@@ -27,3 +27,7 @@ db.env
 .DS_Store
 *.bak2_*
 *.bak[0-9]*
+
+# unelte de-o folosinta (patch-uri aplicate deja, arhivate local)
+_arhiva_patchuri/
+patch*.py
