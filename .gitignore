@@ -1,0 +1,29 @@
+# backup-uri de la patch-uri (nu versionam - git e istoricul acum)
+*.bak_*
+*.bak
+
+# cache Python
+__pycache__/
+*.pyc
+*.pyo
+
+# loguri
+*.log
+uvicorn.log
+
+# arhive / build artefacte
+*.tar.gz
+*.zip
+
+# secrete (sunt in ~/.iconta/ oricum, dar exclud preventiv)
+*.env
+api_keys.env
+db.env
+*.conf
+
+# temporare
+*.tmp
+*.swp
+.DS_Store
+*.bak2_*
+*.bak[0-9]*

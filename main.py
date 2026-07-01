@@ -1,0 +1,2095 @@
+# [patch_coada_user_id] rute paseaza int(uid)
+"""
+main.py — API iConta (reconstruit). Rute SUBȚIRI peste core/ (pur + DB).
+Fără logică de business aici: ruta validează intrarea, cheamă modulul, întoarce.
+
+Pornire:  uvicorn main:app
+Mediu:    DB_* + JWT_SECRET + BREVO_API_KEY din /home/costin/.iconta/*.env
+"""
+from __future__ import annotations
+import os
+from contextlib import asynccontextmanager
+from typing import List, Optional
+
+from fastapi import FastAPI, HTTPException, Depends, Header, Body, UploadFile, File
+from fastapi.responses import Response
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from pydantic import BaseModel
+
+from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs
+
+# template SQL pentru schema unui tenant nou (generat din tenant_001)
+TENANT_TEMPLATE_PATH = os.environ.get(
+    "ICONTA_TENANT_TEMPLATE",
+    os.path.join(os.path.dirname(__file__), "tenant_template.sql"))
+_TENANT_TEMPLATE = None
+
+
+# ============================================================
+#  LIFECYCLE — pool deschis la pornire, închis la oprire
+# ============================================================
+@asynccontextmanager
+async def lifespan(app):
+    global _TENANT_TEMPLATE
+    db.init_pool()
+    try:
+        with db.get_conn() as conn:
+            migrare_api.asigura_tabel(conn)
+    except Exception:
+        pass  # nu blocăm pornirea dacă DB e temporar indisponibil
+    try:
+        with open(TENANT_TEMPLATE_PATH, encoding="utf-8") as f:
+            _TENANT_TEMPLATE = f.read()
+    except FileNotFoundError:
+        _TENANT_TEMPLATE = None   # creare tenant va da eroare clară până e pus
+    yield
+    db.inchide_pool()
+
+
+app = FastAPI(title="iConta API", version="2026.1", lifespan=lifespan)
+
+# frontend: servit static de pe același origin cu API-ul (fără build step)
+_STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+if os.path.isdir(_STATIC_DIR):
+    app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static")
+
+@app.get("/")
+def index():
+    cale = os.path.join(_STATIC_DIR, "index.html")
+    if os.path.isfile(cale):
+        return FileResponse(cale)
+    raise HTTPException(404, "frontend neinstalat")
+
+
+# ============================================================
+#  DEPENDENȚE AUTH — Bearer token -> context
+# ============================================================
+def cere_context(authorization: Optional[str] = Header(None)):
+    """Extrage 'Bearer <token>', verifică, întoarce contextul. 401 dacă lipsă/invalid."""
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(401, "lipsă token (Authorization: Bearer ...)")
+    token = authorization[7:]
+    ctx = auth_api.context_din_token(token)
+    if not ctx["ok"]:
+        raise HTTPException(401, ctx.get("mesaj", "token invalid"))
+    return ctx
+
+
+def cere_rol(*roluri):
+    """Factory: dependență care cere ca rolul din context să fie printre 'roluri'."""
+    def _verifica(ctx=Depends(cere_context)):
+        if ctx["rol"] not in roluri and ctx["rol"] != "superadmin":
+            raise HTTPException(403, "rol insuficient pentru această acțiune")
+        return ctx
+    return _verifica
+
+
+def cere_client(ctx=Depends(cere_context)):
+    """Dependență pentru portal: doar rol 'client' (plus superadmin pt debug)."""
+    if ctx["rol"] not in ("client", "superadmin"):
+        raise HTTPException(403, "doar clienții accesează portalul")
+    return ctx
+
+
+def cere_cabinet(ctx=Depends(cere_context)):
+    """Rute de cabinet: orice rol mai puțin 'client' (clienții au portalul)."""
+    if ctx["rol"] == "client":
+        raise HTTPException(403, "clienții folosesc portalul, nu rutele de cabinet")
+    return ctx
+
+@app.get("/capacitate")  # [p70_capacitate] panou capacitate (doar patron)
+def capacitate_panou(ctx=Depends(cere_rol("admin_firma"))):
+    cab = ctx.get("firm")
+    if not cab:
+        raise HTTPException(400, "fara cabinet asociat")
+    with db.get_conn() as conn:
+        return capacitate_api.capacitate(conn, cab)
+
+@app.get("/tipare")  # [p72_tipare] educatie pe tipare (doar patron)
+def tipare_panou(ctx=Depends(cere_rol("admin_firma"))):
+    cab = ctx.get("firm")
+    if not cab:
+        raise HTTPException(400, "fara cabinet asociat")
+    with db.get_conn() as conn:
+        return tipare_api.tipare(conn, cab)
+
+
+# ============================================================
+#  MODELE intrare
+# ============================================================
+class LoginIn(BaseModel):
+    email: str
+    parola: str
+
+class RegisterIn(BaseModel):
+    email: str
+    parola: str
+    nume_cabinet: str
+    nume: Optional[str] = None
+    prenume: Optional[str] = None
+
+class DeclaratieIn(BaseModel):
+    tenant_id: int
+    an: int
+    luna: Optional[int] = None
+    trim: Optional[int] = None
+    cota: Optional[float] = None
+    manual: Optional[dict] = None
+    date_extra: Optional[dict] = None
+    ca_an_precedent_eur: Optional[float] = None
+
+class TenantNou(BaseModel):
+    nume: str
+    cui: Optional[str] = None
+
+class TenantEdit(BaseModel):
+    nume: Optional[str] = None
+    cui: Optional[str] = None
+
+class LinieIn(BaseModel):
+    descriere: str
+    cantitate: float
+    pret_unitar: float
+    cota_tva: float = 21
+    um: str = "buc"
+
+class FacturaIn(BaseModel):
+    numar: str
+    data_emitere: str
+    directie: str               # "emisa" | "primita"
+    linii: list[LinieIn]
+    client_id: Optional[int] = None
+    tert_nume: Optional[str] = None
+    tert_cui: Optional[str] = None
+    data_scadenta: Optional[str] = None
+    moneda: str = "RON"
+    status: str = "emisa"
+
+class ClientIn(BaseModel):
+    nume: str
+    cui: Optional[str] = None
+    adresa: Optional[str] = None
+    email: Optional[str] = None
+    telefon: Optional[str] = None
+    oras: Optional[str] = None
+    judet: Optional[str] = None
+    cod_postal: Optional[str] = None
+    status: str = "activ"
+
+class ClientEdit(BaseModel):
+    nume: Optional[str] = None
+    cui: Optional[str] = None
+    adresa: Optional[str] = None
+    email: Optional[str] = None
+    telefon: Optional[str] = None
+    oras: Optional[str] = None
+    judet: Optional[str] = None
+    cod_postal: Optional[str] = None
+    status: Optional[str] = None
+
+class SalariatIn(BaseModel):
+    nume: str
+    prenume: Optional[str] = None
+    cnp: Optional[str] = None
+    data_angajare: Optional[str] = None
+    tip_norma: str = "intreaga"
+    ore_zi: Optional[float] = None
+    salariu_brut: float = 0
+    persoane_intretinere: int = 0
+    judet_casa: Optional[str] = None
+    scutit_contrib_minim: bool = False
+    motiv_exceptare: Optional[int] = None
+    cor: Optional[str] = None
+
+class SalariatEdit(BaseModel):
+    nume: Optional[str] = None
+    prenume: Optional[str] = None
+    cnp: Optional[str] = None
+    data_angajare: Optional[str] = None
+    tip_norma: Optional[str] = None
+    ore_zi: Optional[float] = None
+    salariu_brut: Optional[float] = None
+    persoane_intretinere: Optional[int] = None
+    judet_casa: Optional[str] = None
+    activ: Optional[bool] = None
+    scutit_contrib_minim: Optional[bool] = None
+    motiv_exceptare: Optional[int] = None
+    cor: Optional[str] = None
+
+class MigrareValideazaIn(BaseModel):
+    cui_uri: list[str]
+
+class MigrareFirma(BaseModel):
+    cui: str
+    denumire: str
+
+class MigrareImportaIn(BaseModel):
+    firme: list[MigrareFirma]
+
+class MigrareStatusIn(BaseModel):
+    strat: str
+    stare: str
+    nota: str = ""
+
+class VectorIn(BaseModel):  # [p82_vector]
+    regim_fiscal: str
+    platitor_tva: bool
+    tip_decont: Optional[str] = None
+    operatiuni_ic: bool = False
+
+class ProdusPotrivesteIn(BaseModel):  # [p97_produse_rute]
+    denumire: str
+    platitor_tva: bool = True
+
+class ProdusCreeazaIn(BaseModel):
+    denumire: str
+    um: str = "buc"
+    pret_unitar: float = 0
+    cota_tva: Optional[float] = None  # daca lipseste -> AI potriveste
+    categorie: Optional[str] = None
+    confirmat: bool = False
+
+class ProdusUpdateIn(BaseModel):
+    denumire: Optional[str] = None
+    um: Optional[str] = None
+    pret_unitar: Optional[float] = None
+    cota_tva: Optional[float] = None
+    categorie: Optional[str] = None
+    confirmat: Optional[bool] = None
+
+class LinieEmitereIn(BaseModel):  # [p104_emitere_rute]
+    descriere: str
+    um: str = "buc"
+    cantitate: float = 1
+    pret_unitar: float = 0
+    cota_tva: Optional[float] = None  # None -> potrivire automata (nomenclator/AI)
+
+class EmitereIn(BaseModel):
+    linii: List[LinieEmitereIn]
+    tert_nume: Optional[str] = None
+    tert_cui: Optional[str] = None
+    tert_adresa: Optional[str] = None
+    client_id: Optional[int] = None
+    data_emitere: Optional[str] = None
+    data_scadenta: Optional[str] = None
+    moneda: str = "RON"
+    curs_manual: Optional[float] = None
+
+class NumerotareIn(BaseModel):
+    serie: Optional[str] = None
+    numar_start: Optional[int] = None
+
+class SoldRand(BaseModel):
+    cont: str
+    denumire: str = ""
+    debit: float = 0
+    credit: float = 0
+
+class SolduriIn(BaseModel):
+    randuri: list[SoldRand]
+    data_referinta: Optional[str] = None
+class PartenerRand(BaseModel):
+    cont: str
+    cui: str = ""
+    denumire: str = ""
+    debit: float = 0
+    credit: float = 0
+class ParteneriIn(BaseModel):
+    randuri: list[PartenerRand]
+    data_referinta: Optional[str] = None
+class SalariatRand(BaseModel):
+    nume: str = ""
+    prenume: str = ""
+    cnp: str = ""
+    data_angajare: Optional[str] = None
+    tip_norma: str = "intreaga"
+    ore_zi: float = 8
+    salariu_brut: float = 0
+    persoane_intretinere: int = 0
+    judet_casa: str = ""
+    cor: str = ""
+    cnp_valid: bool = True
+    cnp_motiv: str = "ok"
+class SalariatiImportIn(BaseModel):
+    randuri: list[SalariatRand]
+class AsociatRand(BaseModel):
+    nume: str = ""
+    cnp: str = ""
+    cota: float = 0
+    tip: str = "fizica"
+    cnp_valid: bool = True
+    cnp_motiv: str = "ok"
+class AsociatiImportIn(BaseModel):
+    randuri: list[AsociatRand]
+class MijlocFixRand(BaseModel):
+    cod: str = ""
+    denumire: str = ""
+    valoare: float = 0
+    rezidual: float = 0
+    amortizat: float = 0
+    dnf_luni: int = 0
+    data_pif: Optional[str] = None
+    metoda: str = "liniara"
+    cont_imobilizare: str = "2131"
+    cont_amortizare: str = "2813"
+    avertismente: list[str] = []
+    ok: bool = True
+class MijloaceFixeImportIn(BaseModel):
+    randuri: list[MijlocFixRand]
+class IstoricDeclRand(BaseModel):
+    tip: str = ""
+    an: int = 0
+    luna: int = 0
+    data_depunere: Optional[str] = None
+    tip_cunoscut: bool = True
+    avertisment: list[str] = []
+    ok: bool = True
+class IstoricDeclImportIn(BaseModel):
+    randuri: list[IstoricDeclRand]
+
+class CoadaIn(BaseModel):
+    tenant_id: int
+    tip: str
+    an: int
+    luna: Optional[int] = None
+    trim: Optional[int] = None
+    manual: Optional[dict] = None
+    cota: Optional[float] = None
+    date_extra: Optional[dict] = None
+    ca_an_precedent_eur: Optional[float] = None
+    inceput_la: Optional[str] = None  # [p15] ISO, momentul deschiderii formularului
+
+class RespingeIn(BaseModel):
+    motiv: str
+
+class DepuneIn(BaseModel):
+    spv_index: Optional[str] = None
+
+
+# ============================================================
+#  AUTH
+# ============================================================
+@app.post("/auth/login")
+def login(date: LoginIn):
+    with db.get_conn() as conn:
+        r = auth_api.login(conn, date.email, date.parola)
+    if not r["ok"]:
+        raise HTTPException(401, r["mesaj"])
+    return {"token": r["token"], "user": r["user"]}
+
+
+@app.post("/auth/register")
+def register(date: RegisterIn):
+    with db.get_conn() as conn:
+        r = auth_api.inregistreaza_cabinet(
+            conn, date.email, date.parola, date.nume_cabinet,
+            nume=date.nume, prenume=date.prenume)
+    if not r["ok"]:
+        raise HTTPException(400, r["mesaj"])
+    return {"user_id": r["user_id"], "firm_id": r["firm_id"]}
+
+
+# ============================================================
+#  TENANȚI — firmele la care userul are acces
+# ============================================================
+@app.get("/tenants")
+def tenants(ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        return {"tenants": auth_api.tenantii_userului(conn, ctx["uid"])}
+
+
+@app.get("/tenants/{tenant_id}")
+def tenant_detalii(tenant_id: int, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        # verific accesul (schema_tenant întoarce None dacă userul n-are acces)
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        d = tenant_provisioning.detalii_tenant(conn, tenant_id)
+    return d
+
+
+@app.post("/tenants")
+def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
+    if _TENANT_TEMPLATE is None:
+        raise HTTPException(500, "template tenant indisponibil pe server")
+    with db.get_conn() as conn:
+        r = tenant_provisioning.provision_tenant(
+            conn, date.nume, date.cui, ctx["firm"], ctx["uid"], _TENANT_TEMPLATE)
+    return r
+
+
+@app.put("/tenants/{tenant_id}")
+def tenant_actualizeaza(tenant_id: int, date: TenantEdit,
+                        ctx=Depends(cere_rol("admin_firma"))):
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        r = tenant_provisioning.actualizeaza_tenant(conn, tenant_id, date.nume, date.cui)
+    return r
+
+
+# ============================================================
+#  MIGRARE CABINET — validare CUI la ANAF + import în masă
+# ============================================================
+@app.post("/migrare/valideaza")
+def migrare_valideaza(date: MigrareValideazaIn, ctx=Depends(cere_cabinet)):
+    """Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status."""
+    if not date.cui_uri:
+        return {"rezultate": []}
+    try:
+        rez = anaf_api.valideaza_cui(date.cui_uri)
+    except Exception as e:
+        raise HTTPException(502, f"ANAF indisponibil sau a refuzat cererea: {e}")
+    return {"rezultate": rez}
+
+
+@app.post("/migrare/fisier")
+async def migrare_fisier(fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    """Primește un CSV/XLSX, extrage CUI-urile și le validează la ANAF."""
+    continut = await fisier.read()
+    try:
+        cui_uri = anaf_api.extrage_cui_din_fisier(continut, fisier.filename or "")
+    except Exception as e:
+        raise HTTPException(400, f"fișier ilizibil: {e}")
+    if not cui_uri:
+        return {"rezultate": []}
+    try:
+        rez = anaf_api.valideaza_cui(cui_uri)
+    except Exception as e:
+        raise HTTPException(502, f"ANAF indisponibil sau a refuzat cererea: {e}")
+    return {"rezultate": rez}
+
+
+@app.post("/migrare/incarca")
+async def migrare_incarca(fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    """Primește un fișier (.csv/.xlsx), extrage CUI-urile și le validează la ANAF."""
+    continut = await fisier.read()
+    try:
+        cui_uri = anaf_api.extrage_cui_din_fisier(continut, fisier.filename or "")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    if not cui_uri:
+        return {"rezultate": [], "extrase": 0}
+    try:
+        rez = anaf_api.valideaza_cui(cui_uri)
+    except Exception as e:
+        raise HTTPException(502, f"ANAF indisponibil sau a refuzat cererea: {e}")
+    return {"rezultate": rez, "extrase": len(cui_uri)}
+
+
+@app.post("/migrare/importa")
+def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))):
+    """Creează câte un tenant pentru fiecare firmă selectată. Sare peste CUI-uri deja în portofoliu."""
+    if _TENANT_TEMPLATE is None:
+        raise HTTPException(500, "template tenant indisponibil pe server")
+    creat, erori = [], []
+    with db.get_conn() as conn:
+        # CUI-urile deja existente în portofoliul cabinetului (normalizate la cifre)
+        with conn.cursor() as cur:
+            cur.execute("SELECT cui FROM public.tenants WHERE accounting_firm_id = %s", (ctx["firm"],))
+            existente = set()
+            for (c,) in cur.fetchall():
+                cc = anaf_api._curata(c)
+                if cc:
+                    existente.add(cc)
+        for f in date.firme:
+            nume = (f.denumire or "").strip() or f"Firmă {f.cui}"
+            cuic = anaf_api._curata(f.cui)
+            if cuic and cuic in existente:
+                erori.append({"cui": str(f.cui), "nume": nume, "mesaj": "există deja în portofoliu"})
+                continue
+            try:
+                r = tenant_provisioning.provision_tenant(
+                    conn, nume, str(f.cui), ctx["firm"], ctx["uid"], _TENANT_TEMPLATE)
+                creat.append({"cui": str(f.cui), "nume": nume, "tenant_id": r.get("tenant_id")})
+                if cuic:
+                    existente.add(cuic)   # prinde și duplicate în același lot
+            except Exception as e:
+                erori.append({"cui": str(f.cui), "nume": nume, "mesaj": str(e)})
+    return {"creat": creat, "erori": erori, "total": len(creat)}
+
+
+@app.get("/migrare/status")
+def migrare_status_citeste(ctx=Depends(cere_cabinet)):
+    """Starea fiecărui strat de migrare + reminderul (straturi în lucru)."""
+    with db.get_conn() as conn:
+        status = migrare_api.citeste_status(conn, ctx["firm"])
+        rem = migrare_api.reminder(conn, ctx["firm"])
+    return {"straturi": migrare_api.STRATURI, "status": status, "reminder": rem}
+
+
+@app.post("/migrare/status")
+def migrare_status_seteaza(date: MigrareStatusIn, ctx=Depends(cere_rol("admin_firma"))):
+    """Marchează un strat 'gata' sau 'in_lucru' (cu notă obligatorie la in_lucru)."""
+    try:
+        with db.get_conn() as conn:
+            r = migrare_api.seteaza_status(conn, ctx["firm"], date.strat, date.stare, date.nota)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    return r
+
+
+# ============================================================
+#  MIGRARE STRAT 2 — SOLDURI INIȚIALE (per firmă)
+# ============================================================
+@app.get("/migrare/solduri")
+def migrare_solduri_status(ctx=Depends(cere_cabinet)):
+    """Lista firmelor cabinetului cu status solduri (are/n-are, câte conturi)."""
+    out = []
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, ctx["uid"])
+    for f in firme:
+        tid = f.get("id")
+        try:
+            with db.get_conn() as c:
+                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
+            if not schema:
+                continue
+            with db.get_conn(schema) as c:
+                rez = solduri_api.rezumat(c)
+        except Exception:
+            rez = {"are_solduri": False, "randuri": 0, "total_debit": 0, "total_credit": 0}
+        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_solduri": rez["are_solduri"], "randuri": rez["randuri"]})
+    return {"firme": out}
+
+@app.get("/migrare/vector")  # [p84_vector_front] lista firmelor cu status vector fiscal
+def migrare_vector_status(ctx=Depends(cere_cabinet)):
+    """Lista firmelor cabinetului cu status vector (completat sau nu)."""
+    out = []
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, ctx["uid"])
+    for f in firme:
+        tid = f.get("id")
+        try:
+            with db.get_conn() as c:
+                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
+            if not schema:
+                continue
+            with db.get_conn(schema) as c:
+                v = vector_fiscal_api.citeste(c)
+        except Exception:
+            v = {"ok": False}
+        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_vector": bool(v.get("completat")),
+                    "regim_fiscal": v.get("regim_fiscal"),
+                    "platitor_tva": v.get("platitor_tva"),
+                    "tip_decont": v.get("tip_decont"),
+                    "operatiuni_ic": v.get("operatiuni_ic")})
+    return {"firme": out}
+
+
+@app.post("/tenants/{tenant_id}/solduri/incarca")
+async def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    """Parsează o balanță și întoarce preview (nu salvează)."""
+    _schema_sau_404(ctx, tenant_id)
+    continut = await fisier.read()
+    try:
+        randuri = solduri_api.extrage_balanta(continut, fisier.filename or "")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    td = round(sum(r["debit"] for r in randuri), 2)
+    tc = round(sum(r["credit"] for r in randuri), 2)
+    return {"randuri": randuri, "total_debit": td, "total_credit": tc}
+
+
+@app.get("/tenants/{tenant_id}/solduri")
+def solduri_rezumat(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """Rezumatul soldurilor salvate pentru o firmă."""
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return solduri_api.rezumat(conn)
+
+
+@app.post("/tenants/{tenant_id}/solduri")
+def solduri_salveaza(tenant_id: int, date: SolduriIn, ctx=Depends(cere_rol("admin_firma"))):
+    """Salvează soldurile inițiale ale unei firme (înlocuiește ce era)."""
+    schema = _schema_sau_404(ctx, tenant_id)
+    randuri = [{"cont": r.cont, "denumire": r.denumire, "debit": r.debit, "credit": r.credit}
+               for r in date.randuri]
+    with db.get_conn(schema) as conn:
+        return solduri_api.importa(conn, randuri, date.data_referinta)
+
+
+# ============================================================
+#  MIGRARE STRAT 3 — SOLDURI PARTENERI (4111/401 per partener)
+# ============================================================
+@app.get("/migrare/parteneri")
+def migrare_parteneri_status(ctx=Depends(cere_cabinet)):
+    """Lista firmelor cabinetului cu status parteneri (are/n-are, cati parteneri)."""
+    out = []
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, ctx["uid"])
+    for f in firme:
+        tid = f.get("id")
+        try:
+            with db.get_conn() as c:
+                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
+            if not schema:
+                continue
+            with db.get_conn(schema) as c:
+                rez = solduri_parteneri_api.rezumat(c)
+        except Exception:
+            rez = {"are_parteneri": False, "randuri": 0, "total_debit": 0, "total_credit": 0}
+        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_parteneri": rez["are_parteneri"], "randuri": rez["randuri"]})
+    return {"firme": out}
+
+
+@app.post("/tenants/{tenant_id}/parteneri/incarca")
+async def parteneri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    """Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta."""
+    schema = _schema_sau_404(ctx, tenant_id)
+    continut = await fisier.read()
+    try:
+        randuri = solduri_parteneri_api.extrage(continut, fisier.filename or "")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    td = round(sum(r["debit"] for r in randuri), 2)
+    tc = round(sum(r["credit"] for r in randuri), 2)
+    with db.get_conn(schema) as conn:
+        coer = solduri_parteneri_api.coerenta(conn, randuri)
+    return {"randuri": randuri, "total_debit": td, "total_credit": tc, "coerenta": coer}
+
+
+@app.get("/tenants/{tenant_id}/parteneri")
+def parteneri_rezumat(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """Rezumatul partenerilor salvati pentru o firma."""
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return solduri_parteneri_api.rezumat(conn)
+
+
+@app.post("/tenants/{tenant_id}/parteneri")
+def parteneri_salveaza(tenant_id: int, date: ParteneriIn, ctx=Depends(cere_rol("admin_firma"))):
+    """Salveaza soldurile partenerilor unei firme (inlocuieste ce era)."""
+    schema = _schema_sau_404(ctx, tenant_id)
+    randuri = [{"cont": r.cont, "cui": r.cui, "denumire": r.denumire, "debit": r.debit, "credit": r.credit}
+               for r in date.randuri]
+    with db.get_conn(schema) as conn:
+        return solduri_parteneri_api.importa(conn, randuri, date.data_referinta)
+
+
+
+# ============================================================
+#  MIGRARE STRAT 4 — SALARIATI (import din vechea aplicatie)
+# ============================================================
+@app.get("/migrare/salariati")
+def migrare_salariati_status(ctx=Depends(cere_cabinet)):
+    """Lista firmelor cabinetului cu status salariati (are/n-are, cati)."""
+    out = []
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, ctx["uid"])
+    for f in firme:
+        tid = f.get("id")
+        try:
+            with db.get_conn() as c:
+                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
+            if not schema:
+                continue
+            with db.get_conn(schema) as c:
+                rez = salariati_import_api.rezumat(c)
+        except Exception:
+            rez = {"are_salariati": False, "randuri": 0}
+        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_salariati": rez["are_salariati"], "randuri": rez["randuri"]})
+    return {"firme": out}
+
+
+@app.post("/tenants/{tenant_id}/salariati-import/incarca")
+async def salariati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    """Parseaza exportul de salariati si intoarce preview cu validare CNP (nu salveaza)."""
+    _schema_sau_404(ctx, tenant_id)
+    continut = await fisier.read()
+    try:
+        randuri = salariati_import_api.extrage(continut, fisier.filename or "")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    valizi = sum(1 for r in randuri if r["cnp_valid"])
+    return {"randuri": randuri, "total": len(randuri), "valizi": valizi,
+            "invalizi": len(randuri) - valizi}
+
+
+@app.post("/tenants/{tenant_id}/salariati-import")
+def salariati_import_salveaza(tenant_id: int, date: SalariatiImportIn, ctx=Depends(cere_rol("admin_firma"))):
+    """Importa salariatii cu CNP valid (upsert pe CNP). Sare peste cei invalizi."""
+    schema = _schema_sau_404(ctx, tenant_id)
+    randuri = [r.model_dump() for r in date.randuri]
+    with db.get_conn(schema) as conn:
+        return salariati_import_api.importa(conn, randuri)
+
+
+
+# ============================================================
+#  MIGRARE STRAT 5 — ASOCIATI (pentru D205 / dividende)
+# ============================================================
+@app.get("/migrare/asociati")
+def migrare_asociati_status(ctx=Depends(cere_cabinet)):
+    out = []
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, ctx["uid"])
+    for f in firme:
+        tid = f.get("id")
+        try:
+            with db.get_conn() as c:
+                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
+            if not schema:
+                continue
+            with db.get_conn(schema) as c:
+                rez = asociati_import_api.rezumat(c)
+        except Exception:
+            rez = {"are_asociati": False, "randuri": 0, "total_cota": 0}
+        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_asociati": rez["are_asociati"], "randuri": rez["randuri"]})
+    return {"firme": out}
+
+
+@app.post("/tenants/{tenant_id}/asociati-import/incarca")
+async def asociati_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    _schema_sau_404(ctx, tenant_id)
+    continut = await fisier.read()
+    try:
+        randuri = asociati_import_api.extrage(continut, fisier.filename or "")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    coer = asociati_import_api.coerenta_cote(randuri)
+    return {"randuri": randuri, "total": len(randuri), "coerenta": coer}
+
+
+@app.post("/tenants/{tenant_id}/asociati-import")
+def asociati_import_salveaza(tenant_id: int, date: AsociatiImportIn, ctx=Depends(cere_rol("admin_firma"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    randuri = [r.model_dump() for r in date.randuri]
+    with db.get_conn(schema) as conn:
+        return asociati_import_api.importa(conn, randuri)
+
+
+
+# ============================================================
+#  MIGRARE STRAT 6 — MIJLOACE FIXE (registru amortizare)
+# ============================================================
+@app.get("/migrare/mijloace-fixe")
+def migrare_mijloace_status(ctx=Depends(cere_cabinet)):
+    out = []
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, ctx["uid"])
+    for f in firme:
+        tid = f.get("id")
+        try:
+            with db.get_conn() as c:
+                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
+            if not schema:
+                continue
+            with db.get_conn(schema) as c:
+                rez = mijloace_fixe_import_api.rezumat(c)
+        except Exception:
+            rez = {"are_mijloace": False, "randuri": 0}
+        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_mijloace": rez["are_mijloace"], "randuri": rez["randuri"]})
+    return {"firme": out}
+
+
+@app.post("/tenants/{tenant_id}/mijloace-fixe-import/incarca")
+async def mijloace_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    _schema_sau_404(ctx, tenant_id)
+    continut = await fisier.read()
+    try:
+        randuri = mijloace_fixe_import_api.extrage(continut, fisier.filename or "")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    tv = round(sum(r["valoare"] for r in randuri), 2)
+    tr = round(sum(r["rezidual"] for r in randuri), 2)
+    cu_avert = sum(1 for r in randuri if not r["ok"])
+    return {"randuri": randuri, "total": len(randuri), "total_valoare": tv,
+            "total_rezidual": tr, "cu_avertismente": cu_avert}
+
+
+@app.post("/tenants/{tenant_id}/mijloace-fixe-import")
+def mijloace_import_salveaza(tenant_id: int, date: MijloaceFixeImportIn, ctx=Depends(cere_rol("admin_firma"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    randuri = [r.model_dump() for r in date.randuri]
+    with db.get_conn(schema) as conn:
+        return mijloace_fixe_import_api.importa(conn, randuri)
+
+
+
+# ============================================================
+#  MIGRARE STRAT 7 — ISTORIC DECLARATII (ce s-a depus deja)
+# ============================================================
+@app.get("/migrare/istoric-declaratii")
+def migrare_istoric_status(ctx=Depends(cere_cabinet)):
+    out = []
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, ctx["uid"])
+    for f in firme:
+        tid = f.get("id")
+        try:
+            with db.get_conn() as c:
+                rez = istoric_declaratii_import_api.rezumat(c, tid)
+        except Exception:
+            rez = {"are_istoric": False, "randuri": 0}
+        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
+                    "are_istoric": rez["are_istoric"], "randuri": rez["randuri"]})
+    return {"firme": out}
+
+
+@app.post("/tenants/{tenant_id}/istoric-declaratii-import/incarca")
+async def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    _schema_sau_404(ctx, tenant_id)
+    continut = await fisier.read()
+    try:
+        randuri = istoric_declaratii_import_api.extrage(continut, fisier.filename or "")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    cu_avert = sum(1 for r in randuri if not r["ok"])
+    return {"randuri": randuri, "total": len(randuri), "cu_avertismente": cu_avert}
+
+
+@app.post("/tenants/{tenant_id}/istoric-declaratii-import")
+def istoric_import_salveaza(tenant_id: int, date: IstoricDeclImportIn, ctx=Depends(cere_rol("admin_firma"))):
+    _schema_sau_404(ctx, tenant_id)
+    randuri = [r.model_dump() for r in date.randuri]
+    with db.get_conn() as conn:
+        return istoric_declaratii_import_api.importa(conn, tenant_id, randuri)
+
+
+
+# ============================================================
+#  CONTROL FISCAL — semafor conformare per portofoliu
+# ============================================================
+@app.get("/control-fiscal")
+def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
+    """Semafor pentru toate firmele cabinetului + sumar (verde/galben/rosu)."""
+    import datetime
+    azi = datetime.date.today()
+    out = []
+    sumar = {"verde": 0, "galben": 0, "rosu": 0, "gri": 0}
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, ctx["uid"])
+    for f in firme:
+        tid = f.get("id")
+        try:
+            with db.get_conn() as c:
+                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
+            if not schema:
+                continue
+            with db.get_conn(schema) as cs, db.get_conn() as cp:
+                r = control_fiscal_api.evalueaza_firma(cs, cp, tid, schema, azi)
+        except Exception:
+            r = {"stare": "gri", "datorate": 0, "depuse": 0, "lipsa": [], "urmarit": []}
+        sumar[r["stare"]] = sumar.get(r["stare"], 0) + 1
+        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
+                    "stare": r["stare"], "lipsa": len(r["lipsa"]), "urmarit": len(r["urmarit"])})
+    return {"firme": out, "sumar": sumar}
+
+
+@app.get("/control-fiscal/{tenant_id}")
+def control_fiscal_detaliu(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """Detaliu conformare pentru o firma: lista lipsa + de urmarit."""
+    import datetime
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as cs, db.get_conn() as cp:
+        r = control_fiscal_api.evalueaza_firma(cs, cp, tenant_id, schema, datetime.date.today())
+    return r
+
+
+
+# ============================================================
+#  TERMENE — scadente viitoare pe portofoliu (orizont 60 zile)
+# ============================================================
+@app.get("/termene")
+def termene_portofoliu(ctx=Depends(cere_cabinet)):
+    """Scadente viitoare grupate pe data + tip, cu numarul de firme."""
+    import datetime
+    azi = datetime.date.today()
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, ctx["uid"])
+    firme_eval = []
+    for f in firme:
+        tid = f.get("id")
+        try:
+            with db.get_conn() as c:
+                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
+            if not schema:
+                continue
+            with db.get_conn(schema) as cs:
+                with cs.cursor() as cur:
+                    cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic FROM firma_profil LIMIT 1")
+                    row = cur.fetchone()
+                    vector = {"regim_fiscal": row[0], "platitor_tva": row[1],
+                              "tip_decont": row[2], "operatiuni_ic": row[3]} if row else {}
+                    cur.execute("SELECT to_regclass('salariati')")
+                    are_sal = False
+                    if cur.fetchone()[0]:
+                        cur.execute("SELECT count(*) FROM salariati WHERE activ=true")
+                        are_sal = cur.fetchone()[0] > 0
+            if not vector:
+                continue
+            with db.get_conn() as cp:
+                with cp.cursor() as cur:
+                    cur.execute("SELECT tip, an, luna FROM public.declaratii_depuse WHERE tenant_id=%s", (tid,))
+                    depuse = {(t, a, l) for (t, a, l) in cur.fetchall()}
+            term = termene_api.termene_firma(vector, are_sal, depuse, azi)
+            firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "termene": term})
+        except Exception:
+            continue
+    return termene_api.portofoliu(firme_eval, azi)
+
+
+
+# ============================================================
+#  FACTURI (în schema tenantului)
+# ============================================================
+def _schema_sau_404(ctx, tenant_id):
+    """Verifică accesul userului la tenant; întoarce schema sau ridică 404."""
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+    if not schema:
+        raise HTTPException(404, "tenant inexistent sau fără acces")
+    return schema
+
+# [p97_produse_rute] NOMENCLATOR PRODUSE — rute generice pe tenant (cabinet + client + gratuit)
+# guard unificat: _schema_sau_404 accepta orice user cu acces la tenant (schema_tenant)
+@app.get("/tenants/{tenant_id}/produse")
+def produse_lista(tenant_id: int, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return {"produse": produse_api.lista(conn)}
+
+@app.post("/tenants/{tenant_id}/produse/potriveste")
+def produse_potriveste(tenant_id: int, date: ProdusPotrivesteIn, ctx=Depends(cere_context)):
+    # preview cota (AI), fara salvare - pentru UI la scrierea denumirii
+    _schema_sau_404(ctx, tenant_id)  # doar verific accesul
+    return produse_api.potriveste(date.denumire, platitor_tva=date.platitor_tva)
+
+@app.post("/tenants/{tenant_id}/produse")
+def produse_creeaza(tenant_id: int, date: ProdusCreeazaIn, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = produse_api.creeaza(conn, date.denumire, um=date.um,
+                                pret_unitar=date.pret_unitar, cota_tva=date.cota_tva,
+                                categorie=date.categorie, confirmat=date.confirmat)
+    if not r.get("ok"):
+        raise HTTPException(400, r.get("mesaj", "produs invalid"))
+    return r
+
+@app.put("/tenants/{tenant_id}/produse/{produs_id}")
+def produse_actualizeaza(tenant_id: int, produs_id: int, date: ProdusUpdateIn,
+                         ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = produse_api.actualizeaza(conn, produs_id, denumire=date.denumire,
+                                     um=date.um, pret_unitar=date.pret_unitar,
+                                     cota_tva=date.cota_tva, categorie=date.categorie,
+                                     confirmat=date.confirmat)
+    if not r.get("ok"):
+        raise HTTPException(404, "produs inexistent")
+    return r
+
+@app.delete("/tenants/{tenant_id}/produse/{produs_id}")
+def produse_sterge(tenant_id: int, produs_id: int, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = produse_api.sterge(conn, produs_id)
+    if not r.get("ok"):
+        raise HTTPException(404, "produs inexistent")
+    return r
+
+# [p104_emitere_rute] EMITERE FACTURI — rute generice pe tenant (client + gratuit + cabinet)
+def _platitor_tva_firma(conn):
+    """Citeste daca firma emitenta e platitoare TVA (din firma_profil)."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT platitor_tva FROM firma_profil LIMIT 1")
+        row = cur.fetchone()
+    return bool(row[0]) if row and row[0] is not None else True
+
+@app.get("/tenants/{tenant_id}/facturi/numerotare")
+def facturi_numerotare_get(tenant_id: int, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return facturi_api.numerotare(conn)
+
+@app.put("/tenants/{tenant_id}/facturi/numerotare")
+def facturi_numerotare_set(tenant_id: int, date: NumerotareIn, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = facturi_api.seteaza_numerotare(conn, serie=date.serie, numar_start=date.numar_start)
+    if not r.get("ok"):
+        raise HTTPException(400, r.get("mesaj", "eroare"))
+    return r
+
+class ModelFacturaIn(BaseModel):
+    font: Optional[str] = None
+    culoare: Optional[str] = None
+    logo: Optional[str] = None      # data URI base64; "" sterge; None = nu schimba
+
+@app.get("/tenants/{tenant_id}/firma-profil")
+def firma_profil_get(tenant_id: int, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return _fp.citeste_profil(conn)
+
+@app.post("/tenants/{tenant_id}/firma-profil/model")
+def firma_profil_model(tenant_id: int, date: ModelFacturaIn, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return _fp.salveaza_model(conn, font=date.font, culoare=date.culoare, logo=date.logo)
+
+@app.get("/tenants/{tenant_id}/facturi/{factura_id}/pdf")
+def factura_pdf_ruta(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        f = facturi_api.detalii_factura(conn, factura_id)
+        if not f:
+            raise HTTPException(404, "factură inexistentă")
+        profil = _fp.citeste_profil(conn)
+    pdf = _pdf.genereaza_pdf(profil, f)
+    nume = "factura_" + str(f.get("numar") or factura_id).replace("/", "-") + ".pdf"
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'inline; filename="{nume}"'})
+
+class EmailFacturaIn(BaseModel):
+    email: str
+    mesaj: Optional[str] = None
+
+@app.post("/tenants/{tenant_id}/facturi/{factura_id}/email")
+def factura_email(tenant_id: int, factura_id: int, date: EmailFacturaIn, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    email = (date.email or "").strip()
+    if "@" not in email or "." not in email:
+        raise HTTPException(422, "adresă de email invalidă")
+    with db.get_conn(schema) as conn:
+        f = facturi_api.detalii_factura(conn, factura_id)
+        if not f:
+            raise HTTPException(404, "factură inexistentă")
+        profil = _fp.citeste_profil(conn)
+    import base64 as _b64
+    pdf = _pdf.genereaza_pdf(profil, f)
+    nume_pdf = "factura_" + str(f.get("numar") or factura_id).replace("/", "-") + ".pdf"
+    b64 = _b64.b64encode(pdf).decode()
+    numar = f.get("numar") or ""
+    firma = profil.get("nume") or ""
+    subiect = "Factura %s%s" % (numar, (" - " + firma if firma else ""))
+    corp_mesaj = date.mesaj or ("Bună ziua,<br><br>Atașat găsiți factura %s.<br><br>O zi bună!" % numar)
+    html = "<div style='font-family:Arial,sans-serif;font-size:14px;color:#222'>%s</div>" % corp_mesaj
+    ok = _obs.trimite_email_html(email, subiect, html,
+                                 attachments=[{"content": b64, "name": nume_pdf}])
+    if not ok:
+        raise HTTPException(502, "trimiterea email a eșuat")
+    return {"ok": True, "email": email}
+
+@app.post("/tenants/{tenant_id}/facturi/emite")
+def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    linii = [l.model_dump() for l in date.linii]
+    with db.get_conn(schema) as conn:
+        platitor = _platitor_tva_firma(conn)
+        try:
+            r = facturi_api.emite_factura(
+                conn, linii, client_id=date.client_id, tert_nume=date.tert_nume,
+                tert_cui=date.tert_cui, tert_adresa=date.tert_adresa, data_emitere=date.data_emitere,
+                data_scadenta=date.data_scadenta, moneda=date.moneda,
+                platitor_tva=platitor, curs_manual=date.curs_manual)
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+    # curs BNR indisponibil -> 409 cu detaliile pt frontend (Reincearca / Manual)
+    if isinstance(r, dict) and r.get("ok") is False and r.get("cod") == "CURS_INDISPONIBIL":
+        raise HTTPException(409, detail=r)
+    return r
+
+@app.post("/tenants/{tenant_id}/facturi/{factura_id}/storno")
+def facturi_storno(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        try:
+            r = facturi_api.storneaza(conn, factura_id)
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+    return r
+
+@app.get("/tenants/{tenant_id}/verifica-cui/{cui}")
+def verifica_cui(tenant_id: int, cui: str, ctx=Depends(cere_context)):
+    _schema_sau_404(ctx, tenant_id)  # doar verific accesul
+    try:
+        rez = anaf_api.valideaza_cui([cui])
+    except Exception as e:
+        raise HTTPException(502, "ANAF indisponibil: %s" % e)
+    if not rez:
+        return {"gasit": False}
+    return rez[0]
+
+@app.get("/tenants/{tenant_id}/vector")  # [p82_vector] citeste vectorul fiscal
+def vector_citeste(tenant_id: int, ctx=Depends(cere_cabinet)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return vector_fiscal_api.citeste(conn)
+
+@app.post("/tenants/{tenant_id}/vector")  # [p82_vector] scrie vectorul (doar admin_firma)
+def vector_salveaza(tenant_id: int, date: VectorIn, ctx=Depends(cere_rol("admin_firma"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    # nume+cui din public.tenants (pt cazul cand firma_profil e gol si trebuie creat)  # [p83_upsert]
+    with db.get_conn() as cpub:
+        with cpub.cursor() as cur:
+            cur.execute("SELECT nume, cui FROM public.tenants WHERE id = %s", (tenant_id,))
+            row = cur.fetchone()
+    t_nume = row[0] if row else None
+    t_cui = row[1] if row else None
+    with db.get_conn(schema) as conn:
+        rez = vector_fiscal_api.salveaza(conn, date.regim_fiscal, date.platitor_tva,
+                                         date.tip_decont, date.operatiuni_ic,
+                                         nume=t_nume, cui=t_cui)
+    if not rez.get("ok"):
+        raise HTTPException(400, rez.get("mesaj", "vector invalid"))
+    # marcheaza stratul de migrare ca gata
+    try:
+        with db.get_conn() as c:
+            migrare_api.seteaza_status(c, ctx["firm"], "vector_fiscal", "gata", "")
+    except Exception:
+        pass
+    return rez
+
+
+@app.get("/tenants/{tenant_id}/facturi")  # [p117_facturi_lista_acces] acces client+gratuit+cabinet
+def facturi_lista(tenant_id: int, an: Optional[int] = None,
+                  luna: Optional[int] = None, directie: Optional[str] = None,
+                  ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return {"facturi": facturi_api.lista_facturi(conn, an, luna, directie)}
+
+
+@app.post("/tenants/{tenant_id}/facturi")
+def factura_creeaza(tenant_id: int, date: FacturaIn,
+                    ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    linii = [l.model_dump() for l in date.linii]
+    try:
+        with db.get_conn(schema) as conn:
+            r = facturi_api.creeaza_factura(
+                conn, date.numar, date.data_emitere, date.directie, linii,
+                client_id=date.client_id, tert_nume=date.tert_nume,
+                tert_cui=date.tert_cui, data_scadenta=date.data_scadenta,
+                moneda=date.moneda, status=date.status)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    return r
+
+
+@app.get("/tenants/{tenant_id}/facturi/{factura_id}")  # [p115_detalii_acces] acces client+gratuit+cabinet
+def factura_detalii(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        f = facturi_api.detalii_factura(conn, factura_id)
+    if not f:
+        raise HTTPException(404, "factură inexistentă")
+    return f
+
+
+@app.delete("/tenants/{tenant_id}/facturi/{factura_id}")
+def factura_sterge(tenant_id: int, factura_id: int,
+                   ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return facturi_api.sterge_factura(conn, factura_id)
+
+
+# ============================================================
+#  CLIENȚI (în schema tenantului)
+# ============================================================
+@app.get("/tenants/{tenant_id}/clienti")
+def clienti_lista(tenant_id: int, status: Optional[str] = None,
+                  ctx=Depends(cere_cabinet)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return {"clienti": clienti_api.lista_clienti(conn, status)}
+
+
+@app.post("/tenants/{tenant_id}/clienti")
+def client_creeaza(tenant_id: int, date: ClientIn,
+                   ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    try:
+        with db.get_conn(schema) as conn:
+            return clienti_api.creeaza_client(conn, **date.model_dump())
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+
+
+@app.get("/tenants/{tenant_id}/clienti/{client_id}")
+def client_detalii(tenant_id: int, client_id: int, ctx=Depends(cere_cabinet)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        c = clienti_api.detalii_client(conn, client_id)
+    if not c:
+        raise HTTPException(404, "client inexistent")
+    return c
+
+
+@app.put("/tenants/{tenant_id}/clienti/{client_id}")
+def client_actualizeaza(tenant_id: int, client_id: int, date: ClientEdit,
+                        ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return clienti_api.actualizeaza_client(conn, client_id, **date.model_dump())
+
+
+@app.delete("/tenants/{tenant_id}/clienti/{client_id}")
+def client_sterge(tenant_id: int, client_id: int,
+                  ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = clienti_api.sterge_client(conn, client_id)
+    if not r["ok"] and r.get("cod") == "ARE_FACTURI":
+        raise HTTPException(409, r["mesaj"])
+    return r
+
+
+# ============================================================
+#  SALARIAȚI (în schema tenantului)
+# ============================================================
+@app.get("/tenants/{tenant_id}/salariati")
+def salariati_lista(tenant_id: int, activ: Optional[bool] = None,
+                    ctx=Depends(cere_cabinet)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return {"salariati": salariati_api.lista_salariati(conn, activ)}
+
+
+@app.post("/tenants/{tenant_id}/salariati")
+def salariat_creeaza(tenant_id: int, date: SalariatIn,
+                     ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    try:
+        with db.get_conn(schema) as conn:
+            return salariati_api.creeaza_salariat(conn, **date.model_dump())
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+
+
+@app.get("/tenants/{tenant_id}/salariati/{salariat_id}")
+def salariat_detalii(tenant_id: int, salariat_id: int, ctx=Depends(cere_cabinet)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        s = salariati_api.detalii_salariat(conn, salariat_id)
+    if not s:
+        raise HTTPException(404, "salariat inexistent")
+    return s
+
+
+@app.put("/tenants/{tenant_id}/salariati/{salariat_id}")
+def salariat_actualizeaza(tenant_id: int, salariat_id: int, date: SalariatEdit,
+                          ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    try:
+        with db.get_conn(schema) as conn:
+            return salariati_api.actualizeaza_salariat(conn, salariat_id, **date.model_dump())
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+
+
+@app.delete("/tenants/{tenant_id}/salariati/{salariat_id}")
+def salariat_sterge(tenant_id: int, salariat_id: int,
+                    ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = salariati_api.sterge_salariat(conn, salariat_id)
+    if not r["ok"] and r.get("cod") == "ARE_CONCEDII":
+        raise HTTPException(409, r["mesaj"])
+    return r
+
+
+# ============================================================
+#  COADĂ DECLARAȚII (flux validare: asistent -> senior -> depusă)
+# ============================================================
+# [p57_notif] helpere notificari pe fluxul cozii
+def _coada_info(conn, coada_id):
+    with conn.cursor() as cur:
+        cur.execute("SELECT tip, perioada, creat_de_id, cabinet_id FROM public.declaratii_coada WHERE id=%s",
+                    (coada_id,))
+        r = cur.fetchone()
+    if not r:
+        return None
+    return {"tip": r[0], "perioada": r[1], "creat_de_id": r[2], "cabinet_id": r[3]}
+
+def _notif_de_validat(conn, cabinet_id, tip, perioada, creat_de_id):
+    # notifica validatorii (mai putin pregatitorul)
+    ids = _notif.validatorii_cabinetului(conn, cabinet_id, exclude_id=creat_de_id)
+    txt = "Declaratie %s (%s) trimisa spre validare." % ((tip or "").upper(), perioada or "")
+    _notif.adauga_multi(conn, ids, "de_validat", txt, link="validat")
+
+def _notif_pregatitor(conn, coada_id, tip_eveniment, motiv=None):
+    info = _coada_info(conn, coada_id)
+    if not info or not info["creat_de_id"]:
+        return
+    tip = (info["tip"] or "").upper()
+    per = info["perioada"] or ""
+    if tip_eveniment == "respinsa":
+        txt = "Declaratia %s (%s) a fost respinsa." % (tip, per)
+        if motiv:
+            txt += " Motiv: " + motiv
+    elif tip_eveniment == "aprobata":
+        txt = "Declaratia %s (%s) a fost aprobata." % (tip, per)
+    elif tip_eveniment == "depusa":
+        txt = "Declaratia %s (%s) a fost depusa." % (tip, per)
+    else:
+        txt = "Actualizare declaratie %s (%s)." % (tip, per)
+    _notif.adauga(conn, info["creat_de_id"], tip_eveniment, txt, link="validat")
+
+@app.post("/coada")
+def coada_adauga(date: CoadaIn, ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    schema = _schema_sau_404(ctx, date.tenant_id)
+    body = date.model_dump(exclude_none=True)
+    for k in ("tenant_id", "tip", "inceput_la"):  # [p15] inceput_la nu merge la generator
+        body.pop(k, None)
+    # 1) generează declarația pe schema tenantului
+    try:
+        with db.get_conn(schema) as conn:
+            xml, res = declaratii_api.genereaza(conn, schema, date.tip, body)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    payload = {"xml": xml, "avertismente": getattr(res, "avertismente", None)}
+    # 2) pune în coadă (pe public), stare 'la_senior'
+    with db.get_conn() as conn:
+        r = coada_api.adauga_in_coada(
+            conn, ctx["firm"], date.tenant_id, date.tip, date.an, payload,
+            creat_de=str(ctx["uid"]), creat_de_id=int(ctx["uid"]), luna=date.luna, trim=date.trim,
+            inceput_la=date.inceput_la)  # [p15]
+    if not r["ok"] and r.get("cod") == "DEJA_IN_COADA":
+        raise HTTPException(409, r["mesaj"])
+    # [p57_notif] notifica validatorii ca e ceva de validat
+    if r.get("ok"):
+        try:
+            with db.get_conn() as conn:
+                _notif_de_validat(conn, ctx["firm"], date.tip,
+                                  r.get("perioada") or ("%s/%s" % (date.luna or date.trim or "", date.an)),
+                                  int(ctx["uid"]))
+        except Exception:
+            pass
+    return r
+
+
+@app.get("/coada")
+def coada_lista(stare: Optional[str] = None, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        return {"coada": coada_api.lista_coada(conn, ctx["firm"], stare)}
+
+
+@app.post("/coada/{coada_id}/aproba")
+def coada_aproba(coada_id: int, ctx=Depends(cere_rol("admin_firma"))):
+    with db.get_conn() as conn:
+        if not _are_permisiune(ctx, "poate_valida"):
+            raise HTTPException(status_code=403, detail="nu ai permisiunea de a valida declarații")
+        r = coada_api.aproba(conn, coada_id, str(ctx["uid"]), aprobat_de_id=int(ctx["uid"]))
+    if not r["ok"]:
+        cod = r.get("cod")
+        http = 409 if cod == "STARE_GRESITA" else (403 if cod == "PATRU_OCHI" else 404)
+        raise HTTPException(http, r.get("mesaj", cod))
+    # [p57_notif] notifica pregatitorul
+    try:
+        with db.get_conn() as conn:
+            _notif_pregatitor(conn, coada_id, "aprobata")
+    except Exception:
+        pass
+    return r
+
+
+@app.post("/coada/{coada_id}/respinge")
+def coada_respinge(coada_id: int, date: RespingeIn,
+                   ctx=Depends(cere_rol("admin_firma"))):
+    with db.get_conn() as conn:
+        r = coada_api.respinge(conn, coada_id, str(ctx["uid"]), date.motiv, respins_de_id=int(ctx["uid"]))
+    if not r["ok"]:
+        raise HTTPException(409 if r.get("cod") == "STARE_GRESITA" else 404,
+                            r.get("mesaj", r.get("cod")))
+    # [p57_notif] notifica pregatitorul cu motivul
+    try:
+        with db.get_conn() as conn:
+            _notif_pregatitor(conn, coada_id, "respinsa", motiv=date.motiv)
+    except Exception:
+        pass
+    return r
+
+
+@app.post("/coada/{coada_id}/depune")
+def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
+                 ctx=Depends(cere_rol("admin_firma"))):
+    with db.get_conn() as conn:
+        if not _are_permisiune(ctx, "poate_depune"):
+            raise HTTPException(status_code=403, detail="nu ai permisiunea de a depune declarații")
+        r = coada_api.marcheaza_depusa(conn, coada_id, date.spv_index, depus_de=str(ctx["uid"]), depus_de_id=int(ctx["uid"]))
+    if not r["ok"]:
+        raise HTTPException(409 if r.get("cod") == "STARE_GRESITA" else 404,
+                            r.get("mesaj", r.get("cod")))
+    return r
+
+# [p57_notif] RUTE NOTIFICARI
+@app.get("/notificari")
+def notificari_lista(doar_necitite: bool = False, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        return _notif.lista(conn, ctx["uid"], doar_necitite=doar_necitite)
+
+@app.get("/notificari/contor")
+def notificari_contor(ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        return _notif.contor(conn, ctx["uid"])
+@app.get("/notificari/sumar")  # [p63_notif_sumar]
+def notificari_sumar(ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        return _notif.sumar(conn, ctx["uid"])
+
+@app.post("/notificari/citit")
+def notificari_citit_toate(ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        return _notif.marcheaza_citit(conn, ctx["uid"])
+
+# [p62_pachete] RUTE PACHETE LUNARE
+class PachetTextIn(BaseModel):
+    text: str
+    status: Optional[str] = "ciorna"
+
+def _pachet_schema(ctx, tenant_id):
+    with db.get_conn() as c:
+        schema = auth_api.schema_tenant(c, ctx["uid"], tenant_id)
+    if not schema:
+        raise HTTPException(403, "nu ai acces la acest tenant")
+    return schema
+
+@app.get("/pachete/{tenant_id}/rezumat")
+def pachet_rezumat(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    schema = _pachet_schema(ctx, tenant_id)
+    with db.get_conn(schema) as cs, db.get_conn() as cp:
+        return _pachete.rezumat_luna(cs, cp, tenant_id, an, luna)
+
+@app.post("/pachete/{tenant_id}/genereaza")
+def pachet_genereaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    schema = _pachet_schema(ctx, tenant_id)
+    with db.get_conn(schema) as cs, db.get_conn() as cp:
+        return _pachete.genereaza_poveste(cs, cp, tenant_id, an, luna)
+
+@app.get("/pachete/{tenant_id}/poveste")
+def pachet_poveste_get(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    _pachet_schema(ctx, tenant_id)
+    with db.get_conn() as cp:
+        return _pachete.get_poveste(cp, tenant_id, an, luna)
+
+@app.post("/pachete/{tenant_id}/poveste")
+def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn, ctx=Depends(cere_cabinet)):
+    _pachet_schema(ctx, tenant_id)
+    with db.get_conn() as cp:
+        return _pachete.salveaza_poveste(cp, tenant_id, an, luna, date.text, status=date.status or "ciorna")
+
+@app.post("/pachete/{tenant_id}/trimite")
+def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    schema = _pachet_schema(ctx, tenant_id)
+    nume = (ctx.get("prenume") or ctx.get("nume") or "")
+    semnatura = ("Cu salutari,\n" + nume) if nume else "Cu salutari,"
+    with db.get_conn(schema) as cs, db.get_conn() as cp:
+        r = _pachete.trimite(cs, cp, tenant_id, an, luna, semnatura=semnatura)
+    if not r.get("ok"):
+        cod = r.get("cod")
+        msg = {"FARA_EMAIL": "Firma nu are email setat in profil.",
+               "NEAPROBATA": "Aproba povestea inainte de trimitere.",
+               "EMAIL_ESUAT": "Emailul nu a putut fi trimis."}.get(cod, cod or "eroare")
+        raise HTTPException(400, msg)
+    return r
+
+@app.post("/notificari/{nid}/citit")
+def notificari_citit_una(nid: int, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        return _notif.marcheaza_citit(conn, ctx["uid"], notif_id=nid)
+
+
+# ============================================================
+#  DECLARAȚII
+# ============================================================
+@app.get("/declaratii/tipuri")
+def declaratii_tipuri(ctx=Depends(cere_cabinet)):
+    return {"tipuri": declaratii_api.tipuri(),
+            "periodicitate": {t: declaratii_api.periodicitate(t)
+                              for t in declaratii_api.tipuri()}}
+
+
+@app.post("/declaratii/{tip}")
+def declaratie_genereaza(tip: str, date: DeclaratieIn,
+                         ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    body = date.model_dump(exclude_none=True)
+    tenant_id = body.pop("tenant_id")
+    # 1) pe public: aflu schema tenantului + verific accesul userului
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+    if not schema:
+        raise HTTPException(403, "nu ai acces la acest tenant")
+    # 2) pe schema tenantului (SET LOCAL search_path în get_conn, PgBouncer-safe):
+    #    modulul rulează pe conexiunea deja poziționată, NU mai setează el search_path
+    try:
+        with db.get_conn(schema) as conn:
+            xml, res = declaratii_api.genereaza(conn, schema, tip, body)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    avert = getattr(res, "avertismente", None)
+    return {"tip": tip, "xml": xml, "avertismente": avert}
+
+
+# ============================================================
+#  PORTAL CLIENT (read-only, izolat)
+# ============================================================
+def _tenant_client(ctx, tenant_id=None):
+    """Rezolvă tenantul clientului din user_tenants. Un singur tenant -> implicit."""
+    with db.get_conn() as conn:
+        tenants = auth_api.tenantii_userului(conn, ctx["uid"])
+    if not tenants:
+        raise HTTPException(404, "nu aveți nicio firmă asociată")
+    if tenant_id is not None:
+        t = next((x for x in tenants if x["id"] == tenant_id), None)
+        if not t:
+            raise HTTPException(404, "firmă inexistentă sau fără acces")
+        return t
+    if len(tenants) == 1:
+        return tenants[0]
+    raise HTTPException(400, "aveți mai multe firme; specificați tenant_id")
+
+
+@app.get("/portal/firme")
+def portal_firme(ctx=Depends(cere_client)):
+    with db.get_conn() as conn:
+        return {"firme": auth_api.tenantii_userului(conn, ctx["uid"])}
+
+
+@app.get("/portal/firma")
+def portal_firma(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn(t["schema_name"]) as conn:
+        firma = portal_api.date_firma(conn, t["schema_name"])
+    return {"tenant_id": t["id"], "nume": t.get("nume"), "firma": firma}
+
+
+@app.get("/portal/facturi")
+def portal_facturi(tenant_id: Optional[int] = None, an: Optional[int] = None,
+                   luna: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn(t["schema_name"]) as conn:
+        return {"facturi": facturi_api.lista_facturi(conn, an, luna, None)}
+
+
+@app.get("/portal/declaratii")
+def portal_declaratii(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn:
+        return {"declaratii": portal_api.declaratii_depuse(conn, t["id"])}
+
+@app.get("/portal/acasa")  # [p91_portal_acasa] status ANAF + scadente pentru firma clientului
+def portal_acasa(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    schema = t["schema_name"]
+    with db.get_conn(schema) as conn_schema:
+        with db.get_conn() as conn_public:
+            rez = control_fiscal_api.evalueaza_firma(conn_schema, conn_public, t["id"], schema)
+    # normalizez pentru portal: stare + liste scurte de scadente
+    return {
+        "tenant_id": t["id"],
+        "nume": t.get("nume"),
+        "stare": rez.get("stare"),
+        "mesaj": rez.get("mesaj"),
+        "restante": rez.get("lipsa", []),
+        "de_urmarit": rez.get("urmarit", []),
+        "datorate": rez.get("datorate", 0),
+        "depuse": rez.get("depuse", 0),
+    }
+
+
+# === ASISTENTI_API ROUTES ===
+from core import asistenti_api as _asist
+import core.notificari_api as _notif  # [p57_notif]
+import core.pachete_api as _pachete  # [p62_pachete]
+import core.raportari_api as _rap  # [p33]
+
+
+def _cer_admin_cabinet(ctx):
+    """Doar admin_firma (și superadmin) gestionează actorii. Întoarce id cabinet."""
+    if ctx["rol"] not in ("admin_firma", "superadmin"):
+        raise HTTPException(status_code=403, detail="Doar administratorul cabinetului.")
+    return ctx["firm"]
+
+
+@app.get("/asistenti")
+def asistenti_lista(ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        return {
+            "sumar": _asist.sumar(conn, cabinet_id),
+            "actori": _asist.lista_actori(conn, cabinet_id),
+        }
+
+
+@app.get("/asistenti/{uid}")
+def asistenti_detalii(uid: int, ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        r = _asist.detalii_actor(conn, cabinet_id, uid)
+        if not r.get("ok"):
+            raise HTTPException(status_code=404, detail=r.get("cod"))
+        return r
+
+
+@app.post("/asistenti/{uid}/permisiuni")
+def asistenti_permisiuni(uid: int, date: dict = Body(...), ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        r = _asist.set_permisiuni(
+            conn, cabinet_id, uid,
+            date.get("poate_pregati", False),
+            date.get("poate_valida", False),
+            date.get("poate_depune", False),
+        )
+        if not r.get("ok"):
+            raise HTTPException(status_code=400, detail=r.get("cod"))
+        return r
+
+
+@app.post("/asistenti/{uid}/firme/{tid}")
+def asistenti_atribuie(uid: int, tid: int, ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        r = _asist.atribuie_firma(conn, cabinet_id, uid, tid)
+        if not r.get("ok"):
+            raise HTTPException(status_code=400, detail=r.get("cod"))
+        return r
+
+
+@app.delete("/asistenti/{uid}/firme/{tid}")
+def asistenti_elimina(uid: int, tid: int, ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        r = _asist.elimina_firma(conn, cabinet_id, uid, tid)
+        if not r.get("ok"):
+            raise HTTPException(status_code=400, detail=r.get("cod"))
+        return r
+
+
+@app.post("/asistenti/{uid}/dezactiveaza")
+def asistenti_dezactiveaza(uid: int, ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        r = _asist.dezactiveaza(conn, cabinet_id, uid, ctx["uid"])
+        if not r.get("ok"):
+            raise HTTPException(status_code=400, detail=r.get("cod"))
+        return r
+
+
+@app.post("/asistenti/{uid}/reactiveaza")
+def asistenti_reactiveaza(uid: int, ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        r = _asist.reactiveaza(conn, cabinet_id, uid)
+        if not r.get("ok"):
+            raise HTTPException(status_code=400, detail=r.get("cod"))
+        return r
+
+
+
+# [patch7_finalizeaza_firme]
+@app.post("/asistenti/{uid}/finalizeaza-firme")
+def asistenti_finalizeaza_firme(uid: int, ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        r = _asist.aplica_regula_zero_firme(conn, cabinet_id, uid)
+        if not r.get("ok"):
+            raise HTTPException(status_code=400, detail=r.get("cod"))
+        return r
+
+
+
+# [patch9_semafor_rute]
+@app.get("/asistenti/echipa/semafor")
+def asistenti_semafor(zile: int = 30, ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        return _asist.semafor_echipa(conn, cabinet_id, zile)
+
+
+@app.get("/asistenti/echipa/erori")
+def asistenti_erori(zile: int = 30, ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        return _asist.erori_echipa(conn, cabinet_id, zile)
+
+# [p16_activitate_cabinet_routes]
+@app.get("/asistenti/echipa/centralizator")
+def asistenti_centralizator(de: Optional[str] = None, pana: Optional[str] = None,
+                            ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        return _asist.centralizator(conn, cabinet_id, de=de, pana=pana)
+
+
+@app.get("/asistenti/echipa/jurnal")
+def asistenti_jurnal(de: Optional[str] = None, pana: Optional[str] = None,
+                     limit: int = 200, ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        return _asist.jurnal(conn, cabinet_id, de=de, pana=pana, limit=limit)
+
+
+# [patch_asistenti_calitate]
+@app.get("/asistenti/{uid}/calitate")
+def asistenti_calitate(uid: int, de: Optional[str] = None,
+                       pana: Optional[str] = None, ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        r = _asist.calitate(conn, cabinet_id, uid, de=de, pana=pana)
+        if not r.get("ok"):
+            raise HTTPException(404, r.get("cod", "eroare"))
+        return r
+
+
+@app.get("/asistenti/{uid}/activitate")
+def asistenti_activitate(uid: int, ctx=Depends(cere_cabinet)):
+    cabinet_id = _cer_admin_cabinet(ctx)
+    with db.get_conn() as conn:
+        r = _asist.activitate(conn, cabinet_id, uid)
+        if not r.get("ok"):
+            raise HTTPException(status_code=404, detail=r.get("cod"))
+        return r
+
+
+# [p18_selfview]
+@app.get("/eu/calitate")
+def eu_calitate(de: Optional[str] = None, pana: Optional[str] = None,
+                ctx=Depends(cere_cabinet)):
+    """Self-view: propria calitate (nivel, semafor, rata, tipare). uid din token."""
+    with db.get_conn() as conn:
+        r = _asist.calitate(conn, ctx["firm"], ctx["uid"], de=de, pana=pana)
+        if not r.get("ok"):
+            raise HTTPException(404, r.get("cod", "eroare"))
+        return r
+
+
+
+
+# [p27_setari_routes]
+class SchimbaParolaIn(BaseModel):
+    parola_veche: str
+    parola_noua: str
+
+
+class ProfilIn(BaseModel):
+    nume: Optional[str] = None
+    prenume: Optional[str] = None
+
+
+# [p47_compet]
+class CompetenteIn(BaseModel):
+    poate_pregati: bool = False
+    poate_valida: bool = False
+    poate_depune: bool = False
+
+# [p50_edu]
+@app.get("/eu/educatie")
+def eu_educatie(ctx=Depends(cere_cabinet)):
+    if ctx["rol"] not in ("admin_firma", "superadmin"):
+        return {"ok": True, "educatii": []}
+    with db.get_conn() as conn:
+        return _asist.educatie_de_aratat(conn, ctx["firm"])
+
+# [p54_4ochi]
+class PatruOchiIn(BaseModel):
+    activ: bool
+
+@app.post("/eu/patru-ochi")
+def eu_patru_ochi(date: PatruOchiIn, ctx=Depends(cere_cabinet)):
+    if ctx["rol"] not in ("admin_firma", "superadmin"):
+        raise HTTPException(403, "Doar patronul.")
+    with db.get_conn() as conn:
+        return _asist.patru_ochi_seteaza(conn, ctx["firm"], date.activ)
+
+
+@app.post("/eu/educatie/patru-ochi/vazut")
+def eu_educatie_vazut(ctx=Depends(cere_cabinet)):
+    if ctx["rol"] not in ("admin_firma", "superadmin"):
+        raise HTTPException(403, "Doar patronul.")
+    with db.get_conn() as conn:
+        return _asist.educatie_marcheaza(conn, ctx["firm"])
+
+
+@app.get("/eu/competente")
+def eu_competente_get(ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        return _asist.get_competente_proprii(conn, ctx["uid"])
+
+@app.post("/eu/competente")
+def eu_competente_set(date: CompetenteIn, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        return _asist.set_competente_proprii(
+            conn, ctx["uid"], date.poate_pregati, date.poate_valida, date.poate_depune)
+
+
+@app.post("/eu/schimba-parola")
+def eu_schimba_parola(date: SchimbaParolaIn, ctx=Depends(cere_cabinet)):
+    if len(date.parola_noua or "") < 8:
+        raise HTTPException(422, "Parola noua trebuie sa aiba minim 8 caractere.")
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT password_hash FROM public.users WHERE id = %s", (ctx["uid"],))
+            row = cur.fetchone()
+        if not row or not auth_api.verifica_parola_orice(date.parola_veche, row[0]):
+            raise HTTPException(403, "Parola actuala este gresita.")
+        auth_api.schimba_parola(conn, ctx["uid"], date.parola_noua)
+    return {"ok": True}
+
+
+@app.post("/eu/profil")
+def eu_profil(date: ProfilIn, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        r = auth_api.actualizeaza_profil(conn, ctx["uid"], nume=date.nume, prenume=date.prenume)
+    if not r.get("ok"):
+        raise HTTPException(422, r.get("cod", "eroare"))
+    return r
+
+
+# [p29_cabinet_routes]
+class CabinetIn(BaseModel):
+    nume: Optional[str] = None
+    cui: Optional[str] = None
+
+
+@app.get("/eu/cabinet")
+def eu_cabinet_get(ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        r = auth_api.get_cabinet(conn, ctx["firm"])
+    if not r.get("ok"):
+        raise HTTPException(404, r.get("cod", "eroare"))
+    return r
+
+
+@app.post("/eu/cabinet")
+def eu_cabinet_set(date: CabinetIn, ctx=Depends(cere_cabinet)):
+    if ctx["rol"] not in ("admin_firma", "superadmin"):
+        raise HTTPException(403, "Doar administratorul cabinetului poate edita datele cabinetului.")
+    with db.get_conn() as conn:
+        r = auth_api.actualizeaza_cabinet(conn, ctx["firm"], nume=date.nume, cui=date.cui)
+    if not r.get("ok"):
+        raise HTTPException(422, r.get("cod", "eroare"))
+    return r
+
+
+# [p30_recomanda]
+_APP_URL = "https://iconta.eu"
+
+
+def _mesaj_promo_html(nume_cabinet):
+    # [p32_mesaj] text cu diacritice, 4 atribute principale ale aplicatiei
+    cine = nume_cabinet or "Un cabinet de contabilitate"
+    _li = "margin:0 0 10px 0;padding-left:2px"
+    return (
+        "<!-- [p32_mesaj] -->"
+        "<div style='font-family:sans-serif;font-size:15px;color:#111;max-width:540px;line-height:1.55'>"
+        "<p>Bună,</p>"
+        "<p>" + cine + " folosește <b>iConta</b> și s-a gândit că ți-ar prinde bine și ție.</p>"
+        "<p>iConta e contabilitatea în cloud care lucrează pentru tine și echipa ta:</p>"
+        "<ul style='margin:14px 0;padding-left:20px'>"
+        "<li style='" + _li + "'><b>Te apără</b> &mdash; semaforul fiscal te avertizează înainte "
+        "să depui ceva ce-ți aduce control.</li>"
+        "<li style='" + _li + "'><b>Face munca grea</b> &mdash; citește documentele și propune "
+        "contările; tu doar verifici și aprobi.</li>"
+        "<li style='" + _li + "'><b>Îți conduce echipa</b> &mdash; împarți firmele pe asistenți, "
+        "urmărești cine ce lucrează, cu validare în patru ochi înainte de depunere.</li>"
+        "<li style='" + _li + "'><b>Adună tot</b> &mdash; contabilitate, salarizare, declarații, "
+        "e-Factura și SAF-T, pe același client.</li>"
+        "</ul>"
+        "<p>Mai puțin timp pierdut, mai puține greșeli costisitoare.</p>"
+        "<p style='margin:24px 0'><a href='" + _APP_URL + "' style='background:#2563eb;color:#fff;"
+        "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>Încearcă iConta</a></p>"
+        "</div>"
+    )
+
+
+class RecomandareIn(BaseModel):
+    emails: list[str]
+
+
+# [p67_recprev]
+@app.get("/recomanda/preview")
+def recomanda_preview(ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        r = auth_api.get_cabinet(conn, ctx["firm"])
+    nume_cabinet = (r.get("cabinet") or {}).get("nume", "") if r.get("ok") else ""
+    return {"ok": True, "html": _mesaj_promo_html(nume_cabinet),
+            "subiect": "O recomandare pentru cabinetul tau: iConta"}
+
+@app.post("/recomanda")
+def trimite_recomandari(date: RecomandareIn, ctx=Depends(cere_cabinet)):
+    emails = [e.strip() for e in (date.emails or []) if e and e.strip()]
+    if not emails:
+        raise HTTPException(400, "Niciun email valid.")
+    if len(emails) > 20:
+        raise HTTPException(400, "Maxim 20 de emailuri odata.")
+    with db.get_conn() as conn:
+        r = auth_api.get_cabinet(conn, ctx["firm"])
+    nume_cabinet = (r.get("cabinet") or {}).get("nume", "") if r.get("ok") else ""
+    html = _mesaj_promo_html(nume_cabinet)
+    import core.observare as _obs
+    rezultate = []
+    for em in emails:
+        ok = _obs.trimite_email_html(em, "O recomandare pentru cabinetul tau: iConta", html)
+        rezultate.append({"email": em, "stare": "trimis" if ok else "esuat"})
+    return {"ok": True, "rezultate": rezultate}
+
+
+# [p33_raportari]
+class RaportareNouaIn(BaseModel):
+    subiect: Optional[str] = None
+    text: str
+
+
+class MesajIn(BaseModel):
+    text: str
+
+
+@app.post("/raportari")
+def raportari_creeaza(date: RaportareNouaIn, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        r = _rap.creeaza_raportare(conn, ctx["uid"], ctx.get("firm"), date.subiect, date.text)
+    if not r.get("ok"):
+        raise HTTPException(400, r.get("cod", "eroare"))
+    return r
+
+
+@app.get("/raportari/eu")
+def raportari_mele(ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        return _rap.raportarile_mele(conn, ctx["uid"])
+
+
+@app.get("/raportari/contor")
+def raportari_contor(ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        return _rap.contor_necitite(conn, ctx["uid"])
+
+
+@app.get("/raportari/admin")
+def raportari_admin(ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    with db.get_conn() as conn:
+        return _rap.toate_raportarile(conn)
+
+
+@app.get("/raportari/{rid}")
+def raportari_fir(rid: int, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        r = _rap.firul_complet(conn, rid)
+        if not r.get("ok"):
+            raise HTTPException(404, r.get("cod", "eroare"))
+        # acces: autorul firului sau superadmin
+        if ctx["rol"] != "superadmin" and r["raportare"]["autor_id"] != ctx["uid"]:
+            raise HTTPException(403, "Nu ai acces la aceasta raportare.")
+        return r
+
+
+@app.post("/raportari/{rid}/mesaj")
+def raportari_mesaj(rid: int, date: MesajIn, ctx=Depends(cere_cabinet)):
+    rol_autor = "admin" if ctx["rol"] == "superadmin" else "utilizator"
+    with db.get_conn() as conn:
+        # utilizatorul poate scrie doar in firele lui
+        if rol_autor == "utilizator":
+            f = _rap.firul_complet(conn, rid)
+            if not f.get("ok"):
+                raise HTTPException(404, "Inexistent.")
+            if f["raportare"]["autor_id"] != ctx["uid"]:
+                raise HTTPException(403, "Nu ai acces.")
+        r = _rap.adauga_mesaj(conn, rid, ctx["uid"], rol_autor, date.text)
+    if not r.get("ok"):
+        raise HTTPException(400, r.get("cod", "eroare"))
+    return r
+
+
+@app.post("/raportari/{rid}/citit")
+def raportari_citit(rid: int, ctx=Depends(cere_cabinet)):
+    cine_rol = "admin" if ctx["rol"] == "superadmin" else "utilizator"
+    with db.get_conn() as conn:
+        return _rap.marcheaza_citit(conn, rid, cine_rol)
+
+
+# [p38_pentru_admin]
+class PentruAdminIn(BaseModel):
+    valoare: bool = True
+
+@app.post("/raportari/{rid}/pentru-admin")
+def raportari_pentru_admin(rid: int, date: PentruAdminIn, ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    with db.get_conn() as conn:
+        r = _rap.seteaza_pentru_admin(conn, rid, date.valoare)
+    if not r.get("ok"):
+        raise HTTPException(404, r.get("cod", "eroare"))
+    return r
+
+
+# [p35_raportari_imagine]
+@app.post("/raportari/mesaj/{mid}/imagine")
+async def raportari_imagine(mid: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    import os as _os, uuid as _uuid
+    tip = (fisier.content_type or "").lower()
+    if tip not in ("image/png", "image/jpeg", "image/jpg", "image/webp"):
+        raise HTTPException(415, "Doar capturi de ecran (PNG, JPG, WEBP).")
+    continut = await fisier.read()
+    if len(continut) > 8 * 1024 * 1024:
+        raise HTTPException(413, "Imaginea e prea mare (max 8MB).")
+    with db.get_conn() as conn:
+        info = _rap.autor_mesajului(conn, mid)
+        if not info:
+            raise HTTPException(404, "Mesaj inexistent.")
+        # acces: superadmin, sau autorul mesajului
+        if ctx["rol"] != "superadmin" and info["mesaj_autor"] != ctx["uid"]:
+            raise HTTPException(403, "Nu ai acces.")
+        ext = {"image/png": ".png", "image/jpeg": ".jpg", "image/jpg": ".jpg",
+               "image/webp": ".webp"}.get(tip, ".png")
+        nume = "r%d_m%d_%s%s" % (info["raportare_id"], mid, _uuid.uuid4().hex[:8], ext)
+        director = _os.path.join(_STATIC_DIR, "raportari")
+        _os.makedirs(director, exist_ok=True)
+        cale_disc = _os.path.join(director, nume)
+        with open(cale_disc, "wb") as fh:
+            fh.write(continut)
+        cale_web = "/static/raportari/" + nume
+        r = _rap.adauga_atasament(conn, mid, cale_web, fisier.filename)
+    if not r.get("ok"):
+        raise HTTPException(400, r.get("cod", "eroare"))
+    return {"ok": True, "cale": cale_web}
+# === /ASISTENTI_API ROUTES ===
+
+
+# === PERMISIUNI FLUX (coada) ===
+def _are_permisiune(ctx, flag):
+    """True dacă userul curent are flagul (poate_valida / poate_depune).
+    superadmin trece mereu. Citește direct din public.users."""
+    if ctx.get("rol") == "superadmin":
+        return True
+    if flag not in ("poate_pregati", "poate_valida", "poate_depune"):
+        return False
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT %s FROM public.users WHERE id = %%s" % flag,
+                        (ctx["uid"],))
+            r = cur.fetchone()
+            return bool(r and r[0])
+
+
+@app.get("/eu/permisiuni")
+def eu_permisiuni(ctx=Depends(cere_cabinet)):
+    """Permisiunile actorului curent — pentru ca frontendul să rescrie butoanele
+    fără relogare (permisiunile se schimbă din cardul Asistenți)."""
+    if ctx.get("rol") == "superadmin":
+        return {"poate_pregati": True, "poate_valida": True, "poate_depune": True,
+                "rol": "superadmin"}
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT poate_pregati, poate_valida, poate_depune, rol "
+                "FROM public.users WHERE id = %s", (ctx["uid"],))
+            r = cur.fetchone()
+    if not r:
+        raise HTTPException(status_code=404, detail="user inexistent")
+    return {"poate_pregati": bool(r[0]), "poate_valida": bool(r[1]),
+            "poate_depune": bool(r[2]), "rol": r[3]}
+# === /PERMISIUNI FLUX ===

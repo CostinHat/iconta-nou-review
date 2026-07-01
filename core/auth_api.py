@@ -1,0 +1,308 @@
+"""
+core/auth_api.py — autentificare API: login, register, context token, acces tenant.
+Strat SUBȚIRE peste nucleu.py (pur) + db.py (pool). Aliniat la schema reală
+public.users / public.tenants / public.user_tenants de pe iconta-prod.
+
+Compatibilitate parole (DRUM A):
+  Userii existenți au hash BCRYPT ($2b$12$...). nucleu.py știe doar scrypt.
+  -> verifica_parola_orice() detectează formatul și verifică pe cel potrivit.
+  -> userii vechi se loghează în continuare; la următoarea schimbare de parolă
+     se face rehash în scrypt (nucleu.hash_parola). Migrare lină, nimeni resetat.
+
+nucleu.py rămâne NEATINS (scrypt pentru parole noi). Adaptarea stă la margine.
+
+Roluri: baza are 4 (superadmin/admin_firma/angajat/client). nucleu.ROLURI are 3.
+  -> login NU filtrează pe rol; emite token cu rolul din DB.
+
+Se dovedește pe server (parte DB): query users/tenants/user_tenants.
+"""
+from __future__ import annotations
+import os
+
+from core import nucleu, db
+
+REGULI = "2026.1"
+MODUL = "auth_api"
+
+SECRET = os.environ.get("JWT_SECRET", "")
+DURATA_TOKEN_SEC = int(os.environ.get("ICONTA_TOKEN_DURATA_SEC", str(8 * 3600)))
+
+_BCRYPT_PREFIX = ("$2a$", "$2b$", "$2y$")
+
+
+# ============================================================
+#  PAROLĂ dual-format — PURĂ (testabilă fără DB)
+# ============================================================
+def verifica_parola_orice(parola, hash_stocat):
+    """
+    Verifică parola contra hash-ului, indiferent de format:
+      - $2a/$2b/$2y -> bcrypt (userii vechi)
+      - scrypt$...  -> nucleu.verifica_parola (userii noi)
+    Întoarce True/False. Nu aruncă pe hash necunoscut (întoarce False).
+    """
+    if not hash_stocat:
+        return False
+    if hash_stocat.startswith(_BCRYPT_PREFIX):
+        import bcrypt
+        try:
+            return bcrypt.checkpw(parola.encode("utf-8"), hash_stocat.encode("utf-8"))
+        except (ValueError, TypeError):
+            return False
+    if hash_stocat.startswith("scrypt$"):
+        return nucleu.verifica_parola(parola, hash_stocat)
+    return False
+
+
+def e_bcrypt(hash_stocat):
+    """True dacă hash-ul e bcrypt (deci candidat la rehash scrypt). Pură."""
+    return bool(hash_stocat) and hash_stocat.startswith(_BCRYPT_PREFIX)
+
+
+# ============================================================
+#  PAYLOAD TOKEN — PURĂ
+# ============================================================
+def construieste_payload(user_row):
+    """
+    Din rândul user (dict) construiește payload-ul token (doar ce e necesar).
+    NU pune email/nume în token — minim necesar pentru autorizare.
+    """
+    return {
+        "uid": user_row["id"],
+        "rol": user_row["rol"],
+        "firm": user_row.get("accounting_firm_id"),
+    }
+
+
+def emite_token(user_row, secret=None, durata=None, acum=None):
+    """Emite token semnat pentru un user. Pură (delegă la nucleu)."""
+    secret = SECRET if secret is None else secret
+    durata = DURATA_TOKEN_SEC if durata is None else durata
+    return nucleu.creeaza_token(construieste_payload(user_row), secret,
+                                durata_sec=durata, acum=acum)
+
+
+def context_din_token(token, secret=None, acum=None):
+    """
+    Verifică token-ul, întoarce contextul {ok, uid, rol, firm} sau {ok:False,...}.
+    Rutele cer asta la fiecare request protejat.
+    """
+    secret = SECRET if secret is None else secret
+    r = nucleu.verifica_token(token, secret, acum=acum)
+    if not r["ok"]:
+        return r
+    p = r["payload"]
+    return {"ok": True, "uid": p.get("uid"), "rol": p.get("rol"), "firm": p.get("firm")}
+
+
+# ============================================================
+#  LOGIN — parte DB (se dovedește pe server)
+# ============================================================
+def login(conn, email, parola, secret=None):
+    """
+    Caută userul după email, verifică activ + parolă (dual format), emite token.
+    Întoarce {ok, token, user:{id,rol,nume,firm}} sau {ok:False, cod, mesaj}.
+    Mesaj generic la eșec (nu divulgăm dacă emailul există).
+    """
+    import psycopg2.extras as _E
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute(  # [p20_sursa_unica]
+            "SELECT u.id, u.email, u.password_hash, u.nume, u.prenume, u.rol, "
+            "u.accounting_firm_id, u.activ, "
+            "u.poate_pregati, u.poate_valida, u.poate_depune, "
+            "af.nume AS nume_firma "
+            "FROM public.users u "
+            "LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id "
+            "WHERE u.email = %s",
+            (email,))
+        u = cur.fetchone()
+
+    if not u or not u["activ"]:
+        return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "email sau parolă greșite"}
+    if not verifica_parola_orice(parola, u["password_hash"]):
+        return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "email sau parolă greșite"}
+
+    token = emite_token(u, secret=secret)
+    # [[p90_client_bara]] pentru client: numele firmei lui (tenant) din user_tenants
+    nume_tenant = None
+    if u["rol"] == "client":
+        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+            cur.execute(
+                "SELECT t.nume FROM public.user_tenants ut "
+                "JOIN public.tenants t ON t.id = ut.tenant_id "
+                "WHERE ut.user_id = %s ORDER BY ut.tenant_id LIMIT 1",
+                (u["id"],))
+            row = cur.fetchone()
+        nume_tenant = row["nume"] if row else None
+    return {"ok": True, "token": token,
+            "user": {"id": u["id"], "rol": u["rol"],
+                     "nume": u.get("nume"), "prenume": u.get("prenume"),
+                     "firm": u["accounting_firm_id"],
+                     "nume_firma": u.get("nume_firma"),
+                     "nume_tenant": nume_tenant,
+                     "poate_pregati": bool(u.get("poate_pregati")),
+                     "poate_valida": bool(u.get("poate_valida")),
+                     "poate_depune": bool(u.get("poate_depune"))},
+            "rehash_recomandat": e_bcrypt(u["password_hash"])}
+
+
+# [p27_setari]
+def actualizeaza_profil(conn, user_id, nume=None, prenume=None):
+    """Actualizeaza nume/prenume. Intoarce {ok, user} cu datele noi (pt sesiune)."""
+    import psycopg2.extras as _E
+    sets, par = [], []
+    if nume is not None:
+        sets.append("nume = %s"); par.append(nume.strip())
+    if prenume is not None:
+        sets.append("prenume = %s"); par.append(prenume.strip())
+    if not sets:
+        return {"ok": False, "cod": "NIMIC_DE_SCHIMBAT"}
+    par.append(user_id)
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute("UPDATE public.users SET " + ", ".join(sets) +
+                    " WHERE id = %s RETURNING id, email, nume, prenume, rol, "
+                    "accounting_firm_id, poate_pregati, poate_valida, poate_depune",
+                    tuple(par))
+        u = cur.fetchone()
+    if not u:
+        return {"ok": False, "cod": "USER_INEXISTENT"}
+    # nume_firma pentru sursa unica (bara 1)
+    with conn.cursor() as cur:
+        cur.execute("SELECT nume FROM public.accounting_firms WHERE id = %s",
+                    (u["accounting_firm_id"],))
+        r = cur.fetchone()
+        nume_firma = r[0] if r else None
+    return {"ok": True, "user": {
+        "id": u["id"], "rol": u["rol"], "nume": u.get("nume"),
+        "prenume": u.get("prenume"), "firm": u["accounting_firm_id"],
+        "nume_firma": nume_firma,
+        "poate_pregati": bool(u.get("poate_pregati")),
+        "poate_valida": bool(u.get("poate_valida")),
+        "poate_depune": bool(u.get("poate_depune"))}}
+
+
+def schimba_parola(conn, user_id, parola_noua):
+    """
+    Setează parolă nouă cu SCRYPT (nucleu). Folosit la rehash-ul userilor bcrypt
+    sau la schimbare normală. Marchează parola_schimbata=true.
+    """
+    h = nucleu.hash_parola(parola_noua)
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.users SET password_hash = %s, "
+                    "parola_schimbata = true WHERE id = %s", (h, user_id))
+    return {"ok": True}
+
+
+# ============================================================
+#  REGISTER — self-service cabinet (ca vechiul /register)
+# ============================================================
+# [p29_cabinet]
+def get_cabinet(conn, firm_id):
+    """Datele cabinetului (nume, cui)."""
+    import psycopg2.extras as _E
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute("SELECT id, nume, cui FROM public.accounting_firms WHERE id = %s", (firm_id,))
+        r = cur.fetchone()
+    return {"ok": True, "cabinet": dict(r)} if r else {"ok": False, "cod": "INEXISTENT"}
+
+
+def actualizeaza_cabinet(conn, firm_id, nume=None, cui=None):
+    """Actualizeaza nume/cui cabinet."""
+    import psycopg2.extras as _E
+    sets, par = [], []
+    if nume is not None:
+        sets.append("nume = %s"); par.append(nume.strip())
+    if cui is not None:
+        sets.append("cui = %s"); par.append((cui or "").strip() or None)
+    if not sets:
+        return {"ok": False, "cod": "NIMIC_DE_SCHIMBAT"}
+    par.append(firm_id)
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute("UPDATE public.accounting_firms SET " + ", ".join(sets) +
+                    " WHERE id = %s RETURNING id, nume, cui", tuple(par))
+        r = cur.fetchone()
+    return {"ok": True, "cabinet": dict(r)} if r else {"ok": False, "cod": "INEXISTENT"}
+
+
+def inregistreaza_cabinet(conn, email, parola, nume_cabinet, nume=None, prenume=None):
+    """
+    Creează un cabinet nou (accounting_firms) + user admin_firma (scrypt).
+    Respectă chk_firm_required (admin_firma cere accounting_firm_id).
+    Întoarce {ok, user_id, firm_id} sau {ok:False, cod, mesaj}.
+    """
+    import psycopg2.extras as _E
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute("SELECT 1 FROM public.users WHERE email = %s", (email,))
+        if cur.fetchone():
+            return {"ok": False, "cod": "EMAIL_EXISTA", "mesaj": "email deja înregistrat"}
+        cur.execute("INSERT INTO public.accounting_firms (nume) VALUES (%s) RETURNING id",
+                    (nume_cabinet,))
+        firm_id = cur.fetchone()["id"]
+        h = nucleu.hash_parola(parola)
+        cur.execute(
+            "INSERT INTO public.users (email, password_hash, nume, prenume, rol, "
+            "accounting_firm_id) VALUES (%s,%s,%s,%s,'admin_firma',%s) RETURNING id",
+            (email, h, nume, prenume, firm_id))
+        user_id = cur.fetchone()["id"]
+    return {"ok": True, "user_id": user_id, "firm_id": firm_id}
+
+
+# ============================================================
+#  ACCES TENANT — izolare: userul vede DOAR tenanții lui
+# ============================================================
+def _rol_si_firma(conn, user_id):
+    """(rol, accounting_firm_id) ale userului, sau (None, None)."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT rol, accounting_firm_id FROM public.users WHERE id = %s", (user_id,))
+        r = cur.fetchone()
+    return (r[0], r[1]) if r else (None, None)
+
+
+def schema_tenant(conn, user_id, tenant_id):
+    """
+    Întoarce schema_name a tenantului dacă userul are acces, altfel None.
+      - superadmin: orice firmă activă
+      - admin_firma: firmele cabinetului lui (accounting_firm_id)
+      - restul (angajat/client): doar prin user_tenants
+    """
+    rol, firm = _rol_si_firma(conn, user_id)
+    with conn.cursor() as cur:
+        if rol == "superadmin":
+            # GDPR: superadmin acceseaza continut DOAR pentru conturi gratuite (fara cabinet).
+            cur.execute("SELECT schema_name FROM public.tenants WHERE id = %s AND accounting_firm_id IS NULL AND activ = true", (tenant_id,))
+        elif rol == "admin_firma":
+            cur.execute("SELECT schema_name FROM public.tenants WHERE id = %s AND accounting_firm_id = %s AND activ = true",
+                        (tenant_id, firm))
+        else:
+            cur.execute(
+                "SELECT t.schema_name FROM public.tenants t "
+                "JOIN public.user_tenants ut ON ut.tenant_id = t.id "
+                "WHERE ut.user_id = %s AND t.id = %s AND t.activ = true",
+                (user_id, tenant_id))
+        row = cur.fetchone()
+    return row[0] if row else None
+
+
+def tenantii_userului(conn, user_id):
+    """
+    Lista tenanților la care userul are acces: [{id, nume, schema_name, cui, activ}].
+      - superadmin: toate firmele active
+      - admin_firma: firmele cabinetului lui
+      - restul: doar prin user_tenants
+    """
+    import psycopg2.extras as _E
+    rol, firm = _rol_si_firma(conn, user_id)
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        if rol == "superadmin":
+            # GDPR: superadmin vede in lista DOAR conturi gratuite (fara cabinet).
+            cur.execute("SELECT id, nume, schema_name, cui, activ FROM public.tenants "
+                        "WHERE accounting_firm_id IS NULL AND activ = true ORDER BY nume")
+        elif rol == "admin_firma":
+            cur.execute("SELECT id, nume, schema_name, cui, activ FROM public.tenants "
+                        "WHERE accounting_firm_id = %s AND activ = true ORDER BY nume", (firm,))
+        else:
+            cur.execute(
+                "SELECT t.id, t.nume, t.schema_name, t.cui, t.activ FROM public.tenants t "
+                "JOIN public.user_tenants ut ON ut.tenant_id = t.id "
+                "WHERE ut.user_id = %s AND t.activ = true ORDER BY t.nume",
+                (user_id,))
+        return [dict(r) for r in cur.fetchall()]

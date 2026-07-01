@@ -1,0 +1,383 @@
+// asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
+// Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
+// Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
+import { api } from "../api.js";
+/* [patch11_semafor_explicit] */
+function _semaforEticheta(culoare) {
+  const M = { rosu: "probleme", galben: "de urm\u0103rit", verde: "f\u0103r\u0103 probleme" };
+  const t = M[culoare] || "";
+  return `<span class="asi-sem asi-sem-${culoare}"></span><span class="asi-sem-txt">${t}</span>`;
+}
+
+const PERM = [
+  ["poate_pregati", "Poate pregăti"],
+  ["poate_valida", "Poate valida"],
+  ["poate_depune", "Poate depune"],
+];
+
+// ── NIVEL 2: listă actori ──────────────────────────────────
+export async function randeazaAsistenti(corp, nav) {
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă asistenții…</p>`;
+  let date;
+  try {
+    date = await api.get("/asistenti");
+  } catch {
+    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca asistenții.</p>`;
+    return;
+  }
+  const actori = (date && date.actori) || [];
+  const sumar = (date && date.sumar) || { total: 0, activi: 0 };
+
+  corp.innerHTML = `
+    <p class="mig-intro">Asistenții cabinetului: roluri, permisiuni și firmele pe care le lucrează.
+      Tu decizi cine poate pregăti, valida și depune declarații.</p>
+    <div class="asi-sumar">${sumar.total} asistenț${sumar.total === 1 ? "ă" : "i"} · ${sumar.activi} activ${sumar.activi === 1 ? "" : "i"}</div>
+    <div id="asi-banner"></div>
+    <div id="asi-lista"></div>
+    <div class="mig-eroare" id="asi-eroare"></div>
+  `;
+  _asiBannerEchipa(corp, nav);
+  const lista = corp.querySelector("#asi-lista");
+  /* [patch8_lista_dez] */
+  if (!actori.length) {
+    lista.innerHTML = `<div class="mig-gol">Niciun asistent în cabinet.</div>`;
+    return;
+  }
+  const activi = actori.filter((a) => a.activ);
+  const inactivi = actori.filter((a) => !a.activ);
+
+  if (!activi.length) {
+    lista.innerHTML = `<div class="mig-gol">Niciun asistent activ.</div>`;
+  } else {
+    activi.forEach((a) => lista.appendChild(randActor(a, corp, nav)));
+  }
+
+  if (inactivi.length) {
+    const wrap = document.createElement("div");
+    wrap.innerHTML = `
+      <button class="asi-toggle-dez" id="asi-toggle-dez">Arată dezactivați (${inactivi.length})</button>
+      <div id="asi-lista-dez" style="display:none;"></div>`;
+    lista.appendChild(wrap);
+    const cont = wrap.querySelector("#asi-lista-dez");
+    inactivi.forEach((a) => cont.appendChild(randActor(a, corp, nav)));
+    const btn = wrap.querySelector("#asi-toggle-dez");
+    btn.onclick = () => {
+      const deschis = cont.style.display !== "none";
+      cont.style.display = deschis ? "none" : "";
+      btn.textContent = (deschis ? "Arată" : "Ascunde") + ` dezactivați (${inactivi.length})`;
+    };
+  }
+}
+
+function pastilaPerm(activ, text) {
+  const cls = activ ? "asi-perm-on" : "asi-perm-off";
+  return `<span class="asi-perm ${cls}">${activ ? "✓" : "·"} ${text}</span>`;
+}
+
+function randActor(a, corp, nav) {
+  const div = document.createElement("div");
+  div.className = "val-card" + (a.activ ? "" : " asi-inactiv");
+  const nume = [a.prenume, a.nume].filter(Boolean).join(" ") || a.email;
+  const rolText = a.rol === "admin_firma" ? "administrator" : (a.functie || "asistent");
+  const perms = PERM.map(([k, t]) => pastilaPerm(a[k], t)).join(" ");
+  const inactivBadge = a.activ ? "" : `<span class="asi-badge-inactiv">dezactivat</span>`;
+  div.innerHTML = `
+    <div class="asi-rand-sus">
+      <div>
+        <div class="asi-nume">${nume} ${inactivBadge}</div>
+        <div class="asi-rol">${rolText} · ${a.nr_firme} firme</div>
+      </div>
+      <div class="asi-actiuni-rand">
+        <button class="mig-buton-mic" data-act="edit">Editează</button>
+        <button class="mig-buton-mic" data-act="vezi">Vizualizează</button>
+      </div>
+    </div>
+    <div class="asi-perms">${perms}</div>
+  `;
+  div.querySelector('[data-act="edit"]').onclick = () =>
+    deschideEditare(a.id, corp, nav);
+  div.querySelector('[data-act="vezi"]').onclick = () =>
+    deschideVizualizare(a.id, nav);
+  return div;
+}
+
+// ── NIVEL 3a: editare actor (permisiuni + firme) ───────────
+// [patch6_editare_completa]
+async function deschideEditare(uid, corp, nav) {
+  let d;
+  try { d = await api.get(`/asistenti/${uid}`); }
+  catch { alert("Nu am putut incarca asistentul."); return; }
+  if (!d.ok) return;
+  const a = d.actor;
+  const firme = d.firme || [];
+  const nume = [a.prenume, a.nume].filter(Boolean).join(" ") || a.email;
+  const calcNivel = () => a.poate_depune ? 3 : (a.poate_valida ? 2 : 1);
+
+  nav.deschide(`Editeaza \u2014 ${nume}`, (box) => {
+    const sectiuneFirme = a.atribuire_relevanta
+      ? `
+        <div class="asi-sectiune-titlu">Selecteaza firme</div>
+        <p class="asi-mic">Asistentul vede doar firmele bifate. Bifarea = stare finala.</p>
+        <input id="asi-cauta-firme" class="asi-cauta" placeholder="Cauta firma (nume sau CUI)..." style="width:100%;margin-bottom:8px;">
+        <div id="asi-firme">${firme.map((f) => `
+          <label class="asi-firma-rand">
+            <input type="checkbox" data-tid="${f.id}" ${f.atribuit ? "checked" : ""}>
+            <span>${f.nume}${f.cui ? ` \u00b7 ${f.cui}` : ""}</span>
+          </label>`).join("")}</div>`
+      : `<p class="asi-mic">Administratorul vede automat tot portofoliul (nu se atribuie firme individual).</p>`;
+
+    box.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <span class="asi-nivel-badge" id="asi-nivel-badge">Nivel ${calcNivel()}</span>
+        <span style="font-size:13px;color:#5f5e5a;">${a.rol === "admin_firma" ? "administrator" : (a.functie || "asistent")}</span>
+      </div>
+      <div class="asi-sectiune-titlu">Alege competente</div>
+      <div id="asi-perm-edit">
+        ${PERM.map(([k, t]) => `
+          <label class="asi-firma-rand">
+            <input type="checkbox" data-perm="${k}" ${a[k] ? "checked" : ""}>
+            <span>${t}</span>
+          </label>`).join("")}
+      </div>
+      <div class="asi-info-patru">\u2139 \u201ePoate valida\u201d permite aprobarea, dar niciodata a ceea ce a pregatit el insusi (patru ochi).</div>
+      ${sectiuneFirme}
+      <div class="asi-editbtns">
+        <button class="mig-buton" id="asi-salveaza">Salveaza</button>
+        ${a.rol !== "admin_firma" && a.activ
+          ? `<button class="mig-buton-sec" id="asi-dezactiveaza">Dezactiveaza asistentul</button>` : ""}
+        ${!a.activ
+          ? `<button class="mig-buton-sec" id="asi-reactiveaza">Reactiveaza</button>` : ""}
+      </div>
+      <div class="mig-eroare" id="asi-edit-eroare"></div>
+    `;
+
+    const err = box.querySelector("#asi-edit-eroare");
+
+    box.querySelectorAll("[data-perm]").forEach((cb) => {
+      cb.addEventListener("change", () => {
+        const val = box.querySelector('[data-perm="poate_valida"]')?.checked;
+        const dep = box.querySelector('[data-perm="poate_depune"]')?.checked;
+        const nv = dep ? 3 : (val ? 2 : 1);
+        const bd = box.querySelector("#asi-nivel-badge");
+        if (bd) bd.textContent = "Nivel " + nv;
+      });
+    });
+
+    const cauta = box.querySelector("#asi-cauta-firme");
+    if (cauta)
+      cauta.oninput = () => {
+        const q = cauta.value.toLowerCase();
+        box.querySelectorAll("#asi-firme .asi-firma-rand").forEach((r) => {
+          r.style.display = r.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+      };
+
+    box.querySelector("#asi-salveaza").onclick = async () => {
+      err.textContent = "";
+      const valNou = box.querySelector('[data-perm="poate_valida"]')?.checked && !a.poate_valida;
+      if (valNou && !confirm(`Acorzi dreptul de validare lui ${nume} (Nivel 2)? Asigura-te ca acopera tipurile pe care le va valida.`)) return;
+      /* [patch7_zero_firme] */
+      if (a.atribuire_relevanta) {
+        const bifate = [...box.querySelectorAll("[data-tid]")].filter((cb) => cb.checked).length;
+        if (bifate === 0) {
+          const mesaj = a.rol === "angajat"
+            ? `${nume} ramane fara nicio firma. Competentele se sterg si contul se DEZACTIVEAZA (ramane in istoric). Continui?`
+            : `${nume} ramane fara nicio firma. Competentele se sterg si iese din lista de procesatori (contul de administrator ramane). Continui?`;
+          if (!confirm(mesaj)) return;
+        }
+      }
+      try {
+        const permVals = {};
+        box.querySelectorAll("[data-perm]").forEach((cb) => { permVals[cb.dataset.perm] = cb.checked; });
+        await api.post(`/asistenti/${uid}/permisiuni`, permVals);
+        if (a.atribuire_relevanta) {
+          const initiale = {};
+          firme.forEach((f) => (initiale[f.id] = f.atribuit));
+          const tasks = [];
+          box.querySelectorAll("[data-tid]").forEach((cb) => {
+            const tid = Number(cb.dataset.tid);
+            if (cb.checked && !initiale[tid]) tasks.push(api.post(`/asistenti/${uid}/firme/${tid}`));
+            if (!cb.checked && initiale[tid]) tasks.push(api.del(`/asistenti/${uid}/firme/${tid}`));
+          });
+          await Promise.all(tasks);
+          await api.post(`/asistenti/${uid}/finalizeaza-firme`);
+        }
+        nav.inapoi();
+        randeazaAsistenti(corp, nav);
+      } catch { err.textContent = "Nu am putut salva. Incearca din nou."; }
+    };
+
+    const bDez = box.querySelector("#asi-dezactiveaza");
+    if (bDez) bDez.onclick = async () => {
+      if (!confirm(`Dezactivezi ${nume}? Ramane in istoric, dar nu mai are acces.`)) return;
+      try { await api.post(`/asistenti/${uid}/dezactiveaza`); nav.inapoi(); randeazaAsistenti(corp, nav); }
+      catch { err.textContent = "Nu am putut dezactiva."; }
+    };
+    const bReact = box.querySelector("#asi-reactiveaza");
+    if (bReact) bReact.onclick = async () => {
+      try { await api.post(`/asistenti/${uid}/reactiveaza`); nav.inapoi(); randeazaAsistenti(corp, nav); }
+      catch { err.textContent = "Nu am putut reactiva."; }
+    };
+  });
+}
+
+// ── NIVEL 3b: Vizualizează (read-only, activitate + patru ochi) ──
+// [patch5_fereastra_completa]
+async function deschideVizualizare(uid, nav) {
+  const qp = (de, pana) => {
+    const p = [];
+    if (de) p.push("de=" + de);
+    if (pana) p.push("pana=" + pana);
+    return p.length ? "?" + p.join("&") : "";
+  };
+  const iso = (x) => x.toISOString().slice(0, 10);
+
+  let d0;
+  try { d0 = await api.get(`/asistenti/${uid}/activitate`); }
+  catch { alert("Nu am putut incarca fisa."); return; }
+  if (!d0.ok) return;
+  const nume = [d0.actor.prenume, d0.actor.nume].filter(Boolean).join(" ") || `#${d0.actor.id}`;
+
+  nav.deschide(`Asistent \u2014 ${nume}`, (box) => {
+    async function reincarca(de, pana) {
+      let c;
+      try { c = await api.get(`/asistenti/${uid}/calitate` + qp(de, pana)); }
+      catch { c = null; }
+      box.innerHTML = _asiRandeazaFereastra(d0, c);
+    }
+    box.addEventListener("change", (e) => {
+      const t = e.target;
+      if (!(t && t.classList && t.classList.contains("asi-per-sel"))) return;
+      const azi = new Date();
+      let de = null, pana = null;
+      if (t.value === "azi") { de = iso(azi); pana = iso(azi); }
+      else if (t.value === "luna") { de = iso(new Date(azi.getFullYear(), azi.getMonth(), 1)); pana = iso(azi); }
+      else if (t.value === "an") { de = iso(new Date(azi.getFullYear(), 0, 1)); pana = iso(azi); }
+      reincarca(de, pana);
+    });
+    reincarca(null, null);
+  });
+}
+
+function _asiRandeazaFereastra(d, c) {
+  const cal = c && c.ok ? c : null;
+  const nivel = cal ? cal.nivel : 1;
+  let sem = "verde";
+  if (cal && (cal.tipare || []).some((t) => t.tip === "sistematic")) sem = "rosu";
+  else if (cal && (cal.tipare || []).some((t) => t.nou)) sem = "galben";
+
+  const header = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <span class="asi-nivel-badge">Nivel ${nivel}</span>
+      ${_semaforEticheta(sem)}
+      <span style="font-size:13px;color:#5f5e5a;">${d.actor.rol}</span>
+    </div>`;
+
+  const perioada = `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <span style="font-size:13px;color:#5f5e5a;">Perioada:</span>
+      <select class="asi-per-sel" style="width:auto;">
+        <option value="tot">Tot</option>
+        <option value="azi">Azi</option>
+        <option value="luna">Luna curenta</option>
+        <option value="an">Anul curent</option>
+      </select>
+    </div>`;
+
+  const calitate = cal ? `
+    <div class="asi-sectiune-titlu">Calitate</div>
+    <div style="display:flex;gap:10px;margin:8px 0 12px;">
+      <div class="asi-cal-card" style="flex:1;"><div class="asi-cal-eticheta">Pregatite</div><div class="asi-cal-cifra">${cal.pregatite}</div></div>
+      <div class="asi-cal-card" style="flex:1;"><div class="asi-cal-eticheta">Aprobate</div><div class="asi-cal-cifra asi-cal-verde">${cal.aprobate}</div></div>
+      <div class="asi-cal-card" style="flex:1;"><div class="asi-cal-eticheta">Respinse</div><div class="asi-cal-cifra asi-cal-rosu">${cal.respinse} \u00b7 ${cal.rata_respins}%</div></div>
+    </div>
+    <div class="asi-cal-rand2">
+      <span>Timp mediu pregatit\u2192aprobat: <b>${cal.zile_mediu != null ? cal.zile_mediu + " zile" : "\u2014"}</b></span>
+      <span>Acoperire: <b>${(cal.tipuri || []).join(", ") || "\u2014"}</b></span>
+    </div>` : `<div class="mig-gol">Calitatea nu a putut fi incarcata.</div>`;
+
+  let tipare = "";
+  if (cal) {
+    const lst = cal.tipare || [];
+    const rows = lst.length ? lst.map((t) => {
+      const bt = t.tip === "sistematic"
+        ? `<span class="asi-badge asi-badge-rosu">sistematic</span>`
+        : `<span class="asi-badge asi-badge-gri">accident</span>`;
+      const bn = t.nou ? `<span class="asi-badge asi-badge-galben">nou</span>` : "";
+      return `<div class="asi-cal-motiv"><span>${t.motiv}</span><span>${bt} ${bn} <b>${t.nr}\u00d7</b></span></div>`;
+    }).join("") : `<div class="mig-gol">Nicio respingere.</div>`;
+    tipare = `<div class="asi-sectiune-titlu">Tipare sistematice si greseli noi</div>${rows}`;
+  }
+
+  const acte = d.activitate || [];
+  const alerta = d.nr_self_approval > 0
+    ? `<div class="asi-alerta-rosu">\u26a0 ${d.nr_self_approval} declaratii aprobate de propriul pregatitor (patru ochi).</div>`
+    : `<div class="asi-alerta-verde">\u2713 Nicio declaratie aprobata de propriul pregatitor.</div>`;
+  const randuri = acte.length ? acte.map((c2) => {
+    const roluri = [];
+    if (c2.a_pregatit) roluri.push("pregatit");
+    if (c2.a_aprobat) roluri.push("aprobat");
+    if (c2.a_respins) roluri.push("respins");
+    const flag = c2.self_approval ? `<span class="asi-flag-rosu">si-a aprobat singur</span>` : "";
+    return `<div class="asi-act-rand ${c2.self_approval ? "asi-act-rosu" : ""}"><div class="asi-act-tip">${c2.tip} \u00b7 ${c2.perioada}</div><div class="asi-act-meta">firma #${c2.tenant_id} \u00b7 ${roluri.join(", ")} \u00b7 stare: ${c2.stare} ${flag}</div></div>`;
+  }).join("") : `<div class="mig-gol">Nicio activitate inregistrata.</div>`;
+
+  return `${header}${perioada}${calitate}${tipare}${alerta}<div class="asi-sectiune-titlu">Declaratii lucrate (max. 200)</div><div id="asi-activitate">${randuri}</div>`;
+}
+
+/* [patch10_banner_erori] */
+async function _asiBannerEchipa(corp, nav) {
+  let s;
+  try { s = await api.get("/asistenti/echipa/semafor"); } catch { return; }
+  if (!s || !s.ok) return;
+  const host = corp.querySelector("#asi-banner");
+  if (!host) return;
+  const cnt = s.counts || {};
+  const detalii = [];
+  if (cnt.rosu) detalii.push(`${cnt.rosu} cu tipare`);
+  if (cnt.galben) detalii.push(`${cnt.galben} de urmarit`);
+  if (cnt.verde) detalii.push(`${cnt.verde} ok`);
+  const text = detalii.length ? detalii.join(" · ") : "fara activitate recenta";
+  const areErori = (cnt.rosu || 0) + (cnt.galben || 0) > 0;
+  host.innerHTML = `
+    <div class="asi-echipa-banner">
+      ${_semaforEticheta(s.culoare)}
+      <span class="asi-echipa-text">Calitatea echipei (${s.zile} zile): ${text}</span>
+      ${areErori ? `<button class="asi-echipa-btn" id="asi-vezi-erori">Vezi erorile</button>` : ""}
+    </div>`;
+  const b = host.querySelector("#asi-vezi-erori");
+  if (b) b.onclick = () => deschideEchipaErori(nav);
+}
+
+async function deschideEchipaErori(nav) {
+  let d;
+  try { d = await api.get("/asistenti/echipa/erori"); }
+  catch { alert("Nu am putut incarca erorile."); return; }
+  if (!d.ok) return;
+  nav.deschide("Erori — echipa", (box) => {
+    const lst = d.asistenti || [];
+    if (!lst.length) {
+      box.innerHTML = `<div class="asi-alerta-verde">✓ Nicio respingere in ultimele ${d.zile} zile.</div>`;
+      return;
+    }
+    const carduri = lst.map((a) => {
+      const tipare = (a.tipare || []).map((t) => {
+        const bt = t.tip === "sistematic"
+          ? `<span class="asi-badge asi-badge-rosu">sistematic</span>`
+          : `<span class="asi-badge asi-badge-gri">accident</span>`;
+        const bn = t.nou ? `<span class="asi-badge asi-badge-galben">nou</span>` : "";
+        return `<div class="asi-cal-motiv"><span>${t.motiv}</span><span>${bt} ${bn} <b>${t.nr}×</b></span></div>`;
+      }).join("");
+      return `
+        <div class="val-card" style="display:block;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            ${_semaforEticheta(a.culoare)}
+            <b>${a.nume}</b>
+            <span style="font-size:13px;color:#5f5e5a;">${a.respinse} respinse · ${a.rata}%</span>
+          </div>
+          ${tipare}
+        </div>`;
+    }).join("");
+    box.innerHTML = `<p class="mig-intro">Cine a produs respingeri in ultimele ${d.zile} zile, sortat dupa volum.</p>${carduri}`;
+  });
+}
