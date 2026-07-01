@@ -72,6 +72,17 @@ Build nou = ~/iconta_nou, baza iconta_v2, complet separat de productia veche (/o
 - Ecran CLIENT PORTAL (scoping inceput inainte de facturi)
 - Master list ecrane Management echipa C-G: C.Capacitate+norma+responsabil · D.Activitate cabinet (centralizator+jurnal) · E.Notificari (clopotel+sumar login+email zilnic) · F.Self-view asistent · G.Educatie AI pe tipare (A gata, B card echipa partial)
 
+### Povestea lunii + Povestea anului (design agreat 01.07.2026)
+
+**Povestea LUNII** (backend gata in pachete_api.py: rezumat_luna, genereaza_poveste AI, get/salveaza_poveste, trimite Brevo). Flux: cabinet genereaza -> aproba -> trimite email. LIPSESTE: afisare in PORTAL client.
+- DE FACUT (Pas 1, urmatorul): ruta GET /portal/poveste (guard cere_client) care intoarce ultima poveste APROBATA a firmei clientului (NU ciorne). Cardul "Povestea lunii" din portal.js (acum placeholder ecranInLucru) o afiseaza read-only.
+
+**Povestea ANULUI** (Pas 2, dupa portal luna). Nu e 12x povestea lunii - e naratiune diferita: tendinte (cifra afaceri creste/scade), TVA colectat vs dedus pe an, evolutie salarii, declaratii la termen, profit/pierdere+impozit, COMPARATIE cu anul anterior (aurul, daca exista istoric 2 ani).
+- Declansare: NOTIFICARE pe CLOPOTEL (nu buton mereu-prezent), aparuta cand DECEMBRIE e efectiv depus (nu data fixa 1 ian) -> datele-s complete. UNA per firma. Doar firme cu istoric pe tot anul (prag 12/12 luni sau >=10, de decis la build). Se degradeaza elegant: fara istoric an-anterior -> poveste doar despre anul curent, fara comparatie.
+- Flux: notificare -> cabinet genereaza (AI, prompt ANUAL nou cu agregari+comparatii, diferit de _prompt_poveste lunar) -> aproba -> email + portal. Dupa generare, notificarea se marcheaza rezolvata.
+- Cost AI: mai mare (mai multe date), dar rar (o data/an/firma) -> acceptabil. Se leaga de migrarea istoricului (justifica incarcarea: "da-mi 2 ani de date, iti arat povestea completa").
+- Backend nou necesar: rezumat_perioada(an, luna_start, luna_end) agregare multi-luni + _prompt_perioada + tip nou de notificare (clopotel) declansata la depunerea lui decembrie.
+
 ### Backlog mare (build nou)
 - Migrare straturile 3-7: Salariati, Asociati, Mijloace fixe, Istoric declaratii (layer 1 Firme + layer 2 Solduri initiale = gata)
 - Portare module declaratii din legacy in build nou (D100/D101/D112/D205/D300/D301/D390/D394/D406 exista in legacy + refacute in iCONTA_2026, de integrat in iconta_v2)
