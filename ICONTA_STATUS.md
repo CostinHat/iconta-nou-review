@@ -72,6 +72,25 @@ Build nou = ~/iconta_nou, baza iconta_v2, complet separat de productia veche (/o
 - Ecran CLIENT PORTAL (scoping inceput inainte de facturi)
 - Master list ecrane Management echipa C-G: C.Capacitate+norma+responsabil · D.Activitate cabinet (centralizator+jurnal) · E.Notificari (clopotel+sumar login+email zilnic) · F.Self-view asistent · G.Educatie AI pe tipare (A gata, B card echipa partial)
 
+### Metoda de lucru (agreat 01.07.2026, seara)
+- EDITARE DIRECTA PE SERVER (implicit): modificarile se fac pe loc cu python3/sed in SSH, tu doar rulezi. Fara descarcare pe calculator, fara scp -> zero corupere (coruperea aparea la PASTE base64 in terminal, nu la transfer de fisier). Fisier nou = cat > fisier << 'EOF' direct pe server. Descarca/scp doar rar (binar mare).
+- STATUS.md: NU se mai descarca/incarca. E in git, se editeaza direct pe server + commit. Actualizat la finalul zilei.
+- git e plasa de siguranta reala (nu .bak). Backup automat .bak inainte de editari, dar recuperarea reala = git checkout.
+
+### Curatenie + infrastructura git (FACUT azi 01.07.2026)
+- _ascii scos complet din factura_pdf.py (cod curat, fonturile DejaVu redau diacriticele)
+- git init in ~/iconta_nou + 4 commit-uri: cbf24ce (snapshot cod 107 fisiere), de594aa (STATUS), 6ac1704 (design poveste), ba74670 (curatenie patch-uri)
+- 158 backup-uri .bak sterse; 18 patch-uri vechi + 2 .sql arhivate in _arhiva_patchuri/ (scoase din git, ignorate)
+- git curat: 90 fisiere, doar cod viu. Radacina: main.py, tenant_template.sql, ICONTA_STATUS.md, .gitignore + core/ + static/
+- .gitignore acopera: *.bak*, __pycache__, *.log, *.tar.gz, *.env, patch*.py, _arhiva_patchuri/
+
+### DE FACUT MAINE (imediat, firul principal): POVESTEA LUNII IN PORTAL (Pas 1)
+- Backend gata in pachete_api.py: get_poveste(conn_public, tenant_id, an, luna), rezumat_luna, genereaza_poveste (AI, claude-sonnet-4-6), salveaza_poveste, trimite (Brevo). Toate rutele /pachete/{tid}/* sunt sub cere_cabinet (main.py ~1458-1476).
+- LIPSESTE: clientul nu poate citi povestea din portal. De adaugat:
+  1. Ruta noua GET /portal/poveste (guard cere_client, main.py ~89) care intoarce ultima poveste APROBATA a firmei clientului (NU ciorne). Reutilizeaza get_poveste. Firma clientului se afla ca la /portal/firma (deja folosit in portal.js deschideFacturi).
+  2. Frontend: cardul "Povestea lunii" din portal.js (acum placeholder ecranInLucru, in deschideCard) -> ecran read-only care afiseaza ultima poveste aprobata (fara selector luna la inceput; adaugat daca e nevoie).
+- PRIMUL PAS MAINE (verificare la sursa inainte de cod): sed -n '112,138p' pachete_api.py (structura get_poveste) + grep cere_client + /portal/firma in main.py.
+
 ### Povestea lunii + Povestea anului (design agreat 01.07.2026)
 
 **Povestea LUNII** (backend gata in pachete_api.py: rezumat_luna, genereaza_poveste AI, get/salveaza_poveste, trimite Brevo). Flux: cabinet genereaza -> aproba -> trimite email. LIPSESTE: afisare in PORTAL client.
