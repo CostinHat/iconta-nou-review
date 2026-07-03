@@ -127,3 +127,54 @@ def monografie_salariu(calc):
 def monografie_plata(net, cont_trezorerie="5121"):
     """421 = 5121/5311 (plata salariului net)."""
     return _nota("421", cont_trezorerie, net)
+
+# ============================================================
+#  CONCEDII MEDICALE — OUG 158/2005 + Legea 141/2025 + OUG 91/2025
+#  + Ordinul 506/1030/2026 (diminuare 1 zi PER EPISOD, nu per certificat)
+#  Verificat la sursa: legislatie.just.ro, MOF 507/19.06.2026
+# ============================================================
+def procent_cm(cod, zile_episod):
+    """Procent indemnizatie dupa cod si durata episodului (art. 17 OUG 158/2005)."""
+    cod = str(cod or "01").zfill(2)
+    if cod == "01":  # boala obisnuita: progresiv (Legea 141/2025)
+        if zile_episod <= 7: return Decimal("0.55")
+        if zile_episod <= 14: return Decimal("0.65")
+        return Decimal("0.75")
+    if cod in ("02", "03", "04", "10"): return Decimal("1.00")  # accident munca/boala prof/urgente 100%
+    if cod in ("08", "09"): return Decimal("0.85")  # maternitate / ingrijire copil 85%
+    if cod in ("05", "06", "12", "13", "14"): return Decimal("0.75")
+    return Decimal("0.75")
+
+def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
+              cod="01", zile_episod=None, prima_zi_din_episod=True,
+              spitalizare=False, la_data=None):
+    """
+    Ci = Mzbci x procent x (NZLCM - diminuare)
+    - Mzbci = suma venituri 6 luni / total zile lucratoare 6 luni
+    - diminuare 1 zi: certificate 01.02.2026-31.12.2027, O DATA per episod,
+      NU la spitalizare, NU la accidente de munca (cod 02/03), NU la izolare (cod 07)
+    - rotunjire la leu (norme CNAS)
+    """
+    from datetime import date as _dt
+    ref = la_data or _dt.today()
+    mz = _dec(venituri_6_luni) / _dec(zile_lucratoare_6_luni or 1)
+    ze = zile_episod if zile_episod is not None else zile_lucratoare_cm
+    pct = procent_cm(cod, ze)
+    diminuare = 0
+    if (_dt(2026, 2, 1) <= ref <= _dt(2027, 12, 31)
+            and prima_zi_din_episod and not spitalizare
+            and str(cod).zfill(2) not in ("02", "03", "07")):
+        diminuare = 1
+    zile_platite = max(zile_lucratoare_cm - diminuare, 0)
+    brut = (mz * pct * zile_platite).quantize(Decimal("1"))  # rotunjit la leu
+    # split: angajator zilele 1-5 calendaristice ale episodului, FNUASS din ziua 6
+    zile_ang = min(zile_platite, max(5 - diminuare, 0))
+    zile_fnuass = zile_platite - zile_ang
+    brut_ang = (mz * pct * zile_ang).quantize(Decimal("1"))
+    brut_fnuass = brut - brut_ang
+    return {
+        "media_zilnica": _q(mz), "procent": _q(pct * 100),
+        "zile_platite": zile_platite, "diminuare": diminuare,
+        "zile_ang": zile_ang, "zile_fnuass": zile_fnuass,
+        "brut": _q(brut), "brut_ang": _q(brut_ang), "brut_fnuass": _q(brut_fnuass),
+    }
