@@ -16,9 +16,24 @@ def stat_plata(conn, schema, an, luna):
             FROM {schema}.salariati WHERE activ = true ORDER BY nume, prenume
         """)
         randuri = cur.fetchall()
+    # CM-uri pe luna
+    with conn.cursor() as cur:
+        cur.execute(f"""
+            SELECT salariat_id, COALESCE(SUM(zile),0), COALESCE(SUM(net),0), COALESCE(SUM(brut_ang+brut_fnuass),0)
+            FROM {schema}.concedii_medicale WHERE an = %s AND luna = %s GROUP BY salariat_id
+        """, (an, luna))
+        cm = {r[0]: {"zile": int(r[1]), "net": float(r[2]), "brut": float(r[3])} for r in cur.fetchall()}
     stat = []
     for sid, nume, prenume, brut, pers, part_time, ore_zi in randuri:
-        calc = salarizare.calcul_salariu(brut or 0, persoane=pers or 0, la_data=ref)
+        c_cm = cm.get(sid)
+        import calendar as _cal
+        zile_luna = sum(1 for z in range(1, _cal.monthrange(an, luna)[1] + 1)
+                        if date(an, luna, z).weekday() < 5)
+        if c_cm and c_cm["zile"] > 0:
+            brut_lucrat = float(brut or 0) * max(zile_luna - c_cm["zile"], 0) / zile_luna
+        else:
+            brut_lucrat = float(brut or 0)
+        calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref)
         stat.append({
             "id": sid,
             "nume": f"{nume or ''} {prenume or ''}".strip(),
@@ -27,6 +42,8 @@ def stat_plata(conn, schema, an, luna):
             "deducere": float(calc["deducere"]["total"]),
             "net": float(calc["net"]), "cam": float(calc["cam"]),
             "cost": float(calc["cost_angajator"]),
+            "cm_zile": c_cm["zile"] if c_cm else 0,
+            "cm_brut": c_cm["brut"] if c_cm else 0,
         })
     return stat
 
@@ -41,7 +58,17 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     if not r:
         return None
     nume, prenume, brut, pers = r
-    calc = salarizare.calcul_salariu(brut or 0, persoane=pers or 0, la_data=ref)
+    with conn.cursor() as cur:
+        cur.execute(f"""
+            SELECT COALESCE(SUM(zile),0), COALESCE(SUM(net),0), COALESCE(SUM(brut_ang+brut_fnuass),0)
+            FROM {schema}.concedii_medicale WHERE salariat_id = %s AND an = %s AND luna = %s
+        """, (salariat_id, an, luna))
+        zc, cm_net, cm_brut = cur.fetchone()
+    import calendar as _cal
+    zile_luna = sum(1 for z in range(1, _cal.monthrange(an, luna)[1] + 1)
+                    if date(an, luna, z).weekday() < 5)
+    brut_lucrat = float(brut or 0) * max(zile_luna - int(zc or 0), 0) / zile_luna if zc else float(brut or 0)
+    calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref)
     init_fonturi()
     fr, fb = font("sans")
     buf = BytesIO()
@@ -65,6 +92,9 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
         ("Impozit pe venit", -calc["impozit"]),
         ("SALARIU NET", calc["net"]),
     ]
+    if zc:
+        linii.insert(1, (f"Zile concediu medical: {int(zc)}", 0))
+        linii.insert(len(linii)-1, ("Indemnizatie CM (neta)", cm_net))
     for eticheta, val in linii:
         bold = eticheta == "SALARIU NET"
         cnv.setFont(fb if bold else fr, 11 if bold else 10)
