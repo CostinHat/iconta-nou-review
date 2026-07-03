@@ -2122,6 +2122,29 @@ def firma_verificari(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabine
         "note": len(note),
     }
     return rez
+@app.post("/portal/bon")
+async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    from core import ai_client
+    import json as _json
+    t = _tenant_client(ctx, tenant_id)
+    if not ai_client.disponibil():
+        raise HTTPException(503, "serviciul AI indisponibil")
+    imagini = []
+    for f in fisiere[:4]:
+        b = await f.read()
+        if len(b) > 8_000_000:
+            raise HTTPException(400, "imagine prea mare (max 8MB)")
+        imagini.append((b, f.content_type or "image/jpeg"))
+    prompt = ("Citeste bonul fiscal (poate fi in mai multe imagini, in ordine). Raspunde DOAR cu JSON, fara alt text: "
+              '{"comerciant": "...", "cui": "...", "data": "YYYY-MM-DD", "total": 0.0, '
+              '"tva_11": 0.0, "tva_21": 0.0}. Daca un camp nu se vede, pune null.')
+    try:
+        text = ai_client.citeste_imagini(imagini, prompt)
+        text = text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+        date = _json.loads(text)
+    except Exception:
+        raise HTTPException(422, "nu am putut citi bonul; incearca o poza mai clara")
+    return {"ok": True, "bon": date}
 @app.get("/portal/documente/luni")
 def portal_documente_luni(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, tenant_id)

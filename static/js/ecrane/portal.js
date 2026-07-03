@@ -24,6 +24,8 @@ export function desktopPortal(continut, nav) {
       sinteza: "Vizualizeaza facturile emise si primite." },
     { cheie: "declaratii", titlu: "Declaratii depuse", icon: "declaratii", bg: "#dff4f2", fg: "#0a807b",
       sinteza: "Ce s-a depus la ANAF pentru tine" },
+    { cheie: "bon", titlu: "Pozeaza bon", icon: "facturi", bg: "#fdeef0", fg: "#a3344b",
+      sinteza: "Fotografiaza bonul, iConta il citeste" },
     { cheie: "documente", titlu: "Documente", icon: "documente", bg: "#e6f6ec", fg: "#16a34a",
       sinteza: "Recipise, balante, bilant" },
     { cheie: "solicitari", titlu: "Solicitari", icon: "solicitari", bg: "#faece7", fg: "#993c1d",
@@ -66,6 +68,7 @@ function deschideCard(cheie, nav) {
   else if (cheie === "povestea") nav.deschide("Povestea lunii", (corp) => ecranPovestea(corp, nav));
   else if (cheie === "solicitari") nav.deschide("Solicitari", (corp) => ecranSolicitari(corp, nav));  // ICRD_SOLICITARI_FRONT_V1
   else if (cheie === "recomanda") nav.deschide("Recomanda", (corp) => ecranRecomanda(corp, nav));
+  else if (cheie === "bon") nav.deschide("Pozeaza bon", (corp) => ecranBon(corp, nav));
   else if (cheie === "documente") nav.deschide("Documente", (corp) => ecranDocumente(corp, nav));
 }
 
@@ -380,4 +383,29 @@ async function ecranDocumente(corp, nav) {
 }
 function ecranInLucru(corp, nav, nume) {
   corp.innerHTML = `<div class="mig-gol">"${nume}" vine in curand.</div>`;
+}
+
+// [bon] Pozeaza bon - OCR cu AI
+async function ecranBon(corp, nav) {
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Pozeaza bon</h2>
+    <p class="pf-intro">Fotografiaza sau incarca bonul fiscal. iConta il citeste automat.</p>
+    <input type="file" id="bon-fisier" accept="image/*" capture="environment" multiple style="margin-bottom:16px">
+    <div id="bon-rezultat"></div>`;
+  corp.querySelector("#bon-fisier").addEventListener("change", async (ev) => {
+    const fs = Array.from(ev.target.files);
+    if (!fs.length) return;
+    const zona = corp.querySelector("#bon-rezultat");
+    zona.innerHTML = `<p class="ecran-nota">Citesc bonul...</p>`;
+    const fd = new FormData();
+    fs.forEach((f) => fd.append("fisiere", f));
+    try {
+      const r = await api.postForm("/portal/bon", fd);
+      const b = r.bon || {};
+      zona.innerHTML = `<div class="pf-frand"><div class="pf-frand-text">
+        <div class="pf-frand-nume">${b.comerciant || "?"} \u00b7 ${b.total != null ? b.total.toFixed(2) + " lei" : "?"}</div>
+        <div class="pf-frand-sub">${b.data || "?"}${b.cui ? " \u00b7 CUI " + b.cui : ""}${b.tva_11 ? " \u00b7 TVA 11%: " + b.tva_11 : ""}${b.tva_21 ? " \u00b7 TVA 21%: " + b.tva_21 : ""}</div>
+      </div><span class="pf-frand-ok">\u2713 citit</span></div>`;
+    } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.mesaj || "Nu am putut citi bonul."}</div>`; }
+  });
 }
