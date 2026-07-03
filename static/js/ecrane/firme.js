@@ -2,6 +2,7 @@
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
 import { api } from "../api.js";
+import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
@@ -88,7 +89,7 @@ function meniuFirma(corp, nav, t) {
       icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>', activ: false },
     { cheie: "salariati", titlu: "Salariați", desc: "Stat plată, fluturași, D112",
       bg: "#fdeef0", fg: "#a3344b",
-      icon: '<circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M16 3.5a3 3 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.7"/>', activ: false },
+      icon: '<circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M16 3.5a3 3 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.7"/>', activ: true },
     { cheie: "verificari", titlu: "Verific\u0103ri", desc: "Echilibru, trezorerie, TVA",
       bg: "#eef4ff", fg: "#1d4ed8",
       icon: '<path d="M9 11l3 3 8-8"/><path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/>', activ: true },
@@ -115,6 +116,10 @@ function meniuFirma(corp, nav, t) {
     bFacturi.addEventListener("click", () => {
       randeazaFacturi(corp, nav, t.id, { inapoi: () => meniuFirma(corp, nav, t) });
     });
+  }
+  const bSalariati = corp.querySelector("#fa-salariati");
+  if (bSalariati && !bSalariati.disabled) {
+    bSalariati.addEventListener("click", () => ecranSalariati(corp, nav, t));
   }
   const bVerif = corp.querySelector("#fa-verificari");
   if (bVerif) {
@@ -213,6 +218,54 @@ async function ecranVerificari(corp, nav, t) {
       </div>`;
     corp.querySelector("#vf-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#vf-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+  };
+  deseneaza();
+}
+
+// [salariati] Stat de plata lunar + fluturasi
+async function ecranSalariati(corp, nav, t) {
+  const azi = new Date();
+  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se calculeaza...</p>`;
+    let stat = [];
+    try {
+      const r = await api.get(`/tenants/${t.id}/stat-plata?an=${an}&luna=${luna}`);
+      stat = (r && r.stat) || [];
+    } catch {}
+    const randuri = !stat.length
+      ? `<div class="mig-gol">Niciun salariat activ.</div>`
+      : stat.map((s) => `
+        <div class="pf-frand">
+          <div class="pf-frand-text">
+            <div class="pf-frand-nume">${s.nume}</div>
+            <div class="pf-frand-sub">brut ${s.brut.toFixed(2)} \u00b7 CAS ${s.cas.toFixed(2)} \u00b7 CASS ${s.cass.toFixed(2)} \u00b7 impozit ${s.impozit.toFixed(2)} \u00b7 <b>net ${s.net.toFixed(2)}</b> \u00b7 cost ${s.cost.toFixed(2)}</div>
+          </div>
+          <button class="btn" data-flut="${s.id}">Fluturas</button>
+        </div>`).join("");
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Stat de plat\u0103 \u00b7 ${t.nume || ""}</h2>
+      <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an}
+        <button class="btn btn-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="btn btn-secundar" id="sp-next">luna \u2192</button></p>
+      <div class="pf-lista">${randuri}</div>`;
+    corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelectorAll("[data-flut]").forEach((b) => {
+      b.addEventListener("click", async () => {
+        try {
+          const resp = await fetch(`/tenants/${t.id}/fluturas/${b.dataset.flut}?an=${an}&luna=${luna}`, {
+            headers: { "Authorization": "Bearer " + sesiune.token() }
+          });
+          if (!resp.ok) throw new Error();
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url; a.download = `fluturas_${an}_${String(luna).padStart(2,"0")}.pdf`; a.click();
+          URL.revokeObjectURL(url);
+        } catch { alert("Nu am putut genera fluturasul."); }
+      });
+    });
   };
   deseneaza();
 }

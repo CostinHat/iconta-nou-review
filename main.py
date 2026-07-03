@@ -1989,6 +1989,29 @@ def portal_firma(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     return {"tenant_id": t["id"], "nume": t.get("nume"), "firma": firma}
 
 
+@app.get("/tenants/{tenant_id}/stat-plata")
+def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    from core import stat_plata_api as _sp
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return {"stat": _sp.stat_plata(conn, schema, an, luna)}
+@app.get("/tenants/{tenant_id}/fluturas/{salariat_id}")
+def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    from fastapi.responses import Response
+    from core import stat_plata_api as _sp
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        cur = conn.cursor(); cur.execute("SELECT nume FROM public.tenants WHERE id=%s", (tenant_id,))
+        nf = (cur.fetchone() or [""])[0]
+        pdf = _sp.fluturas_pdf(conn, schema, salariat_id, an, luna, nf)
+    if pdf is None:
+        raise HTTPException(404, "salariat inexistent")
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="fluturas_{salariat_id}_{an}_{luna:02d}.pdf"'})
 @app.get("/firme/{tenant_id}/verificari")
 def firma_verificari(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from core import verificatoare as _vf
