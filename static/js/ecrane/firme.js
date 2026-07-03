@@ -90,6 +90,15 @@ function meniuFirma(corp, nav, t) {
     { cheie: "salariati", titlu: "Salariați", desc: "Stat plată, fluturași, D112",
       bg: "#fdeef0", fg: "#a3344b",
       icon: '<circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M16 3.5a3 3 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.7"/>', activ: true },
+    { cheie: "jurnal", titlu: "Registru jurnal", desc: "Notele contabile ale firmei",
+      bg: "#eef0f3", fg: "#3a4250",
+      icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', activ: true },
+    { cheie: "raportz", titlu: "Raport Z", desc: "Incasari zilnice \u2192 nota automata",
+      bg: "#fbeedd", fg: "#92500a",
+      icon: '<path d="M4 4h16M4 4l16 16M4 20h16"/>', activ: true },
+    { cheie: "banca", titlu: "Banc\u0103", desc: "Import extras, propuneri contare",
+      bg: "#e9f0fe", fg: "#1d4ed8",
+      icon: '<path d="M3 21h18M4 18h16M6 18V9M10 18V9M14 18V9M18 18V9M2 9l10-6 10 6"/>', activ: true },
     { cheie: "verificari", titlu: "Verific\u0103ri", desc: "Echilibru, trezorerie, TVA",
       bg: "#eef4ff", fg: "#1d4ed8",
       icon: '<path d="M9 11l3 3 8-8"/><path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/>', activ: true },
@@ -120,6 +129,18 @@ function meniuFirma(corp, nav, t) {
   const bSalariati = corp.querySelector("#fa-salariati");
   if (bSalariati && !bSalariati.disabled) {
     bSalariati.addEventListener("click", () => ecranSalariati(corp, nav, t));
+  }
+  const bJurnal = corp.querySelector("#fa-jurnal");
+  if (bJurnal) {
+    bJurnal.addEventListener("click", () => ecranJurnal(corp, nav, t));
+  }
+  const bZ = corp.querySelector("#fa-raportz");
+  if (bZ) {
+    bZ.addEventListener("click", () => ecranRaportZ(corp, nav, t));
+  }
+  const bBanca = corp.querySelector("#fa-banca");
+  if (bBanca) {
+    bBanca.addEventListener("click", () => ecranBanca(corp, nav, t));
   }
   const bVerif = corp.querySelector("#fa-verificari");
   if (bVerif) {
@@ -266,6 +287,109 @@ async function ecranSalariati(corp, nav, t) {
         } catch { alert("Nu am putut genera fluturasul."); }
       });
     });
+  };
+  deseneaza();
+}
+
+// [banca] Import extras bancar
+async function ecranBanca(corp, nav, t) {
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Banc\u0103 \u00b7 ${t.nume || ""}</h2>
+    <p class="pf-intro">Incarca extrasul (.xls, .xlsx, .csv) \u2014 ING, Jasper.</p>
+    <input type="file" id="bk-fisier" accept=".xls,.xlsx,.csv" style="margin-bottom:16px">
+    <div id="bk-rezultat"></div>`;
+  corp.querySelector("#bk-fisier").addEventListener("change", async (ev) => {
+    const f = ev.target.files[0];
+    if (!f) return;
+    const zona = corp.querySelector("#bk-rezultat");
+    zona.innerHTML = `<p class="ecran-nota">Se citeste extrasul...</p>`;
+    const fd = new FormData();
+    fd.append("fisier", f);
+    try {
+      const resp = await fetch(`/tenants/${t.id}/banca/parse-extras`, {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + sesiune.token() },
+        body: fd,
+      });
+      if (!resp.ok) throw new Error("eroare " + resp.status);
+      const r = await resp.json();
+      const tr = r.tranzactii || [];
+      zona.innerHTML = `
+        <p class="pf-intro"><b>${tr.length}</b> tranzactii citite.</p>
+        <div class="pf-lista">${tr.map((x) => `
+          <div class="pf-frand">
+            <div class="pf-frand-text">
+              <div class="pf-frand-nume">${x.data} \u00b7 ${x.suma < 0 ? "" : "+"}${x.suma.toFixed(2)} lei${x.cui ? " \u00b7 CUI " + x.cui : ""}</div>
+              <div class="pf-frand-sub">${(x.detalii || "").slice(0, 90)} \u00b7 ${x.tip || ""}</div>
+            </div>
+          </div>`).join("")}</div>`;
+    } catch { zona.innerHTML = `<div class="mig-gol">Nu am putut citi extrasul.</div>`; }
+  });
+}
+
+// [horeca] Raport Z zilnic
+async function ecranRaportZ(corp, nav, t) {
+  const azi = new Date().toISOString().slice(0, 10);
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Raport Z \u00b7 ${t.nume || ""}</h2>
+    <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px">
+      <label>Data<br><input type="date" id="z-data" value="${azi}" class="mig-text"></label>
+      <span></span>
+      <label>Total 11% (mancare)<br><input type="number" step="0.01" id="z-11" class="mig-text" value="0"></label>
+      <label>Total 21% (alcool, sucuri)<br><input type="number" step="0.01" id="z-21" class="mig-text" value="0"></label>
+      <label>Numerar<br><input type="number" step="0.01" id="z-num" class="mig-text" value="0"></label>
+      <label>Card<br><input type="number" step="0.01" id="z-card" class="mig-text" value="0"></label>
+    </div>
+    <div id="z-rezultat" style="margin-top:16px"></div>
+    <p style="margin-top:16px"><button class="btn" id="z-salveaza">Genereaza nota</button></p>`;
+  corp.querySelector("#z-salveaza").addEventListener("click", async () => {
+    const v = (id) => parseFloat(corp.querySelector(id).value) || 0;
+    const zona = corp.querySelector("#z-rezultat");
+    try {
+      const r = await api.post(`/tenants/${t.id}/horeca/raport-z`, {
+        data: corp.querySelector("#z-data").value,
+        total_11: v("#z-11"), total_21: v("#z-21"),
+        numerar: v("#z-num"), card: v("#z-card"),
+      });
+      zona.innerHTML = `<div class="pf-frand"><div class="pf-frand-text">
+        <div class="pf-frand-nume">Nota generata (#${r.nota_id})</div>
+        <div class="pf-frand-sub">TVA 11%: ${r.tva_11.toFixed(2)} \u00b7 TVA 21%: ${r.tva_21.toFixed(2)} \u00b7 baze: ${r.baza_11.toFixed(2)} / ${r.baza_21.toFixed(2)}</div>
+      </div><span class="pf-frand-ok">\u2713</span></div>`;
+    } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.mesaj || "Eroare"}</div>`; }
+  });
+}
+
+
+// [jurnal] Registru jurnal lunar
+async function ecranJurnal(corp, nav, t) {
+  const azi = new Date();
+  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+    let note = [];
+    try {
+      const r = await api.get(`/tenants/${t.id}/jurnal?an=${an}&luna=${luna}`);
+      note = (r && r.note) || [];
+    } catch {}
+    const randuri = !note.length
+      ? `<div class="mig-gol">Nicio nota in luna asta.</div>`
+      : note.map((n) => `
+        <div class="pf-frand">
+          <div class="pf-frand-text">
+            <div class="pf-frand-nume">${n.data} \u00b7 ${n.descriere || n.numar || "#" + n.id}</div>
+            <div class="pf-frand-sub">${n.linii.map((l) => `${l.debit} = ${l.credit} \u00b7 ${l.suma.toFixed(2)}`).join("<br>")}</div>
+          </div>
+          <span class="mig-stare">${n.sursa || ""}</span>
+        </div>`).join("");
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Registru jurnal \u00b7 ${t.nume || ""}</h2>
+      <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an} \u00b7 ${note.length} note
+        <button class="btn btn-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="btn btn-secundar" id="j-next">luna \u2192</button></p>
+      <div class="pf-lista">${randuri}</div>`;
+    corp.querySelector("#j-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#j-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
   };
   deseneaza();
 }

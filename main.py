@@ -1989,6 +1989,89 @@ def portal_firma(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     return {"tenant_id": t["id"], "nume": t.get("nume"), "firma": firma}
 
 
+class RaportZ(BaseModel):
+    data: str
+    total_11: float = 0
+    total_21: float = 0
+    numerar: float = 0
+    card: float = 0
+@app.get("/tenants/{tenant_id}/jurnal")
+def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"""
+                SELECT i.id, i.data, i.numar, i.descriere, i.sursa, i.status,
+                       l.cont_debit, l.cont_credit, l.suma
+                FROM {schema}.inregistrari i
+                JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
+                WHERE date_trunc('month', i.data) = %s
+                ORDER BY i.data, i.id, l.id
+            """, (f"{an}-{luna:02d}-01",))
+            note = {}
+            for iid, data, nr, desc, sursa, status, deb, cre, suma in cur.fetchall():
+                if iid not in note:
+                    note[iid] = {"id": iid, "data": data.isoformat(), "numar": nr,
+                                 "descriere": desc, "sursa": sursa, "status": status, "linii": []}
+                note[iid]["linii"].append({"debit": deb, "credit": cre, "suma": float(suma)})
+    return {"note": list(note.values())}
+@app.post("/tenants/{tenant_id}/horeca/raport-z")
+def horeca_raport_z(tenant_id: int, rz: RaportZ, ctx=Depends(cere_cabinet)):
+    from decimal import Decimal as D
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        total = D(str(rz.total_11)) + D(str(rz.total_21))
+        if abs(float(total) - (rz.numerar + rz.card)) > 0.01:
+            raise HTTPException(400, "numerar + card trebuie sa fie egal cu totalul pe cote")
+        # suta marita: TVA = total * cota / (100 + cota)
+        tva11 = (D(str(rz.total_11)) * 11 / 111).quantize(D("0.01"))
+        tva21 = (D(str(rz.total_21)) * 21 / 121).quantize(D("0.01"))
+        baza11 = D(str(rz.total_11)) - tva11
+        baza21 = D(str(rz.total_21)) - tva21
+        with conn.cursor() as cur:
+            cur.execute(f"""
+                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
+                VALUES (%s, %s, %s, 'horeca_z', 'validata') RETURNING id
+            """, (rz.data, f"Z-{rz.data}", f"Raport Z {rz.data}"))
+            iid = cur.fetchone()[0]
+            linii = []
+            if rz.numerar: linii.append(("5311", "707", rz.numerar))
+            if rz.card: linii.append(("5125", "707", rz.card))
+            # corectie TVA: 707 -> 4427 pentru TVA colectata
+            tva_total = tva11 + tva21
+            if tva_total: linii.append(("707", "4427", float(tva_total)))
+            for deb, cre, suma in linii:
+                cur.execute(f"""
+                    INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
+                    VALUES (%s, %s, %s, %s)
+                """, (iid, deb, cre, suma))
+    return {"ok": True, "nota_id": iid,
+            "tva_11": float(tva11), "tva_21": float(tva21),
+            "baza_11": float(baza11), "baza_21": float(baza21)}
+@app.post("/tenants/{tenant_id}/banca/parse-extras")
+async def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    from core import banca_parser, banca as _bk
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+    continut = await fisier.read()
+    try:
+        tranzactii = banca_parser.parse_extras(continut, fisier.filename or "")
+    except Exception as e:
+        raise HTTPException(400, f"nu am putut citi extrasul: {e}")
+    for t in tranzactii:
+        linie = {"sens": "debit" if t["suma"] < 0 else "credit",
+                 "suma": abs(t["suma"]), "descriere": t.get("detalii", "")}
+        r = _bk.regula_cont(linie)
+        t["cui"] = r.get("cui")
+        t["tip"] = r.get("tip")
+        t["nota"] = r.get("nota")
+    return {"tranzactii": tranzactii, "nr": len(tranzactii)}
 @app.get("/tenants/{tenant_id}/stat-plata")
 def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from core import stat_plata_api as _sp
