@@ -90,6 +90,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "salariati", titlu: "Salariați", desc: "Stat plată, fluturași, D112",
       bg: "#fdeef0", fg: "#a3344b",
       icon: '<circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M16 3.5a3 3 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.7"/>', activ: true },
+    { cheie: "bonuri", titlu: "Bonuri de verificat", desc: "Citite de AI \u2014 certifica si conteaza",
+      bg: "#fdeef0", fg: "#a3344b",
+      icon: '<path d="M9 11l3 3 8-8"/><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>', activ: true },
     { cheie: "jurnal", titlu: "Registru jurnal", desc: "Notele contabile ale firmei",
       bg: "#eef0f3", fg: "#3a4250",
       icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', activ: true },
@@ -129,6 +132,10 @@ function meniuFirma(corp, nav, t) {
   const bSalariati = corp.querySelector("#fa-salariati");
   if (bSalariati && !bSalariati.disabled) {
     bSalariati.addEventListener("click", () => ecranSalariati(corp, nav, t));
+  }
+  const bBonuri = corp.querySelector("#fa-bonuri");
+  if (bBonuri) {
+    bBonuri.addEventListener("click", () => ecranBonuri(corp, nav, t));
   }
   const bJurnal = corp.querySelector("#fa-jurnal");
   if (bJurnal) {
@@ -390,6 +397,69 @@ async function ecranJurnal(corp, nav, t) {
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#j-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#j-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+  };
+  deseneaza();
+}
+
+// [bonuri] verificare + contare bonuri citite de AI (linii multiple)
+async function ecranBonuri(corp, nav, t) {
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+    let bonuri = [];
+    try {
+      const r = await api.get(`/tenants/${t.id}/bonuri/de-verificat`);
+      bonuri = (r && r.bonuri) || [];
+    } catch {}
+    const randuri = !bonuri.length
+      ? `<div class="mig-gol">Niciun bon de verificat.</div>`
+      : bonuri.map((b, i) => `
+        <div class="pf-frand" style="flex-wrap:wrap">
+          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;width:100%;align-items:end">
+            <label>Comerciant<br><input class="mig-text" id="b-com-${i}" value="${b.comerciant || ""}"></label>
+            <label>Data<br><input class="mig-text" type="date" id="b-data-${i}" value="${b.data || ""}"></label>
+            <label>Total<br><input class="mig-text" type="number" step="0.01" id="b-tot-${i}" value="${b.total}"></label>
+            <label>TVA total<br><input class="mig-text" type="number" step="0.01" id="b-tva-${i}" value="${b.tva}"></label>
+          </div>
+          <div id="b-linii-${i}" style="width:100%;margin-top:8px">
+            ${(b.articole || []).map((a, j) => `
+              <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:4px">
+                <input class="mig-text" id="b-den-${i}-${j}" value="${a.denumire || ""}" readonly>
+                <input class="mig-text" type="number" step="0.01" id="b-val-${i}-${j}" value="${a.valoare || 0}">
+                <input class="mig-text" id="b-cont-${i}-${j}" value="${a.cont_propus || ""}" placeholder="cont">
+              </div>`).join("")}
+          </div>
+          <div style="margin-top:8px"><button class="btn" data-aproba="${i}">Certifica si conteaza</button></div>
+        </div>`).join("");
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Bonuri de verificat \u00b7 ${t.nume || ""}</h2>
+      <p class="pf-intro">Verifica articolele, pune contul pe fiecare, apoi certifica. Liniile cu acelasi cont se aduna.</p>
+      <div class="pf-lista">${randuri}</div>`;
+    corp.querySelectorAll("[data-aproba]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const i = parseInt(btn.dataset.aproba);
+        const b = bonuri[i];
+        const v = (id) => corp.querySelector(id).value;
+        const grupe = {};
+        let ok = true;
+        (b.articole || []).forEach((a, j) => {
+          const cont = v(`#b-cont-${i}-${j}`).trim();
+          const val = parseFloat(v(`#b-val-${i}-${j}`)) || 0;
+          if (!cont) ok = false;
+          grupe[cont] = (grupe[cont] || 0) + val;
+        });
+        if (!ok) { alert("Pune contul pe fiecare articol."); return; }
+        const linii = Object.entries(grupe).map(([cont, valoare]) => ({ cont, valoare: Math.round(valoare * 100) / 100 }));
+        try {
+          await api.post(`/tenants/${t.id}/bonuri/${b.id}/aproba`, {
+            comerciant: v(`#b-com-${i}`), data: v(`#b-data-${i}`),
+            total: parseFloat(v(`#b-tot-${i}`)) || 0,
+            tva: parseFloat(v(`#b-tva-${i}`)) || 0,
+            linii,
+          });
+          deseneaza();
+        } catch (e) { alert(e.mesaj || "Eroare"); }
+      });
+    });
   };
   deseneaza();
 }

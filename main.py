@@ -1995,6 +1995,60 @@ class RaportZ(BaseModel):
     total_21: float = 0
     numerar: float = 0
     card: float = 0
+@app.get("/tenants/{tenant_id}/bonuri/de-verificat")
+def bonuri_de_verificat(tenant_id: int, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"""
+                SELECT id, comerciant, cui, data, total, tva_11, articole, status
+                FROM {schema}.bonuri WHERE status = 'de_verificat' ORDER BY creat_la
+            """)
+            bonuri = [{"id": r[0], "comerciant": r[1], "cui": r[2],
+                       "data": r[3].isoformat() if r[3] else None,
+                       "total": float(r[4] or 0), "tva": float(r[5] or 0),
+                       "articole": r[6] or [], "status": r[7]} for r in cur.fetchall()]
+    return {"bonuri": bonuri}
+class BonLinie(BaseModel):
+    cont: str
+    valoare: float
+class BonAproba(BaseModel):
+    comerciant: str = ""
+    data: str
+    total: float
+    tva: float = 0
+    linii: list[BonLinie]
+@app.post("/tenants/{tenant_id}/bonuri/{bon_id}/aproba")
+def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        suma_linii = sum(l.valoare for l in b.linii)
+        if abs(suma_linii - b.total) > 0.05:
+            raise HTTPException(400, f"suma articolelor ({suma_linii}) != total ({b.total})")
+        # valorile articolelor sunt cu TVA inclus; scad TVA proportional
+        factor = (b.total - b.tva) / b.total if b.total else 1
+        with conn.cursor() as cur:
+            cur.execute(f"""
+                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
+                VALUES (%s, %s, %s, 'bon', 'validata') RETURNING id
+            """, (b.data, f"BON-{bon_id}", f"Bon {b.comerciant}"))
+            iid = cur.fetchone()[0]
+            for l in b.linii:
+                cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, %s, '5311', %s)",
+                            (iid, l.cont, round(l.valoare * factor, 2)))
+            if b.tva:
+                cur.execute(f"INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s, '4426', '5311', %s)",
+                            (iid, b.tva))
+            cur.execute(f"""
+                UPDATE {schema}.bonuri SET status='aprobat',
+                       comerciant=%s, data=%s, total=%s, inregistrare_id=%s
+                WHERE id=%s
+            """, (b.comerciant, b.data, b.total, iid, bon_id))
+    return {"ok": True, "nota_id": iid}
 @app.get("/tenants/{tenant_id}/jurnal")
 def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
@@ -2137,14 +2191,31 @@ async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[
         imagini.append((b, f.content_type or "image/jpeg"))
     prompt = ("Citeste bonul fiscal (poate fi in mai multe imagini, in ordine). Raspunde DOAR cu JSON, fara alt text: "
               '{"comerciant": "...", "cui": "...", "data": "YYYY-MM-DD", "total": 0.0, '
-              '"tva_11": 0.0, "tva_21": 0.0}. Daca un camp nu se vede, pune null.')
+              '"articole": [{"denumire": "...", "valoare": 0.0, "cota_tva": 0, "cont_propus": "..."}], '
+              '"tva": [{"cota": 0, "valoare": 0.0}]}. '
+              "Cotele TVA le citesti EXACT cum apar pe bon (pot fi 19/9/11/21/5 in functie de anul bonului). "
+              "cont_propus = contul de cheltuiala OMFP 1802 potrivit articolului: 6022 combustibil, "
+              "623 protocol (cafea, apa, mancare), 604 materiale nestocate, 628 alte servicii. "
+              "Reducerile primesc contul articolului principal. "
+              "Daca un camp nu se vede, pune null.")
     try:
         text = ai_client.citeste_imagini(imagini, prompt)
         text = text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
         date = _json.loads(text)
     except Exception:
         raise HTTPException(422, "nu am putut citi bonul; incearca o poza mai clara")
-    return {"ok": True, "bon": date}
+    schema = t["schema_name"]
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            tva_lista = date.get("tva") or []
+            tva_total = sum(x.get("valoare") or 0 for x in tva_lista)
+            cur.execute(f"""
+                INSERT INTO {schema}.bonuri (comerciant, cui, data, total, tva_11, tva_21, articole)
+                VALUES (%s, %s, %s, %s, %s, 0, %s) RETURNING id
+            """, (date.get("comerciant"), date.get("cui"), date.get("data"),
+                  date.get("total") or 0, tva_total, _json.dumps(date.get("articole") or [])))
+            bon_id = cur.fetchone()[0]
+    return {"ok": True, "bon": date, "bon_id": bon_id}
 @app.get("/portal/documente/luni")
 def portal_documente_luni(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, tenant_id)

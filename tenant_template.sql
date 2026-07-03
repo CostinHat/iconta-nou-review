@@ -689,3 +689,13 @@ ALTER TABLE ONLY tenant_001.inregistrari_linii
 
 \unrestrict WhhAvQHo5rYRGrzihzrovA0oUhGSwAGzOkexXEjBytu2oq82qKcU2JoHaLGYcXN
 
+
+CREATE TABLE IF NOT EXISTS tenant_001.bonuri (
+  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  comerciant text, cui text, data date, total numeric(12,2),
+  tva_11 numeric(12,2) DEFAULT 0, tva_21 numeric(12,2) DEFAULT 0,
+  cont_cheltuiala varchar(10),
+  status varchar(20) NOT NULL DEFAULT 'de_verificat',
+  inregistrare_id integer,
+  creat_la timestamptz NOT NULL DEFAULT now()
+);
