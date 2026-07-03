@@ -21,7 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs
+from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
 TENANT_TEMPLATE_PATH = os.environ.get(
@@ -417,6 +417,43 @@ def admin_cabinet_reactiveaza(firm_id: int, ctx=Depends(cere_cabinet)):
             cur.execute("UPDATE public.accounting_firms SET activ=true WHERE id=%s", (firm_id,))
     return {"ok": True}
 
+@app.get("/admin/activitate/conturi-gratuite")
+def admin_conturi_gratuite(ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("""
+                SELECT t.id, t.nume, t.cui, t.activ, t.creat_la,
+                       (SELECT COUNT(DISTINCT ut.user_id) FROM public.user_tenants ut WHERE ut.tenant_id = t.id) AS nr_useri,
+                       (SELECT MAX(a.created_at) FROM public.audit_log a
+                          JOIN public.user_tenants ut2 ON ut2.user_id = a.user_id
+                          WHERE ut2.tenant_id = t.id) AS ultima_activitate,
+                       (SELECT COUNT(*) FROM public.audit_log a2
+                          JOIN public.user_tenants ut3 ON ut3.user_id = a2.user_id
+                          WHERE ut3.tenant_id = t.id AND a2.actiune LIKE '%%/facturi/emite%%') AS nr_facturi
+                FROM public.tenants t
+                WHERE t.accounting_firm_id IS NULL
+                ORDER BY t.creat_la DESC
+            """)
+            rows = cur.fetchall()
+    return {"conturi": rows}
+@app.post("/admin/conturi-gratuite/{tenant_id}/suspenda")
+def admin_cont_gratuit_suspenda(tenant_id: int, ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE public.tenants SET activ=false WHERE id=%s AND accounting_firm_id IS NULL", (tenant_id,))
+    return {"ok": True}
+@app.post("/admin/conturi-gratuite/{tenant_id}/reactiveaza")
+def admin_cont_gratuit_reactiveaza(tenant_id: int, ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE public.tenants SET activ=true WHERE id=%s AND accounting_firm_id IS NULL", (tenant_id,))
+    return {"ok": True}
 @app.get("/admin/activitate/cabinet/{firm_id}")
 def admin_activitate_cabinet(firm_id: int, limita: int = 200, ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
@@ -1952,6 +1989,21 @@ def portal_firma(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     return {"tenant_id": t["id"], "nume": t.get("nume"), "firma": firma}
 
 
+@app.get("/portal/documente/luni")
+def portal_documente_luni(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn:
+        luni = documente_api.luni_disponibile(conn, t["schema_name"])
+        decl = documente_api.declaratii_depuse(conn, t["id"])
+    return {"luni": luni, "declaratii": decl}
+@app.get("/portal/documente/balanta")
+def portal_documente_balanta(an: int, luna: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    from fastapi.responses import Response
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn:
+        pdf = documente_api.balanta_pdf(conn, t["schema_name"], an, luna, t.get("nume") or "")
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="balanta_{an}_{luna:02d}.pdf"'})
 @app.get("/portal/facturi")
 def portal_facturi(tenant_id: Optional[int] = None, an: Optional[int] = None,
                    luna: Optional[int] = None, ctx=Depends(cere_client)):

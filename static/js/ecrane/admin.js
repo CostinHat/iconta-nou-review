@@ -5,6 +5,7 @@
 import { sesiune } from "../sesiune.js";
 import { randeazaAdminRaportari } from "./admin_raportari.js";
 import { randeazaAdminActivitate } from "./admin_activitate.js";
+import { randeazaAdminGratuite } from "./admin_gratuite.js";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=2";
 
 // iconite SVG inline (autonome)
@@ -23,6 +24,9 @@ const DEF = [
   { cheie:"activitate", titlu:"Activitate cabinete", icon:"report", bg:"#e6f6ec", fg:"#16a34a",
     sinteza:"Cine e activ, cine nu",
     actiune:(nav) => nav.deschide("Activitate cabinete", (corp) => randeazaAdminActivitate(corp, nav)) },
+  { cheie:"gratuite", titlu:"Facturare gratuită", icon:"report", bg:"#eef4ff", fg:"#1d4ed8",
+    sinteza:"Conturi gratuite: cine e activ, cine nu",
+    actiune:(nav) => nav.deschide("Facturare gratuită", (corp) => randeazaAdminGratuite(corp, nav)) },
   { cheie:"sanatate", titlu:"Sănătate server", icon:"report", bg:"#fdeef2", fg:"#c0246b",
     sinteza:"Server, aplicație, bază de date, erori",
     actiune:(nav) => nav.deschide("Sănătate server", (corp) => randeazaAdminSanatate(corp, nav)) },

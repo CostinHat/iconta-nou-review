@@ -1924,7 +1924,7 @@ html, body {
 .pagina-bara-stanga { display: flex; align-items: center; gap: 8px; }
 .pagina-bara-logo { height: 28px; }
 .pagina-bara-marca { font-size: var(--text); font-weight: 700; color: var(--ardezie); }
-.pagina-bara-acces { background: #0f6cbd; color: #fff; border: none; border-radius: var(--raza); padding: 8px 20px; font-size: var(--text-mic); font-weight: 600; cursor: pointer; font-family: var(--font); }
+.pagina-bara-acces { background: #3d8fd6; color: #fff; border: none; border-radius: var(--raza); padding: 8px 20px; font-size: var(--text-mic); font-weight: 600; cursor: pointer; font-family: var(--font); }
 .pagina-bara-acces:hover { background: #115ea3; }
 
 /* ICRD_ACCES_OVERLAY_V1 */
@@ -2027,3 +2027,21 @@ html, body { overflow-y: hidden; }
 /* [card_umbra] umbra discreta permanenta pe toate cardurile */
 .cab-card, .firme-optiune, .mig-op { box-shadow: 0 3px 12px rgba(20,30,45,0.14) !important; }
 .cab-card:hover, .firme-optiune:hover { box-shadow: 0 6px 20px rgba(20,30,45,0.2) !important; }
+/* ============ [STANDARD_BUTOANE] NU SE MODIFICA ============
+   Butoane actiune: 8x16, 15px, radius 8, umbra 0 1px 4px.
+   Primar albastru / .btn-secundar gri / .btn-sters rosu. Nav si link exceptate. */
+button:not(.cab-card):not(.firme-optiune):not(.mig-op) {
+  font-family: var(--font) !important;
+  font-size: var(--text-mic) !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  cursor: pointer;
+  border: none;
+  background: #3d8fd6; color: #fff;
+  box-shadow: 0 3px 8px rgba(20,30,45,0.35);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+button.btn-secundar { background: #eef1f5 !important; color: #1a2535 !important; border: 1px solid #d5dae2 !important; }
+button.btn-sters { background: #ff3b30 !important; color: #fff !important; }
+button:not(.cab-card):not(.firme-optiune):not(.mig-op):hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(20,30,45,0.16); }
+/* ============ sfarsit STANDARD_BUTOANE ============ */
