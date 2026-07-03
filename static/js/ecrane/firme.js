@@ -393,10 +393,18 @@ async function ecranJurnal(corp, nav, t) {
       <h2 class="pf-titlu">Registru jurnal \u00b7 ${t.nume || ""}</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an} \u00b7 ${note.length} note
         <button class="btn btn-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
-        <button class="btn btn-secundar" id="j-next">luna \u2192</button></p>
+        <button class="btn btn-secundar" id="j-next">luna \u2192</button>
+        <button class="btn" id="j-amort" style="margin-left:12px">Genereaza amortizarea</button></p>
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#j-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#j-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelector("#j-amort").addEventListener("click", async () => {
+      try {
+        const r = await api.post(`/tenants/${t.id}/amortizare?an=${an}&luna=${luna}`, {});
+        alert(r.linii ? `Nota generata: ${r.linii} mijloace fixe, total ${r.total} lei` : "Nimic de amortizat.");
+        deseneaza();
+      } catch (e) { alert(e.mesaj || "Eroare"); }
+    });
   };
   deseneaza();
 }
