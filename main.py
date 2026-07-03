@@ -2049,6 +2049,52 @@ def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba, ctx=Depends(cere_cabin
                 WHERE id=%s
             """, (b.comerciant, b.data, b.total, iid, bon_id))
     return {"ok": True, "nota_id": iid}
+@app.post("/tenants/{tenant_id}/amortizare")
+def tenant_amortizare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    """Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ."""
+    from datetime import date as _date
+    from decimal import Decimal as D
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        ref = _date(an, luna, 1)
+        with conn.cursor() as cur:
+            cur.execute(f"""
+                SELECT numar FROM {schema}.inregistrari
+                WHERE sursa = 'amortizare' AND numar = %s
+            """, (f"AMORT-{an}-{luna:02d}",))
+            if cur.fetchone():
+                raise HTTPException(400, "amortizarea lunii e deja generata")
+            cur.execute(f"""
+                SELECT id, denumire, cont_amortizare, valoare, COALESCE(rezidual,0), dnf_luni, data_pif
+                FROM {schema}.mijloace_fixe WHERE activ = true
+            """)
+            mf = cur.fetchall()
+        linii = []
+        for mid, den, cont_am, val, rez, dnf, pif in mf:
+            if not pif or not dnf:
+                continue
+            luni_trecute = (an - pif.year) * 12 + (luna - pif.month)
+            if luni_trecute < 1 or luni_trecute > dnf:
+                continue  # amortizarea incepe luna urmatoare PIF, se opreste la DNF
+            rata = ((D(str(val)) - D(str(rez))) / dnf).quantize(D("0.01"))
+            if rata > 0:
+                linii.append((cont_am or "2813", float(rata), den))
+        if not linii:
+            return {"ok": True, "mesaj": "nimic de amortizat", "linii": 0}
+        with conn.cursor() as cur:
+            cur.execute(f"""
+                INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
+                VALUES (%s, %s, %s, 'amortizare', 'validata') RETURNING id
+            """, (_date(an, luna, 1).replace(day=28), f"AMORT-{an}-{luna:02d}", f"Amortizare {luna:02d}/{an}"))
+            iid = cur.fetchone()[0]
+            for cont_am, rata, den in linii:
+                cur.execute(f"""
+                    INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
+                    VALUES (%s, '6811', %s, %s)
+                """, (iid, cont_am, rata))
+    return {"ok": True, "nota_id": iid, "linii": len(linii), "total": round(sum(r for _, r, _ in linii), 2)}
 @app.get("/tenants/{tenant_id}/jurnal")
 def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
