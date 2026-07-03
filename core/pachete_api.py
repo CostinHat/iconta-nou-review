@@ -163,3 +163,13 @@ def trimite(conn_schema, conn_public, tenant_id, an, luna, semnatura=""):
     if not ok:
         return {"ok": False, "cod": "EMAIL_ESUAT"}
     return {"ok": True, "email": email}
+
+
+# ICRD_POVESTI_LISTA_V1 - listeaza povestile aprobate ale unei firme (portal client)
+def lista_povesti_aprobate(conn_public, tenant_id):
+    with conn_public.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute(
+            "SELECT an, luna, text, updated_at FROM public.pachet_povestea "
+            "WHERE tenant_id=%s AND status='aprobat' ORDER BY an DESC, luna DESC",
+            (tenant_id,))
+        return cur.fetchall()

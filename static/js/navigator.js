@@ -73,9 +73,27 @@ export function creeazaNavigator(radacina, desktopRandator) {
       const subbara = document.createElement("div");
       subbara.className = "subbara";
       const icon = `<svg class="subbara-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M19 21V11a2 2 0 0 0-2-2h-2"/><path d="M9 7h2M9 11h2M9 15h2"/></svg>`;
-      subbara.innerHTML = firmaInLucru
-        ? `${icon}<span class="subbara-cheie">În lucru:</span><span class="subbara-firma">${firmaInLucru}</span>`
-        : `${icon}<span class="subbara-gol">Nicio firmă selectată</span>`;
+      // ICRD_SUBBARA_ADMIN_SUMAR_V1
+      if (u.rol === "superadmin") {
+        subbara.classList.add("subbara--admin");
+        subbara.innerHTML = `${icon}<span class="subbara-gol">Se încarcă centralizatorul...</span>`;
+        import("./api.js").then(({ api }) => api.get("/admin/activitate/cabinete")).then((r) => {
+          const cabinete = (r && r.cabinete) || [];
+          const active = cabinete.filter((c) => c.activ).length;
+          const firme = cabinete.reduce((s2, c) => s2 + (c.nr_firme || 0), 0);
+          const angajati = cabinete.reduce((s2, c) => s2 + (c.nr_angajati || 0), 0);
+          const facturi = cabinete.reduce((s2, c) => s2 + (c.nr_facturi || 0), 0);
+          const declaratii = cabinete.reduce((s2, c) => s2 + (c.nr_declaratii || 0), 0);
+          const recomandari = cabinete.reduce((s2, c) => s2 + (c.nr_recomandari || 0), 0);
+          subbara.innerHTML = `${icon}<span class="subbara-admin-sumar">${active} cabinete active · ${firme} firme · ${angajati} angajați · ${facturi} facturi emise · ${declaratii} declarații depuse · ${recomandari} recomandări</span>`;
+        }).catch(() => {
+          subbara.innerHTML = `${icon}<span class="subbara-gol">Centralizatorul nu a putut fi încărcat.</span>`;
+        });
+      } else {
+        subbara.innerHTML = firmaInLucru
+          ? `${icon}<span class="subbara-cheie">În lucru:</span><span class="subbara-firma">${firmaInLucru}</span>`
+          : `${icon}<span class="subbara-gol">Nicio firmă selectată</span>`;
+      }
       ecran.appendChild(subbara);
     }
     // [p25_bara3] bara 3 motivationala — doar asistent (angajat)

@@ -4,6 +4,8 @@
 
 import { sesiune } from "../sesiune.js";
 import { randeazaAdminRaportari } from "./admin_raportari.js";
+import { randeazaAdminActivitate } from "./admin_activitate.js";
+import { randeazaAdminSanatate } from "./admin_sanatate.js?v=2";
 
 // iconite SVG inline (autonome)
 const IC = {
@@ -18,6 +20,12 @@ const DEF = [
   { cheie:"raportari", titlu:"Raportări", icon:"report", bg:"#f3e8ff", fg:"#6d28d9",
     sinteza:"Răspunde la sesizările utilizatorilor",
     actiune:(nav) => nav.deschide("Raportări", (corp) => randeazaAdminRaportari(corp, nav)) },
+  { cheie:"activitate", titlu:"Activitate cabinete", icon:"report", bg:"#e6f6ec", fg:"#16a34a",
+    sinteza:"Cine e activ, cine nu",
+    actiune:(nav) => nav.deschide("Activitate cabinete", (corp) => randeazaAdminActivitate(corp, nav)) },
+  { cheie:"sanatate", titlu:"Sănătate server", icon:"report", bg:"#fdeef2", fg:"#c0246b",
+    sinteza:"Server, aplicație, bază de date, erori",
+    actiune:(nav) => nav.deschide("Sănătate server", (corp) => randeazaAdminSanatate(corp, nav)) },
 ];
 
 export function desktopAdmin(continut, nav) {

@@ -198,7 +198,9 @@ def importa(conn, randuri):
         cur.execute("""
             DO $$ BEGIN
               IF NOT EXISTS (
-                SELECT 1 FROM pg_constraint WHERE conname = 'salariati_cnp_uniq'
+                SELECT 1 FROM pg_constraint c
+                JOIN pg_namespace n ON n.oid = c.connamespace
+                WHERE c.conname = 'salariati_cnp_uniq' AND n.nspname = current_schema()
               ) THEN
                 ALTER TABLE salariati ADD CONSTRAINT salariati_cnp_uniq UNIQUE (cnp);
               END IF;
@@ -208,19 +210,20 @@ def importa(conn, randuri):
             if not r.get("cnp_valid"):
                 sarite += 1
                 continue
+            part_time = (r.get("tip_norma", "intreaga") == "partiala")
             cur.execute("""
                 INSERT INTO salariati
-                  (cnp, nume, prenume, data_angajare, tip_norma, ore_zi, salariu_brut,
+                  (cnp, nume, prenume, data_angajare, part_time, ore_zi, salariu_brut,
                    persoane_intretinere, judet_casa, activ, cor)
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true,%s)
                 ON CONFLICT (cnp) DO UPDATE SET
                   nume=EXCLUDED.nume, prenume=EXCLUDED.prenume,
-                  data_angajare=EXCLUDED.data_angajare, tip_norma=EXCLUDED.tip_norma,
+                  data_angajare=EXCLUDED.data_angajare, part_time=EXCLUDED.part_time,
                   ore_zi=EXCLUDED.ore_zi, salariu_brut=EXCLUDED.salariu_brut,
                   persoane_intretinere=EXCLUDED.persoane_intretinere,
                   judet_casa=EXCLUDED.judet_casa, cor=EXCLUDED.cor
             """, (r["cnp"], r["nume"], r["prenume"], r.get("data_angajare"),
-                  r.get("tip_norma", "intreaga"), r.get("ore_zi", 8),
+                  part_time, r.get("ore_zi", 8),
                   r.get("salariu_brut", 0), r.get("persoane_intretinere", 0),
                   r.get("judet_casa", ""), r.get("cor", "")))
             importati += 1

@@ -63,9 +63,9 @@ export function desktopPortal(continut, nav) {
 function deschideCard(cheie, nav) {
   if (cheie === "facturi") nav.deschide("Facturi", (corp) => deschideFacturi(corp, nav));  // [p116_facturi_modul]
   else if (cheie === "declaratii") nav.deschide("Declaratii depuse", (corp) => ecranDeclaratii(corp, nav));
-  else if (cheie === "povestea") nav.deschide("Povestea lunii", (corp) => ecranInLucru(corp, nav, "Povestea lunii"));
-  else if (cheie === "solicitari") nav.deschide("Solicitari", (corp) => ecranInLucru(corp, nav, "Solicitari"));
-  else if (cheie === "recomanda") nav.deschide("Recomanda", (corp) => ecranInLucru(corp, nav, "Recomanda"));
+  else if (cheie === "povestea") nav.deschide("Povestea lunii", (corp) => ecranPovestea(corp, nav));
+  else if (cheie === "solicitari") nav.deschide("Solicitari", (corp) => ecranSolicitari(corp, nav));  // ICRD_SOLICITARI_FRONT_V1
+  else if (cheie === "recomanda") nav.deschide("Recomanda", (corp) => ecranRecomanda(corp, nav));
   else if (cheie === "documente") nav.deschide("Documente", (corp) => ecranInLucru(corp, nav, "Documente"));
 }
 
@@ -109,7 +109,7 @@ async function actualizeazaStatusAcasa(continut) {
   const linii = [...restante, ...urmarit];
   let listaHtml = "";
   if (linii.length) {
-    listaHtml = `<div class="pa-lista">` + linii.map((x) =>
+    listaHtml = `<div class="pa-lista" id="pa-lista" hidden>` + linii.map((x) =>
       `<div class="pa-rand">
         <span class="pa-tip">${x.tip}</span>
         <span class="pa-perioada">${x.perioada || ""}</span>
@@ -117,11 +117,17 @@ async function actualizeazaStatusAcasa(continut) {
       </div>`).join("") + `</div>`;
   }
 
-  zona.innerHTML = `<div class="pa-card ${clasa}">
+  zona.innerHTML = `<div class="pa-card ${clasa}" id="pa-card" style="${linii.length ? "cursor:pointer" : ""}">
     <div class="pa-titlu">${titlu}</div>
     <div class="pa-sub">${sub}</div>
     ${listaHtml}
   </div>`;
+
+  if (linii.length) {
+    const card = zona.querySelector("#pa-card");
+    const lista = zona.querySelector("#pa-lista");
+    card.addEventListener("click", () => { lista.hidden = !lista.hidden; });
+  }
 }
 
 // [p107_facturi_meniu] MENIU FACTURI: doua optiuni (Istoric / Emite)
@@ -165,6 +171,157 @@ async function ecranDeclaratii(corp, nav) {
     <h2 class="pf-titlu">Declaratii depuse</h2>
     <p class="pf-intro">Ce a fost depus la ANAF pentru firma ta.</p>
     <div class="pf-lista">${corpuri}</div>`;
+}
+
+// ---------- SOLICITARI (chat cu contabilul) ----------  // ICRD_SOLICITARI_FRONT_V1
+function fmtData(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d)) return iso;
+  const zz = String(d.getDate()).padStart(2, "0");
+  const ll = String(d.getMonth() + 1).padStart(2, "0");
+  return `${zz}/${ll}/${d.getFullYear()}`;
+}
+
+async function ecranSolicitari(corp, nav) {
+  corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+  await randeazaSolicitari(corp, nav);
+}
+
+async function randeazaSolicitari(corp, nav) {
+  let lista = [];
+  try {
+    const r = await api.get("/portal/solicitari");
+    lista = (r && r.solicitari) || [];
+  } catch {}
+  let firHtml = '<div class="mig-gol">Niciun mesaj inca.</div>';
+  if (lista.length) {
+    firHtml = lista.map((s) => {
+      const cine = s.autor_rol === "cabinet" ? "Contabil" : "Tu";
+      return `<div class="sol-rand sol-${s.autor_rol}">
+        <div class="sol-mesaj">${s.mesaj}</div>
+        <div class="sol-meta">${cine} · ${fmtData(s.creat_la)}</div>
+      </div>`;
+    }).join("");
+  }
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Solicitari</h2>
+    <p class="pf-intro">Cere ceva contabilului tau.</p>
+    <div class="sol-fir" id="sol-fir">${firHtml}</div>
+    <div class="sol-trimite">
+      <textarea id="sol-input" placeholder="Scrie un mesaj..." rows="3"></textarea>
+      <button class="btn" id="sol-trimite-btn">Trimite</button>
+    </div>
+  `;
+  const fir = corp.querySelector("#sol-fir");
+  if (fir) fir.scrollTop = fir.scrollHeight;
+  const btn = corp.querySelector("#sol-trimite-btn");
+  if (btn) btn.addEventListener("click", async () => {
+    const inp = corp.querySelector("#sol-input");
+    const txt = ((inp && inp.value) || "").trim();
+    if (!txt) return;
+    try {
+      await api.post("/portal/solicitari", { mesaj: txt });
+      await randeazaSolicitari(corp, nav);
+    } catch {}
+  });
+}
+
+// ---------- POVESTEA LUNII ----------
+async function ecranPovestea(corp, nav) {
+  corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+  let lista = [];
+  try {
+    const r = await api.get("/portal/povesti");
+    lista = (r && r.povesti) || [];
+  } catch {}
+  const luni = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
+                "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"];
+  if (!lista.length) {
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Povestea lunii</h2>
+      <p class="pf-intro">Raportul lunar de la contabil.</p>
+      <div class="mig-gol">Inca nu ai primit niciun raport lunar.</div>`;
+    return;
+  }
+  const fmtDif = (p) => {
+    if (typeof p.diferenta !== "number") return "";
+    const semn = p.diferenta > 0 ? "+" : "";
+    const culoare = p.diferenta > 0 ? "#16a34a" : (p.diferenta < 0 ? "#dc2626" : "#666");
+    return `<span style="color:${culoare};font-weight:600">${semn}${p.diferenta.toLocaleString("ro-RO")} lei fata de luna anterioara</span>`;
+  };
+  const corpuri = lista.map((p) => `
+    <div class="pf-frand">
+      <div class="pf-frand-text">
+        <div class="pf-frand-nume">${luni[p.luna] || p.luna} ${p.an}</div>
+        <div class="pf-frand-sub">${(p.text || "").slice(0, 80)}...</div>
+        <div class="pf-frand-sub">${fmtDif(p)}</div>
+      </div>
+    </div>`).join("");
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Povestea lunii</h2>
+    <p class="pf-intro">Raportul lunar de la contabil.</p>
+    <div class="pf-lista" id="pov-lista">${corpuri}</div>
+    <div id="pov-detaliu"></div>`;
+  corp.querySelectorAll(".pf-frand").forEach((el, i) => {
+    el.style.cursor = "pointer";
+    el.addEventListener("click", () => {
+      const p = lista[i];
+      corp.querySelector("#pov-detaliu").innerHTML = `
+        <div class="pov-card">
+          <h3>${luni[p.luna] || p.luna} ${p.an}</h3>
+          <div class="pov-text">${(p.text || "").replace(/\n/g, "<br>")}</div>
+          ${typeof p.diferenta === "number" ? `<div class="pov-dif">${fmtDif(p)}</div>` : ""}
+        </div>`;
+    });
+  });
+}
+
+// ---------- RECOMANDA ----------
+async function ecranRecomanda(corp, nav) {
+  corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+  let previewHtml = "";
+  try {
+    const p = await api.get("/portal/recomanda/preview");
+    previewHtml = (p && p.html) || "";
+  } catch {}
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Recomanda</h2>
+    <p class="pf-intro">Invita un antreprenor prieten sa afle despre iConta.</p>
+    <div class="pov-card" style="margin-bottom:16px">
+      <button type="button" id="rec-vezi-mesaj" class="btn" style="background:#fff;color:#111;border:1px solid #ddd">Vezi mesajul</button>
+      <div id="rec-preview" style="display:none;margin-top:10px;border:1px solid #eee;border-radius:8px;padding:16px;background:#fafafa">${previewHtml}</div>
+    </div>
+    <textarea id="rec-emails" placeholder="email1@exemplu.ro, email2@exemplu.ro" rows="4"
+      style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-family:inherit;font-size:15px"></textarea>
+    <p class="ecran-nota">Separa mai multe adrese prin virgula. Maxim 10.</p>
+    <button class="btn" id="rec-trimite-btn" style="margin-top:14px">Trimite recomandarea</button>
+    <div id="rec-rezultat" style="margin-top:16px"></div>
+  `;
+  const bVezi = corp.querySelector("#rec-vezi-mesaj");
+  if (bVezi) bVezi.addEventListener("click", () => {
+    const zona = corp.querySelector("#rec-preview");
+    zona.style.display = zona.style.display === "none" ? "block" : "none";
+  });
+  corp.querySelector("#rec-trimite-btn").addEventListener("click", async () => {
+    const raw = corp.querySelector("#rec-emails").value || "";
+    const emails = raw.split(",").map((e) => e.trim()).filter(Boolean);
+    const zona = corp.querySelector("#rec-rezultat");
+    if (!emails.length) {
+      zona.innerHTML = `<div class="mig-gol" style="color:#dc2626">Scrie cel putin un email.</div>`;
+      return;
+    }
+    zona.innerHTML = `<p class="ecran-nota">Se trimite...</p>`;
+    try {
+      const r = await api.post("/portal/recomanda", { emails });
+      const rez = (r && r.rezultate) || [];
+      zona.innerHTML = rez.map((x) =>
+        `<div class="pf-frand"><div class="pf-frand-text">${x.email} — ${x.stare === "trimis" ? "trimis" : "esuat"}</div></div>`
+      ).join("");
+    } catch {
+      zona.innerHTML = `<div class="mig-gol">A aparut o eroare. Incearca din nou.</div>`;
+    }
+  });
 }
 
 // ---------- IN LUCRU (placeholder pentru cardurile ce urmeaza) ----------

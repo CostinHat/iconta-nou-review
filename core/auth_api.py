@@ -109,7 +109,7 @@ def login(conn, email, parola, secret=None):
             "SELECT u.id, u.email, u.password_hash, u.nume, u.prenume, u.rol, "
             "u.accounting_firm_id, u.activ, "
             "u.poate_pregati, u.poate_valida, u.poate_depune, "
-            "af.nume AS nume_firma "
+            "af.nume AS nume_firma, af.activ AS firma_activa "  # ICRD_CABINETE_CONSOLIDAT_LOGIN_V1
             "FROM public.users u "
             "LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id "
             "WHERE u.email = %s",
@@ -118,6 +118,8 @@ def login(conn, email, parola, secret=None):
 
     if not u or not u["activ"]:
         return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "email sau parolă greșite"}
+    if u["accounting_firm_id"] and u["firma_activa"] is False:
+        return {"ok": False, "cod": "CABINET_SUSPENDAT", "mesaj": "Cabinetul este suspendat. Contactati furnizorul."}
     if not verifica_parola_orice(parola, u["password_hash"]):
         return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "email sau parolă greșite"}
 

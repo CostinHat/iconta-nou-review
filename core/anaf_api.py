@@ -103,6 +103,7 @@ def valideaza_cui(lista_cui, data_interogare=None):
                 "stare": (dg.get("stare_inregistrare") or dg.get("stareinregistrare") or "").strip(),
                 "inactiv": bool(inactiv.get("statusInactivi")),
                 "adresa": (dg.get("adresa") or "").strip(),
+                "cod_caen": (dg.get("codCAEN") or "").strip(),
                 "gasit": True,
             })
         for c in dj.get("notFound", []):

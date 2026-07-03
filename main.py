@@ -11,7 +11,11 @@ import os
 from contextlib import asynccontextmanager
 from typing import List, Optional
 
-from fastapi import FastAPI, HTTPException, Depends, Header, Body, UploadFile, File
+from fastapi import FastAPI, HTTPException, Depends, Header, Body, UploadFile, File, Request
+import re as _re_audit
+import json as _json_audit
+from starlette.concurrency import run_in_threadpool as _run_in_threadpool_audit
+import psycopg2.extras as _E_audit
 from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -33,6 +37,8 @@ _TENANT_TEMPLATE = None
 async def lifespan(app):
     global _TENANT_TEMPLATE
     db.init_pool()
+    import asyncio as _asyncio_lifespan  # ICRD_LIFESPAN_ALERTE_V1
+    _asyncio_lifespan.create_task(_bucla_alerte_sanatate())
     try:
         with db.get_conn() as conn:
             migrare_api.asigura_tabel(conn)
@@ -48,6 +54,8 @@ async def lifespan(app):
 
 
 app = FastAPI(title="iConta API", version="2026.1", lifespan=lifespan)
+
+_APP_PORNIT_LA = __import__("time").time()  # ICRD_SANATATE_SERVER_V1 - uptime proces
 
 # frontend: servit static de pe același origin cu API-ul (fără build step)
 _STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
@@ -97,6 +105,336 @@ def cere_cabinet(ctx=Depends(cere_context)):
     if ctx["rol"] == "client":
         raise HTTPException(403, "clienții folosesc portalul, nu rutele de cabinet")
     return ctx
+
+# ICRD_AUDIT_LOG_V1 - activitate cabinete (portat din legacy /opt/iconta)
+_AUDIT_SKIP_PATHS = ("/static", "/notificari/contor", "/favicon.ico",
+                     "/.well-known")
+
+def _inregistreaza_activitate(method, path, status, auth_header):
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return
+    if method == "OPTIONS":
+        return
+    if any(path.startswith(p) for p in _AUDIT_SKIP_PATHS):
+        return
+    token = auth_header[7:]
+    try:
+        ctx = auth_api.context_din_token(token)
+    except Exception:
+        return
+    if not ctx.get("ok"):
+        return
+    uid = ctx.get("uid")
+    if not uid:
+        return
+    tenant_id = None
+    m = _re_audit.match(r"^/tenants/(\d+)", path)
+    if m:
+        tenant_id = int(m.group(1))
+    actiune = f"{method} {path}"
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) "
+                    "VALUES (%s,%s,%s,%s)",
+                    (uid, tenant_id, actiune, _json_audit.dumps({"status": status})))
+    except Exception:
+        pass
+
+@app.middleware("http")
+async def _audit_middleware(request: Request, call_next):
+    response = await call_next(request)
+    try:
+        path = request.url.path
+        if not any(path.startswith(p) for p in _AUDIT_SKIP_PATHS):
+            auth = request.headers.get("authorization")
+            await _run_in_threadpool_audit(
+                _inregistreaza_activitate, request.method, path, response.status_code, auth)
+    except Exception:
+        pass
+    return response
+
+# ICRD_CABINETE_CONSOLIDAT_V1
+# ICRD_SANATATE_SERVER_V1
+# ICRD_ALERTE_SANATATE_V1
+_PRAG_RAM_PROCENT = 75
+_PRAG_DISC_PROCENT = 75
+_PRAG_CONEXIUNI_DB = 20
+_ALERTE_COOLDOWN_SEC = 3600
+_alerte_ultima_trimitere = {}
+
+def _citeste_metrici_pentru_alerte():
+    import os as _os
+    import shutil as _shutil
+    rezultat = {"ram_procent": None, "disc_procent": None, "load1": None,
+                "cpu_count": _os.cpu_count() or 1, "conexiuni_db": None, "erori_noi": 0}
+    try:
+        info = {}
+        with open("/proc/meminfo") as f:
+            for linie in f:
+                k, v = linie.split(":", 1)
+                info[k.strip()] = int(v.strip().split()[0])
+        total_kb = info.get("MemTotal", 0)
+        disp_kb = info.get("MemAvailable", 0)
+        if total_kb:
+            rezultat["ram_procent"] = round(100 * (1 - disp_kb / total_kb), 1)
+    except Exception:
+        pass
+    try:
+        total, folosit, liber = _shutil.disk_usage("/")
+        rezultat["disc_procent"] = round(100 * folosit / total, 1)
+    except Exception:
+        pass
+    try:
+        rezultat["load1"] = _os.getloadavg()[0]
+    except Exception:
+        pass
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT count(*) FROM pg_stat_activity WHERE datname = current_database()")
+                rezultat["conexiuni_db"] = cur.fetchone()[0]
+                cur.execute("""
+                    SELECT count(*) FROM public.audit_log
+                    WHERE created_at > now() - interval '10 minutes'
+                      AND (detalii->>'status')::int >= 500
+                """)
+                rezultat["erori_noi"] = cur.fetchone()[0]
+    except Exception:
+        pass
+    return rezultat
+
+def _email_superadmin():
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT email FROM public.users WHERE rol='superadmin' AND activ=true ORDER BY id LIMIT 1")
+                r = cur.fetchone()
+        return r[0] if r else None
+    except Exception:
+        return None
+
+def _poate_alerta(categorie):
+    import time as _time
+    ultima = _alerte_ultima_trimitere.get(categorie, 0)
+    if _time.time() - ultima < _ALERTE_COOLDOWN_SEC:
+        return False
+    _alerte_ultima_trimitere[categorie] = _time.time()
+    return True
+
+def _verifica_si_alerta():
+    m = _citeste_metrici_pentru_alerte()
+    probleme = []
+    if m["ram_procent"] is not None and m["ram_procent"] >= _PRAG_RAM_PROCENT and _poate_alerta("ram"):
+        probleme.append(f"RAM folosita: {m['ram_procent']}% (prag {_PRAG_RAM_PROCENT}%)")
+    if m["disc_procent"] is not None and m["disc_procent"] >= _PRAG_DISC_PROCENT and _poate_alerta("disc"):
+        probleme.append(f"Disc folosit: {m['disc_procent']}% (prag {_PRAG_DISC_PROCENT}%)")
+    if m["load1"] is not None and m["load1"] >= 0.7 * m["cpu_count"] and _poate_alerta("load"):
+        probleme.append(f"Load average: {round(m['load1'], 2)} (prag {round(0.7 * m['cpu_count'], 2)})")
+    if m["conexiuni_db"] is not None and m["conexiuni_db"] >= _PRAG_CONEXIUNI_DB and _poate_alerta("conexiuni_db"):
+        probleme.append(f"Conexiuni DB active: {m['conexiuni_db']} (prag {_PRAG_CONEXIUNI_DB})")
+    if m["erori_noi"] and m["erori_noi"] > 0 and _poate_alerta("erori"):
+        probleme.append(f"{m['erori_noi']} eroare/erori server (500+) in ultimele 10 minute")
+    # ICRD_ISTORIC_SANATATE_V1 - salveaza instantaneu pentru grafice
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "INSERT INTO public.metrici_sanatate "
+                    "(ram_procent, disc_procent, load1, conexiuni_db, erori_noi) "
+                    "VALUES (%s,%s,%s,%s,%s)",
+                    (m["ram_procent"], m["disc_procent"], m["load1"], m["conexiuni_db"], m["erori_noi"]))
+    except Exception:
+        pass
+
+    if not probleme:
+        return
+    email = _email_superadmin()
+    if not email:
+        return
+    html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
+            "<p>Alerta sanatate server iConta:</p><ul>" +
+            "".join("<li>" + p + "</li>" for p in probleme) +
+            "</ul><p>Verifica panoul 'Sanatate server' din Admin iConta.</p></div>")
+    import core.observare as _obs
+    _obs.trimite_email_html(email, "Alerta iConta - sanatate server", html)
+
+async def _bucla_alerte_sanatate():
+    import asyncio as _asyncio
+    while True:
+        try:
+            await _run_in_threadpool_audit(_verifica_si_alerta)
+        except Exception:
+            pass
+        await _asyncio.sleep(300)
+
+@app.get("/admin/sanatate/istoric")
+def admin_sanatate_istoric(ore: int = 24, ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    ore = min(max(ore, 1), 168)
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("""
+                SELECT ram_procent, disc_procent, load1, conexiuni_db, erori_noi, creat_la
+                FROM public.metrici_sanatate
+                WHERE creat_la > now() - (%s || ' hours')::interval
+                ORDER BY creat_la ASC
+            """, (ore,))
+            rows = cur.fetchall()
+    return {"istoric": rows}
+
+@app.get("/admin/sanatate")
+def admin_sanatate(ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    import time as _time
+    import shutil as _shutil
+    import os as _os
+
+    # --- server: load average, RAM, disk ---
+    try:
+        load1, load5, load15 = _os.getloadavg()
+    except Exception:
+        load1 = load5 = load15 = None
+
+    ram = {"total_mb": None, "disponibil_mb": None, "folosit_procent": None}
+    try:
+        info = {}
+        with open("/proc/meminfo") as f:
+            for linie in f:
+                k, v = linie.split(":", 1)
+                info[k.strip()] = int(v.strip().split()[0])  # kB
+        total_kb = info.get("MemTotal", 0)
+        disp_kb = info.get("MemAvailable", 0)
+        if total_kb:
+            ram = {
+                "total_mb": round(total_kb / 1024, 1),
+                "disponibil_mb": round(disp_kb / 1024, 1),
+                "folosit_procent": round(100 * (1 - disp_kb / total_kb), 1),
+            }
+    except Exception:
+        pass
+
+    disc = {"total_gb": None, "liber_gb": None, "folosit_procent": None}
+    try:
+        total, folosit, liber = _shutil.disk_usage("/")
+        disc = {
+            "total_gb": round(total / (1024 ** 3), 1),
+            "liber_gb": round(liber / (1024 ** 3), 1),
+            "folosit_procent": round(100 * folosit / total, 1),
+        }
+    except Exception:
+        pass
+
+    uptime_sec = round(_time.time() - _APP_PORNIT_LA)
+
+    # --- baza de date ---
+    db_info = {"conexiuni": None, "marime": None}
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT count(*) FROM pg_stat_activity WHERE datname = current_database()")
+                db_info["conexiuni"] = cur.fetchone()[0]
+                cur.execute("SELECT pg_size_pretty(pg_database_size(current_database()))")
+                db_info["marime"] = cur.fetchone()[0]
+    except Exception:
+        pass
+
+    # --- erori recente (status >= 500 in ultimele 24h) ---
+    erori_24h = 0
+    lista_erori = []
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+                cur.execute("""
+                    SELECT id, actiune, tenant_id, user_id, created_at, detalii
+                    FROM public.audit_log
+                    WHERE created_at > now() - interval '24 hours'
+                      AND (detalii->>'status')::int >= 500
+                    ORDER BY created_at DESC
+                """)
+                rows = cur.fetchall()
+                erori_24h = len(rows)
+                lista_erori = rows[:50]
+    except Exception:
+        pass
+
+    return {
+        "server": {"load1": load1, "load5": load5, "load15": load15, "ram": ram, "disc": disc},
+        "aplicatie": {"uptime_secunde": uptime_sec},
+        "baza_date": db_info,
+        "erori_24h": erori_24h,
+        "erori_lista": lista_erori,
+    }
+
+@app.get("/admin/activitate/cabinete")
+def admin_activitate_cabinete(ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("""
+                SELECT f.id, f.nume, f.activ,
+                       (SELECT COUNT(*) FROM public.tenants t WHERE t.accounting_firm_id = f.id) AS nr_firme,
+                       (SELECT COUNT(*) FROM public.users u2 WHERE u2.accounting_firm_id = f.id
+                          AND u2.activ = true AND u2.rol IN ('admin_firma','angajat')) AS nr_angajati,
+                       (SELECT COUNT(*) FROM public.audit_log a2 JOIN public.users u3 ON u3.id = a2.user_id
+                          WHERE u3.accounting_firm_id = f.id AND a2.actiune LIKE 'POST /recomanda%%') AS nr_recomandari,
+                       (SELECT COUNT(*) FROM public.audit_log a5 JOIN public.users u6 ON u6.id = a5.user_id
+                          WHERE u6.accounting_firm_id = f.id AND a5.actiune LIKE '%%/facturi/emite%%') AS nr_facturi,
+                       (SELECT COUNT(*) FROM public.audit_log a6 JOIN public.users u7 ON u7.id = a6.user_id
+                          WHERE u7.accounting_firm_id = f.id AND a6.actiune LIKE '%%/depune%%') AS nr_declaratii,  -- ICRD_CABINETE_CATEGORII_V1
+                       MAX(a.created_at) AS ultima_activitate,
+                       MAX(a.created_at) FILTER (WHERE a.actiune = 'login') AS ultim_login,
+                       COUNT(a.id) AS nr_actiuni,
+                       COUNT(a.id) FILTER (WHERE a.actiune = 'login') AS nr_logari
+                FROM public.accounting_firms f
+                LEFT JOIN public.users u ON u.accounting_firm_id = f.id
+                LEFT JOIN public.audit_log a ON a.user_id = u.id
+                GROUP BY f.id, f.nume, f.activ
+                ORDER BY f.nume
+            """)
+            rows = cur.fetchall()
+    return {"cabinete": rows}
+
+@app.post("/admin/cabinete/{firm_id}/suspenda")
+def admin_cabinet_suspenda(firm_id: int, ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE public.accounting_firms SET activ=false WHERE id=%s", (firm_id,))
+    return {"ok": True}
+
+@app.post("/admin/cabinete/{firm_id}/reactiveaza")
+def admin_cabinet_reactiveaza(firm_id: int, ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE public.accounting_firms SET activ=true WHERE id=%s", (firm_id,))
+    return {"ok": True}
+
+@app.get("/admin/activitate/cabinet/{firm_id}")
+def admin_activitate_cabinet(firm_id: int, limita: int = 200, ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    limita = min(max(limita, 1), 2000)
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("""
+                SELECT a.id, a.actiune, a.tenant_id, a.created_at, u.nume, u.prenume
+                FROM public.audit_log a
+                JOIN public.users u ON u.id = a.user_id
+                WHERE u.accounting_firm_id = %s
+                ORDER BY a.created_at DESC
+                LIMIT %s
+            """, (firm_id, limita))
+            rows = cur.fetchall()
+    return {"activitate": rows}
+
 
 @app.get("/capacitate")  # [p70_capacitate] panou capacitate (doar patron)
 def capacitate_panou(ctx=Depends(cere_rol("admin_firma"))):
@@ -376,6 +714,14 @@ def login(date: LoginIn):
         r = auth_api.login(conn, date.email, date.parola)
     if not r["ok"]:
         raise HTTPException(401, r["mesaj"])
+    try:
+        with db.get_conn() as conn2:
+            with conn2.cursor() as cur:
+                cur.execute(
+                    "INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'login')",
+                    (r["user"]["id"],))
+    except Exception:
+        pass
     return {"token": r["token"], "user": r["user"]}
 
 
@@ -1108,6 +1454,17 @@ def facturi_storno(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
             raise HTTPException(422, str(e))
     return r
 
+# ICRD_PUBLIC_VERIFICA_CUI_V1
+@app.get("/public/verifica-cui/{cui}")
+def public_verifica_cui(cui: str):
+    try:
+        rez = anaf_api.valideaza_cui([cui])
+    except Exception as e:
+        raise HTTPException(502, "ANAF indisponibil: %s" % e)
+    if not rez:
+        return {"gasit": False}
+    return rez[0]
+
 @app.get("/tenants/{tenant_id}/verifica-cui/{cui}")
 def verifica_cui(tenant_id: int, cui: str, ctx=Depends(cere_context)):
     _schema_sau_404(ctx, tenant_id)  # doar verific accesul
@@ -1473,11 +1830,42 @@ def pachet_poveste_get(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabi
     with db.get_conn() as cp:
         return _pachete.get_poveste(cp, tenant_id, an, luna)
 
+# ICRD_NOTIF_EMAIL_CLIENT_V1
+def _email_client_tenant(conn, tenant_id):
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT u.email FROM public.users u JOIN public.user_tenants ut ON ut.user_id=u.id "
+            "WHERE ut.tenant_id=%s AND u.rol='client' AND u.activ=true LIMIT 1", (tenant_id,))
+        r = cur.fetchone()
+    return r[0] if r else None
+
+def _nume_tenant(conn, tenant_id):
+    with conn.cursor() as cur:
+        cur.execute("SELECT nume FROM public.tenants WHERE id=%s", (tenant_id,))
+        r = cur.fetchone()
+    return r[0] if r else ""
+
 @app.post("/pachete/{tenant_id}/poveste")
 def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn, ctx=Depends(cere_cabinet)):
     _pachet_schema(ctx, tenant_id)
     with db.get_conn() as cp:
-        return _pachete.salveaza_poveste(cp, tenant_id, an, luna, date.text, status=date.status or "ciorna")
+        r = _pachete.salveaza_poveste(cp, tenant_id, an, luna, date.text, status=date.status or "ciorna")
+        if (date.status or "") == "aprobat":
+            email = _email_client_tenant(cp, tenant_id)
+            if email:
+                nume = _nume_tenant(cp, tenant_id)
+                luni_n = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
+                          "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"]
+                subiect = "Raportul lunar - " + (luni_n[luna] if 1 <= luna <= 12 else str(luna)) + " " + str(an)
+                html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
+                        "<p>Buna,</p><p>Contabilul tau a pregatit raportul lunar pentru <b>" +
+                        (nume or "firma ta") + "</b>. Il gasesti in portalul iConta, la Povestea lunii.</p>"
+                        "<p><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
+                        "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>"
+                        "Deschide portalul</a></p></div>")
+                import core.observare as _obs
+                _obs.trimite_email_html(email, subiect, html)
+        return r
 
 @app.post("/pachete/{tenant_id}/trimite")
 def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
@@ -1577,6 +1965,146 @@ def portal_declaratii(tenant_id: Optional[int] = None, ctx=Depends(cere_client))
     t = _tenant_client(ctx, tenant_id)
     with db.get_conn() as conn:
         return {"declaratii": portal_api.declaratii_depuse(conn, t["id"])}
+
+# ICRD_RECOMANDA_UNIFICAT_V1
+def _trimite_recomandari(emails, html, subiect):
+    if not emails:
+        raise HTTPException(400, "Niciun email valid.")
+    if len(emails) > 20:
+        raise HTTPException(400, "Maxim 20 de emailuri odata.")
+    import core.observare as _obs
+    rezultate = []
+    for em in emails:
+        ok = _obs.trimite_email_html(em, subiect, html)
+        rezultate.append({"email": em, "stare": "trimis" if ok else "esuat"})
+    return rezultate
+
+def _mesaj_recomanda_client_html(nume_firma):
+    return (
+        "<div style='font-family:sans-serif;font-size:15px;color:#111;max-width:540px;line-height:1.55'>"
+        "<p>Buna,</p>"
+        "<p>Sunt client iConta si ma tine departe de batai de cap cu ANAF - "
+        "imi arata din timp daca am ceva de depus sau de platit, inainte sa fie o problema.</p>"
+        "<p>M-am gandit ca ti-ar prinde bine si tie.</p>"
+        "<p style='margin:24px 0'><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
+        "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>Vezi iConta</a></p>"
+        "</div>"
+    )
+
+class RecomandareClientIn(BaseModel):
+    emails: list[str]
+
+@app.get("/portal/recomanda/preview")
+def portal_recomanda_preview(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn(t["schema_name"]) as conn:
+        firma = portal_api.date_firma(conn, t["schema_name"])
+    nume_firma = (firma or {}).get("nume") or t.get("nume") or ""
+    return {"ok": True, "html": _mesaj_recomanda_client_html(nume_firma),
+            "subiect": "O recomandare de la " + (nume_firma or "un antreprenor")}
+
+@app.post("/portal/recomanda")
+def portal_recomanda(date: RecomandareClientIn, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    emails = [e.strip() for e in (date.emails or []) if e and e.strip()]
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn(t["schema_name"]) as conn:
+        firma = portal_api.date_firma(conn, t["schema_name"])
+    nume_firma = (firma or {}).get("nume") or t.get("nume") or ""
+    html = _mesaj_recomanda_client_html(nume_firma)
+    rezultate = _trimite_recomandari(emails, html, "O recomandare de la " + (nume_firma or "un antreprenor"))
+    return {"ok": True, "rezultate": rezultate}
+
+
+@app.get("/portal/povesti")
+def portal_povesti(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn:
+        rows = _pachete.lista_povesti_aprobate(conn, t["id"])
+        with db.get_conn(t["schema_name"]) as conn_s:
+            for r in rows:
+                an, luna = r["an"], r["luna"]
+                an_p, luna_p = (an - 1, 12) if luna == 1 else (an, luna - 1)
+                cur_rz = _pachete.rezumat_luna(conn_s, conn, t["id"], an, luna)
+                prev_rz = _pachete.rezumat_luna(conn_s, conn, t["id"], an_p, luna_p)
+                r["venituri"] = cur_rz["venituri"]
+                r["cheltuieli"] = cur_rz["cheltuieli"]
+                r["rezultat"] = cur_rz["rezultat"]
+                r["rezultat_anterior"] = prev_rz["rezultat"]
+                r["diferenta"] = round(cur_rz["rezultat"] - prev_rz["rezultat"], 2)
+    return {"povesti": rows}
+
+# ICRD_SOLICITARI_V1 - bucla solicitari client <-> cabinet
+import psycopg2.extras as _E_sol
+class SolicitareIn(BaseModel):
+    mesaj: str
+
+@app.get("/portal/solicitari")
+def portal_solicitari_lista(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_sol.RealDictCursor) as cur:
+            cur.execute(
+                "SELECT id, mesaj, autor_rol, creat_la FROM public.solicitari_client "
+                "WHERE tenant_id=%s ORDER BY id", (t["id"],))
+            rows = cur.fetchall()
+    return {"solicitari": rows}
+
+@app.post("/portal/solicitari")
+def portal_solicitari_trimite(date: SolicitareIn, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO public.solicitari_client (tenant_id, mesaj, autor_rol, autor_id) "
+                "VALUES (%s,%s,'client',%s)", (t["id"], date.mesaj, ctx["uid"]))
+        with conn.cursor() as cur:
+            cur.execute("SELECT accounting_firm_id, nume FROM public.tenants WHERE id=%s", (t["id"],))
+            r = cur.fetchone()
+        if r and r[0]:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT id FROM public.users WHERE accounting_firm_id=%s AND activ=true", (r[0],))
+                ids = [x[0] for x in cur.fetchall()]
+            txt = "Mesaj nou de la %s: %s" % (r[1] or "firma", date.mesaj[:80])
+            _notif.adauga_multi(conn, ids, "solicitare_client", txt, link="solicitari:%s" % t["id"])
+    return {"ok": True}
+
+@app.get("/tenants/{tenant_id}/solicitari")
+def cabinet_solicitari_lista(tenant_id: int, ctx=Depends(cere_context)):
+    _schema_sau_404(ctx, tenant_id)
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_sol.RealDictCursor) as cur:
+            cur.execute(
+                "SELECT id, mesaj, autor_rol, creat_la, citit FROM public.solicitari_client "
+                "WHERE tenant_id=%s ORDER BY id", (tenant_id,))
+            rows = cur.fetchall()
+    return {"solicitari": rows}
+
+@app.post("/tenants/{tenant_id}/solicitari")
+def cabinet_solicitari_raspunde(tenant_id: int, date: SolicitareIn, ctx=Depends(cere_context)):
+    _schema_sau_404(ctx, tenant_id)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO public.solicitari_client (tenant_id, mesaj, autor_rol, autor_id) "
+                "VALUES (%s,%s,'cabinet',%s)", (tenant_id, date.mesaj, ctx["uid"]))
+        conn.commit()
+        email = _email_client_tenant(conn, tenant_id)
+        if email:
+            nume = _nume_tenant(conn, tenant_id)
+            subiect = "Raspuns nou de la contabilul tau"
+            html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
+                    "<p>Buna,</p><p>Contabilul tau ti-a raspuns la o solicitare pentru <b>" +
+                    (nume or "firma ta") + "</b>:</p>"
+                    "<p style='background:#f5f5f5;padding:14px;border-radius:8px'>" +
+                    date.mesaj.replace("<", "&lt;").replace(">", "&gt;") + "</p>"
+                    "<p><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
+                    "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>"
+                    "Deschide portalul</a></p></div>")
+            import core.observare as _obs
+            _obs.trimite_email_html(email, subiect, html)
+    return {"ok": True}
+
 
 @app.get("/portal/acasa")  # [p91_portal_acasa] status ANAF + scadente pentru firma clientului
 def portal_acasa(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
@@ -1920,19 +2448,11 @@ def recomanda_preview(ctx=Depends(cere_cabinet)):
 @app.post("/recomanda")
 def trimite_recomandari(date: RecomandareIn, ctx=Depends(cere_cabinet)):
     emails = [e.strip() for e in (date.emails or []) if e and e.strip()]
-    if not emails:
-        raise HTTPException(400, "Niciun email valid.")
-    if len(emails) > 20:
-        raise HTTPException(400, "Maxim 20 de emailuri odata.")
     with db.get_conn() as conn:
         r = auth_api.get_cabinet(conn, ctx["firm"])
     nume_cabinet = (r.get("cabinet") or {}).get("nume", "") if r.get("ok") else ""
     html = _mesaj_promo_html(nume_cabinet)
-    import core.observare as _obs
-    rezultate = []
-    for em in emails:
-        ok = _obs.trimite_email_html(em, "O recomandare pentru cabinetul tau: iConta", html)
-        rezultate.append({"email": em, "stare": "trimis" if ok else "esuat"})
+    rezultate = _trimite_recomandari(emails, html, "O recomandare pentru cabinetul tau: iConta")
     return {"ok": True, "rezultate": rezultate}
 
 

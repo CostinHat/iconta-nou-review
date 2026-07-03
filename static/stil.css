@@ -1575,13 +1575,13 @@ html, body {
 
 /* [p71_capacitate] ecran Capacitate */
 .cap-ecran { padding: 4px 2px; }
-.cap-titlu { font-size: 14px; text-transform: uppercase; letter-spacing: .04em;
+.cap-titlu { font-size: 17px; text-transform: uppercase; letter-spacing: .04em;
   color: #888; margin: 22px 0 10px; }
 .cap-titlu:first-child { margin-top: 4px; }
 .cap-cifre { display: flex; gap: 28px; flex-wrap: wrap; }
 .cap-cifra-bloc { min-width: 96px; }
-.cap-cifra { font-size: 22px; font-weight: 700; line-height: 1; }
-.cap-cifra-desc { font-size: 13px; color: #666; margin-top: 4px; }
+.cap-cifra { font-size: 28px; font-weight: 700; line-height: 1; }
+.cap-cifra-desc { font-size: 16px; color: #666; margin-top: 4px; }
 .cap-nota { font-size: 12px; color: #999; margin: 8px 0 0; }
 .cap-tabel-wrap { border: 1px solid #eee; border-radius: 8px; overflow: hidden; }
 .cap-tabel { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -1680,8 +1680,8 @@ html, body {
 .pf-val { font-weight: 600; text-align: right; }
 .pf-frand { display: flex; justify-content: space-between; align-items: center; gap: 14px;
   padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 10px; margin-bottom: 8px; }
-.pf-frand-nume { font-size: 16px; font-weight: 600; }
-.pf-frand-sub { font-size: 13px; color: var(--gri); margin-top: 2px; }
+.pf-frand-nume { font-size: 20px; font-weight: 600; }
+.pf-frand-sub { font-size: 16px; color: var(--gri); margin-top: 2px; }
 .pf-frand-suma { font-size: 16px; font-weight: 600; white-space: nowrap; }
 .pf-frand-ok { font-size: 14px; color: #1d7a4d; font-weight: 600; white-space: nowrap; }
 
@@ -1897,3 +1897,117 @@ html, body {
   padding: 12px; background: #fdf3f3; max-width: 440px; }
 .fd-storno-avert { font-size: 13px; color: #7a2020; margin-bottom: 10px; line-height: 1.4; }
 .fd-storno-actiuni { display: flex; gap: 8px; }
+
+/* ICRD_SOLICITARI_FRONT_V1 - chat solicitari client<->cabinet */
+.sol-fir { display:flex; flex-direction:column; gap:10px; max-height:420px; overflow-y:auto; padding:4px; }
+.sol-rand { max-width:80%; padding:10px 14px; border-radius:12px; }
+.sol-client { align-self:flex-end; background:#e9f0fe; }
+.sol-cabinet { align-self:flex-start; background:#f1f1f1; }
+.sol-mesaj { font-size:15px; line-height:1.4; white-space:pre-wrap; }
+.sol-meta { font-size:12px; color:#888; margin-top:4px; }
+.sol-trimite { display:flex; gap:10px; margin-top:14px; }
+.sol-trimite textarea { flex:1; resize:vertical; padding:10px; border-radius:8px; border:1px solid #ddd; font-family:inherit; font-size:15px; }
+.mig-rosu { color: #b91c1c; background: #fee2e2; }
+#ac-lista [data-zebra="0"] { background: #fdeef2; }
+#ac-lista [data-zebra="1"] { background: #eaf2fb; }
+#ac-lista.pf-lista { max-width: none; }
+
+.subbara--admin { height: 56px; padding: 0 24px; }
+.subbara-admin-sumar { font-size: 17px; font-weight: 600; color: #1a2535; }
+.fereastra.fer-larg-simplu { max-width: 1000px; }
+
+.pagina-bara { position: relative; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: #fff; border-bottom: 1px solid var(--linie); }
+.pagina-bara-centru { position: absolute; left: 50%; transform: translateX(-50%); font-size: 18px; color: #0f6cbd; font-weight: 700; font-family: var(--font); }
+.pagina-bara-stanga { display: flex; align-items: center; gap: 8px; }
+.pagina-bara-logo { height: 28px; }
+.pagina-bara-marca { font-size: 18px; font-weight: 700; color: var(--ardezie); }
+.pagina-bara-acces { background: #0f6cbd; color: #fff; border: none; border-radius: var(--raza); padding: 8px 20px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+.pagina-bara-acces:hover { background: #115ea3; }
+
+/* ICRD_ACCES_OVERLAY_V1 */
+.pagina-corp { min-height: calc(100dvh - 56px); background: var(--fundal); display: flex; flex-direction: column; }
+.acces-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(20,30,45,0.45);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.acces-modal {
+  position: relative;
+  background: #fff; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  width: 100%; max-width: 380px; padding: 32px 28px;
+}
+.acces-x {
+  position: absolute; top: 14px; right: 14px;
+  width: 28px; height: 28px; border-radius: 50%;
+  border: none; background: transparent; color: var(--gri);
+  font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.acces-x:hover { background: #f1f1f1; }
+.acces-alegere { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+.acces-card {
+  display: flex; align-items: center; gap: 16px;
+  text-align: left; border: 1px solid #dbe9fb; border-radius: 12px;
+  padding: 18px 20px; background: #eef5fd; cursor: pointer; font-family: var(--font);
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+}
+.acces-card:hover { border-color: #0f6cbd; box-shadow: 0 4px 14px rgba(15,108,189,0.14); transform: translateY(-1px); }
+.acces-card-icon { flex-shrink: 0; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+.acces-card-text { flex: 1; }
+.acces-card-titlu { font-size: 17px; font-weight: 700; color: var(--ardezie); }
+.acces-card-sub { font-size: 13px; color: var(--gri); margin-top: 2px; }
+.acces-card-sageata { flex-shrink: 0; color: #c4c9d1; }
+.acces-modal { max-width: 420px; padding: 36px 32px; }
+.acces-overlay[hidden] { display: none !important; }
+.login-subtagline { font-size: 13px; color: var(--gri); margin-top: 4px; text-align: center; }
+
+.pagina-hero { text-align: center; max-width: 560px; margin: 20px auto 16px; padding: 0 24px; }
+.pagina-hero-eyebrow { font-size: 13px; color: #0f6cbd; font-weight: 600; margin: 0 0 10px; }
+.pagina-hero-titlu { font-family: "Segoe UI Variable Display", var(--font); font-weight: 700; font-size: 56px; line-height: 60px; letter-spacing: -0.02em; color: #1F2937; margin: 0 0 8px; }
+.pagina-hero-sub { font-family: "Segoe UI Variable Text", "Segoe UI", var(--font); font-weight: 400; font-size: 20px; line-height: 32px; letter-spacing: 0; color: #6B7280; margin: 0; }
+.pagina-carduri-sectiune { flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 24px; }
+.pagina-carduri-wrap { display: flex; align-items: stretch; gap: 28px; max-width: 1300px; width: 100%; }
+.pagina-card-mare { flex: 0 0 320px; border-radius: 20px; padding: 40px 32px; display: flex; flex-direction: column; justify-content: center; }
+.pagina-card-mare-icon { width: 68px; height: 68px; border-radius: 17px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+.pagina-card-mare-titlu { font-size: 28px; font-weight: 800; color: var(--ardezie); margin-bottom: 10px; }
+.pagina-card-mare-sub { font-size: 16px; color: var(--gri); line-height: 1.5; }
+.pagina-card-buton { margin-top: 20px; background: #c0246b; color: #fff; border: none; border-radius: var(--raza); padding: 12px 24px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: var(--font); align-self: flex-start; }
+.pagina-carduri { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.pagina-card { border-radius: 18px; padding: 28px 24px; }
+.pagina-card-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.pagina-card-titlu { font-size: 18px; font-weight: 700; color: var(--ardezie); margin-bottom: 8px; }
+.pagina-card-sub { font-size: 14px; color: var(--gri); line-height: 1.5; }
+.pagina-card { border-radius: 12px; padding: 14px 16px; }
+.pagina-card-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+.pagina-card-titlu { font-size: 16px; font-weight: 700; color: var(--ardezie); margin-bottom: 6px; }
+.pagina-card-sub { font-size: 13px; color: var(--gri); line-height: 1.5; }
+html, body { overflow-x: hidden; }
+
+html, body { overflow-y: hidden; }
+
+/* ICRD_LANDING_V3 — layout refacut dupa referinta */
+.pagina-card-mare .pagina-card-buton { background: #0f6cbd; }
+.pagina-card-mare .pagina-card-buton:hover { background: #115ea3; }
+
+.pagina-carduri-randuri { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+.pagina-carduri-rand { display: grid; gap: 12px; }
+.pagina-carduri-rand:nth-child(1) { grid-template-columns: repeat(3, 1fr); }
+.pagina-carduri-rand:nth-child(2) { grid-template-columns: repeat(4, 1fr); }
+
+.pagina-card { position: relative; border-radius: 16px; padding: 20px 20px 24px; }
+.pagina-card-icon { width: 44px; height: 44px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.pagina-card-titlu { font-size: 15px; font-weight: 700; color: var(--ardezie); margin-bottom: 6px; }
+.pagina-card-sub { font-size: 12px; color: var(--gri); line-height: 1.45; }
+.pagina-card-sageata { position: absolute; right: 16px; bottom: 16px; }
+
+.pagina-card-mare-icon { width: 60px; height: 60px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+.pagina-incredere {
+  display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
+  padding: 20px 24px; border-top: 1px solid var(--linie); margin-top: auto;
+}
+.pagina-incredere-item { display: flex; align-items: center; gap: 10px; }
+.pagina-incredere-icon { color: #0f6cbd; display: flex; }
+.pagina-incredere-titlu { font-size: 13px; font-weight: 700; color: var(--ardezie); }
+.pagina-incredere-sub { font-size: 12px; color: var(--gri); }
+.pa-lista[hidden] { display: none !important; }
