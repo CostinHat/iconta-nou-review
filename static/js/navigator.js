@@ -92,7 +92,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       } else {
         subbara.innerHTML = firmaInLucru
           ? `${icon}<span class="subbara-cheie">În lucru:</span><span class="subbara-firma">${firmaInLucru}</span>`
-          : `${icon}<span class="subbara-gol">Nicio firmă selectată</span>`;
+          : `${icon}<span class="subbara-gol">Firmă activă: Nicio firmă selectată</span>`;
       }
       ecran.appendChild(subbara);
     }

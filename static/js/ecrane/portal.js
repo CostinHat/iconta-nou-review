@@ -21,23 +21,23 @@ export function desktopPortal(continut, nav) {
 
   const CARDURI = [
     { cheie: "facturi", titlu: "Facturi", icon: "facturi", bg: "#e9f0fe", fg: "#1d4ed8",
-      sinteza: "Facturile emise si primite" },
+      sinteza: "Vizualizeaza facturile emise si primite." },
     { cheie: "declaratii", titlu: "Declaratii depuse", icon: "declaratii", bg: "#dff4f2", fg: "#0a807b",
       sinteza: "Ce s-a depus la ANAF pentru tine" },
-    { cheie: "povestea", titlu: "Povestea lunii", icon: "povestea", bg: "#efebfe", fg: "#6d28d9",
-      sinteza: "Raportul lunar de la contabil" },
-    { cheie: "solicitari", titlu: "Solicitari", icon: "solicitari", bg: "#faece7", fg: "#993c1d",
-      sinteza: "Cere ceva contabilului tau" },
-    { cheie: "recomanda", titlu: "Recomanda", icon: "recomanda", bg: "#fbeedd", fg: "#92500a",
-      sinteza: "Invita un antreprenor in iConta" },
     { cheie: "documente", titlu: "Documente", icon: "documente", bg: "#e6f6ec", fg: "#16a34a",
       sinteza: "Recipise, balante, bilant" },
+    { cheie: "solicitari", titlu: "Solicitari", icon: "solicitari", bg: "#faece7", fg: "#993c1d",
+      sinteza: "Trimite o solicitare contabilului." },
+    { cheie: "povestea", titlu: "Povestea lunii", icon: "povestea", bg: "#efebfe", fg: "#6d28d9",
+      sinteza: "Raportul lunar de la contabil" },
+    { cheie: "recomanda", titlu: "Recomanda", icon: "recomanda", bg: "#fbeedd", fg: "#92500a",
+      sinteza: "Invita un antreprenor in iConta" },
   ];
 
   continut.innerHTML = `
-    <div class="cab-salut">
-      <div class="cab-salut-nume">Portalul firmei</div>
-      <div class="cab-salut-sub">${firma}</div>
+    <div class="cab-salut portal-sus">
+      <div class="cab-salut-nume">${firma}</div>
+      <div class="cab-salut-sub">Portal Client</div>
     </div>
     <div class="pa-status" id="pa-status"><p class="ecran-nota">Se verifica situatia la ANAF...</p></div>
     <div class="cab-grila"></div>
@@ -99,8 +99,8 @@ async function actualizeazaStatusAcasa(continut) {
 
   let clasa = "pa-verde", titlu = "Totul e la zi", sub = "Nicio declaratie restanta. Contabilul tau are situatia sub control.";
   if (d.stare === "rosu") {
-    clasa = "pa-rosu"; titlu = `${restante.length} ${restante.length === 1 ? "declaratie restanta" : "declaratii restante"}`;
-    sub = "Contabilul tau se ocupa - mai jos vezi ce e de depus.";
+    clasa = "pa-rosu"; titlu = `${restante.length} ${restante.length === 1 ? "declaratie trebuie depusa" : "declaratii trebuie depuse"}`;
+    sub = "Contabilul tau se ocupa.";
   } else if (d.stare === "galben") {
     clasa = "pa-galben"; titlu = `${urmarit.length} ${urmarit.length === 1 ? "termen apropiat" : "termene apropiate"}`;
     sub = "Scadente in perioada urmatoare.";

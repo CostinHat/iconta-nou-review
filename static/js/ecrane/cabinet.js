@@ -47,31 +47,31 @@ function inLucru(titlu) {
 
 // definiția celor 9 carduri (sinteză = text inițial; unele se actualizează din date live)
 const DEF = [
-  { cheie:"brief",     titlu:"Sinteza zilei",  icon:"brief",     bg:"#eef4ff", fg:"#1d4ed8",
-    sinteza:"Ce se întâmplă azi în cabinet", actiune:inLucru("Sinteza zilei") }, // [p74_card_brief]
-  { cheie:"firme",     titlu:"Firme",          icon:"building",  bg:"#e9f0fe", fg:"#1d4ed8",
-    sinteza:"se încarcă…", actiune:inLucru("Firme") },
   { cheie:"control",   titlu:"Control fiscal", icon:"shield",    bg:"#dff4f2", fg:"#0a807b",
     sinteza:'se încarcă…',
     actiune:inLucru("Control fiscal") },
-  { cheie:"termene",   titlu:"Termene",        icon:"calendar",  bg:"#e6f6ec", fg:"#15803d",
-    sinteza:"Următoarea scadență:<br><b>D300</b> pe <b>25 feb</b>, pentru <b>7 firme</b>", actiune:inLucru("Termene") },
   { cheie:"validat",   titlu:"De validat",     icon:"clipboard", bg:"#faece7", fg:"#993c1d",
     sinteza:'<b style="font-size:19px">4</b> declarații de validat și trimis', actiune:inLucru("De validat") },
+  { cheie:"termene",   titlu:"Termene",        icon:"calendar",  bg:"#e6f6ec", fg:"#15803d",
+    sinteza:"Următoarea scadență: …", actiune:inLucru("Termene") },
+  { cheie:"firme",     titlu:"Firme",          icon:"building",  bg:"#e9f0fe", fg:"#1d4ed8",
+    sinteza:"se încarcă…", actiune:inLucru("Firme") },
   { cheie:"asistenti", titlu:"Asistenți",      icon:"users",     bg:"#fbeaf0", fg:"#993556",
     sinteza:'<b style="font-size:19px">·</b> asistenți în echipă', actiune:inLucru("Asistenți") },
+  { cheie:"brief",     titlu:"Sinteza zilei",  icon:"brief",     bg:"#eef4ff", fg:"#1d4ed8",
+    sinteza:"Vezi prioritățile zilei", actiune:inLucru("Sinteza zilei") },
+  { cheie:"activitate", titlu:"Activitate",     icon:"report",    bg:"#e9f0fe", fg:"#1d4ed8",
+    sinteza:"Activitate recentă", actiune:inLucru("Activitate") },
+  { cheie:"capacitate", titlu:"Capacitate",     icon:"gauge",     bg:"#eaf6f0", fg:"#0f7a4d",
+    sinteza:"Cum stă echipa cu ritmul", actiune:inLucru("Capacitate") },
   { cheie:"pachete",   titlu:"Pachete lunare", icon:"mail",      bg:"#efebfe", fg:"#6d28d9",
     sinteza:"Trimite pachetul lunar către clienți", actiune:inLucru("Pachete lunare") },
-  { cheie:"recomanda", titlu:"Recomandă",      icon:"gift",      bg:"#fbeedd", fg:"#92500a",
-    sinteza:"Invită un cabinet în iConta", actiune:inLucru("Recomandă") },
-  { cheie:"raport",    titlu:"Raportează",     icon:"report",    bg:"#eaeef6", fg:"#45597f",
-    sinteza:"Raportează o problemă către iConta", actiune:inLucru("Raportează") },
-  { cheie:"activitate", titlu:"Activitate",     icon:"report",    bg:"#e9f0fe", fg:"#1d4ed8",
-    sinteza:"Activitate și tipare de erori", actiune:inLucru("Activitate") }, // [p76_comasare_font] (comaseaza Tipare)
-  { cheie:"capacitate", titlu:"Capacitate",     icon:"gauge",     bg:"#eaf6f0", fg:"#0f7a4d",
-    sinteza:"Cum stă echipa cu ritmul", actiune:inLucru("Capacitate") }, // [p71_capacitate]
+  { cheie:"raport",    titlu:"Suport",     icon:"report",    bg:"#eaeef6", fg:"#45597f",
+    sinteza:"Întrebări, probleme și asistență tehnică", actiune:inLucru("Raportează") },
   { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  bg:"#eef0f3", fg:"#3a4250",
     sinteza:"Parolă și date de profil", actiune:inLucru("Setări cont") },
+  { cheie:"recomanda", titlu:"Recomandă",      icon:"gift",      bg:"#fbeedd", fg:"#92500a",
+    sinteza:"Invită un cabinet în iConta", actiune:inLucru("Recomandă") },
 ];
 
 // [p73_sinteza_azi] deschide un ecran existent dupa cheie (refoloseste ecranele, nu duplica)
@@ -254,6 +254,7 @@ function randeazaPanou(continut, nav) {
   actualizeazaFirme(grila);
   actualizeazaControl(grila);
   actualizeazaTermene(grila);
+  actualizeazaActivitate(grila);
   actualizeazaValidat(grila);
   actualizeazaAsistenti(grila);
   actualizeazaRaportari(grila);  // [p34_raporteaza]
@@ -263,6 +264,17 @@ function randeazaPanou(continut, nav) {
 
 // VEDEREA 2: meniul Firme — două opțiuni (existente / migrare cabinet)
 // [p76_comasare_font] meniul Activitate: doua optiuni (jurnal/centralizator + tipare)
+// [p_activ_alerta] sinteza card Activitate: gol daca e curat, altfel N tipare
+async function actualizeazaActivitate(grila) {
+  const zona = grila.querySelector('[data-cheie="activitate"]');
+  if (!zona) return;
+  try {
+    const r = await api.get("/asistenti/semafor");
+    const n = (r.counts?.rosu || 0) + (r.counts?.galben || 0);
+    window._activAlerta = n;
+    zona.innerHTML = n === 0 ? "Activitate recentă" : `<b>${n}</b> ${n === 1 ? "tipar necesită atenție" : "tipare necesită atenție"}`;
+  } catch {}
+}
 function randeazaMeniuActivitate(continut, nav) {
   continut.innerHTML = `
     <div class="sub-cap">
@@ -283,7 +295,7 @@ function randeazaMeniuActivitate(continut, nav) {
         <div class="firme-optiune-icon" style="background:#fdeef0; color:#a3344b">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
         </div>
-        <div class="firme-optiune-titlu">Tipare de erori</div>
+        <div class="firme-optiune-titlu">Tipare de erori ${window._activAlerta ? '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ff3b30;margin-left:6px"></span>' : ""}</div>
         <div class="firme-optiune-desc">Unde se greseste des si de ce — educatie din respingerile reale</div>
       </button>
     </div>
@@ -338,7 +350,7 @@ async function actualizeazaFirme(grila) {
     const lista = (r && r.tenants) || [];
     const total = lista.length;
     const active = lista.filter((t) => t.activ).length;
-    zona.innerHTML = `<b style="font-size:19px">${total}</b> firme, din care ${active} active`;
+    zona.innerHTML = `<b>${active}</b> ${active === 1 ? "firmă activă" : "firme active"}`;
   } catch (e) {
     zona.innerHTML = "—";
   }
@@ -371,7 +383,7 @@ async function actualizeazaControl(grila) {
     const r = await api.get("/control-fiscal");
     const s = (r && r.sumar) || {};
     zona.innerHTML = _semaforCard([
-      { n: s.rosu, cls: "pct-rosu", txt: "cu restanță" },
+      { n: s.rosu, cls: "pct-rosu", txt: s.rosu === 1 ? "alertă fiscală" : "alerte fiscale" },
       { n: s.galben, cls: "pct-galben", txt: "de urmărit" },
     ], "Toate firmele la zi");
   } catch {}
@@ -389,7 +401,7 @@ async function actualizeazaTermene(grila) {
     const luni = ["ian","feb","mar","apr","mai","iun","iul","aug","sep","oct","noi","dec"];
     const p = u.termen.split("-");
     const dataTxt = `${parseInt(p[2])} ${luni[parseInt(p[1]) - 1]}`;
-    zona.innerHTML = `Următoarea scadență:<br><b>${u.tip}</b> pe <b>${dataTxt}</b>, pentru <b>${u.nr_firme} ${u.nr_firme === 1 ? "firmă" : "firme"}</b>`;
+    zona.innerHTML = `Următoarea scadență: <b>${dataTxt}</b>`;
   } catch {}
 }
 
@@ -418,10 +430,10 @@ async function actualizeazaAsistenti(grila) {
       const sm = await api.get("/asistenti/echipa/semafor");
       if (sm && sm.ok) {
         const c = sm.counts || {rosu:0, galben:0, verde:0};
-        randuri = _semaforCard([
-          { n: c.rosu, cls: "pct-rosu", txt: "cu probleme" },
-          { n: c.galben, cls: "pct-galben", txt: "de urmărit" },
-        ], "Toți fără probleme");
+        const na = (c.rosu || 0) + (c.galben || 0);
+        randuri = na === 0 ? "" : _semaforCard([
+          { n: na, cls: c.rosu ? "pct-rosu" : "pct-galben", txt: na === 1 ? "activitate care necesită atenție" : "activități care necesită atenție" },
+        ], "");
       }
     } catch {}
     zona.innerHTML = randuri || `<span class="cab-stare"><span class="cab-pct pct-verde"></span>Echipă activă</span>`;  // [p76_comasare_font]
