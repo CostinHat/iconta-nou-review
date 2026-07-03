@@ -89,6 +89,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "salariati", titlu: "Salariați", desc: "Stat plată, fluturași, D112",
       bg: "#fdeef0", fg: "#a3344b",
       icon: '<circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M16 3.5a3 3 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.7"/>', activ: false },
+    { cheie: "verificari", titlu: "Verific\u0103ri", desc: "Echilibru, trezorerie, TVA",
+      bg: "#eef4ff", fg: "#1d4ed8",
+      icon: '<path d="M9 11l3 3 8-8"/><path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/>', activ: true },
     { cheie: "solicitari", titlu: "Solicitări client", desc: "Mesaje primite de la firma-client",
       bg: "#faece7", fg: "#993c1d",
       icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>', activ: true },
@@ -112,6 +115,10 @@ function meniuFirma(corp, nav, t) {
     bFacturi.addEventListener("click", () => {
       randeazaFacturi(corp, nav, t.id, { inapoi: () => meniuFirma(corp, nav, t) });
     });
+  }
+  const bVerif = corp.querySelector("#fa-verificari");
+  if (bVerif) {
+    bVerif.addEventListener("click", () => ecranVerificari(corp, nav, t));
   }
   const bSolicitari = corp.querySelector("#fa-solicitari");
   if (bSolicitari) {
@@ -172,4 +179,40 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
       await randeazaSolicitariCabinet(corp, nav, t);
     } catch {}
   });
+}
+
+// [verificari] Verificari coerenta pe firma: echilibru, trezorerie, TVA
+async function ecranVerificari(corp, nav, t) {
+  const azi = new Date();
+  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se verifica...</p>`;
+    let r = null;
+    try { r = await api.get(`/firme/${t.id}/verificari?an=${an}&luna=${luna}`); } catch {}
+    const rand = (nume, obj) => {
+      const ok = obj && (obj.ok === true || obj.cod === undefined) && !(Array.isArray(obj) && obj.length);
+      const detaliu = ok ? "in regula" : (Array.isArray(obj) ? obj.map(p=>p.cod).join(", ") : (obj && obj.cod) || "problema");
+      return `<div class="pf-frand">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${nume}</div>
+          <div class="pf-frand-sub">${detaliu}</div>
+        </div>
+        <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${ok ? "#1d7a4d" : "#ff3b30"}"></span>
+      </div>`;
+    };
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Verific\u0103ri \u00b7 ${t.nume || ""}</h2>
+      <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an} \u00b7 ${r ? r.note : 0} note contabile
+        <button class="btn-secundar" id="vf-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="btn-secundar" id="vf-next">luna \u2192</button></p>
+      <div class="pf-lista">
+        ${r ? rand("Echilibru balan\u021b\u0103", r.echilibru) : ""}
+        ${r ? rand("Trezorerie (f\u0103r\u0103 solduri creditoare)", r.trezorerie) : ""}
+        ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${r.tva.suma} lei (cont ${r.tva.cont})</div></div></div>` : ""}
+        ${!r ? '<div class="mig-gol">Nu am putut rula verific\u0103rile.</div>' : ""}
+      </div>`;
+    corp.querySelector("#vf-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#vf-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+  };
+  deseneaza();
 }

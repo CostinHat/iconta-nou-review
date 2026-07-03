@@ -2027,21 +2027,42 @@ html, body { overflow-y: hidden; }
 /* [card_umbra] umbra discreta permanenta pe toate cardurile */
 .cab-card, .firme-optiune, .mig-op { box-shadow: 0 3px 12px rgba(20,30,45,0.14) !important; }
 .cab-card:hover, .firme-optiune:hover { box-shadow: 0 6px 20px rgba(20,30,45,0.2) !important; }
-/* ============ [STANDARD_BUTOANE] NU SE MODIFICA ============
-   Butoane actiune: 8x16, 15px, radius 8, umbra 0 1px 4px.
-   Primar albastru / .btn-secundar gri / .btn-sters rosu. Nav si link exceptate. */
-button:not(.cab-card):not(.firme-optiune):not(.mig-op) {
-  font-family: var(--font) !important;
-  font-size: var(--text-mic) !important;
-  border-radius: 8px !important;
-  padding: 8px 16px !important;
-  cursor: pointer;
-  border: none;
-  background: #3d8fd6; color: #fff;
-  box-shadow: 0 3px 8px rgba(20,30,45,0.35);
-  transition: transform 0.1s, box-shadow 0.1s;
-}
-button.btn-secundar { background: #eef1f5 !important; color: #1a2535 !important; border: 1px solid #d5dae2 !important; }
-button.btn-sters { background: #ff3b30 !important; color: #fff !important; }
-button:not(.cab-card):not(.firme-optiune):not(.mig-op):hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(20,30,45,0.16); }
+/* ============ [STANDARD_BUTOANE] NU SE MODIFICA ============ */
+.btn { font-size: var(--text-mic) !important; padding: 8px 16px !important; border-radius: 8px !important;
+  border: none; background: #3d8fd6; color: #fff; cursor: pointer;
+  box-shadow: 0 2px 6px rgba(20,30,45,0.25); transition: transform 0.1s, box-shadow 0.1s; font-family: var(--font) !important; }
+.btn.btn-secundar { background: #eef1f5; color: #1a2535; border: 1px solid #d5dae2; box-shadow: 0 2px 6px rgba(20,30,45,0.18); }
+.btn.btn-sters { background: #ff3b30; color: #fff; }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.3); }
+.btn-nav { width: 32px; height: 32px; padding: 0; border-radius: 8px; border: none;
+  background: #f97316; color: #fff; font-size: 18px; cursor: pointer; box-shadow: 0 2px 6px rgba(20,30,45,0.25); }
+.btn-link { font-size: var(--text-mic); padding: 0; border: none; background: transparent;
+  color: #3d8fd6; text-decoration: underline; cursor: pointer; box-shadow: none; }
 /* ============ sfarsit STANDARD_BUTOANE ============ */
+/* [STANDARD_BUTOANE_MAPARE] clase vechi -> standard */
+.mig-buton, .rap-trimite, .asi-toggle-dez, .asi-echipa-btn, .rap-muta {
+  font-size: var(--text-mic) !important; padding: 8px 16px !important; border-radius: 8px !important;
+  border: none !important; background: #3d8fd6 !important; color: #fff !important; cursor: pointer;
+  box-shadow: 0 2px 6px rgba(20,30,45,0.25) !important; }
+.mig-buton-sec, .mig-buton-mic, .rap-copy-tot {
+  font-size: var(--text-mic) !important; padding: 8px 16px !important; border-radius: 8px !important;
+  border: 1px solid #d5dae2 !important; background: #eef1f5 !important; color: #1a2535 !important; cursor: pointer;
+  box-shadow: 0 2px 6px rgba(20,30,45,0.18) !important; }
+/* ============ [STANDARD_SEMAFOR] NU SE MODIFICA ============
+   Buline LED 16px, gradient luminat dreapta-sus. Se aplica peste orice definitie veche. */
+.pct-verde, .sa-pct.pct-verde  { width:16px !important; height:16px !important; border-radius:50% !important;
+  background: radial-gradient(circle at 65% 30%, #6fc494, #1d7a4d 60%) !important; }
+.pct-galben { width:16px !important; height:16px !important; border-radius:50% !important;
+  background: radial-gradient(circle at 65% 30%, #f0cd7a, #c9961f 60%) !important; }
+.pct-rosu, .sa-pct.pct-rosu { width:16px !important; height:16px !important; border-radius:50% !important;
+  background: radial-gradient(circle at 65% 30%, #ff8a80, #ff3b30 60%) !important; }
+/* ============ sfarsit STANDARD_SEMAFOR ============ */
+/* ============ [STANDARD_SEMAFOR_V2] NU SE MODIFICA ============ */
+.cab-pct, .cf-dot, .asi-sem, .sa-pct { width:16px !important; height:16px !important; border-radius:50% !important; display:inline-block; }
+.pct-verde, .asi-sem-verde, .sa-pct.pct-verde { background: radial-gradient(circle at 65% 30%, #7fe3a8, #16b364 60%) !important; box-shadow: 0 0 6px rgba(22,179,100,0.5) !important; }
+.pct-galben, .asi-sem-galben { background: radial-gradient(circle at 65% 30%, #ffe08a, #ffb020 60%) !important; box-shadow: 0 0 6px rgba(255,176,32,0.5) !important; }
+.pct-rosu, .asi-sem-rosu, .sa-pct.pct-rosu { background: radial-gradient(circle at 65% 30%, #ff9d95, #ff2d20 60%) !important; box-shadow: 0 0 6px rgba(255,45,32,0.5) !important; }
+/* ============ sfarsit STANDARD_SEMAFOR_V2 ============ */
+/* [STANDARD_SEMAFOR_V3] prinde orice bulina semafor, indiferent de clasa */
+span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="dot"] {
+  width:16px !important; height:16px !important; border-radius:50% !important; }

@@ -1989,6 +1989,33 @@ def portal_firma(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     return {"tenant_id": t["id"], "nume": t.get("nume"), "firma": firma}
 
 
+@app.get("/firme/{tenant_id}/verificari")
+def firma_verificari(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    from core import verificatoare as _vf
+    from datetime import date as _date
+    sfarsit = _date(an + (luna == 12), (luna % 12) + 1, 1)
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"""
+                SELECT l.cont_debit, l.cont_credit, l.suma
+                FROM {schema}.inregistrari_linii l
+                JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+                WHERE i.data < %s
+            """, (sfarsit,))
+            note = [{"debit": r[0], "credit": r[1], "suma": r[2]} for r in cur.fetchall()]
+            cur.execute(f"SELECT cont, SUM(sold_debitor) - SUM(sold_creditor) FROM {schema}.solduri_initiale GROUP BY cont")
+            si = {r[0]: r[1] for r in cur.fetchall()}
+    bal = _vf.balanta(note, si)
+    rez = {
+        "echilibru": _vf.verifica_balanta(bal),
+        "trezorerie": _vf.verifica_trezorerie(bal),
+        "tva": _vf.coerenta_tva(bal.get("4427", {}).get("credit", 0), bal.get("4426", {}).get("debit", 0)),
+        "note": len(note),
+    }
+    return rez
 @app.get("/portal/documente/luni")
 def portal_documente_luni(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, tenant_id)

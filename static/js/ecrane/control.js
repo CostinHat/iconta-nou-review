@@ -5,9 +5,9 @@
 import { api } from "../api.js";
 
 const CULORI = {
-  verde:  { dot:"#1d9e75", txt:"la zi",       bg:"#e6f6ec" },
-  galben: { dot:"#ba7517", txt:"de urmărit",  bg:"#fbf3e2" },
-  rosu:   { dot:"#e24b4a", txt:"restanță",    bg:"#fbe9e9" },
+  verde:  { dot:"radial-gradient(circle at 65% 30%, #7fe3a8, #16b364 60%)", txt:"la zi",       bg:"#e6f6ec" },
+  galben: { dot:"radial-gradient(circle at 65% 30%, #ffe08a, #ffb020 60%)", txt:"de urmărit",  bg:"#fbf3e2" },
+  rosu:   { dot:"radial-gradient(circle at 65% 30%, #ff9d95, #ff2d20 60%)", txt:"restanță",    bg:"#fbe9e9" },
   gri:    { dot:"#9aa3b2", txt:"necompletat", bg:"#eef0f3" },
 };
 const LUNI = ["", "ian", "feb", "mar", "apr", "mai", "iun", "iul", "aug", "sep", "oct", "noi", "dec"];
@@ -61,7 +61,7 @@ export async function randeazaControl(corp, nav) {
         <div class="mig-frand-nume">${f.nume}</div>
         <div class="mig-frand-sub">${detaliu}</div>
       </div>
-      <span class="cf-stare" style="background:${col.bg}; color:${col.dot}">
+      <span class="cf-stare" style="background:${col.bg}">
         <span class="cf-dot" style="background:${col.dot}"></span>${col.txt}
       </span>
     `;
