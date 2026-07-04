@@ -3028,3 +3028,18 @@ def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
         return _jurnal_rez(_j.valideaza(conn, schema, nota_id))
+
+
+@app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora")
+def banca_rec_ignora(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"UPDATE {schema}.extras_linii SET status='ignorat' WHERE id=%s AND status != 'contat' RETURNING id", (linie_id,))
+            r = cur.fetchone()
+        conn.commit()
+    if not r:
+        raise HTTPException(400, "linie inexistenta sau deja contata")
+    return {"ok": True}

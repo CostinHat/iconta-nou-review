@@ -312,6 +312,7 @@ async function ecranBanca(corp, nav, t) {
   const zonaLista = corp.querySelector("#bk-lista");
 
   function badge(l) {
+    if (l.status === "ignorat") return `<span style="color:#3a4250">Ignorată</span>`;
     if (l.status === "contat") return `<span style="color:${CUL.gri};font-weight:600">Contat \u2713</span>`;
     const m = (l.alocari || {}).status_match;
     if (m === "verde") return `<span style="color:${CUL.verde};font-weight:600">\u25cf Match exact</span>`;
@@ -339,11 +340,16 @@ async function ecranBanca(corp, nav, t) {
         </div>
         <div>
           ${l.status === "potrivit" ? `<button class="btn" data-cont="${l.id}">Conteaz\u0103</button>` : ""}${l.status === "nou" && l.nota_propusa && l.nota_propusa.debit ? `<button class="btn" data-cont="${l.id}">Conteaz\u0103 ${l.nota_propusa.debit}=${l.nota_propusa.credit}</button>` : ""}
-          ${l.status !== "contat" ? `<button class="btn" data-alege="${l.id}" style="margin-left:6px">Alege facturile</button>` : ""}
+          ${l.status !== "contat" && l.status !== "ignorat" ? `<button class="btn" data-alege="${l.id}" style="margin-left:6px">Alege facturile</button>` : ""}${l.status !== "contat" && l.status !== "ignorat" ? `<button class="btn btn-secundar" data-ign="${l.id}" style="margin-left:6px">Ignor\u0103</button>` : ""}
         </div>
       </div>`).join("")}</div>`;
     zonaLista.querySelectorAll("[data-cont]").forEach((b) =>
       b.addEventListener("click", () => conteaza(parseInt(b.dataset.cont), null)));
+    zonaLista.querySelectorAll("[data-ign]").forEach((b) =>
+      b.addEventListener("click", async () => {
+        try { await api.post(`/tenants/${t.id}/banca/reconciliere/${b.dataset.ign}/ignora`, {}); incarca(); }
+        catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${e.mesaj || "Eroare"}</div>`; }
+      }));
     zonaLista.querySelectorAll("[data-alege]").forEach((b) =>
       b.addEventListener("click", () => picker(linii.find((x) => x.id === parseInt(b.dataset.alege)))));
   }
