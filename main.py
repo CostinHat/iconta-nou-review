@@ -4639,3 +4639,52 @@ def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **extra}
+
+
+@app.post("/tenants/{tenant_id}/nota-provizion")
+def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, fel creanta|provizion|stoc, actiune constituire|reluare, suma,
+    descriere?, + creanta{zile_depasire?, garantata?, afiliata?, faliment?} |
+    provizion{tip litigii|garantii|dezafectare|restructurare|impozite|altele} |
+    stoc{cont_ajustare?}}. Raspunsul include deductibilitatea fiscala."""
+    from core import provizioane as _pv
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        fel = corp.get("fel")
+        act = corp.get("actiune", "constituire")
+        info = {}
+        try:
+            if fel == "creanta":
+                r = _pv.nota_ajustare_creanta(corp["suma"], act)
+                pct, temei = _pv.deductibilitate_creanta(
+                    corp.get("zile_depasire", 0), bool(corp.get("garantata")),
+                    bool(corp.get("afiliata")), bool(corp.get("faliment")))
+                info = {"deductibil_procent": pct, "temei": temei}
+                d0 = f"Ajustare creanta ({act}) - deductibil {pct}%"
+            elif fel == "provizion":
+                r = _pv.nota_provizion(corp["suma"], corp.get("tip", "garantii"), act)
+                info = {"deductibil": r["deductibil"]}
+                d0 = f"Provizion {corp.get('tip','garantii')} ({act})" +                      ("" if r["deductibil"] else " - NEDEDUCTIBIL fiscal")
+            elif fel == "stoc":
+                r = _pv.nota_ajustare_stoc(corp["suma"], corp.get("cont_ajustare", "397"), act)
+                info = {"deductibil": False}
+                d0 = f"Ajustare depreciere stocuri ({act}) - nedeductibil fiscal"
+            else:
+                raise ValueError("fel: creanta|provizion|stoc")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - art. 26 CF / OMFP 1802"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
