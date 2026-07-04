@@ -295,19 +295,44 @@ def pull(conn, schema, an, luna):
             "data_angajare": str(s.get("data_angajare") or ""),
             "ore_zi": s.get("ore_zi") or 8,
             "judet_casa": s.get("judet"),
+            "scutit_pt": bool(s.get("scutit_contrib_minim")),
+            "scutit": bool(s.get("scutit_contrib_minim")),
+            "motiv_exceptare": s.get("motiv_exceptare"),
             "cm": cm,
             "zile_cm": sum(x["zile_ang"] + x["zile_fnuass"] for x in cm),
             # calcul din core.salarizare (facilitate/deducere/contributii pe brut)
         })
     from core import salarizare as _sz
+    from core import common as _cm
     from datetime import date as _dt
+    import calendar as _cal
+    ref = _dt(an, luna, 1)
+    sm, _t1 = _cm.cota("salariu_minim", ref)
+    fac, _t2 = _cm.cota("facilitate_salariu_minim", ref)
+    prag_pt = float(sm) - float(fac)  # baza minima part-time (structura D112: sm-facilitate)
+    nzl = sum(1 for z in range(1, _cal.monthrange(an, luna)[1] + 1)
+              if _dt(an, luna, z).weekday() < 5)
     for s in salariati:
-        r = _sz.calcul_salariu(brut=s["brut"] or 0, la_data=_dt(an, luna, 1))
+        r = _sz.calcul_salariu(brut=s["brut"] or 0, la_data=ref)
         s["facilitate"] = r.get("facilitate", 0)
         s["cas"] = r.get("cas", 0)
         s["cass"] = r.get("cass", 0)
         s["impozit"] = r.get("impozit", 0)
         s["deducere"] = (r.get("deducere") or {}).get("total", 0)
+        # part-time supra-taxare (art. 146(5^6)/168(6^1) CF, structura D112 v7):
+        # part_time = ROUND(prag_pt * zile_lucrate / NZL); daca 0 < baza < part_time
+        # -> B4_*P la prag, diferenta pe angajator. Exceptati: scutit+motiv 1-5.
+        zile_lucr = max(nzl - int(s.get("zile_cm") or 0), 0)
+        baza = float(s["brut"] or 0)
+        scutit = bool(s.get("scutit_pt"))
+        prag_zile = round(prag_pt * zile_lucr / nzl) if nzl else 0
+        if not scutit and 0 < baza < prag_zile:
+            s["pt_aplica"] = True
+            s["baza_minim_pt"] = prag_zile
+            s["cas_min_pt"] = round(prag_zile * 0.25)
+            s["cass_min_pt"] = round(prag_zile * 0.10)
+        else:
+            s["pt_aplica"] = False
     return prof, salariati
 
 
