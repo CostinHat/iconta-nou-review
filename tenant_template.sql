@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict dvt9E34bCyIEaT2f9va5jVBG5hp2AkVW6nOGSNUkpebHouWJAGAeyugWhRlFNqt
+\restrict TQ4HcQd31JtvICkWZvd9dDLthOdvEmnRb3LP37gTF27QfVNfQxc4PF55HaqLUxh
 
 -- Dumped from database version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
@@ -683,6 +683,62 @@ ALTER TABLE tenant_001.produse ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY 
 
 
 --
+-- Name: retete; Type: TABLE; Schema: tenant_001; Owner: postgres
+--
+
+CREATE TABLE tenant_001.retete (
+    id integer NOT NULL,
+    denumire text NOT NULL,
+    pret_fara_tva numeric(12,2) DEFAULT 0 NOT NULL,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE tenant_001.retete OWNER TO postgres;
+
+--
+-- Name: retete_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE tenant_001.retete ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME tenant_001.retete_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: retete_linii; Type: TABLE; Schema: tenant_001; Owner: postgres
+--
+
+CREATE TABLE tenant_001.retete_linii (
+    id integer NOT NULL,
+    reteta_id integer,
+    articol_id integer,
+    cantitate numeric(12,3) NOT NULL
+);
+
+
+ALTER TABLE tenant_001.retete_linii OWNER TO postgres;
+
+--
+-- Name: retete_linii_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE tenant_001.retete_linii ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME tenant_001.retete_linii_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: salariati; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
@@ -938,6 +994,22 @@ ALTER TABLE ONLY tenant_001.produse
 
 
 --
+-- Name: retete_linii retete_linii_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.retete_linii
+    ADD CONSTRAINT retete_linii_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: retete retete_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.retete
+    ADD CONSTRAINT retete_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: salariati salariati_cnp_uniq; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
@@ -1033,6 +1105,22 @@ ALTER TABLE ONLY tenant_001.nir_linii
 
 
 --
+-- Name: retete_linii retete_linii_articol_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.retete_linii
+    ADD CONSTRAINT retete_linii_articol_id_fkey FOREIGN KEY (articol_id) REFERENCES tenant_001.articole(id);
+
+
+--
+-- Name: retete_linii retete_linii_reteta_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.retete_linii
+    ADD CONSTRAINT retete_linii_reteta_id_fkey FOREIGN KEY (reteta_id) REFERENCES tenant_001.retete(id) ON DELETE CASCADE;
+
+
+--
 -- Name: SCHEMA tenant_001; Type: ACL; Schema: -; Owner: postgres
 --
 
@@ -1044,6 +1132,13 @@ GRANT ALL ON SCHEMA tenant_001 TO iconta_user;
 --
 
 GRANT ALL ON TABLE tenant_001.articole TO iconta_user;
+
+
+--
+-- Name: SEQUENCE articole_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.articole_id_seq TO iconta_user;
 
 
 --
@@ -1065,6 +1160,13 @@ GRANT ALL ON SEQUENCE tenant_001.asociati_id_seq TO iconta_user;
 --
 
 GRANT ALL ON TABLE tenant_001.casa_operatiuni TO iconta_user;
+
+
+--
+-- Name: SEQUENCE casa_operatiuni_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.casa_operatiuni_id_seq TO iconta_user;
 
 
 --
@@ -1100,6 +1202,13 @@ GRANT ALL ON SEQUENCE tenant_001.concedii_medicale_id_seq TO iconta_user;
 --
 
 GRANT ALL ON TABLE tenant_001.extras_linii TO iconta_user;
+
+
+--
+-- Name: SEQUENCE extras_linii_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.extras_linii_id_seq TO iconta_user;
 
 
 --
@@ -1201,10 +1310,24 @@ GRANT ALL ON TABLE tenant_001.miscari_stoc TO iconta_user;
 
 
 --
+-- Name: SEQUENCE miscari_stoc_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.miscari_stoc_id_seq TO iconta_user;
+
+
+--
 -- Name: TABLE nir; Type: ACL; Schema: tenant_001; Owner: postgres
 --
 
 GRANT ALL ON TABLE tenant_001.nir TO iconta_user;
+
+
+--
+-- Name: SEQUENCE nir_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.nir_id_seq TO iconta_user;
 
 
 --
@@ -1215,10 +1338,45 @@ GRANT ALL ON TABLE tenant_001.nir_linii TO iconta_user;
 
 
 --
+-- Name: SEQUENCE nir_linii_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.nir_linii_id_seq TO iconta_user;
+
+
+--
 -- Name: TABLE plan_conturi; Type: ACL; Schema: tenant_001; Owner: postgres
 --
 
 GRANT ALL ON TABLE tenant_001.plan_conturi TO iconta_user;
+
+
+--
+-- Name: TABLE retete; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.retete TO iconta_user;
+
+
+--
+-- Name: SEQUENCE retete_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.retete_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE retete_linii; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.retete_linii TO iconta_user;
+
+
+--
+-- Name: SEQUENCE retete_linii_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.retete_linii_id_seq TO iconta_user;
 
 
 --
@@ -1267,5 +1425,5 @@ GRANT ALL ON SEQUENCE tenant_001.solduri_parteneri_id_seq TO iconta_user;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict dvt9E34bCyIEaT2f9va5jVBG5hp2AkVW6nOGSNUkpebHouWJAGAeyugWhRlFNqt
+\unrestrict TQ4HcQd31JtvICkWZvd9dDLthOdvEmnRb3LP37gTF27QfVNfQxc4PF55HaqLUxh
 
