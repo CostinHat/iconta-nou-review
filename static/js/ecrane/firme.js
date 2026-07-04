@@ -103,6 +103,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "stocuri", titlu: "Stocuri", desc: "NIR, adaos, desc\u0103rcare gestiune",
       bg: "#fbeedd", fg: "#92500a",
       icon: '<path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', activ: true },
+    { cheie: "balanta", titlu: "Balan\u021b\u0103 de verificare", desc: "PDF lunar, solduri si rulaje",
+      bg: "#eef4ff", fg: "#1d4ed8",
+      icon: '<path d="M12 3v18M3 7h18M6 7l-3 5h6l-3-5zM18 7l-3 5h6l-3-5z"/>', activ: true },
     { cheie: "bilant", titlu: "Bilan\u021b anual", desc: "S1005 micro / S1003 mici, validare ANAF",
       bg: "#eef4ff", fg: "#1d4ed8",
       icon: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>', activ: true },
@@ -169,9 +172,11 @@ function meniuFirma(corp, nav, t) {
   const bCasa = corp.querySelector("#fa-casa");
   if (bCasa) {
     bCasa.addEventListener("click", () => ecranCasa(corp, nav, t));
+  }
   const bRip = corp.querySelector("#fa-rip");
   if (bRip) bRip.addEventListener("click", () => ecranRip(corp, nav, t));
-  }
+  const bBalanta = corp.querySelector("#fa-balanta");
+  if (bBalanta) bBalanta.addEventListener("click", () => ecranBalanta(corp, nav, t));
   const bBanca = corp.querySelector("#fa-banca");
   if (bBanca) {
     bBanca.addEventListener("click", () => ecranBanca(corp, nav, t));
@@ -1093,6 +1098,37 @@ async function ecranBonuri(corp, nav, t) {
           deseneaza();
         } catch (e) { alert(e.mesaj || "Eroare"); }
       });
+    });
+  };
+  deseneaza();
+}
+
+// [balanta] Balanta de verificare - descarcare PDF lunar
+async function ecranBalanta(corp, nav, t) {
+  const azi = new Date();
+  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  const deseneaza = () => {
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Balan\u021b\u0103 de verificare \u00b7 ${String(t.nume || "")}</h2>
+      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
+        <button class="btn btn-secundar" id="b-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="btn btn-secundar" id="b-next">luna \u2192</button></p>
+      <p><button class="btn" id="b-pdf">Descarc\u0103 PDF</button></p>
+      <div id="b-mesaj"></div>`;
+    corp.querySelector("#b-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#b-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelector("#b-pdf").addEventListener("click", async () => {
+      const zona = corp.querySelector("#b-mesaj");
+      try {
+        const resp = await fetch(`/tenants/${t.id}/documente/balanta?an=${an}&luna=${luna}`, {
+          headers: { Authorization: "Bearer " + sesiune.token() } });
+        if (!resp.ok) throw new Error("eroare " + resp.status);
+        const url = URL.createObjectURL(await resp.blob());
+        const a = document.createElement("a");
+        a.href = url; a.download = `balanta_${an}_${String(luna).padStart(2, "0")}.pdf`; a.click();
+        URL.revokeObjectURL(url);
+        zona.innerHTML = `<p class="pf-intro">Balanta descarcata.</p>`;
+      } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.message || "eroare"}</div>`; }
     });
   };
   deseneaza();
