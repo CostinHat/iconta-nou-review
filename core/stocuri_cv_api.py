@@ -102,3 +102,50 @@ def iesire(conn, schema, corp):
     conn.commit()
     return {"id": mid, "cmp": str(r["cmp"]), "valoare": str(r["valoare"]),
             "nota": f"{a['cont_cheltuiala']}={a['cont_stoc']}", "inregistrare_id": iid}
+
+
+def inventar(conn, schema, corp):
+    """corp: {data, linii: [{articol_id, faptic}]}. Diferente la CMP:
+    plus -> intrare + nota 371=607 (ciorna); minus -> iesire + nota 607=371 (ciorna).
+    Temei: OMFP 1802/2014, functiunea conturilor 371/607."""
+    rez = []
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        for l in corp.get("linii", []):
+            cur.execute(f"SELECT * FROM {schema}.articole WHERE id=%s", (l["articol_id"],))
+            a = cur.fetchone()
+            if not a:
+                rez.append({"articol_id": l["articol_id"], "eroare": "articol inexistent"})
+                continue
+            fisa = _m.fisa_magazie(_miscari(cur, schema, a["id"]))
+            scriptic = fisa[-1]["sold_cantitate"] if fisa else Decimal("0")
+            cmp = Decimal(str(fisa[-1]["cmp"])) if fisa and fisa[-1]["cmp"] else Decimal("0")
+            faptic = Decimal(str(l["faptic"]))
+            dif = faptic - scriptic
+            if dif == 0:
+                rez.append({"articol_id": a["id"], "denumire": a["denumire"], "diferenta": "0"})
+                continue
+            val = (abs(dif) * cmp).quantize(Decimal("0.01"))
+            if dif > 0:
+                debit, credit, tip = a["cont_stoc"], a["cont_cheltuiala"], "intrare"
+            else:
+                if abs(dif) > scriptic:
+                    rez.append({"articol_id": a["id"], "eroare": "minus peste stocul scriptic"})
+                    continue
+                debit, credit, tip = a["cont_cheltuiala"], a["cont_stoc"], "iesire"
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'stocuri','ciorna') RETURNING id""",
+                        (corp["data"], f"Inventar {a['denumire']}: {'plus' if dif > 0 else 'minus'} {abs(dif)}"[:200]))
+            iid = cur.fetchone()["id"]
+            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                            (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                        (iid, debit, credit, val))
+            cur.execute(f"""INSERT INTO {schema}.miscari_stoc
+                            (articol_id, data, tip, cantitate, pret_unitar, valoare, document, inregistrare_id)
+                            VALUES (%s,%s,%s,%s,%s,%s,'inventar',%s)""",
+                        (a["id"], corp["data"], tip, abs(dif),
+                         cmp if tip == "intrare" else None, val, iid))
+            rez.append({"articol_id": a["id"], "denumire": a["denumire"],
+                        "diferenta": str(dif), "valoare": str(val),
+                        "nota": f"{debit}={credit}", "inregistrare_id": iid})
+    conn.commit()
+    return {"rezultate": rez}

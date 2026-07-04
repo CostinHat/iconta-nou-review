@@ -341,6 +341,10 @@ async function sectiuneaCV(corp, t, zonaM) {
         <button class="btn" id="cv-iesire" style="margin-left:6px">Ie\u0219ire la CMP (nota ciorn\u0103)</button>
         <button class="btn btn-secundar" id="cv-fisa" style="margin-left:6px">Vezi fi\u0219a</button>
       </p>
+      <div style="margin-top:10px">
+        <button class="btn btn-secundar" id="cv-inv">Inventar (stoc faptic)</button>
+        <div id="cv-inv-zona" style="margin-top:8px"></div>
+      </div>
       <div id="cv-fisa-zona"></div>
     </div>`;
   const val = (id) => zona.querySelector(id).value;
@@ -365,6 +369,31 @@ async function sectiuneaCV(corp, t, zonaM) {
       zonaM.innerHTML = `<p class="pf-intro">Iesire la CMP ${r.cmp} \u00b7 ${r.valoare} lei \u00b7 nota ${escV(r.nota)} (ciorna).</p>`;
       sectiuneaCV(corp, t, zonaM);
     } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "Eroare")}</div>`; }
+  });
+
+  zona.querySelector("#cv-inv").addEventListener("click", () => {
+    const z = zona.querySelector("#cv-inv-zona");
+    z.innerHTML = `<div class="pf-lista">${arts.map((a) => `
+      <div class="pf-frand"><div class="pf-frand-text">
+        <div class="pf-frand-nume">${escV(a.denumire)} \u00b7 scriptic ${a.stoc} ${escV(a.um)}</div>
+      </div>
+      <input type="number" step="0.001" class="mig-text cvi-faptic" data-aid="${a.id}" placeholder="faptic" style="width:110px"></div>`).join("")}
+      <p style="margin-top:8px"><button class="btn" id="cvi-salveaza">Salveaz\u0103 inventarul (note ciorne)</button></p>`;
+    z.querySelector("#cvi-salveaza").addEventListener("click", async () => {
+      const linii = [...z.querySelectorAll(".cvi-faptic")]
+        .filter((i) => i.value !== "")
+        .map((i) => ({ articol_id: parseInt(i.dataset.aid), faptic: parseFloat(i.value) }));
+      if (!linii.length) { zonaM.innerHTML = `<div class="mig-gol">Completeaza stocul faptic la cel putin un articol.</div>`; return; }
+      try {
+        const r = await api.post(`/tenants/${t.id}/stocuri/inventar`,
+          { data: val("#cv-data"), linii });
+        zonaM.innerHTML = `<p class="pf-intro">${(r.rezultate || []).map((x) =>
+          x.eroare ? `${escV(x.denumire || x.articol_id)}: ${escV(x.eroare)}`
+          : x.diferenta === "0" ? `${escV(x.denumire)}: fara diferenta`
+          : `${escV(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${x.diferenta} \u00b7 ${x.valoare} lei \u00b7 nota ${escV(x.nota)} (ciorna)`).join("<br>")}</p>`;
+        sectiuneaCV(corp, t, zonaM);
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "Eroare")}</div>`; }
+    });
   });
   zona.querySelector("#cv-fisa").addEventListener("click", async () => {
     if (!val("#cv-art")) return;

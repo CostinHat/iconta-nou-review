@@ -3164,3 +3164,13 @@ def cv_iesire(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet))
     if rez.get("eroare"):
         raise HTTPException(400, rez["eroare"])
     return rez
+
+
+@app.post("/tenants/{tenant_id}/stocuri/inventar")
+def cv_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _s.inventar(conn, schema, corp)
