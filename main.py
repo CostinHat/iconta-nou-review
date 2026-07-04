@@ -4863,3 +4863,47 @@ def nota_sponsorizare_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], "credit_fiscal": info}
+
+
+@app.post("/tenants/{tenant_id}/nota-subventie")
+def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, fel exploatare|investitii|reluare, descriere?, +
+    exploatare/investitii{suma, moment drept|incasare};
+    reluare{valoare_activ, subventie, amortizare_lunara}}."""
+    from core import subventii as _sb
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        fel = corp.get("fel")
+        info = {}
+        try:
+            if fel == "exploatare":
+                r = _sb.nota_subventie_exploatare(corp["suma"], corp.get("moment", "drept"),
+                                                  corp.get("cont_venit", "741"))
+                d0 = f"Subventie exploatare ({corp.get('moment','drept')})"
+            elif fel == "investitii":
+                r = _sb.nota_subventie_investitii(corp["suma"], corp.get("moment", "drept"))
+                d0 = f"Subventie investitii 4751 ({corp.get('moment','drept')})"
+            elif fel == "reluare":
+                r = _sb.reluare_lunara_investitii(corp["valoare_activ"], corp["subventie"],
+                                                  corp["amortizare_lunara"])
+                info = {"procent_subventionat": r["procent_subventionat"]}
+                d0 = "Reluare subventie investitii 4751=7584 (proportional cu amortizarea)"
+            else:
+                raise ValueError("fel: exploatare|investitii|reluare")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - OMFP 1802 pct. 392-402"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
