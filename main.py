@@ -4258,3 +4258,36 @@ def export_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
                             VALUES (%s,'4111',%s,%s)""", (iid, cont_venit, val))
         conn.commit()
     return {"inregistrare_id": iid, "mentiune": ment}
+
+
+@app.get("/tenants/{tenant_id}/intrastat-praguri")
+def intrastat_praguri(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    """Monitor praguri Intrastat (Ordin INS 1604/2025, 1.000.000 lei/flux):
+    introduceri = facturi primite de la parteneri UE; expedieri = facturi emise
+    catre parteneri UE. Cumulat pe an, status + luna depasirii per flux."""
+    from core import intrastat as _is
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        intro, exped = {}, {}
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT directie, tert_cui,
+                                   EXTRACT(MONTH FROM data_emitere)::int AS luna,
+                                   COALESCE(total,0) - COALESCE(tva,0) AS baza
+                            FROM {schema}.facturi
+                            WHERE EXTRACT(YEAR FROM data_emitere) = %s""", (an,))
+            for directie, cui, luna, baza in cur.fetchall():
+                if not _is.e_partener_ue(cui):
+                    continue
+                tinta = intro if directie == "primita" else exped
+                tinta[luna] = tinta.get(luna, 0) + float(baza or 0)
+    ri = _is.analiza_flux(intro)
+    re_ = _is.analiza_flux(exped)
+    def fmt(r):
+        return {"cumulat": str(r["cumulat"]), "status": r["status"],
+                "luna_depasirii": r["luna_depasirii"], "procent": str(r["procent"]),
+                "prag": str(r["prag"])}
+    return {"an": an, "introduceri": fmt(ri), "expedieri": fmt(re_),
+            "nota": "obligatia de declarare la INS (intrastat.ro) incepe cu luna "
+                    "depasirii pragului, separat pe flux (Ordin INS 1604/2025)"}
