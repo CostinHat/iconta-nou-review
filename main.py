@@ -2938,3 +2938,93 @@ def eu_permisiuni(ctx=Depends(cere_cabinet)):
     return {"poate_pregati": bool(r[0]), "poate_valida": bool(r[1]),
             "poate_depune": bool(r[2]), "rol": r[3]}
 # === /PERMISIUNI FLUX ===
+
+
+# --- reconciliere bancara ---
+@app.post("/tenants/{tenant_id}/banca/reconciliere/import")
+async def banca_rec_import(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    from core import banca_parser, banca as _bk, reconciliere_api as _rec
+    continut = await fisier.read()
+    try:
+        tranzactii = banca_parser.parse_extras(continut, fisier.filename or "")
+    except Exception as e:
+        raise HTTPException(400, f"nu am putut citi extrasul: {e}")
+    for t in tranzactii:
+        r = _bk.regula_cont({"sens": "debit" if t["suma"] < 0 else "credit",
+                             "suma": abs(t["suma"]), "descriere": t.get("detalii", "")})
+        t["cui"], t["tip"], t["nota"] = r.get("cui"), r.get("tip"), r.get("nota")
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return {"linii": _rec.importa_extras(conn, schema, tranzactii, fisier.filename or "")}
+
+@app.get("/tenants/{tenant_id}/banca/reconciliere")
+def banca_rec_lista(tenant_id: int, status: str = None, ctx=Depends(cere_cabinet)):
+    from core import reconciliere_api as _rec
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return {"linii": _rec.lista(conn, schema, status)}
+
+@app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza")
+def banca_rec_conteaza(tenant_id: int, linie_id: int, corp: dict = Body(default={}), ctx=Depends(cere_cabinet)):
+    from core import reconciliere_api as _rec
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _rec.conteaza(conn, schema, linie_id, corp.get("alocari"))
+    if rez is None:
+        raise HTTPException(404, "linie inexistenta")
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+
+@app.get("/tenants/{tenant_id}/banca/reconciliere/facturi-deschise")
+def banca_rec_facturi(tenant_id: int, ctx=Depends(cere_cabinet)):
+    from core import reconciliere_api as _rec
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return {"facturi": _rec.facturi_deschise_detalii(conn, schema)}
+
+
+# --- jurnal: editare/stergere/validare ciorne ---
+def _jurnal_rez(rez):
+    if rez is None:
+        raise HTTPException(404, "nota inexistenta")
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+@app.put("/tenants/{tenant_id}/jurnal/{nota_id}")
+def jurnal_editeaza(tenant_id: int, nota_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import jurnal_api as _j
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _jurnal_rez(_j.editeaza(conn, schema, nota_id,
+                                       corp.get("descriere"), corp.get("data"), corp.get("linii")))
+
+@app.delete("/tenants/{tenant_id}/jurnal/{nota_id}")
+def jurnal_sterge(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
+    from core import jurnal_api as _j
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _jurnal_rez(_j.sterge(conn, schema, nota_id))
+
+@app.post("/tenants/{tenant_id}/jurnal/{nota_id}/valideaza")
+def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
+    from core import jurnal_api as _j
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _jurnal_rez(_j.valideaza(conn, schema, nota_id))

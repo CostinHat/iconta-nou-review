@@ -298,40 +298,133 @@ async function ecranSalariati(corp, nav, t) {
   deseneaza();
 }
 
-// [banca] Import extras bancar
+// [banca] Import extras + reconciliere pe facturi
 async function ecranBanca(corp, nav, t) {
+  const escB = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const CUL = { verde: "#1d7a4d", galben: "#c9961f", rosu: "#ff3b30", gri: "#3a4250" };
   corp.innerHTML = `
-    <h2 class="pf-titlu">Banc\u0103 \u00b7 ${t.nume || ""}</h2>
-    <p class="pf-intro">Incarca extrasul (.xls, .xlsx, .csv) \u2014 ING, Jasper.</p>
+    <h2 class="pf-titlu">Banc\u0103 \u00b7 ${escB(t.nume || "")}</h2>
+    <p class="pf-intro">Incarca extrasul (.xls, .xlsx, .csv) \u2014 liniile se potrivesc automat pe facturi dupa CUI.</p>
     <input type="file" id="bk-fisier" accept=".xls,.xlsx,.csv" style="margin-bottom:16px">
-    <div id="bk-rezultat"></div>`;
+    <div id="bk-mesaj"></div>
+    <div id="bk-lista"></div>`;
+  const zonaMesaj = corp.querySelector("#bk-mesaj");
+  const zonaLista = corp.querySelector("#bk-lista");
+
+  function badge(l) {
+    if (l.status === "contat") return `<span style="color:${CUL.gri};font-weight:600">Contat \u2713</span>`;
+    const m = (l.alocari || {}).status_match;
+    if (m === "verde") return `<span style="color:${CUL.verde};font-weight:600">\u25cf Match exact</span>`;
+    if (m === "galben") return `<span style="color:${CUL.galben};font-weight:600">\u25cf Par\u021bial</span>`;
+    return `<span style="color:${CUL.rosu};font-weight:600">\u25cf F\u0103r\u0103 match</span>`;
+  }
+
+  function randAlocari(l) {
+    const al = ((l.alocari || {}).alocari || []);
+    if (!al.length) return "";
+    return `<div class="pf-frand-sub">${al.map((a) => {
+      const f = a.factura || {};
+      return `${escB(f.serie || "")}${escB(f.numar || "#" + a.factura_id)} \u00b7 ${escB(f.tert || "")} \u00b7 ${a.suma} lei`;
+    }).join("<br>")}</div>`;
+  }
+
+  function randeaza(linii) {
+    if (!linii.length) { zonaLista.innerHTML = `<div class="mig-gol">Nicio linie de extras. Incarca un fisier.</div>`; return; }
+    zonaLista.innerHTML = `<div class="pf-lista">${linii.map((l) => `
+      <div class="pf-frand">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${escB(l.data)} \u00b7 ${l.tip === "plata" ? "\u2212" : "+"}${l.suma} lei${l.cui_detectat ? " \u00b7 CUI " + escB(l.cui_detectat) : ""} \u00b7 ${badge(l)}</div>
+          <div class="pf-frand-sub">${escB((l.descriere || "").slice(0, 90))}${(l.alocari || {}).motiv ? " \u00b7 " + escB(l.alocari.motiv) : ""}</div>
+          ${randAlocari(l)}
+        </div>
+        <div>
+          ${l.status === "potrivit" ? `<button class="btn" data-cont="${l.id}">Conteaz\u0103</button>` : ""}${l.status === "nou" && l.nota_propusa && l.nota_propusa.debit ? `<button class="btn" data-cont="${l.id}">Conteaz\u0103 ${l.nota_propusa.debit}=${l.nota_propusa.credit}</button>` : ""}
+          ${l.status !== "contat" ? `<button class="btn" data-alege="${l.id}" style="margin-left:6px">Alege facturile</button>` : ""}
+        </div>
+      </div>`).join("")}</div>`;
+    zonaLista.querySelectorAll("[data-cont]").forEach((b) =>
+      b.addEventListener("click", () => conteaza(parseInt(b.dataset.cont), null)));
+    zonaLista.querySelectorAll("[data-alege]").forEach((b) =>
+      b.addEventListener("click", () => picker(linii.find((x) => x.id === parseInt(b.dataset.alege)))));
+  }
+
+  async function incarca() {
+    try {
+      const r = await api.get(`/tenants/${t.id}/banca/reconciliere`);
+      randeaza(r.linii || []);
+    } catch { zonaLista.innerHTML = `<div class="mig-gol">Nu am putut incarca liniile.</div>`; }
+  }
+
+  async function conteaza(id, alocari) {
+    zonaMesaj.innerHTML = "";
+    try {
+      const r = await api.post(`/tenants/${t.id}/banca/reconciliere/${id}/conteaza`, alocari ? { alocari } : {});
+      zonaMesaj.innerHTML = `<p class="pf-intro">Nota ${escB(r.nota || "")} \u2014 ${(r.inregistrari || []).length} inregistrari create.</p>`;
+      incarca();
+    } catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${escB(e.mesaj || "Eroare la contare")}</div>`; }
+  }
+
+  async function picker(l) {
+    if (!l) return;
+    zonaMesaj.innerHTML = `<p class="ecran-nota">Se incarca facturile deschise...</p>`;
+    let facturi = [];
+    try {
+      const r = await api.get(`/tenants/${t.id}/banca/reconciliere/facturi-deschise`);
+      facturi = (r.facturi || []).filter((f) => f.directie === (l.tip === "incasare" ? "emisa" : "primita"));
+    } catch { zonaMesaj.innerHTML = `<div class="mig-gol">Nu am putut incarca facturile.</div>`; return; }
+    if (!facturi.length) { zonaMesaj.innerHTML = `<div class="mig-gol">Nicio factura deschisa pe aceasta directie.</div>`; return; }
+    zonaMesaj.innerHTML = `
+      <div class="pf-frand" style="display:block">
+        <div class="pf-frand-nume">Alege facturile pentru linia din ${escB(l.data)} \u00b7 ${l.suma} lei</div>
+        <div class="pf-lista" style="margin-top:8px">${facturi.map((f) => `
+          <label class="pf-frand" style="cursor:pointer">
+            <input type="checkbox" data-fid="${f.id}" data-sold="${f.sold}" style="margin-right:10px">
+            <div class="pf-frand-text">
+              <div class="pf-frand-nume">${escB(f.serie || "")}${escB(f.numar)} \u00b7 ${escB(f.tert_nume || "")}</div>
+              <div class="pf-frand-sub">${escB(f.data_emitere)} \u00b7 sold ${f.sold} lei \u00b7 CUI ${escB(f.tert_cui || "")}</div>
+            </div>
+          </label>`).join("")}</div>
+        <p style="margin-top:10px">
+          <button class="btn" id="bk-pk-ok">Conteaz\u0103 selectate</button>
+          <button class="btn" id="bk-pk-nu" style="margin-left:6px">Renun\u021b\u0103</button>
+        </p>
+      </div>`;
+    zonaMesaj.querySelector("#bk-pk-nu").addEventListener("click", () => { zonaMesaj.innerHTML = ""; });
+    zonaMesaj.querySelector("#bk-pk-ok").addEventListener("click", () => {
+      let rest = parseFloat(l.suma);
+      const aloc = [];
+      zonaMesaj.querySelectorAll("input[data-fid]:checked").forEach((c) => {
+        if (rest <= 0.005) return;
+        const parte = Math.min(parseFloat(c.dataset.sold), rest);
+        aloc.push({ factura_id: parseInt(c.dataset.fid), suma: parte.toFixed(2) });
+        rest -= parte;
+      });
+      if (!aloc.length) { zonaMesaj.innerHTML = `<div class="mig-gol">Nicio factura selectata.</div>`; return; }
+      conteaza(l.id, aloc);
+    });
+  }
+
   corp.querySelector("#bk-fisier").addEventListener("change", async (ev) => {
     const f = ev.target.files[0];
     if (!f) return;
-    const zona = corp.querySelector("#bk-rezultat");
-    zona.innerHTML = `<p class="ecran-nota">Se citeste extrasul...</p>`;
+    zonaMesaj.innerHTML = `<p class="ecran-nota">Se citeste si se potriveste extrasul...</p>`;
     const fd = new FormData();
     fd.append("fisier", f);
     try {
-      const resp = await fetch(`/tenants/${t.id}/banca/parse-extras`, {
+      const resp = await fetch(`/tenants/${t.id}/banca/reconciliere/import`, {
         method: "POST",
         headers: { "Authorization": "Bearer " + sesiune.token() },
         body: fd,
       });
       if (!resp.ok) throw new Error("eroare " + resp.status);
       const r = await resp.json();
-      const tr = r.tranzactii || [];
-      zona.innerHTML = `
-        <p class="pf-intro"><b>${tr.length}</b> tranzactii citite.</p>
-        <div class="pf-lista">${tr.map((x) => `
-          <div class="pf-frand">
-            <div class="pf-frand-text">
-              <div class="pf-frand-nume">${x.data} \u00b7 ${x.suma < 0 ? "" : "+"}${x.suma.toFixed(2)} lei${x.cui ? " \u00b7 CUI " + x.cui : ""}</div>
-              <div class="pf-frand-sub">${(x.detalii || "").slice(0, 90)} \u00b7 ${x.tip || ""}</div>
-            </div>
-          </div>`).join("")}</div>`;
-    } catch { zona.innerHTML = `<div class="mig-gol">Nu am putut citi extrasul.</div>`; }
+      zonaMesaj.innerHTML = `<p class="pf-intro"><b>${(r.linii || []).length}</b> linii importate si potrivite.</p>`;
+      incarca();
+    } catch { zonaMesaj.innerHTML = `<div class="mig-gol">Nu am putut citi extrasul.</div>`; }
+    ev.target.value = "";
   });
+
+  incarca();
 }
 
 // [horeca] Raport Z zilnic
@@ -370,8 +463,15 @@ async function ecranRaportZ(corp, nav, t) {
 
 // [jurnal] Registru jurnal lunar
 async function ecranJurnal(corp, nav, t) {
+  const escJ = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  let inEditare = null; // id-ul notei deschise in editor
+
+  const badge = (n) => n.status === "ciorna"
+    ? `<span style="color:#c9961f;font-weight:600">\u25cf Ciorn\u0103</span>`
+    : `<span style="color:#1d7a4d;font-weight:600">\u25cf Validat\u0103</span>`;
+
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
     let note = [];
@@ -379,25 +479,55 @@ async function ecranJurnal(corp, nav, t) {
       const r = await api.get(`/tenants/${t.id}/jurnal?an=${an}&luna=${luna}`);
       note = (r && r.note) || [];
     } catch {}
-    const randuri = !note.length
-      ? `<div class="mig-gol">Nicio nota in luna asta.</div>`
-      : note.map((n) => `
+    const rand = (n) => {
+      if (inEditare === n.id) return editor(n);
+      const butoane = n.status === "ciorna" ? `
+        <button class="btn" data-val="${n.id}">Valideaz\u0103</button>
+        <button class="btn btn-secundar" data-edit="${n.id}" style="margin-left:6px">Editeaz\u0103</button>
+        <button class="btn btn-secundar" data-del="${n.id}" style="margin-left:6px">\u0218terge</button>` : "";
+      return `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${n.data} \u00b7 ${n.descriere || n.numar || "#" + n.id}</div>
-            <div class="pf-frand-sub">${n.linii.map((l) => `${l.debit} = ${l.credit} \u00b7 ${l.suma.toFixed(2)}`).join("<br>")}</div>
+            <div class="pf-frand-nume">${escJ(n.data)} \u00b7 ${escJ(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
+            <div class="pf-frand-sub">${n.linii.map((l) => `${escJ(l.debit)} = ${escJ(l.credit)} \u00b7 ${l.suma.toFixed(2)}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + escJ(n.sursa) : ""}</div>
           </div>
-          <span class="mig-stare">${n.sursa || ""}</span>
-        </div>`).join("");
+          <div>${butoane}</div>
+        </div>`;
+    };
+    const editor = (n) => `
+      <div class="pf-frand" style="display:block;border:1px solid #c9961f">
+        <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${escJ(n.data)}</div>
+        <label>Descriere<br><input type="text" id="je-desc" class="mig-text" style="width:100%" value="${escJ(n.descriere || "")}"></label>
+        <div id="je-linii" style="margin-top:8px">${n.linii.map((l, i) => `
+          <div style="display:flex;gap:8px;margin-bottom:6px" data-lin="${i}">
+            <input type="text" class="mig-text je-deb" placeholder="debit" value="${escJ(l.debit)}" style="width:90px">
+            <span style="align-self:center">=</span>
+            <input type="text" class="mig-text je-cre" placeholder="credit" value="${escJ(l.credit)}" style="width:90px">
+            <input type="number" step="0.01" class="mig-text je-sum" value="${l.suma.toFixed(2)}" style="width:120px">
+            <button class="btn btn-secundar je-scoate">\u2212</button>
+          </div>`).join("")}</div>
+        <p><button class="btn btn-secundar" id="je-plus">+ linie</button></p>
+        <p style="margin-top:10px">
+          <button class="btn" id="je-salveaza">Salveaz\u0103</button>
+          <button class="btn btn-secundar" id="je-renunta" style="margin-left:6px">Renun\u021b\u0103</button>
+        </p>
+      </div>`;
+    const randuri = !note.length
+      ? `<div class="mig-gol">Nicio nota in luna asta.</div>`
+      : note.map(rand).join("");
+    const ciorne = note.filter((n) => n.status === "ciorna").length;
     corp.innerHTML = `
-      <h2 class="pf-titlu">Registru jurnal \u00b7 ${t.nume || ""}</h2>
-      <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an} \u00b7 ${note.length} note
+      <h2 class="pf-titlu">Registru jurnal \u00b7 ${escJ(t.nume || "")}</h2>
+      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:#c9961f;font-weight:600">${ciorne} de validat</span>` : ""}
         <button class="btn btn-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="btn btn-secundar" id="j-next">luna \u2192</button>
         <button class="btn" id="j-amort" style="margin-left:12px">Genereaza amortizarea</button></p>
+      <div id="j-mesaj"></div>
       <div class="pf-lista">${randuri}</div>`;
-    corp.querySelector("#j-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
-    corp.querySelector("#j-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    const zonaMesaj = corp.querySelector("#j-mesaj");
+    const eroare = (e, txt) => { zonaMesaj.innerHTML = `<div class="mig-gol">${escJ((e && e.mesaj) || txt)}</div>`; };
+    corp.querySelector("#j-prev").addEventListener("click", () => { inEditare = null; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#j-next").addEventListener("click", () => { inEditare = null; luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
     corp.querySelector("#j-amort").addEventListener("click", async () => {
       try {
         const r = await api.post(`/tenants/${t.id}/amortizare?an=${an}&luna=${luna}`, {});
@@ -405,9 +535,51 @@ async function ecranJurnal(corp, nav, t) {
         deseneaza();
       } catch (e) { alert(e.mesaj || "Eroare"); }
     });
+    corp.querySelectorAll("[data-val]").forEach((b) => b.addEventListener("click", async () => {
+      try { await api.post(`/tenants/${t.id}/jurnal/${b.dataset.val}/valideaza`, {}); deseneaza(); }
+      catch (e) { eroare(e, "Eroare la validare"); }
+    }));
+    corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm("Stergi aceasta ciorna?")) return;
+      try { await api.del(`/tenants/${t.id}/jurnal/${b.dataset.del}`); deseneaza(); }
+      catch (e) { eroare(e, "Eroare la stergere"); }
+    }));
+    corp.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => {
+      inEditare = parseInt(b.dataset.edit); deseneaza();
+    }));
+    if (inEditare !== null) {
+      const zona = corp.querySelector("#je-linii");
+      const leaga = () => zona.querySelectorAll(".je-scoate").forEach((b) =>
+        b.addEventListener("click", () => { if (zona.children.length > 1) b.parentElement.remove(); }));
+      leaga();
+      corp.querySelector("#je-plus").addEventListener("click", () => {
+        const d = document.createElement("div");
+        d.style.cssText = "display:flex;gap:8px;margin-bottom:6px";
+        d.innerHTML = `<input type="text" class="mig-text je-deb" placeholder="debit" style="width:90px">
+          <span style="align-self:center">=</span>
+          <input type="text" class="mig-text je-cre" placeholder="credit" style="width:90px">
+          <input type="number" step="0.01" class="mig-text je-sum" value="0.00" style="width:120px">
+          <button class="btn btn-secundar je-scoate">\u2212</button>`;
+        zona.appendChild(d); leaga();
+      });
+      corp.querySelector("#je-renunta").addEventListener("click", () => { inEditare = null; deseneaza(); });
+      corp.querySelector("#je-salveaza").addEventListener("click", async () => {
+        const linii = [...zona.children].map((r) => ({
+          debit: r.querySelector(".je-deb").value.trim(),
+          credit: r.querySelector(".je-cre").value.trim(),
+          suma: parseFloat(r.querySelector(".je-sum").value) || 0,
+        }));
+        try {
+          await api.put(`/tenants/${t.id}/jurnal/${inEditare}`,
+            { descriere: corp.querySelector("#je-desc").value, linii });
+          inEditare = null; deseneaza();
+        } catch (e) { eroare(e, "Eroare la salvare"); }
+      });
+    }
   };
   deseneaza();
 }
+
 
 // [bonuri] verificare + contare bonuri citite de AI (linii multiple)
 async function ecranBonuri(corp, nav, t) {
