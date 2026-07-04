@@ -5105,3 +5105,40 @@ def nota_sgr(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
                                 VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+
+
+@app.post("/tenants/{tenant_id}/nota-perisabilitati")
+def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, valoare_intrari, procent_limita (coef. grupa HG 831/2004),
+    pierdere_constatata, cota?, cont_stoc?, degradare_dovedita_distrusa?,
+    descriere?}. Nota 607 (split deductibil/nedeductibil) + ajustare TVA 635=4426
+    pe depasire."""
+    from core import perisabilitati as _pe
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            r = _pe.calcul(corp["valoare_intrari"], corp["procent_limita"],
+                           corp["pierdere_constatata"], corp.get("cota", 21),
+                           str(corp.get("cont_stoc") or "371"),
+                           bool(corp.get("degradare_dovedita_distrusa")))
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or
+                 f"Perisabilitati: limita {r['limita']}, deductibil {r['deductibil']}, "
+                 f"nedeductibil {r['nedeductibil']} (PV inventariere)")[:200]
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr + " - HG 831/2004"))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "limita": str(r["limita"]),
+            "deductibil": str(r["deductibil"]), "nedeductibil": str(r["nedeductibil"]),
+            "ajustare_tva": str(r["ajustare_tva"]),
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
