@@ -2066,3 +2066,20 @@ html, body { overflow-y: hidden; }
 /* [STANDARD_SEMAFOR_V3] prinde orice bulina semafor, indiferent de clasa */
 span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="dot"] {
   width:16px !important; height:16px !important; border-radius:50% !important; }
+
+/* [responsive-landing] <900px */
+@media (max-width: 900px) {
+  .pagina-hero-titlu { font-size: 36px; line-height: 42px; }
+  .pagina-hero-sub { font-size: var(--text); line-height: 24px; }
+  .pagina-carduri-wrap { flex-direction: column; gap: 16px; }
+  .pagina-carduri { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .pagina-carduri-rand:nth-child(1),
+  .pagina-carduri-rand:nth-child(2) { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .pagina-hero-titlu { font-size: 28px; line-height: 34px; }
+  .pagina-carduri,
+  .pagina-carduri-rand:nth-child(1),
+  .pagina-carduri-rand:nth-child(2) { grid-template-columns: 1fr; }
+  .pagina-bara { padding: 0 14px; }
+}
