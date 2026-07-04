@@ -278,6 +278,18 @@ async def _bucla_alerte_sanatate():
             pass
         await _asyncio.sleep(300)
 
+@app.post("/admin/sanatate/test-alerta")
+def admin_sanatate_test_alerta(ctx=Depends(cere_cabinet)):
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    email = _email_superadmin()
+    if not email:
+        raise HTTPException(500, "email superadmin negasit")
+    import core.observare as _obs
+    r = _obs.trimite_email_html(email, "TEST Alerta iConta - sanatate server",
+        "<p>Test manual alerta sanatate. Daca ai primit acest email, livrarea functioneaza.</p>")
+    return {"trimis_catre": email, "rezultat": str(r)}
+
 @app.get("/admin/sanatate/istoric")
 def admin_sanatate_istoric(ore: int = 24, ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
