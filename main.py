@@ -4476,3 +4476,48 @@ def nota_credit(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
                                 VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+
+
+@app.post("/tenants/{tenant_id}/nota-avans")
+def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, operatie avans_platit|regularizare_platit|avans_incasat|
+    regularizare_incasat, suma (fara TVA), cota?, destinatie? (platit:
+    stocuri|servicii|imobilizari|imobilizari_necorporale), descriere?}."""
+    from core import avansuri as _av
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        op = corp.get("operatie")
+        cota = corp.get("cota", 21)
+        dest = corp.get("destinatie", "stocuri")
+        try:
+            if op == "avans_platit":
+                r = _av.nota_avans_platit(corp["suma"], cota, dest)
+                d0 = f"Factura avans furnizor ({r['cont_avans']}+4426=401)"
+            elif op == "regularizare_platit":
+                r = _av.nota_regularizare_avans_platit(corp["suma"], cota, dest)
+                d0 = "Regularizare avans furnizor la factura finala"
+            elif op == "avans_incasat":
+                r = _av.nota_avans_incasat(corp["suma"], cota)
+                d0 = "Factura avans client (4111=419+4427)"
+            elif op == "regularizare_incasat":
+                r = _av.nota_regularizare_avans_incasat(corp["suma"], cota)
+                d0 = "Regularizare avans client la factura finala"
+            else:
+                raise ValueError("operatie: avans_platit|regularizare_platit|"
+                                 "avans_incasat|regularizare_incasat")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - art. 282(2)b CF"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
