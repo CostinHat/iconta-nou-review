@@ -133,21 +133,39 @@ def monografie_plata(net, cont_trezorerie="5121"):
 #  + Ordinul 506/1030/2026 (diminuare 1 zi PER EPISOD, nu per certificat)
 #  Verificat la sursa: legislatie.just.ro, MOF 507/19.06.2026
 # ============================================================
-def procent_cm(cod, zile_episod):
-    """Procent indemnizatie dupa cod si durata episodului (art. 17 OUG 158/2005)."""
+def procent_cm(cod, zile_episod, procent_accident=100):
+    """Procent indemnizatie dupa cod (nomenclator Legea 125/2006, art. 17-31 OUG 158/2005).
+    01=55/65/75 progresiv (Legea 141/2025); 02/03/04=80 sau 100 (FAAMBP, param);
+    05/06/12/14/51=100; 07/13/15=75; 08/09=85. Cod 10 (reducere timp munca) NU are
+    procent - formula speciala art. 19 (diferenta venit, max 25% din baza) -> ValueError."""
     cod = str(cod or "01").zfill(2)
-    if cod == "01":  # boala obisnuita: progresiv (Legea 141/2025)
+    if cod == "01":
         if zile_episod <= 7: return Decimal("0.55")
         if zile_episod <= 14: return Decimal("0.65")
         return Decimal("0.75")
-    if cod in ("02", "03", "04", "10"): return Decimal("1.00")  # accident munca/boala prof/urgente 100%
-    if cod in ("08", "09"): return Decimal("0.85")  # maternitate / ingrijire copil 85%
-    if cod in ("05", "06", "12", "13", "14"): return Decimal("0.75")
-    return Decimal("0.75")
+    if cod == "10":
+        raise ValueError("cod 10 (reducere timp munca): formula speciala art. 19 - "
+                         "foloseste calcul_cm_cod10")
+    if cod in ("02", "03", "04"):  # accidente munca/boala prof: 80% sau 100% (aviz ITM)
+        return Decimal(str(procent_accident)) / 100
+    if cod in ("05", "06", "12", "14", "51"): return Decimal("1.00")  # infectocontagioase A/urgente/TBC/neoplazii-SIDA/izolare
+    if cod in ("08", "09"): return Decimal("0.85")  # maternitate / ingrijire copil
+    return Decimal("0.75")  # 07 carantina, 13 cardiovasculare, 15 risc maternal, rest
+
+
+def calcul_cm_cod10(baza_lunara, venit_realizat):
+    """Cod 10 - reducere timp munca cu 1/4 (art. 19 OUG 158/2005):
+    indemnizatia = baza de calcul - venitul realizat in noua situatie,
+    plafonata la 25% din baza de calcul."""
+    b, v = _dec(baza_lunara), _dec(venit_realizat)
+    if b <= 0 or v < 0:
+        raise ValueError("baza/venit invalide")
+    return _q(min(max(b - v, Decimal("0")), b * Decimal("0.25")))
 
 def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
               cod="01", zile_episod=None, prima_zi_din_episod=True,
-              spitalizare=False, la_data=None):
+              spitalizare=False, la_data=None, exceptat_prima_zi=False,
+              procent_accident=100):
     """
     Ci = Mzbci x procent x (NZLCM - diminuare)
     - Mzbci = suma venituri 6 luni / total zile lucratoare 6 luni
@@ -159,11 +177,13 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     ref = la_data or _dt.today()
     mz = _dec(venituri_6_luni) / _dec(zile_lucratoare_6_luni or 1)
     ze = zile_episod if zile_episod is not None else zile_lucratoare_cm
-    pct = procent_cm(cod, ze)
+    pct = procent_cm(cod, ze, procent_accident)
     diminuare = 0
+    # Exceptii prima zi neplatita (OUG 91/2025 + Legea 64/2026): accidente munca,
+    # izolare/carantina, maternitate, risc maternal, urgente, cronici/programe nationale
     if (_dt(2026, 2, 1) <= ref <= _dt(2027, 12, 31)
-            and prima_zi_din_episod and not spitalizare
-            and str(cod).zfill(2) not in ("02", "03", "07")):
+            and prima_zi_din_episod and not spitalizare and not exceptat_prima_zi
+            and str(cod).zfill(2) not in ("02", "03", "06", "07", "08", "15", "51")):
         diminuare = 1
     zile_platite = max(zile_lucratoare_cm - diminuare, 0)
     brut = (mz * pct * zile_platite).quantize(Decimal("1"))  # rotunjit la leu
