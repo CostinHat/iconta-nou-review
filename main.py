@@ -4171,3 +4171,90 @@ def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
         conn.commit()
     return {"inregistrare_id": iid, "mentiune": ment, "vies": v}
 
+
+
+@app.post("/tenants/{tenant_id}/import-extracomunitar")
+def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, valoare_vamala (RON), procent_taxa_vamala?, accize?, accesorii?,
+    cota?, certificat_amanare?, cont_destinatie, descriere?}.
+    Nota ciorna: marfa cont=401; taxe vamale cont=446; TVA dupa mod:
+    decont 4426=4427 | vama 4426=446 | cost cont=446."""
+    from decimal import Decimal
+    from core import import_export as _ie
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT COALESCE(platitor_tva, true) FROM {schema}.firma_profil LIMIT 1")
+            rand = cur.fetchone()
+            platitor = bool(rand[0]) if rand else True
+        try:
+            r = _ie.calcul_import(corp["valoare_vamala"],
+                                  corp.get("procent_taxa_vamala", 0),
+                                  corp.get("accize", 0), corp.get("accesorii", 0),
+                                  corp.get("cota", 21),
+                                  bool(corp.get("certificat_amanare")), platitor)
+            cont = str(corp["cont_destinatie"]).strip()
+            if not cont:
+                raise ValueError("cont_destinatie obligatoriu")
+            val = Decimal(str(corp["valoare_vamala"]))
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        mod_txt = {"decont": "TVA in decont (certificat art. 326(4), 4426=4427)",
+                   "vama": "TVA platita in vama (deducere pe DVI art. 299(1)c)",
+                   "cost": "neplatitor - TVA in cost"}[r["mod_tva"]]
+        descr = (corp.get("descriere") or "Import extracomunitar") + " - DVI, " + mod_txt
+        linii = [(cont, "401", val)]
+        if r["taxa_vamala"] > 0:
+            linii.append((cont, "446", r["taxa_vamala"]))
+        if r["mod_tva"] == "decont":
+            linii.append(("4426", "4427", r["tva"]))
+        elif r["mod_tva"] == "vama":
+            linii.append(("4426", "446", r["tva"]))
+        else:
+            linii.append((cont, "446", r["tva"]))
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for d, c, s in linii:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+        conn.commit()
+    return {"inregistrare_id": iid, "taxa_vamala": str(r["taxa_vamala"]),
+            "baza_tva": str(r["baza_tva"]), "tva": str(r["tva"]), "mod_tva": r["mod_tva"]}
+
+
+@app.post("/tenants/{tenant_id}/export-extracomunitar")
+def export_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, valoare, tara_client, dovada_export, cont_venit?, descriere?}.
+    Scutit art. 294(1)a cu DVE. Nota: 4111=70x fara TVA."""
+    from decimal import Decimal
+    from core import import_export as _ie
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            ok, ment = _ie.valideaza_export(corp.get("tara_client"),
+                                            bool(corp.get("dovada_export")))
+            val = Decimal(str(corp["valoare"]))
+            if val <= 0:
+                raise ValueError("valoare invalida")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        cont_venit = str(corp.get("cont_venit") or "707")
+        descr = (corp.get("descriere") or "Export") + f" ({corp['tara_client']}) - " + ment
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                            (inregistrare_id, cont_debit, cont_credit, suma)
+                            VALUES (%s,'4111',%s,%s)""", (iid, cont_venit, val))
+        conn.commit()
+    return {"inregistrare_id": iid, "mentiune": ment}
