@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict WhhAvQHo5rYRGrzihzrovA0oUhGSwAGzOkexXEjBytu2oq82qKcU2JoHaLGYcXN
+\restrict 9PIAuOwVuXNCVV7kMpdZBmGFArHBYm97i3H9N7QoZMgrJMuGAuLXsOl71pnBn1A
 
 -- Dumped from database version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
@@ -19,18 +19,20 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: tenant_001; Type: SCHEMA; Schema: -; Owner: -
+-- Name: tenant_001; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
 CREATE SCHEMA tenant_001;
 
+
+ALTER SCHEMA tenant_001 OWNER TO postgres;
 
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: asociati; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: asociati; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.asociati (
@@ -42,8 +44,10 @@ CREATE TABLE tenant_001.asociati (
 );
 
 
+ALTER TABLE tenant_001.asociati OWNER TO postgres;
+
 --
--- Name: asociati_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: asociati_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.asociati ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -57,7 +61,43 @@ ALTER TABLE tenant_001.asociati ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY
 
 
 --
--- Name: clienti; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: bonuri; Type: TABLE; Schema: tenant_001; Owner: iconta_user
+--
+
+CREATE TABLE tenant_001.bonuri (
+    id integer NOT NULL,
+    comerciant text,
+    cui text,
+    data date,
+    total numeric(12,2),
+    tva_11 numeric(12,2) DEFAULT 0,
+    tva_21 numeric(12,2) DEFAULT 0,
+    cont_cheltuiala character varying(10),
+    status character varying(20) DEFAULT 'de_verificat'::character varying NOT NULL,
+    inregistrare_id integer,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL,
+    articole jsonb DEFAULT '[]'::jsonb
+);
+
+
+ALTER TABLE tenant_001.bonuri OWNER TO iconta_user;
+
+--
+-- Name: bonuri_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: iconta_user
+--
+
+ALTER TABLE tenant_001.bonuri ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME tenant_001.bonuri_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: clienti; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.clienti (
@@ -75,8 +115,10 @@ CREATE TABLE tenant_001.clienti (
 );
 
 
+ALTER TABLE tenant_001.clienti OWNER TO postgres;
+
 --
--- Name: clienti_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: clienti_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.clienti ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -90,7 +132,7 @@ ALTER TABLE tenant_001.clienti ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY 
 
 
 --
--- Name: concedii_medicale; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: concedii_medicale; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.concedii_medicale (
@@ -125,8 +167,10 @@ CREATE TABLE tenant_001.concedii_medicale (
 );
 
 
+ALTER TABLE tenant_001.concedii_medicale OWNER TO postgres;
+
 --
--- Name: concedii_medicale_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: concedii_medicale_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.concedii_medicale ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -140,7 +184,43 @@ ALTER TABLE tenant_001.concedii_medicale ALTER COLUMN id ADD GENERATED ALWAYS AS
 
 
 --
--- Name: factura_linii; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: extras_linii; Type: TABLE; Schema: tenant_001; Owner: postgres
+--
+
+CREATE TABLE tenant_001.extras_linii (
+    id integer NOT NULL,
+    data date NOT NULL,
+    descriere text,
+    suma numeric(12,2) NOT NULL,
+    valuta boolean DEFAULT false NOT NULL,
+    tip character varying(10) NOT NULL,
+    cui_detectat character varying(30),
+    status character varying(15) DEFAULT 'nou'::character varying NOT NULL,
+    alocari jsonb,
+    nota_propusa jsonb,
+    fisier_sursa character varying(255),
+    creat_la timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE tenant_001.extras_linii OWNER TO postgres;
+
+--
+-- Name: extras_linii_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE tenant_001.extras_linii ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME tenant_001.extras_linii_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: factura_linii; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.factura_linii (
@@ -154,8 +234,10 @@ CREATE TABLE tenant_001.factura_linii (
 );
 
 
+ALTER TABLE tenant_001.factura_linii OWNER TO postgres;
+
 --
--- Name: factura_linii_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: factura_linii_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.factura_linii ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -169,7 +251,7 @@ ALTER TABLE tenant_001.factura_linii ALTER COLUMN id ADD GENERATED ALWAYS AS IDE
 
 
 --
--- Name: facturi; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: facturi; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.facturi (
@@ -198,8 +280,10 @@ CREATE TABLE tenant_001.facturi (
 );
 
 
+ALTER TABLE tenant_001.facturi OWNER TO postgres;
+
 --
--- Name: facturi_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: facturi_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.facturi ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -213,7 +297,7 @@ ALTER TABLE tenant_001.facturi ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY 
 
 
 --
--- Name: firma_profil; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: firma_profil; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.firma_profil (
@@ -249,8 +333,10 @@ CREATE TABLE tenant_001.firma_profil (
 );
 
 
+ALTER TABLE tenant_001.firma_profil OWNER TO postgres;
+
 --
--- Name: furnizori; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: furnizori; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.furnizori (
@@ -268,8 +354,10 @@ CREATE TABLE tenant_001.furnizori (
 );
 
 
+ALTER TABLE tenant_001.furnizori OWNER TO postgres;
+
 --
--- Name: furnizori_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: furnizori_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.furnizori ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -283,7 +371,7 @@ ALTER TABLE tenant_001.furnizori ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTIT
 
 
 --
--- Name: inregistrari; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: inregistrari; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.inregistrari (
@@ -299,8 +387,10 @@ CREATE TABLE tenant_001.inregistrari (
 );
 
 
+ALTER TABLE tenant_001.inregistrari OWNER TO postgres;
+
 --
--- Name: inregistrari_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: inregistrari_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.inregistrari ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -314,7 +404,7 @@ ALTER TABLE tenant_001.inregistrari ALTER COLUMN id ADD GENERATED ALWAYS AS IDEN
 
 
 --
--- Name: inregistrari_linii; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: inregistrari_linii; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.inregistrari_linii (
@@ -326,8 +416,10 @@ CREATE TABLE tenant_001.inregistrari_linii (
 );
 
 
+ALTER TABLE tenant_001.inregistrari_linii OWNER TO postgres;
+
 --
--- Name: inregistrari_linii_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: inregistrari_linii_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.inregistrari_linii ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -341,7 +433,7 @@ ALTER TABLE tenant_001.inregistrari_linii ALTER COLUMN id ADD GENERATED ALWAYS A
 
 
 --
--- Name: mijloace_fixe; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: mijloace_fixe; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.mijloace_fixe (
@@ -360,8 +452,10 @@ CREATE TABLE tenant_001.mijloace_fixe (
 );
 
 
+ALTER TABLE tenant_001.mijloace_fixe OWNER TO postgres;
+
 --
--- Name: mijloace_fixe_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: mijloace_fixe_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.mijloace_fixe ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -375,7 +469,7 @@ ALTER TABLE tenant_001.mijloace_fixe ALTER COLUMN id ADD GENERATED ALWAYS AS IDE
 
 
 --
--- Name: plan_conturi; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: plan_conturi; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.plan_conturi (
@@ -387,8 +481,10 @@ CREATE TABLE tenant_001.plan_conturi (
 );
 
 
+ALTER TABLE tenant_001.plan_conturi OWNER TO postgres;
+
 --
--- Name: produse; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: produse; Type: TABLE; Schema: tenant_001; Owner: iconta_user
 --
 
 CREATE TABLE tenant_001.produse (
@@ -405,8 +501,10 @@ CREATE TABLE tenant_001.produse (
 );
 
 
+ALTER TABLE tenant_001.produse OWNER TO iconta_user;
+
 --
--- Name: produse_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: produse_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: iconta_user
 --
 
 ALTER TABLE tenant_001.produse ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -420,7 +518,7 @@ ALTER TABLE tenant_001.produse ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY 
 
 
 --
--- Name: salariati; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: salariati; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.salariati (
@@ -445,8 +543,10 @@ CREATE TABLE tenant_001.salariati (
 );
 
 
+ALTER TABLE tenant_001.salariati OWNER TO postgres;
+
 --
--- Name: salariati_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: salariati_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.salariati ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -460,7 +560,7 @@ ALTER TABLE tenant_001.salariati ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTIT
 
 
 --
--- Name: solduri_initiale; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: solduri_initiale; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.solduri_initiale (
@@ -473,8 +573,10 @@ CREATE TABLE tenant_001.solduri_initiale (
 );
 
 
+ALTER TABLE tenant_001.solduri_initiale OWNER TO postgres;
+
 --
--- Name: solduri_initiale_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: solduri_initiale_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.solduri_initiale ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -488,7 +590,7 @@ ALTER TABLE tenant_001.solduri_initiale ALTER COLUMN id ADD GENERATED ALWAYS AS 
 
 
 --
--- Name: solduri_parteneri; Type: TABLE; Schema: tenant_001; Owner: -
+-- Name: solduri_parteneri; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
 CREATE TABLE tenant_001.solduri_parteneri (
@@ -502,8 +604,10 @@ CREATE TABLE tenant_001.solduri_parteneri (
 );
 
 
+ALTER TABLE tenant_001.solduri_parteneri OWNER TO postgres;
+
 --
--- Name: solduri_parteneri_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: -
+-- Name: solduri_parteneri_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE tenant_001.solduri_parteneri ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
@@ -517,7 +621,7 @@ ALTER TABLE tenant_001.solduri_parteneri ALTER COLUMN id ADD GENERATED ALWAYS AS
 
 
 --
--- Name: asociati asociati_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: asociati asociati_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.asociati
@@ -525,7 +629,15 @@ ALTER TABLE ONLY tenant_001.asociati
 
 
 --
--- Name: clienti clienti_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: bonuri bonuri_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: iconta_user
+--
+
+ALTER TABLE ONLY tenant_001.bonuri
+    ADD CONSTRAINT bonuri_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: clienti clienti_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.clienti
@@ -533,7 +645,7 @@ ALTER TABLE ONLY tenant_001.clienti
 
 
 --
--- Name: concedii_medicale concedii_medicale_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: concedii_medicale concedii_medicale_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.concedii_medicale
@@ -541,7 +653,15 @@ ALTER TABLE ONLY tenant_001.concedii_medicale
 
 
 --
--- Name: factura_linii factura_linii_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: extras_linii extras_linii_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.extras_linii
+    ADD CONSTRAINT extras_linii_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: factura_linii factura_linii_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.factura_linii
@@ -549,7 +669,7 @@ ALTER TABLE ONLY tenant_001.factura_linii
 
 
 --
--- Name: facturi facturi_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: facturi facturi_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.facturi
@@ -557,7 +677,7 @@ ALTER TABLE ONLY tenant_001.facturi
 
 
 --
--- Name: firma_profil firma_profil_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: firma_profil firma_profil_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.firma_profil
@@ -565,7 +685,7 @@ ALTER TABLE ONLY tenant_001.firma_profil
 
 
 --
--- Name: furnizori furnizori_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: furnizori furnizori_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.furnizori
@@ -573,7 +693,7 @@ ALTER TABLE ONLY tenant_001.furnizori
 
 
 --
--- Name: inregistrari_linii inregistrari_linii_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: inregistrari_linii inregistrari_linii_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.inregistrari_linii
@@ -581,7 +701,7 @@ ALTER TABLE ONLY tenant_001.inregistrari_linii
 
 
 --
--- Name: inregistrari inregistrari_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: inregistrari inregistrari_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.inregistrari
@@ -589,7 +709,7 @@ ALTER TABLE ONLY tenant_001.inregistrari
 
 
 --
--- Name: mijloace_fixe mijloace_fixe_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: mijloace_fixe mijloace_fixe_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.mijloace_fixe
@@ -597,7 +717,7 @@ ALTER TABLE ONLY tenant_001.mijloace_fixe
 
 
 --
--- Name: plan_conturi plan_conturi_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: plan_conturi plan_conturi_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.plan_conturi
@@ -605,7 +725,7 @@ ALTER TABLE ONLY tenant_001.plan_conturi
 
 
 --
--- Name: produse produse_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: produse produse_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: iconta_user
 --
 
 ALTER TABLE ONLY tenant_001.produse
@@ -613,7 +733,15 @@ ALTER TABLE ONLY tenant_001.produse
 
 
 --
--- Name: salariati salariati_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: salariati salariati_cnp_uniq; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.salariati
+    ADD CONSTRAINT salariati_cnp_uniq UNIQUE (cnp);
+
+
+--
+-- Name: salariati salariati_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.salariati
@@ -621,7 +749,7 @@ ALTER TABLE ONLY tenant_001.salariati
 
 
 --
--- Name: solduri_initiale solduri_initiale_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: solduri_initiale solduri_initiale_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.solduri_initiale
@@ -629,7 +757,7 @@ ALTER TABLE ONLY tenant_001.solduri_initiale
 
 
 --
--- Name: solduri_parteneri solduri_parteneri_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: solduri_parteneri solduri_parteneri_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.solduri_parteneri
@@ -637,14 +765,14 @@ ALTER TABLE ONLY tenant_001.solduri_parteneri
 
 
 --
--- Name: produse_denumire_idx; Type: INDEX; Schema: tenant_001; Owner: -
+-- Name: produse_denumire_idx; Type: INDEX; Schema: tenant_001; Owner: iconta_user
 --
 
 CREATE INDEX produse_denumire_idx ON tenant_001.produse USING btree (lower(denumire));
 
 
 --
--- Name: concedii_medicale concedii_medicale_salariat_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: concedii_medicale concedii_medicale_salariat_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.concedii_medicale
@@ -652,7 +780,7 @@ ALTER TABLE ONLY tenant_001.concedii_medicale
 
 
 --
--- Name: factura_linii factura_linii_factura_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: factura_linii factura_linii_factura_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.factura_linii
@@ -660,7 +788,7 @@ ALTER TABLE ONLY tenant_001.factura_linii
 
 
 --
--- Name: facturi facturi_client_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: facturi facturi_client_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.facturi
@@ -668,7 +796,7 @@ ALTER TABLE ONLY tenant_001.facturi
 
 
 --
--- Name: inregistrari inregistrari_factura_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: inregistrari inregistrari_factura_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.inregistrari
@@ -676,7 +804,7 @@ ALTER TABLE ONLY tenant_001.inregistrari
 
 
 --
--- Name: inregistrari_linii inregistrari_linii_inregistrare_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: -
+-- Name: inregistrari_linii inregistrari_linii_inregistrare_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
 ALTER TABLE ONLY tenant_001.inregistrari_linii
@@ -684,18 +812,204 @@ ALTER TABLE ONLY tenant_001.inregistrari_linii
 
 
 --
+-- Name: SCHEMA tenant_001; Type: ACL; Schema: -; Owner: postgres
+--
+
+GRANT ALL ON SCHEMA tenant_001 TO iconta_user;
+
+
+--
+-- Name: TABLE asociati; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.asociati TO iconta_user;
+
+
+--
+-- Name: SEQUENCE asociati_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.asociati_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE clienti; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.clienti TO iconta_user;
+
+
+--
+-- Name: SEQUENCE clienti_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.clienti_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE concedii_medicale; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.concedii_medicale TO iconta_user;
+
+
+--
+-- Name: SEQUENCE concedii_medicale_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.concedii_medicale_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE extras_linii; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.extras_linii TO iconta_user;
+
+
+--
+-- Name: TABLE factura_linii; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.factura_linii TO iconta_user;
+
+
+--
+-- Name: SEQUENCE factura_linii_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.factura_linii_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE facturi; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.facturi TO iconta_user;
+
+
+--
+-- Name: SEQUENCE facturi_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.facturi_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE firma_profil; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.firma_profil TO iconta_user;
+
+
+--
+-- Name: TABLE furnizori; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.furnizori TO iconta_user;
+
+
+--
+-- Name: SEQUENCE furnizori_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.furnizori_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE inregistrari; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.inregistrari TO iconta_user;
+
+
+--
+-- Name: SEQUENCE inregistrari_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.inregistrari_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE inregistrari_linii; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.inregistrari_linii TO iconta_user;
+
+
+--
+-- Name: SEQUENCE inregistrari_linii_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.inregistrari_linii_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE mijloace_fixe; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.mijloace_fixe TO iconta_user;
+
+
+--
+-- Name: SEQUENCE mijloace_fixe_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.mijloace_fixe_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE plan_conturi; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.plan_conturi TO iconta_user;
+
+
+--
+-- Name: TABLE salariati; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.salariati TO iconta_user;
+
+
+--
+-- Name: SEQUENCE salariati_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.salariati_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE solduri_initiale; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.solduri_initiale TO iconta_user;
+
+
+--
+-- Name: SEQUENCE solduri_initiale_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.solduri_initiale_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE solduri_parteneri; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.solduri_parteneri TO iconta_user;
+
+
+--
+-- Name: SEQUENCE solduri_parteneri_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON SEQUENCE tenant_001.solduri_parteneri_id_seq TO iconta_user;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict WhhAvQHo5rYRGrzihzrovA0oUhGSwAGzOkexXEjBytu2oq82qKcU2JoHaLGYcXN
+\unrestrict 9PIAuOwVuXNCVV7kMpdZBmGFArHBYm97i3H9N7QoZMgrJMuGAuLXsOl71pnBn1A
 
-
-CREATE TABLE IF NOT EXISTS tenant_001.bonuri (
-  id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  comerciant text, cui text, data date, total numeric(12,2),
-  tva_11 numeric(12,2) DEFAULT 0, tva_21 numeric(12,2) DEFAULT 0,
-  cont_cheltuiala varchar(10),
-  status varchar(20) NOT NULL DEFAULT 'de_verificat',
-  inregistrare_id integer,
-  creat_la timestamptz NOT NULL DEFAULT now()
-);
