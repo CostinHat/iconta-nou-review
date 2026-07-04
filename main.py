@@ -5054,3 +5054,54 @@ def nota_bacsis(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+
+
+@app.post("/tenants/{tenant_id}/nota-sgr")
+def nota_sgr(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, operatie achizitie|vanzare|restituire|autofactura|virare,
+    descriere?, + nr_ambalaje|suma, sursa casa|banca, +
+    autofactura{garantii_returnate, tarif_gestionare?, cota?}; virare{suma,
+    catre furnizor|plata}}. Garantia 0,50 lei/ambalaj, in afara sferei TVA."""
+    from core import sgr as _sg
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        op = corp.get("operatie")
+        try:
+            if op == "achizitie":
+                r = _sg.nota_garantie_achizitie(corp.get("nr_ambalaje"), corp.get("suma"))
+                d0 = "SGR: garantie platita furnizorului 461=401 (fara TVA)"
+            elif op == "vanzare":
+                r = _sg.nota_garantie_vanzare(corp.get("nr_ambalaje"), corp.get("suma"),
+                                              corp.get("sursa", "casa"))
+                d0 = "SGR: garantie incasata de la client (distinct pe bon)"
+            elif op == "restituire":
+                r = _sg.nota_restituire_consumator(corp.get("nr_ambalaje"),
+                                                   corp.get("suma"),
+                                                   corp.get("sursa", "casa"))
+                d0 = "SGR: restituire garantie consumator (461=creanta RetuRO)"
+            elif op == "autofactura":
+                r = _sg.nota_autofactura_returo(corp.get("garantii_returnate", 0),
+                                                corp.get("tarif_gestionare", 0),
+                                                corp.get("cota", 21))
+                d0 = "SGR: autofactura RetuRO (garantii fara TVA + tarif gestionare cu TVA)"
+            elif op == "virare":
+                r = _sg.nota_virare_garantii(corp["suma"], corp.get("catre", "furnizor"))
+                d0 = "SGR: virare garantii incasate catre amonte 462"
+            else:
+                raise ValueError("operatie: achizitie|vanzare|restituire|autofactura|virare")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - HG 1074/2021"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
