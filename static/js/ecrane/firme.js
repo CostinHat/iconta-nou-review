@@ -887,7 +887,19 @@ async function ecranRaportZ(corp, nav, t) {
         <div class="pf-frand-nume">Nota generata (#${r.nota_id})</div>
         <div class="pf-frand-sub">TVA 11%: ${r.tva_11.toFixed(2)} \u00b7 TVA 21%: ${r.tva_21.toFixed(2)} \u00b7 baze: ${r.baza_11.toFixed(2)} / ${r.baza_21.toFixed(2)}</div>
       </div><span class="pf-frand-ok">\u2713</span></div>`;
-    } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.mesaj || "Eroare"}</div>`; }
+      // [z_desc_v1] propune descarcarea gestiunii GV a lunii dupa nota Z
+      const dz = new Date(corp.querySelector("#z-data").value || new Date());
+      const anz = dz.getFullYear(), lz = dz.getMonth() + 1;
+      const zb = document.createElement("p");
+      zb.innerHTML = `<button class="btn btn-secundar" id="z-desc-gv">Descarc\u0103 gestiunea GV ${String(lz).padStart(2,"0")}/${anz} (not\u0103 ciorn\u0103)</button>`;
+      zona.appendChild(zb);
+      zb.querySelector("#z-desc-gv").addEventListener("click", async () => {
+        try {
+          const rd = await api.post(`/tenants/${t.id}/stocuri/descarcare?an=${anz}&luna=${lz}`, {});
+          zb.innerHTML = `<span class="pf-intro">Desc\u0103rcare GV \u00eenregistrat\u0103 (ciorn\u0103): 607 = ${rd.cmv ?? "?"} lei (K=${rd.k ?? "?"}).</span>`;
+        } catch (e2) { zb.innerHTML = `<span class="pf-intro">${(e2.mesaj || "Eroare la desc\u0103rcare")}</span>`; }
+      });
+        } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.mesaj || "Eroare"}</div>`; }
   });
 }
 
