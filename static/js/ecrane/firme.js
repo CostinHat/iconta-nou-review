@@ -353,6 +353,18 @@ async function sectiuneaCV(corp, t, zonaM) {
         <div id="cv-inv-zona" style="margin-top:8px"></div>
       </div>
       <div id="cv-fisa-zona"></div>
+      <div class="pf-card" style="margin-top:14px">
+        <h3 class="pf-subtitlu">Re\u021bete (HoReCa)</h3>
+        <div id="rt-lista"></div>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end">
+          <label>Denumire<br><input class="mig-text" id="rt-den" placeholder="ex. Meniu zilei"></label>
+          <label>Pre\u021b f\u0103r\u0103 TVA<br><input class="mig-text" type="number" step="0.01" id="rt-pret" style="width:110px"></label>
+          <button class="btn btn-secundar" id="rt-plus">+ ingredient</button>
+          <button class="btn" id="rt-salveaza">Salveaz\u0103 re\u021beta</button>
+        </div>
+        <div id="rt-ingrediente"></div>
+      </div>
+
     </div>`;
   const val = (id) => zona.querySelector(id).value;
   zona.querySelector("#cv-intrare").addEventListener("click", async () => {
@@ -377,6 +389,66 @@ async function sectiuneaCV(corp, t, zonaM) {
       sectiuneaCV(corp, t, zonaM);
     } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "Eroare")}</div>`; }
   });
+
+
+  // [retete_v1] Retete HoReCa: CRUD + descarcare pe reteta + food cost
+  const rtLista = zona.querySelector("#rt-lista");
+  const rtIng = zona.querySelector("#rt-ingrediente");
+  let rtLinii = [];
+  const rtDeseneazaIng = () => {
+    rtIng.innerHTML = rtLinii.map((l, i) => `
+      <div style="display:flex;gap:6px;margin-top:6px;align-items:center">
+        <select class="mig-text rt-art" data-i="${i}">${arts.map((a) =>
+          `<option value="${a.id}" ${a.id == l.articol_id ? "selected" : ""}>${escV(a.denumire)} \u00b7 CMP ${a.cmp}</option>`).join("")}</select>
+        <input class="mig-text rt-cant" data-i="${i}" type="number" step="0.001" value="${l.cantitate || ""}" placeholder="cant./por\u021bie" style="width:120px">
+        <button class="btn btn-sters rt-scoate" data-i="${i}">\u2212</button>
+      </div>`).join("");
+    rtIng.querySelectorAll(".rt-art").forEach((s) => s.addEventListener("change", (e) => { rtLinii[e.target.dataset.i].articol_id = parseInt(e.target.value); }));
+    rtIng.querySelectorAll(".rt-cant").forEach((s) => s.addEventListener("input", (e) => { rtLinii[e.target.dataset.i].cantitate = parseFloat(e.target.value); }));
+    rtIng.querySelectorAll(".rt-scoate").forEach((b) => b.addEventListener("click", (e) => { rtLinii.splice(e.target.dataset.i, 1); rtDeseneazaIng(); }));
+  };
+  const rtIncarca = async () => {
+    let rr = [];
+    try { const r = await api.get(`/tenants/${t.id}/retete`); rr = r.retete || []; } catch {}
+    rtLista.innerHTML = !rr.length ? `<div class="mig-gol">Nicio re\u021bet\u0103 \u00eenc\u0103.</div>`
+      : rr.map((r) => {
+          const fc = r.food_cost || {};
+          const pct = fc.food_cost_pct == null ? "\u2013" : fc.food_cost_pct + "%";
+          return `<div class="pf-frand">
+            <div class="pf-frand-text">
+              <div class="pf-frand-nume">${escV(r.denumire)} \u00b7 ${r.pret_fara_tva} lei</div>
+              <div class="pf-frand-sub">cost/por\u021bie ${fc.cost_portie} \u00b7 food cost ${pct} \u00b7 ${(r.linii || []).map((l) => `${escV(l.denumire)} ${l.cantitate}${escV(l.um || "")}`).join(", ")}</div>
+            </div>
+            <input class="mig-text rt-portii" data-id="${r.id}" type="number" placeholder="por\u021bii" style="width:80px">
+            <button class="btn rt-desc" data-id="${r.id}">Descarc\u0103 (ciorn\u0103)</button>
+            <button class="btn btn-sters rt-del" data-id="${r.id}">\u0218terge</button>
+          </div>`;
+        }).join("");
+    rtLista.querySelectorAll(".rt-desc").forEach((b) => b.addEventListener("click", async (e) => {
+      const id = e.target.dataset.id;
+      const p = rtLista.querySelector(`.rt-portii[data-id="${id}"]`).value;
+      if (!p) { zonaM.innerHTML = `<div class="mig-gol">Completeaz\u0103 num\u0103rul de por\u021bii.</div>`; return; }
+      try {
+        const r = await api.post(`/tenants/${t.id}/retete/descarca`, { reteta_id: parseInt(id), portii: parseFloat(p), data: val("#cv-data") || new Date().toISOString().slice(0, 10) });
+        zonaM.innerHTML = `<p class="pf-intro">Consum \u00eenregistrat (ciorn\u0103 #${r.inregistrare_id}) \u00b7 cost total ${r.cost_total} lei.</p>`;
+        sectiuneaCV(corp, t, zonaM); rtIncarca();
+      } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Eroare")}</div>`; }
+    }));
+    rtLista.querySelectorAll(".rt-del").forEach((b) => b.addEventListener("click", async (e) => {
+      try { await api.del(`/tenants/${t.id}/retete/${e.target.dataset.id}`); rtIncarca(); } catch {}
+    }));
+  };
+  zona.querySelector("#rt-plus").addEventListener("click", () => { rtLinii.push({ articol_id: arts[0] && arts[0].id, cantitate: "" }); rtDeseneazaIng(); });
+  zona.querySelector("#rt-salveaza").addEventListener("click", async () => {
+    const den = zona.querySelector("#rt-den").value.trim();
+    const linii = rtLinii.filter((l) => l.articol_id && l.cantitate > 0);
+    if (!den || !linii.length) { zonaM.innerHTML = `<div class="mig-gol">Completeaz\u0103 denumirea \u0219i cel pu\u021bin un ingredient.</div>`; return; }
+    try {
+      await api.post(`/tenants/${t.id}/retete`, { denumire: den, pret_fara_tva: parseFloat(zona.querySelector("#rt-pret").value || 0), linii });
+      zona.querySelector("#rt-den").value = ""; zona.querySelector("#rt-pret").value = ""; rtLinii = []; rtDeseneazaIng(); rtIncarca();
+    } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Eroare")}</div>`; }
+  });
+  rtIncarca();
 
   zona.querySelector("#cv-inv").addEventListener("click", () => {
     const z = zona.querySelector("#cv-inv-zona");
