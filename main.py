@@ -2179,7 +2179,12 @@ def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
-        return {"stat": _sp.stat_plata(conn, schema, an, luna)}
+        stat = _sp.stat_plata(conn, schema, an, luna)
+        try:
+            _snapshot_stat_plata(conn, schema, stat, an, luna)
+        except Exception:
+            conn.rollback()
+        return {"stat": stat}
 @app.get("/tenants/{tenant_id}/fluturas/{salariat_id}")
 def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from fastapi.responses import Response
@@ -3781,3 +3786,99 @@ def d406_active_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     except ValueError as e:
         raise HTTPException(422, str(e))
     return Response(content=xml, media_type="application/xml")
+
+
+@app.get("/tenants/{tenant_id}/d406-stocuri")
+def d406_stocuri_xml(tenant_id: int, data_start: str, data_end: str, cui: str,
+                     ctx=Depends(cere_cabinet)):
+    """Sectiunea PhysicalStock SAF-T pe perioada (D406 la cerere ANAF).
+    data_start/data_end: YYYY-MM-DD; cui: OwnerID (CUI firma)."""
+    from datetime import date as _date
+    from fastapi.responses import Response
+    from core import d406_stocuri as _m
+    try:
+        ds, de = _date.fromisoformat(data_start), _date.fromisoformat(data_end)
+    except ValueError:
+        raise HTTPException(422, "date format YYYY-MM-DD")
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT a.id, a.denumire, a.um, a.cont_stoc,
+                                   m.data, m.tip, m.cantitate, m.valoare
+                            FROM {schema}.articole a
+                            JOIN {schema}.miscari_stoc m ON m.articol_id = a.id
+                            WHERE m.data <= %s
+                            ORDER BY a.id, m.data, m.id""", (de,))
+            rows = cur.fetchall()
+    grupat = {}
+    for aid, den, um, cont, data, tip, cant, val in rows:
+        art, mis = grupat.setdefault(aid, ({"id": aid, "denumire": den, "um": um,
+                                            "cont_stoc": cont}, []))
+        mis.append({"data": data, "tip": tip, "cantitate": cant, "valoare": val})
+    try:
+        xml = _m.xml_physical_stock(list(grupat.values()), ds, de, cui)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    return Response(content=xml, media_type="application/xml")
+
+
+def _snapshot_stat_plata(conn, schema, rezultate, an, luna):
+    """Persista venit brut + zile lucrate per salariat (UPSERT), pt. media CM."""
+    from datetime import date as _date
+    import calendar as _cal
+    zile_luna = sum(1 for z in range(1, _cal.monthrange(an, luna)[1] + 1)
+                    if _date(an, luna, z).weekday() < 5)
+    with conn.cursor() as cur:
+        for r in rezultate:
+            zile = max(zile_luna - int(r.get("cm_zile") or 0), 0)
+            cur.execute(f"""INSERT INTO {schema}.state_plata
+                            (salariat_id, luna, venit_brut, zile_lucrate)
+                            VALUES (%s,%s,%s,%s)
+                            ON CONFLICT (salariat_id, luna) DO UPDATE
+                            SET venit_brut=EXCLUDED.venit_brut,
+                                zile_lucrate=EXCLUDED.zile_lucrate""",
+                        (r["id"], _date(an, luna, 1), r.get("brut", 0), zile))
+    conn.commit()
+
+
+@app.post("/tenants/{tenant_id}/calcul-cm")
+def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {salariat_id, an, luna (luna certificatului), zile_lucratoare_cm,
+    cod?, zile_episod?, prima_zi_din_episod?, spitalizare?, data_certificat?}.
+    Media reala din state_plata: 6 luni anterioare lunii certificatului
+    (sau cate exista, art. 10 al. 4 OUG 158/2005)."""
+    from datetime import date as _date
+    from core import salarizare as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        an, luna = int(corp["an"]), int(corp["luna"])
+        prima = _date(an, luna, 1)
+        start = _date(an - 1, luna + 6, 1) if luna <= 6 else _date(an, luna - 6, 1)
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT COALESCE(SUM(venit_brut),0), COALESCE(SUM(zile_lucrate),0),
+                                   COUNT(*)
+                            FROM {schema}.state_plata
+                            WHERE salariat_id=%s AND luna >= %s AND luna < %s""",
+                        (corp["salariat_id"], start, prima))
+            venituri, zile, nr_luni = cur.fetchone()
+    if nr_luni == 0 or zile == 0:
+        raise HTTPException(422, "fara istoric in state_plata pt. ultimele 6 luni - "
+                                 "ruleaza stat-plata pe lunile anterioare")
+    try:
+        r = _s.calcul_cm(venituri, zile, int(corp["zile_lucratoare_cm"]),
+                         cod=corp.get("cod", "01"),
+                         zile_episod=corp.get("zile_episod"),
+                         prima_zi_din_episod=corp.get("prima_zi_din_episod", True),
+                         spitalizare=corp.get("spitalizare", False),
+                         la_data=_date.fromisoformat(corp["data_certificat"])
+                                 if corp.get("data_certificat") else None)
+    except (ValueError, KeyError) as e:
+        raise HTTPException(422, str(e))
+    r["luni_in_baza"] = nr_luni
+    r["venituri_baza"] = str(venituri)
+    r["zile_baza"] = int(zile)
+    return r
