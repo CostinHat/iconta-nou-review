@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict dfhSRGianSLgxZQFckHlHBHnSqr2xfh90Ae4tPwvYBrk2NxnYsbAUnqhhnd7SFD
+\restrict dvt9E34bCyIEaT2f9va5jVBG5hp2AkVW6nOGSNUkpebHouWJAGAeyugWhRlFNqt
 
 -- Dumped from database version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
@@ -30,6 +30,36 @@ ALTER SCHEMA tenant_001 OWNER TO postgres;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+--
+-- Name: articole; Type: TABLE; Schema: tenant_001; Owner: postgres
+--
+
+CREATE TABLE tenant_001.articole (
+    id integer NOT NULL,
+    denumire character varying(255) NOT NULL,
+    um character varying(20) DEFAULT 'buc'::character varying NOT NULL,
+    cont_stoc character varying(10) DEFAULT '371'::character varying NOT NULL,
+    cont_cheltuiala character varying(10) DEFAULT '607'::character varying NOT NULL,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE tenant_001.articole OWNER TO postgres;
+
+--
+-- Name: articole_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE tenant_001.articole ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME tenant_001.articole_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
 
 --
 -- Name: asociati; Type: TABLE; Schema: tenant_001; Owner: postgres
@@ -503,6 +533,40 @@ ALTER TABLE tenant_001.mijloace_fixe ALTER COLUMN id ADD GENERATED ALWAYS AS IDE
 
 
 --
+-- Name: miscari_stoc; Type: TABLE; Schema: tenant_001; Owner: postgres
+--
+
+CREATE TABLE tenant_001.miscari_stoc (
+    id integer NOT NULL,
+    articol_id integer NOT NULL,
+    data date NOT NULL,
+    tip character varying(10) NOT NULL,
+    cantitate numeric(12,3) NOT NULL,
+    pret_unitar numeric(12,4),
+    valoare numeric(12,2) NOT NULL,
+    document character varying(100),
+    inregistrare_id integer,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE tenant_001.miscari_stoc OWNER TO postgres;
+
+--
+-- Name: miscari_stoc_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE tenant_001.miscari_stoc ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME tenant_001.miscari_stoc_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: nir; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
@@ -722,6 +786,14 @@ ALTER TABLE tenant_001.solduri_parteneri ALTER COLUMN id ADD GENERATED ALWAYS AS
 
 
 --
+-- Name: articole articole_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.articole
+    ADD CONSTRAINT articole_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: asociati asociati_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
@@ -823,6 +895,14 @@ ALTER TABLE ONLY tenant_001.inregistrari
 
 ALTER TABLE ONLY tenant_001.mijloace_fixe
     ADD CONSTRAINT mijloace_fixe_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: miscari_stoc miscari_stoc_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.miscari_stoc
+    ADD CONSTRAINT miscari_stoc_pkey PRIMARY KEY (id);
 
 
 --
@@ -937,6 +1017,14 @@ ALTER TABLE ONLY tenant_001.inregistrari_linii
 
 
 --
+-- Name: miscari_stoc miscari_stoc_articol_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.miscari_stoc
+    ADD CONSTRAINT miscari_stoc_articol_id_fkey FOREIGN KEY (articol_id) REFERENCES tenant_001.articole(id);
+
+
+--
 -- Name: nir_linii nir_linii_nir_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
@@ -949,6 +1037,13 @@ ALTER TABLE ONLY tenant_001.nir_linii
 --
 
 GRANT ALL ON SCHEMA tenant_001 TO iconta_user;
+
+
+--
+-- Name: TABLE articole; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.articole TO iconta_user;
 
 
 --
@@ -1099,6 +1194,13 @@ GRANT ALL ON SEQUENCE tenant_001.mijloace_fixe_id_seq TO iconta_user;
 
 
 --
+-- Name: TABLE miscari_stoc; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.miscari_stoc TO iconta_user;
+
+
+--
 -- Name: TABLE nir; Type: ACL; Schema: tenant_001; Owner: postgres
 --
 
@@ -1165,5 +1267,5 @@ GRANT ALL ON SEQUENCE tenant_001.solduri_parteneri_id_seq TO iconta_user;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict dfhSRGianSLgxZQFckHlHBHnSqr2xfh90Ae4tPwvYBrk2NxnYsbAUnqhhnd7SFD
+\unrestrict dvt9E34bCyIEaT2f9va5jVBG5hp2AkVW6nOGSNUkpebHouWJAGAeyugWhRlFNqt
 
