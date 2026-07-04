@@ -4,7 +4,7 @@
 import { api } from "../api.js";
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js?v=2";
-import { ecranRip } from "./rip_ecran.js?v=1";
+import { ecranRip } from "./rip_ecran.js?v=2";
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {

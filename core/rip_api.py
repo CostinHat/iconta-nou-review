@@ -162,3 +162,32 @@ def fisa_d212(conn, schema, an, optiune_cas=False, optiune_cass=False):
         r["avertisment"] = ("Cheltuielile limitate NU sunt in calcul - contabilul stabileste "
                             f"partea deductibila. {ciorne} ciorne neincluse.")
     return r
+
+
+def registru_inventar(conn, schema, an):
+    """Registrul-inventar (14-1-2/b): elemente de activ la 31.12.an.
+    MF la valoare ramasa (liniar), disponibilitati = sold RIP validat cumulat pana la 31.12."""
+    from datetime import date as _d
+    ref = _d(an, 12, 31)
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"""SELECT id, cod, denumire, valoare, rezidual, dnf_luni, data_pif
+                        FROM {schema}.mijloace_fixe WHERE activ AND data_pif <= %s""", (ref,))
+        mf = []
+        for r in cur.fetchall():
+            luni = (ref.year - r["data_pif"].year) * 12 + (ref.month - r["data_pif"].month)
+            luni = max(0, min(luni, r["dnf_luni"]))
+            amortizabil = float(r["valoare"]) - float(r["rezidual"] or 0)
+            amort = round(amortizabil * luni / r["dnf_luni"], 2) if r["dnf_luni"] else 0.0
+            mf.append({"denumire": r["denumire"], "cod": r["cod"],
+                       "valoare_intrare": float(r["valoare"]), "amortizare_cumulata": amort,
+                       "valoare_ramasa": round(float(r["valoare"]) - amort, 2)})
+        cur.execute(f"""SELECT
+              COALESCE(SUM(suma) FILTER (WHERE tip='incasare'),0)
+            - COALESCE(SUM(suma) FILTER (WHERE tip='plata'),0) AS sold
+            FROM {schema}.rip_operatiuni
+            WHERE status='validata' AND data_operatiune <= %s""", (ref,))
+        disponibil = float(cur.fetchone()["sold"])
+    total_mf = round(sum(m["valoare_ramasa"] for m in mf), 2)
+    return {"an": an, "data_referinta": str(ref), "mijloace_fixe": mf,
+            "total_mijloace_fixe": total_mf, "disponibilitati": round(disponibil, 2),
+            "total_activ": round(total_mf + disponibil, 2)}

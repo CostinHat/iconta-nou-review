@@ -3102,6 +3102,12 @@ def rip_import_casa(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet
     with db.get_conn() as conn:
         return _r.import_casa(conn, _rip_ctx(conn, ctx, tenant_id), an, luna, ctx["uid"])
 
+@app.get("/tenants/{tenant_id}/rip/inventar/{an}")
+def rip_inventar(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    from core import rip_api as _r
+    with db.get_conn() as conn:
+        return _r.registru_inventar(conn, _rip_ctx(conn, ctx, tenant_id), an)
+
 @app.get("/tenants/{tenant_id}/rip/d212/{an}")
 def rip_d212(tenant_id: int, an: int, optiune_cas: bool = False, optiune_cass: bool = False, ctx=Depends(cere_cabinet)):
     from core import rip_api as _r

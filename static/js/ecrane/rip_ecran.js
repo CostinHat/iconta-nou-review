@@ -51,6 +51,7 @@ export async function ecranRip(corp, nav, t) {
         <button class="btn btn-secundar" id="r-imp-banca">Import din banc\u0103 (ciorne)</button>
         <button class="btn btn-secundar" id="r-imp-casa">Import din cas\u0103 (ciorne)</button>
         <button class="btn btn-secundar" id="r-d212">Fi\u0219a D212</button>
+        <button class="btn btn-secundar" id="r-inv">Registru-inventar</button>
       </p>
       <div id="r-mesaj"></div>
       <div class="pf-frand" style="display:block;margin-bottom:14px">
@@ -113,6 +114,19 @@ export async function ecranRip(corp, nav, t) {
     corp.querySelector("#r-imp-casa").addEventListener("click", async () => {
       try { const r = await api.post(`/tenants/${t.id}/rip/import-casa?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ciorne importate din casa.</p>`; deseneaza(); }
       catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+    });
+
+    corp.querySelector("#r-inv").addEventListener("click", async () => {
+      try {
+        const d = await api.get(`/tenants/${t.id}/rip/inventar/${an}`);
+        const mf = (d.mijloace_fixe || []).map((m) =>
+          `<br>${esc(m.denumire)}: intrare ${m.valoare_intrare} \u2212 amortizare ${m.amortizare_cumulata} = <b>${m.valoare_ramasa}</b> lei`).join("");
+        zonaMsg.innerHTML = `<div class="pf-frand" style="display:block">
+          <div class="pf-frand-nume">Registru-inventar \u00b7 31.12.${d.an}</div>
+          <div class="pf-frand-sub">Mijloace fixe (valoare ramasa): <b>${d.total_mijloace_fixe}</b> lei${mf}
+          <br>Disponibilitati (RIP validat): <b>${d.disponibilitati}</b> lei
+          <br><b style="font-size:1.05em">Total activ: ${d.total_activ} lei</b></div></div>`;
+      } catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
     });
 
     corp.querySelector("#r-d212").addEventListener("click", async () => {
