@@ -4291,3 +4291,90 @@ def intrastat_praguri(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     return {"an": an, "introduceri": fmt(ri), "expedieri": fmt(re_),
             "nota": "obligatia de declarare la INS (intrastat.ro) incepe cu luna "
                     "depasirii pragului, separat pe flux (Ordin INS 1604/2025)"}
+
+
+@app.post("/tenants/{tenant_id}/decontare-valuta")
+def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765.
+    corp: {data, valoare_valuta, moneda, curs_evidenta, tip creanta|datorie,
+    cont_tert, cont_banca?, descriere?}. Cursul decontarii = BNR la data (auto)."""
+    from datetime import date as _date
+    from core import diferente_curs as _dc
+    from core import curs_bnr as _cb
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            data = _date.fromisoformat(corp["data"])
+            curs_dec, _dcurs, _sursa = _cb.curs_pentru(conn, corp.get("moneda", "EUR"), data)
+            r = _dc.nota_decontare(corp["valoare_valuta"], corp["curs_evidenta"],
+                                   curs_dec, corp["tip"], str(corp["cont_tert"]),
+                                   str(corp.get("cont_banca") or "5124"))
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        d = r["diferenta"]
+        descr = (corp.get("descriere") or "Decontare valuta") +                 f" {corp['valoare_valuta']} {corp.get('moneda','EUR')} curs {curs_dec}" +                 (f", dif. {d['sens']} {d['diferenta']} lei ({d['cont']})" if d["cont"] else "")
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'banca','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "curs_decontare": str(curs_dec),
+            "lei_evidenta": str(r["lei_evidenta"]),
+            "diferenta": {"suma": str(d["diferenta"]), "cont": d["cont"],
+                          "sens": d["sens"]}}
+
+
+@app.post("/tenants/{tenant_id}/reevaluare-valuta")
+def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """Reevaluare lunara solduri valuta (OMFP 1802 pct. 316), curs BNR auto.
+    corp: {data (ultima zi luna), solduri: [{cont, valoare_valuta, moneda,
+    curs_evidenta, tip creanta|datorie|disponibil}]}. O nota cu toate liniile."""
+    from datetime import date as _date
+    from core import diferente_curs as _dc
+    from core import curs_bnr as _cb
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            data = _date.fromisoformat(corp["data"])
+            solduri = corp["solduri"]
+            if not solduri:
+                raise ValueError("solduri gol")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        linii, detalii = [], []
+        try:
+            for s in solduri:
+                curs_bnr, _dcurs, _sursa = _cb.curs_pentru(conn, s.get("moneda", "EUR"), data)
+                r = _dc.reevaluare_sold(s["valoare_valuta"], s["curs_evidenta"],
+                                        curs_bnr, s["tip"], str(s["cont"]))
+                if r:
+                    linii.append(r["linie"])
+                    detalii.append({"cont": s["cont"], "curs_bnr": str(curs_bnr),
+                                    "diferenta": str(r["diferenta"]["diferenta"]),
+                                    "cont_rezultat": r["diferenta"]["cont"]})
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        if not linii:
+            return {"inregistrare_id": None, "detalii": [],
+                    "mesaj": "nicio diferenta de reevaluat"}
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'banca','ciorna') RETURNING id""",
+                        (corp["data"], f"Reevaluare solduri valuta la {corp['data']} "
+                                       "(OMFP 1802 pct. 316, curs BNR)"))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in linii:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "detalii": detalii}
