@@ -4378,3 +4378,51 @@ def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                                 VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
         conn.commit()
     return {"inregistrare_id": iid, "detalii": detalii}
+
+
+@app.post("/tenants/{tenant_id}/nota-leasing")
+def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, tip primire|rata|reziduala|operational, descriere?, cota?,
+    + campuri pe tip: primire{valoare_capital, dobanda_totala, cont_imobilizare?};
+    rata{capital, dobanda?, comision?}; reziduala{valoare_reziduala};
+    operational{chirie, cont_cheltuiala?}}. Nota ciorna."""
+    from core import leasing as _ls
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        tip = corp.get("tip")
+        cota = corp.get("cota", 21)
+        try:
+            if tip == "primire":
+                r = _ls.nota_primire_financiar(corp["valoare_capital"],
+                                               corp.get("dobanda_totala", 0),
+                                               str(corp.get("cont_imobilizare") or "2133"))
+                d0 = "Primire bun leasing financiar (2133=167 + D8051 dobanda)"
+            elif tip == "rata":
+                r = _ls.nota_rata_financiar(corp["capital"], corp.get("dobanda", 0),
+                                            corp.get("comision", 0), cota)
+                d0 = "Rata leasing financiar (167/666/628=404 + C8051)"
+            elif tip == "reziduala":
+                r = _ls.nota_reziduala(corp["valoare_reziduala"], cota)
+                d0 = "Valoare reziduala leasing (167=404, inchide 167)"
+            elif tip == "operational":
+                r = _ls.nota_rata_operational(corp["chirie"], cota,
+                                              str(corp.get("cont_cheltuiala") or "612"))
+                d0 = "Rata leasing operational (612=401)"
+            else:
+                raise ValueError("tip: primire|rata|reziduala|operational")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - OMFP 1802 pct. 212-217"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
