@@ -2295,6 +2295,18 @@ def portal_documente_luni(tenant_id: Optional[int] = None, ctx=Depends(cere_clie
         luni = documente_api.luni_disponibile(conn, t["schema_name"])
         decl = documente_api.declaratii_depuse(conn, t["id"])
     return {"luni": luni, "declaratii": decl}
+@app.get("/tenants/{tenant_id}/documente/balanta")
+def cabinet_documente_balanta(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    from fastapi.responses import Response
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        d = tenant_provisioning.detalii_tenant(conn, tenant_id)
+        pdf = documente_api.balanta_pdf(conn, schema, an, luna, (d or {}).get("nume") or "")
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="balanta_{an}_{luna:02d}.pdf"'})
+
 @app.get("/portal/documente/balanta")
 def portal_documente_balanta(an: int, luna: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     from fastapi.responses import Response

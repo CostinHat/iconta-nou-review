@@ -52,6 +52,9 @@ def balanta(conn, schema, an, luna):
             tsc = float(sc) + float(cred)
             fin_d = tsd - tsc if tsd > tsc else 0
             fin_c = tsc - tsd if tsc > tsd else 0
+            if not den:
+                from core.plan_omfp import denumire_omfp
+                den = denumire_omfp(cont)
             randuri.append({"cont": cont, "denumire": den,
                             "si_d": float(sd), "si_c": float(sc),
                             "rul_d": float(deb), "rul_c": float(cred),
