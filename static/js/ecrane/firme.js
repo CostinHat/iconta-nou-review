@@ -102,6 +102,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "stocuri", titlu: "Stocuri", desc: "NIR, adaos, desc\u0103rcare gestiune",
       bg: "#fbeedd", fg: "#92500a",
       icon: '<path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', activ: true },
+    { cheie: "bilant", titlu: "Bilan\u021b anual", desc: "S1005 micro / S1003 mici, validare ANAF",
+      bg: "#eef4ff", fg: "#1d4ed8",
+      icon: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>', activ: true },
     { cheie: "casa", titlu: "Cas\u0103", desc: "Registru de cas\u0103, plafoane numerar",
       bg: "#e6f6ec", fg: "#16a34a",
       icon: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/>', activ: true },
@@ -150,6 +153,10 @@ function meniuFirma(corp, nav, t) {
   const bZ = corp.querySelector("#fa-raportz");
   if (bZ) {
     bZ.addEventListener("click", () => ecranRaportZ(corp, nav, t));
+  }
+  const bBilant = corp.querySelector("#fa-bilant");
+  if (bBilant) {
+    bBilant.addEventListener("click", () => ecranBilant(corp, nav, t));
   }
   const bStocuri = corp.querySelector("#fa-stocuri");
   if (bStocuri) {
@@ -411,6 +418,55 @@ async function sectiuneaCV(corp, t, zonaM) {
 }
 
 // [stocuri] NIR + descarcare gestiune (global-valorica)
+
+async function ecranBilant(corp, nav, t) {
+  const escS = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  {
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Bilan\u021b anual \u00b7 ${escS(t.nume || "")}</h2>
+      <p class="pf-intro">Genereaz\u0103 \u0219i valideaz\u0103 situa\u021biile financiare (validator ANAF pe server).</p>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label>An<br><input type="number" id="bl-an" class="mig-text" value="${new Date().getFullYear() - 1}" style="width:90px"></label>
+        <label>Tip<br><select id="bl-tip" class="mig-text">
+          <option value="s1005">S1005 \u00b7 microentit\u0103\u021bi</option>
+          <option value="s1003">S1003 \u00b7 entit\u0103\u021bi mici</option>
+        </select></label>
+        <button class="btn" id="bl-val">Valideaz\u0103 (ANAF)</button>
+        <button class="btn btn-secundar" id="bl-xml">Descarc\u0103 XML</button>
+      </div>
+      <div id="bl-rez" style="margin-top:10px"></div>`;
+    const rez = corp.querySelector("#bl-rez");
+    const par = () => `an=${corp.querySelector("#bl-an").value}`;
+    const tip = () => corp.querySelector("#bl-tip").value;
+    corp.querySelector("#bl-val").addEventListener("click", async () => {
+      rez.innerHTML = `<div class="mig-gol">Se valideaz\u0103...</div>`;
+      try {
+        const r = await api.post(`/tenants/${t.id}/${tip()}-valideaza?${par()}`, {});
+        const sem = r.ok
+          ? `<span style="color:#1d7a4d;font-weight:600">\u25cf Validare f\u0103r\u0103 erori</span>`
+          : `<span style="color:#ff3b30;font-weight:600">\u25cf Erori la validare</span>`;
+        rez.innerHTML = `<p>${sem}</p>` +
+          (r.erori ? `<pre style="white-space:pre-wrap;font-size:12px;background:#f6f7f9;padding:8px;border-radius:8px">${escS(r.erori)}</pre>` : "") +
+          (r.avertismente && r.avertismente.length
+            ? `<p class="pf-intro">${r.avertismente.map(escS).join("<br>")}</p>` : "");
+      } catch (e) { rez.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
+    });
+    corp.querySelector("#bl-xml").addEventListener("click", async () => {
+      try {
+        const r = await api.get(`/tenants/${t.id}/${tip()}-xml?${par()}`);
+        const b = new Blob([r.xml], { type: "application/xml" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(b);
+        a.download = `${tip()}_${t.id}_${corp.querySelector("#bl-an").value}.xml`;
+        a.click();
+        if (r.avertismente && r.avertismente.length) {
+          rez.innerHTML = `<p class="pf-intro">${r.avertismente.map(escS).join("<br>")}</p>`;
+        }
+      } catch (e) { rez.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
+    });
+  }
+}
+
 async function ecranStocuri(corp, nav, t) {
   const escS = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const azi = new Date();
