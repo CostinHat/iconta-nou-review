@@ -3080,3 +3080,38 @@ def casa_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_cabinet)):
     if rez.get("eroare"):
         raise HTTPException(400, rez["eroare"])
     return rez
+
+
+# --- stocuri global-valorica ---
+@app.get("/tenants/{tenant_id}/stocuri/nir")
+def stocuri_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    from core import stocuri_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return {"nir": _s.lista_nir(conn, schema, an, luna)}
+
+@app.post("/tenants/{tenant_id}/stocuri/nir")
+def stocuri_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import stocuri_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _s.adauga_nir(conn, schema, corp)
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+@app.post("/tenants/{tenant_id}/stocuri/descarcare")
+def stocuri_descarcare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    from core import stocuri_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _s.descarca_luna(conn, schema, an, luna)
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez

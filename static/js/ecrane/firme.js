@@ -99,6 +99,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "raportz", titlu: "Raport Z", desc: "Incasari zilnice \u2192 nota automata",
       bg: "#fbeedd", fg: "#92500a",
       icon: '<path d="M4 4h16M4 4l16 16M4 20h16"/>', activ: true },
+    { cheie: "stocuri", titlu: "Stocuri", desc: "NIR, adaos, desc\u0103rcare gestiune",
+      bg: "#fbeedd", fg: "#92500a",
+      icon: '<path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', activ: true },
     { cheie: "casa", titlu: "Cas\u0103", desc: "Registru de cas\u0103, plafoane numerar",
       bg: "#e6f6ec", fg: "#16a34a",
       icon: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/>', activ: true },
@@ -147,6 +150,10 @@ function meniuFirma(corp, nav, t) {
   const bZ = corp.querySelector("#fa-raportz");
   if (bZ) {
     bZ.addEventListener("click", () => ecranRaportZ(corp, nav, t));
+  }
+  const bStocuri = corp.querySelector("#fa-stocuri");
+  if (bStocuri) {
+    bStocuri.addEventListener("click", () => ecranStocuri(corp, nav, t));
   }
   const bCasa = corp.querySelector("#fa-casa");
   if (bCasa) {
@@ -305,6 +312,107 @@ async function ecranSalariati(corp, nav, t) {
   deseneaza();
 }
 
+
+
+// [stocuri] NIR + descarcare gestiune (global-valorica)
+async function ecranStocuri(corp, nav, t) {
+  const escS = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const azi = new Date();
+  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  let liniiNir = [];
+
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+    let nirs = [];
+    try { const r = await api.get(`/tenants/${t.id}/stocuri/nir?an=${an}&luna=${luna}`); nirs = r.nir || []; } catch {}
+    const randuri = !nirs.length
+      ? `<div class="mig-gol">Niciun NIR in luna asta.</div>`
+      : nirs.map((n) => `
+        <div class="pf-frand">
+          <div class="pf-frand-text">
+            <div class="pf-frand-nume">NIR ${escS(n.numar)} \u00b7 ${escS(n.data)} \u00b7 ${escS(n.furnizor || "")}</div>
+            <div class="pf-frand-sub">cost ${n.cost_total} \u00b7 adaos ${n.adaos_total} \u00b7 TVA neex. ${n.tva_neexigibila} \u00b7 raft ${n.valoare_vanzare} lei</div>
+          </div>
+        </div>`).join("");
+    const randLinie = (l, i) => `
+      <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap" data-i="${i}">
+        <input type="text" class="mig-text sn-den" placeholder="denumire" value="${escS(l.denumire || "")}" style="flex:2;min-width:160px">
+        <input type="number" step="0.001" class="mig-text sn-cant" placeholder="cant." value="${l.cantitate || ""}" style="width:90px">
+        <input type="number" step="0.0001" class="mig-text sn-pa" placeholder="pret achizitie" value="${l.pret_achizitie || ""}" style="width:120px">
+        <input type="number" step="0.0001" class="mig-text sn-pv" placeholder="pret raft (cu TVA)" value="${l.pret_vanzare || ""}" style="width:140px">
+        <select class="mig-text sn-tva" style="width:80px">${[21, 11].map((c) => `<option value="${c}"${(l.cota_tva || 21) == c ? " selected" : ""}>${c}%</option>`).join("")}</select>
+        <button class="btn btn-secundar sn-scoate">\u2212</button>
+      </div>`;
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Stocuri \u00b7 ${escS(t.nume || "")}</h2>
+      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
+        <button class="btn btn-secundar" id="s-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="btn btn-secundar" id="s-next">luna \u2192</button>
+        <button class="btn" id="s-desc" style="margin-left:12px">Descarc\u0103 gestiunea lunii</button></p>
+      <div id="s-mesaj"></div>
+      <div class="pf-frand" style="display:block;margin-bottom:14px">
+        <div class="pf-frand-nume" style="margin-bottom:8px">NIR nou</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <input type="text" id="sn-numar" class="mig-text" placeholder="numar NIR" style="width:120px">
+          <input type="date" id="sn-data" class="mig-text" value="${new Date().toISOString().slice(0, 10)}">
+          <input type="text" id="sn-furn" class="mig-text" placeholder="furnizor" style="flex:1;min-width:160px">
+          <input type="text" id="sn-cui" class="mig-text" placeholder="CUI" style="width:120px">
+        </div>
+        <div id="sn-linii">${liniiNir.map(randLinie).join("")}</div>
+        <p><button class="btn btn-secundar" id="sn-plus">+ articol</button>
+           <button class="btn" id="sn-salveaza" style="margin-left:6px">Salveaz\u0103 NIR (note ciorne)</button></p>
+      </div>
+      <div class="pf-lista">${randuri}</div>`;
+    const zonaM = corp.querySelector("#s-mesaj");
+    const zonaL = corp.querySelector("#sn-linii");
+    const citesteLinii = () => [...zonaL.children].map((r) => ({
+      denumire: r.querySelector(".sn-den").value.trim(),
+      cantitate: parseFloat(r.querySelector(".sn-cant").value) || 0,
+      pret_achizitie: parseFloat(r.querySelector(".sn-pa").value) || 0,
+      pret_vanzare: parseFloat(r.querySelector(".sn-pv").value) || 0,
+      cota_tva: parseFloat(r.querySelector(".sn-tva").value),
+    }));
+    const leaga = () => zonaL.querySelectorAll(".sn-scoate").forEach((b) =>
+      b.addEventListener("click", () => { b.parentElement.remove(); }));
+    leaga();
+    corp.querySelector("#s-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } liniiNir = citesteLinii(); deseneaza(); });
+    corp.querySelector("#s-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } liniiNir = citesteLinii(); deseneaza(); });
+    corp.querySelector("#sn-plus").addEventListener("click", () => {
+      const d = document.createElement("div");
+      d.outerHTML_tmp = null;
+      d.innerHTML = randLinie({}, zonaL.children.length);
+      zonaL.appendChild(d.firstElementChild);
+      leaga();
+    });
+    corp.querySelector("#sn-salveaza").addEventListener("click", async () => {
+      const linii = citesteLinii().filter((l) => l.denumire);
+      if (!linii.length) { zonaM.innerHTML = `<div class="mig-gol">Adauga cel putin un articol.</div>`; return; }
+      try {
+        const r = await api.post(`/tenants/${t.id}/stocuri/nir`, {
+          numar: corp.querySelector("#sn-numar").value.trim(),
+          data: corp.querySelector("#sn-data").value,
+          furnizor: corp.querySelector("#sn-furn").value || null,
+          cui: corp.querySelector("#sn-cui").value || null,
+          linii,
+        });
+        liniiNir = [];
+        zonaM.innerHTML = `<p class="pf-intro">NIR salvat \u00b7 ${r.inregistrari.length} note ciorne (cost ${r.cost_total}, adaos ${r.adaos_total}, TVA neex. ${r.tva_neexigibila}).</p>`;
+        deseneaza();
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
+    });
+    corp.querySelector("#s-desc").addEventListener("click", async () => {
+      if (!confirm(`Descarci gestiunea pe ${String(luna).padStart(2, "0")}/${an}? Se calculeaza din notele VALIDATE.`)) return;
+      try {
+        const r = await api.post(`/tenants/${t.id}/stocuri/descarcare?an=${an}&luna=${luna}`, {});
+        zonaM.innerHTML = r.mesaj
+          ? `<div class="mig-gol">${escS(r.mesaj)}</div>`
+          : `<p class="pf-intro">K=${r.k} \u00b7 CMV ${r.cmv} \u00b7 adaos ${r.adaos} \u00b7 TVA ${r.tva} \u00b7 total 371: ${r.total_371} lei \u00b7 ${r.inregistrari.length} note ciorne.</p>`;
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
+    });
+  };
+  liniiNir = [{}];
+  deseneaza();
+}
 
 // [casa] Registru de casa
 async function ecranCasa(corp, nav, t) {
