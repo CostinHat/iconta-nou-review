@@ -52,6 +52,10 @@ def sterge(conn, schema, nota_id):
             return None
         if n["status"] != "ciorna":
             return {"eroare": "doar ciornele se pot sterge"}
+        cur.execute(f"DELETE FROM {schema}.casa_operatiuni WHERE inregistrare_id=%s", (nota_id,))
+        cur.execute(f"""UPDATE {schema}.extras_linii SET status='potrivit'
+                        WHERE status='contat'
+                          AND alocari->'inregistrari_ids' @> %s::jsonb""", (str(nota_id),))
         cur.execute(f"DELETE FROM {schema}.inregistrari WHERE id=%s", (nota_id,))
     conn.commit()
     return {"ok": True}

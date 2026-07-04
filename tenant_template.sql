@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 9PIAuOwVuXNCVV7kMpdZBmGFArHBYm97i3H9N7QoZMgrJMuGAuLXsOl71pnBn1A
+\restrict H1djxeQMbce2uLa1DYeEfqnLd7O8sAC7IwzmlC572ghiP4ZPI22pkFO7hyycJGM
 
 -- Dumped from database version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
@@ -88,6 +88,40 @@ ALTER TABLE tenant_001.bonuri OWNER TO iconta_user;
 
 ALTER TABLE tenant_001.bonuri ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
     SEQUENCE NAME tenant_001.bonuri_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: casa_operatiuni; Type: TABLE; Schema: tenant_001; Owner: postgres
+--
+
+CREATE TABLE tenant_001.casa_operatiuni (
+    id integer NOT NULL,
+    data date NOT NULL,
+    tip character varying(10) NOT NULL,
+    categorie character varying(30) NOT NULL,
+    document character varying(50),
+    partener character varying(255),
+    cui character varying(30),
+    suma numeric(12,2) NOT NULL,
+    inregistrare_id integer,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE tenant_001.casa_operatiuni OWNER TO postgres;
+
+--
+-- Name: casa_operatiuni_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE tenant_001.casa_operatiuni ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME tenant_001.casa_operatiuni_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -637,6 +671,14 @@ ALTER TABLE ONLY tenant_001.bonuri
 
 
 --
+-- Name: casa_operatiuni casa_operatiuni_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.casa_operatiuni
+    ADD CONSTRAINT casa_operatiuni_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: clienti clienti_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
@@ -833,6 +875,13 @@ GRANT ALL ON SEQUENCE tenant_001.asociati_id_seq TO iconta_user;
 
 
 --
+-- Name: TABLE casa_operatiuni; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.casa_operatiuni TO iconta_user;
+
+
+--
 -- Name: TABLE clienti; Type: ACL; Schema: tenant_001; Owner: postgres
 --
 
@@ -1011,5 +1060,5 @@ GRANT ALL ON SEQUENCE tenant_001.solduri_parteneri_id_seq TO iconta_user;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 9PIAuOwVuXNCVV7kMpdZBmGFArHBYm97i3H9N7QoZMgrJMuGAuLXsOl71pnBn1A
+\unrestrict H1djxeQMbce2uLa1DYeEfqnLd7O8sAC7IwzmlC572ghiP4ZPI22pkFO7hyycJGM
 

@@ -137,7 +137,8 @@ def conteaza(conn, schema, linie_id, alocari=None):
                 INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
                 VALUES (%s,%s,%s,%s)
             """, (iid, np["debit"], np["credit"], Decimal(str(np.get("suma") or l["suma"]))))
-            cur.execute(f"UPDATE {schema}.extras_linii SET status='contat' WHERE id=%s", (linie_id,))
+            cur.execute(f"UPDATE {schema}.extras_linii SET status='contat', alocari=%s WHERE id=%s",
+                        (json.dumps({**(l.get("alocari") or {}), "inregistrari_ids": [iid]}), linie_id))
             conn.commit()
             return {"inregistrari": [iid], "nota": f"{np['debit']}={np['credit']}"}
         banca = _cont_banca(l["valuta"])
@@ -158,7 +159,8 @@ def conteaza(conn, schema, linie_id, alocari=None):
         cur.execute(f"UPDATE {schema}.extras_linii SET status='contat', alocari=%s WHERE id=%s",
                     (json.dumps({**(l.get("alocari") or {}),
                                  "alocari": [{"factura_id": a["factura_id"], "suma": str(a["suma"])}
-                                             for a in aloc]}), linie_id))
+                                             for a in aloc],
+                                 "inregistrari_ids": create}), linie_id))
     conn.commit()
     return {"inregistrari": create, "nota": f"{debit}={credit}"}
 
