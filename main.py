@@ -3512,3 +3512,38 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
         conn.commit()
     return {"inregistrare_id": iid, "tva_la_incasare": bool(tvai),
             "linii": [{"debit": n["debit"], "credit": n["credit"], "suma": str(n["suma"])} for n in note]}
+
+
+@app.post("/tenants/{tenant_id}/vanzare-marja")
+def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, pret_vanzare, pret_cumparare, cota?, descriere?}. Nota ciorna
+    regim marja (art. 312): 4111=707 cost + 4111=707 marja neta + 4111=4427 TVA marja."""
+    from decimal import Decimal
+    from core import tva_marja as _m
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            r = _m.vanzare_marja(corp["pret_vanzare"], corp["pret_cumparare"], corp.get("cota", 21))
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], (corp.get("descriere") or "Vanzare regim marja (art. 312)")[:200]))
+            iid = cur.fetchone()[0]
+            linii = [("4111", "707", Decimal(str(corp["pret_cumparare"])))]
+            if r["marja_neta"] > 0:
+                linii.append(("4111", "707", r["marja_neta"]))
+            if r["tva"] > 0:
+                linii.append(("4111", "4427", r["tva"]))
+            for d, c, s in linii:
+                if s > 0:
+                    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                    (inregistrare_id, cont_debit, cont_credit, suma)
+                                    VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+        conn.commit()
+    return {"inregistrare_id": iid, "marja_bruta": str(r["marja_bruta"]),
+            "tva": str(r["tva"]), "marja_neta": str(r["marja_neta"]),
+            "avertisment": r["nota"]}
