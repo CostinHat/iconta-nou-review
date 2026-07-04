@@ -4824,3 +4824,42 @@ def nota_asociati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+
+
+@app.post("/tenants/{tenant_id}/nota-sponsorizare")
+def nota_sponsorizare_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, suma, mod contract|plata, descriere?, + optional pentru calcul
+    credit: cifra_afaceri, impozit_profit, tip_impozit profit|micro,
+    beneficiar_in_registru}. Nota 6582 + info credit fiscal/D177."""
+    from core import sponsorizari as _sp
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            r = _sp.nota_sponsorizare(corp["suma"], corp.get("mod", "contract"))
+            info = {}
+            if corp.get("cifra_afaceri") is not None:
+                c = _sp.credit_sponsorizare(corp["cifra_afaceri"],
+                                            corp.get("impozit_profit", 0),
+                                            corp["suma"],
+                                            corp.get("tip_impozit", "profit"),
+                                            corp.get("beneficiar_in_registru", True))
+                info = {k: (str(v) if not isinstance(v, str) else v)
+                        for k, v in c.items()}
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or "Sponsorizare (6582, nedeductibil, "
+                 "credit fiscal art. 25(4)i)")
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], "credit_fiscal": info}
