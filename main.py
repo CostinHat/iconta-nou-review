@@ -3647,3 +3647,65 @@ def vanzare_aur_investitii(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
                             VALUES (%s,'4111','707',%s)""", (iid, suma))
         conn.commit()
     return {"inregistrare_id": iid, "regim": regim, "suma": str(suma)}
+
+
+@app.post("/tenants/{tenant_id}/achizitie-agricultor")
+def achizitie_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, valoare (fara taxa), cont_cheltuiala, agricultor_in_registru,
+    agricultor?, descriere?}. Nota ciorna: % cont_chelt + 4426(compensatie 8%) = 401."""
+    from decimal import Decimal
+    from core import tva_agricultori as _m
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            r = _m.achizitie_de_la_agricultor(corp["valoare"], corp["agricultor_in_registru"])
+            cont = str(corp["cont_cheltuiala"]).strip()
+            if not cont:
+                raise ValueError("cont_cheltuiala obligatoriu")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or "Achizitie agricultor regim special (art. 315^1)") \
+                + ((" - " + corp["agricultor"]) if corp.get("agricultor") else "")
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for d, c, s in [(cont, "401", r["pret"]), ("4426", "401", r["compensatie"])]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+        conn.commit()
+    return {"inregistrare_id": iid, "pret": str(r["pret"]),
+            "compensatie": str(r["compensatie"]), "total": str(r["total"])}
+
+
+@app.post("/tenants/{tenant_id}/vanzare-agricultor")
+def vanzare_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, pret (fara taxa), descriere?}. Client agricultor regim special:
+    factura fara TVA, mentiune regim + 8% + compensatie. Nota: 4111 = 704 pret + 704 compensatie."""
+    from core import tva_agricultori as _m
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            r = _m.compensatie(corp["pret"])
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or "Livrare produse agricole") \
+                + " - regim special agricultori (art. 315^1), compensatie 8%"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for s in (r["pret"], r["compensatie"]):
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,'4111','704',%s)""", (iid, s))
+        conn.commit()
+    return {"inregistrare_id": iid, "pret": str(r["pret"]),
+            "compensatie": str(r["compensatie"]), "total": str(r["total"])}
