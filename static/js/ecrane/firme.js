@@ -389,6 +389,7 @@ async function ecranBanca(corp, nav, t) {
           <button class="btn" id="bk-pk-nu" style="margin-left:6px">Renun\u021b\u0103</button>
         </p>
       </div>`;
+    zonaMesaj.scrollIntoView({behavior:"smooth",block:"start"});
     zonaMesaj.querySelector("#bk-pk-nu").addEventListener("click", () => { zonaMesaj.innerHTML = ""; });
     zonaMesaj.querySelector("#bk-pk-ok").addEventListener("click", () => {
       let rest = parseFloat(l.suma);

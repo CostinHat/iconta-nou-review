@@ -32,13 +32,17 @@ def facturi_deschise(conn, schema):
                              JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
                              WHERE i.factura_id = f.id
                                AND ((f.directie='emisa'   AND l.cont_credit=%s)
-                                 OR (f.directie='primita' AND l.cont_debit=%s))), 0) AS decontat
+                                 OR (f.directie='primita' AND l.cont_debit=%s))), 0) AS decontat,
+                   COALESCE((SELECT SUM(COALESCE(st.total_lei, st.total))
+                             FROM {schema}.facturi st
+                             WHERE st.storno_din_id = f.id), 0) AS storno
             FROM {schema}.facturi f
             WHERE f.status NOT IN ('anulata','storno')
+              AND f.storno_din_id IS NULL
         """, (CONT_CLIENTI, CONT_FURNIZORI))
         rez = []
         for r in cur.fetchall():
-            sold = Decimal(r["total"] or 0) - Decimal(r["decontat"] or 0)
+            sold = Decimal(r["total"] or 0) - Decimal(r["decontat"] or 0) + Decimal(r["storno"] or 0)
             if sold > Decimal("0.01"):
                 rez.append({"id": r["id"], "tert_cui": r["tert_cui"],
                             "directie": r["directie"],
