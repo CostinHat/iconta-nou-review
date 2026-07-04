@@ -154,3 +154,72 @@ def xml_s1005(prof, an, f10p, f10c, f20p, f20c):
     H.append('  <F30%s/>' % "".join(f30))
     H.append('</Bilant1005>')
     return "\n".join(H)
+
+
+def f20_complet_din_rulaje(rl):
+    """F20 cont de profit si pierdere COMPLET (S1003, OMFP 1802 formular standard).
+    Intoarce dict rd->valoare. Randuri agregate calculate; iterat cu validatorul DUK."""
+    r = {}
+    # venituri exploatare
+    prod_vanduta = rc(rl, "701","702","703","704","705","706","708") - rd(rl, "709")
+    venit_marfa = rc(rl, "707")
+    r[2] = _i(prod_vanduta); r[3] = _i(venit_marfa)
+    r[4] = _i(rc(rl, "7411"))
+    r[5] = Decimal("0")  # reduceri comerciale acordate (709 deja scazut) - pe formular rd separat
+    r[1] = _i(prod_vanduta + venit_marfa + rc(rl, "7411"))
+    sold_711 = rc(rl, "711","712") - rd(rl, "711","712")
+    r[6] = _i(sold_711 if sold_711 > 0 else 0)   # sold C variatia stocurilor
+    r[7] = _i(-sold_711 if sold_711 < 0 else 0)  # sold D
+    r[8] = _i(rc(rl, "721","722","725"))
+    r[9] = _i(rc(rl, "741") - rc(rl, "7411") + rc(rl, "751","755","758") + rc(rl, "7815"))
+    r[10] = _i(Decimal(str(r[1])) + Decimal(str(r[6])) - Decimal(str(r[7])) + Decimal(str(r[8])) + Decimal(str(r[9])))
+    # cheltuieli exploatare
+    r[11] = _i(rd(rl, "601","602") - rc(rl, "609"))
+    r[12] = _i(rd(rl, "603","604","606","608"))
+    r[13] = _i(rd(rl, "605"))
+    r[14] = _i(rd(rl, "607"))
+    r[15] = Decimal("0")  # reduceri comerciale primite (609) - net in rd11 v1
+    r[16] = _i(rd(rl, "641","642","643","644","645","646"))
+    r[17] = _i(rd(rl, "6811","6813","6817") + rd(rl, "654") - rc(rl, "754","7813","7814"))
+    r[18] = _i(rd(rl, "611","612","613","614","615","621","622","623","624","625","626","627","628"))
+    r[19] = _i(rd(rl, "635"))
+    r[20] = _i(rd(rl, "651","652","655","658"))
+    r[21] = _i(rd(rl, "6812") - rc(rl, "7812"))
+    che_expl = (Decimal(str(r[11])) + Decimal(str(r[12])) + Decimal(str(r[13])) + Decimal(str(r[14]))
+                + Decimal(str(r[16])) + Decimal(str(r[17])) + Decimal(str(r[18])) + Decimal(str(r[19]))
+                + Decimal(str(r[20])) + Decimal(str(r[21])))
+    r[22] = _i(che_expl)
+    rez_expl = Decimal(str(r[10])) - che_expl
+    r[23] = _i(rez_expl if rez_expl > 0 else 0)
+    r[24] = _i(-rez_expl if rez_expl < 0 else 0)
+    # financiar
+    r[25] = _i(rc(rl, "761","762"))
+    r[26] = _i(rc(rl, "764","765","766","767","768","786"))
+    r[27] = _i(rd(rl, "663","664","665","666","667","668","686"))
+    ven_fin = Decimal(str(r[25])) + Decimal(str(r[26]))
+    r[28] = _i(ven_fin)
+    rez_fin = ven_fin - Decimal(str(r[27]))
+    r[29] = _i(rez_fin if rez_fin > 0 else 0)
+    r[30] = _i(-rez_fin if rez_fin < 0 else 0)
+    # totaluri
+    ven_tot = Decimal(str(r[10])) + ven_fin
+    che_tot = che_expl + Decimal(str(r[27]))
+    r[31] = _i(ven_tot); r[32] = _i(che_tot)
+    rez_brut = ven_tot - che_tot
+    r[33] = _i(rez_brut if rez_brut > 0 else 0)
+    r[34] = _i(-rez_brut if rez_brut < 0 else 0)
+    r[35] = _i(rd(rl, "691","698"))
+    r[36] = _i(rd(rl, "694","695","696","697"))
+    rez_net = rez_brut - Decimal(str(r[35])) - Decimal(str(r[36]))
+    r[37] = _i(rez_net if rez_net > 0 else 0)
+    r[38] = _i(-rez_net if rez_net < 0 else 0)
+    return {k: (v if isinstance(v, int) else _i(v)) for k, v in r.items()}
+
+
+def xml_s1003(prof, an, f10p, f10c, f20p, f20c):
+    """XML S1003 (mici) v15 - aceeasi structura antet ca S1005, tipBIL=BS."""
+    x = xml_s1005(prof, an, f10p, f10c, f20p, f20c)
+    x = x.replace("mfp:anaf:dgti:s1005:declaratie:v15", "mfp:anaf:dgti:s1003:declaratie:v15")
+    x = x.replace("<Bilant1005", "<Bilant1003").replace("</Bilant1005>", "</Bilant1003>")
+    x = x.replace('tipBIL="UU"', 'tipBIL="BS"')
+    return x

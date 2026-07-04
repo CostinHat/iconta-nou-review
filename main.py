@@ -3242,3 +3242,36 @@ def s1005_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     ok = "fara erori" in (r.stdout + r.stderr)
     return {"ok": ok, "erori": erori, "avertismente": av,
             "xml_b64": base64.b64encode(xml.encode()).decode()}
+
+
+# --- S1003 (bilant mici) ---
+@app.get("/tenants/{tenant_id}/s1003-xml")
+def s1003_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    from core import bilant_api as _ba
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        xml, av = _ba.genereaza_s1003(conn, schema, an)
+    return {"xml": xml, "avertismente": av}
+
+@app.post("/tenants/{tenant_id}/s1003-valideaza")
+def s1003_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    import base64, subprocess, tempfile, os
+    from core import bilant_api as _ba
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        xml, av = _ba.genereaza_s1003(conn, schema, an)
+    with tempfile.TemporaryDirectory() as td:
+        cale = os.path.join(td, f"s1003_{tenant_id}_{an}.xml")
+        open(cale, "w", encoding="utf-8").write(xml)
+        r = subprocess.run(["java", "-jar", "DUKIntegrator.jar", "-v", "S1003", cale],
+                           cwd="/home/costin/duk/dist", capture_output=True, text=True, timeout=120)
+        erori = ""
+        if os.path.exists(cale + ".err.txt"):
+            erori = open(cale + ".err.txt", encoding="utf-8").read()
+    ok = "fara erori" in (r.stdout + r.stderr)
+    return {"ok": ok, "erori": erori, "avertismente": av,
+            "xml_b64": base64.b64encode(xml.encode()).decode()}

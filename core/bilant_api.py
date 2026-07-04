@@ -80,3 +80,29 @@ def genereaza(conn, schema, an):
     if f10c.get(15) != f10c.get(49):
         av.append(f"Verificare: F(rd15)={f10c.get(15)} != J(rd49)={f10c.get(49)} - datorii>1an/provizioane/ven.avans pot explica diferenta.")
     return _b.xml_s1005(prof, an, f10p, f10c, f20p, f20c), av
+
+
+def genereaza_s1003(conn, schema, an):
+    """S1003 (mici): F10 identic, F20 complet."""
+    import re
+    av = []
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
+        p = dict(cur.fetchone() or {})
+        s_fin = _solduri_la(cur, schema, an)
+        s_ini = _solduri_initiale(cur, schema)
+        rl = _rulaje_67(cur, schema, an)
+    j = (p.get("judet") or "bucuresti").strip().lower()
+    prof = {
+        "cui_numeric": re.sub(r"\D", "", p.get("cui") or ""),
+        "nume": p.get("nume"), "caen": re.sub(r"\D", "", p.get("caen") or ""),
+        "reg_com": p.get("reg_com") or "", "adresa": p.get("adresa") or "",
+        "cod_judet": _JUD.get(j, 40),
+        "declarant_nume": p.get("declarant_nume"),
+        "intocmit_nume": p.get("declarant_nume"),
+    }
+    f10c = _b.f10_din_balanta(s_fin)
+    f10p = _b.f10_din_balanta(s_ini)
+    f20c = _b.f20_complet_din_rulaje(rl)
+    av.append("F20 an precedent necompletat - de completat manual daca e cazul.")
+    return _b.xml_s1003(prof, an, f10p, f10c, {}, f20c), av
