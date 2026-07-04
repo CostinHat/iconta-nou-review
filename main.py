@@ -3709,3 +3709,48 @@ def vanzare_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
         conn.commit()
     return {"inregistrare_id": iid, "pret": str(r["pret"]),
             "compensatie": str(r["compensatie"]), "total": str(r["total"])}
+
+
+@app.get("/tenants/{tenant_id}/jurnal-marja")
+def jurnal_marja(tenant_id: int, tip: str, luna: str, ctx=Depends(cere_cabinet)):
+    """tip: secondhand|turism; luna: YYYY-MM. Jurnal special vanzari regim marja:
+    per nota cost/marja neta/TVA + totaluri perioada (norme pct. 86)."""
+    from decimal import Decimal
+    marker = {"secondhand": "art. 312", "turism": "art. 311"}.get(tip)
+    if not marker:
+        raise HTTPException(422, "tip invalid (secondhand|turism)")
+    if len(luna) != 7 or luna[4] != "-":
+        raise HTTPException(422, "luna format YYYY-MM")
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT i.id, i.data, i.descriere, i.status,
+                                   l.cont_credit, l.suma, l.id
+                            FROM {schema}.inregistrari i
+                            JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
+                            WHERE i.descriere LIKE %s
+                              AND to_char(i.data, 'YYYY-MM') = %s
+                            ORDER BY i.data, i.id, l.id""",
+                        ("%" + marker + "%", luna))
+            rows = cur.fetchall()
+    note = {}
+    for iid, data, descr, status, cont, suma, lid in rows:
+        n = note.setdefault(iid, {"id": iid, "data": str(data), "descriere": descr,
+                                  "status": status, "cost": Decimal("0"),
+                                  "marja_neta": Decimal("0"), "tva": Decimal("0")})
+        if cont == "4427":
+            n["tva"] += suma
+        elif n["cost"] == 0:
+            n["cost"] = suma
+        else:
+            n["marja_neta"] += suma
+    tot_cost = sum(n["cost"] for n in note.values())
+    tot_marja = sum(n["marja_neta"] for n in note.values())
+    tot_tva = sum(n["tva"] for n in note.values())
+    return {"tip": tip, "luna": luna, "numar_note": len(note),
+            "note": [{**n, "cost": str(n["cost"]), "marja_neta": str(n["marja_neta"]),
+                      "tva": str(n["tva"])} for n in note.values()],
+            "total_cost": str(tot_cost), "total_baza_marja_neta": str(tot_marja),
+            "total_tva_colectata": str(tot_tva)}
