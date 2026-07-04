@@ -99,13 +99,13 @@ def import_banca(conn, schema, an, luna, user_id=None):
     with conn.cursor() as cur:
         cur.execute(f"""INSERT INTO {schema}.rip_operatiuni
             (data_operatiune, tip, document_tip, explicatie, suma, metoda, categorie,
-             status, creat_de, banca_linie_id)
+             deductibilitate, status, creat_de, banca_linie_id)
             SELECT el.data,
-                   CASE WHEN el.tip='credit' THEN 'incasare' ELSE 'plata' END,
+                   CASE WHEN el.tip='incasare' THEN 'incasare' ELSE 'plata' END,
                    'extras cont', COALESCE(NULLIF(el.descriere,''), 'operatiune bancara'),
                    ABS(el.suma), 'banca',
-                   CASE WHEN el.tip='credit' THEN 'activitate' ELSE 'cheltuiala_deductibila' END,
-                   CASE WHEN el.tip='credit' THEN NULL ELSE 'integral' END,
+                   CASE WHEN el.tip='incasare' THEN 'activitate' ELSE 'cheltuiala_deductibila' END,
+                   CASE WHEN el.tip='incasare' THEN NULL ELSE 'integral' END,
                    'ciorna', %s, el.id
             FROM {schema}.extras_linii el
             WHERE EXTRACT(YEAR FROM el.data)=%s AND EXTRACT(MONTH FROM el.data)=%s

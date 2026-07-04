@@ -1,0 +1,148 @@
+// [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
+import { api } from "../api.js";
+
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+const CATEGORII_INC = [
+  ["activitate", "Incasare din activitate"],
+  ["aport", "Aport numerar/banca"],
+  ["credit", "Credit / imprumut primit"],
+  ["subventie", "Subventie / fonduri"],
+  ["alte_incasari", "Alte incasari"],
+];
+const CATEGORII_PL = [
+  ["cheltuiala_deductibila", "Cheltuiala deductibila"],
+  ["cheltuiala_limitata", "Cheltuiala deductibila limitat"],
+  ["cheltuiala_nedeductibila", "Cheltuiala nedeductibila"],
+  ["aport_retragere", "Retragere aport"],
+  ["rambursare_credit", "Rambursare credit"],
+];
+
+export async function ecranRip(corp, nav, t) {
+  const azi = new Date();
+  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+    let reg = { operatiuni: [], total_incasari: "0", total_plati: "0", sold: "0" };
+    try { reg = await api.get(`/tenants/${t.id}/rip/registru?an=${an}&luna=${luna}`); } catch {}
+    const ziAzi = new Date().toISOString().slice(0, 10);
+
+    const randuri = !(reg.operatiuni || []).length
+      ? `<div class="mig-gol">Nicio operatiune in luna asta.</div>`
+      : reg.operatiuni.map((o) => `
+        <div class="pf-frand">
+          <div class="pf-frand-text">
+            <div class="pf-frand-nume">${esc(o.data_operatiune)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${o.suma} ${esc(o.valuta)}
+              ${o.status === "ciorna" ? '<span style="color:#c9961f;font-weight:600"> \u00b7 CIORNA</span>' : '<span style="color:#1d7a4d;font-weight:600"> \u00b7 VALIDATA</span>'}</div>
+            <div class="pf-frand-sub">${esc(o.explicatie)} \u00b7 ${esc(o.categorie)}${o.deductibilitate ? " \u00b7 " + esc(o.deductibilitate) : ""}${o.document_numar ? " \u00b7 doc " + esc(o.document_numar) : ""} \u00b7 ${esc(o.metoda)}</div>
+          </div>
+          ${o.status === "ciorna" ? `<button class="btn" data-val="${o.id}">Valideaza</button>
+          <button class="btn btn-secundar" data-del="${o.id}">\u0218terge</button>` : ""}
+        </div>`).join("");
+
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Registru \u00eencas\u0103ri/pl\u0103\u021bi \u00b7 ${esc(t.nume || "")}</h2>
+      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
+        \u00b7 \u00eencas\u0103ri <b>${reg.total_incasari}</b> \u00b7 pl\u0103\u021bi <b>${reg.total_plati}</b> \u00b7 sold <b>${reg.sold} lei</b>
+        <button class="btn btn-secundar" id="r-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="btn btn-secundar" id="r-next">luna \u2192</button></p>
+      <p>
+        <button class="btn btn-secundar" id="r-imp-banca">Import din banc\u0103 (ciorne)</button>
+        <button class="btn btn-secundar" id="r-imp-casa">Import din cas\u0103 (ciorne)</button>
+        <button class="btn btn-secundar" id="r-d212">Fi\u0219a D212</button>
+      </p>
+      <div id="r-mesaj"></div>
+      <div class="pf-frand" style="display:block;margin-bottom:14px">
+        <div class="pf-frand-nume" style="margin-bottom:8px">Opera\u021biune nou\u0103</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:1000px">
+          <label>Data<br><input type="date" id="r-data" class="mig-text" value="${ziAzi}"></label>
+          <label>Tip<br><select id="r-tip" class="mig-text"><option value="incasare">Incasare</option><option value="plata">Plata</option></select></label>
+          <label>Categorie<br><select id="r-cat" class="mig-text"></select></label>
+          <label>Deductibilitate<br><select id="r-ded" class="mig-text" disabled>
+            <option value="">-</option><option value="integral">integral</option>
+            <option value="limitat">limitat</option><option value="nedeductibil">nedeductibil</option></select></label>
+          <label>Suma (lei)<br><input type="number" step="0.01" id="r-suma" class="mig-text" value="0"></label>
+          <label>Metoda<br><select id="r-met" class="mig-text"><option value="numerar">numerar</option><option value="banca">banca</option></select></label>
+          <label>Explicatie<br><input type="text" id="r-expl" class="mig-text"></label>
+          <label>Document nr.<br><input type="text" id="r-doc" class="mig-text"></label>
+        </div>
+        <p style="margin-top:10px"><button class="btn" id="r-adauga">Adauga (ciorna)</button></p>
+      </div>
+      <div class="pf-lista">${randuri}</div>`;
+
+    const zonaMsg = corp.querySelector("#r-mesaj");
+    const selTip = corp.querySelector("#r-tip"), selCat = corp.querySelector("#r-cat"), selDed = corp.querySelector("#r-ded");
+    const umpleCat = () => {
+      const cats = selTip.value === "incasare" ? CATEGORII_INC : CATEGORII_PL;
+      selCat.innerHTML = cats.map(([v, l]) => `<option value="${v}">${l}</option>`).join("");
+      actDed();
+    };
+    const actDed = () => {
+      const eChelt = selTip.value === "plata" && selCat.value.startsWith("cheltuiala");
+      selDed.disabled = !eChelt;
+      selDed.value = eChelt ? (selCat.value === "cheltuiala_limitata" ? "limitat"
+        : selCat.value === "cheltuiala_nedeductibila" ? "nedeductibil" : "integral") : "";
+    };
+    selTip.addEventListener("change", umpleCat);
+    selCat.addEventListener("change", actDed);
+    umpleCat();
+
+    corp.querySelector("#r-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#r-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+
+    corp.querySelector("#r-adauga").addEventListener("click", async () => {
+      try {
+        await api.post(`/tenants/${t.id}/rip/operatiuni`, {
+          data_operatiune: corp.querySelector("#r-data").value,
+          tip: selTip.value, categorie: selCat.value,
+          deductibilitate: selDed.value || null,
+          suma: parseFloat(corp.querySelector("#r-suma").value || "0"),
+          metoda: corp.querySelector("#r-met").value,
+          explicatie: corp.querySelector("#r-expl").value,
+          document_numar: corp.querySelector("#r-doc").value || null,
+        });
+        deseneaza();
+      } catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+    });
+
+    corp.querySelector("#r-imp-banca").addEventListener("click", async () => {
+      try { const r = await api.post(`/tenants/${t.id}/rip/import-banca?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ciorne importate din banca.</p>`; deseneaza(); }
+      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+    });
+    corp.querySelector("#r-imp-casa").addEventListener("click", async () => {
+      try { const r = await api.post(`/tenants/${t.id}/rip/import-casa?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ciorne importate din casa.</p>`; deseneaza(); }
+      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+    });
+
+    corp.querySelector("#r-d212").addEventListener("click", async () => {
+      try {
+        const d = await api.get(`/tenants/${t.id}/rip/d212/2025`);
+        zonaMsg.innerHTML = `
+          <div class="pf-frand" style="display:block">
+            <div class="pf-frand-nume">Fi\u0219a de calcul D212 \u00b7 venituri 2025 (sm 4.050 lei)</div>
+            <div class="pf-frand-sub">
+              Venit brut: <b>${d.venit_brut}</b> \u00b7 Cheltuieli deductibile: <b>${d.cheltuieli_deductibile}</b> \u00b7 Venit net: <b>${d.venit_net}</b><br>
+              CAS (25%): <b>${d.cas.cas}</b> lei${d.cas.obligatoriu ? "" : " (neobligatoriu - sub 12 salarii minime)"} \u00b7 baza ${d.cas.baza}<br>
+              CASS (10%): <b>${d.cass.cass}</b> lei${d.cass.obligatoriu ? "" : " (neobligatoriu - sub 6 salarii minime)"} \u00b7 baza ${d.cass.baza}<br>
+              Baza impozit: <b>${d.baza_impozit}</b> \u00b7 Impozit (10%): <b>${d.impozit}</b> lei<br>
+              <b style="font-size:1.05em">Total datorat: ${d.total_datorat} lei</b>
+              ${d.cheltuieli_limitate_de_analizat > 0 ? `<br><span style="color:#c9961f">Cheltuieli limitate de analizat: ${d.cheltuieli_limitate_de_analizat} lei</span>` : ""}
+              ${d.ciorne_nevalidate > 0 ? `<br><span style="color:#ff3b30">${d.ciorne_nevalidate} ciorne nevalidate - neincluse in calcul</span>` : ""}
+              ${d.avertisment ? `<br><span style="color:#c9961f">${esc(d.avertisment)}</span>` : ""}
+            </div>
+          </div>`;
+      } catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+    });
+
+    corp.querySelectorAll("[data-val]").forEach((b) => b.addEventListener("click", async () => {
+      try { await api.put(`/tenants/${t.id}/rip/operatiuni/${b.dataset.val}/valideaza`, {}); deseneaza(); }
+      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+    }));
+    corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
+      try { await api.del(`/tenants/${t.id}/rip/operatiuni/${b.dataset.del}`); deseneaza(); }
+      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+    }));
+  };
+  deseneaza();
+}
