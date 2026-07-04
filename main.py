@@ -3275,3 +3275,44 @@ def s1003_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     ok = "fara erori" in (r.stdout + r.stderr)
     return {"ok": ok, "erori": erori, "avertismente": av,
             "xml_b64": base64.b64encode(xml.encode()).decode()}
+
+
+# --- Retetar HoReCa ---
+@app.get("/tenants/{tenant_id}/retete")
+def retete_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
+    from core import retete_api as _r
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _r.lista(conn, schema)
+
+@app.post("/tenants/{tenant_id}/retete")
+def retete_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import retete_api as _r
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _r.salveaza(conn, schema, corp)
+
+@app.delete("/tenants/{tenant_id}/retete/{reteta_id}")
+def retete_sterge(tenant_id: int, reteta_id: int, ctx=Depends(cere_cabinet)):
+    from core import retete_api as _r
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _r.sterge(conn, schema, reteta_id)
+
+@app.post("/tenants/{tenant_id}/retete/descarca")
+def retete_descarca(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import retete_api as _r
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            return _r.descarca(conn, schema, corp)
+        except ValueError as e:
+            raise HTTPException(400, str(e))
