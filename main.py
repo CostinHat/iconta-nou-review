@@ -3547,3 +3547,62 @@ def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
     return {"inregistrare_id": iid, "marja_bruta": str(r["marja_bruta"]),
             "tva": str(r["tva"]), "marja_neta": str(r["marja_neta"]),
             "avertisment": r["nota"]}
+
+
+@app.post("/tenants/{tenant_id}/vanzare-marja-turism")
+def vanzare_marja_turism(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, calitate_client PF|PJ, locuri [RO|UE|NONUE], optiune_normal?,
+    intermediar?, cota?, descriere?} + per regim:
+    special: incasat, cost_ue, cost_non_ue? | normal: componente [{descriere,baza,cota}]
+    | intermediar: comision, tva_inclus?. Nota intra mereu ciorna (art. 311 CF)."""
+    from decimal import Decimal
+    from core import tva_marja_turism as _m
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            regim = _m.determina_regim(corp["calitate_client"], corp.get("locuri", ["RO"]),
+                                       corp.get("optiune_normal", False),
+                                       corp.get("intermediar", False))
+            cota = corp.get("cota", 21)
+            if regim == "special":
+                r = _m.marja_turism_special(corp["incasat"], corp["cost_ue"],
+                                            corp.get("cost_non_ue", 0), cota)
+                linii = [("4111", "704", Decimal(str(corp["cost_ue"])) + Decimal(str(corp.get("cost_non_ue", 0))))]
+                if r["marja_neta"] > 0:
+                    linii.append(("4111", "704", r["marja_neta"]))
+                if r["tva"] > 0:
+                    linii.append(("4111", "4427", r["tva"]))
+                rasp = {"regim": regim, "marja_bruta": str(r["marja_bruta"]),
+                        "marja_scutita": str(r["marja_scutita"]), "tva": str(r["tva"]),
+                        "marja_neta": str(r["marja_neta"]), "nota": r["nota"]}
+            elif regim == "normal":
+                r = _m.marja_turism_normal(corp["componente"])
+                linii = [("4111", "704", comp["baza"]) for comp in r["componente"]]
+                if r["total_tva"] > 0:
+                    linii.append(("4111", "4427", r["total_tva"]))
+                rasp = {"regim": regim, "total_baza": str(r["total_baza"]),
+                        "total_tva": str(r["total_tva"]), "total_factura": str(r["total_factura"])}
+            else:
+                r = _m.comision_intermediar(corp["comision"], cota, corp.get("tva_inclus", False))
+                linii = [("4111", "704", r["baza"])]
+                if r["tva"] > 0:
+                    linii.append(("4111", "4427", r["tva"]))
+                rasp = {"regim": regim, "baza": str(r["baza"]), "tva": str(r["tva"]),
+                        "total": str(r["total"])}
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], (corp.get("descriere") or f"Vanzare marja turism ({regim}, art. 311)")[:200]))
+            iid = cur.fetchone()[0]
+            for d, c, s in linii:
+                if s > 0:
+                    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                    (inregistrare_id, cont_debit, cont_credit, suma)
+                                    VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+        conn.commit()
+    rasp["inregistrare_id"] = iid
+    return rasp
