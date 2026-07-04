@@ -736,7 +736,7 @@ async function ecranBanca(corp, nav, t) {
   const zonaLista = corp.querySelector("#bk-lista");
 
   function badge(l) {
-    if (l.status === "ignorat") return `<span style="color:#3a4250">Ignorată</span>`;
+    if (l.status === "ignorat") return `<span style="color:#3a4250">Ignorată</span> <button class="btn-link bk-undo" data-id="${l.id}">readu</button>`;
     if (l.status === "contat") return `<span style="color:${CUL.gri};font-weight:600">Contat \u2713</span>`;
     const m = (l.alocari || {}).status_match;
     if (m === "verde") return `<span style="color:${CUL.verde};font-weight:600">\u25cf Match exact</span>`;
@@ -772,6 +772,11 @@ async function ecranBanca(corp, nav, t) {
     zonaLista.querySelectorAll("[data-ign]").forEach((b) =>
       b.addEventListener("click", async () => {
         try { await api.post(`/tenants/${t.id}/banca/reconciliere/${b.dataset.ign}/ignora`, {}); incarca(); }
+        catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${e.mesaj || "Eroare"}</div>`; }
+      }));
+    zonaLista.querySelectorAll(".bk-undo").forEach((b) =>
+      b.addEventListener("click", async () => {
+        try { await api.post(`/tenants/${t.id}/banca/reconciliere/${b.dataset.id}/reactiveaza`, {}); incarca(); }
         catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${e.mesaj || "Eroare"}</div>`; }
       }));
     zonaLista.querySelectorAll("[data-alege]").forEach((b) =>

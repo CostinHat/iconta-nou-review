@@ -3448,3 +3448,19 @@ def anaf_oauth_stare(ctx=Depends(cere_cabinet)):
                         (ctx["firm"],))
             r = cur.fetchone()
     return {"autorizat": bool(r), "obtinut_la": str(r["obtinut_la"]) if r else None}
+
+
+@app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza")
+def banca_rec_reactiveaza(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"""UPDATE {schema}.extras_linii SET status='nou'
+                            WHERE id=%s AND status='ignorat' RETURNING id""", (linie_id,))
+            r = cur.fetchone()
+        conn.commit()
+    if not r:
+        raise HTTPException(422, "linia nu e ignorata")
+    return {"ok": True}
