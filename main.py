@@ -3043,3 +3043,40 @@ def banca_rec_ignora(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):
     if not r:
         raise HTTPException(400, "linie inexistenta sau deja contata")
     return {"ok": True}
+
+
+# --- registru de casa ---
+@app.get("/tenants/{tenant_id}/casa/registru")
+def casa_registru(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    from core import casa_api as _c
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _c.registru(conn, schema, an, luna)
+
+@app.post("/tenants/{tenant_id}/casa/operatiuni")
+def casa_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import casa_api as _c
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _c.adauga(conn, schema, corp)
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+@app.delete("/tenants/{tenant_id}/casa/operatiuni/{op_id}")
+def casa_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_cabinet)):
+    from core import casa_api as _c
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _c.sterge(conn, schema, op_id)
+    if rez is None:
+        raise HTTPException(404, "operatiune inexistenta")
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez

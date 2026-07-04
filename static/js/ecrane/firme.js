@@ -99,6 +99,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "raportz", titlu: "Raport Z", desc: "Incasari zilnice \u2192 nota automata",
       bg: "#fbeedd", fg: "#92500a",
       icon: '<path d="M4 4h16M4 4l16 16M4 20h16"/>', activ: true },
+    { cheie: "casa", titlu: "Cas\u0103", desc: "Registru de cas\u0103, plafoane numerar",
+      bg: "#e6f6ec", fg: "#16a34a",
+      icon: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/>', activ: true },
     { cheie: "banca", titlu: "Banc\u0103", desc: "Import extras, propuneri contare",
       bg: "#e9f0fe", fg: "#1d4ed8",
       icon: '<path d="M3 21h18M4 18h16M6 18V9M10 18V9M14 18V9M18 18V9M2 9l10-6 10 6"/>', activ: true },
@@ -144,6 +147,10 @@ function meniuFirma(corp, nav, t) {
   const bZ = corp.querySelector("#fa-raportz");
   if (bZ) {
     bZ.addEventListener("click", () => ecranRaportZ(corp, nav, t));
+  }
+  const bCasa = corp.querySelector("#fa-casa");
+  if (bCasa) {
+    bCasa.addEventListener("click", () => ecranCasa(corp, nav, t));
   }
   const bBanca = corp.querySelector("#fa-banca");
   if (bBanca) {
@@ -294,6 +301,83 @@ async function ecranSalariati(corp, nav, t) {
         } catch { alert("Nu am putut genera fluturasul."); }
       });
     });
+  };
+  deseneaza();
+}
+
+
+// [casa] Registru de casa
+async function ecranCasa(corp, nav, t) {
+  const escC = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const CATEGORII = [
+    ["incasare_client", "Incasare client (5311=4111)"],
+    ["plata_furnizor", "Plata furnizor (401=5311)"],
+    ["ridicare_banca", "Ridicare de la banca (5311=581)"],
+    ["depunere_banca", "Depunere la banca (581=5311)"],
+    ["avans_decontare", "Avans spre decontare (542=5311)"],
+  ];
+  const azi = new Date();
+  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+    let reg = { operatiuni: [], sold_final: "0", avertismente: [] };
+    try { reg = await api.get(`/tenants/${t.id}/casa/registru?an=${an}&luna=${luna}`); } catch {}
+    const ziAzi = new Date().toISOString().slice(0, 10);
+    const avert = (reg.avertismente || []).map((a) =>
+      `<div class="mig-gol" style="margin-bottom:6px">${escC(a.mesaj || a.cod || "")}${a.temei ? " \u00b7 " + escC(a.temei) : ""}</div>`).join("");
+    const randuri = !(reg.operatiuni || []).length
+      ? `<div class="mig-gol">Nicio operatiune in luna asta.</div>`
+      : reg.operatiuni.map((o) => `
+        <div class="pf-frand">
+          <div class="pf-frand-text">
+            <div class="pf-frand-nume">${escC(o.data)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${o.suma} lei \u00b7 sold ${o.sold} lei</div>
+            <div class="pf-frand-sub">${escC(o.partener || "")}${o.document ? " \u00b7 doc " + escC(o.document) : ""} \u00b7 ${escC(o.categorie)}</div>
+          </div>
+          <button class="btn btn-secundar" data-del="${o.id}">\u0218terge</button>
+        </div>`).join("");
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Cas\u0103 \u00b7 ${escC(t.nume || "")}</h2>
+      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 sold final <b>${reg.sold_final} lei</b>
+        <button class="btn btn-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="btn btn-secundar" id="c-next">luna \u2192</button></p>
+      ${avert}
+      <div class="pf-frand" style="display:block;margin-bottom:14px">
+        <div class="pf-frand-nume" style="margin-bottom:8px">Dispozitie noua</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:900px">
+          <label>Data<br><input type="date" id="c-data" class="mig-text" value="${ziAzi}"></label>
+          <label>Tip<br><select id="c-cat" class="mig-text">${CATEGORII.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label>
+          <label>Suma<br><input type="number" step="0.01" id="c-suma" class="mig-text" value="0"></label>
+          <label>Partener<br><input type="text" id="c-part" class="mig-text"></label>
+          <label>CUI<br><input type="text" id="c-cui" class="mig-text"></label>
+          <label>Document<br><input type="text" id="c-doc" class="mig-text"></label>
+        </div>
+        <p style="margin-top:10px"><button class="btn" id="c-adauga">Adauga (nota ciorna)</button></p>
+        <div id="c-mesaj"></div>
+      </div>
+      <div class="pf-lista">${randuri}</div>`;
+    corp.querySelector("#c-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#c-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelector("#c-adauga").addEventListener("click", async () => {
+      const zonaM = corp.querySelector("#c-mesaj");
+      try {
+        const r = await api.post(`/tenants/${t.id}/casa/operatiuni`, {
+          data: corp.querySelector("#c-data").value,
+          categorie: corp.querySelector("#c-cat").value,
+          suma: parseFloat(corp.querySelector("#c-suma").value) || 0,
+          partener: corp.querySelector("#c-part").value || null,
+          cui: corp.querySelector("#c-cui").value || null,
+          document: corp.querySelector("#c-doc").value || null,
+        });
+        const av = (r.avertismente || []).length;
+        zonaM.innerHTML = `<p class="pf-intro">Nota ${escC(r.nota)} creata ca ciorna.${av ? ` <b style="color:#c9961f">${av} avertisment(e) plafon.</b>` : ""}</p>`;
+        deseneaza();
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escC(e.mesaj || "Eroare")}</div>`; }
+    });
+    corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
+      if (!confirm("Stergi operatiunea si ciorna legata?")) return;
+      try { await api.del(`/tenants/${t.id}/casa/operatiuni/${b.dataset.del}`); deseneaza(); }
+      catch (e) { alert(e.mesaj || "Eroare"); }
+    }));
   };
   deseneaza();
 }
