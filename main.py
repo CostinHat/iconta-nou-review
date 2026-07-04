@@ -3754,3 +3754,30 @@ def jurnal_marja(tenant_id: int, tip: str, luna: str, ctx=Depends(cere_cabinet))
                       "tva": str(n["tva"])} for n in note.values()],
             "total_cost": str(tot_cost), "total_baza_marja_neta": str(tot_marja),
             "total_tva_colectata": str(tot_tva)}
+
+
+@app.get("/tenants/{tenant_id}/d406-active")
+def d406_active_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    """Sectiunea Assets SAF-T pentru anul dat (D406 anual - active)."""
+    from fastapi.responses import Response
+    from core import d406_active as _m
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT id, cod, denumire, cont_imobilizare, cont_amortizare,
+                                   valoare, rezidual, dnf_luni, data_pif, metoda, activ
+                            FROM {schema}.mijloace_fixe
+                            WHERE data_pif IS NOT NULL
+                              AND EXTRACT(YEAR FROM data_pif) <= %s
+                            ORDER BY id""", (an,))
+            cols = [d[0] for d in cur.description]
+            lista = [dict(zip(cols, r)) for r in cur.fetchall()]
+    if not lista:
+        raise HTTPException(404, "niciun mijloc fix cu PIF pana in anul cerut")
+    try:
+        xml = _m.xml_assets(lista, an)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    return Response(content=xml, media_type="application/xml")
