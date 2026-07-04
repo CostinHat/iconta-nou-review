@@ -5142,3 +5142,36 @@ def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere
             "deductibil": str(r["deductibil"]), "nedeductibil": str(r["nedeductibil"]),
             "ajustare_tva": str(r["ajustare_tva"]),
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+
+
+@app.post("/tenants/{tenant_id}/nota-contract-special")
+def nota_contract_special(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, fel zilier|cenzor|mandat, brut, sursa casa|banca, descriere?}.
+    Zilieri: impozit 10%+CAS 25% fara CASS (L52/2011). Cenzor/mandat: CAS+CASS+
+    impozit, fara CAM (art. 76(2)g/i)."""
+    from core import contracte_speciale as _cs
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            r = _cs.nota(corp["brut"], corp.get("fel", "zilier"),
+                         corp.get("sursa", "casa"))
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        fel = corp.get("fel", "zilier")
+        descr = (corp.get("descriere") or
+                 f"Remuneratie {fel} brut {corp['brut']} (net {r['net']})") +                 (" - L52/2011" if fel == "zilier" else " - art. 76(2)g/i CF")
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'salarii','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "brut": str(r["brut"]), "cas": str(r["cas"]),
+            "cass": str(r["cass"]), "impozit": str(r["impozit"]), "net": str(r["net"]),
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
