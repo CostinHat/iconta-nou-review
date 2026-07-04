@@ -68,13 +68,15 @@ def lista_nir(conn, schema, an, luna):
         return out
 
 
-def _rulaj(cur, schema, cont, parte, pana_exclusiv, de_la=None):
+def _rulaj(cur, schema, cont, parte, pana_exclusiv, de_la=None, surse=None):
     """Rulajul unui cont (debit sau credit) pe note validate, in [de_la, pana)."""
     col = "cont_debit" if parte == "debit" else "cont_credit"
     q = f"""SELECT COALESCE(SUM(l.suma),0) FROM {schema}.inregistrari_linii l
             JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
             WHERE l.{col} = %s AND i.status='validata' AND i.data < %s"""
     p = [cont, pana_exclusiv]
+    if surse:
+        q += " AND i.sursa = ANY(%s)"; p.append(list(surse))
     if de_la:
         q += " AND i.data >= %s"; p.append(de_la)
     cur.execute(q, p)
@@ -101,7 +103,7 @@ def descarca_luna(conn, schema, an, luna):
         rc_378 = _rulaj(cur, schema, "378", "credit", sfarsit, inceput_an)
         rc_4428 = _rulaj(cur, schema, "4428", "credit", sfarsit, inceput_an)
         # vanzari de marfuri DOAR pe luna
-        rc_707 = _rulaj(cur, schema, "707", "credit", sfarsit, inceput_luna)
+        rc_707 = _rulaj(cur, schema, "707", "credit", sfarsit, inceput_luna, surse=("horeca_z", "stocuri", "facturi_marfa"))
         # TVA aferenta vanzarilor de marfuri: proportional din 4427 e riscant;
         # folosim TVA neexigibila medie: tva = rc707 * (Si4428+Rc4428)/numitor-ul fara TVA
         # -> mai sigur: tva = rc707 * cota medie din stoc
