@@ -3359,3 +3359,27 @@ def verificare_stocuri(tenant_id: int, ctx=Depends(cere_cabinet)):
                             "diferenta": str(dif), "ok": abs(dif) <= Decimal("0.01")})
     return {"conturi": rez, "ok": all(x["ok"] for x in rez),
             "nota": "Diferentele pot veni din note ciorna nevalidate sau operatiuni in afara fiselor CV."}
+
+
+# --- e-Transport (v1: XML pt upload manual in SPV; API OAuth = etapa 2) ---
+@app.post("/tenants/{tenant_id}/etransport-xml")
+def etransport_xml(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    import re
+    from core import etransport as _e
+    from psycopg2.extras import RealDictCursor
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id = 1")
+            r = cur.fetchone() or {}
+    cui = re.sub(r"\D", "", r.get("cui") or "")
+    if not cui:
+        raise HTTPException(422, "CUI firma lipsa in Profil firma")
+    try:
+        xml = _e.xml_notificare(cui, corp)
+    except KeyError as e:
+        raise HTTPException(422, f"camp lipsa: {e}")
+    return {"xml": xml,
+            "nota": "XML v2 pt. incarcare manuala in SPV (e-Transport). UIT-ul vine de la ANAF dupa upload."}
