@@ -4728,3 +4728,49 @@ def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
                                 VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+
+
+@app.post("/tenants/{tenant_id}/nota-obiect-inventar")
+def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, operatie achizitie|dare_folosinta|scoatere, valoare, cota?,
+    descriere?}. Achizitia verifica pragul MF (5000 din 25.02.2026, OUG 8/2026)
+    si refuza daca valoarea e peste prag (foloseste fluxul de mijloace fixe)."""
+    from datetime import date as _date
+    from core import obiecte_inventar as _oi
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        op = corp.get("operatie")
+        try:
+            if op == "achizitie":
+                ref = _date.fromisoformat(corp["data"])
+                if not _oi.e_obiect_inventar(corp["valoare"], ref,
+                                             bool(corp.get("durata_sub_1_an"))):
+                    raise ValueError(f"valoarea depaseste pragul MF de "
+                                     f"{_oi.prag_mf(ref)} lei (OUG 8/2026) - "
+                                     "inregistreaza ca mijloc fix")
+                r = _oi.nota_achizitie(corp["valoare"], corp.get("cota", 21))
+                d0 = "Achizitie obiect de inventar 303+4426=401"
+            elif op == "dare_folosinta":
+                r = _oi.nota_dare_folosinta(corp["valoare"])
+                d0 = "Dare in folosinta OI: 603=303 + D8035"
+            elif op == "scoatere":
+                r = _oi.nota_scoatere_uz(corp["valoare"])
+                d0 = "Scoatere din uz OI: C8035 (proces-verbal)"
+            else:
+                raise ValueError("operatie: achizitie|dare_folosinta|scoatere")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - OMFP 1802 / OUG 8/2026"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
