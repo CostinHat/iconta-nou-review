@@ -1,0 +1,164 @@
+# -*- coding: utf-8 -*-
+"""Registru-jurnal de încasări și plăți (OMFP 170/2015) + Fișa calcul D212.
+Convenție: funcții (conn, schema, ...). Tot ce e generat automat = ciorna."""
+from decimal import Decimal
+from psycopg2.extras import RealDictCursor
+from core.d212_engine import calculeaza_d212, PLAFOANE_VENIT_2025
+
+CATEGORII_INCASARE = {"activitate", "aport", "credit", "subventie", "alte_incasari"}
+CATEGORII_PLATA = {"cheltuiala_deductibila", "cheltuiala_limitata",
+                   "cheltuiala_nedeductibila", "aport_retragere", "rambursare_credit"}
+
+
+def _fara_decimal(x):
+    if isinstance(x, list):
+        return [_fara_decimal(i) for i in x]
+    if isinstance(x, dict):
+        return {k: _fara_decimal(v) for k, v in x.items()}
+    return str(x) if isinstance(x, Decimal) or hasattr(x, "isoformat") else x
+
+
+def _valideaza(op):
+    tip, cat = op.get("tip"), op.get("categorie")
+    if tip not in ("incasare", "plata"):
+        return "tip invalid"
+    if op.get("metoda") not in ("numerar", "banca"):
+        return "metoda invalida (numerar/banca)"
+    if Decimal(str(op.get("suma", 0))) <= 0:
+        return "suma trebuie sa fie > 0"
+    if not (op.get("explicatie") or "").strip():
+        return "explicatia este obligatorie (OMFP 170/2015)"
+    cats = CATEGORII_INCASARE if tip == "incasare" else CATEGORII_PLATA
+    if cat not in cats:
+        return f"categorie invalida pentru {tip}"
+    if tip == "plata" and cat.startswith("cheltuiala") and not op.get("deductibilitate"):
+        return "deductibilitate obligatorie pentru cheltuieli"
+    if op.get("valuta", "RON") != "RON" and (not op.get("suma_valuta") or not op.get("curs_valutar")):
+        return "pentru valuta != RON: suma_valuta si curs_valutar obligatorii"
+    return None
+
+
+def lista(conn, schema, an, luna=None, status=None):
+    where, params = ["EXTRACT(YEAR FROM data_operatiune)=%s"], [an]
+    if luna:
+        where.append("EXTRACT(MONTH FROM data_operatiune)=%s"); params.append(luna)
+    if status:
+        where.append("status=%s"); params.append(status)
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"""SELECT * FROM {schema}.rip_operatiuni
+                        WHERE {' AND '.join(where)} ORDER BY data_operatiune, id""", params)
+        rows = cur.fetchall()
+    ti = sum(Decimal(str(r["suma"])) for r in rows if r["tip"] == "incasare")
+    tp = sum(Decimal(str(r["suma"])) for r in rows if r["tip"] == "plata")
+    return {"operatiuni": _fara_decimal(rows), "total_incasari": str(ti),
+            "total_plati": str(tp), "sold": str(ti - tp)}
+
+
+def adauga(conn, schema, op, user_id=None):
+    err = _valideaza(op)
+    if err:
+        return {"eroare": err}
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"""INSERT INTO {schema}.rip_operatiuni
+            (data_operatiune, tip, document_tip, document_numar, document_data, explicatie,
+             suma, valuta, suma_valuta, curs_valutar, metoda, categorie, deductibilitate,
+             status, creat_de)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'ciorna',%s) RETURNING id""",
+            (op["data_operatiune"], op["tip"], op.get("document_tip"), op.get("document_numar"),
+             op.get("document_data"), op["explicatie"].strip(), op["suma"],
+             op.get("valuta", "RON"), op.get("suma_valuta"), op.get("curs_valutar"),
+             op["metoda"], op["categorie"], op.get("deductibilitate"), user_id))
+        rid = cur.fetchone()["id"]
+    conn.commit()
+    return {"id": rid, "status": "ciorna"}
+
+
+def valideaza(conn, schema, op_id, user_id=None):
+    with conn.cursor() as cur:
+        cur.execute(f"""UPDATE {schema}.rip_operatiuni
+                        SET status='validata', validat_de=%s, updated_at=now()
+                        WHERE id=%s AND status='ciorna' RETURNING id""", (user_id, op_id))
+        if not cur.fetchone():
+            return {"eroare": "operatiune inexistenta sau deja validata"}
+    conn.commit()
+    return {"id": op_id, "status": "validata"}
+
+
+def sterge(conn, schema, op_id):
+    with conn.cursor() as cur:
+        cur.execute(f"DELETE FROM {schema}.rip_operatiuni WHERE id=%s AND status='ciorna' RETURNING id", (op_id,))
+        if not cur.fetchone():
+            return {"eroare": "doar ciornele se pot sterge"}
+    conn.commit()
+    return {"sters": op_id}
+
+
+def import_banca(conn, schema, an, luna, user_id=None):
+    """Ciorne din extras_linii. sens: 'credit'=incasare, 'debit'=plata (core/banca.py).
+    Idempotent pe banca_linie_id."""
+    with conn.cursor() as cur:
+        cur.execute(f"""INSERT INTO {schema}.rip_operatiuni
+            (data_operatiune, tip, document_tip, explicatie, suma, metoda, categorie,
+             status, creat_de, banca_linie_id)
+            SELECT el.data,
+                   CASE WHEN el.tip='credit' THEN 'incasare' ELSE 'plata' END,
+                   'extras cont', COALESCE(NULLIF(el.descriere,''), 'operatiune bancara'),
+                   ABS(el.suma), 'banca',
+                   CASE WHEN el.tip='credit' THEN 'activitate' ELSE 'cheltuiala_deductibila' END,
+                   CASE WHEN el.tip='credit' THEN NULL ELSE 'integral' END,
+                   'ciorna', %s, el.id
+            FROM {schema}.extras_linii el
+            WHERE EXTRACT(YEAR FROM el.data)=%s AND EXTRACT(MONTH FROM el.data)=%s
+              AND NOT EXISTS (SELECT 1 FROM {schema}.rip_operatiuni r WHERE r.banca_linie_id=el.id)
+            RETURNING id""", (user_id, an, luna))
+        n = len(cur.fetchall())
+    conn.commit()
+    return {"importate": n, "status": "ciorna",
+            "nota": "categoriile/deductibilitatea propuse - de verificat de contabil"}
+
+
+def import_casa(conn, schema, an, luna, user_id=None):
+    """Ciorne din casa_operatiuni (coloane: data,tip,categorie,document,partener,suma).
+    Idempotent pe casa_operatiune_id."""
+    with conn.cursor() as cur:
+        cur.execute(f"""INSERT INTO {schema}.rip_operatiuni
+            (data_operatiune, tip, document_tip, document_numar, explicatie, suma,
+             metoda, categorie, deductibilitate, status, creat_de, casa_operatiune_id)
+            SELECT co.data, co.tip, 'document casa', co.document,
+                   COALESCE(NULLIF(co.partener,''), REPLACE(co.categorie,'_',' ')),
+                   co.suma, 'numerar',
+                   CASE WHEN co.tip='incasare' THEN 'activitate' ELSE 'cheltuiala_deductibila' END,
+                   CASE WHEN co.tip='incasare' THEN NULL ELSE 'integral' END,
+                   'ciorna', %s, co.id
+            FROM {schema}.casa_operatiuni co
+            WHERE EXTRACT(YEAR FROM co.data)=%s AND EXTRACT(MONTH FROM co.data)=%s
+              AND NOT EXISTS (SELECT 1 FROM {schema}.rip_operatiuni r WHERE r.casa_operatiune_id=co.id)
+            RETURNING id""", (user_id, an, luna))
+        n = len(cur.fetchall())
+    conn.commit()
+    return {"importate": n, "status": "ciorna"}
+
+
+def fisa_d212(conn, schema, an, optiune_cas=False, optiune_cass=False):
+    """Fisa calcul D212 din operatiunile VALIDATE. Plafoane verificate doar pt venituri 2025."""
+    if an != 2025:
+        return {"eroare": "plafoane verificate doar pentru venituri 2025; "
+                          "pentru alt an verifica intai sursele oficiale"}
+    with conn.cursor() as cur:
+        cur.execute(f"""SELECT
+              COALESCE(SUM(suma) FILTER (WHERE tip='incasare' AND categorie='activitate'),0),
+              COALESCE(SUM(suma) FILTER (WHERE tip='plata' AND categorie='cheltuiala_deductibila'),0),
+              COALESCE(SUM(suma) FILTER (WHERE tip='plata' AND categorie='cheltuiala_limitata'),0)
+            FROM {schema}.rip_operatiuni
+            WHERE EXTRACT(YEAR FROM data_operatiune)=%s AND status='validata'""", (an,))
+        vb, cd, cl = cur.fetchone()
+        cur.execute(f"""SELECT COUNT(*) FROM {schema}.rip_operatiuni
+                        WHERE EXTRACT(YEAR FROM data_operatiune)=%s AND status='ciorna'""", (an,))
+        ciorne = cur.fetchone()[0]
+    r = calculeaza_d212(float(vb), float(cd), PLAFOANE_VENIT_2025, optiune_cas, optiune_cass)
+    r["cheltuieli_limitate_de_analizat"] = float(cl)
+    r["ciorne_nevalidate"] = ciorne
+    if cl or ciorne:
+        r["avertisment"] = ("Cheltuielile limitate NU sunt in calcul - contabilul stabileste "
+                            f"partea deductibila. {ciorne} ciorne neincluse.")
+    return r

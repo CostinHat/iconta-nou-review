@@ -3050,6 +3050,67 @@ def banca_rec_ignora(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):
     return {"ok": True}
 
 
+# --- registru incasari/plati (RIP) ---
+def _rip_ctx(conn, ctx, tenant_id):
+    schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+    if not schema:
+        raise HTTPException(404, "tenant inexistent sau fara acces")
+    return schema
+
+@app.get("/tenants/{tenant_id}/rip/registru")
+def rip_lista(tenant_id: int, an: int, luna: int = None, status: str = None, ctx=Depends(cere_cabinet)):
+    from core import rip_api as _r
+    with db.get_conn() as conn:
+        return _r.lista(conn, _rip_ctx(conn, ctx, tenant_id), an, luna, status)
+
+@app.post("/tenants/{tenant_id}/rip/operatiuni")
+def rip_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import rip_api as _r
+    with db.get_conn() as conn:
+        rez = _r.adauga(conn, _rip_ctx(conn, ctx, tenant_id), corp, ctx["uid"])
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+@app.put("/tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza")
+def rip_valideaza(tenant_id: int, op_id: int, ctx=Depends(cere_cabinet)):
+    from core import rip_api as _r
+    with db.get_conn() as conn:
+        rez = _r.valideaza(conn, _rip_ctx(conn, ctx, tenant_id), op_id, ctx["uid"])
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+@app.delete("/tenants/{tenant_id}/rip/operatiuni/{op_id}")
+def rip_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_cabinet)):
+    from core import rip_api as _r
+    with db.get_conn() as conn:
+        rez = _r.sterge(conn, _rip_ctx(conn, ctx, tenant_id), op_id)
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+@app.post("/tenants/{tenant_id}/rip/import-banca")
+def rip_import_banca(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    from core import rip_api as _r
+    with db.get_conn() as conn:
+        return _r.import_banca(conn, _rip_ctx(conn, ctx, tenant_id), an, luna, ctx["uid"])
+
+@app.post("/tenants/{tenant_id}/rip/import-casa")
+def rip_import_casa(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    from core import rip_api as _r
+    with db.get_conn() as conn:
+        return _r.import_casa(conn, _rip_ctx(conn, ctx, tenant_id), an, luna, ctx["uid"])
+
+@app.get("/tenants/{tenant_id}/rip/d212/{an}")
+def rip_d212(tenant_id: int, an: int, optiune_cas: bool = False, optiune_cass: bool = False, ctx=Depends(cere_cabinet)):
+    from core import rip_api as _r
+    with db.get_conn() as conn:
+        rez = _r.fisa_d212(conn, _rip_ctx(conn, ctx, tenant_id), an, optiune_cas, optiune_cass)
+    if isinstance(rez, dict) and rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
 # --- registru de casa ---
 @app.get("/tenants/{tenant_id}/casa/registru")
 def casa_registru(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
@@ -5305,3 +5366,42 @@ def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+
+
+@app.post("/tenants/{tenant_id}/nota-ong")
+def nota_ong(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, operatie venit|scutire, descriere?, +
+    venit{suma, fel cotizatie|contributie|donatie|sponsorizare|financiar|
+    fonduri|ocazional|alte, sursa casa|banca};
+    scutire{venituri_economice, venituri_neimpozabile, curs_eur} - doar calcul,
+    fara nota}. OMFP 3103/2017 + art. 15(2)-(3) CF."""
+    from core import ong as _on
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        op = corp.get("operatie", "venit")
+        try:
+            if op == "scutire":
+                r = _on.scutire_economica(corp["venituri_economice"],
+                                          corp["venituri_neimpozabile"],
+                                          corp["curs_eur"])
+                return {k: str(v) for k, v in r.items()}
+            r = _on.nota_venit(corp["suma"], corp.get("fel", "cotizatie"),
+                               corp.get("sursa", "casa"))
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or
+                 f"Venit AFSP {corp.get('fel', 'cotizatie')} pe {r['cont_venit']}") +                 " - OMFP 3103/2017"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'casa','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "cont_venit": r["cont_venit"],
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
