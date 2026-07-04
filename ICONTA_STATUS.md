@@ -113,3 +113,39 @@ Toate portate in core/: d100, d101, d112, d205, d300, d301, d390, d394, d406
 - Sincronizare copii Windows (reconciliere_api.py cu fix-urile de pe server)
 
 **Comenzi git:** 0d99847 (reconciliere+jurnal), a64aef1 (template), + commit-ul de azi
+# iConta STATUS — 04.07.2026 (build nou, iconta_v2)
+
+## Finalizate azi (≈27 commit-uri pe main)
+
+**Bancă / reconciliere**
+- Reconciliere bancară completă: motor matching (exact/combo/FIFO), persistență, UI cu badge-uri status.
+- Ignoră + undo („readu", endpoint `reactiveaza`).
+- TVA la încasare (art. 282 + OUG 8/2026, plafon 5M de la 01.03.2026): motor `core/tva_incasare.py` (6 teste), la contarea încasării/plății pe factură se adaugă automat 4428=4427 / 4426=4428 proporțional (sută mărită). Bifă `firma_profil.tva_la_incasare`. D300 pe exigibilitate = etapa 2.
+
+**Facturi**
+- Contare automată: `POST /facturi/{id}/contabilizeaza` → notă ciornă (emisă 4111=70x+4427/4428), idempotent, buton „Contează" în Istoric facturi. Fix: cota din DB e procent → fracție.
+- Regim marjă art. 312 (second-hand): `core/tva_marja.py` (3 teste), endpoint `/vanzare-marja` → ciornă 4111=707cost+707marjă netă+4427; marjă negativă → 0, report.
+- Regim marjă turism art. 311: endpoint `/vanzare-marja-turism` (704) — patch scris, **de aplicat** (patch_main_marja_turism.py).
+
+**Stocuri / HoReCa**
+- Stocuri CV: ieșire la CMP prin UI, inventar (plus 371=607 / minus 607=371 la CMP).
+- Rețetar: rețete+ingrediente, food cost %, descărcare pe rețetă la CMP → ciornă agregată. UI în ecran Stocuri.
+- Raport Z → buton descărcare gestiune GV a lunii (ciornă).
+- Verificator coerență stocuri: sold contabil vs fișe CV per cont, în ecranul Verificări.
+
+**Declarații / raportări**
+- D112 cu CM portat în `core/d112.py` — „Validare fara erori" DUKIntegrator pe server (headless, ~/duk/dist), endpoint xml+valideaza.
+- Bilanț S1005 (micro) și S1003 (mici) — XML validat cu validatoarele oficiale (namespace v15 pt 2025, tipBIL UU/BS, F30 minimal); UI card „Bilanț anual". Mapare v1 — test pe balanță reală obligatoriu înainte de depunere.
+- e-Transport v1: generator XML notificare v2 (structura oficială MF), endpoint pt upload manual SPV. API = etapa 2 (după OAuth).
+
+**Infrastructură**
+- OAuth2 ANAF pregătit: /anaf/oauth/start + /efactura/callback + tokens per cabinet; nginx rutează callback-ul pe 8010. Autorizare reală blocată: client_id respins („invalid_client") — de verificat la pfinternet.anaf.ro săptămâna viitoare (cu CUI/certificat).
+- Curățenie date test tenant_002 (sold KAI-148 = 0, duplicate șterse).
+
+## Blocate pe terți
+- Raport Z automat din AMEF: fișier .p7b real de la Daniela (testele vechi pierdute).
+- OAuth ANAF: certificat + verificare profil client_id.
+- PSD2, e-commerce, REGES: chei/contracte externe.
+
+## Următoarele (lista mare, în ordine)
+Aplicare marjă turism → taxare inversă internă art. 331 (legare la contare) → operațiuni IC/VIES → import/DVI → Intrastat → multi-valută 665/765 → leasing → avansuri 409/419 → restul listei.
