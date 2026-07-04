@@ -5015,3 +5015,42 @@ def nota_decont_deplasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+
+
+@app.post("/tenants/{tenant_id}/nota-bacsis")
+def nota_bacsis(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, fel incasare|distribuire, suma, sursa card|numerar (incasare) /
+    banca|casa (distribuire), descriere?}. Legea 376/2022: fara TVA, fara
+    CAS/CASS, impozit 10% retinut la distribuire (D100, informativ D205)."""
+    from core import bacsis as _bc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        fel = corp.get("fel")
+        info = {}
+        try:
+            if fel == "incasare":
+                r = _bc.nota_incasare(corp["suma"], corp.get("sursa", "card"))
+                d0 = "Bacsis incasat pe bon fiscal (461=462, fara TVA)"
+            elif fel == "distribuire":
+                r = _bc.nota_distribuire(corp["suma"], corp.get("sursa", "banca"))
+                info = {"impozit": str(r["impozit"]), "net": str(r["net"])}
+                d0 = "Distribuire bacsis salariati (impozit 10% retinut, 462=446)"
+            else:
+                raise ValueError("fel: incasare|distribuire")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - Legea 376/2022"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'casa','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
