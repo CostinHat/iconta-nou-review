@@ -58,26 +58,26 @@ def calcul_tva(baza, cota=None, la_data=None):
 # ============================================================
 #  FACTURĂ EMISĂ (vânzare)
 # ============================================================
-def factura_emisa(baza, tip="marfa", cota=None, la_data=None, cont_venit=None):
+def factura_emisa(baza, tip="marfa", cota=None, la_data=None, cont_venit=None, tva_incasare=False):
     """4111 = venit (bază) ; 4111 = 4427 (TVA)."""
     cont = cont_venit or VENIT[tip]
     t = calcul_tva(baza, cota, la_data)
     note = [_nota("4111", cont, baza)]
     if t["tva"]:
-        note.append(_nota("4111", "4427", t["tva"], temei=t["temei"]))
+        note.append(_nota("4111", "4428" if tva_incasare else "4427", t["tva"], temei=t["temei"]))
     return note
 
 
 # ============================================================
 #  FACTURĂ PRIMITĂ (achiziție)
 # ============================================================
-def factura_primita(baza, tip="marfa", cota=None, la_data=None, cont=None):
+def factura_primita(baza, tip="marfa", cota=None, la_data=None, cont=None, tva_incasare=False):
     """cont = 401 (bază) ; 4426 = 401 (TVA)."""
     c_ach = cont or ACHIZITIE[tip]
     t = calcul_tva(baza, cota, la_data)
     note = [_nota(c_ach, "401", baza)]
     if t["tva"]:
-        note.append(_nota("4426", "401", t["tva"], temei=t["temei"]))
+        note.append(_nota("4428" if tva_incasare else "4426", "401", t["tva"], temei=t["temei"]))
     return note
 
 

@@ -3464,3 +3464,51 @@ def banca_rec_reactiveaza(tenant_id: int, linie_id: int, ctx=Depends(cere_cabine
     if not r:
         raise HTTPException(422, "linia nu e ignorata")
     return {"ok": True}
+
+
+@app.post("/tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza")
+def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cabinet)):
+    """Nota ciorna din factura (AI propune, contabilul valideaza). Idempotent:
+    refuza daca exista deja inregistrare (ciorna sau validata) pe factura."""
+    from decimal import Decimal
+    from psycopg2.extras import RealDictCursor
+    from core import facturi as _fc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(f"SELECT * FROM {schema}.facturi WHERE id=%s", (factura_id,))
+            f = cur.fetchone()
+            if not f:
+                raise HTTPException(404, "factura inexistenta")
+            cur.execute(f"SELECT COUNT(*) AS n FROM {schema}.inregistrari WHERE factura_id=%s", (factura_id,))
+            if cur.fetchone()["n"]:
+                raise HTTPException(422, "factura are deja inregistrare (ciorna sau validata)")
+            cur.execute(f"SELECT COALESCE(tva_la_incasare,false) AS b FROM {schema}.firma_profil WHERE id=1")
+            tvai = cur.fetchone()["b"]
+            cur.execute(f"""SELECT COALESCE(SUM(cantitate*pret_unitar),0) AS baza,
+                                   MAX(cota_tva) AS cota FROM {schema}.factura_linii
+                            WHERE factura_id=%s""", (factura_id,))
+            fl = cur.fetchone()
+            baza = Decimal(str(fl["baza"] or 0))
+            if baza <= 0:
+                baza = Decimal(str(f.get("total_lei") or f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
+            cota = Decimal(str(fl["cota"])) / 100 if fl["cota"] is not None else Decimal("0.21")
+            if f["directie"] == "emisa":
+                note = _fc.factura_emisa(baza, cota=cota, la_data=str(f["data_emitere"]), tva_incasare=tvai)
+            else:
+                note = _fc.factura_primita(baza, cota=cota, la_data=str(f["data_emitere"]), tva_incasare=tvai)
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
+                            VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
+                        (f["data_emitere"], factura_id,
+                         f"Contare factura {f.get('serie') or ''}{f.get('numar') or factura_id}"[:200]))
+            iid = cur.fetchone()["id"]
+            for n in note:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""",
+                            (iid, n["debit"], n["credit"], Decimal(str(n["suma"]))))
+        conn.commit()
+    return {"inregistrare_id": iid, "tva_la_incasare": bool(tvai),
+            "linii": [{"debit": n["debit"], "credit": n["credit"], "suma": str(n["suma"])} for n in note]}
