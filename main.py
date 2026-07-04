@@ -4078,3 +4078,96 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...), ctx=Depends
         conn.commit()
     return {"inregistrare_id": iid, "valoare": str(val), "tva": str(tva),
             "mentiune": mentiune}
+
+
+@app.get("/tenants/{tenant_id}/verifica-vies")
+def verifica_vies_ep(tenant_id: int, cod_tva: str, ctx=Depends(cere_cabinet)):
+    """Verifica un cod TVA UE in VIES (API oficial CE)."""
+    from core import intracomunitar as _ic
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+    try:
+        return _ic.verifica_vies(cod_tva)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    except Exception as e:
+        raise HTTPException(502, f"VIES indisponibil: {e}")
+
+
+@app.post("/tenants/{tenant_id}/achizitie-ic")
+def achizitie_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """AIC bunuri/servicii primite (art. 268 / 278(2), plata = beneficiar art. 308).
+    corp: {data, valoare (RON), cont_destinatie, cota?, tip bunuri|servicii, descriere?}.
+    Nota ciorna: cont_dest=401 + 4426=4427 (norme 109)."""
+    from decimal import Decimal
+    from core import intracomunitar as _ic
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            val = Decimal(str(corp["valoare"]))
+            tva = _ic.tva_taxare_inversa(val, corp.get("cota", 21))
+            cont = str(corp["cont_destinatie"]).strip()
+            if not cont:
+                raise ValueError("cont_destinatie obligatoriu")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        tip = "servicii IC primite (art. 278(2))" if corp.get("tip") == "servicii"               else "achizitie intracomunitara bunuri (art. 268)"
+        descr = (corp.get("descriere") or "AIC") + f" - {tip}, taxare inversa 4426=4427"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for d, c, s in [(cont, "401", val), ("4426", "4427", tva)]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+        conn.commit()
+    return {"inregistrare_id": iid, "valoare": str(val), "tva": str(tva)}
+
+
+@app.post("/tenants/{tenant_id}/vanzare-ic")
+def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """LIC bunuri (art. 294(2)a) sau prestare servicii IC (art. 278(2)).
+    corp: {data, valoare, cod_tva_client, tip bunuri|servicii, dovada_transport?,
+    cont_venit?, descriere?}. Verifica VIES LIVE. Nota: 4111=70x fara TVA."""
+    from decimal import Decimal
+    from core import intracomunitar as _ic
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            v = _ic.verifica_vies(corp["cod_tva_client"])
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+        except Exception as e:
+            raise HTTPException(502, f"VIES indisponibil: {e}")
+        try:
+            if corp.get("tip") == "servicii":
+                ok, ment = _ic.valideaza_prestare_ic(corp["cod_tva_client"], v["valid"])
+                cont_venit = str(corp.get("cont_venit") or "704")
+            else:
+                ok, ment = _ic.valideaza_lic(corp["cod_tva_client"], v["valid"],
+                                             bool(corp.get("dovada_transport")))
+                cont_venit = str(corp.get("cont_venit") or "707")
+            val = Decimal(str(corp["valoare"]))
+            if val <= 0:
+                raise ValueError("valoare invalida")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or "Vanzare IC") + " - " + ment +                 f" [{v['nume']}]"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                            (inregistrare_id, cont_debit, cont_credit, suma)
+                            VALUES (%s,'4111',%s,%s)""", (iid, cont_venit, val))
+        conn.commit()
+    return {"inregistrare_id": iid, "mentiune": ment, "vies": v}
+
