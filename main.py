@@ -3208,3 +3208,37 @@ def d112_valideaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)
     ok = "fara erori" in (r.stdout + r.stderr) and not erori.strip().startswith(("E:", "F:"))
     return {"ok": ok, "erori": erori, "avertismente": av,
             "xml_b64": base64.b64encode(xml.encode()).decode()}
+
+
+# --- S1005 (bilant micro) ---
+@app.get("/tenants/{tenant_id}/s1005-xml")
+def s1005_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    from core import bilant_api as _ba
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        xml, av = _ba.genereaza(conn, schema, an)
+    return {"xml": xml, "avertismente": av}
+
+@app.post("/tenants/{tenant_id}/s1005-valideaza")
+def s1005_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    import base64, subprocess, tempfile, os
+    from core import bilant_api as _ba
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        xml, av = _ba.genereaza(conn, schema, an)
+    with tempfile.TemporaryDirectory() as td:
+        cale = os.path.join(td, f"s1005_{tenant_id}_{an}.xml")
+        open(cale, "w", encoding="utf-8").write(xml)
+        r = subprocess.run(["java", "-jar", "DUKIntegrator.jar", "-v", "S1005", cale],
+                           cwd="/home/costin/duk/dist", capture_output=True, text=True, timeout=120)
+        erori = ""
+        err_f = cale + ".err.txt"
+        if os.path.exists(err_f):
+            erori = open(err_f, encoding="utf-8").read()
+    ok = "fara erori" in (r.stdout + r.stderr)
+    return {"ok": ok, "erori": erori, "avertismente": av,
+            "xml_b64": base64.b64encode(xml.encode()).decode()}
