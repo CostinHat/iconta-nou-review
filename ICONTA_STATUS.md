@@ -88,3 +88,28 @@ Toate portate in core/: d100, d101, d112, d205, d300, d301, d390, d394, d406
 **Document:** iConta_functionalitati.docx — inventar complet existente + lipsa + regimuri speciale (30 puncte).
 
 **Urmatoarele:** e-Factura SPV (asteapta CUI), stocuri/NIR, casa UI, bilant anual, reconciliere bancara, teste end-to-end (Creeaza cont, suspendare, alerte email), pilot Daniela.
+## 04.07.2026 — Reconciliere bancară + validare jurnal
+
+**Reconciliere bancară (complet, testat pe extras real):**
+- DDL `extras_linii` per tenant (alocari jsonb, status nou/potrivit/contat/ignorat) + în tenant_template.sql (regenerat din tenant_001)
+- `core/reconciliere.py` — motor pur, 13 teste pytest: match exact (o factură / combo 2–4), FIFO parțial, consum secvențial solduri, CUI normalizat, toleranță 0.01
+- `core/reconciliere_api.py` — facturi_deschise (sold = total − decontat + storno legate prin storno_din_id, facturile-storno excluse), importa_extras, lista, conteaza, facturi_deschise_detalii
+- 4 endpoint-uri: import / lista / conteaza / facturi-deschise
+- UI în ecranBanca (firme.js): badge-uri culori canonice + etichetă text, Contează pe match, picker facturi cu alocare FIFO, contare generică din nota_propusa (627=5121 etc.) pe linii fără CUI
+
+**Principiu respectat:** AI propune, contabilul validează — toate notele din bancă intră `ciorna`.
+
+**Validare jurnal (nou):**
+- `core/jurnal_api.py` — editeaza/sterge/valideaza, DOAR pe ciorne
+- 3 endpoint-uri PUT/DELETE/POST valideaza
+- UI ecranJurnal: badge Ciornă (galben) / Validată (verde), contor "N de validat", editor inline linii (debit/credit/sumă, +/− linii)
+
+**Fix-uri pe parcurs:** Decimal în json.dumps (default=str), data dd.mm.yyyy→ISO, tip strict după semn, scroll la picker.
+
+**De făcut (Următoarele):**
+- Editare notă cu factura_id desincronizează soldul facturii — avertisment sau recalcul la editare
+- Buton Ignoră pe linii de extras (status ignorat există în DDL, fără endpoint)
+- Sold negativ rezidual (KAI-148 la −800 după editarea notei) — de curățat datele de test
+- Sincronizare copii Windows (reconciliere_api.py cu fix-urile de pe server)
+
+**Comenzi git:** 0d99847 (reconciliere+jurnal), a64aef1 (template), + commit-ul de azi
