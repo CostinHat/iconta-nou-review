@@ -4426,3 +4426,53 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
                                 VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+
+
+@app.post("/tenants/{tenant_id}/nota-credit")
+def nota_credit(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, operatie primire|dobanda|plata|restanta|garantie, tip lung|scurt,
+    descriere?, + pe operatie: primire{suma}; dobanda{dobanda}; plata{rata?, dobanda?,
+    comision?, dobanda_angajata?}; restanta{suma}; garantie{suma, fel primita|acordata,
+    actiune inregistrare|eliberare}}. Nota ciorna."""
+    from core import credite as _cr
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        op = corp.get("operatie")
+        tip = corp.get("tip", "lung")
+        try:
+            if op == "primire":
+                r = _cr.nota_primire(corp["suma"], tip)
+                d0 = f"Primire credit bancar termen {tip}"
+            elif op == "dobanda":
+                r = _cr.nota_dobanda_angajata(corp["dobanda"], tip)
+                d0 = "Dobanda angajata credit (666=168x/519x)"
+            elif op == "plata":
+                r = _cr.nota_plata(corp.get("rata", 0), corp.get("dobanda", 0),
+                                   corp.get("comision", 0), tip,
+                                   dobanda_angajata=corp.get("dobanda_angajata", True))
+                d0 = "Plata rata/dobanda/comision credit"
+            elif op == "restanta":
+                r = _cr.nota_restanta(corp["suma"], tip)
+                d0 = "Credit nerambursat la scadenta"
+            elif op == "garantie":
+                r = _cr.nota_garantie(corp["suma"], corp.get("fel", "primita"),
+                                      corp.get("actiune", "inregistrare"))
+                d0 = f"Garantie {corp.get('fel','primita')} extracontabil 801x"
+            else:
+                raise ValueError("operatie: primire|dobanda|plata|restanta|garantie")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - OMFP 1802"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'banca','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
