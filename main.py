@@ -104,6 +104,15 @@ def cere_cabinet(ctx=Depends(cere_context)):
     """Rute de cabinet: orice rol mai puțin 'client' (clienții au portalul)."""
     if ctx["rol"] == "client":
         raise HTTPException(403, "clienții folosesc portalul, nu rutele de cabinet")
+    # [suspendare-live] cabinet suspendat => 403 imediat, nu doar la login
+    if ctx["rol"] != "superadmin":
+        with db.get_conn() as conn, conn.cursor() as cur:
+            cur.execute("""SELECT af.activ FROM public.users u
+                           LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id
+                           WHERE u.id = %s""", (ctx["uid"],))
+            r = cur.fetchone()
+            if r and r[0] is False:
+                raise HTTPException(403, "Cabinetul este suspendat. Contactati furnizorul.")
     return ctx
 
 # ICRD_AUDIT_LOG_V1 - activitate cabinete (portat din legacy /opt/iconta)
