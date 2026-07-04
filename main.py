@@ -5175,3 +5175,85 @@ def nota_contract_special(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
     return {"inregistrare_id": iid, "brut": str(r["brut"]), "cas": str(r["cas"]),
             "cass": str(r["cass"]), "impozit": str(r["impozit"]), "net": str(r["net"]),
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+
+
+@app.post("/tenants/{tenant_id}/nota-inventariere")
+def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, operatie plus|plus_mf|minus|casare, descriere?, +
+    plus{valoare, cont_stoc?}; plus_mf{valoare, cont_imobilizare?};
+    minus{valoare, cont_stoc?, imputabil?, valoare_imputare?, vinovat
+    salariat|tert, cota?, asigurat_sau_distrus?};
+    casare{mijloc_fix_id SAU valoare_bruta+amortizare_cumulata+conturi}.
+    Casarea cu mijloc_fix_id calculeaza amortizarea auto si dezactiveaza MF."""
+    from decimal import Decimal
+    from datetime import date as _date
+    from core import inventariere as _iv
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        op = corp.get("operatie")
+        mf_id = None
+        try:
+            if op == "plus":
+                r = _iv.nota_plus(corp["valoare"], str(corp.get("cont_stoc") or "371"))
+                d0 = "Plus la inventar stocuri"
+            elif op == "plus_mf":
+                r = _iv.nota_plus_mf(corp["valoare"],
+                                     str(corp.get("cont_imobilizare") or "2131"))
+                d0 = "Plus la inventar mijloace fixe (21x=4754)"
+            elif op == "minus":
+                r = _iv.nota_minus(corp["valoare"], str(corp.get("cont_stoc") or "371"),
+                                   bool(corp.get("imputabil")),
+                                   corp.get("valoare_imputare"),
+                                   corp.get("vinovat", "salariat"),
+                                   corp.get("cota", 21),
+                                   bool(corp.get("asigurat_sau_distrus")))
+                d0 = "Minus la inventar" + (" imputabil" if corp.get("imputabil") else
+                                            " neimputabil")
+            elif op == "casare":
+                if corp.get("mijloc_fix_id"):
+                    mf_id = corp["mijloc_fix_id"]
+                    with conn.cursor() as cur:
+                        cur.execute(f"""SELECT denumire, cont_imobilizare, cont_amortizare,
+                                               valoare, COALESCE(rezidual,0), dnf_luni, data_pif
+                                        FROM {schema}.mijloace_fixe
+                                        WHERE id=%s AND activ=true""", (mf_id,))
+                        mf = cur.fetchone()
+                    if not mf:
+                        raise HTTPException(404, "mijloc fix inexistent/inactiv")
+                    den, ci, ca, val, rez, dnf, pif = mf
+                    ref = _date.fromisoformat(corp["data"])
+                    luni = 0
+                    if pif and dnf:
+                        luni = max(0, min((ref.year - pif.year) * 12 +
+                                          (ref.month - pif.month), dnf))
+                    rata = (Decimal(str(val)) - Decimal(str(rez))) / dnf if dnf else Decimal(0)
+                    am = (rata * luni).quantize(Decimal("0.01"))
+                    r = _iv.nota_casare_mf(val, am, ci, ca)
+                    d0 = f"Casare {den} (PV comisie, neamortizat {r['neamortizat']})"
+                else:
+                    r = _iv.nota_casare_mf(corp["valoare_bruta"],
+                                           corp["amortizare_cumulata"],
+                                           str(corp.get("cont_imobilizare") or "2131"),
+                                           str(corp.get("cont_amortizare") or "2813"))
+                    d0 = "Casare mijloc fix (PV comisie)"
+            else:
+                raise ValueError("operatie: plus|plus_mf|minus|casare")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - OMFP 2861/2009"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+            if mf_id:
+                cur.execute(f"UPDATE {schema}.mijloace_fixe SET activ=false WHERE id=%s",
+                            (mf_id,))
+        conn.commit()
+    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
