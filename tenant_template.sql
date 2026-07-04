@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict H1djxeQMbce2uLa1DYeEfqnLd7O8sAC7IwzmlC572ghiP4ZPI22pkFO7hyycJGM
+\restrict dfhSRGianSLgxZQFckHlHBHnSqr2xfh90Ae4tPwvYBrk2NxnYsbAUnqhhnd7SFD
 
 -- Dumped from database version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
@@ -503,6 +503,73 @@ ALTER TABLE tenant_001.mijloace_fixe ALTER COLUMN id ADD GENERATED ALWAYS AS IDE
 
 
 --
+-- Name: nir; Type: TABLE; Schema: tenant_001; Owner: postgres
+--
+
+CREATE TABLE tenant_001.nir (
+    id integer NOT NULL,
+    numar character varying(50) NOT NULL,
+    data date NOT NULL,
+    furnizor character varying(255),
+    cui character varying(30),
+    factura_ref character varying(100),
+    cost_total numeric(12,2) DEFAULT 0 NOT NULL,
+    valoare_vanzare numeric(12,2) DEFAULT 0 NOT NULL,
+    adaos_total numeric(12,2) DEFAULT 0 NOT NULL,
+    tva_neexigibila numeric(12,2) DEFAULT 0 NOT NULL,
+    inregistrari_ids jsonb,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE tenant_001.nir OWNER TO postgres;
+
+--
+-- Name: nir_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE tenant_001.nir ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME tenant_001.nir_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: nir_linii; Type: TABLE; Schema: tenant_001; Owner: postgres
+--
+
+CREATE TABLE tenant_001.nir_linii (
+    id integer NOT NULL,
+    nir_id integer NOT NULL,
+    denumire character varying(255) NOT NULL,
+    cantitate numeric(12,3) NOT NULL,
+    pret_achizitie numeric(12,4) NOT NULL,
+    pret_vanzare numeric(12,4) NOT NULL,
+    cota_tva numeric(5,2) DEFAULT 21 NOT NULL
+);
+
+
+ALTER TABLE tenant_001.nir_linii OWNER TO postgres;
+
+--
+-- Name: nir_linii_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE tenant_001.nir_linii ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME tenant_001.nir_linii_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: plan_conturi; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
@@ -759,6 +826,22 @@ ALTER TABLE ONLY tenant_001.mijloace_fixe
 
 
 --
+-- Name: nir_linii nir_linii_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.nir_linii
+    ADD CONSTRAINT nir_linii_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: nir nir_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.nir
+    ADD CONSTRAINT nir_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: plan_conturi plan_conturi_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
@@ -851,6 +934,14 @@ ALTER TABLE ONLY tenant_001.inregistrari
 
 ALTER TABLE ONLY tenant_001.inregistrari_linii
     ADD CONSTRAINT inregistrari_linii_inregistrare_id_fkey FOREIGN KEY (inregistrare_id) REFERENCES tenant_001.inregistrari(id) ON DELETE CASCADE;
+
+
+--
+-- Name: nir_linii nir_linii_nir_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.nir_linii
+    ADD CONSTRAINT nir_linii_nir_id_fkey FOREIGN KEY (nir_id) REFERENCES tenant_001.nir(id) ON DELETE CASCADE;
 
 
 --
@@ -1008,6 +1099,20 @@ GRANT ALL ON SEQUENCE tenant_001.mijloace_fixe_id_seq TO iconta_user;
 
 
 --
+-- Name: TABLE nir; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.nir TO iconta_user;
+
+
+--
+-- Name: TABLE nir_linii; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.nir_linii TO iconta_user;
+
+
+--
 -- Name: TABLE plan_conturi; Type: ACL; Schema: tenant_001; Owner: postgres
 --
 
@@ -1060,5 +1165,5 @@ GRANT ALL ON SEQUENCE tenant_001.solduri_parteneri_id_seq TO iconta_user;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict H1djxeQMbce2uLa1DYeEfqnLd7O8sAC7IwzmlC572ghiP4ZPI22pkFO7hyycJGM
+\unrestrict dfhSRGianSLgxZQFckHlHBHnSqr2xfh90Ae4tPwvYBrk2NxnYsbAUnqhhnd7SFD
 
