@@ -3606,3 +3606,44 @@ def vanzare_marja_turism(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
         conn.commit()
     rasp["inregistrare_id"] = iid
     return rasp
+
+
+@app.post("/tenants/{tenant_id}/vanzare-aur-investitii")
+def vanzare_aur_investitii(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, tip lingou|plancheta|moneda, puritate, an_emisie?, pret_unitar?,
+    valoare_aur?, suma, optiune_taxare?, calitate_client PF|PJ, client_identificare,
+    descriere?}. Scutit (art. 313 al. 3) sau taxare inversa (art. 331 al. 2 lit. h).
+    Nota ciorna: 4111=707 fara TVA."""
+    from decimal import Decimal
+    from core import tva_aur as _m
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            ok, motiv = _m.este_aur_investitii(corp["tip"], corp["puritate"],
+                                               corp.get("an_emisie"), corp.get("pret_unitar"),
+                                               corp.get("valoare_aur"))
+            if not ok:
+                raise ValueError("nu este aur de investitii: " + motiv)
+            regim = _m.livrare_aur(corp.get("optiune_taxare", False),
+                                   corp["calitate_client"], corp["client_identificare"])
+            suma = Decimal(str(corp["suma"]))
+            if suma <= 0:
+                raise ValueError("suma invalida")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        mentiune = "taxare inversa (art. 331 al. 2 lit. h)" if regim == "taxare_inversa" \
+                   else "scutit (art. 313 al. 3)"
+        descr = (corp.get("descriere") or "Livrare aur investitii") + " - " + mentiune \
+                + " - client: " + corp["client_identificare"]
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                            (inregistrare_id, cont_debit, cont_credit, suma)
+                            VALUES (%s,'4111','707',%s)""", (iid, suma))
+        conn.commit()
+    return {"inregistrare_id": iid, "regim": regim, "suma": str(suma)}
