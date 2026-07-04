@@ -4521,3 +4521,121 @@ def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
                                 VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+
+
+@app.post("/tenants/{tenant_id}/achizitie-necorporala")
+def achizitie_necorporala(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet|
+    dezvoltare|constituire, dnf_luni?, cota?, cod?}.
+    Art. 28(9): software = 36 luni (fix); licenta/brevet = durata contract (dnf_luni
+    obligatoriu); constituire = max 60 luni. Nota ciorna 20x+4426=404 + inscriere
+    in mijloace_fixe (amortizare lunara preluata de mecanismul existent)."""
+    from decimal import Decimal
+    TIPURI = {"software":    ("208", "2808", 36),
+              "licenta":     ("205", "2805", None),
+              "brevet":      ("205", "2805", None),
+              "dezvoltare":  ("203", "2803", None),
+              "constituire": ("201", "2801", 60)}
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        tip = corp.get("tip")
+        if tip not in TIPURI:
+            raise HTTPException(422, "tip: " + "|".join(TIPURI))
+        cont_imo, cont_am, dnf_regula = TIPURI[tip]
+        dnf = corp.get("dnf_luni")
+        if tip == "software":
+            dnf = 36  # art. 28(9): programe informatice = 3 ani, fix
+        elif tip == "constituire":
+            dnf = min(int(dnf or 60), 60)  # art. 28(11): max 5 ani
+        elif not dnf:
+            raise HTTPException(422, f"dnf_luni obligatoriu pentru {tip} "
+                                     "(durata contractului/de utilizare, art. 28(9))")
+        try:
+            val = Decimal(str(corp["valoare"]))
+            if val <= 0:
+                raise ValueError
+            tva = (val * Decimal(str(corp.get("cota", 21))) / 100).quantize(Decimal("0.01"))
+        except (ValueError, KeyError):
+            raise HTTPException(422, "valoare invalida")
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
+                            (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
+                             rezidual, dnf_luni, data_pif, metoda, activ)
+                            VALUES (%s,%s,%s,%s,%s,0,%s,%s,'liniara',true) RETURNING id""",
+                        (corp.get("cod") or f"NEC-{tip[:3].upper()}",
+                         corp["denumire"][:200], cont_imo, cont_am, val,
+                         int(dnf), corp["data"]))
+            mfid = cur.fetchone()[0]
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], f"Achizitie necorporala {tip}: {corp['denumire']}"
+                                       f" (amortizare {dnf} luni, art. 28(9) CF)"[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in [(cont_imo, "404", val), ("4426", "404", tva)]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "mijloc_fix_id": mfid, "dnf_luni": int(dnf),
+            "conturi": [cont_imo, cont_am]}
+
+
+@app.post("/tenants/{tenant_id}/reevaluare-imobilizare")
+def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, operatie reevaluare|surplus, + reevaluare{mijloc_fix_id,
+    valoare_justa, sold_105_activ?, pierdere_655_anterioara?} | surplus{suma}}.
+    Reevaluarea citeste valoarea+amortizarea cumulata din mijloace_fixe si
+    actualizeaza valoarea/dnf ramane manual (raport evaluator)."""
+    from decimal import Decimal
+    from datetime import date as _date
+    from core import reevaluare as _rv
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        op = corp.get("operatie", "reevaluare")
+        try:
+            if op == "surplus":
+                r = _rv.nota_realizare_surplus(corp["suma"])
+                descr = "Transfer surplus reevaluare realizat (105=1175, pct.109-110)"
+                extra = {}
+            else:
+                with conn.cursor() as cur:
+                    cur.execute(f"""SELECT denumire, cont_imobilizare, cont_amortizare,
+                                           valoare, COALESCE(rezidual,0), dnf_luni, data_pif
+                                    FROM {schema}.mijloace_fixe WHERE id=%s AND activ=true""",
+                                (corp["mijloc_fix_id"],))
+                    mf = cur.fetchone()
+                if not mf:
+                    raise HTTPException(404, "mijloc fix inexistent/inactiv")
+                den, ci, ca, val, rez, dnf, pif = mf
+                ref = _date.fromisoformat(corp["data"])
+                luni = 0
+                if pif and dnf:
+                    luni = max(0, min((ref.year - pif.year) * 12 + (ref.month - pif.month), dnf))
+                rata = (Decimal(str(val)) - Decimal(str(rez))) / dnf if dnf else Decimal(0)
+                amortizare = (rata * luni).quantize(Decimal("0.01"))
+                r = _rv.nota_reevaluare(val, amortizare, corp["valoare_justa"], ci, ca,
+                                        corp.get("sold_105_activ", 0),
+                                        corp.get("pierdere_655_anterioara", 0))
+                descr = f"Reevaluare {den}: neta {r['valoare_neta']} -> justa "                         f"{corp['valoare_justa']} (OMFP 1802 pct.111-116)"
+                extra = {"valoare_neta": str(r["valoare_neta"]),
+                         "diferenta": str(r["diferenta"]), "amortizare_eliminata": str(amortizare)}
+                if not r["linii"]:
+                    return {"inregistrare_id": None, "mesaj": "nicio diferenta", **extra}
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **extra}
