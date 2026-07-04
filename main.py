@@ -5257,3 +5257,51 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                             (mf_id,))
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+
+
+@app.post("/tenants/{tenant_id}/nota-lichidare")
+def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, operatie vanzare_activ|partaj, descriere?, +
+    vanzare_activ{pret, valoare_bruta, amortizare_cumulata, conturi?, cota?};
+    partaj{capital_social, rezerve?, profituri?}}. OMFP 897/2015."""
+    from datetime import date as _date
+    from core import lichidare as _li
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        op = corp.get("operatie")
+        info = {}
+        try:
+            if op == "vanzare_activ":
+                r = _li.nota_vanzare_activ(corp["pret"], corp["valoare_bruta"],
+                                           corp["amortizare_cumulata"],
+                                           str(corp.get("cont_imobilizare") or "2131"),
+                                           str(corp.get("cont_amortizare") or "2813"),
+                                           corp.get("cota", 21))
+                d0 = "Lichidare: valorificare activ (7583 + descarcare)"
+            elif op == "partaj":
+                r = _li.partaj(corp["capital_social"], corp.get("rezerve", 0),
+                               corp.get("profituri", 0),
+                               _date.fromisoformat(corp["data"]))
+                info = {"castig_impozabil": str(r["castig_impozabil"]),
+                        "impozit": str(r["impozit"]),
+                        "net_asociat": str(r["net_asociat"]), "cota": r["cota"]}
+                d0 = "Partaj lichidare: capital neimpozabil + castig cu impozit dividend"
+            else:
+                raise ValueError("operatie: vanzare_activ|partaj")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - OMFP 897/2015"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
