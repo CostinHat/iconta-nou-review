@@ -243,6 +243,8 @@ async function ecranVerificari(corp, nav, t) {
     corp.innerHTML = `<p class="ecran-nota">Se verifica...</p>`;
     let r = null;
     try { r = await api.get(`/firme/${t.id}/verificari?an=${an}&luna=${luna}`); } catch {}
+    let vs = null;  // [verif_stocuri_v1]
+    try { vs = await api.get(`/tenants/${t.id}/verificare-stocuri`); } catch {}
     const rand = (nume, obj) => {
       const ok = obj && (obj.ok === true || obj.cod === undefined) && !(Array.isArray(obj) && obj.length);
       const detaliu = ok ? "in regula" : (Array.isArray(obj) ? obj.map(p=>p.cod).join(", ") : (obj && obj.cod) || "problema");
@@ -263,6 +265,10 @@ async function ecranVerificari(corp, nav, t) {
         ${r ? rand("Echilibru balan\u021b\u0103", r.echilibru) : ""}
         ${r ? rand("Trezorerie (f\u0103r\u0103 solduri creditoare)", r.trezorerie) : ""}
         ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${r.tva.suma} lei (cont ${r.tva.cont})</div></div></div>` : ""}
+        ${vs ? `<div class="pf-frand"><div class="pf-frand-text">
+          <div class="pf-frand-nume">Stocuri (contabil vs fi\u0219e CV)</div>
+          <div class="pf-frand-sub">${vs.ok ? "in regula" : vs.conturi.filter(c=>!c.ok).map(c=>`cont ${c.cod || c.cont}: contabil ${c.sold_contabil} vs fi\u0219e ${c.valoare_fise_cv} (dif ${c.diferenta})`).join(" \u00b7 ")}</div>
+        </div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${vs.ok ? "#1d7a4d" : "#ff3b30"}"></span></div>` : ""}
         ${!r ? '<div class="mig-gol">Nu am putut rula verific\u0103rile.</div>' : ""}
       </div>`;
     corp.querySelector("#vf-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
