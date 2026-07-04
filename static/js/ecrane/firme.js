@@ -503,7 +503,7 @@ async function ecranJurnal(corp, nav, t) {
     };
     const editor = (n) => `
       <div class="pf-frand" style="display:block;border:1px solid #c9961f">
-        <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${escJ(n.data)}</div>
+        <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${escJ(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
         <label>Descriere<br><input type="text" id="je-desc" class="mig-text" style="width:100%" value="${escJ(n.descriere || "")}"></label>
         <div id="je-linii" style="margin-top:8px">${n.linii.map((l, i) => `
           <div style="display:flex;gap:8px;margin-bottom:6px" data-lin="${i}">

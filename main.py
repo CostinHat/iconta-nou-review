@@ -2103,7 +2103,7 @@ def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
             raise HTTPException(404, "tenant inexistent sau fara acces")
         with conn.cursor() as cur:
             cur.execute(f"""
-                SELECT i.id, i.data, i.numar, i.descriere, i.sursa, i.status,
+                SELECT i.id, i.data, i.numar, i.descriere, i.sursa, i.status, i.factura_id,
                        l.cont_debit, l.cont_credit, l.suma
                 FROM {schema}.inregistrari i
                 JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
@@ -2111,10 +2111,10 @@ def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
                 ORDER BY i.data, i.id, l.id
             """, (f"{an}-{luna:02d}-01",))
             note = {}
-            for iid, data, nr, desc, sursa, status, deb, cre, suma in cur.fetchall():
+            for iid, data, nr, desc, sursa, status, fid, deb, cre, suma in cur.fetchall():
                 if iid not in note:
                     note[iid] = {"id": iid, "data": data.isoformat(), "numar": nr,
-                                 "descriere": desc, "sursa": sursa, "status": status, "linii": []}
+                                 "descriere": desc, "sursa": sursa, "status": status, "factura_id": fid, "linii": []}
                 note[iid]["linii"].append({"debit": deb, "credit": cre, "suma": float(suma)})
     return {"note": list(note.values())}
 @app.post("/tenants/{tenant_id}/horeca/raport-z")
