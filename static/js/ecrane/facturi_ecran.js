@@ -68,6 +68,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
           <div class="pf-frand-sub">${fmtData(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}</div>
         </div>
         <span class="pf-frand-suma">${suma}</span>
+        <span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>
       </button>`;
       }).join("");
   corp.innerHTML = `
@@ -76,6 +77,15 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     <p class="pf-intro">Apas\u0103 o factur\u0103 pentru detalii.</p>
     <div class="pf-lista">${corpuri}</div>`;
   corp.querySelector("#fac-back").addEventListener("click", inapoiMeniu);
+  corp.querySelectorAll(".fac-cont").forEach((b) => b.addEventListener("click", async (ev) => {
+    ev.stopPropagation();
+    try {
+      const r = await api.post(`/tenants/${tenantId}/facturi/${b.dataset.cid}/contabilizeaza`, {});
+      b.outerHTML = `<span style="color:#1d7a4d;font-size:13px;margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
+    } catch (e) {
+      b.outerHTML = `<span style="color:#c9961f;font-size:13px;margin-left:8px">${(e.mesaj || "eroare")}</span>`;
+    }
+  }));
   corp.querySelectorAll(".fac-frand-btn").forEach((b) => {
     b.addEventListener("click", () => detaliiFactura(corp, nav, tenantId, b.dataset.id, opt));
   });
