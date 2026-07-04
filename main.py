@@ -4774,3 +4774,53 @@ def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
                                 VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
         conn.commit()
     return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+
+
+@app.post("/tenants/{tenant_id}/nota-asociati")
+def nota_asociati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, operatie dividend|regularizare|imprumut, descriere?, +
+    dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar,
+    dividend_anual}; imprumut{suma, fel primire|restituire, dobanda?}}."""
+    from datetime import date as _date
+    from core import decontari_asociati as _da
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        op = corp.get("operatie")
+        info = {}
+        try:
+            if op == "dividend":
+                r = _da.nota_dividend(corp["brut"], _date.fromisoformat(corp["data"]),
+                                      bool(corp.get("interimar")),
+                                      corp.get("cu_plata", True))
+                info = {"impozit": str(r["impozit"]), "net": str(r["net"]),
+                        "cota": r["cota"]}
+                d0 = f"Dividende {'interimare' if corp.get('interimar') else 'anuale'} "                      f"brut {corp['brut']}, impozit {r['cota']}%"
+            elif op == "regularizare":
+                r = _da.nota_regularizare_interimar(corp["total_interimar"],
+                                                    corp["dividend_anual"])
+                info = {"exces_de_restituit": str(r["exces_de_restituit"])}
+                d0 = "Regularizare dividende interimare (457=463, OMFP 3067/2018)"
+            elif op == "imprumut":
+                r = _da.nota_imprumut_asociat(corp.get("suma", 0),
+                                              corp.get("fel", "primire"),
+                                              corp.get("dobanda", 0))
+                d0 = f"Imprumut asociat 4551 ({corp.get('fel','primire')})"
+            else:
+                raise ValueError("operatie: dividend|regularizare|imprumut")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0)
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
