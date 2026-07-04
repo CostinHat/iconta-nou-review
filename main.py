@@ -4035,3 +4035,46 @@ def reges_poll(tenant_id: int, ctx=Depends(cere_cabinet)):
                              m_rc.group(1) if m_rc else None, m_mid.group(1), tenant_id))
             conn.commit()
     return {"http_status": status, "raspuns": rasp[:1000]}
+
+
+@app.post("/tenants/{tenant_id}/achizitie-taxare-inversa")
+def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?,
+    furnizor_platitor_tva, descriere?}. Beneficiarul (firma) trebuie platitor TVA.
+    Nota ciorna: cont_dest=401 valoare + 4426=4427 TVA (norme pct. 109)."""
+    from decimal import Decimal
+    from datetime import date as _date
+    from core import taxare_inversa as _ti
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT COALESCE(platitor_tva, true) FROM {schema}.firma_profil LIMIT 1")
+            rand = cur.fetchone()
+            beneficiar_tva = bool(rand[0]) if rand else True
+        try:
+            ok, mentiune = _ti.se_aplica(corp["categorie"], corp["valoare"],
+                                         corp.get("furnizor_platitor_tva", True),
+                                         beneficiar_tva,
+                                         _date.fromisoformat(corp["data"]))
+            cont = str(corp["cont_destinatie"]).strip()
+            if not cont:
+                raise ValueError("cont_destinatie obligatoriu")
+            val = Decimal(str(corp["valoare"]))
+            tva = _ti.tva_beneficiar(val, corp.get("cota", 21))
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or "Achizitie") + " - " + mentiune
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for d, c, s in [(cont, "401", val), ("4426", "4427", tva)]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
+        conn.commit()
+    return {"inregistrare_id": iid, "valoare": str(val), "tva": str(tva),
+            "mentiune": mentiune}
