@@ -140,7 +140,6 @@ def conteaza(conn, schema, linie_id, alocari=None):
             cur.execute(f"UPDATE {schema}.extras_linii SET status='contat', alocari=%s WHERE id=%s",
                         (json.dumps({**(l.get("alocari") or {}), "inregistrari_ids": [iid]}), linie_id))
             conn.commit()
-            return {"inregistrari": [iid], "nota": f"{np['debit']}={np['credit']}"}
         banca = _cont_banca(l["valuta"])
         debit, credit = (banca, CONT_CLIENTI) if l["tip"] == "incasare" else (CONT_FURNIZORI, banca)
         create = []
@@ -155,6 +154,21 @@ def conteaza(conn, schema, linie_id, alocari=None):
                 INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
                 VALUES (%s,%s,%s,%s)
             """, (iid, debit, credit, Decimal(str(a["suma"]))))
+            # [tvai_v1] TVA la incasare: exigibilitate la incasare/plata (art.282(3),(8))
+            cur.execute(f"SELECT COALESCE(tva_la_incasare, false) AS b FROM {schema}.firma_profil WHERE id = 1")
+            if (cur.fetchone() or {}).get("b"):
+                from core import tva_incasare as _tv
+                cur.execute(f"""SELECT f.directie, COALESCE((SELECT cota_tva FROM {schema}.factura_linii
+                                        WHERE factura_id = f.id LIMIT 1), 21) AS cota
+                                FROM {schema}.facturi f WHERE f.id = %s""", (a["factura_id"],))
+                _f = cur.fetchone()
+                if _f:
+                    _tva = _tv.tva_din_incasare(a["suma"], _f["cota"])
+                    if _tva > 0:
+                        _deb, _cred = ("4428", "4427") if _f["directie"] == "emisa" else ("4426", "4428")
+                        cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                        (inregistrare_id, cont_debit, cont_credit, suma)
+                                        VALUES (%s,%s,%s,%s)""", (iid, _deb, _cred, _tva))
             create.append(iid)
         cur.execute(f"UPDATE {schema}.extras_linii SET status='contat', alocari=%s WHERE id=%s",
                     (json.dumps({**(l.get("alocari") or {}),
