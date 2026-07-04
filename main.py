@@ -1742,7 +1742,7 @@ def coada_adauga(date: CoadaIn, ctx=Depends(cere_rol("admin_firma", "angajat")))
             xml, res = declaratii_api.genereaza(conn, schema, date.tip, body)
     except ValueError as e:
         raise HTTPException(422, str(e))
-    payload = {"xml": xml, "avertismente": getattr(res, "avertismente", None)}
+    payload = {"xml": xml, "avertismente": (res if isinstance(res, list) else getattr(res, "avertismente", None))}
     # 2) pune în coadă (pe public), stare 'la_senior'
     with db.get_conn() as conn:
         r = coada_api.adauga_in_coada(
