@@ -3316,3 +3316,46 @@ def retete_descarca(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cab
             return _r.descarca(conn, schema, corp)
         except ValueError as e:
             raise HTTPException(400, str(e))
+
+
+@app.get("/tenants/{tenant_id}/verificare-stocuri")
+def verificare_stocuri(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """Compara soldul contabil (solduri_initiale + note validate) pe fiecare cont de stoc
+    folosit in articole cu valoarea insumata a fiselor CV (cantitate x CMP)."""
+    from decimal import Decimal
+    from psycopg2.extras import RealDictCursor
+    from core import stocuri_cv as _m
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute(f"SELECT id, denumire, cont_stoc FROM {schema}.articole ORDER BY id")
+            arts = [dict(r) for r in cur.fetchall()]
+            val_cv = {}
+            for a in arts:
+                cur.execute(f"""SELECT data, tip, cantitate, pret_unitar FROM {schema}.miscari_stoc
+                                WHERE articol_id=%s ORDER BY data, id""", (a["id"],))
+                fisa = _m.fisa_magazie([dict(r) for r in cur.fetchall()])
+                if fisa:
+                    u = fisa[-1]
+                    v = Decimal(str(u["sold_cantitate"] or 0)) * Decimal(str(u["cmp"] or 0))
+                    val_cv[a["cont_stoc"]] = val_cv.get(a["cont_stoc"], Decimal("0")) + v
+            rez = []
+            for cont, vcv in sorted(val_cv.items()):
+                cur.execute(f"""SELECT COALESCE(SUM(sold_debitor - sold_creditor),0) AS si
+                                FROM {schema}.solduri_initiale WHERE cont = %s""", (cont,))
+                sold = Decimal(str(cur.fetchone()["si"]))
+                cur.execute(f"""SELECT COALESCE(SUM(CASE WHEN l.cont_debit=%s THEN l.suma ELSE 0 END),0) AS d,
+                                       COALESCE(SUM(CASE WHEN l.cont_credit=%s THEN l.suma ELSE 0 END),0) AS c
+                                FROM {schema}.inregistrari_linii l
+                                JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+                                WHERE i.status = 'validata'""", (cont, cont))
+                r = cur.fetchone()
+                sold += Decimal(str(r["d"])) - Decimal(str(r["c"]))
+                dif = (sold - vcv).quantize(Decimal("0.01"))
+                rez.append({"cont": cont, "sold_contabil": str(sold.quantize(Decimal("0.01"))),
+                            "valoare_fise_cv": str(vcv.quantize(Decimal("0.01"))),
+                            "diferenta": str(dif), "ok": abs(dif) <= Decimal("0.01")})
+    return {"conturi": rez, "ok": all(x["ok"] for x in rez),
+            "nota": "Diferentele pot veni din note ciorna nevalidate sau operatiuni in afara fiselor CV."}
