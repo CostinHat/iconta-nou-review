@@ -3882,3 +3882,156 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
     r["venituri_baza"] = str(venituri)
     r["zile_baza"] = int(zile)
     return r
+
+
+@app.post("/tenants/{tenant_id}/import-efactura")
+async def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
+                          ctx=Depends(cere_cabinet)):
+    """Upload XML/ZIP e-Factura. Parseaza UBL, directie auto (CUI firma vs furnizor),
+    idempotent pe (numar, tert_cui, data_emitere)."""
+    from core import efactura_import as _ef
+    rezultate = {"importate": 0, "duplicate": 0, "erori": []}
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT cui FROM {schema}.firma_profil LIMIT 1")
+            rand = cur.fetchone()
+            if not rand or not rand[0]:
+                raise HTTPException(422, "CUI firma lipsa in firma_profil")
+            cui_firma = rand[0]
+            for up in fisiere:
+                continut = await up.read()
+                try:
+                    perechi = _ef.extrage_fisiere(up.filename or "f.xml", continut)
+                except Exception as e:
+                    rezultate["erori"].append(f"{up.filename}: {e}")
+                    continue
+                for nume, xmlb in perechi:
+                    try:
+                        f = _ef.parseaza_xml(xmlb, cui_firma)
+                    except ValueError as e:
+                        rezultate["erori"].append(f"{nume}: {e}")
+                        continue
+                    cur.execute(f"""SELECT 1 FROM {schema}.facturi
+                                    WHERE numar=%s AND COALESCE(tert_cui,'')=%s
+                                      AND data_emitere=%s""",
+                                (f["numar"], f["tert_cui"], f["data_emitere"]))
+                    if cur.fetchone():
+                        rezultate["duplicate"] += 1
+                        continue
+                    cur.execute(f"""INSERT INTO {schema}.facturi
+                                    (numar, data_emitere, data_scadenta, total, tva,
+                                     moneda, directie, status, xml, tert_nume, tert_cui)
+                                    VALUES (%s,%s,%s,%s,%s,%s,%s,'importata',%s,%s,%s)
+                                    RETURNING id""",
+                                (f["numar"], f["data_emitere"], f["data_scadenta"],
+                                 f["total"], f["tva"], f["moneda"], f["directie"],
+                                 f["xml"], f["tert_nume"][:255], f["tert_cui"][:30]))
+                    fid = cur.fetchone()[0]
+                    for ln in f["linii"]:
+                        cur.execute(f"""INSERT INTO {schema}.factura_linii
+                                        (factura_id, descriere, cantitate, pret_unitar, cota_tva)
+                                        VALUES (%s,%s,%s,%s,%s)""",
+                                    (fid, ln["descriere"][:255], ln["cantitate"],
+                                     ln["pret_unitar"], ln["cota_tva"]))
+                    rezultate["importate"] += 1
+        conn.commit()
+    return rezultate
+
+
+@app.post("/tenants/{tenant_id}/reges-config")
+def reges_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {username, parola, mediu test|prod}. Chei API din aplicatia REGES Angajator."""
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        if corp.get("mediu", "test") not in ("test", "prod"):
+            raise HTTPException(422, "mediu: test|prod")
+        with conn.cursor() as cur:
+            cur.execute("""INSERT INTO public.reges_chei (tenant_id, username, parola, mediu)
+                           VALUES (%s,%s,%s,%s)
+                           ON CONFLICT (tenant_id) DO UPDATE
+                           SET username=EXCLUDED.username, parola=EXCLUDED.parola,
+                               mediu=EXCLUDED.mediu""",
+                        (tenant_id, corp["username"], corp["parola"], corp.get("mediu", "test")))
+        conn.commit()
+    return {"ok": True}
+
+
+@app.post("/tenants/{tenant_id}/reges-trimite-salariat")
+def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {salariat_id, adresa, contract {numar, data_contract, data_inceput, salariu, cor, ...}?}.
+    Trimite InregistrareSalariat (+ AdaugareContract daca vine si contract dupa referinta)."""
+    from core import reges_client as _rg
+    import uuid as _uuid
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute("SELECT username, parola, mediu, author_id FROM public.reges_chei WHERE tenant_id=%s",
+                        (tenant_id,))
+            chei = cur.fetchone()
+            if not chei:
+                raise HTTPException(422, "chei REGES neconfigurate - foloseste reges-config")
+            cur.execute(f"SELECT cnp, nume, prenume FROM {schema}.salariati WHERE id=%s",
+                        (corp["salariat_id"],))
+            s = cur.fetchone()
+            if not s:
+                raise HTTPException(404, "salariat inexistent")
+        mid = _uuid.uuid4()
+        xml = _rg.mesaj_inregistrare_salariat(
+            {"cnp": s[0], "nume": s[1], "prenume": s[2], "adresa": corp.get("adresa")},
+            str(chei[3]), chei[0], message_id=mid)
+        cl = _rg.RegesClient(chei[0], chei[1], chei[2])
+        try:
+            status, rasp = cl.trimite_salariat(xml)
+        except Exception as e:
+            raise HTTPException(502, f"REGES: {e}")
+        with conn.cursor() as cur:
+            cur.execute("""INSERT INTO public.reges_mesaje
+                           (tenant_id, salariat_id, operatie, message_id, response_id, raspuns)
+                           VALUES (%s,%s,'InregistrareSalariat',%s,%s,%s) RETURNING id""",
+                        (tenant_id, corp["salariat_id"], str(mid), None, rasp[:4000]))
+            rid = cur.fetchone()[0]
+        conn.commit()
+    return {"mesaj_id": rid, "http_status": status, "raspuns": rasp[:500]}
+
+
+@app.post("/tenants/{tenant_id}/reges-poll")
+def reges_poll(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """Citeste+consuma un mesaj din coada REGES; salveaza referintele in reges_mesaje."""
+    from core import reges_client as _rg
+    import re as _re
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute("SELECT username, parola, mediu FROM public.reges_chei WHERE tenant_id=%s",
+                        (tenant_id,))
+            chei = cur.fetchone()
+            if not chei:
+                raise HTTPException(422, "chei REGES neconfigurate")
+        cl = _rg.RegesClient(chei[0], chei[1], chei[2])
+        try:
+            status, rasp = cl.poll_mesaj()
+        except Exception as e:
+            raise HTTPException(502, f"REGES: {e}")
+        m_mid = _re.search(r"<(?:Initial)?MessageId>([0-9a-f-]{36})", rasp)
+        m_rs = _re.search(r"ReferintaSalariat>?\s*<Id>([0-9a-f-]{36})", rasp)
+        m_rc = _re.search(r"ReferintaContract>?\s*<Id>([0-9a-f-]{36})", rasp)
+        if m_mid:
+            with conn.cursor() as cur:
+                cur.execute("""UPDATE public.reges_mesaje
+                               SET status='raspuns', raspuns=%s,
+                                   referinta_salariat=COALESCE(%s::uuid, referinta_salariat),
+                                   referinta_contract=COALESCE(%s::uuid, referinta_contract)
+                               WHERE message_id=%s::uuid AND tenant_id=%s""",
+                            (rasp[:4000], m_rs.group(1) if m_rs else None,
+                             m_rc.group(1) if m_rc else None, m_mid.group(1), tenant_id))
+            conn.commit()
+    return {"http_status": status, "raspuns": rasp[:1000]}
