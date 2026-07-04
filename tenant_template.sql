@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict TQ4HcQd31JtvICkWZvd9dDLthOdvEmnRb3LP37gTF27QfVNfQxc4PF55HaqLUxh
+\restrict umc0FyjRHXFebs1fdDYQPYdqAkPv9ls0bzKyTGnTJLUk4xDofQogXpk4eIXf7wb
 
 -- Dumped from database version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
 -- Dumped by pg_dump version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
@@ -393,6 +393,7 @@ CREATE TABLE tenant_001.firma_profil (
     urmator_numar_factura integer DEFAULT 1 NOT NULL,
     font_factura character varying(30) DEFAULT 'sans'::character varying,
     culoare_factura character varying(10) DEFAULT '#1d4ed8'::character varying,
+    tva_la_incasare boolean DEFAULT false NOT NULL,
     CONSTRAINT firma_profil_singleton CHECK ((id = 1))
 );
 
@@ -842,6 +843,36 @@ ALTER TABLE tenant_001.solduri_parteneri ALTER COLUMN id ADD GENERATED ALWAYS AS
 
 
 --
+-- Name: state_plata; Type: TABLE; Schema: tenant_001; Owner: postgres
+--
+
+CREATE TABLE tenant_001.state_plata (
+    id integer NOT NULL,
+    salariat_id integer NOT NULL,
+    luna date NOT NULL,
+    venit_brut numeric DEFAULT 0 NOT NULL,
+    zile_lucrate integer DEFAULT 0 NOT NULL,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE tenant_001.state_plata OWNER TO postgres;
+
+--
+-- Name: state_plata_id_seq; Type: SEQUENCE; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE tenant_001.state_plata ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME tenant_001.state_plata_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: articole articole_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
@@ -1042,6 +1073,22 @@ ALTER TABLE ONLY tenant_001.solduri_parteneri
 
 
 --
+-- Name: state_plata state_plata_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.state_plata
+    ADD CONSTRAINT state_plata_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: state_plata state_plata_salariat_id_luna_key; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.state_plata
+    ADD CONSTRAINT state_plata_salariat_id_luna_key UNIQUE (salariat_id, luna);
+
+
+--
 -- Name: produse_denumire_idx; Type: INDEX; Schema: tenant_001; Owner: iconta_user
 --
 
@@ -1118,6 +1165,14 @@ ALTER TABLE ONLY tenant_001.retete_linii
 
 ALTER TABLE ONLY tenant_001.retete_linii
     ADD CONSTRAINT retete_linii_reteta_id_fkey FOREIGN KEY (reteta_id) REFERENCES tenant_001.retete(id) ON DELETE CASCADE;
+
+
+--
+-- Name: state_plata state_plata_salariat_id_fkey; Type: FK CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.state_plata
+    ADD CONSTRAINT state_plata_salariat_id_fkey FOREIGN KEY (salariat_id) REFERENCES tenant_001.salariati(id) ON DELETE CASCADE;
 
 
 --
@@ -1422,8 +1477,22 @@ GRANT ALL ON SEQUENCE tenant_001.solduri_parteneri_id_seq TO iconta_user;
 
 
 --
+-- Name: TABLE state_plata; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE tenant_001.state_plata TO iconta_user;
+
+
+--
+-- Name: SEQUENCE state_plata_id_seq; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT USAGE ON SEQUENCE tenant_001.state_plata_id_seq TO iconta_user;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict TQ4HcQd31JtvICkWZvd9dDLthOdvEmnRb3LP37gTF27QfVNfQxc4PF55HaqLUxh
+\unrestrict umc0FyjRHXFebs1fdDYQPYdqAkPv9ls0bzKyTGnTJLUk4xDofQogXpk4eIXf7wb
 

@@ -149,3 +149,33 @@ Toate portate in core/: d100, d101, d112, d205, d300, d301, d390, d394, d406
 
 ## Următoarele (lista mare, în ordine)
 Aplicare marjă turism → taxare inversă internă art. 331 (legare la contare) → operațiuni IC/VIES → import/DVI → Intrastat → multi-valută 665/765 → leasing → avansuri 409/419 → restul listei.
+
+## 04.07.2026 — Maraton module contabile (sesiunea 2)
+
+21 module noi, fiecare cu motor pur `core/*.py` + pytest + endpoint + smoke validat:
+
+- `9294f4b` diferente curs 665/765 + reevaluare solduri valuta (curs BNR auto)
+- `be230e8` leasing financiar/operational (167, D8051/C8051)
+- `29b8d7c` credite bancare + garantii extracontabile 8011/8021
+- `973adf5` avansuri 4091-4094/419
+- necorporale: soft 36 luni fix, licenta dnf obligatoriu (endpoint achizitie-necorporala)
+- `a9b81f3` reevaluare imobilizari 105/755/655 (amortizare auto din registru MF)
+- `ac3187a` provizioane + ajustari creante 0/30/100% art. 26
+- `19cde4c` productie 345/711/348 + PIC 331
+- `5e15af4` obiecte inventar 303 + prag MF 5000 (OUG 8/2026) + 8035
+- `a7df658` decontari asociati: dividende anuale/interimare 463, cota 16%/2026, imprumut 4551
+- `527a374` sponsorizari: credit fiscal min(0.75%CA, 20%imp), D177, micro fara facilitate
+- `0ff7934` subventii exploatare/investitii 445/4751/7584
+- `84208cf` comodat 8038, chirii PJ/PF, refacturare utilitati (structura comisionar, 2 note)
+- `f8893d7` deconturi deplasare + diurna: plafon min(2.5x bugetar; 3 salarii/zl)
+- `fcdbffd` bacsis HoReCa L376/2022: 461/462, impozit 10% retinut
+- `0c43fcf` SGR HG 1074/2021: garantie 0.50 fara TVA, autofactura RetuRO
+- `5fb4a55` perisabilitati HG 831/2004: split deductibil + ajustare TVA
+- `a0be936` zilieri (10%+CAS, fara CASS, validat ANAF) / cenzori / mandat
+- `e176d89` inventariere: plus/minus imputabil-neimputabil, casare MF auto
+- `fb598d7` lichidare OMFP 897/2015: valorificare + partaj cu impozit dividend
+- ONG OMFP 3103/2017: venituri grupa 73, scutire economica art. 15(3)
+
+Toate valorile fiscale verificate la sursa oficiala. Toate notele intra `ciorna`.
+
+URMATORUL: PFA/II/IF partida simpla + Registru incasari/plati + D212 (OMFP 170/2015, tabel nou rip_operatiuni).
