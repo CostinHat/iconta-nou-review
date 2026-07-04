@@ -4688,3 +4688,43 @@ def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+
+
+@app.post("/tenants/{tenant_id}/nota-productie")
+def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, operatie obtinere|pic|vanzare, descriere?, +
+    obtinere{cost_standard, cost_efectiv?}; pic{suma, moment constatare|reluare};
+    vanzare{pret_vanzare, cost_standard_iesit, cota?, coef_348?}}."""
+    from core import productie as _pr
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        op = corp.get("operatie")
+        try:
+            if op == "obtinere":
+                r = _pr.nota_obtinere(corp["cost_standard"], corp.get("cost_efectiv"))
+                d0 = "Obtinere produse finite 345=711 (cost standard)"
+            elif op == "pic":
+                r = _pr.nota_productie_in_curs(corp["suma"], corp.get("moment", "constatare"))
+                d0 = f"Productie in curs ({corp.get('moment','constatare')}) 331/711"
+            elif op == "vanzare":
+                r = _pr.nota_vanzare(corp["pret_vanzare"], corp["cost_standard_iesit"],
+                                     corp.get("cota", 21), corp.get("coef_348"))
+                d0 = "Vanzare produse finite 4111=701+4427, descarcare 711=345"
+            else:
+                raise ValueError("operatie: obtinere|pic|vanzare")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - OMFP 1802"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
