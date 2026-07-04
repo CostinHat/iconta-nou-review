@@ -314,6 +314,73 @@ async function ecranSalariati(corp, nav, t) {
 
 
 
+
+// [stocuri-cv] Fise de magazie (cantitativ-valoric)
+async function sectiuneaCV(corp, t, zonaM) {
+  const escV = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const zona = corp.querySelector("#cv-zona");
+  let arts = [];
+  try { const r = await api.get(`/tenants/${t.id}/stocuri/articole`); arts = r.articole || []; } catch {}
+  const azi = new Date().toISOString().slice(0, 10);
+  zona.innerHTML = `
+    <div class="pf-frand" style="display:block;margin-bottom:14px">
+      <div class="pf-frand-nume" style="margin-bottom:8px">Fi\u0219e de magazie (cantitativ-valoric, CMP)</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <select id="cv-art" class="mig-text" style="min-width:200px">
+          <option value="">\u2014 articol nou \u2014</option>
+          ${arts.map((a) => `<option value="${a.id}">${escV(a.denumire)} \u00b7 stoc ${a.stoc} ${escV(a.um)}${a.cmp ? " \u00b7 CMP " + a.cmp : ""}</option>`).join("")}
+        </select>
+        <input type="text" id="cv-den" class="mig-text" placeholder="denumire (articol nou)" style="flex:1;min-width:160px">
+        <input type="date" id="cv-data" class="mig-text" value="${azi}">
+        <input type="number" step="0.001" id="cv-cant" class="mig-text" placeholder="cant." style="width:90px">
+        <input type="number" step="0.0001" id="cv-pret" class="mig-text" placeholder="pret unitar (la intrare)" style="width:170px">
+        <input type="text" id="cv-doc" class="mig-text" placeholder="document" style="width:130px">
+      </div>
+      <p>
+        <button class="btn" id="cv-intrare">Intrare</button>
+        <button class="btn" id="cv-iesire" style="margin-left:6px">Ie\u0219ire la CMP (nota ciorn\u0103)</button>
+        <button class="btn btn-secundar" id="cv-fisa" style="margin-left:6px">Vezi fi\u0219a</button>
+      </p>
+      <div id="cv-fisa-zona"></div>
+    </div>`;
+  const val = (id) => zona.querySelector(id).value;
+  zona.querySelector("#cv-intrare").addEventListener("click", async () => {
+    try {
+      const corpReq = { data: val("#cv-data"), cantitate: parseFloat(val("#cv-cant")) || 0,
+        pret_unitar: parseFloat(val("#cv-pret")) || 0, document: val("#cv-doc") || null };
+      if (val("#cv-art")) corpReq.articol_id = parseInt(val("#cv-art"));
+      else corpReq.denumire = val("#cv-den").trim();
+      if (!corpReq.articol_id && !corpReq.denumire) { zonaM.innerHTML = `<div class="mig-gol">Alege articolul sau da-i un nume.</div>`; return; }
+      const r = await api.post(`/tenants/${t.id}/stocuri/intrare`, corpReq);
+      zonaM.innerHTML = `<p class="pf-intro">Intrare inregistrata \u00b7 ${r.valoare} lei.</p>`;
+      sectiuneaCV(corp, t, zonaM);
+    } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "Eroare")}</div>`; }
+  });
+  zona.querySelector("#cv-iesire").addEventListener("click", async () => {
+    if (!val("#cv-art")) { zonaM.innerHTML = `<div class="mig-gol">Alege articolul pentru iesire.</div>`; return; }
+    try {
+      const r = await api.post(`/tenants/${t.id}/stocuri/iesire`, {
+        articol_id: parseInt(val("#cv-art")), data: val("#cv-data"),
+        cantitate: parseFloat(val("#cv-cant")) || 0, document: val("#cv-doc") || null });
+      zonaM.innerHTML = `<p class="pf-intro">Iesire la CMP ${r.cmp} \u00b7 ${r.valoare} lei \u00b7 nota ${escV(r.nota)} (ciorna).</p>`;
+      sectiuneaCV(corp, t, zonaM);
+    } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "Eroare")}</div>`; }
+  });
+  zona.querySelector("#cv-fisa").addEventListener("click", async () => {
+    if (!val("#cv-art")) return;
+    try {
+      const r = await api.get(`/tenants/${t.id}/stocuri/articole/${val("#cv-art")}/fisa`);
+      zona.querySelector("#cv-fisa-zona").innerHTML = `
+        <div class="pf-frand-nume" style="margin:8px 0">Fisa: ${escV(r.articol.denumire)}</div>
+        <div class="pf-lista">${r.linii.map((l) => `
+          <div class="pf-frand"><div class="pf-frand-text">
+            <div class="pf-frand-nume">${escV(l.data)} \u00b7 ${l.tip === "intrare" ? "+" : "\u2212"}${l.cantitate} \u00b7 ${l.valoare} lei${l.pret_unitar ? " \u00b7 pret " + l.pret_unitar : ""}</div>
+            <div class="pf-frand-sub">sold ${l.sold_cantitate} \u00b7 ${l.sold_valoare} lei${l.cmp ? " \u00b7 CMP " + l.cmp : ""}${l.document ? " \u00b7 " + escV(l.document) : ""}</div>
+          </div></div>`).join("") || '<div class="mig-gol">Fara miscari.</div>'}</div>`;
+    } catch { zona.querySelector("#cv-fisa-zona").innerHTML = `<div class="mig-gol">Nu am putut incarca fisa.</div>`; }
+  });
+}
+
 // [stocuri] NIR + descarcare gestiune (global-valorica)
 async function ecranStocuri(corp, nav, t) {
   const escS = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -362,6 +429,7 @@ async function ecranStocuri(corp, nav, t) {
         <p><button class="btn btn-secundar" id="sn-plus">+ articol</button>
            <button class="btn" id="sn-salveaza" style="margin-left:6px">Salveaz\u0103 NIR (note ciorne)</button></p>
       </div>
+      <div id="cv-zona"></div>
       <div class="pf-lista">${randuri}</div>`;
     const zonaM = corp.querySelector("#s-mesaj");
     const zonaL = corp.querySelector("#sn-linii");
@@ -409,6 +477,7 @@ async function ecranStocuri(corp, nav, t) {
           : `<p class="pf-intro">K=${r.k} \u00b7 CMV ${r.cmv} \u00b7 adaos ${r.adaos} \u00b7 TVA ${r.tva} \u00b7 total 371: ${r.total_371} lei \u00b7 ${r.inregistrari.length} note ciorne.</p>`;
       } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
     });
+    sectiuneaCV(corp, t, zonaM);
   };
   liniiNir = [{}];
   deseneaza();

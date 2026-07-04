@@ -3115,3 +3115,52 @@ def stocuri_descarcare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabi
     if rez.get("eroare"):
         raise HTTPException(400, rez["eroare"])
     return rez
+
+
+# --- stocuri cantitativ-valorice ---
+@app.get("/tenants/{tenant_id}/stocuri/articole")
+def cv_articole(tenant_id: int, ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return {"articole": _s.articole(conn, schema)}
+
+@app.get("/tenants/{tenant_id}/stocuri/articole/{articol_id}/fisa")
+def cv_fisa(tenant_id: int, articol_id: int, ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _s.fisa(conn, schema, articol_id)
+    if rez is None:
+        raise HTTPException(404, "articol inexistent")
+    return rez
+
+@app.post("/tenants/{tenant_id}/stocuri/intrare")
+def cv_intrare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _s.intrare(conn, schema, corp)
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+@app.post("/tenants/{tenant_id}/stocuri/iesire")
+def cv_iesire(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _s.iesire(conn, schema, corp)
+    if rez is None:
+        raise HTTPException(404, "articol inexistent")
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
