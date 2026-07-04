@@ -4907,3 +4907,111 @@ def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
         conn.commit()
     return {"inregistrare_id": iid,
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
+
+
+@app.post("/tenants/{tenant_id}/nota-chirie")
+def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, fel comodat|chirie_platita|chirie_incasata|refacturare,
+    descriere?, cota?, + comodat{valoare, moment primire|restituire};
+    chirie_platita{chirie, proprietar pj|pf}; chirie_incasata{chirie};
+    refacturare{total_factura, parte_refacturata}}.
+    Refacturarea creeaza DOUA note (primire+emitere)."""
+    from core import comodat_chirii as _cc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        fel = corp.get("fel")
+        cota = corp.get("cota", 21)
+        note = []  # [(descriere, linii)]
+        info = {}
+        try:
+            if fel == "comodat":
+                r = _cc.nota_comodat(corp["valoare"], corp.get("moment", "primire"))
+                note.append((f"Comodat 8038 ({corp.get('moment','primire')}) - art. 2146 CC",
+                             r["linii"]))
+            elif fel == "chirie_platita":
+                r = _cc.nota_chirie_platita(corp["chirie"], cota,
+                                            corp.get("proprietar", "pj"))
+                info = {"nota": r.get("nota", "")}
+                note.append((f"Chirie platita ({corp.get('proprietar','pj')})", r["linii"]))
+            elif fel == "chirie_incasata":
+                r = _cc.nota_chirie_incasata(corp["chirie"], cota)
+                note.append(("Chirie incasata 4111=706", r["linii"]))
+            elif fel == "refacturare":
+                r = _cc.nota_refacturare(corp["total_factura"],
+                                         corp["parte_refacturata"], cota)
+                info = {"tva_refacturat": str(r["tva_refacturat"])}
+                if r["primire"]:
+                    note.append(("Factura utilitati: parte proprie + de refacturat (art. 271)",
+                                 r["primire"]))
+                if r["emitere"]:
+                    note.append(("Refacturare utilitati 4111=708 (aceeasi cota)",
+                                 r["emitere"]))
+            else:
+                raise ValueError("fel: comodat|chirie_platita|chirie_incasata|refacturare")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        ids = []
+        with conn.cursor() as cur:
+            for d0, linii in note:
+                descr = (corp.get("descriere") or d0)
+                cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                                VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
+                            (corp["data"], descr[:200]))
+                iid = cur.fetchone()[0]
+                ids.append(iid)
+                for dd, cc, ss in linii:
+                    cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                    (inregistrare_id, cont_debit, cont_credit, suma)
+                                    VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrari": ids, **info}
+
+
+@app.post("/tenants/{tenant_id}/nota-decont-deplasare")
+def nota_decont_deplasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, fel avans|decont|plafon, descriere?, sursa casa|banca, +
+    avans{suma}; decont{avans, diurna?, transport?, cazare?, cota?};
+    plafon{diurna_pe_zi, zile, salariu_baza, zile_lucratoare, diurna_bugetara?,
+    curs?} - plafon NU creeaza nota, doar calculeaza}."""
+    from core import deconturi as _dp
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        fel = corp.get("fel")
+        info = {}
+        try:
+            if fel == "plafon":
+                p = _dp.plafon_diurna(corp["diurna_pe_zi"], corp["zile"],
+                                      corp["salariu_baza"], corp["zile_lucratoare"],
+                                      corp.get("diurna_bugetara"), corp.get("curs", 1))
+                return {k: str(v) for k, v in p.items()}
+            if fel == "avans":
+                r = _dp.nota_avans(corp["suma"], corp.get("sursa", "casa"))
+                d0 = "Avans spre decontare 542"
+            elif fel == "decont":
+                r = _dp.nota_decont(corp.get("avans", 0), corp.get("diurna", 0),
+                                    corp.get("transport", 0), corp.get("cazare", 0),
+                                    corp.get("cota", 0), corp.get("sursa", "casa"))
+                info = {"total_cheltuieli": str(r["total_cheltuieli"]),
+                        "diferenta": str(r["diferenta"])}
+                d0 = "Decont deplasare 625=542 (ordin de deplasare + justificative)"
+            else:
+                raise ValueError("fel: avans|decont|plafon")
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or d0) + " - art. 76(2)k CF / HG 714/2018"
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'casa','ciorna') RETURNING id""",
+                        (corp["data"], descr[:200]))
+            iid = cur.fetchone()[0]
+            for dd, cc, ss in r["linii"]:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma)
+                                VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
+        conn.commit()
+    return {"inregistrare_id": iid,
+            "linii": [[a, b, str(c)] for a, b, c in r["linii"]], **info}
