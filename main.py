@@ -3174,3 +3174,37 @@ def cv_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
         return _s.inventar(conn, schema, corp)
+
+
+# --- D112 ---
+@app.get("/tenants/{tenant_id}/d112-xml")
+def d112_xml(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    from core import d112 as _d
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        xml, av = _d.genereaza(conn, schema, an, luna)
+    return {"xml": xml, "avertismente": av}
+
+@app.post("/tenants/{tenant_id}/d112-valideaza")
+def d112_valideaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    import base64, subprocess, tempfile, os
+    from core import d112 as _d
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        xml, av = _d.genereaza(conn, schema, an, luna)
+    with tempfile.TemporaryDirectory() as td:
+        cale = os.path.join(td, f"d112_{tenant_id}_{an}_{luna:02d}.xml")
+        open(cale, "w", encoding="utf-8").write(xml)
+        r = subprocess.run(["java", "-jar", "DUKIntegrator.jar", "-v", "D112", cale],
+                           cwd="/home/costin/duk/dist", capture_output=True, text=True, timeout=120)
+        erori = ""
+        err_f = cale + ".err.txt"
+        if os.path.exists(err_f):
+            erori = open(err_f, encoding="utf-8").read()
+    ok = "fara erori" in (r.stdout + r.stderr) and not erori.strip().startswith(("E:", "F:"))
+    return {"ok": ok, "erori": erori, "avertismente": av,
+            "xml_b64": base64.b64encode(xml.encode()).decode()}
