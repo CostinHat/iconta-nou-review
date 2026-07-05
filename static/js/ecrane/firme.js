@@ -326,15 +326,58 @@ async function ecranSalariati(corp, nav, t) {
             <div class="pf-frand-sub">brut ${s.brut.toFixed(2)} \u00b7 CAS ${s.cas.toFixed(2)} \u00b7 CASS ${s.cass.toFixed(2)} \u00b7 impozit ${s.impozit.toFixed(2)} \u00b7 <b>net ${s.net.toFixed(2)}</b> \u00b7 cost ${s.cost.toFixed(2)}</div>
           </div>
           <button class="btn" data-flut="${s.id}">Fluturas</button>
+          <button class="btn btn-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Stat de plat\u0103 \u00b7 ${t.nume || ""}</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an}
         <button class="btn btn-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
-        <button class="btn btn-secundar" id="sp-next">luna \u2192</button></p>
+        <button class="btn btn-secundar" id="sp-next">luna \u2192</button>
+        <button class="btn btn-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
+        <button class="btn btn-secundar" id="sp-reges-poll">R\u0103spunsuri REGES</button></p>
+      <div id="sp-reges-zona"></div>
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    const zonaReges = corp.querySelector("#sp-reges-zona");
+    corp.querySelector("#sp-reges-cfg").addEventListener("click", () => {
+      zonaReges.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
+        <div class="pf-frand-nume" style="margin-bottom:8px">Chei API REGES (din aplicatia REGES Angajator)</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;max-width:700px">
+          <label>Username<br><input type="text" id="rg-user" class="mig-text"></label>
+          <label>Parola<br><input type="password" id="rg-pass" class="mig-text"></label>
+          <label>Mediu<br><select id="rg-mediu" class="mig-text"><option value="test">Test</option><option value="prod">Productie</option></select></label>
+        </div>
+        <p style="margin-top:10px"><button class="btn" id="rg-salveaza">Salveaz\u0103</button></p>
+        <div id="rg-msg"></div></div>`;
+      corp.querySelector("#rg-salveaza").addEventListener("click", async () => {
+        const m = corp.querySelector("#rg-msg");
+        try {
+          await api.post(`/tenants/${t.id}/reges-config`, {
+            username: corp.querySelector("#rg-user").value,
+            parola: corp.querySelector("#rg-pass").value,
+            mediu: corp.querySelector("#rg-mediu").value });
+          m.innerHTML = '<p class="pf-intro">Chei salvate.</p>';
+        } catch (e) { m.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
+      });
+    });
+    corp.querySelector("#sp-reges-poll").addEventListener("click", async () => {
+      try {
+        const r = await api.get(`/tenants/${t.id}/reges-poll`);
+        const msgs = (r && (r.mesaje || r.raspunsuri)) || [];
+        zonaReges.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
+          <div class="pf-frand-nume">R\u0103spunsuri REGES</div>
+          <div class="pf-frand-sub">${msgs.length ? msgs.map((m2) => `${m2.data || ""} \u00b7 ${m2.status || m2.tip || ""} \u00b7 ${m2.mesaj || m2.detalii || JSON.stringify(m2)}`).join("<br>") : "niciun raspuns nou"}</div></div>`;
+      } catch (e) { zonaReges.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
+    });
+    corp.querySelectorAll("[data-reges]").forEach((b) => b.addEventListener("click", async () => {
+      const adresa = prompt("Adresa salariatului (obligatorie REGES):");
+      if (!adresa) return;
+      try {
+        const r = await api.post(`/tenants/${t.id}/reges-trimite-salariat`, { salariat_id: parseInt(b.dataset.reges), adresa });
+        zonaReges.innerHTML = `<p class="pf-intro">Trimis in REGES${r.referinta ? " \u00b7 ref " + r.referinta : ""}. Verifica R\u0103spunsuri REGES.</p>`;
+      } catch (e) { zonaReges.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
+    }));
     corp.querySelectorAll("[data-flut]").forEach((b) => {
       b.addEventListener("click", async () => {
         try {
