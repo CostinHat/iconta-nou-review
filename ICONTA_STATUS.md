@@ -212,3 +212,7 @@ Cod actualizat pt facilitate 200 lei (01.07.2026). Validatorul ANAF (22.04.2026)
 inca aplica 300 → atentionare SP1B4_1 fals pozitiva pe iulie. Cand ANAF publica
 validatorul nou (inainte de 25 aug): descarca D112Validator de pe
 static.anaf.ro/static/10/Anaf/Declaratii_R/112.html → ~/duk/dist/lib/ → revalideaza.
+
+## DE FACUT — Anunturi programate + alerta "in vigoare de azi"
+1. Tabel public.anunturi (mesaj, activ, de_la, pana_la, destinatar) + banner pe landing (inainte de login) + UI administrare in Admin iConta.
+2. Legatura cu monitor_fiscal: alerta fiscala cu data intrarii in vigoare -> in ziua respectiva, banner automat "De azi este in vigoare: <modificarea>" pentru cabinete.
