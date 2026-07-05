@@ -634,6 +634,21 @@ ALTER TABLE tenant_001.nir_linii ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTIT
 
 
 --
+-- Name: perioade_blocate; Type: TABLE; Schema: tenant_001; Owner: postgres
+--
+
+CREATE TABLE tenant_001.perioade_blocate (
+    an integer NOT NULL,
+    luna integer NOT NULL,
+    blocat_de integer,
+    blocat_la timestamp without time zone DEFAULT now() NOT NULL,
+    CONSTRAINT perioade_blocate_luna_check CHECK (((luna >= 1) AND (luna <= 12)))
+);
+
+
+ALTER TABLE tenant_001.perioade_blocate OWNER TO iconta_user;
+
+--
 -- Name: plan_conturi; Type: TABLE; Schema: tenant_001; Owner: postgres
 --
 
@@ -1072,6 +1087,14 @@ ALTER TABLE ONLY tenant_001.nir
 
 
 --
+-- Name: perioade_blocate perioade_blocate_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
+--
+
+ALTER TABLE ONLY tenant_001.perioade_blocate
+    ADD CONSTRAINT perioade_blocate_pkey PRIMARY KEY (an, luna);
+
+
+--
 -- Name: plan_conturi plan_conturi_pkey; Type: CONSTRAINT; Schema: tenant_001; Owner: postgres
 --
 
@@ -1498,6 +1521,13 @@ GRANT ALL ON TABLE tenant_001.nir_linii TO iconta_user;
 --
 
 GRANT ALL ON SEQUENCE tenant_001.nir_linii_id_seq TO iconta_user;
+
+
+--
+-- Name: TABLE perioade_blocate; Type: ACL; Schema: tenant_001; Owner: postgres
+--
+
+GRANT ALL ON TABLE tenant_001.perioade_blocate TO iconta_user;
 
 
 --

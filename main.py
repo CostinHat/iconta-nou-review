@@ -2116,6 +2116,54 @@ def tenant_amortizare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
                     VALUES (%s, '6811', %s, %s)
                 """, (iid, cont_am, rata))
     return {"ok": True, "nota_id": iid, "linii": len(linii), "total": round(sum(r for _, r, _ in linii), 2)}
+def _perioada_blocata(conn, schema, data_nota):
+    """True daca luna notei e blocata. data_nota: date sau str ISO."""
+    d = str(data_nota)[:10]
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT 1 FROM {schema}.perioade_blocate WHERE an=%s AND luna=%s",
+                    (int(d[:4]), int(d[5:7])))
+        return cur.fetchone() is not None
+
+def _cere_perioada_deschisa(conn, schema, nota_id):
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT data FROM {schema}.inregistrari WHERE id=%s", (nota_id,))
+        r = cur.fetchone()
+    if r and _perioada_blocata(conn, schema, r[0]):
+        raise HTTPException(423, "perioada este blocata (luna inchisa)")
+
+@app.get("/tenants/{tenant_id}/perioade-blocate")
+def perioade_blocate_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT an, luna FROM {schema}.perioade_blocate ORDER BY an, luna")
+            return {"blocate": [{"an": r[0], "luna": r[1]} for r in cur.fetchall()]}
+
+@app.post("/tenants/{tenant_id}/perioade-blocate")
+def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.perioade_blocate (an, luna, blocat_de)
+                            VALUES (%s,%s,%s) ON CONFLICT DO NOTHING""", (an, luna, ctx["uid"]))
+        conn.commit()
+    return {"blocat": f"{luna:02d}/{an}"}
+
+@app.delete("/tenants/{tenant_id}/perioade-blocate")
+def perioada_deblocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"DELETE FROM {schema}.perioade_blocate WHERE an=%s AND luna=%s", (an, luna))
+        conn.commit()
+    return {"deblocat": f"{luna:02d}/{an}"}
+
 @app.get("/tenants/{tenant_id}/jurnal")
 def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
@@ -3094,6 +3142,7 @@ def jurnal_editeaza(tenant_id: int, nota_id: int, corp: dict = Body(...), ctx=De
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
+        _cere_perioada_deschisa(conn, schema, nota_id)
         return _jurnal_rez(_j.editeaza(conn, schema, nota_id,
                                        corp.get("descriere"), corp.get("data"), corp.get("linii")))
 
@@ -3104,6 +3153,7 @@ def jurnal_sterge(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
+        _cere_perioada_deschisa(conn, schema, nota_id)
         return _jurnal_rez(_j.sterge(conn, schema, nota_id))
 
 @app.post("/tenants/{tenant_id}/jurnal/{nota_id}/valideaza")
@@ -3113,6 +3163,7 @@ def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
+        _cere_perioada_deschisa(conn, schema, nota_id)
         return _jurnal_rez(_j.valideaza(conn, schema, nota_id))
 
 
