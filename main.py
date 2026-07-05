@@ -21,6 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
+from core import nucleu as _nucleu
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
@@ -826,6 +827,88 @@ def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
         raise HTTPException(400, str(e))
     return r
 
+
+# [client_acces_v1] acces client la portal: creare cont + email cu parola temporara
+class ClientAccesIn(BaseModel):
+    email: str
+    nume: str = ""
+
+@app.get("/tenants/{tenant_id}/client-acces")
+def client_acces_lista(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("""SELECT u.id, u.email, u.nume, u.activ FROM public.users u
+                           JOIN public.user_tenants ut ON ut.user_id = u.id
+                           WHERE ut.tenant_id = %s AND u.rol = 'client' ORDER BY u.id""", (tenant_id,))
+            return {"clienti": cur.fetchall()}
+
+@app.post("/tenants/{tenant_id}/client-acces")
+def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
+                         ctx=Depends(cere_rol("admin_firma"))):
+    email = (date.email or "").strip().lower()
+    if "@" not in email:
+        raise HTTPException(400, "email invalid")
+    import secrets
+    parola_temp = secrets.token_urlsafe(9)
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        d = tenant_provisioning.detalii_tenant(conn, tenant_id)
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("SELECT id FROM public.users WHERE lower(email)=%s", (email,))
+            if cur.fetchone():
+                raise HTTPException(400, "exista deja un cont cu acest email")
+            cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ)
+                           VALUES (%s, %s, %s, 'client', %s, true) RETURNING id""",
+                        (email, _nucleu.hash_parola(parola_temp), date.nume or email.split("@")[0], ctx["firm"]))
+            uid = cur.fetchone()["id"]
+            cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s)", (uid, tenant_id))
+    # client_activare_v1: link de activare in loc de parola pe email
+    import secrets as _sec
+    tok = _sec.token_urlsafe(32)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '48 hours')", (tok, uid))
+    baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
+    link = baza + "/#activare=" + tok
+    html = ("<p>Buna,</p><p>Ai primit acces la portalul iConta pentru firma <b>%s</b>.</p>"
+            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Activeaza contul</a></p>"
+            "<p>Linkul e valabil 48 de ore. La activare iti setezi parola.</p>") % (d.get("nume", ""), link)
+    _obs.trimite_email_html(email, "Acces portal iConta — " + d.get("nume", ""), html)
+    return {"ok": True, "user_id": uid}
+
+class ActivareIn(BaseModel):
+    token: str
+    parola: str
+
+@app.post("/public/activare")
+def activare_cont(date: ActivareIn):
+    if len(date.parola or "") < 8:
+        raise HTTPException(400, "parola trebuie sa aiba minim 8 caractere")
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("""SELECT user_id FROM public.tokene_activare
+                           WHERE token=%s AND NOT folosit AND expira > now()""", (date.token,))
+            r = cur.fetchone()
+            if not r:
+                raise HTTPException(400, "link de activare invalid sau expirat")
+            cur.execute("UPDATE public.users SET password_hash=%s, parola_schimbata=true, activ=true WHERE id=%s",
+                        (_nucleu.hash_parola(date.parola), r["user_id"]))
+            cur.execute("UPDATE public.tokene_activare SET folosit=true WHERE token=%s", (date.token,))
+    return {"ok": True}
+
+@app.delete("/tenants/{tenant_id}/client-acces/{user_id}")
+def client_acces_revoca(tenant_id: int, user_id: int, ctx=Depends(cere_rol("admin_firma"))):
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute("""UPDATE public.users SET activ=false WHERE id=%s AND rol='client'
+                           AND id IN (SELECT user_id FROM public.user_tenants WHERE tenant_id=%s)""",
+                        (user_id, tenant_id))
+    return {"ok": True}
 
 @app.put("/tenants/{tenant_id}")
 def tenant_actualizeaza(tenant_id: int, date: TenantEdit,
@@ -3779,7 +3862,7 @@ def verificare_stocuri(tenant_id: int, ctx=Depends(cere_cabinet)):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
-        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute(f"SELECT id, denumire, cont_stoc FROM {schema}.articole ORDER BY id")
             arts = [dict(r) for r in cur.fetchall()]
             val_cv = {}
@@ -3821,7 +3904,7 @@ def etransport_xml(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
-        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id = 1")
             r = cur.fetchone() or {}
     cui = re.sub(r"\D", "", r.get("cui") or "")
@@ -3890,7 +3973,7 @@ def anaf_oauth_callback(code: str = "", state: str = "", error: str = ""):
 def anaf_oauth_stare(ctx=Depends(cere_cabinet)):
     from psycopg2.extras import RealDictCursor
     with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute("""SELECT to_regclass('public.anaf_tokens') AS t""")
             if not cur.fetchone()["t"]:
                 return {"autorizat": False}
@@ -3927,7 +4010,7 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
-        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute(f"SELECT * FROM {schema}.facturi WHERE id=%s", (factura_id,))
             f = cur.fetchone()
             if not f:
