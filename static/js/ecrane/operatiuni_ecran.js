@@ -118,6 +118,13 @@ const REGISTRU = [
     C("client_identificare", "Identificare client", "text"),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
+  { cat: "Extern", cheie: "reeval_valuta", titlu: "Reevaluare lunara solduri valuta", ruta: "reevaluare-valuta", multi: "solduri", campuri: [
+    C("data", "Data (ultima zi a lunii)", "data") ], subcampuri: [
+    C("cont", "Cont", "text", { sugestie: "4111" }),
+    C("valoare_valuta", "Sold in valuta"),
+    C("moneda", "Moneda", "text", { sugestie: "EUR" }),
+    C("curs_evidenta", "Curs evidenta"),
+    C("tip", "Tip", "select", { optiuni: [["creanta","Creanta"],["datorie","Datorie"],["disponibil","Disponibil"]] }) ] },
   { cat: "Extern", cheie: "decont_valuta", titlu: "Decontare in valuta (665/765)", ruta: "decontare-valuta", campuri: [
     C("data", "Data", "data"),
     C("tip", "Tip", "select", { optiuni: [["creanta","Incasare creanta"],["datorie","Plata datorie"]] }),
@@ -272,10 +279,29 @@ export async function ecranOperatiuni(corp, nav, t) {
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;max-width:1000px">
           ${opCurenta.campuri.map(camp).join("")}
         </div>
+        ${opCurenta.multi ? '<div class="pf-frand-nume" style="margin:12px 0 6px">Solduri</div><div id="op-multi"></div>' : ""}
         <p style="margin-top:12px"><button class="btn" id="op-trimite">Genereaz\u0103 nota (ciorn\u0103)</button></p>
         <div id="op-mesaj"></div>
       </div>`;
     corp.querySelector("#op-inapoi").addEventListener("click", lista);
+
+    // [multi] randuri repetabile (ex. reevaluare valuta)
+    let randuriMulti = opCurenta.multi ? [0] : [];
+    const zonaMulti = corp.querySelector("#op-multi");
+    const randMulti = (i) => `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:8px;padding:8px;border:1px solid var(--linie);border-radius:8px">
+      ${opCurenta.subcampuri.map((sc) => {
+        if (sc.tip === "select") return `<label>${esc(sc.eticheta)}<br><select id="m${i}-${sc.nume}" class="mig-text">${sc.optiuni.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("")}</select></label>`;
+        const t2 = sc.tip === "numar" ? "number" : "text";
+        return `<label>${esc(sc.eticheta)}<br><input type="${t2}" step="0.0001" id="m${i}-${sc.nume}" class="mig-text" placeholder="${sc.sugestie||""}"></label>`;
+      }).join("")}</div>`;
+    if (opCurenta.multi && zonaMulti) {
+      zonaMulti.innerHTML = randMulti(0) + '<p><button class="btn btn-secundar" id="op-plus-rand">+ Rand</button></p>';
+      corp.querySelector("#op-plus-rand").addEventListener("click", () => {
+        const i = randuriMulti.length; randuriMulti.push(i);
+        const d = document.createElement("div"); d.innerHTML = randMulti(i);
+        zonaMulti.insertBefore(d.firstElementChild, corp.querySelector("#op-plus-rand").parentElement);
+      });
+    }
 
     // vizibilitate conditionata
     const actualizeazaCond = () => {
@@ -301,11 +327,22 @@ export async function ecranOperatiuni(corp, nav, t) {
         if (v) corpReq[c.nume] = c.tip === "numar" ? parseFloat(v) : v;
       }
       if (lipsa) { zona.innerHTML = `<div class="mig-gol">Camp obligatoriu: ${esc(lipsa)}</div>`; return; }
+      if (opCurenta.multi) {
+        corpReq[opCurenta.multi] = [...corp.querySelectorAll("#op-multi > div")].map((rand) => {
+          const o = {};
+          opCurenta.subcampuri.forEach((sc) => {
+            const el = rand.querySelector(`[id$="-${sc.nume}"]`);
+            if (el && el.value) o[sc.nume] = sc.tip === "numar" ? parseFloat(el.value) : el.value;
+          });
+          return o;
+        }).filter((o) => Object.keys(o).length > 1 || (Object.keys(o).length === 1 && !o.tip));
+        if (!corpReq[opCurenta.multi].length) { zona.innerHTML = '<div class="mig-gol">Completeaza cel putin un rand.</div>'; return; }
+      }
       try {
         const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`, corpReq);
         zona.innerHTML = `<p class="pf-intro">Nota generata (ciorna)${r.inregistrare_id ? " #" + r.inregistrare_id : ""}. O validezi din Registru jurnal.</p>`;
       } catch (e) {
-        zona.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`;
+        zona.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")} 00b7 trimis: ${esc(JSON.stringify(corpReq))}</div>`;
       }
     });
   };
