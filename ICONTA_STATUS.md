@@ -179,3 +179,30 @@ Aplicare marjă turism → taxare inversă internă art. 331 (legare la contare)
 Toate valorile fiscale verificate la sursa oficiala. Toate notele intra `ciorna`.
 
 URMATORUL: PFA/II/IF partida simpla + Registru incasari/plati + D212 (OMFP 170/2015, tabel nou rip_operatiuni).
+## Sesiune 04.07.2026 (seara) — Partidă simplă PFA/II/IF + pending-uri mici
+
+### Module noi
+**Partidă simplă (PFA/II/IF) — complet:**
+- `rip_operatiuni` per tenant (DDL aplicat tenant_001/002, în tenant_template.sql)
+- `core/d212_engine.py` — motor CAS/CASS/impozit, praguri venituri 2025 verificate la sursă (sm 4.050, CAS 12/24 sm, CASS liniar 6–60 sm, impozit 10%); 7 teste passed. Atenție: pt venituri 2026 → plafon CASS 72 sm (Legea 141/2025), de verificat înainte de folosire.
+- `core/rip_api.py` — CRUD (convenția conn+schema), validare ciornă→validată, import idempotent bancă (`extras_linii`, sens din `el.tip`) și casă (`casa_operatiuni`), Fișa D212 doar din validate (avertisment cheltuieli limitate + ciorne), Registru-inventar 14-1-2/b (MF valoare rămasă liniară + disponibilități RIP cumulat).
+- Rute: `/tenants/{id}/rip/*` (registru, operatiuni, valideaza, import-banca, import-casa, d212/{an}, inventar/{an})
+- UI: `static/js/ecrane/rip_ecran.js` — card „Incasari/plati" în fișa firmei, ecran cu import/validare/ștergere, Fișa D212, Registru-inventar. Testat end-to-end pe KAI.
+
+### Pending-uri rezolvate
+- **Responsive landing** <900px și <560px (media queries pagina-*)
+- **E2E Creează cont** — register→login→provisioning tenant testat; a scos bug: template regenerat cu pg_dump 16.14 conținea `\restrict` + owner postgres → provisioning pica. Fix: regenerare cu sed pe `\restrict`/`\unrestrict` + `OWNER TO postgres`→`iconta_user`, păstrat `tenant_001` literal (convenția parametrizare!). NU folosi `__SCHEMA__` în template.
+- **Suspendare cabinet live** — gap securitate găsit: tokenul existent rămânea valid după suspendare. Fix: `cere_cabinet` verifică `accounting_firms.activ` în DB per request. Testat: suspendare blochează instant, reactivare restabilește.
+- **Alerte email sănătate** — livrare Brevo confirmată (email primit în inbox). Endpoint permanent de test: `POST /admin/sanatate/test-alerta` (superadmin).
+- **Fallback denumiri OMFP** — `core/plan_omfp.py` (179 conturi OMFP 1802, cădere 4→3 cifre), integrat în balanță când planul tenantului e gol.
+- **Balanță pentru cabinet** — gap real: balanța exista doar în portal client. Rută nouă `/tenants/{id}/documente/balanta` + card „Balanță de verificare" în fișa firmei. PDF verificat: denumiri OMFP OK, echilibrată.
+- Fix: handler bRip era în interiorul blocului `if (bCasa)` — mutat corect.
+- Curățenie: 44 fișiere .bak șterse, module restante committate (d406_stocuri, efactura_import, ong + teste).
+
+### Commit-uri (9)
+527d65a partidă simplă backend · d84ffeb UI RIP + fix sens · e2d0625 Registru-inventar · c6859f3 responsive landing · 4141660 fix template tenant · dd2458b suspendare live · 07933ab test alertă sănătate · 3731c10 fallback OMFP + balanță cabinet · f032d21 module restante
+
+### Rămase pe backlog
+- Educație AI pe tipare erori (amânat conștient: întâi documentația)
+- Stratul 5 AI triage reclamații (după knowledge base)
+- Cont 733 apărut în balanță KAI — nu există în OMFP, de verificat notele de test
