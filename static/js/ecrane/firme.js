@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api } from "../api.js";
+import { api, arataMesaj } from "../api.js";  /* msg_conventie_fe_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js?v=2";
 import { ecranRip } from "./rip_ecran.js?v=2";
@@ -38,6 +38,10 @@ export function randeazaListaFirme(container, nav, inapoi) {
           <label class="camp-eticheta">Denumire firmă</label>
           <input class="camp-input" id="fn-nume" placeholder="Se completează automat de la ANAF">
         </div>
+        <div class="camp" style="margin-bottom:14px">
+          <label class="camp-eticheta">Email client (primește automat acces la portal)</label>
+          <input class="camp-input" id="fn-email" type="email" placeholder="client@firma.ro" autocomplete="off">
+        </div>
         <button class="buton-primar" id="fn-salveaza" disabled>Adaugă firma</button>
       `;
       const cui = corp.querySelector("#fn-cui"), nume = corp.querySelector("#fn-nume");
@@ -61,9 +65,12 @@ export function randeazaListaFirme(container, nav, inapoi) {
       });
       nume.addEventListener("input", () => { if (nume.value.trim().length > 2 && cui.value.replace(/\D/g,"").length >= 6) btn.disabled = false; });
       btn.addEventListener("click", async () => {
+        const emailCl = corp.querySelector("#fn-email").value.trim();  /* firma_email_client_v1 */
+        if (!emailCl.includes("@")) { info.textContent = "Completează emailul clientului."; return; }
         btn.disabled = true; btn.textContent = "Se creează...";
         try {
-          await api.post("/tenants", { nume: nume.value.trim(), cui: cui.value.replace(/\D/g, "") });
+          const rT = await api.post("/tenants", { nume: nume.value.trim(), cui: cui.value.replace(/\D/g, "") });
+          await api.post(`/tenants/${rT.tenant_id}/client-acces`, { email: emailCl, nume: "" });
           nav.inapoi(); incarca();
         } catch (e) {
           info.textContent = e.mesaj || e.message || "Eroare la creare.";
@@ -1379,3 +1386,5 @@ async function ecranAccesClient(corp, nav, t) {
   });
   incarcaLista();
 }
+
+// fara_mesaj_v1

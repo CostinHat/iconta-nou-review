@@ -2091,3 +2091,7 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .pa-card { box-shadow: 0 3px 12px rgba(20,30,45,0.14); border-radius: 12px; border-width: 2px; }
 .pa-card { cursor: pointer; transition: transform 0.12s, box-shadow 0.12s; }
 .pa-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(20,30,45,0.12); }
+/* conventie globala mesaje (msg_conventie_v1) */
+.msg-eroare { color: #a3231c; font-weight: 600; font-size: var(--text-mic); }
+.msg-avert  { color: #8a6410; font-weight: 600; font-size: var(--text-mic); }
+.msg-info   { color: var(--gri); font-size: var(--text-mic); }

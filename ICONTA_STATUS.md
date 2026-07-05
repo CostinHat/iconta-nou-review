@@ -216,3 +216,7 @@ static.anaf.ro/static/10/Anaf/Declaratii_R/112.html → ~/duk/dist/lib/ → reva
 ## DE FACUT — Anunturi programate + alerta "in vigoare de azi"
 1. Tabel public.anunturi (mesaj, activ, de_la, pana_la, destinatar) + banner pe landing (inainte de login) + UI administrare in Admin iConta.
 2. Legatura cu monitor_fiscal: alerta fiscala cu data intrarii in vigoare -> in ziua respectiva, banner automat "De azi este in vigoare: <modificarea>" pentru cabinete.
+
+## REGULA PERMANENTA — mesaje utilizator
+Helper global arataMesaj(el, txt, tip) in api.js; tipuri: eroare (rosu bold), avert (galben), info (gri).
+Orice actiune esuata AFISEAZA mesaj (e.mesaj || e.message) — niciodata tacere. Clase: .msg-eroare/.msg-avert/.msg-info.

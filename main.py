@@ -832,6 +832,7 @@ def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
 class ClientAccesIn(BaseModel):
     email: str
     nume: str = ""
+    mesaj: str = ""  # client_mesaj_v1
 
 @app.get("/tenants/{tenant_id}/client-acces")
 def client_acces_lista(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "angajat"))):
@@ -857,14 +858,22 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
             raise HTTPException(404, "tenant inexistent sau fara acces")
         d = tenant_provisioning.detalii_tenant(conn, tenant_id)
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("SELECT id FROM public.users WHERE lower(email)=%s", (email,))
-            if cur.fetchone():
+            cur.execute("SELECT id, rol, activ FROM public.users WHERE lower(email)=%s", (email,))
+            _ex = cur.fetchone()
+            if _ex and (_ex["rol"] != "client" or _ex["activ"]):
                 raise HTTPException(400, "exista deja un cont cu acest email")
-            cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ)
-                           VALUES (%s, %s, %s, 'client', %s, true) RETURNING id""",
-                        (email, _nucleu.hash_parola(parola_temp), date.nume or email.split("@")[0], ctx["firm"]))
-            uid = cur.fetchone()["id"]
-            cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s)", (uid, tenant_id))
+            if _ex:  # client_mesaj_v1: reinvitare client dezactivat
+                uid = _ex["id"]
+                cur.execute("UPDATE public.users SET activ=true, nume=%s WHERE id=%s",
+                            (date.nume or email.split("@")[0], uid))
+                cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s) ON CONFLICT DO NOTHING", (uid, tenant_id))
+            el_creaza = _ex is None
+            if el_creaza:
+                cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ)
+                               VALUES (%s, %s, %s, 'client', %s, true) RETURNING id""",
+                            (email, _nucleu.hash_parola(parola_temp), date.nume or email.split("@")[0], ctx["firm"]))
+                uid = cur.fetchone()["id"]
+                cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s)", (uid, tenant_id))
     # client_activare_v1: link de activare in loc de parola pe email
     import secrets as _sec
     tok = _sec.token_urlsafe(32)
@@ -873,9 +882,13 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
             cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '48 hours')", (tok, uid))
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#activare=" + tok
-    html = ("<p>Buna,</p><p>Ai primit acces la portalul iConta pentru firma <b>%s</b>.</p>"
+    _pm = ("<p style='border-left:3px solid #3d8fd6;padding-left:12px;color:#334155'>%s</p>" % date.mesaj.strip()) if (date.mesaj or "").strip() else ""  # client_mesaj_v1
+    html = ("<p>Buna,</p>" + _pm + "<p>Ai primit acces la portalul iConta pentru firma <b>%s</b>.</p>"
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Activeaza contul</a></p>"
-            "<p>Linkul e valabil 48 de ore. La activare iti setezi parola.</p>") % (d.get("nume", ""), link)
+            "<p><b>Pasii:</b></p>"
+            "<ol><li>Apasa butonul de mai sus si seteaza-ti o parola.</li>"
+            "<li>Intra apoi in aplicatie cu emailul <b>%s</b> si parola setata.</li></ol>"
+            "<p>Linkul e valabil 48 de ore.</p>") % (d.get("nume", ""), link, email)
     _obs.trimite_email_html(email, "Acces portal iConta — " + d.get("nume", ""), html)
     return {"ok": True, "user_id": uid}
 

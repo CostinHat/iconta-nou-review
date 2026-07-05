@@ -58,3 +58,10 @@ export const api = {
   del: (cale) => cere("DELETE", cale),
   postForm: (cale, formData) => cereForm(cale, formData),
 };
+// [msg_conventie_v1] helper global mesaje: tip = "eroare" | "avert" | "info"
+export function arataMesaj(el, txt, tip = "info") {
+  if (!el) return;
+  el.textContent = txt || "";
+  el.className = el.className.replace(/\bmsg-(eroare|avert|info)\b/g, "").trim();
+  el.classList.add("msg-" + tip);
+}
