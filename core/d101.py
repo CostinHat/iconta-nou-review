@@ -38,7 +38,12 @@ NS = "mfp:anaf:dgti:d101:declaratie:v10"
 REGULI = "2026.1"
 _NEDIGIT = re.compile(r"\D")
 COTA_PROFIT = Decimal("0.16")
-COTA_IMCA = Decimal("0.01")
+def cota_imca(an):  # imca_2026: OUG 8/2026 - 0.5% in 2026, eliminat din 2027
+    if int(an) >= 2027:
+        return Decimal("0")
+    if int(an) >= 2026:
+        return Decimal("0.005")
+    return Decimal("0.01")
 PRAG_IMCA_EUR = 50_000_000
 
 
@@ -169,7 +174,7 @@ def calcul_d101(prof, an, date, ca_an_precedent_eur=0):
         # IMCA = 1% din cifra de afaceri ajustată (simplificat: venituri totale)
         ca_lei = Decimal(str(date.get("cifra_afaceri_lei", 0) or 0))
         P["P46"] = _r0(Decimal(P["P40"]) * COTA_PROFIT)   # impozit profit pt comparație
-        P["P47"] = _r0(ca_lei * COTA_IMCA)                # IMCA
+        P["P47"] = _r0(ca_lei * cota_imca(an))                # IMCA  # imca_2026
     else:
         P["P46"] = 0
         P["P47"] = 0
