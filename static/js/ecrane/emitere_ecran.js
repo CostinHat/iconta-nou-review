@@ -128,6 +128,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <span class="em-moneda-nota" id="em-moneda-nota"></span>
     </div>
     <div class="em-actiuni">
+      <select id="em-tip" class="mig-text" style="max-width:180px;margin-right:8px">
+        <option value="factura">Factura</option>
+        <option value="proforma">Proforma</option>
+        <option value="aviz">Aviz insotire</option>
+      </select>
       <button class="mig-buton em-emite" id="em-emite">Emite factura</button>
     </div>
     <div class="em-rezultat" id="em-rezultat"></div>`;
@@ -278,6 +283,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     if (btn) { btn.disabled = true; btn.textContent = "Se emite\u2026"; }
     const rez2 = corp.querySelector("#em-rezultat");
     try {
+      const selTip = corp.querySelector("#em-tip");
+      if (selTip) payload.tip = selTip.value;
       const r = await api.post(`/tenants/${tenantId}/facturi/emite`, payload);
       rez2.innerHTML = `\u2713 Factura <b>${r.numar}</b> emis\u0103 \u00b7 total ${Number(r.total).toLocaleString("ro-RO", {minimumFractionDigits:2})} ${monedaSel}. A fost trimis\u0103 c\u0103tre contabil.`;
       rez2.className = "em-rezultat em-bun";
