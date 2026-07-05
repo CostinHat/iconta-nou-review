@@ -85,3 +85,26 @@ def sincronizeaza(conn, schema):
                     (datetime.date.today().isoformat(),))
     conn.commit()
     return {"importate": importate, "sarite": sarite}
+
+
+def _main():
+    """Cron: sincronizeaza toti tenantii cu WC configurat."""
+    from core import db
+    db.init_pool()
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("SELECT schema_name FROM public.tenants ORDER BY id")
+        scheme = [r[0] for r in cur.fetchall()]
+    for schema in scheme:
+        try:
+            with db.get_conn(schema) as conn:
+                cfg = config(conn, schema)
+                if not (cfg and cfg["wc_url"]):
+                    continue
+                r = sincronizeaza(conn, schema)
+                print(f"{schema}: {len(r.get('importate', []))} importate, {r.get('sarite', 0)} sarite")
+        except Exception as e:
+            print(f"{schema}: EROARE {e}")
+
+
+if __name__ == "__main__":
+    _main()

@@ -126,6 +126,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "banca", titlu: "Banc\u0103", desc: "Import extras, propuneri contare",
       bg: "#e9f0fe", fg: "#1d4ed8",
       icon: '<path d="M3 21h18M4 18h16M6 18V9M10 18V9M14 18V9M18 18V9M2 9l10-6 10 6"/>', activ: true },
+    { cheie: "magazin", titlu: "Magazin online", desc: "WooCommerce \u2192 facturi automate",
+      bg: "#f3e8ff", fg: "#7c3aed",
+      icon: '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>', activ: true },  // wc_fe_v1
     { cheie: "verificari", titlu: "Verific\u0103ri", desc: "Echilibru, trezorerie, TVA",
       bg: "#eef4ff", fg: "#1d4ed8",
       icon: '<path d="M9 11l3 3 8-8"/><path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/>', activ: true },
@@ -164,6 +167,10 @@ function meniuFirma(corp, nav, t) {
   const bJurnal = corp.querySelector("#fa-jurnal");
   if (bJurnal) {
     bJurnal.addEventListener("click", () => ecranJurnal(corp, nav, t));
+  }
+  const bMagazin = corp.querySelector("#fa-magazin");  // wc_fe_v1
+  if (bMagazin) {
+    bMagazin.addEventListener("click", () => ecranMagazin(corp, nav, t));
   }
   const bZ = corp.querySelector("#fa-raportz");
   if (bZ) {
@@ -1233,4 +1240,47 @@ async function ecranBalanta(corp, nav, t) {
     });
   };
   deseneaza();
+}
+
+
+// ---------- MAGAZIN ONLINE (WooCommerce) ----------  // wc_fe_v1
+async function ecranMagazin(corp, nav, t) {
+  const inapoi = () => meniuFirma(corp, nav, t);
+  corp.innerHTML = `
+    <button class="mig-inapoi" id="wc-back">\u2190</button>
+    <h2 class="pf-titlu">Magazin online</h2>
+    <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
+    <div class="em-sectiune">
+      <div class="em-eticheta">Configurare</div>
+      <input class="pr-input" id="wc-url" placeholder="URL magazin (ex: https://magazin.ro)" autocomplete="off">
+      <input class="pr-input" id="wc-ck" placeholder="Consumer Key (ck_...)" autocomplete="off">
+      <input class="pr-input" id="wc-cs" placeholder="Consumer Secret (cs_...)" type="password" autocomplete="off">
+      <button class="em-buton-sec" id="wc-salveaza">Salveaz\u0103</button>
+    </div>
+    <div class="em-actiuni">
+      <button class="mig-buton" id="wc-sinc">Sincronizeaz\u0103 acum</button>
+    </div>
+    <div class="em-rezultat" id="wc-rezultat"></div>`;
+  corp.querySelector("#wc-back").addEventListener("click", inapoi);
+  const zona = corp.querySelector("#wc-rezultat");
+
+  corp.querySelector("#wc-salveaza").addEventListener("click", async () => {
+    try {
+      await api.put(`/tenants/${t.id}/woocommerce/config`, {
+        url: corp.querySelector("#wc-url").value.trim() || null,
+        ck: corp.querySelector("#wc-ck").value.trim() || null,
+        cs: corp.querySelector("#wc-cs").value.trim() || null,
+      });
+      zona.innerHTML = `<span style="color:#1d7a4d">Configurare salvat\u0103.</span>`;
+    } catch (e) { zona.innerHTML = `<span style="color:#c0392b">${e.mesaj || "eroare"}</span>`; }
+  });
+
+  corp.querySelector("#wc-sinc").addEventListener("click", async () => {
+    zona.innerHTML = `<p class="ecran-nota">Se sincronizeaz\u0103...</p>`;
+    try {
+      const r = await api.post(`/tenants/${t.id}/woocommerce/sincronizeaza`, {});
+      const n = (r.importate || []).length;
+      zona.innerHTML = `<span style="color:#1d7a4d">${n} facturi importate, ${r.sarite || 0} deja existente.</span>`;
+    } catch (e) { zona.innerHTML = `<span style="color:#c0392b">${e.mesaj || "eroare"}</span>`; }
+  });
 }
