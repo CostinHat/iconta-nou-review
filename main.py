@@ -2138,6 +2138,52 @@ def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
                                  "descriere": desc, "sursa": sursa, "status": status, "factura_id": fid, "linii": []}
                 note[iid]["linii"].append({"debit": deb, "credit": cre, "suma": float(suma)})
     return {"note": list(note.values())}
+@app.post("/tenants/{tenant_id}/horeca/import-amef")
+async def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    """Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA.
+    Nota se genereaza pe cote reale din XML: 5311/5125=707 + 707=4427 per cota."""
+    from decimal import Decimal as D
+    from core import amef_import as _am
+    continut = await fisier.read()
+    try:
+        xml = _am.extrage_xml(continut)
+        rz = _am.parseaza_raport_z(xml)
+    except (ValueError, Exception) as e:
+        raise HTTPException(422, f"fisier AMEF invalid: {e}")
+    if not rz["data"]:
+        raise HTTPException(422, "nu am putut extrage data din idR")
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        numerar = sum((p["suma"] for p in rz["plati"] if p["tip"] == "numerar"), D("0"))
+        rest = sum((p["suma"] for p in rz["plati"] if p["tip"] != "numerar"), D("0"))
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT 1 FROM {schema}.inregistrari
+                            WHERE sursa='amef' AND numar=%s""", (f"Z-{rz['nui']}-{rz['nr_raport']}",))
+            if cur.fetchone():
+                raise HTTPException(409, "raportul Z e deja importat (NUI+nr raport)")
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
+                            VALUES (%s,%s,%s,'amef','ciorna') RETURNING id""",
+                        (rz["data"], f"Z-{rz['nui']}-{rz['nr_raport']}",
+                         f"Raport Z {rz['data']} AMEF {rz['nui']} nr {rz['nr_raport']} ({rz['nr_bonuri']} bonuri) - de verificat cu Z tiparit"))
+            iid = cur.fetchone()[0]
+            linii = []
+            if numerar: linii.append(("5311", "707", numerar))
+            if rest: linii.append(("5125", "707", rest))
+            for cota in rz["cote"]:
+                if cota["tva"]:
+                    linii.append(("707", "4427", cota["tva"]))
+            for deb, cred, suma in linii:
+                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                                (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                            (iid, deb, cred, suma))
+        conn.commit()
+    return {"inregistrare_id": iid, "status": "ciorna", "data": rz["data"],
+            "total": str(rz["total"]), "tva_total": str(rz["total_tva"]),
+            "cote": [{"cota": x["cota"], "tva": str(x["tva"])} for x in rz["cote"]],
+            "numerar": str(numerar), "card_altele": str(rest)}
+
 @app.post("/tenants/{tenant_id}/horeca/raport-z")
 def horeca_raport_z(tenant_id: int, rz: RaportZ, ctx=Depends(cere_cabinet)):
     from decimal import Decimal as D

@@ -941,6 +941,9 @@ async function ecranRaportZ(corp, nav, t) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Raport Z \u00b7 ${t.nume || ""}</h2>
     <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total.</p>
+    <p><label class="btn btn-secundar" style="cursor:pointer">Import fisier AMEF (p7b/XML)
+      <input type="file" id="z-amef" accept=".p7b,.xml" style="display:none"></label></p>
+    <div id="z-amef-msg"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px">
       <label>Data<br><input type="date" id="z-data" value="${azi}" class="mig-text"></label>
       <span></span>
@@ -951,7 +954,22 @@ async function ecranRaportZ(corp, nav, t) {
     </div>
     <div id="z-rezultat" style="margin-top:16px"></div>
     <p style="margin-top:16px"><button class="btn" id="z-salveaza">Genereaza nota</button></p>`;
-  corp.querySelector("#z-salveaza").addEventListener("click", async () => {
+  corp.querySelector("#z-amef").addEventListener("change", async (ev) => {
+      const f = ev.target.files[0];
+      const zona = corp.querySelector("#z-amef-msg");
+      if (!f) return;
+      const fd = new FormData();
+      fd.append("fisier", f);
+      try {
+        const resp = await fetch(`/tenants/${t.id}/horeca/import-amef`, {
+          method: "POST", headers: { Authorization: "Bearer " + sesiune.token() }, body: fd });
+        const r = await resp.json();
+        if (!resp.ok) throw new Error(r.detail || "eroare");
+        zona.innerHTML = `<p class="pf-intro">Importat: Z din ${r.data}, total ${r.total} (numerar ${r.numerar}, card ${r.card_altele}), TVA ${r.tva_total}. Nota <b>ciorna</b> #${r.inregistrare_id} - verifica cu Z-ul tiparit.</p>`;
+      } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.message || "eroare"}</div>`; }
+      ev.target.value = "";
+    });
+    corp.querySelector("#z-salveaza").addEventListener("click", async () => {
     const v = (id) => parseFloat(corp.querySelector(id).value) || 0;
     const zona = corp.querySelector("#z-rezultat");
     try {
