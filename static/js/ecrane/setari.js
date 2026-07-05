@@ -54,6 +54,14 @@ export async function randeazaSetari(corp, nav) {
     ${sectiuneCabinet}
 
     ${eAdmin ? _sectiuneCompetente(_comp) : ""}
+    ${eAdmin ? `<div class="set-sectiune">
+      <div class="set-titlu">Chei API</div>
+      <p class="mig-intro">Pentru conectarea altor aplica\u021bii la datele cabinetului. Cheia se afi\u0219eaz\u0103 o singur\u0103 dat\u0103.</p>
+      <div id="set-chei-lista"><p class="ecran-nota">Se \u00eencarc\u0103...</p></div>
+      <input id="set-cheie-nume" class="set-input" type="text" placeholder="Nume cheie (ex: integrare CRM)">
+      <button class="set-buton" id="set-cheie-noua">Genereaz\u0103 cheie nou\u0103</button>
+      <div class="set-mesaj" id="set-msg-chei"></div>
+    </div>` : ""}
 
     <div class="set-sectiune">
       <div class="set-titlu">Date profil</div>
@@ -131,6 +139,7 @@ export async function randeazaSetari(corp, nav) {
   }
 
   // --- salvare profil ---
+  _initChei(corp);  // setari_api_chei_v2
   corp.querySelector("#set-salveaza-profil").addEventListener("click", async () => {
     const msg = corp.querySelector("#set-msg-profil");
     const nume = corp.querySelector("#set-nume").value.trim();
@@ -162,5 +171,46 @@ export async function randeazaSetari(corp, nav) {
       corp.querySelector("#set-pn").value = "";
       corp.querySelector("#set-pc").value = "";
     } catch (e) { msg.textContent = "Parola actuala gresita sau eroare."; msg.className = "set-mesaj set-err"; }
+  });
+}
+
+
+// ---------- CHEI API ----------  // setari_api_chei_v1
+async function _incarcaChei(corp) {
+  const zona = corp.querySelector("#set-chei-lista");
+  if (!zona) return;
+  let chei = [];
+  try { const r = await api.get("/cabinet/api-chei"); chei = (r && r.chei) || []; } catch {}
+  if (!chei.length) { zona.innerHTML = `<div class="mig-gol">Nicio cheie generat\u0103.</div>`; return; }
+  zona.innerHTML = chei.map((c) => `
+    <div class="pf-frand">
+      <div class="pf-frand-text">
+        <div class="pf-frand-nume">${esc(c.nume) || "\u2014"} \u00b7 <code>${c.prefix}\u2026</code></div>
+        <div class="pf-frand-sub">${c.activ ? "activ\u0103" : "revocat\u0103"}${c.ultima_folosire ? " \u00b7 folosit\u0103: " + c.ultima_folosire.slice(0, 16) : ""}</div>
+      </div>
+      ${c.activ ? `<span class="btn-link set-cheie-revoca" data-id="${c.id}" style="color:#c0392b">Revoc\u0103</span>` : ""}
+    </div>`).join("");
+  zona.querySelectorAll(".set-cheie-revoca").forEach((b) => b.addEventListener("click", async () => {
+    if (!confirm("Revoci cheia? Aplica\u021biile care o folosesc nu vor mai avea acces.")) return;
+    try { await api.del(`/cabinet/api-chei/${b.dataset.id}`); _incarcaChei(corp); }
+    catch (e) { alert(e.mesaj || "eroare"); }
+  }));
+}
+
+function _initChei(corp) {
+  const btn = corp.querySelector("#set-cheie-noua");
+  if (!btn) return;
+  _incarcaChei(corp);
+  btn.addEventListener("click", async () => {
+    const msg = corp.querySelector("#set-msg-chei");
+    const nume = corp.querySelector("#set-cheie-nume").value.trim() || null;
+    try {
+      const r = await api.post("/cabinet/api-chei", { nume });
+      msg.innerHTML = `Cheia ta (copiaz-o ACUM, nu se mai afi\u0219eaz\u0103):<br><code style="user-select:all;word-break:break-all">${r.cheie}</code>`;
+      corp.querySelector("#set-cheie-nume").value = "";
+      _incarcaChei(corp);
+    } catch (e) {
+      msg.textContent = e.mesaj || e.message || "eroare";
+    }
   });
 }

@@ -9,7 +9,7 @@ import { randeazaListaFirme } from "./firme.js?v=13";
 import { randeazaMigrare } from "./migrare.js";
 import { randeazaControl } from "./control.js";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js"; // [p28_setari]
+import { randeazaSetari } from "./setari.js?v=2"; // [p28_setari]
 import { randeazaRecomanda } from "./recomanda.js"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js"; // [p63_pachete]
