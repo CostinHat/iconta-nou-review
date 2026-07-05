@@ -1059,10 +1059,25 @@ async function ecranJurnal(corp, nav, t) {
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:#c9961f;font-weight:600">${ciorne} de validat</span>` : ""}
         <button class="btn btn-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="btn btn-secundar" id="j-next">luna \u2192</button>
-        <button class="btn" id="j-amort" style="margin-left:12px">Genereaza amortizarea</button></p>
+        <button class="btn" id="j-amort" style="margin-left:12px">Genereaza amortizarea</button>
+        <button class="btn btn-secundar" id="j-lock" style="margin-left:6px"></button></p>
       <div id="j-mesaj"></div>
       <div class="pf-lista">${randuri}</div>`;
     const zonaMesaj = corp.querySelector("#j-mesaj");
+    const bLock = corp.querySelector("#j-lock");
+    let lunaBlocata = false;
+    try {
+      const pb = await api.get(`/tenants/${t.id}/perioade-blocate`);
+      lunaBlocata = (pb.blocate || []).some((p) => p.an === an && p.luna === luna);
+    } catch {}
+    bLock.textContent = lunaBlocata ? "Deblocheaza luna" : "Blocheaza luna";
+    bLock.addEventListener("click", async () => {
+      try {
+        if (lunaBlocata) await api.del(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}`);
+        else await api.post(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}`, {});
+        deseneaza();
+      } catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${(e && e.mesaj) || "eroare"}</div>`; }
+    });
     const eroare = (e, txt) => { zonaMesaj.innerHTML = `<div class="mig-gol">${escJ((e && e.mesaj) || txt)}</div>`; };
     corp.querySelector("#j-prev").addEventListener("click", () => { inEditare = null; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#j-next").addEventListener("click", () => { inEditare = null; luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
