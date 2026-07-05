@@ -2563,6 +2563,28 @@ def apiv1_balanta(tenant_id: int, an: int, luna: int, actx=Depends(cere_api_key)
         return {"balanta": documente_api.balanta(conn, schema, an, luna)}
 
 
+@app.post("/tenants/{tenant_id}/woocommerce/sincronizeaza")  # wc_sinc_v1
+def wc_sinc(tenant_id: int, ctx=Depends(cere_cabinet)):
+    from core import woocommerce as _wc
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = _wc.sincronizeaza(conn, schema)
+    if r.get("eroare"):
+        raise HTTPException(422, r["eroare"])
+    return r
+
+
+@app.put("/tenants/{tenant_id}/woocommerce/config")  # wc_sinc_v1
+def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute(f"""UPDATE {schema}.firma_profil
+                        SET wc_url=%s, wc_ck=%s, wc_cs=%s""",
+                    (corp.get("url"), corp.get("ck"), corp.get("cs")))
+        conn.commit()
+    return {"ok": True}
+
+
 @app.get("/cabinet/consolidare")  # consolidare_v1
 def cabinet_consolidare(an: Optional[int] = None, luna: Optional[int] = None,
                         ctx=Depends(cere_cabinet)):
