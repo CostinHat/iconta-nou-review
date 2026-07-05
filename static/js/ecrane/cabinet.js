@@ -72,8 +72,6 @@ const DEF = [
     sinteza:"Parolă și date de profil", actiune:inLucru("Setări cont") },
   { cheie:"consolidare", titlu:"Consolidare", icon:"report", bg:"#e6f2ec", fg:"#1d7a4d",
     sinteza:"Cifrele tuturor firmelor" },  // consolidare_fe_v1
-  { cheie:"recomanda", titlu:"Recomandă",      icon:"gift",      bg:"#fbeedd", fg:"#92500a",
-    sinteza:"Invită un cabinet în iConta", actiune:inLucru("Recomandă") },
 ];
 
 // [p73_sinteza_azi] deschide un ecran existent dupa cheie (refoloseste ecranele, nu duplica)
@@ -205,14 +203,20 @@ function randeazaPanou(continut, nav) {
   const prenume = u.prenume || (u.nume || "").split(" ").slice(-1)[0] || u.nume || "";
 
   continut.innerHTML = `
-    <div class="cab-salut">
-      <div class="cab-salut-nume">Bună, ${prenume}</div>
-      <div class="cab-salut-data">Spațiul tău de lucru — ${azi}</div>
+    <div class="cab-salut" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+      <div>
+        <div class="cab-salut-nume">Bună, ${prenume}</div>
+        <div class="cab-salut-data">Spațiul tău de lucru — ${azi}</div>
+      </div>
+      <button class="cab-card cab-card-mic" id="cab-recomanda-mic" style="background:#fbeedd;color:#92500a">
+        <div class="cab-card-cap">${svg("gift", "#92500a")}<span class="cab-card-titlu">Recomandă</span></div>
+      </button>
     </div>
     <div class="cab-grila"></div>
   `;
 
   const grila = continut.querySelector(".cab-grila");
+  continut.querySelector("#cab-recomanda-mic").addEventListener("click", () => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav)));  /* recomanda_mic_v1 */
   DEF.forEach((c) => {
     const card = document.createElement("button");
     card.className = "cab-card";

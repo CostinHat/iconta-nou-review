@@ -2083,3 +2083,7 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
   .pagina-carduri-rand:nth-child(2) { grid-template-columns: 1fr; }
   .pagina-bara { padding: 0 14px; }
 }
+/* recomanda_mic_v1: card mic cat o coloana de grila */
+.cab-card-mic { width: calc((100% - 24px) / 3); padding: 10px 16px; flex-shrink: 0; }
+@media (max-width: 760px) { .cab-card-mic { width: calc((100% - 12px) / 2); } }
+@media (max-width: 480px) { .cab-card-mic { width: auto; } }
