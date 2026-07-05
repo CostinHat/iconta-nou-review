@@ -32,6 +32,8 @@ export function desktopPortal(continut, nav) {
       sinteza: "Trimite o solicitare contabilului." },
     { cheie: "povestea", titlu: "Povestea lunii", icon: "povestea", bg: "#efebfe", fg: "#6d28d9",
       sinteza: "Raportul lunar de la contabil" },
+    { cheie: "cifre", titlu: "Cifrele firmei", icon: "declaratii", bg: "#e6f2ec", fg: "#1d7a4d",
+      sinteza: "Profit, cash, incasari" },  // portal_kpi_fe_v1
     { cheie: "recomanda", titlu: "Recomanda", icon: "recomanda", bg: "#fbeedd", fg: "#92500a",
       sinteza: "Invita un antreprenor in iConta" },
   ];
@@ -70,6 +72,7 @@ function deschideCard(cheie, nav) {
   else if (cheie === "recomanda") nav.deschide("Recomanda", (corp) => ecranRecomanda(corp, nav));
   else if (cheie === "bon") nav.deschide("Pozeaza bon", (corp) => ecranBon(corp, nav));
   else if (cheie === "documente") nav.deschide("Documente", (corp) => ecranDocumente(corp, nav));
+  else if (cheie === "cifre") nav.deschide("Cifrele firmei", (corp) => ecranCifre(corp, nav));  // portal_kpi_fe_v1
 }
 
 // ---------- PANOU STATUS ANAF (Acasa) ----------
@@ -408,4 +411,61 @@ async function ecranBon(corp, nav) {
       </div><span class="pf-frand-ok">\u2713 citit</span></div>`;
     } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.mesaj || "Nu am putut citi bonul."}</div>`; }
   });
+}
+
+
+// ---------- CIFRELE FIRMEI (KPI) ----------  // portal_kpi_fe_v1
+async function ecranCifre(corp, nav) {
+  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
+  let d = null;
+  try {
+    d = await api.get("/portal/kpi");
+  } catch (e) {
+    corp.innerHTML = `<div class="mig-gol">${e.mesaj || e.message || "Nu am putut \u00eenc\u0103rca cifrele."}</div>`;
+    return;
+  }
+  const k = d.kpi || {};
+  const lei = (v) => (Number(v) || 0).toLocaleString("ro-RO", { maximumFractionDigits: 0 }) + " lei";
+  const luni = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
+    "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"];
+  const rand = (eticheta, valoare, culoare) => `
+    <div class="pf-frand">
+      <div class="pf-frand-text"><div class="pf-frand-nume">${eticheta}</div></div>
+      <span class="pf-frand-suma" style="${culoare ? "color:" + culoare : ""}">${valoare}</span>
+    </div>`;
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Cifrele firmei</h2>
+    <p class="pf-intro">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${luni[d.luna]} ${d.an}. Date din contabilitate \u2014 lunile nedepuse pot lipsi.</p>
+    <div class="pf-lista">
+      ${rand("Venituri", lei(k.venituri))}
+      ${rand("Cheltuieli", lei(k.cheltuieli))}
+      ${rand("Profit", lei(k.profit), (k.profit || 0) >= 0 ? "#1d7a4d" : "#c0392b")}
+      ${rand("Bani disponibili (cas\u0103 + banc\u0103)", lei(k.cash))}
+      ${rand("De \u00eencasat de la clien\u021bi", lei(k.de_incasat))}
+      ${rand("De pl\u0103tit c\u0103tre furnizori", lei(k.de_platit))}
+    </div>
+    <h2 class="pf-titlu" style="margin-top:20px">Previziune bani (8 s\u0103pt\u0103m\u00e2ni)</h2>
+    <p class="pf-intro" id="cf-intro">Estimare pe scaden\u021bele facturilor \u2014 orientativ.</p>
+    <div class="pf-lista" id="cf-zona"><p class="ecran-nota">Se \u00eencarc\u0103...</p></div>`;
+  incarcaForecast(corp, rand, lei);  // portal_cashflow_fe_v1
+}
+
+async function incarcaForecast(corp, rand, lei) {  // portal_cashflow_fe_v1
+  const zona = corp.querySelector("#cf-zona");
+  if (!zona) return;
+  let d = null;
+  try { d = await api.get("/portal/cashflow"); }
+  catch (e) { zona.innerHTML = `<div class="mig-gol">${e.mesaj || "indisponibil"}</div>`; return; }
+  const intro = corp.querySelector("#cf-intro");  // portal_cashflow_fe_v2
+  if (intro && d.medie_cheltuieli > 0) {
+    intro.textContent = "Estimare pe scaden\u021bele facturilor \u0219i obliga\u021biilor \u2014 presupun\u00e2nd c\u0103 cheltuielile lunare r\u0103m\u00e2n la ~" +
+      (Number(d.medie_cheltuieli) || 0).toLocaleString("ro-RO", { maximumFractionDigits: 0 }) + " lei (media anului).";
+  }
+  const fmtD = (iso) => { const p = String(iso).split("-"); return p.length === 3 ? p[2] + "." + p[1] : iso; };
+  zona.innerHTML = (d.saptamani || []).map((w) => {
+    const detaliu = (w.incasari ? "+" + lei(w.incasari) : "") +
+      (w.incasari && w.plati ? " / " : "") + (w.plati ? "\u2212" + lei(w.plati) : "");
+    return rand("din " + fmtD(w.de_la) + (detaliu ? " \u00b7 " + detaliu : ""),
+      lei(w.sold), w.sold < 0 ? "#c0392b" : null);
+  }).join("");
 }

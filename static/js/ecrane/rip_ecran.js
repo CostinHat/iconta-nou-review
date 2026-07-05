@@ -104,16 +104,16 @@ export async function ecranRip(corp, nav, t) {
           document_numar: corp.querySelector("#r-doc").value || null,
         });
         deseneaza();
-      } catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+      } catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     });
 
     corp.querySelector("#r-imp-banca").addEventListener("click", async () => {
       try { const r = await api.post(`/tenants/${t.id}/rip/import-banca?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ciorne importate din banca.</p>`; deseneaza(); }
-      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     });
     corp.querySelector("#r-imp-casa").addEventListener("click", async () => {
       try { const r = await api.post(`/tenants/${t.id}/rip/import-casa?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ciorne importate din casa.</p>`; deseneaza(); }
-      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     });
 
     corp.querySelector("#r-inv").addEventListener("click", async () => {
@@ -126,7 +126,7 @@ export async function ecranRip(corp, nav, t) {
           <div class="pf-frand-sub">Mijloace fixe (valoare ramasa): <b>${d.total_mijloace_fixe}</b> lei${mf}
           <br>Disponibilitati (RIP validat): <b>${d.disponibilitati}</b> lei
           <br><b style="font-size:1.05em">Total activ: ${d.total_activ} lei</b></div></div>`;
-      } catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+      } catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     });
 
     corp.querySelector("#r-d212").addEventListener("click", async () => {
@@ -146,16 +146,16 @@ export async function ecranRip(corp, nav, t) {
               ${d.avertisment ? `<br><span style="color:#c9961f">${esc(d.avertisment)}</span>` : ""}
             </div>
           </div>`;
-      } catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+      } catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     });
 
     corp.querySelectorAll("[data-val]").forEach((b) => b.addEventListener("click", async () => {
       try { await api.put(`/tenants/${t.id}/rip/operatiuni/${b.dataset.val}/valideaza`, {}); deseneaza(); }
-      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     }));
     corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
       try { await api.del(`/tenants/${t.id}/rip/operatiuni/${b.dataset.del}`); deseneaza(); }
-      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.message || "eroare")}</div>`; }
+      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     }));
   };
   deseneaza();

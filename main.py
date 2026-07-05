@@ -2480,6 +2480,75 @@ def portal_documente_balanta(an: int, luna: int, tenant_id: Optional[int] = None
         pdf = documente_api.balanta_pdf(conn, t["schema_name"], an, luna, t.get("nume") or "")
     return Response(content=pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="balanta_{an}_{luna:02d}.pdf"'})
+@app.get("/cabinet/consolidare")  # consolidare_v1
+def cabinet_consolidare(an: Optional[int] = None, luna: Optional[int] = None,
+                        ctx=Depends(cere_cabinet)):
+    from datetime import date as _d
+    from core import kpi_client as _kpi
+    azi = _d.today()
+    an = an or azi.year
+    luna = luna or azi.month
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""SELECT id, nume, schema_name FROM public.tenants
+                       WHERE accounting_firm_id = %s ORDER BY nume""",
+                    (ctx["firm"],))
+        tenanti = cur.fetchall()
+    firme = []
+    total = {"venituri": 0, "cheltuieli": 0, "profit": 0,
+             "cash": 0, "de_incasat": 0, "de_platit": 0}
+    with db.get_conn() as conn:
+        for tid, nume, schema in tenanti:
+            try:
+                k = _kpi.kpi_din_balanta(documente_api.balanta(conn, schema, an, luna))
+            except Exception:
+                k = None
+            firme.append({"tenant_id": tid, "nume": nume, "kpi": k})
+            if k:
+                for c in total:
+                    total[c] = round(total[c] + k[c], 2)
+    return {"an": an, "luna": luna, "firme": firme, "total": total}
+
+
+@app.get("/portal/kpi")  # portal_kpi_v1
+def portal_kpi(an: Optional[int] = None, luna: Optional[int] = None,
+               tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    from datetime import date as _d
+    from core import kpi_client as _kpi
+    t = _tenant_client(ctx, tenant_id)
+    azi = _d.today()
+    an = an or azi.year
+    luna = luna or azi.month
+    with db.get_conn() as conn:
+        randuri = documente_api.balanta(conn, t["schema_name"], an, luna)
+    return {"an": an, "luna": luna, "kpi": _kpi.kpi_din_balanta(randuri)}
+
+
+@app.get("/portal/cashflow")  # portal_cashflow_v1
+def portal_cashflow(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    from datetime import date as _d
+    from core import kpi_client as _kpi
+    from core import cashflow as _cf
+    t = _tenant_client(ctx, tenant_id)
+    azi = _d.today()
+    with db.get_conn() as conn:
+        randuri = documente_api.balanta(conn, t["schema_name"], azi.year, azi.month)
+    k = _kpi.kpi_din_balanta(randuri)
+    with db.get_conn(t["schema_name"]) as conn:
+        with conn.cursor() as cur:
+            cur.execute("""SELECT directie, data_emitere, data_scadenta, total
+                           FROM facturi WHERE tip='factura' AND storno_din_id IS NULL""")
+            fs = [{"directie": r[0], "data_emitere": str(r[1]),
+                   "data_scadenta": str(r[2]) if r[2] else None, "total": float(r[3] or 0)}
+                  for r in cur.fetchall()]
+    emise = _cf.aloca_sold([f for f in fs if f["directie"] == "emisa"], k["de_incasat"])
+    primite = _cf.aloca_sold([f for f in fs if f["directie"] == "primita"], k["de_platit"])
+    obligatii = _cf.obligatii_din_balanta(randuri)  # portal_cashflow_v2
+    medie = _cf.cheltuieli_lunare_cash(randuri, azi.month)
+    primite = primite + _cf.plati_estimate(obligatii, medie, azi=azi)
+    return {"cash": k["cash"], "medie_cheltuieli": medie,
+            "saptamani": _cf.forecast(k["cash"], emise, primite, azi=azi)}
+
+
 @app.get("/portal/facturi")
 def portal_facturi(tenant_id: Optional[int] = None, an: Optional[int] = None,
                    luna: Optional[int] = None, ctx=Depends(cere_client)):

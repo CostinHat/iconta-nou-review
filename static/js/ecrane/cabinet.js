@@ -70,6 +70,8 @@ const DEF = [
     sinteza:"Întrebări, probleme și asistență tehnică", actiune:inLucru("Raportează") },
   { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  bg:"#eef0f3", fg:"#3a4250",
     sinteza:"Parolă și date de profil", actiune:inLucru("Setări cont") },
+  { cheie:"consolidare", titlu:"Consolidare", icon:"report", bg:"#e6f2ec", fg:"#1d7a4d",
+    sinteza:"Cifrele tuturor firmelor" },  // consolidare_fe_v1
   { cheie:"recomanda", titlu:"Recomandă",      icon:"gift",      bg:"#fbeedd", fg:"#92500a",
     sinteza:"Invită un cabinet în iConta", actiune:inLucru("Recomandă") },
 ];
@@ -233,6 +235,8 @@ function randeazaPanou(continut, nav) {
       card.addEventListener("click", () => nav.deschide("Asistenți", (corp) => randeazaAsistenti(corp, nav)));
     } else if (c.cheie === "activitate") {  // [p76_comasare_font] meniu Activitate (jurnal + tipare)
       card.addEventListener("click", () => randeazaMeniuActivitate(continut, nav));
+    } else if (c.cheie === "consolidare") {  // consolidare_fe_v1
+      card.addEventListener("click", () => nav.deschide("Consolidare", (corp) => randeazaConsolidare(corp, nav)));
     } else if (c.cheie === "capacitate") {  // [p71_capacitate]
       card.addEventListener("click", () => nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav)));
     } else if (c.cheie === "brief") {  // [p74_card_brief]
@@ -495,3 +499,39 @@ async function _educatiePatruOchi(continut) {  // [p55_decizie]
   });
 }
 // [p81_raport_text]
+
+
+// ---------- CONSOLIDARE ----------  // consolidare_fe_v1
+async function randeazaConsolidare(corp, nav) {
+  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
+  let d = null;
+  try { d = await api.get("/cabinet/consolidare"); }
+  catch (e) { corp.innerHTML = `<div class="mig-gol">${e.mesaj || e.message || "eroare"}</div>`; return; }
+  const lei = (v) => (Number(v) || 0).toLocaleString("ro-RO", { maximumFractionDigits: 0 });
+  const luni = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
+    "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"];
+  const cap = `
+    <div class="pf-frand" style="font-weight:600">
+      <div class="pf-frand-text" style="flex:2">Firma</div>
+      <span style="flex:1;text-align:right">Venituri</span>
+      <span style="flex:1;text-align:right">Cheltuieli</span>
+      <span style="flex:1;text-align:right">Profit</span>
+      <span style="flex:1;text-align:right">Cash</span>
+    </div>`;
+  const rand = (nume, k, bold) => `
+    <div class="pf-frand" style="${bold ? "font-weight:700;border-top:2px solid #ccc" : ""}">
+      <div class="pf-frand-text" style="flex:2">${nume}</div>
+      <span style="flex:1;text-align:right">${k ? lei(k.venituri) : "\u2014"}</span>
+      <span style="flex:1;text-align:right">${k ? lei(k.cheltuieli) : "\u2014"}</span>
+      <span style="flex:1;text-align:right;${k && k.profit < 0 ? "color:#c0392b" : ""}">${k ? lei(k.profit) : "\u2014"}</span>
+      <span style="flex:1;text-align:right">${k ? lei(k.cash) : "\u2014"}</span>
+    </div>`;
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Consolidare portofoliu</h2>
+    <p class="pf-intro">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${luni[d.luna]} ${d.an}. Valori \u00een lei.</p>
+    <div class="pf-lista">
+      ${cap}
+      ${(d.firme || []).map((f) => rand(f.nume, f.kpi)).join("")}
+      ${rand("TOTAL", d.total, true)}
+    </div>`;
+}

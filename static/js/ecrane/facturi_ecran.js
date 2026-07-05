@@ -39,11 +39,16 @@ function meniuFacturi(corp, nav, tenantId, opt) {
         <div class="fac-opt-titlu">Model factur\u0103</div>
         <div class="fac-opt-sub">Logo, font \u0219i culoare</div>
       </button>
+      <button class="fac-optiune" id="fac-recurente">
+        <div class="fac-opt-titlu">Facturi recurente</div>
+        <div class="fac-opt-sub">\u0218abloane emise automat lunar</div>
+      </button>
     </div>`;
   corp.querySelector("#fac-istoric").addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
   corp.querySelector("#fac-emite").addEventListener("click", () => emiteFactura(corp, nav, tenantId, opt));
   corp.querySelector("#fac-model").addEventListener("click", () => modelFactura(corp, nav, tenantId, opt));
-}
+  corp.querySelector("#fac-recurente").addEventListener("click", () => listaRecurente(corp, nav, tenantId, opt));
+}  // fac_recurente_v1
 
 // ---------- ISTORIC ----------
 async function istoricFacturi(corp, nav, tenantId, opt) {
@@ -498,4 +503,174 @@ async function modelFactura(corp, nav, tenantId, opt) {
 
   marcheaza();
   randPreview();
+}
+
+
+// ---------- RECURENTE ----------  // fac_recurente_v1
+async function listaRecurente(corp, nav, tenantId, opt) {
+  const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
+  corp.innerHTML = `<button class="mig-inapoi" id="fac-back">\u2190</button><p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
+  corp.querySelector("#fac-back").addEventListener("click", inapoiMeniu);
+  let sabloane = [];
+  try {
+    const r = await api.get(`/tenants/${tenantId}/facturi-recurente`);
+    sabloane = (r && r.sabloane) || [];
+  } catch {}
+  randareRecurente(corp, nav, tenantId, opt, sabloane);
+}
+
+function randareRecurente(corp, nav, tenantId, opt, sabloane) {
+  const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
+  const corpuri = !sabloane.length
+    ? `<div class="mig-gol">Niciun \u0219ablon \u00eenc\u0103.</div>`
+    : sabloane.map((s) => {
+        const suma = (s.linii || []).reduce((t, l) => t + (Number(l.cantitate) || 0) * (Number(l.pret_unitar) || 0), 0);
+        const sumaTxt = suma.toLocaleString("ro-RO") + " " + (s.moneda || "RON");
+        const stare = s.activ
+          ? '<span style="color:#1d7a4d">activ</span>'
+          : '<span style="color:#8a8a8a">inactiv</span>';
+        return `
+      <div class="pf-frand" data-id="${s.id}">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${s.tert_nume || "\u2014"}</div>
+          <div class="pf-frand-sub">ziua ${s.zi_emitere} \u00b7 ultima: ${fmtData(s.ultima_emitere) || "\u2014"} \u00b7 ${stare}</div>
+        </div>
+        <span class="pf-frand-suma">${sumaTxt}</span>
+        <span class="btn-link fr-toggle" data-id="${s.id}" data-activ="${s.activ}" style="margin-left:8px">${s.activ ? "Dezactiveaz\u0103" : "Activeaz\u0103"}</span>
+        <span class="btn-link fr-sterge" data-id="${s.id}" style="margin-left:8px;color:#c0392b">\u0218terge</span>
+      </div>`;
+      }).join("");
+
+  corp.innerHTML = `
+    <button class="mig-inapoi" id="fac-back">\u2190</button>
+    <h2 class="pf-titlu">Facturi recurente</h2>
+    <p class="pf-intro">\u0218abloane emise automat \u00een fiecare lun\u0103 (verificare zilnic\u0103 la 07:00).</p>
+    <div class="pf-lista">${corpuri}</div>
+    <button class="mig-buton" id="fr-add" style="margin-top:12px">+ \u0218ablon nou</button>`;
+  corp.querySelector("#fac-back").addEventListener("click", inapoiMeniu);
+  corp.querySelector("#fr-add").addEventListener("click", () => formSablon(corp, nav, tenantId, opt));
+
+  corp.querySelectorAll(".fr-toggle").forEach((b) => b.addEventListener("click", async () => {
+    const activNou = !(b.dataset.activ === "true");
+    try {
+      await api.put(`/tenants/${tenantId}/facturi-recurente/${b.dataset.id}?activ=${activNou}`);
+      listaRecurente(corp, nav, tenantId, opt);
+    } catch (e) {
+      alert(e.mesaj || e.message || "eroare");
+    }
+  }));
+  corp.querySelectorAll(".fr-sterge").forEach((b) => b.addEventListener("click", async () => {
+    if (!confirm("\u0218tergi \u0219ablonul?")) return;
+    try {
+      await api.del(`/tenants/${tenantId}/facturi-recurente/${b.dataset.id}`);
+      listaRecurente(corp, nav, tenantId, opt);
+    } catch (e) {
+      alert(e.mesaj || e.message || "eroare");
+    }
+  }));
+}
+
+// ---------- ADAUGA SABLON ----------  // fac_recurente_v1
+function formSablon(corp, nav, tenantId, opt) {
+  const inapoiLista = () => listaRecurente(corp, nav, tenantId, opt);
+  corp.innerHTML = `
+    <button class="mig-inapoi" id="fr-back">\u2190</button>
+    <h2 class="pf-titlu">\u0218ablon nou</h2>
+
+    <div class="em-sectiune">
+      <div class="em-eticheta">Beneficiar</div>
+      <input class="pr-input" id="fr-cui" placeholder="CUI beneficiar (ex: RO12345678)" autocomplete="off">
+      <input class="pr-input" id="fr-nume" placeholder="Denumire beneficiar" autocomplete="off">
+    </div>
+
+    <div class="em-sectiune">
+      <div class="em-eticheta">Produse \u0219i servicii</div>
+      <div class="em-linii" id="fr-linii"></div>
+      <button class="em-buton-sec" id="fr-add-linie">+ Adaug\u0103 linie</button>
+    </div>
+
+    <div class="em-sectiune">
+      <div class="em-eticheta">Emitere</div>
+      <input class="pr-input" id="fr-zi" type="number" min="1" max="28" value="1" title="Ziua din lun\u0103 la care se emite">
+      <select class="pr-input" id="fr-moneda">
+        <option value="RON">RON</option>
+        <option value="EUR">EUR</option>
+        <option value="USD">USD</option>
+      </select>
+    </div>
+
+    <div class="em-actiuni">
+      <button class="mig-buton" id="fr-salveaza">Salveaz\u0103 \u0219ablonul</button>
+    </div>
+    <div class="em-rezultat" id="fr-rezultat"></div>`;
+  corp.querySelector("#fr-back").addEventListener("click", inapoiLista);
+
+  const zonaLinii = corp.querySelector("#fr-linii");
+  const linii = [];
+
+  function adaugaLinie() {
+    const idx = linii.length;
+    linii.push({ descriere: "", cantitate: 1, pret_unitar: 0, cota_tva: null });
+    const rand = document.createElement("div");
+    rand.className = "em-linie";
+    rand.dataset.idx = idx;
+    rand.innerHTML = `
+      <input class="pr-input em-l-den" placeholder="Denumire (ex: abonament mentenan\u021b\u0103)" autocomplete="off">
+      <input class="pr-input em-l-cant" type="number" step="0.001" value="1" title="Cantitate">
+      <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" title="Pre\u021b unitar">
+      <span class="em-l-cota" title="Cota TVA">\u2014</span>
+      <button class="em-l-sterge" title="\u0218terge">\u00d7</button>`;
+    zonaLinii.appendChild(rand);
+
+    const den = rand.querySelector(".em-l-den");
+    const cant = rand.querySelector(".em-l-cant");
+    const pret = rand.querySelector(".em-l-pret");
+    const cotaEl = rand.querySelector(".em-l-cota");
+
+    let timer = null;
+    den.addEventListener("input", () => {
+      linii[idx].descriere = den.value.trim();
+      linii[idx].cota_tva = null;
+      clearTimeout(timer);
+      const d = den.value.trim();
+      if (d.length < 3) { cotaEl.textContent = "\u2014"; return; }
+      cotaEl.textContent = "\u2026";
+      timer = setTimeout(async () => {
+        try {
+          const r = await api.post(`/tenants/${tenantId}/produse/potriveste`, { denumire: d });
+          if (r && r.ok) {
+            linii[idx].cota_tva = r.cota;
+            cotaEl.textContent = r.cota === 0 ? "scutit" : r.cota + "%";
+          } else {
+            cotaEl.textContent = "\u2014";
+          }
+        } catch { cotaEl.textContent = "\u2014"; }
+      }, 400);
+    });
+    cant.addEventListener("input", () => { linii[idx].cantitate = Number(cant.value) || 0; });
+    pret.addEventListener("input", () => { linii[idx].pret_unitar = Number(pret.value) || 0; });
+    rand.querySelector(".em-l-sterge").addEventListener("click", () => {
+      linii.splice(idx, 1);
+      rand.remove();
+    });
+  }
+  adaugaLinie();
+  corp.querySelector("#fr-add-linie").addEventListener("click", adaugaLinie);
+
+  corp.querySelector("#fr-salveaza").addEventListener("click", async () => {
+    const zona = corp.querySelector("#fr-rezultat");
+    const corpCerere = {
+      tert_cui: corp.querySelector("#fr-cui").value.trim() || null,
+      tert_nume: corp.querySelector("#fr-nume").value.trim(),
+      zi_emitere: Number(corp.querySelector("#fr-zi").value) || 1,
+      moneda: corp.querySelector("#fr-moneda").value,
+      linii: linii.filter((l) => l.descriere && l.cantitate),
+    };
+    try {
+      await api.post(`/tenants/${tenantId}/facturi-recurente`, corpCerere);
+      inapoiLista();
+    } catch (e) {
+      zona.innerHTML = `<span style="color:#c0392b">${e.mesaj || e.message || "eroare"}</span>`;
+    }
+  });
 }
