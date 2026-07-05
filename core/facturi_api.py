@@ -183,7 +183,7 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
 
 def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, tert_adresa=None,
                   data_emitere=None, data_scadenta=None, moneda="RON",
-                  platitor_tva=True, status="de_preluat", curs_manual=None):
+                  platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura"):
     """
     Emite o factura noua (directie=emisa):
       - potriveste cota pe liniile fara cota (nomenclator/AI)
@@ -197,10 +197,19 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
     data_emitere = data_emitere or datetime.date.today().isoformat()
 
     linii = _potriveste_linii(conn, linii, platitor_tva=platitor_tva)
-    num = numerotare(conn)
-    serie = num["serie"]
-    numar_int = num["urmator_numar"]
-    numar = f"{serie}{numar_int}" if serie else str(numar_int)
+    if tip == "factura":
+        num = numerotare(conn)
+        serie = num["serie"]
+        numar_int = num["urmator_numar"]
+        numar = f"{serie}{numar_int}" if serie else str(numar_int)
+    else:
+        prefix = "PF" if tip == "proforma" else "AV"
+        col = "urmator_numar_proforma" if tip == "proforma" else "urmator_numar_aviz"
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT {col} FROM firma_profil LIMIT 1")
+            numar_int = (cur.fetchone() or [1])[0] or 1
+        serie = prefix
+        numar = f"{prefix}{numar_int}"
 
     r = creeaza_factura(conn, numar, data_emitere, "emisa", linii,
                         client_id=client_id, tert_nume=tert_nume, tert_cui=tert_cui, tert_adresa=tert_adresa,
@@ -208,8 +217,12 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
     # setez seria pe factura + incrementez contorul
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET serie = %s WHERE id = %s", (serie, r["factura_id"]))
-        cur.execute("UPDATE firma_profil SET urmator_numar_factura = %s",
-                    (numar_int + 1,))
+        if tip == "factura":
+            cur.execute("UPDATE firma_profil SET urmator_numar_factura = %s", (numar_int + 1,))
+        else:
+            col = "urmator_numar_proforma" if tip == "proforma" else "urmator_numar_aviz"
+            cur.execute(f"UPDATE firma_profil SET {col} = %s", (numar_int + 1,))
+        cur.execute("UPDATE facturi SET tip = %s WHERE id = %s", (tip, r["factura_id"]))
     # ---- CURS VALUTAR (art. 290/319 Cod fiscal): TVA obligatoriu si in lei ----
     import datetime as _dt
     _fid = r["factura_id"]

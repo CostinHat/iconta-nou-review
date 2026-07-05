@@ -662,6 +662,7 @@ class LinieEmitereIn(BaseModel):  # [p104_emitere_rute]
     cota_tva: Optional[float] = None  # None -> potrivire automata (nomenclator/AI)
 
 class EmitereIn(BaseModel):
+    tip: str = "factura"  # factura|proforma|aviz
     linii: List[LinieEmitereIn]
     tert_nume: Optional[str] = None
     tert_cui: Optional[str] = None
@@ -1494,7 +1495,7 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
                 conn, linii, client_id=date.client_id, tert_nume=date.tert_nume,
                 tert_cui=date.tert_cui, tert_adresa=date.tert_adresa, data_emitere=date.data_emitere,
                 data_scadenta=date.data_scadenta, moneda=date.moneda,
-                platitor_tva=platitor, curs_manual=date.curs_manual)
+                platitor_tva=platitor, curs_manual=date.curs_manual, tip=date.tip)
         except ValueError as e:
             raise HTTPException(422, str(e))
     # curs BNR indisponibil -> 409 cu detaliile pt frontend (Reincearca / Manual)
@@ -1590,6 +1591,37 @@ def factura_creeaza(tenant_id: int, date: FacturaIn,
         raise HTTPException(422, str(e))
     return r
 
+
+@app.post("/tenants/{tenant_id}/facturi/{factura_id}/transforma")
+def proforma_transforma(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
+    """Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal)."""
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT tip, transformat_in_id FROM facturi WHERE id=%s", (factura_id,))
+            r = cur.fetchone()
+        if not r:
+            raise HTTPException(404, "document inexistent")
+        if r[0] == "factura":
+            raise HTTPException(422, "documentul e deja factura")
+        if r[1]:
+            raise HTTPException(409, f"deja transformat in factura #{r[1]}")
+        f = facturi_api.detalii_factura(conn, factura_id)
+        linii = [{"descriere": l.get("descriere"), "cantitate": l.get("cantitate"),
+                  "pret_unitar": l.get("pret_unitar"), "cota_tva": l.get("cota_tva")}
+                 for l in (f.get("linii") or [])]
+        platitor = _platitor_tva_firma(conn)
+        try:
+            rez = facturi_api.emite_factura(conn, linii, client_id=f.get("client_id"),
+                tert_nume=f.get("tert_nume"), tert_cui=f.get("tert_cui"),
+                moneda=f.get("moneda") or "RON", platitor_tva=platitor)
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+        with conn.cursor() as cur:
+            cur.execute("UPDATE facturi SET transformat_in_id=%s WHERE id=%s",
+                        (rez["factura_id"], factura_id))
+        conn.commit()
+    return rez
 
 @app.get("/tenants/{tenant_id}/facturi/{factura_id}")  # [p115_detalii_acces] acces client+gratuit+cabinet
 def factura_detalii(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
