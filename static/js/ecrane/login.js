@@ -164,16 +164,18 @@ export function ecranLogin(radacina) {
         <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
       </div>
+      <form id="login-form" onsubmit="return false">
       <label class="camp">
         <span class="camp-eticheta">Email</span>
-        <input type="email" class="camp-input" id="login-email" autocomplete="username" autofocus>
+        <input type="email" name="email" class="camp-input" id="login-email" autocomplete="username" autofocus>
       </label>
       <label class="camp">
         <span class="camp-eticheta">Parolă</span>
-        <input type="password" class="camp-input" id="login-parola" autocomplete="current-password">
+        <input type="password" class="camp-input" name="password" id="login-parola" autocomplete="current-password">
       </label>
       <div class="login-eroare" id="login-eroare" hidden></div>
-      <button class="buton-primar" id="login-buton">Autentificare</button>
+      <button type="submit" class="buton-primar" id="login-buton">Autentificare</button>
+      </form>
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
 
@@ -346,3 +348,5 @@ export function ecranLogin(radacina) {
 // landing_texte_v3
 
 // landing_carduri_v2
+
+// login_form_v1

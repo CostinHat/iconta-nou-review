@@ -220,3 +220,7 @@ static.anaf.ro/static/10/Anaf/Declaratii_R/112.html → ~/duk/dist/lib/ → reva
 ## REGULA PERMANENTA — mesaje utilizator
 Helper global arataMesaj(el, txt, tip) in api.js; tipuri: eroare (rosu bold), avert (galben), info (gri).
 Orice actiune esuata AFISEAZA mesaj (e.mesaj || e.message) — niciodata tacere. Clase: .msg-eroare/.msg-avert/.msg-info.
+
+## SESIUNE 05.07 (partea 2) — testare + flux client
+FACUT: monitor fiscal live (cron luni 08:00, email OK), conformitate exhaustiva (4 fixuri: micro 1%, sm 4325, IMCA 0.5%, D112), Excel 190 teste, landing actualizat (carduri+diacritice), Recomanda card mic (cabinet+portal), portal layout v2, Adauga firma (CUI+ANAF+email client obligatoriu, invitatie automata), Acces client (invitatie/activare link 48h/revocare), conventie globala mesaje, login fullscreen (Bitwarden OK), token 24h.
+URMEAZA: testare pe 8 firme profile diferite in cabinetul AMZUICA. Firma 1 MARKET DUNAV (comert, micro, TVA) creata; fisiere test generate (f1_achizitie.xml, extras_iulie.csv, raport_z_0207.csv) — de descarcat din chat. Primul test maine: import XML factura in Facturi.

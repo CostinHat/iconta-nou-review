@@ -1,7 +1,7 @@
 // app.js — punctul de pornire. Login -> navigator cu desktopul rolului.
 
 import { sesiune } from "./sesiune.js";
-import { ecranLogin } from "./ecrane/login.js?v=2";
+import { ecranLogin } from "./ecrane/login.js?v=7";
 import { creeazaNavigator } from "./navigator.js";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=12";
 import { desktopAsistent } from "./ecrane/asistent.js";

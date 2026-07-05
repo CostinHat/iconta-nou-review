@@ -2095,3 +2095,6 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .msg-eroare { color: #a3231c; font-weight: 600; font-size: var(--text-mic); }
 .msg-avert  { color: #8a6410; font-weight: 600; font-size: var(--text-mic); }
 .msg-info   { color: var(--gri); font-size: var(--text-mic); }
+/* login_fullscreen_v1 */
+.acces-overlay { background: var(--fundal, #f4f6f9) !important; padding: 0 !important; }
+.acces-modal { box-shadow: none !important; border-radius: 0 !important; max-width: 460px; width: 100%; margin: 8vh auto 0; }
