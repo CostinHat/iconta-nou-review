@@ -61,11 +61,12 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         const suma = f.total != null ? Number(f.total).toLocaleString("ro-RO") + " " + (f.moneda || "lei") : "";
         const dir = dirEticheta(f.directie);
         const storno = f.storno_din_id ? ' \u00b7 <span class="fac-storno-tag">storno</span>' : "";
+        const tipTag = f.tip && f.tip !== "factura" ? ` \u00b7 <span class="fac-storno-tag">${f.tip}</span>` : "";
         return `
       <button class="pf-frand fac-frand-btn" data-id="${f.id}">
         <div class="pf-frand-text">
           <div class="pf-frand-nume">${f.numar || "\u2014"}${f.tert_nume ? " \u00b7 " + f.tert_nume : ""}</div>
-          <div class="pf-frand-sub">${fmtData(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}</div>
+          <div class="pf-frand-sub">${fmtData(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
         </div>
         <span class="pf-frand-suma">${suma}</span>
         <span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>
@@ -183,6 +184,8 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <button class="em-buton-sec fd-pdf-btn" id="fd-pdf">Vezi PDF</button>
         <button class="em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
         ${(f.directie === "emisa" && !f.storno_din_id) ? '<button class="em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
+        ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="em-buton-sec" id="fd-transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
+        ${f.transformat_in_id ? `<span class="fac-storno-tag">transformat \u00een #${f.transformat_in_id}</span>` : ""}
       </div>
       <div class="fd-email-zona" id="fd-email-zona"></div>
       <div class="fd-storno-zona" id="fd-storno-zona"></div>
@@ -276,6 +279,13 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   }
 
   const btnStorno = corp.querySelector("#fd-storno");
+  const btnTransforma = corp.querySelector("#fd-transforma");
+  if (btnTransforma) btnTransforma.addEventListener("click", async () => {
+    try {
+      const r = await api.post(`/tenants/${tenantId}/facturi/${f.id}/transforma`, {});
+      btnTransforma.outerHTML = `<span class="fac-storno-tag">factura ${r.numar} emisa</span>`;
+    } catch (e) { alert((e && e.mesaj) || "eroare"); }
+  });
   const zonaStorno = corp.querySelector("#fd-storno-zona");
   if (btnStorno && zonaStorno) {
     btnStorno.addEventListener("click", () => {

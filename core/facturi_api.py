@@ -95,7 +95,7 @@ def lista_facturi(conn, an=None, luna=None, directie=None):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, numar, data_emitere, directie, total, tva, status, "
-            "moneda, tert_nume, tert_cui, tert_adresa FROM facturi" + where +
+            "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id FROM facturi" + where +
             " ORDER BY data_emitere DESC, id DESC", val)
         return [dict(r) for r in cur.fetchall()]
 
@@ -110,7 +110,7 @@ def detalii_factura(conn, factura_id):
         cur.execute(
             "SELECT id, client_id, numar, data_emitere, data_scadenta, total, tva, "
             "status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
-            "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, storno_din_id "
+            "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, storno_din_id, tip, transformat_in_id "
             "FROM facturi WHERE id = %s",
             (factura_id,))
         f = cur.fetchone()
