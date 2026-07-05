@@ -64,6 +64,21 @@ def importa_extras(conn, schema, tranzactii, fisier=""):
             aloc = {"status_match": rez["status"], "motiv": rez["motiv"],
                     "alocari": [{"factura_id": a["factura_id"], "suma": str(a["suma"])}
                                 for a in rez["alocari"]]}
+            # ai_sugestie_v1: linie fara facturi -> sugestie din istoricul invatat
+            if rez["status"] == "rosu" and not t.get("nota"):
+                try:
+                    from core import ai_incredere as _ai
+                    sug = _ai.sugestie(conn, schema, ln.get("descriere") or "")
+                    if sug:
+                        cont_banca = "5121"
+                        if ln["tip"] == "plata":
+                            t["nota"] = {"debit": sug["cont"], "credit": cont_banca}
+                        else:
+                            t["nota"] = {"debit": cont_banca, "credit": sug["cont"]}
+                        aloc["incredere"] = sug["incredere"]
+                        aloc["motiv"] = aloc["motiv"] + f"; sugestie invatata: {sug['cont']} ({sug['incredere']}, {sug['validari']} validari)"
+                except Exception:
+                    pass
             status = "potrivit" if rez["status"] in ("verde", "galben") else "nou"
             cur.execute(f"""
                 INSERT INTO {schema}.extras_linii
