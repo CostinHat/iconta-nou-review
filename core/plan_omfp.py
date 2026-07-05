@@ -120,6 +120,13 @@ PLAN_OMFP = {
     "781": "Venituri din provizioane si ajustari pentru depreciere",
     "7814": "Venituri din ajustari pentru deprecierea activelor circulante",
     "8051": "Dobanzi de platit",
+    # OMFP 3103/2017 - persoane juridice fara scop patrimonial (grupa 73, verificat la sursa)
+    "731": "Venituri din cotizatiile membrilor, contributiile banesti sau in natura ale membrilor si simpatizantilor, din cote-parti primite potrivit statutului",
+    "732": "Venituri din taxele de inregistrare stabilite potrivit legislatiei in vigoare",
+    "733": "Venituri din donatii, sume sau bunuri primite prin sponsorizare si ajutoare",
+    "734": "Venituri financiare rezultate din activitatile fara scop patrimonial",
+    "736": "Venituri din subventii de exploatare",
+    "738": "Alte venituri din activitatile fara scop patrimonial",
 }
 
 
