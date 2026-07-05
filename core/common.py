@@ -156,7 +156,7 @@ COTE = {
         (date(2025, 1, 1), Decimal("3700"), "HG 1006/2024"),
     ],
     "facilitate_salariu_minim": [
-        (date(2026, 7, 1), Decimal("200"), "OUG 156/2024"),
+        (date(2026, 7, 1), Decimal("200"), "OUG 89/2025 art.III + Ordin 605/2026"),
         (date(2025, 1, 1), Decimal("300"), "OUG 115/2023"),
     ],
 }

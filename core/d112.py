@@ -161,11 +161,18 @@ def _d112_genereaza(prof, salariati, an, luna):
                 _m17, _m18, media = _cm_media6(x.get("baza"), s.get("data_angajare"), an, luna)  # cm_media6_v1
                 d18 = _m18
                 d17 = _d112int(round(_m17))
+                if d17 == 0:  # d112_s107_v1: S107.1 - fara medie => si d18=0
+                    d18 = 0
                 d19 = round(d17 / d18, 2) if d18 else 0
-                _dl.append('    <asiguratD D_1="%s" D_2="%s" D_5="%s" D_6="%s" D_7="%s" D_9="%s" D_10="%d" '
-                           'D_14="%d" D_15="%d" D_16="%d" D_17="%d" D_18="%d" D_19="%.2f" D_20="%d" D_21="%d" D_23="%s"/>'  # d112_d23_v2
-                           % (_d112esc(x.get("serie")), _d112esc(x.get("numar")), x.get("da") or "", x.get("di") or "",
-                              x.get("ds") or "", (x.get("cod") or "01"), int(x.get("loc_prescriere") or 1),
+                # d112_atrib_optionale_v1: atributele optionale se omit cand sunt goale (vid nepermis)
+                _opt = ""
+                for _a, _v in (("D_1", _d112esc(x.get("serie"))), ("D_2", _d112esc(x.get("numar"))),
+                               ("D_5", x.get("da") or ""), ("D_6", x.get("di") or ""), ("D_7", x.get("ds") or "")):
+                    if _v:
+                        _opt += ' %s="%s"' % (_a, _v)
+                _dl.append('    <asiguratD%s D_9="%s" D_10="%d" '
+                           'D_14="%d" D_15="%d" D_16="%d" D_17="%d" D_18="%d" D_19="%.2f" D_20="%d" D_21="%d" D_23="%s"/>'
+                           % (_opt, (x.get("cod") or "01"), int(x.get("loc_prescriere") or 1),
                               za, zf, d16, d17, d18, d19, d20, d21, _d112esc(x.get("diagnostic") or "999")))
             c2_count += len(cms)
             c2_d16 += b3z

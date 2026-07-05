@@ -206,3 +206,9 @@ URMATORUL: PFA/II/IF partida simpla + Registru incasari/plati + D212 (OMFP 170/2
 - Educație AI pe tipare erori (amânat conștient: întâi documentația)
 - Stratul 5 AI triage reclamații (după knowledge base)
 - Cont 733 apărut în balanță KAI — nu există în OMFP, de verificat notele de test
+
+## URMARIRE — validator D112 nou (Ordin 605/2026)
+Cod actualizat pt facilitate 200 lei (01.07.2026). Validatorul ANAF (22.04.2026)
+inca aplica 300 → atentionare SP1B4_1 fals pozitiva pe iulie. Cand ANAF publica
+validatorul nou (inainte de 25 aug): descarca D112Validator de pe
+static.anaf.ro/static/10/Anaf/Declaratii_R/112.html → ~/duk/dist/lib/ → revalideaza.
