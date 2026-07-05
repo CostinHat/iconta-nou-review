@@ -267,6 +267,8 @@ async function ecranVerificari(corp, nav, t) {
     let r = null;
     try { r = await api.get(`/firme/${t.id}/verificari?an=${an}&luna=${luna}`); } catch {}
     let vs = null;  // [verif_stocuri_v1]
+    let intra = null;  // [intrastat_v1]
+    try { intra = await api.get(`/tenants/${t.id}/intrastat-praguri?an=${an}`); } catch {}
     try { vs = await api.get(`/tenants/${t.id}/verificare-stocuri`); } catch {}
     const rand = (nume, obj) => {
       const ok = obj && (obj.ok === true || obj.cod === undefined) && !(Array.isArray(obj) && obj.length);
@@ -292,6 +294,10 @@ async function ecranVerificari(corp, nav, t) {
           <div class="pf-frand-nume">Stocuri (contabil vs fi\u0219e CV)</div>
           <div class="pf-frand-sub">${vs.ok ? "in regula" : vs.conturi.filter(c=>!c.ok).map(c=>`cont ${c.cod || c.cont}: contabil ${c.sold_contabil} vs fi\u0219e ${c.valoare_fise_cv} (dif ${c.diferenta})`).join(" \u00b7 ")}</div>
         </div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${vs.ok ? "#1d7a4d" : "#ff3b30"}"></span></div>` : ""}
+        ${intra ? `<div class="pf-frand"><div class="pf-frand-text">
+          <div class="pf-frand-nume">Intrastat (prag 1.000.000 lei/flux, an ${an})</div>
+          <div class="pf-frand-sub">Introduceri: ${intra.introduceri ? intra.introduceri.cumulat + " lei (" + intra.introduceri.procent + "%)" + (intra.introduceri.status !== "sub_prag" ? " \u00b7 DEPASIT din luna " + intra.introduceri.luna_depasirii : "") : "-"} \u00b7 Expedieri: ${intra.expedieri ? intra.expedieri.cumulat + " lei (" + intra.expedieri.procent + "%)" + (intra.expedieri.status !== "sub_prag" ? " \u00b7 DEPASIT din luna " + intra.expedieri.luna_depasirii : "") : "-"}</div>
+        </div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${(intra.introduceri && intra.introduceri.status !== "sub_prag") || (intra.expedieri && intra.expedieri.status !== "sub_prag") ? "#ff3b30" : "#1d7a4d"}"></span></div>` : ""}
         ${!r ? '<div class="mig-gol">Nu am putut rula verific\u0103rile.</div>' : ""}
       </div>`;
     corp.querySelector("#vf-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
