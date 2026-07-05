@@ -176,6 +176,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "solicitari", titlu: "Solicitări client", desc: "Mesaje primite de la firma-client",
       bg: "#faece7", fg: "#993c1d",
       icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>', activ: true },
+    { cheie: "acces", titlu: "Acces client", desc: "Invită clientul în portal",
+      bg: "#e6f2ec", fg: "#1d7a4d",
+      icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/>', activ: true },
   ];
 
   corp.innerHTML = `
@@ -191,6 +194,8 @@ function meniuFirma(corp, nav, t) {
         </button>`).join("")}
     </div>`;
 
+  const bAcces = corp.querySelector("#fa-acces");
+  if (bAcces) bAcces.addEventListener("click", () => nav.deschide("Acces client", (c2) => ecranAccesClient(c2, nav, t)));
   const bFacturi = corp.querySelector("#fa-facturi");
   if (bFacturi) {
     bFacturi.addEventListener("click", () => {
@@ -1324,4 +1329,53 @@ async function ecranMagazin(corp, nav, t) {
       zona.innerHTML = `<span style="color:#1d7a4d">${n} facturi importate, ${r.sarite || 0} deja existente.</span>`;
     } catch (e) { zona.innerHTML = `<span style="color:#c0392b">${e.mesaj || "eroare"}</span>`; }
   });
+}
+
+/* acces_client_ui_v1 */
+async function ecranAccesClient(corp, nav, t) {
+  corp.innerHTML = `
+    <div class="camp" style="margin-bottom:12px">
+      <label class="camp-eticheta">Email client</label>
+      <input class="camp-input" id="ac-email" type="email" placeholder="client@firma.ro" autocomplete="off">
+    </div>
+    <div class="camp" style="margin-bottom:14px">
+      <label class="camp-eticheta">Nume (op\u021bional)</label>
+      <input class="camp-input" id="ac-nume" placeholder="Numele persoanei">
+    </div>
+    <p class="ecran-nota" id="ac-msg" style="margin:0 0 10px"></p>
+    <button class="buton-primar" id="ac-btn">Trimite invita\u021bia</button>
+    <h3 style="margin:22px 0 8px">Conturi client</h3>
+    <div id="ac-lista"><p class="ecran-nota">Se \u00eencarc\u0103...</p></div>
+  `;
+  const msg = corp.querySelector("#ac-msg");
+  async function incarcaLista() {
+    const zona = corp.querySelector("#ac-lista");
+    try {
+      const r = await api.get(`/tenants/${t.id}/client-acces`);
+      const cl = r.clienti || [];
+      if (!cl.length) { zona.innerHTML = `<p class="ecran-nota">Niciun cont de client \u00eenc\u0103.</p>`; return; }
+      zona.innerHTML = cl.map((c) => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e5e9f0">
+          <div><b>${c.email}</b> \u00b7 ${c.nume || ""} ${c.activ ? "" : " \u00b7 <span style=\'color:#a3231c\'>dezactivat</span>"}</div>
+          ${c.activ ? `<button class="buton-secundar" data-id="${c.id}">Revoc\u0103</button>` : ""}
+        </div>`).join("");
+      zona.querySelectorAll("button[data-id]").forEach((b) => b.addEventListener("click", async () => {
+        if (!confirm("Revoci accesul acestui client?")) return;
+        await api.del(`/tenants/${t.id}/client-acces/${b.dataset.id}`);
+        incarcaLista();
+      }));
+    } catch (e) { zona.innerHTML = `<p class="ecran-nota">${e.mesaj || e.message}</p>`; }
+  }
+  corp.querySelector("#ac-btn").addEventListener("click", async () => {
+    const email = corp.querySelector("#ac-email").value.trim();
+    if (!email.includes("@")) { msg.textContent = "Email invalid."; return; }
+    msg.textContent = "Se trimite...";
+    try {
+      await api.post(`/tenants/${t.id}/client-acces`, { email, nume: corp.querySelector("#ac-nume").value.trim() });
+      msg.textContent = "Invita\u021bie trimis\u0103 pe " + email + ".";
+      corp.querySelector("#ac-email").value = "";
+      incarcaLista();
+    } catch (e) { msg.textContent = e.mesaj || e.message; }
+  });
+  incarcaLista();
 }
