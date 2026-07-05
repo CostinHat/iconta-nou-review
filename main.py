@@ -4393,6 +4393,36 @@ def intrastat_praguri(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
                     "depasirii pragului, separat pe flux (Ordin INS 1604/2025)"}
 
 
+@app.post("/tenants/{tenant_id}/nota-tva-incasare")
+def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {data, sens incasare|plata, suma_incasata, cota?, descriere?}.
+    incasare: 4428=4427 devine exigibil TVA colectat (suta marita);
+    plata: 4426=4428 devine deductibil TVA achitat furnizorului. Nota ciorna."""
+    from core import tva_incasare as _ti
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        sens = corp.get("sens")
+        if sens not in ("incasare", "plata"):
+            raise HTTPException(422, "sens invalid (incasare/plata)")
+        try:
+            tva = _ti.tva_din_incasare(corp["suma_incasata"], corp.get("cota", 21))
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        debit, credit = ("4428", "4427") if sens == "incasare" else ("4426", "4428")
+        desc = corp.get("descriere") or (
+            "TVA la incasare - exigibilitate la " + ("incasare (art. 282)" if sens == "incasare" else "plata furnizor"))
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""", (corp["data"], desc[:200]))
+            iid = cur.fetchone()[0]
+            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                            (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                        (iid, debit, credit, tva))
+        conn.commit()
+    return {"inregistrare_id": iid, "tva_exigibil": str(tva), "nota": f"{debit}={credit}"}
+
 @app.post("/tenants/{tenant_id}/decontare-valuta")
 def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765.

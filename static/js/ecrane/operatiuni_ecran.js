@@ -84,6 +84,12 @@ const REGISTRU = [
     C("valoare_imputare", "Valoare imputare", "numar", { cond: { camp: "operatie", val: "minus" }, optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
+  { cat: "TVA regimuri speciale", cheie: "tva_incasare", titlu: "TVA la incasare (art. 282)", ruta: "nota-tva-incasare", campuri: [
+    C("data", "Data", "data"),
+    C("sens", "Sens", "select", { optiuni: [["incasare","Incasare de la client (4428=4427)"],["plata","Plata catre furnizor (4426=4428)"]] }),
+    C("suma_incasata", "Suma incasata/platita (cu TVA)"),
+    C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
+    C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "TVA regimuri speciale", cheie: "marja", titlu: "Vanzare regim marja (second-hand)", ruta: "vanzare-marja", campuri: [
     C("data", "Data", "data"), C("pret_vanzare", "Pret vanzare"), C("pret_cumparare", "Pret cumparare"),
     C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),

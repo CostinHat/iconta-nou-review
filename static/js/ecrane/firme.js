@@ -5,7 +5,7 @@ import { api } from "../api.js";
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js?v=2";
 import { ecranRip } from "./rip_ecran.js?v=2";
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=8";
 import { ecranEtransport } from "./etransport_ecran.js?v=1";
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
