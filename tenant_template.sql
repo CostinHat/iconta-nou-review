@@ -339,7 +339,9 @@ CREATE TABLE tenant_001.facturi (
     total_lei numeric(12,2),
     data_curs date,
     curs_sursa character varying(10),
-    tert_adresa text
+    tert_adresa text,
+    tip character varying(10) DEFAULT 'factura'::character varying NOT NULL,
+    transformat_in_id integer
 );
 
 
@@ -393,6 +395,8 @@ CREATE TABLE tenant_001.firma_profil (
     font_factura character varying(30) DEFAULT 'sans'::character varying,
     culoare_factura character varying(10) DEFAULT '#1d4ed8'::character varying,
     tva_la_incasare boolean DEFAULT false NOT NULL,
+    urmator_numar_proforma integer DEFAULT 1 NOT NULL,
+    urmator_numar_aviz integer DEFAULT 1 NOT NULL,
     CONSTRAINT firma_profil_singleton CHECK ((id = 1))
 );
 
