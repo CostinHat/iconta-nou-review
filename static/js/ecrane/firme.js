@@ -5,6 +5,7 @@ import { api } from "../api.js";
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js?v=2";
 import { ecranRip } from "./rip_ecran.js?v=2";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=1";
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -112,6 +113,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "casa", titlu: "Cas\u0103", desc: "Registru de cas\u0103, plafoane numerar",
       bg: "#e6f6ec", fg: "#16a34a",
       icon: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/>', activ: true },
+    { cheie: "operatiuni", titlu: "Operatiuni speciale", desc: "Leasing, marja, IC, sponsorizari si altele",
+      bg: "#f3e8ff", fg: "#7c3aed",
+      icon: '<path d="M12 2l2 4 4 .5-3 3 .8 4.5L12 12l-3.8 2 .8-4.5-3-3 4-.5z"/><path d="M5 18h14M5 21h14"/>', activ: true },
     { cheie: "rip", titlu: "Incasari/plati", desc: "Partida simpla PFA/II/IF, Fisa D212",
       bg: "#e6f6ec", fg: "#16a34a",
       icon: '<path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', activ: true },
@@ -175,6 +179,8 @@ function meniuFirma(corp, nav, t) {
   }
   const bRip = corp.querySelector("#fa-rip");
   if (bRip) bRip.addEventListener("click", () => ecranRip(corp, nav, t));
+  const bOperatiuni = corp.querySelector("#fa-operatiuni");
+  if (bOperatiuni) bOperatiuni.addEventListener("click", () => ecranOperatiuni(corp, nav, t));
   const bBalanta = corp.querySelector("#fa-balanta");
   if (bBalanta) bBalanta.addEventListener("click", () => ecranBalanta(corp, nav, t));
   const bBanca = corp.querySelector("#fa-banca");
