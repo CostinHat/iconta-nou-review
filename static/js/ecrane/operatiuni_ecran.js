@@ -118,6 +118,14 @@ const REGISTRU = [
     C("client_identificare", "Identificare client", "text"),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
+  { cat: "Extern", cheie: "decont_valuta", titlu: "Decontare in valuta (665/765)", ruta: "decontare-valuta", campuri: [
+    C("data", "Data", "data"),
+    C("tip", "Tip", "select", { optiuni: [["creanta","Incasare creanta"],["datorie","Plata datorie"]] }),
+    C("valoare_valuta", "Valoare in valuta"),
+    C("moneda", "Moneda (EUR/USD...)", "text", { sugestie: "EUR" }),
+    C("curs_evidenta", "Curs de evidenta"),
+    C("cont_tert", "Cont tert", "text", { sugestie: "4111" }),
+    C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Extern", cheie: "achizitie_ic", titlu: "Achizitie intracomunitara", ruta: "achizitie-ic", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare (RON)"),
     C("cont_destinatie", "Cont destinatie", "text", { sugestie: "371" }),
