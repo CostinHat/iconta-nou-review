@@ -2192,6 +2192,8 @@ def horeca_raport_z(tenant_id: int, rz: RaportZ, ctx=Depends(cere_cabinet)):
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
         total = D(str(rz.total_11)) + D(str(rz.total_21))
+        if total <= 0:
+            raise HTTPException(400, "totalul pe cote trebuie sa fie pozitiv")
         if abs(float(total) - (rz.numerar + rz.card)) > 0.01:
             raise HTTPException(400, "numerar + card trebuie sa fie egal cu totalul pe cote")
         # suta marita: TVA = total * cota / (100 + cota)
