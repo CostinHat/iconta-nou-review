@@ -2480,6 +2480,89 @@ def portal_documente_balanta(an: int, luna: int, tenant_id: Optional[int] = None
         pdf = documente_api.balanta_pdf(conn, t["schema_name"], an, luna, t.get("nume") or "")
     return Response(content=pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="balanta_{an}_{luna:02d}.pdf"'})
+# === API PUBLIC === # api_public_v1
+def cere_api_key(x_api_key: Optional[str] = Header(None)):
+    from core import api_public as _ap
+    if not x_api_key:
+        raise HTTPException(401, "lipsa X-Api-Key")
+    with db.get_conn() as conn:
+        firm_id = _ap.verifica(conn, x_api_key)
+    if not firm_id:
+        raise HTTPException(401, "cheie invalida sau revocata")
+    return {"firm": firm_id}
+
+
+def _api_schema(actx, tenant_id):
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""SELECT schema_name FROM public.tenants
+                       WHERE id=%s AND accounting_firm_id=%s""", (tenant_id, actx["firm"]))
+        r = cur.fetchone()
+    if not r:
+        raise HTTPException(404, "firma inexistenta")
+    return r[0]
+
+
+@app.post("/cabinet/api-chei")  # api_public_v1
+def api_cheie_creeaza(corp: dict = Body(default={}), ctx=Depends(cere_rol("admin_firma"))):
+    from core import api_public as _ap
+    with db.get_conn() as conn:
+        return _ap.genereaza(conn, ctx["firm"], (corp or {}).get("nume"))
+
+
+@app.get("/cabinet/api-chei")  # api_public_v1
+def api_chei_lista(ctx=Depends(cere_rol("admin_firma"))):
+    from core import api_public as _ap
+    with db.get_conn() as conn:
+        return {"chei": _ap.lista(conn, ctx["firm"])}
+
+
+@app.delete("/cabinet/api-chei/{kid}")  # api_public_v1
+def api_cheie_revoca(kid: int, ctx=Depends(cere_rol("admin_firma"))):
+    from core import api_public as _ap
+    with db.get_conn() as conn:
+        r = _ap.revoca(conn, ctx["firm"], kid)
+    if r.get("eroare"):
+        raise HTTPException(404, r["eroare"])
+    return r
+
+
+@app.get("/api/v1/firme")  # api_public_v1
+def apiv1_firme(actx=Depends(cere_api_key)):
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""SELECT id, nume, cui FROM public.tenants
+                       WHERE accounting_firm_id=%s ORDER BY nume""", (actx["firm"],))
+        return {"firme": [{"id": r[0], "nume": r[1], "cui": r[2]} for r in cur.fetchall()]}
+
+
+@app.get("/api/v1/firme/{tenant_id}/facturi")  # api_public_v1
+def apiv1_facturi(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,
+                  actx=Depends(cere_api_key)):
+    schema = _api_schema(actx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return {"facturi": facturi_api.lista_facturi(conn, an, luna, None)}
+
+
+@app.get("/api/v1/firme/{tenant_id}/kpi")  # api_public_v1
+def apiv1_kpi(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,
+              actx=Depends(cere_api_key)):
+    from datetime import date as _d
+    from core import kpi_client as _kpi
+    schema = _api_schema(actx, tenant_id)
+    azi = _d.today()
+    an = an or azi.year
+    luna = luna or azi.month
+    with db.get_conn() as conn:
+        randuri = documente_api.balanta(conn, schema, an, luna)
+    return {"an": an, "luna": luna, "kpi": _kpi.kpi_din_balanta(randuri)}
+
+
+@app.get("/api/v1/firme/{tenant_id}/balanta")  # api_public_v1
+def apiv1_balanta(tenant_id: int, an: int, luna: int, actx=Depends(cere_api_key)):
+    schema = _api_schema(actx, tenant_id)
+    with db.get_conn() as conn:
+        return {"balanta": documente_api.balanta(conn, schema, an, luna)}
+
+
 @app.get("/cabinet/consolidare")  # consolidare_v1
 def cabinet_consolidare(an: Optional[int] = None, luna: Optional[int] = None,
                         ctx=Depends(cere_cabinet)):
