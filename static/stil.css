@@ -1974,7 +1974,7 @@ html, body {
 .pagina-card-mare-icon { width: 68px; height: 68px; border-radius: 17px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
 .pagina-card-mare-titlu { font-size: var(--text-titlu); font-weight: 800; color: var(--ardezie); margin-bottom: 10px; }
 .pagina-card-mare-sub { font-size: var(--text); color: var(--gri); line-height: 1.5; }
-.pagina-card-buton { margin-top: 20px; background: #c0246b; color: #fff; border: none; border-radius: var(--raza); padding: 12px 24px; font-size: var(--text-mic); font-weight: 700; cursor: pointer; font-family: var(--font); align-self: flex-start; }
+.pagina-card-buton { margin-top: 20px; background: #3d8fd6; color: #fff; border: none; border-radius: var(--raza); padding: 8px 20px; font-size: var(--text-mic); font-weight: 600; cursor: pointer; font-family: var(--font); align-self: flex-start; }
 .pagina-carduri { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .pagina-card { border-radius: 18px; padding: 28px 24px; }
 .pagina-card-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
@@ -1989,7 +1989,7 @@ html, body { overflow-x: hidden; }
 html, body { overflow-y: hidden; }
 
 /* ICRD_LANDING_V3 — layout refacut dupa referinta */
-.pagina-card-mare .pagina-card-buton { background: #0f6cbd; }
+.pagina-card-mare .pagina-card-buton { background: #3d8fd6; }
 .pagina-card-mare .pagina-card-buton:hover { background: #115ea3; }
 
 .pagina-carduri-randuri { flex: 1; display: flex; flex-direction: column; gap: 12px; }

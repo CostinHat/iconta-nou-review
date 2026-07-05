@@ -25,14 +25,14 @@ const ICONI = {
 
 const CARDURI_RAND1 = [
   { cheie: "saft", titlu: "SAF-T inclus", sub: "D100-D406, XML + PDF, validate DUKIntegrator.", bg: "#e9f0fe", fg: "#1d4ed8", icon: ICONI.saft },
-  { cheie: "ai", titlu: "AI care lucreaza pentru tine", sub: "OCR, propune contarea si scrie Povestea lunii.", bg: "#efebfe", fg: "#6d28d9", icon: ICONI.ai },
-  { cheie: "pachet", titlu: "Pachet lunar pentru client", sub: "Grafic, situatie financiara, trimise pe email.", bg: "#dff4f2", fg: "#0a807b", icon: ICONI.pachet },
+  { cheie: "ai", titlu: "AI care lucreaz\u0103 pentru tine", sub: "OCR, contare propus\u0103, sugestii care \u00eenva\u021b\u0103 din corec\u021biile tale, Povestea lunii.", bg: "#efebfe", fg: "#6d28d9", icon: ICONI.ai },
+  { cheie: "pachet", titlu: "Pachet lunar pentru client", sub: "Grafic, situa\u021bie financiar\u0103, cifre live \u0219i previziune bani \u00een portal.", bg: "#dff4f2", fg: "#0a807b", icon: ICONI.pachet },
 ];
 const CARDURI_RAND2 = [
-  { cheie: "cabinete", titlu: "Gandit pentru cabinete", sub: "Multi-client, multi-utilizator, drepturi pe rol.", bg: "#e6f6ec", fg: "#16a34a", icon: ICONI.cabinet },
-  { cheie: "efactura", titlu: "Facturare cu e-Factura", sub: "Emitere, valuta, import XML ANAF, storno.", bg: "#faece7", fg: "#993c1d", icon: ICONI.factura },
-  { cheie: "control", titlu: "Control fiscal automat", sub: "Verifica D112 vs contabilitate, TVA vs declaratii.", bg: "#fbeedd", fg: "#92500a", icon: ICONI.scut },
-  { cheie: "rapoarte", titlu: "Rapoarte si analize", sub: "Urmaresti performanta si ai datele mereu la zi.", bg: "#e9f0fe", fg: "#1d4ed8", icon: ICONI.raport },
+  { cheie: "cabinete", titlu: "G\u00e2ndit pentru cabinete", sub: "Multi-client, multi-utilizator, drepturi pe rol.", bg: "#e6f6ec", fg: "#16a34a", icon: ICONI.cabinet },
+  { cheie: "efactura", titlu: "Facturare cu e-Factura", sub: "Emitere, valut\u0103, import XML ANAF, storno.", bg: "#faece7", fg: "#993c1d", icon: ICONI.factura },
+  { cheie: "control", titlu: "Control fiscal automat", sub: "Verific\u0103 D112 vs contabilitate, TVA vs declara\u021bii.", bg: "#fbeedd", fg: "#92500a", icon: ICONI.scut },
+  { cheie: "conformitate", titlu: "Mereu conform legisla\u021biei", sub: "Monitoriz\u0103m ANAF automat; modific\u0103rile intr\u0103 \u00een vigoare la zi.", bg: "#e9f0fe", fg: "#1d4ed8", icon: ICONI.raport },
 ];
 const INCREDERE = [
   { titlu: "Date securizate", sub: "la standarde ridicate", icon: ICONI.scutmic },
@@ -68,14 +68,14 @@ export function ecranLogin(radacina) {
   corp.innerHTML = `
     <div class="pagina-hero">
       <h1 class="pagina-hero-titlu">Un singur sistem.<br>Toate procesele.</h1>
-      <p class="pagina-hero-sub">Incarci documentele. iConta le prelucreaza, propune contarea si verifica automat obligatiile fiscale.</p>
+      <p class="pagina-hero-sub">\u00cencarci documentele. iConta le prelucreaz\u0103, propune contarea \u0219i verific\u0103 automat obliga\u021biile fiscale.</p>
     </div>
     <div class="pagina-carduri-sectiune">
       <div class="pagina-carduri-wrap">
         <div class="pagina-card-mare" style="background:#fdeef2">
           <div class="pagina-card-mare-icon" style="color:#c0246b">${svgIcon(ICONI.factura, 30)}</div>
-          <div class="pagina-card-mare-titlu">Facturare gratuita</div>
-          <div class="pagina-card-mare-sub">Emiti facturi profesioniste rapid si simplu, direct din platforma.</div>
+          <div class="pagina-card-mare-titlu">Facturare gratuit\u0103</div>
+          <div class="pagina-card-mare-sub">Facturi, proforme, recurente \u0219i import din magazinul online \u2014 direct din platform\u0103.</div>
           <button type="button" class="pagina-card-buton" id="pagina-facturare-gratuita-btn">Acces</button>
         </div>
         <div class="pagina-carduri-randuri">
@@ -340,3 +340,9 @@ export function ecranLogin(radacina) {
     buton.addEventListener("click", creeaza);
   }
 }
+
+// landing_diacritice_v1
+
+// landing_texte_v3
+
+// landing_carduri_v2
