@@ -1484,6 +1484,43 @@ def factura_email(tenant_id: int, factura_id: int, date: EmailFacturaIn, ctx=Dep
         raise HTTPException(502, "trimiterea email a eșuat")
     return {"ok": True, "email": email}
 
+@app.get("/tenants/{tenant_id}/facturi-recurente")
+def fr_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
+    from core import facturi_recurente as _fr
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn() as conn:
+        return {"sabloane": _fr.lista(conn, schema)}
+
+@app.post("/tenants/{tenant_id}/facturi-recurente")
+def fr_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import facturi_recurente as _fr
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn() as conn:
+        r = _fr.adauga(conn, schema, corp)
+    if r.get("eroare"):
+        raise HTTPException(422, r["eroare"])
+    return r
+
+@app.put("/tenants/{tenant_id}/facturi-recurente/{sid}")
+def fr_comuta(tenant_id: int, sid: int, activ: bool, ctx=Depends(cere_cabinet)):
+    from core import facturi_recurente as _fr
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn() as conn:
+        r = _fr.comuta(conn, schema, sid, activ)
+    if r.get("eroare"):
+        raise HTTPException(404, r["eroare"])
+    return r
+
+@app.delete("/tenants/{tenant_id}/facturi-recurente/{sid}")
+def fr_sterge(tenant_id: int, sid: int, ctx=Depends(cere_cabinet)):
+    from core import facturi_recurente as _fr
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn() as conn:
+        r = _fr.sterge(conn, schema, sid)
+    if r.get("eroare"):
+        raise HTTPException(404, r["eroare"])
+    return r
+
 @app.post("/tenants/{tenant_id}/facturi/emite")
 def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
