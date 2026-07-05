@@ -22,32 +22,47 @@ export function desktopPortal(continut, nav) {
   const CARDURI = [
     { cheie: "facturi", titlu: "Facturi", icon: "facturi", bg: "#e9f0fe", fg: "#1d4ed8",
       sinteza: "Vizualizeaza facturile emise si primite." },
-    { cheie: "declaratii", titlu: "Declaratii depuse", icon: "declaratii", bg: "#dff4f2", fg: "#0a807b",
-      sinteza: "Ce s-a depus la ANAF pentru tine" },
-    { cheie: "bon", titlu: "Pozeaza bon", icon: "facturi", bg: "#fdeef0", fg: "#a3344b",
-      sinteza: "Fotografiaza bonul, iConta il citeste" },
-    { cheie: "documente", titlu: "Documente", icon: "documente", bg: "#e6f6ec", fg: "#16a34a",
-      sinteza: "Recipise, balante, bilant" },
+    { cheie: "cifre", titlu: "Cifrele firmei", icon: "declaratii", bg: "#e6f2ec", fg: "#1d7a4d",
+      sinteza: "Profit, cash, incasari" },
     { cheie: "solicitari", titlu: "Solicitari", icon: "solicitari", bg: "#faece7", fg: "#993c1d",
       sinteza: "Trimite o solicitare contabilului." },
+    { cheie: "declaratii", titlu: "Declaratii depuse", icon: "declaratii", bg: "#dff4f2", fg: "#0a807b",
+      sinteza: "Ce s-a depus la ANAF pentru tine" },
+    { cheie: "documente", titlu: "Documente", icon: "documente", bg: "#eaeef6", fg: "#45597f",
+      sinteza: "Recipise, balante, bilant" },
     { cheie: "povestea", titlu: "Povestea lunii", icon: "povestea", bg: "#efebfe", fg: "#6d28d9",
       sinteza: "Raportul lunar de la contabil" },
-    { cheie: "cifre", titlu: "Cifrele firmei", icon: "declaratii", bg: "#e6f2ec", fg: "#1d7a4d",
-      sinteza: "Profit, cash, incasari" },  // portal_kpi_fe_v1
-    { cheie: "recomanda", titlu: "Recomanda", icon: "recomanda", bg: "#fbeedd", fg: "#92500a",
-      sinteza: "Invita un antreprenor in iConta" },
   ];
+  const CARD_BON = { cheie: "bon", titlu: "Pozeaza bon", icon: "facturi", bg: "#fdeef0", fg: "#a3344b",
+      sinteza: "Fotografiaza bonul, iConta il citeste" };  /* portal_layout_v2 */
 
   continut.innerHTML = `
-    <div class="cab-salut portal-sus">
-      <div class="cab-salut-nume">${firma}</div>
-      <div class="cab-salut-sub">Portal Client</div>
+    <div class="cab-salut portal-sus" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
+      <div>
+        <div class="cab-salut-nume">${firma}</div>
+        <div class="cab-salut-sub">Portal Client</div>
+      </div>
+      <button class="cab-card cab-card-mic" id="portal-recomanda-mic" style="background:#fbeedd;color:#92500a">
+        <div class="cab-card-cap">${SVG(ICON["recomanda"], "#92500a")}<span class="cab-card-titlu">Recomand\u0103</span></div>
+      </button>
     </div>
-    <div class="pa-status" id="pa-status"><p class="ecran-nota">Se verifica situatia la ANAF...</p></div>
-    <div class="cab-grila"></div>
+    <div class="cab-grila">
+      <div class="pa-status" id="pa-status" style="grid-column: span 2; margin:0"><p class="ecran-nota">Se verifica situatia la ANAF...</p></div>
+      <div id="pa-bon-slot" style="display:flex"></div>
+    </div>
   `;
 
   const grila = continut.querySelector(".cab-grila");
+  {
+    const c = CARD_BON;
+    const card = document.createElement("button");
+    card.className = "cab-card";
+    card.style.cssText = "background:" + c.bg + ";color:" + c.fg + ";flex:1";
+    card.innerHTML = '<div class="cab-card-cap">' + SVG(ICON[c.icon], c.fg) + '<span class="cab-card-titlu">' + c.titlu + '</span></div><div class="cab-card-sinteza">' + c.sinteza + '</div>';
+    card.addEventListener("click", () => deschideCard(c.cheie, nav));
+    continut.querySelector("#pa-bon-slot").appendChild(card);
+  }
+  continut.querySelector("#portal-recomanda-mic").addEventListener("click", () => nav.deschide("Recomanda", (corp) => ecranRecomanda(corp, nav)));  /* recomanda_mic_portal_v1 */
   CARDURI.forEach((c) => {
     const card = document.createElement("button");
     card.className = "cab-card";
@@ -469,3 +484,7 @@ async function incarcaForecast(corp, rand, lei) {  // portal_cashflow_fe_v1
       lei(w.sold), w.sold < 0 ? "#c0392b" : null);
   }).join("");
 }
+
+// portal_culori_v2
+
+// portal_status_in_grila_v1

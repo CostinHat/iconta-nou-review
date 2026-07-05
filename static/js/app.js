@@ -3,9 +3,9 @@
 import { sesiune } from "./sesiune.js";
 import { ecranLogin } from "./ecrane/login.js?v=2";
 import { creeazaNavigator } from "./navigator.js";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=6";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=9";
 import { desktopAsistent } from "./ecrane/asistent.js";
-import { desktopPortal } from "./ecrane/portal.js?v=5";
+import { desktopPortal } from "./ecrane/portal.js?v=12";
 import { desktopAdmin } from "./ecrane/admin.js"; // [p37_admin_desktop]
 
 const radacina = document.getElementById("app");

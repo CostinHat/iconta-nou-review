@@ -46,32 +46,32 @@ function inLucru(titlu) {
 }
 
 // definiția celor 9 carduri (sinteză = text inițial; unele se actualizează din date live)
-const DEF = [
+const DEF = [  /* cab_ordine_v2 */
+  { cheie:"firme",     titlu:"Firme",          icon:"building",  bg:"#e9f0fe", fg:"#1d4ed8",
+    sinteza:"se încarcă…", actiune:inLucru("Firme") },
+  { cheie:"validat",   titlu:"De validat",     icon:"clipboard", bg:"#faece7", fg:"#993c1d",
+    sinteza:'<b style="font-size:19px">4</b> declarații de validat și trimis', actiune:inLucru("De validat") },
   { cheie:"control",   titlu:"Control fiscal", icon:"shield",    bg:"#dff4f2", fg:"#0a807b",
     sinteza:'se încarcă…',
     actiune:inLucru("Control fiscal") },
-  { cheie:"validat",   titlu:"De validat",     icon:"clipboard", bg:"#faece7", fg:"#993c1d",
-    sinteza:'<b style="font-size:19px">4</b> declarații de validat și trimis', actiune:inLucru("De validat") },
   { cheie:"termene",   titlu:"Termene",        icon:"calendar",  bg:"#e6f6ec", fg:"#15803d",
     sinteza:"Următoarea scadență: …", actiune:inLucru("Termene") },
-  { cheie:"firme",     titlu:"Firme",          icon:"building",  bg:"#e9f0fe", fg:"#1d4ed8",
-    sinteza:"se încarcă…", actiune:inLucru("Firme") },
-  { cheie:"asistenti", titlu:"Asistenți",      icon:"users",     bg:"#fbeaf0", fg:"#993556",
-    sinteza:'<b style="font-size:19px">·</b> asistenți în echipă', actiune:inLucru("Asistenți") },
-  { cheie:"brief",     titlu:"Sinteza zilei",  icon:"brief",     bg:"#eef4ff", fg:"#1d4ed8",
+  { cheie:"brief",     titlu:"Sinteza zilei",  icon:"brief",     bg:"#efebfe", fg:"#6d28d9",
     sinteza:"Vezi prioritățile zilei", actiune:inLucru("Sinteza zilei") },
-  { cheie:"activitate", titlu:"Activitate",     icon:"report",    bg:"#e9f0fe", fg:"#1d4ed8",
+  { cheie:"activitate", titlu:"Activitate",     icon:"report",    bg:"#fbeaf0", fg:"#993556",
     sinteza:"Activitate recentă", actiune:inLucru("Activitate") },
+  { cheie:"pachete",   titlu:"Pachete lunare", icon:"mail",      bg:"#eef4ff", fg:"#1d4ed8",
+    sinteza:"Trimite pachetul lunar către clienți", actiune:inLucru("Pachete lunare") },
   { cheie:"capacitate", titlu:"Capacitate",     icon:"gauge",     bg:"#eaf6f0", fg:"#0f7a4d",
     sinteza:"Cum stă echipa cu ritmul", actiune:inLucru("Capacitate") },
-  { cheie:"pachete",   titlu:"Pachete lunare", icon:"mail",      bg:"#efebfe", fg:"#6d28d9",
-    sinteza:"Trimite pachetul lunar către clienți", actiune:inLucru("Pachete lunare") },
-  { cheie:"raport",    titlu:"Suport",     icon:"report",    bg:"#eaeef6", fg:"#45597f",
-    sinteza:"Întrebări, probleme și asistență tehnică", actiune:inLucru("Raportează") },
+  { cheie:"consolidare", titlu:"Consolidare", icon:"report", bg:"#eaeef6", fg:"#45597f",
+    sinteza:"Cifrele tuturor firmelor" },  // consolidare_fe_v1
+  { cheie:"asistenti", titlu:"Asistenți",      icon:"users",     bg:"#fbeaf0", fg:"#993556",
+    sinteza:'<b style="font-size:19px">·</b> asistenți în echipă', actiune:inLucru("Asistenți") },
   { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  bg:"#eef0f3", fg:"#3a4250",
     sinteza:"Parolă și date de profil", actiune:inLucru("Setări cont") },
-  { cheie:"consolidare", titlu:"Consolidare", icon:"report", bg:"#e6f2ec", fg:"#1d7a4d",
-    sinteza:"Cifrele tuturor firmelor" },  // consolidare_fe_v1
+  { cheie:"raport",    titlu:"Suport",     icon:"report",    bg:"#e6f2ec", fg:"#1d7a4d",
+    sinteza:"Întrebări, probleme și asistență tehnică", actiune:inLucru("Raportează") },
 ];
 
 // [p73_sinteza_azi] deschide un ecran existent dupa cheie (refoloseste ecranele, nu duplica)
@@ -205,7 +205,7 @@ function randeazaPanou(continut, nav) {
   continut.innerHTML = `
     <div class="cab-salut" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
       <div>
-        <div class="cab-salut-nume">Bună, ${prenume}</div>
+        <div class="cab-salut-nume">Salut, ${prenume}</div>
         <div class="cab-salut-data">Spațiul tău de lucru — ${azi}</div>
       </div>
       <button class="cab-card cab-card-mic" id="cab-recomanda-mic" style="background:#fbeedd;color:#92500a">
@@ -539,3 +539,5 @@ async function randeazaConsolidare(corp, nav) {
       ${rand("TOTAL", d.total, true)}
     </div>`;
 }
+
+// cab_culori_v2

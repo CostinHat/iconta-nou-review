@@ -296,7 +296,7 @@ html, body {
 /* ============================================================
    DESKTOP CABINET — salut + grilă 9 carduri pastel
    ============================================================ */
-.cab-salut { margin-bottom: 16px; }
+.cab-salut { margin-bottom: 12px; }
 .cab-salut-nume { font-size: var(--text-titlu); font-weight: 600; color: #163a5a; }
 .cab-salut-data { font-size: var(--text-mic); color: var(--gri); }
 
@@ -1690,7 +1690,7 @@ html, body {
 
 /* [p92_portal_status] panou status ANAF pe portalul clientului */
 .pa-status { margin: 4px 0 20px; }
-.pa-card { border-radius: 14px; padding: 20px 22px; border: 2px solid; }  /* [p94_latime_panou] latime cat grila */
+.pa-card { border-radius: 12px; padding: 16px 22px; border: 2px solid; height: 100%; box-sizing: border-box; }  /* [p94_latime_panou] latime cat grila */
 .pa-card .pa-titlu { font-size: var(--text-titlu); font-weight: 700; }
 .pa-card .pa-sub { font-size: var(--text-mic); margin-top: 4px; opacity: 0.85; }
 .pa-verde  { background: #eaf7f0; border-color: #1d7a4d; color: #145c39; }
@@ -2087,3 +2087,7 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .cab-card-mic { width: calc((100% - 24px) / 3); padding: 10px 16px; flex-shrink: 0; }
 @media (max-width: 760px) { .cab-card-mic { width: calc((100% - 12px) / 2); } }
 @media (max-width: 480px) { .cab-card-mic { width: auto; } }
+/* portal_layout_v2: umbra pe panoul de status ca la carduri */
+.pa-card { box-shadow: 0 3px 12px rgba(20,30,45,0.14); border-radius: 12px; border-width: 2px; }
+.pa-card { cursor: pointer; transition: transform 0.12s, box-shadow 0.12s; }
+.pa-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(20,30,45,0.12); }
