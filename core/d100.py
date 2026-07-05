@@ -35,14 +35,16 @@ def _esc(v):
              .replace('"', "&quot;").replace("'", "&apos;"))
 
 
-def cota_micro(nr_salariati):
-    """Cotă oficială micro după numărul de salariați."""
-    n = int(nr_salariati or 0)
-    if n == 0:
-        return 3   # 3% fără salariați
-    if n == 1:
-        return 2   # 2% un salariat
-    return 1       # 1% peste 2 (inclusiv 2+)
+def cota_micro(nr_salariati=None, an=2026, venituri_eur=None):  # micro_1pc_2026
+    """Cota micro dupa perioada (functie de an, verificata la sursa):
+    - din 2026: 1% unic (OUG 89/2025; cota 3% eliminata; plafon 100.000 EUR)
+    - 2025: 1% pana la 60.000 EUR, 3% intre 60.000-250.000 EUR (OUG 156/2024)
+    nr_salariati e pastrat doar pt compatibilitate semnatura; NU decide cota."""
+    if int(an) >= 2026:
+        return 1
+    if venituri_eur is not None and float(venituri_eur) > 60000:
+        return 3
+    return 1
 
 
 def procent_din_cota(cota):
@@ -93,7 +95,7 @@ def calcul_d100(prof, an, trim, venit, nr_salariati=None, cota=None):
     """Calcul PUR. venit = bază (fără TVA) pe trimestru.
     cota: dacă None, se determină din nr_salariati."""
     if cota is None:
-        cota = cota_micro(nr_salariati)
+        cota = cota_micro(nr_salariati, an=an)
     cota = int(cota)
     proc = procent_din_cota(cota)
     baza = Decimal(str(venit or 0))

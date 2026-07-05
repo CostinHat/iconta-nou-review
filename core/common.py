@@ -152,6 +152,7 @@ COTE = {
         (date(2018, 1, 1), Decimal("0.0225"), "Cod fiscal art. 220^1"),
     ],
     "salariu_minim": [
+        (date(2026, 7, 1), Decimal("4325"), "HG 146/2026"),
         (date(2026, 1, 1), Decimal("4050"), "HG 1510/2024"),
         (date(2025, 1, 1), Decimal("3700"), "HG 1006/2024"),
     ],
