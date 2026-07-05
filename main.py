@@ -818,9 +818,12 @@ def tenant_detalii(tenant_id: int, ctx=Depends(cere_cabinet)):
 def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
     if _TENANT_TEMPLATE is None:
         raise HTTPException(500, "template tenant indisponibil pe server")
-    with db.get_conn() as conn:
-        r = tenant_provisioning.provision_tenant(
-            conn, date.nume, date.cui, ctx["firm"], ctx["uid"], _TENANT_TEMPLATE)
+    try:  # tenant_cui_400
+        with db.get_conn() as conn:
+            r = tenant_provisioning.provision_tenant(
+                conn, date.nume, date.cui, ctx["firm"], ctx["uid"], _TENANT_TEMPLATE)
+    except ValueError as e:
+        raise HTTPException(400, str(e))
     return r
 
 

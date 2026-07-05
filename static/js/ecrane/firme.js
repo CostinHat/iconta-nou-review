@@ -27,8 +27,49 @@ export function randeazaListaFirme(container, nav, inapoi) {
 
   container.querySelector("#firme-inapoi").addEventListener("click", inapoi);
   container.querySelector("#firme-adauga").addEventListener("click", () => {
-    nav.deschide("Adaugă firmă", (corp) => {
-      corp.innerHTML = `<p class="ecran-nota">Formular „Adaugă firmă" — în construcție.</p>`;
+    nav.deschide("Adaugă firmă", (corp) => {  /* firma_noua_v1 */
+      corp.innerHTML = `
+        <div class="camp" style="margin-bottom:14px">
+          <label class="camp-eticheta">CUI</label>
+          <input class="camp-input" id="fn-cui" placeholder="RO12345678 sau 12345678" autocomplete="off">
+          <p class="ecran-nota" id="fn-cui-info" style="margin:6px 0 0"></p>
+        </div>
+        <div class="camp" style="margin-bottom:14px">
+          <label class="camp-eticheta">Denumire firmă</label>
+          <input class="camp-input" id="fn-nume" placeholder="Se completează automat de la ANAF">
+        </div>
+        <button class="buton-primar" id="fn-salveaza" disabled>Adaugă firma</button>
+      `;
+      const cui = corp.querySelector("#fn-cui"), nume = corp.querySelector("#fn-nume");
+      const info = corp.querySelector("#fn-cui-info"), btn = corp.querySelector("#fn-salveaza");
+      let t = null;
+      cui.addEventListener("input", () => {
+        clearTimeout(t); btn.disabled = true; info.textContent = "";
+        const v = cui.value.replace(/\D/g, "");
+        if (v.length < 6) return;
+        t = setTimeout(async () => {
+          info.textContent = "Verific la ANAF...";
+          try {
+            const r = await api.get("/public/verifica-cui/" + v);
+            if (r && r.nume) { nume.value = r.nume; info.textContent = "Găsită: " + r.nume; btn.disabled = false; }
+            else { info.textContent = "CUI negăsit la ANAF. Poți completa denumirea manual."; btn.disabled = false; }
+          } catch (e) {
+            info.textContent = "Nu am putut verifica la ANAF acum. Completează denumirea manual.";
+            btn.disabled = false;
+          }
+        }, 500);
+      });
+      nume.addEventListener("input", () => { if (nume.value.trim().length > 2 && cui.value.replace(/\D/g,"").length >= 6) btn.disabled = false; });
+      btn.addEventListener("click", async () => {
+        btn.disabled = true; btn.textContent = "Se creează...";
+        try {
+          await api.post("/tenants", { nume: nume.value.trim(), cui: cui.value.replace(/\D/g, "") });
+          nav.inapoi(); incarca();
+        } catch (e) {
+          info.textContent = e.mesaj || e.message || "Eroare la creare.";
+          btn.disabled = false; btn.textContent = "Adaugă firma";
+        }
+      });
     });
   });
 
@@ -1251,7 +1292,7 @@ async function ecranMagazin(corp, nav, t) {
     <h2 class="pf-titlu">Magazin online</h2>
     <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
     <div class="em-sectiune">
-      <div class="em-eticheta">Configurare</div>
+      <div class="camp-eticheta">Configurare</div>
       <input class="pr-input" id="wc-url" placeholder="URL magazin (ex: https://magazin.ro)" autocomplete="off">
       <input class="pr-input" id="wc-ck" placeholder="Consumer Key (ck_...)" autocomplete="off">
       <input class="pr-input" id="wc-cs" placeholder="Consumer Secret (cs_...)" type="password" autocomplete="off">

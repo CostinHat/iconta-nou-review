@@ -77,6 +77,12 @@ def creeaza_schema(conn, schema_noua, sql_template):
 #  PROVISION tenant — orchestrare, o singură tranzacție
 # ============================================================
 def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template):
+    # cui_unic_v1: un CUI o singura data per cabinet
+    with conn.cursor() as _c:
+        _c.execute("SELECT id FROM public.tenants WHERE cui=%s AND accounting_firm_id=%s",
+                   (str(cui), accounting_firm_id))
+        if _c.fetchone():
+            raise ValueError("Firma cu acest CUI exista deja in portofoliu")
     """
     Creează un tenant complet, totul-sau-nimic:
       1. generează schema_name nou (tenant_NNN)

@@ -90,7 +90,9 @@ def valideaza_cui(lista_cui, data_interogare=None):
         payload = [{"cui": c, "data": azi} for c in lot]
         r = requests.post(ANAF_URL, json=payload, timeout=20,
                           headers={"Content-Type": "application/json"})
-        r.raise_for_status()
+        # anaf_404_notfound_v1: ANAF intoarce 404 cu body valid cand CUI e notFound
+        if r.status_code not in (200, 404):
+            r.raise_for_status()
         dj = r.json()
         for f in dj.get("found", []):
             dg = f.get("date_generale", f.get("dategenerale", {})) or {}
