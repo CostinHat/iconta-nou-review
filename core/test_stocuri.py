@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 import pytest
-from stocuri import nir_gv, coeficient_k, descarcare_gv
+from core.stocuri import nir_gv, coeficient_k, descarcare_gv
 
 D = Decimal
 

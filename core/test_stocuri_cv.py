@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 import pytest
-from stocuri_cv import fisa_magazie, valoare_iesire
+from core.stocuri_cv import fisa_magazie, valoare_iesire
 
 D = Decimal
 

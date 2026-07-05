@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
-from reconciliere import potriveste_linie, potriveste_extras, facturi_partener
+from core.reconciliere import potriveste_linie, potriveste_extras, facturi_partener
 
 def F(id, cui, sold, directie="emisa", data="2026-06-01"):
     return {"id": id, "tert_cui": cui, "directie": directie,

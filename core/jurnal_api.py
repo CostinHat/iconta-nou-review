@@ -21,6 +21,11 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
         if linii is not None:
             if not linii:
                 return {"eroare": "nota trebuie sa aiba cel putin o linie"}
+            # ai_corectie_v1: memoreaza contul debit dinainte de edit (propunerea AI)
+            cur.execute(f"""SELECT cont_debit FROM {schema}.inregistrari_linii
+                            WHERE inregistrare_id=%s ORDER BY id LIMIT 1""", (nota_id,))
+            _vechi = cur.fetchone()
+            _cont_vechi = (_vechi["cont_debit"] if isinstance(_vechi, dict) else _vechi[0]) if _vechi else None
             for l in linii:
                 if not str(l.get("debit", "")).strip() or not str(l.get("credit", "")).strip():
                     return {"eroare": "fiecare linie are nevoie de cont debit si credit"}
@@ -32,6 +37,18 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
                     (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
                     (nota_id, str(l["debit"]).strip(), str(l["credit"]).strip(),
                      Decimal(str(l["suma"]))))
+            # ai_corectie_v2: cont schimbat de contabil => corectie invatata
+            try:
+                _cont_nou = str(linii[0]["debit"]).strip()
+                if _cont_vechi and _cont_nou and _cont_vechi != _cont_nou and n.get("descriere"):
+                    from core import ai_incredere as _ai
+                    _ctx = _ai.normalizeaza(n["descriere"])
+                    if _ctx:
+                        cur.execute(f"""INSERT INTO {schema}.ai_corectii
+                                        (context, cont_propus, cont_final, corectat)
+                                        VALUES (%s,%s,%s,true)""", (_ctx, _cont_vechi, _cont_nou))
+            except Exception:
+                pass
         seturi, valori = [], []
         if descriere is not None:
             seturi.append("descriere=%s"); valori.append(descriere)
@@ -74,5 +91,20 @@ def valideaza(conn, schema, nota_id):
         if cur.fetchone()["c"] == 0:
             return {"eroare": "nota nu are linii"}
         cur.execute(f"UPDATE {schema}.inregistrari SET status='validata' WHERE id=%s", (nota_id,))
+        # ai_invatare_v1: invatare din validare (context = descriere, cont = debitul primei linii)
+        try:
+            cur.execute(f"""SELECT cont_debit FROM {schema}.inregistrari_linii
+                            WHERE inregistrare_id=%s ORDER BY id LIMIT 1""", (nota_id,))
+            ld = cur.fetchone()
+            if ld and n.get("descriere"):
+                from core import ai_incredere as _ai
+                ctx_t = _ai.normalizeaza(n["descriere"])
+                cont_f = ld["cont_debit"] if isinstance(ld, dict) else ld[0]
+                if ctx_t and cont_f:
+                    cur.execute(f"""INSERT INTO {schema}.ai_corectii
+                                    (context, cont_propus, cont_final, corectat)
+                                    VALUES (%s,%s,%s,false)""", (ctx_t, cont_f, cont_f))
+        except Exception:
+            pass
     conn.commit()
     return {"ok": True}
