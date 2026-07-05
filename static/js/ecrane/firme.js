@@ -816,6 +816,13 @@ async function ecranBanca(corp, nav, t) {
     return `<span style="color:${CUL.rosu};font-weight:600">\u25cf F\u0103r\u0103 match</span>`;
   }
 
+  function badgeIncredere(l) {  // ai_incredere_fe_v1
+    const inc = (l.alocari || {}).incredere;
+    if (!inc) return "";
+    if (inc === "sigur") return ` <span style="color:${CUL.verde};font-size:12px">\u25cf sigur</span>`;
+    if (inc === "de_verificat") return ` <span style="color:${CUL.rosu};font-size:12px">\u25cf de verificat</span>`;
+    return ` <span style="color:${CUL.galben};font-size:12px">\u25cf probabil</span>`;
+  }
   function randAlocari(l) {
     const al = ((l.alocari || {}).alocari || []);
     if (!al.length) return "";
@@ -835,7 +842,7 @@ async function ecranBanca(corp, nav, t) {
           ${randAlocari(l)}
         </div>
         <div>
-          ${l.status === "potrivit" ? `<button class="btn" data-cont="${l.id}">Conteaz\u0103</button>` : ""}${l.status === "nou" && l.nota_propusa && l.nota_propusa.debit ? `<button class="btn" data-cont="${l.id}">Conteaz\u0103 ${l.nota_propusa.debit}=${l.nota_propusa.credit}</button>` : ""}
+          ${l.status === "potrivit" ? `<button class="btn" data-cont="${l.id}">Conteaz\u0103</button>` : ""}${l.status === "nou" && l.nota_propusa && l.nota_propusa.debit ? `<button class="btn" data-cont="${l.id}">Conteaz\u0103 ${l.nota_propusa.debit}=${l.nota_propusa.credit}</button>${badgeIncredere(l)}` : ""}
           ${l.status !== "contat" && l.status !== "ignorat" ? `<button class="btn" data-alege="${l.id}" style="margin-left:6px">Alege facturile</button>` : ""}${l.status !== "contat" && l.status !== "ignorat" ? `<button class="btn btn-secundar" data-ign="${l.id}" style="margin-left:6px">Ignor\u0103</button>` : ""}
         </div>
       </div>`).join("")}</div>`;

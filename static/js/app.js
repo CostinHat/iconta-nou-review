@@ -3,7 +3,7 @@
 import { sesiune } from "./sesiune.js";
 import { ecranLogin } from "./ecrane/login.js";
 import { creeazaNavigator } from "./navigator.js";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=3";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=4";
 import { desktopAsistent } from "./ecrane/asistent.js";
 import { desktopPortal } from "./ecrane/portal.js?v=5";
 import { desktopAdmin } from "./ecrane/admin.js"; // [p37_admin_desktop]
