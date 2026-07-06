@@ -122,6 +122,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     radacina.appendChild(ecran);
 
     desktopRandator(continut, nav);
+    _anunturiBanner(ecran);  /* anunturi_fe_v1 */
     randeazaFerestre();
   }
 
@@ -300,4 +301,39 @@ function _clopotData(iso) {
   const ora = `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
   if (d.toDateString() === azi.toDateString()) return `azi ${ora}`;
   return `${d.getDate()}.${d.getMonth()+1} ${ora}`;
+}
+
+
+// anunturi_fe_v1: bannere anunturi de la Admin iConta, cu confirmare
+async function _anunturiBanner(ecran) {
+  const u = sesiune.user() || {};
+  if (u.rol === "client" || u.rol === "superadmin") return;
+  let d;
+  try {
+    const { api } = await import("./api.js");
+    d = await api.get("/eu/anunturi");
+  } catch { return; }
+  const lista = (d && d.anunturi) || [];
+  if (!lista.length) return;
+  const cont = ecran.querySelector(".desktop-continut");
+  if (!cont) return;
+  lista.forEach((a) => {  /* anunt_modal_v2: modal central */
+    const el = document.createElement("div");
+    el.className = "fereastra-overlay";
+    el.style.zIndex = "300";
+    el.innerHTML = `<div class="fereastra" style="max-width:520px">
+      <div class="fereastra-corp">
+        <h2 class="pf-titlu">Mesaj de la iConta</h2>
+        <p class="anunt-text">${(a.mesaj || "").replace(/[<>&]/g, "")}</p>
+        <button class="buton-primar anunt-ok">Am \u00een\u021beles</button>
+      </div></div>`;
+    el.querySelector(".anunt-ok").addEventListener("click", async () => {
+      try {
+        const { api } = await import("./api.js");
+        await api.post(`/eu/anunturi/${a.id}/confirma`, {});
+        el.remove();
+      } catch {}
+    });
+    document.body.appendChild(el);
+  });
 }

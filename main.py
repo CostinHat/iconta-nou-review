@@ -397,6 +397,52 @@ def admin_sanatate(ctx=Depends(cere_cabinet)):
         "erori_lista": lista_erori,
     }
 
+# === ANUNTURI CABINET === # anunturi_v1
+class AnuntIn(BaseModel):
+    mesaj: str
+    cabinet_id: Optional[int] = None  # None = toate cabinetele
+
+@app.post("/admin/anunturi")
+def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
+    if not (date.mesaj or "").strip():
+        raise HTTPException(422, "mesaj gol")
+    with db.get_conn() as conn, conn.cursor() as cur:
+        if date.cabinet_id:
+            cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj) VALUES (%s, %s) RETURNING id",
+                        (date.cabinet_id, date.mesaj.strip()))
+            n = 1
+        else:
+            cur.execute("SELECT id FROM public.accounting_firms WHERE activ")
+            ids = [r[0] for r in cur.fetchall()]
+            for cid in ids:
+                cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj) VALUES (%s, %s)",
+                            (cid, date.mesaj.strip()))
+            n = len(ids)
+        conn.commit()
+    return {"ok": True, "trimise": n}
+
+@app.get("/eu/anunturi")
+def eu_anunturi(ctx=Depends(cere_cabinet)):
+    from psycopg2.extras import RealDictCursor
+    with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+        cur.execute("""SELECT id, mesaj, creat_la FROM public.anunturi_cabinet
+                       WHERE cabinet_id=%s AND confirmat_la IS NULL ORDER BY id""", (ctx["firm"],))
+        rows = [dict(r) for r in cur.fetchall()]
+    for r in rows:
+        r["creat_la"] = str(r["creat_la"])
+    return {"anunturi": rows}
+
+@app.post("/eu/anunturi/{aid}/confirma")
+def eu_anunt_confirma(aid: int, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""UPDATE public.anunturi_cabinet SET confirmat_la=now()
+                       WHERE id=%s AND cabinet_id=%s AND confirmat_la IS NULL RETURNING id""", (aid, ctx["firm"]))
+        r = cur.fetchone()
+        conn.commit()
+    if not r:
+        raise HTTPException(404, "anunt inexistent")
+    return {"ok": True}
+
 @app.get("/admin/activitate/cabinete")
 def admin_activitate_cabinete(ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
