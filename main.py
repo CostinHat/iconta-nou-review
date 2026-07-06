@@ -800,6 +800,13 @@ def register(date: RegisterIn):
             nume=date.nume, prenume=date.prenume)
     if not r["ok"]:
         raise HTTPException(400, r["mesaj"])
+    try:  # register_email_v1: email de bun venit
+        html = ("<p>Buna,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.</p>"
+                "<p>Te poti loga oricand cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
+                "<p>Firma proprie a cabinetului este deja adaugata in portofoliu.</p>") % (date.nume_cabinet, date.email)
+        _obs.trimite_email_html(date.email, "Bine ai venit pe iConta", html)
+    except Exception:
+        pass
     if date.cui and _TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
         try:
             with db.get_conn() as conn:
