@@ -266,7 +266,8 @@ function randeazaPanou(continut, nav) {
   actualizeazaValidat(grila);
   actualizeazaAsistenti(grila);
   actualizeazaRaportari(grila);  // [p34_raporteaza]
-  _educatiePatruOchi(continut);  // [p51_edu]
+  _educatiePatruOchi(continut);
+  _indicatorPatruOchi();  // [p51_edu]
   document.addEventListener("raportari:schimbat", () => actualizeazaRaportari(grila));
 }
 
@@ -473,34 +474,55 @@ async function actualizeazaRaportari(grila) {
 
 
 // [p51_edu] banner educatie patru-ochi (apare cand creste nr de validatori)
+async function _indicatorPatruOchi() {  /* po_indicator_v1 */
+  const bara = document.querySelector(".subbara");
+  if (!bara || bara.querySelector("#po-indicator")) return;
+  let st;
+  try { st = await api.get("/eu/patru-ochi"); } catch { return; }
+  if (!st || !st.activ) return;
+  const el = document.createElement("button");
+  el.id = "po-indicator";
+  el.className = "subbara-edu btn-link";
+  el.style.color = "#1d7a4d";
+  el.style.fontWeight = "600";
+  el.textContent = "Validarea \u00een doi asisten\u021bi \u2713";
+  el.title = "Apas\u0103 pentru a dezactiva";
+  el.addEventListener("click", async () => {
+    if (!confirm("Dezactivezi validarea \u00een doi? Declara\u021biile vor putea fi depuse de cine le-a preg\u0103tit.")) return;
+    try {
+      await api.post("/eu/patru-ochi", { activ: false });
+      el.remove();
+      _educatiePatruOchi(document.querySelector(".desktop-continut"));
+    } catch {}
+  });
+  bara.appendChild(el);
+}
 async function _educatiePatruOchi(continut) {  // [p55_decizie]
   let date;
   try { date = await api.get("/eu/educatie"); } catch { return; }
   const ed = (date.educatii || []).find((e) => e.cheie === "patru-ochi");
   if (!ed) return;
-  const banner = document.createElement("div");
-  banner.className = "edu-banner";
-  banner.innerHTML = `
-    <div class="edu-icon">i</div>
-    <div class="edu-text">
-      <div class="edu-titlu">Validare în doi (patru ochi)</div>
-      <div class="edu-corp">Cabinetul are acum o persoană care pregătește și alta care poate valida. Poți activa validarea în doi: nimeni nu depune singur o declarație pe care a pregătit-o el însuși — o validează altcineva. Este protecția care nu te lasă să depui ce poate aduce control fiscal. O poți activa acum sau lăsa pe mai târziu.</div>
-      <div class="edu-actiuni">
-        <button class="edu-ok" id="edu-activ">Activează validarea în doi</button>
-        <button class="edu-nu" id="edu-nu">Nu acum</button>
-      </div>
-    </div>
-  `;
-  continut.insertBefore(banner, continut.firstChild);
-  banner.querySelector("#edu-activ").addEventListener("click", async () => {
-    try { await api.post("/eu/patru-ochi", { activ: true }); } catch {}
-    banner.remove();
+  const bara = document.querySelector(".subbara");  /* edu_subbara_v1: mesaj persistent in bara gri */
+  if (!bara || bara.querySelector("#edu-4ochi")) return;
+  const el = document.createElement("span");
+  el.id = "edu-4ochi";
+  el.className = "subbara-edu";
+  el.innerHTML = `Po\u021bi activa validarea \u00een doi (patru ochi): nimeni nu depune ce a preg\u0103tit singur.
+    <button class="btn-link" id="edu-activ">Activeaz\u0103</button> \u00b7
+    <button class="btn-link" id="edu-nu">Nu acum</button>`;
+  bara.appendChild(el);
+  el.querySelector("#edu-activ").addEventListener("click", async () => {
+    try {
+      await api.post("/eu/patru-ochi", { activ: true });
+      el.innerHTML = `<span style="color:#1d7a4d;font-weight:600">Validarea \u00een doi este activ\u0103.</span>`;
+      setTimeout(() => el.remove(), 6000);
+    } catch (e) { el.insertAdjacentHTML("beforeend", ` <span class="msg-eroare">${e.mesaj || e.message}</span>`); }
   });
-  banner.querySelector("#edu-nu").addEventListener("click", async () => {
-    // "Nu acum": marcheaza vazut la nivelul curent; revine cand mai apare un validator
+  el.querySelector("#edu-nu").addEventListener("click", async () => {
     try { await api.post("/eu/educatie/patru-ochi/vazut", {}); } catch {}
-    banner.remove();
+    el.remove();
   });
+
 }
 // [p81_raport_text]
 

@@ -3069,6 +3069,43 @@ def asistenti_detalii(uid: int, ctx=Depends(cere_cabinet)):
         return r
 
 
+# === ASISTENT NOU === # asistent_nou_v1
+class AsistentNouIn(BaseModel):
+    email: str
+    nume: str = ""
+    poate_valida: bool = False
+
+@app.post("/asistenti")
+def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_rol("admin_firma"))):
+    from core import nucleu as _nucleu
+    import secrets as _sec
+    email = date.email.strip().lower()
+    if "@" not in email:
+        raise HTTPException(422, "email invalid")
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("SELECT id, activ FROM public.users WHERE email=%s", (email,))
+            if cur.fetchone():
+                raise HTTPException(422, "email deja folosit")
+            cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ, poate_valida)
+                           VALUES (%s, %s, %s, 'angajat', %s, true, %s) RETURNING id""",
+                        (email, _nucleu.hash_parola(_sec.token_urlsafe(16)),
+                         date.nume or email.split("@")[0], ctx["firm"], date.poate_valida))
+            uid = cur.fetchone()["id"]
+        with conn.cursor() as cur:
+            tok = _sec.token_urlsafe(32)
+            cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '48 hours')", (tok, uid))
+    baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
+    link = baza + "/#activare=" + tok
+    html = ("<p>Buna,</p><p>Ai fost adaugat ca asistent in cabinetul tau pe iConta.</p>"
+            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Activeaza contul</a></p>"
+            "<p>Dupa activare, intra cu emailul <b>%s</b> si parola setata. Linkul e valabil 48 de ore.</p>") % (link, email)
+    try:
+        _obs.trimite_email_html(email, "Acces asistent iConta", html)
+    except Exception:
+        pass
+    return {"ok": True, "user_id": uid}
+
 @app.post("/asistenti/{uid}/permisiuni")
 def asistenti_permisiuni(uid: int, date: dict = Body(...), ctx=Depends(cere_cabinet)):
     cabinet_id = _cer_admin_cabinet(ctx)
@@ -3232,6 +3269,13 @@ def eu_educatie(ctx=Depends(cere_cabinet)):
 # [p54_4ochi]
 class PatruOchiIn(BaseModel):
     activ: bool
+
+@app.get("/eu/patru-ochi")  # po_stare_v1
+def eu_patru_ochi_stare(ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("SELECT patru_ochi_activ FROM public.accounting_firms WHERE id=%s", (ctx["firm"],))
+        r = cur.fetchone()
+    return {"activ": bool(r and r[0])}
 
 @app.post("/eu/patru-ochi")
 def eu_patru_ochi(date: PatruOchiIn, ctx=Depends(cere_cabinet)):

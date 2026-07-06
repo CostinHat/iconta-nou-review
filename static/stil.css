@@ -2150,3 +2150,9 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .fer-larg .pf-frand-suma { margin-left: 0; }
 /* cf_detaliu_contabil_v1: motivele contabile pe un rand */
 .cf-rand-decl .mig-sold-cont { white-space: nowrap; }
+/* semafor_text_explicit_v1: eticheta semaforului = acelasi font ca textul */
+.asi-sem-txt { font-size: var(--text-mic); color: var(--ardezie, #2c2b28); }
+.asi-echipa-banner { align-items: center; gap: 8px; display: flex; flex-wrap: nowrap; }
+.asi-echipa-banner .asi-sem { flex-shrink: 0; }
+/* edu_subbara_v1 */
+.subbara-edu { margin-left: auto; font-size: var(--text-mic); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }

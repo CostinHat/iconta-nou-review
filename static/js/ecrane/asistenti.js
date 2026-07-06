@@ -1,7 +1,7 @@
 // asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
 // Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
 // Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
-import { api } from "../api.js";
+import { api, arataMesaj } from "../api.js";
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
   const M = { rosu: "probleme", galben: "de urm\u0103rit", verde: "f\u0103r\u0103 probleme" };
@@ -33,10 +33,35 @@ export async function randeazaAsistenti(corp, nav) {
       Tu decizi cine poate pregăti, valida și depune declarații.</p>
     <div class="asi-sumar">${sumar.total} asistenț${sumar.total === 1 ? "ă" : "i"} · ${sumar.activi} activ${sumar.activi === 1 ? "" : "i"}</div>
     <div id="asi-banner"></div>
+    <button class="buton-primar" id="asi-adauga" style="margin:6px 0 14px">Adaug\u0103 asistent</button>
+    <div id="asi-adauga-form" style="display:none;margin-bottom:14px">
+      <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Email asistent</label>
+        <input class="camp-input" id="asi-email" type="email" placeholder="asistent@cabinet.ro" autocomplete="off"></div>
+      <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Nume (op\u021bional)</label>
+        <input class="camp-input" id="asi-nume" autocomplete="off"></div>
+      <label style="display:block;margin-bottom:10px;font-size:var(--text-mic)"><input type="checkbox" id="asi-valida"> Poate valida (Nivel 2)</label>
+      <button class="buton-primar" id="asi-trimite">Trimite invita\u021bia</button>
+      <p id="asi-adauga-msg" style="margin:8px 0 0"></p>
+    </div>
     <div id="asi-lista"></div>
     <div class="mig-eroare" id="asi-eroare"></div>
   `;
   _asiBannerEchipa(corp, nav);
+  corp.querySelector("#asi-adauga").addEventListener("click", () => {  /* asistent_nou_fe_v1 */
+    const f = corp.querySelector("#asi-adauga-form");
+    f.style.display = f.style.display === "none" ? "block" : "none";
+  });
+  corp.querySelector("#asi-trimite").addEventListener("click", async () => {
+    const msg = corp.querySelector("#asi-adauga-msg");
+    const email = corp.querySelector("#asi-email").value.trim();
+    if (!email.includes("@")) { arataMesaj(msg, "Completeaz\u0103 un email valid.", "eroare"); return; }
+    try {
+      await api.post("/asistenti", { email, nume: corp.querySelector("#asi-nume").value.trim(),
+        poate_valida: corp.querySelector("#asi-valida").checked });
+      arataMesaj(msg, "Invita\u021bie trimis\u0103 pe " + email + ".", "info");
+      setTimeout(() => randeazaAsistenti(corp, nav), 900);
+    } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
+  });
   const lista = corp.querySelector("#asi-lista");
   /* [patch8_lista_dez] */
   if (!actori.length) {
@@ -334,14 +359,14 @@ async function _asiBannerEchipa(corp, nav) {
   if (!host) return;
   const cnt = s.counts || {};
   const detalii = [];
-  if (cnt.rosu) detalii.push(`${cnt.rosu} cu tipare`);
-  if (cnt.galben) detalii.push(`${cnt.galben} de urmarit`);
-  if (cnt.verde) detalii.push(`${cnt.verde} ok`);
-  const text = detalii.length ? detalii.join(" · ") : "fara activitate recenta";
+  if (cnt.rosu) detalii.push(`${cnt.rosu} asisten\u021b${cnt.rosu === 1 ? "" : "i"} cu gre\u0219eli repetate`);
+  if (cnt.galben) detalii.push(`${cnt.galben} de urm\u0103rit`);
+  if (cnt.verde) detalii.push(`${cnt.verde} f\u0103r\u0103 probleme`);
+  const text = detalii.length ? detalii.join(" \u00b7 ") : "nicio declara\u021bie lucrat\u0103 \u00een aceast\u0103 perioad\u0103"; /* semafor_text_explicit_v1 */
   const areErori = (cnt.rosu || 0) + (cnt.galben || 0) > 0;
   host.innerHTML = `
     <div class="asi-echipa-banner">
-      ${_semaforEticheta(s.culoare)}
+      <span class="asi-sem asi-sem-${s.culoare}"></span>
       <span class="asi-echipa-text">Calitatea echipei (${s.zile} zile): ${text}</span>
       ${areErori ? `<button class="asi-echipa-btn" id="asi-vezi-erori">Vezi erorile</button>` : ""}
     </div>`;
