@@ -2126,3 +2126,27 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .fereastra input[type=file]::file-selector-button:hover { background: #115ea3; }
 /* butoanele nu se intind niciodata pe toata latimea */
 .fereastra button { width: auto; max-width: 400px; }
+/* facturi_larg_v1: fereastra larga = continut compact, global */
+.fer-larg .fereastra-corp { font-size: var(--text-mic); }
+.fer-larg .fereastra-corp h2 { font-size: var(--text-titlu); }
+/* facturi_larg_v2: in fereastra larga, randurile pf-frand devin compacte pe un rand */
+.fer-larg .pf-frand { padding: 8px 14px; gap: 10px; }
+.fer-larg .pf-frand-nume { font-size: var(--text-mic); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fer-larg .pf-frand-sub { font-size: var(--text-mic); }
+.fer-larg .pf-frand-suma { font-size: var(--text-mic); }
+/* facturi_larg_v3: lista pe 2 coloane, centrata */
+.fer-larg .pf-lista { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; justify-content: center; } /* facturi_larg_v5 */
+.fer-larg .pf-frand { border: 1px solid #e3e7ee; border-radius: 10px; }
+@media (max-width: 900px) { .fer-larg .pf-lista { grid-template-columns: 1fr; } }
+/* facturi_larg_v4: continutul cardului se comprima, Conteaza ramane inauntru */
+.fer-larg .pf-frand-text { flex: 1; min-width: 0; }
+.fer-larg .pf-frand-nume { max-width: 100%; }
+.fer-larg .pf-frand-suma { white-space: nowrap; }
+.fer-larg .pf-frand .fac-cont { white-space: nowrap; flex-shrink: 0; }
+/* facturi_larg_v6: card pe 2 randuri - text sus, suma+Conteaza jos */
+.fer-larg .pf-frand { flex-wrap: wrap; row-gap: 4px; }
+.fer-larg .pf-frand-text { flex: 1 0 100%; }
+.fer-larg .pf-frand-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fer-larg .pf-frand-suma { margin-left: 0; }
+/* cf_detaliu_contabil_v1: motivele contabile pe un rand */
+.cf-rand-decl .mig-sold-cont { white-space: nowrap; }

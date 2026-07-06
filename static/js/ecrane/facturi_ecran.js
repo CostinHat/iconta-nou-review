@@ -50,11 +50,11 @@ function meniuFacturi(corp, nav, tenantId, opt) {
   corp.querySelector("#fac-recurente").addEventListener("click", () => listaRecurente(corp, nav, tenantId, opt));
 }  // fac_recurente_v1
 
-// ---------- ISTORIC ----------
+// ---------- ISTORIC ---------- /* facback_null_fix_v1 */
 async function istoricFacturi(corp, nav, tenantId, opt) {
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
   corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
-  corp.querySelector("#fac-back").addEventListener("click", inapoiMeniu);
+  corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   let lista = [];
   try {
     const r = await api.get(`/tenants/${tenantId}/facturi`);
@@ -81,7 +81,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     <h2 class="pf-titlu">Istoric facturi</h2>
     <p class="pf-intro">Apas\u0103 o factur\u0103 pentru detalii.</p>
     <div class="pf-lista">${corpuri}</div>`;
-  corp.querySelector("#fac-back").addEventListener("click", inapoiMeniu);
+  corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   corp.querySelectorAll(".fac-cont").forEach((b) => b.addEventListener("click", async (ev) => {
     ev.stopPropagation();
     try {
@@ -114,14 +114,14 @@ const _bani = (x, mon) => {
 
 async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
-  corp.querySelector("#fac-back").addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
+  corp.querySelector("#fac-back")?.addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
 
   let f = null;
   try {
     f = await api.get(`/tenants/${tenantId}/facturi/${facturaId}`);
   } catch {
     corp.innerHTML = `<div class="mig-gol">Nu am putut \u00eenc\u0103rca factura.</div>`;
-    corp.querySelector("#fac-back").addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
+    corp.querySelector("#fac-back")?.addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
     return;
   }
 
@@ -215,7 +215,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     </div>
     ${blocValuta}`;
 
-  corp.querySelector("#fac-back").addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
+  corp.querySelector("#fac-back")?.addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
 
   const bPlata = corp.querySelector("#fd-plata");  /* plati_fe_v1 */
   if (bPlata) bPlata.addEventListener("click", async () => {
@@ -350,14 +350,14 @@ const MF_CULORI = ["#1d4ed8", "#0a807b", "#1d7a4d", "#a3344b", "#6d28d9", "#b453
 
 async function modelFactura(corp, nav, tenantId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
-  corp.querySelector("#fac-back").addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
+  corp.querySelector("#fac-back")?.addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
 
   let profil = {};
   try {
     profil = await api.get(`/tenants/${tenantId}/firma-profil`);
   } catch {
     corp.innerHTML = `<div class="mig-gol">Nu am putut \u00eenc\u0103rca profilul firmei.</div>`;
-    corp.querySelector("#fac-back").addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
+    corp.querySelector("#fac-back")?.addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
     return;
   }
 
@@ -408,7 +408,7 @@ async function modelFactura(corp, nav, tenantId, opt) {
       </div>
     </div>`;
 
-  corp.querySelector("#fac-back").addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
+  corp.querySelector("#fac-back")?.addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
 
   const preview = corp.querySelector("#mf-preview");
 
@@ -519,7 +519,7 @@ async function modelFactura(corp, nav, tenantId, opt) {
 async function listaRecurente(corp, nav, tenantId, opt) {
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
-  corp.querySelector("#fac-back").addEventListener("click", inapoiMeniu);
+  corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   let sabloane = [];
   try {
     const r = await api.get(`/tenants/${tenantId}/facturi-recurente`);
@@ -555,7 +555,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
     <p class="pf-intro">\u0218abloane emise automat \u00een fiecare lun\u0103 (verificare zilnic\u0103 la 07:00).</p>
     <div class="pf-lista">${corpuri}</div>
     <button class="mig-buton" id="fr-add" style="margin-top:12px">+ \u0218ablon nou</button>`;
-  corp.querySelector("#fac-back").addEventListener("click", inapoiMeniu);
+  corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   corp.querySelector("#fr-add").addEventListener("click", () => formSablon(corp, nav, tenantId, opt));
 
   corp.querySelectorAll(".fr-toggle").forEach((b) => b.addEventListener("click", async () => {

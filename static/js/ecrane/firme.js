@@ -206,7 +206,7 @@ function meniuFirma(corp, nav, t) {
   const bFacturi = corp.querySelector("#fa-facturi");
   if (bFacturi) {
     bFacturi.addEventListener("click", () => {
-      nav.deschide("Facturi", (c2) => randeazaFacturi(c2, nav, t.id, {}));
+      nav.deschide("Facturi", (c2) => randeazaFacturi(c2, nav, t.id, {}), { lat: "larg" }); /* facturi_larg_v1 */
     });
   }
   const bSalariati = corp.querySelector("#fa-salariati");

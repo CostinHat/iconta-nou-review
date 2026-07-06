@@ -4136,6 +4136,8 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
             f = cur.fetchone()
             if not f:
                 raise HTTPException(404, "factura inexistenta")
+            if (f.get("tip") or "factura") != "factura":  # proforma_fara_nota_v1
+                raise HTTPException(422, "proforma/avizul nu se contabilizeaza (nu e document fiscal)")
             cur.execute(f"SELECT COUNT(*) AS n FROM {schema}.inregistrari WHERE factura_id=%s", (factura_id,))
             if cur.fetchone()["n"]:
                 raise HTTPException(422, "factura are deja inregistrare (ciorna sau validata)")

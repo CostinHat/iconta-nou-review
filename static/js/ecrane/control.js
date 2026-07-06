@@ -98,6 +98,18 @@ async function detaliuFirma(corp, nav, firma) {
     ${urmarit.length ? `
       <div class="cf-grup-titlu cf-galben">De urmărit (${urmarit.length})</div>
       <div class="cf-decl">${randDecl(urmarit, "cf-termen-galben")}</div>` : ""}
+    ${(() => { /* cf_detaliu_contabil_v1 */
+      const vc = d.verificari_contabile || null;
+      if (!vc) return "";
+      const probleme = [];
+      if (vc.echilibru && vc.echilibru.ok === false) probleme.push("balanță dezechilibrată");
+      const tz = vc.trezorerie;
+      if ((Array.isArray(tz) && tz.length) || (tz && !Array.isArray(tz) && tz.ok === false)) probleme.push("solduri creditoare trezorerie");
+      if (firma.contabil) firma.contabil.forEach((p) => { if (!probleme.includes(p) && p !== "balanta dezechilibrata" && p !== "solduri creditoare trezorerie") probleme.push(p); }); /* cf_detaliu_contabil_v2 */
+      if (!probleme.length) return "";
+      return `<div class="cf-grup-titlu cf-rosu">Verificări contabile (${probleme.length})</div>
+        <div class="cf-decl">${probleme.map((p) => `<div class="mig-sold-rand cf-rand-decl"><span class="mig-sold-cont">${p}</span></div>`).join("")}</div>`;
+    })()}
     ${(!lipsa.length && !urmarit.length) ? `
       <div class="mig-gata" style="padding:30px 0">
         <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="#1d9e75" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
