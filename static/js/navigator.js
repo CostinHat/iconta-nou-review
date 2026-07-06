@@ -163,7 +163,13 @@ export function creeazaNavigator(radacina, desktopRandator) {
     if (sus.scrollY) fer.querySelector(".fereastra-corp").scrollTop = sus.scrollY; /* scroll_memorat_v1 */
     /* stelute_rosii_v2: orice * din etichete devine rosu, oricand apare */
     const _corp = fer.querySelector(".fereastra-corp");
-    const _steaza = () => { /* titlu_firma_v2 */
+    const _steaza = () => { /* titlu_firma_v2 + titlu_global_v1 */
+      if (!_corp.querySelector("h2") && sus.titlu && _corp.children.length) {
+        const h = document.createElement("h2");
+        h.className = "pf-titlu";
+        h.textContent = sus.titlu;
+        _corp.prepend(h);
+      }
       if (firmaInLucru) {
         const h = _corp.querySelector("h2");
         if (h && !h.textContent.includes(firmaInLucru)) h.textContent += " \u00b7 " + firmaInLucru;

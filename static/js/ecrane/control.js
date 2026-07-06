@@ -51,9 +51,10 @@ export async function randeazaControl(corp, nav) {
 
   firme.forEach((f) => {
     const col = CULORI[f.stare] || CULORI.gri;
-    const detaliu = f.stare === "rosu" ? `${f.lipsa} restanț${f.lipsa === 1 ? "ă" : "e"}`
+    let detaliu = f.stare === "rosu" ? `${f.lipsa} restanț${f.lipsa === 1 ? "ă" : "e"}`
       : f.stare === "galben" ? `${f.urmarit} de urmărit`
       : f.stare === "verde" ? "totul la zi" : "vector necompletat";
+    if ((f.contabil || []).length) detaliu += " \u00b7 " + f.contabil.join(" \u00b7 ");
     const rand = document.createElement("button");
     rand.className = "mig-frand";
     rand.innerHTML = `

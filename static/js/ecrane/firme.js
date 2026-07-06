@@ -338,7 +338,7 @@ async function ecranVerificari(corp, nav, t) {
           <div class="pf-frand-nume">${nume}</div>
           <div class="pf-frand-sub">${detaliu}</div>
         </div>
-        <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${ok ? "#1d7a4d" : "#ff3b30"}"></span>
+        <span class="cab-pct ${ok ? 'pct-verde' : 'pct-rosu'}"></span>
       </div>`;
     };
     corp.innerHTML = `
@@ -349,15 +349,15 @@ async function ecranVerificari(corp, nav, t) {
       <div class="pf-lista">
         ${r ? rand("Echilibru balan\u021b\u0103", r.echilibru) : ""}
         ${r ? rand("Trezorerie (f\u0103r\u0103 solduri creditoare)", r.trezorerie) : ""}
-        ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${r.tva.suma} lei (cont ${r.tva.cont})</div></div></div>` : ""}
+        ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${r.tva.suma} lei (cont ${r.tva.cont})</div></div><span class="cab-pct pct-verde"></span></div>` : ""}
         ${vs ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Stocuri (contabil vs fi\u0219e CV)</div>
           <div class="pf-frand-sub">${vs.ok ? "in regula" : vs.conturi.filter(c=>!c.ok).map(c=>`cont ${c.cod || c.cont}: contabil ${c.sold_contabil} vs fi\u0219e ${c.valoare_fise_cv} (dif ${c.diferenta})`).join(" \u00b7 ")}</div>
-        </div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${vs.ok ? "#1d7a4d" : "#ff3b30"}"></span></div>` : ""}
+        </div><span class="cab-pct ${vs.ok ? 'pct-verde' : 'pct-rosu'}"></span></div>` : ""}
         ${intra ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Intrastat (prag 1.000.000 lei/flux, an ${an})</div>
           <div class="pf-frand-sub">Introduceri: ${intra.introduceri ? intra.introduceri.cumulat + " lei (" + intra.introduceri.procent + "%)" + (intra.introduceri.status !== "sub_prag" ? " \u00b7 DEPASIT din luna " + intra.introduceri.luna_depasirii : "") : "-"} \u00b7 Expedieri: ${intra.expedieri ? intra.expedieri.cumulat + " lei (" + intra.expedieri.procent + "%)" + (intra.expedieri.status !== "sub_prag" ? " \u00b7 DEPASIT din luna " + intra.expedieri.luna_depasirii : "") : "-"}</div>
-        </div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${(intra.introduceri && intra.introduceri.status !== "sub_prag") || (intra.expedieri && intra.expedieri.status !== "sub_prag") ? "#ff3b30" : "#1d7a4d"}"></span></div>` : ""}
+        </div><span class="cab-pct ${(intra.introduceri && intra.introduceri.status !== 'sub_prag') || (intra.expedieri && intra.expedieri.status !== 'sub_prag') ? 'pct-rosu' : 'pct-verde'}"></span></div>` : ""}
         ${!r ? '<div class="mig-gol">Nu am putut rula verific\u0103rile.</div>' : ""}
       </div>`;
     corp.querySelector("#vf-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });

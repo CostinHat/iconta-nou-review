@@ -1388,9 +1388,35 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
                 r = control_fiscal_api.evalueaza_firma(cs, cp, tid, schema, azi)
         except Exception:
             r = {"stare": "gri", "datorate": 0, "depuse": 0, "lipsa": [], "urmarit": []}
+        contabil = []  # cf_verificari_v1 + cf_toate_verificarile_v1
+        try:
+            v = _verificari_contabile(schema, azi.year, azi.month)
+            if not (v["echilibru"] or {}).get("ok", True):
+                r["stare"] = "rosu"; contabil.append("balanta dezechilibrata")
+            tz = v["trezorerie"]
+            if (isinstance(tz, list) and tz) or (isinstance(tz, dict) and not tz.get("ok", True)):
+                if r["stare"] == "verde": r["stare"] = "galben"
+                contabil.append("solduri creditoare trezorerie")
+        except Exception:
+            pass
+        try:  # stocuri contabil vs fise CV
+            vs = verificare_stocuri(tid, ctx)
+            if not vs.get("ok", True):
+                if r["stare"] == "verde": r["stare"] = "galben"
+                contabil.append("diferente stocuri")
+        except Exception:
+            pass
+        try:  # praguri Intrastat
+            ip = intrastat_praguri(tid, azi.year, ctx)
+            if (ip["introduceri"]["status"] != "sub_prag") or (ip["expedieri"]["status"] != "sub_prag"):
+                r["stare"] = "rosu"
+                contabil.append("prag Intrastat depasit")
+        except Exception:
+            pass
         sumar[r["stare"]] = sumar.get(r["stare"], 0) + 1
         out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
-                    "stare": r["stare"], "lipsa": len(r["lipsa"]), "urmarit": len(r["urmarit"])})
+                    "stare": r["stare"], "lipsa": len(r["lipsa"]), "urmarit": len(r["urmarit"]),
+                    "contabil": contabil})
     return {"firme": out, "sumar": sumar}
 
 
@@ -1401,6 +1427,11 @@ def control_fiscal_detaliu(tenant_id: int, ctx=Depends(cere_cabinet)):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as cs, db.get_conn() as cp:
         r = control_fiscal_api.evalueaza_firma(cs, cp, tenant_id, schema, datetime.date.today())
+    try:  # cf_verificari_v1
+        azi = datetime.date.today()
+        r["verificari_contabile"] = _verificari_contabile(schema, azi.year, azi.month)
+    except Exception:
+        pass
     return r
 
 
@@ -2491,33 +2522,37 @@ def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=De
         raise HTTPException(404, "salariat inexistent")
     return Response(content=pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="fluturas_{salariat_id}_{an}_{luna:02d}.pdf"'})
-@app.get("/firme/{tenant_id}/verificari")
-def firma_verificari(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+# cf_verificari_v1: verificari contabile reutilizabile (echilibru + trezorerie)
+def _verificari_contabile(schema, an, luna):
     from core import verificatoare as _vf
     from datetime import date as _date
     sfarsit = _date(an + (luna == 12), (luna % 12) + 1, 1)
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fara acces")
-        with conn.cursor() as cur:
-            cur.execute(f"""
-                SELECT l.cont_debit, l.cont_credit, l.suma
-                FROM {schema}.inregistrari_linii l
-                JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-                WHERE i.data < %s
-            """, (sfarsit,))
-            note = [{"debit": r[0], "credit": r[1], "suma": r[2]} for r in cur.fetchall()]
-            cur.execute(f"SELECT cont, SUM(sold_debitor) - SUM(sold_creditor) FROM {schema}.solduri_initiale GROUP BY cont")
-            si = {r[0]: r[1] for r in cur.fetchall()}
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute(f"""
+            SELECT l.cont_debit, l.cont_credit, l.suma
+            FROM {schema}.inregistrari_linii l
+            JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+            WHERE i.data < %s
+        """, (sfarsit,))
+        note = [{"debit": r[0], "credit": r[1], "suma": r[2]} for r in cur.fetchall()]
+        cur.execute(f"SELECT cont, SUM(sold_debitor) - SUM(sold_creditor) FROM {schema}.solduri_initiale GROUP BY cont")
+        si = {r[0]: r[1] for r in cur.fetchall()}
     bal = _vf.balanta(note, si)
-    rez = {
+    return {
         "echilibru": _vf.verifica_balanta(bal),
         "trezorerie": _vf.verifica_trezorerie(bal),
         "tva": _vf.coerenta_tva(bal.get("4427", {}).get("credit", 0), bal.get("4426", {}).get("debit", 0)),
         "note": len(note),
     }
-    return rez
+
+
+@app.get("/firme/{tenant_id}/verificari")
+def firma_verificari(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+    if not schema:
+        raise HTTPException(404, "tenant inexistent sau fara acces")
+    return _verificari_contabile(schema, an, luna)  # cf_verificari_v1
 @app.post("/portal/bon")
 async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     from core import ai_client
@@ -2666,6 +2701,29 @@ def apiv1_balanta(tenant_id: int, an: int, luna: int, actx=Depends(cere_api_key)
     schema = _api_schema(actx, tenant_id)
     with db.get_conn() as conn:
         return {"balanta": documente_api.balanta(conn, schema, an, luna)}
+
+@app.post("/api/v1/firme/{tenant_id}/facturi")  # api_public_v1
+def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cere_api_key)):
+    schema = _api_schema(actx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = facturi_api.emite_factura(
+            conn,
+            linii=corp.get("linii"),
+            client_id=corp.get("client_id"),
+            tert_nume=corp.get("tert_nume"),
+            tert_cui=corp.get("tert_cui"),
+            tert_adresa=corp.get("tert_adresa"),
+            data_emitere=corp.get("data_emitere"),
+            data_scadenta=corp.get("data_scadenta"),
+            moneda=corp.get("moneda", "RON"),
+            platitor_tva=corp.get("platitor_tva", True),
+            status=corp.get("status", "de_preluat"),
+            curs_manual=corp.get("curs_manual"),
+            tip=corp.get("tip", "factura"),
+        )
+    if not r.get("ok", True) and r.get("cod") == "CURS_INDISPONIBIL":
+        raise HTTPException(422, r.get("mesaj"))
+    return r
 
 
 @app.post("/tenants/{tenant_id}/woocommerce/sincronizeaza")  # wc_sinc_v1
