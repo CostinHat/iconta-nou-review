@@ -8,7 +8,7 @@ import { sesiune } from "../sesiune.js";
 import { randeazaControl } from "./control.js";
 import { randeazaTermene } from "./termene.js";
 import { randeazaValidat } from "./validat.js";
-import { randeazaListaFirme } from "./firme.js?v=22";
+import { randeazaListaFirme } from "./firme.js";
 import { randeazaRecomanda } from "./recomanda.js"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js"; // [p63_pachete]

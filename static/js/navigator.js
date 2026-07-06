@@ -137,7 +137,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     // Sageata apare DOAR cand exista un "inapoi" real:
     //  - mai multe ferestre pe stiva, SAU
     //  - ecranul curent isi defineste o functie interna 'inapoi' (ex: migrare in cascada)
-    const areInapoi = stiva.length > 1 || typeof sus.inapoi === "function";
+    const areInapoi = true; /* sageata mereu */
     fer.innerHTML = `
       <div class="fereastra-antet">
         ${areInapoi
@@ -158,11 +158,12 @@ export function creeazaNavigator(radacina, desktopRandator) {
     fer.querySelector(".nav-x").addEventListener("click", () => nav.acasa());
     overlay.appendChild(fer);
     radacina.appendChild(overlay);
+    fer.classList.toggle("fer-larg", (sus.optiuni || {}).lat === "larg");
     sus.randator(fer.querySelector(".fereastra-corp"), nav);
   }
 
   const nav = {
-    deschide(titlu, randator) { stiva.push({ titlu, randator }); randeazaFerestre(); },
+    deschide(titlu, randator, optiuni) { stiva.push({ titlu, randator, optiuni: optiuni || {} }); randeazaFerestre(); }, /* fereastra_optiuni_v1 */
     inapoi() { stiva.pop(); randeazaFerestre(); },
     setInapoi(fn) { if (stiva.length) stiva[stiva.length - 1].inapoi = fn; },
     acasa() { stiva.length = 0; randeazaFerestre(); },

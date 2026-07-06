@@ -61,7 +61,13 @@ _APP_PORNIT_LA = __import__("time").time()  # ICRD_SANATATE_SERVER_V1 - uptime p
 # frontend: servit static de pe același origin cu API-ul (fără build step)
 _STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 if os.path.isdir(_STATIC_DIR):
-    app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static")
+    # [nocache_static_v1]: browserul revalideaza automat (304), fara ?v= manual
+    class _StaticNoCache(StaticFiles):
+        def file_response(self, *a, **k):
+            r = super().file_response(*a, **k)
+            r.headers["Cache-Control"] = "no-cache"
+            return r
+    app.mount("/static", _StaticNoCache(directory=_STATIC_DIR), name="static")
 
 @app.get("/")
 def index():

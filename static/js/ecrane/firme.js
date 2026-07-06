@@ -3,10 +3,10 @@
 
 import { api, arataMesaj } from "../api.js";  /* msg_conventie_fe_v1 */
 import { sesiune } from "../sesiune.js";
-import { randeazaFacturi } from "./facturi_ecran.js?v=2";
-import { ecranRip } from "./rip_ecran.js?v=2";
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=8";
-import { ecranEtransport } from "./etransport_ecran.js?v=1";
+import { randeazaFacturi } from "./facturi_ecran.js";
+import { ecranRip } from "./rip_ecran.js";
+import { ecranOperatiuni } from "./operatiuni_ecran.js";
+import { ecranEtransport } from "./etransport_ecran.js";
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -123,7 +123,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
 // deschide o firmă: setează "În lucru" + spațiul de lucru (meniu de acțiuni)
 function deschideFirma(t, nav) {
   nav.setFirmaInLucru(t.nume || "");
-  nav.deschide(t.nume || "Firmă", (corp) => meniuFirma(corp, nav, t));
+  nav.deschide((t.nume || "Firmă") + " \u00b7 CUI " + (t.cui || ""), (corp) => meniuFirma(corp, nav, t), { lat: "larg" });
 }
 
 // meniul de acțiuni pe o firmă (facturi activ; restul se activează pe rând)
@@ -189,7 +189,7 @@ function meniuFirma(corp, nav, t) {
   ];
 
   corp.innerHTML = `
-    <p class="pf-intro">CUI ${t.cui || "\u2014"}</p>
+    
     <div class="firme-optiuni">
       ${optiuni.map((o) => `
         <button class="firme-optiune" id="fa-${o.cheie}"${o.activ ? "" : ' disabled style="opacity:.55;cursor:default"'}>
@@ -206,20 +206,20 @@ function meniuFirma(corp, nav, t) {
   const bFacturi = corp.querySelector("#fa-facturi");
   if (bFacturi) {
     bFacturi.addEventListener("click", () => {
-      randeazaFacturi(corp, nav, t.id, { inapoi: () => meniuFirma(corp, nav, t) });
+      nav.deschide("Facturi", (c2) => randeazaFacturi(c2, nav, t.id, {}));
     });
   }
   const bSalariati = corp.querySelector("#fa-salariati");
   if (bSalariati && !bSalariati.disabled) {
-    bSalariati.addEventListener("click", () => ecranSalariati(corp, nav, t));
+    bSalariati.addEventListener("click", () => { nav.deschide("Salariați", (c2) => ecranSalariati(c2, nav, t)); });
   }
   const bBonuri = corp.querySelector("#fa-bonuri");
   if (bBonuri) {
-    bBonuri.addEventListener("click", () => ecranBonuri(corp, nav, t));
+    bBonuri.addEventListener("click", () => { nav.deschide("Bonuri", (c2) => ecranBonuri(c2, nav, t)); });
   }
   const bJurnal = corp.querySelector("#fa-jurnal");
   if (bJurnal) {
-    bJurnal.addEventListener("click", () => ecranJurnal(corp, nav, t));
+    bJurnal.addEventListener("click", () => { nav.deschide("Registru jurnal", (c2) => ecranJurnal(c2, nav, t)); });
   }
   const bMagazin = corp.querySelector("#fa-magazin");  // wc_fe_v1
   if (bMagazin) {
@@ -227,35 +227,35 @@ function meniuFirma(corp, nav, t) {
   }
   const bZ = corp.querySelector("#fa-raportz");
   if (bZ) {
-    bZ.addEventListener("click", () => ecranRaportZ(corp, nav, t));
+    bZ.addEventListener("click", () => { nav.deschide("Raport Z", (c2) => ecranRaportZ(c2, nav, t)); });
   }
   const bBilant = corp.querySelector("#fa-bilant");
   if (bBilant) {
-    bBilant.addEventListener("click", () => ecranBilant(corp, nav, t));
+    bBilant.addEventListener("click", () => { nav.deschide("Bilanț", (c2) => ecranBilant(c2, nav, t)); });
   }
   const bStocuri = corp.querySelector("#fa-stocuri");
   if (bStocuri) {
-    bStocuri.addEventListener("click", () => ecranStocuri(corp, nav, t));
+    bStocuri.addEventListener("click", () => { nav.deschide("Stocuri", (c2) => ecranStocuri(c2, nav, t)); });
   }
   const bCasa = corp.querySelector("#fa-casa");
   if (bCasa) {
-    bCasa.addEventListener("click", () => ecranCasa(corp, nav, t));
+    bCasa.addEventListener("click", () => { nav.deschide("Casă", (c2) => ecranCasa(c2, nav, t)); });
   }
   const bRip = corp.querySelector("#fa-rip");
-  if (bRip) bRip.addEventListener("click", () => ecranRip(corp, nav, t));
+  if (bRip) bRip.addEventListener("click", () => { nav.deschide("Încasări/plăți", (c2) => ecranRip(c2, nav, t)); });
   const bOperatiuni = corp.querySelector("#fa-operatiuni");
-  if (bOperatiuni) bOperatiuni.addEventListener("click", () => ecranOperatiuni(corp, nav, t));
+  if (bOperatiuni) bOperatiuni.addEventListener("click", () => { nav.deschide("Operațiuni speciale", (c2) => ecranOperatiuni(c2, nav, t)); });
   const bEtransport = corp.querySelector("#fa-etransport");
-  if (bEtransport) bEtransport.addEventListener("click", () => ecranEtransport(corp, nav, t));
+  if (bEtransport) bEtransport.addEventListener("click", () => { nav.deschide("e-Transport", (c2) => ecranEtransport(c2, nav, t)); });
   const bBalanta = corp.querySelector("#fa-balanta");
-  if (bBalanta) bBalanta.addEventListener("click", () => ecranBalanta(corp, nav, t));
+  if (bBalanta) bBalanta.addEventListener("click", () => { nav.deschide("Balanță de verificare", (c2) => ecranBalanta(c2, nav, t)); });
   const bBanca = corp.querySelector("#fa-banca");
   if (bBanca) {
-    bBanca.addEventListener("click", () => ecranBanca(corp, nav, t));
+    bBanca.addEventListener("click", () => { nav.deschide("Bancă", (c2) => ecranBanca(c2, nav, t)); });
   }
   const bVerif = corp.querySelector("#fa-verificari");
   if (bVerif) {
-    bVerif.addEventListener("click", () => ecranVerificari(corp, nav, t));
+    bVerif.addEventListener("click", () => { nav.deschide("Verificări", (c2) => ecranVerificari(c2, nav, t)); });
   }
   const bSolicitari = corp.querySelector("#fa-solicitari");
   if (bSolicitari) {
@@ -1388,3 +1388,7 @@ async function ecranAccesClient(corp, nav, t) {
 }
 
 // fara_mesaj_v1
+
+// inapoi_meniu_v1
+
+// module_stiva_v1

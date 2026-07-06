@@ -211,17 +211,17 @@ html, body {
    ============================================================ */
 .fereastra-overlay {
   position: fixed; inset: 0;
-  background: rgba(20, 30, 45, 0.45);
+  background: rgba(20, 30, 45, 0.55);
   display: flex; align-items: center; justify-content: center;
   padding: 24px; z-index: 100;
   animation: aparitie-overlay 0.12s ease-out;
 }
 
 .fereastra {
-  width: 100%; max-width: 680px;
+  width: 100%; max-width: 680px; 
   transition: max-width 0.18s ease;
   max-height: calc(100vh - 48px);
-  background: var(--alb);
+  background: #f4f6f9;
   border-radius: var(--raza);
   box-shadow: 0 12px 48px rgba(20, 30, 45, 0.25);
   display: flex; flex-direction: column;
@@ -345,11 +345,11 @@ html, body {
 .sub-inapoi:hover { background: var(--portocaliu); color: var(--alb); }
 
 /* meniu Firme — 2 opțiuni */
-.firme-optiuni { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.firme-optiuni { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .firme-optiune {
   text-align: left; background: var(--alb);
   border: 0.5px solid var(--linie); border-radius: 12px;
-  padding: 20px; cursor: pointer; font-family: inherit;
+  padding: 12px 14px; cursor: pointer; font-family: inherit;
   transition: transform 0.12s, box-shadow 0.12s;
 }
 .firme-optiune:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(20,30,45,0.1); }
@@ -591,7 +591,7 @@ html, body {
 .mig-sold-cap span:nth-child(3), .mig-sold-cap span:nth-child(4) { text-align: right; }
 
 /* pe fereastra lărgită: corpul nu scrollează, doar tabelul ia spațiul rămas */
-.fereastra.fer-larg .fereastra-corp { overflow: hidden; display: flex; flex-direction: column; }
+.fereastra.fer-larg .fereastra-corp { overflow: auto; display: flex; flex-direction: column; }
 .fereastra.fer-larg .mig-sold-tabel { max-height: none; flex: 1 1 auto; min-height: 100px; }
 .fereastra.fer-larg .mig-inapoi,
 .fereastra.fer-larg .mig-intro,
@@ -2098,3 +2098,12 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 /* login_fullscreen_v1 */
 .acces-overlay { background: var(--fundal, #f4f6f9) !important; padding: 0 !important; }
 .acces-modal { box-shadow: none !important; border-radius: 0 !important; max-width: 460px; width: 100%; margin: 8vh auto 0; }
+/* ferestre_std_v1: campuri albe pe fundal gri in ferestre */
+.fereastra .camp-input, .fereastra textarea.camp-input, .fereastra select.camp-input { background: #fff; }
+.fereastra .buton-secundar { background: #fff; }
+/* ferestre_std_v2: dimensiuni unice pentru orice camp din ferestre */
+.fereastra input:not([type=checkbox]):not([type=radio]), .fereastra select { height: 36px !important; padding: 0 10px !important; font-size: var(--text-mic); box-sizing: border-box; }
+.fereastra textarea { padding: 8px 10px !important; font-size: var(--text-mic); }
+.fereastra input[type=number] { max-width: 180px; }
+.fereastra input[type=date] { max-width: 180px; }
+.firme-optiune { border: 1px solid #d5dbe3 !important; }

@@ -6,7 +6,7 @@ import { sesiune } from "../sesiune.js";
 import { randeazaAdminRaportari } from "./admin_raportari.js";
 import { randeazaAdminActivitate } from "./admin_activitate.js";
 import { randeazaAdminGratuite } from "./admin_gratuite.js";
-import { randeazaAdminSanatate } from "./admin_sanatate.js?v=2";
+import { randeazaAdminSanatate } from "./admin_sanatate.js";
 
 // iconite SVG inline (autonome)
 const IC = {
