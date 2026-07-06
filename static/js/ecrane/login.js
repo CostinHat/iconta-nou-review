@@ -325,6 +325,7 @@ export function ecranLogin(radacina) {
           email: email.value.trim(),
           parola: parola.value,
           nume_cabinet: cabinet.value.trim(),
+          cui: (cui.value || "").trim(),  /* register_primul_tenant_v1 */
           nume,
           prenume,
         });

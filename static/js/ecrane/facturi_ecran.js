@@ -3,7 +3,7 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api } from "../api.js";
+import { api, arataMesaj } from "../api.js";
 import { sesiune } from "../sesiune.js";
 import { randeazaEmitere } from "./emitere_ecran.js";
 
@@ -188,10 +188,13 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <button class="em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
         ${(f.directie === "emisa" && !f.storno_din_id) ? '<button class="em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="em-buton-sec" id="fd-transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
+        ${f.platita_la ? '<span class="fac-storno-tag" style="background:#eaf7f0;color:#145c39">pl\u0103tit\u0103</span>' : ""}
+        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}
         ${f.transformat_in_id ? `<span class="fac-storno-tag">transformat \u00een #${f.transformat_in_id}</span>` : ""}
       </div>
       <div class="fd-email-zona" id="fd-email-zona"></div>
       <div class="fd-storno-zona" id="fd-storno-zona"></div>
+      <div id="fd-plata-zona"></div>
       <div class="fd-antet-linie">${dir ? dir.charAt(0).toUpperCase() + dir.slice(1) : ""} \u00b7 ${fmtData(f.data_emitere)}${f.data_scadenta ? " \u00b7 scaden\u021b\u0103 " + fmtData(f.data_scadenta) : ""}</div>
       ${partener ? `<div class="fd-antet-linie">${dir === "primit\u0103" ? "De la" : "C\u0103tre"}: ${partener}</div>` : ""}
     </div>
@@ -214,6 +217,15 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   corp.querySelector("#fac-back").addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
 
+  const bPlata = corp.querySelector("#fd-plata");  /* plati_fe_v1 */
+  if (bPlata) bPlata.addEventListener("click", async () => {
+    const zona = corp.querySelector("#fd-plata-zona");
+    try {
+      const r = await api.post(`/tenants/${tenantId}/facturi/${facturaId}/link-plata`, {});
+      zona.innerHTML = `<div class="msg-info">Link de plat\u0103: <a href="${r.link}" target="_blank">${r.link}</a> <button class="em-buton-sec" id="fd-plata-copiaza">Copiaz\u0103</button></div>`;
+      zona.querySelector("#fd-plata-copiaza").addEventListener("click", () => navigator.clipboard.writeText(r.link));
+    } catch (e) { arataMesaj(zona, e.mesaj || e.message, "eroare"); }
+  });
   const btnPdf = corp.querySelector("#fd-pdf");
   if (btnPdf) {
     btnPdf.addEventListener("click", async () => {

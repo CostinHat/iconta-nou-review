@@ -113,6 +113,12 @@ def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template)
             "INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s,%s) "
             "ON CONFLICT DO NOTHING",
             (user_id, tenant_id))
+    # profil_la_provisionare_v1: profil minim (numerotare facturi functionala din prima)
+    with conn.cursor() as cur:
+        cur.execute(
+            f"INSERT INTO {schema_noua}.firma_profil (id, nume, cui, serie_factura, urmator_numar_factura) "
+            "VALUES (1, %s, %s, '', 1) ON CONFLICT (id) DO NOTHING",
+            (nume, str(cui)))
     return {"ok": True, "tenant_id": tenant_id, "schema_name": schema_noua}
 
 

@@ -531,6 +531,7 @@ class RegisterIn(BaseModel):
     nume_cabinet: str
     nume: Optional[str] = None
     prenume: Optional[str] = None
+    cui: Optional[str] = None  # register_primul_tenant_v1
 
 class DeclaratieIn(BaseModel):
     tenant_id: int
@@ -799,6 +800,14 @@ def register(date: RegisterIn):
             nume=date.nume, prenume=date.prenume)
     if not r["ok"]:
         raise HTTPException(400, r["mesaj"])
+    if date.cui and _TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
+        try:
+            with db.get_conn() as conn:
+                tenant_provisioning.provision_tenant(
+                    conn, date.nume_cabinet, date.cui.replace("RO", "").strip(),
+                    r["firm_id"], r["user_id"], _TENANT_TEMPLATE)
+        except Exception:
+            pass  # inregistrarea nu pica din cauza primului tenant
     return {"user_id": r["user_id"], "firm_id": r["firm_id"]}
 
 
@@ -2701,6 +2710,41 @@ def apiv1_balanta(tenant_id: int, an: int, luna: int, actx=Depends(cere_api_key)
     schema = _api_schema(actx, tenant_id)
     with db.get_conn() as conn:
         return {"balanta": documente_api.balanta(conn, schema, an, luna)}
+
+# === LINK PLATA === # plati_link_v1
+@app.post("/tenants/{tenant_id}/facturi/{factura_id}/link-plata")
+def factura_link_plata(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
+    from core import plati as _pl
+    schema = _schema_sau_404(ctx, tenant_id)
+    baza = os.environ.get("ICONTA_BAZA_URL", "https://iconta.eu")
+    with db.get_conn() as conn:
+        r = _pl.genereaza_link(conn, schema, factura_id, baza)
+    if r.get("eroare"):
+        raise HTTPException(422, r["eroare"])
+    return r
+
+@app.get("/public/plata/{ref}")
+def plata_pagina(ref: str):
+    """Pagina mock: confirma plata (pana la integrarea provider real)."""
+    return Response(content=f"""<!doctype html><html lang="ro"><meta charset="utf-8">
+<title>Plata factura</title><body style="font-family:sans-serif;max-width:420px;margin:10vh auto">
+<h2>Plat\u0103 factur\u0103 (demo)</h2>
+<p>Integrarea cu procesatorul de pl\u0103\u021bi urmeaz\u0103. Ap\u0103sa\u021bi pentru a simula plata.</p>
+<form method="post" action="/public/plata/{ref}/confirma"><button style="padding:10px 22px">Pl\u0103te\u0219te</button></form>
+</body></html>""", media_type="text/html")
+
+@app.post("/public/plata/{ref}/confirma")
+def plata_confirma(ref: str):
+    from core import plati as _pl
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("SELECT schema_name FROM public.tenants ORDER BY id")
+        scheme = [r[0] for r in cur.fetchall()]
+    for sch in scheme:
+        with db.get_conn() as conn:
+            r = _pl.confirma_plata(conn, sch, ref)
+        if r.get("ok"):
+            return {"ok": True}
+    raise HTTPException(404, "referinta necunoscuta")
 
 @app.post("/api/v1/firme/{tenant_id}/facturi")  # api_public_v1
 def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cere_api_key)):
