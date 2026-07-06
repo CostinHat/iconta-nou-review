@@ -9,9 +9,9 @@ export async function ecranEtransport(corp, nav, t) {
   const ziAzi = new Date().toISOString().slice(0, 10);
 
   const inp = (id, eticheta, tip = "text", val = "", extra = "") =>
-    `<label>${eticheta}<br><input type="${tip}" id="${id}" class="mig-text" value="${esc(val)}" ${extra}></label>`;
+    `<label class="camp">${"<span class=\"camp-eticheta\">" + eticheta + "</span>"}<input type="${tip}" id="${id}" class="camp-input" value="${esc(val)}" ${extra}></label>`;
   const sel = (id, eticheta, optiuni) =>
-    `<label>${eticheta}<br><select id="${id}" class="mig-text">${optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select></label>`;
+    `<label class="camp">${"<span class=\"camp-eticheta\">" + eticheta + "</span>"}<select id="${id}" class="camp-input">${optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select></label>`;
 
   const blocLoc = (p, titlu) => `
     <div class="pf-frand-nume" style="margin:12px 0 6px">${titlu}</div>
@@ -108,3 +108,5 @@ export async function ecranEtransport(corp, nav, t) {
   };
   deseneaza();
 }
+
+// etransport_std_v1

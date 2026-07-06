@@ -160,10 +160,32 @@ export function creeazaNavigator(radacina, desktopRandator) {
     radacina.appendChild(overlay);
     fer.classList.toggle("fer-larg", (sus.optiuni || {}).lat === "larg");
     sus.randator(fer.querySelector(".fereastra-corp"), nav);
+    if (sus.scrollY) fer.querySelector(".fereastra-corp").scrollTop = sus.scrollY; /* scroll_memorat_v1 */
+    /* stelute_rosii_v2: orice * din etichete devine rosu, oricand apare */
+    const _corp = fer.querySelector(".fereastra-corp");
+    const _steaza = () => { /* titlu_firma_v2 */
+      if (firmaInLucru) {
+        const h = _corp.querySelector("h2");
+        if (h && !h.textContent.includes(firmaInLucru)) h.textContent += " \u00b7 " + firmaInLucru;
+      }
+      _corp.querySelectorAll("label, .camp-eticheta").forEach((l) => {
+      l.childNodes.forEach((n) => {
+        if (n.nodeType === 3 && n.textContent.includes("*")) {
+          const span = document.createElement("span");
+          span.innerHTML = n.textContent.replace(/\*/g, '<b style="color:#e11d1d">*</b>');
+          n.replaceWith(span);
+        }
+      });
+    }); };
+    _steaza();
+    new MutationObserver(_steaza).observe(_corp, { childList: true, subtree: true });
   }
 
   const nav = {
-    deschide(titlu, randator, optiuni) { stiva.push({ titlu, randator, optiuni: optiuni || {} }); randeazaFerestre(); }, /* fereastra_optiuni_v1 */
+    deschide(titlu, randator, optiuni) {
+      const c = document.querySelector(".fereastra-corp");
+      if (c && stiva.length) stiva[stiva.length - 1].scrollY = c.scrollTop; /* scroll_memorat_v1 */
+      stiva.push({ titlu, randator, optiuni: optiuni || {} }); randeazaFerestre(); }, /* fereastra_optiuni_v1 */
     inapoi() { stiva.pop(); randeazaFerestre(); },
     setInapoi(fn) { if (stiva.length) stiva[stiva.length - 1].inapoi = fn; },
     acasa() { stiva.length = 0; randeazaFerestre(); },

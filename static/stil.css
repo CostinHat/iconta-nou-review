@@ -2107,3 +2107,22 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .fereastra input[type=number] { max-width: 180px; }
 .fereastra input[type=date] { max-width: 180px; }
 .firme-optiune { border: 1px solid #d5dbe3 !important; }
+/* stelute obligatorii rosii - global */
+.fereastra label, .fereastra .camp-eticheta { position: relative; }
+/* aliniere campuri in ferestre: eticheta sus, input jos, indiferent de lungimea etichetei */
+.fereastra .camp, .fereastra .et-camp { display: flex; flex-direction: column; justify-content: flex-end; }
+/* aliniere: etichete pe un singur rand, nu se rup */
+.fereastra label { display: flex; flex-direction: column; justify-content: flex-end; }
+.fereastra label > span:first-child, .fereastra .camp-eticheta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* select-urile nu se strang sub continut */
+.fereastra select { min-width: 280px; width: auto; }
+/* rand de formular standard: flex cu wrap, nu se incaleca niciodata */
+.fereastra .form-rand, .fereastra .casa-rand, .fereastra .pf-rand { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.fereastra .form-rand > label, .fereastra .casa-rand > label { flex: 1 1 160px; min-width: 160px; }
+.fereastra .form-rand > label:has(select) { flex: 2 1 280px; }
+/* input file conform: butonul nativ preia stilul butonului primar */
+.fereastra input[type=file] { height: auto !important; padding: 0 !important; border: none; background: none; font-family: var(--font); font-size: var(--text-mic); }
+.fereastra input[type=file]::file-selector-button { background: #3d8fd6; color: #fff; border: none; border-radius: var(--raza); padding: 8px 16px; font-family: var(--font); font-size: var(--text-mic); font-weight: 600; cursor: pointer; margin-right: 10px; }
+.fereastra input[type=file]::file-selector-button:hover { background: #115ea3; }
+/* butoanele nu se intind niciodata pe toata latimea */
+.fereastra button { width: auto; max-width: 400px; }

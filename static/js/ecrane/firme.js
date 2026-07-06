@@ -223,7 +223,7 @@ function meniuFirma(corp, nav, t) {
   }
   const bMagazin = corp.querySelector("#fa-magazin");  // wc_fe_v1
   if (bMagazin) {
-    bMagazin.addEventListener("click", () => ecranMagazin(corp, nav, t));
+    bMagazin.addEventListener("click", () => nav.deschide("Magazin online", (c2) => ecranMagazin(c2, nav, t)));
   }
   const bZ = corp.querySelector("#fa-raportz");
   if (bZ) {
@@ -239,7 +239,7 @@ function meniuFirma(corp, nav, t) {
   }
   const bCasa = corp.querySelector("#fa-casa");
   if (bCasa) {
-    bCasa.addEventListener("click", () => { nav.deschide("Casă", (c2) => ecranCasa(c2, nav, t)); });
+    bCasa.addEventListener("click", () => { nav.deschide("Casă", (c2) => ecranCasa(c2, nav, t), { lat: "larg" }); });
   }
   const bRip = corp.querySelector("#fa-rip");
   if (bRip) bRip.addEventListener("click", () => { nav.deschide("Încasări/plăți", (c2) => ecranRip(c2, nav, t)); });
@@ -404,9 +404,9 @@ async function ecranSalariati(corp, nav, t) {
       zonaReges.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
         <div class="pf-frand-nume" style="margin-bottom:8px">Chei API REGES (din aplicatia REGES Angajator)</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;max-width:700px">
-          <label>Username<br><input type="text" id="rg-user" class="mig-text"></label>
-          <label>Parola<br><input type="password" id="rg-pass" class="mig-text"></label>
-          <label>Mediu<br><select id="rg-mediu" class="mig-text"><option value="test">Test</option><option value="prod">Productie</option></select></label>
+          <label class="camp"><span class="camp-eticheta">Username</span><input type="text" id="rg-user" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Parola</span><input type="password" id="rg-pass" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Mediu</span><select id="rg-mediu" class="camp-input"><option value="test">Test</option><option value="prod">Productie</option></select></label>
         </div>
         <p style="margin-top:10px"><button class="btn" id="rg-salveaza">Salveaz\u0103</button></p>
         <div id="rg-msg"></div></div>`;
@@ -495,8 +495,8 @@ async function sectiuneaCV(corp, t, zonaM) {
         <h3 class="pf-subtitlu">Re\u021bete (HoReCa)</h3>
         <div id="rt-lista"></div>
         <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end">
-          <label>Denumire<br><input class="mig-text" id="rt-den" placeholder="ex. Meniu zilei"></label>
-          <label>Pre\u021b f\u0103r\u0103 TVA<br><input class="mig-text" type="number" step="0.01" id="rt-pret" style="width:110px"></label>
+          <label class="camp"><span class="camp-eticheta">Denumire</span><input class="camp-input" id="rt-den" placeholder="ex. Meniu zilei"></label>
+          <label class="camp"><span class="camp-eticheta">Pre\u021b f\u0103r\u0103 TVA</span><input class="camp-input" type="number" step="0.01" id="rt-pret" style="width:110px"></label>
           <button class="btn btn-secundar" id="rt-plus">+ ingredient</button>
           <button class="btn" id="rt-salveaza">Salveaz\u0103 re\u021beta</button>
         </div>
@@ -636,8 +636,8 @@ async function ecranBilant(corp, nav, t) {
       <h2 class="pf-titlu">Bilan\u021b anual \u00b7 ${escS(t.nume || "")}</h2>
       <p class="pf-intro">Genereaz\u0103 \u0219i valideaz\u0103 situa\u021biile financiare (validator ANAF pe server).</p>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <label>An<br><input type="number" id="bl-an" class="mig-text" value="${new Date().getFullYear() - 1}" style="width:90px"></label>
-        <label>Tip<br><select id="bl-tip" class="mig-text">
+        <label class="camp"><span class="camp-eticheta">An</span><input type="number" id="bl-an" class="camp-input" value="${new Date().getFullYear() - 1}" style="width:90px"></label>
+        <label class="camp"><span class="camp-eticheta">Tip</span><select id="bl-tip" class="camp-input">
           <option value="s1005">S1005 \u00b7 microentit\u0103\u021bi</option>
           <option value="s1003">S1003 \u00b7 entit\u0103\u021bi mici</option>
         </select></label>
@@ -815,13 +815,13 @@ async function ecranCasa(corp, nav, t) {
       ${avert}
       <div class="pf-frand" style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Dispozitie noua</div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:900px">
-          <label>Data<br><input type="date" id="c-data" class="mig-text" value="${ziAzi}"></label>
-          <label>Tip<br><select id="c-cat" class="mig-text">${CATEGORII.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label>
-          <label>Suma<br><input type="number" step="0.01" id="c-suma" class="mig-text" value="0"></label>
-          <label>Partener<br><input type="text" id="c-part" class="mig-text"></label>
-          <label>CUI<br><input type="text" id="c-cui" class="mig-text"></label>
-          <label>Document<br><input type="text" id="c-doc" class="mig-text"></label>
+        <div class="form-rand">
+          <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="c-data" class="camp-input" value="${ziAzi}"></label>
+          <label class="camp"><span class="camp-eticheta">Tip</span><select id="c-cat" class="camp-input">${CATEGORII.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label>
+          <label class="camp"><span class="camp-eticheta">Suma</span><input type="number" step="0.01" id="c-suma" class="camp-input" value="0"></label>
+          <label class="camp"><span class="camp-eticheta">Partener</span><input type="text" id="c-part" class="camp-input"></label>
+          <label class="camp" style="flex:0 1 160px"><span class="camp-eticheta">CUI</span><input type="text" id="c-cui" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Document</span><input type="text" id="c-doc" class="camp-input"></label>
         </div>
         <p style="margin-top:10px"><button class="btn" id="c-adauga">Adauga (nota ciorna)</button></p>
         <div id="c-mesaj"></div>
@@ -1012,12 +1012,12 @@ async function ecranRaportZ(corp, nav, t) {
       <input type="file" id="z-amef" accept=".p7b,.xml" style="display:none"></label></p>
     <div id="z-amef-msg"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px">
-      <label>Data<br><input type="date" id="z-data" value="${azi}" class="mig-text"></label>
+      <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="z-data" value="${azi}" class="camp-input"></label>
       <span></span>
-      <label>Total 11% (mancare)<br><input type="number" step="0.01" id="z-11" class="mig-text" value="0"></label>
-      <label>Total 21% (alcool, sucuri)<br><input type="number" step="0.01" id="z-21" class="mig-text" value="0"></label>
-      <label>Numerar<br><input type="number" step="0.01" id="z-num" class="mig-text" value="0"></label>
-      <label>Card<br><input type="number" step="0.01" id="z-card" class="mig-text" value="0"></label>
+      <label class="camp"><span class="camp-eticheta">Total 11% (mancare)</span><input type="number" step="0.01" id="z-11" class="camp-input" value="0"></label>
+      <label class="camp"><span class="camp-eticheta">Total 21% (alcool, sucuri)</span><input type="number" step="0.01" id="z-21" class="camp-input" value="0"></label>
+      <label class="camp"><span class="camp-eticheta">Numerar</span><input type="number" step="0.01" id="z-num" class="camp-input" value="0"></label>
+      <label class="camp"><span class="camp-eticheta">Card</span><input type="number" step="0.01" id="z-card" class="camp-input" value="0"></label>
     </div>
     <div id="z-rezultat" style="margin-top:16px"></div>
     <p style="margin-top:16px"><button class="btn" id="z-salveaza">Genereaza nota</button></p>`;
@@ -1102,7 +1102,7 @@ async function ecranJurnal(corp, nav, t) {
     const editor = (n) => `
       <div class="pf-frand" style="display:block;border:1px solid #c9961f">
         <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${escJ(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
-        <label>Descriere<br><input type="text" id="je-desc" class="mig-text" style="width:100%" value="${escJ(n.descriere || "")}"></label>
+        <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${escJ(n.descriere || "")}"></label>
         <div id="je-linii" style="margin-top:8px">${n.linii.map((l, i) => `
           <div style="display:flex;gap:8px;margin-bottom:6px" data-lin="${i}">
             <input type="text" class="mig-text je-deb" placeholder="debit" value="${escJ(l.debit)}" style="width:90px">
@@ -1215,10 +1215,10 @@ async function ecranBonuri(corp, nav, t) {
       : bonuri.map((b, i) => `
         <div class="pf-frand" style="flex-wrap:wrap">
           <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;width:100%;align-items:end">
-            <label>Comerciant<br><input class="mig-text" id="b-com-${i}" value="${b.comerciant || ""}"></label>
-            <label>Data<br><input class="mig-text" type="date" id="b-data-${i}" value="${b.data || ""}"></label>
-            <label>Total<br><input class="mig-text" type="number" step="0.01" id="b-tot-${i}" value="${b.total}"></label>
-            <label>TVA total<br><input class="mig-text" type="number" step="0.01" id="b-tva-${i}" value="${b.tva}"></label>
+            <label class="camp"><span class="camp-eticheta">Comerciant</span><input class="camp-input" id="b-com-${i}" value="${b.comerciant || ""}"></label>
+            <label class="camp"><span class="camp-eticheta">Data</span><input class="camp-input" type="date" id="b-data-${i}" value="${b.data || ""}"></label>
+            <label class="camp"><span class="camp-eticheta">Total</span><input class="camp-input" type="number" step="0.01" id="b-tot-${i}" value="${b.total}"></label>
+            <label class="camp"><span class="camp-eticheta">TVA total</span><input class="camp-input" type="number" step="0.01" id="b-tva-${i}" value="${b.tva}"></label>
           </div>
           <div id="b-linii-${i}" style="width:100%;margin-top:8px">
             ${(b.articole || []).map((a, j) => `
@@ -1300,7 +1300,6 @@ async function ecranBalanta(corp, nav, t) {
 async function ecranMagazin(corp, nav, t) {
   const inapoi = () => meniuFirma(corp, nav, t);
   corp.innerHTML = `
-    <button class="mig-inapoi" id="wc-back">\u2190</button>
     <h2 class="pf-titlu">Magazin online</h2>
     <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
     <div class="em-sectiune">
@@ -1314,7 +1313,7 @@ async function ecranMagazin(corp, nav, t) {
       <button class="mig-buton" id="wc-sinc">Sincronizeaz\u0103 acum</button>
     </div>
     <div class="em-rezultat" id="wc-rezultat"></div>`;
-  corp.querySelector("#wc-back").addEventListener("click", inapoi);
+  { const _b = corp.querySelector("#wc-back"); if (_b) _b.addEventListener("click", inapoi); }
   const zona = corp.querySelector("#wc-rezultat");
 
   corp.querySelector("#wc-salveaza").addEventListener("click", async () => {
@@ -1392,3 +1391,5 @@ async function ecranAccesClient(corp, nav, t) {
 // inapoi_meniu_v1
 
 // module_stiva_v1
+
+// casa_std_v1

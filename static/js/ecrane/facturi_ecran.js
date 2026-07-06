@@ -53,7 +53,7 @@ function meniuFacturi(corp, nav, tenantId, opt) {
 // ---------- ISTORIC ----------
 async function istoricFacturi(corp, nav, tenantId, opt) {
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
-  corp.innerHTML = `<button class="mig-inapoi" id="fac-back">\u2190</button><p class="ecran-nota">Se incarca...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
   corp.querySelector("#fac-back").addEventListener("click", inapoiMeniu);
   let lista = [];
   try {
@@ -78,7 +78,6 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       </button>`;
       }).join("");
   corp.innerHTML = `
-    <button class="mig-inapoi" id="fac-back">\u2190</button>
     <h2 class="pf-titlu">Istoric facturi</h2>
     <p class="pf-intro">Apas\u0103 o factur\u0103 pentru detalii.</p>
     <div class="pf-lista">${corpuri}</div>`;
@@ -114,14 +113,14 @@ const _bani = (x, mon) => {
 };
 
 async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
-  corp.innerHTML = `<button class="mig-inapoi" id="fac-back">\u2190</button><p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
   corp.querySelector("#fac-back").addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
 
   let f = null;
   try {
     f = await api.get(`/tenants/${tenantId}/facturi/${facturaId}`);
   } catch {
-    corp.innerHTML = `<button class="mig-inapoi" id="fac-back">\u2190</button><div class="mig-gol">Nu am putut \u00eenc\u0103rca factura.</div>`;
+    corp.innerHTML = `<div class="mig-gol">Nu am putut \u00eenc\u0103rca factura.</div>`;
     corp.querySelector("#fac-back").addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
     return;
   }
@@ -181,7 +180,6 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   const statusTxt = f.storno_din_id ? "storno" : (f.status || "");
 
   corp.innerHTML = `
-    <button class="mig-inapoi" id="fac-back">\u2190</button>
     <div class="fd-antet">
       <div class="fd-antet-sus">
         <h2 class="pf-titlu">${_esc(f.numar || "\u2014")}</h2>
@@ -339,14 +337,14 @@ const MF_FONTURI = {
 const MF_CULORI = ["#1d4ed8", "#0a807b", "#1d7a4d", "#a3344b", "#6d28d9", "#b45309"];
 
 async function modelFactura(corp, nav, tenantId, opt) {
-  corp.innerHTML = `<button class="mig-inapoi" id="fac-back">\u2190</button><p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
   corp.querySelector("#fac-back").addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
 
   let profil = {};
   try {
     profil = await api.get(`/tenants/${tenantId}/firma-profil`);
   } catch {
-    corp.innerHTML = `<button class="mig-inapoi" id="fac-back">\u2190</button><div class="mig-gol">Nu am putut \u00eenc\u0103rca profilul firmei.</div>`;
+    corp.innerHTML = `<div class="mig-gol">Nu am putut \u00eenc\u0103rca profilul firmei.</div>`;
     corp.querySelector("#fac-back").addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
     return;
   }
@@ -359,7 +357,6 @@ async function modelFactura(corp, nav, tenantId, opt) {
   };
 
   corp.innerHTML = `
-    <button class="mig-inapoi" id="fac-back">\u2190</button>
     <h2 class="pf-titlu">Model factur\u0103</h2>
     <p class="pf-intro">Logo, font \u0219i culoare \u2014 preview live.</p>
     <div class="mf-layout">
@@ -509,7 +506,7 @@ async function modelFactura(corp, nav, tenantId, opt) {
 // ---------- RECURENTE ----------  // fac_recurente_v1
 async function listaRecurente(corp, nav, tenantId, opt) {
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
-  corp.innerHTML = `<button class="mig-inapoi" id="fac-back">\u2190</button><p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
   corp.querySelector("#fac-back").addEventListener("click", inapoiMeniu);
   let sabloane = [];
   try {
@@ -542,7 +539,6 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
       }).join("");
 
   corp.innerHTML = `
-    <button class="mig-inapoi" id="fac-back">\u2190</button>
     <h2 class="pf-titlu">Facturi recurente</h2>
     <p class="pf-intro">\u0218abloane emise automat \u00een fiecare lun\u0103 (verificare zilnic\u0103 la 07:00).</p>
     <div class="pf-lista">${corpuri}</div>
@@ -574,7 +570,6 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
 function formSablon(corp, nav, tenantId, opt) {
   const inapoiLista = () => listaRecurente(corp, nav, tenantId, opt);
   corp.innerHTML = `
-    <button class="mig-inapoi" id="fr-back">\u2190</button>
     <h2 class="pf-titlu">\u0218ablon nou</h2>
 
     <div class="em-sectiune">
