@@ -97,6 +97,43 @@ def context_din_token(token, secret=None, acum=None):
 # ============================================================
 #  LOGIN — parte DB (se dovedește pe server)
 # ============================================================
+def sesiune_pentru_user(conn, user_id, secret=None):
+    """Emite token + user pentru un user_id deja autentificat (magic link). # sesiune_pentru_user_v1"""
+    import psycopg2.extras as _E
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute(
+            "SELECT u.id, u.email, u.nume, u.prenume, u.rol, u.accounting_firm_id, u.activ, "
+            "u.poate_pregati, u.poate_valida, u.poate_depune, "
+            "af.nume AS nume_firma, af.activ AS firma_activa "
+            "FROM public.users u "
+            "LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id "
+            "WHERE u.id = %s", (user_id,))
+        u = cur.fetchone()
+    if not u or not u["activ"]:
+        return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "cont inexistent sau inactiv"}
+    if u["accounting_firm_id"] and u["firma_activa"] is False:
+        return {"ok": False, "cod": "CABINET_SUSPENDAT", "mesaj": "Cabinetul este suspendat."}
+    token = emite_token(u, secret=secret)
+    nume_tenant = None
+    if u["rol"] == "client":
+        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+            cur.execute(
+                "SELECT t.nume FROM public.user_tenants ut "
+                "JOIN public.tenants t ON t.id = ut.tenant_id "
+                "WHERE ut.user_id = %s ORDER BY ut.tenant_id LIMIT 1", (u["id"],))
+            row = cur.fetchone()
+        nume_tenant = row["nume"] if row else None
+    return {"ok": True, "token": token,
+            "user": {"id": u["id"], "rol": u["rol"],
+                     "nume": u.get("nume"), "prenume": u.get("prenume"),
+                     "firm": u["accounting_firm_id"],
+                     "nume_firma": u.get("nume_firma"),
+                     "nume_tenant": nume_tenant,
+                     "poate_pregati": bool(u.get("poate_pregati")),
+                     "poate_valida": bool(u.get("poate_valida")),
+                     "poate_depune": bool(u.get("poate_depune"))}}
+
+
 def login(conn, email, parola, secret=None):
     """
     Caută userul după email, verifică activ + parolă (dual format), emite token.

@@ -47,6 +47,21 @@ function ecranActivare(tok) {  /* activare_fe_v1 */
 function randeaza() {
   const _act = (location.hash.match(/#activare=([\w-]+)/) || [])[1];  /* activare_fe_v1 */
   if (_act) { ecranActivare(_act); return; }
+  const _mag = (location.hash.match(/#magic=([\w-]+)/) || [])[1];  /* magic_login_fe_v1 */
+  if (_mag) {
+    location.hash = "";
+    fetch("/public/magic-login", { method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: _mag }) })
+      .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
+      .then(({ ok, d }) => {
+        if (!ok) { alert(d.detail || "Link expirat sau folosit."); randeaza(); return; }
+        sesiune.intra(d.token, d.user);
+        location.reload();
+      })
+      .catch(() => { alert("Eroare la logare."); randeaza(); });
+    return;
+  }
   if (!sesiune.esteLogat()) {
     radacina.innerHTML = "";
     ecranLogin(radacina);

@@ -964,6 +964,55 @@ class ActivareIn(BaseModel):
     token: str
     parola: str
 
+# === MAGIC LINK === # magic_link_v1
+class MagicCereIn(BaseModel):
+    email: str
+
+@app.post("/public/magic-link")
+def magic_link_cere(date: MagicCereIn):
+    """Trimite link de logare fara parola. Raspuns identic indiferent daca emailul exista (fara enumerare)."""
+    import secrets as _sec
+    email = (date.email or "").strip().lower()
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.users WHERE email=%s AND activ", (email,))
+        r = cur.fetchone()
+        if r:
+            tok = "ml_" + _sec.token_urlsafe(32)
+            cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '15 minutes')", (tok, r[0]))
+            conn.commit()
+            baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
+            link = baza + "/#magic=" + tok
+            html = ("<p>Buna,</p><p>Apasa butonul pentru a intra in iConta, fara parola:</p>"
+                    "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in iConta</a></p>"
+                    "<p>Linkul e valabil 15 minute si poate fi folosit o singura data.</p>") % link
+            try:
+                _obs.trimite_email_html(email, "Link de logare iConta", html)
+            except Exception:
+                pass
+    return {"ok": True, "mesaj": "Daca emailul exista, ai primit linkul de logare."}
+
+class MagicLoginIn(BaseModel):
+    token: str
+
+@app.post("/public/magic-login")
+def magic_login(date: MagicLoginIn):
+    tok = (date.token or "").strip()
+    if not tok.startswith("ml_"):
+        raise HTTPException(401, "link invalid")
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""SELECT user_id FROM public.tokene_activare
+                       WHERE token=%s AND NOT folosit AND expira > now()""", (tok,))
+        r = cur.fetchone()
+        if not r:
+            raise HTTPException(401, "link expirat sau folosit")
+        cur.execute("UPDATE public.tokene_activare SET folosit=true WHERE token=%s", (tok,))
+        conn.commit()
+    with db.get_conn() as conn:
+        rez = auth_api.sesiune_pentru_user(conn, r[0])
+    if not rez.get("ok"):
+        raise HTTPException(401, rez.get("mesaj", "cont inactiv"))
+    return rez
+
 @app.post("/public/activare")
 def activare_cont(date: ActivareIn):
     if len(date.parola or "") < 8:

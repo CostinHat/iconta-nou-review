@@ -1,7 +1,7 @@
 // login.js — poarta de intrare.
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
-import { api } from "../api.js";
+import { api, arataMesaj } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 function svgIcon(paths, w = 24) {
@@ -175,12 +175,24 @@ export function ecranLogin(radacina) {
       </label>
       <div class="login-eroare" id="login-eroare" hidden></div>
       <button type="submit" class="buton-primar" id="login-buton">Autentificare</button>
+      <button type="button" class="btn-link" id="acc-magic" style="margin-top:10px;display:block">Trimite-mi link de logare (f\u0103r\u0103 parol\u0103)</button>
+      <p id="acc-magic-msg" style="margin:6px 0 0"></p>
       </form>
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
 
     const email = modal.querySelector("#login-email");
     const parola = modal.querySelector("#login-parola");
+    const bMagic = modal.querySelector("#acc-magic");  /* magic_link_fe_v2 */
+    if (bMagic) bMagic.addEventListener("click", async () => {
+      const msg = modal.querySelector("#acc-magic-msg");
+      const em = (email.value || "").trim();
+      if (!em.includes("@")) { arataMesaj(msg, "Completeaz\u0103 emailul mai \u00eent\u00e2i.", "eroare"); return; }
+      try {
+        const r = await api.post("/public/magic-link", { email: em });
+        arataMesaj(msg, r.mesaj, "info");
+      } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
+    });
     const buton = modal.querySelector("#login-buton");
     const eroare = modal.querySelector("#login-eroare");
 
