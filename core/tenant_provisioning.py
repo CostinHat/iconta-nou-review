@@ -17,7 +17,7 @@ from core import db
 REGULI = "2026.1"
 MODUL = "tenant_provisioning"
 
-SCHEMA_SURSA = "tenant_001"   # schema din care s-a generat template-ul
+SCHEMA_SURSA = "TENANT_PLACEHOLDER"   # schema din care s-a generat template-ul
 _RE_TENANT_NR = re.compile(r"^tenant_(\d+)$")
 
 
