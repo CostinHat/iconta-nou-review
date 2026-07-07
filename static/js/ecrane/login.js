@@ -126,8 +126,13 @@ export function ecranLogin(radacina) {
 
   // ---------- ecran 1: alege Intra in cont / Client nou ----------
   function randeazaAlegere() {
+    modal.classList.remove("acces-modal-inreg");
     modal.innerHTML = `
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div class="login-brand">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
+        <span class="login-tagline">Contabilitatea cu control fiscal</span>
+      </div>
       <div class="acces-alegere">
         <button class="acces-card" id="acces-intra">
           <div class="acces-card-icon" style="background:#e9f0fe;color:#1d4ed8">
@@ -158,6 +163,7 @@ export function ecranLogin(radacina) {
 
   // ---------- ecran 2a: login ----------
   function randeazaLogin() {
+    modal.classList.remove("acces-modal-inreg");
     modal.innerHTML = `
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
@@ -227,6 +233,7 @@ export function ecranLogin(radacina) {
 
   // ---------- ecran 2b: inregistrare cabinet nou ----------
   function randeazaInregistrare() {
+    modal.classList.add("acces-modal-inreg");
     modal.innerHTML = `
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">

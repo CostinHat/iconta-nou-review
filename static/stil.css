@@ -1935,7 +1935,7 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   padding: 24px;
 }
-.acces-modal {
+.acces-modal { padding-top: 40px !important;
   position: relative;
   background: #fff; border-radius: 12px; box-shadow: 0 12px 40px rgba(0,0,0,0.18);
   width: 100%; max-width: 380px; padding: 32px 28px;
@@ -1960,7 +1960,7 @@ html, body {
 .acces-card-titlu { font-size: var(--text); font-weight: 700; color: var(--ardezie); }
 .acces-card-sub { font-size: var(--text-mic); color: var(--gri); margin-top: 2px; }
 .acces-card-sageata { flex-shrink: 0; color: #c4c9d1; }
-.acces-modal { max-width: 420px; padding: 36px 32px; }
+.acces-modal { max-width: 420px; padding: 40px 32px 36px; }
 .acces-overlay[hidden] { display: none !important; }
 .login-subtagline { font-size: var(--text-mic); color: var(--gri); margin-top: 4px; text-align: center; }
 
@@ -2095,68 +2095,4 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .msg-eroare { color: #a3231c; font-weight: 600; font-size: var(--text-mic); }
 .msg-avert  { color: #8a6410; font-weight: 600; font-size: var(--text-mic); }
 .msg-info   { color: var(--gri); font-size: var(--text-mic); }
-/* login_fullscreen_v1 */
-.acces-overlay { background: var(--fundal, #f4f6f9) !important; padding: 0 !important; }
-.acces-modal { box-shadow: none !important; border-radius: 0 !important; max-width: 460px; width: 100%; margin: 8vh auto 0; }
-/* ferestre_std_v1: campuri albe pe fundal gri in ferestre */
-.fereastra .camp-input, .fereastra textarea.camp-input, .fereastra select.camp-input { background: #fff; }
-.fereastra .buton-secundar { background: #fff; }
-/* ferestre_std_v2: dimensiuni unice pentru orice camp din ferestre */
-.fereastra input:not([type=checkbox]):not([type=radio]), .fereastra select { height: 36px !important; padding: 0 10px !important; font-size: var(--text-mic); box-sizing: border-box; }
-.fereastra textarea { padding: 8px 10px !important; font-size: var(--text-mic); }
-.fereastra input[type=number] { max-width: 180px; }
-.fereastra input[type=date] { max-width: 180px; }
-.firme-optiune { border: 1px solid #d5dbe3 !important; }
-/* stelute obligatorii rosii - global */
-.fereastra label, .fereastra .camp-eticheta { position: relative; }
-/* aliniere campuri in ferestre: eticheta sus, input jos, indiferent de lungimea etichetei */
-.fereastra .camp, .fereastra .et-camp { display: flex; flex-direction: column; justify-content: flex-end; }
-/* aliniere: etichete pe un singur rand, nu se rup */
-.fereastra label { display: flex; flex-direction: column; justify-content: flex-end; }
-.fereastra label > span:first-child, .fereastra .camp-eticheta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* select-urile nu se strang sub continut */
-.fereastra select { min-width: 280px; width: auto; }
-/* rand de formular standard: flex cu wrap, nu se incaleca niciodata */
-.fereastra .form-rand, .fereastra .casa-rand, .fereastra .pf-rand { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
-.fereastra .form-rand > label, .fereastra .casa-rand > label { flex: 1 1 160px; min-width: 160px; }
-.fereastra .form-rand > label:has(select) { flex: 2 1 280px; }
-/* input file conform: butonul nativ preia stilul butonului primar */
-.fereastra input[type=file] { height: auto !important; padding: 0 !important; border: none; background: none; font-family: var(--font); font-size: var(--text-mic); }
-.fereastra input[type=file]::file-selector-button { background: #3d8fd6; color: #fff; border: none; border-radius: var(--raza); padding: 8px 16px; font-family: var(--font); font-size: var(--text-mic); font-weight: 600; cursor: pointer; margin-right: 10px; }
-.fereastra input[type=file]::file-selector-button:hover { background: #115ea3; }
-/* butoanele nu se intind niciodata pe toata latimea */
-.fereastra button { width: auto; max-width: 400px; }
-/* facturi_larg_v1: fereastra larga = continut compact, global */
-.fer-larg .fereastra-corp { font-size: var(--text-mic); }
-.fer-larg .fereastra-corp h2 { font-size: var(--text-titlu); }
-/* facturi_larg_v2: in fereastra larga, randurile pf-frand devin compacte pe un rand */
-.fer-larg .pf-frand { padding: 8px 14px; gap: 10px; }
-.fer-larg .pf-frand-nume { font-size: var(--text-mic); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.fer-larg .pf-frand-sub { font-size: var(--text-mic); }
-.fer-larg .pf-frand-suma { font-size: var(--text-mic); }
-/* facturi_larg_v3: lista pe 2 coloane, centrata */
-.fer-larg .pf-lista { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; justify-content: center; } /* facturi_larg_v5 */
-.fer-larg .pf-frand { border: 1px solid #e3e7ee; border-radius: 10px; }
-@media (max-width: 900px) { .fer-larg .pf-lista { grid-template-columns: 1fr; } }
-/* facturi_larg_v4: continutul cardului se comprima, Conteaza ramane inauntru */
-.fer-larg .pf-frand-text { flex: 1; min-width: 0; }
-.fer-larg .pf-frand-nume { max-width: 100%; }
-.fer-larg .pf-frand-suma { white-space: nowrap; }
-.fer-larg .pf-frand .fac-cont { white-space: nowrap; flex-shrink: 0; }
-/* facturi_larg_v6: card pe 2 randuri - text sus, suma+Conteaza jos */
-.fer-larg .pf-frand { flex-wrap: wrap; row-gap: 4px; }
-.fer-larg .pf-frand-text { flex: 1 0 100%; }
-.fer-larg .pf-frand-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.fer-larg .pf-frand-suma { margin-left: 0; }
-/* cf_detaliu_contabil_v1: motivele contabile pe un rand */
-.cf-rand-decl .mig-sold-cont { white-space: nowrap; }
-/* semafor_text_explicit_v1: eticheta semaforului = acelasi font ca textul */
-.asi-sem-txt { font-size: var(--text-mic); color: var(--ardezie, #2c2b28); }
-.asi-echipa-banner { align-items: center; gap: 8px; display: flex; flex-wrap: nowrap; }
-.asi-echipa-banner .asi-sem { flex-shrink: 0; }
-/* edu_subbara_v1 */
-.subbara-edu { margin-left: auto; font-size: var(--text-mic); display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-/* anunturi_fe_v1 */
-.anunt-banner { display:flex; align-items:center; gap:14px; background:#fff7e6; border:1px solid #f0d9a8;
-  border-radius:10px; padding:12px 16px; margin-bottom:14px; }
-.anunt-text { flex:1; font-size:var(--text); color:#5a4a1c; }
+.acces-modal-inreg { background: #eaf2fc; }
