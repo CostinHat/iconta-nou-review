@@ -45,6 +45,7 @@ function latime(corp, larg) {
 }
 
 async function meniuMigrare(corp, nav) {
+  nav.setInapoi(null);
   latime(corp, false);
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let status = {}, nrFirme = 0;
@@ -117,10 +118,12 @@ async function meniuMigrare(corp, nav) {
 
 // ---------- WIZARD FIRME ----------
 function wizardFirme(corp, nav) {
+  nav.setInapoi(() => meniuMigrare(corp, nav));
   pasInput(corp, nav);
 }
 
 function pasInput(corp, nav) {
+  nav.setInapoi(() => meniuMigrare(corp, nav));
   corp.innerHTML = `
     <p class="mig-intro">Încarcă-ți tot portofoliul în iConta. Verificăm fiecare CUI direct la ANAF și completăm automat denumirea și datele firmei.</p>
     <div class="mig-eticheta">Lipește CUI-urile firmelor (unul pe linie)</div>
@@ -187,6 +190,7 @@ async function incarcaFisier(file) {
 }
 
 function pasRezultate(corp, nav, rezultate) {
+  nav.setInapoi(() => pasInput(corp, nav));
   corp.innerHTML = `
     <p class="mig-intro">Am verificat <b>${rezultate.length} CUI-uri</b> la ANAF. Bifează firmele pe care le aduci în iConta.</p>
     <div class="mig-lista" id="mig-lista"></div>
@@ -241,6 +245,7 @@ function pasRezultate(corp, nav, rezultate) {
 
 // ---------- PAS FINAL: decizie de finalizare ----------
 function pasFinal(corp, nav, raport) {
+  nav.setInapoi(() => meniuMigrare(corp, nav));
   const creat = (raport && raport.creat) || [];
   const erori = (raport && raport.erori) || [];
   const dejaExista = erori.filter((e) => (e.mesaj || "").includes("există deja")).length;
@@ -308,6 +313,7 @@ function randeazaDecizie(corp, nav, strat, sumarHTML, intrebare) {
 // ---------- STRAT 2: SOLDURI INIȚIALE (per firmă) ----------
 // [p84_vector_front] ----- STRAT VECTOR FISCAL -----
 async function wizardVector(corp, nav) {
+  nav.setInapoi(() => meniuMigrare(corp, nav));
   latime(corp, false);
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103 firmele\u2026</p>`;
   let firme = [];
@@ -359,6 +365,7 @@ async function wizardVector(corp, nav) {
 }
 
 async function formularVectorFirma(corp, nav, f) {
+  nav.setInapoi(() => wizardVector(corp, nav));
   latime(corp, false);
   // pre-completez din ANAF (platitor_tva e deja stiut la validarea CUI) daca firma n-are vector
   let tvaInit = f.platitor_tva;
@@ -448,7 +455,7 @@ async function formularVectorFirma(corp, nav, f) {
 }
 
 async function wizardSolduri(corp, nav) {
-  nav.setInapoi(null);
+  nav.setInapoi(() => meniuMigrare(corp, nav));
   latime(corp, false);
   corp.innerHTML = `<p class="ecran-nota">Se încarcă firmele…</p>`;
   let firme = [];
@@ -577,7 +584,7 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
 
 // ---------- STRAT 3: SOLDURI PARTENERI (per firma) ----------
 async function wizardParteneri(corp, nav) {
-  nav.setInapoi(null);
+  nav.setInapoi(() => meniuMigrare(corp, nav));
   latime(corp, false);
   corp.innerHTML = `<p class="ecran-nota">Se încarcă firmele…</p>`;
   let firme = [];
@@ -717,7 +724,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
 
 // ---------- STRAT 4: SALARIATI (per firma) ----------
 async function wizardSalariati(corp, nav) {
-  nav.setInapoi(null);
+  nav.setInapoi(() => meniuMigrare(corp, nav));
   latime(corp, false);
   corp.innerHTML = `<p class="ecran-nota">Se încarcă firmele…</p>`;
   let firme = [];
@@ -855,7 +862,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
 
 // ---------- STRAT 5: ASOCIATI (per firma) ----------
 async function wizardAsociati(corp, nav) {
-  nav.setInapoi(null);
+  nav.setInapoi(() => meniuMigrare(corp, nav));
   latime(corp, false);
   corp.innerHTML = `<p class="ecran-nota">Se încarcă firmele…</p>`;
   let firme = [];
@@ -992,7 +999,7 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
 
 // ---------- STRAT 6: MIJLOACE FIXE (per firma) ----------
 async function wizardMijloace(corp, nav) {
-  nav.setInapoi(null);
+  nav.setInapoi(() => meniuMigrare(corp, nav));
   latime(corp, false);
   corp.innerHTML = `<p class="ecran-nota">Se încarcă firmele…</p>`;
   let firme = [];
@@ -1131,7 +1138,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
 
 // ---------- STRAT 7: ISTORIC DECLARATII (per firma) ----------
 async function wizardIstoric(corp, nav) {
-  nav.setInapoi(null);
+  nav.setInapoi(() => meniuMigrare(corp, nav));
   latime(corp, false);
   corp.innerHTML = `<p class="ecran-nota">Se încarcă firmele…</p>`;
   let firme = [];
