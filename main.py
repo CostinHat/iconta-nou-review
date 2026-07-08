@@ -942,21 +942,18 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
                             (email, _nucleu.hash_parola(parola_temp), date.nume or email.split("@")[0], ctx["firm"]))
                 uid = cur.fetchone()["id"]
                 cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s)", (uid, tenant_id))
-    # client_activare_v1: link de activare in loc de parola pe email
+    # client_activare_v2: link magic (fara parola)
     import secrets as _sec
-    tok = _sec.token_urlsafe(32)
+    tok = "ml_" + _sec.token_urlsafe(32)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '48 hours')", (tok, uid))
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
-    link = baza + "/#activare=" + tok
+    link = baza + "/#magic=" + tok
     _pm = ("<p style='border-left:3px solid #3d8fd6;padding-left:12px;color:#334155'>%s</p>" % date.mesaj.strip()) if (date.mesaj or "").strip() else ""  # client_mesaj_v1
     html = ("<p>Buna,</p>" + _pm + "<p>Ai primit acces la portalul iConta pentru firma <b>%s</b>.</p>"
-            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Activeaza contul</a></p>"
-            "<p><b>Pasii:</b></p>"
-            "<ol><li>Apasa butonul de mai sus si seteaza-ti o parola.</li>"
-            "<li>Intra apoi in aplicatie cu emailul <b>%s</b> si parola setata.</li></ol>"
-            "<p>Linkul e valabil 48 de ore.</p>") % (d.get("nume", ""), link, email)
+            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in portal</a></p>"
+            "<p>Linkul e valabil 48 de ore.</p>") % (d.get("nume", ""), link)
     _obs.trimite_email_html(email, "Acces portal iConta — " + d.get("nume", ""), html)
     return {"ok": True, "user_id": uid}
 
@@ -2316,6 +2313,101 @@ def _tenant_client(ctx, tenant_id=None):
 def portal_firme(ctx=Depends(cere_client)):
     with db.get_conn() as conn:
         return {"firme": auth_api.tenantii_userului(conn, ctx["uid"])}
+
+# [portal_acces_cont_v1] patronul isi gestioneaza propriul email + acces suplimentar (fara parola, magic-link)
+class SchimbaEmailIn(BaseModel):
+    tenant_id: Optional[int] = None
+    email: str
+class AdaugaAccesIn(BaseModel):
+    tenant_id: Optional[int] = None
+    email: str
+    nume: str = ""
+@app.get("/portal/acces-cont")
+def portal_acces_cont(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("SELECT principal_client_id FROM public.tenants WHERE id=%s", (t["id"],))
+            pid = cur.fetchone()["principal_client_id"]
+            cur.execute("""SELECT u.id, u.email, u.nume FROM public.users u
+                           JOIN public.user_tenants ut ON ut.user_id=u.id
+                           WHERE ut.tenant_id=%s AND u.rol='client' ORDER BY u.id""", (t["id"],))
+            conturi = cur.fetchall()
+    principal = next((c for c in conturi if c["id"] == pid), (conturi[0] if conturi else None))
+    suplimentare = [c for c in conturi if principal and c["id"] != principal["id"]]
+    return {"principal": principal, "suplimentare": suplimentare,
+            "eu_principal": bool(principal) and principal["id"] == ctx["uid"]}
+@app.put("/portal/acces-cont/email")
+def portal_schimba_email(date: SchimbaEmailIn, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, date.tenant_id)
+    email_nou = date.email.strip().lower()
+    if "@" not in email_nou:
+        raise HTTPException(400, "email invalid")
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("SELECT principal_client_id FROM public.tenants WHERE id=%s", (t["id"],))
+            pid = cur.fetchone()["principal_client_id"]
+            if pid != ctx["uid"]:
+                raise HTTPException(403, "doar patronul poate schimba emailul principal")
+            cur.execute("SELECT id FROM public.users WHERE lower(email)=%s AND id<>%s", (email_nou, ctx["uid"]))
+            if cur.fetchone():
+                raise HTTPException(400, "email deja folosit")
+            cur.execute("UPDATE public.users SET email=%s WHERE id=%s", (email_nou, ctx["uid"]))
+    return {"ok": True}
+@app.post("/portal/acces-cont/acces")
+def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, date.tenant_id)
+    email = date.email.strip().lower()
+    if "@" not in email:
+        raise HTTPException(400, "email invalid")
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("SELECT principal_client_id FROM public.tenants WHERE id=%s", (t["id"],))
+            pid = cur.fetchone()["principal_client_id"]
+            if pid != ctx["uid"]:
+                raise HTTPException(403, "doar patronul poate adauga acces")
+            cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE id=%s", (t["id"],))
+            firm_id = cur.fetchone()["accounting_firm_id"]
+            cur.execute("SELECT id, rol, activ FROM public.users WHERE lower(email)=%s", (email,))
+            ex = cur.fetchone()
+            if ex and (ex["rol"] != "client" or ex["activ"]):
+                raise HTTPException(400, "exista deja un cont cu acest email")
+            import secrets as _sec2
+            if ex:
+                uid = ex["id"]
+                cur.execute("UPDATE public.users SET activ=true, nume=%s WHERE id=%s", (date.nume or email.split("@")[0], uid))
+                cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s) ON CONFLICT DO NOTHING", (uid, t["id"]))
+            else:
+                cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ)
+                               VALUES (%s, %s, %s, 'client', %s, true) RETURNING id""",
+                            (email, _nucleu.hash_parola(_sec2.token_urlsafe(16)), date.nume or email.split("@")[0], firm_id))
+                uid = cur.fetchone()["id"]
+                cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s)", (uid, t["id"]))
+            tok = "ml_" + _sec2.token_urlsafe(32)
+            cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '48 hours')", (tok, uid))
+    baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
+    link = baza + "/#magic=" + tok
+    html = ("<p>Buna,</p><p>Ai primit acces la portalul iConta pentru firma <b>%s</b>.</p>"
+            "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in portal</a></p>"
+            "<p>Linkul e valabil 48 de ore.</p>") % (t.get("nume", ""), link)
+    _obs.trimite_email_html(email, "Acces portal iConta — " + t.get("nume", ""), html)
+    return {"ok": True}
+@app.delete("/portal/acces-cont/acces/{user_id}")
+def portal_revoca_acces(user_id: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("SELECT principal_client_id FROM public.tenants WHERE id=%s", (t["id"],))
+            pid = cur.fetchone()["principal_client_id"]
+            if pid != ctx["uid"]:
+                raise HTTPException(403, "doar patronul poate revoca acces")
+            if user_id == pid:
+                raise HTTPException(400, "nu poti revoca propriul acces principal")
+            cur.execute("DELETE FROM public.user_tenants WHERE user_id=%s AND tenant_id=%s", (user_id, t["id"]))
+            cur.execute("SELECT count(*) AS n FROM public.user_tenants WHERE user_id=%s", (user_id,))
+            if cur.fetchone()["n"] == 0:
+                cur.execute("UPDATE public.users SET activ=false WHERE id=%s", (user_id,))
+    return {"ok": True}
 
 
 @app.get("/portal/firma")

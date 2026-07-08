@@ -1,6 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api } from "../api.js";
+import { api, arataMesaj } from "../api.js";
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";  // [p116_facturi_modul]
 
@@ -32,6 +32,8 @@ export function desktopPortal(continut, nav) {
       sinteza: "Recipise, balante, bilant" },
     { cheie: "povestea", titlu: "Povestea lunii", icon: "povestea", bg: "#efebfe", fg: "#6d28d9",
       sinteza: "Raportul lunar de la contabil" },
+    { cheie: "acces-cont", titlu: "Acces cont", icon: "solicitari", bg: "#eef2f7", fg: "#334155",
+      sinteza: "Email si acces suplimentar la portal" },
   ];
   const CARD_BON = { cheie: "bon", titlu: "Pozeaza bon", icon: "facturi", bg: "#fdeef0", fg: "#a3344b",
       sinteza: "Fotografiaza bonul, iConta il citeste" };  /* portal_layout_v2 */
@@ -88,6 +90,99 @@ function deschideCard(cheie, nav) {
   else if (cheie === "bon") nav.deschide("Pozeaza bon", (corp) => ecranBon(corp, nav));
   else if (cheie === "documente") nav.deschide("Documente", (corp) => ecranDocumente(corp, nav));
   else if (cheie === "cifre") nav.deschide("Cifrele firmei", (corp) => ecranCifre(corp, nav));  // portal_kpi_fe_v1
+  else if (cheie === "acces-cont") nav.deschide("Acces cont", (corp) => ecranAccesCont(corp, nav));
+}
+async function ecranAccesCont(corp, nav) {
+  corp.innerHTML = '<p class="ecran-nota">Se incarca...</p>';
+  let d;
+  try { d = await api.get("/portal/acces-cont"); }
+  catch (e) { corp.innerHTML = '<p class="msg-eroare">' + (e.mesaj || "Eroare la incarcare.") + '</p>'; return; }
+
+  let mesajSucces = "";
+  function randeazaEcran() {
+    nav.setInapoi(undefined);
+    const p = d.principal || {};
+    corp.innerHTML = `
+      ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
+      <div style="margin-bottom:6px"><b>Email de logare:</b> ${p.email || "-"}</div>
+      ${d.eu_principal ? '<button class="buton-secundar" id="ac-btn-schimba-email" style="margin-bottom:24px">Schimba adresa de email</button>' : '<p class="ecran-nota" style="margin:0 0 24px">Doar titularul contului poate schimba acest email.</p>'}
+      <h3 style="margin:0 0 8px">Alte persoane cu acces</h3>
+      <div id="ac-lista-suplimentar" style="margin-bottom:16px"></div>
+      ${d.eu_principal ? '<button class="buton-secundar" id="ac-btn-adauga-acces">Adauga acces altor persoane</button>' : ""}
+    `;
+    const lista = corp.querySelector("#ac-lista-suplimentar");
+    lista.innerHTML = (d.suplimentare || []).map((c) => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee">
+        <span>${c.email}${c.nume ? " · " + c.nume : ""}</span>
+        ${d.eu_principal ? '<button class="btn-link" data-uid="' + c.id + '">Revoca</button>' : ""}
+      </div>`).join("") || '<p class="ecran-nota">Niciun acces suplimentar.</p>';
+    if (d.eu_principal) {
+      lista.querySelectorAll("[data-uid]").forEach((b) => b.addEventListener("click", async () => {
+        if (!confirm("Revoci accesul pentru " + b.previousElementSibling?.textContent + "?")) return;
+        try {
+          await api.del("/portal/acces-cont/acces/" + b.dataset.uid);
+          d.suplimentare = d.suplimentare.filter((c) => String(c.id) !== b.dataset.uid);
+          randeazaEcran();
+        } catch (e) { alert(e.mesaj || "Eroare la revocare."); }
+      }));
+      corp.querySelector("#ac-btn-schimba-email").addEventListener("click", randeazaFormEmail);
+      corp.querySelector("#ac-btn-adauga-acces").addEventListener("click", randeazaFormAdauga);
+    }
+  }
+
+  function randeazaFormEmail() {
+    nav.setInapoi(randeazaEcran);
+    const p = d.principal || {};
+    corp.innerHTML = `
+      <div class="camp" style="margin-bottom:10px">
+        <label class="camp-eticheta">Noua adresa de email</label>
+        <input class="camp-input" id="ac-email-nou-val" value="${p.email || ""}" autofocus>
+      </div>
+      <p class="ecran-nota" style="margin:0 0 14px">Data viitoare cand te loghezi, vei primi linkul la aceasta adresa.</p>
+      <button class="buton-primar" id="ac-salveaza-email">Salveaza</button>
+      <button class="btn-link" id="ac-anuleaza-email" style="margin-left:10px">Renunta</button>
+      <p class="ecran-nota" id="ac-email-msg" style="margin:10px 0 0"></p>
+    `;
+    corp.querySelector("#ac-anuleaza-email").addEventListener("click", randeazaEcran);
+    corp.querySelector("#ac-salveaza-email").addEventListener("click", async () => {
+      const msg = corp.querySelector("#ac-email-msg");
+      const val = corp.querySelector("#ac-email-nou-val").value.trim();
+      try {
+        await api.put("/portal/acces-cont/email", { email: val });
+        d = await api.get("/portal/acces-cont");
+        mesajSucces = "Email actualizat.";
+        randeazaEcran();
+      } catch (e) { arataMesaj(msg, e.mesaj || "Eroare.", "eroare"); }
+    });
+  }
+
+  function randeazaFormAdauga() {
+    nav.setInapoi(randeazaEcran);
+    corp.innerHTML = `
+      <div class="camp" style="margin-bottom:10px">
+        <label class="camp-eticheta">Email de invitat</label>
+        <input class="camp-input" id="ac-email-nou" placeholder="persoana@exemplu.ro" autofocus>
+      </div>
+      <p class="ecran-nota" style="margin:0 0 14px">Persoana primeste un link de logare, fara parola.</p>
+      <button class="buton-primar" id="ac-adauga">Trimite acces</button>
+      <button class="btn-link" id="ac-anuleaza-adauga" style="margin-left:10px">Renunta</button>
+      <p class="ecran-nota" id="ac-adauga-msg" style="margin:10px 0 0"></p>
+    `;
+    corp.querySelector("#ac-anuleaza-adauga").addEventListener("click", randeazaEcran);
+    corp.querySelector("#ac-adauga").addEventListener("click", async () => {
+      const msg = corp.querySelector("#ac-adauga-msg");
+      const email = corp.querySelector("#ac-email-nou").value.trim();
+      if (!email.includes("@")) { arataMesaj(msg, "Email invalid.", "eroare"); return; }
+      try {
+        await api.post("/portal/acces-cont/acces", { email });
+        d = await api.get("/portal/acces-cont");
+        mesajSucces = "Invitatie trimisa catre " + email + ".";
+        randeazaEcran();
+      } catch (e) { arataMesaj(msg, e.mesaj || "Eroare.", "eroare"); }
+    });
+  }
+
+  randeazaEcran();
 }
 
 // ---------- PANOU STATUS ANAF (Acasa) ----------

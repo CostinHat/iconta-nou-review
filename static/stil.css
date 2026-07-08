@@ -119,11 +119,11 @@ html, body {
   font-weight: 600;
   font-family: var(--font);
   cursor: pointer;
-  transition: background 0.15s;
+  box-shadow: 0 2px 6px rgba(20,30,45,0.25); transition: background 0.15s, transform 0.1s, box-shadow 0.1s;
   margin-top: 4px;
 }
 
-.buton-primar:hover { background: var(--albastru-inchis); }
+.buton-primar:hover { background: var(--albastru-inchis); transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.3); }
 .buton-primar:disabled { background: var(--gri-clar); cursor: default; }
 
 .buton-text {
@@ -1283,9 +1283,9 @@ html, body {
   padding: 9px 18px;
   font-family: var(--font);
   font-size: var(--text-mic);
-  cursor: pointer;
+  cursor: pointer; box-shadow: 0 2px 6px rgba(20,30,45,0.18); transition: background 0.15s, transform 0.1s, box-shadow 0.1s;
 }
-.buton-secundar:hover { background: var(--fundal); }
+.buton-secundar:hover { background: var(--fundal); transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.25); }
 
 /* ---- ecran Declaratii ---- */
 .dec-form { display: flex; flex-direction: column; gap: 16px; margin-top: 4px; }
@@ -1950,8 +1950,8 @@ html, body {
 .acces-alegere { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
 .acces-card {
   display: flex; align-items: center; gap: 16px;
-  text-align: left; border: 1px solid #dbe9fb; border-radius: 12px;
-  padding: 18px 20px; background: #eef5fd; cursor: pointer; font-family: var(--font);
+  text-align: left; border: 1px solid #a8c4e8; border-radius: 12px;
+  padding: 18px 20px; background: #cfe0f7; cursor: pointer; font-family: var(--font);
   transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
 }
 .acces-card:hover { border-color: #0f6cbd; box-shadow: 0 4px 14px rgba(15,108,189,0.14); transform: translateY(-1px); }
@@ -2096,3 +2096,5 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .msg-avert  { color: #8a6410; font-weight: 600; font-size: var(--text-mic); }
 .msg-info   { color: var(--gri); font-size: var(--text-mic); }
 .acces-modal-inreg { background: #eaf2fc; }
+/* meniu_card_v2: alias pe acces-card, latime plina */
+.meniu-card { width: 100%; margin-bottom: 12px; }

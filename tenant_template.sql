@@ -24,7 +24,7 @@ SET row_security = off;
 CREATE SCHEMA TENANT_PLACEHOLDER;
 
 
-ALTER SCHEMA TENANT_PLACEHOLDER OWNER TO postgres;
+ALTER SCHEMA TENANT_PLACEHOLDER OWNER TO iconta_user;
 
 SET default_tablespace = '';
 
@@ -44,7 +44,7 @@ CREATE TABLE TENANT_PLACEHOLDER.ai_corectii (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.ai_corectii OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.ai_corectii OWNER TO iconta_user;
 
 --
 -- Name: ai_corectii_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -59,7 +59,7 @@ CREATE SEQUENCE TENANT_PLACEHOLDER.ai_corectii_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE TENANT_PLACEHOLDER.ai_corectii_id_seq OWNER TO postgres;
+ALTER SEQUENCE TENANT_PLACEHOLDER.ai_corectii_id_seq OWNER TO iconta_user;
 
 --
 -- Name: ai_corectii_id_seq; Type: SEQUENCE OWNED BY; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -82,7 +82,7 @@ CREATE TABLE TENANT_PLACEHOLDER.articole (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.articole OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.articole OWNER TO iconta_user;
 
 --
 -- Name: articole_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -111,7 +111,7 @@ CREATE TABLE TENANT_PLACEHOLDER.asociati (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.asociati OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.asociati OWNER TO iconta_user;
 
 --
 -- Name: asociati_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -181,7 +181,7 @@ CREATE TABLE TENANT_PLACEHOLDER.casa_operatiuni (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.casa_operatiuni OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.casa_operatiuni OWNER TO iconta_user;
 
 --
 -- Name: casa_operatiuni_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -216,7 +216,7 @@ CREATE TABLE TENANT_PLACEHOLDER.clienti (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.clienti OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.clienti OWNER TO iconta_user;
 
 --
 -- Name: clienti_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -268,7 +268,7 @@ CREATE TABLE TENANT_PLACEHOLDER.concedii_medicale (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.concedii_medicale OWNER TO iconta_user;
 
 --
 -- Name: concedii_medicale_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -304,7 +304,7 @@ CREATE TABLE TENANT_PLACEHOLDER.extras_linii (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.extras_linii OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.extras_linii OWNER TO iconta_user;
 
 --
 -- Name: extras_linii_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -335,7 +335,7 @@ CREATE TABLE TENANT_PLACEHOLDER.factura_linii (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.factura_linii OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.factura_linii OWNER TO iconta_user;
 
 --
 -- Name: factura_linii_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -388,7 +388,7 @@ CREATE TABLE TENANT_PLACEHOLDER.facturi (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.facturi OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.facturi OWNER TO iconta_user;
 
 --
 -- Name: facturi_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -423,7 +423,7 @@ CREATE TABLE TENANT_PLACEHOLDER.facturi_recurente (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.facturi_recurente OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.facturi_recurente OWNER TO iconta_user;
 
 --
 -- Name: facturi_recurente_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -438,7 +438,7 @@ CREATE SEQUENCE TENANT_PLACEHOLDER.facturi_recurente_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE TENANT_PLACEHOLDER.facturi_recurente_id_seq OWNER TO postgres;
+ALTER SEQUENCE TENANT_PLACEHOLDER.facturi_recurente_id_seq OWNER TO iconta_user;
 
 --
 -- Name: facturi_recurente_id_seq; Type: SEQUENCE OWNED BY; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -487,7 +487,7 @@ CREATE TABLE TENANT_PLACEHOLDER.firma_profil (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.firma_profil OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil OWNER TO iconta_user;
 
 --
 -- Name: furnizori; Type: TABLE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -508,7 +508,7 @@ CREATE TABLE TENANT_PLACEHOLDER.furnizori (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.furnizori OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.furnizori OWNER TO iconta_user;
 
 --
 -- Name: furnizori_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -541,7 +541,7 @@ CREATE TABLE TENANT_PLACEHOLDER.inregistrari (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.inregistrari OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.inregistrari OWNER TO iconta_user;
 
 --
 -- Name: inregistrari_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -570,7 +570,7 @@ CREATE TABLE TENANT_PLACEHOLDER.inregistrari_linii (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.inregistrari_linii OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.inregistrari_linii OWNER TO iconta_user;
 
 --
 -- Name: inregistrari_linii_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -606,7 +606,7 @@ CREATE TABLE TENANT_PLACEHOLDER.mijloace_fixe (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.mijloace_fixe OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.mijloace_fixe OWNER TO iconta_user;
 
 --
 -- Name: mijloace_fixe_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -640,7 +640,7 @@ CREATE TABLE TENANT_PLACEHOLDER.miscari_stoc (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.miscari_stoc OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.miscari_stoc OWNER TO iconta_user;
 
 --
 -- Name: miscari_stoc_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -676,7 +676,7 @@ CREATE TABLE TENANT_PLACEHOLDER.nir (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.nir OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.nir OWNER TO iconta_user;
 
 --
 -- Name: nir_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -707,7 +707,7 @@ CREATE TABLE TENANT_PLACEHOLDER.nir_linii (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.nir_linii OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.nir_linii OWNER TO iconta_user;
 
 --
 -- Name: nir_linii_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -736,7 +736,7 @@ CREATE TABLE TENANT_PLACEHOLDER.perioade_blocate (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.perioade_blocate OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.perioade_blocate OWNER TO iconta_user;
 
 --
 -- Name: plan_conturi; Type: TABLE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -751,7 +751,7 @@ CREATE TABLE TENANT_PLACEHOLDER.plan_conturi (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.plan_conturi OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.plan_conturi OWNER TO iconta_user;
 
 --
 -- Name: produse; Type: TABLE; Schema: TENANT_PLACEHOLDER; Owner: iconta_user
@@ -799,7 +799,7 @@ CREATE TABLE TENANT_PLACEHOLDER.retete (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.retete OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.retete OWNER TO iconta_user;
 
 --
 -- Name: retete_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -827,7 +827,7 @@ CREATE TABLE TENANT_PLACEHOLDER.retete_linii (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.retete_linii OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.retete_linii OWNER TO iconta_user;
 
 --
 -- Name: retete_linii_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -876,7 +876,7 @@ CREATE TABLE TENANT_PLACEHOLDER.rip_operatiuni (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.rip_operatiuni OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.rip_operatiuni OWNER TO iconta_user;
 
 --
 -- Name: rip_operatiuni_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -891,7 +891,7 @@ CREATE SEQUENCE TENANT_PLACEHOLDER.rip_operatiuni_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE TENANT_PLACEHOLDER.rip_operatiuni_id_seq OWNER TO postgres;
+ALTER SEQUENCE TENANT_PLACEHOLDER.rip_operatiuni_id_seq OWNER TO iconta_user;
 
 --
 -- Name: rip_operatiuni_id_seq; Type: SEQUENCE OWNED BY; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -926,7 +926,7 @@ CREATE TABLE TENANT_PLACEHOLDER.salariati (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.salariati OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.salariati OWNER TO iconta_user;
 
 --
 -- Name: salariati_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -956,7 +956,7 @@ CREATE TABLE TENANT_PLACEHOLDER.solduri_initiale (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.solduri_initiale OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.solduri_initiale OWNER TO iconta_user;
 
 --
 -- Name: solduri_initiale_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -987,7 +987,7 @@ CREATE TABLE TENANT_PLACEHOLDER.solduri_parteneri (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.solduri_parteneri OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.solduri_parteneri OWNER TO iconta_user;
 
 --
 -- Name: solduri_parteneri_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres
@@ -1017,7 +1017,7 @@ CREATE TABLE TENANT_PLACEHOLDER.state_plata (
 );
 
 
-ALTER TABLE TENANT_PLACEHOLDER.state_plata OWNER TO postgres;
+ALTER TABLE TENANT_PLACEHOLDER.state_plata OWNER TO iconta_user;
 
 --
 -- Name: state_plata_id_seq; Type: SEQUENCE; Schema: TENANT_PLACEHOLDER; Owner: postgres

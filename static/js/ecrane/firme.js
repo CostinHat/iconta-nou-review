@@ -55,7 +55,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
           info.textContent = "Verific la ANAF...";
           try {
             const r = await api.get("/public/verifica-cui/" + v);
-            if (r && r.nume) { nume.value = r.nume; info.textContent = "Găsită: " + r.nume; btn.disabled = false; }
+            if (r && r.gasit) { nume.value = r.denumire; info.textContent = "Găsită: " + r.denumire; btn.disabled = false; }
             else { info.textContent = "CUI negăsit la ANAF. Poți completa denumirea manual."; btn.disabled = false; }
           } catch (e) {
             info.textContent = "Nu am putut verifica la ANAF acum. Completează denumirea manual.";
@@ -66,7 +66,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
       nume.addEventListener("input", () => { if (nume.value.trim().length > 2 && cui.value.replace(/\D/g,"").length >= 6) btn.disabled = false; });
       btn.addEventListener("click", async () => {
         const emailCl = corp.querySelector("#fn-email").value.trim();  /* firma_email_client_v1 */
-        if (!emailCl.includes("@")) { info.textContent = "Completează emailul clientului."; return; }
+        if (!emailCl.includes("@")) { info.innerHTML = '<span class="msg-eroare">Completează emailul clientului.</span>'; return; }
         btn.disabled = true; btn.textContent = "Se creează...";
         try {
           const rT = await api.post("/tenants", { nume: nume.value.trim(), cui: cui.value.replace(/\D/g, "") });
@@ -1339,53 +1339,66 @@ async function ecranMagazin(corp, nav, t) {
 
 /* acces_client_ui_v1 */
 async function ecranAccesClient(corp, nav, t) {
-  corp.innerHTML = `
-    <div class="camp" style="margin-bottom:12px">
-      <label class="camp-eticheta">Email client</label>
-      <input class="camp-input" id="ac-email" type="email" placeholder="client@firma.ro" autocomplete="off">
-    </div>
-    <div class="camp" style="margin-bottom:14px">
-      <label class="camp-eticheta">Nume (op\u021bional)</label>
-      <input class="camp-input" id="ac-nume" placeholder="Numele persoanei">
-    </div>
-    <p class="ecran-nota" id="ac-msg" style="margin:0 0 10px"></p>
-    <button class="buton-primar" id="ac-btn">Trimite invita\u021bia</button>
-    <h3 style="margin:22px 0 8px">Conturi client</h3>
-    <div id="ac-lista"><p class="ecran-nota">Se \u00eencarc\u0103...</p></div>
-  `;
-  const msg = corp.querySelector("#ac-msg");
-  async function incarcaLista() {
+  let mesajSucces = "";
+  async function randeazaPrincipal() {
+    nav.setInapoi(undefined);
+    corp.innerHTML = `
+      ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
+      <h3 style="margin:0 0 8px">Conturi client</h3>
+      <div id="ac-lista" style="margin-bottom:16px"><p class="ecran-nota">Se incarca...</p></div>
+      <button class="acces-card meniu-card" id="ac-btn-invita">Invita client nou</button>
+    `;
+    mesajSucces = "";
+    corp.querySelector("#ac-btn-invita").addEventListener("click", randeazaFormular);
     const zona = corp.querySelector("#ac-lista");
     try {
       const r = await api.get(`/tenants/${t.id}/client-acces`);
       const cl = r.clienti || [];
-      if (!cl.length) { zona.innerHTML = `<p class="ecran-nota">Niciun cont de client \u00eenc\u0103.</p>`; return; }
-      zona.innerHTML = cl.map((c) => `
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e5e9f0">
-          <div><b>${c.email}</b> \u00b7 ${c.nume || ""} ${c.activ ? "" : " \u00b7 <span style=\'color:#a3231c\'>dezactivat</span>"}</div>
-          ${c.activ ? `<button class="buton-secundar" data-id="${c.id}">Revoc\u0103</button>` : ""}
-        </div>`).join("");
-      zona.querySelectorAll("button[data-id]").forEach((b) => b.addEventListener("click", async () => {
-        if (!confirm("Revoci accesul acestui client?")) return;
-        await api.del(`/tenants/${t.id}/client-acces/${b.dataset.id}`);
-        incarcaLista();
-      }));
+      if (!cl.length) { zona.innerHTML = `<p class="ecran-nota">Niciun cont de client inca.</p>`; }
+      else {
+        zona.innerHTML = cl.map((c) => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e5e9f0">
+            <div><b>${c.email}</b> · ${c.nume || ""} ${c.activ ? "" : ' · <span style="color:#a3231c">dezactivat</span>'}</div>
+            ${c.activ ? `<button class="buton-secundar" data-id="${c.id}">Revoca</button>` : ""}
+          </div>`).join("");
+        zona.querySelectorAll("button[data-id]").forEach((b) => b.addEventListener("click", async () => {
+          if (!confirm("Revoci accesul acestui client?")) return;
+          await api.del(`/tenants/${t.id}/client-acces/${b.dataset.id}`);
+          randeazaPrincipal();
+        }));
+      }
     } catch (e) { zona.innerHTML = `<p class="ecran-nota">${e.mesaj || e.message}</p>`; }
   }
-  corp.querySelector("#ac-btn").addEventListener("click", async () => {
-    const email = corp.querySelector("#ac-email").value.trim();
-    if (!email.includes("@")) { msg.textContent = "Email invalid."; return; }
-    msg.textContent = "Se trimite...";
-    try {
-      await api.post(`/tenants/${t.id}/client-acces`, { email, nume: corp.querySelector("#ac-nume").value.trim() });
-      msg.textContent = "Invita\u021bie trimis\u0103 pe " + email + ".";
-      corp.querySelector("#ac-email").value = "";
-      incarcaLista();
-    } catch (e) { msg.textContent = e.mesaj || e.message; }
-  });
-  incarcaLista();
+  function randeazaFormular() {
+    nav.setInapoi(randeazaPrincipal);
+    corp.innerHTML = `
+      <div class="camp" style="margin-bottom:12px">
+        <label class="camp-eticheta">Email client</label>
+        <input class="camp-input" id="ac-email" type="email" placeholder="client@firma.ro" autocomplete="off" autofocus>
+      </div>
+      <div class="camp" style="margin-bottom:14px">
+        <label class="camp-eticheta">Nume (optional)</label>
+        <input class="camp-input" id="ac-nume" placeholder="Numele persoanei">
+      </div>
+      <p class="ecran-nota" id="ac-msg" style="margin:0 0 10px"></p>
+      <button class="buton-primar" id="ac-btn">Trimite invitatia</button>
+      <button class="btn-link" id="ac-renunta" style="margin-left:10px">Renunta</button>
+    `;
+    const msg = corp.querySelector("#ac-msg");
+    corp.querySelector("#ac-renunta").addEventListener("click", randeazaPrincipal);
+    corp.querySelector("#ac-btn").addEventListener("click", async () => {
+      const email = corp.querySelector("#ac-email").value.trim();
+      if (!email.includes("@")) { msg.innerHTML = '<span class="msg-eroare">Email invalid.</span>'; return; }
+      msg.textContent = "Se trimite...";
+      try {
+        await api.post(`/tenants/${t.id}/client-acces`, { email, nume: corp.querySelector("#ac-nume").value.trim() });
+        mesajSucces = "Invitatie trimisa pe " + email + ".";
+        randeazaPrincipal();
+      } catch (e) { msg.innerHTML = '<span class="msg-eroare">' + (e.mesaj || e.message) + '</span>'; }
+    });
+  }
+  randeazaPrincipal();
 }
-
 // fara_mesaj_v1
 
 // inapoi_meniu_v1
