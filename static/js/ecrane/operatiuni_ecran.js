@@ -253,7 +253,7 @@ export async function ecranOperatiuni(corp, nav, t) {
           <div class="pf-frand-nume" style="margin-bottom:8px">${esc(cat)}</div>
           <div style="display:flex;flex-wrap:wrap;gap:8px">
             ${REGISTRU.filter((o) => o.cat === cat).map((o) =>
-              `<button class="btn btn-secundar" data-op="${o.cheie}">${esc(o.titlu)}</button>`).join("")}
+              `<button class="buton-secundar" data-op="${o.cheie}">${esc(o.titlu)}</button>`).join("")}
           </div>
         </div>`).join("")}`;
     corp.querySelectorAll("[data-op]").forEach((b) => b.addEventListener("click", () => {
@@ -280,13 +280,13 @@ export async function ecranOperatiuni(corp, nav, t) {
     };
     corp.innerHTML = `
       <h2 class="pf-titlu">${esc(opCurenta.titlu)} \u00b7 ${esc(t.nume || "")}</h2>
-      <p><button class="btn btn-secundar" id="op-inapoi">\u2190 Toate opera\u021biunile</button></p>
+      <p><button class="buton-secundar" id="op-inapoi">\u2190 Toate opera\u021biunile</button></p>
       <div class="pf-frand" style="display:block">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;max-width:1000px">
           ${opCurenta.campuri.map(camp).join("")}
         </div>
         ${opCurenta.multi ? '<div class="pf-frand-nume" style="margin:12px 0 6px">Solduri</div><div id="op-multi"></div>' : ""}
-        <p style="margin-top:12px"><button class="btn" id="op-trimite">Genereaz\u0103 nota (ciorn\u0103)</button></p>
+        <p style="margin-top:12px"><button class="buton-primar" id="op-trimite">Genereaz\u0103 nota (ciorn\u0103)</button></p>
         <div id="op-mesaj"></div>
       </div>`;
     corp.querySelector("#op-inapoi").addEventListener("click", lista);
@@ -301,7 +301,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         return `<label>${esc(sc.eticheta)}<br><input type="${t2}" step="0.0001" id="m${i}-${sc.nume}" class="mig-text" placeholder="${sc.sugestie||""}"></label>`;
       }).join("")}</div>`;
     if (opCurenta.multi && zonaMulti) {
-      zonaMulti.innerHTML = randMulti(0) + '<p><button class="btn btn-secundar" id="op-plus-rand">+ Rand</button></p>';
+      zonaMulti.innerHTML = randMulti(0) + '<p><button class="buton-secundar" id="op-plus-rand">+ Rand</button></p>';
       corp.querySelector("#op-plus-rand").addEventListener("click", () => {
         const i = randuriMulti.length; randuriMulti.push(i);
         const d = document.createElement("div"); d.innerHTML = randMulti(i);

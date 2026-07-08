@@ -27,7 +27,7 @@ export async function randeazaRaporteaza(corp, nav) {
         <button class="rap-btn-poza" id="rap-add-poza" type="button">+ Adauga captura</button>
         <input type="file" id="rap-file" accept="image/png,image/jpeg,image/webp" multiple style="display:none">
       </div>
-      <button class="set-buton" id="rap-trimite">Trimite sesizarea</button>
+      <button class="buton-primar" id="rap-trimite">Trimite sesizarea</button>
       <div class="set-mesaj" id="rap-msg"></div>
     </div>
 
@@ -143,7 +143,7 @@ export async function randeazaRaporteaza(corp, nav) {
           <div class="rap-mesaje">${mesaje}</div>
           <div class="rap-replica">
             <textarea class="rap-replica-text set-input" rows="2" style="overflow:hidden;resize:none" placeholder="Adauga un mesaj..."></textarea>
-            <button class="set-buton rap-replica-btn">Trimite</button>
+            <button class="buton-primar rap-replica-btn">Trimite</button>
           </div>
         </div>
       </div>`;

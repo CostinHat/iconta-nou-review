@@ -301,7 +301,7 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
     <div class="sol-fir" id="sol-fir">${firHtml}</div>
     <div class="sol-trimite">
       <textarea id="sol-input" placeholder="Scrie un raspuns..." rows="3"></textarea>
-      <button class="btn" id="sol-trimite-btn">Trimite</button>
+      <button class="buton-primar" id="sol-trimite-btn">Trimite</button>
     </div>
   `;
   const fir = corp.querySelector("#sol-fir");
@@ -344,8 +344,8 @@ async function ecranVerificari(corp, nav, t) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Verific\u0103ri \u00b7 ${t.nume || ""}</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an} \u00b7 ${r ? r.note : 0} note contabile
-        <button class="btn-secundar" id="vf-prev" style="margin-left:12px">\u2190 luna</button>
-        <button class="btn-secundar" id="vf-next">luna \u2192</button></p>
+        <button class="buton-secundar" id="vf-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="buton-secundar" id="vf-next">luna \u2192</button></p>
       <div class="pf-lista">
         ${r ? rand("Echilibru balan\u021b\u0103", r.echilibru) : ""}
         ${r ? rand("Trezorerie (f\u0103r\u0103 solduri creditoare)", r.trezorerie) : ""}
@@ -385,16 +385,16 @@ async function ecranSalariati(corp, nav, t) {
             <div class="pf-frand-nume">${s.nume}</div>
             <div class="pf-frand-sub">brut ${s.brut.toFixed(2)} \u00b7 CAS ${s.cas.toFixed(2)} \u00b7 CASS ${s.cass.toFixed(2)} \u00b7 impozit ${s.impozit.toFixed(2)} \u00b7 <b>net ${s.net.toFixed(2)}</b> \u00b7 cost ${s.cost.toFixed(2)}</div>
           </div>
-          <button class="btn" data-flut="${s.id}">Fluturas</button>
-          <button class="btn btn-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
+          <button class="buton-primar" data-flut="${s.id}">Fluturas</button>
+          <button class="buton-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Stat de plat\u0103 \u00b7 ${t.nume || ""}</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an}
-        <button class="btn btn-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
-        <button class="btn btn-secundar" id="sp-next">luna \u2192</button>
-        <button class="btn btn-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
-        <button class="btn btn-secundar" id="sp-reges-poll">R\u0103spunsuri REGES</button></p>
+        <button class="buton-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="buton-secundar" id="sp-next">luna \u2192</button>
+        <button class="buton-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
+        <button class="buton-secundar" id="sp-reges-poll">R\u0103spunsuri REGES</button></p>
       <div id="sp-reges-zona"></div>
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
@@ -408,7 +408,7 @@ async function ecranSalariati(corp, nav, t) {
           <label class="camp"><span class="camp-eticheta">Parola</span><input type="password" id="rg-pass" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Mediu</span><select id="rg-mediu" class="camp-input"><option value="test">Test</option><option value="prod">Productie</option></select></label>
         </div>
-        <p style="margin-top:10px"><button class="btn" id="rg-salveaza">Salveaz\u0103</button></p>
+        <p style="margin-top:10px"><button class="buton-primar" id="rg-salveaza">Salveaz\u0103</button></p>
         <div id="rg-msg"></div></div>`;
       corp.querySelector("#rg-salveaza").addEventListener("click", async () => {
         const m = corp.querySelector("#rg-msg");
@@ -482,12 +482,12 @@ async function sectiuneaCV(corp, t, zonaM) {
         <input type="text" id="cv-doc" class="mig-text" placeholder="document" style="width:130px">
       </div>
       <p>
-        <button class="btn" id="cv-intrare">Intrare</button>
-        <button class="btn" id="cv-iesire" style="margin-left:6px">Ie\u0219ire la CMP (nota ciorn\u0103)</button>
-        <button class="btn btn-secundar" id="cv-fisa" style="margin-left:6px">Vezi fi\u0219a</button>
+        <button class="buton-primar" id="cv-intrare">Intrare</button>
+        <button class="buton-primar" id="cv-iesire" style="margin-left:6px">Ie\u0219ire la CMP (nota ciorn\u0103)</button>
+        <button class="buton-secundar" id="cv-fisa" style="margin-left:6px">Vezi fi\u0219a</button>
       </p>
       <div style="margin-top:10px">
-        <button class="btn btn-secundar" id="cv-inv">Inventar (stoc faptic)</button>
+        <button class="buton-secundar" id="cv-inv">Inventar (stoc faptic)</button>
         <div id="cv-inv-zona" style="margin-top:8px"></div>
       </div>
       <div id="cv-fisa-zona"></div>
@@ -497,8 +497,8 @@ async function sectiuneaCV(corp, t, zonaM) {
         <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end">
           <label class="camp"><span class="camp-eticheta">Denumire</span><input class="camp-input" id="rt-den" placeholder="ex. Meniu zilei"></label>
           <label class="camp"><span class="camp-eticheta">Pre\u021b f\u0103r\u0103 TVA</span><input class="camp-input" type="number" step="0.01" id="rt-pret" style="width:110px"></label>
-          <button class="btn btn-secundar" id="rt-plus">+ ingredient</button>
-          <button class="btn" id="rt-salveaza">Salveaz\u0103 re\u021beta</button>
+          <button class="buton-secundar" id="rt-plus">+ ingredient</button>
+          <button class="buton-primar" id="rt-salveaza">Salveaz\u0103 re\u021beta</button>
         </div>
         <div id="rt-ingrediente"></div>
       </div>
@@ -539,7 +539,7 @@ async function sectiuneaCV(corp, t, zonaM) {
         <select class="mig-text rt-art" data-i="${i}">${arts.map((a) =>
           `<option value="${a.id}" ${a.id == l.articol_id ? "selected" : ""}>${escV(a.denumire)} \u00b7 CMP ${a.cmp}</option>`).join("")}</select>
         <input class="mig-text rt-cant" data-i="${i}" type="number" step="0.001" value="${l.cantitate || ""}" placeholder="cant./por\u021bie" style="width:120px">
-        <button class="btn btn-sters rt-scoate" data-i="${i}">\u2212</button>
+        <button class="buton-sters rt-scoate" data-i="${i}">\u2212</button>
       </div>`).join("");
     rtIng.querySelectorAll(".rt-art").forEach((s) => s.addEventListener("change", (e) => { rtLinii[e.target.dataset.i].articol_id = parseInt(e.target.value); }));
     rtIng.querySelectorAll(".rt-cant").forEach((s) => s.addEventListener("input", (e) => { rtLinii[e.target.dataset.i].cantitate = parseFloat(e.target.value); }));
@@ -558,8 +558,8 @@ async function sectiuneaCV(corp, t, zonaM) {
               <div class="pf-frand-sub">cost/por\u021bie ${fc.cost_portie} \u00b7 food cost ${pct} \u00b7 ${(r.linii || []).map((l) => `${escV(l.denumire)} ${l.cantitate}${escV(l.um || "")}`).join(", ")}</div>
             </div>
             <input class="mig-text rt-portii" data-id="${r.id}" type="number" placeholder="por\u021bii" style="width:80px">
-            <button class="btn rt-desc" data-id="${r.id}">Descarc\u0103 (ciorn\u0103)</button>
-            <button class="btn btn-sters rt-del" data-id="${r.id}">\u0218terge</button>
+            <button class="buton-primar rt-desc" data-id="${r.id}">Descarc\u0103 (ciorn\u0103)</button>
+            <button class="buton-sters rt-del" data-id="${r.id}">\u0218terge</button>
           </div>`;
         }).join("");
     rtLista.querySelectorAll(".rt-desc").forEach((b) => b.addEventListener("click", async (e) => {
@@ -595,7 +595,7 @@ async function sectiuneaCV(corp, t, zonaM) {
         <div class="pf-frand-nume">${escV(a.denumire)} \u00b7 scriptic ${a.stoc} ${escV(a.um)}</div>
       </div>
       <input type="number" step="0.001" class="mig-text cvi-faptic" data-aid="${a.id}" placeholder="faptic" style="width:110px"></div>`).join("")}
-      <p style="margin-top:8px"><button class="btn" id="cvi-salveaza">Salveaz\u0103 inventarul (note ciorne)</button></p>`;
+      <p style="margin-top:8px"><button class="buton-primar" id="cvi-salveaza">Salveaz\u0103 inventarul (note ciorne)</button></p>`;
     z.querySelector("#cvi-salveaza").addEventListener("click", async () => {
       const linii = [...z.querySelectorAll(".cvi-faptic")]
         .filter((i) => i.value !== "")
@@ -641,8 +641,8 @@ async function ecranBilant(corp, nav, t) {
           <option value="s1005">S1005 \u00b7 microentit\u0103\u021bi</option>
           <option value="s1003">S1003 \u00b7 entit\u0103\u021bi mici</option>
         </select></label>
-        <button class="btn" id="bl-val">Valideaz\u0103 (ANAF)</button>
-        <button class="btn btn-secundar" id="bl-xml">Descarc\u0103 XML</button>
+        <button class="buton-primar" id="bl-val">Valideaz\u0103 (ANAF)</button>
+        <button class="buton-secundar" id="bl-xml">Descarc\u0103 XML</button>
       </div>
       <div id="bl-rez" style="margin-top:10px"></div>`;
     const rez = corp.querySelector("#bl-rez");
@@ -703,14 +703,14 @@ async function ecranStocuri(corp, nav, t) {
         <input type="number" step="0.0001" class="mig-text sn-pa" placeholder="pret achizitie" value="${l.pret_achizitie || ""}" style="width:120px">
         <input type="number" step="0.0001" class="mig-text sn-pv" placeholder="pret raft (cu TVA)" value="${l.pret_vanzare || ""}" style="width:140px">
         <select class="mig-text sn-tva" style="width:80px">${[21, 11].map((c) => `<option value="${c}"${(l.cota_tva || 21) == c ? " selected" : ""}>${c}%</option>`).join("")}</select>
-        <button class="btn btn-secundar sn-scoate">\u2212</button>
+        <button class="buton-secundar sn-scoate">\u2212</button>
       </div>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Stocuri \u00b7 ${escS(t.nume || "")}</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
-        <button class="btn btn-secundar" id="s-prev" style="margin-left:12px">\u2190 luna</button>
-        <button class="btn btn-secundar" id="s-next">luna \u2192</button>
-        <button class="btn" id="s-desc" style="margin-left:12px">Descarc\u0103 gestiunea lunii</button></p>
+        <button class="buton-secundar" id="s-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="buton-secundar" id="s-next">luna \u2192</button>
+        <button class="buton-primar" id="s-desc" style="margin-left:12px">Descarc\u0103 gestiunea lunii</button></p>
       <div id="s-mesaj"></div>
       <div class="pf-frand" style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">NIR nou</div>
@@ -721,8 +721,8 @@ async function ecranStocuri(corp, nav, t) {
           <input type="text" id="sn-cui" class="mig-text" placeholder="CUI" style="width:120px">
         </div>
         <div id="sn-linii">${liniiNir.map(randLinie).join("")}</div>
-        <p><button class="btn btn-secundar" id="sn-plus">+ articol</button>
-           <button class="btn" id="sn-salveaza" style="margin-left:6px">Salveaz\u0103 NIR (note ciorne)</button></p>
+        <p><button class="buton-secundar" id="sn-plus">+ articol</button>
+           <button class="buton-primar" id="sn-salveaza" style="margin-left:6px">Salveaz\u0103 NIR (note ciorne)</button></p>
       </div>
       <div id="cv-zona"></div>
       <div class="pf-lista">${randuri}</div>`;
@@ -805,13 +805,13 @@ async function ecranCasa(corp, nav, t) {
             <div class="pf-frand-nume">${escC(o.data)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${o.suma} lei \u00b7 sold ${o.sold} lei</div>
             <div class="pf-frand-sub">${escC(o.partener || "")}${o.document ? " \u00b7 doc " + escC(o.document) : ""} \u00b7 ${escC(o.categorie)}</div>
           </div>
-          <button class="btn btn-secundar" data-del="${o.id}">\u0218terge</button>
+          <button class="buton-secundar" data-del="${o.id}">\u0218terge</button>
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Cas\u0103 \u00b7 ${escC(t.nume || "")}</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 sold final <b>${reg.sold_final} lei</b>
-        <button class="btn btn-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
-        <button class="btn btn-secundar" id="c-next">luna \u2192</button></p>
+        <button class="buton-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="buton-secundar" id="c-next">luna \u2192</button></p>
       ${avert}
       <div class="pf-frand" style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Dispozitie noua</div>
@@ -823,7 +823,7 @@ async function ecranCasa(corp, nav, t) {
           <label class="camp" style="flex:0 1 160px"><span class="camp-eticheta">CUI</span><input type="text" id="c-cui" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Document</span><input type="text" id="c-doc" class="camp-input"></label>
         </div>
-        <p style="margin-top:10px"><button class="btn" id="c-adauga">Adauga (nota ciorna)</button></p>
+        <p style="margin-top:10px"><button class="buton-primar" id="c-adauga">Adauga (nota ciorna)</button></p>
         <div id="c-mesaj"></div>
       </div>
       <div class="pf-lista">${randuri}</div>`;
@@ -902,8 +902,8 @@ async function ecranBanca(corp, nav, t) {
           ${randAlocari(l)}
         </div>
         <div>
-          ${l.status === "potrivit" ? `<button class="btn" data-cont="${l.id}">Conteaz\u0103</button>` : ""}${l.status === "nou" && l.nota_propusa && l.nota_propusa.debit ? `<button class="btn" data-cont="${l.id}">Conteaz\u0103 ${l.nota_propusa.debit}=${l.nota_propusa.credit}</button>${badgeIncredere(l)}` : ""}
-          ${l.status !== "contat" && l.status !== "ignorat" ? `<button class="btn" data-alege="${l.id}" style="margin-left:6px">Alege facturile</button>` : ""}${l.status !== "contat" && l.status !== "ignorat" ? `<button class="btn btn-secundar" data-ign="${l.id}" style="margin-left:6px">Ignor\u0103</button>` : ""}
+          ${l.status === "potrivit" ? `<button class="buton-primar" data-cont="${l.id}">Conteaz\u0103</button>` : ""}${l.status === "nou" && l.nota_propusa && l.nota_propusa.debit ? `<button class="buton-primar" data-cont="${l.id}">Conteaz\u0103 ${l.nota_propusa.debit}=${l.nota_propusa.credit}</button>${badgeIncredere(l)}` : ""}
+          ${l.status !== "contat" && l.status !== "ignorat" ? `<button class="buton-primar" data-alege="${l.id}" style="margin-left:6px">Alege facturile</button>` : ""}${l.status !== "contat" && l.status !== "ignorat" ? `<button class="buton-secundar" data-ign="${l.id}" style="margin-left:6px">Ignor\u0103</button>` : ""}
         </div>
       </div>`).join("")}</div>`;
     zonaLista.querySelectorAll("[data-cont]").forEach((b) =>
@@ -959,8 +959,8 @@ async function ecranBanca(corp, nav, t) {
             </div>
           </label>`).join("")}</div>
         <p style="margin-top:10px">
-          <button class="btn" id="bk-pk-ok">Conteaz\u0103 selectate</button>
-          <button class="btn" id="bk-pk-nu" style="margin-left:6px">Renun\u021b\u0103</button>
+          <button class="buton-primar" id="bk-pk-ok">Conteaz\u0103 selectate</button>
+          <button class="buton-primar" id="bk-pk-nu" style="margin-left:6px">Renun\u021b\u0103</button>
         </p>
       </div>`;
     zonaMesaj.scrollIntoView({behavior:"smooth",block:"start"});
@@ -1008,7 +1008,7 @@ async function ecranRaportZ(corp, nav, t) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Raport Z \u00b7 ${t.nume || ""}</h2>
     <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total.</p>
-    <p><label class="btn btn-secundar" style="cursor:pointer">Import fisier AMEF (p7b/XML)
+    <p><label class="buton-secundar" style="cursor:pointer">Import fisier AMEF (p7b/XML)
       <input type="file" id="z-amef" accept=".p7b,.xml" style="display:none"></label></p>
     <div id="z-amef-msg"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px">
@@ -1020,7 +1020,7 @@ async function ecranRaportZ(corp, nav, t) {
       <label class="camp"><span class="camp-eticheta">Card</span><input type="number" step="0.01" id="z-card" class="camp-input" value="0"></label>
     </div>
     <div id="z-rezultat" style="margin-top:16px"></div>
-    <p style="margin-top:16px"><button class="btn" id="z-salveaza">Genereaza nota</button></p>`;
+    <p style="margin-top:16px"><button class="buton-primar" id="z-salveaza">Genereaza nota</button></p>`;
   corp.querySelector("#z-amef").addEventListener("change", async (ev) => {
       const f = ev.target.files[0];
       const zona = corp.querySelector("#z-amef-msg");
@@ -1053,7 +1053,7 @@ async function ecranRaportZ(corp, nav, t) {
       const dz = new Date(corp.querySelector("#z-data").value || new Date());
       const anz = dz.getFullYear(), lz = dz.getMonth() + 1;
       const zb = document.createElement("p");
-      zb.innerHTML = `<button class="btn btn-secundar" id="z-desc-gv">Descarc\u0103 gestiunea GV ${String(lz).padStart(2,"0")}/${anz} (not\u0103 ciorn\u0103)</button>`;
+      zb.innerHTML = `<button class="buton-secundar" id="z-desc-gv">Descarc\u0103 gestiunea GV ${String(lz).padStart(2,"0")}/${anz} (not\u0103 ciorn\u0103)</button>`;
       zona.appendChild(zb);
       zb.querySelector("#z-desc-gv").addEventListener("click", async () => {
         try {
@@ -1087,9 +1087,9 @@ async function ecranJurnal(corp, nav, t) {
     const rand = (n) => {
       if (inEditare === n.id) return editor(n);
       const butoane = n.status === "ciorna" ? `
-        <button class="btn" data-val="${n.id}">Valideaz\u0103</button>
-        <button class="btn btn-secundar" data-edit="${n.id}" style="margin-left:6px">Editeaz\u0103</button>
-        <button class="btn btn-secundar" data-del="${n.id}" style="margin-left:6px">\u0218terge</button>` : "";
+        <button class="buton-primar" data-val="${n.id}">Valideaz\u0103</button>
+        <button class="buton-secundar" data-edit="${n.id}" style="margin-left:6px">Editeaz\u0103</button>
+        <button class="buton-secundar" data-del="${n.id}" style="margin-left:6px">\u0218terge</button>` : "";
       return `
         <div class="pf-frand">
           <div class="pf-frand-text">
@@ -1109,12 +1109,12 @@ async function ecranJurnal(corp, nav, t) {
             <span style="align-self:center">=</span>
             <input type="text" class="mig-text je-cre" placeholder="credit" value="${escJ(l.credit)}" style="width:90px">
             <input type="number" step="0.01" class="mig-text je-sum" value="${l.suma.toFixed(2)}" style="width:120px">
-            <button class="btn btn-secundar je-scoate">\u2212</button>
+            <button class="buton-secundar je-scoate">\u2212</button>
           </div>`).join("")}</div>
-        <p><button class="btn btn-secundar" id="je-plus">+ linie</button></p>
+        <p><button class="buton-secundar" id="je-plus">+ linie</button></p>
         <p style="margin-top:10px">
-          <button class="btn" id="je-salveaza">Salveaz\u0103</button>
-          <button class="btn btn-secundar" id="je-renunta" style="margin-left:6px">Renun\u021b\u0103</button>
+          <button class="buton-primar" id="je-salveaza">Salveaz\u0103</button>
+          <button class="buton-secundar" id="je-renunta" style="margin-left:6px">Renun\u021b\u0103</button>
         </p>
       </div>`;
     const randuri = !note.length
@@ -1124,10 +1124,10 @@ async function ecranJurnal(corp, nav, t) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Registru jurnal \u00b7 ${escJ(t.nume || "")}</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:#c9961f;font-weight:600">${ciorne} de validat</span>` : ""}
-        <button class="btn btn-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
-        <button class="btn btn-secundar" id="j-next">luna \u2192</button>
-        <button class="btn" id="j-amort" style="margin-left:12px">Genereaza amortizarea</button>
-        <button class="btn btn-secundar" id="j-lock" style="margin-left:6px"></button></p>
+        <button class="buton-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="buton-secundar" id="j-next">luna \u2192</button>
+        <button class="buton-primar" id="j-amort" style="margin-left:12px">Genereaza amortizarea</button>
+        <button class="buton-secundar" id="j-lock" style="margin-left:6px"></button></p>
       <div id="j-mesaj"></div>
       <div class="pf-lista">${randuri}</div>`;
     const zonaMesaj = corp.querySelector("#j-mesaj");
@@ -1179,7 +1179,7 @@ async function ecranJurnal(corp, nav, t) {
           <span style="align-self:center">=</span>
           <input type="text" class="mig-text je-cre" placeholder="credit" style="width:90px">
           <input type="number" step="0.01" class="mig-text je-sum" value="0.00" style="width:120px">
-          <button class="btn btn-secundar je-scoate">\u2212</button>`;
+          <button class="buton-secundar je-scoate">\u2212</button>`;
         zona.appendChild(d); leaga();
       });
       corp.querySelector("#je-renunta").addEventListener("click", () => { inEditare = null; deseneaza(); });
@@ -1228,7 +1228,7 @@ async function ecranBonuri(corp, nav, t) {
                 <input class="mig-text" id="b-cont-${i}-${j}" value="${a.cont_propus || ""}" placeholder="cont">
               </div>`).join("")}
           </div>
-          <div style="margin-top:8px"><button class="btn" data-aproba="${i}">Certifica si conteaza</button></div>
+          <div style="margin-top:8px"><button class="buton-primar" data-aproba="${i}">Certifica si conteaza</button></div>
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Bonuri de verificat \u00b7 ${t.nume || ""}</h2>
@@ -1272,9 +1272,9 @@ async function ecranBalanta(corp, nav, t) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Balan\u021b\u0103 de verificare \u00b7 ${String(t.nume || "")}</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
-        <button class="btn btn-secundar" id="b-prev" style="margin-left:12px">\u2190 luna</button>
-        <button class="btn btn-secundar" id="b-next">luna \u2192</button></p>
-      <p><button class="btn" id="b-pdf">Descarc\u0103 PDF</button></p>
+        <button class="buton-secundar" id="b-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="buton-secundar" id="b-next">luna \u2192</button></p>
+      <p><button class="buton-primar" id="b-pdf">Descarc\u0103 PDF</button></p>
       <div id="b-mesaj"></div>`;
     corp.querySelector("#b-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#b-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });

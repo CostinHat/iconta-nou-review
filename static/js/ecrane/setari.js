@@ -58,7 +58,7 @@ export async function randeazaSetari(corp, nav) {
           <span class="set-eticheta">CUI</span>
           <input id="set-cab-cui" class="set-input" type="text" value="${esc(cab && cab.cui)}">
         </label>
-        <button class="set-buton" id="set-salveaza-cabinet">Salveaza datele cabinetului</button>
+        <button class="buton-primar" id="set-salveaza-cabinet">Salveaza datele cabinetului</button>
         <div class="set-mesaj" id="set-msg-cabinet"></div>
       </div>`;
     legaInapoi();
@@ -93,7 +93,7 @@ export async function randeazaSetari(corp, nav) {
         <label class="set-bifa"><input type="checkbox" id="cmp-preg" ${b("poate_pregati")}> <span>Pot pregati declaratii</span></label>
         <label class="set-bifa"><input type="checkbox" id="cmp-val" ${b("poate_valida")}> <span>Pot valida declaratii</span></label>
         <label class="set-bifa"><input type="checkbox" id="cmp-dep" ${b("poate_depune")}> <span>Pot depune declaratii</span></label>
-        <button class="set-buton" id="set-salveaza-compet">Salveaza competentele</button>
+        <button class="buton-primar" id="set-salveaza-compet">Salveaza competentele</button>
         <div class="set-mesaj" id="set-msg-compet"></div>
       </div>`;
     legaInapoi();
@@ -123,7 +123,7 @@ export async function randeazaSetari(corp, nav) {
         <p class="mig-intro">Pentru conectarea altor aplicatii la datele cabinetului. Cheia se afiseaza o singura data.</p>
         <div id="set-chei-lista"><p class="ecran-nota">Se incarca...</p></div>
         <input id="set-cheie-nume" class="set-input" type="text" placeholder="Nume cheie (ex: integrare CRM)">
-        <button class="set-buton" id="set-cheie-noua">Genereaza cheie noua</button>
+        <button class="buton-primar" id="set-cheie-noua">Genereaza cheie noua</button>
         <div class="set-mesaj" id="set-msg-chei"></div>
       </div>`;
     legaInapoi();
@@ -142,7 +142,7 @@ export async function randeazaSetari(corp, nav) {
           <span class="set-eticheta">Nume</span>
           <input id="set-prenume" class="set-input" type="text" value="${esc(u.prenume)}">
         </label>
-        <button class="set-buton" id="set-salveaza-profil">Salveaza profilul</button>
+        <button class="buton-primar" id="set-salveaza-profil">Salveaza profilul</button>
         <div class="set-mesaj" id="set-msg-profil"></div>
       </div>`;
     legaInapoi();
@@ -177,7 +177,7 @@ export async function randeazaSetari(corp, nav) {
           <span class="set-eticheta">Confirma parola noua</span>
           <input id="set-pc" class="set-input" type="password" autocomplete="new-password">
         </label>
-        <button class="set-buton" id="set-schimba-parola">Schimba parola</button>
+        <button class="buton-primar" id="set-schimba-parola">Schimba parola</button>
         <div class="set-mesaj" id="set-msg-parola"></div>
       </div>`;
     legaInapoi();

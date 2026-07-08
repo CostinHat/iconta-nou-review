@@ -40,7 +40,7 @@ async function randeaza(corp, nav) {
           <div class="pf-frand-sub">${c.nr_useri ?? 0} utilizatori · ${c.nr_facturi ?? 0} facturi emise · creat: ${fmtData(c.creat_la)} · ultima activitate: ${fmtData(c.ultima_activitate)}</div>
         </div>
         ${stare}
-        <button class="btn ${c.activ ? 'btn-sters' : 'btn-secundar'}" data-toggle="${i}" style="margin-left:10px">
+        <button class="${c.activ ? 'buton-sters' : 'buton-secundar'}" data-toggle="${i}" style="margin-left:10px">
           ${c.activ ? "Suspendă" : "Reactivează"}
         </button>
       </div>`;

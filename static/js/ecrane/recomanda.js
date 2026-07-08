@@ -15,7 +15,7 @@ export function randeazaRecomanda(corp, nav) {
         <span class="set-eticheta">Email (poti pune mai multe, separate prin virgula sau enter)</span>
         <textarea id="rec-emails" class="set-input" rows="4" placeholder="prieten@exemplu.ro, alt.cabinet@exemplu.ro"></textarea>
       </label>
-      <button class="set-buton" id="rec-trimite">Trimite invitatia</button>
+      <button class="buton-primar" id="rec-trimite">Trimite invitatia</button>
       <div class="set-mesaj" id="rec-msg"></div>
     </div>
   `;

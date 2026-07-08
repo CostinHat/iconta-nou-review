@@ -37,21 +37,21 @@ export async function ecranRip(corp, nav, t) {
               ${o.status === "ciorna" ? '<span style="color:#c9961f;font-weight:600"> \u00b7 CIORNA</span>' : '<span style="color:#1d7a4d;font-weight:600"> \u00b7 VALIDATA</span>'}</div>
             <div class="pf-frand-sub">${esc(o.explicatie)} \u00b7 ${esc(o.categorie)}${o.deductibilitate ? " \u00b7 " + esc(o.deductibilitate) : ""}${o.document_numar ? " \u00b7 doc " + esc(o.document_numar) : ""} \u00b7 ${esc(o.metoda)}</div>
           </div>
-          ${o.status === "ciorna" ? `<button class="btn" data-val="${o.id}">Valideaza</button>
-          <button class="btn btn-secundar" data-del="${o.id}">\u0218terge</button>` : ""}
+          ${o.status === "ciorna" ? `<button class="buton-primar" data-val="${o.id}">Valideaza</button>
+          <button class="buton-secundar" data-del="${o.id}">\u0218terge</button>` : ""}
         </div>`).join("");
 
     corp.innerHTML = `
       <h2 class="pf-titlu">Registru \u00eencas\u0103ri/pl\u0103\u021bi \u00b7 ${esc(t.nume || "")}</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
         \u00b7 \u00eencas\u0103ri <b>${reg.total_incasari}</b> \u00b7 pl\u0103\u021bi <b>${reg.total_plati}</b> \u00b7 sold <b>${reg.sold} lei</b>
-        <button class="btn btn-secundar" id="r-prev" style="margin-left:12px">\u2190 luna</button>
-        <button class="btn btn-secundar" id="r-next">luna \u2192</button></p>
+        <button class="buton-secundar" id="r-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="buton-secundar" id="r-next">luna \u2192</button></p>
       <p>
-        <button class="btn btn-secundar" id="r-imp-banca">Import din banc\u0103 (ciorne)</button>
-        <button class="btn btn-secundar" id="r-imp-casa">Import din cas\u0103 (ciorne)</button>
-        <button class="btn btn-secundar" id="r-d212">Fi\u0219a D212</button>
-        <button class="btn btn-secundar" id="r-inv">Registru-inventar</button>
+        <button class="buton-secundar" id="r-imp-banca">Import din banc\u0103 (ciorne)</button>
+        <button class="buton-secundar" id="r-imp-casa">Import din cas\u0103 (ciorne)</button>
+        <button class="buton-secundar" id="r-d212">Fi\u0219a D212</button>
+        <button class="buton-secundar" id="r-inv">Registru-inventar</button>
       </p>
       <div id="r-mesaj"></div>
       <div class="pf-frand" style="display:block;margin-bottom:14px">
@@ -68,7 +68,7 @@ export async function ecranRip(corp, nav, t) {
           <label>Explicatie<br><input type="text" id="r-expl" class="mig-text"></label>
           <label>Document nr.<br><input type="text" id="r-doc" class="mig-text"></label>
         </div>
-        <p style="margin-top:10px"><button class="btn" id="r-adauga">Adauga (ciorna)</button></p>
+        <p style="margin-top:10px"><button class="buton-primar" id="r-adauga">Adauga (ciorna)</button></p>
       </div>
       <div class="pf-lista">${randuri}</div>`;
 

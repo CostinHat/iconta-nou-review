@@ -326,7 +326,7 @@ async function randeazaSolicitari(corp, nav) {
     <div class="sol-fir" id="sol-fir">${firHtml}</div>
     <div class="sol-trimite">
       <textarea id="sol-input" placeholder="Scrie un mesaj..." rows="3"></textarea>
-      <button class="btn" id="sol-trimite-btn">Trimite</button>
+      <button class="buton-primar" id="sol-trimite-btn">Trimite</button>
     </div>
   `;
   const fir = corp.querySelector("#sol-fir");
@@ -405,13 +405,13 @@ async function ecranRecomanda(corp, nav) {
     <h2 class="pf-titlu">Recomanda</h2>
     <p class="pf-intro">Invita un antreprenor prieten sa afle despre iConta.</p>
     <div class="pov-card" style="margin-bottom:16px">
-      <button type="button" id="rec-vezi-mesaj" class="btn" style="background:#fff;color:#111;border:1px solid #ddd">Vezi mesajul</button>
+      <button type="button" id="rec-vezi-mesaj" class="buton-primar" style="background:#fff;color:#111;border:1px solid #ddd">Vezi mesajul</button>
       <div id="rec-preview" style="display:none;margin-top:10px;border:1px solid #eee;border-radius:8px;padding:16px;background:#fafafa">${previewHtml}</div>
     </div>
     <textarea id="rec-emails" placeholder="email1@exemplu.ro, email2@exemplu.ro" rows="4"
       style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-family:inherit;font-size:15px"></textarea>
     <p class="ecran-nota">Separa mai multe adrese prin virgula. Maxim 10.</p>
-    <button class="btn" id="rec-trimite-btn" style="margin-top:14px">Trimite recomandarea</button>
+    <button class="buton-primar" id="rec-trimite-btn" style="margin-top:14px">Trimite recomandarea</button>
     <div id="rec-rezultat" style="margin-top:16px"></div>
   `;
   const bVezi = corp.querySelector("#rec-vezi-mesaj");
@@ -461,7 +461,7 @@ async function ecranDocumente(corp, nav) {
           <div class="pf-frand-nume">Balanta de verificare · ${numeLuni[parseInt(ll)-1]} ${an}</div>
           <div class="pf-frand-sub">generata automat din datele contabile</div>
         </div>
-        <button class="btn" data-bal="${an}-${ll}">Descarca PDF</button>
+        <button class="buton-primar" data-bal="${an}-${ll}">Descarca PDF</button>
       </div>`;
     }).join("");
   corp.innerHTML = `

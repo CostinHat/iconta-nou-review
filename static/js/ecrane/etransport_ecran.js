@@ -45,7 +45,7 @@ export async function ecranEtransport(corp, nav, t) {
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Bunuri transportate</div>
         <div id="et-bunuri">${bunuri.map((_, i) => randBun(i)).join("")}</div>
-        <p><button class="btn btn-secundar" id="et-plus-bun">+ Bun</button></p>
+        <p><button class="buton-secundar" id="et-plus-bun">+ Bun</button></p>
         <div class="pf-frand-nume" style="margin:12px 0 6px">Partener comercial</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
           ${inp("p-cod_tara", "Cod tara *", "text", "RO")}
@@ -63,7 +63,7 @@ export async function ecranEtransport(corp, nav, t) {
         </div>
         ${blocLoc("s", "Loc de pornire")}
         ${blocLoc("f", "Loc de sosire")}
-        <p style="margin-top:14px"><button class="btn" id="et-genereaza">Genereaz\u0103 XML</button></p>
+        <p style="margin-top:14px"><button class="buton-primar" id="et-genereaza">Genereaz\u0103 XML</button></p>
         <div id="et-mesaj"></div>
       </div>`;
 
