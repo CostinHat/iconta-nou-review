@@ -110,7 +110,7 @@ html, body {
 }
 
 .buton-primar {
-  height: 42px;
+  padding: 9px 18px;
   border: none;
   border-radius: var(--raza);
   background: var(--albastru);
@@ -1386,7 +1386,7 @@ html, body {
 .edu-ok {
   flex: 0 0 auto; align-self: center;
   border: 0; border-radius: var(--raza); background: var(--albastru); color: #fff;
-  padding: 8px 16px; font-family: var(--font); font-size: var(--text-mic); cursor: pointer;
+  padding: 9px 18px; font-family: var(--font); font-size: var(--text-mic); cursor: pointer;
 }
 .edu-ok:hover { background: var(--albastru-inchis); }
 
@@ -1395,7 +1395,7 @@ html, body {
 .edu-actiuni { display: flex; gap: 10px; margin-top: 10px; }
 .edu-nu {
   border: 1px solid var(--linie); background: var(--alb); color: var(--gri);
-  border-radius: var(--raza); padding: 8px 16px;
+  border-radius: var(--raza); padding: 9px 18px;
   font-family: var(--font); font-size: var(--text-mic); cursor: pointer;
 }
 .edu-nu:hover { background: var(--fundal); }
@@ -2044,18 +2044,18 @@ html, body { overflow-y: hidden; }
 .mig-buton, .rap-trimite, .asi-toggle-dez, .asi-echipa-btn, .rap-muta,
 .em-emite, .mf-salveaza, .val-aproba, .val-depune, .pac-genereaza, .rap-btn-poza,
 .fd-email-send, .fd-storno-ok, .acces-verifica-btn, .pr-add {
-  font-size: var(--text-mic) !important; padding: 8px 16px !important; border-radius: 8px !important;
+  font-size: var(--text-mic) !important; padding: 9px 18px !important; border-radius: 8px !important;
   border: none !important; background: #3d8fd6 !important; color: #fff !important; cursor: pointer;
   box-shadow: 0 2px 6px rgba(20,30,45,0.25) !important; }
 .mig-buton-sec, .mig-buton-mic, .rap-copy-tot,
 .em-buton-sec, .em-curs-retry, .fd-email-btn, .fd-pdf-btn, .fd-storno-btn, .rap-replica-btn,
 .fac-frand-btn, .rec-vezi, .sa-asist, .buton-ingust, .dlg-anuleaza, .pr-anuleaza, .bk-undo,
 .mig-dec, .ac-per, .vf-opt, .rt-desc {
-  font-size: var(--text-mic) !important; padding: 8px 16px !important; border-radius: 8px !important;
+  font-size: var(--text-mic) !important; padding: 9px 18px !important; border-radius: 8px !important;
   border: 1px solid #d5dae2 !important; background: #eef1f5 !important; color: #1a2535 !important; cursor: pointer;
   box-shadow: 0 2px 6px rgba(20,30,45,0.18) !important; }
 .val-respinge, .pr-sterge, .rt-del, .rt-scoate, .em-l-sterge, .je-scoate, .sn-scoate, .mf-logo-sterge, .rap-thumb-x {
-  font-size: var(--text-mic) !important; padding: 8px 16px !important; border-radius: 8px !important;
+  font-size: var(--text-mic) !important; padding: 9px 18px !important; border-radius: 8px !important;
   border: none !important; background: #ff3b30 !important; color: #fff !important; cursor: pointer;
   box-shadow: 0 2px 6px rgba(20,30,45,0.25) !important; }
 /* ============ [STANDARD_SEMAFOR] NU SE MODIFICA ============

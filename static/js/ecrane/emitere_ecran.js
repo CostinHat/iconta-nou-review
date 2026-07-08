@@ -24,6 +24,7 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
 
 // ---------- CONFIGURARE NUMEROTARE (o data) ----------
 function configureazaNumerotare(corp, nav, tenantId, opt) {
+  if (nav && nav.setInapoi) nav.setInapoi(() => randeazaEmitere(corp, nav, tenantId, opt));
   const inapoi = opt.inapoi || (() => nav.inapoi());
   corp.innerHTML = `
     
@@ -85,6 +86,7 @@ async function salveazaConfig(tenantId, serie, numar_start) {
 
 // ---------- FORMULAR EMITERE ----------
 function formularEmitere(corp, nav, tenantId, num, opt) {
+  if (nav && nav.setInapoi) nav.setInapoi(undefined);
   let monedaSel = "RON";
   const inapoi = opt.inapoi || (() => nav.inapoi());
   const numarProxim = num.serie ? `${num.serie}${num.urmator_numar}` : `${num.urmator_numar}`;

@@ -405,7 +405,7 @@ async function ecranRecomanda(corp, nav) {
     <h2 class="pf-titlu">Recomanda</h2>
     <p class="pf-intro">Invita un antreprenor prieten sa afle despre iConta.</p>
     <div class="pov-card" style="margin-bottom:16px">
-      <button type="button" id="rec-vezi-mesaj" class="buton-primar" style="background:#fff;color:#111;border:1px solid #ddd">Vezi mesajul</button>
+      <button type="button" id="rec-vezi-mesaj" class="buton-secundar">Vezi mesajul</button>
       <div id="rec-preview" style="display:none;margin-top:10px;border:1px solid #eee;border-radius:8px;padding:16px;background:#fafafa">${previewHtml}</div>
     </div>
     <textarea id="rec-emails" placeholder="email1@exemplu.ro, email2@exemplu.ro" rows="4"

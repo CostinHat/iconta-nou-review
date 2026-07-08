@@ -15,6 +15,7 @@ let S = null;
 function esc(s){ return String(s ?? "").replace(/[&<>"]/g,(c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
 
 export async function randeazaDeclaratii(corp, nav) {
+  if (nav && nav.setInapoi) nav.setInapoi(undefined);
   const acum = new Date();
   S = {
     inceput_la: acum.toISOString(),          // cronometru efort (datoria p15)
@@ -41,6 +42,7 @@ export async function randeazaDeclaratii(corp, nav) {
 
 // ---------- PAS 1: firma + tip + perioada ----------
 function pas1(corp, nav) {
+  if (nav && nav.setInapoi) nav.setInapoi(undefined);
   const f = corp.closest(".fereastra"); if (f) f.classList.remove("fer-larg");
   S.pas = 1;
   const per = S.tip ? S.periodicitate[S.tip] : null;
@@ -126,6 +128,7 @@ function legPerioada(zona) {
 
 // ---------- PAS 2: genereaza + verifica ----------
 async function pas2(corp, nav) {
+  if (nav && nav.setInapoi) nav.setInapoi(() => pas1(corp, nav));
   S.pas = 2;
   corp.innerHTML = `<p class="ecran-nota">Se generează declarația…</p>`;
   const per = S.periodicitate[S.tip];
@@ -169,6 +172,7 @@ async function pas2(corp, nav) {
 
 // ---------- PAS 3: trimite in coada ----------
 async function pas3(corp, nav) {
+  if (nav && nav.setInapoi) nav.setInapoi(() => pas2(corp, nav));
   const btn = corp.querySelector("#dec-trimite");
   if (btn) { btn.disabled = true; btn.textContent = "Se trimite…"; }
   const per = S.periodicitate[S.tip];

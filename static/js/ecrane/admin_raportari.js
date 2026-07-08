@@ -47,6 +47,7 @@ let _activ = null;    // id sesizare deschisa
 let _toate = [];      // cache lista (sursa unica, filtram local)
 
 export async function randeazaAdminRaportari(corp, nav) {
+  if (nav && nav.setInapoi) nav.setInapoi(undefined);
   // largeste fereastra (split master-detail), ca la ecranul de solduri
   const f = corp.closest(".fereastra");
   if (f) f.classList.add("fer-larg");
@@ -130,6 +131,7 @@ function randeazaLista(corp, nav) {
 }
 
 async function deschideSesizare(corp, nav, id) {
+  if (nav && nav.setInapoi) nav.setInapoi(() => randeazaAdminRaportari(corp, nav));
   _activ = id;
   corp.querySelectorAll(".rap-rand").forEach((b) => b.classList.remove("rap-rand-activ"));
 

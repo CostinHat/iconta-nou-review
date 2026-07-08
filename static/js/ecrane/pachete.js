@@ -13,6 +13,7 @@ function esc(s){ return String(s ?? "").replace(/[&<>"]/g,(c)=>({ "&":"&amp;","<
 function bani(x){ try { return Number(x).toLocaleString("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2}) + " lei"; } catch { return x; } }
 
 export async function randeazaPachete(corp, nav) {
+  if (nav && nav.setInapoi) nav.setInapoi(undefined);
   const acum = new Date();
   // luna trecuta (pachetul se face pt luna inchisa)
   let an = acum.getFullYear(), luna = acum.getMonth(); // getMonth e 0-11 => luna trecuta 1-12
@@ -30,6 +31,7 @@ export async function randeazaPachete(corp, nav) {
 }
 
 function pasAlegere(corp, nav) {
+  if (nav && nav.setInapoi) nav.setInapoi(undefined);
   const f = corp.closest(".fereastra"); if (f) f.classList.remove("fer-larg");
   corp.innerHTML = `
     <p class="mig-intro">Trimite antreprenorului „povestea lunii” — un rezumat clar al lunii, scris de AI și aprobat de tine.</p>
@@ -68,6 +70,7 @@ function pasAlegere(corp, nav) {
 }
 
 async function pasLucru(corp, nav) {
+  if (nav && nav.setInapoi) nav.setInapoi(() => pasAlegere(corp, nav));
   const f = corp.closest(".fereastra"); if (f) f.classList.add("fer-larg");
   corp.innerHTML = `<p class="ecran-nota">Se incarca datele lunii…</p>`;
   // rezumat + poveste existenta (in paralel)

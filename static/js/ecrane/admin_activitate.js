@@ -21,6 +21,7 @@ export async function randeazaAdminActivitate(corp, nav) {
 }
 
 async function randeaza(corp, nav) {
+  if (nav && nav.setInapoi) nav.setInapoi(undefined);
   let cabinete = [];
   try {
     const r = await api.get("/admin/activitate/cabinete");
