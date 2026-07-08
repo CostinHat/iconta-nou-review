@@ -24,7 +24,7 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
 
 // ---------- CONFIGURARE NUMEROTARE (o data) ----------
 function configureazaNumerotare(corp, nav, tenantId, opt) {
-  if (nav && nav.setInapoi) nav.setInapoi(() => randeazaEmitere(corp, nav, tenantId, opt));
+  if (nav && nav.setInapoi) nav.setInapoi(undefined);
   const inapoi = opt.inapoi || (() => nav.inapoi());
   corp.innerHTML = `
     
@@ -55,6 +55,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
       <button class="mig-buton" id="em-salveaza-config">Continu\u0103</button>`;
     zona.querySelector("#em-salveaza-config").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie").value.trim() || null;
+      if (serie && /^\d+$/.test(serie)) { alert("Seria contine doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-). Numarul ultimei facturi se pune in campul urmator."); return; }
       const ultim = parseInt(zona.querySelector("#em-ultim").value, 10);
       const start = Number.isFinite(ultim) ? ultim + 1 : 1;
       await salveazaConfig(tenantId, serie, start);
@@ -72,6 +73,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
       <button class="mig-buton" id="em-salveaza-config2">Continu\u0103</button>`;
     zona.querySelector("#em-salveaza-config2").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie2").value.trim() || null;
+      if (serie && /^\d+$/.test(serie)) { alert("Seria contine doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-)."); return; }
       await salveazaConfig(tenantId, serie, 1);
       randeazaEmitere(corp, nav, tenantId, opt);
     });

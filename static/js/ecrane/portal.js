@@ -442,57 +442,76 @@ async function ecranRecomanda(corp, nav) {
 
 // ---------- IN LUCRU (placeholder pentru cardurile ce urmeaza) ----------
 async function ecranDocumente(corp, nav) {
-  corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
-  let luni = [];
-  let decl = [];
-  try {
-    const r = await api.get("/portal/documente/luni");
-    luni = (r && r.luni) || [];
-    decl = (r && r.declaratii) || [];
-  } catch {}
-  const numeLuni = ["ianuarie","februarie","martie","aprilie","mai","iunie","iulie","august","septembrie","octombrie","noiembrie","decembrie"];
-  let corpuri = !luni.length
-    ? `<div class="mig-gol">Nicio luna cu date contabile inca.</div>`
-    : luni.map((iso) => {
-      const [an, ll] = iso.split("-");
-      return `
-      <div class="pf-frand">
-        <div class="pf-frand-text">
-          <div class="pf-frand-nume">Balanta de verificare · ${numeLuni[parseInt(ll)-1]} ${an}</div>
-          <div class="pf-frand-sub">generata automat din datele contabile</div>
-        </div>
-        <button class="buton-primar" data-bal="${an}-${ll}">Descarca PDF</button>
-      </div>`;
-    }).join("");
-  corp.innerHTML = `
-    <h2 class="pf-titlu">Documente</h2>
-    <p class="pf-intro">Balante lunare, generate automat.</p>
-    <div class="pf-lista">${corpuri}</div>
-    <h2 class="pf-titlu" style="margin-top:24px">Declaratii depuse</h2>
-    <div class="pf-lista">${!decl.length ? '<div class="mig-gol">Nicio declaratie depusa inca.</div>' : decl.map((d) => `
-      <div class="pf-frand">
-        <div class="pf-frand-text">
-          <div class="pf-frand-nume">${d.tip} \u00b7 ${String(d.luna).padStart(2,"0")}/${d.an}</div>
-          <div class="pf-frand-sub">depusa ${fmtData(d.data)}</div>
-        </div>
-        <span class="pf-frand-ok">\u2713 depusa</span>
-      </div>`).join("")}</div>`;
-  corp.querySelectorAll("[data-bal]").forEach((b) => {
-    b.addEventListener("click", async () => {
-      const [an, ll] = b.dataset.bal.split("-");
-      try {
-        const resp = await fetch(`/portal/documente/balanta?an=${an}&luna=${parseInt(ll)}`, {
-          headers: { "Authorization": "Bearer " + sesiune.token() }
-        });
-        if (!resp.ok) throw new Error("eroare " + resp.status);
-        const blob = await resp.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url; a.download = `balanta_${an}_${ll}.pdf`; a.click();
-        URL.revokeObjectURL(url);
-      } catch { alert("Nu am putut genera documentul."); }
+  function randeazaMeniu() {
+    nav.setInapoi(undefined);
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Documente</h2>
+      <p class="pf-intro">Alege ce vrei sa vezi.</p>
+      <button class="acces-card meniu-card" id="doc-balante">Balante lunare — generate automat din datele contabile</button>
+      <button class="acces-card meniu-card" id="doc-declaratii">Declaratii depuse — ce s-a depus la ANAF, cu data depunerii</button>
+    `;
+    corp.querySelector("#doc-balante").addEventListener("click", randeazaBalante);
+    corp.querySelector("#doc-declaratii").addEventListener("click", randeazaDeclaratii);
+  }
+
+  async function randeazaBalante() {
+    nav.setInapoi(randeazaMeniu);
+    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+    let luni = [];
+    try { const r = await api.get("/portal/documente/luni"); luni = (r && r.luni) || []; } catch {}
+    const numeLuni = ["ianuarie","februarie","martie","aprilie","mai","iunie","iulie","august","septembrie","octombrie","noiembrie","decembrie"];
+    const corpuri = !luni.length
+      ? `<div class="mig-gol">Nicio luna cu date contabile inca.</div>`
+      : luni.map((iso) => {
+        const [an, ll] = iso.split("-");
+        return `
+        <div class="pf-frand">
+          <div class="pf-frand-text">
+            <div class="pf-frand-nume">Balanta de verificare · ${numeLuni[parseInt(ll)-1]} ${an}</div>
+            <div class="pf-frand-sub">generata automat din datele contabile</div>
+          </div>
+          <button class="buton-primar" data-bal="${an}-${ll}">Descarca PDF</button>
+        </div>`;
+      }).join("");
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Balante lunare</h2>
+      <div class="pf-lista">${corpuri}</div>`;
+    corp.querySelectorAll("[data-bal]").forEach((b) => {
+      b.addEventListener("click", async () => {
+        const [an, ll] = b.dataset.bal.split("-");
+        try {
+          const resp = await fetch(`/portal/documente/balanta?an=${an}&luna=${parseInt(ll)}`, {
+            headers: { "Authorization": "Bearer " + sesiune.token() }
+          });
+          if (!resp.ok) throw new Error("eroare " + resp.status);
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url; a.download = `balanta_${an}_${ll}.pdf`; a.click();
+          URL.revokeObjectURL(url);
+        } catch { alert("Nu am putut genera documentul."); }
+      });
     });
-  });
+  }
+
+  async function randeazaDeclaratii() {
+    nav.setInapoi(randeazaMeniu);
+    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+    let decl = [];
+    try { const r = await api.get("/portal/documente/luni"); decl = (r && r.declaratii) || []; } catch {}
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Declaratii depuse</h2>
+      <div class="pf-lista">${!decl.length ? '<div class="mig-gol">Nicio declaratie depusa inca.</div>' : decl.map((d) => `
+        <div class="pf-frand">
+          <div class="pf-frand-text">
+            <div class="pf-frand-nume">${d.tip} · ${String(d.luna).padStart(2,"0")}/${d.an}</div>
+            <div class="pf-frand-sub">depusa ${fmtData(d.data)}</div>
+          </div>
+          <span class="pf-frand-ok">✓ depusa</span>
+        </div>`).join("")}</div>`;
+  }
+
+  randeazaMeniu();
 }
 function ecranInLucru(corp, nav, nume) {
   corp.innerHTML = `<div class="mig-gol">"${nume}" vine in curand.</div>`;

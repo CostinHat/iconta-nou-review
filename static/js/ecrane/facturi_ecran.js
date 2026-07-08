@@ -147,10 +147,10 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     return `
       <tr>
         <td class="fd-td-den">${_esc(l.descriere)}</td>
-        <td class="fd-td-num">${cant.toLocaleString("ro-RO")}</td>
+        <td>${cant.toLocaleString("ro-RO")}</td>
         <td class="fd-td-um">${_esc(l.um || "buc")}</td>
-        <td class="fd-td-num">${_bani(pret)}</td>
-        <td class="fd-td-num">${cota}%</td>
+        <td>${_bani(pret)}</td>
+        <td>${cota}%</td>
         <td class="fd-td-num">${_bani(baza, mon)}</td>
       </tr>`;
   }).join("");
@@ -206,8 +206,8 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     <table class="fd-tabel">
       <thead>
         <tr>
-          <th>Denumire</th><th class="fd-td-num">Cant</th><th>UM</th>
-          <th class="fd-td-num">Pre\u021b</th><th class="fd-td-num">Cot\u0103</th><th class="fd-td-num">Valoare</th>
+          <th>Denumire</th><th>Cant</th><th>UM</th>
+          <th>Pre\u021b</th><th>Cot\u0103</th><th class="fd-td-num">Valoare</th>
         </tr>
       </thead>
       <tbody>${randuriLinii || `<tr><td colspan="6" class="fd-td-den">F\u0103r\u0103 linii.</td></tr>`}</tbody>

@@ -1798,15 +1798,18 @@ html, body {
 .fd-antet { margin: 4px 0 16px; }
 .fd-antet-sus { display: flex; align-items: center; gap: 10px; }
 .fd-antet-linie { font-size: var(--text-mic); color: var(--gri); margin-top: 4px; }
-.fd-tabel { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: var(--text-mic); }
+.fd-tabel { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: var(--text-mic);
+  background: #fff; border: 1px solid var(--linie); border-radius: var(--raza); overflow: hidden; }
 .fd-tabel thead th { text-align: left; font-weight: 600; color: var(--ardezie);
-  border-bottom: 1px solid var(--linie); padding: 8px 10px; }
-.fd-tabel tbody td { padding: 8px 10px; border-bottom: 1px solid var(--linie); color: var(--ardezie); }
-.fd-td-num { text-align: right; white-space: nowrap; }
+  border-bottom: 1px solid var(--linie); padding: 8px 10px; background: #fff; }
+.fd-tabel tbody td { padding: 8px 10px; border-bottom: 1px solid var(--linie); color: var(--ardezie); background: #fff; }
+.fd-td-num, .fd-tabel thead th.fd-td-num, .fd-tabel thead th.fd-td-num { text-align: right; white-space: nowrap; }
 .fd-td-um { color: var(--gri); }
 .fd-td-den { font-weight: 500; }
-.fd-totaluri { max-width: 320px; margin-left: auto; }
-.fd-tot-rand { display: flex; justify-content: space-between; padding: 4px 0; font-size: var(--text-mic); color: var(--gri); }
+.fd-totaluri { max-width: 320px; margin-left: auto; background: #fff; border: 1px solid var(--linie);
+  border-radius: var(--raza); padding: 12px 9px; }
+.fd-totaluri .fd-tot-rand span:last-child, .fd-totaluri .fd-tot-final span:last-child { text-align: right; min-width: 130px; }
+.fd-tot-rand { display: flex; justify-content: space-between; gap: 24px; padding: 4px 0; font-size: var(--text-mic); color: var(--gri); }
 .fd-tot-final { border-top: 1px solid var(--linie); margin-top: 4px; padding-top: 8px;
   font-size: var(--text-mic); font-weight: 700; color: var(--ardezie); }
 .fd-valuta { max-width: 320px; margin: 14px 0 0 auto; padding: 12px;
@@ -1894,9 +1897,10 @@ html, body {
 /* ===== Storno (fd-storno-*) ===== */
 .fd-storno-btn { cursor: pointer; white-space: nowrap; }
 .fd-storno-zona { margin-top: 8px; }
-.fd-storno-box { border: 1px solid #e0b0b0; border-radius: var(--raza);
+.fd-storno-box .mig-buton { width: auto; margin-top: 0; }
+.fd-storno-box { max-width: 560px; background: #fdf3f3; border: 2px solid #d98c8c; margin: 14px 0; border-radius: var(--raza);
   padding: 12px; background: #fdf3f3; max-width: 440px; }
-.fd-storno-avert { font-size: var(--text-mic); color: #7a2020; margin-bottom: 10px; line-height: 1.4; }
+.fd-storno-avert { font-size: var(--text-mic); color: #7a2020; margin-bottom: 12px; line-height: 1.4; }
 .fd-storno-actiuni { display: flex; gap: 8px; }
 
 /* ICRD_SOLICITARI_FRONT_V1 - chat solicitari client<->cabinet */
@@ -2039,6 +2043,13 @@ html, body { overflow-y: hidden; }
   padding: 9px 18px; font-family: var(--font); font-size: var(--text-mic); font-weight: 600; cursor: pointer;
   box-shadow: 0 2px 6px rgba(20,30,45,0.25); transition: background 0.15s, transform 0.1s, box-shadow 0.1s; }
 .buton-verde:hover { background: #16613d; transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.3); }
+/* [STANDARD_ATENTIONARE] caseta de atentionare/confirmare - unica in toata aplicatia */
+.caseta-atentie {
+  background: #fdf3f3; border: 2px solid #d98c8c; border-radius: var(--raza);
+  padding: 14px 16px; margin: 14px 0; max-width: 560px;
+}
+.caseta-atentie .ca-mesaj { font-size: var(--text-mic); color: #7a2020; line-height: 1.4; margin-bottom: 12px; }
+.caseta-atentie .ca-actiuni { display: flex; gap: 8px; }
 /* ============ sfarsit STANDARD_BUTOANE ============ */
 /* [STANDARD_BUTOANE_MAPARE] clase vechi -> standard */
 .mig-buton, .rap-trimite, .asi-toggle-dez, .asi-echipa-btn, .rap-muta,

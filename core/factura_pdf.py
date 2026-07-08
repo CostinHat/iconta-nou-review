@@ -183,13 +183,13 @@ def genereaza_pdf(profil, factura):
         peCota[cota][1] += tva
         date_tab.append([
             Paragraph(str(l.get("descriere") or ""), st_cell),
-            Paragraph(f"{cant:g}", st_cell),
+            Paragraph(f"{cant:,.3f}".rstrip("0").rstrip(".").replace(",", "."), st_cell),
             Paragraph(str(l.get("um") or "buc"), st_cell),
-            Paragraph(_bani(pret), ParagraphStyle("r", parent=st_cell, alignment=TA_RIGHT)),
-            Paragraph(f"{cota:g}%", ParagraphStyle("r2", parent=st_cell, alignment=TA_RIGHT)),
-            Paragraph(_bani(baza, mon), ParagraphStyle("r3", parent=st_cell, alignment=TA_RIGHT)),
+            Paragraph(_bani(pret), st_cell),
+            Paragraph(f"{cota:.2f}".rstrip("0").rstrip(".") + "%", st_cell),
+            Paragraph(_bani(baza, mon), ParagraphStyle("rval", parent=st_cell, alignment=TA_RIGHT)),
         ])
-    tabel = Table(date_tab, colWidths=[70 * mm, 16 * mm, 14 * mm, 26 * mm, 16 * mm, 32 * mm])
+    tabel = Table(date_tab, colWidths=[60 * mm, 22 * mm, 14 * mm, 26 * mm, 18 * mm, 34 * mm])
     tabel.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), ac),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
@@ -220,6 +220,7 @@ def genereaza_pdf(profil, factura):
         ("LINEABOVE", (0, n_last), (-1, n_last), 1, ac),
         ("TOPPADDING", (0, 0), (-1, -1), 2),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+        ("RIGHTPADDING", (1, 0), (1, -1), 6),
         ("FONTNAME", (0, n_last), (-1, n_last), font_b),
         ("TEXTCOLOR", (1, n_last), (1, n_last), ac),
         ("FONTSIZE", (0, n_last), (-1, n_last), 11),
