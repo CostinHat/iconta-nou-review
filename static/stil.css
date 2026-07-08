@@ -1546,7 +1546,7 @@ html, body {
 .rec-cap { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .rec-vezi { border: 1px solid var(--linie); background: var(--alb); color: var(--albastru); border-radius: var(--raza); padding: 5px 12px; font-family: var(--font); font-size: var(--text-mic); cursor: pointer; }
 .rec-vezi:hover { background: var(--albastru-clar); border-color: var(--albastru); }
-.rec-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(20,30,45,0.5); display: flex; align-items: center; justify-content: center; padding: 28px; }
+.rec-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(20,30,45,0.55); display: flex; align-items: center; justify-content: center; padding: 28px; }
 .rec-modal { width: 100%; max-width: 640px; max-height: calc(100vh - 80px); background: var(--alb); border-radius: 10px; box-shadow: 0 8px 40px rgba(20,30,45,0.3); display: flex; flex-direction: column; overflow: hidden; }
 .rec-modal-cap { display: flex; align-items: flex-start; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--linie); flex: 0 0 auto; }
 .rec-modal-titlu { font-size: var(--text); font-weight: 600; color: var(--ardezie); }
@@ -1674,7 +1674,7 @@ html, body {
 .pf-et { color: var(--gri); }
 .pf-val { font-weight: 600; text-align: right; }
 .pf-frand { display: flex; justify-content: space-between; align-items: center; gap: 14px;
-  padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 10px; margin-bottom: 8px; }
+  padding: 14px; background: var(--alb); border: 1px solid var(--linie); border-radius: var(--raza); margin-bottom: 8px; }  /* portal_ds_audit_a_v1 */
 .pf-frand-nume { font-size: var(--text-titlu); font-weight: 600; }
 .pf-frand-sub { font-size: var(--text); color: var(--gri); margin-top: 2px; }
 .pf-frand-suma { font-size: var(--text); font-weight: 600; white-space: nowrap; }
@@ -1897,7 +1897,7 @@ html, body {
 .fd-storno-actiuni { display: flex; gap: 8px; }
 
 /* ICRD_SOLICITARI_FRONT_V1 - chat solicitari client<->cabinet */
-.sol-fir { display:flex; flex-direction:column; gap:10px; max-height:420px; overflow-y:auto; padding:4px; }
+.sol-fir { display:flex; flex-direction:column; gap:10px; max-height:420px; overflow-y:auto; padding:12px; background: var(--alb); border: 1px solid var(--linie); border-radius: var(--raza); }  /* portal_ds_audit_a_v1 */
 .sol-rand { max-width:80%; padding:10px 14px; border-radius:12px; }
 .sol-client { align-self:flex-end; background:#e9f0fe; }
 .sol-cabinet { align-self:flex-start; background:#f1f1f1; }
@@ -2112,6 +2112,12 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .acces-modal-inreg { background: #eaf2fc; }
 /* meniu_card_v2: alias pe acces-card, latime plina */
 .meniu-card { width: 100%; margin-bottom: 12px; }
+
+/* [portal_ds_audit_a_v1] casete portal: detaliu Povestea lunii (clasa era folosita, dar nedefinita) */
+.pov-card { background: var(--alb); border: 1px solid var(--linie); border-radius: var(--raza); padding: 16px 18px; margin-top: 14px; max-width: 640px; }
+.pov-card h3 { margin: 0 0 10px; font-size: var(--text-titlu); }
+.pov-text { font-size: var(--text); line-height: 1.55; }
+.pov-dif { margin-top: 10px; font-size: var(--text-mic); }
 
 /* [STANDARD_BUTON_ACTIV] starea "apasat/deschis" pentru butoane cu zone toggle */
 .buton-activ { background: #1a5a94 !important; color: #fff !important; border-color: #1a5a94 !important;
