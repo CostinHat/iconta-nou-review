@@ -3,7 +3,7 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, arataMesaj } from "../api.js";
+import { api, arataMesaj, confirmaCaseta } from "../api.js";
 import { sesiune } from "../sesiune.js";
 import { randeazaEmitere } from "./emitere_ecran.js";
 
@@ -259,8 +259,12 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   if (btnEmail && zonaEmail) {
     btnEmail.addEventListener("click", () => {
       if (zonaEmail.dataset.deschis === "1") {
-        zonaEmail.dataset.deschis = ""; zonaEmail.innerHTML = ""; return;
+        zonaEmail.dataset.deschis = ""; zonaEmail.innerHTML = ""; btnEmail.classList.remove("buton-activ"); return;
       }
+      const zs = corp.querySelector("#fd-storno-zona");
+      if (zs) { zs.dataset.deschis = ""; zs.innerHTML = ""; }
+      corp.querySelector("#fd-storno")?.classList.remove("buton-activ");
+      btnEmail.classList.add("buton-activ");
       zonaEmail.dataset.deschis = "1";
       const emailPre = (f.tert_email || "");
       zonaEmail.innerHTML = `
@@ -268,7 +272,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
           <label class="fd-email-eticheta">Trimite factura ${_esc(f.numar || "")} c\u0103tre:</label>
           <div class="fd-email-rand">
             <input type="email" id="fd-email-input" class="fd-email-input" placeholder="email@client.ro" value="${_esc(emailPre)}">
-            <button class="mig-buton fd-email-send" id="fd-email-send">Trimite</button>
+            <button class="buton-primar fd-email-send" id="fd-email-send">Trimite</button>
           </div>
           <div class="em-rezultat" id="fd-email-rez"></div>
         </div>`;
@@ -309,18 +313,22 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   if (btnStorno && zonaStorno) {
     btnStorno.addEventListener("click", () => {
       if (zonaStorno.dataset.deschis === "1") {
-        zonaStorno.dataset.deschis = ""; zonaStorno.innerHTML = ""; return;
+        zonaStorno.dataset.deschis = ""; zonaStorno.innerHTML = ""; btnStorno.classList.remove("buton-activ"); return;
       }
+      const ze = corp.querySelector("#fd-email-zona");
+      if (ze) { ze.dataset.deschis = ""; ze.innerHTML = ""; }
+      corp.querySelector("#fd-email")?.classList.remove("buton-activ");
+      btnStorno.classList.add("buton-activ");
       zonaStorno.dataset.deschis = "1";
       zonaStorno.innerHTML = `
         <div class="fd-storno-box">
-          <div class="fd-storno-avert">Se creeaz\u0103 o factur\u0103 de stornare pentru <b>${_esc(f.numar || "")}</b> (valori negative, document contabil). Ac\u021biunea nu poate fi anulat\u0103.</div>
-          <div class="fd-storno-actiuni">
-            <button class="mig-buton fd-storno-ok" id="fd-storno-ok">Confirm stornarea</button>
-            <button class="em-buton-sec" id="fd-storno-nu">Renun\u021b\u0103</button>
-          </div>
-          <div class="em-rezultat" id="fd-storno-rez"></div>
-        </div>`;
+          <div class="fd-storno-avert" style="margin-bottom:0">Se creeaz\u0103 o factur\u0103 de stornare pentru <b>${_esc(f.numar || "")}</b> (valori negative, document contabil). Ac\u021biunea nu poate fi anulat\u0103.</div>
+        </div>
+        <div class="fd-storno-actiuni" style="margin:10px 0 14px">
+          <button class="buton-primar" id="fd-storno-ok">Confirm stornarea</button>
+          <button class="buton-secundar" id="fd-storno-nu">Renun\u021b\u0103</button>
+        </div>
+        <div class="em-rezultat" id="fd-storno-rez"></div>`;
       zonaStorno.querySelector("#fd-storno-nu").addEventListener("click", () => {
         zonaStorno.dataset.deschis = ""; zonaStorno.innerHTML = "";
       });
@@ -405,7 +413,7 @@ async function modelFactura(corp, nav, tenantId, opt) {
             ${MF_CULORI.map((c) => `<button class="mf-culoare-opt" data-culoare="${c}" style="background:${c}" title="${c}"></button>`).join("")}
           </div>
         </div>
-        <button class="mig-buton mf-salveaza" id="mf-salveaza">Salveaz\u0103</button>
+        <button class="buton-primar mf-salveaza" id="mf-salveaza">Salveaz\u0103</button>
         <div class="em-rezultat" id="mf-rezultat"></div>
       </div>
       <div class="mf-preview-wrap">
@@ -560,7 +568,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
     <h2 class="pf-titlu">Facturi recurente</h2>
     <p class="pf-intro">\u0218abloane emise automat \u00een fiecare lun\u0103 (verificare zilnic\u0103 la 07:00).</p>
     <div class="pf-lista">${corpuri}</div>
-    <button class="mig-buton" id="fr-add" style="margin-top:12px">+ \u0218ablon nou</button>`;
+    <button class="buton-primar" id="fr-add" style="margin-top:12px">+ \u0218ablon nou</button>`;
   corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   corp.querySelector("#fr-add").addEventListener("click", () => formSablon(corp, nav, tenantId, opt));
 
@@ -573,14 +581,15 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
       alert(e.mesaj || e.message || "eroare");
     }
   }));
-  corp.querySelectorAll(".fr-sterge").forEach((b) => b.addEventListener("click", async () => {
-    if (!confirm("\u0218tergi \u0219ablonul?")) return;
-    try {
-      await api.del(`/tenants/${tenantId}/facturi-recurente/${b.dataset.id}`);
-      listaRecurente(corp, nav, tenantId, opt);
-    } catch (e) {
-      alert(e.mesaj || e.message || "eroare");
-    }
+  corp.querySelectorAll(".fr-sterge").forEach((b) => b.addEventListener("click", () => {
+    confirmaCaseta(b.parentElement, "\u0218tergi \u0219ablonul?", async () => {
+      try {
+        await api.del(`/tenants/${tenantId}/facturi-recurente/${b.dataset.id}`);
+        listaRecurente(corp, nav, tenantId, opt);
+      } catch (e) {
+        alert(e.mesaj || e.message || "eroare");
+      }
+    }, { textOk: "\u0218terge" });
   }));
 }
 
@@ -614,7 +623,7 @@ function formSablon(corp, nav, tenantId, opt) {
     </div>
 
     <div class="em-actiuni">
-      <button class="mig-buton" id="fr-salveaza">Salveaz\u0103 \u0219ablonul</button>
+      <button class="buton-primar" id="fr-salveaza">Salveaz\u0103 \u0219ablonul</button>
     </div>
     <div class="em-rezultat" id="fr-rezultat"></div>`;
   corp.querySelector("#fr-back").addEventListener("click", inapoiLista);

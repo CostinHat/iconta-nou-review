@@ -136,7 +136,7 @@ function pasInput(corp, nav) {
       <div class="mig-drop-desc">Excel sau CSV cu o coloană de CUI-uri</div>
     </label>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="mig-buton" id="mig-valideaza">Validează la ANAF</button>
+    <button class="buton-primar mig-buton" id="mig-valideaza">Validează la ANAF</button>
   `;
 
   const fileInput = corp.querySelector("#mig-file");
@@ -195,7 +195,7 @@ function pasRezultate(corp, nav, rezultate) {
     <p class="mig-intro">Am verificat <b>${rezultate.length} CUI-uri</b> la ANAF. Bifează firmele pe care le aduci în iConta.</p>
     <div class="mig-lista" id="mig-lista"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="mig-buton" id="mig-importa">Importă firmele bifate</button>
+    <button class="buton-primar mig-buton" id="mig-importa">Importă firmele bifate</button>
   `;
   const lista = corp.querySelector("#mig-lista");
   rezultate.forEach((r, i) => {
@@ -277,7 +277,7 @@ function randeazaDecizie(corp, nav, strat, sumarHTML, intrebare) {
       <textarea id="mig-nota" class="mig-textarea" style="height:64px" placeholder="Ex: aștept balanțele de la 2 clienți"></textarea>
     </div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="mig-buton" id="mig-salveaza" disabled>Salvează</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza" disabled>Salvează</button>
   `;
   let ales = null;
   const zona = corp.querySelector("#mig-nota-zona");
@@ -327,7 +327,7 @@ async function wizardVector(corp, nav) {
     <p class="mig-intro">Spune sistemului ce declara\u021bii datoreaz\u0103 fiecare firm\u0103: dac\u0103 e pl\u0103titoare de TVA, ce regim are (micro/profit) \u0219i dac\u0103 face opera\u021biuni intracomunitare. F\u0103r\u0103 vectorul fiscal firma nu poate fi procesat\u0103.</p>
     <div class="mig-progres">${cu} din ${firme.length} firme au vectorul completat</div>
     <div class="mig-lista" id="mig-firme"></div>
-    <button class="mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizeaz\u0103 stratul Vector fiscal</button>
+    <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizeaz\u0103 stratul Vector fiscal</button>
   `;
   const lista = corp.querySelector("#mig-firme");
   if (firme.length === 0) {
@@ -413,7 +413,7 @@ async function formularVectorFirma(corp, nav, f) {
         </div>
       </div>
       <div class="mig-eroare" id="vf-eroare"></div>
-      <button class="mig-buton" id="vf-salveaza" style="margin-top:8px">Salveaz\u0103 vectorul</button>
+      <button class="buton-primar mig-buton" id="vf-salveaza" style="margin-top:8px">Salveaz\u0103 vectorul</button>
     </div>
   `;
   // selectie exclusiva in fiecare grup
@@ -469,7 +469,7 @@ async function wizardSolduri(corp, nav) {
     <p class="mig-intro">Încarcă balanța de deschidere pentru fiecare firmă. Soldurile devin poziția de pornire, iar conturile analitice (clienți, furnizori) intră automat în plan.</p>
     <div class="mig-progres">${cuSolduri} din ${firme.length} firme au solduri</div>
     <div class="mig-lista" id="mig-firme"></div>
-    <button class="mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Solduri</button>
+    <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Solduri</button>
   `;
 
   const lista = corp.querySelector("#mig-firme");
@@ -553,7 +553,7 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="mig-buton" id="mig-salveaza-sold">Salvează soldurile</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-sold">Salvează soldurile</button>
   `;
   nav.setInapoi(() => wizardSolduri(corp, nav));
 
@@ -598,7 +598,7 @@ async function wizardParteneri(corp, nav) {
     <p class="mig-intro">Defalcă soldurile de clienți (4111) și furnizori (401) pe fiecare partener. Sumele se verifică automat cu balanța de deschidere.</p>
     <div class="mig-progres">${cuParteneri} din ${firme.length} firme au parteneri</div>
     <div class="mig-lista" id="mig-firme"></div>
-    <button class="mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Parteneri</button>
+    <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Parteneri</button>
   `;
 
   const lista = corp.querySelector("#mig-firme");
@@ -692,7 +692,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="mig-buton" id="mig-salveaza-part">Salvează partenerii</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-part">Salvează partenerii</button>
   `;
   nav.setInapoi(() => wizardParteneri(corp, nav));
 
@@ -738,7 +738,7 @@ async function wizardSalariati(corp, nav) {
     <p class="mig-intro">Importă salariații din vechea aplicație (nume, CNP, salariu, contract). CNP-urile se verifică automat — cele greșite sunt semnalate și sărite.</p>
     <div class="mig-progres">${cuSal} din ${firme.length} firme au salariați</div>
     <div class="mig-lista" id="mig-firme"></div>
-    <button class="mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Salariați</button>
+    <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Salariați</button>
   `;
 
   const lista = corp.querySelector("#mig-firme");
@@ -823,7 +823,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="mig-buton" id="mig-salveaza-sal">Salvează salariații</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-sal">Salvează salariații</button>
   `;
   nav.setInapoi(() => wizardSalariati(corp, nav));
 
@@ -876,7 +876,7 @@ async function wizardAsociati(corp, nav) {
     <p class="mig-intro">Importă asociații firmei (nume, CNP/CUI, cotă %). Cotele se verifică automat — ar trebui să dea 100%.</p>
     <div class="mig-progres">${cuAsoc} din ${firme.length} firme au asociați</div>
     <div class="mig-lista" id="mig-firme"></div>
-    <button class="mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Asociați</button>
+    <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Asociați</button>
   `;
 
   const lista = corp.querySelector("#mig-firme");
@@ -962,7 +962,7 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="mig-buton" id="mig-salveaza-asoc">Salvează asociații</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-asoc">Salvează asociații</button>
   `;
   nav.setInapoi(() => wizardAsociati(corp, nav));
 
@@ -1013,7 +1013,7 @@ async function wizardMijloace(corp, nav) {
     <p class="mig-intro">Importă registrul de mijloace fixe (valoare, durată, valoare rămasă). Amortizarea cumulată se păstrează ca să nu reluăm de la zero.</p>
     <div class="mig-progres">${cuMF} din ${firme.length} firme au mijloace fixe</div>
     <div class="mig-lista" id="mig-firme"></div>
-    <button class="mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Mijloace fixe</button>
+    <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Mijloace fixe</button>
   `;
 
   const lista = corp.querySelector("#mig-firme");
@@ -1100,7 +1100,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="mig-buton" id="mig-salveaza-mf">Salvează mijloacele fixe</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-mf">Salvează mijloacele fixe</button>
   `;
   nav.setInapoi(() => wizardMijloace(corp, nav));
 
@@ -1152,7 +1152,7 @@ async function wizardIstoric(corp, nav) {
     <p class="mig-intro">Importă declarațiile deja depuse anul curent (la vechiul program). Astfel iConta nu le mai cere ca restanță.</p>
     <div class="mig-progres">${cuIst} din ${firme.length} firme au istoric</div>
     <div class="mig-lista" id="mig-firme"></div>
-    <button class="mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Istoric</button>
+    <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Istoric</button>
   `;
 
   const lista = corp.querySelector("#mig-firme");
@@ -1237,7 +1237,7 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
-    <button class="mig-buton" id="mig-salveaza-ist">Salvează istoricul</button>
+    <button class="buton-primar mig-buton" id="mig-salveaza-ist">Salvează istoricul</button>
   `;
   nav.setInapoi(() => wizardIstoric(corp, nav));
 

@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, arataMesaj } from "../api.js";  /* msg_conventie_fe_v1 */
+import { api, arataMesaj, confirmaCaseta } from "../api.js";  /* msg_conventie_fe_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";
 import { ecranRip } from "./rip_ecran.js";
@@ -1386,10 +1386,11 @@ async function ecranAccesClient(corp, nav, t) {
             <div><b>${c.email}</b> · ${c.nume || ""} ${c.activ ? "" : ' · <span style="color:#a3231c">dezactivat</span>'}</div>
             ${c.activ ? `<button class="buton-secundar" data-id="${c.id}">Revoca</button>` : ""}
           </div>`).join("");
-        zona.querySelectorAll("button[data-id]").forEach((b) => b.addEventListener("click", async () => {
-          if (!confirm("Revoci accesul acestui client?")) return;
-          await api.del(`/tenants/${t.id}/client-acces/${b.dataset.id}`);
-          randeazaPrincipal();
+        zona.querySelectorAll("button[data-id]").forEach((b) => b.addEventListener("click", () => {
+          confirmaCaseta(b.parentElement, "Revoci accesul acestui client?", async () => {
+            await api.del(`/tenants/${t.id}/client-acces/${b.dataset.id}`);
+            randeazaPrincipal();
+          }, { textOk: "Revoca" });
         }));
       }
     } catch (e) { zona.innerHTML = `<p class="ecran-nota">${e.mesaj || e.message}</p>`; }

@@ -65,3 +65,23 @@ export function arataMesaj(el, txt, tip = "info") {
   el.className = el.className.replace(/\bmsg-(eroare|avert|info)\b/g, "").trim();
   el.classList.add("msg-" + tip);
 }
+
+// [STANDARD_ATENTIONARE] confirmare in caseta standard, inlocuieste confirm() nativ.
+// Foloseste: confirmaCaseta(elementZona, "Mesaj...", () => { actiunea });
+// Injecteaza caseta + butoane sub/inaintea zonei date; Renunta o inchide.
+export function confirmaCaseta(zona, mesaj, laConfirm, optiuni = {}) {
+  const vechi = document.getElementById("caseta-atentie-activa");
+  if (vechi) vechi.remove();
+  const div = document.createElement("div");
+  div.id = "caseta-atentie-activa";
+  div.innerHTML = `
+    <div class="caseta-atentie"><div class="ca-mesaj" style="margin-bottom:0">${mesaj}</div></div>
+    <div class="ca-actiuni" style="margin:10px 0 14px;display:flex;gap:8px">
+      <button class="buton-primar" id="ca-ok">${optiuni.textOk || "Confirm"}</button>
+      <button class="buton-secundar" id="ca-nu">Renun\u021b\u0103</button>
+    </div>`;
+  zona.parentNode.insertBefore(div, zona.nextSibling);
+  div.querySelector("#ca-nu").addEventListener("click", () => div.remove());
+  div.querySelector("#ca-ok").addEventListener("click", () => { div.remove(); laConfirm(); });
+  div.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}

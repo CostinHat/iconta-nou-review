@@ -167,7 +167,7 @@ async function deschideEditare(uid, corp, nav) {
       <div class="asi-info-patru">\u2139 \u201ePoate valida\u201d permite aprobarea, dar niciodata a ceea ce a pregatit el insusi (patru ochi).</div>
       ${sectiuneFirme}
       <div class="asi-editbtns">
-        <button class="mig-buton" id="asi-salveaza">Salveaza</button>
+        <button class="buton-primar" id="asi-salveaza">Salveaza</button>
         ${a.rol !== "admin_firma" && a.activ
           ? `<button class="mig-buton-sec" id="asi-dezactiveaza">Dezactiveaza asistentul</button>` : ""}
         ${!a.activ

@@ -20,7 +20,7 @@ export async function randeazaProduse(corp, nav, tenantId, opt = {}) {
     
     <div class="pr-cap">
       <h2 class="pf-titlu">Produse \u0219i servicii</h2>
-      <button class="mig-buton pr-add" id="pr-add">+ Adaug\u0103 produs</button>
+      <button class="buton-primar pr-add" id="pr-add">+ Adaug\u0103 produs</button>
     </div>
     <p class="pf-intro">Scrii denumirea, iar sistemul potrive\u0219te automat cota de TVA corect\u0103 din legisla\u021bie. O po\u021bi corecta oric\u00e2nd.</p>
     <div class="pr-form-zona" id="pr-form-zona"></div>
@@ -87,7 +87,7 @@ function formularAdauga(corp, tenantId, reincarca) {
         </select>
       </div>
       <div class="pr-form-actiuni">
-        <button class="mig-buton" id="pr-salveaza">Salveaz\u0103</button>
+        <button class="buton-primar" id="pr-salveaza">Salveaz\u0103</button>
         <button class="pr-anuleaza" id="pr-anuleaza">Renun\u021b\u0103</button>
       </div>
     </div>

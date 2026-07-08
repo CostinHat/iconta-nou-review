@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api } from "../api.js";
+import { api, confirmaCaseta } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 function esc(s) { return (s || "").replace(/"/g, "&quot;"); }
@@ -219,10 +219,11 @@ async function _incarcaChei(corp) {
       </div>
       ${c.activ ? `<span class="btn-link set-cheie-revoca" data-id="${c.id}" style="color:#c0392b">Revoca</span>` : ""}
     </div>`).join("");
-  zona.querySelectorAll(".set-cheie-revoca").forEach((b) => b.addEventListener("click", async () => {
-    if (!confirm("Revoci cheia? Aplicatiile care o folosesc nu vor mai avea acces.")) return;
-    try { await api.del(`/cabinet/api-chei/${b.dataset.id}`); _incarcaChei(corp); }
-    catch (e) { alert(e.mesaj || "eroare"); }
+  zona.querySelectorAll(".set-cheie-revoca").forEach((b) => b.addEventListener("click", () => {
+    confirmaCaseta(b.closest(".pf-frand") || b, "Revoci cheia? Aplicatiile care o folosesc nu vor mai avea acces.", async () => {
+      try { await api.del(`/cabinet/api-chei/${b.dataset.id}`); _incarcaChei(corp); }
+      catch (e) { alert(e.mesaj || "eroare"); }
+    }, { textOk: "Revoca" });
   }));
 }
 

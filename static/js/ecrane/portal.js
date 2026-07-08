@@ -1,6 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, arataMesaj } from "../api.js";
+import { api, arataMesaj, confirmaCaseta } from "../api.js";
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";  // [p116_facturi_modul]
 
@@ -117,13 +117,14 @@ async function ecranAccesCont(corp, nav) {
         ${d.eu_principal ? '<button class="btn-link" data-uid="' + c.id + '">Revoca</button>' : ""}
       </div>`).join("") || '<p class="ecran-nota">Niciun acces suplimentar.</p>';
     if (d.eu_principal) {
-      lista.querySelectorAll("[data-uid]").forEach((b) => b.addEventListener("click", async () => {
-        if (!confirm("Revoci accesul pentru " + b.previousElementSibling?.textContent + "?")) return;
-        try {
-          await api.del("/portal/acces-cont/acces/" + b.dataset.uid);
-          d.suplimentare = d.suplimentare.filter((c) => String(c.id) !== b.dataset.uid);
-          randeazaEcran();
-        } catch (e) { alert(e.mesaj || "Eroare la revocare."); }
+      lista.querySelectorAll("[data-uid]").forEach((b) => b.addEventListener("click", () => {
+        confirmaCaseta(b.parentElement, "Revoci accesul pentru " + (b.previousElementSibling?.textContent || "") + "?", async () => {
+          try {
+            await api.del("/portal/acces-cont/acces/" + b.dataset.uid);
+            d.suplimentare = d.suplimentare.filter((c) => String(c.id) !== b.dataset.uid);
+            randeazaEcran();
+          } catch (e) { alert(e.mesaj || "Eroare la revocare."); }
+        }, { textOk: "Revoca" });
       }));
       corp.querySelector("#ac-btn-schimba-email").addEventListener("click", randeazaFormEmail);
       corp.querySelector("#ac-btn-adauga-acces").addEventListener("click", randeazaFormAdauga);

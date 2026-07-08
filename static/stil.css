@@ -414,7 +414,7 @@ html, body {
 .mig-fisier:hover { border-color: #16a34a; background: #f3fbf5; }
 .mig-fisier-titlu { font-size: var(--text-mic); font-weight: 600; color: var(--ardezie); margin-top: 6px; }
 .mig-fisier-desc { font-size: var(--text-mic); color: var(--gri); margin-top: 2px; }
-.mig-buton { width: 100%; margin-top: 18px; height: 42px; }
+.mig-buton { width: 100%; margin-top: 18px; }
 .mig-eroare, .mig-eroare2 { color: #a32d2d; font-size: var(--text-mic); margin-top: 10px; min-height: 1px; }
 
 .mig-lista { border: 0.5px solid var(--linie); border-radius: var(--raza); overflow: hidden; }
@@ -460,13 +460,7 @@ html, body {
 .mig-drop-desc { font-size: var(--text-mic); color: var(--gri); margin-top: 2px; }
 .mig-eroare { color: #a32d2d; font-size: var(--text-mic); margin: 12px 0 0; min-height: 0; }
 .mig-eroare:empty { margin: 0; }
-.mig-buton {
-  width: 100%; margin-top: 18px; height: 42px;
-  background: var(--albastru); color: #fff; border: none; border-radius: var(--raza);
-  font-size: var(--text-mic); font-weight: 600; font-family: inherit; cursor: pointer;
-  transition: background 0.15s;
-}
-.mig-buton:hover:not(:disabled) { background: #173a5c; }
+.mig-buton { width: 100%; margin-top: 18px; }
 .mig-buton:disabled { opacity: 0.5; cursor: default; }
 
 /* lista rezultate */
@@ -1886,8 +1880,7 @@ html, body {
 /* ===== Trimite pe email (fd-email-*) ===== */
 .fd-email-btn { cursor: pointer; white-space: nowrap; }
 .fd-email-zona { margin-top: 8px; }
-.fd-email-box { border: 1px solid var(--linie); border-radius: var(--raza);
-  padding: 12px; background: var(--fundal-usor, #f8f9fb); max-width: 420px; }
+.fd-email-box { background: #fff; border: 1px solid var(--linie); border-radius: var(--raza); padding: 14px 16px; margin: 10px 0 14px; max-width: 560px; }
 .fd-email-eticheta { display: block; font-size: var(--text-mic); color: var(--ardezie); margin-bottom: 8px; }
 .fd-email-rand { display: flex; gap: 8px; }
 .fd-email-input { flex: 1; padding: 8px 10px; border: 1px solid var(--linie);
@@ -2052,7 +2045,7 @@ html, body { overflow-y: hidden; }
 .caseta-atentie .ca-actiuni { display: flex; gap: 8px; }
 /* ============ sfarsit STANDARD_BUTOANE ============ */
 /* [STANDARD_BUTOANE_MAPARE] clase vechi -> standard */
-.mig-buton, .rap-trimite, .asi-toggle-dez, .asi-echipa-btn, .rap-muta,
+.rap-trimite, .asi-toggle-dez, .asi-echipa-btn, .rap-muta,
 .em-emite, .mf-salveaza, .val-aproba, .val-depune, .pac-genereaza, .rap-btn-poza,
 .fd-email-send, .fd-storno-ok, .acces-verifica-btn, .pr-add {
   font-size: var(--text-mic) !important; padding: 9px 18px !important; border-radius: 8px !important;
@@ -2119,3 +2112,7 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .acces-modal-inreg { background: #eaf2fc; }
 /* meniu_card_v2: alias pe acces-card, latime plina */
 .meniu-card { width: 100%; margin-bottom: 12px; }
+
+/* [STANDARD_BUTON_ACTIV] starea "apasat/deschis" pentru butoane cu zone toggle */
+.buton-activ { background: #1a5a94 !important; color: #fff !important; border-color: #1a5a94 !important;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.25) !important; transform: none !important; }

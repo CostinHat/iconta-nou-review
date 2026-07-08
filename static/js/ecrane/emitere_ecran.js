@@ -33,7 +33,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
     <div class="em-config">
       <div class="em-intrebare">Ai mai emis facturi p\u00e2n\u0103 acum (\u00een alt program sau pe h\u00e2rtie)?</div>
       <div class="em-optiuni">
-        <button class="mig-buton" id="em-da">Da, am mai emis</button>
+        <button class="buton-primar" id="em-da">Da, am mai emis</button>
         <button class="em-buton-sec" id="em-nu">Nu, \u00eencep acum</button>
       </div>
       <div class="em-config-form" id="em-config-form"></div>
@@ -52,7 +52,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
         <input class="pr-input" id="em-ultim" type="number" placeholder="ex: 147">
       </div>
       <p class="em-hint">Vom continua de la num\u0103rul urm\u0103tor.</p>
-      <button class="mig-buton" id="em-salveaza-config">Continu\u0103</button>`;
+      <button class="buton-primar" id="em-salveaza-config">Continu\u0103</button>`;
     zona.querySelector("#em-salveaza-config").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie").value.trim() || null;
       if (serie && /^\d+$/.test(serie)) { alert("Seria contine doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-). Numarul ultimei facturi se pune in campul urmator."); return; }
@@ -70,7 +70,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
         <input class="pr-input" id="em-serie2" placeholder="las\u0103 gol dac\u0103 nu folose\u0219ti serie" autocomplete="off">
       </div>
       <p class="em-hint">Prima factur\u0103 va avea num\u0103rul 1.</p>
-      <button class="mig-buton" id="em-salveaza-config2">Continu\u0103</button>`;
+      <button class="buton-primar" id="em-salveaza-config2">Continu\u0103</button>`;
     zona.querySelector("#em-salveaza-config2").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie2").value.trim() || null;
       if (serie && /^\d+$/.test(serie)) { alert("Seria contine doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-)."); return; }
@@ -137,7 +137,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <option value="proforma">Proforma</option>
         <option value="aviz">Aviz insotire</option>
       </select>
-      <button class="mig-buton em-emite" id="em-emite">Emite factura</button>
+      <button class="buton-primar em-emite" id="em-emite">Emite factura</button>
     </div>
     <div class="em-rezultat" id="em-rezultat"></div>`;
 
@@ -313,7 +313,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <div class="em-curs-box">
         <div class="em-curs-titlu">\u26a0 Cursul BNR nu e disponibil momentan (${det.moneda}, ${det.data}).</div>
         <div class="em-curs-actiuni">
-          <button class="mig-buton em-curs-retry" id="em-curs-retry">Re\u00eencearc\u0103</button>
+          <button class="buton-primar em-curs-retry" id="em-curs-retry">Re\u00eencearc\u0103</button>
           <button class="em-buton-sec" id="em-curs-manual">Introdu manual</button>
         </div>
         <div id="em-curs-manual-zona"></div>
@@ -325,7 +325,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <div class="em-curs-manual">
           <label>Curs ${det.moneda} \u2192 RON pentru ${det.data}</label>
           <input type="number" step="0.0001" id="em-curs-val" placeholder="ex. 5.2438" class="em-curs-input">
-          <button class="mig-buton" id="em-curs-ok">Emite cu acest curs</button>
+          <button class="buton-primar" id="em-curs-ok">Emite cu acest curs</button>
           <div class="em-curs-avertisment">Introdu cursul BNR valabil pentru data facturii. R\u0103spunderea corectitudinii \u00ee\u021bi revine.</div>
         </div>`;
       zona.querySelector("#em-curs-ok").addEventListener("click", () => {
