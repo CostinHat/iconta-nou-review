@@ -168,7 +168,7 @@ async function randeazaSintezaAzi(nav, continut) {  // [p74_brief_modal] modal c
           <div class="sa-sectiune sa-flex1">
             <div class="sa-cap-rand">
               <span class="sa-cap">Ultimele evenimente</span>
-              <button class="sa-link" data-ecran="activitate">Vezi tot</button>
+              <button class="btn-link" data-ecran="activitate">Vezi tot</button>
             </div>
             <ul class="sa-jurnal">${jurnal}</ul>
           </div>

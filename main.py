@@ -2975,6 +2975,18 @@ def wc_sinc(tenant_id: int, ctx=Depends(cere_cabinet)):
     return r
 
 
+@app.get("/tenants/{tenant_id}/woocommerce/config")  # wc_config_get_v1
+def wc_config_get(tenant_id: int, ctx=Depends(cere_cabinet)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn() as conn, conn.cursor() as cur:
+        try:
+            cur.execute(f"SELECT wc_url, (wc_ck IS NOT NULL AND wc_cs IS NOT NULL) AS are_chei FROM {schema}.firma_profil LIMIT 1")
+            r = cur.fetchone()
+        except Exception:
+            return {"configurat": False, "url": None}
+    if not r:
+        return {"configurat": False, "url": None}
+    return {"configurat": bool(r[0] and r[1]), "url": r[0]}
 @app.put("/tenants/{tenant_id}/woocommerce/config")  # wc_sinc_v1
 def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     schema = _schema_sau_404(ctx, tenant_id)

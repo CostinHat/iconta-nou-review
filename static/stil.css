@@ -1775,8 +1775,8 @@ html, body {
 
 /* [p108_fac_meniu_css] meniu facturi (2 optiuni) */
 .fac-meniu { display:flex; flex-direction:column; gap:12px; max-width:520px; margin-top:8px; }
-.fac-optiune { text-align:left; background:#fff; border:2px solid #e6eaf0; border-radius:12px; padding:18px 20px; cursor:pointer; transition:border-color .12s, background .12s; }
-.fac-optiune:hover { border-color:#1d4ed8; background:#f7f9ff; }
+.fac-optiune { text-align:left; background:#cfe0f7; border:1px solid #a8c4e8; border-radius:12px; padding:18px 20px; cursor:pointer; font-family:var(--font); transition:border-color .15s, box-shadow .15s, transform .15s; }
+.fac-optiune:hover { border-color:#0f6cbd; box-shadow:0 4px 14px rgba(15,108,189,0.14); transform:translateY(-1px); }
 .fac-opt-titlu { font-size: var(--text); font-weight:700; color:#0f172a; }
 .fac-opt-sub { font-size: var(--text-mic); color:#64748b; margin-top:3px; }
 

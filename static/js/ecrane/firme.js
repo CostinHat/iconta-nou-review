@@ -1298,45 +1298,70 @@ async function ecranBalanta(corp, nav, t) {
 
 // ---------- MAGAZIN ONLINE (WooCommerce) ----------  // wc_fe_v1
 async function ecranMagazin(corp, nav, t) {
-  const inapoi = () => meniuFirma(corp, nav, t);
-  corp.innerHTML = `
-    <h2 class="pf-titlu">Magazin online</h2>
-    <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
-    <div class="em-sectiune">
-      <div class="camp-eticheta">Configurare</div>
-      <input class="pr-input" id="wc-url" placeholder="URL magazin (ex: https://magazin.ro)" autocomplete="off">
-      <input class="pr-input" id="wc-ck" placeholder="Consumer Key (ck_...)" autocomplete="off">
-      <input class="pr-input" id="wc-cs" placeholder="Consumer Secret (cs_...)" type="password" autocomplete="off">
-      <button class="em-buton-sec" id="wc-salveaza">Salveaz\u0103</button>
-    </div>
-    <div class="em-actiuni">
-      <button class="mig-buton" id="wc-sinc">Sincronizeaz\u0103 acum</button>
-    </div>
-    <div class="em-rezultat" id="wc-rezultat"></div>`;
-  { const _b = corp.querySelector("#wc-back"); if (_b) _b.addEventListener("click", inapoi); }
-  const zona = corp.querySelector("#wc-rezultat");
-
-  corp.querySelector("#wc-salveaza").addEventListener("click", async () => {
-    try {
-      await api.put(`/tenants/${t.id}/woocommerce/config`, {
-        url: corp.querySelector("#wc-url").value.trim() || null,
-        ck: corp.querySelector("#wc-ck").value.trim() || null,
-        cs: corp.querySelector("#wc-cs").value.trim() || null,
-      });
-      zona.innerHTML = `<span style="color:#1d7a4d">Configurare salvat\u0103.</span>`;
-    } catch (e) { zona.innerHTML = `<span style="color:#c0392b">${e.mesaj || "eroare"}</span>`; }
-  });
-
-  corp.querySelector("#wc-sinc").addEventListener("click", async () => {
-    zona.innerHTML = `<p class="ecran-nota">Se sincronizeaz\u0103...</p>`;
-    try {
-      const r = await api.post(`/tenants/${t.id}/woocommerce/sincronizeaza`, {});
-      const n = (r.importate || []).length;
-      zona.innerHTML = `<span style="color:#1d7a4d">${n} facturi importate, ${r.sarite || 0} deja existente.</span>`;
-    } catch (e) { zona.innerHTML = `<span style="color:#c0392b">${e.mesaj || "eroare"}</span>`; }
-  });
+  let mesajSucces = "";
+  async function randeazaPrincipal() {
+    nav.setInapoi(undefined);
+    corp.innerHTML = '<p class="ecran-nota">Se incarca...</p>';
+    let cfg = { configurat: false, url: null };
+    try { cfg = await api.get(`/tenants/${t.id}/woocommerce/config`); } catch (e) {}
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Magazin online</h2>
+      <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
+      ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
+      <p style="margin:0 0 16px"><b>Stare:</b> ${cfg.configurat ? "conectat la " + cfg.url : "neconfigurat"}</p>
+      ${cfg.configurat ? '<button class="buton-primar" id="wc-sinc" style="margin-bottom:12px">Sincronizeaza acum</button><br>' : ""}
+      <button class="acces-card meniu-card" id="wc-btn-config">${cfg.configurat ? "Modifica configurarea" : "Configureaza magazinul"}</button>
+      <div class="em-rezultat" id="wc-rezultat"></div>
+    `;
+    mesajSucces = "";
+    corp.querySelector("#wc-btn-config").addEventListener("click", randeazaConfig);
+    const zona = corp.querySelector("#wc-rezultat");
+    const bs = corp.querySelector("#wc-sinc");
+    if (bs) bs.addEventListener("click", async () => {
+      zona.innerHTML = `<p class="ecran-nota">Se sincronizeaza...</p>`;
+      try {
+        const r = await api.post(`/tenants/${t.id}/woocommerce/sincronizeaza`, {});
+        const n = (r.importate || []).length;
+        zona.innerHTML = `<span style="color:#1d7a4d">${n} facturi importate, ${r.sarite || 0} deja existente.</span>`;
+      } catch (e) { zona.innerHTML = `<span style="color:#c0392b">${e.mesaj || "eroare"}</span>`; }
+    });
+  }
+  function randeazaConfig() {
+    nav.setInapoi(randeazaPrincipal);
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Configurare magazin</h2>
+      <div class="camp" style="margin-bottom:10px">
+        <label class="camp-eticheta">URL magazin</label>
+        <input class="camp-input" id="wc-url" placeholder="https://magazin.ro" autocomplete="off" autofocus>
+      </div>
+      <div class="camp" style="margin-bottom:10px">
+        <label class="camp-eticheta">Consumer Key</label>
+        <input class="camp-input" id="wc-ck" placeholder="ck_..." autocomplete="off">
+      </div>
+      <div class="camp" style="margin-bottom:14px">
+        <label class="camp-eticheta">Consumer Secret</label>
+        <input class="camp-input" id="wc-cs" placeholder="cs_..." type="password" autocomplete="off">
+      </div>
+      <button class="buton-primar" id="wc-salveaza">Salveaza</button>
+      <button class="btn-link" id="wc-renunta" style="margin-left:10px">Renunta</button>
+      <p class="ecran-nota" id="wc-msg" style="margin:10px 0 0"></p>
+    `;
+    corp.querySelector("#wc-renunta").addEventListener("click", randeazaPrincipal);
+    corp.querySelector("#wc-salveaza").addEventListener("click", async () => {
+      const msg = corp.querySelector("#wc-msg");
+      try {
+        await api.put(`/tenants/${t.id}/woocommerce/config`, {
+          url: corp.querySelector("#wc-url").value.trim() || null,
+          ck: corp.querySelector("#wc-ck").value.trim() || null,
+          cs: corp.querySelector("#wc-cs").value.trim() || null,
+        });
+        mesajSucces = "Configurare salvata.";
+        randeazaPrincipal();
+      } catch (e) { msg.innerHTML = '<span class="msg-eroare">' + (e.mesaj || "eroare") + '</span>'; }
+    });
+  }
+  randeazaPrincipal();
 }
-
 /* acces_client_ui_v1 */
 async function ecranAccesClient(corp, nav, t) {
   let mesajSucces = "";

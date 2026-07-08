@@ -21,6 +21,7 @@ export function randeazaFacturi(corp, nav, tenantId, opt = {}) {
 
 // ---------- MENIU (Istoric / Emite / Model) ----------
 function meniuFacturi(corp, nav, tenantId, opt) {
+  if (nav.setInapoi) nav.setInapoi(undefined);
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
   const titluInapoi = opt.titluInapoi || "Inapoi";
   corp.innerHTML = `
@@ -52,6 +53,7 @@ function meniuFacturi(corp, nav, tenantId, opt) {
 
 // ---------- ISTORIC ---------- /* facback_null_fix_v1 */
 async function istoricFacturi(corp, nav, tenantId, opt) {
+  if (nav.setInapoi) nav.setInapoi(() => meniuFacturi(corp, nav, tenantId, opt));
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
   corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
   corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
@@ -98,6 +100,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
 
 // ---------- EMITE ----------
 function emiteFactura(corp, nav, tenantId, opt) {
+  if (nav.setInapoi) nav.setInapoi(() => meniuFacturi(corp, nav, tenantId, opt));
   randeazaEmitere(corp, nav, tenantId, {
     inapoi: () => meniuFacturi(corp, nav, tenantId, opt),
     dupaEmitere: () => istoricFacturi(corp, nav, tenantId, opt),
@@ -113,6 +116,7 @@ const _bani = (x, mon) => {
 };
 
 async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
+  if (nav.setInapoi) nav.setInapoi(() => istoricFacturi(corp, nav, tenantId, opt));
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
   corp.querySelector("#fac-back")?.addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
 
@@ -349,6 +353,7 @@ const MF_FONTURI = {
 const MF_CULORI = ["#1d4ed8", "#0a807b", "#1d7a4d", "#a3344b", "#6d28d9", "#b45309"];
 
 async function modelFactura(corp, nav, tenantId, opt) {
+  if (nav.setInapoi) nav.setInapoi(() => meniuFacturi(corp, nav, tenantId, opt));
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
   corp.querySelector("#fac-back")?.addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
 
@@ -517,6 +522,7 @@ async function modelFactura(corp, nav, tenantId, opt) {
 
 // ---------- RECURENTE ----------  // fac_recurente_v1
 async function listaRecurente(corp, nav, tenantId, opt) {
+  if (nav.setInapoi) nav.setInapoi(() => meniuFacturi(corp, nav, tenantId, opt));
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
   corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
@@ -580,6 +586,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
 
 // ---------- ADAUGA SABLON ----------  // fac_recurente_v1
 function formSablon(corp, nav, tenantId, opt) {
+  if (nav.setInapoi) nav.setInapoi(() => listaRecurente(corp, nav, tenantId, opt));
   const inapoiLista = () => listaRecurente(corp, nav, tenantId, opt);
   corp.innerHTML = `
     <h2 class="pf-titlu">\u0218ablon nou</h2>
