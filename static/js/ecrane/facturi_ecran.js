@@ -607,7 +607,7 @@ async function modelFactura(corp, nav, tenantId, opt) {
 // ---------- RECURENTE ----------  // fac_recurente_v1
 async function listaRecurente(corp, nav, tenantId, opt) {
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
-  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
   corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   let sabloane = [];
   try {

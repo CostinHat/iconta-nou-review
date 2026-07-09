@@ -530,7 +530,7 @@ async function _educatiePatruOchi(continut) {  // [p55_decizie]
 
 // ---------- CONSOLIDARE ----------  // consolidare_fe_v1
 async function randeazaConsolidare(corp, nav) {
-  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
   let d = null;
   try { d = await api.get("/cabinet/consolidare"); }
   catch (e) { corp.innerHTML = `<div class="mig-gol">${e.mesaj || e.message || "eroare"}</div>`; return; }

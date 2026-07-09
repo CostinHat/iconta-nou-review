@@ -652,7 +652,7 @@ async function ecranBon(corp, nav) {
 // ---------- CIFRELE FIRMEI (KPI) ----------  // portal_kpi_fe_v1
 async function ecranCifre(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
-  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
   let d = null;
   try {
     d = await api.get("/portal/kpi");
@@ -682,7 +682,7 @@ async function ecranCifre(corp, nav) {
     </div>
     <h2 class="pf-titlu" style="margin-top:20px">Previziune bani (8 s\u0103pt\u0103m\u00e2ni)</h2>
     <p class="pf-intro" id="cf-intro">Estimare pe scaden\u021bele facturilor \u2014 orientativ.</p>
-    <div class="pf-lista" id="cf-zona"><p class="ecran-nota">Se \u00eencarc\u0103...</p></div>`;
+    <div class="pf-lista" id="cf-zona"><p class="ecran-nota">Se \u00eencarc\u0103\u2026</p></div>`;
   incarcaForecast(corp, rand, lei);  // portal_cashflow_fe_v1
 }
 
