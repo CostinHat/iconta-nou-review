@@ -644,7 +644,7 @@ async function ecranBilant(corp, nav, t) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Bilan\u021b anual</h2>
       <p class="pf-intro">Genereaz\u0103 \u0219i valideaz\u0103 situa\u021biile financiare (validator ANAF pe server).</p>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
         <label class="camp"><span class="camp-eticheta">An</span><input type="number" id="bl-an" class="camp-input" value="${new Date().getFullYear() - 1}" style="width:90px"></label>
         <label class="camp"><span class="camp-eticheta">Tip</span><select id="bl-tip" class="camp-input">
           <option value="s1005">S1005 \u00b7 microentit\u0103\u021bi</option>
