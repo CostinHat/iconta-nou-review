@@ -582,7 +582,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Eroare")}</div>`; }
     }));
     rtLista.querySelectorAll(".rt-del").forEach((b) => b.addEventListener("click", async (e) => {
-      try { await api.del(`/tenants/${t.id}/retete/${e.target.dataset.id}`); rtIncarca(); } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Nu am putut sterge reteta.")}</div>`; }
+      try { await api.del(`/tenants/${t.id}/retete/${e.target.dataset.id}`); rtIncarca(); } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Nu am putut \u0219terge re\u021beta.")}</div>`; }
     }));
   };
   zona.querySelector("#rt-plus").addEventListener("click", () => { rtLinii.push({ articol_id: arts[0] && arts[0].id, cantitate: "" }); rtDeseneazaIng(); });
