@@ -1208,6 +1208,7 @@ async function ecranJurnal(corp, nav, t) {
 // [bonuri] documente pozate de client: lista -> detaliu la selectie  // bon_flux_e5_v1
 async function ecranBonuri(corp, nav, t) {
   const fmt = (v) => (Number(v) || 0).toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmtZi = (iso) => { const p = String(iso || "").split("-"); return p.length === 3 ? p[2] + "." + p[1] + "." + p[0] : (iso || ""); };  // bon_flux_e6_v1
   let urlsPoze = [];
   let mesajSucces = "";
   let docs = [];
@@ -1242,7 +1243,7 @@ async function ecranBonuri(corp, nav, t) {
       : docs.map((b, i) => `
         <button class="acces-card meniu-card" data-doc="${i}">
           <b>${b.tip === "chitanta" ? "Chitanță" : "Bon fiscal"}</b> · ${b.comerciant || "emitent necitit"}
-          · ${b.data || "dată necitită"} · ${b.total ? fmt(b.total) + " lei" : "sumă necitită"}
+          · ${b.data ? fmtZi(b.data) : "dată necitită"} · ${b.total ? fmt(b.total) + " lei" : "sumă necitită"}
         </button>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Bonuri și chitanțe · ${t.nume || ""}</h2>
@@ -1556,3 +1557,5 @@ async function ecranAccesClient(corp, nav, t) {
 // casa_std_v1
 
 // verif_doc_pozate_v1
+
+// bon_flux_e6_v1

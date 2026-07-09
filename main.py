@@ -2433,7 +2433,7 @@ def bonuri_de_verificat(tenant_id: int, ctx=Depends(cere_cabinet)):
         with conn.cursor() as cur:
             cur.execute(f"""
                 SELECT id, comerciant, cui, data, total, tva_11, tva_21, articole, status, nr_imagini, tip, numar_document, mentiuni, tva
-                FROM {schema}.bonuri WHERE status = 'de_verificat' ORDER BY creat_la
+                FROM {schema}.bonuri WHERE status = 'de_verificat' ORDER BY creat_la DESC
             """)
             bonuri = [{"id": r[0], "comerciant": r[1], "cui": r[2],
                        "data": r[3].isoformat() if r[3] else None,
@@ -6551,3 +6551,5 @@ def nota_ong(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
         conn.commit()
     return {"inregistrare_id": iid, "cont_venit": r["cont_venit"],
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+
+# bon_flux_e6_v1

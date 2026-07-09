@@ -161,9 +161,73 @@ export function ecranLogin(radacina) {
     modal.querySelector("#acces-client-nou").addEventListener("click", randeazaInregistrare);
   }
 
-  // ---------- ecran 2a: login ----------
+  // ---------- ecran 2a: login (doua cai explicite) ----------  // ux_login_camera_v1
   function randeazaLogin() {
     modal.classList.remove("acces-modal-inreg");
+    modal.innerHTML = `
+      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div class="login-brand">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
+        <span class="login-tagline">Contabilitatea cu control fiscal</span>
+      </div>
+      <button class="acces-card meniu-card" id="lg-client">
+        <div class="acces-card-text">
+          <div class="acces-card-titlu">Sunt client al unui cabinet</div>
+          <div class="acces-card-sub">Intri cu un link primit pe email — fără parolă</div>
+        </div>
+      </button>
+      <button class="acces-card meniu-card" id="lg-cabinet">
+        <div class="acces-card-text">
+          <div class="acces-card-titlu">Sunt cabinet de contabilitate</div>
+          <div class="acces-card-sub">Intri cu email și parolă</div>
+        </div>
+      </button>
+    `;
+    modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
+    modal.querySelector("#lg-client").addEventListener("click", formClient);
+    modal.querySelector("#lg-cabinet").addEventListener("click", formCabinet);
+  }
+
+  function formClient() {
+    modal.innerHTML = `
+      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div class="login-brand">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
+        <span class="login-tagline">Portalul tău, fără parolă</span>
+      </div>
+      <form id="lg-form-client" onsubmit="return false">
+      <label class="camp">
+        <span class="camp-eticheta">Emailul cu care intri în portal</span>
+        <input type="email" class="camp-input" id="lgc-email" autocomplete="username" autofocus>
+      </label>
+      <p class="ecran-nota" style="margin:0 0 12px">Îți trimitem pe email un link de logare. Îl apeși și ai intrat.</p>
+      <button type="submit" class="buton-primar" id="lgc-trimite">Trimite-mi linkul de logare</button>
+      <button type="button" class="btn-link" id="lgc-inapoi" style="margin-left:10px">Înapoi</button>
+      <p id="lgc-msg" style="margin:10px 0 0"></p>
+      </form>
+    `;
+    modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
+    modal.querySelector("#lgc-inapoi").addEventListener("click", randeazaLogin);
+    const email = modal.querySelector("#lgc-email");
+    const btn = modal.querySelector("#lgc-trimite");
+    btn.addEventListener("click", async () => {
+      const msg = modal.querySelector("#lgc-msg");
+      const em = (email.value || "").trim();
+      if (!em.includes("@")) { arataMesaj(msg, "Completează emailul mai întâi.", "eroare"); return; }
+      btn.disabled = true; btn.textContent = "Se trimite...";
+      try {
+        const r = await api.post("/public/magic-link", { email: em });
+        arataMesaj(msg, r.mesaj || "Linkul a plecat. Verifică emailul (și Spam).", "info");
+        btn.textContent = "Trimis ✓";
+      } catch (e) {
+        btn.disabled = false; btn.textContent = "Trimite-mi linkul de logare";
+        arataMesaj(msg, e.mesaj || e.message, "eroare");
+      }
+    });
+    email.addEventListener("keydown", (e) => { if (e.key === "Enter") btn.click(); });
+  }
+
+  function formCabinet() {
     modal.innerHTML = `
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
@@ -181,11 +245,13 @@ export function ecranLogin(radacina) {
       </label>
       <div class="login-eroare" id="login-eroare" hidden></div>
       <button type="submit" class="buton-primar" id="login-buton">Autentificare</button>
-      <button type="button" class="btn-link" id="acc-magic" style="margin-top:10px;display:block">Trimite-mi link de logare (f\u0103r\u0103 parol\u0103)</button>
+      <button type="button" class="btn-link" id="login-inapoi" style="margin-left:10px">Înapoi</button>
+      <button type="button" class="btn-link" id="acc-magic" style="margin-top:10px;display:block">Trimite-mi link de logare (fără parolă)</button>
       <p id="acc-magic-msg" style="margin:6px 0 0"></p>
       </form>
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
+    modal.querySelector("#login-inapoi").addEventListener("click", randeazaLogin);
 
     const email = modal.querySelector("#login-email");
     const parola = modal.querySelector("#login-parola");
@@ -193,7 +259,7 @@ export function ecranLogin(radacina) {
     if (bMagic) bMagic.addEventListener("click", async () => {
       const msg = modal.querySelector("#acc-magic-msg");
       const em = (email.value || "").trim();
-      if (!em.includes("@")) { arataMesaj(msg, "Completeaz\u0103 emailul mai \u00eent\u00e2i.", "eroare"); return; }
+      if (!em.includes("@")) { arataMesaj(msg, "Completează emailul mai întâi.", "eroare"); return; }
       try {
         const r = await api.post("/public/magic-link", { email: em });
         arataMesaj(msg, r.mesaj, "info");

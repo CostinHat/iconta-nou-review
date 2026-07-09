@@ -558,13 +558,20 @@ async function ecranBon(corp, nav) {
       <h2 class="pf-titlu">Pozează bon sau chitanță</h2>
       <p class="pf-intro">Fotografiază sau încarcă bonul fiscal ori chitanța. iConta citește documentul automat, apoi tu îl trimiți contabilului.</p>
       ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
-      <input type="file" id="bon-fisier" accept="image/*" capture="environment" multiple style="margin-bottom:16px">
+      <input type="file" id="bon-fisier" accept="image/*" capture="environment" multiple hidden>
+      <input type="file" id="bon-fisier-galerie" accept="image/*" multiple hidden>
+      <div id="bon-butoane" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+        <button class="buton-primar" id="bon-fotografiaza">Fotografiază documentul</button>
+        <button class="buton-secundar" id="bon-incarca">Încarcă din galerie</button>
+      </div>
       <div id="bon-rezultat"></div>`;
     mesajSucces = "";
-    corp.querySelector("#bon-fisier").addEventListener("change", async (ev) => {
+    corp.querySelector("#bon-fotografiaza").addEventListener("click", () => corp.querySelector("#bon-fisier").click());  // ux_login_camera_v1
+    corp.querySelector("#bon-incarca").addEventListener("click", () => corp.querySelector("#bon-fisier-galerie").click());
+    const laSelectie = async (ev) => {
       const fs = Array.from(ev.target.files);
       if (!fs.length) return;
-      ev.target.disabled = true;
+      corp.querySelectorAll("#bon-butoane button").forEach((b) => { b.disabled = true; });
       const zona = corp.querySelector("#bon-rezultat");
       zona.innerHTML = `<p class="ecran-nota">Citesc documentul...</p>`;
       const fd = new FormData();
@@ -575,10 +582,13 @@ async function ecranBon(corp, nav) {
                   urls: fs.map((f) => URL.createObjectURL(f)) };
         randeazaConfirmare();
       } catch (e) {
-        ev.target.disabled = false; ev.target.value = "";
+        corp.querySelectorAll("#bon-butoane button").forEach((b) => { b.disabled = false; });
+        ev.target.value = "";
         zona.innerHTML = `<p class="msg-eroare">${e.mesaj || "Nu am putut citi documentul. Încearcă o poză mai clară."}</p>`;
       }
-    });
+    };
+    corp.querySelector("#bon-fisier").addEventListener("change", laSelectie);
+    corp.querySelector("#bon-fisier-galerie").addEventListener("change", laSelectie);
   }
 
   function randeazaConfirmare() {
@@ -702,3 +712,5 @@ async function incarcaForecast(corp, rand, lei) {  // portal_cashflow_fe_v1
 // portal_ds_audit_b_v1
 
 // bon_flux_e2b_v1
+
+// ux_login_camera_v1
