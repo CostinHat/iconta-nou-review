@@ -770,14 +770,16 @@ async function ecranStocuri(corp, nav, t) {
         deseneaza();
       } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
     });
-    corp.querySelector("#s-desc").addEventListener("click", async () => {
-      if (!confirm(`Descarci gestiunea pe ${String(luna).padStart(2, "0")}/${an}? Se calculeaza din notele VALIDATE.`)) return;
+    corp.querySelector("#s-desc").addEventListener("click", () => {
+      const bD = corp.querySelector("#s-desc");
+      confirmaCaseta(bD.parentElement || bD, `Descarci gestiunea pe ${String(luna).padStart(2, "0")}/${an}? Se calculează din notele VALIDATE.`, async () => {  // audit_cab_lot2_v1
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/descarcare?an=${an}&luna=${luna}`, {});
         zonaM.innerHTML = r.mesaj
           ? `<div class="mig-gol">${escS(r.mesaj)}</div>`
           : `<p class="pf-intro">K=${r.k} \u00b7 CMV ${r.cmv} \u00b7 adaos ${r.adaos} \u00b7 TVA ${r.tva} \u00b7 total 371: ${r.total_371} lei \u00b7 ${r.inregistrari.length} note ciorne.</p>`;
       } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
+      }, { textOk: "Descarcă gestiunea" });
     });
     sectiuneaCV(corp, t, zonaM);
   };
@@ -852,13 +854,14 @@ async function ecranCasa(corp, nav, t) {
         deseneaza();
       } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escC(e.mesaj || "Eroare")}</div>`; }
     });
-    corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
-      if (!confirm("Stergi operatiunea si ciorna legata?")) return;
+    corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
+      confirmaCaseta(b.parentElement || b, "Ștergi operațiunea și ciorna legată?", async () => {  // audit_cab_lot2_v1
       try { await api.del(`/tenants/${t.id}/casa/operatiuni/${b.dataset.del}`); deseneaza(); }
       catch (e) {
         b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
         b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + (e.mesaj || "Eroare la ștergere.") + '</span>');
       }
+      }, { textOk: "Șterge" });
     }));
   };
   deseneaza();
@@ -1169,10 +1172,11 @@ async function ecranJurnal(corp, nav, t) {
       try { await api.post(`/tenants/${t.id}/jurnal/${b.dataset.val}/valideaza`, {}); deseneaza(); }
       catch (e) { eroare(e, "Eroare la validare"); }
     }));
-    corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
-      if (!confirm("Stergi aceasta ciorna?")) return;
-      try { await api.del(`/tenants/${t.id}/jurnal/${b.dataset.del}`); deseneaza(); }
-      catch (e) { eroare(e, "Eroare la stergere"); }
+    corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
+      confirmaCaseta(b.parentElement || b, "Ștergi această ciornă?", async () => {  // audit_cab_lot2_v1
+        try { await api.del(`/tenants/${t.id}/jurnal/${b.dataset.del}`); deseneaza(); }
+        catch (e) { eroare(e, "Eroare la stergere"); }
+      }, { textOk: "Șterge" });
     }));
     corp.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => {
       inEditare = parseInt(b.dataset.edit); deseneaza();
@@ -1611,3 +1615,5 @@ async function ecranAccesClient(corp, nav, t) {
 // bon_flux_e9b_v1
 
 // audit_cab_lot1_v1
+
+// audit_cab_lot2_v1

@@ -2,7 +2,7 @@
 // Bandă de salut + 9 carduri pastel (grilă 3×3), fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api } from "../api.js";
+import { api, confirmaCaseta } from "../api.js";
 import { semaforCard as _semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
 import { randeazaListaFirme } from "./firme.js";
@@ -487,13 +487,14 @@ async function _indicatorPatruOchi() {  /* po_indicator_v1 */
   el.style.fontWeight = "600";
   el.textContent = "Validarea \u00een doi asisten\u021bi \u2713";
   el.title = "Apas\u0103 pentru a dezactiva";
-  el.addEventListener("click", async () => {
-    if (!confirm("Dezactivezi validarea \u00een doi? Declara\u021biile vor putea fi depuse de cine le-a preg\u0103tit.")) return;
-    try {
-      await api.post("/eu/patru-ochi", { activ: false });
-      el.remove();
-      _educatiePatruOchi(document.querySelector(".desktop-continut"));
-    } catch {}
+  el.addEventListener("click", () => {
+    confirmaCaseta(el.parentElement || el, "Dezactivezi validarea \u00een doi? Declara\u021biile vor putea fi depuse de cine le-a preg\u0103tit.", async () => {  // audit_cab_lot2_v1
+      try {
+        await api.post("/eu/patru-ochi", { activ: false });
+        el.remove();
+        _educatiePatruOchi(document.querySelector(".desktop-continut"));
+      } catch {}
+    }, { textOk: "Dezactiveaz\u0103" });
   });
   bara.appendChild(el);
 }
@@ -563,3 +564,5 @@ async function randeazaConsolidare(corp, nav) {
 }
 
 // cab_culori_v2
+
+// audit_cab_lot2_v1

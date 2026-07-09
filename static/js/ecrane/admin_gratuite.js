@@ -1,5 +1,5 @@
 // admin_gratuite.js — Admin iConta: conturi gratuite (facturare, fara cabinet).
-import { api } from "../api.js";
+import { api, confirmaCaseta } from "../api.js";  /* audit_cab_lot2_v1 */
 function fmtData(iso) {
   if (!iso) return "—";
   const d = new Date(iso);
@@ -53,16 +53,21 @@ async function randeaza(corp, nav) {
     btn.addEventListener("click", async () => {
       const c = conturi[parseInt(btn.dataset.toggle)];
       const ruta = c.activ ? "suspenda" : "reactiveaza";
-      if (c.activ && !confirm(`Suspenzi contul ${c.nume}? Utilizatorii nu se vor mai putea loga.`)) return;
-      try {
-        await api.post(`/admin/conturi-gratuite/${c.id}/${ruta}`, {});
-        await randeaza(corp, nav);
-      } catch {
-        corp.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-        corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">Operațiunea a eșuat. Reîncearcă.</p>');
-      }
+      const fa = async () => {  // audit_cab_lot2_v1
+        try {
+          await api.post(`/admin/conturi-gratuite/${c.id}/${ruta}`, {});
+          await randeaza(corp, nav);
+        } catch {
+          corp.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+          corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">Operațiunea a eșuat. Reîncearcă.</p>');
+        }
+      };
+      if (c.activ) confirmaCaseta(btn.parentElement || btn, `Suspenzi contul ${c.nume}? Utilizatorii nu se vor mai putea loga.`, fa, { textOk: "Suspendă" });
+      else fa();
     });
   });
 }
 
 // audit_cab_lot1_v1
+
+// audit_cab_lot2_v1

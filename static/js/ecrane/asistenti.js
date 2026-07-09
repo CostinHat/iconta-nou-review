@@ -1,7 +1,7 @@
 // asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
 // Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
 // Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
-import { api, arataMesaj } from "../api.js";
+import { api, arataMesaj, confirmaCaseta } from "../api.js";  /* audit_cab_lot2_v1 */
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
   const M = { rosu: "probleme", galben: "de urm\u0103rit", verde: "f\u0103r\u0103 probleme" };
@@ -197,20 +197,7 @@ async function deschideEditare(uid, corp, nav) {
         });
       };
 
-    box.querySelector("#asi-salveaza").onclick = async () => {
-      err.textContent = "";
-      const valNou = box.querySelector('[data-perm="poate_valida"]')?.checked && !a.poate_valida;
-      if (valNou && !confirm(`Acorzi dreptul de validare lui ${nume} (Nivel 2)? Asigura-te ca acopera tipurile pe care le va valida.`)) return;
-      /* [patch7_zero_firme] */
-      if (a.atribuire_relevanta) {
-        const bifate = [...box.querySelectorAll("[data-tid]")].filter((cb) => cb.checked).length;
-        if (bifate === 0) {
-          const mesaj = a.rol === "angajat"
-            ? `${nume} ramane fara nicio firma. Competentele se sterg si contul se DEZACTIVEAZA (ramane in istoric). Continui?`
-            : `${nume} ramane fara nicio firma. Competentele se sterg si iese din lista de procesatori (contul de administrator ramane). Continui?`;
-          if (!confirm(mesaj)) return;
-        }
-      }
+    const _salveazaEfectiv = async () => {  // audit_cab_lot2_v1
       try {
         const permVals = {};
         box.querySelectorAll("[data-perm]").forEach((cb) => { permVals[cb.dataset.perm] = cb.checked; });
@@ -231,12 +218,30 @@ async function deschideEditare(uid, corp, nav) {
         randeazaAsistenti(corp, nav);
       } catch { err.textContent = "Nu am putut salva. Incearca din nou."; }
     };
+    box.querySelector("#asi-salveaza").onclick = () => {
+      err.textContent = "";
+      const btnS = box.querySelector("#asi-salveaza");
+      const valNou = box.querySelector('[data-perm="poate_valida"]')?.checked && !a.poate_valida;
+      let intrebari = [];
+      if (valNou) intrebari.push(`Acorzi dreptul de validare lui ${nume} (Nivel 2)? Asigură-te că acoperă tipurile pe care le va valida.`);
+      if (a.atribuire_relevanta) {
+        const bifate = [...box.querySelectorAll("[data-tid]")].filter((cb) => cb.checked).length;
+        if (bifate === 0) {
+          intrebari.push(a.rol === "angajat"
+            ? `${nume} rămâne fără nicio firmă. Competențele se șterg și contul se DEZACTIVEAZĂ (rămâne în istoric).`
+            : `${nume} rămâne fără nicio firmă. Competențele se șterg și iese din lista de procesatori (contul de administrator rămâne).`);
+        }
+      }
+      if (!intrebari.length) { _salveazaEfectiv(); return; }
+      confirmaCaseta(btnS.parentElement || btnS, intrebari.join(" ") + " Continui?", _salveazaEfectiv, { textOk: "Da, salvează" });
+    };
 
     const bDez = box.querySelector("#asi-dezactiveaza");
-    if (bDez) bDez.onclick = async () => {
-      if (!confirm(`Dezactivezi ${nume}? Ramane in istoric, dar nu mai are acces.`)) return;
-      try { await api.post(`/asistenti/${uid}/dezactiveaza`); nav.inapoi(); randeazaAsistenti(corp, nav); }
-      catch { err.textContent = "Nu am putut dezactiva."; }
+    if (bDez) bDez.onclick = () => {
+      confirmaCaseta(bDez.parentElement || bDez, `Dezactivezi ${nume}? Rămâne în istoric, dar nu mai are acces.`, async () => {
+        try { await api.post(`/asistenti/${uid}/dezactiveaza`); nav.inapoi(); randeazaAsistenti(corp, nav); }
+        catch { err.textContent = "Nu am putut dezactiva."; }
+      }, { textOk: "Dezactivează" });
     };
     const bReact = box.querySelector("#asi-reactiveaza");
     if (bReact) bReact.onclick = async () => {
@@ -408,3 +413,5 @@ async function deschideEchipaErori(nav) {
 }
 
 // audit_cab_lot1_v1
+
+// audit_cab_lot2_v1

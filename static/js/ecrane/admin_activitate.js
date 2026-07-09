@@ -1,6 +1,6 @@
 // admin_activitate.js — Admin iConta: activitate + business cabinete (doar superadmin).
 // Sumar + lista cu firme/angajati/recomandari/actiuni, suspenda/reactiveaza, click -> timeline.
-import { api } from "../api.js";
+import { api, confirmaCaseta } from "../api.js";  /* audit_cab_lot2_v1 */
 
 function fmtData(iso) {
   if (!iso) return "—";
@@ -73,7 +73,7 @@ async function randeaza(corp, nav) {
       const mesaj = c.activ
         ? `Suspenzi accesul cabinetului "${c.nume}"? Login-ul se taie instant, datele rămân.`
         : `Reactivezi accesul cabinetului "${c.nume}"?`;
-      if (!confirm(mesaj)) return;
+      confirmaCaseta(btn.parentElement || btn, mesaj, async () => {  // audit_cab_lot2_v1
       try {
         await api.post(`/admin/cabinete/${c.id}/${ruta}`, {});
         corp.innerHTML = `<p class="ecran-nota">Se actualizează...</p>`;
@@ -82,6 +82,7 @@ async function randeaza(corp, nav) {
         corp.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
         corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">A apărut o eroare. Reîncearcă.</p>');
       }
+      }, { textOk: c.activ ? "Suspendă" : "Reactivează" });
     });
   });
 }
@@ -110,3 +111,5 @@ async function deschideTimeline(corp, cabinet) {
 }
 
 // audit_cab_lot1_v1
+
+// audit_cab_lot2_v1

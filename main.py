@@ -4688,7 +4688,7 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
                             VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
                         (f["data_emitere"], factura_id,
-                         f"Contare factura {f.get('serie') or ''}{f.get('numar') or factura_id}"[:200]))
+                         f"Contare factura {(lambda s, n: n if (s and str(n).startswith(str(s))) else (str(s or '') + str(n)))(f.get('serie'), f.get('numar') or factura_id)}"[:200]))  # fix_serie_contare_v1
             iid = cur.fetchone()["id"]
             for n in note:
                 cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
