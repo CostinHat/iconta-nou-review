@@ -839,7 +839,7 @@ async function ecranCasa(corp, nav, t) {
       <p><button class="buton-secundar" id="c-toggle">+ Dispozi\u021bie nou\u0103</button></p>
       <div id="c-zona" hidden style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Dispoziție nouă</div>
-        <div class="form-rand">
+        <div class="form-rand" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
           <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="c-data" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Tip</span><select id="c-cat" class="camp-input">${CATEGORII.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label>
           <label class="camp"><span class="camp-eticheta">Suma</span><input type="number" step="0.01" id="c-suma" class="camp-input" placeholder="0,00"></label>
