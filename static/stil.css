@@ -866,7 +866,7 @@ html, body {
 .asi-badge-gri    { background:#eceae3; color:#5f5e5a; }\n
 
 /* [patch6_editare_completa] */
-.asi-cauta { padding:7px 10px; border:0.5px solid #d0cfc9; border-radius:8px; font-size: var(--text-mic); box-sizing:border-box; }
+/* .asi-cauta aliniat la STANDARD_INPUT_CONTRAST (identic firme-q) — fara stil propriu */
 .asi-info-patru { font-size: var(--text-mic); color:#8a6516; background:#fcf0d6; border-radius:8px; padding:8px 10px; margin:8px 0 14px; }
 
 /* [gridfix_asistenti] */
