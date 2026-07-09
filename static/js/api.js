@@ -85,3 +85,34 @@ export function confirmaCaseta(zona, mesaj, laConfirm, optiuni = {}) {
   div.querySelector("#ca-ok").addEventListener("click", () => { div.remove(); laConfirm(); });
   div.scrollIntoView({ block: "nearest", behavior: "smooth" });
 }
+
+
+// [lupa] vizualizare poza cu zoom (rotita / dublu-click) si tragere — element comun  // generalizare_zi_v1
+export function deschideLupa(u) {
+  const ov = document.createElement("div");
+  ov.className = "lupa-overlay";
+  const img = document.createElement("img");
+  img.src = u; img.className = "lupa-mare"; img.draggable = false;
+  let scara = 1, tx = 0, ty = 0, drag = null;
+  const aplica = () => { img.style.transform = `translate(${tx}px,${ty}px) scale(${scara})`; };
+  ov.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    scara = Math.min(8, Math.max(1, scara * (e.deltaY < 0 ? 1.25 : 0.8)));
+    if (scara === 1) { tx = 0; ty = 0; }
+    aplica();
+  }, { passive: false });
+  img.addEventListener("dblclick", () => { scara = scara > 1 ? 1 : 3; if (scara === 1) { tx = 0; ty = 0; } aplica(); });
+  img.addEventListener("mousedown", (e) => { e.preventDefault(); drag = { x: e.clientX - tx, y: e.clientY - ty }; });
+  const misca = (e) => { if (drag) { tx = e.clientX - drag.x; ty = e.clientY - drag.y; aplica(); } };
+  const lasa = () => { drag = null; };
+  window.addEventListener("mousemove", misca);
+  window.addEventListener("mouseup", lasa);
+  img.addEventListener("click", (e) => e.stopPropagation());
+  ov.addEventListener("click", () => {
+    window.removeEventListener("mousemove", misca);
+    window.removeEventListener("mouseup", lasa);
+    ov.remove();
+  });
+  ov.appendChild(img);
+  document.body.appendChild(ov);
+}

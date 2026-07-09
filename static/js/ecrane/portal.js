@@ -1,6 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, arataMesaj, confirmaCaseta } from "../api.js";
+import { api, arataMesaj, confirmaCaseta, deschideLupa } from "../api.js";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";  // [p116_facturi_modul]
 
@@ -594,7 +594,7 @@ async function ecranBon(corp, nav) {
       <p class="pf-intro">Compară cu documentul din mână: poza e întreagă și datele se potrivesc?</p>
       ${avert}
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-        ${draft.urls.map((u) => `<img src="${u}" alt="bon" style="max-width:180px;max-height:260px;border:1px solid var(--linie);border-radius:8px;object-fit:contain;background:#fff">`).join("")}
+        ${draft.urls.map((u) => `<img src="${u}" alt="document" class="lupa-mini" data-lupa="${u}">`).join("")}
       </div>
       <div class="pf-lista">
         <div class="pf-frand">
@@ -623,6 +623,8 @@ async function ecranBon(corp, nav) {
       }
     });
     corp.querySelector("#bon-refa").addEventListener("click", refaPoza);
+    corp.querySelectorAll("[data-lupa]").forEach((img) =>
+      img.addEventListener("click", () => deschideLupa(img.dataset.lupa)));
   }
 
   async function refaPoza() {

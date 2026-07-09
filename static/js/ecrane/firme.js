@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, arataMesaj, confirmaCaseta } from "../api.js";  /* msg_conventie_fe_v1 */
+import { api, arataMesaj, confirmaCaseta, deschideLupa } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";
 import { ecranRip } from "./rip_ecran.js";
@@ -1200,37 +1200,6 @@ async function ecranJurnal(corp, nav, t) {
   deseneaza();
 }
 
-
-// [lupa] vizualizare poza cu zoom (rotita / dublu-click) si tragere  // bon_flux_e4_v1
-function deschideLupa(u) {
-  const ov = document.createElement("div");
-  ov.className = "lupa-overlay";
-  const img = document.createElement("img");
-  img.src = u; img.className = "lupa-mare"; img.draggable = false;
-  let scara = 1, tx = 0, ty = 0, drag = null;
-  const aplica = () => { img.style.transform = `translate(${tx}px,${ty}px) scale(${scara})`; };
-  ov.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    scara = Math.min(8, Math.max(1, scara * (e.deltaY < 0 ? 1.25 : 0.8)));
-    if (scara === 1) { tx = 0; ty = 0; }
-    aplica();
-  }, { passive: false });
-  img.addEventListener("dblclick", () => { scara = scara > 1 ? 1 : 3; if (scara === 1) { tx = 0; ty = 0; } aplica(); });
-  img.addEventListener("mousedown", (e) => { e.preventDefault(); drag = { x: e.clientX - tx, y: e.clientY - ty }; });
-  const misca = (e) => { if (drag) { tx = e.clientX - drag.x; ty = e.clientY - drag.y; aplica(); } };
-  const lasa = () => { drag = null; };
-  window.addEventListener("mousemove", misca);
-  window.addEventListener("mouseup", lasa);
-  img.addEventListener("click", (e) => e.stopPropagation());
-  const inchide = () => {
-    window.removeEventListener("mousemove", misca);
-    window.removeEventListener("mouseup", lasa);
-    ov.remove();
-  };
-  ov.addEventListener("click", inchide);
-  ov.appendChild(img);
-  document.body.appendChild(ov);
-}
 
 // [bonuri] documente pozate de client: lista -> detaliu la selectie  // bon_flux_e5_v1
 async function ecranBonuri(corp, nav, t) {

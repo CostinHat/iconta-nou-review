@@ -143,7 +143,15 @@ CREATE TABLE TENANT_PLACEHOLDER.bonuri (
     status character varying(20) DEFAULT 'de_verificat'::character varying NOT NULL,
     inregistrare_id integer,
     creat_la timestamp with time zone DEFAULT now() NOT NULL,
-    articole jsonb DEFAULT '[]'::jsonb
+    articole jsonb DEFAULT '[]'::jsonb,
+    tva jsonb DEFAULT '[]'::jsonb,
+    nr_imagini integer DEFAULT 0 NOT NULL,
+    bon_complet boolean DEFAULT true NOT NULL,
+    tip character varying(12) DEFAULT 'bon'::character varying NOT NULL,
+    numar_document character varying(50),
+    mentiuni text,
+    factura_id integer,
+    casa_operatiune_id integer
 );
 
 
@@ -1795,3 +1803,5 @@ GRANT USAGE ON SEQUENCE TENANT_PLACEHOLDER.state_plata_id_seq TO iconta_user;
 --
 
 
+
+-- generalizare_zi_v1

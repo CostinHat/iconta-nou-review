@@ -209,6 +209,15 @@ export function creeazaNavigator(radacina, desktopRandator) {
 async function _clopotActualizeazaBadge(container) {  // [p66_badge_ref]
   const badge = (container || document).querySelector("#nav-clopot-badge");
   if (!badge) return;
+  try {  // generalizare_zi_v1: notificarile sunt de cabinet; pe client nu interogam (evita 403)
+    const { sesiune } = await import("./sesiune.js");
+    if (((sesiune.user() || {}).rol) === "client") {
+      badge.style.display = "none";
+      const btn = (container || document).querySelector("#nav-clopot");
+      if (btn) btn.style.display = "none";
+      return;
+    }
+  } catch {}
   try {
     const { api } = await import("./api.js");
     const r = await api.get("/notificari/contor");
