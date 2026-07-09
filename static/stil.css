@@ -1504,14 +1504,14 @@ html, body {
 /* overlay modal central */
 .pacm-overlay {
   position: fixed; inset: 0; z-index: 300;
-  background: rgba(20,30,45,0.5);
+  background: rgba(20, 30, 45, 0.55);
   display: flex; align-items: center; justify-content: center;
   padding: 24px;
   animation: pacm-fade 0.12s ease-out;
 }
 @keyframes pacm-fade { from { opacity: 0; } to { opacity: 1; } }
 .pacm {
-  width: 100%; max-width: 720px; max-height: calc(100vh - 80px);
+  width: 100%; max-width: 720px; max-height: calc(100vh - 48px);
   background: var(--alb); border-radius: 10px;
   box-shadow: 0 8px 40px rgba(20,30,45,0.3);
   display: flex; flex-direction: column; overflow: hidden;
@@ -1559,8 +1559,7 @@ html, body {
 .pacm {
   max-width: 900px;
   width: 100%;
-  height: calc(100vh - 64px);
-  max-height: none;
+  max-height: calc(100vh - 48px);
 }
 .pacm-corp { flex: 1 1 auto; }
 .pacm-editor { padding: 26px 34px; }
@@ -1576,7 +1575,7 @@ html, body {
 .rec-vezi { border: 1px solid var(--linie); background: var(--alb); color: var(--albastru); border-radius: var(--raza); padding: 5px 12px; font-family: var(--font); font-size: var(--text-mic); cursor: pointer; }
 .rec-vezi:hover { background: var(--albastru-clar); border-color: var(--albastru); }
 .rec-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(20,30,45,0.55); display: flex; align-items: center; justify-content: center; padding: 28px; }
-.rec-modal { width: 100%; max-width: 640px; max-height: calc(100vh - 80px); background: var(--alb); border-radius: 10px; box-shadow: 0 8px 40px rgba(20,30,45,0.3); display: flex; flex-direction: column; overflow: hidden; }
+.rec-modal { width: 100%; max-width: 640px; max-height: calc(100vh - 48px); background: var(--alb); border-radius: 10px; box-shadow: 0 8px 40px rgba(20,30,45,0.3); display: flex; flex-direction: column; overflow: hidden; }
 .rec-modal-cap { display: flex; align-items: flex-start; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--linie); flex: 0 0 auto; }
 .rec-modal-titlu { font-size: var(--text); font-weight: 600; color: var(--ardezie); }
 .rec-modal-sub { font-size: var(--text-mic); color: var(--gri); margin-top: 2px; }
@@ -1664,7 +1663,7 @@ html, body {
 /* [p74_brief_modal] modal briefing de intampinare */
 .brief-overlay { padding: 24px; }
 .brief {
-  width: 100%; max-width: 760px; max-height: calc(100vh - 80px);
+  width: 100%; max-width: 760px; max-height: calc(100vh - 48px);
   background: var(--alb); border-radius: 12px;
   box-shadow: 0 8px 40px rgba(20,30,45,0.3);
   display: flex; flex-direction: column; overflow: hidden;
@@ -1950,7 +1949,7 @@ html, body {
 .pagina-corp { min-height: calc(100dvh - 56px); background: var(--fundal); display: flex; flex-direction: column; }
 .acces-overlay {
   position: fixed; inset: 0; z-index: 200;
-  background: rgba(20,30,45,0.45);
+  background: rgba(20, 30, 45, 0.55);
   display: flex; align-items: center; justify-content: center;
   padding: 24px;
 }
@@ -2073,24 +2072,23 @@ html, body { overflow-y: hidden; }
 /* strat de suprascriere eliminat — butoanele poarta clasele canonice (Lot BUTOANE) */
 
 
-/* ============ [STANDARD_SEMAFOR] NU SE MODIFICA ============
-   Buline LED 16px, gradient luminat dreapta-sus. Se aplica peste orice definitie veche. */
-.pct-verde, .sa-pct.pct-verde  { width:16px !important; height:16px !important; border-radius:50% !important;
-  background: radial-gradient(circle at 65% 30%, #6fc494, #1d7a4d 60%) !important; }
-.pct-galben { width:16px !important; height:16px !important; border-radius:50% !important;
-  background: radial-gradient(circle at 65% 30%, #f0cd7a, #c9961f 60%) !important; }
-.pct-rosu, .sa-pct.pct-rosu { width:16px !important; height:16px !important; border-radius:50% !important;
-  background: radial-gradient(circle at 65% 30%, #ff8a80, #ff3b30 60%) !important; }
+/* ============ [STANDARD_SEMAFOR] UNIC - NU SE MODIFICA (Design System cap.8) ============
+   Bulina LED 16px, gradient pe culorile CANONICE (verde #1d7a4d, galben #c9961f, rosu #ff3b30),
+   eticheta text explicita obligatorie langa bulina. Suprascrie orice definitie veche. */
+.cab-pct, .cf-dot, .asi-sem, .sa-pct,
+span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
+  width:16px !important; height:16px !important; border-radius:50% !important; display:inline-block; }
+.pct-verde, .asi-sem-verde, .sa-pct.pct-verde {
+  background: radial-gradient(circle at 65% 30%, #6fc494, #1d7a4d 60%) !important;
+  box-shadow: 0 0 6px rgba(29,122,77,0.45) !important; }
+.pct-galben, .asi-sem-galben {
+  background: radial-gradient(circle at 65% 30%, #f0cd7a, #c9961f 60%) !important;
+  box-shadow: 0 0 6px rgba(201,150,31,0.45) !important; }
+.pct-rosu, .asi-sem-rosu, .sa-pct.pct-rosu {
+  background: radial-gradient(circle at 65% 30%, #ff8a80, #ff3b30 60%) !important;
+  box-shadow: 0 0 6px rgba(255,59,48,0.45) !important; }
 /* ============ sfarsit STANDARD_SEMAFOR ============ */
-/* ============ [STANDARD_SEMAFOR_V2] NU SE MODIFICA ============ */
-.cab-pct, .cf-dot, .asi-sem, .sa-pct { width:16px !important; height:16px !important; border-radius:50% !important; display:inline-block; }
-.pct-verde, .asi-sem-verde, .sa-pct.pct-verde { background: radial-gradient(circle at 65% 30%, #7fe3a8, #16b364 60%) !important; box-shadow: 0 0 6px rgba(22,179,100,0.5) !important; }
-.pct-galben, .asi-sem-galben { background: radial-gradient(circle at 65% 30%, #ffe08a, #ffb020 60%) !important; box-shadow: 0 0 6px rgba(255,176,32,0.5) !important; }
-.pct-rosu, .asi-sem-rosu, .sa-pct.pct-rosu { background: radial-gradient(circle at 65% 30%, #ff9d95, #ff2d20 60%) !important; box-shadow: 0 0 6px rgba(255,45,32,0.5) !important; }
-/* ============ sfarsit STANDARD_SEMAFOR_V2 ============ */
-/* [STANDARD_SEMAFOR_V3] prinde orice bulina semafor, indiferent de clasa */
-span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="dot"] {
-  width:16px !important; height:16px !important; border-radius:50% !important; }
+
 
 /* [responsive-landing] <900px */
 @media (max-width: 900px) {
@@ -2184,19 +2182,21 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 /* etichete_v1 — Lot ETICHETE: eticheta vizibila de sine statatoare */
 label.camp-eticheta, div.camp-eticheta { display: block; margin: 6px 0 4px; }
 
-/* ============ [STANDARD_INPUT_CONTRAST] NU SE MODIFICA ============
-   Regula Design System v1.1: TOATE casetele de introducere (element-level: input,
-   select, textarea) stau pe fundal contrastant, nu alb pe alb.
-   La focus se inverseaza: fundal alb + accent albastru.
-   Exceptii: checkbox/radio/file/range/color (nu sunt casete de text). */
+
+
+/* ============ [STANDARD_INPUT_CONTRAST v2] NU SE MODIFICA ============
+   Design System v1.1: casetele de introducere sunt ALBE cu bordura vizibila,
+   pe containere gri (contrastul vine din fundal, nu din caseta).
+   Promoveaza global contrast_ferestre_v1 (nu doar in .fereastra-corp). */
 input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
 select, textarea {
-  background: var(--fundal) !important;
-  border: 1.5px solid var(--linie) !important;
+  background: var(--alb) !important;
+  border: 1.5px solid #b9c2cf !important;
+  border-radius: 8px;
 }
 input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="hidden"]):focus,
 select:focus, textarea:focus {
-  background: var(--alb) !important;
   border-color: var(--albastru) !important;
   box-shadow: 0 0 0 3px var(--albastru-clar) !important;
+  outline: none;
 }

@@ -54,7 +54,8 @@ export async function ecranRip(corp, nav, t) {
         <button class="buton-secundar" id="r-inv">Registru-inventar</button>
       </p>
       <div id="r-mesaj"></div>
-      <div class="pf-frand" style="display:block;margin-bottom:14px">
+      <p><button class="buton-secundar" id="r-toggle">+ Opera\u021biune nou\u0103</button></p>
+      <div class="pf-frand" id="r-zona" hidden style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Opera\u021biune nou\u0103</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:1000px">
           <label>Data<br><input type="date" id="r-data" class="mig-text"></label>
@@ -73,6 +74,15 @@ export async function ecranRip(corp, nav, t) {
       <div class="pf-lista">${randuri}</div>`;
 
     const zonaMsg = corp.querySelector("#r-mesaj");
+    const _tg = (btnId, zonaId) => {  /* cap2_toggle_v1 */
+      const b = corp.querySelector(btnId), z = corp.querySelector(zonaId);
+      if (!b || !z) return;
+      b.addEventListener("click", () => {
+        z.hidden = !z.hidden;
+        b.classList.toggle("buton-activ", !z.hidden);
+      });
+    };
+    _tg("#r-toggle", "#r-zona");
     const selTip = corp.querySelector("#r-tip"), selCat = corp.querySelector("#r-cat"), selDed = corp.querySelector("#r-ded");
     const umpleCat = () => {
       const cats = selTip.value === "incasare" ? CATEGORII_INC : CATEGORII_PL;

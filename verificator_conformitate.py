@@ -55,7 +55,7 @@ for nume, t in fisiere.items():
         if re.search(r'<h2[^>]*>[^<]*\$\{[^}]*nume', lin):
             rap["entitate_in_titlu"].append((nume, i, "", lin.strip()[:66]))
         # INPUT_CONTRAST: fundal alb fortat inline pe casete (incalca STANDARD_INPUT_CONTRAST)
-        if re.search(r'<(input|select|textarea)[^>]*style="[^"]*background:\s*(#fff|#ffffff|white)', lin):
+        if re.search(r'<(input|select|textarea)[^>]*style="[^"]*background:\s*(#f5f6f8|#eee|#eeeeee|#f7f8fa|#f7f9fc)', lin):
             rap["input_contrast"].append((nume, i, "", lin.strip()[:66]))
         if re.search(r'\balert\(|(?<!confirma)\bconfirm\(', lin):
             rap["dialog_browser"].append((nume, i, "", lin.strip()[:66]))

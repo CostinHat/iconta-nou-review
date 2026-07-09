@@ -354,7 +354,7 @@ async function ecranVerificari(corp, nav, t) {
           <div class="pf-frand-nume">Documente pozate de clien\u021bi</div>
           <div class="pf-frand-sub">${r.documente_pozate.ok ? "\u00een regul\u0103" : [r.documente_pozate.bonuri_neverificate ? r.documente_pozate.bonuri_neverificate + " document(e) confirmate de client, necontate de peste 3 zile" : "", r.documente_pozate.ciorne_casa ? r.documente_pozate.ciorne_casa + " not\u0103(e) de cas\u0103 ciorn\u0103, nevalidate de peste 3 zile" : ""].filter(Boolean).join(" \u00b7 ")}</div>
         </div><span class="cab-pct ${r.documente_pozate.ok ? 'pct-verde' : 'pct-rosu'}"></span></div>` : ""}
-        ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${bani(r.tva.suma)} lei (cont ${r.tva.cont})</div></div><span class="cab-pct pct-verde"></span></div>` : ""}
+        ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${bani(r.tva.suma)} lei (cont ${r.tva.cont})</div></div></div>` : ""}
         ${vs ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Stocuri (contabil vs fi\u0219e CV)</div>
           <div class="pf-frand-sub">${vs.ok ? "in regula" : vs.conturi.filter(c=>!c.ok).map(c=>`cont ${c.cod || c.cont}: contabil ${c.sold_contabil} vs fi\u0219e ${c.valoare_fise_cv} (dif ${c.diferenta})`).join(" \u00b7 ")}</div>
@@ -582,7 +582,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Eroare")}</div>`; }
     }));
     rtLista.querySelectorAll(".rt-del").forEach((b) => b.addEventListener("click", async (e) => {
-      try { await api.del(`/tenants/${t.id}/retete/${e.target.dataset.id}`); rtIncarca(); } catch {}
+      try { await api.del(`/tenants/${t.id}/retete/${e.target.dataset.id}`); rtIncarca(); } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Nu am putut sterge reteta.")}</div>`; }
     }));
   };
   zona.querySelector("#rt-plus").addEventListener("click", () => { rtLinii.push({ articol_id: arts[0] && arts[0].id, cantitate: "" }); rtDeseneazaIng(); });
@@ -721,7 +721,8 @@ async function ecranStocuri(corp, nav, t) {
         <button class="buton-secundar" id="s-next">luna \u2192</button>
         <button class="buton-primar" id="s-desc" style="margin-left:12px">Descarc\u0103 gestiunea lunii</button></p>
       <div id="s-mesaj"></div>
-      <div class="pf-frand" style="display:block;margin-bottom:14px">
+      <p><button class="buton-secundar" id="sn-toggle">+ NIR nou</button></p>
+      <div class="pf-frand" id="sn-zona" hidden style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">NIR nou</div>
         <div class="camp-eticheta">NIR: num\u0103r \u00b7 dat\u0103 \u00b7 furnizor \u00b7 CUI</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
@@ -739,6 +740,15 @@ async function ecranStocuri(corp, nav, t) {
       <div class="pf-lista">${randuri}</div>`;
     const zonaM = corp.querySelector("#s-mesaj");
     const zonaL = corp.querySelector("#sn-linii");
+    const _tg = (btnId, zonaId) => {  /* cap2_toggle_v1 */
+      const b = corp.querySelector(btnId), z = corp.querySelector(zonaId);
+      if (!b || !z) return;
+      b.addEventListener("click", () => {
+        z.hidden = !z.hidden;
+        b.classList.toggle("buton-activ", !z.hidden);
+      });
+    };
+    _tg("#sn-toggle", "#sn-zona");
     const citesteLinii = () => [...zonaL.children].map((r) => ({
       denumire: r.querySelector(".sn-den").value.trim(),
       cantitate: parseFloat(r.querySelector(".sn-cant").value) || 0,
@@ -826,7 +836,8 @@ async function ecranCasa(corp, nav, t) {
         <button class="buton-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="c-next">luna \u2192</button></p>
       ${avert}
-      <div class="pf-frand" style="display:block;margin-bottom:14px">
+      <p><button class="buton-secundar" id="c-toggle">+ Dispozi\u021bie nou\u0103</button></p>
+      <div class="pf-frand" id="c-zona" hidden style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Dispoziție nouă</div>
         <div class="form-rand">
           <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="c-data" class="camp-input"></label>
@@ -840,6 +851,16 @@ async function ecranCasa(corp, nav, t) {
         <div id="c-mesaj"></div>
       </div>
       <div class="pf-lista">${randuri}</div>`;
+
+    const _tg = (btnId, zonaId) => {  /* cap2_toggle_v1 */
+      const b = corp.querySelector(btnId), z = corp.querySelector(zonaId);
+      if (!b || !z) return;
+      b.addEventListener("click", () => {
+        z.hidden = !z.hidden;
+        b.classList.toggle("buton-activ", !z.hidden);
+      });
+    };
+    _tg("#c-toggle", "#c-zona");
     corp.querySelector("#c-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#c-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
     corp.querySelector("#c-adauga").addEventListener("click", async () => {

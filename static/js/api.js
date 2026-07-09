@@ -4,7 +4,34 @@
 
 import { sesiune } from "./sesiune.js";
 
+// [cap1_feedback_async_v1] Design System cap.1: butonul declansator se dezactiveaza
+// automat pe durata oricarei actiuni asincrone. Textul devine "Se lucreaza..." si se
+// restaureaza la final. Textele specifice ("Se salveaza...") raman posibile local.
+let _ultimClick = { btn: null, t: 0 };
+document.addEventListener("pointerdown", (e) => {
+  const b = e.target.closest("button");
+  if (b) _ultimClick = { btn: b, t: Date.now() };
+}, true);
+function butonDeclansator() {
+  return (_ultimClick.btn && Date.now() - _ultimClick.t < 400 && !_ultimClick.btn.disabled) ? _ultimClick.btn : null;
+}
+function blocheazaButon(metoda) {
+  if (metoda === "GET") return () => {};
+  const b = butonDeclansator();
+  if (!b) return () => {};
+  const textOriginal = b.textContent;
+  b.disabled = true;
+  if (!/Se \S+eaz\u0103|Se lucreaz/.test(textOriginal)) b.textContent = "Se lucreaz\u0103...";
+  return () => { b.disabled = false; b.textContent = textOriginal; };
+}
+
 async function cere(metoda, cale, corp) {
+  const deblocheaza = blocheazaButon(metoda);
+  try {
+    return await _cere(metoda, cale, corp);
+  } finally { deblocheaza(); }
+}
+async function _cere(metoda, cale, corp) {
   const optiuni = {
     method: metoda,
     headers: { "Content-Type": "application/json" },
@@ -33,6 +60,12 @@ async function cere(metoda, cale, corp) {
 
 // [p36_postform] trimitere multipart (FormData) - pt upload fisiere/imagini
 async function cereForm(cale, formData) {
+  const deblocheaza = blocheazaButon("POST");
+  try {
+    return await _cereForm(cale, formData);
+  } finally { deblocheaza(); }
+}
+async function _cereForm(cale, formData) {
   const optiuni = { method: "POST", headers: {} };  // NU setam Content-Type (boundary auto)
   const token = sesiune.token();
   if (token) optiuni.headers["Authorization"] = "Bearer " + token;

@@ -5,9 +5,9 @@
 import { api } from "../api.js";
 
 const CULORI = {
-  verde:  { dot:"radial-gradient(circle at 65% 30%, #7fe3a8, #16b364 60%)", txt:"la zi",       bg:"#e6f6ec" },
-  galben: { dot:"radial-gradient(circle at 65% 30%, #ffe08a, #ffb020 60%)", txt:"de urmărit",  bg:"#fbf3e2" },
-  rosu:   { dot:"radial-gradient(circle at 65% 30%, #ff9d95, #ff2d20 60%)", txt:"restanță",    bg:"#fbe9e9" },
+  verde:  { dot:"radial-gradient(circle at 65% 30%, #6fc494, #1d7a4d 60%)", txt:"la zi",       bg:"#e6f6ec" },
+  galben: { dot:"radial-gradient(circle at 65% 30%, #f0cd7a, #c9961f 60%)", txt:"de urmărit",  bg:"#fbf3e2" },
+  rosu:   { dot:"radial-gradient(circle at 65% 30%, #ff8a80, #ff3b30 60%)", txt:"restanță",    bg:"#fbe9e9" },
   gri:    { dot:"#9aa3b2", txt:"necompletat", bg:"#eef0f3" },
 };
 const LUNI = ["", "ian", "feb", "mar", "apr", "mai", "iun", "iul", "aug", "sep", "oct", "noi", "dec"];
