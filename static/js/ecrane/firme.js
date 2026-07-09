@@ -844,9 +844,15 @@ async function ecranCasa(corp, nav, t) {
           <label class="camp"><span class="camp-eticheta">Tip</span><select id="c-cat" class="camp-input">${CATEGORII.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label>
           <label class="camp"><span class="camp-eticheta">Suma</span><input type="number" step="0.01" id="c-suma" class="camp-input" placeholder="0,00"></label>
           <label class="camp"><span class="camp-eticheta">Partener</span><input type="text" id="c-part" class="camp-input"></label>
-          <label class="camp" style="flex:0 1 160px"><span class="camp-eticheta">CUI</span><input type="text" id="c-cui" class="camp-input"></label>
+          <label class="camp" style="flex:0 1 160px"><span class="camp-eticheta">CUI</span>
+            <div style="display:flex;gap:6px">
+              <input type="text" id="c-cui" class="camp-input" style="flex:1">
+              <button type="button" class="buton-secundar" id="c-cui-verif" style="white-space:nowrap">Verific\u0103</button>
+            </div>
+          </label>
           <label class="camp"><span class="camp-eticheta">Document</span><input type="text" id="c-doc" class="camp-input"></label>
         </div>
+        <div class="em-cui-stare" id="c-cui-stare"></div>
         <p style="margin-top:10px"><button class="buton-primar" id="c-adauga">Adaugă (notă ciornă)</button></p>
         <div id="c-mesaj"></div>
       </div>
@@ -861,6 +867,27 @@ async function ecranCasa(corp, nav, t) {
       });
     };
     _tg("#c-toggle", "#c-zona");
+    corp.querySelector("#c-cui-verif").addEventListener("click", async () => {  /* verificare_anaf_casa_v1 */
+      const cui = corp.querySelector("#c-cui").value.trim();
+      const stare = corp.querySelector("#c-cui-stare");
+      if (!cui) return;
+      stare.textContent = "se verific\u0103 la ANAF\u2026";
+      stare.className = "em-cui-stare";
+      try {
+        const r = await api.get(`/tenants/${t.id}/verifica-cui/${encodeURIComponent(cui)}`);
+        if (r && r.gasit) {
+          corp.querySelector("#c-part").value = r.denumire || "";
+          stare.innerHTML = `<span class="em-cui-info">${r.platitor_tva ? "pl\u0103titor TVA" : "nepl\u0103titor TVA"}${r.inactiv ? " \u00b7 <b style=\"color:#dc2626\">INACTIV\u0102 fiscal</b>" : ""}</span>`;
+          stare.className = "em-cui-stare";
+        } else {
+          stare.textContent = "CUI neg\u0103sit la ANAF";
+          stare.className = "em-cui-stare em-cui-rau";
+        }
+      } catch {
+        stare.textContent = "verificarea a e\u0219uat";
+        stare.className = "em-cui-stare em-cui-rau";
+      }
+    });
     corp.querySelector("#c-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#c-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
     corp.querySelector("#c-adauga").addEventListener("click", async () => {
