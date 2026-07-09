@@ -201,16 +201,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
         h.textContent = sus.titlu;
         _corp.prepend(h);
       }
-      {  // provenienta_v1 + uniformizare_fir_v1: entitatea ca span uniform
-        const h = _corp.querySelector("h2");
-        const ent = (sus.optiuni || {}).nivel === "cabinet" ? "Cabinet" : firmaInLucru;
-        const firulArata = stiva.length > 1 || (sus.pasi && sus.pasi.length > 0);  /* dedup_entitate_v1 */
-        if (h && ent && !firulArata && !h.textContent.includes(ent)) {
-          const sp = document.createElement("span");
-          sp.className = "titlu-entitate";
-          sp.textContent = "\u00b7 " + ent;
-          h.appendChild(sp);
-        }
+      {  // cap9_titlu_v11: titlul ecranului = DOAR titlul; entitatea traieste in bara mare de sus, nu se dubleaza aici
       }
       _corp.querySelectorAll("label, .camp-eticheta").forEach((l) => {
       l.childNodes.forEach((n) => {

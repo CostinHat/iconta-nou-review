@@ -18,6 +18,7 @@ CLASE_COMPONENTA_OK = {"firme-optiune", "cab-card", "acces-card", "meniu-card", 
                        "val-btn", "mf-font-opt", "mf-culoare-opt", "pagina-card-buton",
                        "pagina-bara-acces", "pacm-x", "acces-x", "rec-modal-x", "pf-frand"}
 # culori-token permise inline (semafor canonic + entitate + fir)
+ZEBRA_INTERZISE = {"#fdeef2", "#eaf2fb", "#f4f7fb", "#f7f8fa"}  # alternante vechi, inlocuite de STANDARD_ZEBRA
 CULORI_OK = {"#1d7a4d", "#c9961f", "#ff3b30", "#1d4ed8", "#5b6b7c", "#1d3a5f", "#8a97a5", "#e11d1d"}
 
 fisiere = {}
@@ -28,7 +29,7 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast"]}
+                        "etichete_lipsa", "input_contrast", "antet"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -54,6 +55,9 @@ for nume, t in fisiere.items():
                 rap["butoane"].append((nume, i, bm.group(1)[:26], lin.strip()[:56]))
         if re.search(r'<h2[^>]*>[^<]*\$\{[^}]*nume', lin):
             rap["entitate_in_titlu"].append((nume, i, "", lin.strip()[:66]))
+        # ANTET (cap.9): titlu de fereastra cu sufix de nivel "· Cabinet"/"· Firma" = entitate dublata in titlu
+        if re.search(r'titlu-entitate|nivel[^=]*==[^?]*\?\s*"Cabinet"', lin):
+            rap["antet"].append((nume, i, "", lin.strip()[:66]))
         # INPUT_CONTRAST: fundal alb fortat inline pe casete (incalca STANDARD_INPUT_CONTRAST)
         if re.search(r'<(input|select|textarea)[^>]*style="[^"]*background:\s*(#f5f6f8|#eee|#eeeeee|#f7f8fa|#f7f9fc)', lin):
             rap["input_contrast"].append((nume, i, "", lin.strip()[:66]))

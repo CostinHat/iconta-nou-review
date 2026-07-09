@@ -1929,8 +1929,8 @@ html, body {
 .sol-trimite { display:flex; gap:10px; margin-top:14px; }
 .sol-trimite textarea { flex:1; resize:vertical; padding:10px; border-radius:8px; border:1px solid #ddd; font-family:inherit; font-size: var(--text-mic); }
 .mig-rosu { color: #b91c1c; background: #fee2e2; }
-#ac-lista [data-zebra="0"] { background: #fdeef2; }
-#ac-lista [data-zebra="1"] { background: #eaf2fb; }
+#ac-lista [data-zebra="0"] { background: var(--albastru-clar); }
+#ac-lista [data-zebra="1"] { background: var(--alb); }  /* aliniat STANDARD_ZEBRA */
 #ac-lista.pf-lista { max-width: none; }
 
 .subbara--admin { height: 56px; padding: 0 24px; }
@@ -2158,7 +2158,7 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
 .fir-veriga:hover { background: #eef2f6; color: #1d3a5f; text-decoration: underline; }
 .fir-sep { color: #9aa7b4; font-size: 13px; }
 .fir-parinti { color: #5b6b7c; font-size: 13px; font-weight: 500; }  /* parintii in titlurile de panou */
-.titlu-entitate { color: #1d4ed8; font-size: 13px; font-weight: 600; margin-left: 6px; }  /* Cabinet / firma */
+/* titlu-entitate eliminat v1.1: entitatea traieste in bara mare de sus */
 .fir-acum { color: #1d3a5f; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
 
 /* [STANDARD_BUTON_ACTIV] starea "apasat/deschis" pentru butoane cu zone toggle */
@@ -2200,3 +2200,15 @@ select:focus, textarea:focus {
   box-shadow: 0 0 0 3px var(--albastru-clar) !important;
   outline: none;
 }
+
+/* ============ [STANDARD_ZEBRA] NU SE MODIFICA (Design System v1.1 cap.4) ============
+   Toate listele si tabelele: primul rand de date colorat var(--albastru-clar), apoi
+   alternativ cu alb. Capul de tabel nezebrat. SINGURA alternanta din aplicatie. */
+.pf-lista > .pf-frand:nth-of-type(odd),
+.firme-lista > .firme-rand:nth-of-type(odd) { background: var(--albastru-clar) !important; }
+.pf-lista > .pf-frand:nth-of-type(even),
+.firme-lista > .firme-rand:nth-of-type(even) { background: var(--alb) !important; }
+.firme-rand:hover { background: #dce7f3 !important; }
+table tbody tr:nth-child(odd) td { background: var(--albastru-clar); }
+table tbody tr:nth-child(even) td { background: var(--alb); }
+/* ============ sfarsit STANDARD_ZEBRA ============ */
