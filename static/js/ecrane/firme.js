@@ -1264,10 +1264,35 @@ async function ecranBonuri(corp, nav, t) {
         </button>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Bonuri și chitanțe · ${t.nume || ""}</h2>
-      <p class="pf-intro">Documente pozate de clienți. Alege unul ca să-l verifici și să-l contezi.</p>
+      <p class="pf-intro">Documente pozate de clienți sau adăugate de tine. Alege unul ca să-l verifici și să-l contezi.</p>
+      <div style="margin:0 0 12px">
+        <button class="buton-secundar" id="bc-adauga">Adaugă document (pozează / încarcă)</button>
+        <input type="file" id="bc-fisier" accept="image/*" multiple hidden>
+        <span class="msg-eroare" id="bc-msg" style="margin-left:8px"></span>
+      </div>
       ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 12px">' + mesajSucces + '</p>' : ""}
       ${itemi}`;
     mesajSucces = "";
+    const bcInput = corp.querySelector("#bc-fisier");  // bon_cabinet_v1
+    const bcBtn = corp.querySelector("#bc-adauga");
+    bcBtn.addEventListener("click", () => bcInput.click());
+    bcInput.addEventListener("change", async () => {
+      const fs = Array.from(bcInput.files);
+      if (!fs.length) return;
+      const msg = corp.querySelector("#bc-msg");
+      bcBtn.disabled = true; bcBtn.textContent = "Citesc documentul...";
+      const fd = new FormData();
+      fs.forEach((f) => fd.append("fisiere", f));
+      try {
+        const r = await api.postForm(`/portal/bon?tenant_id=${t.id}`, fd);
+        await api.post(`/portal/bon/${r.bon_id}/confirma?tenant_id=${t.id}`, {});
+        mesajSucces = "Document adăugat — deschide-l din listă ca să-l verifici și să-l contezi.";
+        randeazaLista();
+      } catch (e) {
+        bcBtn.disabled = false; bcBtn.textContent = "Adaugă document (pozează / încarcă)";
+        msg.textContent = e.mesaj || "Nu am putut citi documentul. Încearcă o poză mai clară.";
+      }
+    });
     corp.querySelectorAll("[data-doc]").forEach((el) =>
       el.addEventListener("click", () => randeazaDetaliu(parseInt(el.dataset.doc))));
   }
@@ -1617,3 +1642,5 @@ async function ecranAccesClient(corp, nav, t) {
 // audit_cab_lot1_v1
 
 // audit_cab_lot2_v1
+
+// bon_cabinet_v1

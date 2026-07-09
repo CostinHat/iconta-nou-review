@@ -2789,13 +2789,22 @@ def firma_verificari(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabine
     return _verificari_contabile(schema, an, luna)  # cf_verificari_v1
 BON_DIR_BAZA = "~/iconta_date/bonuri"  # bon_flux_e1_v1
 
+def _tenant_pentru_documente(ctx, tenant_id):  # bon_cabinet_v1
+    """Client -> firma lui (ca pana acum); rolurile de cabinet -> tenant_id obligatoriu,
+    cu verificarea accesului. Intoarce dict cu schema_name + id."""
+    if (ctx.get("rol") or "") == "client":
+        return _tenant_client(ctx, tenant_id)
+    if not tenant_id:
+        raise HTTPException(400, "tenant_id necesar pentru rolurile de cabinet")
+    return {"schema_name": _schema_sau_404(ctx, tenant_id), "id": tenant_id}
+
 @app.post("/portal/bon")
-async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[int] = None, ctx=Depends(cere_context)):
     """Extrage datele bonului cu AI si salveaza ca DRAFT (status='extras') + pozele pe disc.
     Intra la contabil doar dupa confirmarea clientului (POST /portal/bon/{id}/confirma)."""
     from core import ai_client
     import json as _json, os as _os
-    t = _tenant_client(ctx, tenant_id)
+    t = _tenant_pentru_documente(ctx, tenant_id)
     if not ai_client.disponibil():
         raise HTTPException(503, "serviciul AI indisponibil")
     imagini = []
@@ -2873,9 +2882,9 @@ def _bon_imagine_cale(schema, bon_id, n):
     return cai[0] if cai else None
 
 @app.post("/portal/bon/{bon_id}/confirma")
-def portal_bon_confirma(bon_id: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+def portal_bon_confirma(bon_id: int, tenant_id: Optional[int] = None, ctx=Depends(cere_context)):
     """Clientul confirma ca poza e intreaga si lizibila -> bonul intra la contabil."""
-    t = _tenant_client(ctx, tenant_id)
+    t = _tenant_pentru_documente(ctx, tenant_id)
     with db.get_conn() as conn, conn.cursor() as cur:
         cur.execute(f"UPDATE {t['schema_name']}.bonuri SET status='de_verificat' WHERE id=%s AND status='extras' RETURNING id", (bon_id,))
         if not cur.fetchone():
@@ -2883,10 +2892,10 @@ def portal_bon_confirma(bon_id: int, tenant_id: Optional[int] = None, ctx=Depend
     return {"ok": True}
 
 @app.delete("/portal/bon/{bon_id}")
-def portal_bon_sterge(bon_id: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+def portal_bon_sterge(bon_id: int, tenant_id: Optional[int] = None, ctx=Depends(cere_context)):
     """Clientul reface poza -> draftul (status='extras') si pozele lui se sterg."""
     import os as _os, shutil as _shutil
-    t = _tenant_client(ctx, tenant_id)
+    t = _tenant_pentru_documente(ctx, tenant_id)
     with db.get_conn() as conn, conn.cursor() as cur:
         cur.execute(f"DELETE FROM {t['schema_name']}.bonuri WHERE id=%s AND status='extras' RETURNING id", (bon_id,))
         if not cur.fetchone():
@@ -2897,9 +2906,9 @@ def portal_bon_sterge(bon_id: int, tenant_id: Optional[int] = None, ctx=Depends(
     return {"ok": True}
 
 @app.get("/portal/bon/{bon_id}/imagine/{n}")
-def portal_bon_imagine(bon_id: int, n: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+def portal_bon_imagine(bon_id: int, n: int, tenant_id: Optional[int] = None, ctx=Depends(cere_context)):
     from fastapi.responses import FileResponse
-    t = _tenant_client(ctx, tenant_id)
+    t = _tenant_pentru_documente(ctx, tenant_id)
     cale = _bon_imagine_cale(t["schema_name"], bon_id, n)
     if not cale:
         raise HTTPException(404, "imagine inexistenta")
