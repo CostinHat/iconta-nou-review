@@ -138,12 +138,10 @@ export function creeazaNavigator(radacina, desktopRandator) {
     // Sageata apare DOAR cand exista un "inapoi" real:
     //  - mai multe ferestre pe stiva, SAU
     //  - ecranul curent isi defineste o functie interna 'inapoi' (ex: migrare in cascada)
-    const areInapoi = true; /* sageata mereu */
+    const areInapoi = stiva.length > 1 || typeof sus.inapoi === "function";  // sageata_dinamica_v1
     fer.innerHTML = `
       <div class="fereastra-antet">
-        ${areInapoi
-          ? '<button class="nav-sageata nav-inapoi" title="Înapoi" aria-label="Înapoi"><span aria-hidden="true">←</span></button>'
-          : ''}
+        <button class="nav-sageata nav-inapoi" title="Înapoi" aria-label="Înapoi" ${areInapoi ? '' : 'style="display:none"'}><span aria-hidden="true">←</span></button>
         <span class="fereastra-spatiu"></span>
         <button class="nav-x" title="Închide" aria-label="Închide"><span aria-hidden="true">✕</span></button>
       </div>
@@ -194,7 +192,12 @@ export function creeazaNavigator(radacina, desktopRandator) {
       if (c && stiva.length) stiva[stiva.length - 1].scrollY = c.scrollTop; /* scroll_memorat_v1 */
       stiva.push({ titlu, randator, optiuni: optiuni || {} }); randeazaFerestre(); }, /* fereastra_optiuni_v1 */
     inapoi() { stiva.pop(); randeazaFerestre(); },
-    setInapoi(fn) { if (stiva.length) stiva[stiva.length - 1].inapoi = fn; },
+    setInapoi(fn) {  // sageata_dinamica_v1
+      if (!stiva.length) return;
+      stiva[stiva.length - 1].inapoi = fn;
+      const b = radacina.querySelector(".nav-inapoi");
+      if (b) b.style.display = (typeof fn === "function" || stiva.length > 1) ? "" : "none";
+    },
     acasa() { stiva.length = 0; randeazaFerestre(); },
     // setează firma procesată (bara de jos) și re-randează desktopul
     setFirmaInLucru(nume) { firmaInLucru = nume; randeazaDesktop(); },
@@ -346,3 +349,4 @@ async function _anunturiBanner(ecran) {
     document.body.appendChild(el);
   });
 }
+// sageata_dinamica_v1
