@@ -2136,6 +2136,11 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .doc-poza-cadru img { width: 100%; display: block; transition: transform 0.05s; user-select: none; }
 .doc-campuri { flex: 1 1 380px; min-width: 300px; }
 
+/* [bon_flux_e9c_v1] X-ul lupei (ecran complet) */
+.lupa-x { position: absolute; top: 16px; right: 20px; border: 0; background: rgba(255,255,255,0.14);
+  color: #fff; font-size: 20px; line-height: 1; padding: 10px 13px; border-radius: 10px; cursor: pointer; }
+.lupa-x:hover { background: rgba(255,255,255,0.28); }
+
 /* [STANDARD_BUTON_ACTIV] starea "apasat/deschis" pentru butoane cu zone toggle */
 .buton-activ { background: #1a5a94 !important; color: #fff !important; border-color: #1a5a94 !important;
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.25) !important; transform: none !important; }

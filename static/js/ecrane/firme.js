@@ -1312,24 +1312,34 @@ async function ecranBonuri(corp, nav, t) {
           cadru.className = "doc-poza-cadru";
           const img = document.createElement("img");
           img.src = u; img.alt = "document"; img.draggable = false;
-          let scara = 1, tx = 0, ty = 0, drag = null;
-          const aplica = () => { img.style.transform = `translate(${tx}px,${ty}px) scale(${scara})`; };
+          let scara = 1, tx = 0, ty = 0, drag = null, rot = Number(b.orientare) || 0;  // bon_flux_e9_v1
+          const aplica = () => { img.style.transform = `translate(${tx}px,${ty}px) scale(${scara}) rotate(${rot}deg)`; };
+          aplica();
           cadru.addEventListener("wheel", (e) => {
             e.preventDefault();
-            scara = Math.min(6, Math.max(1, scara * (e.deltaY < 0 ? 1.2 : 1 / 1.2)));
-            if (scara === 1) { tx = 0; ty = 0; }
+            if (e.shiftKey) {  // bon_flux_e9b_v1: rotire fina, indrepti bonul la orice unghi
+              rot = (rot + (e.deltaY < 0 ? -2 : 2) + 360) % 360;
+            } else {
+              scara = Math.min(6, Math.max(1, scara * (e.deltaY < 0 ? 1.2 : 1 / 1.2)));
+              if (scara === 1) { tx = 0; ty = 0; }
+            }
             aplica();
           }, { passive: false });
+          cadru.addEventListener("contextmenu", (e) => { e.preventDefault(); rot = (rot + 90) % 360; aplica(); });
           img.addEventListener("mousedown", (e) => { e.preventDefault(); drag = { x: e.clientX - tx, y: e.clientY - ty }; });
           cadru.addEventListener("mousemove", (e) => { if (drag) { tx = e.clientX - drag.x; ty = e.clientY - drag.y; aplica(); } });
           window.addEventListener("mouseup", () => { drag = null; });
-          img.addEventListener("dblclick", () => deschideLupa(u));
+          img.addEventListener("dblclick", () => deschideLupa(u, rot));
           cadru.appendChild(img);
           zona.appendChild(cadru);
+          const bRot = document.createElement("button");
+          bRot.className = "btn-link"; bRot.textContent = "\u21bb Rote\u0219te";
+          bRot.addEventListener("click", () => { rot = (rot + 90) % 360; aplica(); });
+          zona.appendChild(bRot);
         } catch {}
       }
       if (!zona.children.length) zona.innerHTML = `<p class="ecran-nota">Fără poză (document mai vechi).</p>`;
-      else zona.insertAdjacentHTML("beforeend", '<p class="ecran-nota" style="margin:0">Rotița = mărește · trage = mută · dublu-click = ecran complet</p>');
+      else zona.insertAdjacentHTML("beforeend", '<p class="ecran-nota" style="margin:0">Rotița = mărește · Shift+rotița = îndreaptă · click-dreapta = rotește 90° · trage = mută · dublu-click = ecran complet</p>');
     })();
 
     // facturile candidate (doar chitanta)
@@ -1589,3 +1599,7 @@ async function ecranAccesClient(corp, nav, t) {
 // bon_flux_e7_v1
 
 // bon_flux_e8_v1
+
+// bon_flux_e9_v1
+
+// bon_flux_e9b_v1

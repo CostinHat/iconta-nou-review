@@ -2432,7 +2432,7 @@ def bonuri_de_verificat(tenant_id: int, ctx=Depends(cere_cabinet)):
             raise HTTPException(404, "tenant inexistent sau fara acces")
         with conn.cursor() as cur:
             cur.execute(f"""
-                SELECT id, comerciant, cui, data, total, tva_11, tva_21, articole, status, nr_imagini, tip, numar_document, mentiuni, tva, creat_la
+                SELECT id, comerciant, cui, data, total, tva_11, tva_21, articole, status, nr_imagini, tip, numar_document, mentiuni, tva, creat_la, orientare
                 FROM {schema}.bonuri WHERE status = 'de_verificat' ORDER BY creat_la DESC
             """)
             bonuri = [{"id": r[0], "comerciant": r[1], "cui": r[2],
@@ -2443,7 +2443,8 @@ def bonuri_de_verificat(tenant_id: int, ctx=Depends(cere_cabinet)):
                        "articole": r[7] or [], "status": r[8],
                        "nr_imagini": r[9] or 0, "tip": r[10] or "bon",
                        "numar_document": r[11], "mentiuni": r[12],
-                       "primit_la": r[14].isoformat() if r[14] else None} for r in cur.fetchall()]  # bon_flux_e7_v1
+                       "primit_la": r[14].isoformat() if r[14] else None,
+                       "orientare": r[15] or 0} for r in cur.fetchall()]  # bon_flux_e9_v1
     return {"bonuri": bonuri}
 class BonLinie(BaseModel):
     cont: str
@@ -2808,7 +2809,7 @@ async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[
               '{"tip": "bon", "comerciant": "...", "cui": "...", "data": "YYYY-MM-DD", "total": 0.0, '
               '"numar_document": "...", "mentiuni": "...", '
               '"articole": [{"denumire": "...", "valoare": 0.0, "cota_tva": 0, "cont_propus": "..."}], '
-              '"tva": [{"cota": 0, "valoare": 0.0}], "bon_complet": true}. '
+              '"tva": [{"cota": 0, "valoare": 0.0}], "bon_complet": true, "orientare": 0}. '
               'tip = "bon" pentru bon fiscal, "chitanta" pentru chitanta. '
               "Pentru BON FISCAL: numar_document = numarul bonului daca se vede; articole si tva ca mai jos. "
               "Cotele TVA le citesti EXACT cum apar pe bon (pot fi 19/9/11/21/5 in functie de anul bonului). "
@@ -2820,6 +2821,7 @@ async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[
               "articole si tva raman liste goale. "
               "bon_complet = false daca documentul pare taiat in poza (nu se vad antetul si totalul) "
               "ori e partial ilizibil. "
+              "orientare = cate grade trebuie rotita PRIMA imagine in sens orar ca textul sa fie drept: 0, 90, 180 sau 270. "
               "Daca un camp nu se vede, pune null.")
     try:
         text = ai_client.citeste_imagini(imagini, prompt)
@@ -2849,12 +2851,13 @@ async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[
         with conn.cursor() as cur:
             tip_doc = "chitanta" if date.get("tip") == "chitanta" else "bon"  # bon_flux_e1b_v1
             cur.execute(f"""
-                INSERT INTO {schema}.bonuri (comerciant, cui, data, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'extras', %s, %s, %s) RETURNING id
+                INSERT INTO {schema}.bonuri (comerciant, cui, data, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni, orientare)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'extras', %s, %s, %s, %s) RETURNING id
             """, (date.get("comerciant"), date.get("cui"), date.get("data"),
                   total, tva_11, tva_21, _json.dumps(date.get("articole") or []),
                   _json.dumps(tva_lista), len(imagini), date.get("bon_complet") is not False,
-                  tip_doc, date.get("numar_document"), date.get("mentiuni")))
+                  tip_doc, date.get("numar_document"), date.get("mentiuni"),
+                  int(date.get("orientare") or 0) % 360))
             bon_id = cur.fetchone()[0]
     dir_bon = _os.path.join(_os.path.expanduser(BON_DIR_BAZA), schema, str(bon_id))
     _os.makedirs(dir_bon, exist_ok=True)
