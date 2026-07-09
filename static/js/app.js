@@ -1,5 +1,18 @@
 // app.js — punctul de pornire. Login -> navigator cu desktopul rolului.
 
+// [handler_global_erori_v1] Design System: nicio tacere la eroare, nici la nivel de aplicatie.
+function _bannerEroareGlobala(detaliu) {
+  if (document.getElementById("eroare-globala")) return;  // un singur banner o data
+  const b = document.createElement("div");
+  b.id = "eroare-globala";
+  b.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#fdf3f3;border-top:2px solid #d98c8c;color:#7a2020;padding:12px 20px;font-size:14px;font-family:'Segoe UI',system-ui,sans-serif;text-align:center;";
+  b.textContent = "A ap\u0103rut o eroare nea\u0219teptat\u0103. Reinc\u0103rca\u021bi pagina (Ctrl+F5). Dac\u0103 problema persist\u0103, anun\u021ba\u021bi.";
+  document.body.appendChild(b);
+  console.error("[eroare_globala]", detaliu);
+}
+window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.message));
+window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
+
 import { sesiune } from "./sesiune.js";
 import { ecranLogin } from "./ecrane/login.js";
 import { creeazaNavigator } from "./navigator.js";
