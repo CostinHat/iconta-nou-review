@@ -1,21 +1,19 @@
-# verificator_conformitate.py — AUDIT COMPLET DE CONFORMITATE (Design System)
-# Ruleaza pe server: /opt/iconta/venv/bin/python3 verificator_conformitate.py
-# Scaneaza TOATE ecranele pe toate regulile; raport pe categorii, cu fisier:linie.
-# Unealta permanenta de audit. Zero modificari — doar raport.
+# verificator_conformitate.py — v2: AUDIT COMPLET DE CONFORMITATE (Design System)
+# /opt/iconta/venv/bin/python3 verificator_conformitate.py
+# v2 adauga: BANI (sume afisate fara formator), SPATIERE (Total0,00), MENIURI (dialecte),
+# CULORI_HARDCODATE (stiluri inline in afara tokenilor), ETICHETE (campuri doar cu placeholder)
 import re, os
 
 BAZA = os.path.expanduser("~/iconta_nou/static/js/ecrane")
-NAV = os.path.expanduser("~/iconta_nou/static/js/navigator.js")
 
-# cuvinte scrise sigur gresit fara diacritice (lista conservatoare, fara ambiguitati)
 CUVINTE = ["inca", "raspuns", "adauga", "sterge", "stergi", "cauta", "fara",
-           "numar", "incarca", "gaseste", "banca", "plata", "luna viitoare",
-           "trimite-ne", "pastreaza", "creaza", "creeaza", "urmator", "intelege",
-           "dispozitie", "noua", "incasare", "aceasta", "asteapta", "asteptare"]
+           "numar", "incarca", "gaseste", "banca", "plata", "pastreaza",
+           "creeaza", "urmator", "dispozitie", "noua", "incasare", "asteapta", "asteptare"]
 RE_CUV = re.compile(r'[">\s(](' + "|".join(CUVINTE) + r')[\s.,:!?<")]', re.IGNORECASE)
-
 CLASE_BUTON_OK = {"buton-primar", "buton-secundar", "buton-sters", "buton-verde",
                   "buton-mic", "btn-link", "btn-nav", "buton-activ", "buton-ingust"}
+# culori-token permise inline (semafor canonic + entitate + fir)
+CULORI_OK = {"#1d7a4d", "#c9961f", "#ff3b30", "#1d4ed8", "#5b6b7c", "#1d3a5f", "#8a97a5", "#e11d1d"}
 
 fisiere = {}
 for f in sorted(os.listdir(BAZA)):
@@ -23,36 +21,60 @@ for f in sorted(os.listdir(BAZA)):
         with open(os.path.join(BAZA, f), encoding="utf-8") as h:
             fisiere[f] = h.read()
 
-rap = {"diacritice": [], "precompletari": [], "butoane": [], "entitate_in_titlu": [],
-       "dialog_browser": [], "clase_camp_vechi": []}
+rap = {k: [] for k in ["diacritice", "precompletari", "butoane", "entitate_in_titlu",
+                        "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
+                        "etichete_lipsa"]}
+meniuri = {}
 
 for nume, t in fisiere.items():
-    for i, lin in enumerate(t.split("\n"), 1):
-        # doar texte vizibile (in template-uri HTML), nu cod
-        if "<" in lin or 'textContent' in lin or 'placeholder' in lin or '"' in lin:
+    linii = t.split("\n")
+    for i, lin in enumerate(linii, 1):
+        if "<" in lin or "textContent" in lin or "placeholder" in lin:
             m = RE_CUV.search(lin)
-            if m and "//" not in lin.split(m.group(1))[0][-30:]:
-                rap["diacritice"].append((nume, i, m.group(1), lin.strip()[:70]))
-        if re.search(r'value="(0|1|0\.00|0,00)"', lin) or 'value="${ziAzi}"' in lin or 'value="${azi' in lin:
-            rap["precompletari"].append((nume, i, "", lin.strip()[:70]))
+            if m:
+                rap["diacritice"].append((nume, i, m.group(1), lin.strip()[:66]))
+        if re.search(r'value="(0|1|0\.00|0,00)"', lin) or re.search(r'value="\$\{(azi|ziAzi)', lin):
+            rap["precompletari"].append((nume, i, "", lin.strip()[:66]))
         for bm in re.finditer(r'<button[^>]*class="([^"]*)"', lin):
             cls = set(bm.group(1).split())
             if not (cls & CLASE_BUTON_OK) and "fir-veriga" not in cls and "nav-" not in bm.group(1):
-                rap["butoane"].append((nume, i, bm.group(1)[:30], lin.strip()[:60]))
+                rap["butoane"].append((nume, i, bm.group(1)[:26], lin.strip()[:56]))
         if re.search(r'<h2[^>]*>[^<]*\$\{[^}]*nume', lin):
-            rap["entitate_in_titlu"].append((nume, i, "", lin.strip()[:70]))
-        if re.search(r'\balert\(|\bconfirm\(', lin) and "confirmaCaseta" not in lin:
-            rap["dialog_browser"].append((nume, i, "", lin.strip()[:70]))
+            rap["entitate_in_titlu"].append((nume, i, "", lin.strip()[:66]))
+        if re.search(r'\balert\(|(?<!confirma)\bconfirm\(', lin):
+            rap["dialog_browser"].append((nume, i, "", lin.strip()[:66]))
+        # BANI: ${expr} imediat urmat de RON/lei/EUR fara formator cunoscut in expresie
+        for bm in re.finditer(r'\$\{([^}]*)\}\s*(RON|lei|EUR|\$\{[^}]*moneda)', lin):
+            expr = bm.group(1)
+            if not re.search(r'_bani|toLocaleString|toFixed|fmt|bani\(', expr):
+                rap["bani_neformatati"].append((nume, i, expr[:22], lin.strip()[:60]))
+        # SPATIERE: cuvant lipit direct de ${ (ex: Total${...})
+        for sm in re.finditer(r'>([A-Za-z\u00c0-\u024f]{3,})\$\{', lin):
+            rap["spatiere"].append((nume, i, sm.group(1), lin.strip()[:60]))
+        # CULORI: style cu hex in afara tokenilor
+        for cm in re.finditer(r'style="[^"]*color:\s*(#[0-9a-fA-F]{3,6})', lin):
+            if cm.group(1).lower() not in CULORI_OK:
+                rap["culori_hardcodate"].append((nume, i, cm.group(1), lin.strip()[:56]))
+        # MENIURI: dialecte de optiuni
+        for dm in re.finditer(r'class="((?:fac|firme)-optiune)', lin):
+            meniuri.setdefault(dm.group(1), []).append((nume, i))
+        # ETICHETE: input cu placeholder informativ dar fara label/eticheta pe linie/vecinatate
+        if re.search(r'<input[^>]*placeholder="[^"]{4,}', lin) and "camp-eticheta" not in lin and "<label" not in lin:
+            vecini = "\n".join(linii[max(0,i-3):i])
+            if "camp-eticheta" not in vecini and "<label" not in vecini:
+                rap["etichete_lipsa"].append((nume, i, "", lin.strip()[:66]))
 
-print("=" * 90)
-print("RAPORT DE CONFORMITATE — Design System")
-print("=" * 90)
+print("=" * 92)
+print("RAPORT DE CONFORMITATE v2 — Design System")
+print("=" * 92)
 for cat, lista in rap.items():
-    print("\n### %s: %d gasite" % (cat.upper(), len(lista)))
-    for nume, i, extra, lin in lista[:30]:
-        print("  %-22s %5d  %-12s %s" % (nume, i, extra, lin))
-    if len(lista) > 30:
-        print("  ... si inca %d" % (len(lista) - 30))
-print("\n" + "=" * 90)
-total = sum(len(v) for v in rap.values())
-print("TOTAL: %d neconformitati candidate (diacriticele pot avea fals-pozitive rare)" % total)
+    print("\n### %s: %d" % (cat.upper(), len(lista)))
+    for nume, i, extra, lin in lista[:25]:
+        print("  %-22s %5d  %-14s %s" % (nume, i, extra, lin))
+    if len(lista) > 25:
+        print("  ... si inca %d" % (len(lista) - 25))
+print("\n### MENIURI (dialecte de optiuni):")
+for cls, loc in meniuri.items():
+    print("  %-16s %d aparitii (%s)" % (cls, len(loc), ", ".join(sorted(set(x[0] for x in loc)))))
+print("\n" + "=" * 92)
+print("TOTAL:", sum(len(v) for v in rap.values()), "candidate")

@@ -1,91 +1,157 @@
-==========================================================================================
-RAPORT DE CONFORMITATE — Design System
-==========================================================================================
+============================================================================================
+RAPORT DE CONFORMITATE v2 — Design System
+============================================================================================
 
-### DIACRITICE: 149 gasite
-  admin_raportari.js       101  raspuns      const nrUseri = _toate.filter((r) => !r.pentru_admin && r.stare !== "r
-  admin_raportari.js       102  raspuns      const nrTine  = _toate.filter((r) =>  r.pentru_admin && r.stare !== "r
-  admin_raportari.js       115  raspuns      const faraRaspuns = r.stare !== "raspuns";
-  asistenti.js             146  Cauta        <input id="asi-cauta-firme" class="asi-cauta" placeholder="Cauta firma
-  asistenti.js             191  cauta        const cauta = box.querySelector("#asi-cauta-firme");
-  cabinet.js               127  inca         asist = `<p class="sa-gol">Niciun asistent n-a produs inca azi.</p>`;
-  cabinet.js               144  inca         jurnal = `<li class="sa-gol">Nicio activitate inca azi.</li>`;
-  emitere_ecran.js         226  fara         // [p113_doar_gri] doar info TVA cu gri, fara verde/bifa/"gasita"
-  etransport_ecran.js       22  Numar        ${inp(p + "-numar", "Numar")}
-  etransport_ecran.js       27  dispozitie   ${sel(`b${i}-cod_scop`, "Scop *", [["101","Comercializare"],["201","Pr
-  etransport_ecran.js       34  fara         ${inp(`b${i}-valoare_fara_tva`, "Valoare fara TVA *", "number")}
-  etransport_ecran.js       81  numar        strada: v(p + "-strada"), numar: v(p + "-numar") || undefined });
-  facturi_ecran.js          57  incarca      corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
-  facturi_ecran.js          65  inca         ? `<div class="mig-gol">Nicio factura inregistrata inca.</div>`
-  firme.js                 174  banca        { cheie: "banca", titlu: "Banc\u0103", desc: "Import extras, propuneri
-  firme.js                 278  incarca      corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
-  firme.js                 288  inca         let firHtml = '<div class="mig-gol">Niciun mesaj inca.</div>';
-  firme.js                 303  raspuns      <textarea id="sol-input" placeholder="Scrie un raspuns..." rows="3"></
-  firme.js                 434  raspuns      <div class="pf-frand-sub">${msgs.length ? msgs.map((m2) => `${m2.data 
-  firme.js                 616  fara         : x.diferenta === "0" ? `${escV(x.denumire)}: fara diferenta`
-  firme.js                 632  Fara         </div></div>`).join("") || '<div class="mig-gol">Fara miscari.</div>'}
-  firme.js                 633  incarca      } catch { zona.querySelector("#cv-fisa-zona").innerHTML = `<div class=
-  firme.js                 694  incarca      corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
-  firme.js                 725  numar        <input type="text" id="sn-numar" class="mig-text" placeholder="numar N
-  firme.js                 759  Adauga       if (!linii.length) { zonaM.innerHTML = `<div class="mig-gol">Adauga ce
-  firme.js                 762  numar        numar: corp.querySelector("#sn-numar").value.trim(),
-  firme.js                 803  incarca      corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
-  firme.js                 814  plata        <div class="pf-frand-nume">${escC(o.data)} \u00b7 ${o.tip === "plata" 
-  firme.js                 876  Incarca      <p class="pf-intro">Incarca extrasul (.xls, .xlsx, .csv) \u2014 liniil
-  firme.js                 909  Incarca      if (!linii.length) { zonaLista.innerHTML = `<div class="mig-gol">Nicio
-  ... si inca 119
+### DIACRITICE: 52
+  asistenti.js             146  Cauta          <input id="asi-cauta-firme" class="asi-cauta" placeholder="Cauta f
+  cabinet.js               127  inca           asist = `<p class="sa-gol">Niciun asistent n-a produs inca azi.</p
+  cabinet.js               144  inca           jurnal = `<li class="sa-gol">Nicio activitate inca azi.</li>`;
+  facturi_ecran.js          57  incarca        corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+  facturi_ecran.js          65  inca           ? `<div class="mig-gol">Nicio factura inregistrata inca.</div>`
+  firme.js                 278  incarca        corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+  firme.js                 288  inca           let firHtml = '<div class="mig-gol">Niciun mesaj inca.</div>';
+  firme.js                 303  raspuns        <textarea id="sol-input" placeholder="Scrie un raspuns..." rows="3
+  firme.js                 434  raspuns        <div class="pf-frand-sub">${msgs.length ? msgs.map((m2) => `${m2.d
+  firme.js                 632  Fara           </div></div>`).join("") || '<div class="mig-gol">Fara miscari.</di
+  firme.js                 633  incarca        } catch { zona.querySelector("#cv-fisa-zona").innerHTML = `<div cl
+  firme.js                 694  incarca        corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+  firme.js                 725  numar          <input type="text" id="sn-numar" class="mig-text" placeholder="num
+  firme.js                 759  Adauga         if (!linii.length) { zonaM.innerHTML = `<div class="mig-gol">Adaug
+  firme.js                 803  incarca        corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+  firme.js                 814  plata          <div class="pf-frand-nume">${escC(o.data)} \u00b7 ${o.tip === "pla
+  firme.js                 876  Incarca        <p class="pf-intro">Incarca extrasul (.xls, .xlsx, .csv) \u2014 li
+  firme.js                 909  Incarca        if (!linii.length) { zonaLista.innerHTML = `<div class="mig-gol">N
+  firme.js                 913  plata          <div class="pf-frand-nume">${escB(l.data)} \u00b7 ${l.tip === "pla
+  firme.js                 942  incarca        } catch { zonaLista.innerHTML = `<div class="mig-gol">Nu am putut 
+  firme.js                 956  incarca        zonaMesaj.innerHTML = `<p class="ecran-nota">Se incarca facturile 
+  firme.js                 961  incarca        } catch { zonaMesaj.innerHTML = `<div class="mig-gol">Nu am putut 
+  firme.js                1094  incarca        corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+  firme.js                1335  plata          <button class="buton-verde" id="d-certifica">${eChitanta ? "Certif
+  firme.js                1405  plata          ${!fc.length ? '<p class="ecran-nota" style="margin:4px 0 0">Nicio
+  ... si inca 27
 
-### PRECOMPLETARI: 6 gasite
-  firme.js                 486               <input type="date" id="cv-data" class="mig-text" value="${azi}">
-  firme.js                1028               <label class="camp"><span class="camp-eticheta">Data</span><input type
-  operatiuni_ecran.js      273               input = `<input type="date" id="op-${c.nume}" class="mig-text" value="
-  produse_ecran.js          86               <option value="0">f\u0103r\u0103 TVA</option>
-  rip_ecran.js              60               <label>Data<br><input type="date" id="r-data" class="mig-text" value="
-  rip_ecran.js              66               <label>Suma (lei)<br><input type="number" step="0.01" id="r-suma" clas
+### PRECOMPLETARI: 1
+  produse_ecran.js          86                 <option value="0">f\u0103r\u0103 TVA</option>
 
-### BUTOANE: 90 gasite
-  activitate_cabinet.js     70  ac-per ${perioada === k ?  `<button class="ac-per ${perioada === k ? "ac-per-on" : ""}"
-  admin_activitate.js       49  ${c.activ ? 'buton-sters' : 'b <button class="${c.activ ? 'buton-sters' : 'buton-secundar'}
-  admin_gratuite.js         43  ${c.activ ? 'buton-sters' : 'b <button class="${c.activ ? 'buton-sters' : 'buton-secundar'}
-  admin_raportari.js        59  rap-tab rap-tab-activ <button class="rap-tab rap-tab-activ" data-tab="useri">De la
-  admin_raportari.js        60  rap-tab      <button class="rap-tab" data-tab="tine">De la AI <span class
-  admin_raportari.js        62  rap-copy-tot <button class="rap-copy-tot" id="rap-copy-tot" title="Copiaz
-  admin_raportari.js       162  rap-muta     <button class="rap-muta" id="rap-muta">${etMutare}</button>
-  admin_raportari.js       169  rap-trimite  <button class="rap-trimite" id="rap-trimite">Trimite</button
-  asistenti.js              83  asi-toggle-dez <button class="asi-toggle-dez" id="asi-toggle-dez">Arată dez
-  asistenti.js             116  mig-buton-mic <button class="mig-buton-mic" data-act="edit">Editează</butt
-  asistenti.js             117  mig-buton-mic <button class="mig-buton-mic" data-act="vezi">Vizualizează</
-  asistenti.js             172  mig-buton-sec ? `<button class="mig-buton-sec" id="asi-dezactiveaza">Dezac
-  asistenti.js             174  mig-buton-sec ? `<button class="mig-buton-sec" id="asi-reactiveaza">Reacti
-  asistenti.js             376  asi-echipa-btn ${areErori ? `<button class="asi-echipa-btn" id="asi-vezi-er
-  cabinet.js               105  ${cls}       return `<button class="${cls}" data-ecran="${cheie || ""}">
-  cabinet.js               122  sa-asist sa-clic <button class="sa-asist sa-clic" data-ecran="capacitate">
-  cabinet.js               156  pacm-x       <button class="pacm-x" id="brief-x" aria-label="Inchide">✕</
-  cabinet.js               211  cab-card cab-card-mic <button class="cab-card cab-card-mic" id="cab-recomanda-mic"
-  cabinet.js               290  sub-inapoi   <button class="sub-inapoi" id="sub-inapoi">
-  cabinet.js               296  firme-optiune <button class="firme-optiune" id="opt-jurnal">
-  cabinet.js               303  firme-optiune <button class="firme-optiune" id="opt-tipare">
-  cabinet.js               322  sub-inapoi   <button class="sub-inapoi" id="sub-inapoi">
-  cabinet.js               328  firme-optiune <button class="firme-optiune" id="opt-existente">
-  cabinet.js               335  firme-optiune <button class="firme-optiune" id="opt-migrare">
-  emitere_ecran.js          37  em-buton-sec <button class="em-buton-sec" id="em-nu">Nu, \u00eencep acum<
-  emitere_ecran.js         107  em-buton-sec <button class="em-buton-sec" id="em-verifica">Verific\u0103 
-  emitere_ecran.js         117  em-buton-sec <button class="em-buton-sec" id="em-add-linie">+ Adaug\u0103
-  emitere_ecran.js         158  em-l-sterge  <button class="em-l-sterge" title="\u0218terge">\u00d7</butt
-  emitere_ecran.js         317  em-buton-sec <button class="em-buton-sec" id="em-curs-manual">Introdu man
-  facturi_ecran.js          31  fac-optiune  <button class="fac-optiune" id="fac-istoric">
-  ... si inca 60
+### BUTOANE: 90
+  activitate_cabinet.js     70  ac-per ${perioada === k ?  `<button class="ac-per ${perioada === k ? "ac-per-on" : 
+  admin_activitate.js       49  ${c.activ ? 'buton-sters'  <button class="${c.activ ? 'buton-sters' : 'buton-secund
+  admin_gratuite.js         43  ${c.activ ? 'buton-sters'  <button class="${c.activ ? 'buton-sters' : 'buton-secund
+  admin_raportari.js        59  rap-tab rap-tab-activ <button class="rap-tab rap-tab-activ" data-tab="useri">D
+  admin_raportari.js        60  rap-tab        <button class="rap-tab" data-tab="tine">De la AI <span c
+  admin_raportari.js        62  rap-copy-tot   <button class="rap-copy-tot" id="rap-copy-tot" title="Co
+  admin_raportari.js       162  rap-muta       <button class="rap-muta" id="rap-muta">${etMutare}</butt
+  admin_raportari.js       169  rap-trimite    <button class="rap-trimite" id="rap-trimite">Trimite</bu
+  asistenti.js              83  asi-toggle-dez <button class="asi-toggle-dez" id="asi-toggle-dez">Arată
+  asistenti.js             116  mig-buton-mic  <button class="mig-buton-mic" data-act="edit">Editează</
+  asistenti.js             117  mig-buton-mic  <button class="mig-buton-mic" data-act="vezi">Vizualizea
+  asistenti.js             172  mig-buton-sec  ? `<button class="mig-buton-sec" id="asi-dezactiveaza">D
+  asistenti.js             174  mig-buton-sec  ? `<button class="mig-buton-sec" id="asi-reactiveaza">Re
+  asistenti.js             376  asi-echipa-btn ${areErori ? `<button class="asi-echipa-btn" id="asi-vez
+  cabinet.js               105  ${cls}         return `<button class="${cls}" data-ecran="${cheie || ""
+  cabinet.js               122  sa-asist sa-clic <button class="sa-asist sa-clic" data-ecran="capacitate"
+  cabinet.js               156  pacm-x         <button class="pacm-x" id="brief-x" aria-label="Inchide"
+  cabinet.js               211  cab-card cab-card-mic <button class="cab-card cab-card-mic" id="cab-recomanda-
+  cabinet.js               290  sub-inapoi     <button class="sub-inapoi" id="sub-inapoi">
+  cabinet.js               296  firme-optiune  <button class="firme-optiune" id="opt-jurnal">
+  cabinet.js               303  firme-optiune  <button class="firme-optiune" id="opt-tipare">
+  cabinet.js               322  sub-inapoi     <button class="sub-inapoi" id="sub-inapoi">
+  cabinet.js               328  firme-optiune  <button class="firme-optiune" id="opt-existente">
+  cabinet.js               335  firme-optiune  <button class="firme-optiune" id="opt-migrare">
+  emitere_ecran.js          37  em-buton-sec   <button class="em-buton-sec" id="em-nu">Nu, \u00eencep a
+  ... si inca 65
 
-### ENTITATE_IN_TITLU: 5 gasite
-  etransport_ecran.js       39               <h2 class="pf-titlu">e-Transport \u00b7 ${esc(t.nume || "")}</h2>
-  migrare.js               384               <h2 class="mig-form-titlu">${f.nume}</h2>
-  operatiuni_ecran.js      249               <h2 class="pf-titlu">Opera\u021biuni speciale \u00b7 ${esc(t.nume || "
-  operatiuni_ecran.js      282               <h2 class="pf-titlu">${esc(opCurenta.titlu)} \u00b7 ${esc(t.nume || ""
-  rip_ecran.js              45               <h2 class="pf-titlu">Registru \u00eencas\u0103ri/pl\u0103\u021bi \u00b
+### ENTITATE_IN_TITLU: 5
+  etransport_ecran.js       39                 <h2 class="pf-titlu">e-Transport \u00b7 ${esc(t.nume || "")}</h2>
+  migrare.js               384                 <h2 class="mig-form-titlu">${f.nume}</h2>
+  operatiuni_ecran.js      249                 <h2 class="pf-titlu">Opera\u021biuni speciale \u00b7 ${esc(t.nume 
+  operatiuni_ecran.js      282                 <h2 class="pf-titlu">${esc(opCurenta.titlu)} \u00b7 ${esc(t.nume |
+  rip_ecran.js              45                 <h2 class="pf-titlu">Registru \u00eencas\u0103ri/pl\u0103\u021bi \
 
-### DIALOG_BROWSER: 0 gasite
+### DIALOG_BROWSER: 0
 
-### CLASE_CAMP_VECHI: 0 gasite
+### BANI_NEFORMATATI: 23
+  firme.js                 356  r.tva.suma     ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div
+  firme.js                 523  r.valoare      zonaM.innerHTML = `<p class="pf-intro">Intrare inregistrata 
+  firme.js                 533  r.valoare      zonaM.innerHTML = `<p class="pf-intro">Iesire la CMP ${r.cmp
+  firme.js                 564  r.pret_fara_tva <div class="pf-frand-nume">${escV(r.denumire)} \u00b7 ${r.pr
+  firme.js                 578  r.cost_total   zonaM.innerHTML = `<p class="pf-intro">Consum \u00eenregistr
+  firme.js                 617  x.valoare      : `${escV(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"
+  firme.js                 630  l.valoare      <div class="pf-frand-nume">${escV(l.data)} \u00b7 ${l.tip ==
+  firme.js                 631  l.sold_valoare <div class="pf-frand-sub">sold ${l.sold_cantitate} \u00b7 ${
+  firme.js                 703  n.valoare_vanzare <div class="pf-frand-sub">cost ${n.cost_total} \u00b7 adaos 
+  firme.js                 780  r.total_371    : `<p class="pf-intro">K=${r.k} \u00b7 CMV ${r.cmv} \u00b7 a
+  firme.js                 814  o.suma         <div class="pf-frand-nume">${escC(o.data)} \u00b7 ${o.tip ==
+  firme.js                 814  o.sold         <div class="pf-frand-nume">${escC(o.data)} \u00b7 ${o.tip ==
+  firme.js                 821  reg.sold_final <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${
+  firme.js                 904  a.suma         return `${escB(f.serie || "")}${escB(f.numar || "#" + a.fact
+  firme.js                 913  l.suma         <div class="pf-frand-nume">${escB(l.data)} \u00b7 ${l.tip ==
+  firme.js                 965  l.suma         <div class="pf-frand-nume">Alege facturile pentru linia din 
+  firme.js                 971  f.sold         <div class="pf-frand-sub">${escB(f.data_emitere)} \u00b7 sol
+  firme.js                1074  rd.cmv ?? "?"  zb.innerHTML = `<span class="pf-intro">Desc\u0103rcare GV \u
+  firme.js                1167  r.total        zonaMesaj.innerHTML = `<div class="mig-gol">${r.linii ? `Not
+  rip_ecran.js              47  reg.sold       \u00b7 \u00eencas\u0103ri <b>${reg.total_incasari}</b> \u00b
+  rip_ecran.js             128  d.total_activ  <br><b style="font-size:1.05em">Total activ: ${d.total_activ
+  rip_ecran.js             143  d.total_datorat <b style="font-size:1.05em">Total datorat: ${d.total_datorat
+  rip_ecran.js             144  d.cheltuieli_limitate_ ${d.cheltuieli_limitate_de_analizat > 0 ? `<br><span style="
 
-==========================================================================================
-TOTAL: 250 neconformitati candidate (diacriticele pot avea fals-pozitive rare)
+### SPATIERE: 0
+
+### CULORI_HARDCODATE: 22
+  admin_sanatate.js         44  #888           return `<div class="pov-card"><div style="font-size:13px
+  admin_sanatate.js         66  #888           <div style="font-size:13px;color:#888">${titlu}</div>
+  admin_sanatate.js         72  #999           <div style="display:flex;justify-content:space-between;f
+  asistenti.js             157  #5f5e5a        <span style="font-size:13px;color:#5f5e5a;">${a.rol === 
+  asistenti.js             303  #5f5e5a        <span style="font-size:13px;color:#5f5e5a;">${d.actor.ro
+  asistenti.js             308  #5f5e5a        <span style="font-size:13px;color:#5f5e5a;">Perioada:</s
+  asistenti.js             406  #5f5e5a        <span style="font-size:13px;color:#5f5e5a;">${a.respinse
+  cabinet.js               211  #92500a        <button class="cab-card cab-card-mic" id="cab-recomanda-
+  cabinet.js               304  #a3344b        <div class="firme-optiune-icon" style="background:#fdeef
+  cabinet.js               336  #16a34a        <div class="firme-optiune-icon" style="background:#e6f6e
+  facturi_ecran.js         191  #145c39        ${f.platita_la ? '<span class="fac-storno-tag" style="ba
+  facturi_ecran.js         617  #8a8a8a        : '<span style="color:#8a8a8a">inactiv</span>';
+  facturi_ecran.js         626  #c0392b        <span class="btn-link fr-sterge" data-id="${s.id}" style
+  facturi_ecran.js         760  #c0392b        zona.innerHTML = `<span style="color:#c0392b">${e.mesaj 
+  firme.js                 884  #3a4250        if (l.status === "ignorat") return `<span style="color:#
+  firme.js                1525  #c0392b        } catch (e) { zona.innerHTML = `<span style="color:#c039
+  firme.js                1585  #a3231c        <div><b>${c.email}</b> · ${c.nume || ""} ${c.activ ? "" 
+  login.js                  76  #c0246b        <div class="pagina-card-mare-icon" style="color:#c0246b"
+  login.js                 148  #16a34a        <div class="acces-card-icon" style="background:#e6f6ec;c
+  portal.js                 47  #92500a        <button class="cab-card cab-card-mic" id="portal-recoman
+  setari.js                219  #c0392b        ${c.activ ? `<span class="btn-link set-cheie-revoca" dat
+  validat.js                58  #15803d        z2.innerHTML = `<div class="cf-grup-titlu" style="color:
+
+### ETICHETE_LIPSA: 38
+  asistenti.js             146                 <input id="asi-cauta-firme" class="asi-cauta" placeholder="Cauta f
+  emitere_ecran.js         106                 <input class="pr-input em-cui" id="em-cui" placeholder="CUI benefi
+  emitere_ecran.js         109                 <input class="pr-input em-nume" id="em-nume" placeholder="Denumire
+  emitere_ecran.js         110                 <input class="pr-input em-adresa" id="em-adresa" placeholder="Adre
+  emitere_ecran.js         154                 <input class="pr-input em-l-den" placeholder="Denumire (ex: paine,
+  emitere_ecran.js         155                 <input class="pr-input em-l-cant" type="number" step="0.001" place
+  emitere_ecran.js         156                 <input class="pr-input em-l-pret" type="number" step="0.01" placeh
+  facturi_ecran.js         669                 <input class="pr-input" id="fr-cui" placeholder="CUI beneficiar (e
+  facturi_ecran.js         670                 <input class="pr-input" id="fr-nume" placeholder="Denumire benefic
+  facturi_ecran.js         705                 <input class="pr-input em-l-den" placeholder="Denumire (ex: abonam
+  facturi_ecran.js         706                 <input class="pr-input em-l-cant" type="number" step="0.001" place
+  facturi_ecran.js         707                 <input class="pr-input em-l-pret" type="number" step="0.01" placeh
+  firme.js                  23                 <input type="text" id="firme-q" placeholder="Caută după nume sau C
+  firme.js                 485                 <input type="text" id="cv-den" class="mig-text" placeholder="denum
+  firme.js                 487                 <input type="number" step="0.001" id="cv-cant" class="mig-text" pl
+  firme.js                 488                 <input type="number" step="0.0001" id="cv-pret" class="mig-text" p
+  firme.js                 489                 <input type="text" id="cv-doc" class="mig-text" placeholder="docum
+  firme.js                 548                 <input class="mig-text rt-cant" data-i="${i}" type="number" step="
+  firme.js                 567                 <input class="mig-text rt-portii" data-id="${r.id}" type="number" 
+  firme.js                 604                 <input type="number" step="0.001" class="mig-text cvi-faptic" data
+  firme.js                 708                 <input type="text" class="mig-text sn-den" placeholder="denumire" 
+  firme.js                 709                 <input type="number" step="0.001" class="mig-text sn-cant" placeho
+  firme.js                 710                 <input type="number" step="0.0001" class="mig-text sn-pa" placehol
+  firme.js                 711                 <input type="number" step="0.0001" class="mig-text sn-pv" placehol
+  firme.js                 725                 <input type="text" id="sn-numar" class="mig-text" placeholder="num
+  ... si inca 13
+
+### MENIURI (dialecte de optiuni):
+  firme-optiune    20 aparitii (cabinet.js, firme.js)
+  fac-optiune      4 aparitii (facturi_ecran.js)
+
+============================================================================================
+TOTAL: 231 candidate

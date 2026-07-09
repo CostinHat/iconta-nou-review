@@ -42,7 +42,7 @@ export async function ecranRip(corp, nav, t) {
         </div>`).join("");
 
     corp.innerHTML = `
-      <h2 class="pf-titlu">Registru \u00eencas\u0103ri/pl\u0103\u021bi \u00b7 ${esc(t.nume || "")}</h2>
+      <h2 class="pf-titlu">Registru \u00eencas\u0103ri/pl\u0103\u021bi</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
         \u00b7 \u00eencas\u0103ri <b>${reg.total_incasari}</b> \u00b7 pl\u0103\u021bi <b>${reg.total_plati}</b> \u00b7 sold <b>${reg.sold} lei</b>
         <button class="buton-secundar" id="r-prev" style="margin-left:12px">\u2190 luna</button>

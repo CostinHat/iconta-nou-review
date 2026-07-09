@@ -36,7 +36,7 @@ export async function ecranEtransport(corp, nav, t) {
 
   const deseneaza = () => {
     corp.innerHTML = `
-      <h2 class="pf-titlu">e-Transport \u00b7 ${esc(t.nume || "")}</h2>
+      <h2 class="pf-titlu">e-Transport</h2>
       <p class="pf-intro">Genereaz\u0103 XML-ul notific\u0103rii (v2) pentru \u00eenc\u0103rcare manual\u0103 \u00een SPV. UIT-ul vine de la ANAF dup\u0103 upload.</p>
       <div class="pf-frand" style="display:block">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">

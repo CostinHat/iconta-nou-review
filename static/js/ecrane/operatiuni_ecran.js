@@ -246,7 +246,7 @@ export async function ecranOperatiuni(corp, nav, t) {
 
   const lista = () => {
     corp.innerHTML = `
-      <h2 class="pf-titlu">Opera\u021biuni speciale \u00b7 ${esc(t.nume || "")}</h2>
+      <h2 class="pf-titlu">Opera\u021biuni speciale</h2>
       <p class="pf-intro">Note contabile pentru opera\u021biuni punctuale. Toate intr\u0103 drept <b>ciorn\u0103</b> \u2014 se valideaz\u0103 din Registru jurnal.</p>
       ${CATEGORII.map((cat) => `
         <div class="pf-frand" style="display:block;margin-bottom:12px">
@@ -279,7 +279,7 @@ export async function ecranOperatiuni(corp, nav, t) {
       return `<label${cond}>${esc(c.eticheta)}${c.optional ? "" : " *"}<br>${input}</label>`;
     };
     corp.innerHTML = `
-      <h2 class="pf-titlu">${esc(opCurenta.titlu)} \u00b7 ${esc(t.nume || "")}</h2>
+      <h2 class="pf-titlu">${esc(opCurenta.titlu)}</h2>
       <p><button class="buton-secundar" id="op-inapoi">\u2190 Toate opera\u021biunile</button></p>
       <div class="pf-frand" style="display:block">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;max-width:1000px">
