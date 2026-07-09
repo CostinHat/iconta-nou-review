@@ -121,7 +121,8 @@ export async function randeazaSetari(corp, nav) {
         <div class="set-titlu">Chei API</div>
         <p class="mig-intro">Pentru conectarea altor aplicatii la datele cabinetului. Cheia se afiseaza o singura data.</p>
         <div id="set-chei-lista"><p class="ecran-nota">Se incarca...</p></div>
-        <input id="set-cheie-nume" class="set-input" type="text" placeholder="Nume cheie (ex: integrare CRM)">
+        <label class="camp-eticheta" for="set-cheie-nume">Nume cheie</label>
+        <input id="set-cheie-nume" class="set-input" type="text" placeholder="ex: integrare CRM">
         <button class="buton-primar" id="set-cheie-noua">Genereaza cheie noua</button>
         <div class="set-mesaj" id="set-msg-chei"></div>
       </div>`;
@@ -216,7 +217,7 @@ async function _incarcaChei(corp) {
         <div class="pf-frand-nume">${esc(c.nume) || "—"} · <code>${c.prefix}…</code></div>
         <div class="pf-frand-sub">${c.activ ? "activa" : "revocata"}${c.ultima_folosire ? " · folosita: " + c.ultima_folosire.slice(0, 16) : ""}</div>
       </div>
-      ${c.activ ? `<span class="btn-link set-cheie-revoca" data-id="${c.id}" style="color:#c0392b">Revoca</span>` : ""}
+      ${c.activ ? `<span class="btn-link set-cheie-revoca" data-id="${c.id}" style="color:var(--rosu)">Revoca</span>` : ""}
     </div>`).join("");
   zona.querySelectorAll(".set-cheie-revoca").forEach((b) => b.addEventListener("click", () => {
     confirmaCaseta(b.closest(".pf-frand") || b, "Revoci cheia? Aplicatiile care o folosesc nu vor mai avea acces.", async () => {

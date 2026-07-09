@@ -44,7 +44,7 @@ export function desktopPortal(continut, nav) {
         <div class="cab-salut-nume">${firma}</div>
         <div class="cab-salut-sub">Portal Client</div>
       </div>
-      <button class="cab-card cab-card-mic" id="portal-recomanda-mic" style="background:#fbeedd;color:#92500a">
+      <button class="cab-card cab-card-mic accent-recomanda" id="portal-recomanda-mic">
         <div class="cab-card-cap">${SVG(ICON["recomanda"], "#92500a")}<span class="cab-card-titlu">Recomand\u0103</span></div>
       </button>
     </div>

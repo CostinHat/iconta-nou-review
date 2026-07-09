@@ -59,9 +59,9 @@ for nume, t in fisiere.items():
         for dm in re.finditer(r'class="((?:fac|firme)-optiune)', lin):
             meniuri.setdefault(dm.group(1), []).append((nume, i))
         # ETICHETE: input cu placeholder informativ dar fara label/eticheta pe linie/vecinatate
-        if re.search(r'<input[^>]*placeholder="[^"]{4,}', lin) and "camp-eticheta" not in lin and "<label" not in lin:
+        if re.search(r'<input[^>]*placeholder="[^"]{4,}', lin) and "camp-eticheta" not in lin and "<label" not in lin and "aria-label" not in lin:
             vecini = "\n".join(linii[max(0,i-3):i])
-            if "camp-eticheta" not in vecini and "<label" not in vecini:
+            if "camp-eticheta" not in vecini and "<label" not in vecini and "aria-label" not in vecini:
                 rap["etichete_lipsa"].append((nume, i, "", lin.strip()[:66]))
 
 print("=" * 92)
@@ -69,10 +69,10 @@ print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
-    for nume, i, extra, lin in lista[:25]:
+    for nume, i, extra, lin in lista:
         print("  %-22s %5d  %-14s %s" % (nume, i, extra, lin))
     if len(lista) > 25:
-        print("  ... si inca %d" % (len(lista) - 25))
+        pass  # listare completa
 print("\n### MENIURI (dialecte de optiuni):")
 for cls, loc in meniuri.items():
     print("  %-16s %d aparitii (%s)" % (cls, len(loc), ", ".join(sorted(set(x[0] for x in loc)))))

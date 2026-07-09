@@ -137,3 +137,10 @@ export function deschideLupa(u, rotInit) {  // bon_flux_e9_v1
 // bon_flux_e9b_v1
 
 // bon_flux_e9c_v1
+
+/* bani_v1 — formator monetar canonic (Design System v1.1): 1.234,56 */
+export function bani(v) {
+  const n = Number(v);
+  if (v === null || v === undefined || v === "" || !isFinite(n)) return v ?? "";
+  return n.toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}

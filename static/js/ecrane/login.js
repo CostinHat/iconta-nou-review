@@ -73,7 +73,7 @@ export function ecranLogin(radacina) {
     <div class="pagina-carduri-sectiune">
       <div class="pagina-carduri-wrap">
         <div class="pagina-card-mare" style="background:#fdeef2">
-          <div class="pagina-card-mare-icon" style="color:#c0246b">${svgIcon(ICONI.factura, 30)}</div>
+          <div class="pagina-card-mare-icon accent-magenta">${svgIcon(ICONI.factura, 30)}</div>
           <div class="pagina-card-mare-titlu">Facturare gratuit\u0103</div>
           <div class="pagina-card-mare-sub">Facturi, proforme, recurente \u0219i import din magazinul online \u2014 direct din platform\u0103.</div>
           <button type="button" class="pagina-card-buton" id="pagina-facturare-gratuita-btn">Acces</button>
@@ -145,7 +145,7 @@ export function ecranLogin(radacina) {
           <svg class="acces-card-sageata" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
         <button class="acces-card" id="acces-client-nou">
-          <div class="acces-card-icon" style="background:#e6f6ec;color:#16a34a">
+          <div class="acces-card-icon accent-verde">
             <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M19 21V11a2 2 0 0 0-2-2h-2"/><path d="M9 7h2M9 11h2M9 15h2"/></svg>
           </div>
           <div class="acces-card-text">

@@ -208,7 +208,7 @@ function randeazaPanou(continut, nav) {
         <div class="cab-salut-nume">Salut, ${prenume}</div>
         <div class="cab-salut-data">Spațiul tău de lucru — ${azi}</div>
       </div>
-      <button class="cab-card cab-card-mic" id="cab-recomanda-mic" style="background:#fbeedd;color:#92500a">
+      <button class="cab-card cab-card-mic accent-recomanda" id="cab-recomanda-mic">
         <div class="cab-card-cap">${svg("gift", "#92500a")}<span class="cab-card-titlu">Recomandă</span></div>
       </button>
     </div>
@@ -301,7 +301,7 @@ function randeazaMeniuActivitate(continut, nav) {
         <div class="firme-optiune-desc">Centralizator si jurnal cronologic: cine ce a pregatit, validat, depus</div>
       </button>
       <button class="firme-optiune" id="opt-tipare">
-        <div class="firme-optiune-icon" style="background:#fdeef0; color:#a3344b">
+        <div class="firme-optiune-icon accent-roz">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
         </div>
         <div class="firme-optiune-titlu">Tipare de erori ${window._activAlerta ? '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ff3b30;margin-left:6px"></span>' : ""}</div>
@@ -333,7 +333,7 @@ function randeazaMeniuFirme(continut, nav) {
         <div class="firme-optiune-desc">Vezi portofoliul, caută o firmă și deschide-o ca să lucrezi pe ea</div>
       </button>
       <button class="firme-optiune" id="opt-migrare">
-        <div class="firme-optiune-icon" style="background:#e6f6ec; color:#16a34a">
+        <div class="firme-optiune-icon accent-verde">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
         </div>
         <div class="firme-optiune-titlu">Migrare cabinet</div>

@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, arataMesaj, confirmaCaseta, deschideLupa } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, arataMesaj, confirmaCaseta, deschideLupa, bani } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";
 import { ecranRip } from "./rip_ecran.js";
@@ -20,6 +20,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
       <button class="buton-primar buton-ingust" id="firme-adauga">+ Adaugă firmă</button>
     </div>
     <div class="firme-cautare">
+      <label class="camp-eticheta" for="firme-q">Caut\u0103</label>
       <input type="text" id="firme-q" placeholder="Caută după nume sau CUI" autocomplete="off">
     </div>
     <div class="firme-lista" id="firme-lista"><div class="ecran-nota">Se încarcă firmele…</div></div>
@@ -353,7 +354,7 @@ async function ecranVerificari(corp, nav, t) {
           <div class="pf-frand-nume">Documente pozate de clien\u021bi</div>
           <div class="pf-frand-sub">${r.documente_pozate.ok ? "\u00een regul\u0103" : [r.documente_pozate.bonuri_neverificate ? r.documente_pozate.bonuri_neverificate + " document(e) confirmate de client, necontate de peste 3 zile" : "", r.documente_pozate.ciorne_casa ? r.documente_pozate.ciorne_casa + " not\u0103(e) de cas\u0103 ciorn\u0103, nevalidate de peste 3 zile" : ""].filter(Boolean).join(" \u00b7 ")}</div>
         </div><span class="cab-pct ${r.documente_pozate.ok ? 'pct-verde' : 'pct-rosu'}"></span></div>` : ""}
-        ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${r.tva.suma} lei (cont ${r.tva.cont})</div></div><span class="cab-pct pct-verde"></span></div>` : ""}
+        ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${bani(r.tva.suma)} lei (cont ${r.tva.cont})</div></div><span class="cab-pct pct-verde"></span></div>` : ""}
         ${vs ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Stocuri (contabil vs fi\u0219e CV)</div>
           <div class="pf-frand-sub">${vs.ok ? "in regula" : vs.conturi.filter(c=>!c.ok).map(c=>`cont ${c.cod || c.cont}: contabil ${c.sold_contabil} vs fi\u0219e ${c.valoare_fise_cv} (dif ${c.diferenta})`).join(" \u00b7 ")}</div>
@@ -477,16 +478,17 @@ async function sectiuneaCV(corp, t, zonaM) {
   zona.innerHTML = `
     <div class="pf-frand" style="display:block;margin-bottom:14px">
       <div class="pf-frand-nume" style="margin-bottom:8px">Fi\u0219e de magazie (cantitativ-valoric, CMP)</div>
+      <div class="camp-eticheta">Mi\u0219care: articol \u00b7 denumire (nou) \u00b7 dat\u0103 \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 document</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <select id="cv-art" class="mig-text" style="min-width:200px">
           <option value="">\u2014 articol nou \u2014</option>
           ${arts.map((a) => `<option value="${a.id}">${escV(a.denumire)} \u00b7 stoc ${a.stoc} ${escV(a.um)}${a.cmp ? " \u00b7 CMP " + a.cmp : ""}</option>`).join("")}
         </select>
-        <input type="text" id="cv-den" class="mig-text" placeholder="denumire (articol nou)" style="flex:1;min-width:160px">
+        <input type="text" id="cv-den" class="mig-text" placeholder="denumire (articol nou)" aria-label="Denumire articol nou" style="flex:1;min-width:160px">
         <input type="date" id="cv-data" class="mig-text">
-        <input type="number" step="0.001" id="cv-cant" class="mig-text" placeholder="cant." style="width:90px">
-        <input type="number" step="0.0001" id="cv-pret" class="mig-text" placeholder="pret unitar (la intrare)" style="width:170px">
-        <input type="text" id="cv-doc" class="mig-text" placeholder="document" style="width:130px">
+        <input type="number" step="0.001" id="cv-cant" class="mig-text" placeholder="cant." aria-label="Cantitate" style="width:90px">
+        <input type="number" step="0.0001" id="cv-pret" class="mig-text" placeholder="pret unitar (la intrare)" aria-label="Pre\u021b unitar la intrare" style="width:170px">
+        <input type="text" id="cv-doc" class="mig-text" placeholder="document" aria-label="Document" style="width:130px">
       </div>
       <p>
         <button class="buton-primar" id="cv-intrare">Intrare</button>
@@ -520,7 +522,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       else corpReq.denumire = val("#cv-den").trim();
       if (!corpReq.articol_id && !corpReq.denumire) { zonaM.innerHTML = `<div class="mig-gol">Alege articolul sau da-i un nume.</div>`; return; }
       const r = await api.post(`/tenants/${t.id}/stocuri/intrare`, corpReq);
-      zonaM.innerHTML = `<p class="pf-intro">Intrare inregistrata \u00b7 ${r.valoare} lei.</p>`;
+      zonaM.innerHTML = `<p class="pf-intro">Intrare inregistrata \u00b7 ${bani(r.valoare)} lei.</p>`;
       sectiuneaCV(corp, t, zonaM);
     } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "Eroare")}</div>`; }
   });
@@ -530,7 +532,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       const r = await api.post(`/tenants/${t.id}/stocuri/iesire`, {
         articol_id: parseInt(val("#cv-art")), data: val("#cv-data"),
         cantitate: parseFloat(val("#cv-cant")) || 0, document: val("#cv-doc") || null });
-      zonaM.innerHTML = `<p class="pf-intro">Iesire la CMP ${r.cmp} \u00b7 ${r.valoare} lei \u00b7 nota ${escV(r.nota)} (ciorna).</p>`;
+      zonaM.innerHTML = `<p class="pf-intro">Iesire la CMP ${r.cmp} \u00b7 ${bani(r.valoare)} lei \u00b7 nota ${escV(r.nota)} (ciorna).</p>`;
       sectiuneaCV(corp, t, zonaM);
     } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "Eroare")}</div>`; }
   });
@@ -545,7 +547,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       <div style="display:flex;gap:6px;margin-top:6px;align-items:center">
         <select class="mig-text rt-art" data-i="${i}">${arts.map((a) =>
           `<option value="${a.id}" ${a.id == l.articol_id ? "selected" : ""}>${escV(a.denumire)} \u00b7 CMP ${a.cmp}</option>`).join("")}</select>
-        <input class="mig-text rt-cant" data-i="${i}" type="number" step="0.001" value="${l.cantitate || ""}" placeholder="cant./por\u021bie" style="width:120px">
+        <input class="mig-text rt-cant" data-i="${i}" type="number" step="0.001" value="${l.cantitate || ""}" placeholder="cant./por\u021bie" aria-label="Cantitate pe por\u021bie" style="width:120px">
         <button class="buton-sters rt-scoate" data-i="${i}">\u2212</button>
       </div>`).join("");
     rtIng.querySelectorAll(".rt-art").forEach((s) => s.addEventListener("change", (e) => { rtLinii[e.target.dataset.i].articol_id = parseInt(e.target.value); }));
@@ -561,10 +563,10 @@ async function sectiuneaCV(corp, t, zonaM) {
           const pct = fc.food_cost_pct == null ? "\u2013" : fc.food_cost_pct + "%";
           return `<div class="pf-frand">
             <div class="pf-frand-text">
-              <div class="pf-frand-nume">${escV(r.denumire)} \u00b7 ${r.pret_fara_tva} lei</div>
+              <div class="pf-frand-nume">${escV(r.denumire)} \u00b7 ${bani(r.pret_fara_tva)} lei</div>
               <div class="pf-frand-sub">cost/por\u021bie ${fc.cost_portie} \u00b7 food cost ${pct} \u00b7 ${(r.linii || []).map((l) => `${escV(l.denumire)} ${l.cantitate}${escV(l.um || "")}`).join(", ")}</div>
             </div>
-            <input class="mig-text rt-portii" data-id="${r.id}" type="number" placeholder="por\u021bii" style="width:80px">
+            <input class="mig-text rt-portii" data-id="${r.id}" type="number" placeholder="por\u021bii" aria-label="Num\u0103r por\u021bii" style="width:80px">
             <button class="buton-primar rt-desc" data-id="${r.id}">Descarc\u0103 (ciorn\u0103)</button>
             <button class="buton-sters rt-del" data-id="${r.id}">\u0218terge</button>
           </div>`;
@@ -575,7 +577,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       if (!p) { zonaM.innerHTML = `<div class="mig-gol">Completeaz\u0103 num\u0103rul de por\u021bii.</div>`; return; }
       try {
         const r = await api.post(`/tenants/${t.id}/retete/descarca`, { reteta_id: parseInt(id), portii: parseFloat(p), data: val("#cv-data") || new Date().toISOString().slice(0, 10) });
-        zonaM.innerHTML = `<p class="pf-intro">Consum \u00eenregistrat (ciorn\u0103 #${r.inregistrare_id}) \u00b7 cost total ${r.cost_total} lei.</p>`;
+        zonaM.innerHTML = `<p class="pf-intro">Consum \u00eenregistrat (ciorn\u0103 #${r.inregistrare_id}) \u00b7 cost total ${bani(r.cost_total)} lei.</p>`;
         sectiuneaCV(corp, t, zonaM); rtIncarca();
       } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Eroare")}</div>`; }
     }));
@@ -601,7 +603,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       <div class="pf-frand"><div class="pf-frand-text">
         <div class="pf-frand-nume">${escV(a.denumire)} \u00b7 scriptic ${a.stoc} ${escV(a.um)}</div>
       </div>
-      <input type="number" step="0.001" class="mig-text cvi-faptic" data-aid="${a.id}" placeholder="faptic" style="width:110px"></div>`).join("")}
+      <input type="number" step="0.001" class="mig-text cvi-faptic" data-aid="${a.id}" placeholder="faptic" aria-label="Stoc faptic" style="width:110px"></div>`).join("")}
       <p style="margin-top:8px"><button class="buton-primar" id="cvi-salveaza">Salveaz\u0103 inventarul (note ciorne)</button></p>`;
     z.querySelector("#cvi-salveaza").addEventListener("click", async () => {
       const linii = [...z.querySelectorAll(".cvi-faptic")]
@@ -614,7 +616,7 @@ async function sectiuneaCV(corp, t, zonaM) {
         zonaM.innerHTML = `<p class="pf-intro">${(r.rezultate || []).map((x) =>
           x.eroare ? `${escV(x.denumire || x.articol_id)}: ${escV(x.eroare)}`
           : x.diferenta === "0" ? `${escV(x.denumire)}: fara diferenta`
-          : `${escV(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${x.diferenta} \u00b7 ${x.valoare} lei \u00b7 nota ${escV(x.nota)} (ciorna)`).join("<br>")}</p>`;
+          : `${escV(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${x.diferenta} \u00b7 ${bani(x.valoare)} lei \u00b7 nota ${escV(x.nota)} (ciorna)`).join("<br>")}</p>`;
         sectiuneaCV(corp, t, zonaM);
       } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "Eroare")}</div>`; }
     });
@@ -627,8 +629,8 @@ async function sectiuneaCV(corp, t, zonaM) {
         <div class="pf-frand-nume" style="margin:8px 0">Fisa: ${escV(r.articol.denumire)}</div>
         <div class="pf-lista">${r.linii.map((l) => `
           <div class="pf-frand"><div class="pf-frand-text">
-            <div class="pf-frand-nume">${escV(l.data)} \u00b7 ${l.tip === "intrare" ? "+" : "\u2212"}${l.cantitate} \u00b7 ${l.valoare} lei${l.pret_unitar ? " \u00b7 pret " + l.pret_unitar : ""}</div>
-            <div class="pf-frand-sub">sold ${l.sold_cantitate} \u00b7 ${l.sold_valoare} lei${l.cmp ? " \u00b7 CMP " + l.cmp : ""}${l.document ? " \u00b7 " + escV(l.document) : ""}</div>
+            <div class="pf-frand-nume">${escV(l.data)} \u00b7 ${l.tip === "intrare" ? "+" : "\u2212"}${l.cantitate} \u00b7 ${bani(l.valoare)} lei${l.pret_unitar ? " \u00b7 pret " + l.pret_unitar : ""}</div>
+            <div class="pf-frand-sub">sold ${l.sold_cantitate} \u00b7 ${bani(l.sold_valoare)} lei${l.cmp ? " \u00b7 CMP " + l.cmp : ""}${l.document ? " \u00b7 " + escV(l.document) : ""}</div>
           </div></div>`).join("") || '<div class="mig-gol">Fara miscari.</div>'}</div>`;
     } catch { zona.querySelector("#cv-fisa-zona").innerHTML = `<div class="mig-gol">Nu am putut incarca fisa.</div>`; }
   });
@@ -700,15 +702,15 @@ async function ecranStocuri(corp, nav, t) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">NIR ${escS(n.numar)} \u00b7 ${escS(n.data)} \u00b7 ${escS(n.furnizor || "")}</div>
-            <div class="pf-frand-sub">cost ${n.cost_total} \u00b7 adaos ${n.adaos_total} \u00b7 TVA neex. ${n.tva_neexigibila} \u00b7 raft ${n.valoare_vanzare} lei</div>
+            <div class="pf-frand-sub">cost ${n.cost_total} \u00b7 adaos ${n.adaos_total} \u00b7 TVA neex. ${n.tva_neexigibila} \u00b7 raft ${bani(n.valoare_vanzare)} lei</div>
           </div>
         </div>`).join("");
     const randLinie = (l, i) => `
       <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap" data-i="${i}">
-        <input type="text" class="mig-text sn-den" placeholder="denumire" value="${escS(l.denumire || "")}" style="flex:2;min-width:160px">
-        <input type="number" step="0.001" class="mig-text sn-cant" placeholder="cant." value="${l.cantitate || ""}" style="width:90px">
-        <input type="number" step="0.0001" class="mig-text sn-pa" placeholder="pret achizitie" value="${l.pret_achizitie || ""}" style="width:120px">
-        <input type="number" step="0.0001" class="mig-text sn-pv" placeholder="pret raft (cu TVA)" value="${l.pret_vanzare || ""}" style="width:140px">
+        <input type="text" class="mig-text sn-den" placeholder="denumire" aria-label="Denumire" value="${escS(l.denumire || "")}" style="flex:2;min-width:160px">
+        <input type="number" step="0.001" class="mig-text sn-cant" placeholder="cant." aria-label="Cantitate" value="${l.cantitate || ""}" style="width:90px">
+        <input type="number" step="0.0001" class="mig-text sn-pa" placeholder="pret achizitie" aria-label="Pre\u021b achizi\u021bie" value="${l.pret_achizitie || ""}" style="width:120px">
+        <input type="number" step="0.0001" class="mig-text sn-pv" placeholder="pret raft (cu TVA)" aria-label="Pre\u021b raft cu TVA" value="${l.pret_vanzare || ""}" style="width:140px">
         <select class="mig-text sn-tva" style="width:80px">${[21, 11].map((c) => `<option value="${c}"${(l.cota_tva || 21) == c ? " selected" : ""}>${c}%</option>`).join("")}</select>
         <button class="buton-secundar sn-scoate">\u2212</button>
       </div>`;
@@ -721,12 +723,14 @@ async function ecranStocuri(corp, nav, t) {
       <div id="s-mesaj"></div>
       <div class="pf-frand" style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">NIR nou</div>
+        <div class="camp-eticheta">NIR: num\u0103r \u00b7 dat\u0103 \u00b7 furnizor \u00b7 CUI</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-          <input type="text" id="sn-numar" class="mig-text" placeholder="numar NIR" style="width:120px">
+          <input type="text" id="sn-numar" class="mig-text" placeholder="numar NIR" aria-label="Num\u0103r NIR" style="width:120px">
           <input type="date" id="sn-data" class="mig-text" value="${new Date().toISOString().slice(0, 10)}">
-          <input type="text" id="sn-furn" class="mig-text" placeholder="furnizor" style="flex:1;min-width:160px">
-          <input type="text" id="sn-cui" class="mig-text" placeholder="CUI" style="width:120px">
+          <input type="text" id="sn-furn" class="mig-text" placeholder="furnizor" aria-label="Furnizor" style="flex:1;min-width:160px">
+          <input type="text" id="sn-cui" class="mig-text" placeholder="CUI" aria-label="CUI furnizor" style="width:120px">
         </div>
+        <div class="camp-eticheta">Articole: denumire \u00b7 cantitate \u00b7 pre\u021b achizi\u021bie \u00b7 pre\u021b raft (cu TVA) \u00b7 cot\u0103 TVA</div>
         <div id="sn-linii">${liniiNir.map(randLinie).join("")}</div>
         <p><button class="buton-secundar" id="sn-plus">+ articol</button>
            <button class="buton-primar" id="sn-salveaza" style="margin-left:6px">Salveaz\u0103 NIR (note ciorne)</button></p>
@@ -777,7 +781,7 @@ async function ecranStocuri(corp, nav, t) {
         const r = await api.post(`/tenants/${t.id}/stocuri/descarcare?an=${an}&luna=${luna}`, {});
         zonaM.innerHTML = r.mesaj
           ? `<div class="mig-gol">${escS(r.mesaj)}</div>`
-          : `<p class="pf-intro">K=${r.k} \u00b7 CMV ${r.cmv} \u00b7 adaos ${r.adaos} \u00b7 TVA ${r.tva} \u00b7 total 371: ${r.total_371} lei \u00b7 ${r.inregistrari.length} note ciorne.</p>`;
+          : `<p class="pf-intro">K=${r.k} \u00b7 CMV ${r.cmv} \u00b7 adaos ${r.adaos} \u00b7 TVA ${r.tva} \u00b7 total 371: ${bani(r.total_371)} lei \u00b7 ${r.inregistrari.length} note ciorne.</p>`;
       } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
       }, { textOk: "Descarcă gestiunea" });
     });
@@ -811,14 +815,14 @@ async function ecranCasa(corp, nav, t) {
       : reg.operatiuni.map((o) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${escC(o.data)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${o.suma} lei \u00b7 sold ${o.sold} lei</div>
+            <div class="pf-frand-nume">${escC(o.data)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${bani(o.suma)} lei \u00b7 sold ${bani(o.sold)} lei</div>
             <div class="pf-frand-sub">${escC(o.partener || "")}${o.document ? " \u00b7 doc " + escC(o.document) : ""} \u00b7 ${escC(o.categorie)}</div>
           </div>
           <button class="buton-secundar" data-del="${o.id}">\u0218terge</button>
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Cas\u0103</h2>
-      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 sold final <b>${reg.sold_final} lei</b>
+      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 sold final <b>${bani(reg.sold_final)} lei</b>
         <button class="buton-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="c-next">luna \u2192</button></p>
       ${avert}
@@ -881,7 +885,7 @@ async function ecranBanca(corp, nav, t) {
   const zonaLista = corp.querySelector("#bk-lista");
 
   function badge(l) {
-    if (l.status === "ignorat") return `<span style="color:#3a4250">Ignorată</span> <button class="btn-link bk-undo" data-id="${l.id}">readu</button>`;
+    if (l.status === "ignorat") return `<span style="color:var(--gri)">Ignorată</span> <button class="btn-link bk-undo" data-id="${l.id}">readu</button>`;
     if (l.status === "contat") return `<span style="color:${CUL.gri};font-weight:600">Contat \u2713</span>`;
     const m = (l.alocari || {}).status_match;
     if (m === "verde") return `<span style="color:${CUL.verde};font-weight:600">\u25cf Match exact</span>`;
@@ -901,7 +905,7 @@ async function ecranBanca(corp, nav, t) {
     if (!al.length) return "";
     return `<div class="pf-frand-sub">${al.map((a) => {
       const f = a.factura || {};
-      return `${escB(f.serie || "")}${escB(f.numar || "#" + a.factura_id)} \u00b7 ${escB(f.tert || "")} \u00b7 ${a.suma} lei`;
+      return `${escB(f.serie || "")}${escB(f.numar || "#" + a.factura_id)} \u00b7 ${escB(f.tert || "")} \u00b7 ${bani(a.suma)} lei`;
     }).join("<br>")}</div>`;
   }
 
@@ -910,7 +914,7 @@ async function ecranBanca(corp, nav, t) {
     zonaLista.innerHTML = `<div class="pf-lista">${linii.map((l) => `
       <div class="pf-frand">
         <div class="pf-frand-text">
-          <div class="pf-frand-nume">${escB(l.data)} \u00b7 ${l.tip === "plata" ? "\u2212" : "+"}${l.suma} lei${l.cui_detectat ? " \u00b7 CUI " + escB(l.cui_detectat) : ""} \u00b7 ${badge(l)}</div>
+          <div class="pf-frand-nume">${escB(l.data)} \u00b7 ${l.tip === "plata" ? "\u2212" : "+"}${bani(l.suma)} lei${l.cui_detectat ? " \u00b7 CUI " + escB(l.cui_detectat) : ""} \u00b7 ${badge(l)}</div>
           <div class="pf-frand-sub">${escB((l.descriere || "").slice(0, 90))}${(l.alocari || {}).motiv ? " \u00b7 " + escB(l.alocari.motiv) : ""}</div>
           ${randAlocari(l)}
         </div>
@@ -962,13 +966,13 @@ async function ecranBanca(corp, nav, t) {
     if (!facturi.length) { zonaMesaj.innerHTML = `<div class="mig-gol">Nicio factura deschisa pe aceasta directie.</div>`; return; }
     zonaMesaj.innerHTML = `
       <div class="pf-frand" style="display:block">
-        <div class="pf-frand-nume">Alege facturile pentru linia din ${escB(l.data)} \u00b7 ${l.suma} lei</div>
+        <div class="pf-frand-nume">Alege facturile pentru linia din ${escB(l.data)} \u00b7 ${bani(l.suma)} lei</div>
         <div class="pf-lista" style="margin-top:8px">${facturi.map((f) => `
           <label class="pf-frand" style="cursor:pointer">
             <input type="checkbox" data-fid="${f.id}" data-sold="${f.sold}" style="margin-right:10px">
             <div class="pf-frand-text">
               <div class="pf-frand-nume">${escB(f.serie || "")}${escB(f.numar)} \u00b7 ${escB(f.tert_nume || "")}</div>
-              <div class="pf-frand-sub">${escB(f.data_emitere)} \u00b7 sold ${f.sold} lei \u00b7 CUI ${escB(f.tert_cui || "")}</div>
+              <div class="pf-frand-sub">${escB(f.data_emitere)} \u00b7 sold ${bani(f.sold)} lei \u00b7 CUI ${escB(f.tert_cui || "")}</div>
             </div>
           </label>`).join("")}</div>
         <p style="margin-top:10px">
@@ -1071,7 +1075,7 @@ async function ecranRaportZ(corp, nav, t) {
       zb.querySelector("#z-desc-gv").addEventListener("click", async () => {
         try {
           const rd = await api.post(`/tenants/${t.id}/stocuri/descarcare?an=${anz}&luna=${lz}`, {});
-          zb.innerHTML = `<span class="pf-intro">Desc\u0103rcare GV \u00eenregistrat\u0103 (ciorn\u0103): 607 = ${rd.cmv ?? "?"} lei (K=${rd.k ?? "?"}).</span>`;
+          zb.innerHTML = `<span class="pf-intro">Desc\u0103rcare GV \u00eenregistrat\u0103 (ciorn\u0103): 607 = ${rd.cmv != null ? bani(rd.cmv) : "?"} lei (K=${rd.k ?? "?"}).</span>`;
         } catch (e2) { zb.innerHTML = `<span class="pf-intro">${(e2.mesaj || "Eroare la desc\u0103rcare")}</span>`; }
       });
         } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.mesaj || "Eroare"}</div>`; }
@@ -1116,11 +1120,12 @@ async function ecranJurnal(corp, nav, t) {
       <div class="pf-frand" style="display:block;border:1px solid #c9961f">
         <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${escJ(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
         <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${escJ(n.descriere || "")}"></label>
-        <div id="je-linii" style="margin-top:8px">${n.linii.map((l, i) => `
+        <div class="camp-eticheta" style="margin-top:8px">Linii: cont debit = cont credit \u00b7 sum\u0103</div>
+        <div id="je-linii">${n.linii.map((l, i) => `
           <div style="display:flex;gap:8px;margin-bottom:6px" data-lin="${i}">
-            <input type="text" class="mig-text je-deb" placeholder="debit" value="${escJ(l.debit)}" style="width:90px">
+            <input type="text" class="mig-text je-deb" placeholder="debit" aria-label="Cont debit" value="${escJ(l.debit)}" style="width:90px">
             <span style="align-self:center">=</span>
-            <input type="text" class="mig-text je-cre" placeholder="credit" value="${escJ(l.credit)}" style="width:90px">
+            <input type="text" class="mig-text je-cre" placeholder="credit" aria-label="Cont credit" value="${escJ(l.credit)}" style="width:90px">
             <input type="number" step="0.01" class="mig-text je-sum" value="${l.suma.toFixed(2)}" style="width:120px">
             <button class="buton-secundar je-scoate">\u2212</button>
           </div>`).join("")}</div>
@@ -1164,7 +1169,7 @@ async function ecranJurnal(corp, nav, t) {
     corp.querySelector("#j-amort").addEventListener("click", async () => {
       try {
         const r = await api.post(`/tenants/${t.id}/amortizare?an=${an}&luna=${luna}`, {});
-        zonaMesaj.innerHTML = `<div class="mig-gol">${r.linii ? `Notă generată: ${r.linii} mijloace fixe, total ${r.total} lei` : "Nimic de amortizat."}</div>`;
+        zonaMesaj.innerHTML = `<div class="mig-gol">${r.linii ? `Notă generată: ${r.linii} mijloace fixe, total ${bani(r.total)} lei` : "Nimic de amortizat."}</div>`;
         deseneaza();
       } catch (e) { eroare(e, "Eroare la generarea notei de amortizare."); }
     });
@@ -1189,10 +1194,10 @@ async function ecranJurnal(corp, nav, t) {
       corp.querySelector("#je-plus").addEventListener("click", () => {
         const d = document.createElement("div");
         d.style.cssText = "display:flex;gap:8px;margin-bottom:6px";
-        d.innerHTML = `<input type="text" class="mig-text je-deb" placeholder="debit" style="width:90px">
+        d.innerHTML = `<input type="text" class="mig-text je-deb" placeholder="debit" aria-label="Cont debit" style="width:90px">
           <span style="align-self:center">=</span>
-          <input type="text" class="mig-text je-cre" placeholder="credit" style="width:90px">
-          <input type="number" step="0.01" class="mig-text je-sum" placeholder="0,00" style="width:120px">
+          <input type="text" class="mig-text je-cre" placeholder="credit" aria-label="Cont credit" style="width:90px">
+          <input type="number" step="0.01" class="mig-text je-sum" placeholder="0,00" aria-label="Sum\u0103" style="width:120px">
           <button class="buton-secundar je-scoate">\u2212</button>`;
         zona.appendChild(d); leaga();
       });
@@ -1325,11 +1330,11 @@ async function ecranBonuri(corp, nav, t) {
       </div>
       ${eChitanta
         ? `<div id="d-cand" style="margin-top:12px"><p class="ecran-nota">Caut facturi de potrivit...</p></div>`
-        : `<div style="margin-top:8px">${(b.articole || []).map((a, j) => `
+        : `<div style="margin-top:8px"><div class="camp-eticheta">Denumire \u00b7 valoare \u00b7 cont</div>${(b.articole || []).map((a, j) => `
             <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:4px">
               <input class="camp-input" id="d-den-${j}" value="${a.denumire || ""}" readonly>
               <input class="camp-input" type="number" step="0.01" id="d-val-${j}" value="${a.valoare || 0}">
-              <input class="camp-input" id="d-cont-${j}" value="${a.cont_propus || ""}" placeholder="cont">
+              <input class="camp-input" id="d-cont-${j}" value="${a.cont_propus || ""}" placeholder="cont" aria-label="Cont propus">
             </div>`).join("")}</div>`}
       <div style="margin-top:14px">
         <button class="buton-verde" id="d-certifica">${eChitanta ? "Certifică plata (401 = 5311)" : "Certifică și contează"}</button>
@@ -1522,7 +1527,7 @@ async function ecranMagazin(corp, nav, t) {
         const r = await api.post(`/tenants/${t.id}/woocommerce/sincronizeaza`, {});
         const n = (r.importate || []).length;
         zona.innerHTML = `<span style="color:#1d7a4d">${n} facturi importate, ${r.sarite || 0} deja existente.</span>`;
-      } catch (e) { zona.innerHTML = `<span style="color:#c0392b">${e.mesaj || "eroare"}</span>`; }
+      } catch (e) { zona.innerHTML = `<span style="color:var(--rosu)">${e.mesaj || "eroare"}</span>`; }
     });
   }
   function randeazaConfig() {
@@ -1582,7 +1587,7 @@ async function ecranAccesClient(corp, nav, t) {
       else {
         zona.innerHTML = cl.map((c) => `
           <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e5e9f0">
-            <div><b>${c.email}</b> · ${c.nume || ""} ${c.activ ? "" : ' · <span style="color:#a3231c">dezactivat</span>'}</div>
+            <div><b>${c.email}</b> · ${c.nume || ""} ${c.activ ? "" : ' · <span style="color:var(--rosu)">dezactivat</span>'}</div>
             ${c.activ ? `<button class="buton-secundar" data-id="${c.id}">Revoca</button>` : ""}
           </div>`).join("");
         zona.querySelectorAll("button[data-id]").forEach((b) => b.addEventListener("click", () => {

@@ -41,7 +41,7 @@ function grafic(istoric, camp, titlu, culoare, maxFix) {
   const valori = istoric.map((r) => (r[camp] == null ? null : Number(r[camp])));
   const puncteValide = valori.filter((v) => v != null);
   if (!puncteValide.length) {
-    return `<div class="pov-card"><div style="font-size:13px;color:#888;margin-bottom:6px">${titlu}</div><div class="mig-gol">Fără date încă.</div></div>`;
+    return `<div class="pov-card"><div style="font-size:13px;color:var(--gri);margin-bottom:6px">${titlu}</div><div class="mig-gol">Fără date încă.</div></div>`;
   }
   const W = 560, H = 120, PAD = 8;
   const maxVal = maxFix != null ? maxFix : Math.max(...puncteValide, 1);
@@ -63,13 +63,13 @@ function grafic(istoric, camp, titlu, culoare, maxFix) {
   return `
     <div class="pov-card">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
-        <div style="font-size:13px;color:#888">${titlu}</div>
+        <div style="font-size:13px;color:var(--gri)">${titlu}</div>
         <div style="font-size:18px;font-weight:700;color:${culoare}">${ultimaVal != null ? ultimaVal : "—"}</div>
       </div>
       <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:${H}px" preserveAspectRatio="none">
         <polyline points="${puncte.join(" ")}" fill="none" stroke="${culoare}" stroke-width="2" />
       </svg>
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:#999;margin-top:2px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gri-clar);margin-top:2px">
         <span>${primaOra}</span><span>${ultimaOra}</span>
       </div>
     </div>`;

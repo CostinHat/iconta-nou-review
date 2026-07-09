@@ -143,6 +143,7 @@ async function deschideEditare(uid, corp, nav) {
       ? `
         <div class="asi-sectiune-titlu">Selecteaza firme</div>
         <p class="asi-mic">Asistentul vede doar firmele bifate. Bifarea = stare finala.</p>
+        <label class="camp-eticheta" for="asi-cauta-firme">Caut\u0103 firma</label>
         <input id="asi-cauta-firme" class="asi-cauta" placeholder="Cauta firma (nume sau CUI)..." style="width:100%;margin-bottom:8px;">
         <div id="asi-firme">${firme.map((f) => `
           <label class="asi-firma-rand">
@@ -154,7 +155,7 @@ async function deschideEditare(uid, corp, nav) {
     box.innerHTML = `
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
         <span class="asi-nivel-badge" id="asi-nivel-badge">Nivel ${calcNivel()}</span>
-        <span style="font-size:13px;color:#5f5e5a;">${a.rol === "admin_firma" ? "administrator" : (a.functie || "asistent")}</span>
+        <span style="font-size:13px;color:var(--gri);">${a.rol === "admin_firma" ? "administrator" : (a.functie || "asistent")}</span>
       </div>
       <div class="asi-sectiune-titlu">Alege competente</div>
       <div id="asi-perm-edit">
@@ -300,12 +301,12 @@ function _asiRandeazaFereastra(d, c) {
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <span class="asi-nivel-badge">Nivel ${nivel}</span>
       ${_semaforEticheta(sem)}
-      <span style="font-size:13px;color:#5f5e5a;">${d.actor.rol}</span>
+      <span style="font-size:13px;color:var(--gri);">${d.actor.rol}</span>
     </div>`;
 
   const perioada = `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-      <span style="font-size:13px;color:#5f5e5a;">Perioada:</span>
+      <span style="font-size:13px;color:var(--gri);">Perioada:</span>
       <select class="asi-per-sel" style="width:auto;">
         <option value="tot">Tot</option>
         <option value="azi">Azi</option>
@@ -403,7 +404,7 @@ async function deschideEchipaErori(nav) {
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
             ${_semaforEticheta(a.culoare)}
             <b>${a.nume}</b>
-            <span style="font-size:13px;color:#5f5e5a;">${a.respinse} respinse · ${a.rata}%</span>
+            <span style="font-size:13px;color:var(--gri);">${a.respinse} respinse · ${a.rata}%</span>
           </div>
           ${tipare}
         </div>`;

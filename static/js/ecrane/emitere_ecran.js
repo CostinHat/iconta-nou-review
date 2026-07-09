@@ -102,17 +102,21 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Beneficiar</div>
+      <label class="camp-eticheta" for="em-cui">CUI beneficiar</label>
       <div class="em-benef">
-        <input class="pr-input em-cui" id="em-cui" placeholder="CUI beneficiar (ex: RO12345678)" autocomplete="off">
+        <input class="pr-input em-cui" id="em-cui" placeholder="ex: RO12345678" autocomplete="off">
         <button class="em-buton-sec" id="em-verifica">Verific\u0103 la ANAF</button>  <!-- [p114_buton_anaf] -->
       </div>
-      <input class="pr-input em-nume" id="em-nume" placeholder="Denumire beneficiar" autocomplete="off">
-      <input class="pr-input em-adresa" id="em-adresa" placeholder="Adresa beneficiar (art. 319)" autocomplete="off">
+      <label class="camp-eticheta" for="em-nume">Denumire beneficiar</label>
+      <input class="pr-input em-nume" id="em-nume" autocomplete="off">
+      <label class="camp-eticheta" for="em-adresa">Adres\u0103 beneficiar (art. 319)</label>
+      <input class="pr-input em-adresa" id="em-adresa" autocomplete="off">
       <div class="em-cui-stare" id="em-cui-stare"></div>
     </div>
 
     <div class="em-sectiune">
       <div class="em-eticheta">Produse \u0219i servicii</div>
+      <div class="camp-eticheta">Linie: denumire \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 cot\u0103 TVA</div>
       <div class="em-linii" id="em-linii"></div>
       <button class="em-buton-sec" id="em-add-linie">+ Adaug\u0103 linie</button>
     </div>
@@ -151,9 +155,9 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     rand.className = "em-linie";
     rand.dataset.idx = idx;
     rand.innerHTML = `
-      <input class="pr-input em-l-den" placeholder="Denumire (ex: paine, consultanta)" autocomplete="off">
-      <input class="pr-input em-l-cant" type="number" step="0.001" placeholder="Cant." title="Cantitate">
-      <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" title="Pre\u021b unitar">
+      <input class="pr-input em-l-den" placeholder="Denumire (ex: paine, consultanta)" aria-label="Denumire articol" autocomplete="off">
+      <input class="pr-input em-l-cant" type="number" step="0.001" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
+      <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" aria-label="Pre\u021b unitar" title="Pre\u021b unitar">
       <span class="em-l-cota" title="Cota TVA">\u2014</span>
       <button class="em-l-sterge" title="\u0218terge">\u00d7</button>`;
     zonaLinii.appendChild(rand);

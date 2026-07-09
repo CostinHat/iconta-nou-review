@@ -272,9 +272,9 @@ export async function ecranOperatiuni(corp, nav, t) {
       } else if (c.tip === "data") {
         input = `<input type="date" id="op-${c.nume}" class="mig-text">`;
       } else if (c.tip === "numar") {
-        input = `<input type="number" step="0.01" id="op-${c.nume}" class="mig-text" placeholder="${c.sugestie || ""}">`;
+        input = `<input type="number" step="0.01" id="op-${c.nume}" class="mig-text" placeholder="${c.sugestie || ""}" aria-label="${esc(c.eticheta)}">`;
       } else {
-        input = `<input type="text" id="op-${c.nume}" class="mig-text" placeholder="${c.sugestie || ""}">`;
+        input = `<input type="text" id="op-${c.nume}" class="mig-text" placeholder="${c.sugestie || ""}" aria-label="${esc(c.eticheta)}">`;
       }
       return `<label${cond}>${esc(c.eticheta)}${c.optional ? "" : " *"}<br>${input}</label>`;
     };

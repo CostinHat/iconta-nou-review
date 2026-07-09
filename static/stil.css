@@ -17,6 +17,9 @@
   --fundal: #f5f6f8;
   --alb: #ffffff;
   --rosu: #b3261e;              /* erori — sobru */
+  --verde: #1d7a4d;             /* succes — canonic Design System */
+  --verde-fundal: #e6f6ec;
+  --galben: #c9961f;            /* avertizare — canonic */
   --rosu-fundal: #fce8e6;
   --portocaliu: #c8651b;        /* navigare: ieși / la bază */
   --portocaliu-fundal: #fdf0e6;
@@ -1794,11 +1797,8 @@ html, body {
 }
 
 /* [p108_fac_meniu_css] meniu facturi (2 optiuni) */
-.fac-meniu { display:flex; flex-direction:column; gap:12px; max-width:520px; margin-top:8px; }
-.fac-optiune { text-align:left; background:#cfe0f7; border:1px solid #a8c4e8; border-radius:12px; padding:18px 20px; cursor:pointer; font-family:var(--font); transition:border-color .15s, box-shadow .15s, transform .15s; }
-.fac-optiune:hover { border-color:#0f6cbd; box-shadow:0 4px 14px rgba(15,108,189,0.14); transform:translateY(-1px); }
-.fac-opt-titlu { font-size: var(--text); font-weight:700; color:#0f172a; }
-.fac-opt-sub { font-size: var(--text-mic); color:#64748b; margin-top:3px; }
+/* fac-meniu eliminat — Lot MENIURI: Facturi foloseste limbajul canonic firme-optiuni */
+/* fac-opt-* eliminate — Lot MENIURI */
 
 /* [p110_avert_css] avertisment firma inactiva la emitere */
 .em-avert-inactiv { background:#fdecec; border:2px solid #ff3b30; border-radius:12px; padding:16px 18px; margin:12px 0; }
@@ -2187,3 +2187,14 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 /* contrast_ferestre_v1 */
 
 /* casete_uniforme_v1 */
+
+/* accent_v1 — accente decorative pentru iconite (Lot CULORI) */
+.accent-recomanda { background: #fbeedd; color: #92500a; }
+.accent-albastru { background: #e9f0fe; color: #1d4ed8; }
+.accent-roz { background: #fdeef0; color: #a3344b; }
+.accent-verde { background: var(--verde-fundal); color: var(--verde); }
+.accent-magenta { color: #c0246b; }
+.fac-tag-platit { background: var(--verde-fundal); color: var(--verde); }
+
+/* etichete_v1 — Lot ETICHETE: eticheta vizibila de sine statatoare */
+label.camp-eticheta, div.camp-eticheta { display: block; margin: 6px 0 4px; }

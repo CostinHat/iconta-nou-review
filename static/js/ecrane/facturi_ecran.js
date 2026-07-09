@@ -27,22 +27,34 @@ function meniuFacturi(corp, nav, tenantId, opt) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Facturi</h2>
     <p class="pf-intro">Ce vrei s\u0103 faci?</p>
-    <div class="fac-meniu">
-      <button class="fac-optiune" id="fac-istoric">
-        <div class="fac-opt-titlu">Istoric facturi</div>
-        <div class="fac-opt-sub">Facturile emise \u0219i primite</div>
+    <div class="firme-optiuni">
+      <button class="firme-optiune" id="fac-istoric">
+        <div class="firme-optiune-icon accent-albastru">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        </div>
+        <div class="firme-optiune-titlu">Istoric facturi</div>
+        <div class="firme-optiune-desc">Facturile emise \u0219i primite</div>
       </button>
-      <button class="fac-optiune" id="fac-emite">
-        <div class="fac-opt-titlu">Emite factur\u0103</div>
-        <div class="fac-opt-sub">Creeaz\u0103 o factur\u0103 nou\u0103</div>
+      <button class="firme-optiune" id="fac-emite">
+        <div class="firme-optiune-icon accent-verde">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+        <div class="firme-optiune-titlu">Emite factur\u0103</div>
+        <div class="firme-optiune-desc">Creeaz\u0103 o factur\u0103 nou\u0103</div>
       </button>
-      <button class="fac-optiune" id="fac-model">
-        <div class="fac-opt-titlu">Model factur\u0103</div>
-        <div class="fac-opt-sub">Logo, font \u0219i culoare</div>
+      <button class="firme-optiune" id="fac-model">
+        <div class="firme-optiune-icon accent-roz">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </div>
+        <div class="firme-optiune-titlu">Model factur\u0103</div>
+        <div class="firme-optiune-desc">Logo, font \u0219i culoare</div>
       </button>
-      <button class="fac-optiune" id="fac-recurente">
-        <div class="fac-opt-titlu">Facturi recurente</div>
-        <div class="fac-opt-sub">\u0218abloane emise automat lunar</div>
+      <button class="firme-optiune" id="fac-recurente">
+        <div class="firme-optiune-icon accent-recomanda">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v5h-5"/></svg>
+        </div>
+        <div class="firme-optiune-titlu">Facturi recurente</div>
+        <div class="firme-optiune-desc">\u0218abloane emise automat lunar</div>
       </button>
     </div>`;
   corp.querySelector("#fac-istoric").addEventListener("click", () => nav.mergi("Istoric facturi", (c) => istoricFacturi(c, nav, tenantId, opt)));  // faza_b_traseu_v1
@@ -188,7 +200,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <button class="em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
         ${(f.directie === "emisa" && !f.storno_din_id) ? '<button class="em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="em-buton-sec" id="fd-transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
-        ${f.platita_la ? '<span class="fac-storno-tag" style="background:#eaf7f0;color:#145c39">pl\u0103tit\u0103</span>' : ""}
+        ${f.platita_la ? '<span class="fac-storno-tag fac-tag-platit">pl\u0103tit\u0103</span>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="em-buton-sec" id="fd-chitanta">Emite chitan\u021b\u0103</button>' : ""}
         ${f.transformat_in_id ? `<span class="fac-storno-tag">transformat \u00een #${f.transformat_in_id}</span>` : ""}
@@ -614,7 +626,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
         const sumaTxt = suma.toLocaleString("ro-RO") + " " + (s.moneda || "RON");
         const stare = s.activ
           ? '<span style="color:#1d7a4d">activ</span>'
-          : '<span style="color:#8a8a8a">inactiv</span>';
+          : '<span style="color:var(--gri-clar)">inactiv</span>';
         return `
       <div class="pf-frand" data-id="${s.id}">
         <div class="pf-frand-text">
@@ -623,7 +635,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
         </div>
         <span class="pf-frand-suma">${sumaTxt}</span>
         <span class="btn-link fr-toggle" data-id="${s.id}" data-activ="${s.activ}" style="margin-left:8px">${s.activ ? "Dezactiveaz\u0103" : "Activeaz\u0103"}</span>
-        <span class="btn-link fr-sterge" data-id="${s.id}" style="margin-left:8px;color:#c0392b">\u0218terge</span>
+        <span class="btn-link fr-sterge" data-id="${s.id}" style="margin-left:8px;color:var(--rosu)">\u0218terge</span>
       </div>`;
       }).join("");
 
@@ -666,12 +678,15 @@ function formSablon(corp, nav, tenantId, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Beneficiar</div>
-      <input class="pr-input" id="fr-cui" placeholder="CUI beneficiar (ex: RO12345678)" autocomplete="off">
-      <input class="pr-input" id="fr-nume" placeholder="Denumire beneficiar" autocomplete="off">
+      <label class="camp-eticheta" for="fr-cui">CUI beneficiar</label>
+      <input class="pr-input" id="fr-cui" placeholder="ex: RO12345678" autocomplete="off">
+      <label class="camp-eticheta" for="fr-nume">Denumire beneficiar</label>
+      <input class="pr-input" id="fr-nume" autocomplete="off">
     </div>
 
     <div class="em-sectiune">
       <div class="em-eticheta">Produse \u0219i servicii</div>
+      <div class="camp-eticheta">Linie: denumire \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 cot\u0103 TVA</div>
       <div class="em-linii" id="fr-linii"></div>
       <button class="em-buton-sec" id="fr-add-linie">+ Adaug\u0103 linie</button>
     </div>
@@ -702,9 +717,9 @@ function formSablon(corp, nav, tenantId, opt) {
     rand.className = "em-linie";
     rand.dataset.idx = idx;
     rand.innerHTML = `
-      <input class="pr-input em-l-den" placeholder="Denumire (ex: abonament mentenan\u021b\u0103)" autocomplete="off">
-      <input class="pr-input em-l-cant" type="number" step="0.001" placeholder="Cant." title="Cantitate">
-      <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" title="Pre\u021b unitar">
+      <input class="pr-input em-l-den" placeholder="Denumire (ex: abonament mentenan\u021b\u0103)" aria-label="Denumire articol" autocomplete="off">
+      <input class="pr-input em-l-cant" type="number" step="0.001" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
+      <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" aria-label="Pre\u021b unitar" title="Pre\u021b unitar">
       <span class="em-l-cota" title="Cota TVA">\u2014</span>
       <button class="em-l-sterge" title="\u0218terge">\u00d7</button>`;
     zonaLinii.appendChild(rand);
@@ -757,7 +772,7 @@ function formSablon(corp, nav, tenantId, opt) {
       await api.post(`/tenants/${tenantId}/facturi-recurente`, corpCerere);
       inapoiLista();
     } catch (e) {
-      zona.innerHTML = `<span style="color:#c0392b">${e.mesaj || e.message || "eroare"}</span>`;
+      zona.innerHTML = `<span style="color:var(--rosu)">${e.mesaj || e.message || "eroare"}</span>`;
     }
   });
 }

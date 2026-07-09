@@ -55,7 +55,7 @@ export async function randeazaValidat(corp, nav) {
     deValidat.forEach((c) => z1.appendChild(randDeclaratie(c, firme, corp, nav, "valida", perm)));
   }
   if (deDepus.length) {
-    z2.innerHTML = `<div class="cf-grup-titlu" style="color:#15803d">Aprobate, de depus (${deDepus.length})</div>`;
+    z2.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">Aprobate, de depus (${deDepus.length})</div>`;
     deDepus.forEach((c) => z2.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm)));
   }
 }

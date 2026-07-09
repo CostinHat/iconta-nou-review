@@ -73,12 +73,14 @@ function formularAdauga(corp, tenantId, reincarca) {
   zona.innerHTML = `
     <div class="pr-form">
       <div class="pr-form-rand">
-        <input class="pr-input pr-den" id="pr-den" placeholder="Denumire produs sau serviciu (ex: paine alba, consultanta)" autocomplete="off">
+        <label class="camp-eticheta" for="pr-den">Denumire produs sau serviciu</label>
+        <input class="pr-input pr-den" id="pr-den" placeholder="ex: paine alba, consultanta" autocomplete="off">
       </div>
       <div class="pr-cota-preview" id="pr-cota-preview"></div>
+      <div class="camp-eticheta">Pre\u021b \u00b7 unitate de m\u0103sur\u0103 \u00b7 cot\u0103 TVA</div>
       <div class="pr-form-rand pr-form-detalii">
-        <input class="pr-input pr-mic" id="pr-pret" type="number" step="0.01" placeholder="Pre\u021b" >
-        <input class="pr-input pr-mic" id="pr-um" placeholder="UM (buc)" value="buc">
+        <input class="pr-input pr-mic" id="pr-pret" type="number" step="0.01" placeholder="Pre\u021b" aria-label="Pre\u021b">
+        <input class="pr-input pr-mic" id="pr-um" placeholder="UM (buc)" aria-label="Unitate de m\u0103sur\u0103" value="buc">
         <select class="pr-input pr-mic" id="pr-cota">
           <option value="">cot\u0103 (auto)</option>
           <option value="21">21%</option>
