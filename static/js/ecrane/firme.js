@@ -40,7 +40,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
         </div>
         <div class="camp" style="margin-bottom:14px">
           <label class="camp-eticheta">Email client (primește automat acces la portal)</label>
-          <input class="camp-input" id="fn-email" type="email" placeholder="client@firma.ro" autocomplete="off">
+          <input class="camp-input" id="fn-email" type="email" placeholder="Opțional: emailul patronului — primește acces în portal" autocomplete="off">
         </div>
         <button class="buton-primar" id="fn-salveaza" disabled>Adaugă firma</button>
       `;
@@ -65,12 +65,12 @@ export function randeazaListaFirme(container, nav, inapoi) {
       });
       nume.addEventListener("input", () => { if (nume.value.trim().length > 2 && cui.value.replace(/\D/g,"").length >= 6) btn.disabled = false; });
       btn.addEventListener("click", async () => {
-        const emailCl = corp.querySelector("#fn-email").value.trim();  /* firma_email_client_v1 */
-        if (!emailCl.includes("@")) { info.innerHTML = '<span class="msg-eroare">Completează emailul clientului.</span>'; return; }
+        const emailCl = corp.querySelector("#fn-email").value.trim();  /* firma_email_optional_v1 */
+        if (emailCl && !emailCl.includes("@")) { info.innerHTML = '<span class="msg-eroare">Emailul nu pare valid. Lasă gol dacă nu inviți pe nimeni acum.</span>'; return; }
         btn.disabled = true; btn.textContent = "Se creează...";
         try {
           const rT = await api.post("/tenants", { nume: nume.value.trim(), cui: cui.value.replace(/\D/g, "") });
-          await api.post(`/tenants/${rT.tenant_id}/client-acces`, { email: emailCl, nume: "" });
+          if (emailCl) await api.post(`/tenants/${rT.tenant_id}/client-acces`, { email: emailCl, nume: "" });
           nav.inapoi(); incarca();
         } catch (e) {
           info.textContent = e.mesaj || e.message || "Eroare la creare.";
@@ -1644,3 +1644,5 @@ async function ecranAccesClient(corp, nav, t) {
 // audit_cab_lot2_v1
 
 // bon_cabinet_v1
+
+// firma_email_optional_v1
