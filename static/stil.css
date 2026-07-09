@@ -2119,6 +2119,14 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .pov-text { font-size: var(--text); line-height: 1.55; }
 .pov-dif { margin-top: 10px; font-size: var(--text-mic); }
 
+/* [bon_flux_e4_v1] lupa pentru pozele documentelor (bon/chitanta) */
+.lupa-mini { max-width: 170px; max-height: 240px; border: 1px solid var(--linie); border-radius: 8px;
+  object-fit: contain; background: #fff; cursor: zoom-in; }
+.lupa-overlay { position: fixed; inset: 0; z-index: 400; background: rgba(20,30,45,0.85);
+  display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: zoom-out; }
+.lupa-mare { max-width: 92vw; max-height: 94vh; user-select: none; cursor: grab; transition: transform 0.05s; }
+.lupa-mare:active { cursor: grabbing; }
+
 /* [STANDARD_BUTON_ACTIV] starea "apasat/deschis" pentru butoane cu zone toggle */
 .buton-activ { background: #1a5a94 !important; color: #fff !important; border-color: #1a5a94 !important;
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.25) !important; transform: none !important; }

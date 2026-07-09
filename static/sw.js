@@ -1,7 +1,9 @@
-// Service worker minimal: network-first, fallback cache pentru shell.
-const CACHE = "iconta-v1";
+// Service worker v2 (bon_flux_e4_v1): JS/CSS/imagini merg DIRECT la server
+// (prospetimea o decide serverul prin antete). SW pastreaza doar fallback
+// offline pentru navigare. Bump-ul de versiune curata cache-ul v1 la activare.
+const CACHE = "iconta-v2";
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(["/", "/static/stil.css"])));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(["/"])));
   self.skipWaiting();
 });
 self.addEventListener("activate", (e) => {
@@ -10,14 +12,9 @@ self.addEventListener("activate", (e) => {
   self.clients.claim();
 });
 self.addEventListener("fetch", (e) => {
-  if (e.request.method !== "GET" || e.request.url.includes("/api") ||
-      e.request.url.includes("/tenants") || e.request.url.includes("/portal") ||
-      e.request.url.includes("/auth") || e.request.url.includes("/cabinet")) return;
-  e.respondWith(
-    fetch(e.request).then((r) => {
-      const copie = r.clone();
-      caches.open(CACHE).then((c) => c.put(e.request, copie));
-      return r;
-    }).catch(() => caches.match(e.request))
-  );
+  if (e.request.method !== "GET") return;
+  if (e.request.mode === "navigate") {
+    e.respondWith(fetch(e.request).catch(() => caches.match("/")));
+  }
+  // restul cererilor: netratate de SW -> browser + server, fara cache paralel
 });

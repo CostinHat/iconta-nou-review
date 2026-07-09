@@ -141,7 +141,7 @@ function meniuFirma(corp, nav, t) {
     { cheie: "salariati", titlu: "Salariați", desc: "Stat plată, fluturași, D112",
       bg: "#fdeef0", fg: "#a3344b",
       icon: '<circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M16 3.5a3 3 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.7"/>', activ: true },
-    { cheie: "bonuri", titlu: "Bonuri de verificat", desc: "Citite de AI \u2014 certifica si conteaza",
+    { cheie: "bonuri", titlu: "Bonuri și chitanțe", desc: "Pozate de client \u2014 certifică și contează",
       bg: "#fdeef0", fg: "#a3344b",
       icon: '<path d="M9 11l3 3 8-8"/><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>', activ: true },
     { cheie: "jurnal", titlu: "Registru jurnal", desc: "Notele contabile ale firmei",
@@ -215,7 +215,7 @@ function meniuFirma(corp, nav, t) {
   }
   const bBonuri = corp.querySelector("#fa-bonuri");
   if (bBonuri) {
-    bBonuri.addEventListener("click", () => { nav.deschide("Bonuri", (c2) => ecranBonuri(c2, nav, t)); });
+    bBonuri.addEventListener("click", () => { nav.deschide("Bonuri și chitanțe", (c2) => ecranBonuri(c2, nav, t), { lat: "larg" }); });  /* bon_flux_e4_v1 */
   }
   const bJurnal = corp.querySelector("#fa-jurnal");
   if (bJurnal) {
@@ -1201,67 +1201,216 @@ async function ecranJurnal(corp, nav, t) {
 }
 
 
-// [bonuri] verificare + contare bonuri citite de AI (linii multiple)
+// [lupa] vizualizare poza cu zoom (rotita / dublu-click) si tragere  // bon_flux_e4_v1
+function deschideLupa(u) {
+  const ov = document.createElement("div");
+  ov.className = "lupa-overlay";
+  const img = document.createElement("img");
+  img.src = u; img.className = "lupa-mare"; img.draggable = false;
+  let scara = 1, tx = 0, ty = 0, drag = null;
+  const aplica = () => { img.style.transform = `translate(${tx}px,${ty}px) scale(${scara})`; };
+  ov.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    scara = Math.min(8, Math.max(1, scara * (e.deltaY < 0 ? 1.25 : 0.8)));
+    if (scara === 1) { tx = 0; ty = 0; }
+    aplica();
+  }, { passive: false });
+  img.addEventListener("dblclick", () => { scara = scara > 1 ? 1 : 3; if (scara === 1) { tx = 0; ty = 0; } aplica(); });
+  img.addEventListener("mousedown", (e) => { e.preventDefault(); drag = { x: e.clientX - tx, y: e.clientY - ty }; });
+  const misca = (e) => { if (drag) { tx = e.clientX - drag.x; ty = e.clientY - drag.y; aplica(); } };
+  const lasa = () => { drag = null; };
+  window.addEventListener("mousemove", misca);
+  window.addEventListener("mouseup", lasa);
+  img.addEventListener("click", (e) => e.stopPropagation());
+  const inchide = () => {
+    window.removeEventListener("mousemove", misca);
+    window.removeEventListener("mouseup", lasa);
+    ov.remove();
+  };
+  ov.addEventListener("click", inchide);
+  ov.appendChild(img);
+  document.body.appendChild(ov);
+}
+
+// [bonuri] documente pozate de client: lista -> detaliu la selectie  // bon_flux_e5_v1
 async function ecranBonuri(corp, nav, t) {
-  const deseneaza = async () => {
-    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
-    let bonuri = [];
+  const fmt = (v) => (Number(v) || 0).toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  let urlsPoze = [];
+  let mesajSucces = "";
+  let docs = [];
+
+  const curata = () => { urlsPoze.forEach((u) => URL.revokeObjectURL(u)); urlsPoze = []; };
+
+  async function pozaUrl(bonId, n) {
+    const resp = await fetch(`/tenants/${t.id}/bonuri/${bonId}/imagine/${n}`,
+      { headers: { Authorization: "Bearer " + sesiune.token() } });
+    if (!resp.ok) throw new Error("imagine " + resp.status);
+    const u = URL.createObjectURL(await resp.blob());
+    urlsPoze.push(u);
+    return u;
+  }
+
+  async function randeazaLista() {
+    nav.setInapoi(undefined);
+    curata();
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+    let err = null;
     try {
       const r = await api.get(`/tenants/${t.id}/bonuri/de-verificat`);
-      bonuri = (r && r.bonuri) || [];
-    } catch {}
-    const randuri = !bonuri.length
-      ? `<div class="mig-gol">Niciun bon de verificat.</div>`
-      : bonuri.map((b, i) => `
-        <div class="pf-frand" style="flex-wrap:wrap">
-          <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;width:100%;align-items:end">
-            <label class="camp"><span class="camp-eticheta">Comerciant</span><input class="camp-input" id="b-com-${i}" value="${b.comerciant || ""}"></label>
-            <label class="camp"><span class="camp-eticheta">Data</span><input class="camp-input" type="date" id="b-data-${i}" value="${b.data || ""}"></label>
-            <label class="camp"><span class="camp-eticheta">Total</span><input class="camp-input" type="number" step="0.01" id="b-tot-${i}" value="${b.total}"></label>
-            <label class="camp"><span class="camp-eticheta">TVA total</span><input class="camp-input" type="number" step="0.01" id="b-tva-${i}" value="${b.tva}"></label>
-          </div>
-          <div id="b-linii-${i}" style="width:100%;margin-top:8px">
-            ${(b.articole || []).map((a, j) => `
-              <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:4px">
-                <input class="mig-text" id="b-den-${i}-${j}" value="${a.denumire || ""}" readonly>
-                <input class="mig-text" type="number" step="0.01" id="b-val-${i}-${j}" value="${a.valoare || 0}">
-                <input class="mig-text" id="b-cont-${i}-${j}" value="${a.cont_propus || ""}" placeholder="cont">
-              </div>`).join("")}
-          </div>
-          <div style="margin-top:8px"><button class="buton-primar" data-aproba="${i}">Certifica si conteaza</button></div>
-        </div>`).join("");
+      docs = (r && r.bonuri) || [];
+    } catch (e) { err = e; }
+    if (err) {
+      corp.innerHTML = `<h2 class="pf-titlu">Bonuri și chitanțe · ${t.nume || ""}</h2>
+        <p class="msg-eroare">${err.mesaj || "Nu am putut încărca documentele."}</p>`;
+      return;
+    }
+    const itemi = !docs.length
+      ? `<div class="mig-gol">Niciun document de verificat. Clienții pozează, aici certifici.</div>`
+      : docs.map((b, i) => `
+        <button class="acces-card meniu-card" data-doc="${i}">
+          <b>${b.tip === "chitanta" ? "Chitanță" : "Bon fiscal"}</b> · ${b.comerciant || "emitent necitit"}
+          · ${b.data || "dată necitită"} · ${b.total ? fmt(b.total) + " lei" : "sumă necitită"}
+        </button>`).join("");
     corp.innerHTML = `
-      <h2 class="pf-titlu">Bonuri de verificat \u00b7 ${t.nume || ""}</h2>
-      <p class="pf-intro">Verifica articolele, pune contul pe fiecare, apoi certifica. Liniile cu acelasi cont se aduna.</p>
-      <div class="pf-lista">${randuri}</div>`;
-    corp.querySelectorAll("[data-aproba]").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const i = parseInt(btn.dataset.aproba);
-        const b = bonuri[i];
-        const v = (id) => corp.querySelector(id).value;
+      <h2 class="pf-titlu">Bonuri și chitanțe · ${t.nume || ""}</h2>
+      <p class="pf-intro">Documente pozate de clienți. Alege unul ca să-l verifici și să-l contezi.</p>
+      ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 12px">' + mesajSucces + '</p>' : ""}
+      ${itemi}`;
+    mesajSucces = "";
+    corp.querySelectorAll("[data-doc]").forEach((el) =>
+      el.addEventListener("click", () => randeazaDetaliu(parseInt(el.dataset.doc))));
+  }
+
+  async function randeazaDetaliu(i) {
+    nav.setInapoi(randeazaLista);
+    curata();
+    const b = docs[i];
+    const eChitanta = b.tip === "chitanta";
+    const sumaArt = (b.articole || []).reduce((s, a) => s + (Number(a.valoare) || 0), 0);
+    const dif = (b.articole || []).length ? Math.abs(Math.round((sumaArt - b.total) * 100) / 100) : 0;
+
+    corp.innerHTML = `
+      <h2 class="pf-titlu">${eChitanta ? "Chitanță" : "Bon fiscal"}${b.numar_document ? " · nr. " + b.numar_document : ""}</h2>
+      ${b.mentiuni ? `<p class="pf-intro">reprezentând: ${b.mentiuni}</p>` : ""}
+      ${!eChitanta && dif > 0.05 ? `<div class="caseta-atentie" style="margin:0 0 12px"><div class="ca-mesaj">Suma articolelor citite (${fmt(sumaArt)}) nu se închide cu totalul (${fmt(b.total)}) — verifică cu poza.</div></div>` : ""}
+      <div id="d-poze" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"><p class="ecran-nota">Se încarcă poza...</p></div>
+      <div style="display:grid;grid-template-columns:${eChitanta ? "2fr 1fr 1fr" : "2fr 1fr 1fr 1fr"};gap:8px;align-items:end">
+        <label class="camp"><span class="camp-eticheta">${eChitanta ? "Emitent (furnizor)" : "Comerciant"}</span><input class="camp-input" id="d-com" value="${b.comerciant || ""}"></label>
+        <label class="camp"><span class="camp-eticheta">${eChitanta ? "Data plății" : "Data"}</span><input class="camp-input" type="date" id="d-data" value="${b.data || ""}"></label>
+        <label class="camp"><span class="camp-eticheta">${eChitanta ? "Suma plătită" : "Total"}</span><input class="camp-input" type="number" step="0.01" id="d-tot" value="${b.total}"></label>
+        ${eChitanta ? "" : `<label class="camp"><span class="camp-eticheta">TVA total</span><input class="camp-input" type="number" step="0.01" id="d-tva" value="${b.tva}"></label>`}
+      </div>
+      ${eChitanta
+        ? `<div id="d-cand" style="margin-top:12px"><p class="ecran-nota">Caut facturi de potrivit...</p></div>`
+        : `<div style="margin-top:8px">${(b.articole || []).map((a, j) => `
+            <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:4px">
+              <input class="camp-input" id="d-den-${j}" value="${a.denumire || ""}" readonly>
+              <input class="camp-input" type="number" step="0.01" id="d-val-${j}" value="${a.valoare || 0}">
+              <input class="camp-input" id="d-cont-${j}" value="${a.cont_propus || ""}" placeholder="cont">
+            </div>`).join("")}</div>`}
+      <div style="margin-top:14px">
+        <button class="buton-verde" id="d-certifica">${eChitanta ? "Certifică plata (401 = 5311)" : "Certifică și contează"}</button>
+        <button class="btn-link" id="d-renunta" style="margin-left:10px">Renunță</button>
+        <span class="msg-eroare" id="d-msg" style="margin-left:10px"></span>
+      </div>`;
+
+    corp.querySelector("#d-renunta").addEventListener("click", randeazaLista);
+
+    // pozele, cu lupa
+    (async () => {
+      const zona = corp.querySelector("#d-poze");
+      zona.innerHTML = "";
+      for (let n = 1; n <= (b.nr_imagini || 0); n++) {
+        try {
+          const u = await pozaUrl(b.id, n);
+          const img = document.createElement("img");
+          img.src = u; img.alt = "document"; img.className = "lupa-mini";
+          img.addEventListener("click", () => deschideLupa(u));
+          zona.appendChild(img);
+        } catch {}
+      }
+      if (!zona.children.length) zona.innerHTML = `<p class="ecran-nota">Fără poză (document mai vechi).</p>`;
+    })();
+
+    // facturile candidate (doar chitanta)
+    if (eChitanta) (async () => {
+      const zona = corp.querySelector("#d-cand");
+      let fc = [];
+      try {
+        const r = await api.get(`/tenants/${t.id}/bonuri/${b.id}/facturi-candidate`);
+        fc = (r && r.facturi) || [];
+      } catch {}
+      const idPref = (fc.find((f) => f.potrivire_cui && f.potrivire_suma) || {}).id;
+      zona.innerHTML = `
+        <div class="camp-eticheta" style="margin-bottom:6px">Ce plătește chitanța?</div>
+        ${fc.map((f) => `
+          <label style="display:flex;gap:8px;align-items:center;padding:4px 0">
+            <input type="radio" name="d-fact" value="${f.id}" ${f.id === idPref ? "checked" : ""}>
+            <span>Factura ${f.numar || f.id} · ${f.furnizor || ""} · ${f.data || ""} · ${fmt(f.total)} lei${f.potrivire_cui ? '<span style="color:#1d7a4d;font-weight:600"> ✓ CUI</span>' : ""}${f.potrivire_suma ? '<span style="color:#1d7a4d;font-weight:600"> ✓ sumă</span>' : ""}</span>
+          </label>`).join("")}
+        <label style="display:flex;gap:8px;align-items:center;padding:4px 0">
+          <input type="radio" name="d-fact" value="" ${idPref ? "" : "checked"}>
+          <span>Plată directă, fără factură în sistem</span>
+        </label>
+        ${!fc.length ? '<p class="ecran-nota" style="margin:4px 0 0">Nicio factură primită neplătită găsită — rămâne plata directă.</p>' : ""}`;
+    })();
+
+    // certificare
+    corp.querySelector("#d-certifica").addEventListener("click", async (ev) => {
+      const btn = ev.currentTarget;
+      const v = (id) => corp.querySelector(id).value;
+      const msg = corp.querySelector("#d-msg");
+      msg.textContent = "";
+      if (eChitanta) {
+        const suma = parseFloat(v("#d-tot")) || 0;
+        if (suma <= 0) { msg.textContent = "Completează suma plătită (citește-o de pe poză)."; return; }
+        if (!v("#d-data")) { msg.textContent = "Completează data plății."; return; }
+        const ales = corp.querySelector('input[name="d-fact"]:checked');
+        btn.disabled = true; btn.textContent = "Se contează...";
+        try {
+          const r = await api.post(`/tenants/${t.id}/bonuri/${b.id}/stinge`, {
+            data: v("#d-data"), suma,
+            partener: v("#d-com"), cui: b.cui || "",
+            document: b.numar_document || "",
+            factura_id: ales && ales.value ? parseInt(ales.value) : null,
+          });
+          const av = (r && r.avertismente) || [];
+          mesajSucces = "Plata a fost înregistrată în Registrul de casă." + (av.length ? " Atenție: " + av.join(" ") : "");
+          randeazaLista();
+        } catch (e) {
+          btn.disabled = false; btn.textContent = "Certifică plata (401 = 5311)";
+          msg.textContent = e.mesaj || "Eroare la înregistrare.";
+        }
+      } else {
         const grupe = {};
         let ok = true;
         (b.articole || []).forEach((a, j) => {
-          const cont = v(`#b-cont-${i}-${j}`).trim();
-          const val = parseFloat(v(`#b-val-${i}-${j}`)) || 0;
+          const cont = v(`#d-cont-${j}`).trim();
+          const val = parseFloat(v(`#d-val-${j}`)) || 0;
           if (!cont) ok = false;
           grupe[cont] = (grupe[cont] || 0) + val;
         });
-        if (!ok) { alert("Pune contul pe fiecare articol."); return; }
+        if (!ok) { msg.textContent = "Pune contul pe fiecare articol."; return; }
         const linii = Object.entries(grupe).map(([cont, valoare]) => ({ cont, valoare: Math.round(valoare * 100) / 100 }));
+        btn.disabled = true; btn.textContent = "Se contează...";
         try {
           await api.post(`/tenants/${t.id}/bonuri/${b.id}/aproba`, {
-            comerciant: v(`#b-com-${i}`), data: v(`#b-data-${i}`),
-            total: parseFloat(v(`#b-tot-${i}`)) || 0,
-            tva: parseFloat(v(`#b-tva-${i}`)) || 0,
+            comerciant: v("#d-com"), data: v("#d-data"),
+            total: parseFloat(v("#d-tot")) || 0,
+            tva: parseFloat(v("#d-tva")) || 0,
             linii,
           });
-          deseneaza();
-        } catch (e) { alert(e.mesaj || "Eroare"); }
-      });
+          mesajSucces = "Bonul a fost contat.";
+          randeazaLista();
+        } catch (e) {
+          btn.disabled = false; btn.textContent = "Certifică și contează";
+          msg.textContent = e.mesaj || "Eroare la contare.";
+        }
+      }
     });
-  };
-  deseneaza();
+  }
+
+  randeazaLista();
 }
 
 // [balanta] Balanta de verificare - descarcare PDF lunar

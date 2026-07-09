@@ -2432,13 +2432,17 @@ def bonuri_de_verificat(tenant_id: int, ctx=Depends(cere_cabinet)):
             raise HTTPException(404, "tenant inexistent sau fara acces")
         with conn.cursor() as cur:
             cur.execute(f"""
-                SELECT id, comerciant, cui, data, total, tva_11, articole, status
+                SELECT id, comerciant, cui, data, total, tva_11, tva_21, articole, status, nr_imagini, tip, numar_document, mentiuni, tva
                 FROM {schema}.bonuri WHERE status = 'de_verificat' ORDER BY creat_la
             """)
             bonuri = [{"id": r[0], "comerciant": r[1], "cui": r[2],
                        "data": r[3].isoformat() if r[3] else None,
-                       "total": float(r[4] or 0), "tva": float(r[5] or 0),
-                       "articole": r[6] or [], "status": r[7]} for r in cur.fetchall()]
+                       "total": float(r[4] or 0),
+                       "tva": (round(sum(float(x.get("valoare") or 0) for x in r[13]), 2)
+                               if r[13] else float(r[5] or 0) + float(r[6] or 0)),
+                       "articole": r[7] or [], "status": r[8],
+                       "nr_imagini": r[9] or 0, "tip": r[10] or "bon",
+                       "numar_document": r[11], "mentiuni": r[12]} for r in cur.fetchall()]  # bon_flux_e5b_v1
     return {"bonuri": bonuri}
 class BonLinie(BaseModel):
     cont: str
@@ -2455,6 +2459,13 @@ def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba, ctx=Depends(cere_cabin
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:  # bon_flux_e1b_v1
+            cur.execute(f"SELECT tip FROM {schema}.bonuri WHERE id=%s", (bon_id,))
+            rt = cur.fetchone()
+            if not rt:
+                raise HTTPException(404, "bon inexistent")
+            if (rt[0] or "bon") != "bon":
+                raise HTTPException(400, "documentul e chitanta; foloseste stingerea de factura, nu contarea pe cheltuiala")
         suma_linii = sum(l.valoare for l in b.linii)
         if abs(suma_linii - b.total) > 0.05:
             raise HTTPException(400, f"suma articolelor ({suma_linii}) != total ({b.total})")
@@ -2756,10 +2767,14 @@ def firma_verificari(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabine
     if not schema:
         raise HTTPException(404, "tenant inexistent sau fara acces")
     return _verificari_contabile(schema, an, luna)  # cf_verificari_v1
+BON_DIR_BAZA = "~/iconta_date/bonuri"  # bon_flux_e1_v1
+
 @app.post("/portal/bon")
 async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    """Extrage datele bonului cu AI si salveaza ca DRAFT (status='extras') + pozele pe disc.
+    Intra la contabil doar dupa confirmarea clientului (POST /portal/bon/{id}/confirma)."""
     from core import ai_client
-    import json as _json
+    import json as _json, os as _os
     t = _tenant_client(ctx, tenant_id)
     if not ai_client.disponibil():
         raise HTTPException(503, "serviciul AI indisponibil")
@@ -2769,14 +2784,23 @@ async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[
         if len(b) > 8_000_000:
             raise HTTPException(400, "imagine prea mare (max 8MB)")
         imagini.append((b, f.content_type or "image/jpeg"))
-    prompt = ("Citeste bonul fiscal (poate fi in mai multe imagini, in ordine). Raspunde DOAR cu JSON, fara alt text: "
-              '{"comerciant": "...", "cui": "...", "data": "YYYY-MM-DD", "total": 0.0, '
+    prompt = ("Primesti un document pozat (un singur document, posibil pe mai multe imagini, in ordine). "
+              "Clasifica-l: bon fiscal SAU chitanta. Raspunde DOAR cu JSON, fara alt text: "
+              '{"tip": "bon", "comerciant": "...", "cui": "...", "data": "YYYY-MM-DD", "total": 0.0, '
+              '"numar_document": "...", "mentiuni": "...", '
               '"articole": [{"denumire": "...", "valoare": 0.0, "cota_tva": 0, "cont_propus": "..."}], '
-              '"tva": [{"cota": 0, "valoare": 0.0}]}. '
+              '"tva": [{"cota": 0, "valoare": 0.0}], "bon_complet": true}. '
+              'tip = "bon" pentru bon fiscal, "chitanta" pentru chitanta. '
+              "Pentru BON FISCAL: numar_document = numarul bonului daca se vede; articole si tva ca mai jos. "
               "Cotele TVA le citesti EXACT cum apar pe bon (pot fi 19/9/11/21/5 in functie de anul bonului). "
               "cont_propus = contul de cheltuiala OMFP 1802 potrivit articolului: 6022 combustibil, "
               "623 protocol (cafea, apa, mancare), 604 materiale nestocate, 628 alte servicii. "
               "Reducerile primesc contul articolului principal. "
+              "Pentru CHITANTA: comerciant = emitentul chitantei (cel care a incasat), total = suma platita, "
+              "numar_document = numarul chitantei, mentiuni = textul de dupa 'reprezentand' (ex. factura platita); "
+              "articole si tva raman liste goale. "
+              "bon_complet = false daca documentul pare taiat in poza (nu se vad antetul si totalul) "
+              "ori e partial ilizibil. "
               "Daca un camp nu se vede, pune null.")
     try:
         text = ai_client.citeste_imagini(imagini, prompt)
@@ -2784,18 +2808,155 @@ async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[
         date = _json.loads(text)
     except Exception:
         raise HTTPException(422, "nu am putut citi bonul; incearca o poza mai clara")
+    avertismente = []
+    if date.get("bon_complet") is False:
+        avertismente.append("Documentul pare incomplet sau greu lizibil \u00een poz\u0103. Fotografiaz\u0103-l \u00eentreg, cu lumin\u0103 bun\u0103 \u0219i totalul vizibil.")  # bon_flux_e3b_v1
+    total = float(date.get("total") or 0)  # avertismentul aritmetic se arata doar contabilului (bon_flux_e3b_v1)
+    tva_lista = date.get("tva") or []
+    tva_11 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == 11), 2)
+    tva_21 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == 21), 2)
     schema = t["schema_name"]
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            tva_lista = date.get("tva") or []
-            tva_total = sum(x.get("valoare") or 0 for x in tva_lista)
+            tip_doc = "chitanta" if date.get("tip") == "chitanta" else "bon"  # bon_flux_e1b_v1
             cur.execute(f"""
-                INSERT INTO {schema}.bonuri (comerciant, cui, data, total, tva_11, tva_21, articole)
-                VALUES (%s, %s, %s, %s, %s, 0, %s) RETURNING id
+                INSERT INTO {schema}.bonuri (comerciant, cui, data, total, tva_11, tva_21, articole, tva, nr_imagini, bon_complet, status, tip, numar_document, mentiuni)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'extras', %s, %s, %s) RETURNING id
             """, (date.get("comerciant"), date.get("cui"), date.get("data"),
-                  date.get("total") or 0, tva_total, _json.dumps(date.get("articole") or [])))
+                  total, tva_11, tva_21, _json.dumps(date.get("articole") or []),
+                  _json.dumps(tva_lista), len(imagini), date.get("bon_complet") is not False,
+                  tip_doc, date.get("numar_document"), date.get("mentiuni")))
             bon_id = cur.fetchone()[0]
-    return {"ok": True, "bon": date, "bon_id": bon_id}
+    dir_bon = _os.path.join(_os.path.expanduser(BON_DIR_BAZA), schema, str(bon_id))
+    _os.makedirs(dir_bon, exist_ok=True)
+    _EXT = {"image/jpeg": "jpg", "image/png": "png", "image/webp": "webp"}
+    for i, (b, mt) in enumerate(imagini, 1):
+        with open(_os.path.join(dir_bon, "img_%d.%s" % (i, _EXT.get(mt, "jpg"))), "wb") as fh:
+            fh.write(b)
+    return {"ok": True, "bon": date, "bon_id": bon_id, "avertismente": avertismente}
+
+def _bon_imagine_cale(schema, bon_id, n):
+    import os as _os, glob as _glob
+    cai = sorted(_glob.glob(_os.path.join(_os.path.expanduser(BON_DIR_BAZA), schema, str(int(bon_id)), "img_%d.*" % int(n))))
+    return cai[0] if cai else None
+
+@app.post("/portal/bon/{bon_id}/confirma")
+def portal_bon_confirma(bon_id: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    """Clientul confirma ca poza e intreaga si lizibila -> bonul intra la contabil."""
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute(f"UPDATE {t['schema_name']}.bonuri SET status='de_verificat' WHERE id=%s AND status='extras' RETURNING id", (bon_id,))
+        if not cur.fetchone():
+            raise HTTPException(404, "bon inexistent sau deja trimis")
+    return {"ok": True}
+
+@app.delete("/portal/bon/{bon_id}")
+def portal_bon_sterge(bon_id: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    """Clientul reface poza -> draftul (status='extras') si pozele lui se sterg."""
+    import os as _os, shutil as _shutil
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute(f"DELETE FROM {t['schema_name']}.bonuri WHERE id=%s AND status='extras' RETURNING id", (bon_id,))
+        if not cur.fetchone():
+            raise HTTPException(404, "bon inexistent sau deja trimis")
+    dir_bon = _os.path.join(_os.path.expanduser(BON_DIR_BAZA), t["schema_name"], str(bon_id))
+    if _os.path.isdir(dir_bon):
+        _shutil.rmtree(dir_bon, ignore_errors=True)
+    return {"ok": True}
+
+@app.get("/portal/bon/{bon_id}/imagine/{n}")
+def portal_bon_imagine(bon_id: int, n: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    from fastapi.responses import FileResponse
+    t = _tenant_client(ctx, tenant_id)
+    cale = _bon_imagine_cale(t["schema_name"], bon_id, n)
+    if not cale:
+        raise HTTPException(404, "imagine inexistenta")
+    return FileResponse(cale)
+
+@app.get("/tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}")
+def cabinet_bon_imagine(tenant_id: int, bon_id: int, n: int, ctx=Depends(cere_cabinet)):
+    from fastapi.responses import FileResponse
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+    if not schema:
+        raise HTTPException(404, "tenant inexistent sau fara acces")
+    cale = _bon_imagine_cale(schema, bon_id, n)
+    if not cale:
+        raise HTTPException(404, "imagine inexistenta")
+    return FileResponse(cale)
+@app.get("/tenants/{tenant_id}/bonuri/{bon_id}/facturi-candidate")
+def bon_facturi_candidate(tenant_id: int, bon_id: int, ctx=Depends(cere_cabinet)):
+    """Pentru o chitanta: facturile PRIMITE, neplatite, care ar putea fi stinse de ea.
+    Ordonare: potrivire CUI intai, apoi apropiere de suma."""
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT cui, total FROM {schema}.bonuri WHERE id=%s", (bon_id,))
+            r = cur.fetchone()
+            if not r:
+                raise HTTPException(404, "document inexistent")
+            cui = (r[0] or "").upper().replace("RO", "").strip()
+            suma = float(r[1] or 0)
+            cur.execute(f"""
+                SELECT id, numar, serie, data_emitere, total, tert_nume, tert_cui
+                FROM {schema}.facturi
+                WHERE directie='primita' AND COALESCE(status,'') <> 'anulata' AND platita_la IS NULL
+                ORDER BY (upper(replace(COALESCE(tert_cui,''),'RO','')) = %s) DESC,
+                         abs(total - %s) ASC, data_emitere DESC
+                LIMIT 10
+            """, (cui, suma))
+            fc = [{"id": x[0], "numar": ((x[2] or "") + str(x[1] or "")).strip(),
+                   "data": x[3].isoformat() if x[3] else None,
+                   "total": float(x[4] or 0), "furnizor": x[5], "cui": x[6],
+                   "potrivire_cui": bool(cui) and (x[6] or "").upper().replace("RO", "").strip() == cui,
+                   "potrivire_suma": abs(float(x[4] or 0) - suma) <= 0.05} for x in cur.fetchall()]
+    return {"facturi": fc}
+
+class ChitantaStinge(BaseModel):
+    data: str
+    suma: float
+    partener: str = ""
+    cui: str = ""
+    document: str = ""
+    factura_id: Optional[int] = None
+
+@app.post("/tenants/{tenant_id}/bonuri/{bon_id}/stinge")
+def chitanta_stinge(tenant_id: int, bon_id: int, c: ChitantaStinge, ctx=Depends(cere_cabinet)):
+    """Chitanta certificata de contabil: plata furnizor prin Registrul de casa
+    (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon).
+    Optional leaga si marcheaza platita factura primita."""
+    from core import casa_api
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT tip, status FROM {schema}.bonuri WHERE id=%s", (bon_id,))
+            r = cur.fetchone()
+            if not r:
+                raise HTTPException(404, "document inexistent")
+            if (r[0] or "bon") != "chitanta":
+                raise HTTPException(400, "documentul nu e chitanta")
+            if r[1] != "de_verificat":
+                raise HTTPException(400, "documentul nu e in asteptare")
+        rez = casa_api.adauga(conn, schema, {"data": c.data, "categorie": "plata_furnizor",
+                                             "suma": c.suma, "document": c.document or ("CHIT-%d" % bon_id),
+                                             "partener": c.partener, "cui": c.cui})
+        if rez.get("eroare"):
+            raise HTTPException(400, rez["eroare"])
+        with conn.cursor() as cur:
+            cur.execute(f"""UPDATE {schema}.bonuri SET status='aprobat', factura_id=%s,
+                            casa_operatiune_id=%s, inregistrare_id=%s,
+                            comerciant=%s, data=%s, total=%s WHERE id=%s""",
+                        (c.factura_id, rez["id"], rez["inregistrare_id"],
+                         c.partener or None, c.data, c.suma, bon_id))
+            if c.factura_id:
+                cur.execute(f"UPDATE {schema}.facturi SET platita_la=now() WHERE id=%s AND directie='primita'", (c.factura_id,))
+    return {"ok": True, "operatiune_id": rez["id"], "nota_id": rez["inregistrare_id"],
+            "avertismente": rez.get("avertismente") or []}
+
 @app.get("/portal/documente/luni")
 def portal_documente_luni(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, tenant_id)

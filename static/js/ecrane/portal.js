@@ -35,8 +35,8 @@ export function desktopPortal(continut, nav) {
     { cheie: "acces-cont", titlu: "Acces cont", icon: "solicitari", bg: "#eef2f7", fg: "#334155",
       sinteza: "Email și acces suplimentar la portal" },
   ];
-  const CARD_BON = { cheie: "bon", titlu: "Pozează bon", icon: "facturi", bg: "#fdeef0", fg: "#a3344b",
-      sinteza: "Fotografiază bonul, iConta îl citește" };  /* portal_layout_v2 */
+  const CARD_BON = { cheie: "bon", titlu: "Pozează bon sau chitanță", icon: "facturi", bg: "#fdeef0", fg: "#a3344b",
+      sinteza: "Fotografiază documentul, iConta îl citește" };  /* portal_layout_v2 */
 
   continut.innerHTML = `
     <div class="cab-salut portal-sus" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
@@ -87,7 +87,7 @@ function deschideCard(cheie, nav) {
   else if (cheie === "povestea") nav.deschide("Povestea lunii", (corp) => ecranPovestea(corp, nav));
   else if (cheie === "solicitari") nav.deschide("Solicitări", (corp) => ecranSolicitari(corp, nav));  // ICRD_SOLICITARI_FRONT_V1
   else if (cheie === "recomanda") nav.deschide("Recomandă", (corp) => ecranRecomanda(corp, nav));
-  else if (cheie === "bon") nav.deschide("Pozează bon", (corp) => ecranBon(corp, nav));
+  else if (cheie === "bon") nav.deschide("Pozează bon sau chitanță", (corp) => ecranBon(corp, nav));
   else if (cheie === "documente") nav.deschide("Documente", (corp) => ecranDocumente(corp, nav));
   else if (cheie === "cifre") nav.deschide("Cifrele firmei", (corp) => ecranCifre(corp, nav));  // portal_kpi_fe_v1
   else if (cheie === "acces-cont") nav.deschide("Acces cont", (corp) => ecranAccesCont(corp, nav));
@@ -542,30 +542,97 @@ function ecranInLucru(corp, nav, nume) {
   corp.innerHTML = `<div class="mig-gol">"${nume}" vine în curând.</div>`;
 }
 
-// [bon] Pozeaza bon - OCR cu AI
+// [bon] Pozeaza bon - OCR cu AI + confirmare client  // bon_flux_e2_v1
 async function ecranBon(corp, nav) {
-  nav.setInapoi(undefined);  // portal_ds_audit_a_v1
-  corp.innerHTML = `
-    <h2 class="pf-titlu">Pozează bon</h2>
-    <p class="pf-intro">Fotografiază sau încarcă bonul fiscal. iConta îl citește automat.</p>
-    <input type="file" id="bon-fisier" accept="image/*" capture="environment" multiple style="margin-bottom:16px">
-    <div id="bon-rezultat"></div>`;
-  corp.querySelector("#bon-fisier").addEventListener("change", async (ev) => {
-    const fs = Array.from(ev.target.files);
-    if (!fs.length) return;
-    const zona = corp.querySelector("#bon-rezultat");
-    zona.innerHTML = `<p class="ecran-nota">Citesc bonul...</p>`;
-    const fd = new FormData();
-    fs.forEach((f) => fd.append("fisiere", f));
-    try {
-      const r = await api.postForm("/portal/bon", fd);
-      const b = r.bon || {};
-      zona.innerHTML = `<div class="pf-frand"><div class="pf-frand-text">
-        <div class="pf-frand-nume">${b.comerciant || "?"} \u00b7 ${b.total != null ? b.total.toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " lei" : "?"}</div>
-        <div class="pf-frand-sub">${b.data || "?"}${b.cui ? " \u00b7 CUI " + b.cui : ""}${b.tva_11 ? " \u00b7 TVA 11%: " + b.tva_11 : ""}${b.tva_21 ? " \u00b7 TVA 21%: " + b.tva_21 : ""}</div>
-      </div><span class="pf-frand-ok">\u2713 citit</span></div>`;
-    } catch (e) { zona.innerHTML = `<p class="msg-eroare">${e.mesaj || "Nu am putut citi bonul."}</p>`; }
-  });
+  let mesajSucces = "";
+  let draft = null;  // { bon_id, bon, avertismente, urls: [obiect URL-uri poze] }
+
+  function curataUrls() {
+    if (draft && draft.urls) draft.urls.forEach((u) => URL.revokeObjectURL(u));
+  }
+
+  function randeazaPozare() {
+    nav.setInapoi(undefined);
+    curataUrls(); draft = null;
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Pozează bon sau chitanță</h2>
+      <p class="pf-intro">Fotografiază sau încarcă bonul fiscal ori chitanța. iConta citește documentul automat, apoi tu îl trimiți contabilului.</p>
+      ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
+      <input type="file" id="bon-fisier" accept="image/*" capture="environment" multiple style="margin-bottom:16px">
+      <div id="bon-rezultat"></div>`;
+    mesajSucces = "";
+    corp.querySelector("#bon-fisier").addEventListener("change", async (ev) => {
+      const fs = Array.from(ev.target.files);
+      if (!fs.length) return;
+      ev.target.disabled = true;
+      const zona = corp.querySelector("#bon-rezultat");
+      zona.innerHTML = `<p class="ecran-nota">Citesc documentul...</p>`;
+      const fd = new FormData();
+      fs.forEach((f) => fd.append("fisiere", f));
+      try {
+        const r = await api.postForm("/portal/bon", fd);
+        draft = { bon_id: r.bon_id, bon: r.bon || {}, avertismente: r.avertismente || [],
+                  urls: fs.map((f) => URL.createObjectURL(f)) };
+        randeazaConfirmare();
+      } catch (e) {
+        ev.target.disabled = false; ev.target.value = "";
+        zona.innerHTML = `<p class="msg-eroare">${e.mesaj || "Nu am putut citi documentul. Încearcă o poză mai clară."}</p>`;
+      }
+    });
+  }
+
+  function randeazaConfirmare() {
+    nav.setInapoi(refaPoza);
+    const b = draft.bon;
+    const fmt = (v) => (Number(v) || 0).toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const tvaTxt = (b.tva || []).filter((x) => x && x.valoare)
+      .map((x) => "TVA " + x.cota + "%: " + fmt(x.valoare) + " lei").join(" \u00b7 ");
+    const avert = (draft.avertismente || []).map((a) =>
+      `<div class="caseta-atentie" style="margin:0 0 12px"><div class="ca-mesaj">${a}</div></div>`).join("");
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Verifică documentul</h2>
+      <p class="pf-intro">Compară cu documentul din mână: poza e întreagă și datele se potrivesc?</p>
+      ${avert}
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+        ${draft.urls.map((u) => `<img src="${u}" alt="bon" style="max-width:180px;max-height:260px;border:1px solid var(--linie);border-radius:8px;object-fit:contain;background:#fff">`).join("")}
+      </div>
+      <div class="pf-lista">
+        <div class="pf-frand">
+          <div class="pf-frand-text">
+            <div class="pf-frand-nume">${b.tip === "chitanta" ? "Chitanță" : "Bon fiscal"} \u00b7 ${b.comerciant || "Comerciant necitit"}</div>
+            <div class="pf-frand-sub">${b.numar_document ? "nr. " + b.numar_document + " \u00b7 " : ""}${b.data || "dată necitită"}${b.cui ? " \u00b7 CUI " + b.cui : ""}${tvaTxt ? " \u00b7 " + tvaTxt : ""}${b.mentiuni ? " \u00b7 " + b.mentiuni : ""}</div>
+          </div>
+          <span class="pf-frand-suma">${b.total != null ? fmt(b.total) + " lei" : "total necitit"}</span>
+        </div>
+      </div>
+      <div style="margin-top:16px">
+        <button class="buton-verde" id="bon-trimite">Trimite la contabil</button>
+        <button class="buton-secundar" id="bon-refa" style="margin-left:10px">Refă poza</button>
+      </div>
+      <p class="ecran-nota" id="bon-msg" style="margin:10px 0 0"></p>`;
+    corp.querySelector("#bon-trimite").addEventListener("click", async (ev) => {
+      const bt = ev.currentTarget, br = corp.querySelector("#bon-refa");
+      bt.disabled = true; br.disabled = true; bt.textContent = "Se trimite...";
+      try {
+        await api.post("/portal/bon/" + draft.bon_id + "/confirma", {});
+        mesajSucces = "Documentul a plecat la contabil. Îl vei regăsi în cifrele firmei.";
+        randeazaPozare();
+      } catch (e) {
+        bt.disabled = false; br.disabled = false; bt.textContent = "Trimite la contabil";
+        corp.querySelector("#bon-msg").innerHTML = '<span class="msg-eroare">' + (e.mesaj || "Nu am putut trimite. Încearcă din nou.") + '</span>';
+      }
+    });
+    corp.querySelector("#bon-refa").addEventListener("click", refaPoza);
+  }
+
+  async function refaPoza() {
+    if (draft && draft.bon_id) {
+      try { await api.del("/portal/bon/" + draft.bon_id); } catch {}
+    }
+    randeazaPozare();
+  }
+
+  randeazaPozare();
 }
 
 
@@ -631,3 +698,5 @@ async function incarcaForecast(corp, rand, lei) {  // portal_cashflow_fe_v1
 // portal_status_in_grila_v1
 
 // portal_ds_audit_b_v1
+
+// bon_flux_e2b_v1
