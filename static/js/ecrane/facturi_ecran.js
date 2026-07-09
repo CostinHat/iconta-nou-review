@@ -188,17 +188,19 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       <div class="fd-antet-sus">
         <h2 class="pf-titlu">${_esc(f.numar || "\u2014")}</h2>
         ${statusTxt ? `<span class="fac-storno-tag">${_esc(statusTxt)}</span>` : ""}
-        <button class="em-buton-sec fd-pdf-btn" id="fd-pdf">Vezi PDF</button>
+        <button class="em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
         <button class="em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
         ${(f.directie === "emisa" && !f.storno_din_id) ? '<button class="em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="em-buton-sec" id="fd-transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
         ${f.platita_la ? '<span class="fac-storno-tag" style="background:#eaf7f0;color:#145c39">pl\u0103tit\u0103</span>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}
+        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="em-buton-sec" id="fd-chitanta">Emite chitan\u021b\u0103</button>' : ""}
         ${f.transformat_in_id ? `<span class="fac-storno-tag">transformat \u00een #${f.transformat_in_id}</span>` : ""}
       </div>
       <div class="fd-email-zona" id="fd-email-zona"></div>
       <div class="fd-storno-zona" id="fd-storno-zona"></div>
       <div id="fd-plata-zona"></div>
+      <div id="fd-chitanta-zona"></div>
       <div class="fd-antet-linie">${dir ? dir.charAt(0).toUpperCase() + dir.slice(1) : ""} \u00b7 ${fmtData(f.data_emitere)}${f.data_scadenta ? " \u00b7 scaden\u021b\u0103 " + fmtData(f.data_scadenta) : ""}</div>
       ${partener ? `<div class="fd-antet-linie">${dir === "primit\u0103" ? "De la" : "C\u0103tre"}: ${partener}</div>` : ""}
     </div>
@@ -230,6 +232,71 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       zona.querySelector("#fd-plata-copiaza").addEventListener("click", () => navigator.clipboard.writeText(r.link));
     } catch (e) { arataMesaj(zona, e.mesaj || e.message, "eroare"); }
   });
+  // [chitante] emitere chitanta (cod 14-4-1) + lista pe factura  // chitante_fe_v1
+  const bChit = corp.querySelector("#fd-chitanta");
+  const zonaChit = corp.querySelector("#fd-chitanta-zona");
+  const totalDeIncasat = esteValuta ? (Number(f.total_lei) || 0) : (Number(f.total) || 0);
+  async function chitanteAle() {
+    try {
+      const r = await api.get(`/tenants/${tenantId}/chitante?factura_id=${facturaId}`);
+      return (r && r.chitante) || [];
+    } catch { return []; }
+  }
+  async function arataChitante(mesaj) {
+    if (!zonaChit) return 0;
+    const chi = await chitanteAle();
+    const incasat = chi.reduce((s, c) => s + (Number(c.suma) || 0), 0);
+    zonaChit.innerHTML = (mesaj || "") + chi.map((c) => `
+      <div class="fd-tot-rand"><span>Chitan\u021ba ${c.serie}-${c.numar} \u00b7 ${fmtData(c.data)} \u00b7 ${_bani(c.suma, "lei")}</span>
+      <span><button class="btn-link" data-chpdf="${c.id}">PDF chitan\u021b\u0103</button></span></div>`).join("");
+    zonaChit.querySelectorAll("[data-chpdf]").forEach((b) => b.addEventListener("click", async () => {
+      try {
+        const r = await fetch(`/tenants/${tenantId}/chitante/${b.dataset.chpdf}/pdf`,
+          { headers: { "Authorization": "Bearer " + sesiune.token() } });
+        if (!r.ok) throw new Error("pdf " + r.status);
+        const url = URL.createObjectURL(await r.blob());
+        window.open(url, "_blank");
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      } catch { b.textContent = "Eroare \u2014 re\u00eencearc\u0103"; }
+    }));
+    return incasat;
+  }
+  if (zonaChit) arataChitante();
+  if (bChit) bChit.addEventListener("click", async () => {
+    if (zonaChit.querySelector("#fd-chit-form")) return;
+    const chi = await chitanteAle();
+    const incasat = chi.reduce((s, c) => s + (Number(c.suma) || 0), 0);
+    const rest = Math.max(0, Math.round((totalDeIncasat - incasat) * 100) / 100);
+    zonaChit.insertAdjacentHTML("afterbegin", `
+      <div id="fd-chit-form" style="display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin:8px 0">
+        <label class="camp"><span class="camp-eticheta">Data \u00eencas\u0103rii</span><input class="camp-input" type="date" id="fd-chit-data" value="${new Date().toISOString().slice(0, 10)}"></label>
+        <label class="camp"><span class="camp-eticheta">Suma \u00eencasat\u0103 (lei)</span><input class="camp-input" type="number" step="0.01" id="fd-chit-suma" value="${rest || totalDeIncasat}"></label>
+        <button class="buton-primar" id="fd-chit-ok">Emite</button>
+        <button class="btn-link" id="fd-chit-nu">Renun\u021b\u0103</button>
+        <span class="msg-eroare" id="fd-chit-msg"></span>
+      </div>`);
+    const form = zonaChit.querySelector("#fd-chit-form");
+    form.querySelector("#fd-chit-nu").addEventListener("click", () => form.remove());
+    form.querySelector("#fd-chit-ok").addEventListener("click", async (ev) => {
+      const b = ev.currentTarget, msg = form.querySelector("#fd-chit-msg");
+      const suma = parseFloat(form.querySelector("#fd-chit-suma").value) || 0;
+      const data = form.querySelector("#fd-chit-data").value;
+      if (suma <= 0) { msg.textContent = "Suma trebuie s\u0103 fie mai mare ca zero."; return; }
+      if (!data) { msg.textContent = "Completeaz\u0103 data \u00eencas\u0103rii."; return; }
+      b.disabled = true; b.textContent = "Se emite...";
+      try {
+        const r = await api.post(`/tenants/${tenantId}/chitante`, { data, suma, factura_id: facturaId });
+        const av = (r && r.avertismente) || [];
+        form.remove();
+        await arataChitante(`<p style="color:#1d7a4d;font-weight:600;margin:6px 0">Chitan\u021ba ${r.serie}-${r.numar} a fost emis\u0103 \u0219i \u00eenregistrat\u0103 \u00een Registrul de cas\u0103.${av.length ? " Aten\u021bie: " + av.join(" ") : ""}</p>`);
+        if (rest > 0 && suma >= rest - 0.005 && bChit) bChit.style.display = "none";
+      } catch (e) {
+        b.disabled = false; b.textContent = "Emite";
+        msg.textContent = e.mesaj || "Eroare la emitere.";
+      }
+    });
+  });
+
   const btnPdf = corp.querySelector("#fd-pdf");
   if (btnPdf) {
     btnPdf.addEventListener("click", async () => {
@@ -697,3 +764,7 @@ function formSablon(corp, nav, tenantId, opt) {
     }
   });
 }
+
+// chitante_fe_v1
+
+// chitante_fe_v2_etichete

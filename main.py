@@ -2737,6 +2737,19 @@ def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=De
     return Response(content=pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="fluturas_{salariat_id}_{an}_{luna:02d}.pdf"'})
 # cf_verificari_v1: verificari contabile reutilizabile (echilibru + trezorerie)
+def _verifica_documente_pozate(schema):  # verif_doc_pozate_v1
+    """Documente pozate de clienti blocate in flux: necontate >3 zile sau note ciorna casa >3 zile."""
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute(f"""SELECT count(*) FROM {schema}.bonuri
+                        WHERE status='de_verificat' AND creat_la < now() - interval '3 days'""")
+        bonuri_vechi = cur.fetchone()[0]
+        cur.execute(f"""SELECT count(*) FROM {schema}.casa_operatiuni co
+                        JOIN {schema}.inregistrari i ON i.id = co.inregistrare_id
+                        WHERE i.status='ciorna' AND co.creat_la < now() - interval '3 days'""")
+        ciorne = cur.fetchone()[0]
+    return {"ok": bonuri_vechi == 0 and ciorne == 0,
+            "bonuri_neverificate": bonuri_vechi, "ciorne_casa": ciorne}
+
 def _verificari_contabile(schema, an, luna):
     from core import verificatoare as _vf
     from datetime import date as _date
@@ -2752,12 +2765,17 @@ def _verificari_contabile(schema, an, luna):
         cur.execute(f"SELECT cont, SUM(sold_debitor) - SUM(sold_creditor) FROM {schema}.solduri_initiale GROUP BY cont")
         si = {r[0]: r[1] for r in cur.fetchall()}
     bal = _vf.balanta(note, si)
-    return {
+    rezultat = {
         "echilibru": _vf.verifica_balanta(bal),
         "trezorerie": _vf.verifica_trezorerie(bal),
         "tva": _vf.coerenta_tva(bal.get("4427", {}).get("credit", 0), bal.get("4426", {}).get("debit", 0)),
         "note": len(note),
     }
+    try:  # verif_doc_pozate_v1
+        rezultat["documente_pozate"] = _verifica_documente_pozate(schema)
+    except Exception:
+        pass
+    return rezultat
 
 
 @app.get("/firme/{tenant_id}/verificari")
@@ -2816,6 +2834,16 @@ async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[
     tva_11 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == 11), 2)
     tva_21 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == 21), 2)
     schema = t["schema_name"]
+    with db.get_conn() as conn:  # verif_doc_pozate_v1: drafturi abandonate >24h se curata (rand + poze)
+        with conn.cursor() as cur:
+            cur.execute(f"""DELETE FROM {schema}.bonuri
+                            WHERE status='extras' AND creat_la < now() - interval '24 hours'
+                            RETURNING id""")
+            for (vechi_id,) in cur.fetchall():
+                import shutil as _shutil
+                d = _os.path.join(_os.path.expanduser(BON_DIR_BAZA), schema, str(vechi_id))
+                if _os.path.isdir(d):
+                    _shutil.rmtree(d, ignore_errors=True)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             tip_doc = "chitanta" if date.get("tip") == "chitanta" else "bon"  # bon_flux_e1b_v1
@@ -2956,6 +2984,93 @@ def chitanta_stinge(tenant_id: int, bon_id: int, c: ChitantaStinge, ctx=Depends(
                 cur.execute(f"UPDATE {schema}.facturi SET platita_la=now() WHERE id=%s AND directie='primita'", (c.factura_id,))
     return {"ok": True, "operatiune_id": rez["id"], "nota_id": rez["inregistrare_id"],
             "avertismente": rez.get("avertismente") or []}
+
+# chitante_emise_v1
+class ChitantaEmite(BaseModel):
+    data: str
+    suma: float
+    factura_id: Optional[int] = None
+
+@app.post("/tenants/{tenant_id}/chitante")
+def chitanta_emite(tenant_id: int, c: ChitantaEmite, ctx=Depends(cere_context)):
+    """Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar:
+    numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api
+    (5311=4111, nota ciorna, verificare plafon Legea 70/2015)."""
+    from core import casa_api
+    schema = _schema_sau_404(ctx, tenant_id)
+    if c.suma <= 0:
+        raise HTTPException(400, "suma trebuie sa fie > 0")
+    client_nume = client_cui = reprezentand = None
+    total_fact = None
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            if c.factura_id:
+                cur.execute(f"SELECT serie, numar, tert_nume, tert_cui, total, directie, data_emitere FROM {schema}.facturi WHERE id=%s", (c.factura_id,))
+                r = cur.fetchone()
+                if not r:
+                    raise HTTPException(404, "factura inexistenta")
+                if r[5] != "emisa":
+                    raise HTTPException(400, "chitanta se emite doar pentru facturi emise")
+                client_nume, client_cui, total_fact = r[2], r[3], float(r[4] or 0)
+                nrtxt = str(r[1] or "")  # chitante_emise_v2_reprezentand: numar contine adesea si seria (ex. MD-2)
+                if r[0] and not nrtxt.startswith(str(r[0])):
+                    nrtxt = str(r[0]) + nrtxt
+                reprezentand = "contravaloare factura %s din %s" % (
+                    nrtxt, r[6].strftime("%d.%m.%Y") if r[6] else "")
+            cur.execute(f"SELECT COALESCE(serie_chitanta, 'CH') FROM {schema}.firma_profil LIMIT 1")
+            rs = cur.fetchone()
+            serie = (rs[0] if rs else None) or "CH"
+            cur.execute(f"SELECT COALESCE(max(numar), 0) + 1 FROM {schema}.chitante WHERE serie=%s", (serie,))
+            nr = cur.fetchone()[0]
+        rez = casa_api.adauga(conn, schema, {"data": c.data, "categorie": "incasare_client",
+                                             "suma": c.suma, "document": "%s-%s" % (serie, nr),
+                                             "partener": client_nume, "cui": client_cui})
+        if rez.get("eroare"):
+            raise HTTPException(400, rez["eroare"])
+        with conn.cursor() as cur:
+            cur.execute(f"""INSERT INTO {schema}.chitante
+                            (serie, numar, data, factura_id, client_nume, client_cui, suma, reprezentand,
+                             casa_operatiune_id, inregistrare_id)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                        (serie, nr, c.data, c.factura_id, client_nume, client_cui, c.suma,
+                         reprezentand, rez["id"], rez["inregistrare_id"]))
+            cid = cur.fetchone()[0]
+            if c.factura_id and total_fact is not None and c.suma >= total_fact - 0.005:
+                cur.execute(f"UPDATE {schema}.facturi SET platita_la=now() WHERE id=%s", (c.factura_id,))
+    return {"ok": True, "chitanta_id": cid, "serie": serie, "numar": nr,
+            "avertismente": rez.get("avertismente") or []}
+
+@app.get("/tenants/{tenant_id}/chitante")
+def chitante_lista(tenant_id: int, factura_id: Optional[int] = None, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn() as conn, conn.cursor() as cur:
+        if factura_id:
+            cur.execute(f"SELECT id, serie, numar, data, suma, client_nume FROM {schema}.chitante WHERE factura_id=%s AND NOT anulata ORDER BY id DESC", (factura_id,))
+        else:
+            cur.execute(f"SELECT id, serie, numar, data, suma, client_nume FROM {schema}.chitante WHERE NOT anulata ORDER BY id DESC LIMIT 100")
+        chi = [{"id": r[0], "serie": r[1], "numar": r[2], "data": r[3].isoformat() if r[3] else None,
+                "suma": float(r[4] or 0), "client_nume": r[5]} for r in cur.fetchall()]
+    return {"chitante": chi}
+
+@app.get("/tenants/{tenant_id}/chitante/{chitanta_id}/pdf")
+def chitanta_pdf(tenant_id: int, chitanta_id: int, ctx=Depends(cere_context)):
+    from fastapi.responses import Response
+    from core import chitante as _ch
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute(f"SELECT serie, numar, data, client_nume, client_cui, suma, reprezentand FROM {schema}.chitante WHERE id=%s", (chitanta_id,))
+        r = cur.fetchone()
+        if not r:
+            raise HTTPException(404, "chitanta inexistenta")
+        cur.execute("SELECT nume, cui FROM public.tenants WHERE id=%s", (tenant_id,))
+        te = cur.fetchone() or (None, None)
+    pdf = _ch.pdf_chitanta({"nume": te[0], "cui": te[1]},
+                           {"serie": r[0], "numar": r[1],
+                            "data": r[2].strftime("%d.%m.%Y") if r[2] else "",
+                            "client_nume": r[3], "client_cui": r[4], "suma": float(r[5] or 0),
+                            "reprezentand": r[6]})
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": 'attachment; filename="chitanta_%s_%s.pdf"' % (r[0], r[1])})
 
 @app.get("/portal/documente/luni")
 def portal_documente_luni(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):

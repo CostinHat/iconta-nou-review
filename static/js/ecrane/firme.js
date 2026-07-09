@@ -349,6 +349,10 @@ async function ecranVerificari(corp, nav, t) {
       <div class="pf-lista">
         ${r ? rand("Echilibru balan\u021b\u0103", r.echilibru) : ""}
         ${r ? rand("Trezorerie (f\u0103r\u0103 solduri creditoare)", r.trezorerie) : ""}
+        ${r && r.documente_pozate ? `<div class="pf-frand"><div class="pf-frand-text">
+          <div class="pf-frand-nume">Documente pozate de clien\u021bi</div>
+          <div class="pf-frand-sub">${r.documente_pozate.ok ? "\u00een regul\u0103" : [r.documente_pozate.bonuri_neverificate ? r.documente_pozate.bonuri_neverificate + " document(e) confirmate de client, necontate de peste 3 zile" : "", r.documente_pozate.ciorne_casa ? r.documente_pozate.ciorne_casa + " not\u0103(e) de cas\u0103 ciorn\u0103, nevalidate de peste 3 zile" : ""].filter(Boolean).join(" \u00b7 ")}</div>
+        </div><span class="cab-pct ${r.documente_pozate.ok ? 'pct-verde' : 'pct-rosu'}"></span></div>` : ""}
         ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${r.tva.suma} lei (cont ${r.tva.cont})</div></div><span class="cab-pct pct-verde"></span></div>` : ""}
         ${vs ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Stocuri (contabil vs fi\u0219e CV)</div>
@@ -1550,3 +1554,5 @@ async function ecranAccesClient(corp, nav, t) {
 // module_stiva_v1
 
 // casa_std_v1
+
+// verif_doc_pozate_v1

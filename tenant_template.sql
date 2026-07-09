@@ -1805,3 +1805,22 @@ GRANT USAGE ON SEQUENCE TENANT_PLACEHOLDER.state_plata_id_seq TO iconta_user;
 
 
 -- generalizare_zi_v1
+
+-- chitante_emise_v1
+CREATE TABLE TENANT_PLACEHOLDER.chitante (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    serie character varying(10) NOT NULL,
+    numar integer NOT NULL,
+    data date NOT NULL,
+    factura_id integer,
+    client_nume text,
+    client_cui character varying(30),
+    suma numeric(12,2) NOT NULL,
+    reprezentand text,
+    casa_operatiune_id integer,
+    inregistrare_id integer,
+    anulata boolean DEFAULT false NOT NULL,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL
+);
+ALTER TABLE TENANT_PLACEHOLDER.chitante OWNER TO iconta_user;
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS serie_chitanta character varying(10) DEFAULT 'CH';
