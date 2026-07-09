@@ -406,7 +406,7 @@ async function ecranSalariati(corp, nav, t) {
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
     const zonaReges = corp.querySelector("#sp-reges-zona");
     corp.querySelector("#sp-reges-cfg").addEventListener("click", () => {
-      zonaReges.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
+      zonaReges.innerHTML = `<div style="display:block;margin:10px 0">
         <div class="pf-frand-nume" style="margin-bottom:8px">Chei API REGES (din aplicatia REGES Angajator)</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;max-width:700px">
           <label class="camp"><span class="camp-eticheta">Username</span><input type="text" id="rg-user" class="camp-input"></label>
@@ -476,7 +476,7 @@ async function sectiuneaCV(corp, t, zonaM) {
   try { const r = await api.get(`/tenants/${t.id}/stocuri/articole`); arts = r.articole || []; } catch {}
   const azi = new Date().toISOString().slice(0, 10);
   zona.innerHTML = `
-    <div class="pf-frand" style="display:block;margin-bottom:14px">
+    <div style="display:block;margin-bottom:14px">
       <div class="pf-frand-nume" style="margin-bottom:8px">Fi\u0219e de magazie (cantitativ-valoric, CMP)</div>
       <div class="camp-eticheta">Mi\u0219care: articol \u00b7 denumire (nou) \u00b7 dat\u0103 \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 document</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
@@ -722,7 +722,7 @@ async function ecranStocuri(corp, nav, t) {
         <button class="buton-primar" id="s-desc" style="margin-left:12px">Descarc\u0103 gestiunea lunii</button></p>
       <div id="s-mesaj"></div>
       <p><button class="buton-secundar" id="sn-toggle">+ NIR nou</button></p>
-      <div class="pf-frand" id="sn-zona" hidden style="margin-bottom:14px">
+      <div id="sn-zona" hidden style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">NIR nou</div>
         <div class="camp-eticheta">NIR: num\u0103r \u00b7 dat\u0103 \u00b7 furnizor \u00b7 CUI</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
@@ -837,7 +837,7 @@ async function ecranCasa(corp, nav, t) {
         <button class="buton-secundar" id="c-next">luna \u2192</button></p>
       ${avert}
       <p><button class="buton-secundar" id="c-toggle">+ Dispozi\u021bie nou\u0103</button></p>
-      <div class="pf-frand" id="c-zona" hidden style="margin-bottom:14px">
+      <div id="c-zona" hidden style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Dispoziție nouă</div>
         <div class="form-rand">
           <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="c-data" class="camp-input"></label>
@@ -986,7 +986,7 @@ async function ecranBanca(corp, nav, t) {
     } catch { zonaMesaj.innerHTML = `<div class="mig-gol">Nu am putut încărca facturile.</div>`; return; }
     if (!facturi.length) { zonaMesaj.innerHTML = `<div class="mig-gol">Nicio factura deschisa pe aceasta directie.</div>`; return; }
     zonaMesaj.innerHTML = `
-      <div class="pf-frand" style="display:block">
+      <div style="display:block">
         <div class="pf-frand-nume">Alege facturile pentru linia din ${escB(l.data)} \u00b7 ${bani(l.suma)} lei</div>
         <div class="pf-lista" style="margin-top:8px">${facturi.map((f) => `
           <label class="pf-frand" style="cursor:pointer">
@@ -1138,7 +1138,7 @@ async function ecranJurnal(corp, nav, t) {
         </div>`;
     };
     const editor = (n) => `
-      <div class="pf-frand" style="display:block;border:1px solid #c9961f">
+      <div style="display:block;border:1px solid #c9961f">
         <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${escJ(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
         <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${escJ(n.descriere || "")}"></label>
         <div class="camp-eticheta" style="margin-top:8px">Linii: cont debit = cont credit \u00b7 sum\u0103</div>
@@ -1284,7 +1284,7 @@ async function ecranBonuri(corp, nav, t) {
     const itemi = !docs.length
       ? `<div class="mig-gol">Niciun document de verificat. Clienții pozează, aici certifici.</div>`
       : docs.map((b, i) => `
-        <button class="acces-card meniu-card" data-doc="${i}">
+        <button class="acces-card meniu-card pf-frand" data-doc="${i}" style="width:100%;text-align:left">
           <b>${b.tip === "chitanta" ? "Chitanță" : "Bon fiscal"}</b> · ${b.comerciant || "emitent necitit"}
           · ${b.total ? fmt(b.total) + " lei" : "sumă necitită"}${b.data ? " · din " + fmtZi(b.data) : ""}
           · <b>${fmtPrimit(b.primit_la)}</b>
