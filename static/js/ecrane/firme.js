@@ -524,7 +524,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       const r = await api.post(`/tenants/${t.id}/stocuri/intrare`, corpReq);
       zonaM.innerHTML = `<p class="pf-intro">Intrare inregistrata \u00b7 ${bani(r.valoare)} lei.</p>`;
       sectiuneaCV(corp, t, zonaM);
-    } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "Eroare")}</div>`; }
+    } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "eroare")}</div>`; }
   });
   zona.querySelector("#cv-iesire").addEventListener("click", async () => {
     if (!val("#cv-art")) { zonaM.innerHTML = `<div class="mig-gol">Alege articolul pentru iesire.</div>`; return; }
@@ -534,7 +534,7 @@ async function sectiuneaCV(corp, t, zonaM) {
         cantitate: parseFloat(val("#cv-cant")) || 0, document: val("#cv-doc") || null });
       zonaM.innerHTML = `<p class="pf-intro">Iesire la CMP ${r.cmp} \u00b7 ${bani(r.valoare)} lei \u00b7 nota ${escV(r.nota)} (ciorna).</p>`;
       sectiuneaCV(corp, t, zonaM);
-    } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "Eroare")}</div>`; }
+    } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "eroare")}</div>`; }
   });
 
 
@@ -579,7 +579,7 @@ async function sectiuneaCV(corp, t, zonaM) {
         const r = await api.post(`/tenants/${t.id}/retete/descarca`, { reteta_id: parseInt(id), portii: parseFloat(p), data: val("#cv-data") || new Date().toISOString().slice(0, 10) });
         zonaM.innerHTML = `<p class="pf-intro">Consum \u00eenregistrat (ciorn\u0103 #${r.inregistrare_id}) \u00b7 cost total ${bani(r.cost_total)} lei.</p>`;
         sectiuneaCV(corp, t, zonaM); rtIncarca();
-      } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Eroare")}</div>`; }
+      } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "eroare")}</div>`; }
     }));
     rtLista.querySelectorAll(".rt-del").forEach((b) => b.addEventListener("click", async (e) => {
       try { await api.del(`/tenants/${t.id}/retete/${e.target.dataset.id}`); rtIncarca(); } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Nu am putut \u0219terge re\u021beta.")}</div>`; }
@@ -593,7 +593,7 @@ async function sectiuneaCV(corp, t, zonaM) {
     try {
       await api.post(`/tenants/${t.id}/retete`, { denumire: den, pret_fara_tva: parseFloat(zona.querySelector("#rt-pret").value || 0), linii });
       zona.querySelector("#rt-den").value = ""; zona.querySelector("#rt-pret").value = ""; rtLinii = []; rtDeseneazaIng(); rtIncarca();
-    } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Eroare")}</div>`; }
+    } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "eroare")}</div>`; }
   });
   rtIncarca();
 
@@ -618,7 +618,7 @@ async function sectiuneaCV(corp, t, zonaM) {
           : x.diferenta === "0" ? `${escV(x.denumire)}: fara diferenta`
           : `${escV(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${x.diferenta} \u00b7 ${bani(x.valoare)} lei \u00b7 nota ${escV(x.nota)} (ciorna)`).join("<br>")}</p>`;
         sectiuneaCV(corp, t, zonaM);
-      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "Eroare")}</div>`; }
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "eroare")}</div>`; }
     });
   });
   zona.querySelector("#cv-fisa").addEventListener("click", async () => {
@@ -668,7 +668,7 @@ async function ecranBilant(corp, nav, t) {
           (r.erori ? `<pre style="white-space:pre-wrap;font-size:12px;background:#f6f7f9;padding:8px;border-radius:8px">${escS(r.erori)}</pre>` : "") +
           (r.avertismente && r.avertismente.length
             ? `<p class="pf-intro">${r.avertismente.map(escS).join("<br>")}</p>` : "");
-      } catch (e) { rez.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
+      } catch (e) { rez.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "eroare")}</div>`; }
     });
     corp.querySelector("#bl-xml").addEventListener("click", async () => {
       try {
@@ -681,7 +681,7 @@ async function ecranBilant(corp, nav, t) {
         if (r.avertismente && r.avertismente.length) {
           rez.innerHTML = `<p class="pf-intro">${r.avertismente.map(escS).join("<br>")}</p>`;
         }
-      } catch (e) { rez.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
+      } catch (e) { rez.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "eroare")}</div>`; }
     });
   }
 }
@@ -782,7 +782,7 @@ async function ecranStocuri(corp, nav, t) {
         liniiNir = [];
         zonaM.innerHTML = `<p class="pf-intro">NIR salvat \u00b7 ${r.inregistrari.length} note ciorne (cost ${r.cost_total}, adaos ${r.adaos_total}, TVA neex. ${r.tva_neexigibila}).</p>`;
         deseneaza();
-      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "eroare")}</div>`; }
     });
     corp.querySelector("#s-desc").addEventListener("click", () => {
       const bD = corp.querySelector("#s-desc");
@@ -792,7 +792,7 @@ async function ecranStocuri(corp, nav, t) {
         zonaM.innerHTML = r.mesaj
           ? `<div class="mig-gol">${escS(r.mesaj)}</div>`
           : `<p class="pf-intro">K=${r.k} \u00b7 CMV ${r.cmv} \u00b7 adaos ${r.adaos} \u00b7 TVA ${r.tva} \u00b7 total 371: ${bani(r.total_371)} lei \u00b7 ${r.inregistrari.length} note ciorne.</p>`;
-      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "Eroare")}</div>`; }
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "eroare")}</div>`; }
       }, { textOk: "Descarcă gestiunea" });
     });
     sectiuneaCV(corp, t, zonaM);
@@ -877,7 +877,7 @@ async function ecranCasa(corp, nav, t) {
         const av = (r.avertismente || []).length;
         zonaM.innerHTML = `<p class="pf-intro">Nota ${escC(r.nota)} creata ca ciorna.${av ? ` <b style="color:#c9961f">${av} avertisment(e) plafon.</b>` : ""}</p>`;
         deseneaza();
-      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escC(e.mesaj || "Eroare")}</div>`; }
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escC(e.mesaj || "eroare")}</div>`; }
     });
     corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
       confirmaCaseta(b.parentElement || b, "Ștergi operațiunea și ciorna legată?", async () => {  // audit_cab_lot2_v1
@@ -949,12 +949,12 @@ async function ecranBanca(corp, nav, t) {
     zonaLista.querySelectorAll("[data-ign]").forEach((b) =>
       b.addEventListener("click", async () => {
         try { await api.post(`/tenants/${t.id}/banca/reconciliere/${b.dataset.ign}/ignora`, {}); incarca(); }
-        catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${e.mesaj || "Eroare"}</div>`; }
+        catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
       }));
     zonaLista.querySelectorAll(".bk-undo").forEach((b) =>
       b.addEventListener("click", async () => {
         try { await api.post(`/tenants/${t.id}/banca/reconciliere/${b.dataset.id}/reactiveaza`, {}); incarca(); }
-        catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${e.mesaj || "Eroare"}</div>`; }
+        catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
       }));
     zonaLista.querySelectorAll("[data-alege]").forEach((b) =>
       b.addEventListener("click", () => picker(linii.find((x) => x.id === parseInt(b.dataset.alege)))));
@@ -1099,7 +1099,7 @@ async function ecranRaportZ(corp, nav, t) {
           zb.innerHTML = `<span class="pf-intro">Desc\u0103rcare GV \u00eenregistrat\u0103 (ciorn\u0103): 607 = ${rd.cmv != null ? bani(rd.cmv) : "?"} lei (K=${rd.k ?? "?"}).</span>`;
         } catch (e2) { zb.innerHTML = `<span class="pf-intro">${(e2.mesaj || "Eroare la desc\u0103rcare")}</span>`; }
       });
-        } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.mesaj || "Eroare"}</div>`; }
+        } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
   });
 }
 
