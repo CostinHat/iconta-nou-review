@@ -34,7 +34,7 @@ export async function randeazaAsistenti(corp, nav) {
     <div class="asi-sumar">${sumar.total} asistenț${sumar.total === 1 ? "ă" : "i"} · ${sumar.activi} activ${sumar.activi === 1 ? "" : "i"}</div>
     <div id="asi-banner"></div>
     <button class="buton-primar" id="asi-adauga" style="margin:6px 0 14px">Adaug\u0103 asistent</button>
-    <div id="asi-adauga-form" style="display:none;margin-bottom:14px">
+    <div id="asi-adauga-form" hidden style="margin-bottom:14px">
       <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Email asistent</label>
         <input class="camp-input" id="asi-email" type="email" placeholder="asistent@cabinet.ro" autocomplete="off"></div>
       <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Nume (op\u021bional)</label>
@@ -47,9 +47,11 @@ export async function randeazaAsistenti(corp, nav) {
     <div class="mig-eroare" id="asi-eroare"></div>
   `;
   _asiBannerEchipa(corp, nav);
-  corp.querySelector("#asi-adauga").addEventListener("click", () => {  /* asistent_nou_fe_v1 */
+  corp.querySelector("#asi-adauga").addEventListener("click", () => {  /* asistent_nou_fe_v1 + investigatie_identitate_toggle */
     const f = corp.querySelector("#asi-adauga-form");
-    f.style.display = f.style.display === "none" ? "block" : "none";
+    const b = corp.querySelector("#asi-adauga");
+    f.hidden = !f.hidden;
+    b.classList.toggle("buton-activ", !f.hidden);
   });
   corp.querySelector("#asi-trimite").addEventListener("click", async () => {
     const msg = corp.querySelector("#asi-adauga-msg");
