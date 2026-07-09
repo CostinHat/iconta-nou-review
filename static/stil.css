@@ -9,7 +9,7 @@
   /* paletă: ardezie profundă + albastru de încredere + neutre curate */
   --albastru: #3d8fd6;          /* accent principal — sobru, nu Fluent-default */
   --albastru-inchis: #163a5a;
-  --albastru-clar: #e8eef5;
+  --albastru-clar: #d6e4f5;  /* zebra_fix_v1: distinct de fundalul ferestrei #e9edf3 */
   --ardezie: #2b3440;           /* text principal */
   --gri: #5b6573;               /* text secundar */
   --gri-clar: #8a929e;
