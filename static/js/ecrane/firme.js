@@ -844,11 +844,12 @@ async function ecranCasa(corp, nav, t) {
           <label class="camp"><span class="camp-eticheta">Tip</span><select id="c-cat" class="camp-input">${CATEGORII.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label>
           <label class="camp"><span class="camp-eticheta">Suma</span><input type="number" step="0.01" id="c-suma" class="camp-input" placeholder="0,00"></label>
           <label class="camp"><span class="camp-eticheta">Partener</span><input type="text" id="c-part" class="camp-input"></label>
-          <label class="camp" style="flex:0 1 160px"><span class="camp-eticheta">CUI</span>
-            <div style="display:flex;gap:6px">
-              <input type="text" id="c-cui" class="camp-input" style="flex:1">
-              <button type="button" class="buton-secundar" id="c-cui-verif" style="white-space:nowrap">Verific\u0103</button>
-            </div>
+          <label class="camp">
+            <span class="camp-eticheta" style="display:flex;justify-content:space-between;align-items:center">
+              CUI
+              <button type="button" class="btn-link" id="c-cui-verif" style="font-weight:600">Verific\u0103</button>
+            </span>
+            <input type="text" id="c-cui" class="camp-input">
           </label>
           <label class="camp"><span class="camp-eticheta">Document</span><input type="text" id="c-doc" class="camp-input"></label>
         </div>
