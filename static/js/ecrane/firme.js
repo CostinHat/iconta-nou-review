@@ -722,7 +722,7 @@ async function ecranStocuri(corp, nav, t) {
         <button class="buton-primar" id="s-desc" style="margin-left:12px">Descarc\u0103 gestiunea lunii</button></p>
       <div id="s-mesaj"></div>
       <p><button class="buton-secundar" id="sn-toggle">+ NIR nou</button></p>
-      <div class="pf-frand" id="sn-zona" hidden style="display:block;margin-bottom:14px">
+      <div class="pf-frand" id="sn-zona" hidden style="margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">NIR nou</div>
         <div class="camp-eticheta">NIR: num\u0103r \u00b7 dat\u0103 \u00b7 furnizor \u00b7 CUI</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
@@ -837,7 +837,7 @@ async function ecranCasa(corp, nav, t) {
         <button class="buton-secundar" id="c-next">luna \u2192</button></p>
       ${avert}
       <p><button class="buton-secundar" id="c-toggle">+ Dispozi\u021bie nou\u0103</button></p>
-      <div class="pf-frand" id="c-zona" hidden style="display:block;margin-bottom:14px">
+      <div class="pf-frand" id="c-zona" hidden style="margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Dispoziție nouă</div>
         <div class="form-rand">
           <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="c-data" class="camp-input"></label>

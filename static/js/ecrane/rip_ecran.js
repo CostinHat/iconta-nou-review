@@ -55,7 +55,7 @@ export async function ecranRip(corp, nav, t) {
       </p>
       <div id="r-mesaj"></div>
       <p><button class="buton-secundar" id="r-toggle">+ Opera\u021biune nou\u0103</button></p>
-      <div class="pf-frand" id="r-zona" hidden style="display:block;margin-bottom:14px">
+      <div class="pf-frand" id="r-zona" hidden style="margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Opera\u021biune nou\u0103</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:1000px">
           <label>Data<br><input type="date" id="r-data" class="mig-text"></label>
