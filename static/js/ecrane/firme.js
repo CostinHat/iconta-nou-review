@@ -15,7 +15,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
       <button class="firme-inapoi" id="firme-inapoi" title="Înapoi la panou" aria-label="Înapoi la panou">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <h1 class="firme-titlu">Firme</h1>
+      <h1 class="firme-titlu"><span style="color:#8a97a5;font-weight:500">Panou \u203a Firme \u203a </span>Firme existente</h1>
       <span class="firme-spatiu"></span>
       <button class="buton-primar buton-ingust" id="firme-adauga">+ Adaugă firmă</button>
     </div>
@@ -296,7 +296,7 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
     }).join("");
   }
   corp.innerHTML = `
-    <h2 class="pf-titlu">Solicitări — ${t.nume || ""}</h2>
+    <h2 class="pf-titlu">Solicitări</h2>
     <p class="pf-intro">Mesaje de la firma-client.</p>
     <div class="sol-fir" id="sol-fir">${firHtml}</div>
     <div class="sol-trimite">
@@ -342,7 +342,7 @@ async function ecranVerificari(corp, nav, t) {
       </div>`;
     };
     corp.innerHTML = `
-      <h2 class="pf-titlu">Verific\u0103ri \u00b7 ${t.nume || ""}</h2>
+      <h2 class="pf-titlu">Verific\u0103ri</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an} \u00b7 ${r ? r.note : 0} note contabile
         <button class="buton-secundar" id="vf-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="vf-next">luna \u2192</button></p>
@@ -393,7 +393,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
         </div>`).join("");
     corp.innerHTML = `
-      <h2 class="pf-titlu">Stat de plat\u0103 \u00b7 ${t.nume || ""}</h2>
+      <h2 class="pf-titlu">Stat de plat\u0103</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an}
         <button class="buton-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="sp-next">luna \u2192</button>
@@ -483,7 +483,7 @@ async function sectiuneaCV(corp, t, zonaM) {
           ${arts.map((a) => `<option value="${a.id}">${escV(a.denumire)} \u00b7 stoc ${a.stoc} ${escV(a.um)}${a.cmp ? " \u00b7 CMP " + a.cmp : ""}</option>`).join("")}
         </select>
         <input type="text" id="cv-den" class="mig-text" placeholder="denumire (articol nou)" style="flex:1;min-width:160px">
-        <input type="date" id="cv-data" class="mig-text" value="${azi}">
+        <input type="date" id="cv-data" class="mig-text">
         <input type="number" step="0.001" id="cv-cant" class="mig-text" placeholder="cant." style="width:90px">
         <input type="number" step="0.0001" id="cv-pret" class="mig-text" placeholder="pret unitar (la intrare)" style="width:170px">
         <input type="text" id="cv-doc" class="mig-text" placeholder="document" style="width:130px">
@@ -640,7 +640,7 @@ async function ecranBilant(corp, nav, t) {
   const escS = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   {
     corp.innerHTML = `
-      <h2 class="pf-titlu">Bilan\u021b anual \u00b7 ${escS(t.nume || "")}</h2>
+      <h2 class="pf-titlu">Bilan\u021b anual</h2>
       <p class="pf-intro">Genereaz\u0103 \u0219i valideaz\u0103 situa\u021biile financiare (validator ANAF pe server).</p>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <label class="camp"><span class="camp-eticheta">An</span><input type="number" id="bl-an" class="camp-input" value="${new Date().getFullYear() - 1}" style="width:90px"></label>
@@ -713,7 +713,7 @@ async function ecranStocuri(corp, nav, t) {
         <button class="buton-secundar sn-scoate">\u2212</button>
       </div>`;
     corp.innerHTML = `
-      <h2 class="pf-titlu">Stocuri \u00b7 ${escS(t.nume || "")}</h2>
+      <h2 class="pf-titlu">Stocuri</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
         <button class="buton-secundar" id="s-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="s-next">luna \u2192</button>
@@ -791,10 +791,10 @@ async function ecranStocuri(corp, nav, t) {
 async function ecranCasa(corp, nav, t) {
   const escC = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const CATEGORII = [
-    ["incasare_client", "Incasare client (5311=4111)"],
-    ["plata_furnizor", "Plata furnizor (401=5311)"],
-    ["ridicare_banca", "Ridicare de la banca (5311=581)"],
-    ["depunere_banca", "Depunere la banca (581=5311)"],
+    ["incasare_client", "Încasare client (5311=4111)"],
+    ["plata_furnizor", "Plată furnizor (401=5311)"],
+    ["ridicare_banca", "Ridicare de la bancă (5311=581)"],
+    ["depunere_banca", "Depunere la bancă (581=5311)"],
     ["avans_decontare", "Avans spre decontare (542=5311)"],
   ];
   const azi = new Date();
@@ -817,22 +817,22 @@ async function ecranCasa(corp, nav, t) {
           <button class="buton-secundar" data-del="${o.id}">\u0218terge</button>
         </div>`).join("");
     corp.innerHTML = `
-      <h2 class="pf-titlu">Cas\u0103 \u00b7 ${escC(t.nume || "")}</h2>
+      <h2 class="pf-titlu">Cas\u0103</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 sold final <b>${reg.sold_final} lei</b>
         <button class="buton-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="c-next">luna \u2192</button></p>
       ${avert}
       <div class="pf-frand" style="display:block;margin-bottom:14px">
-        <div class="pf-frand-nume" style="margin-bottom:8px">Dispozitie noua</div>
+        <div class="pf-frand-nume" style="margin-bottom:8px">Dispoziție nouă</div>
         <div class="form-rand">
-          <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="c-data" class="camp-input" value="${ziAzi}"></label>
+          <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="c-data" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Tip</span><select id="c-cat" class="camp-input">${CATEGORII.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select></label>
-          <label class="camp"><span class="camp-eticheta">Suma</span><input type="number" step="0.01" id="c-suma" class="camp-input" value="0"></label>
+          <label class="camp"><span class="camp-eticheta">Suma</span><input type="number" step="0.01" id="c-suma" class="camp-input" placeholder="0,00"></label>
           <label class="camp"><span class="camp-eticheta">Partener</span><input type="text" id="c-part" class="camp-input"></label>
           <label class="camp" style="flex:0 1 160px"><span class="camp-eticheta">CUI</span><input type="text" id="c-cui" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Document</span><input type="text" id="c-doc" class="camp-input"></label>
         </div>
-        <p style="margin-top:10px"><button class="buton-primar" id="c-adauga">Adauga (nota ciorna)</button></p>
+        <p style="margin-top:10px"><button class="buton-primar" id="c-adauga">Adaugă (notă ciornă)</button></p>
         <div id="c-mesaj"></div>
       </div>
       <div class="pf-lista">${randuri}</div>`;
@@ -872,7 +872,7 @@ async function ecranBanca(corp, nav, t) {
   const escB = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const CUL = { verde: "#1d7a4d", galben: "#c9961f", rosu: "#ff3b30", gri: "#3a4250" };
   corp.innerHTML = `
-    <h2 class="pf-titlu">Banc\u0103 \u00b7 ${escB(t.nume || "")}</h2>
+    <h2 class="pf-titlu">Banc\u0103</h2>
     <p class="pf-intro">Incarca extrasul (.xls, .xlsx, .csv) \u2014 liniile se potrivesc automat pe facturi dupa CUI.</p>
     <input type="file" id="bk-fisier" accept=".xls,.xlsx,.csv" style="margin-bottom:16px">
     <div id="bk-mesaj"></div>
@@ -1019,18 +1019,18 @@ async function ecranBanca(corp, nav, t) {
 async function ecranRaportZ(corp, nav, t) {
   const azi = new Date().toISOString().slice(0, 10);
   corp.innerHTML = `
-    <h2 class="pf-titlu">Raport Z \u00b7 ${t.nume || ""}</h2>
+    <h2 class="pf-titlu">Raport Z</h2>
     <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total.</p>
     <p><label class="buton-secundar" style="cursor:pointer">Import fisier AMEF (p7b/XML)
       <input type="file" id="z-amef" accept=".p7b,.xml" style="display:none"></label></p>
     <div id="z-amef-msg"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px">
-      <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="z-data" value="${azi}" class="camp-input"></label>
+      <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="z-data" class="camp-input"></label>
       <span></span>
-      <label class="camp"><span class="camp-eticheta">Total 11% (mancare)</span><input type="number" step="0.01" id="z-11" class="camp-input" value="0"></label>
-      <label class="camp"><span class="camp-eticheta">Total 21% (alcool, sucuri)</span><input type="number" step="0.01" id="z-21" class="camp-input" value="0"></label>
-      <label class="camp"><span class="camp-eticheta">Numerar</span><input type="number" step="0.01" id="z-num" class="camp-input" value="0"></label>
-      <label class="camp"><span class="camp-eticheta">Card</span><input type="number" step="0.01" id="z-card" class="camp-input" value="0"></label>
+      <label class="camp"><span class="camp-eticheta">Total 11% (mancare)</span><input type="number" step="0.01" id="z-11" class="camp-input" placeholder="0,00"></label>
+      <label class="camp"><span class="camp-eticheta">Total 21% (alcool, sucuri)</span><input type="number" step="0.01" id="z-21" class="camp-input" placeholder="0,00"></label>
+      <label class="camp"><span class="camp-eticheta">Numerar</span><input type="number" step="0.01" id="z-num" class="camp-input" placeholder="0,00"></label>
+      <label class="camp"><span class="camp-eticheta">Card</span><input type="number" step="0.01" id="z-card" class="camp-input" placeholder="0,00"></label>
     </div>
     <div id="z-rezultat" style="margin-top:16px"></div>
     <p style="margin-top:16px"><button class="buton-primar" id="z-salveaza">Genereaza nota</button></p>`;
@@ -1135,7 +1135,7 @@ async function ecranJurnal(corp, nav, t) {
       : note.map(rand).join("");
     const ciorne = note.filter((n) => n.status === "ciorna").length;
     corp.innerHTML = `
-      <h2 class="pf-titlu">Registru jurnal \u00b7 ${escJ(t.nume || "")}</h2>
+      <h2 class="pf-titlu">Registru jurnal</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:#c9961f;font-weight:600">${ciorne} de validat</span>` : ""}
         <button class="buton-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="j-next">luna \u2192</button>
@@ -1192,7 +1192,7 @@ async function ecranJurnal(corp, nav, t) {
         d.innerHTML = `<input type="text" class="mig-text je-deb" placeholder="debit" style="width:90px">
           <span style="align-self:center">=</span>
           <input type="text" class="mig-text je-cre" placeholder="credit" style="width:90px">
-          <input type="number" step="0.01" class="mig-text je-sum" value="0.00" style="width:120px">
+          <input type="number" step="0.01" class="mig-text je-sum" placeholder="0,00" style="width:120px">
           <button class="buton-secundar je-scoate">\u2212</button>`;
         zona.appendChild(d); leaga();
       });
@@ -1216,6 +1216,7 @@ async function ecranJurnal(corp, nav, t) {
 
 
 // [bonuri] documente pozate de client: lista -> detaliu la selectie  // bon_flux_e5_v1
+let _bonuriMesaj = "";  // faza_b_traseu_v1
 async function ecranBonuri(corp, nav, t) {
   const fmt = (v) => (Number(v) || 0).toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const fmtZi = (iso) => { const p = String(iso || "").split("-"); return p.length === 3 ? p[2] + "." + p[1] + "." + p[0] : (iso || ""); };  // bon_flux_e6_v1
@@ -1250,7 +1251,7 @@ async function ecranBonuri(corp, nav, t) {
       docs = (r && r.bonuri) || [];
     } catch (e) { err = e; }
     if (err) {
-      corp.innerHTML = `<h2 class="pf-titlu">Bonuri și chitanțe · ${t.nume || ""}</h2>
+      corp.innerHTML = `<h2 class="pf-titlu">Bonuri și chitanțe</h2>
         <p class="msg-eroare">${err.mesaj || "Nu am putut încărca documentele."}</p>`;
       return;
     }
@@ -1263,16 +1264,16 @@ async function ecranBonuri(corp, nav, t) {
           · <b>${fmtPrimit(b.primit_la)}</b>
         </button>`).join("");
     corp.innerHTML = `
-      <h2 class="pf-titlu">Bonuri și chitanțe · ${t.nume || ""}</h2>
+      <h2 class="pf-titlu">Bonuri și chitanțe</h2>
       <p class="pf-intro">Documente pozate de clienți sau adăugate de tine. Alege unul ca să-l verifici și să-l contezi.</p>
       <div style="margin:0 0 12px">
         <button class="buton-secundar" id="bc-adauga">Adaugă document (pozează / încarcă)</button>
         <input type="file" id="bc-fisier" accept="image/*" multiple hidden>
         <span class="msg-eroare" id="bc-msg" style="margin-left:8px"></span>
       </div>
-      ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 12px">' + mesajSucces + '</p>' : ""}
+      ${(mesajSucces || _bonuriMesaj) ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 12px">' + (mesajSucces || _bonuriMesaj) + '</p>' : ""}
       ${itemi}`;
-    mesajSucces = "";
+    mesajSucces = ""; _bonuriMesaj = "";
     const bcInput = corp.querySelector("#bc-fisier");  // bon_cabinet_v1
     const bcBtn = corp.querySelector("#bc-adauga");
     bcBtn.addEventListener("click", () => bcInput.click());
@@ -1294,12 +1295,16 @@ async function ecranBonuri(corp, nav, t) {
       }
     });
     corp.querySelectorAll("[data-doc]").forEach((el) =>
-      el.addEventListener("click", () => randeazaDetaliu(parseInt(el.dataset.doc))));
+      el.addEventListener("click", () => {  // faza_b_traseu_v1
+        const i = parseInt(el.dataset.doc);
+        const b = docs[i];
+        nav.mergi((b.tip === "chitanta" ? "Chitan\u021b\u0103" : "Bon fiscal") + (b.comerciant ? " \u00b7 " + b.comerciant : ""),
+          (c) => { corp = c; randeazaDetaliu(i); });
+      }));
   }
 
   async function randeazaDetaliu(i) {
-    nav.setInapoi(randeazaLista);
-    curata();
+    curata();  // faza_b_traseu_v1
     const b = docs[i];
     const eChitanta = b.tip === "chitanta";
     const sumaArt = (b.articole || []).reduce((s, a) => s + (Number(a.valoare) || 0), 0);
@@ -1334,7 +1339,7 @@ async function ecranBonuri(corp, nav, t) {
       </div>
       </div>`;
 
-    corp.querySelector("#d-renunta").addEventListener("click", randeazaLista);
+    corp.querySelector("#d-renunta").addEventListener("click", () => nav.inapoiPas());  // faza_b_traseu_v1
 
     // pozele: mari, fixe langa date; rotita = zoom, tragere = mutare, dublu-click = ecran complet  // bon_flux_e8_v1
     (async () => {
@@ -1420,8 +1425,8 @@ async function ecranBonuri(corp, nav, t) {
             factura_id: ales && ales.value ? parseInt(ales.value) : null,
           });
           const av = (r && r.avertismente) || [];
-          mesajSucces = "Plata a fost înregistrată în Registrul de casă." + (av.length ? " Atenție: " + av.join(" ") : "");
-          randeazaLista();
+          _bonuriMesaj = "Plata a fost înregistrată în Registrul de casă." + (av.length ? " Atenție: " + av.join(" ") : "");
+          nav.inapoiPas();
         } catch (e) {
           btn.disabled = false; btn.textContent = "Certifică plata (401 = 5311)";
           msg.textContent = e.mesaj || "Eroare la înregistrare.";
@@ -1445,8 +1450,8 @@ async function ecranBonuri(corp, nav, t) {
             tva: parseFloat(v("#d-tva")) || 0,
             linii,
           });
-          mesajSucces = "Bonul a fost contat.";
-          randeazaLista();
+          _bonuriMesaj = "Bonul a fost contat.";
+          nav.inapoiPas();
         } catch (e) {
           btn.disabled = false; btn.textContent = "Certifică și contează";
           msg.textContent = e.mesaj || "Eroare la contare.";
@@ -1464,7 +1469,7 @@ async function ecranBalanta(corp, nav, t) {
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
   const deseneaza = () => {
     corp.innerHTML = `
-      <h2 class="pf-titlu">Balan\u021b\u0103 de verificare \u00b7 ${String(t.nume || "")}</h2>
+      <h2 class="pf-titlu">Balan\u021b\u0103 de verificare</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
         <button class="buton-secundar" id="b-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="b-next">luna \u2192</button></p>
@@ -1646,3 +1651,15 @@ async function ecranAccesClient(corp, nav, t) {
 // bon_cabinet_v1
 
 // firma_email_optional_v1
+
+// faza_b_traseu_v1
+
+// provenienta_v1
+
+// fara_precompletari_v1
+
+// entitate_sursa_unica_v1
+
+// casa_conform_v1
+
+// precompletari_rest_v1

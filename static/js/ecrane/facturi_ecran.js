@@ -45,15 +45,14 @@ function meniuFacturi(corp, nav, tenantId, opt) {
         <div class="fac-opt-sub">\u0218abloane emise automat lunar</div>
       </button>
     </div>`;
-  corp.querySelector("#fac-istoric").addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
-  corp.querySelector("#fac-emite").addEventListener("click", () => emiteFactura(corp, nav, tenantId, opt));
-  corp.querySelector("#fac-model").addEventListener("click", () => modelFactura(corp, nav, tenantId, opt));
-  corp.querySelector("#fac-recurente").addEventListener("click", () => listaRecurente(corp, nav, tenantId, opt));
+  corp.querySelector("#fac-istoric").addEventListener("click", () => nav.mergi("Istoric facturi", (c) => istoricFacturi(c, nav, tenantId, opt)));  // faza_b_traseu_v1
+  corp.querySelector("#fac-emite").addEventListener("click", () => nav.mergi("Emite factur\u0103", (c) => emiteFactura(c, nav, tenantId, opt)));
+  corp.querySelector("#fac-model").addEventListener("click", () => nav.mergi("Model factur\u0103", (c) => modelFactura(c, nav, tenantId, opt)));
+  corp.querySelector("#fac-recurente").addEventListener("click", () => nav.mergi("Facturi recurente", (c) => listaRecurente(c, nav, tenantId, opt)));
 }  // fac_recurente_v1
 
 // ---------- ISTORIC ---------- /* facback_null_fix_v1 */
 async function istoricFacturi(corp, nav, tenantId, opt) {
-  if (nav.setInapoi) nav.setInapoi(() => meniuFacturi(corp, nav, tenantId, opt));
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
   corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
   corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
@@ -94,16 +93,14 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     }
   }));
   corp.querySelectorAll(".fac-frand-btn").forEach((b) => {
-    b.addEventListener("click", () => detaliiFactura(corp, nav, tenantId, b.dataset.id, opt));
+    b.addEventListener("click", () => nav.mergi("Factur\u0103", (c) => detaliiFactura(c, nav, tenantId, b.dataset.id, opt)));  // faza_b_traseu_v1
   });
 }
 
 // ---------- EMITE ----------
 function emiteFactura(corp, nav, tenantId, opt) {
-  if (nav.setInapoi) nav.setInapoi(() => meniuFacturi(corp, nav, tenantId, opt));
   randeazaEmitere(corp, nav, tenantId, {
-    inapoi: () => meniuFacturi(corp, nav, tenantId, opt),
-    dupaEmitere: () => istoricFacturi(corp, nav, tenantId, opt),
+    dupaEmitere: () => { nav.inapoiPas(); nav.mergi("Istoric facturi", (c) => istoricFacturi(c, nav, tenantId, opt)); },  // faza_b_traseu_v1
   });
 }
 
@@ -116,7 +113,6 @@ const _bani = (x, mon) => {
 };
 
 async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
-  if (nav.setInapoi) nav.setInapoi(() => istoricFacturi(corp, nav, tenantId, opt));
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
   corp.querySelector("#fac-back")?.addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
 
@@ -430,7 +426,6 @@ const MF_FONTURI = {
 const MF_CULORI = ["#1d4ed8", "#0a807b", "#1d7a4d", "#a3344b", "#6d28d9", "#b45309"];
 
 async function modelFactura(corp, nav, tenantId, opt) {
-  if (nav.setInapoi) nav.setInapoi(() => meniuFacturi(corp, nav, tenantId, opt));
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
   corp.querySelector("#fac-back")?.addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
 
@@ -599,7 +594,6 @@ async function modelFactura(corp, nav, tenantId, opt) {
 
 // ---------- RECURENTE ----------  // fac_recurente_v1
 async function listaRecurente(corp, nav, tenantId, opt) {
-  if (nav.setInapoi) nav.setInapoi(() => meniuFacturi(corp, nav, tenantId, opt));
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
   corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
@@ -639,7 +633,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
     <div class="pf-lista">${corpuri}</div>
     <button class="buton-primar" id="fr-add" style="margin-top:12px">+ \u0218ablon nou</button>`;
   corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
-  corp.querySelector("#fr-add").addEventListener("click", () => formSablon(corp, nav, tenantId, opt));
+  corp.querySelector("#fr-add").addEventListener("click", () => nav.mergi("\u0218ablon nou", (c) => formSablon(c, nav, tenantId, opt)));  // faza_b_traseu_v1
 
   corp.querySelectorAll(".fr-toggle").forEach((b) => b.addEventListener("click", async () => {
     const activNou = !(b.dataset.activ === "true");
@@ -666,8 +660,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
 
 // ---------- ADAUGA SABLON ----------  // fac_recurente_v1
 function formSablon(corp, nav, tenantId, opt) {
-  if (nav.setInapoi) nav.setInapoi(() => listaRecurente(corp, nav, tenantId, opt));
-  const inapoiLista = () => listaRecurente(corp, nav, tenantId, opt);
+  const inapoiLista = () => nav.inapoiPas();  // faza_b_traseu_v1
   corp.innerHTML = `
     <h2 class="pf-titlu">\u0218ablon nou</h2>
 
@@ -685,7 +678,7 @@ function formSablon(corp, nav, tenantId, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Emitere</div>
-      <input class="pr-input" id="fr-zi" type="number" min="1" max="28" value="1" title="Ziua din lun\u0103 la care se emite">
+      <input class="pr-input" id="fr-zi" type="number" min="1" max="28" placeholder="1" title="Ziua din lun\u0103 la care se emite">
       <select class="pr-input" id="fr-moneda">
         <option value="RON">RON</option>
         <option value="EUR">EUR</option>
@@ -710,7 +703,7 @@ function formSablon(corp, nav, tenantId, opt) {
     rand.dataset.idx = idx;
     rand.innerHTML = `
       <input class="pr-input em-l-den" placeholder="Denumire (ex: abonament mentenan\u021b\u0103)" autocomplete="off">
-      <input class="pr-input em-l-cant" type="number" step="0.001" value="1" title="Cantitate">
+      <input class="pr-input em-l-cant" type="number" step="0.001" placeholder="Cant." title="Cantitate">
       <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" title="Pre\u021b unitar">
       <span class="em-l-cota" title="Cota TVA">\u2014</span>
       <button class="em-l-sterge" title="\u0218terge">\u00d7</button>`;
@@ -774,3 +767,7 @@ function formSablon(corp, nav, tenantId, opt) {
 // chitante_fe_v2_etichete
 
 // audit_cab_lot1_v1
+
+// faza_b_traseu_v1
+
+// fara_precompletari_v1

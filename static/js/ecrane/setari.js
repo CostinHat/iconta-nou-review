@@ -25,13 +25,12 @@ export async function randeazaSetari(corp, nav) {
       const b = document.createElement("button");
       b.className = "acces-card meniu-card";
       b.textContent = it.titlu;
-      b.addEventListener("click", () => deschide(it.cheie));
+      b.addEventListener("click", () => nav.mergi(it.titlu, (c) => { corp = c; deschide(it.cheie); }));  // faza_b2_traseu_v1
       meniu.appendChild(b);
     });
   }
 
   function deschide(cheie) {
-    nav.setInapoi(randeazaMeniu);
     if (cheie === "cabinet") randeazaCabinet();
     else if (cheie === "competente") randeazaCompetente();
     else if (cheie === "chei") randeazaChei();
@@ -249,3 +248,5 @@ function _initChei(corp) {
 }
 
 // audit_cab_lot1_v1
+
+// faza_b2_traseu_v1

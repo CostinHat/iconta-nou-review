@@ -270,7 +270,7 @@ export async function ecranOperatiuni(corp, nav, t) {
       if (c.tip === "select") {
         input = `<select id="op-${c.nume}" class="mig-text">${(c.optional ? '<option value="">-</option>' : "") + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
       } else if (c.tip === "data") {
-        input = `<input type="date" id="op-${c.nume}" class="mig-text" value="${ziAzi}">`;
+        input = `<input type="date" id="op-${c.nume}" class="mig-text">`;
       } else if (c.tip === "numar") {
         input = `<input type="number" step="0.01" id="op-${c.nume}" class="mig-text" placeholder="${c.sugestie || ""}">`;
       } else {
@@ -355,3 +355,5 @@ export async function ecranOperatiuni(corp, nav, t) {
 
   lista();
 }
+
+// precompletari_rest_v1

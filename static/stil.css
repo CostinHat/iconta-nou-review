@@ -95,7 +95,7 @@ html, body {
 .camp-input {
   height: 40px;
   padding: 0 12px;
-  border: 1px solid var(--linie);
+  border: 1.5px solid #b9c2cf;  /* contrast_ferestre_v1 */
   border-radius: var(--raza);
   font-size: var(--text-mic);
   font-family: var(--font);
@@ -221,7 +221,7 @@ html, body {
   width: 100%; max-width: 680px; 
   transition: max-width 0.18s ease;
   max-height: calc(100vh - 48px);
-  background: #f4f6f9;
+  background: #e9edf3;  /* contrast_ferestre_v1 */
   border-radius: var(--raza);
   box-shadow: 0 12px 48px rgba(20, 30, 45, 0.25);
   display: flex; flex-direction: column;
@@ -247,6 +247,32 @@ html, body {
 .nav-x:hover { background: var(--rosu-fundal); color: var(--rosu); }
 
 .fereastra-corp { padding: 24px; overflow-y: auto; }
+/* [contrast_ferestre_v1] toate zonele de completat din ferestre: bordura unica vizibila */
+.fereastra-corp input:not([type=checkbox]):not([type=radio]):not([type=file]),
+.fereastra-corp textarea,
+.fereastra-corp select {
+  border: 1.5px solid #b9c2cf;
+  background: #fff;
+  border-radius: 8px;
+}
+.fereastra-corp input:focus, .fereastra-corp textarea:focus, .fereastra-corp select:focus {
+  border-color: #2563eb; outline: none;
+}
+/* [casete_uniforme_v1] dimensiune si font standard, indiferent de clasa */
+.fereastra-corp input:not([type=checkbox]):not([type=radio]):not([type=file]),
+.fereastra-corp select {
+  height: 40px;
+  padding: 0 12px;
+  font-size: var(--text-mic);
+  font-family: var(--font);
+  box-sizing: border-box;
+}
+.fereastra-corp textarea {
+  padding: 10px 12px;
+  font-size: var(--text-mic);
+  font-family: var(--font);
+  box-sizing: border-box;
+}
 
 @keyframes aparitie-overlay { from { opacity: 0; } to { opacity: 1; } }
 @keyframes aparitie-fereastra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
@@ -1702,7 +1728,7 @@ html, body {
 .pr-form-zona { margin: 12px 0; }
 .pr-form { background:#f7f9fc; border:2px solid rgba(0,0,0,0.10); border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:12px; }
 .pr-form-rand { display:flex; gap:10px; flex-wrap:wrap; }
-.pr-input { padding:10px 12px; border:1.5px solid #c8d0dc; border-radius:8px; font-size: var(--text-mic); }
+.pr-input { padding:10px 12px; border:1.5px solid #b9c2cf; border-radius:8px; font-size: var(--text-mic); }  /* contrast_ferestre_v1 */
 .pr-den { width:100%; }
 .pr-mic { flex:1; min-width:90px; }
 .pr-form-detalii { }
@@ -2141,6 +2167,23 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
   color: #fff; font-size: 20px; line-height: 1; padding: 10px 13px; border-radius: 10px; cursor: pointer; }
 .lupa-x:hover { background: rgba(255,255,255,0.28); }
 
+/* [breadcrumb_css_v1] firul drumului in antetul ferestrei */
+.fereastra-fir { display: flex; align-items: center; gap: 6px; margin-left: 10px;
+  overflow: hidden; white-space: nowrap; min-width: 0; font-size: 13px; }
+.fir-veriga { border: 0; background: none; padding: 2px 4px; cursor: pointer;
+  color: #5b6b7c; font-size: 13px; font-weight: 500; border-radius: 6px; }  /* uniformizare_fir_v1 */
+.fir-veriga:hover { background: #eef2f6; color: #1d3a5f; text-decoration: underline; }
+.fir-sep { color: #9aa7b4; font-size: 13px; }
+.fir-parinti { color: #5b6b7c; font-size: 13px; font-weight: 500; }  /* parintii in titlurile de panou */
+.titlu-entitate { color: #1d4ed8; font-size: 13px; font-weight: 600; margin-left: 6px; }  /* Cabinet / firma */
+.fir-acum { color: #1d3a5f; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+
 /* [STANDARD_BUTON_ACTIV] starea "apasat/deschis" pentru butoane cu zone toggle */
 .buton-activ { background: #1a5a94 !important; color: #fff !important; border-color: #1a5a94 !important;
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.25) !important; transform: none !important; }
+
+/* uniformizare_fir_v1 */
+
+/* contrast_ferestre_v1 */
+
+/* casete_uniforme_v1 */

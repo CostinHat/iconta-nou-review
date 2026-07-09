@@ -486,7 +486,7 @@ async function wizardSolduri(corp, nav) {
       </div>
       <span class="mig-stare ${f.are_solduri ? "mig-ok" : "mig-gri"}">${f.are_solduri ? "✓ gata" : "de încărcat"}</span>
     `;
-    rand.addEventListener("click", () => importSolduriFirma(corp, nav, f));
+    rand.addEventListener("click", () => nav.mergi("Import \u00b7 " + (f.nume || ""), (c) => importSolduriFirma(c, nav, f)));  // faza_b3_migrare_v1
     lista.appendChild(rand);
   });
 
@@ -511,8 +511,6 @@ function importSolduriFirma(corp, nav, firma) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
-  nav.setInapoi(() => wizardSolduri(corp, nav));
-
   const fileInput = corp.querySelector("#mig-file");
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
@@ -615,7 +613,7 @@ async function wizardParteneri(corp, nav) {
       </div>
       <span class="mig-stare ${f.are_parteneri ? "mig-ok" : "mig-gri"}">${f.are_parteneri ? "✓ gata" : "de încărcat"}</span>
     `;
-    rand.addEventListener("click", () => importParteneriFirma(corp, nav, f));
+    rand.addEventListener("click", () => nav.mergi("Import \u00b7 " + (f.nume || ""), (c) => importParteneriFirma(c, nav, f)));  // faza_b3_migrare_v1
     lista.appendChild(rand);
   });
 
@@ -640,8 +638,6 @@ function importParteneriFirma(corp, nav, firma) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
-  nav.setInapoi(() => wizardParteneri(corp, nav));
-
   const fileInput = corp.querySelector("#mig-file");
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
@@ -755,7 +751,7 @@ async function wizardSalariati(corp, nav) {
       </div>
       <span class="mig-stare ${f.are_salariati ? "mig-ok" : "mig-gri"}">${f.are_salariati ? "✓ gata" : "de încărcat"}</span>
     `;
-    rand.addEventListener("click", () => importSalariatiFirma(corp, nav, f));
+    rand.addEventListener("click", () => nav.mergi("Import \u00b7 " + (f.nume || ""), (c) => importSalariatiFirma(c, nav, f)));  // faza_b3_migrare_v1
     lista.appendChild(rand);
   });
 
@@ -780,8 +776,6 @@ function importSalariatiFirma(corp, nav, firma) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
-  nav.setInapoi(() => wizardSalariati(corp, nav));
-
   const fileInput = corp.querySelector("#mig-file");
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
@@ -893,7 +887,7 @@ async function wizardAsociati(corp, nav) {
       </div>
       <span class="mig-stare ${f.are_asociati ? "mig-ok" : "mig-gri"}">${f.are_asociati ? "✓ gata" : "de încărcat"}</span>
     `;
-    rand.addEventListener("click", () => importAsociatiFirma(corp, nav, f));
+    rand.addEventListener("click", () => nav.mergi("Import \u00b7 " + (f.nume || ""), (c) => importAsociatiFirma(c, nav, f)));  // faza_b3_migrare_v1
     lista.appendChild(rand);
   });
 
@@ -918,8 +912,6 @@ function importAsociatiFirma(corp, nav, firma) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
-  nav.setInapoi(() => wizardAsociati(corp, nav));
-
   const fileInput = corp.querySelector("#mig-file");
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
@@ -1030,7 +1022,7 @@ async function wizardMijloace(corp, nav) {
       </div>
       <span class="mig-stare ${f.are_mijloace ? "mig-ok" : "mig-gri"}">${f.are_mijloace ? "✓ gata" : "de încărcat"}</span>
     `;
-    rand.addEventListener("click", () => importMijloaceFirma(corp, nav, f));
+    rand.addEventListener("click", () => nav.mergi("Import \u00b7 " + (f.nume || ""), (c) => importMijloaceFirma(c, nav, f)));  // faza_b3_migrare_v1
     lista.appendChild(rand);
   });
 
@@ -1055,8 +1047,6 @@ function importMijloaceFirma(corp, nav, firma) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
-  nav.setInapoi(() => wizardMijloace(corp, nav));
-
   const fileInput = corp.querySelector("#mig-file");
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
@@ -1169,7 +1159,7 @@ async function wizardIstoric(corp, nav) {
       </div>
       <span class="mig-stare ${f.are_istoric ? "mig-ok" : "mig-gri"}">${f.are_istoric ? "✓ gata" : "de încărcat"}</span>
     `;
-    rand.addEventListener("click", () => importIstoricFirma(corp, nav, f));
+    rand.addEventListener("click", () => nav.mergi("Import \u00b7 " + (f.nume || ""), (c) => importIstoricFirma(c, nav, f)));  // faza_b3_migrare_v1
     lista.appendChild(rand);
   });
 
@@ -1194,8 +1184,6 @@ function importIstoricFirma(corp, nav, firma) {
     <div class="mig-eroare" id="mig-eroare"></div>
     <div id="mig-preview"></div>
   `;
-  nav.setInapoi(() => wizardIstoric(corp, nav));
-
   const fileInput = corp.querySelector("#mig-file");
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
@@ -1270,3 +1258,5 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
     }
   });
 }
+
+// faza_b3_migrare_v1

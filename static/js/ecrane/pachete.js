@@ -65,12 +65,11 @@ function pasAlegere(corp, nav) {
   selF.addEventListener("change", refresh);
   corp.querySelector("#pac-an").addEventListener("change", refresh);
   corp.querySelector("#pac-luna").addEventListener("change", refresh);
-  cont.addEventListener("click", () => pasLucru(corp, nav));
+  cont.addEventListener("click", () => nav.mergi("Pachetul lunii", (c) => pasLucru(c, nav)));  // faza_b2_traseu_v1
   refresh();
 }
 
 async function pasLucru(corp, nav) {
-  if (nav && nav.setInapoi) nav.setInapoi(() => pasAlegere(corp, nav));
   const f = corp.closest(".fereastra"); if (f) f.classList.add("fer-larg");
   corp.innerHTML = `<p class="ecran-nota">Se incarca datele lunii…</p>`;
   // rezumat + poveste existenta (in paralel)
@@ -236,3 +235,5 @@ async function _salveaza(text, status, stareEl) {  // audit_cab_lot1_v1
 }
 
 // audit_cab_lot1_v1
+
+// faza_b2_traseu_v1

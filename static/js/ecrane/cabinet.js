@@ -76,11 +76,11 @@ const DEF = [  /* cab_ordine_v2 */
 
 // [p73_sinteza_azi] deschide un ecran existent dupa cheie (refoloseste ecranele, nu duplica)
 function deschideEcran(cheie, nav, continut) {
-  if (cheie === "validat") return nav.deschide("De validat", (corp) => randeazaValidat(corp, nav));
-  if (cheie === "activitate") return nav.deschide("Activitate cabinet", (corp) => randeazaActivitateCabinet(corp, nav));
-  if (cheie === "capacitate") return nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav));
-  if (cheie === "tipare") return nav.deschide("Tipare", (corp) => randeazaTipare(corp, nav));
-  if (cheie === "raport") return nav.deschide("Raporteaza", (corp) => randeazaRaporteaza(corp, nav));
+  if (cheie === "validat") return nav.deschide("De validat", (corp) => randeazaValidat(corp, nav), { nivel: "cabinet" });
+  if (cheie === "activitate") return nav.deschide("Activitate cabinet", (corp) => randeazaActivitateCabinet(corp, nav), { nivel: "cabinet" });
+  if (cheie === "capacitate") return nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav), { nivel: "cabinet" });
+  if (cheie === "tipare") return nav.deschide("Tipare", (corp) => randeazaTipare(corp, nav), { nivel: "cabinet" });
+  if (cheie === "raport") return nav.deschide("Raporteaza", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" });
 }
 
 // [p73_sinteza_azi] panou de intampinare: sinteza zilei, totul clickabil spre ecranele de detaliu
@@ -216,7 +216,7 @@ function randeazaPanou(continut, nav) {
   `;
 
   const grila = continut.querySelector(".cab-grila");
-  continut.querySelector("#cab-recomanda-mic").addEventListener("click", () => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav)));  /* recomanda_mic_v1 */
+  continut.querySelector("#cab-recomanda-mic").addEventListener("click", () => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav), { nivel: "cabinet" }));  /* recomanda_mic_v1 */
   DEF.forEach((c) => {
     const card = document.createElement("button");
     card.className = "cab-card";
@@ -230,29 +230,29 @@ function randeazaPanou(continut, nav) {
     if (c.cheie === "firme") {
       card.addEventListener("click", () => randeazaMeniuFirme(continut, nav));
     } else if (c.cheie === "control") {
-      card.addEventListener("click", () => nav.deschide("Control fiscal", (corp) => randeazaControl(corp, nav)));
+      card.addEventListener("click", () => nav.deschide("Control fiscal", (corp) => randeazaControl(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "termene") {
-      card.addEventListener("click", () => nav.deschide("Termene", (corp) => randeazaTermene(corp, nav)));
+      card.addEventListener("click", () => nav.deschide("Termene", (corp) => randeazaTermene(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "validat") {
-      card.addEventListener("click", () => nav.deschide("De validat", (corp) => randeazaValidat(corp, nav)));
+      card.addEventListener("click", () => nav.deschide("De validat", (corp) => randeazaValidat(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "asistenti") {
-      card.addEventListener("click", () => nav.deschide("Asistenți", (corp) => randeazaAsistenti(corp, nav)));
+      card.addEventListener("click", () => nav.deschide("Asistenți", (corp) => randeazaAsistenti(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "activitate") {  // [p76_comasare_font] meniu Activitate (jurnal + tipare)
       card.addEventListener("click", () => randeazaMeniuActivitate(continut, nav));
     } else if (c.cheie === "consolidare") {  // consolidare_fe_v1
-      card.addEventListener("click", () => nav.deschide("Consolidare", (corp) => randeazaConsolidare(corp, nav)));
+      card.addEventListener("click", () => nav.deschide("Consolidare", (corp) => randeazaConsolidare(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "capacitate") {  // [p71_capacitate]
-      card.addEventListener("click", () => nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav)));
+      card.addEventListener("click", () => nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "brief") {  // [p74_card_brief]
       card.addEventListener("click", () => randeazaSintezaAzi(nav, continut));
     } else if (c.cheie === "setari") {  // [p28_setari]
-      card.addEventListener("click", () => nav.deschide("Setari cont", (corp) => randeazaSetari(corp, nav)));
+      card.addEventListener("click", () => nav.deschide("Setari cont", (corp) => randeazaSetari(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "recomanda") {  // [p31_recomanda]
-      card.addEventListener("click", () => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav)));
+      card.addEventListener("click", () => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "pachete") {  // [p63_pachete]
-      card.addEventListener("click", () => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav)));
+      card.addEventListener("click", () => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "raport") {  // [p34_raporteaza]
-      card.addEventListener("click", () => nav.deschide("Raporteaza", (corp) => randeazaRaporteaza(corp, nav)));
+      card.addEventListener("click", () => nav.deschide("Raporteaza", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" }));
     } else {
       card.addEventListener("click", () => c.actiune(nav));
     }
@@ -290,7 +290,7 @@ function randeazaMeniuActivitate(continut, nav) {
       <button class="sub-inapoi" id="sub-inapoi">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <h1 class="sub-titlu">Activitate</h1>
+      <h1 class="sub-titlu"><span style="color:#8a97a5;font-weight:500">Panou \u203a </span>Activitate</h1>
     </div>
     <div class="firme-optiuni">
       <button class="firme-optiune" id="opt-jurnal">
@@ -311,9 +311,9 @@ function randeazaMeniuActivitate(continut, nav) {
   `;
   continut.querySelector("#sub-inapoi").addEventListener("click", () => randeazaPanou(continut, nav));
   continut.querySelector("#opt-jurnal").addEventListener("click", () =>
-    nav.deschide("Activitate cabinet", (corp) => randeazaActivitateCabinet(corp, nav)));
+    nav.deschide("Activitate cabinet", (corp) => randeazaActivitateCabinet(corp, nav), { nivel: "cabinet" }));
   continut.querySelector("#opt-tipare").addEventListener("click", () =>
-    nav.deschide("Tipare", (corp) => randeazaTipare(corp, nav)));
+    nav.deschide("Tipare", (corp) => randeazaTipare(corp, nav), { nivel: "cabinet" }));
 }
 
 function randeazaMeniuFirme(continut, nav) {
@@ -322,7 +322,7 @@ function randeazaMeniuFirme(continut, nav) {
       <button class="sub-inapoi" id="sub-inapoi">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <h1 class="sub-titlu">Firme</h1>
+      <h1 class="sub-titlu"><span style="color:#8a97a5;font-weight:500">Panou \u203a </span>Firme</h1>
     </div>
     <div class="firme-optiuni">
       <button class="firme-optiune" id="opt-existente">
@@ -346,7 +346,7 @@ function randeazaMeniuFirme(continut, nav) {
     randeazaListaFirme(continut, nav, () => randeazaMeniuFirme(continut, nav))
   );
   continut.querySelector("#opt-migrare").addEventListener("click", () =>
-    nav.deschide("Migrare cabinet", (corp) => randeazaMigrare(corp, nav))
+    nav.deschide("Migrare cabinet", (corp) => randeazaMigrare(corp, nav), { nivel: "cabinet" })
   );
 }
 
@@ -566,3 +566,5 @@ async function randeazaConsolidare(corp, nav) {
 // cab_culori_v2
 
 // audit_cab_lot2_v1
+
+// provenienta_v1

@@ -142,11 +142,12 @@ def sterge_factura(conn, factura_id):
 def numerotare(conn):
     """Citeste serie + urmatorul numar de factura din firma_profil."""
     with conn.cursor() as cur:
-        cur.execute("SELECT serie_factura, urmator_numar_factura FROM firma_profil LIMIT 1")
+        cur.execute("SELECT serie_factura, urmator_numar_factura, numerotare_configurata FROM firma_profil LIMIT 1")
         row = cur.fetchone()
     serie = row[0] if row else None
     urmator = int(row[1]) if row and row[1] is not None else 1
-    return {"serie": serie, "urmator_numar": urmator}
+    configurata = bool(row[2]) if row and len(row) > 2 and row[2] is not None else False
+    return {"serie": serie, "urmator_numar": urmator, "configurata": configurata}  # numerotare_configurata_v1
 
 
 def seteaza_numerotare(conn, serie=None, numar_start=None):
@@ -159,6 +160,7 @@ def seteaza_numerotare(conn, serie=None, numar_start=None):
         seturi.append("urmator_numar_factura = %s"); val.append(int(numar_start))
     if not seturi:
         return {"ok": False, "mesaj": "nimic de setat"}
+    seturi.append("numerotare_configurata = true")  # numerotare_configurata_v1
     with conn.cursor() as cur:
         cur.execute("UPDATE firma_profil SET " + ", ".join(seturi), val)
     return {"ok": True}

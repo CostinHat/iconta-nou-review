@@ -11,10 +11,10 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
 
   // citesc numerotarea; daca nu e configurata (serie null si urmator 1 fara facturi) -> config
-  let num = { serie: null, urmator_numar: 1 };
+  let num = { serie: null, urmator_numar: 1, configurata: false };
   try { num = await api.get(`/tenants/${tenantId}/facturi/numerotare`); } catch {}
 
-  const neconfigurat = !num.serie && (!num.urmator_numar || num.urmator_numar === 1);
+  const neconfigurat = !num.configurata;  // numerotare_configurata_v1
   if (neconfigurat) {
     configureazaNumerotare(corp, nav, tenantId, opt);
   } else {
@@ -24,7 +24,7 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
 
 // ---------- CONFIGURARE NUMEROTARE (o data) ----------
 function configureazaNumerotare(corp, nav, tenantId, opt) {
-  if (nav && nav.setInapoi) nav.setInapoi(undefined);
+  if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || undefined);  // emitere_inapoi_v1
   const inapoi = opt.inapoi || (() => nav.inapoi());
   corp.innerHTML = `
     
@@ -88,7 +88,7 @@ async function salveazaConfig(tenantId, serie, numar_start) {
 
 // ---------- FORMULAR EMITERE ----------
 function formularEmitere(corp, nav, tenantId, num, opt) {
-  if (nav && nav.setInapoi) nav.setInapoi(undefined);
+  if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || undefined);  // emitere_inapoi_v1
   let monedaSel = "RON";
   const inapoi = opt.inapoi || (() => nav.inapoi());
   const numarProxim = num.serie ? `${num.serie}${num.urmator_numar}` : `${num.urmator_numar}`;
@@ -152,7 +152,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     rand.dataset.idx = idx;
     rand.innerHTML = `
       <input class="pr-input em-l-den" placeholder="Denumire (ex: paine, consultanta)" autocomplete="off">
-      <input class="pr-input em-l-cant" type="number" step="0.001" value="1" title="Cantitate">
+      <input class="pr-input em-l-cant" type="number" step="0.001" placeholder="Cant." title="Cantitate">
       <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" title="Pre\u021b unitar">
       <span class="em-l-cota" title="Cota TVA">\u2014</span>
       <button class="em-l-sterge" title="\u0218terge">\u00d7</button>`;
@@ -340,3 +340,9 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 }
 
 // audit_cab_lot1_v1
+
+// emitere_inapoi_v1
+
+// numerotare_configurata_v1
+
+// fara_precompletari_v1

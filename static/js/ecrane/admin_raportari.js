@@ -125,13 +125,12 @@ function randeazaLista(corp, nav) {
         <span class="rap-rand-jos">${esc(r.cabinet || "")}${r.autor ? " · " + esc(r.autor) : ""}</span>
       </span>
     `;
-    rand.addEventListener("click", () => deschideSesizare(corp, nav, r.id));
+    rand.addEventListener("click", () => nav.mergi("Sesizare", (c) => deschideSesizare(c, nav, r.id)));  // faza_b2_traseu_v1
     cont.appendChild(rand);
   });
 }
 
 async function deschideSesizare(corp, nav, id) {
-  if (nav && nav.setInapoi) nav.setInapoi(() => randeazaAdminRaportari(corp, nav));
   _activ = id;
   corp.querySelectorAll(".rap-rand").forEach((b) => b.classList.remove("rap-rand-activ"));
 
@@ -248,3 +247,5 @@ async function mutaSesizare(corp, nav, id, valoare) {
 }
 
 // audit_cab_lot1_v1
+
+// faza_b2_traseu_v1

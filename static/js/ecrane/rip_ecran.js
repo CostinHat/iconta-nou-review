@@ -57,13 +57,13 @@ export async function ecranRip(corp, nav, t) {
       <div class="pf-frand" style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Opera\u021biune nou\u0103</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:1000px">
-          <label>Data<br><input type="date" id="r-data" class="mig-text" value="${ziAzi}"></label>
+          <label>Data<br><input type="date" id="r-data" class="mig-text"></label>
           <label>Tip<br><select id="r-tip" class="mig-text"><option value="incasare">Incasare</option><option value="plata">Plata</option></select></label>
           <label>Categorie<br><select id="r-cat" class="mig-text"></select></label>
           <label>Deductibilitate<br><select id="r-ded" class="mig-text" disabled>
             <option value="">-</option><option value="integral">integral</option>
             <option value="limitat">limitat</option><option value="nedeductibil">nedeductibil</option></select></label>
-          <label>Suma (lei)<br><input type="number" step="0.01" id="r-suma" class="mig-text" value="0"></label>
+          <label>Suma (lei)<br><input type="number" step="0.01" id="r-suma" class="mig-text" placeholder="0,00"></label>
           <label>Metoda<br><select id="r-met" class="mig-text"><option value="numerar">numerar</option><option value="banca">banca</option></select></label>
           <label>Explicatie<br><input type="text" id="r-expl" class="mig-text"></label>
           <label>Document nr.<br><input type="text" id="r-doc" class="mig-text"></label>
@@ -160,3 +160,5 @@ export async function ecranRip(corp, nav, t) {
   };
   deseneaza();
 }
+
+// precompletari_rest_v1

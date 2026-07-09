@@ -543,6 +543,7 @@ function ecranInLucru(corp, nav, nume) {
 }
 
 // [bon] Pozeaza bon - OCR cu AI + confirmare client  // bon_flux_e2_v1
+let _pozareMesaj = "";  // faza_b_traseu_v1
 async function ecranBon(corp, nav) {
   let mesajSucces = "";
   let draft = null;  // { bon_id, bon, avertismente, urls: [obiect URL-uri poze] }
@@ -557,7 +558,7 @@ async function ecranBon(corp, nav) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Pozează bon sau chitanță</h2>
       <p class="pf-intro">Fotografiază sau încarcă bonul fiscal ori chitanța. iConta citește documentul automat, apoi tu îl trimiți contabilului.</p>
-      ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
+      ${(mesajSucces || _pozareMesaj) ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + (mesajSucces || _pozareMesaj) + '</p>' : ""}
       <input type="file" id="bon-fisier" accept="image/*" capture="environment" multiple hidden>
       <input type="file" id="bon-fisier-galerie" accept="image/*" multiple hidden>
       <div id="bon-butoane" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
@@ -565,7 +566,7 @@ async function ecranBon(corp, nav) {
         <button class="buton-secundar" id="bon-incarca">Încarcă din galerie</button>
       </div>
       <div id="bon-rezultat"></div>`;
-    mesajSucces = "";
+    mesajSucces = ""; _pozareMesaj = "";
     corp.querySelector("#bon-fotografiaza").addEventListener("click", () => corp.querySelector("#bon-fisier").click());  // ux_login_camera_v1
     corp.querySelector("#bon-incarca").addEventListener("click", () => corp.querySelector("#bon-fisier-galerie").click());
     const laSelectie = async (ev) => {
@@ -580,7 +581,7 @@ async function ecranBon(corp, nav) {
         const r = await api.postForm("/portal/bon", fd);
         draft = { bon_id: r.bon_id, bon: r.bon || {}, avertismente: r.avertismente || [],
                   urls: fs.map((f) => URL.createObjectURL(f)) };
-        randeazaConfirmare();
+        nav.mergi("Verific\u0103 documentul", (c) => { corp = c; randeazaConfirmare(); });  // faza_b_traseu_v1
       } catch (e) {
         corp.querySelectorAll("#bon-butoane button").forEach((b) => { b.disabled = false; });
         ev.target.value = "";
@@ -625,8 +626,8 @@ async function ecranBon(corp, nav) {
       bt.disabled = true; br.disabled = true; bt.textContent = "Se trimite...";
       try {
         await api.post("/portal/bon/" + draft.bon_id + "/confirma", {});
-        mesajSucces = "Documentul a plecat la contabil. Îl vei regăsi în cifrele firmei.";
-        randeazaPozare();
+        _pozareMesaj = "Documentul a plecat la contabil. Îl vei regăsi în cifrele firmei.";
+        nav.inapoiPas();  // faza_b_traseu_v1
       } catch (e) {
         bt.disabled = false; br.disabled = false; bt.textContent = "Trimite la contabil";
         corp.querySelector("#bon-msg").innerHTML = '<span class="msg-eroare">' + (e.mesaj || "Nu am putut trimite. Încearcă din nou.") + '</span>';
@@ -641,7 +642,7 @@ async function ecranBon(corp, nav) {
     if (draft && draft.bon_id) {
       try { await api.del("/portal/bon/" + draft.bon_id); } catch {}
     }
-    randeazaPozare();
+    nav.inapoiPas();  // faza_b_traseu_v1
   }
 
   randeazaPozare();
@@ -714,3 +715,5 @@ async function incarcaForecast(corp, rand, lei) {  // portal_cashflow_fe_v1
 // bon_flux_e2b_v1
 
 // ux_login_camera_v1
+
+// faza_b_traseu_v1

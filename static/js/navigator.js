@@ -5,7 +5,8 @@
 //   bara albastru-gri dedesubt (cabinet/asistent): firma în lucru
 //   client: doar bara albastră (o singură firmă)
 // FEREASTRĂ de lucru (modală, centrală peste overlay umbrit):
-//   ← portocaliu stânga-sus -> ACASĂ (golește stiva); X dreapta-sus -> ÎNAPOI un pas
+//   ← stânga-sus -> UN PAS ÎNAPOI pe traseul parcurs (apare doar când există drum);
+//   X dreapta-sus -> ÎNCHIDE fereastra (acasă). Traseul e memorat de navigator (nav.mergi).
 
 import { sesiune } from "./sesiune.js";
 
@@ -138,27 +139,58 @@ export function creeazaNavigator(radacina, desktopRandator) {
     // Sageata apare DOAR cand exista un "inapoi" real:
     //  - mai multe ferestre pe stiva, SAU
     //  - ecranul curent isi defineste o functie interna 'inapoi' (ex: migrare in cascada)
-    const areInapoi = stiva.length > 1 || typeof sus.inapoi === "function";  // sageata_dinamica_v1
+    const areInapoi = stiva.length > 1 || typeof sus.inapoi === "function" || (sus.pasi && sus.pasi.length > 0);  // traseu_automat_v1
+    // breadcrumb_v1: drumul (breadcrumb) din traseul real — ferestre + pasi + curent
+    const drum = [];
+    for (let i = 0; i < stiva.length - 1; i++) drum.push({ text: stiva[i].titlu || "…", fereastra: i });
+    (sus.pasi || []).forEach((p, i) => { if (p.titlu) drum.push({ text: p.titlu, pas: i }); });
+    const drumHtml = drum.map((d, i) =>
+      `<button class="fir-veriga" data-fer="${d.fereastra ?? ''}" data-pas="${d.pas ?? ''}">${String(d.text).replace(/[<>&]/g, "")}</button>` +
+      (i < drum.length - 1 ? `<span class="fir-sep" aria-hidden="true">›</span>` : "")
+    ).join("");  // fir_doar_parinti_v1: doar parintii; pasul curent = titlul din corp
     fer.innerHTML = `
       <div class="fereastra-antet">
         <button class="nav-sageata nav-inapoi" title="Înapoi" aria-label="Înapoi" ${areInapoi ? '' : 'style="display:none"'}><span aria-hidden="true">←</span></button>
+        <span class="fereastra-fir">${drumHtml}</span>
         <span class="fereastra-spatiu"></span>
         <button class="nav-x" title="Închide" aria-label="Închide"><span aria-hidden="true">✕</span></button>
       </div>
       <div class="fereastra-corp"></div>
     `;
+    fer.querySelectorAll(".fir-veriga").forEach((b) => b.addEventListener("click", () => {
+      if (b.dataset.fer !== "") {  // sari la o fereastra de dedesubt
+        stiva.length = Number(b.dataset.fer) + 1;
+        randeazaFerestre();
+        return;
+      }
+      const idx = Number(b.dataset.pas);  // sari la un pas de pe traseu
+      const p = sus.pasi[idx];
+      sus.pasi.length = idx;
+      sus.curent = p.randator;
+      sus.titluCurent = p.titlu || "";
+      sus.inapoi = null;
+      randeazaFerestre();
+    }));
     const bInapoi = fer.querySelector(".nav-inapoi");
     if (bInapoi) {
-      bInapoi.addEventListener("click", () => {
-        if (typeof sus.inapoi === "function") sus.inapoi();
-        else nav.inapoi();
+      bInapoi.addEventListener("click", () => {  // traseu_automat_v1
+        if (typeof sus.inapoi === "function") { sus.inapoi(); return; }
+        if (sus.pasi && sus.pasi.length) {
+          const p = sus.pasi.pop();
+          sus.curent = p.randator;
+          sus.titluCurent = p.titlu || "";  // breadcrumb_v1
+          sus.scrollY = p.scrollY || 0;
+          randeazaFerestre();
+          return;
+        }
+        nav.inapoi();
       });
     }
     fer.querySelector(".nav-x").addEventListener("click", () => nav.acasa());
     overlay.appendChild(fer);
     radacina.appendChild(overlay);
     fer.classList.toggle("fer-larg", (sus.optiuni || {}).lat === "larg");
-    sus.randator(fer.querySelector(".fereastra-corp"), nav);
+    (sus.curent || sus.randator)(fer.querySelector(".fereastra-corp"), nav);  // traseu_automat_v1
     if (sus.scrollY) fer.querySelector(".fereastra-corp").scrollTop = sus.scrollY; /* scroll_memorat_v1 */
     /* stelute_rosii_v2: orice * din etichete devine rosu, oricand apare */
     const _corp = fer.querySelector(".fereastra-corp");
@@ -169,9 +201,16 @@ export function creeazaNavigator(radacina, desktopRandator) {
         h.textContent = sus.titlu;
         _corp.prepend(h);
       }
-      if (firmaInLucru) {
+      {  // provenienta_v1 + uniformizare_fir_v1: entitatea ca span uniform
         const h = _corp.querySelector("h2");
-        if (h && !h.textContent.includes(firmaInLucru)) h.textContent += " \u00b7 " + firmaInLucru;
+        const ent = (sus.optiuni || {}).nivel === "cabinet" ? "Cabinet" : firmaInLucru;
+        const firulArata = stiva.length > 1 || (sus.pasi && sus.pasi.length > 0);  /* dedup_entitate_v1 */
+        if (h && ent && !firulArata && !h.textContent.includes(ent)) {
+          const sp = document.createElement("span");
+          sp.className = "titlu-entitate";
+          sp.textContent = "\u00b7 " + ent;
+          h.appendChild(sp);
+        }
       }
       _corp.querySelectorAll("label, .camp-eticheta").forEach((l) => {
       l.childNodes.forEach((n) => {
@@ -190,13 +229,38 @@ export function creeazaNavigator(radacina, desktopRandator) {
     deschide(titlu, randator, optiuni) {
       const c = document.querySelector(".fereastra-corp");
       if (c && stiva.length) stiva[stiva.length - 1].scrollY = c.scrollTop; /* scroll_memorat_v1 */
-      stiva.push({ titlu, randator, optiuni: optiuni || {} }); randeazaFerestre(); }, /* fereastra_optiuni_v1 */
+      stiva.push({ titlu, randator, curent: randator, pasi: [], optiuni: optiuni || {} }); randeazaFerestre(); }, /* fereastra_optiuni_v1 + traseu_automat_v1 */
     inapoi() { stiva.pop(); randeazaFerestre(); },
+    inapoiPas() {  // faza_b_traseu_v1: un pas inapoi pe traseu, programatic (dupa o actiune reusita)
+      if (!stiva.length) return;
+      const sus = stiva[stiva.length - 1];
+      if (sus.pasi && sus.pasi.length) {
+        const p = sus.pasi.pop();
+        sus.curent = p.randator;
+        sus.titluCurent = p.titlu || "";
+        sus.scrollY = p.scrollY || 0;
+        randeazaFerestre();
+      } else nav.inapoi();
+    },
+    mergi(titlu, fn) {  // traseu_automat_v1 + breadcrumb_v1: pas cu titlu pe traseu
+      if (!stiva.length) return;
+      if (typeof titlu === "function") { fn = titlu; titlu = ""; }  // compat: mergi(fn)
+      const sus = stiva[stiva.length - 1];
+      const c = document.querySelector(".fereastra-corp");
+      sus.pasi.push({ randator: sus.curent || sus.randator, scrollY: c ? c.scrollTop : 0,
+                      titlu: sus.titluCurent || sus.titlu || "" });
+      sus.curent = fn;
+      sus.titluCurent = titlu || "";
+      sus.inapoi = null;
+      sus.scrollY = 0;
+      randeazaFerestre();
+    },
     setInapoi(fn) {  // sageata_dinamica_v1
       if (!stiva.length) return;
       stiva[stiva.length - 1].inapoi = fn;
       const b = radacina.querySelector(".nav-inapoi");
-      if (b) b.style.display = (typeof fn === "function" || stiva.length > 1) ? "" : "none";
+      const sus2 = stiva[stiva.length - 1];
+      if (b) b.style.display = (typeof fn === "function" || stiva.length > 1 || (sus2.pasi && sus2.pasi.length > 0)) ? "" : "none";  // traseu_automat_v1
     },
     acasa() { stiva.length = 0; randeazaFerestre(); },
     // setează firma procesată (bara de jos) și re-randează desktopul
@@ -350,3 +414,15 @@ async function _anunturiBanner(ecran) {
   });
 }
 // sageata_dinamica_v1
+
+// traseu_automat_v1
+
+// breadcrumb_v1
+
+// faza_b_traseu_v1
+
+// provenienta_v1
+
+// uniformizare_fir_v1
+
+// fir_doar_parinti_v1
