@@ -9,7 +9,7 @@ export function randeazaRecomanda(corp, nav) {
     <div class="set-sectiune" style="max-width:560px">
       <div class="rec-cap">
         <div class="set-titlu">Adrese de email</div>
-        <button class="rec-vezi" id="rec-vezi">Vezi ce trimitem</button>
+        <button class="buton-secundar rec-vezi" id="rec-vezi">Vezi ce trimitem</button>
       </div>
       <label class="set-camp">
         <span class="set-eticheta">Email (poți pune mai multe, separate prin virgulă sau enter)</span>

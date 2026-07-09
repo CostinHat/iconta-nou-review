@@ -17,7 +17,7 @@ export async function randeazaRaporteaza(corp, nav) {
     <p class="mig-intro">Ai observat ceva care nu merge, nu e corect sau nu se intelege? Trimite-ne o sesizare. Iti raspundem aici.</p>
 
     <div class="rap-nou set-sectiune" style="max-width:640px">
-      <div class="set-titlu">Sesizare noua</div>
+      <div class="set-titlu">Sesizare nouă</div>
       <label class="set-camp">
         <span class="set-eticheta">Ce ai observat?</span>
         <textarea id="rap-text" class="set-input rap-autogrow" rows="6" style="min-height:130px;overflow:hidden;resize:none" placeholder="Descrie ce ai observat, ce nu merge sau ce nu se intelege... (poti lipi o captura de ecran cu Ctrl+V)"></textarea>
@@ -33,7 +33,7 @@ export async function randeazaRaporteaza(corp, nav) {
     </div>
 
     <div class="rap-titlu-lista">Sesizarile mele</div>
-    <div id="rap-lista" class="rap-lista"><div class="rap-gol">Se incarca...</div></div>
+    <div id="rap-lista" class="rap-lista"><div class="rap-gol">Se încarcă...</div></div>
   `;
 
   const lista = corp.querySelector("#rap-lista");
@@ -54,7 +54,7 @@ export async function randeazaRaporteaza(corp, nav) {
 
   function randeazaPozeNoi() {
     zonaPoze.innerHTML = pozeNoi.map((p, i) =>
-      `<div class="rap-thumb"><img src="${p.url}" alt=""><button class="rap-thumb-x" data-i="${i}" type="button">×</button></div>`
+      `<div class="rap-thumb"><img src="${p.url}" alt=""><button class="buton-sters rap-thumb-x" data-i="${i}" type="button">×</button></div>`
     ).join("");
     zonaPoze.querySelectorAll(".rap-thumb-x").forEach((b) => {
       b.addEventListener("click", () => {
@@ -101,14 +101,14 @@ export async function randeazaRaporteaza(corp, nav) {
       const r = await api.get("/raportari/eu");
       const fire = (r && r.raportari) || [];
       if (!fire.length) {
-        lista.innerHTML = `<div class="rap-gol">Nu ai trimis nicio sesizare inca.</div>`;
+        lista.innerHTML = `<div class="rap-gol">Nu ai trimis nicio sesizare încă.</div>`;
         return;
       }
       lista.innerHTML = fire.map(renderFir).join("");
       // legaturi pe fiecare fir: deschidere/raspuns/citire
       fire.forEach((f) => legaFir(f));
     } catch {
-      lista.innerHTML = `<div class="rap-gol">Nu am putut incarca sesizarile.</div>`;
+      lista.innerHTML = `<div class="rap-gol">Nu am putut încărca sesizarile.</div>`;
     }
   }
 
@@ -143,7 +143,7 @@ export async function randeazaRaporteaza(corp, nav) {
         <div class="rap-fir-corp" style="display:none">
           <div class="rap-mesaje">${mesaje}</div>
           <div class="rap-replica">
-            <textarea class="rap-replica-text set-input" rows="2" style="overflow:hidden;resize:none" placeholder="Adauga un mesaj..."></textarea>
+            <textarea class="rap-replica-text set-input" rows="2" style="overflow:hidden;resize:none" placeholder="Adaugă un mesaj..."></textarea>
             <button class="buton-primar rap-replica-btn">Trimite</button>
           </div>
         </div>
@@ -187,7 +187,7 @@ export async function randeazaRaporteaza(corp, nav) {
       const r = await api.post("/raportari", { text });
       // urc pozele la primul mesaj al raportarii
       if (pozeNoi.length && r && r.mesaj_id) {
-        msg.textContent = "Se incarca imaginile...";
+        msg.textContent = "Se încarcă imaginile...";
         await urcaPoze(r.mesaj_id, pozeNoi.map((p) => p.file));
       }
       msg.textContent = "Sesizare trimisa."; msg.className = "set-mesaj set-ok";

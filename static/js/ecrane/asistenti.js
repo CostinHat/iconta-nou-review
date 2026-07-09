@@ -80,7 +80,7 @@ export async function randeazaAsistenti(corp, nav) {
   if (inactivi.length) {
     const wrap = document.createElement("div");
     wrap.innerHTML = `
-      <button class="asi-toggle-dez" id="asi-toggle-dez">Arată dezactivați (${inactivi.length})</button>
+      <button class="buton-secundar asi-toggle-dez" id="asi-toggle-dez">Arată dezactivați (${inactivi.length})</button>
       <div id="asi-lista-dez" style="display:none;"></div>`;
     lista.appendChild(wrap);
     const cont = wrap.querySelector("#asi-lista-dez");
@@ -113,8 +113,8 @@ function randActor(a, corp, nav) {
         <div class="asi-rol">${rolText} · ${a.nr_firme} firme</div>
       </div>
       <div class="asi-actiuni-rand">
-        <button class="mig-buton-mic" data-act="edit">Editează</button>
-        <button class="mig-buton-mic" data-act="vezi">Vizualizează</button>
+        <button class="buton-mic mig-buton-mic" data-act="edit">Editează</button>
+        <button class="buton-mic mig-buton-mic" data-act="vezi">Vizualizează</button>
       </div>
     </div>
     <div class="asi-perms">${perms}</div>
@@ -144,7 +144,7 @@ async function deschideEditare(uid, corp, nav) {
         <div class="asi-sectiune-titlu">Selecteaza firme</div>
         <p class="asi-mic">Asistentul vede doar firmele bifate. Bifarea = stare finala.</p>
         <label class="camp-eticheta" for="asi-cauta-firme">Caut\u0103 firma</label>
-        <input id="asi-cauta-firme" class="asi-cauta" placeholder="Cauta firma (nume sau CUI)..." style="width:100%;margin-bottom:8px;">
+        <input id="asi-cauta-firme" class="asi-cauta" placeholder="Caută firma (nume sau CUI)..." style="width:100%;margin-bottom:8px;">
         <div id="asi-firme">${firme.map((f) => `
           <label class="asi-firma-rand">
             <input type="checkbox" data-tid="${f.id}" ${f.atribuit ? "checked" : ""}>
@@ -170,9 +170,9 @@ async function deschideEditare(uid, corp, nav) {
       <div class="asi-editbtns">
         <button class="buton-primar" id="asi-salveaza">Salveaza</button>
         ${a.rol !== "admin_firma" && a.activ
-          ? `<button class="mig-buton-sec" id="asi-dezactiveaza">Dezactiveaza asistentul</button>` : ""}
+          ? `<button class="buton-secundar mig-buton-sec" id="asi-dezactiveaza">Dezactiveaza asistentul</button>` : ""}
         ${!a.activ
-          ? `<button class="mig-buton-sec" id="asi-reactiveaza">Reactiveaza</button>` : ""}
+          ? `<button class="buton-secundar mig-buton-sec" id="asi-reactiveaza">Reactiveaza</button>` : ""}
       </div>
       <div class="mig-eroare" id="asi-edit-eroare"></div>
     `;
@@ -374,7 +374,7 @@ async function _asiBannerEchipa(corp, nav) {
     <div class="asi-echipa-banner">
       <span class="asi-sem asi-sem-${s.culoare}"></span>
       <span class="asi-echipa-text">Calitatea echipei (${s.zile} zile): ${text}</span>
-      ${areErori ? `<button class="asi-echipa-btn" id="asi-vezi-erori">Vezi erorile</button>` : ""}
+      ${areErori ? `<button class="buton-secundar asi-echipa-btn" id="asi-vezi-erori">Vezi erorile</button>` : ""}
     </div>`;
   const b = host.querySelector("#asi-vezi-erori");
   if (b) b.onclick = () => deschideEchipaErori(nav);

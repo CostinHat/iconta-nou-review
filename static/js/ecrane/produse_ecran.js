@@ -54,7 +54,7 @@ function randeazaLista(corp, tenantId, lista, reincarca) {
       </div>
       <div class="pr-rand-drept">
         ${badgeCota(p.cota_tva, p.sursa)}
-        <button class="pr-sterge" data-id="${p.id}" title="\u0218terge" aria-label="\u0218terge">\u00d7</button>
+        <button class="buton-sters pr-sterge" data-id="${p.id}" title="\u0218terge" aria-label="\u0218terge">\u00d7</button>
       </div>
     </div>`).join("");
   zona.querySelectorAll(".pr-sterge").forEach((b) => {
@@ -85,12 +85,12 @@ function formularAdauga(corp, tenantId, reincarca) {
           <option value="">cot\u0103 (auto)</option>
           <option value="21">21%</option>
           <option value="11">11%</option>
-          <option value="0">f\u0103r\u0103 TVA</option>
+          <option value="0">scutit / f\u0103r\u0103 TVA (art. 292)</option>
         </select>
       </div>
       <div class="pr-form-actiuni">
         <button class="buton-primar" id="pr-salveaza">Salveaz\u0103</button>
-        <button class="pr-anuleaza" id="pr-anuleaza">Renun\u021b\u0103</button>
+        <button class="buton-secundar pr-anuleaza" id="pr-anuleaza">Renun\u021b\u0103</button>
       </div>
     </div>
   `;

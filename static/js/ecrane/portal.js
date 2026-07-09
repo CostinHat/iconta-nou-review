@@ -136,7 +136,7 @@ async function ecranAccesCont(corp, nav) {
     const p = d.principal || {};
     corp.innerHTML = `
       <div class="camp" style="margin-bottom:10px">
-        <label class="camp-eticheta">Noua adresă de email</label>
+        <label class="camp-eticheta">Adresa nouă de email</label>
         <input class="camp-input" id="ac-email-nou-val" value="${p.email || ""}" autofocus>
       </div>
       <p class="ecran-nota" style="margin:0 0 14px">Data viitoare când te loghezi, vei primi linkul la această adresă.</p>

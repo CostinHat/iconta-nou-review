@@ -23,7 +23,7 @@ export async function ecranRip(corp, nav, t) {
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
 
   const deseneaza = async () => {
-    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let reg = { operatiuni: [], total_incasari: "0", total_plati: "0", sold: "0" };
     try { reg = await api.get(`/tenants/${t.id}/rip/registru?an=${an}&luna=${luna}`); } catch {}
     const ziAzi = new Date().toISOString().slice(0, 10);
@@ -58,17 +58,17 @@ export async function ecranRip(corp, nav, t) {
         <div class="pf-frand-nume" style="margin-bottom:8px">Opera\u021biune nou\u0103</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:1000px">
           <label>Data<br><input type="date" id="r-data" class="mig-text"></label>
-          <label>Tip<br><select id="r-tip" class="mig-text"><option value="incasare">Incasare</option><option value="plata">Plata</option></select></label>
+          <label>Tip<br><select id="r-tip" class="mig-text"><option value="incasare">Încasare</option><option value="plata">Plată</option></select></label>
           <label>Categorie<br><select id="r-cat" class="mig-text"></select></label>
           <label>Deductibilitate<br><select id="r-ded" class="mig-text" disabled>
             <option value="">-</option><option value="integral">integral</option>
             <option value="limitat">limitat</option><option value="nedeductibil">nedeductibil</option></select></label>
           <label>Suma (lei)<br><input type="number" step="0.01" id="r-suma" class="mig-text" placeholder="0,00"></label>
-          <label>Metoda<br><select id="r-met" class="mig-text"><option value="numerar">numerar</option><option value="banca">banca</option></select></label>
+          <label>Metoda<br><select id="r-met" class="mig-text"><option value="numerar">Numerar</option><option value="banca">Bancă</option></select></label>
           <label>Explicatie<br><input type="text" id="r-expl" class="mig-text"></label>
           <label>Document nr.<br><input type="text" id="r-doc" class="mig-text"></label>
         </div>
-        <p style="margin-top:10px"><button class="buton-primar" id="r-adauga">Adauga (ciorna)</button></p>
+        <p style="margin-top:10px"><button class="buton-primar" id="r-adauga">Adaugă (ciornă)</button></p>
       </div>
       <div class="pf-lista">${randuri}</div>`;
 
@@ -108,7 +108,7 @@ export async function ecranRip(corp, nav, t) {
     });
 
     corp.querySelector("#r-imp-banca").addEventListener("click", async () => {
-      try { const r = await api.post(`/tenants/${t.id}/rip/import-banca?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ciorne importate din banca.</p>`; deseneaza(); }
+      try { const r = await api.post(`/tenants/${t.id}/rip/import-banca?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ciorne importate din bancă.</p>`; deseneaza(); }
       catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     });
     corp.querySelector("#r-imp-casa").addEventListener("click", async () => {

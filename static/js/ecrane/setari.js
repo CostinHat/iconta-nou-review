@@ -42,7 +42,7 @@ export async function randeazaSetari(corp, nav) {
   function legaInapoi() {}
 
   async function randeazaCabinet() {
-    corp.innerHTML = butonInapoi() + '<p class="ecran-nota">Se incarca...</p>';
+    corp.innerHTML = butonInapoi() + '<p class="ecran-nota">Se încarcă...</p>';
     legaInapoi();
     let cab = null;
     try { const r = await api.get("/eu/cabinet"); if (r && r.ok) cab = r.cabinet; } catch {}
@@ -79,7 +79,7 @@ export async function randeazaSetari(corp, nav) {
   }
 
   async function randeazaCompetente() {
-    corp.innerHTML = butonInapoi() + '<p class="ecran-nota">Se incarca...</p>';
+    corp.innerHTML = butonInapoi() + '<p class="ecran-nota">Se încarcă...</p>';
     legaInapoi();
     let comp = null;
     try { const rc = await api.get("/eu/competente"); if (rc && rc.ok) comp = rc; } catch {}
@@ -120,10 +120,10 @@ export async function randeazaSetari(corp, nav) {
       <div class="set-sectiune">
         <div class="set-titlu">Chei API</div>
         <p class="mig-intro">Pentru conectarea altor aplicatii la datele cabinetului. Cheia se afiseaza o singura data.</p>
-        <div id="set-chei-lista"><p class="ecran-nota">Se incarca...</p></div>
+        <div id="set-chei-lista"><p class="ecran-nota">Se încarcă...</p></div>
         <label class="camp-eticheta" for="set-cheie-nume">Nume cheie</label>
         <input id="set-cheie-nume" class="set-input" type="text" placeholder="ex: integrare CRM">
-        <button class="buton-primar" id="set-cheie-noua">Genereaza cheie noua</button>
+        <button class="buton-primar" id="set-cheie-noua">Generează cheie nouă</button>
         <div class="set-mesaj" id="set-msg-chei"></div>
       </div>`;
     legaInapoi();
@@ -170,11 +170,11 @@ export async function randeazaSetari(corp, nav) {
           <input id="set-pv" class="set-input" type="password" autocomplete="current-password">
         </label>
         <label class="set-camp">
-          <span class="set-eticheta">Parola noua (min 8 caractere)</span>
+          <span class="set-eticheta">Parola nouă (min 8 caractere)</span>
           <input id="set-pn" class="set-input" type="password" autocomplete="new-password">
         </label>
         <label class="set-camp">
-          <span class="set-eticheta">Confirma parola noua</span>
+          <span class="set-eticheta">Confirmă parola nouă</span>
           <input id="set-pc" class="set-input" type="password" autocomplete="new-password">
         </label>
         <button class="buton-primar" id="set-schimba-parola">Schimba parola</button>
@@ -187,7 +187,7 @@ export async function randeazaSetari(corp, nav) {
       const pn = corp.querySelector("#set-pn").value;
       const pc = corp.querySelector("#set-pc").value;
       msg.className = "set-mesaj";
-      if (pn.length < 8) { msg.textContent = "Parola noua trebuie sa aiba minim 8 caractere."; msg.className = "set-mesaj set-err"; return; }
+      if (pn.length < 8) { msg.textContent = "Parola nouă trebuie să aiba minim 8 caractere."; msg.className = "set-mesaj set-err"; return; }
       if (pn !== pc) { msg.textContent = "Parolele nu coincid."; msg.className = "set-mesaj set-err"; return; }
       msg.textContent = "Se schimba...";
       try {

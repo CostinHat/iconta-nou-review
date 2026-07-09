@@ -78,18 +78,18 @@ function randDeclaratie(c, firme, corp, nav, mod, perm) {
     } else if (euAmPregatit) {
       actiuni += `<span class="val-nota-perm">ai pregătit-o tu — o validează altcineva</span>`;
     } else {
-      actiuni += `<button class="val-btn val-aproba" data-act="aproba">Aprobă</button>`;
+      actiuni += `<button class="buton-primar val-btn val-aproba" data-act="aproba">Aprobă</button>`;
     }
     // Respinge — îl poate face oricine cu drept de validare (și care n-a pregătit-o)
     if (perm.poate_valida && !euAmPregatit) {
-      actiuni += `<button class="val-btn val-respinge" data-act="respinge">Respinge</button>`;
+      actiuni += `<button class="buton-sters val-btn val-respinge" data-act="respinge">Respinge</button>`;
     }
   } else {
     // depune -> "Confirmă depunerea"
     if (!perm.poate_depune) {
       actiuni += `<span class="val-nota-perm">nu ai dreptul de depunere</span>`;
     } else {
-      actiuni += `<button class="val-btn val-depune" data-act="depune">Confirmă depunerea</button>`;
+      actiuni += `<button class="buton-primar val-btn val-depune" data-act="depune">Confirmă depunerea</button>`;
     }
   }
 
@@ -159,7 +159,7 @@ function dialogInput(nav, opt) {
       <input class="dlg-input" id="dlg-input" type="text" placeholder="${opt.placeholder || ""}" autocomplete="off">
       <div class="dlg-eroare" id="dlg-eroare"></div>
       <div class="dlg-actiuni">
-        <button class="val-btn dlg-anuleaza" id="dlg-anuleaza">Anulează</button>
+        <button class="buton-secundar val-btn dlg-anuleaza" id="dlg-anuleaza">Anulează</button>
         <button class="val-btn ${opt.butonClasa}" id="dlg-ok">${opt.buton}</button>
       </div>
     `;

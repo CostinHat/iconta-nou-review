@@ -12,6 +12,11 @@ CUVINTE = ["inca", "raspuns", "adauga", "sterge", "stergi", "cauta", "fara",
 RE_CUV = re.compile(r'[">\s(](' + "|".join(CUVINTE) + r')[\s.,:!?<")]', re.IGNORECASE)
 CLASE_BUTON_OK = {"buton-primar", "buton-secundar", "buton-sters", "buton-verde",
                   "buton-mic", "btn-link", "btn-nav", "buton-activ", "buton-ingust"}
+# componente structurale si selectoare de optiune — limbaj propriu, nu butoane de actiune (Design System v1.1)
+CLASE_COMPONENTA_OK = {"firme-optiune", "cab-card", "acces-card", "meniu-card", "sub-inapoi",
+                       "firme-inapoi", "rap-tab", "ac-per", "mig-dec", "vf-opt", "sa-asist",
+                       "val-btn", "mf-font-opt", "mf-culoare-opt", "pagina-card-buton",
+                       "pagina-bara-acces", "pacm-x", "acces-x", "rec-modal-x", "pf-frand"}
 # culori-token permise inline (semafor canonic + entitate + fir)
 CULORI_OK = {"#1d7a4d", "#c9961f", "#ff3b30", "#1d4ed8", "#5b6b7c", "#1d3a5f", "#8a97a5", "#e11d1d"}
 
@@ -23,7 +28,7 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa"]}
+                        "etichete_lipsa", "input_contrast"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -32,15 +37,26 @@ for nume, t in fisiere.items():
         if "<" in lin or "textContent" in lin or "placeholder" in lin:
             m = RE_CUV.search(lin)
             if m:
-                rap["diacritice"].append((nume, i, m.group(1), lin.strip()[:66]))
-        if re.search(r'value="(0|1|0\.00|0,00)"', lin) or re.search(r'value="\$\{(azi|ziAzi)', lin):
+                cuv = m.group(1); poz = m.start(1)
+                # ignora aparitiile din cod: value="cuv", comparatii === "cuv", cai URL /cuv
+                context = lin[max(0,poz-14):poz]
+                if 'value="' in context or '=== "' in context or "/" == lin[poz-1:poz] or "-" == lin[poz-1:poz]:
+                    continue
+                # forma articulata corecta: 'plata' (plata directa, Certifica plata) nu cere diacritic
+                if cuv.lower() == "plata" and lin[poz+5:poz+6] not in ("_", "-"):
+                    continue
+                rap["diacritice"].append((nume, i, cuv, lin.strip()[:66]))
+        if (re.search(r'value="(0|1|0\.00|0,00)"', lin) and "<option" not in lin) or re.search(r'value="\$\{(azi|ziAzi)', lin):
             rap["precompletari"].append((nume, i, "", lin.strip()[:66]))
         for bm in re.finditer(r'<button[^>]*class="([^"]*)"', lin):
             cls = set(bm.group(1).split())
-            if not (cls & CLASE_BUTON_OK) and "fir-veriga" not in cls and "nav-" not in bm.group(1):
+            if not (cls & CLASE_BUTON_OK) and not (cls & CLASE_COMPONENTA_OK) and "fir-veriga" not in cls and "nav-" not in bm.group(1) and "${cls}" not in bm.group(1) and not any(ok in bm.group(1) for ok in CLASE_BUTON_OK):
                 rap["butoane"].append((nume, i, bm.group(1)[:26], lin.strip()[:56]))
         if re.search(r'<h2[^>]*>[^<]*\$\{[^}]*nume', lin):
             rap["entitate_in_titlu"].append((nume, i, "", lin.strip()[:66]))
+        # INPUT_CONTRAST: fundal alb fortat inline pe casete (incalca STANDARD_INPUT_CONTRAST)
+        if re.search(r'<(input|select|textarea)[^>]*style="[^"]*background:\s*(#fff|#ffffff|white)', lin):
+            rap["input_contrast"].append((nume, i, "", lin.strip()[:66]))
         if re.search(r'\balert\(|(?<!confirma)\bconfirm\(', lin):
             rap["dialog_browser"].append((nume, i, "", lin.strip()[:66]))
         # BANI: ${expr} imediat urmat de RON/lei/EUR fara formator cunoscut in expresie

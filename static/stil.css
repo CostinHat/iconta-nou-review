@@ -1755,8 +1755,6 @@ html, body {
 .pr-sterge:hover { color:#ef4444; }
 
 /* [p105_emitere_css] ecran emitere facturi */
-.em-buton-sec { background:#eef2f7; color:#334155; border:1.5px solid #cbd5e1; border-radius:8px; padding:9px 16px; font-size: var(--text-mic); font-weight:600; cursor:pointer; }
-.em-buton-sec:hover { background:#e2e8f0; }
 .em-config { max-width:520px; margin-top:8px; }
 .em-intrebare { font-size: var(--text); font-weight:600; margin-bottom:14px; }
 .em-optiuni { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
@@ -2072,22 +2070,9 @@ html, body { overflow-y: hidden; }
 /* ============ sfarsit STANDARD_BUTOANE ============ */
 /* [STANDARD_BUTOANE_MAPARE] clase vechi -> standard */
 .rap-trimite, .asi-toggle-dez, .asi-echipa-btn, .rap-muta,
-.em-emite, .mf-salveaza, .val-aproba, .val-depune, .pac-genereaza, .rap-btn-poza,
-.fd-email-send, .fd-storno-ok, .acces-verifica-btn, .pr-add {
-  font-size: var(--text-mic) !important; padding: 9px 18px !important; border-radius: 8px !important;
-  border: none !important; background: #3d8fd6 !important; color: #fff !important; cursor: pointer;
-  box-shadow: 0 2px 6px rgba(20,30,45,0.25) !important; }
-.mig-buton-sec, .mig-buton-mic, .rap-copy-tot,
-.em-buton-sec, .em-curs-retry, .fd-email-btn, .fd-pdf-btn, .fd-storno-btn, .rap-replica-btn,
-.fac-frand-btn, .rec-vezi, .sa-asist, .buton-ingust, .dlg-anuleaza, .pr-anuleaza, .bk-undo,
-.mig-dec, .ac-per, .vf-opt, .rt-desc {
-  font-size: var(--text-mic) !important; padding: 9px 18px !important; border-radius: 8px !important;
-  border: 1px solid #d5dae2 !important; background: #eef1f5 !important; color: #1a2535 !important; cursor: pointer;
-  box-shadow: 0 2px 6px rgba(20,30,45,0.18) !important; }
-.val-respinge, .pr-sterge, .rt-del, .rt-scoate, .em-l-sterge, .je-scoate, .sn-scoate, .mf-logo-sterge, .rap-thumb-x {
-  font-size: var(--text-mic) !important; padding: 9px 18px !important; border-radius: 8px !important;
-  border: none !important; background: #ff3b30 !important; color: #fff !important; cursor: pointer;
-  box-shadow: 0 2px 6px rgba(20,30,45,0.25) !important; }
+/* strat de suprascriere eliminat — butoanele poarta clasele canonice (Lot BUTOANE) */
+
+
 /* ============ [STANDARD_SEMAFOR] NU SE MODIFICA ============
    Buline LED 16px, gradient luminat dreapta-sus. Se aplica peste orice definitie veche. */
 .pct-verde, .sa-pct.pct-verde  { width:16px !important; height:16px !important; border-radius:50% !important;
@@ -2198,3 +2183,20 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 
 /* etichete_v1 — Lot ETICHETE: eticheta vizibila de sine statatoare */
 label.camp-eticheta, div.camp-eticheta { display: block; margin: 6px 0 4px; }
+
+/* ============ [STANDARD_INPUT_CONTRAST] NU SE MODIFICA ============
+   Regula Design System v1.1: TOATE casetele de introducere (element-level: input,
+   select, textarea) stau pe fundal contrastant, nu alb pe alb.
+   La focus se inverseaza: fundal alb + accent albastru.
+   Exceptii: checkbox/radio/file/range/color (nu sunt casete de text). */
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+select, textarea {
+  background: var(--fundal) !important;
+  border: 1.5px solid var(--linie) !important;
+}
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="hidden"]):focus,
+select:focus, textarea:focus {
+  background: var(--alb) !important;
+  border-color: var(--albastru) !important;
+  box-shadow: 0 0 0 3px var(--albastru-clar) !important;
+}

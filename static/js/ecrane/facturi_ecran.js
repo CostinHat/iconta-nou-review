@@ -66,7 +66,7 @@ function meniuFacturi(corp, nav, tenantId, opt) {
 // ---------- ISTORIC ---------- /* facback_null_fix_v1 */
 async function istoricFacturi(corp, nav, tenantId, opt) {
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
-  corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
   corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   let lista = [];
   try {
@@ -74,14 +74,14 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     lista = (r && r.facturi) || [];
   } catch {}
   let corpuri = !lista.length
-    ? `<div class="mig-gol">Nicio factura inregistrata inca.</div>`
+    ? `<div class="mig-gol">Nicio factura înregistrată încă.</div>`
     : lista.map((f) => {
         const suma = f.total != null ? Number(f.total).toLocaleString("ro-RO") + " " + (f.moneda || "lei") : "";
         const dir = dirEticheta(f.directie);
         const storno = f.storno_din_id ? ' \u00b7 <span class="fac-storno-tag">storno</span>' : "";
         const tipTag = f.tip && f.tip !== "factura" ? ` \u00b7 <span class="fac-storno-tag">${f.tip}</span>` : "";
         return `
-      <button class="pf-frand fac-frand-btn" data-id="${f.id}">
+      <button class="buton-secundar pf-frand fac-frand-btn" data-id="${f.id}">
         <div class="pf-frand-text">
           <div class="pf-frand-nume">${f.numar || "\u2014"}${f.tert_nume ? " \u00b7 " + f.tert_nume : ""}</div>
           <div class="pf-frand-sub">${fmtData(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
@@ -196,13 +196,13 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       <div class="fd-antet-sus">
         <h2 class="pf-titlu">${_esc(f.numar || "\u2014")}</h2>
         ${statusTxt ? `<span class="fac-storno-tag">${_esc(statusTxt)}</span>` : ""}
-        <button class="em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
-        <button class="em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
-        ${(f.directie === "emisa" && !f.storno_din_id) ? '<button class="em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
-        ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="em-buton-sec" id="fd-transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
+        <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
+        <button class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
+        ${(f.directie === "emisa" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
+        ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
         ${f.platita_la ? '<span class="fac-storno-tag fac-tag-platit">pl\u0103tit\u0103</span>' : ""}
-        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}
-        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="em-buton-sec" id="fd-chitanta">Emite chitan\u021b\u0103</button>' : ""}
+        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}
+        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-chitanta">Emite chitan\u021b\u0103</button>' : ""}
         ${f.transformat_in_id ? `<span class="fac-storno-tag">transformat \u00een #${f.transformat_in_id}</span>` : ""}
       </div>
       <div class="fd-email-zona" id="fd-email-zona"></div>
@@ -236,7 +236,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     const zona = corp.querySelector("#fd-plata-zona");
     try {
       const r = await api.post(`/tenants/${tenantId}/facturi/${facturaId}/link-plata`, {});
-      zona.innerHTML = `<div class="msg-info">Link de plat\u0103: <a href="${r.link}" target="_blank">${r.link}</a> <button class="em-buton-sec" id="fd-plata-copiaza">Copiaz\u0103</button></div>`;
+      zona.innerHTML = `<div class="msg-info">Link de plat\u0103: <a href="${r.link}" target="_blank">${r.link}</a> <button class="buton-secundar em-buton-sec" id="fd-plata-copiaza">Copiaz\u0103</button></div>`;
       zona.querySelector("#fd-plata-copiaza").addEventListener("click", () => navigator.clipboard.writeText(r.link));
     } catch (e) { arataMesaj(zona, e.mesaj || e.message, "eroare"); }
   });
@@ -466,11 +466,11 @@ async function modelFactura(corp, nav, tenantId, opt) {
           <label class="mf-eticheta">Logo</label>
           <div class="mf-logo-zona">
             <img id="mf-logo-preview" class="mf-logo-preview" alt="logo" ${stare.logo ? `src="${stare.logo}"` : 'style="display:none"'}>
-            <label class="em-buton-sec mf-logo-btn">
+            <label class="buton-secundar em-buton-sec mf-logo-btn">
               \u00cencarc\u0103 imagine
               <input type="file" id="mf-logo-input" accept="image/png,image/jpeg,image/svg+xml" hidden>
             </label>
-            <button class="mf-logo-sterge" id="mf-logo-sterge" ${stare.logo ? "" : 'style="display:none"'}>\u0218terge</button>
+            <button class="buton-sters mf-logo-sterge" id="mf-logo-sterge" ${stare.logo ? "" : 'style="display:none"'}>\u0218terge</button>
           </div>
           <div class="mf-logo-info">PNG, JPG sau SVG \u00b7 max 500 KB \u00b7 ideal ~400px l\u0103\u021bime</div>
           <div class="mf-logo-msg" id="mf-logo-msg"></div>
@@ -688,7 +688,7 @@ function formSablon(corp, nav, tenantId, opt) {
       <div class="em-eticheta">Produse \u0219i servicii</div>
       <div class="camp-eticheta">Linie: denumire \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 cot\u0103 TVA</div>
       <div class="em-linii" id="fr-linii"></div>
-      <button class="em-buton-sec" id="fr-add-linie">+ Adaug\u0103 linie</button>
+      <button class="buton-secundar em-buton-sec" id="fr-add-linie">+ Adaug\u0103 linie</button>
     </div>
 
     <div class="em-sectiune">
@@ -721,7 +721,7 @@ function formSablon(corp, nav, tenantId, opt) {
       <input class="pr-input em-l-cant" type="number" step="0.001" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
       <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" aria-label="Pre\u021b unitar" title="Pre\u021b unitar">
       <span class="em-l-cota" title="Cota TVA">\u2014</span>
-      <button class="em-l-sterge" title="\u0218terge">\u00d7</button>`;
+      <button class="buton-sters em-l-sterge" title="\u0218terge">\u00d7</button>`;
     zonaLinii.appendChild(rand);
 
     const den = rand.querySelector(".em-l-den");

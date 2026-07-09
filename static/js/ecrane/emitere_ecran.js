@@ -34,7 +34,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
       <div class="em-intrebare">Ai mai emis facturi p\u00e2n\u0103 acum (\u00een alt program sau pe h\u00e2rtie)?</div>
       <div class="em-optiuni">
         <button class="buton-primar" id="em-da">Da, am mai emis</button>
-        <button class="em-buton-sec" id="em-nu">Nu, \u00eencep acum</button>
+        <button class="buton-secundar em-buton-sec" id="em-nu">Nu, \u00eencep acum</button>
       </div>
       <div class="em-config-form" id="em-config-form"></div>
     </div>`;
@@ -105,7 +105,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <label class="camp-eticheta" for="em-cui">CUI beneficiar</label>
       <div class="em-benef">
         <input class="pr-input em-cui" id="em-cui" placeholder="ex: RO12345678" autocomplete="off">
-        <button class="em-buton-sec" id="em-verifica">Verific\u0103 la ANAF</button>  <!-- [p114_buton_anaf] -->
+        <button class="buton-secundar em-buton-sec" id="em-verifica">Verific\u0103 la ANAF</button>  <!-- [p114_buton_anaf] -->
       </div>
       <label class="camp-eticheta" for="em-nume">Denumire beneficiar</label>
       <input class="pr-input em-nume" id="em-nume" autocomplete="off">
@@ -118,7 +118,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <div class="em-eticheta">Produse \u0219i servicii</div>
       <div class="camp-eticheta">Linie: denumire \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 cot\u0103 TVA</div>
       <div class="em-linii" id="em-linii"></div>
-      <button class="em-buton-sec" id="em-add-linie">+ Adaug\u0103 linie</button>
+      <button class="buton-secundar em-buton-sec" id="em-add-linie">+ Adaug\u0103 linie</button>
     </div>
 
     <div class="em-total" id="em-total"></div>
@@ -159,7 +159,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <input class="pr-input em-l-cant" type="number" step="0.001" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
       <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" aria-label="Pre\u021b unitar" title="Pre\u021b unitar">
       <span class="em-l-cota" title="Cota TVA">\u2014</span>
-      <button class="em-l-sterge" title="\u0218terge">\u00d7</button>`;
+      <button class="buton-sters em-l-sterge" title="\u0218terge">\u00d7</button>`;
     zonaLinii.appendChild(rand);
 
     const den = rand.querySelector(".em-l-den");
@@ -318,7 +318,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <div class="em-curs-titlu">\u26a0 Cursul BNR nu e disponibil momentan (${det.moneda}, ${det.data}).</div>
         <div class="em-curs-actiuni">
           <button class="buton-primar em-curs-retry" id="em-curs-retry">Re\u00eencearc\u0103</button>
-          <button class="em-buton-sec" id="em-curs-manual">Introdu manual</button>
+          <button class="buton-secundar em-buton-sec" id="em-curs-manual">Introdu manual</button>
         </div>
         <div id="em-curs-manual-zona"></div>
       </div>`;

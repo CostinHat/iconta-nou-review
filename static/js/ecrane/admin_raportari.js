@@ -59,7 +59,7 @@ export async function randeazaAdminRaportari(corp, nav) {
       <button class="rap-tab rap-tab-activ" data-tab="useri">De la utilizatori <span class="rap-tab-nr" id="rap-nr-useri"></span></button>
       <button class="rap-tab" data-tab="tine">De la AI <span class="rap-tab-nr" id="rap-nr-tine"></span></button>
       <span class="rap-tabs-spatiu"></span>
-      <button class="rap-copy-tot" id="rap-copy-tot" title="Copiază toate reclamațiile din această filă">
+      <button class="buton-secundar rap-copy-tot" id="rap-copy-tot" title="Copiază toate reclamațiile din această filă">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
         <span id="rap-copy-tot-text">Copiază tot</span>
       </button>
@@ -159,14 +159,14 @@ async function deschideSesizare(corp, nav, id) {
     <div class="rap-fir-cap">
       <div class="rap-fir-subiect">${esc(cap.subiect || "(fără subiect)")}</div>
       <div class="rap-fir-meta">${esc(cap.cabinet || "")}${cap.autor ? " · " + esc(cap.autor) : ""}</div>
-      <button class="rap-muta" id="rap-muta">${etMutare}</button>
+      <button class="buton-secundar rap-muta" id="rap-muta">${etMutare}</button>
     </div>
     <div class="rap-mesaje" id="rap-mesaje"></div>
     <div class="rap-compose">
       <textarea id="rap-text" class="rap-text" placeholder="Scrie răspunsul…" rows="3"></textarea>
       <div class="rap-compose-bara">
         <label class="rap-atas"><input type="file" id="rap-img" accept="image/*" hidden><span>Atașează imagine</span></label>
-        <button class="rap-trimite" id="rap-trimite">Trimite</button>
+        <button class="buton-primar rap-trimite" id="rap-trimite">Trimite</button>
       </div>
       <div class="rap-img-nume" id="rap-img-nume"></div>
     </div>

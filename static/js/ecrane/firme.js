@@ -276,7 +276,7 @@ function fmtDataCab(iso) {
 }
 
 async function ecranSolicitariCabinet(corp, nav, t) {
-  corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
   await randeazaSolicitariCabinet(corp, nav, t);
 }
 
@@ -286,7 +286,7 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
     const r = await api.get(`/tenants/${t.id}/solicitari`);
     lista = (r && r.solicitari) || [];
   } catch {}
-  let firHtml = '<div class="mig-gol">Niciun mesaj inca.</div>';
+  let firHtml = '<div class="mig-gol">Niciun mesaj încă.</div>';
   if (lista.length) {
     firHtml = lista.map((s) => {
       const cine = s.autor_rol === "cabinet" ? "Tu" : "Client";
@@ -301,7 +301,7 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
     <p class="pf-intro">Mesaje de la firma-client.</p>
     <div class="sol-fir" id="sol-fir">${firHtml}</div>
     <div class="sol-trimite">
-      <textarea id="sol-input" placeholder="Scrie un raspuns..." rows="3"></textarea>
+      <textarea id="sol-input" placeholder="Scrie un răspuns..." rows="3"></textarea>
       <button class="buton-primar" id="sol-trimite-btn">Trimite</button>
     </div>
   `;
@@ -432,7 +432,7 @@ async function ecranSalariati(corp, nav, t) {
         const msgs = (r && (r.mesaje || r.raspunsuri)) || [];
         zonaReges.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
           <div class="pf-frand-nume">R\u0103spunsuri REGES</div>
-          <div class="pf-frand-sub">${msgs.length ? msgs.map((m2) => `${m2.data || ""} \u00b7 ${m2.status || m2.tip || ""} \u00b7 ${m2.mesaj || m2.detalii || JSON.stringify(m2)}`).join("<br>") : "niciun raspuns nou"}</div></div>`;
+          <div class="pf-frand-sub">${msgs.length ? msgs.map((m2) => `${m2.data || ""} \u00b7 ${m2.status || m2.tip || ""} \u00b7 ${m2.mesaj || m2.detalii || JSON.stringify(m2)}`).join("<br>") : "niciun răspuns nou"}</div></div>`;
       } catch (e) { zonaReges.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
     });
     corp.querySelectorAll("[data-reges]").forEach((b) => b.addEventListener("click", async () => {
@@ -631,8 +631,8 @@ async function sectiuneaCV(corp, t, zonaM) {
           <div class="pf-frand"><div class="pf-frand-text">
             <div class="pf-frand-nume">${escV(l.data)} \u00b7 ${l.tip === "intrare" ? "+" : "\u2212"}${l.cantitate} \u00b7 ${bani(l.valoare)} lei${l.pret_unitar ? " \u00b7 pret " + l.pret_unitar : ""}</div>
             <div class="pf-frand-sub">sold ${l.sold_cantitate} \u00b7 ${bani(l.sold_valoare)} lei${l.cmp ? " \u00b7 CMP " + l.cmp : ""}${l.document ? " \u00b7 " + escV(l.document) : ""}</div>
-          </div></div>`).join("") || '<div class="mig-gol">Fara miscari.</div>'}</div>`;
-    } catch { zona.querySelector("#cv-fisa-zona").innerHTML = `<div class="mig-gol">Nu am putut incarca fisa.</div>`; }
+          </div></div>`).join("") || '<div class="mig-gol">Fără mișcări.</div>'}</div>`;
+    } catch { zona.querySelector("#cv-fisa-zona").innerHTML = `<div class="mig-gol">Nu am putut încărca fisa.</div>`; }
   });
 }
 
@@ -693,7 +693,7 @@ async function ecranStocuri(corp, nav, t) {
   let liniiNir = [];
 
   const deseneaza = async () => {
-    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let nirs = [];
     try { const r = await api.get(`/tenants/${t.id}/stocuri/nir?an=${an}&luna=${luna}`); nirs = r.nir || []; } catch {}
     const randuri = !nirs.length
@@ -725,7 +725,7 @@ async function ecranStocuri(corp, nav, t) {
         <div class="pf-frand-nume" style="margin-bottom:8px">NIR nou</div>
         <div class="camp-eticheta">NIR: num\u0103r \u00b7 dat\u0103 \u00b7 furnizor \u00b7 CUI</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-          <input type="text" id="sn-numar" class="mig-text" placeholder="numar NIR" aria-label="Num\u0103r NIR" style="width:120px">
+          <input type="text" id="sn-numar" class="mig-text" placeholder="număr NIR" aria-label="Num\u0103r NIR" style="width:120px">
           <input type="date" id="sn-data" class="mig-text" value="${new Date().toISOString().slice(0, 10)}">
           <input type="text" id="sn-furn" class="mig-text" placeholder="furnizor" aria-label="Furnizor" style="flex:1;min-width:160px">
           <input type="text" id="sn-cui" class="mig-text" placeholder="CUI" aria-label="CUI furnizor" style="width:120px">
@@ -760,7 +760,7 @@ async function ecranStocuri(corp, nav, t) {
     });
     corp.querySelector("#sn-salveaza").addEventListener("click", async () => {
       const linii = citesteLinii().filter((l) => l.denumire);
-      if (!linii.length) { zonaM.innerHTML = `<div class="mig-gol">Adauga cel putin un articol.</div>`; return; }
+      if (!linii.length) { zonaM.innerHTML = `<div class="mig-gol">Adaugă cel puțin un articol.</div>`; return; }
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/nir`, {
           numar: corp.querySelector("#sn-numar").value.trim(),
@@ -804,7 +804,7 @@ async function ecranCasa(corp, nav, t) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
   const deseneaza = async () => {
-    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let reg = { operatiuni: [], sold_final: "0", avertismente: [] };
     try { reg = await api.get(`/tenants/${t.id}/casa/registru?an=${an}&luna=${luna}`); } catch {}
     const ziAzi = new Date().toISOString().slice(0, 10);
@@ -877,7 +877,7 @@ async function ecranBanca(corp, nav, t) {
   const CUL = { verde: "#1d7a4d", galben: "#c9961f", rosu: "#ff3b30", gri: "#3a4250" };
   corp.innerHTML = `
     <h2 class="pf-titlu">Banc\u0103</h2>
-    <p class="pf-intro">Incarca extrasul (.xls, .xlsx, .csv) \u2014 liniile se potrivesc automat pe facturi dupa CUI.</p>
+    <p class="pf-intro">Încarcă extrasul (.xls, .xlsx, .csv) \u2014 liniile se potrivesc automat pe facturi dupa CUI.</p>
     <input type="file" id="bk-fisier" accept=".xls,.xlsx,.csv" style="margin-bottom:16px">
     <div id="bk-mesaj"></div>
     <div id="bk-lista"></div>`;
@@ -910,7 +910,7 @@ async function ecranBanca(corp, nav, t) {
   }
 
   function randeaza(linii) {
-    if (!linii.length) { zonaLista.innerHTML = `<div class="mig-gol">Nicio linie de extras. Incarca un fisier.</div>`; return; }
+    if (!linii.length) { zonaLista.innerHTML = `<div class="mig-gol">Nicio linie de extras. Încarcă un fișier.</div>`; return; }
     zonaLista.innerHTML = `<div class="pf-lista">${linii.map((l) => `
       <div class="pf-frand">
         <div class="pf-frand-text">
@@ -943,7 +943,7 @@ async function ecranBanca(corp, nav, t) {
     try {
       const r = await api.get(`/tenants/${t.id}/banca/reconciliere`);
       randeaza(r.linii || []);
-    } catch { zonaLista.innerHTML = `<div class="mig-gol">Nu am putut incarca liniile.</div>`; }
+    } catch { zonaLista.innerHTML = `<div class="mig-gol">Nu am putut încărca liniile.</div>`; }
   }
 
   async function conteaza(id, alocari) {
@@ -957,12 +957,12 @@ async function ecranBanca(corp, nav, t) {
 
   async function picker(l) {
     if (!l) return;
-    zonaMesaj.innerHTML = `<p class="ecran-nota">Se incarca facturile deschise...</p>`;
+    zonaMesaj.innerHTML = `<p class="ecran-nota">Se încarcă facturile deschise...</p>`;
     let facturi = [];
     try {
       const r = await api.get(`/tenants/${t.id}/banca/reconciliere/facturi-deschise`);
       facturi = (r.facturi || []).filter((f) => f.directie === (l.tip === "incasare" ? "emisa" : "primita"));
-    } catch { zonaMesaj.innerHTML = `<div class="mig-gol">Nu am putut incarca facturile.</div>`; return; }
+    } catch { zonaMesaj.innerHTML = `<div class="mig-gol">Nu am putut încărca facturile.</div>`; return; }
     if (!facturi.length) { zonaMesaj.innerHTML = `<div class="mig-gol">Nicio factura deschisa pe aceasta directie.</div>`; return; }
     zonaMesaj.innerHTML = `
       <div class="pf-frand" style="display:block">
@@ -1095,7 +1095,7 @@ async function ecranJurnal(corp, nav, t) {
     : `<span style="color:#1d7a4d;font-weight:600">\u25cf Validat\u0103</span>`;
 
   const deseneaza = async () => {
-    corp.innerHTML = `<p class="ecran-nota">Se incarca...</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let note = [];
     try {
       const r = await api.get(`/tenants/${t.id}/jurnal?an=${an}&luna=${luna}`);
@@ -1505,7 +1505,7 @@ async function ecranMagazin(corp, nav, t) {
   let mesajSucces = "";
   async function randeazaPrincipal() {
     nav.setInapoi(undefined);
-    corp.innerHTML = '<p class="ecran-nota">Se incarca...</p>';
+    corp.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
     let cfg = { configurat: false, url: null };
     try { cfg = await api.get(`/tenants/${t.id}/woocommerce/config`); } catch (e) {}
     corp.innerHTML = `
@@ -1574,7 +1574,7 @@ async function ecranAccesClient(corp, nav, t) {
     corp.innerHTML = `
       ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
       <h3 style="margin:0 0 8px">Conturi client</h3>
-      <div id="ac-lista" style="margin-bottom:16px"><p class="ecran-nota">Se incarca...</p></div>
+      <div id="ac-lista" style="margin-bottom:16px"><p class="ecran-nota">Se încarcă...</p></div>
       <button class="acces-card meniu-card" id="ac-btn-invita">Invita client nou</button>
     `;
     mesajSucces = "";
@@ -1583,7 +1583,7 @@ async function ecranAccesClient(corp, nav, t) {
     try {
       const r = await api.get(`/tenants/${t.id}/client-acces`);
       const cl = r.clienti || [];
-      if (!cl.length) { zona.innerHTML = `<p class="ecran-nota">Niciun cont de client inca.</p>`; }
+      if (!cl.length) { zona.innerHTML = `<p class="ecran-nota">Niciun cont de client încă.</p>`; }
       else {
         zona.innerHTML = cl.map((c) => `
           <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e5e9f0">

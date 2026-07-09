@@ -19,12 +19,12 @@ export async function randeazaPachete(corp, nav) {
   let an = acum.getFullYear(), luna = acum.getMonth(); // getMonth e 0-11 => luna trecuta 1-12
   if (luna === 0) { luna = 12; an -= 1; }
   S = { firme: [], tenant_id: null, an, luna, rezumat: null, text: "", status: null };
-  corp.innerHTML = `<p class="ecran-nota">Se incarca…</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
     const t = await api.get("/tenants");
     S.firme = Array.isArray(t) ? t : (t.tenants || []);
   } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut incarca firmele.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca firmele.</p>`;
     return;
   }
   pasAlegere(corp, nav);
@@ -71,7 +71,7 @@ function pasAlegere(corp, nav) {
 
 async function pasLucru(corp, nav) {
   const f = corp.closest(".fereastra"); if (f) f.classList.add("fer-larg");
-  corp.innerHTML = `<p class="ecran-nota">Se incarca datele lunii…</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă datele lunii…</p>`;
   // rezumat + poveste existenta (in paralel)
   try {
     const [rz, pv] = await Promise.all([
@@ -82,7 +82,7 @@ async function pasLucru(corp, nav) {
     if (pv && pv.exista) { S.text = pv.text || ""; S.status = pv.status; }
     else { S.text = ""; S.status = null; }
   } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut incarca datele.</p>
+    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca datele.</p>
       <div class="dec-bara"><button class="buton-secundar" id="pac-back">\u2190</button></div>`;
     corp.querySelector("#pac-back").addEventListener("click", () => pasAlegere(corp, nav));
     return;
@@ -135,7 +135,7 @@ function deschideModal(corp, nav) {
       </div>
       <div class="pacm-stare" id="pacm-stare"></div>
       <div class="pacm-bara">
-        <button class="pac-genereaza" id="pacm-gen">✨ Generează cu AI</button>
+        <button class="buton-primar pac-genereaza" id="pacm-gen">✨ Generează cu AI</button>
         <button class="buton-secundar" id="pacm-vezi">Vezi ca email</button>
         <span class="pacm-spatiu"></span>
         <button class="buton-secundar" id="pacm-salveaza">Salvează ciornă</button>

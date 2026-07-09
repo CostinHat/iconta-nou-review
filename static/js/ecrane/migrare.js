@@ -381,8 +381,8 @@ async function formularVectorFirma(corp, nav, f) {
   const ic = !!f.operatiuni_ic;
   const tva = !!tvaInit;
   corp.innerHTML = `
-    <h2 class="mig-form-titlu">${f.nume}</h2>
-    <p class="mig-form-cui">CUI ${f.cui}</p>
+    <h2 class="mig-form-titlu">Verificare fiscal\u0103</h2>
+    <p class="mig-form-cui">${f.nume} \u00b7 CUI ${f.cui}</p>
     <div class="vf-form">
       <div class="vf-grup">
         <div class="vf-eticheta">Regim fiscal</div>
