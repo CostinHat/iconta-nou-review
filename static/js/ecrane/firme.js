@@ -1209,6 +1209,12 @@ async function ecranJurnal(corp, nav, t) {
 async function ecranBonuri(corp, nav, t) {
   const fmt = (v) => (Number(v) || 0).toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const fmtZi = (iso) => { const p = String(iso || "").split("-"); return p.length === 3 ? p[2] + "." + p[1] + "." + p[0] : (iso || ""); };  // bon_flux_e6_v1
+  const fmtPrimit = (iso) => {  // bon_flux_e7_v1
+    if (!iso) return "";
+    const d = new Date(iso);
+    const dd = (n) => String(n).padStart(2, "0");
+    return "primit " + dd(d.getDate()) + "." + dd(d.getMonth() + 1) + "." + d.getFullYear() + " " + dd(d.getHours()) + ":" + dd(d.getMinutes());
+  };
   let urlsPoze = [];
   let mesajSucces = "";
   let docs = [];
@@ -1243,7 +1249,8 @@ async function ecranBonuri(corp, nav, t) {
       : docs.map((b, i) => `
         <button class="acces-card meniu-card" data-doc="${i}">
           <b>${b.tip === "chitanta" ? "Chitanță" : "Bon fiscal"}</b> · ${b.comerciant || "emitent necitit"}
-          · ${b.data ? fmtZi(b.data) : "dată necitită"} · ${b.total ? fmt(b.total) + " lei" : "sumă necitită"}
+          · ${b.total ? fmt(b.total) + " lei" : "sumă necitită"}${b.data ? " · din " + fmtZi(b.data) : ""}
+          · <b>${fmtPrimit(b.primit_la)}</b>
         </button>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Bonuri și chitanțe · ${t.nume || ""}</h2>
@@ -1559,3 +1566,5 @@ async function ecranAccesClient(corp, nav, t) {
 // verif_doc_pozate_v1
 
 // bon_flux_e6_v1
+
+// bon_flux_e7_v1

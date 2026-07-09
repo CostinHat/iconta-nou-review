@@ -2432,7 +2432,7 @@ def bonuri_de_verificat(tenant_id: int, ctx=Depends(cere_cabinet)):
             raise HTTPException(404, "tenant inexistent sau fara acces")
         with conn.cursor() as cur:
             cur.execute(f"""
-                SELECT id, comerciant, cui, data, total, tva_11, tva_21, articole, status, nr_imagini, tip, numar_document, mentiuni, tva
+                SELECT id, comerciant, cui, data, total, tva_11, tva_21, articole, status, nr_imagini, tip, numar_document, mentiuni, tva, creat_la
                 FROM {schema}.bonuri WHERE status = 'de_verificat' ORDER BY creat_la DESC
             """)
             bonuri = [{"id": r[0], "comerciant": r[1], "cui": r[2],
@@ -2442,7 +2442,8 @@ def bonuri_de_verificat(tenant_id: int, ctx=Depends(cere_cabinet)):
                                if r[13] else float(r[5] or 0) + float(r[6] or 0)),
                        "articole": r[7] or [], "status": r[8],
                        "nr_imagini": r[9] or 0, "tip": r[10] or "bon",
-                       "numar_document": r[11], "mentiuni": r[12]} for r in cur.fetchall()]  # bon_flux_e5b_v1
+                       "numar_document": r[11], "mentiuni": r[12],
+                       "primit_la": r[14].isoformat() if r[14] else None} for r in cur.fetchall()]  # bon_flux_e7_v1
     return {"bonuri": bonuri}
 class BonLinie(BaseModel):
     cont: str
