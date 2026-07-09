@@ -9,7 +9,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<
 const C = (nume, eticheta, tip = "numar", extra = {}) => ({ nume, eticheta, tip, ...extra });
 
 const REGISTRU = [
-  { cat: "Finantare", cheie: "leasing", titlu: "Leasing", ruta: "nota-leasing", campuri: [
+  { cat: "Finanțare", cheie: "leasing", titlu: "Leasing", ruta: "nota-leasing", campuri: [
     C("data", "Data", "data"), 
     C("tip", "Tip operatiune", "select", { optiuni: [["primire","Primire bun (financiar)"],["rata","Rata lunara"],["reziduala","Valoare reziduala"],["operational","Chirie leasing operational"]] }),
     C("valoare_capital", "Valoare capital", "numar", { cond: { camp: "tip", val: "primire" } }),
@@ -21,7 +21,7 @@ const REGISTRU = [
     C("valoare_reziduala", "Valoare reziduala", "numar", { cond: { camp: "tip", val: "reziduala" } }),
     C("chirie", "Chirie lunara", "numar", { cond: { camp: "tip", val: "operational" } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Finantare", cheie: "credit", titlu: "Credite bancare", ruta: "nota-credit", campuri: [
+  { cat: "Finanțare", cheie: "credit", titlu: "Credite bancare", ruta: "nota-credit", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Operatie", "select", { optiuni: [["primire","Primire credit"],["dobanda","Dobanda"],["plata","Plata rata"],["restanta","Restanta"],["garantie","Garantie"]] }),
     C("tip", "Termen", "select", { optiuni: [["scurt","Sub 1 an (519)"],["lung","Peste 1 an (162)"]] }),
@@ -29,7 +29,7 @@ const REGISTRU = [
     C("dobanda", "Dobanda", "numar", { cond: { camp: "operatie", val: "dobanda" } }),
     C("rata", "Rata (capital)", "numar", { cond: { camp: "operatie", val: "plata" }, optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Finantare", cheie: "asociati", titlu: "Decontari asociati (455/457)", ruta: "nota-asociati", campuri: [
+  { cat: "Finanțare", cheie: "asociati", titlu: "Decontări asociați (455/457)", ruta: "nota-asociati", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Operatie", "select", { optiuni: [["dividend","Dividend"],["imprumut","Imprumut asociat"],["regularizare","Regularizare interimare"]] }),
     C("brut", "Dividend brut", "numar", { cond: { camp: "operatie", val: "dividend" } }),
@@ -38,33 +38,33 @@ const REGISTRU = [
     C("total_interimar", "Total dividende interimare", "numar", { cond: { camp: "operatie", val: "regularizare" } }),
     C("dividend_anual", "Dividend anual final", "numar", { cond: { camp: "operatie", val: "regularizare" } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Finantare", cheie: "avans", titlu: "Avansuri (409/419)", ruta: "nota-avans", campuri: [
+  { cat: "Finanțare", cheie: "avans", titlu: "Avansuri (409/419)", ruta: "nota-avans", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Operatie", "select", { optiuni: [["avans_platit","Avans platit (409)"],["regularizare_platit","Regularizare 409"],["avans_incasat","Avans incasat (419)"],["regularizare_incasat","Regularizare 419"]] }),
     C("suma", "Suma (fara TVA)"), C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("destinatie", "Destinatie", "select", { optiuni: [["stocuri","Stocuri"],["servicii","Servicii"],["imobilizari","Imobilizari"],["imobilizari_necorporale","Imobilizari necorporale"]], optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
-  { cat: "Imobilizari si capital", cheie: "reevaluare", titlu: "Reevaluare imobilizari (105)", ruta: "reevaluare-imobilizare", campuri: [
+  { cat: "Imobilizări și capital", cheie: "reevaluare", titlu: "Reevaluare imobilizări (105)", ruta: "reevaluare-imobilizare", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Operatie", "select", { optiuni: [["reevaluare","Reevaluare MF"],["surplus","Transfer surplus la 1175"]] }),
     C("mijloc_fix_id", "ID mijloc fix", "numar", { cond: { camp: "operatie", val: "reevaluare" } }),
     C("valoare_justa", "Valoare justa", "numar", { cond: { camp: "operatie", val: "reevaluare" } }),
     C("suma", "Suma surplus", "numar", { cond: { camp: "operatie", val: "surplus" } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Imobilizari si capital", cheie: "obiect_inv", titlu: "Obiecte de inventar (303)", ruta: "nota-obiect-inventar", campuri: [
+  { cat: "Imobilizări și capital", cheie: "obiect_inv", titlu: "Obiecte de inventar (303)", ruta: "nota-obiect-inventar", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Operatie", "select", { optiuni: [["achizitie","Achizitie"],["dare_folosinta","Dare in folosinta (603=303)"],["scoatere","Scoatere din folosinta"]] }),
     C("valoare", "Valoare"), C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Imobilizari si capital", cheie: "provizion", titlu: "Provizioane si ajustari", ruta: "nota-provizion", campuri: [
+  { cat: "Imobilizări și capital", cheie: "provizion", titlu: "Provizioane și ajustări", ruta: "nota-provizion", campuri: [
     C("data", "Data", "data"),
     C("fel", "Fel", "select", { optiuni: [["creanta","Ajustare creante (491)"],["provizion","Provizion (151)"],["stoc","Ajustare stocuri (39x)"]] }),
     C("actiune", "Actiune", "select", { optiuni: [["constituire","Constituire"],["reluare","Reluare"]] }),
     C("suma", "Suma"),
     C("tip", "Tip provizion", "select", { optiuni: [["litigii","Litigii"],["garantii","Garantii"],["dezafectare","Dezafectare"],["restructurare","Restructurare"],["impozite","Impozite"],["altele","Altele"]], cond: { camp: "fel", val: "provizion" } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Imobilizari si capital", cheie: "productie", titlu: "Productie (711/345)", ruta: "nota-productie", campuri: [
+  { cat: "Imobilizări și capital", cheie: "productie", titlu: "Producție (711/345)", ruta: "nota-productie", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Operatie", "select", { optiuni: [["obtinere","Obtinere produse"],["pic","Productie in curs (331)"],["vanzare","Vanzare + descarcare"]] }),
     C("cost_standard", "Cost standard", "numar", { cond: { camp: "operatie", val: "obtinere" } }),
@@ -75,7 +75,7 @@ const REGISTRU = [
     C("cost_standard_iesit", "Cost standard iesit", "numar", { cond: { camp: "operatie", val: "vanzare" } }),
     C("cota", "Cota TVA %", "numar", { cond: { camp: "operatie", val: "vanzare" }, optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Imobilizari si capital", cheie: "inventariere", titlu: "Inventariere anuala", ruta: "nota-inventariere", campuri: [
+  { cat: "Imobilizări și capital", cheie: "inventariere", titlu: "Inventariere anuală", ruta: "nota-inventariere", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Operatie", "select", { optiuni: [["plus","Plus stoc"],["plus_mf","Plus mijloc fix"],["minus","Minus"],["casare","Casare"]] }),
     C("valoare", "Valoare"),
@@ -84,17 +84,17 @@ const REGISTRU = [
     C("valoare_imputare", "Valoare imputare", "numar", { cond: { camp: "operatie", val: "minus" }, optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
-  { cat: "TVA regimuri speciale", cheie: "tva_incasare", titlu: "TVA la incasare (art. 282)", ruta: "nota-tva-incasare", campuri: [
+  { cat: "TVA regimuri speciale", cheie: "tva_incasare", titlu: "TVA la încasare (art. 282)", ruta: "nota-tva-incasare", campuri: [
     C("data", "Data", "data"),
     C("sens", "Sens", "select", { optiuni: [["incasare","Incasare de la client (4428=4427)"],["plata","Plata catre furnizor (4426=4428)"]] }),
     C("suma_incasata", "Suma incasata/platita (cu TVA)"),
     C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "TVA regimuri speciale", cheie: "marja", titlu: "Vanzare regim marja (second-hand)", ruta: "vanzare-marja", campuri: [
+  { cat: "TVA regimuri speciale", cheie: "marja", titlu: "Vânzare regim marjă (second-hand)", ruta: "vanzare-marja", campuri: [
     C("data", "Data", "data"), C("pret_vanzare", "Pret vanzare"), C("pret_cumparare", "Pret cumparare"),
     C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "TVA regimuri speciale", cheie: "marja_turism", titlu: "Marja agentii de turism", ruta: "vanzare-marja-turism", campuri: [
+  { cat: "TVA regimuri speciale", cheie: "marja_turism", titlu: "Marjă agenții de turism", ruta: "vanzare-marja-turism", campuri: [
     C("data", "Data", "data"),
     C("calitate_client", "Client", "select", { optiuni: [["PF","Persoana fizica"],["PJ","Persoana juridica"]] }),
     C("incasat", "Incasat de la client"),
@@ -102,7 +102,7 @@ const REGISTRU = [
     C("cost_non_ue", "Cost servicii non-UE", "numar", { optional: true }),
     C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "TVA regimuri speciale", cheie: "taxare_inversa", titlu: "Taxare inversa interna (art. 331)", ruta: "achizitie-taxare-inversa", campuri: [
+  { cat: "TVA regimuri speciale", cheie: "taxare_inversa", titlu: "Taxare inversă internă (art. 331)", ruta: "achizitie-taxare-inversa", campuri: [
     C("data", "Data", "data"),
     C("categorie", "Categorie", "select", { optiuni: [["cereale","Cereale"],["deseuri","Deseuri"],["cladiri","Cladiri/terenuri"],["energie","Energie"],["altele","Altele art. 331"]] }),
     C("valoare", "Valoare (fara TVA)"),
@@ -110,12 +110,12 @@ const REGISTRU = [
     C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("furnizor_platitor_tva", "Furnizor platitor TVA", "select", { optiuni: [["true","Da"],["false","Nu"]] }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "TVA regimuri speciale", cheie: "agricultor", titlu: "Achizitie de la agricultor (compensare 8%)", ruta: "achizitie-agricultor", campuri: [
+  { cat: "TVA regimuri speciale", cheie: "agricultor", titlu: "Achiziție de la agricultor (compensare 8%)", ruta: "achizitie-agricultor", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare (fara taxa)"),
     C("cont_cheltuiala", "Cont cheltuiala/stoc", "text", { sugestie: "301" }),
     C("agricultor_in_registru", "Agricultor in registru", "select", { optiuni: [["true","Da"],["false","Nu"]] }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "TVA regimuri speciale", cheie: "aur", titlu: "Aur de investitii (art. 313)", ruta: "vanzare-aur-investitii", campuri: [
+  { cat: "TVA regimuri speciale", cheie: "aur", titlu: "Aur de investiții (art. 313)", ruta: "vanzare-aur-investitii", campuri: [
     C("data", "Data", "data"),
     C("tip", "Tip", "select", { optiuni: [["lingou","Lingou"],["plancheta","Plancheta"],["moneda","Moneda"]] }),
     C("puritate", "Puritate (ex. 995)", "text"),
@@ -124,14 +124,14 @@ const REGISTRU = [
     C("client_identificare", "Identificare client", "text"),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
-  { cat: "Extern", cheie: "reeval_valuta", titlu: "Reevaluare lunara solduri valuta", ruta: "reevaluare-valuta", multi: "solduri", campuri: [
+  { cat: "Extern", cheie: "reeval_valuta", titlu: "Reevaluare lunară solduri valută", ruta: "reevaluare-valuta", multi: "solduri", campuri: [
     C("data", "Data (ultima zi a lunii)", "data") ], subcampuri: [
     C("cont", "Cont", "text", { sugestie: "4111" }),
     C("valoare_valuta", "Sold in valuta"),
     C("moneda", "Moneda", "text", { sugestie: "EUR" }),
     C("curs_evidenta", "Curs evidenta"),
     C("tip", "Tip", "select", { optiuni: [["creanta","Creanta"],["datorie","Datorie"],["disponibil","Disponibil"]] }) ] },
-  { cat: "Extern", cheie: "decont_valuta", titlu: "Decontare in valuta (665/765)", ruta: "decontare-valuta", campuri: [
+  { cat: "Extern", cheie: "decont_valuta", titlu: "Decontare în valută (665/765)", ruta: "decontare-valuta", campuri: [
     C("data", "Data", "data"),
     C("tip", "Tip", "select", { optiuni: [["creanta","Incasare creanta"],["datorie","Plata datorie"]] }),
     C("valoare_valuta", "Valoare in valuta"),
@@ -139,13 +139,13 @@ const REGISTRU = [
     C("curs_evidenta", "Curs de evidenta"),
     C("cont_tert", "Cont tert", "text", { sugestie: "4111" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Extern", cheie: "achizitie_ic", titlu: "Achizitie intracomunitara", ruta: "achizitie-ic", campuri: [
+  { cat: "Extern", cheie: "achizitie_ic", titlu: "Achiziție intracomunitară", ruta: "achizitie-ic", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare (RON)"),
     C("cont_destinatie", "Cont destinatie", "text", { sugestie: "371" }),
     C("tip", "Tip", "select", { optiuni: [["bunuri","Bunuri"],["servicii","Servicii"]] }),
     C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Extern", cheie: "vanzare_ic", titlu: "Livrare/prestare intracomunitara (VIES live)", ruta: "vanzare-ic", campuri: [
+  { cat: "Extern", cheie: "vanzare_ic", titlu: "Livrare/prestare intracomunitară (VIES live)", ruta: "vanzare-ic", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare"),
     C("cod_tva_client", "Cod TVA client (ex. DE123456789)", "text"),
     C("tip", "Tip", "select", { optiuni: [["bunuri","Bunuri"],["servicii","Servicii"]] }),
@@ -165,7 +165,7 @@ const REGISTRU = [
     C("dovada_export", "Dovada export (DVE)", "text"),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
-  { cat: "Personal si deconturi", cheie: "decont", titlu: "Decont deplasare / diurna", ruta: "nota-decont-deplasare", campuri: [
+  { cat: "Personal și deconturi", cheie: "decont", titlu: "Decont deplasare / diurnă", ruta: "nota-decont-deplasare", campuri: [
     C("data", "Data", "data"),
     C("fel", "Fel", "select", { optiuni: [["avans","Avans deplasare (542)"],["decont","Decont final"]] }),
     C("sursa", "Sursa", "select", { optiuni: [["casa","Casa"],["banca","Banca"]] }),
@@ -175,13 +175,13 @@ const REGISTRU = [
     C("transport", "Transport", "numar", { cond: { camp: "fel", val: "decont" }, optional: true }),
     C("cazare", "Cazare", "numar", { cond: { camp: "fel", val: "decont" }, optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Personal si deconturi", cheie: "contract_special", titlu: "Contracte speciale (zilieri, mandat, cenzori)", ruta: "nota-contract-special", campuri: [
+  { cat: "Personal și deconturi", cheie: "contract_special", titlu: "Contracte speciale (zilieri, mandat, cenzori)", ruta: "nota-contract-special", campuri: [
     C("data", "Data", "data"),
     C("fel", "Fel", "select", { optiuni: [["zilier","Zilier"],["mandat","Mandat administrator"],["cenzor","Cenzor"]] }),
     C("brut", "Suma bruta"),
     C("sursa", "Sursa plata", "select", { optiuni: [["casa","Casa"],["banca","Banca"]] }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Personal si deconturi", cheie: "bacsis", titlu: "Bacsis (HoReCa)", ruta: "nota-bacsis", campuri: [
+  { cat: "Personal și deconturi", cheie: "bacsis", titlu: "Bacșiș (HoReCa)", ruta: "nota-bacsis", campuri: [
     C("data", "Data", "data"),
     C("fel", "Fel", "select", { optiuni: [["incasare","Incasare"],["distribuire","Distribuire la salariati"]] }),
     C("suma", "Suma"),
@@ -195,18 +195,18 @@ const REGISTRU = [
     C("cifra_afaceri", "Cifra de afaceri (pt credit)", "numar", { optional: true }),
     C("impozit_profit", "Impozit datorat (pt credit)", "numar", { optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Diverse", cheie: "subventie", titlu: "Subventii (445/741)", ruta: "nota-subventie", campuri: [
+  { cat: "Diverse", cheie: "subventie", titlu: "Subvenții (445/741)", ruta: "nota-subventie", campuri: [
     C("data", "Data", "data"),
     C("fel", "Fel", "select", { optiuni: [["exploatare","Exploatare"],["investitii","Investitii (475)"],["reluare","Reluare la venituri"]] }),
     C("suma", "Suma", "numar", { optional: true }),
     C("moment", "Moment", "select", { optiuni: [["drept","La dreptul de a primi"],["incasare","La incasare"]], optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Diverse", cheie: "chirie", titlu: "Chirii / comodat / refacturari", ruta: "nota-chirie", campuri: [
+  { cat: "Diverse", cheie: "chirie", titlu: "Chirii / comodat / refacturări", ruta: "nota-chirie", campuri: [
     C("data", "Data", "data"),
     C("fel", "Fel", "select", { optiuni: [["comodat","Comodat"],["chirie_platita","Chirie platita (612)"],["chirie_incasata","Chirie incasata (706)"],["refacturare","Refacturare utilitati"]] }),
     C("suma", "Suma"), C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Diverse", cheie: "perisabilitati", titlu: "Perisabilitati si scazaminte", ruta: "nota-perisabilitati", campuri: [
+  { cat: "Diverse", cheie: "perisabilitati", titlu: "Perisabilități și scăzăminte", ruta: "nota-perisabilitati", campuri: [
     C("data", "Data", "data"),
     C("valoare_intrari", "Valoare intrari (baza calcul)"),
     C("procent_limita", "Procent limita HG 831/2004 (%)"),
@@ -214,20 +214,20 @@ const REGISTRU = [
     C("cont_stoc", "Cont stoc", "text", { optional: true, sugestie: "371" }),
     C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Diverse", cheie: "sgr", titlu: "SGR - garantie ambalaje", ruta: "nota-sgr", campuri: [
+  { cat: "Diverse", cheie: "sgr", titlu: "SGR - garanție ambalaje", ruta: "nota-sgr", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Operatie", "select", { optiuni: [["achizitie","Achizitie (garantii platite)"],["vanzare","Vanzare (garantii incasate)"],["restituire","Restituire"],["autofactura","Autofactura SGR"],["virare","Virare"]] }),
     C("nr_ambalaje", "Nr. ambalaje (0,50 lei/buc)", "numar", { optional: true }),
     C("suma", "Suma (alternativ la nr.)", "numar", { optional: true }),
     C("sursa", "Sursa", "select", { optiuni: [["casa","Casa"],["banca","Banca"]], optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Diverse", cheie: "ong", titlu: "Operatiuni ONG (OMFP 3103/2017)", ruta: "nota-ong", campuri: [
+  { cat: "Diverse", cheie: "ong", titlu: "Operațiuni ONG (OMFP 3103/2017)", ruta: "nota-ong", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Operatie", "select", { optiuni: [["venit","Venit AFSP"],["scutire","Calcul scutire art. 15 CF"]] }),
     C("suma", "Suma", "numar", { cond: { camp: "operatie", val: "venit" } }),
     C("fel", "Fel venit", "select", { optiuni: [["cotizatie","Cotizatie (731)"],["contributie","Contributie"],["donatie","Donatie (733)"],["sponsorizare","Sponsorizare primita (733)"],["financiar","Financiar (734)"]], cond: { camp: "operatie", val: "venit" } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
-  { cat: "Diverse", cheie: "lichidare", titlu: "Lichidare / radiere firma", ruta: "nota-lichidare", campuri: [
+  { cat: "Diverse", cheie: "lichidare", titlu: "Lichidare / radiere firmă", ruta: "nota-lichidare", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Operatie", "select", { optiuni: [["vanzare_activ","Vanzare activ la lichidare"],["partaj","Partaj catre asociati"]] }),
     C("pret", "Pret vanzare", "numar", { cond: { camp: "operatie", val: "vanzare_activ" } }),
