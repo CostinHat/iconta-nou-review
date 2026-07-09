@@ -23,11 +23,12 @@ export async function randeazaRaporteaza(corp, nav) {
         <textarea id="rap-text" class="set-input rap-autogrow" rows="6" style="min-height:130px;overflow:hidden;resize:none" placeholder="Descrie ce ai observat, ce nu merge sau ce nu se intelege... (poti lipi o captura de ecran cu Ctrl+V)"></textarea>
       </label>
       <div class="rap-poze" id="rap-poze-noi"></div>
-      <div class="rap-actiuni">
-        <button class="rap-btn-poza" id="rap-add-poza" type="button">+ Adauga captura</button>
+      <p class="ecran-nota" style="margin:0 0 8px">Opțional: atașează capturi de ecran — cu butonul de mai jos sau lipite direct cu Ctrl+V.</p>
+      <div class="rap-actiuni" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="buton-primar" id="rap-trimite">Trimite sesizarea</button>
+        <button class="buton-secundar" id="rap-add-poza" type="button">Adaugă captură</button>
         <input type="file" id="rap-file" accept="image/png,image/jpeg,image/webp" multiple style="display:none">
       </div>
-      <button class="buton-primar" id="rap-trimite">Trimite sesizarea</button>
       <div class="set-mesaj" id="rap-msg"></div>
     </div>
 
@@ -209,3 +210,5 @@ function actualizeazaBadgeCard() {
 function escapeHtml(s) {
   return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
+
+// audit_cab_lot1_v1

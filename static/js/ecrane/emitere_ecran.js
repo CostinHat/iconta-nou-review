@@ -55,7 +55,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
       <button class="buton-primar" id="em-salveaza-config">Continu\u0103</button>`;
     zona.querySelector("#em-salveaza-config").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie").value.trim() || null;
-      if (serie && /^\d+$/.test(serie)) { alert("Seria contine doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-). Numarul ultimei facturi se pune in campul urmator."); return; }
+      if (serie && /^\d+$/.test(serie)) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-). Numărul ultimei facturi se pune în câmpul următor."; return; }
       const ultim = parseInt(zona.querySelector("#em-ultim").value, 10);
       const start = Number.isFinite(ultim) ? ultim + 1 : 1;
       await salveazaConfig(tenantId, serie, start);
@@ -73,7 +73,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
       <button class="buton-primar" id="em-salveaza-config2">Continu\u0103</button>`;
     zona.querySelector("#em-salveaza-config2").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie2").value.trim() || null;
-      if (serie && /^\d+$/.test(serie)) { alert("Seria contine doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-)."); return; }
+      if (serie && /^\d+$/.test(serie)) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-)."; return; }
       await salveazaConfig(tenantId, serie, 1);
       randeazaEmitere(corp, nav, tenantId, opt);
     });
@@ -338,3 +338,5 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
   corp.querySelector("#em-emite").addEventListener("click", () => trimiteEmitere(null));
 }
+
+// audit_cab_lot1_v1

@@ -454,7 +454,10 @@ async function ecranSalariati(corp, nav, t) {
           const a = document.createElement("a");
           a.href = url; a.download = `fluturas_${an}_${String(luna).padStart(2,"0")}.pdf`; a.click();
           URL.revokeObjectURL(url);
-        } catch { alert("Nu am putut genera fluturasul."); }
+        } catch {
+          b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+          b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">Nu am putut genera fluturașul.</span>');
+        }
       });
     });
   };
@@ -852,7 +855,10 @@ async function ecranCasa(corp, nav, t) {
     corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
       if (!confirm("Stergi operatiunea si ciorna legata?")) return;
       try { await api.del(`/tenants/${t.id}/casa/operatiuni/${b.dataset.del}`); deseneaza(); }
-      catch (e) { alert(e.mesaj || "Eroare"); }
+      catch (e) {
+        b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+        b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + (e.mesaj || "Eroare la ștergere.") + '</span>');
+      }
     }));
   };
   deseneaza();
@@ -1155,9 +1161,9 @@ async function ecranJurnal(corp, nav, t) {
     corp.querySelector("#j-amort").addEventListener("click", async () => {
       try {
         const r = await api.post(`/tenants/${t.id}/amortizare?an=${an}&luna=${luna}`, {});
-        alert(r.linii ? `Nota generata: ${r.linii} mijloace fixe, total ${r.total} lei` : "Nimic de amortizat.");
+        zonaMesaj.innerHTML = `<div class="mig-gol">${r.linii ? `Notă generată: ${r.linii} mijloace fixe, total ${r.total} lei` : "Nimic de amortizat."}</div>`;
         deseneaza();
-      } catch (e) { alert(e.mesaj || "Eroare"); }
+      } catch (e) { eroare(e, "Eroare la generarea notei de amortizare."); }
     });
     corp.querySelectorAll("[data-val]").forEach((b) => b.addEventListener("click", async () => {
       try { await api.post(`/tenants/${t.id}/jurnal/${b.dataset.val}/valideaza`, {}); deseneaza(); }
@@ -1603,3 +1609,5 @@ async function ecranAccesClient(corp, nav, t) {
 // bon_flux_e9_v1
 
 // bon_flux_e9b_v1
+
+// audit_cab_lot1_v1

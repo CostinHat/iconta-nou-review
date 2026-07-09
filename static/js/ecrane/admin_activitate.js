@@ -79,7 +79,8 @@ async function randeaza(corp, nav) {
         corp.innerHTML = `<p class="ecran-nota">Se actualizează...</p>`;
         await randeaza(corp, nav);
       } catch {
-        alert("A apărut o eroare.");
+        corp.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+        corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">A apărut o eroare. Reîncearcă.</p>');
       }
     });
   });
@@ -107,3 +108,5 @@ async function deschideTimeline(corp, cabinet) {
       <div class="sol-fir" style="max-height:480px">${linii}</div>
     </div>`;
 }
+
+// audit_cab_lot1_v1

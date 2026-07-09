@@ -374,7 +374,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     try {
       const r = await api.post(`/tenants/${tenantId}/facturi/${f.id}/transforma`, {});
       btnTransforma.outerHTML = `<span class="fac-storno-tag">factura ${r.numar} emisa</span>`;
-    } catch (e) { alert((e && e.mesaj) || "eroare"); }
+    } catch (e) {
+      btnTransforma.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + ((e && e.mesaj) || "Nu am putut transforma.") + '</span>');
+    }
   });
   const zonaStorno = corp.querySelector("#fd-storno-zona");
   if (btnStorno && zonaStorno) {
@@ -645,7 +647,8 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
       await api.put(`/tenants/${tenantId}/facturi-recurente/${b.dataset.id}?activ=${activNou}`);
       listaRecurente(corp, nav, tenantId, opt);
     } catch (e) {
-      alert(e.mesaj || e.message || "eroare");
+      corp.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+      corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">' + (e.mesaj || e.message || "Eroare.") + '</p>');
     }
   }));
   corp.querySelectorAll(".fr-sterge").forEach((b) => b.addEventListener("click", () => {
@@ -654,7 +657,8 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
         await api.del(`/tenants/${tenantId}/facturi-recurente/${b.dataset.id}`);
         listaRecurente(corp, nav, tenantId, opt);
       } catch (e) {
-        alert(e.mesaj || e.message || "eroare");
+        corp.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+        corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">' + (e.mesaj || e.message || "Eroare.") + '</p>');
       }
     }, { textOk: "\u0218terge" });
   }));
@@ -768,3 +772,5 @@ function formSablon(corp, nav, tenantId, opt) {
 // chitante_fe_v1
 
 // chitante_fe_v2_etichete
+
+// audit_cab_lot1_v1

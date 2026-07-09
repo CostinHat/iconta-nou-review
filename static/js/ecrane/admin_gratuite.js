@@ -57,7 +57,12 @@ async function randeaza(corp, nav) {
       try {
         await api.post(`/admin/conturi-gratuite/${c.id}/${ruta}`, {});
         await randeaza(corp, nav);
-      } catch { alert("Operațiunea a eșuat."); }
+      } catch {
+        corp.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+        corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">Operațiunea a eșuat. Reîncearcă.</p>');
+      }
     });
   });
 }
+
+// audit_cab_lot1_v1

@@ -222,7 +222,10 @@ async function _incarcaChei(corp) {
   zona.querySelectorAll(".set-cheie-revoca").forEach((b) => b.addEventListener("click", () => {
     confirmaCaseta(b.closest(".pf-frand") || b, "Revoci cheia? Aplicatiile care o folosesc nu vor mai avea acces.", async () => {
       try { await api.del(`/cabinet/api-chei/${b.dataset.id}`); _incarcaChei(corp); }
-      catch (e) { alert(e.mesaj || "eroare"); }
+      catch (e) {
+        b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+        b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + (e.mesaj || "Nu am putut revoca cheia.") + '</span>');
+      }
     }, { textOk: "Revoca" });
   }));
 }
@@ -244,3 +247,5 @@ function _initChei(corp) {
     }
   });
 }
+
+// audit_cab_lot1_v1

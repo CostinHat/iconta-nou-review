@@ -226,7 +226,8 @@ async function trimiteRaspuns(corp, nav, id, fir) {
     }
   } catch {
     btn.disabled = false; btn.textContent = "Trimite";
-    alert("Nu am putut trimite răspunsul.");
+    btn.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+    btn.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">Nu am putut trimite răspunsul.</span>');
     return;
   }
   await incarcaLista(corp, nav);
@@ -237,10 +238,13 @@ async function mutaSesizare(corp, nav, id, valoare) {
   try {
     await api.post(`/raportari/${id}/pentru-admin`, { valoare });
   } catch {
-    alert("Nu am putut muta sesizarea.");
+    corp.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+    corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">Nu am putut muta sesizarea.</p>');
     return;
   }
   _activ = null;
   corp.querySelector("#rap-fir").innerHTML = `<div class="rap-gol">Mutată. Alege altă sesizare.</div>`;
   await incarcaLista(corp, nav);
 }
+
+// audit_cab_lot1_v1

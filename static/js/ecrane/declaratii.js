@@ -184,7 +184,10 @@ async function pas3(corp, nav) {
     await api.post("/coada", body);
   } catch (e) {
     if (btn) { btn.disabled = false; btn.textContent = "Trimite în coadă →"; }
-    alert("Nu am putut trimite în coadă. Poate există deja o declarație pentru această perioadă.");
+    if (btn) {
+      btn.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+      btn.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">Nu am putut trimite în coadă. Poate există deja o declarație pentru această perioadă.</span>');
+    }
     return;
   }
 
@@ -210,3 +213,5 @@ function etPerioada() {
   if (per === "trimestrial") return `${TRIM[S.trim-1]} ${S.an}`;
   return `${LUNI[S.luna-1]} ${S.an}`;
 }
+
+// audit_cab_lot1_v1

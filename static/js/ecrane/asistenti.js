@@ -131,7 +131,7 @@ function randActor(a, corp, nav) {
 async function deschideEditare(uid, corp, nav) {
   let d;
   try { d = await api.get(`/asistenti/${uid}`); }
-  catch { alert("Nu am putut incarca asistentul."); return; }
+  catch { nav.deschide("Asistent", (c2) => { c2.innerHTML = '<p class="msg-eroare">Nu am putut încărca asistentul.</p>'; }); return; }
   if (!d.ok) return;
   const a = d.actor;
   const firme = d.firme || [];
@@ -259,7 +259,7 @@ async function deschideVizualizare(uid, nav) {
 
   let d0;
   try { d0 = await api.get(`/asistenti/${uid}/activitate`); }
-  catch { alert("Nu am putut incarca fisa."); return; }
+  catch { nav.deschide("Fișa asistentului", (c2) => { c2.innerHTML = '<p class="msg-eroare">Nu am putut încărca fișa.</p>'; }); return; }
   if (!d0.ok) return;
   const nume = [d0.actor.prenume, d0.actor.nume].filter(Boolean).join(" ") || `#${d0.actor.id}`;
 
@@ -377,7 +377,7 @@ async function _asiBannerEchipa(corp, nav) {
 async function deschideEchipaErori(nav) {
   let d;
   try { d = await api.get("/asistenti/echipa/erori"); }
-  catch { alert("Nu am putut incarca erorile."); return; }
+  catch { nav.deschide("Erori echipă", (c2) => { c2.innerHTML = '<p class="msg-eroare">Nu am putut încărca erorile.</p>'; }); return; }
   if (!d.ok) return;
   nav.deschide("Erori — echipa", (box) => {
     const lst = d.asistenti || [];
@@ -406,3 +406,5 @@ async function deschideEchipaErori(nav) {
     box.innerHTML = `<p class="mig-intro">Cine a produs respingeri in ultimele ${d.zile} zile, sortat dupa volum.</p>${carduri}`;
   });
 }
+
+// audit_cab_lot1_v1
