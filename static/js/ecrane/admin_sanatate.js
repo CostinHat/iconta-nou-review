@@ -128,7 +128,7 @@ export async function randeazaAdminSanatate(corp, nav) {
     <div class="cap-cifre">
       ${cifra(d.erori_24h ?? 0, "erori server (500+)", d.erori_24h > 0 ? 100 : 0)}
     </div>
-    <div class="pf-lista" style="margin-top:12px">
+    <div class="pf-lista zebra-lista" style="margin-top:12px">
       ${erori.length
         ? erori.map((e) => `
           <div class="pf-frand">

@@ -2204,8 +2204,8 @@ select:focus, textarea:focus {
 /* ============ [STANDARD_ZEBRA] NU SE MODIFICA (Design System v1.1 cap.4) ============
    Toate listele: primul rand de date colorat var(--albastru-clar), apoi alb, alternativ.
    Regula pe ELEMENT direct (nu pe combinator de parinte) — functioneaza indiferent de container. */
-.pf-lista > .pf-frand:nth-of-type(odd) { background: var(--albastru-clar) !important; }
-.pf-lista > .pf-frand:nth-of-type(even) { background: var(--alb) !important; }
+.zebra-lista > .pf-frand:nth-of-type(odd) { background: var(--albastru-clar) !important; }
+.zebra-lista > .pf-frand:nth-of-type(even) { background: var(--alb) !important; }
 .firme-lista > .firme-rand:nth-of-type(odd) { background: var(--albastru-clar) !important; }
 .firme-lista > .firme-rand:nth-of-type(even) { background: var(--alb) !important; }
 .firme-rand:hover { background: #dce7f3 !important; }

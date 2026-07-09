@@ -54,7 +54,7 @@ async function randeaza(corp, nav) {
 
   corp.innerHTML = `
     <h2 class="pf-titlu">Cabinete</h2>
-    <div class="pf-lista" id="ac-lista">${randuri}</div>
+    <div class="pf-lista zebra-lista" id="ac-lista">${randuri}</div>
     <div id="ac-detaliu"></div>
   `;
 

@@ -294,7 +294,7 @@ async function ecranDeclaratii(corp, nav) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Declarații depuse</h2>
     <p class="pf-intro">Ce a fost depus la ANAF pentru firma ta.</p>
-    <div class="pf-lista">${corpuri}</div>`;
+    <div class="pf-lista zebra-lista">${corpuri}</div>`;
 }
 
 // ---------- SOLICITARI (chat cu contabilul) ----------  // ICRD_SOLICITARI_FRONT_V1
@@ -395,7 +395,7 @@ async function ecranPovestea(corp, nav) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Povestea lunii</h2>
     <p class="pf-intro">Raportul lunar de la contabil.</p>
-    <div class="pf-lista" id="pov-lista">${corpuri}</div>
+    <div class="pf-lista zebra-lista" id="pov-lista">${corpuri}</div>
     <div id="pov-detaliu"></div>`;
   corp.querySelectorAll(".pf-frand").forEach((el, i) => {
     el.style.cursor = "pointer";
@@ -499,7 +499,7 @@ async function ecranDocumente(corp, nav) {
       }).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Balanțe lunare</h2>
-      <div class="pf-lista">${corpuri}</div>`;
+      <div class="pf-lista zebra-lista">${corpuri}</div>`;
     corp.querySelectorAll("[data-bal]").forEach((b) => {
       b.addEventListener("click", async () => {
         const [an, ll] = b.dataset.bal.split("-");
@@ -526,7 +526,7 @@ async function ecranDocumente(corp, nav) {
     if (err) { corp.innerHTML = `<h2 class="pf-titlu">Declarații depuse</h2><p class="msg-eroare">${err.mesaj || "Nu am putut încărca lista."}</p>`; return; }
     corp.innerHTML = `
       <h2 class="pf-titlu">Declarații depuse</h2>
-      <div class="pf-lista">${!decl.length ? '<div class="mig-gol">Nicio declarație depusă încă.</div>' : decl.map((d) => `
+      <div class="pf-lista zebra-lista">${!decl.length ? '<div class="mig-gol">Nicio declarație depusă încă.</div>' : decl.map((d) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${d.tip} · ${String(d.luna).padStart(2,"0")}/${d.an}</div>

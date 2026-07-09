@@ -93,7 +93,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Istoric facturi</h2>
     <p class="pf-intro">Apas\u0103 o factur\u0103 pentru detalii.</p>
-    <div class="pf-lista">${corpuri}</div>`;
+    <div class="pf-lista zebra-lista">${corpuri}</div>`;
   corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   corp.querySelectorAll(".fac-cont").forEach((b) => b.addEventListener("click", async (ev) => {
     ev.stopPropagation();
@@ -642,7 +642,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Facturi recurente</h2>
     <p class="pf-intro">\u0218abloane emise automat \u00een fiecare lun\u0103 (verificare zilnic\u0103 la 07:00).</p>
-    <div class="pf-lista">${corpuri}</div>
+    <div class="pf-lista zebra-lista">${corpuri}</div>
     <button class="buton-primar" id="fr-add" style="margin-top:12px">+ \u0218ablon nou</button>`;
   corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
   corp.querySelector("#fr-add").addEventListener("click", () => nav.mergi("\u0218ablon nou", (c) => formSablon(c, nav, tenantId, opt)));  // faza_b_traseu_v1

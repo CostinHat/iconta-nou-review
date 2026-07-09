@@ -47,7 +47,7 @@ async function randeaza(corp, nav) {
   }).join("");
   corp.innerHTML = `
     <h2 class="pf-titlu">Conturi gratuite</h2>
-    <div class="pf-lista" id="ag-lista">${randuri}</div>
+    <div class="pf-lista zebra-lista" id="ag-lista">${randuri}</div>
   `;
   corp.querySelectorAll("[data-toggle]").forEach((btn) => {
     btn.addEventListener("click", async () => {

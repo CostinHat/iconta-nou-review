@@ -556,7 +556,7 @@ async function randeazaConsolidare(corp, nav) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Consolidare portofoliu</h2>
     <p class="pf-intro">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${luni[d.luna]} ${d.an}. Valori \u00een lei.</p>
-    <div class="pf-lista">
+    <div class="pf-lista zebra-lista">
       ${cap}
       ${(d.firme || []).map((f) => rand(f.nume, f.kpi)).join("")}
       ${rand("TOTAL", d.total, true)}
