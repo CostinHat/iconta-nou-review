@@ -2127,6 +2127,15 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], .cf-dot, i[class*="
 .lupa-mare { max-width: 92vw; max-height: 94vh; user-select: none; cursor: grab; transition: transform 0.05s; }
 .lupa-mare:active { cursor: grabbing; }
 
+/* [bon_flux_e8_v1] detaliu document pozat: poza sticky langa date */
+.doc-split { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; }
+.doc-poza { flex: 0 1 340px; min-width: 260px; position: sticky; top: 0;
+  display: flex; flex-direction: column; gap: 8px; }
+.doc-poza-cadru { overflow: hidden; border: 1px solid var(--linie); border-radius: var(--raza);
+  background: #fff; cursor: zoom-in; max-height: 70vh; }
+.doc-poza-cadru img { width: 100%; display: block; transition: transform 0.05s; user-select: none; }
+.doc-campuri { flex: 1 1 380px; min-width: 300px; }
+
 /* [STANDARD_BUTON_ACTIV] starea "apasat/deschis" pentru butoane cu zone toggle */
 .buton-activ { background: #1a5a94 !important; color: #fff !important; border-color: #1a5a94 !important;
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.25) !important; transform: none !important; }

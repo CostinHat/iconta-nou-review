@@ -1209,7 +1209,7 @@ async function ecranJurnal(corp, nav, t) {
 async function ecranBonuri(corp, nav, t) {
   const fmt = (v) => (Number(v) || 0).toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const fmtZi = (iso) => { const p = String(iso || "").split("-"); return p.length === 3 ? p[2] + "." + p[1] + "." + p[0] : (iso || ""); };  // bon_flux_e6_v1
-  const fmtPrimit = (iso) => {  // bon_flux_e7_v1
+  const fmtPrimit = (iso) => {  // bon_flux_e7b_v1
     if (!iso) return "";
     const d = new Date(iso);
     const dd = (n) => String(n).padStart(2, "0");
@@ -1274,7 +1274,9 @@ async function ecranBonuri(corp, nav, t) {
       <h2 class="pf-titlu">${eChitanta ? "Chitanță" : "Bon fiscal"}${b.numar_document ? " · nr. " + b.numar_document : ""}</h2>
       ${b.mentiuni ? `<p class="pf-intro">reprezentând: ${b.mentiuni}</p>` : ""}
       ${!eChitanta && dif > 0.05 ? `<div class="caseta-atentie" style="margin:0 0 12px"><div class="ca-mesaj">Suma articolelor citite (${fmt(sumaArt)}) nu se închide cu totalul (${fmt(b.total)}) — verifică cu poza.</div></div>` : ""}
-      <div id="d-poze" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"><p class="ecran-nota">Se încarcă poza...</p></div>
+      <div class="doc-split">
+      <div class="doc-poza" id="d-poze"><p class="ecran-nota">Se încarcă poza...</p></div>
+      <div class="doc-campuri">
       <div style="display:grid;grid-template-columns:${eChitanta ? "2fr 1fr 1fr" : "2fr 1fr 1fr 1fr"};gap:8px;align-items:end">
         <label class="camp"><span class="camp-eticheta">${eChitanta ? "Emitent (furnizor)" : "Comerciant"}</span><input class="camp-input" id="d-com" value="${b.comerciant || ""}"></label>
         <label class="camp"><span class="camp-eticheta">${eChitanta ? "Data plății" : "Data"}</span><input class="camp-input" type="date" id="d-data" value="${b.data || ""}"></label>
@@ -1293,24 +1295,41 @@ async function ecranBonuri(corp, nav, t) {
         <button class="buton-verde" id="d-certifica">${eChitanta ? "Certifică plata (401 = 5311)" : "Certifică și contează"}</button>
         <button class="btn-link" id="d-renunta" style="margin-left:10px">Renunță</button>
         <span class="msg-eroare" id="d-msg" style="margin-left:10px"></span>
+      </div>
+      </div>
       </div>`;
 
     corp.querySelector("#d-renunta").addEventListener("click", randeazaLista);
 
-    // pozele, cu lupa
+    // pozele: mari, fixe langa date; rotita = zoom, tragere = mutare, dublu-click = ecran complet  // bon_flux_e8_v1
     (async () => {
       const zona = corp.querySelector("#d-poze");
       zona.innerHTML = "";
       for (let n = 1; n <= (b.nr_imagini || 0); n++) {
         try {
           const u = await pozaUrl(b.id, n);
+          const cadru = document.createElement("div");
+          cadru.className = "doc-poza-cadru";
           const img = document.createElement("img");
-          img.src = u; img.alt = "document"; img.className = "lupa-mini";
-          img.addEventListener("click", () => deschideLupa(u));
-          zona.appendChild(img);
+          img.src = u; img.alt = "document"; img.draggable = false;
+          let scara = 1, tx = 0, ty = 0, drag = null;
+          const aplica = () => { img.style.transform = `translate(${tx}px,${ty}px) scale(${scara})`; };
+          cadru.addEventListener("wheel", (e) => {
+            e.preventDefault();
+            scara = Math.min(6, Math.max(1, scara * (e.deltaY < 0 ? 1.2 : 1 / 1.2)));
+            if (scara === 1) { tx = 0; ty = 0; }
+            aplica();
+          }, { passive: false });
+          img.addEventListener("mousedown", (e) => { e.preventDefault(); drag = { x: e.clientX - tx, y: e.clientY - ty }; });
+          cadru.addEventListener("mousemove", (e) => { if (drag) { tx = e.clientX - drag.x; ty = e.clientY - drag.y; aplica(); } });
+          window.addEventListener("mouseup", () => { drag = null; });
+          img.addEventListener("dblclick", () => deschideLupa(u));
+          cadru.appendChild(img);
+          zona.appendChild(cadru);
         } catch {}
       }
       if (!zona.children.length) zona.innerHTML = `<p class="ecran-nota">Fără poză (document mai vechi).</p>`;
+      else zona.insertAdjacentHTML("beforeend", '<p class="ecran-nota" style="margin:0">Rotița = mărește · trage = mută · dublu-click = ecran complet</p>');
     })();
 
     // facturile candidate (doar chitanta)
@@ -1568,3 +1587,5 @@ async function ecranAccesClient(corp, nav, t) {
 // bon_flux_e6_v1
 
 // bon_flux_e7_v1
+
+// bon_flux_e8_v1
