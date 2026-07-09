@@ -249,7 +249,7 @@ export async function ecranOperatiuni(corp, nav, t) {
       <h2 class="pf-titlu">Opera\u021biuni speciale</h2>
       <p class="pf-intro">Note contabile pentru opera\u021biuni punctuale. Toate intr\u0103 drept <b>ciorn\u0103</b> \u2014 se valideaz\u0103 din Registru jurnal.</p>
       ${CATEGORII.map((cat) => `
-        <div class="pf-frand" style="display:block;margin-bottom:12px">
+        <div style="display:block;margin-bottom:12px;background:var(--fundal);border:1px solid var(--linie);border-radius:var(--raza);padding:14px">
           <div class="pf-frand-nume" style="margin-bottom:8px">${esc(cat)}</div>
           <div style="display:flex;flex-wrap:wrap;gap:8px">
             ${REGISTRU.filter((o) => o.cat === cat).map((o) =>
