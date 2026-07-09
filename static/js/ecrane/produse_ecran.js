@@ -2,7 +2,7 @@
 // Scrii denumirea -> AI potriveste cota TVA din regula oficiala (preview live) ->
 // vezi cota + justificarea -> salvezi. Cota se poate corecta manual.
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj } from "../api.js";  /* cap6_catch_v1b */
+import { api, arataMesaj, confirmaCaseta } from "../api.js";  /* cap6_catch_v1b + investigatie_identitate_v1 */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
 
@@ -58,11 +58,13 @@ function randeazaLista(corp, tenantId, lista, reincarca) {
       </div>
     </div>`).join("");
   zona.querySelectorAll(".pr-sterge").forEach((b) => {
-    b.addEventListener("click", async (e) => {
+    b.addEventListener("click", (e) => {
       e.stopPropagation();
       const id = b.dataset.id;
-      try { await api.del(`/tenants/${tenantId}/produse/${id}`); } catch (er) { arataMesaj(zona.querySelector("#pr-form-zona"), er.mesaj || "Nu am putut \u0219terge produsul.", "eroare"); }
-      reincarca();
+      confirmaCaseta(b.parentElement || b, "\u0218tergi produsul?", async () => {
+        try { await api.del(`/tenants/${tenantId}/produse/${id}`); reincarca(); }
+        catch (er) { arataMesaj(zona.querySelector("#pr-form-zona"), er.mesaj || "Nu am putut \u0219terge produsul.", "eroare"); }
+      });
     });
   });
 }

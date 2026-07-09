@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, bani } from "../api.js";
+import { api, bani, confirmaCaseta } from "../api.js";  /* investigatie_identitate_v1 */
 
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -163,9 +163,11 @@ export async function ecranRip(corp, nav, t) {
       try { await api.put(`/tenants/${t.id}/rip/operatiuni/${b.dataset.val}/valideaza`, {}); deseneaza(); }
       catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     }));
-    corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", async () => {
-      try { await api.del(`/tenants/${t.id}/rip/operatiuni/${b.dataset.del}`); deseneaza(); }
-      catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
+    corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
+      confirmaCaseta(b.parentElement || b, "\u0218tergi opera\u021biunea?", async () => {
+        try { await api.del(`/tenants/${t.id}/rip/operatiuni/${b.dataset.del}`); deseneaza(); }
+        catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
+      });
     }));
   };
   deseneaza();
