@@ -1164,15 +1164,15 @@ async function ecranJurnal(corp, nav, t) {
       if (inEditare === n.id) return editor(n);
       const butoane = n.status === "ciorna" ? `
         <button class="buton-primar" data-val="${n.id}">Valideaz\u0103</button>
-        <button class="buton-secundar" data-edit="${n.id}" style="margin-left:6px">Editeaz\u0103</button>
-        <button class="buton-secundar" data-del="${n.id}" style="margin-left:6px">\u0218terge</button>` : "";
+        <button class="buton-secundar" data-edit="${n.id}">Editeaz\u0103</button>
+        <button class="buton-secundar" data-del="${n.id}">\u0218terge</button>` : "";
       return `
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${fmtDataCab(n.data)} \u00b7 ${escJ(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
             <div class="pf-frand-sub">${n.linii.map((l) => `${escJ(l.debit)} = ${escJ(l.credit)} \u00b7 ${l.suma.toFixed(2)}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + escJ(n.sursa) : ""}</div>
           </div>
-          <div>${butoane}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start">${butoane}</div>
         </div>`;
     };
     const editor = (n) => `
