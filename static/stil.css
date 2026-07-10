@@ -374,7 +374,7 @@ html, body {
 .sub-inapoi:hover { background: var(--portocaliu); color: var(--alb); }
 
 /* meniu Firme — 2 opțiuni */
-.firme-optiuni { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.firme-optiuni { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
 .firme-optiune {
   text-align: left; background: var(--alb);
   border: 0.5px solid var(--linie); border-radius: 12px;
