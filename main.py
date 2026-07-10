@@ -3488,7 +3488,8 @@ def portal_solicitari_trimite(date: SolicitareIn, tenant_id: Optional[int] = Non
         if r and r[0]:
             with conn.cursor() as cur:
                 cur.execute(
-                    "SELECT id FROM public.users WHERE accounting_firm_id=%s AND activ=true", (r[0],))
+                    "SELECT id FROM public.users WHERE accounting_firm_id=%s AND activ=true "
+                    "AND rol IN ('admin_firma', 'angajat')", (r[0],))
                 ids = [x[0] for x in cur.fetchall()]
             txt = "Mesaj nou de la %s: %s" % (r[1] or "firma", date.mesaj[:80])
             _notif.adauga_multi(conn, ids, "solicitare_client", txt, link="solicitari:%s" % t["id"])
