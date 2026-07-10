@@ -244,7 +244,9 @@ const CATEGORII = [...new Set(REGISTRU.map((o) => o.cat))];
 export async function ecranOperatiuni(corp, nav, t) {
   let opCurenta = null;
 
-  const lista = () => {
+  const lista = (c) => {
+    if (c) corp = c;
+    nav.setInapoi(undefined);
     corp.innerHTML = `
       <h2 class="pf-titlu">Opera\u021biuni speciale</h2>
       <p class="pf-intro">Note contabile pentru opera\u021biuni punctuale. Toate intr\u0103 drept <b>ciorn\u0103</b> \u2014 se valideaz\u0103 din Registru jurnal.</p>
@@ -258,11 +260,12 @@ export async function ecranOperatiuni(corp, nav, t) {
         </div>`).join("")}`;
     corp.querySelectorAll("[data-op]").forEach((b) => b.addEventListener("click", () => {
       opCurenta = REGISTRU.find((o) => o.cheie === b.dataset.op);
-      formular();
+      nav.mergi(opCurenta.titlu, formular);
     }));
   };
 
-  const formular = () => {
+  const formular = (c) => {
+    if (c) corp = c;
     const ziAzi = new Date().toISOString().slice(0, 10);
     const camp = (c) => {
       const cond = c.cond ? ` data-cond-camp="${c.cond.camp}" data-cond-val="${c.cond.val}"` : "";
@@ -272,33 +275,31 @@ export async function ecranOperatiuni(corp, nav, t) {
       } else if (c.tip === "data") {
         input = `<input type="date" id="op-${c.nume}" class="mig-text">`;
       } else if (c.tip === "numar") {
-        input = `<input type="number" step="0.01" id="op-${c.nume}" class="mig-text" placeholder="${c.sugestie || ""}" aria-label="${esc(c.eticheta)}">`;
+        input = `<input type="number" step="0.01" id="op-${c.nume}" class="mig-text" placeholder="${c.sugestie || ""}">`;
       } else {
-        input = `<input type="text" id="op-${c.nume}" class="mig-text" placeholder="${c.sugestie || ""}" aria-label="${esc(c.eticheta)}">`;
+        input = `<input type="text" id="op-${c.nume}" class="mig-text" placeholder="${c.sugestie || ""}">`;
       }
-      return `<label${cond}>${esc(c.eticheta)}${c.optional ? "" : " *"}<br>${input}</label>`;
+      return `<div class="camp"${cond}><label class="camp-eticheta" for="op-${c.nume}">${esc(c.eticheta)}${c.optional ? "" : " *"}</label>${input}</div>`;
     };
     corp.innerHTML = `
       <h2 class="pf-titlu">${esc(opCurenta.titlu)}</h2>
-      <p><button class="buton-secundar" id="op-inapoi">\u2190 Toate opera\u021biunile</button></p>
       <div class="pf-frand" style="display:block">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;max-width:1000px">
+        <div class="grila-campuri">
           ${opCurenta.campuri.map(camp).join("")}
         </div>
         ${opCurenta.multi ? '<div class="pf-frand-nume" style="margin:12px 0 6px">Solduri</div><div id="op-multi"></div>' : ""}
         <p style="margin-top:12px"><button class="buton-primar" id="op-trimite">Genereaz\u0103 nota (ciorn\u0103)</button></p>
         <div id="op-mesaj"></div>
       </div>`;
-    corp.querySelector("#op-inapoi").addEventListener("click", lista);
 
     // [multi] randuri repetabile (ex. reevaluare valuta)
     let randuriMulti = opCurenta.multi ? [0] : [];
     const zonaMulti = corp.querySelector("#op-multi");
-    const randMulti = (i) => `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:8px;padding:8px;border:1px solid var(--linie);border-radius:8px">
+    const randMulti = (i) => `<div class="grila-campuri grila-campuri-compacta">
       ${opCurenta.subcampuri.map((sc) => {
-        if (sc.tip === "select") return `<label>${esc(sc.eticheta)}<br><select id="m${i}-${sc.nume}" class="mig-text">${sc.optiuni.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("")}</select></label>`;
+        if (sc.tip === "select") return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><select id="m${i}-${sc.nume}" class="mig-text">${sc.optiuni.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("")}</select></div>`;
         const t2 = sc.tip === "numar" ? "number" : "text";
-        return `<label>${esc(sc.eticheta)}<br><input type="${t2}" step="0.0001" id="m${i}-${sc.nume}" class="mig-text" placeholder="${sc.sugestie||""}"></label>`;
+        return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><input type="${t2}" step="0.0001" id="m${i}-${sc.nume}" class="mig-text" placeholder="${sc.sugestie||""}"></div>`;
       }).join("")}</div>`;
     if (opCurenta.multi && zonaMulti) {
       zonaMulti.innerHTML = randMulti(0) + '<p><button class="buton-secundar" id="op-plus-rand">+ Rand</button></p>';
@@ -311,7 +312,7 @@ export async function ecranOperatiuni(corp, nav, t) {
 
     // vizibilitate conditionata
     const actualizeazaCond = () => {
-      corp.querySelectorAll("label[data-cond-camp]").forEach((l) => {
+      corp.querySelectorAll(".camp[data-cond-camp]").forEach((l) => {
         const sel = corp.querySelector(`#op-${l.dataset.condCamp}`);
         l.style.display = sel && sel.value === l.dataset.condVal ? "" : "none";
       });
@@ -326,7 +327,7 @@ export async function ecranOperatiuni(corp, nav, t) {
       let lipsa = null;
       for (const c of opCurenta.campuri) {
         const el = corp.querySelector(`#op-${c.nume}`);
-        const ascuns = el.closest("label").style.display === "none";
+        const ascuns = el.closest(".camp").style.display === "none";
         if (ascuns) continue;
         const v = el.value;
         if (!v && !c.optional) { lipsa = c.eticheta; break; }

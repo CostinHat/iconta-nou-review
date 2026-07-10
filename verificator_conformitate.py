@@ -29,7 +29,7 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast", "antet"]}
+                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -78,9 +78,12 @@ for nume, t in fisiere.items():
         # MENIURI: dialecte de optiuni
         for dm in re.finditer(r'class="((?:fac|firme)-optiune)', lin):
             meniuri.setdefault(dm.group(1), []).append((nume, i))
+        # CAMP_DIALECT (#61): <label>text<br><input|select> in loc de .camp canonic
+        if re.search(r'<label[^>]*>[^<]*<br>\s*(<input|<select|\$\{input)', lin):
+            rap["camp_dialect"].append((nume, i, "", lin.strip()[:66]))
         # ETICHETE: input cu placeholder informativ dar fara label/eticheta pe linie/vecinatate
         if re.search(r'<input[^>]*placeholder="[^"]{4,}', lin) and "camp-eticheta" not in lin and "<label" not in lin and "aria-label" not in lin:
-            vecini = "\n".join(linii[max(0,i-3):i])
+            vecini = "\n".join(linii[max(0,i-3):i] + linii[i:i+4])
             if "camp-eticheta" not in vecini and "<label" not in vecini and "aria-label" not in vecini:
                 rap["etichete_lipsa"].append((nume, i, "", lin.strip()[:66]))
 

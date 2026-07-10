@@ -2214,3 +2214,8 @@ select:focus, textarea:focus {
 table tbody tr:nth-child(odd) td { background: var(--albastru-clar); }
 table tbody tr:nth-child(even) td { background: var(--alb); }
 /* ============ sfarsit STANDARD_ZEBRA ============ */
+
+/* grila_campuri_v1 - Design System v1.1 (#61): grila de campuri, casete aliniate jos */
+.grila-campuri { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; max-width: 1000px; }
+.grila-campuri .camp { justify-content: flex-end; }
+.grila-campuri-compacta { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 8px; padding: 8px; border: 1px solid var(--linie); border-radius: 8px; }
