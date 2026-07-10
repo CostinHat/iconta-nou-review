@@ -49,18 +49,18 @@ function meniuFacturi(corp, nav, tenantId, opt) {
         <div class="firme-optiune-titlu">Model factur\u0103</div>
         <div class="firme-optiune-desc">Logo, font \u0219i culoare</div>
       </button>
-      <button class="firme-optiune" id="fac-recurente">
+      ${!opt.client ? `<button class="firme-optiune" id="fac-recurente">
         <div class="firme-optiune-icon accent-recomanda">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v5h-5"/></svg>
         </div>
         <div class="firme-optiune-titlu">Facturi recurente</div>
         <div class="firme-optiune-desc">\u0218abloane emise automat lunar</div>
-      </button>
+      </button>` : ""}
     </div>`;
   corp.querySelector("#fac-istoric").addEventListener("click", () => nav.mergi("Istoric facturi", (c) => istoricFacturi(c, nav, tenantId, opt)));  // faza_b_traseu_v1
   corp.querySelector("#fac-emite").addEventListener("click", () => nav.mergi("Emite factur\u0103", (c) => emiteFactura(c, nav, tenantId, opt)));
   corp.querySelector("#fac-model").addEventListener("click", () => nav.mergi("Model factur\u0103", (c) => modelFactura(c, nav, tenantId, opt)));
-  corp.querySelector("#fac-recurente").addEventListener("click", () => nav.mergi("Facturi recurente", (c) => listaRecurente(c, nav, tenantId, opt)));
+  corp.querySelector("#fac-recurente")?.addEventListener("click", () => nav.mergi("Facturi recurente", (c) => listaRecurente(c, nav, tenantId, opt)));
 }  // fac_recurente_v1
 
 // ---------- ISTORIC ---------- /* facback_null_fix_v1 */
