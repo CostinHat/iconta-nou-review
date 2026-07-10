@@ -68,13 +68,16 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  let afisate = 10;
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
     let lista = [];
     try {
-      const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}`);
+      const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=${afisate + 1}`);
       lista = (r && r.facturi) || [];
     } catch {}
+    const maiSunt = lista.length > afisate;
+    if (maiSunt) lista = lista.slice(0, afisate);
     let corpuri = !lista.length
       ? `<div class="mig-gol">Nicio factur\u0103 \u00een luna aceasta.</div>`
       : lista.map((f) => {
@@ -96,10 +99,12 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       <h2 class="pf-titlu">Istoric facturi</h2>
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
         <button class="buton-secundar" id="fac-prev" style="margin-left:12px">\u2190 luna</button>
-        <button class="buton-secundar" id="fac-next">luna \u2192</button></p>
+        <button class="buton-secundar" id="fac-next">luna \u2192</button>
+        ${maiSunt ? '<button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px">Vezi \u0219i facturile mai vechi din aceast\u0103 lun\u0103</button>' : ""}</p>
       <div class="pf-lista zebra-lista">${corpuri}</div>`;
-    corp.querySelector("#fac-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
-    corp.querySelector("#fac-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelector("#fac-mai-multe")?.addEventListener("click", () => { afisate += 10; deseneaza(); });
+    corp.querySelector("#fac-prev").addEventListener("click", () => { afisate = 10; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#fac-next").addEventListener("click", () => { afisate = 10; luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
     corp.querySelectorAll(".fac-cont").forEach((b) => b.addEventListener("click", async (ev) => {
       ev.stopPropagation();
       try {

@@ -78,8 +78,9 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
 # ============================================================
 #  LISTĂ — DB
 # ============================================================
-def lista_facturi(conn, an=None, luna=None, directie=None):
-    """Lista facturilor (antet), filtrabilă pe an/lună/direcție."""
+def lista_facturi(conn, an=None, luna=None, directie=None, limit=None, offset=0):
+    """Lista facturilor (antet), filtrabilă pe an/lună/direcție. limit=None -> tot istoricul
+    (folosit intern de alte module: verificatoare, D390 etc.); UI foloseste limit pentru paginare."""
     import psycopg2.extras as _E
     cond, val = [], []
     if an is not None and luna is not None:
@@ -92,11 +93,14 @@ def lista_facturi(conn, an=None, luna=None, directie=None):
     if directie is not None:
         cond.append("directie = %s"); val.append(directie)
     where = (" WHERE " + " AND ".join(cond)) if cond else ""
+    limitclause = ""
+    if limit is not None:
+        limitclause = " LIMIT %s OFFSET %s"; val += [limit, offset]
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, numar, data_emitere, directie, total, tva, status, "
             "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id FROM facturi" + where +
-            " ORDER BY data_emitere DESC, id DESC", val)
+            " ORDER BY data_emitere DESC, id DESC" + limitclause, val)
         return [dict(r) for r in cur.fetchall()]
 
 

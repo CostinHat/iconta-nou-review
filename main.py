@@ -1850,10 +1850,11 @@ def vector_salveaza(tenant_id: int, date: VectorIn, ctx=Depends(cere_rol("admin_
 @app.get("/tenants/{tenant_id}/facturi")  # [p117_facturi_lista_acces] acces client+gratuit+cabinet
 def facturi_lista(tenant_id: int, an: Optional[int] = None,
                   luna: Optional[int] = None, directie: Optional[str] = None,
+                  limit: Optional[int] = None, offset: int = 0,
                   ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
-        return {"facturi": facturi_api.lista_facturi(conn, an, luna, directie)}
+        return {"facturi": facturi_api.lista_facturi(conn, an, luna, directie, limit=limit, offset=offset)}
 
 
 @app.post("/tenants/{tenant_id}/facturi")
