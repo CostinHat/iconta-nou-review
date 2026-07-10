@@ -435,7 +435,7 @@ const MF_FONTURI = {
   serif: 'Georgia, "Times New Roman", serif',
   mono: '"Courier New", monospace',
 };
-const MF_CULORI = ["#1d4ed8", "#0a807b", "#1d7a4d", "#a3344b", "#6d28d9", "#b45309"];
+const MF_CULORI = ["#5b8dd9", "#4a9d97", "#4a9d6f", "#c15a70", "#8b6fc9", "#c17d3f", "#4b5563"];
 
 async function modelFactura(corp, nav, tenantId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;

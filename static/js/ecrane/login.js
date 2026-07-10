@@ -165,7 +165,10 @@ export function ecranLogin(radacina) {
   function randeazaLogin() {
     modal.classList.remove("acces-modal-inreg");
     modal.innerHTML = `
-      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <button type="button" class="nav-sageata" id="login-la-alegere" title="Înapoi" aria-label="Înapoi"><span aria-hidden="true">←</span></button>
+        <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      </div>
       <div class="login-brand">
         <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
@@ -190,7 +193,10 @@ export function ecranLogin(radacina) {
 
   function formClient() {
     modal.innerHTML = `
-      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <button type="button" class="nav-sageata" id="lgc-inapoi" title="Înapoi" aria-label="Înapoi"><span aria-hidden="true">←</span></button>
+        <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      </div>
       <div class="login-brand">
         <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
         <span class="login-tagline">Portalul tău, fără parolă</span>
@@ -202,7 +208,6 @@ export function ecranLogin(radacina) {
       </label>
       <p class="ecran-nota" style="margin:0 0 12px">Îți trimitem pe email un link de logare. Îl apeși și ai intrat.</p>
       <button type="submit" class="buton-primar" id="lgc-trimite">Trimite-mi linkul de logare</button>
-      <button type="button" class="btn-link" id="lgc-inapoi" style="margin-left:10px">Înapoi</button>
       <p id="lgc-msg" style="margin:10px 0 0"></p>
       </form>
     `;
@@ -229,7 +234,10 @@ export function ecranLogin(radacina) {
 
   function formCabinet() {
     modal.innerHTML = `
-      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <button type="button" class="nav-sageata" id="login-inapoi" title="Înapoi" aria-label="Înapoi"><span aria-hidden="true">←</span></button>
+        <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      </div>
       <div class="login-brand">
         <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
@@ -245,7 +253,6 @@ export function ecranLogin(radacina) {
       </label>
       <div class="login-eroare" id="login-eroare" hidden></div>
       <button type="submit" class="buton-primar" id="login-buton">Autentificare</button>
-      <button type="button" class="btn-link" id="login-inapoi" style="margin-left:10px">Înapoi</button>
       <button type="button" class="btn-link" id="acc-magic" style="margin-top:10px;display:block">Trimite-mi link de logare (fără parolă)</button>
       <p id="acc-magic-msg" style="margin:6px 0 0"></p>
       </form>

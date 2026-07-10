@@ -2034,11 +2034,10 @@ html, body { overflow-y: hidden; }
 .pa-lista[hidden] { display: none !important; }
 /* [portal_fix] spatiere doar pe portal client, nu afecteaza cabinetul */
 .portal-sus { margin-top: 14vh; }
-/* [font_unic] REGULA GLOBALA - nu se modifica. Forteaza font + stil normal peste tot. */
-#app, #app * { font-family: var(--font) !important; font-style: normal !important; }
-/* [font_unic_exceptie_documente] Documentele emise de cabinet (previzualizare factura) folosesc
-   fontul ales de firma-client, NU fontul aplicatiei — e identitatea vizuala a firmei, nu a iConta. */
-#mf-preview, #mf-preview * { font-family: inherit !important; }
+/* [font_unic] REGULA GLOBALA - nu se modifica. Forteaza font + stil normal peste tot,
+   CU EXCEPTIA #mf-preview (previzualizarea documentelor cabinetului: e identitatea vizuala
+   a firmei-client, nu a aplicatiei iConta — foloseste fontul ales de ei in Model factura). */
+#app *:not(#mf-preview):not(#mf-preview *) { font-family: var(--font) !important; font-style: normal !important; }
 .subbara-gol { font-size: var(--text-mic) !important; color: inherit; }
 /* [subbara_deschisa] fundal mai deschis pt contrast */
 .subbara { background: #dfe4ea !important; }
