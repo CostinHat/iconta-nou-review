@@ -267,7 +267,7 @@ async function deschideFacturi(corp, nav) {
     corp.innerHTML = `<p class="msg-eroare">Nu am putut identifica firma.</p>`;
     return;
   }
-  randeazaFacturi(corp, nav, tenantId);  // [p125_portal_curat]
+  randeazaFacturi(corp, nav, tenantId, { client: true });  // [p125_portal_curat]
 }
 
 // ---------- DECLARATII DEPUSE ----------

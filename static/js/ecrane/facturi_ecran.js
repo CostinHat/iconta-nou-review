@@ -87,7 +87,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
           <div class="pf-frand-sub">${fmtData(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
         </div>
         <span class="pf-frand-suma">${suma}</span>
-        <span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>
+        ${!opt.client ? `<span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
       </button>`;
       }).join("");
   corp.innerHTML = `
