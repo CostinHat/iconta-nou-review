@@ -382,6 +382,69 @@ async function ecranVerificari(corp, nav, t) {
 }
 
 // [salariati] Stat de plata lunar + fluturasi
+
+function formularSalariatNou(corp, nav, t, dupaSalvare) {
+  const camp = (id, eticheta, tip, extra) => {
+    const optional = !(extra && extra.obligatoriu);
+    if (tip === "select") {
+      const optiuni = (extra.optiuni || []).map(([v, l]) => `<option value="${v}">${l}</option>`).join("");
+      return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : " *"}</label><select id="sn-${id}" class="mig-text">${optiuni}</select></div>`;
+    }
+    if (tip === "checkbox") {
+      return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}</label><input type="checkbox" id="sn-${id}"></div>`;
+    }
+    const inputTip = tip === "numar" ? "number" : (tip === "data" ? "date" : "text");
+    const pas = (extra && extra.pas) || "0.01";
+    const restrictii = tip === "numar" ? ` step="${pas}" min="0"` : "";
+    return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : " *"}</label><input type="${inputTip}"${restrictii} id="sn-${id}" class="mig-text"></div>`;
+  };
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Salariat nou</h2>
+    <div class="grila-campuri">
+      ${camp("nume", "Nume", "text", { obligatoriu: true })}
+      ${camp("prenume", "Prenume", "text")}
+      ${camp("cnp", "CNP", "text")}
+      ${camp("data_angajare", "Data angaj\u0103rii", "data")}
+      ${camp("tip_norma", "Tip norm\u0103", "select", { optiuni: [["intreaga","\u00centreag\u0103"],["partiala","Par\u021bial\u0103"]] })}
+      ${camp("ore_zi", "Ore/zi (norm\u0103 par\u021bial\u0103)", "numar", { pas: "0.5" })}
+      ${camp("salariu_brut", "Salariu brut", "numar", { obligatoriu: true })}
+      ${camp("persoane_intretinere", "Persoane \u00een \u00eentre\u021binere", "numar", { pas: "1" })}
+      ${camp("judet_casa", "Jude\u021b CAS/CASS", "text")}
+      ${camp("cor", "Cod COR", "text")}
+      ${camp("scutit_contrib_minim", "Scutit contribu\u021bie minim\u0103", "checkbox")}
+    </div>
+    <p style="margin-top:12px">
+      <button class="buton-primar" id="sn-salveaza">Salveaz\u0103</button>
+      <button class="buton-secundar" id="sn-gata" style="margin-left:6px">Gata, \u00eenapoi la list\u0103</button></p>
+    <div id="sn-mesaj"></div>`;
+  corp.querySelector("#sn-gata").addEventListener("click", () => nav.inapoiPas());
+  corp.querySelector("#sn-salveaza").addEventListener("click", async () => {
+    const zona = corp.querySelector("#sn-mesaj");
+    const nume = corp.querySelector("#sn-nume").value.trim();
+    const brut = corp.querySelector("#sn-salariu_brut").value;
+    if (!nume) { zona.innerHTML = '<div class="mig-gol">Numele este obligatoriu.</div>'; return; }
+    const corpReq = {
+      nume,
+      prenume: corp.querySelector("#sn-prenume").value.trim() || null,
+      cnp: corp.querySelector("#sn-cnp").value.trim() || null,
+      data_angajare: corp.querySelector("#sn-data_angajare").value || null,
+      tip_norma: corp.querySelector("#sn-tip_norma").value,
+      ore_zi: corp.querySelector("#sn-ore_zi").value ? Number(corp.querySelector("#sn-ore_zi").value) : null,
+      salariu_brut: brut ? Number(brut) : 0,
+      persoane_intretinere: corp.querySelector("#sn-persoane_intretinere").value ? Number(corp.querySelector("#sn-persoane_intretinere").value) : 0,
+      judet_casa: corp.querySelector("#sn-judet_casa").value.trim() || null,
+      cor: corp.querySelector("#sn-cor").value.trim() || null,
+      scutit_contrib_minim: corp.querySelector("#sn-scutit_contrib_minim").checked,
+    };
+    try {
+      await api.post(`/tenants/${t.id}/salariati`, corpReq);
+      if (dupaSalvare) dupaSalvare();
+      formularSalariatNou(corp, nav, t, dupaSalvare);
+      corp.querySelector("#sn-mesaj").innerHTML = `<p class="pf-intro" style="color:var(--verde)">Salariat salvat. Po\u021bi ad\u0103uga altul.</p>`;
+    } catch (e) { zona.innerHTML = `<div class="mig-gol">${(e && e.mesaj) || "eroare la salvare"}</div>`; }
+  });
+}
+
 async function ecranSalariati(corp, nav, t) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
@@ -409,11 +472,13 @@ async function ecranSalariati(corp, nav, t) {
         <button class="buton-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="sp-next">luna \u2192</button>
         <button class="buton-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
-        <button class="buton-secundar" id="sp-reges-poll">R\u0103spunsuri REGES</button></p>
+        <button class="buton-secundar" id="sp-reges-poll">R\u0103spunsuri REGES</button>
+        <button class="buton-primar" id="sp-salariat-nou" style="margin-left:12px">+ Salariat nou</button></p>
       <div id="sp-reges-zona"></div>
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelector("#sp-salariat-nou").addEventListener("click", () => nav.mergi("Salariat nou", (c2) => formularSalariatNou(c2, nav, t, deseneaza)));
     const zonaReges = corp.querySelector("#sp-reges-zona");
     corp.querySelector("#sp-reges-cfg").addEventListener("click", () => {
       zonaReges.innerHTML = `<div style="display:block;margin:10px 0">

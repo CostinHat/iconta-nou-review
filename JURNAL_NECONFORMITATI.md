@@ -67,3 +67,25 @@ verificata manual, exacta. Motorul refuza corect calculul pt alt an decat 2025
 Gaura similara cu #66 gasita si reparata: rip_operatiuni nu avea trigger perioada
 blocata. Extins acelasi tipar (trigger pe data_operatiune) pe toate 6 scheme +
 tenant_template.sql. Testat: 423 pe luna blocata, 200 pe luna libera.
+
+## Test #68 (10.07.2026) — Salariat nou + contract: FAIL -> construit + PASS
+Gaura reala: UI de adaugare salariat individual lipsea complet (doar import bulk
+migrare exista). Backend (POST /tenants/{id}/salariati) era gata dar neapelat.
+Construit ecran nou "Salariat nou" in ecranSalariati (firme.js), structura canonica
+.camp + grila-campuri (identic tipar #61), nav.mergi pentru scroll.
+
+Bug de sistem critic gasit in constructie: salariati_api.py folosea coloana
+tip_norma (text) peste tot, dar DB are part_time (boolean) - redenumita intr-o
+migrare anterioara (03.07.2026) fara actualizarea codului. TOATA lista de
+salariati era stricata (500) pentru orice tenant - bug preexistent, invizibil
+pana acum (nimeni nu testase GET /salariati). Reparat: traducere API<->DB la
+granita (tip_norma<->part_time), contract API neschimbat. Confirmat: KAI avea
+deja 2 salariati (Ionescu Maria, Popescu Ion) ascunsi de eroare, acum vizibili.
+
+2 bug-uri UX gasite si reparate live cu Costin: (1) Ore/zi permitea valori
+negative (fara min pe input number) - fix min="0" pe toate campurile numerice.
+(2) step=0.01 aplicat uniform gresit (bani vs ore vs persoane) - diferentiat:
+ore_zi=0.5, persoane_intretinere=1, salariu_brut=0.01. (3) Dupa salvare iesea
+din formular direct la lista (nav.inapoi() inchidea toata fereastra) - fix:
+ramane pe formular golit cu mesaj confirmare + buton separat "Gata, inapoi la
+lista" (nav.inapoiPas(), nu nav.inapoi()).
