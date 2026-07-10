@@ -1359,3 +1359,38 @@ function importPlanConturiFirma(corp, nav, firma) {
     }
   });
 }
+
+// ---------- MENIU MIGRARE PER FIRMA [p96_import_firma] ----------
+// Deschis din fisa unei firme (cardul "Import date") - sare peste pasul de
+// selectie a firmei, duce direct in ecranul de import per-strat pentru firma curenta.
+export function meniuMigrarePerFirma(corp, nav, firma) {
+  nav.setInapoi(null);
+  latime(corp, false);
+  const PASI = [
+    { titlu: "Vector fiscal", desc: "TVA, regim, intracomunitar", fn: (c, n) => formularVectorFirma(c, n, firma) },
+    { titlu: "Solduri ini\u021biale", desc: "Balan\u021ba de deschidere", fn: (c, n) => importSolduriFirma(c, n, firma) },
+    { titlu: "Solduri parteneri", desc: "4111/401 pe client \u0219i furnizor", fn: (c, n) => importParteneriFirma(c, n, firma) },
+    { titlu: "Salaria\u021bi", desc: "Nume, CNP, salariu, contract", fn: (c, n) => importSalariatiFirma(c, n, firma) },
+    { titlu: "Asocia\u021bi", desc: "Nume, cot\u0103 % (D205)", fn: (c, n) => importAsociatiFirma(c, n, firma) },
+    { titlu: "Mijloace fixe", desc: "Registru amortizare", fn: (c, n) => importMijloaceFirma(c, n, firma) },
+    { titlu: "Istoric declara\u021bii", desc: "Ce s-a depus deja", fn: (c, n) => importIstoricFirma(c, n, firma) },
+    { titlu: "Plan de conturi", desc: "Cont\u0103 analitice/nestandard", fn: (c, n) => importPlanConturiFirma(c, n, firma) },
+  ];
+  corp.innerHTML = `
+    <p class="mig-intro"><b>${firma.nume}</b><br>Alege ce vrei s\u0103 aduci pentru aceast\u0103 firm\u0103.</p>
+    <div class="mig-lista" id="mig-pasi"></div>
+  `;
+  const lista = corp.querySelector("#mig-pasi");
+  PASI.forEach((p) => {
+    const rand = document.createElement("button");
+    rand.className = "mig-frand";
+    rand.innerHTML = `
+      <div class="mig-frand-text">
+        <div class="mig-frand-nume">${p.titlu}</div>
+        <div class="mig-frand-sub">${p.desc}</div>
+      </div>
+    `;
+    rand.addEventListener("click", () => nav.mergi(p.titlu + " \u00b7 " + (firma.nume || ""), (c) => p.fn(c, nav)));
+    lista.appendChild(rand);
+  });
+}

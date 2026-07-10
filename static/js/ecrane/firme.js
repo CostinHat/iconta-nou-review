@@ -7,6 +7,7 @@ import { randeazaFacturi } from "./facturi_ecran.js";
 import { ecranRip } from "./rip_ecran.js";
 import { ecranOperatiuni } from "./operatiuni_ecran.js";
 import { ecranEtransport } from "./etransport_ecran.js";
+import { meniuMigrarePerFirma } from "./migrare.js";  // [p96_import_firma]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -187,6 +188,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "acces", titlu: "Acces client", desc: "Invită clientul în portal",
       bg: "#e6f2ec", fg: "#1d7a4d",
       icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/>', activ: true },
+    { cheie: "import", titlu: "Import date", desc: "Toate straturile de migrare, pentru aceast\u0103 firm\u0103",
+      bg: "#eef4ff", fg: "#1d4ed8",
+      icon: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>', activ: true },
   ];
 
   corp.innerHTML = `
@@ -262,6 +266,12 @@ function meniuFirma(corp, nav, t) {
   if (bSolicitari) {
     bSolicitari.addEventListener("click", () => {
       ecranSolicitariCabinet(corp, nav, t);
+    });
+  }
+  const bImport = corp.querySelector("#fa-import");
+  if (bImport) {
+    bImport.addEventListener("click", () => {
+      nav.mergi("Import date \u00b7 " + (t.nume || ""), (c) => meniuMigrarePerFirma(c, nav, { tenant_id: t.id, nume: t.nume }));
     });
   }
 }
