@@ -31,12 +31,7 @@ def _culoare(hexs, implicit="#1d4ed8"):
         return colors.HexColor(implicit)
 
 
-def _bani(x, mon=""):
-    if x is None:
-        return ""
-    n = Decimal(str(x)).quantize(Decimal("0.01"))
-    s = f"{n:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-    return f"{s} {mon}".strip()
+from core.pdf_util import bani as _bani  # sursa unica cap.7
 
 
 def _data_ro(iso):

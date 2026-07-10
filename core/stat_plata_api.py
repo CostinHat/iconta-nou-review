@@ -48,6 +48,15 @@ def stat_plata(conn, schema, an, luna):
     return stat
 
 def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
+    """Design System cap.7: reportlab Table, nu drawString manual. Sume in format romanesc."""
+    from reportlab.lib.pagesizes import A4 as _A4
+    from reportlab.lib.units import mm as _mm
+    from reportlab.lib import colors as _colors
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib.enums import TA_RIGHT
+    from core.pdf_util import bani as _bani
+
     ref = date(an, luna, 1)
     with conn.cursor() as cur:
         cur.execute(f"""
@@ -69,20 +78,39 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
                     if date(an, luna, z).weekday() < 5)
     brut_lucrat = float(brut or 0) * max(zile_luna - int(zc or 0), 0) / zile_luna if zc else float(brut or 0)
     calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref)
+
+    with conn.cursor() as _cur:
+        _cur.execute(f"SELECT culoare_factura, font_factura FROM {schema}.firma_profil WHERE id = 1")
+        _prof = _cur.fetchone()
+    _cul_profil, _font_profil = (_prof if _prof else (None, None))
     init_fonturi()
-    fr, fb = font("sans")
+    fr, fb = font(_font_profil or "sans")
+    try:
+        ac = _colors.HexColor(_cul_profil or "#1d4ed8")
+    except Exception:
+        ac = _colors.HexColor("#1d4ed8")
+
     buf = BytesIO()
-    cnv = canvas.Canvas(buf, pagesize=A4)
-    lat, inalt = A4
-    y = inalt - 25*mm
-    cnv.setFont(fb, 14)
-    cnv.drawString(20*mm, y, f"Fluturas de salariu — {luna:02d}/{an}")
-    y -= 7*mm
-    cnv.setFont(fr, 10)
-    cnv.drawString(20*mm, y, nume_firma)
-    y -= 6*mm
-    cnv.drawString(20*mm, y, f"Salariat: {nume or ''} {prenume or ''}")
-    y -= 12*mm
+    doc = SimpleDocTemplate(
+        buf, pagesize=_A4,
+        leftMargin=18 * _mm, rightMargin=18 * _mm,
+        topMargin=16 * _mm, bottomMargin=16 * _mm,
+    )
+    stil = getSampleStyleSheet()
+    st_titlu = ParagraphStyle("titlu", parent=stil["Normal"], fontName=fb, fontSize=14, textColor=ac, leading=17)
+    st_meta = ParagraphStyle("meta", parent=stil["Normal"], fontName=fr, fontSize=10, textColor=_colors.HexColor("#555555"))
+    st_lbl = ParagraphStyle("lbl", parent=stil["Normal"], fontName=fr, fontSize=10)
+    st_val = ParagraphStyle("val", parent=stil["Normal"], fontName=fr, fontSize=10, alignment=TA_RIGHT)
+    st_lbl_b = ParagraphStyle("lblb", parent=st_lbl, fontName=fb, fontSize=11)
+    st_val_b = ParagraphStyle("valb", parent=st_val, fontName=fb, fontSize=11)
+
+    el = [
+        Paragraph(f"Fluturas de salariu \u2014 {luna:02d}/{an}", st_titlu),
+        Paragraph(nume_firma, st_meta),
+        Paragraph(f"Salariat: {nume or ''} {prenume or ''}", st_meta),
+        Spacer(1, 10),
+    ]
+
     linii = [
         ("Salariu brut", calc["brut"]),
         ("Facilitate salariu minim (netaxabil)", calc["facilitate"]),
@@ -93,16 +121,29 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
         ("SALARIU NET", calc["net"]),
     ]
     if zc:
-        linii.insert(1, (f"Zile concediu medical: {int(zc)}", 0))
-        linii.insert(len(linii)-1, ("Indemnizatie CM (neta)", cm_net))
+        linii.insert(1, (f"Zile concediu medical: {int(zc)}", None))
+        linii.insert(len(linii) - 1, ("Indemnizatie CM (neta)", cm_net))
+
+    rows = []
     for eticheta, val in linii:
         bold = eticheta == "SALARIU NET"
-        cnv.setFont(fb if bold else fr, 11 if bold else 10)
-        cnv.drawString(20*mm, y, eticheta)
-        cnv.drawRightString(120*mm, y, f"{float(val):,.2f} lei")
-        y -= 7*mm
-    y -= 4*mm
-    cnv.setFont(fr, 9)
-    cnv.drawString(20*mm, y, f"Cost total angajator (inclusiv CAM 2.25%): {float(calc['cost_angajator']):,.2f} lei")
-    cnv.save()
+        lbl_st = st_lbl_b if bold else st_lbl
+        val_st = st_val_b if bold else st_val
+        val_txt = _bani(val, "lei") if val is not None else ""
+        rows.append([Paragraph(eticheta, lbl_st), Paragraph(val_txt, val_st)])
+
+    tabel = Table(rows, colWidths=[100 * _mm, 40 * _mm])
+    n_last = len(rows) - 1
+    tabel.setStyle(TableStyle([
+        ("LINEABOVE", (0, n_last), (-1, n_last), 1, ac),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+    ]))
+    el.append(tabel)
+    el.append(Spacer(1, 8))
+    el.append(Paragraph(
+        f"Cost total angajator (inclusiv CAM 2.25%): {_bani(calc['cost_angajator'], 'lei')}",
+        ParagraphStyle("cost", parent=stil["Normal"], fontName=fr, fontSize=9, textColor=_colors.HexColor("#555555")),
+    ))
+    doc.build(el)
     return buf.getvalue()

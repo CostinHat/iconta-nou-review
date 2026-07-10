@@ -2036,6 +2036,9 @@ html, body { overflow-y: hidden; }
 .portal-sus { margin-top: 14vh; }
 /* [font_unic] REGULA GLOBALA - nu se modifica. Forteaza font + stil normal peste tot. */
 #app, #app * { font-family: var(--font) !important; font-style: normal !important; }
+/* [font_unic_exceptie_documente] Documentele emise de cabinet (previzualizare factura) folosesc
+   fontul ales de firma-client, NU fontul aplicatiei — e identitatea vizuala a firmei, nu a iConta. */
+#mf-preview, #mf-preview * { font-family: inherit !important; }
 .subbara-gol { font-size: var(--text-mic) !important; color: inherit; }
 /* [subbara_deschisa] fundal mai deschis pt contrast */
 .subbara { background: #dfe4ea !important; }

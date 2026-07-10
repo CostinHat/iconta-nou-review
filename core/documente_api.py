@@ -62,43 +62,77 @@ def balanta(conn, schema, an, luna):
         return randuri
 
 def balanta_pdf(conn, schema, an, luna, nume_firma=""):
+    """Design System cap.7: reportlab Table cu colWidths explicite (ca factura_pdf.py),
+    nu drawString manual. Sume in format romanesc via pdf_util.bani()."""
+    from reportlab.lib.pagesizes import A4 as _A4
+    from reportlab.lib.units import mm as _mm
+    from reportlab.lib import colors as _colors
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib.enums import TA_RIGHT, TA_LEFT
+    from core.pdf_util import bani as _bani
+
     randuri = balanta(conn, schema, an, luna)
+    with conn.cursor() as _cur:
+        _cur.execute(f"SELECT culoare_factura, font_factura FROM {schema}.firma_profil WHERE id = 1")
+        _prof = _cur.fetchone()
+    _cul_profil, _font_profil = (_prof if _prof else (None, None))
     init_fonturi()
-    _fr, _fb = font("sans")
+    fr, fb = font(_font_profil or "sans")
+    try:
+        ac = _colors.HexColor(_cul_profil or "#1d4ed8")
+    except Exception:
+        ac = _colors.HexColor("#1d4ed8")
+
     buf = BytesIO()
-    c = canvas.Canvas(buf, pagesize=A4)
-    lat, inalt = A4
-    y = inalt - 20*mm
-    c.setFont(_fb, 13)
-    c.drawString(15*mm, y, f"Balanta de verificare — {luna:02d}/{an}")
-    y -= 6*mm
-    c.setFont(_fr, 10)
-    c.drawString(15*mm, y, nume_firma)
-    y -= 10*mm
-    c.setFont(_fb, 8)
+    doc = SimpleDocTemplate(
+        buf, pagesize=_A4,
+        leftMargin=18 * _mm, rightMargin=18 * _mm,
+        topMargin=16 * _mm, bottomMargin=16 * _mm,
+    )
+    stil = getSampleStyleSheet()
+    st_titlu = ParagraphStyle("titlu", parent=stil["Normal"], fontName=fb, fontSize=13, textColor=ac, leading=16)
+    st_meta = ParagraphStyle("meta", parent=stil["Normal"], fontName=fr, fontSize=10, textColor=_colors.HexColor("#555555"))
+    st_cell = ParagraphStyle("cell", parent=stil["Normal"], fontName=fr, fontSize=7.5, leading=9)
+    st_cell_r = ParagraphStyle("cellr", parent=st_cell, alignment=TA_RIGHT)
+    st_cap = ParagraphStyle("cap", parent=stil["Normal"], fontName=fb, fontSize=8, textColor=_colors.white)
+    st_cap_r = ParagraphStyle("capr", parent=st_cap, alignment=TA_RIGHT)
+
+    el = [
+        Paragraph(f"Balan\u021ba de verificare \u2014 {luna:02d}/{an}", st_titlu),
+        Paragraph(nume_firma, st_meta),
+        Spacer(1, 8),
+    ]
+
     cap = ["Cont", "Denumire", "SI D", "SI C", "Rulaj D", "Rulaj C", "SF D", "SF C"]
-    pozx = [15, 30, 95, 115, 135, 155, 175, 195]
-    for t, x in zip(cap, pozx):
-        c.drawString(x*mm, y, t)
-    y -= 5*mm
-    c.setFont(_fr, 7.5)
-    tot = [0]*6
+    date_tab = [[Paragraph(c, st_cap) if i < 2 else Paragraph(c, st_cap_r) for i, c in enumerate(cap)]]
+    tot = [0.0] * 6
     for r in randuri:
-        if y < 20*mm:
-            c.showPage(); y = inalt - 20*mm; c.setFont(_fr, 7.5)
         vals = [r["si_d"], r["si_c"], r["rul_d"], r["rul_c"], r["sf_d"], r["sf_c"]]
-        for i, v in enumerate(vals): tot[i] += v
-        c.drawString(15*mm, y, str(r["cont"]))
-        c.drawString(30*mm, y, (r["denumire"] or "")[:38])
-        for v, x in zip(vals, pozx[2:]):
-            c.drawRightString((x+15)*mm, y, f"{v:,.2f}")
-        y -= 4*mm
-    y -= 2*mm
-    c.setFont(_fb, 8)
-    c.drawString(30*mm, y, "TOTAL")
-    for v, x in zip(tot, pozx[2:]):
-        c.drawRightString((x+15)*mm, y, f"{v:,.2f}")
-    c.save()
+        for i, v in enumerate(vals):
+            tot[i] += v
+        date_tab.append([
+            Paragraph(str(r["cont"]), st_cell),
+            Paragraph((r["denumire"] or "")[:42], st_cell),
+        ] + [Paragraph(_bani(v), st_cell_r) for v in vals])
+    date_tab.append([
+        Paragraph("", st_cell), Paragraph("TOTAL", ParagraphStyle("totlbl", parent=st_cell, fontName=fb)),
+    ] + [Paragraph(_bani(v), ParagraphStyle("totval", parent=st_cell_r, fontName=fb)) for v in tot])
+
+    tabel = Table(date_tab, colWidths=[20 * _mm, 55 * _mm, 20 * _mm, 20 * _mm, 20 * _mm, 20 * _mm, 20 * _mm, 20 * _mm], repeatRows=1)
+    n_last = len(date_tab) - 1
+    tabel.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), ac),
+        ("LINEBELOW", (0, 1), (-1, -2), 0.4, _colors.HexColor("#dddddd")),
+        ("LINEABOVE", (0, n_last), (-1, n_last), 1, ac),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+        ("LEFTPADDING", (0, 0), (-1, -1), 5),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+    ]))
+    el.append(tabel)
+    doc.build(el)
     return buf.getvalue()
 
 def declaratii_depuse(conn, tenant_id):
