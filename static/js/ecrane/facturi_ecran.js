@@ -66,47 +66,54 @@ function meniuFacturi(corp, nav, tenantId, opt) {
 // ---------- ISTORIC ---------- /* facback_null_fix_v1 */
 async function istoricFacturi(corp, nav, tenantId, opt) {
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
-  corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
-  corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
-  let lista = [];
-  try {
-    const r = await api.get(`/tenants/${tenantId}/facturi`);
-    lista = (r && r.facturi) || [];
-  } catch {}
-  let corpuri = !lista.length
-    ? `<div class="mig-gol">Nicio factura înregistrată încă.</div>`
-    : lista.map((f) => {
-        const suma = f.total != null ? Number(f.total).toLocaleString("ro-RO") + " " + (f.moneda || "lei") : "";
-        const dir = dirEticheta(f.directie);
-        const storno = f.storno_din_id ? ' \u00b7 <span class="fac-storno-tag">storno</span>' : "";
-        const tipTag = f.tip && f.tip !== "factura" ? ` \u00b7 <span class="fac-storno-tag">${f.tip}</span>` : "";
-        return `
-      <button class="buton-secundar pf-frand fac-frand-btn" data-id="${f.id}">
-        <div class="pf-frand-text">
-          <div class="pf-frand-nume">${f.numar || "\u2014"}${f.tert_nume ? " \u00b7 " + f.tert_nume : ""}</div>
-          <div class="pf-frand-sub">${fmtData(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
-        </div>
-        <span class="pf-frand-suma">${suma}</span>
-        ${!opt.client ? `<span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
-      </button>`;
-      }).join("");
-  corp.innerHTML = `
-    <h2 class="pf-titlu">Istoric facturi</h2>
-    <p class="pf-intro">Apas\u0103 o factur\u0103 pentru detalii.</p>
-    <div class="pf-lista zebra-lista">${corpuri}</div>`;
-  corp.querySelector("#fac-back")?.addEventListener("click", inapoiMeniu);
-  corp.querySelectorAll(".fac-cont").forEach((b) => b.addEventListener("click", async (ev) => {
-    ev.stopPropagation();
+  const azi = new Date();
+  let an = azi.getFullYear(), luna = azi.getMonth() + 1;
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
+    let lista = [];
     try {
-      const r = await api.post(`/tenants/${tenantId}/facturi/${b.dataset.cid}/contabilizeaza`, {});
-      b.outerHTML = `<span style="color:#1d7a4d;font-size:13px;margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
-    } catch (e) {
-      b.outerHTML = `<span style="color:#c9961f;font-size:13px;margin-left:8px">${(e.mesaj || "eroare")}</span>`;
-    }
-  }));
-  corp.querySelectorAll(".fac-frand-btn").forEach((b) => {
-    b.addEventListener("click", () => nav.mergi("Factur\u0103", (c) => detaliiFactura(c, nav, tenantId, b.dataset.id, opt)));  // faza_b_traseu_v1
-  });
+      const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}`);
+      lista = (r && r.facturi) || [];
+    } catch {}
+    let corpuri = !lista.length
+      ? `<div class="mig-gol">Nicio factur\u0103 \u00een luna aceasta.</div>`
+      : lista.map((f) => {
+          const suma = f.total != null ? Number(f.total).toLocaleString("ro-RO") + " " + (f.moneda || "lei") : "";
+          const dir = dirEticheta(f.directie);
+          const storno = f.storno_din_id ? ' \u00b7 <span class="fac-storno-tag">storno</span>' : "";
+          const tipTag = f.tip && f.tip !== "factura" ? ` \u00b7 <span class="fac-storno-tag">${f.tip}</span>` : "";
+          return `
+        <button class="buton-secundar pf-frand fac-frand-btn" data-id="${f.id}">
+          <div class="pf-frand-text">
+            <div class="pf-frand-nume">${f.numar || "\u2014"}${f.tert_nume ? " \u00b7 " + f.tert_nume : ""}</div>
+            <div class="pf-frand-sub">${fmtData(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
+          </div>
+          <span class="pf-frand-suma">${suma}</span>
+          ${!opt.client ? `<span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
+        </button>`;
+        }).join("");
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Istoric facturi</h2>
+      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
+        <button class="buton-secundar" id="fac-prev" style="margin-left:12px">\u2190 luna</button>
+        <button class="buton-secundar" id="fac-next">luna \u2192</button></p>
+      <div class="pf-lista zebra-lista">${corpuri}</div>`;
+    corp.querySelector("#fac-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#fac-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelectorAll(".fac-cont").forEach((b) => b.addEventListener("click", async (ev) => {
+      ev.stopPropagation();
+      try {
+        const r = await api.post(`/tenants/${tenantId}/facturi/${b.dataset.cid}/contabilizeaza`, {});
+        b.outerHTML = `<span style="color:#1d7a4d;font-size:13px;margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
+      } catch (e) {
+        b.outerHTML = `<span style="color:#c9961f;font-size:13px;margin-left:8px">${(e.mesaj || "eroare")}</span>`;
+      }
+    }));
+    corp.querySelectorAll(".fac-frand-btn").forEach((b) => {
+      b.addEventListener("click", () => nav.mergi("Factur\u0103", (c) => detaliiFactura(c, nav, tenantId, b.dataset.id, opt)));  // faza_b_traseu_v1
+    });
+  };
+  deseneaza();
 }
 
 // ---------- EMITE ----------
