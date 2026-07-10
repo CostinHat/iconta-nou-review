@@ -229,3 +229,51 @@ URMEAZA: testare pe 8 firme profile diferite in cabinetul AMZUICA. Firma 1 MARKE
 FACUT: cache automat (no-cache pe static, eliminat ?v= peste tot), fereastra prin navigator cu optiuni {lat:"larg"}, sageata mereu + scroll memorat la revenire, titlu h2 primeste automat " · firma" (observer), stelute * rosii automate (observer, #e11d1d), input file stilizat global, form-rand flex standard (Casa, e-Transport normalizate), sageti duble scoase din ecrane (wc + altele), Magazin online prin nav.deschide, borduri carduri 1px #d5dbe3, butoane max-width 400px.
 DE FACUT IMEDIAT (chat nou): semafoare LED global — ETALONUL e semaforul din Control fiscal (mari, efect LED); butoanele "← luna / luna →" neconforme de standardizat; commit git al refactorului.
 TESTARE: MARKET DUNAV creat (comert, micro, TVA), fisiere test generate in chat vechi (f1_achizitie.xml, extras_iulie.csv, raport_z_0207.csv) — REDESCARCA sau regenereaza in chatul nou. Urmeaza: import XML factura.
+
+## SESIUNE 10.07 (partea 2, dupa-amiaza) — testare Portal client + Migrare + bug-uri reale
+
+### Zona 3 Portal client (#19-32) — COMPLETA
+Toate 14 teste verificate. 6 bug-uri reale gasite si reparate pe parcurs:
+- Contează/Storniează vizibile pe portalul clientului (limbaj de contabil) → ascunse via flag opt.client, functii comune cabinet+portal
+- Lista facturi fara limita (toata istoria intr-un request) → paginare pe luna, limit=10 + buton "vezi mai vechi"
+- Card Facturi recurente cauza crash JS pe portal (403 la cere_cabinet + null.addEventListener) → ascuns pe portal, backend ramane intentionat doar-cabinet
+- Pachete lunare (Genereaza cu AI) dadea 500: KeyError 'debit' — `_note_lunii` in pachete_api.py construia note cu chei cont_debit/cont_credit, dar motor.agrega_conturi() astepta debit/credit (conventia canonica din motor.py). Fix + testat functional (iunie 700 lei, iulie 6.75 lei rezultat).
+- **Scurgere de notificari intre clienti diferiti ai aceluiasi cabinet** (bug real de privacy): notificarea de mesaj nou la solicitari client mergea la TOTI users cu accounting_firm_id potrivit, indiferent de rol — includea alti CLIENTI (nu doar cabinet). Filtrat explicit rol IN admin_firma/angajat.
+
+### Card Solicitari + badge — NEREZOLVAT, revenit la baseline
+3 incercari de a adauga badge rosu (necitite) pe cardul Solicitari din portal — toate au stricat structura HTML a cardului (divurile interioare dispareau, text plat inclusiv badge concatenat). Cauza exacta NEIDENTIFICATA dupa investigatie extinsa (verificat: cod corect scris, navigator nu re-randeaza la deschidere/inchidere fereastra, niciun alt cod din app nu atinge cardul). Revert complet la starea functionala dinainte de orice patch (commit 9dc6359). **De reluat cu alta metoda** (poate console.log/debugger live in browser) inainte de a incerca din nou.
+
+### Strat 9 de migrare: Plan de conturi (functionalitate noua)
+Cabinetul poate cauta planul existent si adauga conturi analitice/nestandard per firma (rezolva gap gasit la D406: conturi IFRS nestandard nemapate). Backend: 3 endpointuri (`GET /migrare/plan-conturi`, `GET/POST /tenants/{id}/plan-conturi`) + model PlanContIn. Frontend: wizardPlanConturi + importPlanConturiFirma, tipar identic wizardSolduri.
+
+### Bug radacina gasit + reparat: plan_conturi niciodata populat
+`tenant_template.sql` avea doar structura tabelei plan_conturi, ZERO date — toate cele 6 firme existente aveau planul complet gol (nu doar KAI). Backfill imediat (185 conturi OMFP fiecare, din core/plan_omfp.py). Fix radacina: tenant_template.sql acum contine INSERT-urile (185 randuri), testat pe schema temporara reala — orice firma noua va avea planul populat automat, fara interventie manuala.
+
+### Card "Import date" pe fisa firmei (functionalitate noua)
+Deschide toate cele 8 straturi de migrare direct pentru firma curenta, fara re-selectarea firmei la fiecare strat. Functie noua exportata `meniuMigrarePerFirma()` in migrare.js, reutilizeaza exact functiile per-firma existente.
+
+### Nota contabila manuala (functionalitate noua, test #54)
+Buton "+ Nota noua" in Registru jurnal, reutilizeaza exact editorul existent. Backend: `jurnal_api.creeaza()` + `POST /tenants/{id}/jurnal`, aceeasi validare ca la editare. Testat functional: creare+verificare DB+curatenie+validare eroare.
+
+### Fix-uri mici Registru jurnal
+- Format data ISO (2026-07-05) → fmtDataCab existent (DD/MM/YYYY), identic cu 4 alte fisiere
+- Butoane Valideaza/Editeaza/Sterge: stivuite vertical, aliniate dreapta (flex-direction:column), inlocuieste flex-wrap inconsecvent
+
+### Zona 6 Contabilitate & module firma — PARTIAL
+#53 Plan de conturi: rezolvat prin constructia stratului 9 de mai sus
+#54 Nota manuala: rezolvat prin constructia de mai sus
+#56 Balanta pe luna: PASS (aritmetica verificata linie cu linie, format romanesc corect)
+#57 Import balanta initiala: PASS (echilibru validat corect, import fidel sursei)
+#58 Import extras bancar: PASS (5 linii, matching automat pe CUI+suma, contare propusa corecta)
+#59 e-Factura import: NETESTAT (fara fisier XML de test disponibil)
+#60 Auto-contare factura: PASS (dupa fix format data gasit pe parcurs)
+#61 TVA la incasare (art. 282): IN CURS — formular functional, bug de aliniere vizuala gasit (eticheta "Suma incasata/platita (cu TVA)" se rupe pe 2 randuri, caseta nu se aliniaza cu Data/Sens) — de reparat in sesiunea urmatoare, cautam functia renderer generica de campuri in operatiuni_ecran.js.
+
+### Regula de proces noua stabilita azi (10.07, in timpul sesiunii)
+"O singura comanda per mesaj" — Costin a cerut explicit dupa confuzii repetate cu blocuri multiple de comenzi in acelasi mesaj (patch-uri care nu se scriau efectiv pe disc pentru ca doar a doua comanda dintr-un bloc era rulata).
+
+### Ramase pe backlog (actualizat)
+- Zonele 7-17 din planul de teste — complet netestate
+- Card Solicitari badge — reluat cu alta metoda de debug
+- #59 e-Factura — necesita fisier XML de test
+- #61 aliniere vizuala campuri operatiuni_ecran.js — in curs, neterminat
