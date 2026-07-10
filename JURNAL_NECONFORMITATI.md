@@ -56,3 +56,14 @@ pe toate cele 6 scheme tenant existente + tenant_template.sql (tenanti noi). Exc
 handler specific (nu Exception generic - doar traduce PERIOADA_BLOCATA) -> 423 curat.
 Testat: amortizare pe luna blocata->423, luna libera->200 (flux normal nestricat),
 creare nota manuala pe luna blocata->423 (cazul gaurii reale, acum acoperit).
+
+## Test #67 (10.07.2026) — PFA partida simpla + RIP: PASS
+Motor complet testat end-to-end pe AMZUICĂ (tenant_004, id=13): adaugare incasare
+5000+plata deductibila 800 (sold 4200 exact), validare, fisa D212 pe 2025 cu date
+reale (venit 80000, cheltuiala 15000): CAS 12150 (baza fixa 12x4050, 25%), CASS
+6500 (baza=venit net, regula 2025), impozit 4635 (10%), total 23285 - aritmetica
+verificata manual, exacta. Motorul refuza corect calculul pt alt an decat 2025
+(plafoane neverificate) - comportament defensiv corect, nu bug.
+Gaura similara cu #66 gasita si reparata: rip_operatiuni nu avea trigger perioada
+blocata. Extins acelasi tipar (trigger pe data_operatiune) pe toate 6 scheme +
+tenant_template.sql. Testat: 423 pe luna blocata, 200 pe luna libera.
