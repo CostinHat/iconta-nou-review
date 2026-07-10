@@ -1172,6 +1172,55 @@ def migrare_solduri_status(ctx=Depends(cere_cabinet)):
                     "are_solduri": rez["are_solduri"], "randuri": rez["randuri"]})
     return {"firme": out}
 
+@app.get("/migrare/plan-conturi")  # [p95_plan_conturi] lista firmelor cu numar de conturi in plan
+def migrare_plan_conturi_status(ctx=Depends(cere_cabinet)):
+    out = []
+    with db.get_conn() as conn:
+        firme = auth_api.tenantii_userului(conn, ctx["uid"])
+    for f in firme:
+        tid = f.get("id")
+        try:
+            with db.get_conn() as c:
+                schema = auth_api.schema_tenant(c, ctx["uid"], tid)
+            if not schema:
+                continue
+            with db.get_conn(schema) as c:
+                with c.cursor() as cur:
+                    cur.execute("SELECT count(*) FROM plan_conturi")
+                    n = cur.fetchone()[0]
+        except Exception:
+            n = 0
+        out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"), "nr_conturi": n})
+    return {"firme": out}
+@app.get("/tenants/{tenant_id}/plan-conturi")  # [p95_plan_conturi] cauta/listeaza conturile firmei
+def tenant_plan_conturi_lista(tenant_id: int, q: Optional[str] = None, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            if q:
+                cur.execute(
+                    "SELECT simbol, denumire, tip FROM plan_conturi "
+                    "WHERE simbol ILIKE %s OR denumire ILIKE %s ORDER BY simbol LIMIT 100",
+                    (f"%{q}%", f"%{q}%"))
+            else:
+                cur.execute("SELECT simbol, denumire, tip FROM plan_conturi ORDER BY simbol LIMIT 100")
+            rows = cur.fetchall()
+    return {"conturi": [{"simbol": r[0], "denumire": r[1], "tip": r[2]} for r in rows]}
+@app.post("/tenants/{tenant_id}/plan-conturi")  # [p95_plan_conturi] adauga cont nou (analitic/nestandard)
+def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    simbol = (date.simbol or "").strip()
+    denumire = (date.denumire or "").strip()
+    if not simbol or not denumire:
+        raise HTTPException(422, "simbol si denumire sunt obligatorii")
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO plan_conturi (simbol, denumire, tip) VALUES (%s, %s, %s) "
+                "ON CONFLICT (simbol) DO UPDATE SET denumire = EXCLUDED.denumire, tip = EXCLUDED.tip",
+                (simbol, denumire, date.tip or "Bifunctional"))
+        conn.commit()
+    return {"ok": True, "simbol": simbol}
 @app.get("/migrare/vector")  # [p84_vector_front] lista firmelor cu status vector fiscal
 def migrare_vector_status(ctx=Depends(cere_cabinet)):
     """Lista firmelor cabinetului cu status vector (completat sau nu)."""
@@ -3440,6 +3489,10 @@ def portal_povesti(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
 
 # ICRD_SOLICITARI_V1 - bucla solicitari client <-> cabinet
 import psycopg2.extras as _E_sol
+class PlanContIn(BaseModel):  # [p95_plan_conturi]
+    simbol: str
+    denumire: str
+    tip: Optional[str] = "Bifunctional"
 class SolicitareIn(BaseModel):
     mesaj: str
 

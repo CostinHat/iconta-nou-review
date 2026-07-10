@@ -10,7 +10,7 @@ Tabelul se auto-creează (CREATE TABLE IF NOT EXISTS) la pornire.
 from __future__ import annotations
 
 # straturile de migrare, în ordinea logică (firme întâi — creează tenant-urile)
-STRATURI = ["firme", "vector_fiscal", "solduri", "solduri_parteneri", "salariati", "asociati", "mijloace_fixe", "istoric_declaratii"]  # [p82_vector]
+STRATURI = ["firme", "vector_fiscal", "solduri", "solduri_parteneri", "salariati", "asociati", "mijloace_fixe", "istoric_declaratii", "plan_conturi"]  # [p82_vector] [p95_plan_conturi]
 STARI = ("gata", "in_lucru")
 
 

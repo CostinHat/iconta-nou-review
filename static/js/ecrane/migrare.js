@@ -30,6 +30,9 @@ const STRATURI = [
   { cheie:"istoric_declaratii", nr:8, titlu:"Istoric declarații", desc:"Ce s-a depus deja anul curent (ca să nu apară fals restanță)",
     bg:"#eaeef6", fg:"#45597f", construit:true,
     icon:'<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13l2 2 4-4"/>' },
+  { cheie:"plan_conturi", nr:9, titlu:"Plan de conturi", desc:"Extinde planul standard cu conturi analitice/nestandard, per firmă",
+    bg:"#f3e8ff", fg:"#7c3aed", construit:true,
+    icon:'<path d="M4 6h16M4 12h16M4 18h7"/>' },
 ];
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
@@ -110,6 +113,7 @@ async function meniuMigrare(corp, nav) {
         else if (st.cheie === "asociati") nav.deschide("Asociați", (cc, nn) => wizardAsociati(cc, nn));
         else if (st.cheie === "mijloace_fixe") nav.deschide("Mijloace fixe", (cc, nn) => wizardMijloace(cc, nn));
         else if (st.cheie === "istoric_declaratii") nav.deschide("Istoric declarații", (cc, nn) => wizardIstoric(cc, nn));
+        else if (st.cheie === "plan_conturi") nav.deschide("Plan de conturi", (cc, nn) => wizardPlanConturi(cc, nn));
       });
     }
     meniu.appendChild(rand);
@@ -1260,3 +1264,98 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
 }
 
 // faza_b3_migrare_v1
+
+// ---------- WIZARD PLAN DE CONTURI [p95_plan_conturi] ----------
+async function wizardPlanConturi(corp, nav) {
+  nav.setInapoi(() => meniuMigrare(corp, nav));
+  latime(corp, false);
+  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103 firmele\u2026</p>`;
+  let firme = [];
+  try {
+    const r = await api.get("/migrare/plan-conturi");
+    firme = (r && r.firme) || [];
+  } catch {}
+  corp.innerHTML = `
+    <p class="mig-intro">Planul standard OMFP e deja \u00eencărcat automat la fiecare firm\u0103. Aici adaugi conturi analitice sau nestandard (ex: leasing IFRS) pentru firme cu nevoi speciale.</p>
+    <div class="mig-lista" id="mig-firme"></div>
+    <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizeaz\u0103 stratul Plan de conturi</button>
+  `;
+  const lista = corp.querySelector("#mig-firme");
+  if (firme.length === 0) {
+    lista.innerHTML = `<div class="mig-gol">Nicio firm\u0103 \u00een portofoliu. Import\u0103 \u00eent\u00e2i firmele (stratul 1).</div>`;
+  }
+  firme.forEach((f) => {
+    const rand = document.createElement("button");
+    rand.className = "mig-frand";
+    rand.innerHTML = `
+      <div class="mig-frand-text">
+        <div class="mig-frand-nume">${f.nume}</div>
+        <div class="mig-frand-sub">${f.nr_conturi} conturi \u00een plan</div>
+      </div>
+      <span class="mig-stare ${f.nr_conturi > 0 ? "mig-ok" : "mig-gri"}">${f.nr_conturi > 0 ? "\u2713 populat" : "gol"}</span>
+    `;
+    rand.addEventListener("click", () => nav.mergi("Plan de conturi \u00b7 " + (f.nume || ""), (c) => importPlanConturiFirma(c, nav, f)));
+    lista.appendChild(rand);
+  });
+  corp.querySelector("#mig-finalizeaza").addEventListener("click", () => {
+    const sumar = `<div class="mig-gata">
+      <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="#1d9e75" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
+      <div class="mig-gata-titlu">Plan de conturi: ${firme.length} firme verificate</div>
+    </div>`;
+    randeazaDecizie(corp, nav, "plan_conturi", sumar, "Planul de conturi e complet pentru toate firmele?");
+  });
+}
+function importPlanConturiFirma(corp, nav, firma) {
+  corp.innerHTML = `
+    <p class="mig-intro"><b>${firma.nume}</b><br>Caut\u0103 \u00een planul existent sau adaug\u0103 un cont nou.</p>
+    <input type="text" class="mig-text" id="pc-cauta" aria-label="Caut\u0103 \u00een plan" placeholder="Caut\u0103 dup\u0103 simbol sau denumire\u2026" style="width:100%;margin-bottom:10px">
+    <div class="mig-lista" id="pc-rezultate"></div>
+    <div class="mig-eticheta" style="margin-top:16px">Adaug\u0103 cont nou</div>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <input type="text" class="mig-text" id="pc-simbol" aria-label="Simbol cont" placeholder="Simbol (ex: 4428)" style="width:140px">
+      <input type="text" class="mig-text" id="pc-denumire" aria-label="Denumire cont" placeholder="Denumire" style="flex:1">
+    </div>
+    <div class="mig-eroare" id="pc-eroare"></div>
+    <button class="buton-primar mig-buton" id="pc-adauga" style="margin-top:10px">Adaug\u0103 cont</button>
+  `;
+  const rezZona = corp.querySelector("#pc-rezultate");
+  const cautaInput = corp.querySelector("#pc-cauta");
+  async function cauta(q) {
+    rezZona.innerHTML = `<p class="ecran-nota">Se caut\u0103\u2026</p>`;
+    try {
+      const r = await api.get(`/tenants/${firma.tenant_id}/plan-conturi${q ? "?q=" + encodeURIComponent(q) : ""}`);
+      const conturi = (r && r.conturi) || [];
+      rezZona.innerHTML = conturi.length
+        ? conturi.map((c) => `<div class="mig-frand" style="cursor:default">
+            <div class="mig-frand-text">
+              <div class="mig-frand-nume">${c.simbol} \u00b7 ${c.denumire}</div>
+              <div class="mig-frand-sub">${c.tip || ""}</div>
+            </div>
+          </div>`).join("")
+        : `<div class="mig-gol">Niciun cont g\u0103sit.</div>`;
+    } catch {
+      rezZona.innerHTML = `<div class="mig-gol">Eroare la c\u0103utare.</div>`;
+    }
+  }
+  cauta("");
+  let timer = null;
+  cautaInput.addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => cauta(cautaInput.value.trim()), 300);
+  });
+  corp.querySelector("#pc-adauga").addEventListener("click", async () => {
+    const eroare = corp.querySelector("#pc-eroare");
+    eroare.textContent = "";
+    const simbol = corp.querySelector("#pc-simbol").value.trim();
+    const denumire = corp.querySelector("#pc-denumire").value.trim();
+    if (!simbol || !denumire) { eroare.textContent = "Simbol \u0219i denumire sunt obligatorii."; return; }
+    try {
+      await api.post(`/tenants/${firma.tenant_id}/plan-conturi`, { simbol, denumire });
+      corp.querySelector("#pc-simbol").value = "";
+      corp.querySelector("#pc-denumire").value = "";
+      cauta(cautaInput.value.trim());
+    } catch (e) {
+      eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
+    }
+  });
+}
