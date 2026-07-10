@@ -89,3 +89,34 @@ ore_zi=0.5, persoane_intretinere=1, salariu_brut=0.01. (3) Dupa salvare iesea
 din formular direct la lista (nav.inapoi() inchidea toata fereastra) - fix:
 ramane pe formular golit cu mesaj confirmare + buton separat "Gata, inapoi la
 lista" (nav.inapoiPas(), nu nav.inapoi()).
+
+## Test #69 (10.07.2026) — Stat de plata: calcul brut-net: PARTIAL (confirmat)
+Motor calcul_salariu() verificat corect pe cazul de baza (normă întreagă, brut peste
+minim, fara persoane): aritmetica exacta (Popescu Ion brut 4500 -> CAS 1125, CASS 450,
+impozit 212.49, net 2712.51 - identic UI si rulare directa a functiei).
+
+BUG FISCAL confirmat la sursa oficiala (legislatie.just.ro + CECCAR, OUG 89/2025 art.
+III): facilitatea 200/300 lei cere CUMULATIV: (a) norma intreaga, (b) functie de baza,
+(c) salariul de baza EGAL cu minimul (nu doar <=), (d) venit brut total (fara tichete)
+<= 4300 lei S1 / 4600 lei S2 2026. Codul actual (core/salarizare.py, calcul_salariu)
+aplica facilitatea oricui are brut<=sm, IGNORAND toate cele 4 conditii - orice norma
+partiala cu brut mic primeste incorect facilitatea (confirmat empiric: Ionescu Maria,
+part-time 4h/zi, brut 1956.52, a primit facilitate=200 incorect).
+
+Gasit si un mecanism SEPARAT, mai vechi (Cod fiscal, podea CAS/CASS la nivelul
+salariului minim pentru norma partiala) mentionat de avocatnet.ro dar neverificat
+inca la sursa oficiala si neimplementat deloc in motor.
+
+DECIZIE: fix marcat ca "logica fiscala noua" (regula model: Opus 4.8, nu Sonnet).
+De facut sesiunea urmatoare cu Opus: (1) adauga parametri norma_intreaga + venit_brut_total
+in calcul_salariu, conditie eligibilitate completa (a-d), (2) cerceteaza la sursa oficiala
+mecanismul podea CAS/CASS norma partiala, (3) verifica toate D112-urile deja generate
+pe clienti reali pentru norma partiala - posibil facilitate aplicata gresit retroactiv.
+
+## Completare #69 — locatie exacta pt sesiunea Opus
+core/stat_plata_api.py: part_time CITIT din DB (linia 27, unpacking randuri) dar
+NICIODATA transmis catre salarizare.calcul_salariu() (liniile 36 si 80 - apelat doar
+cu persoane=pers, la_data=ref, fara part_time/sub_26/copii_scoala/functie_baza).
+De asemenea zero verificare venit_brut_total <= plafon (4300/4600) inainte de a
+acorda facilitatea. Ambele apeluri (linia 36 traseu normal, linia 80 alt traseu -
+probabil fisa individuala) trebuie corectate identic.

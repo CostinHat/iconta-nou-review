@@ -277,3 +277,83 @@ Buton "+ Nota noua" in Registru jurnal, reutilizeaza exact editorul existent. Ba
 - Card Solicitari badge — reluat cu alta metoda de debug
 - #59 e-Factura — necesita fisier XML de test
 - #61 aliniere vizuala campuri operatiuni_ecran.js — in curs, neterminat
+
+## SESIUNE 10.07 (partea 3, seara) — inchidere zona 6 + deschidere zona 7 Salarizare
+
+### #61 TVA la incasare — INCHIS
+Structura canonica .camp + .camp-eticheta stabilita ca regula noua (Design System
+v1.1): eliminat dialectul <label>text<br>input din operatiuni_ecran.js. Grila noua
+.grila-campuri (casete aliniate jos, eticheta lunga urca pe 2 randuri deasupra).
+Verificator extins cu categoria CAMP_DIALECT (detecteaza dialectul vechi mecanic) +
+fix vecini bidirectionali la ETICHETE (fals-pozitive eliminate). NC-22 jurnalizat
+(rip_ecran.js are 6 campuri neconforme, ramase pt migrare ulterioara).
+
+Bug de navigare gasit si reparat pe acelasi ecran: sageata din antet nu functiona
+(operatiuni_ecran.js nu folosea deloc nav.setInapoi/nav.mergi — parte din cele 19
+ecrane nemigrate pe navigatorul nou, jurnalizat NC-24 cu lista completa pt R4).
+Migrat pe nav.mergi (nu setInapoi) ca sa beneficieze de scroll memorat automat
+(mecanism deja existent in navigator.js, scroll_memorat_v1). 2 regresii proprii
+gasite si reparate in acelasi patch: corp stale dupa randare noua a navigatorului
+(nav.mergi paseaza container DOM nou de fiecare data) + el.closest("label") ramas
+dupa schimbarea structurii in .camp (trebuia .closest(".camp")).
+
+### Zona 6 Contabilitate & module firma — COMPLETA (#53-67, minus #59 blocat)
+#62 Amortizare MF liniara: PASS (KAI, 3 linii, 1583.34 lei, aritmetica exacta,
+    formula start luna urmatoare PIF / stop DNF confirmata pe date reale)
+#63 Raport Z HoReCa/AMEF: PASS (deja confirmat anterior)
+#64 Stocuri fise CV+CMP: PASS (11/11 teste unitare + end-to-end pe 2 articole,
+    CMP recalculat corect, surse diverse inventar/reteta integrate corect)
+#65 Operatiuni speciale (30, ecran generic): PASS (sponsorizare testata end-to-end,
+    monografie 6582=401 corecta)
+#66 Perioada blocata: FAIL -> PASS dupa reparatie. BUG CRITIC: doar 3 din 39 puncte
+    de inserare in {schema}.inregistrari verificau perioada blocata (doar edit/
+    sterge/valideaza nota manuala) — toate cele 30 module + amortizarea + crearea
+    de nota noua OCOLEAU blocarea complet (confirmat empiric). Reparat la nivel de
+    baza de date: trigger SQL pe INSERT/UPDATE/DELETE, aplicat pe toate 6 scheme +
+    tenant_template.sql (tenanti noi). Exception handler specific -> 423 curat.
+#67 PFA partida simpla + RIP: PASS (motor testat end-to-end pe AMZUICĂ, D212 2025
+    aritmetica validata manual exact: CAS 12150, CASS 6500, impozit 4635). Aceeasi
+    gaura ca #66 gasita si reparata pe rip_operatiuni (alta tabela, acelasi tipar).
+#59 e-Factura import: ramane NETESTAT (fara fisier XML de test)
+
+### Zona 7 Salarizare — DESCHISA
+#68 Salariat nou + contract: FAIL -> construit + PASS. UI complet lipsa (doar
+    import bulk migrare exista, backend POST /salariati gata dar neapelat).
+    Construit ecran nou in ecranSalariati (firme.js), structura canonica.
+    BUG CRITIC DE SISTEM gasit si reparat: salariati_api.py folosea tip_norma
+    (text) peste tot, DB are part_time (boolean) - redenumita intr-o migrare
+    anterioara (03.07) fara actualizare cod. TOATA lista de salariati era stricata
+    (500) pt orice tenant, invizibil pana acum. Reparat: traducere API<->DB la
+    granita, contract API neschimbat. 3 fix-uri UX gasite live cu Costin: min=0
+    pe campuri numerice, step diferentiat (ore=0.5, persoane=1, bani=0.01),
+    ramane pe formular dupa salvare (nu mai iese la lista, foloseste nav.inapoiPas
+    nu nav.inapoi).
+
+#69 Stat de plata: calcul brut-net: PARTIAL (confirmat, netratat inca)
+    Motor calcul_salariu() corect pe cazul de baza (verificat exact pe date reale).
+    BUG FISCAL confirmat la sursa oficiala (legislatie.just.ro + CECCAR, OUG 89/2025
+    art. III): facilitatea 200/300 lei cere cumulativ (a) norma intreaga (b) functie
+    de baza (c) brut EGAL cu minimul (d) venit brut total <=4300/4600 lei. Codul
+    actual ignora toate 4 conditiile, aplica facilitatea oricui brut<=minim -
+    confirmat empiric ca norma partiala primeste incorect facilitatea. Plus un
+    mecanism separat (podea CAS/CASS la minim pt norma partiala) mentionat de sursa
+    dar neverificat inca oficial, neimplementat deloc.
+    DECIZIE: marcat "logica fiscala noua" -> Opus 4.8 pt sesiunea urmatoare (nu
+    Sonnet). Locatii exacte: core/stat_plata_api.py liniile 36+80 (part_time citit
+    dar niciodata transmis catre calcul_salariu), core/salarizare.py functia
+    calcul_salariu (conditie facilitate linia ~74).
+
+### Regula de proces noua stabilita azi (10.07, seara)
+0a REGULA REPARATIE REALA, 0b REGULA GLOBALA-INTAI, 0c REGULA VERIFICARE
+FUNCTIONALA — toate 3 adaugate in memoria permanenta, aplicate consecvent azi.
+
+### Ramase pe backlog (actualizat)
+- #69 Stat de plata: fix fiscal facilitate 200 lei — SESIUNE URMATOARE CU OPUS
+- #70-76 zona Salarizare — netestate (Deducere, Facilitate 200 S2, CM, Part-time,
+  Fluturasi PDF, Contracte speciale, Tips HoReCa)
+- Zonele 8-17 din planul de teste — complet netestate
+- Card Solicitari badge (portal) — reluat cu alta metoda de debug
+- #59 e-Factura — necesita fisier XML de test
+- NC-22 (rip_ecran.js, 6 campuri CAMP_DIALECT) si NC-23 (diacritice REGISTRU
+  operatiuni_ecran.js) — jurnalizate, nereparate
+- R4 nav.setInapoi migrare — 18 ecrane ramase (lista completa in NC-24)
