@@ -56,6 +56,16 @@ async def lifespan(app):
 
 app = FastAPI(title="iConta API", version="2026.1", lifespan=lifespan)
 
+@app.exception_handler(Exception)
+async def _handler_perioada_blocata(request: Request, exc: Exception):
+    from fastapi.responses import JSONResponse as _JR
+    msg = str(exc)
+    if "PERIOADA_BLOCATA" in msg:
+        detaliu = msg.split("PERIOADA_BLOCATA:")[1].split("\n")[0].strip() \
+            if "PERIOADA_BLOCATA:" in msg else "perioada este blocata"
+        return _JR(status_code=423, content={"detail": f"Perioada {detaliu}."})
+    raise exc
+
 _APP_PORNIT_LA = __import__("time").time()  # ICRD_SANATATE_SERVER_V1 - uptime proces
 
 # frontend: servit static de pe același origin cu API-ul (fără build step)

@@ -22,3 +22,37 @@ Patch-urile 61a-61d (aliniere campuri + nav.mergi cu scroll memorat + fix corp s
 + fix .closest(".camp")) verificate sintactic si vizual (navigare stabila, scroll
 memorat). Ramane de rulat: generare efectiva a unei note (ex. TVA la incasare) si
 verificare ciorna in Registru jurnal — pt validarea end-to-end a fix-ului closest.
+
+## Test #62 (10.07.2026) — Amortizare MF liniara: PASS
+Verificat pe KAI PERFORMANCE (tenant_002), luna 07/2026: 3 linii generate
+(Laptop Dell 166.67, Dacia Duster 1250.00, Laptop test 166.67), total 1583.34 lei.
+Aritmetica validata manual (formula liniara, start luna urmatoare PIF, stop la DNF)
+- coincide exact cu rezultatul din baza. ERP test corect exclus (PIF in luna curenta).
+Cont 6811/2813 monografie corecta.
+JURNAL_OKcat
+
+## Test #64 (10.07.2026) — Stocuri: fise CV + CMP: PASS
+11/11 teste unitare pytest (core/test_stocuri_cv.py). Verificare end-to-end pe
+tenant_002 (KAI), 2 articole, 5 miscari: CMP recalculat corect la intrare (5.00,
+7.00 lei), neschimbat la iesiri succesive, sold cantitate/valoare exact la fiecare
+linie. Surse diverse (inventar, reteta) alimenteaza corect aceeasi fisa - integrare
+reala confirmata, nu doar motor izolat.
+
+## Test #65 (10.07.2026) — Operatiuni speciale (30, ecran generic): PASS
+Testat end-to-end operatiunea "sponsorizare" (POST /tenants/2/nota-sponsorizare):
+1000 lei mod contract -> nota 6582=401 corecta, status ciorna, descriere pastrata.
+Numar gol la generare e comportament normal (populat abia la validare); Registru
+jurnal are deja fallback descriere||numar||#id (firme.js:1172), afisare corecta.
+Nota de test stearsa dupa verificare. Include si fix-urile de aliniere/navigare
+din aceasta sesiune (patch 61a-61d): structura .camp, nav.mergi cu scroll memorat.
+
+## Test #66 (10.07.2026) — Perioada blocata: FAIL initial -> PASS dupa reparatie
+Bug real gasit: doar 3 din 39 puncte de inserare in {schema}.inregistrari verificau
+perioada blocata (doar editare/stergere/validare nota manuala). Toate cele 30 module
++ crearea de nota noua + amortizarea ocoleau blocarea complet (testat empiric:
+amortizare generata cu succes pe luna blocata, status validata direct).
+REPARATIE: trigger SQL (verifica_perioada_blocata) pe INSERT/UPDATE/DELETE, aplicat
+pe toate cele 6 scheme tenant existente + tenant_template.sql (tenanti noi). Exception
+handler specific (nu Exception generic - doar traduce PERIOADA_BLOCATA) -> 423 curat.
+Testat: amortizare pe luna blocata->423, luna libera->200 (flux normal nestricat),
+creare nota manuala pe luna blocata->423 (cazul gaurii reale, acum acoperit).

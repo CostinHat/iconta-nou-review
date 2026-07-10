@@ -2015,3 +2015,25 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS serie_chita
 
 -- bon_flux_e9_v1
 ALTER TABLE TENANT_PLACEHOLDER.bonuri ADD COLUMN IF NOT EXISTS orientare smallint NOT NULL DEFAULT 0;
+
+-- perioada_blocata_trigger_v1 (#66): blocheaza INSERT/UPDATE/DELETE pe luna inchisa
+
+CREATE OR REPLACE FUNCTION {schema}.verifica_perioada_blocata() RETURNS trigger AS $$
+DECLARE
+  d date;
+BEGIN
+  IF TG_OP = 'DELETE' THEN d := OLD.data; ELSE d := NEW.data; END IF;
+  IF EXISTS (SELECT 1 FROM {schema}.perioade_blocate
+             WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
+    RAISE EXCEPTION 'PERIOADA_BLOCATA: luna %/% este inchisa',
+      LPAD(EXTRACT(MONTH FROM d)::text, 2, '0'), EXTRACT(YEAR FROM d)::text;
+  END IF;
+  IF TG_OP = 'DELETE' THEN RETURN OLD; END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_verifica_perioada_blocata ON {schema}.inregistrari;
+CREATE TRIGGER trg_verifica_perioada_blocata
+BEFORE INSERT OR UPDATE OR DELETE ON {schema}.inregistrari
+FOR EACH ROW EXECUTE FUNCTION {schema}.verifica_perioada_blocata();
