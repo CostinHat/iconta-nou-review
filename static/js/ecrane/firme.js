@@ -1169,7 +1169,7 @@ async function ecranJurnal(corp, nav, t) {
       return `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${escJ(n.data)} \u00b7 ${escJ(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
+            <div class="pf-frand-nume">${fmtDataCab(n.data)} \u00b7 ${escJ(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
             <div class="pf-frand-sub">${n.linii.map((l) => `${escJ(l.debit)} = ${escJ(l.credit)} \u00b7 ${l.suma.toFixed(2)}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + escJ(n.sursa) : ""}</div>
           </div>
           <div>${butoane}</div>
@@ -1177,7 +1177,7 @@ async function ecranJurnal(corp, nav, t) {
     };
     const editor = (n) => `
       <div style="display:block;border:1px solid #c9961f">
-        <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${escJ(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
+        <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${fmtDataCab(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
         <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${escJ(n.descriere || "")}"></label>
         <div class="camp-eticheta" style="margin-top:8px">Linii: cont debit = cont credit \u00b7 sum\u0103</div>
         <div id="je-linii">${n.linii.map((l, i) => `
