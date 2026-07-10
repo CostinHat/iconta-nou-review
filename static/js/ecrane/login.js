@@ -165,10 +165,8 @@ export function ecranLogin(radacina) {
   function randeazaLogin() {
     modal.classList.remove("acces-modal-inreg");
     modal.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <button type="button" class="nav-sageata" id="login-la-alegere" title="Înapoi" aria-label="Înapoi"><span aria-hidden="true">←</span></button>
-        <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
-      </div>
+      <button type="button" class="nav-sageata" id="login-la-alegere" title="Înapoi" aria-label="Înapoi" style="position:absolute;top:14px;left:14px"><span aria-hidden="true">←</span></button>
+      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
         <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
@@ -193,10 +191,8 @@ export function ecranLogin(radacina) {
 
   function formClient() {
     modal.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <button type="button" class="nav-sageata" id="lgc-inapoi" title="Înapoi" aria-label="Înapoi"><span aria-hidden="true">←</span></button>
-        <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
-      </div>
+      <button type="button" class="nav-sageata" id="lgc-inapoi" title="Înapoi" aria-label="Înapoi" style="position:absolute;top:14px;left:14px"><span aria-hidden="true">←</span></button>
+      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
         <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
         <span class="login-tagline">Portalul tău, fără parolă</span>
@@ -234,10 +230,8 @@ export function ecranLogin(radacina) {
 
   function formCabinet() {
     modal.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <button type="button" class="nav-sageata" id="login-inapoi" title="Înapoi" aria-label="Înapoi"><span aria-hidden="true">←</span></button>
-        <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
-      </div>
+      <button type="button" class="nav-sageata" id="login-inapoi" title="Înapoi" aria-label="Înapoi" style="position:absolute;top:14px;left:14px"><span aria-hidden="true">←</span></button>
+      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
         <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
