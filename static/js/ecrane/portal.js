@@ -15,10 +15,8 @@ const ICON = {
   documente: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
 };
 
-export async function desktopPortal(continut, nav) {
+export function desktopPortal(continut, nav) {
   const u = sesiune.user() || {};
-  let _solNecitite = 0;
-  try { const r = await api.get("/portal/solicitari/contor"); _solNecitite = (r && r.necitite) || 0; } catch {}  // icrd_sol_badge_v2
   const firma = u.nume_tenant || u.nume_firma || "firma ta";
 
   const CARDURI = [
@@ -72,20 +70,35 @@ export async function desktopPortal(continut, nav) {
     card.className = "cab-card";
     card.style.background = c.bg;
     card.style.color = c.fg;
-    const esteSolicitari = c.cheie === "solicitari";
-    if (esteSolicitari) card.style.position = "relative";
-    const badgeHtml = (esteSolicitari && _solNecitite > 0)
-      ? `<span class="cab-card-badge">${_solNecitite}</span>` : "";
     card.innerHTML = `
       <div class="cab-card-cap">${SVG(ICON[c.icon], c.fg)}<span class="cab-card-titlu">${c.titlu}</span></div>
-      <div class="cab-card-sinteza">${c.sinteza}</div>
-      ${badgeHtml}
+      <div class="cab-card-sinteza" data-cheie="${c.cheie}">${c.sinteza}</div>
     `;
     card.addEventListener("click", () => deschideCard(c.cheie, nav));
     grila.appendChild(card);
   });
 
   actualizeazaStatusAcasa(continut);
+  actualizeazaSolicitari(grila);  // icrd_sol_badge_v3 - tipar identic cu actualizeazaRaportari (cabinet.js)
+}
+async function actualizeazaSolicitari(grila) {  // icrd_sol_badge_v3
+  const card = grila.querySelector('[data-cheie="solicitari"]');
+  const host = card ? card.closest(".cab-card") : null;
+  if (!host) return;
+  try {
+    const r = await api.get("/portal/solicitari/contor");
+    const n = (r && r.necitite) || 0;
+    let b = host.querySelector(".cab-card-badge");
+    if (n > 0) {
+      if (!b) {
+        b = document.createElement("span");
+        b.className = "cab-card-badge";
+        host.style.position = "relative";
+        host.appendChild(b);
+      }
+      b.textContent = n;
+    } else if (b) { b.remove(); }
+  } catch {}
 }
 
 function deschideCard(cheie, nav) {
