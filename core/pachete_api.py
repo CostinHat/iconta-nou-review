@@ -38,7 +38,7 @@ def _note_lunii(conn_schema, an, luna):
         randuri = cur.fetchall()
     note = []
     for r in randuri:
-        note.append({"cont_debit": r["cont_debit"], "cont_credit": r["cont_credit"],
+        note.append({"debit": r["cont_debit"], "credit": r["cont_credit"],
                      "suma": Decimal(str(r["suma"]))})
     return note
 
