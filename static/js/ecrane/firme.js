@@ -1194,9 +1194,11 @@ async function ecranJurnal(corp, nav, t) {
           <button class="buton-secundar" id="je-renunta" style="margin-left:6px">Renun\u021b\u0103</button>
         </p>
       </div>`;
-    const randuri = !note.length
-      ? `<div class="mig-gol">Nicio nota in luna asta.</div>`
-      : note.map(rand).join("");
+    const notaNoua = { id: "nou", data: `${an}-${String(luna).padStart(2,"0")}-01`, descriere: "", linii: [{ debit: "", credit: "", suma: 0 }] };
+    const randuri = (inEditare === "nou" ? editor(notaNoua) : "") +
+      (!note.length
+        ? (inEditare === "nou" ? "" : `<div class="mig-gol">Nicio nota in luna asta.</div>`)
+        : note.map(rand).join(""));
     const ciorne = note.filter((n) => n.status === "ciorna").length;
     corp.innerHTML = `
       <h2 class="pf-titlu">Registru jurnal</h2>
@@ -1204,6 +1206,7 @@ async function ecranJurnal(corp, nav, t) {
         <button class="buton-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="j-next">luna \u2192</button>
         <button class="buton-primar" id="j-amort" style="margin-left:12px">Genereaza amortizarea</button>
+        <button class="buton-secundar" id="j-nota-noua" style="margin-left:6px">+ Not\u0103 nou\u0103</button>
         <button class="buton-secundar" id="j-lock" style="margin-left:6px"></button></p>
       <div id="j-mesaj"></div>
       <div class="pf-lista">${randuri}</div>`;
@@ -1225,6 +1228,7 @@ async function ecranJurnal(corp, nav, t) {
     const eroare = (e, txt) => { zonaMesaj.innerHTML = `<div class="mig-gol">${escJ((e && e.mesaj) || txt)}</div>`; };
     corp.querySelector("#j-prev").addEventListener("click", () => { inEditare = null; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#j-next").addEventListener("click", () => { inEditare = null; luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelector("#j-nota-noua").addEventListener("click", () => { inEditare = "nou"; deseneaza(); });
     corp.querySelector("#j-amort").addEventListener("click", async () => {
       try {
         const r = await api.post(`/tenants/${t.id}/amortizare?an=${an}&luna=${luna}`, {});
@@ -1268,8 +1272,13 @@ async function ecranJurnal(corp, nav, t) {
           suma: parseFloat(r.querySelector(".je-sum").value) || 0,
         }));
         try {
-          await api.put(`/tenants/${t.id}/jurnal/${inEditare}`,
-            { descriere: corp.querySelector("#je-desc").value, linii });
+          if (inEditare === "nou") {
+            await api.post(`/tenants/${t.id}/jurnal`,
+              { descriere: corp.querySelector("#je-desc").value, data: notaNoua.data, linii });
+          } else {
+            await api.put(`/tenants/${t.id}/jurnal/${inEditare}`,
+              { descriere: corp.querySelector("#je-desc").value, linii });
+          }
           inEditare = null; deseneaza();
         } catch (e) { eroare(e, "Eroare la salvare"); }
       });

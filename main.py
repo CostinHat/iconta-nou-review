@@ -4199,6 +4199,14 @@ def _jurnal_rez(rez):
         raise HTTPException(400, rez["eroare"])
     return rez
 
+@app.post("/tenants/{tenant_id}/jurnal")
+def jurnal_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import jurnal_api as _j
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _jurnal_rez(_j.creeaza(conn, schema, corp.get("descriere"), corp.get("data"), corp.get("linii")))
 @app.put("/tenants/{tenant_id}/jurnal/{nota_id}")
 def jurnal_editeaza(tenant_id: int, nota_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     from core import jurnal_api as _j

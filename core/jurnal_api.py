@@ -10,6 +10,27 @@ def _nota(cur, schema, nota_id):
     return cur.fetchone()
 
 
+def creeaza(conn, schema, descriere, data, linii):
+    """Creeaza o nota manuala noua, ca ciorna. linii = [{debit, credit, suma}], min 1 linie."""
+    if not linii:
+        return {"eroare": "nota trebuie sa aiba cel putin o linie"}
+    for l in linii:
+        if not str(l.get("debit", "")).strip() or not str(l.get("credit", "")).strip():
+            return {"eroare": "fiecare linie are nevoie de cont debit si credit"}
+        if Decimal(str(l.get("suma", 0))) <= 0:
+            return {"eroare": "suma fiecarei linii trebuie sa fie > 0"}
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                        VALUES (%s,%s,'manual','ciorna') RETURNING id""",
+                    (data, (descriere or "")[:200]))
+        nota_id = cur.fetchone()["id"]
+        for l in linii:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                (nota_id, str(l["debit"]).strip(), str(l["credit"]).strip(),
+                 Decimal(str(l["suma"]))))
+    conn.commit()
+    return {"ok": True, "id": nota_id}
 def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
     """Editează o notă ciornă. linii = [{debit, credit, suma}] înlocuiește complet liniile."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
