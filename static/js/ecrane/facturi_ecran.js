@@ -198,7 +198,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         ${statusTxt ? `<span class="fac-storno-tag">${_esc(statusTxt)}</span>` : ""}
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
         <button class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
-        ${(f.directie === "emisa" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
+        ${(!opt.client && f.directie === "emisa" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
         ${f.platita_la ? '<span class="fac-storno-tag fac-tag-platit">pl\u0103tit\u0103</span>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}
