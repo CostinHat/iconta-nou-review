@@ -15,8 +15,10 @@ const ICON = {
   documente: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
 };
 
-export function desktopPortal(continut, nav) {
+export async function desktopPortal(continut, nav) {
   const u = sesiune.user() || {};
+  let _solNecitite = 0;
+  try { const r = await api.get("/portal/solicitari/contor"); _solNecitite = (r && r.necitite) || 0; } catch {}  // icrd_sol_badge_v2
   const firma = u.nume_tenant || u.nume_firma || "firma ta";
 
   const CARDURI = [
@@ -70,29 +72,20 @@ export function desktopPortal(continut, nav) {
     card.className = "cab-card";
     card.style.background = c.bg;
     card.style.color = c.fg;
-    if (c.cheie === "solicitari") card.style.position = "relative";
+    const esteSolicitari = c.cheie === "solicitari";
+    if (esteSolicitari) card.style.position = "relative";
+    const badgeHtml = (esteSolicitari && _solNecitite > 0)
+      ? `<span class="cab-card-badge">${_solNecitite}</span>` : "";
     card.innerHTML = `
       <div class="cab-card-cap">${SVG(ICON[c.icon], c.fg)}<span class="cab-card-titlu">${c.titlu}</span></div>
       <div class="cab-card-sinteza">${c.sinteza}</div>
+      ${badgeHtml}
     `;
     card.addEventListener("click", () => deschideCard(c.cheie, nav));
     grila.appendChild(card);
-    if (c.cheie === "solicitari") _sol_badge(card);  // icrd_sol_badge_v1
   });
 
   actualizeazaStatusAcasa(continut);
-}
-async function _sol_badge(host) {  // icrd_sol_badge_v1: badge rosu pe cardul Solicitari (necitite de la cabinet)
-  try {
-    const r = await api.get("/portal/solicitari/contor");
-    const n = (r && r.necitite) || 0;
-    if (n > 0) {
-      const b = document.createElement("span");
-      b.className = "cab-card-badge";
-      b.textContent = n;
-      host.appendChild(b);
-    }
-  } catch {}
 }
 
 function deschideCard(cheie, nav) {
