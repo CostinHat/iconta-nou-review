@@ -70,15 +70,29 @@ export function desktopPortal(continut, nav) {
     card.className = "cab-card";
     card.style.background = c.bg;
     card.style.color = c.fg;
+    if (c.cheie === "solicitari") card.style.position = "relative";
     card.innerHTML = `
       <div class="cab-card-cap">${SVG(ICON[c.icon], c.fg)}<span class="cab-card-titlu">${c.titlu}</span></div>
       <div class="cab-card-sinteza">${c.sinteza}</div>
     `;
     card.addEventListener("click", () => deschideCard(c.cheie, nav));
     grila.appendChild(card);
+    if (c.cheie === "solicitari") _sol_badge(card);  // icrd_sol_badge_v1
   });
 
   actualizeazaStatusAcasa(continut);
+}
+async function _sol_badge(host) {  // icrd_sol_badge_v1: badge rosu pe cardul Solicitari (necitite de la cabinet)
+  try {
+    const r = await api.get("/portal/solicitari/contor");
+    const n = (r && r.necitite) || 0;
+    if (n > 0) {
+      const b = document.createElement("span");
+      b.className = "cab-card-badge";
+      b.textContent = n;
+      host.appendChild(b);
+    }
+  } catch {}
 }
 
 function deschideCard(cheie, nav) {
@@ -310,6 +324,7 @@ function fmtData(iso) {
 async function ecranSolicitari(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
   corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+  try { await api.post("/portal/solicitari/marcheaza-citit", {}); } catch {}  // icrd_sol_badge_v1
   await randeazaSolicitari(corp, nav);
 }
 

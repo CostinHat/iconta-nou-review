@@ -3443,6 +3443,26 @@ import psycopg2.extras as _E_sol
 class SolicitareIn(BaseModel):
     mesaj: str
 
+@app.get("/portal/solicitari/contor")  # [icrd_sol_badge_v1] necitite de la cabinet, pt clientul curent
+def portal_solicitari_contor(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT count(*) FROM public.solicitari_client "
+                "WHERE tenant_id=%s AND autor_rol='cabinet' AND citit=false", (t["id"],))
+            n = cur.fetchone()[0]
+    return {"necitite": n}
+@app.post("/portal/solicitari/marcheaza-citit")  # [icrd_sol_badge_v1]
+def portal_solicitari_marcheaza(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    t = _tenant_client(ctx, tenant_id)
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "UPDATE public.solicitari_client SET citit=true "
+                "WHERE tenant_id=%s AND autor_rol='cabinet' AND citit=false", (t["id"],))
+        conn.commit()
+    return {"ok": True}
 @app.get("/portal/solicitari")
 def portal_solicitari_lista(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, tenant_id)
