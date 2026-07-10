@@ -72,33 +72,13 @@ export function desktopPortal(continut, nav) {
     card.style.color = c.fg;
     card.innerHTML = `
       <div class="cab-card-cap">${SVG(ICON[c.icon], c.fg)}<span class="cab-card-titlu">${c.titlu}</span></div>
-      <div class="cab-card-sinteza" data-cheie="${c.cheie}">${c.sinteza}</div>
+      <div class="cab-card-sinteza">${c.sinteza}</div>
     `;
     card.addEventListener("click", () => deschideCard(c.cheie, nav));
     grila.appendChild(card);
   });
 
   actualizeazaStatusAcasa(continut);
-  actualizeazaSolicitari(grila);  // icrd_sol_badge_v3 - tipar identic cu actualizeazaRaportari (cabinet.js)
-}
-async function actualizeazaSolicitari(grila) {  // icrd_sol_badge_v3
-  const card = grila.querySelector('[data-cheie="solicitari"]');
-  const host = card ? card.closest(".cab-card") : null;
-  if (!host) return;
-  try {
-    const r = await api.get("/portal/solicitari/contor");
-    const n = (r && r.necitite) || 0;
-    let b = host.querySelector(".cab-card-badge");
-    if (n > 0) {
-      if (!b) {
-        b = document.createElement("span");
-        b.className = "cab-card-badge";
-        host.style.position = "relative";
-        host.appendChild(b);
-      }
-      b.textContent = n;
-    } else if (b) { b.remove(); }
-  } catch {}
 }
 
 function deschideCard(cheie, nav) {
@@ -330,7 +310,6 @@ function fmtData(iso) {
 async function ecranSolicitari(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
   corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
-  try { await api.post("/portal/solicitari/marcheaza-citit", {}); } catch {}  // icrd_sol_badge_v1
   await randeazaSolicitari(corp, nav);
 }
 
