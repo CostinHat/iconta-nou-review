@@ -1172,7 +1172,7 @@ async function ecranJurnal(corp, nav, t) {
             <div class="pf-frand-nume">${fmtDataCab(n.data)} \u00b7 ${escJ(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
             <div class="pf-frand-sub">${n.linii.map((l) => `${escJ(l.debit)} = ${escJ(l.credit)} \u00b7 ${l.suma.toFixed(2)}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + escJ(n.sursa) : ""}</div>
           </div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start">${butoane}</div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:stretch">${butoane}</div>
         </div>`;
     };
     const editor = (n) => `
