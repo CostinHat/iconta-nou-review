@@ -167,3 +167,19 @@ RAMAS PE BACKLOG (NC-27): D112 pentru part-time - declararea/plata catre buget s
 la baza-podea intreaga (nu doar diferenta pe cheltuieli). d112.py:323 apeleaza cu
 norma_intreaga=True default - de verificat si corectat separat pt part-time. Plus:
 verificare retroactiva D112-uri deja depuse pt part-time (CAS/CASS subevaluat).
+
+## Test #70 (11.07.2026) — Deducere personala + suplimentara: PASS (fix rotunjire)
+Audit complet la sursa oficiala (art.77 Cod fiscal - Lege5/Ordonanta 16/2022 + SD Worx):
+TOATE procentele si pragurile CORECTE: 20% baza, +5%/persoana (max 4), 15% tineri<26,
+100 lei/copil scoala, plafon minim+2000, degresie -0.5%/50 lei, conditie tineri (brut>2000).
+
+BUG confirmat si reparat: deducerea NU era rotunjita la 10 lei in sus. Legea (art.77 +
+SD Worx) cere rotunjire la 10 lei in favoarea contribuabilului. Cod vechi intorcea total
+cu 2 zecimale -> impozit usor supraevaluat sistematic la orice salariat cu deducere
+degresiva. Ex: brut 4500 -> deducere 800.13 (gresit) vs 810 (corect), impozit -0.99 lei,
+net +0.99 lei in favoarea salariatului. Rotunjirea aplicata la TOTAL (art.77 alin.2:
+deducerea = baza+suplimentara ca intreg), o singura data.
+
+Verificat end-to-end pe KAI (luna 8): deduceri acum multipli de 10 (Georgescu 160,
+Ionescu 1090, Popescu 810), impozite scazute corect. Aritmetica validata manual pe
+6 cazuri (minim, degresie, tineri, copii, peste plafon).
