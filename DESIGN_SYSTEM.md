@@ -1,0 +1,112 @@
+# iConta — Design System
+
+*Document normativ · v2.0 · 11 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+
+**Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
+
+---
+
+## 0. Principii generale
+
+- Nicio clasă vizuală nouă. Orice element nou folosește exclusiv clasele din acest document. Clase suplimentare = doar hook JS sau poziționare (margin/width), niciodată culori/fonturi/umbre/dimensiuni.
+- Când se descoperă o inconsistență: STOP, se corectează, apoi se continuă. Zero datorie tehnică vizuală.
+- La orice decizie de schimbare de comportament se verifică TOATE locurile unde comportamentul vechi există, nu doar cel discutat.
+- Textele afișate folosesc diacritice românești complete; codul/comentariile/markerii — fără diacritice.
+- Mesajele către utilizator sunt clare și strict folositoare: spun ce s-a întâmplat și ce are de făcut.
+
+## 1. Butoane — set ÎNCHIS
+
+Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Padding unic 9px 18px (excepții: `.buton-mic`, `.btn-nav`). NU se adaugă clase noi.
+
+| Clasă | Rol |
+| --- | --- |
+| `.buton-primar` | Acțiunea principală. Albastru #3d8fd6, text alb, fără bordură. |
+| `.buton-secundar` | Acțiuni secundare. Alb, text ardezie, **bordură 1px #b9c2cf** (v2.0 — era #e2e5ea/var(--linie), invizibil pe fond alb). |
+| `.buton-sters` | Ștergere/revocare/distructiv. Roșu #ff3b30, text alb. |
+| `.buton-verde` | Aprobare/confirmare pozitivă. Verde #1d7a4d. |
+| `.buton-mic` | MODIFICATOR de mărime, se combină (ex: `buton-sters buton-mic`). Singurul modificator de mărime permis. |
+| `.btn-link` | Acțiune discretă tip link. Fără fundal/bordură/umbră. Albastru subliniat. |
+| `.btn-nav` | Exclusiv navigare. 32×32px, portocaliu #f97316. Duce MEREU un pas înapoi. |
+| `.buton-activ` | STARE (nu buton): marchează butonul cu zona toggle deschisă. Albastru închis #1a5a94. |
+
+**Feedback obligatoriu:**
+- Butoane cu zonă toggle: primesc `.buton-activ` cât timp zona e deschisă; deschiderea unei zone închide zonele-frate.
+- Acțiuni asincrone: butonul se dezactivează + text "Se salvează…" / "Se trimite…" pe durata cererii.
+
+**INTERZIS**: clase de buton în afara setului (ex. `buton-ingust` — folosește margin/width inline pentru dimensionare, nu clasă nouă).
+
+## 2. Pattern fundamental: nimic vizibil decât la selecție
+
+- Un ecran arată la deschidere DOAR: titlu + informația de stare esențială + itemii de meniu (`.acces-card`/`.meniu-card`) sau lista care e scopul ecranului.
+- Formularele de adăugare/editare/configurare NU apar la deschidere — apar la apăsarea unui buton dedicat.
+- Excepție: ecranele-formular, unde formularul ESTE scopul (Raport Z, Bilanț, Emitere factură).
+- Formularele deschise la selecție au întotdeauna buton "Renunță" (`.btn-link` sau `.buton-secundar`) care revine la ecranul anterior.
+
+**IMPORTANT (v2.0)**: Formularele NU se învelesc într-o casetă albă (`background:#fff`). Stau direct pe fundalul ferestrei (gri); doar câmpurile de input sunt albe cu bordură #b9c2cf. Un wrapper alb pe fundal gri-deschis face caseta invizibilă.
+
+## 3. Navigare
+
+- Săgeata portocalie (`.btn-nav`) duce MEREU exact un pas înapoi în ierarhia ecranului.
+- Mecanismul: `nav.setInapoi(fn)` — obligatoriu apelat la începutul FIECĂRUI sub-ecran: rădăcina cu undefined/null, sub-ecranele cu funcția părinte.
+- X-ul închide fereastra de oriunde. Săgeata nu ține locul lui X.
+- Ecranele-poartă (configurare obligatorie) primesc `setInapoi(undefined)` ca să evite bucla.
+
+## 4. Casete de date
+
+- Orice bloc de date (tabel, totaluri, liste) stă în casetă pe FOND ALB cu bordură 1px var(--linie), distinct de fundalul ferestrei.
+- Tabele: titlurile și valorile la STÂNGA, cu excepția coloanelor de sume monetare — titlu și valori la DREAPTA (separator zecimal pe aceeași verticală).
+- **Toate datele se afișează prin `dataRo(d, stil)` din api.js** (v2.0). SINGURA formatare de dată. Stiluri: implicit `zz.ll.aaaa`; `cu_ora` → `zz.ll.aaaa HH:MM`; `lung` → `11 iulie 2026`. INTERZIS `toLocaleDateString` ad-hoc, date ISO brute în template, funcții locale de formatare a datei.
+- Toate sumele cu exact 2 zecimale, format românesc (1.234,56). Cantități fără zecimale inutile. Procente compacte (11%).
+- Etichetă și valoare pe același rând se separă clar (flex space-between + gap).
+
+## 5. Casete de atenționare, confirmări și INPUT
+
+- Stil unic: `.caseta-atentie` — fundal #fdf3f3, bordură 2px #d98c8c, mesaj în `.ca-mesaj`. Butoanele stau SUB casetă, pe clase canonice.
+- **`confirm()`, `alert()` și `prompt()` native de browser sunt INTERZISE** (v2.0 — include prompt). Confirmări via `confirmaCaseta(zona, mesaj, laConfirm, {textOk})`. Input via formular în-ecran (câmp + buton), niciodată prompt nativ.
+- Mesajul spune exact ce se întâmplă și dacă e ireversibil.
+
+## 6. Mesaje de stare, câmpuri obligatorii și ghidaj
+
+- Succes: text verde #1d7a4d, weight 600, afișat pe ecranul principal DUPĂ revenirea din formular.
+- Eroare de câmp/formular: `<span class="msg-eroare">` (roșu), lângă câmpul/butonul relevant. Niciodată tăcere la o acțiune eșuată.
+- Validări preventive cu mesaj explicativ, nu doar refuz.
+- **Câmp obligatoriu (v2.0)**: marcat cu asterisc roșu prin `<span class="oblig">*</span>` lângă etichetă. Câmpurile opționale nu se marchează.
+- **Ghidaj preventiv (v2.0)**: câmp care nu se poate autocompleta din date existente primește `<span class="camp-ajutor">` (albastru #3d8fd6, sub etichetă) care spune de unde ia utilizatorul valoarea. Niciun câmp obligatoriu gol fără context.
+
+## 7. Documente PDF
+
+- Tabelele PDF respectă aceleași reguli de aliniere ca HTML (cap. 4): stânga peste tot, sume la dreapta cu separator aliniat.
+- Preferință: tabele reportlab Table cu colWidths explicite (ca factura_pdf.py), nu drawString cu coordonate manuale.
+
+## 8. Semafoare
+
+- Mereu vertical, ordinea ROȘU → GALBEN → VERDE (urgența întâi).
+- Bulină LED 16px cu gradient + etichetă text 10px.
+- Culori canonice: verde #1d7a4d · galben #c9961f · roșu #ff3b30.
+
+## 9. Ferestre de lucru
+
+- Overlay umbrit uniform rgba(20,30,45,0.55) pentru TOATE ferestrele. Card central alb.
+- max-height calc(100vh - 48px); la tabele lungi: antet + butoane fixe, doar tabelul derulează.
+- `.fer-larg` max-width 1000px doar pentru tabele.
+- Nicio fereastră nu iese din ecran.
+
+## 10. Escape și securitate
+
+- **`esc` din api.js (v2.0) = SINGURA funcție de escape.** Escapează `& < > " '` (5 caractere, inclusiv apostroful). INTERZISE variante locale (`_esc`/`escB`/`escV`/`escS`/`escC`/`escJ`) care omit apostroful — risc XSS în atribute cu ghilimele simple.
+- Orice dată user/import-controlled afișată în innerHTML se trece prin `esc()`.
+
+## 11. Procedură de lucru
+
+- Orice element UI nou: se alege din acest document. Dacă nu există → se discută, se adaugă AICI întâi, apoi se implementează.
+- O regulă nouă intră în ACEST document ȘI (unde e cazul) în `verificator_conformitate.py` simultan.
+- Audit de conformitate la fiecare ecran atins: se verifică cap. 1–10.
+- Acest document se versionează în git (`.md`, editabil prin SSH — v2.0, migrat din docx).
+
+---
+
+## Changelog
+
+**v2.0 (11.07.2026)** — migrat docx → .md; adăugate: bordură buton-secundar #b9c2cf (cap.1); interdicție wrapper alb pe formulare (cap.2); `dataRo()` canonic (cap.4); interdicție prompt() nativ (cap.5); `.oblig` asterisc roșu + `.camp-ajutor` albastru (cap.6); `esc` canonic + interdicție variante locale (cap.10).
+
+**v1.0 (08.07.2026)** — versiune inițială, 10 capitole (docx).
