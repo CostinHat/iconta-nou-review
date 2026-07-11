@@ -239,3 +239,17 @@ nota de cost o mentioneaza explicit (transparenta - altfel apareau bani "din sen
 Bug prins in constructie: _dec nu era importat in stat_plata_api - inlocuit cu float.
 Verificat end-to-end: PDF valid generat pt Ionescu (PT, "suprataxa part-time 568,75 lei"
 in cost) si Popescu (NI, fara mentiune). Ambele HTTP 200, PDF-uri valide.
+
+## Test #75 (11.07.2026) — Contracte speciale (zilieri, cenzori, mandat): PASS
+Verificare la sursa (Legea 52/2011 + art.76(2) lit.r/g/i Cod fiscal + ANAF regim_zilieri
++ infotva 2025/2026). Motor contracte_speciale.py corect pt regimul ACTUAL:
+- ZILIERI: impozit 10% pe (brut-CAS), CAS 25% pe brut, FARA CASS, FARA CAM. Confirmat
+  la sursa (art.139(1)s + art.76(2)r CF: din mai 2019 zilierii datoreaza CAS 25%; nu
+  sunt asigurati in sanatate deci fara CASS). Codul e aliniat la regimul actual, nu la
+  cel vechi ("fara contributii" - depasit). Impozit 10% (nu 16% din textul original L52,
+  suprascis de art.76(2)r CF). Monografie: 641=421, 421=4315, 421=444, 421=5311 (fara CASS).
+- MANDAT/CENZOR: CAS 25% + CASS 10% + impozit 10% pe (brut-CAS-CASS), fara CAM. Corect.
+Aritmetica verificata manual: zilier 500 -> net 337.50; mandat 2000 -> net 1170.
+OBSERVATIE minora (nu bug): remuneratie_minima_zilier foloseste 165.33 ore/luna ->
+orar 26.16, vs minimul orar oficial 25.95 (166.667 ore/luna). Rezultat conservator
+(peste minim), de aliniat divizorul daca se doreste precizie la minimul orar exact.
