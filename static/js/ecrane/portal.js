@@ -1,6 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, arataMesaj, confirmaCaseta, deschideLupa } from "../api.js";  /* generalizare_zi_v1 */
+import { api, arataMesaj, confirmaCaseta, deschideLupa, esc } from "../api.js";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";  // [p116_facturi_modul]
 
@@ -113,7 +113,7 @@ async function ecranAccesCont(corp, nav) {
     const lista = corp.querySelector("#ac-lista-suplimentar");
     lista.innerHTML = (d.suplimentare || []).map((c) => `
       <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee">
-        <span>${c.email}${c.nume ? " · " + c.nume : ""}</span>
+        <span>${esc(c.email)}${c.nume ? " · " + esc(c.nume) : ""}</span>
         ${d.eu_principal ? '<button class="btn-link" data-uid="' + c.id + '">Revocă</button>' : ""}
       </div>`).join("") || '<p class="ecran-nota">Niciun acces suplimentar.</p>';
     if (d.eu_principal) {
@@ -454,7 +454,7 @@ async function ecranRecomanda(corp, nav) {
       const rez = (r && r.rezultate) || [];
       bTr.disabled = false; bTr.textContent = "Trimite recomandarea";
       zona.innerHTML = rez.map((x) =>
-        `<div class="pf-frand"><div class="pf-frand-text">${x.email} — ${x.stare === "trimis" ? "trimis" : "eșuat"}</div></div>`
+        `<div class="pf-frand"><div class="pf-frand-text">${esc(x.email)} — ${x.stare === "trimis" ? "trimis" : "eșuat"}</div></div>`
       ).join("");
     } catch {
       bTr.disabled = false; bTr.textContent = "Trimite recomandarea";

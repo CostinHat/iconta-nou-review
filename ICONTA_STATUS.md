@@ -493,3 +493,18 @@ singura, in util comun) aplicata la TOATE randarile de date user in innerHTML, +
 verificator_conformitate.py care detecteaza ${...} de date user in innerHTML neescapat.
 NU petice punctuale. Audit sistematic necesar (toate ecranele). Atinge date reale afisate
 contabililor -> prioritate mare.
+
+## ADDENDUM 11.07 — NC-27 XSS REPARAT (partea 1: vectorii reali)
+Reevaluare la sursa: NC-27 era supraevaluat. Vectori XSS REALI (date user in innerHTML)
+= doar 4 locuri, nu raspandit: firme.js 463 (${s.nume} salariat), firme.js 1723
+(${c.email}+${c.nume} client); portal.js 116 (${c.email}+${c.nume}), portal.js 457
+(${x.email}). Linia firme.js 349 ${nume} si portal.js 542 ${nume} = text controlat de
+cod (etichete verificare/modul), NU date user -> nu-s vectori.
+FIX: functie canonica esc() adaugata + exportata in static/js/api.js [esc_canonic_v1]
+(escapare completa & < > " '). Importata in firme.js si portal.js, aplicata pe cele 4
+locuri. node --input-type=module --check OK pe toate 3 fisiere. Server restart, health 200,
+esc servit live. LECTIE 0c: node --check simplu esueaza pe ESM (fals "eroare"); +
+scriptul initial a raportat gresit "esc deja in import" portal.js -> era nedefinit,
+prins inainte de restart (altfel portalul client crapa la afisare lista).
+RAMAS NC-27 (partea 2): regula in verificator_conformitate.py care detecteaza automat
+${dateUser} neescapat in innerHTML (pattern de finete: distinge date user de text de cod).

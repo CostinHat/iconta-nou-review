@@ -177,3 +177,11 @@ export function bani(v) {
   if (v === null || v === undefined || v === "" || !isFinite(n)) return v ?? "";
   return n.toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+
+
+// [esc_canonic_v1] Escapare HTML unica pentru date user randate in innerHTML (NC-27).
+export function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}

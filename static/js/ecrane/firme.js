@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, arataMesaj, confirmaCaseta, deschideLupa, bani } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, arataMesaj, confirmaCaseta, deschideLupa, bani, esc } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";
 import { ecranRip } from "./rip_ecran.js";
@@ -460,7 +460,7 @@ async function ecranSalariati(corp, nav, t) {
       : stat.map((s) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${s.nume}</div>
+            <div class="pf-frand-nume">${esc(s.nume)}</div>
             <div class="pf-frand-sub">brut ${s.brut.toFixed(2)} \u00b7 CAS ${s.cas.toFixed(2)} \u00b7 CASS ${s.cass.toFixed(2)} \u00b7 impozit ${s.impozit.toFixed(2)} \u00b7 <b>net ${s.net.toFixed(2)}</b> \u00b7 cost ${s.cost.toFixed(2)}</div>
           </div>
           <button class="buton-primar" data-flut="${s.id}">Fluturas</button>
@@ -1720,7 +1720,7 @@ async function ecranAccesClient(corp, nav, t) {
       else {
         zona.innerHTML = cl.map((c) => `
           <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e5e9f0">
-            <div><b>${c.email}</b> · ${c.nume || ""} ${c.activ ? "" : ' · <span style="color:var(--rosu)">dezactivat</span>'}</div>
+            <div><b>${esc(c.email)}</b> · ${esc(c.nume || "")} ${c.activ ? "" : ' · <span style="color:var(--rosu)">dezactivat</span>'}</div>
             ${c.activ ? `<button class="buton-secundar" data-id="${c.id}">Revoca</button>` : ""}
           </div>`).join("");
         zona.querySelectorAll("button[data-id]").forEach((b) => b.addEventListener("click", () => {
