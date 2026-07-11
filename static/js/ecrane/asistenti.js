@@ -150,7 +150,7 @@ async function deschideEditare(uid, corp, nav) {
         <div id="asi-firme">${firme.map((f) => `
           <label class="asi-firma-rand">
             <input type="checkbox" data-tid="${f.id}" ${f.atribuit ? "checked" : ""}>
-            <span>${f.nume}${f.cui ? ` \u00b7 ${f.cui}` : ""}</span>
+            <span>${esc(f.nume)}${f.cui ? ` \u00b7 ${esc(f.cui)}` : ""}</span>
           </label>`).join("")}</div>`
       : `<p class="asi-mic">Administratorul vede automat tot portofoliul (nu se atribuie firme individual).</p>`;
 
@@ -405,7 +405,7 @@ async function deschideEchipaErori(nav) {
         <div class="val-card" style="display:block;">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
             ${_semaforEticheta(a.culoare)}
-            <b>${a.nume}</b>
+            <b>${esc(a.nume)}</b>
             <span style="font-size:13px;color:var(--gri);">${a.respinse} respinse · ${a.rata}%</span>
           </div>
           ${tipare}

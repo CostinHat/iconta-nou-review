@@ -1,6 +1,6 @@
 // admin_activitate.js — Admin iConta: activitate + business cabinete (doar superadmin).
 // Sumar + lista cu firme/angajati/recomandari/actiuni, suspenda/reactiveaza, click -> timeline.
-import { api, confirmaCaseta } from "../api.js";  /* audit_cab_lot2_v1 */
+import { api, confirmaCaseta, esc } from "../api.js";  /* audit_cab_lot2_v1 + esc_nc27 */
 
 function fmtData(iso) {
   if (!iso) return "—";
@@ -42,7 +42,7 @@ async function randeaza(corp, nav) {
     return `
       <div class="pf-frand" data-zebra="${i % 2}">
         <div class="pf-frand-text" data-i="${i}" style="cursor:pointer">
-          <div class="pf-frand-nume">${(c.nume || "—")}</div>
+          <div class="pf-frand-nume">${esc(c.nume || "—")}</div>
           <div class="pf-frand-sub">${c.nr_firme ?? 0} firme · ${c.nr_angajati ?? 0} angajați · ${c.nr_facturi ?? 0} facturi emise · ${c.nr_declaratii ?? 0} declarații depuse · ${c.nr_recomandari ?? 0} recomandări · ultima activitate: ${fmtData(c.ultima_activitate)}</div>
         </div>
         ${stare}
@@ -71,8 +71,8 @@ async function randeaza(corp, nav) {
       const c = cabinete[Number(btn.dataset.toggle)];
       const ruta = c.activ ? "suspenda" : "reactiveaza";
       const mesaj = c.activ
-        ? `Suspenzi accesul cabinetului "${c.nume}"? Login-ul se taie instant, datele rămân.`
-        : `Reactivezi accesul cabinetului "${c.nume}"?`;
+        ? `Suspenzi accesul cabinetului "${esc(c.nume)}"? Login-ul se taie instant, datele rămân.`
+        : `Reactivezi accesul cabinetului "${esc(c.nume)}"?`;
       confirmaCaseta(btn.parentElement || btn, mesaj, async () => {  // audit_cab_lot2_v1
       try {
         await api.post(`/admin/cabinete/${c.id}/${ruta}`, {});
@@ -102,7 +102,7 @@ async function deschideTimeline(corp, cabinet) {
   const linii = activitate.map((a) => `
     <div class="sol-rand sol-cabinet">
       <div class="sol-mesaj">${(a.actiune || "")}</div>
-      <div class="sol-meta">${(a.nume || "")} ${(a.prenume || "")} · ${fmtData(a.created_at)}</div>
+      <div class="sol-meta">${esc(a.nume || "")} ${esc(a.prenume || "")} · ${fmtData(a.created_at)}</div>
     </div>`).join("");
   zona.innerHTML = `
     <div class="pov-card">

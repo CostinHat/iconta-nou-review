@@ -1,5 +1,5 @@
 // admin_gratuite.js — Admin iConta: conturi gratuite (facturare, fara cabinet).
-import { api, confirmaCaseta } from "../api.js";  /* audit_cab_lot2_v1 */
+import { api, confirmaCaseta, esc } from "../api.js";  /* audit_cab_lot2_v1 + esc_nc27 */
 function fmtData(iso) {
   if (!iso) return "—";
   const d = new Date(iso);
@@ -36,7 +36,7 @@ async function randeaza(corp, nav) {
     return `
       <div class="pf-frand" data-zebra="${i % 2}">
         <div class="pf-frand-text">
-          <div class="pf-frand-nume">${(c.nume || "—")}${c.cui ? " · " + c.cui : ""}</div>
+          <div class="pf-frand-nume">${esc(c.nume || "—")}${c.cui ? " · " + esc(c.cui) : ""}</div>
           <div class="pf-frand-sub">${c.nr_useri ?? 0} utilizatori · ${c.nr_facturi ?? 0} facturi emise · creat: ${fmtData(c.creat_la)} · ultima activitate: ${fmtData(c.ultima_activitate)}</div>
         </div>
         ${stare}
@@ -62,7 +62,7 @@ async function randeaza(corp, nav) {
           corp.insertAdjacentHTML("afterbegin", '<p class="msg-eroare">Operațiunea a eșuat. Reîncearcă.</p>');
         }
       };
-      if (c.activ) confirmaCaseta(btn.parentElement || btn, `Suspenzi contul ${c.nume}? Utilizatorii nu se vor mai putea loga.`, fa, { textOk: "Suspendă" });
+      if (c.activ) confirmaCaseta(btn.parentElement || btn, `Suspenzi contul ${esc(c.nume)}? Utilizatorii nu se vor mai putea loga.`, fa, { textOk: "Suspendă" });
       else fa();
     });
   });

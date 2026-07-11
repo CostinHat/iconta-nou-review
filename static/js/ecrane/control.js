@@ -2,7 +2,7 @@
 // Nivel 1: lista firmelor cu pastila colorata (verde/galben/rosu).
 // Nivel 2: click pe firma -> declaratiile lipsa + de urmarit, cu termene.
 
-import { api } from "../api.js";
+import { api, esc } from "../api.js";  /* esc_nc27 */
 
 const CULORI = {
   verde:  { dot:"radial-gradient(circle at 65% 30%, #6fc494, #1d7a4d 60%)", txt:"la zi",       bg:"#e6f6ec" },
@@ -59,7 +59,7 @@ export async function randeazaControl(corp, nav) {
     rand.className = "mig-frand";
     rand.innerHTML = `
       <div class="mig-frand-text">
-        <div class="mig-frand-nume">${f.nume}</div>
+        <div class="mig-frand-nume">${esc(f.nume)}</div>
         <div class="mig-frand-sub">${detaliu}</div>
       </div>
       <span class="cf-stare" style="background:${col.bg}">
@@ -91,7 +91,7 @@ async function detaliuFirma(corp, nav, firma) {
     </div>`).join("");
 
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b> · <span style="color:${col.dot}">${col.txt}</span></p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · <span style="color:${col.dot}">${col.txt}</span></p>
     ${lipsa.length ? `
       <div class="cf-grup-titlu cf-rosu">Restanțe (${lipsa.length})</div>
       <div class="cf-decl">${randDecl(lipsa, "cf-termen-rosu")}</div>` : ""}

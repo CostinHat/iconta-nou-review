@@ -2838,6 +2838,23 @@ def _verificari_contabile(schema, an, luna):
         rezultat["documente_pozate"] = _verifica_documente_pozate(schema)
     except Exception:
         pass
+    try:  # verif_d205_457_v1 (NC-28 backlog #97)
+        with db.get_conn() as conn2, conn2.cursor() as cur2:
+            cur2.execute(f"SELECT to_regclass('{schema}.d205_beneficiari')")
+            are_tabel = cur2.fetchone()[0] is not None
+            suma_d205 = 0
+            if are_tabel:
+                cur2.execute(f"SELECT COALESCE(SUM(suma_bruta),0) FROM {schema}.d205_beneficiari "
+                            f"WHERE an=%s AND tip_venit='08'", (an,))
+                suma_d205 = cur2.fetchone()[0]
+            cur2.execute(f"""SELECT COALESCE(SUM(l.suma),0) FROM {schema}.inregistrari_linii l
+                            JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+                            WHERE l.cont_debit='1171' AND l.cont_credit='457'
+                            AND EXTRACT(YEAR FROM i.data) = %s""", (an,))
+            suma_457 = cur2.fetchone()[0]
+        rezultat["d205_vs_457"] = _vf.coerenta_d205_457(suma_d205, suma_457)
+    except Exception:
+        pass
     return rezultat
 
 

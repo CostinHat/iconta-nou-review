@@ -105,7 +105,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
       rand.className = "firme-rand";
       rand.innerHTML = `
         <div class="firme-rand-text">
-          <div class="firme-rand-nume">${t.nume || "(fără nume)"}</div>
+          <div class="firme-rand-nume">${esc(t.nume) || "(fără nume)"}</div>
           <div class="firme-rand-cui">CUI ${t.cui || "—"}</div>
         </div>
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#9aa3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
@@ -1465,7 +1465,7 @@ async function ecranBonuri(corp, nav, t) {
         ? `<div id="d-cand" style="margin-top:12px"><p class="ecran-nota">Caut facturi de potrivit...</p></div>`
         : `<div style="margin-top:8px"><div class="camp-eticheta">Denumire \u00b7 valoare \u00b7 cont</div>${(b.articole || []).map((a, j) => `
             <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:4px">
-              <input class="camp-input" id="d-den-${j}" value="${a.denumire || ""}" readonly>
+              <input class="camp-input" id="d-den-${j}" value="${esc(a.denumire || "")}" readonly>
               <input class="camp-input" type="number" step="0.01" id="d-val-${j}" value="${a.valoare || 0}">
               <input class="camp-input" id="d-cont-${j}" value="${a.cont_propus || ""}" placeholder="cont" aria-label="Cont propus">
             </div>`).join("")}</div>`}

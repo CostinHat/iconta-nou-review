@@ -108,6 +108,15 @@ def verifica_tva_pe_cota(baza, tva, la_data=None):
 # ============================================================
 #  COERENȚĂ TREZORERIE
 # ============================================================
+def coerenta_d205_457(suma_d205, suma_457):
+    """Compara suma bruta declarata in D205 (tip_venit=08, dividende) cu
+    suma bruta repartizata in contabilitate (1171->457) pentru acelasi an.
+    Diferenta poate insemna dividende nedeclarate sau postari lipsa."""
+    d = _dec(suma_d205)
+    s457 = _dec(suma_457)
+    dif = d - s457
+    return {"suma_d205": _q(d), "suma_457": _q(s457), "diferenta": _q(dif),
+            "coerent": dif == 0}
 def verifica_trezorerie(bal, conturi=("5121", "5124", "5311", "5314")):
     """Conturile de trezorerie nu pot avea sold creditor. Întoarce listă de probleme."""
     probleme = []

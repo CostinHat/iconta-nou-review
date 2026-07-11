@@ -52,3 +52,14 @@ def test_prima_zi_exceptii():
     r = s.calcul_cm(27000, 129, 10, cod="01", zile_episod=10,
                     la_data=date(2026, 7, 2), exceptat_prima_zi=True)
     assert r["diminuare"] == 0
+
+
+def test_nc28_exceptii_diminuare():
+    # Ordinul 506/1030/2026 MOF 507 - verificat la sursa
+    from datetime import date as _d
+    d=_d(2026,7,2)
+    for c in ('02','03','04','08','12','13','14','15','17','51'):
+        assert s.calcul_cm(27000,129,10,cod=c,zile_episod=10,la_data=d)['diminuare']==0, c
+    for c in ('01','06','07','09'):
+        assert s.calcul_cm(27000,129,10,cod=c,zile_episod=10,la_data=d)['diminuare']==1, c
+    assert s.calcul_cm(27000,129,10,cod='01',zile_episod=10,la_data=d,spitalizare=True)['diminuare']==0

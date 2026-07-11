@@ -3,7 +3,7 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, arataMesaj, confirmaCaseta } from "../api.js";
+import { api, arataMesaj, confirmaCaseta, esc } from "../api.js";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js";
 import { randeazaEmitere } from "./emitere_ecran.js";
 
@@ -88,7 +88,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
           return `
         <button class="buton-secundar pf-frand fac-frand-btn" data-id="${f.id}">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${f.numar || "\u2014"}${f.tert_nume ? " \u00b7 " + f.tert_nume : ""}</div>
+            <div class="pf-frand-nume">${f.numar || "\u2014"}${f.tert_nume ? " \u00b7 " + esc(f.tert_nume) : ""}</div>
             <div class="pf-frand-sub">${fmtData(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
           </div>
           <span class="pf-frand-suma">${suma}</span>
@@ -642,7 +642,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
         return `
       <div class="pf-frand" data-id="${s.id}">
         <div class="pf-frand-text">
-          <div class="pf-frand-nume">${s.tert_nume || "\u2014"}</div>
+          <div class="pf-frand-nume">${esc(s.tert_nume) || "\u2014"}</div>
           <div class="pf-frand-sub">ziua ${s.zi_emitere} \u00b7 ultima: ${fmtData(s.ultima_emitere) || "\u2014"} \u00b7 ${stare}</div>
         </div>
         <span class="pf-frand-suma">${sumaTxt}</span>

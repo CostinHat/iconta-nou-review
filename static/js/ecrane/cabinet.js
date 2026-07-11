@@ -2,7 +2,7 @@
 // Bandă de salut + 9 carduri pastel (grilă 3×3), fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, confirmaCaseta } from "../api.js";
+import { api, confirmaCaseta, esc } from "../api.js";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
 import { randeazaListaFirme } from "./firme.js";
@@ -558,7 +558,7 @@ async function randeazaConsolidare(corp, nav) {
     <p class="pf-intro">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${luni[d.luna]} ${d.an}. Valori \u00een lei.</p>
     <div class="pf-lista zebra-lista">
       ${cap}
-      ${(d.firme || []).map((f) => rand(f.nume, f.kpi)).join("")}
+      ${(d.firme || []).map((f) => rand(esc(f.nume), f.kpi)).join("")}
       ${rand("TOTAL", d.total, true)}
     </div>`;
 }

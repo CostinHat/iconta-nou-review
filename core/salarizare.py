@@ -210,7 +210,7 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     Ci = Mzbci x procent x (NZLCM - diminuare)
     - Mzbci = suma venituri 6 luni / total zile lucratoare 6 luni
     - diminuare 1 zi: certificate 01.02.2026-31.12.2027, O DATA per episod,
-      NU la spitalizare, NU la accidente de munca (cod 02/03), NU la izolare (cod 07)
+      NU la spitalizare, accidente 02/03/04, izolare 51, maternitate 08, oncologic 17, risc maternal 15, PNS 12/13/14
     - rotunjire la leu (norme CNAS)
     """
     from datetime import date as _dt
@@ -219,11 +219,12 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     ze = zile_episod if zile_episod is not None else zile_lucratoare_cm
     pct = procent_cm(cod, ze, procent_accident)
     diminuare = 0
-    # Exceptii prima zi neplatita (OUG 91/2025 + Legea 64/2026): accidente munca,
-    # izolare/carantina, maternitate, risc maternal, urgente, cronici/programe nationale
+    # Exceptii diminuare 1 zi verif. la sursa MOF 507/19.06.2026 (Ordinul 506/1030/2026):
+    # accidente 02/03/04, izolare 51, maternitate 08, oncologic 17, risc maternal 15, PNS 12/13/14.
+    # NU exceptate: urgente 06, carantina 07, boala obisnuita 01, ingrijire copil 09.
     if (_dt(2026, 2, 1) <= ref <= _dt(2027, 12, 31)
             and prima_zi_din_episod and not spitalizare and not exceptat_prima_zi
-            and str(cod).zfill(2) not in ("02", "03", "06", "07", "08", "15", "51")):
+            and str(cod).zfill(2) not in ("02", "03", "04", "08", "12", "13", "14", "15", "17", "51")):
         diminuare = 1
     zile_platite = max(zile_lucratoare_cm - diminuare, 0)
     brut = (mz * pct * zile_platite).quantize(Decimal("1"))  # rotunjit la leu
