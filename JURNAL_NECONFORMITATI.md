@@ -183,3 +183,10 @@ deducerea = baza+suplimentara ca intreg), o singura data.
 Verificat end-to-end pe KAI (luna 8): deduceri acum multipli de 10 (Georgescu 160,
 Ionescu 1090, Popescu 810), impozite scazute corect. Aritmetica validata manual pe
 6 cazuri (minim, degresie, tineri, copii, peste plafon).
+
+## Test #71 (11.07.2026) — Facilitate 200 lei S2 2026: PASS
+Acoperit de fix-ul #69 (conditii cumulative facilitate). Verificat explicit pe cazul S2:
+- S1 (martie, minim 4050): facilitate 300 corect
+- S2 (august, minim 4325): facilitate 200 corect (tranzitia 300->200 pe data functioneaza)
+- plafon S2: venit total 4650>4600 -> facilitate 0; venit 4600 exact -> facilitate 200 (<=)
+Tranzitia semestriala gestionata de cotele datate, plafon corect la granita.
