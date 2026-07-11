@@ -161,3 +161,72 @@ def sterge_salariat(conn, salariat_id):
         cur.execute("DELETE FROM salariati WHERE id = %s", (salariat_id,))
         sters = cur.rowcount > 0
     return {"ok": sters}
+
+
+# ============================================================
+#  CONCEDII MEDICALE — calcul (calcul_cm + taxe_cm) + salvare
+# ============================================================
+def lista_concedii(conn, salariat_id, an=None):
+    """Concediile medicale ale unui salariat, optional filtrate pe an. Desc dupa data inceput."""
+    with conn.cursor() as cur:
+        if an:
+            cur.execute("SELECT * FROM concedii_medicale WHERE salariat_id=%s AND an=%s "
+                        "ORDER BY data_inceput DESC NULLS LAST, id DESC", (salariat_id, an))
+        else:
+            cur.execute("SELECT * FROM concedii_medicale WHERE salariat_id=%s "
+                        "ORDER BY data_inceput DESC NULLS LAST, id DESC", (salariat_id,))
+        cols = [d[0] for d in cur.description]
+        return [dict(zip(cols, r)) for r in cur.fetchall()]
+
+
+def salveaza_concediu(conn, salariat_id, date):
+    """Calculeaza indemnizatia CM (calcul_cm + taxe_cm) si o salveaza in concedii_medicale.
+    date: serie, numar, cod, data_acordare, data_inceput, data_sfarsit, loc_prescriere,
+          diagnostic, spitalizare, zile_cm (lucratoare), venituri_6_luni, zile_6_luni,
+          an, luna, procent_accident (optional). Intoarce randul salvat + breakdown calcul."""
+    from core import salarizare as _s
+    from decimal import Decimal
+    cod = str(date.get("cod") or "01").zfill(2)
+    zile_cm = int(date.get("zile_cm") or 0)
+    ven6 = date.get("venituri_6_luni") or 0
+    zile6 = int(date.get("zile_6_luni") or 1)
+    spitalizare = bool(date.get("spitalizare"))
+    pacc = int(date.get("procent_accident") or 100)
+    import datetime as _dtmod
+    _di = date.get("data_inceput") or None
+    if isinstance(_di, str) and _di:
+        try: la_data = _dtmod.date.fromisoformat(_di[:10])
+        except ValueError: la_data = None
+    else:
+        la_data = _di
+
+    calc = _s.calcul_cm(ven6, zile6, zile_cm, cod=cod, spitalizare=spitalizare,
+                        la_data=la_data, procent_accident=pacc)
+    taxe = _s.taxe_cm(calc["brut"], cod=cod, la_data=la_data)
+
+    with conn.cursor() as cur:
+        cur.execute(
+            "INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, "
+            "baza, media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, "
+            "brut_ang, brut_fnuass, cass, impozit, cas, net, serie, numar, data_acordare, "
+            "data_inceput, data_sfarsit, loc_prescriere, diagnostic) "
+            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+            "RETURNING id",
+            (salariat_id, date.get("an"), date.get("luna"), cod, zile_cm, calc["brut"],
+             ven6, calc["media_zilnica"], calc["procent"], bool(calc["diminuare"]),
+             calc["zile_platite"], calc["zile_ang"], calc["zile_fnuass"],
+             calc["brut_ang"], calc["brut_fnuass"], taxe["cass"], taxe["impozit"],
+             taxe["cas"], taxe["net"], date.get("serie"), date.get("numar"),
+             date.get("data_acordare"), date.get("data_inceput"), date.get("data_sfarsit"),
+             int(date.get("loc_prescriere") or 1), date.get("diagnostic")))
+        cm_id = cur.fetchone()[0]
+    return {"ok": True, "id": cm_id, "calcul": {**calc, **taxe}}
+
+
+def sterge_concediu(conn, salariat_id, cm_id):
+    """Sterge un concediu medical (verifica apartenenta la salariat)."""
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM concedii_medicale WHERE id=%s AND salariat_id=%s RETURNING id",
+                    (cm_id, salariat_id))
+        r = cur.fetchone()
+    return {"ok": r is not None}

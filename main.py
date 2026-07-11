@@ -2087,6 +2087,32 @@ def salariat_sterge(tenant_id: int, salariat_id: int,
     return r
 
 
+@app.get("/tenants/{tenant_id}/salariati/{salariat_id}/concedii")  # cm_lista_v1
+def cm_lista(tenant_id: int, salariat_id: int, an: int = None, ctx=Depends(cere_cabinet)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return {"concedii": salariati_api.lista_concedii(conn, salariat_id, an)}
+
+
+@app.post("/tenants/{tenant_id}/salariati/{salariat_id}/concedii")  # cm_salveaza_v1
+def cm_salveaza(tenant_id: int, salariat_id: int, corp: dict = Body(...),
+                ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    try:
+        with db.get_conn(schema) as conn:
+            return salariati_api.salveaza_concediu(conn, salariat_id, corp)
+    except (ValueError, ZeroDivisionError) as e:
+        raise HTTPException(422, str(e))
+
+
+@app.delete("/tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}")  # cm_sterge_v1
+def cm_sterge(tenant_id: int, salariat_id: int, cm_id: int,
+              ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return salariati_api.sterge_concediu(conn, salariat_id, cm_id)
+
+
 # ============================================================
 #  COADĂ DECLARAȚII (flux validare: asistent -> senior -> depusă)
 # ============================================================
