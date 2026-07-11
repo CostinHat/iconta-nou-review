@@ -2187,9 +2187,10 @@ def coada_respinge(coada_id: int, date: RespingeIn,
                    ctx=Depends(cere_rol("admin_firma"))):
     with db.get_conn() as conn:
         r = coada_api.respinge(conn, coada_id, str(ctx["uid"]), date.motiv, respins_de_id=int(ctx["uid"]))
-    if not r["ok"]:
-        raise HTTPException(409 if r.get("cod") == "STARE_GRESITA" else 404,
-                            r.get("mesaj", r.get("cod")))
+    if not r["ok"]:  # [motiv_lipsa_400_v1] MOTIV_LIPSA e input invalid -> 400
+        _cod = r.get("cod")
+        _http = 409 if _cod == "STARE_GRESITA" else (400 if _cod == "MOTIV_LIPSA" else 404)
+        raise HTTPException(_http, r.get("mesaj", _cod))
     # [p57_notif] notifica pregatitorul cu motivul
     try:
         with db.get_conn() as conn:

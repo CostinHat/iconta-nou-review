@@ -171,6 +171,10 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None):
 
 def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None):
     """la_senior -> respinsa + motiv. Refuză dacă starea nu permite."""
+    # [motiv_obligatoriu_v1] respingerea fără motiv lasă contabilul fără explicație
+    if motiv is None or not str(motiv).strip():
+        return {"ok": False, "cod": "MOTIV_LIPSA",
+                "mesaj": "respingerea necesită un motiv (contabilul trebuie să știe ce să corecteze)"}
     with conn.cursor() as cur:
         st = _stare_curenta(cur, coada_id)
         if st is None:

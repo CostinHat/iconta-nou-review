@@ -27,9 +27,10 @@ class PlafoaneD212:
 # Venituri 2025 (declarate in D212 depusa in 2026) - sursa: HG 1506/2024, Cod fiscal
 PLAFOANE_VENIT_2025 = PlafoaneD212(salariu_minim=4050)
 
-# Venituri 2026 (declarate in D212 depusa in 2027) - Legea 141/2025 urca plafonul CASS la 72 sm
-# NU folosi inca acest set pana nu se confirma la sursa oficiala momentul aplicarii salariului minim
-# (4050 sem1 / 4325 sem2 2026) in raport cu noul plafon 72 sm.
+# Venituri 2026 (declarate in D212 depusa in 2027) - Legea 141/2025 urca plafonul CASS la 72 sm.
+# VERIFICAT LA SURSA 11.07.2026: reperul plafoanelor D212 = salariul minim la 1 ian 2026 = 4050 lei,
+# FIX pe tot anul (instructiunile formular 212), indiferent de majorarea la 4325 din 01.07 (HG 146/2026).
+# Majorarea salariului minim NU atinge plafoanele D212. Plafon CASS 60->72 sm confirmat pt venituri 2026.
 PLAFOANE_VENIT_2026 = PlafoaneD212(salariu_minim=4050, cass_prag_max_sm=72)
 
 

@@ -357,3 +357,66 @@ FUNCTIONALA — toate 3 adaugate in memoria permanenta, aplicate consecvent azi.
 - NC-22 (rip_ecran.js, 6 campuri CAMP_DIALECT) si NC-23 (diacritice REGISTRU
   operatiuni_ecran.js) — jurnalizate, nereparate
 - R4 nav.setInapoi migrare — 18 ecrane ramase (lista completa in NC-24)
+
+## SESIUNE 11.07.2026 — testare zona 8 (Declaratii) + zona 9 (Verificari), pe Opus 4.8
+
+### Context de start
+Zona 7 Salarizare declarata COMPLETA (#68-76 PASS, cu fix-urile fiscale la sursa
+din sesiunea 10-11.07: facilitate 200 lei pe 4 conditii cumulative, suprataxa PT,
+rotunjire deducere la 10 lei, split CM angajator/FNUASS). NC-26 (audit salarizare.py)
+inchis prin acele fix-uri. Ramas din #72: nomenclator coduri CNAS + exceptii
+diminuare (cod 06/14) — in REGISTRU.
+
+### ZONA 8 — DECLARATII: inchisa (mai putin #78 D394)
+- #77 D300, #79 D100/D101 IMCA, #80 D112, #81 D205, #82 D406, #83 Bilant:
+  PASS din sesiunile DUKIntegrator anterioare (nemodificate).
+- #78 D301+D390 PASS (DUK). D394 RAMANE de reconfirmat separat cu DUK la Costin.
+- #84 D212 PFA — PASS AZI. Motor core/d212_engine.py auditat LA SURSA (regula #3):
+  Legea 141/2025, art.68/148/154/170 CF, instructiuni formular 212. VERIFICAT:
+  reper plafoane D212 = salariu minim la 1 ian 2026 = 4050 lei FIX pe tot anul
+  (majorarea la 4325 din 01.07 NU atinge plafoanele D212). Plafon CASS 60->72 sm
+  confirmat pt venituri 2026. Comentariul de incertitudine din cod inlocuit cu
+  decizie datata. Aritmetica confirmata pe 6 oracle-uri contra surse: CAS trepte
+  12/24 sm, CASS liniar 6/60(2025) si 6/72(2026), impozit pe net-CAS-CASS.
+  CASS max 2025=24300 vs 2026=29160 aplicat corect pe an.
+- #85 Semafor conformare per firma — PASS AZI. control_fiscal_api.evalueaza_firma
+  rulat pe toate 6 tenanturile. Aritmetica confirmata pe tenant_002: 7 datorate,
+  3 depuse corect scazute, 4 lipsa, stare=rosu. Termene cu zi lucratoare corecte.
+  Prag urmarire 7 zile viu (limiteaza orizontul, nu polueaza galbenul).
+- #86 Patru-ochi — PASS AZI (end-to-end useri reali): id=3==pregatitor -> REFUZ
+  cod PATRU_OCHI; id=2 validator distinct -> APROBA. Rollback, nimic persistat.
+- #87 Flux validare — PASS AZI cu BUG REAL REPARAT: respingerea fara motiv era
+  acceptata (contabilul ramanea fara explicatie). Fix la sursa in 3 straturi:
+  (1) coada_api.respinge guard MOTIV_LIPSA pe None/whitespace [motiv_obligatoriu_v1];
+  (2) ruta main.py mapare 400 pt MOTIV_LIPSA [motiv_lipsa_400_v1];
+  (3) UI validat.js dialogInput are deja obligatoriu:true + trim (verificat, corect).
+  Guard STARE_GRESITA confirmat. Retest end-to-end OK.
+
+### ZONA 9 — VERIFICARI & CONTROL: partial
+- #88 echilibru balanta — PASS AZI (include si soldurile initiale).
+- #89 trezorerie — PASS AZI. Caz real prins: tenant_002 cont 5311 sold creditor
+  -334.43 -> TREZORERIE_NEGATIVA blocant, temei OMFP 1802/2014.
+- #90 TVA de plata/recuperat — PASS AZI. tenant_002 de_recuperat 51.60 cont 4424;
+  tenant_003 de_plata cont 4423. Aritmetica confirmata.
+- #93 navigare luni — PASS AZI. Recalcul corect: luna 12 = 52 note cumulativ vs 3
+  la luna 3/5, TVA flip de_recuperat 51.60 -> de_plata 1030.41.
+- #91 stocuri contabil vs fise — ABSENT. verificare_stocuri APELATA in /control-fiscal
+  dar NEDEFINITA -> esueaza silentios in try/except pass. De construit.
+- #92 Intrastat praguri — ABSENT. intrastat_praguri apelata dar nedefinita, prinsa
+  tacut. De construit (praguri cumulate + luna depasirii; PRAG de verificat LA SURSA).
+- #94 lista sortata / #95 drill-down — ruta exista (/control-fiscal + /{id}), NETESTAT.
+- #96 verificator TVA drill / #97 D205 vs 457 — fara functie dedicata gasita. NETESTAT.
+
+### REGISTRU (observatii noi, nereparate)
+- declaratii_datorate itereaza doar an=azi.year; in ian-feb rateaza restantele lunii
+  decembrie an precedent. Edge-case sezonier -> sesiune Opus dedicata.
+- coerenta_tva: nota.suma afiseaza doar baza colectata, poate parea inselator. Cosmetic.
+- verificare_stocuri + intrastat_praguri apelate in /control-fiscal dar nedefinite (=#91,#92).
+
+### Ramase pe backlog (actualizat)
+- #78 D394 — reconfirmare DUKIntegrator la Costin (grupat cu alta validare DUK)
+- #91, #92 — de CONSTRUIT (stocuri, Intrastat), logica noua + surse
+- #94-97 — de testat functional / de confirmat existenta
+- Zonele 10-17 din planul de teste — netestate
+- Din #72: nomenclator coduri CM la CNAS + exceptii diminuare (cod 06/14)
+- NC-22, NC-23, NC-24 (R4 nav 18 ecrane), #59 e-Factura XML test — deschise anterior
