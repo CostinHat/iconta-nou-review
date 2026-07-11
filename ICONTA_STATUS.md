@@ -536,3 +536,20 @@ dar escaparea e inconsistenta pe MAI MULTE ecrane. AUDIT XSS COMPLET ramane task
 (1) unifica cele 7 variante esc* locale intr-un singur esc() din api.js; (2) aplica pe
 TOATE ecranele (grep dupa .nume/.email/.denumire/.cui/.tert_nume in innerHTML); (3) apoi
 detector in verificator cu excludere corecta (deja-escapate + deschide* + atribute).
+
+## NC-27 partea 3 — INVENTAR COMPLET vectori XSS (harta gata pt audit dedicat)
+Grep sistematic ${...camp user} neescapat (exclus deja-escapate): ~50 vectori pe ~10 fisiere.
+PRIORITIZARE PE RISC (sursa datelor):
+- RISC REAL (date de la parti mai putin de incredere - portal client, input liber):
+  cele 4 din partea 1 (firme.js 463/1723, portal.js 116/457) - DEJA REPARATE.
+  De adaugat: asistenti.js 153/408 (nume+cui firma), admin_activitate.js 45/74/75/105,
+  admin_gratuite.js 39/65, control.js 62/94, facturi_ecran.js 91/645 (tert_nume), login.js
+  369/372 (denumire ANAF), cabinet.js 561.
+- RISC MIC (date din Excel cabinet / ANAF, nu atacator extern): migrare.js ~30 vectori
+  (nume/cui firme importate), firme.js 108/109/1176/1468.
+EXECUTIE (task dedicat, mecanic, potrivit Sonnet dupa tipar): pentru fiecare, import esc din
+api.js + inlocuire ${x.camp} -> ${esc(x.camp)}. ATENTIE la template nested (asistenti.js:153
+${f.cui ? ` · ${f.cui}` : ""}) - esc doar pe valoare, nu rupe ternarul. Verifica anchor x1,
+node --input-type=module --check dupa fiecare fisier, restart la final.
+NU s-a facut in graba la finalul sesiunii 11.07 (50 editari obosit = risc regresie).
+Harta de mai sus e completa - se executa curat intr-o sesiune proprie.
