@@ -32,7 +32,7 @@ Ultima actualizare: 11.07.2026 (noapte)
 - **D394** pe DUKIntegrator (validare desktop)
 
 ## 3. Sesiune desktop (Word, nu SSH)
-- **Design System docx**: adaugă 7 reguli noi (dataRo, .camp-ajutor, .oblig, bordură buton #b9c2cf, fără wrapper alb, esc canonic, fără native dialogs). Detalii: caută "REGULI DESIGN SYSTEM noi" în ISTORIC.md.
+- (REZOLVAT) Design System e acum DESIGN_SYSTEM.md v2.0 in repo, editabil prin SSH, cu toate regulile la zi.
 
 ## 4. Infra
 - **Reboot kernel** — "System restart required". Fereastră liniștită (downtime clienți, Daniela pilot).
