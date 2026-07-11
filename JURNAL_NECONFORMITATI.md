@@ -120,3 +120,50 @@ cu persoane=pers, la_data=ref, fara part_time/sub_26/copii_scoala/functie_baza).
 De asemenea zero verificare venit_brut_total <= plafon (4300/4600) inainte de a
 acorda facilitatea. Ambele apeluri (linia 36 traseu normal, linia 80 alt traseu -
 probabil fisa individuala) trebuie corectate identic.
+
+## NC-26 (10.07.2026) — AUDIT FISCAL LA SURSA cerut, nefacut inca pe scara larga
+Azi (10.07) s-a verificat la sursa oficiala (legislatie.just.ro + CECCAR) DOAR
+facilitatea 200 lei din calcul_salariu (#69) - a iesit bug real. Restul motorului
+de salarizare (deducere personala, plafoane, CAS/CASS, art. 77 CF) NU a fost
+reverificat azi, desi a fost testat doar aritmetic-intern (cod se leaga cu el
+insusi, nu neaparat cu legea curenta). Similar #62 (amortizare, DNF vs Catalogul
+HG 2139/2004), #65 (credit fiscal sponsorizare D177), #67 (regula "12x salariul
+minim" pt CAS PFA, valabila 2025 - de reconfirmat neschimbata).
+
+DE FACUT: audit fiscal dedicat la sursa oficiala (Opus, model_selection: logica
+fiscala/verificare sursa) pe intreg core/salarizare.py, nu doar facilitatea 200 lei:
+- deducere_personala(): plafoane si procente (art. 77 CF) - sursa curenta 2026
+- CAS/CASS/impozit cote - confirmate deja general (25%/10%/10%) dar verifica
+  praguri si exceptii (motiv_exceptare, scutit_contrib_minim)
+- CAM 2.25% - baza de calcul corecta (brut intreg, fara facilitate - de confirmat)
+- amortizare: DNF-urile din configurarea MF vs Catalogul mijloacelor fixe actual
+- sponsorizare: formula credit fiscal D177 la sursa
+- PFA/RIP: plafoane D212 2025 (CAS baza fixa 12x minim) - valabilitate neschimbata
+De facut inainte de a declara oricare din #62/65/67/68/69 "PASS fiscal complet" -
+in prezent sunt doar "PASS aritmetic intern".
+
+## Test #69 (11.07.2026) — Stat de plata brut-net: PARTIAL -> PASS (2 bug-uri fiscale reparate)
+Sesiune Opus, verificare la sursa oficiala (legislatie.just.ro + CECCAR + mfinante.gov.ro):
+
+BUG 1 (facilitate acordata gresit) - REPARAT: OUG 89/2025 art.III cere CUMULATIV:
+norma intreaga + functie baza + brut EXACT=salariul minim + venit brut total<=plafon
+(4300 S1/4600 S2). Cod vechi: doar "b<=sm". Adaugat cota noua plafon_facilitate_salariu_minim
+(common.py) + conditii complete in calcul_salariu. Part-time exclus explicit de la facilitate.
+
+BUG 2 (suprataxare part-time lipsa) - IMPLEMENTAT: art.146 alin.5^7 Cod fiscal - pt
+part-time cu brut<(minim-facilitate), angajatorul suporta CAS/CASS suplimentar pe
+diferenta pana la baza-podea (4125 in S2). Retinerea angajatului ramane pe venit real.
+Monografie: 6451=4315 (CAS unitate) + 6453=4316 (CASS unitate), conditionate. Exceptii:
+elev/student<26, pensionar, multi-contract (param exceptat_suprataxare).
+
+Verificat end-to-end pe KAI (an 2026 luna 8): Ionescu Maria (part-time 2500) - suprataxa
+cas 406.25 + cass 162.50, cost angajator 3125 (era subevaluat cu ~569 lei/luna inainte).
+Popescu/Georgescu (norma intreaga) neafectati. 6 cazuri de test unitare verificate manual.
+
+Semnatura calcul_salariu extinsa append-only (norma_intreaga=True default) - apelantii
+existenti (d112.py, stat_plata vechi) merg neschimbat.
+
+RAMAS PE BACKLOG (NC-27): D112 pentru part-time - declararea/plata catre buget se face
+la baza-podea intreaga (nu doar diferenta pe cheltuieli). d112.py:323 apeleaza cu
+norma_intreaga=True default - de verificat si corectat separat pt part-time. Plus:
+verificare retroactiva D112-uri deja depuse pt part-time (CAS/CASS subevaluat).

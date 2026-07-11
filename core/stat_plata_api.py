@@ -33,7 +33,9 @@ def stat_plata(conn, schema, an, luna):
             brut_lucrat = float(brut or 0) * max(zile_luna - c_cm["zile"], 0) / zile_luna
         else:
             brut_lucrat = float(brut or 0)
-        calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref)
+        calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
+                                         norma_intreaga=not part_time,
+                                         venit_brut_total=float(brut or 0))
         stat.append({
             "id": sid,
             "nume": f"{nume or ''} {prenume or ''}".strip(),
@@ -41,6 +43,8 @@ def stat_plata(conn, schema, an, luna):
             "cass": float(calc["cass"]), "impozit": float(calc["impozit"]),
             "deducere": float(calc["deducere"]["total"]),
             "net": float(calc["net"]), "cam": float(calc["cam"]),
+            "cas_suprataxa": float(calc.get("cas_suprataxa", 0)),
+            "cass_suprataxa": float(calc.get("cass_suprataxa", 0)),
             "cost": float(calc["cost_angajator"]),
             "cm_zile": c_cm["zile"] if c_cm else 0,
             "cm_brut": c_cm["brut"] if c_cm else 0,
@@ -60,13 +64,13 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     ref = date(an, luna, 1)
     with conn.cursor() as cur:
         cur.execute(f"""
-            SELECT nume, prenume, salariu_brut, persoane_intretinere
+            SELECT nume, prenume, salariu_brut, persoane_intretinere, part_time
             FROM {schema}.salariati WHERE id = %s
         """, (salariat_id,))
         r = cur.fetchone()
     if not r:
         return None
-    nume, prenume, brut, pers = r
+    nume, prenume, brut, pers, part_time = r
     with conn.cursor() as cur:
         cur.execute(f"""
             SELECT COALESCE(SUM(zile),0), COALESCE(SUM(net),0), COALESCE(SUM(brut_ang+brut_fnuass),0)
@@ -77,7 +81,9 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     zile_luna = sum(1 for z in range(1, _cal.monthrange(an, luna)[1] + 1)
                     if date(an, luna, z).weekday() < 5)
     brut_lucrat = float(brut or 0) * max(zile_luna - int(zc or 0), 0) / zile_luna if zc else float(brut or 0)
-    calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref)
+    calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
+                                     norma_intreaga=not part_time,
+                                     venit_brut_total=float(brut or 0))
 
     with conn.cursor() as _cur:
         _cur.execute(f"SELECT culoare_factura, font_factura FROM {schema}.firma_profil WHERE id = 1")

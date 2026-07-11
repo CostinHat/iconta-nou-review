@@ -69,8 +69,16 @@ def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0,
 #  CALCUL SALARIU BRUT → NET
 # ============================================================
 def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
-                   functie_baza=True, la_data=None):
-    """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost."""
+                   functie_baza=True, la_data=None,
+                   norma_intreaga=True, venit_brut_total=None,
+                   exceptat_suprataxare=False):
+    """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
+
+    Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
+    - norma_intreaga: False pentru part-time (afectează facilitate + suprataxare)
+    - venit_brut_total: venit brut lunar contractual (default = brut), pt plafon facilitate
+    - exceptat_suprataxare: elev/student <26, pensionar, multi-contract cu declarație
+    """
     b = _dec(brut)
     sm, temei_sm = c.cota("salariu_minim", la_data)
     cota_cas, _ = c.cota("cas", la_data)
@@ -78,9 +86,15 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
     cota_imp, _ = c.cota("impozit_venit", la_data)
     cota_cam, _ = c.cota("cam", la_data)
     facilitate_val, _ = c.cota("facilitate_salariu_minim", la_data)
+    plafon_fac, _ = c.cota("plafon_facilitate_salariu_minim", la_data)
 
-    # facilitate (sumă netaxabilă) doar la salariul minim
-    facilitate = facilitate_val if b <= sm else Decimal(0)
+    # FACILITATE (OUG 89/2025 art.III) - conditii CUMULATIVE:
+    #   (a) norma intreaga  (b) functie de baza  (c) brut EXACT = salariul minim
+    #   (d) venit brut total (fara tichete) <= plafon (4300 S1 / 4600 S2)
+    vbt = _dec(venit_brut_total) if venit_brut_total is not None else b
+    facilitate = facilitate_val if (
+        norma_intreaga and functie_baza and b == sm and vbt <= plafon_fac
+    ) else Decimal(0)
     baza_contrib = b - facilitate
 
     cas = baza_contrib * cota_cas
@@ -96,6 +110,18 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
 
     cam = b * cota_cam
 
+    # SUPRATAXARE PART-TIME (art.146 alin.5^7 Cod fiscal): daca part-time si
+    # baza_contrib < baza_podea (minim - facilitate), angajatorul SUPORTA CAS/CASS
+    # suplimentar pe diferenta (nu se retine din netul angajatului).
+    # Exceptii: elev/student <26, pensionar, multi-contract cu declaratie.
+    baza_podea = sm - facilitate_val
+    cas_suprataxa = Decimal(0)
+    cass_suprataxa = Decimal(0)
+    if (not norma_intreaga) and (not exceptat_suprataxare) and baza_contrib < baza_podea:
+        diferenta = baza_podea - baza_contrib
+        cas_suprataxa = diferenta * cota_cas
+        cass_suprataxa = diferenta * cota_cass
+
     return {
         "brut": _q(b),
         "facilitate": _q(facilitate),
@@ -106,7 +132,9 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
         "impozit": _q(impozit),
         "net": _q(net),
         "cam": _q(cam),
-        "cost_angajator": _q(b + cam),
+        "cas_suprataxa": _q(cas_suprataxa),
+        "cass_suprataxa": _q(cass_suprataxa),
+        "cost_angajator": _q(b + cam + cas_suprataxa + cass_suprataxa),
     }
 
 
@@ -115,13 +143,22 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
 # ============================================================
 def monografie_salariu(calc):
     """Generează notele din rezultatul calcul_salariu."""
-    return [
+    note = [
         _nota("641", "421", calc["brut"]),       # cheltuială salarii brute
-        _nota("421", "4315", calc["cas"]),        # CAS reținut
-        _nota("421", "4316", calc["cass"]),       # CASS reținut
+        _nota("421", "4315", calc["cas"]),        # CAS reținut (angajat)
+        _nota("421", "4316", calc["cass"]),       # CASS reținut (angajat)
         _nota("421", "444", calc["impozit"]),     # impozit pe venit
         _nota("646", "436", calc["cam"]),         # CAM angajator
     ]
+    # suprataxare part-time (art.146 Cod fiscal): diferența CAS/CASS suportată
+    # de angajator peste venitul real, până la baza-podea (minim - facilitate)
+    cas_supra = calc.get("cas_suprataxa", 0)
+    cass_supra = calc.get("cass_suprataxa", 0)
+    if _dec(cas_supra) > 0:
+        note.append(_nota("6451", "4315", cas_supra))   # CAS suprataxa (cheltuială unitate)
+    if _dec(cass_supra) > 0:
+        note.append(_nota("6453", "4316", cass_supra))  # CASS suprataxa (cheltuială unitate)
+    return note
 
 
 def monografie_plata(net, cont_trezorerie="5121"):

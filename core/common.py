@@ -160,6 +160,10 @@ COTE = {
         (date(2026, 7, 1), Decimal("200"), "OUG 89/2025 art.III + Ordin 605/2026"),
         (date(2025, 1, 1), Decimal("300"), "OUG 115/2023"),
     ],
+    "plafon_facilitate_salariu_minim": [
+        (date(2026, 7, 1), Decimal("4600"), "OUG 89/2025 art.III lit.b (venit brut total, S2 2026)"),
+        (date(2026, 1, 1), Decimal("4300"), "OUG 89/2025 art.III lit.b (venit brut total, S1 2026)"),
+    ],
 }
 
 
