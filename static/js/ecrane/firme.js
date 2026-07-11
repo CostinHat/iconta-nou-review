@@ -364,7 +364,7 @@ async function ecranVerificari(corp, nav, t) {
           <div class="pf-frand-nume">Documente pozate de clien\u021bi</div>
           <div class="pf-frand-sub">${r.documente_pozate.ok ? "\u00een regul\u0103" : [r.documente_pozate.bonuri_neverificate ? r.documente_pozate.bonuri_neverificate + " document(e) confirmate de client, necontate de peste 3 zile" : "", r.documente_pozate.ciorne_casa ? r.documente_pozate.ciorne_casa + " not\u0103(e) de cas\u0103 ciorn\u0103, nevalidate de peste 3 zile" : ""].filter(Boolean).join(" \u00b7 ")}</div>
         </div><span class="cab-pct ${r.documente_pozate.ok ? 'pct-verde' : 'pct-rosu'}"></span></div>` : ""}
-        ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${bani(r.tva.suma)} lei (cont ${r.tva.cont})</div></div></div>` : ""}
+        ${r ? `<div class="pf-frand"><div class="pf-frand-text"><div class="pf-frand-nume">TVA</div><div class="pf-frand-sub">${r.tva.rezultat === "de_plata" ? "de plat\u0103" : "de recuperat"}: ${bani(r.tva.suma)} lei (cont ${r.tva.cont})</div></div><span class="cab-pct pct-info"></span></div>` : ""}
         ${vs ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Stocuri (contabil vs fi\u0219e CV)</div>
           <div class="pf-frand-sub">${vs.ok ? "in regula" : vs.conturi.filter(c=>!c.ok).map(c=>`cont ${c.cod || c.cont}: contabil ${c.sold_contabil} vs fi\u0219e ${c.valoare_fise_cv} (dif ${c.diferenta})`).join(" \u00b7 ")}</div>

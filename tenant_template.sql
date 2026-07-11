@@ -491,6 +491,10 @@ CREATE TABLE TENANT_PLACEHOLDER.firma_profil (
     tva_la_incasare boolean DEFAULT false NOT NULL,
     urmator_numar_proforma integer DEFAULT 1 NOT NULL,
     urmator_numar_aviz integer DEFAULT 1 NOT NULL,
+    wc_url text,
+    wc_ck text,
+    wc_cs text,
+    wc_ultima_sinc date,
     CONSTRAINT firma_profil_singleton CHECK ((id = 1))
 );
 
