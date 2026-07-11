@@ -3,6 +3,7 @@
 
 import { api, arataMesaj, confirmaCaseta, deschideLupa, bani, esc } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
+import { fluxConcediu } from "./flux_concediu.js";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js";
 import { ecranRip } from "./rip_ecran.js";
 import { ecranOperatiuni } from "./operatiuni_ecran.js";
@@ -469,6 +470,7 @@ async function ecranSalariati(corp, nav, t) {
           </div>
           <button class="buton-primar" data-flut="${s.id}">Fluturas</button>
           <button class="buton-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
+          <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Concediu medical</button>
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Stat de plat\u0103</h2>
@@ -514,6 +516,9 @@ async function ecranSalariati(corp, nav, t) {
           <div class="pf-frand-sub">${msgs.length ? msgs.map((m2) => `${m2.data || ""} \u00b7 ${m2.status || m2.tip || ""} \u00b7 ${m2.mesaj || m2.detalii || JSON.stringify(m2)}`).join("<br>") : "niciun răspuns nou"}</div></div>`;
       } catch (e) { zonaReges.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
     });
+    corp.querySelectorAll("[data-cm]").forEach((b) => b.addEventListener("click", () => {
+      fluxConcediu(nav, t, { id: parseInt(b.dataset.cm), nume: b.dataset.nume });
+    }));
     corp.querySelectorAll("[data-reges]").forEach((b) => b.addEventListener("click", async () => {
       const adresa = prompt("Adresa salariatului (obligatorie REGES):");
       if (!adresa) return;
