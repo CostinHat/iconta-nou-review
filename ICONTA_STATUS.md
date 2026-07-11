@@ -584,7 +584,13 @@ Harta de mai sus e completa - se executa curat intr-o sesiune proprie.
 1. REBOOT KERNEL — "System restart required" pe server. Decizie Costin, fereastra linistita (downtime clienti, Daniela pilot activ).
 2. Zona 16 PWA (#145-148) — manifest, service worker, instalare Android/iOS. Se testeaza in browser DevTools + telefon. NU prin SSH.
 3. D394 pe DUKIntegrator — validare in aplicatia desktop ANAF. NU prin SSH.
-4. CM UI (concedii medicale) — backend testat (#72) dar ecran nou de construit. Sesiune proprie cu Design System in fata (regula 0: citeste+citeaza regula inainte de orice cod UI).
+4. CM (concedii medicale) — DE FAPT mai putin gata decat credeam (verificat la sursa 11.07):
+   motorul de calcul e COMPLET si testat (calcul_cm + procent_cm in salarizare.py, reparate NC-28, pytest 9/9),
+   DAR: (a) NU exista ruta HTTP care sa-l expuna (calcul_cm apelat doar din teste, nu din main.py),
+   (b) NU exista ecran UI. De construit: ruta /tenants/.../concedii-medicale + ecran nou.
+   BLOCAT pe Design System: iConta_Design_System.docx nu e pe server (e pe desktop Costin) -> regula 0
+   nu se poate respecta din SSH. Sesiune proprie: urca Design System pe server SAU lucram cu el in fata,
+   apoi decidem plasarea fluxului CM (sub salariati / ecran propriu / sub-tab operatiuni).
 5. Gap numerotare KAI-162 (cosmetic, din curatarea unei facturi de test API). Recuperabil manual daca se doreste.
 
 ### NOTA
