@@ -598,3 +598,27 @@ Harta de mai sus e completa - se executa curat intr-o sesiune proprie.
 Toate restantele de COD REAL si SECURITATE sunt inchise. Ce ramane cere ochii/mainile lui Costin
 (browser, telefon, DUK) sau o sesiune dedicata (CM UI). Vechea nota XSS de mai sus (migrare.js ~30 vectori)
 este ACUM REZOLVATA (6f1fea2).
+
+## SESIUNE 11.07 (noapte) — MODUL CONCEDII MEDICALE complet + consolidare data/escape
+
+### Modul CM (concedii medicale) — LIVE, commit b3b8a8f + ceed5ca + a18394b
+- Backend: taxe_cm (CAS 0; CASS doar cod 01/07/10 verif ANAF art.17(2) OUG 34/2024; impozit 10%) + salveaza/lista/sterge_concediu + 3 rute HTTP /tenants/{id}/salariati/{sid}/concedii. Motor calcul_cm (deja existent, NC-28) testat end-to-end.
+- UI: modul flux_concediu.js, buton "Concediu" pe randul salariatului (ecranSalariati din firme.js). Form certificat + calcul afisat + lista + stergere.
+- Auto-calcul zile lucratoare (luni-vineri) din data inceput/sfarsit; contabilul poate suprascrie.
+- Validare: refuza salvare daca venituri 6 luni <= 0 (altfel brut 0 dar net pozitiv = imposibil).
+- Cod 10 (reducere timp munca) EXCLUS din dropdown - formula speciala calcul_cm_cod10, iteratie viitoare.
+
+### REGULI DESIGN SYSTEM noi (stabilite azi - DE ADAUGAT IN docx la sesiune desktop)
+1. dataRo(d, stil) din api.js = SINGURA formatare data. Stiluri: implicit "zz.ll.aaaa", "cu_ora" (zz.ll.aaaa HH:MM), "lung" (11 iulie 2026). INTERZIS toLocaleDateString ad-hoc, date ISO brute, functii locale de data. [commit 082c9fb: eliminat 7 functii duplicate + migrat 11 fisiere]
+2. .camp-ajutor (albastru #3d8fd6) = ghidaj preventiv sub camp: de unde ia utilizatorul valoarea. Niciun camp obligatoriu gol fara context.
+3. .oblig (asterisc rosu #ff3b30) = marcaj camp obligatoriu langa eticheta. Campurile optionale nu se marcheaza.
+4. .buton-secundar bordura #b9c2cf (nu var(--linie) care era invizibil pe alb).
+5. Formularele NU se invelesc in caseta alba (background:#fff). Stau pe fundalul ferestrei; doar campurile (input) sunt albe cu bordura #b9c2cf. Wrapper alb pe fundal gri-deschis = caseta invizibila.
+6. esc canonic din api.js (escapeaza & < > " ') = SINGURA functie escape. INTERZISE variante locale (_esc/escB/escV/escS/escC/escJ) care omit apostroful -> risc XSS in atribute cu ghilimele simple. [commit 082c9fb + 8eb3aae: 6 variante eliminate din firme.js/facturi]
+7. confirm()/alert()/prompt() native INTERZISE. Confirmari via confirmaCaseta(); input via formular in-ecran (nu prompt). [commit 8eb3aae: prompt REGES inlocuit]
+
+### RESTANTE ACTUALIZATE
+- Design System docx: regulile 1-7 de mai sus DE ADAUGAT in docx (sesiune desktop cu Word - NU prin SSH, risc corupere binar).
+- raporteaza.js: format data "11 iul" (scurt cu luna) migrat la dataRo cu_ora - de verificat vizual ca nu deranjeaza feed-ul.
+- Reboot kernel (decizie Costin, fereastra linistita).
+- Zona 16 PWA (#145-148) + D394 DUK - browser/telefon/desktop, nu prin SSH.
