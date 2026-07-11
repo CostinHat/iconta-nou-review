@@ -445,3 +445,13 @@ workstream separat de dezvoltare): #91 stocuri, #92 Intrastat, #96 TVA drill, #9
 - #96, #97 apar ca livrate in istoric dar lipsesc din build iconta_v2. Ipoteza: erau
   in /opt/iconta vechi, neportate. De verificat daca merita reconstruite sau erau
   inlocuite de alte mecanisme (control fiscal + verificari_contabile acopera partial).
+
+## ADDENDUM 11.07 (fix cron #122/#123 EXECUTAT, commit 1574bfe)
+#122 facturi_recurente: REPARAT. CREATE TABLE + seq (structura exacta din template) pe
+tenant_003 si tenant_004. Cron ruleaza curat ("nimic de emis"). + adaugat DEJA in template.
+#123 woocommerce: REPARAT. ADD COLUMN wc_url/wc_ck/wc_cs(text)+wc_ultima_sinc(date) pe
+tenant_003/004/005/006 firma_profil, SI in tenant_template.sql (liniile 494-497, firme
+noi). Cron ruleaza curat ("0 importate, 0 sarite"). Coloanele wc_ erau adaugate candva
+manual doar pe 001/002, lipseau din template - acum reproductibil.
+ZONA 13 CRON-URI: COMPLETA 4/4 PASS.
+Punctele 1-2 din "DE REPARAT DATA VIITOARE" (addendum anterior) SUNT REZOLVATE.
