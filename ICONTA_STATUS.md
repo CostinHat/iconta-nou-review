@@ -475,3 +475,21 @@ live a intors cursuri EUR VARIABILE si GRESITE intre apeluri (4.9755 apoi 5.2409
 ~4.97). Pe productie cronul BNR umple cache-ul zilnic deci calea live nu se declanseaza
 normal - DAR daca cronul rateaza o zi, facturile valuta ar primi curs gresit -> TVA lei
 gresit. DE INVESTIGAT: de ce calea live (parse_xml/curs_pentru) da EUR gresit cand cache gol.
+
+## SESIUNE 11.07 (continuare) — ZONA 15 Securitate
+PASS: #138 client pe ruta cabinet->403, #139 cabinet pe firma altui cabinet->404 (izolare
+web, confirmat Nistor pe tenant_13 Amzuica), #140 token invalid->401, #141 suspendare live
+(cere_cabinet verifica af.activ la FIECARE request, cod confirmat), #142 patru-ochi (=#86).
+#143 SQL: PROTEJAT (psycopg2 parametrizat %s peste tot).
+
+## NC-27 SECURITATE XSS (gasit 11.07, NEREPARAT) - PRIORITAR
+Escaparea HTML (replace(/[<>&]/) EXISTA si e folosita in 7 fisiere JS (cabinet.js, admin.js,
+capacitate.js, tipare.js, recomanda.js, raporteaza.js, navigator.js) DAR NU peste tot.
+firme.js (liniile 39-41 ${f.nume}, 349 ${nume}, 463 ${s.nume}, 1723 ${c.email}/${c.nume})
+si portal.js (116 ${c.email}/${c.nume}, 457 ${x.email}, 542 ${nume}) pun date user in
+innerHTML FARA escapare -> XSS stocat posibil (nume firma/client cu <script>).
+Escapare INCONSISTENTA = nonconformitate 0a. FIX corect: functie de escapare GLOBALA (una
+singura, in util comun) aplicata la TOATE randarile de date user in innerHTML, + regula in
+verificator_conformitate.py care detecteaza ${...} de date user in innerHTML neescapat.
+NU petice punctuale. Audit sistematic necesar (toate ecranele). Atinge date reale afisate
+contabililor -> prioritate mare.
