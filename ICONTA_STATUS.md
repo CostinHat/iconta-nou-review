@@ -455,3 +455,23 @@ noi). Cron ruleaza curat ("0 importate, 0 sarite"). Coloanele wc_ erau adaugate 
 manual doar pe 001/002, lipseau din template - acum reproductibil.
 ZONA 13 CRON-URI: COMPLETA 4/4 PASS.
 Punctele 1-2 din "DE REPARAT DATA VIITOARE" (addendum anterior) SUNT REZOLVATE.
+
+## SESIUNE 11.07 (continuare) — ZONA 14 API public
+PASS: #126 (cheie ick_+token_urlsafe, stocat DOAR sha256, afisata o data), #127 GET firme,
+#128 GET facturi, #129 KPI, #130 balanta, #131 POST factura (RON numerotare auto TVA 21%
+corect + EUR cu curs BNR aplicat, tva_lei corect), #133 cheie gresita->401, #134 cheie
+revocata->401, #135 firma alt cabinet->404 (IZOLARE intre cabinete - critic, confirmat),
+#136 ultima_folosire actualizata la fiecare apel. Testat prin HTTP real pe 8010.
+PARTIAL #132: valuta fara curs->422 - calea CU curs disponibil merge; calea 422 (curs
+lipsa) de testat cu valuta necotata BNR.
+NETESTAT #137: UI chei in Setari (necesita browser).
+Curatenie: facturile de test (id 3,4,5 tenant_001) STERSE, cheile de test sterse/revocate.
+
+### REGISTRU - observatie curs BNR (de investigat, potential real)
+Cursul valutar vine din core/curs_bnr.py: live de la bnr.ro XML + cache public.
+curs_bnr_zilnic (coloane: data, moneda, curs, luat_la). RON->1.0. Cache-ul de test are
+ultima data 01.07.2026. La emitere factura EUR cu data 11.07 (fara curs in cache), fallback-ul
+live a intors cursuri EUR VARIABILE si GRESITE intre apeluri (4.9755 apoi 5.2409; EUR real
+~4.97). Pe productie cronul BNR umple cache-ul zilnic deci calea live nu se declanseaza
+normal - DAR daca cronul rateaza o zi, facturile valuta ar primi curs gresit -> TVA lei
+gresit. DE INVESTIGAT: de ce calea live (parse_xml/curs_pentru) da EUR gresit cand cache gol.
