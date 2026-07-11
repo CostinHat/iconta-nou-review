@@ -553,3 +553,41 @@ ${f.cui ? ` · ${f.cui}` : ""}) - esc doar pe valoare, nu rupe ternarul. Verific
 node --input-type=module --check dupa fiecare fisier, restart la final.
 NU s-a facut in graba la finalul sesiunii 11.07 (50 editari obosit = risc regresie).
 Harta de mai sus e completa - se executa curat intr-o sesiune proprie.
+
+
+## SESIUNE 11.07 (seara) — inchidere restante cod/securitate + testare zone 11/12/15
+
+### REZOLVAT azi (6 commit-uri + config nginx)
+- 4baafee NC-27b: esc lipsea din import in asistenti.js -> ReferenceError runtime
+  (rupea listele de firme + vizualizare actor) + 5 vectori XSS nume in innerHTML/confirmaCaseta.
+- 6f1fea2 NC-27c: 47 vectori XSS escapati in migrare.js (nume firma/cont/denumire/
+  salariati/asociati din import ANAF+upload) + esc in import. RISC MIC inchis.
+- b0ced83 NC-27d: unificat _esc local (nu escapa apostrof) cu esc canonic din api.js (16 apeluri).
+- 12dd215: UI verificator D205 vs cont 457 randat in ecranul Verificari (semafor verde/rosu). #97 complet (backend+wiring+UI+test real).
+- 3011b4d: gitignore log_arhiva/.
+- CONFIG NGINX (in afara repo, backup nou-iconta.bak_SECHDR): adaugate 4 headere securitate
+  (Strict-Transport-Security HSTS, X-Frame-Options SAMEORIGIN, X-Content-Type-Options nosniff,
+  Referrer-Policy). Verificate live pe https://nou.iconta.eu. #141 reparat.
+- Audit esc: niciun alt fisier nu foloseste esc/_esc fara import/definitie (asistenti.js era singurul).
+- Menaj: recurente.log + woocommerce.log arhivate in log_arhiva/ si golite (erorile ISTORICE pacaleau la tail).
+
+### TESTAT azi — zone complete PASS
+- Zona 11 (Asistenti) 5/5: #111 competente-fara-firme (aplica_regula_zero_firme: angajat->dezactivat,
+  admin->doar iese din procesatori), #112 semafor echipa, #113 patru-ochi (=#86), #114 capacitate, #115 tipare/bara.
+- Zona 12 (Admin iConta) 6/6: toate 11 rutele /admin au guard rol='superadmin' (verificat cu script),
+  testat functional #116 activitate+guard 403, #118/119 suspenda/reactiveaza.
+- Zona 15 (Securitate) 7/7: #138/139 rate limiting (auth 5r/min, gen 20r/s, 429), #140 fail2ban activ,
+  #141 headere (REPARAT azi), #142 zero secrete in git + zero chei hardcodate, #143 SQL parametrizat (%s),
+  #144 XSS (acoperit NC-27 a-d).
+
+### RESTANTE RAMASE (nu se pot face din server / sesiune proprie)
+1. REBOOT KERNEL — "System restart required" pe server. Decizie Costin, fereastra linistita (downtime clienti, Daniela pilot activ).
+2. Zona 16 PWA (#145-148) — manifest, service worker, instalare Android/iOS. Se testeaza in browser DevTools + telefon. NU prin SSH.
+3. D394 pe DUKIntegrator — validare in aplicatia desktop ANAF. NU prin SSH.
+4. CM UI (concedii medicale) — backend testat (#72) dar ecran nou de construit. Sesiune proprie cu Design System in fata (regula 0: citeste+citeaza regula inainte de orice cod UI).
+5. Gap numerotare KAI-162 (cosmetic, din curatarea unei facturi de test API). Recuperabil manual daca se doreste.
+
+### NOTA
+Toate restantele de COD REAL si SECURITATE sunt inchise. Ce ramane cere ochii/mainile lui Costin
+(browser, telefon, DUK) sau o sesiune dedicata (CM UI). Vechea nota XSS de mai sus (migrare.js ~30 vectori)
+este ACUM REZOLVATA (6f1fea2).
