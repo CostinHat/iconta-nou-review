@@ -253,3 +253,18 @@ Aritmetica verificata manual: zilier 500 -> net 337.50; mandat 2000 -> net 1170.
 OBSERVATIE minora (nu bug): remuneratie_minima_zilier foloseste 165.33 ore/luna ->
 orar 26.16, vs minimul orar oficial 25.95 (166.667 ore/luna). Rezultat conservator
 (peste minim), de aliniat divizorul daca se doreste precizie la minimul orar exact.
+
+## Test #76 (11.07.2026) — Tips HoReCa (bacsis): PASS
+Verificare la sursa (Legea 376/2022 + art.115 CF + OUG 28/1999 art.2^3 + juridice.ro +
+avocatnet/Rapcencu). Motor bacsis.py corect:
+- REGIM FISCAL (partea de conformitate): impozit 10% "venituri din alte surse" retinut
+  la sursa la distribuire, FARA CAS/CASS, FARA TVA, nu se recalifica salarial, restaurantul
+  nu inregistreaza nici venit nici cheltuiala. Declarare D100 (impozit) + D205 informativ.
+  TOATE confirmate la sursa oficiala.
+- MONOGRAFIE: iConta foloseste 461/462 (Debitori/Creditori diversi) - convenție VALIDA.
+  Expert contabil Rapcencu (avocatnet) confirma explicit: "462 Creditori diversi SAU 4281
+  Alte datorii cu personalul, in functie de rationamentul profesional al fiecaruia". SAGA +
+  Nexus ERP folosesc tot 462. Nu e bug - e alegere profesionala acceptata.
+Aritmetica verificata: bacsis 1000 -> impozit 100, net 900. Monografie corecta.
+OBSERVATIE minora (nu bug): contul-punte de incasare e 461 (Debitori) - mai atipic vs
+4111 (Clienti), dar valid ca terti. De rafinat daca se doreste alinierea la 4111.
