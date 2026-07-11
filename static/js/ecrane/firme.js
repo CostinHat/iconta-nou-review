@@ -3,7 +3,7 @@
 
 import { api, arataMesaj, confirmaCaseta, deschideLupa, bani, esc } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
-import { fluxConcediu } from "./flux_concediu.js";  /* cm_flux_v1 */
+import { fluxConcediu } from "./flux_concediu.js?v=2";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js";
 import { ecranRip } from "./rip_ecran.js";
 import { ecranOperatiuni } from "./operatiuni_ecran.js";

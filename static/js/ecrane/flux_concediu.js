@@ -1,6 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
-// Se insereaza in firme.js (are deja: api, esc, confirmaCaseta, nav).
+// Modul ES de sine statator. nav/t/sal vin ca parametri.
+import { api, esc, confirmaCaseta } from "../api.js";
 
 const CM_CODURI = [
   ["01", "01 — Boală obișnuită (55/65/75%)"],
@@ -21,7 +22,7 @@ const CM_CODURI = [
   ["51", "51 — Izolare (100%)"],
 ];
 
-async function fluxConcediu(nav, t, sal, dupaSalvare) {
+export async function fluxConcediu(nav, t, sal, dupaSalvare) {
   // sal = { id, nume } (salariatul selectat)
   const numeSal = [sal.prenume, sal.nume].filter(Boolean).join(" ") || ("Salariat #" + sal.id);
   nav.mergi("Concediu medical \u2014 " + numeSal, (corp) => randeaza(corp));
