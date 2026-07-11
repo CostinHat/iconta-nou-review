@@ -588,9 +588,10 @@ Harta de mai sus e completa - se executa curat intr-o sesiune proprie.
    motorul de calcul e COMPLET si testat (calcul_cm + procent_cm in salarizare.py, reparate NC-28, pytest 9/9),
    DAR: (a) NU exista ruta HTTP care sa-l expuna (calcul_cm apelat doar din teste, nu din main.py),
    (b) NU exista ecran UI. De construit: ruta /tenants/.../concedii-medicale + ecran nou.
-   BLOCAT pe Design System: iConta_Design_System.docx nu e pe server (e pe desktop Costin) -> regula 0
-   nu se poate respecta din SSH. Sesiune proprie: urca Design System pe server SAU lucram cu el in fata,
-   apoi decidem plasarea fluxului CM (sub salariati / ecran propriu / sub-tab operatiuni).
+   Design System ACUM pe server + in repo (0592eac) -> regula 0 se poate respecta din SSH.
+   Ramas de facut in sesiune CM: (1) ruta HTTP care expune calcul_cm, (2) ecran nou conform Design System
+   (cap.2 nimic vizibil decat la selectie, cap.4 casete date, cap.1 butoane), (3) decizie plasare flux
+   (sub salariati / ecran propriu / sub-tab operatiuni) - intrebare pt Costin la start.
 5. Gap numerotare KAI-162 (cosmetic, din curatarea unei facturi de test API). Recuperabil manual daca se doreste.
 
 ### NOTA
