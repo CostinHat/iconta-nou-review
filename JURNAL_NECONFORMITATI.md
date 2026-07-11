@@ -213,3 +213,19 @@ RAMAS PARTIAL (piesa dedicata Opus - aliniere nomenclator CM la CNAS inainte de 
    trebui adaugat. Lista oficiala exceptii (art.78^4, de la 01.06.2026): maternitate
    (c), oncologic (d1), risc maternal (e), PNS (12/13/14), spitalizare, +accidente
    munca (L346/2002) + izolare (L136/2020).
+
+## Test #73 (11.07.2026) — Part-time: PASS
+Verificare dedicata la sursa (art.146 Cod fiscal + art.77 + Pluxee/zarinacrm). Acoperit
+in mare de fix-ul #69, verificat explicit pe 6 colturi neatestate:
+- PT cu persoane intretinere: deducere pe VENIT REAL (nu podea) - confirmat corect la
+  sursa (Pluxee: deducerea part-time proportional cu venitul brut real)
+- PT sub 26 exceptat: deducere tineri + fara suprataxare - corect
+- granita EXACT la podea 4125: fara suprataxare (corect, nu se suprataxeaza la egalitate)
+- PT peste podea (4200): fara facilitate, fara suprataxa - corect
+- pensionar exceptat: suprataxa 0 - corect
+Aritmetica validata manual pe toate cazurile.
+
+LIMITARE CUNOSCUTA (notata, nu bug): deducerea NU se acorda la part-time care nu e
+functia de baza (al doilea job) - codul are param functie_baza, dar stat_plata trateaza
+toti salariatii ca functie de baza implicit. Rezonabil pt firme mici, de rafinat pt
+multi-contract (impreuna cu exceptat_suprataxare, care necesita si el declaratie).
