@@ -69,7 +69,7 @@ def verifica_balanta(bal):
     # echilibru_si_v1: si soldurile trebuie sa se inchida (SI debitor = SI creditor)
     ts = sum((v["sold"] for v in bal.values()), Decimal(0))
     if _q(ts) != 0:
-        return c.problema("BALANTA_INEGALA", nivel=c.BLOCANT,
+        return c.problema("BALANTA_SI_DEZECHILIBRATA", nivel=c.BLOCANT,
                           debit=_q(td), credit=_q(tc), diferenta_solduri=_q(ts))
     return c.ok()
 

@@ -72,6 +72,10 @@ CODURI = {
     "BALANTA_INEGALA": (
         "Balanță dezechilibrată: sume debitoare {debit} ≠ sume creditoare {credit}.",
         "OMFP 1802/2014 — egalitatea balanței de verificare"),
+    "BALANTA_SI_DEZECHILIBRATA": (
+        "Solduri inițiale dezechilibrate: diferența {diferenta_solduri} lei "
+        "(SI debitoare ≠ SI creditoare) — verifică introducerea soldurilor.",
+        "OMFP 1802/2014 — egalitatea balanței de verificare"),
     # — plafoane numerar (Legea 70/2015) —
     "PLAFON_SOLD_CASA": (
         "Sold casierie {gasit} lei la sfârșitul zilei {zi} > plafon {asteptat} lei.",
