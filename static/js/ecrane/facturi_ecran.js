@@ -3,15 +3,10 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, arataMesaj, confirmaCaseta, esc } from "../api.js";  /* esc_nc27 */
+import { api, dataRo, arataMesaj, confirmaCaseta, esc } from "../api.js";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js";
 import { randeazaEmitere } from "./emitere_ecran.js";
 
-const fmtData = (iso) => {
-  if (!iso) return "";
-  const p = String(iso).split("-");
-  return p.length === 3 ? `${p[2]}.${p[1]}.${p[0]}` : iso;
-};
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
 
@@ -89,7 +84,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         <button class="buton-secundar pf-frand fac-frand-btn" data-id="${f.id}">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${f.numar || "\u2014"}${f.tert_nume ? " \u00b7 " + esc(f.tert_nume) : ""}</div>
-            <div class="pf-frand-sub">${fmtData(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
+            <div class="pf-frand-sub">${dataRo(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
           </div>
           <span class="pf-frand-suma">${suma}</span>
           ${!opt.client ? `<span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
@@ -194,7 +189,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div class="fd-valuta-titlu">Conversie \u00een lei (art. 319 Cod fiscal)</div>
         <div class="fd-tot-rand"><span>TVA \u00een lei</span><span><b>${_bani(f.tva_lei, "lei")}</b></span></div>
         <div class="fd-tot-rand"><span>Total \u00een lei</span><span>${_bani(f.total_lei, "lei")}</span></div>
-        <div class="fd-valuta-sub">${sursaTxt} ${f.curs_bnr ? Number(f.curs_bnr).toLocaleString("ro-RO", { minimumFractionDigits: 4 }) : ""} ${f.data_curs ? "\u00b7 " + fmtData(f.data_curs) : ""}</div>
+        <div class="fd-valuta-sub">${sursaTxt} ${f.curs_bnr ? Number(f.curs_bnr).toLocaleString("ro-RO", { minimumFractionDigits: 4 }) : ""} ${f.data_curs ? "\u00b7 " + dataRo(f.data_curs) : ""}</div>
       </div>`;
   }
 
@@ -220,7 +215,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       <div class="fd-storno-zona" id="fd-storno-zona"></div>
       <div id="fd-plata-zona"></div>
       <div id="fd-chitanta-zona"></div>
-      <div class="fd-antet-linie">${dir ? dir.charAt(0).toUpperCase() + dir.slice(1) : ""} \u00b7 ${fmtData(f.data_emitere)}${f.data_scadenta ? " \u00b7 scaden\u021b\u0103 " + fmtData(f.data_scadenta) : ""}</div>
+      <div class="fd-antet-linie">${dir ? dir.charAt(0).toUpperCase() + dir.slice(1) : ""} \u00b7 ${dataRo(f.data_emitere)}${f.data_scadenta ? " \u00b7 scaden\u021b\u0103 " + dataRo(f.data_scadenta) : ""}</div>
       ${partener ? `<div class="fd-antet-linie">${dir === "primit\u0103" ? "De la" : "C\u0103tre"}: ${partener}</div>` : ""}
     </div>
 
@@ -266,7 +261,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     const chi = await chitanteAle();
     const incasat = chi.reduce((s, c) => s + (Number(c.suma) || 0), 0);
     zonaChit.innerHTML = (mesaj || "") + chi.map((c) => `
-      <div class="fd-tot-rand"><span>Chitan\u021ba ${c.serie}-${c.numar} \u00b7 ${fmtData(c.data)} \u00b7 ${_bani(c.suma, "lei")}</span>
+      <div class="fd-tot-rand"><span>Chitan\u021ba ${c.serie}-${c.numar} \u00b7 ${dataRo(c.data)} \u00b7 ${_bani(c.suma, "lei")}</span>
       <span><button class="btn-link" data-chpdf="${c.id}">PDF chitan\u021b\u0103</button></span></div>`).join("");
     zonaChit.querySelectorAll("[data-chpdf]").forEach((b) => b.addEventListener("click", async () => {
       try {
@@ -642,7 +637,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
       <div class="pf-frand" data-id="${s.id}">
         <div class="pf-frand-text">
           <div class="pf-frand-nume">${esc(s.tert_nume) || "\u2014"}</div>
-          <div class="pf-frand-sub">ziua ${s.zi_emitere} \u00b7 ultima: ${fmtData(s.ultima_emitere) || "\u2014"} \u00b7 ${stare}</div>
+          <div class="pf-frand-sub">ziua ${s.zi_emitere} \u00b7 ultima: ${dataRo(s.ultima_emitere) || "\u2014"} \u00b7 ${stare}</div>
         </div>
         <span class="pf-frand-suma">${sumaTxt}</span>
         <span class="btn-link fr-toggle" data-id="${s.id}" data-activ="${s.activ}" style="margin-left:8px">${s.activ ? "Dezactiveaz\u0103" : "Activeaz\u0103"}</span>

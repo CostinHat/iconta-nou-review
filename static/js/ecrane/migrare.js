@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc } from "../api.js";
+import { api, esc, dataRo } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 const STRATURI = [
@@ -1244,7 +1244,7 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
         <span class="mig-sold-cont ${tipCls}">${r.tip}${av}</span>
         <span class="mig-sold-an">${r.an || "—"}</span>
         <span class="mig-sold-luna">${lunaTxt}</span>
-        <span class="mig-sold-den">${r.data_depunere || "—"}</span>
+        <span class="mig-sold-den">${dataRo(r.data_depunere) || "—"}</span>
       </div>`;
   }).join("");
 

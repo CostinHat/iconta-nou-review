@@ -1,9 +1,9 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, arataMesaj, confirmaCaseta, deschideLupa, bani, esc } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
-import { fluxConcediu } from "./flux_concediu.js?v=2";  /* cm_flux_v1 */
+import { fluxConcediu } from "./flux_concediu.js?v=8";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js";
 import { ecranRip } from "./rip_ecran.js";
 import { ecranOperatiuni } from "./operatiuni_ecran.js";
@@ -277,14 +277,6 @@ function meniuFirma(corp, nav, t) {
   }
 }
 
-function fmtDataCab(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (isNaN(d)) return iso;
-  const zz = String(d.getDate()).padStart(2, "0");
-  const ll = String(d.getMonth() + 1).padStart(2, "0");
-  return `${zz}/${ll}/${d.getFullYear()}`;
-}
 
 async function ecranSolicitariCabinet(corp, nav, t) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
@@ -303,7 +295,7 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
       const cine = s.autor_rol === "cabinet" ? "Tu" : "Client";
       return `<div class="sol-rand sol-${s.autor_rol === "cabinet" ? "client" : "cabinet"}">
         <div class="sol-mesaj">${s.mesaj}</div>
-        <div class="sol-meta">${cine} · ${fmtDataCab(s.creat_la)}</div>
+        <div class="sol-meta">${cine} · ${dataRo(s.creat_la)}</div>
       </div>`;
     }).join("");
   }
@@ -470,7 +462,7 @@ async function ecranSalariati(corp, nav, t) {
           </div>
           <button class="buton-primar" data-flut="${s.id}">Fluturas</button>
           <button class="buton-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
-          <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Concediu medical</button>
+          <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Concediu</button>
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Stat de plat\u0103</h2>
@@ -1006,7 +998,6 @@ async function ecranCasa(corp, nav, t) {
 
 // [banca] Import extras + reconciliere pe facturi
 async function ecranBanca(corp, nav, t) {
-  const escB = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const CUL = { verde: "#1d7a4d", galben: "#c9961f", rosu: "#ff3b30", gri: "#3a4250" };
   corp.innerHTML = `
     <h2 class="pf-titlu">Banc\u0103</h2>
@@ -1038,7 +1029,7 @@ async function ecranBanca(corp, nav, t) {
     if (!al.length) return "";
     return `<div class="pf-frand-sub">${al.map((a) => {
       const f = a.factura || {};
-      return `${escB(f.serie || "")}${escB(f.numar || "#" + a.factura_id)} \u00b7 ${escB(f.tert || "")} \u00b7 ${bani(a.suma)} lei`;
+      return `${esc(f.serie || "")}${esc(f.numar || "#" + a.factura_id)} \u00b7 ${esc(f.tert || "")} \u00b7 ${bani(a.suma)} lei`;
     }).join("<br>")}</div>`;
   }
 
@@ -1047,8 +1038,8 @@ async function ecranBanca(corp, nav, t) {
     zonaLista.innerHTML = `<div class="pf-lista">${linii.map((l) => `
       <div class="pf-frand">
         <div class="pf-frand-text">
-          <div class="pf-frand-nume">${escB(l.data)} \u00b7 ${l.tip === "plata" ? "\u2212" : "+"}${bani(l.suma)} lei${l.cui_detectat ? " \u00b7 CUI " + escB(l.cui_detectat) : ""} \u00b7 ${badge(l)}</div>
-          <div class="pf-frand-sub">${escB((l.descriere || "").slice(0, 90))}${(l.alocari || {}).motiv ? " \u00b7 " + escB(l.alocari.motiv) : ""}</div>
+          <div class="pf-frand-nume">${esc(l.data)} \u00b7 ${l.tip === "plata" ? "\u2212" : "+"}${bani(l.suma)} lei${l.cui_detectat ? " \u00b7 CUI " + esc(l.cui_detectat) : ""} \u00b7 ${badge(l)}</div>
+          <div class="pf-frand-sub">${esc((l.descriere || "").slice(0, 90))}${(l.alocari || {}).motiv ? " \u00b7 " + esc(l.alocari.motiv) : ""}</div>
           ${randAlocari(l)}
         </div>
         <div>
@@ -1083,9 +1074,9 @@ async function ecranBanca(corp, nav, t) {
     zonaMesaj.innerHTML = "";
     try {
       const r = await api.post(`/tenants/${t.id}/banca/reconciliere/${id}/conteaza`, alocari ? { alocari } : {});
-      zonaMesaj.innerHTML = `<p class="pf-intro">Nota ${escB(r.nota || "")} \u2014 ${(r.inregistrari || []).length} inregistrari create.</p>`;
+      zonaMesaj.innerHTML = `<p class="pf-intro">Nota ${esc(r.nota || "")} \u2014 ${(r.inregistrari || []).length} inregistrari create.</p>`;
       incarca();
-    } catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${escB(e.mesaj || "Eroare la contare")}</div>`; }
+    } catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "Eroare la contare")}</div>`; }
   }
 
   async function picker(l) {
@@ -1099,13 +1090,13 @@ async function ecranBanca(corp, nav, t) {
     if (!facturi.length) { zonaMesaj.innerHTML = `<div class="mig-gol">Nicio factura deschisa pe aceasta directie.</div>`; return; }
     zonaMesaj.innerHTML = `
       <div style="display:block">
-        <div class="pf-frand-nume">Alege facturile pentru linia din ${escB(l.data)} \u00b7 ${bani(l.suma)} lei</div>
+        <div class="pf-frand-nume">Alege facturile pentru linia din ${esc(l.data)} \u00b7 ${bani(l.suma)} lei</div>
         <div class="pf-lista" style="margin-top:8px">${facturi.map((f) => `
           <label class="pf-frand" style="cursor:pointer">
             <input type="checkbox" data-fid="${f.id}" data-sold="${f.sold}" style="margin-right:10px">
             <div class="pf-frand-text">
-              <div class="pf-frand-nume">${escB(f.serie || "")}${escB(f.numar)} \u00b7 ${escB(f.tert_nume || "")}</div>
-              <div class="pf-frand-sub">${escB(f.data_emitere)} \u00b7 sold ${bani(f.sold)} lei \u00b7 CUI ${escB(f.tert_cui || "")}</div>
+              <div class="pf-frand-nume">${esc(f.serie || "")}${esc(f.numar)} \u00b7 ${esc(f.tert_nume || "")}</div>
+              <div class="pf-frand-sub">${dataRo(f.data_emitere)} \u00b7 sold ${bani(f.sold)} lei \u00b7 CUI ${esc(f.tert_cui || "")}</div>
             </div>
           </label>`).join("")}</div>
         <p style="margin-top:10px">
@@ -1243,7 +1234,7 @@ async function ecranJurnal(corp, nav, t) {
       return `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${fmtDataCab(n.data)} \u00b7 ${escJ(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
+            <div class="pf-frand-nume">${dataRo(n.data)} \u00b7 ${escJ(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
             <div class="pf-frand-sub">${n.linii.map((l) => `${escJ(l.debit)} = ${escJ(l.credit)} \u00b7 ${l.suma.toFixed(2)}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + escJ(n.sursa) : ""}</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:stretch">${butoane}</div>
@@ -1251,7 +1242,7 @@ async function ecranJurnal(corp, nav, t) {
     };
     const editor = (n) => `
       <div style="display:block;border:1px solid #c9961f">
-        <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${fmtDataCab(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
+        <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${dataRo(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
         <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${escJ(n.descriere || "")}"></label>
         <div class="camp-eticheta" style="margin-top:8px">Linii: cont debit = cont credit \u00b7 sum\u0103</div>
         <div id="je-linii">${n.linii.map((l, i) => `

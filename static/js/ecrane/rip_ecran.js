@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, bani, confirmaCaseta } from "../api.js";  /* investigatie_identitate_v1 */
+import { api, bani, confirmaCaseta, dataRo } from "../api.js";  /* investigatie_identitate_v1 */
 
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -33,7 +33,7 @@ export async function ecranRip(corp, nav, t) {
       : reg.operatiuni.map((o) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${esc(o.data_operatiune)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${o.suma} ${esc(o.valuta)}
+            <div class="pf-frand-nume">${dataRo(o.data_operatiune)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${o.suma} ${esc(o.valuta)}
               ${o.status === "ciorna" ? '<span style="color:#c9961f;font-weight:600"> \u00b7 CIORNA</span>' : '<span style="color:#1d7a4d;font-weight:600"> \u00b7 VALIDATA</span>'}</div>
             <div class="pf-frand-sub">${esc(o.explicatie)} \u00b7 ${esc(o.categorie)}${o.deductibilitate ? " \u00b7 " + esc(o.deductibilitate) : ""}${o.document_numar ? " \u00b7 doc " + esc(o.document_numar) : ""} \u00b7 ${esc(o.metoda)}</div>
           </div>

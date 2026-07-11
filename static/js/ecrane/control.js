@@ -2,7 +2,7 @@
 // Nivel 1: lista firmelor cu pastila colorata (verde/galben/rosu).
 // Nivel 2: click pe firma -> declaratiile lipsa + de urmarit, cu termene.
 
-import { api, esc } from "../api.js";  /* esc_nc27 */
+import { api, esc, dataRo } from "../api.js";  /* esc_nc27 */
 
 const CULORI = {
   verde:  { dot:"radial-gradient(circle at 65% 30%, #6fc494, #1d7a4d 60%)", txt:"la zi",       bg:"#e6f6ec" },
@@ -12,11 +12,6 @@ const CULORI = {
 };
 const LUNI = ["", "ian", "feb", "mar", "apr", "mai", "iun", "iul", "aug", "sep", "oct", "noi", "dec"];
 
-function dataRo(iso) {
-  if (!iso) return "—";
-  const p = iso.split("-");
-  return p.length === 3 ? `${p[2]}.${p[1]}.${p[0]}` : iso;
-}
 
 export async function randeazaControl(corp, nav) {
   corp.innerHTML = `<p class="ecran-nota">Se evaluează portofoliul…</p>`;

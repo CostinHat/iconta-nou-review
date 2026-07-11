@@ -1,7 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, esc, confirmaCaseta } from "../api.js";
+import { api, esc, confirmaCaseta, dataRo } from "../api.js";
 
 const CM_CODURI = [
   ["01", "01 — Boală obișnuită (55/65/75%)"],
@@ -41,7 +41,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${esc(c.serie || "")}${esc(c.numar || "")} \u00b7 cod ${esc(c.cod || "")} \u00b7 ${c.zile || 0} zile</div>
-            <div class="pf-frand-sub">${esc(String(c.data_inceput || ""))} \u2192 ${esc(String(c.data_sfarsit || ""))} \u00b7 indemniza\u021bie brut\u0103 ${Number(c.indemnizatie || 0).toFixed(2)} lei \u00b7 net ${Number(c.net || 0).toFixed(2)} lei</div>
+            <div class="pf-frand-sub">${dataRo(c.data_inceput)} \u2192 ${dataRo(c.data_sfarsit)} \u00b7 indemniza\u021bie brut\u0103 ${Number(c.indemnizatie || 0).toFixed(2)} lei \u00b7 net ${Number(c.net || 0).toFixed(2)} lei</div>
           </div>
           <button class="buton-sters buton-mic" data-sterge="${c.id}">\u0218terge</button>
         </div>`).join("");
@@ -73,23 +73,23 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     const azi = new Date();
     const optCod = CM_CODURI.map(([v, txt]) => `<option value="${v}">${txt}</option>`).join("");
     zona.innerHTML = `
-      <div class="cm-form" style="display:block;background:#fff;border:1px solid var(--linie);border-radius:var(--raza);padding:16px;margin:12px 0;max-width:720px">
+      <div class="cm-form" style="display:block;margin:12px 0;max-width:720px">
         <div class="pf-frand-nume" style="margin-bottom:10px">Certificat nou</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
           <label class="camp"><span class="camp-eticheta">Serie</span><input type="text" id="cm-serie" class="camp-input" placeholder="ex. AB"></label>
           <label class="camp"><span class="camp-eticheta">Num\u0103r</span><input type="text" id="cm-numar" class="camp-input" placeholder="ex. 1234567"></label>
           <label class="camp" style="grid-column:span 2"><span class="camp-eticheta">Cod indemniza\u021bie</span><select id="cm-cod" class="camp-input">${optCod}</select></label>
           <label class="camp"><span class="camp-eticheta">Data acord\u0103rii</span><input type="date" id="cm-acord" class="camp-input"></label>
-          <label class="camp"><span class="camp-eticheta">Data \u00eenceput</span><input type="date" id="cm-inceput" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Data \u00eenceput<span class="oblig">*</span></span><input type="date" id="cm-inceput" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Data sf\u00e2r\u0219it</span><input type="date" id="cm-sfarsit" class="camp-input"></label>
-          <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare CM</span><input type="number" id="cm-zile" class="camp-input" min="0" placeholder="ex. 8"></label>
+          <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare CM<span class="oblig">*</span></span><input type="number" id="cm-zile" class="camp-input" min="0" placeholder="ex. 8"></label>
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Baza de calcul (ultimele 6 luni)</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
-          <label class="camp"><span class="camp-eticheta">Venituri brute 6 luni</span><input type="number" id="cm-ven6" class="camp-input" step="0.01" placeholder="suma total\u0103"></label>
-          <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare 6 luni</span><input type="number" id="cm-zile6" class="camp-input" min="1" placeholder="ex. 126"></label>
+          <label class="camp"><span class="camp-eticheta">Venituri brute 6 luni<span class="oblig">*</span></span><input type="number" id="cm-ven6" class="camp-input" step="0.01" placeholder="suma total\u0103"><span class="camp-ajutor">Suma veniturilor brute din ultimele 6 luni lucrate (din statele de plat\u0103). Baza = aceast\u0103 sum\u0103 \u00eemp\u0103r\u021bit\u0103 la zilele lucr\u0103toare.</span></label>
+          <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare 6 luni<span class="oblig">*</span></span><input type="number" id="cm-zile6" class="camp-input" min="1" placeholder="ex. 126"><span class="camp-ajutor">Total zile lucr\u0103toare din acelea\u0219i 6 luni (ex. ~126 pentru 6 luni pline).</span></label>
           <label class="camp"><span class="camp-eticheta">Diagnostic (op\u021bional)</span><input type="text" id="cm-diag" class="camp-input"></label>
-          <label class="camp cm-check" style="display:flex;align-items:center;gap:6px;margin-top:18px"><input type="checkbox" id="cm-spital"> <span>Spitalizare (prima zi se pl\u0103te\u0219te)</span></label>
+          <label class="cm-check" style="display:flex;align-items:center;gap:8px;margin-top:18px"><input type="checkbox" id="cm-spital"> <span>Spitalizare (prima zi se pl\u0103te\u0219te)</span></label>
         </div>
         <p style="margin-top:14px">
           <button class="buton-primar" id="cm-calc">Calculeaz\u0103 \u0219i salveaz\u0103</button>
@@ -99,6 +99,27 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       </div>`;
 
     zona.querySelector("#cm-renunta").addEventListener("click", () => { zona.innerHTML = ""; });
+
+    // Auto-calcul zile lucratoare (luni-vineri) intre inceput si sfarsit; contabilul poate suprascrie.
+    let zileEditateManual = false;
+    const inpZile = zona.querySelector("#cm-zile");
+    inpZile.addEventListener("input", () => { zileEditateManual = true; });
+    const recalcZile = () => {
+      if (zileEditateManual) return;
+      const di = zona.querySelector("#cm-inceput").value;
+      const ds = zona.querySelector("#cm-sfarsit").value;
+      if (!di || !ds) return;
+      const d1 = new Date(di), d2 = new Date(ds);
+      if (d2 < d1) return;
+      let n = 0;
+      for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
+        const zi = d.getDay();
+        if (zi !== 0 && zi !== 6) n++;
+      }
+      inpZile.value = n;
+    };
+    zona.querySelector("#cm-inceput").addEventListener("change", recalcZile);
+    zona.querySelector("#cm-sfarsit").addEventListener("change", recalcZile);
 
     zona.querySelector("#cm-calc").addEventListener("click", async () => {
       const rez = zona.querySelector("#cm-rezultat");

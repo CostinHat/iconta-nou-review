@@ -3,7 +3,7 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js";
-import { api, arataMesaj } from "../api.js";
+import { api, arataMesaj, dataRo } from "../api.js";
 import { randeazaAdminRaportari } from "./admin_raportari.js";
 import { randeazaAdminActivitate } from "./admin_activitate.js";
 import { randeazaAdminGratuite } from "./admin_gratuite.js";
@@ -38,7 +38,7 @@ const DEF = [
 
 export function desktopAdmin(continut, nav) {
   const u = sesiune.user() || {};
-  const azi = new Date().toLocaleDateString("ro-RO", { day:"numeric", month:"long", year:"numeric" });
+  const azi = dataRo(new Date(), "lung");
   const prenume = u.prenume || (u.nume || "").split(" ").slice(-1)[0] || u.nume || "";
   continut.innerHTML = `
     <div class="cab-salut">

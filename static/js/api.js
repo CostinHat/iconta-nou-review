@@ -180,6 +180,34 @@ export function bani(v) {
 
 
 // [esc_canonic_v1] Escapare HTML unica pentru date user randate in innerHTML (NC-27).
+// dataRo — SINGURA functie de formatare data in aplicatie (Design System cap.4).
+// Accepta: string ISO (yyyy-mm-dd), obiect Date, sau null/gol -> "".
+// stil "scurt" (implicit): zz.ll.aaaa (numeric, aliniabil in tabele).
+// stil "lung": "11 iulie 2026" (pentru titluri).
+const _LUNI_RO = ["ianuarie","februarie","martie","aprilie","mai","iunie","iulie","august","septembrie","octombrie","noiembrie","decembrie"];
+export function dataRo(d, stil) {
+  if (!d) return "";
+  let dt;
+  if (d instanceof Date) dt = d;
+  else {
+    const str = String(d).slice(0, 10);
+    const m = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (m) dt = new Date(+m[1], +m[2] - 1, +m[3]);
+    else { dt = new Date(str); if (isNaN(dt)) return String(d); }
+  }
+  if (isNaN(dt)) return String(d);
+  const zz = String(dt.getDate()).padStart(2, "0");
+  const ll = String(dt.getMonth() + 1).padStart(2, "0");
+  const aa = dt.getFullYear();
+  if (stil === "lung") return `${dt.getDate()} ${_LUNI_RO[dt.getMonth()]} ${aa}`;
+  if (stil === "cu_ora") {
+    const hh = String(dt.getHours()).padStart(2, "0");
+    const mi = String(dt.getMinutes()).padStart(2, "0");
+    return `${zz}.${ll}.${aa} ${hh}:${mi}`;
+  }
+  return `${zz}.${ll}.${aa}`;
+}
+
 export function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"

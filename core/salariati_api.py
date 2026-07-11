@@ -179,6 +179,11 @@ def lista_concedii(conn, salariat_id, an=None):
         return [dict(zip(cols, r)) for r in cur.fetchall()]
 
 
+def _dec_pos(v):
+    try: return float(v)
+    except (TypeError, ValueError): return 0.0
+
+
 def salveaza_concediu(conn, salariat_id, date):
     """Calculeaza indemnizatia CM (calcul_cm + taxe_cm) si o salveaza in concedii_medicale.
     date: serie, numar, cod, data_acordare, data_inceput, data_sfarsit, loc_prescriere,
@@ -200,6 +205,13 @@ def salveaza_concediu(conn, salariat_id, date):
     else:
         la_data = _di
 
+    # Validare: baza de calcul trebuie sa fie reala (altfel brut 0 dar net pozitiv = imposibil)
+    if _dec_pos(ven6) <= 0:
+        raise ValueError("Veniturile brute pe 6 luni lipsesc sau sunt 0 - completeaza baza de calcul din statele de plata.")
+    if zile6 <= 0:
+        raise ValueError("Zilele lucratoare din cele 6 luni lipsesc sau sunt 0.")
+    if zile_cm <= 0:
+        raise ValueError("Zilele lucratoare CM trebuie sa fie cel putin 1.")
     calc = _s.calcul_cm(ven6, zile6, zile_cm, cod=cod, spitalizare=spitalizare,
                         la_data=la_data, procent_accident=pacc)
     taxe = _s.taxe_cm(calc["brut"], cod=cod, la_data=la_data)

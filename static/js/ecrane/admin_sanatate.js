@@ -1,17 +1,7 @@
 // admin_sanatate.js — Admin iConta: sanatate infrastructura (doar superadmin).
 // Server (CPU/RAM/disk), aplicatie (uptime), baza de date, erori recente (500+), grafice istoric.
-import { api } from "../api.js";
+import { dataRo, api } from "../api.js";
 
-function fmtData(iso) {
-  if (!iso) return "—";
-  const d = new Date(iso);
-  if (isNaN(d)) return iso;
-  const zz = String(d.getDate()).padStart(2, "0");
-  const ll = String(d.getMonth() + 1).padStart(2, "0");
-  const hh = String(d.getHours()).padStart(2, "0");
-  const mm = String(d.getMinutes()).padStart(2, "0");
-  return `${zz}/${ll}/${d.getFullYear()} ${hh}:${mm}`;
-}
 
 function fmtOra(iso) {
   const d = new Date(iso);
@@ -134,7 +124,7 @@ export async function randeazaAdminSanatate(corp, nav) {
           <div class="pf-frand">
             <div class="pf-frand-text">
               <div class="pf-frand-nume">${(e.actiune || "")}</div>
-              <div class="pf-frand-sub">status ${(e.detalii && e.detalii.status) || "?"} · ${fmtData(e.created_at)}</div>
+              <div class="pf-frand-sub">status ${(e.detalii && e.detalii.status) || "?"} · ${dataRo(e.created_at, "cu_ora")}</div>
             </div>
           </div>`).join("")
         : `<div class="mig-gol">Nicio eroare în ultimele 24h.</div>`}

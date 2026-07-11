@@ -2,7 +2,7 @@
 // Bandă de salut + 9 carduri pastel (grilă 3×3), fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, confirmaCaseta, esc } from "../api.js";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo } from "../api.js";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
 import { randeazaListaFirme } from "./firme.js";
@@ -97,7 +97,7 @@ async function randeazaSintezaAzi(nav, continut) {  // [p74_brief_modal] modal c
   const t = cen.totaluri || {};
   const u = sesiune.user() || {};
   const numeFirma = u.nume_firma || "Cabinet";
-  const dataRo = new Date().toLocaleDateString("ro-RO", { day:"numeric", month:"long", year:"numeric" });
+  const aziLung = dataRo(new Date(), "lung");
 
   function cifra(val, eticheta, cheie, accent) {
     const cls = cheie ? "sa-cifra sa-clic" : "sa-cifra";
@@ -151,7 +151,7 @@ async function randeazaSintezaAzi(nav, continut) {  // [p74_brief_modal] modal c
       <div class="brief-cap">
         <div>
           <div class="brief-titlu">Sinteza zilei</div>
-          <div class="brief-sub">${numeFirma.replace(/[<>&]/g,"")} · ${dataRo}</div>
+          <div class="brief-sub">${numeFirma.replace(/[<>&]/g,"")} · ${aziLung}</div>
         </div>
         <button class="pacm-x" id="brief-x" aria-label="Inchide">✕</button>
       </div>
@@ -199,7 +199,7 @@ export function desktopCabinet(continut, nav) {
 // VEDEREA 1: panoul cu cele 9 carduri
 function randeazaPanou(continut, nav) {
   const u = sesiune.user() || {};
-  const azi = new Date().toLocaleDateString("ro-RO", { day:"numeric", month:"long", year:"numeric" });
+  const azi = dataRo(new Date(), "lung");
   const prenume = u.prenume || (u.nume || "").split(" ").slice(-1)[0] || u.nume || "";
 
   continut.innerHTML = `

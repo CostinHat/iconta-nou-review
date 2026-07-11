@@ -94,6 +94,17 @@ html, body {
   font-weight: 600;
   color: var(--gri);
 }
+.camp-ajutor {  /* ghidaj preventiv sub camp: de unde ia utilizatorul valoarea */
+  font-size: 12px;
+  color: var(--albastru);
+  margin-top: 2px;
+  line-height: 1.35;
+}
+.oblig {  /* asterisc camp obligatoriu */
+  color: #ff3b30;
+  font-weight: 600;
+  margin-left: 2px;
+}
 
 .camp-input {
   height: 40px;
@@ -1297,7 +1308,7 @@ html, body {
 /* [p45_declaratii] */
 /* buton secundar (lipsea) */
 .buton-secundar {
-  border: 1px solid var(--linie);
+  border: 1px solid #b9c2cf;
   border-radius: var(--raza);
   background: var(--alb);
   color: var(--ardezie);

@@ -2,14 +2,10 @@
 // Trimite o observatie catre Admin iConta; vede firul cu raspunsuri; bec rosu = raspunsuri necitite.
 // Strat 2 (text + fir). Imagini: strat 3.
 
-import { api } from "../api.js";
+import { api, dataRo } from "../api.js";
 
 function dataScurta(iso) {
-  try {
-    const d = new Date(iso);
-    return d.toLocaleDateString("ro-RO", { day: "2-digit", month: "short" }) +
-           " " + d.toLocaleTimeString("ro-RO", { hour: "2-digit", minute: "2-digit" });
-  } catch { return ""; }
+  return dataRo(iso, "cu_ora");
 }
 
 export async function randeazaRaporteaza(corp, nav) {

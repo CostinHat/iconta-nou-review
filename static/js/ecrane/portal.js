@@ -1,6 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, arataMesaj, confirmaCaseta, deschideLupa, esc } from "../api.js";  /* generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc } from "../api.js";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";  // [p116_facturi_modul]
 
@@ -298,14 +298,6 @@ async function ecranDeclaratii(corp, nav) {
 }
 
 // ---------- SOLICITARI (chat cu contabilul) ----------  // ICRD_SOLICITARI_FRONT_V1
-function fmtData(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (isNaN(d)) return iso;
-  const zz = String(d.getDate()).padStart(2, "0");
-  const ll = String(d.getMonth() + 1).padStart(2, "0");
-  return `${zz}/${ll}/${d.getFullYear()}`;
-}
 
 async function ecranSolicitari(corp, nav) {
   nav.setInapoi(undefined);  // portal_ds_audit_a_v1
@@ -327,7 +319,7 @@ async function randeazaSolicitari(corp, nav) {
       const cine = s.autor_rol === "cabinet" ? "Contabil" : "Tu";
       return `<div class="sol-rand sol-${s.autor_rol}">
         <div class="sol-mesaj">${s.mesaj}</div>
-        <div class="sol-meta">${cine} · ${fmtData(s.creat_la)}</div>
+        <div class="sol-meta">${cine} · ${dataRo(s.creat_la)}</div>
       </div>`;
     }).join("");
   }
@@ -530,7 +522,7 @@ async function ecranDocumente(corp, nav) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${d.tip} · ${String(d.luna).padStart(2,"0")}/${d.an}</div>
-            <div class="pf-frand-sub">depusă ${fmtData(d.data)}</div>
+            <div class="pf-frand-sub">depusă ${dataRo(d.data)}</div>
           </div>
           <span class="pf-frand-ok">✓ depusă</span>
         </div>`).join("")}</div>`;
