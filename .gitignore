@@ -31,3 +31,4 @@ db.env
 # unelte de-o folosinta (patch-uri aplicate deja, arhivate local)
 _arhiva_patchuri/
 patch*.py
+log_arhiva/
