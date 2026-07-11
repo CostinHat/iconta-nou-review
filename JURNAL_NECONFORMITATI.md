@@ -229,3 +229,13 @@ LIMITARE CUNOSCUTA (notata, nu bug): deducerea NU se acorda la part-time care nu
 functia de baza (al doilea job) - codul are param functie_baza, dar stat_plata trateaza
 toti salariatii ca functie de baza implicit. Rezonabil pt firme mici, de rafinat pt
 multi-contract (impreuna cu exceptat_suprataxare, care necesita si el declaratie).
+
+## Test #74 (11.07.2026) — Fluturasi PDF: PASS
+Fluturasul afiseaza corect perspectiva ANGAJATULUI (brut, facilitate, CAS, CASS,
+deducere, impozit, net) - suprataxa part-time NU apare in retineri (corect, e cost
+angajator, nu afecteaza netul salariatului). Costul total angajator (jos) include deja
+suprataxa via calc['cost_angajator'] (fix #69). Imbunatatire: cand exista suprataxa,
+nota de cost o mentioneaza explicit (transparenta - altfel apareau bani "din senin").
+Bug prins in constructie: _dec nu era importat in stat_plata_api - inlocuit cu float.
+Verificat end-to-end: PDF valid generat pt Ionescu (PT, "suprataxa part-time 568,75 lei"
+in cost) si Popescu (NI, fara mentiune). Ambele HTTP 200, PDF-uri valide.

@@ -147,8 +147,13 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     ]))
     el.append(tabel)
     el.append(Spacer(1, 8))
+    _supra = float(calc.get("cas_suprataxa", 0) or 0) + float(calc.get("cass_suprataxa", 0) or 0)
+    _nota_cost = "Cost total angajator (inclusiv CAM 2.25%"
+    if _supra > 0:
+        _nota_cost += f" + suprataxa part-time {_bani(_supra, 'lei')}"
+    _nota_cost += f"): {_bani(calc['cost_angajator'], 'lei')}"
     el.append(Paragraph(
-        f"Cost total angajator (inclusiv CAM 2.25%): {_bani(calc['cost_angajator'], 'lei')}",
+        _nota_cost,
         ParagraphStyle("cost", parent=stil["Normal"], fontName=fr, fontSize=9, textColor=_colors.HexColor("#555555")),
     ))
     doc.build(el)
