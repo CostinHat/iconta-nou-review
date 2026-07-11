@@ -108,6 +108,20 @@ def verifica_tva_pe_cota(baza, tva, la_data=None):
 # ============================================================
 #  COERENȚĂ TREZORERIE
 # ============================================================
+def verifica_stocuri_vs_fise(stoc_fise, bal):
+    """Compara soldul contabil (cont marfuri/materii, ex. 371/301) cu valoarea
+    calculata din fisele de magazin (stocuri_cv). stoc_fise: {cont: valoare}.
+    bal: rezultatul balanta(). Diferentele apar per cont."""
+    probleme = []
+    for cont, val_fisa in stoc_fise.items():
+        val_bal = bal.get(cont, {}).get("sold", Decimal(0))
+        val_fisa_d = _dec(val_fisa)
+        dif = val_bal - val_fisa_d
+        if _q(dif) != 0:
+            probleme.append(c.problema("STOC_DIFERENTA_FISA", nivel=c.BLOCANT,
+                            cont=cont, sold_contabil=_q(val_bal),
+                            valoare_fise=_q(val_fisa_d), diferenta=_q(dif)))
+    return probleme
 def coerenta_d205_457(suma_d205, suma_457):
     """Compara suma bruta declarata in D205 (tip_venit=08, dividende) cu
     suma bruta repartizata in contabilitate (1171->457) pentru acelasi an.

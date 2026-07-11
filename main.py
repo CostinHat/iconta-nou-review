@@ -2855,6 +2855,18 @@ def _verificari_contabile(schema, an, luna):
         rezultat["d205_vs_457"] = _vf.coerenta_d205_457(suma_d205, suma_457)
     except Exception:
         pass
+    try:  # verif_stocuri_fise_v1 (backlog #91)
+        from core import stocuri_cv_api as _scv
+        from decimal import Decimal as _Dec
+        with db.get_conn() as conn3:
+            lista_art = _scv.articole(conn3, schema)
+        stoc_fise = {}
+        for a in lista_art:
+            ct = a["cont_stoc"]
+            stoc_fise[ct] = stoc_fise.get(ct, _Dec("0")) + _Dec(a["valoare"])
+        rezultat["stocuri_vs_fise"] = _vf.verifica_stocuri_vs_fise(stoc_fise, bal)
+    except Exception:
+        pass
     return rezultat
 
 
