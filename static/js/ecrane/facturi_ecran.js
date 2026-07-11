@@ -129,7 +129,6 @@ function emiteFactura(corp, nav, tenantId, opt) {
 }
 
 // ---------- DETALII factura ----------
-const _esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const _bani = (x, mon) => {
   if (x == null || x === "") return "";
   const n = Number(x).toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -166,9 +165,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     peCota[cota].tva += tva;
     return `
       <tr>
-        <td class="fd-td-den">${_esc(l.descriere)}</td>
+        <td class="fd-td-den">${esc(l.descriere)}</td>
         <td>${cant.toLocaleString("ro-RO")}</td>
-        <td class="fd-td-um">${_esc(l.um || "buc")}</td>
+        <td class="fd-td-um">${esc(l.um || "buc")}</td>
         <td class="fd-td-num">${_bani(pret)}</td>
         <td>${cota}%</td>
         <td class="fd-td-num">${_bani(baza, mon)}</td>
@@ -200,14 +199,14 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   }
 
   const dir = dirEticheta(f.directie);
-  const partener = f.tert_nume ? `${_esc(f.tert_nume)}${f.tert_cui ? " \u00b7 CUI " + _esc(f.tert_cui) : ""}` : "";
+  const partener = f.tert_nume ? `${esc(f.tert_nume)}${f.tert_cui ? " \u00b7 CUI " + esc(f.tert_cui) : ""}` : "";
   const statusTxt = f.storno_din_id ? "storno" : (f.status || "");
 
   corp.innerHTML = `
     <div class="fd-antet">
       <div class="fd-antet-sus">
-        <h2 class="pf-titlu">${_esc(f.numar || "\u2014")}</h2>
-        ${statusTxt ? `<span class="fac-storno-tag">${_esc(statusTxt)}</span>` : ""}
+        <h2 class="pf-titlu">${esc(f.numar || "\u2014")}</h2>
+        ${statusTxt ? `<span class="fac-storno-tag">${esc(statusTxt)}</span>` : ""}
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
         <button class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
         ${(!opt.client && f.directie === "emisa" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
@@ -356,9 +355,9 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       const emailPre = (f.tert_email || "");
       zonaEmail.innerHTML = `
         <div class="fd-email-box">
-          <label class="fd-email-eticheta">Trimite factura ${_esc(f.numar || "")} c\u0103tre:</label>
+          <label class="fd-email-eticheta">Trimite factura ${esc(f.numar || "")} c\u0103tre:</label>
           <div class="fd-email-rand">
-            <input type="email" id="fd-email-input" class="fd-email-input" placeholder="email@client.ro" value="${_esc(emailPre)}">
+            <input type="email" id="fd-email-input" class="fd-email-input" placeholder="email@client.ro" value="${esc(emailPre)}">
             <button class="buton-primar fd-email-send" id="fd-email-send">Trimite</button>
           </div>
           <div class="em-rezultat" id="fd-email-rez"></div>
@@ -375,7 +374,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         send.disabled = true; send.textContent = "Se trimite\u2026";
         try {
           await api.post(`/tenants/${tenantId}/facturi/${facturaId}/email`, { email });
-          rez.innerHTML = `\u2713 Trimis c\u0103tre <b>${_esc(email)}</b>.`;
+          rez.innerHTML = `\u2713 Trimis c\u0103tre <b>${esc(email)}</b>.`;
           rez.className = "em-rezultat em-bun";
           send.textContent = "Trimite";
         } catch (e) {
@@ -411,7 +410,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       zonaStorno.dataset.deschis = "1";
       zonaStorno.innerHTML = `
         <div class="fd-storno-box">
-          <div class="fd-storno-avert" style="margin-bottom:0">Se creeaz\u0103 o factur\u0103 de stornare pentru <b>${_esc(f.numar || "")}</b> (valori negative, document contabil). Ac\u021biunea nu poate fi anulat\u0103.</div>
+          <div class="fd-storno-avert" style="margin-bottom:0">Se creeaz\u0103 o factur\u0103 de stornare pentru <b>${esc(f.numar || "")}</b> (valori negative, document contabil). Ac\u021biunea nu poate fi anulat\u0103.</div>
         </div>
         <div class="fd-storno-actiuni" style="margin:10px 0 14px">
           <button class="buton-primar" id="fd-storno-ok">Confirm stornarea</button>
@@ -427,7 +426,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         ok.disabled = true; ok.textContent = "Se storneaz\u0103\u2026";
         try {
           const r = await api.post(`/tenants/${tenantId}/facturi/${facturaId}/storno`, {});
-          rez.innerHTML = `\u2713 Storno creat: <b>${_esc(r.numar || "")}</b>.`;
+          rez.innerHTML = `\u2713 Storno creat: <b>${esc(r.numar || "")}</b>.`;
           rez.className = "em-rezultat em-bun";
           setTimeout(() => istoricFacturi(corp, nav, tenantId, opt), 1200);
         } catch (e) {
@@ -524,12 +523,12 @@ async function modelFactura(corp, nav, tenantId, opt) {
         <div class="mfp-firma">
           ${stare.logo ? `<img src="${stare.logo}" class="mfp-logo">` : ""}
           <div>
-            <div class="mfp-nume" style="color:${ac}">${_esc(profil.nume || "Firma mea SRL")}</div>
-            <div class="mfp-detalii">CUI ${_esc(profil.cui || "\u2014")}${adr ? " \u00b7 " + _esc(adr) : ""}</div>
-            ${profil.iban ? `<div class="mfp-detalii">IBAN ${_esc(profil.iban)}</div>` : ""}
+            <div class="mfp-nume" style="color:${ac}">${esc(profil.nume || "Firma mea SRL")}</div>
+            <div class="mfp-detalii">CUI ${esc(profil.cui || "\u2014")}${adr ? " \u00b7 " + esc(adr) : ""}</div>
+            ${profil.iban ? `<div class="mfp-detalii">IBAN ${esc(profil.iban)}</div>` : ""}
           </div>
         </div>
-        <div class="mfp-titlu" style="color:${ac}">FACTUR\u0102<br><span class="mfp-nr">${_esc(nr)}</span></div>
+        <div class="mfp-titlu" style="color:${ac}">FACTUR\u0102<br><span class="mfp-nr">${esc(nr)}</span></div>
       </div>
       <table class="mfp-tabel">
         <thead><tr style="background:${ac}">
