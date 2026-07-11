@@ -511,13 +511,27 @@ async function ecranSalariati(corp, nav, t) {
     corp.querySelectorAll("[data-cm]").forEach((b) => b.addEventListener("click", () => {
       fluxConcediu(nav, t, { id: parseInt(b.dataset.cm), nume: b.dataset.nume });
     }));
-    corp.querySelectorAll("[data-reges]").forEach((b) => b.addEventListener("click", async () => {
-      const adresa = prompt("Adresa salariatului (obligatorie REGES):");
-      if (!adresa) return;
-      try {
-        const r = await api.post(`/tenants/${t.id}/reges-trimite-salariat`, { salariat_id: parseInt(b.dataset.reges), adresa });
-        zonaReges.innerHTML = `<p class="pf-intro">Trimis in REGES${r.referinta ? " \u00b7 ref " + r.referinta : ""}. Verifica R\u0103spunsuri REGES.</p>`;
-      } catch (e) { zonaReges.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
+    corp.querySelectorAll("[data-reges]").forEach((b) => b.addEventListener("click", () => {
+      const sid = parseInt(b.dataset.reges);
+      zonaReges.innerHTML = `<div style="display:block;margin:10px 0;max-width:520px">
+        <div class="camp"><span class="camp-eticheta">Adresa salariatului<span class="oblig">*</span></span>
+          <input type="text" id="rg-adresa" class="camp-input" placeholder="strada, nr, localitate, judet">
+          <span class="camp-ajutor">Obligatorie pentru transmiterea in REGES.</span></div>
+        <p style="margin-top:10px"><button class="buton-primar" id="rg-trimite">Trimite in REGES</button>
+          <button class="btn-link" id="rg-renunta" style="margin-left:10px">Renunta</button></p>
+        <div id="rg-rez"></div></div>`;
+      zonaReges.querySelector("#rg-renunta").addEventListener("click", () => { zonaReges.innerHTML = ""; });
+      zonaReges.querySelector("#rg-trimite").addEventListener("click", async () => {
+        const adresa = zonaReges.querySelector("#rg-adresa").value.trim();
+        const rez = zonaReges.querySelector("#rg-rez");
+        if (!adresa) { rez.innerHTML = `<span class="msg-eroare">Completeaza adresa salariatului.</span>`; return; }
+        const btn = zonaReges.querySelector("#rg-trimite");
+        btn.disabled = true; btn.textContent = "Se trimite\u2026";
+        try {
+          const r = await api.post(`/tenants/${t.id}/reges-trimite-salariat`, { salariat_id: sid, adresa });
+          zonaReges.innerHTML = `<p class="pf-intro">Trimis in REGES${r.referinta ? " \u00b7 ref " + r.referinta : ""}. Verifica R\u0103spunsuri REGES.</p>`;
+        } catch (e) { btn.disabled = false; btn.textContent = "Trimite in REGES"; rez.innerHTML = `<span class="msg-eroare">${esc(e.mesaj || "eroare")}</span>`; }
+      });
     }));
     corp.querySelectorAll("[data-flut]").forEach((b) => {
       b.addEventListener("click", async () => {
@@ -546,7 +560,6 @@ async function ecranSalariati(corp, nav, t) {
 
 // [stocuri-cv] Fise de magazie (cantitativ-valoric)
 async function sectiuneaCV(corp, t, zonaM) {
-  const escV = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const zona = corp.querySelector("#cv-zona");
   let arts = [];
   try { const r = await api.get(`/tenants/${t.id}/stocuri/articole`); arts = r.articole || []; } catch {}
@@ -558,7 +571,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <select id="cv-art" class="mig-text" style="min-width:200px">
           <option value="">\u2014 articol nou \u2014</option>
-          ${arts.map((a) => `<option value="${a.id}">${escV(a.denumire)} \u00b7 stoc ${a.stoc} ${escV(a.um)}${a.cmp ? " \u00b7 CMP " + a.cmp : ""}</option>`).join("")}
+          ${arts.map((a) => `<option value="${a.id}">${esc(a.denumire)} \u00b7 stoc ${a.stoc} ${esc(a.um)}${a.cmp ? " \u00b7 CMP " + a.cmp : ""}</option>`).join("")}
         </select>
         <input type="text" id="cv-den" class="mig-text" placeholder="denumire (articol nou)" aria-label="Denumire articol nou" style="flex:1;min-width:160px">
         <input type="date" id="cv-data" class="mig-text">
@@ -600,7 +613,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       const r = await api.post(`/tenants/${t.id}/stocuri/intrare`, corpReq);
       zonaM.innerHTML = `<p class="pf-intro">Intrare inregistrata \u00b7 ${bani(r.valoare)} lei.</p>`;
       sectiuneaCV(corp, t, zonaM);
-    } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "eroare")}</div>`; }
+    } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
   });
   zona.querySelector("#cv-iesire").addEventListener("click", async () => {
     if (!val("#cv-art")) { zonaM.innerHTML = `<div class="mig-gol">Alege articolul pentru iesire.</div>`; return; }
@@ -608,9 +621,9 @@ async function sectiuneaCV(corp, t, zonaM) {
       const r = await api.post(`/tenants/${t.id}/stocuri/iesire`, {
         articol_id: parseInt(val("#cv-art")), data: val("#cv-data"),
         cantitate: parseFloat(val("#cv-cant")) || 0, document: val("#cv-doc") || null });
-      zonaM.innerHTML = `<p class="pf-intro">Iesire la CMP ${r.cmp} \u00b7 ${bani(r.valoare)} lei \u00b7 nota ${escV(r.nota)} (ciorna).</p>`;
+      zonaM.innerHTML = `<p class="pf-intro">Iesire la CMP ${r.cmp} \u00b7 ${bani(r.valoare)} lei \u00b7 nota ${esc(r.nota)} (ciorna).</p>`;
       sectiuneaCV(corp, t, zonaM);
-    } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "eroare")}</div>`; }
+    } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
   });
 
 
@@ -622,7 +635,7 @@ async function sectiuneaCV(corp, t, zonaM) {
     rtIng.innerHTML = rtLinii.map((l, i) => `
       <div style="display:flex;gap:6px;margin-top:6px;align-items:center">
         <select class="mig-text rt-art" data-i="${i}">${arts.map((a) =>
-          `<option value="${a.id}" ${a.id == l.articol_id ? "selected" : ""}>${escV(a.denumire)} \u00b7 CMP ${a.cmp}</option>`).join("")}</select>
+          `<option value="${a.id}" ${a.id == l.articol_id ? "selected" : ""}>${esc(a.denumire)} \u00b7 CMP ${a.cmp}</option>`).join("")}</select>
         <input class="mig-text rt-cant" data-i="${i}" type="number" step="0.001" value="${l.cantitate || ""}" placeholder="cant./por\u021bie" aria-label="Cantitate pe por\u021bie" style="width:120px">
         <button class="buton-sters rt-scoate" data-i="${i}">\u2212</button>
       </div>`).join("");
@@ -639,8 +652,8 @@ async function sectiuneaCV(corp, t, zonaM) {
           const pct = fc.food_cost_pct == null ? "\u2013" : fc.food_cost_pct + "%";
           return `<div class="pf-frand">
             <div class="pf-frand-text">
-              <div class="pf-frand-nume">${escV(r.denumire)} \u00b7 ${bani(r.pret_fara_tva)} lei</div>
-              <div class="pf-frand-sub">cost/por\u021bie ${fc.cost_portie} \u00b7 food cost ${pct} \u00b7 ${(r.linii || []).map((l) => `${escV(l.denumire)} ${l.cantitate}${escV(l.um || "")}`).join(", ")}</div>
+              <div class="pf-frand-nume">${esc(r.denumire)} \u00b7 ${bani(r.pret_fara_tva)} lei</div>
+              <div class="pf-frand-sub">cost/por\u021bie ${fc.cost_portie} \u00b7 food cost ${pct} \u00b7 ${(r.linii || []).map((l) => `${esc(l.denumire)} ${l.cantitate}${esc(l.um || "")}`).join(", ")}</div>
             </div>
             <input class="mig-text rt-portii" data-id="${r.id}" type="number" placeholder="por\u021bii" aria-label="Num\u0103r por\u021bii" style="width:80px">
             <button class="buton-primar rt-desc" data-id="${r.id}">Descarc\u0103 (ciorn\u0103)</button>
@@ -655,10 +668,10 @@ async function sectiuneaCV(corp, t, zonaM) {
         const r = await api.post(`/tenants/${t.id}/retete/descarca`, { reteta_id: parseInt(id), portii: parseFloat(p), data: val("#cv-data") || new Date().toISOString().slice(0, 10) });
         zonaM.innerHTML = `<p class="pf-intro">Consum \u00eenregistrat (ciorn\u0103 #${r.inregistrare_id}) \u00b7 cost total ${bani(r.cost_total)} lei.</p>`;
         sectiuneaCV(corp, t, zonaM); rtIncarca();
-      } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "eroare")}</div>`; }
+      } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${esc(er.mesaj || "eroare")}</div>`; }
     }));
     rtLista.querySelectorAll(".rt-del").forEach((b) => b.addEventListener("click", async (e) => {
-      try { await api.del(`/tenants/${t.id}/retete/${e.target.dataset.id}`); rtIncarca(); } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "Nu am putut \u0219terge re\u021beta.")}</div>`; }
+      try { await api.del(`/tenants/${t.id}/retete/${e.target.dataset.id}`); rtIncarca(); } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${esc(er.mesaj || "Nu am putut \u0219terge re\u021beta.")}</div>`; }
     }));
   };
   zona.querySelector("#rt-plus").addEventListener("click", () => { rtLinii.push({ articol_id: arts[0] && arts[0].id, cantitate: "" }); rtDeseneazaIng(); });
@@ -669,7 +682,7 @@ async function sectiuneaCV(corp, t, zonaM) {
     try {
       await api.post(`/tenants/${t.id}/retete`, { denumire: den, pret_fara_tva: parseFloat(zona.querySelector("#rt-pret").value || 0), linii });
       zona.querySelector("#rt-den").value = ""; zona.querySelector("#rt-pret").value = ""; rtLinii = []; rtDeseneazaIng(); rtIncarca();
-    } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${escV(er.mesaj || "eroare")}</div>`; }
+    } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${esc(er.mesaj || "eroare")}</div>`; }
   });
   rtIncarca();
 
@@ -677,7 +690,7 @@ async function sectiuneaCV(corp, t, zonaM) {
     const z = zona.querySelector("#cv-inv-zona");
     z.innerHTML = `<div class="pf-lista">${arts.map((a) => `
       <div class="pf-frand"><div class="pf-frand-text">
-        <div class="pf-frand-nume">${escV(a.denumire)} \u00b7 scriptic ${a.stoc} ${escV(a.um)}</div>
+        <div class="pf-frand-nume">${esc(a.denumire)} \u00b7 scriptic ${a.stoc} ${esc(a.um)}</div>
       </div>
       <input type="number" step="0.001" class="mig-text cvi-faptic" data-aid="${a.id}" placeholder="faptic" aria-label="Stoc faptic" style="width:110px"></div>`).join("")}
       <p style="margin-top:8px"><button class="buton-primar" id="cvi-salveaza">Salveaz\u0103 inventarul (note ciorne)</button></p>`;
@@ -690,11 +703,11 @@ async function sectiuneaCV(corp, t, zonaM) {
         const r = await api.post(`/tenants/${t.id}/stocuri/inventar`,
           { data: val("#cv-data"), linii });
         zonaM.innerHTML = `<p class="pf-intro">${(r.rezultate || []).map((x) =>
-          x.eroare ? `${escV(x.denumire || x.articol_id)}: ${escV(x.eroare)}`
-          : x.diferenta === "0" ? `${escV(x.denumire)}: fara diferenta`
-          : `${escV(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${x.diferenta} \u00b7 ${bani(x.valoare)} lei \u00b7 nota ${escV(x.nota)} (ciorna)`).join("<br>")}</p>`;
+          x.eroare ? `${esc(x.denumire || x.articol_id)}: ${esc(x.eroare)}`
+          : x.diferenta === "0" ? `${esc(x.denumire)}: fara diferenta`
+          : `${esc(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${x.diferenta} \u00b7 ${bani(x.valoare)} lei \u00b7 nota ${esc(x.nota)} (ciorna)`).join("<br>")}</p>`;
         sectiuneaCV(corp, t, zonaM);
-      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escV(e.mesaj || "eroare")}</div>`; }
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
     });
   });
   zona.querySelector("#cv-fisa").addEventListener("click", async () => {
@@ -702,11 +715,11 @@ async function sectiuneaCV(corp, t, zonaM) {
     try {
       const r = await api.get(`/tenants/${t.id}/stocuri/articole/${val("#cv-art")}/fisa`);
       zona.querySelector("#cv-fisa-zona").innerHTML = `
-        <div class="pf-frand-nume" style="margin:8px 0">Fisa: ${escV(r.articol.denumire)}</div>
+        <div class="pf-frand-nume" style="margin:8px 0">Fisa: ${esc(r.articol.denumire)}</div>
         <div class="pf-lista">${r.linii.map((l) => `
           <div class="pf-frand"><div class="pf-frand-text">
-            <div class="pf-frand-nume">${escV(l.data)} \u00b7 ${l.tip === "intrare" ? "+" : "\u2212"}${l.cantitate} \u00b7 ${bani(l.valoare)} lei${l.pret_unitar ? " \u00b7 pret " + l.pret_unitar : ""}</div>
-            <div class="pf-frand-sub">sold ${l.sold_cantitate} \u00b7 ${bani(l.sold_valoare)} lei${l.cmp ? " \u00b7 CMP " + l.cmp : ""}${l.document ? " \u00b7 " + escV(l.document) : ""}</div>
+            <div class="pf-frand-nume">${esc(l.data)} \u00b7 ${l.tip === "intrare" ? "+" : "\u2212"}${l.cantitate} \u00b7 ${bani(l.valoare)} lei${l.pret_unitar ? " \u00b7 pret " + l.pret_unitar : ""}</div>
+            <div class="pf-frand-sub">sold ${l.sold_cantitate} \u00b7 ${bani(l.sold_valoare)} lei${l.cmp ? " \u00b7 CMP " + l.cmp : ""}${l.document ? " \u00b7 " + esc(l.document) : ""}</div>
           </div></div>`).join("") || '<div class="mig-gol">Fără mișcări.</div>'}</div>`;
     } catch { zona.querySelector("#cv-fisa-zona").innerHTML = `<div class="mig-gol">Nu am putut încărca fisa.</div>`; }
   });
@@ -715,7 +728,6 @@ async function sectiuneaCV(corp, t, zonaM) {
 // [stocuri] NIR + descarcare gestiune (global-valorica)
 
 async function ecranBilant(corp, nav, t) {
-  const escS = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   {
     corp.innerHTML = `
       <h2 class="pf-titlu">Bilan\u021b anual</h2>
@@ -741,10 +753,10 @@ async function ecranBilant(corp, nav, t) {
           ? `<span style="color:#1d7a4d;font-weight:600">\u25cf Validare f\u0103r\u0103 erori</span>`
           : `<span style="color:#ff3b30;font-weight:600">\u25cf Erori la validare</span>`;
         rez.innerHTML = `<p>${sem}</p>` +
-          (r.erori ? `<pre style="white-space:pre-wrap;font-size:12px;background:#f6f7f9;padding:8px;border-radius:8px">${escS(r.erori)}</pre>` : "") +
+          (r.erori ? `<pre style="white-space:pre-wrap;font-size:12px;background:#f6f7f9;padding:8px;border-radius:8px">${esc(r.erori)}</pre>` : "") +
           (r.avertismente && r.avertismente.length
-            ? `<p class="pf-intro">${r.avertismente.map(escS).join("<br>")}</p>` : "");
-      } catch (e) { rez.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "eroare")}</div>`; }
+            ? `<p class="pf-intro">${r.avertismente.map(esc).join("<br>")}</p>` : "");
+      } catch (e) { rez.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
     });
     corp.querySelector("#bl-xml").addEventListener("click", async () => {
       try {
@@ -755,15 +767,14 @@ async function ecranBilant(corp, nav, t) {
         a.download = `${tip()}_${t.id}_${corp.querySelector("#bl-an").value}.xml`;
         a.click();
         if (r.avertismente && r.avertismente.length) {
-          rez.innerHTML = `<p class="pf-intro">${r.avertismente.map(escS).join("<br>")}</p>`;
+          rez.innerHTML = `<p class="pf-intro">${r.avertismente.map(esc).join("<br>")}</p>`;
         }
-      } catch (e) { rez.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "eroare")}</div>`; }
+      } catch (e) { rez.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
     });
   }
 }
 
 async function ecranStocuri(corp, nav, t) {
-  const escS = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
   let liniiNir = [];
@@ -777,13 +788,13 @@ async function ecranStocuri(corp, nav, t) {
       : nirs.map((n) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">NIR ${escS(n.numar)} \u00b7 ${escS(n.data)} \u00b7 ${escS(n.furnizor || "")}</div>
+            <div class="pf-frand-nume">NIR ${esc(n.numar)} \u00b7 ${esc(n.data)} \u00b7 ${esc(n.furnizor || "")}</div>
             <div class="pf-frand-sub">cost ${n.cost_total} \u00b7 adaos ${n.adaos_total} \u00b7 TVA neex. ${n.tva_neexigibila} \u00b7 raft ${bani(n.valoare_vanzare)} lei</div>
           </div>
         </div>`).join("");
     const randLinie = (l, i) => `
       <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap" data-i="${i}">
-        <input type="text" class="mig-text sn-den" placeholder="denumire" aria-label="Denumire" value="${escS(l.denumire || "")}" style="flex:2;min-width:160px">
+        <input type="text" class="mig-text sn-den" placeholder="denumire" aria-label="Denumire" value="${esc(l.denumire || "")}" style="flex:2;min-width:160px">
         <input type="number" step="0.001" class="mig-text sn-cant" placeholder="cant." aria-label="Cantitate" value="${l.cantitate || ""}" style="width:90px">
         <input type="number" step="0.0001" class="mig-text sn-pa" placeholder="pret achizitie" aria-label="Pre\u021b achizi\u021bie" value="${l.pret_achizitie || ""}" style="width:120px">
         <input type="number" step="0.0001" class="mig-text sn-pv" placeholder="pret raft (cu TVA)" aria-label="Pre\u021b raft cu TVA" value="${l.pret_vanzare || ""}" style="width:140px">
@@ -858,7 +869,7 @@ async function ecranStocuri(corp, nav, t) {
         liniiNir = [];
         zonaM.innerHTML = `<p class="pf-intro">NIR salvat \u00b7 ${r.inregistrari.length} note ciorne (cost ${r.cost_total}, adaos ${r.adaos_total}, TVA neex. ${r.tva_neexigibila}).</p>`;
         deseneaza();
-      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "eroare")}</div>`; }
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
     });
     corp.querySelector("#s-desc").addEventListener("click", () => {
       const bD = corp.querySelector("#s-desc");
@@ -866,9 +877,9 @@ async function ecranStocuri(corp, nav, t) {
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/descarcare?an=${an}&luna=${luna}`, {});
         zonaM.innerHTML = r.mesaj
-          ? `<div class="mig-gol">${escS(r.mesaj)}</div>`
+          ? `<div class="mig-gol">${esc(r.mesaj)}</div>`
           : `<p class="pf-intro">K=${r.k} \u00b7 CMV ${r.cmv} \u00b7 adaos ${r.adaos} \u00b7 TVA ${r.tva} \u00b7 total 371: ${bani(r.total_371)} lei \u00b7 ${r.inregistrari.length} note ciorne.</p>`;
-      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escS(e.mesaj || "eroare")}</div>`; }
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
       }, { textOk: "Descarcă gestiunea" });
     });
     sectiuneaCV(corp, t, zonaM);
@@ -879,7 +890,6 @@ async function ecranStocuri(corp, nav, t) {
 
 // [casa] Registru de casa
 async function ecranCasa(corp, nav, t) {
-  const escC = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const CATEGORII = [
     ["incasare_client", "Încasare client (5311=4111)"],
     ["plata_furnizor", "Plată furnizor (401=5311)"],
@@ -895,14 +905,14 @@ async function ecranCasa(corp, nav, t) {
     try { reg = await api.get(`/tenants/${t.id}/casa/registru?an=${an}&luna=${luna}`); } catch {}
     const ziAzi = new Date().toISOString().slice(0, 10);
     const avert = (reg.avertismente || []).map((a) =>
-      `<div class="mig-gol" style="margin-bottom:6px">${escC(a.mesaj || a.cod || "")}${a.temei ? " \u00b7 " + escC(a.temei) : ""}</div>`).join("");
+      `<div class="mig-gol" style="margin-bottom:6px">${esc(a.mesaj || a.cod || "")}${a.temei ? " \u00b7 " + esc(a.temei) : ""}</div>`).join("");
     const randuri = !(reg.operatiuni || []).length
       ? `<div class="mig-gol">Nicio operatiune in luna asta.</div>`
       : reg.operatiuni.map((o) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${escC(o.data)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${bani(o.suma)} lei \u00b7 sold ${bani(o.sold)} lei</div>
-            <div class="pf-frand-sub">${escC(o.partener || "")}${o.document ? " \u00b7 doc " + escC(o.document) : ""} \u00b7 ${escC(o.categorie)}</div>
+            <div class="pf-frand-nume">${esc(o.data)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${bani(o.suma)} lei \u00b7 sold ${bani(o.sold)} lei</div>
+            <div class="pf-frand-sub">${esc(o.partener || "")}${o.document ? " \u00b7 doc " + esc(o.document) : ""} \u00b7 ${esc(o.categorie)}</div>
           </div>
           <button class="buton-secundar" data-del="${o.id}">\u0218terge</button>
         </div>`).join("");
@@ -979,9 +989,9 @@ async function ecranCasa(corp, nav, t) {
           document: corp.querySelector("#c-doc").value || null,
         });
         const av = (r.avertismente || []).length;
-        zonaM.innerHTML = `<p class="pf-intro">Nota ${escC(r.nota)} creata ca ciorna.${av ? ` <b style="color:#c9961f">${av} avertisment(e) plafon.</b>` : ""}</p>`;
+        zonaM.innerHTML = `<p class="pf-intro">Nota ${esc(r.nota)} creata ca ciorna.${av ? ` <b style="color:#c9961f">${av} avertisment(e) plafon.</b>` : ""}</p>`;
         deseneaza();
-      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${escC(e.mesaj || "eroare")}</div>`; }
+      } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
     });
     corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
       confirmaCaseta(b.parentElement || b, "Ștergi operațiunea și ciorna legată?", async () => {  // audit_cab_lot2_v1
@@ -1209,7 +1219,6 @@ async function ecranRaportZ(corp, nav, t) {
 
 // [jurnal] Registru jurnal lunar
 async function ecranJurnal(corp, nav, t) {
-  const escJ = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
   let inEditare = null; // id-ul notei deschise in editor
@@ -1234,8 +1243,8 @@ async function ecranJurnal(corp, nav, t) {
       return `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${dataRo(n.data)} \u00b7 ${escJ(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
-            <div class="pf-frand-sub">${n.linii.map((l) => `${escJ(l.debit)} = ${escJ(l.credit)} \u00b7 ${l.suma.toFixed(2)}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + escJ(n.sursa) : ""}</div>
+            <div class="pf-frand-nume">${dataRo(n.data)} \u00b7 ${esc(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
+            <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${l.suma.toFixed(2)}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + esc(n.sursa) : ""}</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:stretch">${butoane}</div>
         </div>`;
@@ -1243,13 +1252,13 @@ async function ecranJurnal(corp, nav, t) {
     const editor = (n) => `
       <div style="display:block;border:1px solid #c9961f">
         <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${dataRo(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
-        <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${escJ(n.descriere || "")}"></label>
+        <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${esc(n.descriere || "")}"></label>
         <div class="camp-eticheta" style="margin-top:8px">Linii: cont debit = cont credit \u00b7 sum\u0103</div>
         <div id="je-linii">${n.linii.map((l, i) => `
           <div style="display:flex;gap:8px;margin-bottom:6px" data-lin="${i}">
-            <input type="text" class="mig-text je-deb" placeholder="debit" aria-label="Cont debit" value="${escJ(l.debit)}" style="width:90px">
+            <input type="text" class="mig-text je-deb" placeholder="debit" aria-label="Cont debit" value="${esc(l.debit)}" style="width:90px">
             <span style="align-self:center">=</span>
-            <input type="text" class="mig-text je-cre" placeholder="credit" aria-label="Cont credit" value="${escJ(l.credit)}" style="width:90px">
+            <input type="text" class="mig-text je-cre" placeholder="credit" aria-label="Cont credit" value="${esc(l.credit)}" style="width:90px">
             <input type="number" step="0.01" class="mig-text je-sum" value="${l.suma.toFixed(2)}" style="width:120px">
             <button class="buton-secundar je-scoate">\u2212</button>
           </div>`).join("")}</div>
@@ -1290,7 +1299,7 @@ async function ecranJurnal(corp, nav, t) {
         deseneaza();
       } catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${(e && e.mesaj) || "eroare"}</div>`; }
     });
-    const eroare = (e, txt) => { zonaMesaj.innerHTML = `<div class="mig-gol">${escJ((e && e.mesaj) || txt)}</div>`; };
+    const eroare = (e, txt) => { zonaMesaj.innerHTML = `<div class="mig-gol">${esc((e && e.mesaj) || txt)}</div>`; };
     corp.querySelector("#j-prev").addEventListener("click", () => { inEditare = null; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#j-next").addEventListener("click", () => { inEditare = null; luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
     corp.querySelector("#j-nota-noua").addEventListener("click", () => { inEditare = "nou"; deseneaza(); });
