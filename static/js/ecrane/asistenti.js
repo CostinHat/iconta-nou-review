@@ -1,7 +1,7 @@
 // asistenti.js — managementul actorilor de cabinet (cardul Asistenți).
 // Trei niveluri: listă actori -> editare actor (permisiuni + firme atribuite) -> Vizualizează.
 // Doar admin_firma. Stil aliniat la validat.js / control.js (api.js + nav.deschide).
-import { api, arataMesaj, confirmaCaseta } from "../api.js";  /* audit_cab_lot2_v1 */
+import { api, arataMesaj, confirmaCaseta, esc } from "../api.js";  /* audit_cab_lot2_v1 */
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
   const M = { rosu: "probleme", galben: "de urm\u0103rit", verde: "f\u0103r\u0103 probleme" };
@@ -111,7 +111,7 @@ function randActor(a, corp, nav) {
   div.innerHTML = `
     <div class="asi-rand-sus">
       <div>
-        <div class="asi-nume">${nume} ${inactivBadge}</div>
+        <div class="asi-nume">${esc(nume)} ${inactivBadge}</div>
         <div class="asi-rol">${rolText} · ${a.nr_firme} firme</div>
       </div>
       <div class="asi-actiuni-rand">
@@ -226,13 +226,13 @@ async function deschideEditare(uid, corp, nav) {
       const btnS = box.querySelector("#asi-salveaza");
       const valNou = box.querySelector('[data-perm="poate_valida"]')?.checked && !a.poate_valida;
       let intrebari = [];
-      if (valNou) intrebari.push(`Acorzi dreptul de validare lui ${nume} (Nivel 2)? Asigură-te că acoperă tipurile pe care le va valida.`);
+      if (valNou) intrebari.push(`Acorzi dreptul de validare lui ${esc(nume)} (Nivel 2)? Asigură-te că acoperă tipurile pe care le va valida.`);
       if (a.atribuire_relevanta) {
         const bifate = [...box.querySelectorAll("[data-tid]")].filter((cb) => cb.checked).length;
         if (bifate === 0) {
           intrebari.push(a.rol === "angajat"
-            ? `${nume} rămâne fără nicio firmă. Competențele se șterg și contul se DEZACTIVEAZĂ (rămâne în istoric).`
-            : `${nume} rămâne fără nicio firmă. Competențele se șterg și iese din lista de procesatori (contul de administrator rămâne).`);
+            ? `${esc(nume)} rămâne fără nicio firmă. Competențele se șterg și contul se DEZACTIVEAZĂ (rămâne în istoric).`
+            : `${esc(nume)} rămâne fără nicio firmă. Competențele se șterg și iese din lista de procesatori (contul de administrator rămâne).`);
         }
       }
       if (!intrebari.length) { _salveazaEfectiv(); return; }
@@ -241,7 +241,7 @@ async function deschideEditare(uid, corp, nav) {
 
     const bDez = box.querySelector("#asi-dezactiveaza");
     if (bDez) bDez.onclick = () => {
-      confirmaCaseta(bDez.parentElement || bDez, `Dezactivezi ${nume}? Rămâne în istoric, dar nu mai are acces.`, async () => {
+      confirmaCaseta(bDez.parentElement || bDez, `Dezactivezi ${esc(nume)}? Rămâne în istoric, dar nu mai are acces.`, async () => {
         try { await api.post(`/asistenti/${uid}/dezactiveaza`); nav.inapoi(); randeazaAsistenti(corp, nav); }
         catch { err.textContent = "Nu am putut dezactiva."; }
       }, { textOk: "Dezactivează" });
