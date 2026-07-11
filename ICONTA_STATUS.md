@@ -520,3 +520,19 @@ multiplier tratat bine (val/mult), curs_din_harta determinist (cel mai recent Cu
 LECTIE (regula de aur, iar): am declarat "curs gresit" pe baza unei cifre din MEMORIE
 (EUR ~4.97) fara sa verific la sursa. Exact tiparul pe care regula il previne.
 #131/#132 emitere valuta: CONFIRMAT CORECT (curs real aplicat, tva_lei corect).
+
+## NC-27 partea 2 (regula verificator XSS) — AMANAT deliberat
+Detector XSS incercat in verificator_conformitate.py -> RETRAS (restaurat la baseline
+TOTAL:6). Motiv: pattern-ul ${camp.entitate} neescapat prinde prea multe false pozitive
+greu de exclus mecanic: (a) deja-escapate ${escV(...)}/${escS(...)} - exista 7 variante
+locale esc/escB/escC/escJ/escS/escV/escapeHtml, (b) fals-prieteni "esc" in numele
+deschide*() (deschideCard/Modal/Lupa contin "esc"), (c) context atribut vs innerHTML vs
+dialog confirmaCaseta. Un detector imperfect polueaza verificatorul (trebuie TOTAL:0 la
+commit) -> mai bine amanat decat pe jumatate (regula 0a).
+DAR detectorul a scos la iveala VECTORI XSS REALI in plus fata de partea 1 (firme.js+
+portal.js reparate): asistenti.js:153 ${f.nume}${f.cui}, admin.js:79 ${c.nume} in option,
+firme.js:1176 ${r.data} import Z, si posibil altele. => NC-27 partea 1 a acoperit 4 locuri
+dar escaparea e inconsistenta pe MAI MULTE ecrane. AUDIT XSS COMPLET ramane task real:
+(1) unifica cele 7 variante esc* locale intr-un singur esc() din api.js; (2) aplica pe
+TOATE ecranele (grep dupa .nume/.email/.denumire/.cui/.tert_nume in innerHTML); (3) apoi
+detector in verificator cu excludere corecta (deja-escapate + deschide* + atribute).
