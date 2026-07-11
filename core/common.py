@@ -99,11 +99,6 @@ CODURI = {
     "DECLARATIE_INTARZIATA": (
         "Declarația {tip} pentru {perioada} avea termen {scadenta} — depășit.",
         "Calendar ANAF — termen depunere"),
-    "STOC_DIFERENTA_FISA": (
-        "Cont {cont}: sold contabil {sold_contabil} ≠ valoare din fișele de magazin "
-        "{valoare_fise} (diferență {diferenta}) — verifică mișcările de stoc "
-        "sau notele contabile pe acest cont.",
-        "OMFP 1802/2014 — concordanța stocuri contabile cu evidența cantitativ-valorică"),
 }
 
 
