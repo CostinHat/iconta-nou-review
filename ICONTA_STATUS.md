@@ -508,3 +508,15 @@ scriptul initial a raportat gresit "esc deja in import" portal.js -> era nedefin
 prins inainte de restart (altfel portalul client crapa la afisare lista).
 RAMAS NC-27 (partea 2): regula in verificator_conformitate.py care detecteaza automat
 ${dateUser} neescapat in innerHTML (pattern de finete: distinge date user de text de cod).
+
+## CORECTIE 11.07 — observatia "curs BNR gresit" era FALSA ALARMA
+Verificat la sursa (cursbnr.ro): EUR real 2026 = interval 5.08-5.27 lei (mediu 5.148,
+max 5.2688 pe 6.05, min 5.0871 pe 8.01). Valorile pe care le marcasem "gresite"
+(4.9755, 5.2409) sunt CORECTE - 5.2409 e in interval; 4.9755 era cursul mediu 2024,
+pe care l-am confundat din memorie cu cel actual. Diferenta intre apeluri = zile
+diferite (cache vs fallback live), nu aleator. curs_bnr.py e CORECT: cache-first,
+multiplier tratat bine (val/mult), curs_din_harta determinist (cel mai recent Cube
+<= data). NU e bug. Observatia anterioara din REGISTRU se ANULEAZA.
+LECTIE (regula de aur, iar): am declarat "curs gresit" pe baza unei cifre din MEMORIE
+(EUR ~4.97) fara sa verific la sursa. Exact tiparul pe care regula il previne.
+#131/#132 emitere valuta: CONFIRMAT CORECT (curs real aplicat, tva_lei corect).
