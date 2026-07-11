@@ -420,3 +420,28 @@ diminuare (cod 06/14) — in REGISTRU.
 - Zonele 10-17 din planul de teste — netestate
 - Din #72: nomenclator coduri CM la CNAS + exceptii diminuare (cod 06/14)
 - NC-22, NC-23, NC-24 (R4 nav 18 ecrane), #59 e-Factura XML test — deschise anterior
+
+## SESIUNE 11.07.2026 (continuare) — zona 9 #94-97
+- #94 control fiscal lista sortata — PASS AZI. Ruta /control-fiscal agrega
+  evalueaza_firma pe portofoliu + sumar {verde,galben,rosu,gri}. Sortare
+  rosu->galben->verde->gri verificata. Testat pe cabinet Nistor (uid2) si Amzuica
+  (uid7). Tranzitie de stare demonstrata end-to-end: tenant_003 rosu (lipsa D100 T1)
+  -> depunere in tranzactie -> VERDE (lipsa goala) -> rollback -> revine rosu. Nimic
+  persistat. (Toate firmele de test sunt rosu pe date reale; verdele fortat controlat.)
+- #95 drill-down firma — PASS AZI. Ruta /control-fiscal/{tid} = evalueaza_firma +
+  verificari_contabile. tenant_003: lipsa = D100 T1 termen 27.04.2026. Corect.
+- #96 verificator coerenta TVA drill-down — ABSENT in build curent. Exista doar
+  coerenta_tva de baza (suma de_plata/de_recuperat, testat #90), FARA drill-down pe
+  facturi nepostate. Aparea ca livrat in istoric — probabil in build vechi /opt/iconta
+  neportat la reconstructia iconta_v2. De confirmat + reconstruit.
+- #97 D205 vs 457 — ABSENT in build curent. Doar o nota 457=463 (regularizare
+  dividende, main.py 6118), FARA verificator dedicat D205-vs-457. Acelasi caz ca #96.
+
+### ZONA 9 — concluzie
+Testabil epuizat. CONSTRUITE+PASS: #88,89,90,93,94,95. ABSENTE (de construit,
+workstream separat de dezvoltare): #91 stocuri, #92 Intrastat, #96 TVA drill, #97 D205-457.
+
+### REGISTRU (adaugat)
+- #96, #97 apar ca livrate in istoric dar lipsesc din build iconta_v2. Ipoteza: erau
+  in /opt/iconta vechi, neportate. De verificat daca merita reconstruite sau erau
+  inlocuite de alte mecanisme (control fiscal + verificari_contabile acopera partial).
