@@ -190,3 +190,26 @@ Acoperit de fix-ul #69 (conditii cumulative facilitate). Verificat explicit pe c
 - S2 (august, minim 4325): facilitate 200 corect (tranzitia 300->200 pe data functioneaza)
 - plafon S2: venit total 4650>4600 -> facilitate 0; venit 4600 exact -> facilitate 200 (<=)
 Tranzitia semestriala gestionata de cotele datate, plafon corect la granita.
+
+## Test #72 (11.07.2026) — Concediu medical coduri + procente: PARTIAL (split reparat)
+Sesiune Opus, verificare la sursa (OUG 158/2005 + OUG 91/2025 + Legea 64/2026 +
+Ordinul 506/1030/2026, textul oficial cnas.ro art.78^4). CM e BACKEND-ONLY (endpoint
+main.py:5130 + motor calcul_cm, ZERO UI inca).
+
+CORECTE la sursa: procente cod 01 (55/65/75 progresiv), maternitate 85%, coduri 100%,
+perioada diminuarii (01.02.2026-31.12.2027), regula "o data per episod".
+
+BUG SPLIT reparat: zile_ang = min(zile_platite, max(5-diminuare,0)) dadea 4 zile
+angajatorului cand diminuare=1. Oficial: angajatorul suporta zilele 2-6 = 5 zile
+lucratoare PLATITE, FNUASS din ziua 7. Prima zi diminuata e neplatita, NU reduce
+plafonul de 5. Impact real: dosarele de recuperare CNAS erau respinse (alocare
+eronata perioada angajator). Reparat: zile_ang = min(zile_platite, 5). Verificat 5 cazuri.
+
+RAMAS PARTIAL (piesa dedicata Opus - aliniere nomenclator CM la CNAS inainte de fix):
+1. Nomenclatorul iConta (51=izolare, 06=urgente) DIFERA de cel oficial CNAS
+   (07=carantina/izolare, 14=oncologic/neoplazii, 12/13/14=PNS). De aliniat intai.
+2. Excepatii diminuare gresite (dupa nomenclatorul corect): cod 06 (urgente) exceptat
+   gresit - NU e in lista oficiala; cod 14 (oncologic) LIPSESTE din exceptii - ar
+   trebui adaugat. Lista oficiala exceptii (art.78^4, de la 01.06.2026): maternitate
+   (c), oncologic (d1), risc maternal (e), PNS (12/13/14), spitalizare, +accidente
+   munca (L346/2002) + izolare (L136/2020).

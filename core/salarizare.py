@@ -227,8 +227,10 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
         diminuare = 1
     zile_platite = max(zile_lucratoare_cm - diminuare, 0)
     brut = (mz * pct * zile_platite).quantize(Decimal("1"))  # rotunjit la leu
-    # split: angajator zilele 1-5 calendaristice ale episodului, FNUASS din ziua 6
-    zile_ang = min(zile_platite, max(5 - diminuare, 0))
+    # split angajator/FNUASS (Norme OUG 158/2005): angajatorul suporta zilele 2-6 ale
+    # concediului = primele 5 zile lucratoare din cele PLATITE (prima zi diminuata e
+    # neplatita, nu reduce plafonul de 5 al angajatorului); FNUASS suporta din ziua 7.
+    zile_ang = min(zile_platite, 5)
     zile_fnuass = zile_platite - zile_ang
     brut_ang = (mz * pct * zile_ang).quantize(Decimal("1"))
     brut_fnuass = brut - brut_ang
