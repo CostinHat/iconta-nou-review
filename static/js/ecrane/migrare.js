@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api } from "../api.js";
+import { api, esc } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 const STRATURI = [
@@ -90,7 +90,7 @@ async function meniuMigrare(corp, nav) {
       sub = `${nrFirme} ${nrFirme === 1 ? "firmă importată" : "firme importate"}`;
     }
     if (stare && stare.stare === "in_lucru" && stare.nota) {
-      sub = `${stare.nota}`;
+      sub = `${esc(stare.nota)}`;
       subAlert = true;
     }
 
@@ -208,7 +208,7 @@ function pasRezultate(corp, nav, rezultate) {
     rand.innerHTML = `
       <input type="checkbox" data-i="${i}" ${r.gasit ? "checked" : "disabled"}>
       <div class="mig-rand-text">
-        <div class="mig-rand-nume">${r.gasit ? r.denumire : ("CUI " + r.cui)}</div>
+        <div class="mig-rand-nume">${esc(r.gasit ? r.denumire : ("CUI " + r.cui))}</div>
         <div class="mig-rand-sub">${r.gasit
           ? ("CUI " + r.cui + " · " + (r.platitor_tva ? "plătitor TVA" : "neplătitor TVA"))
           : "nu a fost găsit la ANAF"}</div>
@@ -351,7 +351,7 @@ async function wizardVector(corp, nav) {
     }
     rand.innerHTML = `
       <div class="mig-frand-text">
-        <div class="mig-frand-nume">${f.nume}</div>
+        <div class="mig-frand-nume">${esc(f.nume)}</div>
         <div class="mig-frand-sub">${sub}</div>
       </div>
       <span class="mig-stare ${f.are_vector ? "mig-ok" : "mig-gri"}">${f.are_vector ? "\u2713 gata" : "de completat"}</span>
@@ -386,7 +386,7 @@ async function formularVectorFirma(corp, nav, f) {
   const tva = !!tvaInit;
   corp.innerHTML = `
     <h2 class="mig-form-titlu">Verificare fiscal\u0103</h2>
-    <p class="mig-form-cui">${f.nume} \u00b7 CUI ${f.cui}</p>
+    <p class="mig-form-cui">${esc(f.nume)} \u00b7 CUI ${esc(f.cui)}</p>
     <div class="vf-form">
       <div class="vf-grup">
         <div class="vf-eticheta">Regim fiscal</div>
@@ -485,7 +485,7 @@ async function wizardSolduri(corp, nav) {
     rand.className = "mig-frand";
     rand.innerHTML = `
       <div class="mig-frand-text">
-        <div class="mig-frand-nume">${f.nume}</div>
+        <div class="mig-frand-nume">${esc(f.nume)}</div>
         <div class="mig-frand-sub">${f.are_solduri ? `${f.randuri} conturi importate` : "fără solduri încă"}</div>
       </div>
       <span class="mig-stare ${f.are_solduri ? "mig-ok" : "mig-gri"}">${f.are_solduri ? "✓ gata" : "de încărcat"}</span>
@@ -505,7 +505,7 @@ async function wizardSolduri(corp, nav) {
 
 function importSolduriFirma(corp, nav, firma) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b><br>Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor).</p>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -545,7 +545,7 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
   const echilibrat = Math.abs(date.total_debit - date.total_credit) < 0.01;
 
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b> · balanță încărcată</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · balanță încărcată</p>
     <div class="mig-sold-rezumat">
       <b>${randuri.length}</b> conturi · debit <b>${fmt(date.total_debit)}</b> · credit <b>${fmt(date.total_credit)}</b>
       ${echilibrat ? '<span class="mig-eq mig-eq-ok">echilibrat</span>' : '<span class="mig-eq mig-eq-no">neechilibrat</span>'}
@@ -562,8 +562,8 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => `
     <div class="mig-sold-rand">
-      <span class="mig-sold-cont">${r.cont}</span>
-      <span class="mig-sold-den">${r.denumire || ""}</span>
+      <span class="mig-sold-cont">${esc(r.cont)}</span>
+      <span class="mig-sold-den">${esc(r.denumire || "")}</span>
       <span class="mig-sold-val">${fmt(r.debit)}</span>
       <span class="mig-sold-val">${fmt(r.credit)}</span>
     </div>`).join("");
@@ -612,7 +612,7 @@ async function wizardParteneri(corp, nav) {
     rand.className = "mig-frand";
     rand.innerHTML = `
       <div class="mig-frand-text">
-        <div class="mig-frand-nume">${f.nume}</div>
+        <div class="mig-frand-nume">${esc(f.nume)}</div>
         <div class="mig-frand-sub">${f.are_parteneri ? `${f.randuri} parteneri importați` : "fără parteneri încă"}</div>
       </div>
       <span class="mig-stare ${f.are_parteneri ? "mig-ok" : "mig-gri"}">${f.are_parteneri ? "✓ gata" : "de încărcat"}</span>
@@ -632,7 +632,7 @@ async function wizardParteneri(corp, nav) {
 
 function importParteneriFirma(corp, nav, firma) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b><br>Încarcă partenerii (cont · CUI · denumire · sold debitor · sold creditor).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă partenerii (cont · CUI · denumire · sold debitor · sold creditor).</p>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0a807b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -674,15 +674,15 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
   // banda de coerenta per cont sintetic
   const coerHTML = coer.map((c) => {
     if (c.coincide === true) {
-      return `<span class="mig-eq mig-eq-ok">${c.cont}: ✓ coincide</span>`;
+      return `<span class="mig-eq mig-eq-ok">${esc(c.cont)}: ✓ coincide</span>`;
     } else if (c.coincide === false) {
-      return `<span class="mig-eq mig-eq-no">${c.cont}: ⚠ diferență ${fmt(Math.abs(c.diferenta))}</span>`;
+      return `<span class="mig-eq mig-eq-no">${esc(c.cont)}: ⚠ diferență ${fmt(Math.abs(c.diferenta))}</span>`;
     }
-    return `<span class="mig-eq mig-eq-gri">${c.cont}: fără balanță</span>`;
+    return `<span class="mig-eq mig-eq-gri">${esc(c.cont)}: fără balanță</span>`;
   }).join(" ");
 
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b> · parteneri încărcați</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · parteneri încărcați</p>
     <div class="mig-sold-rezumat">
       <b>${randuri.length}</b> parteneri · debit <b>${fmt(date.total_debit)}</b> · credit <b>${fmt(date.total_credit)}</b>
     </div>
@@ -699,9 +699,9 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => `
     <div class="mig-sold-rand mig-rand-part">
-      <span class="mig-sold-cont">${r.cont}</span>
-      <span class="mig-sold-cui">${r.cui || ""}</span>
-      <span class="mig-sold-den">${r.denumire || ""}</span>
+      <span class="mig-sold-cont">${esc(r.cont)}</span>
+      <span class="mig-sold-cui">${esc(r.cui || "")}</span>
+      <span class="mig-sold-den">${esc(r.denumire || "")}</span>
       <span class="mig-sold-val">${fmt(r.debit)}</span>
       <span class="mig-sold-val">${fmt(r.credit)}</span>
     </div>`).join("");
@@ -750,7 +750,7 @@ async function wizardSalariati(corp, nav) {
     rand.className = "mig-frand";
     rand.innerHTML = `
       <div class="mig-frand-text">
-        <div class="mig-frand-nume">${f.nume}</div>
+        <div class="mig-frand-nume">${esc(f.nume)}</div>
         <div class="mig-frand-sub">${f.are_salariati ? `${f.randuri} salariați importați` : "fără salariați încă"}</div>
       </div>
       <span class="mig-stare ${f.are_salariati ? "mig-ok" : "mig-gri"}">${f.are_salariati ? "✓ gata" : "de încărcat"}</span>
@@ -770,7 +770,7 @@ async function wizardSalariati(corp, nav) {
 
 function importSalariatiFirma(corp, nav, firma) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b><br>Încarcă exportul de salariați (nume · CNP · salariu · date contract).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă exportul de salariați (nume · CNP · salariu · date contract).</p>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#c2415f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -813,7 +813,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     : `<span class="mig-eq mig-eq-ok">toate ${date.valizi} CNP-urile sunt corecte</span>`;
 
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b> · salariați încărcați</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · salariați încărcați</p>
     <div class="mig-sold-rezumat"><b>${randuri.length}</b> salariați</div>
     <div class="mig-coer">${banda}</div>
     <div class="mig-sold-cap mig-cap-sal">
@@ -829,14 +829,14 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
   tabel.innerHTML = randuri.map((r) => {
     const ok = r.cnp_valid;
     const cnpCell = ok
-      ? `<span class="mig-cnp-ok">${r.cnp}</span>`
-      : `<span class="mig-cnp-no" title="${r.cnp_motiv}">${r.cnp || "—"} ⚠</span>`;
+      ? `<span class="mig-cnp-ok">${esc(r.cnp)}</span>`
+      : `<span class="mig-cnp-no" title="${esc(r.cnp_motiv)}">${esc(r.cnp || "—")} ⚠</span>`;
     const norma = r.tip_norma === "partiala" ? `parțială ${r.ore_zi}h` : "întreagă";
     return `
       <div class="mig-sold-rand mig-rand-sal ${ok ? "" : "mig-rand-invalid"}">
-        <span class="mig-sold-den">${r.nume} ${r.prenume}</span>
+        <span class="mig-sold-den">${esc(r.nume)} ${esc(r.prenume)}</span>
         <span class="mig-sold-cnp">${cnpCell}</span>
-        <span class="mig-sold-cor">${r.cor || ""}</span>
+        <span class="mig-sold-cor">${esc(r.cor || "")}</span>
         <span class="mig-sold-val">${fmt(r.salariu_brut)}</span>
         <span class="mig-sold-norma">${norma}</span>
       </div>`;
@@ -886,7 +886,7 @@ async function wizardAsociati(corp, nav) {
     rand.className = "mig-frand";
     rand.innerHTML = `
       <div class="mig-frand-text">
-        <div class="mig-frand-nume">${f.nume}</div>
+        <div class="mig-frand-nume">${esc(f.nume)}</div>
         <div class="mig-frand-sub">${f.are_asociati ? `${f.randuri} asociați importați` : "fără asociați încă"}</div>
       </div>
       <span class="mig-stare ${f.are_asociati ? "mig-ok" : "mig-gri"}">${f.are_asociati ? "✓ gata" : "de încărcat"}</span>
@@ -906,7 +906,7 @@ async function wizardAsociati(corp, nav) {
 
 function importAsociatiFirma(corp, nav, firma) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b><br>Încarcă asociații (nume · CNP/CUI · cotă %).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă asociații (nume · CNP/CUI · cotă %).</p>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#6d28d9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -950,7 +950,7 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
     : `<span class="mig-eq mig-eq-no">total cote: ⚠ ${fmt(coer.total)}%</span>`;
 
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b> · asociați încărcați</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · asociați încărcați</p>
     <div class="mig-sold-rezumat"><b>${randuri.length}</b> asociați</div>
     <div class="mig-coer">${banda}</div>
     <div class="mig-sold-cap mig-cap-asoc">
@@ -965,12 +965,12 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => {
     const cod = r.tip === "fizica"
-      ? (r.cnp_valid ? `<span class="mig-cnp-ok">${r.cnp}</span>` : `<span class="mig-cnp-no" title="${r.cnp_motiv}">${r.cnp} ⚠</span>`)
-      : `<span>${r.cnp}</span>`;
+      ? (r.cnp_valid ? `<span class="mig-cnp-ok">${esc(r.cnp)}</span>` : `<span class="mig-cnp-no" title="${esc(r.cnp_motiv)}">${esc(r.cnp)} ⚠</span>`)
+      : `<span>${esc(r.cnp)}</span>`;
     const tip = r.tip === "juridica" ? "juridică" : "fizică";
     return `
       <div class="mig-sold-rand mig-rand-asoc">
-        <span class="mig-sold-den">${r.nume}</span>
+        <span class="mig-sold-den">${esc(r.nume)}</span>
         <span class="mig-sold-cnp">${cod}</span>
         <span class="mig-sold-tip">${tip}</span>
         <span class="mig-sold-val">${fmt(r.cota)}</span>
@@ -1021,7 +1021,7 @@ async function wizardMijloace(corp, nav) {
     rand.className = "mig-frand";
     rand.innerHTML = `
       <div class="mig-frand-text">
-        <div class="mig-frand-nume">${f.nume}</div>
+        <div class="mig-frand-nume">${esc(f.nume)}</div>
         <div class="mig-frand-sub">${f.are_mijloace ? `${f.randuri} mijloace fixe importate` : "fără mijloace fixe încă"}</div>
       </div>
       <span class="mig-stare ${f.are_mijloace ? "mig-ok" : "mig-gri"}">${f.are_mijloace ? "✓ gata" : "de încărcat"}</span>
@@ -1041,7 +1041,7 @@ async function wizardMijloace(corp, nav) {
 
 function importMijloaceFirma(corp, nav, firma) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b><br>Încarcă registrul de mijloace fixe (cod · denumire · valoare · rezidual · durată · PIF · metodă).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă registrul de mijloace fixe (cod · denumire · valoare · rezidual · durată · PIF · metodă).</p>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#c0492b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -1084,7 +1084,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
     : `<span class="mig-eq mig-eq-ok">toate ${date.total} corecte</span>`;
 
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b> · mijloace fixe încărcate</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · mijloace fixe încărcate</p>
     <div class="mig-sold-rezumat">
       <b>${randuri.length}</b> mijloace · valoare <b>${fmt(date.total_valoare)}</b> · rămas <b>${fmt(date.total_rezidual)}</b>
     </div>
@@ -1106,7 +1106,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
     return `
       <div class="mig-sold-rand mig-rand-mf ${r.ok ? "" : "mig-rand-invalid"}">
         <span class="mig-sold-cont">${r.cod}</span>
-        <span class="mig-sold-den">${r.denumire}${av}</span>
+        <span class="mig-sold-den">${esc(r.denumire)}${av}</span>
         <span class="mig-sold-val">${fmt(r.valoare)}</span>
         <span class="mig-sold-val">${fmt(r.rezidual)}</span>
         <span class="mig-sold-dur">${luni}</span>
@@ -1158,7 +1158,7 @@ async function wizardIstoric(corp, nav) {
     rand.className = "mig-frand";
     rand.innerHTML = `
       <div class="mig-frand-text">
-        <div class="mig-frand-nume">${f.nume}</div>
+        <div class="mig-frand-nume">${esc(f.nume)}</div>
         <div class="mig-frand-sub">${f.are_istoric ? `${f.randuri} declarații înregistrate` : "fără istoric încă"}</div>
       </div>
       <span class="mig-stare ${f.are_istoric ? "mig-ok" : "mig-gri"}">${f.are_istoric ? "✓ gata" : "de încărcat"}</span>
@@ -1178,7 +1178,7 @@ async function wizardIstoric(corp, nav) {
 
 function importIstoricFirma(corp, nav, firma) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b><br>Încarcă declarațiile depuse (tip · an · lună · data depunerii).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă declarațiile depuse (tip · an · lună · data depunerii).</p>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#45597f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13l2 2 4-4"/></svg>
@@ -1221,7 +1221,7 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
     : `<span class="mig-eq mig-eq-ok">toate ${date.total} recunoscute</span>`;
 
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b> · istoric declarații</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b> · istoric declarații</p>
     <div class="mig-sold-rezumat"><b>${randuri.length}</b> declarații depuse</div>
     <div class="mig-coer">${banda}</div>
     <div class="mig-sold-cap mig-cap-ist">
@@ -1289,7 +1289,7 @@ async function wizardPlanConturi(corp, nav) {
     rand.className = "mig-frand";
     rand.innerHTML = `
       <div class="mig-frand-text">
-        <div class="mig-frand-nume">${f.nume}</div>
+        <div class="mig-frand-nume">${esc(f.nume)}</div>
         <div class="mig-frand-sub">${f.nr_conturi} conturi \u00een plan</div>
       </div>
       <span class="mig-stare ${f.nr_conturi > 0 ? "mig-ok" : "mig-gri"}">${f.nr_conturi > 0 ? "\u2713 populat" : "gol"}</span>
@@ -1307,7 +1307,7 @@ async function wizardPlanConturi(corp, nav) {
 }
 function importPlanConturiFirma(corp, nav, firma) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b><br>Caut\u0103 \u00een planul existent sau adaug\u0103 un cont nou.</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Caut\u0103 \u00een planul existent sau adaug\u0103 un cont nou.</p>
     <input type="text" class="mig-text" id="pc-cauta" aria-label="Caut\u0103 \u00een plan" placeholder="Caut\u0103 dup\u0103 simbol sau denumire\u2026" style="width:100%;margin-bottom:10px">
     <div class="mig-lista" id="pc-rezultate"></div>
     <div class="mig-eticheta" style="margin-top:16px">Adaug\u0103 cont nou</div>
@@ -1328,7 +1328,7 @@ function importPlanConturiFirma(corp, nav, firma) {
       rezZona.innerHTML = conturi.length
         ? conturi.map((c) => `<div class="mig-frand" style="cursor:default">
             <div class="mig-frand-text">
-              <div class="mig-frand-nume">${c.simbol} \u00b7 ${c.denumire}</div>
+              <div class="mig-frand-nume">${esc(c.simbol)} \u00b7 ${esc(c.denumire)}</div>
               <div class="mig-frand-sub">${c.tip || ""}</div>
             </div>
           </div>`).join("")
@@ -1377,7 +1377,7 @@ export function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Plan de conturi", desc: "Cont\u0103 analitice/nestandard", fn: (c, n) => importPlanConturiFirma(c, n, firma) },
   ];
   corp.innerHTML = `
-    <p class="mig-intro"><b>${firma.nume}</b><br>Alege ce vrei s\u0103 aduci pentru aceast\u0103 firm\u0103.</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Alege ce vrei s\u0103 aduci pentru aceast\u0103 firm\u0103.</p>
     <div class="mig-lista" id="mig-pasi"></div>
   `;
   const lista = corp.querySelector("#mig-pasi");
