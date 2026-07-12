@@ -113,6 +113,9 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Cardurile REFERĂ paleta, nu o copiază: `...CULORI_CARD.cheie` (import din api.js), NICIODATĂ `bg:"#..."` literal — chiar dacă valoarea coincide cu paleta. Excepție: semaforul (control.js, obiecte cu `dot:`). Prins de regula CULOARE_CARD_HEX în verificator.
 - Culorile de semafor (cap.8) și cele de stare rămân separate; astea sunt doar pentru carduri de navigare.
 
+### Spacing (decizie 12.07.2026)
+- Margin/padding inline rămân valori literale (6/8/10/12/14/16px, tipar de facto consistent, ~2100 apariții). NU se canonizează în tokeni — raport risc/câștig nefavorabil. Decizie închisă, nu se redeschide fără motiv nou.
+
 ## 13. Iconițe
 
 - Iconițele de card/UI folosesc EXCLUSIV dicționarul canonic unic `ICOANE` (api.js) — path-uri SVG interne, viewBox 24×24, stroke. NU se duplică dicționarul în ecrane (era copiat divergent în cabinet/admin/asistent).

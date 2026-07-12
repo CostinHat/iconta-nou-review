@@ -194,7 +194,8 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
 
   const dir = dirEticheta(f.directie);
   const partener = f.tert_nume ? `${esc(f.tert_nume)}${f.tert_cui ? " \u00b7 CUI " + esc(f.tert_cui) : ""}` : "";
-  const statusTxt = f.storno_din_id ? "storno" : (f.status || "");
+  const STATUS_ETICHETA = { de_preluat: "de preluat", emisa: "emis\u0103", anulata: "anulat\u0103", platita: "pl\u0103tit\u0103" };
+  const statusTxt = f.storno_din_id ? "storno" : (STATUS_ETICHETA[f.status] || f.status || "");
 
   corp.innerHTML = `
     <div class="fd-antet">
@@ -208,7 +209,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         ${f.platita_la ? '<span class="fac-storno-tag fac-tag-platit">pl\u0103tit\u0103</span>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-chitanta">Emite chitan\u021b\u0103</button>' : ""}
-        ${f.transformat_in_id ? `<span class="fac-storno-tag">transformat \u00een #${f.transformat_in_id}</span>` : ""}
+        ${f.transformat_in_id ? `<button class="btn-link" id="fd-vezi-transformata">transformat\u0103 \u00een ${esc(f.transformat_in_numar || "factur\u0103")}</button>` : ""}
       </div>
       <div class="fd-email-zona" id="fd-email-zona"></div>
       <div class="fd-storno-zona" id="fd-storno-zona"></div>
@@ -381,12 +382,15 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     });
   }
 
+  const btnVeziTransformata = corp.querySelector("#fd-vezi-transformata");
+  if (btnVeziTransformata) btnVeziTransformata.addEventListener("click", () => detaliiFactura(corp, nav, tenantId, f.transformat_in_id, opt));
   const btnStorno = corp.querySelector("#fd-storno");
   const btnTransforma = corp.querySelector("#fd-transforma");
   if (btnTransforma) btnTransforma.addEventListener("click", async () => {
     try {
       const r = await api.post(`/tenants/${tenantId}/facturi/${f.id}/transforma`, {});
-      btnTransforma.outerHTML = `<span class="fac-storno-tag">factura ${r.numar} emisa</span>`;
+      await detaliiFactura(corp, nav, tenantId, f.id, opt);
+      arataMesaj(corp, `Factura ${r.numar} a fost emis\u0103.`, "ok");
     } catch (e) {
       btnTransforma.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">' + ((e && e.mesaj) || "Nu am putut transforma.") + '</span>');
     }

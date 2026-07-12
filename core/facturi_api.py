@@ -115,7 +115,8 @@ def detalii_factura(conn, factura_id):
             "SELECT id, client_id, numar, data_emitere, data_scadenta, total, tva, "
             "status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
             "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, storno_din_id, tip, transformat_in_id, "
-            "link_plata, platita_la "
+            "link_plata, platita_la, "
+            "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar "
             "FROM facturi WHERE id = %s",
             (factura_id,))
         f = cur.fetchone()
