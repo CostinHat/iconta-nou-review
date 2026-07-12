@@ -2149,6 +2149,7 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
 .msg-eroare { color: #a3231c; font-weight: 600; font-size: var(--text-mic); }
 .msg-avert  { color: #8a6410; font-weight: 600; font-size: var(--text-mic); }
 .msg-info   { color: var(--gri); font-size: var(--text-mic); }
+.msg-ok     { color: var(--verde); font-weight: 600; font-size: var(--text-mic); }
 .acces-modal-inreg { background: #eaf2fc; }
 /* meniu_card_v2: alias pe acces-card, latime plina */
 .meniu-card { width: 100%; margin-bottom: 12px; }

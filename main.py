@@ -2594,7 +2594,7 @@ def tenant_amortizare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
                 WHERE sursa = 'amortizare' AND numar = %s
             """, (f"AMORT-{an}-{luna:02d}",))
             if cur.fetchone():
-                raise HTTPException(400, "amortizarea lunii e deja generata")
+                raise HTTPException(400, "Amortizarea lunii e deja generată.")
             cur.execute(f"""
                 SELECT id, denumire, cont_amortizare, valoare, COALESCE(rezidual,0), dnf_luni, data_pif
                 FROM {schema}.mijloace_fixe WHERE activ = true

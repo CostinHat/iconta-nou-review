@@ -1062,12 +1062,12 @@ async function ecranBanca(corp, nav, t) {
     zonaLista.querySelectorAll("[data-ign]").forEach((b) =>
       b.addEventListener("click", async () => {
         try { await api.post(`/tenants/${t.id}/banca/reconciliere/${b.dataset.ign}/ignora`, {}); incarca(); }
-        catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
+        catch (e) { arataMesaj(zonaMesaj, e.mesaj || "Eroare.", "eroare"); }
       }));
     zonaLista.querySelectorAll(".bk-undo").forEach((b) =>
       b.addEventListener("click", async () => {
         try { await api.post(`/tenants/${t.id}/banca/reconciliere/${b.dataset.id}/reactiveaza`, {}); incarca(); }
-        catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
+        catch (e) { arataMesaj(zonaMesaj, e.mesaj || "Eroare.", "eroare"); }
       }));
     zonaLista.querySelectorAll("[data-alege]").forEach((b) =>
       b.addEventListener("click", () => picker(linii.find((x) => x.id === parseInt(b.dataset.alege)))));
@@ -1084,7 +1084,7 @@ async function ecranBanca(corp, nav, t) {
     zonaMesaj.innerHTML = "";
     try {
       const r = await api.post(`/tenants/${t.id}/banca/reconciliere/${id}/conteaza`, alocari ? { alocari } : {});
-      zonaMesaj.innerHTML = `<p class="pf-intro">Nota ${esc(r.nota || "")} \u2014 ${(r.inregistrari || []).length} inregistrari create.</p>`;
+      arataMesaj(zonaMesaj, `Nota ${r.nota || ""} \u2014 ${(r.inregistrari || []).length} \u00eenregistr\u0103ri create.`, "ok");
       incarca();
     } catch (e) { zonaMesaj.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "Eroare la contare")}</div>`; }
   }
@@ -1306,7 +1306,7 @@ async function ecranJurnal(corp, nav, t) {
     corp.querySelector("#j-amort").addEventListener("click", async () => {
       try {
         const r = await api.post(`/tenants/${t.id}/amortizare?an=${an}&luna=${luna}`, {});
-        zonaMesaj.innerHTML = `<div class="mig-gol">${r.linii ? `Notă generată: ${r.linii} mijloace fixe, total ${bani(r.total)} lei` : "Nimic de amortizat."}</div>`;
+        arataMesaj(zonaMesaj, r.linii ? `Notă generată: ${r.linii} mijloace fixe, total ${bani(r.total)} lei` : "Nimic de amortizat.", r.linii ? "ok" : "info");
         deseneaza();
       } catch (e) { eroare(e, "Eroare la generarea notei de amortizare."); }
     });

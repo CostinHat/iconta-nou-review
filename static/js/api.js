@@ -95,7 +95,7 @@ export const api = {
 export function arataMesaj(el, txt, tip = "info") {
   if (!el) return;
   el.textContent = txt || "";
-  el.className = el.className.replace(/\bmsg-(eroare|avert|info)\b/g, "").trim();
+  el.className = el.className.replace(/\bmsg-(eroare|avert|info|ok)\b/g, "").trim();
   el.classList.add("msg-" + tip);
 }
 
