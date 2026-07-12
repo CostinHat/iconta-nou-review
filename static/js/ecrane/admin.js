@@ -3,18 +3,15 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js";
-import { api, arataMesaj, dataRo } from "../api.js";
+import { api, arataMesaj, dataRo, ICOANE } from "../api.js";
 import { randeazaAdminRaportari } from "./admin_raportari.js";
 import { randeazaAdminActivitate } from "./admin_activitate.js";
 import { randeazaAdminGratuite } from "./admin_gratuite.js";
 import { randeazaAdminSanatate } from "./admin_sanatate.js";
 
 // iconite SVG inline (autonome)
-const IC = {
-  report: '<rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 8h18"/><path d="M7 12h7M7 15h4"/>',
-};
 function svg(cheie, fg) {
-  return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${fg}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IC[cheie] || ""}</svg>`;
+  return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${fg}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICOANE[cheie] || ""}</svg>`;
 }
 
 // cardurile panoului Admin iConta (extensibil)
@@ -22,16 +19,16 @@ const DEF = [
   { cheie:"raportari", titlu:"Raportări", icon:"report", bg:"#efebfe", fg:"#6d28d9",
     sinteza:"Răspunde la sesizările utilizatorilor",
     actiune:(nav) => nav.deschide("Raportări", (corp) => randeazaAdminRaportari(corp, nav)) },
-  { cheie:"activitate", titlu:"Activitate cabinete", icon:"report", bg:"#e6f6ec", fg:"#16a34a",
+  { cheie:"activitate", titlu:"Activitate cabinete", icon: "activitate", bg:"#e6f6ec", fg:"#16a34a",
     sinteza:"Cine e activ, cine nu",
     actiune:(nav) => nav.deschide("Activitate cabinete", (corp) => randeazaAdminActivitate(corp, nav)) },
-  { cheie:"gratuite", titlu:"Facturare gratuită", icon:"report", bg:"#e9f0fe", fg:"#1d4ed8",
+  { cheie:"gratuite", titlu:"Facturare gratuită", icon: "facturi", bg:"#e9f0fe", fg:"#1d4ed8",
     sinteza:"Conturi gratuite: cine e activ, cine nu",
     actiune:(nav) => nav.deschide("Facturare gratuită", (corp) => randeazaAdminGratuite(corp, nav)) },
-  { cheie:"anunturi", titlu:"Anunțuri", icon:"report", bg:"#fbeedd", fg:"#92500a",
+  { cheie:"anunturi", titlu:"Anunțuri", icon: "anunturi", bg:"#fbeedd", fg:"#92500a",
     sinteza:"Banner la logare pentru cabinete",
     actiune:(nav) => nav.deschide("Anunțuri", (corp) => randeazaAdminAnunturi(corp, nav)) },
-  { cheie:"sanatate", titlu:"Sănătate server", icon:"report", bg:"#faece7", fg:"#993c1d",
+  { cheie:"sanatate", titlu:"Sănătate server", icon: "server", bg:"#faece7", fg:"#993c1d",
     sinteza:"Server, aplicație, bază de date, erori",
     actiune:(nav) => nav.deschide("Sănătate server", (corp) => randeazaAdminSanatate(corp, nav)) },
 ];

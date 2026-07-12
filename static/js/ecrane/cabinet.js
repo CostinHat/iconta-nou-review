@@ -2,7 +2,7 @@
 // Bandă de salut + 9 carduri pastel (grilă 3×3), fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, confirmaCaseta, esc, dataRo, baniRotund } from "../api.js";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE } from "../api.js";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
 import { randeazaListaFirme } from "./firme.js";
@@ -20,22 +20,8 @@ import { randeazaCapacitate } from "./capacitate.js"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js"; // [p72_tipare]
 
 // iconițe SVG inline (autonome, fără dependență externă de rețea)
-const IC = {
-  building: '<path d="M3 21h18"/><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M19 21V11a2 2 0 0 0-2-2h-2"/><path d="M9 7h2M9 11h2M9 15h2"/>',
-  shield: '<path d="M12 3l8 3v5c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-3z"/><path d="M9 12l2 2 4-4"/>',
-  calendar: '<rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9h16M8 3v4M16 3v4"/>',
-  clipboard: '<rect x="8" y="3" width="8" height="4" rx="1"/><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><path d="M9 14l2 2 4-4"/>',
-  users: '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M16 6a3 3 0 0 1 0 6M21 20c0-2-1-3.5-3-4.5"/>',
-  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
-  gift: '<rect x="3" y="11" width="18" height="10" rx="1"/><path d="M3 11V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2M12 7v14"/>',
-  report: '<path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5z"/><path d="M12 8v4M12 15.5v.5"/>',
-  brief: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',  // [p74_card_brief]
-  trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/>',  // [p72_tipare]
-  gauge: '<path d="M12 13a4 4 0 0 1 4-4"/><path d="M3 18a9 9 0 0 1 18 0"/><path d="M12 13l4-2"/>',  // [p71_capacitate]
-  settings: '<circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6 6l1.5 1.5M18 18l-1.5-1.5M6 18l1.5-1.5M18 6l-1.5 1.5"/>',
-};
 function svg(nume, culoare) {
-  return `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[nume]}</svg>`;
+  return `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume]}</svg>`;
 }
 
 // fereastră placeholder până construim ecranul real al fiecărui card
@@ -58,19 +44,19 @@ const DEF = [  /* cab_ordine_v2 */
     sinteza:"Următoarea scadență: …", actiune:inLucru("Termene") },
   { cheie:"brief",     titlu:"Sinteza zilei",  icon:"brief",     bg:"#efebfe", fg:"#6d28d9",
     sinteza:"Vezi prioritățile zilei", actiune:inLucru("Sinteza zilei") },
-  { cheie:"activitate", titlu:"Activitate",     icon:"report",    bg:"#faece7", fg:"#993c1d",
+  { cheie:"activitate", titlu:"Activitate",     icon: "activitate",    bg:"#faece7", fg:"#993c1d",
     sinteza:"Activitate recentă", actiune:inLucru("Activitate") },
   { cheie:"pachete",   titlu:"Pachete lunare", icon:"mail",      bg:"#e9f0fe", fg:"#1d4ed8",
     sinteza:"Trimite pachetul lunar către clienți", actiune:inLucru("Pachete lunare") },
   { cheie:"capacitate", titlu:"Capacitate",     icon:"gauge",     bg:"#e6f6ec", fg:"#16a34a",
     sinteza:"Cum stă echipa cu ritmul", actiune:inLucru("Capacitate") },
-  { cheie:"consolidare", titlu:"Consolidare", icon:"report", bg:"#eaeef6", fg:"#45597f",
+  { cheie:"consolidare", titlu:"Consolidare", icon: "consolidare", bg:"#eaeef6", fg:"#45597f",
     sinteza:"Cifrele tuturor firmelor" },  // consolidare_fe_v1
   { cheie:"asistenti", titlu:"Asistenți",      icon:"users",     bg:"#faece7", fg:"#993c1d",
     sinteza:'<b style="font-size:19px">·</b> asistenți în echipă', actiune:inLucru("Asistenți") },
   { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  bg:"#eaeef6", fg:"#45597f",
     sinteza:"Parolă și date de profil", actiune:inLucru("Setări cont") },
-  { cheie:"raport",    titlu:"Suport",     icon:"report",    bg:"#e6f6ec", fg:"#16a34a",
+  { cheie:"raport",    titlu:"Suport",     icon: "suport",    bg:"#e6f6ec", fg:"#16a34a",
     sinteza:"Întrebări, probleme și asistență tehnică", actiune:inLucru("Raportează") },
 ];
 

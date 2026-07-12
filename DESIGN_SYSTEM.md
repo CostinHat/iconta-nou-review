@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.6 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.7 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -112,6 +112,12 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - INTERZIS hex de card ad-hoc în afara paletei. Nuanțele apropiate NU se multiplică — un singur verde, un singur violet etc.
 - Culorile de semafor (cap.8) și cele de stare rămân separate; astea sunt doar pentru carduri de navigare.
 
+## 13. Iconițe
+
+- Iconițele de card/UI folosesc EXCLUSIV dicționarul canonic unic `ICOANE` (api.js) — path-uri SVG interne, viewBox 24×24, stroke. NU se duplică dicționarul în ecrane (era copiat divergent în cabinet/admin/asistent).
+- Fiecare concept = o iconiță sugestivă distinctă. Triada card = culoare + denumire + iconiță, toate coerente. INTERZIS iconiță generică (`report`) folosită ca fallback pe concepte diferite.
+- Iconiță nouă → se adaugă în `ICOANE`, nu inline într-un ecran. Prins de regula ICOANE_LOCAL în verificator.
+
 ---
 
 ## Changelog
@@ -127,6 +133,8 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 **v2.4 (12.07.2026)** — `baniRotund()` canonic pentru cifre rotunjite (portal cifre client + cockpit cabinet); eliminat dialectele `lei` (portal/cabinet) și `_bani`/inline (facturi) → `bani()`/`baniRotund()`; stil `zi_luna_text` (`25 feb`) pentru termene client. Regula FMT_LOCAL lărgită la orice nume de const (cap.4).
 
 **v2.5 (12.07.2026)** — eliminat clasa `buton-ingust` (JS + CSS + lista albă verificator); regulă DATA_BRUTA în verificator (prinde `${x.data}` afișat fără `dataRo` — a scos la iveală data REGES nemarcată în firme.js).
+
+**v2.7 (12.07.2026)** — dicționar canonic unic `ICOANE` (api.js, 22 iconițe, 5 noi); eliminat dicționarele locale divergente (cabinet/admin/asistent); reasignat 8 carduri de la `report` generic la iconițe sugestive distincte; cap.13 nou + regula ICOANE_LOCAL în verificator.
 
 **v2.6 (12.07.2026)** — consolidat sistemul de culori-card: 35 nuanțe divergente → 7 culori-concept canonice în `CULORI_CARD` (api.js); cap.12 nou (paletă card normativă).
 

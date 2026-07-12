@@ -29,7 +29,7 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta"]}
+                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -91,6 +91,9 @@ for nume, t in fisiere.items():
         if re.search(r'toLocaleDateString', lin) or re.search(r'const\s+fmt\w*\s*=.*split\("-"\)', lin):
             rap["data_dialect"].append((nume, i, "", lin.strip()[:66]))
         # DATA_BRUTA: ${x.data} sau ${x.data_ceva} afisat direct in template fara dataRo (exclus value= de input si payload)
+        # ICOANE_LOCAL: dictionar local de iconite (building/report/shield cu <path) in loc de ICOANE canonic
+        if re.search(r'(building|report|shield|clipboard)\s*:\s*.<path', lin):
+            rap["icoane_local"].append((nume, i, "", lin.strip()[:60]))
         if 'value="' not in lin and "value='" not in lin:
             for dm in re.finditer(r'\$\{(\w+\.data\w*)\s*(?:\|\|[^}]*)?\}', lin):
                 pre = lin[:dm.start()]
