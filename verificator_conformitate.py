@@ -31,7 +31,7 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline"]}
+                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -65,6 +65,10 @@ for nume, t in fisiere.items():
             rap["input_contrast"].append((nume, i, "", lin.strip()[:66]))
         if re.search(r'\balert\(|(?<!confirma)\bconfirm\(', lin):
             rap["dialog_browser"].append((nume, i, "", lin.strip()[:66]))
+        # CARD_INLINE (cap.2a): card deschis inline in corpul panoului in loc de nav.deschide.
+        # Semnatura interzisa: randeazaMeniu*(continut,...) sau handler .cab-card care scrie in continut.
+        if re.search(r'randeazaMeniu\w+\(\s*continut\b', lin):
+            rap["card_inline"].append((nume, i, "", lin.strip()[:66]))
         # BANI: ${expr} imediat urmat de RON/lei/EUR fara formator cunoscut in expresie
         for bm in re.finditer(r'\$\{([^}]*)\}\s*(RON|lei|EUR|\$\{[^}]*moneda)', lin):
             expr = bm.group(1)

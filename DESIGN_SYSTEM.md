@@ -46,6 +46,12 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 **Clasa de câmp (v2.1)**: input/select normale poartă exclusiv `.camp-input` (înălțime 40px, bordură vizibilă #b9c2cf, font aplicație). INTERZIS `.mig-text` pe input/select — e croită doar pentru textarea ecranului de migrare (font monospace, bordură 0.5px invizibilă pe alb). Structura canonică de câmp: `<label class="camp"><span class="camp-eticheta">Etichetă</span><input class="camp-input"></label>` — nu `<label>text<br><input>`.
 
+## 2a. Deschiderea cardurilor: MEREU fereastra (modal), niciodata inline
+- Orice card din grila cabinetului (`.cab-card`) se deschide EXCLUSIV prin `nav.deschide(titlu, corp, opt)` — fereastra overlay cu X.
+- INTERZIS ca un card sa se deschida inline in corpul panoului (sa suprascrie `.cab-grila`/`continut`). Un card = o fereastra.
+- Meniurile cu sub-optiuni (ex. Firme, Activitate) sunt tot ferestre: sub-optiunile devin `.meniu-card` in corpul ferestrei, NU un al doilea nivel inline cu breadcrumb.
+- Consecinta: in corpul panoului nu apare breadcrumb ("Panou > X") si nici al doilea rand de sageti. Inchiderea se face din X-ul ferestrei.
+
 ## 3. Navigare
 
 - Săgeata portocalie (`.btn-nav`) duce MEREU exact un pas înapoi în ierarhia ecranului.

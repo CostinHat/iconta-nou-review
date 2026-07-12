@@ -210,7 +210,7 @@ function randeazaPanou(continut, nav) {
     `;
     // "Firme" intră în meniul cu 2 opțiuni (parte din desktop); restul deschid fereastră
     if (c.cheie === "firme") {
-      card.addEventListener("click", () => randeazaMeniuFirme(continut, nav));
+      card.addEventListener("click", () => nav.deschide("Firme", (corp) => randeazaMeniuFirme(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "control") {
       card.addEventListener("click", () => nav.deschide("Control fiscal", (corp) => randeazaControl(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "termene") {
@@ -220,7 +220,7 @@ function randeazaPanou(continut, nav) {
     } else if (c.cheie === "asistenti") {
       card.addEventListener("click", () => nav.deschide("Asistenți", (corp) => randeazaAsistenti(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "activitate") {  // [p76_comasare_font] meniu Activitate (jurnal + tipare)
-      card.addEventListener("click", () => randeazaMeniuActivitate(continut, nav));
+      card.addEventListener("click", () => nav.deschide("Activitate", (corp) => randeazaMeniuActivitate(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "consolidare") {  // consolidare_fe_v1
       card.addEventListener("click", () => nav.deschide("Consolidare", (corp) => randeazaConsolidare(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "capacitate") {  // [p71_capacitate]
@@ -266,14 +266,8 @@ async function actualizeazaActivitate(grila) {
     zona.innerHTML = n === 0 ? "Activitate recentă" : `<b>${n}</b> ${n === 1 ? "tipar necesită atenție" : "tipare necesită atenție"}`;
   } catch {}
 }
-function randeazaMeniuActivitate(continut, nav) {
-  continut.innerHTML = `
-    <div class="sub-cap">
-      <button class="sub-inapoi" id="sub-inapoi">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <h1 class="sub-titlu"><span style="color:var(--gri-clar);font-weight:500">Panou \u203a </span>Activitate</h1>
-    </div>
+function randeazaMeniuActivitate(corp, nav) {
+  corp.innerHTML = `
     <div class="firme-optiuni">
       <button class="firme-optiune" id="opt-jurnal">
         <div class="firme-optiune-icon" style="background:#e9f0fe; color:#1d4ed8">
@@ -291,21 +285,14 @@ function randeazaMeniuActivitate(continut, nav) {
       </button>
     </div>
   `;
-  continut.querySelector("#sub-inapoi").addEventListener("click", () => randeazaPanou(continut, nav));
-  continut.querySelector("#opt-jurnal").addEventListener("click", () =>
-    nav.deschide("Activitate cabinet", (corp) => randeazaActivitateCabinet(corp, nav), { nivel: "cabinet" }));
-  continut.querySelector("#opt-tipare").addEventListener("click", () =>
-    nav.deschide("Tipare", (corp) => randeazaTipare(corp, nav), { nivel: "cabinet" }));
+  corp.querySelector("#opt-jurnal").addEventListener("click", () =>
+    nav.deschide("Activitate cabinet", (c) => randeazaActivitateCabinet(c, nav), { nivel: "cabinet" }));
+  corp.querySelector("#opt-tipare").addEventListener("click", () =>
+    nav.deschide("Tipare", (c) => randeazaTipare(c, nav), { nivel: "cabinet" }));
 }
 
-function randeazaMeniuFirme(continut, nav) {
-  continut.innerHTML = `
-    <div class="sub-cap">
-      <button class="sub-inapoi" id="sub-inapoi">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <h1 class="sub-titlu"><span style="color:var(--gri-clar);font-weight:500">Panou \u203a </span>Firme</h1>
-    </div>
+function randeazaMeniuFirme(corp, nav) {
+  corp.innerHTML = `
     <div class="firme-optiuni">
       <button class="firme-optiune" id="opt-existente">
         <div class="firme-optiune-icon" style="background:#e9f0fe; color:#1d4ed8">
@@ -323,12 +310,11 @@ function randeazaMeniuFirme(continut, nav) {
       </button>
     </div>
   `;
-  continut.querySelector("#sub-inapoi").addEventListener("click", () => randeazaPanou(continut, nav));
-  continut.querySelector("#opt-existente").addEventListener("click", () =>
-    randeazaListaFirme(continut, nav, () => randeazaMeniuFirme(continut, nav))
+  corp.querySelector("#opt-existente").addEventListener("click", () =>
+    nav.deschide("Firme existente", (c) => randeazaListaFirme(c, nav, null), { nivel: "cabinet" })
   );
-  continut.querySelector("#opt-migrare").addEventListener("click", () =>
-    nav.deschide("Migrare cabinet", (corp) => randeazaMigrare(corp, nav), { nivel: "cabinet" })
+  corp.querySelector("#opt-migrare").addEventListener("click", () =>
+    nav.deschide("Migrare cabinet", (c) => randeazaMigrare(c, nav), { nivel: "cabinet" })
   );
 }
 
