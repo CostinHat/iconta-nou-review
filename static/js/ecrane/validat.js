@@ -95,7 +95,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm) {
 
   div.innerHTML = `
     <div class="val-info">
-      <div class="val-titlu"><b>${c.tip}</b> · ${c.perioada}</div>
+      <div class="val-titlu"><b>${(c.tip||"").toUpperCase()}</b> · ${c.perioada}</div>
       <div class="val-sub">${numeFirma(firme, c.tenant_id)} · pregătit de ${c.creat_de || "—"}</div>
     </div>
     <div class="val-mij">${coer}</div>
@@ -113,7 +113,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   if (act === "respinge") {
     dialogInput(nav, {
       titlu: "Respinge declarația",
-      eticheta: `Motiv respingere pentru ${c.tip} (${c.perioada}):`,
+      eticheta: `Motiv respingere pentru ${(c.tip||"").toUpperCase()} (${c.perioada}):`,
       placeholder: "ex: TVA necorelată cu jurnalul de vânzări",
       obligatoriu: true,
       buton: "Respinge",
@@ -129,7 +129,7 @@ async function actioneaza(c, act, firme, corp, nav) {
   if (act === "depune") {
     dialogInput(nav, {
       titlu: "Confirmă depunerea",
-      eticheta: `Index SPV pentru ${c.tip} (${c.perioada}) — opțional:`,
+      eticheta: `Index SPV pentru ${(c.tip||"").toUpperCase()} (${c.perioada}) — opțional:`,
       placeholder: "lasă gol dacă nu ai indexul încă",
       obligatoriu: false,
       buton: "Confirmă depunerea",
