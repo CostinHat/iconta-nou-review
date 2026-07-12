@@ -26,6 +26,8 @@ def _valideaza(op):
         return "metoda invalida (numerar/banca)"
     if Decimal(str(op.get("suma", 0))) <= 0:
         return "suma trebuie sa fie > 0"
+    if not (op.get("data_operatiune") or "").strip():
+        return "data operatiunii este obligatorie"
     if not (op.get("explicatie") or "").strip():
         return "explicatia este obligatorie (OMFP 170/2015)"
     cats = CATEGORII_INCASARE if tip == "incasare" else CATEGORII_PLATA

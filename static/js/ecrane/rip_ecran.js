@@ -33,7 +33,7 @@ export async function ecranRip(corp, nav, t) {
       : reg.operatiuni.map((o) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${dataRo(o.data_operatiune)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${o.suma} ${esc(o.valuta)}
+            <div class="pf-frand-nume">${dataRo(o.data_operatiune)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${bani(o.suma)} ${esc(o.valuta)}
               ${o.status === "ciorna" ? '<span style="color:#c9961f;font-weight:600"> \u00b7 CIORNA</span>' : '<span style="color:#1d7a4d;font-weight:600"> \u00b7 VALIDATA</span>'}</div>
             <div class="pf-frand-sub">${esc(o.explicatie)} \u00b7 ${esc(o.categorie)}${o.deductibilitate ? " \u00b7 " + esc(o.deductibilitate) : ""}${o.document_numar ? " \u00b7 doc " + esc(o.document_numar) : ""} \u00b7 ${esc(o.metoda)}</div>
           </div>
@@ -58,16 +58,16 @@ export async function ecranRip(corp, nav, t) {
       <div id="r-zona" hidden style="display:block;margin-bottom:14px">
         <div class="pf-frand-nume" style="margin-bottom:8px">Opera\u021biune nou\u0103</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;max-width:1000px">
-          <label>Data<br><input type="date" id="r-data" class="mig-text"></label>
-          <label>Tip<br><select id="r-tip" class="mig-text"><option value="incasare">Încasare</option><option value="plata">Plată</option></select></label>
-          <label>Categorie<br><select id="r-cat" class="mig-text"></select></label>
-          <label>Deductibilitate<br><select id="r-ded" class="mig-text" disabled>
+          <label class="camp"><span class="camp-eticheta">Data<span class="oblig">*</span></span><input type="date" id="r-data" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Tip</span><select id="r-tip" class="camp-input"><option value="incasare">Încasare</option><option value="plata">Plată</option></select></label>
+          <label class="camp"><span class="camp-eticheta">Categorie</span><select id="r-cat" class="camp-input"></select></label>
+          <label class="camp"><span class="camp-eticheta">Deductibilitate</span><select id="r-ded" class="camp-input" disabled>
             <option value="">-</option><option value="integral">integral</option>
             <option value="limitat">limitat</option><option value="nedeductibil">nedeductibil</option></select></label>
-          <label>Suma (lei)<br><input type="number" step="0.01" id="r-suma" class="mig-text" placeholder="0,00"></label>
-          <label>Metoda<br><select id="r-met" class="mig-text"><option value="numerar">Numerar</option><option value="banca">Bancă</option></select></label>
-          <label>Explicatie<br><input type="text" id="r-expl" class="mig-text"></label>
-          <label>Document nr.<br><input type="text" id="r-doc" class="mig-text"></label>
+          <label class="camp"><span class="camp-eticheta">Suma (lei)<span class="oblig">*</span></span><input type="number" step="0.01" id="r-suma" class="camp-input" placeholder="0,00"></label>
+          <label class="camp"><span class="camp-eticheta">Metoda</span><select id="r-met" class="camp-input"><option value="numerar">Numerar</option><option value="banca">Bancă</option></select></label>
+          <label class="camp"><span class="camp-eticheta">Explicație<span class="oblig">*</span></span><input type="text" id="r-expl" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Document nr.</span><input type="text" id="r-doc" class="camp-input"></label>
         </div>
         <p style="margin-top:10px"><button class="buton-primar" id="r-adauga">Adaugă (ciornă)</button></p>
       </div>

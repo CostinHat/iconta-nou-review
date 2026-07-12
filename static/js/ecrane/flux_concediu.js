@@ -1,7 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, esc, confirmaCaseta, dataRo } from "../api.js";
+import { api, esc, confirmaCaseta, dataRo, bani } from "../api.js";
 
 const CM_CODURI = [
   ["01", "01 — Boală obișnuită (55/65/75%)"],
@@ -41,13 +41,14 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${esc(c.serie || "")}${esc(c.numar || "")} \u00b7 cod ${esc(c.cod || "")} \u00b7 ${c.zile || 0} zile</div>
-            <div class="pf-frand-sub">${dataRo(c.data_inceput)} \u2192 ${dataRo(c.data_sfarsit)} \u00b7 indemniza\u021bie brut\u0103 ${Number(c.indemnizatie || 0).toFixed(2)} lei \u00b7 net ${Number(c.net || 0).toFixed(2)} lei</div>
+            <div class="pf-frand-sub">${dataRo(c.data_inceput)} \u2192 ${dataRo(c.data_sfarsit)} \u00b7 indemniza\u021bie brut\u0103 ${bani(c.indemnizatie || 0)} lei \u00b7 net ${bani(c.net || 0)} lei</div>
           </div>
           <button class="buton-sters buton-mic" data-sterge="${c.id}">\u0218terge</button>
         </div>`).join("");
 
     corp.innerHTML = `
-      <h2 class="pf-titlu">Concedii medicale \u2014 ${esc(numeSal)}</h2>
+      <h2 class="pf-titlu">Concedii medicale</h2>
+      <p class="pf-sub">Salariat: <strong>${esc(numeSal)}</strong></p>
       <p class="pf-intro">Certificatele de concediu medical ale salariatului. Prima zi din fiecare certificat nu se pl\u0103te\u0219te (OUG 91/2025, p\u00e2n\u0103 la 31.12.2027).
         <button class="buton-primar" id="cm-nou" style="margin-left:12px">+ Certificat nou</button></p>
       <div id="cm-form-zona"></div>
@@ -81,7 +82,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp" style="grid-column:span 2"><span class="camp-eticheta">Cod indemniza\u021bie</span><select id="cm-cod" class="camp-input">${optCod}</select></label>
           <label class="camp"><span class="camp-eticheta">Data acord\u0103rii</span><input type="date" id="cm-acord" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Data \u00eenceput<span class="oblig">*</span></span><input type="date" id="cm-inceput" class="camp-input"></label>
-          <label class="camp"><span class="camp-eticheta">Data sf\u00e2r\u0219it</span><input type="date" id="cm-sfarsit" class="camp-input"></label>
+          <label class="camp"><span class="camp-eticheta">Data sf\u00e2r\u0219it <span class="oblig">*</span></span><input type="date" id="cm-sfarsit" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare CM<span class="oblig">*</span></span><input type="number" id="cm-zile" class="camp-input" min="0" placeholder="ex. 8"></label>
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Baza de calcul (ultimele 6 luni)</div>
