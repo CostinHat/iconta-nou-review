@@ -98,7 +98,7 @@ async function randeazaSintezaAzi(nav, continut) {  // [p74_brief_modal] modal c
     cifra(t.respinse || 0, "respinse", "tipare", (t.respinse ? "#ff3b30" : null)),
     cifra(t.depuse || 0, "depuse", "activitate", "#1d7a4d"),
     cifra(t.in_asteptare || 0, "de validat", "validat", (t.in_asteptare ? "#c9961f" : null)),
-    cifra(rap.necitite || 0, "sesizari noi", "raport", (rap.necitite ? "#ff3b30" : null)),
+    cifra(rap.necitite || 0, "sesiz\u0103ri noi", "raport", (rap.necitite ? "#ff3b30" : null)),
   ].join("");
 
   let asist = "";
@@ -143,12 +143,12 @@ async function randeazaSintezaAzi(nav, continut) {  // [p74_brief_modal] modal c
       </div>
       <div class="brief-corp">
         <div class="sa-sectiune">
-          <div class="sa-cap">Astazi in cabinet</div>
+          <div class="sa-cap">Ast\u0103zi \u00een cabinet</div>
           <div class="sa-cifre">${cifre}</div>
         </div>
         <div class="sa-doua">
           <div class="sa-sectiune sa-flex1">
-            <div class="sa-cap">Productia echipei</div>
+            <div class="sa-cap">Produc\u021bia echipei</div>
             <div class="sa-asist-lista">${asist}</div>
           </div>
           <div class="sa-sectiune sa-flex1">

@@ -9,7 +9,8 @@ BAZA = os.path.expanduser("~/iconta_nou/static/js/ecrane")
 CUVINTE = ["inca", "raspuns", "adauga", "sterge", "stergi", "cauta", "fara",
            "numar", "incarca", "gaseste", "banca", "plata", "pastreaza",
            "creeaza", "urmator", "dispozitie", "noua", "incasare", "asteapta", "asteptare",
-           "genereaza", "blocheaza", "deblocheaza", "valideaza", "editeaza", "salveaza", "renunta"]
+           "genereaza", "blocheaza", "deblocheaza", "valideaza", "editeaza", "salveaza", "renunta",
+           "astazi", "productia", "sesizari", "prioritatile"]
 RE_CUV = re.compile(r'[">\s(](' + "|".join(CUVINTE) + r')[\s.,:!?<")]', re.IGNORECASE)
 CLASE_BUTON_OK = {"buton-primar", "buton-secundar", "buton-sters", "buton-verde",
                   "buton-mic", "btn-link", "btn-nav", "buton-activ"}
