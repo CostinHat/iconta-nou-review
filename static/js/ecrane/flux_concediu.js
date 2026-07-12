@@ -159,15 +159,15 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         rez.innerHTML = `
           <div style="background:#fff;border:1px solid var(--linie);border-radius:var(--raza);padding:12px;margin-top:12px;max-width:520px">
             <div class="pf-frand-nume" style="color:#1d7a4d;margin-bottom:8px">\u2713 Concediu salvat</div>
-            <div class="pac-rez-rand"><span>Media zilnic\u0103</span><b>${Number(c.media_zilnica || 0).toFixed(2)} lei</b></div>
+            <div class="pac-rez-rand"><span>Media zilnic\u0103</span><b>${bani(c.media_zilnica || 0)} lei</b></div>
             <div class="pac-rez-rand"><span>Procent</span><b>${Number(c.procent || 0).toFixed(0)}%</b></div>
             <div class="pac-rez-rand"><span>Zile pl\u0103tite (dup\u0103 diminuare ${c.diminuare ? "1 zi" : "0"})</span><b>${c.zile_platite || 0}</b></div>
-            <div class="pac-rez-rand"><span>Suportat angajator (zile 2\u20136)</span><b>${Number(c.brut_ang || 0).toFixed(2)} lei</b></div>
-            <div class="pac-rez-rand"><span>Suportat FNUASS (din ziua 7)</span><b>${Number(c.brut_fnuass || 0).toFixed(2)} lei</b></div>
-            <div class="pac-rez-rand" style="border-top:1px solid var(--linie);margin-top:6px;padding-top:6px"><span>Indemniza\u021bie brut\u0103</span><b>${Number(c.brut || 0).toFixed(2)} lei</b></div>
-            <div class="pac-rez-rand"><span>CASS</span><b>${Number(c.cass || 0).toFixed(2)} lei</b></div>
-            <div class="pac-rez-rand"><span>Impozit</span><b>${Number(c.impozit || 0).toFixed(2)} lei</b></div>
-            <div class="pac-rez-rand"><span><b>Net</b></span><b>${Number(c.net || 0).toFixed(2)} lei</b></div>
+            <div class="pac-rez-rand"><span>Suportat angajator (zile 2\u20136)</span><b>${bani(c.brut_ang || 0)} lei</b></div>
+            <div class="pac-rez-rand"><span>Suportat FNUASS (din ziua 7)</span><b>${bani(c.brut_fnuass || 0)} lei</b></div>
+            <div class="pac-rez-rand" style="border-top:1px solid var(--linie);margin-top:6px;padding-top:6px"><span>Indemniza\u021bie brut\u0103</span><b>${bani(c.brut || 0)} lei</b></div>
+            <div class="pac-rez-rand"><span>CASS</span><b>${bani(c.cass || 0)} lei</b></div>
+            <div class="pac-rez-rand"><span>Impozit</span><b>${bani(c.impozit || 0)} lei</b></div>
+            <div class="pac-rez-rand"><span><b>Net</b></span><b>${bani(c.net || 0)} lei</b></div>
           </div>`;
         // reincarca lista dupa un moment ca sa apara noul concediu
         setTimeout(() => randeaza(corp), 1400);

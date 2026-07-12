@@ -385,7 +385,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     const optional = !(extra && extra.obligatoriu);
     if (tip === "select") {
       const optiuni = (extra.optiuni || []).map(([v, l]) => `<option value="${v}">${l}</option>`).join("");
-      return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : " *"}</label><select id="sn-${id}" class="mig-text">${optiuni}</select></div>`;
+      return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : " *"}</label><select id="sn-${id}" class="camp-input">${optiuni}</select></div>`;
     }
     if (tip === "checkbox") {
       return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}</label><input type="checkbox" id="sn-${id}"></div>`;
@@ -393,7 +393,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     const inputTip = tip === "numar" ? "number" : (tip === "data" ? "date" : "text");
     const pas = (extra && extra.pas) || "0.01";
     const restrictii = tip === "numar" ? ` step="${pas}" min="0"` : "";
-    return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : " *"}</label><input type="${inputTip}"${restrictii} id="sn-${id}" class="mig-text"></div>`;
+    return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : " *"}</label><input type="${inputTip}"${restrictii} id="sn-${id}" class="camp-input"></div>`;
   };
   corp.innerHTML = `
     <h2 class="pf-titlu">Salariat nou</h2>
@@ -458,7 +458,7 @@ async function ecranSalariati(corp, nav, t) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${esc(s.nume)}</div>
-            <div class="pf-frand-sub">brut ${s.brut.toFixed(2)} \u00b7 CAS ${s.cas.toFixed(2)} \u00b7 CASS ${s.cass.toFixed(2)} \u00b7 impozit ${s.impozit.toFixed(2)} \u00b7 <b>net ${s.net.toFixed(2)}</b> \u00b7 cost ${s.cost.toFixed(2)}</div>
+            <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}</div>
           </div>
           <button class="buton-primar" data-flut="${s.id}">Fluturas</button>
           <button class="buton-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
@@ -569,15 +569,15 @@ async function sectiuneaCV(corp, t, zonaM) {
       <div class="pf-frand-nume" style="margin-bottom:8px">Fi\u0219e de magazie (cantitativ-valoric, CMP)</div>
       <div class="camp-eticheta">Mi\u0219care: articol \u00b7 denumire (nou) \u00b7 dat\u0103 \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 document</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-        <select id="cv-art" class="mig-text" style="min-width:200px">
+        <select id="cv-art" class="camp-input" style="min-width:200px">
           <option value="">\u2014 articol nou \u2014</option>
           ${arts.map((a) => `<option value="${a.id}">${esc(a.denumire)} \u00b7 stoc ${a.stoc} ${esc(a.um)}${a.cmp ? " \u00b7 CMP " + a.cmp : ""}</option>`).join("")}
         </select>
-        <input type="text" id="cv-den" class="mig-text" placeholder="denumire (articol nou)" aria-label="Denumire articol nou" style="flex:1;min-width:160px">
-        <input type="date" id="cv-data" class="mig-text">
-        <input type="number" step="0.001" id="cv-cant" class="mig-text" placeholder="cant." aria-label="Cantitate" style="width:90px">
-        <input type="number" step="0.0001" id="cv-pret" class="mig-text" placeholder="pret unitar (la intrare)" aria-label="Pre\u021b unitar la intrare" style="width:170px">
-        <input type="text" id="cv-doc" class="mig-text" placeholder="document" aria-label="Document" style="width:130px">
+        <input type="text" id="cv-den" class="camp-input" placeholder="denumire (articol nou)" aria-label="Denumire articol nou" style="flex:1;min-width:160px">
+        <input type="date" id="cv-data" class="camp-input">
+        <input type="number" step="0.001" id="cv-cant" class="camp-input" placeholder="cant." aria-label="Cantitate" style="width:90px">
+        <input type="number" step="0.0001" id="cv-pret" class="camp-input" placeholder="pret unitar (la intrare)" aria-label="Pre\u021b unitar la intrare" style="width:170px">
+        <input type="text" id="cv-doc" class="camp-input" placeholder="document" aria-label="Document" style="width:130px">
       </div>
       <p>
         <button class="buton-primar" id="cv-intrare">Intrare</button>
@@ -634,9 +634,9 @@ async function sectiuneaCV(corp, t, zonaM) {
   const rtDeseneazaIng = () => {
     rtIng.innerHTML = rtLinii.map((l, i) => `
       <div style="display:flex;gap:6px;margin-top:6px;align-items:center">
-        <select class="mig-text rt-art" data-i="${i}">${arts.map((a) =>
+        <select class="camp-input rt-art" data-i="${i}">${arts.map((a) =>
           `<option value="${a.id}" ${a.id == l.articol_id ? "selected" : ""}>${esc(a.denumire)} \u00b7 CMP ${a.cmp}</option>`).join("")}</select>
-        <input class="mig-text rt-cant" data-i="${i}" type="number" step="0.001" value="${l.cantitate || ""}" placeholder="cant./por\u021bie" aria-label="Cantitate pe por\u021bie" style="width:120px">
+        <input class="camp-input rt-cant" data-i="${i}" type="number" step="0.001" value="${l.cantitate || ""}" placeholder="cant./por\u021bie" aria-label="Cantitate pe por\u021bie" style="width:120px">
         <button class="buton-sters rt-scoate" data-i="${i}">\u2212</button>
       </div>`).join("");
     rtIng.querySelectorAll(".rt-art").forEach((s) => s.addEventListener("change", (e) => { rtLinii[e.target.dataset.i].articol_id = parseInt(e.target.value); }));
@@ -653,9 +653,9 @@ async function sectiuneaCV(corp, t, zonaM) {
           return `<div class="pf-frand">
             <div class="pf-frand-text">
               <div class="pf-frand-nume">${esc(r.denumire)} \u00b7 ${bani(r.pret_fara_tva)} lei</div>
-              <div class="pf-frand-sub">cost/por\u021bie ${fc.cost_portie} \u00b7 food cost ${pct} \u00b7 ${(r.linii || []).map((l) => `${esc(l.denumire)} ${l.cantitate}${esc(l.um || "")}`).join(", ")}</div>
+              <div class="pf-frand-sub">cost/por\u021bie ${bani(fc.cost_portie)} \u00b7 food cost ${pct} \u00b7 ${(r.linii || []).map((l) => `${esc(l.denumire)} ${l.cantitate}${esc(l.um || "")}`).join(", ")}</div>
             </div>
-            <input class="mig-text rt-portii" data-id="${r.id}" type="number" placeholder="por\u021bii" aria-label="Num\u0103r por\u021bii" style="width:80px">
+            <input class="camp-input rt-portii" data-id="${r.id}" type="number" placeholder="por\u021bii" aria-label="Num\u0103r por\u021bii" style="width:80px">
             <button class="buton-primar rt-desc" data-id="${r.id}">Descarc\u0103 (ciorn\u0103)</button>
             <button class="buton-sters rt-del" data-id="${r.id}">\u0218terge</button>
           </div>`;
@@ -692,7 +692,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       <div class="pf-frand"><div class="pf-frand-text">
         <div class="pf-frand-nume">${esc(a.denumire)} \u00b7 scriptic ${a.stoc} ${esc(a.um)}</div>
       </div>
-      <input type="number" step="0.001" class="mig-text cvi-faptic" data-aid="${a.id}" placeholder="faptic" aria-label="Stoc faptic" style="width:110px"></div>`).join("")}
+      <input type="number" step="0.001" class="camp-input cvi-faptic" data-aid="${a.id}" placeholder="faptic" aria-label="Stoc faptic" style="width:110px"></div>`).join("")}
       <p style="margin-top:8px"><button class="buton-primar" id="cvi-salveaza">Salveaz\u0103 inventarul (note ciorne)</button></p>`;
     z.querySelector("#cvi-salveaza").addEventListener("click", async () => {
       const linii = [...z.querySelectorAll(".cvi-faptic")]
@@ -794,11 +794,11 @@ async function ecranStocuri(corp, nav, t) {
         </div>`).join("");
     const randLinie = (l, i) => `
       <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap" data-i="${i}">
-        <input type="text" class="mig-text sn-den" placeholder="denumire" aria-label="Denumire" value="${esc(l.denumire || "")}" style="flex:2;min-width:160px">
-        <input type="number" step="0.001" class="mig-text sn-cant" placeholder="cant." aria-label="Cantitate" value="${l.cantitate || ""}" style="width:90px">
-        <input type="number" step="0.0001" class="mig-text sn-pa" placeholder="pret achizitie" aria-label="Pre\u021b achizi\u021bie" value="${l.pret_achizitie || ""}" style="width:120px">
-        <input type="number" step="0.0001" class="mig-text sn-pv" placeholder="pret raft (cu TVA)" aria-label="Pre\u021b raft cu TVA" value="${l.pret_vanzare || ""}" style="width:140px">
-        <select class="mig-text sn-tva" style="width:80px">${[21, 11].map((c) => `<option value="${c}"${(l.cota_tva || 21) == c ? " selected" : ""}>${c}%</option>`).join("")}</select>
+        <input type="text" class="camp-input sn-den" placeholder="denumire" aria-label="Denumire" value="${esc(l.denumire || "")}" style="flex:2;min-width:160px">
+        <input type="number" step="0.001" class="camp-input sn-cant" placeholder="cant." aria-label="Cantitate" value="${l.cantitate || ""}" style="width:90px">
+        <input type="number" step="0.0001" class="camp-input sn-pa" placeholder="pret achizitie" aria-label="Pre\u021b achizi\u021bie" value="${l.pret_achizitie || ""}" style="width:120px">
+        <input type="number" step="0.0001" class="camp-input sn-pv" placeholder="pret raft (cu TVA)" aria-label="Pre\u021b raft cu TVA" value="${l.pret_vanzare || ""}" style="width:140px">
+        <select class="camp-input sn-tva" style="width:80px">${[21, 11].map((c) => `<option value="${c}"${(l.cota_tva || 21) == c ? " selected" : ""}>${c}%</option>`).join("")}</select>
         <button class="buton-secundar sn-scoate">\u2212</button>
       </div>`;
     corp.innerHTML = `
@@ -813,10 +813,10 @@ async function ecranStocuri(corp, nav, t) {
         <div class="pf-frand-nume" style="margin-bottom:8px">NIR nou</div>
         <div class="camp-eticheta">NIR: num\u0103r \u00b7 dat\u0103 \u00b7 furnizor \u00b7 CUI</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-          <input type="text" id="sn-numar" class="mig-text" placeholder="număr NIR" aria-label="Num\u0103r NIR" style="width:120px">
-          <input type="date" id="sn-data" class="mig-text" value="${new Date().toISOString().slice(0, 10)}">
-          <input type="text" id="sn-furn" class="mig-text" placeholder="furnizor" aria-label="Furnizor" style="flex:1;min-width:160px">
-          <input type="text" id="sn-cui" class="mig-text" placeholder="CUI" aria-label="CUI furnizor" style="width:120px">
+          <input type="text" id="sn-numar" class="camp-input" placeholder="număr NIR" aria-label="Num\u0103r NIR" style="width:120px">
+          <input type="date" id="sn-data" class="camp-input" value="${new Date().toISOString().slice(0, 10)}">
+          <input type="text" id="sn-furn" class="camp-input" placeholder="furnizor" aria-label="Furnizor" style="flex:1;min-width:160px">
+          <input type="text" id="sn-cui" class="camp-input" placeholder="CUI" aria-label="CUI furnizor" style="width:120px">
         </div>
         <div class="camp-eticheta">Articole: denumire \u00b7 cantitate \u00b7 pre\u021b achizi\u021bie \u00b7 pre\u021b raft (cu TVA) \u00b7 cot\u0103 TVA</div>
         <div id="sn-linii">${liniiNir.map(randLinie).join("")}</div>
@@ -1198,7 +1198,7 @@ async function ecranRaportZ(corp, nav, t) {
       });
       zona.innerHTML = `<div class="pf-frand"><div class="pf-frand-text">
         <div class="pf-frand-nume">Nota generata (#${r.nota_id})</div>
-        <div class="pf-frand-sub">TVA 11%: ${r.tva_11.toFixed(2)} \u00b7 TVA 21%: ${r.tva_21.toFixed(2)} \u00b7 baze: ${r.baza_11.toFixed(2)} / ${r.baza_21.toFixed(2)}</div>
+        <div class="pf-frand-sub">TVA 11%: ${bani(r.tva_11)} \u00b7 TVA 21%: ${bani(r.tva_21)} \u00b7 baze: ${bani(r.baza_11)} / ${bani(r.baza_21)}</div>
       </div><span class="pf-frand-ok">\u2713</span></div>`;
       // [z_desc_v1] propune descarcarea gestiunii GV a lunii dupa nota Z
       const dz = new Date(corp.querySelector("#z-data").value || new Date());
@@ -1244,7 +1244,7 @@ async function ecranJurnal(corp, nav, t) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${dataRo(n.data)} \u00b7 ${esc(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
-            <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${l.suma.toFixed(2)}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + esc(n.sursa) : ""}</div>
+            <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${bani(l.suma)}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + esc(n.sursa) : ""}</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:stretch">${butoane}</div>
         </div>`;
@@ -1256,10 +1256,10 @@ async function ecranJurnal(corp, nav, t) {
         <div class="camp-eticheta" style="margin-top:8px">Linii: cont debit = cont credit \u00b7 sum\u0103</div>
         <div id="je-linii">${n.linii.map((l, i) => `
           <div style="display:flex;gap:8px;margin-bottom:6px" data-lin="${i}">
-            <input type="text" class="mig-text je-deb" placeholder="debit" aria-label="Cont debit" value="${esc(l.debit)}" style="width:90px">
+            <input type="text" class="camp-input je-deb" placeholder="debit" aria-label="Cont debit" value="${esc(l.debit)}" style="width:90px">
             <span style="align-self:center">=</span>
-            <input type="text" class="mig-text je-cre" placeholder="credit" aria-label="Cont credit" value="${esc(l.credit)}" style="width:90px">
-            <input type="number" step="0.01" class="mig-text je-sum" value="${l.suma.toFixed(2)}" style="width:120px">
+            <input type="text" class="camp-input je-cre" placeholder="credit" aria-label="Cont credit" value="${esc(l.credit)}" style="width:90px">
+            <input type="number" step="0.01" class="camp-input je-sum" value="${l.suma.toFixed(2)}" style="width:120px">
             <button class="buton-secundar je-scoate">\u2212</button>
           </div>`).join("")}</div>
         <p><button class="buton-secundar" id="je-plus">+ linie</button></p>
@@ -1331,10 +1331,10 @@ async function ecranJurnal(corp, nav, t) {
       corp.querySelector("#je-plus").addEventListener("click", () => {
         const d = document.createElement("div");
         d.style.cssText = "display:flex;gap:8px;margin-bottom:6px";
-        d.innerHTML = `<input type="text" class="mig-text je-deb" placeholder="debit" aria-label="Cont debit" style="width:90px">
+        d.innerHTML = `<input type="text" class="camp-input je-deb" placeholder="debit" aria-label="Cont debit" style="width:90px">
           <span style="align-self:center">=</span>
-          <input type="text" class="mig-text je-cre" placeholder="credit" aria-label="Cont credit" style="width:90px">
-          <input type="number" step="0.01" class="mig-text je-sum" placeholder="0,00" aria-label="Sum\u0103" style="width:120px">
+          <input type="text" class="camp-input je-cre" placeholder="credit" aria-label="Cont credit" style="width:90px">
+          <input type="number" step="0.01" class="camp-input je-sum" placeholder="0,00" aria-label="Sum\u0103" style="width:120px">
           <button class="buton-secundar je-scoate">\u2212</button>`;
         zona.appendChild(d); leaga();
       });

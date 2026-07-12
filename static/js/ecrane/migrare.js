@@ -1308,12 +1308,12 @@ async function wizardPlanConturi(corp, nav) {
 function importPlanConturiFirma(corp, nav, firma) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Caut\u0103 \u00een planul existent sau adaug\u0103 un cont nou.</p>
-    <input type="text" class="mig-text" id="pc-cauta" aria-label="Caut\u0103 \u00een plan" placeholder="Caut\u0103 dup\u0103 simbol sau denumire\u2026" style="width:100%;margin-bottom:10px">
+    <input type="text" class="camp-input" id="pc-cauta" aria-label="Caut\u0103 \u00een plan" placeholder="Caut\u0103 dup\u0103 simbol sau denumire\u2026" style="width:100%;margin-bottom:10px">
     <div class="mig-lista" id="pc-rezultate"></div>
     <div class="mig-eticheta" style="margin-top:16px">Adaug\u0103 cont nou</div>
     <div style="display:flex;gap:8px;margin-top:6px">
-      <input type="text" class="mig-text" id="pc-simbol" aria-label="Simbol cont" placeholder="Simbol (ex: 4428)" style="width:140px">
-      <input type="text" class="mig-text" id="pc-denumire" aria-label="Denumire cont" placeholder="Denumire" style="flex:1">
+      <input type="text" class="camp-input" id="pc-simbol" aria-label="Simbol cont" placeholder="Simbol (ex: 4428)" style="width:140px">
+      <input type="text" class="camp-input" id="pc-denumire" aria-label="Denumire cont" placeholder="Denumire" style="flex:1">
     </div>
     <div class="mig-eroare" id="pc-eroare"></div>
     <button class="buton-primar mig-buton" id="pc-adauga" style="margin-top:10px">Adaug\u0103 cont</button>

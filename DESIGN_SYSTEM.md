@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.0 · 11 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.1 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -44,6 +44,8 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 **IMPORTANT (v2.0)**: Formularele NU se învelesc într-o casetă albă (`background:#fff`). Stau direct pe fundalul ferestrei (gri); doar câmpurile de input sunt albe cu bordură #b9c2cf. Un wrapper alb pe fundal gri-deschis face caseta invizibilă.
 
+**Clasa de câmp (v2.1)**: input/select normale poartă exclusiv `.camp-input` (înălțime 40px, bordură vizibilă #b9c2cf, font aplicație). INTERZIS `.mig-text` pe input/select — e croită doar pentru textarea ecranului de migrare (font monospace, bordură 0.5px invizibilă pe alb). Structura canonică de câmp: `<label class="camp"><span class="camp-eticheta">Etichetă</span><input class="camp-input"></label>` — nu `<label>text<br><input>`.
+
 ## 3. Navigare
 
 - Săgeata portocalie (`.btn-nav`) duce MEREU exact un pas înapoi în ierarhia ecranului.
@@ -56,7 +58,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Orice bloc de date (tabel, totaluri, liste) stă în casetă pe FOND ALB cu bordură 1px var(--linie), distinct de fundalul ferestrei.
 - Tabele: titlurile și valorile la STÂNGA, cu excepția coloanelor de sume monetare — titlu și valori la DREAPTA (separator zecimal pe aceeași verticală).
 - **Toate datele se afișează prin `dataRo(d, stil)` din api.js** (v2.0). SINGURA formatare de dată. Stiluri: implicit `zz.ll.aaaa`; `cu_ora` → `zz.ll.aaaa HH:MM`; `lung` → `11 iulie 2026`. INTERZIS `toLocaleDateString` ad-hoc, date ISO brute în template, funcții locale de formatare a datei.
-- Toate sumele cu exact 2 zecimale, format românesc (1.234,56). Cantități fără zecimale inutile. Procente compacte (11%).
+- **Toate sumele afișate se trec prin `bani(v)` din api.js** (v2.1). SINGURUL formator monetar. Produce format românesc (1.234,56). INTERZIS `toFixed(2)` pe sume afișate (dă `1234.56`, nepotrivit), formatări locale sau concatenare brută. Excepții permise: `value` de `<input type="number">` și payload trimis la backend (acolo se cere punct zecimal). Moneda (`lei`/`RON`) se afișează când suma stă izolat sau unitatea nu e evidentă (total factură, fluturaș, indemnizație, sold); se omite în liste/tabele dense unde contextul o face redundantă (cost/porție, coloane cu antet monetar). `bani()` e mereu obligatoriu; moneda e contextuală. Cantități fără zecimale inutile. Procente compacte (11%).
 - Etichetă și valoare pe același rând se separă clar (flex space-between + gap).
 
 ## 5. Casete de atenționare, confirmări și INPUT
@@ -108,5 +110,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 ## Changelog
 
 **v2.0 (11.07.2026)** — migrat docx → .md; adăugate: bordură buton-secundar #b9c2cf (cap.1); interdicție wrapper alb pe formulare (cap.2); `dataRo()` canonic (cap.4); interdicție prompt() nativ (cap.5); `.oblig` asterisc roșu + `.camp-ajutor` albastru (cap.6); `esc` canonic + interdicție variante locale (cap.10).
+
+**v2.1 (12.07.2026)** — adăugate: `bani()` formator monetar canonic + interdicție `toFixed` pe afișare (cap.4); `.camp-input` obligatoriu pe input/select + interdicție `.mig-text` + structură label canonică (cap.2). Ambele reguli în `verificator_conformitate.py` (BANI_NEFORMATATI întărit, MIG_TEXT nou).
 
 **v1.0 (08.07.2026)** — versiune inițială, 10 capitole (docx).

@@ -271,13 +271,13 @@ export async function ecranOperatiuni(corp, nav, t) {
       const cond = c.cond ? ` data-cond-camp="${c.cond.camp}" data-cond-val="${c.cond.val}"` : "";
       let input;
       if (c.tip === "select") {
-        input = `<select id="op-${c.nume}" class="mig-text">${(c.optional ? '<option value="">-</option>' : "") + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
+        input = `<select id="op-${c.nume}" class="camp-input">${(c.optional ? '<option value="">-</option>' : "") + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
       } else if (c.tip === "data") {
-        input = `<input type="date" id="op-${c.nume}" class="mig-text">`;
+        input = `<input type="date" id="op-${c.nume}" class="camp-input">`;
       } else if (c.tip === "numar") {
-        input = `<input type="number" step="0.01" id="op-${c.nume}" class="mig-text" placeholder="${c.sugestie || ""}">`;
+        input = `<input type="number" step="0.01" id="op-${c.nume}" class="camp-input" placeholder="${c.sugestie || ""}">`;
       } else {
-        input = `<input type="text" id="op-${c.nume}" class="mig-text" placeholder="${c.sugestie || ""}">`;
+        input = `<input type="text" id="op-${c.nume}" class="camp-input" placeholder="${c.sugestie || ""}">`;
       }
       return `<div class="camp"${cond}><label class="camp-eticheta" for="op-${c.nume}">${esc(c.eticheta)}${c.optional ? "" : " *"}</label>${input}</div>`;
     };
@@ -297,9 +297,9 @@ export async function ecranOperatiuni(corp, nav, t) {
     const zonaMulti = corp.querySelector("#op-multi");
     const randMulti = (i) => `<div class="grila-campuri grila-campuri-compacta">
       ${opCurenta.subcampuri.map((sc) => {
-        if (sc.tip === "select") return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><select id="m${i}-${sc.nume}" class="mig-text">${sc.optiuni.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("")}</select></div>`;
+        if (sc.tip === "select") return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><select id="m${i}-${sc.nume}" class="camp-input">${sc.optiuni.map(([v,l])=>`<option value="${v}">${esc(l)}</option>`).join("")}</select></div>`;
         const t2 = sc.tip === "numar" ? "number" : "text";
-        return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><input type="${t2}" step="0.0001" id="m${i}-${sc.nume}" class="mig-text" placeholder="${sc.sugestie||""}"></div>`;
+        return `<div class="camp"><label class="camp-eticheta" for="m${i}-${sc.nume}">${esc(sc.eticheta)}</label><input type="${t2}" step="0.0001" id="m${i}-${sc.nume}" class="camp-input" placeholder="${sc.sugestie||""}"></div>`;
       }).join("")}</div>`;
     if (opCurenta.multi && zonaMulti) {
       zonaMulti.innerHTML = randMulti(0) + '<p><button class="buton-secundar" id="op-plus-rand">+ Rand</button></p>';

@@ -29,7 +29,7 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect"]}
+                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -66,7 +66,7 @@ for nume, t in fisiere.items():
         # BANI: ${expr} imediat urmat de RON/lei/EUR fara formator cunoscut in expresie
         for bm in re.finditer(r'\$\{([^}]*)\}\s*(RON|lei|EUR|\$\{[^}]*moneda)', lin):
             expr = bm.group(1)
-            if not re.search(r'_bani|toLocaleString|toFixed|fmt|bani\(', expr):
+            if not re.search(r'_bani|toLocaleString|fmt|bani\(', expr):
                 rap["bani_neformatati"].append((nume, i, expr[:22], lin.strip()[:60]))
         # SPATIERE: cuvant lipit direct de ${ (ex: Total${...})
         for sm in re.finditer(r'>([A-Za-z\u00c0-\u024f]{3,})\$\{', lin):
@@ -81,6 +81,9 @@ for nume, t in fisiere.items():
         # CAMP_DIALECT (#61): <label>text<br><input|select> in loc de .camp canonic
         if re.search(r'<label[^>]*>[^<]*<br>\s*(<input|<select|\$\{input)', lin):
             rap["camp_dialect"].append((nume, i, "", lin.strip()[:66]))
+        # MIG_TEXT: input/select cu clasa mig-text (dialect de contrast, textarea-only) in loc de camp-input
+        if re.search(r'<(input|select)[^>]*class="[^"]*\bmig-text\b', lin):
+            rap["mig_text"].append((nume, i, "", lin.strip()[:66]))
         # ETICHETE: input cu placeholder informativ dar fara label/eticheta pe linie/vecinatate
         if re.search(r'<input[^>]*placeholder="[^"]{4,}', lin) and "camp-eticheta" not in lin and "<label" not in lin and "aria-label" not in lin:
             vecini = "\n".join(linii[max(0,i-3):i] + linii[i:i+4])

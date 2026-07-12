@@ -136,7 +136,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <span class="em-moneda-nota" id="em-moneda-nota"></span>
     </div>
     <div class="em-actiuni">
-      <select id="em-tip" class="mig-text" style="max-width:180px;margin-right:8px">
+      <select id="em-tip" class="camp-input" style="max-width:180px;margin-right:8px">
         <option value="factura">Factura</option>
         <option value="proforma">Proforma</option>
         <option value="aviz">Aviz insotire</option>
