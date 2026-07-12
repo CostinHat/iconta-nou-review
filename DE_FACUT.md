@@ -32,7 +32,11 @@ Ultima actualizare: 12.07.2026 (dimineata)
 - **D394** pe DUKIntegrator (validare desktop)
 
 ## 3. Sesiune desktop (Word, nu SSH)
-- (REZOLVAT) Design System e DESIGN_SYSTEM.md v2.9 in repo (15 capitole), editabil prin SSH; verificator_conformitate.py cu 9 reguli-gardian. Ambele la zi dupa auditul design 12.07.
+- (PARTIAL) Audit design 12.07: INCHISE (canonic + verificator TOTAL 0 pe toate 30 ecrane): formatare bani/data/procent, culori-card, iconite, tipografie, culori/borduri/raza. Design System v2.9 + verificator 9 reguli, la zi.
+- RAMAS DIN AUDIT DESIGN (nefacut):
+  1. Verificare VIZUALA doar ~10/30 ecrane. De vazut cu ochii restul ~20 (declaratii, control, termene, setari, recomanda, admin*, etransport, produse, tipare, semafor, validat, pachete, capacitate) - verificatorul e curat pe ele dar nu prinde tot.
+  2. Categorii NEATACATE: spacing/padding/gap inline (fara inventar inca); wrapper alb pe formulare (cap.2 - verificatorul n-are regula, prins doar 1 manual); aliniere tabele (cap.4 sume la dreapta, neverificata sistematic); anatomia ferestrei (cap.1 entitate-antet/titlu-h2-corp, neauditata vizual).
+  3. TASK 0a mai vechi (cerut 10.07, inca nefacut): audit cod mort + functionalitati ascunse ad-hoc fara conditie documentata + diferente cabinet/client inconsecvente.
 
 ## 4. Infra
 - **Reboot kernel** — "System restart required". Fereastră liniștită (downtime clienți, Daniela pilot).
