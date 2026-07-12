@@ -291,7 +291,6 @@ html, body {
 @keyframes aparitie-overlay { from { opacity: 0; } to { opacity: 1; } }
 @keyframes aparitie-fereastra { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-.buton-ingust { width: auto; padding: 0 20px; margin-top: 16px; }
 
 .ecran-titlu { font-size: var(--text-titlu); font-weight: 700; color: var(--ardezie); margin: 0 0 8px; }
 .ecran-nota { font-size: var(--text-mic); color: var(--gri); margin: 0; }

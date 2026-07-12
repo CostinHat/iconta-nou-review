@@ -19,7 +19,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
       </button>
       <h1 class="firme-titlu"><span style="color:#8a97a5;font-weight:500">Panou \u203a Firme \u203a </span>Firme existente</h1>
       <span class="firme-spatiu"></span>
-      <button class="buton-primar buton-ingust" id="firme-adauga">+ Adaugă firmă</button>
+      <button class="buton-primar" id="firme-adauga" style="margin-top:16px">+ Adaugă firmă</button>
     </div>
     <div class="firme-cautare">
       <label class="camp-eticheta" for="firme-q">Caut\u0103</label>
@@ -505,7 +505,7 @@ async function ecranSalariati(corp, nav, t) {
         const msgs = (r && (r.mesaje || r.raspunsuri)) || [];
         zonaReges.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
           <div class="pf-frand-nume">R\u0103spunsuri REGES</div>
-          <div class="pf-frand-sub">${msgs.length ? msgs.map((m2) => `${m2.data || ""} \u00b7 ${m2.status || m2.tip || ""} \u00b7 ${m2.mesaj || m2.detalii || JSON.stringify(m2)}`).join("<br>") : "niciun răspuns nou"}</div></div>`;
+          <div class="pf-frand-sub">${msgs.length ? msgs.map((m2) => `${m2.data ? dataRo(m2.data) : ""} \u00b7 ${m2.status || m2.tip || ""} \u00b7 ${m2.mesaj || m2.detalii || JSON.stringify(m2)}`).join("<br>") : "niciun răspuns nou"}</div></div>`;
       } catch (e) { zonaReges.innerHTML = `<div class="mig-gol">${e.mesaj || "eroare"}</div>`; }
     });
     corp.querySelectorAll("[data-cm]").forEach((b) => b.addEventListener("click", () => {

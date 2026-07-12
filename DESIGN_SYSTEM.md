@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.4 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.5 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -33,7 +33,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Butoane cu zonă toggle: primesc `.buton-activ` cât timp zona e deschisă; deschiderea unei zone închide zonele-frate.
 - Acțiuni asincrone: butonul se dezactivează + text "Se salvează…" / "Se trimite…" pe durata cererii.
 
-**INTERZIS**: clase de buton în afara setului (ex. `buton-ingust` — folosește margin/width inline pentru dimensionare, nu clasă nouă).
+**INTERZIS**: clase de buton în afara setului (ex. `buton-ingust` — folosește margin/width inline pentru dimensionare, nu clasă nouă). Prins de regula BUTOANE din verificator (v2.5 — `buton-ingust` scos și din lista albă a verificatorului, era o excepție greșită).
 
 ## 2. Pattern fundamental: nimic vizibil decât la selecție
 
@@ -118,5 +118,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 **v2.3 (12.07.2026)** — audit dată: eliminat dialectele `fmtTermen`/`fmtD` (portal) → `dataRo(…, "zi_luna")`; stil nou `zi_luna` în `dataRo`; date ISO brute (`r.data`/`f.data`/`b.data`/`det.data`) → `dataRo`; sumă din `fmtDif` → `bani()`. Regulă DATA_DIALECT în verificator (cap.4).
 
 **v2.4 (12.07.2026)** — `baniRotund()` canonic pentru cifre rotunjite (portal cifre client + cockpit cabinet); eliminat dialectele `lei` (portal/cabinet) și `_bani`/inline (facturi) → `bani()`/`baniRotund()`; stil `zi_luna_text` (`25 feb`) pentru termene client. Regula FMT_LOCAL lărgită la orice nume de const (cap.4).
+
+**v2.5 (12.07.2026)** — eliminat clasa `buton-ingust` (JS + CSS + lista albă verificator); regulă DATA_BRUTA în verificator (prinde `${x.data}` afișat fără `dataRo` — a scos la iveală data REGES nemarcată în firme.js).
 
 **v1.0 (08.07.2026)** — versiune inițială, 10 capitole (docx).

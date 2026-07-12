@@ -11,7 +11,7 @@ CUVINTE = ["inca", "raspuns", "adauga", "sterge", "stergi", "cauta", "fara",
            "creeaza", "urmator", "dispozitie", "noua", "incasare", "asteapta", "asteptare"]
 RE_CUV = re.compile(r'[">\s(](' + "|".join(CUVINTE) + r')[\s.,:!?<")]', re.IGNORECASE)
 CLASE_BUTON_OK = {"buton-primar", "buton-secundar", "buton-sters", "buton-verde",
-                  "buton-mic", "btn-link", "btn-nav", "buton-activ", "buton-ingust"}
+                  "buton-mic", "btn-link", "btn-nav", "buton-activ"}
 # componente structurale si selectoare de optiune — limbaj propriu, nu butoane de actiune (Design System v1.1)
 CLASE_COMPONENTA_OK = {"firme-optiune", "cab-card", "acces-card", "meniu-card", "sub-inapoi",
                        "firme-inapoi", "rap-tab", "ac-per", "mig-dec", "vf-opt", "sa-asist",
@@ -29,7 +29,7 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect"]}
+                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -90,6 +90,14 @@ for nume, t in fisiere.items():
         # DATA_DIALECT: functie locala de formatare data (toLocaleDateString sau split("-") pt reordonare zi/luna/an) in loc de dataRo()
         if re.search(r'toLocaleDateString', lin) or re.search(r'const\s+fmt\w*\s*=.*split\("-"\)', lin):
             rap["data_dialect"].append((nume, i, "", lin.strip()[:66]))
+        # DATA_BRUTA: ${x.data} sau ${x.data_ceva} afisat direct in template fara dataRo (exclus value= de input si payload)
+        if 'value="' not in lin and "value='" not in lin:
+            for dm in re.finditer(r'\$\{(\w+\.data\w*)\s*(?:\|\|[^}]*)?\}', lin):
+                pre = lin[:dm.start()]
+                # doar daca e in context de afisare (are tag HTML inainte pe linie) si nu e deja prin dataRo
+                if 'dataRo' not in dm.group(0) and re.search(r'<(div|span|td|p|b|label|h\d)', pre):
+                    rap["data_bruta"].append((nume, i, dm.group(1)[:20], lin.strip()[:60]))
+                    break
         # ETICHETE: input cu placeholder informativ dar fara label/eticheta pe linie/vecinatate
         if re.search(r'<input[^>]*placeholder="[^"]{4,}', lin) and "camp-eticheta" not in lin and "<label" not in lin and "aria-label" not in lin:
             vecini = "\n".join(linii[max(0,i-3):i] + linii[i:i+4])
