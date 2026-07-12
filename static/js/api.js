@@ -206,7 +206,7 @@ export const ICOANE = {
   users: '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M16 6a3 3 0 0 1 0 6M21 20c0-2-1-3.5-3-4.5"/>',
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
   gift: '<rect x="3" y="11" width="18" height="10" rx="1"/><path d="M3 11V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2M12 7v14"/>',
-  brief: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/>',
+  brief: '<path d="M4 5h16M4 10h16M4 15h10M4 20h6"/><circle cx="18" cy="18" r="3"/><path d="M18 16.5v1.5l1 1"/>',
   trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/>',
   gauge: '<path d="M12 13a4 4 0 0 1 4-4"/><path d="M3 18a9 9 0 0 1 18 0"/><path d="M12 13l4-2"/>',
   settings: '<circle cx="12" cy="12" r="3"/><path d="M12 3v2M12 19v2M5 12H3M21 12h-2M6 6l1.5 1.5M18 18l-1.5-1.5M6 18l1.5-1.5M18 6l-1.5 1.5"/>',
