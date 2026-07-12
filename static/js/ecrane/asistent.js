@@ -45,7 +45,7 @@ export async function desktopAsistent(continut, nav) {
       sinteza:"Firmele tale alocate" },
     { cheie:"control",   titlu:"Control fiscal", icon:"shield",    bg:"#dff4f2", fg:"#0a807b",
       sinteza:"Starea fiscală a firmelor tale" },
-    { cheie:"termene",   titlu:"Termene",        icon:"calendar",  bg:"#e6f6ec", fg:"#15803d",
+    { cheie:"termene",   titlu:"Termene",        icon:"calendar",  bg:"#e6f6ec", fg:"#16a34a",
       sinteza:"Scadențele firmelor tale" },
     ...(poateValida ? [
     { cheie:"validat",   titlu:"De validat",     icon:"clipboard", bg:"#faece7", fg:"#993c1d",
@@ -71,7 +71,7 @@ export async function desktopAsistent(continut, nav) {
   if ((sesiune.user() || {}).poate_pregati) {
     _listaA.splice(3, 0, {
       cheie:"declaratii", titlu:"Declarații", icon:"clipboard",
-      bg:"#eaf3ff", fg:"#1d4ed8",
+      bg:"#e9f0fe", fg:"#1d4ed8",
       sinteza:"Pregătește și trimite la validare"
     });
   }

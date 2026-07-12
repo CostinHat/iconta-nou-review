@@ -22,7 +22,7 @@ export function desktopPortal(continut, nav) {
   const CARDURI = [
     { cheie: "facturi", titlu: "Facturi", icon: "facturi", bg: "#e9f0fe", fg: "#1d4ed8",
       sinteza: "Vizualizează facturile emise și primite." },
-    { cheie: "cifre", titlu: "Cifrele firmei", icon: "declaratii", bg: "#e6f2ec", fg: "#1d7a4d",
+    { cheie: "cifre", titlu: "Cifrele firmei", icon: "declaratii", bg: "#e6f6ec", fg: "#16a34a",
       sinteza: "Profit, cash, încasări" },
     { cheie: "solicitari", titlu: "Solicitări", icon: "solicitari", bg: "#faece7", fg: "#993c1d",
       sinteza: "Trimite o solicitare contabilului." },
@@ -32,10 +32,10 @@ export function desktopPortal(continut, nav) {
       sinteza: "Recipise, balanțe, bilanț" },
     { cheie: "povestea", titlu: "Povestea lunii", icon: "povestea", bg: "#efebfe", fg: "#6d28d9",
       sinteza: "Raportul lunar de la contabil" },
-    { cheie: "acces-cont", titlu: "Acces cont", icon: "solicitari", bg: "#eef2f7", fg: "#334155",
+    { cheie: "acces-cont", titlu: "Acces cont", icon: "solicitari", bg: "#eaeef6", fg: "#45597f",
       sinteza: "Email și acces suplimentar la portal" },
   ];
-  const CARD_BON = { cheie: "bon", titlu: "Pozează bon sau chitanță", icon: "facturi", bg: "#fdeef0", fg: "#a3344b",
+  const CARD_BON = { cheie: "bon", titlu: "Pozează bon sau chitanță", icon: "facturi", bg: "#faece7", fg: "#993c1d",
       sinteza: "Fotografiază documentul, iConta îl citește" };  /* portal_layout_v2 */
 
   continut.innerHTML = `

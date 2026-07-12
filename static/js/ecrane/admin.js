@@ -19,19 +19,19 @@ function svg(cheie, fg) {
 
 // cardurile panoului Admin iConta (extensibil)
 const DEF = [
-  { cheie:"raportari", titlu:"Raportări", icon:"report", bg:"#f3e8ff", fg:"#6d28d9",
+  { cheie:"raportari", titlu:"Raportări", icon:"report", bg:"#efebfe", fg:"#6d28d9",
     sinteza:"Răspunde la sesizările utilizatorilor",
     actiune:(nav) => nav.deschide("Raportări", (corp) => randeazaAdminRaportari(corp, nav)) },
   { cheie:"activitate", titlu:"Activitate cabinete", icon:"report", bg:"#e6f6ec", fg:"#16a34a",
     sinteza:"Cine e activ, cine nu",
     actiune:(nav) => nav.deschide("Activitate cabinete", (corp) => randeazaAdminActivitate(corp, nav)) },
-  { cheie:"gratuite", titlu:"Facturare gratuită", icon:"report", bg:"#eef4ff", fg:"#1d4ed8",
+  { cheie:"gratuite", titlu:"Facturare gratuită", icon:"report", bg:"#e9f0fe", fg:"#1d4ed8",
     sinteza:"Conturi gratuite: cine e activ, cine nu",
     actiune:(nav) => nav.deschide("Facturare gratuită", (corp) => randeazaAdminGratuite(corp, nav)) },
-  { cheie:"anunturi", titlu:"Anunțuri", icon:"report", bg:"#fff7e6", fg:"#b45309",
+  { cheie:"anunturi", titlu:"Anunțuri", icon:"report", bg:"#fbeedd", fg:"#92500a",
     sinteza:"Banner la logare pentru cabinete",
     actiune:(nav) => nav.deschide("Anunțuri", (corp) => randeazaAdminAnunturi(corp, nav)) },
-  { cheie:"sanatate", titlu:"Sănătate server", icon:"report", bg:"#fdeef2", fg:"#c0246b",
+  { cheie:"sanatate", titlu:"Sănătate server", icon:"report", bg:"#faece7", fg:"#993c1d",
     sinteza:"Server, aplicație, bază de date, erori",
     actiune:(nav) => nav.deschide("Sănătate server", (corp) => randeazaAdminSanatate(corp, nav)) },
 ];

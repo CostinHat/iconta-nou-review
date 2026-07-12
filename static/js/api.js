@@ -184,6 +184,18 @@ export function baniRotund(v) {
   return n.toLocaleString("ro-RO", { maximumFractionDigits: 0 });
 }
 
+/* CULORI_CARD — paleta canonica de carduri de meniu (Design System cap.12). 7 culori-concept.
+   Fiecare card foloseste o cheie de aici, NU hex ad-hoc. bg = fundal pastel, fg = titlu/icon saturat. */
+export const CULORI_CARD = {
+  albastru:  { bg: "#e9f0fe", fg: "#1d4ed8" },
+  verde:     { bg: "#e6f6ec", fg: "#16a34a" },
+  teal:      { bg: "#dff4f2", fg: "#0a807b" },
+  violet:    { bg: "#efebfe", fg: "#6d28d9" },
+  piersica:  { bg: "#faece7", fg: "#993c1d" },
+  chihlimbar:{ bg: "#fbeedd", fg: "#92500a" },
+  ardezie:   { bg: "#eaeef6", fg: "#45597f" },
+};
+
 
 // [esc_canonic_v1] Escapare HTML unica pentru date user randate in innerHTML (NC-27).
 // dataRo — SINGURA functie de formatare data in aplicatie (Design System cap.4).

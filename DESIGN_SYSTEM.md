@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.5 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.6 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -105,6 +105,13 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Audit de conformitate la fiecare ecran atins: se verifică cap. 1–10.
 - Acest document se versionează în git (`.md`, editabil prin SSH — v2.0, migrat din docx).
 
+## 12. Culori de card (meniu)
+
+- Cardurile de meniu (`.acces-card`/`.meniu-card`) folosesc EXCLUSIV paleta canonică de 7 culori-concept din `CULORI_CARD` (api.js). Fiecare card: `bg` (fundal pastel) + `fg` (titlu/icon saturat).
+- Paleta: **albastru** #e9f0fe/#1d4ed8 (firme, facturi, pachete) · **verde** #e6f6ec/#16a34a (termene, capacitate, cifre) · **teal** #dff4f2/#0a807b (control fiscal, declarații) · **violet** #efebfe/#6d28d9 (sinteză, raportări) · **piersică** #faece7/#993c1d (de validat, asistenți, activitate) · **chihlimbar** #fbeedd/#92500a (recomandă, anunțuri) · **ardezie** #eaeef6/#45597f (consolidare, documente, setări, suport).
+- INTERZIS hex de card ad-hoc în afara paletei. Nuanțele apropiate NU se multiplică — un singur verde, un singur violet etc.
+- Culorile de semafor (cap.8) și cele de stare rămân separate; astea sunt doar pentru carduri de navigare.
+
 ---
 
 ## Changelog
@@ -120,5 +127,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 **v2.4 (12.07.2026)** — `baniRotund()` canonic pentru cifre rotunjite (portal cifre client + cockpit cabinet); eliminat dialectele `lei` (portal/cabinet) și `_bani`/inline (facturi) → `bani()`/`baniRotund()`; stil `zi_luna_text` (`25 feb`) pentru termene client. Regula FMT_LOCAL lărgită la orice nume de const (cap.4).
 
 **v2.5 (12.07.2026)** — eliminat clasa `buton-ingust` (JS + CSS + lista albă verificator); regulă DATA_BRUTA în verificator (prinde `${x.data}` afișat fără `dataRo` — a scos la iveală data REGES nemarcată în firme.js).
+
+**v2.6 (12.07.2026)** — consolidat sistemul de culori-card: 35 nuanțe divergente → 7 culori-concept canonice în `CULORI_CARD` (api.js); cap.12 nou (paletă card normativă).
 
 **v1.0 (08.07.2026)** — versiune inițială, 10 capitole (docx).
