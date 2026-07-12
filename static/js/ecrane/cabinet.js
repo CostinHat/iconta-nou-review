@@ -70,7 +70,7 @@ function deschideEcran(cheie, nav, continut) {
 }
 
 // [p73_sinteza_azi] panou de intampinare: sinteza zilei, totul clickabil spre ecranele de detaliu
-async function randeazaSintezaAzi(nav, continut) {  // [p74_brief_modal] modal central de intampinare
+async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca fereastra (nav.deschide)
   const azi = new Date().toISOString().slice(0, 10);
   const sfx = "?de=" + azi + "&pana=" + azi;
   let cen = { totaluri: {}, pe_asistent: [] };
@@ -81,8 +81,6 @@ async function randeazaSintezaAzi(nav, continut) {  // [p74_brief_modal] modal c
   try { rap = await api.get("/raportari/contor"); } catch {}
 
   const t = cen.totaluri || {};
-  const u = sesiune.user() || {};
-  const numeFirma = u.nume_firma || "Cabinet";
   const aziLung = dataRo(new Date(), "lung");
 
   function cifra(val, eticheta, cheie, accent) {
@@ -130,19 +128,9 @@ async function randeazaSintezaAzi(nav, continut) {  // [p74_brief_modal] modal c
     jurnal = `<li class="sa-gol">Nicio activitate încă azi.</li>`;
   }
 
-  const ov = document.createElement("div");
-  ov.className = "pacm-overlay brief-overlay";
-  ov.innerHTML = `
-    <div class="brief">
-      <div class="brief-cap">
-        <div>
-          <div class="brief-titlu">Sinteza zilei</div>
-          <div class="brief-sub">${numeFirma.replace(/[<>&]/g,"")} · ${aziLung}</div>
-        </div>
-        <button class="pacm-x" id="brief-x" aria-label="Inchide">✕</button>
-      </div>
-      <div class="brief-corp">
-        <div class="sa-sectiune">
+  corp.innerHTML = `
+    <p class="ecran-nota">${aziLung}</p>
+    <div class="sa-sectiune">
           <div class="sa-cap">Ast\u0103zi \u00een cabinet</div>
           <div class="sa-cifre">${cifre}</div>
         </div>
@@ -158,18 +146,11 @@ async function randeazaSintezaAzi(nav, continut) {  // [p74_brief_modal] modal c
             </div>
             <ul class="sa-jurnal">${jurnal}</ul>
           </div>
-        </div>
-      </div>
-    </div>`;
-  document.body.appendChild(ov);
-
-  function inchide() { ov.remove(); }
-  ov.querySelector("#brief-x").addEventListener("click", inchide);
-  ov.addEventListener("click", (e) => { if (e.target === ov) inchide(); });
-  ov.querySelectorAll("[data-ecran]").forEach((el) => {
+        </div>`;
+  corp.querySelectorAll("[data-ecran]").forEach((el) => {
     const cheie = el.getAttribute("data-ecran");
     if (!cheie) return;
-    el.addEventListener("click", () => { inchide(); deschideEcran(cheie, nav, continut); });
+    el.addEventListener("click", () => deschideEcran(cheie, nav, corp));
   });
 }
 
@@ -226,7 +207,7 @@ function randeazaPanou(continut, nav) {
     } else if (c.cheie === "capacitate") {  // [p71_capacitate]
       card.addEventListener("click", () => nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "brief") {  // [p74_card_brief]
-      card.addEventListener("click", () => randeazaSintezaAzi(nav, continut));
+      card.addEventListener("click", () => nav.deschide("Sinteza zilei", (c) => randeazaSintezaAzi(c, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "setari") {  // [p28_setari]
       card.addEventListener("click", () => nav.deschide("Setari cont", (corp) => randeazaSetari(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "recomanda") {  // [p31_recomanda]

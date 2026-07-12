@@ -1684,21 +1684,6 @@ html, body {
 .sa-link:hover { text-decoration: underline; }
 .sa-gol { color: #999; font-size: var(--text-mic); padding: 4px 0; }
 
-/* [p74_brief_modal] modal briefing de intampinare */
-.brief-overlay { padding: 24px; }
-.brief {
-  width: 100%; max-width: 760px; max-height: calc(100vh - 48px);
-  background: var(--alb); border-radius: 12px;
-  box-shadow: 0 8px 40px rgba(20,30,45,0.3);
-  display: flex; flex-direction: column; overflow: hidden;
-}
-.brief-cap {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  padding: 18px 22px; border-bottom: 1px solid var(--linie); flex: 0 0 auto;
-}
-.brief-titlu { font-size: var(--text); font-weight: 700; color: var(--ardezie); }
-.brief-sub { font-size: var(--text-mic); color: var(--gri); margin-top: 2px; }
-.brief-corp { padding: 18px 22px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
 
 /* [p75_carduri_mari] stari orizontale pe carduri (semafor doar cand e ceva) */
 .cab-stari { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px; }
