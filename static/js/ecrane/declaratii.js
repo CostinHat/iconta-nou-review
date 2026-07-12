@@ -142,8 +142,7 @@ async function pas2(corp, nav) {
     corp.innerHTML = `
       <p class="mig-intro">Pasul 2 din 3 — generare</p>
       <div class="dec-eroare">Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.</div>
-      <div class="dec-bara"><button class="buton-secundar" id="dec-inapoi">\u2190</button></div>`;
-    corp.querySelector("#dec-inapoi").addEventListener("click", () => pas1(corp, nav));
+      `;
     return;
   }
 
@@ -162,11 +161,9 @@ async function pas2(corp, nav) {
       <pre class="dec-xml-pre">${esc(xml)}</pre>
     </details>
     <div class="dec-bara">
-      <button class="buton-secundar" id="dec-inapoi">\u2190</button>
       <button class="buton-primar" id="dec-trimite">Trimite în coadă →</button>
     </div>
   `;
-  corp.querySelector("#dec-inapoi").addEventListener("click", () => pas1(corp, nav));
   corp.querySelector("#dec-trimite").addEventListener("click", () => pas3(corp, nav));
 }
 

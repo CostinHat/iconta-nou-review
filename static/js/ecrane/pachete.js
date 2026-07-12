@@ -38,9 +38,10 @@ function pasAlegere(corp, nav) {
     <div class="dec-form">
       <label class="dec-camp">
         <span class="dec-eticheta">Firmă</span>
+        <input id="pac-cauta" class="dec-input" placeholder="Caută firma (nume sau CUI)..." style="margin-bottom:8px">
         <select id="pac-firma" class="dec-select">
           <option value="">— alege firma —</option>
-          ${S.firme.map((fr)=>`<option value="${fr.id}" ${fr.id===S.tenant_id?"selected":""}>${esc(fr.nume||("Firma "+fr.id))}</option>`).join("")}
+          ${S.firme.map((fr)=>`<option value="${fr.id}" ${fr.id===S.tenant_id?"selected":""}>${esc(fr.nume||("Firma "+fr.id))}${fr.cui?" \u00b7 "+esc(fr.cui):""}</option>`).join("")}
         </select>
       </label>
       <div class="dec-perioada-rand">
@@ -63,6 +64,15 @@ function pasAlegere(corp, nav) {
     cont.disabled = !S.tenant_id;
   };
   selF.addEventListener("change", refresh);
+  const cauta = corp.querySelector("#pac-cauta");
+  cauta.addEventListener("input", () => {
+    const q = cauta.value.toLowerCase().trim();
+    const vizibile = S.firme.filter((fr) => !q || (fr.nume||"").toLowerCase().includes(q) || (fr.cui||"").toLowerCase().includes(q));
+    selF.innerHTML = '<option value="">\u2014 alege firma \u2014</option>' +
+      vizibile.map((fr)=>`<option value="${fr.id}">${esc(fr.nume||("Firma "+fr.id))}${fr.cui?" \u00b7 "+esc(fr.cui):""}</option>`).join("");
+    if (vizibile.length === 1) selF.value = String(vizibile[0].id);
+    selF.dispatchEvent(new Event("change"));
+  });
   corp.querySelector("#pac-an").addEventListener("change", refresh);
   corp.querySelector("#pac-luna").addEventListener("change", refresh);
   cont.addEventListener("click", () => nav.mergi("Pachetul lunii", (c) => pasLucru(c, nav)));  // faza_b2_traseu_v1
@@ -83,8 +93,7 @@ async function pasLucru(corp, nav) {
     else { S.text = ""; S.status = null; }
   } catch {
     corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca datele.</p>
-      <div class="dec-bara"><button class="buton-secundar" id="pac-back">\u2190</button></div>`;
-    corp.querySelector("#pac-back").addEventListener("click", () => pasAlegere(corp, nav));
+      `;
     return;
   }
   randeazaLucru(corp, nav);
@@ -95,20 +104,19 @@ function randeazaLucru(corp, nav) {
   const depuse = (rz.declaratii_depuse || []).join(", ") || "—";
   corp.innerHTML = `
     <p class="mig-intro">${esc(rz.nume_firma||"Firma")} · ${LUNI[S.luna-1]} ${S.an}</p>
-    <div class="pac-rezumat">
+    <div class="panou pac-rezumat">
       <div class="pac-rez-rand"><span>Venituri</span><b>${bani(rz.venituri)}</b></div>
       <div class="pac-rez-rand"><span>Cheltuieli</span><b>${bani(rz.cheltuieli)}</b></div>
       <div class="pac-rez-rand pac-rez-total"><span>Rezultat</span><b>${bani(rz.rezultat)} (${esc(rz.tip)})</b></div>
       <div class="pac-rez-rand"><span>Declarații depuse</span><b>${esc(depuse)}</b></div>
       <div class="pac-rez-rand"><span>Email antreprenor</span><b>${esc(rz.email||"— nesetat —")}</b></div>
     </div>
-    <div class="pac-deschide-zona">
+    <div class="panou pac-deschide-zona">
       <div class="pac-deschide-stare" id="pac-deschide-stare">${S.status === "aprobat" ? "Povestea e aprobată ✓" : (S.text ? "Există o ciornă salvată" : "Încă nu există o poveste pentru această lună")}</div>
       <button class="buton-primar" id="pac-deschide">${S.text ? "Deschide povestea" : "Scrie povestea"}</button>
     </div>
-    <div class="dec-bara"><button class="buton-secundar" id="pac-back">\u2190</button></div>
+
   `;
-  corp.querySelector("#pac-back").addEventListener("click", () => pasAlegere(corp, nav));
   corp.querySelector("#pac-deschide").addEventListener("click", () => deschideModal(corp, nav));
 }
 

@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.9 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.10 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -137,26 +137,21 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 ---
 
+## 16. Panouri de conținut
+- Orice casetă de conținut așezată direct pe corpul gri al ferestrei folosește clasa canonică `.panou`: fundal ALB + bordură `#b9c2cf` + `var(--raza)` + padding 12/14. Clasele specifice ecranului adaugă DOAR diferențele (margin, layout, border-style), nu redefinesc fundalul/bordura.
+- INTERZIS panou transparent sau pe `var(--fundal)` direct pe corpul ferestrei — gri pe gri = invizibil. Excepții legitime: stări hover, sub-zone în interiorul unui panou alb (ex. antet de fir), zone de scroll tip `rec-modal-corp`.
+- Exemple conforme: `pac-rezumat`, `pac-deschide-zona` (dashed), `grila-campuri-compacta`.
+
 ## Changelog
-
-**v2.0 (11.07.2026)** — migrat docx → .md; adăugate: bordură buton-secundar #b9c2cf (cap.1); interdicție wrapper alb pe formulare (cap.2); `dataRo()` canonic (cap.4); interdicție prompt() nativ (cap.5); `.oblig` asterisc roșu + `.camp-ajutor` albastru (cap.6); `esc` canonic + interdicție variante locale (cap.10).
-
-**v2.1 (12.07.2026)** — adăugate: `bani()` formator monetar canonic + interdicție `toFixed` pe afișare (cap.4); `.camp-input` obligatoriu pe input/select + interdicție `.mig-text` + structură label canonică (cap.2). Ambele reguli în `verificator_conformitate.py` (BANI_NEFORMATATI întărit, MIG_TEXT nou).
-
-**v2.2 (12.07.2026)** — eliminat dialectul `fmt` local (7 definiții în firme/portal/migrare) → `bani()` canonic; `fmtZi` rezidual → `dataRo()`; procente separate ca `pct`. Regulă FMT_LOCAL în verificator; interdicție funcții monetare locale (cap.4).
-
-**v2.3 (12.07.2026)** — audit dată: eliminat dialectele `fmtTermen`/`fmtD` (portal) → `dataRo(…, "zi_luna")`; stil nou `zi_luna` în `dataRo`; date ISO brute (`r.data`/`f.data`/`b.data`/`det.data`) → `dataRo`; sumă din `fmtDif` → `bani()`. Regulă DATA_DIALECT în verificator (cap.4).
-
-**v2.4 (12.07.2026)** — `baniRotund()` canonic pentru cifre rotunjite (portal cifre client + cockpit cabinet); eliminat dialectele `lei` (portal/cabinet) și `_bani`/inline (facturi) → `bani()`/`baniRotund()`; stil `zi_luna_text` (`25 feb`) pentru termene client. Regula FMT_LOCAL lărgită la orice nume de const (cap.4).
-
-**v2.5 (12.07.2026)** — eliminat clasa `buton-ingust` (JS + CSS + lista albă verificator); regulă DATA_BRUTA în verificator (prinde `${x.data}` afișat fără `dataRo` — a scos la iveală data REGES nemarcată în firme.js).
-
+**v2.10 (12.07.2026)** — panouri de conținut: clasa canonică `.panou` (alb + bordură #b9c2cf); reparate `pac-rezumat`/`pac-deschide-zona`/`grila-campuri-compacta` (gri pe gri); cap.16 nou. Carduri: 73 hex literal → `...CULORI_CARD.cheie` + regula CULOARE_CARD_HEX; decizie spacing închisă (rămâne literal).
 **v2.9 (12.07.2026)** — canonizat culorile/bordurile/raza din cod: 3 borduri + 6 culori ad-hoc → `var()`, 4 border-radius → `var(--raza)`; cap.15 nou + reguli RADIUS_INLINE (și culoare ad-hoc) în verificator. Landing exclus (sistem separat).
-
 **v2.8 (12.07.2026)** — sistem de tipografie: 6 tokeni de dimensiune + 7 clase de tip (stil.css); eliminat toate font-size literale inline (18 migrate în 9 ecrane); cap.14 nou + regula FONT_INLINE în verificator.
-
 **v2.7 (12.07.2026)** — dicționar canonic unic `ICOANE` (api.js, 22 iconițe, 5 noi); eliminat dicționarele locale divergente (cabinet/admin/asistent); reasignat 8 carduri de la `report` generic la iconițe sugestive distincte; cap.13 nou + regula ICOANE_LOCAL în verificator.
-
 **v2.6 (12.07.2026)** — consolidat sistemul de culori-card: 35 nuanțe divergente → 7 culori-concept canonice în `CULORI_CARD` (api.js); cap.12 nou (paletă card normativă).
-
+**v2.5 (12.07.2026)** — eliminat clasa `buton-ingust` (JS + CSS + lista albă verificator); regulă DATA_BRUTA în verificator (prinde `${x.data}` afișat fără `dataRo` — a scos la iveală data REGES nemarcată în firme.js).
+**v2.4 (12.07.2026)** — `baniRotund()` canonic pentru cifre rotunjite (portal cifre client + cockpit cabinet); eliminat dialectele `lei` (portal/cabinet) și `_bani`/inline (facturi) → `bani()`/`baniRotund()`; stil `zi_luna_text` (`25 feb`) pentru termene client. Regula FMT_LOCAL lărgită la orice nume de const (cap.4).
+**v2.3 (12.07.2026)** — audit dată: eliminat dialectele `fmtTermen`/`fmtD` (portal) → `dataRo(…, "zi_luna")`; stil nou `zi_luna` în `dataRo`; date ISO brute (`r.data`/`f.data`/`b.data`/`det.data`) → `dataRo`; sumă din `fmtDif` → `bani()`. Regulă DATA_DIALECT în verificator (cap.4).
+**v2.2 (12.07.2026)** — eliminat dialectul `fmt` local (7 definiții în firme/portal/migrare) → `bani()` canonic; `fmtZi` rezidual → `dataRo()`; procente separate ca `pct`. Regulă FMT_LOCAL în verificator; interdicție funcții monetare locale (cap.4).
+**v2.1 (12.07.2026)** — adăugate: `bani()` formator monetar canonic + interdicție `toFixed` pe afișare (cap.4); `.camp-input` obligatoriu pe input/select + interdicție `.mig-text` + structură label canonică (cap.2). Ambele reguli în `verificator_conformitate.py` (BANI_NEFORMATATI întărit, MIG_TEXT nou).
+**v2.0 (11.07.2026)** — migrat docx → .md; adăugate: bordură buton-secundar #b9c2cf (cap.1); interdicție wrapper alb pe formulare (cap.2); `dataRo()` canonic (cap.4); interdicție prompt() nativ (cap.5); `.oblig` asterisc roșu + `.camp-ajutor` albastru (cap.6); `esc` canonic + interdicție variante locale (cap.10).
 **v1.0 (08.07.2026)** — versiune inițială, 10 capitole (docx).

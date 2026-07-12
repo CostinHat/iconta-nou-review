@@ -273,6 +273,8 @@ html, body {
 .nav-x:hover { background: var(--rosu-fundal); color: var(--rosu); }
 
 .fereastra-corp { padding: 24px; overflow-y: auto; }
+/* PANOU canonic (DS cap.16): caseta alba de continut pe corpul gri al ferestrei */
+.panou { background: var(--alb); border: 1px solid #b9c2cf; border-radius: var(--raza); padding: 12px 14px; }
 /* [contrast_ferestre_v1] toate zonele de completat din ferestre: bordura unica vizibila */
 .fereastra-corp input:not([type=checkbox]):not([type=radio]):not([type=file]),
 .fereastra-corp textarea,
@@ -1488,7 +1490,7 @@ html, body {
 
 
 /* [p64_pachete] */
-.pac-rezumat { border: 1px solid var(--linie); border-radius: var(--raza); padding: 12px 14px; margin: 4px 0 16px; }
+.pac-rezumat { margin: 4px 0 16px; }  /* extinde .panou */
 .pac-rez-rand { display: flex; justify-content: space-between; padding: 5px 0; font-size: var(--text-mic); color: var(--gri); }
 .pac-rez-rand b { color: var(--ardezie); }
 .pac-rez-total { border-top: 1px solid var(--linie); margin-top: 4px; padding-top: 8px; }
@@ -1519,7 +1521,7 @@ html, body {
 .pac-deschide-zona {
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px; padding: 18px; margin-top: 8px;
-  border: 1px dashed var(--linie); border-radius: var(--raza); background: var(--fundal);
+  border-style: dashed;  /* extinde .panou */
 }
 .pac-deschide-stare { font-size: var(--text-mic); color: var(--gri); }
 
@@ -2245,4 +2247,4 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 /* grila_campuri_v1 - Design System v1.1 (#61): grila de campuri, casete aliniate jos */
 .grila-campuri { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; max-width: 1000px; }
 .grila-campuri .camp { justify-content: flex-end; }
-.grila-campuri-compacta { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 8px; padding: 8px; border: 1px solid var(--linie); border-radius: 8px; }
+.grila-campuri-compacta { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 8px; padding: 8px; background: var(--alb); border: 1px solid #b9c2cf; border-radius: var(--raza); }
