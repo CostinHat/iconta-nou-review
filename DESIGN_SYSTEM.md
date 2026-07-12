@@ -70,6 +70,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 ## 6. Mesaje de stare, câmpuri obligatorii și ghidaj
 
 - Succes: text verde #1d7a4d, weight 600, afișat pe ecranul principal DUPĂ revenirea din formular.
+- `arataMesaj(el, txt, tip)` — singura cale de afișare a mesajelor de stare. Tipuri canonice: `eroare` (roșu), `avert` (galben), `info` (gri), `ok` (verde, succes). INTERZIS mesaj de stare prin innerHTML cu clase ad-hoc (`mig-gol`, `pf-intro`, span inline).
 - Eroare de câmp/formular: `<span class="msg-eroare">` (roșu), lângă câmpul/butonul relevant. Niciodată tăcere la o acțiune eșuată.
 - Validări preventive cu mesaj explicativ, nu doar refuz.
 - **Câmp obligatoriu (v2.0)**: marcat cu asterisc roșu prin `<span class="oblig">*</span>` lângă etichetă. Câmpurile opționale nu se marchează.
