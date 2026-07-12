@@ -276,7 +276,7 @@ function randeazaMeniuActivitate(continut, nav) {
       <button class="sub-inapoi" id="sub-inapoi">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <h1 class="sub-titlu"><span style="color:#8a97a5;font-weight:500">Panou \u203a </span>Activitate</h1>
+      <h1 class="sub-titlu"><span style="color:var(--gri-clar);font-weight:500">Panou \u203a </span>Activitate</h1>
     </div>
     <div class="firme-optiuni">
       <button class="firme-optiune" id="opt-jurnal">
@@ -308,7 +308,7 @@ function randeazaMeniuFirme(continut, nav) {
       <button class="sub-inapoi" id="sub-inapoi">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <h1 class="sub-titlu"><span style="color:#8a97a5;font-weight:500">Panou \u203a </span>Firme</h1>
+      <h1 class="sub-titlu"><span style="color:var(--gri-clar);font-weight:500">Panou \u203a </span>Firme</h1>
     </div>
     <div class="firme-optiuni">
       <button class="firme-optiune" id="opt-existente">
@@ -536,7 +536,7 @@ async function randeazaConsolidare(corp, nav) {
       <div class="pf-frand-text" style="flex:2">${nume}</div>
       <span style="flex:1;text-align:right">${k ? lei(k.venituri) : "\u2014"}</span>
       <span style="flex:1;text-align:right">${k ? lei(k.cheltuieli) : "\u2014"}</span>
-      <span style="flex:1;text-align:right;${k && k.profit < 0 ? "color:#c0392b" : ""}">${k ? lei(k.profit) : "\u2014"}</span>
+      <span style="flex:1;text-align:right;${k && k.profit < 0 ? "color:var(--rosu)" : ""}">${k ? lei(k.profit) : "\u2014"}</span>
       <span style="flex:1;text-align:right">${k ? lei(k.cash) : "\u2014"}</span>
     </div>`;
   corp.innerHTML = `

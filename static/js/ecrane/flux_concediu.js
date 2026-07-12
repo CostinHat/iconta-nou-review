@@ -157,7 +157,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         const r = await api.post(`/tenants/${t.id}/salariati/${sal.id}/concedii`, payload);
         const c = r.calcul || {};
         rez.innerHTML = `
-          <div style="background:#fff;border:1px solid var(--linie);border-radius:var(--raza);padding:12px;margin-top:12px;max-width:520px">
+          <div style="background:var(--alb);border:1px solid var(--linie);border-radius:var(--raza);padding:12px;margin-top:12px;max-width:520px">
             <div class="pf-frand-nume" style="color:#1d7a4d;margin-bottom:8px">\u2713 Concediu salvat</div>
             <div class="pac-rez-rand"><span>Media zilnic\u0103</span><b>${bani(c.media_zilnica || 0)} lei</b></div>
             <div class="pac-rez-rand"><span>Procent</span><b>${Number(c.procent || 0).toFixed(0)}%</b></div>

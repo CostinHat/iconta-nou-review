@@ -17,7 +17,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
       <button class="firme-inapoi" id="firme-inapoi" title="Înapoi la panou" aria-label="Înapoi la panou">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
-      <h1 class="firme-titlu"><span style="color:#8a97a5;font-weight:500">Panou \u203a Firme \u203a </span>Firme existente</h1>
+      <h1 class="firme-titlu"><span style="color:var(--gri-clar);font-weight:500">Panou \u203a Firme \u203a </span>Firme existente</h1>
       <span class="firme-spatiu"></span>
       <button class="buton-primar" id="firme-adauga" style="margin-top:16px">+ Adaugă firmă</button>
     </div>
@@ -753,7 +753,7 @@ async function ecranBilant(corp, nav, t) {
           ? `<span style="color:#1d7a4d;font-weight:600">\u25cf Validare f\u0103r\u0103 erori</span>`
           : `<span style="color:#ff3b30;font-weight:600">\u25cf Erori la validare</span>`;
         rez.innerHTML = `<p>${sem}</p>` +
-          (r.erori ? `<pre class="tip-micut" style="white-space:pre-wrap;background:#f6f7f9;padding:8px;border-radius:8px">${esc(r.erori)}</pre>` : "") +
+          (r.erori ? `<pre class="tip-micut" style="white-space:pre-wrap;background:var(--fundal);padding:8px;border-radius:8px">${esc(r.erori)}</pre>` : "") +
           (r.avertismente && r.avertismente.length
             ? `<p class="pf-intro">${r.avertismente.map(esc).join("<br>")}</p>` : "");
       } catch (e) { rez.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
@@ -964,7 +964,7 @@ async function ecranCasa(corp, nav, t) {
         const r = await api.get(`/tenants/${t.id}/verifica-cui/${encodeURIComponent(cui)}`);
         if (r && r.gasit) {
           corp.querySelector("#c-part").value = r.denumire || "";
-          stare.innerHTML = `<span class="em-cui-info">${r.platitor_tva ? "pl\u0103titor TVA" : "nepl\u0103titor TVA"}${r.inactiv ? " \u00b7 <b style=\"color:#dc2626\">INACTIV\u0102 fiscal</b>" : ""}</span>`;
+          stare.innerHTML = `<span class="em-cui-info">${r.platitor_tva ? "pl\u0103titor TVA" : "nepl\u0103titor TVA"}${r.inactiv ? " \u00b7 <b style=\"color:var(--rosu)\">INACTIV\u0102 fiscal</b>" : ""}</span>`;
           stare.className = "em-cui-stare";
         } else {
           stare.textContent = "CUI neg\u0103sit la ANAF";
@@ -1250,7 +1250,7 @@ async function ecranJurnal(corp, nav, t) {
         </div>`;
     };
     const editor = (n) => `
-      <div style="display:block;border:1px solid #c9961f">
+      <div style="display:block;border:1px solid var(--galben)">
         <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${dataRo(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
         <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${esc(n.descriere || "")}"></label>
         <div class="camp-eticheta" style="margin-top:8px">Linii: cont debit = cont credit \u00b7 sum\u0103</div>

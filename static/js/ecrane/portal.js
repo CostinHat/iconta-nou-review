@@ -412,10 +412,10 @@ async function ecranRecomanda(corp, nav) {
     <p class="pf-intro">Invită un antreprenor prieten să afle despre iConta.</p>
     <div class="pov-card" style="margin-bottom:16px">
       <button type="button" id="rec-vezi-mesaj" class="buton-secundar">Vezi mesajul</button>
-      <div id="rec-preview" style="display:none;margin-top:10px;border:1px solid #eee;border-radius:8px;padding:16px;background:#fafafa">${previewHtml}</div>
+      <div id="rec-preview" style="display:none;margin-top:10px;border:1px solid var(--linie);border-radius:8px;padding:16px;background:var(--fundal)">${previewHtml}</div>
     </div>
     <textarea id="rec-emails" placeholder="email1@exemplu.ro, email2@exemplu.ro" rows="4"
-      style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-family:inherit"></textarea>
+      style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--linie);font-family:inherit"></textarea>
     <p class="ecran-nota">Separă mai multe adrese prin virgulă. Maxim 10.</p>
     <button class="buton-primar" id="rec-trimite-btn" style="margin-top:14px">Trimite recomandarea</button>
     <div id="rec-rezultat" style="margin-top:16px"></div>
