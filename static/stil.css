@@ -1654,23 +1654,23 @@ html, body {
 /* [p73_sinteza_azi] panou sinteza azi (intampinare patron) */
 .sa-gazda { margin: 0 0 20px; }
 .sa-panou { display: flex; flex-direction: column; gap: 16px; }
-.sa-sectiune { background: #fff; border: 1px solid #ececec; border-radius: 12px; padding: 16px 18px; }
+.sa-sectiune { background: #fff; border: 1px solid #b9c2cf; border-radius: 12px; padding: 16px 18px; }
 .sa-cap { font-size: var(--text-mic); text-transform: uppercase; letter-spacing: .05em; color: #999; font-weight: 600; margin-bottom: 12px; }
 .sa-cap-rand { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .sa-cap-rand .sa-cap { margin-bottom: 0; }
 .sa-cifre { display: flex; gap: 10px; flex-wrap: wrap; }
 .sa-cifra { display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
-  background: #fafafa; border: 1px solid #f0f0f0; border-radius: 10px; padding: 12px 16px;
+  background: #fff; border: 1px solid #b9c2cf; border-radius: 10px; padding: 12px 16px;
   min-width: 92px; cursor: default; text-align: left; }
 .sa-clic { cursor: pointer; transition: background .12s, border-color .12s; }
 .sa-clic:hover { background: #f2f6ff; border-color: #d6e2fb; }
-.sa-num { font-size: var(--text-titlu); font-weight: 700; line-height: 1; }
-.sa-desc { font-size: var(--text-mic); color: #666; }
+.sa-num { font-size: 19px; font-weight: 700; line-height: 1; }
+.sa-desc { font-size: 13px; color: #666; }
 .sa-doua { display: flex; gap: 16px; flex-wrap: wrap; }
 .sa-flex1 { flex: 1; min-width: 260px; }
 .sa-asist-lista { display: flex; flex-direction: column; gap: 6px; }
 .sa-asist { display: flex; justify-content: space-between; align-items: center;
-  border: 1px solid #f0f0f0; border-radius: 8px; padding: 9px 12px; background: #fafafa; text-align: left; }
+  border: 1px solid #b9c2cf; border-radius: 8px; padding: 9px 12px; background: #fff; text-align: left; }
 .sa-asist-nume { font-size: var(--text-mic); font-weight: 600; color: #1a1d21; }
 .sa-asist-cifre { font-size: var(--text-mic); color: #777; }
 .sa-jurnal { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
