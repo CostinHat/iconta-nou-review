@@ -10,6 +10,26 @@
 
 Actualizat: 03.07.2026
 
+---
+## 12.07.2026 — Audit design & conformitate (DS v2.0 -> v2.9, 11 commit-uri)
+Campanie sistematica de audit vizual pe iconta_v2. Tipar recurent: functie/dictionar canonic unic + eliminarea copiilor divergente + regula in verificator. verificator_conformitate.py la TOTAL 0, fiecare pas confirmat vizual in browser.
+
+**Canonizat:**
+- FORMATARE: bani(v) = singurul formator monetar (2 zecimale); baniRotund(v) NOU = cifre de ansamblu rotunjite la leu (cockpit cabinet, cifrele firmei client); dataRo(d,stil) = singurul formator de data (stiluri noi zi_luna="12.07" numeric + zi_luna_text="25 feb" pt termene portal client); pct separat pt procente. Eliminat 7x fmt local + _bani + lei local + fmtZi/fmtD/fmtTermen + inline-uri. Date ISO brute afisate (r/f/b/det/m2.data) -> dataRo.
+- CULORI CARD (DS cap.12): 35 nuante divergente -> 7 culori-concept in CULORI_CARD (api.js): albastru/verde/teal/violet/piersica/chihlimbar/ardezie. Normalizate 31 definitii card in 5 ecrane.
+- ICONITE (cap.13): dictionar canonic unic ICOANE (api.js, 22 iconite, 5 noi: anunturi/server/suport/consolidare/activitate). Eliminat 3 dictionare locale divergente (cabinet/admin/asistent). 8 carduri report generic -> iconite distincte. Fix brief (sinteza) sa nu duplice settings. Fiecare card = triada culoare+denumire+iconita.
+- TIPOGRAFIE (cap.14): 6 tokeni dimensiune + 7 clase de tip (.tip-*). Eliminat toate font-size literale inline (18 in 9 ecrane).
+- CULORI/BORDURI/RAZA din cod (cap.15): 3 borduri + 6 culori ad-hoc -> var() canonice; 4 border-radius -> var(--raza). Landing (pagina-*/login) pastrat sistem separat (marketing).
+- BUTOANE: eliminat clasa buton-ingust (JS+CSS+lista alba verificator). Marcaje .oblig + structura label canonica in flux_concediu + rip_ecran. 37x mig-text -> camp-input (contrast invizibil pe alb).
+- BACKEND: validare data_operatiune goala in rip_api.py (testata functional).
+
+**Verificator - 9 reguli-gardian noi permanente:** BANI_NEFORMATATI (toFixed), MIG_TEXT, FMT_LOCAL (orice const X=toLocaleString), DATA_DIALECT, DATA_BRUTA, BUTOANE (strict), ICOANE_LOCAL, FONT_INLINE, RADIUS_INLINE.
+
+**Design System:** migrat complet docx->md (editabil SSH), la v2.9, 15 capitole normative pe server (~/iconta_nou/DESIGN_SYSTEM.md).
+
+Commit-uri: 85dab20 996ce3c ac2baae 865d93c 9596488 6a9da3b 150a218 aa7937a 12c23a6 a134b5e 1b69ca1.
+
+
 ## FUNCTIONAL, TESTAT LIVE
 
 ### Portal client (complet)

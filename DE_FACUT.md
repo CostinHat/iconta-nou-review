@@ -1,7 +1,7 @@
 # iConta — DE FĂCUT
 
 **Doar viitorul: ce e deschis. Când termini, ștergi rândul. Trecutul e în ISTORIC.md + git log.**
-Ultima actualizare: 11.07.2026 (noapte)
+Ultima actualizare: 12.07.2026 (dimineata)
 
 ---
 
@@ -32,10 +32,11 @@ Ultima actualizare: 11.07.2026 (noapte)
 - **D394** pe DUKIntegrator (validare desktop)
 
 ## 3. Sesiune desktop (Word, nu SSH)
-- (REZOLVAT) Design System e acum DESIGN_SYSTEM.md v2.0 in repo, editabil prin SSH, cu toate regulile la zi.
+- (REZOLVAT) Design System e DESIGN_SYSTEM.md v2.9 in repo (15 capitole), editabil prin SSH; verificator_conformitate.py cu 9 reguli-gardian. Ambele la zi dupa auditul design 12.07.
 
 ## 4. Infra
 - **Reboot kernel** — "System restart required". Fereastră liniștită (downtime clienți, Daniela pilot).
+- **systemd propriu pentru build nou (8010)** — DESCOPERIT 12.07: 8010 ruleaza uvicorn pornit MANUAL (nu prin systemd), cu venv-ul din /opt/iconta (buildul vechi!), wd ~/iconta_nou. iconta.service (systemd) ruleaza de fapt buildul VECHI (/opt/iconta, port 8000). LA UN RESTART, 8010 NU REVINE SINGUR. De facut serviciu systemd dedicat pt buildul nou. Se leaga de rebootul de kernel - de rezolvat inainte sau odata cu el.
 
 ## 5. Iterații viitoare (nu urgente)
 - Cod 10 CM (reducere timp muncă) — exclus din dropdown; `calcul_cm_cod10` neintegrat în flux.
