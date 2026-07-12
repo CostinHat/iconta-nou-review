@@ -1183,7 +1183,7 @@ async function ecranRaportZ(corp, nav, t) {
           method: "POST", headers: { Authorization: "Bearer " + sesiune.token() }, body: fd });
         const r = await resp.json();
         if (!resp.ok) throw new Error(r.detail || "eroare");
-        zona.innerHTML = `<p class="pf-intro">Importat: Z din ${r.data}, total ${r.total} (numerar ${r.numerar}, card ${r.card_altele}), TVA ${r.tva_total}. Nota <b>ciorna</b> #${r.inregistrare_id} - verifica cu Z-ul tiparit.</p>`;
+        zona.innerHTML = `<p class="pf-intro">Importat: Z din ${dataRo(r.data)}, total ${r.total} (numerar ${r.numerar}, card ${r.card_altele}), TVA ${r.tva_total}. Nota <b>ciorna</b> #${r.inregistrare_id} - verifica cu Z-ul tiparit.</p>`;
       } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.message || "eroare"}</div>`; }
       ev.target.value = "";
     });
@@ -1541,7 +1541,7 @@ async function ecranBonuri(corp, nav, t) {
         ${fc.map((f) => `
           <label style="display:flex;gap:8px;align-items:center;padding:4px 0">
             <input type="radio" name="d-fact" value="${f.id}" ${f.id === idPref ? "checked" : ""}>
-            <span>Factura ${f.numar || f.id} · ${f.furnizor || ""} · ${f.data || ""} · ${bani(f.total)} lei${f.potrivire_cui ? '<span style="color:#1d7a4d;font-weight:600"> ✓ CUI</span>' : ""}${f.potrivire_suma ? '<span style="color:#1d7a4d;font-weight:600"> ✓ sumă</span>' : ""}</span>
+            <span>Factura ${f.numar || f.id} · ${f.furnizor || ""} · ${f.data ? dataRo(f.data) : ""} · ${bani(f.total)} lei${f.potrivire_cui ? '<span style="color:#1d7a4d;font-weight:600"> ✓ CUI</span>' : ""}${f.potrivire_suma ? '<span style="color:#1d7a4d;font-weight:600"> ✓ sumă</span>' : ""}</span>
           </label>`).join("")}
         <label style="display:flex;gap:8px;align-items:center;padding:4px 0">
           <input type="radio" name="d-fact" value="" ${idPref ? "" : "checked"}>

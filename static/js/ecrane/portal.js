@@ -1,6 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani } from "../api.js";  /* generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund } from "../api.js";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";  // [p116_facturi_modul]
 
@@ -202,11 +202,6 @@ async function actualizeazaStatusAcasa(continut) {
     return;
   }
   const luni = ["", "ian", "feb", "mar", "apr", "mai", "iun", "iul", "aug", "sep", "oct", "noi", "dec"];
-  const fmtTermen = (iso) => {
-    if (!iso) return "";
-    const p = iso.split("-");
-    return p.length === 3 ? `${p[2]} ${luni[parseInt(p[1], 10)]}` : iso;
-  };
   const restante = d.restante || [];
   const urmarit = d.de_urmarit || [];
 
@@ -234,7 +229,7 @@ async function actualizeazaStatusAcasa(continut) {
       `<div class="pa-rand">
         <span class="pa-tip">${x.tip}</span>
         <span class="pa-perioada">${x.perioada || ""}</span>
-        <span class="pa-termen">până pe ${fmtTermen(x.termen)}</span>
+        <span class="pa-termen">până pe ${dataRo(x.termen, "zi_luna_text")}</span>
       </div>`).join("") + `</div>`;
   }
 
@@ -374,7 +369,7 @@ async function ecranPovestea(corp, nav) {
     if (typeof p.diferenta !== "number") return "";
     const semn = p.diferenta > 0 ? "+" : "";
     const culoare = p.diferenta > 0 ? "#1d7a4d" : (p.diferenta < 0 ? "var(--rosu)" : "var(--gri)");
-    return `<span style="color:${culoare};font-weight:600">${semn}${p.diferenta.toLocaleString("ro-RO")} lei față de luna anterioară</span>`;
+    return `<span style="color:${culoare};font-weight:600">${semn}${bani(p.diferenta)} lei față de luna anterioară</span>`;
   };
   const corpuri = lista.map((p) => `
     <div class="pf-frand">
@@ -602,7 +597,7 @@ async function ecranBon(corp, nav) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${b.tip === "chitanta" ? "Chitanță" : "Bon fiscal"} \u00b7 ${b.comerciant || "Comerciant necitit"}</div>
-            <div class="pf-frand-sub">${b.numar_document ? "nr. " + b.numar_document + " \u00b7 " : ""}${b.data || "dată necitită"}${b.cui ? " \u00b7 CUI " + b.cui : ""}${tvaTxt ? " \u00b7 " + tvaTxt : ""}${b.mentiuni ? " \u00b7 " + b.mentiuni : ""}</div>
+            <div class="pf-frand-sub">${b.numar_document ? "nr. " + b.numar_document + " \u00b7 " : ""}${b.data ? dataRo(b.data) : "dată necitită"}${b.cui ? " \u00b7 CUI " + b.cui : ""}${tvaTxt ? " \u00b7 " + tvaTxt : ""}${b.mentiuni ? " \u00b7 " + b.mentiuni : ""}</div>
           </div>
           <span class="pf-frand-suma">${b.total != null ? bani(b.total) + " lei" : "total necitit"}</span>
         </div>
@@ -652,7 +647,7 @@ async function ecranCifre(corp, nav) {
     return;
   }
   const k = d.kpi || {};
-  const lei = (v) => (Number(v) || 0).toLocaleString("ro-RO", { maximumFractionDigits: 0 }) + " lei";
+  const lei = (v) => baniRotund(v) + " lei";
   const luni = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
     "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"];
   const rand = (eticheta, valoare, culoare) => `
@@ -688,11 +683,10 @@ async function incarcaForecast(corp, rand, lei) {  // portal_cashflow_fe_v1
     intro.textContent = "Estimare pe scaden\u021bele facturilor \u0219i obliga\u021biilor \u2014 presupun\u00e2nd c\u0103 cheltuielile lunare r\u0103m\u00e2n la ~" +
       (Number(d.medie_cheltuieli) || 0).toLocaleString("ro-RO", { maximumFractionDigits: 0 }) + " lei (media anului).";
   }
-  const fmtD = (iso) => { const p = String(iso).split("-"); return p.length === 3 ? p[2] + "." + p[1] : iso; };
   zona.innerHTML = (d.saptamani || []).map((w) => {
     const detaliu = (w.incasari ? "+" + lei(w.incasari) : "") +
       (w.incasari && w.plati ? " / " : "") + (w.plati ? "\u2212" + lei(w.plati) : "");
-    return rand("din " + fmtD(w.de_la) + (detaliu ? " \u00b7 " + detaliu : ""),
+    return rand("din " + dataRo(w.de_la, "zi_luna") + (detaliu ? " \u00b7 " + detaliu : ""),
       lei(w.sold), w.sold < 0 ? "var(--rosu)" : null);
   }).join("");
 }

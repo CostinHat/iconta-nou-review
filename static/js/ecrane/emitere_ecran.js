@@ -4,7 +4,7 @@
 //      DA -> serie + ultimul numar (continuitate); NU -> serie optionala, start 1
 //   2. formular emitere: beneficiar (CUI verificat ANAF) + linii (cota auto) + total live
 // Apelare: randeazaEmitere(corp, nav, tenantId, { inapoi, dupaEmitere })
-import { api } from "../api.js";
+import { api, dataRo } from "../api.js";
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -315,7 +315,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     rez.className = "em-rezultat";
     rez.innerHTML = `
       <div class="em-curs-box">
-        <div class="em-curs-titlu">\u26a0 Cursul BNR nu e disponibil momentan (${det.moneda}, ${det.data}).</div>
+        <div class="em-curs-titlu">\u26a0 Cursul BNR nu e disponibil momentan (${det.moneda}, ${dataRo(det.data)}).</div>
         <div class="em-curs-actiuni">
           <button class="buton-primar em-curs-retry" id="em-curs-retry">Re\u00eencearc\u0103</button>
           <button class="buton-secundar em-buton-sec" id="em-curs-manual">Introdu manual</button>
@@ -327,7 +327,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       const zona = rez.querySelector("#em-curs-manual-zona");
       zona.innerHTML = `
         <div class="em-curs-manual">
-          <label>Curs ${det.moneda} \u2192 RON pentru ${det.data}</label>
+          <label>Curs ${det.moneda} \u2192 RON pentru ${dataRo(det.data)}</label>
           <input type="number" step="0.0001" id="em-curs-val" placeholder="ex. 5.2438" class="em-curs-input">
           <button class="buton-primar" id="em-curs-ok">Emite cu acest curs</button>
           <div class="em-curs-avertisment">Introdu cursul BNR valabil pentru data facturii. R\u0103spunderea corectitudinii \u00ee\u021bi revine.</div>

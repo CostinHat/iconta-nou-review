@@ -177,6 +177,12 @@ export function bani(v) {
   if (v === null || v === undefined || v === "" || !isFinite(n)) return v ?? "";
   return n.toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+/* baniRotund — cifre de ansamblu rotunjite la leu (cockpit cabinet, cifrele firmei client). 1.234 (fara zecimale) */
+export function baniRotund(v) {
+  const n = Number(v);
+  if (v === null || v === undefined || v === "" || !isFinite(n)) return v ?? "";
+  return n.toLocaleString("ro-RO", { maximumFractionDigits: 0 });
+}
 
 
 // [esc_canonic_v1] Escapare HTML unica pentru date user randate in innerHTML (NC-27).
@@ -185,6 +191,7 @@ export function bani(v) {
 // stil "scurt" (implicit): zz.ll.aaaa (numeric, aliniabil in tabele).
 // stil "lung": "11 iulie 2026" (pentru titluri).
 const _LUNI_RO = ["ianuarie","februarie","martie","aprilie","mai","iunie","iulie","august","septembrie","octombrie","noiembrie","decembrie"];
+const _LUNI_SCURT = ["ian","feb","mar","apr","mai","iun","iul","aug","sep","oct","noi","dec"];
 export function dataRo(d, stil) {
   if (!d) return "";
   let dt;
@@ -205,6 +212,8 @@ export function dataRo(d, stil) {
     const mi = String(dt.getMinutes()).padStart(2, "0");
     return `${zz}.${ll}.${aa} ${hh}:${mi}`;
   }
+  if (stil === "zi_luna_text") return `${dt.getDate()} ${_LUNI_SCURT[dt.getMonth()]}`;
+  if (stil === "zi_luna") return `${zz}.${ll}`;
   return `${zz}.${ll}.${aa}`;
 }
 

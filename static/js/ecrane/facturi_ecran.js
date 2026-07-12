@@ -3,7 +3,7 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc } from "../api.js";  /* esc_nc27 */
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani } from "../api.js";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js";
 import { randeazaEmitere } from "./emitere_ecran.js";
 
@@ -76,7 +76,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     let corpuri = !lista.length
       ? `<div class="mig-gol">Nicio factur\u0103 \u00een luna aceasta.</div>`
       : lista.map((f) => {
-          const suma = f.total != null ? Number(f.total).toLocaleString("ro-RO") + " " + (f.moneda || "lei") : "";
+          const suma = f.total != null ? bani(f.total) + " " + (f.moneda || "lei") : "";
           const dir = dirEticheta(f.directie);
           const storno = f.storno_din_id ? ' \u00b7 <span class="fac-storno-tag">storno</span>' : "";
           const tipTag = f.tip && f.tip !== "factura" ? ` \u00b7 <span class="fac-storno-tag">${f.tip}</span>` : "";
@@ -126,8 +126,7 @@ function emiteFactura(corp, nav, tenantId, opt) {
 // ---------- DETALII factura ----------
 const _bani = (x, mon) => {
   if (x == null || x === "") return "";
-  const n = Number(x).toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  return mon ? `${n} ${mon}` : n;
+  return mon ? `${bani(x)} ${mon}` : bani(x);
 };
 
 async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
@@ -629,7 +628,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
     ? `<div class="mig-gol">Niciun \u0219ablon \u00eenc\u0103.</div>`
     : sabloane.map((s) => {
         const suma = (s.linii || []).reduce((t, l) => t + (Number(l.cantitate) || 0) * (Number(l.pret_unitar) || 0), 0);
-        const sumaTxt = suma.toLocaleString("ro-RO") + " " + (s.moneda || "RON");
+        const sumaTxt = bani(suma) + " " + (s.moneda || "RON");
         const stare = s.activ
           ? '<span style="color:#1d7a4d">activ</span>'
           : '<span style="color:var(--gri-clar)">inactiv</span>';
