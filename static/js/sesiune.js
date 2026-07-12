@@ -2,6 +2,8 @@
 // Tot ce ține de "cine ești" trece pe aici. Nimeni altcineva nu citește
 // localStorage direct. Asta omoară problema veche (token citit din locuri
 // diferite, rol dedus greșit).
+// [izolare_tab_v1] sessionStorage = sesiune izolata per-tab: doua cabinete
+// in doua taburi nu se mai suprascriu reciproc (bug NISTOR<->BOGDAN, 12.07.2026).
 
 const CHEIE_TOKEN = "iconta_token";
 const CHEIE_USER = "iconta_user";
@@ -9,7 +11,7 @@ const CHEIE_USER = "iconta_user";
 let _abonati = [];  // callback-uri notificate la schimbarea sesiunii
 
 function _user() {
-  try { return JSON.parse(localStorage.getItem(CHEIE_USER)); }
+  try { return JSON.parse(sessionStorage.getItem(CHEIE_USER)); }
   catch { return null; }
 }
 
@@ -19,7 +21,7 @@ function _anunta() {
 
 export const sesiune = {
   token() {
-    return localStorage.getItem(CHEIE_TOKEN);
+    return sessionStorage.getItem(CHEIE_TOKEN);
   },
 
   user() {
@@ -32,20 +34,20 @@ export const sesiune = {
   },
 
   esteLogat() {
-    return !!localStorage.getItem(CHEIE_TOKEN);
+    return !!sessionStorage.getItem(CHEIE_TOKEN);
   },
 
   // setează sesiunea după login reușit (token + user din răspunsul serverului)
   intra(token, user) {
-    localStorage.setItem(CHEIE_TOKEN, token);
-    localStorage.setItem(CHEIE_USER, JSON.stringify(user));
+    sessionStorage.setItem(CHEIE_TOKEN, token);
+    sessionStorage.setItem(CHEIE_USER, JSON.stringify(user));
     _anunta();
   },
 
   // șterge sesiunea (logout sau token expirat)
   iesi() {
-    localStorage.removeItem(CHEIE_TOKEN);
-    localStorage.removeItem(CHEIE_USER);
+    sessionStorage.removeItem(CHEIE_TOKEN);
+    sessionStorage.removeItem(CHEIE_USER);
     _anunta();
   },
 
@@ -53,7 +55,7 @@ export const sesiune = {
   actualizeazaUser(partial) {
     const u = _user() || {};
     const nou = Object.assign({}, u, partial || {});
-    localStorage.setItem(CHEIE_USER, JSON.stringify(nou));
+    sessionStorage.setItem(CHEIE_USER, JSON.stringify(nou));
     _anunta();
     return nou;
   },

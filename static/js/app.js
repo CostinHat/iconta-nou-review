@@ -53,7 +53,7 @@ function ecranActivare(tok) {  /* activare_fe_v1 */
       const d = await r.json();
       if (!r.ok) throw new Error(d.detail || "Eroare");
       location.hash = "";  /* activare_logout_v1: sesiunea veche nu ramane activa */
-      try { sesiune.iesi(); } catch (_e) { localStorage.clear(); location.reload(); }
+      try { sesiune.iesi(); } catch (_e) { sessionStorage.clear(); location.reload(); }
     } catch (e) { msg.textContent = e.message; }
   });
 }
