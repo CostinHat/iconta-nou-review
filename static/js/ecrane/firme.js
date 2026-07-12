@@ -753,7 +753,7 @@ async function ecranBilant(corp, nav, t) {
           ? `<span style="color:#1d7a4d;font-weight:600">\u25cf Validare f\u0103r\u0103 erori</span>`
           : `<span style="color:#ff3b30;font-weight:600">\u25cf Erori la validare</span>`;
         rez.innerHTML = `<p>${sem}</p>` +
-          (r.erori ? `<pre style="white-space:pre-wrap;font-size:12px;background:#f6f7f9;padding:8px;border-radius:8px">${esc(r.erori)}</pre>` : "") +
+          (r.erori ? `<pre class="tip-micut" style="white-space:pre-wrap;background:#f6f7f9;padding:8px;border-radius:8px">${esc(r.erori)}</pre>` : "") +
           (r.avertismente && r.avertismente.length
             ? `<p class="pf-intro">${r.avertismente.map(esc).join("<br>")}</p>` : "");
       } catch (e) { rez.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
@@ -1030,9 +1030,9 @@ async function ecranBanca(corp, nav, t) {
   function badgeIncredere(l) {  // ai_incredere_fe_v1
     const inc = (l.alocari || {}).incredere;
     if (!inc) return "";
-    if (inc === "sigur") return ` <span style="color:${CUL.verde};font-size:12px">\u25cf sigur</span>`;
-    if (inc === "de_verificat") return ` <span style="color:${CUL.rosu};font-size:12px">\u25cf de verificat</span>`;
-    return ` <span style="color:${CUL.galben};font-size:12px">\u25cf probabil</span>`;
+    if (inc === "sigur") return ` <span class="tip-micut" style="color:${CUL.verde}">\u25cf sigur</span>`;
+    if (inc === "de_verificat") return ` <span class="tip-micut" style="color:${CUL.rosu}">\u25cf de verificat</span>`;
+    return ` <span class="tip-micut" style="color:${CUL.galben}">\u25cf probabil</span>`;
   }
   function randAlocari(l) {
     const al = ((l.alocari || {}).alocari || []);

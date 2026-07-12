@@ -415,7 +415,7 @@ async function ecranRecomanda(corp, nav) {
       <div id="rec-preview" style="display:none;margin-top:10px;border:1px solid #eee;border-radius:8px;padding:16px;background:#fafafa">${previewHtml}</div>
     </div>
     <textarea id="rec-emails" placeholder="email1@exemplu.ro, email2@exemplu.ro" rows="4"
-      style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-family:inherit;font-size:15px"></textarea>
+      style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd;font-family:inherit"></textarea>
     <p class="ecran-nota">Separă mai multe adrese prin virgulă. Maxim 10.</p>
     <button class="buton-primar" id="rec-trimite-btn" style="margin-top:14px">Trimite recomandarea</button>
     <div id="rec-rezultat" style="margin-top:16px"></div>

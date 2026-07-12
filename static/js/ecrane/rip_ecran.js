@@ -135,7 +135,7 @@ export async function ecranRip(corp, nav, t) {
           <div class="pf-frand-nume">Registru-inventar \u00b7 31.12.${d.an}</div>
           <div class="pf-frand-sub">Mijloace fixe (valoare ramasa): <b>${d.total_mijloace_fixe}</b> lei${mf}
           <br>Disponibilitati (RIP validat): <b>${d.disponibilitati}</b> lei
-          <br><b style="font-size:1.05em">Total activ: ${bani(d.total_activ)} lei</b></div></div>`;
+          <br><b class="tip-total">Total activ: ${bani(d.total_activ)} lei</b></div></div>`;
       } catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     });
 
@@ -150,7 +150,7 @@ export async function ecranRip(corp, nav, t) {
               CAS (25%): <b>${d.cas.cas}</b> lei${d.cas.obligatoriu ? "" : " (neobligatoriu - sub 12 salarii minime)"} \u00b7 baza ${d.cas.baza}<br>
               CASS (10%): <b>${d.cass.cass}</b> lei${d.cass.obligatoriu ? "" : " (neobligatoriu - sub 6 salarii minime)"} \u00b7 baza ${d.cass.baza}<br>
               Baza impozit: <b>${d.baza_impozit}</b> \u00b7 Impozit (10%): <b>${d.impozit}</b> lei<br>
-              <b style="font-size:1.05em">Total datorat: ${bani(d.total_datorat)} lei</b>
+              <b class="tip-total">Total datorat: ${bani(d.total_datorat)} lei</b>
               ${d.cheltuieli_limitate_de_analizat > 0 ? `<br><span style="color:#c9961f">Cheltuieli limitate de analizat: ${bani(d.cheltuieli_limitate_de_analizat)} lei</span>` : ""}
               ${d.ciorne_nevalidate > 0 ? `<br><span style="color:#ff3b30">${d.ciorne_nevalidate} ciorne nevalidate - neincluse in calcul</span>` : ""}
               ${d.avertisment ? `<br><span style="color:#c9961f">${esc(d.avertisment)}</span>` : ""}

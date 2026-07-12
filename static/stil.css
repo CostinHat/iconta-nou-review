@@ -4,8 +4,11 @@
 
 :root {
   --text-titlu: 22px;
+  --text-sectiune: 19px;
   --text: 17px;
   --text-mic: 15px;
+  --text-desc: 13px;
+  --text-micut: 12px;
   /* paletă: ardezie profundă + albastru de încredere + neutre curate */
   --albastru: #3d8fd6;          /* accent principal — sobru, nu Fluent-default */
   --albastru-inchis: #163a5a;
@@ -122,6 +125,15 @@ html, body {
   border-color: var(--albastru);
   box-shadow: 0 0 0 3px var(--albastru-clar);
 }
+
+/* Clase de tip — rol semantic tipografic (Design System cap.14). Inline font-size INTERZIS. */
+.tip-titlu    { font-size: var(--text-titlu); font-weight: 600; color: var(--ardezie); }
+.tip-sectiune { font-size: var(--text-sectiune); font-weight: 600; color: var(--ardezie); }
+.tip-corp     { font-size: var(--text); color: var(--ardezie); }
+.tip-desc     { font-size: var(--text-desc); color: var(--gri); }
+.tip-figura   { font-size: var(--text-sectiune); font-weight: 700; color: var(--ardezie); }
+.tip-total    { font-size: var(--text); font-weight: 700; color: var(--ardezie); }
+.tip-micut    { font-size: var(--text-micut); color: var(--gri); }
 
 .buton-primar {
   padding: 9px 18px;

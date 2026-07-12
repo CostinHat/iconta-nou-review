@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.7 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.8 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -118,6 +118,13 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Fiecare concept = o iconiță sugestivă distinctă. Triada card = culoare + denumire + iconiță, toate coerente. INTERZIS iconiță generică (`report`) folosită ca fallback pe concepte diferite.
 - Iconiță nouă → se adaugă în `ICOANE`, nu inline într-un ecran. Prins de regula ICOANE_LOCAL în verificator.
 
+## 14. Tipografie
+
+- Scară de dimensiuni canonică (tokeni CSS): `--text-titlu` 22px · `--text-sectiune` 19px · `--text` 17px · `--text-mic` 15px · `--text-desc` 13px · `--text-micut` 12px. NU se folosesc alte valori.
+- Clase de tip (rol semantic, în stil.css): `.tip-titlu` · `.tip-sectiune` · `.tip-corp` · `.tip-desc` (13px gri, descrieri) · `.tip-figura` (19px bold, cifre de card) · `.tip-total` (17px bold, totaluri) · `.tip-micut` (12px, note).
+- INTERZIS `font-size` cu valoare literală inline (`font-size:13px`). Se folosește clasa de tip sau, excepțional, `font-size:var(--text-*)`. Prins de regula FONT_INLINE în verificator.
+- Culoarea, marginea, alte stiluri non-tipografice pot rămâne inline; doar dimensiunea fontului trece prin clasă/token.
+
 ---
 
 ## Changelog
@@ -133,6 +140,8 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 **v2.4 (12.07.2026)** — `baniRotund()` canonic pentru cifre rotunjite (portal cifre client + cockpit cabinet); eliminat dialectele `lei` (portal/cabinet) și `_bani`/inline (facturi) → `bani()`/`baniRotund()`; stil `zi_luna_text` (`25 feb`) pentru termene client. Regula FMT_LOCAL lărgită la orice nume de const (cap.4).
 
 **v2.5 (12.07.2026)** — eliminat clasa `buton-ingust` (JS + CSS + lista albă verificator); regulă DATA_BRUTA în verificator (prinde `${x.data}` afișat fără `dataRo` — a scos la iveală data REGES nemarcată în firme.js).
+
+**v2.8 (12.07.2026)** — sistem de tipografie: 6 tokeni de dimensiune + 7 clase de tip (stil.css); eliminat toate font-size literale inline (18 migrate în 9 ecrane); cap.14 nou + regula FONT_INLINE în verificator.
 
 **v2.7 (12.07.2026)** — dicționar canonic unic `ICOANE` (api.js, 22 iconițe, 5 noi); eliminat dicționarele locale divergente (cabinet/admin/asistent); reasignat 8 carduri de la `report` generic la iconițe sugestive distincte; cap.13 nou + regula ICOANE_LOCAL în verificator.
 

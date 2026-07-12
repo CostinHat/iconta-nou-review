@@ -36,7 +36,7 @@ const DEF = [  /* cab_ordine_v2 */
   { cheie:"firme",     titlu:"Firme",          icon:"building",  bg:"#e9f0fe", fg:"#1d4ed8",
     sinteza:"se încarcă…", actiune:inLucru("Firme") },
   { cheie:"validat",   titlu:"De validat",     icon:"clipboard", bg:"#faece7", fg:"#993c1d",
-    sinteza:'<b style="font-size:19px">4</b> declarații de validat și trimis', actiune:inLucru("De validat") },
+    sinteza:'<b class="tip-figura">4</b> declarații de validat și trimis', actiune:inLucru("De validat") },
   { cheie:"control",   titlu:"Control fiscal", icon:"shield",    bg:"#dff4f2", fg:"#0a807b",
     sinteza:'se încarcă…',
     actiune:inLucru("Control fiscal") },
@@ -53,7 +53,7 @@ const DEF = [  /* cab_ordine_v2 */
   { cheie:"consolidare", titlu:"Consolidare", icon: "consolidare", bg:"#eaeef6", fg:"#45597f",
     sinteza:"Cifrele tuturor firmelor" },  // consolidare_fe_v1
   { cheie:"asistenti", titlu:"Asistenți",      icon:"users",     bg:"#faece7", fg:"#993c1d",
-    sinteza:'<b style="font-size:19px">·</b> asistenți în echipă', actiune:inLucru("Asistenți") },
+    sinteza:'<b class="tip-figura">·</b> asistenți în echipă', actiune:inLucru("Asistenți") },
   { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  bg:"#eaeef6", fg:"#45597f",
     sinteza:"Parolă și date de profil", actiune:inLucru("Setări cont") },
   { cheie:"raport",    titlu:"Suport",     icon: "suport",    bg:"#e6f6ec", fg:"#16a34a",
@@ -409,7 +409,7 @@ async function actualizeazaValidat(grila) {
     const r = await api.get("/coada");
     const coada = (r && r.coada) || [];
     const n = coada.filter((c) => c.stare === "la_senior").length;
-    zona.innerHTML = `<b style="font-size:19px">${n}</b> declaraț${n === 1 ? "ie de validat" : "ii de validat"} și trimis`;
+    zona.innerHTML = `<b class="tip-figura">${n}</b> declaraț${n === 1 ? "ie de validat" : "ii de validat"} și trimis`;
   } catch {}
 }
 

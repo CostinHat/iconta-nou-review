@@ -104,9 +104,9 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       ev.stopPropagation();
       try {
         const r = await api.post(`/tenants/${tenantId}/facturi/${b.dataset.cid}/contabilizeaza`, {});
-        b.outerHTML = `<span style="color:#1d7a4d;font-size:13px;margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
+        b.outerHTML = `<span class="tip-desc" style="color:#1d7a4d;margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
       } catch (e) {
-        b.outerHTML = `<span style="color:#c9961f;font-size:13px;margin-left:8px">${(e.mesaj || "eroare")}</span>`;
+        b.outerHTML = `<span class="tip-desc" style="color:#c9961f;margin-left:8px">${(e.mesaj || "eroare")}</span>`;
       }
     }));
     corp.querySelectorAll(".fac-frand-btn").forEach((b) => {

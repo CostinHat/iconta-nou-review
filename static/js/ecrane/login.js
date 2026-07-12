@@ -314,7 +314,7 @@ export function ecranLogin(radacina) {
           <input type="text" class="camp-input" id="reg-cui" autofocus style="flex:1">
           <button type="button" class="buton-primar acces-verifica-btn" id="reg-cui-verifica">Verifică la ANAF</button>
         </div>
-        <div id="reg-cui-info" style="font-size:12px;margin-top:6px"></div>
+        <div id="reg-cui-info" class="tip-micut" style="margin-top:6px"></div>
       </label>
       <label class="camp">
         <span class="camp-eticheta">Denumire cabinet de contabilitate/contabil</span>

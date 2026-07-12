@@ -157,7 +157,7 @@ async function deschideEditare(uid, corp, nav) {
     box.innerHTML = `
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
         <span class="asi-nivel-badge" id="asi-nivel-badge">Nivel ${calcNivel()}</span>
-        <span style="font-size:13px;color:var(--gri);">${a.rol === "admin_firma" ? "administrator" : (a.functie || "asistent")}</span>
+        <span class="tip-desc">${a.rol === "admin_firma" ? "administrator" : (a.functie || "asistent")}</span>
       </div>
       <div class="asi-sectiune-titlu">Alege competente</div>
       <div id="asi-perm-edit">
@@ -303,12 +303,12 @@ function _asiRandeazaFereastra(d, c) {
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
       <span class="asi-nivel-badge">Nivel ${nivel}</span>
       ${_semaforEticheta(sem)}
-      <span style="font-size:13px;color:var(--gri);">${d.actor.rol}</span>
+      <span class="tip-desc">${d.actor.rol}</span>
     </div>`;
 
   const perioada = `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
-      <span style="font-size:13px;color:var(--gri);">Perioada:</span>
+      <span class="tip-desc">Perioada:</span>
       <select class="asi-per-sel" style="width:auto;">
         <option value="tot">Tot</option>
         <option value="azi">Azi</option>
@@ -406,7 +406,7 @@ async function deschideEchipaErori(nav) {
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
             ${_semaforEticheta(a.culoare)}
             <b>${esc(a.nume)}</b>
-            <span style="font-size:13px;color:var(--gri);">${a.respinse} respinse · ${a.rata}%</span>
+            <span class="tip-desc">${a.respinse} respinse · ${a.rata}%</span>
           </div>
           ${tipare}
         </div>`;
