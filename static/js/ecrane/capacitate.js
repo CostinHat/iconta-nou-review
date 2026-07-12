@@ -28,7 +28,6 @@ export async function randeazaCapacitate(corp, nav) {
 
   // --- 1) CABINET ---
   const sectCabinet = `
-    <h3 class="cap-titlu">Cabinet</h3>
     <div class="cap-cifre">
       ${celulaCifra(cab.in_lucru ?? 0, "în lucru")}
       ${celulaCifra(cab.de_validat ?? 0, "de validat", cab.de_validat ? "#c9961f" : null)}
