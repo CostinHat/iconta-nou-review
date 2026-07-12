@@ -753,7 +753,7 @@ async function ecranBilant(corp, nav, t) {
           ? `<span style="color:#1d7a4d;font-weight:600">\u25cf Validare f\u0103r\u0103 erori</span>`
           : `<span style="color:#ff3b30;font-weight:600">\u25cf Erori la validare</span>`;
         rez.innerHTML = `<p>${sem}</p>` +
-          (r.erori ? `<pre class="tip-micut" style="white-space:pre-wrap;background:var(--fundal);padding:8px;border-radius:8px">${esc(r.erori)}</pre>` : "") +
+          (r.erori ? `<pre class="tip-micut" style="white-space:pre-wrap;background:var(--fundal);padding:8px;border-radius:var(--raza)">${esc(r.erori)}</pre>` : "") +
           (r.avertismente && r.avertismente.length
             ? `<p class="pf-intro">${r.avertismente.map(esc).join("<br>")}</p>` : "");
       } catch (e) { rez.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }

@@ -29,7 +29,7 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline"]}
+                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -97,6 +97,10 @@ for nume, t in fisiere.items():
         # FONT_INLINE: font-size cu valoare literala inline (px/em) in loc de var(--text-*) sau clasa .tip-*
         for fm in re.finditer(r'font-size:\s*([0-9.]+(?:px|em|rem))', lin):
             rap["font_inline"].append((nume, i, fm.group(1), lin.strip()[:56]))
+        # RADIUS_INLINE: border-radius cu valoare literala in loc de var(--raza) (exceptie: 50% pentru cercuri, 20px landing)
+        for rm in re.finditer(r'border-radius:\s*([0-9]+px)', lin):
+            if 'pagina-' not in lin and 'login' not in nume:
+                rap["radius_inline"].append((nume, i, rm.group(1), lin.strip()[:56]))
         if 'value="' not in lin and "value='" not in lin:
             for dm in re.finditer(r'\$\{(\w+\.data\w*)\s*(?:\|\|[^}]*)?\}', lin):
                 pre = lin[:dm.start()]

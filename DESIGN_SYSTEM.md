@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.8 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.9 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -125,6 +125,12 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - INTERZIS `font-size` cu valoare literală inline (`font-size:13px`). Se folosește clasa de tip sau, excepțional, `font-size:var(--text-*)`. Prins de regula FONT_INLINE în verificator.
 - Culoarea, marginea, alte stiluri non-tipografice pot rămâne inline; doar dimensiunea fontului trece prin clasă/token.
 
+## 15. Tokeni de culoare, bordură, rază
+
+- Culorile din cod folosesc EXCLUSIV variabile canonice: `var(--ardezie)` (text), `var(--gri)`/`var(--gri-clar)` (secundar), `var(--rosu)`/`var(--verde)`/`var(--galben)`/`var(--albastru)` (stări), `var(--linie)` (borduri), `var(--fundal)`/`var(--alb)` (fundaluri). INTERZIS hex ad-hoc (`#ddd`, `#8a97a5`, `#fff`) în aplicație.
+- Border-radius folosește `var(--raza)` (6px). INTERZIS valoare literală (`border-radius:8px`). Excepție: `50%` pentru cercuri.
+- Landing page (`pagina-*`, login) e sistem vizual separat (marketing) — nu se supune paletei aplicației.
+
 ---
 
 ## Changelog
@@ -140,6 +146,8 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 **v2.4 (12.07.2026)** — `baniRotund()` canonic pentru cifre rotunjite (portal cifre client + cockpit cabinet); eliminat dialectele `lei` (portal/cabinet) și `_bani`/inline (facturi) → `bani()`/`baniRotund()`; stil `zi_luna_text` (`25 feb`) pentru termene client. Regula FMT_LOCAL lărgită la orice nume de const (cap.4).
 
 **v2.5 (12.07.2026)** — eliminat clasa `buton-ingust` (JS + CSS + lista albă verificator); regulă DATA_BRUTA în verificator (prinde `${x.data}` afișat fără `dataRo` — a scos la iveală data REGES nemarcată în firme.js).
+
+**v2.9 (12.07.2026)** — canonizat culorile/bordurile/raza din cod: 3 borduri + 6 culori ad-hoc → `var()`, 4 border-radius → `var(--raza)`; cap.15 nou + reguli RADIUS_INLINE (și culoare ad-hoc) în verificator. Landing exclus (sistem separat).
 
 **v2.8 (12.07.2026)** — sistem de tipografie: 6 tokeni de dimensiune + 7 clase de tip (stil.css); eliminat toate font-size literale inline (18 migrate în 9 ecrane); cap.14 nou + regula FONT_INLINE în verificator.
 

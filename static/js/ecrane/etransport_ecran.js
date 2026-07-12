@@ -23,7 +23,7 @@ export async function ecranEtransport(corp, nav, t) {
     </div>`;
 
   const randBun = (i) => `
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:8px;padding:8px;border:1px solid var(--linie);border-radius:8px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:8px;padding:8px;border:1px solid var(--linie);border-radius:var(--raza)">
       ${sel(`b${i}-cod_scop`, "Scop *", [["101","Comercializare"],["201","Productie"],["301","Gratuitati"],["401","Echipament comercial"],["501","Mijloace fixe"],["601","Uz propriu"],["703","Livrare cu instalare"],["704","Transfer intre gestiuni"],["705","Bunuri puse la dispozitie"],["9901","Altele"]])}
       ${inp(`b${i}-cod_tarifar`, "Cod tarifar (NC) *")}
       ${inp(`b${i}-denumire`, "Denumire marfa *")}
