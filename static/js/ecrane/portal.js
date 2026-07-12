@@ -1,6 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund } from "../api.js";  /* generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD } from "../api.js";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";  // [p116_facturi_modul]
 
@@ -20,22 +20,22 @@ export function desktopPortal(continut, nav) {
   const firma = u.nume_tenant || u.nume_firma || "firma ta";
 
   const CARDURI = [
-    { cheie: "facturi", titlu: "Facturi", icon: "facturi", bg: "#e9f0fe", fg: "#1d4ed8",
+    { cheie: "facturi", titlu: "Facturi", icon: "facturi", ...CULORI_CARD.albastru,
       sinteza: "Vizualizează facturile emise și primite." },
-    { cheie: "cifre", titlu: "Cifrele firmei", icon: "declaratii", bg: "#e6f6ec", fg: "#16a34a",
+    { cheie: "cifre", titlu: "Cifrele firmei", icon: "declaratii", ...CULORI_CARD.verde,
       sinteza: "Profit, cash, încasări" },
-    { cheie: "solicitari", titlu: "Solicitări", icon: "solicitari", bg: "#faece7", fg: "#993c1d",
+    { cheie: "solicitari", titlu: "Solicitări", icon: "solicitari", ...CULORI_CARD.piersica,
       sinteza: "Trimite o solicitare contabilului." },
-    { cheie: "declaratii", titlu: "Declarații depuse", icon: "declaratii", bg: "#dff4f2", fg: "#0a807b",
+    { cheie: "declaratii", titlu: "Declarații depuse", icon: "declaratii", ...CULORI_CARD.teal,
       sinteza: "Ce s-a depus la ANAF pentru tine" },
-    { cheie: "documente", titlu: "Documente", icon: "documente", bg: "#eaeef6", fg: "#45597f",
+    { cheie: "documente", titlu: "Documente", icon: "documente", ...CULORI_CARD.ardezie,
       sinteza: "Recipise, balanțe, bilanț" },
-    { cheie: "povestea", titlu: "Povestea lunii", icon: "povestea", bg: "#efebfe", fg: "#6d28d9",
+    { cheie: "povestea", titlu: "Povestea lunii", icon: "povestea", ...CULORI_CARD.violet,
       sinteza: "Raportul lunar de la contabil" },
-    { cheie: "acces-cont", titlu: "Acces cont", icon: "solicitari", bg: "#eaeef6", fg: "#45597f",
+    { cheie: "acces-cont", titlu: "Acces cont", icon: "solicitari", ...CULORI_CARD.ardezie,
       sinteza: "Email și acces suplimentar la portal" },
   ];
-  const CARD_BON = { cheie: "bon", titlu: "Pozează bon sau chitanță", icon: "facturi", bg: "#faece7", fg: "#993c1d",
+  const CARD_BON = { cheie: "bon", titlu: "Pozează bon sau chitanță", icon: "facturi", ...CULORI_CARD.piersica,
       sinteza: "Fotografiază documentul, iConta îl citește" };  /* portal_layout_v2 */
 
   continut.innerHTML = `

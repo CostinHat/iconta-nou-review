@@ -1,7 +1,7 @@
 // login.js — poarta de intrare.
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
-import { api, arataMesaj } from "../api.js";
+import { api, arataMesaj, CULORI_CARD } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 function svgIcon(paths, w = 24) {
@@ -24,15 +24,15 @@ const ICONI = {
 };
 
 const CARDURI_RAND1 = [
-  { cheie: "saft", titlu: "SAF-T inclus", sub: "D100-D406, XML + PDF, validate DUKIntegrator.", bg: "#e9f0fe", fg: "#1d4ed8", icon: ICONI.saft },
-  { cheie: "ai", titlu: "AI care lucreaz\u0103 pentru tine", sub: "OCR, contare propus\u0103, sugestii care \u00eenva\u021b\u0103 din corec\u021biile tale, Povestea lunii.", bg: "#efebfe", fg: "#6d28d9", icon: ICONI.ai },
-  { cheie: "pachet", titlu: "Pachet lunar pentru client", sub: "Grafic, situa\u021bie financiar\u0103, cifre live \u0219i previziune bani \u00een portal.", bg: "#dff4f2", fg: "#0a807b", icon: ICONI.pachet },
+  { cheie: "saft", titlu: "SAF-T inclus", sub: "D100-D406, XML + PDF, validate DUKIntegrator.", ...CULORI_CARD.albastru, icon: ICONI.saft },
+  { cheie: "ai", titlu: "AI care lucreaz\u0103 pentru tine", sub: "OCR, contare propus\u0103, sugestii care \u00eenva\u021b\u0103 din corec\u021biile tale, Povestea lunii.", ...CULORI_CARD.violet, icon: ICONI.ai },
+  { cheie: "pachet", titlu: "Pachet lunar pentru client", sub: "Grafic, situa\u021bie financiar\u0103, cifre live \u0219i previziune bani \u00een portal.", ...CULORI_CARD.teal, icon: ICONI.pachet },
 ];
 const CARDURI_RAND2 = [
-  { cheie: "cabinete", titlu: "G\u00e2ndit pentru cabinete", sub: "Multi-client, multi-utilizator, drepturi pe rol.", bg: "#e6f6ec", fg: "#16a34a", icon: ICONI.cabinet },
-  { cheie: "efactura", titlu: "Facturare cu e-Factura", sub: "Emitere, valut\u0103, import XML ANAF, storno.", bg: "#faece7", fg: "#993c1d", icon: ICONI.factura },
-  { cheie: "control", titlu: "Control fiscal automat", sub: "Verific\u0103 D112 vs contabilitate, TVA vs declara\u021bii.", bg: "#fbeedd", fg: "#92500a", icon: ICONI.scut },
-  { cheie: "conformitate", titlu: "Mereu conform legisla\u021biei", sub: "Monitoriz\u0103m ANAF automat; modific\u0103rile intr\u0103 \u00een vigoare la zi.", bg: "#e9f0fe", fg: "#1d4ed8", icon: ICONI.raport },
+  { cheie: "cabinete", titlu: "G\u00e2ndit pentru cabinete", sub: "Multi-client, multi-utilizator, drepturi pe rol.", ...CULORI_CARD.verde, icon: ICONI.cabinet },
+  { cheie: "efactura", titlu: "Facturare cu e-Factura", sub: "Emitere, valut\u0103, import XML ANAF, storno.", ...CULORI_CARD.piersica, icon: ICONI.factura },
+  { cheie: "control", titlu: "Control fiscal automat", sub: "Verific\u0103 D112 vs contabilitate, TVA vs declara\u021bii.", ...CULORI_CARD.chihlimbar, icon: ICONI.scut },
+  { cheie: "conformitate", titlu: "Mereu conform legisla\u021biei", sub: "Monitoriz\u0103m ANAF automat; modific\u0103rile intr\u0103 \u00een vigoare la zi.", ...CULORI_CARD.albastru, icon: ICONI.raport },
 ];
 const INCREDERE = [
   { titlu: "Date securizate", sub: "la standarde ridicate", icon: ICONI.scutmic },

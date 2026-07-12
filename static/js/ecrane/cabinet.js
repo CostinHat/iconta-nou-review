@@ -2,7 +2,7 @@
 // Bandă de salut + 9 carduri pastel (grilă 3×3), fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE } from "../api.js";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD } from "../api.js";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
 import { randeazaListaFirme } from "./firme.js";
@@ -33,30 +33,30 @@ function inLucru(titlu) {
 
 // definiția celor 9 carduri (sinteză = text inițial; unele se actualizează din date live)
 const DEF = [  /* cab_ordine_v2 */
-  { cheie:"firme",     titlu:"Firme",          icon:"building",  bg:"#e9f0fe", fg:"#1d4ed8",
+  { cheie:"firme",     titlu:"Firme",          icon:"building",  ...CULORI_CARD.albastru,
     sinteza:"se încarcă…", actiune:inLucru("Firme") },
-  { cheie:"validat",   titlu:"De validat",     icon:"clipboard", bg:"#faece7", fg:"#993c1d",
+  { cheie:"validat",   titlu:"De validat",     icon:"clipboard", ...CULORI_CARD.piersica,
     sinteza:'<b class="tip-figura">4</b> declarații de validat și trimis', actiune:inLucru("De validat") },
-  { cheie:"control",   titlu:"Control fiscal", icon:"shield",    bg:"#dff4f2", fg:"#0a807b",
+  { cheie:"control",   titlu:"Control fiscal", icon:"shield",    ...CULORI_CARD.teal,
     sinteza:'se încarcă…',
     actiune:inLucru("Control fiscal") },
-  { cheie:"termene",   titlu:"Termene",        icon:"calendar",  bg:"#e6f6ec", fg:"#16a34a",
+  { cheie:"termene",   titlu:"Termene",        icon:"calendar",  ...CULORI_CARD.verde,
     sinteza:"Următoarea scadență: …", actiune:inLucru("Termene") },
-  { cheie:"brief",     titlu:"Sinteza zilei",  icon:"brief",     bg:"#efebfe", fg:"#6d28d9",
+  { cheie:"brief",     titlu:"Sinteza zilei",  icon:"brief",     ...CULORI_CARD.violet,
     sinteza:"Vezi prioritățile zilei", actiune:inLucru("Sinteza zilei") },
-  { cheie:"activitate", titlu:"Activitate",     icon: "activitate",    bg:"#faece7", fg:"#993c1d",
+  { cheie:"activitate", titlu:"Activitate",     icon: "activitate",    ...CULORI_CARD.piersica,
     sinteza:"Activitate recentă", actiune:inLucru("Activitate") },
-  { cheie:"pachete",   titlu:"Pachete lunare", icon:"mail",      bg:"#e9f0fe", fg:"#1d4ed8",
+  { cheie:"pachete",   titlu:"Pachete lunare", icon:"mail",      ...CULORI_CARD.albastru,
     sinteza:"Trimite pachetul lunar către clienți", actiune:inLucru("Pachete lunare") },
-  { cheie:"capacitate", titlu:"Capacitate",     icon:"gauge",     bg:"#e6f6ec", fg:"#16a34a",
+  { cheie:"capacitate", titlu:"Capacitate",     icon:"gauge",     ...CULORI_CARD.verde,
     sinteza:"Cum stă echipa cu ritmul", actiune:inLucru("Capacitate") },
-  { cheie:"consolidare", titlu:"Consolidare", icon: "consolidare", bg:"#eaeef6", fg:"#45597f",
+  { cheie:"consolidare", titlu:"Consolidare", icon: "consolidare", ...CULORI_CARD.ardezie,
     sinteza:"Cifrele tuturor firmelor" },  // consolidare_fe_v1
-  { cheie:"asistenti", titlu:"Asistenți",      icon:"users",     bg:"#faece7", fg:"#993c1d",
+  { cheie:"asistenti", titlu:"Asistenți",      icon:"users",     ...CULORI_CARD.piersica,
     sinteza:'<b class="tip-figura">·</b> asistenți în echipă', actiune:inLucru("Asistenți") },
-  { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  bg:"#eaeef6", fg:"#45597f",
+  { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  ...CULORI_CARD.ardezie,
     sinteza:"Parolă și date de profil", actiune:inLucru("Setări cont") },
-  { cheie:"raport",    titlu:"Suport",     icon: "suport",    bg:"#e6f6ec", fg:"#16a34a",
+  { cheie:"raport",    titlu:"Suport",     icon: "suport",    ...CULORI_CARD.verde,
     sinteza:"Întrebări, probleme și asistență tehnică", actiune:inLucru("Raportează") },
 ];
 

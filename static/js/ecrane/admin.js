@@ -3,7 +3,7 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js";
-import { api, arataMesaj, dataRo, ICOANE } from "../api.js";
+import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD } from "../api.js";
 import { randeazaAdminRaportari } from "./admin_raportari.js";
 import { randeazaAdminActivitate } from "./admin_activitate.js";
 import { randeazaAdminGratuite } from "./admin_gratuite.js";
@@ -16,19 +16,19 @@ function svg(cheie, fg) {
 
 // cardurile panoului Admin iConta (extensibil)
 const DEF = [
-  { cheie:"raportari", titlu:"Raportări", icon:"report", bg:"#efebfe", fg:"#6d28d9",
+  { cheie:"raportari", titlu:"Raportări", icon:"report", ...CULORI_CARD.violet,
     sinteza:"Răspunde la sesizările utilizatorilor",
     actiune:(nav) => nav.deschide("Raportări", (corp) => randeazaAdminRaportari(corp, nav)) },
-  { cheie:"activitate", titlu:"Activitate cabinete", icon: "activitate", bg:"#e6f6ec", fg:"#16a34a",
+  { cheie:"activitate", titlu:"Activitate cabinete", icon: "activitate", ...CULORI_CARD.verde,
     sinteza:"Cine e activ, cine nu",
     actiune:(nav) => nav.deschide("Activitate cabinete", (corp) => randeazaAdminActivitate(corp, nav)) },
-  { cheie:"gratuite", titlu:"Facturare gratuită", icon: "facturi", bg:"#e9f0fe", fg:"#1d4ed8",
+  { cheie:"gratuite", titlu:"Facturare gratuită", icon: "facturi", ...CULORI_CARD.albastru,
     sinteza:"Conturi gratuite: cine e activ, cine nu",
     actiune:(nav) => nav.deschide("Facturare gratuită", (corp) => randeazaAdminGratuite(corp, nav)) },
-  { cheie:"anunturi", titlu:"Anunțuri", icon: "anunturi", bg:"#fbeedd", fg:"#92500a",
+  { cheie:"anunturi", titlu:"Anunțuri", icon: "anunturi", ...CULORI_CARD.chihlimbar,
     sinteza:"Banner la logare pentru cabinete",
     actiune:(nav) => nav.deschide("Anunțuri", (corp) => randeazaAdminAnunturi(corp, nav)) },
-  { cheie:"sanatate", titlu:"Sănătate server", icon: "server", bg:"#faece7", fg:"#993c1d",
+  { cheie:"sanatate", titlu:"Sănătate server", icon: "server", ...CULORI_CARD.piersica,
     sinteza:"Server, aplicație, bază de date, erori",
     actiune:(nav) => nav.deschide("Sănătate server", (corp) => randeazaAdminSanatate(corp, nav)) },
 ];

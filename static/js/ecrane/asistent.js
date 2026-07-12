@@ -2,7 +2,7 @@
 // minus exclusivele cabinetului. Bara 3 = doar motivational (pozitiv).
 // Sursa unica: identitatea/permisiunile din sesiune.user(); cifrele din /eu/calitate.
 
-import { api, ICOANE } from "../api.js";
+import { api, ICOANE, CULORI_CARD } from "../api.js";
 import { semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
 import { randeazaControl } from "./control.js";
@@ -32,20 +32,20 @@ export async function desktopAsistent(continut, nav) {
   // [p25_bara3] bara 3 e in navigator acum, nu aici
 
   const DEF = [
-    { cheie:"firme",     titlu:"Firme",          icon:"building",  bg:"#e9f0fe", fg:"#1d4ed8",
+    { cheie:"firme",     titlu:"Firme",          icon:"building",  ...CULORI_CARD.albastru,
       sinteza:"Firmele tale alocate" },
-    { cheie:"control",   titlu:"Control fiscal", icon:"shield",    bg:"#dff4f2", fg:"#0a807b",
+    { cheie:"control",   titlu:"Control fiscal", icon:"shield",    ...CULORI_CARD.teal,
       sinteza:"Starea fiscală a firmelor tale" },
-    { cheie:"termene",   titlu:"Termene",        icon:"calendar",  bg:"#e6f6ec", fg:"#16a34a",
+    { cheie:"termene",   titlu:"Termene",        icon:"calendar",  ...CULORI_CARD.verde,
       sinteza:"Scadențele firmelor tale" },
     ...(poateValida ? [
-    { cheie:"validat",   titlu:"De validat",     icon:"clipboard", bg:"#faece7", fg:"#993c1d",
+    { cheie:"validat",   titlu:"De validat",     icon:"clipboard", ...CULORI_CARD.piersica,
       sinteza:"Declarații de validat de la colegi" }] : []),
-    { cheie:"pachete",   titlu:"Pachete lunare", icon:"mail",      bg:"#efebfe", fg:"#6d28d9",
+    { cheie:"pachete",   titlu:"Pachete lunare", icon:"mail",      ...CULORI_CARD.violet,
       sinteza:"Trimite pachetul lunar către clienți" },
-    { cheie:"recomanda", titlu:"Recomandă",      icon:"gift",      bg:"#fbeedd", fg:"#92500a",
+    { cheie:"recomanda", titlu:"Recomandă",      icon:"gift",      ...CULORI_CARD.chihlimbar,
       sinteza:"Invită un cabinet în iConta" },
-    { cheie:"raport",    titlu:"Raportează",     icon:"report",    bg:"#eaeef6", fg:"#45597f",
+    { cheie:"raport",    titlu:"Raportează",     icon:"report",    ...CULORI_CARD.ardezie,
       sinteza:"Raportează o problemă către iConta" },
   ];
 
@@ -62,7 +62,7 @@ export async function desktopAsistent(continut, nav) {
   if ((sesiune.user() || {}).poate_pregati) {
     _listaA.splice(3, 0, {
       cheie:"declaratii", titlu:"Declarații", icon: "declaratii",
-      bg:"#e9f0fe", fg:"#1d4ed8",
+      ...CULORI_CARD.albastru,
       sinteza:"Pregătește și trimite la validare"
     });
   }

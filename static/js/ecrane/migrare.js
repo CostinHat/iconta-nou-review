@@ -2,36 +2,36 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani } from "../api.js";
+import { api, esc, dataRo, bani, CULORI_CARD } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 const STRATURI = [
   { cheie:"firme", nr:1, titlu:"Firme", desc:"Validare CUI la ANAF · identificare + status fiscal",
-    bg:"#e9f0fe", fg:"#1d4ed8", construit:true,
+    ...CULORI_CARD.albastru, construit:true,
     icon:'<path d="M3 21h18"/><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M19 21V11a2 2 0 0 0-2-2h-2"/><path d="M9 7h2M9 11h2M9 15h2"/>' },
   { cheie:"vector_fiscal", nr:2, titlu:"Vector fiscal", desc:"Ce declarații datorează firma (TVA, regim, intracomunitar)",
-    bg:"#fbeedd", fg:"#92500a", obligatoriu:true, construit:true,
+    ...CULORI_CARD.chihlimbar, obligatoriu:true, construit:true,
     icon:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>' },  // [p84_vector_front]
   { cheie:"solduri", nr:3, titlu:"Solduri inițiale", desc:"Balanța de deschidere per firmă (aduce și planul analitic)",
-    bg:"#e6f6ec", fg:"#16a34a", obligatoriu:true, construit:true,
+    ...CULORI_CARD.verde, obligatoriu:true, construit:true,
     icon:'<path d="M12 3v18"/><path d="M5 8h14"/><path d="M5 8l-2 5h4z"/><path d="M19 8l-2 5h4z"/>' },
   { cheie:"solduri_parteneri", nr:4, titlu:"Solduri parteneri", desc:"4111/401 defalcat per client și furnizor",
-    bg:"#dff4f2", fg:"#0a807b", construit:true,
+    ...CULORI_CARD.teal, construit:true,
     icon:'<path d="M7 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/><path d="M17 21a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/><path d="M8.5 7L16 17"/>' },
   { cheie:"salariati", nr:5, titlu:"Salariați", desc:"Nume, CNP, salariu, date contract (payroll + D112)",
-    bg:"#faece7", fg:"#993c1d", construit:true,
+    ...CULORI_CARD.piersica, construit:true,
     icon:'<circle cx="9" cy="7" r="3"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.5a3 3 0 0 1 0 7M21 21v-2a4 4 0 0 0-3-3.8"/>' },
   { cheie:"asociati", nr:6, titlu:"Asociați", desc:"Nume, cotă % (pentru D205, dividende)",
-    bg:"#efebfe", fg:"#6d28d9", construit:true,
+    ...CULORI_CARD.violet, construit:true,
     icon:'<circle cx="12" cy="8" r="3.2"/><path d="M5 21v-1.5a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5V21"/>' },
   { cheie:"mijloace_fixe", nr:7, titlu:"Mijloace fixe", desc:"Registru amortizare în curs (valoare · durată · cumulat)",
-    bg:"#faece7", fg:"#993c1d", construit:true,
+    ...CULORI_CARD.piersica, construit:true,
     icon:'<path d="M3 21h18"/><path d="M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/>' },
   { cheie:"istoric_declaratii", nr:8, titlu:"Istoric declarații", desc:"Ce s-a depus deja anul curent (ca să nu apară fals restanță)",
-    bg:"#eaeef6", fg:"#45597f", construit:true,
+    ...CULORI_CARD.ardezie, construit:true,
     icon:'<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13l2 2 4-4"/>' },
   { cheie:"plan_conturi", nr:9, titlu:"Plan de conturi", desc:"Extinde planul standard cu conturi analitice/nestandard, per firmă",
-    bg:"#efebfe", fg:"#6d28d9", construit:true,
+    ...CULORI_CARD.violet, construit:true,
     icon:'<path d="M4 6h16M4 12h16M4 18h7"/>' },
 ];
 

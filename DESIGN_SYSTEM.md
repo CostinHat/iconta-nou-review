@@ -110,6 +110,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Cardurile de meniu (`.acces-card`/`.meniu-card`) folosesc EXCLUSIV paleta canonică de 7 culori-concept din `CULORI_CARD` (api.js). Fiecare card: `bg` (fundal pastel) + `fg` (titlu/icon saturat).
 - Paleta: **albastru** #e9f0fe/#1d4ed8 (firme, facturi, pachete) · **verde** #e6f6ec/#16a34a (termene, capacitate, cifre) · **teal** #dff4f2/#0a807b (control fiscal, declarații) · **violet** #efebfe/#6d28d9 (sinteză, raportări) · **piersică** #faece7/#993c1d (de validat, asistenți, activitate) · **chihlimbar** #fbeedd/#92500a (recomandă, anunțuri) · **ardezie** #eaeef6/#45597f (consolidare, documente, setări, suport).
 - INTERZIS hex de card ad-hoc în afara paletei. Nuanțele apropiate NU se multiplică — un singur verde, un singur violet etc.
+- Cardurile REFERĂ paleta, nu o copiază: `...CULORI_CARD.cheie` (import din api.js), NICIODATĂ `bg:"#..."` literal — chiar dacă valoarea coincide cu paleta. Excepție: semaforul (control.js, obiecte cu `dot:`). Prins de regula CULOARE_CARD_HEX în verificator.
 - Culorile de semafor (cap.8) și cele de stare rămân separate; astea sunt doar pentru carduri de navigare.
 
 ## 13. Iconițe
