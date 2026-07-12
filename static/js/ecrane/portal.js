@@ -1,6 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc } from "../api.js";  /* generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani } from "../api.js";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js";  // [p116_facturi_modul]
 
@@ -587,9 +587,8 @@ async function ecranBon(corp, nav) {
   function randeazaConfirmare() {
     nav.setInapoi(refaPoza);
     const b = draft.bon;
-    const fmt = (v) => (Number(v) || 0).toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const tvaTxt = (b.tva || []).filter((x) => x && x.valoare)
-      .map((x) => "TVA " + x.cota + "%: " + fmt(x.valoare) + " lei").join(" \u00b7 ");
+      .map((x) => "TVA " + x.cota + "%: " + bani(x.valoare) + " lei").join(" \u00b7 ");
     const avert = (draft.avertismente || []).map((a) =>
       `<div class="caseta-atentie" style="margin:0 0 12px"><div class="ca-mesaj">${a}</div></div>`).join("");
     corp.innerHTML = `
@@ -605,7 +604,7 @@ async function ecranBon(corp, nav) {
             <div class="pf-frand-nume">${b.tip === "chitanta" ? "Chitanță" : "Bon fiscal"} \u00b7 ${b.comerciant || "Comerciant necitit"}</div>
             <div class="pf-frand-sub">${b.numar_document ? "nr. " + b.numar_document + " \u00b7 " : ""}${b.data || "dată necitită"}${b.cui ? " \u00b7 CUI " + b.cui : ""}${tvaTxt ? " \u00b7 " + tvaTxt : ""}${b.mentiuni ? " \u00b7 " + b.mentiuni : ""}</div>
           </div>
-          <span class="pf-frand-suma">${b.total != null ? fmt(b.total) + " lei" : "total necitit"}</span>
+          <span class="pf-frand-suma">${b.total != null ? bani(b.total) + " lei" : "total necitit"}</span>
         </div>
       </div>
       <div style="margin-top:16px">

@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo } from "../api.js";
+import { api, esc, dataRo, bani } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 const STRATURI = [
@@ -541,13 +541,12 @@ function importSolduriFirma(corp, nav, firma) {
 function previzualizeazaSolduri(corp, nav, firma, date) {
   latime(corp, true);
   const randuri = date.randuri || [];
-  const fmt = (n) => n ? n.toLocaleString("ro-RO", { minimumFractionDigits: 0 }) : "";
   const echilibrat = Math.abs(date.total_debit - date.total_credit) < 0.01;
 
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · balanță încărcată</p>
     <div class="mig-sold-rezumat">
-      <b>${randuri.length}</b> conturi · debit <b>${fmt(date.total_debit)}</b> · credit <b>${fmt(date.total_credit)}</b>
+      <b>${randuri.length}</b> conturi · debit <b>${bani(date.total_debit)}</b> · credit <b>${bani(date.total_credit)}</b>
       ${echilibrat ? '<span class="mig-eq mig-eq-ok">echilibrat</span>' : '<span class="mig-eq mig-eq-no">neechilibrat</span>'}
     </div>
     <div class="mig-sold-cap">
@@ -564,8 +563,8 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
     <div class="mig-sold-rand">
       <span class="mig-sold-cont">${esc(r.cont)}</span>
       <span class="mig-sold-den">${esc(r.denumire || "")}</span>
-      <span class="mig-sold-val">${fmt(r.debit)}</span>
-      <span class="mig-sold-val">${fmt(r.credit)}</span>
+      <span class="mig-sold-val">${bani(r.debit)}</span>
+      <span class="mig-sold-val">${bani(r.credit)}</span>
     </div>`).join("");
 
   corp.querySelector("#mig-salveaza-sold").addEventListener("click", async () => {
@@ -669,14 +668,13 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
   latime(corp, true);
   const randuri = date.randuri || [];
   const coer = date.coerenta || [];
-  const fmt = (n) => n ? n.toLocaleString("ro-RO", { minimumFractionDigits: 0 }) : "";
 
   // banda de coerenta per cont sintetic
   const coerHTML = coer.map((c) => {
     if (c.coincide === true) {
       return `<span class="mig-eq mig-eq-ok">${esc(c.cont)}: ✓ coincide</span>`;
     } else if (c.coincide === false) {
-      return `<span class="mig-eq mig-eq-no">${esc(c.cont)}: ⚠ diferență ${fmt(Math.abs(c.diferenta))}</span>`;
+      return `<span class="mig-eq mig-eq-no">${esc(c.cont)}: ⚠ diferență ${bani(Math.abs(c.diferenta))}</span>`;
     }
     return `<span class="mig-eq mig-eq-gri">${esc(c.cont)}: fără balanță</span>`;
   }).join(" ");
@@ -684,7 +682,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · parteneri încărcați</p>
     <div class="mig-sold-rezumat">
-      <b>${randuri.length}</b> parteneri · debit <b>${fmt(date.total_debit)}</b> · credit <b>${fmt(date.total_credit)}</b>
+      <b>${randuri.length}</b> parteneri · debit <b>${bani(date.total_debit)}</b> · credit <b>${bani(date.total_credit)}</b>
     </div>
     <div class="mig-coer">${coerHTML}</div>
     <div class="mig-sold-cap mig-cap-part">
@@ -702,8 +700,8 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
       <span class="mig-sold-cont">${esc(r.cont)}</span>
       <span class="mig-sold-cui">${esc(r.cui || "")}</span>
       <span class="mig-sold-den">${esc(r.denumire || "")}</span>
-      <span class="mig-sold-val">${fmt(r.debit)}</span>
-      <span class="mig-sold-val">${fmt(r.credit)}</span>
+      <span class="mig-sold-val">${bani(r.debit)}</span>
+      <span class="mig-sold-val">${bani(r.credit)}</span>
     </div>`).join("");
 
   corp.querySelector("#mig-salveaza-part").addEventListener("click", async () => {
@@ -806,7 +804,6 @@ function importSalariatiFirma(corp, nav, firma) {
 function previzualizeazaSalariati(corp, nav, firma, date) {
   latime(corp, true);
   const randuri = date.randuri || [];
-  const fmt = (n) => n ? n.toLocaleString("ro-RO", { minimumFractionDigits: 0 }) : "";
 
   const banda = date.invalizi > 0
     ? `<span class="mig-eq mig-eq-ok">${date.valizi} valizi</span> <span class="mig-eq mig-eq-no">${date.invalizi} cu CNP greșit (vor fi sărite)</span>`
@@ -837,7 +834,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
         <span class="mig-sold-den">${esc(r.nume)} ${esc(r.prenume)}</span>
         <span class="mig-sold-cnp">${cnpCell}</span>
         <span class="mig-sold-cor">${esc(r.cor || "")}</span>
-        <span class="mig-sold-val">${fmt(r.salariu_brut)}</span>
+        <span class="mig-sold-val">${bani(r.salariu_brut)}</span>
         <span class="mig-sold-norma">${norma}</span>
       </div>`;
   }).join("");
@@ -943,11 +940,11 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
   latime(corp, true);
   const randuri = date.randuri || [];
   const coer = date.coerenta || { total: 0, coincide: false };
-  const fmt = (n) => (n || n === 0) ? n.toLocaleString("ro-RO", { minimumFractionDigits: 0 }) : "";
+  const pct = (n) => (n || n === 0) ? n.toLocaleString("ro-RO", { minimumFractionDigits: 0 }) : "";
 
   const banda = coer.coincide
     ? `<span class="mig-eq mig-eq-ok">total cote: ✓ 100%</span>`
-    : `<span class="mig-eq mig-eq-no">total cote: ⚠ ${fmt(coer.total)}%</span>`;
+    : `<span class="mig-eq mig-eq-no">total cote: ⚠ ${pct(coer.total)}%</span>`;
 
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · asociați încărcați</p>
@@ -973,7 +970,7 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
         <span class="mig-sold-den">${esc(r.nume)}</span>
         <span class="mig-sold-cnp">${cod}</span>
         <span class="mig-sold-tip">${tip}</span>
-        <span class="mig-sold-val">${fmt(r.cota)}</span>
+        <span class="mig-sold-val">${pct(r.cota)}</span>
       </div>`;
   }).join("");
 
@@ -1077,7 +1074,6 @@ function importMijloaceFirma(corp, nav, firma) {
 function previzualizeazaMijloace(corp, nav, firma, date) {
   latime(corp, true);
   const randuri = date.randuri || [];
-  const fmt = (n) => (n || n === 0) ? n.toLocaleString("ro-RO", { minimumFractionDigits: 0 }) : "";
 
   const banda = date.cu_avertismente > 0
     ? `<span class="mig-eq mig-eq-ok">${date.total - date.cu_avertismente} ok</span> <span class="mig-eq mig-eq-no">${date.cu_avertismente} cu avertisment</span>`
@@ -1086,7 +1082,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · mijloace fixe încărcate</p>
     <div class="mig-sold-rezumat">
-      <b>${randuri.length}</b> mijloace · valoare <b>${fmt(date.total_valoare)}</b> · rămas <b>${fmt(date.total_rezidual)}</b>
+      <b>${randuri.length}</b> mijloace · valoare <b>${bani(date.total_valoare)}</b> · rămas <b>${bani(date.total_rezidual)}</b>
     </div>
     <div class="mig-coer">${banda}</div>
     <div class="mig-sold-cap mig-cap-mf">
@@ -1107,8 +1103,8 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
       <div class="mig-sold-rand mig-rand-mf ${r.ok ? "" : "mig-rand-invalid"}">
         <span class="mig-sold-cont">${r.cod}</span>
         <span class="mig-sold-den">${esc(r.denumire)}${av}</span>
-        <span class="mig-sold-val">${fmt(r.valoare)}</span>
-        <span class="mig-sold-val">${fmt(r.rezidual)}</span>
+        <span class="mig-sold-val">${bani(r.valoare)}</span>
+        <span class="mig-sold-val">${bani(r.rezidual)}</span>
         <span class="mig-sold-dur">${luni}</span>
         <span class="mig-sold-met">${r.metoda}</span>
       </div>`;

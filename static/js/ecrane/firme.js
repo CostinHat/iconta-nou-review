@@ -1365,8 +1365,6 @@ async function ecranJurnal(corp, nav, t) {
 // [bonuri] documente pozate de client: lista -> detaliu la selectie  // bon_flux_e5_v1
 let _bonuriMesaj = "";  // faza_b_traseu_v1
 async function ecranBonuri(corp, nav, t) {
-  const fmt = (v) => (Number(v) || 0).toLocaleString("ro-RO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  const fmtZi = (iso) => { const p = String(iso || "").split("-"); return p.length === 3 ? p[2] + "." + p[1] + "." + p[0] : (iso || ""); };  // bon_flux_e6_v1
   const fmtPrimit = (iso) => {  // bon_flux_e7b_v1
     if (!iso) return "";
     const d = new Date(iso);
@@ -1407,7 +1405,7 @@ async function ecranBonuri(corp, nav, t) {
       : docs.map((b, i) => `
         <button class="acces-card meniu-card pf-frand" data-doc="${i}" style="width:100%;text-align:left">
           <b>${b.tip === "chitanta" ? "Chitanță" : "Bon fiscal"}</b> · ${b.comerciant || "emitent necitit"}
-          · ${b.total ? fmt(b.total) + " lei" : "sumă necitită"}${b.data ? " · din " + fmtZi(b.data) : ""}
+          · ${b.total ? bani(b.total) + " lei" : "sumă necitită"}${b.data ? " · din " + dataRo(b.data) : ""}
           · <b>${fmtPrimit(b.primit_la)}</b>
         </button>`).join("");
     corp.innerHTML = `
@@ -1460,7 +1458,7 @@ async function ecranBonuri(corp, nav, t) {
     corp.innerHTML = `
       <h2 class="pf-titlu">${eChitanta ? "Chitanță" : "Bon fiscal"}${b.numar_document ? " · nr. " + b.numar_document : ""}</h2>
       ${b.mentiuni ? `<p class="pf-intro">reprezentând: ${b.mentiuni}</p>` : ""}
-      ${!eChitanta && dif > 0.05 ? `<div class="caseta-atentie" style="margin:0 0 12px"><div class="ca-mesaj">Suma articolelor citite (${fmt(sumaArt)}) nu se închide cu totalul (${fmt(b.total)}) — verifică cu poza.</div></div>` : ""}
+      ${!eChitanta && dif > 0.05 ? `<div class="caseta-atentie" style="margin:0 0 12px"><div class="ca-mesaj">Suma articolelor citite (${bani(sumaArt)}) nu se închide cu totalul (${bani(b.total)}) — verifică cu poza.</div></div>` : ""}
       <div class="doc-split">
       <div class="doc-poza" id="d-poze"><p class="ecran-nota">Se încarcă poza...</p></div>
       <div class="doc-campuri">
@@ -1543,7 +1541,7 @@ async function ecranBonuri(corp, nav, t) {
         ${fc.map((f) => `
           <label style="display:flex;gap:8px;align-items:center;padding:4px 0">
             <input type="radio" name="d-fact" value="${f.id}" ${f.id === idPref ? "checked" : ""}>
-            <span>Factura ${f.numar || f.id} · ${f.furnizor || ""} · ${f.data || ""} · ${fmt(f.total)} lei${f.potrivire_cui ? '<span style="color:#1d7a4d;font-weight:600"> ✓ CUI</span>' : ""}${f.potrivire_suma ? '<span style="color:#1d7a4d;font-weight:600"> ✓ sumă</span>' : ""}</span>
+            <span>Factura ${f.numar || f.id} · ${f.furnizor || ""} · ${f.data || ""} · ${bani(f.total)} lei${f.potrivire_cui ? '<span style="color:#1d7a4d;font-weight:600"> ✓ CUI</span>' : ""}${f.potrivire_suma ? '<span style="color:#1d7a4d;font-weight:600"> ✓ sumă</span>' : ""}</span>
           </label>`).join("")}
         <label style="display:flex;gap:8px;align-items:center;padding:4px 0">
           <input type="radio" name="d-fact" value="" ${idPref ? "" : "checked"}>

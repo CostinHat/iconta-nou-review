@@ -29,7 +29,7 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text"]}
+                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -84,6 +84,9 @@ for nume, t in fisiere.items():
         # MIG_TEXT: input/select cu clasa mig-text (dialect de contrast, textarea-only) in loc de camp-input
         if re.search(r'<(input|select)[^>]*class="[^"]*\bmig-text\b', lin):
             rap["mig_text"].append((nume, i, "", lin.strip()[:66]))
+        # FMT_LOCAL: definitie locala de format monetar (const fmt = ...toLocaleString) in loc de bani() canonic
+        if re.search(r'const\s+fmt\s*=.*toLocaleString', lin):
+            rap["fmt_local"].append((nume, i, "", lin.strip()[:66]))
         # ETICHETE: input cu placeholder informativ dar fara label/eticheta pe linie/vecinatate
         if re.search(r'<input[^>]*placeholder="[^"]{4,}', lin) and "camp-eticheta" not in lin and "<label" not in lin and "aria-label" not in lin:
             vecini = "\n".join(linii[max(0,i-3):i] + linii[i:i+4])
