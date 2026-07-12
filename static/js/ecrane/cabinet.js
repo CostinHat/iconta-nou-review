@@ -175,11 +175,7 @@ async function randeazaSintezaAzi(nav, continut) {  // [p74_brief_modal] modal c
 
 export function desktopCabinet(continut, nav) {
   randeazaPanou(continut, nav);
-  // [p74_brief_modal] briefing de intampinare, o data per sesiune
-  if (sessionStorage.getItem("iconta_brief_aratat") !== "1") {
-    sessionStorage.setItem("iconta_brief_aratat", "1");
-    setTimeout(() => randeazaSintezaAzi(nav, continut), 200);
-  }
+  // [p74_brief_modal] Sinteza zilei: doar la click pe card, NU automat (decis 12.07.2026)
 }
 
 // VEDEREA 1: panoul cu cele 9 carduri
