@@ -37,7 +37,7 @@ export async function ecranRip(corp, nav, t) {
               ${o.status === "ciorna" ? '<span style="color:#c9961f;font-weight:600"> \u00b7 CIORNA</span>' : '<span style="color:#1d7a4d;font-weight:600"> \u00b7 VALIDATA</span>'}</div>
             <div class="pf-frand-sub">${esc(o.explicatie)} \u00b7 ${esc(o.categorie)}${o.deductibilitate ? " \u00b7 " + esc(o.deductibilitate) : ""}${o.document_numar ? " \u00b7 doc " + esc(o.document_numar) : ""} \u00b7 ${esc(o.metoda)}</div>
           </div>
-          ${o.status === "ciorna" ? `<button class="buton-primar" data-val="${o.id}">Valideaza</button>
+          ${o.status === "ciorna" ? `<button class="buton-primar" data-val="${o.id}">Valideaz\u0103</button>
           <button class="buton-secundar" data-del="${o.id}">\u0218terge</button>` : ""}
         </div>`).join("");
 

@@ -57,7 +57,7 @@ export async function randeazaSetari(corp, nav) {
           <span class="set-eticheta">CUI</span>
           <input id="set-cab-cui" class="set-input" type="text" value="${esc(cab && cab.cui)}">
         </label>
-        <button class="buton-primar" id="set-salveaza-cabinet">Salveaza datele cabinetului</button>
+        <button class="buton-primar" id="set-salveaza-cabinet">Salveaz\u0103 datele cabinetului</button>
         <div class="set-mesaj" id="set-msg-cabinet"></div>
       </div>`;
     legaInapoi();
@@ -65,7 +65,7 @@ export async function randeazaSetari(corp, nav) {
       const msg = corp.querySelector("#set-msg-cabinet");
       const nume = corp.querySelector("#set-cab-nume").value.trim();
       const cui = corp.querySelector("#set-cab-cui").value.trim();
-      msg.textContent = "Se salveaza..."; msg.className = "set-mesaj";
+      msg.textContent = "Se salveaz\u0103..."; msg.className = "set-mesaj";
       try {
         const r = await api.post("/eu/cabinet", { nume, cui });
         if (r && r.ok && r.cabinet) {
@@ -92,7 +92,7 @@ export async function randeazaSetari(corp, nav) {
         <label class="set-bifa"><input type="checkbox" id="cmp-preg" ${b("poate_pregati")}> <span>Pot pregati declaratii</span></label>
         <label class="set-bifa"><input type="checkbox" id="cmp-val" ${b("poate_valida")}> <span>Pot valida declaratii</span></label>
         <label class="set-bifa"><input type="checkbox" id="cmp-dep" ${b("poate_depune")}> <span>Pot depune declaratii</span></label>
-        <button class="buton-primar" id="set-salveaza-compet">Salveaza competentele</button>
+        <button class="buton-primar" id="set-salveaza-compet">Salveaz\u0103 competentele</button>
         <div class="set-mesaj" id="set-msg-compet"></div>
       </div>`;
     legaInapoi();
@@ -102,7 +102,7 @@ export async function randeazaSetari(corp, nav) {
       const preg = corp.querySelector("#cmp-preg").checked;
       const val = corp.querySelector("#cmp-val").checked;
       const dep = corp.querySelector("#cmp-dep").checked;
-      msg.textContent = "Se salveaza..."; msg.className = "set-mesaj";
+      msg.textContent = "Se salveaz\u0103..."; msg.className = "set-mesaj";
       btnCmp.disabled = true;
       try {
         const r = await api.post("/eu/competente", { poate_pregati: preg, poate_valida: val, poate_depune: dep });
@@ -142,7 +142,7 @@ export async function randeazaSetari(corp, nav) {
           <span class="set-eticheta">Nume</span>
           <input id="set-prenume" class="set-input" type="text" value="${esc(u.prenume)}">
         </label>
-        <button class="buton-primar" id="set-salveaza-profil">Salveaza profilul</button>
+        <button class="buton-primar" id="set-salveaza-profil">Salveaz\u0103 profilul</button>
         <div class="set-mesaj" id="set-msg-profil"></div>
       </div>`;
     legaInapoi();
@@ -150,7 +150,7 @@ export async function randeazaSetari(corp, nav) {
       const msg = corp.querySelector("#set-msg-profil");
       const nume = corp.querySelector("#set-nume").value.trim();
       const prenume = corp.querySelector("#set-prenume").value.trim();
-      msg.textContent = "Se salveaza..."; msg.className = "set-mesaj";
+      msg.textContent = "Se salveaz\u0103..."; msg.className = "set-mesaj";
       try {
         const r = await api.post("/eu/profil", { nume, prenume });
         if (r && r.ok && r.user) {

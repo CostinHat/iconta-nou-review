@@ -518,7 +518,7 @@ async function ecranSalariati(corp, nav, t) {
           <input type="text" id="rg-adresa" class="camp-input" placeholder="strada, nr, localitate, judet">
           <span class="camp-ajutor">Obligatorie pentru transmiterea in REGES.</span></div>
         <p style="margin-top:10px"><button class="buton-primar" id="rg-trimite">Trimite in REGES</button>
-          <button class="btn-link" id="rg-renunta" style="margin-left:10px">Renunta</button></p>
+          <button class="btn-link" id="rg-renunta" style="margin-left:10px">Renun\u021b\u0103</button></p>
         <div id="rg-rez"></div></div>`;
       zonaReges.querySelector("#rg-renunta").addEventListener("click", () => { zonaReges.innerHTML = ""; });
       zonaReges.querySelector("#rg-trimite").addEventListener("click", async () => {
@@ -1171,7 +1171,7 @@ async function ecranRaportZ(corp, nav, t) {
       <label class="camp"><span class="camp-eticheta">Card</span><input type="number" step="0.01" id="z-card" class="camp-input" placeholder="0,00"></label>
     </div>
     <div id="z-rezultat" style="margin-top:16px"></div>
-    <p style="margin-top:16px"><button class="buton-primar" id="z-salveaza">Genereaza nota</button></p>`;
+    <p style="margin-top:16px"><button class="buton-primar" id="z-salveaza">Genereaz\u0103 not\u0103</button></p>`;
   corp.querySelector("#z-amef").addEventListener("change", async (ev) => {
       const f = ev.target.files[0];
       const zona = corp.querySelector("#z-amef-msg");
@@ -1251,7 +1251,7 @@ async function ecranJurnal(corp, nav, t) {
     };
     const editor = (n) => `
       <div style="display:block;border:1px solid var(--galben)">
-        <div class="pf-frand-nume" style="margin-bottom:8px">Editare nota #${n.id} \u00b7 ${dataRo(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
+        <div class="pf-frand-nume" style="margin-bottom:8px">${n.id === "nou" || !n.id ? "Not\u0103 nou\u0103" : "Editare not\u0103 #" + n.id} \u00b7 ${dataRo(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
         <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${esc(n.descriere || "")}"></label>
         <div class="camp-eticheta" style="margin-top:8px">Linii: cont debit = cont credit \u00b7 sum\u0103</div>
         <div id="je-linii">${n.linii.map((l, i) => `
@@ -1279,7 +1279,7 @@ async function ecranJurnal(corp, nav, t) {
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:#c9961f;font-weight:600">${ciorne} de validat</span>` : ""}
         <button class="buton-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="j-next">luna \u2192</button>
-        <button class="buton-primar" id="j-amort" style="margin-left:12px">Genereaza amortizarea</button>
+        <button class="buton-primar" id="j-amort" style="margin-left:12px">Genereaz\u0103 amortizarea</button>
         <button class="buton-secundar" id="j-nota-noua" style="margin-left:6px">+ Not\u0103 nou\u0103</button>
         <button class="buton-secundar" id="j-lock" style="margin-left:6px"></button></p>
       <div id="j-mesaj"></div>
@@ -1291,7 +1291,7 @@ async function ecranJurnal(corp, nav, t) {
       const pb = await api.get(`/tenants/${t.id}/perioade-blocate`);
       lunaBlocata = (pb.blocate || []).some((p) => p.an === an && p.luna === luna);
     } catch {}
-    bLock.textContent = lunaBlocata ? "Deblocheaza luna" : "Blocheaza luna";
+    bLock.textContent = lunaBlocata ? "Deblocheaz\u0103 luna" : "Blocheaz\u0103 luna";
     bLock.addEventListener("click", async () => {
       try {
         if (lunaBlocata) await api.del(`/tenants/${t.id}/perioade-blocate?an=${an}&luna=${luna}`);
@@ -1686,8 +1686,8 @@ async function ecranMagazin(corp, nav, t) {
         <label class="camp-eticheta">Consumer Secret</label>
         <input class="camp-input" id="wc-cs" placeholder="cs_..." type="password" autocomplete="off">
       </div>
-      <button class="buton-primar" id="wc-salveaza">Salveaza</button>
-      <button class="btn-link" id="wc-renunta" style="margin-left:10px">Renunta</button>
+      <button class="buton-primar" id="wc-salveaza">Salveaz\u0103</button>
+      <button class="btn-link" id="wc-renunta" style="margin-left:10px">Renun\u021b\u0103</button>
       <p class="ecran-nota" id="wc-msg" style="margin:10px 0 0"></p>
     `;
     corp.querySelector("#wc-renunta").addEventListener("click", randeazaPrincipal);
@@ -1752,7 +1752,7 @@ async function ecranAccesClient(corp, nav, t) {
       </div>
       <p class="ecran-nota" id="ac-msg" style="margin:0 0 10px"></p>
       <button class="buton-primar" id="ac-btn">Trimite invitatia</button>
-      <button class="btn-link" id="ac-renunta" style="margin-left:10px">Renunta</button>
+      <button class="btn-link" id="ac-renunta" style="margin-left:10px">Renun\u021b\u0103</button>
     `;
     const msg = corp.querySelector("#ac-msg");
     corp.querySelector("#ac-renunta").addEventListener("click", randeazaPrincipal);
