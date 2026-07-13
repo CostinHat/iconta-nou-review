@@ -1,84 +1,412 @@
-# iConta — Functionalitati (inventar complet)
-*Document de referinta · 13 iulie 2026 · construit din auditul vizual complet + inventarul mecanic al codului (304 rute HTTP, 27 ecrane, 53 carduri pe 5 niveluri)*
+# iConta — Registrul functionalitatilor (v2)
+*Lista plata: o functionalitate distincta per pozitie · ID stabil · construita din cod (core + rute + ecrane) · 13.07.2026*
+*Stare: SCHELET — descrierile exacte se scriu pe loturi, cu citirea modulului. (fost FUNCTIONALITATI.md v1 pe carduri — arhivat in git)*
 
-## 1. NIVEL CABINET (desktopul contabilului-sef)
+**F001 · ai client**  
+Sursa: `core/ai_client.py`  
+Descriere: TODO
 
-- **Firme** — portofoliul cabinetului: lista firmelor-client cu cautare nume/CUI, adaugare firma cu validare CUI la ANAF (completare automata denumire/date), fisa individuala per firma (vezi cap. 2).
-- **Migrare cabinet** — aducerea datelor din vechiul program, in 9 straturi ghidate cu stare per firma (gata/de incarcat) si decizie explicita de finalizare per strat: 1. Firme (CUI-uri in masa, lipite sau Excel/CSV, validate la ANAF), 2. Vector fiscal (TVA/regim/intracomunitar — fara el firma nu e procesabila), 3. Solduri initiale (balanta de deschidere, conturile analitice intra automat in plan), 4. Solduri parteneri (4111/401 defalcat pe partener, verificat automat cu balanta), 5. Salariati (nume/CNP/salariu/contract, CNP-uri verificate), 6. Asociati (nume/cota %, pentru D205), 7. Mijloace fixe (registru amortizare in curs), 8. Istoric declaratii (ce s-a depus deja — iConta nu le mai cere ca restanta), 9. Plan de conturi (OMFP standard automat + analitice/nestandard manual).
-- **Termene** — scadentele urmatoarelor 60 de zile grupate pe data, cu drill-down pe declaratie -> firmele vizate.
-- **Pachete lunare (Povestea lunii)** — rezumatul lunii pentru antreprenor, scris de AI, aprobat de contabil, trimis pe email (Brevo); selectie firma cu cautare, an/luna.
-- **De validat** — coada de validare patru-ochi: declaratiile pregatite de asistenti asteapta aprobarea; cine a pregatit nu poate aproba; afiseaza pregatitorul pe nume; actiuni Aproba/Respinge (cu motiv)/Confirma depunerea (cu index SPV optional). Nimic nu se depune nevalidat.
-- **Control fiscal (tot cabinetul)** — semafor de conformare pe fiecare firma (verde la zi / galben de urmarit / rosu restanta), cu drill-down: declaratii lipsa cu termene + verificari de coerenta contabila (echilibru, TVA, stocuri, documente pozate).
-- **Asistenti (management echipa)** — roluri si permisiuni (poate pregati/valida/depune), firmele alocate, calitatea echipei pe 30 zile cu semafor si drill-down pe erori, fereastra per asistent (nivel, perioada, calitate, tipare sistematic/accident, drift, activitate), editare competente cu regula patru-ochi si avertisment soft; adaugare asistent.
-- **Capacitate** — incarcarea echipei: in lucru / de validat / depuse luna asta / ritm pe zi lucratoare; tabel per asistent (in lucru, pregatite, depuse, % acceptate); timp mediu pe tip de declaratie (masurat real, de la deschiderea ecranului la generare).
-- **Consolidare portofoliu** — cifrele tuturor firmelor cumulat de la inceputul anului: venituri/cheltuieli/profit/cash per firma + TOTAL.
-- **Sinteza zilei** — brief la cerere (click pe card): astazi in cabinet (pregatite/validate/respinse/depuse/de validat/sesizari noi), productia echipei, ultimele evenimente.
-- **Activitate** — doua zone: Activitatea echipei (centralizator + jurnal cronologic: cine ce a pregatit/validat/depus) si Tipare de erori (unde se greseste des si de ce — educatie AI din respingerile reale).
-- **Setari cont** — date cabinet, competente proprii (ce pot face), chei API, date profil, schimbare parola.
-- **Raporteaza (Suport)** — sesizari catre iConta cu capturi de ecran (buton sau Ctrl+V), istoric sesizari, raspunsuri in fir.
-- **Notificari** — clopotel cu sumar la login + email zilnic (mesaje de la clienti, evenimente echipa).
+**F002 · ai incredere**  
+Sursa: `core/ai_incredere.py`  
+Descriere: TODO
 
-## 2. FISA FIRMEI (21 de carduri per firma-client)
+**F003 · amef import**  
+Sursa: `core/amef_import.py`  
+Descriere: TODO
 
-- **Facturi** — emitere factura (beneficiar cu verificare CUI la ANAF si VIES (intracomunitar), linii cu potrivire automata a cotei TVA din nomenclator, numerotare automata), istoric cu navigare pe luni, detaliu factura (contare/stornare — doar cabinet), model factura (logo, font, culoare accent — identitatea vizuala a FIRMEI-CLIENT pe documente, preview live), facturi recurente (sabloane emise automat lunar, verificare zilnica 07:00), transformare proforma -> factura.
-- **Declaratii** — generare per firma prin fluxul in 3 pasi (tip + perioada dupa periodicitate -> generare cu avertismente + XML -> trimitere in coada de validare); 9 tipuri: D100, D101 (cu IMCA), D112, D205 (cu impartire automata pe asociati), D300, D301, D390, D394, D406 SAF-T (cu mapare manuala de conturi).
-- **Control fiscal** — semafor per firma: declaratii de depus cu termene + verificari de coerenta (echilibru balanta, TVA vs contabilitate, documente pozate).
-- **Salariati** — stat de plata lunar (brut->net cu toate regulile 2026: facilitati, part-time cu supliment angajator, deduceri), fluturasi PDF per salariat, trimitere REGES (chei + raspunsuri), concedii medicale (certificat cu cod indemnizatie, calcul OUG 34/2024: CASS doar codurile 01/07/10, zile platite dupa diminuare, angajator zile 2-6 / FNUASS din ziua 7, auto-calcul zile lucratoare), salariat nou.
-- **Bonuri si chitante** — documente pozate de client sau incarcate de contabil: clasificare AI (bon/chitanta), extragere comerciant/data/total/TVA/articole cu conturi propuse, poza cu zoom/rotire fina, verificare suma articole vs total, certificare si contare (bon -> nota; chitanta -> potrivire cu facturi 401=5311).
-- **Perioade blocate** — blocarea lunilor inchise la nivel de firma (notele nu se mai pot modifica).
-- **Registru jurnal** — notele contabile ale lunii cu stare (ciorna/validata), Valideaza/Editeaza/Sterge per nota, nota manuala noua, generare amortizare, blocare/deblocare luna, navigare pe luni.
-- **Retetar (GV HoReCa)** — retete de productie (CRUD) + descarcarea gestiunii pe baza retetarului; completeaza Raportul Z pentru gestiunea cantitativ-valorica.
-- **Raport Z** — import AMEF (.p7b/XML) sau introducere manuala (total 11% mancare / 21% alcool-sucuri, numerar+card=total) -> nota ciorna pe zi, idempotent; descarcarea gestiunii dupa nota.
-- **Stocuri** — NIR (numar/data/furnizor/CUI + articole cu cantitate/pret achizitie/pret raft/cota TVA) -> note ciorne; fise de magazie cantitativ-valoric CMP; descarcarea gestiunii lunii.
-- **Balanta de verificare** — PDF lunar cu solduri si rulaje, navigare pe luni.
-- **Bilant anual** — S1005 micro / S1003 mici: generare + validare ANAF pe server + descarcare XML.
-- **Casa** — registru de casa pe luna cu sold curent per operatiune, dispozitie noua (incasare/plata pe tipuri cu conturi), avertismente plafoane numerar.
-- **e-Transport** — notificare UIT: XML v2 pentru incarcare manuala in SPV; tip operatiune (AIC etc.), bunuri (cod tarifar NC, greutati, valoare), partener comercial, punct incarcare/descarcare cu judet, vehicul.
-- **Operatiuni speciale** — note contabile pentru operatiuni punctuale, toate ca ciorna: Finantare (leasing, credite bancare, decontari asociati 455/457, avansuri 409/419), Imobilizari si capital (reevaluare 105, obiecte de inventar 303, provizioane si ajustari, productie 711/345, inventariere anuala), TVA regimuri speciale (TVA la incasare art.282, marja second-hand, marja agentii turism, taxare inversa art.331, achizitie de la agricultor 8%, aur de investitii, nota TVA la incasare), Extern (achizitie/livrare intracomunitara, reevaluare valuta), SGR garantii, ONG venituri, subventii, sponsorizari, perisabilitati, decont deplasare, lichidare (vanzare activ, partaj).
-- **Incasari/plati (RIP)** — partida simpla PFA/II/IF: registru pe luna cu totaluri, operatiune noua (tip/categorie/deductibilitate/metoda), import ciorne din banca si din casa, Fisa D212 (venit net, CAS/CASS datorate, cheltuieli limitate de analizat), registru-inventar.
-- **Banca** — import extras (.xls/.xlsx/.csv, ING/Jasper, format detectat dupa continut), citire + potrivire automata a platilor cu facturile (pe CUI si sume, alocare partiala pe mai multe facturi), propuneri de contare per linie, ignorare/reactivare linii.
-- **Magazin online** — WooCommerce: comenzile devin facturi emise automat (zilnic 07:30), sincronizare manuala la cerere, configurare conexiune.
-- **Verificari** — coerenta lunara: echilibru balanta, trezorerie (fara solduri creditoare pe conturi de datorii salariale/fiscale), documente pozate, TVA vs contabilitate (cu drill-down pe facturile necontabilizate), D205 vs cont 457 (dividende).
-- **Solicitari client** — mesajele firmei-client in fir de conversatie, cu raspuns din cabinet; notificari doar catre rolurile de cabinet.
-- **Acces client** — conturile de portal ale firmei (email + nume), invitare client nou (magic-link, fara parola), revocare.
-- **Import date** — cele 9 straturi de migrare direct pentru firma curenta (fara reselectarea firmei).
-- **Produse** — nomenclatorul firmei: denumire -> AI potriveste cota TVA din legislatie (21/11/0%) cu justificare afisata, corectabila manual; cautare; folosit automat la emiterea facturilor.
+**F004 · anaf**  
+Sursa: `core/anaf_api.py`  
+Descriere: TODO
 
-## 3. PORTAL CLIENT (firma-client, read-only + actiuni proprii)
+**F005 · api public**  
+Sursa: `core/api_public.py`  
+Descriere: TODO
 
-- **Acasa** — cardurile firmei cu cifrele lunii (formulare prietenoase, rotunjite la leu).
-- **Facturile mele** — istoric pe luni (fara actiuni de contabil).
-- **Cifrele firmei** — venituri/cheltuieli/profit/cash.
-- **Declaratii depuse** — ce s-a depus, cu termene prietenoase.
-- **Documente** — arhiva documentelor firmei.
-- **Pozeaza bon** — fotografiere document -> clasificare AI -> confirmare client -> ajunge la contabil pentru certificare; emitere chitanta cu PDF.
-- **Solicitari** — mesaje catre cabinet in fir.
-- **Povestea lunii** — pachetul lunar primit.
-- **Recomanda** (buton mic pe desktop) — invita alta firma; disponibil si cabinetelor prin rolul asistent.
-- **Acces cont** — schimbare email propriu, acces suplimentar pentru colegi (magic-link), revocare.
+**F006 · asistenti**  
+Sursa: `core/asistenti_api.py`  
+Descriere: TODO
 
-## 4. ROL ASISTENT (angajat de cabinet)
+**F007 · asociati import**  
+Sursa: `core/asociati_import_api.py`  
+Descriere: TODO
 
-- **Desktop propriu** — 7 carduri limitate la firmele alocate; bara de calitate personala (pregatite luna aceasta, % acceptate din prima); antet cu nume + nivel (junior/senior).
-- **Firme** — doar firmele alocate lui.
-- **Declaratii** — fluxul 3 pasi cu selectie de firma; totul intra in coada de validare (nu poate depune direct fara permisiune).
-- **De validat** — declaratiile colegilor; patru-ochi pe ID: la propriile declaratii vede "ai pregatit-o tu — o valideaza altcineva".
-- **Control fiscal / Termene / Pachete lunare / Recomanda / Raporteaza** — aceleasi ecrane, restranse la firmele lui.
-- **Self-view (/eu)** — anunturi in aplicatie cu confirmare de citire, calitatea proprie pe perioada, educatie AI din tiparele proprii de erori, starea patru-ochi.
-- **Permisiuni granulare** — poate_pregati / poate_valida / poate_depune, acordate de admin; zero firme -> cont dezactivat automat.
+**F008 · auth**  
+Sursa: `core/auth_api.py`  
+Descriere: TODO
 
-## 5. ROL ADMIN iCONTA (superadmin platforma)
+**F009 · avansuri**  
+Sursa: `core/avansuri.py`  
+Descriere: TODO
 
-- **Activitate** — toate cabinetele din platforma, cu categorii si cifre (firme, angajati, facturi emise, declaratii depuse, recomandari, ultima activitate).
-- **Sanatate server** — grafice load/memorie/disc pe istoric.
-- **Gratuite / Anunturi** — gestiune conturi gratuite si anunturi in aplicatie.
-- **Sesizari** — sesizarile din Raporteaza, cu raspuns.
+**F010 · bacsis**  
+Sursa: `core/bacsis.py`  
+Descriere: TODO
 
-## 6. TRANSVERSALE & INFRASTRUCTURA
+**F011 · banca**  
+Sursa: `core/banca.py`  
+Descriere: TODO
 
-- **Autentificare** — parola clasica + magic-link fara parola (clienti); landing public cu inregistrare cabinet self-service (CUI verificat la ANAF, avertisment CAEN non-6920).
-- **Navigator** — ferestre modale cu traseu real: fir de parinti in antet, titlul pasului in corp, sageata = pop pe traseu, entitatea (cabinet/firma + CUI) doar in antet; sesiune per-tab (doua cabinete in taburi diferite nu se amesteca).
-- **Design System** — DESIGN_SYSTEM.md v2.11 (16 capitole normative) + verificator_conformitate.py (gardian mecanic, TOTAL 0 pe toate ecranele): set inchis de butoane, tokeni de culoare/tipografie/spatiere, formatori canonici (bani/baniRotund/dataRo/pct/esc), dictionar unic de iconite si culori-card, diacritice obligatorii pe text afisat.
-- **Fiscal la sursa** — toate valorile fiscale verificate la ANAF/lege inainte de cod (TVA 21/11%, salariu minim, CAS/CASS/CAM, IMCA, OUG 34/2024 etc.); generatoarele validate cu DUKIntegrator.
-- **Securitate** — nginx cu SSL + rate limiting + headere (HSTS etc.), fail2ban 3 jails, XSS escapat centralizat (esc canonic), patru-ochi pe ID, roluri stricte (superadmin/admin_firma/angajat/client), actiuni de contabil ascunse pe portal.
-- **Infrastructura** — FastAPI + PostgreSQL schema-per-tenant (iconta_v2), uvicorn prin systemd (iconta-nou.service, reporneste la boot), git pe ~/iconta_nou, fisiere normative canonice editate prin SSH.
+**F012 · banca parser**  
+Sursa: `core/banca_parser.py`  
+Descriere: TODO
+
+**F013 · bilant**  
+Sursa: `core/bilant.py + core/bilant_api.py`  
+Descriere: TODO
+
+**F014 · capacitate**  
+Sursa: `core/capacitate_api.py`  
+Descriere: TODO
+
+**F015 · casa**  
+Sursa: `core/casa.py + core/casa_api.py`  
+Descriere: TODO
+
+**F016 · cashflow**  
+Sursa: `core/cashflow.py`  
+Descriere: TODO
+
+**F017 · chitante**  
+Sursa: `core/chitante.py`  
+Descriere: TODO
+
+**F018 · clienti**  
+Sursa: `core/clienti_api.py`  
+Descriere: TODO
+
+**F019 · coada**  
+Sursa: `core/coada_api.py`  
+Descriere: TODO
+
+**F020 · comodat chirii**  
+Sursa: `core/comodat_chirii.py`  
+Descriere: TODO
+
+**F021 · contracte speciale**  
+Sursa: `core/contracte_speciale.py`  
+Descriere: TODO
+
+**F022 · control fiscal**  
+Sursa: `core/control_fiscal_api.py`  
+Descriere: TODO
+
+**F023 · cote tva**  
+Sursa: `core/cote_tva.py`  
+Descriere: TODO
+
+**F024 · credite**  
+Sursa: `core/credite.py`  
+Descriere: TODO
+
+**F025 · curs bnr**  
+Sursa: `core/curs_bnr.py`  
+Descriere: TODO
+
+**F026 · d100**  
+Sursa: `core/d100.py`  
+Descriere: TODO
+
+**F027 · d101**  
+Sursa: `core/d101.py`  
+Descriere: TODO
+
+**F028 · d112**  
+Sursa: `core/d112.py`  
+Descriere: TODO
+
+**F029 · d205**  
+Sursa: `core/d205.py`  
+Descriere: TODO
+
+**F030 · d212 engine**  
+Sursa: `core/d212_engine.py`  
+Descriere: TODO
+
+**F031 · d300**  
+Sursa: `core/d300.py`  
+Descriere: TODO
+
+**F032 · d301**  
+Sursa: `core/d301.py`  
+Descriere: TODO
+
+**F033 · d390**  
+Sursa: `core/d390.py`  
+Descriere: TODO
+
+**F034 · d394**  
+Sursa: `core/d394.py`  
+Descriere: TODO
+
+**F035 · d406**  
+Sursa: `core/d406.py`  
+Descriere: TODO
+
+**F036 · d406 active**  
+Sursa: `core/d406_active.py`  
+Descriere: TODO
+
+**F037 · d406 stocuri**  
+Sursa: `core/d406_stocuri.py`  
+Descriere: TODO
+
+**F038 · declaratii**  
+Sursa: `core/declaratii_api.py`  
+Descriere: TODO
+
+**F039 · decontari asociati**  
+Sursa: `core/decontari_asociati.py`  
+Descriere: TODO
+
+**F040 · deconturi**  
+Sursa: `core/deconturi.py`  
+Descriere: TODO
+
+**F041 · diferente curs**  
+Sursa: `core/diferente_curs.py`  
+Descriere: TODO
+
+**F042 · documente**  
+Sursa: `core/documente_api.py`  
+Descriere: TODO
+
+**F043 · efactura import**  
+Sursa: `core/efactura_import.py`  
+Descriere: TODO
+
+**F044 · etransport**  
+Sursa: `core/etransport.py`  
+Descriere: TODO
+
+**F045 · factura pdf**  
+Sursa: `core/factura_pdf.py`  
+Descriere: TODO
+
+**F046 · facturi**  
+Sursa: `core/facturi.py + core/facturi_api.py`  
+Descriere: TODO
+
+**F047 · facturi recurente**  
+Sursa: `core/facturi_recurente.py`  
+Descriere: TODO
+
+**F048 · firma profil**  
+Sursa: `core/firma_profil_api.py`  
+Descriere: TODO
+
+**F049 · import export**  
+Sursa: `core/import_export.py`  
+Descriere: TODO
+
+**F050 · intracomunitar**  
+Sursa: `core/intracomunitar.py`  
+Descriere: TODO
+
+**F051 · intrastat**  
+Sursa: `core/intrastat.py`  
+Descriere: TODO
+
+**F052 · inventariere**  
+Sursa: `core/inventariere.py`  
+Descriere: TODO
+
+**F053 · istoric declaratii import**  
+Sursa: `core/istoric_declaratii_import_api.py`  
+Descriere: TODO
+
+**F054 · jurnal**  
+Sursa: `core/jurnal_api.py`  
+Descriere: TODO
+
+**F055 · kpi client**  
+Sursa: `core/kpi_client.py`  
+Descriere: TODO
+
+**F056 · leasing**  
+Sursa: `core/leasing.py`  
+Descriere: TODO
+
+**F057 · lichidare**  
+Sursa: `core/lichidare.py`  
+Descriere: TODO
+
+**F058 · migrare**  
+Sursa: `core/migrare_api.py`  
+Descriere: TODO
+
+**F059 · mijloace fixe import**  
+Sursa: `core/mijloace_fixe_import_api.py`  
+Descriere: TODO
+
+**F060 · monitor fiscal**  
+Sursa: `core/monitor_fiscal.py`  
+Descriere: TODO
+
+**F061 · motor**  
+Sursa: `core/motor.py`  
+Descriere: TODO
+
+**F062 · notificari**  
+Sursa: `core/notificari_api.py`  
+Descriere: TODO
+
+**F063 · obiecte inventar**  
+Sursa: `core/obiecte_inventar.py`  
+Descriere: TODO
+
+**F064 · ong**  
+Sursa: `core/ong.py`  
+Descriere: TODO
+
+**F065 · pachete**  
+Sursa: `core/pachete_api.py`  
+Descriere: TODO
+
+**F066 · perisabilitati**  
+Sursa: `core/perisabilitati.py`  
+Descriere: TODO
+
+**F067 · plati**  
+Sursa: `core/plati.py`  
+Descriere: TODO
+
+**F068 · portal**  
+Sursa: `core/portal_api.py`  
+Descriere: TODO
+
+**F069 · productie**  
+Sursa: `core/productie.py`  
+Descriere: TODO
+
+**F070 · produse**  
+Sursa: `core/produse_api.py`  
+Descriere: TODO
+
+**F071 · provizioane**  
+Sursa: `core/provizioane.py`  
+Descriere: TODO
+
+**F072 · raportari**  
+Sursa: `core/raportari_api.py`  
+Descriere: TODO
+
+**F073 · reconciliere**  
+Sursa: `core/reconciliere.py + core/reconciliere_api.py`  
+Descriere: TODO
+
+**F074 · reevaluare**  
+Sursa: `core/reevaluare.py`  
+Descriere: TODO
+
+**F075 · reges client**  
+Sursa: `core/reges_client.py`  
+Descriere: TODO
+
+**F076 · retete**  
+Sursa: `core/retete.py + core/retete_api.py`  
+Descriere: TODO
+
+**F077 · rip**  
+Sursa: `core/rip_api.py`  
+Descriere: TODO
+
+**F078 · salariati**  
+Sursa: `core/salariati_api.py`  
+Descriere: TODO
+
+**F079 · salariati import**  
+Sursa: `core/salariati_import_api.py`  
+Descriere: TODO
+
+**F080 · salarizare**  
+Sursa: `core/salarizare.py`  
+Descriere: TODO
+
+**F081 · scadente**  
+Sursa: `core/scadente.py`  
+Descriere: TODO
+
+**F082 · sgr**  
+Sursa: `core/sgr.py`  
+Descriere: TODO
+
+**F083 · sinteza zilnica**  
+Sursa: `core/sinteza_zilnica.py`  
+Descriere: TODO
+
+**F084 · solduri**  
+Sursa: `core/solduri_api.py`  
+Descriere: TODO
+
+**F085 · solduri parteneri**  
+Sursa: `core/solduri_parteneri_api.py`  
+Descriere: TODO
+
+**F086 · sponsorizari**  
+Sursa: `core/sponsorizari.py`  
+Descriere: TODO
+
+**F087 · stat plata**  
+Sursa: `core/stat_plata_api.py`  
+Descriere: TODO
+
+**F088 · stocuri**  
+Sursa: `core/stocuri.py + core/stocuri_api.py`  
+Descriere: TODO
+
+**F089 · stocuri cv**  
+Sursa: `core/stocuri_cv.py + core/stocuri_cv_api.py`  
+Descriere: TODO
+
+**F090 · subventii**  
+Sursa: `core/subventii.py`  
+Descriere: TODO
+
+**F091 · taxare inversa**  
+Sursa: `core/taxare_inversa.py`  
+Descriere: TODO
+
+**F092 · tenant provisioning**  
+Sursa: `core/tenant_provisioning.py`  
+Descriere: TODO
+
+**F093 · termene**  
+Sursa: `core/termene_api.py`  
+Descriere: TODO
+
+**F094 · tipare**  
+Sursa: `core/tipare_api.py`  
+Descriere: TODO
+
+**F095 · tva agricultori**  
+Sursa: `core/tva_agricultori.py`  
+Descriere: TODO
+
+**F096 · tva aur**  
+Sursa: `core/tva_aur.py`  
+Descriere: TODO
+
+**F097 · tva incasare**  
+Sursa: `core/tva_incasare.py`  
+Descriere: TODO
+
+**F098 · tva marja**  
+Sursa: `core/tva_marja.py`  
+Descriere: TODO
+
+**F099 · tva marja turism**  
+Sursa: `core/tva_marja_turism.py`  
+Descriere: TODO
+
+**F100 · vector fiscal**  
+Sursa: `core/vector_fiscal_api.py`  
+Descriere: TODO
+
+**F101 · verificatoare**  
+Sursa: `core/verificatoare.py`  
+Descriere: TODO
+
+**F102 · woocommerce**  
+Sursa: `core/woocommerce.py`  
+Descriere: TODO
+
