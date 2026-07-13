@@ -11,6 +11,29 @@
 Actualizat: 03.07.2026
 
 ---
+## 13.07.2026 — Partea 4: systemd + audit vizual COMPLET + registrul functionalitatilor + analiza concurentei
+~60 commit-uri. Verificator TOTAL 0 permanent.
+
+**INFRA:** iconta-nou.service (systemd, enabled, Restart=always). Restart canonic: sudo systemctl restart iconta-nou.
+
+**Features:** Declaratii per firma LIVE; card Produse reconectat (+cautare+esc); De validat cu numele pregatitorului (JOIN pe creat_de_id).
+
+**Gardieni/tokeni:** HEX_SEMAFOR extins; FIX bug DIACRITICE (finditer); --galben-fundal, --gri-semafor, --gri-fundal-semafor; pct() canonic.
+
+**Fix-uri arhitectura:** navigator h2 auto pe titluCurent (dublarea entitatii); Migrare: inapoiPas dupa Salveaza (firul nu mai acumuleaza); grila-doc min-width; dialecte eliminate (dec-*, cf-gol, asi-echipa-btn, breadcrumb fals ecran Firme); 91 patch-uri moarte sterse (0a).
+
+**HOTFIX-uri (bug-urile mele, prinse de Costin):** fila alba (pct inexistent); interpolare selector firma (escape template imbricat). Lectii: 0c si la frontend, ambele ramuri; screenshot-ul se CITESTE.
+
+**AUDIT VIZUAL COMPLET - toata aplicatia:** fisa firmei 21/21, desktop cabinet integral (retrecut metodic; Asistenti: dialect asi-echipa-btn + flex-wrap + 3 diacritice), Migrare 9 straturi, rol asistent (breadcrumb fals + hotfix interpolare + landing diacritice), admin 5/5 (semafor Sanatate pe tokeni). Parola test Gica: asistent@gmail.com/Test1234!.
+
+**REGISTRUL FUNCTIONALITATILOR (FUNCTIONALITATI.csv, canonic):** 149 pozitii - 112 LIVE + 7 PARTIAL + 30 PLANIFICAT; fiecare cu descriere exacta din citirea modulului, ID stabil Fnnn, nivel, acces UI, sursa, temei legal, stare, testat. Sortat: LIVE primele. REGULA: nicio functionalitate nu traieste in afara listei. + FUNCTIONALITATI_inventar_core.txt (127 module).
+
+**CARENTE consolidate in DE_FACUT:** 10 pozitii cu diagnostic (F103 alerte programate convenite ~03.07 - PARTIAL: lipseste data_afisare + flux monitor->anunt; cod 10 CM; D394 DUK; PWA; retetar GV re-verificare; e-Transport API; pilot P1-P5; spacing).
+
+**ANALIZA CONCURENTEI (CONCURENTA.csv):** 7 competitori, 84 capabilitati confruntate cu registrul. Goluri majore: e-Factura SPV complet (toti), depunere ANAF cu recipise, open banking PSD2, mesaje SPV, tichete de masa, centre de cost+bugete (4 confirmari). 24 pozitii noi PLANIFICAT din concurenta. Pericol strategic: Keez (acelasi model, 7000+ clienti).
+
+---
+
 ## 13.07.2026 — Audit DS (partea 3) + Control fiscal per firma (LIVE)
 Continuare audit + primul feature din colturile inactive. ~25 commit-uri. Verificator TOTAL 0.
 

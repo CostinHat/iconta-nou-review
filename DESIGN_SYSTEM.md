@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.11 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.11 · 13 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 

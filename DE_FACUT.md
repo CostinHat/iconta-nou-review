@@ -48,7 +48,7 @@ Ultima actualizare: 13.07.2026
 5. **GV Retetar HoReCa**: CRUD + descarcare exista (descoperit azi in rute); UI/fluxul complet de re-verificat cu date reale (nota veche: "de re-verificat").
 6. **e-Transport**: XML pentru upload MANUAL in SPV; trimiterea directa prin API SPV nu exista.
 7. **Descrieri FUNCTIONALITATI.csv**: 13/103 scrise (lot 1); loturile 2-8 raman.
-8. **Admin: 4 sub-ecrane neverificate vizual** (raportari/gratuite/anunturi/sanatate; activitate partial).
+8. (REZOLVAT 13.07 seara) Admin auditat complet: 5/5 sub-ecrane, semafor Sanatate pe tokeni.
 9. **Testare pilot**: sectiunea 1 (P1-P5) intacta — niciun punct bifat.
 10. **Audit design ramas**: spacing inline (inchis explicit ca datorie acceptata), paleta iconite migrare (decizie amanata azi), anatomie/aliniere tabele nesistematizate.
 
