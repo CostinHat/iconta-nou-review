@@ -1538,18 +1538,18 @@ async function ecranBonuri(corp, nav, t) {
       <div class="doc-split">
       <div class="doc-poza" id="d-poze"><p class="ecran-nota">Se încarcă poza...</p></div>
       <div class="doc-campuri">
-      <div style="display:grid;grid-template-columns:${eChitanta ? "2fr 1fr 1fr" : "2fr 1fr 1fr 1fr"};gap:8px;align-items:end">
+      <div class="grila-doc" style="grid-template-columns:${eChitanta ? "2fr 1fr 1fr" : "2fr 1fr 1fr 1fr"}">
         <label class="camp"><span class="camp-eticheta">${eChitanta ? "Emitent (furnizor)" : "Comerciant"}</span><input class="camp-input" id="d-com" value="${b.comerciant || ""}"></label>
         <label class="camp"><span class="camp-eticheta">${eChitanta ? "Data plății" : "Data"}</span><input class="camp-input" type="date" id="d-data" value="${b.data || ""}"></label>
-        <label class="camp"><span class="camp-eticheta">${eChitanta ? "Suma plătită" : "Total"}</span><input class="camp-input" type="number" step="0.01" id="d-tot" value="${b.total}"></label>
-        ${eChitanta ? "" : `<label class="camp"><span class="camp-eticheta">TVA total</span><input class="camp-input" type="number" step="0.01" id="d-tva" value="${b.tva}"></label>`}
+        <label class="camp"><span class="camp-eticheta">${eChitanta ? "Suma plătită" : "Total"}</span><input class="camp-input" type="number" step="0.01" id="d-tot" value="${Number(b.total || 0).toFixed(2)}"></label>
+        ${eChitanta ? "" : `<label class="camp"><span class="camp-eticheta">TVA total</span><input class="camp-input" type="number" step="0.01" id="d-tva" value="${Number(b.tva || 0).toFixed(2)}"></label>`}
       </div>
       ${eChitanta
         ? `<div id="d-cand" style="margin-top:12px"><p class="ecran-nota">Caut facturi de potrivit...</p></div>`
         : `<div style="margin-top:8px"><div class="camp-eticheta">Denumire \u00b7 valoare \u00b7 cont</div>${(b.articole || []).map((a, j) => `
-            <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:4px">
+            <div class="grila-doc" style="grid-template-columns:2fr 1fr 1fr;margin-top:4px">
               <input class="camp-input" id="d-den-${j}" value="${esc(a.denumire || "")}" readonly>
-              <input class="camp-input" type="number" step="0.01" id="d-val-${j}" value="${a.valoare || 0}">
+              <input class="camp-input" type="number" step="0.01" id="d-val-${j}" value="${Number(a.valoare || 0).toFixed(2)}">
               <input class="camp-input" id="d-cont-${j}" value="${a.cont_propus || ""}" placeholder="cont" aria-label="Cont propus">
             </div>`).join("")}</div>`}
       <div style="margin-top:14px">

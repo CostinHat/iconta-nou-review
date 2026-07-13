@@ -2116,6 +2116,8 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
   background: #fff; cursor: zoom-in; max-height: 70vh; }
 .doc-poza-cadru img { width: 100%; display: block; transition: transform 0.05s; user-select: none; }
 .doc-campuri { flex: 1 1 380px; min-width: 300px; }
+.grila-doc { display: grid; gap: 8px; align-items: end; }  /* [bon_grila_v1] coloanele vin inline (dinamice) */
+.grila-doc > * { min-width: 0; }  /* inputurile se pot strange -> fereastra nu iese din ecran (DS cap.3) */
 
 /* [bon_flux_e9c_v1] X-ul lupei (ecran complet) */
 .lupa-x { position: absolute; top: 16px; right: 20px; border: 0; background: rgba(255,255,255,0.14);

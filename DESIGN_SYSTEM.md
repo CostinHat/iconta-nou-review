@@ -107,6 +107,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 - Overlay umbrit uniform rgba(20,30,45,0.55) pentru TOATE ferestrele. Card central alb.
 - max-height calc(100vh - 48px); la tabele lungi: antet + butoane fixe, doar tabelul derulează.
+- Grile de câmpuri în ferestre: clasa `.grila-doc` (copiii primesc `min-width:0` ca să se strângă) — fără grile inline cu display:grid care lasă inputurile să împingă fereastra în scroll orizontal.
 - `.fer-larg` max-width 1000px doar pentru tabele.
 - Nicio fereastră nu iese din ecran.
 
