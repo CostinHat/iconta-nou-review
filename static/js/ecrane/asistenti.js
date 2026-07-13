@@ -82,7 +82,7 @@ export async function randeazaAsistenti(corp, nav) {
   if (inactivi.length) {
     const wrap = document.createElement("div");
     wrap.innerHTML = `
-      <button class="buton-secundar asi-toggle-dez" id="asi-toggle-dez">Arată dezactivați (${inactivi.length})</button>
+      <button class="buton-secundar" id="asi-toggle-dez" style="margin-top:10px">Arată dezactivați (${inactivi.length})</button>
       <div id="asi-lista-dez" style="display:none;"></div>`;
     lista.appendChild(wrap);
     const cont = wrap.querySelector("#asi-lista-dez");
