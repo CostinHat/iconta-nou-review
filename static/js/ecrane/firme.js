@@ -1729,8 +1729,8 @@ async function ecranMagazin(corp, nav, t) {
       <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
       <p style="margin:0 0 16px"><b>Stare:</b> ${cfg.configurat ? "conectat la " + cfg.url : "neconfigurat"}</p>
-      ${cfg.configurat ? '<button class="buton-primar" id="wc-sinc" style="margin-bottom:12px">Sincronizeaza acum</button><br>' : ""}
-      <button class="acces-card meniu-card" id="wc-btn-config">${cfg.configurat ? "Modifica configurarea" : "Configureaza magazinul"}</button>
+      ${cfg.configurat ? '<button class="buton-primar" id="wc-sinc" style="margin-bottom:12px">Sincronizeaz\u0103 acum</button><br>' : ""}
+      <button class="buton-secundar" id="wc-btn-config">${cfg.configurat ? "Modific\u0103 configurarea" : "Configureaz\u0103 magazinul"}</button>
       <div class="em-rezultat" id="wc-rezultat"></div>
     `;
     mesajSucces = "";
@@ -1791,7 +1791,7 @@ async function ecranAccesClient(corp, nav, t) {
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
       <h3 style="margin:0 0 8px">Conturi client</h3>
       <div id="ac-lista" style="margin-bottom:16px"><p class="ecran-nota">Se încarcă...</p></div>
-      <button class="acces-card meniu-card" id="ac-btn-invita">Invita client nou</button>
+      <button class="buton-secundar" id="ac-btn-invita">Invit\u0103 client nou</button>
     `;
     mesajSucces = "";
     corp.querySelector("#ac-btn-invita").addEventListener("click", randeazaFormular);
