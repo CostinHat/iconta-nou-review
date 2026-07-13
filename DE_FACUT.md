@@ -1,7 +1,7 @@
 # iConta — DE FĂCUT
 
 **Doar viitorul: ce e deschis. Când termini, ștergi rândul. Trecutul e în ISTORIC.md + git log.**
-Ultima actualizare: 12.07.2026 (dimineata)
+Ultima actualizare: 13.07.2026
 
 ---
 
@@ -46,6 +46,18 @@ Ultima actualizare: 12.07.2026 (dimineata)
 - Cod 10 CM (reducere timp muncă) — exclus din dropdown; `calcul_cm_cod10` neintegrat în flux.
 - raporteaza.js — verifică vizual data "cu_ora" în feed (migrat azi).
 - Verifică date CM de test invalide în alte tenant-uri (CCMAD corupt deja șters din tenant_002).
+
+## 6. Ecrane firmă neconstruite (carduri inactive — DS cap.2b)
+**Context (verificat 13.07.2026):** în meniul unei firme, 2 carduri sunt `activ: false` (estompate, "· în curând"). Nu sunt bug-uri — feature-uri neconstruite. Regula DS 2b le tratează uniform. NU se activează cardul fără ecranul în spate (ar crăpa).
+
+**Dependență critică — se construiește PRIMUL:**
+- **Vector fiscal per firmă** (tabel `vector_fiscal`): plătitor TVA lunar/trimestrial? are salariați→D112? regim micro→D100 / profit→D101? + scadențar (ce declarație, ce frecvență, ce zi-limită). Amânat la migrare. FĂRĂ el nu se poate calcula "ce ar trebui depus", deci nici semaforul, nici declarațiile.
+
+**Apoi, în ordine (sesiuni dedicate, cu verificare fiscală la sursă ANAF):**
+1. **Control fiscal per firmă** (`activ:false`, firme.js ~143): semafor per firmă (la zi/de urmărit/restanță, din vector fiscal vs declaratii_depuse) + cross-check coerență (D112 bază CAS vs rulaj 421, D300 TVA vs 4427/4426). NB: Control fiscal există deja la nivel CABINET (cockpit portofoliu) — ăsta e versiunea per-firmă, distinctă.
+2. **Declarații per firmă** (`activ:false`, firme.js ~138): generare D112/D300/D101 pentru firmă — motor calcul + generatoare XML + validare DUKIntegrator. Săptămâni de muncă.
+
+**La activare:** `activ:true` + leagă funcția de randare + elimină "· în curând" (per DS cap.2b).
 
 ---
 
