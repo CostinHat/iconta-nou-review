@@ -15,9 +15,9 @@ export async function randeazaSetari(corp, nav) {
     if (eAdmin) itemi.push({ cheie: "competente", titlu: "Ce pot face" });
     if (eAdmin) itemi.push({ cheie: "chei", titlu: "Chei API" });
     itemi.push({ cheie: "profil", titlu: "Date profil" });
-    itemi.push({ cheie: "parola", titlu: "Schimba parola" });
+    itemi.push({ cheie: "parola", titlu: "Schimbă parola" });
     corp.innerHTML = `
-      <p class="mig-intro">Datele contului tau si setarile cabinetului.</p>
+      <p class="mig-intro">Datele contului tău și setările cabinetului.</p>
       <div class="set-meniu"></div>
     `;
     const meniu = corp.querySelector(".set-meniu");
@@ -164,7 +164,7 @@ export async function randeazaSetari(corp, nav) {
   function randeazaParola() {
     corp.innerHTML = butonInapoi() + `
       <div class="set-sectiune">
-        <div class="set-titlu">Schimba parola</div>
+        <div class="set-titlu">Schimbă parola</div>
         <label class="set-camp">
           <span class="set-eticheta">Parola actuala</span>
           <input id="set-pv" class="set-input" type="password" autocomplete="current-password">
@@ -177,7 +177,7 @@ export async function randeazaSetari(corp, nav) {
           <span class="set-eticheta">Confirmă parola nouă</span>
           <input id="set-pc" class="set-input" type="password" autocomplete="new-password">
         </label>
-        <button class="buton-primar" id="set-schimba-parola">Schimba parola</button>
+        <button class="buton-primar" id="set-schimba-parola">Schimbă parola</button>
         <div class="set-mesaj" id="set-msg-parola"></div>
       </div>`;
     legaInapoi();

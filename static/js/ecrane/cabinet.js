@@ -209,7 +209,7 @@ function randeazaPanou(continut, nav) {
     } else if (c.cheie === "brief") {  // [p74_card_brief]
       card.addEventListener("click", () => nav.deschide("Sinteza zilei", (c) => randeazaSintezaAzi(c, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "setari") {  // [p28_setari]
-      card.addEventListener("click", () => nav.deschide("Setari cont", (corp) => randeazaSetari(corp, nav), { nivel: "cabinet" }));
+      card.addEventListener("click", () => nav.deschide("Setări cont", (corp) => randeazaSetari(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "recomanda") {  // [p31_recomanda]
       card.addEventListener("click", () => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "pachete") {  // [p63_pachete]
