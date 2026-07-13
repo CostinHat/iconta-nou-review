@@ -860,7 +860,7 @@ async function ecranStocuri(corp, nav, t) {
     let nirs = [];
     try { const r = await api.get(`/tenants/${t.id}/stocuri/nir?an=${an}&luna=${luna}`); nirs = r.nir || []; } catch {}
     const randuri = !nirs.length
-      ? `<div class="mig-gol">Niciun NIR in luna asta.</div>`
+      ? `<div class="mig-gol">Niciun NIR \u00een luna asta.</div>`
       : nirs.map((n) => `
         <div class="pf-frand">
           <div class="pf-frand-text">

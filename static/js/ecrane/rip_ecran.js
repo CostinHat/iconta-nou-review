@@ -29,7 +29,7 @@ export async function ecranRip(corp, nav, t) {
     const ziAzi = new Date().toISOString().slice(0, 10);
 
     const randuri = !(reg.operatiuni || []).length
-      ? `<div class="mig-gol">Nicio operatiune in luna asta.</div>`
+      ? `<div class="mig-gol">Nicio opera\u021biune \u00een luna asta.</div>`
       : reg.operatiuni.map((o) => `
         <div class="pf-frand">
           <div class="pf-frand-text">

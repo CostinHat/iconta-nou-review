@@ -353,7 +353,7 @@ function _asiRandeazaFereastra(d, c) {
     if (c2.a_respins) roluri.push("respins");
     const flag = c2.self_approval ? `<span class="asi-flag-rosu">si-a aprobat singur</span>` : "";
     return `<div class="asi-act-rand ${c2.self_approval ? "asi-act-rosu" : ""}"><div class="asi-act-tip">${c2.tip} \u00b7 ${c2.perioada}</div><div class="asi-act-meta">firma #${c2.tenant_id} \u00b7 ${roluri.join(", ")} \u00b7 stare: ${c2.stare} ${flag}</div></div>`;
-  }).join("") : `<div class="mig-gol">Nicio activitate inregistrata.</div>`;
+  }).join("") : `<div class="mig-gol">Nicio activitate \u00eenregistrat\u0103.</div>`;
 
   return `${header}${perioada}${calitate}${tipare}${alerta}<div class="asi-sectiune-titlu">Declaratii lucrate (max. 200)</div><div id="asi-activitate">${randuri}</div>`;
 }

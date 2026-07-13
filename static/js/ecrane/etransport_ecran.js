@@ -26,12 +26,12 @@ export async function ecranEtransport(corp, nav, t) {
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:8px;padding:8px;border:1px solid var(--linie);border-radius:var(--raza)">
       ${sel(`b${i}-cod_scop`, "Scop *", [["101","Comercializare"],["201","Productie"],["301","Gratuitati"],["401","Echipament comercial"],["501","Mijloace fixe"],["601","Uz propriu"],["703","Livrare cu instalare"],["704","Transfer intre gestiuni"],["705","Bunuri puse la dispozitie"],["9901","Altele"]])}
       ${inp(`b${i}-cod_tarifar`, "Cod tarifar (NC) *")}
-      ${inp(`b${i}-denumire`, "Denumire marfa *")}
+      ${inp(`b${i}-denumire`, "Denumire marf\u0103 *")}
       ${inp(`b${i}-cantitate`, "Cantitate *", "number")}
       ${inp(`b${i}-um`, "UM *", "text", "H87", 'placeholder="H87=buc, KGM=kg"')}
-      ${inp(`b${i}-greutate_neta`, "Greutate neta (kg) *", "number")}
-      ${inp(`b${i}-greutate_bruta`, "Greutate bruta (kg) *", "number")}
-      ${inp(`b${i}-valoare_fara_tva`, "Valoare fara TVA *", "number")}
+      ${inp(`b${i}-greutate_neta`, "Greutate net\u0103 (kg) *", "number")}
+      ${inp(`b${i}-greutate_bruta`, "Greutate brut\u0103 (kg) *", "number")}
+      ${inp(`b${i}-valoare_fara_tva`, "Valoare f\u0103r\u0103 TVA *", "number")}
     </div>`;
 
   const deseneaza = () => {
@@ -40,15 +40,15 @@ export async function ecranEtransport(corp, nav, t) {
       <p class="pf-intro">Genereaz\u0103 XML-ul notific\u0103rii (v2) pentru \u00eenc\u0103rcare manual\u0103 \u00een SPV. UIT-ul vine de la ANAF dup\u0103 upload.</p>
       <div class="pf-frand" style="display:block">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
-          ${sel("et-tip", "Tip operatiune *", [["10","AIC - achizitie intracomunitara"],["20","LIC - livrare intracomunitara"],["30","Transport national"],["40","Import"],["50","Export"],["60","Tranzactie intracom. - intrare"],["70","Tranzactie intracom. - iesire"]])}
-          ${inp("et-ref", "Referinta interna")}
+          ${sel("et-tip", "Tip opera\u021biune *", [["10","AIC - achizi\u021bie intracomunitar\u0103"],["20","LIC - livrare intracomunitara"],["30","Transport national"],["40","Import"],["50","Export"],["60","Tranzactie intracom. - intrare"],["70","Tranzactie intracom. - iesire"]])}
+          ${inp("et-ref", "Referin\u021ba intern\u0103")}
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Bunuri transportate</div>
         <div id="et-bunuri">${bunuri.map((_, i) => randBun(i)).join("")}</div>
         <p><button class="buton-secundar" id="et-plus-bun">+ Bun</button></p>
         <div class="pf-frand-nume" style="margin:12px 0 6px">Partener comercial</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
-          ${inp("p-cod_tara", "Cod tara *", "text", "RO")}
+          ${inp("p-cod_tara", "Cod \u021bar\u0103 *", "text", "RO")}
           ${inp("p-cod", "CUI/Cod partener")}
           ${inp("p-denumire", "Denumire *")}
         </div>
