@@ -45,7 +45,7 @@ export function desktopPortal(continut, nav) {
         <div class="cab-salut-sub">Portal Client</div>
       </div>
       <button class="cab-card cab-card-mic accent-recomanda" id="portal-recomanda-mic">
-        <div class="cab-card-cap">${SVG(ICON["recomanda"], "#92500a")}<span class="cab-card-titlu">Recomand\u0103</span></div>
+        <div class="cab-card-cap">${SVG(ICON["recomanda"], CULORI_CARD.chihlimbar.fg)}<span class="cab-card-titlu">Recomand\u0103</span></div>
       </button>
     </div>
     <div class="cab-grila">
@@ -103,7 +103,7 @@ async function ecranAccesCont(corp, nav) {
     nav.setInapoi(undefined);
     const p = d.principal || {};
     corp.innerHTML = `
-      ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
+      ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
       <div style="margin-bottom:6px"><b>Email de logare:</b> ${p.email || "-"}</div>
       ${d.eu_principal ? '<button class="buton-secundar" id="ac-btn-schimba-email" style="margin-bottom:24px">Schimbă adresa de email</button>' : '<p class="ecran-nota" style="margin:0 0 24px">Doar titularul contului poate schimba acest email.</p>'}
       <h3 style="margin:0 0 8px">Alte persoane cu acces</h3>
@@ -112,7 +112,7 @@ async function ecranAccesCont(corp, nav) {
     `;
     const lista = corp.querySelector("#ac-lista-suplimentar");
     lista.innerHTML = (d.suplimentare || []).map((c) => `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #eee">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--linie)">
         <span>${esc(c.email)}${c.nume ? " · " + esc(c.nume) : ""}</span>
         ${d.eu_principal ? '<button class="btn-link" data-uid="' + c.id + '">Revocă</button>' : ""}
       </div>`).join("") || '<p class="ecran-nota">Niciun acces suplimentar.</p>';
@@ -368,7 +368,7 @@ async function ecranPovestea(corp, nav) {
   const fmtDif = (p) => {
     if (typeof p.diferenta !== "number") return "";
     const semn = p.diferenta > 0 ? "+" : "";
-    const culoare = p.diferenta > 0 ? "#1d7a4d" : (p.diferenta < 0 ? "var(--rosu)" : "var(--gri)");
+    const culoare = p.diferenta > 0 ? "var(--verde)" : (p.diferenta < 0 ? "var(--rosu)" : "var(--gri)");
     return `<span style="color:${culoare};font-weight:600">${semn}${bani(p.diferenta)} lei față de luna anterioară</span>`;
   };
   const corpuri = lista.map((p) => `
@@ -545,7 +545,7 @@ async function ecranBon(corp, nav) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Pozează bon sau chitanță</h2>
       <p class="pf-intro">Fotografiază sau încarcă bonul fiscal ori chitanța. iConta citește documentul automat, apoi tu îl trimiți contabilului.</p>
-      ${(mesajSucces || _pozareMesaj) ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + (mesajSucces || _pozareMesaj) + '</p>' : ""}
+      ${(mesajSucces || _pozareMesaj) ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + (mesajSucces || _pozareMesaj) + '</p>' : ""}
       <input type="file" id="bon-fisier" accept="image/*" capture="environment" multiple hidden>
       <input type="file" id="bon-fisier-galerie" accept="image/*" multiple hidden>
       <div id="bon-butoane" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
@@ -661,7 +661,7 @@ async function ecranCifre(corp, nav) {
     <div class="pf-lista">
       ${rand("Venituri", lei(k.venituri))}
       ${rand("Cheltuieli", lei(k.cheltuieli))}
-      ${rand("Profit", lei(k.profit), (k.profit || 0) >= 0 ? "#1d7a4d" : "var(--rosu)")}
+      ${rand("Profit", lei(k.profit), (k.profit || 0) >= 0 ? "var(--verde)" : "var(--rosu)")}
       ${rand("Bani disponibili (cas\u0103 + banc\u0103)", lei(k.cash))}
       ${rand("De \u00eencasat de la clien\u021bi", lei(k.de_incasat))}
       ${rand("De pl\u0103tit c\u0103tre furnizori", lei(k.de_platit))}
