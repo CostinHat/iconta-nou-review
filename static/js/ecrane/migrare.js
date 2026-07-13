@@ -1370,7 +1370,6 @@ export function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Mijloace fixe", desc: "Registru amortizare", fn: (c, n) => importMijloaceFirma(c, n, firma) },
     { titlu: "Istoric declara\u021bii", desc: "Ce s-a depus deja", fn: (c, n) => importIstoricFirma(c, n, firma) },
     { titlu: "Plan de conturi", desc: "Cont\u0103 analitice/nestandard", fn: (c, n) => importPlanConturiFirma(c, n, firma) },
-    { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", fn: (c, n) => importArticoleFirma(c, n, firma) },
   ];
   corp.innerHTML = `
     <p class="mig-intro">Alege ce vrei s\u0103 aduci pentru aceast\u0103 firm\u0103.</p>
@@ -1388,71 +1387,5 @@ export function meniuMigrarePerFirma(corp, nav, firma) {
     `;
     rand.addEventListener("click", () => nav.mergi(p.titlu, (c) => p.fn(c, nav)));  // titlul = pasul; firma e in antet (fisa) sau in intro (drum cabinet) - DS cap.1
     lista.appendChild(rand);
-  });
-}
-
-// [F151] Import articole + stoc initial CV
-function importArticoleFirma(corp, nav, firma) {
-  corp.innerHTML = `
-    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 nomenclatorul de articole cu stocul ini\u021bial (denumire \u00b7 UM \u00b7 cantitate \u00b7 pre\u021b unitar).</p>
-    <label class="mig-drop" id="mig-drop">
-      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
-      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0a807b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
-      <div class="mig-drop-titlu" id="mig-drop-titlu">\u00cencarc\u0103 articolele</div>
-      <div class="mig-drop-desc">Excel sau CSV</div>
-    </label>
-    <div class="mig-eroare" id="mig-eroare"></div>
-    <div id="mig-preview"></div>
-  `;
-  const fileInput = corp.querySelector("#mig-file");
-  fileInput.addEventListener("change", async () => {
-    const file = fileInput.files[0];
-    if (!file) return;
-    corp.querySelector("#mig-drop-titlu").textContent = file.name;
-    const eroare = corp.querySelector("#mig-eroare");
-    eroare.textContent = "Citesc articolele\u2026";
-    try {
-      const fd = new FormData();
-      fd.append("fisier", file);
-      const r = await fetch(`/tenants/${firma.tenant_id}/articole-import/incarca`, {
-        method: "POST", headers: { "Authorization": "Bearer " + sesiune.token() }, body: fd,
-      });
-      const date = await r.json();
-      if (!r.ok) throw { mesaj: (date && (date.detail || date.mesaj)) || ("eroare " + r.status) };
-      eroare.textContent = "";
-      previzualizeazaArticole(corp, nav, firma, date);
-    } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la citirea fi\u0219ierului.";
-    }
-  });
-}
-
-function previzualizeazaArticole(corp, nav, firma, date) {
-  latime(corp, true);
-  const randuri = date.randuri || [];
-  const rez = date.rezumat || {};
-  const zona = corp.querySelector("#mig-preview");
-  zona.innerHTML = `
-    <div class="mig-eticheta" style="margin-top:10px">${rez.valide || 0} articole valide \u00b7 ${rez.cu_stoc || 0} cu stoc \u00b7 valoare total\u0103 ${bani(rez.valoare_totala || 0)} lei${rez.invalide ? ` \u00b7 <span style="color:var(--rosu)">${rez.invalide} invalide</span>` : ""}</div>
-    <div class="mig-lista">
-      ${randuri.slice(0, 50).map((a) => `
-        <div class="mig-rand${a.valid ? "" : " mig-rand-rosu"}">
-          <span>${esc(a.denumire)} \u00b7 ${esc(a.um)}</span>
-          <span>${a.cantitate} \u00d7 ${bani(a.pret)} lei${a.valid ? "" : " \u00b7 " + esc(a.motiv)}</span>
-        </div>`).join("")}
-      ${randuri.length > 50 ? `<div class="mig-eticheta">\u2026 \u0219i \u00eenc\u0103 ${randuri.length - 50}</div>` : ""}
-    </div>
-    <button class="buton-primar mig-buton" id="mig-importa">Import\u0103 ${rez.valide || 0} articole</button>
-  `;
-  zona.querySelector("#mig-importa").addEventListener("click", async () => {
-    const b = zona.querySelector("#mig-importa");
-    b.disabled = true; b.textContent = "Import\u2026";
-    try {
-      const r = await api.post(`/tenants/${firma.tenant_id}/articole-import`, { randuri });
-      zona.innerHTML = `<div class="mig-gata"><div class="mig-gata-titlu">${r.create} articole importate${r.sarite && r.sarite.length ? ` \u00b7 ${r.sarite.length} s\u0103rite (existente/invalide)` : ""}</div></div>`;
-    } catch (e) {
-      b.disabled = false; b.textContent = "Import\u0103";
-      corp.querySelector("#mig-eroare").textContent = (e && e.mesaj) || "Eroare la import.";
-    }
   });
 }
