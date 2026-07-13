@@ -1,5 +1,5 @@
 # iConta — Functionalitati (inventar complet)
-*Document de referinta · 13 iulie 2026 · construit din auditul vizual complet al aplicatiei*
+*Document de referinta · 13 iulie 2026 · construit din auditul vizual complet + inventarul mecanic al codului (304 rute HTTP, 27 ecrane, 53 carduri pe 5 niveluri)*
 
 ## 1. NIVEL CABINET (desktopul contabilului-sef)
 
@@ -16,7 +16,6 @@
 - **Activitate** — doua zone: Activitatea echipei (centralizator + jurnal cronologic: cine ce a pregatit/validat/depus) si Tipare de erori (unde se greseste des si de ce — educatie AI din respingerile reale).
 - **Setari cont** — date cabinet, competente proprii (ce pot face), chei API, date profil, schimbare parola.
 - **Raporteaza (Suport)** — sesizari catre iConta cu capturi de ecran (buton sau Ctrl+V), istoric sesizari, raspunsuri in fir.
-- **Recomanda** — invitatie de cabinete noi in iConta (emailuri multiple).
 - **Notificari** — clopotel cu sumar la login + email zilnic (mesaje de la clienti, evenimente echipa).
 
 ## 2. FISA FIRMEI (21 de carduri per firma-client)
@@ -53,7 +52,7 @@
 - **Pozeaza bon** — fotografiere document -> clasificare AI -> confirmare client -> ajunge la contabil pentru certificare; emitere chitanta cu PDF.
 - **Solicitari** — mesaje catre cabinet in fir.
 - **Povestea lunii** — pachetul lunar primit.
-- **Recomanda** — invita alta firma.
+- **Recomanda** (buton mic pe desktop) — invita alta firma; disponibil si cabinetelor prin rolul asistent.
 - **Acces cont** — schimbare email propriu, acces suplimentar pentru colegi (magic-link), revocare.
 
 ## 4. ROL ASISTENT (angajat de cabinet)
@@ -63,12 +62,12 @@
 - **Declaratii** — fluxul 3 pasi cu selectie de firma; totul intra in coada de validare (nu poate depune direct fara permisiune).
 - **De validat** — declaratiile colegilor; patru-ochi pe ID: la propriile declaratii vede "ai pregatit-o tu — o valideaza altcineva".
 - **Control fiscal / Termene / Pachete lunare / Recomanda / Raporteaza** — aceleasi ecrane, restranse la firmele lui.
+- **Self-view (/eu)** — anunturi in aplicatie cu confirmare de citire, calitatea proprie pe perioada, educatie AI din tiparele proprii de erori, starea patru-ochi.
 - **Permisiuni granulare** — poate_pregati / poate_valida / poate_depune, acordate de admin; zero firme -> cont dezactivat automat.
 
 ## 5. ROL ADMIN iCONTA (superadmin platforma)
 
-- **Cabinete** — toate cabinetele din platforma cu categorii si cifre (firme, angajati, facturi, declaratii, recomandari, ultima activitate).
-- **Activitate** — centralizator cross-platforma.
+- **Activitate** — toate cabinetele din platforma, cu categorii si cifre (firme, angajati, facturi emise, declaratii depuse, recomandari, ultima activitate).
 - **Sanatate server** — grafice load/memorie/disc pe istoric.
 - **Gratuite / Anunturi** — gestiune conturi gratuite si anunturi in aplicatie.
 - **Sesizari** — sesizarile din Raporteaza, cu raspuns.
