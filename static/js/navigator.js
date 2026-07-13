@@ -195,10 +195,10 @@ export function creeazaNavigator(radacina, desktopRandator) {
     /* stelute_rosii_v2: orice * din etichete devine rosu, oricand apare */
     const _corp = fer.querySelector(".fereastra-corp");
     const _steaza = () => { /* titlu_firma_v2 + titlu_global_v1 */
-      if (!_corp.querySelector("h2") && sus.titlu && _corp.children.length) {
+      if (!_corp.querySelector("h2") && (sus.titluCurent || sus.titlu) && _corp.children.length) {
         const h = document.createElement("h2");
         h.className = "pf-titlu";
-        h.textContent = sus.titlu;
+        h.textContent = sus.titluCurent || sus.titlu;  // titlul pasului curent, nu al ferestrei (ferestra poarta entitatea - DS cap.1)
         _corp.prepend(h);
       }
       {  // cap9_titlu_v11: titlul ecranului = DOAR titlul; entitatea traieste in bara mare de sus, nu se dubleaza aici
