@@ -411,6 +411,7 @@ def admin_sanatate(ctx=Depends(cere_cabinet)):
 class AnuntIn(BaseModel):
     mesaj: str
     cabinet_id: Optional[int] = None  # None = toate cabinetele
+    data_afisare: Optional[str] = None  # [F103] None = imediat
 
 @app.post("/admin/anunturi")
 def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
@@ -418,15 +419,15 @@ def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
         raise HTTPException(422, "mesaj gol")
     with db.get_conn() as conn, conn.cursor() as cur:
         if date.cabinet_id:
-            cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj) VALUES (%s, %s) RETURNING id",
-                        (date.cabinet_id, date.mesaj.strip()))
+            cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s, %s, %s) RETURNING id",
+                        (date.cabinet_id, date.mesaj.strip(), (date.data_afisare or "").strip() or None))
             n = 1
         else:
             cur.execute("SELECT id FROM public.accounting_firms WHERE activ")
             ids = [r[0] for r in cur.fetchall()]
             for cid in ids:
-                cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj) VALUES (%s, %s)",
-                            (cid, date.mesaj.strip()))
+                cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s, %s, %s)",
+                            (cid, date.mesaj.strip(), (date.data_afisare or "").strip() or None))
             n = len(ids)
         conn.commit()
     return {"ok": True, "trimise": n}
@@ -436,7 +437,7 @@ def eu_anunturi(ctx=Depends(cere_cabinet)):
     from psycopg2.extras import RealDictCursor
     with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
         cur.execute("""SELECT id, mesaj, creat_la FROM public.anunturi_cabinet
-                       WHERE cabinet_id=%s AND confirmat_la IS NULL ORDER BY id""", (ctx["firm"],))
+                       WHERE cabinet_id=%s AND confirmat_la IS NULL AND (data_afisare IS NULL OR data_afisare <= CURRENT_DATE) ORDER BY id""", (ctx["firm"],))
         rows = [dict(r) for r in cur.fetchall()]
     for r in rows:
         r["creat_la"] = str(r["creat_la"])

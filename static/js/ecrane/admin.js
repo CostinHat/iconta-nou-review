@@ -77,6 +77,8 @@ async function randeazaAdminAnunturi(corp, nav) {
       </select></div>
     <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Mesaj</label>
       <textarea class="camp-input" id="an-mesaj" rows="4" style="resize:vertical;min-height:90px"></textarea></div>
+    <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Afișare de la data (opțional — gol = imediat)</label>
+      <input type="date" class="camp-input" id="an-data"></div>
     <button class="buton-primar" id="an-trimite">Trimite</button>
     <p id="an-msg" style="margin-top:8px"></p>`;
   const ta = corp.querySelector("#an-mesaj");  /* textarea_auto_v1 */
@@ -87,7 +89,7 @@ async function randeazaAdminAnunturi(corp, nav) {
     if (!mesaj) { arataMesaj(msg, "Scrie mesajul.", "eroare"); return; }
     const cid = corp.querySelector("#an-cab").value;
     try {
-      const r = await api.post("/admin/anunturi", { mesaj, cabinet_id: cid ? Number(cid) : null });
+      const r = await api.post("/admin/anunturi", { mesaj, cabinet_id: cid ? Number(cid) : null, data_afisare: corp.querySelector("#an-data").value || null });
       arataMesaj(msg, `Trimis către ${r.trimise} cabinet${r.trimise === 1 ? "" : "e"}.`, "info");
       corp.querySelector("#an-mesaj").value = "";
     } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
