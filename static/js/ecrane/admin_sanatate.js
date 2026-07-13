@@ -20,10 +20,10 @@ function fmtUptime(sec) {
 }
 
 function culoareProcent(p) {
-  if (p == null) return "#666";
-  if (p >= 90) return "#dc2626";
+  if (p == null) return "var(--gri-semafor)";
+  if (p >= 90) return "var(--rosu-semafor)";
   if (p >= 70) return "var(--galben)";
-  return "#16a34a";
+  return "var(--verde)";
 }
 
 // grafic SVG simplu (polyline), fara librarie externa
