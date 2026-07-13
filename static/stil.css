@@ -730,6 +730,14 @@ html, body {
 .cf-termen { font-size: 12.5px; font-variant-numeric: tabular-nums; }
 .cf-termen-rosu { color: #c0392b; }
 .cf-termen-galben { color: #a06713; }
+/* [control_firma_v1] Control fiscal per firma */
+.cf-stare-mare { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: var(--raza); margin-top: 14px; }
+.cf-stare-txt { font-weight: 700; color: var(--ardezie); }
+.cf-stare-cifre { color: var(--gri); margin-left: auto; }
+.cf-verif { display: flex; align-items: center; gap: 8px; padding: 7px 0; }
+.cf-verif-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+.cf-verif-txt { font-size: var(--text-mic); color: var(--ardezie); }
+.cf-gol { color: var(--gri); font-size: var(--text-mic); padding: 6px 0; }
 
 
 /* ---------- TERMENE ---------- */

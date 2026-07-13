@@ -140,7 +140,7 @@ function meniuFirma(corp, nav, t) {
       icon: '<path d="M9 13h6M9 17h4M9 9h1"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>', activ: false },
     { cheie: "control", titlu: "Control fiscal", desc: "Semafor conformare pe firmă",
       ...CULORI_CARD.teal,
-      icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>', activ: false },
+      icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>', activ: true },
     { cheie: "salariati", titlu: "Salariați", desc: "Stat plată, fluturași, D112",
       ...CULORI_CARD.piersica,
       icon: '<circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M16 3.5a3 3 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.7"/>', activ: true },
@@ -218,6 +218,10 @@ function meniuFirma(corp, nav, t) {
   const bSalariati = corp.querySelector("#fa-salariati");
   if (bSalariati && !bSalariati.disabled) {
     bSalariati.addEventListener("click", () => { nav.deschide("Salariați", (c2) => ecranSalariati(c2, nav, t)); });
+  }
+  const bControl = corp.querySelector("#fa-control");
+  if (bControl && !bControl.disabled) {
+    bControl.addEventListener("click", () => { nav.deschide("Control fiscal", (c2) => ecranControlFirma(c2, nav, t)); });
   }
   const bBonuri = corp.querySelector("#fa-bonuri");
   if (bBonuri) {
@@ -442,6 +446,66 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
   });
 }
 
+// [control_firma_v1] Control fiscal per firma: semafor + declaratii lipsa + verificari contabile
+const _CF_CUL = {
+  verde:  { dot:"radial-gradient(circle at 65% 30%, #6fc494, var(--verde) 60%)", txt:"la zi",      bg:"var(--verde-fundal)" },
+  galben: { dot:"radial-gradient(circle at 65% 30%, #f0cd7a, var(--galben) 60%)", txt:"de urmărit", bg:"#fbf3e2" },
+  rosu:   { dot:"radial-gradient(circle at 65% 30%, #ff8a80, var(--rosu-semafor) 60%)", txt:"restanță", bg:"var(--rosu-fundal)" },
+  gri:    { dot:"#9aa3b2", txt:"vector necompletat", bg:"#eef0f3" },
+};
+async function ecranControlFirma(corp, nav, t) {
+  corp.innerHTML = `<p class="ecran-nota">Se evalueaza situatia fiscala...</p>`;
+  let d;
+  try {
+    d = await api.get(`/control-fiscal/${t.id}`);
+  } catch (e) {
+    corp.innerHTML = `<p class="msg-eroare">${(e && e.mesaj) || "Nu am putut evalua controlul fiscal."}</p>`;
+    return;
+  }
+  const cul = _CF_CUL[d.stare] || _CF_CUL.gri;
+
+  // declaratii lipsa
+  let lipsaHtml = "";
+  if ((d.lipsa || []).length) {
+    lipsaHtml = d.lipsa.map((l) =>
+      `<div class="cf-rand-decl">
+        <div><b>${esc(l.tip)}</b> <span class="tip-micut">${esc(l.perioada || "")} · ${l.an}</span></div>
+        <div class="cf-termen">termen ${dataRo(l.termen)}</div>
+      </div>`
+    ).join("");
+  } else {
+    lipsaHtml = `<div class="cf-gol">Nicio declarație restantă.</div>`;
+  }
+
+  // verificari contabile (coerenta)
+  const v = d.verificari_contabile || {};
+  const vRand = (eticheta, ok, detaliu) =>
+    `<div class="cf-verif">
+      <span class="cf-verif-dot" style="background:${ok ? "var(--verde)" : "var(--rosu-semafor)"}"></span>
+      <span class="cf-verif-txt">${eticheta}${detaliu ? ` <span class="tip-micut">${detaliu}</span>` : ""}</span>
+    </div>`;
+  let verifHtml = "";
+  if (v.echilibru) verifHtml += vRand("Echilibru balanta", v.echilibru.ok);
+  if (v.tva) verifHtml += vRand("TVA vs contabilitate", (v.tva.suma === 0 || v.tva.rezultat), `${v.tva.rezultat || ""} ${bani(v.tva.suma || 0)} lei`);
+  if (v.documente_pozate) verifHtml += vRand("Documente pozate", v.documente_pozate.ok, v.documente_pozate.bonuri_neverificate ? `${v.documente_pozate.bonuri_neverificate} neverificate` : "");
+
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Control fiscal</h2>
+    <p class="pf-intro">Situația fiscală a firmei: ce s-a depus vs ce e datorat, cu verificări de coerență.</p>
+    <div class="cf-stare-mare" style="background:${cul.bg}">
+      <span class="cf-dot" style="background:${cul.dot}"></span>
+      <span class="cf-stare-txt">${cul.txt}</span>
+      <span class="cf-stare-cifre tip-micut">${d.datorate || 0} datorate · ${d.depuse || 0} depuse</span>
+    </div>
+    <div class="panou" style="margin-top:14px">
+      <h3 class="cap-titlu">Declarații de depus</h3>
+      ${lipsaHtml}
+    </div>
+    <div class="panou" style="margin-top:14px">
+      <h3 class="cap-titlu">Verificări de coerență</h3>
+      ${verifHtml || '<div class="cf-gol">Nicio verificare disponibilă.</div>'}
+    </div>`;
+}
 async function ecranSalariati(corp, nav, t) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
