@@ -38,8 +38,7 @@ for nume, t in fisiere.items():
     linii = t.split("\n")
     for i, lin in enumerate(linii, 1):
         if "<" in lin or "textContent" in lin or "placeholder" in lin:
-            m = RE_CUV.search(lin)
-            if m:
+            for m in RE_CUV.finditer(lin):  # toate aparitiile, nu doar prima (bug: prima in cod ascundea restul)
                 cuv = m.group(1); poz = m.start(1)
                 # ignora aparitiile din cod: value="cuv", comparatii === "cuv", cai URL /cuv
                 context = lin[max(0,poz-14):poz]
