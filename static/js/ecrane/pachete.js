@@ -36,19 +36,19 @@ function pasAlegere(corp, nav) {
   corp.innerHTML = `
     <p class="mig-intro">Trimite antreprenorului „povestea lunii” — un rezumat clar al lunii, scris de AI și aprobat de tine.</p>
     <div class="dec-form">
-      <label class="dec-camp">
-        <span class="dec-eticheta">Firmă</span>
-        <input id="pac-cauta" class="dec-input" placeholder="Caută firma (nume sau CUI)..." style="margin-bottom:8px">
-        <select id="pac-firma" class="dec-select">
+      <label class="camp">
+        <span class="camp-eticheta">Firmă</span>
+        <input id="pac-cauta" class="camp-input" placeholder="Caută firma (nume sau CUI)..." style="margin-bottom:8px">
+        <select id="pac-firma" class="camp-input">
           <option value="">— alege firma —</option>
           ${S.firme.map((fr)=>`<option value="${fr.id}" ${fr.id===S.tenant_id?"selected":""}>${esc(fr.nume||("Firma "+fr.id))}${fr.cui?" \u00b7 "+esc(fr.cui):""}</option>`).join("")}
         </select>
       </label>
       <div class="dec-perioada-rand">
-        <label class="dec-camp dec-camp-mic"><span class="dec-eticheta">An</span>
-          <input id="pac-an" class="dec-input" type="number" min="2020" max="2030" value="${S.an}"></label>
-        <label class="dec-camp dec-camp-mic"><span class="dec-eticheta">Lună</span>
-          <select id="pac-luna" class="dec-select">
+        <label class="camp camp camp-mic"><span class="camp-eticheta">An</span>
+          <input id="pac-an" class="camp-input" type="number" min="2020" max="2030" value="${S.an}"></label>
+        <label class="camp camp camp-mic"><span class="camp-eticheta">Lună</span>
+          <select id="pac-luna" class="camp-input">
             ${LUNI.map((l,i)=>`<option value="${i+1}" ${i+1===S.luna?"selected":""}>${l}</option>`).join("")}
           </select></label>
       </div>

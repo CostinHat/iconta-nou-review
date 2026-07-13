@@ -3,7 +3,7 @@
 // inceput_la porneste la deschiderea ecranului (cronometru efort) si merge la /coada.
 // Backend: GET /tenants, GET /declaratii/tipuri, POST /declaratii/{tip}, POST /coada.
 
-import { api } from "../api.js";
+import { api, esc } from "../api.js";
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -12,7 +12,7 @@ const TRIM = ["T1 (ian-mar)","T2 (apr-iun)","T3 (iul-sep)","T4 (oct-dec)"];
 // stare ecran
 let S = null;
 
-function esc(s){ return String(s ?? "").replace(/[&<>"]/g,(c)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
+
 
 export async function randeazaDeclaratii(corp, nav) {
   if (nav && nav.setInapoi) nav.setInapoi(undefined);
@@ -50,16 +50,16 @@ function pas1(corp, nav) {
   corp.innerHTML = `
     <p class="mig-intro">Pasul 1 din 3 — alege firma, tipul declarației și perioada.</p>
     <div class="dec-form">
-      <label class="dec-camp">
-        <span class="dec-eticheta">Firmă</span>
-        <select id="dec-firma" class="dec-select">
+      <label class="camp">
+        <span class="camp-eticheta">Firmă</span>
+        <select id="dec-firma" class="camp-input">
           <option value="">— alege firma —</option>
           ${S.firme.map((fr) => `<option value="${fr.id}" ${fr.id===S.tenant_id?"selected":""}>${esc(fr.nume || fr.denumire || ("Firma "+fr.id))}</option>`).join("")}
         </select>
       </label>
-      <label class="dec-camp">
-        <span class="dec-eticheta">Tip declarație</span>
-        <select id="dec-tip" class="dec-select">
+      <label class="camp">
+        <span class="camp-eticheta">Tip declarație</span>
+        <select id="dec-tip" class="camp-input">
           <option value="">— alege tipul —</option>
           ${S.tipuri.map((tp) => `<option value="${tp}" ${tp===S.tip?"selected":""}>${tp.toUpperCase()} · ${S.periodicitate[tp]||""}</option>`).join("")}
         </select>
@@ -93,25 +93,25 @@ function pas1(corp, nav) {
 
 function randPerioada(per) {
   if (!per) return "";
-  const an = `<label class="dec-camp dec-camp-mic">
-      <span class="dec-eticheta">An</span>
-      <input id="dec-an" class="dec-input" type="number" min="2020" max="2030" value="${S.an}">
+  const an = `<label class="camp camp camp-mic">
+      <span class="camp-eticheta">An</span>
+      <input id="dec-an" class="camp-input" type="number" min="2020" max="2030" value="${S.an}">
     </label>`;
   if (per === "anual") return `<div class="dec-perioada-rand">${an}</div>`;
   if (per === "trimestrial") {
     return `<div class="dec-perioada-rand">${an}
-      <label class="dec-camp dec-camp-mic">
-        <span class="dec-eticheta">Trimestru</span>
-        <select id="dec-trim" class="dec-select">
+      <label class="camp camp camp-mic">
+        <span class="camp-eticheta">Trimestru</span>
+        <select id="dec-trim" class="camp-input">
           ${TRIM.map((t,i)=>`<option value="${i+1}" ${i+1===S.trim?"selected":""}>${t}</option>`).join("")}
         </select>
       </label></div>`;
   }
   // lunar
   return `<div class="dec-perioada-rand">${an}
-    <label class="dec-camp dec-camp-mic">
-      <span class="dec-eticheta">Lună</span>
-      <select id="dec-luna" class="dec-select">
+    <label class="camp camp camp-mic">
+      <span class="camp-eticheta">Lună</span>
+      <select id="dec-luna" class="camp-input">
         ${LUNI.map((l,i)=>`<option value="${i+1}" ${i+1===S.luna?"selected":""}>${l}</option>`).join("")}
       </select>
     </label></div>`;

@@ -1328,20 +1328,8 @@ html, body {
 
 /* ---- ecran Declaratii ---- */
 .dec-form { display: flex; flex-direction: column; gap: 16px; margin-top: 4px; }
-.dec-camp { display: flex; flex-direction: column; gap: 5px; }
-.dec-eticheta { font-size: var(--text-mic); color: var(--gri); font-weight: 600; }
-.dec-select, .dec-input {
-  border: 1px solid var(--linie);
-  border-radius: var(--raza);
-  padding: 9px 10px;
-  font-family: var(--font);
-  font-size: var(--text-mic);
-  color: var(--ardezie);
-  background: var(--alb);
-}
-.dec-select:focus, .dec-input:focus { outline: 0; border-color: var(--albastru); box-shadow: 0 0 0 3px var(--albastru-clar); }
 .dec-perioada-rand { display: flex; gap: 12px; flex-wrap: wrap; }
-.dec-camp-mic { flex: 1 1 140px; }
+.camp-mic { flex: 1 1 140px; }
 
 .dec-bara { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
 .fereastra.fer-larg .dec-bara { flex: 0 0 auto; }
