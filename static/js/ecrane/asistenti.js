@@ -39,7 +39,7 @@ export async function randeazaAsistenti(corp, nav) {
         <input class="camp-input" id="asi-email" type="email" placeholder="asistent@cabinet.ro" autocomplete="off"></div>
       <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Nume (op\u021bional)</label>
         <input class="camp-input" id="asi-nume" autocomplete="off"></div>
-      <label style="display:block;margin-bottom:10px;font-size:var(--text-mic)"><input type="checkbox" id="asi-valida"> Poate valida (Nivel 2)</label>
+      <label class="set-bifa" style="margin-bottom:10px"><input type="checkbox" id="asi-valida"> <span>Poate valida (Nivel 2)</span></label>
       <button class="buton-primar" id="asi-trimite">Trimite invita\u021bia</button>
       <p id="asi-adauga-msg" style="margin:8px 0 0"></p>
     </div>

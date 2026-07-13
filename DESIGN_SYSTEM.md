@@ -45,6 +45,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 **IMPORTANT (v2.0)**: Formularele NU se învelesc într-o casetă albă (`background:#fff`). Stau direct pe fundalul ferestrei (gri); doar câmpurile de input sunt albe cu bordură #b9c2cf. Un wrapper alb pe fundal gri-deschis face caseta invizibilă.
 
 **Clasa de câmp (v2.1)**: input/select normale poartă exclusiv `.camp-input` (înălțime 40px, bordură vizibilă #b9c2cf, font aplicație). INTERZIS `.mig-text` pe input/select — e croită doar pentru textarea ecranului de migrare (font monospace, bordură 0.5px invizibilă pe alb). Structura canonică de câmp: `<label class="camp"><span class="camp-eticheta">Etichetă</span><input class="camp-input"></label>` — nu `<label>text<br><input>`.
+**Checkbox cu etichetă (v2.11)**: un checkbox însoțit de text-etichetă poartă EXCLUSIV `.set-bifa`. Structura canonică: `<label class="set-bifa"><input type="checkbox"> <span>Text</span></label>`. INTERZIS checkbox cu etichetă-text pe `style` inline (font-size, display) sau clase ad-hoc (`.cm-check`). Excepție: checkbox-urile fără text alături (în tabele/liste, doar bifă) nu au nevoie de `.set-bifa`.
 
 ## 2a. Deschiderea cardurilor: MEREU fereastra (modal), niciodata inline
 - Orice card din grila cabinetului (`.cab-card`) se deschide EXCLUSIV prin `nav.deschide(titlu, corp, opt)` — fereastra overlay cu X.

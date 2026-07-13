@@ -90,7 +90,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp"><span class="camp-eticheta">Venituri brute 6 luni<span class="oblig">*</span></span><input type="number" id="cm-ven6" class="camp-input" step="0.01" placeholder="suma total\u0103"><span class="camp-ajutor">Suma veniturilor brute din ultimele 6 luni lucrate (din statele de plat\u0103). Baza = aceast\u0103 sum\u0103 \u00eemp\u0103r\u021bit\u0103 la zilele lucr\u0103toare.</span></label>
           <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare 6 luni<span class="oblig">*</span></span><input type="number" id="cm-zile6" class="camp-input" min="1" placeholder="ex. 126"><span class="camp-ajutor">Total zile lucr\u0103toare din acelea\u0219i 6 luni (ex. ~126 pentru 6 luni pline).</span></label>
           <label class="camp"><span class="camp-eticheta">Diagnostic (op\u021bional)</span><input type="text" id="cm-diag" class="camp-input"></label>
-          <label class="cm-check" style="display:flex;align-items:center;gap:8px;margin-top:18px"><input type="checkbox" id="cm-spital"> <span>Spitalizare (prima zi se pl\u0103te\u0219te)</span></label>
+          <label class="set-bifa" style="margin-top:18px"><input type="checkbox" id="cm-spital"> <span>Spitalizare (prima zi se plătește)</span></label>
         </div>
         <p style="margin-top:14px">
           <button class="buton-primar" id="cm-calc">Calculeaz\u0103 \u0219i salveaz\u0103</button>
