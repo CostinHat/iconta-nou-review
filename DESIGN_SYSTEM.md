@@ -53,6 +53,14 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Meniurile cu sub-optiuni (ex. Firme, Activitate) sunt tot ferestre: sub-optiunile devin `.meniu-card` in corpul ferestrei, NU un al doilea nivel inline cu breadcrumb.
 - Consecinta: in corpul panoului nu apare breadcrumb ("Panou > X") si nici al doilea rand de sageti. Inchiderea se face din X-ul ferestrei.
 
+## 2b. Carduri inactive (feature neconstruit)
+- Un card al carui ecran nu exista inca poarta EXPLICIT `activ: false` in definitie.
+- Aspect canonic: `disabled` + `style="opacity:.55;cursor:default"` (estompat, ne-clicabil).
+- Marcaj text: descrierea cardului se termina cu ` \u00b7 in curand` (` · in curand`).
+- La click NU se intampla nimic (butonul e `disabled`) — INTERZIS card inactiv care deschide fereastra goala sau crapa.
+- Cand feature-ul se construieste: se seteaza `activ: true`, se leaga functia de randare, se ELIMINA marcajul "in curand". Un card `activ: true` fara ecran in spate = neconform (crapa la click).
+- Orice card din meniul unei firme (`firme-optiune`) TREBUIE sa aiba campul `activ` definit explicit (true sau false), niciodata absent.
+
 ## 3. Navigare
 
 - Săgeata portocalie (`.btn-nav`) duce MEREU exact un pas înapoi în ierarhia ecranului.
