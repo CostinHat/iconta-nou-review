@@ -60,7 +60,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
         <span class="camp-eticheta">Firmă</span>
         <select id="dec-firma" class="camp-input">
           <option value="">— alege firma —</option>
-          \${S.firme.map((fr) => \`<option value="\${fr.id}" \${fr.id===S.tenant_id?"selected":""}>\${esc(fr.nume || fr.denumire || ("Firma "+fr.id))}</option>\`).join("")}
+          ${S.firme.map((fr) => `<option value="${fr.id}" ${fr.id===S.tenant_id?"selected":""}>${esc(fr.nume || fr.denumire || ("Firma "+fr.id))}</option>`).join("")}
         </select>
       </label>`}
       <label class="camp">
