@@ -29,6 +29,21 @@ def _cmp_si_stoc(cur, schema, articol_id):
         return Decimal("0"), Decimal("0")
     u = fisa[-1]
     return Decimal(str(u["cmp"] or 0)), Decimal(str(u["sold_cantitate"] or 0))
+def _cmp_la_data(cur, schema, articol_id, data_iso):
+    """CMP la o data: fisa pe miscarile pana la data inclusiv. [gv_crono]"""
+    pana = [m for m in _miscari(cur, schema, articol_id) if str(m["data"]) <= data_iso]
+    fisa = _m.fisa_magazie(pana)
+    if not fisa or not fisa[-1]["sold_cantitate"]:
+        return Decimal("0")
+    return Decimal(str(fisa[-1]["cmp"] or 0))
+def _valideaza_iesire_la_data(cur, schema, articol_id, data_iso, cantitate):
+    """Replay complet cu iesirea noua inserata cronologic - prinde si spargerea
+    miscarilor ULTERIOARE de o iesire antedatata. [gv_crono]"""
+    miscari = _miscari(cur, schema, articol_id)
+    pana = [m for m in miscari if str(m["data"]) <= data_iso]
+    dupa = [m for m in miscari if str(m["data"]) > data_iso]
+    noua = {"data": data_iso, "tip": "iesire", "cantitate": cantitate, "pret_unitar": None}
+    _m.fisa_magazie(pana + [noua] + dupa)
 
 
 def lista(conn, schema):
@@ -97,21 +112,21 @@ def descarca(conn, schema, corp):
         linii_r = [dict(r) for r in cur.fetchall()]
         if not linii_r:
             raise ValueError("reteta fara ingrediente")
+        import datetime as _dt
+        d = corp.get("data") or _dt.date.today().isoformat()  # [gv_fix] fara data -> azi
         pentru_motor = []
         for l in linii_r:
-            cmp, stoc = _cmp_si_stoc(cur, schema, l["articol_id"])
-            l["cmp"] = cmp; l["stoc"] = stoc
+            l["cmp"] = _cmp_la_data(cur, schema, l["articol_id"], d)
             pentru_motor.append({"articol_id": l["articol_id"],
-                                 "cantitate": l["cantitate"], "cmp": cmp})
+                                 "cantitate": l["cantitate"], "cmp": l["cmp"]})
         cons = _r.consum_pe_portii(pentru_motor, corp["portii"])
         pe_art = {c["articol_id"]: c for c in cons["linii"]}
         for l in linii_r:
             c = pe_art[l["articol_id"]]
-            if c["cantitate"] > l["stoc"]:
-                raise ValueError(f"stoc insuficient la {l['denumire']}: "
-                                 f"necesar {c['cantitate']}, disponibil {l['stoc']}")
-        import datetime as _dt
-        d = corp.get("data") or _dt.date.today().isoformat()  # [gv_fix] fara data -> azi
+            try:  # [gv_crono] iesirea la data ei nu are voie sa sparga fisa
+                _valideaza_iesire_la_data(cur, schema, l["articol_id"], d, c["cantitate"])
+            except ValueError as e:
+                raise ValueError(f"stoc insuficient la {l['denumire']}: {e}")
         cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                         VALUES (%s,%s,'stocuri','ciorna') RETURNING id""",
                     (d, f"Consum reteta {ret['denumire']} x{corp['portii']}"[:200]))

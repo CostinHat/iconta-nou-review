@@ -734,26 +734,26 @@ async function sectiuneaCV(corp, t, zonaM) {
     rtLista.querySelectorAll(".rt-desc").forEach((b) => b.addEventListener("click", async (e) => {
       const id = e.target.dataset.id;
       const p = rtLista.querySelector(`.rt-portii[data-id="${id}"]`).value;
-      if (!p) { zonaM.innerHTML = `<div class="mig-gol">Completeaz\u0103 num\u0103rul de por\u021bii.</div>`; return; }
+      if (!p) { arataMesaj(zonaM, "Completeaz\u0103 num\u0103rul de por\u021bii.", "eroare"); return; }
       try {
         const r = await api.post(`/tenants/${t.id}/retete/descarca`, { reteta_id: parseInt(id), portii: parseFloat(p), data: val("#cv-data") || new Date().toISOString().slice(0, 10) });
-        zonaM.innerHTML = `<p class="pf-intro">Consum \u00eenregistrat (ciorn\u0103 #${r.inregistrare_id}) \u00b7 cost total ${bani(r.cost_total)} lei.</p>`;
+        arataMesaj(zonaM, `Consum \u00eenregistrat (ciorn\u0103 #${r.inregistrare_id}) \u00b7 cost total ${bani(r.cost_total)} lei.`, "ok");
         sectiuneaCV(corp, t, zonaM); rtIncarca();
-      } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${esc(er.mesaj || "eroare")}</div>`; }
+      } catch (er) { arataMesaj(zonaM, er.mesaj || "Eroare la desc\u0103rcare.", "eroare"); }
     }));
     rtLista.querySelectorAll(".rt-del").forEach((b) => b.addEventListener("click", async (e) => {
-      try { await api.del(`/tenants/${t.id}/retete/${e.target.dataset.id}`); rtIncarca(); } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${esc(er.mesaj || "Nu am putut \u0219terge re\u021beta.")}</div>`; }
+      try { await api.del(`/tenants/${t.id}/retete/${e.target.dataset.id}`); rtIncarca(); } catch (er) { arataMesaj(zonaM, er.mesaj || "Nu am putut \u0219terge re\u021beta.", "eroare"); }
     }));
   };
   zona.querySelector("#rt-plus").addEventListener("click", () => { rtLinii.push({ articol_id: arts[0] && arts[0].id, cantitate: "" }); rtDeseneazaIng(); });
   zona.querySelector("#rt-salveaza").addEventListener("click", async () => {
     const den = zona.querySelector("#rt-den").value.trim();
     const linii = rtLinii.filter((l) => l.articol_id && l.cantitate > 0);
-    if (!den || !linii.length) { zonaM.innerHTML = `<div class="mig-gol">Completeaz\u0103 denumirea \u0219i cel pu\u021bin un ingredient.</div>`; return; }
+    if (!den || !linii.length) { arataMesaj(zonaM, "Completeaz\u0103 denumirea \u0219i cel pu\u021bin un ingredient.", "eroare"); return; }
     try {
       await api.post(`/tenants/${t.id}/retete`, { denumire: den, pret_fara_tva: parseFloat(zona.querySelector("#rt-pret").value || 0), linii });
       zona.querySelector("#rt-den").value = ""; zona.querySelector("#rt-pret").value = ""; rtLinii = []; rtDeseneazaIng(); rtIncarca();
-    } catch (er) { zonaM.innerHTML = `<div class="mig-gol">${esc(er.mesaj || "eroare")}</div>`; }
+    } catch (er) { arataMesaj(zonaM, er.mesaj || "Eroare la salvare.", "eroare"); }
   });
   rtIncarca();
 
