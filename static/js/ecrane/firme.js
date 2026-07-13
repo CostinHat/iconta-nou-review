@@ -449,12 +449,12 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
 // [control_firma_v1] Control fiscal per firma: semafor + declaratii lipsa + verificari contabile
 const _CF_CUL = {
   verde:  { dot:"radial-gradient(circle at 65% 30%, #6fc494, var(--verde) 60%)", txt:"la zi",      bg:"var(--verde-fundal)" },
-  galben: { dot:"radial-gradient(circle at 65% 30%, #f0cd7a, var(--galben) 60%)", txt:"de urmărit", bg:"#fbf3e2" },
+  galben: { dot:"radial-gradient(circle at 65% 30%, #f0cd7a, var(--galben) 60%)", txt:"de urmărit", bg:"var(--galben-fundal)" },
   rosu:   { dot:"radial-gradient(circle at 65% 30%, #ff8a80, var(--rosu-semafor) 60%)", txt:"restanță", bg:"var(--rosu-fundal)" },
   gri:    { dot:"#9aa3b2", txt:"vector necompletat", bg:"#eef0f3" },
 };
 async function ecranControlFirma(corp, nav, t) {
-  corp.innerHTML = `<p class="ecran-nota">Se evalueaza situatia fiscala...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se evalueaz\u0103 situa\u021bia fiscal\u0103...</p>`;
   let d;
   try {
     d = await api.get(`/control-fiscal/${t.id}`);
@@ -474,7 +474,7 @@ async function ecranControlFirma(corp, nav, t) {
       </div>`
     ).join("");
   } else {
-    lipsaHtml = `<div class="cf-gol">Nicio declarație restantă.</div>`;
+    lipsaHtml = `<div class="mig-gol">Nicio declarație restantă.</div>`;
   }
 
   // verificari contabile (coerenta)
@@ -485,7 +485,7 @@ async function ecranControlFirma(corp, nav, t) {
       <span class="cf-verif-txt">${eticheta}${detaliu ? ` <span class="tip-micut">${detaliu}</span>` : ""}</span>
     </div>`;
   let verifHtml = "";
-  if (v.echilibru) verifHtml += vRand("Echilibru balanta", v.echilibru.ok);
+  if (v.echilibru) verifHtml += vRand("Echilibru balan\u021b\u0103", v.echilibru.ok);
   if (v.tva) verifHtml += vRand("TVA vs contabilitate", (v.tva.suma === 0 || v.tva.rezultat), `${v.tva.rezultat || ""} ${bani(v.tva.suma || 0)} lei`);
   if (v.documente_pozate) verifHtml += vRand("Documente pozate", v.documente_pozate.ok, v.documente_pozate.bonuri_neverificate ? `${v.documente_pozate.bonuri_neverificate} neverificate` : "");
 
@@ -503,14 +503,14 @@ async function ecranControlFirma(corp, nav, t) {
     </div>
     <div class="panou" style="margin-top:14px">
       <h3 class="cap-titlu">Verificări de coerență</h3>
-      ${verifHtml || '<div class="cf-gol">Nicio verificare disponibilă.</div>'}
+      ${verifHtml || '<div class="mig-gol">Nicio verificare disponibilă.</div>'}
     </div>`;
 }
 async function ecranSalariati(corp, nav, t) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
   const deseneaza = async () => {
-    corp.innerHTML = `<p class="ecran-nota">Se calculeaza...</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Se calculeaz\u0103...</p>`;
     let stat = [];
     try {
       const r = await api.get(`/tenants/${t.id}/stat-plata?an=${an}&luna=${luna}`);
@@ -524,7 +524,7 @@ async function ecranSalariati(corp, nav, t) {
             <div class="pf-frand-nume">${esc(s.nume)}</div>
             <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}</div>
           </div>
-          <button class="buton-primar" data-flut="${s.id}">Fluturas</button>
+          <button class="buton-primar" data-flut="${s.id}">Flutura\u0219</button>
           <button class="buton-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
           <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Concediu</button>
         </div>`).join("");
