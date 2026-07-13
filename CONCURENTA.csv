@@ -65,3 +65,13 @@ Keez,Video-conferinta cu contabilul din aplicatie,"15 min/sedinta, max 2/luna, p
 Keez,Arhiva electronica cu cautare complexa,Toate documentele stocate cu functii de cautare avansata,PARTIAL (Documente pe portal),cautarea transversala in arhiva = GOL
 Keez,Formulare si modele descarcabile,Biblioteca de formulare editabile pentru business,GOL,minor
 Keez,Onboarding infiintare firma,"Asistenta si pasi pentru firma noua, activare SPV prin imputernicire",GOL,serviciu+feature; relevant pt achizitia de clienti
+WinMentor,Balanta consolidata pe grup de firme (Cuplaj),Balanta cumulata pentru grup cu acelasi plan de conturi,"PARTIAL (Consolidare iConta = KPI sumati, nu balanta cumulata)",
+WinMentor,Drepturi granulare per utilizator,"Vizualizare/editare/stergere distincte per inregistrare, modul, firma",PARTIAL (iConta: roluri + 3 permisiuni),granularitatea pe modul/actiune = GOL
+WinMentor,Amortizare liniara/accelerata/degresiva,Toate cele 3 regimuri de amortizare,PARTIAL (de verificat: iConta probabil doar liniar),
+WinMentor,"Stocuri: necesar aprovizionare, critice, fara miscare, prognoza","Analize de stoc: sub prag, epuizare, prognoza pe perioade comparabile",GOL,analitica de stoc
+WinMentor,"Analitica vanzari: durata medie incasare pe agent, istoric pe articole/parteneri",Rapoarte comerciale detaliate,GOL,confirma golul rapoarte comerciale
+WinMentor,Modul Bugete (plan venituri/cheltuieli),Condu activitatea pe plan de buget,GOL,confirma linii de buget (Keez)
+WinMentor,Liste configurabile salvabile,"Orice raport re-configurat (grupari, filtre) se salveaza ca lista noua in meniu",GOL,rapoarte configurabile de utilizator
+WinMentor,"Periferice: case de marcat, coduri de bare, cantare, terminale date",Conectivitate hardware de gestiune,GOL,confirma
+WinMentor,"Module verticale: Parc Auto (FAZ), Restaurante, Service auto, EDI retail, Curierat AWB",Verticale specializate,GOL,"strategic: iConta tinteste cabinete, nu verticale - dar Parc auto/FAZ e cerut des de contabili"
+WinMentor,Export rapoarte txt/html/xls/dbf,Orice lista exportabila in formate multiple,PARTIAL (iConta: PDF + CSV punctual),export XLS generalizat = GOL
