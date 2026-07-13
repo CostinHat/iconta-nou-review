@@ -14,14 +14,20 @@ let S = null;
 
 
 
-export async function randeazaDeclaratii(corp, nav) {
+// [decl_firma_v1] varianta per-firma: firma fixata, fara selector (entitatea e in antet)
+export async function declaratiiPerFirma(corp, nav, firma) {
+  return randeazaDeclaratii(corp, nav, firma);
+}
+
+export async function randeazaDeclaratii(corp, nav, firmaFixa) {
   if (nav && nav.setInapoi) nav.setInapoi(undefined);
   const acum = new Date();
   S = {
     inceput_la: acum.toISOString(),          // cronometru efort (datoria p15)
     pas: 1,
     firme: [], tipuri: [], periodicitate: {},
-    tenant_id: null, tip: null,
+    firmaFixa: firmaFixa || null,
+    tenant_id: firmaFixa ? firmaFixa.tenant_id : null, tip: null,
     an: acum.getFullYear(),
     luna: acum.getMonth() + 1,
     trim: Math.floor(acum.getMonth()/3) + 1,
@@ -50,13 +56,13 @@ function pas1(corp, nav) {
   corp.innerHTML = `
     <p class="mig-intro">Pasul 1 din 3 — alege firma, tipul declarației și perioada.</p>
     <div class="dec-form">
-      <label class="camp">
+${S.firmaFixa ? "" : `      <label class="camp">
         <span class="camp-eticheta">Firmă</span>
         <select id="dec-firma" class="camp-input">
           <option value="">— alege firma —</option>
-          ${S.firme.map((fr) => `<option value="${fr.id}" ${fr.id===S.tenant_id?"selected":""}>${esc(fr.nume || fr.denumire || ("Firma "+fr.id))}</option>`).join("")}
+          \${S.firme.map((fr) => \`<option value="\${fr.id}" \${fr.id===S.tenant_id?"selected":""}>\${esc(fr.nume || fr.denumire || ("Firma "+fr.id))}</option>\`).join("")}
         </select>
-      </label>
+      </label>`}
       <label class="camp">
         <span class="camp-eticheta">Tip declarație</span>
         <select id="dec-tip" class="camp-input">
@@ -71,20 +77,20 @@ function pas1(corp, nav) {
     </div>
   `;
 
-  const selFirma = corp.querySelector("#dec-firma");
+  const selFirma = corp.querySelector("#dec-firma");  // null cand firma e fixa [decl_firma_v1]
   const selTip = corp.querySelector("#dec-tip");
   const cont = corp.querySelector("#dec-continua");
   const zonaP = corp.querySelector("#dec-perioada");
 
   function refresh() {
-    S.tenant_id = selFirma.value ? parseInt(selFirma.value) : null;
+    if (selFirma) S.tenant_id = selFirma.value ? parseInt(selFirma.value) : null;
     S.tip = selTip.value || null;
     const p = S.tip ? S.periodicitate[S.tip] : null;
     zonaP.innerHTML = randPerioada(p);
     legPerioada(zonaP);
     cont.disabled = !(S.tenant_id && S.tip);
   }
-  selFirma.addEventListener("change", refresh);
+  if (selFirma) selFirma.addEventListener("change", refresh);
   selTip.addEventListener("change", refresh);
   legPerioada(zonaP);
   cont.addEventListener("click", () => pas2(corp, nav));

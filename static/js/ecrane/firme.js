@@ -9,6 +9,7 @@ import { ecranRip } from "./rip_ecran.js";
 import { ecranOperatiuni } from "./operatiuni_ecran.js";
 import { ecranEtransport } from "./etransport_ecran.js";
 import { meniuMigrarePerFirma } from "./migrare.js";  // [p96_import_firma]
+import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -137,7 +138,7 @@ function meniuFirma(corp, nav, t) {
       icon: '<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h4"/>', activ: true },
     { cheie: "declaratii", titlu: "Declarații", desc: "D112, D300, D101 și restul",
       ...CULORI_CARD.verde,
-      icon: '<path d="M9 13h6M9 17h4M9 9h1"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>', activ: false },
+      icon: '<path d="M9 13h6M9 17h4M9 9h1"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>', activ: true },
     { cheie: "control", titlu: "Control fiscal", desc: "Semafor conformare pe firmă",
       ...CULORI_CARD.teal,
       icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>', activ: true },
@@ -218,6 +219,10 @@ function meniuFirma(corp, nav, t) {
   const bSalariati = corp.querySelector("#fa-salariati");
   if (bSalariati && !bSalariati.disabled) {
     bSalariati.addEventListener("click", () => { nav.deschide("Salariați", (c2) => ecranSalariati(c2, nav, t)); });
+  }
+  const bDeclaratii = corp.querySelector("#fa-declaratii");  // [decl_firma_v1]
+  if (bDeclaratii && !bDeclaratii.disabled) {
+    bDeclaratii.addEventListener("click", () => { nav.deschide("Declara\u021bii", (c2) => declaratiiPerFirma(c2, nav, { tenant_id: t.id, nume: t.nume })); });
   }
   const bControl = corp.querySelector("#fa-control");
   if (bControl && !bControl.disabled) {

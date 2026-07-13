@@ -222,7 +222,8 @@ def calcul_d300(prof, an, luna, facturi, manual=None):
         res.avertismente.append("%d linii livrare cu cotă în afara 21/11/9 — neincluse (pune-le manual la rândurile potrivite)." % alte_l)
     if alte_a:
         res.avertismente.append("%d linii achiziție cu cotă în afara 21/11/9 — neincluse." % alte_a)
-    rez = ("de plată %d" % de_plata) if de_plata else (("de recuperat %d" % de_recuperat) if de_recuperat else "0")
+    _f = lambda x: format(int(x), ",").replace(",", ".")
+    rez = ("de plată " + _f(de_plata)) if de_plata else (("de recuperat " + _f(de_recuperat)) if de_recuperat else "0")
     res.avertismente.append("Rezultat TVA %s lei." % rez)
     return res
 
