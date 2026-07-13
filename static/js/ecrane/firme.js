@@ -593,7 +593,7 @@ async function ecranSalariati(corp, nav, t) {
         <div class="camp"><span class="camp-eticheta">Adresa salariatului<span class="oblig">*</span></span>
           <input type="text" id="rg-adresa" class="camp-input" placeholder="strada, nr, localitate, judet">
           <span class="camp-ajutor">Obligatorie pentru transmiterea in REGES.</span></div>
-        <p style="margin-top:10px"><button class="buton-primar" id="rg-trimite">Trimite in REGES</button>
+        <p style="margin-top:10px"><button class="buton-primar" id="rg-trimite">Trimite \u00een REGES</button>
           <button class="btn-link" id="rg-renunta" style="margin-left:10px">Renun\u021b\u0103</button></p>
         <div id="rg-rez"></div></div>`;
       zonaReges.querySelector("#rg-renunta").addEventListener("click", () => { zonaReges.innerHTML = ""; });
@@ -606,7 +606,7 @@ async function ecranSalariati(corp, nav, t) {
         try {
           const r = await api.post(`/tenants/${t.id}/reges-trimite-salariat`, { salariat_id: sid, adresa });
           zonaReges.innerHTML = `<p class="pf-intro">Trimis in REGES${r.referinta ? " \u00b7 ref " + r.referinta : ""}. Verifica R\u0103spunsuri REGES.</p>`;
-        } catch (e) { btn.disabled = false; btn.textContent = "Trimite in REGES"; rez.innerHTML = `<span class="msg-eroare">${esc(e.mesaj || "eroare")}</span>`; }
+        } catch (e) { btn.disabled = false; btn.textContent = "Trimite \u00een REGES"; rez.innerHTML = `<span class="msg-eroare">${esc(e.mesaj || "eroare")}</span>`; }
       });
     }));
     corp.querySelectorAll("[data-flut]").forEach((b) => {
