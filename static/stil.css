@@ -985,15 +985,6 @@ html, body {
 
 
 /* [p28_setari] Ecran Setari cont */
-.set-sectiune { background:#f7f8fa; border:0.5px solid var(--linie,#e6e5e1); border-radius:10px; padding:14px 16px; margin-bottom:14px; max-width:520px; }
-.set-titlu { font-size: var(--text-mic); font-weight:600; color:#22324f; margin-bottom:10px; }
-.set-camp { display:block; margin-bottom:10px; }
-.set-eticheta { display:block; font-size:12.5px; color:#5f5e5a; margin-bottom:4px; }
-.set-input { width:100%; box-sizing:border-box; padding:8px 10px; font-size: var(--text-mic); border:0.5px solid #cfd4dc; border-radius:7px; background:#fff; }
-.set-input:focus { outline:none; border-color:#1d4ed8; }
-.set-mesaj { font-size: var(--text-mic); margin-top:8px; min-height:16px; }
-.set-mesaj.set-ok { color:#1d7a4d; }
-.set-mesaj.set-err { color:#ff3b30; }
 
 
 /* [p34_raporteaza] Ecran + badge raportari */
@@ -1399,15 +1390,12 @@ html, body {
 
 
 /* [p49_setari_bife] */
-.set-nota { font-size: var(--text-mic); color: var(--gri); margin: 0 0 10px; }
 .set-bifa {
   display: flex; align-items: center; gap: 8px;
   font-size: var(--text-mic); color: var(--ardezie);
   padding: 5px 0; cursor: pointer;
 }
 .set-bifa input { width: 16px; height: 16px; cursor: pointer; }
-.set-mesaj.set-ok { color: #1d7a4d; }
-.set-mesaj.set-err { color: var(--rosu); }
 
 
 /* [p52_edu] */

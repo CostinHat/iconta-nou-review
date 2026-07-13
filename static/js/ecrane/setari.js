@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, confirmaCaseta } from "../api.js";
+import { api, confirmaCaseta, arataMesaj } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 function esc(s) { return (s || "").replace(/"/g, "&quot;"); }
@@ -47,34 +47,34 @@ export async function randeazaSetari(corp, nav) {
     let cab = null;
     try { const r = await api.get("/eu/cabinet"); if (r && r.ok) cab = r.cabinet; } catch {}
     corp.innerHTML = butonInapoi() + `
-      <div class="set-sectiune">
-        <div class="set-titlu">Date cabinet</div>
-        <label class="set-camp">
-          <span class="set-eticheta">Nume cabinet</span>
-          <input id="set-cab-nume" class="set-input" type="text" value="${esc(cab && cab.nume)}">
+      <div class="panou">
+        <div class="cap-titlu">Date cabinet</div>
+        <label class="camp">
+          <span class="camp-eticheta">Nume cabinet</span>
+          <input id="set-cab-nume" class="camp-input" type="text" value="${esc(cab && cab.nume)}">
         </label>
-        <label class="set-camp">
-          <span class="set-eticheta">CUI</span>
-          <input id="set-cab-cui" class="set-input" type="text" value="${esc(cab && cab.cui)}">
+        <label class="camp">
+          <span class="camp-eticheta">CUI</span>
+          <input id="set-cab-cui" class="camp-input" type="text" value="${esc(cab && cab.cui)}">
         </label>
         <button class="buton-primar" id="set-salveaza-cabinet">Salveaz\u0103 datele cabinetului</button>
-        <div class="set-mesaj" id="set-msg-cabinet"></div>
+        <div class="" id="set-msg-cabinet"></div>
       </div>`;
     legaInapoi();
     corp.querySelector("#set-salveaza-cabinet").addEventListener("click", async () => {
       const msg = corp.querySelector("#set-msg-cabinet");
       const nume = corp.querySelector("#set-cab-nume").value.trim();
       const cui = corp.querySelector("#set-cab-cui").value.trim();
-      msg.textContent = "Se salveaz\u0103..."; msg.className = "set-mesaj";
+      arataMesaj(msg, "Se salvează...", "info");
       try {
         const r = await api.post("/eu/cabinet", { nume, cui });
         if (r && r.ok && r.cabinet) {
           const us = sesiune.user() || {};
           us.nume_firma = r.cabinet.nume;
           sesiune.intra(sesiune.token(), us);
-          msg.textContent = "Date cabinet salvate."; msg.className = "set-mesaj set-ok";
-        } else { msg.textContent = "Nu am putut salva."; msg.className = "set-mesaj set-err"; }
-      } catch (e) { msg.textContent = "Eroare la salvare."; msg.className = "set-mesaj set-err"; }
+          arataMesaj(msg, "Date cabinet salvate.", "ok");
+        } else { arataMesaj(msg, "Nu am putut salva.", "eroare"); }
+      } catch (e) { arataMesaj(msg, "Eroare la salvare.", "eroare"); }
     });
   }
 
@@ -86,14 +86,14 @@ export async function randeazaSetari(corp, nav) {
     const c = comp || {};
     const b = (k) => c[k] ? "checked" : "";
     corp.innerHTML = butonInapoi() + `
-      <div class="set-sectiune">
-        <div class="set-titlu">Ce pot face</div>
-        <p class="set-nota">Alege ce poti face in fluxul de declaratii. Le poti lasa nebifate daca procesarea o fac asistentii.</p>
+      <div class="panou">
+        <div class="cap-titlu">Ce pot face</div>
+        <p class="ecran-nota">Alege ce poti face in fluxul de declaratii. Le poti lasa nebifate daca procesarea o fac asistentii.</p>
         <label class="set-bifa"><input type="checkbox" id="cmp-preg" ${b("poate_pregati")}> <span>Pot pregati declaratii</span></label>
         <label class="set-bifa"><input type="checkbox" id="cmp-val" ${b("poate_valida")}> <span>Pot valida declaratii</span></label>
         <label class="set-bifa"><input type="checkbox" id="cmp-dep" ${b("poate_depune")}> <span>Pot depune declaratii</span></label>
         <button class="buton-primar" id="set-salveaza-compet">Salveaz\u0103 competentele</button>
-        <div class="set-mesaj" id="set-msg-compet"></div>
+        <div class="" id="set-msg-compet"></div>
       </div>`;
     legaInapoi();
     const btnCmp = corp.querySelector("#set-salveaza-compet");
@@ -102,29 +102,29 @@ export async function randeazaSetari(corp, nav) {
       const preg = corp.querySelector("#cmp-preg").checked;
       const val = corp.querySelector("#cmp-val").checked;
       const dep = corp.querySelector("#cmp-dep").checked;
-      msg.textContent = "Se salveaz\u0103..."; msg.className = "set-mesaj";
+      arataMesaj(msg, "Se salvează...", "info");
       btnCmp.disabled = true;
       try {
         const r = await api.post("/eu/competente", { poate_pregati: preg, poate_valida: val, poate_depune: dep });
         if (r && r.ok) {
           sesiune.actualizeazaUser({ poate_pregati: r.poate_pregati, poate_valida: r.poate_valida, poate_depune: r.poate_depune });
-          msg.textContent = "Competente salvate."; msg.className = "set-mesaj set-ok";
-        } else { msg.textContent = "Nu am putut salva."; msg.className = "set-mesaj set-err"; }
-      } catch (e) { msg.textContent = "Eroare la salvare."; msg.className = "set-mesaj set-err"; }
+          arataMesaj(msg, "Competențe salvate.", "ok");
+        } else { arataMesaj(msg, "Nu am putut salva.", "eroare"); }
+      } catch (e) { arataMesaj(msg, "Eroare la salvare.", "eroare"); }
       btnCmp.disabled = false;
     });
   }
 
   function randeazaChei() {
     corp.innerHTML = butonInapoi() + `
-      <div class="set-sectiune">
-        <div class="set-titlu">Chei API</div>
+      <div class="panou">
+        <div class="cap-titlu">Chei API</div>
         <p class="mig-intro">Pentru conectarea altor aplicatii la datele cabinetului. Cheia se afiseaza o singura data.</p>
         <div id="set-chei-lista"><p class="ecran-nota">Se încarcă...</p></div>
         <label class="camp-eticheta" for="set-cheie-nume">Nume cheie</label>
-        <input id="set-cheie-nume" class="set-input" type="text" placeholder="ex: integrare CRM">
+        <input id="set-cheie-nume" class="camp-input" type="text" placeholder="ex: integrare CRM">
         <button class="buton-primar" id="set-cheie-noua">Generează cheie nouă</button>
-        <div class="set-mesaj" id="set-msg-chei"></div>
+        <div class="" id="set-msg-chei"></div>
       </div>`;
     legaInapoi();
     _initChei(corp);
@@ -132,53 +132,53 @@ export async function randeazaSetari(corp, nav) {
 
   function randeazaProfil() {
     corp.innerHTML = butonInapoi() + `
-      <div class="set-sectiune">
-        <div class="set-titlu">Date profil</div>
-        <label class="set-camp">
-          <span class="set-eticheta">Prenume</span>
-          <input id="set-nume" class="set-input" type="text" value="${esc(u.nume)}">
+      <div class="panou">
+        <div class="cap-titlu">Date profil</div>
+        <label class="camp">
+          <span class="camp-eticheta">Prenume</span>
+          <input id="set-nume" class="camp-input" type="text" value="${esc(u.nume)}">
         </label>
-        <label class="set-camp">
-          <span class="set-eticheta">Nume</span>
-          <input id="set-prenume" class="set-input" type="text" value="${esc(u.prenume)}">
+        <label class="camp">
+          <span class="camp-eticheta">Nume</span>
+          <input id="set-prenume" class="camp-input" type="text" value="${esc(u.prenume)}">
         </label>
         <button class="buton-primar" id="set-salveaza-profil">Salveaz\u0103 profilul</button>
-        <div class="set-mesaj" id="set-msg-profil"></div>
+        <div class="" id="set-msg-profil"></div>
       </div>`;
     legaInapoi();
     corp.querySelector("#set-salveaza-profil").addEventListener("click", async () => {
       const msg = corp.querySelector("#set-msg-profil");
       const nume = corp.querySelector("#set-nume").value.trim();
       const prenume = corp.querySelector("#set-prenume").value.trim();
-      msg.textContent = "Se salveaz\u0103..."; msg.className = "set-mesaj";
+      arataMesaj(msg, "Se salvează...", "info");
       try {
         const r = await api.post("/eu/profil", { nume, prenume });
         if (r && r.ok && r.user) {
           sesiune.intra(sesiune.token(), r.user);
-          msg.textContent = "Profil salvat."; msg.className = "set-mesaj set-ok";
-        } else { msg.textContent = "Nu am putut salva."; msg.className = "set-mesaj set-err"; }
-      } catch (e) { msg.textContent = "Eroare la salvare."; msg.className = "set-mesaj set-err"; }
+          arataMesaj(msg, "Profil salvat.", "ok");
+        } else { arataMesaj(msg, "Nu am putut salva.", "eroare"); }
+      } catch (e) { arataMesaj(msg, "Eroare la salvare.", "eroare"); }
     });
   }
 
   function randeazaParola() {
     corp.innerHTML = butonInapoi() + `
-      <div class="set-sectiune">
-        <div class="set-titlu">Schimbă parola</div>
-        <label class="set-camp">
-          <span class="set-eticheta">Parola actuala</span>
-          <input id="set-pv" class="set-input" type="password" autocomplete="current-password">
+      <div class="panou">
+        <div class="cap-titlu">Schimbă parola</div>
+        <label class="camp">
+          <span class="camp-eticheta">Parola actuala</span>
+          <input id="set-pv" class="camp-input" type="password" autocomplete="current-password">
         </label>
-        <label class="set-camp">
-          <span class="set-eticheta">Parola nouă (min 8 caractere)</span>
-          <input id="set-pn" class="set-input" type="password" autocomplete="new-password">
+        <label class="camp">
+          <span class="camp-eticheta">Parola nouă (min 8 caractere)</span>
+          <input id="set-pn" class="camp-input" type="password" autocomplete="new-password">
         </label>
-        <label class="set-camp">
-          <span class="set-eticheta">Confirmă parola nouă</span>
-          <input id="set-pc" class="set-input" type="password" autocomplete="new-password">
+        <label class="camp">
+          <span class="camp-eticheta">Confirmă parola nouă</span>
+          <input id="set-pc" class="camp-input" type="password" autocomplete="new-password">
         </label>
         <button class="buton-primar" id="set-schimba-parola">Schimbă parola</button>
-        <div class="set-mesaj" id="set-msg-parola"></div>
+        <div class="" id="set-msg-parola"></div>
       </div>`;
     legaInapoi();
     corp.querySelector("#set-schimba-parola").addEventListener("click", async () => {
@@ -186,17 +186,16 @@ export async function randeazaSetari(corp, nav) {
       const pv = corp.querySelector("#set-pv").value;
       const pn = corp.querySelector("#set-pn").value;
       const pc = corp.querySelector("#set-pc").value;
-      msg.className = "set-mesaj";
-      if (pn.length < 8) { msg.textContent = "Parola nouă trebuie să aiba minim 8 caractere."; msg.className = "set-mesaj set-err"; return; }
-      if (pn !== pc) { msg.textContent = "Parolele nu coincid."; msg.className = "set-mesaj set-err"; return; }
+      if (pn.length < 8) { arataMesaj(msg, "Parola nouă trebuie să aibă minim 8 caractere.", "eroare"); return; }
+      if (pn !== pc) { arataMesaj(msg, "Parolele nu coincid.", "eroare"); return; }
       msg.textContent = "Se schimba...";
       try {
         await api.post("/eu/schimba-parola", { parola_veche: pv, parola_noua: pn });
-        msg.textContent = "Parola schimbata cu succes."; msg.className = "set-mesaj set-ok";
+        arataMesaj(msg, "Parolă schimbată cu succes.", "ok");
         corp.querySelector("#set-pv").value = "";
         corp.querySelector("#set-pn").value = "";
         corp.querySelector("#set-pc").value = "";
-      } catch (e) { msg.textContent = "Parola actuala gresita sau eroare."; msg.className = "set-mesaj set-err"; }
+      } catch (e) { arataMesaj(msg, "Parola actuală greșită sau eroare.", "eroare"); }
     });
   }
 
