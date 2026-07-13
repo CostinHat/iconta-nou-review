@@ -75,3 +75,11 @@ WinMentor,Liste configurabile salvabile,"Orice raport re-configurat (grupari, fi
 WinMentor,"Periferice: case de marcat, coduri de bare, cantare, terminale date",Conectivitate hardware de gestiune,GOL,confirma
 WinMentor,"Module verticale: Parc Auto (FAZ), Restaurante, Service auto, EDI retail, Curierat AWB",Verticale specializate,GOL,"strategic: iConta tinteste cabinete, nu verticale - dar Parc auto/FAZ e cerut des de contabili"
 WinMentor,Export rapoarte txt/html/xls/dbf,Orice lista exportabila in formate multiple,PARTIAL (iConta: PDF + CSV punctual),export XLS generalizat = GOL
+Ciel/NextUp,"Tichete (masa, cadou, alte tichete)",Note contabile si tratament fiscal pentru tichete de masa si alte beneficii,GOL,GOL REAL de salarizare: iConta nu are tichete de masa
+Ciel/NextUp,Coduri COR pe contracte,Nomenclatorul ocupatiilor actualizat pe contractele de munca,GOL (de verificat in REGES iConta),
+Ciel/NextUp,Adeverinte salariati (CIC etc.),Generarea adeverintelor cerute de salariati,GOL,
+Ciel/NextUp,Venituri din arenda + alte tipuri de contract,"Contract arenda cu zile lucrate, pensionari C35, administratori pe 462",PARTIAL (F021),arenda = GOL
+Ciel/NextUp,Fluturas trimis automat prin SMS/email,Distributia automata a fluturasilor catre salariati,PARTIAL (F087 = PDF descarcabil),trimiterea automata = GOL
+Ciel/NextUp,Diurna cu valoare deductibila/nedeductibila separata,Campuri distincte pe decont,DA (F040 plafon),paritate aproximativa
+Ciel/NextUp,Coduri CM noi (cod 16) la zi,Actualizare permanenta a codurilor de indemnizatie,"PARTIAL (iConta: codurile OUG 158, cod 10 neintegrat)",
+Nexus ERP,Centre de cost si profit + bugete diferentiate,"Analiza pe centre, urmarirea bugetelor",GOL,a 4-a confirmare a golului centre de cost/bugete
