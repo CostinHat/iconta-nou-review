@@ -4,7 +4,7 @@ import { api, bani, confirmaCaseta, dataRo } from "../api.js";  /* investigatie_
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 const CATEGORII_INC = [
-  ["activitate", "Incasare din activitate"],
+  ["activitate", "\u00cencasare din activitate"],
   ["aport", "Aport numerar/banca"],
   ["credit", "Credit / imprumut primit"],
   ["subventie", "Subventie / fonduri"],
@@ -65,7 +65,7 @@ export async function ecranRip(corp, nav, t) {
             <option value="">-</option><option value="integral">integral</option>
             <option value="limitat">limitat</option><option value="nedeductibil">nedeductibil</option></select></label>
           <label class="camp"><span class="camp-eticheta">Suma (lei)<span class="oblig">*</span></span><input type="number" step="0.01" id="r-suma" class="camp-input" placeholder="0,00"></label>
-          <label class="camp"><span class="camp-eticheta">Metoda</span><select id="r-met" class="camp-input"><option value="numerar">Numerar</option><option value="banca">Bancă</option></select></label>
+          <label class="camp"><span class="camp-eticheta">Metod\u0103</span><select id="r-met" class="camp-input"><option value="numerar">Numerar</option><option value="banca">Bancă</option></select></label>
           <label class="camp"><span class="camp-eticheta">Explicație<span class="oblig">*</span></span><input type="text" id="r-expl" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Document nr.</span><input type="text" id="r-doc" class="camp-input"></label>
         </div>
@@ -122,7 +122,7 @@ export async function ecranRip(corp, nav, t) {
       catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     });
     corp.querySelector("#r-imp-casa").addEventListener("click", async () => {
-      try { const r = await api.post(`/tenants/${t.id}/rip/import-casa?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ciorne importate din casa.</p>`; deseneaza(); }
+      try { const r = await api.post(`/tenants/${t.id}/rip/import-casa?an=${an}&luna=${luna}`, {}); zonaMsg.innerHTML = `<p class="pf-intro"><b>${r.importate}</b> ciorne importate din cas\u0103.</p>`; deseneaza(); }
       catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
     });
 
@@ -152,7 +152,7 @@ export async function ecranRip(corp, nav, t) {
               Baza impozit: <b>${d.baza_impozit}</b> \u00b7 Impozit (10%): <b>${d.impozit}</b> lei<br>
               <b class="tip-total">Total datorat: ${bani(d.total_datorat)} lei</b>
               ${d.cheltuieli_limitate_de_analizat > 0 ? `<br><span style="color:var(--galben)">Cheltuieli limitate de analizat: ${bani(d.cheltuieli_limitate_de_analizat)} lei</span>` : ""}
-              ${d.ciorne_nevalidate > 0 ? `<br><span style="color:var(--rosu-semafor)">${d.ciorne_nevalidate} ciorne nevalidate - neincluse in calcul</span>` : ""}
+              ${d.ciorne_nevalidate > 0 ? `<br><span style="color:var(--rosu-semafor)">${d.ciorne_nevalidate} ciorne nevalidate \u2014 neincluse \u00een calcul</span>` : ""}
               ${d.avertisment ? `<br><span style="color:var(--galben)">${esc(d.avertisment)}</span>` : ""}
             </div>
           </div>`;
