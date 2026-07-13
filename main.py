@@ -432,6 +432,24 @@ def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
         conn.commit()
     return {"ok": True, "trimise": n}
 
+@app.get("/admin/alerte-fiscale")  # [F103 partea 2] propunerile monitorului pentru anunturi
+def admin_alerte_fiscale(ctx=Depends(cere_rol("superadmin"))):
+    with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+        cur.execute("""SELECT id, sursa, titlu, rezumat, url, relevanta, creat_la
+                       FROM public.alerte_fiscale WHERE NOT vazut ORDER BY id DESC LIMIT 30""")
+        rows = [dict(r) for r in cur.fetchall()]
+    for r in rows:
+        r["creat_la"] = str(r["creat_la"])
+    return {"alerte": rows}
+@app.post("/admin/alerte-fiscale/{aid}/tratat")  # [F103 partea 2]
+def admin_alerta_tratata(aid: int, ctx=Depends(cere_rol("superadmin"))):
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("UPDATE public.alerte_fiscale SET vazut=true WHERE id=%s RETURNING id", (aid,))
+        r = cur.fetchone()
+        conn.commit()
+    if not r:
+        raise HTTPException(404, "alerta inexistenta")
+    return {"ok": True}
 @app.get("/eu/anunturi")
 def eu_anunturi(ctx=Depends(cere_cabinet)):
     from psycopg2.extras import RealDictCursor

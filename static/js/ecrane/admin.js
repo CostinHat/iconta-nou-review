@@ -3,7 +3,7 @@
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
 import { sesiune } from "../sesiune.js";
-import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD } from "../api.js";
+import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js";
 import { randeazaAdminRaportari } from "./admin_raportari.js";
 import { randeazaAdminActivitate } from "./admin_activitate.js";
 import { randeazaAdminGratuite } from "./admin_gratuite.js";
@@ -80,7 +80,9 @@ async function randeazaAdminAnunturi(corp, nav) {
     <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Afișare de la data (opțional — gol = imediat)</label>
       <input type="date" class="camp-input" id="an-data"></div>
     <button class="buton-primar" id="an-trimite">Trimite</button>
-    <p id="an-msg" style="margin-top:8px"></p>`;
+    <p id="an-msg" style="margin-top:8px"></p>
+    <div id="an-propuneri"></div>`;
+  incarcaPropuneri(corp);  // [F103 partea 2]
   const ta = corp.querySelector("#an-mesaj");  /* textarea_auto_v1 */
   ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; });
   corp.querySelector("#an-trimite").addEventListener("click", async () => {
@@ -93,5 +95,32 @@ async function randeazaAdminAnunturi(corp, nav) {
       arataMesaj(msg, `Trimis către ${r.trimise} cabinet${r.trimise === 1 ? "" : "e"}.`, "info");
       corp.querySelector("#an-mesaj").value = "";
     } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
+  });
+}
+// [F103 partea 2] propunerile monitorului fiscal ca anunturi
+async function incarcaPropuneri(corp) {
+  const zona = corp.querySelector("#an-propuneri");
+  if (!zona) return;
+  let d = { alerte: [] };
+  try { d = await api.get("/admin/alerte-fiscale"); } catch { return; }
+  if (!d.alerte || !d.alerte.length) return;
+  zona.innerHTML = `
+    <h2 class="pf-titlu" style="margin-top:18px">Propuneri de la monitorul fiscal</h2>
+    ${d.alerte.map((a) => `
+      <div class="panou" style="margin-bottom:10px">
+        <div><b>${esc(a.titlu)}</b>${a.relevanta === "mare" ? " \u00b7 relevan\u021b\u0103 mare" : ""}</div>
+        <div class="tip-mic" style="margin:4px 0">${esc(a.rezumat || "")}</div>
+        <button class="buton-secundar buton-mic" data-id="${a.id}">Preia \u00een mesaj</button>
+      </div>`).join("")}`;
+  zona.querySelectorAll("button[data-id]").forEach((b) => {
+    b.addEventListener("click", async () => {
+      const a = d.alerte.find((x) => String(x.id) === b.dataset.id);
+      const ta2 = corp.querySelector("#an-mesaj");
+      ta2.value = a.titlu + (a.rezumat ? "\n\n" + a.rezumat : "");
+      ta2.dispatchEvent(new Event("input"));
+      try { await api.post(`/admin/alerte-fiscale/${a.id}/tratat`, {}); } catch {}
+      b.closest(".panou").remove();
+      ta2.focus();
+    });
   });
 }
