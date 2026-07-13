@@ -1386,7 +1386,7 @@ export function meniuMigrarePerFirma(corp, nav, firma) {
         <div class="mig-frand-sub">${p.desc}</div>
       </div>
     `;
-    rand.addEventListener("click", () => nav.mergi(p.titlu + " \u00b7 " + (firma.nume || ""), (c) => p.fn(c, nav)));
+    rand.addEventListener("click", () => nav.mergi(p.titlu, (c) => p.fn(c, nav)));  // titlul = pasul; firma e in antet (fisa) sau in intro (drum cabinet) - DS cap.1
     lista.appendChild(rand);
   });
 }
