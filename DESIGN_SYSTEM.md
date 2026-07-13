@@ -101,7 +101,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Mereu vertical, ordinea ROȘU → GALBEN → VERDE (urgența întâi).
 - Bulină LED 16px cu gradient + etichetă text 10px.
 - Culori canonice: verde #1d7a4d · galben #c9961f · roșu #ff3b30.
-- Se folosesc EXCLUSIV prin tokeni: `var(--verde)` / `var(--galben)` / `var(--rosu-semafor)`. Hex literal interzis în JS/CSS (excepții: definiția tokenului, nuanțele deschise din gradientul `dot:`). Prins de regula HEX_SEMAFOR în verificator (v2.11).
+- Se folosesc EXCLUSIV prin tokeni: `var(--verde)` / `var(--galben)` / `var(--rosu-semafor)`. Hex literal interzis în JS/CSS (excepții: definiția tokenului, nuanțele deschise din gradientul `dot:`). Prins de regula HEX_SEMAFOR în verificator (v2.11). Starea gri (necunoscut/necompletat): `var(--gri-semafor)` #9aa3b2 + fundal `var(--gri-fundal-semafor)` #eef0f3 — un singur gri de semafor, nu nuanțe ad-hoc.
 
 ## 9. Ferestre de lucru
 

@@ -107,7 +107,7 @@ for nume, t in fisiere.items():
         for fm in re.finditer(r'font-size:\s*([0-9.]+(?:px|em|rem))', lin):
             rap["font_inline"].append((nume, i, fm.group(1), lin.strip()[:56]))
         # HEX_SEMAFOR: culori de semafor literale in loc de var(--rosu-semafor)/var(--galben)/var(--verde). Exceptii: definitia tokenilor si gradientul dot:
-        if re.search(r'#(ff3b30|c9961f|1d7a4d)\b', lin, re.I) and '--rosu-semafor:' not in lin and '--galben:' not in lin and '--verde:' not in lin and 'dot:' not in lin:
+        if re.search(r'#(ff3b30|c9961f|1d7a4d|9aa3b2|3a4250)\b', lin, re.I) and '--rosu-semafor:' not in lin and '--galben:' not in lin and '--verde:' not in lin and '--gri-semafor:' not in lin and '--gri-fundal-semafor:' not in lin and 'dot:' not in lin:
             rap["hex_semafor"].append((nume, i, "", lin.strip()[:66]))
         # CULOARE_CARD_HEX: bg:/fg: cu hex literal pe carduri in loc de ...CULORI_CARD.cheie (exceptie: semafor control.js, are dot:)
         if re.search(r'\b(bg|fg)\s*:\s*"#', lin) and 'dot:' not in lin:

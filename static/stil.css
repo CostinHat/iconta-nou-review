@@ -24,6 +24,8 @@
   --verde-fundal: #e6f6ec;
   --galben: #c9961f;            /* avertizare — canonic */
   --rosu-semafor: #ff3b30;      /* semafor rosu viu — DS cap.8 (distinct de --rosu sobru) */
+  --gri-semafor: #9aa3b2;      /* semafor stare necunoscuta/necompletat */
+  --gri-fundal-semafor: #eef0f3;
   --rosu-fundal: #fce8e6;
   --galben-fundal: #fbf3e2;
   --portocaliu: #c8651b;        /* navigare: ieși / la bază */
@@ -756,7 +758,7 @@ html, body {
 .term-item:hover { background: #f6f8fb; }
 .term-tip { font-weight: 700; color: #1f4e79; }
 .term-nr { color: #44516b; }
-.term-chev { color: #9aa3b2; }
+.term-chev { color: var(--gri-semafor); }
 
 
 /* ---------- DE VALIDAT ---------- */

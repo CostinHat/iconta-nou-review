@@ -463,7 +463,7 @@ const _CF_CUL = {
   verde:  { dot:"radial-gradient(circle at 65% 30%, #6fc494, var(--verde) 60%)", txt:"la zi",      bg:"var(--verde-fundal)" },
   galben: { dot:"radial-gradient(circle at 65% 30%, #f0cd7a, var(--galben) 60%)", txt:"de urmărit", bg:"var(--galben-fundal)" },
   rosu:   { dot:"radial-gradient(circle at 65% 30%, #ff8a80, var(--rosu-semafor) 60%)", txt:"restanță", bg:"var(--rosu-fundal)" },
-  gri:    { dot:"#9aa3b2", txt:"vector necompletat", bg:"#eef0f3" },
+  gri:    { dot:"var(--gri-semafor)", txt:"vector necompletat", bg:"var(--gri-fundal-semafor)" },
 };
 async function ecranControlFirma(corp, nav, t) {
   corp.innerHTML = `<p class="ecran-nota">Se evalueaz\u0103 situa\u021bia fiscal\u0103...</p>`;
@@ -1084,7 +1084,7 @@ async function ecranCasa(corp, nav, t) {
 
 // [banca] Import extras + reconciliere pe facturi
 async function ecranBanca(corp, nav, t) {
-  const CUL = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu-semafor)", gri: "#3a4250" };
+  const CUL = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu-semafor)", gri: "var(--gri-semafor)" };
   corp.innerHTML = `
     <h2 class="pf-titlu">Banc\u0103</h2>
     <p class="pf-intro">Încarcă extrasul (.xls, .xlsx, .csv) \u2014 liniile se potrivesc automat pe facturi dupa CUI.</p>
@@ -1209,7 +1209,7 @@ async function ecranBanca(corp, nav, t) {
   corp.querySelector("#bk-fisier").addEventListener("change", async (ev) => {
     const f = ev.target.files[0];
     if (!f) return;
-    zonaMesaj.innerHTML = `<p class="ecran-nota">Se citeste si se potriveste extrasul...</p>`;
+    zonaMesaj.innerHTML = `<p class="ecran-nota">Se cite\u0219te \u0219i se potrive\u0219te extrasul...</p>`;
     const fd = new FormData();
     fd.append("fisier", f);
     try {
