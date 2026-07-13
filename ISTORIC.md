@@ -11,6 +11,28 @@
 Actualizat: 03.07.2026
 
 ---
+## 13.07.2026 — Audit DS (partea 3) + Control fiscal per firma (LIVE)
+Continuare audit + primul feature din colturile inactive. ~25 commit-uri. Verificator TOTAL 0.
+
+**Audit DS (ecrane de lucru + portal client):**
+- Raporteaza/Recomanda/Setari cont: sistem `.set-*` -> canonic (`.panou`/`.camp`/`.camp-input`/`.cap-titlu`); mesaje prin `arataMesaj` (DS cap.6); diacritice; CSS `.set-*` mort eliminat (`.set-bifa` pastrat).
+- FIX real `dataRo`: stilul `cu_ora` nu mai afiseaza mereu 00:00 (slice(0,10) taia ora).
+- Portal client complet (10 carduri): Facturi 680px (scos lat:larg); hex->tokeni Cifre; dublu scroll eliminat Solicitari.
+- Salariati/firme.js: hex semafor -> tokeni. Token nou `--rosu-semafor` #ff3b30 (distinct de `--rosu` sobru #b3261e).
+
+**Reguli noi:** DS cap.2b carduri inactive (activ:false explicit, estompat, "in curand", camp activ obligatoriu). DE_FACUT.md sectiunea 6 (ecrane firma neconstruite + dependenta vector fiscal, persistenta intre sesiuni).
+
+**Control fiscal per firma — CONSTRUIT SI LIVE (commit dfa4be9):**
+- Card activat firme.js + `ecranControlFirma`: semafor + declaratii lipsa cu termene + verificari coerenta. Cheama `/control-fiscal/{tenant_id}`; backend `control_fiscal_api.py` exista deja.
+- Vector fiscal = `firma_profil` (schema tenant), NU public. Tabel `public.vector_fiscal` creat gresit -> sters (regula de aur).
+- Testat live KAI: rosu 7 datorate/3 depuse, D112 x4 luni, verificari OK.
+
+**In curs:** Declaratii per firma — backend `declaratii_api.py` exista (`tipuri`/`periodicitate`/`genereaza`; rute `/declaratii/tipuri`, `/declaratii/{tip}`). De construit ecran + activat card, identic cu Control fiscal.
+
+**Lot deschis:** `#ff3b30` inca hardcodat in stil.css + alte JS (~10 locuri) -> `--rosu-semafor` (lot dedicat).
+
+---
+
 ## 12.07.2026 — Audit design & conformitate (DS v2.0 -> v2.9, 11 commit-uri)
 Campanie sistematica de audit vizual pe iconta_v2. Tipar recurent: functie/dictionar canonic unic + eliminarea copiilor divergente + regula in verificator. verificator_conformitate.py la TOTAL 0, fiecare pas confirmat vizual in browser.
 
