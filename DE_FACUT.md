@@ -40,6 +40,18 @@ Ultima actualizare: 13.07.2026
 
 - **Alerte legislative programate (convenit ~03.07, PARTIAL)**: monitorul fiscal detecteaza modificarile (exista, cu email), anunturile exista (imediate, cu confirmare) — de construit: camp data_afisare pe anunturi_cabinet + afisare conditionata de data + flux monitor -> propunere de anunt in adminul de Anunturi (superadminul alege data). Ref: F103 in FUNCTIONALITATI.csv.
 
+## CARENTE — inventar consolidat 13.07.2026 (functionalitati partiale/promise)
+1. **F103 Alerte legislative programate** (convenit ~03.07): lipseste data programata a afisarii + fluxul monitor fiscal -> propunere anunt. Detalii mai sus.
+2. **Cod 10 CM** (reducere timp munca): calcul_cm_cod10 exista dar NEintegrat in flux; exclus din dropdown.
+3. **D394 pe DUKIntegrator**: generatorul exista, validarea desktop blocata (sectiunea 2).
+4. **PWA**: manifest + service worker existente, NEtestate pe HTTPS/telefon (P4.18).
+5. **GV Retetar HoReCa**: CRUD + descarcare exista (descoperit azi in rute); UI/fluxul complet de re-verificat cu date reale (nota veche: "de re-verificat").
+6. **e-Transport**: XML pentru upload MANUAL in SPV; trimiterea directa prin API SPV nu exista.
+7. **Descrieri FUNCTIONALITATI.csv**: 13/103 scrise (lot 1); loturile 2-8 raman.
+8. **Admin: 4 sub-ecrane neverificate vizual** (raportari/gratuite/anunturi/sanatate; activitate partial).
+9. **Testare pilot**: sectiunea 1 (P1-P5) intacta — niciun punct bifat.
+10. **Audit design ramas**: spacing inline (inchis explicit ca datorie acceptata), paleta iconite migrare (decizie amanata azi), anatomie/aliniere tabele nesistematizate.
+
 ## 4. Infra
 - **Reboot kernel** — "System restart required". Fereastră liniștită (downtime clienți, Daniela pilot).
 - (REZOLVAT 13.07) systemd pentru 8010: iconta-nou.service creat, enabled la boot, EnvironmentFile db.env+api_keys.env, Restart=always. Testat functional (login 401 corect din DB). Restart: sudo systemctl restart iconta-nou. Unit in repo: config_referinta_iconta-nou.service.
@@ -49,17 +61,8 @@ Ultima actualizare: 13.07.2026
 - raporteaza.js — verifică vizual data "cu_ora" în feed (migrat azi).
 - Verifică date CM de test invalide în alte tenant-uri (CCMAD corupt deja șters din tenant_002).
 
-## 6. Ecrane firmă neconstruite (carduri inactive — DS cap.2b)
-**Context (verificat 13.07.2026):** în meniul unei firme, 2 carduri sunt `activ: false` (estompate, "· în curând"). Nu sunt bug-uri — feature-uri neconstruite. Regula DS 2b le tratează uniform. NU se activează cardul fără ecranul în spate (ar crăpa).
-
-**Dependență critică — se construiește PRIMUL:**
-- **Vector fiscal per firmă** (tabel `vector_fiscal`): plătitor TVA lunar/trimestrial? are salariați→D112? regim micro→D100 / profit→D101? + scadențar (ce declarație, ce frecvență, ce zi-limită). Amânat la migrare. FĂRĂ el nu se poate calcula "ce ar trebui depus", deci nici semaforul, nici declarațiile.
-
-**Apoi, în ordine (sesiuni dedicate, cu verificare fiscală la sursă ANAF):**
-1. **Control fiscal per firmă** (`activ:false`, firme.js ~143): semafor per firmă (la zi/de urmărit/restanță, din vector fiscal vs declaratii_depuse) + cross-check coerență (D112 bază CAS vs rulaj 421, D300 TVA vs 4427/4426). NB: Control fiscal există deja la nivel CABINET (cockpit portofoliu) — ăsta e versiunea per-firmă, distinctă.
-2. **Declarații per firmă** (`activ:false`, firme.js ~138): generare D112/D300/D101 pentru firmă — motor calcul + generatoare XML + validare DUKIntegrator. Săptămâni de muncă.
-
-**La activare:** `activ:true` + leagă funcția de randare + elimină "· în curând" (per DS cap.2b).
+## 6. (REZOLVAT 13.07) Ecrane firma neconstruite
+- Control fiscal per firma: LIVE (partea 3). Declaratii per firma: LIVE (partea 4, decl_firma_v1). Vector fiscal: exista in firma_profil + ecran in Migrare. Card Produse: reconectat (partea 4). Sectiunea inchisa.
 
 ---
 
