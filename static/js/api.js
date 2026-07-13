@@ -236,10 +236,12 @@ export function dataRo(d, stil) {
   let dt;
   if (d instanceof Date) dt = d;
   else {
-    const str = String(d).slice(0, 10);
-    const m = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if (m) dt = new Date(+m[1], +m[2] - 1, +m[3]);
-    else { dt = new Date(str); if (isNaN(dt)) return String(d); }
+    const full = String(d);
+    const mDoar = full.slice(0, 10).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    // daca string-ul are si ora (ISO cu T sau spatiu), pastreaza timestamp-ul intreg
+    if (mDoar && full.length > 10) { dt = new Date(full); if (isNaN(dt)) dt = new Date(+mDoar[1], +mDoar[2] - 1, +mDoar[3]); }
+    else if (mDoar) dt = new Date(+mDoar[1], +mDoar[2] - 1, +mDoar[3]);
+    else { dt = new Date(full); if (isNaN(dt)) return String(d); }
   }
   if (isNaN(dt)) return String(d);
   const zz = String(dt.getDate()).padStart(2, "0");
