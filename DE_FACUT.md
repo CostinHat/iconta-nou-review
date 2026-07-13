@@ -38,6 +38,8 @@ Ultima actualizare: 13.07.2026
   2. Categorii NEATACATE: spacing/padding/gap inline (fara inventar inca); wrapper alb pe formulare (cap.2 - verificatorul n-are regula, prins doar 1 manual); aliniere tabele (cap.4 sume la dreapta, neverificata sistematic); anatomia ferestrei (cap.1 entitate-antet/titlu-h2-corp, neauditata vizual).
   3. TASK 0a mai vechi (cerut 10.07, inca nefacut): audit cod mort + functionalitati ascunse ad-hoc fara conditie documentata + diferente cabinet/client inconsecvente.
 
+- **Alerte legislative programate (convenit ~03.07, PARTIAL)**: monitorul fiscal detecteaza modificarile (exista, cu email), anunturile exista (imediate, cu confirmare) — de construit: camp data_afisare pe anunturi_cabinet + afisare conditionata de data + flux monitor -> propunere de anunt in adminul de Anunturi (superadminul alege data). Ref: F103 in FUNCTIONALITATI.csv.
+
 ## 4. Infra
 - **Reboot kernel** — "System restart required". Fereastră liniștită (downtime clienți, Daniela pilot).
 - (REZOLVAT 13.07) systemd pentru 8010: iconta-nou.service creat, enabled la boot, EnvironmentFile db.env+api_keys.env, Restart=always. Testat functional (login 401 corect din DB). Restart: sudo systemctl restart iconta-nou. Unit in repo: config_referinta_iconta-nou.service.

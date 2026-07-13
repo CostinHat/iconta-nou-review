@@ -101,3 +101,4 @@ tva marja turism,TODO,F099,,,core/tva_marja_turism.py,,,
 vector fiscal,TODO,F100,,,core/vector_fiscal_api.py,,,
 verificatoare,TODO,F101,,,core/verificatoare.py,,,
 woocommerce,TODO,F102,,,core/woocommerce.py,,,
+Alerte legislative programate,"Modificarile legislative detectate de monitorul fiscal se afiseaza pe ecranele utilizatorilor la DATA decisa de superadmin, cu data intrarii in vigoare - pentru incredere in aplicatie. EXISTA: detectia (monitor AI saptamanal, email) + anunturi imediate cu confirmare. LIPSESTE: data programata a afisarii (tabela anunturi_cabinet nu are campul) + fluxul monitor -> propunere anunt in admin.",F103,transversal,banner utilizatori + admin Anunturi,core/monitor_fiscal.py + anunturi_cabinet,,"PARTIAL - convenit 03.07, neterminat",—
