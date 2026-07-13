@@ -30,3 +30,15 @@ SmartBill,Depunere declaratii + tablou de verificare pe vector fiscal,Depunere d
 SmartBill,Trimitere automata si IN MASA a balantelor catre clienti,Raportare lunara automata catre toti clientii cabinetului,PARTIAL (F065 Povestea lunii per firma),trimiterea in masa/automata = GOL
 SmartBill,Import borderouri curieri,Incasari ramburs din borderourile firmelor de curierat,GOL,relevant pt e-commerce
 SmartBill,Preluare automata din contul clientului,"Sincronizare in timp real Facturare/Gestiune client -> Conta cabinet (vanzari, achizitii, incasari, miscari stoc)",DA (arhitectura iConta e nativ unificata),"avantaj structural iConta: nu exista sincronizare, e aceeasi baza"
+Oblio,Trimitere e-Factura in SPV + urmarire stare,"Trimite in SPV, interogheaza periodic starea, buline validat/eroare, arhiva SPV cu semnatura",GOL,confirma golul SPV; include si polling de stare
+Oblio,Oblio Wallet: NIR automat din e-Factura furnizorului,Facturile primite din SPV devin automat NIR-uri,GOL (F043 import manual UBL),lantul SPV->NIR automat lipseste
+Oblio,Alerte automate la clienti neplatitori,Notificari setabile pe facturile neincasate,GOL,confirma golul notificari de plata
+Oblio,Import extrase de la banci + CURIERI + procesatori de carduri,Borderouri curieri si procesatori card ca surse de incasari,PARTIAL (F012 doar banci),
+Oblio,Import din programul de facturare concurent,"Facturi, stoc, produse, clienti, furnizori din SmartBill/FGO/EasyBill in cateva minute",PARTIAL (migrare iConta = din programe de CONTABILITATE),importul din programe de facturare = GOL
+Oblio,Fisa client / fisa furnizor + rapoarte vanzari,"Fise per partener, vanzari pe produs/agent, profit pe produs",PARTIAL,confirma golul rapoarte comerciale
+Oblio,Transfer intre gestiuni + schimbare tip produs,"Nota de transfer gestiune A->B, materie prima -> marfa",GOL,confirma golul de la SAGA
+Oblio,Inventar pe telefon in timp real,"Echipa de inventariere cu mobilul, datele urca live",GOL,
+Oblio,Integrare case de marcat,"Datecs, Tremol, Daisy etc.; bon fiscal cu numerar/card/tichete",GOL,confirma
+Oblio,Pluginuri e-commerce multiple + API emitere gratuit,"WooCommerce, PrestaShop, OpenCart, Shopify, eMag, Gomag",PARTIAL (F102 doar Woo),
+Oblio,Repartizare cost transport/taxe in costul de achizitie,Landed cost pe NIR,GOL,detaliu de NIR relevant
+Oblio,Bon de productie cu consum automat pe retetar,Emiterea bonului de productie declanseaza automat bonul de consum,PARTIAL (F076),
