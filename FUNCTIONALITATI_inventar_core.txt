@@ -1,0 +1,127 @@
+__init__.py                          (fara docstring)
+ai_client.py                         core/ai_client.py — wrapper subtire peste API-ul Claude (Anthropic).
+ai_incredere.py                      Incredere + invatare pentru propunerile AI.
+amef_import.py                       Import Raport Z din fisier AMEF (p7b sau XML) - OPANAF 146/2018, anexa 2, sectiunea II.7.
+anaf_api.py                          (fara docstring)
+api_public.py                        API public: chei per cabinet. Cheia se arata O SINGURA DATA la creare; stocam doar SHA256.
+asistenti_api.py                     core/asistenti_api.py — managementul actorilor de cabinet (cardul Asistenți).
+asociati_import_api.py               core/asociati_import_api.py — import asociati (stratul 5 migrare) per firma.
+auth_api.py                          core/auth_api.py — autentificare API: login, register, context token, acces tenant.
+avansuri.py                          Avansuri furnizori/clienti (409/419) si regularizare - motor PUR.
+bacsis.py                            Bacsis HoReCa - motor PUR (Legea 376/2022 + art. 115 CF).
+banca.py                             core/banca.py — contabilizare extras de cont. Calcul PUR, fără DB.
+banca_parser.py                      (fara docstring)
+bilant.py                            S1005 - situatii financiare anuale microentitati (OMF 107/2025, XSD v14).
+bilant_api.py                        S1005 - strat DB: solduri finale + rulaje din note VALIDATE, apoi core.bilant.
+capacitate_api.py                    core/capacitate_api.py — panou Capacitate pentru patron (admin_firma).
+casa.py                              core/casa.py — casierie + avansuri de trezorerie. Calcul PUR, fără DB.
+casa_api.py                          Registru de casă — API. Motorul de plafoane e în core/casa.py.
+cashflow.py                          Forecast cash-flow 8 saptamani: cash curent + incasari/plati asteptate pe scadente.
+chitante.py                          Chitante emise (cod 14-4-1, Ordin 2634/2015): suma in litere + PDF.
+clienti_api.py                       core/clienti_api.py — clienți/parteneri în schema unui tenant: listă, creare,
+coada_api.py                         core/coada_api.py — coada de validare a declarațiilor (public.declaratii_coada).
+common.py                            core/common.py — STRAT COMUN MIC ȘI STABIL.
+comodat_chirii.py                    Comodat, chirii, refacturari utilitati - motor PUR.
+contracte_speciale.py                Contracte de munca speciale: zilieri, cenzori, mandat administrator - motor PUR.
+control_fiscal_api.py                core/control_fiscal_api.py — semafor de conformare fiscala per firma (cross-portfolio).
+cote_tva.py                          core/cote_tva.py — regula oficiala a cotelor de TVA (art. 291 Cod fiscal,
+credite.py                           Credite bancare, dobanzi, garantii - motor PUR (OMFP 1802/2014 pct. 360-364,
+curs_bnr.py                          curs_bnr.py — curs valutar BNR pentru facturi in valuta.
+d100.py                              Modul D100 — Declarația privind obligațiile de plată la bugetul de stat
+d101.py                              Modul D101 — Declarația privind impozitul pe profit (ANAF v10, OPANAF 206/2025).
+d112.py                              D112 - generator VALIDAT DUKIntegrator (portat din monolit /opt/iconta 04.07.2026).
+d205.py                              Modul D205 — Declarația informativă privind impozitul reținut la sursă, veniturile
+d212_engine.py                       Motor calcul D212 - PFA/II/IF sistem real (partida simpla), conform:
+d300.py                              Modul D300 — Decont de TVA (ANAF v12, conform OPANAF 174/2026 + Legea 141/2025).
+d301.py                              Modul D301 — Decont special de TVA (ANAF v1, OPANAF 592/2016, structură din 2013).
+d390.py                              Modul D390 — Declarație recapitulativă VIES privind livrările/achizițiile/
+d394.py                              Modul D394 — Declarația informativă privind livrările/prestările și achizițiile
+d406.py                              Modul D406 — Fișierul Standard de Control Fiscal (SAF-T) pentru România.
+d406_active.py                       D406 Active (SAF-T anual, sectiunea Assets) - generator PUR.
+d406_stocuri.py                      D406 Stocuri (SAF-T la cerere ANAF, sectiunea PhysicalStock) - generator PUR.
+db.py                                core/db.py — conexiune PostgreSQL: pool + get_conn, schema-per-tenant.
+declaratii_api.py                    core/declaratii_api.py — dispatch pentru cele 9 declarații. O singură rută în
+decontari_asociati.py                Decontari asociati (455/456/457/463) - motor PUR.
+deconturi.py                         Deconturi de deplasare si diurna - motor PUR.
+diferente_curs.py                    Diferente de curs valutar (665/765) - motor PUR.
+documente_api.py                     (fara docstring)
+efactura_import.py                   Import e-Factura (UBL 2.1 / CIUS-RO) - parser PUR.
+etransport.py                        e-Transport v2 - generator XML notificare (mfp:anaf:dgti:eTransport:declaratie:v2).
+factura_pdf.py                       core/factura_pdf.py — genereaza PDF-ul unei facturi (reportlab).
+facturi.py                           core/facturi.py — contare facturi + TVA + storno. Calcul PUR, fără DB.
+facturi_api.py                       core/facturi_api.py — facturi în schema unui tenant: listă, creare, detalii, ștergere.
+facturi_recurente.py                 Facturi recurente: emitere lunara automata din sabloane (cron zilnic).
+firma_profil_api.py                  core/firma_profil_api.py — profilul firmei din schema unui tenant.
+import_export.py                     Import/export extracomunitar - motor PUR.
+intracomunitar.py                    Operatiuni intracomunitare - motor PUR + client VIES.
+intrastat.py                         Intrastat - verificator praguri (Ordinul INS 1604/2025, MO 1022/05.11.2025).
+inventariere.py                      Inventariere anuala - motor PUR (OMFP 2861/2009 + OMFP 1802 + art. 304 CF).
+istoric_declaratii_import_api.py     core/istoric_declaratii_import_api.py — import istoric declaratii (stratul 7) per firma.
+jurnal_api.py                        Jurnal — editare/ștergere/validare note. Doar ciornele se pot modifica:
+kpi_client.py                        KPI client pentru portal: P&L, cash, creante, datorii din balanta cumulata.
+leasing.py                           Leasing financiar si operational - motor PUR (OMFP 1802/2014 pct. 212-217).
+lichidare.py                         Lichidare/radiere societate - motor PUR (OMFP 897/2015 + L31/1990 art. 227+
+migrare_api.py                       core/migrare_api.py — starea migrării unui cabinet, pe straturi.
+mijloace_fixe_import_api.py          core/mijloace_fixe_import_api.py — import mijloace fixe (stratul 6 migrare) per firma.
+monitor_fiscal.py                    Monitor fiscal: cron saptamanal. Citeste noutatile ANAF/MF, AI filtreaza
+motor.py                             core/motor.py — motor contabil: carte mare + rezultat + închidere lună/an. Calcul PUR.
+notificari_api.py                    core/notificari_api.py — notificari in-app (clopotel).
+nucleu.py                            core/nucleu.py — infrastructură: parole + token-uri + RBAC. Logică PURĂ, fără DB.
+obiecte_inventar.py                  Obiecte de inventar (303) - motor PUR (OMFP 1802/2014).
+observare.py                         core/observare.py — strat de observare: măsoară timpi + ocupare pool, alertă pe prag.
+ong.py                               ONG contabilitate specifica - motor PUR (OMFP 3103/2017 anexa 1, partida
+pachete_api.py                       core/pachete_api.py — Pachetul lunar / "Povestea lunii".
+pdf_fonturi.py                       core/pdf_fonturi.py — SURSA UNICA pentru fonturile din PDF-uri (reportlab).
+pdf_util.py                          core/pdf_util.py — utilitare comune generatoarelor PDF (reportlab).
+perisabilitati.py                    Perisabilitati si scazaminte - motor PUR (HG 831/2004 + art. 25 CF + art. 304 CF).
+plan_omfp.py                         Plan de conturi OMFP 1802/2014 - denumiri sintetice (fallback cand planul tenantului e gol).
+plati.py                             Link de plata pe factura emisa. Provider abstract: mock (fara cont) / netopia / stripe.
+portal_api.py                        core/portal_api.py — portalul clientului (rol 'client'), READ-ONLY.
+productie.py                         Productie in curs si produse finite - motor PUR (OMFP 1802/2014, metoda
+produse_api.py                       core/produse_api.py — nomenclatorul de produse per firma (schema tenant).
+provizioane.py                       Provizioane si ajustari de valoare - motor PUR.
+raportari_api.py                     core/raportari_api.py — canal de feedback: cei care proceseaza trimit raportari
+reconciliere.py                      Reconciliere bancară — matching linii extras pe facturi deschise.
+reconciliere_api.py                  Reconciliere bancară — strat API (tipar stat_plata_api: funcții conn+schema).
+reevaluare.py                        Reevaluare imobilizari (cont 105) - motor PUR (OMFP 1802/2014 pct. 111-116).
+reges_client.py                      Client REGES-ONLINE (api.inspectiamuncii.ro / api.dev.inspectiamuncii.org).
+retete.py                            Retetar HoReCa - motor PUR.
+retete_api.py                        Retetar - strat DB. Consum pe reteta -> iesiri miscari_stoc la CMP + nota ciorna
+rip_api.py                           Registru-jurnal de încasări și plăți (OMFP 170/2015) + Fișa calcul D212.
+salariati_api.py                     core/salariati_api.py — salariați în schema unui tenant: listă, creare, detalii,
+salariati_import_api.py              core/salariati_import_api.py — import salariati (stratul 4 migrare) per firma.
+salarizare.py                        core/salarizare.py — calcul salariu brut→net + deduceri + monografie. Calcul PUR, fără DB.
+scadente.py                          core/scadente.py — calculează data scadenței unei declarații (format zz/ll/aaaa),
+sgr.py                               SGR sistem garantie-returnare - motor PUR (HG 1074/2021, garantie 0,50
+sinteza_zilnica.py                   core/sinteza_zilnica.py — sinteza zilnica a activitatii din cabinet,
+solduri_api.py                       core/solduri_api.py — import solduri inițiale (balanță de deschidere) per firmă.
+solduri_parteneri_api.py             core/solduri_parteneri_api.py — import solduri parteneri (defalcare 4111/401 per client/furnizor).
+sponsorizari.py                      Sponsorizari si redirectionare impozit - motor PUR.
+stat_plata_api.py                    (fara docstring)
+stocuri.py                           Stocuri — metoda global-valorică (preț cu amănuntul). OMFP 1802/2014.
+stocuri_api.py                       Stocuri global-valorică — strat API. Motorul: core/stocuri.py.
+stocuri_cv.py                        Stocuri — metoda cantitativ-valorică, evaluare la CMP (cost mediu ponderat).
+stocuri_cv_api.py                    Stocuri cantitativ-valorice — strat API. Motorul: core/stocuri_cv.py.
+subventii.py                         Subventii (445/741/4751/7584) - motor PUR (OMFP 1802/2014 pct. 392-402).
+taxare_inversa.py                    Taxare inversa interna (art. 331 CF + norme pct. 109) - motor PUR.
+tenant_provisioning.py               core/tenant_provisioning.py — creează un tenant nou: schemă PostgreSQL + cele 21
+termene_api.py                       core/termene_api.py — scadente fiscale VIITOARE pe portofoliu (orizont 60 zile).
+test_ai_incredere.py                 (fara docstring)
+test_api_public.py                   (fara docstring)
+test_cashflow.py                     (fara docstring)
+test_kpi_client.py                   (fara docstring)
+test_monitor_fiscal.py               (fara docstring)
+test_plati.py                        (fara docstring)
+test_reconciliere.py                 (fara docstring)
+test_stocuri.py                      (fara docstring)
+test_stocuri_cv.py                   (fara docstring)
+test_woocommerce.py                  (fara docstring)
+tipare_api.py                        core/tipare_api.py — Ecran G: Educatie pe tipare (statistic, fara AI).
+tva_agricultori.py                   Regim special agricultori (art. 315^1 CF) - motor PUR.
+tva_aur.py                           Regim special aur de investitii (art. 313 CF) - motor PUR.
+tva_incasare.py                      TVA la incasare (art. 282 CF, OUG 8/2026) - motor PUR.
+tva_marja.py                         Regim special marja (art. 312 CF, norme pct. 86) - motor PUR.
+tva_marja_turism.py                  Regim special agentii de turism (art. 311 CF) - motor PUR. Acopera:
+vector_fiscal_api.py                 core/vector_fiscal_api.py — vectorul fiscal al unei firme.
+verificatoare.py                     core/verificatoare.py — verificatoare de coerență contabilă. Calcul PUR, fără DB.
+woocommerce.py                       Conector WooCommerce: import comenzi -> facturi iConta.
