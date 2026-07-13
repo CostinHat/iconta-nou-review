@@ -2,7 +2,7 @@
 // Scrii denumirea -> AI potriveste cota TVA din regula oficiala (preview live) ->
 // vezi cota + justificarea -> salvezi. Cota se poate corecta manual.
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, confirmaCaseta } from "../api.js";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { api, arataMesaj, confirmaCaseta, esc, bani } from "../api.js";  /* cap6_catch_v1b + investigatie_identitate_v1 */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
 
@@ -23,10 +23,16 @@ export async function randeazaProduse(corp, nav, tenantId, opt = {}) {
       <button class="buton-primar pr-add" id="pr-add">+ Adaug\u0103 produs</button>
     </div>
     <p class="pf-intro">Scrii denumirea, iar sistemul potrive\u0219te automat cota de TVA corect\u0103 din legisla\u021bie. O po\u021bi corecta oric\u00e2nd.</p>
+    <input id="pr-cauta" class="camp-input" placeholder="Caut\u0103 produs..." aria-label="Caut\u0103 produs" style="margin-bottom:8px">
     <div class="pr-form-zona" id="pr-form-zona"></div>
     <div class="pr-lista" id="pr-lista"></div>
   `;
   corp.querySelector("#pr-add").addEventListener("click", () => formularAdauga(corp, tenantId, () => randeazaProduse(corp, nav, tenantId, opt)));
+  corp.querySelector("#pr-cauta").addEventListener("input", (e) => {  // [pr_cauta_v1]
+    const q = e.target.value.toLowerCase().trim();
+    const filtrata = q ? lista.filter((x) => (x.denumire || "").toLowerCase().includes(q)) : lista;
+    randeazaLista(corp, tenantId, filtrata, () => randeazaProduse(corp, nav, tenantId, opt));
+  });
 
   randeazaLista(corp, tenantId, lista, () => randeazaProduse(corp, nav, tenantId, opt));
 }
@@ -49,8 +55,8 @@ function randeazaLista(corp, tenantId, lista, reincarca) {
   zona.innerHTML = lista.map((p) => `
     <div class="pr-rand" data-id="${p.id}">
       <div class="pr-rand-text">
-        <div class="pr-rand-nume">${p.denumire}</div>
-        <div class="pr-rand-sub">${p.pret_unitar ? Number(p.pret_unitar).toLocaleString("ro-RO") + " lei / " + (p.um || "buc") : (p.um || "buc")}${p.justificare ? " \u00b7 " + p.justificare : ""}</div>
+        <div class="pr-rand-nume">${esc(p.denumire)}</div>
+        <div class="pr-rand-sub">${p.pret_unitar ? bani(p.pret_unitar) + " lei / " + (p.um || "buc") : (p.um || "buc")}${p.justificare ? " \u00b7 " + esc(p.justificare) : ""}</div>
       </div>
       <div class="pr-rand-drept">
         ${badgeCota(p.cota_tva, p.sursa)}

@@ -10,6 +10,7 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js";
 import { ecranEtransport } from "./etransport_ecran.js";
 import { meniuMigrarePerFirma } from "./migrare.js";  // [p96_import_firma]
 import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
+import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -136,6 +137,8 @@ function meniuFirma(corp, nav, t) {
     { cheie: "facturi", titlu: "Facturi", desc: "Emite și vezi facturile firmei",
       ...CULORI_CARD.albastru,
       icon: '<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h4"/>', activ: true },
+    { cheie: "produse", titlu: "Produse", desc: "Nomenclator cu cote TVA, potrivire AI",
+      icon: '<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>', activ: true },  // [produse_firma_v1]
     { cheie: "declaratii", titlu: "Declarații", desc: "D112, D300, D101 și restul",
       ...CULORI_CARD.verde,
       icon: '<path d="M9 13h6M9 17h4M9 9h1"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>', activ: true },
@@ -219,6 +222,10 @@ function meniuFirma(corp, nav, t) {
   const bSalariati = corp.querySelector("#fa-salariati");
   if (bSalariati && !bSalariati.disabled) {
     bSalariati.addEventListener("click", () => { nav.deschide("Salariați", (c2) => ecranSalariati(c2, nav, t)); });
+  }
+  const bProduse = corp.querySelector("#fa-produse");  // [produse_firma_v1]
+  if (bProduse && !bProduse.disabled) {
+    bProduse.addEventListener("click", () => { nav.deschide("Produse", (c2) => randeazaProduse(c2, nav, t.id)); });
   }
   const bDeclaratii = corp.querySelector("#fa-declaratii");  // [decl_firma_v1]
   if (bDeclaratii && !bDeclaratii.disabled) {
