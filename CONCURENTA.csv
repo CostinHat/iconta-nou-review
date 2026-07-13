@@ -42,3 +42,14 @@ Oblio,Integrare case de marcat,"Datecs, Tremol, Daisy etc.; bon fiscal cu numera
 Oblio,Pluginuri e-commerce multiple + API emitere gratuit,"WooCommerce, PrestaShop, OpenCart, Shopify, eMag, Gomag",PARTIAL (F102 doar Woo),
 Oblio,Repartizare cost transport/taxe in costul de achizitie,Landed cost pe NIR,GOL,detaliu de NIR relevant
 Oblio,Bon de productie cu consum automat pe retetar,Emiterea bonului de productie declanseaza automat bonul de consum,PARTIAL (F076),
+FGO,e-Factura complet automata cu retry,"Trimitere automata la interval setabil, reincercare la 45 min timp de 4 zile daca ANAF e picat, monitorizare status cu filtre pe erori",GOL,cel mai matur flux SPV din piata
+FGO,Conectare BANCA prin PSD2 (citire automata),"Tranzactiile se citesc automat din banca (nu import de fisier), asociere automata cu facturile pe reguli configurabile",GOL (F012 = import fisier),GOL MAJOR: open banking
+FGO,Email dedicat firmei + citire AI a facturilor,"Forward la adresa proprie FGO -> factura salvata automat, AI extrage furnizor/scadenta/suma/numar din PDF",PARTIAL (iConta: bonuri pozate cu AI),canalul email + PDF furnizori = GOL
+FGO,Pontaj electronic angajati,"Pontaj zilnic al salariatilor, accesibil contabilului",GOL,vecin cu salarizarea - candidat natural
+FGO,Registratura documente,Numere de intrare/iesire alocate automat,GOL,
+FGO,Comenzi clienti per agent de vanzari,"Fiecare agent isi inregistreaza comenzile, vede doar clientii lui",GOL,"scop comercial, de decis"
+FGO,Arhivare in OneDrive/Google Drive,Arhiva facturilor sincronizata in cloud-ul utilizatorului,GOL,
+FGO,Generare contracte,Contracte generate din datele clientului,GOL,
+FGO,Analiza cheltuieli pe furnizori si centre de cost,"Dashboard incotro se duc banii, pe furnizori/centre/perioade",PARTIAL (F016/F055),centre de cost confirmate ca gol
+FGO,Retea: factura emisa apare la client automat,"Daca ambele parti au FGO, factura circula automat intre conturi",DA (arhitectura iConta: cabinet+client pe aceeasi baza),paritate structurala
+FGO,Facturare de pe mobil cu imprimanta termica,Print pe teren de pe telefon,GOL,minor
