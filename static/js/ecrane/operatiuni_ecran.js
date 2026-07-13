@@ -23,7 +23,7 @@ const REGISTRU = [
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Finanțare", cheie: "credit", titlu: "Credite bancare", ruta: "nota-credit", campuri: [
     C("data", "Data", "data"),
-    C("operatie", "Operatie", "select", { optiuni: [["primire","Primire credit"],["dobanda","Dobanda"],["plata","Plata rata"],["restanta","Restanta"],["garantie","Garantie"]] }),
+    C("operatie", "Opera\u021bie", "select", { optiuni: [["primire","Primire credit"],["dobanda","Dobanda"],["plata","Plata rata"],["restanta","Restanta"],["garantie","Garantie"]] }),
     C("tip", "Termen", "select", { optiuni: [["scurt","Sub 1 an (519)"],["lung","Peste 1 an (162)"]] }),
     C("suma", "Suma", "numar", { cond: { camp: "operatie", val: "primire" } }),
     C("dobanda", "Dobanda", "numar", { cond: { camp: "operatie", val: "dobanda" } }),
@@ -31,7 +31,7 @@ const REGISTRU = [
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Finanțare", cheie: "asociati", titlu: "Decontări asociați (455/457)", ruta: "nota-asociati", campuri: [
     C("data", "Data", "data"),
-    C("operatie", "Operatie", "select", { optiuni: [["dividend","Dividend"],["imprumut","Imprumut asociat"],["regularizare","Regularizare interimare"]] }),
+    C("operatie", "Opera\u021bie", "select", { optiuni: [["dividend","Dividend"],["imprumut","Imprumut asociat"],["regularizare","Regularizare interimare"]] }),
     C("brut", "Dividend brut", "numar", { cond: { camp: "operatie", val: "dividend" } }),
     C("suma", "Suma imprumut", "numar", { cond: { camp: "operatie", val: "imprumut" } }),
     C("fel", "Sens", "select", { optiuni: [["primire","Primire de la asociat"],["restituire","Restituire catre asociat"]], cond: { camp: "operatie", val: "imprumut" } }),
@@ -40,21 +40,21 @@ const REGISTRU = [
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Finanțare", cheie: "avans", titlu: "Avansuri (409/419)", ruta: "nota-avans", campuri: [
     C("data", "Data", "data"),
-    C("operatie", "Operatie", "select", { optiuni: [["avans_platit","Avans platit (409)"],["regularizare_platit","Regularizare 409"],["avans_incasat","Avans incasat (419)"],["regularizare_incasat","Regularizare 419"]] }),
+    C("operatie", "Opera\u021bie", "select", { optiuni: [["avans_platit","Avans platit (409)"],["regularizare_platit","Regularizare 409"],["avans_incasat","Avans incasat (419)"],["regularizare_incasat","Regularizare 419"]] }),
     C("suma", "Suma (fara TVA)"), C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("destinatie", "Destinatie", "select", { optiuni: [["stocuri","Stocuri"],["servicii","Servicii"],["imobilizari","Imobilizari"],["imobilizari_necorporale","Imobilizari necorporale"]], optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
   { cat: "Imobilizări și capital", cheie: "reevaluare", titlu: "Reevaluare imobilizări (105)", ruta: "reevaluare-imobilizare", campuri: [
     C("data", "Data", "data"),
-    C("operatie", "Operatie", "select", { optiuni: [["reevaluare","Reevaluare MF"],["surplus","Transfer surplus la 1175"]] }),
+    C("operatie", "Opera\u021bie", "select", { optiuni: [["reevaluare","Reevaluare MF"],["surplus","Transfer surplus la 1175"]] }),
     C("mijloc_fix_id", "ID mijloc fix", "numar", { cond: { camp: "operatie", val: "reevaluare" } }),
     C("valoare_justa", "Valoare justa", "numar", { cond: { camp: "operatie", val: "reevaluare" } }),
     C("suma", "Suma surplus", "numar", { cond: { camp: "operatie", val: "surplus" } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Imobilizări și capital", cheie: "obiect_inv", titlu: "Obiecte de inventar (303)", ruta: "nota-obiect-inventar", campuri: [
     C("data", "Data", "data"),
-    C("operatie", "Operatie", "select", { optiuni: [["achizitie","Achizitie"],["dare_folosinta","Dare in folosinta (603=303)"],["scoatere","Scoatere din folosinta"]] }),
+    C("operatie", "Opera\u021bie", "select", { optiuni: [["achizitie","Achizi\u021bie"],["dare_folosinta","Dare in folosinta (603=303)"],["scoatere","Scoatere din folosinta"]] }),
     C("valoare", "Valoare"), C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Imobilizări și capital", cheie: "provizion", titlu: "Provizioane și ajustări", ruta: "nota-provizion", campuri: [
@@ -66,7 +66,7 @@ const REGISTRU = [
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Imobilizări și capital", cheie: "productie", titlu: "Producție (711/345)", ruta: "nota-productie", campuri: [
     C("data", "Data", "data"),
-    C("operatie", "Operatie", "select", { optiuni: [["obtinere","Obtinere produse"],["pic","Productie in curs (331)"],["vanzare","Vanzare + descarcare"]] }),
+    C("operatie", "Opera\u021bie", "select", { optiuni: [["obtinere","Ob\u021binere produse"],["pic","Produc\u021bie \u00een curs (331)"],["vanzare","V\u00e2nzare + desc\u0103rcare"]] }),
     C("cost_standard", "Cost standard", "numar", { cond: { camp: "operatie", val: "obtinere" } }),
     C("cost_efectiv", "Cost efectiv", "numar", { cond: { camp: "operatie", val: "obtinere" }, optional: true }),
     C("suma", "Suma PIC", "numar", { cond: { camp: "operatie", val: "pic" } }),
@@ -77,7 +77,7 @@ const REGISTRU = [
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Imobilizări și capital", cheie: "inventariere", titlu: "Inventariere anuală", ruta: "nota-inventariere", campuri: [
     C("data", "Data", "data"),
-    C("operatie", "Operatie", "select", { optiuni: [["plus","Plus stoc"],["plus_mf","Plus mijloc fix"],["minus","Minus"],["casare","Casare"]] }),
+    C("operatie", "Opera\u021bie", "select", { optiuni: [["plus","Plus stoc"],["plus_mf","Plus mijloc fix"],["minus","Minus"],["casare","Casare"]] }),
     C("valoare", "Valoare"),
     C("cont_stoc", "Cont stoc", "text", { optional: true, sugestie: "371" }),
     C("imputabil", "Imputabil", "select", { optiuni: [["true","Da"],["false","Nu"]], cond: { camp: "operatie", val: "minus" } }),
@@ -216,20 +216,20 @@ const REGISTRU = [
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Diverse", cheie: "sgr", titlu: "SGR - garanție ambalaje", ruta: "nota-sgr", campuri: [
     C("data", "Data", "data"),
-    C("operatie", "Operatie", "select", { optiuni: [["achizitie","Achizitie (garantii platite)"],["vanzare","Vanzare (garantii incasate)"],["restituire","Restituire"],["autofactura","Autofactura SGR"],["virare","Virare"]] }),
+    C("operatie", "Opera\u021bie", "select", { optiuni: [["achizitie","Achizi\u021bie (garan\u021bii pl\u0103tite)"],["vanzare","V\u00e2nzare (garan\u021bii \u00eencasate)"],["restituire","Restituire"],["autofactura","Autofactura SGR"],["virare","Virare"]] }),
     C("nr_ambalaje", "Nr. ambalaje (0,50 lei/buc)", "numar", { optional: true }),
     C("suma", "Suma (alternativ la nr.)", "numar", { optional: true }),
     C("sursa", "Sursa", "select", { optiuni: [["casa","Casa"],["banca","Banca"]], optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Diverse", cheie: "ong", titlu: "Operațiuni ONG (OMFP 3103/2017)", ruta: "nota-ong", campuri: [
     C("data", "Data", "data"),
-    C("operatie", "Operatie", "select", { optiuni: [["venit","Venit AFSP"],["scutire","Calcul scutire art. 15 CF"]] }),
+    C("operatie", "Opera\u021bie", "select", { optiuni: [["venit","Venit AFSP"],["scutire","Calcul scutire art. 15 CF"]] }),
     C("suma", "Suma", "numar", { cond: { camp: "operatie", val: "venit" } }),
     C("fel", "Fel venit", "select", { optiuni: [["cotizatie","Cotizatie (731)"],["contributie","Contributie"],["donatie","Donatie (733)"],["sponsorizare","Sponsorizare primita (733)"],["financiar","Financiar (734)"]], cond: { camp: "operatie", val: "venit" } }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Diverse", cheie: "lichidare", titlu: "Lichidare / radiere firmă", ruta: "nota-lichidare", campuri: [
     C("data", "Data", "data"),
-    C("operatie", "Operatie", "select", { optiuni: [["vanzare_activ","Vanzare activ la lichidare"],["partaj","Partaj catre asociati"]] }),
+    C("operatie", "Opera\u021bie", "select", { optiuni: [["vanzare_activ","V\u00e2nzare activ la lichidare"],["partaj","Partaj catre asociati"]] }),
     C("pret", "Pret vanzare", "numar", { cond: { camp: "operatie", val: "vanzare_activ" } }),
     C("valoare_bruta", "Valoare bruta activ", "numar", { cond: { camp: "operatie", val: "vanzare_activ" } }),
     C("amortizare_cumulata", "Amortizare cumulata", "numar", { cond: { camp: "operatie", val: "vanzare_activ" } }),
