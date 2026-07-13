@@ -179,7 +179,7 @@ function randeazaPanou(continut, nav) {
   `;
 
   const grila = continut.querySelector(".cab-grila");
-  continut.querySelector("#cab-recomanda-mic").addEventListener("click", () => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav), { nivel: "cabinet" }));  /* recomanda_mic_v1 */
+  continut.querySelector("#cab-recomanda-mic").addEventListener("click", () => nav.deschide("Recomandă", (corp) => randeazaRecomanda(corp, nav), { nivel: "cabinet" }));  /* recomanda_mic_v1 */
   DEF.forEach((c) => {
     const card = document.createElement("button");
     card.className = "cab-card";
@@ -211,7 +211,7 @@ function randeazaPanou(continut, nav) {
     } else if (c.cheie === "setari") {  // [p28_setari]
       card.addEventListener("click", () => nav.deschide("Setări cont", (corp) => randeazaSetari(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "recomanda") {  // [p31_recomanda]
-      card.addEventListener("click", () => nav.deschide("Recomanda", (corp) => randeazaRecomanda(corp, nav), { nivel: "cabinet" }));
+      card.addEventListener("click", () => nav.deschide("Recomandă", (corp) => randeazaRecomanda(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "pachete") {  // [p63_pachete]
       card.addEventListener("click", () => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "raport") {  // [p34_raporteaza]

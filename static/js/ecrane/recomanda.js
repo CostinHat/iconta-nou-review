@@ -1,29 +1,29 @@
 // recomanda.js — cardul Recomanda: invita un cabinet in iConta.
 // Trimite email(uri) de invitatie cu buton "Incearca iConta".
 // "Vezi ce trimite" = preview exact al emailului (acelasi HTML ca cel trimis).
-import { api } from "../api.js";
+import { api, arataMesaj } from "../api.js";
 
 export function randeazaRecomanda(corp, nav) {
   corp.innerHTML = `
     <p class="mig-intro">Invită un cabinet prieten să încerce iConta. Îi trimitem un email cu o invitație.</p>
-    <div class="set-sectiune" style="max-width:560px">
+    <div class="panou" style="max-width:560px">
       <div class="rec-cap">
-        <div class="set-titlu">Adrese de email</div>
+        <h3 class="cap-titlu">Adrese de email</h3>
         <button class="buton-secundar rec-vezi" id="rec-vezi">Vezi ce trimitem</button>
       </div>
-      <label class="set-camp">
-        <span class="set-eticheta">Email (poți pune mai multe, separate prin virgulă sau enter)</span>
-        <textarea id="rec-emails" class="set-input" rows="4" placeholder="prieten@exemplu.ro, alt.cabinet@exemplu.ro"></textarea>
+      <label class="camp">
+        <span class="camp-eticheta">Email (poți pune mai multe, separate prin virgulă sau enter)</span>
+        <textarea id="rec-emails" class="camp-input" rows="4" placeholder="prieten@exemplu.ro, alt.cabinet@exemplu.ro"></textarea>
       </label>
       <button class="buton-primar" id="rec-trimite">Trimite invitația</button>
-      <div class="set-mesaj" id="rec-msg"></div>
+      <div id="rec-msg"></div>
     </div>
   `;
 
   // Vezi ce trimitem -> modal preview cu HTML-ul exact
   corp.querySelector("#rec-vezi").addEventListener("click", async () => {
     let date;
-    try { date = await api.get("/recomanda/preview"); } catch { const m = corp.querySelector("#rec-msg"); m.textContent = "Nu am putut încărca previzualizarea."; m.className = "set-mesaj set-err"; return; }  // portal_ds_audit_a_v1
+    try { date = await api.get("/recomanda/preview"); } catch { const m = corp.querySelector("#rec-msg"); arataMesaj(m, "Nu am putut încărca previzualizarea.", "eroare"); return; }  // portal_ds_audit_a_v1
     if (!date || !date.ok) return;
     const ov = document.createElement("div");
     ov.className = "rec-overlay";
@@ -50,31 +50,27 @@ export function randeazaRecomanda(corp, nav) {
     const msg = corp.querySelector("#rec-msg");
     const raw = corp.querySelector("#rec-emails").value || "";
     const emails = raw.split(/[\s,;]+/).map((e) => e.trim()).filter(Boolean);
-    msg.className = "set-mesaj";
     if (!emails.length) {
-      msg.textContent = "Adaugă cel puțin o adresă de email.";
-      msg.className = "set-mesaj set-err"; return;
+      arataMesaj(msg, "Adaugă cel puțin o adresă de email.", "eroare"); return;
     }
     if (emails.length > 20) {
-      msg.textContent = "Maxim 20 de adrese odată.";
-      msg.className = "set-mesaj set-err"; return;
+      arataMesaj(msg, "Maxim 20 de adrese odată.", "eroare"); return;
     }
-    msg.textContent = "Se trimite...";
+    arataMesaj(msg, "Se trimite...", "info");
     try {
       const r = await api.post("/recomanda", { emails });
       if (r && r.ok) {
         const trimise = (r.rezultate || []).filter((x) => x.stare === "trimis").length;
         const esuate = (r.rezultate || []).filter((x) => x.stare === "esuat").length;
-        msg.textContent = esuate
+        arataMesaj(msg, esuate
           ? `${trimise} trimise, ${esuate} eșuate.`
-          : `Invitație trimisă către ${trimise} ${trimise === 1 ? "adresă" : "adrese"}.`;
-        msg.className = "set-mesaj " + (esuate ? "set-err" : "set-ok");
+          : `Invitație trimisă către ${trimise} ${trimise === 1 ? "adresă" : "adrese"}.`, esuate ? "eroare" : "ok");
         if (!esuate) corp.querySelector("#rec-emails").value = "";
       } else {
-        msg.textContent = "Nu am putut trimite."; msg.className = "set-mesaj set-err";
+        arataMesaj(msg, "Nu am putut trimite.", "eroare");
       }
     } catch (e) {
-      msg.textContent = "Eroare la trimitere."; msg.className = "set-mesaj set-err";
+      arataMesaj(msg, "Eroare la trimitere.", "eroare");
     }
   });
 }
