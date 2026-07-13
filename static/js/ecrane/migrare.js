@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani, CULORI_CARD, baniRotund } from "../api.js";
+import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 const STRATURI = [
@@ -1411,7 +1411,7 @@ function importReteteFirma(corp, nav, firma) {
     if (!file) return;
     corp.querySelector("#mig-drop-titlu").textContent = file.name;
     const eroare = corp.querySelector("#mig-eroare");
-    eroare.textContent = "Citesc re\u021betele\u2026";
+    arataMesaj(eroare, "Citesc re\u021betele\u2026", "info");
     try {
       const fd = new FormData();
       fd.append("fisier", file);
@@ -1423,7 +1423,7 @@ function importReteteFirma(corp, nav, firma) {
       eroare.textContent = "";
       previzualizeazaRetete(corp, nav, firma, date);
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la citirea fi\u0219ierului.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la citirea fi\u0219ierului.", "eroare");
     }
   });
 }
@@ -1450,10 +1450,10 @@ function previzualizeazaRetete(corp, nav, firma, date) {
     b.disabled = true; b.textContent = "Import\u2026";
     try {
       const r = await api.post(`/tenants/${firma.tenant_id}/retete-import`, { retete });
-      zona.innerHTML = `<div class="mig-gata"><div class="mig-gata-titlu">${r.create} re\u021bete importate${r.sarite && r.sarite.length ? ` \u00b7 ${r.sarite.length} s\u0103rite (existente/invalide)` : ""}</div></div>`;
+      arataMesaj(zona, `${r.create} re\u021bete importate${r.sarite && r.sarite.length ? ` \u00b7 ${r.sarite.length} s\u0103rite (existente/invalide)` : ""}`, "ok");
     } catch (e) {
       b.disabled = false; b.textContent = "Import\u0103";
-      corp.querySelector("#mig-eroare").textContent = (e && e.mesaj) || "Eroare la import.";
+      arataMesaj(corp.querySelector("#mig-eroare"), (e && e.mesaj) || "Eroare la import.", "eroare");
     }
   });
 }

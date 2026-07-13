@@ -6,7 +6,7 @@ import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD } fro
 import { semaforCard as _semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
 import { randeazaListaFirme } from "./firme.js";
-import { randeazaMigrare } from "./migrare.js?v=2";
+import { randeazaMigrare } from "./migrare.js?v=3";
 import { randeazaControl } from "./control.js";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js"; // [p17_activitate]
 import { randeazaSetari } from "./setari.js"; // [p28_setari]
