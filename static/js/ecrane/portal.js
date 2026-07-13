@@ -82,7 +82,7 @@ export function desktopPortal(continut, nav) {
 }
 
 function deschideCard(cheie, nav) {
-  if (cheie === "facturi") nav.deschide("Facturi", (corp) => deschideFacturi(corp, nav), { lat: "larg" }); /* facturi_larg_v1 */  // [p116_facturi_modul]
+  if (cheie === "facturi") nav.deschide("Facturi", (corp) => deschideFacturi(corp, nav)); /* portal: latime normala 680px, lista nu are nevoie de larg */  // [p116_facturi_modul]
   else if (cheie === "declaratii") nav.deschide("Declarații depuse", (corp) => ecranDeclaratii(corp, nav));
   else if (cheie === "povestea") nav.deschide("Povestea lunii", (corp) => ecranPovestea(corp, nav));
   else if (cheie === "solicitari") nav.deschide("Solicitări", (corp) => ecranSolicitari(corp, nav));  // ICRD_SOLICITARI_FRONT_V1
