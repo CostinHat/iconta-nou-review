@@ -419,14 +419,6 @@ html, body {
 
 /* lista de firme */
 .firme-cap { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.firme-titlu { font-size: var(--text-titlu); font-weight: 600; color: #163a5a; margin: 0; }
-.firme-inapoi {
-  display: flex; align-items: center; gap: 5px;
-  background: var(--portocaliu-fundal); color: var(--portocaliu);
-  border: 1px solid var(--portocaliu); border-radius: var(--raza);
-  padding: 6px 12px; font-size: var(--text-mic); font-family: inherit; cursor: pointer;
-}
-.firme-inapoi:hover { background: var(--portocaliu); color: var(--alb); }
 .firme-spatiu { flex: 1; }
 .firme-cautare { margin-bottom: 14px; }
 .firme-cautare input {

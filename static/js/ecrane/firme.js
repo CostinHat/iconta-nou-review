@@ -16,12 +16,8 @@ import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
 export function randeazaListaFirme(container, nav, inapoi) {
   container.innerHTML = `
     <div class="firme-cap">
-      <button class="firme-inapoi" id="firme-inapoi" title="Înapoi la panou" aria-label="Înapoi la panou">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-      </button>
-      <h1 class="firme-titlu"><span style="color:var(--gri-clar);font-weight:500">Panou \u203a Firme \u203a </span>Firme existente</h1>
       <span class="firme-spatiu"></span>
-      <button class="buton-primar" id="firme-adauga" style="margin-top:16px">+ Adaugă firmă</button>
+      <button class="buton-primar" id="firme-adauga">+ Adaugă firmă</button>
     </div>
     <div class="firme-cautare">
       <label class="camp-eticheta" for="firme-q">Caut\u0103</label>
@@ -30,7 +26,6 @@ export function randeazaListaFirme(container, nav, inapoi) {
     <div class="firme-lista" id="firme-lista"><div class="ecran-nota">Se încarcă firmele…</div></div>
   `;
 
-  container.querySelector("#firme-inapoi").addEventListener("click", inapoi);
   container.querySelector("#firme-adauga").addEventListener("click", () => {
     nav.deschide("Adaugă firmă", (corp) => {  /* firma_noua_v1 */
       corp.innerHTML = `
