@@ -66,7 +66,7 @@ function deschideEcran(cheie, nav, continut) {
   if (cheie === "activitate") return nav.deschide("Activitate cabinet", (corp) => randeazaActivitateCabinet(corp, nav), { nivel: "cabinet" });
   if (cheie === "capacitate") return nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav), { nivel: "cabinet" });
   if (cheie === "tipare") return nav.deschide("Tipare", (corp) => randeazaTipare(corp, nav), { nivel: "cabinet" });
-  if (cheie === "raport") return nav.deschide("Raporteaza", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" });
+  if (cheie === "raport") return nav.deschide("Raportează", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" });
 }
 
 // [p73_sinteza_azi] panou de intampinare: sinteza zilei, totul clickabil spre ecranele de detaliu
@@ -215,7 +215,7 @@ function randeazaPanou(continut, nav) {
     } else if (c.cheie === "pachete") {  // [p63_pachete]
       card.addEventListener("click", () => nav.deschide("Pachete lunare", (corp) => randeazaPachete(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "raport") {  // [p34_raporteaza]
-      card.addEventListener("click", () => nav.deschide("Raporteaza", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" }));
+      card.addEventListener("click", () => nav.deschide("Raportează", (corp) => randeazaRaporteaza(corp, nav), { nivel: "cabinet" }));
     } else {
       card.addEventListener("click", () => c.actiune(nav));
     }

@@ -2,7 +2,7 @@
 // Trimite o observatie catre Admin iConta; vede firul cu raspunsuri; bec rosu = raspunsuri necitite.
 // Strat 2 (text + fir). Imagini: strat 3.
 
-import { api, dataRo } from "../api.js";
+import { api, dataRo, arataMesaj } from "../api.js";
 
 function dataScurta(iso) {
   return dataRo(iso, "cu_ora");
@@ -10,13 +10,13 @@ function dataScurta(iso) {
 
 export async function randeazaRaporteaza(corp, nav) {
   corp.innerHTML = `
-    <p class="mig-intro">Ai observat ceva care nu merge, nu e corect sau nu se intelege? Trimite-ne o sesizare. Iti raspundem aici.</p>
+    <p class="mig-intro">Ai observat ceva care nu merge, nu e corect sau nu se înțelege? Trimite-ne o sesizare. Îți răspundem aici.</p>
 
-    <div class="rap-nou set-sectiune" style="max-width:640px">
-      <div class="set-titlu">Sesizare nouă</div>
-      <label class="set-camp">
-        <span class="set-eticheta">Ce ai observat?</span>
-        <textarea id="rap-text" class="set-input rap-autogrow" rows="6" style="min-height:130px;overflow:hidden;resize:none" placeholder="Descrie ce ai observat, ce nu merge sau ce nu se intelege... (poti lipi o captura de ecran cu Ctrl+V)"></textarea>
+    <div class="rap-nou panou" style="max-width:640px">
+      <h3 class="cap-titlu">Sesizare nouă</h3>
+      <label class="camp">
+        <span class="camp-eticheta">Ce ai observat?</span>
+        <textarea id="rap-text" class="camp-input rap-autogrow" rows="6" style="min-height:130px;overflow:hidden;resize:none" placeholder="Descrie ce ai observat, ce nu merge sau ce nu se înțelege... (poți lipi o captură de ecran cu Ctrl+V)"></textarea>
       </label>
       <div class="rap-poze" id="rap-poze-noi"></div>
       <p class="ecran-nota" style="margin:0 0 8px">Opțional: atașează capturi de ecran — cu butonul de mai jos sau lipite direct cu Ctrl+V.</p>
@@ -25,10 +25,10 @@ export async function randeazaRaporteaza(corp, nav) {
         <button class="buton-secundar" id="rap-add-poza" type="button">Adaugă captură</button>
         <input type="file" id="rap-file" accept="image/png,image/jpeg,image/webp" multiple style="display:none">
       </div>
-      <div class="set-mesaj" id="rap-msg"></div>
+      <div id="rap-msg"></div>
     </div>
 
-    <div class="rap-titlu-lista">Sesizarile mele</div>
+    <div class="rap-titlu-lista">Sesizările mele</div>
     <div id="rap-lista" class="rap-lista"><div class="rap-gol">Se încarcă...</div></div>
   `;
 
@@ -110,8 +110,8 @@ export async function randeazaRaporteaza(corp, nav) {
 
   function renderFir(f) {
     const inAsteptare = f.necitite > 0;
-    const badge = inAsteptare ? `<span class="rap-badge-pct" title="in asteptarea raspunsului"></span>` : "";
-    const stareEt = { noua: "in asteptare", raspuns: "raspuns primit", inchisa: "inchisa" }[f.stare] || f.stare;
+    const badge = inAsteptare ? `<span class="rap-badge-pct" title="în așteptarea răspunsului"></span>` : "";
+    const stareEt = { noua: "în așteptare", raspuns: "răspuns primit", inchisa: "închisă" }[f.stare] || f.stare;
     // titlul firului = inceputul primului mesaj (al meu)
     const primul = (f.mesaje.find((m) => m.rol_autor === "utilizator") || f.mesaje[0] || {}).text || "";
     const titlu = primul.length > 70 ? primul.slice(0, 70) + "…" : primul;
@@ -139,7 +139,7 @@ export async function randeazaRaporteaza(corp, nav) {
         <div class="rap-fir-corp" style="display:none">
           <div class="rap-mesaje">${mesaje}</div>
           <div class="rap-replica">
-            <textarea class="rap-replica-text set-input" rows="2" style="overflow:hidden;resize:none" placeholder="Adaugă un mesaj..."></textarea>
+            <textarea class="rap-replica-text camp-input" rows="2" style="overflow:hidden;resize:none" placeholder="Adaugă un mesaj..."></textarea>
             <button class="buton-primar rap-replica-btn">Trimite</button>
           </div>
         </div>
@@ -176,23 +176,22 @@ export async function randeazaRaporteaza(corp, nav) {
   corp.querySelector("#rap-trimite").addEventListener("click", async () => {
     const msg = corp.querySelector("#rap-msg");
     const text = corp.querySelector("#rap-text").value.trim();
-    msg.className = "set-mesaj";
-    if (!text) { msg.textContent = "Scrie ce ai observat."; msg.className = "set-mesaj set-err"; return; }
-    msg.textContent = "Se trimite...";
+    if (!text) { arataMesaj(msg, "Scrie ce ai observat.", "eroare"); return; }
+    arataMesaj(msg, "Se trimite...", "info");
     try {
       const r = await api.post("/raportari", { text });
       // urc pozele la primul mesaj al raportarii
       if (pozeNoi.length && r && r.mesaj_id) {
-        msg.textContent = "Se încarcă imaginile...";
+        arataMesaj(msg, "Se încarcă imaginile...", "info");
         await urcaPoze(r.mesaj_id, pozeNoi.map((p) => p.file));
       }
-      msg.textContent = "Sesizare trimisa."; msg.className = "set-mesaj set-ok";
+      arataMesaj(msg, "Sesizare trimisă.", "ok");
       corp.querySelector("#rap-text").value = "";
       pozeNoi.forEach((p) => URL.revokeObjectURL(p.url));
       pozeNoi = [];
       randeazaPozeNoi();
       await incarcaFire();
-    } catch { msg.textContent = "Nu am putut trimite."; msg.className = "set-mesaj set-err"; }
+    } catch { arataMesaj(msg, "Nu am putut trimite.", "eroare"); }
   });
 
   await incarcaFire();
