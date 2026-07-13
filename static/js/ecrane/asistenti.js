@@ -344,8 +344,8 @@ function _asiRandeazaFereastra(d, c) {
 
   const acte = d.activitate || [];
   const alerta = d.nr_self_approval > 0
-    ? `<div class="asi-alerta-rosu">\u26a0 ${d.nr_self_approval} declaratii aprobate de propriul pregatitor (patru ochi).</div>`
-    : `<div class="asi-alerta-verde">\u2713 Nicio declaratie aprobata de propriul pregatitor.</div>`;
+    ? `<div class="asi-alerta-rosu">\u26a0 ${d.nr_self_approval} declara\u021bii aprobate de propriul preg\u0103titor (patru ochi).</div>`
+    : `<div class="asi-alerta-verde">\u2713 Nicio declara\u021bie aprobat\u0103 de propriul preg\u0103titor.</div>`;
   const randuri = acte.length ? acte.map((c2) => {
     const roluri = [];
     if (c2.a_pregatit) roluri.push("pregatit");
@@ -376,7 +376,7 @@ async function _asiBannerEchipa(corp, nav) {
     <div class="asi-echipa-banner">
       <span class="asi-sem asi-sem-${s.culoare}"></span>
       <span class="asi-echipa-text">Calitatea echipei (${s.zile} zile): ${text}</span>
-      ${areErori ? `<button class="buton-secundar asi-echipa-btn" id="asi-vezi-erori">Vezi erorile</button>` : ""}
+      ${areErori ? `<button class="buton-secundar buton-mic" id="asi-vezi-erori">Vezi erorile</button>` : ""}
     </div>`;
   const b = host.querySelector("#asi-vezi-erori");
   if (b) b.onclick = () => deschideEchipaErori(nav);
@@ -390,7 +390,7 @@ async function deschideEchipaErori(nav) {
   nav.deschide("Erori — echipa", (box) => {
     const lst = d.asistenti || [];
     if (!lst.length) {
-      box.innerHTML = `<div class="asi-alerta-verde">✓ Nicio respingere in ultimele ${d.zile} zile.</div>`;
+      box.innerHTML = `<div class="asi-alerta-verde">✓ Nicio respingere \u00een ultimele ${d.zile} zile.</div>`;
       return;
     }
     const carduri = lst.map((a) => {

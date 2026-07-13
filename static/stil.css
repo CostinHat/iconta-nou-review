@@ -915,17 +915,12 @@ html, body {
 
 /* [patch10_card_sem] */
 .asi-echipa-banner {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   padding: 10px 12px; margin: 4px 0 12px;
   background: var(--fundal, #f5f6f8); border-radius: 10px;
 }
 .asi-echipa-text { font-size: var(--text-mic); color: var(--ardezie, #2c2b28); flex: 1; }
-.asi-echipa-btn {
-  padding: 6px 12px; font-family: inherit; font-size: var(--text-mic); cursor: pointer;
-  background: #fff; border: 0.5px solid var(--linie, #d0cfc9); border-radius: 8px;
-  color: var(--ardezie, #2c2b28);
-}
-.asi-echipa-btn:hover { background: #ecebe5; }
+
 
 
 /* [p17_activitate] Ecran D - Activitate cabinet */
