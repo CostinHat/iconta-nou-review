@@ -38,7 +38,7 @@ const INCREDERE = [
   { titlu: "Date securizate", sub: "la standarde ridicate", icon: ICONI.scutmic },
   { titlu: "Acces de oriunde", sub: "din cloud", icon: ICONI.nor },
   { titlu: "Suport dedicat", sub: "pentru cabinete", icon: ICONI.oameni },
-  { titlu: "Fara costuri ascunse", sub: "plati transparente", icon: ICONI.moneda },
+  { titlu: "F\u0103r\u0103 costuri ascunse", sub: "pl\u0103\u021bi transparente", icon: ICONI.moneda },
 ];
 
 function randCard(c) {
