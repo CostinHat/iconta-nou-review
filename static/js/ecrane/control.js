@@ -5,8 +5,8 @@
 import { api, esc, dataRo } from "../api.js";  /* esc_nc27 */
 
 const CULORI = {
-  verde:  { dot:"radial-gradient(circle at 65% 30%, #6fc494, #1d7a4d 60%)", txt:"la zi",       bg:"#e6f6ec" },
-  galben: { dot:"radial-gradient(circle at 65% 30%, #f0cd7a, #c9961f 60%)", txt:"de urmărit",  bg:"#fbf3e2" },
+  verde:  { dot:"radial-gradient(circle at 65% 30%, #6fc494, #1d7a4d 60%)", txt:"la zi",       bg:"var(--verde-fundal)" },
+  galben: { dot:"radial-gradient(circle at 65% 30%, #f0cd7a, #c9961f 60%)", txt:"de urmărit",  bg:"var(--galben-fundal)" },
   rosu:   { dot:"radial-gradient(circle at 65% 30%, #ff8a80, var(--rosu-semafor) 60%)", txt:"restanță",    bg:"var(--rosu-fundal)" },
   gri:    { dot:"var(--gri-semafor)", txt:"necompletat", bg:"var(--gri-fundal-semafor)" },
 };

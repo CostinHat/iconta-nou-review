@@ -1570,7 +1570,7 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
             vs = verificare_stocuri(tid, ctx)
             if not vs.get("ok", True):
                 if r["stare"] == "verde": r["stare"] = "galben"
-                contabil.append("diferente stocuri")
+                contabil.append("diferen\u021be stocuri")
         except Exception:
             pass
         try:  # praguri Intrastat
