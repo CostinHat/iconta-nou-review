@@ -864,7 +864,7 @@ async function ecranStocuri(corp, nav, t) {
       : nirs.map((n) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">NIR ${esc(n.numar)} \u00b7 ${esc(n.data)} \u00b7 ${esc(n.furnizor || "")}</div>
+            <div class="pf-frand-nume">NIR ${esc(n.numar)} \u00b7 ${dataRo(n.data)} \u00b7 ${esc(n.furnizor || "")}</div>
             <div class="pf-frand-sub">cost ${n.cost_total} \u00b7 adaos ${n.adaos_total} \u00b7 TVA neex. ${n.tva_neexigibila} \u00b7 raft ${bani(n.valoare_vanzare)} lei</div>
           </div>
         </div>`).join("");
@@ -872,8 +872,8 @@ async function ecranStocuri(corp, nav, t) {
       <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap" data-i="${i}">
         <input type="text" class="camp-input sn-den" placeholder="denumire" aria-label="Denumire" value="${esc(l.denumire || "")}" style="flex:2;min-width:160px">
         <input type="number" step="0.001" class="camp-input sn-cant" placeholder="cant." aria-label="Cantitate" value="${l.cantitate || ""}" style="width:90px">
-        <input type="number" step="0.0001" class="camp-input sn-pa" placeholder="pret achizitie" aria-label="Pre\u021b achizi\u021bie" value="${l.pret_achizitie || ""}" style="width:120px">
-        <input type="number" step="0.0001" class="camp-input sn-pv" placeholder="pret raft (cu TVA)" aria-label="Pre\u021b raft cu TVA" value="${l.pret_vanzare || ""}" style="width:140px">
+        <input type="number" step="0.0001" class="camp-input sn-pa" placeholder="pre\u021b achizi\u021bie" aria-label="Pre\u021b achizi\u021bie" value="${l.pret_achizitie || ""}" style="width:120px">
+        <input type="number" step="0.0001" class="camp-input sn-pv" placeholder="pre\u021b raft (cu TVA)" aria-label="Pre\u021b raft cu TVA" value="${l.pret_vanzare || ""}" style="width:140px">
         <select class="camp-input sn-tva" style="width:80px">${[21, 11].map((c) => `<option value="${c}"${(l.cota_tva || 21) == c ? " selected" : ""}>${c}%</option>`).join("")}</select>
         <button class="buton-secundar sn-scoate">\u2212</button>
       </div>`;
