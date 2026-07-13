@@ -1477,7 +1477,7 @@ function importArticoleFirma(corp, nav, firma) {
     if (!file) return;
     corp.querySelector("#mig-drop-titlu").textContent = file.name;
     const eroare = corp.querySelector("#mig-eroare");
-    eroare.textContent = "Citesc articolele\u2026";
+    arataMesaj(eroare, "Citesc articolele\u2026", "info");
     try {
       const fd = new FormData();
       fd.append("fisier", file);
@@ -1489,7 +1489,7 @@ function importArticoleFirma(corp, nav, firma) {
       eroare.textContent = "";
       previzualizeazaArticole(corp, nav, firma, date);
     } catch (e) {
-      eroare.textContent = (e && e.mesaj) || "Eroare la citirea fi\u0219ierului.";
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la citirea fi\u0219ierului.", "eroare");
     }
   });
 }
@@ -1516,10 +1516,10 @@ function previzualizeazaArticole(corp, nav, firma, date) {
     b.disabled = true; b.textContent = "Import\u2026";
     try {
       const r = await api.post(`/tenants/${firma.tenant_id}/articole-import`, { randuri });
-      zona.innerHTML = `<div class="mig-gata"><div class="mig-gata-titlu">${r.create} articole importate${r.sarite && r.sarite.length ? ` \u00b7 ${r.sarite.length} s\u0103rite (existente/invalide)` : ""}</div></div>`;
+      arataMesaj(zona, `${r.create} articole importate${r.sarite && r.sarite.length ? ` \u00b7 ${r.sarite.length} s\u0103rite (existente/invalide)` : ""}`, "ok");
     } catch (e) {
       b.disabled = false; b.textContent = "Import\u0103";
-      corp.querySelector("#mig-eroare").textContent = (e && e.mesaj) || "Eroare la import.";
+      arataMesaj(corp.querySelector("#mig-eroare"), (e && e.mesaj) || "Eroare la import.", "eroare");
     }
   });
 }
