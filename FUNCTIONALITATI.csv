@@ -12,95 +12,95 @@ Bacsis HoReCa,"Note pentru incasarea si distribuirea bacsisului (0-15%/suma fixa
 Contabilizare extras de cont,"Motor pur pe liniile de extras: detectare tip, extragere CUI, reguli de cont pe tipare, note cu urma.",F011,firma,card Banca,core/banca.py,,LIVE,pytest
 Parser extras bancar,"Citeste .xls/.xlsx/.csv (ING/Jasper), format detectat dupa continut (magic bytes), grid pe pozitia coloanelor, randuri multi-linie.",F012,firma,card Banca,core/banca_parser.py,,LIVE,validat la leu pe ING
 Bilant anual S1005/S1003,"Mapare balanta->F10, rulaje->F20, XML pe XSD v14, validare pe server cu validatorul ANAF.",F013,firma,card Bilant anual,core/bilant.py + core/bilant_api.py,OMF 107/2025,LIVE,validator ANAF
-capacitate,TODO,F014,,,core/capacitate_api.py,,,
-casa,TODO,F015,,,core/casa.py + core/casa_api.py,,,
-cashflow,TODO,F016,,,core/cashflow.py,,,
-chitante,TODO,F017,,,core/chitante.py,,,
-clienti,TODO,F018,,,core/clienti_api.py,,,
-coada,TODO,F019,,,core/coada_api.py,,,
-comodat chirii,TODO,F020,,,core/comodat_chirii.py,,,
-contracte speciale,TODO,F021,,,core/contracte_speciale.py,,,
-control fiscal,TODO,F022,,,core/control_fiscal_api.py,,,
-cote tva,TODO,F023,,,core/cote_tva.py,,,
-credite,TODO,F024,,,core/credite.py,,,
-curs bnr,TODO,F025,,,core/curs_bnr.py,,,
-d100,TODO,F026,,,core/d100.py,,,
-d101,TODO,F027,,,core/d101.py,,,
-d112,TODO,F028,,,core/d112.py,,,
-d205,TODO,F029,,,core/d205.py,,,
-d212 engine,TODO,F030,,,core/d212_engine.py,,,
-d300,TODO,F031,,,core/d300.py,,,
-d301,TODO,F032,,,core/d301.py,,,
-d390,TODO,F033,,,core/d390.py,,,
-d394,TODO,F034,,,core/d394.py,,PARTIAL - generator complet; validare DUKIntegrator blocata pe desktop (carenta 3),
-d406,TODO,F035,,,core/d406.py,,,
-d406 active,TODO,F036,,,core/d406_active.py,,,
-d406 stocuri,TODO,F037,,,core/d406_stocuri.py,,,
-declaratii,TODO,F038,,,core/declaratii_api.py,,,
-decontari asociati,TODO,F039,,,core/decontari_asociati.py,,,
-deconturi,TODO,F040,,,core/deconturi.py,,,
-diferente curs,TODO,F041,,,core/diferente_curs.py,,,
-documente,TODO,F042,,,core/documente_api.py,,,
-efactura import,TODO,F043,,,core/efactura_import.py,,,
-etransport,TODO,F044,,,core/etransport.py,,PARTIAL - XML pentru upload manual SPV; trimitere directa prin API inexistenta (carenta 6),
-factura pdf,TODO,F045,,,core/factura_pdf.py,,,
-facturi,TODO,F046,,,core/facturi.py + core/facturi_api.py,,,
-facturi recurente,TODO,F047,,,core/facturi_recurente.py,,,
-firma profil,TODO,F048,,,core/firma_profil_api.py,,,
-import export,TODO,F049,,,core/import_export.py,,,
-intracomunitar,TODO,F050,,,core/intracomunitar.py,,,
-intrastat,TODO,F051,,,core/intrastat.py,,,
-inventariere,TODO,F052,,,core/inventariere.py,,,
-istoric declaratii import,TODO,F053,,,core/istoric_declaratii_import_api.py,,,
-jurnal,TODO,F054,,,core/jurnal_api.py,,,
-kpi client,TODO,F055,,,core/kpi_client.py,,,
-leasing,TODO,F056,,,core/leasing.py,,,
-lichidare,TODO,F057,,,core/lichidare.py,,,
-migrare,TODO,F058,,,core/migrare_api.py,,,
-mijloace fixe import,TODO,F059,,,core/mijloace_fixe_import_api.py,,,
-monitor fiscal,TODO,F060,,,core/monitor_fiscal.py,,"PARTIAL - detectie+email exista; afisare programata lipseste (vezi F103, carenta 1)",
-motor,TODO,F061,,,core/motor.py,,,
-notificari,TODO,F062,,,core/notificari_api.py,,,
-obiecte inventar,TODO,F063,,,core/obiecte_inventar.py,,,
-ong,TODO,F064,,,core/ong.py,,,
-pachete,TODO,F065,,,core/pachete_api.py,,,
-perisabilitati,TODO,F066,,,core/perisabilitati.py,,,
-plati,TODO,F067,,,core/plati.py,,,
-portal,TODO,F068,,,core/portal_api.py,,,
-productie,TODO,F069,,,core/productie.py,,,
-produse,TODO,F070,,,core/produse_api.py,,,
-provizioane,TODO,F071,,,core/provizioane.py,,,
-raportari,TODO,F072,,,core/raportari_api.py,,,
-reconciliere,TODO,F073,,,core/reconciliere.py + core/reconciliere_api.py,,,
-reevaluare,TODO,F074,,,core/reevaluare.py,,,
-reges client,TODO,F075,,,core/reges_client.py,,,
-retete,TODO,F076,,,core/retete.py + core/retete_api.py,,PARTIAL - CRUD+descarcare exista; flux complet de re-verificat cu date reale (carenta 5),
-rip,TODO,F077,,,core/rip_api.py,,,
-salariati,TODO,F078,,,core/salariati_api.py,,,
-salariati import,TODO,F079,,,core/salariati_import_api.py,,,
-salarizare,TODO,F080,,,core/salarizare.py,,PARTIAL - stat plata complet; cod 10 CM (calcul_cm_cod10) neintegrat in flux (carenta 2),
-scadente,TODO,F081,,,core/scadente.py,,,
-sgr,TODO,F082,,,core/sgr.py,,,
-sinteza zilnica,TODO,F083,,,core/sinteza_zilnica.py,,,
-solduri,TODO,F084,,,core/solduri_api.py,,,
-solduri parteneri,TODO,F085,,,core/solduri_parteneri_api.py,,,
-sponsorizari,TODO,F086,,,core/sponsorizari.py,,,
-stat plata,TODO,F087,,,core/stat_plata_api.py,,,
-stocuri,TODO,F088,,,core/stocuri.py + core/stocuri_api.py,,,
-stocuri cv,TODO,F089,,,core/stocuri_cv.py + core/stocuri_cv_api.py,,,
-subventii,TODO,F090,,,core/subventii.py,,,
-taxare inversa,TODO,F091,,,core/taxare_inversa.py,,,
-tenant provisioning,TODO,F092,,,core/tenant_provisioning.py,,,
-termene,TODO,F093,,,core/termene_api.py,,,
-tipare,TODO,F094,,,core/tipare_api.py,,,
-tva agricultori,TODO,F095,,,core/tva_agricultori.py,,,
-tva aur,TODO,F096,,,core/tva_aur.py,,,
-tva incasare,TODO,F097,,,core/tva_incasare.py,,,
-tva marja,TODO,F098,,,core/tva_marja.py,,,
-tva marja turism,TODO,F099,,,core/tva_marja_turism.py,,,
-vector fiscal,TODO,F100,,,core/vector_fiscal_api.py,,,
-verificatoare,TODO,F101,,,core/verificatoare.py,,,
-woocommerce,TODO,F102,,,core/woocommerce.py,,,
+Panou Capacitate,"Trei perspective pe cabinet pentru patron: totaluri (in lucru/de validat/depuse/ritm pe zi lucratoare), tabel per asistent (in lucru/pregatite/depuse/% acceptate), timp mediu masurat per tip de declaratie.",F014,cabinet,card Capacitate,core/capacitate_api.py,,LIVE,vizual
+Registru de casa + plafoane,"Registru zilnic cu sold curent per operatiune, reguli de cont pe tip (incasare client 5311=4111 etc.), verificare plafoane numerar (Legea 70/2015), avansuri de trezorerie (acordare 542 / restituire cu justificare).",F015,firma,card Casa,core/casa.py + core/casa_api.py,Legea 70/2015,LIVE,pytest
+Forecast cash-flow 8 saptamani,"Previziunea banilor: cash curent + incasari/plati asteptate pe scadente; soldurile 4111/401 alocate pe facturile deschise, obligatiile fiscale din balanta, cheltuielile lunare recurente estimate.",F016,firma,Portal > Cifrele firmei,core/cashflow.py,,LIVE,pytest
+Chitante emise,Chitanta cod 14-4-1 cu suma in litere si PDF; emitere la certificarea platilor cash (bon pozat de client -> chitanta).,F017,firma,Bonuri si chitante / portal Pozeaza bon,core/chitante.py,Ordin 2634/2015,LIVE,
+Parteneri (clienti/furnizori),"CRUD parteneri in schema firmei: lista, creare, editare, stergere, cu reguli de validare; folositi la facturare, solduri, reconciliere.",F018,firma,Emitere / Solduri parteneri,core/clienti_api.py,,LIVE,
+Coada de validare patru-ochi,"Fluxul declaratiilor: pregatita -> aprobata/respinsa (cu motiv) -> depusa (cu index SPV); tranzitii de stare validate, hash pe payload, patru-ochi pe ID (pregatitorul nu aproba), cronometru de efort (inceput_la).",F019,transversal,De validat / Declaratii,core/coada_api.py,,LIVE,403 dovedit pe self-approval
+"Comodat, chirii, refacturari","Note pentru comodat (evidenta extrabilantiera), chirie platita/incasata, refacturare utilitati (art. 271 CF: refacturarea = livrare/prestare in nume propriu).",F020,firma,Operatiuni speciale,core/comodat_chirii.py,OMFP 1802/2014; art. 271 CF,LIVE,pytest
+Contracte de munca speciale,"Calcul pentru zilieri (remuneratie minima, impozit, fara contributii sociale standard), cenzori si mandat administrator, cu notele contabile aferente.",F021,firma,Salarizare / Operatiuni,core/contracte_speciale.py,Legea 52/2011; CF,LIVE,pytest
+Semafor conformare fiscala,"Pentru fiecare firma: declaratiile DATORATE (din vectorul fiscal: TVA/regim/salariati) vs cele depuse, cu termene ANAF -> stare verde/galben/rosu; agregat pe portofoliu si detaliat per firma.",F022,transversal,Control fiscal (cabinet + per firma + asistent),core/control_fiscal_api.py,,LIVE,vizual + testat KAI
+Regula cotelor de TVA,"Sursa unica a cotelor (21/11/0% de la 01.08.2025): potrivirea cotei corecte pe descrierea produsului (regula + AI cu justificare), lista cotelor valide pe perioada.",F023,transversal,Produse / Emitere / Raport Z,core/cote_tva.py,art. 291 CF; Legea 141/2025,LIVE,pytest
+Credite bancare si garantii,"Note pentru primirea creditului, dobanda angajata lunar, plata ratelor, restante si garantii (conturi 162/168/519x/8051).",F024,firma,Operatiuni speciale > Finantare,core/credite.py,OMFP 1802/2014 pct. 360-364,LIVE,pytest
+Curs valutar BNR,"Preia si aplica cursul BNR pentru facturile in valuta, cu regula legala a cursului corect pe data operatiunii si conversia TVA.",F025,transversal,Emitere / operatiuni valutare,core/curs_bnr.py,art. 290(2) CF,LIVE,pytest
+Declaratia D100,"Impozitele la bugetul de stat, in principal impozitul micro: cota pe perioada, proratizare, scadente micro, numar de evidenta cu checksum, XML validat.",F026,firma,Declaratii,core/d100.py,OPANAF 587/2016 mod.,LIVE,DUKIntegrator
+Declaratia D101 + IMCA,"Impozitul pe profit anual (namespace v10): calcul din balanta, pierdere reportata, IMCA (impozit minim cifra afaceri, 0,5% 2026) cu comparatia P46/P47, sub-randuri, XML validat.",F027,firma,Declaratii,core/d101.py,OPANAF 206/2025,LIVE,DUKIntegrator
+Declaratia D112,"Contributii sociale si impozit pe salarii: pull din statul de plata (inclusiv CM cu asiguratB3, part-time cu supliment angajator pe baza minima, facilitati), generare XML pe namespace v7.",F028,firma,Declaratii / Salariati,core/d112.py,CF titlul V,LIVE,DUKIntegrator cap-coada
+Declaratia D205 + distribuire dividende,"Impozit retinut la sursa (dividende): beneficiari cu cota pe an (8/10/16%), impartire automata a dividendului brut pe asociati dupa cote, XML validat.",F029,firma,Declaratii (tab D205 + asociati),core/d205.py,CF art. 97,LIVE,DUKIntegrator + ANAF
+Motor D212 (PFA/II/IF),"Calcul sistem real partida simpla: venit net, CAS si CASS pe plafoane (6/12/24 salarii minime), pentru Fisa D212 din registrul de incasari/plati.",F030,firma,RIP > Fisa D212,core/d212_engine.py,"CF art. 148-149, 154, 170",LIVE,pytest
+Declaratia D300,"Decontul de TVA v12: calcul din facturi pe cote (21/11/9), TVA de plata/recuperat, tip decont lunar/trimestrial, avertismente (linii cu cote atipice, rezultat), XML validat.",F031,firma,Declaratii,core/d300.py,OPANAF 174/2026; Legea 141/2025,LIVE,DUKIntegrator
+Declaratia D301,"Decontul special de TVA pentru neplatitori cu achizitii UE (servicii Google/FB, bunuri intracom): baza la curs, servicii tip 5 cu parinte tip 4, XML validat.",F032,firma,Declaratii,core/d301.py,OPANAF 592/2016,LIVE,DUKIntegrator
+Declaratia D390 (VIES),"Recapitulativa intracomunitara: livrari/achizitii/prestari pe parteneri UE cu mapare automata emisa->L, primita->A, avertisment pe CUI UE invalid si pe clasificarile manuale (P/S, T/R), XML validat.",F033,firma,Declaratii,core/d390.py,ANAF v3,LIVE,DUKIntegrator
+Declaratia D394,"Informativa livrari/achizitii nationale pe parteneri: calcul din facturi, XML generat.",F034,firma,Declaratii,core/d394.py,ANAF,PARTIAL - generator complet; validare DUKIntegrator blocata pe desktop (carenta 3),generator complet; validare DUK blocata
+D406 SAF-T lunar,"Fisierul Standard de Control Fiscal (schema v2.4.9): GLEntries cu regula de partener (00+CUI propriu pe liniile fara partener, client pe 4111/419, furnizor pe 401/409), mapare manuala a conturilor nestandard, XML + validare + PDF cu un click.",F035,firma,Declaratii (tab D406),core/d406.py,OPANAF; schema v2.4.9,LIVE,DUKIntegrator 0 erori end-to-end
+D406 Active (SAF-T anual),"Sectiunea Assets din SAF-T anual: calculul per activ din registrul de mijloace fixe, XML pe saft.xsd oficial.",F036,firma,Declaratii D406,core/d406_active.py,schema SAF-T ANAF,LIVE,pe XSD oficial
+D406 Stocuri (la cerere),"Sectiunea PhysicalStock din SAF-T la cerere: soldurile de stoc pe articole, XML pe saft.xsd.",F037,firma,Declaratii D406,core/d406_stocuri.py,schema SAF-T ANAF,LIVE,pe XSD oficial
+Dispatch declaratii,"Punct unic pentru cele 9 declaratii: tipuri, periodicitate (lunar/trimestrial/anual), validarea cererii, rutarea catre generatorul potrivit - o singura ruta HTTP pentru toate.",F038,transversal,Declaratii (toate intrarile),core/declaratii_api.py,,LIVE,
+Decontari asociati,"Note pentru dividende (455/457 cu cota pe an), dividende interimare cu regularizare, imprumuturi de la/catre asociati (455/456/463).",F039,firma,Operatiuni speciale > Finantare,core/decontari_asociati.py,Legea 31/1990 art. 67; OMFP 1802,LIVE,pytest
+Deconturi deplasare si diurna,"Avans de deplasare, decont cu justificare si diferenta (restituire/plata), plafonul de diurna neimpozabila intern/extern.",F040,firma,Operatiuni speciale,core/deconturi.py,art. 76 CF; HG 714/2018,LIVE,pytest
+Diferente de curs valutar,Diferentele la decontarea creantelor/datoriilor in valuta (665/765) si reevaluarea soldurilor la finele perioadei.,F041,firma,Operatiuni speciale / automat la decontare,core/diferente_curs.py,OMFP 1802/2014 pct. 316-322,LIVE,pytest
+Documente pentru portal,"Arhiva documentelor firmei pentru client: lunile disponibile, balanta lunara ca PDF, declaratiile depuse - totul read-only.",F042,portal,Portal > Documente,core/documente_api.py,,LIVE,
+Import e-Factura (UBL),"Parser pentru XML-urile e-Factura (UBL 2.1 / CIUS-RO): numar, data, scadenta, parti, linii cu cote - facturile primite intra in aplicatie fara retastare.",F043,firma,Facturi (import),core/efactura_import.py,CIUS-RO,LIVE,
+Notificare e-Transport,"Genereaza XML-ul notificarii v2 (UIT) pe structura oficiala, pentru incarcare manuala in SPV: operatiune, bunuri cu cod tarifar/greutati/valoare, partener, puncte incarcare/descarcare, vehicul.",F044,firma,card e-Transport,core/etransport.py,schema mfp v2,PARTIAL - XML pentru upload manual SPV; trimitere directa prin API inexistenta (carenta 6),vizual
+PDF factura,"Genereaza PDF-ul facturii cu identitatea vizuala a firmei-client (logo, font, culoare accent din Model factura).",F045,firma,Facturi / portal,core/factura_pdf.py,,LIVE,
+Contare facturi + TVA + storno,"Motor pur: TVA pe cote, nota pentru factura emisa (4111=70x+4427) si primita (60x+4426=401), taxare inversa, storno cu semn.",F046,firma,Facturi (contare automata ca ciorna),core/facturi.py + core/facturi_api.py,OMFP 1802/2014,LIVE,pytest
+Facturi recurente,"Sabloane cu zi de emitere: lista/adaugare/activare-dezactivare/stergere; cron-ul zilnic emite scadentele (sablon activ, zi <= azi, o singura data pe luna).",F047,firma,Facturi > Facturi recurente,core/facturi_recurente.py,,LIVE,de testat cap-coada P1.4
+Profil firma + model factura,"Profilul firmei din schema tenant (regim fiscal, platitor TVA, banca/IBAN, antet) + modelul vizual de factura (logo, font, culoare) cu salvare.",F048,firma,Model factura / Control fiscal,core/firma_profil_api.py,,LIVE,
+Import/export extracomunitar,"Baza TVA la import (valoarea in vama + taxe + comisioane), calculul importului, validarea exportului (scutit cu drept de deducere).",F049,firma,Operatiuni speciale > Extern,core/import_export.py,art. 289 CF,LIVE,pytest
+Operatiuni intracomunitare,"AIC/LIC si servicii B2B: despartirea codului TVA, verificare VIES a partenerului, taxare inversa (4426=4427), validarile livrarii si prestarii IC.",F050,firma,Operatiuni speciale > Extern / Emitere,core/intracomunitar.py,"art. 268, 278(2) CF",LIVE,pytest
+Verificator praguri Intrastat,Analizeaza fluxurile UE ale firmei contra pragurilor 2026 (1.000.000 lei expedieri/introduceri) si avertizeaza cand se apropie obligatia de raportare.,F051,firma,Control fiscal (verificare),core/intrastat.py,Ordin INS 1604/2025,LIVE,
+Inventariere anuala,"Notele rezultatelor inventarierii dupa compensari: plusuri (marfa/MF), minusuri imputabile/neimputabile, casare mijloace fixe.",F052,firma,Operatiuni speciale > Imobilizari,core/inventariere.py,OMFP 2861/2009; art. 304 CF,LIVE,pytest
+Import istoric declaratii (migrare),"Citeste lista declaratiilor deja depuse in vechiul program (tip/an/luna) si le inregistreaza, ca iConta sa nu le ceara ca restanta.",F053,firma,Migrare / Import date,core/istoric_declaratii_import_api.py,,LIVE,
+Editor note contabile,"Creare/editare/stergere/validare note: doar ciornele se modifica (AI propune ciorna, contabilul valideaza - validata devine imutabila).",F054,firma,Registru jurnal,core/jurnal_api.py,,LIVE,
+KPI client (portal),"P&L, cash, creante si datorii calculate din balanta cumulata - cifrele firmei pe portal, in limbaj de antreprenor.",F055,portal,Portal > Cifrele firmei,core/kpi_client.py,,LIVE,pytest
+Leasing financiar si operational,"Note pentru leasingul financiar (primire 2133=167, rata cu dobanda si TVA, valoare reziduala) si operational (chirie 612=401+4426).",F056,firma,Operatiuni speciale > Finantare,core/leasing.py,OMFP 1802/2014 pct. 212-217,LIVE,pytest
+Lichidare/radiere societate,"Nota de vanzare a activelor la lichidare si partajul intre asociati, cu impozitul pe castigul din lichidare.",F057,firma,Operatiuni speciale,core/lichidare.py,OMFP 897/2015; L31/1990; L85/2014,LIVE,pytest
+Starea migrarii pe straturi,Per cabinet: fiecare strat cu stare (gata/in lucru + nota ce mai lipseste) decisa explicit; remindere pentru straturile ramase.,F058,cabinet,Migrare cabinet,core/migrare_api.py,,LIVE,vizual (9 straturi)
+Import mijloace fixe (migrare),"Citeste registrul de mijloace fixe din export (valoare, durata, amortizare cumulata) - amortizarea continua fara reluare de la zero.",F059,firma,Migrare / Import date,core/mijloace_fixe_import_api.py,,LIVE,
+Monitor fiscal (noutati legislative),"Cron saptamanal: citeste noutatile ANAF/MF, AI filtreaza relevanta (TVA, salarii, plafoane, declaratii, dividende) cu data intrarii in vigoare, salveaza si trimite email.",F060,admin,— (automat) + email,core/monitor_fiscal.py,,"PARTIAL - detectie+email exista; afisare programata lipseste (vezi F103, carenta 1)",pytest
+Motor contabil (carte mare + inchidere),"Nucleul contabilitatii: cartea mare din note validate, rezultatul, inchiderea de luna (TVA, venituri/cheltuieli in 121) si de an (rezerva legala, repartizare 129).",F061,firma,— (motorul tuturor rapoartelor),core/motor.py,OMFP 1802/2014,LIVE,pytest (bug nota neechilibrata prins la rescriere)
+Notificari pe evenimente,"O notificare = eveniment catre un user (mesaj client, respingere, validare); adresare individuala sau catre validatorii cabinetului; contor necitite + marcare citit.",F062,transversal,clopotel,core/notificari_api.py,,LIVE,
+Obiecte de inventar,"Note pentru achizitie (303), dare in folosinta si scoatere din uz, cu pragul de mijloc fix actualizat (5.000 lei din 25.02.2026).",F063,firma,Operatiuni speciale > Imobilizari,core/obiecte_inventar.py,OMFP 1802/2014; OUG 8/2026,LIVE,pytest
+Contabilitate ONG,Note pe partida dubla specifica ONG (venituri fara scop patrimonial vs economice) si testul scutirii activitatii economice.,F064,firma,Operatiuni speciale,core/ong.py,OMFP 3103/2017; art. 15(2-3) CF,LIVE,pytest
+Povestea lunii (pachet lunar),Aduna cifrele lunii firmei -> AI scrie un draft narativ pentru antreprenor -> contabilul editeaza/aproba -> trimitere pe email; istoric per luna.,F065,cabinet,card Pachete lunare,core/pachete_api.py,,LIVE,vizual
+Perisabilitati si scazaminte,Calculul limitei maxime deductibile pe categorii (HG 831/2004) si nota aferenta pierderilor din perisabilitati.,F066,firma,Operatiuni speciale,core/perisabilitati.py,"HG 831/2004; art. 25, 304 CF",LIVE,pytest
+Link de plata pe factura,Genereaza link de plata online pe factura emisa si confirma incasarea; provider abstract: mock (fara cont) / Netopia / Stripe - cheia providerului per cabinet.,F067,firma,Facturi (detaliu),core/plati.py,,LIVE cu mock; provider real de configurat,pytest
+"API portal (read-only, izolat)","Datele clientului strict pe firmele lui: date firma, declaratii depuse etc.; rol client separat, fara actiuni de contabil.",F068,portal,Portal (toate ecranele),core/portal_api.py,,LIVE,privacy-bug reparat 10.07
+Productie in curs si produse finite,"Note pentru obtinerea produselor (345=711), productia in curs (331), coeficientul 348 (diferente de pret) si vanzarea cu descarcare.",F069,firma,Operatiuni speciale > Imobilizari,core/productie.py,OMFP 1802/2014,LIVE,pytest
+Nomenclator produse + cota AI,"Produsele firmei: denumire -> AI potriveste cota TVA din regula oficiala cu justificare afisata, corectabila manual; cautare si potrivire la emiterea facturilor.",F070,firma,card Produse / Emitere,core/produse_api.py,art. 291 CF,LIVE,vizual (reconectat 13.07)
+Provizioane si ajustari,"Ajustari de valoare pentru creante (cu testul deductibilitatii), provizioane si ajustari de stoc, cu notele aferente.",F071,firma,Operatiuni speciale > Imobilizari,core/provizioane.py,OMFP 1802/2014 s.4.10; art. 26 CF,LIVE,pytest
+Canal de sesizari (Raporteaza),"Feedback de la utilizatori catre Admin iConta: sesizare cu atasamente (capturi), fir de raspunsuri bidirectional, marcare citit.",F072,transversal,Raporteaza (cabinet/asistent/portal) + Admin > Raportari,core/raportari_api.py,,LIVE,vizual
+Reconciliere bancara (matching),"Motor pur de potrivire a liniilor de extras pe facturile deschise ale partenerului: exact, combinatii, FIFO; alocare partiala pe mai multe facturi.",F073,firma,card Banca,core/reconciliere.py + core/reconciliere_api.py,,LIVE,pytest
+Reevaluare imobilizari,"Reevaluarea la valoarea justa (cont 105, metoda valorii nete cu eliminarea amortizarii) si realizarea surplusului din rezerve.",F074,firma,Operatiuni speciale > Imobilizari,core/reevaluare.py,OMFP 1802/2014 pct. 111-116,LIVE,pytest
+Client REGES-ONLINE,"Mesaje catre registrul de evidenta a salariatilor (Inspectia Muncii): inregistrare salariat, adaugare contract, incetare; chei per firma, raspunsuri interogabile.",F075,firma,Salariati > REGES,core/reges_client.py,HG REGES; API oficial,LIVE (API alpha ITM),
+Retetar HoReCa (GV),Reteta = ingrediente cu cantitate/portie; vanzarea a N portii consuma ingredientele din stoc la CMP (iesiri miscari_stoc + nota ciorna) si calculeaza food cost per portie.,F076,firma,Raport Z / retetar,core/retete.py + core/retete_api.py,,PARTIAL - CRUD+descarcare exista; flux complet de re-verificat cu date reale (carenta 5),de re-verificat cu date reale
+Registru incasari/plati (partida simpla),"Registrul-jurnal PFA/II/IF pe luna: operatiuni cu categorie/deductibilitate, validare, import ciorne din banca si din casa, plus Fisa D212.",F077,firma,card Incasari/plati,core/rip_api.py,OMFP 170/2015,LIVE,vizual
+Salariati (CRUD),"Salariatii firmei: creare/editare/stergere cu validare (CNP, norma, contract), alimenteaza statul de plata, D112 si REGES.",F078,firma,card Salariati,core/salariati_api.py,,LIVE,bug tip_norma reparat
+Import salariati (migrare),"Citeste exportul din vechea aplicatie (nume/CNP/salariu/contract), validare CNP, semnalare + sarire pe cele gresite.",F079,firma,Migrare / Import date,core/salariati_import_api.py,,LIVE,
+Calcul salarizare (brut->net),"Motorul salariilor 2026: CAS/CASS/impozit, deducere personala + suplimentare (tineri<26, copii), facilitatea 200/300 lei (4 conditii cumulative), part-time cu supliment angajator pe baza minima, procente CM (55/65/75), monografia salariilor si a platii.",F080,firma,Salariati > Stat de plata,core/salarizare.py,CF titlul IV-V; OUG 158/2005; OUG 34/2024,PARTIAL - stat plata complet; cod 10 CM (calcul_cm_cod10) neintegrat in flux (carenta 2),285 pytest pe core + DUK pe D112
+Calculul scadentelor,"Data scadentei per declaratie (25 ale lunii etc.), mutata la prima zi lucratoare dupa sarbatori legale (calendar cu Pastele pe ani).",F081,transversal,Termene / Control fiscal,core/scadente.py,calendar sarbatori legale,LIVE,
+SGR (garantie-returnare),"Notele fluxului SGR: garantie la achizitie/vanzare (0,50 lei/ambalaj), restituire consumator, autofactura RetuRO, virarea garantiilor.",F082,firma,Operatiuni speciale,core/sgr.py,HG 1074/2021,LIVE,pytest
+Sinteza zilnica pe email,"Seara, patronul primeste pe email sinteza cabinetului: pregatite/validate/respinse/depuse, productia echipei, evenimente; aceeasi sinteza si in card, la cerere.",F083,cabinet,card Sinteza zilei + email (cron),core/sinteza_zilnica.py,,LIVE,vizual
+Import solduri initiale (migrare),"Citeste balanta de deschidere (.xlsx/.csv), extrage soldurile per cont si le importa ca pozitie de pornire; conturile analitice intra automat in plan.",F084,firma,Migrare / Import date,core/solduri_api.py,,LIVE,
+Import solduri parteneri (migrare),"Defalcarea 4111/401 per client/furnizor din export, cu verificarea automata a coerentei fata de balanta de deschidere.",F085,firma,Migrare / Import date,core/solduri_parteneri_api.py,,LIVE,
+Sponsorizari si credit fiscal,"Plafonul creditului fiscal (0,75% CA / 20% impozit), creditul de sponsorizare si nota; fara credit ramane simpla cheltuiala.",F086,firma,Operatiuni speciale,core/sponsorizari.py,art. 25(4)i CF; Legea 32/1994,LIVE,pytest
+Stat de plata + fluturasi,"Statul de plata lunar per firma (toti salariatii, prin motorul de salarizare) si fluturasii PDF individuali.",F087,firma,Salariati,core/stat_plata_api.py,,LIVE,vizual + parte din D112 DUK
+Stocuri global-valorice,"Metoda pretului cu amanuntul: NIR cu adaos si TVA neexigibila (378/4428), coeficientul K, descarcarea gestiunii lunare.",F088,firma,card Stocuri,core/stocuri.py + core/stocuri_api.py,OMFP 1802/2014,LIVE,pytest
+Stocuri cantitativ-valorice (CMP),"Fise de magazie per articol cu CMP recalculat la fiecare intrare, valoarea iesirilor la CMP curent.",F089,firma,card Stocuri,core/stocuri_cv.py + core/stocuri_cv_api.py,OMFP 1802/2014 pct. 96,LIVE,pytest
+Subventii,Note pentru subventiile de exploatare (inclusiv cele pe salarii) si de investitii (4751 cu reluarea lunara la venituri pe durata amortizarii).,F090,firma,Operatiuni speciale,core/subventii.py,OMFP 1802/2014 pct. 392-402,LIVE,pytest
+Taxare inversa interna,"Aplicarea art. 331: conditie ambele parti platitoare de TVA, categoriile eligibile, TVA-ul beneficiarului (4426=4427).",F091,firma,Operatiuni speciale > TVA regimuri,core/taxare_inversa.py,art. 331 CF; norme pct. 109,LIVE,pytest
+Provisioning tenant (schema per firma),Firma noua = schema PostgreSQL dedicata cu tabelele din template + planul de conturi OMFP populat + numerotare automata a schemei; actualizare detalii tenant.,F092,transversal,— (automat la Adauga firma),core/tenant_provisioning.py,,LIVE,bug template gol reparat 10.07
+Scadente viitoare pe portofoliu,"Pentru fiecare firma deriva din vectorul fiscal declaratiile datorate cu termenele urmatoarelor 60 de zile; agregare pe portofoliu, grupare pe data.",F093,cabinet,card Termene,core/termene_api.py,,LIVE,vizual
+Educatie pe tipare de erori,Agregate statistice deterministe pe respingerile reale din coada: unde se greseste des si de ce - baza cardului Tipare de erori si a educatiei asistentilor.,F094,cabinet,Activitate > Tipare de erori,core/tipare_api.py,,LIVE,vizual
+Regim special agricultori,Compensatia forfetara 8% si nota achizitiei de la agricultorul cu regim special.,F095,firma,Operatiuni speciale > TVA regimuri,core/tva_agricultori.py,art. 315^1 CF,LIVE,pytest
+Regim special aur de investitii,"Testul de incadrare (lingouri >=995‰, monede eligibile) si livrarea scutita cu regimul special al aurului.",F096,firma,Operatiuni speciale > TVA regimuri,core/tva_aur.py,art. 313 CF,LIVE,pytest
+TVA la incasare,"Exigibilitatea la incasarea totala/partiala: 4428->4427 proportional cu incasarile, alocarile pe facturi, verificarea plafonului de eligibilitate.",F097,firma,Operatiuni speciale > TVA regimuri,core/tva_incasare.py,art. 282 CF; OUG 8/2026,LIVE,pytest; de testat P2.6
+Regim special marja (second-hand),"TVA doar pe marja (pret vanzare - pret cumparare) pentru bunuri second-hand, cu nota aferenta.",F098,firma,Operatiuni speciale > TVA regimuri,core/tva_marja.py,art. 312 CF; norme pct. 86,LIVE,pytest
+Regim special agentii de turism,"Determina regimul aplicabil si calculeaza: marja pe regim special (incasari - costuri directe), regim normal, comision de intermediar.",F099,firma,Operatiuni speciale > TVA regimuri,core/tva_marja_turism.py,art. 311 CF,LIVE,pytest
+Vector fiscal per firma,"Cele 4 atribute care determina obligatiile: platitor TVA + periodicitate, regim (micro/profit), operatiuni intracomunitare, salariati - stocate in firma_profil; baza semaforului si a declaratiilor datorate.",F100,firma,Migrare > Vector fiscal / Control fiscal,core/vector_fiscal_api.py,,LIVE,vizual
+Verificatoare de coerenta,"Motoare pure de control: echilibrul fiecarei note, echilibrul balantei, TVA pe cote (facturi vs 4427/4426), D205 vs cont 457 - fiecare esec cu explicatie.",F101,firma,Verificari / Control fiscal,core/verificatoare.py,,LIVE,pytest
+Conector WooCommerce,"Config per firma (URL + chei), citirea comenzilor, transformarea in facturi iConta idempotent (comanda deja importata se sare), sincronizare manuala + cron.",F102,firma,card Magazin online,core/woocommerce.py,,LIVE,pytest; de testat P1.5
 Alerte legislative programate,"Modificarile legislative detectate de monitorul fiscal se afiseaza pe ecranele utilizatorilor la DATA decisa de superadmin, cu data intrarii in vigoare - pentru incredere in aplicatie. EXISTA: detectia (monitor AI saptamanal, email) + anunturi imediate cu confirmare. LIPSESTE: data programata a afisarii (tabela anunturi_cabinet nu are campul) + fluxul monitor -> propunere anunt in admin.",F103,transversal,banner utilizatori + admin Anunturi,core/monitor_fiscal.py + anunturi_cabinet,,"PARTIAL - convenit 03.07, neterminat",—
 Navigator ferestre cu traseu,"Ferestre modale peste desktop: fir de parinti in antet, titlul pasului in corp, sageata=pop pe traseul real, X=inchide tot, entitatea doar in antet, scroll memorat per pas.",F104,transversal,toata aplicatia,static/js/navigator.js,,LIVE,vizual
 Sesiune per-tab,sessionStorage per tab: doua cabinete deschise in taburi diferite nu isi suprascriu sesiunea.,F105,transversal,—,static/js/sesiune.js,,LIVE,reparat+verificat 12.07
