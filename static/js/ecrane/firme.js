@@ -1235,13 +1235,13 @@ async function ecranRaportZ(corp, nav, t) {
   corp.innerHTML = `
     <h2 class="pf-titlu">Raport Z</h2>
     <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total.</p>
-    <p><label class="buton-secundar" style="cursor:pointer">Import fisier AMEF (p7b/XML)
+    <p><label class="buton-secundar" style="cursor:pointer">Import fi\u0219ier AMEF (p7b/XML)
       <input type="file" id="z-amef" accept=".p7b,.xml" style="display:none"></label></p>
     <div id="z-amef-msg"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px">
       <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="z-data" class="camp-input"></label>
       <span></span>
-      <label class="camp"><span class="camp-eticheta">Total 11% (mancare)</span><input type="number" step="0.01" id="z-11" class="camp-input" placeholder="0,00"></label>
+      <label class="camp"><span class="camp-eticheta">Total 11% (m\u00e2ncare)</span><input type="number" step="0.01" id="z-11" class="camp-input" placeholder="0,00"></label>
       <label class="camp"><span class="camp-eticheta">Total 21% (alcool, sucuri)</span><input type="number" step="0.01" id="z-21" class="camp-input" placeholder="0,00"></label>
       <label class="camp"><span class="camp-eticheta">Numerar</span><input type="number" step="0.01" id="z-num" class="camp-input" placeholder="0,00"></label>
       <label class="camp"><span class="camp-eticheta">Card</span><input type="number" step="0.01" id="z-card" class="camp-input" placeholder="0,00"></label>
@@ -1259,7 +1259,7 @@ async function ecranRaportZ(corp, nav, t) {
           method: "POST", headers: { Authorization: "Bearer " + sesiune.token() }, body: fd });
         const r = await resp.json();
         if (!resp.ok) throw new Error(r.detail || "eroare");
-        zona.innerHTML = `<p class="pf-intro">Importat: Z din ${dataRo(r.data)}, total ${r.total} (numerar ${r.numerar}, card ${r.card_altele}), TVA ${r.tva_total}. Nota <b>ciorna</b> #${r.inregistrare_id} - verifica cu Z-ul tiparit.</p>`;
+        zona.innerHTML = `<p class="pf-intro">Importat: Z din ${dataRo(r.data)}, total ${bani(r.total)} (numerar ${bani(r.numerar)}, card ${bani(r.card_altele)}), TVA ${r.tva_total}. Nota <b>ciorna</b> #${r.inregistrare_id} - verifica cu Z-ul tiparit.</p>`;
       } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.message || "eroare"}</div>`; }
       ev.target.value = "";
     });
