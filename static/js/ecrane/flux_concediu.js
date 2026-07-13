@@ -11,6 +11,7 @@ const CM_CODURI = [
   ["05", "05 — Boală infectocontagioasă grupa A (100%)"],
   ["06", "06 — Urgență medico-chirurgicală (100%)"],
   ["07", "07 — Carantină (75%)"],
+  ["10", "10 — Reducere timp de muncă cu 1/4 (art. 19)"],
   ["08", "08 — Maternitate (85%)"],
   ["09", "09 — Îngrijire copil bolnav (85%)"],
   ["12", "12 — Tuberculoză (100%)"],
@@ -80,6 +81,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp"><span class="camp-eticheta">Serie</span><input type="text" id="cm-serie" class="camp-input" placeholder="ex. AB"></label>
           <label class="camp"><span class="camp-eticheta">Num\u0103r</span><input type="text" id="cm-numar" class="camp-input" placeholder="ex. 1234567"></label>
           <label class="camp" style="grid-column:span 2"><span class="camp-eticheta">Cod indemniza\u021bie</span><select id="cm-cod" class="camp-input">${optCod}</select></label>
+          <label class="camp" id="cm-venit-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">Venit brut realizat \u00een noua situa\u021bie (lei)</span><input type="number" id="cm-venit" class="camp-input" min="0" step="0.01"></label>
           <label class="camp"><span class="camp-eticheta">Data acord\u0103rii</span><input type="date" id="cm-acord" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Data \u00eenceput<span class="oblig">*</span></span><input type="date" id="cm-inceput" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Data sf\u00e2r\u0219it <span class="oblig">*</span></span><input type="date" id="cm-sfarsit" class="camp-input"></label>
@@ -98,6 +100,10 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         </p>
         <div id="cm-rezultat"></div>
       </div>`;
+    const selCod = zona.querySelector("#cm-cod");
+    const venitZona = zona.querySelector("#cm-venit-zona");
+    selCod.addEventListener("change", () => { venitZona.style.display = selCod.value === "10" ? "" : "none"; });  // [cod10] camp conditionat
+
 
     zona.querySelector("#cm-renunta").addEventListener("click", () => { zona.innerHTML = ""; });
 
@@ -140,6 +146,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         serie: zona.querySelector("#cm-serie").value,
         numar: zona.querySelector("#cm-numar").value,
         cod: zona.querySelector("#cm-cod").value,
+        venit_realizat: zona.querySelector("#cm-venit").value || null,
         data_acordare: zona.querySelector("#cm-acord").value || null,
         data_inceput: inceput,
         data_sfarsit: zona.querySelector("#cm-sfarsit").value || null,

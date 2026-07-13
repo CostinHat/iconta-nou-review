@@ -212,8 +212,20 @@ def salveaza_concediu(conn, salariat_id, date):
         raise ValueError("Zilele lucratoare din cele 6 luni lipsesc sau sunt 0.")
     if zile_cm <= 0:
         raise ValueError("Zilele lucratoare CM trebuie sa fie cel putin 1.")
-    calc = _s.calcul_cm(ven6, zile6, zile_cm, cod=cod, spitalizare=spitalizare,
-                        la_data=la_data, procent_accident=pacc)
+    if cod == "10":  # [cod10] art. 19 OUG 158/2005: baza - venit realizat, plafon 25% din baza; integral FNUASS (art. 12)
+        from decimal import Decimal as _D
+        vr = date.get("venit_realizat")
+        if vr in (None, ""):
+            raise ValueError("La codul 10 completeaza venitul brut realizat in noua situatie.")
+        mz = (_D(str(ven6)) / _D(zile6)).quantize(_D("0.01"))
+        baza_per = (mz * _D(zile_cm)).quantize(_D("0.01"))
+        brut10 = _s.calcul_cm_cod10(baza_per, vr)
+        calc = {"brut": brut10, "media_zilnica": mz, "procent": _D("0.25"), "diminuare": False,
+                "zile_platite": zile_cm, "zile_ang": 0, "zile_fnuass": zile_cm,
+                "brut_ang": _D("0"), "brut_fnuass": brut10}
+    else:
+        calc = _s.calcul_cm(ven6, zile6, zile_cm, cod=cod, spitalizare=spitalizare,
+                            la_data=la_data, procent_accident=pacc)
     taxe = _s.taxe_cm(calc["brut"], cod=cod, la_data=la_data)
 
     with conn.cursor() as cur:

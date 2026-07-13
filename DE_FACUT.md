@@ -42,7 +42,7 @@ Ultima actualizare: 13.07.2026
 
 ## CARENTE — inventar consolidat 13.07.2026 (functionalitati partiale/promise)
 1. **F103 Alerte legislative programate** (convenit ~03.07): lipseste data programata a afisarii + fluxul monitor fiscal -> propunere anunt. Detalii mai sus.
-2. **Cod 10 CM** (reducere timp munca): calcul_cm_cod10 exista dar NEintegrat in flux; exclus din dropdown.
+2. (REZOLVAT 13.07 seara) Cod 10 CM integrat: dropdown + venit realizat + art.19 + FNUASS integral, testat.
 3. **D394 pe DUKIntegrator**: generatorul exista, validarea desktop blocata (sectiunea 2).
 4. **PWA**: manifest + service worker existente, NEtestate pe HTTPS/telefon (P4.18).
 5. **GV Retetar HoReCa**: CRUD + descarcare exista (descoperit azi in rute); UI/fluxul complet de re-verificat cu date reale (nota veche: "de re-verificat").
