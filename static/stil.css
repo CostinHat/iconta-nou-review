@@ -106,7 +106,7 @@ html, body {
   line-height: 1.35;
 }
 .oblig {  /* asterisc camp obligatoriu */
-  color: #ff3b30;
+  color: var(--rosu-semafor);
   font-weight: 600;
   margin-left: 2px;
 }
@@ -379,7 +379,7 @@ html, body {
 .cab-pct { display: inline-block; width: 15px; height: 15px; border-radius: 50%; margin-right: 8px; vertical-align: -2px; }  /* [p75_carduri_mari] */
 .pct-verde  { background: #1d7a4d; }
 .pct-galben { background: #c9961f; }
-.pct-rosu   { background: #ff3b30; }
+.pct-rosu   { background: var(--rosu-semafor); }
 
 /* mobil: 1-2 coloane */
 @media (max-width: 760px) { .cab-grila { grid-template-columns: 1fr 1fr; } }
@@ -889,7 +889,7 @@ html, body {
 .asi-sem { width:10px; height:10px; border-radius:50%; display:inline-block; }
 .asi-sem-verde  { background:#1d7a4d; }
 .asi-sem-galben { background:#c9961f; }
-.asi-sem-rosu   { background:#ff3b30; }
+.asi-sem-rosu   { background:var(--rosu-semafor); }
 
 /* [patch11_semafor_explicit] */
 .asi-sem-txt { font-size:12.5px; color:#5f5e5a; margin-left:5px; }
@@ -934,7 +934,7 @@ html, body {
 .ac-carduri { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:14px; flex:0 0 auto; }
 .ac-card { background:#f5f6f8; border-radius:8px; padding:10px 12px; text-align:center; }
 .ac-cifra { font-size: var(--text); font-weight:700; color:#22324f; }
-.ac-cifra.ac-rosu { color:#ff3b30; }
+.ac-cifra.ac-rosu { color:var(--rosu-semafor); }
 .ac-descr { font-size: var(--text-mic); color:#5f5e5a; margin-top:2px; }
 /* jurnal: grid pe 5 coloane, antet fix prin mig-sold-tabel flex */
 .ac-tabel .ac-rand, .ac-tabel .ac-cap {
@@ -946,7 +946,7 @@ html, body {
 .ac-cine { font-weight:600; color:#22324f; }
 .ac-act  { display:flex; align-items:center; }
 .ac-decl, .ac-firma { font-size:12.5px; color:#3a4250; }
-.ac-motiv { font-size: var(--text-mic); color:#ff3b30; padding:2px 0 6px 138px; }
+.ac-motiv { font-size: var(--text-mic); color:var(--rosu-semafor); padding:2px 0 6px 138px; }
 
 
 /* [p19_selfview] Ecran F - self-view asistent */
@@ -954,7 +954,7 @@ html, body {
 .sv-carduri { display:flex; gap:10px; margin:8px 0 14px; }
 .sv-card { flex:1; background:#f5f6f8; border-radius:8px; padding:10px 12px; text-align:center; }
 .sv-cifra { font-size: var(--text); font-weight:700; color:#22324f; }
-.sv-cifra.sv-rosu { color:#ff3b30; }
+.sv-cifra.sv-rosu { color:var(--rosu-semafor); }
 .sv-descr { font-size: var(--text-mic); color:#5f5e5a; margin-top:2px; }
 .sv-tipare { display:flex; flex-direction:column; gap:0; margin-bottom:14px; }
 .sv-tipar { display:flex; align-items:center; gap:8px; padding:7px 0;
@@ -997,7 +997,7 @@ html, body {
 
 
 /* [p34_raporteaza] Ecran + badge raportari */
-.cab-card-badge { position:absolute; top:10px; right:10px; min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:#ff3b30; color:#fff; font-size: var(--text-mic); font-weight:700; display:flex; align-items:center; justify-content:center; box-sizing:border-box; }
+.cab-card-badge { position:absolute; top:10px; right:10px; min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:var(--rosu-semafor); color:#fff; font-size: var(--text-mic); font-weight:700; display:flex; align-items:center; justify-content:center; box-sizing:border-box; }
 .rap-titlu-lista { font-size: var(--text-mic); font-weight:600; color:#22324f; margin:18px 0 10px; }
 .rap-lista { display:flex; flex-direction:column; gap:8px; max-width:640px; }
 .rap-gol { font-size: var(--text-mic); color:#8a897f; font-style:italic; padding:8px 0; }
@@ -1005,7 +1005,7 @@ html, body {
 .rap-fir-cap { display:flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer; }
 .rap-fir-cap:hover { background:#f7f8fa; }
 .rap-fir-subiect { font-size: var(--text-mic); font-weight:600; color:#1a2535; flex:1; }
-.rap-badge { min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:#ff3b30; color:#fff; font-size: var(--text-mic); font-weight:700; display:inline-flex; align-items:center; justify-content:center; }
+.rap-badge { min-width:18px; height:18px; padding:0 5px; border-radius:9px; background:var(--rosu-semafor); color:#fff; font-size: var(--text-mic); font-weight:700; display:inline-flex; align-items:center; justify-content:center; }
 .rap-fir-stare { font-size:11.5px; padding:2px 8px; border-radius:10px; }
 .rap-stare-noua { background:#eef2f9; color:#445; }
 .rap-stare-raspuns { background:#e6f6ec; color:#15803d; }
@@ -1038,7 +1038,7 @@ html, body {
 
 
 /* [p38_rap_pct] punct "in asteptare" pe firul de raportare */
-.rap-badge-pct { width:9px; height:9px; border-radius:50%; background:#ff3b30; display:inline-block; flex-shrink:0; }
+.rap-badge-pct { width:9px; height:9px; border-radius:50%; background:var(--rosu-semafor); display:inline-block; flex-shrink:0; }
 
 
 /* [p36_admin_raportari] */
@@ -1111,7 +1111,7 @@ html, body {
   background: transparent;
   border: 1px solid var(--linie);
 }
-.rap-bulina-on { background: #ff3b30; border-color: #ff3b30; }
+.rap-bulina-on { background: var(--rosu-semafor); border-color: var(--rosu-semafor); }
 
 .rap-rand-text { flex: 1 1 auto; min-width: 0; }
 .rap-rand-sus {
@@ -1255,7 +1255,7 @@ html, body {
   line-height: 16px;
   text-align: center;
   border-radius: 9px;
-  background: #ff3b30;
+  background: var(--rosu-semafor);
   color: #fff;
 }
 .rap-tab-nr:empty { display: none; }
@@ -1436,7 +1436,7 @@ html, body {
 .nav-clopot-badge {
   position: absolute; top: 0; right: 0;
   min-width: 16px; height: 16px; padding: 0 4px;
-  background: #ff3b30; color: #fff; border-radius: 9px;
+  background: var(--rosu-semafor); color: #fff; border-radius: 9px;
   font-size: var(--text-mic); font-weight: 700;
   display: none; align-items: center; justify-content: center;
 }
@@ -1656,7 +1656,7 @@ html, body {
 .sa-ev { display: flex; align-items: center; gap: 8px; font-size: var(--text-mic); color: #333; }
 .sa-pct { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .sa-pct.pct-verde { background: #1d7a4d; }
-.sa-pct.pct-rosu { background: #ff3b30; }
+.sa-pct.pct-rosu { background: var(--rosu-semafor); }
 .sa-ev-txt { flex: 1; }
 .sa-ev-ora { color: #aaa; font-size: var(--text-mic); }
 .sa-link { background: none; border: none; color: #1d4ed8; font-size: var(--text-mic); cursor: pointer; padding: 0; }
@@ -1703,7 +1703,7 @@ html, body {
 .pa-card .pa-sub { font-size: var(--text-mic); margin-top: 4px; opacity: 0.85; }
 .pa-verde  { background: #eaf7f0; border-color: #1d7a4d; color: #145c39; }
 .pa-galben { background: #fdf5e3; border-color: #c9961f; color: #8a6410; }
-.pa-rosu   { background: #fdecec; border-color: #ff3b30; color: #a3231c; }
+.pa-rosu   { background: #fdecec; border-color: var(--rosu-semafor); color: #a3231c; }
 .pa-neutru { background: #f1f3f7; border-color: #c3c9d4; color: #4a5464; }
 .pa-lista { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
 .pa-rand { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.6);
@@ -1786,7 +1786,7 @@ html, body {
 /* fac-opt-* eliminate — Lot MENIURI */
 
 /* [p110_avert_css] avertisment firma inactiva la emitere */
-.em-avert-inactiv { background:#fdecec; border:2px solid #ff3b30; border-radius:12px; padding:16px 18px; margin:12px 0; }
+.em-avert-inactiv { background:#fdecec; border:2px solid var(--rosu-semafor); border-radius:12px; padding:16px 18px; margin:12px 0; }
 .em-avert-titlu { color:#c1121f; font-size: var(--text); font-weight:800; margin-bottom:8px; }
 .em-avert-text { color:#a3231c; font-size: var(--text-mic); line-height:1.6; }
 .em-avert-text b { font-weight:700; }
@@ -2036,7 +2036,7 @@ html, body { overflow-y: hidden; }
 .cab-card, .firme-optiune, .mig-op { box-shadow: 0 3px 12px rgba(20,30,45,0.14) !important; }
 .cab-card:hover, .firme-optiune:hover { box-shadow: 0 6px 20px rgba(20,30,45,0.2) !important; }
 /* ============ [STANDARD_BUTOANE] NU SE MODIFICA ============ */
-.buton-sters { border: none; border-radius: var(--raza); background: #ff3b30; color: #fff;
+.buton-sters { border: none; border-radius: var(--raza); background: var(--rosu-semafor); color: #fff;
   padding: 9px 18px; font-family: var(--font); font-size: var(--text-mic); font-weight: 600; cursor: pointer;
   box-shadow: 0 2px 6px rgba(20,30,45,0.25); transition: background 0.15s, transform 0.1s, box-shadow 0.1s; }
 .buton-sters:hover { background: #d92d23; transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.3); }
@@ -2063,7 +2063,7 @@ html, body { overflow-y: hidden; }
 
 
 /* ============ [STANDARD_SEMAFOR] UNIC - NU SE MODIFICA (Design System cap.8) ============
-   Bulina LED 16px, gradient pe culorile CANONICE (verde #1d7a4d, galben #c9961f, rosu #ff3b30),
+   Bulina LED 16px, gradient pe culorile CANONICE (verde #1d7a4d, galben #c9961f, rosu var(--rosu-semafor)),
    eticheta text explicita obligatorie langa bulina. Suprascrie orice definitie veche. */
 .cab-pct, .cf-dot, .asi-sem, .sa-pct,
 span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
@@ -2075,7 +2075,7 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
   background: radial-gradient(circle at 65% 30%, #f0cd7a, #c9961f 60%) !important;
   box-shadow: 0 0 6px rgba(201,150,31,0.45) !important; }
 .pct-rosu, .asi-sem-rosu, .sa-pct.pct-rosu {
-  background: radial-gradient(circle at 65% 30%, #ff8a80, #ff3b30 60%) !important;
+  background: radial-gradient(circle at 65% 30%, #ff8a80, var(--rosu-semafor) 60%) !important;
   box-shadow: 0 0 6px rgba(255,59,48,0.45) !important; }
 /* [pct_info_v1] a 4-a stare: INFORMATIV (albastru). Pt randuri care comunica o cifra,
    nu o verifica (ex. TVA de plata/recuperat) — NU verde (=verificat ok), NU alerta. */

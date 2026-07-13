@@ -5,7 +5,7 @@ import { api } from "../api.js";
 
 function bara(pct) {
   // bara de proportie pentru rata de respingere
-  const c = pct >= 30 ? "#ff3b30" : (pct >= 10 ? "#c9961f" : "#1d7a4d");
+  const c = pct >= 30 ? "var(--rosu-semafor)" : (pct >= 10 ? "var(--galben)" : "var(--verde)");
   return `<div class="tip-bara"><div class="tip-bara-fill" style="width:${pct}%;background:${c}"></div></div>`;
 }
 

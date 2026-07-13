@@ -93,10 +93,10 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
   const cifre = [
     cifra(t.create || 0, "pregatite", "activitate"),
     cifra(t.aprobate || 0, "validate", "activitate", "#1d7a4d"),
-    cifra(t.respinse || 0, "respinse", "tipare", (t.respinse ? "#ff3b30" : null)),
+    cifra(t.respinse || 0, "respinse", "tipare", (t.respinse ? "var(--rosu-semafor)" : null)),
     cifra(t.depuse || 0, "depuse", "activitate", "#1d7a4d"),
     cifra(t.in_asteptare || 0, "de validat", "validat", (t.in_asteptare ? "#c9961f" : null)),
-    cifra(rap.necitite || 0, "sesiz\u0103ri noi", "raport", (rap.necitite ? "#ff3b30" : null)),
+    cifra(rap.necitite || 0, "sesiz\u0103ri noi", "raport", (rap.necitite ? "var(--rosu-semafor)" : null)),
   ].join("");
 
   let asist = "";
@@ -261,7 +261,7 @@ function randeazaMeniuActivitate(corp, nav) {
         <div class="firme-optiune-icon accent-roz">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
         </div>
-        <div class="firme-optiune-titlu">Tipare de erori ${window._activAlerta ? '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ff3b30;margin-left:6px"></span>' : ""}</div>
+        <div class="firme-optiune-titlu">Tipare de erori ${window._activAlerta ? '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--rosu-semafor);margin-left:6px"></span>' : ""}</div>
         <div class="firme-optiune-desc">Unde se greseste des si de ce — educatie din respingerile reale</div>
       </button>
     </div>
