@@ -750,8 +750,8 @@ async function ecranBilant(corp, nav, t) {
       try {
         const r = await api.post(`/tenants/${t.id}/${tip()}-valideaza?${par()}`, {});
         const sem = r.ok
-          ? `<span style="color:#1d7a4d;font-weight:600">\u25cf Validare f\u0103r\u0103 erori</span>`
-          : `<span style="color:#ff3b30;font-weight:600">\u25cf Erori la validare</span>`;
+          ? `<span style="color:var(--verde);font-weight:600">\u25cf Validare f\u0103r\u0103 erori</span>`
+          : `<span style="color:var(--rosu-semafor);font-weight:600">\u25cf Erori la validare</span>`;
         rez.innerHTML = `<p>${sem}</p>` +
           (r.erori ? `<pre class="tip-micut" style="white-space:pre-wrap;background:var(--fundal);padding:8px;border-radius:var(--raza)">${esc(r.erori)}</pre>` : "") +
           (r.avertismente && r.avertismente.length
@@ -989,7 +989,7 @@ async function ecranCasa(corp, nav, t) {
           document: corp.querySelector("#c-doc").value || null,
         });
         const av = (r.avertismente || []).length;
-        zonaM.innerHTML = `<p class="pf-intro">Nota ${esc(r.nota)} creata ca ciorna.${av ? ` <b style="color:#c9961f">${av} avertisment(e) plafon.</b>` : ""}</p>`;
+        zonaM.innerHTML = `<p class="pf-intro">Nota ${esc(r.nota)} creata ca ciorna.${av ? ` <b style="color:var(--galben)">${av} avertisment(e) plafon.</b>` : ""}</p>`;
         deseneaza();
       } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
     });
@@ -1008,7 +1008,7 @@ async function ecranCasa(corp, nav, t) {
 
 // [banca] Import extras + reconciliere pe facturi
 async function ecranBanca(corp, nav, t) {
-  const CUL = { verde: "#1d7a4d", galben: "#c9961f", rosu: "#ff3b30", gri: "#3a4250" };
+  const CUL = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu-semafor)", gri: "#3a4250" };
   corp.innerHTML = `
     <h2 class="pf-titlu">Banc\u0103</h2>
     <p class="pf-intro">Încarcă extrasul (.xls, .xlsx, .csv) \u2014 liniile se potrivesc automat pe facturi dupa CUI.</p>
@@ -1224,8 +1224,8 @@ async function ecranJurnal(corp, nav, t) {
   let inEditare = null; // id-ul notei deschise in editor
 
   const badge = (n) => n.status === "ciorna"
-    ? `<span style="color:#c9961f;font-weight:600">\u25cf Ciorn\u0103</span>`
-    : `<span style="color:#1d7a4d;font-weight:600">\u25cf Validat\u0103</span>`;
+    ? `<span style="color:var(--galben);font-weight:600">\u25cf Ciorn\u0103</span>`
+    : `<span style="color:var(--verde);font-weight:600">\u25cf Validat\u0103</span>`;
 
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
@@ -1276,7 +1276,7 @@ async function ecranJurnal(corp, nav, t) {
     const ciorne = note.filter((n) => n.status === "ciorna").length;
     corp.innerHTML = `
       <h2 class="pf-titlu">Registru jurnal</h2>
-      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:#c9961f;font-weight:600">${ciorne} de validat</span>` : ""}
+      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:var(--galben);font-weight:600">${ciorne} de validat</span>` : ""}
         <button class="buton-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="j-next">luna \u2192</button>
         <button class="buton-primar" id="j-amort" style="margin-left:12px">Genereaz\u0103 amortizarea</button>
@@ -1416,7 +1416,7 @@ async function ecranBonuri(corp, nav, t) {
         <input type="file" id="bc-fisier" accept="image/*" multiple hidden>
         <span class="msg-eroare" id="bc-msg" style="margin-left:8px"></span>
       </div>
-      ${(mesajSucces || _bonuriMesaj) ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 12px">' + (mesajSucces || _bonuriMesaj) + '</p>' : ""}
+      ${(mesajSucces || _bonuriMesaj) ? '<p style="color:var(--verde);font-weight:600;margin:0 0 12px">' + (mesajSucces || _bonuriMesaj) + '</p>' : ""}
       ${itemi}`;
     mesajSucces = ""; _bonuriMesaj = "";
     const bcInput = corp.querySelector("#bc-fisier");  // bon_cabinet_v1
@@ -1541,7 +1541,7 @@ async function ecranBonuri(corp, nav, t) {
         ${fc.map((f) => `
           <label style="display:flex;gap:8px;align-items:center;padding:4px 0">
             <input type="radio" name="d-fact" value="${f.id}" ${f.id === idPref ? "checked" : ""}>
-            <span>Factura ${f.numar || f.id} · ${f.furnizor || ""} · ${f.data ? dataRo(f.data) : ""} · ${bani(f.total)} lei${f.potrivire_cui ? '<span style="color:#1d7a4d;font-weight:600"> ✓ CUI</span>' : ""}${f.potrivire_suma ? '<span style="color:#1d7a4d;font-weight:600"> ✓ sumă</span>' : ""}</span>
+            <span>Factura ${f.numar || f.id} · ${f.furnizor || ""} · ${f.data ? dataRo(f.data) : ""} · ${bani(f.total)} lei${f.potrivire_cui ? '<span style="color:var(--verde);font-weight:600"> ✓ CUI</span>' : ""}${f.potrivire_suma ? '<span style="color:var(--verde);font-weight:600"> ✓ sumă</span>' : ""}</span>
           </label>`).join("")}
         <label style="display:flex;gap:8px;align-items:center;padding:4px 0">
           <input type="radio" name="d-fact" value="" ${idPref ? "" : "checked"}>
@@ -1651,7 +1651,7 @@ async function ecranMagazin(corp, nav, t) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Magazin online</h2>
       <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
-      ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
+      ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
       <p style="margin:0 0 16px"><b>Stare:</b> ${cfg.configurat ? "conectat la " + cfg.url : "neconfigurat"}</p>
       ${cfg.configurat ? '<button class="buton-primar" id="wc-sinc" style="margin-bottom:12px">Sincronizeaza acum</button><br>' : ""}
       <button class="acces-card meniu-card" id="wc-btn-config">${cfg.configurat ? "Modifica configurarea" : "Configureaza magazinul"}</button>
@@ -1666,7 +1666,7 @@ async function ecranMagazin(corp, nav, t) {
       try {
         const r = await api.post(`/tenants/${t.id}/woocommerce/sincronizeaza`, {});
         const n = (r.importate || []).length;
-        zona.innerHTML = `<span style="color:#1d7a4d">${n} facturi importate, ${r.sarite || 0} deja existente.</span>`;
+        zona.innerHTML = `<span style="color:var(--verde)">${n} facturi importate, ${r.sarite || 0} deja existente.</span>`;
       } catch (e) { zona.innerHTML = `<span style="color:var(--rosu)">${e.mesaj || "eroare"}</span>`; }
     });
   }
@@ -1712,7 +1712,7 @@ async function ecranAccesClient(corp, nav, t) {
   async function randeazaPrincipal() {
     nav.setInapoi(undefined);
     corp.innerHTML = `
-      ${mesajSucces ? '<p style="color:#1d7a4d;font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
+      ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
       <h3 style="margin:0 0 8px">Conturi client</h3>
       <div id="ac-lista" style="margin-bottom:16px"><p class="ecran-nota">Se încarcă...</p></div>
       <button class="acces-card meniu-card" id="ac-btn-invita">Invita client nou</button>
