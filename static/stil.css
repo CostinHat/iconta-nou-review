@@ -1911,14 +1911,14 @@ html, body {
 .fd-storno-actiuni { display: flex; gap: 8px; }
 
 /* ICRD_SOLICITARI_FRONT_V1 - chat solicitari client<->cabinet */
-.sol-fir { display:flex; flex-direction:column; gap:10px; max-height:420px; overflow-y:auto; padding:12px; background: var(--alb); border: 1px solid var(--linie); border-radius: var(--raza); }  /* portal_ds_audit_a_v1 */
+.sol-fir { display:flex; flex-direction:column; gap:10px; padding:12px; background: var(--alb); border: 1px solid var(--linie); border-radius: var(--raza); }  /* un singur scroll: al ferestrei */
 .sol-rand { max-width:80%; padding:10px 14px; border-radius:12px; }
 .sol-client { align-self:flex-end; background:#e9f0fe; }
-.sol-cabinet { align-self:flex-start; background:#f1f1f1; }
+.sol-cabinet { align-self:flex-start; background: var(--fundal); }
 .sol-mesaj { font-size: var(--text-mic); line-height:1.4; white-space:pre-wrap; }
-.sol-meta { font-size: var(--text-mic); color:#888; margin-top:4px; }
+.sol-meta { font-size: var(--text-mic); color: var(--gri); margin-top:4px; }
 .sol-trimite { display:flex; gap:10px; margin-top:14px; }
-.sol-trimite textarea { flex:1; resize:vertical; padding:10px; border-radius:8px; border:1px solid #ddd; font-family:inherit; font-size: var(--text-mic); }
+.sol-trimite textarea { flex:1; resize:vertical; padding:10px; border-radius:8px; border:1px solid #b9c2cf; font-family:inherit; font-size: var(--text-mic); }
 .mig-rosu { color: #b91c1c; background: #fee2e2; }
 #ac-lista [data-zebra="0"] { background: var(--albastru-clar); }
 #ac-lista [data-zebra="1"] { background: var(--alb); }  /* aliniat STANDARD_ZEBRA */
