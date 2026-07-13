@@ -436,7 +436,7 @@ def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
 def admin_alerte_fiscale(ctx=Depends(cere_rol("superadmin"))):
     with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
         cur.execute("""SELECT id, sursa, titlu, rezumat, url, relevanta, creat_la
-                       FROM public.alerte_fiscale WHERE NOT vazut ORDER BY id DESC LIMIT 30""")
+                       FROM public.alerte_fiscale WHERE NOT vazut AND sursa != 'anaf_buletin' ORDER BY id DESC LIMIT 30""")
         rows = [dict(r) for r in cur.fetchall()]
     for r in rows:
         r["creat_la"] = str(r["creat_la"])
