@@ -110,9 +110,11 @@ def descarca(conn, schema, corp):
             if c["cantitate"] > l["stoc"]:
                 raise ValueError(f"stoc insuficient la {l['denumire']}: "
                                  f"necesar {c['cantitate']}, disponibil {l['stoc']}")
+        import datetime as _dt
+        d = corp.get("data") or _dt.date.today().isoformat()  # [gv_fix] fara data -> azi
         cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                         VALUES (%s,%s,'stocuri','ciorna') RETURNING id""",
-                    (corp["data"], f"Consum reteta {ret['denumire']} x{corp['portii']}"[:200]))
+                    (d, f"Consum reteta {ret['denumire']} x{corp['portii']}"[:200]))
         iid = cur.fetchone()["id"]
         pe_cont = {}
         for l in linii_r:
@@ -122,7 +124,7 @@ def descarca(conn, schema, corp):
             cur.execute(f"""INSERT INTO {schema}.miscari_stoc
                             (articol_id, data, tip, cantitate, valoare, document, inregistrare_id)
                             VALUES (%s,%s,'iesire',%s,%s,'reteta',%s)""",
-                        (l["articol_id"], corp["data"], c["cantitate"], c["valoare"], iid))
+                        (l["articol_id"], d, c["cantitate"], c["valoare"], iid))
         for (deb, cred), suma in pe_cont.items():
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                             (inregistrare_id, cont_debit, cont_credit, suma)

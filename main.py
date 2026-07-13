@@ -21,7 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from core import nucleu as _nucleu
+from core import nucleu as _nucleu, articole_import_api
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
@@ -1462,6 +1462,34 @@ def asociati_import_salveaza(tenant_id: int, date: AsociatiImportIn, ctx=Depends
 
 
 
+# === IMPORT ARTICOLE + STOC INITIAL CV (F151) ===
+class ArticolImportIn(BaseModel):
+    denumire: str
+    um: str = "buc"
+    cantitate: float = 0
+    pret: float = 0
+    cont_stoc: str = "302"
+    cont_cheltuiala: str = "601"
+    valid: bool = True
+    motiv: str = "ok"
+class ArticoleImportIn(BaseModel):
+    randuri: list[ArticolImportIn]
+    data_sold: Optional[str] = None
+@app.post("/tenants/{tenant_id}/articole-import/incarca")
+async def articole_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
+    _schema_sau_404(ctx, tenant_id)
+    continut = await fisier.read()
+    try:
+        randuri = articole_import_api.extrage(continut, fisier.filename or "")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    return {"randuri": randuri, "rezumat": articole_import_api.rezumat(randuri)}
+@app.post("/tenants/{tenant_id}/articole-import")
+def articole_import_salveaza(tenant_id: int, date: ArticoleImportIn, ctx=Depends(cere_rol("admin_firma"))):
+    schema = _schema_sau_404(ctx, tenant_id)
+    randuri = [r.model_dump() for r in date.randuri]
+    with db.get_conn(schema) as conn:
+        return articole_import_api.importa(conn, schema, randuri, data_sold=date.data_sold)
 # ============================================================
 #  MIGRARE STRAT 6 — MIJLOACE FIXE (registru amortizare)
 # ============================================================
