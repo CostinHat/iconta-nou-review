@@ -97,10 +97,13 @@ def lista_coada(conn, cabinet_id, stare=None):
         cond.append("stare = %s"); val.append(stare)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
-            "SELECT id, tenant_id, tip, perioada, stare, coerenta, creat_de, "
-            "creat_la, aprobat_de, respins_de, motiv_respingere "
-            "FROM public.declaratii_coada WHERE " + " AND ".join(cond) +
-            " ORDER BY creat_la DESC", val)
+            "SELECT c.id, c.tenant_id, c.tip, c.perioada, c.stare, c.coerenta, c.creat_de, "
+            "c.creat_la, c.aprobat_de, c.respins_de, c.motiv_respingere, "
+            "COALESCE(u.nume, u.email) AS creat_de_nume "  # [val_nume_v1] numele pregatitorului, nu UID brut
+            "FROM public.declaratii_coada c "
+            "LEFT JOIN public.users u ON u.id = c.creat_de_id "
+            "WHERE " + " AND ".join("c." + x for x in cond) +
+            " ORDER BY c.creat_la DESC", val)
         return [dict(r) for r in cur.fetchall()]
 
 

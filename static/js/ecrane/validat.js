@@ -96,7 +96,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm) {
   div.innerHTML = `
     <div class="val-info">
       <div class="val-titlu"><b>${(c.tip||"").toUpperCase()}</b> · ${c.perioada}</div>
-      <div class="val-sub">${numeFirma(firme, c.tenant_id)} · pregătit de ${c.creat_de || "—"}</div>
+      <div class="val-sub">${numeFirma(firme, c.tenant_id)} · pregătit de ${c.creat_de_nume || c.creat_de || "—"}</div>
     </div>
     <div class="val-mij">${coer}</div>
     <div class="val-actiuni">${actiuni}</div>
