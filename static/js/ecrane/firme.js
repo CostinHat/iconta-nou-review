@@ -288,7 +288,7 @@ function meniuFirma(corp, nav, t) {
   const bImport = corp.querySelector("#fa-import");
   if (bImport) {
     bImport.addEventListener("click", () => {
-      nav.mergi("Import date \u00b7 " + (t.nume || ""), (c) => meniuMigrarePerFirma(c, nav, { tenant_id: t.id, nume: t.nume }));
+      nav.mergi("Import date", (c) => meniuMigrarePerFirma(c, nav, { tenant_id: t.id, nume: t.nume }));  // entitatea e in antet (DS cap.1), nu in titlu
     });
   }
 }
@@ -1804,13 +1804,13 @@ async function ecranAccesClient(corp, nav, t) {
         zona.innerHTML = cl.map((c) => `
           <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e5e9f0">
             <div><b>${esc(c.email)}</b> · ${esc(c.nume || "")} ${c.activ ? "" : ' · <span style="color:var(--rosu)">dezactivat</span>'}</div>
-            ${c.activ ? `<button class="buton-secundar" data-id="${c.id}">Revoca</button>` : ""}
+            ${c.activ ? `<button class="buton-secundar" data-id="${c.id}">Revoc\u0103</button>` : ""}
           </div>`).join("");
         zona.querySelectorAll("button[data-id]").forEach((b) => b.addEventListener("click", () => {
           confirmaCaseta(b.parentElement, "Revoci accesul acestui client?", async () => {
             await api.del(`/tenants/${t.id}/client-acces/${b.dataset.id}`);
             randeazaPrincipal();
-          }, { textOk: "Revoca" });
+          }, { textOk: "Revoc\u0103" });
         }));
       }
     } catch (e) { zona.innerHTML = `<p class="ecran-nota">${e.mesaj || e.message}</p>`; }
