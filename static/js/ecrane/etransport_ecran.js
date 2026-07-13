@@ -16,7 +16,7 @@ export async function ecranEtransport(corp, nav, t) {
   const blocLoc = (p, titlu) => `
     <div class="pf-frand-nume" style="margin:12px 0 6px">${titlu}</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
-      ${sel(p + "-judet", "Judet *", JUDETE.map((j) => [j, j]))}
+      ${sel(p + "-judet", "Jude\u021b *", JUDETE.map((j) => [j, j]))}
       ${inp(p + "-localitate", "Localitate *")}
       ${inp(p + "-strada", "Strada *")}
       ${inp(p + "-numar", "Numar")}
