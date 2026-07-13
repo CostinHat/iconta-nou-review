@@ -15,3 +15,18 @@ SAGA C/WEB,Cloud multi-user pe o baza de date,"SAGA WEB: echipa pe aceeasi baza,
 SAGA C/WEB,Intrastat raportare completa,Suport raportare Intrastat,PARTIAL (F051),"iConta: doar verificator de praguri, fara generarea raportarii"
 SAGA C/WEB,"Module verticale (asociatii proprietari, amanet)","Liste intretinere, penalizari, fond rulment; case de amanet cu gajuri",GOL,verticale in afara scopului iConta (de decis strategic)
 SAGA C/WEB,e-Factura + e-Transport + SAF-T,Suport complet raportari electronice,"DA/PARTIAL (F043 import, F044 XML manual, F035-F037 SAF-T)","iConta: e-Factura doar import (fara trimitere), e-Transport fara API"
+SmartBill,e-Factura: emitere + trimitere AUTOMATA in SPV + primire,"Trimitere automata a facturilor in SPV, preluare documente din SPV, 99,8% validate din prima",GOL (F043 doar import local),GOL MAJOR: iConta nu trimite/primeste din SPV
+SmartBill,Buton de plata pe factura (VISA),Plata cu cardul direct de pe factura + notificari de plata catre clienti,PARTIAL (F067 mock),notificarile de plata catre clienti = GOL
+SmartBill,Raport facturi neincasate + scadentar clienti,"Urmarirea incasarilor, restante pe clienti, fisa client",PARTIAL (F016 forecast),fisa client / scadentar dedicat = GOL
+SmartBill,Facturare in orice limba si valuta,Facturi bilingve/multilingve pentru clienti externi,PARTIAL (F025 valuta),facturi in alta limba = GOL
+SmartBill,Emitere bon fiscal prin casa de marcat din aplicatie,Inclusiv de pe telefon Android,GOL,confirma golul de la SAGA (case de marcat live)
+SmartBill,Aplicatie mobila nativa iOS/Android,"Emitere/incasare facturi, fotografiere bonuri, rapoarte pe mobil",PARTIAL (PWA netestat),
+SmartBill,Rapoarte business detaliate,"Vanzari, profit PE PRODUS, vanzari pe agent, fisa client, situatia platilor","PARTIAL (F055 KPI, consolidare)",profit per produs / pe agent = GOL
+SmartBill,Coduri de bare in gestiune,Lucru cu coduri de bare la stocuri,GOL,
+SmartBill,Integrare e-commerce multipla,"Shopify, WooCommerce si altele; POS sincronizat",PARTIAL (F102 doar WooCommerce),
+SmartBill,API de EMITERE documente,Emitere facturi prin API (700-3000 doc/luna),PARTIAL (F005+API v1 doar GET),API-ul iConta e read-only; emiterea prin API = GOL
+SmartBill,"Declaratii D207, D700, D710",Generare pe langa D100/101/205/300/301/390/394,GOL,3 declaratii lipsa din iConta
+SmartBill,Depunere declaratii + tablou de verificare pe vector fiscal,Depunere din aplicatie + verificare automata,PARTIAL (F022 tabloul exista; depunerea GOL),confirma golul transmitere ANAF
+SmartBill,Trimitere automata si IN MASA a balantelor catre clienti,Raportare lunara automata catre toti clientii cabinetului,PARTIAL (F065 Povestea lunii per firma),trimiterea in masa/automata = GOL
+SmartBill,Import borderouri curieri,Incasari ramburs din borderourile firmelor de curierat,GOL,relevant pt e-commerce
+SmartBill,Preluare automata din contul clientului,"Sincronizare in timp real Facturare/Gestiune client -> Conta cabinet (vanzari, achizitii, incasari, miscari stoc)",DA (arhitectura iConta e nativ unificata),"avantaj structural iConta: nu exista sincronizare, e aceeasi baza"
