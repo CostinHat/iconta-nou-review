@@ -1,0 +1,18 @@
+[Unit]
+Description=iConta build nou (port 8010)
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=costin
+WorkingDirectory=/home/costin/iconta_nou
+EnvironmentFile=/home/costin/.iconta/db.env
+EnvironmentFile=/home/costin/.iconta/api_keys.env
+ExecStart=/opt/iconta/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8010
+Restart=always
+RestartSec=3
+StandardOutput=append:/home/costin/iconta_nou/uvicorn.log
+StandardError=append:/home/costin/iconta_nou/uvicorn.log
+
+[Install]
+WantedBy=multi-user.target

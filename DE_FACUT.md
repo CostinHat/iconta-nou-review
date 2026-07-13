@@ -40,7 +40,7 @@ Ultima actualizare: 13.07.2026
 
 ## 4. Infra
 - **Reboot kernel** — "System restart required". Fereastră liniștită (downtime clienți, Daniela pilot).
-- **systemd propriu pentru build nou (8010)** — DESCOPERIT 12.07: 8010 ruleaza uvicorn pornit MANUAL (nu prin systemd), cu venv-ul din /opt/iconta (buildul vechi!), wd ~/iconta_nou. iconta.service (systemd) ruleaza de fapt buildul VECHI (/opt/iconta, port 8000). LA UN RESTART, 8010 NU REVINE SINGUR. De facut serviciu systemd dedicat pt buildul nou. Se leaga de rebootul de kernel - de rezolvat inainte sau odata cu el.
+- (REZOLVAT 13.07) systemd pentru 8010: iconta-nou.service creat, enabled la boot, EnvironmentFile db.env+api_keys.env, Restart=always. Testat functional (login 401 corect din DB). Restart: sudo systemctl restart iconta-nou. Unit in repo: config_referinta_iconta-nou.service.
 
 ## 5. Iterații viitoare (nu urgente)
 - Cod 10 CM (reducere timp muncă) — exclus din dropdown; `calcul_cm_cod10` neintegrat în flux.
