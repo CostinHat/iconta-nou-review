@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { fluxConcediu } from "./flux_concediu.js?v=8";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js";
@@ -725,11 +725,11 @@ async function sectiuneaCV(corp, t, zonaM) {
     rtLista.innerHTML = !rr.length ? `<div class="mig-gol">Nicio re\u021bet\u0103 \u00eenc\u0103.</div>`
       : rr.map((r) => {
           const fc = r.food_cost || {};
-          const pct = fc.food_cost_pct == null ? "\u2013" : fc.food_cost_pct + "%";
+          const procent = fc.food_cost_pct == null ? "\u2013" : pct(fc.food_cost_pct);
           return `<div class="pf-frand">
             <div class="pf-frand-text">
               <div class="pf-frand-nume">${esc(r.denumire)} \u00b7 ${bani(r.pret_fara_tva)} lei</div>
-              <div class="pf-frand-sub">cost/por\u021bie ${bani(fc.cost_portie)} \u00b7 food cost ${pct} \u00b7 ${(r.linii || []).map((l) => `${esc(l.denumire)} ${l.cantitate}${esc(l.um || "")}`).join(", ")}</div>
+              <div class="pf-frand-sub">cost/por\u021bie ${bani(fc.cost_portie)} \u00b7 food cost ${procent} \u00b7 ${(r.linii || []).map((l) => `${esc(l.denumire)} ${l.cantitate}${esc(l.um || "")}`).join(", ")}</div>
             </div>
             <input class="camp-input rt-portii" data-id="${r.id}" type="number" placeholder="por\u021bii" aria-label="Num\u0103r por\u021bii" style="width:80px">
             <button class="buton-primar rt-desc" data-id="${r.id}">Descarc\u0103 (ciorn\u0103)</button>

@@ -940,11 +940,11 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
   latime(corp, true);
   const randuri = date.randuri || [];
   const coer = date.coerenta || { total: 0, coincide: false };
-  const pct = (n) => (n || n === 0) ? n.toLocaleString("ro-RO", { minimumFractionDigits: 0 }) : "";
+  const nr = (n) => (n || n === 0) ? n.toLocaleString("ro-RO", { minimumFractionDigits: 0 }) : "";
 
   const banda = coer.coincide
     ? `<span class="mig-eq mig-eq-ok">total cote: ✓ 100%</span>`
-    : `<span class="mig-eq mig-eq-no">total cote: ⚠ ${pct(coer.total)}%</span>`;
+    : `<span class="mig-eq mig-eq-no">total cote: ⚠ ${nr(coer.total)}%</span>`;
 
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · asociați încărcați</p>
@@ -970,7 +970,7 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
         <span class="mig-sold-den">${esc(r.nume)}</span>
         <span class="mig-sold-cnp">${cod}</span>
         <span class="mig-sold-tip">${tip}</span>
-        <span class="mig-sold-val">${pct(r.cota)}</span>
+        <span class="mig-sold-val">${nr(r.cota)}</span>
       </div>`;
   }).join("");
 

@@ -258,6 +258,13 @@ export function dataRo(d, stil) {
   return `${zz}.${ll}.${aa}`;
 }
 
+// pct(v) — singurul formator de procent: numar intreg + "%" (12%), o zecimala cand exista (12,5%)
+export function pct(v) {
+  const n = Number(v) || 0;
+  const t = Number.isInteger(n) ? String(n) : n.toFixed(1).replace(".", ",");
+  return t + "%";
+}
+
 export function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
