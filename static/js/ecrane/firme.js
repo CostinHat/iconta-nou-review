@@ -1347,7 +1347,7 @@ async function ecranJurnal(corp, nav, t) {
     const notaNoua = { id: "nou", data: `${an}-${String(luna).padStart(2,"0")}-01`, descriere: "", linii: [{ debit: "", credit: "", suma: 0 }] };
     const randuri = (inEditare === "nou" ? editor(notaNoua) : "") +
       (!note.length
-        ? (inEditare === "nou" ? "" : `<div class="mig-gol">Nicio nota in luna asta.</div>`)
+        ? (inEditare === "nou" ? "" : `<div class="mig-gol">Nicio not\u0103 \u00een luna asta.</div>`)
         : note.map(rand).join(""));
     const ciorne = note.filter((n) => n.status === "ciorna").length;
     corp.innerHTML = `
