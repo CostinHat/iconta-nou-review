@@ -1,17 +1,17 @@
 ﻿Functionalitate,Descriere,ID,Nivel,Acces UI,Sursa cod,Temei legal,Stare,Testat
-ai client,TODO,F001,,,core/ai_client.py,,,
-ai incredere,TODO,F002,,,core/ai_incredere.py,,,
-amef import,TODO,F003,,,core/amef_import.py,,,
-anaf,TODO,F004,,,core/anaf_api.py,,,
-api public,TODO,F005,,,core/api_public.py,,,
-asistenti,TODO,F006,,,core/asistenti_api.py,,,
-asociati import,TODO,F007,,,core/asociati_import_api.py,,,
-auth,TODO,F008,,,core/auth_api.py,,,
-avansuri,TODO,F009,,,core/avansuri.py,,,
-bacsis,TODO,F010,,,core/bacsis.py,,,
-banca,TODO,F011,,,core/banca.py,,,
-banca parser,TODO,F012,,,core/banca_parser.py,,,
-bilant,TODO,F013,,,core/bilant.py + core/bilant_api.py,,,
+Client AI (Claude),Wrapper unic peste API-ul Anthropic: generare text (narativul Povestii lunii) si citire de imagini (clasificarea bonurilor pozate). Cheia din env; punct unic de acces AI.,F001,transversal,—,core/ai_client.py,,LIVE,
+Incredere si invatare AI,"Memoreaza corectiile contabilului la propunerile AI (cont per partener/descriere normalizata) si le refoloseste: dupa validari repetate sugestia devine cea invatata, cu scor de incredere.",F002,transversal,"propuneri contare (Banca, Bonuri)",core/ai_incredere.py,,LIVE,pytest
+Import Raport Z din AMEF,Parseaza fisierul AMEF (.p7b sau XML): totalurile zilei pe cote TVA si tipuri de plata pentru nota contabila zilnica.,F003,firma,card Raport Z,core/amef_import.py,OPANAF 146/2018,LIVE,date reale de re-verificat
+Validare CUI la ANAF,"Interogheaza serviciul ANAF pentru un CUI (existenta, denumire, platitor TVA, CAEN) + extragere CUI-uri in masa din fisiere la migrare.",F004,transversal,"Adauga firma, Migrare, Emitere, inregistrare",core/anaf_api.py,,LIVE,
+Chei API publice per cabinet,"Genereaza/listeaza/revoca chei pentru integrari externe; cheia se afiseaza o singura data, se stocheaza doar SHA256.",F005,cabinet,Setari cont > Chei API,core/api_public.py,,LIVE,pytest
+Management actori de cabinet,"Lista asistentilor cu roluri/permisiuni/firme, centralizator si jurnal, sumar calitate, detalii per actor (nivel/tipare/drift), setare patru-ochi, educatie pe erori.",F006,cabinet,card Asistenti,core/asistenti_api.py,,LIVE,vizual
+Import asociati (migrare),"Citeste .xlsx/.csv cu nume/CNP-CUI/cota %, mapare flexibila, validare CNP, coerenta cotelor (100%), import per firma pentru D205.",F007,firma,Migrare / Import date,core/asociati_import_api.py,,LIVE,
+Autentificare si sesiuni,"Login email+parola (bcrypt+scrypt), token JWT cu rol (superadmin/admin_firma/angajat/client), acces per tenant, actualizare profil.",F008,transversal,ecran login,core/auth_api.py,,LIVE,
+Avansuri furnizori/clienti,Note pentru avansuri platite (409) si incasate (419) cu TVA exigibila la incasare + regularizare la factura finala.,F009,firma,Operatiuni speciale,core/avansuri.py,OMFP 1802/2014; art. 282(2)(b) CF,LIVE,pytest
+Bacsis HoReCa,"Note pentru incasarea si distribuirea bacsisului (0-15%/suma fixa), tratament fiscal dedicat (impozit 10%, fara contributii).",F010,firma,Operatiuni speciale,core/bacsis.py,Legea 376/2022; art. 115 CF,LIVE,pytest
+Contabilizare extras de cont,"Motor pur pe liniile de extras: detectare tip, extragere CUI, reguli de cont pe tipare, note cu urma.",F011,firma,card Banca,core/banca.py,,LIVE,pytest
+Parser extras bancar,"Citeste .xls/.xlsx/.csv (ING/Jasper), format detectat dupa continut (magic bytes), grid pe pozitia coloanelor, randuri multi-linie.",F012,firma,card Banca,core/banca_parser.py,,LIVE,validat la leu pe ING
+Bilant anual S1005/S1003,"Mapare balanta->F10, rulaje->F20, XML pe XSD v14, validare pe server cu validatorul ANAF.",F013,firma,card Bilant anual,core/bilant.py + core/bilant_api.py,OMF 107/2025,LIVE,validator ANAF
 capacitate,TODO,F014,,,core/capacitate_api.py,,,
 casa,TODO,F015,,,core/casa.py + core/casa_api.py,,,
 cashflow,TODO,F016,,,core/cashflow.py,,,
@@ -102,3 +102,19 @@ vector fiscal,TODO,F100,,,core/vector_fiscal_api.py,,,
 verificatoare,TODO,F101,,,core/verificatoare.py,,,
 woocommerce,TODO,F102,,,core/woocommerce.py,,,
 Alerte legislative programate,"Modificarile legislative detectate de monitorul fiscal se afiseaza pe ecranele utilizatorilor la DATA decisa de superadmin, cu data intrarii in vigoare - pentru incredere in aplicatie. EXISTA: detectia (monitor AI saptamanal, email) + anunturi imediate cu confirmare. LIPSESTE: data programata a afisarii (tabela anunturi_cabinet nu are campul) + fluxul monitor -> propunere anunt in admin.",F103,transversal,banner utilizatori + admin Anunturi,core/monitor_fiscal.py + anunturi_cabinet,,"PARTIAL - convenit 03.07, neterminat",—
+Navigator ferestre cu traseu,"Ferestre modale peste desktop: fir de parinti in antet, titlul pasului in corp, sageata=pop pe traseul real, X=inchide tot, entitatea doar in antet, scroll memorat per pas.",F104,transversal,toata aplicatia,static/js/navigator.js,,LIVE,vizual
+Sesiune per-tab,sessionStorage per tab: doua cabinete deschise in taburi diferite nu isi suprascriu sesiunea.,F105,transversal,—,static/js/sesiune.js,,LIVE,reparat+verificat 12.07
+Design System + verificator,"16 capitole normative (DESIGN_SYSTEM.md v2.11) + gardian mecanic cu ~14 reguli (verificator_conformitate.py), TOTAL 0 permanent.",F106,transversal,—,DESIGN_SYSTEM.md + verificator_conformitate.py,,LIVE,rulat la fiecare tema
+Magic-link (login fara parola),Link de autentificare pe email pentru clienti de portal si accese suplimentare; fara parola.,F107,transversal,Acces client / Acces cont,main.py (auth),,LIVE,
+Inregistrare cabinet self-service,"Landing public: CUI verificat la ANAF (avertisment CAEN non-6920), creare cont + tenant provisioning automat.",F108,transversal,landing /,static/js/ecrane/login.js + tenant_provisioning,,LIVE,
+Suspendare cabinet,Superadminul blocheaza un cabinet instant (verificare per-request).,F109,admin,Admin > Activitate,main.py,,LIVE,
+Cron facturi recurente,"Emitere lunara automata din sabloane, verificare zilnica 07:00, idempotent.",F110,firma,— (automat),core/facturi_recurente.py + cron,,LIVE,de testat P1.4
+Cron WooCommerce,"Import comenzi -> facturi, zilnic 07:30, idempotent, per firma configurata.",F111,firma,— (automat),core/woocommerce.py + cron,,LIVE,pytest; de testat P1.5
+Cron monitor fiscal,"Saptamanal: noutatile ANAF/MF, filtrare AI pe relevanta (TVA/salarii/plafoane/declaratii), salvare + email.",F112,admin,— (automat),core/monitor_fiscal.py + cron,,LIVE (afisarea programata = F103),pytest
+PWA (aplicatie instalabila),Manifest + service worker pentru adaugare pe ecranul telefonului si pornire standalone.,F113,transversal,portal pe mobil,static/,,PARTIAL - netestat pe HTTPS/telefon (carenta 4),—
+API public v1,Endpoint-uri cu X-Api-Key pentru integrari: GET firme / facturi / kpi / balanta.,F114,transversal,— (programatic),core/api_public.py + main.py /api/v1,,LIVE,pytest
+Notificari in-app + email,"Clopotel cu necitite, sumar la login, email zilnic (mesaje clienti, evenimente echipa); notificarile de mesaje doar catre rolurile de cabinet.",F115,transversal,clopotel antet,core/notificari_api.py,,LIVE,
+Securitate perimetru,"nginx SSL + rate limiting (5r/m auth, 20r/s general) + headere (HSTS, X-Frame-Options, X-Content-Type, Referrer-Policy) + fail2ban 3 jails.",F116,transversal,—,nginx + fail2ban,,LIVE,
+Alerte sanatate server,"Metrici la 5 min (load/memorie/disc), grafice istorice, alerte pe email (Brevo) la praguri.",F117,admin,Admin > Sanatate server,core/observare.py + admin_sanatate.js,,LIVE,vizual partial
+Blocare perioade,Lunile inchise se blocheaza per firma: scriere refuzata (423) pe note in perioada blocata.,F118,firma,Registru jurnal > Blocheaza luna,main.py perioade-blocate,,LIVE,
+Provisioning tenant,Firma noua = schema PostgreSQL dedicata cu cele ~21 tabele din template + plan de conturi OMFP populat.,F119,transversal,— (automat la adaugare firma),core/tenant_provisioning.py + tenant_template.sql,,LIVE,bug template gol reparat 10.07
