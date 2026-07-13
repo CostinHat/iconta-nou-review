@@ -53,3 +53,15 @@ FGO,Generare contracte,Contracte generate din datele clientului,GOL,
 FGO,Analiza cheltuieli pe furnizori si centre de cost,"Dashboard incotro se duc banii, pe furnizori/centre/perioade",PARTIAL (F016/F055),centre de cost confirmate ca gol
 FGO,Retea: factura emisa apare la client automat,"Daca ambele parti au FGO, factura circula automat intre conturi",DA (arhitectura iConta: cabinet+client pe aceeasi baza),paritate structurala
 FGO,Facturare de pe mobil cu imprimanta termica,Print pe teren de pe telefon,GOL,minor
+Keez,Extras Online: TOATE bancile prin PSD2,"Extrase zilnice automate de la toate bancile din RO inclusiv Revolut si Trezoreria, corelate cu facturile emise/primite - zero efort client",GOL,confirma si concretizeaza golul open banking (inclusiv Trezorerie!)
+Keez,Relatia cu ANAF gestionata IN aplicatie,"Mesajele SPV monitorizate, cereri de informatii din aplicatie, alerte pe mesaje critice - clientul nu are nevoie de semnatura proprie",GOL,GOL NOU: monitorizarea mesajelor SPV ale firmelor
+Keez,Declaratii depuse + RECIPISE in portal,Clientul vede declaratiile depuse cu recipisele lor,PARTIAL (istoric depuneri exista; recipisele GOL),
+Keez,e-Factura nativ: vizualizare si ACCEPT din SPV,Facturile de achizitie sosesc din SPV si se accepta in aplicatie,GOL,confirma
+Keez,Rapoarte BI cu pivoti si comparatii evolutive,"Analiza pe luni trecute, drill-down pana la documentul care a generat inregistrarea",PARTIAL (F055/F016),pivoti/BI = GOL
+Keez,Centre de cost si LINII DE BUGET,Bugetare pe linii cu urmarire,GOL,linii de buget = concept nou peste centrele de cost
+Keez,Pontaj (concedii completate de client),"Clientul completeaza lunar concediile in Pontaj, statul se calculeaza automat",GOL,confirma FGO; fluxul client->stat de plata e relevant pt iConta
+Keez,Drepturi de autor (CDA) si mandat,"Contracte CDA cu regimul fiscal propriu, pe langa contractele de munca",PARTIAL (F021 are mandat/cenzori/zilieri),CDA (drepturi de autor) = GOL
+Keez,Video-conferinta cu contabilul din aplicatie,"15 min/sedinta, max 2/luna, programate; chat cu fisiere si istoric oficial",PARTIAL (Solicitari = chat text),video + limite de consum = GOL
+Keez,Arhiva electronica cu cautare complexa,Toate documentele stocate cu functii de cautare avansata,PARTIAL (Documente pe portal),cautarea transversala in arhiva = GOL
+Keez,Formulare si modele descarcabile,Biblioteca de formulare editabile pentru business,GOL,minor
+Keez,Onboarding infiintare firma,"Asistenta si pasi pentru firma noua, activare SPV prin imputernicire",GOL,serviciu+feature; relevant pt achizitia de clienti
