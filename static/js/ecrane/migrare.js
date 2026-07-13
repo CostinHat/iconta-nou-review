@@ -306,7 +306,7 @@ function randeazaDecizie(corp, nav, strat, sumarHTML, intrebare) {
     salv.disabled = true; salv.textContent = "Salvez…";
     try {
       await api.post("/migrare/status", { strat, stare: ales, nota });
-      meniuMigrare(corp, nav);
+      if (nav && nav.inapoiPas) nav.inapoiPas(); else meniuMigrare(corp, nav);  // pop pe traseu -> firul reflecta pozitia reala (nu acumuleaza straturi)
     } catch (e) {
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
       salv.disabled = false; salv.textContent = "Salvează";
