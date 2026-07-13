@@ -1,0 +1,17 @@
+﻿Competitor,Capabilitate,Detalii,Are iConta (Fnnn/GOL),Observatii
+SAGA C/WEB,Contabilitate partida dubla completa,"Fise de cont, balante, registru jurnal, registru inventar, calcul impozit profit","DA (F061, F054, si altele)",
+SAGA C/WEB,Transmitere declaratii DIRECT la ANAF,"Modul Declaratii ANAF: semnare cu certificat digital, transmitere directa, preluare AUTOMATA a recipiselor, istoric depuneri",GOL,iConta genereaza XML + confirmare manuala; depunerea efectiva e in afara aplicatiei
+SAGA C/WEB,"Declaratii D392, D094",Declaratii informative suplimentare,GOL,iConta are 9 tipuri; D392A/B si D094 lipsesc
+SAGA C/WEB,Salarii cu plata pe card,Generare fisier de plati salariale catre banca,GOL,"iConta are stat de plata + fluturasi, fara fisierul bancar de plata"
+SAGA C/WEB,REGES online integrat,"Din versiunea 3.0.598, acces direct REGES",DA (F075),paritate
+SAGA C/WEB,Productie pe retetar si/sau COMENZI,"Productie pe comenzi de fabricatie, nu doar retetar","PARTIAL (F069, F076)",iConta: retetar HoReCa + note productie; fara comenzi de fabricatie
+SAGA C/WEB,Operatii interne stocuri,"Bonuri de consum, predare/primire, transferuri intre gestiuni, inventariere",PARTIAL (F088/F089/F052),iConta: fara transferuri intre gestiuni multiple
+SAGA C/WEB,Casa/Banca in VALUTA,Registre de casa si banca in valuta cu diferente de curs,"PARTIAL (F015, F041)",iConta: casa in lei; diferentele de curs exista ca motor
+SAGA C/WEB,Centre de profit + situatii grafice,Urmarire pe centre de profit cu grafice,GOL,iConta nu are dimensiunea centre de profit/cost
+SAGA C/WEB,Legatura case de marcat (printer fiscal),"Datecs, Euro, Elka, Eltrade, Optimus, Samsung, Daisy, CHD in regim printer fiscal",GOL,iConta: doar import Raport Z din AMEF (post-factum)
+SAGA C/WEB,POS retail + HoReCa (MarketLine/PubLine),Extensii de vanzare: magazine si baruri/restaurante (comenzi),GOL,in afara scopului iConta? de decis
+SAGA C/WEB,Aplicatie mobila facturare nativa,SAGA Facturare pe iOS/Android (pentru SAGA WEB),PARTIAL,iConta: web responsive + PWA netestat; fara app nativa
+SAGA C/WEB,Cloud multi-user pe o baza de date,"SAGA WEB: echipa pe aceeasi baza, acces personalizat, salvari zilnice automate",DA (arhitectura iConta e nativ cloud multi-tenant),paritate+
+SAGA C/WEB,Intrastat raportare completa,Suport raportare Intrastat,PARTIAL (F051),"iConta: doar verificator de praguri, fara generarea raportarii"
+SAGA C/WEB,"Module verticale (asociatii proprietari, amanet)","Liste intretinere, penalizari, fond rulment; case de amanet cu gajuri",GOL,verticale in afara scopului iConta (de decis strategic)
+SAGA C/WEB,e-Factura + e-Transport + SAF-T,Suport complet raportari electronice,"DA/PARTIAL (F043 import, F044 XML manual, F035-F037 SAF-T)","iConta: e-Factura doar import (fara trimitere), e-Transport fara API"
