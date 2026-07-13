@@ -1371,6 +1371,7 @@ export function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Istoric declara\u021bii", desc: "Ce s-a depus deja", fn: (c, n) => importIstoricFirma(c, n, firma) },
     { titlu: "Plan de conturi", desc: "Cont\u0103 analitice/nestandard", fn: (c, n) => importPlanConturiFirma(c, n, firma) },
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", fn: (c, n) => importArticoleFirma(c, n, firma) },
+    { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", fn: (c, n) => importReteteFirma(c, n, firma) },
   ];
   corp.innerHTML = `
     <p class="mig-intro">Alege ce vrei s\u0103 aduci pentru aceast\u0103 firm\u0103.</p>
@@ -1388,6 +1389,72 @@ export function meniuMigrarePerFirma(corp, nav, firma) {
     `;
     rand.addEventListener("click", () => nav.mergi(p.titlu, (c) => p.fn(c, nav)));  // titlul = pasul; firma e in antet (fisa) sau in intro (drum cabinet) - DS cap.1
     lista.appendChild(rand);
+  });
+}
+
+// [F150] Import retete HoReCa (pasul 11)
+function importReteteFirma(corp, nav, firma) {
+  corp.innerHTML = `
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 re\u021betarul: un r\u00e2nd per ingredient (re\u021bet\u0103 \u00b7 pre\u021b v\u00e2nzare \u00b7 ingredient \u00b7 cantitate/por\u021bie). Ingredientele se potrivesc pe articolele din stoc dup\u0103 denumire.</p>
+    <label class="mig-drop" id="mig-drop">
+      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0a807b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
+      <div class="mig-drop-titlu" id="mig-drop-titlu">\u00cencarc\u0103 re\u021betele</div>
+      <div class="mig-drop-desc">Excel sau CSV</div>
+    </label>
+    <div class="mig-eroare" id="mig-eroare"></div>
+    <div id="mig-preview"></div>
+  `;
+  const fileInput = corp.querySelector("#mig-file");
+  fileInput.addEventListener("change", async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    corp.querySelector("#mig-drop-titlu").textContent = file.name;
+    const eroare = corp.querySelector("#mig-eroare");
+    eroare.textContent = "Citesc re\u021betele\u2026";
+    try {
+      const fd = new FormData();
+      fd.append("fisier", file);
+      const r = await fetch(`/tenants/${firma.tenant_id}/retete-import/incarca`, {
+        method: "POST", headers: { "Authorization": "Bearer " + sesiune.token() }, body: fd,
+      });
+      const date = await r.json();
+      if (!r.ok) throw { mesaj: (date && (date.detail || date.mesaj)) || ("eroare " + r.status) };
+      eroare.textContent = "";
+      previzualizeazaRetete(corp, nav, firma, date);
+    } catch (e) {
+      eroare.textContent = (e && e.mesaj) || "Eroare la citirea fi\u0219ierului.";
+    }
+  });
+}
+
+function previzualizeazaRetete(corp, nav, firma, date) {
+  latime(corp, true);
+  const retete = date.retete || [];
+  const rez = date.rezumat || {};
+  const zona = corp.querySelector("#mig-preview");
+  zona.innerHTML = `
+    <div class="mig-eticheta" style="margin-top:10px">${rez.valide || 0} re\u021bete valide din ${rez.total || 0} \u00b7 ${rez.ingrediente || 0} ingrediente${rez.invalide ? ` \u00b7 <span style="color:var(--rosu)">${rez.invalide} invalide</span>` : ""}</div>
+    <div class="mig-lista">
+      ${retete.slice(0, 50).map((rt) => `
+        <div class="mig-rand${rt.valid ? "" : " mig-rand-rosu"}">
+          <span>${esc(rt.denumire)} \u00b7 ${rt.linii.length} ingrediente</span>
+          <span>${bani(rt.pret || 0)} lei${rt.valid ? "" : " \u00b7 " + esc(rt.motiv)}</span>
+        </div>`).join("")}
+      ${retete.length > 50 ? `<div class="mig-eticheta">\u2026 \u0219i \u00eenc\u0103 ${retete.length - 50}</div>` : ""}
+    </div>
+    <button class="buton-primar mig-buton" id="mig-importa">Import\u0103 ${rez.valide || 0} re\u021bete</button>
+  `;
+  zona.querySelector("#mig-importa").addEventListener("click", async () => {
+    const b = zona.querySelector("#mig-importa");
+    b.disabled = true; b.textContent = "Import\u2026";
+    try {
+      const r = await api.post(`/tenants/${firma.tenant_id}/retete-import`, { retete });
+      zona.innerHTML = `<div class="mig-gata"><div class="mig-gata-titlu">${r.create} re\u021bete importate${r.sarite && r.sarite.length ? ` \u00b7 ${r.sarite.length} s\u0103rite (existente/invalide)` : ""}</div></div>`;
+    } catch (e) {
+      b.disabled = false; b.textContent = "Import\u0103";
+      corp.querySelector("#mig-eroare").textContent = (e && e.mesaj) || "Eroare la import.";
+    }
   });
 }
 
