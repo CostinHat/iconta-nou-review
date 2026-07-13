@@ -92,10 +92,10 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
   }
   const cifre = [
     cifra(t.create || 0, "pregatite", "activitate"),
-    cifra(t.aprobate || 0, "validate", "activitate", "#1d7a4d"),
+    cifra(t.aprobate || 0, "validate", "activitate", "var(--verde)"),
     cifra(t.respinse || 0, "respinse", "tipare", (t.respinse ? "var(--rosu-semafor)" : null)),
-    cifra(t.depuse || 0, "depuse", "activitate", "#1d7a4d"),
-    cifra(t.in_asteptare || 0, "de validat", "validat", (t.in_asteptare ? "#c9961f" : null)),
+    cifra(t.depuse || 0, "depuse", "activitate", "var(--verde)"),
+    cifra(t.in_asteptare || 0, "de validat", "validat", (t.in_asteptare ? "var(--galben)" : null)),
     cifra(rap.necitite || 0, "sesiz\u0103ri noi", "raport", (rap.necitite ? "var(--rosu-semafor)" : null)),
   ].join("");
 
@@ -432,7 +432,7 @@ async function _indicatorPatruOchi() {  /* po_indicator_v1 */
   const el = document.createElement("button");
   el.id = "po-indicator";
   el.className = "subbara-edu btn-link";
-  el.style.color = "#1d7a4d";
+  el.style.color = "var(--verde)";
   el.style.fontWeight = "600";
   el.textContent = "Validarea \u00een doi asisten\u021bi \u2713";
   el.title = "Apas\u0103 pentru a dezactiva";
@@ -464,7 +464,7 @@ async function _educatiePatruOchi(continut) {  // [p55_decizie]
   el.querySelector("#edu-activ").addEventListener("click", async () => {
     try {
       await api.post("/eu/patru-ochi", { activ: true });
-      el.innerHTML = `<span style="color:#1d7a4d;font-weight:600">Validarea \u00een doi este activ\u0103.</span>`;
+      el.innerHTML = `<span style="color:var(--verde);font-weight:600">Validarea \u00een doi este activ\u0103.</span>`;
       setTimeout(() => el.remove(), 6000);
     } catch (e) { el.insertAdjacentHTML("beforeend", ` <span class="msg-eroare">${e.mesaj || e.message}</span>`); }
   });

@@ -34,7 +34,7 @@ export async function ecranRip(corp, nav, t) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${dataRo(o.data_operatiune)} \u00b7 ${o.tip === "plata" ? "\u2212" : "+"}${bani(o.suma)} ${esc(o.valuta)}
-              ${o.status === "ciorna" ? '<span style="color:#c9961f;font-weight:600"> \u00b7 CIORNA</span>' : '<span style="color:#1d7a4d;font-weight:600"> \u00b7 VALIDATA</span>'}</div>
+              ${o.status === "ciorna" ? '<span style="color:var(--galben);font-weight:600"> \u00b7 CIORNA</span>' : '<span style="color:var(--verde);font-weight:600"> \u00b7 VALIDATA</span>'}</div>
             <div class="pf-frand-sub">${esc(o.explicatie)} \u00b7 ${esc(o.categorie)}${o.deductibilitate ? " \u00b7 " + esc(o.deductibilitate) : ""}${o.document_numar ? " \u00b7 doc " + esc(o.document_numar) : ""} \u00b7 ${esc(o.metoda)}</div>
           </div>
           ${o.status === "ciorna" ? `<button class="buton-primar" data-val="${o.id}">Valideaz\u0103</button>
@@ -151,9 +151,9 @@ export async function ecranRip(corp, nav, t) {
               CASS (10%): <b>${d.cass.cass}</b> lei${d.cass.obligatoriu ? "" : " (neobligatoriu - sub 6 salarii minime)"} \u00b7 baza ${d.cass.baza}<br>
               Baza impozit: <b>${d.baza_impozit}</b> \u00b7 Impozit (10%): <b>${d.impozit}</b> lei<br>
               <b class="tip-total">Total datorat: ${bani(d.total_datorat)} lei</b>
-              ${d.cheltuieli_limitate_de_analizat > 0 ? `<br><span style="color:#c9961f">Cheltuieli limitate de analizat: ${bani(d.cheltuieli_limitate_de_analizat)} lei</span>` : ""}
+              ${d.cheltuieli_limitate_de_analizat > 0 ? `<br><span style="color:var(--galben)">Cheltuieli limitate de analizat: ${bani(d.cheltuieli_limitate_de_analizat)} lei</span>` : ""}
               ${d.ciorne_nevalidate > 0 ? `<br><span style="color:var(--rosu-semafor)">${d.ciorne_nevalidate} ciorne nevalidate - neincluse in calcul</span>` : ""}
-              ${d.avertisment ? `<br><span style="color:#c9961f">${esc(d.avertisment)}</span>` : ""}
+              ${d.avertisment ? `<br><span style="color:var(--galben)">${esc(d.avertisment)}</span>` : ""}
             </div>
           </div>`;
       } catch (e) { zonaMsg.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }

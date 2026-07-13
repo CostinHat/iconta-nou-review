@@ -29,7 +29,7 @@ for f in sorted(os.listdir(BAZA)):
         with open(os.path.join(BAZA, f), encoding="utf-8") as h:
             fisiere[f] = h.read()
 
-rap = {k: [] for k in ["culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
+rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
                         "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect"]}
 meniuri = {}
@@ -107,6 +107,9 @@ for nume, t in fisiere.items():
         # FONT_INLINE: font-size cu valoare literala inline (px/em) in loc de var(--text-*) sau clasa .tip-*
         for fm in re.finditer(r'font-size:\s*([0-9.]+(?:px|em|rem))', lin):
             rap["font_inline"].append((nume, i, fm.group(1), lin.strip()[:56]))
+        # HEX_SEMAFOR: culori de semafor literale in loc de var(--rosu-semafor)/var(--galben)/var(--verde). Exceptii: definitia tokenilor si gradientul dot:
+        if re.search(r'#(ff3b30|c9961f|1d7a4d)\b', lin, re.I) and '--rosu-semafor:' not in lin and '--galben:' not in lin and '--verde:' not in lin and 'dot:' not in lin:
+            rap["hex_semafor"].append((nume, i, "", lin.strip()[:66]))
         # CULOARE_CARD_HEX: bg:/fg: cu hex literal pe carduri in loc de ...CULORI_CARD.cheie (exceptie: semafor control.js, are dot:)
         if re.search(r'\b(bg|fg)\s*:\s*"#', lin) and 'dot:' not in lin:
             rap["culoare_card_hex"].append((nume, i, "", lin.strip()[:66]))

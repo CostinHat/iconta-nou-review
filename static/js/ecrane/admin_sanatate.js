@@ -22,7 +22,7 @@ function fmtUptime(sec) {
 function culoareProcent(p) {
   if (p == null) return "#666";
   if (p >= 90) return "#dc2626";
-  if (p >= 70) return "#c9961f";
+  if (p >= 70) return "var(--galben)";
   return "#16a34a";
 }
 
@@ -134,7 +134,7 @@ export async function randeazaAdminSanatate(corp, nav) {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
       ${grafic(istoric, "ram_procent", "RAM folosită (%)", "#2563eb", 100)}
       ${grafic(istoric, "disc_procent", "Disc folosit (%)", "#7c3aed", 100)}
-      ${grafic(istoric, "load1", "Load average", "#c9961f")}
+      ${grafic(istoric, "load1", "Load average", "var(--galben)")}
       ${grafic(istoric, "conexiuni_db", "Conexiuni DB", "#16a34a")}
     </div>
   `;

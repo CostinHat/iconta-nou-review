@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.10 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.11 · 12 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -101,6 +101,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Mereu vertical, ordinea ROȘU → GALBEN → VERDE (urgența întâi).
 - Bulină LED 16px cu gradient + etichetă text 10px.
 - Culori canonice: verde #1d7a4d · galben #c9961f · roșu #ff3b30.
+- Se folosesc EXCLUSIV prin tokeni: `var(--verde)` / `var(--galben)` / `var(--rosu-semafor)`. Hex literal interzis în JS/CSS (excepții: definiția tokenului, nuanțele deschise din gradientul `dot:`). Prins de regula HEX_SEMAFOR în verificator (v2.11).
 
 ## 9. Ferestre de lucru
 
@@ -160,7 +161,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Exemple conforme: `pac-rezumat`, `pac-deschide-zona` (dashed), `grila-campuri-compacta`.
 
 ## Changelog
-**v2.10 (12.07.2026)** — panouri de conținut: clasa canonică `.panou` (alb + bordură #b9c2cf); reparate `pac-rezumat`/`pac-deschide-zona`/`grila-campuri-compacta` (gri pe gri); cap.16 nou. Carduri: 73 hex literal → `...CULORI_CARD.cheie` + regula CULOARE_CARD_HEX; decizie spacing închisă (rămâne literal).
+**v2.11 (12.07.2026)** — panouri de conținut: clasa canonică `.panou` (alb + bordură #b9c2cf); reparate `pac-rezumat`/`pac-deschide-zona`/`grila-campuri-compacta` (gri pe gri); cap.16 nou. Carduri: 73 hex literal → `...CULORI_CARD.cheie` + regula CULOARE_CARD_HEX; decizie spacing închisă (rămâne literal).
 **v2.9 (12.07.2026)** — canonizat culorile/bordurile/raza din cod: 3 borduri + 6 culori ad-hoc → `var()`, 4 border-radius → `var(--raza)`; cap.15 nou + reguli RADIUS_INLINE (și culoare ad-hoc) în verificator. Landing exclus (sistem separat).
 **v2.8 (12.07.2026)** — sistem de tipografie: 6 tokeni de dimensiune + 7 clase de tip (stil.css); eliminat toate font-size literale inline (18 migrate în 9 ecrane); cap.14 nou + regula FONT_INLINE în verificator.
 **v2.7 (12.07.2026)** — dicționar canonic unic `ICOANE` (api.js, 22 iconițe, 5 noi); eliminat dicționarele locale divergente (cabinet/admin/asistent); reasignat 8 carduri de la `report` generic la iconițe sugestive distincte; cap.13 nou + regula ICOANE_LOCAL în verificator.

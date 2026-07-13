@@ -30,8 +30,8 @@ export async function randeazaCapacitate(corp, nav) {
   const sectCabinet = `
     <div class="cap-cifre">
       ${celulaCifra(cab.in_lucru ?? 0, "în lucru")}
-      ${celulaCifra(cab.de_validat ?? 0, "de validat", cab.de_validat ? "#c9961f" : null)}
-      ${celulaCifra(cab.depuse_luna ?? 0, "depuse luna asta", "#1d7a4d")}
+      ${celulaCifra(cab.de_validat ?? 0, "de validat", cab.de_validat ? "var(--galben)" : null)}
+      ${celulaCifra(cab.depuse_luna ?? 0, "depuse luna asta", "var(--verde)")}
       ${celulaCifra((cab.ritm_pe_zi ?? 0), "ritm / zi lucrătoare")}
     </div>
     <p class="cap-nota">Ritmul e calculat pe ${cab.zile_lucratoare ?? 0} zile lucrătoare din luna curentă.</p>

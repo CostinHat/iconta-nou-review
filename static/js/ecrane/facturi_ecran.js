@@ -104,9 +104,9 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       ev.stopPropagation();
       try {
         const r = await api.post(`/tenants/${tenantId}/facturi/${b.dataset.cid}/contabilizeaza`, {});
-        b.outerHTML = `<span class="tip-desc" style="color:#1d7a4d;margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
+        b.outerHTML = `<span class="tip-desc" style="color:var(--verde);margin-left:8px">ciorn\u0103 #${r.inregistrare_id}</span>`;
       } catch (e) {
-        b.outerHTML = `<span class="tip-desc" style="color:#c9961f;margin-left:8px">${(e.mesaj || "eroare")}</span>`;
+        b.outerHTML = `<span class="tip-desc" style="color:var(--galben);margin-left:8px">${(e.mesaj || "eroare")}</span>`;
       }
     }));
     corp.querySelectorAll(".fac-frand-btn").forEach((b) => {
@@ -302,7 +302,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         const r = await api.post(`/tenants/${tenantId}/chitante`, { data, suma, factura_id: facturaId });
         const av = (r && r.avertismente) || [];
         form.remove();
-        await arataChitante(`<p style="color:#1d7a4d;font-weight:600;margin:6px 0">Chitan\u021ba ${r.serie}-${r.numar} a fost emis\u0103 \u0219i \u00eenregistrat\u0103 \u00een Registrul de cas\u0103.${av.length ? " Aten\u021bie: " + av.join(" ") : ""}</p>`);
+        await arataChitante(`<p style="color:var(--verde);font-weight:600;margin:6px 0">Chitan\u021ba ${r.serie}-${r.numar} a fost emis\u0103 \u0219i \u00eenregistrat\u0103 \u00een Registrul de cas\u0103.${av.length ? " Aten\u021bie: " + av.join(" ") : ""}</p>`);
         if (rest > 0 && suma >= rest - 0.005 && bChit) bChit.style.display = "none";
       } catch (e) {
         b.disabled = false; b.textContent = "Emite";
@@ -634,7 +634,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
         const suma = (s.linii || []).reduce((t, l) => t + (Number(l.cantitate) || 0) * (Number(l.pret_unitar) || 0), 0);
         const sumaTxt = bani(suma) + " " + (s.moneda || "RON");
         const stare = s.activ
-          ? '<span style="color:#1d7a4d">activ</span>'
+          ? '<span style="color:var(--verde)">activ</span>'
           : '<span style="color:var(--gri-clar)">inactiv</span>';
         return `
       <div class="pf-frand" data-id="${s.id}">
