@@ -241,7 +241,7 @@ async function actualizeazaActivitate(grila) {
   const zona = grila.querySelector('[data-cheie="activitate"]');
   if (!zona) return;
   try {
-    const r = await api.get("/asistenti/semafor");
+    const r = await api.get("/asistenti/echipa/semafor");
     const n = (r.counts?.rosu || 0) + (r.counts?.galben || 0);
     window._activAlerta = n;
     zona.innerHTML = n === 0 ? "Activitate recentă" : `<b>${n}</b> ${n === 1 ? "tipar necesită atenție" : "tipare necesită atenție"}`;
