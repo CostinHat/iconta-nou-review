@@ -1372,7 +1372,7 @@ export function meniuMigrarePerFirma(corp, nav, firma) {
     { titlu: "Plan de conturi", desc: "Cont\u0103 analitice/nestandard", fn: (c, n) => importPlanConturiFirma(c, n, firma) },
   ];
   corp.innerHTML = `
-    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Alege ce vrei s\u0103 aduci pentru aceast\u0103 firm\u0103.</p>
+    <p class="mig-intro">Alege ce vrei s\u0103 aduci pentru aceast\u0103 firm\u0103.</p>
     <div class="mig-lista" id="mig-pasi"></div>
   `;
   const lista = corp.querySelector("#mig-pasi");
