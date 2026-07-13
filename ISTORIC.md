@@ -970,3 +970,50 @@ avocatnet/Rapcencu). Motor bacsis.py corect:
 Aritmetica verificata: bacsis 1000 -> impozit 100, net 900. Monografie corecta.
 OBSERVATIE minora (nu bug): contul-punte de incasare e 461 (Debitori) - mai atipic vs
 4111 (Clienti), dar valid ca terti. De rafinat daca se doreste alinierea la 4111.
+
+## Sesiunea 13.07.2026 partea 5 — Restanțe PARTIAL: 4 închise
+**Curățenii date test (tenant_003):** orfanii [TEST-GV] ștersi în ordinea FK
+(retete_linii → retete → miscari_stoc → articole; referentul era [TEST-GV] Pizza,
+linia „mozzarella" potrivită parțial pe articolul vechi id=2); seed [T150] curățat
+complet — 0 markere de test rămase.
+
+**F150 Import rețete HoReCa → LIVE (a932cb3):** retest potrivire OK după curățenie
+(Pizza valid, potrivire unică); UI pas 11 „Rețete (HoReCa)" în migrare per-firmă,
+clonă structurală F151; cache-bust import migrare.js (firme.js + cabinet.js);
+test vizual complet în KAI: ambele ramuri (2 valide importate, 1 sărită cu motiv),
+persistență confirmată în date (Pizza 3 linii, Paste 2).
+
+**Reparație DS cap.6 pe F150 + F151 (78f458a, 615b50f):** mesajele de stare din
+ambii pași de import (progres/eroare/succes) mutate de pe innerHTML ad-hoc pe
+arataMesaj (info/eroare/ok) — 4+4 înlocuiri. Lecție reconfirmată: clonarea unui
+pattern existent NU scuză abaterile DS din el; cod nou = conform de la prima linie.
+
+**F076 Rețetar GV → LIVE (6a3798d, ec3cf08):** test complet cu date reale în
+tenant_002 — food cost 3,44/porție (11,5%) confirmat matematic, descărcare 10
+porții la CMP (34,40, notă ciornă 601=302), stoc insuficient blocat, fișe sănătoase,
+23 pytest. **BUG REAL găsit și reparat [gv_crono]:** descarca valida doar stocul
+TOTAL, nu cronologic la data descărcării — o ieșire antedatată (15.06, înainte de
+intrări) trecea și corupea fișa de magazie (orice replay ulterior pica). Reparație:
+validare prin replay complet fisa_magazie cu ieșirea inserată cronologic (prinde
+și spargerea mișcărilor ulterioare) + CMP la data descărcării; zero logică duplicată.
+Nota coruptă #92 ștearsă; 07/2026 deblocat în tenant_002 (reziduu test 12.07).
+UI retete_v1 din firme.js: 6 mesaje de stare mutate pe arataMesaj (DS cap.6).
+Bonus: blocarea perioadei s-a autovalidat în test (PERIOADA_BLOCATA a oprit corect
+prima încercare pe 07/2026).
+
+**F060 + F103 Alerte legislative programate → LIVE (ef968d3):** descoperire —
+funcționalitatea era deja construită integral (DDL data_afisare, emitere 7/3/0
+cu jurnal alerte_emise, cron 9:00 --doar-emitere, propuneri monitor în admin,
+afișare condiționată de dată); statusul PARTIAL era rămas în urmă. Testat integral
+cu alertă sintetică [T103]: emitere prag 3 către cabinetele active, idempotență
+(a doua rulare 0), anunț cu data_afisare viitoare invizibil azi, curățenie.
+Design clarificat: automat 7/3/0 DOAR pentru alertele cu data_vigoare extrasă de
+AI; restul rămân propuneri manuale (superadminul alege data). **Fix propuneri:**
+markerele de idempotență anaf_buletin („N modificări relevante") excluse din
+/admin/alerte-fiscale (rămân în tabelă pentru _procesat); 20 markere istorice
+marcate văzut, 18 propuneri reale rămase.
+
+**Bilanț restanțe:** din 6 PARTIAL la începutul părții 5 → rămân 2: F113 PWA
+(cere telefon + HTTPS) și blocatele extern F034 (DUK desktop) / F044 (API SPV).
+Igienă: 17 fișiere .bak_* șterse din static/js/ecrane/ (contra 0a).
+Commits: a932cb3, 78f458a, 615b50f, 6a3798d, ec3cf08, ef968d3 + închiderea.

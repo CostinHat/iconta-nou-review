@@ -1,7 +1,7 @@
 # iConta — DE FĂCUT
 
 **Doar viitorul: ce e deschis. Când termini, ștergi rândul. Trecutul e în ISTORIC.md + git log.**
-Ultima actualizare: 13.07.2026
+Ultima actualizare: 13.07.2026 seara (partea 5)
 
 ---
 
@@ -38,14 +38,12 @@ Ultima actualizare: 13.07.2026
   2. Categorii NEATACATE: spacing/padding/gap inline (fara inventar inca); wrapper alb pe formulare (cap.2 - verificatorul n-are regula, prins doar 1 manual); aliniere tabele (cap.4 sume la dreapta, neverificata sistematic); anatomia ferestrei (cap.1 entitate-antet/titlu-h2-corp, neauditata vizual).
   3. TASK 0a mai vechi (cerut 10.07, inca nefacut): audit cod mort + functionalitati ascunse ad-hoc fara conditie documentata + diferente cabinet/client inconsecvente.
 
-- **Alerte legislative programate (convenit ~03.07, PARTIAL)**: monitorul fiscal detecteaza modificarile (exista, cu email), anunturile exista (imediate, cu confirmare) — de construit: camp data_afisare pe anunturi_cabinet + afisare conditionata de data + flux monitor -> propunere de anunt in adminul de Anunturi (superadminul alege data). Ref: F103 in FUNCTIONALITATI.csv.
-
 ## CARENTE — inventar consolidat 13.07.2026 (functionalitati partiale/promise)
-1. **F103 Alerte legislative programate** (convenit ~03.07): lipseste data programata a afisarii + fluxul monitor fiscal -> propunere anunt. Detalii mai sus.
+1. (REZOLVAT 13.07 partea 5) F103+F060 alerte programate: testate integral, fix propuneri (markere buletin excluse). LIVE.
 2. (REZOLVAT 13.07 seara) Cod 10 CM integrat: dropdown + venit realizat + art.19 + FNUASS integral, testat.
 3. **D394 pe DUKIntegrator**: generatorul exista, validarea desktop blocata (sectiunea 2).
 4. **PWA**: manifest + service worker existente, NEtestate pe HTTPS/telefon (P4.18).
-5. **GV Retetar HoReCa**: CRUD + descarcare exista (descoperit azi in rute); UI/fluxul complet de re-verificat cu date reale (nota veche: "de re-verificat").
+5. (REZOLVAT 13.07 partea 5) F076 retetar GV: testat cu date reale, bug gv_crono (antedatare) reparat. LIVE.
 6. **e-Transport**: XML pentru upload MANUAL in SPV; trimiterea directa prin API SPV nu exista.
 7. **Descrieri FUNCTIONALITATI.csv**: 13/103 scrise (lot 1); loturile 2-8 raman.
 8. (REZOLVAT 13.07 seara) Admin auditat complet: 5/5 sub-ecrane, semafor Sanatate pe tokeni.
