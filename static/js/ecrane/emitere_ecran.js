@@ -141,7 +141,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <option value="proforma">Proforma</option>
         <option value="aviz">Aviz insotire</option>
       </select>
-      <button class="buton-primar em-emite" id="em-emite">Emite factura</button>
+      <button class="buton-primar em-emite" id="em-emite">Emite factur\u0103</button>
     </div>
     <div class="em-rezultat" id="em-rezultat"></div>`;
 
@@ -155,7 +155,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     rand.className = "em-linie";
     rand.dataset.idx = idx;
     rand.innerHTML = `
-      <input class="pr-input em-l-den" placeholder="Denumire (ex: paine, consultanta)" aria-label="Denumire articol" autocomplete="off">
+      <input class="pr-input em-l-den" placeholder="Denumire (ex: p\u00e2ine, consultan\u021b\u0103)" aria-label="Denumire articol" autocomplete="off">
       <input class="pr-input em-l-cant" type="number" step="0.001" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
       <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" aria-label="Pre\u021b unitar" title="Pre\u021b unitar">
       <span class="em-l-cota" title="Cota TVA">\u2014</span>
@@ -306,7 +306,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         rez2.textContent = "Emiterea a e\u0219uat. \u00cencearc\u0103 din nou.";
         rez2.className = "em-rezultat em-rau";
       }
-      if (btn) { btn.disabled = false; btn.textContent = "Emite factura"; }
+      if (btn) { btn.disabled = false; btn.textContent = "Emite factur\u0103"; }
     }
   }
 

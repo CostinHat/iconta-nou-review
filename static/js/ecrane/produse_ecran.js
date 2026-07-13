@@ -76,7 +76,7 @@ function formularAdauga(corp, tenantId, reincarca) {
     <div class="pr-form">
       <div class="pr-form-rand">
         <label class="camp-eticheta" for="pr-den">Denumire produs sau serviciu</label>
-        <input class="pr-input pr-den" id="pr-den" placeholder="ex: paine alba, consultanta" autocomplete="off">
+        <input class="pr-input pr-den" id="pr-den" placeholder="ex: p\u00e2ine alb\u0103, consultan\u021b\u0103" autocomplete="off">
       </div>
       <div class="pr-cota-preview" id="pr-cota-preview"></div>
       <div class="camp-eticheta">Pre\u021b \u00b7 unitate de m\u0103sur\u0103 \u00b7 cot\u0103 TVA</div>
