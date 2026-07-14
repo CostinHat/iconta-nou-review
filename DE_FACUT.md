@@ -137,4 +137,4 @@ Firme, solduri initiale, solduri parteneri, salariati, asociati, MF, istoric dec
 
 ## Actualizare 14.07.2026 (sfarsitul zilei)
 - INCHISE azi: F113, F152, F153 (gratuit v1+v2), descrieri CSV 103/103, dosarul rutelor 0a, audit vizual complet (~22 ecrane), regresia tenant_template
-- RAMASE: teste [C]/[D] plan pilot (Costin/Daniela); blocate extern: F034 D394 DUK, F044 e-Transport API SPV; F154-F161 roadmap gratuit PLANIFICATE; VIES de legat in emitere (api_intern_v1); parse-extras de clarificat vs rip/import-banca
+- RAMASE: teste [C]/[D] plan pilot (Costin/Daniela); blocate extern: F034 D394 DUK, F044 e-Transport API SPV; F154-F161 roadmap gratuit PLANIFICATE; parse-extras de clarificat vs rip/import-banca

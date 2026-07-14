@@ -914,6 +914,17 @@ def register_gratuit(date: RegisterGratuitIn):
                                                     date.nume_firma.strip(), date.cui.replace("RO", "").strip(), _TENANT_TEMPLATE)
             if not r.get("ok"):
                 raise HTTPException(409, r.get("mesaj", "eroare"))
+            # [gratuit_tva_anaf_v1] platitor_tva din ANAF, nu default template
+            try:
+                rez = anaf_api.valideaza_cui([date.cui.replace("RO", "").strip()])
+                if rez and rez[0].get("gasit"):
+                    with conn.cursor() as cur:
+                        cur.execute("SELECT schema_name FROM public.tenants WHERE id = %s", (r["tenant_id"],))
+                        sch = cur.fetchone()[0]
+                        cur.execute(f'UPDATE "{sch}".firma_profil SET platitor_tva = %s',
+                                    (bool(rez[0].get("platitor_tva")),))
+            except Exception:
+                pass  # ANAF jos -> ramane default, corectabil din vector fiscal
             conn.commit()
         except HTTPException:
             conn.rollback(); raise
