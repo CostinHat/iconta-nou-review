@@ -1,6 +1,6 @@
 // admin_sanatate.js — Admin iConta: sanatate infrastructura (doar superadmin).
 // Server (CPU/RAM/disk), aplicatie (uptime), baza de date, erori recente (500+), grafice istoric.
-import { dataRo, api } from "../api.js";
+import { dataRo, api, arataMesaj, esc } from "../api.js";
 
 
 function fmtOra(iso) {
@@ -48,8 +48,10 @@ function grafic(istoric, camp, titlu, culoare, maxFix) {
   });
   const ultimulR = istoric[istoric.length - 1];
   const ultimaVal = ultimulR ? ultimulR[camp] : null;
-  const primaOra = fmtOra(istoric[0].creat_la);
-  const ultimaOra = fmtOra(istoric[istoric.length - 1].creat_la);
+  const _cuZi = (iso) => { const d = new Date(iso); return isNaN(d) ? "" : `${d.getDate()}.${String(d.getMonth()+1).padStart(2,"0")} ${fmtOra(iso)}`; };
+  const _multizi = (new Date(istoric[istoric.length-1].creat_la) - new Date(istoric[0].creat_la)) > 20*3600*1000;
+  const primaOra = _multizi ? _cuZi(istoric[0].creat_la) : fmtOra(istoric[0].creat_la);
+  const ultimaOra = _multizi ? _cuZi(istoric[istoric.length - 1].creat_la) : fmtOra(istoric[istoric.length - 1].creat_la);
   return `
     <div class="pov-card">
       <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
@@ -123,7 +125,7 @@ export async function randeazaAdminSanatate(corp, nav) {
         ? erori.map((e) => `
           <div class="pf-frand">
             <div class="pf-frand-text">
-              <div class="pf-frand-nume">${(e.actiune || "")}</div>
+              <div class="pf-frand-nume">${esc(e.actiune || "")}</div>
               <div class="pf-frand-sub">status ${(e.detalii && e.detalii.status) || "?"} · ${dataRo(e.created_at, "cu_ora")}</div>
             </div>
           </div>`).join("")
@@ -137,5 +139,20 @@ export async function randeazaAdminSanatate(corp, nav) {
       ${grafic(istoric, "load1", "Load average", "var(--galben)")}
       ${grafic(istoric, "conexiuni_db", "Conexiuni DB", "#16a34a")}
     </div>
+    <div style="margin-top:16px">
+      <button class="buton-secundar" id="san-test-alerta">Trimite alert\u0103 de test</button>
+      <span id="san-test-msg"></span>
+    </div>
   `;
+  const bTest = corp.querySelector("#san-test-alerta");
+  bTest.addEventListener("click", async () => {  // [test_alerta_v1] verifica livrarea emailurilor de alerta
+    bTest.disabled = true;
+    try {
+      const r = await api.post("/admin/sanatate/test-alerta", {});
+      arataMesaj(corp.querySelector("#san-test-msg"), `Alert\u0103 de test trimis\u0103 la ${r.trimis_catre}. Verific\u0103 inboxul.`, "ok");
+    } catch {
+      arataMesaj(corp.querySelector("#san-test-msg"), "Nu am putut trimite alerta de test.", "eroare");
+    }
+    bTest.disabled = false;
+  });
 }

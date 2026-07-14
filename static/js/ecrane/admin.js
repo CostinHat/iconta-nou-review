@@ -7,7 +7,7 @@ import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=5";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=6";
 import { randeazaAdminGratuite } from "./admin_gratuite.js";
-import { randeazaAdminSanatate } from "./admin_sanatate.js";
+import { randeazaAdminSanatate } from "./admin_sanatate.js?v=3";
 
 // iconite SVG inline (autonome)
 function svg(cheie, fg) {
