@@ -16,7 +16,7 @@ window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reas
 import { sesiune } from "./sesiune.js";
 import { ecranLogin } from "./ecrane/login.js?v=3";
 import { creeazaNavigator } from "./navigator.js?v=2";
-import { desktopCabinet } from "./ecrane/cabinet.js";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=2";
 import { desktopAsistent } from "./ecrane/asistent.js";
 import { desktopPortal } from "./ecrane/portal.js?v=8";
 import { desktopAdmin } from "./ecrane/admin.js?v=12"; // [p37_admin_desktop]

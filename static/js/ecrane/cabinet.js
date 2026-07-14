@@ -5,7 +5,7 @@
 import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD } from "../api.js";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
-import { randeazaListaFirme } from "./firme.js";
+import { randeazaListaFirme } from "./firme.js?v=2";
 import { randeazaMigrare } from "./migrare.js?v=4";
 import { randeazaControl } from "./control.js";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js"; // [p17_activitate]
@@ -496,7 +496,7 @@ async function randeazaConsolidare(corp, nav) {
     </div>`;
   const rand = (nume, k, bold) => `
     <div class="pf-frand" style="${bold ? "font-weight:700;border-top:2px solid #ccc" : ""}">
-      <div class="pf-frand-text" style="flex:2">${nume}</div>
+      <div class="pf-frand-text" style="flex:2;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical" title="${nume}">${nume}</div>
       <span style="flex:1;text-align:right">${k ? lei(k.venituri) : "\u2014"}</span>
       <span style="flex:1;text-align:right">${k ? lei(k.cheltuieli) : "\u2014"}</span>
       <span style="flex:1;text-align:right;${k && k.profit < 0 ? "color:var(--rosu)" : ""}">${k ? lei(k.profit) : "\u2014"}</span>

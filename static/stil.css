@@ -721,6 +721,7 @@ html, body {
   display: grid; grid-template-columns: 70px 1fr auto; gap: 10px; align-items: center;
   padding: 9px 4px; border-bottom: 1px solid #eef0f3;
 }
+.cf-rand-decl .cf-perioada { white-space: nowrap; }  /* [audit_v2] T1 2026 nu se frange */
 .cf-perioada { color: #44516b; font-size: var(--text-mic); }
 .cf-termen { font-size: 12.5px; font-variant-numeric: tabular-nums; }
 .cf-termen-rosu { color: #c0392b; }

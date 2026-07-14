@@ -493,7 +493,7 @@ async function ecranControlFirma(corp, nav, t) {
     </div>`;
   let verifHtml = "";
   if (v.echilibru) verifHtml += vRand("Echilibru balan\u021b\u0103", v.echilibru.ok);
-  if (v.tva) verifHtml += vRand("TVA vs contabilitate", (v.tva.suma === 0 || v.tva.rezultat), `${v.tva.rezultat || ""} ${bani(v.tva.suma || 0)} lei`);
+  if (v.tva) verifHtml += vRand("TVA vs contabilitate", (v.tva.suma === 0 || v.tva.rezultat), `${v.tva.rezultat === "de_plata" ? "de plat\u0103" : (v.tva.rezultat === "de_recuperat" ? "de recuperat" : "")} ${bani(v.tva.suma || 0)} lei`);  /* [audit_v2] cheia tehnica tradusa */
   if (v.documente_pozate) verifHtml += vRand("Documente pozate", v.documente_pozate.ok, v.documente_pozate.bonuri_neverificate ? `${v.documente_pozate.bonuri_neverificate} neverificate` : "");
 
   corp.innerHTML = `
