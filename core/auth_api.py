@@ -285,6 +285,24 @@ def inregistreaza_cabinet(conn, email, parola, nume_cabinet, nume=None, prenume=
     return {"ok": True, "user_id": user_id, "firm_id": firm_id}
 
 
+def inregistreaza_cont_gratuit(conn, email, parola, nume_firma, cui, sql_template):
+    """[gratuit_v1] Cont gratuit: user rol 'client' FARA cabinet + tenant propriu
+    (accounting_firm_id NULL). Spatiul de lucru = portalul existent, cod neatins."""
+    import psycopg2.extras as _E
+    from core import tenant_provisioning as _tp
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute("SELECT 1 FROM public.users WHERE email = %s", (email,))
+        if cur.fetchone():
+            return {"ok": False, "cod": "EMAIL_EXISTA", "mesaj": "email deja înregistrat"}
+        h = nucleu.hash_parola(parola)
+        cur.execute(
+            "INSERT INTO public.users (email, password_hash, rol, accounting_firm_id) "
+            "VALUES (%s,%s,'client',NULL) RETURNING id", (email, h))
+        user_id = cur.fetchone()["id"]
+    r = _tp.provision_tenant(conn, nume_firma, cui, None, user_id, sql_template)
+    return {"ok": True, "user_id": user_id, "tenant_id": r["tenant_id"]}
+
+
 # ============================================================
 #  ACCES TENANT — izolare: userul vede DOAR tenanții lui
 # ============================================================

@@ -2022,12 +2022,12 @@ ALTER TABLE TENANT_PLACEHOLDER.bonuri ADD COLUMN IF NOT EXISTS orientare smallin
 
 -- perioada_blocata_trigger_v1 (#66): blocheaza INSERT/UPDATE/DELETE pe luna inchisa
 
-CREATE OR REPLACE FUNCTION {schema}.verifica_perioada_blocata() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata() RETURNS trigger AS $$
 DECLARE
   d date;
 BEGIN
   IF TG_OP = 'DELETE' THEN d := OLD.data; ELSE d := NEW.data; END IF;
-  IF EXISTS (SELECT 1 FROM {schema}.perioade_blocate
+  IF EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.perioade_blocate
              WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
     RAISE EXCEPTION 'PERIOADA_BLOCATA: luna %/% este inchisa',
       LPAD(EXTRACT(MONTH FROM d)::text, 2, '0'), EXTRACT(YEAR FROM d)::text;
@@ -2037,19 +2037,19 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_verifica_perioada_blocata ON {schema}.inregistrari;
+DROP TRIGGER IF EXISTS trg_verifica_perioada_blocata ON TENANT_PLACEHOLDER.inregistrari;
 CREATE TRIGGER trg_verifica_perioada_blocata
-BEFORE INSERT OR UPDATE OR DELETE ON {schema}.inregistrari
-FOR EACH ROW EXECUTE FUNCTION {schema}.verifica_perioada_blocata();
+BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.inregistrari
+FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata();
 
 -- perioada_blocata_rip_trigger_v1 (#67): blocheaza INSERT/UPDATE/DELETE pe rip_operatiuni pt luna inchisa
 
-CREATE OR REPLACE FUNCTION {schema}.verifica_perioada_blocata_rip() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_rip() RETURNS trigger AS $$
 DECLARE
   d date;
 BEGIN
   IF TG_OP = 'DELETE' THEN d := OLD.data_operatiune; ELSE d := NEW.data_operatiune; END IF;
-  IF EXISTS (SELECT 1 FROM {schema}.perioade_blocate
+  IF EXISTS (SELECT 1 FROM TENANT_PLACEHOLDER.perioade_blocate
              WHERE an = EXTRACT(YEAR FROM d)::int AND luna = EXTRACT(MONTH FROM d)::int) THEN
     RAISE EXCEPTION 'PERIOADA_BLOCATA: luna %/% este inchisa',
       LPAD(EXTRACT(MONTH FROM d)::text, 2, '0'), EXTRACT(YEAR FROM d)::text;
@@ -2059,7 +2059,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS trg_verifica_perioada_blocata_rip ON {schema}.rip_operatiuni;
+DROP TRIGGER IF EXISTS trg_verifica_perioada_blocata_rip ON TENANT_PLACEHOLDER.rip_operatiuni;
 CREATE TRIGGER trg_verifica_perioada_blocata_rip
-BEFORE INSERT OR UPDATE OR DELETE ON {schema}.rip_operatiuni
-FOR EACH ROW EXECUTE FUNCTION {schema}.verifica_perioada_blocata_rip();
+BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.rip_operatiuni
+FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_rip();

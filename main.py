@@ -867,6 +867,33 @@ def login(date: LoginIn):
     return {"token": r["token"], "user": r["user"]}
 
 
+class RegisterGratuitIn(BaseModel):
+    email: str
+    parola: str
+    nume_firma: str
+    cui: str
+
+@app.post("/public/register-gratuit")  # [gratuit_v1]
+def register_gratuit(date: RegisterGratuitIn):
+    if len(date.parola or "") < 8:
+        raise HTTPException(422, "parola: minim 8 caractere")
+    if not (date.nume_firma or "").strip() or not (date.cui or "").strip():
+        raise HTTPException(422, "denumirea firmei si CUI-ul sunt obligatorii")
+    if not _TENANT_TEMPLATE:
+        raise HTTPException(500, "template tenant indisponibil pe server")
+    with db.get_conn() as conn:
+        try:
+            r = auth_api.inregistreaza_cont_gratuit(conn, date.email.strip().lower(), date.parola,
+                                                    date.nume_firma.strip(), date.cui.replace("RO", "").strip(), _TENANT_TEMPLATE)
+            if not r.get("ok"):
+                raise HTTPException(409, r.get("mesaj", "eroare"))
+            conn.commit()
+        except HTTPException:
+            conn.rollback(); raise
+        except Exception as e:
+            conn.rollback(); raise HTTPException(400, str(e))
+    return {"ok": True}
+
 @app.post("/auth/register")
 def register(date: RegisterIn):
     with db.get_conn() as conn:
