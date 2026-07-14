@@ -5513,8 +5513,8 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...), ctx=Depends
             "mentiune": mentiune}
 
 
-@app.get("/tenants/{tenant_id}/verifica-vies")  # [api_intern_v1] validare VIES - fara UI inca, pastrat deliberat
-def verifica_vies_ep(tenant_id: int, cod_tva: str, ctx=Depends(cere_cabinet)):
+@app.get("/tenants/{tenant_id}/verifica-vies")  # [vies_emitere_v1] validare VIES - folosit din emitere
+def verifica_vies_ep(tenant_id: int, cod_tva: str, ctx=Depends(cere_context)):
     """Verifica un cod TVA UE in VIES (API oficial CE)."""
     from core import intracomunitar as _ic
     with db.get_conn() as conn:

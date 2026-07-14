@@ -4,7 +4,7 @@
 //      DA -> serie + ultimul numar (continuitate); NU -> serie optionala, start 1
 //   2. formular emitere: beneficiar (CUI verificat ANAF) + linii (cota auto) + total live
 // Apelare: randeazaEmitere(corp, nav, tenantId, { inapoi, dupaEmitere })
-import { api, dataRo } from "../api.js";
+import { api, dataRo, esc } from "../api.js";
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -119,7 +119,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       <label class="camp-eticheta" for="em-cui">CUI beneficiar</label>
       <div class="em-benef">
         <input class="pr-input em-cui" id="em-cui" placeholder="ex: RO12345678" autocomplete="off">
-        <button class="buton-secundar em-buton-sec" id="em-verifica">Verific\u0103 la ANAF</button>  <!-- [p114_buton_anaf] -->
+        <button class="buton-secundar em-buton-sec" id="em-verifica">Verific\u0103</button>  <!-- [p114_buton_anaf: eticheta neutra, acopera ANAF+VIES] -->
       </div>
       <label class="camp-eticheta" for="em-nume">Denumire beneficiar<span class="oblig">*</span></label>
       <input class="pr-input em-nume" id="em-nume" autocomplete="off">
@@ -234,6 +234,30 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     const cui = corp.querySelector("#em-cui").value.trim();
     const stare = corp.querySelector("#em-cui-stare");
     if (!cui) return;
+    // [vies_emitere_v1] cod TVA UE (prefix stat membru != RO) -> verificare VIES, nu ANAF
+    const pfx = (cui.slice(0, 2) || "").toUpperCase();
+    const UE = ["AT","BE","BG","CY","CZ","DE","DK","EE","EL","ES","FI","FR","HR","HU","IE","IT","LT","LU","LV","MT","NL","PL","PT","SE","SI","SK","XI"];
+    if (UE.includes(pfx)) {
+      stare.textContent = "se verific\u0103 \u00een VIES\u2026";
+      stare.className = "em-cui-stare";
+      try {
+        const v = await api.get(`/tenants/${tenantId}/verifica-vies?cod_tva=${encodeURIComponent(cui)}`);
+        if (v && v.valid) {
+          // unele state (ex. DE) nu divulga nume/adresa -> VIES intoarce "---"
+          if (v.nume && v.nume !== "---") corp.querySelector("#em-nume").value = v.nume;
+          if (v.adresa && v.adresa !== "---") corp.querySelector("#em-adresa").value = v.adresa.trim();
+          stare.innerHTML = `<span class="em-cui-info">valid \u00een VIES \u00b7 ${esc(v.tara || pfx)}</span>`;
+          stare.className = "em-cui-stare";
+        } else {
+          stare.textContent = "cod TVA INVALID \u00een VIES \u2014 scutirea intracomunitar\u0103 nu se aplic\u0103";
+          stare.className = "em-cui-stare em-cui-rau";
+        }
+      } catch {
+        stare.textContent = "VIES indisponibil \u2014 re\u00eencearc\u0103";
+        stare.className = "em-cui-stare em-cui-rau";
+      }
+      return;
+    }
     stare.textContent = "se verific\u0103 la ANAF\u2026";
     stare.className = "em-cui-stare";
     try {
