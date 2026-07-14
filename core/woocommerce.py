@@ -55,6 +55,8 @@ def config(conn, schema):
 def sincronizeaza(conn, schema):
     """Import comenzi noi -> facturi emise (status de_preluat). Idempotent pe numar WC-<nr>."""
     from core import facturi_api
+    with conn.cursor() as _c:
+        _c.execute(f"SET search_path TO {schema}")  # [wc_searchpath_v1] emite_factura/produse_api asteapta schema pe conexiune
     cfg = config(conn, schema)
     if not (cfg and cfg["wc_url"] and cfg["wc_ck"] and cfg["wc_cs"]):
         return {"eroare": "WooCommerce neconfigurat"}
