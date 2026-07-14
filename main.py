@@ -4945,7 +4945,9 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
                 baza = Decimal(str(f.get("total_lei") or f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
             cota = Decimal(str(fl["cota"])) / 100 if fl["cota"] is not None else Decimal("0.21")
             if f["directie"] == "emisa":
-                note = _fc.factura_emisa(baza, cota=cota, la_data=str(f["data_emitere"]), tva_incasare=tvai)
+                cur.execute(f"SELECT COALESCE(cont_venit_implicit,'707') AS cv FROM {schema}.firma_profil WHERE id=1")
+                _cv = cur.fetchone()["cv"]  # [cont_venit_firma_v1] 707 marfa / 704 servicii, setabil pe firma
+                note = _fc.factura_emisa(baza, cota=cota, la_data=str(f["data_emitere"]), tva_incasare=tvai, cont_venit=_cv)
             else:
                 note = _fc.factura_primita(baza, cota=cota, la_data=str(f["data_emitere"]), tva_incasare=tvai)
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)

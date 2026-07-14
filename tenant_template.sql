@@ -480,6 +480,7 @@ CREATE TABLE TENANT_PLACEHOLDER.firma_profil (
     patron_email text,
     logo text,
     tip_decont text,
+    cont_venit_implicit character varying(10) DEFAULT '707',
     pro_rata numeric,
     regim_fiscal text,
     platitor_tva boolean,
