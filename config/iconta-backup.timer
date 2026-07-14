@@ -1,0 +1,7 @@
+[Unit]
+Description=iConta DB backup zilnic 03:00
+[Timer]
+OnCalendar=*-*-* 03:00:00
+Persistent=true
+[Install]
+WantedBy=timers.target

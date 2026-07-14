@@ -1041,3 +1041,39 @@ Commits: a932cb3, 78f458a, 615b50f, 6a3798d, ec3cf08, ef968d3 + închiderea.
 - Marunt: e-Transport, Produse, Tipare, Asistenti — conforme
 
 Fisiere de test: test.gratuit@example.com / Gratuit2026! (tenant 18) + contul QUANTUM al lui Costin (tenant_009, serie asf232, platitor TVA).
+
+## 14.07.2026 — Partea 2: VIES, backup automat, MT940, gardieni fiscali, poarta beta
+14 commit-uri (822358d -> 6f918c3). Verificator TOTAL 0 permanent. Sesiune de testare [C]/[D] + infra critica.
+
+**VIES in emitere** (822358d): prefix stat UE (!=RO) la CUI beneficiar -> verifica-vies in loc de ANAF, autocompletare nume/adresa (filtru "---" pt state ca DE care nu divulga), auth aliniat cere_context (mergea doar pe cabinet). Buton "Verifica" (nu "la ANAF"). Testat IE valid / DE invalid / RO neatins.
+
+**BACKUP AUTOMAT DB -> LIVE** (iconta_backup_v1, 6f918c3 include): GAURA CRITICA inchisa. /usr/local/bin/iconta-backup.sh (pg_dump -Fc iconta_v2 -> /var/backups/iconta, retentie 7 zile) + iconta-backup.service + iconta-backup.timer (systemd, zilnic 03:00, Persistent=true, enabled). Dump/restore validat pe DB temp (11 tenanti/15 useri/date intacte). NB: service+timer traiesc in /etc/systemd/system, de salvat in sertarul config desktop.
+
+**Parser MT940 (SWIFT)** (79f9384, F166): ramura noua in banca_parser detectata dupa marker :61:/:20:, produce aceeasi structura {data,detalii,suma} ca parserul grid. Acoperire majoritatea bancilor RO printr-un fisier standard, cost zero. Model de automatizare maxima. RAMAS: validare pe fisier MT940 real (camp :86: variaza per banca). F167 Open Banking prin Enable Banking notat pt etapa 2 (tier gratuit Restricted Production pt conturi proprii; productie=contract+KYB+cost).
+
+**POARTA BETA -> LIVE** (beta_gate_v1, 6f918c3): BETA_COD_ACCES in env opreste accesul public la login + signup gratuit; conturile se salveaza REAL (lead capture), mesaj "Site in lucru, vei primi email cand devine functional". Testerii intra cu cod (camp nou "Cod acces" la login). Cod actual: ICONTA2026. Golirea env-ului = lansare publica. F168: email automat la lansare catre conturile create in beta.
+
+**Teste [C] DONE** (plan pilot): P1.1 end-to-end (register->firma->factura->contare->status), P1.4 recurente (sablon->cron->factura emisa), P1.5 WooCommerce (simulat complet cu WC fake local, import+idempotenta), P2.9-2.11 (KPI portal / consolidare=suma firmelor / tipare AI), P5.24 backup/restore.
+
+**Teste [D] majoritatea DONE cu GARDIENI scrisi** (module fiscale critice care erau FARA test):
+- P1.3 salarizare: test_salarizare.py 15 teste (brut->net, deduceri degresive art.77, facilitate minim, part-time suprataxa art.146, CM prima-zi/split-FNUASS/CASS-coduri/cod10), valori la sursa 2026 (0db51e6)
+- P2.6 TVA la incasare: test_tva_incasare.py 6 teste (suta marita proportionala 4428->4427, cote 21/11, alocari mixte, plafoane OUG 8/2026) (9b197f5)
+- P2.7 operatiuni speciale: test_operatiuni_speciale.py 9 teste (sponsorizari plafon dublu+D177+micro, avans TVA, leasing financiar cap/dobanda, provizioane art.26) (4be2105)
+- MT940: test_banca_parser_mt940.py 4 teste (79f9384)
+- Total 34 teste noi. RAMAS: P1.2 (flux lunar complet e-Factura->reconciliere->jurnal->balanta->D300->ANAF).
+
+**BUG-URI REALE prinse prin dogfooding (9):**
+1. platitor_tva gresit la signup gratuit (ANAF nefolosit) -> preluat din ANAF la register (gratuit_tva_anaf_v1, 5dd57a9)
+2. drift schema tenant_004: 4 coloane link-plata lipsa -> ALTER + verificat template
+3. drift schema tenant_003+004: sursa_externa lipsa -> ALTER
+4. buton "Conteaza" fantoma pe factura deja contata -> flag contabilizata (lista+detaliu) (0e0d892)
+5. status "de preluat" mincinos dupa contare -> eticheta din flag contabilizata
+6. cont venit 707 hardcodat (consultanta pe marfuri) -> firma_profil.cont_venit_implicit (707/704) (26775e4)
+7. #fr-back null rupea formularul sablon recurent -> eliminat handler mort (2d26568)
+8. search_path nesetat in sincronizarea Woo -> SET search_path (wc_searchpath_v1, 8af00f6)
+9. (infra) niciun backup automat -> construit
+
+**FIX DS**: detaliu factura titlu "Factura N" (entitate scoasa din titlu, prins de ENTITATE_IN_TITLU); eticheta stare .fd-stare (DS cap.6, clasa fac-storno-tag era fantoma fara CSS) (0e0d892).
+
+**DE_FACUT nou**: F162 (avertisment platitor_tva vs ANAF), F164 (cont_venit din UI), F165 (auditor drift schema tenant vs template - drift recurent), F166 (MT940, in lucru), F167 (Open Banking Enable Banking), F168 (email lansare beta).
+
