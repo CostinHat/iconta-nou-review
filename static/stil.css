@@ -2185,3 +2185,6 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .grila-campuri { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; max-width: 1000px; }
 .grila-campuri .camp { justify-content: flex-end; }
 .grila-campuri-compacta { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 8px; padding: 8px; background: var(--alb); border: 1px solid #b9c2cf; border-radius: var(--raza); }
+/* [fd_stare_v1] eticheta de stare pe detaliu factura (DS cap.6) */
+.fd-stare { font-size: 12px; color: #5b6572; background: var(--gri-fundal-semafor); border-radius: 10px; padding: 2px 10px; white-space: nowrap; }
+.fd-stare-verde { color: var(--verde); background: #e4f2ea; }

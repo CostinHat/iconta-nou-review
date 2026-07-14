@@ -99,7 +99,9 @@ def lista_facturi(conn, an=None, luna=None, directie=None, limit=None, offset=0)
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, numar, data_emitere, directie, total, tva, status, "
-            "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id FROM facturi" + where +
+            "moneda, tert_nume, tert_cui, tert_adresa, tip, transformat_in_id, storno_din_id, "
+            "EXISTS(SELECT 1 FROM inregistrari i WHERE i.factura_id = facturi.id) AS contabilizata "
+            "FROM facturi" + where +
             " ORDER BY data_emitere DESC, id DESC" + limitclause, val)
         return [dict(r) for r in cur.fetchall()]
 
@@ -116,7 +118,8 @@ def detalii_factura(conn, factura_id):
             "status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
             "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, storno_din_id, tip, transformat_in_id, "
             "link_plata, platita_la, "
-            "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar "
+            "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar, "
+            "EXISTS(SELECT 1 FROM inregistrari i WHERE i.factura_id = facturi.id) AS contabilizata "
             "FROM facturi WHERE id = %s",
             (factura_id,))
         f = cur.fetchone()

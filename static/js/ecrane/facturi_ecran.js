@@ -87,7 +87,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
             <div class="pf-frand-sub">${dataRo(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
           </div>
           <span class="pf-frand-suma">${suma}</span>
-          ${(!opt.client && !opt.gratuit) ? `<span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
+          ${(!opt.client && !opt.gratuit && !f.contabilizata) ? `<span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
         </button>`;
         }).join("");
     corp.innerHTML = `
@@ -195,18 +195,18 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   const dir = dirEticheta(f.directie);
   const partener = f.tert_nume ? `${esc(f.tert_nume)}${f.tert_cui ? " \u00b7 CUI " + esc(f.tert_cui) : ""}` : "";
   const STATUS_ETICHETA = { de_preluat: "de preluat", emisa: "emis\u0103", anulata: "anulat\u0103", platita: "pl\u0103tit\u0103" };
-  const statusTxt = f.storno_din_id ? "storno" : (STATUS_ETICHETA[f.status] || f.status || "");
+  const statusTxt = f.storno_din_id ? "storno" : (f.contabilizata ? "contabilizat\u0103" : (STATUS_ETICHETA[f.status] || f.status || ""));
 
   corp.innerHTML = `
     <div class="fd-antet">
       <div class="fd-antet-sus">
-        <h2 class="pf-titlu">${esc(f.numar || "\u2014")}</h2>
-        ${statusTxt ? `<span class="fac-storno-tag">${esc(statusTxt)}</span>` : ""}
+        <h2 class="pf-titlu">Factur\u0103 ${esc(f.numar || "\u2014")}</h2>
+        ${statusTxt ? `<span class="fd-stare">${esc(statusTxt)}</span>` : ""}
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
         <button class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
         ${(!opt.client && !opt.gratuit && f.directie === "emisa" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
-        ${f.platita_la ? '<span class="fac-storno-tag fac-tag-platit">pl\u0103tit\u0103</span>' : ""}
+        ${f.platita_la ? '<span class="fd-stare fd-stare-verde">pl\u0103tit\u0103</span>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-chitanta">Emite chitan\u021b\u0103</button>' : ""}
         ${f.transformat_in_id ? `<button class="btn-link" id="fd-vezi-transformata">transformat\u0103 \u00een ${esc(f.transformat_in_numar || "factur\u0103")}</button>` : ""}
