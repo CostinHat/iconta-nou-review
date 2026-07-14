@@ -24,7 +24,7 @@ Ultima actualizare: 13.07.2026 seara (partea 5)
 - P5.24 Backup/restore: pg_dump → restore pe DB temp → login OK
 
 ### Cere telefon [T] — după HTTPS (nou.iconta.eu e sus)
-- P4.18 PWA: adaugă pe ecran (Android+iOS), pornire standalone
+- P4.18 PWA: (FACUT iOS 14.07 - standalone+offline OK) ramas doar Android, verificare secundara
 - P4.19 Pozează bon: cameră, multi-imagine, flux până la notă
 - P4.20/21 Responsive portal <400px, landing <900px/<560px
 
@@ -42,7 +42,7 @@ Ultima actualizare: 13.07.2026 seara (partea 5)
 1. (REZOLVAT 13.07 partea 5) F103+F060 alerte programate: testate integral, fix propuneri (markere buletin excluse). LIVE.
 2. (REZOLVAT 13.07 seara) Cod 10 CM integrat: dropdown + venit realizat + art.19 + FNUASS integral, testat.
 3. **D394 pe DUKIntegrator**: generatorul exista, validarea desktop blocata (sectiunea 2).
-4. **PWA**: manifest + service worker existente, NEtestate pe HTTPS/telefon (P4.18).
+4. (REZOLVAT 14.07) PWA testat pe iPhone: instalare, standalone, offline. Android secundar.
 5. (REZOLVAT 13.07 partea 5) F076 retetar GV: testat cu date reale, bug gv_crono (antedatare) reparat. LIVE.
 6. **e-Transport**: XML pentru upload MANUAL in SPV; trimiterea directa prin API SPV nu exista.
 7. **Descrieri FUNCTIONALITATI.csv**: 13/103 scrise (lot 1); loturile 2-8 raman.
