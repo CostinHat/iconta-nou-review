@@ -714,7 +714,6 @@ function formSablon(corp, nav, tenantId, opt) {
       <button class="buton-primar" id="fr-salveaza">Salveaz\u0103 \u0219ablonul</button>
     </div>
     <div class="em-rezultat" id="fr-rezultat"></div>`;
-  corp.querySelector("#fr-back").addEventListener("click", inapoiLista);
 
   const zonaLinii = corp.querySelector("#fr-linii");
   const linii = [];

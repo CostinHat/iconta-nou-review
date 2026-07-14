@@ -138,4 +138,5 @@ Firme, solduri initiale, solduri parteneri, salariati, asociati, MF, istoric dec
 ## Actualizare 14.07.2026 (sfarsitul zilei)
 - INCHISE azi: F113, F152, F153 (gratuit v1+v2), descrieri CSV 103/103, dosarul rutelor 0a, audit vizual complet (~22 ecrane), regresia tenant_template
 - F162: platitor_tva editat manual vs ANAF -> avertisment la salvare vector fiscal + semafor rosu Control fiscal la divergenta [PLANIFICAT]
+- F164: cont_venit_implicit setabil din UI (Setari cont/profil firma), acum doar din DB [PLANIFICAT]
 - RAMASE: teste [C]/[D] plan pilot (Costin/Daniela); blocate extern: F034 D394 DUK, F044 e-Transport API SPV; F154-F161 roadmap gratuit PLANIFICATE; parse-extras de clarificat vs rip/import-banca
