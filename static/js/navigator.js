@@ -16,7 +16,11 @@ function _functieAsistent(u) {
 }
 function contextBara(u) {
   switch (u.rol) {
-    case "client":  // [p90_client_bara] cabinet (slab) + firma clientului
+    case "client":  // [p90_client_bara] cabinet (slab) + firma clientului; [gratuit_v1] fara cabinet
+      if (!u.firm) return { verigi: [
+        { text: "Facturare gratuită", slab: true },
+        { text: u.nume_tenant || u.nume || "" },
+      ] };
       return { verigi: [
         { text: "Cabinet de contabilitate · " + (u.nume_firma || ""), slab: true },
         { text: u.nume_tenant || u.nume || "" },

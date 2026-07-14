@@ -1831,6 +1831,18 @@ def firma_profil_get(tenant_id: int, ctx=Depends(cere_context)):
     with db.get_conn(schema) as conn:
         return _fp.citeste_profil(conn)
 
+class RegimTvaIn(BaseModel):
+    platitor_tva: bool
+
+@app.post("/tenants/{tenant_id}/firma-profil/regim-tva")  # [tva_config_v1] setat la Configurare emitere
+def firma_profil_regim_tva(tenant_id: int, date: RegimTvaIn, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE firma_profil SET platitor_tva = %s", (date.platitor_tva,))
+        conn.commit()
+    return {"ok": True, "platitor_tva": date.platitor_tva}
+
 @app.post("/tenants/{tenant_id}/firma-profil/model")
 def firma_profil_model(tenant_id: int, date: ModelFacturaIn, ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)

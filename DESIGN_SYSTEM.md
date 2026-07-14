@@ -88,6 +88,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - `arataMesaj(el, txt, tip)` — singura cale de afișare a mesajelor de stare. Tipuri canonice: `eroare` (roșu), `avert` (galben), `info` (gri), `ok` (verde, succes). INTERZIS mesaj de stare prin innerHTML cu clase ad-hoc (`mig-gol`, `pf-intro`, span inline).
 - Eroare de câmp/formular: `<span class="msg-eroare">` (roșu), lângă câmpul/butonul relevant. Niciodată tăcere la o acțiune eșuată.
 - Validări preventive cu mesaj explicativ, nu doar refuz.
+- **Cota TVA la emitere (v2.11)**: cota NU se tastează pe linie — vine din nomenclatorul de produse (F023: potrivire pe denumire, regulă+AI), la plătitorii de TVA; ne-plătitorii emit fără TVA. Regimul se setează o dată, în ecranul-poartă „Configurare emitere" (numerotare + regim TVA), obligatoriu înainte de prima factură.
 - **Câmp obligatoriu (v2.0)**: marcat cu asterisc roșu prin `<span class="oblig">*</span>` lângă etichetă. Câmpurile opționale nu se marchează.
 - **Ghidaj preventiv (v2.0)**: câmp care nu se poate autocompleta din date existente primește `<span class="camp-ajutor">` (albastru #3d8fd6, sub etichetă) care spune de unde ia utilizatorul valoarea. Niciun câmp obligatoriu gol fără context.
 

@@ -4,7 +4,7 @@
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { fluxConcediu } from "./flux_concediu.js?v=8";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js";
+import { randeazaFacturi } from "./facturi_ecran.js?v=3";
 import { ecranRip } from "./rip_ecran.js";
 import { ecranOperatiuni } from "./operatiuni_ecran.js";
 import { ecranEtransport } from "./etransport_ecran.js";

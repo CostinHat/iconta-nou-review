@@ -2,7 +2,7 @@
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD } from "../api.js";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
-import { randeazaFacturi } from "./facturi_ecran.js";  // [p116_facturi_modul]
+import { randeazaFacturi } from "./facturi_ecran.js?v=3";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -14,6 +14,10 @@ const ICON = {
   recomanda: '<path d="M20 12v10H4V12"/><path d="M2 7h20v5H2z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>',
   documente: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
 };
+
+function _eGratuit() {  // [gratuit_v1] cont fara cabinet (firm null in sesiune)
+  try { const u = sesiune.user(); return !!u && u.rol === "client" && !u.firm; } catch { return false; }
+}
 
 export function desktopPortal(continut, nav) {
   const u = sesiune.user() || {};
@@ -37,25 +41,28 @@ export function desktopPortal(continut, nav) {
   ];
   const CARD_BON = { cheie: "bon", titlu: "Pozează bon sau chitanță", icon: "facturi", ...CULORI_CARD.piersica,
       sinteza: "Fotografiază documentul, iConta îl citește" };  /* portal_layout_v2 */
+  // [gratuit_v1] contul fara cabinet: doar cardurile cu sens (fara contabil)
+  const GRATUIT_CARDURI = new Set(["facturi", "cifre", "acces-cont"]);
+  const carduriVizibile = _eGratuit() ? CARDURI.filter((c) => GRATUIT_CARDURI.has(c.cheie)) : CARDURI;
 
   continut.innerHTML = `
     <div class="cab-salut portal-sus" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
       <div>
         <div class="cab-salut-nume">${firma}</div>
-        <div class="cab-salut-sub">Portal Client</div>
+        <div class="cab-salut-sub">${_eGratuit() ? "Facturare gratuită" : "Portal Client"}</div>
       </div>
       <button class="cab-card cab-card-mic accent-recomanda" id="portal-recomanda-mic">
         <div class="cab-card-cap">${SVG(ICON["recomanda"], CULORI_CARD.chihlimbar.fg)}<span class="cab-card-titlu">Recomand\u0103</span></div>
       </button>
     </div>
     <div class="cab-grila">
-      <div class="pa-status" id="pa-status" style="grid-column: span 2; margin:0"><p class="ecran-nota">Se verifică situația la ANAF...</p></div>
-      <div id="pa-bon-slot" style="display:flex"></div>
+      ${_eGratuit() ? "" : `<div class="pa-status" id="pa-status" style="grid-column: span 2; margin:0"><p class="ecran-nota">Se verifică situația la ANAF...</p></div>`}
+      ${_eGratuit() ? "" : `<div id="pa-bon-slot" style="display:flex"></div>`}
     </div>
   `;
 
   const grila = continut.querySelector(".cab-grila");
-  {
+  if (!_eGratuit()) {  // [gratuit_v1] fluxul bon->contabil nu exista la gratuit
     const c = CARD_BON;
     const card = document.createElement("button");
     card.className = "cab-card";
@@ -65,7 +72,7 @@ export function desktopPortal(continut, nav) {
     continut.querySelector("#pa-bon-slot").appendChild(card);
   }
   continut.querySelector("#portal-recomanda-mic").addEventListener("click", () => nav.deschide("Recomandă", (corp) => ecranRecomanda(corp, nav)));  /* recomanda_mic_portal_v1 */
-  CARDURI.forEach((c) => {
+  carduriVizibile.forEach((c) => {
     const card = document.createElement("button");
     card.className = "cab-card";
     card.style.background = c.bg;
@@ -78,7 +85,7 @@ export function desktopPortal(continut, nav) {
     grila.appendChild(card);
   });
 
-  actualizeazaStatusAcasa(continut);
+  if (!_eGratuit()) actualizeazaStatusAcasa(continut);  // [gratuit_v1] fara panou fiscal la gratuit
 }
 
 function deschideCard(cheie, nav) {
@@ -208,15 +215,15 @@ async function actualizeazaStatusAcasa(continut) {
   if (d.mesaj === "vector fiscal necompletat" || d.stare === "gri") {
     zona.innerHTML = `<div class="pa-card pa-neutru">
       <div class="pa-titlu">Situația fiscală se configurează</div>
-      <div class="pa-sub">Contabilul tău finalizează încă setarea firmei.</div>
+      <div class="pa-sub">${_eGratuit() ? "Completează profilul firmei pentru situația fiscală." : "Contabilul tău finalizează încă setarea firmei."}</div>
     </div>`;
     return;
   }
 
-  let clasa = "pa-verde", titlu = "Totul e la zi", sub = "Nicio declarație restantă. Contabilul tău are situația sub control.";
+  let clasa = "pa-verde", titlu = "Totul e la zi", sub = _eGratuit() ? "Nicio declarație restantă." : "Nicio declarație restantă. Contabilul tău are situația sub control.";
   if (d.stare === "rosu") {
     clasa = "pa-rosu"; titlu = `${restante.length} ${restante.length === 1 ? "declarație trebuie depusă" : "declarații trebuie depuse"}`;
-    sub = "Contabilul tău se ocupă.";
+    sub = _eGratuit() ? "Verifică scadențele în lista de mai jos." : "Contabilul tău se ocupă.";
   } else if (d.stare === "galben") {
     clasa = "pa-galben"; titlu = `${urmarit.length} ${urmarit.length === 1 ? "termen apropiat" : "termene apropiate"}`;
     sub = "Scadențe în perioada următoare.";
@@ -262,7 +269,7 @@ async function deschideFacturi(corp, nav) {
     corp.innerHTML = `<p class="msg-eroare">Nu am putut identifica firma.</p>`;
     return;
   }
-  randeazaFacturi(corp, nav, tenantId, { client: true });  // [p125_portal_curat]
+  randeazaFacturi(corp, nav, tenantId, _eGratuit() ? { gratuit: true } : { client: true });  // [p125_portal_curat] + [gratuit_v1] gratuit = meniul complet (emitere, recurente)
 }
 
 // ---------- DECLARATII DEPUSE ----------

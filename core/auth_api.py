@@ -294,6 +294,9 @@ def inregistreaza_cont_gratuit(conn, email, parola, nume_firma, cui, sql_templat
         cur.execute("SELECT 1 FROM public.users WHERE email = %s", (email,))
         if cur.fetchone():
             return {"ok": False, "cod": "EMAIL_EXISTA", "mesaj": "email deja înregistrat"}
+        cur.execute("SELECT 1 FROM public.tenants WHERE cui = %s AND accounting_firm_id IS NULL", (str(cui),))
+        if cur.fetchone():  # [gratuit_v1] un CUI = un cont gratuit (limitare abuz)
+            return {"ok": False, "cod": "CUI_EXISTA", "mesaj": "există deja un cont gratuit pentru acest CUI"}
         h = nucleu.hash_parola(parola)
         cur.execute(
             "INSERT INTO public.users (email, password_hash, rol, accounting_firm_id) "

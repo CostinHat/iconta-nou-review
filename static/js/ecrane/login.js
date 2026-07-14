@@ -119,7 +119,7 @@ export function ecranLogin(radacina) {
   const facturareBtn = document.querySelector("#pagina-facturare-gratuita-btn");
   if (facturareBtn) facturareBtn.addEventListener("click", () => {
     overlay.hidden = false;
-    randeazaInregistrare(true);  // [gratuit_v1]
+    randeazaInregistrareGratuita();  // [gratuit_v2] formular dedicat, stare proprie
   });
 
   const modal = overlay.querySelector("#acces-modal");
@@ -298,15 +298,109 @@ export function ecranLogin(radacina) {
     email.addEventListener("keydown", (e) => { if (e.key === "Enter") parola.focus(); });
   }
 
-  // ---------- ecran 2b: inregistrare cabinet nou ----------
-  function randeazaInregistrare(gratuit) {  // [gratuit_v1] acelasi formular, doua moduri
+  // ---------- ecran 2c: cont de facturare gratuita ---------- [gratuit_v2]
+  function randeazaInregistrareGratuita() {
+    if (sesiune.token()) sesiune.iesi();  // [gratuit_v2] nicio stare mostenita: sesiunea veche a tabului moare aici
     modal.classList.add("acces-modal-inreg");
     modal.innerHTML = `
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
         <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
-        <div class="login-subtagline">${gratuit ? "Cont de facturare gratuit\u0103" : "\u00cenregistreaz\u0103 cabinetul t\u0103u"}</div>
+        <div class="login-subtagline">Cont de facturare gratuită</div>
+      </div>
+      <label class="camp">
+        <span class="camp-eticheta">CUI<span class="oblig">*</span></span>
+        <div style="display:flex; gap:8px;">
+          <input type="text" class="camp-input" id="gr-cui" autofocus style="flex:1">
+          <button type="button" class="buton-primar acces-verifica-btn" id="gr-cui-verifica">Verifică la ANAF</button>
+        </div>
+        <div id="gr-cui-info" class="tip-micut" style="margin-top:6px"></div>
+      </label>
+      <label class="camp">
+        <span class="camp-eticheta">Denumire firmă<span class="oblig">*</span></span>
+        <input type="text" class="camp-input" id="gr-firma">
+      </label>
+      <label class="camp">
+        <span class="camp-eticheta">Email<span class="oblig">*</span></span>
+        <input type="email" class="camp-input" id="gr-email" autocomplete="off" placeholder="nume@firma.ro">
+      </label>
+      <label class="camp">
+        <span class="camp-eticheta">Parolă<span class="oblig">*</span> <span class="tip-micut">(minim 8 caractere)</span></span>
+        <input type="password" class="camp-input" id="gr-parola" autocomplete="off">
+      </label>
+      <label class="camp">
+        <span class="camp-eticheta">Confirmă parola<span class="oblig">*</span></span>
+        <input type="password" class="camp-input" id="gr-parola2" autocomplete="off">
+      </label>
+      <div class="login-eroare" id="gr-eroare" hidden></div>
+      <button class="buton-primar" id="gr-buton">Creează contul gratuit</button>
+    `;
+    modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
+    const cui = modal.querySelector("#gr-cui");
+    const cuiBtn = modal.querySelector("#gr-cui-verifica");
+    const cuiInfo = modal.querySelector("#gr-cui-info");
+    const firma = modal.querySelector("#gr-firma");
+    const email = modal.querySelector("#gr-email");
+    const parola = modal.querySelector("#gr-parola");
+    const parola2 = modal.querySelector("#gr-parola2");
+    const buton = modal.querySelector("#gr-buton");
+    const eroare = modal.querySelector("#gr-eroare");
+    const arata = (t) => { eroare.textContent = t; eroare.hidden = false; };
+    cui.addEventListener("input", () => {  // CUI schimbat = denumirea veche nu mai e valabila
+      firma.value = ""; cuiInfo.textContent = "";
+    });
+    cuiBtn.addEventListener("click", async () => {
+      const val = (cui.value || "").trim();
+      if (!val) { cuiInfo.textContent = "Introdu CUI-ul mai întâi."; cuiInfo.style.color = "#a32d2d"; return; }
+      cuiBtn.disabled = true; cuiBtn.textContent = "Se verifică…"; cuiInfo.textContent = "";
+      try {
+        const r = await api.get(`/public/verifica-cui/${encodeURIComponent(val)}`);
+        if (r && r.gasit) {
+          firma.value = r.denumire || "";
+          cuiInfo.textContent = `Găsit la ANAF: ${r.denumire}. Verifică să fie firma ta.`;
+          cuiInfo.style.color = "#16a34a";
+        } else {
+          cuiInfo.textContent = "Nu apare la ANAF prin acest CUI. Completează denumirea manual.";
+          cuiInfo.style.color = "#92500a";
+        }
+      } catch {
+        cuiInfo.textContent = "Nu am putut verifica acum. Completează denumirea manual.";
+        cuiInfo.style.color = "#616161";
+      }
+      cuiBtn.disabled = false; cuiBtn.textContent = "Verifică la ANAF";
+    });
+    buton.addEventListener("click", async () => {
+      eroare.hidden = true;
+      if (!(cui.value || "").trim() || !firma.value.trim() || !email.value.trim() || !parola.value) {
+        arata("Completează CUI, denumire firmă, email și parolă."); return;
+      }
+      if (parola.value.length < 8) { arata("Parola: minim 8 caractere."); return; }
+      if (parola.value !== parola2.value) { arata("Parolele nu coincid."); return; }
+      buton.disabled = true; buton.textContent = "Se creează…";
+      try {
+        await api.post("/public/register-gratuit", {
+          email: email.value.trim(), parola: parola.value,
+          nume_firma: firma.value.trim(), cui: (cui.value || "").trim(),
+        });
+        const r = await api.post("/auth/login", { email: email.value.trim(), parola: parola.value });
+        sesiune.intra(r.token, r.user);  // redirect DOAR dupa login reusit
+      } catch (e) {
+        arata((e && e.mesaj) || "Nu am putut crea contul.");
+        buton.disabled = false; buton.textContent = "Creează contul gratuit";
+      }
+    });
+  }
+
+  // ---------- ecran 2b: inregistrare cabinet nou ----------
+  function randeazaInregistrare() {
+    modal.classList.add("acces-modal-inreg");
+    modal.innerHTML = `
+      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div class="login-brand">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
+        <span class="login-tagline">Contabilitatea cu control fiscal</span>
+        <div class="login-subtagline">Înregistrează cabinetul tău</div>
       </div>
       <label class="camp">
         <span class="camp-eticheta">CUI<span class="oblig">*</span></span>
@@ -317,13 +411,13 @@ export function ecranLogin(radacina) {
         <div id="reg-cui-info" class="tip-micut" style="margin-top:6px"></div>
       </label>
       <label class="camp">
-        <span class="camp-eticheta">${gratuit ? "Denumire firm\u0103" : "Denumire cabinet de contabilitate/contabil"}<span class="oblig">*</span></span>
+        <span class="camp-eticheta">Denumire cabinet de contabilitate/contabil<span class="oblig">*</span></span>
         <input type="text" class="camp-input" id="reg-cabinet">
       </label>
-      ${gratuit ? "" : `<label class="camp">
+      <label class="camp">
         <span class="camp-eticheta">Nume administrator</span>
         <input type="text" class="camp-input" id="reg-nume-admin">
-      </label>`}
+      </label>
       <label class="camp">
         <span class="camp-eticheta">Email<span class="oblig">*</span></span>
         <input type="email" class="camp-input" id="reg-email" autocomplete="off" placeholder="nume@firma.ro">
@@ -395,8 +489,8 @@ export function ecranLogin(radacina) {
     }
     async function creeaza() {
       eroare.hidden = true;
-      if (!cabinet.value || !email.value || !parola.value || (gratuit && !(cui.value || "").trim())) {
-        arataEroare(gratuit ? "Completeaz\u0103 CUI, denumire firm\u0103, email \u0219i parol\u0103." : "Completeaz\u0103 denumire cabinet, email \u0219i parol\u0103.");
+      if (!cabinet.value || !email.value || !parola.value) {
+        arataEroare("Completează denumire cabinet, email și parolă.");
         return;
       }
       if (parola.value !== parola2.value) {
@@ -407,12 +501,7 @@ export function ecranLogin(radacina) {
       buton.textContent = "Se creează…";
       const { nume, prenume } = separaNume((numeAdmin && numeAdmin.value) || "");
       try {
-        if (gratuit) {  // [gratuit_v1]
-          await api.post("/public/register-gratuit", {
-            email: email.value.trim(), parola: parola.value,
-            nume_firma: cabinet.value.trim(), cui: (cui.value || "").trim(),
-          });
-        } else {
+        {
           await api.post("/auth/register", {
             email: email.value.trim(),
             parola: parola.value,

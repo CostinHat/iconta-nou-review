@@ -28,8 +28,15 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
   const inapoi = opt.inapoi || (() => nav.inapoi());
   corp.innerHTML = `
     
-    <h2 class="pf-titlu">Configureaz\u0103 numerotarea</h2>
-    <p class="pf-intro">\u00cenainte de prima factur\u0103, stabilim de unde continu\u0103 numerotarea, ca s\u0103 fie neîntrerupt\u0103.</p>
+    <h2 class="pf-titlu">Configurare emitere</h2>
+    <p class="pf-intro">\u00cenainte de prima factur\u0103: numerotarea (ca s\u0103 fie ne\u00eentrerupt\u0103) \u0219i regimul de TVA.</p>
+    <div class="em-config-camp" style="margin-bottom:12px">
+      <label>Firma e pl\u0103titoare de TVA?<span class="oblig">*</span></label>
+      <div class="em-optiuni">
+        <button class="buton-secundar em-buton-sec" id="em-tva-da">Da, pl\u0103titoare</button>
+        <button class="buton-secundar em-buton-sec" id="em-tva-nu">Nu</button>
+      </div>
+    </div>
     <div class="em-config">
       <div class="em-intrebare">Ai mai emis facturi p\u00e2n\u0103 acum (\u00een alt program sau pe h\u00e2rtie)?</div>
       <div class="em-optiuni">
@@ -40,6 +47,10 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
     </div>`;
 
   const zona = corp.querySelector("#em-config-form");
+  let platitorTva = null;  // [tva_config_v1] obligatoriu ales inainte de Continua
+  const bTvaDa = corp.querySelector("#em-tva-da"), bTvaNu = corp.querySelector("#em-tva-nu");
+  bTvaDa.addEventListener("click", () => { platitorTva = true; bTvaDa.classList.add("buton-activ"); bTvaNu.classList.remove("buton-activ"); });
+  bTvaNu.addEventListener("click", () => { platitorTva = false; bTvaNu.classList.add("buton-activ"); bTvaDa.classList.remove("buton-activ"); });
 
   corp.querySelector("#em-da").addEventListener("click", () => {
     zona.innerHTML = `
@@ -58,7 +69,8 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
       if (serie && /^\d+$/.test(serie)) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-). Numărul ultimei facturi se pune în câmpul următor."; return; }
       const ultim = parseInt(zona.querySelector("#em-ultim").value, 10);
       const start = Number.isFinite(ultim) ? ultim + 1 : 1;
-      await salveazaConfig(tenantId, serie, start);
+      if (platitorTva === null) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Alege dac\u0103 firma e pl\u0103titoare de TVA."; return; }
+      await salveazaConfig(tenantId, serie, start, platitorTva);
       randeazaEmitere(corp, nav, tenantId, opt);
     });
   });
@@ -74,16 +86,18 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
     zona.querySelector("#em-salveaza-config2").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie2").value.trim() || null;
       if (serie && /^\d+$/.test(serie)) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-)."; return; }
-      await salveazaConfig(tenantId, serie, 1);
+      if (platitorTva === null) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Alege dac\u0103 firma e pl\u0103titoare de TVA."; return; }
+      await salveazaConfig(tenantId, serie, 1, platitorTva);
       randeazaEmitere(corp, nav, tenantId, opt);
     });
   });
 }
 
-async function salveazaConfig(tenantId, serie, numar_start) {
-  try {
-    await api.put(`/tenants/${tenantId}/facturi/numerotare`, { serie, numar_start });
-  } catch {}
+async function salveazaConfig(tenantId, serie, numar_start, platitor_tva) {
+  // [tva_config_v1] fara catch mut: esecul configurarii trebuie vazut (DS cap.6)
+  await api.put(`/tenants/${tenantId}/facturi/numerotare`, { serie, numar_start });
+  if (platitor_tva !== undefined && platitor_tva !== null)
+    await api.post(`/tenants/${tenantId}/firma-profil/regim-tva`, { platitor_tva });
 }
 
 // ---------- FORMULAR EMITERE ----------
@@ -107,7 +121,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <input class="pr-input em-cui" id="em-cui" placeholder="ex: RO12345678" autocomplete="off">
         <button class="buton-secundar em-buton-sec" id="em-verifica">Verific\u0103 la ANAF</button>  <!-- [p114_buton_anaf] -->
       </div>
-      <label class="camp-eticheta" for="em-nume">Denumire beneficiar</label>
+      <label class="camp-eticheta" for="em-nume">Denumire beneficiar<span class="oblig">*</span></label>
       <input class="pr-input em-nume" id="em-nume" autocomplete="off">
       <label class="camp-eticheta" for="em-adresa">Adres\u0103 beneficiar (art. 319)</label>
       <input class="pr-input em-adresa" id="em-adresa" autocomplete="off">
@@ -116,7 +130,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Produse \u0219i servicii</div>
-      <div class="camp-eticheta">Linie: denumire \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 cot\u0103 TVA</div>
+      <div class="camp-eticheta">Linie: denumire \u00b7 cantitate \u00b7 pre\u021b unitar <span class="oblig">*</span> <span class="tip-micut">(cota TVA se stabile\u0219te automat din produs)</span></div>
       <div class="em-linii" id="em-linii"></div>
       <button class="buton-secundar em-buton-sec" id="em-add-linie">+ Adaug\u0103 linie</button>
     </div>
