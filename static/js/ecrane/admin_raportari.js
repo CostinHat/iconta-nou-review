@@ -20,14 +20,18 @@ function dataScurta(iso) {
   return `${d.getDate()} ${LUNI[d.getMonth()]} ${ora}`;
 }
 
+function titluFir(r) {  // subiect sau inceputul primului mesaj
+  const t = (r.subiect && r.subiect.trim()) || (r.text || "").trim() || "(sesizare)";
+  return t.length > 70 ? t.slice(0, 70) + "\u2026" : t;
+}
+
 function copiazaTot(corp) {
   const vrei = _tab === "tine";
   const lista = _toate.filter((r) => !!r.pentru_admin === vrei);
   if (!lista.length) return;
   const blocuri = lista.map((r, i) => {
     const cap = `[${i + 1}] ${r.cabinet || ""}${r.autor ? " · " + r.autor : ""} (${dataScurta(r.ultim_mesaj_la || r.creat_la)})`;
-    const subj = (r.subiect && r.subiect.trim()) ? r.subiect.trim() : "(fără subiect)";
-    return `${cap}\n${subj}\n${r.text || ""}`.trim();
+    return `${cap}\n${titluFir(r)}\n${r.text || ""}`.trim();
   });
   const txt = blocuri.join("\n\n----------\n\n");
   const btn = corp.querySelector("#rap-copy-tot-text");
@@ -39,6 +43,7 @@ function copiazaTot(corp) {
 // stare modul
 let _tab = "useri";   // "useri" (pentru_admin=false) | "tine" (pentru_admin=true)
 let _activ = null;    // id sesizare deschisa
+let _cuInchise = false;  // [inchidere_v1] istoricul: arata si sesizarile inchise
 let _toate = [];      // cache lista (sursa unica, filtram local)
 
 export async function randeazaAdminRaportari(corp, nav) {
@@ -90,7 +95,8 @@ async function incarcaLista(corp, nav) {
 
 function randeazaLista(corp, nav) {
   const vrei = _tab === "tine";
-  const lista = _toate.filter((r) => !!r.pentru_admin === vrei);
+  const inchise = _toate.filter((r) => !!r.pentru_admin === vrei && r.stare === "inchisa").length;
+  const lista = _toate.filter((r) => !!r.pentru_admin === vrei && (_cuInchise || r.stare !== "inchisa"));
 
   // contoare pe tab-uri (fara raspuns)
   const nrUseri = _toate.filter((r) => !r.pentru_admin && r.stare !== "raspuns").length;
@@ -106,6 +112,13 @@ function randeazaLista(corp, nav) {
     return;
   }
   cont.innerHTML = "";
+  if (inchise) {
+    const ln = document.createElement("button");
+    ln.className = "btn-link";
+    ln.textContent = _cuInchise ? "Ascunde \u00eenchisele" : `Arat\u0103 \u0219i \u00eenchisele (${inchise})`;
+    ln.addEventListener("click", () => { _cuInchise = !_cuInchise; randeazaLista(corp, nav); });
+    cont.appendChild(ln);
+  }
   lista.forEach((r) => {
     const faraRaspuns = r.stare !== "raspuns";
     const rand = document.createElement("button");
@@ -114,7 +127,7 @@ function randeazaLista(corp, nav) {
       <span class="rap-bulina ${faraRaspuns ? "rap-bulina-on" : ""}"></span>
       <span class="rap-rand-text">
         <span class="rap-rand-sus">
-          <span class="rap-subiect">${esc(r.subiect || "(fără subiect)")}</span>
+          <span class="rap-subiect">${esc(titluFir(r))}</span>
           <span class="rap-cand">${dataScurta(r.ultim_mesaj_la || r.creat_la)}</span>
         </span>
         <span class="rap-rand-jos">${esc(r.cabinet || "")}${r.autor ? " · " + esc(r.autor) : ""}</span>
@@ -152,9 +165,10 @@ async function deschideSesizare(corp, nav, id) {
 
   fir.innerHTML = `
     <div class="rap-fir-cap">
-      <div class="rap-fir-subiect">${esc(cap.subiect || "(fără subiect)")}</div>
+      <div class="rap-fir-subiect">${esc(titluFir(cap))}</div>
       <div class="rap-fir-meta">${esc(cap.cabinet || "")}${cap.autor ? " · " + esc(cap.autor) : ""}</div>
       <button class="buton-secundar rap-muta" id="rap-muta">${etMutare}</button>
+      ${cap.stare !== "inchisa" ? `<button class="buton-secundar rap-muta" id="rap-inchide">\u00cenchide sesizarea</button>` : `<span class="rap-fir-stare rap-stare-inchisa">\u00eenchis\u0103</span>`}
     </div>
     <div class="rap-mesaje" id="rap-mesaje"></div>
     <div class="rap-compose">
@@ -176,6 +190,12 @@ async function deschideSesizare(corp, nav, id) {
   });
   fir.querySelector("#rap-trimite").addEventListener("click", () => trimiteRaspuns(corp, nav, id, fir));
   fir.querySelector("#rap-muta").addEventListener("click", () => mutaSesizare(corp, nav, id, !eTine));
+  const bInc = fir.querySelector("#rap-inchide");
+  if (bInc) bInc.addEventListener("click", async () => {
+    bInc.disabled = true;
+    try { await api.post(`/raportari/${id}/stare`, { stare: "inchisa" }); await incarcaLista(corp, nav); fir.innerHTML = `<div class="rap-gol">Sesizare \u00eenchis\u0103.</div>`; }
+    catch { bInc.disabled = false; }
+  });
 }
 
 function randeazaMesaje(cont, mesaje) {

@@ -45,6 +45,8 @@ def adauga_mesaj(conn, raportare_id, autor_id, rol_autor, text, schimba_stare=Tr
             "VALUES (%s,%s,%s,%s) RETURNING id",
             (raportare_id, autor_id, rol_autor, text.strip()))
         mid = cur.fetchone()["id"]
+        # [inchidere_v1] mesaj intr-un fir inchis il redeschide
+        cur.execute("UPDATE public.raportari SET stare='noua' WHERE id=%s AND stare='inchisa'", (raportare_id,))
         # [triaj_ai] replica utilizatorului dupa un raspuns AI = AI-ul nu a rezolvat -> escaladare
         if rol_autor == "utilizator":
             cur.execute("SELECT rol_autor FROM public.raportari_mesaje WHERE raportare_id=%s "
@@ -216,8 +218,19 @@ def firul_complet(conn, raportare_id):
         "id": f["id"], "subiect": f["subiect"], "stare": f["stare"],
         "autor_id": f["autor_id"],
         "autor": _nume(f["prenume"], f["nume"], f["email"]),
-        "cabinet": f["cabinet"], "mesaje": mesaje}}
+        "cabinet": f["cabinet"], "mesaje": mesaje,
+        "text": next((m["text"] for m in mesaje if m.get("rol_autor") == "utilizator"), "")}}  # [titlu_fir]
 
+
+# [inchidere_v1] inchiderea unei sesizari (fara stergere - istoricul ramane in DB)
+def seteaza_stare(conn, raportare_id, stare):
+    if stare not in ("noua", "raspuns", "inchisa"):
+        return {"ok": False, "cod": "STARE_INVALIDA"}
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.raportari SET stare = %s WHERE id = %s RETURNING id", (stare, raportare_id))
+        if not cur.fetchone():
+            return {"ok": False, "cod": "INEXISTENT"}
+    return {"ok": True, "stare": stare}
 
 # [p38_pentru_admin]
 def seteaza_pentru_admin(conn, raportare_id, valoare):

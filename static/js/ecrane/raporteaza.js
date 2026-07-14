@@ -101,7 +101,13 @@ export async function randeazaRaporteaza(corp, nav) {
         lista.innerHTML = `<div class="rap-gol">Nu ai trimis nicio sesizare încă.</div>`;
         return;
       }
-      lista.innerHTML = fire.map(renderFir).join("");
+      const inchise = fire.filter((f) => f.stare === "inchisa").length;
+      const activeF = fire.filter((f) => window._rapCuInchise || f.stare !== "inchisa");
+      lista.innerHTML = activeF.map(renderFir).join("");
+      if (inchise) lista.insertAdjacentHTML("beforeend",
+        `<button class="btn-link" id="rap-istoric">${window._rapCuInchise ? "Ascunde \u00eenchisele" : `Arat\u0103 \u0219i \u00eenchisele (${inchise})`}</button>`);
+      const bi = lista.querySelector("#rap-istoric");
+      if (bi) bi.addEventListener("click", () => { window._rapCuInchise = !window._rapCuInchise; incarcaFire(); });
       // legaturi pe fiecare fir: deschidere/raspuns/citire
       fire.forEach((f) => legaFir(f));
     } catch {

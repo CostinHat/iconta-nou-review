@@ -1104,7 +1104,10 @@ html, body {
   padding: 12px 16px;
   border-bottom: 1px solid var(--linie);
   background: var(--fundal);
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;  /* [inchidere_v1] butoanele nu deborda */
 }
+.rap-fir-cap .rap-fir-subiect { flex: 1 1 100%; }
+.rap-fir-cap .rap-fir-meta { flex: 1 1 auto; }
 .rap-fir-subiect { font-size: var(--text-mic); font-weight: 600; color: var(--ardezie); }
 .rap-fir-meta { font-size: var(--text-mic); color: var(--gri); margin-top: 2px; }
 

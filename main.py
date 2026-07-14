@@ -4179,8 +4179,20 @@ def raportari_citit(rid: int, ctx=Depends(cere_cabinet)):
 
 
 # [p38_pentru_admin]
+class StareIn(BaseModel):
+    stare: str
+
 class PentruAdminIn(BaseModel):
     valoare: bool = True
+
+@app.post("/raportari/{rid}/stare")  # [inchidere_v1]
+def raportari_stare(rid: int, date: StareIn, ctx=Depends(cere_rol("superadmin"))):
+    with db.get_conn() as conn:
+        r = _rap.seteaza_stare(conn, rid, date.stare)
+        conn.commit()
+    if not r.get("ok"):
+        raise HTTPException(400, r.get("cod", "eroare"))
+    return r
 
 @app.post("/raportari/{rid}/pentru-admin")
 def raportari_pentru_admin(rid: int, date: PentruAdminIn, ctx=Depends(cere_cabinet)):
