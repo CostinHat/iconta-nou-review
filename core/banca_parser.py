@@ -56,6 +56,41 @@ def _parse_grid(randuri):
     if curenta: tranzactii.append(curenta)
     return tranzactii
 
+def _parse_mt940(text):
+    """Parser MT940 (SWIFT, format bancar standard).
+    :61: linie tranzactie (data, semn C/D, suma). :86: detalii asociate.
+    Intoarce aceeasi structura ca _parse_grid: {data, detalii, suma}.
+    Sursa: specificatia SWIFT MT940 (Statement Message).
+    """
+    tranzactii, curenta = [], None
+    for linie_raw in text.splitlines():
+        linie = linie_raw.strip()
+        if linie.startswith(":61:"):
+            if curenta:
+                tranzactii.append(curenta)
+            corp = linie[4:]
+            # format :61: YYMMDD[MMDD]{C|D|RC|RD}suma...
+            m = re.match(r"(\d{6})(\d{4})?(R?[CD])([\d,]+)", corp)
+            if not m:
+                curenta = None
+                continue
+            yymmdd, _mmdd, semn, suma_s = m.groups()
+            an = 2000 + int(yymmdd[:2])
+            data = f"{yymmdd[4:6]}.{yymmdd[2:4]}.{an}"
+            suma = float(suma_s.replace(",", "."))
+            if semn in ("D", "RC"):  # D=debit(plata), RC=storno credit
+                suma = -suma
+            curenta = {"data": data, "detalii": "", "suma": round(suma, 2)}
+        elif linie.startswith(":86:") and curenta is not None:
+            curenta["detalii"] = linie[4:].strip()
+        elif curenta is not None and not linie.startswith(":") and linie:
+            # continuare detalii pe linia urmatoare
+            curenta["detalii"] = (curenta["detalii"] + " " + linie).strip()
+    if curenta:
+        tranzactii.append(curenta)
+    return tranzactii
+
+
 def parse_extras(continut, nume_fisier=""):
     """Detecteaza formatul dupa magic bytes si intoarce lista de tranzactii."""
     if continut[:8] == b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1":  # OLE2 = .xls
@@ -68,9 +103,11 @@ def parse_extras(continut, nume_fisier=""):
         wb = load_workbook(BytesIO(continut), read_only=True)
         sh = wb.active
         randuri = [[c for c in rand] for rand in sh.iter_rows(values_only=True)]
-    else:  # csv/text
+    else:  # text: MT940 sau csv
+        text = continut.decode("utf-8", errors="replace") if isinstance(continut, bytes) else continut
+        if ":61:" in text or ":20:" in text:  # marker MT940
+            return _parse_mt940(text)
         import csv
-        text = continut.decode("utf-8", errors="replace")
         dialect = csv.Sniffer().sniff(text[:2000]) if text.strip() else None
         randuri = list(csv.reader(text.splitlines(), dialect)) if dialect else []
     return _parse_grid(randuri)
