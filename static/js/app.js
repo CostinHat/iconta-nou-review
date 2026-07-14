@@ -18,8 +18,8 @@ import { ecranLogin } from "./ecrane/login.js";
 import { creeazaNavigator } from "./navigator.js";
 import { desktopCabinet } from "./ecrane/cabinet.js";
 import { desktopAsistent } from "./ecrane/asistent.js";
-import { desktopPortal } from "./ecrane/portal.js";
-import { desktopAdmin } from "./ecrane/admin.js"; // [p37_admin_desktop]
+import { desktopPortal } from "./ecrane/portal.js?v=2";
+import { desktopAdmin } from "./ecrane/admin.js?v=2"; // [p37_admin_desktop]
 
 const radacina = document.getElementById("app");
 

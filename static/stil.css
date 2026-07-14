@@ -1004,6 +1004,7 @@ html, body {
 
 /* [p38_rap_pct] punct "in asteptare" pe firul de raportare */
 .rap-badge-pct { width:9px; height:9px; border-radius:50%; background:var(--rosu-semafor); display:inline-block; flex-shrink:0; }
+.rap-badge-verde { background:#1d7a4d; }  /* [triaj_ai] raspuns primit necitit - verde canonic DS cap.8 */
 
 
 /* [p36_admin_raportari] */
@@ -2023,7 +2024,6 @@ html, body { overflow-y: hidden; }
 .caseta-atentie .ca-actiuni { display: flex; gap: 8px; }
 /* ============ sfarsit STANDARD_BUTOANE ============ */
 /* [STANDARD_BUTOANE_MAPARE] clase vechi -> standard */
-.rap-trimite, .asi-toggle-dez, .asi-echipa-btn, .rap-muta,
 /* strat de suprascriere eliminat — butoanele poarta clasele canonice (Lot BUTOANE) */
 
 

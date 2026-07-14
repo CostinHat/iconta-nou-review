@@ -5,7 +5,7 @@
 //          POST /raportari/{id}/citit, POST /raportari/{id}/pentru-admin,
 //          POST /raportari/mesaj/{mid}/imagine.
 
-import { api } from "../api.js";
+import { api, esc } from "../api.js";
 
 const LUNI = ["ian.","feb.","mar.","apr.","mai","iun.",
               "iul.","aug.","sep.","oct.","noi.","dec."];
@@ -34,11 +34,6 @@ function copiazaTot(corp) {
   navigator.clipboard.writeText(txt).then(() => {
     if (btn) { const v = btn.textContent; btn.textContent = `Copiat (${lista.length})`; setTimeout(() => (btn.textContent = v), 1400); }
   }).catch(() => {});
-}
-
-function esc(s) {
-  return String(s ?? "").replace(/[&<>"]/g, (c) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 }
 
 // stare modul
@@ -125,7 +120,7 @@ function randeazaLista(corp, nav) {
         <span class="rap-rand-jos">${esc(r.cabinet || "")}${r.autor ? " · " + esc(r.autor) : ""}</span>
       </span>
     `;
-    rand.addEventListener("click", () => nav.mergi("Sesizare", (c) => deschideSesizare(c, nav, r.id)));  // faza_b2_traseu_v1
+    rand.addEventListener("click", () => deschideSesizare(corp, nav, r.id));  // master-detail: firul in coloana dreapta, acelasi ecran
     cont.appendChild(rand);
   });
 }
@@ -187,7 +182,7 @@ function randeazaMesaje(cont, mesaje) {
   cont.innerHTML = "";
   if (!mesaje.length) { cont.innerHTML = `<div class="rap-gol">Fără mesaje.</div>`; return; }
   mesaje.forEach((m) => {
-    const eAdmin = (m.rol_autor || m.rol) === "admin";
+    const eAdmin = ["admin", "ai"].includes(m.rol_autor || m.rol);  // [triaj_ai] mesajele AI pe partea admin
     const bloc = document.createElement("div");
     bloc.className = "rap-msg " + (eAdmin ? "rap-msg-admin" : "rap-msg-user");
     let imgHtml = "";

@@ -10,7 +10,7 @@ import { randeazaTermene } from "./termene.js";
 import { randeazaValidat } from "./validat.js";
 import { randeazaListaFirme } from "./firme.js";
 import { randeazaRecomanda } from "./recomanda.js"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js"; // [p34_raporteaza]
+import { randeazaRaporteaza } from "./raporteaza.js?v=6"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js"; // [p63_pachete]
 import { randeazaDeclaratii } from "./declaratii.js"; // [p44_declaratii]
 

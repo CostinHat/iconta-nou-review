@@ -525,10 +525,6 @@ async function ecranDocumente(corp, nav) {
 
   randeazaMeniu();
 }
-function ecranInLucru(corp, nav, nume) {
-  corp.innerHTML = `<div class="mig-gol">"${nume}" vine în curând.</div>`;
-}
-
 // [bon] Pozeaza bon - OCR cu AI + confirmare client  // bon_flux_e2_v1
 let _pozareMesaj = "";  // faza_b_traseu_v1
 async function ecranBon(corp, nav) {

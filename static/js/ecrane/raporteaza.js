@@ -2,7 +2,7 @@
 // Trimite o observatie catre Admin iConta; vede firul cu raspunsuri; bec rosu = raspunsuri necitite.
 // Strat 2 (text + fir). Imagini: strat 3.
 
-import { api, dataRo, arataMesaj } from "../api.js";
+import { api, dataRo, arataMesaj, esc } from "../api.js";
 
 function dataScurta(iso) {
   return dataRo(iso, "cu_ora");
@@ -96,6 +96,7 @@ export async function randeazaRaporteaza(corp, nav) {
     try {
       const r = await api.get("/raportari/eu");
       const fire = (r && r.raportari) || [];
+      window._rapFire = fire;  // [triaj_ai] pollingul verifica reactia AI pe firul cel mai nou
       if (!fire.length) {
         lista.innerHTML = `<div class="rap-gol">Nu ai trimis nicio sesizare încă.</div>`;
         return;
@@ -109,29 +110,30 @@ export async function randeazaRaporteaza(corp, nav) {
   }
 
   function renderFir(f) {
-    const inAsteptare = f.necitite > 0;
-    const badge = inAsteptare ? `<span class="rap-badge-pct" title="în așteptarea răspunsului"></span>` : "";
+    const badge = f.stare === "noua"
+      ? `<span class="rap-badge-pct" title="în așteptarea răspunsului"></span>`
+      : (f.necitite > 0 ? `<span class="rap-badge-pct rap-badge-verde" title="răspuns primit, necitit"></span>` : "");
     const stareEt = { noua: "în așteptare", raspuns: "răspuns primit", inchisa: "închisă" }[f.stare] || f.stare;
     // titlul firului = inceputul primului mesaj (al meu)
     const primul = (f.mesaje.find((m) => m.rol_autor === "utilizator") || f.mesaje[0] || {}).text || "";
     const titlu = primul.length > 70 ? primul.slice(0, 70) + "…" : primul;
     const mesaje = f.mesaje.map((m) => {
-      const cls = m.rol_autor === "admin" ? "rap-msg-admin" : "rap-msg-eu";
-      const cine = m.rol_autor === "admin" ? "iConta" : "Eu";
+      const cls = m.rol_autor === "utilizator" ? "rap-msg-eu" : "rap-msg-admin";
+      const cine = m.rol_autor === "admin" ? "iConta" : (m.rol_autor === "ai" ? "Asistent AI" : "Eu");
       const poze = (m.atasamente || []).map((a) =>
         `<a href="${a.cale}" target="_blank" class="rap-img-link"><img class="rap-img" src="${a.cale}" alt="captura"></a>`
       ).join("");
       return `
         <div class="rap-mesaj ${cls}">
           <div class="rap-mesaj-cap"><b>${cine}</b><span class="rap-mesaj-data">${dataScurta(m.cand)}</span></div>
-          <div class="rap-mesaj-text">${escapeHtml(m.text)}</div>
+          <div class="rap-mesaj-text">${esc(m.text)}</div>
           ${poze ? `<div class="rap-mesaj-poze">${poze}</div>` : ""}
         </div>`;
     }).join("");
     return `
       <div class="rap-fir" data-id="${f.id}">
         <div class="rap-fir-cap" data-rol="cap">
-          <span class="rap-fir-subiect">${escapeHtml(titlu || "(sesizare)")}</span>
+          <span class="rap-fir-subiect">${esc(titlu || "(sesizare)")}</span>
           ${badge}
           <span class="rap-fir-stare rap-stare-${f.stare}">${stareEt}</span>
           <span class="rap-fir-data">${dataScurta(f.ultim_mesaj_la)}</span>
@@ -154,6 +156,7 @@ export async function randeazaRaporteaza(corp, nav) {
     cap.addEventListener("click", () => {
       const deschis = corpFir.style.display !== "none";
       corpFir.style.display = deschis ? "none" : "block";
+      const ta2 = el.querySelector(".rap-replica-text"); if (!deschis && ta2) { ta2.style.height = "auto"; ta2.style.height = Math.max(ta2.scrollHeight, 44) + "px"; }  // [fix_autogrow] scrollHeight e 0 cat firul e ascuns
     });
     const btn = el.querySelector(".rap-replica-btn");
     const ta = el.querySelector(".rap-replica-text");
@@ -191,19 +194,20 @@ export async function randeazaRaporteaza(corp, nav) {
       pozeNoi = [];
       randeazaPozeNoi();
       await incarcaFire();
+      // [triaj_ai] polling suplu: la 3s pana apare reactia AI (max 10 incercari)
+      let ramase = 10;
+      const asteaptaAI = async () => {
+        if (ramase-- <= 0) return;
+        await incarcaFire();
+        const f0 = (window._rapFire || [])[0];
+        if (!f0 || !(f0.mesaje || []).some((m) => m.rol_autor === "ai")) setTimeout(asteaptaAI, 3000);
+        else document.dispatchEvent(new CustomEvent("raportari:schimbat"));  // cifra cardului se actualizeaza la sosirea raspunsului
+      };
+      setTimeout(asteaptaAI, 3000);
     } catch { arataMesaj(msg, "Nu am putut trimite.", "eroare"); }
   });
 
   await incarcaFire();
-}
-
-// reactualizeaza badge-ul rosu de pe cardul Raporteaza din desktop (daca e vizibil)
-function actualizeazaBadgeCard() {
-  document.dispatchEvent(new CustomEvent("raportari:schimbat"));
-}
-
-function escapeHtml(s) {
-  return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
 // audit_cab_lot1_v1

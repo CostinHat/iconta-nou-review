@@ -4,7 +4,7 @@
 
 import { sesiune } from "../sesiune.js";
 import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js";
-import { randeazaAdminRaportari } from "./admin_raportari.js";
+import { randeazaAdminRaportari } from "./admin_raportari.js?v=3";
 import { randeazaAdminActivitate } from "./admin_activitate.js";
 import { randeazaAdminGratuite } from "./admin_gratuite.js";
 import { randeazaAdminSanatate } from "./admin_sanatate.js";

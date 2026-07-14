@@ -29,10 +29,10 @@ def creeaza_raportare(conn, autor_id, cabinet_id, subiect, text):
     return {"ok": True, "raportare_id": rid, "mesaj_id": mid}
 
 
-def adauga_mesaj(conn, raportare_id, autor_id, rol_autor, text):
-    """Adauga un mesaj in fir. rol_autor = 'utilizator' sau 'admin'.
+def adauga_mesaj(conn, raportare_id, autor_id, rol_autor, text, schimba_stare=True):
+    """Adauga un mesaj in fir. rol_autor = 'utilizator', 'admin' sau 'ai' (autor_id NULL).
     Mesajul nou e necitit pentru destinatar (becul rosu)."""
-    if rol_autor not in ("utilizator", "admin"):
+    if rol_autor not in ("utilizator", "admin", "ai"):
         return {"ok": False, "cod": "ROL_INVALID"}
     if not (text or "").strip():
         return {"ok": False, "cod": "TEXT_GOL"}
@@ -45,8 +45,18 @@ def adauga_mesaj(conn, raportare_id, autor_id, rol_autor, text):
             "VALUES (%s,%s,%s,%s) RETURNING id",
             (raportare_id, autor_id, rol_autor, text.strip()))
         mid = cur.fetchone()["id"]
-        # raspunsul de la admin schimba starea + marcheaza fir activ
-        stare = "raspuns" if rol_autor == "admin" else "noua"
+        # [triaj_ai] replica utilizatorului dupa un raspuns AI = AI-ul nu a rezolvat -> escaladare
+        if rol_autor == "utilizator":
+            cur.execute("SELECT rol_autor FROM public.raportari_mesaje WHERE raportare_id=%s "
+                        "AND id < %s ORDER BY id DESC LIMIT 1", (raportare_id, mid))
+            ult = cur.fetchone()
+            if ult and ult["rol_autor"] == "ai":
+                cur.execute("UPDATE public.raportari SET pentru_admin = true WHERE id = %s", (raportare_id,))
+        if not schimba_stare:  # [triaj_ai] confirmarea de escaladare nu stinge bulina
+            cur.execute("UPDATE public.raportari SET ultim_mesaj_la = now() WHERE id = %s", (raportare_id,))
+            return {"ok": True, "mesaj_id": mid}
+        # raspunsul de la admin/AI schimba starea + marcheaza fir activ
+        stare = "raspuns" if rol_autor in ("admin", "ai") else "noua"
         cur.execute(
             "UPDATE public.raportari SET ultim_mesaj_la = now(), stare = %s WHERE id = %s",
             (stare, raportare_id))
@@ -146,14 +156,13 @@ def marcheaza_citit(conn, raportare_id, cine_rol):
 
 
 def contor_necitite(conn, autor_id):
-    """Becul rosu = sesizarile mele care inca NU au primit raspuns de la admin.
-    Se aprinde la trimitere, scade pe masura ce iConta raspunde."""
+    """Cifra rosie = sesizarile mele in asteptare de raspuns (stare 'noua').
+    Se aprinde la trimitere, scade pe masura ce vin raspunsuri reale (admin sau AI);
+    confirmarea de escaladare NU stinge (sesizarea inca asteapta). [triaj_ai]"""
     with conn.cursor() as cur:
         cur.execute(
             "SELECT COUNT(*) FROM public.raportari r "
-            " WHERE r.autor_id = %s "
-            "   AND NOT EXISTS (SELECT 1 FROM public.raportari_mesaje m "
-            "                     WHERE m.raportare_id = r.id AND m.rol_autor = 'admin')",
+            " WHERE r.autor_id = %s AND r.stare = 'noua'",
             (autor_id,))
         n = cur.fetchone()[0]
     return {"ok": True, "necitite": int(n)}

@@ -4115,6 +4115,10 @@ def raportari_creeaza(date: RaportareNouaIn, ctx=Depends(cere_cabinet)):
         r = _rap.creeaza_raportare(conn, ctx["uid"], ctx.get("firm"), date.subiect, date.text)
     if not r.get("ok"):
         raise HTTPException(400, r.get("cod", "eroare"))
+    # [triaj_ai] AI raspunde la intrebarile de folosire sau escaladeaza (pentru_admin); nu blocheaza crearea
+    import threading
+    from core import raportari_ai as _rai
+    threading.Thread(target=_rai.proceseaza, args=(r["raportare_id"], date.subiect, date.text), daemon=True).start()
     return r
 
 

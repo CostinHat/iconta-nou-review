@@ -103,6 +103,8 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Culori canonice: verde #1d7a4d · galben #c9961f · roșu #ff3b30.
 - Se folosesc EXCLUSIV prin tokeni: `var(--verde)` / `var(--galben)` / `var(--rosu-semafor)`. Hex literal interzis în JS/CSS (excepții: definiția tokenului, nuanțele deschise din gradientul `dot:`). Prins de regula HEX_SEMAFOR în verificator (v2.11). Starea gri (necunoscut/necompletat): `var(--gri-semafor)` #9aa3b2 + fundal `var(--gri-fundal-semafor)` #eef0f3 — un singur gri de semafor, nu nuanțe ad-hoc.
 
+- Buline de stare pe fire de conversatie (Raporteaza): ROSU = in asteptare de raspuns, VERDE (#1d7a4d) = raspuns primit. Fara concept de citit/necitit; cifra de pe card = firele in asteptare (stare noua) si scade singura la sosirea raspunsurilor.
+
 ## 9. Ferestre de lucru
 
 - Overlay umbrit uniform rgba(20,30,45,0.55) pentru TOATE ferestrele. Card central alb.

@@ -14,7 +14,7 @@ def disponibil():
     return bool(os.environ.get("ANTHROPIC_API_KEY"))
 
 
-def genereaza_text(prompt, sistem=None, max_tokens=1200, temperatura=0.7):
+def genereaza_text(prompt, sistem=None, max_tokens=1200, temperatura=0.7, model=None):
     """Trimite un prompt la Claude, intoarce textul raspunsului.
     Ridica RuntimeError daca nu e disponibil sau apelul esueaza (apelantul prinde)."""
     key = os.environ.get("ANTHROPIC_API_KEY")
@@ -27,7 +27,7 @@ def genereaza_text(prompt, sistem=None, max_tokens=1200, temperatura=0.7):
 
     client = Anthropic(api_key=key)
     kwargs = {
-        "model": _MODEL,
+        "model": model or _MODEL,
         "max_tokens": int(max_tokens),
         "temperature": float(temperatura),
         "messages": [{"role": "user", "content": prompt}],
