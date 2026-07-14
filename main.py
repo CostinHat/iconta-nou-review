@@ -412,23 +412,41 @@ class AnuntIn(BaseModel):
     mesaj: str
     cabinet_id: Optional[int] = None  # None = toate cabinetele
     data_afisare: Optional[str] = None  # [F103] None = imediat
+    segment: Optional[str] = None
+    cabinet_ids: Optional[list] = None
+    tenant_ids: Optional[list] = None
 
 @app.post("/admin/anunturi")
 def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
     if not (date.mesaj or "").strip():
         raise HTTPException(422, "mesaj gol")
+    mesaj = date.mesaj.strip()
+    data_af = (date.data_afisare or "").strip() or None
+    n = 0
     with db.get_conn() as conn, conn.cursor() as cur:
-        if date.cabinet_id:
-            cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s, %s, %s) RETURNING id",
-                        (date.cabinet_id, date.mesaj.strip(), (date.data_afisare or "").strip() or None))
+        seg = (date.segment or "cabinete")
+        if seg == "gratuit":  # [anunturi_gratuit_v1] conturi gratuite: alese sau toate
+            if date.tenant_ids:
+                for tid in date.tenant_ids:
+                    cur.execute("INSERT INTO public.anunturi_cabinet (tenant_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (int(tid), mesaj, data_af))
+                    n += 1
+            else:
+                cur.execute("SELECT id FROM public.tenants WHERE accounting_firm_id IS NULL AND activ")
+                for (tid,) in cur.fetchall():
+                    cur.execute("INSERT INTO public.anunturi_cabinet (tenant_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (tid, mesaj, data_af))
+                    n += 1
+        elif date.cabinet_ids:  # [anunturi_alese_v1] cabinete alese cu bife
+            for cid in date.cabinet_ids:
+                cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (int(cid), mesaj, data_af))
+                n += 1
+        elif date.cabinet_id:
+            cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (date.cabinet_id, mesaj, data_af))
             n = 1
         else:
             cur.execute("SELECT id FROM public.accounting_firms WHERE activ")
-            ids = [r[0] for r in cur.fetchall()]
-            for cid in ids:
-                cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s, %s, %s)",
-                            (cid, date.mesaj.strip(), (date.data_afisare or "").strip() or None))
-            n = len(ids)
+            for (cid,) in cur.fetchall():
+                cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (cid, mesaj, data_af))
+                n += 1
         conn.commit()
     return {"ok": True, "trimise": n}
 
@@ -454,8 +472,13 @@ def admin_alerta_tratata(aid: int, ctx=Depends(cere_rol("superadmin"))):
 def eu_anunturi(ctx=Depends(cere_cabinet)):
     from psycopg2.extras import RealDictCursor
     with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-        cur.execute("""SELECT id, mesaj, creat_la FROM public.anunturi_cabinet
+        if ctx.get("firm"):
+            cur.execute("""SELECT id, mesaj, creat_la FROM public.anunturi_cabinet
                        WHERE cabinet_id=%s AND confirmat_la IS NULL AND (data_afisare IS NULL OR data_afisare <= CURRENT_DATE) ORDER BY id""", (ctx["firm"],))
+        else:  # [anunturi_gratuit_v1] cont gratuit: anunturile tenantului propriu
+            cur.execute("""SELECT a.id, a.mesaj, a.creat_la FROM public.anunturi_cabinet a
+                       JOIN public.user_tenants ut ON ut.tenant_id = a.tenant_id
+                       WHERE ut.user_id=%s AND a.confirmat_la IS NULL AND (a.data_afisare IS NULL OR a.data_afisare <= CURRENT_DATE) ORDER BY a.id""", (ctx["uid"],))
         rows = [dict(r) for r in cur.fetchall()]
     for r in rows:
         r["creat_la"] = str(r["creat_la"])
@@ -464,8 +487,12 @@ def eu_anunturi(ctx=Depends(cere_cabinet)):
 @app.post("/eu/anunturi/{aid}/confirma")
 def eu_anunt_confirma(aid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("""UPDATE public.anunturi_cabinet SET confirmat_la=now()
+        if ctx.get("firm"):
+            cur.execute("""UPDATE public.anunturi_cabinet SET confirmat_la=now()
                        WHERE id=%s AND cabinet_id=%s AND confirmat_la IS NULL RETURNING id""", (aid, ctx["firm"]))
+        else:  # [anunturi_gratuit_v1]
+            cur.execute("""UPDATE public.anunturi_cabinet a SET confirmat_la=now()
+                       FROM public.user_tenants ut WHERE a.id=%s AND ut.tenant_id=a.tenant_id AND ut.user_id=%s AND a.confirmat_la IS NULL RETURNING a.id""", (aid, ctx["uid"]))
         r = cur.fetchone()
         conn.commit()
     if not r:

@@ -27,7 +27,7 @@ const DEF = [
     actiune:(nav) => nav.deschide("Facturare gratuită", (corp) => randeazaAdminGratuite(corp, nav)) },
   { cheie:"anunturi", titlu:"Anunțuri", icon: "anunturi", ...CULORI_CARD.chihlimbar,
     sinteza:"Banner la logare pentru cabinete",
-    actiune:(nav) => nav.deschide("Anunțuri", (corp) => randeazaAdminAnunturi(corp, nav)) },
+    actiune:(nav) => nav.deschide("Anunțuri", (corp) => randeazaAdminAnunturi(corp, nav), { lat: "larg" }) },  /* anunturi_larg_v1 */
   { cheie:"sanatate", titlu:"Sănătate server", icon: "server", ...CULORI_CARD.piersica,
     sinteza:"Server, aplicație, bază de date, erori",
     actiune:(nav) => nav.deschide("Sănătate server", (corp) => randeazaAdminSanatate(corp, nav)) },
@@ -63,39 +63,98 @@ export function desktopAdmin(continut, nav) {
 // admin_anunturi_fe_v1
 async function randeazaAdminAnunturi(corp, nav) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
-  let cabinete = [];
+  let cabinete = [], gratuite = [];
   try {
-    const r = await api.get("/admin/activitate/cabinete");
+    const [r, g] = await Promise.all([api.get("/admin/activitate/cabinete"), api.get("/admin/activitate/conturi-gratuite")]);
     cabinete = (r && r.cabinete) || [];
+    gratuite = (g && g.conturi) || [];
   } catch {}
-  corp.innerHTML = `
-    <p class="mig-intro">Mesajul apare ca banner la logarea cabinetului, până apasă „Am înțeles".</p>
-    <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Destinatar</label>
-      <select class="camp-input" id="an-cab">
-        <option value="">Toate cabinetele</option>
-        ${cabinete.map((c) => `<option value="${c.id}">${(c.nume || "").replace(/[<>&]/g, "")}</option>`).join("")}
-      </select></div>
-    <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Mesaj</label>
-      <textarea class="camp-input" id="an-mesaj" rows="4" style="resize:vertical;min-height:90px"></textarea></div>
-    <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Afișare de la data (opțional — gol = imediat)</label>
-      <input type="date" class="camp-input" id="an-data"></div>
-    <button class="buton-primar" id="an-trimite">Trimite</button>
-    <p id="an-msg" style="margin-top:8px"></p>
-    <div id="an-propuneri"></div>`;
-  incarcaPropuneri(corp);  // [F103 partea 2]
-  const ta = corp.querySelector("#an-mesaj");  /* textarea_auto_v1 */
-  ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; });
-  corp.querySelector("#an-trimite").addEventListener("click", async () => {
-    const msg = corp.querySelector("#an-msg");
-    const mesaj = corp.querySelector("#an-mesaj").value.trim();
-    if (!mesaj) { arataMesaj(msg, "Scrie mesajul.", "eroare"); return; }
-    const cid = corp.querySelector("#an-cab").value;
-    try {
-      const r = await api.post("/admin/anunturi", { mesaj, cabinet_id: cid ? Number(cid) : null, data_afisare: corp.querySelector("#an-data").value || null });
-      arataMesaj(msg, `Trimis către ${r.trimise} cabinet${r.trimise === 1 ? "" : "e"}.`, "info");
-      corp.querySelector("#an-mesaj").value = "";
-    } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
-  });
+  // [anunturi_meniu_v1] DS cap.2a: optiunile se deschid ca pasi de navigator, nu inline
+  const stare = window._anStare = window._anStare || { segment: null, cabIds: null, tenIds: null };  // persistenta intre re-randari (mergi/inapoi re-executa radacina)
+  const rezumat = () => {
+    if (stare.segment === "cabinete") return stare.cabIds ? `${stare.cabIds.length} cabinete alese` : "toate cabinetele";
+    if (stare.segment === "gratuit") return stare.tenIds ? `${stare.tenIds.length} conturi alese` : "toate conturile gratuite";
+    return "nimeni ales înc\u0103";
+  };
+  const meniu = () => {
+    if (nav.setInapoi) nav.setInapoi(undefined);
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Anun\u021buri</h2>
+      <p class="mig-intro">Mesajul apare ca banner la logare, p\u00e2n\u0103 la \u201eAm \u00een\u021beles\u201d. Alege destinatarii, apoi scrie mesajul.</p>
+      <div class="firme-meniu">
+        <button class="firme-optiune" id="an-op-cab">
+          <div class="firme-optiune-icon accent-albastru"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 9h1M9 13h1M14 9h1M14 13h1"/></svg></div>
+          <div class="firme-optiune-titlu">Cabinete</div>
+          <div class="firme-optiune-desc">${stare.segment === "cabinete" ? esc(rezumat()) : "alege cabinetele destinatare"}</div>
+        </button>
+        <button class="firme-optiune" id="an-op-gr">
+          <div class="firme-optiune-icon accent-verde"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg></div>
+          <div class="firme-optiune-titlu">Facturare gratuit\u0103</div>
+          <div class="firme-optiune-desc">${stare.segment === "gratuit" ? esc(rezumat()) : "alege conturile gratuite"}</div>
+        </button>
+        <button class="firme-optiune" id="an-op-msg">
+          <div class="firme-optiune-icon accent-roz"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg></div>
+          <div class="firme-optiune-titlu">Mesaj</div>
+          <div class="firme-optiune-desc">c\u0103tre: ${esc(rezumat())}</div>
+        </button>
+      </div>
+      <div id="an-propuneri"></div>`;
+    corp.querySelector("#an-op-cab").addEventListener("click", () => nav.mergi("Cabinete", (c) => pasSelectie(c, "cabinete")));
+    corp.querySelector("#an-op-gr").addEventListener("click", () => nav.mergi("Facturare gratuit\u0103", (c) => pasSelectie(c, "gratuit")));
+    corp.querySelector("#an-op-msg").addEventListener("click", () => nav.mergi("Mesaj", (c) => pasMesaj(c)));
+    incarcaPropuneri(corp);
+  };
+  function pasSelectie(c, seg) {
+    const eGr = seg === "gratuit";
+    const lista = eGr ? gratuite : cabinete;
+    const idsCur = eGr ? stare.tenIds : stare.cabIds;
+    c.innerHTML = `
+      <h2 class="pf-titlu">${eGr ? "Conturi de facturare gratuit\u0103" : "Cabinete destinatare"}</h2>
+      <p class="mig-intro">Bifeaz\u0103 destinatarii. Nimic bifat = anun\u021bul merge la to\u021bi.</p>
+      <input type="text" class="camp-input" id="sel-cauta" placeholder="caut\u0103" style="max-width:340px;margin-bottom:10px">
+      <div class="pf-lista zebra-lista" id="an-sel-lista">
+        ${lista.map((x, i) => `<label class="pf-frand set-bifa sel-rand" data-zebra="${i % 2}" style="cursor:pointer;display:flex;align-items:center;gap:12px"><input type="checkbox" class="sel-bifa" value="${x.id}" ${idsCur && idsCur.includes(x.id) ? "checked" : ""} style="flex-shrink:0">
+          <div class="pf-frand-text" style="flex:1;text-align:left"><div class="pf-frand-nume">${esc(x.nume || "")}</div>${eGr ? `<div class="pf-frand-sub">CUI ${esc(x.cui || "")}</div>` : ""}</div>
+        </label>`).join("")}
+      </div>`;
+    c.querySelector("#sel-cauta").addEventListener("input", (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      c.querySelectorAll(".sel-rand").forEach((r) => { r.style.display = !q || r.textContent.toLowerCase().includes(q) ? "" : "none"; });
+    });
+    const salveaza = () => {  // [sel_direct_v1] bifarea E selectia; nimic bifat = toate
+      const ids = [...c.querySelectorAll(".sel-bifa:checked")].map((b) => Number(b.value));
+      stare.segment = seg;
+      const val = ids.length ? ids : null;
+      if (eGr) { stare.tenIds = val; stare.cabIds = null; } else { stare.cabIds = val; stare.tenIds = null; }
+    };
+    c.querySelectorAll(".sel-bifa").forEach((b) => b.addEventListener("change", salveaza));
+    salveaza();
+  }
+  function pasMesaj(c) {
+    c.innerHTML = `
+      <h2 class="pf-titlu">Mesaj</h2>
+      <p class="mig-intro">C\u0103tre: <b>${esc(rezumat())}</b></p>
+      <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Mesaj<span class="oblig">*</span></label>
+        <textarea class="camp-input" id="an-mesaj" rows="4" style="resize:vertical;min-height:90px"></textarea></div>
+      <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Afi\u0219are de la data (op\u021bional \u2014 gol = imediat)</label>
+        <input type="date" class="camp-input" id="an-data"></div>
+      <button class="buton-primar" id="an-trimite">Trimite</button>
+      <p id="an-msg" style="margin-top:8px"></p>`;
+    const ta = c.querySelector("#an-mesaj");
+    ta.addEventListener("input", () => { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; });
+    c.querySelector("#an-trimite").addEventListener("click", async () => {
+      const msg = c.querySelector("#an-msg");
+      const mesaj = ta.value.trim();
+      if (!mesaj) { arataMesaj(msg, "Scrie mesajul.", "eroare"); return; }
+      if (!stare.segment) { arataMesaj(msg, "Alege \u00eent\u00e2i destinatarii (Cabinete sau Facturare gratuit\u0103).", "eroare"); return; }
+      try {
+        const r = await api.post("/admin/anunturi", { mesaj, segment: stare.segment, cabinet_ids: stare.cabIds, tenant_ids: stare.tenIds, cabinet_id: null, data_afisare: c.querySelector("#an-data").value || null });
+        arataMesaj(msg, `Trimis c\u0103tre ${r.trimise} destinatar${r.trimise === 1 ? "" : "i"}.`, "ok");
+        ta.value = "";
+      } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
+    });
+  }
+  meniu();
 }
 // [F103 partea 2] propunerile monitorului fiscal ca anunturi
 async function incarcaPropuneri(corp) {

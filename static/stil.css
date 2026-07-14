@@ -1889,6 +1889,7 @@ html, body {
 #ac-lista [data-zebra="0"] { background: var(--albastru-clar); }
 #ac-lista [data-zebra="1"] { background: var(--alb); }  /* aliniat STANDARD_ZEBRA */
 #ac-lista.pf-lista { max-width: none; }
+#an-sel-lista.pf-lista { max-width: none; max-height: 60vh; overflow: auto; }  /* [anunturi_meniu_v1] selector destinatari: full-width + scroll propriu */
 
 .subbara--admin { height: 56px; padding: 0 24px; }
 .subbara-admin-sumar { font-size: var(--text); font-weight: 600; color: #1a2535; }
