@@ -130,7 +130,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Produse \u0219i servicii</div>
-      <div class="camp-eticheta">Linie: denumire \u00b7 cantitate \u00b7 pre\u021b unitar <span class="oblig">*</span> <span class="tip-micut">(cota TVA se stabile\u0219te automat din produs)</span></div>
+      <div class="camp-eticheta">Linie: denumire \u00b7 cantitate \u00b7 pre\u021b unitar <span class="oblig">*</span> <span class="tip-micut">(cota TVA e propus\u0103 automat pe baza denumirii produsului \u2014 verific\u0103 \u00eencadrarea; r\u0103spunderea corectitudinii cotei \u00ee\u021bi apar\u021bine)</span></div>
       <div class="em-linii" id="em-linii"></div>
       <button class="buton-secundar em-buton-sec" id="em-add-linie">+ Adaug\u0103 linie</button>
     </div>
