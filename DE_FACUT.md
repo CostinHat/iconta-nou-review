@@ -45,7 +45,7 @@ Ultima actualizare: 13.07.2026 seara (partea 5)
 4. (REZOLVAT 14.07) PWA testat pe iPhone: instalare, standalone, offline. Android secundar.
 5. (REZOLVAT 13.07 partea 5) F076 retetar GV: testat cu date reale, bug gv_crono (antedatare) reparat. LIVE.
 6. **e-Transport**: XML pentru upload MANUAL in SPV; trimiterea directa prin API SPV nu exista.
-7. **Descrieri FUNCTIONALITATI.csv**: 13/103 scrise (lot 1); loturile 2-8 raman.
+7. (REZOLVAT 14.07) Descrieri FUNCTIONALITATI.csv complete: loturile 2-7 + F113, toate verificate la sursa; scurte raman doar pozitiile PLANIFICATE (legitim - scop propus, nu cod).
 8. (REZOLVAT 13.07 seara) Admin auditat complet: 5/5 sub-ecrane, semafor Sanatate pe tokeni.
 9. **Testare pilot**: sectiunea 1 (P1-P5) intacta — niciun punct bifat.
 10. **Audit design ramas**: spacing inline (inchis explicit ca datorie acceptata), paleta iconite migrare (decizie amanata azi), anatomie/aliniere tabele nesistematizate.
