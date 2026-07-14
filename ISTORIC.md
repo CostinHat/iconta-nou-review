@@ -1017,3 +1017,27 @@ marcate văzut, 18 propuneri reale rămase.
 (cere telefon + HTTPS) și blocatele extern F034 (DUK desktop) / F044 (API SPV).
 Igienă: 17 fișiere .bak_* șterse din static/js/ecrane/ (contra 0a).
 Commits: a932cb3, 78f458a, 615b50f, 6a3798d, ec3cf08, ef968d3 + închiderea.
+
+## 14.07.2026 (zi plina: F113, F152, F153 gratuit, regresie template, audit vizual ~22 ecrane)
+
+**F113 PWA -> LIVE** (`df00efe`): manifest+SW v2, testat iPhone/Safari (instalare, standalone, offline).
+
+**Descrieri FUNCTIONALITATI.csv 103/103** (loturi 2-7): toate pozitiile LIVE cu descrieri verificate la sursa.
+
+**TASK 0a audit cod mort**: 3 functii JS moarte sterse; dosarul rutelor nelegate INCHIS azi (`651a20d`): vanzare-agricultor + achizitie-necorporala LEGATE in registrul Operatiuni speciale (testate real), d112-valideaza/xml + marcheaza-citit STERSE, 6 rute marcate [api_intern_v1].
+
+**F152 Triaj AI sesizari -> LIVE** (`8cb9a3b`): sesizarile trec prin Claude Haiku (baza = FUNCTIONALITATI.csv LIVE); intrebari de folosire -> raspuns AI in fir (~5-8s, polling 3s); bug/fiscal/incert -> escaladare cu confirmare; replica dupa AI = escaladare. Buline rosu/verde (DS cap.8), contor pe stare noua. + inchidere_v1 (`b0795a8`): sesizarile se inchid (nu se sterg), filtru istoric, redeschidere la mesaj; titlu fir din primul mesaj.
+
+**REGRESIE MAJORA REPARATA** (`364d41c`): tenant_template.sql avea {schema} neparametrizat in triggerele perioadelor blocate — provisionarea ORICARUI tenant nou era rupta. Corectat pe TENANT_PLACEHOLDER.
+
+**F153 Cont de facturare gratuita -> LIVE** (gratuit_v1+v2, `36cacbc`+`22021f4`): canal public de achizitie. Register dedicat pe landing (CUI unic, denumirea se goleste la schimbare CUI, sesiune curatata), user client FARA cabinet + tenant propriu (CHECK relaxat). Portal pe masura: 3 carduri, breadcrumb Facturare gratuita, fara elemente de contabil. Poarta Configurare emitere: numerotare + regim TVA (ruta noua regim-tva; FIX bug numerotare_configurata — coloana lipsea din DB, DDL + migrare 6 scheme + template). Regula DS v2.11: cota TVA din nomenclator, nu tastata; avertisment raspundere cota la emitere. 2 facturi reale emise. **IZOLARE GDPR VERIFICATA**: scanare mecanica 161 rute tenant (toate cu bariera) + test practic token ostil = 404/403. Roadmap F154-F161 PLANIFICATE (proforme, recurente, WooCommerce, chitante, model, link plata, e-Factura SPV, Vreau contabil).
+
+**Audit vizual ~22 ecrane** (loturi V1 admin + V2 cabinet + marunt):
+- Raportari admin: master-detail restaurat, esc canonic, selector CSS orfan reparat (4 butoane rupte), copiaza tot verificat
+- Activitate cabinete (`02528d3`): jurnal grupat pe categorii-toggle, traducere actiuni RO, esc, rezumat cifre, panou full-width, cautare live, fix debordare sol-fir
+- Sanatate server (`c075daf`): buton test alerta legat (ruta orfana; email livrat real), etichete grafice cu ziua, esc erori
+- Anunturi (`ecc1e5d`): reproiectat pe meniu+pasi navigator (cap.2a), segmente Cabinete/Facturare gratuita cu bife+cautare, selectie directa, tenant_id in anunturi_cabinet, banner la conturile gratuite, fereastra larga
+- Lot V2 (`fc89bab`): de_plata tradus, perioada nowrap, nume lung Consolidare pe 2 randuri; 13 ecrane conforme
+- Marunt: e-Transport, Produse, Tipare, Asistenti — conforme
+
+Fisiere de test: test.gratuit@example.com / Gratuit2026! (tenant 18) + contul QUANTUM al lui Costin (tenant_009, serie asf232, platitor TVA).
