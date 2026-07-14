@@ -626,6 +626,7 @@ def tipare_panou(ctx=Depends(cere_rol("admin_firma"))):
 class LoginIn(BaseModel):
     email: str
     parola: str
+    cod_acces: Optional[str] = None  # [beta_gate_v1] poarta beta
 
 class RegisterIn(BaseModel):
     email: str
@@ -883,6 +884,11 @@ def login(date: LoginIn):
         r = auth_api.login(conn, date.email, date.parola)
     if not r["ok"]:
         raise HTTPException(401, r["mesaj"])
+    # [beta_gate_v1] poarta beta: daca BETA_COD_ACCES e setat, cere codul.
+    # Parola corecta dar fara cod -> 403 "in lucru" (contul ramane valid pt lansare).
+    _cod = os.environ.get("BETA_COD_ACCES", "").strip()
+    if _cod and (date.cod_acces or "").strip() != _cod:
+        raise HTTPException(403, "Site in lucru. Vei primi un email cand devine functional.")
     try:
         with db.get_conn() as conn2:
             with conn2.cursor() as cur:

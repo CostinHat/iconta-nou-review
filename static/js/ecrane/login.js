@@ -245,6 +245,10 @@ export function ecranLogin(radacina) {
         <span class="camp-eticheta">Parol\u0103<span class="oblig">*</span></span>
         <input type="password" class="camp-input" name="password" id="login-parola" autocomplete="current-password">
       </label>
+      <label class="camp">
+        <span class="camp-eticheta">Cod acces</span>
+        <input type="text" class="camp-input" id="login-cod" autocomplete="off" placeholder="doar \u00een perioada de testare">
+      </label>
       <div class="login-eroare" id="login-eroare" hidden></div>
       <button type="submit" class="buton-primar" id="login-buton">Autentificare</button>
       <button type="button" class="btn-link" id="acc-magic" style="margin-top:10px;display:block">Trimite-mi link de logare (fără parolă)</button>
@@ -285,6 +289,7 @@ export function ecranLogin(radacina) {
         const r = await api.post("/auth/login", {
           email: email.value.trim(),
           parola: parola.value,
+          cod_acces: (document.getElementById("login-cod")?.value || "").trim(),
         });
         sesiune.intra(r.token, r.user);
       } catch (e) {
@@ -383,8 +388,14 @@ export function ecranLogin(radacina) {
           email: email.value.trim(), parola: parola.value,
           nume_firma: firma.value.trim(), cui: (cui.value || "").trim(),
         });
-        const r = await api.post("/auth/login", { email: email.value.trim(), parola: parola.value });
-        sesiune.intra(r.token, r.user);  // redirect DOAR dupa login reusit
+        try {
+          const r = await api.post("/auth/login", { email: email.value.trim(), parola: parola.value });
+          sesiune.intra(r.token, r.user);  // redirect DOAR dupa login reusit
+        } catch (e2) {
+          // [beta_gate_v1] contul e creat si salvat; poarta beta opreste intrarea
+          arata("Contul a fost creat. Site-ul e in lucru \u2014 vei primi un email cand devine functional.", "info");
+          buton.disabled = true; buton.textContent = "Cont creat \u2713";
+        }
       } catch (e) {
         arata((e && e.mesaj) || "Nu am putut crea contul.");
         buton.disabled = false; buton.textContent = "Creează contul gratuit";

@@ -140,4 +140,5 @@ Firme, solduri initiale, solduri parteneri, salariati, asociati, MF, istoric dec
 - F162: platitor_tva editat manual vs ANAF -> avertisment la salvare vector fiscal + semafor rosu Control fiscal la divergenta [PLANIFICAT]
 - F164: cont_venit_implicit setabil din UI (Setari cont/profil firma), acum doar din DB [PLANIFICAT]
 - F165: auditor conformitate schema tenant vs template + auto-ALTER (drift recurent pe tenant_003/004: link_plata, sursa_externa lipseau); rulat la provisionare + verificabil on-demand [PLANIFICAT]
+- F168: la lansare publica, email automat catre conturile create in perioada beta (site in lucru); sterge BETA_COD_ACCES din env pt acces public [PLANIFICAT]
 - RAMASE: teste [C] DONE 14.07 (P1.1/P1.4/P1.5-simulat/P2.9-2.11/P5.24); backup automat LIVE (systemd timer zilnic 03:00, retentie 7z); [D] raman ca teste proprii; blocate extern: F034 D394 DUK, F044 e-Transport API SPV; F154-F161 roadmap gratuit PLANIFICATE; parse-extras de clarificat vs rip/import-banca
