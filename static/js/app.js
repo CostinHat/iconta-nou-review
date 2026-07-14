@@ -14,7 +14,7 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js";
-import { ecranLogin } from "./ecrane/login.js";
+import { ecranLogin } from "./ecrane/login.js?v=2";
 import { creeazaNavigator } from "./navigator.js";
 import { desktopCabinet } from "./ecrane/cabinet.js";
 import { desktopAsistent } from "./ecrane/asistent.js";
