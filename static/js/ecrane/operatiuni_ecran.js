@@ -45,6 +45,18 @@ const REGISTRU = [
     C("destinatie", "Destinatie", "select", { optiuni: [["stocuri","Stocuri"],["servicii","Servicii"],["imobilizari","Imobilizari"],["imobilizari_necorporale","Imobilizari necorporale"]], optional: true }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
+  { cat: "Vânzări speciale", cheie: "agricultor", titlu: "Vânzare către agricultor (regim special)", ruta: "vanzare-agricultor", campuri: [
+    C("data", "Data", "data"),
+    C("pret", "Preț (fără taxă)", "numar"),
+    C("descriere", "Descriere", "text", { optional: true }),
+  ] },  /* [0a_rute_v1] backend existent, legat in registru */
+  { cat: "Imobilizări și capital", cheie: "necorporala", titlu: "Achiziție necorporală (software/licență/brevet)", ruta: "achizitie-necorporala", campuri: [
+    C("data", "Data", "data"),
+    C("denumire", "Denumire", "text"),
+    C("valoare", "Valoare (fără TVA)", "numar"),
+    C("tip", "Tip", "select", { optiuni: [["software","Software (36 luni)"],["licenta","Licență"],["brevet","Brevet"]] }),
+    C("dnf_luni", "Durată contract (luni)", "numar", { cond: { camp: "tip", val: "licenta" }, optional: true }),
+  ] },  /* [0a_rute_v1] */
   { cat: "Imobilizări și capital", cheie: "reevaluare", titlu: "Reevaluare imobilizări (105)", ruta: "reevaluare-imobilizare", campuri: [
     C("data", "Data", "data"),
     C("operatie", "Opera\u021bie", "select", { optiuni: [["reevaluare","Reevaluare MF"],["surplus","Transfer surplus la 1175"]] }),

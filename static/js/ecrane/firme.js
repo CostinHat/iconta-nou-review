@@ -6,7 +6,7 @@ import { sesiune } from "../sesiune.js";
 import { fluxConcediu } from "./flux_concediu.js?v=8";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=3";
 import { ecranRip } from "./rip_ecran.js";
-import { ecranOperatiuni } from "./operatiuni_ecran.js";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=2";
 import { ecranEtransport } from "./etransport_ecran.js";
 import { meniuMigrarePerFirma } from "./migrare.js?v=4";  // [p96_import_firma]
 import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]

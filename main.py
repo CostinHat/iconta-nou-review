@@ -2909,7 +2909,7 @@ def horeca_raport_z(tenant_id: int, rz: RaportZ, ctx=Depends(cere_cabinet)):
     return {"ok": True, "nota_id": iid,
             "tva_11": float(tva11), "tva_21": float(tva21),
             "baza_11": float(baza11), "baza_21": float(baza21)}
-@app.post("/tenants/{tenant_id}/banca/parse-extras")
+@app.post("/tenants/{tenant_id}/banca/parse-extras")  # [api_intern_v1] parsare extras la upload - fara UI inca, pastrat deliberat
 async def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     from core import banca_parser, banca as _bk
     with db.get_conn() as conn:
@@ -3692,16 +3692,7 @@ def portal_solicitari_contor(tenant_id: Optional[int] = None, ctx=Depends(cere_c
                 "WHERE tenant_id=%s AND autor_rol='cabinet' AND citit=false", (t["id"],))
             n = cur.fetchone()[0]
     return {"necitite": n}
-@app.post("/portal/solicitari/marcheaza-citit")  # [icrd_sol_badge_v1]
-def portal_solicitari_marcheaza(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
-    t = _tenant_client(ctx, tenant_id)
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                "UPDATE public.solicitari_client SET citit=true "
-                "WHERE tenant_id=%s AND autor_rol='cabinet' AND citit=false", (t["id"],))
-        conn.commit()
-    return {"ok": True}
+
 @app.get("/portal/solicitari")
 def portal_solicitari_lista(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, tenant_id)
@@ -4655,40 +4646,7 @@ def cv_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
 
 
 # --- D112 ---
-@app.get("/tenants/{tenant_id}/d112-xml")
-def d112_xml(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    from core import d112 as _d
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fara acces")
-        xml, av = _d.genereaza(conn, schema, an, luna)
-    return {"xml": xml, "avertismente": av}
 
-@app.post("/tenants/{tenant_id}/d112-valideaza")
-def d112_valideaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    import base64, subprocess, tempfile, os
-    from core import d112 as _d
-    with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
-        if not schema:
-            raise HTTPException(404, "tenant inexistent sau fara acces")
-        xml, av = _d.genereaza(conn, schema, an, luna)
-    with tempfile.TemporaryDirectory() as td:
-        cale = os.path.join(td, f"d112_{tenant_id}_{an}_{luna:02d}.xml")
-        open(cale, "w", encoding="utf-8").write(xml)
-        r = subprocess.run(["java", "-jar", "DUKIntegrator.jar", "-v", "D112", cale],
-                           cwd="/home/costin/duk/dist", capture_output=True, text=True, timeout=120)
-        erori = ""
-        err_f = cale + ".err.txt"
-        if os.path.exists(err_f):
-            erori = open(err_f, encoding="utf-8").read()
-    ok = "fara erori" in (r.stdout + r.stderr) and not erori.strip().startswith(("E:", "F:"))
-    return {"ok": ok, "erori": erori, "avertismente": av,
-            "xml_b64": base64.b64encode(xml.encode()).decode()}
-
-
-# --- S1005 (bilant micro) ---
 @app.get("/tenants/{tenant_id}/s1005-xml")
 def s1005_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     from core import bilant_api as _ba
@@ -5191,7 +5149,7 @@ def vanzare_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
             "compensatie": str(r["compensatie"]), "total": str(r["total"])}
 
 
-@app.get("/tenants/{tenant_id}/jurnal-marja")
+@app.get("/tenants/{tenant_id}/jurnal-marja")  # [api_intern_v1] raport regim marja - fara UI inca, pastrat deliberat
 def jurnal_marja(tenant_id: int, tip: str, luna: str, ctx=Depends(cere_cabinet)):
     """tip: secondhand|turism; luna: YYYY-MM. Jurnal special vanzari regim marja:
     per nota cost/marja neta/TVA + totaluri perioada (norme pct. 86)."""
@@ -5236,7 +5194,7 @@ def jurnal_marja(tenant_id: int, tip: str, luna: str, ctx=Depends(cere_cabinet))
             "total_tva_colectata": str(tot_tva)}
 
 
-@app.get("/tenants/{tenant_id}/d406-active")
+@app.get("/tenants/{tenant_id}/d406-active")  # [api_intern_v1] SAF-T sub-sectiune - fara UI inca, pastrat deliberat
 def d406_active_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     """Sectiunea Assets SAF-T pentru anul dat (D406 anual - active)."""
     from fastapi.responses import Response
@@ -5263,7 +5221,7 @@ def d406_active_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     return Response(content=xml, media_type="application/xml")
 
 
-@app.get("/tenants/{tenant_id}/d406-stocuri")
+@app.get("/tenants/{tenant_id}/d406-stocuri")  # [api_intern_v1] SAF-T sub-sectiune - fara UI inca, pastrat deliberat
 def d406_stocuri_xml(tenant_id: int, data_start: str, data_end: str, cui: str,
                      ctx=Depends(cere_cabinet)):
     """Sectiunea PhysicalStock SAF-T pe perioada (D406 la cerere ANAF).
@@ -5318,7 +5276,7 @@ def _snapshot_stat_plata(conn, schema, rezultate, an, luna):
     conn.commit()
 
 
-@app.post("/tenants/{tenant_id}/calcul-cm")
+@app.post("/tenants/{tenant_id}/calcul-cm")  # [api_intern_v1] calculator CM - fara UI inca, pastrat deliberat
 def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """corp: {salariat_id, an, luna (luna certificatului), zile_lucratoare_cm,
     cod?, zile_episod?, prima_zi_din_episod?, spitalizare?, data_certificat?}.
@@ -5555,7 +5513,7 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...), ctx=Depends
             "mentiune": mentiune}
 
 
-@app.get("/tenants/{tenant_id}/verifica-vies")
+@app.get("/tenants/{tenant_id}/verifica-vies")  # [api_intern_v1] validare VIES - fara UI inca, pastrat deliberat
 def verifica_vies_ep(tenant_id: int, cod_tva: str, ctx=Depends(cere_cabinet)):
     """Verifica un cod TVA UE in VIES (API oficial CE)."""
     from core import intracomunitar as _ic
