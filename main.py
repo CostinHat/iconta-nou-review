@@ -2509,6 +2509,32 @@ def declaratii_tipuri(ctx=Depends(cere_cabinet)):
                               for t in declaratii_api.tipuri()}}
 
 
+@app.post("/declaratii/{tip}/valideaza")  # duk_valideaza_v1
+def declaratie_valideaza(tip: str, date: DeclaratieIn,
+                         ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    """Genereaza declaratia si o trece prin validatorul OFICIAL ANAF (DUKIntegrator).
+    Intoarce TREI stari: valid / erori / gri (gri = nu am putut valida; un XML
+    nevalidat NU se declara valid). Vezi core/duk.py."""
+    import base64 as _b64
+    from core import duk as _duk
+    body = date.model_dump(exclude_none=True)
+    tenant_id = body.pop("tenant_id")
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+    if not schema:
+        raise HTTPException(403, "nu ai acces la acest tenant")
+    try:
+        with db.get_conn(schema) as conn:
+            xml, res = declaratii_api.genereaza(conn, schema, tip, body)
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    rez = _duk.valideaza(xml, tip)  # java blocant; timeout in duk.valideaza
+    return {"tip": tip, "stare": rez["stare"], "erori": rez["erori"],
+            "temei": rez["temei"], "limita": rez["limita"],
+            "avertismente": getattr(res, "avertismente", None),
+            "xml_b64": _b64.b64encode(xml.encode()).decode()}
+
+
 @app.post("/declaratii/{tip}")
 def declaratie_genereaza(tip: str, date: DeclaratieIn,
                          ctx=Depends(cere_rol("admin_firma", "angajat"))):
