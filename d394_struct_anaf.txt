@@ -1,0 +1,3580 @@
+# STRUCTURA OFICIALA D394 - sursa de adevar pentru core/d394.py.
+# Descarcat 15.07.2026 de la ANAF:
+#   https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structD394_02092020.pdf
+# Extras cu pypdf. 41 pagini: elemente/atribute, tip si lungime, obligativitate,
+# formule si restrictii, mesaje de eroare.
+# Verificare incrucisata: d394_structura_v5.txt (extras din D394Validator.jar instalat).
+# Ordin de baza: OPANAF 3769/2015, actualizat prin OPANAF 2194/2025 (cote TVA de la
+# 01.08.2025 - de aceea validatorul are tvaDed21/BUN21/achizitiiB21).
+# ATENTIE (din doc): <informatii> se pozitioneaza IN <declaratie394>, INAINTE de <rezumat1>.
+# Sectiuni: rezumat1(229) detaliu(798) rezumat2(1217) serieFacturi(1582)
+#           informatii(1676) lista(2413) facturi(2461) op1(2585) op11(2798)
+
+ 
+Data 
+modific ă
+rii 
+Nr. crt.  Elemente/ atribute  Denumire c âmp  Tip şi 
+lungime 
+câmp 
+ 
+Câmp 
+obligatoriu  
+Câmp  
+calcul 
+at 
+ 
+Formule 
+şi restric ţii Erori  
+ 1.  <declaratie394>       
+ 2.  luna  Perioada de raportare - Luna  N(2) DA  1>=luna <=12  ERR - luna raportare  
+ 
+3.  
+an  Perioada de raportare - An  N(4) DA  
+ 
+an >= 2016 
+ 
+ 
+ERR - 
+an raportare  
+ 
+4.  
+tip_D394 Tip D394 
+ ( lunar/ trimestrial/ semestrial/ anual) C(1) DA  
+tip_D394   in (L,T,S,A) 
+ 
+ 
+Atentie  pentru 
+platitorii de TVA 
+TRIMESTRIAL si 
+achizitii 
+intracomunitare!  
+Daca in lunile 02,05,08 
+sau 11 se opereaza 
+achizitii intracomunitare, 
+pentru aceste luni se va 
+incarca decont 
+TRIMESTRIAL, cu 
+valoarea cumulata din 
+lunile 01+02, 04+05, 
+07+08, respectiv 10+11 
+Decontul urmator va 
+trebui sa fie LUNAR 
+(pentru lunile 
+03,06,09,12). 
+ 
+ 
+tip_D394   = T daca 
+luna_r in 
+(02,03,05,06,08,09,11,1 
+2)  
+tip_D394   = S daca 
+luna_r in (06,12)  
+tip_D394   = A daca 
+luna_r =12 
+ 
+ERR – 
+ tip_D394=T si luna # 
+(02,03,05,06,08,09,11,12)  tip_decont  = 
+S si luna # (06,12) 
+tip_decont  = A si luna #12 
+ 
+ 
+5.  
+sistemTVA Sistemul de TVA utilizat de societate N(1)  DA  
+=0  sistem normal de 
+TVA 
+=1 sistem de TVA la 
+incasare 
+ERR- valoare eronata 
+ERR- camp obligatoriu 
+ 
+ 
+ 
+ 
+6.  
+op_efectuate Daca au fost efectuate operatiuni in 
+perioada de raportare N(1) DA  
+=0 NU 
+=1 DA 
+Daca op_efectuate = 1 
+si nu s-au introdus 
+date 
+Daca op_efectuate = 0 
+si  s-au introdus date 
+ 
+ERR valoare eronata 
+ERR camp obligatoriu 
+ 
+01.09.202 
+0 
+6.a 
+prsAfiliat 
+Au fost efectuate operatiuni cu 
+persoane afiliate in perioada de 
+raportare 
+N(1) DA  =0 NU 
+=1 Da 
+ 
+ 7.  nume_declar Nume declarant  C(75) DA    ERR - nume declarant necompletat  
+ 8.  prenume_declar Prenume declarant  C(75) DA    ERR - prenume declarant necompletat  
+ 9.  functie_declar Functie declarant  C(50) DA    ERR – functie declarant necompletat ă 
+ 10.  <identificare>  1 aparitie       
+ 11.   cui  Cod de înregistrare în scopuri de tva  N(10) DA   Verificare cui  ERR - cui invalid sau inexistent  
+08.06.16  11.a  caen  Cod caen al activitatii desfasurate  C(4) DA    ERR 
+ 12.  den  Denumire sau Nume şi Prenume  C(200) DA   ERR - denumire necompletat ă 
+ 13.   adresa  Adres ă domiciliu fiscal  C(1000) DA   ERR – adres ă necompletat ă 
+18.11.16  14.  telefon  Telefon domiciliu fiscal  C(15)  DA     
+ 15.  fax  Fax domiciliu fiscal  C(15)     
+ 16.   mail  E-mail domiciliu fiscal  C(200)     
+13.05.16  
+17.  
+totalPlata_A  Suma de control  N(15)  DA DA  
+totalPlata_A = 
+nrCui1+nrCui2+nrCui3+ 
+nrCui4 + 
+rezumat2(bazaL+ 
+bazaA+bazaAI) 
+ 
+ERR – suma de control  – mod de calcul 
+eronat  
+ 18.  </identificare>        
+ 
+19.  <idReprezentant>  0-1 aparitii       
+ 20.  cifR  Cod de identificare fiscal ă reprezentant  N(13)   Verificare cif  ERR - cui invalid  
+ 21.  denR  Denumire sau Nume şi Prenume 
+reprezentant  C(200) DA    
+21.04.16  22.  functie_reprez  Calitatea reprezentantului  C(100) DA    
+ 23.   adresaR  Adres ă reprezentant  C(1000) DA    
+ 24.  telefonR  Telefon reprezentant  C(15)     
+ 25.  faxR  Fax reprezentant  C(15)     
+ 26.  mailR  E-mail reprezentant  C(200)     
+ 27.  tip_intocmit Tipul persoanei care a intocmit declar atia  N(1) DA  =0 persoana juridica 
+=1 persoana fizica 
+ 
+ERR- camp necompletat 
+ERR- valoare eronata 
+ 
+ 28.  den_intocmit Denumire/nume si prenume persoana care 
+intocmeste declaratia 
+ C(75) DA   ERR- camp necompletat  
+ 
+29.  
+cif_intocmit CIF intocmit  N(13) DA  
+Validare CIF 
+Daca tip_intocmit = 1 
+atunci cif_intocmit este 
+CNP sau NIF 
+ 
+ERR- camp necompletat 
+ERR- valoare eronata 
+ERR- Daca tip intocmit este persoana fizica 
+atunci cif_intocmit trebuie sa fie CNP 
+ 
+ 
+30.  
+calitate_intocmit Calitatea intocmitului  C(75)   
+Daca tip_intocmit= 0 
+atunci 
+calitate_intocmit<>null 
+ 
+Daca tip_intocmit= 1 si 
+functie_intocmit=null 
+atunci 
+calitate_intocmit<>null 
+ 
+ERR Calitatea intocmitului este obligatorie 
+pentru tip_intocmit persoana juridica 
+ERR calitatea intocmitului este obligatorie 
+daca tip intocmit este persoana fizica si nu s-
+a completat functia intocmitului 
+ 
+ 
+31.  
+functie_intocmit Functia in cadrul persoanei impoza bile  C(75)   
+Daca tip_intocmit= 0 
+atunci 
+functie_intocmit=null 
+ 
+Daca tip_intocmit= 1 si 
+calitate_intocmit=null 
+atunci 
+functie_intocmit<>null 
+ 
+ERR Functia intocmitului nu se completeaza 
+pentru tip_intocmit persoana juridica 
+ERR functia intocmitului este obligatorie daca 
+tip intocmit este persoana fizica si nu s-a 
+completat calitatea intocmitului 
+ 
+ 
+32.  
+optiune 
+Optiune referitoare la consultarea de catre 
+persoana impozabila a tranzactiilor derulate 
+cu aceasta  prin intermediul aplicatiilor puse 
+la dispozitie de ANAF 
+ 
+N(1) DA  
+=0- NU 
+=1- DA 
+ 
+ 
+ERR valoare eronata  
+24.06.16  
+33.  
+schimb_optiune 
+Schimbarea optiunii referitoare la 
+consultarea de catre persoana impozabila a 
+tranzactiilor derulate cu aceasta  prin 
+intermediul aplicatiilor puse la dispozitie de 
+ANAF in sensul ca este de acord 
+ 
+N(1)   
+=1 sau null  
+Dac ă schimb_optiune=1 
+atunci optiune = 1 
+ERR- valoarea eronata  
+ 34.   </idReprezentant>        
+21.04.16  
+35.  
+<rezumat1>  
+ Rezumat pe fiecare tip partener operatiuni si 
+fiecare cota 
+ 
+0-n aparitii 
+   
+(tip_partener, cota) unic 
+pe rezumat 
+  
+(tip_partener,cota, tip_N, 
+document_N) unic pt 
+tip_partener=2 
+ 
+ 
+ERR sectiune rezumat1 nedeclarata pt 
+(tip_partener, cota) 
+ 
+ 
+36.   
+tip_partener  Tipul partenerului implicat in operatiune  N(1) DA  
+=1 persoane impozabile 
+inregistrate in scopuri 
+de TVA in Romania 
+ 
+ 
+=2 persoane 
+neinregistrate in scopuri 
+de TVA 
+ 
+ 
+ERR valoare eronata 
+ 
+= 3 persoane nestabilite 
+in Romania care sunt 
+stabilite in alt stat 
+membru, neinregistrate 
+si care nu sunt obligate 
+sa se inregistreze in 
+scopuri de TVA in 
+Romania 
+ 
+ 
+=4 persoane nestabilite 
+in Romania, 
+neinregistrate si care nu 
+sunt obligate sa se 
+inregistreze in scopuri 
+de TVA in Romania, 
+nestabilite pe teritoriul 
+UE 
+ 
+01.07.16  
+37.  
+cota  Cota TVA-ului aplicata  N(2) DA  
+cota in (0, 5, 9, 20, 24, 
+19 ) 
+ 
+ERR  
+ 
+38.  
+facturiL  
+Nr facturi aferente livrarilor de bunuri/prestari 
+servicii efectuata de catre persoana 
+impozabila cu exceptia celor pt care au fost 
+emise facturi simplificate 
+ 
+N(15)  DA 
+facturiL=Σ op1(nrFact) 
+pentru op1(tip)=L si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+null pt cota =0 
+<>null pt cota<>0 
+ 
+ERR  – mod calcul eronat  
+ 
+39.  
+bazaL  
+Valoarea totala a bazei impozabile aferenta 
+livrarilor de bunuri/prestari servicii efectuata 
+de catre persoana impozabila cu exceptia 
+celor pt care au fost emise facturi simplificate 
+ 
+N(15)  DA 
+bazaL =Σ op1(baza) 
+pentru op1(tip)=L si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+null pt cota =0 
+<>null pt cota<>0 
+ 
+ERR  – mod calcul eronat  
+ 
+40.  
+tvaL  
+Valoarea totala a TVA  aferenta livrarilor de 
+bunuri/prestari servicii efectuata de catre 
+persoana impozabila cu exceptia celor pt 
+care au fost emise facturi simplificate 
+ 
+N(15)  DA 
+tvaL =Σ op1(tva) 
+pentru op1(tip)=L si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner
+ 
+null pt cota =0 
+<>null pt cota<>0 
+ 
+ERR  – mod calcul eronat  
+21.04.16  
+31.05.16  
+08.07.16  
+41.  
+facturiLS  
+Nr facturi aferente livrarilor de bunuri/prestari 
+servicii pt operatiunile derulate în regim 
+special pt agentiile de turism, pt bunurile 
+second-hand, opere de art 
+ă, obiecte de 
+colec ție și antichitati  
+N(15)  DA 
+facturiLS=Σ op1(nrFact) 
+pentru op1(tip)=LS si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ERR  – mod calcul eronat  
+ner  
+<>null pt cota =0 și 
+document_N=1 și 
+tip_partener=2 
+<>null pt cota =0 și 
+tip_partener<>2 
+null altfel; 
+ 
+21.04.16  
+31.05.16  
+42.  
+bazaLS  
+Valoarea totala a bazei impozabile aferenta 
+livrarilor de bunuri/prestari serviciipt 
+operatiunile derulate în regim special pt 
+agentiile de turism, pt bunurile second-hand, 
+opere de art 
+ă, obiecte de colec ție și 
+antichitati  
+N(15)  DA 
+bazaLS =Σ op1(baza) 
+pentru op1(tip)=LS si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+<>null pt cota =0 și 
+document_N=1 și 
+tip_partener=2 
+<>null pt cota =0 și 
+tip_partener<>2  
+null altfel  
+ERR  – mod calcul eronat  
+ 
+43.   
+facturiA  
+Nr facturi aferente achizitiilor de bunuri si 
+servicii de la persoane impozabile care 
+aplica sistemul normal de TVA, cu excep 
+ția 
+celor pt care s-au primit facturi simplificate  
+N(15)  DA 
+facturiA=Σ op1(nrFact) 
+pentru op1(tip)=A si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+ 
+<>null pt tip_partener=1 
+și cota<>0; 
+altfel =null 
+ 
+ 
+ERR   – mod calcul eronat  
+ 
+44.  
+bazaA  
+Valoarea totala a bazei impozabile aferenta 
+achizitiilor de bunuri si servicii de la 
+persoane impozabile care aplica sistemul 
+normal de TVA, cu excep 
+ția celor pt care s-
+au primit facturi simplificate  
+N(15)  DA 
+bazaA =Σ op1(baza) 
+pentru op1(baza)=A si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner  
+ 
+ 
+<>null pt tip_partener=1 
+și cota<>0; 
+altfel =null 
+ 
+ERR  – mod calcul eronat  
+ 
+45.  
+tvaA  
+Valoarea totala a TVA  aferenta achizitiilor de 
+bunuri si servicii de la persoane impozabile 
+care aplica sistemul normal de TVA, cu 
+excep 
+ția celor pt care s-au primit facturi 
+simplificate  
+N(15)  DA 
+tvaA =Σ op1(tva) 
+pentru op1(tip)=A si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner  
+ 
+ERR  – mod calcul eronat  
+ 
+<>null pt tip_partener=1 
+și cota<>0; 
+ 
+altfel =null  
+ 
+46.  
+facturiAI  
+Nr facturi aferente achizitiilor de bunuri si 
+servicii de la persoane impozabile care 
+aplica sistemul de TVA la incasare, cu 
+excep 
+ția celor pt care s-au primit facturi 
+simplificate  
+N(15)  DA 
+facturiAI=Σ op1(nrFact) 
+pentru op1(tip)=AI si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+<>null pt tip_partener=1 
+și cota<>0; 
+ 
+altfel =null 
+ERR  – mod calcul eronat  
+ 
+47.  
+bazaAI  
+Valoarea totala a bazei impozabile aferenta 
+achizitiilor de bunuri si servicii de la 
+persoane impozabile care aplica sistemul de 
+TVA la incasare, cu excep 
+ția celor pt care s-
+au primit facturi simplificate  
+N(15)  DA 
+bazaAI =Σ op1(baza) 
+pentru op1(tip)=AI si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+<>null pt tip_partener=1 
+și cota<>0; 
+ 
+altfel =null 
+ERR  – mod calcul eronat  
+ 
+48.  
+tvaAI  
+Valoarea totala a TVA  aferenta achizitiilor de 
+bunuri si servicii de la persoane impozabile 
+care aplica sistemul de TVA la incasare, cu 
+excep 
+ția celor pt care s-au primit facturi 
+simplificate  
+N(15)  DA 
+tvaAI =Σ op1(tva) 
+pentru op1(tip)=AI si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+<>null pt tip_partener=1 
+și cota<>0; 
+ 
+altfel =null 
+ERR  – mod calcul eronat  
+21.04.16  
+49.  
+facturiAS  
+Nr facturi aferente achizitiilor de bunuri și 
+serviciiefectuate de la persoane impozabile 
+care aplica regimul special pt agentiile de 
+turism, pt bunurile second-hand, opere de 
+art 
+ă, obiecte de colec ție și antichitati și care 
+aplica sistemul normal de TVA  
+N(15)  DA 
+facturiAS=Σ op1(nrFact) 
+pentru op1(tip)=AS si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+<>null pt tip_partener=1 
+și cota=0  
+altfel =null 
+ 
+ERR  – mod calcul eronat  
+21.04.16  
+50.  
+bazaAS  
+Valoarea totala a bazei impozabile aferenta 
+achizitiilor de bunuri 
+și serviciiefectuate de la 
+persoane impozabile care aplica regimul 
+special pt agentiile de turism, pt bunurile 
+second-hand, opere de art 
+ă, obiecte de 
+colec ție și antichitati și care aplica sistemul 
+normal de TVA  
+N(15)  DA 
+bazaAS =Σ op1(baza) 
+pentru op1(tip)=AS si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+<>null pt tip_partener=1 
+și cota=0   
+altfel =null 
+ 
+ERR  – mod calcul eronat  
+21.04.16  51.  facturiASI  Nr facturi aferente achizitiilor de bunuri și 
+serviciiefectuate de la persoane impozabile N(15)  DA facturiASI=Σ ERR  – mod calcul eronat  
+care aplica regimul special pt agentiile de 
+turism, pt bunurile second-hand, opere de 
+art ă, obiecte de colec ție și antichitati și care 
+aplica sistemul  de TVA la incasare  
+op1(nrFact) 
+pentru op1(tip)=ASI si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner  
+<>null pt tip_partener=1 
+și cota=0; 
+altfel =null  
+21.04.16  
+52.  
+bazaASI  
+Valoarea totala a bazei impozabile aferenta 
+achizitiilor de bunuri și serviciiefectuate de la 
+persoane impozabile care aplica regimul 
+special pt agentiile de turism, pt bunurile 
+second-hand, opere de art ă, obiecte de 
+colec ție și antichitati și care aplica sistemul  
+de TVA la incasare  
+N(15)  DA 
+bazaASI =Σ op1(baza) 
+pentru op1(tip)=ASI si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner  
+<>null pt tip_partener=1 
+și cota=0; 
+altfel =null  
+ERR  – mod calcul eronat  
+22.07.16  
+53.  
+facturiV  
+Nr facturi aferente livrarilor de bunuri/prestari 
+de servicii efectuate pentru care se aplica 
+taxarea inversa 
+ 
+N(15)  DA 
+facturiV=Σ op1(nrFact) 
+pentru op1(tip)=V si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+ 
+<>null pt tip_partener=1 
+și cota=0;  
+altfel =null 
+ERR  – mod calcul eronat  
+22.07.16  
+54.  
+bazaV  
+Valoarea totala a bazei impozabile aferenta 
+livrarilor de bunuri/prestari de servicii 
+efectuate pentru care se aplica taxarea 
+inversa 
+ 
+N(15)   DA 
+bazaV = Σ op1(baza) 
+pentru op1(tip)=V si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+<>null pt tip_partener=1 
+și cota=0 ; 
+altfel =null 
+ERR  – mod calcul eronat  
+22.07.16  
+55.  
+tvaV  
+Valoarea totala a TVA  aferenta livrarilor de 
+bunuri/prestari de servicii efectuate pentru 
+care se aplica taxarea inversa  
+N(15)   DA 
+tvaV = Σ op1(tva) 
+pentru op1(tip)=V si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+<>null pt tip_partener=1 
+și cota<>0; 
+ 
+altfel =null 
+ERR  – mod calcul eronat  
+ 
+56.  
+facturiC  Nr facturi aferente achizitiilor de bunuri si 
+servicii  pentru care se aplica taxarea inversa 
+ N(15)  DA 
+facturiC=Σ op1(nrFact) 
+pentru op1(tip)=C si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+ERR  – mod calcul eronat  
+<>null pt 
+tip_partener=1,3,4 și 
+cota<>0; 
+ 
+altfel =null 
+ 
+57.  
+bazaC  
+Valoarea totala a bazei impozabile aferenta 
+achizitiilor de bunuri si  servicii pentru care 
+se aplica taxarea inversa 
+ 
+N(15)   DA 
+bazaC = Σ op1(baza) 
+pentru op1(tip)=C si 
+op1(cota)=cota  si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+<>null pt 
+tip_partener=1,3,4 și 
+cota<>0; 
+ 
+altfel =null 
+ERR  – mod calcul eronat  
+ 
+58.   
+tvaC  
+Valoarea totala a TVA  aferenta achizitiilor de 
+bunuri si servicii  pentru care se aplica 
+taxarea inversa 
+ 
+N(15)   DA 
+tvaC = Σ op1(tva) 
+pentru op1(tip)=C si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner 
+ 
+<>null pt 
+tip_partener=1,3,4 și 
+cota<>0; 
+ 
+altfel =null 
+ERR  – mod calcul eronat  
+21.04.16  
+ 
+59.  
+facturiN  
+Nr documente pt achizitiilor de bunuri si 
+servicii , cu excep 
+ția celor pt care s-au primit 
+facturi simplificate pt tip_partener=2  
+N(15)    
+facturiN=Σ op1(nrFact) 
+pentru op1(tip)=N si 
+op1(cota)=cota 
+și 
+și 
+op1(tip_document)=docum 
+ent_N si 
+op1(tip_partener)=tip_parte 
+ner (=2) 
+ 
+<>null pt tip_partener=2 
+și cota=0 
+ 
+altfel =null 
+ERR  – mod calcul eronat  
+21.04.16  
+21.06.16  
+27.10.16  
+60.  
+document_N  Tip document N  N(1)    
+1= facturi 
+2= borderouri 
+3= file carnet 
+comercializare 
+4=contracte 
+ 
+5= alte documente  
+document_N=op1(tip_d 
+ocument) 
+ 
+<>null pt tip_partener=2 
+și cota=0  
+ 
+altfel =null 
+ERR  – mod calcul eronat  
+21.04.16  
+22.04.16  
+61.  
+tip_N  Tipul achizitiei  N(1)    
+1= bunuri  
+2= servicii 
+tip_N=op1(tip_N)  
+<>0 pt tip în (V,C,N) și 
+tip_partener in(1,2)  
+altfel =null 
+ERR   
+21.04.16  
+62.  
+bazaN  
+Valoarea totala a bazei impozabile aferenta 
+achizitiilor de bunuri si servicii , cu excep 
+ția 
+celor pt care s-au primit facturi simplificate pt 
+tip_partener=2 
+ 
+N(15)  DA 
+bazaN=Σ op1(nrFact) 
+pentru op1(tip)=N si 
+op1(cota)=cota 
+și 
+și 
+op1(tip_document)=docum 
+ent_N si 
+op1(tip_partener)=tip_parte 
+ner (=2) 
+ 
+<>null pt tip_partener=2 
+și cota=0; 
+ 
+altfel =null 
+ERR  – mod calcul eronat  
+21.04.16  
+25.04.16  
+63.  <detaliu>  Aparitii :0-n      
+ 
+64.  
+bun  
+Tipul bunurilor achizitionate/livrate prin 
+operatiuni cu taxare inversa / Tipul bunului 
+achizitionat pt tip_partener =1 sau 2 
+ 
+N(2)  DA  
+Nomenclator N1 
+Daca tip_partener= 1 
+atunci 21<=bun<=31 
+ 
+Daca tip_partener=2 
+atunci 21<=bun<=23 
+sau 32<=bun<=35 
+ 
+ERR   
+22.07.16  
+65.  
+nrLiv  Nr facturi aferente livrarilor de bunuri/prestari 
+de servicii efectuate, defalcate pe tip bun  N(15)   DA 
+<>null pt tip_partener = 
+1 
+=null pt tip_partener = 2 
+nrLiv=
+Σ op11(nrFactPR) 
+pentru op1(tip)=L si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner 
+și op11(codPR) = bun 
+daca op11(codPR) în 
+(29,30,31) 
+ 
+ERR   
+22.07.16  
+66.  
+bazaL iv 
+Valoarea totala a bazei impozabile aferenta 
+livrarilor de bunuri/prestari de servicii 
+efectuate, defalcate pe tip bun  
+N(15)   DA 
+bazaLiv =ΣΣ  
+op11(bazaPR) 
+pentru op1(tip)=L si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner 
+și op11(codPR) = bun 
+daca op11(codPR) în 
+(29,30,31) 
+  
+ 
+<>null pt tip_partener = 
+ERR   
+1 
+=null pt tip_partener = 2 
+ 
+22.07.16  
+67.  
+tvaL iv 
+Valoarea totala a TVA  aferenta livrarilor de 
+bunuri/prestari de servicii efectuate, 
+defalcate pe tip bun  
+N(15)   DA 
+tvaLiv =ΣΣ  op11(tvaPR) 
+pentru op1(tip)=L si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner 
+și op11(codPR) = bun 
+daca op11(codPR) în 
+(29,30,31) 
+ 
+<>null pt tip_partener = 
+1 
+=null pt tip_partener = 2 
+ 
+ERR   
+25.07.16  
+68.  
+nrLivV  
+Nr facturi aferente livrarilor de bunuri/prestari 
+de servicii efectuate, defalcate pe tip bun, pt 
+taxare inversa 
+ 
+N(15)   DA 
+<>null pt tip_partener = 
+1 și cota=0 
+=null altfel 
+nrLivV=
+Σ 
+op11(nrFactPR) 
+pentru op1(tip)=V si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner 
+și op11(codPR) = bun 
+pt bun<>21 sau 
+lung(op11(codPR))>2 
+pt bun=21 
+ 
+ERR   
+25.07.16  
+69.  
+bazaL ivV 
+Valoarea totala a bazei impozabile aferenta 
+livrarilor de bunuri/prestari de servicii 
+efectuate, defalcate pe tip bun pt taxare 
+inversa 
+ 
+N(15)   DA 
+bazaLivV =ΣΣ  
+op11(bazaPR) 
+pentru op1(tip)=V si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner 
+și op11(codPR) = bun 
+pt bun<>21 sau 
+lung(op11(codPR))>2 
+pt bun=21  
+ 
+<>null pt tip_partener = 
+1 și cota=0 
+ 
+=null altfel 
+ERR   
+22.07.16  
+70.  
+tvaL ivV 
+Valoarea totala a TVA  aferenta livrarilor de 
+bunuri/prestari de servicii efectuate, 
+defalcate pe tip bun pt taxare inversa  
+N(15)   DA 
+tvaLivV =ΣΣ  
+op11(tvaPR) 
+pentru op1(tip)=V si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner 
+și op11(codPR) = bun 
+pt bun<>21 sau 
+lung(op11(codPR))>2 
+pt bun=21 
+ 
+<>null pt tip_partener = 
+ERR   
+1 
+=null pt tip_partener = 2 
+ 
+25.04.16  
+22.07.16  
+71.  
+nrAchiz  Nr facturi aferente achizitiilor de bunuri si 
+servicii, defalcate pe tip bun  N(15   DA 
+nrAchiz= Σ 
+op11(nrFactPR) 
+pentru op1(tip)=A si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner =1 
+și  și op11(codPR) = 
+bun 
+ 
+daca op11(codPR) în 
+(29,30,31) 
+ 
+<>null pt tip_partener = 
+1 
+=null pt tip_partener = 2 
+ 
+ERR   
+25.04.16  
+22.07.16  
+72.  
+bazaAchiz  
+Valoarea totala a bazei impozabile aferenta 
+achizitiilor de bunuri si  servicii, defalcate pe 
+tip bun  
+N(15)   DA 
+bazaAchiz =ΣΣ  
+op11(bazaPR) 
+pentru op1(tip)=A pt 
+tip_partener=1si  
+și 
+op11(codPR) = bun 
+ 
+daca op11(codPR) în 
+(29,30,31) 
+ 
+ 
+<>null pt tip_partener = 
+1 
+=null pt tip_partener = 2 
+ 
+ERR   
+25.04.16  
+22.07.16  
+73.  
+tvaAchiz  Valoarea totala a TVA  aferenta achizitiilor de 
+bunuri si servicii , defalcate pe tip bun  N(15)   DA 
+tvaAchiz =ΣΣ  
+op11(tvaPR) 
+pentru op1(tip)=A 
+și  
+op11(codPR) = bun 
+ 
+daca op11(codPR) în 
+(29,30,31) 
+ 
+<>null pt tip_partener = 
+1 
+=null pt tip_partener = 2 
+ 
+ERR   
+25.04.16  
+09.05.16  
+22.07.16  
+74.   
+nrAchiz AI Nr facturi aferente achizitiilor de bunuri si 
+servicii, defalcate pe tip bun  N(15   DA 
+nrAchiz= Σ 
+op11(nrFactPR) 
+pentru op1(tip)=AI si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_par 
+tener =1 
+și  și 
+op11(codPR) = bun 
+ 
+daca op11(codPR) în 
+(29,30,31) 
+ 
+ERR   
+<>null pt tip_partener 
+= 1 
+=null pt tip_partener = 
+2
+ 
+25.04.16  
+09.05.16  
+22.07.16  
+75.  
+bazaAchiz AI 
+Valoarea totala a bazei impozabile 
+aferenta achizitiilor de bunuri si  servicii, 
+defalcate pe tip bun  
+N(15)   DA 
+bazaAchiz =ΣΣ  
+op11(bazaPR) 
+pentru op1(tip)=AI pt 
+tip_partener=1si  
+și 
+op11(codPR) = bun 
+ 
+daca op11(codPR) în 
+(29,30,31) 
+ 
+<>null pt tip_partener 
+= 1 
+=null pt tip_partener = 
+2
+ 
+ERR   
+25.04.16  
+09.05.16  
+22.07.16  
+76.  
+tvaAchiz AI Valoarea totala a TVA  aferenta achizitiilor 
+de bunuri si servicii , defalcate pe tip bun  N(15)   DA 
+tvaAchiz =ΣΣ  
+op11(tvaPR) 
+pentru op1(tip)=AI 
+și  
+op11(codPR) = bun 
+ 
+daca op11(codPR) în 
+(29,30,31) 
+ 
+<>null pt tip_partener 
+= 1 
+=null pt tip_partener = 
+2
+ 
+ERR   
+25.07.16  
+77.  
+nrAchizC  
+Nr facturi aferente achizitiilor de bunuri si 
+servicii, defalcate pe tip bun 
+ pt taxare 
+inversa  
+N(15   DA 
+nrAchizC= Σ 
+op11(nrFactPR) 
+pentru op1(tip)=C si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner =1  
+și op11(codPR) = 
+bun 
+ 
+daca op11(codPR) = bun 
+pt bun<>21 sau daca 
+lung(op11(codPR))>2 
+pt bun=21  
+ 
+<>null pt tip_partener = 
+1
+ și cota<>0 
+=null altfel  
+ERR   
+25.07.16  
+78.  
+bazaA chizC 
+Valoarea totala a bazei impozabile aferenta 
+achizitiilor de bunuri si  servicii, defalcate pe 
+tip bun/ Valoare totala achizitii 
+ pt taxare 
+N(15)   DA 
+bazaAchizC= Σ 
+op11(bazaPR) 
+pentru op1(tip)=C si 
+ERR   
+inversa  op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner =1  
+și op11(codPR) = 
+bun 
+ 
+daca op11(codPR) = bun 
+pt bun<>21 sau daca 
+lung(op11(codPR))>2 
+pt bun=21  
+ 
+<>null pt tip_partener = 
+1
+ și cota<>0  
+=null altfel 
+25.07.16  
+79.   
+tvaA chizC 
+Valoarea totala a TVA  aferenta achizitiilor de 
+bunuri si servicii  , defalcate pe tip bun pt 
+taxare inversa 
+ 
+N(15)   DA 
+nrAchizC= Σ 
+op11(tvaPR) 
+pentru op1(tip)=C si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner =1  
+și op11(codPR) = 
+bun 
+ 
+daca op11(codPR) = bun 
+pt bun<>21 sau daca 
+lung(op11(codPR))>2 
+pt bun=21  
+ 
+<>null pt tip_partener = 
+1
+ și cota<>0 
+=null altfel  
+ERR   
+ 
+80.  
+nrN  Numar documente( facturi/borderouri/file 
+carnet/contracte) achizi 
+ție bunuri  N(15)   DA 
+nrN= Σ op11(nrFactPR) 
+pentru op1(tip)=N si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner =2 
+și 
+op1(tip_document)=docum 
+ent_N  
+și op11(codPR) = 
+bun 
+ 
+daca op11(codPR) = bun 
+pt bun<>21 sau daca 
+lung(op11(codPR))>2 
+pt bun=21  
+ 
+<>null pt tip_partener = 
+2 și cota =0; 
+altfel = null 
+ 
+ERR   
+ 81.  valN  Valoare achizi ție pe tip bunuri și tip 
+document  N(15)    valN= Σ op11(bazaPR) ERR   
+pentru op1(tip)=N si 
+op1(cota)=cota si 
+op1(tip_partener)=tip_parte 
+ner =2 
+și 
+op1(tip_document)=docum 
+ent_N  
+și op11(codPR) = 
+bun 
+ 
+daca op11(codPR) = bun 
+pt bun<>21 sau daca 
+lung(op11(codPR))>2 
+pt bun=21  
+ 
+<>null pt tip_partener = 
+2 și cota =0; 
+altfel = null 
+ 
+ 82.  </detaliu>        
+ 83.  </rezumat1>        
+28.07.16  
+84.  
+<rezumat2>  0-4 aparitii     
+<rezumat2> nu se 
+completeaza pt 
+op_efectuate=0; 
+ 
+<rezumat2>  se 
+completeaza pt 
+op_efectuate= 1;  
+ 
+ 
+01.07.16  85.  cota  Cota TVA-ului  N(2)   În (5,9,20,24,  19 )  
+ 
+86.  
+bazaFSLcod  
+Valoarea bazei impozabile aferente livrarilor 
+de bunuri/prestarilor de servicii pt care s-au 
+emis facturi simplificate care au inscris codul 
+de inregistrare in scopuri de TVA al 
+beneficiarului 
+ 
+N(15) DA    ERR   
+ 
+87.  
+TVAFSLcod  
+Valoarea TVA-ului aferent livrarilor de 
+bunuri/prestarilor de servicii pt care s-au 
+emis facturi simplificate care au inscris codul 
+de inregistrare in scopuri de TVA al 
+beneficiarului 
+ 
+N(15) DA    ERR   
+ 
+88.  
+bazaFSL  
+Valoarea bazei impozabile aferente livrarilor 
+de bunuri/prestarilor de servicii pt care s-au 
+emis facturi simplificate care nu au inscris 
+codul de inregistrare in scopuri de TVA al 
+beneficiarului si pt care nu s-au emis bonuri 
+fiscale 
+ 
+N(15) DA    ERR   
+ 
+89.   
+TVAFSL  
+Valoarea TVA-ului aferent livrarilor de 
+bunuri/prestarilor de servicii pt care s-au 
+emis facturi simplificate care nu au inscris 
+codul de inregistrare in scopuri de TVA al 
+beneficiarului si pt care nu s-au emis bonuri 
+fiscale 
+ 
+N(15) DA    ERR   
+ 
+90.  
+bazaFSA  
+Valoarea bazei impozabile aferente 
+achizitiilor de bunuri/ servicii pt care s-au 
+emis facturi simplificate de la persoane 
+impozabile care aplica sistemul normal de 
+TVA si care  au inscris codul de inregistrare 
+in scopuri de TVA al beneficiarului si pt care 
+nu s-au emis bonuri fiscale 
+ 
+N(15) DA    ERR   
+ 
+91.  
+TVAFSA  
+Valoarea TVA-ului aferent achizitiilor de 
+bunuri/ servicii pt care s-au emis facturi 
+simplificate de la persoane impozabile care 
+aplica sistemul normal de TVA si care  au 
+inscris codul de inregistrare in scopuri de 
+TVA al beneficiarului si pt care nu s-au emis 
+bonuri fiscale 
+ 
+N(15) DA    ERR   
+ 
+92.  
+bazaFSAI  
+Valoarea bazei impozabile aferente 
+achizitiilor de bunuri/ servicii pt care s-au 
+emis facturi simplificate de la persoane 
+impozabile care aplica sistemul de TVA la 
+incasare si care  au inscris codul de 
+inregistrare in scopuri de TVA al 
+beneficiarului si pt care nu s-au emis bonuri 
+fiscale 
+ 
+N(15) DA    ERR   
+ 
+93.  
+TVAFSAI  
+Valoarea TVA-ului aferent achizitiilor de 
+bunuri/ servicii pt care s-au emis facturi 
+simplificate de la persoane impozabile care 
+aplica sistemul de TVA la incasare si care  
+au inscris codul de inregistrare in scopuri de 
+TVA al beneficiarului si pt care nu s-au emis 
+bonuri fiscale 
+ 
+N(15) DA    ERR   
+ 
+94.  
+bazaBFAI  
+Valoarea bazei impozabile aferente 
+achizitiilor de bunuri/ servicii pt care s-au 
+primit bonuri fiscale care indeplinesc 
+conditiile unei facturi simplificate si care au 
+inscris codul de inregistrare in scopuri de 
+TVA al beneficiarului 
+ 
+N(15) DA    ERR   
+ 
+95.  
+TVABFAI  
+Valoarea TVA-ului aferent achizitiilor de 
+bunuri/ servicii pt care s-au primit bonuri 
+fiscale care indeplinesc conditiile unei facturi 
+simplificate si care au inscris codul de 
+inregistrare in scopuri de TVA al 
+beneficiarului 
+ 
+N(15) DA    ERR   
+25.07.16  
+96.   
+nrFacturiL  Numar de facturi livrari bunuri/prestari de 
+servicii 
+ N(15)  DA  DA  
+=Σ op1(nrFact) 
+pentru op1(tip)=L sau V  și 
+cota=op1(cota) 
+ 
+ERR   
+25.07.16  
+97.  
+bazaL  
+VALOARE TOTAL Ă A BAZEI IMPOZABILE 
+AFERENT Ă LIVR ĂRILOR DE BUNURI/ 
+PREST ĂRILOR DE SERVICII EFECTUATE  
+N(15)  DA  DA 
+bazaL =Σ op1(baza) 
+pentru op1(tip)=L sau V 
+cota=op1(cota) 
+ 
+ERR   
+25.07.16  
+98.  
+tvaL  
+VALOARE TOTAL Ă A TVA AFERENTA 
+LIVR ĂRILOR DE BUNURI/ PREST ĂRILOR 
+DE SERVICII EFECTUATE  
+N(15)  DA  DA 
+tvaL =Σ op1(tva) 
+pentru op1(tip)=L  sau V  și 
+cota=op1(cota) 
+ 
+ERR   
+ 
+99.   
+nrFacturiA  Numar de facturi achizitii bunuri/prestari de 
+servicii 
+ (A+C)  N(15)  DA  DA  
+=Σ op1(nrFact) 
+pentru op1(tip)=A sau C  și 
+cota=op1(cota)  
+ 
+ERR   
+ 
+100.  
+bazaA  
+VALOARE TOTAL Ă A BAZEI IMPOZABILE 
+AFERENT Ă ACHIZI ŢIILOR DE BUNURI ŞI 
+SERVICII EFECTUATE (A+C)  
+N(15)  DA  DA 
+bazaA =Σ op1(baza) 
+pentru op1(tip)=A sau Csi 
+cota=op1(cota) 
+ 
+ERR   
+ 
+101.  
+tvaA  
+VALOARE TOTAL Ă A TVA AFERENTA 
+ACHIZI ŢIILOR DE BUNURI ŞI SERVICII 
+EFECTUATE (A+C)  
+N(15)  DA  DA  
+tvaA= Σ op1(tva) 
+pentru op1(tip)=A sau Csi 
+cota=op1(cota) 
+ 
+ERR   
+ 
+102.  
+nrFacturiAI  Numar de facturi achizitii bunuri/ servicii (AI)  N(15)  DA  DA  
+=Σ op1(nrFact) 
+pentru op1(tip)=AI  si 
+cota=op1(cota)  
+ 
+ERR   
+ 
+103.  
+bazaAI  
+VALOARE TOTAL Ă A BAZEI IMPOZABILE 
+AFERENT ĂACHIZITIILOR DE BUNURI/ 
+SERVICII (AI)  
+N(15)  DA  DA 
+bazaAI =Σ op1(baza) 
+pentru op1(tip)=AI si 
+cota=op1(cota) 
+ 
+ERR   
+ 
+104.  
+tvaAI  
+VALOARE TOTAL Ă A TVA  
+AFERENT ĂACHIZITIILOR DE BUNURI/ 
+SERVICII (AI)  
+N(15)  DA  DA 
+tvaAI =Σ op1(tva) 
+pentru op1(tip)=AI  si 
+cota=op1(cota)  
+ 
+ERR   
+07.07.16  
+22.07.16  
+105.  
+baza_incasari_i1  
+Total baza impozabila incasari in perioada de 
+raportare prin intermediul AMEF inclusiv 
+incasarile prin intermediul bonurilor fiscale 
+care indeplinesc conditiile unei facturi 
+simplificate 
+ 
+N(15) DA, pt 
+cota<> 19,24   
+baza_incasari_i1= Σ 
+op2(baza20) 
+pentru op2(tip_op2)=i1 
+și 
+cota=20 
+ 
+baza_incasari_i1= Σ 
+op2(baza9) 
+pentru op2(tip_op2)=i1 
+și 
+cota=9 
+ 
+baza_incasari_i1= Σ 
+op2(baza5) 
+pentru op2(tip_op2)=i1 
+și 
+cota=5  
+ERR   
+21.04.16  106.  tva_incasari_i1  Total TVA incasari in perioada de raportare N(15) DA, pt  tva_incasari_i1= Σ ERR   
+07.07.16  
+22.07.16  
+prin intermediul AMEF inclusiv incasarile prin 
+intermediul bonurilor fiscale care indeplinesc 
+conditiile unei facturi simplificate 
+ 
+cota<>. 19 ,2 
+4 
+op2(tva20) 
+pentru op2(tip_op2)=i1 
+și 
+cota=20 
+ 
+tva_incasari_i1= Σ 
+op2(tva9) 
+pentru op2(tip_op2)=i1 
+și 
+cota=9 
+ 
+tva_incasari_i1= Σ 
+op2(tva5) 
+pentru op2(tip_op2)=i1 
+și 
+cota=5  
+21.04.16  
+07.07.16  
+22.07.16  
+107.  
+baza_incasari_i2  
+Total baza impozabila  incasari in perioada 
+de raportare efectuate din activitati exceptate 
+de la obligatia utilizarii AMEF 
+ 
+N(15) DA, pt 
+cota<> 19 ,24   
+baza_incasari_i2= Σ 
+op2(baza20) 
+pentru op2(tip_op2)=i2 
+și 
+cota=20 
+ 
+baza_incasari_i2= Σ 
+op2(baza9) 
+pentru op2(tip_op2)=i2 
+și 
+cota=9 
+ 
+baza_incasari_i2= Σ 
+op2(baza5) 
+pentru op2(tip_op2)=i2 
+și 
+cota=5  
+ERR   
+21.04.16  
+07.07.16  
+22.07.16  
+108.  
+tva_incasari_i2  
+Total TVA  incasari in perioada de raportare 
+efectuate din activitati exceptate de la 
+obligatia utilizarii AMEF 
+ 
+N(15) DA, pt 
+cota<> 19 ,24   
+tva_incasari_i2= Σ 
+op2(tva20) 
+pentru op2(tip_op2)=i2 
+și 
+cota=20 
+ 
+tva_incasari_i2= Σ 
+op2(tva9) 
+pentru op2(tip_op2)=i2 
+și 
+cota=9 
+ 
+tva_incasari_i2= Σ 
+op2(tva5) 
+pentru op2(tip_op2)=i2 
+și 
+cota=5  
+ERR   
+21.04.16  
+31.01.17  
+109.  
+bazaL_PF  
+Valoare baza impozabila facturi emise tip L 
+c
+ătre persoane fizice, cu valoare 
+individuala/persoana mai mica sau egala cu 
+10000 lei 
+ 
+N(15) DA   Obligatoriu 0 începând 
+cu 01.01.2017   
+21.04.16  
+31.01.17  
+110.  
+tvaL_PF  
+Valoare tva facturi emise tip L c ătre persoane 
+fizice, cu valoare individuala/persoana mai 
+mica sau egala cu 10000 lei 
+ 
+N(15) DA   Obligatoriu 0 începând 
+cu 01.01.2017   
+ 111.   </rezumat2>        
+25.07.16  
+18.11.16  
+23.11.16  
+07.12.16  
+112.  
+<serieFacturi>  0-n    
+Cel pu țin 1 sectiune 
+cu tip = 1 și o 
+sectiune cu tip=2  dac ă 
+op_efectuate = 1 și luna 
+raportare>9  
+dacă (luna>9 și 
+an=2016 ) sau an 
+>2016 atunci : 
+ 
+Dac ă ( exista op1 cu Tip în 
+(L ,LS)) sau dac ă 
+nrFacturiL_PF >0 sau 
+nrFacturiLS_PF>0)  
+atunci exista cel pu țin o 
+sectiune serieFacturi cu tip 
+=1 și cel pu țin o sectiune 
+cu tip=2  
+ 
+Dac ă ( exista op1 cu Tip în 
+(L ,LS, V)) sau dac ă 
+nrFacturiL_PF >0 sau 
+nrFacturiLS_PF>0)  
+atunci (nrFacturi>0 sau 
+nrFacturi_benef>0 sau 
+nrFacturi_terti>0)  
+ 
+Dac ă exista cel pu țin o 
+sectiune cu tip=2 atunci 
+trebuie sa existe cel pu țin o 
+sectiune cu tip=1  
+ 
+nrFacturi>0 dac ă și numai 
+dac ă exista cel pu țin o 
+sectiune serie_facturi cu 
+tip=2  
+ 
+nrFacturi_terti>0 dac ă și 
+numai dac ă exista cel pu țin 
+o sectiune serie_facturi cu 
+tip=4  
+ 
+nrFacturi_benef>0 dac ă și 
+numai dac ă exista cel pu țin 
+ 
+o sectiune serie_facturi cu 
+tip=3  
+ 
+21.04.16  
+08.06.16  
+113.  
+tip  Tip facturi  N(1)  DA  
+1 = alocate 
+2 = emise 
+ 
+3= emise de beneficiari 
+4= emise de terti 
+ERR 
+  
+22.04.16 
+08.05.17  
+114.  serieI  Seria initiala din plaja de facturi  C(10 
+20) DA    ERR   
+22.07.16  
+28.07.16  
+115.  
+nrI  Nr initial din plaja de facturi  
+N(10) 
+C(10) 
+C(20) 
+ 
+DA 
+   ERR   
+22.04.16  
+21.06.16  
+116.  serieF  Seria finala din plaja de facturi  C(10)  DA    ERR   
+21.06.16  
+22.07.16  
+28.07.16  
+117.  
+nrF  Nr final din plaja de facturi  
+N(10) 
+C(10) 
+C(20)  
+DA    ERR   
+21.04.16  118.   den  Denumire beneficiar/tert  C(100)   <>null pt tip în (3,4) 
+=null pt tip în (1,2) 
+ ERR   
+21.04.16  119.  cui  CUI  beneficiar/tert  N(10)   <>null pt tip în (3,4) 
+=null pt tip în (1,2) 
+ ERR   
+ 120.  </serieFacturi>        
+10.06.16  
+121.  
+<informatii>  1 aparitie  
+Aten ție ! Tag-ul <informatii> va fi pozitionat în interiorul <declaratie394> înainte de <rezumat1> ! 
+Consultati fi șierul xsd ! 
+ 
+21.04.16  
+122.  
+nrCui1  Nr persoane tip partener = 1  N(15) DA  
+=Count (distinct 
+op1(cuiP)) pt 
+tip_partener=1 
+ 
+ERR  
+21.04.16  123.  nrCui2  Nr persoane tip partener = 2  N(15) DA  =Nr inregistrari op1 pt 
+tip_partener=2 
+ Atentionare dac ă nu se respecta formula  
+21.04.16  
+124.  
+nrCui3  Nr persoane tip partener = 3  N(15) DA  
+=Count (distinct 
+op1(cuiP)) pt 
+tip_partener=3 
+ 
+ERR  
+21.04.16  
+125.  
+nrCui4  Nr persoane tip partener = 4  N(15) DA  
+=Count (distinct 
+op1(cuiP)) pt 
+tip_partener=4 
+ 
+ERR  
+21.04.16  
+126.   
+nr_BF_i1  
+Total nr bonuri fiscale – incasari in perioada 
+de raportare prin intermediul AMEF inclusiv 
+incasarile prin intermediul bonurilor fiscale 
+care indeplinesc conditiile unei facturi 
+simplificate 
+ 
+N(15) DA   nr_BF_i1= Σ op2(nrBF) 
+pentru op2(tip_op2)=i1  
+ERR   
+21.04.16  
+127.  
+incasari_i1  
+Total incasari in perioada de raportare prin 
+intermediul AMEF inclusiv incasarile prin 
+intermediul bonurilor fiscale care indeplinesc 
+conditiile unei facturi simplificate 
+ 
+N(15) DA   
+incasari_i1=Σ 
+op2(incasari) 
+pentru op2(tip_op2)=i1 
+ 
+ERR   
+21.04.16  
+128.  
+incasari_i2  
+Total incasari in perioada de raportare 
+efectuate din activitati exceptate de la 
+obligatia utilizarii AMEF 
+ 
+N(15) DA   
+incasari_i2= Σ 
+op2(incasari) 
+pentru op2(tip_op2)=i2 
+ 
+ERR   
+21.04.16  
+18.11.16 
+129.  
+nrFacturi_terti  
+Nr total facturi emise in perioada de 
+raportare, de terti în numele persoanei 
+impozabile 
+ 
+N(15) DA   
+nrFacturi_terti>0 dac ă și 
+numai dac ă exista cel pu țin 
+o sectiune serie_facturi cu 
+tip=4  
+ERR   
+21.04.16  
+18.11.16 
+130.   
+nrFacturi_benef  
+Nr total facturi emise in perioada de 
+raportare, de beneficiari în numele persoanei 
+impozabile 
+ 
+N(15) DA  
+nrFacturi_benef>0 dac ă și 
+numai dac ă exista cel pu țin 
+o sectiune serie_facturi cu 
+tip=3  
+ERR   
+18.11.16 
+131.  
+nrFacturi  Nr total facturi emise in perioada de 
+raportare 
+ N(15) DA  
+nrFacturi>0 dac ă și numai 
+dac ă exista cel pu țin o 
+sectiune serie_facturi cu 
+tip=2  
+ERR   
+21.04.16  
+31.01.17  
+132.  
+nrFacturiL_PF  
+Numar facturi emise tip L c ătre persoane 
+fizice, cu valoare individuala/persoana mai 
+mica sau egala cu 10000 lei 
+ 
+N(15) DA  Obligatoriu 0 începând 
+cu 01.01.2017  ERR   
+21.04.16  
+31.01.17  
+133.  
+nrFacturiLS_PF  
+Numar facturi emise tip LS c ătre persoane 
+fizice, cu valoare individuala/persoana mai 
+mica sau egala cu 10000 lei 
+ 
+N(15) DA  Obligatoriu 0 începând 
+cu 01.01.2017  ERR   
+21.04.16  
+31.01.17  
+134.  
+val_LS_PF  
+Valoare livrari tip LS c ătre persoane fizice, cu 
+valoare individuala/persoana mai mica sau 
+egala cu 10000 lei 
+ 
+N(15) DA  Obligatoriu 0 începând 
+cu 01.01.2017  ERR   
+21.04.16  
+25.04.16  
+135.  
+tvaDed24  
+Tva deductibila aferenta facturilor achitate in 
+perioada de raportare indiferent de data in 
+care acestea au fost primite de la persoane 
+impozabile care aplica sistemul normal de 
+TVA pt cota TVA=24 
+ 
+N(15)   
+=null pt sistem_TVA=0 
+<>null pt 
+sistem_TVA=1 
+ 
+ERR   
+01.07.16  
+135A  
+tvaDed19  
+Tva deductibila aferenta facturilor achitate in 
+perioada de raportare indiferent de data in 
+care acestea au fost primite de la persoane 
+impozabile care aplica sistemul normal de 
+TVA pt cota TVA=19  
+N(15)   
+=null pt sistem_TVA=0 
+<>null pt 
+sistem_TVA=1 
+  
+25.04.16  
+136.   
+tvaDed20 
+Tva deductibila aferenta facturilor achitate in 
+perioada de raportare indiferent de data in 
+care acestea au fost primite de la persoane 
+impozabile care aplica sistemul normal de 
+TVA pt cota TVA=20 
+ 
+N(15)   
+=null pt sistem_TVA=0 
+<>null pt 
+sistem_TVA=1 
+ 
+ERR   
+25.04.16  
+137.  
+tvaDed9  
+Tva deductibila aferenta facturilor achitate in 
+perioada de raportare indiferent de data in 
+care acestea au fost primite de la persoane 
+impozabile care aplica sistemul normal de 
+TVA pt cota TVA=9 
+ 
+N(15)   
+=null pt sistem_TVA=0 
+<>null pt 
+sistem_TVA=1 
+ 
+ERR   
+25.04.16  
+138.  
+tvaDed5  
+Tva deductibila aferenta facturilor achitate in 
+perioada de raportare indiferent de data in 
+care acestea au fost primite de la persoane 
+impozabile care aplica sistemul normal de 
+TVA pt cota TVA=5 
+ 
+N(15)   
+=null pt sistem_TVA=0 
+<>null pt 
+sistem_TVA=1 
+ 
+ERR   
+21.04.16  139.  tvaDedAI24  Tva deductibila aferenta facturilor achitate in N(15) DA  =null pt sistem_TVA=0 ERR   
+25.04.16  perioada de raportare indiferent de data in 
+care acestea au fost primite de la persoane 
+impozabile care aplica sistemul de TVA la 
+incasare pt cota TVA = 24 
+ 
+<>null pt sistem_TVA=1  
+01.07.16  
+ 
+139A  
+tvaDedAI19  
+Tva deductibila aferenta facturilor achitate in 
+perioada de raportare indiferent de data in 
+care acestea au fost primite de la persoane 
+impozabile care aplica sistemul de TVA la 
+incasare pt cota TVA = 19 
+ 
+N(15) DA   ERR 
+25.04.16  
+140.  
+tvaDedAI20  
+Tva deductibila aferenta facturilor achitate in 
+perioada de raportare indiferent de data in 
+care acestea au fost primite de la persoane 
+impozabile care aplica sistemul de TVA la 
+incasare pt cota TVA = 20 
+ 
+N(15) DA  =null pt sistem_TVA=0 
+<>null pt sistem_TVA=1  ERR   
+25.04.16  
+141.   
+tvaDedAI9  
+Tva deductibila aferenta facturilor achitate in 
+perioada de raportare indiferent de data in 
+care acestea au fost primite de la persoane 
+impozabile care aplica sistemul de TVA la 
+incasare pt cota TVA = 9 
+ 
+N(15) DA  =null pt sistem_TVA=0 
+<>null pt sistem_TVA=1  ERR   
+25.04.16  
+142.  
+tvaDedAI5  
+Tva deductibila aferenta facturilor achitate in 
+perioada de raportare indiferent de data in 
+care acestea au fost primite de la persoane 
+impozabile care aplica sistemul de TVA la 
+incasare pt cota TVA = 5 
+ 
+N(15) DA  =null pt sistem_TVA=0 
+<>null pt sistem_TVA=1  ERR   
+21.04.16  
+143.  
+tvaCol24  
+Tva colectata aferenta facturilor incasate in 
+perioada de raportare indiferent de data la 
+care acestea au fost emise de catre 
+persoana impozabila care aplica sistemul de 
+TVA la incasare pt cota de TVA =24 
+ 
+N(15)   =null pt sistem_TVA=0 
+<>null pt sistem_TVA=1 
+ ERR   
+01.07.16  
+143A  
+tvaCol19  
+Tva colectata aferenta facturilor incasate in 
+perioada de raportare indiferent de data la 
+care acestea au fost emise de catre 
+persoana impozabila care aplica sistemul de 
+TVA la incasare pt cota de TVA =19 
+ 
+N(15)   =null pt sistem_TVA=0 
+<>null pt sistem_TVA=1 
+  
+ 
+144.   
+tvaCol20  
+Tva colectata aferenta facturilor incasate in 
+perioada de raportare indiferent de data la 
+care acestea au fost emise de catre 
+persoana impozabila care aplica sistemul de 
+TVA la incasare pt cota de TVA =20 
+ 
+N(15)   =null pt sistem_TVA=0 
+<>null pt sistem_TVA=1 
+ ERR   
+ 
+145.  
+tvaCol9  
+Tva colectata aferenta facturilor incasate in 
+perioada de raportare indiferent de data la 
+care acestea au fost emise de catre 
+persoana impozabila care aplica sistemul de 
+TVA la incasare pt cota de TVA =9 
+ 
+N(15)   =null pt sistem_TVA=0 
+<>null pt sistem_TVA=1 
+ ERR   
+ 
+146.  
+tvaCol5  
+Tva colectata aferenta facturilor incasate in 
+perioada de raportare indiferent de data la 
+care acestea au fost emise de catre 
+persoana impozabila care aplica sistemul de 
+TVA la incasare pt cota de TVA =5 
+ 
+N(15)   =null pt sistem_TVA=0 
+<>null pt sistem_TVA=1 
+ ERR   
+21.04.16  147.  incasari_ag  Valoarea incasarilor agentiei persoanelor 
+care aplica regimul special pt agentiile de 
+N(15)     
+turism  
+21.04.16  148.  costuri_ag  Valoarea costurilor agentiei persoanelor care 
+aplica regimul special pt agentiile de turism 
+ N(15)     
+21.04.16  149.  marja_ag  Marja de profit persoanelor care aplica 
+regimul special pt agentiile de turism 
+ N(15)     
+21.04.16  150.  tva_ag  TVA persoanelor care aplica regimul special 
+pt agentiile de turism 
+ N(15)     
+21.04.16  
+151.  
+pret_vanzare  
+Valoarea pretului de vanzare pt pers 
+impozabile care aplica regimul special pt 
+bunurile second-hand, opere de art 
+ă, obiecte 
+de colec ție și antichitati  
+N(15)     
+21.04.16  
+152.  
+pret_cumparare  
+Valoarea pretului decumparare pt pers 
+impozabile care aplica regimul special pt 
+bunurile second-hand, opere de art 
+ă, obiecte 
+de colec ție și antichitati  
+N(15)     
+21.04.16  
+153.  
+marja_antic  
+Marja de profit persoanelor care aplica 
+regimul special pt bunurile second-hand, 
+opere de art 
+ă, obiecte de colec ție și 
+antichitati  
+N(15)     
+21.04.16  
+154.   
+tva_antic  
+TVA persoanelor care aplica regimul special 
+pt bunurile second-hand, opere de art 
+ă, 
+obiecte de colec ție și antichitati  
+N(15)     
+ 
+155.   
+solicit  
+Se solicita rambursarea sumei negative 
+inregistrate in decontul de TVA aferent 
+perioadei de raportare 
+ 
+N(1) DA  =0 NU 
+=1 DA 
+ ERR   
+ 
+156.  
+achizitiiPE  Achizitii de bunuri si servicii legate direct de 
+bunurile imobile : parcuri eoliene 
+ N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+157.  
+achizitiiCR  Achizitii de bunuri si servicii legate direct de 
+bunurile imobile : constructii rezidentiale 
+ N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+158.  
+achizitiiCB  Achizitii de bunuri si servicii legate direct de 
+bunurile imobile : cladiri de birouri 
+ N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+159.  
+achizitiiCI  Achizitii de bunuri si servicii legate direct de 
+bunurile imobile : constructii industriale 
+ N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+160.  
+achizitiiA  Achizitii de bunuri si servicii legate direct de 
+bunurile imobile : altele 
+ N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+21.04.16  
+161.   
+achizitiiB24  
+Achizitii de bunuri, cu exceptia celor legate 
+direct de bunuri imobile cu cota de TVA de 
+24% 
+ 
+N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+162.  
+achizitiiB20  
+Achizitii de bunuri, cu exceptia celor legate 
+direct de bunuri imobile cu cota de TVA de 
+20% 
+ 
+N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+21.04.16  163.  achizitiiB19  Achizitii de bunuri, cu exceptia celor legate 
+direct de bunuri imobile cu cota de TVA de 
+N(1)   =null pt solicit=0 
+=0 NU 
+ERR   
+19%  =1 DA  
+ 
+164.  
+achizitiiB9  
+Achizitii de bunuri, cu exceptia celor legate 
+direct de bunuri imobile cu cota de TVA de 
+9% 
+ 
+N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+165.  
+achizitiiB5  
+Achizitii de bunuri, cu exceptia celor legate 
+direct de bunuri imobile cu cota de TVA de 
+5% 
+ 
+N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+21.04.16  
+166.  
+achizitiiS24  
+Achizitii de servicii, cu exceptia celor legate 
+direct de bunuri imobile cu cota de TVA de 
+24% 
+ 
+N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+167.  
+achizitiiS20  
+Achizitii de servicii, cu exceptia celor legate 
+direct de bunuri imobile cu cota de TVA de 
+20% 
+ 
+N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+21.04.16  
+168.  
+achizitiiS19  
+Achizitii de servicii, cu exceptia celor legate 
+direct de bunuri imobile cu cota de TVA de 
+19% 
+ 
+N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+169.  
+achizitiiS9  
+Achizitii de servicii, cu exceptia celor legate 
+direct de bunuri imobile cu cota de TVA de 
+9% 
+ 
+N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+170.   
+achizitiiS5  
+Achizitii de servicii, cu exceptia celor legate 
+direct de bunuri imobile cu cota de TVA de 
+5% 
+ 
+N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+171.  
+importB  Importuri de bunuri  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+21.04.16  
+172.  
+acINecorp  Achizitii imobilizari necorporale  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+173.  
+livrariBI  Livrari bunuri imobile  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+21.04.16  
+174.   
+BUN24  livrari de bunuri, cu exceptia bunurilor 
+imobile avand cota de tva de 24% 
+ N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+175.  
+BUN20  livrari de bunuri, cu exceptia bunurilor 
+imobile avand cota de tva de 20% 
+ N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+21.04.16  
+176.  
+BUN19  livrari de bunuri, cu exceptia bunurilor 
+imobile avand cota de tva de 19% 
+ N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+177.  
+BUN9  livrari de bunuri, cu exceptia bunurilor 
+imobile avand cota de tva de 9% 
+ N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 178.  BUN5   livrari de bunuri, cu exceptia bunurilor 
+imobile avand cota de tva de 5% 
+ N(1)   =null pt solicit=0 
+=0 NU 
+ERR   
+=1 DA  
+ 
+179.  
+valoareScutit   livrari de bunuri scutite de TVA  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+180.  
+BunTI  livrari de bunuri/ prestari de servicii pt care 
+se aplica taxarea inversa 
+ N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+21.04.16  
+181.  
+Prest 24 prestari de servicii  pt cota de TVA=24%  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+182.  
+Prest20  prestarir de servicii pt cota de TVA=20%  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+21.04.16  
+183.  
+Prest19  prestarir de servicii pt cota de TVA=19%  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+184.  
+Prest9  prestari de servicii pt cota de TVA=9%  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+185.   
+Prest5  prestari de servicii pt cota de TVA=5%  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+186.  
+PrestScutit  prestari de servicii scutite de TVA  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+187.  
+LIntra  livrari intracomunitare de bunuri  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+188.  
+PrestIntra   prestari intracomunitare de servicii  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+189.   
+Export   exporturi de bunuri  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+21.04.16  
+190.  
+livINecorp  Livrari imobilizari necorporale  N(1)   
+=null pt solicit=0 
+=0 NU 
+=1 DA 
+ 
+ERR   
+ 
+191.  
+efectuat  
+Persoana impozabila nu a efectuat livrari de 
+bunuri/prestari de servicii in perioada de 
+raportare 
+ 
+N(1)   
+=null pt solicit=0 
+= 0 nu a efectuat 
+=1 a efectuat 
+ 
+ 
+ERR   
+ 192.  </informatii>        
+21.04.16  193.  <lista>  0-n aparitii     (caen, cota, operat) unic  ERR   
+ 194.  caen  Activitate  N(6) DA   1071 = Cofetarie si 
+produse de patiserie  ERR   
+4520 = Spalatorie auto  
+4730 = Comert cu 
+amanuntul al 
+carburantilor pentru 
+autovehicule in 
+magazine specializate 
+ 
+47761 = Comert cu 
+amanuntul al florilor, 
+plantelor si semintelor 
+ 
+47762  = Comert cu 
+amanuntul al animalelor 
+de companie si a hranei 
+pentru acestea,in 
+magazine specializate 
+ 
+4932  =Transporturi cu 
+taxiuri  
+55101  =  Hoteluri  
+55102  = Pensiuni 
+turistice  
+56103  = Restaurante  
+5630  = Baruri si 
+activitati de servire a 
+bauturilor 
+ 
+812  = Activitati de 
+cur ățenie  
+9313  =  Activitati ale 
+centrelor de fitness  
+9602  =Activitati de 
+coafura si de 
+infrumusetare 
+ 
+9603  =Servicii de 
+pompe funebre 
+ 
+01.07.16  195.   cota  Cota de TVA  N(2)  DA   În (5,9,20,24, 19 ) ERR   
+21.04.16  196.  operat  Tipul operatiunii  N(1) DA   1= livrari bunuri 
+2= prestari servicii 
+ ERR   
+ 197.   valoare  Valoarea livrarilor/prestarilor de servicii  N(15) DA    ERR   
+ 198.  tva  Valoare TVA  N(15) DA    ERR   
+ 199.  </lista>         
+ 200.   <facturi>  0-n aparitii       
+09.05.16  
+201.  
+tip_factura  Tipul facturii  N(1) DA  
+=1 factura stornata 
+=2 factura anulata 
+=3 autofacturar 
+=4 în calitate de 
+beneficiar în numele 
+ERR   
+furnizorilor  
+22.04.16 
+08.05.17 
+ 
+202.  serie  Seria facturii  C(10 
+20) DA   ERR   
+22.07.16  
+28.07.16  
+203.   
+nr  Numarul facturii  
+N(10) 
+C(10) 
+C(20) 
+DA   ERR   
+21.04.16  
+09.05.16  
+204.  
+baza 24 Baza impozabila aferenta facturii - cota 
+24 % N(15)   
+<>null pt tip_factura=3 
+=null pt tip_factura in 
+(1,2,4) 
+ 
+ERR   
+21.04.16  
+09.05.16  
+205.  
+baza 20 Baza impozabila aferenta facturii- cota 20%  N(15)   
+<>null pt tip_factura=3 
+=null pt tip_factura in 
+(1,2,4) 
+ 
+ERR  
+01.07.16  
+205A  
+baza19  Baza impozabila aferenta facturii- cota 19%  N(15)   
+<>null pt tip_factura=3 
+=null pt tip_factura in 
+(1,2,4) 
+ 
+ 
+21.04.16  
+09.05.16  
+206.  
+baza 9 Baza impozabila aferenta facturii- cota 9%  N(15)   
+<>null pt tip_factura=3 
+=null pt tip_factura in 
+(1,2) 
+ 
+ERR  
+21.04.16  
+09.05.16  
+207.   
+baza5  Baza impozabila aferenta facturii- cota 5%  N(15)   
+<>null pt tip_factura=3 
+=null pt tip_factura in 
+(1,2,4) 
+ 
+ERR  
+21.04.16  
+09.05.16  
+208.  
+tva5  Tva –ul aferent facturii daca se aplica tva 5%  N(15)   
+<>null pt tip_factura=3 
+=null pt tip_factura in 
+(1,2,4) 
+ 
+ 
+ERR   
+21.04.16  
+09.05.16  
+209.  
+tva9  Tva –ul aferent facturii daca se aplica tva 9%  N(15)   
+<>null pt tip_factura=3 
+=null pt tip_factura in 
+(1,2,4) 
+ 
+ 
+ERR  
+01.07.16  
+ 
+209A  tva19 Tva –ul aferent facturii daca se aplica tva 
+19% 
+ N(15)   
+<>null pt tip_factura=3 
+=null pt tip_factura in 
+(1,2,4) 
+ 
+ 
+21.04.16  
+09.05.16  
+210.  
+tva20  Tva –ul aferent facturii daca se aplica tva 
+20% 
+ N(15)   
+<>null pt tip_factura=3 
+=null pt tip_factura in 
+(1,2,4) 
+ 
+ 
+ERR  
+21.04.16  
+09.05.16  
+211.   
+tva24  Tva –ul aferent facturii daca se aplica tva 
+24% 
+ N(15)   
+<>null pt tip_factura=3 
+=null pt tip_factura in 
+(1,2,4) 
+ 
+ERR  
+ 212.  </facturi>        
+ 213.         
+ 214.  <op1>  0-n aparitii       
+21.04.16  
+10.06.16  
+24.06.16  
+215.  
+tip  Tip opera ţiune  
+ 
+C(3) 
+C(2) 
+DA  
+List ă de valori 
+(A,L,C,V,AI,LS,AS, ASI, N) 
+A = achizi ţii 
+L = livr ări 
+C = achizi ţii cu taxare 
+invers ă 
+V = livr ări cu taxare invers ă 
+AI = achizitii cu tva la 
+incasare 
+LS = livrari regim special 
+AS =  achizitii regim 
+special c 
+ătre pers care 
+aplica sistemul normal de 
+TVA 
+ASI = achizitii regim 
+special c ătre pers care 
+aplica sistemul de TVA la 
+incasare 
+N- achizitii de la 
+tip_partener=2 
+ 
+dac 
+ă tip_partener= 1 atunci 
+tip<>N 
+ 
+dac 
+ă tip_partener=2 atunci 
+tip în (L, LS, N) 
+ 
+dac 
+ă tip_partener în (3,4)  
+atunci tip în (L,LS,C)  
+ 
+ 
+ 
+ 
+ERR – tip opera ţiune diferit de A,L,C,V, 
+AI,LS,AS,ASI,N  
+22.07.16  
+216.  
+tip_partener  Tipul partenerului operatiunii  N(1)  DA  
+=1 persoane impozabile 
+inregistrate in scopuri 
+de TVA in Romania 
+=2 persoane 
+neinregistrate in scopuri 
+de TVA 
+= 3 persoane nestabilite 
+in Romania care sunt 
+stabilite in alt stat 
+membru, neinregistrate 
+si care nu sunt obligate 
+sa se inregistreze in 
+scopuri de TVA in 
+Romania 
+=4 persoane nestabilite 
+ 
+in Romania, 
+neinregistrate si care nu 
+sunt obligate sa se 
+inregistreze in scopuri 
+de TVA in 
+Romania,nestabilite pe 
+teritoriul UE 
+ 
+în perioada de raportare 
+(iulie-septembrie) se 
+accepta numai tip_partener 
+= 1  
+ 
+01.07.16  
+22.07.16  
+09.08.16  
+217.  
+cota  Cota TVA-ului  N(2)  DA  
+In (0, 5, 9, 20, 19, 24)  
+valoarea 0 este permisa 
+dac ă și numai dacă tip în 
+(LS,AS,ASI,N, V) 
+ 
+ 
+ 
+ 
+218.  
+cuiP  Cod de înregistrare în scopuri de TVA 
+beneficiar/ furnizor/ prestator 
+ C(50)    
+- Verificare validitate cuiP 
+pt tip_partener în (1,2) 
+- Verificare unicitate 
+apari 
+ţie pentru (cuiP, 
+tip,cota) 
+Obligatoriu pt 
+tip_partener<>2 
+ 
+ 
+ERR - 
+cuiP invalid sau inexistent 
+ERR- combinatia (cuiP ,tip,cota_TVA) are 
+apari 
+ţii multiple  
+ 219.  denP  Denumire beneficiar/ furnizor/ prestator  C(200)  DA   ERR - denumire necompletat ă 
+21.04.16  
+20.05.16  
+10.06.16  
+220.   
+taraP  Țara beneficiar/ furnizor/ prestator  C(2)    
+Nomenclator 
+null pt tip_partener <>2 
+ 
+sau cuiP<>null  
+Obligatoriu pt 
+tip_partener=2 
+și cuiP=null  
+ 
+21.04.16  
+10.06.16  
+221.  locP  Localitate beneficiar/ furnizor/ prestator  C(75)    null pt tip_partener 
+<>2 sau cuiP<>null   
+21.04.16  
+20.05.16 
+10.06.16  
+21.06.16  
+18.11.16  
+222.   
+judP  Judet beneficiar/ furnizor/ prestator  C(2)    
+Nomenclator 
+null pt tip_partener <>2 
+ 
+sau cuiP<>null  
+Obligatoriu pt 
+tip_partener=2 
+și cuiP=null 
+și taraP=RO  
+=null pt taraT<>RO  
+ 
+21.04.16  
+10.06.16  
+223.  strP  Strada beneficiar/ furnizor/ prestator  C(75)    null pt tip_partener <>2 
+sau cuiP<>null   
+21.04.16  
+10.06.16  
+224.  nrP  Numar beneficiar/ furnizor/ prestator  C(50)    null pt tip_partener <>2 
+sau cuiP<>null   
+21.04.16  
+10.06.16  
+225.  blP  Bloc beneficiar/ furnizor/ prestator  C(50)    null pt tip_partener <>2 
+sau cuiP<>null   
+21.04.16  
+10.06.16  
+226.  apP  Apartament beneficiar/ furnizor/ prestator  C(50)    null pt tip_partener <>2 
+sau cuiP<>null   
+21.04.16  
+10.06.16  
+227.  detP  Alte detalii adresa beneficiar/ furnizor/ 
+prestator 
+ C(100)    null pt tip_partener <>2 
+sau cuiP<>null   
+21.04.16  
+27.10.16  
+228.   
+tip_document  Tipul documentului  N(1)    
+1= facturi  
+2= borderouri 
+3= file carnet 
+comercializare 
+4=contracte 
+ 
+5= alte documente  
+Obligatoriu pt 
+tip_partener=2 și 
+tip=N ; 
+altfel null 
+ 
+ 
+21.04.16  
+22.04.16  
+229.  
+tip_N  Tip bun/servicii  N(1)    
+1= bunuri 
+2 = servicii 
+Obligatoriu pt tip în 
+(V,C,N) și tip_partener 
+în (1,2) ; 
+altfel null  
+ 
+ 230.   nrFact  Numar facturi  N(15)  DA   ERR – nr.facturi necompletat  
+ 231.  baza  Baz ă impozabil ă N(15)  DA   ERR - baz ă impozabil ă necompletat ă 
+21.04.16  
+22.07.16  
+232.  
+tva  TVA  N(15)    
+Obligatoriu pt tip în 
+(L,V,C,A,AI); 
+altfel null  
+ERR – tva necompletat ă 
+25.04.16  
+08.07.16  
+22.07.16  
+27.10.16  
+233.  
+<op11>  0-n aparitii     
+Aparitie numai pentru tip in 
+(L,A, V,C, AI ) pt tip_partener 
+= 1 și tip=N pt 
+(tip_partener=2 și cota = 0 
+) 
+Pt ( ( tip în (V,C ) și 
+tip_partener=1) sau( tip=N 
+și (lung(cuiP)=13 sau 
+cuiP=null) ) sectiunea este 
+obligatorie 
+ 
+ 
+234.  
+nrFactPR  Nr facturi  N(15) DA   
+În situa ția în care în 
+cuprinsul unei facturi emise 
+pentru opera 
+țiuni pentru 
+care se aplic ă taxarea 
+invers ă (tip opera țiune V) 
+sunt cuprinse mai multe 
+bunuri/servicii prev 
+ăzute la 
+lit.C, la rubrica "num ăr de 
+facturi" se vor înscrie: 
+valoarea 1 în dreptul 
+opera 
+țiunii cu valoarea cea 
+mai mare a bazei 
+impozabile 
+și valoarea 0 
+pentru restul opera țiunilor.  
+ 
+ 
+În situa 
+ția în care în 
+cuprinsul unei facturi 
+primite pentru opera 
+țiuni 
+pentru care se aplic ă 
+taxarea invers ă (tip 
+opera țiune C) sunt 
+cuprinse mai multe 
+bunuri/servicii prev 
+ăzute la 
+lit.C, la rubrica "num ăr de 
+facturi" se vor înscrie: 
+valoarea 1 în dreptul 
+opera 
+țiunii cu valoarea cea 
+mai mare a TVA și 
+valoarea 0 pentru restul 
+opera 
+țiunilor.  
+ 
+ 
+235.  
+codPR  Cod produs  C(8)  DA   
+- Verificare cu nomenclator 
+produse 
+- Verificare unicitate 
+apari 
+ţie codPR  
+ERR - Cod produs necompletat  
+ 236.  bazaPR  Baz ă impozabil ă N(15)  DA   ERR - baz ă impozabil ă necompletată 
+22.07.16  
+237.   
+tvaPR  TVA  N(15)  
+DA, cu 
+excep ția 
+tip_partener 
+=2 unde 
+tvaPR=null 
+ 
+Null pt tip_partener = 2 
+sau ( tip_partener = 1 și 
+tip=V ) ; 
+altfel <> null  
+ERR – tva necompletat ă 
+ 238.  </op11>        
+ 239.  </op1>        
+22.07.16  
+240.   
+<op2>  0-24 aparitii     
+În perioada de raportare 
+iulie- septembrie 2016 
+count (op2)=0 
+ 
+ 
+ 241.  tip _op2 Tip operatiune  C(2) DA  =I1 
+=I2 
+ Perechea (tip_op2,luna) trebuie s ă fie unica  
+21.04.16  242.  luna  Luna  N(2) DA    
+18.11.16  
+29.08.17  
+243.  
+nrAMEF  Nr de AMEF  N(15)  
+N(4)    
+=null pt tip=I2 
+<>null și >0 pt tip=I1  
+ 
+nrBF/nrAMEF >15000 
+atentionare 
+ 
+ 
+nrBF/nrAMEF <=1 
+atentionare 
+ 
+ 
+ 
+18.11.16  
+244.   
+nrBF  Nr de bonuri fiscale  N(15)   
+=null pt tip=I2 
+<>null șii >0 pt tip=I1 
+ 
+ 
+18.11.16  
+245.  
+total  Total incasari  N(15) DA  
+total>= 
+baza20+baza19+baza9 
++baza5 
+ 
+total>0 
+ 
+baza20+baza19+baza9 
++baza5 > 0  
+ 
+21.04.16  
+18.11.16  
+29.08.17  
+246.  
+baza20  Valoare baza impozabila pt cota 20%  N(15) DA  
+>=0 
+baza20>=TVA20 
+ 
+ 
+total <> 
+baza20+baza19+baza9 
++baza5 atentionare  
+ 
+ 
+21.04.16  
+18.11.16  
+247.  baza 9 Valoare baza impozabila  pt cota 9 % N(15) DA  >=0 
+baza9>=TVA9   
+21.04.16  
+18.11.16  
+248.  baza5  Valoare baza impozabila pt cota 5%  N(15) DA  >=0 
+baza5>=TVA5   
+21.04.16  
+18.11.16  
+249.  TVA 20 Valoarea TVA-ului pt cota 20%  N(15) DA  >=0 
+ 
+ 
+21.04.16  
+18.11.16  
+250.   TVA9  Valoarea TVA-ului  pt cota 9% N(15) DA  >=0 
+ 
+ 
+21.04.16  
+18.11.16  
+251.  TVA5  Valoarea TVA-ului pt cota 5 % N(15) DA  >=0 
+ 
+ 
+22.07.16  
+18.11.16  
+252.  baza19  Valoare baza impozabila  pt cota 19 % N(15) DA  >=0 
+baza19>=TVA19   
+22.07.16  
+18.11.16  
+253.  TVA19  Valoarea TVA-ului pt cota 19 % N(15) DA  >=0 
+ 
+ 
+ 254.  </op2>        
+ 255.  </declaratie394>       
+ 
+ 
+Nomenclator 1- Judete  
+01  Alba  22  Iasi  
+02  Arad  23  Ilfov  
+03  Arges  24  Maramures  
+04  Bacau  25  Mehedinti  
+05  Bihor  26  Mures  
+06  Bistrita-Nasaud  27  Neamt  
+07  Botosani  28  Olt  
+08  Brasov  29  Prahova  
+09  Braila  30  Satu Mare  
+10  Buzau  31  Salaj  
+11  Caras-Severin  32  Sibiu  
+51  Calarasi  33  Suceava  
+12  Cluj  34  Teleorman  
+13  Constanta  35  Timis  
+14  Covasna  36  Tulcea  
+15  Dambovita  37  Vaslui  
+16  Dolj  38  Valcea  
+17  Galati  39  Vrancea  
+52  Giurgiu  40  Municipiul Bucuresti  
+18  Gorj    
+19  Harghita    
+20  Hunedoara    
+21  Ialomita    
+ 
+ 
+Nomenclator 2 - tari  
+ 
+Denumire  Cod (ISO) 
+AF--Afganistan  
+ AX--Insulele Aland  
+ AL--Albania  
+ DZ--Algeria  
+ AS--Samoa americana  
+ AD--Andorra  
+ AO--Angola  
+ AI--Anguilla  
+ AQ--Antarctica  
+ AG--Antigua si Barbuda  
+ AR--Argentina  
+ AM--Armenia  
+ AW--Aruba  
+ AU--Australia  
+ AT--Austria  
+ AZ--Azerbaijan  
+ BS--Bahamas  
+ BH--Bahrain  
+ 004  
+ 248  
+ 008  
+ 012  
+ 016  
+ 020  
+ 024  
+ 660  
+ 010  
+ 028  
+ 032  
+ 051  
+ 533  
+ 036  
+ 040  
+ 031  
+ 044  
+ 048  
+ BD--Bangladesh  
+ BB--Barbados  
+ BY--Belarus  
+ BE--Belgia  
+ BZ--Belize  
+ BJ--Benin  
+ BM--Bermuda  
+ BT--Bhutan  
+ BO--Bolivia, Statul plurinational  
+ BQ--Bonaire, Sint Eustatius si Saba  
+ BA--Bosnia si Herzegovina  
+ BW--Botswana  
+ BV--Insula Bouvet  
+ BR--Brazilia  
+ IO--Teritoriul Britanic din Oceanul Indian  
+ BN--Brunei Darussalam  
+ BG--Bulgaria  
+ BF--Burkina Faso  
+ BI--Burundi  
+ KH--Cambodia  
+ CM--Camerun  
+ CA--Canada  
+ CV--Republica Capului Verde  
+ KY--Insulele Cayman  
+ CF--Republica Centrafricana  
+ TD--Ciad  
+ CL--Chile  
+ CN--China  
+ CX--Insula Craciunului  
+ CC--Insulele Cocos (Keeling)  
+ CO--Columbia  
+ KM--Comore  
+ CG--Congo  
+ CD--Congo, Republica democrata  
+ 050  
+ 052  
+ 112  
+ 056  
+ 084  
+ 204  
+ 060  
+ 064  
+ 068  
+ 535  
+ 070  
+ 072  
+ 074  
+ 076  
+ 086  
+ 096  
+ 100  
+ 854  
+ 108  
+ 116  
+ 120  
+ 124  
+ 132  
+ 136  
+ 140  
+ 148  
+ 152  
+ 156  
+ 162  
+ 166  
+ 170  
+ 174  
+ 178  
+ 180  
+ CK--Insulele Cook  
+ CR--Costa Rica  
+ CI--Coasta de Fildes  
+ HR--Croatia  
+ CU--Cuba  
+ CW--Curaçao  
+ CY--Cipru  
+ CZ--Cehia, Republica  
+ DK--Danemarca  
+ DJ--Djibouti  
+ DM--Dominica  
+ DO--Republica Dominicana  
+ EC--Ecuador  
+ EG--Egipt  
+ SV--El Salvador  
+ GQ--Guineea Ecuatoriala  
+ ER--Eritrea  
+ EE--Estonia  
+ ET--Etiopia  
+ FK--Insulele Falkland (Malvine)  
+ FO--Insulele Feroe  
+ FJ--Fiji  
+ FI--Finlanda  
+ FR--Franta  
+ GF--Guiana Franceza  
+ PF--Polinezia franceza  
+ TF--Teritoriile australe si antarctice franceze  
+ GA--Gabon  
+ GM--Gambia  
+ GE--Georgia  
+ DE--Germania  
+ GH--Ghana  
+ GI--Gibraltar  
+ GR--Grecia  
+ 184  
+ 188  
+ 384  
+ 191  
+ 192  
+ 531  
+ 196  
+ 203  
+ 208  
+ 262  
+ 212  
+ 214  
+ 218  
+ 818  
+ 222  
+ 226  
+ 232  
+ 233  
+ 231  
+ 238  
+ 234  
+ 242  
+ 246  
+ 250  
+ 254  
+ 258  
+ 260  
+ 266  
+ 270  
+ 268  
+ 276  
+ 288  
+ 292  
+ 300  
+ GL--Groenlanda  
+ GD--Grenada  
+ GP--Guadelupa  
+ GU--Guam  
+ GT--Guatemala  
+ GG--Guernsey  
+ GN--Guineea  
+ GW--Guineea-Bissau  
+ GY--Guyana  
+ HT--Haiti  
+ HM--Insula Heard si Insulele McDonald  
+ V A-- Vatican(Statul Cetatii V aticanului)  
+ HN--Honduras  
+ HK--Hong Kong  
+ HU--Ungaria  
+ IS--Islanda  
+ IN--India  
+ ID--Indonezia  
+ IR--Iran, Republica islamica  
+ IQ--Irak  
+ IE--Irlanda, Republica  
+ IM--Insula Man  
+ IL--Israel  
+ IT--Italia  
+ JM--Jamaica  
+ JP--Japonia  
+ JE--Jersey, Insula  
+ JO--Iordania  
+ KZ--Kazahstan  
+ KE--Kenya  
+ KI--Kiribati  
+ KP--Coreea, Republica populara democrata (Coreea de Nord)  
+ KR--Coreea, Republica (Coreea de Sud)  
+ KW--Kuweit  
+ 304  
+ 308  
+ 312  
+ 316  
+ 320  
+ 831  
+ 324  
+ 624  
+ 328  
+ 332  
+ 334  
+ 336  
+ 340  
+ 344  
+ 348  
+ 352  
+ 356  
+ 360  
+ 364  
+ 368  
+ 372  
+ 833  
+ 376  
+ 380  
+ 388  
+ 392  
+ 832  
+ 400  
+ 398  
+ 404  
+ 296  
+ 408  
+ 410  
+ 414  
+ KG--Kargazstan, Republica (Kirghizstan)  
+ LA--Laos, Republica populara democrata  
+ LV--Letonia  
+ LB--Liban  
+ LS--Lesotho  
+ LR--Liberia  
+ LY--Libia  
+ LI--Liechtenstein  
+ LT--Lituania  
+ LU--Luxemburg  
+ MO--Macao  
+ MK--Macedonia,  fosta Republica iugoslava  
+ MG--Madagascar  
+ MW--Malawi  
+ MY--Malaysia  
+ MV--Maldive  
+ ML--Mali  
+ MT--Malta  
+ MH--Insulele Marshall  
+ MQ--Martinica  
+ MR--Mauritania  
+ MU--Mauritius  
+ YT--Mayotte  
+ MX--Mexic  
+ FM--Micronesia, Statele federale  
+ MD--Moldova, Republica  
+ MC--Monaco  
+ MN--Mongolia  
+ ME--Muntenegru  
+ MS--Montserrat  
+ MA--Maroc  
+ MZ--Mozambic  
+ MM--Myanmar  
+ NA--Namibia  
+ 417  
+ 418  
+ 428  
+ 422  
+ 426  
+ 430  
+ 434  
+ 438  
+ 440  
+ 442  
+ 446  
+ 807  
+ 450  
+ 454  
+ 458  
+ 462  
+ 466  
+ 470  
+ 584  
+ 474  
+ 478  
+ 480  
+ 175  
+ 484  
+ 583  
+ 498  
+ 492  
+ 496  
+ 499  
+ 500  
+ 504  
+ 508  
+ 104  
+ 516  
+ NR--Nauru  
+ NP--Nepal  
+ NL--Tarile de Jos (Olanda)  
+ NC--Noua Caledonie  
+ NZ--Noua Zeelanda  
+ NI--Nicaragua  
+ NE--Niger  
+ NG--Nigeria  
+ NU--Niue  
+ NF--Insula Norfolk  
+ MP--Insulele Mariane de Nord  
+ NO--Norvegia  
+ OM--Oman  
+ PK--Pakistan  
+ PW--Palau  
+ PS--Teritoriile Palestiniene, Ocupate  
+ PA--Panama  
+ PG--Papua Noua Guinee  
+ PY--Paraguay  
+ PE--Peru  
+ PH--Filipine  
+ PN--Pitcairn  
+ PL--Polonia  
+ PT--Portugalia  
+ PR--Puerto Rico  
+ QA--Qatar  
+ RE--Reunion  
+ RO--Romania  
+ RU--Rusia, Federatia  
+ RW--Rwanda  
+ BL--Saint Barthélemy  
+ SH--Sfanta Elena, Ascension si Tristan da Cunha  
+ KN--Sfantul Kitts si Nevis  
+ LC--Sfanta Lucia  
+ 520  
+ 524  
+ 528  
+ 540  
+ 554  
+ 558  
+ 562  
+ 566  
+ 570  
+ 574  
+ 580  
+ 578  
+ 512  
+ 586  
+ 585  
+ 275  
+ 591  
+ 598  
+ 600  
+ 604  
+ 608  
+ 612  
+ 616  
+ 620  
+ 630  
+ 634  
+ 638  
+ 642  
+ 643  
+ 646  
+ 652  
+ 654  
+ 659  
+ 662  
+ MF--Sfantul Martin (Regiunea de peste mari franceza)  
+ PM--Saint Pierre si Miquelon  
+ VC--Sfantul Vincentiu si Grenadinele  
+ WS--Samoa  
+ SM--San Marino  
+ ST--Sao Tome si Principe  
+ SA--Arabia Saudita  
+ SN--Senegal  
+ RS--Serbia  
+ SC--Seychelles  
+ SL--Sierra Leone  
+ SG--Singapore  
+ SX--Sint Maarten (Teritoriul olandez)  
+ SK--Slovacia  
+ SI--Slovenia  
+ SB--Insulele Solomon  
+ SO--Somalia  
+ ZA--Africa de Sud  
+ GS--Georgia de Sud si Insulele Sandwich de Sud  
+ SS--Sudanul de Sud,Republica  
+ ES--Spania  
+ LK--Sri Lanka  
+ SD--Sudan  
+ SR--Suriname  
+ SJ--Svalbard si Jan Mayen  
+ SZ--Swaziland  
+ SE--Suedia  
+ CH--Elvetia  
+ SY--Siria, Republica araba  
+ TW--Taiwan, Provincia chineza  
+ TJ--Tajikistan  
+ TZ--Tanzania, Republica unita  
+ TH--Thailanda  
+ TL--Timorul de Est  
+ 663  
+ 666  
+ 670  
+ 882  
+ 674  
+ 678  
+ 682  
+ 686  
+ 688  
+ 690  
+ 694  
+ 702  
+ 534  
+ 703  
+ 705  
+ 090  
+ 706  
+ 710  
+ 239  
+ 728  
+ 724  
+ 144  
+ 729  
+ 740  
+ 744  
+ 748  
+ 752  
+ 756  
+ 760  
+ 158  
+ 762  
+ 834  
+ 764  
+ 626  
+ TG--Togo  
+ TK--Tokelau  
+ TO--Tonga  
+ TT--Trinidad si Tobago  
+ TN--Tunisia  
+ TR--Turcia  
+ TM--Turkmenistan  
+ TC--Insulele Turks si Caicos  
+ TV--Tuvalu  
+ UG--Uganda  
+ UA--Ucraina  
+ AE--Emiratele Arabe Unite  
+ GB--Regatul Unit  
+ US--Statele Unite, ale Americii  
+ UM--United States Minor Outlying Islands  
+ UY--Uruguay  
+ UZ--Uzbekistan  
+ VU--Vanuatu  
+ VE--Venezuela, Republica Bolivariana  
+ VN--Vietnam  
+ VG--Insulele Virgine Britanice  
+ VI--Insulele Virgine Americane  
+ WF--Wallis si Futuna  
+ EH--Sahara Occidentala  
+ YE--Yemen  
+ ZM--Zambia  
+ ZW--Zimbabwe  
+ 768  
+ 772  
+ 776  
+ 780  
+ 788  
+ 792  
+ 795  
+ 796  
+ 798  
+ 800  
+ 804  
+ 784  
+ 826  
+ 840  
+ 581  
+ 858  
+ 860  
+ 548  
+ 862  
+ 704  
+ 092  
+ 850  
+ 876  
+ 732  
+ 887  
+ 894  
+ 716  
+ 
+Nomenclator cod produse pt tip_partener = 1  
+ 
+Cod   
+1001 1001 Grâu și meslin  
+1002  1002 Secara 
+1003  1003 Orz 
+1004  1004 Ovaz 
+1005  1005 Porumb  
+1201  1201 Boabe de soia, chiar sfaramate  
+1205 1205 Seminte de rapita sau de rapita salbatica , chiar sfaramate  
+120600  120600 Seminte de floarea-soarelui, chiar sfaramat e  
+121291 121291 Sfecla de zahar  
+10086000 10086000 Triticale 
+120400 120400 Semințe de in, chiar sfărâmate  
+21 Cereale si plante tehnice  
+22 Deseuri feroase si neferoase  
+23 Masa lemnoasa  
+24 Certificate de emisii de gaze cu efect de sera  
+25 Energie electrica  
+26 Certificate verzi  
+27 Construcții terenuri  
+28 Aur de investitii  
+29 Telefoane mobile  
+30 Microprocesoare  
+31 Console de jocuri, tablete PC si laptopuri  
+ 
+ 
+ 
+Nomenclator cod produse pt tip_partener = 2 
+ 
+ 
+ 
+Cod Denumire produs  
+1001 1001 Grâu și meslin  
+1002  1002 Secara 
+1003  1003 Orz 
+1004  1004 Ovaz 
+1005  1005 Porumb  
+1201  1201 Boabe de soia, chiar sfaramate  
+1205 1205 Seminte de rapita sau de rapita salbatica , chiar sfaramate  
+120600  120600 Seminte de floarea-soarelui, chiar sfaramat e  
+121291 121291 Sfecla de zahar  
+10086000 10086000 Triticale 
+120400 120400 Semințe de in, chiar sfărâmate  
+21 Cereale si plante tehnice ( se folosește doar pt  <rezumat1> )  
+22 Deseuri feroase si neferoase  
+23 Masa lemnoasa  
+32 Terenuri  
+33 Constructii  
+34 Alte bunuri  
+35 servicii  
+ 
+Vers. A4.0.2 din 29.08.2017 :adaugare validari la nrAMEF, nrBF 
+Vers. A4.0.1  din 08.05.2017 :modificare rd. 114 si 202 
+ 
+Vers. A3.0.5  din 31.01.2017 :modificare validari rd. : 109, 110, 132,133,134 
+Vers. A3.0.4  din 07.12.2016 :modificare validari rd. : 112 
+Vers. A3.0.3  din 23.11.2016 :modificare validari rd. : 112 
+Vers. A3.0.2  din 18.11.2016 :modificare validari rd. : 14, 112, 129, 130, 131, 222, 243-253 
+Vers. A3.0.1  din 27.10.2016 : modificare validari rând 60, rând 228 și rând 233 
+Vers. A3.0.0  din 02.08.2016 –  
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="mfp:anaf:dgti:d394:declaratie:v3 D394.xsd" 
+xmlns="mfp:anaf:dgti:d394:declaratie:v3" 

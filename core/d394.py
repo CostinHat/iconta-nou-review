@@ -20,7 +20,7 @@ Separare strictă: calcul pur / validare / XML / DB / orchestrare.
 import re
 from core import common as c
 from dataclasses import dataclass, field
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 NS = "mfp:anaf:dgti:d394:declaratie:v2"
 REGULI = "2026.1"
@@ -193,6 +193,10 @@ def build_xml(res):
     return "\n".join(H)
 
 
+def _b(x):
+    return Decimal(str(x or 0)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+
 def pull(conn, schema, an, luna):
     import psycopg2.extras as _E
     inceput = "%04d-%02d-01" % (an, luna)
@@ -202,18 +206,33 @@ def pull(conn, schema, an, luna):
                     "declarant_nume, declarant_prenume, declarant_functie "
                     "FROM firma_profil WHERE id = 1")
         prof = cur.fetchone() or {}
-        cur.execute("SELECT f.tert_nume, c.nume AS c_nume, c.cui AS c_cui, "
-                    "f.directie, f.total, f.tva, COALESCE(f.taxare_inversa, false) AS ti "
-                    "FROM facturi f LEFT JOIN clienti c ON c.id = f.client_id "
-                    "WHERE f.data_emitere >= %s AND f.data_emitere < %s ORDER BY f.id",
+        # PARTENER: la emise vine din clienti (client_id); la primite furnizorul e in
+        # tert_cui/tert_nume (nu exista client_id) - inainte se citea doar din clienti,
+        # deci ACHIZITIILE ieseau fara CUI si cadeau din D394 ca "fara cui". 15.07.2026.
+        # PROFORME: nu se raporteaza in D394 (nu sunt facturi fiscale).
+        # NU defalcam pe cote: cartusul op1 raporteaza per partener/tip, cu baza si TVA
+        # TOTALE; cotele apar in cartuse pe care nu le generam inca (vezi LIMITE, la fel
+        # ca op11 cereale = manual). O defalcare aici s-ar re-aduna in aceeasi cheie.
+        cur.execute("SELECT f.id, f.tert_nume, f.tert_cui, c.nume AS c_nume, c.cui AS c_cui, "
+                    "f.directie, f.total, f.tva, f.taxare_inversa AS ti, f.categorie_331 "
+                    "FROM facturi f "
+                    "LEFT JOIN clienti c ON c.id = f.client_id "
+                    "WHERE f.data_emitere >= %s AND f.data_emitere < %s "
+                    "  AND COALESCE(f.tip, 'factura') = 'factura' "
+                    "ORDER BY f.id",
                     (inceput, sfarsit))
         rows = cur.fetchall()
-    facturi = [{"cui": (r["c_cui"] or "").strip(),
-                "nume": (r["c_nume"] or r["tert_nume"] or "").strip(),
-                "directie": r["directie"],
-                "total": r["total"] if r["total"] is not None else 0,
-                "tva": r["tva"] if r["tva"] is not None else 0,
-                "taxare_inversa": r["ti"]} for r in rows]
+    facturi = []
+    for r in rows:
+        emisa = (r["directie"] == "emisa")
+        cui = ((r["c_cui"] if emisa else None) or r["tert_cui"] or r["c_cui"] or "").strip()
+        nume = ((r["c_nume"] if emisa else None) or r["tert_nume"] or r["c_nume"] or "").strip()
+        total = Decimal(str(r["total"] or 0))
+        tva = Decimal(str(r["tva"] or 0))
+        facturi.append({"cui": cui, "nume": nume, "directie": r["directie"],
+                        "taxare_inversa": bool(r["ti"]),
+                        "categorie_331": r["categorie_331"],
+                        "baza": _b(total - tva), "tva": _b(tva)})
     return prof, facturi
 
 

@@ -1,0 +1,35 @@
+# Structura D394 v5, extrasa din D394Validator.jar (pachet oficial ANAF, 15.07.2026).
+# Namespace: mfp:anaf:dgti:d394:declaratie:v5
+# Sursa de adevar pentru core/d394.py - ca plan_oficial.txt pentru D406.
+# Extras cu: strings d394validator/v5/<Clasa>.class | grep '^_'
+
+=== Declaratie394 ===
+_achizitiiA _achizitiiB11 _achizitiiB19 _achizitiiB20 _achizitiiB21 _achizitiiB24 _achizitiiB5 _achizitiiB9 _achizitiiCB _achizitiiCI _achizitiiCR _achizitiiPE _achizitiiS11 _achizitiiS19 _achizitiiS20 _achizitiiS21 _achizitiiS24 _achizitiiS5 _achizitiiS9 _acINecorp _adresa _adresaR _attributeOK _BUN11 _BUN19 _BUN20 _BUN21 _BUN24 _BUN5 _BUN9 _BunTI _caen _calitate_intocmit _cif_intocmit _cifR _cntFacturi _cntLista _cntOp1 _cntOp2 _cntRezumat1 _cntRezumat2 _cntSerieFacturi _coduriCaen _costuri_ag _cui _CuiPOp1_1 _CuiPOp1_2 _CuiPOp1_3 _CuiPOp1_4 _den _den_intocmit _denR _efectuat _Export _extractValuesFlag _fax _faxR _functie_intocmit _functie_reprez _importB _incasari_ag _incasari_i1 _incasari_i2 _integerValue _LIntra _listaDetaliu _listaRezumat1 _listaTipD394 _livINecorp _livrariBI _luna _lunaMin _mail _mailR _marja_ag _marja_antic _nr_BF_i1 _nrCui1 _nrCui2 _nrCui3 _nrCui4 _nrFacturi _nrFacturi_benef _nrFacturiL_PF _nrFacturiLS_PF _nrFacturi_terti _op_efectuate _optiune _params _Prest11 _Prest19 _Prest20 _Prest21 _Prest24 _Prest5 _Prest9 _PrestIntra _PrestScutit _pret_cumparare _pret_vanzare _prsAfiliat _rezumat2 _schimb_optiune _serieFacturiTip1 _serieFacturiTip2 _serieFacturiTip3 _serieFacturiTip4 _sistemTVA _solicit _telefon _telefonR _testR112 _tip_D394 _tip_intocmit _totalPlata_A _tva_ag _tva_antic _tvaCol11 _tvaCol19 _tvaCol20 _tvaCol21 _tvaCol24 _tvaCol5 _tvaCol9 _tvaDed11 _tvaDed19 _tvaDed20 _tvaDed21 _tvaDed24 _tvaDed5 _tvaDed9 _tvaDedAI11 _tvaDedAI19 _tvaDedAI20 _tvaDedAI21 _tvaDedAI24 _tvaDedAI5 _tvaDedAI9 _unicitateCuiP _unicitateLista _unicitateOp2 _validator _val_LS_PF _valoareScutit 
+
+=== Rezumat1 ===
+_aggBaza _aggNrFacturi _aggOp1 _aggTva _attributeOK _bazaA _bazaAI _bazaAS _bazaC _bazaL _bazaLS _bazaN _bazaV _cota _coteTVA _document_N _facturiA _facturiAI _facturiAS _facturiC _facturiL _facturiLS _facturiN _facturiV _integerValue _keyRezumat1 _listaRezumat1 _listaTipOperatie _params _tip_partener _tipPartener _tvaA _tvaAI _tvaC _tvaL _validator 
+
+=== Rezumat2 ===
+_aggBaza _aggNrFacturi _aggTva _attributeOK _bazaA _bazaAI _bazaBFAI _bazaFSA _bazaFSAI _bazaFSL _bazaFSLcod _baza_incasari_i1 _baza_incasari_i2 _bazaL _bazaL_PF _cota _coteTVA2 _integerValue _nrFacturiA _nrFacturiAI _nrFacturiL _params _parent _tvaA _tvaAI _TVABFAI _TVAFSA _TVAFSAI _TVAFSL _TVAFSLcod _tva_incasari_i1 _tva_incasari_i2 _tvaL _tvaL_PF _validator 
+
+=== Op1 ===
+_aggBaza _aggNrFacturi _aggOp1 _aggTva _apP _attributeOK _baza _blP _cntOp11 _cntRezumat2 _cota _coteTVA _cuiP _CuiPOp1_1 _CuiPOp1_2 _CuiPOp1_3 _CuiPOp1_4 _denP _detP _flagTipDocumentOK _integerValue _judP _listaJud _listaRezumat1 _listaTari _listaTipOperatie _locP _nrFact _nrP _params _parent _rezumat2 _strP _taraP _testR112 _tip _tip_document _tip_partener _tipPartenerOp1 _tva _unicitateCodPR _unicitateCuiP _validator _W** 
+
+=== Op11 ===
+_aggBaza _aggNrFacturi _aggOp11 _aggTva _attributeOK _bazaPR _codPR _cota _cuiP _flagTipDocumentOK _integerValue _listaCodPR _listaDetaliu _nrFactPR _params _parent _tip _tip_document _tip_partener _tvaPR _unicitateCodPR _validator 
+
+=== Op2 ===
+_aggBaza _aggTva _attributeOK _baza11 _baza19 _baza20 _baza21 _baza5 _baza9 _cntRezumat2 _integerValue _luna _lunaMin _nrAMEF _nrBF _params _parent _rezumat2 _tip_op2 _tipOperatie _total _TVA11 _TVA19 _TVA20 _TVA21 _TVA5 _TVA9 _unicitateOp2 _validator 
+
+=== Facturi ===
+_attributeOK _baza11 _baza19 _baza20 _baza21 _baza24 _baza5 _baza9 _integerValue _serie _tip_factura _tva11 _tva19 _tva20 _tva21 _tva24 _tva5 _tva9 _validator 
+
+=== Detaliu ===
+_aggBaza _aggNrFacturi _aggOp11 _aggTva _attributeOK _bazaAchizC _bazaLivV _bun _cota _coteTVA _documentN _flagOK _integerValue _keyDetaliu _listaDetaliu _M*, _nomenclatorBunuri _nrAchizC _nrLivV _nrN _params _parent _tipPartener _tvaAchizC _validator _valN 
+
+=== SerieFacturi ===
+_attributeOK _cui _den _integerValue _nrF _nrI _parent _serieFacturiTip1 _serieFacturiTip2 _serieFacturiTip3 _serieFacturiTip4 _serieI _tip _validator 
+
+=== Lista ===
+_attributeOK _caen _cota _coteTVA2 _integerValue _listaCaen _operat _params _tva _unicitateLista _validator _valoare 
+

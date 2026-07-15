@@ -386,6 +386,8 @@ CREATE TABLE TENANT_PLACEHOLDER.facturi (
     data_curs date,
     curs_sursa character varying(10),
     tert_adresa text,
+    taxare_inversa boolean DEFAULT false NOT NULL,
+    categorie_331 character varying(30),
     tip character varying(10) DEFAULT 'factura'::character varying NOT NULL,
     transformat_in_id integer,
     sursa_externa character varying(50),
