@@ -41,7 +41,16 @@ def note_lunare(conn, schema, an, luna):
     ref = _dt(an, luna, 1)
     agg = {}
     for s in salariati:
-        calc = _sz.calcul_salariu(brut=s.get("brut") or 0, la_data=ref)
+        # pull() a calculat DEJA salariatul, cu toti parametrii (persoane, norma,
+        # venit contractual, brut lucrat). NU recalculam: al doilea calcul ar fi a
+        # doua cifra. Aceleasi valori pe care le declara D112 -> coerenta prin
+        # constructie. (15.07.2026: aici a fost bug - calcul_salariu(brut, la_data)
+        # gol, aceeasi greseala ca in pull inainte de aliniere; prins de control_coerenta.)
+        calc = _sz.calcul_salariu(
+            (s.get("brut_lucrat") if s.get("brut_lucrat") is not None else s.get("brut")) or 0,
+            persoane=s.get("persoane_intretinere") or 0, la_data=ref,
+            norma_intreaga=not s.get("part_time"),
+            venit_brut_total=float(s.get("brut") or 0))
         for n in _sz.monografie_salariu(calc):
             k = (n["debit"], n["credit"])
             agg[k] = agg.get(k, Decimal("0")) + _d(n["suma"])

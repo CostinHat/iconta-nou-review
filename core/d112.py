@@ -302,6 +302,8 @@ def pull(conn, schema, an, luna):
             "data_angajare": str(s.get("data_angajare") or ""),
             "ore_zi": s.get("ore_zi") or 8,
             "judet_casa": s.get("judet"),
+            "part_time": bool(s.get("part_time")),
+            "persoane_intretinere": s.get("persoane_intretinere") or 0,
             "scutit_pt": bool(s.get("scutit_contrib_minim")),
             "scutit": bool(s.get("scutit_contrib_minim")),
             "motiv_exceptare": s.get("motiv_exceptare"),
@@ -319,8 +321,25 @@ def pull(conn, schema, an, luna):
     prag_pt = float(sm) - float(fac)  # baza minima part-time (structura D112: sm-facilitate)
     nzl = sum(1 for z in range(1, _cal.monthrange(an, luna)[1] + 1)
               if _dt(an, luna, z).weekday() < 5)
+    # ALINIERE la stat_plata_api:36-38 (15.07.2026). pull() chema calcul_salariu(brut,
+    # la_data) GOL: fara persoane / norma_intreaga / venit_brut_total, si pe brutul
+    # INTREG, nu pe cel lucrat. Statul de plata le paseaza pe toate patru -> acelasi
+    # salariat primea deducere personala, facilitate si plafon DIFERITE in D112 fata de
+    # fluturas. Sursa unica de adevar: statul de plata (stat_plata_api).
+    #  - persoane: deducerea personala (art. 77) reduce impozitul declarat
+    #  - norma_intreaga: facilitatea (HG 146/2026 o da doar la norma intreaga)
+    #  - venit_brut_total: plafonul facilitatii se judeca pe brutul CONTRACTUAL
+    #  - brut_lucrat: pe zilele de CM salariul nu se plateste de angajator
     for s in salariati:
-        r = _sz.calcul_salariu(brut=s["brut"] or 0, la_data=ref)
+        brut_int = float(s["brut"] or 0)
+        zile_cm_s = int(s.get("zile_cm") or 0)
+        brut_lucrat = (brut_int * max(nzl - zile_cm_s, 0) / nzl) if (nzl and zile_cm_s) else brut_int
+        r = _sz.calcul_salariu(brut_lucrat,
+                               persoane=s.get("persoane_intretinere") or 0,
+                               la_data=ref,
+                               norma_intreaga=not s.get("part_time"),
+                               venit_brut_total=brut_int)
+        s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
         s["facilitate"] = r.get("facilitate", 0)
         s["cas"] = r.get("cas", 0)
         s["cass"] = r.get("cass", 0)
