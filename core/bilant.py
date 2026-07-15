@@ -108,10 +108,21 @@ def f20_din_rulaje(rl):
 
 def _a(nume, val):
     from xml.sax.saxutils import quoteattr
+    # ANAF respinge "atribut prezent dar vid" (dovedit 15.07.2026 pe regCom/banca/cont).
+    # Un atribut fara valoare se OMITE, nu se scrie gol: altfel contabilul primeste o
+    # eroare criptica de la validator in loc sa afle ce camp sa completeze in profil.
+    if val is None or str(val).strip() == "":
+        return ""
     return ' %s=%s' % (nume, quoteattr(str(val)))
 
 def xml_s1005(prof, an, f10p, f10c, f20p, f20c):
-    """XML S1005 v14. f10p/f20p = an precedent (dict rd->val), f10c/f20c = an curent."""
+    """XML S1005 v15. f10p/f20p = an precedent (dict rd->val), f10c/f20c = an curent.
+
+    VERIFICAT 15.07.2026 pe validatorul instalat (S1005_41): v15 e acceptata, v14 e
+    RESPINSA (eroare de namespace). Docstringul zicea v14 desi codul genera v15.
+    Nota: `strings` pe S1005Validator.jar arata doar v14 - versiunea acceptata se
+    construieste dinamic in validator. Absenta dintr-un extras NU inseamna absenta;
+    singura dovada e rularea validatorului pe XML real."""
     NS = "mfp:anaf:dgti:s1005:declaratie:v15"
     at = []
     at.append(_a("luna", 12)); at.append(_a("an", an))
