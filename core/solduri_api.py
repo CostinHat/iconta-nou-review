@@ -9,8 +9,17 @@ analitic, derivat direct din balanță.
 from __future__ import annotations
 
 
-def _numar(v):
-    """Transformă o valoare în număr (acceptă '1.234,56', '1,234.56', '', None)."""
+def _numar(v, strict=False):
+    """Transformă o valoare în număr (acceptă '1.234,56', '1,234.56', '(500)', '', None).
+
+    PARANTEZELE = sumă negativă — convenția contabilă din exporturile SAGA/Ciel/Excel
+    (format „contabil"). Fără asta, `(500)` cădea pe `float()` și devenea 0.0 TĂCUT:
+    soldul dispărea din balanță, iar totalurile păreau corecte. Dovedit de test, nu de
+    utilizator (15.07.2026).
+
+    strict=True → ridică ValueError pe text neinterpretabil, în loc să întoarcă 0.
+    Un sold care devine 0 în tăcere e mai periculos decât un import refuzat.
+    """
     if v is None:
         return 0.0
     if isinstance(v, (int, float)):
@@ -18,7 +27,15 @@ def _numar(v):
     t = str(v).strip()
     if not t:
         return 0.0
-    t = t.replace(" ", "")
+    t = t.replace(" ", "").replace("\xa0", "")
+    # format contabil: (500) = -500
+    neg = t.startswith("(") and t.endswith(")")
+    if neg:
+        t = t[1:-1].strip()
+    # sufixe de moneda din exporturi: "1.234,56 RON" / "500 lei"
+    for suf in ("RON", "ron", "LEI", "Lei", "lei", "EUR", "eur"):
+        if t.endswith(suf):
+            t = t[:-len(suf)].strip()
     # dacă are și punct și virgulă, ultimul separator e zecimala
     if "," in t and "." in t:
         if t.rfind(",") > t.rfind("."):
@@ -30,9 +47,12 @@ def _numar(v):
         parte = t.split(",")[-1]
         t = t.replace(",", ".") if len(parte) <= 2 else t.replace(",", "")
     try:
-        return float(t)
+        x = float(t)
     except ValueError:
+        if strict:
+            raise ValueError("valoare numerică neinterpretabilă: %r" % (v,))
         return 0.0
+    return -x if neg else x
 
 
 def _gaseste_col(antet, *chei):
@@ -111,8 +131,32 @@ def asigura_tabel(conn):
     conn.commit()
 
 
+def verifica_echilibru(randuri):
+    """PURA: (ok, debit, credit, diferenta). O balanta de deschidere trebuie sa aiba
+    totalul debitor egal cu cel creditor - altfel toata contabilitatea firmei porneste
+    gresit."""
+    td = round(sum(_numar(r.get("debit")) for r in (randuri or [])), 2)
+    tc = round(sum(_numar(r.get("credit")) for r in (randuri or [])), 2)
+    dif = round(td - tc, 2)
+    return abs(dif) < 0.01, td, tc, dif
+
+
 def importa(conn, randuri, data_referinta=None):
-    """Înlocuiește soldurile (DELETE + INSERT). Întoarce {randuri, total_debit, total_credit}."""
+    """Înlocuiește soldurile (DELETE + INSERT). Întoarce {randuri, total_debit, total_credit}.
+    Ridica ValueError daca balanta nu se echilibreaza.
+
+    REFUZ dovedit necesar 15.07.2026, prin migrare reala: ecranul afisa "neechilibrat"
+    rosu, dar importa() scria oricum, iar migrarea marca stratul "gata" verde. Firma
+    ramanea cu o balanta de deschidere imposibila si contabilul credea ca e in regula.
+    Semnalarea fara oprire e mai rea decat tacerea: da impresia ca produsul a verificat.
+    """
+    ok, td_v, tc_v, dif = verifica_echilibru(randuri)
+    if not ok:
+        raise ValueError(
+            "Balanța nu se echilibrează: debit %.2f lei, credit %.2f lei "
+            "(diferență %.2f lei). O balanță de deschidere trebuie să aibă totalul "
+            "debitor egal cu cel creditor — altfel toată contabilitatea firmei "
+            "pornește greșit." % (td_v, tc_v, dif))
     asigura_tabel(conn)
     td = tc = 0.0
     with conn.cursor() as cur:

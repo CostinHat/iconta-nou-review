@@ -1403,7 +1403,10 @@ def solduri_salveaza(tenant_id: int, date: SolduriIn, ctx=Depends(cere_rol("admi
     randuri = [{"cont": r.cont, "denumire": r.denumire, "debit": r.debit, "credit": r.credit}
                for r in date.randuri]
     with db.get_conn(schema) as conn:
-        return solduri_api.importa(conn, randuri, date.data_referinta)
+        try:
+            return solduri_api.importa(conn, randuri, date.data_referinta)
+        except ValueError as e:  # balanta neechilibrata -> 422 cu mesaj explicativ
+            raise HTTPException(422, str(e))
 
 
 # ============================================================
