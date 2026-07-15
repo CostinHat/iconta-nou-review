@@ -2,7 +2,7 @@
 // Nivel 1: lista firmelor cu pastila colorata (verde/galben/rosu).
 // Nivel 2: click pe firma -> declaratiile lipsa + de urmarit, cu termene.
 
-import { api, esc, dataRo } from "../api.js";  /* esc_nc27 */
+import { api, esc, dataRo, confirmaCaseta, arataMesaj } from "../api.js";  /* esc_nc27 */
 
 const CULORI = {
   verde:  { dot:"radial-gradient(circle at 65% 30%, #6fc494, #1d7a4d 60%)", txt:"la zi",       bg:"var(--verde-fundal)" },
@@ -102,7 +102,10 @@ async function detaliuFirma(corp, nav, firma) {
         let extra = "";
         if (c.remediu) {
           const r = c.remediu;
-          extra = `<div class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b><br>${esc(r.actiune || "")}</div>`;
+          const buton = (r.fel === "executabil" && (r.facturi || []).length)
+            ? `<button class="buton-secundar cf-incr-btn" data-facturi="${esc((r.facturi || []).join(","))}"
+                 style="margin-top:8px">Contabilizeaz\u0103 facturile</button>` : "";
+          extra = `<div class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b><br>${esc(r.actiune || "")}${buton ? `<div>${buton}</div>` : ""}</div>`;
         }
         return `<div class="cf-incr-rand">
           <div class="cf-incr-cap"><span class="cf-dot" style="background:${dot}"></span><span>${esc(c.mesaj || "")}</span></div>
@@ -132,4 +135,34 @@ async function detaliuFirma(corp, nav, firma) {
         <div class="mig-gata-titlu">Totul depus la zi</div>
       </div>` : ""}
   `;
+
+  // [control_incrucisat_v1] remediu executabil: contabilizeaza facturile cu cauza dovedita.
+  // Notele se creeaza CIORNA (endpoint existent) -> patru-ochi ramane intact.
+  corp.querySelectorAll(".cf-incr-btn").forEach((b) => b.addEventListener("click", () => {
+    const ids = (b.dataset.facturi || "").split(",").filter(Boolean);
+    if (!ids.length) return;
+    confirmaCaseta(b.parentElement,
+      `Se creeaz\u0103 ${ids.length} note contabile ciorn\u0103. Continui?`,
+      async () => {
+        b.disabled = true;
+        b.textContent = "Se contabilizeaz\u0103\u2026";
+        let ok = 0;
+        const err = [];
+        for (const id of ids) {
+          try {
+            await api.post(`/tenants/${firma.tenant_id}/facturi/${id}/contabilizeaza`, {});
+            ok++;
+          } catch (e) {
+            err.push(`${id}: ${e.mesaj || e.message}`);
+          }
+        }
+        if (err.length) {
+          b.disabled = false;
+          b.textContent = "Contabilizeaz\u0103 facturile";
+          arataMesaj(b.parentElement, `${ok} contabilizate. Erori: ${err.join("; ")}`, "avert");
+        } else {
+          detaliuFirma(corp, nav, firma);  // reincarca: constatarea trece pe verde
+        }
+      }, { textOk: "Contabilizeaz\u0103" });
+  }));
 }
