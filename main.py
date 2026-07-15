@@ -956,9 +956,36 @@ def register(date: RegisterIn):
     if date.cui and _TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
         try:
             with db.get_conn() as conn:
-                tenant_provisioning.provision_tenant(
-                    conn, date.nume_cabinet, date.cui.replace("RO", "").strip(),
+                _cui = date.cui.replace("RO", "").strip()
+                _t = tenant_provisioning.provision_tenant(
+                    conn, date.nume_cabinet, _cui,
                     r["firm_id"], r["user_id"], _TENANT_TEMPLATE)
+                # [register_profil_anaf_v1] Datele de la ANAF se SALVEAZA in profil, nu
+                # doar se afiseaza pe ecran la inregistrare. Fara ele firma noua se naste
+                # cu caen gol si platitor_tva necunoscut -> D394 blocat (caen e obligatoriu),
+                # iar TVA-ul ramane pe valoarea din template in loc de realitate.
+                # Acelasi tipar ca [gratuit_tva_anaf_v1] la contul gratuit (DS: aceeasi
+                # situatie = aceeasi rezolvare), extins la toate campurile pe care ANAF
+                # le da: denumire, cod_caen, adresa, platitor_tva.
+                try:
+                    rez = anaf_api.valideaza_cui([_cui])
+                    if rez and rez[0].get("gasit") and _t and _t.get("schema_name"):
+                        d = rez[0]
+                        sch = _t["schema_name"]
+                        with conn.cursor() as cur:
+                            cur.execute(
+                                f'UPDATE "{sch}".firma_profil SET '
+                                'nume = COALESCE(NULLIF(%s, \'\'), nume), '
+                                'caen = COALESCE(NULLIF(%s, \'\'), caen), '
+                                'adresa = COALESCE(NULLIF(%s, \'\'), adresa), '
+                                'platitor_tva = %s',
+                                ((d.get("denumire") or "").strip(),
+                                 (d.get("cod_caen") or "").strip(),
+                                 (d.get("adresa") or "").strip(),
+                                 bool(d.get("platitor_tva"))))
+                except Exception:
+                    pass  # ANAF jos -> profilul ramane de completat manual
+                conn.commit()
         except Exception:
             pass  # inregistrarea nu pica din cauza primului tenant
     return {"user_id": r["user_id"], "firm_id": r["firm_id"]}
@@ -1890,6 +1917,24 @@ def firma_profil_regim_tva(tenant_id: int, date: RegimTvaIn, ctx=Depends(cere_co
             cur.execute("UPDATE firma_profil SET platitor_tva = %s", (date.platitor_tva,))
         conn.commit()
     return {"ok": True, "platitor_tva": date.platitor_tva}
+
+@app.get("/tenants/{tenant_id}/firma-profil/date")  # [date_firma_v1]
+def firma_profil_date(tenant_id: int, ctx=Depends(cere_context)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return _fp.citeste_date(conn)
+
+
+@app.post("/tenants/{tenant_id}/firma-profil/date")  # [date_firma_v1]
+def firma_profil_date_salveaza(tenant_id: int, date: dict = Body(...),
+                               ctx=Depends(cere_cabinet)):
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = _fp.salveaza_date(conn, date)
+    if not r.get("ok"):
+        raise HTTPException(422, r.get("mesaj", "date invalide"))
+    return r
+
 
 @app.post("/tenants/{tenant_id}/firma-profil/model")
 def firma_profil_model(tenant_id: int, date: ModelFacturaIn, ctx=Depends(cere_context)):

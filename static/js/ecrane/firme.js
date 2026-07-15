@@ -11,6 +11,7 @@ import { ecranEtransport } from "./etransport_ecran.js";
 import { meniuMigrarePerFirma } from "./migrare.js?v=4";  // [p96_import_firma]
 import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
 import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js";  // [date_firma_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -191,6 +192,13 @@ function meniuFirma(corp, nav, t) {
     { cheie: "import", titlu: "Import date", desc: "Toate straturile de migrare, pentru aceast\u0103 firm\u0103",
       ...CULORI_CARD.albastru,
       icon: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>', activ: true },
+    // [date_firma_v1] Datele pe care ANAF le cere in declaratii (CUI, denumire, CAEN,
+    // adresa, banca, IBAN, telefon, reg.com). Pana acum nu se puteau completa din
+    // interfata deloc - firma_profil_api salva doar font/culoare/logo. O firma noua
+    // nu putea depune nimic pana nu se intervenea direct in baza de date.
+    { cheie: "datefirma", titlu: "Date firm\u0103", desc: "Datele cerute de ANAF \u00een declara\u021bii",
+      ...CULORI_CARD.ardezie,
+      icon: '<path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/>', activ: true },
   ];
 
   corp.innerHTML = `
@@ -217,6 +225,10 @@ function meniuFirma(corp, nav, t) {
   const bSalariati = corp.querySelector("#fa-salariati");
   if (bSalariati && !bSalariati.disabled) {
     bSalariati.addEventListener("click", () => { nav.deschide("Salariați", (c2) => ecranSalariati(c2, nav, t)); });
+  }
+  const bDateFirma = corp.querySelector("#fa-datefirma");  // [date_firma_v1]
+  if (bDateFirma && !bDateFirma.disabled) {
+    bDateFirma.addEventListener("click", () => { nav.deschide("Date firm\u0103", (c2) => randeazaDateFirma(c2, nav, t.id)); });
   }
   const bProduse = corp.querySelector("#fa-produse");  // [produse_firma_v1]
   if (bProduse && !bProduse.disabled) {
