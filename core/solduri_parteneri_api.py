@@ -175,8 +175,80 @@ def coerenta(conn, randuri):
     return out
 
 
+# Conturile pe care se tin solduri pe parteneri. Restul (5121 banca, 5311 casa,
+# conturi de venituri/cheltuieli) NU au parteneri: un sold pe partener acolo e o
+# eroare de export, nu o realitate contabila.
+CONTURI_PARTENERI = ("4111", "401", "409", "419", "4118", "4091", "4092", "4093")
+
+# cheia oficiala de control a CUI romanesc (aceeasi ca la CNP in salariati_import_api:
+# algoritm publicat, nu inventat aici)
+_CHEIE_CUI = [7, 5, 3, 2, 1, 7, 5, 3, 2]
+
+
+def valideaza_cui(cui):
+    """(valid, motiv) - cifra de control a CUI romanesc, LOCAL (fara retea).
+    anaf_api.valideaza_cui() interogheaza ANAF si e potrivit la o firma, nu la fiecare
+    rand dintr-un import de sute de parteneri."""
+    c = "".join(ch for ch in str(cui or "") if ch.isdigit())
+    if not c:
+        return False, "lipsa"
+    if not (2 <= len(c) <= 10):
+        return False, "lungime (2-10 cifre)"
+    corp, ctrl = c[:-1], int(c[-1])
+    corp = corp.rjust(9, "0")
+    s = sum(int(corp[i]) * _CHEIE_CUI[i] for i in range(9))
+    rest = (s * 10) % 11
+    if rest == 10:
+        rest = 0
+    return (rest == ctrl), ("ok" if rest == ctrl else "cifra de control")
+
+
+def verifica_randuri(randuri):
+    """PURA: (erori, randuri_bune). Ce nu poate intra in evidenta si de ce.
+
+    Pana la 15.07.2026 nu exista NICIO validare intre extrage() si importa():
+    - CUI cu cifra de control gresita -> intra
+    - partener fara CUI pe cont de parteneri -> intra
+    - partener pe 5121 (banca) -> intra
+    verifica() calcula diferentele fata de balanta si le trimitea in raspuns, ecranul
+    le afisa cu ⚠, iar importa() scria oricum. Migrarea marca stratul "gata" VERDE.
+    Semnalarea fara oprire e mai rea decat tacerea: da impresia ca s-a verificat.
+    """
+    erori, bune = [], []
+    for i, r in enumerate(randuri or [], start=2):   # +2: randul din fisier, cu antet
+        cont = str(r.get("cont") or "").strip()
+        cui = str(r.get("cui") or "").strip()
+        den = str(r.get("denumire") or "").strip()
+        rad = _radacina(cont)
+        if rad not in CONTURI_PARTENERI:
+            erori.append({"rand": i, "cont": cont, "motiv": "cont_nepartener",
+                          "mesaj": "contul %s nu tine solduri pe parteneri (doar %s)"
+                                   % (cont or "?", ", ".join(CONTURI_PARTENERI[:4]))})
+            continue
+        ok, motiv = valideaza_cui(cui)
+        if not ok:
+            erori.append({"rand": i, "cont": cont, "cui": cui, "denumire": den,
+                          "motiv": "cui_invalid",
+                          "mesaj": ("partenerul %s nu are CUI" % (den or "?")) if motiv == "lipsa"
+                                   else "CUI %s invalid (%s)" % (cui, motiv)})
+            continue
+        bune.append(r)
+    return erori, bune
+
+
 def importa(conn, randuri, data_referinta=None):
-    """Inlocuieste partenerii (DELETE + INSERT). Intoarce {randuri, total_debit, total_credit}."""
+    """Inlocuieste partenerii (DELETE + INSERT). Intoarce {randuri, total_debit, total_credit}.
+    Ridica ValueError daca vreun rand nu poate intra in evidenta (vezi verifica_randuri).
+    Refuzul e PRIMA POARTA: nimic nu se scrie dintr-un import cu randuri invalide."""
+    erori, _bune = verifica_randuri(randuri)
+    if erori:
+        det = "; ".join("rand %s: %s" % (e["rand"], e["mesaj"]) for e in erori[:6])
+        if len(erori) > 6:
+            det += " (si inca %d)" % (len(erori) - 6)
+        raise ValueError(
+            "%d randuri nu pot intra in evidenta: %s. Soldurile pe parteneri au nevoie "
+            "de CUI valid (intra in D394 si SAF-T) si de un cont care tine parteneri."
+            % (len(erori), det))
     asigura_tabel(conn)
     td = tc = 0.0
     with conn.cursor() as cur:

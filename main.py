@@ -1465,7 +1465,10 @@ def parteneri_salveaza(tenant_id: int, date: ParteneriIn, ctx=Depends(cere_rol("
     randuri = [{"cont": r.cont, "cui": r.cui, "denumire": r.denumire, "debit": r.debit, "credit": r.credit}
                for r in date.randuri]
     with db.get_conn(schema) as conn:
-        return solduri_parteneri_api.importa(conn, randuri, date.data_referinta)
+        try:
+            return solduri_parteneri_api.importa(conn, randuri, date.data_referinta)
+        except ValueError as e:  # randuri invalide -> 422 cu mesaj explicativ
+            raise HTTPException(422, str(e))
 
 
 
