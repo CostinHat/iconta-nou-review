@@ -93,6 +93,27 @@ async function detaliuFirma(corp, nav, firma) {
     ${urmarit.length ? `
       <div class="cf-grup-titlu cf-galben">De urmărit (${urmarit.length})</div>
       <div class="cf-decl">${randDecl(urmarit, "cf-termen-galben")}</div>` : ""}
+    ${(() => { /* [control_incrucisat_v1] declaratie vs contabilitate: trei stari + temei + remediu */
+      const ti = (d.verificari_contabile || {}).tva_incrucisat;
+      if (!ti) return "";
+      const cls = ti.stare === "rosu" ? "cf-rosu" : (ti.stare === "gri" ? "" : "");
+      const randuri = (ti.constatari || []).map((c) => {
+        const dot = CULORI[c.stare] ? CULORI[c.stare].dot : CULORI.gri.dot;
+        let extra = "";
+        if (c.remediu) {
+          const r = c.remediu;
+          extra = `<div class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b><br>${esc(r.actiune || "")}</div>`;
+        }
+        return `<div class="cf-incr-rand">
+          <div class="cf-incr-cap"><span class="cf-dot" style="background:${dot}"></span><span>${esc(c.mesaj || "")}</span></div>
+          <div class="cf-incr-temei">${esc(c.temei || "")}</div>
+          ${extra}
+        </div>`;
+      }).join("");
+      const limita = ti.limita ? `<div class="cf-incr-temei">${esc(ti.limita)}</div>` : "";
+      return `<div class="cf-grup-titlu ${cls}">Declarație vs contabilitate</div>
+        <div class="cf-decl">${randuri}${limita}</div>`;
+    })()}
     ${(() => { /* cf_detaliu_contabil_v1 */
       const vc = d.verificari_contabile || null;
       if (!vc) return "";
@@ -100,7 +121,7 @@ async function detaliuFirma(corp, nav, firma) {
       if (vc.echilibru && vc.echilibru.ok === false) probleme.push("balanță dezechilibrată");
       const tz = vc.trezorerie;
       if ((Array.isArray(tz) && tz.length) || (tz && !Array.isArray(tz) && tz.ok === false)) probleme.push("solduri creditoare trezorerie");
-      if (firma.contabil) firma.contabil.forEach((p) => { if (!probleme.includes(p) && p !== "balanta dezechilibrata" && p !== "solduri creditoare trezorerie") probleme.push(p); }); /* cf_detaliu_contabil_v2 */
+      if (firma.contabil) firma.contabil.forEach((p) => { if (!probleme.includes(p) && p !== "balanta dezechilibrata" && p !== "solduri creditoare trezorerie" && p !== "TVA declarat diferă de contabilitate") probleme.push(p); }); /* cf_detaliu_contabil_v2 */
       if (!probleme.length) return "";
       return `<div class="cf-grup-titlu cf-rosu">Verificări contabile (${probleme.length})</div>
         <div class="cf-decl">${probleme.map((p) => `<div class="mig-sold-rand cf-rand-decl"><span class="mig-sold-cont">${p}</span></div>`).join("")}</div>`;

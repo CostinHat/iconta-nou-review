@@ -88,20 +88,20 @@ def compara_tva(d300_R, rulaje, necontate=None):
     tva_necontat_primite = sum(_d(f.get("tva")) for f in necontate if f.get("directie") == "primita")
 
     perechi = (
-        ("TVA colectata", "R17_2", "4427", "credit", tva_necontat_emise, "emise"),
-        ("TVA deductibila", "R31_2", "4426", "debit", tva_necontat_primite, "primite"),
+        ("TVA colectată", "R17_2", "4427", "credit", tva_necontat_emise, "emise"),
+        ("TVA deductibilă", "R31_2", "4426", "debit", tva_necontat_primite, "primite"),
     )
     rez = []
     for eticheta, rand, cont, sens, tva_necontat, fel in perechi:
         decl = _d(d300_R.get(rand, 0))
         contabil = _d(rulaje.get(cont, {}).get(sens, 0))
         dif = decl - contabil
-        temei = (f"D300 rand {rand} (facturi {fel} in luna, art. 281 CF) vs "
-                 f"rulaj {sens} cont {cont} pe luna.")
+        temei = (f"D300 rând {rand} (facturi {fel} în lună, art. 281 CF) vs "
+                 f"rulaj {sens} cont {cont} pe lună.")
         if abs(dif) <= TOLERANTA:
             rez.append({"stare": "verde", "eticheta": eticheta, "declarat": decl,
                         "contabil": contabil, "diferenta": dif, "temei": temei,
-                        "mesaj": f"{eticheta}: D300 si contul {cont} coincid.",
+                        "mesaj": f"{eticheta}: D300 și contul {cont} coincid.",
                         "remediu": None})
             continue
         # cauza DOVEDITA: diferenta se explica exact prin facturile necontabilizate
@@ -109,14 +109,14 @@ def compara_tva(d300_R, rulaje, necontate=None):
             rez.append({
                 "stare": "rosu", "eticheta": eticheta, "declarat": decl,
                 "contabil": contabil, "diferenta": dif, "temei": temei,
-                "mesaj": (f"{eticheta}: D300 declara {decl} lei, contul {cont} are {contabil} lei "
-                          f"(diferenta {dif} lei)."),
+                "mesaj": (f"{eticheta}: D300 declară {decl} lei, contul {cont} are {contabil} lei "
+                          f"(diferență {dif} lei)."),
                 "remediu": {
                     "fel": "executabil",
                     "cauza": f"{len([f for f in necontate if f.get('directie')==('emisa' if fel=='emise' else 'primita')])} "
                              f"facturi {fel} nu sunt contabilizate; TVA-ul lor ({tva_necontat} lei) "
-                             f"explica exact diferenta.",
-                    "actiune": "Contabilizeaza facturile listate.",
+                             f"explică exact diferența.",
+                    "actiune": "Contabilizează facturile listate.",
                     "facturi": [f["id"] for f in necontate
                                 if f.get("directie") == ("emisa" if fel == "emise" else "primita")],
                 },
@@ -126,14 +126,14 @@ def compara_tva(d300_R, rulaje, necontate=None):
         rez.append({
             "stare": "rosu", "eticheta": eticheta, "declarat": decl,
             "contabil": contabil, "diferenta": dif, "temei": temei,
-            "mesaj": (f"{eticheta}: D300 declara {decl} lei, contul {cont} are {contabil} lei "
-                      f"(diferenta {dif} lei)."),
+            "mesaj": (f"{eticheta}: D300 declară {decl} lei, contul {cont} are {contabil} lei "
+                      f"(diferență {dif} lei)."),
             "remediu": {
                 "fel": "investigatie",
-                "cauza": "Diferenta nu se explica integral prin facturi necontabilizate.",
-                "actiune": ("Verifica: note manuale pe cont, storno neinregistrat, "
-                            "TVA la incasare (exigibilitate decalata), regularizari, "
-                            "facturi cu data in alta luna decat inregistrarea."),
+                "cauza": "Diferența nu se explică integral prin facturi necontabilizate.",
+                "actiune": ("Verifică: note manuale pe cont, storno neînregistrat, "
+                            "TVA la încasare (exigibilitate decalată), regularizări, "
+                            "facturi cu data în altă lună decât înregistrarea."),
                 "facturi": [],
             },
         })
@@ -153,12 +153,12 @@ def verifica_tva(conn, schema, an, luna):
                     "stare": "gri", "eticheta": "TVA", "temei": "D300 nu s-a putut genera.",
                     "mesaj": f"NU pot verifica TVA: decontul nu se poate calcula ({e}).",
                     "remediu": {"fel": "investigatie",
-                                "cauza": "Date lipsa sau profil fiscal incomplet.",
-                                "actiune": "Completeaza profilul firmei si reincearca.",
+                                "cauza": "Date lipsă sau profil fiscal incomplet.",
+                                "actiune": "Completează profilul firmei și reîncearcă.",
                                 "facturi": []},
                 }],
                 "facturi_necontabilizate": [], "explicatie": "",
-                "limita": "Verificarea TVA nu a fost efectuata - riscul ramane neacoperit."}
+                "limita": "Verificarea TVA nu a fost efectuată — riscul rămâne neacoperit."}
 
     R = res["R"] if isinstance(res, dict) else getattr(res, "R", {})
     necontate = facturi_necontabilizate(conn, schema, an, luna)
@@ -171,7 +171,7 @@ def verifica_tva(conn, schema, an, luna):
         "explicatie": (f"{len(necontate)} facturi ale lunii nu sunt contabilizate."
                        if necontate else ""),
         "limita": ("Verificat: D300 (calculat din facturile lunii) vs conturile 4427/4426. "
-                   "NEVERIFICAT: daca D300 depus efectiv la ANAF coincide cu cel calculat aici "
-                   "(necesita SPV)."),
+                   "NEVERIFICAT: dacă D300 depus efectiv la ANAF coincide cu cel calculat aici "
+                   "(necesită SPV)."),
         "modul": MODUL, "reguli": REGULI,
     }

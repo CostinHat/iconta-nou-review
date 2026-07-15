@@ -1701,6 +1701,10 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
             if (isinstance(tz, list) and tz) or (isinstance(tz, dict) and not tz.get("ok", True)):
                 if r["stare"] == "verde": r["stare"] = "galben"
                 contabil.append("solduri creditoare trezorerie")
+            # [control_incrucisat_v1] declaratie vs evidenta = serios -> rosu
+            ti = v.get("tva_incrucisat") or {}
+            if ti.get("stare") == "rosu":
+                r["stare"] = "rosu"; contabil.append("TVA declarat diferă de contabilitate")
         except Exception:
             pass
         try:  # stocuri contabil vs fise CV
@@ -3003,7 +3007,17 @@ def _verificari_contabile(schema, an, luna):
         cur.execute(f"SELECT cont, SUM(sold_debitor) - SUM(sold_creditor) FROM {schema}.solduri_initiale GROUP BY cont")
         si = {r[0]: r[1] for r in cur.fetchall()}
     bal = _vf.balanta(note, si)
+    # [control_incrucisat_v1] punte declaratie <-> contabilitate (D300 vs 4427/4426).
+    # Distinct de "tva" de mai jos, care e coerenta INTERNA a balantei (4427 vs 4426).
+    try:
+        from core import control_incrucisat as _ci
+        with db.get_conn(schema) as _c:
+            tva_incr = _ci.verifica_tva(_c, schema, an, luna)
+    except Exception as _e:
+        tva_incr = {"stare": "gri", "constatari": [], "facturi_necontabilizate": [],
+                    "limita": "Verificarea incrucisata TVA nu a rulat: %s" % _e}
     rezultat = {
+        "tva_incrucisat": tva_incr,
         "echilibru": _vf.verifica_balanta(bal),
         "trezorerie": _vf.verifica_trezorerie(bal),
         "tva": _vf.coerenta_tva(bal.get("4427", {}).get("credit", 0), bal.get("4426", {}).get("debit", 0)),

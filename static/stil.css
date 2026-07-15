@@ -2188,3 +2188,8 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 /* [fd_stare_v1] eticheta de stare pe detaliu factura (DS cap.6) */
 .fd-stare { font-size: 12px; color: #5b6572; background: var(--gri-fundal-semafor); border-radius: 10px; padding: 2px 10px; white-space: nowrap; }
 .fd-stare-verde { color: var(--verde); background: #e4f2ea; }
+/* [control_incrucisat_v1] declaratie vs contabilitate: temei + remediu sub constatare */
+.cf-incr-temei { font-size: var(--text-mic); color: var(--gri-semafor); margin-top: 4px; line-height: 1.4; }
+.cf-incr-remediu { font-size: var(--text-mic); margin-top: 6px; padding: 8px 10px; background: var(--galben-fundal); border-radius: 8px; line-height: 1.45; }
+.cf-incr-rand { padding: 10px 4px; border-bottom: 1px solid #eef0f3; }
+.cf-incr-cap { display: flex; align-items: center; gap: 8px; font-weight: 600; }
