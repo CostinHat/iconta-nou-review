@@ -11,7 +11,7 @@ import { ecranEtransport } from "./etransport_ecran.js";
 import { meniuMigrarePerFirma } from "./migrare.js?v=4";  // [p96_import_firma]
 import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
 import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
-import { randeazaDateFirma } from "./date_firma.js";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=2";  // [date_firma_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {

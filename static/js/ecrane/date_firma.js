@@ -13,7 +13,7 @@ import { api, arataMesaj, esc } from "../api.js";
 const CAMPURI = [
   { k: "nume", e: "Denumirea firmei", ob: true },
   { k: "cui", e: "CUI", ob: true },
-  { k: "reg_com", e: "Nr. registrul come\u021bului", ob: true,
+  { k: "reg_com", e: "Nr. registrul comer\u021bului", ob: true,
     aj: "Din certificatul de \u00eenregistrare (ex. J40/1234/2020). Cerut la bilan\u021b." },
   { k: "caen", e: "Cod CAEN", ob: true,
     aj: "4 cifre, din certificatul constatator. ANAF nu \u00eel d\u0103 pentru toate firmele \u2014 completeaz\u0103-l manual." },
@@ -41,13 +41,53 @@ function camp(c, val) {
     </label>`;
 }
 
+// [vector_date_firma_v1] Vectorul fiscal: cele 4 atribute din firma_profil pe care le
+// citeste/scrie core/vector_fiscal_api (citeste/salveaza). Pana acum se completa
+// DOAR la migrarea cabinetului (migrare.js) - o firma adaugata direct sau creata la
+// inregistrare ramanea pe valorile implicite din template (micro, neplatitor TVA,
+// fara intracom), adica pe presupuneri. Termenele si controlul fiscal mergeau pe ele.
+// Sta aici, nu intr-un ecran separat: datele fiscale ale firmei sunt un tot (DS:
+// aceeasi situatie = aceeasi rezolvare).
+const VECTOR = [
+  { k: "regim_fiscal", e: "Regim fiscal", ob: true, tip: "select",
+    opt: [["micro", "Microintreprindere (impozit pe venit)"], ["profit", "Impozit pe profit"]],
+    aj: "Decide D100 (micro, trimestrial) sau D101 (profit, anual)." },
+  { k: "platitor_tva", e: "\u00cenregistrat\u0103 \u00een scopuri de TVA", ob: true, tip: "select",
+    opt: [["nu", "Nu"], ["da", "Da"]],
+    aj: "Din vectorul fiscal ANAF. Decide D300 si D394." },
+  { k: "tip_decont", e: "Periodicitate TVA", tip: "select",
+    opt: [["", "\u2014"], ["lunar", "Lunar"], ["trimestrial", "Trimestrial"]],
+    aj: "Obligatorie doar la pl\u0103titorii de TVA. Decide dac\u0103 D300/D394 se depun lunar sau trimestrial." },
+  { k: "operatiuni_ic", e: "Opera\u021biuni intracomunitare", tip: "select",
+    opt: [["nu", "Nu"], ["da", "Da"]],
+    aj: "Achizi\u021bii/livr\u0103ri din UE. Decide D390 (VIES)." },
+];
+
+function campVector(c, val) {
+  const ob = c.ob ? '<span class="oblig">*</span>' : "";
+  const aj = c.aj ? `<span class="camp-ajutor">${esc(c.aj)}</span>` : "";
+  const v = val === true ? "da" : val === false ? "nu" : (val || "");
+  const opts = c.opt.map(([k, t]) =>
+    `<option value="${esc(k)}"${String(k) === String(v) ? " selected" : ""}>${esc(t)}</option>`).join("");
+  return `
+    <label class="camp">
+      <span class="camp-eticheta">${esc(c.e)}${ob}</span>
+      ${aj}
+      <select class="camp-input" id="vf-${c.k}">${opts}</select>
+    </label>`;
+}
+
 export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || null);
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
 
   let d = { profil: {}, lipsuri: [] };
+  let v = {};
   try {
-    d = await api.get(`/tenants/${tenantId}/firma-profil/date`);
+    [d, v] = await Promise.all([
+      api.get(`/tenants/${tenantId}/firma-profil/date`),
+      api.get(`/tenants/${tenantId}/vector`).catch(() => ({})),
+    ]);
   } catch (e) {
     corp.innerHTML = `<div id="df-msg"></div>`;
     arataMesaj(corp.querySelector("#df-msg"), (e && e.mesaj) || "Nu am putut citi datele firmei.", "eroare");
@@ -67,6 +107,10 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     <p class="pf-intro">Datele pe care ANAF le cere \u00een declara\u021bii. C\u00e2mpurile cu <span class="oblig">*</span> sunt obligatorii \u2014 f\u0103r\u0103 ele declara\u021biile nu se pot depune.</p>
     ${avert}
     <div class="grila-doc">${CAMPURI.map((c) => camp(c, d.profil[c.k])).join("")}</div>
+
+    <h2 class="pf-titlu" style="margin-top:26px">Vector fiscal</h2>
+    <p class="pf-intro">Ce declara\u021bii datoreaz\u0103 firma. Termenele \u0219i controlul fiscal pornesc de aici.</p>
+    <div class="grila-doc">${VECTOR.map((c) => campVector(c, v[c.k])).join("")}</div>
     <div id="df-msg"></div>
     <div class="dec-bara">
       <button class="buton-primar" id="df-salveaza">Salveaz\u0103</button>
@@ -87,10 +131,24 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       corp.querySelector(`#df-${goale[0].k}`).focus();
       return;
     }
+    // vectorul: regim obligatoriu; periodicitatea e obligatorie DOAR la platitorii
+    // de TVA (regula din vector_fiscal_api.salveaza - o singura sursa de adevar)
+    const vf = {
+      regim_fiscal: corp.querySelector("#vf-regim_fiscal").value,
+      platitor_tva: corp.querySelector("#vf-platitor_tva").value === "da",
+      tip_decont: corp.querySelector("#vf-tip_decont").value || null,
+      operatiuni_ic: corp.querySelector("#vf-operatiuni_ic").value === "da",
+    };
+    if (vf.platitor_tva && !vf.tip_decont) {
+      arataMesaj(msg, "Completeaz\u0103 periodicitatea TVA \u2014 obligatorie la pl\u0103titorii de TVA (decide dac\u0103 D300 se depune lunar sau trimestrial).", "eroare");
+      corp.querySelector("#vf-tip_decont").focus();
+      return;
+    }
     btn.disabled = true;
     btn.textContent = "Se salveaz\u0103\u2026";
     try {
       await api.post(`/tenants/${tenantId}/firma-profil/date`, date);
+      await api.post(`/tenants/${tenantId}/vector`, vf);
       await randeazaDateFirma(corp, nav, tenantId, opt);
       arataMesaj(corp.querySelector("#df-msg"), "Datele firmei au fost salvate.", "ok");
     } catch (e) {
