@@ -1,0 +1,155 @@
+# NOMENCLATOR COD PRODUSE D394 (op11.codPR) - sursa oficiala ANAF.
+# Ghid_D394_2016.pdf (55 pag), static.anaf.ro/static/10/Anaf/AsistentaContribuabili_r/
+# Descarcat si extras 15.07.2026 cu pypdf. Nom1 = pag.26 (tip_partener=1),
+# Nom2 = pag.33 (tip_partener=2, doar achizitii de la PERSOANE FIZICE).
+# Codul 21 (cereale) e CENTRALIZATOR: la nivel de op11 se pun subcodurile NC.
+# Validator: codPR 32-35 sunt INTERZISE la tip_partener=1 (sunt din Nom2).
+
+=== Ghid pag. 26 ===
+     GHID DE COMPLETARE
+   A  DECLARAȚIEI 
+  INFORMATIVE 
+PRECIZARE
+Coloana "Cod și denumire NC produs" de la lit. C :
+-pentru bunurile din categoria cereale și plante tehnice, se înscriu codurile care figurează în nomenclatura combinată stabilită prin Regulamentul (CEE)
+nr. 2.658/87 al Consiliului din 23 iulie 1987 privind Nomenclatura tarifară și statistică și Tariful vamal comun, modificată conform Regulamentului de
+punere în aplicare (UE) nr. 927/2012 al Comisiei din 9 octombrie 2012, ce se regăsește pe portalul ANAF.
+Nomenclator cod produse pt tip partener = 1 (persoană înregistrată în scopuri de TV A)
+Cod 
+1001 1001 Grâu și meslin 
+1002 1002 Secara
+1003 1003 Orz
+1004 1004 Ovaz
+1005 1005 Porumb 
+1201 1201 Boabe de soia, chiar sfaramate 
+1205 1205 Seminte de rapita sau de rapita salbatica, chiar sfaramate 
+120600 120600 Seminte de floarea-soarelui, chiar sfaramate 
+121291 121291 Sfecla de zahar 
+10086000 10086000 Triticale
+120400 120400 Semințe de in, chiar sfărâmate 
+21 Cereale si plante tehnice
+22 Deseuri feroase si neferoase
+23 Masa lemnoasa
+24 Certificate de emisii de gaze cu efect de sera
+25 Energie electrica
+26 Certificate verzi
+27 Construcții terenuri 
+28 Aur de investitii
+29 Telefoane mobile 
+30 Microprocesoare 
+31 Console de jocuri, tablete PC si laptopuri
+22
+394
+ATENTIE!
+Codul 21 „cereale și plante tehnice” este utilizat 
+numai în cadrul centralizatorului și nu la nivel de Detaliu!
+
+
+=== Ghid pag. 33 ===
+     GHID DE COMPLETARE
+   A  DECLARAȚIEI 
+  INFORMATIVE 
+Natura bunurilor/serviciilor se declară numai în cazul achizițiilor efectuate de la persoane fizice. 
+Astfel, în cazul în care sunt efectuate achiziții de la persoane neînregistrate în scopuri de TV A, altele decât persoanele  fizice, nu  se detaliază
+natura bunurilor/serviciilor achiziționate.
+   Nomenclator cod produse pt tip partener = 2 (persoană neînregistrată în scopuri de TVA)
+Cod Denumire produs
+1001 1001 Grâu și meslin 
+1002 1002 Secara
+1003 1003 Orz
+1004 1004 Ovaz
+1005 1005 Porumb 
+1201 1201 Boabe de soia, chiar sfaramate 
+1205 1205 Seminte de rapita sau de rapita salbatica, chiar sfaramate 
+120600 120600 Seminte de floarea-soarelui, chiar sfaramate 
+121291 121291 Sfecla de zahar 
+10086000 10086000 Triticale
+120400 120400 Semințe de in, chiar sfărâmate 
+21 Cereale si plante tehnice ( se folosește doar pt <rezumat1> )
+22 Deseuri feroase si neferoase
+23 Masa lemnoasa
+32 Terenuri 
+33 Constructii
+34 Alte bunuri 
+35 Servicii
+29
+394
+
+
+=== Ghid pag. 34 ===
+     GHID DE COMPLETARE
+   A  DECLARAȚIEI 
+  INFORMATIVE 
+Completarea și depunerea declarației: Cartușul E.
+|                                                                              |
+| E. REZUMAT DECLARAȚIE                                                        |
+|                                                          ___________________ |
+| NUMĂRUL TOTAL AL PERSOANELOR IMPOZABILE                 |                   ||
+| NESTABILITE ÎN ROMÂNIA CARE SUNT STABILITE              |                   ||  
+| ÎN ALT STAT MEMBRU, NEÎNREGISTRATE                      |___________________||
+| ȘI CARE NU SUNT OBLIGATE SĂ SE ÎNREGISTREZE                                  |
+| ÎN SCOPURI DE TVA ÎN ROMÂNIA INCLUSE ÎN DECLARAȚIE                           |
+||                                             NUMĂR DE  BAZĂ           TVA*)  |
+|                                             FACTURI   IMPOZABILĂ             |
+|                                                                              |
+|                                             ________   _________   ________ _|
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII (L) |        | |         | |         ||
+| defalcate pe fiecare cotă de TVA efectuate |________| |_________| |_________||
+| de către persoana impozabilă care aplică                                     |
+| sistemul normal de TVA cu excepția celor                                     |
+| pentru care au fost emise facturi                                            |
+| simplificate                                                                 |
+|                                             ________   _________   _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII (L) |        | |         | |         ||
+| defalcate pe fiecare cotă de TVA efectuate |________| |_________| |_________||
+| de către persoana impozabilă care aplică                                     |
+| sistemul de TVA la încasare cu excepția                                      |
+| celor pentru care au fost emise facturi                                      |
+| simplificate                                                                 |
+|                                             ________   _________   _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII (LS)|        | |         | |         ||
+| efectuate de către persoana impozabilă     |________| |_________| |_________||
+| care aplică sistemul normal de TVA pentru                                    |
+| operațiunile derulate în regim special                                       |   
+| pentru agențiile de turism, pentru bunurile                                  |
+| second-hand, opere de artă, obiecte de                                       |
+| colecție și antichități                                                      |
+                                              ________   _________   _________ |
+| ACHIZIȚII DE BUNURI ȘI SERVICII EFECTUATE  |        | |         | |         ||
+| PENTRU CARE SE APLICĂ TAXAREA INVERSĂ (C)  |________| |_________| |_________||
+|                                                                              |
+|TVA defalcată pe cote: 24%, 20%,19%,9%, 5%                                |                    
+30
+394
+nr. total al persoanelor impozabile nestabilite în România, care sunt stabilite în alte state membre, 
+neînregistrate și care nu sunt obligate să se înregistreze în scopuri de TV A în România, indiferent de numărul operațiunilor
+nr. total al facturilor emise pentru livrările de bunuri/prestările de servicii defalcate pe fiecare cotă 
+de TV A efectuate de către persoana impozabilă care aplică sistemul normal de TV A, cu excepția 
+celor pentru care au fost emise facturi simplificate
+valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor 
+de servicii taxabile și valoarea totală a TV A aferentă acestora, defalcate pe cote de TV A, 
+efectuate de către persoana impozabilă care aplică sistemul normal de TV A, cu excepția 
+celor pentru care au fost emise facturi simplificate
+nr. total al facturilor emise pentru livrările de bunuri/prestările de servicii
+defalcate pe fiecare cotă de TV A efectuate de către persoana impozabilă care 
+aplică sistemul de TV A la incasare, cu excepția celor pentru care au fost emise facturi simplificate
+valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor 
+de servicii taxabile și valoarea totală a TV A aferentă acestora, defalcate pe cote de TV A, 
+efectuate de către persoana impozabilă care aplică sistemul de TV A la incasare, cu excepția 
+celor pentru care au fost emise facturi simplificate
+nr. total al facturilor emise pentru livrările de bunuri/prestările de servicii efectuate de 
+către persoana impozabilă care aplică sistemul normal de TV A, pentru operațiunile derulate 
+în regim special, respectiv agențiile de turism, pentru bunurile second-hand, opere de artă, 
+obiecte de colecție și antichități
+valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii efectuate 
+de către persoana impozabilă care aplică sistemul normal de TV A, pentru operațiunile derulate în 
+regim special pentru agențiile de turism, pentru bunurile second-hand, opere de artă, obiecte de colecție 
+și antichități
+nr. total al facturilor primite pentru achizițiile de bunuri și servicii pentru care 
+beneficiarul este obligat la plata TV A conform art. 307 alin.(2), (3), (5) și (6) \
+din Codul fiscalvaloarea totală a bazei impozabile aferentă achizițiilor 
+de bunuri și servicii pentru care beneficiarul 
+este obligat la plata TV A conform art. 307 alin.(2), (3), (5) și (6) 
+din Codul fiscal și valoarea totală 
+a TV A aferentă acestora, defalcate pe cote de TV A
+

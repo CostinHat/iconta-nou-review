@@ -89,6 +89,12 @@ def valideaza(xml, tip, dist=DIST, timeout=180):
         if os.path.exists(f):
             with open(f, encoding="utf-8", errors="replace") as fh:
                 rez = (rez + "\n" + fh.read()).strip()
+    # Validatorul scrie literalmente "ok" in fisierul de rezultat cand nu gaseste erori
+    # (dovedit 15.07.2026 pe D394). Fara asta, o declaratie VALIDA era raportata ca
+    # avand eroarea "ok" - fals negativ care ar fi trimis contabilul sa caute o
+    # problema inexistenta. Fisier gol = idem valid (unele validatoare nu-l scriu).
+    if rez.lower() in ("", "ok", "ok."):
+        rez = ""
     temei = "DUKIntegrator -v %s (pachet oficial ANAF)." % cheie
     stare = "erori" if rez else "valid"
     return {"stare": stare, "erori": rez, "cheie": cheie, "temei": temei,
