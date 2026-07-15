@@ -23,6 +23,18 @@ Regula fiscala: D300 se calculeaza pe FACTURILE lunii (fapt generator, art. 281 
 balanta pe INREGISTRARILE contabile. Divergenta apare cand facturi emise nu sunt
 contabilizate. Nu e automat eroare - e semnal ca evidenta a ramas in urma.
 
+Comparatie D112 (F163): totalurile DECLARATE se citesc din XML-ul generat
+(angajatorA A_codOblig), NU dintr-o reagregare a salariatilor din pull(): generatorul
+RECALCULEAZA cas/cass/impozit pe salariatii cu concediu medical (baza CM, OUG 158/2005)
+si adauga suprataxa part-time separat. O reagregare ar fi o A TREIA cifra, care ar da
+rosu fals exact pe cazurile grele. Ce parsam ESTE ce se depune.
+  cod 602 (impozit)      <-> rulaj CREDIT 444
+  cod 412 + 458 (CAS)    <-> rulaj CREDIT 4315   (458 = suprataxa part-time angajator,
+  cod 432 + 459 (CASS)   <-> rulaj CREDIT 4316    contabilizata tot in 4315/4316 prin
+  cod 480 (CAM)          <-> rulaj CREDIT 436     6451/6453 - vezi salarizare.py:161-163)
+NEVERIFICAT: brutul (421). B_brutSalarii din D112 e baza de contributii, nu brut
+contabil - pe lunile cu CM diverge legitim. Se declara ca limita, nu se falsifica.
+
 Comparatie TVA:
   D300 R17_2 (colectata)  <->  rulaj CREDIT 4427 pe luna
   D300 R31_2 (dedusa)     <->  rulaj DEBIT  4426 pe luna
@@ -166,6 +178,126 @@ def compara_tva(d300_R, rulaje, necontate=None):
             "facturi": [],
         }))
     return rez
+
+
+COD_CONT_D112 = (
+    ("Impozit pe venit", ("602",), "444"),
+    ("CAS", ("412", "458"), "4315"),
+    ("CASS", ("432", "459"), "4316"),
+    ("CAM", ("480",), "436"),
+)
+
+
+def totaluri_d112_din_xml(xml):
+    """Totalurile DECLARATE, citite din XML (angajatorA). Lipsa unui cod = declarat 0
+    (add_oblig sare peste val=0), nu 'nu stiu'."""
+    import re
+    out = {}
+    for m in re.finditer(r'A_codOblig="([^"]+)"[^>]*?A_datorat="([-0-9]+)"', xml):
+        out[m.group(1)] = out.get(m.group(1), 0) + int(m.group(2))
+    return out
+
+
+def toleranta_d112(nr_salariati):
+    """D112 rotunjeste la leu (_d112int pe TOTAL), contabilitatea tine bani per salariat.
+    Diferenta legitima de rotunjire creste cu efectivul: pana la ~0.5 lei/salariat.
+    O toleranta fixa de 1 leu ar da rosu fals pe orice firma cu peste ~2 salariati."""
+    return max(TOLERANTA, Decimal("0.5") * Decimal(str(nr_salariati or 0)))
+
+
+def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0):
+    """PURA: totaluri declarate (din XML) vs rulaj CREDIT pe conturile de datorii."""
+    rez = []
+    tol = toleranta_d112(nr_salariati)
+    for eticheta, coduri, cont in COD_CONT_D112:
+        decl = sum(_d(totaluri.get(c, 0)) for c in coduri)
+        contabil = _d(rulaje.get(cont, {}).get("credit", 0))
+        dif = decl - contabil
+        cod_txt = "+".join(coduri)
+        temei = (f"D112 angajatorA cod {cod_txt} (din XML-ul generat) vs "
+                 f"rulaj credit cont {cont} pe lună, numai note validate. "
+                 f"Toleranță {tol} lei: D112 rotunjește la leu, evidența ține bani "
+                 f"({nr_salariati} salariați × 0,5 lei).")
+        baza = {"eticheta": eticheta, "declarat": decl, "contabil": contabil,
+                "diferenta": dif, "temei": temei}
+        if abs(dif) <= tol:
+            rez.append(dict(baza, stare="verde",
+                            mesaj=f"{eticheta}: D112 și contul {cont} coincid.", remediu=None))
+            continue
+        mesaj = (f"{eticheta}: D112 declară {decl} lei, contul {cont} are {contabil} lei "
+                 f"(diferență {dif} lei).")
+        if contabil == 0 and decl > 0 and not note_ciorna:
+            rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
+                "fel": "executabil",
+                "cauza": f"Statul de plată nu este contabilizat: contul {cont} nu are rulaj în lună.",
+                "actiune": "Contabilizează statul de plată.", "facturi": [],
+            }))
+        elif note_ciorna:
+            rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
+                "fel": "sugerat",
+                "cauza": f"{note_ciorna} note de salarii în ciornă, așteaptă validare.",
+                "actiune": ("Un al doilea utilizator validează notele (patru ochi). "
+                            "Până atunci operațiunile nu sunt în evidență."),
+                "facturi": [],
+            }))
+        else:
+            rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
+                "fel": "investigatie",
+                "cauza": "Diferența nu se explică prin lipsa totală a notei de salarii.",
+                "actiune": (f"Verifică: salariați adăugați/șterși după contabilizare, "
+                            f"note manuale pe {cont}, corecții de lună anterioară, "
+                            f"concedii medicale înregistrate diferit față de D112."),
+                "facturi": [],
+            }))
+    return rez
+
+
+def note_salarii_ciorna(conn, schema, an, luna):
+    """DOAR statul de plata (document_ref 'SAL LL/AAAA'). nota_contract_special
+    (zilieri/cenzori) scrie tot sursa='salarii' - nu e stat de plata, nu se numara."""
+    inceput = "%04d-%02d-01" % (an, luna)
+    sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
+    with conn.cursor() as cur:
+        cur.execute(f"""SELECT count(*) FROM {schema}.inregistrari
+                        WHERE data >= %s AND data < %s AND status = 'ciorna'
+                          AND sursa = 'salarii' AND document_ref = %s""",
+                    (inceput, sfarsit, "SAL %02d/%04d" % (luna, an)))
+        return int(cur.fetchone()[0] or 0)
+
+
+def verifica_d112(conn, schema, an, luna):
+    """F163: D112 vs contabilitate. Gri daca declaratia nu se poate genera."""
+    from core import d112 as _d112
+    try:
+        xml, _av = _d112.genereaza(conn, schema, an, luna)
+    except Exception as e:
+        return {"an": an, "luna": luna, "stare": "gri", "constatari": [{
+                    "stare": "gri", "eticheta": "Salarii", "temei": "D112 nu s-a putut genera.",
+                    "mesaj": f"NU pot verifica salariile: declarația nu se poate calcula ({e}).",
+                    "remediu": {"fel": "investigatie",
+                                "cauza": "Date lipsă sau profil incomplet.",
+                                "actiune": "Completează profilul firmei și salariații, apoi reîncearcă.",
+                                "facturi": []}}],
+                "explicatie": "",
+                "limita": "Verificarea D112 nu a fost efectuată — riscul rămâne neacoperit.",
+                "modul": MODUL, "reguli": REGULI}
+    totaluri = totaluri_d112_din_xml(xml)
+    import re as _re
+    _m = _re.search(r'angajatorB[^>]*B_sal="(\d+)"', xml)
+    totaluri["_nr_salariati"] = int(_m.group(1)) if _m else 0
+    rulaje = rulaje_luna(conn, schema, an, luna, ("444", "4315", "4316", "436"))
+    ciorne = note_salarii_ciorna(conn, schema, an, luna)
+    nr_sal = int(totaluri.get("_nr_salariati", 0))
+    constatari = compara_d112(totaluri, rulaje, ciorne, nr_sal)
+    stare = "rosu" if any(c["stare"] == "rosu" for c in constatari) else "verde"
+    return {"an": an, "luna": luna, "stare": stare, "constatari": constatari,
+            "explicatie": (f"{ciorne} note de salarii în ciornă." if ciorne else ""),
+            "limita": ("Verificat: totalurile din XML-ul D112 (cod 602/412+458/432+459/480) vs "
+                       "conturile 444/4315/4316/436, numai note validate. "
+                       "NEVERIFICAT: brutul (421) — D112 raportează baza de contribuții, "
+                       "nu brutul contabil; pe lunile cu concedii medicale diverg legitim. "
+                       "NEVERIFICAT: dacă D112 depus efectiv la ANAF coincide cu cel calculat aici."),
+            "modul": MODUL, "reguli": REGULI}
 
 
 def verifica_tva(conn, schema, an, luna):

@@ -105,3 +105,43 @@ def test_cm_split_angajator_max_5():
 def test_cm_cod10_plafonat_25pct():
     assert calcul_cm_cod10(4000, 3000) == Decimal("1000.00")
     assert calcul_cm_cod10(4000, 2000) == Decimal("1000.00")
+
+
+# ---- art. 146(5^6): suprataxarea NU depinde de norma (corectie 15.07.2026) ----
+def test_norma_intreaga_sub_minim_este_suprataxata():
+    """art. 146(5^6): "norma intreaga SAU timp partial" - conditia e venitul sub minim.
+    Regresie: conditia cerea not norma_intreaga -> stat plata si D112 divergeau."""
+    from datetime import date
+    r = calcul_salariu(brut=3000, la_data=date(2026, 6, 1), norma_intreaga=True)
+    assert r["cas_suprataxa"] > 0, "norma intreaga sub minim TREBUIE suprataxata"
+    assert r["cass_suprataxa"] > 0
+
+
+def test_part_time_sub_minim_ramane_suprataxat():
+    from datetime import date
+    r = calcul_salariu(brut=3000, la_data=date(2026, 6, 1), norma_intreaga=False)
+    assert r["cas_suprataxa"] > 0
+
+
+def test_exceptatul_nu_e_suprataxat_indiferent_de_norma():
+    """Exceptiile sunt cele de la alin. (5^7), nu norma."""
+    from datetime import date
+    for norma in (True, False):
+        r = calcul_salariu(brut=3000, la_data=date(2026, 6, 1), norma_intreaga=norma,
+                           exceptat_suprataxare=True)
+        assert r["cas_suprataxa"] == 0 and r["cass_suprataxa"] == 0
+
+
+def test_peste_minim_nu_se_suprataxeaza():
+    from datetime import date
+    r = calcul_salariu(brut=5000, la_data=date(2026, 6, 1), norma_intreaga=True)
+    assert r["cas_suprataxa"] == 0
+
+
+def test_facilitatea_ramane_conditionata_de_norma_intreaga():
+    """HG 146/2026: facilitatea cere norma intreaga - aici norma CONTEAZA."""
+    from datetime import date
+    intreg = calcul_salariu(brut=4050, la_data=date(2026, 6, 1), norma_intreaga=True)
+    partial = calcul_salariu(brut=4050, la_data=date(2026, 6, 1), norma_intreaga=False)
+    assert intreg["facilitate"] > 0
+    assert partial["facilitate"] == 0

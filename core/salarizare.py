@@ -78,7 +78,9 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
-    - norma_intreaga: False pentru part-time (afectează facilitate + suprataxare)
+    - norma_intreaga: False pentru part-time. Afecteaza FACILITATEA (HG 146/2026
+      o da doar la norma intreaga). NU afecteaza suprataxarea: art. 146(5^6) o
+      cere pentru contract "cu norma intreaga SAU cu timp partial".
     - venit_brut_total: venit brut lunar contractual (default = brut), pt plafon facilitate
     - exceptat_suprataxare: elev/student <26, pensionar, multi-contract cu declarație
     """
@@ -113,14 +115,24 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
 
     cam = b * cota_cam
 
-    # SUPRATAXARE PART-TIME (art.146 alin.5^7 Cod fiscal): daca part-time si
-    # baza_contrib < baza_podea (minim - facilitate), angajatorul SUPORTA CAS/CASS
-    # suplimentar pe diferenta (nu se retine din netul angajatului).
-    # Exceptii: elev/student <26, pensionar, multi-contract cu declaratie.
+    # SUPRATAXARE SUB SALARIUL MINIM (art. 146 alin. (5^6) si art. 168 alin. (6^1)
+    # Cod fiscal). Verificat la sursa 15.07.2026 (mfinante.gov.ro, text oficial):
+    # "in baza unui contract individual de munca CU NORMA INTREAGA SAU CU TIMP PARTIAL
+    # ... nu poate fi mai mica decat nivelul contributiei ... asupra salariului de baza
+    # minim brut pe tara". CONDITIA LEGALA E VENITUL SUB MINIM, NU NORMA.
+    # CORECTIE 15.07.2026: conditia cerea `not norma_intreaga` -> un salariat cu norma
+    # intreaga si brut sub minim NU era suprataxat in statul de plata, dar ERA declarat
+    # suprataxat in D112 (d112.pull:336 aplica pragul indiferent de norma). Doua cifre
+    # diferite pentru acelasi salariat. Divergenta descoperita mecanic, prin control
+    # incrucisat nota-vs-declaratie (salarii_contare.control_coerenta).
+    # Exceptiile sunt cele de la alin. (5^7): elev/student <26, pensionar, multi-contract
+    # cu declaratie pe propria raspundere -> parametrul exceptat_suprataxare.
+    # norma_intreaga ramane conditie pentru FACILITATE (HG 146/2026 cere norma intreaga),
+    # nu pentru suprataxare.
     baza_podea = sm - facilitate_val
     cas_suprataxa = Decimal(0)
     cass_suprataxa = Decimal(0)
-    if (not norma_intreaga) and (not exceptat_suprataxare) and baza_contrib < baza_podea:
+    if (not exceptat_suprataxare) and baza_contrib < baza_podea:
         diferenta = baza_podea - baza_contrib
         cas_suprataxa = diferenta * cota_cas
         cass_suprataxa = diferenta * cota_cass
