@@ -177,8 +177,10 @@ def importa(conn, randuri, data_referinta=None):
     ramanea cu o balanta de deschidere imposibila si contabilul credea ca e in regula.
     Semnalarea fara oprire e mai rea decat tacerea: da impresia ca produsul a verificat.
     """
+    # REFUZUL E PRIMA POARTA: nimic nu se scrie dintr-o balanta respinsa. Pusesem
+    # _adauga_conturi_lipsa inaintea verificarii - conturile intrau in plan chiar si
+    # cand importul era refuzat. Prins de test (15.07.2026), nu de mine.
     ok, td_v, tc_v, dif = verifica_echilibru(randuri)
-    _adauga_conturi_lipsa(conn, randuri)
     if not ok:
         raise ValueError(
             "Balanța nu se echilibrează: debit %.2f lei, credit %.2f lei "
@@ -186,6 +188,7 @@ def importa(conn, randuri, data_referinta=None):
             "debitor egal cu cel creditor — altfel toată contabilitatea firmei "
             "pornește greșit." % (td_v, tc_v, dif))
     asigura_tabel(conn)
+    _adauga_conturi_lipsa(conn, randuri)
     td = tc = 0.0
     with conn.cursor() as cur:
         cur.execute("DELETE FROM solduri_initiale")
