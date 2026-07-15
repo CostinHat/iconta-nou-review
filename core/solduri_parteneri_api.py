@@ -35,9 +35,18 @@ def _numar(v):
         return 0.0
 
 
-def _gaseste_col(antet, *chei):
-    """Indexul primei coloane al carei antet contine una din chei. -1 daca lipseste."""
+def _gaseste_col(antet, *chei, exclus=None):
+    """Indexul primei coloane al carei antet contine una din chei. -1 daca lipseste.
+    `exclus` = indecsi deja atribuiti altui camp; nu pot fi si acesta.
+
+    Fara `exclus`, un antet "CUI partener" se potriveste si la "cui", si la "partener":
+    prima potrivire castiga, iar denumirea ajunge sa fie CUI-ul. Dovedit 15.07.2026
+    prin migrare reala - cabinetele isi numesc chiar asa coloanele.
+    """
+    lua = set(x for x in (exclus or []) if x is not None) if not isinstance(exclus, int) else {exclus}
     for i, h in enumerate(antet):
+        if i in lua:
+            continue
         hl = str(h).strip().lower()
         for k in chei:
             if k in hl:
@@ -89,7 +98,8 @@ def extrage(continut, nume_fisier=""):
     antet = [str(x) for x in randuri[0]]
     i_cont = _gaseste_col(antet, "cont", "simbol")
     i_cui = _gaseste_col(antet, "cui", "cif", "cod fiscal")
-    i_den = _gaseste_col(antet, "denumire", "nume", "partener")
+    # denumirea se cauta DUPA cont si cui, sarind peste coloanele lor
+    i_den = _gaseste_col(antet, "denumire", "nume", "partener", exclus=[i_cont, i_cui])
     i_deb = _gaseste_col(antet, "debitor", "debit")
     i_cre = _gaseste_col(antet, "creditor", "credit")
     if i_cont < 0:

@@ -77,3 +77,47 @@ def test_strict_nu_transforma_gunoiul_in_zero():
     assert _numar("N/A") == 0                  # implicit: tolerant (comportament vechi)
     with pytest.raises(ValueError):
         _numar("N/A", strict=True)
+
+
+def test_conturile_din_balanta_intra_in_plan(monkeypatch):
+    """Ecranul promite: 'conturile analitice (clienti, furnizori) intra automat in plan'.
+    Pana la 15.07.2026 importa() nu atingea deloc plan_conturi (grep = 0), desi si
+    docstringul modulului promitea acelasi lucru. O balanta cu analitice reale
+    (4111.01 DEDEMAN) lasa soldurile pe conturi inexistente in nomenclator."""
+    from core import solduri_api
+    scrise = []
+
+    class _Cur:
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def executemany(self, q, vals):
+            assert "plan_conturi" in q and "ON CONFLICT" in q
+            scrise.extend(vals)
+        rowcount = 0
+
+    class _Conn:
+        def cursor(self): return _Cur()
+
+    solduri_api._adauga_conturi_lipsa(_Conn(), [
+        {"cont": "4111.01", "denumire": "Client DEDEMAN SRL", "debit": 100, "credit": 0},
+        {"cont": "401.05", "denumire": "Furnizor ORANGE SA", "debit": 0, "credit": 100},
+    ])
+    assert ("4111.01", "Client DEDEMAN SRL") in scrise
+    assert ("401.05", "Furnizor ORANGE SA") in scrise
+
+
+def test_contul_fara_denumire_primeste_simbolul():
+    from core import solduri_api
+    scrise = []
+
+    class _Cur:
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def executemany(self, q, vals): scrise.extend(vals)
+        rowcount = 0
+
+    class _Conn:
+        def cursor(self): return _Cur()
+
+    solduri_api._adauga_conturi_lipsa(_Conn(), [{"cont": "5121", "debit": 0, "credit": 0}])
+    assert scrise == [("5121", "5121")]

@@ -141,6 +141,33 @@ def verifica_echilibru(randuri):
     return abs(dif) < 0.01, td, tc, dif
 
 
+def _adauga_conturi_lipsa(conn, randuri):
+    """Conturile din balanta care nu sunt in planul firmei intra in el.
+
+    Ecranul promite: "conturile analitice (clienti, furnizori) intra automat in plan",
+    iar docstringul modulului la fel - dar importa() nu atingea deloc plan_conturi
+    (dovedit 15.07.2026: grep plan_conturi in solduri_api = 0). Planul avea doar cele
+    185 de conturi standard OMFP; o balanta cu analitice reale (4111.01 DEDEMAN,
+    401.05 ORANGE - cum au toate cabinetele) lasa soldurile pe conturi inexistente
+    in nomenclator.
+    Tipul ramane 'Bifunctional' (implicitul tabelei): natura contului se deduce din
+    simbol, nu o inventam aici. ON CONFLICT DO NOTHING - nu suprascriem denumirile
+    din planul oficial cu cele din balanta.
+    """
+    conturi = []
+    for r in (randuri or []):
+        c = str(r.get("cont") or "").strip()
+        if c:
+            conturi.append((c, (str(r.get("denumire") or "").strip() or c)))
+    if not conturi:
+        return 0
+    with conn.cursor() as cur:
+        cur.executemany(
+            "INSERT INTO plan_conturi (simbol, denumire) VALUES (%s, %s) "
+            "ON CONFLICT (simbol) DO NOTHING", conturi)
+        return cur.rowcount
+
+
 def importa(conn, randuri, data_referinta=None):
     """Înlocuiește soldurile (DELETE + INSERT). Întoarce {randuri, total_debit, total_credit}.
     Ridica ValueError daca balanta nu se echilibreaza.
@@ -151,6 +178,7 @@ def importa(conn, randuri, data_referinta=None):
     Semnalarea fara oprire e mai rea decat tacerea: da impresia ca produsul a verificat.
     """
     ok, td_v, tc_v, dif = verifica_echilibru(randuri)
+    _adauga_conturi_lipsa(conn, randuri)
     if not ok:
         raise ValueError(
             "Balanța nu se echilibrează: debit %.2f lei, credit %.2f lei "
