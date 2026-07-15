@@ -16,7 +16,13 @@ Structura AuditFile (OECD SAF-T 2.0 adaptat RO):
    Validare finală: DUKIntegrator_AnLunaUI.jar (-v D406 fisier.xml $ $ an=AAAA luna=LL).
 
 CORECȚII față de prima schiță (confirmate din XSD):
-  - namespace = mfp:anaf:dgti:d406t:declaratie:v1 (NU d406)
+  - namespace = mfp:anaf:dgti:d406:declaratie:v1
+    CORECTIE 15.07.2026: aici scria "d406t (NU d406)" - gresit. Validatorul
+    oficial (DUKIntegrator_AnLunaUI -v D406) spune literal: "namespace
+    ('mfp:anaf:dgti:d406t:declaratie:v1') lipsa sau incorect la sectiunea
+    AuditFile. Valoarea corecta este xmlns='mfp:anaf:dgti:d406:declaratie:v1'".
+    Greseala a supravietuit pentru ca "validarea" D406 era teatru: se chema cu
+    jar-ul si cheia altei declaratii, iesea tacit si orice XML parea valid.
   - AccountType = Activ/Pasiv/Bifunctional (NU "GL")
   - TaxAccountingBasis enumerat: A/I/IFRS/BANK/INSURANCE/NORMA39/IFN/NORMA36/NORMA14/ONG
   - SelectionCriteria cere SelectionStartDate/EndDate + Period*
@@ -31,7 +37,7 @@ from datetime import date, timedelta
 from decimal import Decimal, ROUND_HALF_UP
 
 # namespace REAL din XSD (targetNamespace)
-NS = "mfp:anaf:dgti:d406t:declaratie:v1"
+NS = "mfp:anaf:dgti:d406:declaratie:v1"   # verificat la validatorul oficial 15.07.2026
 REGULI = "2026.1"
 SAFT_VERSION = "2.4.9"
 TAX_ACCOUNTING_BASIS = "A"   # A = Accounting (contabilitate de angajamente)

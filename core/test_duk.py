@@ -40,3 +40,34 @@ def test_toate_declaratiile_din_dispecer_au_cheie():
     from core.declaratii_api import DECLARATII
     for tip in DECLARATII:
         assert tip in CHEIE_DUK, "tipul %s nu are cheie DUK" % tip
+
+
+GUNOI = '<?xml version="1.0"?><aiurea xmlns="mfp:anaf:dgti:inventat:v99" x="1"/>'
+
+
+def test_niciun_validator_nu_accepta_gunoi():
+    """Un validator care nu poate spune NU nu e validator.
+
+    15.07.2026: D406 raporta 'valid' pentru ORICE XML, inclusiv <aiurea/> cu namespace
+    inventat - pentru ca era chemat cu jar-ul si parametrii altei declaratii ("-v D406"
+    in loc de DUKIntegrator_AnLunaUI "-p D406 ... an= luna="), iesea tacut, fara fisier
+    de erori, iar "fara erori" era interpretat drept "valid". Un fals verde e mai
+    periculos decat o eroare: spune ca poti depune ceva ce ANAF respinge.
+    """
+    for tip in ("d100", "d101", "d112", "d205", "d300", "d301", "d390", "d394"):
+        r = valideaza(GUNOI, tip)
+        assert r["stare"] != "valid", "%s accepta gunoi ca valid" % tip
+
+
+def test_d406_nu_accepta_gunoi_si_cere_an_luna():
+    r = valideaza(GUNOI, "d406", an=2026, luna=6)
+    assert r["stare"] != "valid"
+    fara = valideaza(GUNOI, "d406")
+    assert fara["stare"] == "gri" and "an si luna" in fara["temei"]
+
+
+def test_saft_are_jar_propriu():
+    """D406 e SAF-T: alt jar (AnLunaUI), -p in loc de -v, cu an=/luna=."""
+    from core.duk import TIPURI_SAFT, JAR_SAFT
+    assert "d406" in TIPURI_SAFT
+    assert "AnLunaUI" in JAR_SAFT

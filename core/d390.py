@@ -181,11 +181,17 @@ def build_xml(res):
         hdr += ' telefon="%s"' % _esc(tel)
     if mail:
         hdr += ' mail="%s"' % _esc(mail)
-    hdr += ' totalPlata_A="%d">' % res.total_plata_a
+    # REZUMATUL E INLINE PE RADACINA, nu element separat. Dovedit 15.07.2026 pe
+    # D390Validator (clasa Declaratie390 contine nr_pag/nrOPI/bazaL/bazaT/bazaA/bazaP/
+    # bazaS/bazaR/total_baza; nu exista clasa/tag "rezumat"). Elementul <rezumat> scris
+    # aici lasa radacina fara atributele obligatorii -> "lipsa sectiune obligatorie
+    # inainte de sfarsitul sectiunii declaratie390". Acelasi tipar ca <identificare>
+    # la D394: un element inventat, care nu apare in namespace.
+    hdr += (' nr_pag="1" nrOPI="%d" bazaL="%d" bazaT="%d" bazaA="%d" bazaP="%d" '
+            'bazaS="%d" bazaR="%d" total_baza="%d" totalPlata_A="%d">'
+            % (res.nr_opi, bz["L"], bz["T"], bz["A"], bz["P"], bz["S"], bz["R"],
+               res.total_baza, res.total_plata_a))
     H.append(hdr)
-    H.append('  <rezumat nr_pag="1" nrOPI="%d" bazaL="%d" bazaT="%d" bazaA="%d" '
-             'bazaP="%d" bazaS="%d" bazaR="%d" total_baza="%d"/>'
-             % (res.nr_opi, bz["L"], bz["T"], bz["A"], bz["P"], bz["S"], bz["R"], res.total_baza))
     # operațiuni ordonate (tip, tara, cod)
     for (tip, tara, cod, den) in sorted(res.ops.keys(), key=lambda k: (k[0], k[1], k[2])):
         H.append('  <operatie tip="%s" tara="%s" codO="%s" denO="%s" baza="%d"/>'

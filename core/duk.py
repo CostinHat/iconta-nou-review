@@ -30,6 +30,18 @@ REGULI = "2026.1"
 DIST = "/home/costin/duk/dist"
 JAR = os.path.join(DIST, "DUKIntegrator.jar")
 
+# D406 (SAF-T) se valideaza cu ALT jar si ALTI parametri: DUKIntegrator_AnLunaUI.jar
+# -p D406 fisier.xml $ 0 0 out.pdf an=AAAA luna=LL. Dovedit in buildul vechi
+# (/opt/iconta/main.py:10202, care valida D406 cap-coada).
+# CU JAR-UL NORMAL SI "-v D406" VALIDATORUL IESE TACUT, FARA FISIER DE ERORI - ceea ce
+# insemna "valid" pentru orice XML, INCLUSIV UNUL DE GUNOI (dovedit 15.07.2026: un
+# <aiurea/> cu namespace inventat trecea ca "valid"). Un fals verde e mai periculos
+# decat o eroare: iti spune ca poti depune ceva ce ANAF va respinge.
+DIST_SAFT = "/opt/duk/saft/val/duk_SAFT_an_luna/dist"
+JAR_SAFT = os.path.join(DIST_SAFT, "DUKIntegrator_AnLunaUI.jar")
+JAVA_SAFT = "/opt/duk/jre8/bin/java"
+TIPURI_SAFT = frozenset(("d406",))
+
 CHEIE_DUK = {
     "d100": "D100", "d101": "D101", "d112": "D112", "d205": "D205",
     "d300": "D300", "d301": "D301", "d390": "D390", "d394": "D394",
@@ -64,11 +76,60 @@ LIMITA = ("Validare structura si reguli ANAF. NU verifica daca cifrele corespund
           "evidentei contabile - pentru asta e controlul incrucisat.")
 
 
-def valideaza(xml, tip, dist=DIST, timeout=180):
+def _valideaza_saft(xml, tip, an=None, luna=None, timeout=300):
+    """D406/SAF-T: jar separat, -p cu an/luna, succesul = PDF generat.
+    Fara an/luna nu se poate valida -> gri (nu 'valid')."""
+    import subprocess as _sp
+    if not os.path.exists(JAR_SAFT):
+        return _gri("D406", "Validatorul SAF-T (DUKIntegrator_AnLunaUI.jar) nu e instalat.")
+    if not an or not luna:
+        return _gri("D406", "Validarea D406 cere an si luna (validatorul SAF-T le "
+                            "primeste ca parametri).")
+    td = tempfile.mkdtemp(prefix="duk_d406_")
+    xp = os.path.join(td, "d.xml")
+    lp = os.path.join(td, "r.txt")
+    pp = os.path.join(td, "o.pdf")
+    try:
+        with open(xp, "w", encoding="utf-8") as fh:
+            fh.write(xml)
+        # Apelul e cel din doc/Instructiuni.txt al pachetului SAF-T (sursa oficiala):
+        #   java -Xms250m -Xmx4g -jar DUKIntegrator_AnLunaUI.jar -v D406 d406.xml $ $
+        #        an=2025 luna=8
+        # "$" = valoare implicita pentru parametrii optionali. Memoria marita e ceruta
+        # explicit de ANAF: fisierele SAF-T sunt mari.
+        _sp.run([JAVA_SAFT, "-Djava.awt.headless=true", "-Xms250m", "-Xmx4g",
+                 "-jar", JAR_SAFT, "-v", "D406", xp, lp, "$",
+                 "an=%d" % an, "luna=%d" % luna],
+                cwd=DIST_SAFT, capture_output=True, text=True, timeout=timeout)
+    except Exception as e:
+        return _gri("D406", "Validatorul SAF-T nu a putut fi rulat: %s." % e)
+    temei = "DUKIntegrator_AnLunaUI -v D406 (validator SAF-T, pachet oficial ANAF)."
+    rez = ""
+    for f in (lp, xp + ".err.txt"):
+        if os.path.exists(f):
+            with open(f, encoding="utf-8", errors="replace") as fh:
+                rez = (rez + "\n" + fh.read()).strip()
+    if rez.lower() in ("ok", "ok."):
+        rez = ""
+    if not rez:
+        # Fara fisier de rezultat NU declaram "valid": exact asa aparea D406 verde pe
+        # orice gunoi. Cerem o dovada pozitiva - fisier de rezultat sau PDF.
+        if os.path.exists(lp) or (os.path.exists(pp) and os.path.getsize(pp) > 0):
+            return {"stare": "valid", "erori": "", "cheie": "D406", "temei": temei,
+                    "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
+        return _gri("D406", "Validatorul SAF-T nu a produs nici rezultat, nici erori - "
+                            "nu putem confirma ca declaratia e valida.")
+    return {"stare": "erori", "erori": rez, "cheie": "D406", "temei": temei,
+            "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
+
+
+def valideaza(xml, tip, dist=DIST, timeout=180, an=None, luna=None):
     """Intoarce {stare, erori, cheie, temei, limita}. Esecul rularii = 'gri', nu 'valid'."""
     cheie = CHEIE_DUK.get(tip)
     if not cheie:
         return _gri(None, "Tip necunoscut: %r." % tip)
+    if tip in TIPURI_SAFT:
+        return _valideaza_saft(xml, tip, an=an, luna=luna, timeout=max(timeout, 300))
     if cheie not in validatoare_instalate(dist):
         return _gri(cheie, "Validatorul %s nu e instalat in pachetul DUKIntegrator." % cheie,
                     "XML generat, NU validat. Instaleaza validatorul de la ANAF "

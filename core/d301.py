@@ -144,7 +144,11 @@ def build_xml(res):
     adr = " ".join(x for x in [prof.get("adresa"), prof.get("oras"), prof.get("judet")] if x).strip()
     t = res.totaluri
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
-    H.append('<declaratie301 xmlns="%s" luna="%d" an="%d" d_rec="0" mijl_trans="%d" '
+    # temei — OBLIGATORIU (validator: "temei: atributul trebuie sa existe"); lipsea
+    # complet, deci D301 nu s-a validat niciodata. E temeiul legal pentru depunerea
+    # declaratiei DUPA anularea rezervei verificarii ulterioare (art. 105 alin.(6) din
+    # Legea 207/2015, Codul de procedura fiscala). La o depunere obisnuita = 0.
+    H.append('<declaratie301 xmlns="%s" luna="%d" an="%d" d_rec="0" temei="0" mijl_trans="%d" '
              'cif="%s" denumire="%s" adresa="%s" banca="%s" cont="%s" pers_inreg="1" '
              'nr_evid="%s" baza1="%d" tva1="%d" baza2="%d" tva2="%d" baza3="%d" tva3="%d" '
              'baza4="%d" tva4="%d" baza5="%d" tva5="%d" totalPlata_A="%d" '
