@@ -70,3 +70,32 @@ def test_deductibila_necontata_primite():
     assert c["stare"] == "rosu"
     assert c["remediu"]["fel"] == "executabil"
     assert c["remediu"]["facturi"] == [9]
+
+
+def test_ciorna_nu_da_verde_asteapta_validare():
+    """O nota ciorna e propunere, nu evidenta: constatarea ramane rosie pana la patru-ochi."""
+    necontate = [{"id": 1, "directie": "emisa", "tva": Decimal("74"), "are_ciorna": True}]
+    r = compara_tva({"R17_2": 95, "R31_2": 0}, _rulaje(colectata=21), necontate)
+    assert r[0]["stare"] == "rosu"
+    assert r[0]["remediu"]["fel"] == "sugerat"
+    assert "ciorn" in r[0]["remediu"]["cauza"]
+    assert r[0]["remediu"]["facturi"] == []
+
+
+def test_mixt_executabil_doar_pe_facturile_fara_nota():
+    necontate = [{"id": 1, "directie": "emisa", "tva": Decimal("40"), "are_ciorna": True},
+                 {"id": 2, "directie": "emisa", "tva": Decimal("34"), "are_ciorna": False}]
+    r = compara_tva({"R17_2": 95, "R31_2": 0}, _rulaje(colectata=21), necontate)
+    assert r[0]["remediu"]["fel"] == "executabil"
+    assert r[0]["remediu"]["facturi"] == [2]
+    assert "ciorn" in r[0]["remediu"]["cauza"]
+
+
+def test_o_factura_cu_ciorna_nu_intra_niciodata_intr_un_remediu_executabil():
+    necontate = [{"id": 1, "directie": "emisa", "tva": Decimal("74"), "are_ciorna": True},
+                 {"id": 2, "directie": "primita", "tva": Decimal("10"), "are_ciorna": True}]
+    r = compara_tva({"R17_2": 95, "R31_2": 10}, _rulaje(colectata=21, dedusa=0), necontate)
+    for c in r:
+        rem = c.get("remediu") or {}
+        if rem.get("fel") == "executabil":
+            assert 1 not in rem["facturi"] and 2 not in rem["facturi"]
