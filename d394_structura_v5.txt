@@ -33,3 +33,45 @@ _attributeOK _cui _den _integerValue _nrF _nrI _parent _serieFacturiTip1 _serieF
 === Lista ===
 _attributeOK _caen _cota _coteTVA2 _integerValue _listaCaen _operat _params _tva _unicitateLista _validator _valoare 
 
+
+=============================================================================
+ANALIZA 15.07.2026 (din d394_struct_anaf.txt + validator v5). CE CERE D394:
+
+RADACINA <declaratie394> (obligatorii): luna, an, tip_D394 (L/T/S/A, cu regula
+  luna: T->02,03,05,06,08,09,11,12; S->06,12; A->12), sistemTVA (0=normal,
+  1=la incasare), op_efectuate (0/1; ERR daca =1 fara date sau =0 cu date),
+  prsAfiliat (0/1, din 01.09.2020), nume/prenume/functie_declar.
+<identificare> 1 aparitie: cui, caen(!), den, adresa, telefon (toate DA), fax,
+  mail, totalPlata_A = nrCui1+nrCui2+nrCui3+nrCui4 + rezumat2(bazaL+bazaA+bazaAI).
+<idReprezentant> 0-1. Apoi tip_intocmit (0=PJ/1=PF), den_intocmit, cif_intocmit,
+  calitate_intocmit XOR functie_intocmit (reguli incrucisate PJ/PF), optiune,
+  schimb_optiune (=1 -> optiune=1).
+<informatii> 1 aparitie, INAINTE de <rezumat1> (atentionare explicita in doc):
+  nrCui1=count distinct op1.cuiP pt tip_partener=1; nrCui2=NR INREGISTRARI op1 pt
+  tip_partener=2 (nu distinct!); nrCui3/4=count distinct.
+  nr_BF_i1/incasari_i1/incasari_i2 = sume din op2. nrFacturi*, val_LS_PF.
+  tvaDed{24,21,20,19,11,9,5} / tvaDedAI* / tvaCol* = TVA la incasare (0 la normal).
+  solicit=0 -> TOATE achizitii*/BUN*/Prest*/LIntra/Export/... = null. efectuat.
+<rezumat1> 0-n, unic pe (tip_partener, cota): CALCULAT din op1 -
+  bazaL = SUM op1.baza WHERE tip=L AND cota=cota AND tip_partener=tip_partener
+  (idem facturiL/tvaL, si pt A/V/C/AI/AS/LS/N). null pt cota=0, <>null pt cota<>0.
+<op1> 0-n, unic pe (cuiP, tip, cota):
+  tip in (A,L,C,V,AI,LS,AS,ASI,N) - NOUA tipuri, nu 4.
+  tip_partener: 1=inreg TVA RO, 2=neinreg, 3=nestabilit UE, 4=nestabilit non-UE.
+    tip_partener=1 -> tip<>N ; =2 -> tip in (L,LS,N) ; in (3,4) -> tip in (L,LS,C)
+  cota in (0,5,9,11,19,20,21,24); 0 permis DOAR pt tip in (LS,AS,ASI,N,V).
+  cuiP obligatoriu pt tip_partener<>2. denP DA.
+  tip_partener=2 SI cuiP=null -> taraP (nomenclator) + judP (nomenclator, pt RO)
+    + locP/strP/nrP/blP/apP/detP. Altfel toate null.
+  tip_document (1-5) obligatoriu pt tip_partener=2 SI tip=N.
+  tip_N (1=bunuri, 2=servicii) obligatoriu pt tip in (V,C,N) SI tip_partener in (1,2).
+  nrFact, baza (DA), tva.
+<op11> art.331 pe cod produs: codPR, bazaPR, tvaPR, nrFactPR.
+<rezumat2> 0-4, pe cota, doar daca op_efectuate=1: facturi simplificate + bonuri.
+<op2> bonuri AMEF. <facturi>/<serieFacturi> plaje. <detaliu> nomenclator bunuri.
+<lista> 0-n, unic (caen, cota, operat): CAEN-uri speciale (ex 1071 cofetarie).
+
+CE ARE CODUL ACUM (gresit): radacina cu 6 atribute, <identificare> incomplet
+(fara caen/telefon, cu totalPlata_A pe radacina si formula inventata), <rezumat>
+in loc de <rezumat1> (fara tip_partener/cota), <op1> fara cota/tip_partener/nrFact.
+Partenerii straini EXCLUSI - gresit, intra ca tip_partener 3/4.
