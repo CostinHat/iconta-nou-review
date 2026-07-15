@@ -1,7 +1,10 @@
 // declaratii.js — ecran asistent: creeaza o declaratie -> trimite in coada de validare.
 // Flux 3 pasi intr-o fereastra: 1) firma+tip+perioada  2) genereaza+verifica  3) trimite in coada.
 // inceput_la porneste la deschiderea ecranului (cronometru efort) si merge la /coada.
-// Backend: GET /tenants, GET /declaratii/tipuri, POST /declaratii/{tip}, POST /coada.
+// Backend: GET /tenants, GET /declaratii/tipuri, POST /declaratii/{tip}/valideaza, POST /coada.
+// [duk_valideaza_v1] Pasul 2 VALIDEAZA la ANAF (DUKIntegrator), nu doar genereaza:
+// pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
+// iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
 import { api, esc } from "../api.js";
 
@@ -11,6 +14,11 @@ const TRIM = ["T1 (ian-mar)","T2 (apr-iun)","T3 (iul-sep)","T4 (oct-dec)"];
 
 // stare ecran
 let S = null;
+
+// XML-ul vine base64 din ruta de validare (fisierul validat, fara al doilea apel).
+function _dinB64(b64) {
+  try { return decodeURIComponent(escape(atob(b64))); } catch (e) { return ""; }
+}
 
 
 
@@ -143,7 +151,7 @@ async function pas2(corp, nav) {
   if (per === "trimestrial") body.trim = S.trim;
 
   try {
-    S.rezultat = await api.post(`/declaratii/${S.tip}`, body);
+    S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
   } catch (e) {
     corp.innerHTML = `
       <p class="mig-intro">Pasul 2 din 3 — generare</p>
@@ -154,14 +162,29 @@ async function pas2(corp, nav) {
 
   const f = corp.closest(".fereastra"); if (f) f.classList.add("fer-larg");
   const avert = S.rezultat.avertismente || [];
-  const xml = S.rezultat.xml || "";
+  const xml = S.rezultat.xml_b64 ? _dinB64(S.rezultat.xml_b64) : (S.rezultat.xml || "");
+  const stare = S.rezultat.stare || "gri";
+  const erANAF = (S.rezultat.erori || "").trim();
+  const blocANAF = stare === "valid"
+    ? `<div class="dec-ok">Validat la ANAF, fără erori.</div>`
+    : (stare === "erori"
+        ? `<div class="dec-eroare">
+             <div class="dec-avert-cap">Validatorul ANAF a găsit erori</div>
+             <pre class="dec-xml-pre">${esc(erANAF)}</pre>
+           </div>`
+        : `<div class="dec-avert">
+             <div class="dec-avert-cap">Nu am putut valida la ANAF</div>
+             <ul><li>${esc(S.rezultat.temei || "Validatorul nu a rulat.")}</li>
+                 <li>${esc(S.rezultat.limita || "")}</li></ul>
+           </div>`);
 
   corp.innerHTML = `
     <p class="mig-intro">Pasul 2 din 3 — verifică <b>${S.tip.toUpperCase()}</b> · ${etPerioada()}</p>
+    ${blocANAF}
     ${avert.length ? `<div class="dec-avert">
         <div class="dec-avert-cap">Avertismente (${avert.length})</div>
         <ul>${avert.map((a)=>`<li>${esc(typeof a==="string"?a:(a.mesaj||JSON.stringify(a)))}</li>`).join("")}</ul>
-      </div>` : `<div class="dec-ok">Fără avertismente. Declarația pare în regulă.</div>`}
+      </div>` : ""}
     <details class="dec-xml">
       <summary>Vezi XML-ul generat</summary>
       <pre class="dec-xml-pre">${esc(xml)}</pre>
@@ -169,6 +192,7 @@ async function pas2(corp, nav) {
     <div class="dec-bara">
       <button class="buton-primar" id="dec-trimite">Trimite în coadă →</button>
     </div>
+    <p class="ecran-nota">${esc(S.rezultat.limita || "")}</p>
   `;
   corp.querySelector("#dec-trimite").addEventListener("click", () => pas3(corp, nav));
 }
