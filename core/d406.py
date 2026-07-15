@@ -40,7 +40,111 @@ from decimal import Decimal, ROUND_HALF_UP
 NS = "mfp:anaf:dgti:d406:declaratie:v1"   # verificat la validatorul oficial 15.07.2026
 REGULI = "2026.1"
 SAFT_VERSION = "2.4.9"
-TAX_ACCOUNTING_BASIS = "A"   # A = Accounting (contabilitate de angajamente)
+# TaxAccountingBasis = NORMA CONTABILA aplicata de firma, nu "contabilitate de
+# angajamente" cum zicea comentariul de aici. Determina si PLANUL DE CONTURI pe care
+# ANAF il accepta: validatorul respinge orice cont care nu e in planul normei declarate
+# (dovedit 15.07.2026: conturile 731-738 - venituri ONG, OMFP 3103/2017 - erau in
+# planul implicit al TUTUROR firmelor, desi nu exista in plan_conturi_bal_soc_com).
+# Nomenclatorul oficial: d406_nomenclatoare_anaf.properties (extras din D406TValidator).
+TAB_IMPLICIT = "A"   # societati comerciale, OMFP 1802/2014 - cazul majoritatii
+# norma (firma_profil.baza_contabila) -> cheia din nomenclatorul ANAF
+PLAN_NOMENCLATOR = {
+    "A": "plan_conturi_bal_soc_com",
+    "IFRS": "plan_conturi_ifrs",
+    "BANK": "plan_conturi_banci",
+    "INSURANCE": "plan_conturi_soc_asigurari",
+    "ONG": "plan_conturi_ONG",
+    "NORMA39": "plan_conturi_n39",
+    "NORMA36": "plan_conturi_n36",
+    "NORMA14": "plan_conturi_norma14",
+    "IFN": "plan_conturi_ifn",
+}
+
+
+# UnitOfMeasure: nomenclatorul e UN/ECE Recommendation 20, NU unitatile romanesti.
+# Dovedit 15.07.2026 pe validatorul oficial: "BUC" -> "valoarea 'BUC' nu se afla in
+# lista"; H87/KGM/LTR/MTR/... exista toate. iConta tinea "BUC" hardcodat in SAF-T.
+UOM_UNECE = {
+    "buc": "H87", "bucata": "H87", "bucati": "H87", "buc.": "H87", "pcs": "H87",
+    "kg": "KGM", "kgm": "KGM", "kilogram": "KGM",
+    "g": "GRM", "gr": "GRM", "gram": "GRM",
+    "t": "TNE", "to": "TNE", "tona": "TNE",
+    "l": "LTR", "litru": "LTR", "litri": "LTR",
+    "ml": "MLT",
+    "m": "MTR", "metru": "MTR", "ml.": "MTR",
+    "cm": "CMT", "km": "KMT",
+    "mp": "MTK", "m2": "MTK", "mc": "MTQ", "m3": "MTQ",
+    "ora": "HUR", "ore": "HUR", "h": "HUR",
+    "zi": "DAY", "zile": "DAY", "luna": "MON", "luni": "MON", "an": "ANN", "ani": "ANN",
+    "set": "SET", "per": "PR", "pereche": "PR",
+    "kwh": "KWH", "mwh": "MWH",
+}
+UOM_IMPLICIT = "H87"
+
+# HeaderComment: obligatoriu, maximum 2 caractere (dovedit pe validatorul oficial).
+HEADER_COMMENT = "L"   # depunere lunara
+
+# MovementType: nomenclatorul ANAF de miscari de stoc (d406_schema_anaf.xlsx, foaia
+# "Nomenclator stocuri"): 10=Achizitie, 20=Productie, 30=Vanzare. Trimiteam "1", care
+# nu exista in lista. BaseRate = pro-rata TVA: standard 1 (intreaga suma), NU 100 -
+# documentatia SAF-T: "Procentele de pro-rata utilizate pentru codul de taxa. Standard
+# este de 1 (intreaga suma)".
+MISCARI_STOC = {"10": "Achizitie", "20": "Productie", "30": "Vanzare"}
+MOVEMENT_IMPLICIT = "10"
+BASE_RATE = 1
+
+
+def uom_unece(um):
+    """Unitatea noastra -> cod UN/ECE Rec.20. Necunoscut -> H87 (bucata), cu semnalare
+    la apelant: mai bine o unitate implicita declarata decat un XML respins."""
+    if not um:
+        return UOM_IMPLICIT, False
+    k = str(um).strip().lower()
+    if k.upper() in set(UOM_UNECE.values()):
+        return k.upper(), True          # deja e cod UN/ECE
+    c = UOM_UNECE.get(k)
+    return (c, True) if c else (UOM_IMPLICIT, False)
+
+
+def registration_number(prof):
+    """RegistrationNumber conform schemei oficiale ANAF (d406_schema_anaf.xlsx,
+    foaia "5. Structures", S.CMH.1 CompanyHeaderStructure), citat integral:
+
+      "Pentru nerezidentii cu inregistrare fiscala in Romania: Cod de inregistrare
+       fiscala (CIF). Pentru rezidenti: daca este inregistrata in scopuri de TVA,
+       setati numarul de inregistrare VAT cu prefixul RO; in caz contrar, setati
+       Codul unic de inregistrare (CUI)"
+
+    Deci prefixul RO NU e optional: e obligatoriu pentru platitorii de TVA si
+    interzis pentru neplatitori. Codul scria _NEDIGIT.sub("", cui), adica stergea
+    exact prefixul cerut -> "formatul este invalid" pentru orice platitor de TVA.
+    """
+    cif = _NEDIGIT.sub("", prof.get("cui") or "")
+    if not cif:
+        return ""
+    platitor = prof.get("platitor_tva")
+    if platitor is None:
+        platitor = True     # implicit: platitor (cazul majoritatii firmelor D406)
+    return ("RO" + cif) if platitor else cif
+
+
+def plan_oficial(norma):
+    """Conturile pe care ANAF le accepta pentru norma data. Sursa: nomenclatorul
+    din validatorul oficial (d406_nomenclatoare_anaf.properties). Intoarce set gol
+    daca nomenclatorul lipseste - atunci NU filtram (nu inventam un plan al nostru)."""
+    import os as _os
+    cheie = PLAN_NOMENCLATOR.get((norma or TAB_IMPLICIT).upper())
+    if not cheie:
+        return set()
+    cale = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
+                         "d406_nomenclatoare_anaf.properties")
+    if not _os.path.exists(cale):
+        return set()
+    with open(cale, encoding="utf-8", errors="replace") as fh:
+        for l in fh:
+            if l.startswith(cheie + "="):
+                return {x.strip() for x in l.split("=", 1)[1].strip().split(",") if x.strip()}
+    return set()
 _NEDIGIT = re.compile(r"\D")
 
 # valori enumerate confirmate din XSD
@@ -128,7 +232,7 @@ class LinieFactura:
     cont: str                # AccountID
     descriere: str
     cantitate: Decimal = Decimal(1)
-    um: str = "BUC"          # InvoiceUOM
+    um: str = UOM_IMPLICIT   # InvoiceUOM - cod UN/ECE Rec.20 (H87 = bucata)
     pret_unitar: Decimal = Decimal(0)
     valoare: Decimal = Decimal(0)        # InvoiceLineAmount (baza, fără TVA)
     sens: str = "C"          # DebitCreditIndicator (C credit pt vânzare, D debit pt cumpărare)
@@ -201,13 +305,25 @@ class Rezultat:
     avertismente: list = field(default_factory=list)
 
 
-# cote TVA RO 2026 (TaxCode seria 380nnn)
+# TaxCode SAF-T: cod de 6 CIFRE, nu 3. Seria (primele 3) = categoria operatiunii,
+# ultimele 3 = pozitia in nomenclator. Codurile de aici sunt cele din schema OFICIALA
+# ANAF (d406_schema_anaf.xlsx, foaia "Livrari", versiunea 05.02.2026):
+#   310nnn = livrari ; 301nnn-309nnn = achizitii deductibile 100% ;
+#   320nnn = achizitii ded. 50% pro-rata ; 380nnn = note contabile fara document sursa.
+# Codul depinde de COTA SI DE PERIOADA: pentru 21% si 11% ANAF a adaugat coduri NOI,
+# active cu 01.08.2025 (Legea 141/2025); cele vechi raman pentru perioadele anterioare.
+# Vechea lista de aici ("310"/"320"/"330"/"300") era inventata - prefixe, nu coduri.
+# Fiecare cod corespunde unui RAND din D300 (col. "Corespondent rand D300").
 COTE_TVA_STANDARD = [
-    CotaTVA("310", Decimal("21"), "TVA 21%"),
-    CotaTVA("320", Decimal("11"), "TVA 11%"),
-    CotaTVA("330", Decimal("9"), "TVA 9%"),
-    CotaTVA("300", Decimal("0"), "TVA 0% / scutit"),
+    CotaTVA("310344", Decimal("21"), "Livrari taxabile cota 21% (rd. 9 D300)"),
+    CotaTVA("310351", Decimal("11"), "Livrari taxabile cota 11% (rd. 10 D300)"),
+    CotaTVA("310311", Decimal("5"), "Livrari taxabile cota 5% (rd. 11 D300)"),
+    CotaTVA("310312", Decimal("0"), "Livrari cu taxare inversa (rd. 13 D300)"),
 ]
+# cota -> TaxCode livrari, dupa 01.08.2025 (Legea 141/2025)
+TAXCODE_LIVRARI = {21: "310344", 11: "310351", 9: "310357", 5: "310311", 0: "310312"}
+# cotele de dinainte de 01.08.2025 (perioade raportate retroactiv)
+TAXCODE_LIVRARI_PRE_2025_08 = {19: "310309", 9: "310310", 5: "310311", 0: "310312"}
 
 
 def construieste(prof, an, luna, conturi, clienti, furnizori, note=None,
@@ -301,11 +417,15 @@ def _header(res):
     H.append('      <PeriodEnd>%d</PeriodEnd>' % res.luna)
     H.append('      <PeriodEndYear>%d</PeriodEndYear>' % res.an)
     H.append('    </SelectionCriteria>')
-    H.append('    <HeaderComment>D406 generat de iConta</HeaderComment>')
+    # HeaderComment: OBLIGATORIU (min 1 aparitie) dar MAX 2 CARACTERE - dovedit pe
+    # validator, in ambele sensuri. Nu e un comentariu liber, ci un cod scurt; in SAF-T
+    # RO marcheaza tipul depunerii. Textul "D406 generat de iConta" facea XML-ul invalid.
+    H.append('    <HeaderComment>%s</HeaderComment>' % HEADER_COMMENT)
     H.append('    <SegmentIndex>1</SegmentIndex>')
     H.append('    <TotalSegmentsInsequence>1</TotalSegmentsInsequence>')
     # extensie RO: TaxAccountingBasis (după HeaderStructure)
-    H.append('    <TaxAccountingBasis>%s</TaxAccountingBasis>' % TAX_ACCOUNTING_BASIS)
+    H.append('    <TaxAccountingBasis>%s</TaxAccountingBasis>'
+             % ((res.prof.get("baza_contabila") or TAB_IMPLICIT).upper()))
     H.append('  </Header>')
     return H
 
@@ -335,7 +455,7 @@ def _masterfiles(res):
     for c in res.clienti:
         M.append('      <Customer>')
         M.append('        <CompanyStructure>')
-        M.append('          <RegistrationNumber>%s</RegistrationNumber>' % _esc(_NEDIGIT.sub("", c.cui or "")))
+        M.append('          <RegistrationNumber>%s</RegistrationNumber>' % _esc('') + _esc(_NEDIGIT.sub('', res.prof.get('cui') or '')) + _esc(''))
         M.append('          <Name>%s</Name>' % _esc(c.nume))
         M.append('          <Address>')
         M.append('            <City>%s</City>' % _esc(c.oras or "-"))
@@ -376,7 +496,7 @@ def _masterfiles(res):
         M.append('          <TaxCode>%s</TaxCode>' % _esc(ct.cod))
         M.append('          <Description>%s</Description>' % _esc(ct.descriere))
         M.append('          <TaxPercentage>%s</TaxPercentage>' % _dec(ct.procent))
-        M.append('          <BaseRate>100.0000</BaseRate>')
+        M.append('          <BaseRate>1</BaseRate>')
         M.append('          <Country>RO</Country>')
         M.append('        </TaxCodeDetails>')
     M.append('      </TaxTableEntry>')
@@ -384,7 +504,7 @@ def _masterfiles(res):
     # containere obligatorii
     M.append('    <UOMTable>')
     M.append('      <UOMTableEntry>')
-    M.append('        <UnitOfMeasure>BUC</UnitOfMeasure>')
+    M.append('        <UnitOfMeasure>%s</UnitOfMeasure>' % UOM_IMPLICIT)
     M.append('        <Description>Bucata</Description>')
     M.append('      </UOMTableEntry>')
     M.append('    </UOMTable>')
@@ -396,80 +516,74 @@ def _masterfiles(res):
     M.append('        <AnalysisIDDescription>General</AnalysisIDDescription>')
     M.append('      </AnalysisTypeTableEntry>')
     M.append('    </AnalysisTypeTable>')
-    M.append('    <MovementTypeTable>')
-    M.append('      <MovementTypeTableEntry>')
-    M.append('        <MovementType>1</MovementType>')
-    M.append('        <Description>Miscare stoc</Description>')
-    M.append('      </MovementTypeTableEntry>')
-    M.append('    </MovementTypeTable>')
+    # MovementTypeTable: sectiunea e OBLIGATORIE structural, dar GOALA in raportarea
+    # lunara. Schema ANAF (d406_schema_anaf.xlsx, "2. MasterFiles"): pct. 2.8 tabela =
+    # "Mandatory - by request", iar MF.MT.1 (MovementTypeTableEntry) = 0..*.
+    # Validatorul confirma in ambele sensuri (15.07.2026): fara tabela -> "ar fi trebuit
+    # sa apara de minimum 1 ori"; cu o intrare -> "MovementType a depasit numarul maxim
+    # de aparitii (0)". Deci tabela da, continut nu - continutul apare doar la
+    # raportarea de STOCURI, ceruta separat. Codurile: MISCARI_STOC (10/20/30).
+    M.append('    <MovementTypeTable/>')
     M.append('    <Products>')
     M.append('      <Product>')
     M.append('        <ProductCode>GENERIC</ProductCode>')
     M.append('        <Description>Produs generic</Description>')
     M.append('        <ProductCommodityCode>0</ProductCommodityCode>')
     M.append('        <ProductNumberCode>GENERIC</ProductNumberCode>')
-    M.append('        <UOMBase>BUC</UOMBase>')
-    M.append('        <UOMStandard>BUC</UOMStandard>')
+    M.append('        <UOMBase>%s</UOMBase>' % UOM_IMPLICIT)
+    M.append('        <UOMStandard>%s</UOMStandard>' % UOM_IMPLICIT)
     M.append('        <UOMToUOMBaseConversionFactor>1</UOMToUOMBaseConversionFactor>')
     M.append('      </Product>')
     M.append('    </Products>')
-    M.append('    <Owners>')
-    M.append('      <Owner>')
-    M.append('        <CompanyStructure>')
-    M.append('          <RegistrationNumber>%s</RegistrationNumber>' % _esc(_NEDIGIT.sub("", res.prof.get("cui") or "")))
-    M.append('          <Name>%s</Name>' % _esc(res.prof.get("nume") or ""))
-    M.append('          <Address>')
-    M.append('            <City>%s</City>' % _esc(res.prof.get("oras") or "-"))
-    M.append('            <Country>RO</Country>')
-    M.append('          </Address>')
-    M.append('        </CompanyStructure>')
-    M.append('        <OwnerID>1</OwnerID>')
-    M.append('        <AccountID>1012</AccountID>')
-    M.append('      </Owner>')
-    M.append('    </Owners>')
-    M.append('    <Assets>')
-    M.append('      <Asset>')
-    M.append('        <AssetID>0</AssetID>')
-    M.append('        <AccountID>21</AccountID>')
-    M.append('        <Description>Fara active in perioada</Description>')
-    M.append('        <DateOfAcquisition>%04d-%02d-01</DateOfAcquisition>' % (res.an, res.luna))
-    M.append('        <StartUpDate>%04d-%02d-01</StartUpDate>' % (res.an, res.luna))
-    M.append('        <Valuations>')
-    M.append('          <Valuation>')
-    M.append('            <AssetValuationType>1</AssetValuationType>')
-    M.append('            <ValuationClass>0</ValuationClass>')
-    M.append('            <AcquisitionAndProductionCostsBegin>0.00</AcquisitionAndProductionCostsBegin>')
-    M.append('            <AcquisitionAndProductionCostsEnd>0.00</AcquisitionAndProductionCostsEnd>')
-    M.append('            <InvestmentSupport>0.00</InvestmentSupport>')
-    M.append('            <AssetLifeYear>0</AssetLifeYear>')
-    M.append('            <AssetAddition>0.00</AssetAddition>')
-    M.append('            <Transfers>0.00</Transfers>')
-    M.append('            <AssetDisposal>0.00</AssetDisposal>')
-    M.append('            <BookValueBegin>0.00</BookValueBegin>')
-    M.append('            <DepreciationMethod>0</DepreciationMethod>')
-    M.append('            <DepreciationPercentage>0</DepreciationPercentage>')
-    M.append('            <DepreciationForPeriod>0.00</DepreciationForPeriod>')
-    M.append('            <AppreciationForPeriod>0.00</AppreciationForPeriod>')
-    M.append('            <ExtraordinaryDepreciationsForPeriod>')
-    M.append('              <ExtraordinaryDepreciationForPeriod>')
-    M.append('                <ExtraordinaryDepreciationMethod>0</ExtraordinaryDepreciationMethod>')
-    M.append('                <ExtraordinaryDepreciationAmountForPeriod>0.00</ExtraordinaryDepreciationAmountForPeriod>')
-    M.append('              </ExtraordinaryDepreciationForPeriod>')
-    M.append('            </ExtraordinaryDepreciationsForPeriod>')
-    M.append('            <AccumulatedDepreciation>0.00</AccumulatedDepreciation>')
-    M.append('            <BookValueEnd>0.00</BookValueEnd>')
-    M.append('          </Valuation>')
-    M.append('        </Valuations>')
-    M.append('      </Asset>')
-    M.append('    </Assets>')
+    # Owners: sectiune GOALA in raportarea lunara, ca MovementTypeTable.
+    # Schema ANAF (d406_schema_anaf.xlsx): pct. 2.11 Owners = "Mandatory - by request";
+    # MF.O.2 Owner/CompanyStructure = "TBD" (to be determined - nu se completeaza);
+    # S.C.1 CompanyStructure/RegistrationNumber = "TBD". In XSD toate sunt minOccurs=0.
+    # Validatorul confirma: "elementul 'RegistrationNumber' a depasit numarul maxim de
+    # aparitii (0)" - adica in Owners nu are voie sa existe deloc; eroarea de format era
+    # doar efectul validarii unui camp care nu trebuia sa fie acolo.
+    # ATENTIE la doua structuri DIFERITE cu reguli diferite (greseala mea 15.07.2026):
+    #   S.CMH.1 CompanyHeaderStructure (Header/Company) -> RegistrationNumber cu prefix
+    #     RO pentru platitorii de TVA (vezi registration_number()); ACOLO se valideaza.
+    #   S.C.1  CompanyStructure (Owners)                -> TBD, nu se completeaza.
+    # Cand se vor raporta asociatii: OwnerID cu formatul "00" + CUI (MF.O.3).
+    M.append('    <Owners/>')
+    # Assets: GOALA in raportarea LUNARA. Schema ANAF (d406_schema_anaf.xlsx,
+    # "2. MasterFiles", pct. 2.12): "Mandatory - once per year" - mijloacele fixe se
+    # raporteaza o data pe an, in declaratia anuala (tip raportare A), nu lunar.
+    # Validatorul: "elementul 'AssetID' a depasit numarul maxim de aparitii (0)".
+    # Al treilea caz de acelasi fel, dupa MovementTypeTable (2.8) si Owners (2.11):
+    # sectiunea exista, continutul apare doar la raportarea in care e ceruta.
+    # PhysicalStock (2.10, "by request", 0..1) - nu o generam deloc.
+    M.append('    <Assets/>')
     M.append('  </MasterFiles>')
     return M
 
 
 def _gl_entries(res):
-    """GeneralLedgerEntries: Journal -> Transaction -> TransactionLine."""
+    """GeneralLedgerEntries: Journal -> Transaction -> TransactionLine.
+
+    Sectiunea e OBLIGATORIE chiar si pe o luna fara miscari (schema ANAF, "3.
+    GeneralLedgerEntries" = Mandatory; XSD: Journal = minOccurs 0). Codul intorcea []
+    cand nu erau note -> XML fara sectiune -> "elementul 'GeneralLedgerEntries' ar fi
+    trebuit sa apara de minimum 1 ori". Adica o firma fara miscari intr-o luna nu putea
+    depune D406 deloc. Acum: sectiunea cu totaluri 0, fara Journal.
+    """
     if not res.note:
-        return []
+        # Journal e cerut de VALIDATOR chiar si fara tranzactii ("elementul 'Journal'
+        # ar fi trebuit sa apara de minimum 1 ori"), desi XSD zice minOccurs=0 si schema
+        # ANAF il da "Optional" (GL.4). Cand sursele difera, decide validatorul: el
+        # accepta sau respinge depunerea. Deci jurnal gol, fara Transaction.
+        return ['  <GeneralLedgerEntries>',
+                '    <NumberOfEntries>0</NumberOfEntries>',
+                '    <TotalDebit>0.00</TotalDebit>',
+                '    <TotalCredit>0.00</TotalCredit>',
+                '    <Journal>',
+                '      <JournalID>GENERAL</JournalID>',
+                '      <Description>Jurnal general</Description>',
+                '      <Type>GL</Type>',
+                '    </Journal>',
+                '  </GeneralLedgerEntries>']
     nr = len(res.note)
     td = sum(sum(l.debit for l in n.linii) for n in res.note)
     tc = sum(sum(l.credit for l in n.linii) for n in res.note)
@@ -692,11 +806,19 @@ def pull(conn, schema, an, luna):
         cur.execute("SELECT nume, cui, adresa, oras, cod_postal FROM firma_profil WHERE id = 1")
         prof = cur.fetchone() or {}
         conturi, clienti, furnizori, note = [], [], [], []
+        strain = []   # conturi din plan care nu apartin normei declarate
         try:
             cur.execute("SELECT simbol, denumire, COALESCE(tip,'Bifunctional') AS tip, "
                         "COALESCE(sold_debitor,0) AS sd, COALESCE(sold_creditor,0) AS sc "
                         "FROM plan_conturi ORDER BY simbol")
+            # Declaram DOAR conturile din planul normei firmei: ANAF respinge restul
+            # ("ID-ul contului [731] trebuie sa se gaseasca in planul de conturi").
+            # Filtram dupa nomenclatorul OFICIAL, nu dupa o lista scrisa de noi.
+            oficial = plan_oficial(prof.get("baza_contabila"))
             for r in cur.fetchall():
+                if oficial and r["simbol"] not in oficial:
+                    strain.append(r["simbol"])
+                    continue
                 conturi.append(Cont(id=r["simbol"], descriere=r["denumire"], cont_standard=r["simbol"],
                                     tip=r["tip"], sold_inchidere_d=Decimal(str(r["sd"])),
                                     sold_inchidere_c=Decimal(str(r["sc"]))))

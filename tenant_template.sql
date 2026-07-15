@@ -498,7 +498,8 @@ CREATE TABLE TENANT_PLACEHOLDER.firma_profil (
     wc_ck text,
     wc_cs text,
     wc_ultima_sinc date,
-    CONSTRAINT firma_profil_singleton CHECK ((id = 1))
+    CONSTRAINT firma_profil_singleton CHECK ((id = 1)),
+    baza_contabila character varying(12) DEFAULT 'A'::character varying NOT NULL
 );
 
 
