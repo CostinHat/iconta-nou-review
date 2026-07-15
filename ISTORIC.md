@@ -1077,3 +1077,45 @@ Fisiere de test: test.gratuit@example.com / Gratuit2026! (tenant 18) + contul QU
 
 **DE_FACUT nou**: F162 (avertisment platitor_tva vs ANAF), F164 (cont_venit din UI), F165 (auditor drift schema tenant vs template - drift recurent), F166 (MT940, in lucru), F167 (Open Banking Enable Banking), F168 (email lansare beta).
 
+## 15.07.2026 — Control incrucisat: promisiunea "control fiscal" capata acoperire
+Commits: 43dcc5f (motor+teste), b73b464 (UI), 12dac6f (remediu executabil).
+
+**CORECTIE de proces (a doua zi la rand):** consemnarea "backup - gaura critica" din 14.07 era
+FALSA (vezi corectia in sectiunea 14.07). Azi, la fel: notarile F166/F167 din DE_FACUT scrise
+ieri NU erau acolo - replace-ul esuase tacut, iar commit-ul declara altceva. LECTIE dura:
+dupa orice scriere in fisier normativ, VERIFIC ca s-a scris (grep), nu declar din intentie.
+
+**F169 Control incrucisat declaratie vs contabilitate (TVA) -> LIVE.** Descoperire: promisiunea
+din landing ("Control fiscal automat: verifica D112 vs contabilitate, TVA vs declaratii") NU
+avea acoperire in cod. Verificatoarele existente lucrau in INTERIORUL unei surse
+(verificatoare.py pe balanta: 4427 vs 4426 = coerenta interna; control_fiscal_api pe termene:
+CE declaratii sunt datorate, nu cifrele). Puntea INTRE surse lipsea (exista doar d205_vs_457).
+Construit core/control_incrucisat.py: D300 (R17_2/R31_2, calculat din facturile lunii - fapt
+generator art. 281 CF) vs rulaje lunare 4427/4426. Atentie: balanta e CUMULATIVA, D300 e lunar
+-> query propriu de rulaje pe luna, altfel alarme false la orice firma cu istoric.
+
+**PRINCIPII stabilite cu Costin (scrise in modul, aparate de teste):**
+1. TREI stari: verde / rosu / GRI (nu am putut verifica). Un audit care nu poate spune "nu stiu"
+   nu e audit; verdele tacit peste date lipsa e minciuna prin omisiune. Gri-ul E feature-ul.
+2. Fiecare constatare isi declara TEMEIUL (ce sursa, ce rand, ce cont, ce perioada) si LIMITA
+   ("NEVERIFICAT: daca D300 depus efectiv la ANAF coincide - necesita SPV").
+3. Remediu in trei feluri: executabil (cauza DOVEDITA mecanic), sugerat, investigatie.
+   NICIODATA "ajusteaza contul ca sa dea verde" - verdele se castiga prin adevar. Un sistem care
+   invata contabilul sa forteze semaforul e mai rau decat lipsa lui. Aparat de test dedicat.
+4. Rolul: sistemul face verificarea incrucisata pe care omul NU o poate face realist (12 luni x
+   5 declaratii x mii de linii). Increderea vine din recunoasterea limitelor, nu din putere.
+
+**Bucla completa, dovedita pe date reale (tenant_004, iulie):** D300 declara 95 lei TVA colectata,
+contul 4427 are 21 -> ROSU, diferenta 74. Cauza dovedita: 2 facturi emise necontabilizate, TVA-ul
+lor 73.50 explica exact diferenta -> remediu EXECUTABIL, buton "Contabilizeaza facturile" ->
+creeaza note CIORNA prin endpoint existent (patru-ochi intact) -> reincarca -> VERDE. Verificat in
+DB: 3 facturi contate 4111=704 + 4111=4427, toate ciorna, conturi corecte.
+
+**UI (Control fiscal):** sectiune "Declaratie vs contabilitate" in detaliul firmei (bulina stare +
+mesaj cu cifre + temei gri + remediu galben cu buton), escaladare la rosu in portofoliu. Clase
+proprii cf-incr-* : regula 0b a prins ca .cf-rand-decl e grid 3 coloane, incompatibil cu structura
+verticala. Starea "gri" exista deja in DS (cf. CULORI din control.js) - nu a trebuit inventata.
+
+**Registru:** F166 (MT940) si F169 (control incrucisat) adaugate in FUNCTIONALITATI.csv ca LIVE.
+F163 (extindere la D112/D101/D100), F167 (Open Banking), F169-audit-preluare notate in DE_FACUT.
+
