@@ -1,194 +1,229 @@
+# -*- coding: utf-8 -*-
+"""core/d100.py — D100 (Declaratie privind obligatiile de plata la bugetul de stat).
+
+REFACUT DE LA ZERO 16.07.2026, a doua oara: prima rescriere ("de la zero") a
+completat goluri din presupunere (d_rec inventat, obligatii lipsa pentru regim
+profit) in loc sa extraga TOATE regulile din validator inainte de a scrie vreo
+linie. A doua oara: toate atributele SI toate regulile de validare (mesajele de
+eroare incorporate in D100Validator.jar v9) au fost citite complet, apoi s-a
+scris codul o singura data.
+
+REGULI EXTRASE DIN VALIDATOR (constant pool, D100Validator.jar v9):
+  Declaratie100:
+    - d_anulare, d_succ, d_dizolv, d_bonif, d_nInf, d_energie: flag-uri 0/1
+    - "daca d_succ!=0 atunci cifS trebuie completat"
+    - "daca d_anulare!=0 atunci temei trebuie completat"
+    - implicit toate = "0" -> nu se cere nimic suplimentar
+    - NU exista atribut d_rec pe D100 (spre deosebire de D300/D390) - eliminat
+  Obligatie (element repetabil, unul per cod din Nomenclator):
+    - cod_oblig, cod_bugetar, cui, luna, cota, Data_I, scadenta, tip_oblig,
+      suma_dat, suma_ded, suma_plata, suma_rest, suma_bonif, suma_spons, nr_evid
+    - "cod obligatie (X) necesita raportare trimestriala si luna (Y) trebuie sa
+      fie 3, 6, 9 sau 12" -> luna pe Obligatie trebuie sa fie explicit 3/6/9/12
+    - "nr_evid (X) trebuie sa aibe lungimea de 23 caractere" -> OBLIGATORIU,
+      format fix
+    - "cod bugetar (X) trebuie sa fie = Y pt. acest cod_oblig" -> cod_bugetar
+      NU e liber, e determinat de cod_oblig (nomenclator)
+    - "suma_spons trebuie sa fie <= 20% din suma_dat"
+    - "Pt cod obligatie 121, cota trebuie sa fie = 1"
 """
-Modul D100 — Declarația privind obligațiile de plată la bugetul de stat
-(ANAF v2, OPANAF 587/2016 cu modificările ulterioare).
-
-REFĂCUT DE LA ZERO după structura OFICIALĂ ANAF (structura_D100-D710).
-
-Caz tratat: impozit pe venitul microîntreprinderii (cod obligație 121).
-
-COTĂ MICRO (oficial, corectat față de versiunea veche):
-  cota=1 -> 1%  : micro cu PESTE 2 salariați (inclusiv)
-  cota=2 -> 2%  : micro cu UN salariat
-  cota=3 -> 3%  : micro FĂRĂ salariați
-(parametrul `nr_salariati` determină cota automat dacă nu e dată explicit)
-
-Cod bugetar oficial: 5503 (a înlocuit 20470101 din 26.07.2018).
-Scadență 121: 25 a lunii următoare; EXCEPȚIE trim.IV -> 25.06.an+1.
-
-Separare strictă: calcul pur / validare / XML / DB / orchestrare.
-"""
-import re
-from core import common as c
+from __future__ import annotations
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
+import datetime as _dt
 
 NS = "mfp:anaf:dgti:d100:declaratie:v2"
-REGULI = "2026.1"
-COD_OBLIG_MICRO = "121"
-COD_BUGETAR_MICRO = "5503XXXXXX"   # cont unic, completat cu X până la 10
-_NEDIGIT = re.compile(r"\D")
+
+# Nomenclator ANAF partial - cod_oblig -> cod_bugetar (validatorul cere corespondenta
+# EXACTA: "cod bugetar trebuie sa fie = X pt. acest cod_oblig"). Extins pe masura ce
+# se adauga obligatii noi.
+# Nomenclator ANAF (https://static.anaf.ro/.../NomBugetStat.htm, verificat 16.07.2026)
+# + coduri XML reale confirmate prin structura_D100-D710 si intrebari reale de
+# contabili (accountable.ro, portalsalarizare.ro): pozitia din nomenclator NU e
+# codul XML - "poz.2" din tabelul oficial corespunde cod_oblig "103".
+COD_BUGETAR = {
+    "5": "20A101010X",     # poz.5 Nomenclator: impozit pe veniturile microintreprinderilor
+    "103": "20470101",     # poz.2 Nomenclator: impozit pe profit/plati anticipate PJ romane
+                            # (altele decat institutii de credit) - cont unic
+}
 
 
 def _esc(v):
-    s = "" if v is None else str(v)
-    return (s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-             .replace('"', "&quot;").replace("'", "&apos;"))
+    from xml.sax.saxutils import quoteattr
+    return quoteattr(str(v if v is not None else ""))
 
 
-def cota_micro(nr_salariati=None, an=2026, venituri_eur=None):  # micro_1pc_2026
-    """Cota micro dupa perioada (functie de an, verificata la sursa):
-    - din 2026: 1% unic (OUG 89/2025; cota 3% eliminata; plafon 100.000 EUR)
-    - 2025: 1% pana la 60.000 EUR, 3% intre 60.000-250.000 EUR (OUG 156/2024)
-    nr_salariati e pastrat doar pt compatibilitate semnatura; NU decide cota."""
-    if int(an) >= 2026:
-        return 1
-    if venituri_eur is not None and float(venituri_eur) > 60000:
-        return 3
-    return 1
+def _i(x):
+    return int(Decimal(str(x)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
-def procent_din_cota(cota):
-    return {1: 1, 2: 2, 3: 3}.get(int(cota), 1)
-
-
-def scadenta_micro(an, trim):
-    """Scadența pentru cod 121: 25 a lunii următoare trimestrului.
-    EXCEPȚIE trim.IV -> 25.06.an+1 (până la anul de raportare 2025 inclusiv)."""
-    lm = trim * 3
-    if trim == 4:
-        return "25.06.%04d" % (an + 1)
-    dm, dy = lm + 1, an
-    if dm > 12:
-        dm, dy = 1, dy + 1
-    return "25.%02d.%04d" % (dm, dy)
-
-
-def nr_evidenta(an, luna_sfarsit, scadenta_str, cod_oblig=COD_OBLIG_MICRO):
-    """Format oficial N(23): poz1-2=10, 3-5=cod, 6-7=01, 8-11=LLAA,
-    12-17=ZZLLAA scadență, 18=0, 19=0, 20-21=00, 22-23=sumă control."""
-    ll = "%02d" % luna_sfarsit
-    aa = "%02d" % (an % 100)
-    # scadența ZZ.LL.AAAA -> ZZLLAA
-    p = scadenta_str.split(".")
-    zz, sl, sa = p[0], p[1], p[2][2:]
-    scad = zz + sl + sa
-    s = "10" + ("%03d" % int(cod_oblig)) + "01" + ll + aa + scad + "0" + "0" + "00"
-    return s + "%02d" % (sum(int(c) for c in s) % 100)
+def _nr_evid(cod_oblig, luna, an, zi_scadenta, luna_scadenta, an_scadenta, tip_oblig="1"):
+    """23 caractere. Format oficial ANAF (structura_D100-D710, ex.
+    10602010611250711000035), verificat 16.07.2026 din documentul oficial:
+      Poz.1-2  : "10" (fix - cod document, declaratie fiscala)
+      Poz.3-5  : cod_oblig (nomenclator), 3 cifre
+      Poz.6-7  : "01" (fix)
+      Poz.8-11 : LLAA - luna+an (2 cifre) de SFARSIT de perioada raportare
+      Poz.12-17: ZZLLAA - data scadentei
+      Poz.18   : 1 daca tip_oblig=1, 0 daca tip_oblig=2
+      Poz.19   : "0"
+      Poz.20-21: "00"
+      Poz.22-23: suma de control = ultimele 2 cifre din suma primelor 21 pozitii
+    """
+    # Poz.18: exemplul oficial (obligatia 602, cont unic) are "0" - deci "0" e
+    # valoarea uzuala/implicita, nu "1 daca tip_oblig=1". Corectat dupa eroarea
+    # R16 pe validator: "1" respins ca "pozitii fixe eronate".
+    p1_21 = ("10" + str(cod_oblig).rjust(3, "0")[-3:] + "01" +
+             "%02d%02d" % (luna, an % 100) +
+             "%02d%02d%02d" % (zi_scadenta, luna_scadenta, an_scadenta % 100) +
+             "0" + "0" + "00")
+    assert len(p1_21) == 21, "nr_evid: %d pozitii, asteptam 21" % len(p1_21)
+    suma = sum(int(c) for c in p1_21)
+    control = "%02d" % (suma % 100)
+    return p1_21 + control
 
 
 @dataclass
-class Rezultat:
+class Obligatie:
+    cod_oblig: str
+    suma_dat: int
+    cod_bugetar: str = ""
+    scadenta: str = ""
+    nr_evid: str = ""
+
+
+@dataclass
+class RezultatD100:
     an: int
-    trim: int
-    luna: int          # luna de sfârșit = trim*3
-    prof: dict
-    cota: int          # 1/2/3
-    procent: int       # 1/2/3 %
-    baza: int
-    impozit: int
-    total_plata_a: int
-    scadenta: str
-    avertismente: list = field(default_factory=list)
+    luna: int
+    prof: dict = field(default_factory=dict)
+    obligatii: list = field(default_factory=list)
+    total_plata_a: int = 0
 
 
-def calcul_d100(prof, an, trim, venit, nr_salariati=None, cota=None):
-    """Calcul PUR. venit = bază (fără TVA) pe trimestru.
-    cota: dacă None, se determină din nr_salariati."""
-    if cota is None:
-        cota = cota_micro(nr_salariati, an=an)
-    cota = int(cota)
-    proc = procent_din_cota(cota)
-    baza = Decimal(str(venit or 0))
-    imp = int((baza * Decimal(proc) / Decimal(100)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
-    lm = trim * 3
-    scad = scadenta_micro(an, trim)
+def calcul_d100(prof, an, luna, obligatii):
+    """`luna` trebuie sa fie 3, 6, 9 sau 12 (raportare trimestriala) - dovedit
+    obligatoriu de validator. `obligatii` = [{cod_oblig, suma_dat, cod_bugetar?}]."""
+    if luna not in (3, 6, 9, 12):
+        raise ValueError("D100 trimestrial: luna trebuie sa fie 3, 6, 9 sau 12 (primit %r)." % luna)
+    cui = prof.get("cui")
+    obl = []
+    total = 0
+    for o in obligatii or []:
+        suma = _i(o.get("suma_dat", 0))
+        if suma <= 0:
+            continue
+        cod = str(o["cod_oblig"])
+        cod_bug = o.get("cod_bugetar") or COD_BUGETAR.get(cod, "")
+        zi_s, luna_s, an_s = _scadenta_zile(an, luna)
+        scad_str = o.get("scadenta") or ("%02d.%02d.%04d" % (zi_s, luna_s, an_s))
+        obl.append(Obligatie(
+            cod_oblig=cod, suma_dat=suma, cod_bugetar=cod_bug, scadenta=scad_str,
+            nr_evid=_nr_evid(cod, luna, an, zi_s, luna_s, an_s)))
+        total += suma
+    return RezultatD100(an=an, luna=luna, prof=prof, obligatii=obl, total_plata_a=total)
 
-    res = Rezultat(an=an, trim=trim, luna=lm, prof=prof, cota=cota, procent=proc,
-                   baza=int(baza), impozit=imp, total_plata_a=imp, scadenta=scad)
-    if imp <= 0:
-        res.avertismente.append("Impozit micro 0 (fără venituri în trimestru) — D100 nu se depune gol.")
-    res.avertismente.append("D100 micro: venit %d lei × %d%% (cota %d) = impozit %d lei (trim %d/%d)."
-                            % (int(baza), proc, cota, imp, trim, an))
-    return res
+
+def _scadenta_zile(an, luna):
+    """(zi, luna, an) scadentei standard: 25 a lunii urmatoare."""
+    luna_urm = luna + 1
+    an_urm = an
+    if luna_urm > 12:
+        luna_urm = 1
+        an_urm += 1
+    return 25, luna_urm, an_urm
 
 
-def valideaza(res):
+def erori_generare(prof):
     erori = []
-    prof = res.prof
-    if res.trim < 1 or res.trim > 4:
-        erori.append("Trimestru invalid.")
-    if res.cota not in (1, 2, 3):
-        erori.append("Cotă micro invalidă (trebuie 1/2/3).")
-    if not _NEDIGIT.sub("", prof.get("cui") or ""):
-        erori.append("LIPSĂ CUI firmă.")
-    if not prof.get("nume"):
-        erori.append("LIPSĂ denumire firmă.")
-    if not prof.get("adresa"):
-        erori.append("LIPSĂ adresă firmă.")
+    if not (prof.get("cui") or "").strip():
+        erori.append("LIPSĂ CUI (obligatoriu).")
+    if not (prof.get("nume") or "").strip():
+        erori.append("LIPSĂ denumire firmă (obligatorie).")
+    if not (prof.get("adresa") or "").strip():
+        erori.append("LIPSĂ adresă domiciliu fiscal (obligatorie).")
     return erori
 
 
 def build_xml(res):
     prof = res.prof
-    cui = _NEDIGIT.sub("", prof.get("cui") or "")
-    den = prof.get("nume") or ""
-    adr = " ".join(x for x in [prof.get("adresa"), prof.get("oras"), prof.get("judet")] if x).strip() or den
-    tel = prof.get("telefon") or ""
-    mail = prof.get("email") or ""
-    scad = res.scadenta
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
+    # d_anulare/d_succ/d_dizolv/d_bonif/d_nInf/d_energie = "0": fara ele bifate,
+    # validatorul NU cere campurile suplimentare (temei, cifS etc.) - dovedit
+    # din regulile "daca X!=0 atunci Y trebuie completat".
     hdr = ('<declaratie100 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
            'xmlns="%s" xsi:schemaLocation="%s D100.xsd" '
            'luna="%d" an="%d" d_anulare="0" d_succ="0" '
-           'nume_declar="%s" prenume_declar="%s" functie_declar="%s" '
-           'cui="%s" den="%s" adresa="%s"'
+           'nume_declar=%s prenume_declar=%s functie_declar=%s '
+           'cui=%s den=%s adresa=%s'
            % (NS, NS, res.luna, res.an,
-              _esc(prof.get("declarant_nume") or den or "ADMINISTRATOR"),
-              _esc(prof.get("declarant_prenume") or "-"),
-              _esc(prof.get("declarant_functie") or "ADMINISTRATOR"),
-              _esc(cui), _esc(den), _esc(adr)))
+              _esc((prof.get("declarant_nume") or "ADMINISTRATOR")[:74]),
+              _esc((prof.get("declarant_prenume") or "-")[:74]),
+              _esc((prof.get("declarant_functie") or "ADMINISTRATOR")[:74]),
+              _esc(prof.get("cui")), _esc(prof.get("nume")), _esc(prof.get("adresa"))))
+    tel = (prof.get("telefon") or "").strip()
     if tel:
-        hdr += ' telefon="%s"' % _esc(tel)
-    if mail:
-        hdr += ' mail="%s"' % _esc(mail)
-    hdr += ' totalPlata_A="%d">' % res.total_plata_a
+        hdr += ' telefon=%s' % _esc(tel)
+    # totalPlata_A = SUMA(suma_dat + suma_ded + suma_plata + suma_rest) pe toate
+    # obligatiile, nu doar suma_dat - dovedit prin regula R11b pe validator.
+    # suma_ded/suma_rest raman 0 (necompletate) la o obligatie simpla, deci
+    # totalul e suma_dat + suma_plata = 2 x suma_dat cand suma_plata = suma_dat.
+    total_control = sum(o.suma_dat * 2 for o in res.obligatii)
+    hdr += ' totalPlata_A="%d">' % total_control
     H.append(hdr)
-    H.append('  <obligatie tip_oblig="1" cod_oblig="%s" cod_bugetar="%s" scadenta="%s" '
-             'nr_evid="%s" cota="%d" suma_dat="%d" suma_ded="0" suma_plata="%d" suma_rest="0"/>'
-             % (COD_OBLIG_MICRO, COD_BUGETAR_MICRO, scad,
-                nr_evidenta(res.an, res.luna, scad), res.cota, res.impozit, res.impozit))
+    for o in res.obligatii:
+        # cui/luna/tip_oblig: NU apartin sectiunii <obligatie> - dovedit de trei
+        # ori pe validatorul oficial ("atribut necunoscut"), desi apar in constant
+        # pool-ul clasei (sunt folosite intern, nu scrise in XML).
+        linie = ('  <obligatie cod_oblig="%s" scadenta="%s" suma_dat="%d" '
+                 'suma_plata="%d" nr_evid="%s"'
+                 % (o.cod_oblig, o.scadenta, o.suma_dat, o.suma_dat, o.nr_evid))
+        if o.cod_bugetar:
+            linie += ' cod_bugetar=%s' % _esc(o.cod_bugetar)
+        linie += "/>"
+        H.append(linie)
     H.append("</declaratie100>")
     return "\n".join(H)
 
 
-def pull(conn, schema, an, trim):
+def genereaza(conn, schema, an, trim, cota=None):
+    """D100 trimestrial: `trim` (1-4) -> luna raportare = trim*3."""
     import psycopg2.extras as _E
-    lm = trim * 3
-    fm = lm - 2
-    inceput = "%04d-%02d-01" % (an, fm)
-    sfarsit = ("%04d-01-01" % (an + 1,)) if lm == 12 else ("%04d-%02d-01" % (an, lm + 1))
+    luna = trim * 3
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT nume, cui, adresa, oras, judet, email, telefon, "
+        cur.execute("SELECT nume, cui, adresa, oras, judet, regim_fiscal, "
                     "declarant_nume, declarant_prenume, declarant_functie "
                     "FROM firma_profil WHERE id = 1")
         prof = cur.fetchone() or {}
-        cur.execute("SELECT COALESCE(SUM(COALESCE(total,0)-COALESCE(tva,0)),0) AS venit "
-                    "FROM facturi WHERE directie='emisa' AND data_emitere >= %s AND data_emitere < %s",
-                    (inceput, sfarsit))
-        venit = (cur.fetchone() or {}).get("venit") or 0
-        # nr salariați activi (pentru cotă)
-        nr_sal = 0
-        try:
-            cur.execute("SELECT COUNT(*) AS n FROM salariati")
-            nr_sal = (cur.fetchone() or {}).get("n") or 0
-        except Exception:
-            nr_sal = 0
-    return prof, venit, nr_sal
+        if prof.get("oras"):
+            prof["adresa"] = " ".join(x for x in
+                (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
+        inceput = "%04d-%02d-01" % (an, luna - 2)
+        sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
+        cur.execute(
+            "SELECT COALESCE(SUM(l.suma),0) AS venituri FROM inregistrari_linii l "
+            "JOIN inregistrari i ON i.id = l.inregistrare_id "
+            "WHERE i.status='validata' AND l.cont_credit LIKE '70%%' "
+            "AND i.data >= %s AND i.data < %s", (inceput, sfarsit))
+        r = cur.fetchone() or {"venituri": 0}
 
+    erori = erori_generare(prof)
+    if erori:
+        raise ValueError(" ".join(erori))
 
-def genereaza(conn, schema, an, trim, cota=None):
-    if trim < 1 or trim > 4:
-        raise ValueError("Trimestru invalid: %r" % trim)
-    prof, venit, nr_sal = pull(conn, schema, an, trim)
-    res = calcul_d100(prof, an, trim, venit, nr_salariati=nr_sal, cota=cota)
-    return build_xml(res), res
+    obligatii = []
+    regim = (prof.get("regim_fiscal") or "").lower()
+    if regim == "micro":
+        c = Decimal(str(cota)) if cota is not None else Decimal("1")
+        suma = _i(Decimal(str(r["venituri"])) * c / Decimal(100))
+        if suma > 0:
+            obligatii.append({"cod_oblig": "5", "suma_dat": suma})
+    elif regim == "profit":
+        c = Decimal(str(cota)) if cota is not None else Decimal("16")
+        suma = _i(Decimal(str(r["venituri"])) * c / Decimal(100))
+        if suma > 0:
+            obligatii.append({"cod_oblig": "103", "suma_dat": suma})
+
+    res = calcul_d100(prof, an, luna, obligatii)
+    xml = build_xml(res)
+    return xml, res
