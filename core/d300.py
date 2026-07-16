@@ -184,32 +184,78 @@ def calcul_d300(prof, an, luna, facturi, manual=None):
                          "R72_", "R73_", "R75_")):
             setr(k, v)
 
-    # R30 = TOTAL TAXĂ DEDUCTIBILĂ (col.2) — sumă deductibile
-    r30_2 = sum(R.get(k, 0) for k in (
-        "R18_2", "R19_2", "R20_2", "R21_2", "R22_2", "R23_2",
-        "R74_2", "R76_2", "R75_2", "R72_2", "R73_2"))
-    if r30_2:
-        R["R30_2"] = r30_2
+    # R27 = TOTAL TAXA DEDUCTIBILA (col.1 baza, col.2 TVA). Formula oficiala
+    # (structura_D300_v12.0.0_10022026.pdf, randul 101-102):
+    #   R27_1 = R18_1+R19_1+R20_1+R21_1+R22_1+R23_1+R24_1+R25_1+R74_1+R75_1
+    #   R27_2 = R18_2+R19_2+R20_2+R21_2+R22_2+R23_2+R24_2+R25_2+R43_2+R44_2+R74_2+R75_2
+    # LIPSEA COMPLET pana la 16.07.2026: modulul calcula R30/R31/R40 direct din R22,
+    # sarind peste tot lantul R27->R32->R34->R37->R40 pe care validatorul il cere si
+    # verifica formula cu formula. Descoperit prin audit pe date reale, nu pe XML gol.
+    r27_1 = sum(R.get(k, 0) for k in (
+        "R18_1", "R19_1", "R20_1", "R21_1", "R22_1", "R23_1", "R24_1", "R25_1",
+        "R74_1", "R75_1"))
+    r27_2 = sum(R.get(k, 0) for k in (
+        "R18_2", "R19_2", "R20_2", "R21_2", "R22_2", "R23_2", "R24_2", "R25_2",
+        "R43_2", "R44_2", "R74_2", "R75_2"))
+    if r27_1 or r27_2:
+        R["R27_1"], R["R27_2"] = r27_1, r27_2
 
-    # pro-rata pe deductibilă
+    # R28_2 = SUB-TOTAL TAXA DEDUSA conform art.297/298 - la o firma simpla,
+    # egal cu R27_2 (nimic de scazut la acest nivel: nu avem TVA restituita
+    # cumparatori straini (R29) inca).
+    r28_2 = r27_2
+    if r28_2:
+        R["R28_2"] = r28_2
+
+    # pro-rata pe deductibila -> R31_2 (Ajustari conform pro-rata / ajustari de taxa).
+    # NU e "taxa deductibila x pro-rata direct" (asa calcula gresit modulul vechi) -
+    # e o AJUSTARE separata, aditionala la R28. La pro_rata=100% (cazul uzual),
+    # ajustarea e 0 - nu exista de ajustat.
     try:
         pro_rata = float(prof.get("pro_rata"))
     except Exception:
         pro_rata = 100.0
-    r31_2 = _int(Decimal(str(r30_2)) * Decimal(str(pro_rata)) / Decimal(100))
+    r31_2 = 0
+    if pro_rata < 100:
+        r31_2 = _int(Decimal(str(r28_2)) * Decimal(str(100 - pro_rata)) / Decimal(100) * -1)
     if r31_2:
         R["R31_2"] = r31_2
 
-    # --- REZULTAT ---
-    # TVA colectată (R17_2) vs TVA dedusă (R31_2)
-    colectata = r17_2
-    dedusa = r31_2
-    de_plata = max(colectata - dedusa, 0)
-    de_recuperat = max(dedusa - colectata, 0)
-    if de_plata:
-        R["R40_2"] = de_plata     # sold TVA de plată
-    if de_recuperat:
-        R["R42_2"] = de_recuperat  # sold sumă negativă
+    # R32 = TOTAL TAXA DEDUSA (rd.31+rd.32+rd.33+rd.34 in numerotarea veche = R28+R29+R30+R31)
+    r32_2 = r28_2 + R.get("R29_2", 0) + R.get("R30_2", 0) + r31_2
+    if r32_2:
+        R["R32_2"] = r32_2
+
+    # --- REZULTAT: lantul complet R33->R42, formule oficiale exacte ---
+    r17_2_val = R.get("R17_2", 0)
+    r33_2 = max(r32_2 - r17_2_val, 0)          # Suma negativa TVA in perioada
+    r34_2 = max(r17_2_val - r32_2, 0)          # Taxa de plata in perioada
+    if r33_2:
+        R["R33_2"] = r33_2
+    if r34_2:
+        R["R34_2"] = r34_2
+
+    r35_2 = R.get("R35_2", 0)   # sold de plata reportat din perioada precedenta
+    r36_2 = R.get("R36_2", 0)   # diferente stabilite de inspectie fiscala
+    r37_2 = r34_2 + r35_2 + r36_2   # TVA de plata cumulat
+    if r37_2:
+        R["R37_2"] = r37_2
+
+    r38_2 = R.get("R38_2", 0)   # sold suma negativa reportata, fara rambursare ceruta
+    r39_2 = R.get("R39_2", 0)   # diferente negative stabilite de inspectie fiscala
+    r40_2 = r33_2 + r38_2 + r39_2   # Suma negativa TVA cumulata
+    if r40_2:
+        R["R40_2"] = r40_2
+
+    r41_2 = max(r37_2 - r40_2, 0)   # Sold TVA de plata la sfarsitul perioadei
+    r42_2 = max(r40_2 - r37_2, 0)   # Soldul sumei negative la sfarsitul perioadei
+    if r41_2:
+        R["R41_2"] = r41_2
+    if r42_2:
+        R["R42_2"] = r42_2
+
+    de_plata = r41_2
+    de_recuperat = r42_2
 
     res = Rezultat(an=an, luna=luna, prof=prof)
     res.R = R
