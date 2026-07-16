@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Teste motor S1005 (mapare F10/F20)."""
 from decimal import Decimal
-import bilant
+from core import bilant
 
 def s(**kw):
     return {k: (Decimal(str(v[0])), Decimal(str(v[1]))) for k, v in kw.items()}
