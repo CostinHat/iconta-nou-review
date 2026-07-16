@@ -30,6 +30,13 @@ function meniuFacturi(corp, nav, tenantId, opt) {
         <div class="firme-optiune-titlu">Istoric facturi</div>
         <div class="firme-optiune-desc">Facturile emise \u0219i primite</div>
       </button>
+      <button class="firme-optiune" id="fac-scadentar">
+        <div class="firme-optiune-icon accent-roz">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <div class="firme-optiune-titlu">Scaden\u021bar</div>
+        <div class="firme-optiune-desc">Facturi ne\u00eencasate: restante \u0219i care scad cur\u00e2nd</div>
+      </button>
       <button class="firme-optiune" id="fac-emite">
         <div class="firme-optiune-icon accent-verde">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -53,6 +60,7 @@ function meniuFacturi(corp, nav, tenantId, opt) {
       </button>` : ""}
     </div>`;
   corp.querySelector("#fac-istoric").addEventListener("click", () => nav.mergi("Istoric facturi", (c) => istoricFacturi(c, nav, tenantId, opt)));  // faza_b_traseu_v1
+  corp.querySelector("#fac-scadentar").addEventListener("click", () => nav.mergi("Scadențar", (c) => scadentarEcran(c, nav, tenantId, opt)));  // f131_scadentar_v1
   corp.querySelector("#fac-emite").addEventListener("click", () => nav.mergi("Emite factur\u0103", (c) => emiteFactura(c, nav, tenantId, opt)));
   corp.querySelector("#fac-model").addEventListener("click", () => nav.mergi("Model factur\u0103", (c) => modelFactura(c, nav, tenantId, opt)));
   corp.querySelector("#fac-recurente")?.addEventListener("click", () => nav.mergi("Facturi recurente", (c) => listaRecurente(c, nav, tenantId, opt)));
@@ -112,6 +120,78 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     corp.querySelectorAll(".fac-frand-btn").forEach((b) => {
       b.addEventListener("click", () => nav.mergi("Factur\u0103", (c) => detaliiFactura(c, nav, tenantId, b.dataset.id, opt)));  // faza_b_traseu_v1
     });
+  };
+  deseneaza();
+}
+
+// ---------- SCADENȚAR (F131) ----------
+async function scadentarEcran(corp, nav, tenantId, opt) {
+  // Semafor stare factura (DS cap.8): rosu restanta -> galben scade curand -> verde in termen.
+  // Gradientele dot mirror tiparul din control.js (nuantele deschise sunt permise in dot:, HEX_SEMAFOR).
+  const SEM = {
+    restanta:      { dot: "radial-gradient(circle at 65% 30%, #ff8a80, var(--rosu-semafor) 60%)" },
+    scade_curand:  { dot: "radial-gradient(circle at 65% 30%, #f0cd7a, var(--galben) 60%)" },
+    in_termen:     { dot: "radial-gradient(circle at 65% 30%, #6fc494, var(--verde) 60%)" },
+    fara_scadenta: { dot: "var(--gri-semafor)" },
+  };
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă scadențarul…</p>`;
+  let d = { linii: [], rezumat: {}, clienti: [] };
+  try { d = await api.get(`/tenants/${tenantId}/scadentar`); }
+  catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca scadențarul.</p>`; return; }
+  const rez = d.rezumat || {};
+  let vedere = "facturi";
+
+  const randFacturi = () => {
+    if (!(d.linii || []).length) return `<div class="mig-gol">Nicio factură emisă neîncasată.</div>`;
+    return d.linii.map((l) => {
+      const s = SEM[l.stare] || SEM.fara_scadenta;
+      const sub = l.stare === "restanta" ? `${-l.zile} zile întârziere`
+        : l.stare === "scade_curand" ? `scade în ${l.zile} zile`
+        : l.stare === "fara_scadenta" ? "fără scadență în sistem"
+        : `scadență ${dataRo(l.data_scadenta)}`;
+      return `
+      <div class="mig-frand" style="cursor:default">
+        <span class="cf-dot" style="background:${s.dot};flex-shrink:0"></span>
+        <div class="mig-frand-text">
+          <div class="mig-frand-nume">${l.numar || "—"}${l.tert_nume ? " · " + esc(l.tert_nume) : ""}</div>
+          <div class="mig-frand-sub">${sub}</div>
+        </div>
+        <span class="pf-frand-suma">${bani(l.suma)} ${l.moneda || "lei"}</span>
+      </div>`;
+    }).join("");
+  };
+
+  const randClienti = () => {
+    if (!(d.clienti || []).length) return `<div class="mig-gol">Niciun client cu facturi neîncasate.</div>`;
+    return d.clienti.map((c) => {
+      const rest = Number(c.restant) > 0 ? `<span style="color:var(--rosu-semafor)">${bani(c.restant)} restant</span> · ` : "";
+      const fara = c.email ? "" : " · fără email";
+      return `
+      <div class="mig-frand" style="cursor:default">
+        <div class="mig-frand-text">
+          <div class="mig-frand-nume">${esc(c.nume || c.cui || "—")}</div>
+          <div class="mig-frand-sub">${c.nr} factur${c.nr === 1 ? "ă" : "i"} neîncasat${c.nr === 1 ? "ă" : "e"}${fara}</div>
+        </div>
+        <span class="pf-frand-suma">${rest}${bani(c.sold)} lei</span>
+      </div>`;
+    }).join("");
+  };
+
+  const deseneaza = () => {
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Scadențar</h2>
+      <div class="cf-sumar">
+        <span class="cf-pastila"><span class="cf-dot" style="background:${SEM.restanta.dot}"></span>${rez.restanta || 0} restante</span>
+        <span class="cf-pastila"><span class="cf-dot" style="background:${SEM.scade_curand.dot}"></span>${rez.scade_curand || 0} scad curând</span>
+        <span class="cf-pastila"><span class="cf-dot" style="background:${SEM.in_termen.dot}"></span>${rez.in_termen || 0} în termen</span>
+      </div>
+      <p class="pf-intro">
+        <button class="buton-secundar" id="sc-facturi"${vedere === "facturi" ? " disabled" : ""}>Facturi neîncasate</button>
+        <button class="buton-secundar" id="sc-clienti"${vedere === "clienti" ? " disabled" : ""}>Fișă client</button>
+      </p>
+      <div class="mig-lista zebra-lista">${vedere === "facturi" ? randFacturi() : randClienti()}</div>`;
+    corp.querySelector("#sc-facturi").addEventListener("click", () => { vedere = "facturi"; deseneaza(); });
+    corp.querySelector("#sc-clienti").addEventListener("click", () => { vedere = "clienti"; deseneaza(); });
   };
   deseneaza();
 }
