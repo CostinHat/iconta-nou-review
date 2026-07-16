@@ -181,17 +181,20 @@ def build_xml(res):
         hdr += ' telefon="%s"' % _esc(tel)
     if mail:
         hdr += ' mail="%s"' % _esc(mail)
-    # REZUMATUL E INLINE PE RADACINA, nu element separat. Dovedit 15.07.2026 pe
-    # D390Validator (clasa Declaratie390 contine nr_pag/nrOPI/bazaL/bazaT/bazaA/bazaP/
-    # bazaS/bazaR/total_baza; nu exista clasa/tag "rezumat"). Elementul <rezumat> scris
-    # aici lasa radacina fara atributele obligatorii -> "lipsa sectiune obligatorie
-    # inainte de sfarsitul sectiunii declaratie390". Acelasi tipar ca <identificare>
-    # la D394: un element inventat, care nu apare in namespace.
-    hdr += (' nr_pag="1" nrOPI="%d" bazaL="%d" bazaT="%d" bazaA="%d" bazaP="%d" '
-            'bazaS="%d" bazaR="%d" total_baza="%d" totalPlata_A="%d">'
-            % (res.nr_opi, bz["L"], bz["T"], bz["A"], bz["P"], bz["S"], bz["R"],
-               res.total_baza, res.total_plata_a))
+    # CORECTAT 16.07.2026, dupa verificare la sursa oficiala (static.anaf.ro,
+    # structura_D390_2020_180320.pdf, OPANAF 705/2020): <rezumat> EXISTA, e element
+    # separat, 1 aparitie obligatorie. Fix-ul de 15.07.2026 il scosese ("REZUMATUL E
+    # INLINE PE RADACINA") pe baza unui `strings` pe binarul validatorului care n-a
+    # gasit clasa/tag "rezumat" acolo - concluzie gresita: absenta dintr-un extras nu
+    # inseamna absenta. Sursa oficiala arata clar "<rezumat> 1 aparitie", cu campurile
+    # nr_pag/nrOPI/bazaL/bazaT/bazaA/bazaP/bazaS/bazaR/total_baza in interiorul lui,
+    # nu pe radacina.
+    hdr += ' totalPlata_A="%d">' % res.total_plata_a
     H.append(hdr)
+    H.append('  <rezumat nr_pag="1" nrOPI="%d" bazaL="%d" bazaT="%d" bazaA="%d" '
+             'bazaP="%d" bazaS="%d" bazaR="%d" total_baza="%d"/>'
+             % (res.nr_opi, bz["L"], bz["T"], bz["A"], bz["P"], bz["S"], bz["R"],
+                res.total_baza))
     # operațiuni ordonate (tip, tara, cod)
     for (tip, tara, cod, den) in sorted(res.ops.keys(), key=lambda k: (k[0], k[1], k[2])):
         H.append('  <operatie tip="%s" tara="%s" codO="%s" denO="%s" baza="%d"/>'
@@ -209,13 +212,19 @@ def pull(conn, schema, an, luna):
                     "declarant_nume, declarant_prenume, declarant_functie "
                     "FROM firma_profil WHERE id = 1")
         prof = cur.fetchone() or {}
-        cur.execute("SELECT f.id, f.tert_nume, c.nume AS c_nume, c.cui AS c_cui, "
+        cur.execute("SELECT f.id, f.tert_nume, f.tert_cui, c.nume AS c_nume, c.cui AS c_cui, "
                     "f.directie, f.total, f.tva "
                     "FROM facturi f LEFT JOIN clienti c ON c.id = f.client_id "
                     "WHERE f.data_emitere >= %s AND f.data_emitere < %s ORDER BY f.id",
                     (inceput, sfarsit))
         rows = cur.fetchall()
-    facturi = [{"cui": (r["c_cui"] or "").strip(),
+    # CUI-ul: intai clientul din nomenclator (c.cui), altfel tert_cui de pe factura.
+    # Bug dovedit 16.07.2026 prin audit pe date reale: se citea DOAR c.cui, legat de
+    # client_id. Facturile create direct (fara fisa de client) si TOATE facturile
+    # PRIMITE (care n-au niciodata client_id - ala e pentru clienti, nu furnizori)
+    # aveau cui="" -> respinse tacit de calcul_d390 la primul filtru CUI. D390
+    # genera mereu "0 operatiuni" chiar si cu facturi UE reale in luna.
+    facturi = [{"cui": (r["c_cui"] or r["tert_cui"] or "").strip(),
                 "nume": (r["c_nume"] or r["tert_nume"] or "").strip(),
                 "directie": r["directie"],
                 "total": r["total"] if r["total"] is not None else 0,
