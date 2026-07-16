@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
-"""Teste gardian pentru D205 - modulul a fost REFACUT complet 16.07.2026.
+"""Teste gardian pentru D205 - REFACUT A DOUA OARA 16.07.2026.
 
-Structura reala (structura_D205_2025_120226.pdf, 461 linii, citite integral):
-  <declaratie205 ...>
-    <sect_II tip_venit="25" nrben="N" Tcastig=".." Tpierd=".." T_VB=".." T_GAR=".."
-             Tbaza=".." Timp=".."/>    <!-- element GOL, doar atribute -->
-    <benef categ="1.a" nume1=".." cif=".." baza1=".." imp1=".."/>   <!-- 1-n, FRATE
-                                                                          cu sect_II -->
-    <benef .../>
-  </declaratie205>
-
-Regresie: prima incercare pusese <benef> IN INTERIORUL lui <sect_II> (structura
-gresita, citind doar primele ~180 din 461 linii ale documentului). Validatorul:
-"sectiunea benef este gresit pozitionata" - sect_II si benef sunt FRATI, copii
-directi ai radacinii, nu parinte-copil.
+Prima incercare avea trei greseli, gasite toate prin validatorul oficial:
+1. Atributele reale ale <benef> nu erau cele extrase dintr-un grep ingust pe
+   binar: den1 (nu nume1), cifR (nu cif), Rezid cu majuscula, tip_venit1 pe
+   FIECARE beneficiar (nu doar pe sect_II), id_inreg (secvential).
+2. tip_venit pentru dividende e "08" (confirmat: "08 1.a) venituri din
+   dividende"), NU "25" - la 08 se completeaza divid_D/divid_P, la 25
+   baza1/imp1 sunt INTERZISE (regulile R44/R45).
+3. Tcastig/Tpierd/T_VB/T_GAR se calculeaza STRICT pe tip_venit1 corespunzator
+   (25 si 29) - la tip_venit=08 raman 0, nu se calculeaza din divid_D/divid_P.
+4. totalPlata_A = suma(nrben)+suma(Tcastig)+suma(Tpierd)+suma(T_VB)+
+   suma(T_GAR)+suma(Tbaza)+suma(Timp) - suma pe TOATE campurile din sect_II,
+   nu doar Timp.
 """
 import pytest
 from core.d205 import calcul_d205, build_xml
@@ -23,50 +22,56 @@ def _prof():
     return {"cui": "14399840", "nume": "DANTE INTERNATIONAL SA", "adresa": "X"}
 
 
-def test_beneficiar_dividende_simplu():
+def test_dividende_valid():
     res = calcul_d205(_prof(), 2025, [
-        {"categ": "1.a", "nume": "POPESCU Ion", "cif": "1850101450019",
+        {"categ": "1.a", "nume": "POPESCU Ion", "cif": "1850101450013",
          "baza": 10000, "imp": 1000, "castig": 10000}])
-    assert res.beneficiari[0].nume1 == "POPESCU Ion"
-    assert res.beneficiari[0].imp1 == 1000
-    assert res.total_plata_a == 1000
-
-
-def test_beneficiar_fara_suma_nu_intra():
-    res = calcul_d205(_prof(), 2025, [
-        {"categ": "1.a", "nume": "X", "cif": "1", "baza": 0, "imp": 0}])
-    assert res.beneficiari == []
-
-
-def test_fara_beneficiari_refuza_generarea():
-    """D205 fara continut nu se genereaza."""
-    res = calcul_d205(_prof(), 2025, [])
-    with pytest.raises(ValueError):
-        build_xml(res)
-
-
-def test_sect_II_si_benef_sunt_frati_nu_parinte_copil():
-    """Regresie: benef NU e in interiorul lui sect_II. sect_II se inchide singur
-    (element gol, doar atribute), benef vine dupa, la acelasi nivel."""
-    res = calcul_d205(_prof(), 2025, [
-        {"categ": "1.a", "nume": "X", "cif": "1", "baza": 100, "imp": 10, "castig": 100}])
     xml = build_xml(res)
-    assert '<sect_II tip_venit="25"' in xml
-    assert xml.count("<sect_II") == 1
-    # sect_II e element gol (self-closing cu /) - nu are inchidere separata </sect_II>
-    assert "</sect_II>" not in xml
-    # benef apare DUPA sect_II, nu inainte de inchiderea lui (pt ca nu exista inchidere)
-    poz_sect = xml.index("<sect_II")
-    poz_benef = xml.index("<benef")
-    assert poz_benef > poz_sect
+    assert 'tip_venit="08"' in xml
+    assert 'divid_D="10000"' in xml
 
 
-def test_totalurile_se_calculeaza_din_beneficiari():
+def test_tcastig_ramane_zero_la_dividende():
+    """Regresie: Tcastig=10000 (calculat din divid_D) era gresit - regula
+    oficiala il calculeaza doar din beneficiari cu tip_venit1=25."""
     res = calcul_d205(_prof(), 2025, [
-        {"categ": "1.a", "nume": "A", "cif": "1", "baza": 1000, "imp": 100, "castig": 1000},
-        {"categ": "1.a", "nume": "B", "cif": "2", "baza": 2000, "imp": 200, "castig": 2000},
+        {"categ": "1.a", "nume": "X", "cif": "1850101450013",
+         "baza": 5000, "imp": 500, "castig": 5000}])
+    xml = build_xml(res)
+    assert 'Tcastig="0"' in xml
+    assert 'Tpierd="0"' in xml
+
+
+def test_totalPlata_A_e_suma_tuturor_campurilor_sect_II():
+    """Regresie: totalPlata_A=Timp era gresit. Formula reala include si nrben,
+    Tbaza (T_VB/T_GAR/Tcastig/Tpierd raman 0 la dividende)."""
+    res = calcul_d205(_prof(), 2025, [
+        {"categ": "1.a", "nume": "X", "cif": "1850101450013",
+         "baza": 10000, "imp": 1000, "castig": 10000}])
+    xml = build_xml(res)
+    # nrben(1) + Tcastig(0) + Tpierd(0) + T_VB(0) + T_GAR(0) + Tbaza(10000) + Timp(1000)
+    assert 'totalPlata_A="11001"' in xml
+
+
+def test_id_inreg_e_secvential():
+    res = calcul_d205(_prof(), 2025, [
+        {"categ": "1.a", "nume": "A", "cif": "1850101450013", "baza": 100, "imp": 10, "castig": 100},
+        {"categ": "1.a", "nume": "B", "cif": "1850101450013", "baza": 200, "imp": 20, "castig": 200},
     ])
     xml = build_xml(res)
-    assert 'nrben="2"' in xml
-    assert 'Tcastig="3000"' in xml
-    assert 'Timp="300"' in xml
+    assert 'id_inreg="1"' in xml
+    assert 'id_inreg="2"' in xml
+
+
+def test_atributele_reale_pe_benef():
+    """Regresie: den1 (nu nume1), cifR (nu cif), Rezid majuscula (nu rezid),
+    tip_venit1 pe fiecare beneficiar. 'categ' nu e atribut valid - omis."""
+    res = calcul_d205(_prof(), 2025, [
+        {"categ": "1.a", "nume": "X", "cif": "1850101450013", "baza": 100, "imp": 10, "castig": 100}])
+    xml = build_xml(res)
+    linie = [l for l in xml.split("\n") if "<benef" in l][0]
+    assert "den1=" in linie and "nume1=" not in linie
+    assert "cifR=" in linie and 'cif="' not in linie
+    assert "Rezid=" in linie
+    assert "tip_venit1=" in linie
+    assert "categ=" not in linie

@@ -103,10 +103,22 @@ def build_xml(res):
         raise ValueError("D205 fara niciun beneficiar de venit - nu se genereaza "
                          "declaratie fara continut.")
 
-    Tcastig = sum(b.castig1 for b in res.beneficiari)
-    Tpierd = sum(b.pierdere1 for b in res.beneficiari)
+    # Tcastig/Tpierd, conform formulei oficiale, se calculeaza DOAR din
+    # beneficiarii cu tip_venit1=25 ("Tcastig = suma(castig1) pt. tip_venit1=25").
+    # La tip_venit=08 (dividende), NICIUN beneficiar nu are tip_venit1=25, deci
+    # Tcastig/Tpierd raman 0.
+    nrben = len(res.beneficiari)
+    Tcastig = 0
+    Tpierd = 0
+    T_VB = 0
+    T_GAR = 0
     Tbaza = sum(b.baza1 for b in res.beneficiari)
     Timp = sum(b.imp1 for b in res.beneficiari)
+    # totalPlata_A = suma(nrben)+suma(Tcastig)+suma(Tpierd)+suma(T_VB)+
+    # suma(T_GAR)+suma(Tbaza)+suma(Timp) - formula EXACTA din structura oficiala
+    # (nu doar Timp, cum pusesem prima data - R15 respinsese exact asta:
+    # cerea 11001, primea 1000).
+    total_control = nrben + Tcastig + Tpierd + T_VB + T_GAR + Tbaza + Timp
 
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
     hdr = ('<declaratie205 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
@@ -119,20 +131,30 @@ def build_xml(res):
               _esc((prof.get("declarant_prenume") or "-")[:74]),
               _esc((prof.get("declarant_functie") or "ADMINISTRATOR")[:74]),
               "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()),
-              _esc(prof.get("nume")), _esc(prof.get("adresa")), Timp))
+              _esc(prof.get("nume")), _esc(prof.get("adresa")), total_control))
     H.append(hdr)
     # sect_II se INCHIDE (linia 26 din structura oficiala) INAINTE de <benef>
     # (linia 27) - sunt elemente FRATI, ambele copii ai radacinii, nu benef in
     # interiorul lui sect_II. Gresit prima data: pusesem benef in interiorul lui
     # sect_II. "sectiunea benef este gresit pozitionata" - eroarea validatorului
     # spunea exact asta.
-    H.append('  <sect_II tip_venit="25" nrben="%d" Tcastig="%d" Tpierd="%d" '
-             'T_VB="0" T_GAR="0" Tbaza="%d" Timp="%d"/>'
-             % (len(res.beneficiari), Tcastig, Tpierd, Tbaza, Timp))
-    for b in res.beneficiari:
-        H.append('  <benef categ="%s" nume1=%s rezid="%s" cif="%s" tip_plata="%s" '
-                 'castig1="%d" pierdere1="%d" baza1="%d" imp1="%d"/>'
-                 % (b.categ, _esc(b.nume1), b.rezid,
+    # tip_venit "08" = dividende (categ 1.a), NU "25" (alta categorie, unde
+    # baza1/imp1 sunt interzise - R44/R45 respinsesera exact asta). Confirmat
+    # din structura oficiala: "08 1.a) venituri din dividende".
+    H.append('  <sect_II tip_venit="08" nrben="%d" Tcastig="%d" Tpierd="%d" '
+             'T_VB="%d" T_GAR="%d" Tbaza="%d" Timp="%d"/>'
+             % (nrben, Tcastig, Tpierd, T_VB, T_GAR, Tbaza, Timp))
+    # den1 (nu nume1), cifR (nu cif), Rezid cu majuscula, tip_venit1 pe FIECARE
+    # beneficiar, id_inreg secvential. "categ" NU e atribut valid - respins ca
+    # necunoscut de validator; categoria (1.a) e implicita in tip_venit1=08.
+    # La tip_venit1=08 se completeaza si divid_D/divid_P (suma bruta a
+    # dividendului), pe langa baza1/imp1 - confirmat din formatul oficial de
+    # import: "categ(1.a),...,2,divid_D,divid_P,baza,imp".
+    for idx, b in enumerate(res.beneficiari, start=1):
+        H.append('  <benef id_inreg="%d" den1=%s tip_venit1="08" '
+                 'Rezid="1" cifR="%s" tip_plata="%s" '
+                 'divid_D="%d" divid_P="%d" baza1="%d" imp1="%d"/>'
+                 % (idx, _esc(b.nume1),
                     "".join(ch for ch in b.cif if ch.isdigit()),
                     b.tip_plata, b.castig1, b.pierdere1, b.baza1, b.imp1))
     H.append("</declaratie205>")
