@@ -76,8 +76,14 @@ def _d112_casa(judet):
           .replace("\u015f", "s").replace("\u0219", "s").replace("\u0163", "t").replace("\u021b", "t"))
     return _D112_CASA.get(j, "_B")
 def _d112int(x):
+    """Rotunjire ARITMETICA (nu bancara): daca partea zecimala >= 0.5, se adauga 1
+    - regula explicita din structura oficiala D112 ("Contributiile se rotunjesc
+    aritmetic"). round() din Python foloseste rotunjire bancara (half-to-even:
+    112.5 -> 112), care contrazice regula ANAF (112.5 -> 113) - dovedit prin
+    validator: CAM calculat 112, cerut 113 (regula A91b)."""
+    from decimal import Decimal, ROUND_HALF_UP
     try:
-        return int(round(float(x or 0)))
+        return int(Decimal(str(float(x or 0))).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
     except Exception:
         return 0
 def _d112_data(s):
@@ -148,13 +154,13 @@ def _d112_genereaza(prof, salariati, an, luna):
             sza = sum(int(x.get("zile_ang") or 0) for x in cms)
             szf = sum(int(x.get("zile_fnuass") or 0) for x in cms)
             total_base = bazac + cm_base
-            cas = _d112int(round(total_base * 0.25))
-            cass = _d112int(round(total_base * 0.10))
+            cas = _d112int(total_base * 0.25)
+            cass = _d112int(total_base * 0.10)
             ded = float(s.get("deducere") or 0)
             bimp = total_base - cas - cass - ded
             if bimp < 0:
                 bimp = 0
-            imp = _d112int(round(bimp * 0.10))
+            imp = _d112int(bimp * 0.10)
             brute = brut + cm_base
             b4base = total_base
             _b3.append('    <asiguratB3 B3_1="%d" B3_6="%d" B3_7="%d" B3_11="0" B3_12="%d" B3_13="%d"/>' % (b3z, b3z, cm_base, cm_ang, cm_fnuass))
@@ -166,7 +172,7 @@ def _d112_genereaza(prof, salariati, an, luna):
                 d21 = _d112int(x.get("brut_fnuass"))
                 _m17, _m18, media = _cm_media6(x.get("baza"), s.get("data_angajare"), an, luna)  # cm_media6_v1
                 d18 = _m18
-                d17 = _d112int(round(_m17))
+                d17 = _d112int(_m17)
                 if d17 == 0:  # d112_s107_v1: S107.1 - fara medie => si d18=0
                     d18 = 0
                 d19 = round(d17 / d18, 2) if d18 else 0
@@ -237,7 +243,10 @@ def _d112_genereaza(prof, salariati, an, luna):
         a.append('  </asigurat>')
         AS.append("\n".join(a))
     n = len(salariati)
-    cam_total = _d112int(round(sum_bazac * 0.0225))
+    # round() Python (bancar) se aplica ICI, INAINTE ca _d112int() sa poata
+    # rotunji aritmetic - 112.5 devenea deja 112 prin round() inainte sa ajunga
+    # la _d112int. Eliminat round() exterior, _d112int face rotunjirea corecta.
+    cam_total = _d112int(sum_bazac * 0.0225)
     A = []
     def add_oblig(cod, cb, val):
         if val > 0:
@@ -256,6 +265,13 @@ def _d112_genereaza(prof, salariati, an, luna):
              % (_D112_NS, luna, an, _d112esc(nume_d), _d112esc(pren_d), _d112esc(func_d)))
     H.append('  <angajator cif="%s" caen="%s" den="%s" casaAng="%s" datCAM="1" bifa_CAM="0" '
              'totalPlata_A="%d">' % (cui_f, caen_f, _d112esc(den_f), casa_ang, total_plata))
+    # angajatorA ("sectiunea Creante" in mesajul validatorului; tag-ul real e
+    # "angajatorA"). Structura oficiala (structura_D112_0126_030226.pdf,
+    # confirmat prin lista completa de elemente <angajatorX>) o pozitioneaza
+    # PRIMA, inaintea lui angajatorB - nu dupa cum presupusesem gresit prima
+    # data (mutand-o dupa C4 a produs aceeasi eroare "gresit pozitionata",
+    # semn ca directia era inversa). Codurile (602/412/432/480/458/459) erau
+    # deja corecte in add_oblig() - problema era doar pozitia in XML.
     H.extend(A)
     H.append('    <angajatorB B_cnp="%d" B_sanatate="%d" B_pensie="%d" B_brutSalarii="%d" B_sal="%d"/>'
              % (n, n, n, sum_bazac, n))
