@@ -1,0 +1,210 @@
+# CLAUDE.md — Reguli permanente de lucru pe proiectul iConta
+
+Acest fișier e citit automat de Claude Code la începutul fiecărei sesiuni în acest
+director. Conține regulile de lucru stabilite de Costin de-a lungul mai multor
+sesiuni — nu sunt sugestii, sunt obligatorii, indiferent de presiunea de timp.
+
+## Context general
+
+iConta e o platformă de contabilitate SaaS (iconta.eu), solo founder Costin,
+stack FastAPI + PostgreSQL (schema-per-tenant, `iconta_v2`) + vanilla JS ES
+modules, pe server Hetzner (`costin@iconta-prod`, cod în `~/iconta_nou`,
+serviciu `iconta-nou.service`, port 8010). Costin e în Bucureşti, comunică
+tors, lucrează în sesiuni maraton, preferă corectitudine peste viteză.
+
+## REGULA DE AUR — verificare la sursă (cea mai importantă)
+
+**Înainte de a declara ceva "absent/inexistent/de construit/lipsă" SAU de a
+scrie cod nou SAU de a folosi orice valoare fiscală — verifici la sursă și
+ARĂȚI comanda de verificare, nu doar rezultatul.**
+
+Trei surse obligatorii, în funcție de context:
+1. **Cod**: `grep -rn` pe TOT `~/iconta_nou/` (nu doar fișierul pe care crezi
+   că trebuie modificat) — infrastructura veche (`/opt/iconta`, port 8000)
+   poate conține implementări pierdute la refacere; caută și acolo înainte
+   de a declara ceva "de construit".
+2. **Fiscal/legal**: sursă oficială ANAF/lege, NICIODATĂ din memorie. Pentru
+   declarații (D1xx, D3xx, D4xx): validatorul oficial DUK instalat local
+   (`~/duk/dist/lib/`, apelat prin `core/duk.py`, funcția
+   `valideaza(xml, tip, an=, luna=)`) e judecătorul final — nu presupunerea
+   din documentul PDF descărcat, care poate fi incomplet sau despre o altă
+   versiune a formularului.
+3. **UI/produs**: Design System (`DESIGN_SYSTEM.md`, v2.10+, 16 capitole) +
+   `ICONTA_STATUS.md`.
+
+**Niciodată nu se ghicesc valori — nici coduri fiscale, nici CUI/CNP de test,
+nici formate XML, nici nume de coloane de bază de date.**
+
+## Metoda de investigare pentru bug-uri de validare fiscală (D1xx/D3xx/D4xx)
+
+Lecția cea mai costisitoare din sesiunea de 16.07.2026 (peste 10 ore pe patru
+declarații din cauza ghicitului repetat):
+
+1. **Citește ÎNTREG documentul sursă o singură dată, înainte de a scrie orice
+   cod.** Nu „citesc o parte, scriu, corectez, mai citesc o bucată" — asta
+   e ghiceală mascată în iterații. Dacă documentul are 400+ linii, se citesc
+   toate 400, nu primele 180.
+2. **Dacă documentul PDF/oficial nu are structura XML exactă (nume atribute,
+   obligativitate, valori permise)** — de multe ori documentele „structura_
+   DXXX.pdf" descriu doar istoricul de modificări ale unui nomenclator, NU
+   schema XML propriu-zisă — treci direct la extragerea din **validatorul
+   instalat**: `unzip` pe jar-ul din `~/duk/dist/lib/DXXXValidator.jar`,
+   `strings` pe clasele `.class` din **ultima versiune** (`vN` cu N maxim),
+   citind TOATE atributele reale (`grep -E "^_[a-zA-Z]"` pe constant pool),
+   nu doar primele care par relevante.
+3. **Testează IZOLAT, cu date minime construite manual, NU doar pe date
+   reale ale unei firme.** Un test pe profil real, incomplet (câmpuri goale)
+   poate ocoli condiții ale validatorului fără să-ți dai seama — „valid pe
+   un caz" nu înseamnă "structură completă". Construiește un profil minim
+   cu toate câmpurile completate și validează acela separat.
+4. **Validatorul DUK poate raporta eroarea greșit poziționată.** Dacă apare
+   o eroare confuză, aparent fără legătură (ex. "CustomerID lipsă" pe o
+   linie care vizual are CustomerID), verifică dacă nu cumva o secțiune
+   ANTERIOARĂ în document (Header, MasterFiles) are o problemă reală care
+   rupe parsarea — validatorul uneori raportează eroarea pe ultima secțiune
+   parsată cu succes, nu pe cauza reală. Construiește un XML minim de la
+   zero, secțiune cu secțiune, ca să localizezi exact unde apare prima
+   discrepanță structurală.
+5. **O singură corecție per rundă, apoi testezi din nou pe validator.** Nu
+   se aplică trei ipoteze deodată "ca să fie mai rapid" — asta ascunde care
+   fix a rezolvat ce.
+6. **Fiecare reparație validă se comite cu mesaj care documentează:** ce
+   era greșit, ce spune sursa oficială (citat/paraphrase scurt), ce s-a
+   schimbat, dovada (stare=valid pe validator). Fișierul de teste al
+   modulului (`core/test_dXXX.py`) apără explicit fiecare regresie găsită.
+
+## Rotunjire fiscală
+
+Contribuțiile/sumele fiscale se rotunjesc **aritmetic** (dacă partea
+zecimală ≥ 0.5, se adaugă 1 la partea întreagă), NU bancar (`round()` din
+Python folosește half-to-even, care dă rezultate greșite pe `.5` exact).
+Orice rotunjire de sumă fiscală trebuie să folosească `Decimal` +
+`ROUND_HALF_UP`, nu `round()` simplu — și `round()` Python NU trebuie aplicat
+NICIODATĂ înainte de o funcție de rotunjire aritmetică proprie (dublă
+rotunjire = rezultat greșit silențios).
+
+## Date de test — CUI/CNP OBLIGATORIU verificate înainte de inserare
+
+**Niciun CUI sau CNP de test nu se inserează în baza de date fără verificare
+prealabilă a cifrei de control**, prin algoritmul oficial:
+
+```python
+# CUI (persoană juridică RO)
+def cui_valid(cui):
+    ch = [7,5,3,2,1,7,5,3,2]
+    c = str(cui).strip()
+    corp, ctrl = c[:-1].rjust(9,'0'), int(c[-1])
+    s = sum(int(corp[i])*ch[i] for i in range(9))
+    r = (s*10) % 11
+    if r == 10: r = 0
+    return r == ctrl
+
+# CNP
+def cnp_valid(baza12):
+    ch = [2,7,9,1,4,6,3,5,8,2,7,9]
+    s = sum(int(baza12[i])*ch[i] for i in range(12))
+    c = s % 11
+    return baza12 + str(1 if c == 10 else c)
+```
+
+Un CUI/CNP inventat "din cap" fără verificare a produs ore de investigație
+falsă pe 16.07.2026 (validatorul confunda o dată de test greșită cu un bug
+de cod real). Dacă ai nevoie de un CUI real pentru test (firmă cunoscută),
+caută-l/verifică-l, nu-l inventa.
+
+## Metoda "4 comenzi per temă"
+
+Pentru orice temă de lucru (bug fix, feature mic, refactor local):
+**maxim 2 comenzi de citire → 1 comandă de implementare → 1 comandă de
+verificare+commit.** Patru comenzi, nu zece. Dacă o temă cere mai mult,
+înseamnă că tema e prea mare și trebuie tăiată în bucăți mai mici, nu că
+regula nu se aplică.
+
+## Verificare funcțională reală, nu doar sintactică
+
+- `node --check` / `py_compile` verifică DOAR sintaxa, nu comportamentul de
+  runtime. După orice schimbare de backend care afectează o funcție apelată
+  din alt fișier, rulează un test funcțional real (curl sau script Python
+  care apelează funcția cu date reale) înainte de a declara "gata".
+- Orice modificare de SQL cere test funcțional real pe Postgres (rulare
+  reală a interogării, nu doar verificare de sintaxă) — string-urile SQL
+  corupte sau coloanele inexistente nu sunt prinse de py_compile.
+- Un query SQL prins într-un `try/except: pass` care eșuează silențios e un
+  bug la fel de grav ca unul care crapă vizibil — de fapt mai grav, pentru
+  că ascunde problema. Verifică mereu ce se întâmplă dacă interogarea din
+  interiorul unui `try` chiar aruncă excepție.
+
+## Global-first pentru CSS/UI
+
+Înainte de orice schimbare vizuală, verifică dacă elementul țintă e deja
+acoperit de o regulă CSS globală — și spune explicit asta înainte de a
+propune soluția.
+
+## Reparație reală, nu patch
+
+Când ceva trebuie corectat, elimini problema efectiv — fără cod mort, fără
+căi comentate lăsate în urmă, fără dubluri de logică. Dacă găsești o
+funcție/logică deja existentă care face ce ai vrut să construiești, o
+refolosești/repari pe aia, nu construiești una paralelă.
+
+## Design System
+
+`DESIGN_SYSTEM.md` (canonic, pe server, în git) e sursa unică pentru orice
+regulă vizuală. Înainte de orice cod de UI: citește regula relevantă din
+DS și citeaz-o. Dacă regula nu există încă în scris — STOP, se stabilește
+cu Costin întâi, nu se inventează un pattern generic. Orice regulă nouă de
+UI intră simultan în `DESIGN_SYSTEM.md` ȘI în `verificator_conformitate.py`
+(gardian automat), nu doar una din ele.
+
+## Ce NU face Costin
+
+- Nu vrea reflecții/scuze repetate de tip "ai dreptate" — direct la treabă.
+- Nu vrea presupunerea că sesiunea s-a terminat fără să i se ceară explicit.
+- Nu vrea aceeași comandă repetată de două ori (o dată în explicație, o
+  dată în blocul de executat) — o comandă, o singură dată, în bloc.
+- Nu vrea amânare ("las pe mai târziu", "documentăm limitarea") când a
+  cerut explicit să nu se amâne nimic — dacă apare o limitare structurală
+  reală care chiar cere o decizie de scop mai mare (schimbare de schemă,
+  timp semnificativ), se explică clar și se cere decizia lui, nu se declară
+  unilateral "gata pentru azi".
+
+## Fișiere normative pe server (NU se editează local, doar prin SSH)
+
+- `~/iconta_nou/DESIGN_SYSTEM.md` — reguli UI, v2.10+
+- `~/iconta_nou/verificator_conformitate.py` — gardian mecanic pentru DS
+- `~/iconta_nou/ICONTA_STATUS.md` — istoric versionat, actualizat DOAR la
+  finalul zilei de lucru, nu după fiecare task
+- `~/iconta_nou/DE_FACUT.md` — backlog
+- `~/iconta_nou/anaf_surse/` — toate documentele oficiale ANAF descărcate
+  (structuri XML, scheme SAF-T xlsx, versiuni.xml) — verifică AICI ÎNTÂI
+  înainte de a căuta din nou pe internet, poate exista deja sursa.
+
+## Infrastructură
+
+- Restart aplicație: `sudo systemctl restart iconta-nou` (NU pkill+nohup,
+  deprecat)
+- `iconta.service` (fără `-nou`) = build vechi, port 8000, sursă istorică
+  de verificat cu grep înainte de a declara ceva "de construit"
+- Python venv: `/opt/iconta/venv/bin/python3` (nu Python de sistem)
+- DB: schema-per-tenant în `iconta_v2`, `tenant_002` = firmă de test
+  (DANTE INTERNATIONAL SA, plătitoare TVA, regim profit)
+
+## Stare la 16.07.2026 (ultima sesiune majoră)
+
+Toate cele 9 declarații fiscale (D100, D101, D112, D205, D300, D301, D390,
+D394, **D406/SAF-T**) — confirmate `stare: valid, FARA ERORI` pe validatorul
+oficial, atât izolat (profil minim construit manual) cât și pe date reale.
+
+D406 reparat pe 16.07.2026 (commit `d68dbfc`), 5 discrepanțe structurale față
+de XSD-ul oficial (`/opt/duk/saft/saft.xsd`) + regula semantică din
+`d406_schema_anaf.xlsx`: (1) `Transaction` cerea `CustomerID`+`SupplierID`
+(lipseau; validatorul raporta greșit lipsa pe `TransactionLine`); (2) fiecare
+`TransactionLine` cere AMBELE — partener pe latura de client/furnizor, cod
+propriu (`00`+CUI) pe liniile fără partener, niciodată ambele `"0"`; (3)
+`pull()` citea facturile pe coloane inexistente (`except: pass` tăcut → 0
+facturi); (4) sub-secțiunile goale din `SourceDocuments` se omit, iar
+`MovementOfGoods` e gol self-closed; (5) luna fără mișcări → depunere „pe
+zero" cu `<GeneralLedgerEntries/>` self-closed, fără a fabrica tranzacții.
+`test_d406.py` (11 teste) apără fiecare regresie + validează pe DUK. Vezi
+`git log` pentru istoricul complet al tuturor reparațiilor, fiecare cu mesaj
+detaliat.
