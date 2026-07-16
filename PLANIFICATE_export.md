@@ -32,7 +32,6 @@ Total: 37 pozitii, in ordinea din fisier.
 | F146 | Registratura documente | Numere de intrare/iesire alocate automat pe documentele firmei. | Analiza concurentei |
 | F147 | Generare contracte | Contracte generate din sabloane cu datele partenerului. | Analiza concurentei |
 | F148 | Arhivare in cloud extern (Drive/OneDrive) | Sincronizarea arhivei de documente in cloud-ul utilizatorului. | Analiza concurentei |
-| F149 | Case de marcat / POS / imprimante (DECIZIE: probabil in afara scopului) | Legatura live cu case de marcat, POS retail/HoReCa, imprimante termice, cantare - iConta e platforma de cabinet, nu de vanzare;... | Analiza concurentei |
 | F154 | Proforme si avize in contul gratuit | Legarea modulului existent de proforme/avize in meniul Facturi al contului gratuit. | Roadmap cont gratuit |
 | F155 | Facturi recurente in contul gratuit | Legarea sabloanelor recurente (F110, cron existent) - abonamente, chirii. | Roadmap cont gratuit |
 | F156 | Import WooCommerce in contul gratuit | Legarea conectorului WooCommerce (F111): config in profil + import comenzi -> facturi | Roadmap cont gratuit |
