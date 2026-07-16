@@ -143,14 +143,19 @@ def xml_s1005(prof, an, f10p, f10c, f20p, f20c):
     at.append(_a("calit_intocmit", prof.get("calit_intocmit") or 12))
     if prof.get("cif_intocmit"): at.append(_a("cif_intocmit", prof["cif_intocmit"]))
     at.append(_a("totalPlata_A", f10c.get(49, 0)))
-    # emit F10/F20 cu atribute F10_0NN1/F10_0NN2 (NN=rand, 2 cifre) si F10_3011/F10_3021
+    # Atribute F<tag>_<rand><col>: randul pe 3 CIFRE, apoi coloana (1=an precedent,
+    # 2=an curent). Ex: rand 6 -> F10_0061; rand 301 -> F10_3011; rand 302 -> F10_3021
+    # (creante, componentele lui F10_0061 - regula validator F10_68/69: F10_0061 =
+    # F10_3011 + F10_3021). Vechea formatare ("F10_0" + str(k) pentru k>=100) producea
+    # F10_03011 in loc de F10_3011 - "atribut necunoscut" in XSD + regula F10_68 pica
+    # (F10_3011/F10_3021 lipseau, deci suma iesea 0 != 19040). Dovedit pe validatorul
+    # oficial S1005/S1003 (16.07.2026, XSD ~/duk/xsd/s1005_20260312.xsd).
     def bloc(tag, dp, dc):
         a = []
         for k in sorted(set(dp) | set(dc)):
             v1, v2 = dp.get(k, 0), dc.get(k, 0)
-            nn = ("%02d" % k) if k < 100 else str(k)
-            if v1: a.append(_a("F%s_0%s1" % (tag, nn), v1))
-            if v2: a.append(_a("F%s_0%s2" % (tag, nn), v2))
+            if v1: a.append(_a("F%s_%03d1" % (tag, k), v1))
+            if v2: a.append(_a("F%s_%03d2" % (tag, k), v2))
         return "".join(a)
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
     H.append('<Bilant1005 xmlns="%s"%s>' % (NS, "".join(at)))

@@ -62,7 +62,18 @@ def test_xml_are_antet_si_valori():
     prof = {"cui_numeric": "12345678", "nume": "TEST SRL", "reg_com": "J40/1/2020",
             "caen": "6920", "cod_judet": 40, "declarant_nume": "POPESCU ION"}
     x = bilant.xml_s1005(prof, 2025, {}, {2: 80000, 4: 80000}, {}, {1: 49500, 8: 9000})
-    assert 'xmlns="mfp:anaf:dgti:s1005:declaratie:v14"' in x
+    # v15 e versiunea acceptata de validatorul oficial; v14 e RESPINSA (namespace).
+    assert 'xmlns="mfp:anaf:dgti:s1005:declaratie:v15"' in x
     assert 'F10_0022="80000"' in x
     assert 'F20_0012="49500"' in x
     assert 'totalPlata_A=' in x
+
+def test_f10_atribut_creante_3011():
+    # Randurile >=100 (301/302 creante) -> F10_3011/F10_3021, NU F10_03011 (atribut
+    # necunoscut in XSD). Regula validator F10_68: F10_0061 = F10_3011 + F10_3021.
+    # f10p = an precedent (coloana 1: F10_xxx1)
+    x = bilant.xml_s1005({"cui_numeric": "12345678", "nume": "T"}, 2025,
+                         {301: 19040, 6: 19040}, {}, {}, {})
+    assert 'F10_3011="19040"' in x
+    assert 'F10_03011' not in x
+    assert 'F10_0061="19040"' in x
