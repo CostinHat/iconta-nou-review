@@ -133,14 +133,20 @@ def _nr_evid(cui, an, luna, cod_oblig="103"):
 def build_xml(res):
     prof = res.prof
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
+    # d_recN si d_grup: "valoarea 0 nu se incadreaza in intervalul cerut" -
+    # dovedit direct pe validator (constant pool: "d_rec=2 daca d_recN=1",
+    # "d_grup=1 trebuie..."). Valorile lor valide sunt DOAR 1 sau lipsa (null),
+    # niciodata "0" scris explicit - omise complet aici.
+    # cod_obligatie: obligatoriu, lipsea complet - "103" = impozit pe profit
+    # PJ romane (confirmat azi la D100, acelasi nomenclator).
     hdr = ('<declaratie101 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
            'xmlns="%s" xsi:schemaLocation="%s D101.xsd" '
-           'an="%d" luna="12" an_i="%d" luna_i="1" '
-           'd_rec="0" d_recN="0" d_reg="0" d_reglem="0" d_anulare="0" '
-           'd_succ="0" d_grup="0" d_prof="0" d_alte="0" '
+           'an="%d" luna="12" an_i="%d" luna_i="1" cod_obligatie="103" '
+           'd_rec="0" d_reg="0" d_reglem="0" d_anulare="0" '
+           'd_succ="0" d_prof="0" d_alte="0" '
            'Data_I="01.01.%d" Data_S="31.12.%d" '
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
-           'cif="%s" den=%s adresa=%s'
+           'cif="%s" denumire=%s adresa=%s'
            % (NS, NS, res.an, res.an, res.an, res.an,
               _esc((prof.get("declarant_nume") or "ADMINISTRATOR")[:74]),
               _esc((prof.get("declarant_prenume") or "-")[:74]),
@@ -155,6 +161,17 @@ def build_xml(res):
         hdr += ' caen=%s' % _esc(caen)
     cif_num = "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit())
     hdr += ' nr_evid="%s"' % _nr_evid(cif_num, res.an, 12)
+    # denumire (nu "den"), scadenta si cod_bug lipseau complet.
+    # Scadenta = format ZZLLAA (6 cifre COMPACTE, nu cu puncte - "25.03.2026"
+    # a fost respins ca "sir mai lung de 6 caractere"). Formula EXACTA din
+    # regula R17 a validatorului: "daca an Data_S in [2022,2025] atunci
+    # LL=LL+6" (LL=12 din Data_S=31.12.an -> 12+6=18 -> 6, anul+1).
+    scad_luna = 12 + 6
+    scad_an = res.an
+    if scad_luna > 12:
+        scad_luna -= 12
+        scad_an += 1
+    hdr += ' scadenta="25%02d%02d" cod_bug="5503XXXXXX"' % (scad_luna, scad_an % 100)
     hdr += ' totalPlata_A="%d">' % res.total_plata_a
     H.append(hdr)
     for k, v in sorted(res.P.items(), key=lambda kv: int(kv[0][1:])):

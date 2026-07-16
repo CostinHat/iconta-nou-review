@@ -35,15 +35,50 @@ def test_pierdere_nu_genereaza_impozit():
     assert "P11" not in res.P
 
 
-def test_toate_flagurile_apar_pe_radacina():
-    """Regresie: prima incercare avea doar d_anulare/d_succ. Atributele reale
-    (dovedite in Identificare.class): d_rec, d_recN, d_reg, d_reglem, d_anulare,
-    d_succ, d_grup, d_prof, d_alte."""
+def test_flagurile_valide_apar_pe_radacina():
+    """d_recN si d_grup NU accepta "0" (validator: "valoarea 0 nu se
+    incadreaza in intervalul cerut" - valorile lor valide sunt doar 1 sau
+    lipsa). Restul flagurilor accepta "0" explicit."""
     res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
     xml = build_xml(res)
-    for flag in ("d_rec", "d_recN", "d_reg", "d_reglem", "d_anulare",
-                 "d_succ", "d_grup", "d_prof", "d_alte"):
+    for flag in ("d_rec", "d_reg", "d_reglem", "d_anulare",
+                 "d_succ", "d_prof", "d_alte"):
         assert '%s="0"' % flag in xml, "lipseste %s" % flag
+    assert "d_recN=" not in xml
+    assert "d_grup=" not in xml
+
+
+def test_cod_obligatie_e_prezent():
+    """Regresie: lipsea complet - 'atributul trebuie sa existe'.
+    103 = impozit pe profit PJ romane (nomenclator D100/D101)."""
+    res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
+    xml = build_xml(res)
+    assert 'cod_obligatie="103"' in xml
+
+
+def test_denumire_nu_den():
+    """Regresie: 'den' e atribut necunoscut la D101 (spre deosebire de alte
+    declaratii) - numele corect e 'denumire'."""
+    res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
+    xml = build_xml(res)
+    assert 'denumire=' in xml
+    assert ' den=' not in xml
+
+
+def test_scadenta_format_zzllaa_compact():
+    """Regresie: 'scadenta="25.03.2026"' respins ('sir mai lung de 6
+    caractere'). Formatul e ZZLLAA compact, 6 cifre. Formula reala (regula
+    R17): pentru Data_S in [2022,2025], LL=luna+6 (nu +3)."""
+    res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
+    xml = build_xml(res)
+    assert 'scadenta="250626"' in xml
+    assert '.' not in [c for c in xml.split('scadenta="')[1].split('"')[0]]
+
+
+def test_cod_bug_e_prezent():
+    res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
+    xml = build_xml(res)
+    assert 'cod_bug="5503XXXXXX"' in xml
 
 
 def test_data_i_si_data_s():
