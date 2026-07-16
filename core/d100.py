@@ -42,7 +42,11 @@ NS = "mfp:anaf:dgti:d100:declaratie:v2"
 # contabili (accountable.ro, portalsalarizare.ro): pozitia din nomenclator NU e
 # codul XML - "poz.2" din tabelul oficial corespunde cod_oblig "103".
 COD_BUGETAR = {
-    "5": "20A101010X",     # poz.5 Nomenclator: impozit pe veniturile microintreprinderilor
+    # cod_oblig e CODUL din nomenclator (N(3)), NU pozitia din tabel. Impozit micro =
+    # poz.5 in tabel, dar cod_oblig REAL = 121 (dovedit: d100_struct_anaf.txt "5. 121
+    # (poz.5)" + validator "valoarea '5' nu se afla in lista"). cod bugetar = cont unic
+    # 20470101 (art.47/56 L227/2015), acelasi cont unic ca impozitul pe profit.
+    "121": "20470101",     # poz.5 Nomenclator: impozit pe veniturile microintreprinderilor
     "103": "20470101",     # poz.2 Nomenclator: impozit pe profit/plati anticipate PJ romane
                             # (altele decat institutii de credit) - cont unic
 }
@@ -90,6 +94,7 @@ class Obligatie:
     cod_bugetar: str = ""
     scadenta: str = ""
     nr_evid: str = ""
+    cota: str = ""          # doar pt. cod_oblig 121 (micro): validator cere cota="1"
 
 
 @dataclass
@@ -119,7 +124,8 @@ def calcul_d100(prof, an, luna, obligatii):
         scad_str = o.get("scadenta") or ("%02d.%02d.%04d" % (zi_s, luna_s, an_s))
         obl.append(Obligatie(
             cod_oblig=cod, suma_dat=suma, cod_bugetar=cod_bug, scadenta=scad_str,
-            nr_evid=_nr_evid(cod, luna, an, zi_s, luna_s, an_s)))
+            nr_evid=_nr_evid(cod, luna, an, zi_s, luna_s, an_s),
+            cota=str(o.get("cota") or "")))
         total += suma
     return RezultatD100(an=an, luna=luna, prof=prof, obligatii=obl, total_plata_a=total)
 
@@ -180,6 +186,10 @@ def build_xml(res):
                  % (o.cod_oblig, o.scadenta, o.suma_dat, o.suma_dat, o.nr_evid))
         if o.cod_bugetar:
             linie += ' cod_bugetar=%s' % _esc(o.cod_bugetar)
+        # cota: OBLIGATORIU si numai pt. cod_oblig 121 (micro) - reguli R17 + Rcota
+        # ("cota se completeaza daca si numai daca cod_oblig=121"; "cota trebuie = 1").
+        if o.cota:
+            linie += ' cota=%s' % _esc(o.cota)
         linie += "/>"
         H.append(linie)
     H.append("</declaratie100>")
@@ -217,7 +227,7 @@ def genereaza(conn, schema, an, trim, cota=None):
         c = Decimal(str(cota)) if cota is not None else Decimal("1")
         suma = _i(Decimal(str(r["venituri"])) * c / Decimal(100))
         if suma > 0:
-            obligatii.append({"cod_oblig": "5", "suma_dat": suma})
+            obligatii.append({"cod_oblig": "121", "suma_dat": suma, "cota": "1"})
     elif regim == "profit":
         c = Decimal(str(cota)) if cota is not None else Decimal("16")
         suma = _i(Decimal(str(r["venituri"])) * c / Decimal(100))

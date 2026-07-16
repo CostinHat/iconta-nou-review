@@ -43,9 +43,22 @@ def test_nr_evid_cifra_de_control():
 
 
 def test_calcul_micro():
-    res = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "5", "suma_dat": 1000}])
-    assert res.obligatii[0].cod_oblig == "5"
-    assert res.obligatii[0].cod_bugetar == COD_BUGETAR["5"]
+    # cod_oblig micro = 121 (codul din nomenclator), NU pozitia "5" (respinsa de
+    # validator: "valoarea '5' nu se afla in lista"). cont unic 20470101.
+    res = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "121", "suma_dat": 1000, "cota": "1"}])
+    assert res.obligatii[0].cod_oblig == "121"
+    assert res.obligatii[0].cod_bugetar == COD_BUGETAR["121"] == "20470101"
+
+
+def test_micro_are_cota_1_pe_obligatie():
+    """Reguli R17 + Rcota: cod_oblig 121 CERE cota="1" pe <obligatie>; profitul (103)
+    NU are cota. Fara ea, validatorul respinge micro-ul."""
+    xm = build_xml(calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "121", "suma_dat": 1000, "cota": "1"}]))
+    lin_m = [l for l in xm.split("\n") if "<obligatie" in l][0]
+    assert 'cota="1"' in lin_m
+    xp = build_xml(calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "103", "suma_dat": 2400}]))
+    lin_p = [l for l in xp.split("\n") if "<obligatie" in l][0]
+    assert 'cota=' not in lin_p
 
 
 def test_calcul_profit():
