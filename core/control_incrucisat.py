@@ -36,8 +36,8 @@ NEVERIFICAT: brutul (421). B_brutSalarii din D112 e baza de contributii, nu brut
 contabil - pe lunile cu CM diverge legitim. Se declara ca limita, nu se falsifica.
 
 Comparatie TVA:
-  D300 R17_2 (colectata)  <->  rulaj CREDIT 4427 pe luna
-  D300 R31_2 (dedusa)     <->  rulaj DEBIT  4426 pe luna
+  D300 R17_2 (colectata totala)      <->  rulaj CREDIT 4427 pe luna
+  D300 R27_2 (deductibila totala)    <->  rulaj DEBIT  4426 pe luna
 
 Regula EVIDENTA (15.07.2026): rulajele se citesc DOAR din note cu status='validata'.
 Nota in ciorna e o PROPUNERE (nu a trecut patru-ochi), nu evidenta contabila. Daca ar
@@ -121,9 +121,14 @@ def compara_tva(d300_R, rulaje, necontate=None):
     necontate: facturi FARA nota validata, fiecare cu are_ciorna (nota propusa, nevalidata).
     Ciorna nu intra in rulaj si NU inchide constatarea: verdele vine dupa patru-ochi."""
     necontate = necontate or []
+    # TVA deductibilă = R27_2 (TOTAL taxă deductibilă), NU R31_2 (care e doar AJUSTAREA
+    # pro-rata, goala la pro_rata 100%). Bug dovedit 16.07.2026: pe tenant_002 D300
+    # declara corect R27_2=210 (achizitie ORANGE), dar comparatia pe R31_2=0 vs 4426=210
+    # dadea ROSU FALS pe orice firma cu achizitii deductibile normale. R17_2 (colectata)
+    # e corect - totalul colectat, simetric cu R27_2 pe deductibila.
     perechi = (
         ("TVA colectată", "R17_2", "4427", "credit", "emisa", "emise"),
-        ("TVA deductibilă", "R31_2", "4426", "debit", "primita", "primite"),
+        ("TVA deductibilă", "R27_2", "4426", "debit", "primita", "primite"),
     )
     rez = []
     for eticheta, rand, cont, sens, directie, fel in perechi:
