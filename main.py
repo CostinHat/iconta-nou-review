@@ -1913,6 +1913,15 @@ def facturi_numerotare_set(tenant_id: int, date: NumerotareIn, ctx=Depends(cere_
         raise HTTPException(400, r.get("mesaj", "eroare"))
     return r
 
+@app.get("/tenants/{tenant_id}/scadentar")
+def scadentar_get(tenant_id: int, ctx=Depends(cere_context)):
+    """F131: scadentarul facturilor emise neincasate (restante/scade curand/in termen)
+    + fisa client agregata. Read-only, fara schema noua."""
+    from core import scadentar as _sc
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return _sc.pull(conn, schema)
+
 class ModelFacturaIn(BaseModel):
     font: Optional[str] = None
     culoare: Optional[str] = None
