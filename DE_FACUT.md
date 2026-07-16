@@ -146,3 +146,35 @@ Firme, solduri initiale, solduri parteneri, salariati, asociati, MF, istoric dec
 - F167: Open Banking automat prin Enable Banking (AIS EU; tier gratuit Restricted Production pt conturi proprii = dogfooding; productie = contract + KYB + cost pe conexiuni). Dupa MT940. Automatizeaza ADUCEREA extrasului, nu doar citirea [PLANIFICAT-etapa-2]
 - F169: audit de PRELUARE firma - acelasi motor control_incrucisat aplicat la migrare: inventar transparent (ce pot/nu pot verifica), raport datat cu trei categorii (coerent / divergent / NEVERIFICAT-lipsa document), repetabil pe masura ce apar documentele. Acoperire profesionala la preluarea raspunderii [PLANIFICAT]
 - RAMASE: teste [C] DONE 14.07 (P1.1/P1.4/P1.5-simulat/P2.9-2.11/P5.24); backup automat LIVE (systemd timer zilnic 03:00, retentie 7z); [D] raman ca teste proprii; blocate extern: F034 D394 DUK, F044 e-Transport API SPV; F154-F161 roadmap gratuit PLANIFICATE; parse-extras de clarificat vs rip/import-banca
+
+## Actualizare 16.07.2026 — re-testare completa a aplicatiei (portiunea SSH)
+
+Toate testele pe date INVENTATE verificate la sursa oficiala (lege/structuri ANAF/DUK),
+zero opinii de contabil. Suita: 555 teste verzi. 8 commit-uri.
+
+INCHISE azi:
+- **Declaratii 9/9 + bilanturi S1005/S1003 VALID** pe validatorul oficial DUK, izolat SI pe
+  date reale (d68dbfc, 6813537, 2d0a943). Vezi git log pentru fiecare.
+- **Audit migrare firme noi** cap-coada: 3 arhetipuri (micro/profit/neplatitor), toate
+  declaratiile datorate valide. Bug D100 micro reparat (09183e6: cod_oblig era pozitia 5,
+  nu codul 121 + cota lipsa).
+- **Re-testare zone marcate PASS** (ghidata de churn git, nu incredere oarba): gasite si
+  reparate 2 bug-uri exact in cod nou/schimbat de la ultimul PASS:
+  - validare cifra de control CUI LIPSEA la inregistrare (9b2dde6) - CUI malformat devenea
+    tenant real cand ANAF era jos.
+  - control_incrucisat compara D300 R31_2 (ajustare pro-rata, gol) in loc de R27_2 (TVA
+    deductibila) -> rosu fals pe orice firma cu achizitii (0a0c3a0).
+- **Infrastructura teste**: suita nu putea rula (test_bilant import gresit) - reparat (3578be5).
+- **D212 (PFA)** intrat in plasa de regresie (8a9021b) - testele erau doar in __main__.
+- Verificat OK fara reparatii: Facturare (numerotare/TVA/storno/contare), Securitate
+  (0 rute neprotejate din 313, poarta beta, izolare tenant), Admin (13/13 guard superadmin),
+  Cron recurente (scadenta+idempotenta), reconciliere/MT940/WooCommerce (acoperite de suita).
+
+BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
+1. **An fiscal modificat** (necalendaristic): lipsa coloana; stocuri_api.py/d101.py presupun
+   calendaristic (date(an,1,1) hardcodat). Firma cu exercitiu modificat nu e suportata.
+2. **D394 absent din control_fiscal_api.declaratii_datorate**: modulul exista si valideaza,
+   dar nu apare in motorul de obligatii fiscale.
+
+RAMAS — cere ochii/telefonul, NU SSH: **vezi CHECKLIST_BROWSER.md** (PWA P4.18-19, responsive
+P4.20-21, audit vizual ~12 ecrane ramase). Grup fiscal/D101G si ONG: lasate deoparte (fara cod nou).
