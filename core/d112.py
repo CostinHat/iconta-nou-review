@@ -98,9 +98,15 @@ def _d112_genereaza(prof, salariati, an, luna):
     den_f = prof.get("nume") or ""
     caen_f = re.sub(r"\D", "", (prof.get("caen") or "")) or "0000"
     casa_ang = _d112_casa(prof.get("judet"))
-    nume_d = prof.get("declarant_nume") or den_f or "ADMINISTRATOR"
-    pren_d = prof.get("declarant_prenume") or "-"
-    func_d = prof.get("declarant_functie") or "ADMINISTRATOR"
+    # nume_declar/prenume_declar: campul asteapta NUMELE PERSOANEI care depune, nu
+    # denumirea firmei. Fallback-ul pe den_f (cand declarant_nume lipseste din profil)
+    # putea depasi limita de 75 caractere a validatorului ANAF - dovedit 15.07.2026:
+    # "nume_declar: sir mai lung de 75 caractere" pe o denumire de cabinet de 117.
+    # Trunchiem defensiv la 74 (sub limita), pentru orice firma cu denumire lunga -
+    # solutia corecta ramane completarea declarant_nume in profil (ecranul Date firma).
+    nume_d = (prof.get("declarant_nume") or den_f or "ADMINISTRATOR")[:74]
+    pren_d = (prof.get("declarant_prenume") or "-")[:74]
+    func_d = (prof.get("declarant_functie") or "ADMINISTRATOR")[:74]
     if not cui_f:
         av.append("CUI firma lipsa - completeaza Profil firma.")
     if caen_f == "0000":
