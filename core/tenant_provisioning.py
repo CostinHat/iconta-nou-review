@@ -76,7 +76,30 @@ def creeaza_schema(conn, schema_noua, sql_template):
 # ============================================================
 #  PROVISION tenant — orchestrare, o singură tranzacție
 # ============================================================
+def cui_valid(cui):
+    """True daca CUI-ul are cifra de control corecta (algoritm oficial ANAF, Codul
+    fiscal). Pur, testabil. Acceptata forma cu/fara prefix RO si cu spatii - se
+    extrag doar cifrele. CUI romanesc: 2-10 cifre (numar identificare 1-9 + control)."""
+    c = "".join(ch for ch in str(cui or "") if ch.isdigit())
+    if not (2 <= len(c) <= 10):
+        return False
+    ponderi = [7, 5, 3, 2, 1, 7, 5, 3, 2]
+    corp, ctrl = c[:-1].rjust(9, "0"), int(c[-1])
+    s = sum(int(corp[i]) * ponderi[i] for i in range(9))
+    r = (s * 10) % 11
+    if r == 10:
+        r = 0
+    return r == ctrl
+
+
 def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template):
+    # cui_control_v1: cifra de control CUI validata OFFLINE, inainte de orice - ANAF
+    # (anaf_api.valideaza_cui) e best-effort in rutele de register (except: pass), deci
+    # cand ANAF e jos un CUI malformat ajungea tenant real -> sparge toate declaratiile
+    # ulterioare (RegistrationNumber D406/D394 etc. cer CUI valid). Algoritmul e obiectiv
+    # (lege), nu depinde de disponibilitatea ANAF.
+    if not cui_valid(cui):
+        raise ValueError("CUI invalid: cifra de control nu corespunde (%r)" % cui)
     # cui_unic_v1: un CUI o singura data per cabinet
     with conn.cursor() as _c:
         _c.execute("SELECT id FROM public.tenants WHERE cui=%s AND accounting_firm_id=%s",
