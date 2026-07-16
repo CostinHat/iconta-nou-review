@@ -1,35 +1,46 @@
 # -*- coding: utf-8 -*-
 """core/d101.py — D101 (Declaratie privind impozitul pe profit).
 
-REFACUT DE LA ZERO 16.07.2026, din structura oficiala ANAF
-(structura_D101_2024_200225.pdf, conform OPANAF 206/2025), citita integral.
+REFACUT A DOUA OARA, COMPLET, 16.07.2026, direct din D101Validator.jar (v8,
+namespace mfp:anaf:dgti:d101:declaratie:v10), atribute + mesaje de eroare
+extrase din constant pool-ul clasei Identificare.
 
-Fisierul vechi genera dupa schema D101G ("Grup fiscal" - declaratie CONSOLIDATA
-pentru grupuri fiscale, alta declaratie, cu alt formular) si avea o structura de
-calcul (P1-P53) dintr-o versiune veche a formularului, incompatibila cu cea
-curenta (P1-P16). O firma individuala (nu grup fiscal) foloseste D101 simplu.
+PRIMA REFACERE (aceeasi zi) fusese gresita in executie, nu in decizie: structura
+veche (P1-P53) ERA cea corecta (confirmata acum in validator), dar fusese
+inlocuita cu P1-P16 inventat din cap, crezand gresit ca era formularul de grup
+fiscal (D101G). Namespace-ul v10 si Data_I/Data_S erau deja corecte in prima
+refacere - pastrate aici.
 
 Structura reala <declaratie101>:
-  atribute: an, d_rec, nume_declar, prenume_declar, functie_declar, cui, den,
-            adresa, telefon, Data_I (inceput exercitiu), Data_S (sfarsit
-            exercitiu - OBLIGATORIU, lipsea complet in modulul vechi), caen,
-            totalPlata_A
-  P1  = Venituri totale
-  P2  = Cheltuieli totale
-  P3  = Rezultat contabil (P1-P2)
-  P4  = Elemente similare veniturilor
-  P5  = Elemente similare cheltuielilor
-  P6  = Deduceri fiscale
-  P7  = Venituri neimpozabile
-  P8  = Cheltuieli nedeductibile
-  P9  = Rezultat fiscal (P3+P4-P5+P8-P6-P7, minim 0)
-  P10 = Pierdere fiscala recuperata
-  P11 = Impozit pe profit calculat (cota x baza, rotunjit)
-  P12 = Reduceri/credite fiscale
-  P13 = Impozit declarat trimestrial prin D100 (plati anticipate)
-  P14 = Diferenta de restituit (sponsorizare/bursa/mecenat)
-  P15 = Diferenta de impozit datorata: max((P11+P14)-(P12+P13), 0)
-  P16 = Diferenta de impozit de recuperat: max((P12+P13)-(P11+P14), 0)
+  Flag-uri pe radacina (toate "0" implicit, fara conditii suplimentare):
+    d_rec, d_recN, d_reg, d_reglem, d_anulare, d_succ, d_grup, d_prof, d_alte
+  Date obligatorii: Data_I (inceput exercitiu), Data_S (sfarsit exercitiu),
+    an_i, luna_i (derivate din Data_I), an, luna (derivate din Data_S)
+  Identificare: cif, den, adresa, telefon, email, caen
+  Declarant: nume_declar, prenume_declar, functie_declar
+  temei (daca d_anulare=1), Stat_rezid, nr_evid, totalPlata_A
+
+  Corpul declaratiei (P1-P16 - cele relevante pentru o firma fara grup fiscal,
+  fara operatiuni offshore/redirectionare, cazuri acoperite de P17-P53):
+    P1  = Total venituri
+    P2  = Total cheltuieli
+    P3  = Rezultat contabil (P1-P2)
+    P4  = Elemente similare veniturilor
+    P5  = Elemente similare cheltuielilor
+    P6  = Deduceri fiscale
+    P7  = Venituri neimpozabile
+    P8  = Cheltuieli nedeductibile (=P081+P082+P083+P084 daca detaliat)
+    P9  = Rezultat fiscal (P3+P4-P5+P8-P6-P7, minim 0)
+    P10 = Pierdere fiscala recuperata
+    P11 = Impozit pe profit calculat
+    P12 = Reduceri de impozit
+    P13 = Impozit declarat trimestrial prin D100
+    P15 = Diferenta de impozit datorata: max((P11-P12)-P13, 0)
+    P16 = Diferenta de impozit de recuperat: max(P13-(P11-P12), 0)
+
+  NEIMPLEMENTATE (cazuri speciale, nu se aplica unei firme obisnuite):
+    P17 (redirectionare 20%), P38-P53 (offshore, facilitati specifice,
+    grup fiscal). Se adauga cand apare un caz real care le cere.
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
@@ -37,7 +48,7 @@ from decimal import Decimal, ROUND_HALF_UP
 
 NS = "mfp:anaf:dgti:d101:declaratie:v10"
 
-COTA_STANDARD = Decimal("16")   # cota standard impozit pe profit
+COTA_STANDARD = Decimal("16")
 
 
 def _esc(v):
@@ -46,7 +57,6 @@ def _esc(v):
 
 
 def _i(x):
-    """Rotunjire aritmetica la intreg (jumatate in sus)."""
     return int(Decimal(str(x)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
@@ -63,8 +73,7 @@ def calcul_d101(prof, an, venituri_totale=0, cheltuieli_totale=0,
                  elemente_similare_venituri=0, elemente_similare_cheltuieli=0,
                  deduceri_fiscale=0, pierdere_recuperata=0,
                  impozit_trimestrial_d100=0, reduceri_credite=0,
-                 diferenta_restituire=0, cota=COTA_STANDARD):
-    """Calculeaza P1-P16 din datele contabile ale anului. Sume in lei intregi."""
+                 cota=COTA_STANDARD):
     p1 = _i(venituri_totale)
     p2 = _i(cheltuieli_totale)
     p3 = p1 - p2
@@ -79,24 +88,21 @@ def calcul_d101(prof, an, venituri_totale=0, cheltuieli_totale=0,
     p11 = _i(Decimal(baza) * Decimal(str(cota)) / Decimal(100))
     p12 = _i(reduceri_credite)
     p13 = _i(impozit_trimestrial_d100)
-    p14 = _i(diferenta_restituire)
-    v1 = (p11 + p14) - (p12 + p13)
+    v1 = (p11 - p12) - p13
     p15 = v1 if v1 > 0 else 0
     p16 = -v1 if v1 < 0 else 0
 
     P = {}
     for k, v in (("P1", p1), ("P2", p2), ("P3", p3), ("P4", p4), ("P5", p5),
                  ("P6", p6), ("P7", p7), ("P8", p8), ("P9", p9), ("P10", p10),
-                 ("P11", p11), ("P12", p12), ("P13", p13), ("P14", p14),
+                 ("P11", p11), ("P12", p12), ("P13", p13),
                  ("P15", p15), ("P16", p16)):
         if v:
             P[k] = v
-
     return RezultatD101(an=an, prof=prof, P=P, total_plata_a=p15)
 
 
 def erori_generare(prof):
-    """Campuri obligatorii de profil, verificate la sursa inainte de generare."""
     erori = []
     if not (prof.get("cui") or "").strip():
         erori.append("LIPSĂ CUI (obligatoriu).")
@@ -109,27 +115,46 @@ def erori_generare(prof):
     return erori
 
 
+def _nr_evid(cui, an, luna, cod_oblig="103"):
+    """23 caractere - acelasi format oficial ANAF confirmat azi la D100
+    (structura_D100-D710): poz.1-2 fix '10', poz.3-5 cod_oblig, poz.6-7 fix '01',
+    poz.8-11 LLAA (sfarsit perioada), poz.12-17 ZZLLAA (scadenta: 25.03.an+1
+    pentru impozitul anual), poz.18 '0', poz.19 '0', poz.20-21 '00',
+    poz.22-23 cifra de control = ultimele 2 cifre din suma primelor 21 pozitii."""
+    scad_an = an + 1
+    p1_21 = ("10" + str(cod_oblig).rjust(3, "0")[-3:] + "01" +
+             "%02d%02d" % (12, an % 100) +
+             "%02d%02d%02d" % (25, 3, scad_an % 100) + "0" + "0" + "00")
+    assert len(p1_21) == 21
+    suma = sum(int(c) for c in p1_21)
+    return p1_21 + "%02d" % (suma % 100)
+
+
 def build_xml(res):
     prof = res.prof
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
     hdr = ('<declaratie101 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
            'xmlns="%s" xsi:schemaLocation="%s D101.xsd" '
-           'an="%d" d_rec="0" '
+           'an="%d" luna="12" an_i="%d" luna_i="1" '
+           'd_rec="0" d_recN="0" d_reg="0" d_reglem="0" d_anulare="0" '
+           'd_succ="0" d_grup="0" d_prof="0" d_alte="0" '
+           'Data_I="01.01.%d" Data_S="31.12.%d" '
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
-           'cui=%s den=%s adresa=%s'
-           % (NS, NS, res.an,
+           'cif="%s" den=%s adresa=%s'
+           % (NS, NS, res.an, res.an, res.an, res.an,
               _esc((prof.get("declarant_nume") or "ADMINISTRATOR")[:74]),
               _esc((prof.get("declarant_prenume") or "-")[:74]),
               _esc((prof.get("declarant_functie") or "ADMINISTRATOR")[:74]),
-              _esc(prof.get("cui")), _esc(prof.get("nume")), _esc(prof.get("adresa"))))
+              "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()),
+              _esc(prof.get("nume")), _esc(prof.get("adresa"))))
     tel = (prof.get("telefon") or "").strip()
     if tel:
         hdr += ' telefon=%s' % _esc(tel)
-    hdr += ' Data_I="01.01.%d"' % res.an
-    hdr += ' Data_S="31.12.%d"' % res.an
     caen = (prof.get("caen") or "").strip()
     if caen:
         hdr += ' caen=%s' % _esc(caen)
+    cif_num = "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit())
+    hdr += ' nr_evid="%s"' % _nr_evid(cif_num, res.an, 12)
     hdr += ' totalPlata_A="%d">' % res.total_plata_a
     H.append(hdr)
     for k, v in sorted(res.P.items(), key=lambda kv: int(kv[0][1:])):
@@ -139,8 +164,6 @@ def build_xml(res):
 
 
 def genereaza(conn, schema, an, manual=None):
-    """Genereaza D101 pentru anul `an`. `manual` (dict) poate suprascrie oricare
-    din argumentele calcul_d101 (ex. venituri_totale, cheltuieli_totale)."""
     import psycopg2.extras as _E
     manual = dict(manual or {})
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:

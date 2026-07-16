@@ -1,0 +1,21 @@
+<html>
+<head>
+
+</head>
+<body>
+<p align="center">
+<img src="https://static.anaf.ro/static/10/Anaf/anaf.jpg">
+</p>
+<table align="center" height="75%" style=" font: Verdana, Arial, Helvetica, sans-serif">
+<tr><td>
+<b style="font-size:24px">404</b></td><td ><img src="https://static.anaf.ro/static/10/Anaf/error.png"> </td><td ><b> Server-ul nu a gasit pagina ceruta. Va rugam, reveniti!</b></td></tr>
+<tr>
+<td colspan="3" align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>
+
+<tr>
+<td colspan="3" align="center"><b>www.anaf.ro</b></td>
+</tr></table>
+
+</body>
+
+</html>
