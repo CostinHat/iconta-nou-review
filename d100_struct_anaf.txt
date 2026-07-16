@@ -1,0 +1,1789 @@
+ 
+1 
+Structura fisier XML pentru declaratia 100: 
+ 
+In   v.2.0.0  - s-au introdus obligatiile: 536, 537, 701, 631 - 640  (valabil din 01/2014) 
+                   - s-au scos obligatiile :      510, 619, 612, 140 (valabil din 01/2014) 
+ 
+In   v.1.2.2  - s-au introdus obligatiile: 251 - 259 (valabil din 10/2013) 
+ 
+In   v.1.2.0  - oblig.781 se muta din tabelul I in II (valabil din 06/2013) 
+ 
+In   v.1.1.9  - s-au introdus obligatiile:     711, 712 , 713 (valabil din 02/2013) 
+ 
+In   v.1.1.7  - s-au introdus obligatiile:     621, 781 (valabil din 01/2013) 
+ 
+In   v.1.1.6   - s-au introdus obligatiile:     758   (valabil din 12/2012) 
+ 
+In   v.1.1.4   - s-au scos obligatiile :        122, 611, 613, 615, 616
+ (s-au trecut in D112)  (valabil din 07/2012) 
+ 
+In   v 1.1.0  - s-au introdus obligatiile :     619 (valabila din 01/2012) 
+                   - s-au scos obligatiile :          614 (valabila din 01/2012) 
+                   - s-au introdus obligatiile :     450 (valabila din 12/2011) 
+ 
+ 
+Data 
+modific 
+Nr. cr. Elemente/ atribute Denumire câmp Tip si 
+lung. 
+camp 
+Camp 
+oblig. Formule si restrictii Eori 
+  <declaratie100>      
+ 1 luna Perioada de raportare - 
+Luna 
+N(2) DA Æ 0>luna <=12 ERR - luna 
+raportarii  
+ 2 an Perioada de raportare - 
+An 
+N(4) DA Æ an >= 2014 ERR - anul 
+raportarii 
+ 3 nume_declar Nume declarant C(75) DA Æ ERR - Nume 
+declarant 
+necompletat 
+ 4 prenume_declar Prenume declarant C(75) DA Æ ERR - Prenume 
+declarant 
+necompletat 
+ 5 functie_declar Functie declarant C(50) DA Æ ERR - 
+functie_declar 
+necompletat 
+ 6 cui Cod de identificare fiscal ă N(13) DA ÆVerificare CF sau CNP ERR - cif invalid  
+ 7 den Denumire sau Nume si 
+Prenume 
+C(200) DA Æ ERR - denumire 
+necompletata 
+ 8 adresa Adres ă  C(1000) DA Æ ERR - adresa 
+necompletata 
+ 9 telefon Telefon  C(15)  Æ  
+ 10 fax Fax  C(15)  Æ  
+ 11 mail E-mail  C(200)  Æ validare e-mail ATT - E-mail eronat 
+ 11b totalPlata_A Suma de control N(15) DA Σ (suma_dat+ suma_ded+ suma_plata+ 
+suma_rest) 
+ERR calcul 
+  <obligatie> 1-n aparitii     
+ 12 tip_oblig Tip obligatie N(1) DA tip_oblig = 1(care se plătesc în CONT 
+UNIC ), 2 (restul) 
+ 
+ 13 cod_oblig Cod obligatie N(3) DA Atentie ! 
+Toate obligatiile se incarca o singura data, 
+ 
+ERR – cod 
+ 
+2 
+mai putin accizele care se pot incarca de 
+mai multe ori in D100 dar cu scadente 
+diferite in cadrul unei luni. 
+ 
+obligatie negasit in 
+nomenclator  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ERR – cod 
+obligatie cu aparitii 
+multiple 
+daca perechea 
+(cod_oblig,scadent
+a) nu este unica 
+ 
+ 
+ 14 cod_bugetar Cod bugetar C(10) DA Se completeaza cu X pana la 10 
+caractere. 
+ 
+ 15 scadenta  Scadenta platii D(10) DA Format ZZ.LL.AAAA 
+scadenta=25 a lunii urmatoare perioadei 
+de raportare 
+ 
+Exceptii scadente; 
+ 
+Pentru cod_oblig=106 si luna de 
+raportare=12 (trim IV la definitivare imp. 
+profit anual) 
+scadenta=25/03 an urmator al per.de 
+raportare 
+ 
+Pentru cod_oblig =750 si luna de 
+raportare=12  
+Scadenta = 25/12 an de raportare  
+ 
+Pentru cod_oblig = 780 si luna de 
+raportare>5 
+scadenta=25/06 an de raportare  
+ 
+Pentru cod_oblig accize in 
+scadenta=25 a lunii urmatoare perioadei 
+de raportare sau orice zi din luna de 
+raportare 
+ 
+Pentru cod_oblig = 510
+,536,537 
+scadenta= orice zi 
+ 
+Pentru cod_oblig =450 
+scadenta=25 a lunii a 2-a urmatoare 
+perioadei de raportare  
+ 
+ 
+ 
+3 
+Pentru cod_oblig = 701 si orice luna de 
+raportare 
+scadenta=25/05 an de raportare  
+ 
+ 16 nr_evid Nr.de evidenta a platii N(23) DA Ex.nr.evid.a platii : 
+10602010611250711000035 
+ 
+Verificare componenta si suma de control 
+pentru nr_evid : 
+Poz.1-2 :10 
+Poz.3-5 : cod obligatie (nomenclator) 
+Poz.6-7 :01 
+Poz.8-11 : LLAA (sf.per.de raportare) 
+Poz.12-17 : ZZLLAA (scadenta platii) 
+Poz.18:  
+    1 daca tip_oblig=1 
+    0 daca tip_oblig=2 
+ 
+Poz.19 : 0 
+Poz.20-21 : 00 
+Poz.22-23 : suma de control = suma 
+primelor 21 pozitii (se iau ultimele 2 cifre 
+ale sumei) 
+ERR – nr.de 
+evidenta a platii 
+invalid 
+ 17 suma_dat Suma datorata N(15)  Modele de completare  
+ 18 suma_ded Suma deductibila /  
+Suma datorata anterior 
+N(15)  Modele de completare  
+ 19 suma_plata Suma de plata N(15)  Modele de completare  
+ 20 suma_rest Suma de restituit /  
+Suma de recuperat 
+N(15)  Modele de completare  
+  </obligatie >      
+  </declaratie100>      
+ 
+ 
+ 
+ 
+ 
+Nomenclatorul obligaţiilor de plată la bugetul de stat 
+ 
+Nr. 
+crt. 
+Cod 
+Impozit  
+Denumire creanţă fiscală Temei legal Cont bugetar Perio
+ada 
+de 
+raport
+are 
+Termen depunere Scadenţă 
+(termen de 
+plată) 
+Model 
+valida
+re 
+1.  102 Plăţi anticipate, în contul 
+impozitului pe profit anual,  
+datorate de societăţi 
+comerciale bancare, persoane 
+juridice române şi de 
+sucursalele din România ale 
+băncilor, persoane juridice 
+străine 
+art.13 şi art.34 din Legea nr.571/2003 
+privind Codul fiscal, cu modificările şi 
+completările ulterioare 
+20470101 T 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 2.  103  
+Modif 
+01.2014 
+Impozit pe profit / plati 
+anticipate datorat(e) de PJ 
+române /  PJ  cu sediul social 
+art.13 şi art.34 din Legea nr.571/2003 
+privind Codul fiscal, cu modificările şi 
+completările ulterioare 
+20470101 T  
+L 
+ 
+25 a lunii 
+urmatoare 
+perioadei de 
+25LU 
+ 
+ 
+1# 
+ 
+4 
+in Romania 
+ 
+raportare pt. plati 
+anticipate 
+ 
+ 
+Obs.: 
+1) oblig.103 poate 
+avea ex.fin. diferit 
+de anul calend. si 
+permite ca luna de 
+trimestru orice luna, 
+nu numai 3,6,9,12 
+ 
+ 
+ 
+ 
+ 
+3.  106 
+  
+Impozit pe profit din asociere 
+datorat de persoane fizice 
+art.13 lit.c) şi e) şi art.34 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+20470101 T -25 a lunii 
+urmatoare 
+perioadei de 
+raportare pt. 
+trim. I, II, III 
+(luna=3,6,9) 
+ 
+---------------------- 
+- 2503 an urmator 
+pt. regularizare 
+imp. 
+ 
+Obs.: 
+1) oblig.106 poate 
+avea regularizare 
+in ultima luna a 
+ex.fin. 
+ 
+25LU 
+ 
+ 
+ 
+ 
+ 
+ 
+-------------- 
+2503AU 
+ 
+3#  
+ 
+4.  105 
+Modif 
+01.2014 
+ 
+Impozit pe profit datorat de 
+persoane juridice străine, 
+altele decât cele de la pct.1 
+ sau plăţi anticipate în contul 
+impozitului pe profit anual,  
+datorate de persoane juridice 
+străine care desfasoara 
+activitate prin intermediul unui 
+sediu permanent in Romania 
+art.13 lit.b), c) şi d) şi art.34 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+20470101 T  
+L 
+ 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare pt. plati 
+anticipate 
+ 
+---------------------- 
+ 
+25 a lunii a treia 
+urmat. perioadei de 
+raportare pt. 
+regularizare imp. 
+ 
+ 
+Obs.: 
+1) oblig.105 poate 
+avea ex.fin. diferit 
+de anul calend. si 
+permite ca luna de 
+trimestru orice luna, 
+nu numai 3,6,9,12 
+ 
+2) oblig.105 poate 
+avea regularizare 
+25LU 
+ 
+ 
+ 
+ 
+ 
+-------------- 
+25LU3 
+ 
+3#  
+ 
+ 
+5 
+in ultima luna a 
+ex.fin. 
+ 
+5.  150 Impozit pe dividende distribuite 
+persoanelor juridice 
+art.36 din Legea nr.571/2003 privind 
+Codul fiscal, cu modificările şi 
+completările ulterioare 
+20470101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU  1# 
+6.  121 Impozit pe veniturile 
+microîntreprinderilor 
+art.1121 şi art.1129 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+20470101 T 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+7.  710 Impozit la ţiţeiul din producţia 
+internă 
+art.215 şi art.217 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+20470101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+8.  604 Impozit pe veniturile din 
+dividende distribuite 
+persoanelor fizice 
+art.67 şi art.93 din Legea nr.571/2003 
+privind Codul fiscal, cu modificările şi 
+completările ulterioare 
+20470101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU  1# 
+9.  605  
+ 
+Impozit pe veniturile din 
+dobânzi 
+art.67 şi art.93 din Legea nr.571/2003 
+privind Codul fiscal, cu modificările şi 
+completările ulterioare 
+20470101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU  1# 
+10.  609  
+ 
+Impozit pe câştigul din 
+transferul dreptului de 
+proprietate asupra titlurilor de 
+valoare 
+art.67 alin.(3) lit.(b) şi art.93 din 
+Legea nr.571/2003 privind Codul 
+fiscal, cu modificările şi completările 
+ulterioare 
+20470101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU  1# 
+11.  617 Impozit pe câştigul din 
+operaţiuni de vânzare-
+cumpărare de valută la 
+termen, pe bază de contract, 
+precum şi din orice alte 
+operaţiuni de acest gen, altele 
+decât cele cu instrumente 
+financiare tranzacţionate pe 
+pieţe autorizate şi 
+supravegheate de Comisia 
+Naţională a Valorilor Mobiliare  
+art.67 şi art.93 din Legea nr.571/2003 
+privind Codul fiscal, cu modificările şi 
+completările ulterioare 
+20470101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+12.  606  
+ 
+Impozit pe veniturile din 
+lichidarea unei persoane 
+juridice 
+art.67 şi art.93 din Legea nr.571/2003 
+privind Codul fiscal, cu modificările şi 
+completările ulterioare 
+20470101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+13.  608 
+ 
+Impozit pe veniturile din premii art.77 şi art.93 din Legea nr.571/2003 
+privind Codul fiscal, cu modificările şi 
+completările ulterioare 
+20470101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+14.  621 
+ 
+Impozit pe veniturile din jocuri 
+de noroc 
+art.77 şi art.93 din Legea 
+nr.571/2003, cu modificările şi 
+completările ulterioare 
+20470101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+15.  620 Impozit pe veniturile din 
+transferul proprietăţilor 
+imobiliare din patrimoniul 
+personal 
+art.771 şi art.93 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+20030118 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+ 
+6 
+16.  690 Impozit pe veniturile din alte 
+surse 
+art.78, art.79 şi art.93 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+20470101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+17.  810 Vărsăminte de la persoanele 
+juridice, pentru persoanele cu 
+handicap neîncadrate 
+Legea nr.448/2006 privind protecţia şi 
+promovarea drepturilor persoanelor 
+cu handicap, republicată, cu 
+modificările şi completările  ulterioare 
+20470101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+18.  750 Taxa pe activitatea de 
+prospecţiune, explorare, 
+exploatare a resurselor 
+minerale 
+Legea minelor nr.85/2003, cu  
+modificările şi completările ulterioare 
+20160104 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare  
+sau 
+25.12 al anului de 
+raportare 
+pt.luna=12 
+25LU 
+sau 
+2512 AC 
+(pt.luna=12) 
+1# 19.  755 Redevenţe miniere Legea minelor nr.85/2003, cu 
+modificările şi completările ulterioare  
+2030010501 T 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+20.  756 Redevenţe  petroliere Legea petrolului nr.238/2004, cu 
+modificările şi completările ulterioare 
+2030010502 T 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+21.  780 
+ 
+Vărsăminte din profitul net al 
+regiilor autonome 
+OG nr.64/2001 privind repartizarea 
+profitului la societăţiile naţionale, 
+companiile naţionale şi   societăţile 
+comerciale cu capital integral sau 
+majoritar de stat, precum şi la regiile 
+autonome, cu modificările şi 
+completările ulterioare – art.1 alin.(4) 
+20470101 L Pentru 11.2011 
+Scad.25.06.2012 
+Pentru 01-11.2012 
+Scad.25.06.2012 
+----------------------- 
+Pentru 12.2012 
+Scad.25.01.2013  
+------------------------ 
+Pentru an>=2013 
+Scad.28/29 iulie al 
+anului in curs 
+     250611 
+ 
+     250612 
+ 
+------------- 
+250113 
+ 
+-------------- 
+2807AC(an 
+bisect) 
+ 2907AC 
+1# 
+22.  781 
+ 
+Dividende de virat la bugetul 
+de stat de catre autoritatile 
+publice centrale 
+ 
+ 
+OG nr.64/2001 privind repartizarea 
+profitului la societăţiile naţionale, 
+companiile naţionale şi   societăţile 
+comerciale cu capital integral sau 
+majoritar de stat, precum şi la regiile 
+autonome, aprobată cu modificări prin 
+Legea nr.769/2001, cu modificările şi 
+completările ulterioare – art.1 
+alin.(4^4) 
+2030010803 L Scad.28/29 iulie al 
+anului de raportare 
+(pt. dividendele 
+anului urmator) 
+2807AC 
+(an bisect) 
+2907AC 
+(#an bisect) 
+ 
+1# 
+23.  111 Impozit pe profit scutit, 
+conform art.38 alin.(1) din 
+Codul fiscal 
+ 
+  
+art.38 alin.(1) din Legea nr.571/2003 
+privind Codul fiscal, cu modificările şi 
+completările ulterioare 
+20470101 T 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 4# 
+ 
+7 
+24.  211 Accize pentru bere art.206 10 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+ 
+2014010205 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+25.  216 Accize pentru vinuri liniştite art.206 11 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+ 
+2014010208 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+26.  212 Accize pentru vinuri spumoase art.206 11 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010203 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+27.  217 Accize pentru băuturi 
+fermentate liniştite, altele decât 
+bere şi vinuri 
+art.20612 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010207 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+28.  213 Accize pentru băuturi 
+fermentate spumoase, altele 
+decât bere şi vinuri 
+art.20612 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010204 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+29.  214 Accize pentru produse 
+intermediare 
+art.20613 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010202 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+30.  215 Accize pentru alcool etilic art.206 14 şi art.20652  din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010201 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+31.  221 Accize pentru ţigarete 
+ 
+art.20615 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010301 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+32.  222 Accize pentru ţigări şi ţigări de 
+foi 
+art.20615 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010302 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+33.  224 Accize pentru tutun de fumat 
+fin tăiat, destinat rulării în 
+ţigarete 
+art.20615 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010303 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+34.  225 Accize pentru alte tutunuri de 
+fumat 
+art.20615 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010304 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+35.  231 Accize pentru benzină cu 
+plumb   
+art.20616 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010101 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+36.  232 Accize pentru benzină fără 
+plumb şi bioetanol , denaturat 
+si utilizat drept combustibil 
+art.20616 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010102 L 25 a lunii 
+urmatoare 
+perioadei de 
+25LU / 
+FREE 
+5# 
+ 
+8 
+pentru motor raportare 
+37.  233 Accize pentru motorină şi 
+biodiesel 
+art.20616 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010103 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+38.  234 Accize pentru păcură art.206 16 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010104 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+39.  235 Accize pentru gaz petrolier 
+lichefiat 
+art.20616 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010105 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+40.  236 Accize pentru gaz natural art.206 16 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010106 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+41.  238 Accize pentru petrol lampant 
+(kerosen) 
+art.20616 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010108 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+42.  237 Accize pentru cărbune şi cocs art.206 16 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010107 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+43.  270 Accize pentru energie electrică 
+ 
+art.20619 şi art.20652 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+20140106 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE  
+5# 
+44.  244 Accize pentru cafea verde art.207 şi art.214 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010401 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+45.  242 Accize pentru cafea prajită, 
+inclusiv cafea cu înlocuitori 
+art.207 şi art.214 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010402 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+46.  243 
+ 
+Accize pentru cafea solubilă, 
+inclusiv amestecuri cu cafea 
+solubila 
+art.207 şi art.214 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+2014010403 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+47.  261 Accize pentru autoturismele 
+care au facut obiectul unor 
+contracte de leasing intiate 
+inainte de 1 ianuarie 2007 
+art.221^1 si art.214 din Legea 
+nr.571/2003 privind Codul fiscal, cu 
+modificările şi completările ulterioare 
+20140109 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+48.  275 Accize pentru alte produse  
+accizabile (energetice) 
+Art. 206^16 şi 206^52 din Legea 
+nr.571/2003, cu modificările şi 
+completările ulterioare   
+2014010110 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+49.  945 Contribuţia pentru finanţarea 
+unor cheltuieli de sănătate din 
+activităţi publicitare la 
+produsele din tutun şi băuturi 
+Legea nr.95/2006 privind reforma în 
+domeniul sănătăţii, cu modificările şi 
+completările ulterioare şi Ordinul 
+Ministerului Sanătăţii Publice 
+5502 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+ 
+9 
+alcoolice nr.577/2006 şi al Ministerului 
+Finanţelor Publice nr.909/2006 
+privind aprobarea Normelor de 
+aplicare a prevederilor titlului XI - 
+"Finanţarea unor cheltuieli de 
+sănătate" din Legea nr. 95/2006 
+privind reforma în domeniul sănătăţii 
+50.  941 Contribuţia pentru finanţarea 
+unor cheltuieli de sănătate 
+pentru produsele din tutun din 
+producţia internă 
+Legea nr.95/2006 privind reforma în 
+domeniul sănătăţii, cu modificările şi 
+completările ulterioare şi Ordinul 
+Ministerului Sanătăţii Publice 
+nr.577/2006 şi al Ministerului 
+Finanţelor Publice nr.909/2006 
+privind aprobarea Normelor de 
+aplicare a prevederilor titlului XI - 
+"Finanţarea unor cheltuieli de 
+sănătate" din Legea nr. 95/2006 
+privind reforma în domeniul sănătăţii 
+5502 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+51.  942 Contribuţia pentru finanţarea 
+unor cheltuieli de sănătate 
+pentru produsele din tutun din 
+achiziţii intracomunitare/import 
+Legea nr.95/2006 privind reforma în 
+domeniul sănătăţii, cu modificările şi 
+completările ulterioare şi Ordinul 
+Ministerului Sanătăţii Publice 
+nr.577/2006 şi al Ministerului 
+Finanţelor Publice nr.909/2006 
+privind aprobarea Normelor de 
+aplicare a prevederilor titlului XI - 
+"Finanţarea unor cheltuieli de 
+sănătate" din Legea nr. 95/2006 
+privind reforma în domeniul sănătăţii 
+5502 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+52.  943 Contribuţia pentru finanţarea 
+unor cheltuieli de sănătate 
+pentru băuturile alcoolice din 
+producţia internă 
+Legea nr.95/2006 privind reforma în 
+domeniul sănătăţii, cu modificările şi 
+completările ulterioare şi Ordinul 
+Ministerului Sanătăţii Publice 
+nr.577/2006 şi al Ministerului 
+Finanţelor Publice nr.909/2006 
+privind aprobarea Normelor de 
+aplicare a prevederilor titlului XI - 
+"Finanţarea unor cheltuieli de 
+sănătate" din Legea nr. 95/2006 
+privind reforma în domeniul sănătăţii 
+5502 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+53.  944 Contribuţia pentru finanţarea 
+unor cheltuieli de sănătate 
+pentru băuturile alcoolice din 
+achiziţii intracomunitare/import 
+Legea nr.95/2006 privind reforma în 
+domeniul sănătăţii, cu modificările şi 
+completările ulterioare şi Ordinul 
+Ministerului Sanătăţii Publice 
+nr.577/2006 şi al Ministerului 
+Finanţelor Publice nr.909/2006 
+privind aprobarea Normelor de 
+aplicare a prevederilor titlului XI - 
+"Finanţarea unor cheltuieli de 
+sănătate" din Legea nr. 95/2006 
+privind reforma în domeniul sănătăţii 
+5502 L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 1# 
+54.  504 Taxa anuală de autorizare a 
+jocurilor de noroc, regularizată 
+periodic, în funcţie de realizări 
+art.14 alin.(2) lit.b) subpct.(iii) din 
+Ordonanţa de urgenţă a Guvernului 
+nr.77/2009 privind organizarea şi 
+2016010103 L 25 a lunii 
+urmatoare 
+perioadei de 
+25LU 6# 
+ 
+10 
+exploatarea jocurilor de noroc, cu 
+modificările şi completările ulterioare   
+raportare 
+55.  535 
+Taxa de acces pentru jocurile 
+de noroc 
+art.13 alin.(4) şi art.14 alin.(2) lit.d) 
+din Ordonanţa de urgenţă a 
+Guvernului nr.77/2009 şi pct.4 din 
+anexa la aceeaşi ordonanţă de 
+urgenţă; art.21 din Hotărârea 
+Guvernului nr.870/2009, cu 
+modificările şi completările ulterioare 
+2016010104 L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+56.  450 Contribuţie trimestrială 
+datorată pentru 
+medicamentele suportate din 
+FNUASS şi din bugetul 
+Ministerului Sănătăţii 
+art.5 alin.(3) din Ordonan ţa de 
+urgenţă a Guvernului nr.77/2011 
+privind stabilirea unei contribu ţii 
+pentru finan ţarea unor cheltuieli în 
+domeniul sănătăţii; 
+26120509 T 
+25 a celei de a 2-a 
+luni urmatoare 
+perioadei de 
+raportare 
+25LU2 
+7# 
+57.  758 
+ 
+Redevenţe rezultate din 
+contractele de concesiune, 
+arendă şi alte contracte de 
+exploatare eficientă a 
+terenurilor cu destinaţie 
+agricolă 
+Legea nr.268/2001 privind 
+privatizarea societăţilor comerciale ce 
+deţin în administrare terenuri 
+proprietate publică şi privată a statului 
+cu destina ţie agricol ă şi înfiin ţarea 
+Agenţiei Domeniilor Statului, cu 
+modificările şi completările ulterioare 
+2030010505 
+ 
+T 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+58.  711 
+ 
+Impozit asupra veniturilor 
+suplimentare obtinute ca 
+urmare a dereglementarii 
+preturilor din sectorul gazelor 
+naturale 
+OG nr.7/ 2013 
+20120111 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+59.  712  Impozit pe veniturile din 
+activitatile de exploatare a 
+resurselor naturale, altele 
+decat gazele naturale 
+OG nr.6/ 2013 20120112 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+60.  713  Impozit pe monopolul natural 
+din sectorul energiei electrice 
+si al gazului natural 
+OG nr.5/ 2013 20120113 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+61.  
+251 
+ 
+Accize pentru berea/baza 
+de bere din amestecul cu 
+băuturi nealcoolice, la care 
+ponderea gradelor Plato 
+provenite din malţ, cereale 
+malţificabile şi/sau 
+nemalţificabile este mai 
+mică de 30% din numărul 
+total de grade Plato 
+Art.207 si 214 din egea nr.L571/2003, 
+cu modificările şi completările 
+ulterioare 
+2014010501 
+L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+62.  
+252 
+ 
+Accize pentru băuturile 
+fermentate, altele decât 
+bere şi vinuri, la care 
+ponderea de alcool absolut 
+(100%) provenită din 
+fermentarea exclusivă a 
+fructelor, sucurilor de fructe 
+şi sucurilor concentrate de 
+fructe este mai mică de 
+Art.207 si 214 din egea nr.L571/2003, 
+cu modificările şi completările 
+ulterioare 
+2014010502 
+L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+ 
+11 
+50% 
+63.  
+253 
+ 
+Accize pentru bijuterii din 
+aur şi/sau din platină, cu 
+excepţia verighetelor 
+Art.207 si 214 din egea nr.L571/2003, 
+cu modificările şi completările 
+ulterioare 2014010503 
+L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+64.  
+254 
+ Accize pentru confecţii din 
+blănuri naturale 
+Art.207 si 214 din egea nr.L571/2003, 
+cu modificările şi completările 
+ulterioare 2014010504 
+L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+65.  
+255 
+ 
+Accize pentru iahturi şi alte 
+nave şi ambarcaţiuni cu sau 
+fără motor pentru 
+agrement, cu excepţia celor 
+destinate utilizării în sportul 
+de performanţă 
+Art.207 si 214 din egea nr.L571/2003, 
+cu modificările şi completările 
+ulterioare 
+2014010505 
+L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+66.  
+256 
+ 
+Accize pentru autoturisme 
+şi autoturisme de teren a 
+căror capacitate cilindrică 
+este mai mare sau egală cu 
+3.000 cm3 
+Art.207 si 214 din egea nr.L571/2003, 
+cu modificările şi completările 
+ulterioare 2014010506 
+L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+67.  
+257 
+ 
+Accize pentru arme de 
+vânătoare şi arme de uz 
+personal, altele decât cele 
+de uz militar sau de uz 
+sportiv  
+Art.207 si 214 din egea nr.L571/2003, 
+cu modificările şi completările 
+ulterioare 2014010507 
+L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+68.  
+258 
+ 
+Accize pentru cartuşe cu 
+glonţ şi alte tipuri de muniţie 
+pentru armele de vânătoare 
+şi arme de uz personal, 
+altele decât cele de uz 
+militar sau de uz sportiv 
+Art.207 si 214 din egea nr.L571/2003, 
+cu modificările şi completările 
+ulterioare 
+2014010508 
+L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+69.  
+259 
+ 
+Accize pentru motoare cu 
+capacitate de peste 100 
+CP, destinate iahturilor şi 
+altor nave şi ambarcaţiuni 
+pentru agrement 
+Art.207 si 214 din egea nr.L571/2003, 
+cu modificările şi completările 
+ulterioare 2014010509 
+L 25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU / 
+FREE 
+5# 
+70.  
+ 
+536 
+Adaugat 
+01.2014 
+ 
+ 
+ 
+ 
+ 
+ 
+Taxa pentru obţinerea licenţei 
+de organizare a jocurilor de 
+noroc 
+ Art.14 alin.(2) lit.a), subpct.(i) şi (ii) şi 
+lit.c), art.16 alin.(8) şi pct.1.I. din 
+Anexa la  Ordonan ţa de urgen ţă a 
+Guvernului nr.77/2009, aprobat ă cu 
+modificari şi complet ări prin Legea 
+nr.246/2010, cu modific ările şi 
+completările ulterioare; 
+ art.21 din Hot ărârea Guvernului 
+nr.870/2009, pentru aprobarea 
+Normelor metodologice de aplicare a 
+Ordonanţei de urgen ţă a Guvernului 
+nr.77/2010 privind organizarea şi 
+exploatarea jocurilor de noroc, cu 
+modificările şi completările ulterioare 
+2016010107 
+L 
+Pana la termenul 
+de plata prevazut 
+de lege 
+ 
+FREE 
+1# 
+71.  537 Taxa anual ă pentru obţinerea  Art.14 alin.(2) lit.b), subpct.(i), lit.A şi 2016010108 L  Pana la termenul FREE 1# 
+ 
+12 
+Adaugat 
+01.2014 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+autorizaţiei de exploatare a 
+jocurilor de noroc 
+lit.B subpct.(ii), (iii) litera A şi lit.c), 
+art.16 alin.(8) şi pct.1.II. din Anexa la  
+Ordonanţa de urgen ţă a Guvernului 
+nr.77/2009, aprobat ă cu modificari şi 
+completări prin Legea nr.246/2010, 
+cu modific ările şi complet ările 
+ulterioare;   
+art.21 din Hot ărârea Guvernului 
+nr.870/2009, pentru aprobarea 
+Normelor metodologice de aplicare a 
+Ordonanţei de urgen ţă a Guvernului 
+nr.77/2010 privind organizarea şi 
+exploatarea jocurilor de noroc, cu 
+modificările şi completările ulterioare 
+de plata prevazut 
+de lege 
+ 
+72.  
+701 
+Adaugat 
+01.2014 
+Impozit pe constructii 
+ 
+Art.29633 şi 29636 din Legea 
+nr.571/2003, cu modific ările şi 
+completările ulterioare  
+ 
+20070104 
+L 25.05 an de 
+raportare 
+(pt. val.constructii 
+din anul anterior) 
+2505AC 1# 
+73.  
+631 
+Adaugat 
+01.2014 
+Impozit pe veniturile din 
+dividende obţinute din 
+România de persoane 
+nerezidente 
+art.115 alin.(1) lit.a) şi art.116 din 
+Legea nr.571/2003, cu modific ările şi 
+completările ulterioare sau convenţiile 
+de evitare a dublei impuneri încheiate 
+de România cu alte state 
+20470101 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+74.  
+632 
+Adaugat 
+01.2014 
+Impozit pe veniturile din 
+dobânzi obţinute din România 
+de persoane nerezidente 
+ 
+art.115 alin.(1) lit.b), lit.c) şi art.116 
+din Legea nr.571/2003, cu 
+modificările şi complet ările ulterioare 
+sau conven ţiile de evitare a dublei 
+impuneri încheiate de România cu 
+alte state 
+20470101 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+75.  
+633 
+Adaugat 
+01.2014 
+Impozit pe veniturile din 
+redevenţe obţinute din 
+România de persoane 
+nerezidente 
+ 
+art.115 alin.(1) lit.d), lit.e) şi art.116 
+din Legea nr.571/2003, cu 
+modificările şi complet ările ulterioare 
+sau conven ţiile de evitare a dublei 
+impuneri încheiate de România cu 
+alte state 
+20470101 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+76.  
+634 
+Adaugat 
+01.2014 
+Impozit pe veniturile din 
+comisioane obţinute din 
+România de persoane 
+nerezidente 
+ 
+art.115 alin.(1) lit.f), lit.g) şi art.116 din 
+Legea nr.571/2003, cu modific ările şi 
+completările ulterioare sau convenţiile 
+de evitare a dublei impuneri încheiate 
+de România cu alte state 
+20470101 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+77.  
+635 
+Adaugat 
+01.2014 
+Impozit pe veniturile obţinute 
+din România de persoane 
+nerezidente din activităţi 
+sportive şi de divertisment  
+ 
+art.115 alin.(1) lit.h) şi art.116 din 
+Legea nr.571/2003, cu modific ările şi 
+completările ulterioare sau convenţiile 
+de evitare a dublei impuneri încheiate 
+de România cu alte state 
+20470101
+ 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+78.  
+636 
+Adaugat 
+01.2014 
+Impozit pe veniturile din 
+servicii prestate în România şi 
+în afara României de persoane 
+nerezidente 
+ 
+art.115 alin.(1) lit.k), lit.l) şi art.116 din 
+Legea nr.571/2003, cu modific ările şi 
+completările ulterioare sau convenţiile 
+de evitare a dublei impuneri încheiate 
+de România cu alte state 
+20470101
+ 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+79.  637 
+Adaugat 
+01.2014 
+Impozit pe veniturile obţinute 
+de persoane fizice nerezidente 
+din premii acordate la 
+art.115 alin.(1) lit.o) şi art.116 din 
+Legea nr.571/2003, cu modific ările şi 
+completările ulterioare sau convenţiile 
+20470101 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+25LU 
+1# 
+ 
+13 
+concursuri organizate în 
+România  
+ 
+de evitare a dublei impuneri încheiate 
+de România cu alte state 
+raportare 
+80.  
+638 
+Adaugat 
+01.2014 
+Impozit pe veniturile obţinute la 
+jocuri de noroc practicate în 
+România de persoane fizice 
+nerezidente  
+ 
+art.115 alin.(1) lit.p) şi art.116 din 
+Legea nr.571/2003, cu modific ările şi 
+completările ulterioare sau convenţiile 
+de evitare a dublei impuneri încheiate 
+de România cu alte state 
+20470101
+ 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+81.  
+639 
+Adaugat 
+01.2014 
+Impozit pe venituri din 
+lichidarea unei persoane 
+juridice române realizate de 
+persoane nerezidente  
+ 
+art.115 alin.(1) lit.q) şi art.116 din 
+Legea nr.571/2003, cu modific ările şi 
+completările ulterioare sau convenţiile 
+de evitare a dublei impuneri încheiate 
+de România cu alte state 
+20470101 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+82.  
+640 
+Adaugat 
+01.2014 
+Impozit pe veniturile reprezentând 
+remuneraţii primite de persoane 
+juridice nerezidente care au 
+calitatea de administrator, fondator 
+sau membru al consiliului de 
+administraţie al unei persoane 
+juridice române 
+art.115 alin.(1) lit.j) şi art.116 din Legea 
+nr.571/2003, cu modific ările şi 
+completările ulterioare sau conven ţiile de 
+evitare a dublei impuneri încheiate de 
+România cu alte state 
+20470101 
+L 
+25 a lunii 
+urmatoare 
+perioadei de 
+raportare 
+25LU 
+1# 
+07.2012 122 Desfiintat        
+07.2012 611  Desfiintat        
+07.2012 615  Desfiintat        
+07.2012 616  Desfiintat        
+01.2012 614 Desfiintat        
+07.2012 613 Desfiintat        
+01.2014 510 Desfiintat        
+01.2014 619 Desfiintat        
+01.2014 612 Desfiintat        
+01.2014 140 Desfiintat        
+ 
+Obs.: 
+         
+         25LU   
+= scadenta la   25 a lunii urmatoare perioadei de raportare 
+         25LU2 = scadenta la   25 a lunii a 2-a urmatoare perioadei de raportare (oblig.450) 
+         25LU3 = scadenta la   25 a lunii a 3-a urmatoare perioadei de raportare (oblig.103,105) 
+         2512AC (pt.luna=12) = scadenta in  anul perioadei de raportare (oblig.750) 
+         250611(pt.an 2011), 250612(pt.an 2012, luna#12), 250113(pt.12.2012), 2807AC sau 2907AC(pt. an>2012)   =  scadente in  anul perioadei de raportare (oblig.780) 
+         2807AC sau 2907AC (pt. an>2012)  =  scadente in  anul perioadei de raportare (oblig. 781) 
+        2505AC = scadenta in  anul de raportare (oblig.701) 
+ 
+         FREE
+= scadenta  declarata liber de contribuabil ;  
+                      pentru accize scadenta libera trebuie sa se incadreze in luna de raportare;  
+                      pentru oblig. 510,536,537 scadenta poate fi oricare data 
+ 
+        Accizele si oblig.510 se pot incarca de mai multe ori in D100 dar cu scadente diferite ! 
+ 
+ 
+Oblig. 105 – situatii in 2013 ce se raporteaza in 2014:
+ 
+a. asociati PJ straine (ca la poz.3.(106)                                                                    - sistem real, trim I-III, luna=12 scadenta cu 25/03 (regularizare) 
+b. PJ straine nerezidente care obtin venituri din prop.imob.si valori mobiliare - sistem real, trim I-III, luna=12 scadenta cu 25/03 (regularizare) 
+c. PJ care desfasoara activitatea prin unul/mai multe sedii permanente          - sistem real, trim I-III, luna=12 cu scadenta 25/03 (regularizare) 
+d. PJ straine care au optat pentru sistemul cu plati anticipate                             - trim. I-IV, luna=12 cu scadenta 25/01 
+regularizare imp.pe profit (efectuează definitivarea şi plata imp.pe profit anual pana la 25/03/2014 pentru 12/2013 sau 25 a treia luna urmatoare pentru an>2013) 
+ 
+14 
+ 
+Modele de completare 
+ 
+ 
+Model 1# 
+Pentru cod_oblig in  
+(102,103,150,121,122,710,611,615,616,614,613,619,
+604,605,609,617,606,608,621,620,613,690,612,140,
+810,750,755,756,780,781,945,941,942,943,944,510,
+535,758,536,537,701,631,632,633,634,635,636,637,
+638,639,640) 
+ 
+suma_dat >= 0 (de introdus) 
+        si  suma_plata = suma_dat >=0   
+_______________________                                          
+suma_ded, suma_rest  nu se completeaza 
+ 
+Model 3# 
+Pentru cod_oblig in  (105,106)  (imp.pe profit) 
+ 
+ 
+suma_dat >= 0 (de introdus) si suma_ rest  nu se completeaza 
+                                               si  suma_plata = suma_dat >=0      
+                        sau 
+suma_rest>=0  (de introdus numai in ultima luna a ex.financiar pt.asocieri)  si suma_dat  
+nu se completeaza  
+________________________ 
+suma_dedu nu se completeaza       
+ 
+ 
+Model 4# 
+Pentru cod_oblig = 111 (scutit) 
+ 
+suma_dat >=0  (de introdus)                                           
+suma_dedu, suma_plata, suma_rest nu se completeaza 
+ 
+Model 5#  
+Pentru cod_oblig in  
+(211,216,212,217,213,214,215,221,222,224,225,231,
+232,233,234,235,236,238,237,270,244,242,243,261,
+275,251,252,253,254,255,256,257,258,259) (accize) 
+ 
+suma_dat, suma_dedu, suma_rest >=0  (de introdus)                                                            
+suma_plata = suma_dat - suma_dedu            daca suma_dat > suma_dedu 
+                                    sau  suma_plata = 0      daca suma_dat <= suma_dedu 
+ 
+Model 6# 
+Pentru cod_oblig in  (504) (jocuri de noroc) 
+ 
+suma_dat, suma_dedu >=0   (de introdus)                                                                               
+suma_plata = suma_dat - suma_dedu          daca suma_dat > suma_dedu 
+                                     sau  suma_plata = 0    daca suma_dat <= suma_dedu 
+suma_dedu reprezinta suma datorata anterior 
+suma_rest nu se completeaza 
+ 
+Model 7# 
+Pentru cod_oblig in  (450)  (medicamente) 
+ 
+suma_dat, suma_dedu  >=0  (de introdus)                                                                              
+suma_plata = suma_dat - suma_dedu      daca suma_dat >= suma_dedu 
+suma_rest = suma_dedu - suma_dat        daca suma_dedu > suma_dat   
+ 
+ 
+-obligatii care se plătesc în CONT UNIC=20470101  : 102,103,106,105,150,121,122,710,611,615, 616, 613,614,619,604,605,609,617,606,608,621, 
+                                                                                          ,690, 612,140,810,780,781, 631,632,633,634,635,636,637,638,639,640 
+-obligatii care NU se plătesc în CONT UNIC:  620,750,755,756,211,216,212,217,213,214, 215,221,222,224,225,231,232,233,234,235, 
+                                                                                          236,238,237,270,244,242,243,261,275,  
+                                                                                          251,252,253,254,255,256,257,258,259,781 
+ 
+15 
+                                                                                          504, 945,941,942,943,944,510,535,450, 758,711,712,713,536,537,701 
+-obligatie care NU se plăteste (scutit)  :  111  
+ 
+ 
+----------------------------------------------------------------------------------------------------------- 
+ 
+----------------------------------------------------------------------------------------------------------- 
+Explicatii nr.de evidenta a platii 
+ 
+Ex.nr.evid.a platii : 10602010611250711000035 
+ 
+Verificare componenta si suma de control pentru nr_evid in D100 : 
+Poz.1-2 :10 
+Poz.3-5 : cod obligatie (nomenclator) 
+Poz.6-7 :01 
+Poz.8-11 : LLAA (sf.per.de raportare) 
+Poz.12-17 : ZZLLAA (scadenta platii) 
+Poz.18:  
+    1 daca tip_oblig=1 
+    0 daca tip_oblig=2 
+    tip_oblig = 1(care se plătesc în CONT UNIC ), 2 (restul) 
+ 
+Poz.19 : 0 
+Poz.20-21 : 00 
+Poz.22-23 : suma de control = suma primelor 21 pozitii (se iau ultimele 2 cifre ale sumei) 
+ 
+ 
+ 
+Alte valori ale campurilor din nr.de evidenta a platii   : 
+(in Ordine de plata) 
+ 
+Poz.1-2 (cod document fiscal ) : 10,11,20,21,22,23,24,25,26,27,30,40,50,60,70 
+10 - declaratie fiscala sau decont, in functie de tipul documentului 
+11 – declaratie privind impozitul pe profit 
+20 – decizie de impunere privind obligatiile fiscale suplimentare stabilite de inspectia fiscala 
+21 – decizie de plati anticipate 
+22 – PV de constatare a contraventiei si de aplicare a sanctiunii 
+23 – decizie de impunere pt.impozitul pe venitul global 
+24 – decizie referitoare la obigatiile de plata accesorii 
+25 – decizie de impunere din oficiu 
+26 – decizie privind stabilirea sumei reprezentand timbrul de mediu pt.autovehicule 
+27 – decizie de amanare la plata a oblig.fiscale (cf.art.V din OUG 20/2013 priv.reglem.unor masuri fiscale) 
+30 – instiintare de plata 
+40 – titlu executoriu 
+50 - nlesnire la plata 
+60 – poprire 
+70 – valorificare 
+ 
+Poz.3-5 (cod obligatie bugetara) : nomenclator 
+ 
+Poz.6-7 (categoria de obligatie fiscala) : 00,01,03,05,11 
+– 00 - rata inlesnire (se inscrie pentru sumele aferente ratelor la obligatiile bugetare pentru care s-au acordat inlesniri la plata); 
+– 01 - debit (obligatiile stabilite prin document fiscal cod: 10,11,20,22,26,27); 
+ 
+16 
+– 03 - dobanda/majorare de intarziere (reprezinta doband/majorare de intarziere datorata pentru neplata in termen a obligatiilor bugetare, cf. art.116 din OG nr.92/2003 privind Codul de 
+procedura fiscala, republicata, cu modificarile si completarile ulterioare); 
+– 05 - dobanda aferenta sumelor de recuperat cu titlu de ajutor de stat ilegal sau interzis; 
+– 11 - penalitate de intarziere (cf. preved. art.121 din OG 92/2003 privind Codul de procedura fiscala) 
+ 
+Poz.8-11 (sf.per.de raportare) : LLAA  
+  0000 – pt. cod document fiscal =20,22,26,27 
+ 
+Poz.12-17(scadenta platii) : ZZLLAA  
+ ZZLLAA=data emiterii decizii/documente pt. cod document fiscal =20,22,26,27 
+ 
+Poz.18 (tip document) :  
+    1 daca tip_oblig=1(oblig.care se plătesc în CONT UNIC ), 
+    0 daca tip_oblig=2(restul oblig.) sau pt.un document de plata care nu constitue si declaratie fiscala 
+     
+Poz.19 : 0 
+Poz.20-21 : 00 
+Poz.22-23 (suma de control) :  suma primelor 21 pozitii (se iau ultimele 2 cifre ale sumei) 
+ 
+Vers. V2.0.0  din 31.01.2014 
+ 
+ 

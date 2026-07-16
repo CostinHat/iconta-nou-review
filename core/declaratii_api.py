@@ -32,8 +32,13 @@ def _d100(conn, schema, b):
     return d100.genereaza(conn, schema, b["an"], b["trim"], b.get("cota"))
 
 def _d101(conn, schema, b):
-    return d101.genereaza(conn, schema, b["an"], b.get("date_extra"),
-                          b.get("ca_an_precedent_eur", 0))
+    # d101.genereaza() a fost rescris 16.07.2026 pe structura oficiala D101
+    # individual (nu D101G grup) - semnatura noua: (conn, schema, an, manual=None).
+    # manual = suprascrieri optionale (venituri_totale, cheltuieli_totale etc.)
+    manual = dict(b.get("date_extra") or {})
+    if b.get("ca_an_precedent_eur"):
+        manual.setdefault("ca_an_precedent_eur", b["ca_an_precedent_eur"])
+    return d101.genereaza(conn, schema, b["an"], manual or None)
 
 def _d112(conn, schema, b):
     return d112.genereaza(conn, schema, b["an"], b["luna"])

@@ -1,0 +1,948 @@
+ 
+1 
+Structura fişier XML pentru declaratia 101   (an sfarsit  exercitiu >=2024 ) 
+conf. OPANAF nr.206/ 11.02.2025  
+(universalCode: D101_A600,  declaratie: v9   v10) 
+- cu atasament fisier .zip  
+ 
+Corectii  20.02.2025 – poz.88,105,106,106a 
+ 
+ Nr. crt. Elemente/ 
+atribute 
+Denumire câmp Tip şi 
+lungim
+e câmp 
+Câmp 
+oblig. Formule şi restricţii Erori 
+ 1.  <declaratie
+101>      
+ 2.  
+d_rec Declaratie rectifcativa N(1) DA 
+d_rec =(0,1,2) 
+ 0-initiala,     
+1-rectificativa  
+2-rectificativa cu notificare 
+d_rec =2 daca d_recN=1 
+ 
+ 2a d_recN Declaraţie rectificativă ca urmare a unei 
+notificari de conformare N(1)  d_rec =1,null 
+  
+ 3.  
+d_reg 
+Optiunea privind regularizarea impozitului, 
+potrivit art.116^1 din Legea nr. 571/ 2003 
+privind Codul fiscal 
+N(1) DA 
+d_reg =(0,1) 
+ 0-optiune nebifata, 
+ 1-optiune bifata  
+ 
+ 4.  
+Stat_rezid Stat de rezidenta  C(2)  
+Stat_rezid in  nomenclator N1 
+pentru d_reg=1 
+ 
+ERR – camp Stat_rezid 
+necompletat pt. d_reg=1 sau 
+invalid 
+ 4a d_anulare Declaraţie depusă/ corectata după 
+anularea rezervei verificării ulterioare. 
+N(1) DA d_anulare = 0(nebifat), 1 (bifat) ERR - camp d_anulare 
+ 4b temei Temeiul legal pentru corectarea 
+declarației 
+N(1)  temei  # null daca d_anulare=1 (bifat) 
+ 
+1-art.105 alin(6) lit.a) din Legea nr.207/2015  
+2-art.105 alin(6) lit.b) din Legea nr.207/2015  
+ 
+ERR - Temei necompletat 
+pentru d_anulare=1 (bifat) 
+   4c d_succ Declaraţie depusă potrivit art.90 alin.(4) 
+din L207/2015 
+N(1) DA d_succ = 0(nebifat), 1 (bifat) ERR - camp d_succ 
+    4d cifS Cod de identificare fiscală 
+succesor 
+N(13) DA cifS  # null daca d_succ=1 (bifat) 
+ 
+Verificare CF sau CNP 
+ERR - cif succesor invalid 
+   4e 
+d_alte 
+Se bifeaza pentru 
+ 'Alte situatii' 
+ 
+N(1) DA 
+d_alte =(0,1)    
+0- nebifat     
+1- bifat   
+------------------------------- 
+If (d_alte)=1 then 
+ERR - camp d_alte 
+ 
+2 
+( 
+      Data_I si  Data_S --> completare 
+       libera (nu se verifica) 
+) 
+ 
+ 4f d_reglem   Declaraţie depusă de contribuabilii pentru 
+care reglementările contabile sunt emise de 
+B.N.R, respectiv A.S.F. 
+N(1) DA d_reglem = 0(nebifat), 1 (bifat) 
+ 
+ 
+ERR - camp d_reglem 
+ 4g d_grup   Declaraţie depusă de contribuabilii pentru 
+care reglementările contabile sunt emise de 
+B.N.R, respectiv A.S.F. 
+N(1)  d_grup = 1 (bifat) 
+ 
+ 
+ERR - camp d_grup 
+ 5.  cod_obligati
+e Tip impozit pe profit  (nomenclator) N(3) DA cod_obligatie=(102,103,104,105) ERR - valoare invalida 
+ 6.  
+luna_i Luna de inceput de exercitiu financiar N(2) DA luna_i  = Luna( Data_I)   
+ERR-  Luna de inceput de  
+exercitiu financiar   nu 
+corespunde cu  Data de 
+inceput de  exercitiu 
+financiar  
+ 7.  
+an_i Anul de inceput de  exercitiu financiar 
+(an raportare D101) N(4) DA 
+an_i  = Anul( Data_I)  
+an_i>=2023 
+ 
+ 
+ERR-  Anul de inceput de  
+exercitiu financiar    nu 
+corespunde cu  Data de 
+inceput de  exercitiu 
+financiar  
+ 8.  
+luna Luna de sfarsit de  exercitiu financiar N(2) DA luna=  Luna(Data_S)  
+ERR-  Luna de sfarsit de  
+exercitiu financiar    nu 
+corespunde cu  Data de 
+sfarsit de  exercitiu financiar 
+ 9.  
+an Anul de sfarsit de  exercitiu financiar N(4) DA 
+an  = Anul( Data_S)  
+an>=2024 
+ 
+ERR-  Anul de sfarsit de  
+exercitiu financiar    nu 
+corespunde cu  Data  de 
+sfarsit de  exercitiu financiar   
+ 9a 
+ 
+d_prof 
+nu se mai 
+foloseste 
+Se bifeaza daca 'PJ trece de la profit la 
+micro : 
+- la 31.01.2017 sau  
+- la 31.07.2017 
+ 
+N(1)  
+d_prof =(0,1,2)    
+0- nebifat     
+1- bifa  pt. (cod_obligatie =103 sau  
+            104)  si luna=01 an=2017 
+2- bifa  pt. (cod_obligatie =103 sau  
+             104)    si luna=07 an=2017 
+ 
+ 
+ 10.  
+trim_micro Trimestrul in care  PJ trece de la micro la 
+profit N(1)  
+trim_micro =(1,2,3,4)  pt. trim I,II,III,IV 
+ 
+If  (trim_micro =1) then  luna_i =01 
+If  (trim_micro =2) then  luna_i =04 
+If  (trim_micro =3) then  luna_i =07 
+ERR- Trimestrul in care  PJ 
+trece de la micro la profit nu 
+corespunde cu Luna de 
+inceput de exercitiu financiar  
+ 
+ 
+3 
+If  (trim_micro =4) then  luna_i =10 
+ 
+if (cod_obligatie=102) then 
+      trim_micro=null 
+ 
+ 
+ERR-   Trimestrul in care  PJ 
+trece de la micro la profit  nu 
+se completeaza pt. tip 
+impozit=102 
+ 11.  
+primul_an_m
+odif Primul an fiscal modificat N(1)  
+primul_an_modif =(0,1)  
+ 0- NU ,   1- DA     
+ 
+if (cod_obligatie=102) then 
+         primul_an_modif =null 
+ERR- Primul an fiscal 
+modificat nu se bifeaza 
+pt.tip_impozit=102 
+ 
+ 11a
+. ultimul_an_
+modif Ultimul an fiscal modificat N(1)  
+ultimul_an_modif =(0,1)  
+ 0- NU ,   1- DA     
+ 
+if (cod_obligatie=102) then 
+         ultimul_an_modif =null 
+ERR- Ultimul an fiscal 
+modificat nu se bifeaza 
+pt.tip_impozit=102 
+ 
+ 12.  
+Data_M Data de inceput de an modificat D(10)  
+  
+if (cod_obligatie=102) then 
+          Data_M =null 
+ 
+if  (Data_M<>null) then 
+         Anul(Data_M)=an_i 
+ 
+ERR-  Data de inceput an 
+modificat   nu se 
+completeaza pt. tip_impozit 
+=102 
+ 
+ERR- Anul din data de 
+inceput de an modificat   
+trebuie sa fie egal cu anul de 
+raportare 
+ 
+ 13.  
+Data_L 
+Data  dizolvarii  cu  lichidare 
+ 
+ 
+D(10)  
+ 
+daca Data_L<>null  
+    atunci Data_B =  null  
+ 
+AAAA(Data_L)>= an 
+ 
+ 
+ 
+ERR - Data  dizolvarii  cu  
+lichidare  
+nu poate fi completata in 
+acelasi timp cu  Data  
+dizolvarii  cu  lichidare 
+ 
+ 
+ERR - Data  dizolvarii  cu  
+lichidare  
+nu poate fi ulterioara anului 
+de sfarsit  de exercitiu 
+financiar  
+ 
+ 14.  
+Data_B 
+Data  dizolvarii  fara  lichidare 
+ 
+ 
+D(10)  
+ 
+ 
+daca Data_B<>null  
+ 
+ERR - Data  dizolvarii  fara  
+lichidare  
+ 
+4 
+    atunci Data_L =  null  
+ 
+AAAA(Data_B)>= an 
+ 
+nu poate fi completata in 
+acelasi timp cu  Data  
+dizolvarii  cu  lichidare 
+ 
+ERR - Data  dizolvarii  fara  
+lichidare  
+nu poate fi ulterioara anului 
+de sfarsit  de exercitiu 
+financiar  
+ 15.  
+Data_I Data de inceput de exercitiu financiar  
+ D(10) DA 
+If (d_alte=0 si d_prof=0) 
+[ 
+if  (Data_M<>null) then 
+( 
+   If (primul_an_modif=1) then 
+             Data_I= 01.01.Anul(Data_M) 
+   else   Data_I=Data_M 
+) 
+-------------- 
+if  (trim_micro<>null) then 
+( 
+If  trim_micro =1 then  Luna(Data_I)=01 
+If  trim_micro =2 then  Luna(Data_I)=04 
+If  trim_micro =3 then  Luna(Data_I)=07 
+If  trim_micro =4 then  Luna(Data_I)=10 
+) 
+-------------- 
+if  (Data_M=null  and trim_micro=null) 
+    then  Data_I= 01.01.an_i 
+] 
+ERR-  Data de inceput  de 
+exercitiu financiar  
+ 
+ 16.  
+Data_S Data de sfarsit  de exercitiu financiar  
+ D(10) DA 
+ 
+ 
+ 
+If (d_alte=0 si d_prof=0) 
+[ 
+ 
+if  (Data_M=null) then 
+( 
+Data_S=31.12.an_i 
+       if  (Data_L<>null) then Data_S = Data_L 
+       if  (Data_B<>null) then  Data_S = Data_B 
+ ) 
+------------------------------------- 
+ 
+ERR-  Data de sfarsit  de 
+exercitiu financiar  
+ 
+ 
+ 
+ 
+ 
+ERR-  Data de sfarsit  de 
+exercitiu financiar  nu poate 
+fi anterioara Datei de inceput 
+ 
+ 
+ 
+ 
+ 
+5 
+if  (Data_M<>null) then 
+( 
+     If (ultimul_an_modif=1) 
+                 Data_S=31.12.an 
+             (adica an= Anul( Data_M) +1) 
+ 
+     else 
+           Data_S=Data_M+364 zile 
+             (sau 365 zile in an bisect) 
+) 
+ 
+] 
+------------------------------ 
+ 
+Data_S>= Data_I 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 17.  
+scadenta Scadenta platii  
+C(6) DA 
+AA = Anul(Data_S) 
+LL =  Luna(Data_S) 
+ZZ =  25 
+----------------- 
+Daca((AA=2021 si LL=12) sau (AA>=2022 si 
+AA<=2025) )  atunci  LL=LL+6 
+altfel 
+( 
+  daca (cod_obligatie=104) atunci      
+              LL=LL+2 
+  altfel    LL=LL+3 
+) 
+ 
+ 
+Daca cod_obligatie=105 atunci            
+scadenta = LL=LL+3 sau scadenta = LL=LL+6 
+ 
+Daca d_reglem=1 atunci             
+     scadenta = LL=LL+3 
+ 
+Daca(Data_L<>null sau Data_B <> null)  atunci 
+LL=LL+1 
+ 
+ 
+scadenta=ZZLLAA 
+ 
+ERR- ‘Scadenta platii‘  
+ 
+ 18.  cod_bug Cod Bugetar C(10) DA 20470101XX  5503XXXXXX  
+ 19.  nr_evid Nr evidenta a platii N(23) DA Ex.- nr.evid.a platii : ERR – nr.de evidenta a platii 
+ 
+6 
+11103011212250413000028 
+ 
+Verificare componenta si suma de control 
+pentru nr_evid : 
+Poz.1-2 :11 
+Poz.3-5 : cod_obligatie (nomenclator) 
+Poz.6-7 :01 
+Poz.8-11 :    LLAA   
+ (unde LL =  Luna(Data_S)  si  
+           AA = Anul(Data_S)  ) 
+ 
+Poz.12-17 :  scadenta  
+Poz.18: (1,0) 
+ if  (Data_L = null si Data_B=null)   
+        then    poz18=0 
+  else           poz18=1 
+  
+Poz.19-21 : 000 
+Poz.22-23 : suma primelor 21 pozitii (se 
+completeaza cu 0 in fata sau se iau ultimele 2 
+cifre ale sumei) 
+invalid 
+ 20.  totalPlata_A Suma de control N(15) DA totalPlata_A =suma(P1 la P53) 
+(nu se insumeaza rd. de sub  rd. ‘din care’) ERR-calcul suma de control 
+ 21.  nume_declar Nume declarant C(75) DA  ERR – nume declarant 
+necompletat 
+ 22.  prenume_de
+clar Prenume declarant C(75) DA  ERR – prenume declarant 
+necompletat 
+ 23.  functie_decl
+ar Functie declarant C(50) DA  ERR – functie declarant 
+necompletată 
+ 24.   A.DATE DE IDENTIFICARE PLATITOR     
+ 25.  cif Cod de identificare fiscala N(10) DA Validare CIF ERR- CIF invalid 
+ 26.  caen CAEN N(4) DA Validare CAEN ERR – valoare invalida 
+ 27.  denumire Denumirea C(200) DA   
+ 28.  adresa Adresa C(1000
+) DA   
+ 29.  telefon Telefon C(15)    
+ 30.  fax Fax C(15)    
+ 31.  email E-mail C(200)    
+ 32.   C.DATE DE IDENTIFICARE 
+IMPUTERNICIT     
+ 32a cifR Cod de identificare fiscala N(13)  Validare CF(10)  si CIF(13) ERR- CIF invalid 
+ 32b denR Denumirea C(200)    
+ 
+7 
+ 32c adrR Adresa C(1000
+)    
+ 32d telR Telefon C(15)    
+ 32e faxR Fax C(15)    
+ 32f emailR E-mail C(200)    
+ 33.   B.DATE PRIVIND IMPOZITUL PE 
+PROFIT     
+ 34.  P1 Venituri din exploatare N(15)  P1>=0  
+ 35.  P2 Cheltuieli de exploatare N(15)  P2>=0  
+ 36.  P3 Rezultat din exploatare  (rd.1 – rd.2) N(15)  P3=(P1-P2) ERR calcul 
+ 37.  P4 Venituri financiare N(15)  P4>=0  
+ 38.  P5 Cheltuieli financiare N(15)  P5>=0  
+ 39.  P6 Rezultat financiar  (rd.4 – rd.5) N(15)  P6=(P4-P5) ERR calcul 
+ 40.  P7 Rezultat brut (rd.3+rd.6) N(15)  P7=(P3+P6) ERR calcul 
+ 41.  P8 Elemente similare veniturilor, din care: N(15)  P8>=(P081+ P082+ P083+ P084) ERR 
+ 42.  P081 Elemente similare veniturilor potrivit art.46 
+din Codul Fiscal N(15)  P081>=0  
+ 43.  P082 Elemente similare veniturilor din retratări N(15)  P082>=0  
+ 44.  P083 Elemente similare veniturilor din 
+reducerea sau anularea filtrelor 
+prudenţiale 
+N(15)  P0831>=0  
+ 44a P084 Elemente  fferen veniturilor potrivit art.25 
+alin.(10) din Codul fiscal N(15)  P084>=0  
+ 45.  P9 Elemente similare cheltuielilor, din care: N(15)  P9>=P91 ERR  
+ 46.  P091 Elemente similare cheltuielilor din retratări N(15)  P091>=0  
+ 47.  P10 Rezultat după includerea elementelor 
+similare veniturilor/cheltuielilor 
+(rd.7+rd.8-rd.9) 
+N(15)  P10=(P7+P8-P9) ERR calcul 
+ 48.  P11 Amortizare fiscală, din care: N(15)  P11>=(P111+P112+P113) ERR 
+ 49.  P111 Amortizare fiscală integrală a mijloacelor 
+fixe destinate prevenirii accidentelor de 
+muncă și bolilor profesionale 
+N(15)  P111>=0  
+ 50.  P112 Amortizare fiscală integrală a mijloacelor 
+fixe destinate înființării și funcționării 
+cabinetelor medicale 
+N(15)  P112>=0  
+ 51.  P113 Amortizare fiscală integrală a mijloacelor 
+fixe care la data intrării în patrimoniu au o 
+valoare fiscală mai mică decât limita 
+stabilită prin hotărâre a Guvernului 
+N(15)  P113>=0  
+ 52.  P12 Cheltuieli cu dobânzile şi alte costuri 
+echivalente dobanzii din punct de vedere N(15)  P12>=(P121+P122) ERR 
+ 
+8 
+economic, din care: 
+ 
+ 53.  P121 Cheltuielile cu dobânzile şi alte costuri 
+echivalente dobânzii din punct de vedere 
+economic, reportate din anii precedenți, 
+potrivit art.40^2 din Codul fiscal 
+N(15)  P121>=0 
+  
+ 54.  P122 Sume din anul  fferen reprezentand 
+dobânda capitalizată inclusă în valoarea 
+contabilă a unui mijloc fix   
+N(15)  P122>=0 
+  
+ 55.  P13 Rezerva legală deductibilă N(15)  P13>=0 
+  
+ 56.  P14 Provizioane fiscale N(15)  P14>=P141  
+ 57.  P141 Filtre prudenţiale     
+ 58.  P15 Alte sume deductibile, din care: N(15)  P15>=P151 ERR 
+ 59.  P151 Deduceri suplimentare pentru cercetare-
+dezvoltare N(15)  P151>=0  
+ 60.  P16 Total deduceri 
+(rd.11+rd.12+rd.13+rd.14+rd.15) N(15)  P16=( P11+P12+P13+P14+ P15) ERR calcul 
+ 61.  P17 Venituri  neimpozabile din dividende, din 
+care : N(15)  P17>=(P171+ P172+ P173) ERR 
+ 62.  P171 Venituri din dividende primite de la o 
+persoană juridică română N(15)  P171>=0  
+ 63.  
+P172 
+Venituri din dividende primite de la o 
+persoană juridică străină, situată într-un 
+stat terţ, în condiţiile prevăzute de lege 
+N(15)  P172>=0  
+ 64.  
+P173 
+Venituri din dividende primite de la o filială 
+situată într-un stat membru U.E., în 
+condiţiile prevăzute de lege 
+N(15)  P173>=0  
+ 65.  
+P18 
+Venituri din evaluarea/ reevaluarea/ 
+vânzarea/ cesiunea titlurilor de participare, 
+în condițiile prevăzute de lege 
+N(15)  P18>=0  
+ 66.  
+P19 
+Venituri din lichidarea unei alte persoane 
+juridice române sau unei persoane juridice 
+străine situate într-un stat cu care 
+România are încheiată o convenție de 
+evitare a dublei impuneri, în condițiile 
+prevăzute de lege 
+N(15)  P19>=0  
+ 67.  P20 Alte venituri neimpozabile N(15)  P20>=0  
+ 68.  P21 Total venituri neimpozabile 
+(rd.17+rd.18+rd.19+rd.20) N(15)  P21=P17+P18+P19+P20 ERR calcul 
+ 69.  P22 Profit/pierdere (rd.10-rd.16-rd.21) N(15)  P22=P10-P16-P21 ERR calcul 
+ 
+9 
+ 70.  
+P23 
+Cheltuieli cu impozitul pe profit / impozitul 
+pe profit la nivelul impozitului minim pe 
+cifra de afaceri si impozitul pe profit 
+amânat 
+N(15)    
+ 71.  P24 Cheltuieli cu impozitul pe profitul/venitul 
+realizat în străinătate N(15)    
+ 72.  
+P25 
+Dobânzi/majorări de întârziere, amenzile, 
+confiscările şi penalităţile datorate către 
+autorităţile române/străine 
+N(15)   
+ 
+ 73.  P26 Cheltuieli de protocol care depăşesc limita 
+prevăzută de lege N(15)    
+ 74.  P27 Cheltuieli de sponsorizare şi/sau mecenat, 
+burse private, efectuate potrivit legii N(15)    
+ 75.  P28 Cheltuieli cu amortizarea contabilă N(15)    
+ 76.  P29 Cheltuieli cu provizioanele/ajustările 
+pentru depreciere şi a rezervelor peste 
+limitele sau în alte condiții decât cele 
+prevăzute de lege 
+N(15)  
+  
+ 77.  P30 Cheltuieli nedeductibile potrivit art.25 
+alin.(10) din Codul Fiscal N(15)    
+ 78.  
+P31 
+Cheltuieli cu dobânzile şi alte costuri 
+echivalente dobanzii din punct de vedere 
+economic reportate pentru perioada 
+următoare 
+N(15)  
+  
+ 79.  P32 Cheltuieli aferente veniturilor 
+neimpozabile N(15)    
+ 80.  P33 Alte cheltuieli nedeductibile N(15)    
+ 81.        
+ 82.  P34 Total cheltuieli nedeductibile  
+(rd.23 la rd.33) N(15)  
+P34= P23+P24+P25+P26+P27+P28+P29 + 
+P30+ P31+P32+P33 
+ 
+ERR calcul 
+ 83.  P35 Total profit impozabil /pierdere fiscală 
+pentru anul de raportare, înainte de 
+ajustarea cu pierderile curente 
+ (rd. 22 + rd. 34)    (+/ -) 
+N(15)  P35=P22+P34 ERR calcul 
+ 84.  P36 Pierdere fiscală în perioada curentă, de 
+reportat pentru perioada următoare N(15)  P36>=0 ERR P36<0 
+ 85.  P37 Pierdere fiscală în perioada curentă 
+transferată potrivit art.31 alin.(2) N(15)  P37>=0 ERR P37<0 
+ 86.  
+P38 
+Pierdere fiscală în perioada curentă, 
+primită de la persoana juridică cedentă, 
+potrivit art.31 alin.(2) 
+N(15)  P38>=0 ERR P38<0 
+ 
+10 
+ 86a 
+P38a 
+Profit impozabil/ pierdere fiscală,  înainte 
+de reportarea pierderii din anii precedenti 
+(rd.35 + rd.36 + rd.37 - rd.38)   (+/ -) 
+N(15)  P38a=P35+P36+P37-P38 
+  
+ 87.  P39 Pierdere fiscală de recuperat din anii 
+precedenţi N(15)  P39>=0 ERR P39<0 
+ 87a P39a Pierdere fiscală de recuperat in anul 
+curent N(15)  P39a>=0 
+(V1).rd.39^1<=rd.39 
+ERR P39a<0 
+ERR (V1) 
+ 88.  
+P40 
+Profit impozabil aferent anului de 
+raportare    
+    rd.40=rd.38^1 (profit) –  
+              rd.39^1(pierdere) >=0 
+N(15)  
+Daca (P38a>=0 si P39a>=0 si  P38a-P39a>0) 
+Atunci  P40=P38a-P39a 
+Altfel  P40=0 
+ 
+ 
+ERR calcul 
+ 88a 
+P40a 
+Pierdere fiscală aferenta anului de 
+raportare  rd.40^1=rd.38^1(pierdere)>=0 N(15)  
+Daca (P38a<0) Atunci  P40a= -P38a 
+Altfel  P40a=0 
+ 
+ 
+ 89.  
+P41 
+Total impozit pe profit 
+ (rd.41.1+rd.41.2) N(15)  
+P41=(P411+P412) 
+ 
+P41>0 daca P40>0 
+ERR calcul 
+ 
+ATT  
+P41<=0 si P40>0 
+ 90.  
+P411 
+Impozit aferent profitului ce se impune cu 
+cota de 16% N(15)  
+ 
+P411>=0 
+ 
+ERR P411<0 
+ 91.  
+P412 
+Impozit de 5% aplicat veniturilor din 
+activităţi de natura barurilor de noapte, 
+cluburilor de noapte, discotecilor sau 
+cazinourilor 
+N(15)  
+P412>=0 
+Daca d_grup=1 atunci P412=0/null 
+ 
+ERR P412<0 
+ERR grup 
+ 92.  P42 Total credit fiscal 
+(rd.42.1+rd.42.2+rd.42.3) N(15)  P42=(P421+P422+P423) ERR calcul 
+ 93.  
+P421 
+Credit fiscal extern 
+N(15)  P421>=0 
+(V2.)rd.42.1<=rd.41 
+ERR P421<0 
+ERR (V21) 
+ 94.  P422 Impozit pe profit scutit, din care: N(15)  P422>=P4221+ P4222 ERR 
+ 95.  P4221 Impozit pe profitul scutit, potrivit art.22 din 
+Codul fiscal N(15)  P4221>=0 ERR P4221<0 
+ 96.  
+P4222 
+Impozit pe profitul scutit, potrivit art.22^1  
+din Codul fiscal N(15)  P4222>=0 
+(V3).rd.42.2<=rd.41-rd.42.1 
+ERR P4222<0 
+ERR (V3) 
+ 97.  
+P423 
+Scutiri şi reduceri de impozit pe profit 
+calculate potrivit legislaţiei în vigoare,  
+din care: 
+N(15)  P423>=P4231 
+(V4).rd.42.3<=rd.41-rd.42.1-rd.42.2 
+ERR 
+ERR (V4) 
+ 98.  P4231 Impozit pe profit scutit potrivit Legii 
+cooperatiei agricole nr.566/2004 N(15)  P4231>=0 ERR P4231<0 
+ 99.  P43 Sume reprezentând sponsorizare şi/sau N(15)  P43>=P431+P432 ERR 
+ 
+11 
+mecenat, burse private, în limita 
+prevăzută de lege, din care : 
+(V5).rd.43<=20% * (rd.41-rd.42) ERR (V5) 
+ 100.  P431 - din anul curent N(15)    
+ 101.  P432 - reportate din perioada precedentă N(15)    
+ 101a 
+P43a 
+Valoarea rezultata prin aplicarea cotei de 
+16% asupra deducerii suplimentare pentru 
+cercetare-dezvoltare, potrivit OUG nr115/ 
+2024 
+N(15)  P43a>=0  
+ 102.  P44 Alte sume care se scad din impozitul pe 
+profit, potrivit legislatiei in vigoare N(15)  (V6).rd.44<=rd.41-(rd.42+rd.43) ERR 
+ 103.  P45 Reducerea impozitului pe profit conform 
+OUG nr. 153/ 2020 N(15)  (V7).rd.45<=rd.41-(rd.42+rd.43+rd.44) ERR 
+ 104.  
+P46 
+Impozit pe profit determinat pentru 
+efectuarea comparatiei cu impozitul minim 
+pe cifra de afaceri, potrivit art.18^1 alin.(5) 
+din Codul fiscal 
+N(15)  P46>=0  
+ ERR P46<0 
+ 104a 
+P47 
+Impozit pe profit la nivelul impozitului 
+minim pe cifra de afaceri, potrivit 
+art.18^1 alin.(5) din Codul fiscal 
+N(15)  P47>=0 
+ ERR P47<0 
+ 105.  
+P48 
+Impozit pe profit anual datorat/ impozit 
+pe profit la nivelul impozitului minim pe 
+cifra de afaceri anual  
+(rd.48=rd.48.1 + rd.48.2)  
+ (0 pt.grup fiscal) 
+ 
+N(15)  
+Daca (P46>P47) atunci P48=P481 
+Altfel  P48=P482 
+P48=P481+P482 
+ 
+ 
+(V8).rd.48=rd.48.1 sau rd.48=rd.48.2 
+ 
+Daca d_grup=1 atunci P48=0/null 
+ERR calcul 
+ERR (V8)  
+ERR grup 
+ 106.  
+P481 
+Impozit pe profit anual datorat  
+(rd.41-rd.42-rd.43-rd.44-rd.45)>=0, 
+daca rd.46>=rd.47 
+   (0 pt.grup fiscal) 
+N(15)  
+Var v1= P41-P42-P43-P44-P45>=0 
+ 
+Daca ((P46=0 sau P46=null) si (P47=0 sau  
+           P47=null))  Atunci P481=v1 
+Altfel 
+     Daca (P46>=P47)   Atunci P481=v1 
+ 
+Daca P481<0 atunci P481=0 
+Daca d_grup=1 atunci P481=0/null 
+ERR calcul 
+ERR grup 
+ 106a 
+P482 
+Impozit pe profit la nivelul impozitului 
+minim pe cifra de afaceri, anual datorat 
+potrivit art.18^1 din Codul fiscal  
+(rd.47-rd.42.1-rd.43.1-rd.43^1)>=0, 
+daca rd.47>=rd.46  
+(0 pt.grup fiscal) 
+N(15)  
+Var v1= P47-P421-P431-P43a>=0 
+ 
+Daca ((P46=0 sau P46=null) si (P47=0 sau  
+           P47=null))  Atunci P482=v1 
+Altfel 
+     Daca (P47>P46)   Atunci P482=v1 
+ERR calcul  
+ERR grup 
+ 
+12 
+ 
+ 
+ 
+ 
+ 
+ 
+Validari suplimentare :V1-V8 
+Coduri CAEN – lista de valori 01.01.2025 
+ 
+ 
+Nomenclator cod_obligatie: 
+ 
+Nr 
+crt 
+Cod 
+Impozit 
+Denumire creanţă fiscală Temei legal 
+ 
+ 
+Daca P482<0 atunci P482=0 
+Daca d_grup=1 atunci P482=0/null 
+ 107.  
+P49 
+Impozit pe profit/ impozit pe profit la 
+nivelul impozitului minim pe cifra de 
+afaceri,  stabilit în urma inspecţiei fiscale 
+pentru anul fiscal de raportare si care se 
+regăseste in indicatorii din formular 
+N(15)  P49>=0 ERR P49<0 
+ 108.  
+P50 
+Impozit pe profit/ impozit pe profit la 
+nivelul impozitului minim pe cifra de 
+afaceri, declarat pentru anul de raportare 
+prin formularul 100 /  impozit reţinut la 
+sursă în anul de raportare     
+(0 pt.grup fiscal) 
+N(15)  Daca d_grup=1 atunci P50=0/null ERR grup 
+ 109.  
+P51 
+Diferenţa de impozit pe profit datorat 
+urmare restituirii sponsorizarii/ bursei 
+private/ mecenatului 
+N(15)  Daca d_grup=1 atunci P51=0/null 
+  
+ 110.  
+P52 
+Diferenţa de impozit pe profit datorat    
+    (rd.48 + rd.51)  - (rd.49 + rd.50) >=0    
+(0 pt.grup fiscal) N(15)  
+Daca  (P48+P51)–(P49+P50)>=0 atunci 
+P52=(P48+P51)–(P49+P50) 
+ 
+Daca d_grup=1 atunci P52=0/null 
+ 
+ERR calcul 
+ERR grup 
+ 111.  
+P53 
+Diferenţa de impozit pe profit de 
+recuperat   
+(rd.49 + rd.50)  - (rd.48 + rd.51) >=0  
+   (0 pt.grup fiscal) 
+N(15)  
+ 
+Daca  (P49+P50)–(P48+P51)>=0 atunci 
+P53=(P49+P50)–(P48+P51) 
+ 
+Daca d_grup=1 atunci P53=0/null  
+ 
+(P52 si P53 se exclud reciproc) 
+ 
+ 
+ERR calcul  
+ERR grup 
+ 112.  </declaratie101
+>      
+ 
+13 
+1 102 Plăţi anticipate, în contul impozitului pe profit anual,  datorate de 
+societăţi comerciale bancare, persoane juridice române şi de 
+sucursalele din România ale băncilor, persoane juridice străine 
+art.13 şi art.34 din Legea nr.571/2003 privind Codul 
+fiscal, cu modificările şi completările ulterioare 
+2 103 Impozit pe profit datorat de persoane juridice române, altele decât 
+cele de la pct.1 
+art.13 şi art.34 din Legea nr.571/2003 privind Codul 
+fiscal, cu modificările şi completările ulterioare 
+3 104 Impozit pe profit anual (agric., ONG-uri) art.13  şi art.34 alin. 5 lit. b) si c) din Legea 
+nr.571/2003 privind Codul fiscal, cu modificările şi 
+completările ulterioare 
+4 105 Impozit pe profit datorat de persoane juridice străine, altele decât 
+cele de la pct.1  
+art.13 lit.b), c) şi d) şi art.34 din Legea nr.571/2003 
+privind Codul fiscal, cu modificările şi completările 
+ulterioare 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+N1 – Nomenclator state  UE 
+Cod Descriere 
+AT AT-AUSTRIA 
+BE BE-BELGIA 
+BG BG-BULGARIA 
+CZ CZ-CEHIA 
+CY CY-CIPRU 
+HR HR-CROATIA 
+DK DK-DANEMARCA 
+EE EE-ESTONIA 
+FI FI-FINLANDA 
+FR FR-FRANTA 
+DE DE-GERMANIA 
+EL EL-GRECIA 
+IE IE-IRLANDA 
+IS IS-ISLANDA 
+IT IT-ITALIA 
+LV LV-LETONIA 
+LU LU-LUXEMBURG 
+LT LT-LITUANIA 
+MT MT-MALTA 
+NL NL-OLANDA 
+PL PL-POLONIA 
+PT PT-PORTUGALIA 
+ 
+14 
+GB GB- REGATUL UNIT AL 
+MARII BRITANII SI AL 
+IRLANDEI DE NORD 
+SI SI-SLOVENIA 
+SK SK-SLOVACIA 
+ES ES-SPANIA 
+SE SE-SUEDIA 
+HU HU-UNGARIA 
+ 
+ 
+ 
+ 
+ 
+Obs. 
+- Bifa 'PJ trece de la micro la profit' foloseste la corelatia dintre declaratiile D101 anuala si D100 trimestriale. 
+- Pentru   tip imp.=104  nu se depune D100. 
+ 
+ 
+ 
+ 

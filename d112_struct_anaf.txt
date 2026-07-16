@@ -1,0 +1,8051 @@
+ 
+1 
+Versiuni : 
+D112 - vers D112_A7.2.6 (v7) incepand cu luna 01/2026 
+D112 - vers D112_A7.2.6 (v7) incepand cu luna 08/2025  (cf. Ordin comun nr. 2066/248/1377/3103 al ANAF/CNPP/CNAS/ANOFM din 2025 
+D112 - vers D112_A7.2.6 (v6) incepand cu luna 01/2025  (cf. Ordin comun nr.299/455/435/729 al presedintelui ANAF/CNPP/CNASS/ANOFM din 13.03.2025  
+                    (se aplica incepand cu luna de raportare 01/2025 - exceptie 03/2025 pentru rezervisti) 
+D112 - vers D112_A7.2.6 (v6) incepand cu luna 09/2024 (cf. Ordin comun  nr.6330/1587/1630/3121  al presedintelui ANAF/CNPP/CNASS/ANOFM din 08.10.2024) 
+D112 - vers D112_A7.2.6 (v6) incepand cu luna 07/2024 (cf. Ordin comun nr.3796/910/1216/2520 al presedintelui ANAF/CNPP/CNASS/ANOFM din 2024) 
+D112 - vers D112_A7.2.6 (v6) incepand cu luna 04/2024 (cf. Ordin comun nr.723/31/474/1264 al ANAF/CNPP/CNASS/ANOFM din 22.04.2024) 
+D112 - vers D112_A7.2.6 (v6) incepand cu luna 01/2024 (cf. OUG115/2023) 
+D112 - vers D112_A7.2.6 (v6) incepand cu luna 11/2023 (cf. Ordin comun nr.1994/880/1181/4594 al ANAF/CNPP/CNASS/ANOFM din 11.12.2023) 
+D112 - vers D112_A7.2.6 (v6) incepand cu luna 10/2023 (cf. HG900/2023) 
+D112 - vers D112_A7.2.6 (v6) incepand cu luna 01/2023 (cf. Ordin comun nr. 165/7/1272/456 din 10.02.2023 al ANAF/CNPP/CNASS/ANOFM) 
+D112 - vers D112_A7.2.6 (v6) incepand cu luna 08/2022 (cf. Ordin comun nr. 1667/2194/772/4079 din 16.09.2022  al ANAF/CNPP/CNASS/ANOFM) 
+D112 - vers D112_A7.2.6 (v6) incepand cu luna 06/2022 (cf. Ordin comun nr. 1580/ 1098/ 2220 din 07.2022  al MF/MMSS/MS) 
+D112 - vers D112_A7.2.6 (v6) incepand cu luna 01/2022 (cf. Ordin comun nr.152/ 153/ 375 din 02.2022 al MF/MMSS/MS) 
+D112 - vers D112_A7.2.5 (v6) incepand cu luna 01/2021 (cf. Ordin comun nr.203/ 207/ 188 din 02.2021 al MFP/ MMJS/  MS) 
+D112 - vers D112_A7.2.4 (v6) incepand cu luna 10/2020   (cf. Ordin comun nr.2814/1536/1806 din 2020 al MFP/ MMJS/  MS) 
+D112 - vers D112_A7.2.3 (v6) incepand cu luna 04/2020   ( cf. Ordin comun nr.1942/ 979/ 819 al MFP/ MMJS/  MS) 
+D112 - vers D112_A7.2.2 (v6) incepand cu 01/2020    
+D112 - vers D112_A7.2.2 (v5) incepand cu 07/2019    
+D112 - vers D112_A7.2.1 (v4) incepand cu 04/2019 
+D112 - vers D112_A7.2.0 (v3) incepand cu 01/2019 
+ 
+ 
+ 
+ 
+ 
+-----------------------------------------Modificari din 01.2026--------------------------------------- 
+ 
+NZL=nr.zile lucratoare in luna 
+NZC= nr.zile calendaristice in luna   
+ 
+Luna NZC 
+2026 
+Zile libere NZL 
+2026 
+1 31 9+4 18 
+2 28 8 20 
+3 31 9 22 
+4 30 8+2 20 
+5 31 10+1 20 
+6 30 8+1 21 
+7 31 8 23 
+8 31 10 21 
+9 30 8 22 
+10 31 9 22 
+11 30 9+1 20 
+12 31 8+2 21 
+ 
+Zile libere – Sărbători legale  în 2026: 
+1 – 2 ianuarie — Anul Nou 
+6 Ianurie — Boboteaza 
+7 Ianuarie — Sfantul Ioan Botezatorul 
+24 ianuarie — Ziua Unirii Principatelor Române 
+10-13 aprilie  — Paște ortodox 2025 
+1 mai — Ziua Muncii 
+ 
+2 
+1 iunie — Ziua Copilului 
+31mai  — 1 iunie Rusalii 
+15 august — Adormirea Maicii Domnului 
+30 noiembrie — Sfântul Andrei 
+1 decembrie — Ziua Națională a României 
+25 – 26 decembrie — Crăciunul 
+ 
+ 
+plafonPensie_CASS=4000  
+plafonPensie_IMP    =   3000 
+ 
+CacasN = Coeficient CAS angajator (conditii de munca normale ) = 0% 
+CacasD =Coeficient CAS angajator (conditii de munca deosebite)= 4%  
+CacasS =Coeficient CAS angajator (conditii de munca  anitar)  =  8%  
+CacasA =Coeficient CAS angajator (alte conditii de munca) = 0% 
+ 
+Cisan=Coeficient san.indiv.=10% 
+Cipens=Coeficient CAS asigurat pensii=25% 
+pCAM=2.25% 
+ 
+salMin=Sal.minim brut =  4050 (lunile 01-06), 4325 (lunile 07-12) 
+salMin (constructii)=4582 
+ 
+castigMed= castigul salarial mediu brut= 8620 / 01.2026 
+ajutorDeces=Cuantum ajutor deces= 8620 / 01.2026       
+ 
+ 
+Atentie ! Suma veniturilor din ultimele 6 luni (D_17) nu poate depasi suma pe cele 6 luni a 12 salarii minime lunare. 
+I 1 2 3 4 5 6 
+luna 07/2024 08/2024 09/2024 10/2024 11/2024 12/2024 
+salMin 4050 4050 4050 4050 4050 4050 
+ 
+i 7 8 9 10 11 12 13 14 15 16 17 18 
+luna_r 01/2025 02/2025 03/2025 04/2025 05/2025 06/2025 07/2025 08/2025 09/2025 10/2025 11/2025 12/2025 
+salMin 4050 4050 4050 4050 4050 4050 4325 4325 4325 4325 4325 4325 
+D_17(i) 291600 291600 291600 291600 291600 291600 311400 311400 311400 311400 311400 311400 
+ 
+ 
+ 
+ 
+i=indicele lunii  
+D_17 (luna_r) = 12*suma(salMin(i))  pentru i de la luna_r la luna_r+5, in anul curent 
+ 
+Luna 01   D_17(7)  =12*(6*4050)= 291600 
+Luna 02   D_17(8)  =12*(5*4050+1*4050)= 291600 
+Luna 03   D_17(9)  =12*(4*4050+2*4050)= 291600 
+Luna 04   D_17(10)=12*(3*4050+3*4050)= 291600 
+Luna 05   D_17(11)=12*(2*4050+4*4050)= 291600 
+Luna 06   D_17(12)=12*(1*4050+5*4050)= 291600 
+Luna 07   D_17(13)=12*(0*4050+6*4325)= 311400 
+... 
+Luna 12   D_17(18)=12*(6*4325)= 311400 
+ 
+ 
+ 
+ 
+3 
+Suma300 (cf. OUG156/2024)  = 300lei  (01-06/2026) si 200 (07-12/2026);  plafon part-time=4000  4300  
+salMin=Sal.minim brut (aplicat la part-time )=  4050lei (lunile 01-06), 4325 (lunile 07-12) 
+Obs:    -la part-time se compara baza de calcul CAS cu (salMin-300 sau 200) , pentru zile lucrate +zile CM 
+ 
+5.1 Sumă limită de calcul CAS - conditii normale, cf. art.146 alin.(5^6) din CF   (B2_5P) (in PDF) de intrebat cum e ??? 
+ 
+                B2_5P=((4050-300)/NZL*(zile lucrate+zile CM) ) 
+           - zilele fara plata si  zilele nemotivate se supra-taxeaza 
+ 
+ 
+In sectiunea D asigurat – modificari : 
+08.2025 86b D_28 Procentul de 55% / 
+65% / 75% aplicat 
+asupra bazei de 
+calcul pentru 
+certificatele de CM 
+N(15)   
+Modif. 01.02.2026 – cf.OUG 91/2025 
+ 
+Incepand cu  01.02.2026  (pana la 01.02.2027) , in 
+sectiunea D (concedii medicale) , la ‘14. Zile prestaţii 
+(zile lucratoare) suportate de angajator (D_14)’  se va 
+calcula  mai putin cu 1zi  si se va calcula indemnizatia 
+aferenta.  
+Exceptie se face pentru ‘9. Codul indemnizaţiei notat pe 
+certificatul de concediu medical (D_9)’, pentru D_9=51, 
+pentru care nu se va scadea 1zi.  
+ 
+Modif. 01.07.2026 – cf.OUG 89/2025 
+ 
+Incepand cu  01.07.2026  NU se va mai depune 
+declaratie rectificativa pentru  luna  precedenta (cu 
+procentul si indemnizatiile corectate ),  ci se va completa 
+asa in 07/2026: 
+     indemnizatia recalculata  07/2026 = rest 
+indemnizatie 06/2026 +   indemnizatie 07/2026 
+ 
+Modif. 23.09. 25 – cf.OUG 158/2005 
+ 
+daca D_9 = 01  (si numai daca e cazul pentru 
+agregarea in sectiunile C2/ E2 angajator)  
+atunci D_28 =(55,65,75,null) 
+altfel  D_28=null 
+ Fiecare CM (cu D_9=01 si numai daca e cazul 
+pentru agregarea in sectiunile C2/ E2 
+angajator) va avea completat procentul  
+55/65/75/null 
+ Doar concediile in continuare (cu D_9=1) vor 
+cumula nr.de zile 
+ Se va redepune  luna  precedenta cu procentul si 
+indemnizatiile corectate  
+ 
+ 
+ERR  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Atentie !  
+ 
+Declaratiile cu erori fatale (ERR) nu se preiau 
+Declaratiile cu atentionari (ATT) se preiau cu specificarea mesajului de atentionare aferent 
+ 
+ 
+4 
+Declaratia rectificativa nu se poate prelua decat daca exista o declaratie initiala. 
+In aceeasi zi nu se primeste o declaratie initiala si una rectificativa pentru aceiasi perioada. 
+ 
+Rotunjirile :  Contributiile se rotunjesc aritmetic (daca partea zecimala  >= 0.5, se adauga 1 la partea intreaga).  
+                    Exceptie fac valorile subunitare ale contributiei, care se intregesc la 1 leu. 
+ 
+Toate valorile sunt numere  intregi pozitive.  Parametrii pot avea zecimale. 
+Campurile calculate cu ajutorul parametrilor vor avea valori intregi, pozitive obtinute prin rotunjire matematica (cele subunitare se rotunjesc la 1). 
+ 
+ 
+ 
+ 
+ 
+Structura fisier XML: 
+ 
+Data  
+modif. 
+Nr.  
+Crt. 
+Elemente/ 
+atribute 
+Denumire câmp Tip si 
+lung. 
+Camp 
+Camp 
+oblig. Formule si restrictii Eori 
+P 
+S 
+J 
+  <declaratieUnica>       
+ 1 luna_r Perioada de raportare – 
+Luna 
+N(2) DA  0>luna_r <13 ERR luna_r  
+ 2 an_r Perioada de raportare – An N(4) DA  an_r > 2010 ERR an_r  
+  3 d_rec Declaratie Rectificativa N(1) DA d_rec in (0,1)  unde : 
+0= Declaraţie Initiala 
+1=Declaraţie Rectificativă  
+ 
+- d_rec=0 pt.  tip_rec=(3,5,null)  
+- d_rec=1 pt.  tip_rec>0 sau null  
+ 
+ 
+ERR d_rec  
+ 3a tip_rec  Tip declaratie  N(1)  tip_rec=(2,3,4,5,7,8,9,null) 
+tip_rec=(2, 4, 7, 8, 9) pt.d_rec=1 
+tip_rec=(3, 5,null) pt.d_rec=0,1 
+ 
+1. Decl.rectificativa 
+2.Declarație depusă ca urmare a acordării unor drepturi 
+bănesti  
+stabilite prin lege sau în baza unor hotărâri judecătorești 
+definitive și irevocabile/hotărâri judecătorești definitive și 
+executorii, inclusiv cele acordate potrivit hotărârilor 
+primei instanţe, executorii de drept, precum şi în cazul în 
+care prin astfel de hotărâri s-a dispus reîncadrarea în 
+muncă a unor persoane, potrivit art. 147 alin. (3) și alin. 
+(3^1) , art. 169 alin. (3) si alin. (3^2) din Codul fiscal 
+ 
+3.Declaratie depusă ca urmare a unei inspectii fiscale 
+sau ca urmare a stabilirii obligațiilor fiscale din oficiu (din 
+04/2019) 
+ 
+4.Declaratie depusă după anularea rezervei verificării 
+ulterioare  conform Codului de procedură fiscală:- 
+art.105 alin.(6) lit.a)  
+          
+5.Declaratie depusă după anularea rezervei verificării 
+ulterioare  conform Codului de procedură fiscală:- 
+art.105 alin.(6) lit.b)  
+    
+7.Declaratie depusă ca urmare a acordării cumulat de 
+ERR tip_rec 
+ ‘Tip declaratie’  
+ 
+ 
+ 
+ 
+5 
+sume potrivit  art.146 alin.(10) si (11)  din Codul fiscal 
+ 
+8. Declarație depusă ca urmare a  unor  hotărâri 
+judecătorești prin care s-a dispus reîncadrarea activităţii 
+în condiţii deosebite sau speciale de muncă pentru 
+perioade anterioare, 
+ precum şi achitarea de către angajator a diferenţelor de 
+contribuţie de asigurări sociale,potrivit art. 147 alin. (3^2) 
+din Codul fiscal 
+ 
+9. Decl.depusa ca urmare a unei  notificări de 
+conformare 
+ 
+ 
+tip_rec = 7 este valabil numai pt cif apartinand 
+AJOFM,CNAS,CNPP,ANPIS 
+ 
+ 3b nume_declar Nume declarant C(75) DA  ERR nume_declar necompletat  
+ 3bb prenume_declar Prenume declarant C(75 DA  ERR prenume_declar necompletat  
+ 3bbb functie_declar Functie declarant C(50) DA  ERR functie_declar necompletat  
+    <angajator> 1 aparitie      
+ 4 cif Cod de identificare fiscală N(13) DA Verificare CIF ERR cif  
+ 4.a cifS Cod de identificare 
+succesor 
+(pt. Declarație depusă 
+potrivit art. 90 alin. (4)          
+ din Codul de procedură 
+fiscală) 
+ 
+N(13)  Verificare CIF ERR CIF SUCCESOR necompletat  
+ 5 rgCom Nr. Înmatriculare la 
+Registrul Comerţului 
+C(14)  Format : xxx/xxxxx/xxxx   
+ 6 caen Cod CAEN N(4) DA  Nomenclator 1 – coduri CAEN si tarife de risc 
+(nomenclatorul de coduri CAEN – necesar sa contina si 
+perioada de valabilitate 
+ERR caen 
+‘Cod caen inexistent in nomenclator’ 
+P 
+ 7 den Denumire sau Nume si 
+Prenume 
+C(200) DA   ERR den necompletat  
+ 8 adrSoc Adresă sediu social C(1000)   ERR adrSoc necompletata  
+ 9 telSoc Telefon sediu social C(15)     
+ 10 faxSoc Fax sediu social C(15)     
+ 11 mailSoc E-mail sediu social C(200)  validare e-mail ATT E- E-mail sediu social eronat  
+ 12 adrFisc Adresă domiciliu fiscal C(1000)     
+ 13 telFisc Telefon domiciliu fiscal C(15)     
+ 14 faxFisc Fax domiciliu fiscal C(15)     
+ 15 mailFisc E-mail domiciliu fiscal C(200)  validare e-mail ATT E-mail domiciliu fiscal eronat  
+ 16 casaAng Casă de asigurare de 
+sănătate angajator 
+C(2) DA Nomenclator 2 – Case de sanatate 
+casaAng<>AOPSNAJ 
+ERR casaAng 
+‘Nu s-a completat casa de asigurari 
+de sanatate angajator ‘ sau s-a 
+completat un cod gresit 
+ATT : 
+Casa de sanatate a angajatorului 
+trebuie sa coincida cu judetul in care 
+angajatorul are sediul social 
+S 
+ 18a datCAM Datorează CAM N(1) DA datCAM=(0,1) ERR  
+ 
+6 
+22 NU 
+1- DA 
+01.2025 18a1 bifa_AgCon Bifa activitati in constructii/ 
+agricultura 
+     
+01.2025 18aa caenC 
+Cod CAEN in constructii / 
+agricultura (cf. Art.60 pct.5 
+sau pct.7 din CF) 
+     
+01.2025 18b cifAf1 1.Cifra de afaceri  
+totala – an curent      
+01.2025 18c cifAf2 
+2.Cifra de afaceri realizată 
+efectiv  din activitatea de 
+constructii cf. Art. 60 pct. 5 
+din CF – an curent 
+     
+01.2025 18d pond1 3. Pondere – an curent      
+01.2025 18f cifAf1_a 1.Cifra de afaceri totala – 
+an anterior      
+01.2025 18g cifAf2_a 
+2.Cifra de afaceri realizată 
+efectiv  din activitatea de 
+constructii cf. Art. 60 pct. 5 
+din CF – an anterior 
+     
+01.2025 18h pond1_a 3. Pondere – an anterior      
+01.2025 18e bifa_CAM 
+Îndeplineste conditiile 
+pentru aplicarea facilitătilor 
+din sectorul constructiilor 
+/agricultura D/N 
+ 
+     
+ 19 totalPlata_A Total obligatii de plata N(15) DA totalPlata_A= ΣA_plata 
+ 
+ 
+daca  
+COUNT asiguratA(cnp_asig)+ 
+COUNT asiguratB(cnp_asig)+ 
+COUNT asiguratC(cnp_asig) = 0   
+Atunci 
+totalPlata_A = A_plata (01,28,40,43,45, 49,53)  
+(impozitele) 
+.ERR ‘Total obligatii de plata’ diferit 
+de suma calculata 
+ 
+daca nu e US 
+ERR- ‘Total obligatii de plata mai 
+putin impozitele 
+(602,611,623,619,622,624,625) nu 
+poate fi >0  daca nu exista  
+asigurati. 
+Nu aveti declarata nici o persoana in 
+sectiunile A, B, C. Transmiterea unei 
+declaratii fara angajati va duce la 
+incheierea perioadei de asigurare la 
+sanatate. 
+ 
+ 
+         <angajatorA> 1- 41 aparitii   (campurile sunt obligatorii daca exista obligatii)   
+ 20 A_codOblig Cod obligatie  N(3) DA Nomenclator 3 – Obligatii de plata la BS si BASFS 
+A_codOblig nu poate avea aparitii multiple  
+ERR A_codOblig negasit in 
+nomenclator ; 
+ERR A_codOblig  aparitii multiple 
+ 
+ 20b A_codBugetar Cod bugetar C(10) DA Se completeaza automat la selectie Nomenclator 3 – 
+Obligatii de plata la BS si BASFS 
+ERR A_codBugetar  
+ 21 A_datorat 1. Suma Datorată N(15) DA daca nu e US 
+ 
+Σ A_datorat(602,611, 625) >= Σ Timp_E3 
+ 
+ 
+A_datorat-A_scutit(602)= ΣE3_15 pt. (E3_1=”A” sau ”B”) 
+sau (E3_1=”C” si E3_2=10,11,13,14) 
+ 
+A_datorat(611)= ΣE3_15 pt. E3_1=”C” si E3_2=17 
+A_datorat(625)= ΣE3_15 pt. E3_1=”C” si E3_2=30 
+ 
+ 
+daca nu e US 
+ 
+ERR daca ΣA_datorat 
+(602,611,625) < Σ Timp_E3 
+ 
+ERR daca  
+A_datorat-A_scutit(602)# ΣE3_15 
+pt. (E3_1=”A” sau ”B”) sau 
+(E3_1=”C” si E3_2=10,11,13,14) 
+ 
+ERR daca A_datorat(611)# ΣE3_15 
+pt. E3_1=”C” si E3_2=17 
+ 
+ 
+7 
+ERR daca A_datorat(625)# ΣE3_15 
+pt. E3_1=”C” si E3_2=30 
+ 
+01.2025    01.602 Imp. 
+Salarii Nu are formula 
+ 
+ A_datorat (01) =  F1_suma + Σ F2_suma 
+daca  F1_suma<>null sau cel putin un F2_suma<>null 
+ 
+(intra si C_1(33,34,38rezervisti ??),A_1/B1_1(46))  
+ERR  
+Creanta 01 – difera de  suma 
+calculata (daca  F1_suma<>null sau 
+cel putin un F2_suma<>null) 
+ 
+ 
+01.2025    02.412 CAS 
+asig. 
+ 
+ 
+A_datorat (02) = (ΣA_14 + ΣB4_8) + ΣB4_20 +   ΣC_11  
++ ΣC_26   
+ 
+ 
+ΣA_14 pentru  
+A_1 = (1,3,8,9,10,11,12,13,14, 
+18,16,23,19,20,4,5,6,21, 
+27,28,25,29,40, 51)  
+ 
+ΣB4_8 pentru 
+B1_1 = (1,3,8,9,10,11,12,13,14,18,16,23,19,20, 
+4,5,6,21, 27,28,25,29,40,51,31)  
+ 
+ 
+ΣC_11  pentru C_1  =  (2,10, 13,14,15,38)  
+ΣC_26  pentru C_1  =  (33) 
+ 
+ 
+daca nu e US 
+ 
+ATT  ERR  
+Creanta 02 – difera de  suma 
+calculata 
+P 
+01.2025 
+08.2025 
+   07.432 CASS 
+asig. 
+ 
+A_datorat (07)  = ΣA_12 +  ΣB4_6 + ΣC_9 
+ 
+,unde: 
+ΣA_12 pentru 
+A_1=(1, 4,5,6, 8,2,9,10,11,12,13,14,15, 18,19,20, 
+21,22, 25,27,28,29,36,40,46, 51,52) 
+ 
+ΣB4_6 pentru 
+B1_1 = 
+(1,2,4,5,6,8,9,10,11,12,13,14,15,16,23,18,19,20, 
+21,22,25,27,28,29, 31,32,37,40,42, 46, 51, 52) 
+ 
+ΣC_9 pentru C_1  =  (33,34,38,10)  
+ 
+ATT  
+Creanta 07 – difera de  suma 
+calculata 
+S 
+    10.441 CASS 
+pensii 
+ 
+A_datorat (10)  = ΣC_9 
+  pentru C_1  = 28 
+ 
+ATT  
+Creanta 10 – difera de  suma 
+calculata 
+S 
+    28.611 Imp. 
+Dr.aut. Nu are formula   (C_1=17)   
+    30.451 
+ 
+CAS 
+dr.aut. 
+A_datorat (30)  = ΣC_11 
+  pentru C_1  = 17 
+  
+ 
+daca nu e US 
+ATT  ERR 
+Creanta 30 – difera de  suma 
+calculata 
+P 
+    31.461 CASS 
+dr.aut. 
+A_datorat (31)  = ΣC_9 
+  pentru C_1  = 17 
+ 
+ATT  
+Creanta 31 – difera de  suma 
+calculata 
+S 
+    36.464 CASS 
+asociere 
+A_datorat (36)  = ΣC_9 
+  pentru C_1  = 22 
+ATT  
+Creanta 36 – difera de  suma 
+S 
+ 
+8 
+titlu III  calculata  
+    40.623 
+ 
+Imp. 
+Asociere 
+Titlu  III 
+ Nu are formula    (C_1  = 22)  
+ 
+ 
+    42.469 CASS 
+arendare 
+A_datorat (42)  = ΣC_9 
+  pentru C_1  = 26 
+ATT 
+Creanta 42  - difera de  suma 
+calculata 
+S 
+    44.471 CASS 
+asociere 
+titlu II 
+A_datorat (44)  = ΣC_9 
+  pentru C_1  = 27 
+ 
+ATT 
+Creanta 44  - difera de  suma 
+calculata 
+S 
+    43.619 Imp. 
+Arendare  Nu are formula     (C_1  = 26)   
+    45.622 Imp. 
+Asoc.. 
+titlu II 
+Nu are formula     (C_1  = 27)   
+08.2025    46.480 CAM A_datorat (46)  = C4_ct  =  
+         Round(C4_baza * pCAM)  
+ 
+unde C4_baza =Σasigurat 
+ ( A_5 + B4_14 + C_29) – C5_baza  
+daca nu e US 
+ERR  
+Creanta 46 -  mai mare decat suma 
+calculata 
+ATT  
+Creanta 46 – difera de  suma 
+calculata 
+ 
+    47. 481 CAS 
+angajator 
+cond. 
+Deoseb. 
+4% 
+A_datorat (47)  = Round(CacasD *(∑B2_6+∑B3_7)) 
+pentru B3_2>0 și/sau B3_7>0 
+ERR 
+Creanta 47 – difera de  suma 
+calculata 
+ 
+    48. 482 CAS 
+angajator 
+cond. 
+Speciale 
+8% 
+A_datorat (48)  = Round(CacasS *(∑B2_7+∑B3_7)) 
+pentru B3_3>0 și/sau B3_7>0 
+ 
+ERR 
+Creanta 48 – difera de  suma 
+calculata 
+ 
+01.2025    49.624 Imp. 
+Asociere 
+impozit 
+specific 
+Nu are formula    (C_1  = 29)   
+01.2025    50.472 CASS 
+asociere 
+impozit 
+specific 
+A_datorat (50)  = ΣC_9 
+  pentru C_1  = 29 
+ 
+ATT  
+Creanta 50 – difera de  suma 
+calculata 
+ 
+    51.473 CAS 
+sportivi 
+A_datorat (51)  = ΣC_11 (pentru C_1  = 30) 
+   
+ATT  ERR 
+Creanta 51 – difera de  suma 
+calculata 
+ 
+    52.474 CASS 
+sportivi 
+A_datorat (51)  = ΣC_9 (pentru C_1  = 30)  
+ 
+ATT  
+Creanta 52 – difera de  suma 
+calculata 
+ 
+    53.625 Impozit 
+sportivi Nu are formula     (C_1  = 30)   
+01.2025   Facilitati 54.483 CAS 
+facilitati 
+constructii 
+A_datorat (54) = ΣA_14f + ΣB4_8f  
+daca bifa_AgCon=1 (constructii) si bifa_CAM=1 si  
+exista A_1/ B1_1= 25 
+ 
+ATT  ERR 
+Creanta 54 – difera de  suma 
+calculata 
+ 
+   Facilitati 55.484 CAM 
+facilitati 
+constructii 
+A_datorat (55) = C5_ct 
+ 
+ATT  
+Creanta 55 – difera de  suma 
+calculata 
+ 
+    56.607 Imp peste 
+plafon 
+pensie 
+ Nu are formula  (C_1  = 35)   
+08.2025    57.457 CASS 
+peste  A_datorat (57)  = ΣC_9   
+ 
+9 
+plafon 
+pensie 
+  pentru C_1  = 35 
+ 
+01.2025   Facilitati 58.486 CAS 
+facilitati 
+agricult. 
+A_datorat (58) = ΣA_14f + ΣB4_8f  
+daca bifa_AgCon=2 (agricultura) si bifa_CAM=1 si 
+exista A_1/ B1_1= 48 
+ 
+ATT  ERR 
+Creanta 58 – difera de  suma 
+calculata 
+ 
+   Facilitati 59.487 CAM 
+facilitati 
+Agricult. 
+A_datorat (59) = C5_ct 
+ 
+ATT  
+Creanta 59 – difera de  suma 
+calculata 
+ 
+    60.458 CAS 
+sup.de 
+angajator. 
+(art.146 
+alin.(5^6) 
+din CF) 
+A_datorat (60) = 
+ (ΣA_14D + ΣB4_8D )   
+ 
+ 
+ 
+daca nu e US 
+ 
+ATT  ERR  
+Creanta 60 – difera de  suma 
+calculata 
+ 
+    61.459 CAS 
+sup.de 
+angajator  
+(art.168 
+alin.(6^1) 
+din CF) 
+A_datorat (61) = 
+ (ΣA_12D + ΣB4_6D )   
+ 
+ATT  
+Creanta 61 – difera de  suma 
+calculata 
+ 
+01.2025   Facilitati 62.488 CAS 
+facilitati 
+IT 
+A_datorat (62) = ΣA_14f + ΣB4_8f  
+daca bifa_AgCon=3 (IT) si bifa_CAM=1 
+exista A_1/ B1_1= 54 
+ 
+ATT  ERR 
+Creanta 62 – difera de  suma 
+calculata 
+ 
+    63. 627 Impozit 
+prestator 
+casnic 
+Nu are formula  (C_1  = 36) 
+ 
+  
+    64. 477 CAS 
+prestator 
+casnic 
+ 
+ΣC_28 (pentru C_1  = 36) 
+  
+08.2025    
+65.492 
+CASS 
+someri  A_datorat (65)  = ΣC_9   pentru C_1  = 2 
+ 
+  
+08.2025    
+66.478 
+CASS 
+Pers. 
+persec. 
+Politic 
+ 
+ A_datorat (66)  = ΣC_9   
+pentru C_1  = 39-44 
+  
+08.2025    
+67.479 
+CASS 
+Ajutor 
+Incluzi- 
+uni 
+ A_datorat (67)  = ΣC_9  pentru C_1  = 4   
+08.2025    
+68.493 
+CASS 
+crestere 
+copil 
+<2/3ani 
+ A_datorat (68)  = ΣC_9  pentru C_1  = 5   
+08.2025    
+69.490 
+CASS 
+crestere 
+copil 
+handicap 
+3-7ani 
+   A_datorat (69)  = ΣC_9  pentru C_1  = 6   
+ 22 A_deductibil 2. Suma deductibila N(15) DA A_deductibil>=0 
+A_deductibil <= A_datorat 
+ A_deductibil >= 0 pentru (602,412,611,625) 
+ A_deductibil = 0 pentru restul obligatiilor 
+ 
+ 
+ 
+P 
+    01.602 Imp 
+salarii 
+A_deductibil (0) = F1_suma_ded+ ΣF2_suma_ded 
+daca  F1_suma<>null sau cel putin un F2_suma<>null 
+ 
+ERR 
+A_deductibil(602) difera de suma 
+calculata (daca  F1_suma<>null sau 
+cel putin un F2_suma<>null) 
+ 
+ 
+10 
+(<= 3.5% din impozit) 
+ 
+(B1_1=31 nu intra) 
+ 
+ 
+ 
+    02.412 CAS 
+asig. 
+A_deductibil(02) = E4_aj_suma 
+pentru cif=cif AJOFM (ajutoare deces) 
+ATT daca  
+A_deductibil (02) este calculata 
+gresit pentru    
+cif= cif AJOFM 
+ 
+ERR  daca A_deductibil (02) >0 si 
+ cif<> cif AJOFM 
+ 
+    28.611 Imp dr 
+aut.  (<= 3.5% din impozit)   
+    53.625 Imp 
+sportivi  (<= 3.5% din impozit)   
+ 22a A_scutit 2. Suma scutita/ exceptata N(15) DA A_scutit>=0 
+A_scutit <= A_datorat 
+ A_scutit >= 0 pentru (602,432) 
+ A_scutit = 0 pentru restul obligatiilor 
+  
+    01.602 Imp 
+salarii 
+A_scutit = F1_suma_scut+ ΣF2_suma_scut 
+daca  F1_suma<>null sau cel putin un F2_suma<>null 
+ 
+ (constructii) 
+ERR 
+A_scutit(602) difera de suma 
+calculata (daca  F1_suma<>null sau 
+cel putin un F2_suma<>null) 
+ 
+ 
+ 
+    56.607  (C_1  = 35)   
+    28.611  (C_1  = 17)   
+    43.619  (C_1  = 26)   
+    45.622  (C_1  = 27)   
+    40.623  (C_1  = 22)   
+    49.624  (C_1  = 29)   
+    53.625  (C_1  = 30)   
+    63.627  (C_1  = 36)   
+   Facilitati 07.432 
+ 
+CASS 
+asigurat 
+A_scutit = Σasigurat(A_12f)+ Σasigurat(B4_6f) 
+daca caenC#null 
+ (constructii/ agricultura) 
+  
+ATT 
+A_scutit(432) difera de suma 
+calculata 
+ 
+ 
+   Facilitati 61.459 
+ 
+CASS 
+sup.de 
+angajator 
+A_scutit (61)= Σasigurat(A_12fP- A_12f +B4_6fP-B4_6f) 
+daca bifa_CAM=1 si  
+A_12fP- A_12f >0 si B4_6fP-B4_6f >0 (constructii/ 
+agricultura)  
+  
+08.2025    65.433 CASS 
+someri  A_datorat (65)  = ΣC_9 
+  pentru C_1  = 2 
+ 
+  
+08.2025    66.478 CASS 
+pers. 
+persecu- 
+tate 
+ A_datorat (66)  = ΣC_9 
+  pentru C_1  = 3 
+ 
+  
+08.2025    67.479 CASS 
+ajutor 
+incluziune 
+ A_datorat (67)  = ΣC_9 
+  pentru C_1  = 4 
+ 
+  
+08.2025    68.437 CASS 
+indemniz. 
+Copil  
+2-3ani 
+ A_datorat (68)  = ΣC_9 
+  pentru C_1  = 5 
+ 
+  
+08.2025    69.490 CASS 
+indemniz.  A_datorat (69)  = ΣC_9 
+  pentru C_1  = 6 
+  
+ 
+11 
+Copil 
+3-7ani  
+ 23 A_plata 4. Suma de plată (rd.1- 
+rd.2-rd.3) 
+N(15) DA A_plata =  
+A_datorat – A_deductibil – A_scutit >=0 
+ERR A_plata diferita de suma 
+calculata 
+ 
+         </angajatorA>       
+         <angajatorB> 1aparitie      
+01.2025 24 B_cnp 1.Număr de asigurati somaj  N(6) DA B_cnp = COUNT(asiguratA(cnp_asig)) + 
+COUNT(asiguratB(cnp_asig) )  cu baza_AJS=true    
+ 
+baza_AJS=true   daca   asigSO=1 si A_2=0 si  
+A_1=(1,6, 9-25,27,28, 46,,48,51,52,54) 
+ 
+baza_AJS=true   daca   asigSO=1 si B1_2=0  si 
+B1_1=(1,6,9-25,27,28,31,34,36,42,46,48,51,52,54) 
+ 
+ERR 
+ATT 
+B_cnp difera de  suma calculata  
+J 
+ 25 B_sanatate  2.Număr de asigurati 
+concedii si indemnizatii 
+N(6) DA B_sanatate = COUNT(asigurat(cnp_asig))  
+pentru cnp_asig UNIC (???)  si asigCI=1 si 
+A_1# (2, 3,4, 5, 13,15,18,20,30,40)   
+B1_1# (2, 3,4, 5, 13,15,17,18,20,23,30,34,40) 
+ 
+ATT  
+B_sanatate difera de  suma 
+calculata 
+S 
+ 26 B_pensie 3.Număr de asiguraţi care 
+datorează CAS 
+N(5) DA B_pensie= COUNT asiguratA(cnp_asig)+ 
+COUNT asiguratB(cnp_asig)  
+pentru cnp_asig UNIC   si  
+pentru  A_14>0, B4_8>0, B4_20>0  
+unde  
+B4_20>0  pt. B1_1=31 
+ATT 
+B_pensie difera de  suma calculata 
+P 
+01.2025 26a B_sal 5.Numar salariati N(5) DA B_sal = COUNT(asiguratA(cnp_asig)) + 
+COUNT(asiguratB(cnp_asig) )   
+pentru cnp_asig UNIC  si  
+A_1     in (1,2, 8,10,25,27,28,46,48,51,52,54) 
+ 
+B1_1   in (1,2, 8,10, 25,27,28,46,48,51,52,54)  
+ 
+ATT  
+B_sal difera de  suma calculata 
+an
+af 
+01.2025 28 B_brutSalarii  4.Total fond de salarii 
+brute 
+N(15) DA pentru asigCI=1 si A_1,B1_1  # (4,5,15,20,30,40)  
+ 
+B_brutSalarii =   
+(C3_13  -  C3_14)  + ΣA_11 + ΣB4_5 
+unde B1_1=1,2, 8,10, 25,27,28, 31,42,46,48,51,52,54)  
+ATT  
+B_brutSalarii difera de  suma 
+calculata 
+S 
+ 28a nrSal1_111 6.Număr asigurați Legea 
+111/2022 care datorează 
+CAS 
+N(15)     
+ 28b nrSal2_111 7.Număr asigurați Legea 
+111/2022 care îndeplinesc 
+condiția de la art 3 alin (7) 
+(8) 
+N(15)     
+ 28c bazaCAS_111 8.Total Bază lunară de 
+calcul CAS 
+N(15)     
+ 28d CAS_111 9.Total CAS N(15)     
+ 28e nrSal3_111 10.Număr asigurați Legea 
+111/2022 care îndeplinesc 
+condiția de la art 9 alin (5) 
+N(15)     
+         </angajatorB>       
+        <angajatorC1> 0-1 aparitii      
+ 29 C1_11 Total venit realizat – conditii 
+de muncă normale 
+N(15)  C1_11=  ΣA_13 + ΣB2_5 + ΣB1_16 + 
+ ΣA_13S + ΣB2_5S 
+unde ΣB1_16 pt. B1_1=31 
+ERR  P 
+ 
+12 
+ 
+pentru A_1,B1_1#(2,15,22,30,42,46,34,36,52)  
+ 
+ 30 C1_12 Total bază de calcul a 
+contribuţiei la BASS 
+aferente indemnizatiei cf. 
+OUG. 158/2005- conditii de 
+muncă normale/ total venit 
+realizat aferent OUG 
+158/2005 în aplicarea OUG 
+168/2022 
+N(15)  
+C1_12=Σ B3_7 + ΣB3_7S 
+ pentru  B3_1 > 0 si B3_6 > 0  și B3_7>0  
+pentru B1_1#(2,15,22,30,42,46,34,36,52)  
+ 
+ERR  P 
+ 30B C1_13 Total scutire angajator 
+aferenta conditiilor normale 
+de munca 
+N(15)  
+C1_13 =0 (s-au desfiintat motivele de scutire) 
+ERR  P 
+ 31 C1_21 Total venit realizat – conditii 
+de muncă deosebite 
+N(15)   
+C1_21=ΣB2_6 + ΣB2_6S 
+pentru A_1,B1_1#(2,15,22,30,42,46,34,36,52)  
+ 
+ERR  P 
+ 32 C1_22 Total bază de calcul a 
+contribuţiei la BASS 
+aferente indemnizatiei cf. 
+OUG. 158/2005- conditii de 
+muncă deosebite/ total 
+venit realizat aferent OUG 
+158/2005 în aplicarea OUG 
+168/2022 
+N(15)  
+C1_22=ΣB3_7  + ΣB3_7S 
+pentru  B3_2 > 0 si B3_6 > 0   si B3_7> 0  
+si pentru B1_1#(2,15,22,30,42,46,34,36,52)  
+ 
+ 
+ERR  P 
+ 32B C1_23 Total scutire angajator 
+aferenta conditiilor 
+deosebite de munca 
+N(15)  C1_23=0 ( s-au desfiintat motivele de scutire) ERR  P 
+ 33 C1_31 Total venit realizat – conditii 
+de muncă speciale 
+N(15)  C1_31=ΣB2_7 + ΣB2_7S 
+pentru B1_1#(2,15,22,30,42,46,34,36,52)  
+ 
+ERR  P 
+ 34 C1_32 Total bază de calcul a 
+contribuţiei la BASS 
+aferente indemnizatiei cf. 
+OUG. 158/2005- conditii de 
+muncă speciale/ total venit 
+realizat aferent OUG 
+158/2005 în aplicarea OUG 
+168/2022 
+N(15)   
+C1_32=ΣB3_7 + ΣB3_7S 
+pentru  B3_3 > 0 și B3_6 > 0 și  B3_7 > 0   
+si pentru B1_1#(2,15,22,30,42,46,34,36,52)  
+ 
+ 
+ERR  P 
+ 34B C1_33 Total scutire angajator 
+aferenta conditiilor speciale 
+de munca 
+N(15)  C1_33=0 (s-au desfiintat motivele de scutire) ERR  P 
+ 35 C1_T1 Total – Total venit realizat N(15)  C1_T1=C1_11+ C1_21+ C1_31 
+ 
+ERR  P 
+ 36 C1_T2 Total – Total bază de calcul 
+a contribuţiei la BASS 
+aferente indemnizatiei cf. 
+OUG. 158/2005 
+N(15)  C1_T2=C1_12+ C1_22+ C1_32 
+ 
+ERR  P 
+ 36B C1_T Total scutire angajator N(15)  C1_T=C1_13+C1_23+C1_33 ERR  P 
+ 37 C1_T3 Contribuţie CAS – 
+angajator 
+N(15)  CacasN= 0%, 
+C1_23=0 si C1_33=0 ( s-au desfiintat motivele de 
+scutire) 
+ 
+ 
+C1_T3=ROUND[  
+      (C1_21 + C1_22 –  
+ΣB2_6S – ΣB3_7S) * CacasD% + 
+      (C1_31 + C1_32 –  
+ΣB2_7S – ΣB3_7S) * CacasS%   
+ERR 
+C1_T3 difera de suma calculata +/- 
+5 lei 
+ 
+P 
+ 
+13 
+      ] 
+pentru B1_1#(2,15,22,30,42,46,34,36,52)  
+ 
+ 38 C1_5 Baza calcul punctaj somaj 
+tehnic beneficiare de 
+scutire 
+N(15)   
+C1_5=0 (pt.ca B4_2=∑B1_9=0) 
+ATT P 
+ 39b C1_7 Total sumă de recuperat, 
+aferentă lunii de raportare, 
+de către angajator, de la 
+casele teritoriale de pensii 
+din sumele prevăzute 
+pentru asigurarea pentru 
+accidente de muncă si boli 
+profesionale în bugetul 
+asigurărilor sociale  
+N(15)   C1_7 nu are formula  
+ 
+ 
+ P 
+         
+</angajatorC1> 
+      
+        <angajatorC2> 0-1 aparitii      
+ 40 C2_11 Rd1-Nr. Cazuri – 
+Incapacitate temporara 
+N(6)  C2_11=COUNT asigurat(D_9) 
+ daca asigurat (D_9) in 
+(01,02,03,04,05,51,06,12,13,14,16)  
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 41 C2_12 Rd1-Total zile prestatii – 
+Incapacitate temporara 
+N(5)  C2_12=Σasigurat (D_16)  
+ daca asigurat(D_9) in (01,02,03,04,05, 51,06, 
+12,13,14, 16)  si  C_1<>2 
+ERR : 
+ 
+S 
+ 42 C2_13 Rd1-Zile prestatii suportate 
+de angajator – Incapacitate 
+temporara 
+N(5)  C2_13=Σasigurat (D_14) 
+ daca asigurat (D_9) in (01,02,03,04,05, 
+51,06,12,13,14, 16) si  C_1<>2 
+ERR : 
+ 
+S 
+ 43 C2_14 Rd1-Zile prestatii suportate 
+din FNUASS – Incapacitate 
+temporara 
+N(5)  C2_14=Σasigurat(D_15) 
+ daca asigurat (D_9) in (01,02,03,04,05, 
+51,06,12,13,14, 16) si  C_1<>2 
+C2_12>= C2_14               corelatie dubla 
+ 
+ERR : 
+ 
+S 
+ 44 C2_15 Rd1-Suma suportată de 
+angajator – Incapacitate 
+temporara 
+N(15)  C2_15=Σasigurat (D_20) 
+ daca asigurat (D_9) in (01,02,03,04,05, 
+51,06,12,13,14, 16) 
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 45 C2_16 Rd1-Suma suportata de 
+FNUASS – Incapacitate 
+temporara 
+N(15)  C2_16=Σasigurat (D_21) 
+  daca asigurat (D_9) in (01,02,03,04,05, 
+51,06,12,13,14, 16) 
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 40a C2_111 Rd1.1-Nr. Cazuri – 
+Incapacitate temporara 
+urmare a unei boli 
+infectocontagioase pentru 
+care se impune  
+masura izolarii 
+N(6)  C2_111=COUNT asigurat(D_9) 
+ daca asigurat (C_1)<>2   si 
+[  
+(D_9=05 si D_12=35 si  (D_5<=02.11.2020 sau 
+D_5>=24.10.2023) )sau 
+(D_9=51  si D_5>=30.10.2020 ) 
+] 
+ 
+ERR : 
+ 
+S 
+ 41a C2_112 Rd1.1-Total zile prestatii – 
+Incapacitate temporara 
+urmare a unei boli 
+infectocontagioase pentru 
+care se impune  
+masura izolarii 
+N(5)  C2_112=Σasigurat (D_16)  
+daca asigurat (C_1)<>2   si 
+[  
+(D_9=05 si D_12=35 si  (D_5<=02.11.2020 sau 
+D_5>=24.10.2023))  
+sau 
+(D_9=51  si D_5>=30.10.2020 ) 
+] 
+ 
+ERR : 
+ 
+S 
+ 
+14 
+ 42a C2_113 Rd1.1-Zile prestatii 
+suportate de angajator – 
+Incapacitate temporara 
+urmare a unei boli 
+infectocontagioase pentru 
+care se impune  
+masura izolarii 
+N(5)  C2_113=Σasigurat (D_14) 
+ daca asigurat (C_1)<>2   si 
+[  
+(D_9=05 si D_12=35 si  (D_5<=02.11.2020 sau 
+D_5>=24.10.2023))  
+sau 
+(D_9=51  si D_5>=30.10.2020 ) 
+] 
+ 
+ERR : 
+ 
+S 
+ 43a C2_114 Rd1.1-Zile prestatii 
+suportate din FNUASS – 
+Incapacitate temporara 
+urmare a unei boli 
+infectocontagioase pentru 
+care se impune  
+masura izolarii 
+N(5)  C2_114=Σasigurat(D_15) 
+daca asigurat (C_1)<>2   si 
+[  
+(D_9=05 si D_12=35 si  (D_5<=02.11.2020 sau 
+D_5>=24.10.2023))  
+sau 
+(D_9=51  si D_5>=30.10.2020 ) 
+] 
+ 
+ 
+C2_112>= C2_114               corelatie dubla 
+ 
+ERR : 
+ 
+S 
+ 44a C2_115 Rd1.1-Suma suportată de 
+angajator – Incapacitate 
+temporara urmare a unei 
+boli infectocontagioase 
+pentru care se impune  
+masura izolarii 
+N(15)  C2_115=Σasigurat (D_20) 
+daca asigurat (C_1)<>2   si 
+[  
+(D_9=05 si D_12=35 si  (D_5<=02.11.2020 sau 
+D_5>=24.10.2023))  
+sau 
+(D_9=51  si D_5>=30.10.2020 ) 
+] 
+ 
+ERR : 
+ 
+S 
+ 45a C2_116 Rd1.1-Suma suportata de 
+FNUASS – Incapacitate 
+temporara urmare a unei 
+boli infectocontagioase 
+pentru care se impune  
+masura izolarii 
+N(15)  C2_116=Σasigurat (D_21) 
+daca asigurat (C_1)<>2   si 
+[  
+(D_9=05 si D_12=35 si  (D_5<=02.11.2020 sau 
+D_5>=24.10.2023))  
+sau 
+(D_9=51  si D_5>=30.10.2020 ) 
+] 
+ERR : 
+ 
+S 
+08.2025 40b C2_121 Rd1.2-Nr. Cazuri – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+55% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt.CM <=7zile 
+N(6)  C2_121=COUNT asigurat(D_9) 
+ daca asigurat (C_1)<>2   si D_28=55 
+ 
+ERR : 
+ 
+S 
+08.2025 41b C2_122 Rd1.2-Total zile prestatii – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+55% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+N(5)  C2_122=Σasigurat (D_16)  
+daca asigurat (C_1)<>2   si D_28=55 
+ERR : 
+ 
+S 
+ 
+15 
+pt.CM <=7zile 
+08.2025 42b C2_123 Rd1.2-Zile prestatii 
+suportate de angajator – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+55% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt.CM <=7zile 
+N(5)  C2_123=Σasigurat (D_14) 
+daca asigurat (C_1)<>2   si D_28=55 
+ERR : 
+ 
+S 
+08.2025 43b C2_124 Rd1.2-Zile prestatii 
+suportate din FNUASS – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+55% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt.CM <=7zile 
+N(5)  C2_124=Σasigurat(D_15) 
+daca asigurat (C_1)<>2   si D_28=55 
+ 
+C2_122>= C2_124               corelatie dubla 
+ERR : 
+ 
+S 
+08.2025 44b C2_125 Rd1.2-Suma suportată de 
+angajator – Incapacitate 
+temporara cauzată de boli 
+obişnuite sau de accidente 
+în afara muncii (cod 
+indemnizație 01-Boală 
+obişnuită) prin aplicarea 
+procentului de 55% asupra 
+bazei de calcul pentru 
+certificatele de concedii 
+medicale eliberate  
+pt.CM <=7zile 
+N(15)  C2_125=Σasigurat (D_20) 
+daca asigurat (C_1)<>2   si  D_28=55 
+ERR : 
+ 
+S 
+08.2025 45b C2_126 Rd1.2-Suma suportată 
+din FNUASS – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+55% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate  
+pt.CM <=7zile 
+ 
+N(15)  C2_125C2_126=Σasigurat (D_21) 
+daca asigurat (C_1)<>2   si D_28=55 
+ERR : 
+ 
+S 
+08.2025 40c C2_131 Rd1.3-Nr. Cazuri – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+65% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+N(6)  C2_131=COUNT asigurat(D_9) 
+ daca asigurat (C_1)<>2   si D_28=65 
+ 
+ERR : 
+ 
+S 
+ 
+16 
+pt. 8zile<=CM <=14zile 
+08.2025 41c C2_132 Rd1.3-Total zile prestatii – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+65% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt. 8zile<=CM <=14zile 
+N(5)  C2_132=Σasigurat (D_16)  
+daca asigurat (C_1)<>2   si D_28=65 
+ERR : 
+ 
+S 
+08.2025 42c C2_133 Rd1.3-Zile prestatii 
+suportate de angajator – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+65% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt. 8zile<=CM <=14zile 
+N(5)  C2_123 C2_133=Σasigurat (D_14) 
+daca asigurat (C_1)<>2   si D_28=65 
+ERR : 
+ 
+S 
+08.2025 43c C2_134 Rd1.3-Zile prestatii 
+suportate din FNUASS – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+65% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt. 8zile<=CM <=14zile 
+ 
+N(5)  C2_124 C2_134=Σasigurat(D_15) 
+daca asigurat (C_1)<>2   si D_28=65 
+ 
+C2_132>= C2_134               corelatie dubla 
+ERR : 
+ 
+S 
+08.2025 44c C2_135 Rd1.3-Suma suportată de 
+angajator – Incapacitate 
+temporara cauzată de boli 
+obişnuite sau de accidente 
+în afara muncii (cod 
+indemnizație 01-Boală 
+obişnuită) prin aplicarea 
+procentului de 65% asupra 
+bazei de calcul pentru 
+certificatele de concedii 
+medicale eliberate  
+pt. 8zile<=CM <=14zile  
+ 
+N(15)  C2_125 C2_135=Σasigurat (D_20) 
+daca asigurat (C_1)<>2   si  D_28=65 
+ERR : 
+ 
+S 
+08.2025 45c C2_136 Rd1.3-Suma suportată 
+din FNUASS – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+65% asupra bazei de calcul 
+pentru certificatele de 
+N(15)  C2_125 C2_136=Σasigurat (D_21) 
+daca asigurat (C_1)<>2   si D_28=65 
+ERR : 
+ 
+S 
+ 
+17 
+concedii medicale eliberate  
+pt. 8zile<=CM <=14zile 
+08.2025 40d C2_141 Rd1.4-Nr. Cazuri – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+75% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt. CM >=15zile 
+N(6)  C2_141=COUNT asigurat(D_9) 
+ daca asigurat (C_1)<>2   si D_28=75 
+ 
+ERR : 
+ 
+S 
+08.2025 41d C2_142 Rd1.4-Total zile prestatii – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+75% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt. CM >=15zile 
+ 
+N(5)  C2_142=Σasigurat (D_16)  
+daca asigurat (C_1)<>2   si D_28=75 
+ERR : 
+ 
+S 
+08.2025 42d C2_143 Rd1.4-Zile prestatii 
+suportate de angajator – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+75% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt. CM >=15zile 
+N(5)  C2_143=Σasigurat (D_14) 
+daca asigurat (C_1)<>2   si D_28=75 
+ERR : 
+ 
+S 
+08.2025 43d C2_144 Rd1.4-Zile prestatii 
+suportate din FNUASS – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+75% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt. CM >=15zile 
+N(5)  C2_144=Σasigurat(D_15) 
+daca asigurat (C_1)<>2   si D_28=75 
+ 
+C2_142>= C2_144               corelatie dubla 
+ERR : 
+ 
+S 
+08.2025 44d C2_145 Rd1.4-Suma suportată de 
+angajator – Incapacitate 
+temporara cauzată de boli 
+obişnuite sau de accidente 
+în afara muncii (cod 
+indemnizație 01-Boală 
+obişnuită) prin aplicarea 
+procentului de 75% asupra 
+bazei de calcul pentru 
+certificatele de concedii 
+N(15)  C2_145=Σasigurat (D_20) 
+daca asigurat (C_1)<>2   si  D_28=75 
+ERR : 
+ 
+S 
+ 
+18 
+medicale eliberate  
+pt. CM >=15zile  
+ 
+08.2025 45d C2_146 Rd1.4-Suma suportată 
+din FNUASS – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+75% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate  
+pt. CM >=15zile 
+N(15)  C2_146=Σasigurat (D_21) 
+daca asigurat (C_1)<>2   si D_28=75 
+ERR : 
+ 
+S 
+ 46 C2_21 Rd2-Nr. Cazuri – Prevenire 
+imbolnavire 
+N(6)  C2_21=COUNT asigurat (D_9) 
+ daca asigurat (D_9) in (07,10) ) 
+si  C_1<>2 
+ERR 
+ 
+S 
+ 47 C2_22 Rd2-Total zile prestatii – 
+Prevenire imbolnavire 
+N(5)  C2_22=Σasigurat (D_16) 
+ daca asigurat (D_9) in (07,10) 
+si  C_1<>2 
+ERR  S 
+ 47a C2_23 Rd2-Zile prestatii suportate 
+de angajator – Prevenire 
+imbolnavire 
+N(5)  C2_23=Σasigurat (D_14) 
+ daca (D_9=07,10 si  C_1#2 ) 
+ERR  S 
+ 48 C2_24 Rd2-Zile prestatii suportate 
+din FNUASS – Prevenire 
+imbolnavire 
+N(5)  C2_24=Σasigurat (D_15) 
+ daca D_9=07,10 si  C_1#2 
+C2_22= C2_24+C2_23         corelatie dubla     
+ 
+ 
+ERR  S 
+ 48a C2_25 Rd2-Suma suportată de 
+angajator – Prevenire 
+imbolnavire 
+N(15)  C2_25=Σasigurat (D_20) 
+ daca ( D_9=07,10 si  C_1#2) 
+ERR  S 
+ 49 C2_26 Rd2-Suma suportata de 
+FNUASS – Prevenire 
+imbolnavire 
+N(15)  C2_26=Σasigurat (D_21) 
+daca D_9=07,10 si  C_1#2 
+ 
+ERR  S 
+ 49a C2_211 Rd2.2-Nr. Cazuri – 
+Prevenire imbolnavire – 
+carantina 
+N(6)  C2_211=COUNT asigurat (D_9) 
+ daca asigurat (D_9) in (07)  
+si  C_1<>2 
+ERR 
+ 
+S 
+ 49b C2_212 Rd2.2-Total zile prestatii – 
+Prevenire imbolnavire – 
+carantina 
+N(5)  C2_212=Σasigurat (D_16) 
+ daca asigurat (D_9) in (07) 
+si  C_1<>2 
+ERR  S 
+ 49c C2_213 Rd2.2-Zile prestatii 
+suportate de angajator – 
+Prevenire imbolnavire – 
+carantina 
+N(5)  C2_213=Σasigurat (D_14) 
+ daca (D_9=07 si  C_1#2 ) 
+ERR  S 
+ 49d C2_214 Rd2.2-Zile prestatii 
+suportate din FNUASS – 
+Prevenire imbolnavire – 
+carantina 
+N(5)  C2_214=Σasigurat (D_15) 
+ daca D_9=07 si  C_1#2 
+C2_212= C2_214+C2_213         corelatie dubla     
+ERR  S 
+ 49e C2_215 Rd2.2-Suma suportată de 
+angajator – Prevenire 
+imbolnavire – carantina 
+N(15)  C2_215=Σasigurat (D_20) 
+ daca ( D_9=07 si  C_1#2) 
+ERR  S 
+ 49f C2_216 Rd2.2-Suma suportata de 
+FNUASS – Prevenire 
+imbolnavire – carantina 
+N(15)  C2_216=Σasigurat (D_21) 
+daca D_9=07 si  C_1#2 
+ 
+ERR  S 
+ 50 C2_31 Rd.3-Nr. Cazuri – Sarcina 
+si lauzie 
+N(6)  C2_31=COUNTasigurat (D_9) 
+daca asigurat (D_9) =08 ) 
+si  C_1<>2 
+ERR  S 
+ 
+19 
+ 51 C2_32 Rd.3-Total zile prestatii – 
+Sarcina si lauzie 
+N(5)  C2_32=Σasigurat (D_16) 
+ daca asigurat (D_9)=08 
+si  C_1<>2 
+ERR  S 
+ 52 C2_34 Rd.3-Zile prestatii suportate 
+din FNUASS – Sarcina si 
+lauzie 
+N(5)  C2_34=Σasigurat (D_15) 
+ daca asigurat (D_9) =08 si  C_1<>2 
+C2_34=C2_32                 corelatie dubla 
+ 
+ERR : 
+ 
+S 
+ 53 C2_36 Rd.3-Suma suportata de 
+FNUASS – Sarcina si 
+lauzie 
+N(15)  C2_36=Σasigurat (D_21) 
+ daca asigurat (D_9)=08  
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 54 C2_41 Rd.4-Nr. Cazuri – Ingrijire 
+copil bolnav 
+N(6)  C2_41=COUNT asigurat (D_9) 
+ daca asigurat (D_9) = (09,91,92) 
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 54a C2_41a Rd.4.1-Nr. Cazuri – Ingrijire 
+pacient cu afectiuni 
+oncologice 
+N(6)  C2_41=COUNT asigurat (D_9) 
+ daca asigurat (D_9) = (17) 
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 55 C2_42 Rd.4-Total zile prestatii – 
+Ingrijire copil bolnav 
+N(5)  C2_42=Σasigurat (D_16) 
+ daca asigurat (D_9) = (09,91,92) 
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 55a C2_42a Rd.4.1-Total zile prestatii – 
+Ingrijire pacient cu afectiuni 
+oncologice 
+N(5)  C2_42=Σasigurat (D_16) 
+ daca asigurat (D_9) = (17) 
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 56 C2_44 Rd.4-Zile prestatii suportate 
+din FNUASS – Ingrijire 
+copil bolnav 
+N(5)  C2_44=Σasigurat (D_15)  
+ daca asigurat (D_9) = (09,91,92) si  C_1<>2 
+C2_44=C2_42       corelatie dubla 
+ 
+ERR : 
+ 
+S 
+ 56a C2_44a Rd.4.1-Zile prestatii 
+suportate din FNUASS – 
+Ingrijire pacient cu afectiuni 
+oncologice 
+N(5)  C2_44=Σasigurat (D_15)  
+ daca asigurat (D_9) = (17) si  C_1<>2 
+C2_44=C2_42       corelatie dubla 
+ 
+ERR : 
+ 
+S 
+ 57 C2_46 Rd.4-Suma suportata de 
+FNUASS – Ingrijire copil 
+bolnav 
+N(15)  C2_46=Σasigurat (D_21) 
+ daca asigurat (D_9) = (09,91,92) 
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 57a C2_46a Rd.4.1-Suma suportata de 
+FNUASS – Ingrijire pacient 
+cu afectiuni oncologice 
+N(15)  C2_46=Σasigurat (D_21) 
+ daca asigurat (D_9) = (17) 
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 58 C2_51 Rd.5-Nr. Cazuri – Risc 
+maternal 
+N(6)  C2_51=COUNT asigurat (D_9) 
+ daca asigurat (D_9)=15  
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 59 C2_52 Rd.5-Total zile prestatii – 
+Risc maternal 
+N(5)  C2_52=Σasigurat (D_16)  
+ daca asigurat (D_9)=15 
+si  C_1<>2 
+ERR : 
+ 
+S 
+ 60 C2_54 Rd.5-Zile prestatii suportate 
+din FNUASS – Risc 
+maternal 
+N(5)  C2_54=Σasigurat (D_15)  
+ daca asigurat (D_9)=15 si  C_1<>2 
+C2_54=C2_52          corelatie dubla 
+ 
+ERR : 
+ 
+S 
+ 61 C2_56 Rd.5-Suma suportata de 
+FNUASS – Risc maternal 
+N(15)  C2_56=Σasigurat (D_21) 
+ daca asigurat (D_9)=15  
+si  C_1<>2 
+ERR  S 
+ 63 C2_T6 Rd.6-Total – Suma 
+suportată de angajator 
+FNUASS 
+N(15)  C2_T6=C2_16 + C2_26 + C2_36 + C2_46 + C2_56  + 
+C2_46a   
+ 
+ERR : 
+ 
+S 
+ 67 C2_10 Rd.7-Total cuantum 
+prestatii de suportat din 
+bugetul FNUASS pentru 
+concedii si indemnizatii 
+N(15)  C2_10=C2_T6 ERR :  
+ 
+S 
+ 
+20 
+ 70° C2_140 Rd.8-Total sumă de 
+recuperat de la FNUASS 
+pentru concedii şi 
+indemnizaţiil 
+N(15)  C2_140=C2_10   
+         
+</angajatorC2> 
+      
+        <angajatorC3> 0-1 aparitii      
+ 71 C3_11 Rd1-Numar cazuri – 
+Incapacitate temporara 
+N(6)     P 
+ 72 C3_12 Rd1-Zile prestații – 
+Incapacitate temporara 
+N(5)     P 
+ 73 C3_13 Rd1-Sumã totala accidente 
+de munca si boli 
+profesionale 
+N(15)    P 
+ 74 C3_14 Rd1-Sumã suportatã din 
+sumele prevăzute pentru 
+asigurarea pentru 
+accidente de muncă și boli 
+profesionale BAS – 
+Incapacitate temporara 
+N(15)   cu C3_14<=C3_13  P 
+ 75 C3_21 Rd2-Numar cazuri – 
+Trecerea la alt loc de 
+munca 
+N(6)    P 
+ 76 C3_22 Rd2-Zile prestații – 
+Trecerea la alt loc de 
+munca 
+N(5)    P 
+ 77 C3_23 Rd2-Sumã totala accidente 
+de munca si boli 
+profesionale –  
+ Trecerea la alt loc de 
+munca 
+N(15)    P 
+ 78 C3_24 Rd2-Sumã suportatã din 
+sumele prevăzute pentru 
+asigurarea pentru 
+accidente de muncă și boli 
+profesionale BAS – 
+Trecerea la alt loc de 
+munca 
+N(15)   cu C3_24<=C3_23  P 
+ 79 C3_31 Rd3-Numar cazuri – 
+Reducerea timpului de 
+lucru 
+N(6)    P 
+ 80 C3_32 Rd3-Zile prestații – 
+Reducerea timpului de 
+lucru 
+N(5)    P 
+ 81 C3_33 Rd3-Sumã totala accidente 
+de munca si boli 
+profesionale -  Reducerea 
+timpului de lucru 
+N(15)    P 
+ 82 C3_34 Rd3-Sumã suportatã din 
+sumele prevăzute pentru 
+asigurarea pentru 
+accidente de muncă și boli 
+profesionale BAS – 
+Reducerea timpului de 
+lucru 
+N(15)   cu C3_34<=C3_33  P 
+ 83 C3_41 Rd4-Numar cazuri – 
+Cursuri de 
+calificare/reconversie 
+N(6)    P 
+ 84 C3_42 Rd4-Zile prestații –  
+Cursuri de 
+N(5)    P 
+ 
+21 
+calificare/reconversie 
+ 85 C3_43 Rd4-Sumã totala accidente 
+de munca si boli 
+profesionale – Cursuri de 
+calificare/reconversie 
+N(15)    P 
+ 86 C3_44 Rd4-Sumã suportatã din 
+sumele prevăzute pentru 
+asigurarea pentru 
+accidente de muncă și boli 
+profesionale in BAS – 
+Cursuri de 
+calificare/reconversie 
+N(15) - 
+  cu C3_44<=C3_43  P 
+ 87 C3_total Rd5-Total – Sumã totala 
+accidente de munca si boli 
+profesionale  
+N(15)  C3_total=C3_13+ C3_23+ C3_33+ C3_43  
+C3_total=Σ asigurat (B3_9 + B3_10)    corelatie dubla 
+ 
+ P 
+ 88 C3_suma Rd5-Total – Sumã 
+suportatã din sumele 
+prevăzute pentru 
+asigurarea pentru 
+accidente de muncă și boli 
+profesionale in BAS  
+N(15)  C3_suma=C3_14+ C3_24+ C3_34+ C3_44  
+C3_suma=Σ asigurat (B3_9)          
+ corelatie dubla  
+ 
+ P 
+         
+</angajatorC3> 
+      
+         
+<angajatorC4> 
+0-1 aparitii      
+08.2025 91.a C4_baza Baza de calcul CAM  N(15) DA C4_baza =Σasigurat ( A_5 + B4_14 + C_29) – C5_baza 
+ 
+ATT – C4_baza difera de suma 
+calculata 
+ 
+ 91.b C4_ct Valoare CAM  N(15) DA C4_ct =Round(C4_baza * pCAM) 
+Unde : 
+pCAM=2.25%  
+ATT – C4_ct difera de suma 
+calculata 
+ 
+         
+</angajatorC4> 
+      
+         
+<angajatorC5> 
+0-1 aparitii      
+ 91.c C5_baza 
+Nu se mai 
+foloseste din 
+08/2022 
+Baza de calcul CAM 
+constructii 
+N(15) DA C5_baza =Σasigurat ( A_5f + B4_14f) daca caenC#null 
+ 
+ATT – C5_baza difera de suma 
+calculata 
+ 
+ 91.d C5_ct 
+Nu se mai 
+foloseste din 
+08/2022 
+Valoare CAM scutiti 
+In constructii 
+N(15) DA C5_ct =Round(C5_baza * pCAM) daca caenC#null 
+Unde : pCAM=2.25% 
+ 
+pCAM=2.25% pentru bifa_AgCon=1  
+sau 
+pCAM=0.27% pentru bifa_AgCon=2   si per=  
+06/2022 
+sau 
+pCAM=2.25% pentru bifa_AgCon=2   si 
+per>=07/2022 
+ 
+ATT – C5_ct difera de suma 
+calculata 
+ 
+         
+</angajatorC5> 
+      
+         <angajatorD> 0-1 aparitii      
+ 100 D2 Număr de asigurati 
+(concedii si indemnizatii ) 
+N(6)  D2 = COUNT (asiguratC (cnpAsig))   
+pentru asigCI=1 si  asigurat (C_1)=2,11 si 
+asigurat(C_8+C_4)>0 
+ 
+ S 
+03.2025 101 D3 Număr de asiguraţi pentru 
+care angajatorul datorează 
+N(5)  D3=COUNT (asiguratC(cnp_asig) pt. 
+C_1=(2,10,13,14,15,17,30,38) si C_11>0 si 
+ P 
+ 
+22 
+CAS cu conditia ca sa nu existe asiguratA sau asiguratB 
+pt.acel cnp_asig 
+  </angajatorD>       
+        <angajatorE1> 0-1 aparitii      
+03.2025 103 E1_venit Total venit realizat – in 
+conditii de munca normale 
+N(15)  E1_venit= Σ C_19 
+pt. C_1=(2,13,14,15,17,30,38) 
+ 
+ 
+ 
+ERR P 
+ 104 E1_baza Total bază de calcul a 
+contribuţiei la BASS 
+aferente indemnizatiei cf. 
+OUG. 158/2005 – in conditii 
+de munca normale 
+N(15)  E1_baza= ( Σ C_10 pt.C_1=10)  +  
+                 (Σ D_20 +Σ D_21 pt.C_1=2) 
+ERR P 
+         
+</angajatorE1> 
+      
+        <angajatorE2> 0-1 aparitii      
+ 106 E2_11 Rd.1-Nr. Cazuri – 
+Incapacitate temporara 
+N(6)  E2_11=COUNT asigurat (D_9) 
+ daca asigurat (D_9) in (01,02,03,04,05, 
+51,06,12,13,14,16) )  si  asigurat (C_1) = 2 
+ 
+ERR : 
+Numar cazuri- mod de calcul eronat 
+S 
+ 107 E2_12 Rd.1-Total zile prestatii – 
+Incapacitate temporara 
+N(5)  E2_12=Σ asigurat (D_16) 
+ daca asigurat (D_9) in (01,02,03,04,05, 
+51,06,12,13,14, 16)  si  asigurat (C_1) = 2  
+ERR : 
+Total zile prestatii incapacitate 
+temporara de munca –mod de calcul 
+eronat 
+S 
+ 108 E2_14 Rd.1-Zile prestatii suportate 
+din FNUASS – Incapacitate 
+temporara 
+N(5)  E2_14=Σ asigurat (D_15) 
+ daca asigurat (D_9) in (01,02,03,04,05, 
+51,06,12,13,14, 16)  si    asigurat (C_1) = 2 
+E2_14=E2_12              corelatie dubla 
+ 
+ERR : 
+Numar zile prestatii suportate din 
+FNUASS –mod de calcu leronat 
+S 
+ 109 E2_16 Rd.1-Suma suportata de 
+FNUASS – Incapacitate 
+temporara 
+N(15)  E2_16=Σ asigurat (D_21) 
+  daca asigurat  (D_9)  in (01,02,03,04,05, 
+51,06,12,13,14, 16)  si  asigurat (C_1) = 2  
+ERR : 
+Suma suportata din FNUASS pentru 
+incapacitate temporara de munca 
+–mod de calcul eronat 
+S 
+ 106a E2_111 Rd.1.1-Nr. Cazuri – 
+Incapacitate temporara 
+urmare a unei boli 
+infectocontagioase 
+pentru care se impune 
+masura izolarii 
+N(6)   
+E2_111=COUNT asigurat(D_9) 
+ daca asigurat (C_1)=2   si 
+[  
+(D_9=05 si D_12=35 si  (D_5<=02.11.2020 sau 
+D_5>=24.10.2023))  
+sau 
+(D_9=51  si D_5>=30.10.2020 ) 
+] 
+ERR : 
+Numar cazuri- mod de calcul eronat 
+S 
+ 107a E2_112 Rd.1.1-Total zile prestatii – 
+Incapacitate temporara 
+urmare a unei boli 
+infectocontagioase 
+pentru care se impune 
+masura izolarii 
+N(5)   
+C2_111=COUNT asigurat(D_16) 
+ daca asigurat (C_1)=2   si 
+[  
+(D_9=05 si D_12=35 si  (D_5<=02.11.2020 sau 
+D_5>=24.10.2023))  
+sau 
+(D_9=51  si D_5>=30.10.2020 ) 
+] 
+ERR : 
+Total zile prestatii incapacitate 
+temporara de munca –mod de calcul 
+eronat 
+S 
+ 108a E2_114 Rd.1.1-Zile prestatii 
+suportate din FNUASS – 
+Incapacitate temporara 
+urmare a unei boli 
+infectocontagioase 
+pentru care se impune 
+masura izolarii 
+N(5)   
+E2_114=COUNT asigurat(D_15) 
+ daca asigurat (C_1)=2   si 
+[  
+(D_9=05 si D_12=35 si  (D_5<=02.11.2020 sau 
+D_5>=24.10.2023))  
+sau 
+(D_9=51  si D_5>=30.10.2020 ) 
+ERR : 
+Numar zile prestatii suportate din 
+FNUASS –mod de calcu leronat 
+S 
+ 
+23 
+] 
+          corelatie dubla 
+ 
+ 109a E2_116 Rd.1.1-Suma suportata de 
+FNUASS – Incapacitate 
+temporara urmare a unei 
+boli infectocontagioase 
+pentru care se impune 
+masura izolarii 
+N(15)   
+E2_116=COUNT asigurat(D_21) 
+ daca asigurat (C_1)=2   si 
+[  
+(D_9=05 si D_12=35 si  (D_5<=02.11.2020 sau 
+D_5>=24.10.2023))  
+sau 
+(D_9=51  si D_5>=30.10.2020 ) 
+] 
+ERR : 
+Suma suportata din FNUASS pentru 
+incapacitate temporara de munca 
+–mod de calcul eronat 
+S 
+08.2025 106b E2_121 Rd1.2-Nr. Cazuri – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+55% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt.CM <=7zile 
+N(6)  E2_121=COUNT asigurat (D_9) 
+ daca asigurat (C_1)=2   si D_28=55 
+ 
+ERR 
+Numar cazuri prevenire 
+imbolnavire–mod de calcul eronat 
+S 
+08.2025 107b E2_122 Rd1.2-Total zile prestatii – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+55% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt.CM <=7zile 
+N(5)  E2_122=Σ asigurat  (D_16) 
+ daca asigurat (C_1)=2   si D_28=55 
+ERR : 
+Total zile prestatii prevenire 
+imbolnavire–mod de calcul eronat 
+S 
+08.2025 108b E2_124 Rd.1.2-Zile prestatii 
+suportate din FNUASS – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+55% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt.CM <=7zile 
+N(5)  E2_124=Σ asigurat  (D_15) 
+ daca asigurat (C_1)=2   si D_28=55 
+ 
+E2_124=E2_122                   corelatie dubla 
+ERR : 
+Zile prestatii suportate din FNUASS 
+prevenire imbolnavire–mod de calcul 
+eronat 
+S 
+08.2025 109b E2_126 Rd.1.2-Suma suportata de 
+FNUASS – Incapacitate 
+temporara cauzată de boli 
+obişnuite sau de accidente 
+în afara muncii (cod 
+indemnizație 01-Boală 
+obişnuită) prin aplicarea 
+procentului de 55% asupra 
+bazei de calcul pentru 
+certificatele de concedii 
+medicale eliberate  
+pt.CM <=7zile 
+N(15)  E2_126=Σ asigurat (D_21)  
+daca asigurat (C_1)=2   si D_28=55 
+ERR ; 
+Suma suportata de FNUASS 
+prevenire imbolnavire–mod de calcul 
+eronat 
+S 
+08.2025 106c E2_131 Rd1.3-Nr. Cazuri – 
+Incapacitate temporara 
+N(6)  E2_131=COUNT asigurat (D_9) 
+ daca asigurat (C_1)=2   si D_28=65 
+ERR 
+Numar cazuri prevenire 
+S 
+ 
+24 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+65% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt.8zile<=CM <=14zile 
+ imbolnavire–mod de calcul eronat 
+08.2025 107c E2_132 Rd1.3-Total zile prestatii – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+65% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt.8zile<=CM <=14zile 
+N(5)  E2_132=Σ asigurat  (D_16) 
+ daca asigurat (C_1)=2   si D_28=65 
+ERR : 
+Total zile prestatii prevenire 
+imbolnavire–mod de calcul eronat 
+S 
+08.2025 108c E2_134 Rd.1.3-Zile prestatii 
+suportate din FNUASS – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+65% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt.8zile<=CM <=14zile 
+N(5)  E2_134=Σ asigurat  (D_15) 
+ daca asigurat (C_1)=2   si D_28=65 
+ 
+E2_134=E2_132                   corelatie dubla 
+ERR : 
+Zile prestatii suportate din FNUASS 
+prevenire imbolnavire–mod de calcul 
+eronat 
+S 
+08.2025 109c E2_136 Rd.1.3-Suma suportata de 
+FNUASS – Incapacitate 
+temporara cauzată de boli 
+obişnuite sau de accidente 
+în afara muncii (cod 
+indemnizație 01-Boală 
+obişnuită) prin aplicarea 
+procentului de 65% asupra 
+bazei de calcul pentru 
+certificatele de concedii 
+medicale eliberate  
+pt.8zile<=CM <=14zile 
+N(15)  E2_136=Σ asigurat (D_21)  
+daca asigurat (C_1)=2   si D_28=65 
+ERR ; 
+Suma suportata de FNUASS 
+prevenire imbolnavire–mod de calcul 
+eronat 
+S 
+08.2025 106d E2_141 Rd1.4-Nr. Cazuri – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+75% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt. CM <=15zile 
+N(6)  E2_141=COUNT asigurat (D_9) 
+ daca asigurat (C_1)=2   si D_28=75 
+ 
+ERR 
+Numar cazuri prevenire 
+imbolnavire–mod de calcul eronat 
+S 
+08.2025 107d E2_142 Rd1.4-Total zile prestatii – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+N(5)  E2_142=Σ asigurat  (D_16) 
+ daca asigurat (C_1)=2   si D_28=75 
+ERR : 
+Total zile prestatii prevenire 
+imbolnavire–mod de calcul eronat 
+S 
+ 
+25 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+75% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt. CM <=15zile 
+08.2025 108d E2_144 Rd.1.4-Zile prestatii 
+suportate din FNUASS – 
+Incapacitate temporara 
+cauzată de boli obişnuite 
+sau de accidente în afara 
+muncii (cod indemnizație 
+01-Boală obişnuită) prin 
+aplicarea procentului de 
+75% asupra bazei de calcul 
+pentru certificatele de 
+concedii medicale eliberate 
+pt. CM <=15zile 
+N(5)  E2_144=Σ asigurat  (D_15) 
+ daca asigurat (C_1)=2   si D_28=75 
+ 
+E2_144=E2_142                   corelatie dubla 
+ERR : 
+Zile prestatii suportate din FNUASS 
+prevenire imbolnavire–mod de calcul 
+eronat 
+S 
+08.2025 109d E2_146 Rd.1.4-Suma suportata de 
+FNUASS – Incapacitate 
+temporara cauzată de boli 
+obişnuite sau de accidente 
+în afara muncii (cod 
+indemnizație 01-Boală 
+obişnuită) prin aplicarea 
+procentului de 75% asupra 
+bazei de calcul pentru 
+certificatele de concedii 
+medicale eliberate  
+pt. CM <=15zile 
+N(15)  E2_146=Σ asigurat (D_21)  
+daca asigurat (C_1)=2   si D_28=75 
+ERR ; 
+Suma suportata de FNUASS 
+prevenire imbolnavire–mod de calcul 
+eronat 
+S 
+ 110 E2_21 Rd.2-Nr. Cazuri – Prevenire 
+imbolnavire 
+N(6)  E2_21=COUNT asigurat (D_9) 
+ daca asigurat (D_9) in (07,10) ) si asigurat (C_1)= 2  
+ERR 
+Numar cazuri prevenire 
+imbolnavire–mod de calcul eronat 
+S 
+ 111 E2_22 Rd.2-Total zile prestatii – 
+Prevenire imbolnavire 
+N(5)  E2_22=Σ asigurat  (D_16) 
+ daca asigurat (D_9) in (07,10) si asigurat (C_1) = 2  
+ERR : 
+Total zile prestatii prevenire 
+imbolnavire–mod de calcul eronat 
+S 
+ 112 E2_24 Rd.2-Zile prestatii suportate 
+din FNUASS – Prevenire 
+imbolnavire 
+N(5)  E2_24=Σ asigurat  (D_15) 
+ daca asigurat (D_9) in (07,10)  si asigurat (C_1) = 2 
+E2_24=E2_22                   corelatie dubla 
+ERR : 
+Zile prestatii suportate din FNUASS 
+prevenire imbolnavire–mod de calcul 
+eronat 
+S 
+ 113 E2_26 Rd.2-Suma suportata de 
+FNUASS – Prevenire 
+imbolnavire 
+N(15)  E2_26=Σ asigurat (D_21) daca asigurat (D_9) in (07,10) 
+si daca asigurat (C_1) = 2 
+ERR ; 
+Suma suportata de FNUASS 
+prevenire imbolnavire–mod de calcul 
+eronat 
+S 
+ 110a E2_211 Rd.2.1-Nr. Cazuri – 
+Prevenire imbolnavire – 
+carantina 
+N(6)  E2_211=COUNT asigurat (D_9) 
+ daca asigurat (D_9) in (07)  si asigurat (C_1)= 2  
+ERR 
+Numar cazuri prevenire 
+imbolnavire–mod de calcul eronat 
+S 
+ 111a E2_212 Rd.2.1-Total zile prestatii – 
+Prevenire imbolnavire – 
+carantina 
+N(6)  E2_212=Σ asigurat  (D_16) 
+ daca asigurat (D_9) in (07) si asigurat (C_1) = 2  
+ERR : 
+Total zile prestatii prevenire 
+imbolnavire–mod de calcul eronat 
+S 
+ 112a E2_214 Rd.2.1-Zile prestatii 
+suportate din FNUASS – 
+Prevenire imbolnavire – 
+carantina 
+N(6)  E2_214=Σ asigurat  (D_15) 
+ daca asigurat (D_9) in (07)  si asigurat (C_1) = 2 
+E2_214=E2_212                   corelatie dubla 
+ERR : 
+Zile prestatii suportate din FNUASS 
+prevenire imbolnavire–mod de calcul 
+eronat 
+S 
+ 113a E2_216 Rd.2.1-Suma suportata de 
+FNUASS – Prevenire 
+imbolnavire – carantina 
+N(15)  E2_216=Σ asigurat (D_21)  
+daca asigurat (D_9) in (07) si asigurat (C_1) = 2 
+ERR ; 
+Suma suportata de FNUASS 
+prevenire imbolnavire–mod de calcul 
+eronat 
+S 
+ 114 E2_31 Rd.3-Nr. Cazuri – Sarcina 
+si lauzie 
+N(6)  E2_31=COUNT asigurat (D_9) 
+ daca asigurat (D_9) =08 si asigurat (C_1)= 2 
+ERR : 
+Nr. Cazuri – Sarcina si lauzie–mod 
+S 
+ 
+26 
+de calcul eronat 
+ 115 E2_32 Rd.3-Total zile prestatii – 
+Sarcina si lauzie 
+N(5)  E2_32=Σ asigurat (D_16) 
+ daca asigurat (D_9)=08 si asigurat (C_1) = 2 
+ERR : 
+Total zile prestatii – sarcina si lauzie 
+–mod de calcul eronat 
+S 
+ 116 E2_34 Rd.3-Zile prestatii suportate 
+din FNUASS – Sarcina si 
+lauzie 
+N(5)  E2_34=Σ asigurat (D_15) 
+ daca asigurat (D_9)=08 si asigurat (C_1)= 2 
+E2_34=E2_32                    corelatie dubla   
+ 
+ERR : 
+Zile prestatii suportate din FNUASS 
+– sarcina si lauzie 
+–mod de calcul eronat 
+S 
+ 117 E2_36 Rd.3-Suma suportata de 
+FNUASS – Sarcina si 
+lauzie 
+N(15)  E2_36=Σ asigurat (D_21) 
+ daca asigurat (D_9)=08 si asigurat (C_1) = 2 
+ERR : 
+Suma suportata din FNUASS – 
+sarcina si lauzie–mod de calcul 
+eronat 
+S 
+ 118 E2_41 Rd.4-Nr. Cazuri – Ingrijire 
+copil bolnav 
+N(6)  E2_41=COUNT asigurat (D_9) 
+ daca asigurat (D_9) = (09,91,92) si asigurat (C_1) = 2  
+ERR : 
+Numar cazuri ingrijire copil bolnav–
+mod de calcul eronat 
+S 
+ 118a E2_41a Rd.4.1-Nr. Cazuri – Ingrijire 
+pacient cu afectiuni 
+oncologice 
+N(6)  E2_41=COUNT asigurat (D_9) 
+ daca asigurat (D_9) = (17) si asigurat (C_1) = 2  
+ERR : 
+Numar cazuri ingrijire copil bolnav–
+mod de calcul eronat 
+S 
+ 119 E2_42 Rd.4-Total zile prestatii – 
+Ingrijire copil bolnav 
+N(5)  E2_42=Σ asigurat (D_16) 
+ daca asigurat (D_9) = (09,91,92) si asigurat (C_1) = 2 
+ERR : 
+Total zile prestatii ingrijire copil 
+bolnav–mod de calcul eronat 
+S 
+ 119a E2_42a Rd.4.1-Total zile prestatii – 
+Ingrijire pacient cu afectiuni 
+oncologice 
+N(5)  E2_42=Σ asigurat (D_16) 
+ daca asigurat (D_9) = (17) si asigurat (C_1) = 2 
+ERR : 
+Total zile prestatii ingrijire copil 
+bolnav–mod de calcul eronat 
+S 
+ 120 E2_44 Rd.4-Zile prestatii suportate 
+din FNUASS – Ingrijire 
+copil bolnav 
+N(5)  E2_44=Σ asigurat (D_15) 
+ daca asigurat (D_9) = (09,91,92) si asigurat (C_1) = 2 
+E2_44=E2_42                    corelatie dubla 
+ERR : 
+Zile prestatii suportate din FNUASS 
+ingrijire copil bolnav–mod de calcul 
+eronat 
+S 
+ 120a E2_44a Rd.4.1-Zile prestatii 
+suportate din FNUASS – 
+Ingrijire pacient cu afectiuni 
+oncologice 
+N(5)  E2_44=Σ asigurat (D_15) 
+ daca asigurat (D_9) = (17) si asigurat (C_1) = 2 
+E2_44=E2_42                    corelatie dubla 
+ERR : 
+Zile prestatii suportate din FNUASS 
+ingrijire copil bolnav–mod de calcul 
+eronat 
+S 
+ 121 E2_46 Rd.4-Suma suportata de 
+FNUASS – Ingrijire copil 
+bolnav 
+N(15)  E2_46=Σ asigurat (D_21) 
+ daca asigurat (D_9) = (09,91,92) si asigurat (C_1) = 2 
+ERR : 
+Suma suportata din FNUASS 
+ingrijire copil bolnav–mod de calcul 
+eronat 
+S 
+ 121a E2_46a Rd.4.1-Suma suportata de 
+FNUASS – Ingrijire pacient 
+cu afectiuni oncologice 
+N(15)  E2_46=Σ asigurat (D_21) 
+ daca asigurat (D_9) = (17) si asigurat (C_1) = 2 
+ERR : 
+Suma suportata din FNUASS 
+ingrijire copil bolnav–mod de calcul 
+eronat 
+S 
+ 122 E2_51 Rd.5-Nr. Cazuri – Risc 
+maternal 
+N(6)  E2_51=COUNT asigurat (D_9) 
+ Daca asigurat (D_9)=15 si asigurat (C_1) = 2 
+ERR : 
+Numar cazuri risc maternal–mod de 
+calcul eronat 
+S 
+ 123 E2_52 Rd.5-Total zile prestatii – 
+Risc maternal 
+N(5)  E2_52=Σ asigurat (D_16)  
+daca asigurat (D_9)=15 si asigurat (C_1) = 2 
+ERR : 
+Total zile prestatii risc maternal–mod 
+de calcul eronat 
+S 
+ 124 E2_54 Rd.5-Zile prestatii suportate 
+din FNUASS – Risc 
+maternal 
+N(5)  E2_54=Σ asigurat  (D_15) 
+ daca asigurat (D_9)=15 si asigurat (C_1) = 2 
+E2_54=E2_52                 corelatie dubla 
+ERR : 
+Zile prestatii suportate din FNUASS 
+risc maternal–mod de calcul eronat 
+S 
+ 125 E2_56 Rd.5-Suma suportata de 
+FNUASS – Risc maternal 
+N(15)  E2_56=Σ asigurat (D_21) 
+ daca asigurat (D_9)=15 si asigurat (C_1) = 2 
+ERR : 
+Suma suportata din FNUASS risc 
+material–mod de calcul eronat 
+S 
+ 126 E2_66 Rd.6-Total – Suma 
+suportata de FNUASS 
+N(15)  E2_66= E2_16+ E2_26+ E2_36+ E2_46+ E2_56 
+           + E2_46a   
+daca  cif = cif AJOFM    
+altfel E2_66=0 
+ERR : 
+Suma totala suportata din FNUASS-
+mod de calcul eronat 
+S 
+ 130 E2_10 Rd.7-Total cuantum 
+prestatii de suportat din 
+bugetul FNUASS pentru 
+concedii si indemnizatii 
+N(15)  E2_10=E2_66  
+E2_10>=0 
+ERR : 
+Total cuantum prestatii de suportat 
+din bugetul FNUASS pentru concedii 
+si indemnizatii-mod de calcul eronat 
+S 
+ 
+27 
+ 133a E2_140 Rd.8-Total suma de 
+recuperat de la FNUASS pt 
+contributii pentru concedii si 
+indemnizatii 
+N(15)  E2_140=E2_10 
+E2_140>=0 
+ 
+  
+         
+</angajatorE2> 
+      
+        <angajatorE3> 0-1 aparitii      
+ 134 E3_11 Numar cazuri – 
+Incapacitate temporara 
+N(6)    P 
+ 135 E3_12 Zile prestații N(5)    P 
+ 136 E3_13 Sumã totalã accidente de 
+muncã și boli profesionale 
+– Incapacitate temporara 
+N(15)    P 
+ 137 E3_14 Sumã suportatã din 
+FAAMBP – Incapacitate 
+temporara 
+N(15)   cu E3_14<=E3_13 ERR daca E3_14 > 0  
+si nu exista nici-un C_1 = 11 
+ 
+P 
+ 138 E3_21 Numar cazuri – Trecerea la 
+alt loc de munca 
+N(6)    P 
+ 139 E3_22 Zile prestatii – Trecerea la 
+alt loc de munca 
+N(5)    P 
+ 140 E3_23 Sumã totalã accidente de 
+muncã și boli profesionale 
+– Trecerea la alt loc de 
+munca 
+N(15)    P 
+ 141 E3_24 Sumã suportatã din 
+FAAMBP – Trecerea la alt 
+loc de munca 
+N(15)   cu E3_24<=E3_23  P 
+ 142 E3_31 Numar cazuri – Reducerea 
+timpului de lucru 
+N(6)    P 
+ 143 E3_32 Zile prestatii – Reducerea 
+timpului de lucru 
+N(5)    P 
+ 144 E3_33 Sumã totalã accidente de 
+muncã și boli profesionale 
+– Reducerea timpului de 
+lucru 
+N(15)    P 
+ 145 E3_34 Sumã suportatã din 
+FAAMBP – Reducerea 
+timpului de lucru 
+N(15)   cu E3_34<=E3_33  P 
+ 146 E3_41 Numar cazuri – Cursuri de 
+calificare/reconversie 
+N(6)    P 
+ 147 E3_42 Zile prestatii – Cursuri de 
+calificare/reconversie 
+N(5)    P 
+ 148 E3_43 Sumã totalã accidente de 
+muncã și boli profesionale 
+– Cursuri de 
+calificare/reconversie 
+N(15)    P 
+ 149 E3_44 Sumã suportatã din 
+FAAMBP – Cursuri de 
+calificare/reconversie 
+N(15)   cu E3_44<E3_43  P 
+ 150 E3_total Total – Sumă totală 
+accidente de munca 
+N(15)  E3_total=E3_13+ E3_23+ E3_33+ E3_43   
+E3_total=Σ asigurat (C_4)            
+corelatie dubla (verificare pe 2 cai ) 
+ERR P 
+ 151 E3_suma Total – Sumă suportată din 
+FAAMPB sumele prev. Pt. 
+asig. Acc. Muncă 
+N(15)  E3_suma=E3_14+ E3_24+ E3_34+ E3_44 
+E3_suma = Σ asigurat (C_18)        
+ corelatie dubla (verificare pe 2 cai) 
+ERR P 
+         
+</angajatorE3> 
+      
+        <angajatorE4> 0-1 aparitii      
+ 154 E4_aj_nr Număr cazuri – Ajutoare de N(5) DA E4_aj_nr = count (angajatorG) ERR  P 
+ 
+28 
+desfiintat deces  
+ 155 E4_aj_suma 
+desfiintat 
+Sumă – Ajutoare de deces N(15) DA E4_aj_suma= Σcuantum_d 
+ 
+Daca E4_aj_nr>0 atunci 
+E4_aj_suma / E4_aj_nr <= ajutorDeces 
+  
+ATT  
+E4_aj_suma 
+‘Suma acceptata numai cu hotarare 
+judecatoreasca’ 
+P 
+      </angajatorE4>       
+       <angajatorF1> 0-1 aparitii   (campurile sunt obligatorii toate daca exista F1_suma 
+>0) 
+  
+ 156 F1_suma Suma datorata N(15) DA    
+ 156a F1_suma_ded Suma deductibila N(15) DA    
+ 156c F1_suma_scut Suma scutita N(15) DA    
+ 156b F1_deplata Suma de plată  N(15) DA F1_deplata=F1_suma – 
+                    F1_suma_ded – F1_suma_scut>=0 
+ERR 
+ 
+ 
+  </angajatorF1>       
+       <angajatorF2> 0-2000 aparitii   (campurile sunt obligatorii daca exista sedii secundare)   
+ 157 F2_cif Cod de inregistrare fiscala 
+sediu secundar 
+N(10) DA  cu verificare CIF si verificare unicitate CIF sediu 
+secundar 
+  
+ 157b F2_id Nr.crt. sediu secundar N(5) DA    
+ 158 F2_suma Suma calculata sediu 
+secundar (impozit pe venit) 
+N(15) DA    
+ 158a F2_suma_ded Suma distribuita în cota de 
+2 % sau 3.5 % 
+N(15) DA    
+ 158c F2_suma_scut Suma scutita N(15) DA    
+ 158b F2_deplata Suma de plată sediu 
+secundar (impozit pe venit) 
+N(15) DA F2_deplata=F2_suma – 
+                   F2_suma_ded – F2_suma_scut>=0 
+ERR  
+   </angajatorF2>       
+  <angajatorG>  
+desfiintat 
+0-n aparitii   0 aparitii daca pentru cif # cif AJOFM (ajutoare deces) Începând cu ianuarie 2018, doar 
+AJOFM pot declara ajutoare de 
+deces. 
+Angajatorii au putut declara ajutoare 
+de deces pe secțiunea G doar 
+pentru octombrie 2017 – decembrie 
+2017. 
+ 
+ 159 cnp_d CNP persoana decedata N(13) DA cnp_d trebuie să fie unic în cadrul sectiunii 
+cnp_d<>cnp_b 
+  
+ 160 den_d Nume si prenume persoana 
+decedata 
+C(50 DA    
+ 161 nr_act_d Serie si numar 
+ anitary e  de deces 
+C(50) DA    
+ 162 data_d Data decesului C(10) DA    
+ 163 cnp_b CNP beneficiar N(13) DA    
+ 164 den_b Nume si prenume 
+beneficiar 
+C(50) DA    
+ 165 cuantum_d Cuantumul ajutorului de 
+deces 
+N(5) DA cuantum_d ≤ ajutorDeces valabil la data decesului   
+  </angajatorG>       
+    </angajator>       
+         
+    <asigurat> 
+ 
+0-n aparitii   (campurile sunt obligatorii daca exista asigurat tip A, B 
+sau C) 
+  
+ 1 cnpAsig CNP/NIF N(13) DA  cu verificare CNP/NIF 
+Verificarea cifrei de control, an, luna, sex,  varsta minima 
+ERR ‘CNP incorect’ 
+ERR ‘CNP-ul trebuie sa fie unic’ 
+P 
+ 
+29 
+asigurare=15 ani ;  
+asiguratii cu tipC= 3,5,6,17 fac exceptie si nu trebuie sa 
+se verifice pentru ei ca varsta minima asigurare=15 ani) 
+ 
+ 1b idAsig Nr.crt. N(6) DA Contor numar de inregistrari ale asiguratilor   
+ 1c cisAsig CIS N(13)  Cod de identificare la sanatate 
+Se verifica la fel ca un CNP. 
+ 
+ATT 
+CIS necompletat pt NIF 
+S 
+ 
+ 2 numeAsig Nume C(75) DA  numeAsig <>null daca cnpAsig<>null ERR Nume asigurat necompletat  
+ 3 prenAsig Prenume C(75) DA  prenAsig <>null daca cnpAsig<>null ERR Prenume asigurat necompletat  
+ 4 cnpAnt CNP/NIF anterior N(13)   pentru D_rec=1 
+ 
+ERR daca  
+cnpAnt<>0 si d_rec<>1 
+ 
+P 
+ 5 numeAnt Nume anterior C(75)   pentru D_rec=1 ERR daca numeAnt<>spatiu si 
+d_rec<>1 
+ 
+P 
+ 6 prenAnt Prenume anterior C(75)   pentru D_rec=1 ERR daca prenAnt<>spatiu si 
+d_rec<>1 
+ 
+P 
+ 7 dataAng Data intrarii în categoria de 
+asigurat 
+D(10) DA dataAng <> null 
+ 
+ERR :  Data angajare nu a fost 
+completata 
+S 
+ 8 dataSf Data iesirii în categoria de 
+asigurat 
+D(10)  dataAng <= dataSf <= ultima zi a lunii de raportare 
+ 
+Obs.: 
+1.Stagiul de cotizare la sanatate este dat de campurile 
+data angajarii si data plecarii 
+ 
+2. Daca stagiul de cotizare este mai mic de o lună, 
+baza de calcul a indemnizaţiilor (la sanatate) o 
+constituie venitul lunar din prima lună de activitate. 
+ 
+3.Pentru o persoana aflata in concediu de ingrijire 
+copil  se completeaza data plecarii cu data pana la 
+care este salariat. In lunile urmatoare si pana se intoarce 
+din concediu, angajatorul o va declara in continuare in 
+D112 dar, ATENTIE, data plecarii  trebuie sa fie 
+completata ca in declaratia anterioara (adica data pana 
+la care a fost salariat). 
+4. LA FEL PENTRU PERSOANELE AFLATE IN 
+CONCEDIU FARA PLATA  CEL PUTIN O LUNA 
+INTREAGA 
+Angajatorul va trebui sa o raporteze la intoarcere cu 
+data angajare = data la care se intoarce la lucru. 
+ERR :  Data plecare nu poate fi 
+inainte de Data angajare sau dupa 
+luna raportarii 
+S 
+J 
+ 9 casaSn Casa de asigurare de 
+sanatate 
+C(2) DA 
+  Nomenclator 2 – Case de sanatate 
+casaSn=_N (Neasigurat) daca asiguratul este  
+zilier (A_1=3) sau (detasat#null si plata_CASS#1) 
+ 
+ 
+ERR casaSn : campul casa asigurari 
+sanatate asigurat necompletat 
+ 
+ERR casaSn : campul casa asigurari 
+sanatate asigurat completat gresit 
+pentru zilier/ detasat 
+ 
+ 9b asigCI Asigurat pentru concedii şi 
+indemnizaţii de asigurări 
+sociale de sănătate 
+N(1) DA 
+ asigCI in (1,2) 
+Valori : 1- asigurat , 2 – neasigurat 
+ 
+ERR : campul asigurat pentru 
+concedii si indemnizatii necompletat 
+S 
+01.2025 9bb asigSO Asigurat in sistemul de 
+asigurari pentru somaj 
+N(1) DA 
+ Valori : 1- asigurat , 2 – neasigurat ERR : campul asigurat in sistemul 
+de asigurari pentru somaj 
+J 
+ 
+30 
+ 
+asig_SO=2 pt. 
+orice C_1 si pt.  
+A_1,B1_1# 
+(1,6,8,2,9,10,11,12,13,14,16,24,19,21,22,17,23,25,27 
+,48,54) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+necompletat/incorect 
+01.2025 9bbb asigScu Persoana scutita de la plata 
+impozitului pe venit 
+N(1)  asigScu =(1,2,3,4,5,6,7,9) 
+ 
+asigScu =2/7/9  daca exista A_1/ B1_1=54/25/48 
+ 
+daca asigScu =2/7/9  si bifa_pilon2=0 si A_8s/  
+B4_1s=0  atunci 
+ A_13f/  B4_7f>0 
+ 
+daca asigScu #2/7/9   atunci 
+ A_13f/  B4_7f=0 
+ 
+“1” – pentru persoanele fizice “1” – pentru persoanele fizice cu 
+handicap grav sau accentuat, care realizează venituri din 
+activităti independente, realizate în mod individual si/sau într-o 
+formă de asociere, salarii si  anitary e salariilor, prevăzute la 
+art. 76 alin. (1) – (3) din Codul fiscal, venituri din pensii, precum 
+si pentru venituri din activităti agricole, silvicultură si piscicultură, 
+altele decât cele prevăzute la art. 105 din Codul fiscal, realizate 
+în mod individual si/sau într-o formă de asociere fără 
+personalitate juridică, în luna de raportare. 
+“2” – pentru persoanele fizice care realizează venituri din salarii 
+si  anitary e salariilor prevăzute la art. 76 alin. (1) – (3) din 
+Codul fiscal, ca urmare a desfăsurării activitătii de creare de 
+programe pentru calculator, în luna de raportare. 
+“3” – pentru persoanele fizice care realizează venituri din salarii 
+si  anitary e salariilor prevăzute la art. 76 alin. (1) – (3) din 
+Codul fiscal, ca urmare a desfăsurării activitătii de cercetare -
+dezvoltare aplicativă si/sau de dezvoltare tehnologică, în luna de 
+raportare. 
+“4” – pentru persoanele fizice care realizează venituri din salarii 
+si  anitary e salariilor prevăzute la art. 76 alin. (1) – (3) din 
+Codul fiscal, ca urmare a desfăsurării activitătii pe bază de 
+contract individual de muncă încheiat pe o perioadă de 12 luni, 
+cu  anitary juridice române care desfăsoară activităti sezoniere 
+dintre cele prevăzute la art. 1 al Legii nr. 170/2016 privind 
+impozitul specific unor activităti, în cursul unui an, în luna de 
+raportare. 
+“5” – pentru persoanele fizice care realizează venituri din arendă, 
+scutite de la plata impozitului pe venit, în luna de raportare, 
+potrivit Legii nr. 566/2004, Legea cooperatiei agricole. 
+„6” – pentru persoanele fizice care realizează alte venituri scutite 
+de la plata impozitului pe venit, în luna de raportare, potrivit legii. 
+ERR valoare 
+ 
+ERR  
+daca asigScu =2/7/9  si nu 
+exista A_1/ B1_1=54/25/ 48 
+ 
+ERR 
+daca asigScu =2/7/9  si 
+bifa_pilon2=0 si A_8s/  B4_1s=0 
+si A_13f/  B4_7f=0 
+ 
+ERR 
+daca asigScu #2/7/9  si  A_13f/  
+B4_7f>0 
+ 
+ 
+ 
+31 
+”7” – pentru persoanele fizice care realizează venituri din 
+salarii si  anitary e salariilor prevăzute la art. 76 alin. 
+(1) – (3) din Codul fiscal, ca urmare a desfăsurării 
+activitătilor de constructii mentionate la art. 60 pct. 5 
+din Codul fiscal. 
+“8” – pentru persoană fizică care desfasoară activitate în 
+domeniul agricol, conform dispozitiilor art. 4 alin. (3) din  
+Legea nr. 336/2018, privind aprobarea Programului 
+pentru stimularea angajării tinerilor în sectoarele 
+agricultură, acvacultură şi industria alimentară 
+”9” – pentru persoanele fizice care realizează venituri ca 
+urmare a desfăsurării activitătilor in 
+Agricultură,vânătoare și servicii anexe mentionate la art. 
+60 pct. 7 din Codul fiscal. 
+ 9c asigExc Persoana exceptata de la 
+plata CAS si CASS la 
+nivelul salariului minim 
+(art.146 alin.(5^6) si art.168 
+alin.(6^1) din CF) 
+N(1)  asigExc = (0/null,1,2) 
+ 
+asigExc = 0/null daca nu e cazul
+asigExc = 1 dacă p ersoana este  exceptata  de la plata 
+CAS si CASS la nivelul salariului minim 
+asigExc = 2 dacă p ersoana nu este  exceptata de la 
+plata CAS si CASS la nivelul salariului minim 
+ 
+  
+ 9cc motivExc Motiv exceptie prev.la 
+art.146 alin.(5^7) 
+   
+daca asigExc=1 atunci  motivExc = (1-5,null)  
+altfel  motivExc = null
+ 
+1–PF prev.la art.146 alin.(5^7) lit.a) din CF – elevi si 
+ anitar, cu varsta <26 de ani (aflate intr-o forma de 
+scolarizare) 
+2-PF prev.la art.146 alin.(5^7) lit.b) din CF – ucenicii, cu 
+varsta <18 ani (ven.din contract de  ucenici) 
+3-PF prev.la art.146 alin.(5^7) lit.c) din CF – pers.cu 
+dizabilitati sau alte categ.de pers.(prin lege, pot  anit < 
+8ore/zi) 
+4-PF prev.la art.146 alin.(5^7) lit.d) din CF – salariatii 
+care au  anitary.de pensionari pentru limita de varsta 
+5-PF prev.la art.146 alin.(5^7) lit.e) din CF – ven.din din 
+mai multe CIM-uri (val.cumulată >= salariul de baza 
+minim brut pe tara garantat  in plata 
+
+  
+01.2025 9d Timp_E3 Total impozit retinut E3 N(15) DA Timp_E3= Σasigurat(E3_15) pt. toti A_1, 
+B1_1 # (31,42) 
+si C_1=(17,30) 
+ 
+  
+ 9e Tcota_E4 Total cota distribuita in E4 N(4.2)  Tcota_E4=Σasigurat(cota+cota_ctr)  <=3.5   
+ 9f Tsuma_E4 Total suma distribuita in E4 N(15)  Tsuma_E4= Σasigurat(suma+suma_ctr)   
+Tsuma_E4<=  ROUND (Timp_E3 * Tcota_E4 / 100  )   
+rotunjire ca la contributii 
+  
+ 9n plata_CAS Bifa CAS N(1)  Valori :1-plateste numai daca  exista detasat#null  
+            0-nu plateste 
+  
+ 9o plata_CASS Bifa CASS N(1)  Valori :1-plateste numai daca  exista detasat#null  
+            0-nu plateste 
+  
+ 9p plata_CAM Bifa CAM N(1)  Valori :1-plateste numai daca  exista detasat#null    
+ 
+32 
+            0-nu plateste 
+ 9r bifa_plataNerezide
+nt 
+Salariat care îşi desfăşoară 
+activitatea în România şi 
+obţine venituri sub formă de 
+salarii şi asimilate salariilor 
+din străinătate, de la un 
+angajator nerezident fiscal 
+în România și pentru care 
+există un acord încheiat cu 
+angajatorul în vederea 
+efectuării calcului, plății și 
+depunerii declarației 
+N(1)  Valori :1   
+ 9s bifa_Ucraina Salariați, cetăţeni străini 
+sau apatrizii aflaţi în situaţii 
+deosebite, proveniţi din 
+zona conflictului armat din 
+Ucraina 
+N(1)  Valori :1   
+01.2025 9t bifa_pilon2 
+Nu se mai 
+foloseste din 
+01.2025 
+Optiune salariat pentru 
+plata contributiei la fd.de 
+pensii administrat privat 
+N(1)  Valori :1,0,null 
+bifa_pilon2=1 daca bifa_CAM=1 si A_1/B1_1=25,48,50 
+Daca bifa_pilon2=1 atunci Cipens = 25%  
+Altfel Cipens = 21.25% 
+ 
+bifa_pilon2=1/0  daca asigScu=2,7,9 
+ 
+bifa_pilon2=0 daca asigScu#2,7,9 
+ 
+Explicatii: 
+Bifa_pilon2=0 pentru asigurații cu asigScu=2,7,9 care nu 
+optează pentru plata contribuției la Pilon II și pentru 
+asigurații cu asigScu#2,7,9 
+ 
+Bifa_pilon2=1 pentru asigurații cu asigScu=2,7,9 care 
+optează pentru plata contribuției la Pilon II 
+ 
+Pentru asigScu=2,7,9: 
+-       dacă bifa_pilon2=1, atunci Cipens = 25%  
+-       dacă bifa_pilon2=0, atunci Cipens_redusa  
+  
+ERR : bifa_pilon2=1 si 
+asigScu#2,7,9 
+ 
+08.2025   <coAsigurati> 
+ 
+0-3 aparitii   (campurile sunt obligatorii daca exista co-asigurati)   
+08.2025 10 tip Tip asigurat C(1) DA Valori : S – sot/ sotie  si P – parinte ERR : daca cnp is not null : tip 
+asigurat necompletat 
+ 
+08.2025 11 cnp CNP/CIS N(13) DA Verificare CNP 
+Verificarea cifrei de control, zi, an, luna, sex (valori 
+permise 1,2,5,6,7,8,9), varsta minima asigurare=15 ani.  
+ 
+Asiguratii cu tipC= 3,5,6,17 fac exceptie si nu trebuie sa 
+se verifice pentru ei ca varsta minima  asigurare=15 ani. 
+ERR : cnp incorect  
+08.2025 12 nume Nume C(75) DA  ERR : daca cnp is not null : nume 
+necompletat 
+ 
+08.2025 13 prenume Prenume C(75) DA  ERR : daca cnp is not null : prenume 
+necompletat 
+ 
+08.2025  </coAsigurati> 
+ 
+      
+  <det1> 0-5 aparitii      
+ 9g detasat Tip salariat detasat N(2)  Valori (1 la 6) 
+1-Salariat detasat la un alt angajator din România si care 
+  
+ 
+33 
+este plătit si declarat  de către angajatorul care l -a 
+detasat 
+2-Salariat detasat la un alt angajator din România si care 
+este plătit si declarat de către angajatorul la care este 
+detasat 
+ 
+3-Salariat detasat din România in state din UE si din 
+afara UE – cu A1  
+4-Salariat detasat din România in state din UE si din 
+afara UE – fara A1  
+ 
+5-Salariat detasat in România din state  anita UE sau 
+din afara UE – cu A1 
+6-Salariat detasat in România din state  anita UE sau 
+din afara UE – fara A1 
+ 
+ 9h cif_detasat CIF angajator roman  N(10) 
+sau 
+N(13) 
+ Verificare CIF(10) sau CIF(13) 
+cif_detasat#null pentru detasat=(1-2) 
+  
+ 9i dataD1 Perioada detasarii – de la D(10)  dataD1#null pentru detasat=(1- 2 6)   
+ 9j dataD2 Perioada detasarii – la D(10)  dataD2#null pentru detasat=(1- 2 6)   
+ 9k bifa_stat Bifa stat UE,SEE,CE sau 
+alte state 
+N(1)  Valori :1-stat UE,SEE,CE, 2-alte state 
+bifa_stat#null pentru detasat=(3-6) 
+  
+ 9l stat_detasat Stat in/ din care s-a facut 
+detasarea 
+C(2)  Nomenclator state 
+stat_detasat#null pentru detasat=(3-6) 
+  
+ 9m  anita_stat Bifa stat UE,SEE,CE sau 
+alte state 
+N(1)  Valori :1-DA, 2-NU 
+ 
+ anita_stat#null pentru detasat=(3-6)  bifa_stat=2 
+ 
+  
+ 9n plata34 3-Plătit de angajatorul din 
+România care detașează 
+4-Plătit de angajatorul la 
+care este detașat 
+ 
+N(1)  plata34=3,4,null 
+plata34=3 daca detasat=3  
+plata34=4 daca detasat=4 
+  
+  </det1>       
+         <asiguratA> 0-1 aparitii   (campurile sunt obligatorii daca exista asigurat tip A) 
+Sectiunea A nu poate exista concomitent cu sectiunile B 
+si D 
+  
+01.2025 14 A_1 Tip asigurat dpdv contract 
+de munca 
+N(2) DA  Nomenclator 5 – Tip asigurat A,B 
+ 
+    A_1 = (1-6,8-15,18-22,27-30,34,36,40,46,25,48, 
+51,52,54) 
+ 
+(tipurile 3,34,36 se declara doar sectiunea A) 
+ 
+ 
+A_1= 2  (militari) se declara doar in raportarile speciale 
+ale US 
+ 
+Variabile: eSalariat, eConstrAgricIT, dat_CASS, 
+dat_CAS, dat_CAM, baza_AJS 
+ 
+eSalariat=false 
+eConstrAgric=false 
+dat_CASS=false 
+dat_CAS=false 
+ERR : campul tip asigurat dpdv 
+contract de munca 
+necompletat/incorect 
+ 
+ 
+34 
+dat_CAM=false 
+baza_AJS=false 
+ 
+   eSalariat=true daca A_1= (1,46,25,27,48,51,52,54) 
+ 
+    eConstrAgricIT=true  daca 
+        Bifa_CAM=1 si exista A_1 = (25,48, 54), 
+care pot fi impreuna cu (3,4,6,12-15,18-20)  
+ 
+   dat_CASS=true daca A_1 #  (3,16,17,23,24,30,34)   
+ 
+   dat_CAS=true daca A_1 # ( 2,15,17,22,24 
+,30,34,46,52) 
+ 
+   dat_CAM=true  daca datCAM=1 si   
+               A_1 #  (3,4,15,17,20, 23, 30,34,36)  
+ 
+   baza_AJS=true   daca   asigSO=1 si A_2=0 si  
+      A_1=(1,6,9-25,27,28,46,25,48,51,52,54) 
+ 
+ 
+daca (detasat#null si plata_CASS #1) 
+atunci dat_CASS=false 
+ 
+daca (detasat#null si plata_CAS #1) 
+atunci dat_CAS=false 
+ 
+daca (detasat#null si plata_CAM #1) 
+atunci dat_CAM=false 
+ 
+ 14a A_sal1 Salariul de bază lunar 
+brut prevăzut în 
+contractul individual de 
+muncă/raportul de 
+serviciu/actul de 
+detaşare sau într-un 
+statut special prevăzut 
+de lege, după caz 
+N(15)  Se completeaza obligatoriu  A_sal1>0  si/sau A_sal2>0  
+
+  
+11.2023 14b A_sal2 Venitul brut din salarii și 
+asimilate salariului 
+realizat în baza  
+contractului individual de 
+muncă/raportului de 
+serviciu/actului de 
+detaşare sau într-un 
+statut special prevăzut 
+de lege, după caz 
+N(15)   
+A_sal2=E3_8-E3_69
+  
+ 15 A_2 Pensionar N(1) DA Valori : 1- pensionar sau 0 ERR : campul pensionar 
+necompletat/incorect 
+P 
+ 16 A_3 Tip contract de muncă 
+dpdv timp de lucru 
+C(2) DA Valori : N,P1,P2,P3,P4,P5,P6,P7  
+unde i < A_4 si Pi din Nomenclator 12 – Tip contract de 
+munca 
+daca A_1=(51,52,53) atunci A_3=”N” 
+ERR : tip contract de muncă dpdv 
+timp de lucru necompletat 
+ 
+ ERR 
+A_1=(51,52,53) si A_3 # ”N” 
+ 
+ 17 A_4 Ore norma zilnica 
+contract a locului de 
+munca 
+N(1) DA A_4=6,7,8 
+ 
+ERR 
+daca  Ore norma zilnica contract 
+diferit de 8,7 sau 6 
+ 
+ 
+35 
+ 18 A_5 Baza CAM N(15) DA    
+  
+daca dat_CAM=true si A_8>0 atunci A_5>0 
+ 
+ 
+daca dat_CAM=false atunci A_5=0 
+  
+ 
+ 
+ERR ATT daca dat_CAM=true si 
+A_8>0 si A_5=0 
+ 
+ATT daca dat_CAM=false si A_5>0 
+ 
+ 
+ 19 A_6 Ore lucrate efectiv in 
+luna 
+N(3)  
+daca A1_1#3 atunci 
+{ 
+A_6 <= NZL*A_4 daca A_3= ‘N’ 
+A_6 <= NZL* i daca A_3= ‘Pi ‘ 
+} 
+ 
+ 
+daca baza_AJS=true si A_9>0  atunci A_6>0 
+ERR 
+Campul A_6 eronat 
+ 
+ 
+ATT 
+daca baza_AJS=true   si A_9>0  si 
+A_6=0 
+J 
+ 20 A_7 Ore suspendate în luna N(3)  
+daca A1_1#3 atunci 
+{ 
+    A_7+ A_6 <= NZL*A_4 daca A_3= ‘N’ 
+    A_7+ A_6 <= NZL*i daca A_3= ‘Pi ‘ 
+} 
+ 
+Daca baza_AJS=true atunci  A_7 + A_6 > 0  
+ 
+ 
+ERR daca   
+A_7+ A_6  > NZL * A_4 
+ 
+ 
+ERR daca  
+daca baza_AJS=true  si A_7 + A_6 
+= 0 
+J 
+ 21 A_8 Total zile lucrate N(5) 
+N(2) 
+ 
+A_8 <= NZL pentru dat_CAS=true si A_1#3 
+    0< A_8 <= 25 sau NZC pentru A_1=3 
+ 
+ 
+daca dat_CAS=true  si A_8>0  atunci  A_13>0 
+ 
+daca eSalariat=true sau A_1=(8,27,28) si A_13>0 atunci 
+A_8>0 
+ 
+ 
+ 
+ 
+ERR daca dat_CAS=true si A_8 
+>NZL  
+ 
+ERR  
+daca (A_8=0 sau A_8 >25) si  
+A_1=3  
+ 
+ 
+ERR  
+daca dat_CAS=true  si A_8>0  si  
+A_13=0 
+ 
+ERR   
+daca eSalariat=true sau 
+A_1=(8,27,28) si A_13>0 si A_8=0 
+P 
+01.2025 21a A_8r 
+Nu se mai 
+foloseste din 
+01.2025 
+1.1.Total zile lucrate in 
+Romania 
+ 
+N(2)  A_8r>=0 pt.A_1=25, 48   
+01.2025 21b A_8s 
+Nu se mai 
+foloseste din 
+01.2025 
+1.2.Total zile lucrate in 
+afara Romaniei 
+ 
+N(2)  A_8s>=0 pt.A_1=25, 48   
+ 22 A_9 Baza de calcul a 
+indemnizatiei de somaj 
+N(15)    daca baza_AJS=false    atunci  A_9=0 
+ 
+ 
+ daca baza_AJS=true   si A_6 >0  atunci  A_9>0 
+ 
+ERR  
+daca baza_AJS=false  si A_9>0 
+ 
+ATT 
+daca baza_AJS=true si A_6>0 si 
+A_9=0 
+ 
+J 
+ 24 A_11 Baza CASS  N(15) DA  
+  daca dat_CASS=false   atunci A_11=0 
+ 
+ATT dacă dat_CASS=false si 
+S 
+ 
+36 
+  daca dat_CASS=true  si A_8>0  atunci  A_11>0 
+ 
+A_11>0 
+ 
+ATT dacă dat_CASS=true si 
+A_11=0 
+ 
+ 25 A_12 CASS N(15) DA  
+A_12= ROUND (A_11 * Cisan%) 
+ 
+ 
+ERR 
+A_12 – CASS diferita de suma 
+calculata’ 
+ 
+S 
+01.2025 26 A_13 Baza CAS  N(15) DA   daca dat_CAS=false   atunci A_13=0 
+ 
+ 
+  daca dat_CAS=true   si dat_CASS=true   atunci 
+A_13=A_11 
+ 
+daca bifa_CAM=1  si exista A_1 = (25,48, 54)  atunci 
+A_13 = A_13i+ A_13f 
+  
+ 
+ERR 
+Daca dat_CAS=false   si A_13>0 
+ 
+ATT 
+dacă dat_CAS=true   si 
+dat_CASS=true   si A_13#A_11 ??? 
+ 
+ERR 
+Daca caenC#null si 
+A_13#A_13i+A_13f 
+ 
+P 
+01.2025 27 A_14 CAS N(15) DA   
+daca bifa_CAM=1  si exista A_1 = (25,48, 54)  atunci 
+A_14= A_14i+ A_14f  
+ altfel A_14= ROUND (A_13  * 25%) 
+ 
+  
+ERR A_14 
+CAS diferita de suma calculata 
+ 
+ERR 
+Daca bifa_CAM=1 
+si A_14#A_14i+A_14f 
+ 
+P 
+01.2025 P1a A_13P 8.1 Sumă limită de 
+calcul CAS cf. art.146 
+alin.(5^6)  din CF 
+N(15) DA  
+sm=4050  
+sm=sm-300 
+ 
+part_time= ROUND(sm*A_8 /NZL) 
+baza=A_13 
+ 
+Daca baza>0 si baza<part_time 
+ atunci A_13P =part_time  
+ altfel A_13P =0     
+ 
+ 
+ P 
+01.2025 P2a A_14P 11.1 CAS cf. art.146 
+alin.(5^6)  din CF 
+N(15) DA  
+A_14P = ROUND (A_13P * 25%) 
+ 
+1-daca bifa_CAM=0   
+atunci  A_14P = ROUND (A_13P * 25%) 
+ 
+2- daca bifa_CAM=1  si exista A_1 = (25,48, 54) si  
+bifa_pilon2=1 si   A_14<part_time 
+atunci  A_14P = ROUND (A_13P * 25%) 
+ 
+3- daca bifa_CAM=1  si exista A_1 = (25,48, 54) si  
+bifa_pilon2=0  si   A_14<part_time 
+atunci 
+[ 
+    daca A_14f =0 si A_14i>=0  atunci  
+            A_14P = ROUND (A_13P * 25%) 
+ 
+ P 
+ 
+37 
+    daca A_14f>=0 si A_14i=0  atunci  
+           A_14P= ROUND (A_13P * 
+Cipens_redusa%) 
+ 
+    daca A_14f>0 si A_14i>0  atunci  
+            cas1= ROUND (A_13P * Cipens_redusa% 
+            cas2= ROUND (A_13P * 25%) 
+                cas1<= A_14P<=cas2 
+] 
+ 
+01.2025 P3a A_11P 9.1 Sumă limită de 
+calcul CASS cf. art.168 
+alin.(6^1)  din CF 
+N(15) DA  
+sm=4050  
+sm=sm-300  
+ 
+part_time= ROUND(sm*A_8 /NZL) 
+ 
+baza= A_11 
+daca baza>0  si baza<part_time 
+atunci A_11P =part_time  
+altfel A_11P =0   
+ 
+ P 
+ P4a A_12P 10.1 CASS cf. art.168 
+alin.(6^1)  din CF 
+N(15) DA A_12P = ROUND (A_11P * 10%) 
+ 
+ P 
+ P5a A_14D 11.2 CAS suportata de 
+angajator (dif.) 
+N(15) DA Daca A_14P>0 atunci A_14D= A_14P – A_14 
+Altfel A_14D=0 
+ P 
+ P6a A_12D 10.2 CASS suportata de 
+angajator (dif.) 
+N(15) DA Daca A_12P>0 atunci A_12D= A_12P – A_12 
+Altfel A_12D=0 
+ P 
+ S1a A_13S 8.2  Suma de 300 
+lei/lună, netaxabilă, 
+cf.OUG nr.168/2022  
+N(15) DA 0<=A_13S <=300 pt A_1 =(51) 
+A_13S=0 pt. A_1 #(51) 
+  
+ S2a A_13C 8.3  Câştig brut realizat N(15) DA A_13C=A_13+A_13S pentru A_13S>0 
+altfel A_13C=0 
+  
+    </asiguratA>       
+01.2025  <asiguratA1> 
+desfiintat 
+ 
+0-1 aparitii   1 aparitie daca bifa_CAM=1  si exista A_1 = (25,48, 54) 
+0 aparitii  daca bifa_CAM=0  sau (Bifa_CAM=1 si nu 
+exista A_1 = (25,48, 54)) 
+ 
+(campurile sunt obligatorii daca an>=2023 bifa_CAM=1 
+si exista A_1 = (25,48, 54) ) 
+ 
+  
+01.2025 26_i1 A_13i Baza CAS fara facilitati N(15)  Din 11.2023  
+ 
+Daca bifa_pilon2=1  
+Atunci A_14i = A_13 
+ P 
+01.2025 27_i1 A_14i CAS fara facilitati N(15)  Din 11.2023  
+ 
+Daca bifa_pilon2=1  
+Atunci A_14i = A_13*25% 
+ 
+Daca ERR – A_14i diferita de suma 
+calculata 
+P 
+01.2025 26_f1 A_13f Baza CAS  
+cu facilitati 
+N(15)   
+A_13f=0 daca (asigScu#2,7,9 sau bifa_pilon2=1)  
+ 
+ERR dacă  
+A_13f>0 si (asigScu#2,7,9 sau  
+bifa_pilon2=1) 
+P 
+ 
+38 
+ 
+ 
+01.2025 27_f1 A_14f CAS cu facilitati N(15)   
+A_14f=0 daca (asigScu#2,7,9 si bifa_pilon2=0)  
+ 
+ 
+Daca ERR – A_14f diferita de suma 
+calculata 
+P 
+01.2025 27c SalBrut_A Salariu brut de incadrare 
+si/sau Venit asimilat 
+salariilor 
+N(15)     
+ 24_i1 A_11i 
+Nu se mai 
+foloseste 
+din 11/2023 
+Baza CASS  
+fara facilitati 
+     
+ 25_i1 A_12i  
+Nu se mai 
+foloseste 
+din 11/2023 
+CASS fara facilitati      
+ 24_f1 A_11f 
+Nu se mai 
+foloseste 
+din 11/2023 
+Baza CASS cu facilitati      
+ 25_f1 A_12f 
+Nu se mai 
+foloseste 
+din 11/2023 
+CASS cu facilitati      
+ 18_i1 A_5i  
+Nu se mai 
+foloseste 
+din 01/2023 
+Baza CAM 
+fara facilitati 
+     
+ 18_f1 A_5f 
+Nu se mai 
+foloseste 
+din 01/2023 
+Baza CAM 
+cu facilitati 
+    J 
+ 27a A_81 
+Nu se mai 
+foloseste 
+Zile per.01-21.07.19       
+ 27b A_82 
+Nu se mai 
+foloseste 
+Zile per.22-31.07.19      
+ P7a A_13iP  
+Nu se mai 
+foloseste 
+din 11/2023 
+1.1 Sumă limită de 
+calcul CAS cf. art.146 
+alin.(5^6)  din CF 
+    P 
+ P8a A_11iP 
+Nu se mai 
+foloseste 
+din 11/2023 
+2.1 Sumă limită de 
+calcul CASS cf. art.168 
+alin.(6^1)  din CF 
+    P 
+ P9a A_12iP 
+Nu se mai 
+foloseste 
+din 11/2023 
+3.1 CASS cf. art.168 
+alin.(6^1)  din CF 
+    P 
+ P10a A_14iP  
+Nu se mai 
+foloseste 
+din 11/2023 
+4.1 CAS cf. art.146 
+alin.(5^6)  din CF 
+    P 
+ P11a A_13fP  
+Nu se mai 
+foloseste 
+din 11/2023 
+1.1 Sumă limită de 
+calcul CAS cf. art.146 
+alin.(5^6)  din CF 
+     
+ 
+39 
+ P12a A_11fP 
+Nu se mai 
+foloseste 
+din 11/2023 
+2.1 Sumă limită de 
+calcul CASS cf. art.168 
+alin.(6^1)  din CF 
+    P 
+ P13a A_12fP 
+Nu se mai 
+foloseste 
+din 11/2023 
+3.1 CASS cf. art.168 
+alin.(6^1)  din CF 
+    P 
+ P14a A_14fP  
+Nu se mai 
+foloseste 
+din 11/2023 
+4.1 CAS cf. art.146 
+alin.(5^6)  din CF 
+    P 
+   </asiguratA1>       
+  </asiguratB1> 
+ 
+0-10 aparitii   (campurile sunt obligatorii daca exista asigurat tip B) 
+Sectiunea B nu poate exista concomitent cu sectiunea A 
+  
+01.2025 
+ 
+29 B1_1 1.Tip asigurat dpdv contract 
+de munca 
+N(2) DA Nomenclator 5 – Tip asigurat A,B 
+ 
+B1_1 = (1,2,3,4-6,8-25, 27-30,31,40,42,44,46 
+,48,51,52,54) 
+ 
+ 
+(tipurile 34,36 se declara doar in A) 
+(tipurile 16,17,23,24 se declara doar in sectiunea 
+B1) 
+ 
+B1_1 = 2(militari) este permis numai in raportarile 
+speciale ale US 
+ 
+Atentie !    
+***Tipurile B1_1 se pot gasi in combinatiile :  
+-  1 + (31) 
+-  46+(42,44)  pt. timp redus 
+- 27pt. membri cooperatori 
+- (25,48) + (16,17,19,23,24,3) (fara Calcul 
+automat in PDF) 
+unde : 
+31,42 nu pot sa apara decat o singura data in   
+ anitary e .  
+ 
+Variabile:  eSalariat, eConstrAgricIT, dat_CASS, 
+dat_CAS, dat_CAM, baza_AJS 
+ 
+eSalariat=false 
+eConstrAgricIT=false 
+dat_CASS=false 
+dat_CAS=false 
+dat_CAM=false 
+baza_AJS=false 
+ 
+   eSalariat=true daca B1_1 = (1,25,27,46,48, 
+,26,47,49,51,52,53,54) 
+ 
+   eConstrAgricIT=true daca  
+Bifa_CAM=1 si exista  B1_1 = (25,48,54) care pot 
+ERR : campul tip asigurat dpdv 
+contract de munca 
+necompletat/incorect 
+ 
+ 
+40 
+fi impreuna cu 3,4,6,12-20,23,24,31,37)   
+ 
+   dat_CASS=true daca B1_1 #  (3,17,24,30)   
+ 
+   dat_CAS=true daca B1_1 # ( 2,15,17, 22, 24 
+,30, 42, 46,52) 
+ 
+   dat_CAM=true  daca datCAM=1 si                           
+B1_1 #  (3,4,15,17,20,23,30,34) 
+ 
+   baza_AJS=true   daca   asigSO=1 si B1_2=0  si    
+B1_1=(1,6,9-25,27,28,31,36,42,46, 48,51,52,54) 
+ 
+daca (detasat#null si plata_CASS #1) 
+atunci dat_CASS=false 
+ 
+daca (detasat#null si plata_CAS #1) 
+atunci dat_CAS=false 
+ 
+daca (detasat#null si plata_CAM #1) 
+atunci dat_CAM=false 
+ 29a B1_sal1 Salariul de bază lunar brut 
+prevăzut în contractul 
+individual de 
+muncă/raportul de 
+serviciu/actul de detaşare 
+sau într-un statut special 
+prevăzut de lege, după caz 
+N(15)  Se completeaza obligatoriu  B1_sal1>0  si/sau  
+B1_sal2 >0   
+  
+ 29b B1_sal2 Venitul brut din salarii și 
+asimilate salariului realizat 
+în baza  contractului 
+individual de 
+muncă/raportului de 
+serviciu/actului de detaşare 
+sau într-un statut special 
+prevăzut de lege, după caz 
+N(15)     
+ 30 B1_2 2.Pensionar N(1) DA Valori : 1-pensionar sau 0   
+ 31 B1_3 3.Tip Contract Munca dpdv 
+timp de lucru 
+C(2) DA Valori : N,P1,P2,P3,P4,P5,P6,P7 unde i<B1_4 pentru 
+Pi din Nomenclator 12 – Tip contract de munca  
+ 
+daca b1_1=(51,52) atunci B1_3=”N” 
+ERR daca i>=B1_4 
+ 
+ 
+ERR 
+B1_1=(51,52) si B1_3 # ”N” 
+ 
+ 
+ 32 B1_4 4.Ore norma zilnica 
+contract a locului de munca 
+N(1) DA B1_4=6,7,8 ERR   
+ 33 B1_5 10.Baza CAM 
+ 
+N(15)  
+  dacă dat_CAM=true si B1_15>0   atunci B1_5>0  
+ 
+ 
+ERR    ???ATT 
+daca dat_CAM=true si B1_15>0   si  
+B1_5=0 
+ 
+ 
+ 34 B1_6 5.Ore lucrate efectiv in luna N(3)  
+daca B1_1#3 atunci 
+{ 
+  daca B1_3 = ‘N’ atunci B1_6 <= NZL * B1_4  
+  daca B1_3= ‘Pi ‘atunci B1_6 <= NZL* i  
+ERR 
+Campul B1_6 eronat 
+ 
+ 
+ERR 
+daca B1_1= (31,42) si B1_6>0 
+J 
+ 
+41 
+} 
+daca B1_1=(31,42) atunci B1_6=0 
+ 
+daca (baza_AJS=true si B1_1#( 31,42) si B1_10>0  
+atunci B1_6>0 
+ 
+ 
+ATT 
+Daca  (baza_AJS=true si  
+B1_1#(31,42)  si  
+B1_10>0  si B1_6=0 
+ 35 B1_7 6.Ore suspendate/ libere in 
+luna  
+N(3)  
+daca B1_1#3 atunci 
+{ 
+daca B1_3= ‘N’ atunci B1_7 <=  (NZL * B1_4) – B1_6  
+daca B1_3= ‘Pi ‘   atunci B1_7<= NZL* i  - B1_6  
+} 
+ 
+  
+ERR daca   
+Ore suspendate în luna  >  
+NZL * Ore norma zilnica contract – 
+Ore lucrate efectiv în luna 
+ 
+ 
+ 
+J 
+ 36 B1_8 7.Din care ore 
+suspendate/reduse/libere, 
+acordate potrivit : 
+- OUG 132/2020,  
+- Legea 19/2020, 
+OUG110/2021. 
+OUG111/2021  si 
+OUG2/2022   OUG36/2022 
+N(3)     
+Daca B1_1=(31,42) atunci B1_8>=0 
+Altfel B1_8=0  
+ 
+ 
+ 
+B1_8<= B1_7 
+ 
+ERR  
+daca B1_1#(31, 42) si B1_8>0  
+ 
+ATT 
+daca B1_1=(31,42) si B1_8=0  
+ 
+ERR daca B1_8> B1_7 
+ 
+J 
+ 37 B1_9 9.Zile suspendate/ reduse/ 
+libere  
+acordate potrivit : 
+- art.1 alin.(1) și art.3 alin. 
+  (1) din OUG 132/2020 
+- Legea 19/2020  
+OUG110/2021, 
+OUG111/2021  si 
+OUG2/2022    
+N(2)    
+Daca B1_1=(31, 42) atunci B1_9>=0 
+Altfel B1_9=0
+
+ 
+ 
+ERR  
+daca B1_1#(31,42,) si B1_9>0  
+ 
+ATT  ERR 
+daca B1_1=(31,42) si B1_9=0 
+P 
+ 
+ 38 B1_10 11.Baza de calcul pentru 
+indemnizatia de somaj 
+SOMAJ  
+N(15)  
+  daca baza_AJS = false atunci B1_10=0 
+ 
+ 
+daca (baza_AJS=true si B1_1#(31,42) si B1_6>0)  
+atunci B1_10>0 
+ 
+ 
+ 
+ERR 
+daca baza_AJS=false  si B1_10>0  
+ 
+ 
+ATT  ERR 
+Daca (baza_AJS=true si 
+B1_1#(31,42) si B1_6>0  si 
+B1_10=0 
+ 
+ 
+J 
+ 39 B1_15 8.Total zile lucrate N(2)    
+B1_15<=NZL-B1_9 daca B1_1#3 
+0<B1_15<=25 daca B1_1=3 
+ 
+daca B1_1=(31,42)  atunci B1_15=0 
+ 
+ERR daca 
+B1_15>NZL-B1_9 si B1_1#3 
+ERR daca  
+(B1_15=0 sau B1_15>25) si B1_1=3 
+ 
+ATT  ERR 
+daca B1_1#(31,42) si B1_15>0 
+ 
+P 
+ 39a B1_16 12.Bază de calcul CAS 
+aferente indemnizației 
+acordate cf. L19/2020, 
+art.1(4) si art.3(1) din 
+OUG132/2020 si  
+OUG110/2021, 
+OUG111/2021  si 
+OUG2/2022    
+N(15)   Daca B1_1=(31) atunci B1_16>0 
+Altfel B1_16=0
+
+ 
+ERR  
+Daca B1_1#(31) si B1_16>0  
+ 
+ATT  
+Daca B1_1=(31) si B1_16=0  
+ 
+P 
+ 
+42 
+ 39b B1_17 13.Bază de calcul CASS 
+aferente indemnizației 
+acordate 
+cf.L19/2020,art.1(4) si 
+art.3(1)  din 
+OUG132/2020 si  
+OUG110/2021, 
+OUG111/2021  si 
+OUG2/2022   
+OUG36/2022 
+N(15)   Daca B1_1=(31,42)  atunci B1_17>=0 
+Altfel B1_17=0
+ 
+ERR  
+Daca B1_1#(31,42)  si B1_17>0  
+ 
+ATT 
+Daca B1_1=(31,42)  si B1_17=0  
+ 
+ 
+        <asiguratB11> 0-10 aparitii 
+Motive scutire 
+     
+ 40 B11_1       
+ 42 B11_3      S 
+ 43b B11_42      P 
+ 43bb B11_43      P 
+ 45 B11_6      S 
+ 46 B11_71     
+ 
+ P 
+          
+</asiguratB11> 
+      
+         </asiguratB1>       
+         <asiguratB2> 0-1 aparitii    
+ 
+  
+ 47 B2_1 Indicativ conditii deosebite/ 
+speciale 
+N(2)  Nomenclator 7 – Indicativ conditii speciale/deosebite 
+(01,02,03,05-08,10-14,16,17,18,19) 
+ERR daca nu e in nomenclator P 
+08.10.25 48 B2_2 Zile lucrate conditii normale N(2)   Daca cel putin un B1_1= ( 2,15, 22,30,46,34,36,52)  
+atunci B2_2=0 
+ERR daca cel puțin un  
+B1_1=( 2,15, 22 ,30, 42,46, 
+34,36,52) si B2_2>0 
+P 
+08.10.25 49 B2_3 Zile lucrate conditii 
+deosebite 
+N(2)   Daca cel putin un B1_1=(2,15, 22,30,42,46,34, 
+36,52)   atunci B2_3=0 
+ 
+Dacă B1_1#(1,25,48) atunci B2_3=0 
+ERR daca cel putin un B1_1= ( 
+2,15, 22 ,30, 42, 46,34,36,52)   si 
+B2_3>0 
+ERR dacă B1_1# (1,25,48) și 
+B2_3>0 
+P 
+08.10.25 50 B2_4 Zile lucrate conditii speciale N(2)   Daca cel putin un B1_1=( 2,15,22 ,30, 42, 46, 
+34,36,52)   atunci B2_4=0 
+ 
+Dacă B1_1#(1,25) atunci B2_4=0 
+ERR daca cel putin un B1_1= ( 
+2,15, 22, 30, 42, 46, 34,36,52)   si 
+B2_4>0 
+ERR dacă B1_1# (1,25) și B2_4>0 
+P 
+08.10.25 51 B2_5 
+ 
+Baza CAS – conditii 
+normale 
+N(15)   Daca cel putin un B1_1=( 2,15,22,30, 42, 46, 
+34,36,52) atunci B2_5=0 
+ 
+ERR daca cel putin un B1_1=  
+( 2,15,22, 30, 42, 46, 34,36,52) si 
+B2_5>0 
+P 
+08.10.25 52 B2_6 
+ 
+Baza CAS – conditii 
+deosebite 
+N(15)   Daca cel putin un B1_1=( 2,15, 22,30, 42, 46, 
+34,36,52) atunci B2_6=0 
+ 
+Dacă B1_1#(1,25,16,23,17,24,48) atunci B2_6=0    
+   
+ 
+ERR daca cel putin un  
+B1_1=( 2,15, 22, 30, 42,46, 
+34,36,52) si B2_6>0 
+ 
+ERR dacă 
+B1_1#(1,25,16,23,17,24,48) și 
+B2_6>0 
+P 
+08.10.25 53 B2_7 Baza CAS – conditii 
+speciale 
+N(15)   Daca cel putin un B1_1 =( 2,15,22,30, 42, 46, 
+34,36,52) atunci B2_7=0 
+ 
+Dacă B1_1#(1,25,16,23,17,24,48) atunci B2_7=0 
+ 
+ 
+ERR daca cel putin un B1_1 =( 
+2,15,22, 30, 42, 46, 34,36,52)  si 
+B2_7>0 
+ 
+ERR dacă 
+B1_1#(1,25,16,23,17,24,48) și 
+B2_7>0 
+P 
+ 
+43 
+ 51p B2_5P 
+ 
+Baza 5.2 Sumă limită de 
+calcul CAS cf. art.146 
+alin.(5^6)  din CF – conditii 
+normale 
+N(15)    P 
+ 52p B2_6P 
+ 
+5.2 Sumă limită de calcul 
+CAS cf. art.146 alin.(5^6)  
+din CF – conditii 
+deosebite 
+N(15)    P 
+ 53p B2_7P 
+ 
+5.2 Sumă limită de calcul 
+CAS cf. art.146 alin.(5^6)  
+din CF – conditii speciale 
+N(15)    P 
+ 52i B2_6i 
+Nu se mai 
+folosesc, 
+pentru ca nu mai 
+au  anitary e din 
+2018  
+Baza CAS – conditii 
+deosebite  
+fara facilitati 
+ 
+    P 
+ 52f B2_6f 
+Nu se mai 
+folosesc, 
+pentru ca nu mai 
+au  anitary e din 
+2018  
+Baza CAS – conditii 
+deosebite 
+cu facilitati 
+    P 
+ 53i B2_7i  
+Nu se mai 
+folosesc, 
+pentru ca nu mai 
+au  anitary e din 
+2018  
+Baza CAS – conditii 
+speciale 
+fara facilitati 
+    P 
+ 53f B2_7f 
+Nu se mai 
+folosesc, 
+pentru ca nu mai 
+au facilitatidin 2018  
+Baza CAS – conditii 
+speciale 
+cu facilitati 
+    P 
+01.2025 S1b B2_5S 5.2  Suma de 300 lei/lună, 
+netaxabilă, cf.OUG 
+nr.168/2022  
+N(15) DA 0<=B2_5S<=300 pt.B1_1=51 
+Altfel B2_5S=0 
+ERR P 
+01.2025 S2b B2_5C 
+???Ar trebui 
+desfiintate 
+5.3  Câştig brut realizat N(15) DA B2_5C= B2_5+ B2_5S pt.B1_1=51 ERR P 
+ S3b B2_6S 6.2  Suma de 300 lei/lună, 
+netaxabilă, cf.OUG 
+nr.168/2022  
+N(15) DA 0<=B2_6S<= 300  pt.B1_1=51 
+Altfel B2_6S=0 
+ERR P 
+01.2025 S4b B2_6C 
+??? Ar trebui 
+desfiintate 
+6.3  Câştig brut realizat N(15) DA B2_6C= B2_6+ B2_6S pt.B1_1=51 
+ 
+ERR P 
+ S5b B2_7S 7.2   Suma de 300 lei/lună, 
+netaxabilă, cf.OUG 
+nr.168/2022  
+N(15) DA 0<=B2_7S<= 300  pt.B1_1=51Altfel B2_7S=0 ERR P 
+01.2025 S6b B2_7C 
+??? Ar trebui 
+desfiintate 
+7.3  Câştig brut realizat N(15) DA B2_7C= B2_7+ B2_7S  pt.B1_1=51 
+ 
+ERR P 
+         </asiguratB2>       
+         <asiguratB3> 0-1 aparitii      
+08.10.25 54 B3_1 1.Zile Indemnizatii conditii 
+normale 
+N(2)    
+Daca cel putin un B1_1=( 2,15,22, 30, 42, 46,34,36,52)   
+atunci B3_1=0 
+ERR daca cel putin un B1_1= 
+( 2,15,22, 30, 42, 46,34,36,52)  si 
+B3_1>0 
+P 
+01.2025 
+08.10.25 
+55 B3_2 2.Zile Indemnizatii conditii 
+deosebite 
+N(2)   Daca cel putin un B1_1=( 2,15,22,,30, 42, 
+46,34,36,52)  ,atunci B3_2=0 
+ERR daca cel putin un B1_1= 
+( 2,15,22, 30, 42-44, 46,34,36,52)  
+P 
+ 
+44 
+ 
+Dacă B1_1#(1,25,16,23,17,24,48) atunci B3_2=0 
+si B3_2>0 
+ERR dacă B1_1#(1,25,16,23,17,24, 
+48) și B3_2>0 
+01.2025 
+08.10.25 
+56 B3_3 3.Zile Indemnizatii conditii 
+speciale 
+N(2)  
+  Daca cel putin un B1_1=( 2,15, 22,30, 42, 
+46,34,36,52)  ,atunci B3_3=0 
+ 
+Dacă B1_1#(1,25,16,23,17,24,48) atunci B3_3=0 
+ERR daca cel putin un B1_1= 
+( 2,15,22, 42,46,34,36,52) si 
+B3_3>0 
+ERR dacă B1_1#(1,25,16,23,17,24, 
+48) și B3_3>0 
+P 
+ 57 B3_4 6.Zile indemnizatii 
+suportate din suma 
+suportata din sumele 
+prevazute pentru 
+asigurarea pentru 
+accidente de munca si boli 
+profesionale în bugetul 
+asigurarilor sociale 
+N(2)   
+B3_4=0 daca datCAM=0 
+ 
+ 
+ 
+ 
+ B3_4=0 daca B3_9=0 
+ 
+ERR daca 
+ (B3_4>0 and datCAM=0 ) 
+‘ Zile prestatii suporate din suma 
+prev.pt.asig.pt.accid.de munca 
+incorecte-Nu datoraeza contributie 
+de accidente de munca’ 
+ 
+ERR daca 
+(B3_4>0 and B3_9=0 ) 
+Zile prestatii suporate din sumele 
+prevazute pentru  accidente de 
+munca>0 si Suma prestatii suporate 
+din sumele prevazute pentru  
+accidente de munca=0 
+ 
+P 
+ 58 B3_5 7.Zile de concediu fara 
+plata indemnizatie pt. 
+cresterea copilului dupa 
+primele 3 nasteri 
+N(2)    P 
+08.10.25 59 B3_6 4.Total zile lucratoare 
+concediu medical (cf OUG 
+158/2005) 
+N(2)   Daca cel putin un B1_1=( 2,15,22,30, 42, 
+46,34,36,52)   ,atunci B3_6=0 altfel B3_6=ΣD_16  
+ERR daca cel putin un B1_1= 
+( 2,15, 22, 30, 42,46,34,36,52) si 
+B3_6>0 
+ 
+ERR daca B3_6#Σ D_16 si nu 
+exista niciun B1_1=( 2,15, 22, 30, 
+42-44, 46,34,36,52)    
+ 
+P 
+08.10.25 60 B3_7 8.Baza calcul cas aferenta 
+indemnizatiilor (OUG 
+158/2005) – asigurat 
+N(15)   Daca cel putin un B1_1=( 2,15, 22,30, 46,34,36,52)   
+,atunci B3_7=0 
+altfel B3_7 = B3_12+B3_13 – B3_7S 
+ 
+ 
+ERR  
+daca B3_7=0 si B3_6>0 sau 
+daca B3_7>0 si B3_6=0 
+ 
+ERR Daca cel putin un B1_1=  
+( 2,15, 22, 30, 42,46,34,36,52)   si 
+B3_7>0                    
+ 
+P 
+ 60S B3_7S 
+ 
+Suma de 300 lei/lună, 
+netaxabilă, cf.OUG nr. 
+168/2022 
+N(15)  0<=B3_7S<= 300 pt.B1_1=51 
+Altfel B3_7S=0
+ P 
+ 60C B3_7C 
+??? Ar trebui 
+desfiintate 
+ 
+Total venit realizat N(15)  B3_7C= B3_7+ B3_7S pt.B1_1=51 
+Altfel B3_7C=0
+ P 
+ 60i B3_7i 
+Nu se mai 
+foloseste 
+Baza CAS indemnizatii 
+(OUG 158/2005) – fara 
+facilitati 
+     
+ 60f B3_7f 
+Nu se mai 
+foloseste 
+Baza CAS indemnizatii 
+(OUG 158/2005) – cu 
+facilitati 
+     
+08.10.25 61 B3_8 5.Total zile lucratoare din  
+concediu medical pentru 
+N(2)  B3_8=0 daca B3_11=0  ERR daca (B3_8=0 si B3_11>0) 
+ERR Daca cel putin un B1_1=( 
+P 
+ 
+45 
+accidente de munca 
+(se completeaza de 
+angajator cu zilele 
+lucratoare de CM cauzate 
+de accident de munca) 
+ 
+  Daca cel putin un B1_1=( 2,15, 22, 30, 42, 
+46,34,36,52)   atunci B3_8=0   
+2,15, 22, 30, 42,43,44, 46,34,36,52)   
+si B3_8>0                    
+ 
+ 62 B3_9 10.Suma indemnizatii de 
+asigurari sociale suportate 
+din suma suportata din 
+sumele prevazute pentru 
+asigurarea pentru accidente 
+de munca si boli profesionale 
+în bugetul asigurarilor sociale 
+N(15)  B3_9=0 daca datCAM=0  ERR daca (datCAM=0 si B3_9<>0 ) 
+‘Nepermis suma prestatii diferita de 0- 
+nu datoreaza contributii de accidente 
+de munca’ 
+S/
+P 
+ 63 B3_10 9.Suma indemnizatii de 
+asigurari sociale suportate 
+de angajator (conform legii 
+346/2002)  
+(se completeaza de 
+angajator ptr primele 3 zile 
+de CM cauzat de accident 
+de munca cu suma de 
+prestatii suportata de 
+angajator) 
+N(15)    S/
+P 
+08.10.25 64 B3_11 11.Total venit asigurat din 
+indemnizatii  
+N(15)  Daca cel putin un B1_1=( 2,15, 22, 30, 42,46,34,36,52)   
+atunci B3_11=0    
+altfel   B3_11 = B3_9+B3_10 
+ ERR  
+B3_11  -mod de calcul eronat 
+ 
+P 
+ 65 B3_12 12.Total indemnizatie de 
+sanatate suportata de 
+angajator (cf.OUG 
+158/2005) 
+N(15)  B3_12= ΣD_20 ERR  
+B3_12 –mod de calcul eronat 
+S/
+P 
+ 66 B3_13 13.Total indemnizatie de 
+sanatate suportata din 
+FNUASS 
+N(15)  B3_13= ΣD_21 ERR  
+B3_13 – mod de calcul eronat 
+S/
+P 
+  </asiguratB3>       
+         <asiguratB4> 1 aparitii    
+ 
+  
+ 67 B4_1 1.Total zile lucrate 
+(sunt numai zile lucrate nu 
+si prestatii) 
+ 
+N(2)  B4_1=B2_2+B2_3+B2_4<= NZL 
+ 
+ERR  
+daca (B4_1>NZL ) 
+‘Numar zile depaseste numarul de 
+zile lucratoare din luna’ 
+P 
+01.2025 67a B4_1r 
+Nu se mai 
+foloseste din 
+01.2025 
+1.1.Total zile lucrate in 
+Romania 
+ 
+N(2)  B4_1r>=0 pt.B1_1=25, 48   
+01.2025 67b B4_1s 
+Nu se mai 
+foloseste din 
+01.2025 
+1.2.Total zile lucrate in 
+afara Romaniei 
+ 
+N(2)  B4_1s>=0 pt.B1_1=25, 48   
+ 68 B4_2 2.Total zile suspendate/ 
+libere  cf,  L19/2020, 
+art.1(1) si art.3(1) din 
+OUG132/2020 
+N(2)  B4_2=ΣB1_9 
+ 
+ P 
+ 69 B4_3 8.Baza pentru indemnizatia 
+de SOMAJ  
+N(15)  B4_3=ΣB1_10 
+ 
+ERR  
+B4_3 calculata eronat 
+J 
+ 71 B4_5 3.Baza CASS N(15)   
+Cmscutit= Σ(D_20+D_21) pt.D_9#(01,07,10) 
+ 
+Daca nu exista niciun B1_1=( 2,15, 22, 30, 
+42,46,34,36,52)   atunci 
+B4_5=(B2_5+B2_6+B2_7) +  ΣB1_17 + 
+ 
+ATT  daca nu exista niciun B1_1= ( 
+2,15, 22, 30, 42,46,34,36,52)   si   
+B4_5# B2_5+B2_6+B2_7+ 
+ΣB1_17+ (B3_7 – CMscutit) 
+P/
+S 
+ 
+46 
+             (B3_7-CMscutit) 
+ 
+ 
+ 
+unde B1_17  pt.B1_1=(31, 42) 
+ 
+ 72 B4_6 4.CASS N(15)   
+B4_6= ROUND (B4_5* Cisan%) 
+ 
+ 
+ 
+ATT  
+Daca B4_6 > suma calculata 
+ 
+ERR daca B1_1=(1) si B4_5>0  si 
+B4_6=0 
+P/
+S 
+01.2025 73 B4_7 5.Baza CAS N(15)  B4_7= B2_5 + B2_6+B2_7+B3_7 
+ 
+daca bifa_CAM=1 si exista B1_1 = (25,48, 54) 
+ atunci B4_7= B4_7i+ B4_7f  
+(corelatie dubla) 
+ 
+ 
+ERR  
+Daca B4_7 difera de suma calculata 
+P 
+01.2025 74 B4_8 6.CAS N(15)   
+daca bifa_CAM=1 si exista B1_1 = (25,48, 54) 
+ atunci B4_8= B4_8i+ B4_8f  
+ altfel  
+ 
+B4_8= ROUND (B4_7  * 25%) 
+ 
+  
+ 
+ 
+ 
+ERR 
+Daca B4_8 difera de suma calculata  
+ 
+P 
+01.2025 P1b B4_7P 5.1 Sumă limită de calcul 
+CAS cf. art.146 alin.(5^6)  
+din CF 
+N(15) DA sm=4050 pt. B1_1#48 
+sm=sm-300  
+ 
+part_time= ROUND(sm*zile_PT /NZL) 
+baza>=B2_5+B2_6+B2_7 
+ 
+Daca baza>0 si baza<part_time 
+ atunci B4_7P =part_time  
+ altfel B4_7P =0     
+ERR ATT 
+daca B4_7P#2_5P+B2_6P+B2_7P 
+P 
+01.2025 P2b B4_8P 6.1  CAS cf. art.146 
+alin.(5^6)  din CF 
+N(15) DA  
+B4_8P = ROUND (B4_7P * 25%)  
+ 
+-daca bifa_CAM=0   
+atunci  B4_8P = ROUND (B4_7P * 25%)  
+ 
+-daca bifa_CAM=1 si exista B1_1 = (25,48, 54)si  
+bifa_pilon2=1 si   (B4_8P <part_time) 
+atunci  B4_8P=ROUND (B4_7P * 25%) 
+ 
+-daca bifa_CAM=1 si exista B1_1 = (25,48, 54) 
+bifa_pilon2=0 si  (B4_8P <part_time) 
+atunci 
+[ 
+    daca B4_8f=0 si B4_8i>=0  atunci  
+            B4_8P = ROUND (B4_7P * 25%) 
+ 
+    daca B4_8f>=0 si B4_8i=0  atunci  
+            B4_8P = ROUND (B4_7P * Cipens_redusa 
+    daca B4_8f>0 si B4_8i>0  atunci  
+ P 
+ 
+47 
+            cas1= ROUND (B4_7P * Cipens_redusa 
+            cas2= ROUND (B4_7P * 25%) 
+            cas1<= B4_8P <=cas2] 
+ 73b B4_18 5.2.Bază de calcul CAS 
+indemnizație acordata  cf. 
+L19/2020  
+N(15)  Daca B1_1=31 atunci B4_18= ΣB1_16 
+Altfel B4_18=0
+ 
+ERR  
+Daca B1_1#31 si B4_18>0  
+ 
+ERR  
+Daca B1_1=31 si B4_18#ΣB1_16  
+ 
+ 74b B4_20 6.2. CAS  
+indemnizație 
+acordata  cf. L19/2020 
+ 
+N(15)  Daca B4_18>0 atunci B4_20= Round(B4_18*0.25)  
+Altfel B4_20=0 
+ 
+ERR mod de calcul eronat 
+ 
+ 
+01.2025 
+ 
+P3b B4_5P 5.3  Sumă limită de calcul 
+CASS cf. art.168 alin.(6^1)  
+din CF 
+N(15) DA  
+sm=4050 pt. B1_1#48 
+sm=sm-300 
+ 
+part_time= ROUND(sm*zile_PT /NZL) 
+ 
+baza= B2_5+B2_6+B2_7 
+daca baza>0 si baza<part_time 
+atunci B4_5P =part_time  
+altfel B4_5P =0   
+ 
+ P 
+ P4b B4_6P 6.3  CASS cf. art.168 
+alin.(6^1)  din CF 
+N(15) DA B4_6P = ROUND (B4_5P * 10%) 
+ 
+ P 
+ S1b B4_7S 5.4  Suma de 300 
+lei/lună, netaxabilă, 
+cf.OUG nr.168/2022  
+N(15) DA B4_7S=B2_5S+B2_6S+B2_7S+B3_7S  ERR  
+ S2b B4_7C 
+??? Ar trebui 
+desfiintate 
+5.5  Câştig brut realizat N(15) DA B4_7C=B2_5C+B2_6C+B2_7C+B3_7C 
+ 
+Daca B4_7S>0 atunci B4_7C = B4_7 + B4_7S 
+Altfel B4_7C=0 
+ 
+ERR   
+ P5b B4_8D 6.1.1 CAS suportata de 
+angajator (dif.) 
+N(15) DA Daca B4_8P >0  
+Atunci B4_8D = B4_8P – B4_8 – B4_20 
+Altfel B4_8D =0 
+ 
+ P 
+ P6b B4_6D 6.3.1 CASS suportata 
+de angajator (dif.) 
+N(15) DA Daca B4_6P >0  
+Atunci B4_6D = B4_6P – B4_6 
+Altfel B4_6D =0 
+ 
+ P 
+ 75 B4_14 7.Baza CAM N(15)    daca dat_CAM=true   
+  atunci B4_14=ΣB1_5 
+  altfel B4_14=0 
+ERR  J 
+ 69 B4_3 8.Baza pentru 
+indemnizatia de SOMAJ  
+N(15)  B4_3=ΣB1_10 
+ 
+ERR  
+B4_3 calculata eronat 
+J 
+ 73a B4_17  
+Nu se mai 
+foloseste din 
+11/2023 
+Bază de calcul CAS 
+indemnizație  
+acordata cf.  
+OUG111/2021 si 
+OUG2/2022  
+OUG36/2022 
+aferentă lunilor 
+anterioare lunii de 
+raportare 
+ 
+     
+ 
+48 
+ 73c B4_24  
+Nu se mai 
+foloseste din 
+11/2023 
+Bază de calcul CAS 
+indemnizație acordata   
+cf. Art.3(1) din 
+OUG132/2020 
+     
+ 73d B4_29  
+Nu se mai 
+foloseste din 
+06/2022 
+Bază de calcul CAS 
+(exclusiv indemnizatii 
+5b,5c,5d) 
+ 
+     
+ 73e B4_21 
+ Nu se mai 
+foloseste din 
+06/2022 
+Bază de calcul CAS 
+indemnizație 
+acordata  cf. 
+OUG111/2021 si 
+OUG2/2022  
+ 
+     
+ 73f B4_22  
+Nu se mai 
+foloseste din 
+11/2023 
+Bază de calcul CAS 
+indemnizație acordata  
+cf. Art.1 (7) din 
+OUG132/2020 
+     
+ 73g B4_23  
+Nu se mai 
+foloseste din 
+08/2022 
+Bază de calcul CAS 
+indemnizație acordata 
+cf.  OUG110/2021 
+ 
+     
+ 74a B4_19 
+Nu se mai 
+foloseste din 
+11/2023 
+CAS  
+indemnizație cf.  
+OUG111/2021 si 
+OUG2/2022  OUG36/2022 
+aferentă lunilor anterioare 
+lunii de raportare 
+ 
+     
+ 74c B4_28  
+Nu se mai 
+foloseste din 
+11/2023 
+CAS indemnizație acordata   
+cf. Art.3(1) din 
+OUG132/2020 
+     
+ 74d B4_30  
+Nu se mai 
+foloseste din 
+06/2022 
+CAS (exclusiv indemnizatii 
+5b,5c,5d)  
+ 
+     
+ 74e B4_25  
+Nu se mai 
+foloseste din 
+06/2022 
+CAS indemnizație 
+acordata  cf.  
+OUG111/2021  si 
+OUG2/2022 
+ 
+     
+ 74f B4_26  
+Nu se mai 
+foloseste din 
+11/2023 
+CAS indemnizație acordata  
+cf. Art.1 (7) din 
+OUG132/2020 
+     
+ 74g B4_27  
+Nu se mai 
+foloseste din 
+08/2022 
+CAS indemnizație acordata 
+cf.  OUG110/2021 
+ 
+     
+         </asiguratB4>      P 
+01.2025  <asiguratB41> 
+Desfiintat 
+Din 01.2025 
+0-1 aparitii   1 aparitie daca bifa_CAM=1  si  
+           exista B1_1 = (25,48, 54) 
+0 aparitii  daca bifa_CAM=0    
+(campurile sunt obligatorii daca bifa_CAM=1 si 
+exista B1_1 = (25,48, 54) pt. constructii/ agric./IT) 
+ 
+ERR  
+daca caenC=null  și câmpurile sunt 
+completate 
+P 
+01.2025 73_i1 B4_7i 
+Nu se mai 
+1.Baza CAS fara 
+facilitati 
+N(15)  Din 11.2023  
+ 
+ P 
+ 
+49 
+foloseste 
+din 01/2023 
+Daca bifa_pilon2 =1  
+Atunci B4_7i = B4_7 
+01.2025 74_i1 B4_8i 
+Nu se mai 
+foloseste 
+din 01/2023 
+2.CAS fara facilitati N(15)  Din 11.2023  
+ 
+Daca bifa_pilon2 =1  
+Atunci B4_8i =B4_7i*25% 
+ P 
+01.2025 73_f1 B4_7f 
+Nu se mai 
+foloseste 
+din 01/2023 
+3.Baza CAS cu facilitati N(15)   
+B4_7f=0  daca (bifa_pilon2=1 sau asigScu#2,7,9)  
+ 
+ERR dacă B4_7f>0 si 
+(asigScu#2,7,9 sau 
+bifa_pilon2=1) 
+ 
+P 
+01.2025 74_f1 B4_8f 
+Nu se mai 
+foloseste 
+din 01/2023 
+4.CAS cu facilitati N(15)   
+B4_8f=0  daca (bifa_pilon2=1 sau asigScu#2,7,9)  
+ 
+ERR valoarea difera de valoarea 
+calculata 
+ERR dacă B4_8f>0 si 
+(asigScu#2,7,9 sau 
+bifa_pilon2=1) 
+ 
+P 
+01.2025 75c SalBrut_B 
+Nu se mai 
+foloseste 
+din 01/2023 
+Salariu brut de incadrare 
+si/sau  Venit asimilat 
+salariilor 
+ 
+N(15)     
+ 71_f1 B4_5f  
+Nu se mai 
+foloseste din 
+11/2023 
+Baza CASS  
+cu facilitati 
+     
+ 72_f1 B4_6f  
+Nu se mai 
+foloseste din 
+11/2023 
+CASS cu facilitati      
+ 71_i1 B4_5i 
+Nu se mai 
+foloseste 
+din 11/2023 
+Baza CASS  
+fara facilitati 
+     
+ 72_i1 B4_6i 
+Nu se mai 
+foloseste 
+din 11/2023 
+CASS fara facilitati      
+ 75_i1 B4_14i 
+Nu se mai 
+foloseste 
+din 01/2023 
+Baza CAM fara facilitati      
+ 75_f1 B4_14f 
+Nu se mai 
+foloseste 
+din 01/2023 
+Baza CAM cu facilitati     P 
+ 75a B_81 
+Nu se mai 
+foloseste 
+din 01/2020 
+Zile per.01-21.07.19      P 
+ 75b B_82 
+Nu se mai 
+foloseste 
+din 01/2020 
+Zile per.22-31.07.19     P 
+ P7b B4_5iP 
+Nu se mai 
+foloseste 
+din 11/2023 
+Sumă limită de calcul 
+CASS cf. art.168 alin.(6^1)  
+din CF 
+    P 
+ P8b B4_6iP  
+Nu se mai 
+CASS cf. art.168 alin.(6^1)  
+din CF     P 
+ 
+50 
+foloseste 
+din 11/2023 
+ P9b B4_7iP  
+Nu se mai 
+foloseste 
+din 11/2023 
+Sumă limită de calcul CAS 
+cf. art.146 alin.(5^6)  din CF     P 
+ P10b B4_8iP 
+Nu se mai 
+foloseste 
+din 11/2023 
+CAS cf. art.146 alin.(5^6)  
+din CF     P 
+ P11b B4_5fP  
+Nu se mai 
+foloseste 
+din 11/2023 
+Sumă limită de calcul 
+CASS cf. art.168 alin.(6^1)  
+din CF 
+     
+ P12b B4_6fP  
+Nu se mai 
+foloseste 
+din 11/2023 
+CASS cf. art.168 alin.(6^1)  
+din CF     P 
+ P13b B4_7fP  
+Nu se mai 
+foloseste 
+din 11/2023 
+Sumă limită de calcul CAS 
+cf. art.146 alin.(5^6)  din CF     P 
+ P14b B4_8fP  
+Nu se mai 
+foloseste 
+din 11/2023 
+CAS cf. art.146 alin.(5^6)  
+din CF     P 
+   </asiguratB41>      P 
+         <asiguratC> 0-10 aparitii   (campurile sunt obligatorii daca exista asigurati tip C)  
+ 
+Sectiunea C poate exista concomitent cu sectiunile A 
+sau B 
+ 
+ERR 
+ 
+ 
+ 
+03.2025 
+08.2025 
+76 C_1 1.Tip asigurat alte entitati 
+asimilate 
+(pt. C_1= 
+2,10,13,14,15,17,30  se 
+calculeaza CAS) 
+N(2) DA Nomenclator 6 – Tip asigurat C 
+ 
+Din 01/2025 s-a adaugat tip 
+asigurat=37,38 
+Din 08/2025 s-a adaugat tip 
+asigurat=39-44 
+ 
+C_1 = (2,4,5,6,10,11,13,14,15,17, 
+22,26,27,28,30,33,34,35,37,38, 39-44) 
+ 
+Explicatie : 
+ 2(P,S), 39-44(S), 4(S), 5(S), 6(S),10(P,S), 
+11,13(P),14(P),15(P),17(P,S), 22(S),26(S),27(S), 
+28(S),30(P,S), 33(P,S), 34(S), 35(S), 36(P) , 37, 
+38(P,S,J) , 
+unde P =CAS ,S=CASS, J=CAM 
+ 
+Obs. :  
+  - C_1=2  declara: C_2,C_19, CAS(C_10,C_11), 
+                                             CASS(C_8,C_9)  
+  - C_1=39-44  declara: C_2,C_19, CASS(C_8,C_9), 
+  - C_1=4 declara sesiunea C pe zero  CASS(C_8,C_9)  
+  - C_1=(5,6)  declara C_2, CASS(C_8,C_9)  
+  - C_1=(37)  declara numai C_2 
+  - C_1=10 declara :  C_5, CAS(C_10, C_11), 
+ERR  
+C_1 – ‘Tip asigurat nu exista in 
+nomenclator 6’ 
+ 
+ERR daca (C_1=10 si cif<> cif 
+CASAN) 
+ 
+ERR daca (C_1=2,15   si cif<> cif 
+AJOFM) 
+ 
+ERR daca (C_1=5,6   si cif<> cif 
+ANPIS) 
+P 
+ 
+51 
+                                             CASS(C_8,C_9)  
+  - C_1=11 declara numai C_3,C_4, C_17,C_18 
+  - C_1=(13,14,15) declara :C_2,C_19, CAS(C_10,C_11) 
+  - C_1=(17) declara: C_2,C_19, CASS(C_8,C_9), 
+                                                    CAS(C_10, C_11) 
+  - C_1=(22,26,27,28):C_2,CASS(C_8,C_9) 
+  - C_1=(30) declara: C_2,C_19, CASS(C_8,C_9), 
+                                                    CAS(C_10, C_11) 
+  - C_1=(33) declara: C_2,C_19, CASS(C_8, C_9), 
+                                                    CAS(C_25,C_26), 
+   - C_1=(34) declara: C_2, CASS(C_8, C_9) 
+  - C_1=(35) declara: C_19, CASS(C_8, C_9) 
+  - C_1=(36) declara: C_2,C_19, CAS(C_27,C_28) 
+  - C_1=(38) declara: C_2=0,C_19, CASS(C_8, C_9), 
+                                   CAS(C_10, C_11), CAM(C_29) 
+ 
+  - doar C_1=2 poate avea sectiune D  
+  - C_1=(17,30) care nu datoreaza CAS,CASS  declara 
+sesiunea C pe zero   
+ 
+C_1 sa fie unic 
+ 
+*Tipurile C_1=33,34,36  pot sa corespunda la mai multe 
+sectiuni E3 (plati per.anterioare). 
+ 
+ 
+05.2025 
+08.2025 
+ 
+77 C_2 2.Zile (pt.stagiu) N(2)  C_2=0 pt.C_1=(4,10,11,35,38) (pt.stagiu) 
+C_2>0 pentru C_1=(5,6,13,14,15,33,36,37,38,39-44) 
+daca C_ 1 = 2  atunci C_2 <=NZC   
+altfel  C_2 <=NZL 
+ERR  P 
+ 80 C_5 3.Total zile concediu 
+medical (cf OUG 158/2005) 
+N(2)   
+- C_5 = Σ D_16 pentru C_1 = 2(somer) si daca D_16>0 
+si D_20+D_21>0 
+ 
+- C_5 <=NZL pentru C_1 = 10 
+ 
+- C_5=0 pt.C_1#(2,10) 
+ERR daca  C_1=10 si C_5=0 
+ 
+ERR daca  C_1=2 si D_16>0 si  
+C_5<> Σ D_16 
+ 
+ERR daca C_1<>(2,10)  si C_5>0 
+ERR daca C_5>NZL 
+pt.tip asigurat(C_1) = (10) 
+ 
+P 
+ 
+         
+ 78 C_3 4.Zile concediu medical 
+pentru accidente de munca 
+N(2)   0 <= C_3 <=NZL 
+ 
+ C_3=0 pt.C_1#(2,11) 
+ERR  
+ 
+P 
+ 87 C_17 5.Zile prestatii suportate din 
+sumele prev. Pt. asig. Acc. 
+Munca 
+N(2)  C_17=0 pt.C_1#(2, 11) ERR  P 
+03.2025 
+08.2025 
+ 
+89 C_19 6.Venit brut N(15)  C_19=0 pt.C_1#(2,13,14,17,30,15,33,36,38, 
+39-44,35) 
+ 
+ P 
+ 79 C_4 7.Indemnizatie pentru 
+accidente de munca si boli 
+profesionale 
+N(15)  C_4=0   pt.C_1#(2, 11) 
+ 
+ P 
+ 88 C_18 8.Suma prestatii de 
+asigurari sociale suportate 
+din sumele prev. Pt. asig. 
+Acc. Munca 
+N(15)  C_18=0 pt.C_1#(2, 11) ERR  P 
+ 
+52 
+03.2025
+08.2025 
+ 
+83 C_8 9.Baza CASS N(15)   C_8 = 0  pt  C_1 # (17,22,26,27,28,30,33,34,38, 
+ 35, 39-44, 2, 4,5,6,10,) 
+C_8=C_19-3000lei  pt. C_1=35 (pensionari) 
+ 
+ATT calcul C_8 – mod de calcul 
+eronat’ 
+ 
+S 
+ 84 C_9 10.CASS N(15)      C_9= ROUND (C_8 * Cisan % ) ATT calcul C_9  
+‚Contributie Individuala SANATATE – 
+mod de calcul eronat’ 
+S 
+03.2025 
+08.2025 
+ 
+85 C_10 11.Baza CAS N(15)   
+salMin= 4050  (pt.an=2025) 
+castigMed=7567 /01.2025, 8199 /02.2025, 8620 / 
+03.2025 
+ 
+C_10=C_19 pt.C_1=(17)  
+C_10=min(C_19,  5*castigMed) pt.C_1=(2,13)  si C_5=0  
+ 
+C_10=min(C_19,  3*salMin) pt.C_1=14  
+ 
+C_10=min(C_19,  5*castigMed) +suma(D_20+D_21) 
+pt.C_1=2 si C_5>0 
+ 
+C_10=0 pt.C_1#(2,10,13,14,15,17,30,38,39-44)  
+C_10  se introduce pt.C_1=10 
+ 
+ ERR calcul C_10  – mod de calcul 
+eronat’ 
+ 
+P 
+03.2025 
+08.2025 
+ 
+86 C_11 12.CAS N(15)   
+Daca C_1=(2,13,14,15,17,30,38, 39-44) si C_5=0  atunci 
+C_11=Round(C_10*Cipens%) 
+ 
+Daca  C_1=2 si C_5>0 (SOMERI) 
+ 
+ P 
+ 85c C_27 11.2. Bază de calcul si CAS 
+PF care realizează venituri 
+din desfășurarea 
+activităților casnice, 
+tichetele preschimbate cf. 
+L111/2022 
+N(15)   
+daca C_ 1 = 36 atunci C_27 >0  
+altfel  C_27 =0 
+ 
+Daca C_1 = 36 atunci 
+C_27 = suma(E3_82) pt E3_1=C si E3_2=36  
+ 
+
+ 
+ERR  
+Daca C_1#36 si C_27 >0 
+ 
+ 
+ 86c C_28 12.2. CAS PF care 
+realizează venituri din 
+desfășurarea activităților 
+casnice, tichetele 
+preschimbate cf. L111/2022 
+N(15)   
+daca C_ 1 = 36  atunci C_28 >=0   
+altfel  C_28 =0 
+ 
+ERR  
+Daca C_1#36  si C_28 >0 
+ 
+ 
+ 85b C_25 11.1 Baza  CAS sume 
+incasate de personalul 
+ anitary din contracte 
+prestari   
+ Servicii, cf. OUG3/2021, 
+aferente lunilor anterioare 
+lunii de raportare 
+ 
+N(15)   
+daca C_ 1 = 33 atunci C_25 >0  
+altfel  C_25 =0 
+ 
+Daca C_1 = 33 atunci 
+C_25 = suma(E3_46) pt E3_1=C si E3_2=33  
+ 
+
+ 
+ERR  
+Daca C_1#33 si C_25 >0 
+ 
+ 
+ 86b C_26 12.1 CAS sume incasate 
+de personalul  anitary din 
+contracte prestari   
+ Servicii, cf. OUG3/2021, 
+aferente lunilor anterioare 
+lunii de raportare 
+ 
+N(15)   
+daca C_ 1 = 33  atunci C_26 >=0   
+altfel  C_26 =0 
+ 
+ERR  
+Daca C_1#33 si C_26 >0 
+ 
+ 
+ 
+53 
+ 83a C_22  
+Nu se mai 
+foloseste din 
+06/2022. 
+      
+ 84a C_24  
+Nu se mai 
+foloseste din 
+06/2022. 
+      
+ 77a C_20  
+Nu se mai 
+folosește 
+      
+ 85a C_21 
+ Nu se mai 
+foloseste din 
+06/2022. 
+      
+ 86a C_23  
+Nu se mai 
+foloseste din 
+06/2022. 
+     
+ 
+P 
+08.2025 86b C_29 13.baza de calcul CAM N(15)   
+daca C_ 1 = 38  atunci C_29 >=0   
+altfel  C_29 =0 
+ 
+ERR  
+Daca C_1#38 si C_29 >0 
+ 
+J 
+         </asiguratC>       
+08.2025         <asiguratD> 0-10 aparitii   (campurile sunt obligatorii daca exista certificate 
+medicale) Sectiunea D nu poate exista concomitent cu 
+sectiunea A. 
+ 
+Obs. cf.Normelor de aplicare ale OUG 158/2005:  
+      Pe parcursul unui episod de boala, nr.de zile 
+din certificatul de CM initial se aduna cu nr.de zile 
+din certificatele de CM acordate in continuare. 
+      Nr.de zile total rezultat pentru intregul episod 
+de boala care se intinde pe 2luni, va conduce la 
+majorarea  procentului de aplicat asupra bazei de 
+calcul si la recalcularea indemnizatiilor pentru luna 
+precedenta. 
+ 
+ 
+Obs. : 
+CM pentru accidente se declara in 
+D112 doar daca NU au fost 
+confirmate de CNPP ! 
+ 
+ 90a Data_CMI Data început valabilitate 
+concediu medical initial  
+(în cazul CM în 
+continuare)   
+(zz.ll.aaaa) 
+D(10)  Data_CMI # null daca (D_3 # null si D_4 # null) ERR 
+Data_CMI necompletat pt. (D_3 # 
+null si D_4 # null) 
+ 
+ 90 D_1 1.Seria cetificatului de 
+concediu medical 
+C(5) DA Perechea (D_1,D_2) unica pe raportare      (certificat 
+medical unic) 
+ 
+Se accepta sectiunea D numai pentru tip asigurat 
+B1_1#4,5,2,13,15,20 si pentru tip asigurat C_1=2 
+ 
+ERR : Certificatul medical (serie si 
+nr) nu este unic pe raportare 
+S 
+ 91 D_2 2.Numarul certificatului 
+de concediu medical 
+C(10) DA Perechea (D_1,D_2) unica pe raportare        
+(certificat medical unic) 
+ERR : Certificatul medical (serie si 
+nr) nu este unic pe raportare 
+S 
+ 92 D_3 3.Seria cetificatului de 
+concediu medical initial/ 
+anterior 
+C(5)  Perechea (D_1,D_2) # Perechea (D_3,D_4)  S 
+ 93 D_4 4.Numarul certificatului 
+de concediu medical 
+C(10)  Perechea (D_1,D_2) # Perechea (D_3,D_4) 
+D_4#null daca D_3 # null 
+ S 
+ 
+54 
+initial/ anterior 
+ 94 D_5 5.Data acordarii 
+certificatului medical 
+(zz.ll.aaaa) 
+D(10) DA  
+Daca perechea (D_1,D_2) # null  
+atunci D_5 # null 
+ 
+ERR : data acordarii concediului 
+medical este obligatorie 
+S 
+ 95 D_6 6.Data inceput 
+valabilitate CM 
+ 
+D(10) DA  
+D_6 trebuie sa fie in cursul lunii de raportare 
+ 
+daca (D_3=null si D_4=null)  atunci D_5=D_6 sau 
+D_5=D_6+1zi 
+ 
+Incepand cu 01.2018 
+daca (D_3=null si D_4=null)  atunci D_5>=D_6   
+(eroare pt.CM initial) 
+ 
+ 
+ 
+daca (D_3#null si D_4#null si D_10#4, 5)  
+atunci D_5<=D_6 
+( avertisment 1 pt.CM in continuare) 
+ 
+ 
+ 
+daca (D_3#null si D_4#null si D_10=4, 5)  
+atunci D_5>D_6  
+(avertisment 2 pt.CM in continuare) 
+ 
+Data acordarii unui certificat medical initial trebuie sa fie 
+aceeasi cu data de inceput a perioadei de valabilitate 
+sau mai mare cu cel mult o zi (D_5=D_6 sau 
+D_5=D_6+1zi)  
+cu urmatoarele exceptii : 
+-pt. perioada de internare 
+-pt. sarcina si lauzie (numai CM pentru maternitate) 
+-situaţii pentru care este necesar avizul medicului expert 
+al asigurarilor sociale peste 90 de zile 
+-in caz de carantina 
+-pt. aparat gipsat (numai de medicul ortoped/chirurg 
+-pt. persoanele la care  face referire art.32 si art.33 din 
+Ordin 60/2006 
+ 
+- pt. toate certificatele de CM  aferente perioadei starii de 
+urgenţă, potrivit 78^1 din Normele de aplicare a OUG 
+158/2005  
+ 
+Pot intra la raportare  toate certificatele de CM acordate 
+cu retroactivitate dar nu mai târziu de 30 de zile 
+calendaristice de la data încetării perioadei stării de 
+urgenţă (perioada de referinţă este 16.03-13.06.2020) 
+ 
+Certificatele de CM, care cuprind a 91-a zi sau depăşesc  
+183 de zile precum şi cele acordate pentru risc maternal, 
+aferente  perioadei 01.12 2019-13.06.2020, nu 
+sunt condiţionate de avizul medicului expert sau al celui 
+de medicina muncii sau al medicului de familie. 
+ERR  Data de inceput valabilitate nu 
+este in luna si anul de raportare 
+ 
+ATT : Pentru CM initiale si 
+D_5>D_6+1 
+ 
+ 
+eroare : 
+Pentru CM initiale si D_5<D_6 
+ 
+ 
+ 
+avertisment 1 : 
+Pentru CM in continuare si 
+D_5>D_6  
+(explicatie: data acordarii  
+nu poate fi > decât data la care se 
+termina valabilitatea CM acordate 
+anterior pentru aceeaşi afecţiune) 
+ 
+avertisment 2 : 
+Pentru CM in continuare si 
+D_5<=D_6   
+ 
+(explicatie: data de acordare poate fi 
+> decat data de inceput a CM doar 
+pentru persoanele aflate sub 
+incidenta art. 27, 28 din Ordin 
+15/2018 si art. 27^1 din OUG 
+158/2005 – 
+pers. care au urmat un tratament în 
+strainatate pentru afecţiuni care nu 
+pot fi tratate în ţara sau care au 
+urmat un tratament in timp ce se afla 
+în alta ţara sau pentru îngrijirea 
+copilului bolnav daca însoţesc 
+copilul la tratament pe teritoriul unui 
+stat) 
+ 
+S 
+ 96 D_7 7.Data incetare 
+valabilitate CM 
+D(10) DA  
+D_7 >= D_6  si D_7 – D_6 + 1 <= 10  zile  
+ daca D_10=1 si   
+ERR : 
+Concediul medical eliberat pentru 
+incapacitate temporara de munca de 
+S 
+ 
+55 
+[D_9 = (01, 04) sau (D_9=05 si D_12#35) ] 
+ 
+ 
+ 
+D_7 >= D_6  si D_7 – D_6 + 1 <= 5 zile  
+  daca D_10=(1, 3) si D_9 = 06 
+ 
+ 
+D_7 sa apartina de luna_r si an_r 
+ 
+catre medicul de familie nu poate 
+depasi 10 zile calendaristice. 
+ 
+ERR  Concediul medical eliberat in 
+ambulatoriu pentru urgente medico-
+chirurgicale nu poate depasi 5 zile 
+calendaristice. 
+ 
+ERR Data de incetare valabilitate nu 
+este in luna si anul de raportare 
+ 97 D_8 8.CNP/CIS  copil   
+ 
+N(13)  
+Verificare CNP 
+Obligatoriu pentru D_9 = (09,91,92) 
+ERR : 
+Daca D_9=09,91,92  si D_8 = null : 
+Pt. cod de indemnizatie 09,91,92 
+trebuie sa se completeze CNP / cod 
+CIS copil pentru care a fost eliberat 
+certificatul medical. 
+S 
+ 97a D_8a 8.1.CNP/CIS  pacient cu 
+afectiuni oncologice 
+N(13)  
+Verificare CNP 
+Obligatoriu pentru D_9 = (17) 
+ERR : 
+Daca D_9=17 si D_8a= null : 
+Pt. cod de indemnizatie 17 trebuie 
+sa se completeze CNP/ CIS pacient 
+cu afectiuni oncologice pentru care 
+a fost eliberat certificatul medical. 
+S 
+ 98 D_9 9.Codul indemnizatiei 
+notat pe certificatul de 
+concediu medical 
+C(2) DA Nomenclator 9 – Cod indemnizatie boala (certificate 
+medicale) – cod 01-17 
+ 
+-D_9=05 daca  
+(D_12=35 si (D_5<=02.11.2020 sau  
+D_5>=24.10.2023)) 
+ 
+-D_9=51 daca D_5>=30.10.2020 
+ 
+Obs : 
+Daca asiguratul are concediu medical datorat unui 
+accident de munca confirmat de casa de pensii, nu 
+trebuie sa il raporteze in sectiunea D a D112. Acesta e 
+decontat de casa de pensii. 
+ERR 
+Certificatele cu codul de 
+indemnizatie 11 nu se raporteaza la 
+F.N.U.A.S.S. 
+ 
+ATT 
+ 
+S 
+ 99 D_10 10.Locul de prescriere a 
+certificatului medical 
+N(2) DA 
+D_10 in Nomenclator 8 – Loc prescriere (certificate 
+medicale)  
+ERR : 
+Daca D_10 is nul : 
+Nu s-a completat locul prescrierii 
+S 
+ 100 D_11 11.Cod urgenta medico-
+chirurgicala 
+C(3)  D_11 si D_12 nu pot fi completate simultan  
+   
+ 
+  D_11<=175 daca D_5<=29.05.2020 sau 
+  D_11<=177 daca D_5  >29.05.2020  
+ 
+ 
+ 
+daca D_9=06 atunci atunci D_11#null 
+  
+ERR : 
+D_11 si D_12 nu pot fi completate 
+simultan  
+Codurile de urgente medico-
+chirurgicale si boli infecto 
+contagioase nu se pot completa 
+simultan 
+ 
+ERR : 
+Daca D_9 =06 si D_11 is null  
+Nu s-a completat codul de urgenta 
+medico-chirurgicala 
+S 
+ 101 D_12 12.Cod boala infecto-
+contagioasa  
+grupa A sau 
+boala infecto-
+contagioasa pentru care 
+se instituie masura 
+C(2)  D_11 si D_12 nu pot fi completate simultan 
+ 
+ 
+  D_12<= 36 daca (D_5<=29.05.2020 sau  
+                              D_5>=24.10.2023) 
+  D_12<= 35 daca D_5  >29.05.2020   
+ERR : 
+D_11 si D_12 nu pot fi completate 
+simultan  
+(Codurile de urgente medico-
+chirurgicale si boli infecto 
+contagioase nu se pot completa 
+simultan) 
+S 
+ 
+56 
+izolarii (cf.HG 921/ 
+28.10.2020) 
+ 
+ 
+daca D_9= (05,51)  atunci D_12#null 
+  
+ 
+ERR: 
+Daca D_9 = (05,51)   si D_12= null  
+Nu s-a completat codul de boli 
+infeco-contagioase 
+ 102 D_13 13.Numarul avizului 
+medicului expert 
+C(10)  D_13#null pentru  D_9 = 10 ERR : 
+Daca D_9 = 10 si D_13 null : 
+Pentru reducerea cu 1/4 a duratei 
+normale de lucru se completeaza 
+numarul avizului medicului expert. 
+S 
+ 103 D_14 14.Zile prestatii (zile 
+lucratoare) suportate de 
+angajator 
+N(2) DA 
+0<=D_14<=5  pt. D_9#(05,51,07) 
+D14=0 pentru tip asigurat C_1=2 (someri) 
+ 
+ERR ; 
+daca D_14>5 : 
+Numarul de zile suportate de 
+angajator nu trebuie sa depaseasca 
+5 zile 
+S 
+ 104 D_15 15.Zile prestatii (zile 
+lucratoare) suportate de 
+FNUASS 
+N(2) DA   S 
+ 105 D_16 16.Total Zile prestatii 
+(zile lucratoare) aferente 
+concediului medical 
+N(2) DA D_16 = D_14+D_15 
+D_16<=NZL 
+ERR : 
+daca D_16>NZL : 
+Numarul de zile lucratoare aferente 
+concediului medical depaseste 
+numarul total de zile lucratoare din 
+luna de raportare 
+S 
+01.2025 106 D_17 17.Suma venituri 
+ultimele 6 luni 
+N(6) DA  
+ 
+Pentru an=2025 
+sal1=3700;  
+sal2=4050; 
+  
+if(lu1==1) limita=12 * (6*sal1+0*sal2); 
+if(lu1==2) limita=12 * (5*sal1+1*sal2); 
+if(lu1==3) limita=12 * (4*sal1+2*sal2); 
+if(lu1==3) limita=12 * (3*sal1+3*sal2); 
+if(lu1==3) limita=12 * (2*sal1+4*sal2); 
+if(lu1==3) limita=12 * (1*sal1+5*sal2); 
+if(lu1>6)   limita=12 * (0*sal1+6*sal2); 
+ 
+Daca (D_1, D_2 #null) si (D_3, D_4 = null) 
+ atunci D_17 (luna_r) <= limita 
+ 
+ 
+ATT :  
+D_17 = 0 doar in cazurile prev.de 
+lege (OUG 158) 
+ 
+ERR :  
+D_17 nu poate depasi suma de 12 
+salarii minime lunare pe ultimele 6 
+luni  
+S 
+ 107 D_18 18.Numar de zile 
+aferente veniturilor din 
+ultimile 6 luni 
+N(3) DA   
+ 0<= D_18 <= 132 zle lucratoare 
+ 
+Daca D_17=0  atunci D_18=0 
+   
+ 
+ERR :  
+D_18>132  zile lucratoare 
+ 
+ERR : 
+Daca D_17=0  si D_18>0 
+S 
+ 108 D_19 19.Media zilnica a bazei 
+de calcul 
+N(6.2) 
+ 
+ 
+DA D_19 = ROUND(D_17/D_18,2))  
+ 
+ 
+Daca D_17=0 si D_18=0 atunci D_19=0 
+ 
+ERR :  
+Media zilnica a bazei de calcul –mod 
+de calcul eronat 
+ 
+ERR : 
+Daca D_17=0  si D_18=0 si D_19>0 
+S 
+ 109 D_20 20.Indemnizatie 
+sanatate suportata de 
+angajator 
+N(15) DA 
+Daca D_9 = (08.09,91,92,10,15,17)  atunci D_20=0 
+ 
+ 
+Obs. 
+ 
+ 
+ERR:Pentru cod indemnizatie 
+(08,09,91,92,10,15,17), 
+indemnizatia se suporta doar din 
+S 
+ 
+57 
+Instit.publice care suporta integral carantina si bolile cu 
+izolare, pentru D_9 =05.07,51,  
+completeaza (D_14>0, D_20>0)  si (D_15=0, D_21=0). 
+ 
+FNUASS 
+ 110 D_21 21.Indemnizatie 
+sanatate suportata din 
+FNUASS 
+N(15) DA  
+ 
+ 
+ERR: Indemnizatie sanatate 
+suportata din FNUASS nu a fost 
+completata  
+ 
+ 
+S 
+ 110.2 D_23 22.Cod boala C(3) DA Se completeaza cu codul de boala(diagnostic) din 
+certificatul medical 
+Daca D_9=15, D_23=RM 
+  
+08.2025 110.3 D_28  Procentul de 55% / 65% 
+/ 75% aplicat asupra 
+bazei de calcul pentru 
+certificatele de CM     
+N(2)   
+Modif. 01.02.2026 – cf.OUG 91/2025 
+ 
+Incepand cu  01.02.2026  (pana la 01.02.2027) , in 
+sectiunea D (concedii medicale) , la ‘14. Zile prestaţii 
+(zile lucratoare) suportate de angajator (D_14)’  se va 
+calcula  mai putin cu 1zi  si se va calcula indemnizatia 
+aferenta.  
+Exceptie se face pentru ‘9. Codul indemnizaţiei notat pe 
+certificatul de concediu medical (D_9)’, pentru D_9=51, 
+pentru care nu se va scadea 1zi.  
+ 
+Modif. 01.07.2026 – cf.OUG 89/2025 
+ 
+Incepand cu  01.07.2026  NU se va mai depune 
+declaratie rectificativa pentru  luna  precedenta (cu 
+procentul si indemnizatiile corectate ),  ci se va completa 
+asa in 07/2026: 
+     indemnizatia recalculata  07/2026 = rest 
+indemnizatie 06/2026 +   indemnizatie 07/2026 
+ 
+Modif. 23.09. 25 – cf.OUG 158/2005 
+ 
+daca D_9 = 01  (si numai daca e cazul pentru 
+agregarea in sectiunile C2/ E2 angajator)  
+atunci D_28 =(55,65,75,null) 
+altfel  D_28=null 
+ Fiecare CM (cu D_9=01 si numai daca e cazul 
+pentru agregarea in sectiunile C2/ E2 
+angajator) va avea completat procentul  
+55/65/75/null 
+ Doar concediile in continuare (cu D_9=1) vor 
+cumula nr.de zile 
+ Se va redepune  luna  precedenta cu procentul si 
+indemnizatiile corectate  
+ 
+  
+         </asiguratD>       
+ 110A        <asiguratE1> 0-1 aparitii  
+Venituri din salarii 
+obtinute la functia de 
+baza 
+  Sectiune  pentru asigurat in sectiunea A, B sau pentru 
+C_1 in (1,19,25) 
+ERR  
+ERR- Aveti o sectiune asiguratE3 
+completata pentru functia de baza si 
+sectiune asiguratE1 lipsa 
+ 
+ 111 E1_1 1.Venit brut obtinut la 
+functia de baza  
+N(15) DA E1_1>=0 
+=∑E3_8 pentru E3_3=1 
+ 
+ATT- mod calcul eronat  
+ 112 E1_2 2.Contributii sociale 
+obligatorii 
+N(15) DA E1_2>=0 
+=∑E3_9 pentru E3_3=1 
+ATT - mod calcul eronat  
+ 
+58 
+ 
+ 113 E1_3 3.Numar persoane aflate in 
+intretinere 
+N(2) DA E1_3>=0 
+=max(E3_11) pentru E3_3=1 
+ 
+ATT - mod calcul eronat  
+ 114 E1_4 4.Deducere  personala N(15) DA E1_4=E1_41+E1_42 
+ 
+ATT - mod calcul eronat  
+ 114a E1_41 4.1.Deducere personală de 
+bază 
+N(15) DA E1_41>=0 
+=∑E3_121 pentru E3_3=1 
+ 
+ATT - mod calcul eronat  
+ 114b E1_42 4.2.Deducere personală 
+suplimentară 
+N(15) DA E1_42=E1_421+E1_422 
+ 
+ATT - mod calcul eronat  
+ 114c E1_421 4.2.1 Deducere personală 
+suplimentară, cf.art.77 
+alin.(10) lit.a) din CF 
+N(15) DA E1_421>=0 
+=∑E3_1221 pentru E3_3=1 
+ 
+  
+ 114d E1_422 4.2.2 Deducere personală 
+suplimentară, cf.art.77 
+alin.(10) lit.b) din CF 
+N(15) DA E1_422>=0 
+=∑E3_1222 pentru E3_3=1 
+ 
+  
+ 115 E1_5 5.Alte deduceri N(15) DA E1_5>=0 
+=∑E3_13 pentru E3_3=1 
+ 
+ATT - mod calcul eronat  
+ 116 E1_6 6.Venit baza de calcul al 
+impozitului 
+N(15) DA E1_6>=0 
+=∑E3_14 pentru E3_3=1 
+ATT - mod calcul eronat  
+ 117 E1_7 7.Impozit retinut N(15) DA E1_7>=0 
+=∑E3_15 pentru E3_3=1 
+ATT - mod calcul eronat  
+  </asiguratE1>    
+ 
+  
+ 117A   <asiguratE2> 0-1 aparitii  
+Alte venituri din salarii 
+  
+Sectiune  pentru asigurat in sectiunea A, B sau C 
+ 
+ERR- Aveti o sectiune asiguratE3 
+completata pentru venituri in afara 
+functiei de baza si sectiune 
+asiguratE2 lipsa 
+ 
+            
+ 
+  
+ 118 E2_1 1.Venit brut  N(15) DA E2_1>=0 
+=∑E3_8 pentru E3_3=2 
+ 
+ATT -mod calcul eronat  
+ 119 E2_2 2.Contributii sociale 
+obligatorii 
+N(15) DA E2_2>=0 
+=∑E3_9 pentru E3_3=2 
+ 
+ATT - mod calcul eronat  
+ 120 E2_3 3.Venit baza de calcul al 
+impozitului 
+N(15) DA E2_3>=0 
+ 
+=∑E3_14 pentru E3_3=2 
+ 
+ATT - mod calcul eronat  
+ 121 E2_4 4.Impozit retinut N(15) DA E2_4>=0 
+=∑E3_15 pentru E3_3=2 
+ 
+ATT - mod calcul eronat  
+   </asiguratE2>       
+ 121A 
+121B 
+   <asiguratE3> 1-20 aparitii  
+ 
+Date detaliate privind 
+impozitul pe venit 
+  Nr aparitii sectiune asiguratE3(tip_asigurat)>= count(tip 
+asigurat) 
+ 
+ERR- Sectiune E3 lipsa 
+ 
+ERR- nr aparitii sectiune asiguratE3 
+pt fiecare tip asigurat< nr aparitii 
+calculat pentru fiecare tip asigurat 
+ 
+ 
+ 122 
+ 
+E3_1 1.Secţiune asigurat  C(1) DA E3_1=’A’ , ‘B’ sau ‘ C’ ERR- valoare eronata 
+ERR- tip asigurat din sectiunea 
+A/B/C trebuie sa fie = cu tip asigurat 
+declarat in E3 si reciproc 
+ 
+ 
+59 
+ 123 E3_2 2.Tip asigurat N(2) DA Nomenclator5 sau  Nomenclator6, 
+in functie de E3_1 
+ERR- valoare eronata  
+01.2025 124 E3_3 3.Funcţie de baza  N(1) DA  
+=1, pentru functia de baza 
+=2, pentru venit in afara functiei de baza  
+=3, nu e cazul 
+Daca (E3_1=’B’ sau E3_1=’A’) si E3_2=51,52,54 
+Atunci  E3_3=1 
+ERR- valoare eronata  
+ 125 E3_4 4.Tip venit referitor la 
+perioada de raportare (P 
+sau A) 
+C(1) DA  
+=’P’ pentru veniturile din perioada de raportare 
+=’A’ pentru venituri din alta perioada 
+ 
+Daca            (E3_1=’C’  si E3_2=33,34)  
+atunci E3_4 = ’A’  
+ 
+Daca            (E3_1=’C’  si E3_2=36)  
+atunci E3_4 = ’A’ sau ’P’ 
+ 
+ 
+ERR- valoare eronata  
+ 126 E3_5 5.Perioada venitului din alta 
+perioada decât cea de 
+referinţa- luna si an început 
+C(7)   
+E3_5= ‘LL-AAAA pentru (E3_4=’A’ si E3_7#70,100) 
+unde AAAA<=an raportare 
+ 
+E3_5=null daca E3_4=’P’ sau  
+   (E3_1=’C’  si   E3_2=33,34,36) 
+ 
+ 
+Perioada E3_5 <= Perioada E3_6 
+Perioada E3_5 <Perioada (luna, an) raportare 
+ERR- valoare eronata 
+ERR daca E3_4=’A’ si E3_7#70,100 
+si E3_5=null 
+ 
+ 
+ERR- campul se completeaza doar 
+pentru venituri din alta perioada 
+ 
+ 
+ERR- Perioada inceput venit din alta 
+perioada trebuie sa fie anterioara 
+luna,an raportare 
+ERR- Perioada inceput venit din alta 
+perioada trebuie sa fie anterioara 
+perioadei sfarsit venit alta perioada 
+ 
+ 
+ 
+ 127 E3_6 6.Perioada venitului din alta 
+perioada decât cea de 
+referinţa- luna si an sfârşit 
+C(7)   
+E3_6= ‘ll-aaaa’ pentru (E3_4=’A’ si E3_7#70,100) 
+aaaa<=an raportare 
+ 
+E3_5=null daca E3_4=’P’ sau  
+   (E3_1=’C’  si E3_2=33,34,36) 
+ 
+Perioada E3_5 <= Perioada E3_6 
+Perioada E3_6 < Perioada (luna, an) raportare 
+ERR- valoare eronata 
+ERR daca E3_4=’A’ si E3_7#70,100 
+si E3_6=null 
+ 
+ 
+ERR- campul se completeaza doar 
+pentru venituri din alta perioada 
+ 
+ERR- Perioada sfarsit venit din alta 
+perioada trebuie sa fie anterioara 
+luna,an raportare 
+ERR- Perioada inceput venit din alta 
+perioada trebuie sa fie anterioara 
+perioadei sfarsit venit alta perioada 
+ 
+ 
+ 
+  Nu se mai 
+foloseste din 
+11.2023 
+Pentru indemnizația acordata 
+conform  
+     
+ 
+60 
+ 127a E3_37 
+Nu se mai 
+foloseste din 
+11.2023 
+      
+ 127b E3_38 
+Nu se mai 
+foloseste din 
+11.2023 
+      
+ 127c E3_39 
+Nu se mai 
+foloseste din 
+11.2023 
+      
+ 127d E3_40 
+Nu se mai 
+foloseste din 
+11.2023 
+      
+ 127e E3_41 
+Nu se mai 
+foloseste din 
+11.2023 
+      
+ 127f E3_42 
+Nu se mai 
+foloseste din 
+11.2023 
+      
+   
+ 
+ 
+Pentru veniturile realizate 
+de PF care desfășoară 
+activități casnice potrivit 
+Legii nr.111/2022   (rd.6.1-
+6.6) 
+  (se raporteaza de catre ANOFM din 2024)  
+ 
+O sectiune C insumeaza CAS din mai multe sectiuni E3 
+si E3_93>=E3_82. ??? 
+  
+ 127l E3_80 
+ 6.1Perioada de raportare 
+(LL-AAAA)  
+C(7)   
+E3_80#null  pentru  (E3_1=’C’  si E3_2=36) 
+ 
+E3_80 >=01-2024 
+E3_80 <=luna_r 
+ 
+ 
+Perioada E3_80 trebuie sa fie anterioara perioadei de 
+raportare sau in luna de raportare. 
+
+ 
+ERR daca 
+E3_80#null si  
+NOT(E3_1=’C’  si E3_2=36) 
+ 
+ERR daca 
+E3_80=null si E3_1=’C’  si E3_2=36 
+si  d_rec=0 
+ 
+ERR pt.E3_80<01-2024 
+ERR pt.E3_80>luna_r 
+ 
+ERR – format eronat 
+ 
+ 
+ 
+ 127m E3_81 
+ 6.2 Numar zile  N(2)   
+E3_81>0 pentru  (E3_1=’C’  si E3_2=36) 
+ 
+
+ 
+ 
+ERR daca 
+E3_81>0 si  
+NOT(E3_1=’C’  si E3_2=36) 
+ 
+ERR daca 
+E3_81=0 si E3_1=’C’  si E3_2=36 si  
+d_rec=0 
+ 
+ 127n E3_82 
+ 6.3 Baza de calcul CAS  N(15)   
+E3_82>0 pentru  (E3_1=’C’  si E3_2=36) 
+ 
+C_27=suma(E3_82) 
+ 
+ERR daca 
+E3_82>0 si  
+NOT(E3_1=’C’  si E3_2=36) 
+ 
+ 
+ 
+61 
+ ERR daca 
+E3_82=0 si E3_1=’C’  si E3_2=36 si  
+d_rec=0 
+ 
+ 127o E3_83 
+ 6.4 CAS  N(15)   
+E3_83>0 pentru  (E3_1=’C’  si E3_2=36) 
+E3_83=Round(E3_82 * 0.25)
+
+ 
+ERR 
+Daca  E3_83#Round(E3_82 * 0.25) 
+ 
+ 
+ 
+ 127p E3_92 
+ 6.5 Numar zile tichete 
+preschimbate 
+N(2)   
+E3_92>0 pentru  (E3_1=’C’  si E3_2=36)
+ 
+ 
+ERR daca 
+E3_92>0 si  
+NOT(E3_1=’C’  si E3_2=36) 
+ 
+ERR daca 
+E3_92=0 si E3_1=’C’  si E3_2=36 si  
+d_rec=0 
+ 
+ 127q E3_93 
+ 6.6 Baza de calcul CAS 
+tichete preschimbate 
+N(2)   
+E3_93>0 pentru  (E3_1=’C’  si E3_2=36)
+E3_93>=E3_82  
+ 
+ERR daca 
+E3_93>0 si  
+NOT(E3_1=’C’  si E3_2=36) 
+ 
+ERR daca 
+E3_93=0 si E3_1=’C’  si E3_2=36 
+si  d_rec=0 
+ 
+ERR daca  E3_93<E3_82  
+ 
+ 
+   Pentru sumele încasate de 
+personalul medico-sanitar 
+și auxiliar sanitar care își 
+desfășoară activitatea în 
+baza contractelor de 
+prestări servicii prevăzute 
+de O.U.G. nr. 3/2021, 
+pentru care se aplică 
+regimul fiscal specific  
+veniturilor asimilate  
+salariilor  (rd.6.7-6.11) 
+     
+ 127g E3_45 
+ 6.7 Perioada de raportare 
+(LL-AAAA) 
+C(7)   
+E3_45 #null pentru   
+(E3_1=’C’  si E3_2=33,34) 
+ 
+ 
+Perioada E3_45 trebuie sa fie anterioara perioadei de 
+raportare 
+ 
+E3_45 > 01-2021 
+ 
+ERR  
+Daca E3_45#null si  
+NOT(E3_1=’C’  si E3_2=33,34)  
+ 
+ERR daca 
+E3_46=0 si E3_1=’C’  si E3_2=33 
+si  d_rec=0 
+ 
+ERR pt.E3_45<02-2021 
+ 
+ERR – format eronat 
+ 
+ 
+ 127h E3_46 
+ 6.8Baza de calcul CAS  N(15)   ERR  
+Daca E3_46>0 si  
+ 
+ 
+62 
+E3_46>0 pentru  (E3_1=’C’  si E3_2=33) 
+
+NOT(E3_1=’C’  si E3_2=33)  
+
+ 
+ 127i E3_47 
+ 6.9 CAS  N(15)   
+E3_47>0 pentru   
+(E3_1=’C’  si E3_2=33) 
+
+E3_47=Round(E3_46 * 0.25)
+
+ 
+ERR  
+Daca E3_47>0 si  
+NOT(E3_1=’C’  si E3_2=33) 
+ 
+ERR 
+Daca  E3_47#Round(E3_46 * 0.25)
+ 
+ 
+ 127j E3_48 
+ 6.10 Baza de calcul CASS  N(15)   
+E3_48#null pentru   
+((E3_1=’C’  si E3_2=33,34) 
+
+
+ERR  
+Daca E3_48>0 si  
+NOT(E3_1=’C’  si E3_2=33,34) 
+ 
+ 
+ 127k E3_49 
+ 6.11 CASS  N(15)   
+E3_49>0 pentru   
+(E3_1=’C’  si E3_2=33,34) 
+
+E3_49=Round(E3_48 * 0.1)
+
+ 
+ERR  
+Daca E3_49>0 si  
+NOT(E3_1=’C’  si E3_2=33,34) 
+ 
+ERR 
+Daca  E3_49#Round(E3_48 * 0.1)
+ 
+ 
+ 128 E3_7 7.Justificarea venitului din 
+alta perioada decât cea de 
+raportare (tip venit referitor 
+la perioada = ’A‘)  
+N(3)   
+E3_7 se completeaza pentru E3_4=’A’ 
+Valori Nomenclator N1 
+10.Hotarare Judecatoreasca 
+20.Prima/Bonus de natura ocazionala  
+30.Sume din profitul net 
+40.Prima/Bonus prev.prin Contract Colectiv de Munca 
+50.Al 13-lea salariu 
+60.Restante de plata din perioadele anterioare 
+70.Indemnizațiii suportate de ANOFM/ANPIS cf. OUG 
+nr.36/2022 
+100.Altele 
+ 
+Daca   (E3_1=’C’  si E3_2=33,34,36)  atunci 
+E3_7=100 
+ 
+ERR- valoare eronata 
+ 
+ERR- campul se completeaza doar 
+pentru venituri din alta perioada 
+ 
+01.2025 129 E3_8 8.Venit brut, din care: N(15) DA E3_8>=0 
+ 
+E3_8<=6095*0.75=4571 pt. E3_1= ‘B’ si 
+E3_2=31,39,42,45 
+ 
+E3_8<= 2550               pt. E3_1= ‘A’ si E3_2=36   
+ 
+E3_8>= E3_61 + E3_59 + E3_60 + E3_69+E3_90 
+????6095 2550 
+ERR- valoare eronata  
+ 129a E3_61 8.1 Prime, stimulente, alte 
+sporuri 
+N(15)   E3_61>= E3_96 
+
+  
+ 129a1 E3_96 8.1.1Contravaloarea N(15)     
+ 
+63 
+tichetelor de activităţi 
+casnice acordate 
+angajaților, potrivit Legii nr. 
+111/2022 
+
+ 129b E3_59 8.2.Venituri asimilate 
+salariilor, din care: 
+N(15)  E3_59>= E3_52+ E3_53+ E3_54+ E3_55+ E3_56 + 
+E3_85
+  
+ 129b1 E3_52 8.2.1.Indemnizații de 
+delegare 
+N(15)   
+
+  
+ 129b2 E3_53 8.2.2.Indemnizații de 
+detașare 
+N(15)   
+
+  
+ 129b3 E3_54 8.2.3.Indemnizații specifice 
+detașării transnaționale 
+N(15)   
+
+  
+ 129b4 E3_55 8.2.4.Prestații suplimentare 
+primate de salariați în baza 
+clauzei de mobilitate 
+N(15)   
+
+  
+ 129b6 E3_85 8.2.5.Prestații suplimentare 
+primite de salariați în baza 
+clauzei de mobilitate 
+impozabile,conform art.76 
+alin. (2) lit.k^1) CF 
+N(15)   
+
+  
+ 129b5 E3_56 8.2.6.Indemnizații de 
+neconcurență 
+N(15)   
+
+  
+ 129c E3_60 8.3.Avantaje în bani și în 
+natură, din care: 
+N(15)  E3_60>= E3_10 +  E3_72 + E3_73+ E3_74 + 
+E3_75+E3_57+ E3_58 + E3_44 
+               
+  
+ 129c11 E3_10 8.3.1. Contravaloarea 
+tichetelor de masă,acordate 
+potrivit legii 
+N(15)   
+
+  
+ 129c12 E3_72 8.3.1.1.Contravaloarea 
+tichetelor de cresă,acordate 
+potrivit legii 
+N(15)   
+
+  
+ 129c13 E3_73 8.3.1.2.Contravaloarea 
+tichetelor cadou,acordate 
+potrivit legii 
+N(15)   
+
+  
+ 129c14 E3_74 8.3.1.3.Contravaloarea 
+tichetelor culturale,acordate 
+N(15)   
+
+  
+ 
+64 
+potrivit legii 
+ 129c15 E3_75 8.3.1.4.Contravaloarea 
+voucherelor de vacanță, 
+acordate potrivit legii 
+N(15)   
+
+  
+ 129c16 E3_84 
+(desfiintat) 8.3.1.5.Contravaloarea 
+tichetelor de activităţi 
+casnice acordate 
+angajaților 
+N(15)   
+
+  
+ 129c2 E3_57 8.3.2.Avantaje primite de la 
+terți ca urmare a unei relații 
+contractuale între părți 
+N(15)   
+
+  
+ 129c3 E3_58 8.3.3. Primele de 
+asigurare, precum şi 
+serviciile medicale furnizate 
+sub formă de abonament 
+plătite de către suportator 
+pentru angajaţii proprii sau 
+alt beneficiar de venituri din 
+salarii şi asimilate salariilor, 
+la momentul plăţii acestora, 
+altele decât cele obligatorii 
+şi cele care se încadrează 
+în condiţiile prevăzute la 
+art. 76 alin. (4^1) lit. f) din 
+Codul fiscal 
+ 
+N(15)   
+
+  
+ 129c4 E3_44 
+ 8.3.4.Orice alte sume sau 
+avantaje în bani sau în 
+natură impozabile 
+N(15)   
+
+  
+ 129d E3_69 8.4 Venituri neimpozabile, 
+cf.art.76 alin.(4) din CF, din 
+care 
+N(15)   
+E3_69>= (E3_62 la E3_66) + (E3_86  la E3_88)
+  
+ 129d13 E3_86 8.4.1.Cadouri în bani şi/sau 
+în natură, inclusiv tichete 
+cadou, cf.art.76 alin.(4)  
+lit.a)  
+din CF 
+N(15)   
+
+  
+ 129d14 E3_87 8.4.2.Ajutoare de natura N(15)     
+ 
+65 
+celor prevăzute la art.76 
+alin.(4) lit.a) din CF 
+
+ 129d1 E3_62 8.4.3 Indemnizații de 
+delegare neimpozabile, 
+cf.art.76 alin.(4) lit.h) din CF 
+N(15)   
+
+  
+ 129d2 E3_63 8.4.4 Indemnizații de 
+detașare neimpozabile, 
+cf.art.76 alin.(4) lit.h) din CF 
+N(15)   
+
+  
+ 129d3 E3_64 8.4.5 Indemnizații specifice 
+detașării transnaționale 
+neimpozabile,cf.art.76 
+alin.(4) lit.h) din CF 
+N(15)   
+
+  
+ 129d4 E3_65 8.4.6 Prestații suplimentare 
+primite de salariați în baza 
+clauzei de mobilitate 
+neimpozabile, cf.art.76 
+alin.(4) lit.h)  din CF 
+N(15)   
+
+  
+ 129d15 E3_88 8.4.7. Indemnizații și orice 
+alte sume de aceeași 
+natură, neimpozabile, 
+   cf.  art.76 alin.(4) lit.j) din 
+CF 
+N(15)   
+
+  
+ 129d5 E3_66 8.4.8 Avantajele sub forma 
+dreptului la stock options 
+plan, la momentul acordării 
+şi la momentul exercitării 
+acestora, cf.art.76 alin.(4) 
+lit.r)  din CF 
+N(15)   
+
+  
+ 129d16 E3_89 
+(desfiintat) 8.4.9. Diferența favorabilă 
+dintre dobânda 
+preferențială stabilită prin 
+negociere și dobânda 
+practicată pe piață, pentru 
+credite și depozite, cf.art.76 
+alin.(4) lit.s) din CF 
+(abrogat) 
+N(15)   
+
+  
+ 129d17 E3_90 8.5.Venituri neimpozabile, 
+cf.art.76 alin.(4^1)  din CF, 
+N(15)   
+E3_90>=E3_67+E3_68+E3_71+E3_77+E3_78 + E3_79 
++E3_91+ E3_94+E3_95
+  
+ 
+66 
+din care: 
+ 129d18 E3_91 8.5.1.Prestații suplimentare 
+primite de salariați în baza 
+clauzei de mobilitate  
+       neimpozabile, cf.art.76 
+alin.(4^1)  lit.a) din CF    
+N(15)   
+
+  
+ 129d10 E3_77 8.5.2. Contravaloarea 
+hranei acordate de către 
+angajator pentru angajaţii 
+proprii,  
+cf. art. 76 alin. 4^1 lit. b) din 
+CF 
+N(15)     
+ 129d11 E3_78 8.5.3. Cazarea şi 
+contravaloarea chiriei 
+pentru spaţiile de cazare/de 
+locuit puse de către 
+angajatori la dispoziţia 
+angajaţilor propriii, cf. art. 
+76 alin. 4^1 lit. c) din CF 
+N(15)     
+ 129d8 E3_68 8.5.4. Contravaloarea 
+serviciilor turistice şi/sau de 
+tratament, inclusiv 
+transportul, pe perioada 
+concediului, pentru salariaţii 
+proprii şi membrii de familie 
+ai acestora, acordate de 
+angajator pentru salariaţii 
+proprii sau alte persoane, 
+astfel cum este prevăzut în 
+contractul de muncă sau în 
+regulamentul intern, 
+cf.art.76  alin.(4^1) lit.d) din 
+CF 
+N(15)   
+
+  
+ 129d6 E3_67 8.5.5  Contribuţiile la un 
+fond de pensii facultative 
+potrivit Legii nr. 204/2006, 
+cu modificările şi 
+completările ulterioare, 
+precum și contribuţiile la 
+scheme de pensii 
+facultative, calificate astfel 
+în conformitate cu legislaţia 
+N(15)   
+
+  
+ 
+67 
+privind pensiile facultative 
+de către Autoritatea de 
+Supraveghere Financiară, 
+administrate de către 
+entităţi autorizate stabilite 
+în state membre ale Uniunii 
+Europene sau aparţinând 
+Spaţiului Economic 
+European, suportate de 
+angajator pentru angajaţii 
+proprii, în limita a 400 euro 
+anual pentru fiecare 
+persoană, cf.art.76  
+alin.(4^1) lit.e) din CF 
+ 131a 
+ 
+E3_43 
+NU SE MAI 
+FOLOSESTE DIN 
+06/2022 
+      
+ 129d7 E3_71 8.5.6  Primele de asigurare 
+voluntară de sănătate, 
+precum şi serviciile 
+medicale furnizate sub 
+formă de abonament, 
+suportate de angajator 
+pentru angajaţii proprii, 
+astfel încât la nivelul anului 
+să nu se depăşească 
+echivalentul în lei al sumei 
+de 400 euro, pentru fiecare 
+persoană, cf.art.76  
+alin.(4^1) lit.f) din CF 
+N(15)   
+
+ 
+ 
+ 
+ 129d12 E3_79  
+ 8.5.7. Contravaloarea 
+abonamentelor suportate 
+de angajator pentru 
+angajaţii proprii, în limita 
+echivalentului în lei a 100 
+euro anual, conform art. 76 
+alin. (4^1) lit. h) din Codul 
+fiscal 
+     
+ 129d9 E3_76 
+(desfiintat) 8.5.7 Contravaloarea 
+abonamentelor pentru 
+utilizarea facilităților 
+sportive, în vederea 
+N(15)   
+
+  
+ 
+68 
+practicării sportului și 
+educației fizice, suportate 
+de angajator pentru 
+angajații proprii, în limita 
+echivalentul în lei a 400 
+euro  anual , cf.art. 76 alin. 
+4^1 lit. h) din CF 
+ 129d19 E3_94 8.5.8 Sumele suportate de 
+către angajator pentru 
+plasarea copiilor angajaţilor 
+proprii în unităţi de educaţie 
+timpurie, potrivit legii, în 
+limita stabilită de acesta, 
+dar nu mai mult de 1.500 
+lei/lună pentru fiecare copil, 
+conform art. 76 alin. (4^1) 
+lit. i) din CF    
+N(15)   
+
+  
+ 129d20 E3_95 8.5.9 Diferenţa favorabilă 
+dintre dobânda 
+preferenţială stabilită prin 
+negociere şi dobânda 
+practicată pe piaţă, pentru 
+credite şi depozite,conform 
+art. 76 alin. (4^1) lit. j) din 
+CF 
+N(15)   
+
+  
+ 130 E3_9 9.Contribuţii sociale 
+obligatorii 
+N(15) DA E3_9>=0 ERR- valoare eronata  
+ 129e1 E3_20 10. Contravaloarea 
+tichetelor de masă  
+restituite potrivit legii 
+N(15)   
+
+  
+ 129e2 E3_70 10.1 Contravaloarea 
+voucherelor de vacanță, 
+restituite potrivit legii 
+N(15)   
+
+  
+ 139e E3_23 11. Venit scutit conform art. 
+60 pct. 1 din Codul fiscal 
+N(15) DA E3_23>=0 sau null 
+Perechea(E3_23,E3_24) trebuie sa fie (0,0) sau 
+(null,null) sau (n1,n2) 
+E3_23=0 pentru (E3_1=’B’ si E3_2 = 31,42) 
+  
+ 139l E3_24 12. Impozit scutit conform 
+art. 60 pct. 1 din Codul 
+fiscal 
+N(15)  E3_24>=0 sau null 
+E3_24=0 pentru (E3_1=’B’ si E3_2 = 31,42) 
+  
+01.2025 139m E3_25 
+NU SE MAI 
+FOLOSESTE din 
+13. Venit scutit conform art. 
+60 pct. 2 din Codul fiscal      
+ 
+69 
+01/2025 
+01.2025 139n E3_26  
+NU SE MAI 
+FOLOSESTE din 
+01/2025 
+14. Impozit scutit conform 
+art. 60 pct. 2 din Codul 
+fiscal 
+N(15)     
+ 139o E3_27 13. Venit scutit conform art. 
+60 pct. 3 din Codul fiscal 
+N(15)  E3_27>=0 sau null 
+Perechea(E3_27,E3_28) trebuie sa fie (0,0) sau 
+(null,null) sau (n1,n2) 
+E3_27=0 pentru (E3_1=’B’ si E3_2 = 31,42) 
+  
+ 139p E3_28 14. Impozit scutit conform 
+art. 60 pct. 3 din Codul 
+fiscal 
+N(15)  E3_28>=0 sau null 
+E3_28=0 pentru (E3_1=’B’ si E3_2 = 31,42) 
+  
+01.2025 139 E3_18 
+NU SE MAI 
+FOLOSESTE din 
+01/2025 
+17.Venit scutit cf. art.60 
+pct.5 din Codul fiscal      
+01.2025 139a E3_21 
+NU SE MAI 
+FOLOSESTE din 
+01/2025 
+18. Impozit scutit conform 
+art. 60 pct.5 din Codul fiscal      
+01.2025 139s E3_50 
+NU SE MAI 
+FOLOSESTE din 
+01/2025 
+19.Venit scutit cf.  
+art.60 pct.7 din Codul fiscal 
+(agricultura) 
+     
+01.2025 139t E3_51 
+NU SE MAI 
+FOLOSESTE din 
+01/2025 
+20. Impozit scutit conform 
+art. 60 pct.7 din Codul 
+fiscal (agricultura) 
+     
+ 139b E3_19 15.Venit scutit cf.  
+art. 76 din L.566/2004 - 
+legea cooperatiei agricole 
+N(15) DA E3_19>=0 sau null 
+Perechea(E3_19,E3_31) trebuie sa fie (0,0) sau 
+(null,null) sau (n1,n2) 
+  
+ 139j E3_31 16.Impozit scutit cf. art. 76 
+din L.566/2004 - legea 
+cooperatiei agricole 
+N(15)  E3_31>=0 sau null 
+ 
+  
+ 139d E3_22 
+NU SE MAI 
+FOLOSESTE din 
+06/2022 
+      
+ 139k E3_32 
+NU SE MAI 
+FOLOSESTE din 
+06/2022 
+      
+ 132 E3_11 17.Numar persoane aflate 
+în întreţinere 
+N(2)  
+Daca E3_3=1 atunci E3_11>=0 
+Altfel E3_11=0 
+ERR- campul E3_11 se 
+completeaza doar pentru functia de 
+baza 
+ERR- valoare eronata 
+ 
+ 133 E3_12 18.Deducere  personala N(15)   
+E3_12=E3_121+E3_122   
+ 133a E3_121 18.1.Deducere personală 
+de bază 
+ 
+N(15)   
+Daca E3_3=1 atunci E3_12>=0 
+Altfel E3_12=0 
+ERR- campul E3_12 se 
+completeaza doar pentru functia de 
+baza 
+ERR- valoare eronata 
+ 
+ 133b E3_122 18.2.Deducere personală 
+suplimentară 
+N(15)   
+E3_122=E3_1221+E3_1222   
+ 133c E3_1221 18.2.1 Deducere personală 
+suplimentară, cf.art.77 
+alin.(10) lit.a) din CF 
+N(15)   
+Daca E3_3=1 atunci E3_12>=0 
+Altfel E3_1221=0 
+ERR- campul E3_1221 se 
+completeaza doar pentru functia de 
+baza 
+ERR- valoare eronata 
+ 
+ 133d E3_1222 18.2.2 Deducere personală N(15)   ERR- campul E3_1222 se  
+ 
+70 
+suplimentară, cf.art.77 
+alin.(10) lit.b) din CF 
+Daca E3_3=1 atunci E3_12>=0 
+Altfel E3_1222=0 
+completeaza doar pentru functia de 
+baza 
+ERR- valoare eronata 
+ 134 E3_13 19.Alte deduceri N(15)    
+Daca E3_3=1 atunci E3_13>=0 
+Altfel E3_13=0 
+ERR- campul E3_13 se 
+completeaza doar pentru functia de 
+baza 
+ERR- valoare eronata 
+ 
+ 135 E3_14 20.Venit baza de calcul al 
+impozitului 
+N(15) DA 0<=E3_14<=E3_8 
+      
+ 
+ERR- valoare eronata 
+ATT - daca E3_14> E3_8 
+ 
+ 136 E3_15 21.Impozit reţinut N(15) DA     0<= E3_15<= E3_14 ERR- valoare eronata 
+ATT -  daca E3_15> E3_14 
+ 
+ 137 E3_16 22.Suma încasata N(15) DA E3_16>=0   
+ 139f E3_33  
+NU SE MAI 
+FOLOSESTE din 
+01/2020 
+      
+ 139g E3_34  
+NU SE MAI 
+FOLOSESTE din 
+01/2020 
+ 
+      
+ 139h E3_35 
+ NU SE MAI 
+FOLOSESTE din 
+01/2020 
+      
+ 139i E3_36  
+NU SE MAI 
+FOLOSESTE din 
+01/2020 
+      
+ 139q E3_29  
+NU SE MAI 
+FOLOSESTE din 
+01/2023 
+      
+ 139r E3_30  
+NU SE MAI 
+FOLOSESTE din 
+01/2023 
+      
+ 139d E3_22 
+NU SE MAI 
+FOLOSESTE din 
+06/2022 
+      
+ 139k E3_32 
+NU SE MAI 
+FOLOSESTE din 
+06/2022 
+      
+ 139f E3_33  
+NU SE MAI 
+FOLOSESTE din 
+01/2020 
+      
+ 139g E3_34  
+NU SE MAI 
+FOLOSESTE din 
+01/2020 
+ 
+      
+ 139h E3_35  
+NU SE MAI 
+FOLOSESTE din 
+01/2020 
+      
+ 
+71 
+ 139i E3_36  
+NU SE MAI 
+FOLOSESTE din 
+01/2020 
+      
+  </asiguratE3>       
+  <asiguratE4> 0-10 aparitii       
+ 140a cnp_ctr 1.CNP beneficiar bursa C(13)   
+Perechea (cnp_ctr,nr_ctr ,data_ctr) # nul sau = null 
+ 
+  
+ 140 nr_ctr 2.Nr contract bursa privata C(30)   
+ 
+  
+ 141 data_ctr 3.Data contract bursa 
+privata 
+D(10) 
+ 
+    
+ 141a cota_ctr 4.Cota distribuita bursa 
+privata 
+N(4.2) DA  
+0<=cota_ctr<=3.5 daca perechea (nr_ctr ,data_ctr) # null 
+ 
+  
+ 141b suma_ctr 5.Suma distribuita bursa 
+privata 
+N(15) DA   
+0<=suma_ctr <=  ROUND(Timp_E3 * cota_ctr/100) daca 
+perechea (nr_ctr ,data_ctr) # null 
+  
+ 142 den 1.Denumire entitate 
+nonprofit/unitate de cult  
+C(50)   
+Perechea (den ,cui) # null sau = null 
+ 
+  
+ 143 cui 2.CIF entitate 
+nonprofit/unitate de cult  
+N(13)     
+ 144 cota 3.Cota distribuita entitate N(4.2) DA  
+0<=cota <= 3.5 daca perechea (den ,cui) # null 
+ 
+  
+ 145 suma 4.Suma distribuita N(15) DA   
+0<=suma <=  ROUND(Timp_E3 * cota/100) daca 
+perechea (den ,cui) # null 
+  
+  </asiguratE4>       
+  </declaratieUnica
+> 
+      
+ 
+ 
+ 
+ 
+ 
+Validari intre campuri (pensii si somaj) 
+ 
+ 
+ Nr. crt Validare  Tip 
+eroare 
+ 
+Mesaj 
+ 
+ V2  B1_pensie+D3> COUNT asiguratA(cnp_asig)+ 
+COUNTasiguratB(cnp_asig) + COUNT (asiguratC(cnp_asig))  
+ERR Nr. asigurati pt.care se datoreaza CAS este 
+mai mare decat numarul de persoane 
+raportate in asigurati 
+ V3 C3_11+C3_21+C3_31+C3_41 >COUNT 
+asiguratA(cnp_asig)+COUNT asiguratB(cnp_asig)  
+ 
+E3_11+E3_21+E3_31 +E3_41 >  COUNT (asiguratC(cnp_asig))  
+ERR Nr. cazuri de accid. de munca din anexa 
+angajator nu trebuie sa depaseasca 
+numarul de asigurati 
+ 
+72 
+ptr.   C_1=11 
+ V6  datCAM=0 and A_datorat(46)<>0  
+ 
+ERR Nu datoreaza CAM si A_datorat(46)#0 
+ 
+ V10  C3_11=0 and C3_14>0  
+ E3_11=0 and E3_14>0  
+ERR Numar cazuri pe tip de indemnizatie =0 si 
+suma suportata din sumele prev. pt. asig. 
+acc. munca >0 
+ V11  C3_21=0 and C3_24>0  
+ E3_21=0 and E3_24>0  
+ERR Numar cazuri pe tip de indemnizatie =0 si 
+suma suportata din sumele prev. pt. asig. 
+acc. munca >0 
+ V12  C3_31=0 and C3_34>0  
+ E3_31=0 and E3_34>0  
+ERR Numar cazuri pe tip de indemnizatie =0 si 
+suma suportata din sumele prev. pt. asig. 
+acc. munca >0 
+ V13  C3_41=0 and C3_44>0  
+ E3_41=0 and E3_44>0  
+ERR Numar cazuri pe tip de indemnizatie =0 si 
+suma suportata din sumele prev. pt. asig. 
+acc. munca >0 
+ V15  C3_11>0 and C3_14=0 and C3_12=0 
+ E3_11>0 and  E3_14=0 and E3_12=0 
+ATT Numar cazuri pe tip de indemnizatie >0 si 
+suma suportata din sumele prev. pt. asig. 
+acc. munca =0 si zile prestatii=0 
+ V16  C3_21>0 and C3_24=0 and C3_22=0 
+ E3_21>0 and E3_24=0 and E3_22=0 
+ATT  Numar cazuri pe tip de indemnizatie >0 si 
+suma suportata din sumele prev. pt. asig. 
+acc. munca =0 si zile prestatii = 0 
+ V17  C3_31>0 and C3_34=0 and C3_32=0 
+ E3_31>0 and E3_34=0 and E3_32=0 
+ATT  Numar cazuri pe tip de indemnizatie >0 si 
+suma suportata din sumele prev. pt. asig. 
+acc. munca =0 si zile prestatii = 0 
+ V18  C3_41>0 and C3_44=0 and C3_42=0 
+ E3_41>0 and E3_44=0 and E3_42=0 
+ATT  Numar cazuri pe tip de indemnizatie >0 si 
+suma suportata din sumele prev. pt. asig. 
+acc. munca =0 si zile prestatii = 0 
+ V19  C3_14=0 and C3_12<>0 
+ E3_14=0 and E3_12<>0 
+ATT  Suma suportata din sumele prev. pt. asig. 
+acc. munca =0 si zile prestatii <>0 
+ V20  C3_24=0 and C3_22<>0 
+ E3_24=0 and E3_22<>0 
+ATT  Suma suportata din sumele prev. pt. asig. 
+acc. munca =0 si zile prestatii <>0 
+ V21  C3_34=0 and C3_32<>0 
+ E3_34=0 and E3_32<>0 
+ATT  Suma suportata din sumele prev. pt. asig. 
+acc. munca =0 si zile prestatii <>0 
+ V22  C3_44=0 and C3_42<>0 
+ E3_44=0 and E3_42<>0 
+ATT  Suma suportata din  sumele prev. pt. asig. 
+acc. munca =0 si zile prestatii <>0 
+ V23  C3_14>0 and C3_12=0 
+ E3_14>0 and E3_12=0 
+ATT  Suma suportata din sumele prev. pt. asig. 
+acc. munca >0 si zile prestatii =0 
+ V24  C3_24>0 and C3_22=0 
+ E3_24>0 and E3_22=0 
+ATT  Suma suportata din  sumele prev. pt. asig. 
+acc. munca >0 si zile prestatii =0 
+ V25  C3_34>0 and C3_32=0 ATT  Suma suportata din  sumele prev. pt. asig. 
+ 
+73 
+ E3_34>0 and E3_32=0 acc. munca >0 si zile prestatii =0 
+ V26  C3_44>0 and C3_42=0 
+ E3_44>0 and E3_42=0 
+ATT  Suma suportata din sumele prev. pt. asig. 
+acc. munca >0 si zile prestatii =0 
+ V27  C3_aj_nr=0 and C3_aj_suma>0 
+ E4_aj_nr=0   and E4_aj_suma  >0 
+ERR Numar decese=0 si suma ajutor deces  
+completata 
+ V31 C3_aj_nr>0 and C3_aj_suma=0)  
+E4_aj_nr>0 and E4_aj_suma=0)  
+ 
+ERR Numar cazuri decese<>0 si suma ajutor 
+deces  =0 
+01.2025 V31.1 C3_aj_suma +  E4_aj_suma <> suma(cuantum_d) ERR Total suma ajutor deces din sectiunile 
+angajator C si E <> de suma cuantum 
+ajutor deces din sectiunea G 
+ V33  C3_11=0 and C3_13>0  
+ E3_11=0 and E3_13>0  
+ERR Numar cazuri pe tip de indemnizatie =0 si 
+suma totala indemnizatii accidente de 
+munca >0 
+ V34  C3_21=0 and C3_23>0  
+ E3_21=0 and E3_23>0  
+ERR Numar cazuri pe tip de indemnizatie =0 si 
+suma totala indemnizatii accidente de 
+munca >0 
+ V35  C3_31=0 and C3_33>0  
+ E3_31=0 and E3_33>0  
+ERR Numar cazuri pe tip de indemnizatie =0 si 
+suma totala indemnizatii accidente de 
+munca >0 
+ V36  C3_41=0 and C3_43>0  
+ E3_41=0 and E3_43>0  
+ERR Numar cazuri pe tip de indemnizatie =0 si 
+suma totala indemnizatii accidente de 
+munca >0 
+ V47  C1_12=0 and Σasigurat(B3_1-B3_8) >0  si datCAS=true 
+   
+ERR Baza de calcul a contributiei la BASS af. 
+indemnizatiei cf. OUG158/2005 pt. conditii 
+normale=0 si in anexa asigurat exista zile 
+prestatii in conditii normale<>0, utilizate la 
+calculul stagiului de cotizare (pt. pensie)   
+ V48 C1_22=0 and Σasigurat (B3_2 - B3_8) >0   ERR Baza de calcul a contributiei la BASS af. 
+Indemnizatiei cf.OUG158/2005 pe conditii 
+deosebite =0 si in anexa asigurat exista zile 
+prestatii in conditii deosebite <>0  
+ V49 C1_32=0 and Σasigurat (B3_3-B3_8) >0   ERR Baza de calcul a contributiei la BASS af. 
+Indemnizatiei cf.OUG158/2005 pe conditii 
+speciale =0 si in anexa asigurat exista zile 
+prestatii in conditii speciale<>0  
+ V50  B3_6+B3_4 > B3_1+B3_2+B3_3  
+  
+ERR Zile prestatii suportate din asigurarea 
+pt.accidente de munca + zile prestatii cf 
+OUG158/2005> total zile prestatii  
+ V51 C_1=(2,11) and C_3>0 and C_17>0 and C_17>C_3 ERR Zile prestatii suportate din sumele 
+ 
+74 
+prevazute pentru asigurarea pentru 
+accidente de munca > total zile concediu 
+medical pentru accidente de munca  
+(C_17>C_3 nepermis) 
+ 
+ V52 B3_1+B3_2+B3_3=B3_6 si  B3_6#0  si B3_7=0   si datCAS=true   ERR Zile total indemnizatii=Zile indemnizaţii 
+pentru care se datoreaza CAS, conform 
+OUG nr. 158/2005  si baza de calcul CAS 
+pt. indemnizatii cf. OUG 158/2005=0 
+ V53 C_1=10 and ( C_3=0 and  C_4 <>0  and C_5<>0) ERR Raportare Casa de sanatate asigurati cu 
+DLG/CLG Zile concediu medical  pentru 
+accidente de munca=0 si  indemnizatie 
+pentru accidente de munca<> 0 si Zile 
+concediu medical  cf  OUG 158 <> 0 
+ V54 B3_1+B3_2+B3_3=0 si B3_4=0 si B3_11>0 si B3_9=0 
+ 
+ERR Total zile indemnizatii =0 ,  
+zile prestatii suportate din asigurarea 
+pt.accidente de munca =0, total venit 
+asigurat din indemnizatii/ prestatii > 0 si 
+suma prestatii de asig.sociale suportata din 
+asigurarea pt.accidente de munca =0 
+ 
+ V54b (C_1=10 or  C_1=11)  and  
+C_3+C_5=0  and C_17=0 and  C_18=0 and  C_4>0 
+ 
+ERR Total zile prestatii=0 , zile prestatii  
+suportate din sumele prev. pt. asig. acc. 
+munca =0 si  total venit asigurat din 
+indemnizatii/ prestatii > 0 
+ V57  B4_1+B3_1+B3_2+B3_3+B3_5+B4_2>NZL  
+ 
+ERR Total zile lucrate +prestatii +total zile 
+suspendate/libere > numar zile lucratoare 
+din luna 
+ V58 B3_1+B3_2+B3_3>B3_6 si B3_11=0  
+sau 
+B3_1+B3_2+B3_3>0 si B3_11=0  si B3_7=0 
+sau 
+C_1=(10 ,11)  si C_3>0 si C_5=0 si C_4=0 
+ 
+ 
+ERR Zile prestatii <> 0 si cuantum total 
+prestatii=0 
+03.2025 V62 Daca dat_CAS=true si  A_8>0 si A_13=0 
+ 
+Daca exista cel putin un contract B1_1 cu dat_CAS=true si 
+(B2_2>0 si B2_5=0 sau B2_3>0 și B2_6=0 sau B2_4>0 și 
+B2_7=0)  
+ 
+Daca C_1#(5,6,37)  si C_19=0 atunci C_2+C_20=0 
+ERR (A) 
+ 
+ERR (B) 
+ 
+ 
+ERR (C) 
+ 
+Nu exista venit in conditii normale de 
+munca (baza de calcul al CAS) si sunt 
+declarate zile realizate in conditii normale 
+de munca 
+ 
+ 
+75 
+ V63  B2_3>0 and B2_6<=0 
+ 
+ATTN  Nu exista venit pt. conditii deosebite de 
+munca si sunt declarate zile lucrate in 
+conditii deosebite 
+ V64  B2_4>0 and B2_7<=0 
+ 
+ATTN  Nu exista venit pt. conditii speciale de 
+munca si sunt declarate zile lucrate in 
+conditii speciale 
+ V66  B3_4>0 and B3_9=0  
+ C_1=11 and C_17>0 and C_18=0 
+ 
+ERR Zile suportate din FAAMBP >0 si suma 
+suportata din FAAMBP=0 
+ V67  B3_4=0 and B3_9>0  
+ C_1=11 and C_17=0 and C_18>0 
+ 
+ATTN  Zile suportate din FAAMBP =0 si suma 
+suportata din FAAMBP>0 
+01.2025 V69 (CAS zilieri -incepand cu 05/2019) 
+   
+A_13>0 si A_8 =0 pt A_1#(1,3,48,8,25,27,28) 
+B2_5>0 si B2_2 + B3_1=0 pt B1_1#(1,8,25,48,27,28) 
+A_13>0 si A_8 =0 pt A_1=3 
+ 
+ATTN(A)  
+ 
+ATTN(B) 
+ERR(A) 
+ATT - Nu exista zile lucrate in conditii de 
+munca normale si exista sume pt asiguratii 
+care nu sunt de salariatii cu contract de 
+munca 
+ERR - A_13>0 si A_8=0 pt.zilieri 
+01.2025 V70 B2_6>0 si B2_3 + B3_2=0  
+pt B1_1#(1,8,25,27,28,48) 
+ATTN  Nu exista zile lucrate in conditii de munca 
+deosebite  si exista sume pt asiguratii <> de 
+salariatii cu contract de munca 
+ V71 B2_7>0 si B2_4  + B3_3=0  
+pt B1_1#(1,8,25,48,27,28) 
+ATTN  Nu exista zile lucrate in conditii de munca 
+speciale  si exista sume pt asiguratii <> de 
+salariatii cu contract de munca 
+ V73 C_1=(2,11) and C_4>0 and C_18>0 and C_18>C_4 ERR Prestatii suportate din sumele prevazute 
+pentru asigurarea pentru accidente de 
+munca > total indemnizatii pentru accidente 
+de munca 
+(C_18>C_4 nepermis)  
+ V74 daca datCAM=0 si (  B3_8 > 0 sau    B3_4 > 0 sau  B3_9> 0  sau 
+C_3 > 0  sau  C_17>0) 
+ 
+ERR Nu datoreaza contributie de accidente de 
+munca si nu se pot inregistra zile si sume 
+pentru prestatii de accidente de munca 
+ V75 daca C_1 in (5,6) si (C_5>0 sau C_3>0 sau C_17>0 sau C_4>0 
+sau C_18>0 sau C_10>0 sau C_11>0) 
+ERR La raportarea persoanelor care beneficiaza 
+de indemnizatie pt. cresterea copilului pana 
+la 2/3 ani sau cu handicap intre 3-7 ani  nu 
+se completeaza campurile C_5, C_3, C_17, 
+C_4, C_18, C_10, C_11 
+ V79 
+somaj 
+Σ C5_restituit  > 0  si 
+Σ C5_recuperat  < A_datorat(17) 
+ 
+ERR 
+ 
+Pt.creanta 17,  exista ‘Suma de restituit de 
+la AJOFM/ANOFM’  dar  
+‘Suma de recuperat din contributia datorata’ 
+este mai mica decat Suma datorata  
+ V79B 
+somaj 
+Σ C5_recuperat>0 si A_datorat(17)=0 ERR  
+ 
+Exista Suma de recuperat din contributia 
+datorata si nu exista suma datorata 
+ 
+76 
+pt.creanta 17 
+ V82 C_2+C_5+C_3 +C_20 > NZL daca C_1 IN (5, 6, 10,11,13, 14. 
+15. 17, 30) 
+ERR Suma zilelor lucrate plus zilele de cocediu 
+medical cf OUG 158/2005 plus zilele de 
+concediu medical pentru accidente de 
+munca depaseste suma zilelor lucratoare 
+din luna, inclusiv pt consilierii locali 
+ V83 C_2+C_5+C_3 >NZC daca C_1=2 ERR Suma zilelor lucrate plus zilele de cocediu 
+medical cf OUG 158/2005 plus zilele de 
+concediu medical pentru accidente de 
+munca depaseste suma zilelor 
+calendaristice din luna pentru someri  
+ V84 Daca B2_7 > 0 and B2_1=(0 ,11, 19) ERR Exista venit in conditii speciale si nu s-a 
+selectat Indicativ conditii speciale 
+ 
+ V85 Daca (B2_4 > 0 sau B3_3 > 0) and B2_1=(0,11,19) ERR Exista zile lucrate in conditii speciale sau 
+zile prestatii in conditii speciale si nu s-a 
+selectat Indicativ conditii speciale 
+ 
+ V86 Daca (C_3 >0  sau C_4>0 sau C_17 >0 sau C_18>0 ptr C_1 in 
+(13,14,15,17,30) 
+ERR Nu se raporteaza accidente de munca 
+pentru acest tip de asigurat 
+ V87 Daca C_3>0 si A_datorat(04)=0 ptr C_1=2 ERR Exista accidente de munca ptr someri si nu 
+este calculata Contributia de accidente de 
+munca pentru someri 
+ V88 B3_1+B3_2+B3_3 # B3_6+B3_8 ERR Suma zilelor de indemnizatii pe conditii de 
+munca diferita de suma zilelor lucratoare de 
+concedii medicale cf OUG 158/2005 si 
+accidente de munca 
+ V90 Daca B_pensie > 
+ [COUNT asiguratA(cnp_asig pt.A_14>0)+ 
+COUNT asiguratB(cnp_asig pt. B4_8>0,,B4_20>0) ] 
+ 
+ 
+ERR Numarul de asigurati pentru care 
+angajatorul datoreaza CAS din campul 
+B_pensie este > decat cel calculat 
+ V91 Daca B_pensie =0 si 
+[COUNT asiguratA(cnp_asig pt.A_14>0)+ 
+COUNT asiguratB(cnp_asig pt. B4_8>0,B4_19>0,B4_20>0) ] 
+> 0  
+ERR  Numarul de asigurati pentru care 
+angajatorul datoreaza CAS din campul 
+B_pensie este 0 si cel calculat este > 0 
+ V92 Daca (B2_1>0 and B2_1#(11,19)) and (B2_4=0 si  B2_7=0 si 
+B3_3=0) 
+ERR Ati completat indicativ conditii speciale de 
+munca, fara a completa zile sau venit in 
+conditii speciale 
+ V92bis Daca B2_1=(11,19) and (B2_3=0  and  B2_6=0 and B3_2=0) ERR Ati completat indicativ conditii deosebite de 
+ 
+77 
+munca, fara a completa zile sau venit in 
+conditii deosebite 
+ V94 Daca C_1 in (17,18,20,30,31,32) and ( C_5>0 orC_3>0 or 
+C_18>0 or C_4>0 or C_17>0) 
+ERR Pentru aceste tipuri de asigurati nu se 
+raporteaza concedii medicale 
+ V95 Daca C_1 in (5,6) and C_2=0 ERR Asigurati raportati de Agentia de Prestatii 
+Sociale cu zile de prestatii =0 
+ V97 C3_aj_nr >9999  
+E4_aj_nr >9999    
+ERR Numar cazuri ajutor de deces depaseste 
+numarul de asigurati 
+ V98 Daca e completat si e >0 mai mult de unul din campurile B3_1, 
+B3_2, B3_3>0    
+ERR Intr-o luna nu poate fi incarcat decat un 
+singur tip de conditii de munca,cel aferent 
+ultimei zile lucrate. 
+ V104  B3_1+B3_2+B3_3=B3_6 atunci B3_11=0  ERR daca B3_1+B3_2+B3_3=B3_6 and 
+B3_11>0  - “Zile prestatii accidente de 
+munca=0 si cuantum indemnizatie 
+accidente de munca>0” 
+ V105 (C_1=10 or C_1=11) and C_3=0 and C_4=0  
+ 
+ ERR daca (C_1=10 or C_1=11) and C_3=0 
+and C_4>0  
+“Zile prestatii accidente de munca=0 si 
+cuantum indemnizatie accidente de 
+munca>0” 
+ V106 A_deductibil(602) + A_deductibil(611) +  A_deductibil(625) = Σ 
+Tsuma_E4 
+------------------------------------------------------------------ 
+A_deductibil(602) = F1_suma_ded + Σ F2_suma_ded 
+ daca nu e US 
+ERR  
+---------------------------------------------------- 
+ERR 
+ 
+ V107 Concediile medicale acordate de medicul de familie pentru 
+acelasi cod de boala nu pot depasi 10 zile calendaristice 
+  
+11.2023 V108    
+11.2023 V109 
+?????? 
+Trebuie sa existe o corespondenta intre sectiunile  
+ (C si E3) ! 
+ 
+ 
+(C) Pentru mai multe sectiuni E3 cu  
+(E3_1="C" si E3_2= 36) aferente la perioade de  
+raportare (E3_80) diferite, trebuie sa avem  
+    contributii( suma E3) ~= contributii (C), cu marja 
+ 
+(C) Pentru mai multe sectiuni E3 cu  
+(E3_1="C" si E3_2= 33 sau 34) aferente la perioade de  
+raportare (E3_45) diferite, trebuie sa avem  
+    contributii( suma E3) ~= contributii (C), cu marja 
+ 
+Nu putem avea mai multe sectiuni E3 pentru aceeasi perioada  
+E3_80 sau E3_45. 
+ 
+. 
+(C) Sectiunile C cu C_1=(33,34) trebuie sa fie unice. 
+C) Sectiunile C cu C_1=(36) trebuie sa fie unice. 
+ 
+ ERR 
+ V110 Atentie ! Nu se pot depune declaratii D112 cu perioade de 
+raportare diferite si campri E3_37 sau E3_45 identice. 
+Ex. 
+-D112/ 03.2021 cu E3_37=02-2021 
+ ERR 
+ 
+78 
+-D112/ 04.2021 cu E3_37=02-2021 
+-D112/ 05.2021 cu E3_37=02-2021 
+ Sau 
+-D112/ 03.2021 cu E3_45=02-2021 
+-D112/ 04.2021 cu E3_45=02-2021 
+-D112/ 05.2021 cu E3_45=02-2021 
+ 
+  Desfiintate:V1,V4,V5,V7,V9,V14,V28,V29,V30,V68,V71B,V77, 
+V78,V80,V81,V89,V93,V96,V99,V100,V103 
+  
+ 
+    
+ 
+Nomenclator caenC valabil din 01.01.2025 
+Nomenclator caenC In constructii  (art.60 pct.5 CF) (pentru bifa_AgCon=1) desfiintat 
+Nomenclator caenC in  agricultura (art.60 pct.7 CF) (pentru bifa_AgCon=2) desfiintat 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Nomenclatorul “N1 – justificari“ 
+ 
+Justificare venit din alta perioada cod 
+Hotarâre Judecatoreasca 10 
+Prima/Bonus de natura ocazionala  20 
+Sume din profitul net 30 
+Prima/Bonus prevazuta prin Contract Colectiv de Munca si/sau 
+Contractul Individual de Munca 40 
+Al 13-lea salariu 50 
+Restante de plata din perioadele anterioare 60 
+Indemnizațiii suportate de ANOFM/ANPIS, după caz, 
+conform prevederilor OUG nr. 36/2022   (modif. 21.07.22) 70 
+Altele 100 
+ 
+ 
+ 
+Nomenclator 1 – coduri CAEN si tarife de risc  
+ 
+ 
+ 
+Nomenclator 3 – Obligatii de plata la BS si BASFS  (cf.anexa2  Ordin comun) 
+Nr. 
+istoric 
+oblig. 
+Cod 
+oblig. 
+XML 
+Nr.cr. 
+Mof. Cod bugetar Explicatie 
+1 602 1 5503XXXXXX Impozit pe veniturile din salarii si/sau asimilate salariilor 
+2 412 2 5503XXXXXX CAS datorata de asigurati 
+54 483  5503XXXXXX CAS facilitati constructii (art.60 pct.5 CF)   
+58 486  5503XXXXXX CAS facilitati agricultori  (art.60 pct.7 CF)  (din 06/2022) 
+ 
+79 
+62 488  5503XXXXXX CAS facilitati  IT  (art.60 pct.2 CF)  (din 11/2023) 
+47 481 3 5503XXXXXX CAS datorata de angajator pt conditii deosebite de munca (4%) 
+48 482 4 5503XXXXXX CAS datorata de angajator pt conditii speciale de munca  (8%) 
+7 432 5 5503XXXXXX CASS datorata de asigurati 
+46 480 6 20470300XX CAM  (contribuţia asiguratorie pentru munca) 
+55 484  20A470600X CAM datorata de angajatorii  din sectorul constructiilor cf.art.2 alin(2), art.220^1 si art.220^3 alin.(2) 
+din L227/2015  
+59 487  20A470600X CAM  agricultori  (art.60 pct.7 CF)    (din 06/2022) 
+28 611 7 5503XXXXXX Impozit pe veniturile din dr. de prop. intelectuala 
+30 451 8 5503XXXXXX CAS datorata de PF care realiz. ven.din dr. de prop. intelectuala  
+31 461 9 5503XXXXXX CASS datorata de PF care realiz.ven.din dr. de prop. intelectuala 
+43 619 10 5503XXXXXX Impozit pe ven. din arendarea bunurilor agricole 
+42 469 11 5503XXXXXX CASS datorata de PF care realiz.ven. din arendarea bunurilor agricole  
+45 622 12 5503XXXXXX Impozit  pe venitul obţinut dintr-o asociere cu o PJ, potrivit titl.II din L.227/ 2015 
+44 471 13 5503XXXXXX CASS datorata de PF care realiz.ven.dintr-o asociere cu o PJ, potrivit tit. II din L.227/ 2015 
+40 623 14 5503XXXXXX Impozit pe ven.PF dintr-o asociere cu o PJ, potrivit tit. III din L.227/ 2015 
+36 464 15 5503XXXXXX CASS datorata de PF care realiz.ven.dintr-o asociere cu o PJ, potrivit tit. III din L.227/ 2015 
+49 624  5503XXXXXX Impozit pe ven.realiz. de PF dintr-o asociere cu o PJ, potrivit L.170/2016 privind impozitul specific 
+50 472  5503XXXXXX CASS datorata de PF care realiz. ven. din asocierea cu o PJ, potrivit L.170/2016 privind impozitul 
+specific 
+53 625 16 5503XXXXXX Impozit pe ven. realiz. de PF din activit. indep. realizate în baza contractelor de activitate sportiva 
+51 473 17 5503XXXXXX CAS datorata de PF care realiz.ven.în baza contractelor de activitate sportiva 
+52 474 18 5503XXXXXX  CASS datorata de PF care realiz. ven. în baza contractelor de activitate sportiva 
+10 441 19 5503XXXXXX CASS datorata de pensionari pt.per.anterioare datei de 01.02.2017 
+56 607 20 5503XXXXXX  Impozitul pe veniturile din pensii care depasesc plafonul de 2000 lei 
+60 458 21 5503XXXXXX CAS suportat de angajator/ platitorul de venit (art.146 alin.(5^9) din CF) 
+61 459 22 5503XXXXXX CASS suportat de angajator/ platitorul de venit (art.168 alin.(6^1) din CF) 
+63 627 23 5503XXXXXX Impozit PF care realizează venituri din desfășurarea activităților casnice 
+64 477 24 5503XXXXXX CAS  PF care realizează venituri din desfășurarea activităților casnice 
+57 457 
+21 
+25 5503XXXXXX 
+CASS datorată de pensionari care depasesc plafonul de 4000 lei 
+CASS datorata de pensionari, pentru partea de venituri din pensii care depaseste plafonul prevazut 
+de lege (3000lei) 
+65 492 26 5503XXXXXX CASS datorata pentru someri 
+66 478 27 5503XXXXXX CASS datorata pentru persoanele ale cãror drepturi sunt stabilite prin Decretul-lege nr.118/1990  
+privind acordarea unor drepturi persoanelor persecutate din motive politice 
+67 479 28 5503XXXXXX CASS datorata pentru persoanele beneficiare de ajutor de incluziune si ajutor pentru familia cu copii 
+acordate potrivit Legiinr.196/2016 privind venitul minim de incluziune 
+68 
+493 
+29 
+5503XXXXXX CASS datorata pentru persoanele care beneficiaza de indemnizatia pentru cresterea copilului  în 
+varsta de pana la 2 ani, respectiv 3 ani in cazul copilului cu handicap sau de indemnizatia pe perioada 
+concediului de acomodare 
+69 490 30 5503XXXXXX CASS datorata pentru persoanele care beneficiazã de indemnizatia pentru cresterea copilului  cu 
+handicap cu varsta cuprinsa intre 3 si 7 ani 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Nomenclator 5 - Tip asigurat A,B (cf.anexa4 ordin comun) 
+Tip 
+asig. 
+A/B 
+XML 
+Nr.cr 
+Mof. 
+Explicatie CAS 
+02.412 
+ 
+47.481 
+CASS 
+07.432 
+CAM 
+46.480 
+ 
+Baza 
+somaj 
+ 
+80 
+48.482 
+1 1 Salariat (exclusiv 1.1) DA DA DA DA 
+46 1.0 Salariat (exclusiv 1.1) (CAS în sist.proprii) NU DA DA DA 
+26  Salariat cu studii superioare si vechime peste 1 an DA DA DA DA 
+47  Salariat cu studii superioare si vechime peste 1 an 
+(CAS în sist.proprii) NU DA DA DA 
+48  Salariat in agricultura (art.60 pct.7 CF)  
+ 
+CAS 
+58.486 
+Cipens_re
+dusa  
+DA 
+(cu 
+scutire) 
+59.487 
+46.480 
+ 
+DA 
+25 1.1 Salariat în constructii (art. 60 pct. 5 CF) 
+ 
+DA 
+ 
+CAS 
+54.483 
+Cipens_re
+dusa  
+DA 
+ 
+(cu 
+scutire) 
+55.484 
+46.480 
+ 
+DA 
+54  Salariat  IT (art.60 pct.2 CF) CAS 
+62.488 
+Cipens_re
+dusa  
+DA 
+ 
+46.480 
+ 
+ 
+DA 
+27 1.4 Membru cooperator salariat      (din 05.2019) DA DA DA DA 
+31 1.5 Parinti salariati – indemnizatie cf.L19/2020 
+ (se declara numai in sectiunea B)  DA DA DA DA 
+42 1.5.1 Parinti salariati – indemnizatie cf.L19/2020  
+(CAS în sist.proprii) 
+(se declara numai in sectiunea B)  
+NU DA DA DA 
+32  Salariat – indemnizatie cf.OUG 36/2022  
+ OUG111/2021 si OUG 2/2022, suportată din BA șomaj  
+(cu plati anterioare de la ANOFM in E3)  
+(se declara numai in sectiunea B)   
+Nu se mai foloseste din 11/2023.          
+DA DA NU DA 
+  Salariat – indemnizatie cf. OUG 36/2022 
+OUG111/2021 si OUG 2/2022 , suportată din BA șomaj  
+(CAS în sist.proprii) (cu plati anterioare de la ANOFM in E3) 
+(se declara numai in sectiunea B)     
+Nu se mai foloseste din 11/2023.          
+NU DA NU DA 
+33  Salariat -  indemnizația suplimentată de angajator  
+cf OUG111/2021 si OUG 2/2022  
+(se declara numai in sectiunea B)  
+Nu se mai foloseste din 06/2022. 
+DA DA DA DA 
+8 1.7 Personalul român trimis în misiune în strainatate (HG) DA DA DA NU 
+34 1.8 PF ce desfăsoară activităti în cadrul misiunilor diplomatice, 
+oficiilor consulare si institutelor culturale românesti din 
+străinătate, în conformitate cu prevederile art. 5 alin. (1) din 
+cap. IV secţiunea a 3-a al anexei nr. IV la Legea-cadru nr. 
+153/2017 privind salarizarea personalului plătit din fonduri 
+publice  
+(se declara numai in sectiunea A) 
+NU NU NU NU 
+35  Membru cooperator salariat  – indemnizatie cf.  
+OUG111/2021  si OUG 2/2022 (se declara numai in 
+sectiunea B)  
+Nu se mai foloseste din 06/2022. 
+DA DA NU DA 
+36 1.10 PF pentru care angajatorul plateste CASS pe perioada 
+suspendarii din functie 
+(se declara numai in sectiunea A)  
+NU DA NU NU 
+37  Salariat – indemnizatie (timp redus) cf. 
+art.1 alin(7) OUG 132/2020  
+(se declara numai in sectiunea B)  
+Nu se mai foloseste din 11/2023. 
+DA DA DA DA 
+ 
+81 
+44  Salariat – indemnizatie (timp redus) cf. 
+art.1 alin(7) OUG 132/2020 (CAS în sist.proprii)  
+(se declara numai in sectiunea B  din 01.2021) 
+Nu se mai foloseste din 11/2023. 
+NU DA DA DA 
+49  Salariat (majorare salariu minim cu 200 lei – OUG67/2022) 
+Nu se mai foloseste din 01/2023. DA DA DA DA 
+51 1.11.2 Salariat (are CIM cu norma intreaga), beneficiar al masurii 
+'200 300 de lei din sal.minim, suma netaxabila' 
+cf.OUG168/2022 OUG156/2024 (01-06/2026) sau  
+OUG 89/2025 (07-12/2026) 
+ 
+ 
+DA DA DA DA 
+52 1.11.3 Salariat (are CIM cu norma intreaga), beneficiar al masurii 
+‘200 300  de lei din sal.minim, suma netaxabila' cf. 
+OUG168/2022 OUG156/2024 (01-06/2026) sau  
+OUG 89/2025 (07-12/2026) 
+ (CAS în sist.proprii) 
+ 
+NU DA DA DA 
+53  Salariat (are CIM cu norma intreaga), beneficiar al masurii 
+'200 de lei din sal.minim, suma netaxabila' cf.OUG168/2022, 
+care nu se incadreaza la art.60 pct.7 din CF 
+Nu se mai foloseste din 2024 
+DA DA DA DA 
+38  Membru cooperator salariat – indemnizatie (timp redus) 
+cf.art.3(1) OUG 132/2020 
+(se declara numai in sectiunea B  din 10.2020) 
+Nu se mai foloseste din 11/2023 
+DA DA NU DA 
+39  Parinti salariati – indemnizatie cf. OUG 110/2021 
+(se declara numai in sectiunea B)  din 10.2020 
+Nu se mai foloseste din 08/2022. 
+DA DA DA DA 
+45  Parinti salariati – indemnizatie cf. OUG 110/2021 
+(CAS în sist.proprii)  
+(se declara numai in sectiunea B) din 01.2021 
+Nu se mai foloseste din 08/2022. 
+NU DA DA DA 
+2 2 Salariat Militar (politisti,functionari publici cu statut special,la 
+incet.rap.de serviciu) NU DA DA NU 
+ 3. Alte categorii de persoane fizice care realizează venituri din 
+salarii sau asimilate salariilor:     
+9 3.1  PF care ocupa funcţii de demnitate publica DA DA DA DA 
+10 3.2  Consilierii locali, judeteni si ai mun.Bucuresti (indemnizatie 
+de sedinta) DA DA DA DA 
+11 3.3  PF alese în cadrul PJ fara scop patrimonial (pers. alese în 
+consiliul de admin./comitetul director/consiliul superior, 
+comitetul executiv/biroul permanent, comisia de disciplina)  
+DA DA DA DA 
+12 3.4 Directori cu contract de mandat, membri ai directoratului de 
+la societ.admin.în sistem dualist şi ai consil.de supraveghere, 
+manageri 
+DA DA DA DA 
+13 3.5 Administratori ai societ. si manageri care primesc sume din 
+profitul unitatii DA DA DA DA 
+14 3.6 Salariaţi care primesc sume pt. participarea  la profit, cu 
+exceptia sumelor care se acorda ulterior încetarii CIM DA DA DA DA 
+15 3.7 PF care încaseaza indemniz.lunare platite de angajatori pe 
+per. de neconcurenţa, stabilite conform CIM NU DA NU NU 
+18 3.8 PF care incaseaza ven. din salarii sau asimilate salariilor 
+dupa data încet.rap. juridice DA DA DA NU 
+16 3.9 PF care au rap. de munca suspendat (CM cf.OUG 
+158/2005 si indemniz. suportata de angajator)  
+(se declara numai in sectiunea B si are sectiune D) 
+DA DA 
+ DA DA 
+23 3.10 PF care au rap. de munca suspendat (incap. temp. de 
+munca si indemniz. suportata din FNUASS)  
+(se declara numai in sectiunea B si are sectiune D) 
+DA DA 
+ NU DA 
+ 
+82 
+17 3.11 PF care au rap. de munca suspendat (incap. temp. de 
+munca si indemniz. din FAAMBP)  (se declara numai in 
+sectiunea B si are sectiune D) 
+NU NU NU DA 
+24 3.12 PF care au rap. de munca suspendat (incap. temp. de 
+munca cf.L346/2002 si indemniz. suportata de angajator) 
+(se declara numai in sectiunea B si are sectiune D) 
+NU NU DA DA 
+19 3.13 PF care au rap. de munca suspendat (NU e in incap.temp. 
+de munca si plata indemniz. se suporta de angajator) DA DA DA DA 
+20 3.14 Reprezentanţi în organisme tripartite DA DA NU NU 
+55  Rezervisti voluntari  in perioada in care nu participa la 
+instruire sau la misiuni 
+DA DA DA DA 
+4 4 Membri in comisia de cenzori / comitetul de audit/ consilii/ 
+comisii/ comitete/ asoc.de proprietari (cu contract de mandat) DA DA NU NU 
+5 5 PF disponibilizate care benef.de plati compensatorii din  
+fd. de salarii DA DA DA NU 
+40 5.1 PF cu CIM desfăcute (concediere colectiva) - plăți 
+compensatorii calculate pe baza salariilor medii nete pe 
+unitate 
+DA DA DA NU 
+6 6 Administratori ai SC/CN/SN/RA, membri CA/CS/CC si 
+reprezentantii lor în AGA/CA DA DA DA DA 
+21 7 PF care realiz.ven. din activit. dependente, ca urmare a 
+reîncadrarii activitatii DA DA DA DA 
+22 8 PF care realiz. ven.din activit. dependente (CAS în 
+sist.proprii)   (avocati, pensionari militari, etc.)  NU DA DA DA 
+3 9 9.Zilieri (exclusiv 9.1) (L52/2011)  DA NU NU NU 
+50  9.1.Zilieri (art.60 pct.7 CF)  
+Nu se mai foloseste din 01/2023. DA NU NU NU 
+28 10 PF cu  contract de internship cf. L176/2018  DA DA DA NU 
+29 11 PF care primesc avantaje/ venituri în bani sau în natura de 
+la terti, ca urmare a unei relatii generatoare de venituri din 
+salarii si asimilate salariilor 
+DA DA DA NU 
+30 12 PF nerezidente  care obtin venituri din salarii si asimilate 
+salariilor de la un platitor de venituri din România, si care nu 
+datoreaza contributii sociale în România 
+NU NU NU NU 
+ 13 PF care încasează venituri din salarii și asimilate salariilor 
+sau venituri al căror tratament fiscal este cel asimilat 
+veniturilor din salarii și asimilate salariilor și care nu se 
+regăsesc în celelalte tipuri de asigurați     
+DA/NU 
+??? 
+DA/NU 
+??? 
+DA/NU 
+??? 
+DA 
+??? 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Nomenclator 6 - Tip asigurat alte entitati C  (cf. anexa3 din Ordin comun) 
+ 
+Tip 
+asig.C 
+XML 
+Nr.cr. 
+Mof. Explicatie CAS CASS CAM Impozit 
+pe venit 
+2 2 Somer (declara ANOFM) (singurul tip C care poate avea sectiune D pt.CM) DA 
+02.412 
+DA 
+65.492 NU  
+ 3 Pers. ale cãror drepturi sunt stabilite prin Legi speciale : NU DA 
+66.478 NU  
+39 3.1 Pers. persecutate din motive politice, deportate sau luate prizonieri - primesc drepturi 
+cf. Decretului-lege nr.118/1990 NU DA 
+66.478 NU  
+40 3.2 Magistratii care au fost inlaturati din justitie pentru considerente politice in per.1945 – 
+1989 - primesc drepturi cf. Legii nr.51/1993 NU DA 
+66.478 NU  
+41 3.3 Pers. persecutate de catre regimurile instaurate in Romania in per.06.09.1940-
+06.03.1945, din motive etnice - primesc drepturi cf. OG  nr.105/1999 NU DA 
+66.478 NU  
+ 
+83 
+42 3.4 Veteranii, invalizii si vaduvele de razboi - primesc drepturi cf. Legii nr. 44/1994 NU DA 
+66.478 NU  
+43 3.5 Pers. care au efectuat stagiul militar in cadrul Dir.Gen. a Serv. Muncii in per. 1950-
+1961 - primesc drepturi cf. Legii nr. 309/2002 NU DA 
+66.478 NU  
+44 3.6 Pers. care primesc drepturi potrivit Legii nr.341/2004 (Revolutia din Dec.1989, revolta 
+de la Braşov din nov.1987 şi revolta din Valea Jiului-Lupeni din aug.1977) NU DA 
+66.478 NU  
+4 4 Pers. beneficiare de ajutor de incluziune si ajutor pentru familia cu copii, acordate cf. 
+Legii nr.196/2016 privind venitul minim de incluziune (declara primariile) NU DA 
+67.479 NU  
+5 5 Pers.care benef.de indemniz.pt.cresterea copilului < 2 ani sau <3 ani (copilul cu 
+handicap) (declara ANPIS) NU DA 
+68.493 NU  
+6 6 Pers.care benef. de indemniz. de cresterea copilului cu handicap intre 3-7 ani  
+(declara  ANPIS) NU DA 
+69.490 NU  
+10 10 Pers.prev.la art.1 alin.(2) / art.23 alin.(3) / art.32 din OUG 158/2005 privind concediile 
+si indemnizatiile de asig.sociale de sanatate (declara CNAS) 
+DA 
+02.412 
+DA 
+07.432 NU 602 
+11 11 Asigurati preluati de la unitatile in faliment sau preluati in plata  pt.incapacitate 
+temporara de munca (declara de CNPP)  NU NU NU 602 
+13 13 Sot/Sotie pt. personalul roman trimis in misiune permanenta in strainatate (declara 
+unitatile trimitatoare) 
+DA 
+02.412 NU NU 602 
+14 
+ 
+14 Membrii Corpului diplomatic si consular al Romaniei (pt. cursuri de pregatire in 
+strainatate > 90 de zile calend.) (declara MAE) 
+DA 
+02.412 NU NU 602 
+15 15 Pers.disponibilizate care beneficiaza de plati compensatorii suportate de BAS 
+(declara ANOFM) 
+ DA 
+02.412 NU NU 602 
+17 17 PF care realiz. ven. din dr.de prop. intelectuala (declara platitorul de venit) DA 
+30.451 
+DA 
+31.461 NU 611 
+22 22 PF care realiz. ven. din asocierea cu o PJ contribuabil, potrivit tit. III din L227/2015 NU DA 
+36.464 NU 623 
+26 26 PF care realiz.ven. din arendarea bunurilor agricole în regim de reţinere la sursa NU DA 
+42.469 NU 619 
+27 27 PF dintr-o asociere cu o PJ contribuabil, potrivit tit. II din L227 
+ NU DA 
+44.471 NU 622 
+28 28 Pensionari, pt perioadele cand CASS era suportata de contribuabil (declarati de 
+CNPP) NU DA 
+10.441 NU 602 
+30 30 PF care realiz.ven. din activit. indep., în baza contractelor de activitate sportiva 
+(declara platitorul de venit)  
+DA 
+51.473 
+DA 
+52.474 NU 625 
+29  PF care realiz. ven. din asocierea cu o PJ, contribuabil, potrivit L170/ 2016 privind 
+impozitul specific NU DA 
+50.472 NU 624 
+31  PF - indemnizatie activitate sportivă suportata de platitorul de venit  
+cf. OUG111/2021 si OUG 2/2022 (declara platitorul de venit)  
+DA 
+51.473 
+DA 
+542.474 NU  
+625 
+32  PF - indemnizatie activitate sportivă suportata din BS  
+cf. OUG111/2021  si OUG 2/2022 (cu plati anterioare de la ANPIS in E3)  
+(declara platitorul de venit) 
+DA 
+51.473 
+DA 
+52.474 NU  
+625 
+33 33 Personal sanitar - sume incasate din contracte prest.servicii cf.OUG3/2021, aferente 
+lunilor anterioare lunii de raportare  
+(cu plati per.anterioare) 
+Pentru plata din 02-2021 se declara in 03/2021 
+DA 
+02.412 
+DA 
+07.432 NU  
+602 
+34 34 Personal sanitar - sume incasate din contracte prest.servicii cf.OUG3/2021, aferente 
+lunilor anterioare lunii de raportare, asig. în sist. proprii de pensii  
+(cu plati per.anterioare) 
+Pentru plata din 02-2021 se declara in 03/2021 
+NU DA 
+07.432 NU  
+602 
+35 35 35.PF care realiz.ven.din pensii (declarati de CNPP, prin casele de pensii teritoriale/ 
+sectoriale, sau de alte entitati care platesc venituri din pensii) (cei care depasesc 
+plafonul datoreaza CASS in per. 01/2022-10.2023 si  din 08.2025) 
+NU DA 
+07.457 NU 
+ 
+607 
+36 36 PF care realizeaza venituri din desfasurarea activitatilor casnice DA 
+64.477 NU NU  
+627 
+37 37 Rezerviști voluntari dispăruți, răpiți sau căzuți în captivitate pe timpul mobilizării sau în 
+cazul stării de război, precum și al executării misiunilor (declara unitatile militare) 
+(din 03.2025) 
+NU NU NU NU 
+38 38 Rezerviști voluntari în perioada în care nu participă la instruire 
+(din 03.2025) 
+DA 
+02.412 
+DA 
+07.432 
+DA 
+46.480 602  
+ 
+ 
+84 
+ 
+Nomenclator 7 - Indicativ conditii speciale/ deosebite  (din 01.09.2024)   
+ (1,2,3,4,5 -8,9,10,11-12,13,14,15,16,17,18,19) 
+Valoare Explicatie  
+0 Rest  
+1 1.Conditii speciale cf.art.28 alin.(1) lit.a) din L360/2023 (u.miniere)  
+2 2.Conditii speciale cf.art.28 alin.(1) lit.b) din L360/2023 zona I  radiatii  
+3 3.Conditii speciale cf.art.28 alin.(1) lit.b) din L360/2023 zona II radiatii  
+4 (sters) art.30 alin.(1) lit.c) din L263/2010 (Militari)  
+5 4.Conditii speciale cf.art.28 alin.(1) lit.c) din L360/2023 (aviatie)  
+6 5.Conditii speciale cf.art.28 alin.(1) lit.d) din L360/2023 (anexele 2,3 din L360)  
+7 6.Conditii speciale cf.art.28 alin.(1) lit.e) din L360/2023 (artisti)  
+8 7.Conditii speciale cf. art.28 alin.(1) lit.f) din L360/2023 (armament)  
+9 8.Conditii speciale cf. art.28 alin.(1) lit.g) din L360/2023 (constr.nave)  
+10(sters) 9. Conditii speciale cf. L234/2019   <09.2024 
+11 10.Conditii deosebite cf. art.27 alin.(3) din L360/2023 (transplant) Din 01/2021 
+12 11.Conditii speciale cf. art.28 alin.(1) lit.h) din L360/2023 (prod.energ.electrice) Din 08/2021 
+13 (sters) 12.Conditii speciale cf. art.28 alin.(1) lit.a) - l) din L360/2023   
+14 13.Conditii speciale cf. art.28 alin.(1) lit.i) din L360/2023 (constr.masini) Din 01/2023 
+15 14.Conditii speciale cf. art.28 alin.(1) lit.j) din L360/2023 (extractie minereuri) Din 01/2023 
+16(sters) 15.Conditii speciale cf. art.30 alin.(1) lit.l) din L263/2010  <09.2024 
+17 16.Conditii speciale cf. art.28 alin.(1) lit.k) din L360/2023 (exploatari forestiere) Din 09/2024 
+18 17.Conditii speciale cf. art.28 alin.(1) lit. l) din L360/2023 (circulatie feroviara) Din 09/2024 
+19 18.Conditii deosebite cf. art.27 alin.(4) din L360/2023  Din 09/2024 
+ 
+Nomenclator 8 - Loc prescriere (certificate medicale) (D_10) 
+Valoare Explicatie 
+1 Medic de familie 
+2 Spital 
+3 Ambulatoriu 
+4 CAS 
+5 CEX 
+ 
+Nomenclator 9 - Cod indemnizatie boala (certificate medicale) (D_9) 
+Valoare Explicatie Grupa de boala   
+01 Boala obisnuita G1  
+02 Accident in timpul deplasarii la/ de la locul de munca – neconfirmat de casa de pensii G1  
+03 Accident de munca – neconfirmat de casa de pensii G1  
+04 Boala profesionala – neconfirmat de casa de pensii G1  
+05 Boala infecto-contagioasa din grupa A 
+(pt izolare COVID19: D_9=05 si D_12=35 valabil pana la 02.11.2020, inclusiv) 
+G1  
+51 Boala infectocontagioasa pentru care se instituie masura izolarii 
+ (pt izolare COVID19: D_9=51 si D_12=24 valabil din 30.10.2020, inclusiv) 
+G1  
+06 Urgenta medico-chirurgicala G1  
+07 Carantina G2  
+08 Sarcina si lehuzie G3  
+09 Ingrijire copil bolnav in varsta de pana la 7 ani sau copil cu handicap G4  
+91 Ingrijire copil bolnav cu afectiuni grave, in varsta de pana la 16 ani G4  
+92 Supravegherea si îngrijirea copilului în vârstă de până la 18 ani, pentru care s-a dispus 
+măsura carantinei sau a izolării  (L73/2022 si Ordin comun 1165/218/2022) 
+G4 Din 04/2022 
+10 Reducerea cu 1/4 a duratei normale de lucru G2  
+11 Trecerea temporara in alta munca G2  
+12 Tuberculoza G1  
+13 Boala cardio-vasculara G1  
+14 Cancer, HIV, SIDA G1  
+15 Risc maternal G5  
+16 Unele tipuri de arsuri G1 Din 09/2021 
+17 Îngrijirea pacientului cu afecțiuni oncologice (L24/2022 si Ordin comun 1166/217//2022) G4.1 Din 04/2022 
+ 
+ 
+85 
+Nomenclator 10 - Grupe de boala (OUG 158)  
+Valoare Explicatie Cod de boala corespondent (D_9) 
+G1 Incapacitate temporara , din care : 01-06,12-14,16, 51 
+ - boli infectocontagioase cu izolare D_9=05, D_12=35,si  (D_5<=02.11.2020 
+sau D_5>=24.10.2023) 
+ 
+D_9=51 si  D_5>=30.10.2020 
+G2 Prevenire imbolnavire, din care :   07,10,11  
+ - carantina 07 
+G3 Sarcina si lauzie             08 
+G4 Ingrijire copil bolnav     09,91,92 
+G4.1 Îngrijirea pacientului cu afecțiuni 
+oncologice 
+17 
+G5 Risc maternal                 15 
+ 
+ 
+Nomenclator 11 ( Lista de valori) - Motiv scutire la plata contributii (DESFIINTAT) 
+ 
+Nomenclator 12 – Tip contract de munca  
+Valoare Explicatie 
+N - cu norma intreaga 
+P1 - cu timp de lucru partial de 1 ora 
+P2 - cu timp de lucru partial de 2 ore 
+P3 - cu timp de lucru partial de 3 ore 
+P4 - cu timp de lucru partial de 4 ore 
+P5 - cu timp de lucru partial de 5 ore 
+P6 - cu timp de lucru partial de 6 ore 
+P7 - cu timp de lucru partial de 7 ore 
+ 
+         
+-Boli infecto-contagioase grupa A (D_12) (D_12<37) 
+(D_9=05,D_12=35, D_5<=02.11.2020) 
+HG: 
+-Boli infecto-contagioase pentru care se instituie masura 
+izolarii (D_12) (D_12<26) pt.D_5>=30.10.2020 
+ 
+Boli infecto-contagioase din grupa A 
+1. amibiaza (dizenterie amibiană); 
+2. antraxul; 
+3. bruceloza; 
+4. difteria; 
+5. febra butonoasă; 
+6. febra galbenă; 
+7. febrele paratifoide A, B, C; 
+8. febra Q; 
+9. febra recurentă; 
+10. febra tifoidă; 
+11. filarioza, dracunculoza; 
+12. hepatita virală acută; 
+13. holera; 
+14. infecţia gonococică; 
+15. infecţia HIV; 
+16. leishmaniozele; 
+17. lepra; 
+18. leptospiroza; 
+19. limfogranulomatoza inghinală benignă; 
+20. malaria; 
+21. meningita meningococică și meningococemia; 
+22. morva, melioidoza; 
+23. ciuma; 
+ 
+86 
+24. poliomielita şi alte neuroviroze paralitice; 
+25. psitacoza-ornitoza; 
+26. rabia; 
+27. scarlatina; 
+28. sifilisul; 
+29. şancrul moale; 
+30. tetanosul; 
+31. tifosul exantematic; 
+32. tuberculoza (toate formele şi localizările); 
+33. tularemia; 
+34. tusea convulsivă; 
+35. COVID-19 
+ 
+Boli infecto-contagioase cu izolare 
+1. Poliomielita  
+2. Difteria  
+3. Rujeola  
+4. Pertussis  
+5. Febra tifoidă  
+6. Febra paratifoida  
+7. Boala meningococică (MCSE)  
+8. Tuberculoza pulmonara cu microscopie pozitiva  
+9. Antrax pulmonar  
+10. Rabia umana  
+11. Holera  
+12. Pesta  
+13. Variola / varioloidul  
+14. Gripa umana cauzata de un nou tip de virus gripal  
+15. Cazuri umane de gripa aviara inalt patogena  
+16. Febra hemoragica Lassa  
+17. Ebola  
+18. Febra hemoragica Marburg  
+19. Febra hemoragica Crimeea Congo  
+20. Febra galbena  
+21. Nipah  
+22. SARS  
+23. MersCov  
+24. SarsCov2  
+25. Boala cauzata de un agent patogen infectios necunoscut /emergent 
+         
+Urgenţe medico-chirurgicale (D_11) cf.HG 423/ 27.05.2020 (se aplica incepand cu 30.05.2020) 
+ 
+ 
+Tabela coduri fiscale AJOFM si CASAN 
+cif AJOFM 
+(asigurati 
+proprii) 
+cif AJOFM 
+(pt.someri 
+tipC=2) 
+cif CASAN 
+(asigurati proprii) 
+cif CASAN 
+(pt.tipC=10) 
+oasp denjud 
+11333523 28077063 4562729 33875452 011 ALBA 
+11376249 28075844 11390839 40774345 021 ARAD 
+11352991 28083855 11319731 42222568 031 ARGES 
+5036722 28075852 4159042  041 BACAU 
+6961289 28077276 11320930  051 BIHOR 
+11364864 28082612 11320078 32882907 061 BISTRITA 
+11395755 28077071 11321707  071 BOTOSANI 
+11401237 28080190 11333426 28165505 091 BRAILA 
+11139692 28081501 11335478  081 BRASOV 
+ 
+87 
+11353261 28088445 11629740 34733375 411 BUCURESTI 
+11350427 28081617 11317897 28229862 101 BUZAU 
+11356381 28078867 11327998 28407226 401 CALARASI 
+11381407 28089920 3228136 28218073 111 CARAS SEVERIN 
+11372395 28087245 11324762 31260507 121 CLUJ 
+11343926 28136690 11322621  131 CONSTANTA 
+11333035 28074245 4202029 28195468 141 COVASNA 
+11351325 28187333 11351317 28212887 151 DIMBOVITA 
+11485726 28075950 11340652  161 DOLJ 
+11361990 28078662 11317579 50630568 171 GALATI 
+11358536 28080204 11324770 28238283 231 GIURGIU 
+11362804 28076971 11334855  181 GORJ 
+11344042 28078816 11330470 28151739 191 HARGHITA 
+11326062 28083936 11319740  201 HUNEDOARA 
+11460853 28078670 11342440 28495732 211 IALOMITA 
+11390065 28087237 4540178 31137157 221 IASI 
+3627064 28086320 11320493 28214489 241 MARAMURES 
+11574157 28081609 11317951  251 MEHEDINTI 
+11339089 28077233 11343845 29393609 261 MURES 
+11335273 28077217 2613087 28202204 271 NEAMT 
+11505874 28078727 11340121 32790390 281 OLT 
+3197021 28121436 11319359  291 PRAHOVA 
+11340679 28090712 11346922 32594580 311 SALAJ 
+11341313 28077098 11449936 29837540 301 SATU MARE 
+11364678 28135407 10549058 43589300 471 ILFOV 
+11333027 28077292 11342530 28105155 321 SIBIU 
+7588430 28078743 11352916  331 SUCEAVA 
+11431220 28082639 11347260  341 TELEORMAN 
+11375707 28082680 2483580  351 TIMIS 
+11403289 28091955 3429350  361 TULCEA 
+11495517 28077330 11374760 32783725 371 VASLUI 
+11342394 28078786 11342386  381 VILCEA 
+11360870 28077020 11351511 28227519 391 VRANCEA 
+ 
+ 
+Nomenclator state (vezi an 2020) 

@@ -1,0 +1,364 @@
+ 
+1
+ 
+Structura fi şier XML pentru D390: 
+ 
+Conform OPANAF 705/ 11.03.2020 
+Conform OPANAF   76/ 21.01.2010 
+declaratie:v3 (in 2020) 
+declaratie:v2 (in 2017) 
+declaratie:v1 (< 2017) 
+ 
+Data 
+modific ării 
+ 
+Nr. 
+crt. 
+Elemente/ atribute Denumire câmp Tip şi 
+lungim 
+e câmp 
+Câmp 
+obligatoriu Formule şi restric ţii Erori  
+  <declaratie390>      
+ 1 luna Perioada de raportare – Luna N(2) DA 1>= luna  <=12 
+luna>=2 pentru an=2020 ERR - luna raportare 
+01.02.17 2 an Perioada de raportare - An N(4) DA  an  >= 2020 ERR - an raportare 
+ 3 d_rec Declaratie rectificativa 
+N(1)  d_rec  in (0,1)  unde 
+1=Rectificativa , 0=Initiala 
+ 
+Se raporteaza toata 
+initiala corectata  
+ 
+ 4 nume_declar Nume declarant C(75) DA  ERR - nume declarant 
+necompletat 
+ 5 prenume_declar Prenume declarant C(75) DA  ERR - prenume declarant 
+necompletat 
+ 6 functie_declar Functie declarant C(50) DA  ERR – functie declarant 
+necompletat ă 
+ 7 cui Cod de înregistrare în scopuri de tva N(10) DA Verificare cui ERR - cui invalid sau inexistent 
+ 8 den Denumire sau Nume şi Prenume C(200) DA  ERR - denumire necompletat ă 
+ 9 adresa Adres ă domiciliu fiscal C(1000) DA  ERR – adres ă necompletat ă 
+ 10 telefon Telefon domiciliu fiscal C(15)    
+ 11 fax Fax domiciliu fiscal C(15)    
+ 12 mail E-mail domiciliu fiscal C(200)    
+01.02.17 13  totalPlata_A  Suma de control N(15) DA  
+totalPlata_A =  nrOPI+ 
+bazaL+ bazaT+bazaA+ 
+bazaP+ bazaS+ bazaR 
+ERR - calcul 
+  <rezumat> 1 aparitie      
+ 14 nr_pag NUM ĂR TOTAL PAGINI ANEXA LA 
+DECLARATIE N(1) DA   
+ 
+2
+ 15 nrOPI NUM ĂRUL TOTAL AL OPERATORILOR 
+INTRACOMUNITARI (operatii) N(10) DA  
+nrOPI =COUNT  
+operatie 
+(tara+codO+denO)  
+ 
+nrOPI =COUNT (operatie)  
+ 
+(nr.total operatii intracom.) 
+ERR - NUM ĂRUL TOTAL AL 
+OPERATORILOR 
+INTRACOMUNITARI (operatii) 
+– mod de calcul eronat 
+ 16 bazaL L-LIVR ĂRI INTRACOMUNITARE DE 
+BUNURI N(15) DA  
+bazaL =Σ operatie(baza) 
+pentru operatie(tip)=L 
+ 
+ERR - L-LIVR ĂRI 
+INTRACOMUNITARE DE 
+BUNURI – mod de calcul 
+eronat 
+ 17 bazaT T-LIVR ĂRI ÎN CADRUL UNEI 
+OPERA ŢIUNI TRIUNGHIULARE N(15) DA  
+bazaT =Σ operatie(baza) 
+pentru operatie(tip)=T 
+ 
+ERR - T-LIVR ĂRI ÎN CADRUL 
+UNEI OPERA ŢIUNI 
+TRIUNGHIULARE – mod de 
+calcul eronat 
+ 18 bazaA A-ACHIZI ŢII INTRACOMUNITARE DE 
+BUNURI N(15) DA  
+bazaA =Σ operatie(baza) 
+pentru operatie(tip)=A 
+ 
+ERR - A-ACHIZI ŢII 
+INTRACOMUNITARE DE 
+BUNURI – mod de calcul 
+eronat 
+ 19 bazaP P-PREST ĂRI INTRACOMUNITARE DE 
+SERVICII N(15) DA  
+bazaP =Σ operatie(baza) 
+pentru operatie(tip)=P 
+ 
+ERR - P-PREST ĂRI 
+INTRACOMUNITARE DE 
+SERVICII  – mod de calcul 
+eronat 
+ 20 bazaS S-ACHIZI ŢII INTRACOMUNITARE DE 
+SERVICII N(15) DA  
+bazaS =Σ operatie(baza) 
+pentru operatie(tip)=S 
+ 
+ERR - S-ACHIZI ŢII 
+INTRACOMUNITARE DE 
+SERVICII – mod de calcul 
+eronat 
+01.02.17 20a  bazaR 
+R-LIVR ĂRI INTRACOMUNITARE DE 
+BUNURI EFECTUATE IN CADRUL 
+REGIMULUI SPECIAL PENTRU 
+AGRICULTORI 
+N(15) DA  
+bazaR =Σ operatie(baza) 
+pentru operatie(tip)=R 
+ 
+ERR - R-LIVR ĂRI 
+INTRACOMUNITARE DE 
+BUNURI  EFECTUATE IN 
+CADRUL REGIMULUI 
+SPECIAL PENTRU 
+AGRICULTORI – mod de 
+calcul eronat 
+ 21 total_baza Total baza de impozitare din anexa N(1 5) DA  total_baza =   
+Σ operatie(baza)  
+  </rezumat>       
+18.03.20  <cos>  0-n aparitii      
+  tip Sectiunea din care fac parte inregistrarile C(1)  DA tip= A pt sectiunea A 
+tip= B pt sectiunea B 
+ 
+18.03.20 m1 tara_m1 Tara pers.impozabila C(2) DA  tara  – verificare cu 
+Nomenclator  tari 
+ERR - tara operator 
+necompletat ă sau invalida 
+18.03.20 m2 cod_m1 Cod pers.impozabila (fara codul de tara) C(12) DA Daca cod_m1  este ERR – cod_m1  invalid (nu 
+ 
+3
+completat, se verifica 
+daca cod_m1  este valid 
+conform algoritmilor 
+pentru fiecare țara 
+Se verifica unicitate pt 
+(tip=A+tara1+cod1+den1) 
+ 
+ 
+respecta algoritmul de tara) 
+sau necompletat 
+ 
+ 
+ 
+ 
+18.03.20 m3 den_m1 Denumire / nume si prenume 
+pers.impozabila C(200) DA  
+ 
+ERR - denumire operator 
+necompletat ă 
+ m4 
+motiv Motivul modificarii N(1)  
+Valori (1-3) 
+1-retur bunuri 
+2-inlocuire client  
+ 
+Dac ă tip=B atunci motiv 
+#null 
+altfel motiv =null 
+ 
+ERR – motiv  # (1-3) sau motiv 
+necompletat 
+18.03.20 m5 
+tara_m2 Tara pers.impozabila C(2)  
+tara  – verificare cu 
+Nomenclator  tari 
+ 
+Daca motiv=2 atunci 
+tara_m2#null  
+ 
+Dac ă motiv= 1 atunci 
+tara_m2 = null 
+ 
+Dac ă tip=A atunci 
+tara_m2 = null 
+ 
+ERR – tara operator invalida 
+ 
+ERR – tara operator  
+necompletata pentru motiv=2 
+18.03.20 m6 
+cod_m2 Cod pers.impozabila 
+ (fara codul de tara) C(12)  
+Daca cod_m2  este 
+completat, se verifica 
+daca cod_m2  este valid 
+conform algoritmilor 
+pentru fiecare tara 
+ 
+Daca motiv=2 atunci 
+cod_m2#null 
+ 
+Dac ă motiv= 1 atunci 
+cod_m2 = null 
+ 
+Dac ă tip=A atunci cod_m2 
+ERR – cod_m2  invalid (nu 
+respecta algoritmul de tara) 
+ 
+ 
+ 
+ERR – cod operator 
+necompletat pentru motiv=2 
+ 
+4
+= null  
+18.03.20 m7 
+den_m2 Denumire / nume si prenume 
+pers.impozabila C(200)  
+ 
+Daca motiv=2 atunci 
+cod_m2#null 
+ 
+Dac ă motiv= 1 atunci 
+den_m2 = null 
+ 
+Dac ă tip= A atunci 
+den_m2 = null  
+ 
+ERR - denumire operator 
+necompletat ă pentru motiv=2 
+18.03.20   </cos>      
+  <operatie> 1-n aparitii      
+01.02.17 22 tip Tip opera ţiune C(1) DA  tip  in (L,T,A,P,S,R) 
+ 
+ERR – tip opera ţiune diferit de 
+(L,T,A,P,S,R) 
+ 23 tara Tara operator intracomunitar C(2) DA  tara  – verificare cu 
+Nomenclator tari  
+01.02.17 24 codO Cod operator intracomunitar 
+ (fara codul de tara) C(12)  
+Daca codO  este 
+completat, se verifica 
+daca codO  este valid 
+conform algoritmilor 
+pentru fiecare tara 
+ 
+- pt.  tip  in (A,S)  
+codO  poate lipsi 
+ 
+- pt.  tip  in (L,T,P,R)  
+codO  este obligatoriu  
+ 
+Se verifica unicitate 
+apari ţie pentru 
+(tara+codO+denO+tip)  
+ 
+ERR – codO  invalid (nu 
+respecta algoritmul de tara) 
+ 
+ 
+ 
+ 
+ 
+ 
+ERR – codO  necompletat pt.  
+Tip  in (L,T,P,R) 
+ 
+ 
+ERR- (tara+codO+denO+tip ) 
+are apari ţii multiple  
+ 
+ 
+ 
+01.02.17  
+ 25 denO Denumire / nume si prenume operator 
+intracomunitar C(200) DA 
+ 
+ 
+Pentru perechea  
+(tara + codO#null + 
+tip=”A”)  
+pot fi asociate mai multe 
+denO , ALTFEL NU. 
+ 
+ERR - denumire operator 
+necompletat ă 
+ 
+ 
+ 
+ERR - denumire multipla 
+pentru un operator definit prin 
+perechea (tara+codO)  
+ 
+5
+ 
+ 
+ 26 baza Baz ă impozabil ă N(15) DA   ERR - baz ă impozabil ă 
+necompletat ă 
+  </operatie>      
+  </declaratie390>      
+ 
+Caractere permise in campurile de tip caracter : 
+spatiu + - . @ 
+0123456789 
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z  
+a b c d e f g h i j k l m n o p q r s t u v w x y z   
+ 
+ 
+ 
+Lista de valori Tip operatiune   
+ 
+L LIVR ĂRI INTRACOMUNITARE DE BUNURI 
+T LIVR ĂRI ÎN CADRUL UNEI OPERA ŢIUNI TRIUNGHIULARE 
+A ACHIZI ŢII INTRACOMUNITARE DE BUNURI 
+P PREST ĂRI INTRACOMUNITARE DE SERVICII 
+S ACHIZI ŢII INTRACOMUNITARE DE SERVICII 
+R LIVR ĂRI INTRACOMUNITARE DE BUNURI EFECTUATE IN CADRUL REGIMULUI 
+SPECIAL PENTRU AGRICULTORI 
+ 
+ 
+ 
+ 
+ 
+Nomenclator Tari  
+ 
+AT Austria-AT 
+BE Belgia-BE 
+BG Bulgaria-BG 
+CZ Cehia-CZ 
+CY Cipru-CY 
+CR Croatia-HR 
+DK Danemarca-DK 
+EE Estonia-EE 
+DE Germania-DE 
+EL Grecia-EL 
+FI Finlanda-FI 
+FR Franta-FR 
+ 
+6
+IE Irlanda-IE 
+IT Italia-IT 
+LV Letonia-LV 
+LU Luxemburg-LU 
+LT Lituania-LT 
+MT Malta-MT 
+GB Marea Britanie-GB 
+NL Olanda-NL 
+PL Polonia-PL 
+PT Portugalia-PT 
+SI Slovenia-SI 
+SK Slovacia-SK 
+ES Spania-ES 
+SE Suedia-SE 
+HU Ungaria-HU 
+ 
+ 
+Vers. A1.0.0  din 18.03.2020 
+ 
+Vers. A1.0.0  din 01.02.2017 
+ 
+Vers. A1.0.0  din 23.01.2012 
+ 

@@ -1,0 +1,199 @@
+ 
+1 
+Structura fişier XML pentru declaratia 301 
+UniversalCode= D301_A1.0.0 (din 28/01/2013) 
+ 
+ 
+Data 
+modificării 
+Nr. crt. Elemente/ atribute Denumire câmp Tip şi lungime 
+câmp 
+Câmp 
+obligatoriu 
+Câmp 
+calculat 
+ 
+Formule şi restricţii Erori 
+ 1. <declaratie301>       
+ 2. luna Perioada de raportare - luna N(2) DA  luna=( 1,12 ) ERR- luna raportare necompletata 
+ 3. an Perioada de raportare - an N(4) DA  an >= 2013 ERR- an raportare necompletat 
+ 
+4.
+d_rec Declaratie rectificativa N(1) DA  DA 
+d_rec=(0,1) 
+ 0-initiala  
+ 1-rectificativa 
+ERR- camp rectificativa 
+necompletat 
+ERR- camp rectificativa valoare 
+invalida 
+ 
+5.
+mijl_trans 
+Declaratie pt achizitii 
+intracomunitare de mijloace de 
+transport noi 
+N(1) DA DA 
+mijl_trans=(0,1) 
+ 0-NU 
+ 1-DA (caz in care se 
+completeaza sectiunea 2) 
+ERR- camp necompletat 
+ERR- valoare invalida 
+ 6.  I.DATE DE IDENTIFICARE A 
+PERSOANEI IMPOZABILE      
+ 7. cif Cod de identificare fiscal ă C(13) DA  Formula de validare CNP sau 
+CF 
+ERR- cui necompletat 
+ERR- cui nu este valid 
+ 8. denumire Denumire  C(200) DA    ERR-camp necompletat 
+ 9. adresa Domiciliu fiscal C(1000)     
+ 10. telefon Telefon N(15)     
+ 11. fax Fax N(15)     
+ 12. email E-mail C(200)     
+ 
+13.
+banca Banca C(50) DA   
+ERR – banca necompletată 
+ERR – banca contine  
+caracterele , # 
+ 
+14.
+cont Cont C(50) DA   
+ERR – cont necompletat 
+ERR – contul contine  
+caracterele , # 
+ 
+15.
+pers_inreg 
+Persoane care nu sunt 
+înregistrare în scopuri de TVA/ 
+Persoane care sunt 
+înregistrate conform art.1531 
+din Codul Fiscal numai pentru 
+achiziţii intracomunitare 
+N(1) DA DA 
+pers_inreg:=(1,2) 
+ 1- Persoane care nu sunt 
+înregistrare în scopuri de TVA 
+ 2- Persoane care sunt 
+înregistrate conform art.1531 
+din Codul Fiscal numai pentru 
+achiziţii intracomunitare 
+ 
+ 16. nr_evid Numarul de evidenta a platii C(23) DA DA Ex.- nr.evid.a platii : 
+10301010912251012000029 ERR- valoare invalida 
+ 
+2 
+Verificare componenta si suma 
+de control pentru nr_evid : 
+Poz.1-2 :10 
+Poz.3-5 : 301 (nomenclator) 
+Poz.6-7 :01 
+Poz.8-11 :    LLAA   (per.de 
+raportare) 
+Poz.12-17 : ZZLLAA (scadenta 
+platii) 
+Poz.18:  
+  0 daca mij_transp=0 
+  1 daca mij_transp=1 
+Poz.19-21: 000    
+Poz.22-23 : suma primelor 21 
+pozitii (se completeaza cu 0 in 
+fata sau se iau ultimele 2 cifre 
+ale sumei) 
+ 17.  Rezumat - totaluri      
+ 18. baza1 Total baza de impozitare S1 N(15.2) DA DA baza1=sum(baza) pt. 
+tip_operatie=1 ERR- calcul eronat 
+ 19. tva1 Total TVA datorat S1 N(15.2) DA DA tva1=sum(tva) pt. 
+tip_operatie=1 ERR- calcul eronat 
+ 20. baza2 Total baza de impozitare S2 N(15.2) DA DA baza2=sum(baza) pt. 
+tip_operatie=2 ERR- calcul eronat 
+ 21. tva2 Total TVA datorat S2 N(15.2) DA DA tva2=sum(tva) pt. 
+tip_operatie=2 ERR- calcul eronat 
+ 22. baza3 Total baza de impozitare S3 N(15.2) DA DA baza3=sum(baza) pt. 
+tip_operatie=3 ERR- calcul eronat 
+ 23. tva3 Total TVA datorat S3 N(15.2) DA DA tva3=sum(tva) pt. 
+tip_operatie=3 ERR- calcul eronat 
+ 24. baza4 Total baza de impozitare S4 
+(S4=S4.1+S4.2) N(15.2) DA DA baza4=sum(baza) pt. 
+tip_operatie=4 ERR- calcul eronat 
+ 25. tva4 Total TVA datorat S4 
+(S4=S4.1+S4.2) N(15.2) DA DA tva4=sum(tva) pt. 
+tip_operatie=4 ERR- calcul eronat 
+ 26. baza5 Total baza de impozitare S4.1 N(15.2) DA DA baza5=sum(baza) pt. 
+tip_operatie=5 ERR- calcul eronat 
+ 27. tva5 Total TVA datorat S4.1 N(15.2) DA DA tva5=sum(tva) pt. 
+tip_operatie=5 ERR- calcul eronat 
+ 
+28.
+totalPlata_A Suma de control N(15) DA DA 
+totalPlata_A = INT(baza1 
++baza2+ baza3+baza4+ 
+baza5+ tva1+tva2+tva3+tva4  
++tva5) 
+ERR-calcul suma de control 
+ 29. nume_declarant Nume Declarant C(75) DA   ERR- camp necompletat 
+ 
+3 
+ 30. prenume_declarant Prenume Declarant C( 75) DA   ERR- camp necompletat 
+ 31. functia_declarant Functia declarantului C(50) DA   ERR- camp necompletat 
+ 32. <sectiune> DATE PRIVIND OBLIGATIA 
+DE PLATA 1-n aparitii     
+ 33. tip_operatie  N(1) DA  tip_operatie =(1,2,3,4,5) 
+Lista de valori 
+ERR- camp necompletat 
+ 34. nr_doc Numar document C(20) DA    ERR- camp necompletat 
+ 35. data_doc Data document C(10) DA   Format ZZ.LL.AAAA ERR- camp necompletat 
+ 36. val_valuta Valoare in valuta N(15.2) DA    ERR- camp necompletat 
+ 37. tip_valuta Tip valuta C(3) DA   Lista de valori ERR- camp necompletat 
+ 38. curs_valutar Curs de schimb N(15.4) DA    ERR- camp necompletat 
+ 39. baza Baza de impozitare N(15.2) DA  baza=round(val_valuta* 
+curs_valutar,0) 
+ERR- camp necompletat  
+ERR- calcul eronat 
+ 40. tva TVA datorat N(15.2) DA    ERR- camp necompletat 
+ 41. </sectiune>       
+ 42. </ declaratie301>       
+ 
+ 
+Lista de valori pt. tip_operatie 
+tip_opera
+tie Explicatie 
+1 Sectiunea1. Achizitii intracomunitare de bunuri taxabile- altele decat mijloace de transport noi si produse 
+accizabile 
+2 Sectiunea2. Achizitii intracomunitare de mijloace de transport noi 
+3 Sectiunea3. Achizitii intracomunitare de produse accizabile 
+4 Sec ţiunea 4. Operaţiuni prevăzute la art.150 alin.(2), (3), (5) si (6) din Codul fiscal 
+5 Sectiunea4.1. Achizitii de servicii intr acomunitare pentru care beneficiarul este obligat la plata TVA cf. art.150 
+ 
+ 
+Lista de valori pt. tip_valuta 
+. tip_valuta
+ 
+EUR 
+USD 
+AUD 
+CAD 
+CHF 
+CZK 
+DKK 
+EGP 
+GBP 
+ 
+4 
+HUF 
+JPY 
+MDL 
+NOK 
+PLN 
+RON 
+SEK 
+TRY 
+XDR 
+BGN 
+ 
+ 
+ 
+Vers.1.0.0 din 25.03.2013 
+ 

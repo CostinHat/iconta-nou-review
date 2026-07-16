@@ -1,0 +1,787 @@
+ 
+1 
+Structura fişier XML pentru declaratia 205 
+Modif. 12.02.2026 : 
+- s-a adaugat tip_venit=30 
+- tip_venit1=08  ==> tip_plata=2      (8%/2024, 10%/2025, 16%/2026 )   (baza1,imp1,divid_D,divid_P) 
+ 
+Conform OPANAF nr. 102/2025 
+Conform OPANAF nr.154/29.01.2024 
+Conform OPANAF nr.18  / 10.01.2023 
+Conform OPANAF nr. 48 / 11.01.2019 
+  
+declaratie:v3 (din 2018) 
+ 
+Nr. crt. Elemente/ atribute Denumire câmp Tip şi 
+lungim
+e câmp 
+Câmp 
+oblig. Formule şi restricţii Erori 
+1.  <declaratie205>      
+2.  luna Perioada de raportare - Luna N(2) DA luna =12 ERR - luna raportare 
+3.  an Perioada de raportare - An N(4) DA an >= 2025 ERR - an raportare 
+4.  
+d_rec Declaratie rectifcativa N(1) DA 
+d_rec=(0,1) 
+0-initiala 
+1-rectificativa 
+ 
+Declaratia rectificativa va 
+contine doar inregistrarile 
+care reprezinta corectii fata 
+de raportarea initiala. 
+Stergerea se face 
+completand cu zero 
+campurile valorice active ale 
+categoriei de venit.  
+ERR - camp rectificativa 
+4a d_succ Declaraţie depusă potrivit art.90 alin.(4) 
+din L207/2015 
+N(1) 
+ 
+d_succ = 0(nebifat), 1 (bifat) 
+pentru an>=2017 
+ 
+ERR - camp d_succ 
+4b cifSS Cod de identificare fiscală 
+succesor 
+N(13) 
+ 
+cifSS  # null daca d_succ=1 
+(bifat) 
+pentru an>=2017 
+ 
+Verificare CF sau CNP 
+ERR - cif succesor 
+invalid 
+5.  nume_declar Nume declarant C(75) DA  ERR - nume declarant 
+necompletat 
+6.  prenume_declar Prenume declarant C(75) DA  ERR - prenume 
+ 
+2 
+declarant necompletat 
+7.  functie_declar Functie declarant C(50) DA  ERR - functie declarant 
+necompletată 
+8.   Secţiunea I - Date de identificare a 
+plătitorului de venit     
+9.  
+cui Cod de înregistrare fiscala N(13) DA Verificare cui 
+ERR - CIF plătitor de 
+venit invalid sau 
+necompletat 
+10.  den Denumire / Nume şi Prenume C(200) DA  ERR - denumire plătitor 
+de venit necompletată 
+11.  adresa Adresă domiciliu fiscal C(1000) DA  ERR - adresă plătitor de 
+venit necompletată 
+12.  telefon Telefon domiciliu fiscal C(15)    
+13.  fax Fax domiciliu fiscal C(15)    
+14.  mail E-mail domiciliu fiscal C(200)    
+15.  
+totalPlata_A Suma de control  N(15) DA 
+totalPlata_A = suma(nrben)+ 
+suma(Tcastig)+ suma(Tpierd)+ 
+suma(T_VB)+ suma(T_GAR)+ 
+suma(Tbaza)+ suma(Timp)  
+ERR - suma de control 
+16.  baza_JN      
+17.  imp_JN      
+18.  <sect_II> 1-n aparitii     
+19.   Secţiunea II - Date recapitulative     
+20.  
+tip_venit Tip venit C(2) DA 
+tip_venit = 
+ (04,08,09,11,12,16,18, 
+25,26,27,28,29,30)  
+ 
+cf. nomenclator tip venit 
+ERR – tip_venit invalid  
+ 
+21.  nrben Nr. beneficiari  de venit N(15) DA nrben = suma(benef) pt. un   
+tip_venit1  
+ERR - Nr. beneficiari  
+de venit / nr.salariati 
+22.  Tcastig Total castig N(15) DA Tcastig = suma(castig1) pt. un 
+tip_venit1=25 ERR - Total castig  
+23.  Tpierd Total pierdere N(15) DA Tpierd = suma(pierdere1) pt. un 
+tip_venit1=25 ERR - Total pierdere 
+23a T_VB Total venit brut  platit exclusiv in natura N(15) DA T_VB = suma(VB) pt. 
+tip_venit1=29 ERR - Total VB 
+23b T_GAR Total suma garantie pentru plata chirie 
+satabilita prin contract N(15) DA T_GAR = suma(GAR) pt. 
+tip_venit1=29 ERR - Total GAR 
+24.  Tbaza Total baza de calcul a impozitului  
+ N(15) DA Tbaza = suma(baza1) pt.    un 
+tip_venit1#25 
+ERR - Total baza de 
+calcul a imozitului  
+25.  Timp Total impozit retinut N(15) DA Timp = suma(imp1) pt. un 
+tip_venit1#25 
+ERR - Total impozit 
+retinut 
+ 
+3 
+26.  </sect_II>      
+27.  <benef > 1-n aparitii     
+28.  
+ 
+Secţiunile III, IV 
+ 
+III. DATE PRIVIND NATURA 
+VENITURILOR 
+ 
+IV. DATE INFORMATIVE PRIVIND 
+IMPOZITUL REŢINUT LA SURSĂ , 
+VENITURILE DIN JOCURI DE 
+NOROC ŞI CÂŞTIGURILE/ 
+PIERDERILE DIN INVESTIȚII, PE 
+BENEFICIARI DE VENIT 
+V. DATE INFORMATIVE 
+PRIVIND IMPOZITUL PE 
+VENITURILE DIN DIVIDENDE 
+    
+29.  id_inreg ID inregistrare N(15) DA id_inreg unic ERR – ID inregistrare 
+neunic 
+30.  
+tip_venit1 III.Tip venit C(2) DA 
+tip_venit1 = 
+ (04,08,09,11,12, 16, 18, 
+25,26,27,28,29, 30)  
+ 
+ERR - 'III.Tip venit'  <>  
+(04,08,09,11,12,16,18, 
+25, 26,27,28,29,30)  
+ 
+31.  den1 1.Nume si prenume / Denumire C(100) DA  ERR - campul '1.Nume' 
+beneficiar necompletat 
+32.  
+Rezid 2.Rezident/ Nerezident N(1) DA 
+Rezid =(1,2) 
+1- Rezident 
+2- Nerezident 
+ 
+Rezid=(1) pt. 
+tip_venit1=(08,09,11,12) 
+ 
+Rezid=(1,2) pt. 
+tip_venit1=(04,16,18, 25, 26, 
+27,28,29, 30) 
+ERR - campul 
+'2.Rezident/ Nerezident'  
+<> (1,2) 
+33.  
+Stat_R 3.Statul de rezidenta C(2)  
+ 
+daca Rezid=2 atunci 
+     Stat_R in  nomenclator 
+                      state de rezidenta 
+altfel Stat_R=null 
+ 
+ERR – campul '3.Statul 
+de rezidenta' 
+necompletat sau invalid 
+pentru un nerezident 
+34.  
+cifR 4.CNP/NIF din Romania N(13) DA 
+Verificare cifR 
+ 
+cifR= CNP/NIF 
+ERR - campul 
+'4.CNP/NIF din 
+Romania'  invalid  
+ 
+4 
+ 
+ERR - campul 
+'4.CNP/NIF din 
+Romania '  necompletat 
+35.  
+cifS 5.CIF din strainatate C(20)  daca Rezid=1 atunci cifS=null 
+ 
+ERR - campul '5.CIF din 
+strainatate ' este 
+completat pentru un 
+rezident  
+ 
+36.  tip_salAB      
+37.  
+tip_plata 6.Regim fiscal N(1) DA 
+tip_plata =(0,2,3) 
+0-nu se completeaza 
+2- impozit final 
+3- neimpozabil potrivit 
+convenției 
+ 
+tip_plata=0  pt. 
+    tip_venit1=(25) 
+ 
+tip_plata=2 pt. 
+     tip_venit1=(04,08,09,11,12, 
+     16,18,28,29,30) 
+ 
+tip_plata=2,3 pt. 
+     tip_venit1=(26,27) 
+ 
+ERR - campul '6. Regim 
+fiscal # (0,2,3) 
+37a 
+Tara_V 7.Tara din care s-a obtinut venitul C(2)  
+daca tip_venit1=22  atunci 
+Tara_V  in  nomenclator state  
+altfel Tara_V =null 
+ 
+ERR – campul 'Tara din 
+care s-a obtinut venitul' 
+necompletat sau invalid  
+38.  
+castig1 7.IV.  Castig N(15) NU 
+castig>=0 pt. tip_venit1=(25) 
+ 
+castig nu se completeaza pt. 
+tip_venit1<>(25) 
+ 
+ERR –campul ‘7.Castig’  
+are valoare negativa 
+sau nu e completat pt. 
+tip_venit1=(25) 
+ 
+ERR ‘7.Castig’  nu se 
+completeaza pt.. 
+tip_venit1<>(25) 
+ 
+ 
+39.  
+pierdere1 8.IV.  Pierdere  N(15) NU 
+pierdere>=0 pt. tip_venit1=25 
+ 
+pierdere nu se completeaza pt. 
+ERR – campul 
+'8.Pierdere’  are  
+valoare negativa sau nu 
+ 
+5 
+tip_venit1<>25 
+ 
+e completat pt. 
+tip_venit1=25 
+ 
+ERR – ‘8.Pierdere’  nu 
+se completeaza pt. 
+tip_venit1<>25 
+ 
+ 
+39.a 
+divid_D 7.V.  Dividende distribuite N(15) NU 
+divid_D >=0 pt. tip_venit1=08 
+ 
+divid_D  nu se completeaza pt. 
+tip_venit1<>08 
+ 
+ERR – campul 
+'Dividende distribuite’  
+are valoare negativa 
+sau nu e completat pt. 
+tip_venit1=08 
+ 
+ERR – ‘7.Dividende 
+distribuite’  nu se 
+completeaza pt. 
+tip_venit1<>08 
+ 
+ 
+39.b 
+divid_P 8.V.  Dividende platite N(15) NU 
+divid_P >=0 pt. tip_venit1=08 
+ 
+divid_P  nu se completeaza pt. 
+tip_venit1<>08 
+ 
+ 
+ERR – campul 
+'Dividende platite' are 
+valoare negativa sau nu 
+e completat pt. 
+tip_venit1=08 
+ 
+ERR – ‘7.Dividende 
+platite’  nu se 
+completeaza pt. 
+tip_venit1<>08 
+ 
+39.c 
+VB 7.VI  Total venit brut  platit exclusiv in 
+natura N(15) NU 
+VB >=0 pt. tip_venit1=29 
+ 
+VB  nu se completeaza pt. 
+tip_venit1<>29 
+ 
+ERR – campul VB  are 
+valoare negativa sau nu 
+e completat pt. 
+tip_venit1=29 
+ 
+ERR – VB  nu se 
+completeaza pt. 
+tip_venit1<>29 
+ 
+ 
+39.d GAR 8.VI  Total suma garantie pentru plata N(15) NU GAR >=0 pt. tip_venit1=29  
+ 
+6 
+chirie satabilita prin contract  
+GAR  nu se completeaza pt. 
+tip_venit1<>29 
+ 
+ERR – campul GAR are 
+valoare negativa sau nu 
+e completat pt. 
+tip_venit1=29 
+ 
+ERR – GAR  nu se 
+completeaza pt. 
+tip_venit1<>29 
+ 
+40.  tip_functie      
+41.  vbrut      
+42.  dedu_pers      
+43.  dedu_alte      
+44.  
+baza1 9.Baza de calcul al impozitului 
+ N(15) NU 
+baza1>=0 pt. tip_venit1<>(25) 
+ 
+baza1 nu se completeaza pt. 
+tip_venit1=(25) 
+ 
+ 
+ 
+ERR – campul '9.Baza’  
+are valoare negativa 
+sau nu e completat pt. 
+tip_venit1<>(25) 
+ 
+ERR – ‘9.Baza'  nu se 
+completeaza pt. 
+tip_venit1=(25) 
+45.  
+imp1 10.Impozit retinut N(15) NU 
+ imp1>=0 pt. tip_venit1<>(25) 
+ 
+imp1 nu se completeaza pt. 
+tip_venit1=(25) 
+ 
+ 
+ERR – campul 
+'10.Impozit’  are valoare 
+negativa sau nu e 
+completat pt. 
+tip_venit1<>(25) 
+ 
+ERR – ‘10.Impozit'  nu 
+se completeaza pt. 
+tip_venit1=(25) 
+46.  </benef >      
+47.  </declaratie205>      
+ 
+ 
+Validari suplimentare:     
+1. unicitate  (cifR + Tara_V  id_inreg)     pt. tip_venit1=25   
+2. unicitate  (tip_venit1+cifR)   pt. tip_venit1#25   
+ 
+ 
+ 
+ 
+ 
+7 
+ 
+Pentru calculul impozitului retinut (tabelul IV) avem: 
+--------------------------------------------------------- 
+ (tip_plata=1-plata anticipata, 0-nu se completeaza, 2-impozit final, 3-neimpozabil potrivitconv.dublei impuneri) 
+ 
+- tip_venit1=(04,09,11,12,16)        ==> tip_plata=2     (10%)  (baza1,imp1) 
+- tip_venit1=26                               ==> tip_plata=2/3   (1%)   (baza1,imp1) 
+- tip_venit1=27                               ==> tip_plata=2/3   (3%)   (baza1,imp1) 
+- tip_venit1=08                               ==> tip_plata=2      (8%/2024, 10%/2025, 16%/2026 )   (baza1,imp1,divid_D,divid_P) 
+- tip_venit1=18                               ==> tip_plata=2                (baza1,imp1) (imp.pe transe de venit) 
+- tip_venit1=25                                ==> tip_plata=0                (castig1,pierdere1) 
+- tip_venit1=28                                ==> tip_plata=2     (10%)  (baza1,imp1) 
+- tip_venit1=29                                ==> tip_plata=2     (10%)  (baza1,imp1,VB,GAR) 
+- tip_venit1=30                                ==> tip_plata=2                (baza1,imp1) 
+ 
+ 
+Structura inregistrarilor pentru fisier D205.txt pentru import date: 
+1.inregistrare platitor 
+    205,12,2024,#0/1#,#nume#,#pren#,#functie#,cui,#den#,#adresa#,##,##,##,0/1,cifSS  (angajator) 
+ 
+2.inregistrare beneficiar de venit 
+    categ,#nume#,rezid,#statR#,cif,#cifS#,tip_plata,castig/divid_D/VB,pierdere/divid_P/GAR,baza,imp  (beneficiar) 
+     Exemple:\ 
+           categ(1.a),...,2,divid_D,divid_P,baza,imp 
+           categ(1.b-g),...,2,,,baza,imp 
+           categ(1.k),...,2,VB,GAR,baza,imp 
+           categ(2),...,0,castig,pierdere,, 
+ 
+ 
+Nomenclator - natura veniturilor in 2024 
+Cod Tip venit 
+ 1.Venituri cu stopaj la sursa 
+08 1.a) venituri din dividende  - 8%/2024,  10%/2025,   16%/2026    (col.7,8,9,10) 
+09 1.b)venituri din dobânzi - 10%  (col.9,10) 
+26 
+1.c) venituri sub forma câștigurilor din transferul titlurilor de valoare și  instrumente financiare derivate deținute o perioadã >= 365 
+zile -  1%  (col.9,10) 
+27 
+1.d) venituri sub forma câștigurilor din transferul titlurilor de valoare și  instrumente financiare  derivate deținute o perioadã < 365 
+zile -  3%  (col.9,10) 
+ 
+8 
+11 1.e) venituri din lichidarea persoanei juridice – 10%  (col.9,10) 
+12 1.f) venituri din premii – 10%  (col.9,10) 
+18 1.g) venituri din jocuri de noroc   (col.9,10) 
+28 1.h) venituri provenite din incasarea bacsiaului de catre salariati – 10%  (col.9,10) 
+16 1.i) venituri din alte surse, altele decât cele prevãzute la art.114 alin.(2) lit.k^1) din Codul fiscal - 10%  (col.9,10) 
+04 1.j) venituri din activitati independente ( art. 68^2 din CF) si venituri din alte surse (art.114 alin.(2) lit.k^1) din CF)  - 10%  (col.9,10) 
+29 
+1.k) venituri din cedarea folosinței bunurilor, altele decat cele din arendarea bunurilor agricole si din inchirierea in scop turistic a 
+camerelor situate în locuinte proprietate personala, plătite de PJ sau alte entitati care au obligatia de a conduce evidenta  
+contabila - 10%   (col.7,8,9,10) 
+30 
+1.l). venituri din transferul dezmembramintelor dreptului de proprietate sub conditie suspensiva, platite de PJ sau alte entitati care 
+au obligatia de a conduce evidenta contabila  (col. 9,10) 
+25 2) Castiguri/pierderi din transferul aurului de investitii   (col.7,8) 
+ 
+ 
+Nomenclator - natura veniturilor in (desfiintate) 
+Cod Tip venit 
+01 venituri din drepturi de proprietate intelectuală 
+02 
+venituri din activităţi desfăşurate în baza contractelor/ convenţiilor civile încheiate potrivit 
+Codului civil, precum şi a contractelor de agent 
+03 venituri din activitatea de expertiză contabilă şi tehnică, judiciară şi extrajudiciară 
+05 
+ 
+venituri sub forma câştigurilor din operaţiuni de vânzare -cumpărare de valută la termen, pe 
+bază de contract, precum şi orice alte operaţiuni similare 
+06 
+câştiguri din transferul titlurilor de valoare , altele decât părţile socia le şi valorile mobiliare 
+în cazul societăţilor închise 
+07 venituri din salarii 
+10 câştiguri din transferul valorilor mobiliare, în cazul societăţilor închise şi a părţilor sociale 
+13 venituri din pensii 
+14 venituri din activităţi agricole 
+15 venituri din arendare 
+ 
+9 
+17 
+venituri obţinute din valorificarea bunurilor mobile sub forma deşeurilor din patrimoniul 
+afacerii, potrivit art.78 alin.(1) lit.f) din Codul fiscal 
+19 venituri din jocuri de noroc (12.06-31.12.2015) 
+? venituri din jocuri de noroc (13.02-11.06.2015) 
+21 venituri din jocuri de noroc la distanta si festivaluri de poker 
+22 
+2.câstiguri/pierderi din transferul titlurilor de valoare, si orice alte operatiuni cu instrumente 
+financiare, inclusiv instrumente financiare derivate, precum si din transferul aurului financiar, 
+definit potrivit legii 
+23 
+venituri din activitati realizate într-o asociere dintre o persoana juridica contribuabil potrivit 
+titlului II - Impozitul pe profit - si o persoana fizica sau orice alta entitate - asociere fara 
+personalitate juridica 
+24 
+venituri din activitati realizate într-o asociere dintre o persoana juridica contribuabil potrivit 
+titlului III - Impozitul pe veniturile microîntreprinderilor - si o persoana fizica sau o entitate 
+- asociere fara personalitate juridica 
+Modificari state: 
+GR Grecia   EL GR  
+CS Serbia si Muntenegru 27.02.2020 
+PS Fisia Gaza Palestina 27.02.2020 
+CF CENTRAL AFRICAN REP. 
+REPUBLICA  
+CENTRAFRICANA 
+FC   CF 
+27.02.2020 
+NL Olanda Tarile de Jos 27.02.2020 
+ME Muntenegru   XM ME 27.02.2020 
+RS Serbia  XS  RS 27.02.2020 
+XI Irlanda de Nord 01.01.2021 
+ 
+ 
+ 
+ 
+Nomenclator state  
+Cod Descriere Data modificarii 
+JE Jersey, Insulele Canalului  
+ 
+10 
+JM Jamaica  
+JP Japonia  
+KZ Kazakhstan  
+KE Kenia  
+KG Kirghizistan  
+KI Kiribati  
+KW Kuwait  
+LA Laos  
+LS Lesotho  
+LV Letonia  
+LB Liban  
+LR Liberia  
+LY Libia  
+LI Liechtenstein  
+LT Lituania  
+LU Luxemburg  
+MO Macao  
+MK Macedonia  
+MG Madagascar  
+MW Malawi  
+MY Malayezia  
+MV Maldive  
+ML Mali  
+MT Malta  
+MH Marshall  
+MQ Martinica  
+MR Mauritania  
+MU Mauritius  
+YT Mayotte  
+FM Micronezia  
+MC Monaco  
+MN Mongolia  
+MS Montserrat  
+MZ Mozambic  
+NA Namibia  
+NR Nauru  
+NP Nepal  
+NI Nicaragua  
+NE Niger  
+NU Niue  
+NF Norfolk  
+ 
+11 
+CD Congo (Rep. Dem.)  
+CS Serbia si Muntenegru 27.02.2020 
+GS Georgia Sud si Insulele 
+Sandwich Sud 
+ 
+MP Marianele de Nord  
+PS Fisia Gaza Palestina 27.02.2020 
+RU RUSIA  
+SA Arabia Saudita  
+TF Teritoriile Franceze de Sud  
+TW Taiwan  
+UM Teritoriile SUA din departare  
+WS Samoa de Vest  
+XK Kosovo  
+XL Melila  
+AX Insulele Aaland  
+AF Afghanistan  
+CF CENTRAL AFRICAN REP. 
+REPUBLICA 
+CENTRAFRICANA 
+FC   CF 
+27.02.2020 
+ZA SOUTH AFRICA  
+AL Albania  
+DZ Algeria  
+AD Andorra  
+AO Angola  
+AI insula,(terit.aut.britanic)  
+AQ ANTARCTICA  
+AG ANTIGUA  
+AN NETHERLANDS ANTILLES  
+AR Argentina  
+AM Armenia  
+AU Australia  
+AT Austria  
+AZ Azerbaidjan  
+BS Bahamas  
+BH Bahrain  
+BD Bangladesh  
+BB Barbados  
+BE Belgia  
+BZ Belize  
+BJ Benin  
+ 
+12 
+BM Bermude  
+BT Bhutan  
+BY Bielorusia  
+BO Bolivia  
+BA Bosnia-Hertegovina  
+BW Botswana  
+BR Brazilia  
+BN Brunei  
+BG Bulgaria  
+BF Burkina Faso  
+BI Burundi  
+KH Cambogia  
+CM Camerun  
+CA Canada  
+CV Capul Verde  
+CZ Cehia  
+CL Chile  
+CN China  
+CX insula,(terit. ausralian)  
+TD Ciad  
+CY Cipru  
+CI Coasta de Fildes  
+CC insule,(terit. australian)  
+CO Columbia  
+KM Comore  
+CG Congo  
+CK Cook  
+KP COREEA DE NORD  
+KR Coreea de Sud  
+HR Croatia  
+CU Cuba  
+DK Danemarca  
+DM Dominica  
+DO Dominicana  
+EC Ecuador  
+CH Elvetia  
+AE Emiratele Arabe Unite  
+ER Erytrhreea  
+EE Estonia  
+FO Feroe  
+FJ Fiji  
+ 
+13 
+FI Finlanda  
+FR Franta  
+GA Gabon  
+GM Gambia  
+GE Georgia  
+DE Germania  
+GH Ghana  
+GI Gibraltar  
+TV Gilbert si Tuvalu  
+GR Grecia   
+GD Grenada  
+GL Groenlanda  
+GP Guadelupa  
+GU Guam  
+GT Guatemala  
+GN Guineea  
+GQ Guineea Ecuatoriala  
+GW Guineea-Bissau  
+GY Guyana  
+GF Guiana Franceza  
+HT Haiti  
+HM (terit.australian)  
+HN Honduras  
+HK Hong-Kong  
+IN India  
+ID Indonezia  
+JO Iordania  
+IQ Irak  
+IR Iran  
+IE Irlanda  
+XI Irlanda de Nord 01.01.2021 
+IS ISLANDA  
+IL Israel  
+IT Italia  
+EG Egipt  
+ET Ethiopia  
+FK Falkland  
+MX Mexic  
+MA Maroc  
+NG Nigeria  
+NL Olanda Tarile de Jos 27.02.2020 
+ 
+14 
+PH Filipine  
+UG Uganda  
+UY Uruguay  
+CR Costa Rica  
+GB Marea Britanie  
+SV Salvador  
+AW Aruba  
+BV Bouvet (Insula)  
+KY Cayan (Insule)  
+ME Muntenegru   XM ME 27.02.2020 
+PW Palau (Insule)  
+NO Norvegia  
+NC Noua Caledonie  
+NZ Noua Zeelanda  
+OM Oman  
+PK Pakistan  
+PA Panama  
+PG Papua-Noua Guinee  
+PY Paraguay  
+PE Peru  
+PN Pitcairn  
+PF Polinezia Franceza  
+PL Polonia  
+PT Portugalia  
+XC Poses. Spaniole Africa de 
+Nord 
+ 
+PR Puerto Rico  
+QA Qatar  
+YE R.A YEMEN  
+MD Republica Moldova  
+RE Reunion  
+RO România  
+RW Rwanda  
+US S.U.A.  
+EH Western Sahara  
+SH Saint Helena  
+KN Saint Kitts Nevis Anguil  
+LC Saint Lucia  
+PM Saint Pierre si Miquelon  
+VC Saint Vincent  
+AS Samoa Americana  
+ 
+15 
+SM San Marino  
+ST Sao Tome si Principe  
+SN Senegal  
+RS Serbia  XS  RS 27.02.2020 
+SC Seychelles  
+SL Sierra Leone  
+SG Singapore  
+SY Siria  
+SK Slovacia  
+GG Guernsey  
+SI Slovenia  
+SB Solomon Britanice  
+SO Somalia  
+ES Spania  
+LK Sri Lanka  
+SD Sudan  
+SE Suedia  
+SR Surinam  
+SJ Svalbard si Jan Mayen  
+SZ Swaziland  
+TJ REP. TADJIKISTAN  
+TZ Tanzania  
+IO Chagos,Aldabra,Farquhar,Des
+roches(insule) 
+ 
+TH Thailanda  
+TL insula,(terit. indonezian)  
+TG Togo  
+TK insule(terit. neozeelandez)  
+TO Tonga  
+TT Trinidad-Tobago  
+TN Tunisia  
+TR Turcia  
+TM Turkmenistan  
+TC Turks si Caikos  
+UA Ucraina  
+HU Ungaria  
+MM Uniunea Myanmar  
+UZ REP. UZBEKISTAN  
+VU Vanuatu  
+VA Vatican  
+VE Venezuela  
+ 
+16 
+VN Vietnam  
+VI Virgine Americane  
+VG Virgine Britanice  
+WF Wallis si Futuna  
+ZM Zambia  
+ZW Zimbabwe  
+DJ Djibouti  
+ 
+ 
+ 
+ 
