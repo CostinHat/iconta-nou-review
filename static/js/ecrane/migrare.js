@@ -549,11 +549,11 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
       <b>${randuri.length}</b> conturi · debit <b>${bani(date.total_debit)}</b> · credit <b>${bani(date.total_credit)}</b>
       ${echilibrat ? '<span class="mig-eq mig-eq-ok">echilibrat</span>' : '<span class="mig-eq mig-eq-no">neechilibrat</span>'}
     </div>
+    <div class="mig-eroare" id="mig-eroare"></div>
     <div class="mig-sold-cap">
       <span>Cont</span><span>Denumire</span><span>Debit</span><span>Credit</span>
     </div>
     <div class="mig-sold-tabel" id="mig-sold-tabel"></div>
-    <div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-salveaza-sold">Salvează soldurile</button>
   `;
   nav.setInapoi(() => wizardSolduri(corp, nav));

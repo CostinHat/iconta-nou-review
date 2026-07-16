@@ -8,7 +8,7 @@ import { randeazaFacturi } from "./facturi_ecran.js?v=3";
 import { ecranRip } from "./rip_ecran.js";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=2";
 import { ecranEtransport } from "./etransport_ecran.js";
-import { meniuMigrarePerFirma } from "./migrare.js?v=4";  // [p96_import_firma]
+import { meniuMigrarePerFirma } from "./migrare.js?v=5";  // [p96_import_firma]
 import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
 import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=2";  // [date_firma_v1]

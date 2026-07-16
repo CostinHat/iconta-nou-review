@@ -11,28 +11,7 @@ Informativ, NU blocant — contabilul decide.
 from __future__ import annotations
 
 
-def _numar(v):
-    """Transforma o valoare in numar (accepta '1.234,56', '1,234.56', '', None)."""
-    if v is None:
-        return 0.0
-    if isinstance(v, (int, float)):
-        return float(v)
-    t = str(v).strip()
-    if not t:
-        return 0.0
-    t = t.replace(" ", "")
-    if "," in t and "." in t:
-        if t.rfind(",") > t.rfind("."):
-            t = t.replace(".", "").replace(",", ".")
-        else:
-            t = t.replace(",", "")
-    elif "," in t:
-        parte = t.split(",")[-1]
-        t = t.replace(",", ".") if len(parte) <= 2 else t.replace(",", "")
-    try:
-        return float(t)
-    except ValueError:
-        return 0.0
+from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
 
 
 def _gaseste_col(antet, *chei, exclus=None):
