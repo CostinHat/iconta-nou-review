@@ -106,6 +106,34 @@ def uom_unece(um):
     return (c, True) if c else (UOM_IMPLICIT, False)
 
 
+_UE_NON_RO = {"AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR",
+              "HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","SK","SI","ES","SE"}
+
+
+def _partener_registration_number(cui_brut):
+    """RegistrationNumber pt. PARTENERI (Customer/Supplier, S.C.1 CompanyStructure) -
+    diferit de registration_number() de mai jos, care e pt. firma proprie (S.CMH.1).
+    Format oficial (d406_schema_anaf.xlsx, "5. Structures", citat integral):
+      00+CUI (operator RO, FARA prefix RO - "Atentie! Nu se trece atributul fiscal
+              RO pentru platitorii de TVA")
+      01+tara+CUI (operator UE, alta decat RO, verificat VIES)
+      02+tara+CUI (operator din afara UE)
+    Mutata la nivel de modul (16.07.2026) din pull(), unde era definita DUPA locul
+    unde acum trebuie folosita (la construirea notelor, care au nevoie de partener
+    real per tranzactie, nu "primul din lista" - bug dovedit prin migrare reala).
+    """
+    c = (cui_brut or "").strip().upper()
+    tara = c[:2] if len(c) >= 2 and c[:2].isalpha() else ""
+    rest = _NEDIGIT.sub("", c[2:] if tara else c)
+    if not rest:
+        return None
+    if tara == "RO" or not tara:
+        return "00" + rest
+    if tara in _UE_NON_RO:
+        return "01" + tara + rest
+    return "02" + tara + rest
+
+
 def registration_number(prof):
     """RegistrationNumber conform schemei oficiale ANAF (d406_schema_anaf.xlsx,
     foaia "5. Structures", S.CMH.1 CompanyHeaderStructure), citat integral:
@@ -434,8 +462,15 @@ def _masterfiles(res):
     M = ['  <MasterFiles>']
     M.append('    <GeneralLedgerAccounts>')
     for c in res.conturi:
+        # AccountID trebuie NUMERIC INTREG (validator: "numar intreg eronat" pe
+        # simboluri cu punct precum '401.05', '4111.01' - analiticele din
+        # migrare). SAF-T identifica contul dupa sintetic (AccountID); detalierea
+        # pe partener se face prin Customers/Suppliers (deja generate separat,
+        # linia ~466/484), nu prin conturi analitice in GeneralLedgerAccounts.
+        # cont_standard e deja radacina sintetica (ex. '401' pentru '401.05').
+        account_id = c.cont_standard if ("." in c.id and c.cont_standard) else c.id
         M.append('      <Account>')
-        M.append('        <AccountID>%s</AccountID>' % _esc(c.id))
+        M.append('        <AccountID>%s</AccountID>' % _esc(account_id))
         M.append('        <AccountDescription>%s</AccountDescription>' % _esc(c.descriere))
         M.append('        <StandardAccountID>%s</StandardAccountID>' % _esc(c.cont_standard or c.id))
         M.append('        <AccountType>%s</AccountType>' % _esc(c.tip))
@@ -455,7 +490,17 @@ def _masterfiles(res):
     for c in res.clienti:
         M.append('      <Customer>')
         M.append('        <CompanyStructure>')
-        M.append('          <RegistrationNumber>%s</RegistrationNumber>' % _esc('') + _esc(_NEDIGIT.sub('', res.prof.get('cui') or '')) + _esc(''))
+        # Bug vechi la RegistrationNumber: _esc('') + _esc(cui) + _esc('') era
+        # string Python concatenat IN AFARA formatului %s (deci "%s" primea
+        # doar primul _esc('') = "", restul se lipea alaturi in Python, invizibil
+        # in atributul XML real) - de-aia era "vid nepermis". Foloseste CUI-ul
+        # PARTENERULUI (c.cui), nu al firmei proprii (res.prof) - client gresit
+        # legat de CUI-ul firmei. Prefixul RO e obligatoriu pt. platitorii de TVA
+        # (aceeasi regula ca registration_number(), aplicata aici pt. partener).
+        # c.id e deja formatul oficial S.C.1 (00/01/02 + cod), calculat o singura
+        # data la sursa (_registration_number() in pull()) - RegistrationNumber si
+        # CustomerID trebuie sa fie IDENTICE intre ele si cu ce refera TransactionLine.
+        M.append('          <RegistrationNumber>%s</RegistrationNumber>' % _esc(c.id))
         M.append('          <Name>%s</Name>' % _esc(c.nume))
         M.append('          <Address>')
         M.append('            <City>%s</City>' % _esc(c.oras or "-"))
@@ -473,7 +518,9 @@ def _masterfiles(res):
     for f in res.furnizori:
         M.append('      <Supplier>')
         M.append('        <CompanyStructure>')
-        M.append('          <RegistrationNumber>%s</RegistrationNumber>' % _esc(_NEDIGIT.sub("", f.cui or "")))
+        # Acelasi format ca la Customer: prefix RO obligatoriu pt. CUI romanesc.
+        # Acelasi principiu ca la Customer: f.id e deja formatul S.C.1 corect.
+        M.append('          <RegistrationNumber>%s</RegistrationNumber>' % _esc(f.id))
         M.append('          <Name>%s</Name>' % _esc(f.nume))
         M.append('          <Address>')
         M.append('            <City>%s</City>' % _esc(f.oras or "-"))
@@ -560,30 +607,50 @@ def _masterfiles(res):
     return M
 
 
+def _cod_propriu(prof):
+    """Codul contribuabilului RAPORTOR in formatul CustomerID/SupplierID (00 + CUI,
+    fara prefixul RO - regula sintactica GL.28/GL.29 pct. 2.1: "The substring RO is
+    not accepted"). Folosit pe liniile care NU sunt de client/furnizor: regula oficiala
+    (nota GL.28/GL.29 [17]) cere ca acolo AMBELE campuri sa poarte codul propriu al
+    firmei, nu "0" - "0" pe ambele e interzis (rd. sintactic 1: daca unul e "0",
+    celalalt trebuie sa fie diferit de "0")."""
+    cui = _NEDIGIT.sub("", prof.get("cui") or "")
+    return ("00" + cui) if cui else "0"
+
+
+def _cust_supp_linie(cont, partener_id, cod_propriu):
+    """(CustomerID, SupplierID) pentru o TransactionLine, dupa regula oficiala ANAF
+    (d406_schema_anaf.xlsx, "3. GeneralLedgerEntries", GL.28/GL.29). AMBELE sunt
+    obligatorii in XSD (minOccurs=1) pe FIECARE linie:
+      - cont client (4111): CustomerID=partener (sau cod propriu daca lipseste), SupplierID="0"
+      - cont furnizor (401): SupplierID=partener (sau cod propriu daca lipseste), CustomerID="0"
+      - orice alt cont: AMBELE = codul propriu al raportorului (linia nu tine evidenta
+        pe partener - venituri, TVA, banca, etc.)."""
+    radacina = cont.split(".")[0] if "." in cont else cont
+    if radacina == "4111":
+        return (partener_id or cod_propriu, "0")
+    if radacina == "401":
+        return ("0", partener_id or cod_propriu)
+    return (cod_propriu, cod_propriu)
+
+
 def _gl_entries(res):
     """GeneralLedgerEntries: Journal -> Transaction -> TransactionLine.
 
     Sectiunea e OBLIGATORIE chiar si pe o luna fara miscari (schema ANAF, "3.
-    GeneralLedgerEntries" = Mandatory; XSD: Journal = minOccurs 0). Codul intorcea []
-    cand nu erau note -> XML fara sectiune -> "elementul 'GeneralLedgerEntries' ar fi
-    trebuit sa apara de minimum 1 ori". Adica o firma fara miscari intr-o luna nu putea
-    depune D406 deloc. Acum: sectiunea cu totaluri 0, fara Journal.
+    GeneralLedgerEntries" = Mandatory).
+
+    LUNA FARA MISCARI: firma activa cu o luna fara nicio nota contabila depune "pe
+    zero" - sectiunea GOALA, self-closed <GeneralLedgerEntries/>, fara a fabrica nicio
+    tranzactie. Confirmat din surse ANAF si dovedit pe validatorul oficial (16.07.2026,
+    experimente directe): <GeneralLedgerEntries/> = VALID. Orice forma partiala e
+    respinsa - DUK cere lantul complet daca sectiunea are continut (fara Transaction:
+    "Transaction ... minimum 1 ori"; Journal self-closed: "JournalID ... minimum 1 ori";
+    fara Journal: "Journal ... minimum 1 ori"). Deci: ori lant complet cu date reale,
+    ori sectiune complet goala - niciodata partiala.
     """
     if not res.note:
-        # Journal e cerut de VALIDATOR chiar si fara tranzactii ("elementul 'Journal'
-        # ar fi trebuit sa apara de minimum 1 ori"), desi XSD zice minOccurs=0 si schema
-        # ANAF il da "Optional" (GL.4). Cand sursele difera, decide validatorul: el
-        # accepta sau respinge depunerea. Deci jurnal gol, fara Transaction.
-        return ['  <GeneralLedgerEntries>',
-                '    <NumberOfEntries>0</NumberOfEntries>',
-                '    <TotalDebit>0.00</TotalDebit>',
-                '    <TotalCredit>0.00</TotalCredit>',
-                '    <Journal>',
-                '      <JournalID>GENERAL</JournalID>',
-                '      <Description>Jurnal general</Description>',
-                '      <Type>GL</Type>',
-                '    </Journal>',
-                '  </GeneralLedgerEntries>']
+        return ['  <GeneralLedgerEntries/>']
     nr = len(res.note)
     td = sum(sum(l.debit for l in n.linii) for n in res.note)
     tc = sum(sum(l.credit for l in n.linii) for n in res.note)
@@ -595,6 +662,7 @@ def _gl_entries(res):
     G.append('      <JournalID>GENERAL</JournalID>')
     G.append('      <Description>Jurnal general</Description>')
     G.append('      <Type>GL</Type>')
+    cod_propriu = _cod_propriu(res.prof)
     for n in res.note:
         G.append('      <Transaction>')
         G.append('        <TransactionID>%s</TransactionID>' % _esc(n.id))
@@ -604,15 +672,42 @@ def _gl_entries(res):
         G.append('        <Description>%s</Description>' % _esc(n.descriere))
         G.append('        <SystemEntryDate>%s</SystemEntryDate>' % _d(n.data))
         G.append('        <GLPostingDate>%s</GLPostingDate>' % _d(n.data))
-        G.append('        <CustomerID>0</CustomerID>')
-        G.append('        <SupplierID>0</SupplierID>')
+        # CustomerID/SupplierID la nivel Transaction: OBLIGATORII in XSD (minOccurs=1,
+        # dupa GLPostingDate, INAINTE de TransactionLine). Lipsa lor era prima
+        # discrepanta structurala reala din document - validatorul o raporta insa pe
+        # TransactionLine(1) (sectiunea urmatoare parsata), nu aici. Sensul tranzactiei
+        # (client vs furnizor) se ia din prima linie de partener; altfel cod propriu
+        # pe ambele (regula GL.19/GL.20, aceeasi ca la linii).
+        t_cust, t_supp = cod_propriu, cod_propriu
+        for l in n.linii:
+            radacina = l.cont.split(".")[0] if "." in l.cont else l.cont
+            if radacina == "4111" and l.cont_partener_id:
+                t_cust, t_supp = l.cont_partener_id, "0"
+                break
+            if radacina == "401" and l.cont_partener_id:
+                t_cust, t_supp = "0", l.cont_partener_id
+                break
+        G.append('        <CustomerID>%s</CustomerID>' % _esc(t_cust))
+        G.append('        <SupplierID>%s</SupplierID>' % _esc(t_supp))
         for l in n.linii:
             G.append('        <TransactionLine>')
             G.append('          <RecordID>%s</RecordID>' % _esc(l.record_id))
             G.append('          <AccountID>%s</AccountID>' % _esc(l.cont))
-            G.append('          <CustomerID>0</CustomerID>')
-            G.append('          <SupplierID>0</SupplierID>')
-            G.append('          <Description>%s</Description>' % _esc(l.descriere))
+            # CustomerID SI SupplierID: AMBELE OBLIGATORII in XSD pe FIECARE linie
+            # (minOccurs=1, dupa AccountID, inainte de Description). Vechiul cod emitea
+            # doar unul, conditionat -> pe liniile 707/4427/banca nu aparea niciunul ->
+            # "elementul 'CustomerID' ar fi trebuit sa apara de minimum 1 ori".
+            # Valorile: partenerul REAL pe linia de client/furnizor (l.cont_partener_id
+            # = JOIN inregistrari.factura_id -> facturi.tert_cui), "0" pe partea opusa,
+            # iar pe liniile fara evidenta pe partener AMBELE = codul propriu (regula
+            # oficiala GL.28/GL.29 nota [17]). NICIODATA ambele "0" (regula sintactica).
+            l_cust, l_supp = _cust_supp_linie(l.cont, l.cont_partener_id, cod_propriu)
+            G.append('          <CustomerID>%s</CustomerID>' % _esc(l_cust))
+            G.append('          <SupplierID>%s</SupplierID>' % _esc(l_supp))
+            # Description: obligatoriu, nevid. Daca linia n-are descriere proprie,
+            # folosim descrierea notei (era "" fix, respins ca "atribut vid nepermis").
+            desc_linie = l.descriere or n.descriere or ("Nota %s" % n.id)
+            G.append('          <Description>%s</Description>' % _esc(desc_linie))
             if l.debit and not l.credit:
                 G.append('          <DebitAmount>')
                 G.append('            <Amount>%s</Amount>' % _dec(l.debit))
@@ -694,12 +789,17 @@ def _factura_xml(f, este_vanzare, indent):
         X.append('%s      </TaxAmount>' % sp)
         X.append('%s    </TaxInformation>' % sp)
         X.append('%s  </InvoiceLine>' % sp)
-    # totaluri document
+    # totaluri document: TaxCode/TaxPercentage din PRIMA linie a facturii, nu
+    # hardcodat 310/21% (gresit pentru achizitii si pentru facturile cu cota 0 -
+    # intracomunitare, taxare inversa).
+    prima = f.linii[0] if f.linii else None
+    tcod_tot = prima.tva_cod if prima else "310312"
+    tperc_tot = prima.tva_procent if prima else Decimal(0)
     X.append('%s  <InvoiceDocumentTotals>' % sp)
     X.append('%s    <TaxInformationTotals>' % sp)
     X.append('%s      <TaxType>300</TaxType>' % sp)
-    X.append('%s      <TaxCode>310</TaxCode>' % sp)
-    X.append('%s      <TaxPercentage>21.00</TaxPercentage>' % sp)
+    X.append('%s      <TaxCode>%s</TaxCode>' % (sp, _esc(tcod_tot)))
+    X.append('%s      <TaxPercentage>%s</TaxPercentage>' % (sp, _dec(tperc_tot)))
     X.append('%s      <TaxBase>%s</TaxBase>' % (sp, _dec(f.net)))
     X.append('%s      <TaxAmount>' % sp)
     X.append('%s        <Amount>%s</Amount>' % (sp, _dec(f.tva)))
@@ -715,74 +815,90 @@ def _factura_xml(f, este_vanzare, indent):
 
 
 def _source_documents(res):
-    """SourceDocuments: SalesInvoices, PurchaseInvoices, Payments (toate obligatorii în XSD)."""
+    """SourceDocuments: SalesInvoices, PurchaseInvoices, Payments, MovementOfGoods.
+
+    REGULA SECTIUNILOR GOALE (dovedita pe validatorul oficial 16.07.2026, experimente
+    directe pe XML): sub-sectiunile cu liste (SalesInvoices/PurchaseInvoices/Payments)
+    NU se emit cand sunt goale - se OMIT complet. Emise vide (cu NumberOfEntries=0, fara
+    Invoice/Payment) validatorul le respinge: "elementul 'Payment' ar fi trebuit sa
+    apara de minimum 1 ori" / "elementul '' ... minimum 1 ori". Desi XSD da Invoice si
+    Payment cu minOccurs=0, DUK cere continut cand sectiunea e prezenta si accepta
+    absenta ei. MovementOfGoods e OBLIGATORIU (nu se poate omite: "MovementOfGoods ...
+    minimum 1 ori") DAR trebuie GOL - self-closed, fara NumberOfMovementLines/totaluri
+    ("NumberOfMovementLines a depasit numarul maxim de aparitii (0)"), exact ca
+    MovementTypeTable/Owners/Assets: stocurile se raporteaza doar la cerere, nu lunar.
+    """
     fv, fc, pl = res.facturi_vanzare, res.facturi_cumparare, res.plati
     S = ['  <SourceDocuments>']
-    # SalesInvoices (obligatoriu)
-    net_v = sum(f.net for f in fv)
-    S.append('    <SalesInvoices>')
-    S.append('      <NumberOfEntries>%d</NumberOfEntries>' % len(fv))
-    S.append('      <TotalDebit>0.00</TotalDebit>')
-    S.append('      <TotalCredit>%s</TotalCredit>' % _dec(net_v))
-    for f in fv:
-        S.extend(_factura_xml(f, True, 6))
-    S.append('    </SalesInvoices>')
-    # PurchaseInvoices (obligatoriu)
-    net_c = sum(f.net for f in fc)
-    S.append('    <PurchaseInvoices>')
-    S.append('      <NumberOfEntries>%d</NumberOfEntries>' % len(fc))
-    S.append('      <TotalDebit>%s</TotalDebit>' % _dec(net_c))
-    S.append('      <TotalCredit>0.00</TotalCredit>')
-    for f in fc:
-        S.extend(_factura_xml(f, False, 6))
-    S.append('    </PurchaseInvoices>')
-    # Payments (obligatoriu)
-    td = sum(sum(l.suma for l in p.linii if l.sens == "D") for p in pl)
-    tc = sum(sum(l.suma for l in p.linii if l.sens == "C") for p in pl)
-    S.append('    <Payments>')
-    S.append('      <NumberOfEntries>%d</NumberOfEntries>' % len(pl))
-    S.append('      <TotalDebit>%s</TotalDebit>' % _dec(td))
-    S.append('      <TotalCredit>%s</TotalCredit>' % _dec(tc))
-    for p in pl:
-        S.append('      <Payment>')
-        S.append('        <PaymentRefNo>%s</PaymentRefNo>' % _esc(p.ref))
-        S.append('        <TransactionID>%s</TransactionID>' % _esc(p.ref))
-        S.append('        <TransactionDate>%s</TransactionDate>' % _d(p.data))
-        S.append('        <PaymentMethod>%s</PaymentMethod>' % _esc(p.metoda))
-        S.append('        <Description>%s</Description>' % _esc(p.descriere or "Plata"))
-        for l in p.linii:
-            S.append('        <PaymentLine>')
-            S.append('          <LineNumber>%d</LineNumber>' % l.nr)
-            if l.doc_sursa:
-                S.append('          <SourceDocumentID>%s</SourceDocumentID>' % _esc(l.doc_sursa))
-            S.append('          <AccountID>%s</AccountID>' % _esc(l.cont))
-            S.append('          <CustomerID>0</CustomerID>')
-            S.append('          <SupplierID>0</SupplierID>')
-            S.append('          <Description>%s</Description>' % _esc(l.descriere))
-            S.append('          <DebitCreditIndicator>%s</DebitCreditIndicator>' % _esc(l.sens))
-            S.append('          <PaymentLineAmount>')
-            S.append('            <Amount>%s</Amount>' % _dec(l.suma))
-            S.append('            <CurrencyCode>RON</CurrencyCode>')
-            S.append('            <CurrencyAmount>%s</CurrencyAmount>' % _dec(l.suma))
-            S.append('          </PaymentLineAmount>')
-            S.append('          <TaxInformation>')
-            S.append('            <TaxType>300</TaxType>')
-            S.append('            <TaxCode>300</TaxCode>')
-            S.append('            <TaxAmount>')
-            S.append('              <Amount>0.00</Amount>')
-            S.append('              <CurrencyCode>RON</CurrencyCode>')
-            S.append('              <CurrencyAmount>0.00</CurrencyAmount>')
-            S.append('            </TaxAmount>')
-            S.append('          </TaxInformation>')
-            S.append('        </PaymentLine>')
-        S.append('      </Payment>')
-    S.append('    </Payments>')
-    # MovementOfGoods (obligatoriu în XSD; gol — fără mișcări de stoc)
-    S.append('    <MovementOfGoods>')
-    S.append('      <NumberOfMovementLines>0</NumberOfMovementLines>')
-    S.append('      <TotalQuantityReceived>0</TotalQuantityReceived>')
-    S.append('      <TotalQuantityIssued>0</TotalQuantityIssued>')
-    S.append('    </MovementOfGoods>')
+    # SalesInvoices - doar daca exista facturi de vanzare
+    if fv:
+        net_v = sum(f.net for f in fv)
+        S.append('    <SalesInvoices>')
+        S.append('      <NumberOfEntries>%d</NumberOfEntries>' % len(fv))
+        S.append('      <TotalDebit>0.00</TotalDebit>')
+        S.append('      <TotalCredit>%s</TotalCredit>' % _dec(net_v))
+        for f in fv:
+            S.extend(_factura_xml(f, True, 6))
+        S.append('    </SalesInvoices>')
+    # PurchaseInvoices - doar daca exista facturi de cumparare
+    if fc:
+        net_c = sum(f.net for f in fc)
+        S.append('    <PurchaseInvoices>')
+        S.append('      <NumberOfEntries>%d</NumberOfEntries>' % len(fc))
+        S.append('      <TotalDebit>%s</TotalDebit>' % _dec(net_c))
+        S.append('      <TotalCredit>0.00</TotalCredit>')
+        for f in fc:
+            S.extend(_factura_xml(f, False, 6))
+        S.append('    </PurchaseInvoices>')
+    # Payments - doar daca exista plati
+    if pl:
+        cod_propriu = _cod_propriu(res.prof)
+        td = sum(sum(l.suma for l in p.linii if l.sens == "D") for p in pl)
+        tc = sum(sum(l.suma for l in p.linii if l.sens == "C") for p in pl)
+        S.append('    <Payments>')
+        S.append('      <NumberOfEntries>%d</NumberOfEntries>' % len(pl))
+        S.append('      <TotalDebit>%s</TotalDebit>' % _dec(td))
+        S.append('      <TotalCredit>%s</TotalCredit>' % _dec(tc))
+        for p in pl:
+            S.append('      <Payment>')
+            S.append('        <PaymentRefNo>%s</PaymentRefNo>' % _esc(p.ref))
+            S.append('        <TransactionID>%s</TransactionID>' % _esc(p.ref))
+            S.append('        <TransactionDate>%s</TransactionDate>' % _d(p.data))
+            S.append('        <PaymentMethod>%s</PaymentMethod>' % _esc(p.metoda))
+            S.append('        <Description>%s</Description>' % _esc(p.descriere or "Plata"))
+            for l in p.linii:
+                # CustomerID/SupplierID pe PaymentLine: aceeasi regula ca la GL
+                # (AMBELE obligatorii, niciodata ambele "0") - cod propriu pe partea
+                # neaplicabila, partenerul real pe partea de client/furnizor.
+                pl_cust, pl_supp = _cust_supp_linie(l.cont, "", cod_propriu)
+                S.append('        <PaymentLine>')
+                S.append('          <LineNumber>%d</LineNumber>' % l.nr)
+                if l.doc_sursa:
+                    S.append('          <SourceDocumentID>%s</SourceDocumentID>' % _esc(l.doc_sursa))
+                S.append('          <AccountID>%s</AccountID>' % _esc(l.cont))
+                S.append('          <CustomerID>%s</CustomerID>' % _esc(pl_cust))
+                S.append('          <SupplierID>%s</SupplierID>' % _esc(pl_supp))
+                S.append('          <Description>%s</Description>' % _esc(l.descriere))
+                S.append('          <DebitCreditIndicator>%s</DebitCreditIndicator>' % _esc(l.sens))
+                S.append('          <PaymentLineAmount>')
+                S.append('            <Amount>%s</Amount>' % _dec(l.suma))
+                S.append('            <CurrencyCode>RON</CurrencyCode>')
+                S.append('            <CurrencyAmount>%s</CurrencyAmount>' % _dec(l.suma))
+                S.append('          </PaymentLineAmount>')
+                S.append('          <TaxInformation>')
+                S.append('            <TaxType>300</TaxType>')
+                S.append('            <TaxCode>300</TaxCode>')
+                S.append('            <TaxAmount>')
+                S.append('              <Amount>0.00</Amount>')
+                S.append('              <CurrencyCode>RON</CurrencyCode>')
+                S.append('              <CurrencyAmount>0.00</CurrencyAmount>')
+                S.append('            </TaxAmount>')
+                S.append('          </TaxInformation>')
+                S.append('        </PaymentLine>')
+            S.append('      </Payment>')
+        S.append('    </Payments>')
+    # MovementOfGoods: OBLIGATORIU dar GOL (self-closed) in raportarea lunara.
+    S.append('    <MovementOfGoods/>')
     S.append('  </SourceDocuments>')
     return S
 
@@ -819,7 +935,13 @@ def pull(conn, schema, an, luna):
                 if oficial and r["simbol"] not in oficial:
                     strain.append(r["simbol"])
                     continue
-                conturi.append(Cont(id=r["simbol"], descriere=r["denumire"], cont_standard=r["simbol"],
+                # cont_standard = radacina sintetica ('401.05' -> '401'), nu simbolul
+                # intreg - dovedit gresit azi: era setat = simbol (identic cu id),
+                # deci pentru analitice ramanea tot cu punct -> AccountID respins
+                # ("numar intreg eronat"). SAF-T identifica contul dupa sintetic.
+                simb = r["simbol"]
+                sintetic = simb.split(".")[0] if "." in simb else simb
+                conturi.append(Cont(id=simb, descriere=r["denumire"], cont_standard=sintetic,
                                     tip=r["tip"], sold_inchidere_d=Decimal(str(r["sd"])),
                                     sold_inchidere_c=Decimal(str(r["sc"]))))
         except Exception:
@@ -836,38 +958,123 @@ def pull(conn, schema, an, luna):
                 furnizori.append(Partener(id=str(r["id"]), nume=r["nume"] or "", cui=r["cui"] or "", oras=r["oras"] or ""))
         except Exception:
             pass
+        # FALLBACK: daca nomenclatoarele clienti/furnizori sunt goale (dovedit
+        # 16.07.2026: facturile create direct NU populeaza automat clienti/
+        # furnizori - limitare cunoscuta, nereparata inca la sursa), derivam
+        # macar un partener minimal din facturi, ca SAF-T sa aiba CustomerID/
+        # SupplierID valabil (obligatoriu pe liniile 4111/401). De inlocuit cu
+        # nomenclatorul real cand facturile vor popula clienti/furnizori automat.
         try:
-            cur.execute("SELECT i.id, i.data, i.descriere, l.cont, l.debit, l.credit, l.descriere AS ldesc "
+            # FALLBACK: nomenclatoarele clienti/furnizori sunt goale (dovedit
+            # 16.07.2026: facturile create direct NU le populeaza automat -
+            # limitare cunoscuta, de reparat la sursa in facturi_api.py). Derivam
+            # TOTI partenerii distincti din facturi, cu formatul oficial S.C.1
+            # (00/01/02 + cod), ca fiecare linie 4111/401 sa aiba un CustomerID/
+            # SupplierID valabil - nu doar primul partener (LIMIT 1 lasa restul
+            # tranzactiilor fara CustomerID, cum s-a dovedit cu factura UE).
+            if not clienti:
+                cur.execute(
+                    "SELECT DISTINCT ON (tert_cui) tert_cui, tert_nume FROM facturi "
+                    "WHERE directie='emisa' AND tert_cui IS NOT NULL AND tert_cui != '' "
+                    "ORDER BY tert_cui, id")
+                for r in cur.fetchall():
+                    rid = _partener_registration_number(r["tert_cui"])
+                    if rid:
+                        clienti.append(Partener(id=rid, nume=r["tert_nume"] or "",
+                                                cui=r["tert_cui"] or "", oras=""))
+            if not furnizori:
+                cur.execute(
+                    "SELECT DISTINCT ON (tert_cui) tert_cui, tert_nume FROM facturi "
+                    "WHERE directie='primita' AND tert_cui IS NOT NULL AND tert_cui != '' "
+                    "ORDER BY tert_cui, id")
+                for r in cur.fetchall():
+                    rid = _partener_registration_number(r["tert_cui"])
+                    if rid:
+                        furnizori.append(Partener(id=rid, nume=r["tert_nume"] or "",
+                                                  cui=r["tert_cui"] or "", oras=""))
+        except Exception:
+            pass
+        try:
+            # COLOANE REALE (dovedit 16.07.2026 prin \d tenant_002.inregistrari_linii):
+            # cont_debit, cont_credit, suma - NU cont/debit/credit cum interoga codul
+            # vechi. Interogarea gresita CRAPA mereu, dar era prinsa de un except: pass
+            # tacut - <GeneralLedgerEntries> ramanea mereu GOL, pentru ORICE firma,
+            # indiferent cate note validate existau. Bug universal, nu specific unei
+            # firme - descoperit abia acum, prin auditul pe date reale ale lui DANTE.
+            # O linie din inregistrari_linii (cont_debit + cont_credit + suma) e o
+            # singura miscare contabila; in SAF-T devine DOUA TransactionLine (una pe
+            # contul debitor cu debit=suma, alta pe contul creditor cu credit=suma) -
+            # asta e conventia LinieNota deja existenta (un cont, debit SAU credit).
+            # Doar notele VALIDATE (regula EVIDENTEI: ciorna nu e evidenta).
+            # JOIN cu facturi prin i.factura_id: fiecare nota poate purta partenerul
+            # REAL al facturii care a generat-o - nu se mai ghiceste "primul client
+            # din lista" (bug dovedit 16.07.2026: 5 tranzactii cu 5 parteneri diferiti
+            # primeau toate CustomerID-ul aceluiasi client, fiscal incorect - Auchan
+            # Italia aparea pe factura ALTEX). Notele fara factura_id (dividende,
+            # inregistrari manuale) raman fara partener - nu se aplica.
+            cur.execute("SELECT i.id, i.data, i.descriere, l.cont_debit, l.cont_credit, l.suma, "
+                        "f.tert_cui, f.tert_nume "
                         "FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
-                        "WHERE i.data >= %s AND i.data < %s ORDER BY i.id, l.id", (di, ds))
+                        "LEFT JOIN facturi f ON f.id = i.factura_id "
+                        "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s "
+                        "ORDER BY i.id, l.id", (di, ds))
             nmap = {}
             for r in cur.fetchall():
                 n = nmap.get(r["id"])
                 if n is None:
                     n = Nota(id=str(r["id"]), data=r["data"], descriere=r["descriere"] or "")
                     nmap[r["id"]] = n
-                n.linii.append(LinieNota(record_id=str(len(n.linii) + 1), cont=r["cont"] or "",
-                                         descriere=r["ldesc"] or "", debit=Decimal(str(r["debit"] or 0)),
-                                         credit=Decimal(str(r["credit"] or 0))))
+                suma = Decimal(str(r["suma"] or 0))
+                pid = _partener_registration_number(r["tert_cui"]) if r["tert_cui"] else ""
+                n.linii.append(LinieNota(record_id=str(len(n.linii) + 1), cont=r["cont_debit"] or "",
+                                         descriere="", debit=suma, credit=Decimal("0"),
+                                         cont_partener_id=pid))
+                n.linii.append(LinieNota(record_id=str(len(n.linii) + 1), cont=r["cont_credit"] or "",
+                                         descriere="", debit=Decimal("0"), credit=suma,
+                                         cont_partener_id=pid))
             note = list(nmap.values())
         except Exception:
             pass
         facturi_vanzare, facturi_cumparare, plati = [], [], []
         try:
-            cur.execute("SELECT id, numar, data, partener_id, partener_nume, tip, "
-                        "COALESCE(baza,0) AS baza, COALESCE(tva,0) AS tva, COALESCE(cota_tva,21) AS cota, directie "
-                        "FROM facturi WHERE data >= %s AND data < %s ORDER BY id", (di, ds))
+            # COLOANE REALE facturi (dovedit 16.07.2026 prin \d tenant_002.facturi):
+            # data_emitere (NU 'data'), tert_cui/tert_nume (NU partener_id/nume),
+            # total = BRUT cu TVA (NU 'baza'), tva, taxare_inversa, storno_din_id.
+            # Nu exista coloana 'cota_tva' - cota se DEDUCE (tva / net * 100). Query-ul
+            # vechi cerea coloane inexistente -> arunca -> except: pass -> 0 facturi in
+            # SalesInvoices/PurchaseInvoices, DESI existau 5 facturi reale in iunie
+            # (aceeasi clasa de bug ca la note: schema presupusa != schema reala).
+            cur.execute("SELECT id, numar, data_emitere, tert_cui, tert_nume, "
+                        "COALESCE(total,0) AS total, COALESCE(tva,0) AS tva, "
+                        "COALESCE(taxare_inversa,false) AS ti, storno_din_id, directie "
+                        "FROM facturi WHERE data_emitere >= %s AND data_emitere < %s ORDER BY id", (di, ds))
             for r in cur.fetchall():
-                cota = Decimal(str(r["cota"]))
-                tcod = {Decimal(21): "310", Decimal(11): "320", Decimal(9): "330"}.get(cota, "300")
+                total = Decimal(str(r["total"]))
+                tva = Decimal(str(r["tva"]))
+                net = total - tva
+                cota = (tva / net * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP) if net else Decimal(0)
                 este_v = (r["directie"] or "emisa") in ("emisa", "vanzare")
+                # InvoiceType = COD SAFcodeType (nomenclator Nom_Tipuri_facturi): 380 =
+                # factura comerciala, 381 = nota de credit (storno). Valoarea DB 'tip'
+                # ("factura") NU e cod valid.
+                itype = "381" if r["storno_din_id"] else "380"
+                # TaxCode dupa cota si sensul operatiunii. Vanzari: nomenclatorul
+                # "Livrari" (TAXCODE_LIVRARI). Achizitii: nomenclatorul "Achizitii ded
+                # 100%" (300501 = achizitii interne standard; 300101 = achizitii
+                # intracomunitare/taxare inversa, cota 0 la raportor).
+                if este_v:
+                    tcod = TAXCODE_LIVRARI.get(int(cota), "310312")
+                else:
+                    tcod = "300101" if (r["ti"] or cota == 0) else "300501"
+                pid = _partener_registration_number(r["tert_cui"]) or "0"
                 linie = LinieFactura(nr=1, cont=("707" if este_v else "371"),
-                                     descriere=r["partener_nume"] or "", valoare=Decimal(str(r["baza"])),
+                                     descriere=r["tert_nume"] or "Factura", cantitate=Decimal(1),
+                                     pret_unitar=net, valoare=net,
                                      sens=("C" if este_v else "D"), tva_cod=tcod, tva_procent=cota,
-                                     tva_suma=Decimal(str(r["tva"])))
-                f = Factura(nr=r["numar"] or str(r["id"]), data=r["data"],
-                            partener_id=str(r["partener_id"] or 0), partener_nume=r["partener_nume"] or "",
-                            tip=r["tip"] or "FT", cont=("4111" if este_v else "401"), linii=[linie])
+                                     tva_suma=tva)
+                f = Factura(nr=r["numar"] or str(r["id"]), data=r["data_emitere"],
+                            partener_id=pid, partener_nume=r["tert_nume"] or "",
+                            tip=itype, cont=("4111" if este_v else "401"), linii=[linie])
                 (facturi_vanzare if este_v else facturi_cumparare).append(f)
         except Exception:
             pass
