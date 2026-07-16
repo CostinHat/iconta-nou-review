@@ -1517,7 +1517,10 @@ def salariati_import_salveaza(tenant_id: int, date: SalariatiImportIn, ctx=Depen
     schema = _schema_sau_404(ctx, tenant_id)
     randuri = [r.model_dump() for r in date.randuri]
     with db.get_conn(schema) as conn:
-        return salariati_import_api.importa(conn, randuri)
+        try:
+            return salariati_import_api.importa(conn, randuri)
+        except ValueError as e:  # randuri invalide -> 422 cu mesaj
+            raise HTTPException(422, str(e))
 
 
 
@@ -1562,7 +1565,10 @@ def asociati_import_salveaza(tenant_id: int, date: AsociatiImportIn, ctx=Depends
     schema = _schema_sau_404(ctx, tenant_id)
     randuri = [r.model_dump() for r in date.randuri]
     with db.get_conn(schema) as conn:
-        return asociati_import_api.importa(conn, randuri)
+        try:
+            return asociati_import_api.importa(conn, randuri)
+        except ValueError as e:  # randuri invalide -> 422 cu mesaj
+            raise HTTPException(422, str(e))
 
 
 
@@ -1657,7 +1663,10 @@ def mijloace_import_salveaza(tenant_id: int, date: MijloaceFixeImportIn, ctx=Dep
     schema = _schema_sau_404(ctx, tenant_id)
     randuri = [r.model_dump() for r in date.randuri]
     with db.get_conn(schema) as conn:
-        return mijloace_fixe_import_api.importa(conn, randuri)
+        try:
+            return mijloace_fixe_import_api.importa(conn, randuri)
+        except ValueError as e:  # randuri invalide -> 422 cu mesaj
+            raise HTTPException(422, str(e))
 
 
 
@@ -1698,7 +1707,10 @@ def istoric_import_salveaza(tenant_id: int, date: IstoricDeclImportIn, ctx=Depen
     _schema_sau_404(ctx, tenant_id)
     randuri = [r.model_dump() for r in date.randuri]
     with db.get_conn() as conn:
-        return istoric_declaratii_import_api.importa(conn, tenant_id, randuri)
+        try:
+            return istoric_declaratii_import_api.importa(conn, tenant_id, randuri)
+        except ValueError as e:  # randuri invalide -> 422 cu mesaj
+            raise HTTPException(422, str(e))
 
 
 

@@ -139,8 +139,35 @@ def rezumat(conn):
     return {"are_asociati": n > 0, "randuri": n, "total_cota": float(tc)}
 
 
+def verifica_randuri(randuri):
+    """PURA: [{rand, motiv, mesaj}]. CNP/CUI valid + cotele insumeaza exact 100%.
+
+    coerenta_cote() exista de la inceput, dar importa() n-o chema: cotele de 115% au
+    intrat, iar migrarea a marcat stratul "gata" verde. D205 nu se poate genera cu ele
+    (dovedit 15.07.2026, prin migrare reala).
+    """
+    er = []
+    for i, r in enumerate(randuri or [], start=2):   # antetul e randul 1
+        nume = str(r.get("nume") or "?").strip()
+        cod = str(r.get("cnp") or "").strip()
+        if cod and not valideaza_cnp(cod)[0]:
+            er.append({"rand": i, "motiv": "cnp_invalid",
+                       "mesaj": "%s: CNP/CUI invalid (%s)" % (nume, valideaza_cnp(cod)[1])})
+    c = coerenta_cote(randuri or [])
+    if (randuri or []) and not c["coincide"]:
+        er.append({"rand": "-", "motiv": "cote",
+                   "mesaj": "cotele asociatilor insumeaza %s%%, nu 100%%" % c["total"]})
+    return er
+
+
 def importa(conn, randuri):
-    """DELETE + INSERT per firma. Intoarce {importati}."""
+    """DELETE + INSERT per firma. Intoarce {importati}.
+    Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri)."""
+    er = verifica_randuri(randuri)
+    if er:
+        raise ValueError("%d probleme: %s. Asociatii si cotele lor intra in D205 "
+                         "(dividende) - cotele trebuie sa dea exact 100%%."
+                         % (len(er), "; ".join(x["mesaj"] for x in er[:6])))
     with conn.cursor() as cur:
         cur.execute("DELETE FROM asociati")
         n = 0

@@ -145,8 +145,55 @@ def rezumat(conn, tenant_id):
     return {"are_istoric": n > 0, "randuri": n}
 
 
+TIPURI_CUNOSCUTE = ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394",
+                    "D406", "D212", "S1003", "S1005", "D394A", "D311", "D207")
+
+
+def verifica_randuri(randuri, azi=None):
+    """PURA: [{rand, motiv, mesaj}]. Nicio validare pana la 15.07.2026: tip D999
+    inexistent, luna 13, data depunerii inaintea perioadei raportate - toate intrau."""
+    import datetime as _dt
+    azi = azi or _dt.date.today()
+    er = []
+    for i, r in enumerate(randuri or [], start=2):
+        tip = str(r.get("tip") or "").strip().upper()
+        an = int(r.get("an") or 0)
+        luna = r.get("luna")
+        if tip and tip not in TIPURI_CUNOSCUTE:
+            er.append({"rand": i, "motiv": "tip",
+                       "mesaj": "declaratia %s nu exista in nomenclatorul ANAF" % tip})
+        if not (2000 <= an <= azi.year + 1):
+            er.append({"rand": i, "motiv": "an", "mesaj": "%s: anul %s e in afara intervalului" % (tip or "?", an)})
+        if luna is not None and str(luna).strip() != "":
+            try:
+                l = int(luna)
+                if not (1 <= l <= 12):
+                    er.append({"rand": i, "motiv": "luna", "mesaj": "%s: luna %s (asteptat 1-12)" % (tip or "?", l)})
+            except (TypeError, ValueError):
+                er.append({"rand": i, "motiv": "luna", "mesaj": "%s: luna %r nu e numar" % (tip or "?", luna)})
+        d = r.get("data_depunere")
+        if d:
+            try:
+                dd = d if isinstance(d, _dt.date) else _dt.date.fromisoformat(str(d)[:10])
+                l = int(luna) if str(luna or "").strip().isdigit() else 12
+                sfarsit = _dt.date(an, l, 1) if 2000 <= an <= 2100 and 1 <= l <= 12 else None
+                if sfarsit and dd < sfarsit:
+                    er.append({"rand": i, "motiv": "data_inainte",
+                               "mesaj": "%s %s/%s: depusa la %s, inainte de perioada raportata"
+                                        % (tip or "?", luna, an, dd)})
+            except ValueError:
+                er.append({"rand": i, "motiv": "data", "mesaj": "%s: data depunerii %r nu se intelege" % (tip or "?", d)})
+    return er
+
+
 def importa(conn, tenant_id, randuri):
-    """DELETE doar randurile de migrare ale firmei + INSERT. NU atinge sursa='iconta'."""
+    """DELETE doar randurile de migrare ale firmei + INSERT. NU atinge sursa='iconta'.
+    Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri)."""
+    er = verifica_randuri(randuri)
+    if er:
+        raise ValueError("%d randuri nu pot intra: %s. Istoricul declaratiilor sta la "
+                         "baza termenelor si a controlului fiscal."
+                         % (len(er), "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6])))
     asigura_coloana_sursa(conn)
     with conn.cursor() as cur:
         cur.execute("DELETE FROM public.declaratii_depuse WHERE tenant_id=%s AND sursa='migrare'",

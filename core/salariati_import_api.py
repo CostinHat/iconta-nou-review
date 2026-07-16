@@ -186,11 +186,63 @@ def rezumat(conn):
     return {"are_salariati": n > 0, "randuri": n}
 
 
+JUDETE_CASA = ("AB","AR","AG","BC","BH","BN","BT","BV","BR","BZ","CS","CL","CJ","CT",
+               "CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS",
+               "NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN","B")
+
+
+def verifica_randuri(randuri, azi=None):
+    """PURA: [{rand, motiv, mesaj}] - ce nu poate intra in evidenta.
+
+    Pana la 15.07.2026 importa() verifica DOAR cnp_valid; restul intra oricum. Dovedit
+    prin migrare reala: brut 1500 la norma intreaga (sub minimul de 4325 -> firma ar fi
+    platit CAS/CASS pe 4125 fara sa stie, art.146(5^6)), angajare in 2027, 15 ore/zi,
+    judet 'ZZ' inexistent, COR '999999' - toate au intrat, iar migrarea a zis "gata".
+    """
+    import datetime as _dt
+    azi = azi or _dt.date.today()
+    er = []
+    for i, r in enumerate(randuri or [], start=2):   # antetul e randul 1
+        nume = ("%s %s" % (r.get("nume") or "", r.get("prenume") or "")).strip() or "?"
+        if not r.get("cnp_valid"):
+            er.append({"rand": i, "motiv": "cnp_invalid",
+                       "mesaj": "%s: CNP invalid (%s)" % (nume, r.get("cnp_motiv") or "-")})
+            continue
+        d = r.get("data_angajare")
+        if d:
+            try:
+                dd = d if isinstance(d, _dt.date) else _dt.date.fromisoformat(str(d)[:10])
+                if dd > azi:
+                    er.append({"rand": i, "motiv": "data_viitor",
+                               "mesaj": "%s: data angajarii (%s) e in viitor" % (nume, dd)})
+            except ValueError:
+                er.append({"rand": i, "motiv": "data_invalida",
+                           "mesaj": "%s: data angajarii nu se intelege (%r)" % (nume, d)})
+        ore = r.get("ore_zi")
+        if ore is not None and not (1 <= float(ore or 0) <= 8):
+            er.append({"rand": i, "motiv": "ore_invalide",
+                       "mesaj": "%s: %s ore/zi (norma legala e de maximum 8)" % (nume, ore)})
+        j = str(r.get("judet_casa") or "").strip().upper()
+        if j and j not in JUDETE_CASA:
+            er.append({"rand": i, "motiv": "judet_invalid",
+                       "mesaj": "%s: judetul '%s' nu exista" % (nume, j)})
+    return er
+
+
 def importa(conn, randuri):
     """
     Insereaza salariatii in tabelul existent. UPSERT pe CNP (daca exista, actualizeaza).
-    Sare peste randurile cu CNP invalid. Intoarce {importati, sarite_cnp}.
+    Ridica ValueError daca vreun rand nu poate intra (vezi verifica_randuri).
+    Refuzul e PRIMA POARTA: nimic nu se scrie dintr-un import cu randuri invalide.
+    Intoarce {importati, sarite_cnp}.
     """
+    er = verifica_randuri(randuri)
+    if er:
+        det = "; ".join("rand %s: %s" % (e["rand"], e["mesaj"]) for e in er[:6])
+        if len(er) > 6:
+            det += " (si inca %d)" % (len(er) - 6)
+        raise ValueError("%d randuri nu pot intra in evidenta: %s. Salariatii intra in "
+                         "D112 si REGES - datele trebuie sa fie cele reale." % (len(er), det))
     importati = 0
     sarite = 0
     with conn.cursor() as cur:

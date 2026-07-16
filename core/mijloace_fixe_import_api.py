@@ -165,8 +165,46 @@ def rezumat(conn):
             "total_valoare": float(tv), "total_rezidual": float(tr)}
 
 
+def verifica_randuri(randuri):
+    """PURA: [{rand, motiv, mesaj}]. Nicio validare nu exista pana la 15.07.2026:
+    durata 0 (amortizarea nu se poate calcula), valoare ramasa > valoare de intrare
+    (imposibil), cod de inventar duplicat - toate intrau, iar migrarea zicea "gata"."""
+    er, coduri = [], {}
+    for i, r in enumerate(randuri or [], start=2):
+        cod = str(r.get("cod") or "").strip()
+        den = str(r.get("denumire") or cod or "?").strip()
+        val = float(r.get("valoare") or 0)
+        rez = float(r.get("rezidual") or 0)
+        dur = int(r.get("durata") or 0)
+        if not cod:
+            er.append({"rand": i, "motiv": "cod_lipsa", "mesaj": "%s: fara cod de inventar" % den})
+        elif cod in coduri:
+            er.append({"rand": i, "motiv": "cod_duplicat",
+                       "mesaj": "codul de inventar %s apare de doua ori (randurile %s si %s)"
+                                % (cod, coduri[cod], i)})
+        else:
+            coduri[cod] = i
+        if dur <= 0:
+            er.append({"rand": i, "motiv": "durata",
+                       "mesaj": "%s: durata %s luni - fara ea nu se calculeaza amortizarea" % (den, dur)})
+        if val <= 0:
+            er.append({"rand": i, "motiv": "valoare",
+                       "mesaj": "%s: valoare de intrare %s" % (den, val)})
+        elif rez > val + 0.01:
+            er.append({"rand": i, "motiv": "rezidual",
+                       "mesaj": "%s: valoarea ramasa (%s) depaseste valoarea de intrare (%s)"
+                                % (den, rez, val)})
+    return er
+
+
 def importa(conn, randuri):
-    """DELETE + INSERT per firma. Intoarce {importati}."""
+    """DELETE + INSERT per firma. Intoarce {importati}.
+    Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri)."""
+    er = verifica_randuri(randuri)
+    if er:
+        raise ValueError("%d randuri nu pot intra: %s. Mijloacele fixe intra in "
+                         "amortizare si in D406 SAF-T."
+                         % (len(er), "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6])))
     with conn.cursor() as cur:
         cur.execute("DELETE FROM mijloace_fixe")
         n = 0
