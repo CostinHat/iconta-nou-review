@@ -4644,6 +4644,45 @@ def rapoarte_comerciale_fisa(tenant_id: int, cui: str, de: str = None, pana: str
         return _rc.fisa_partener(conn, schema, cui, de, pana)
 
 
+# --- rapoarte salvate (F145: variante ale firmei, partajate) ---
+@app.get("/tenants/{tenant_id}/rapoarte-salvate")
+def rapoarte_salvate_lista(tenant_id: int, tip_raport: str = "comercial", ctx=Depends(cere_cabinet)):
+    from core import rapoarte_comerciale_api as _rc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return {"variante": _rc.variante(conn, schema, tip_raport)}
+
+@app.post("/tenants/{tenant_id}/rapoarte-salvate")
+def rapoarte_salvate_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import rapoarte_comerciale_api as _rc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _rc.salveaza_varianta(conn, schema, corp.get("tip_raport", "comercial"),
+                                    corp.get("nume"), corp.get("filtru"), ctx["uid"])
+    if not rez.get("ok"):
+        mesaje = {"TIP_INVALID": "tip de raport necunoscut",
+                  "NUME_GOL": "numele variantei e obligatoriu",
+                  "NUME_EXISTA": "exista deja o varianta cu acest nume"}
+        raise HTTPException(422, mesaje.get(rez.get("cod"), "eroare"))
+    return rez
+
+@app.delete("/tenants/{tenant_id}/rapoarte-salvate/{vid}")
+def rapoarte_salvate_sterge(tenant_id: int, vid: int, ctx=Depends(cere_cabinet)):
+    from core import rapoarte_comerciale_api as _rc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _rc.sterge_varianta(conn, schema, vid)
+    if not rez.get("ok"):
+        raise HTTPException(404, "varianta inexistenta")
+    return rez
+
+
 # --- jurnal: editare/stergere/validare ciorne ---
 def _jurnal_rez(rez):
     if rez is None:

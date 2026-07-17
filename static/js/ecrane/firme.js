@@ -2066,11 +2066,21 @@ async function ecranBalanta(corp, nav, t) {
 async function ecranRapoarte(corp, nav, t) {
   let an = new Date().getFullYear();
   let fisaCui = "";
+  let parteneriCui = new Set();  // [rap145] partenerii existenti (toate facturile), pt validarea referintei salvate
 
   const randeazaFisa = async () => {
     const zona = corp.querySelector("#r-fisa");
     if (!zona) return;
     if (!fisaCui) { zona.innerHTML = ""; return; }
+    // [rap145] referinta din varianta poate muri (partener sters/redenumit): gol + cauza + iesire (DS cap.6)
+    if (!parteneriCui.has(fisaCui)) {
+      zona.innerHTML = "";
+      arataMesaj(zona, "Varianta trimite la un partener care nu mai există în facturile firmei. Alege alt partener.", "avert");
+      fisaCui = "";
+      const sel = corp.querySelector("#r-fisa-sel");
+      if (sel) sel.value = "";
+      return;
+    }
     zona.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let f;
     try {
@@ -2100,10 +2110,15 @@ async function ecranRapoarte(corp, nav, t) {
 
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
-    let d;
+    let d, variante = [];
     try {
       d = await api.get(`/tenants/${t.id}/rapoarte-comerciale?de=${an}-01-01&pana=${an}-12-31`);
     } catch (e) { corp.innerHTML = `<div class="mig-gol">${esc((e && e.mesaj) || "eroare")}</div>`; return; }
+    try {
+      const rv = await api.get(`/tenants/${t.id}/rapoarte-salvate?tip_raport=comercial`);
+      variante = rv.variante || [];
+    } catch { /* variantele nu blocheaza raportul */ }
+    parteneriCui = new Set((d.parteneri || []).map((p) => p.cui));
     const v = d.vanzari || { parteneri: [], total_net: 0 };
     const di = d.durata_incasare || {};
     const randVanzari = (v.parteneri || []).map((p) => `
@@ -2138,11 +2153,58 @@ async function ecranRapoarte(corp, nav, t) {
       <h3 class="pf-subtitlu">Fișă client/furnizor</h3>
       <p><select id="r-fisa-sel" class="camp-input" style="max-width:360px">
         <option value="">— alege partenerul —</option>${optParteneri}</select></p>
-      <div id="r-fisa"></div>`;
+      <div id="r-fisa"></div>
+
+      <h3 class="pf-subtitlu">Variantele firmei</h3>
+      ${variante.length ? `<div class="pf-lista">${variante.map((vr) => `
+        <div class="pf-frand">
+          <div class="pf-frand-text">
+            <div class="pf-frand-nume">${esc(vr.nume)}</div>
+            <div class="pf-frand-sub">anul ${(vr.filtru && vr.filtru.an) || "?"}${vr.filtru && vr.filtru.cui ? " · partener " + esc(vr.filtru.cui) : ""} · creată de ${esc(vr.autor)}</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button class="buton-secundar" data-incarca="${vr.id}">Încarcă</button>
+            <button class="buton-secundar" data-sterge="${vr.id}">Șterge</button>
+          </div>
+        </div>`).join("")}</div>` : `<div class="mig-gol">Nicio variantă salvată încă.</div>`}
+      <p style="margin-top:10px">
+        <input class="camp-input" id="r-var-nume" aria-label="Nume variantă" placeholder="Nume variantă (ex. Anul curent, client X)" style="max-width:320px" maxlength="80" autocomplete="off">
+        <button class="buton-primar" id="r-var-salveaza" style="margin-left:6px">Salvează varianta curentă</button>
+        <span class="msg-eroare" id="r-var-msg" style="margin-left:8px"></span>
+      </p>
+      <div id="r-var-zona"></div>`;
     corp.querySelector("#r-prev").addEventListener("click", () => { an--; deseneaza(); });
     corp.querySelector("#r-next").addEventListener("click", () => { an++; deseneaza(); });
     const sel = corp.querySelector("#r-fisa-sel");
     sel.addEventListener("change", () => { fisaCui = sel.value; randeazaFisa(); });
+    // [rap145] salveaza varianta curenta (an + partener selectat)
+    corp.querySelector("#r-var-salveaza").addEventListener("click", async () => {
+      const msg = corp.querySelector("#r-var-msg");
+      const nume = corp.querySelector("#r-var-nume").value.trim();
+      msg.textContent = "";
+      if (!nume) { msg.textContent = "Dă un nume variantei."; return; }
+      try {
+        await api.post(`/tenants/${t.id}/rapoarte-salvate`, { tip_raport: "comercial", nume, filtru: { an, cui: fisaCui || null } });
+        deseneaza();
+      } catch (e) { msg.textContent = (e && e.mesaj) || "eroare"; }
+    });
+    // [rap145] incarca varianta: aplica filtrul; validarea partenerului se face in randeazaFisa
+    corp.querySelectorAll("[data-incarca]").forEach((b) => b.addEventListener("click", () => {
+      const vr = variante.find((x) => String(x.id) === b.dataset.incarca);
+      if (!vr) return;
+      const fl = vr.filtru || {};
+      if (fl.an) an = parseInt(fl.an, 10) || an;
+      fisaCui = fl.cui || "";
+      deseneaza();
+    }));
+    // [rap145] sterge varianta (ireversibil -> caseta de confirmare, nu dialog nativ de browser)
+    corp.querySelectorAll("[data-sterge]").forEach((b) => b.addEventListener("click", () => {
+      const vr = variante.find((x) => String(x.id) === b.dataset.sterge);
+      confirmaCaseta(corp.querySelector("#r-var-zona"), `Ștergi varianta „${vr ? esc(vr.nume) : ""}"?`, async () => {
+        try { await api.del(`/tenants/${t.id}/rapoarte-salvate/${b.dataset.sterge}`); deseneaza(); }
+        catch (e) { arataMesaj(corp.querySelector("#r-var-zona"), (e && e.mesaj) || "eroare", "eroare"); }
+      });
+    }));
     if (fisaCui) randeazaFisa();
   };
 

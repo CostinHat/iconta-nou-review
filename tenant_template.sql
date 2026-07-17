@@ -2096,6 +2096,19 @@ ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS notificare_stop 
 ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS notificare_amanata_pana date;
 
 --
+-- F145 (rapoarte configurabile salvabile) — mirror al core/migrare_rapoarte_salvate.py
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.rapoarte_salvate (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    tip_raport text NOT NULL CHECK (tip_raport IN ('comercial')),
+    nume text NOT NULL,
+    filtru jsonb NOT NULL DEFAULT '{}'::jsonb,
+    creat_de integer,
+    creat_la timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT rapoarte_salvate_tip_nume_unic UNIQUE (tip_raport, nume)
+);
+
+--
 -- F135 (pontaj informativ) — mirror al core/migrare_pontaj.py
 --
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.pontaj (

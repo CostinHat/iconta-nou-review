@@ -18,10 +18,16 @@ Conventia de sold/storno e IDENTICA cu core/reconciliere_api.py (sursa unica):
   se exclud din randul principal si se aduna inapoi (negative -> reduc valoarea).
   decontat emise = SUM linii cu cont_credit=4111; primite = cont_debit=401.
 """
+import json
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 
 CONT_CLIENTI, CONT_FURNIZORI = "4111", "401"
+
+# F145: vocabular FIX de tipuri de raport salvabile (mirror al CHECK-ului din
+# migrare_rapoarte_salvate.DDL). O litera gresita ar face varianta orfana -> se
+# verifica la scriere, nu se accepta text liber.
+TIPURI_RAPORT = {"comercial"}
 
 
 def _f(v):
@@ -152,3 +158,48 @@ def fisa_partener(conn, schema, cui, de, pana):
             "facturi": facturi,
             "sumar": {"nr": len(facturi), "facturat": _f(s_fact),
                       "decontat": _f(s_dec), "sold": _f(s_sold)}}
+
+
+# ---- F145: variante de raport salvate (ale firmei, partajate) ----
+
+def variante(conn, schema, tip_raport):
+    """Variantele salvate ale firmei pentru un tip de raport, cu autorul (creat_de).
+    Autorul se afiseaza ca sa nu se calce doi utilizatori pe acelasi nume."""
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"""
+            SELECT r.id, r.nume, r.filtru,
+                   COALESCE(NULLIF(TRIM(CONCAT_WS(' ', u.prenume, u.nume)), ''), u.email) AS autor
+            FROM {schema}.rapoarte_salvate r
+            LEFT JOIN public.users u ON u.id = r.creat_de
+            WHERE r.tip_raport = %s
+            ORDER BY r.nume
+        """, (tip_raport,))
+        return [{"id": r["id"], "nume": r["nume"], "filtru": r["filtru"] or {},
+                 "autor": r["autor"] or "(necunoscut)"} for r in cur.fetchall()]
+
+
+def salveaza_varianta(conn, schema, tip_raport, nume, filtru, creat_de):
+    """Salveaza o varianta. Vocabular FIX (TIPURI_RAPORT) + nume unic per tip.
+    Coduri de eroare: TIP_INVALID / NUME_GOL / NUME_EXISTA."""
+    if tip_raport not in TIPURI_RAPORT:
+        return {"ok": False, "cod": "TIP_INVALID"}
+    nume = (nume or "").strip()
+    if not nume:
+        return {"ok": False, "cod": "NUME_GOL"}
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"SELECT 1 FROM {schema}.rapoarte_salvate WHERE tip_raport=%s AND nume=%s",
+                    (tip_raport, nume))
+        if cur.fetchone():
+            return {"ok": False, "cod": "NUME_EXISTA"}
+        cur.execute(f"""INSERT INTO {schema}.rapoarte_salvate (tip_raport, nume, filtru, creat_de)
+                        VALUES (%s,%s,%s,%s) RETURNING id""",
+                    (tip_raport, nume, json.dumps(filtru or {}), creat_de))
+        vid = cur.fetchone()["id"]
+    return {"ok": True, "id": vid}
+
+
+def sterge_varianta(conn, schema, vid):
+    """Sterge o varianta dupa id. {ok: False} daca nu exista."""
+    with conn.cursor() as cur:
+        cur.execute(f"DELETE FROM {schema}.rapoarte_salvate WHERE id=%s", (vid,))
+        return {"ok": cur.rowcount > 0}
