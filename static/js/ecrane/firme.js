@@ -800,6 +800,7 @@ async function sectiuneaCV(corp, t, zonaM) {
         <button class="buton-secundar" id="cv-transfer-t" style="margin-left:6px">Transfer între locații</button>
         <button class="buton-secundar" id="cv-recl-t" style="margin-left:6px">Reclasificare tip produs</button>
         <button class="buton-secundar" id="cv-ana" style="margin-left:6px">Analitică stoc</button>
+        <button class="buton-secundar" id="cv-inv-mobil" style="margin-left:6px">Inventar pe mobil</button>
         <div id="cv-inv-zona" style="margin-top:8px"></div>
         <div id="cv-loc-zona" style="margin-top:8px"></div>
       </div>
@@ -1019,6 +1020,61 @@ async function sectiuneaCV(corp, t, zonaM) {
         sectiuneaCV(corp, t, zonaM);
       } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la reclasificare.", "eroare"); }
     });
+  });
+  // [F142] Inventar pe mobil: scanare cod (keyboard-wedge) -> acumulare in timp real -> finalizare.
+  // Numarare oarba (nu afiseaza scripticul). Fara schema noua: foloseste motorul inventar() existent.
+  zona.querySelector("#cv-inv-mobil").addEventListener("click", () => {
+    const z = zona.querySelector("#cv-inv-zona");
+    const num = {};  // articol_id -> {denumire, um, faptic}
+    const randList = () => Object.entries(num).map(([id, x]) =>
+      `<div class="pf-frand"><div class="pf-frand-text">
+         <div class="pf-frand-nume">${esc(x.denumire)}</div>
+         <div class="pf-frand-sub">numărat ${x.faptic} ${esc(x.um)}</div>
+       </div><button class="buton-sters im-scoate" data-id="${id}">−</button></div>`).join("");
+    const deseneaza = () => {
+      z.innerHTML = `
+        <div class="pf-card">
+          <div class="pf-frand-nume" style="margin-bottom:6px">Inventar pe mobil (numărare oarbă)</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            <input type="text" id="im-scan" class="camp-input" placeholder="scanează codul sau caută denumirea" aria-label="Scanează cod sau caută" style="flex:1;min-width:180px">
+            <input type="number" step="0.001" id="im-cant" class="camp-input" placeholder="cant. (1)" aria-label="Cantitate numărată" style="width:100px">
+            <button class="buton-primar" id="im-add">Adaugă la numărătoare</button>
+          </div>
+          <div id="im-hint" class="camp-eticheta" style="margin-top:4px"></div>
+          <div class="pf-lista" style="margin-top:8px">${randList() || '<div class="mig-gol">Nimic numărat încă.</div>'}</div>
+          <p style="margin-top:8px"><button class="buton-primar" id="im-fin">Finalizează inventarul (note ciorne)</button></p>
+        </div>`;
+      const scan = z.querySelector("#im-scan");
+      scan.focus();
+      const adauga = async () => {
+        const q = scan.value.trim();
+        if (!q) return;
+        const cant = parseFloat(z.querySelector("#im-cant").value) || 1;
+        let a = null;
+        try { a = await api.get(`/tenants/${t.id}/stocuri/barcode/${encodeURIComponent(q)}`); } catch {}
+        if (!a) {
+          const m = arts.filter((x) => x.denumire.toLowerCase().includes(q.toLowerCase()));
+          if (m.length === 1) a = m[0];
+          else { z.querySelector("#im-hint").textContent = m.length ? `${m.length} potriviri — precizează denumirea sau scanează codul.` : "Niciun articol găsit."; return; }
+        }
+        num[a.id] = num[a.id] || { denumire: a.denumire, um: a.um || "buc", faptic: 0 };
+        num[a.id].faptic = Math.round((num[a.id].faptic + cant) * 1000) / 1000;
+        deseneaza();
+      };
+      z.querySelector("#im-add").addEventListener("click", adauga);
+      scan.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); adauga(); } });
+      z.querySelectorAll(".im-scoate").forEach((b) => b.addEventListener("click", () => { delete num[b.dataset.id]; deseneaza(); }));
+      z.querySelector("#im-fin").addEventListener("click", async () => {
+        const linii = Object.entries(num).map(([id, x]) => ({ articol_id: parseInt(id), faptic: x.faptic }));
+        if (!linii.length) { arataMesaj(zonaM, "Nimic de inventariat.", "eroare"); return; }
+        try {
+          const r = await api.post(`/tenants/${t.id}/stocuri/inventar`, { data: val("#cv-data") || new Date().toISOString().slice(0, 10), linii });
+          arataMesaj(zonaM, `Inventar finalizat · ${(r.rezultate || []).length} articole procesate (note ciorne pentru diferențe).`, "ok");
+          sectiuneaCV(corp, t, zonaM);
+        } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la finalizare.", "eroare"); }
+      });
+    };
+    deseneaza();
   });
   // [F140] Analitica de stoc: critic / inert / ABC / consum perioade comparabile
   zona.querySelector("#cv-ana").addEventListener("click", async () => {

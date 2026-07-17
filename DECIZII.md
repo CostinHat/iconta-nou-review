@@ -201,3 +201,19 @@ o alegere fiscala intr-o constanta; import vs achizitie interna cer conturi dife
 pe cantitate/greutate - nu avem greutatea articolelor; proportional cu valoarea e cheia disponibila.
 LIMITA: TVA-ul aferent accesoriului (transport are TVA deductibil, taxele vamale nu) se trateaza
 SEPARAT de contabil - nir_gv capitalizeaza doar valoarea neta a accesoriului, nu-i calculeaza TVA-ul.
+
+### 17.07.2026 F142 inventar pe mobil: acumulare pe ecran, nu sync multi-numarator  (static/js firme.js; LIVE)
+DECIZIE: "cantitatile urca in timp real" din descriere = acumulare CLIENT-SIDE pe ecran pe masura
+ce se scaneaza/numara, finalizata printr-o singura postare prin motorul inventar() existent.
+Sincronizarea live intre mai multi numaratori simultan NU se construieste acum.
+TEMEI: sync multi-numarator cere un TABEL DE SESIUNE de inventar (cine, ce a numarat, cand,
+reconciliere) = schema noua = STOP de arhitectura (garda BRIEF). Coloanele autorizate pe 17.07
+(locatie/barcode/nivel_minim/nir.transport/taxe) NU includ asa ceva. Un cabinet numara de regula
+cu 1 telefon pe rand; multi-numarator simultan e nevoia unui depozit mare - aceeasi intrebare de
+piata ca multi-gestiunea Tier 3 [[vezi Lot 4 Stoc F138]].
+ALTERNATIVA RESPINSA: postare per articol la fiecare scanare (o ciorna per articol) - ar inunda
+jurnalul cu zeci de ciorne pentru un inventar; acumularea + o singura postare da o ciorna per
+diferenta reala. NUMARARE OARBA implicita (nu afiseaza scripticul): buna practica de control,
+evita ajustarea numaratului la cifra asteptata.
+LIMITA: se reia cu tabel de sesiune daca apare un cabinet cu inventar pe echipa. Pana atunci
+NEVOI_RATATE.md capteaza semnalul.
