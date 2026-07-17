@@ -62,6 +62,10 @@ Client oficial: github.com/MfpAnaf/ClientSPV (MIT). Ultimul jurnal de modificari
 VALOARE PIERDUTA ODATA CU F128: astea erau materia prima pentru verificatoare incrucisate
 cu sursa de adevar la ANAF (nu doar in baza proprie). Se redeschid impreuna cu F128.
 Contact tehnic ANAF: spv.webservice@mfinante.ro
+INTREBARE TRIMISA 17.07.2026 catre spv.webservice@mfinante.ro, doua puncte:
+  (1) exista/se planifica transmitere declaratii prin WS?  -> deblocheaza F127
+  (2) se planifica OAuth pentru SPVWS2?                    -> deblocheaza F128 + rapoartele 'cerere'
+Fara raspuns pana la <data>: F127/F128 raman AMANAT. Raspunsul se consemneaza AICI.
 
 ## STARE FUNCTIONALITATI (17.07.2026)
 - F126, F160, F121 : temei tehnic confirmat prin OAuth. Se pot construi server-side.
