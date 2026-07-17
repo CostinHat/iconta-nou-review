@@ -118,3 +118,25 @@ CIM, tip contract, departament, vechime, scop, mentiuni) = input.
 LIMITA: nu acoperim cerintele exacte per institutie (variaza) - doar minimul legal art.34(5).
 Vechimea "in munca/meserie/specialitate" totala (cariera) nu e in DB -> input manual; din
 data_angajare se poate pre-completa doar vechimea in ACEASTA firma.
+
+### 17.07.2026 Proratare CM + zile lucratoare: exclud sarbatorile, sursa unica  (core/scadente.py + stat_plata_api.py + d112.py + main.py + flux_concediu.js)
+DECIZIE: numarul de zile lucratoare ale lunii (NUMITORUL proratarii CM) SI zilele de CM
+(NUMARATORUL, auto-calc) exclud sarbatorile legale. Sursa UNICA: scadente.zile_lucratoare_luna
+/ zile_lucratoare_interval, cu Pastele ortodox CALCULAT (formula Meeus), NU hardcodat.
+TEMEI (verificat la sursa): OUG 158/2005 art. 10 alin. (5)-(6) - din zilele calendaristice de
+CM se platesc zilele LUCRATOARE, iar la stabilirea lor se tin cont de sarbatorile legale
+(exemplu oficial confirma ca se scad). Vinerea Mare = sarbatoare legala (Legea 220/2016),
+depinde de data Pastelui -> se calculeaza, nu se hardcodeaza.
+ALTERNATIVA RESPINSA: weekday<5 (ce era in cod, in 4 locuri: stat_plata x2, main.py, d112).
+Ignora sarbatorile -> proratare gresita in ORICE luna cu sarbatoare pe zi lucratoare + un CM.
+Ex. aprilie 2026 (Vinerea Mare 10 + Paste 13): brut 5000, CM 5 zile -> dadea 3863,64 in loc de
+3750 (diferenta 113,64 lei/luna), si zile CM gresite RAPORTATE IN D112.
+INCIDENT (de ce centralizarea conteaza): exista DEJA o a doua sursa de adevar hardcodata -
+tabelele _D112_NZL_2025/2026 in d112.py - CORECTE (excludeau sarbatorile) dar: (a) doar 2 ani,
+(b) o linie folosea tabelul 2026 pentru ORICE an, (c) coexistau cu un weekday<5 gresit in
+ACEEASI functie. Doua definitii ale "zilei lucratoare" in acelasi cod = exact ce ascunde bug-ul
+(fluturasul dadea o cifra, D112 alta). Eliminate; formula Meeus le reproduce EXACT pe 2025+2026.
+LIMITA: calendarul valabil [2024, 2099] (setul fix cu 6-7 ian din 2024; offset iulian +13 pana
+2099). In afara -> ValueError VIZIBIL, nu rezultat tacut gresit (cum era 2025, care lipsea
+complet si dadea weekday<5). Setul de sarbatori fixe (art. 139 Codul muncii) se reverifica daca
+legea se schimba. NUMARATORUL cm_zile ramane suprascriabil de contabil (auto-calc = doar default).

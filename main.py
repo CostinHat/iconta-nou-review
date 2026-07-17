@@ -1951,6 +1951,17 @@ def scadentar_supapa(tenant_id: int, factura_id: int, date: SupapaScadentarIn, c
         raise HTTPException(404, "factura inexistenta")
     return r
 
+@app.get("/util/zile-lucratoare")
+def util_zile_lucratoare(start: str, end: str, ctx=Depends(cere_context)):
+    """Zile lucratoare (L-V, fara sarbatori legale) intre doua date - auto-calcul CM
+    (OUG 158/2005 art.10). Un an neacoperit de calendar da 422 vizibil, nu tacut."""
+    from core import scadente as _scad
+    from datetime import date as _d
+    try:
+        return {"zile": _scad.zile_lucratoare_interval(_d.fromisoformat(start), _d.fromisoformat(end))}
+    except ValueError as ex:
+        raise HTTPException(422, str(ex))
+
 class ModelFacturaIn(BaseModel):
     font: Optional[str] = None
     culoare: Optional[str] = None
@@ -5453,10 +5464,8 @@ def d406_stocuri_xml(tenant_id: int, data_start: str, data_end: str, cui: str,
 
 def _snapshot_stat_plata(conn, schema, rezultate, an, luna):
     """Persista venit brut + zile lucrate per salariat (UPSERT), pt. media CM."""
-    from datetime import date as _date
-    import calendar as _cal
-    zile_luna = sum(1 for z in range(1, _cal.monthrange(an, luna)[1] + 1)
-                    if _date(an, luna, z).weekday() < 5)
+    from core import scadente as _scad
+    zile_luna = _scad.zile_lucratoare_luna(an, luna)  # fara sarbatori (OUG 158/2005 art.10)
     with conn.cursor() as cur:
         for r in rezultate:
             zile = max(zile_luna - int(r.get("cm_zile") or 0), 0)

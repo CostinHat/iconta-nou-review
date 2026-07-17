@@ -107,23 +107,21 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
 
     zona.querySelector("#cm-renunta").addEventListener("click", () => { zona.innerHTML = ""; });
 
-    // Auto-calcul zile lucratoare (luni-vineri) intre inceput si sfarsit; contabilul poate suprascrie.
+    // Auto-calcul zile lucratoare (FARA sarbatori legale, OUG 158/2005 art.10) intre inceput
+    // si sfarsit; contabilul poate suprascrie. Calendarul e pe backend (sursa unica), NU
+    // reimplementat in JS cu getDay() - vechiul cod ignora sarbatorile -> zile CM gresite in D112.
     let zileEditateManual = false;
     const inpZile = zona.querySelector("#cm-zile");
     inpZile.addEventListener("input", () => { zileEditateManual = true; });
-    const recalcZile = () => {
+    const recalcZile = async () => {
       if (zileEditateManual) return;
       const di = zona.querySelector("#cm-inceput").value;
       const ds = zona.querySelector("#cm-sfarsit").value;
-      if (!di || !ds) return;
-      const d1 = new Date(di), d2 = new Date(ds);
-      if (d2 < d1) return;
-      let n = 0;
-      for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
-        const zi = d.getDay();
-        if (zi !== 0 && zi !== 6) n++;
-      }
-      inpZile.value = n;
+      if (!di || !ds || ds < di) return;
+      try {
+        const r = await api.get(`/util/zile-lucratoare?start=${di}&end=${ds}`);
+        if (r && typeof r.zile === "number") inpZile.value = r.zile;
+      } catch { /* auto-calcul best-effort; contabilul poate completa manual */ }
     };
     zona.querySelector("#cm-inceput").addEventListener("change", recalcZile);
     zona.querySelector("#cm-sfarsit").addEventListener("change", recalcZile);

@@ -3,13 +3,13 @@
 Include CM: asiguratB3 + asiguratD + angajatorC2 (OUG 158/2005).
 pull() citeste salariati + concedii_medicale din schema tenantului."""
 import re
+from core import scadente as _scad
 
-def _nzl(an, luna):  # cm_media6_v1
-    if an == 2026:
-        return _D112_NZL_2026.get(luna, 21)
-    if an == 2025:
-        return _D112_NZL_2025.get(luna, 21)
-    return 21
+def _nzl(an, luna):
+    # Zile lucratoare din luna, FARA sarbatori legale (OUG 158/2005 art.10). Sursa UNICA
+    # scadente.zile_lucratoare_luna - inainte erau tabele hardcodate _D112_NZL_2025/2026
+    # (corecte, dar a doua sursa de adevar + drift pe 2027+) SI un weekday<5 gresit.
+    return _scad.zile_lucratoare_luna(an, luna)
 
 def _sal_minim(an, luna):
     # salariul minim brut pe economie (HG 146/2026). Actualizabil anual.
@@ -19,8 +19,6 @@ def _sal_minim(an, luna):
         return 4050
     return 4325  # 2027+ fallback pana la actualizare
 _D112_NS = "mfp:anaf:dgti:declaratie_unica:declaratie:v7"
-_D112_NZL_2026 = {1: 18, 2: 20, 3: 22, 4: 20, 5: 20, 6: 21, 7: 23, 8: 21, 9: 22, 10: 22, 11: 20, 12: 21}
-_D112_NZL_2025 = {1: 18, 2: 20, 3: 21, 4: 20, 5: 21, 6: 20, 7: 23, 8: 20, 9: 22, 10: 23, 11: 20, 12: 20}  # cm_media6_v1
 def _cm_media6(brut, data_ang, an, luna):  # cm_media6_v1
     """Media zilnica reala pe ultimele 6 luni (OUG 158). Returneaza (d17, d18, media).
     Presupune brut constant pe ferestra (istoric variabil/mariri -> deferat)."""
@@ -98,7 +96,7 @@ def _d112_genereaza(prof, salariati, an, luna):
     (contributii) + E1 (agregat impozit) + E3 (impozit). Returneaza (xml_str, avertismente)."""
     import re
     av = []
-    nzl = _D112_NZL_2026.get(luna, 21)
+    nzl = _nzl(an, luna)
     perioada = "%02d.%04d" % (luna, an)
     cui_f = re.sub(r"\D", "", (prof.get("cui") or ""))
     den_f = prof.get("nume") or ""
@@ -341,8 +339,7 @@ def pull(conn, schema, an, luna):
     sm, _t1 = _cm.cota("salariu_minim", ref)
     fac, _t2 = _cm.cota("facilitate_salariu_minim", ref)
     prag_pt = float(sm) - float(fac)  # baza minima part-time (structura D112: sm-facilitate)
-    nzl = sum(1 for z in range(1, _cal.monthrange(an, luna)[1] + 1)
-              if _dt(an, luna, z).weekday() < 5)
+    nzl = _nzl(an, luna)  # zile lucratoare fara sarbatori (OUG 158 art.10)
     # ALINIERE la stat_plata_api:36-38 (15.07.2026). pull() chema calcul_salariu(brut,
     # la_data) GOL: fara persoane / norma_intreaga / venit_brut_total, si pe brutul
     # INTREG, nu pe cel lucrat. Statul de plata le paseaza pe toate patru -> acelasi

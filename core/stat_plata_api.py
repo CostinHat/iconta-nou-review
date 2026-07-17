@@ -6,6 +6,7 @@ from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 from core.pdf_fonturi import init_fonturi, font
 from core import salarizare
+from core import scadente as _scad
 
 def stat_plata(conn, schema, an, luna):
     """Calcul salarii pentru toti salariatii activi, la data de referinta (an, luna)."""
@@ -26,9 +27,8 @@ def stat_plata(conn, schema, an, luna):
     stat = []
     for sid, nume, prenume, brut, pers, part_time, ore_zi in randuri:
         c_cm = cm.get(sid)
-        import calendar as _cal
-        zile_luna = sum(1 for z in range(1, _cal.monthrange(an, luna)[1] + 1)
-                        if date(an, luna, z).weekday() < 5)
+        # zile lucratoare FARA sarbatori (OUG 158/2005 art.10) - numitorul proratarii CM
+        zile_luna = _scad.zile_lucratoare_luna(an, luna)
         if c_cm and c_cm["zile"] > 0:
             brut_lucrat = float(brut or 0) * max(zile_luna - c_cm["zile"], 0) / zile_luna
         else:
@@ -77,9 +77,8 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
             FROM {schema}.concedii_medicale WHERE salariat_id = %s AND an = %s AND luna = %s
         """, (salariat_id, an, luna))
         zc, cm_net, cm_brut = cur.fetchone()
-    import calendar as _cal
-    zile_luna = sum(1 for z in range(1, _cal.monthrange(an, luna)[1] + 1)
-                    if date(an, luna, z).weekday() < 5)
+    # zile lucratoare FARA sarbatori (OUG 158/2005 art.10)
+    zile_luna = _scad.zile_lucratoare_luna(an, luna)
     brut_lucrat = float(brut or 0) * max(zile_luna - int(zc or 0), 0) / zile_luna if zc else float(brut or 0)
     calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
                                      norma_intreaga=not part_time,
