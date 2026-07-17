@@ -108,7 +108,7 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
         <span class="sa-asist-cifre">${a.create_ || 0} pregatite${a.respinse ? " · " + a.respinse + " respinse" : ""}</span>
       </button>`).join("");
   } else {
-    asist = `<p class="sa-gol">Niciun asistent n-a produs încă azi.</p>`;
+    asist = `<p class="stare-goala--inline">Niciun asistent n-a produs încă azi.</p>`;
   }
 
   const ACT = { pregatit:"a pregatit", aprobat:"a aprobat", respins:"a respins", depus:"a depus" };
@@ -125,7 +125,7 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
         <span class="sa-ev-ora">${ora}</span></li>`;
     }).join("");
   } else {
-    jurnal = `<li class="sa-gol">Nicio activitate încă azi.</li>`;
+    jurnal = `<li class="stare-goala--inline">Nicio activitate încă azi.</li>`;
   }
 
   corp.innerHTML = `

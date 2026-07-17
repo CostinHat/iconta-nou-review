@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.12 · 17 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.13 · 17 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -92,6 +92,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - **Cota TVA la emitere (v2.11)**: cota NU se tastează pe linie — vine din nomenclatorul de produse (F023: potrivire pe denumire, regulă+AI), la plătitorii de TVA; ne-plătitorii emit fără TVA. Regimul se setează o dată, în ecranul-poartă „Configurare emitere" (numerotare + regim TVA), obligatoriu înainte de prima factură.
 - **Câmp obligatoriu (v2.0)**: marcat cu asterisc roșu prin `<span class="oblig">*</span>` lângă etichetă. Câmpurile opționale nu se marchează.
 - **Ghidaj preventiv (v2.0)**: câmp care nu se poate autocompleta din date existente primește `<span class="camp-ajutor">` (albastru #3d8fd6, sub etichetă) care spune de unde ia utilizatorul valoarea. Niciun câmp obligatoriu gol fără context.
+- **Stare goală (v2.13)**: o listă cu ZERO rânduri NU e mesaj de stare — nu se afișează prin `arataMesaj()`. Nu s-a întâmplat nicio acțiune; e conținut de ecran, nu feedback tranzitoriu. Clasă canonică unică: **`.stare-goala`** (modificator `.stare-goala--inline` pentru o linie într-un panou, nu listă goală pe ecran plin — altă anatomie: aliniere stânga, padding mic). Clasele `.cap-gol` și `.sa-gol` sunt ELIMINATE; `.mig-gol` NU se mai folosește pentru stări goale (utilizările lui rămase sunt mesaje de eroare din `catch`, datorie de migrat la `arataMesaj` — vezi DE_FACUT). Trei părți OBLIGATORII: (1) **golul** — ce lipsește; (2) **cauza** — de ce e gol; dacă e precondiție neîndeplinită, cu temei; (3) **ieșirea** — butonul care repară, SAU regula sistemului pe care omul n-o știa (când golul e normal: n-a început încă). INTERZISĂ fundătura: „Niciun X." fără cauză și fără ieșire. Modele: `produse_ecran.js` („Niciun produs încă. Adaugă primul produs — cota se completează automat."), `firme.js` document de verificat („Clienții pozează, aici certifici."). Regula STARE_GOALA în verificator (clasă interzisă + fundătură).
 
 ## 7. Documente PDF
 
@@ -166,6 +167,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Exemple conforme: `pac-rezumat`, `pac-deschide-zona` (dashed), `grila-campuri-compacta`.
 
 ## Changelog
+**v2.13 (17.07.2026)** — stare goală canonică `.stare-goala` (+ modificator `.stare-goala--inline`); cap.6. Lista cu 0 rânduri = conținut de ecran (gol + cauză + ieșire), nu mesaj de stare. Elimină `.cap-gol`/`.sa-gol` (foloseau `#999` hardcodat în loc de `var(--gri)`) și utilizările de stare-goală ale `.mig-gol`. ~40 apariții migrate; mesajele de eroare `.mig-gol` din `catch` (~50) = datorie separată către `arataMesaj` (DE_FACUT). Regula STARE_GOALA în verificator (clasă interzisă `cap-gol`/`sa-gol`/`mig-gol`-stare-goală + fundătură).
 **v2.12 (17.07.2026)** — casetă informativă standing `.caseta-info` (albastru-pal #eef4fd, ne-distructivă), distinctă semantic de `.caseta-atentie` (roșu = distructiv); cap.5. Motivată de ecranul de conectare SPV (avertismentul de 24h cere o notă importantă, permanentă, informativă, fără regulă până acum). Regula CASETA_INFO în verificator (prinde note info ad-hoc cu fundal albastru-pal inline).
 **v2.11 (12.07.2026)** — panouri de conținut: clasa canonică `.panou` (alb + bordură #b9c2cf); reparate `pac-rezumat`/`pac-deschide-zona`/`grila-campuri-compacta` (gri pe gri); cap.16 nou. Carduri: 73 hex literal → `...CULORI_CARD.cheie` + regula CULOARE_CARD_HEX; decizie spacing închisă (rămâne literal).
 **v2.9 (12.07.2026)** — canonizat culorile/bordurile/raza din cod: 3 borduri + 6 culori ad-hoc → `var()`, 4 border-radius → `var(--raza)`; cap.15 nou + reguli RADIUS_INLINE (și culoare ad-hoc) în verificator. Landing exclus (sistem separat).

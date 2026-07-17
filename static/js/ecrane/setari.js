@@ -254,7 +254,7 @@ async function _incarcaChei(corp) {
   if (!zona) return;
   let chei = [];
   try { const r = await api.get("/cabinet/api-chei"); chei = (r && r.chei) || []; } catch {}
-  if (!chei.length) { zona.innerHTML = `<div class="mig-gol">Nicio cheie generata.</div>`; return; }
+  if (!chei.length) { zona.innerHTML = `<div class="stare-goala">Nicio cheie generată încă.</div>`; return; }
   zona.innerHTML = chei.map((c) => `
     <div class="pf-frand">
       <div class="pf-frand-text">

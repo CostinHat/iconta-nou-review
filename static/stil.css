@@ -603,6 +603,11 @@ html, body {
 .mig-frand-sub { font-size: var(--text-mic); color: var(--gri); margin-top: 1px; }
 .mig-gri { color: #5a6472; background: #eef0f3; }
 .mig-gol { padding: 24px 16px; text-align: center; font-size: var(--text-mic); color: var(--gri); }
+/* [stare_goala_v213] Stare goala canonica (DS cap.6 v2.13): lista cu 0 randuri = continut de
+   ecran, nu mesaj de stare (arataMesaj). gol + cauza + iesire. Inlocuieste .cap-gol/.sa-gol
+   (sterse) si utilizarile de stare-goala ale .mig-gol. --inline = linie in panou (alta anatomie). */
+.stare-goala { padding: 24px 16px; text-align: center; font-size: var(--text-mic); color: var(--gri); }
+.stare-goala--inline { padding: 4px 0; text-align: left; font-size: var(--text-mic); color: var(--gri); }
 
 .mig-sold-rezumat {
   font-size: var(--text-mic); color: var(--ardezie); background: #f5f7fa;
@@ -1588,7 +1593,6 @@ html, body {
 .cap-tabel tr:last-child td { border-bottom: none; }
 .cap-num { text-align: right; }
 .cap-rol { font-size: var(--text-mic); color: #999; margin-left: 6px; }
-.cap-gol { color: #999; text-align: center; padding: 16px; font-size: var(--text-mic); }
 
 /* [p72_tipare] ecran Tipare */
 .tip-ecran { padding: 4px 2px; }
@@ -1631,7 +1635,6 @@ html, body {
 .sa-ev-ora { color: #aaa; font-size: var(--text-mic); }
 .sa-link { background: none; border: none; color: #1d4ed8; font-size: var(--text-mic); cursor: pointer; padding: 0; }
 .sa-link:hover { text-decoration: underline; }
-.sa-gol { color: #999; font-size: var(--text-mic); padding: 4px 0; }
 
 
 /* [p75_carduri_mari] stari orizontale pe carduri (semafor doar cand e ceva) */

@@ -333,7 +333,7 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
     const r = await api.get(`/tenants/${t.id}/solicitari`);
     lista = (r && r.solicitari) || [];
   } catch {}
-  let firHtml = '<div class="mig-gol">Niciun mesaj încă.</div>';
+  let firHtml = '<div class="stare-goala">Niciun mesaj încă.</div>';
   if (lista.length) {
     firHtml = lista.map((s) => {
       const cine = s.autor_rol === "cabinet" ? "Tu" : "Client";
@@ -514,7 +514,7 @@ async function ecranControlFirma(corp, nav, t) {
       </div>`
     ).join("");
   } else {
-    lipsaHtml = `<div class="mig-gol">Nicio declarație restantă.</div>`;
+    lipsaHtml = `<div class="stare-goala">Nicio declarație restantă — totul e depus la timp.</div>`;
   }
 
   // verificari contabile (coerenta)
@@ -543,7 +543,7 @@ async function ecranControlFirma(corp, nav, t) {
     </div>
     <div class="panou" style="margin-top:14px">
       <h3 class="cap-titlu">Verificări de coerență</h3>
-      ${verifHtml || '<div class="mig-gol">Nicio verificare disponibilă.</div>'}
+      ${verifHtml || '<div class="stare-goala">Nicio verificare disponibilă încă.</div>'}
     </div>`;
 }
 // F135: pontaj lunar informativ - marcheaza exceptiile pe zilele lucratoare (fara sarbatori)
@@ -576,7 +576,7 @@ async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
         <span class="cf-pastila">${rez.invoire || 0} învoire · ${rez.delegatie || 0} delegație</span>
       </div>
       <p class="pf-intro">Doar zilele lucrătoare (weekendul și sărbătorile legale nu se pontează). Prezent = implicit; evidență informativă, nu schimbă statul de plată.</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;max-width:900px">${randuri || '<div class="mig-gol">Nicio zi lucrătoare în perioada de activitate.</div>'}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;max-width:900px">${randuri || '<div class="stare-goala">Nicio zi lucrătoare în perioada de activitate.</div>'}</div>
       <div id="pj-msg" style="margin-top:10px"></div>`;
     corp.querySelector("#pj-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#pj-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
@@ -652,7 +652,7 @@ async function ecranSalariati(corp, nav, t) {
       stat = (r && r.stat) || [];
     } catch {}
     const randuri = !stat.length
-      ? `<div class="mig-gol">Niciun salariat activ.</div>`
+      ? `<div class="stare-goala">Niciun salariat activ încă.</div>`
       : stat.map((s) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
@@ -896,7 +896,7 @@ async function sectiuneaCV(corp, t, zonaM) {
   const rtIncarca = async () => {
     let rr = [];
     try { const r = await api.get(`/tenants/${t.id}/retete`); rr = r.retete || []; } catch {}
-    rtLista.innerHTML = !rr.length ? `<div class="mig-gol">Nicio re\u021bet\u0103 \u00eenc\u0103.</div>`
+    rtLista.innerHTML = !rr.length ? `<div class="stare-goala">Nicio re\u021bet\u0103 \u00eenc\u0103.</div>`
       : rr.map((r) => {
           const fc = r.food_cost || {};
           const procent = fc.food_cost_pct == null ? "\u2013" : pct(fc.food_cost_pct);
@@ -967,7 +967,7 @@ async function sectiuneaCV(corp, t, zonaM) {
     try {
       const r = await api.get(`/tenants/${t.id}/stocuri/locatii`);
       const l = r.locatii || [];
-      locZona.innerHTML = !l.length ? `<div class="mig-gol">Nicio locație cu stoc.</div>`
+      locZona.innerHTML = !l.length ? `<div class="stare-goala">Nicio locație cu stoc încă.</div>`
         : `<div class="pf-frand-nume" style="margin:4px 0">Stoc pe locații (cantitativ; CMP rămâne global)</div>
            <div class="pf-lista">${l.map((x) => `
              <div class="pf-frand"><div class="pf-frand-text">
@@ -1046,7 +1046,7 @@ async function sectiuneaCV(corp, t, zonaM) {
             <button class="buton-primar" id="im-add">Adaugă la numărătoare</button>
           </div>
           <div id="im-hint" class="camp-eticheta" style="margin-top:4px"></div>
-          <div class="pf-lista" style="margin-top:8px">${randList() || '<div class="mig-gol">Nimic numărat încă.</div>'}</div>
+          <div class="pf-lista" style="margin-top:8px">${randList() || '<div class="stare-goala">Nimic numărat încă.</div>'}</div>
           <p style="margin-top:8px"><button class="buton-primar" id="im-fin">Finalizează inventarul (note ciorne)</button></p>
         </div>`;
       const scan = z.querySelector("#im-scan");
@@ -1087,7 +1087,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       const r = await api.get(`/tenants/${t.id}/stocuri/analitica`);
       const lista = (titlu, randuri, gol) => `
         <div class="pf-frand-nume" style="margin:8px 0 4px">${titlu}</div>
-        ${!randuri.length ? `<div class="mig-gol">${gol}</div>`
+        ${!randuri.length ? `<div class="stare-goala">${gol}</div>`
           : `<div class="pf-lista">${randuri.join("")}</div>`}`;
       const critic = (r.critic || []).map((x) => `
         <div class="pf-frand"><div class="pf-frand-text">
@@ -1128,7 +1128,7 @@ async function sectiuneaCV(corp, t, zonaM) {
           <div class="pf-frand"><div class="pf-frand-text">
             <div class="pf-frand-nume">${esc(l.data)} \u00b7 ${l.tip === "intrare" ? "+" : "\u2212"}${l.cantitate} \u00b7 ${bani(l.valoare)} lei${l.pret_unitar ? " \u00b7 pret " + l.pret_unitar : ""}</div>
             <div class="pf-frand-sub">sold ${l.sold_cantitate} \u00b7 ${bani(l.sold_valoare)} lei${l.cmp ? " \u00b7 CMP " + l.cmp : ""}${l.document ? " \u00b7 " + esc(l.document) : ""}</div>
-          </div></div>`).join("") || '<div class="mig-gol">Fără mișcări.</div>'}</div>`;
+          </div></div>`).join("") || '<div class="stare-goala">Fără mișcări în fișă.</div>'}</div>`;
     } catch { zona.querySelector("#cv-fisa-zona").innerHTML = `<div class="mig-gol">Nu am putut încărca fisa.</div>`; }
   });
 }
@@ -1192,7 +1192,7 @@ async function ecranStocuri(corp, nav, t) {
     let nirs = [];
     try { const r = await api.get(`/tenants/${t.id}/stocuri/nir?an=${an}&luna=${luna}`); nirs = r.nir || []; } catch {}
     const randuri = !nirs.length
-      ? `<div class="mig-gol">Niciun NIR \u00een luna asta.</div>`
+      ? `<div class="stare-goala">Niciun NIR \u00een luna asta.</div>`
       : nirs.map((n) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
@@ -1327,7 +1327,7 @@ async function ecranCasa(corp, nav, t) {
     const avert = (reg.avertismente || []).map((a) =>
       `<div class="mig-gol" style="margin-bottom:6px">${esc(a.mesaj || a.cod || "")}${a.temei ? " \u00b7 " + esc(a.temei) : ""}</div>`).join("");
     const randuri = !(reg.operatiuni || []).length
-      ? `<div class="mig-gol">Nicio opera\u021biune \u00een luna asta.</div>`
+      ? `<div class="stare-goala">Nicio opera\u021biune \u00een luna asta.</div>`
       : reg.operatiuni.map((o) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
@@ -1464,7 +1464,7 @@ async function ecranBanca(corp, nav, t) {
   }
 
   function randeaza(linii) {
-    if (!linii.length) { zonaLista.innerHTML = `<div class="mig-gol">Nicio linie de extras. Încarcă un fișier.</div>`; return; }
+    if (!linii.length) { zonaLista.innerHTML = `<div class="stare-goala">Nicio linie de extras. Încarcă un fișier.</div>`; return; }
     zonaLista.innerHTML = `<div class="pf-lista">${linii.map((l) => `
       <div class="pf-frand">
         <div class="pf-frand-text">
@@ -1517,7 +1517,7 @@ async function ecranBanca(corp, nav, t) {
       const r = await api.get(`/tenants/${t.id}/banca/reconciliere/facturi-deschise`);
       facturi = (r.facturi || []).filter((f) => f.directie === (l.tip === "incasare" ? "emisa" : "primita"));
     } catch { zonaMesaj.innerHTML = `<div class="mig-gol">Nu am putut încărca facturile.</div>`; return; }
-    if (!facturi.length) { zonaMesaj.innerHTML = `<div class="mig-gol">Nicio factura deschisa pe aceasta directie.</div>`; return; }
+    if (!facturi.length) { zonaMesaj.innerHTML = `<div class="stare-goala">Nicio factura deschisa pe aceasta directie.</div>`; return; }
     zonaMesaj.innerHTML = `
       <div style="display:block">
         <div class="pf-frand-nume">Alege facturile pentru linia din ${esc(l.data)} \u00b7 ${bani(l.suma)} lei</div>
@@ -1691,7 +1691,7 @@ async function ecranJurnal(corp, nav, t) {
     const notaNoua = { id: "nou", data: `${an}-${String(luna).padStart(2,"0")}-01`, descriere: "", linii: [{ debit: "", credit: "", suma: 0 }] };
     const randuri = (inEditare === "nou" ? editor(notaNoua) : "") +
       (!note.length
-        ? (inEditare === "nou" ? "" : `<div class="mig-gol">Nicio not\u0103 \u00een luna asta.</div>`)
+        ? (inEditare === "nou" ? "" : `<div class="stare-goala">Nicio not\u0103 \u00een luna asta.</div>`)
         : note.map(rand).join(""));
     const ciorne = note.filter((n) => n.status === "ciorna").length;
     corp.innerHTML = `
@@ -1821,7 +1821,7 @@ async function ecranBonuri(corp, nav, t) {
       return;
     }
     const itemi = !docs.length
-      ? `<div class="mig-gol">Niciun document de verificat. Clienții pozează, aici certifici.</div>`
+      ? `<div class="stare-goala">Niciun document de verificat. Clienții pozează, aici certifici.</div>`
       : docs.map((b, i) => `
         <button class="acces-card meniu-card pf-frand" data-doc="${i}" style="width:100%;text-align:left">
           <b>${b.tip === "chitanta" ? "Chitanță" : "Bon fiscal"}</b> · ${b.comerciant || "emitent necitit"}
@@ -2105,7 +2105,7 @@ async function ecranRapoarte(corp, nav, t) {
             <td class="fd-td-num"><b>${bani(s.decontat)}</b></td>
             <td class="fd-td-num"><b>${bani(s.sold)}</b></td><td></td></tr>
         </tbody>
-      </table>` : `<div class="mig-gol">Nicio factură pentru acest partener în perioadă.</div>`;
+      </table>` : `<div class="stare-goala">Nicio factură pentru acest partener în perioadă.</div>`;
   };
 
   const deseneaza = async () => {
@@ -2148,7 +2148,7 @@ async function ecranRapoarte(corp, nav, t) {
             <tr><td colspan="3"><b>Total</b></td>
               <td class="fd-td-num"><b>${bani(v.total_net)}</b></td></tr>
           </tbody>
-        </table>` : `<div class="mig-gol">Nicio vânzare în perioadă.</div>`}
+        </table>` : `<div class="stare-goala">Nicio vânzare în perioadă.</div>`}
 
       <h3 class="pf-subtitlu">Fișă client/furnizor</h3>
       <p><select id="r-fisa-sel" class="camp-input" style="max-width:360px">
@@ -2166,7 +2166,7 @@ async function ecranRapoarte(corp, nav, t) {
             <button class="buton-secundar" data-incarca="${vr.id}">Încarcă</button>
             <button class="buton-secundar" data-sterge="${vr.id}">Șterge</button>
           </div>
-        </div>`).join("")}</div>` : `<div class="mig-gol">Nicio variantă salvată încă.</div>`}
+        </div>`).join("")}</div>` : `<div class="stare-goala">Nicio variantă salvată încă.</div>`}
       <p style="margin-top:10px">
         <input class="camp-input" id="r-var-nume" aria-label="Nume variantă" placeholder="Nume variantă (ex. Anul curent, client X)" style="max-width:320px" maxlength="80" autocomplete="off">
         <button class="buton-primar" id="r-var-salveaza" style="margin-left:6px">Salvează varianta curentă</button>

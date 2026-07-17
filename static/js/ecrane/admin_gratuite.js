@@ -18,7 +18,7 @@ async function randeaza(corp, nav) {
   if (!conturi.length) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Conturi gratuite</h2>
-      <div class="mig-gol">Niciun cont gratuit încă.</div>`;
+      <div class="stare-goala">Niciun cont gratuit încă.</div>`;
     return;
   }
   const randuri = conturi.map((c, i) => {

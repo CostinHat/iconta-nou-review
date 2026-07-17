@@ -31,7 +31,7 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info"]}
+                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -64,6 +64,15 @@ for nume, t in fisiere.items():
             rap["input_contrast"].append((nume, i, "", lin.strip()[:66]))
         if re.search(r'\balert\(|(?<!confirma)\bconfirm\(', lin):
             rap["dialog_browser"].append((nume, i, "", lin.strip()[:66]))
+        # STARE_GOALA (cap.6 v2.13): starea goala = lista cu 0 randuri, clasa canonica .stare-goala
+        # (gol + cauza + iesire). Clasele moarte cap-gol/sa-gol sunt interzise. Fundatura = negatie
+        # bara (un singur cuvant, fara cauza/iesire) intr-o .stare-goala. NOTA: .mig-gol NU se
+        # interzice inca aici - utilizarile ramase sunt mesaje de eroare din catch (datorie DE_FACUT
+        # -> arataMesaj); interdictia lui totala se adauga cand se inchide acea tema.
+        if re.search(r'class="(cap-gol|sa-gol)"', lin):
+            rap["stare_goala"].append((nume, i, "clasa-moarta", lin.strip()[:66]))
+        if re.search(r'class="stare-goala[^"]*">\s*(Niciun?|Nicio|Nimic)\s+\w+\.?\s*</', lin):
+            rap["stare_goala"].append((nume, i, "fundatura", lin.strip()[:66]))
         # CARD_INLINE (cap.2a): card deschis inline in corpul panoului in loc de nav.deschide.
         # Semnatura interzisa: randeazaMeniu*(continut,...) sau handler .cab-card care scrie in continut.
         if re.search(r'randeazaMeniu\w+\(\s*continut\b', lin):

@@ -284,7 +284,7 @@ async function ecranDeclaratii(corp, nav) {
   let corpuri = err
     ? `<p class="msg-eroare">${err.mesaj || "Nu am putut încărca declarațiile."}</p>`
     : !lista.length
-    ? `<div class="mig-gol">Nicio declarație depusă încă.</div>`
+    ? `<div class="stare-goala">Nicio declarație depusă încă.</div>`
     : lista.map((d) => `
       <div class="pf-frand">
         <div class="pf-frand-text">
@@ -315,7 +315,7 @@ async function randeazaSolicitari(corp, nav) {
   } catch (e) { err = e; }
   let firHtml = err
     ? '<p class="msg-eroare">' + (err.mesaj || "Nu am putut încărca mesajele.") + '</p>'
-    : '<div class="mig-gol">Niciun mesaj încă.</div>';
+    : '<div class="stare-goala">Niciun mesaj încă.</div>';
   if (lista.length) {
     firHtml = lista.map((s) => {
       const cine = s.autor_rol === "cabinet" ? "Contabil" : "Tu";
@@ -369,7 +369,7 @@ async function ecranPovestea(corp, nav) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Povestea lunii</h2>
       <p class="pf-intro">Raportul lunar de la contabil.</p>
-      <div class="mig-gol">Încă nu ai primit niciun raport lunar.</div>`;
+      <div class="stare-goala">Încă nu ai primit niciun raport lunar.</div>`;
     return;
   }
   const fmtDif = (p) => {
@@ -479,7 +479,7 @@ async function ecranDocumente(corp, nav) {
     if (err) { corp.innerHTML = `<h2 class="pf-titlu">Balanțe lunare</h2><p class="msg-eroare">${err.mesaj || "Nu am putut încărca lista."}</p>`; return; }
     const numeLuni = ["ianuarie","februarie","martie","aprilie","mai","iunie","iulie","august","septembrie","octombrie","noiembrie","decembrie"];
     const corpuri = !luni.length
-      ? `<div class="mig-gol">Nicio lună cu date contabile încă.</div>`
+      ? `<div class="stare-goala">Nicio lună cu date contabile încă.</div>`
       : luni.map((iso) => {
         const [an, ll] = iso.split("-");
         return `
@@ -520,7 +520,7 @@ async function ecranDocumente(corp, nav) {
     if (err) { corp.innerHTML = `<h2 class="pf-titlu">Declarații depuse</h2><p class="msg-eroare">${err.mesaj || "Nu am putut încărca lista."}</p>`; return; }
     corp.innerHTML = `
       <h2 class="pf-titlu">Declarații depuse</h2>
-      <div class="pf-lista zebra-lista">${!decl.length ? '<div class="mig-gol">Nicio declarație depusă încă.</div>' : decl.map((d) => `
+      <div class="pf-lista zebra-lista">${!decl.length ? '<div class="stare-goala">Nicio declarație depusă încă.</div>' : decl.map((d) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${d.tip} · ${String(d.luna).padStart(2,"0")}/${d.an}</div>

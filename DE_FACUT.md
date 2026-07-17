@@ -66,6 +66,16 @@ starea reverificata azi:
   (systemd 8010 REZOLVAT 13.07 — arhivat, vezi ISTORIC:17 "iconta-nou.service enabled".)
 
 ## 5. Iterații viitoare (nu urgente)
+- **Mesaje de eroare cu `.mig-gol` -> `arataMesaj` (~50 apariții)** (adăugat 17.07): la migrarea
+  stărilor goale la `.stare-goala` (v2.13) au ieșit la iveală ~50 de utilizări `.mig-gol` care NU
+  sunt stări goale, ci mesaje de stare după acțiune — blocuri `catch` (`${e.mesaj}`), erori de
+  încărcare ("Nu am putut încărca X"), validări ("Câmp obligatoriu"), loading ("Se validează..."),
+  în rip_ecran.js, cabinet.js, etransport_ecran.js, operatiuni_ecran.js, facturi_ecran.js,
+  firme.js (majoritatea), asistenti.js, migrare.js. Temei: DESIGN_SYSTEM cap.6 le cere prin
+  `arataMesaj(el, txt, tip)` (tipuri: eroare/avert/info/ok) — sunt feedback tranzitoriu, nu conținut
+  de ecran. Nu s-au atins în trecerea stărilor goale (scop separat, decis 17.07). Temă proprie:
+  fiecare `catch` care scrie `.mig-gol` în zonă -> `arataMesaj(zona, mesaj, "eroare")`. Verificare
+  funcțională reală per ecran (căi de eroare greu de atins), nu doar `node --check`.
 - Cod 10 CM (reducere timp muncă, art. 19) — INTEGRAT, nu mai e iterație viitoare (corectat 17.07:
   nota veche "exclus din dropdown, `calcul_cm_cod10` neintegrat" era contrazisă de cod). Dovadă:
   `calcul_cm_cod10` definit (salarizare.py:208) + apelat în flux real (salariati_api.py:222) + în

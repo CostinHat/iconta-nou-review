@@ -82,7 +82,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     const maiSunt = lista.length > afisate;
     if (maiSunt) lista = lista.slice(0, afisate);
     let corpuri = !lista.length
-      ? `<div class="mig-gol">Nicio factur\u0103 \u00een luna aceasta.</div>`
+      ? `<div class="stare-goala">Nicio factur\u0103 \u00een luna aceasta.</div>`
       : lista.map((f) => {
           const suma = f.total != null ? bani(f.total) + " " + (f.moneda || "lei") : "";
           const dir = dirEticheta(f.directie);
@@ -143,7 +143,7 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
 
   const aziISO = new Date().toISOString().slice(0, 10);
   const randFacturi = () => {
-    if (!(d.linii || []).length) return `<div class="mig-gol">Nicio factură emisă neîncasată.</div>`;
+    if (!(d.linii || []).length) return `<div class="stare-goala">Nicio factură emisă neîncasată.</div>`;
     return d.linii.map((l) => {
       const s = SEM[l.stare] || SEM.fara_scadenta;
       const sub = l.stare === "restanta" ? `${-l.zile} zile întârziere`
@@ -171,7 +171,7 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
   };
 
   const randClienti = () => {
-    if (!(d.clienti || []).length) return `<div class="mig-gol">Niciun client cu facturi neîncasate.</div>`;
+    if (!(d.clienti || []).length) return `<div class="stare-goala">Niciun client cu facturi neîncasate.</div>`;
     return d.clienti.map((c) => {
       const rest = Number(c.restant) > 0 ? `<span style="color:var(--rosu-semafor)">${bani(c.restant)} restant</span> · ` : "";
       const fara = c.email ? "" : " · fără email";
@@ -741,7 +741,7 @@ async function listaRecurente(corp, nav, tenantId, opt) {
 function randareRecurente(corp, nav, tenantId, opt, sabloane) {
   const inapoiMeniu = () => meniuFacturi(corp, nav, tenantId, opt);
   const corpuri = !sabloane.length
-    ? `<div class="mig-gol">Niciun \u0219ablon \u00eenc\u0103.</div>`
+    ? `<div class="stare-goala">Niciun \u0219ablon \u00eenc\u0103.</div>`
     : sabloane.map((s) => {
         const suma = (s.linii || []).reduce((t, l) => t + (Number(l.cantitate) || 0) * (Number(l.pret_unitar) || 0), 0);
         const sumaTxt = bani(suma) + " " + (s.moneda || "RON");

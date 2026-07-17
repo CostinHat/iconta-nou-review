@@ -108,7 +108,7 @@ export async function randeazaActivitateCabinet(corp, nav) {
           <span class="ac-decl">DECLARAȚIE</span>
           <span class="ac-firma">FIRMĂ</span>
         </div>
-        ${ev.length ? randuriJurnal : `<div class="mig-gol">Nicio activitate în perioada aleasă.</div>`}
+        ${ev.length ? randuriJurnal : `<div class="stare-goala">Nicio activitate în perioada aleasă.</div>`}
       </div>
     `;
 

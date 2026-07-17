@@ -49,7 +49,7 @@ function randeazaLista(corp, tenantId, lista, reincarca) {
   const zona = corp.querySelector("#pr-lista");
   if (!zona) return;
   if (!lista.length) {
-    zona.innerHTML = `<div class="mig-gol">Niciun produs \u00eenc\u0103. Adaug\u0103 primul produs — cota se completeaz\u0103 automat.</div>`;
+    zona.innerHTML = `<div class="stare-goala">Niciun produs \u00eenc\u0103. Adaug\u0103 primul produs — cota se completeaz\u0103 automat.</div>`;
     return;
   }
   zona.innerHTML = lista.map((p) => `

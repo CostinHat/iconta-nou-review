@@ -37,7 +37,7 @@ export async function randeazaControl(corp, nav) {
 
   const lista = corp.querySelector("#cf-lista");
   if (firme.length === 0) {
-    lista.innerHTML = `<div class="mig-gol">Nicio firmă în portofoliu.</div>`;
+    lista.innerHTML = `<div class="stare-goala">Nicio firmă în portofoliu încă.</div>`;
     return;
   }
   // sortare: rosu intai, apoi galben, apoi verde

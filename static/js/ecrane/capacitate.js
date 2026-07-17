@@ -40,7 +40,7 @@ export async function randeazaCapacitate(corp, nav) {
   // --- 2) PE ASISTENT ---
   let randuriAsist = "";
   if (!asistenti.length) {
-    randuriAsist = `<tr><td colspan="5" class="cap-gol">Niciun procesator cu competențe.</td></tr>`;
+    randuriAsist = `<tr><td colspan="5" class="stare-goala">Niciun procesator cu competențe.</td></tr>`;
   } else {
     asistenti.forEach((a) => {
       const pct = (a.pct_acceptate === null || a.pct_acceptate === undefined)
@@ -73,7 +73,7 @@ export async function randeazaCapacitate(corp, nav) {
   // --- 3) TIMP ---
   let randuriTimp = "";
   if (!timp.pe_tip.length) {
-    randuriTimp = `<tr><td colspan="3" class="cap-gol">Încă nu sunt declarații cronometrate.</td></tr>`;
+    randuriTimp = `<tr><td colspan="3" class="stare-goala">Încă nu sunt declarații cronometrate.</td></tr>`;
   } else {
     timp.pe_tip.forEach((t) => {
       randuriTimp += `

@@ -31,7 +31,7 @@ function grafic(istoric, camp, titlu, culoare, maxFix) {
   const valori = istoric.map((r) => (r[camp] == null ? null : Number(r[camp])));
   const puncteValide = valori.filter((v) => v != null);
   if (!puncteValide.length) {
-    return `<div class="pov-card"><div class="tip-desc" style="margin-bottom:6px">${titlu}</div><div class="mig-gol">Fără date încă.</div></div>`;
+    return `<div class="pov-card"><div class="tip-desc" style="margin-bottom:6px">${titlu}</div><div class="stare-goala">Fără date încă. Se umple când apar primele evenimente.</div></div>`;
   }
   const W = 560, H = 120, PAD = 8;
   const maxVal = maxFix != null ? maxFix : Math.max(...puncteValide, 1);
@@ -129,7 +129,7 @@ export async function randeazaAdminSanatate(corp, nav) {
               <div class="pf-frand-sub">status ${(e.detalii && e.detalii.status) || "?"} · ${dataRo(e.created_at, "cu_ora")}</div>
             </div>
           </div>`).join("")
-        : `<div class="mig-gol">Nicio eroare în ultimele 24h.</div>`}
+        : `<div class="stare-goala">Nicio eroare în ultimele 24h.</div>`}
     </div>
 
     <h3 class="cap-titlu">Evoluție (ultimele 24h)</h3>

@@ -35,7 +35,7 @@ export async function randeazaTermene(corp, nav) {
   `;
   const lista = corp.querySelector("#term-lista");
   if (grupuri.length === 0) {
-    lista.innerHTML = `<div class="mig-gol">Nicio scadență în următoarele 60 de zile.</div>`;
+    lista.innerHTML = `<div class="stare-goala">Nicio scadență în următoarele 60 de zile.</div>`;
     return;
   }
 

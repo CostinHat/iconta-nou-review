@@ -23,7 +23,7 @@ async function randeaza(corp, nav) {
   if (!cabinete.length) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Cabinete</h2>
-      <div class="mig-gol">Niciun cabinet încă.</div>`;
+      <div class="stare-goala">Niciun cabinet încă. Apar automat aici când se înregistrează primul (self-service).</div>`;
     return;
   }
 
@@ -116,7 +116,7 @@ async function deschideTimeline(corp, cabinet) {
     activitate = (r && r.activitate) || [];
   } catch {}
   if (!activitate.length) {
-    zona.innerHTML = `<div class="mig-gol">Niciun eveniment înregistrat încă.</div>`;
+    zona.innerHTML = `<div class="stare-goala">Niciun eveniment înregistrat încă. Apar aici pe măsură ce cabinetele lucrează.</div>`;
     return;
   }
   // [aa_grupe] DS cap.2: nimic vizibil decat la selectie - jurnal grupat pe categorii, butoane toggle

@@ -37,7 +37,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     } catch {}
 
     const randuriLista = !lista.length
-      ? `<div class="mig-gol">Niciun concediu medical \u00eenregistrat.</div>`
+      ? `<div class="stare-goala">Niciun concediu medical \u00eenregistrat.</div>`
       : lista.map((c) => `
         <div class="pf-frand">
           <div class="pf-frand-text">

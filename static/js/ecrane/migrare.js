@@ -335,7 +335,7 @@ async function wizardVector(corp, nav) {
   `;
   const lista = corp.querySelector("#mig-firme");
   if (firme.length === 0) {
-    lista.innerHTML = `<div class="mig-gol">Nicio firm\u0103 \u00een portofoliu. Import\u0103 \u00eent\u00e2i firmele (stratul 1).</div>`;
+    lista.innerHTML = `<div class="stare-goala">Nicio firm\u0103 \u00een portofoliu. Import\u0103 \u00eent\u00e2i firmele (stratul 1).</div>`;
   }
   firme.forEach((f) => {
     const rand = document.createElement("button");
@@ -478,7 +478,7 @@ async function wizardSolduri(corp, nav) {
 
   const lista = corp.querySelector("#mig-firme");
   if (firme.length === 0) {
-    lista.innerHTML = `<div class="mig-gol">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
+    lista.innerHTML = `<div class="stare-goala">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
   }
   firme.forEach((f) => {
     const rand = document.createElement("button");
@@ -604,7 +604,7 @@ async function wizardParteneri(corp, nav) {
 
   const lista = corp.querySelector("#mig-firme");
   if (firme.length === 0) {
-    lista.innerHTML = `<div class="mig-gol">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
+    lista.innerHTML = `<div class="stare-goala">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
   }
   firme.forEach((f) => {
     const rand = document.createElement("button");
@@ -741,7 +741,7 @@ async function wizardSalariati(corp, nav) {
 
   const lista = corp.querySelector("#mig-firme");
   if (firme.length === 0) {
-    lista.innerHTML = `<div class="mig-gol">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
+    lista.innerHTML = `<div class="stare-goala">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
   }
   firme.forEach((f) => {
     const rand = document.createElement("button");
@@ -876,7 +876,7 @@ async function wizardAsociati(corp, nav) {
 
   const lista = corp.querySelector("#mig-firme");
   if (firme.length === 0) {
-    lista.innerHTML = `<div class="mig-gol">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
+    lista.innerHTML = `<div class="stare-goala">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
   }
   firme.forEach((f) => {
     const rand = document.createElement("button");
@@ -1010,7 +1010,7 @@ async function wizardMijloace(corp, nav) {
 
   const lista = corp.querySelector("#mig-firme");
   if (firme.length === 0) {
-    lista.innerHTML = `<div class="mig-gol">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
+    lista.innerHTML = `<div class="stare-goala">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
   }
   firme.forEach((f) => {
     const rand = document.createElement("button");
@@ -1146,7 +1146,7 @@ async function wizardIstoric(corp, nav) {
 
   const lista = corp.querySelector("#mig-firme");
   if (firme.length === 0) {
-    lista.innerHTML = `<div class="mig-gol">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
+    lista.innerHTML = `<div class="stare-goala">Nicio firmă în portofoliu. Importă întâi firmele (stratul 1).</div>`;
   }
   firme.forEach((f) => {
     const rand = document.createElement("button");
@@ -1277,7 +1277,7 @@ async function wizardPlanConturi(corp, nav) {
   `;
   const lista = corp.querySelector("#mig-firme");
   if (firme.length === 0) {
-    lista.innerHTML = `<div class="mig-gol">Nicio firm\u0103 \u00een portofoliu. Import\u0103 \u00eent\u00e2i firmele (stratul 1).</div>`;
+    lista.innerHTML = `<div class="stare-goala">Nicio firm\u0103 \u00een portofoliu. Import\u0103 \u00eent\u00e2i firmele (stratul 1).</div>`;
   }
   firme.forEach((f) => {
     const rand = document.createElement("button");
@@ -1327,7 +1327,7 @@ function importPlanConturiFirma(corp, nav, firma) {
               <div class="mig-frand-sub">${c.tip || ""}</div>
             </div>
           </div>`).join("")
-        : `<div class="mig-gol">Niciun cont g\u0103sit.</div>`;
+        : `<div class="stare-goala">Niciun cont g\u0103sit cu acest termen.</div>`;
     } catch {
       rezZona.innerHTML = `<div class="mig-gol">Eroare la c\u0103utare.</div>`;
     }

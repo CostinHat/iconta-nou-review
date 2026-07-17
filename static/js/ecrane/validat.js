@@ -47,7 +47,7 @@ export async function randeazaValidat(corp, nav) {
   const z1 = corp.querySelector("#val-deValidat");
   const z2 = corp.querySelector("#val-deDepus");
   if (deValidat.length === 0 && deDepus.length === 0) {
-    z1.innerHTML = `<div class="mig-gol">Nimic de validat. Coada e goală.</div>`;
+    z1.innerHTML = `<div class="stare-goala">Nimic de validat. Coada e goală.</div>`;
     return;
   }
   if (deValidat.length) {

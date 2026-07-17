@@ -39,7 +39,7 @@ export async function randeazaTipare(corp, nav) {
   // --- 1) MOTIVE ---
   let randMotive = "";
   if (!motive.length) {
-    randMotive = `<tr><td colspan="2" class="cap-gol">Nicio respingere înregistrată.</td></tr>`;
+    randMotive = `<tr><td colspan="2" class="stare-goala">Nicio respingere înregistrată.</td></tr>`;
   } else {
     motive.forEach((m) => {
       randMotive += `<tr>
@@ -62,7 +62,7 @@ export async function randeazaTipare(corp, nav) {
   let randTipuri = "";
   const tipuriCuResp = tipuri.filter((t) => t.respinse > 0);
   if (!tipuriCuResp.length) {
-    randTipuri = `<tr><td colspan="4" class="cap-gol">Niciun tip cu respingeri.</td></tr>`;
+    randTipuri = `<tr><td colspan="4" class="stare-goala">Niciun tip cu respingeri.</td></tr>`;
   } else {
     tipuriCuResp.forEach((t) => {
       randTipuri += `<tr>
@@ -89,7 +89,7 @@ export async function randeazaTipare(corp, nav) {
   // --- 3) FIRME ---
   let randFirme = "";
   if (!firme.length) {
-    randFirme = `<tr><td colspan="3" class="cap-gol">Nicio firmă cu respingeri.</td></tr>`;
+    randFirme = `<tr><td colspan="3" class="stare-goala">Nicio firmă cu respingeri.</td></tr>`;
   } else {
     firme.forEach((f) => {
       const cui = f.cui ? ` <span class="cap-rol">${f.cui}</span>` : "";
