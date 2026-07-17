@@ -763,7 +763,8 @@ async function sectiuneaCV(corp, t, zonaM) {
   const zona = corp.querySelector("#cv-zona");
   let arts = [];
   try { const r = await api.get(`/tenants/${t.id}/stocuri/articole`); arts = r.articole || []; } catch {}
-  const azi = new Date().toISOString().slice(0, 10);
+  let locInit = [];
+  try { const r = await api.get(`/tenants/${t.id}/stocuri/locatii`); locInit = r.locatii || []; } catch {}
   zona.innerHTML = `
     <div style="display:block;margin-bottom:14px">
       <div class="pf-frand-nume" style="margin-bottom:8px">Fi\u0219e de magazie (cantitativ-valoric, CMP)</div>
@@ -778,6 +779,8 @@ async function sectiuneaCV(corp, t, zonaM) {
         <input type="number" step="0.001" id="cv-cant" class="camp-input" placeholder="cant." aria-label="Cantitate" style="width:90px">
         <input type="number" step="0.0001" id="cv-pret" class="camp-input" placeholder="pret unitar (la intrare)" aria-label="Pre\u021b unitar la intrare" style="width:170px">
         <input type="text" id="cv-doc" class="camp-input" placeholder="document" aria-label="Document" style="width:130px">
+        <input type="text" id="cv-loc" class="camp-input" placeholder="locație" aria-label="Locație" list="cv-loc-list" style="width:120px">
+        <datalist id="cv-loc-list">${[...new Set((locInit || []).map((x) => x.locatie).filter((l) => l && l !== "(nespecificat)"))].map((l) => `<option value="${esc(l)}">`).join("")}</datalist>
       </div>
       <p>
         <button class="buton-primar" id="cv-intrare">Intrare</button>
@@ -786,7 +789,11 @@ async function sectiuneaCV(corp, t, zonaM) {
       </p>
       <div style="margin-top:10px">
         <button class="buton-secundar" id="cv-inv">Inventar (stoc faptic)</button>
+        <button class="buton-secundar" id="cv-loc-vezi" style="margin-left:6px">Stoc pe locații</button>
+        <button class="buton-secundar" id="cv-transfer-t" style="margin-left:6px">Transfer între locații</button>
+        <button class="buton-secundar" id="cv-recl-t" style="margin-left:6px">Reclasificare tip produs</button>
         <div id="cv-inv-zona" style="margin-top:8px"></div>
+        <div id="cv-loc-zona" style="margin-top:8px"></div>
       </div>
       <div id="cv-fisa-zona"></div>
       <div class="pf-card" style="margin-top:14px">
@@ -806,7 +813,8 @@ async function sectiuneaCV(corp, t, zonaM) {
   zona.querySelector("#cv-intrare").addEventListener("click", async () => {
     try {
       const corpReq = { data: val("#cv-data"), cantitate: parseFloat(val("#cv-cant")) || 0,
-        pret_unitar: parseFloat(val("#cv-pret")) || 0, document: val("#cv-doc") || null };
+        pret_unitar: parseFloat(val("#cv-pret")) || 0, document: val("#cv-doc") || null,
+        locatie: val("#cv-loc") || null };
       if (val("#cv-art")) corpReq.articol_id = parseInt(val("#cv-art"));
       else corpReq.denumire = val("#cv-den").trim();
       if (!corpReq.articol_id && !corpReq.denumire) { zonaM.innerHTML = `<div class="mig-gol">Alege articolul sau da-i un nume.</div>`; return; }
@@ -820,7 +828,8 @@ async function sectiuneaCV(corp, t, zonaM) {
     try {
       const r = await api.post(`/tenants/${t.id}/stocuri/iesire`, {
         articol_id: parseInt(val("#cv-art")), data: val("#cv-data"),
-        cantitate: parseFloat(val("#cv-cant")) || 0, document: val("#cv-doc") || null });
+        cantitate: parseFloat(val("#cv-cant")) || 0, document: val("#cv-doc") || null,
+        locatie: val("#cv-loc") || null });
       zonaM.innerHTML = `<p class="pf-intro">Iesire la CMP ${r.cmp} \u00b7 ${bani(r.valoare)} lei \u00b7 nota ${esc(r.nota)} (ciorna).</p>`;
       sectiuneaCV(corp, t, zonaM);
     } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
@@ -908,6 +917,72 @@ async function sectiuneaCV(corp, t, zonaM) {
           : `${esc(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${x.diferenta} \u00b7 ${bani(x.valoare)} lei \u00b7 nota ${esc(x.nota)} (ciorna)`).join("<br>")}</p>`;
         sectiuneaCV(corp, t, zonaM);
       } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
+    });
+  });
+  // [F138 Tier 1] Locatii descriptive + transfer (CMP global) + reclasificare tip produs
+  const optArts = (arts || []).map((a) => `<option value="${a.id}">${esc(a.denumire)} · stoc ${a.stoc} ${esc(a.um)}</option>`).join("");
+  const locZona = zona.querySelector("#cv-loc-zona");
+  zona.querySelector("#cv-loc-vezi").addEventListener("click", async () => {
+    try {
+      const r = await api.get(`/tenants/${t.id}/stocuri/locatii`);
+      const l = r.locatii || [];
+      locZona.innerHTML = !l.length ? `<div class="mig-gol">Nicio locație cu stoc.</div>`
+        : `<div class="pf-frand-nume" style="margin:4px 0">Stoc pe locații (cantitativ; CMP rămâne global)</div>
+           <div class="pf-lista">${l.map((x) => `
+             <div class="pf-frand"><div class="pf-frand-text">
+               <div class="pf-frand-nume">${esc(x.denumire)} · ${esc(x.locatie)}</div>
+               <div class="pf-frand-sub">${x.cantitate} ${esc(x.um)}</div>
+             </div></div>`).join("")}</div>`;
+    } catch (e) { locZona.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
+  });
+  zona.querySelector("#cv-transfer-t").addEventListener("click", () => {
+    locZona.innerHTML = `
+      <div class="pf-card">
+        <div class="pf-frand-nume" style="margin-bottom:6px">Transfer între locații (fără notă contabilă, CMP global)</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <select id="tr-art" class="camp-input" style="min-width:200px">${optArts}</select>
+          <input type="text" id="tr-din" class="camp-input" placeholder="din locație" aria-label="Din locație" list="cv-loc-list" style="width:130px">
+          <input type="text" id="tr-in" class="camp-input" placeholder="în locație" aria-label="În locație" list="cv-loc-list" style="width:130px">
+          <input type="number" step="0.001" id="tr-cant" class="camp-input" placeholder="cant." aria-label="Cantitate" style="width:90px">
+          <input type="date" id="tr-data" class="camp-input">
+          <button class="buton-primar" id="tr-ok">Transferă</button>
+        </div>
+      </div>`;
+    locZona.querySelector("#tr-ok").addEventListener("click", async () => {
+      const g = (id) => locZona.querySelector(id).value;
+      try {
+        const r = await api.post(`/tenants/${t.id}/stocuri/transfer`, {
+          articol_id: parseInt(g("#tr-art")), din_locatie: g("#tr-din") || null,
+          in_locatie: g("#tr-in") || null, cantitate: parseFloat(g("#tr-cant")) || 0, data: g("#tr-data") });
+        arataMesaj(zonaM, `Transfer ${r.cantitate} din „${esc(r.din_locatie)}” în „${esc(r.in_locatie)}” · ${bani(r.valoare)} lei la CMP ${r.cmp}.`, "ok");
+        sectiuneaCV(corp, t, zonaM);
+      } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la transfer.", "eroare"); }
+    });
+  });
+  zona.querySelector("#cv-recl-t").addEventListener("click", () => {
+    locZona.innerHTML = `
+      <div class="pf-card">
+        <div class="pf-frand-nume" style="margin-bottom:6px">Reclasificare tip produs (ex. materie primă 301 → marfă 371)</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <select id="rc-art" class="camp-input" style="min-width:200px">${optArts}</select>
+          <input type="text" id="rc-cont" class="camp-input" placeholder="cont stoc nou (ex. 371)" aria-label="Cont stoc nou" style="width:150px">
+          <input type="text" id="rc-chelt" class="camp-input" placeholder="cont cheltuială nou (ex. 607)" aria-label="Cont cheltuială nou" style="width:170px">
+          <input type="date" id="rc-data" class="camp-input">
+          <button class="buton-primar" id="rc-ok">Reclasifică</button>
+        </div>
+        <div class="camp-eticheta" style="margin-top:4px">Emite notă ciornă de reclasificare a soldului (cont nou = cont vechi) la CMP curent. Cantitatea nu se modifică.</div>
+      </div>`;
+    locZona.querySelector("#rc-ok").addEventListener("click", async () => {
+      const g = (id) => locZona.querySelector(id).value;
+      try {
+        const r = await api.post(`/tenants/${t.id}/stocuri/reclasificare`, {
+          articol_id: parseInt(g("#rc-art")), cont_stoc_nou: g("#rc-cont").trim(),
+          cont_cheltuiala_nou: g("#rc-chelt").trim() || null, data: g("#rc-data") });
+        arataMesaj(zonaM, r.nota
+          ? `Reclasificat „${esc(r.denumire)}” din ${esc(r.cont_stoc_vechi)} în ${esc(r.cont_stoc)} · notă ${esc(r.nota)} ${bani(r.valoare_reclasificata)} lei (ciornă).`
+          : `Reclasificat „${esc(r.denumire)}” în ${esc(r.cont_stoc)} (fără sold de reclasificat).`, "ok");
+        sectiuneaCV(corp, t, zonaM);
+      } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la reclasificare.", "eroare"); }
     });
   });
   zona.querySelector("#cv-fisa").addEventListener("click", async () => {

@@ -4874,6 +4874,46 @@ def cv_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
         return _s.inventar(conn, schema, corp)
 
 
+@app.get("/tenants/{tenant_id}/stocuri/locatii")
+def cv_locatii(tenant_id: int, articol_id: int = None, ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return {"locatii": _s.stoc_pe_locatii(conn, schema, articol_id)}
+
+
+@app.post("/tenants/{tenant_id}/stocuri/transfer")
+def cv_transfer(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _s.transfer(conn, schema, corp)
+    if rez is None:
+        raise HTTPException(404, "articol inexistent")
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+
+@app.post("/tenants/{tenant_id}/stocuri/reclasificare")
+def cv_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _s.reclasificare(conn, schema, corp)
+    if rez is None:
+        raise HTTPException(404, "articol inexistent")
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+
 # --- D112 ---
 
 @app.get("/tenants/{tenant_id}/s1005-xml")

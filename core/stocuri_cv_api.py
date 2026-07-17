@@ -66,9 +66,10 @@ def intrare(conn, schema, corp):
             return {"eroare": "cantitate/pret invalide"}
         val = (cant * pret).quantize(Decimal("0.01"))
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc
-                        (articol_id, data, tip, cantitate, pret_unitar, valoare, document)
-                        VALUES (%s,%s,'intrare',%s,%s,%s,%s) RETURNING id""",
-                    (aid, corp["data"], cant, pret, val, corp.get("document")))
+                        (articol_id, data, tip, cantitate, pret_unitar, valoare, document, locatie)
+                        VALUES (%s,%s,'intrare',%s,%s,%s,%s,%s) RETURNING id""",
+                    (aid, corp["data"], cant, pret, val, corp.get("document"),
+                     corp.get("locatie") or None))
         mid = cur.fetchone()["id"]
     conn.commit()
     return {"id": mid, "articol_id": aid, "valoare": str(val)}
@@ -94,10 +95,10 @@ def iesire(conn, schema, corp):
                         (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
                     (iid, a["cont_cheltuiala"], a["cont_stoc"], r["valoare"]))
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc
-                        (articol_id, data, tip, cantitate, valoare, document, inregistrare_id)
-                        VALUES (%s,%s,'iesire',%s,%s,%s,%s) RETURNING id""",
+                        (articol_id, data, tip, cantitate, valoare, document, inregistrare_id, locatie)
+                        VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s) RETURNING id""",
                     (a["id"], corp["data"], Decimal(str(corp["cantitate"])), r["valoare"],
-                     corp.get("document"), iid))
+                     corp.get("document"), iid, corp.get("locatie") or None))
         mid = cur.fetchone()["id"]
     conn.commit()
     return {"id": mid, "cmp": str(r["cmp"]), "valoare": str(r["valoare"]),
@@ -149,3 +150,113 @@ def inventar(conn, schema, corp):
                         "nota": f"{debit}={credit}", "inregistrare_id": iid})
     conn.commit()
     return {"rezultate": rez}
+
+
+def _stoc_locatie(cur, schema, articol_id, locatie):
+    """Cantitatea neta a unui articol la o locatie (intrari - iesiri). Pur cantitativ."""
+    cur.execute(f"""SELECT COALESCE(SUM(CASE WHEN tip='intrare' THEN cantitate
+                    WHEN tip='iesire' THEN -cantitate ELSE 0 END),0) AS q
+                    FROM {schema}.miscari_stoc
+                    WHERE articol_id=%s AND locatie IS NOT DISTINCT FROM %s""",
+                (articol_id, locatie or None))
+    return Decimal(str(cur.fetchone()["q"]))
+
+
+def stoc_pe_locatii(conn, schema, articol_id=None):
+    """Stocul CANTITATIV pe fiecare locatie (F138 Tier 1, eticheta descriptiva).
+    CMP ramane GLOBAL — aici doar cantitati, nu valorizare per locatie (Tier 3 AMANAT)."""
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        q = f"""SELECT m.articol_id, a.denumire, a.um, m.locatie,
+                   SUM(CASE WHEN m.tip='intrare' THEN m.cantitate
+                            WHEN m.tip='iesire' THEN -m.cantitate ELSE 0 END) AS cantitate
+                FROM {schema}.miscari_stoc m JOIN {schema}.articole a ON a.id=m.articol_id"""
+        params = []
+        if articol_id:
+            q += " WHERE m.articol_id=%s"
+            params.append(articol_id)
+        q += """ GROUP BY m.articol_id, a.denumire, a.um, m.locatie
+                 HAVING SUM(CASE WHEN m.tip='intrare' THEN m.cantitate
+                                 WHEN m.tip='iesire' THEN -m.cantitate ELSE 0 END) <> 0
+                 ORDER BY a.denumire, m.locatie NULLS FIRST"""
+        cur.execute(q, params)
+        return [{"articol_id": r["articol_id"], "denumire": r["denumire"], "um": r["um"],
+                 "locatie": r["locatie"] or "(nespecificat)", "cantitate": str(r["cantitate"])}
+                for r in cur.fetchall()]
+
+
+def transfer(conn, schema, corp):
+    """corp: {articol_id, din_locatie, in_locatie, cantitate, data, document?}.
+    Transfer FIZIC intre locatii: iesire din sursa + intrare in destinatie, ambele la
+    CMP-ul GLOBAL curent. NU genereaza nota contabila (nu e consum/achizitie) si e NEUTRU
+    pe CMP si pe D406 (net zero cantitate+valoare). F138 Tier 1."""
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"SELECT * FROM {schema}.articole WHERE id=%s", (corp["articol_id"],))
+        a = cur.fetchone()
+        if not a:
+            return None
+        din = (corp.get("din_locatie") or "").strip() or None
+        catre = (corp.get("in_locatie") or "").strip() or None
+        if din == catre:
+            return {"eroare": "locatia sursa si destinatie sunt identice"}
+        cant = Decimal(str(corp["cantitate"]))
+        if cant <= 0:
+            return {"eroare": "cantitate invalida"}
+        disp = _stoc_locatie(cur, schema, a["id"], din)
+        if cant > disp:
+            return {"eroare": f"transfer {cant} peste stocul {disp} la locatia sursa"}
+        try:
+            r = _m.valoare_iesire(_miscari(cur, schema, a["id"]), None, cant)
+        except ValueError as e:
+            return {"eroare": str(e)}
+        doc = (corp.get("document") or f"transfer {din or '-'}->{catre or '-'}")[:100]
+        cur.execute(f"""INSERT INTO {schema}.miscari_stoc
+                        (articol_id, data, tip, cantitate, valoare, document, locatie)
+                        VALUES (%s,%s,'iesire',%s,%s,%s,%s)""",
+                    (a["id"], corp["data"], cant, r["valoare"], doc, din))
+        cur.execute(f"""INSERT INTO {schema}.miscari_stoc
+                        (articol_id, data, tip, cantitate, pret_unitar, valoare, document, locatie)
+                        VALUES (%s,%s,'intrare',%s,%s,%s,%s,%s)""",
+                    (a["id"], corp["data"], cant, r["cmp"], r["valoare"], doc, catre))
+    conn.commit()
+    return {"articol_id": a["id"], "denumire": a["denumire"], "cantitate": str(cant),
+            "cmp": str(r["cmp"]), "valoare": str(r["valoare"]),
+            "din_locatie": din or "(nespecificat)", "in_locatie": catre or "(nespecificat)"}
+
+
+def reclasificare(conn, schema, corp):
+    """corp: {articol_id, cont_stoc_nou, cont_cheltuiala_nou?, data, document?}.
+    Schimba tipul de produs (ex. materie prima 301 -> marfa 371): actualizeaza conturile
+    articolului si emite nota de reclasificare a soldului la CMP curent
+    (debit cont_stoc_nou = credit cont_stoc_vechi). Cantitatea NU se atinge.
+    Temei: OMFP 1802/2014, functiunea conturilor de stoc. F138 (jumatatea usoara)."""
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"SELECT * FROM {schema}.articole WHERE id=%s", (corp["articol_id"],))
+        a = cur.fetchone()
+        if not a:
+            return None
+        cont_nou = (corp.get("cont_stoc_nou") or "").strip()
+        if not cont_nou:
+            return {"eroare": "cont_stoc_nou lipsa"}
+        if cont_nou == a["cont_stoc"]:
+            return {"eroare": "contul de stoc e neschimbat"}
+        chelt_nou = (corp.get("cont_cheltuiala_nou") or "").strip() or a["cont_cheltuiala"]
+        fisa = _m.fisa_magazie(_miscari(cur, schema, a["id"]))
+        val = Decimal(str(fisa[-1]["sold_valoare"])) if fisa else Decimal("0")
+        iid = None
+        if val > 0:
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
+                            VALUES (%s,%s,'stocuri','ciorna') RETURNING id""",
+                        (corp["data"],
+                         f"Reclasificare {a['denumire']}: {a['cont_stoc']}->{cont_nou}"[:200]))
+            iid = cur.fetchone()["id"]
+            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
+                            (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                        (iid, cont_nou, a["cont_stoc"], val))
+        cur.execute(f"UPDATE {schema}.articole SET cont_stoc=%s, cont_cheltuiala=%s WHERE id=%s",
+                    (cont_nou, chelt_nou, a["id"]))
+    conn.commit()
+    return {"articol_id": a["id"], "denumire": a["denumire"],
+            "cont_stoc_vechi": a["cont_stoc"], "cont_stoc": cont_nou,
+            "cont_cheltuiala": chelt_nou, "valoare_reclasificata": str(val),
+            "nota": (f"{cont_nou}={a['cont_stoc']}" if val > 0 else None),
+            "inregistrare_id": iid}

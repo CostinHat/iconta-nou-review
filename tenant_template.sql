@@ -78,6 +78,8 @@ CREATE TABLE TENANT_PLACEHOLDER.articole (
     um character varying(20) DEFAULT 'buc'::character varying NOT NULL,
     cont_stoc character varying(10) DEFAULT '371'::character varying NOT NULL,
     cont_cheltuiala character varying(10) DEFAULT '607'::character varying NOT NULL,
+    barcode character varying(50),
+    nivel_minim numeric(12,3),
     creat_la timestamp with time zone DEFAULT now() NOT NULL
 );
 
@@ -652,6 +654,7 @@ CREATE TABLE TENANT_PLACEHOLDER.miscari_stoc (
     valoare numeric(12,2) NOT NULL,
     document character varying(100),
     inregistrare_id integer,
+    locatie character varying(100),
     creat_la timestamp with time zone DEFAULT now() NOT NULL
 );
 
@@ -687,6 +690,8 @@ CREATE TABLE TENANT_PLACEHOLDER.nir (
     valoare_vanzare numeric(12,2) DEFAULT 0 NOT NULL,
     adaos_total numeric(12,2) DEFAULT 0 NOT NULL,
     tva_neexigibila numeric(12,2) DEFAULT 0 NOT NULL,
+    transport numeric(12,2) DEFAULT 0 NOT NULL,
+    taxe numeric(12,2) DEFAULT 0 NOT NULL,
     inregistrari_ids jsonb,
     creat_la timestamp with time zone DEFAULT now() NOT NULL
 );
@@ -1532,6 +1537,13 @@ CREATE INDEX idx_rip_status ON TENANT_PLACEHOLDER.rip_operatiuni USING btree (st
 --
 
 CREATE INDEX produse_denumire_idx ON TENANT_PLACEHOLDER.produse USING btree (lower(denumire));
+
+
+--
+-- Name: articole_barcode_uq; Type: INDEX; Schema: TENANT_PLACEHOLDER; Owner: iconta_user
+--
+
+CREATE UNIQUE INDEX articole_barcode_uq ON TENANT_PLACEHOLDER.articole USING btree (barcode) WHERE (barcode IS NOT NULL);
 
 
 --
