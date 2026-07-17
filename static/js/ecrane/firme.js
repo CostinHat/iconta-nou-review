@@ -205,6 +205,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "registratura", titlu: "Registratură", desc: "Numere de intrare/ieșire pe documente",  // registratura_v1
       ...CULORI_CARD.ardezie,
       icon: '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M8 13h6M8 16h6"/>', activ: true },
+    { cheie: "contracte", titlu: "Contracte", desc: "Generează din șabloane cu datele partenerului",  // contracte_v1
+      ...CULORI_CARD.ardezie,
+      icon: '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M9 13l2 2 4-4"/>', activ: true },
   ];
 
   corp.innerHTML = `
@@ -304,6 +307,8 @@ function meniuFirma(corp, nav, t) {
   if (bRapoarte) bRapoarte.addEventListener("click", () => { nav.deschide("Rapoarte comerciale", (c2) => ecranRapoarte(c2, nav, t), { lat: "larg" }); });
   const bRegistratura = corp.querySelector("#fa-registratura");  // registratura_v1
   if (bRegistratura) bRegistratura.addEventListener("click", () => { nav.deschide("Registratură", (c2) => ecranRegistratura(c2, nav, t)); });
+  const bContracte = corp.querySelector("#fa-contracte");  // contracte_v1
+  if (bContracte) bContracte.addEventListener("click", () => { nav.deschide("Contracte", (c2) => ecranContracte(c2, nav, t)); });
   const bBanca = corp.querySelector("#fa-banca");
   if (bBanca) {
     bBanca.addEventListener("click", () => { nav.deschide("Bancă", (c2) => ecranBanca(c2, nav, t)); });
@@ -2281,6 +2286,126 @@ async function ecranRegistratura(corp, nav, t) {
     });
   };
   deseneaza();
+}
+
+
+// [contracte_v1] F147 — Generare contracte din sabloane (mail-merge). Firma isi scrie textul cu
+// marcaje {{...}}; generarea completeaza datele partenerului (clienti) + firmei si scoate PDF.
+async function ecranContracte(corp, nav, t) {
+  let mesajSucces = "";
+
+  async function randeazaPrincipal() {
+    nav.setInapoi(undefined);
+    corp.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
+    let sabloane = [];
+    try { sabloane = (await api.get(`/tenants/${t.id}/contracte/sabloane`)).sabloane || []; } catch (e) {}
+    const rand = (s) => `
+      <div class="pf-frand">
+        <div class="pf-frand-text"><div class="pf-frand-nume">${esc(s.nume)}</div></div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="buton-secundar" data-gen="${s.id}">Generează</button>
+          <button class="buton-secundar" data-edit="${s.id}">Editează</button>
+          <button class="buton-secundar" data-del="${s.id}">Șterge</button>
+        </div>
+      </div>`;
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Contracte</h2>
+      <p class="pf-intro">Șabloane proprii cu marcaje {{...}}; generarea completează datele partenerului și scoate PDF.</p>
+      ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 12px">' + mesajSucces + '</p>' : ""}
+      <p><button class="buton-primar" id="c-nou">+ Șablon nou</button></p>
+      <div class="pf-lista">${sabloane.length
+        ? sabloane.map(rand).join("")
+        : '<div class="stare-goala">Niciun șablon de contract încă. Creează primul cu „+ Șablon nou".</div>'}</div>
+      <div id="c-zona"></div>`;
+    mesajSucces = "";
+    corp.querySelector("#c-nou").addEventListener("click", () => randeazaEditor(null));
+    corp.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () =>
+      randeazaEditor(sabloane.find((s) => String(s.id) === b.dataset.edit))));
+    corp.querySelectorAll("[data-gen]").forEach((b) => b.addEventListener("click", () =>
+      randeazaGenerare(sabloane.find((s) => String(s.id) === b.dataset.gen))));
+    corp.querySelectorAll("[data-del]").forEach((b) => b.addEventListener("click", () => {
+      const s = sabloane.find((x) => String(x.id) === b.dataset.del);
+      confirmaCaseta(corp.querySelector("#c-zona"), `Ștergi șablonul „${esc(s ? s.nume : "")}"?`, async () => {
+        try { await api.del(`/tenants/${t.id}/contracte/sabloane/${b.dataset.del}`); mesajSucces = "Șablon șters."; randeazaPrincipal(); }
+        catch (e) { arataMesaj(corp.querySelector("#c-zona"), (e && e.mesaj) || "eroare", "eroare"); }
+      });
+    }));
+  }
+
+  async function randeazaEditor(sablon) {
+    nav.setInapoi(randeazaPrincipal);
+    let marcaje = {};
+    try { marcaje = (await api.get(`/tenants/${t.id}/contracte/marcaje`)).marcaje || {}; } catch (e) {}
+    const chips = Object.entries(marcaje).map(([k, v]) =>
+      `<code style="padding:2px 6px;margin:0 4px 4px 0;display:inline-block" title="${esc(v)}">{{${k}}}</code>`).join("");
+    corp.innerHTML = `
+      <h2 class="pf-titlu">${sablon ? "Editează șablon" : "Șablon nou"}</h2>
+      <div class="camp" style="margin-bottom:8px">
+        <label class="camp-eticheta">Nume <span class="oblig">*</span></label>
+        <input type="text" class="camp-input" id="c-nume" style="max-width:360px" value="${sablon ? esc(sablon.nume) : ""}" autocomplete="off">
+      </div>
+      <p class="camp-eticheta" style="margin:8px 0 4px">Marcaje disponibile:</p>
+      <div style="margin-bottom:8px">${chips}</div>
+      <div class="camp" style="margin-bottom:10px">
+        <label class="camp-eticheta">Text contract <span class="oblig">*</span></label>
+        <textarea class="camp-input" id="c-continut" rows="16" style="width:100%">${sablon ? esc(sablon.continut) : ""}</textarea>
+      </div>
+      <button class="buton-primar" id="c-salveaza">Salvează</button>
+      <button class="btn-link" id="c-renunta" style="margin-left:10px">Renunță</button>
+      <span class="msg-eroare" id="c-msg" style="margin-left:8px"></span>`;
+    corp.querySelector("#c-renunta").addEventListener("click", randeazaPrincipal);
+    corp.querySelector("#c-salveaza").addEventListener("click", async () => {
+      const msg = corp.querySelector("#c-msg"); msg.textContent = "";
+      try {
+        await api.post(`/tenants/${t.id}/contracte/sabloane`, {
+          id: sablon ? sablon.id : null,
+          nume: corp.querySelector("#c-nume").value.trim(),
+          continut: corp.querySelector("#c-continut").value,
+        });
+        mesajSucces = "Șablon salvat."; randeazaPrincipal();
+      } catch (e) { msg.textContent = (e && e.mesaj) || "eroare"; }
+    });
+  }
+
+  async function randeazaGenerare(sablon) {
+    if (!sablon) return;
+    nav.setInapoi(randeazaPrincipal);
+    corp.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
+    let clienti = [];
+    try { const r = await api.get(`/tenants/${t.id}/clienti`); clienti = r.clienti || (Array.isArray(r) ? r : []); } catch (e) {}
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Generează contract</h2>
+      <p class="pf-intro">Șablon: ${esc(sablon.nume)}</p>
+      <div class="camp" style="margin-bottom:8px">
+        <label class="camp-eticheta">Partener (client)</label>
+        <select class="camp-input" id="c-client" style="max-width:360px">
+          <option value="">— alege clientul —</option>
+          ${clienti.map((c) => `<option value="${c.id}">${esc(c.nume)}${c.cui ? " · " + esc(c.cui) : ""}</option>`).join("")}
+        </select>
+        <span class="camp-ajutor">Datele partenerului se iau din client; câmpurile lipsă rămân goale în contract.</span>
+      </div>
+      <button class="buton-primar" id="c-gen">Descarcă PDF</button>
+      <button class="btn-link" id="c-inapoi" style="margin-left:10px">Înapoi</button>
+      <span class="msg-eroare" id="c-genmsg" style="margin-left:8px"></span>`;
+    corp.querySelector("#c-inapoi").addEventListener("click", randeazaPrincipal);
+    corp.querySelector("#c-gen").addEventListener("click", async () => {
+      const msg = corp.querySelector("#c-genmsg"); msg.textContent = "";
+      try {
+        const resp = await fetch(`/tenants/${t.id}/contracte/genereaza`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: "Bearer " + sesiune.token() },
+          body: JSON.stringify({ sablon_id: sablon.id, client_id: corp.querySelector("#c-client").value || null }),
+        });
+        if (!resp.ok) throw new Error("eroare " + resp.status);
+        const url = URL.createObjectURL(await resp.blob());
+        const a = document.createElement("a");
+        a.href = url; a.download = `contract_${sablon.nume.replace(/[^a-z0-9]+/gi, "_")}.pdf`; a.click();
+        URL.revokeObjectURL(url);
+      } catch (e) { msg.textContent = e.message || "eroare"; }
+    });
+  }
+
+  randeazaPrincipal();
 }
 
 

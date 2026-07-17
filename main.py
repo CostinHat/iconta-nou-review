@@ -4710,6 +4710,65 @@ def registratura_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
     return rez
 
 
+# --- generare contracte din sabloane (F147: mail-merge) ---
+@app.get("/tenants/{tenant_id}/contracte/marcaje")
+def contracte_marcaje(tenant_id: int, ctx=Depends(cere_cabinet)):
+    from core import contracte_api as _ct
+    return {"marcaje": _ct.MARCAJE}
+
+@app.get("/tenants/{tenant_id}/contracte/sabloane")
+def contracte_sabloane_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
+    from core import contracte_api as _ct
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return {"sabloane": _ct.lista_sabloane(conn, schema)}
+
+@app.post("/tenants/{tenant_id}/contracte/sabloane")
+def contracte_sabloane_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import contracte_api as _ct
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _ct.salveaza_sablon(conn, schema, corp.get("id"), corp.get("nume"),
+                                  corp.get("continut"), ctx["uid"])
+    if not rez.get("ok"):
+        mesaje = {"NUME_GOL": "numele sablonului e obligatoriu",
+                  "CONTINUT_GOL": "continutul sablonului e obligatoriu",
+                  "NUME_EXISTA": "exista deja un sablon cu acest nume",
+                  "MARCAJ_INVALID": "marcaj necunoscut: {{%s}}" % rez.get("marcaj"),
+                  "INEXISTENT": "sablon inexistent"}
+        raise HTTPException(422, mesaje.get(rez.get("cod"), "eroare"))
+    return rez
+
+@app.delete("/tenants/{tenant_id}/contracte/sabloane/{sid}")
+def contracte_sabloane_sterge(tenant_id: int, sid: int, ctx=Depends(cere_cabinet)):
+    from core import contracte_api as _ct
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _ct.sterge_sablon(conn, schema, sid)
+    if not rez.get("ok"):
+        raise HTTPException(404, "sablon inexistent")
+    return rez
+
+@app.post("/tenants/{tenant_id}/contracte/genereaza")
+def contracte_genereaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import contracte_api as _ct
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        pdf = _ct.genereaza_pdf(conn, schema, corp.get("sablon_id"), corp)
+    if pdf is None:
+        raise HTTPException(404, "sablon inexistent")
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": 'attachment; filename="contract.pdf"'})
+
+
 # --- jurnal: editare/stergere/validare ciorne ---
 def _jurnal_rez(rez):
     if rez is None:

@@ -2126,6 +2126,18 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.registratura (
 );
 
 --
+-- F147 (generare contracte din sabloane) — mirror al core/migrare_contracte_sabloane.py
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.contracte_sabloane (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nume text NOT NULL,
+    continut text NOT NULL,
+    creat_de integer,
+    creat_la timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT contracte_sabloane_nume_unic UNIQUE (nume)
+);
+
+--
 -- F135 (pontaj informativ) — mirror al core/migrare_pontaj.py
 --
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.pontaj (

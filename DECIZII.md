@@ -308,3 +308,22 @@ ALTERNATIVA RESPINSA (v1): hook automat la emiterea facturii/adeverintei (nr_ies
 atinge fluxuri LIVE; se face dupa ce registrul manual e stabil. F136 nr_iesire ramane input manual
 pana atunci (asa cum e documentat in decizia F136 17.07).
 LIMITA: v1 nu leaga automat documentele existente; contabilul le inregistreaza cand vrea un numar.
+
+### 17.07.2026 Lot 6 F147 generare contracte: mail-merge editabil, fara stocare  (core/contracte_api.py; LIVE)
+DECIZIE: F147 = mail-merge. Firma isi scrie propriul text de contract cu marcaje {{...}} dintr-un
+vocabular FIX (verificat la scriere), iar generarea completeaza datele partenerului (clienti) +
+firmei (firma_profil) si scoate PDF. Contractul generat NU se stocheaza (doar descarcare).
+TEMEI: acelasi principiu ca adeverinta pentru banca (F136) - NU promitem un flux pe care nu-l putem
+tine. A autora noi continut legal de contracte = raspundere + mentenanta juridica (fiecare business
+are alt contract, legea se schimba). Facem SUBSTITUTIE, nu drept. Vocabularul fix de marcaje
+(MARCAJE in contracte_api) previne marcaje orfane la o litera gresita - acelasi tipar anti-orfan ca
+tip_raport F145 / directie F146. PDF pe tiparul adeverinta.py (DS cap.7 reportlab).
+ALTERNATIVA RESPINSA: sabloane predefinite de noi (contracte-tip gata scrise) - comod pentru user,
+dar ne-am asuma autorarea si mentenanta juridica; un sablon invechit tacit dupa o schimbare de lege
+ar induce in eroare. Contrar lectiei F136.
+ALTERNATIVA RESPINSA: stocarea contractelor generate + auto-inregistrare in Registratura (F146) -
+inca un tabel + hook; v1 ramane stateless (descarcare). Urma = optional prin F146 manual. Se poate
+adauga daca apare nevoia reala.
+LIMITA: partenerul se ia din clienti (sau campuri manuale la generare); furnizorii nu sunt inca in
+selector. v1 scoate PDF final (nu doc editabil) - editarea inainte de semnare o face utilizatorul in
+sablon sau dupa, in alt program.
