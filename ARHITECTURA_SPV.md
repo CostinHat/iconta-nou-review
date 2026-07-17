@@ -65,7 +65,7 @@ Contact tehnic ANAF: spv.webservice@mfinante.ro
 INTREBARE TRIMISA 17.07.2026 catre spv.webservice@mfinante.ro, doua puncte:
   (1) exista/se planifica transmitere declaratii prin WS?  -> deblocheaza F127
   (2) se planifica OAuth pentru SPVWS2?                    -> deblocheaza F128 + rapoartele 'cerere'
-Fara raspuns pana la <data>: F127/F128 raman AMANAT. Raspunsul se consemneaza AICI.
+Fara raspuns pana la 17.08.2026: F127/F128 raman AMANAT. Raspunsul se consemneaza AICI.
 
 ## STARE FUNCTIONALITATI (17.07.2026)
 - F126, F160, F121 : temei tehnic confirmat prin OAuth. Se pot construi server-side.
