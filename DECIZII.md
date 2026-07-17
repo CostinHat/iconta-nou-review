@@ -170,3 +170,18 @@ existente) inainte de a intra in constructie.
 ALTERNATIVA RESPINSA: constructia acum a nivelului 3, pe presupunere - risc simetric cu
 ce a produs bug-ul CM de azi (forma gresita, scrisa o data, propagata tacut in CMP/D406
 pentru TOTI clientii, nu doar cel cu multi-depozit).
+
+### 17.07.2026 F140 analitica de stoc: fara model de forecast (consum comparabil in loc)  (core/stocuri_cv_api.py analitica; LIVE)
+DECIZIE: F140 livreaza stoc critic + inert + ABC-Pareto + consum pe perioade comparabile
+(iesiri 30 zile vs 30 anterioare). "Prognoza pe perioade comparabile" din descrierea initiala
+NU se implementeaza ca model de forecast (predictie de cerere).
+TEMEI: un forecast onest cere alegerea metodei (medie mobila? sezonalitate? trend?) si a
+orizontului, care depind de tiparul de vanzare al fiecarei firme - necunoscut azi. Consumul
+comparabil (cifre reale, nu predictie) da contabilului baza de decizie fara sa fabric o cifra
+"prognozata" pe care produsul nu o poate sustine (acelasi rationament ca la adeverinta de venit
+pentru banca, F136: nu promitem un flux pe care nu-l putem tine).
+ALTERNATIVA RESPINSA: medie mobila simpla etichetata "prognoza" - ar da fals aer de predictie
+unei extrapolari triviale; utilizatorul ar lua decizii de aprovizionare pe o cifra fara temei.
+LIMITA: daca apare cerere reala de reaprovizionare automata pe baza de consum, se reia ca item
+separat cu metoda stabilita explicit. ABC clasifica pe cumulativul INAINTE de item (primul
+articol e mereu A, oricat de dominant), nu dupa - altfel articolul dominant iesea clasa C.

@@ -4914,6 +4914,31 @@ def cv_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
     return rez
 
 
+@app.get("/tenants/{tenant_id}/stocuri/analitica")
+def cv_analitica(tenant_id: int, zile_inert: int = 90, ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _s.analitica(conn, schema, zile_inert)
+
+
+@app.post("/tenants/{tenant_id}/stocuri/articole/{articol_id}/nivel-minim")
+def cv_nivel_minim(tenant_id: int, articol_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _s.set_nivel_minim(conn, schema, articol_id, corp.get("nivel_minim"))
+    if rez is None:
+        raise HTTPException(404, "articol inexistent")
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+
 @app.get("/tenants/{tenant_id}/stocuri/barcode/{cod}")
 def cv_barcode_gaseste(tenant_id: int, cod: str, ctx=Depends(cere_cabinet)):
     from core import stocuri_cv_api as _s

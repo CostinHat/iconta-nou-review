@@ -786,6 +786,8 @@ async function sectiuneaCV(corp, t, zonaM) {
         <input type="text" id="cv-bc" class="camp-input" placeholder="cod de bare (scaneaz\u0103/tasteaz\u0103)" aria-label="Cod de bare" style="width:220px">
         <button class="buton-secundar" id="cv-bc-cauta">Caut\u0103 articol dup\u0103 cod</button>
         <button class="buton-secundar" id="cv-bc-set">Atribuie codul articolului selectat</button>
+        <input type="number" step="0.001" id="cv-nm" class="camp-input" placeholder="nivel minim" aria-label="Nivel minim de stoc" style="width:120px">
+        <button class="buton-secundar" id="cv-nm-set">Salveaz\u0103 nivelul minim</button>
       </div>
       <p>
         <button class="buton-primar" id="cv-intrare">Intrare</button>
@@ -797,6 +799,7 @@ async function sectiuneaCV(corp, t, zonaM) {
         <button class="buton-secundar" id="cv-loc-vezi" style="margin-left:6px">Stoc pe locații</button>
         <button class="buton-secundar" id="cv-transfer-t" style="margin-left:6px">Transfer între locații</button>
         <button class="buton-secundar" id="cv-recl-t" style="margin-left:6px">Reclasificare tip produs</button>
+        <button class="buton-secundar" id="cv-ana" style="margin-left:6px">Analitică stoc</button>
         <div id="cv-inv-zona" style="margin-top:8px"></div>
         <div id="cv-loc-zona" style="margin-top:8px"></div>
       </div>
@@ -832,6 +835,15 @@ async function sectiuneaCV(corp, t, zonaM) {
       arataMesaj(zonaM, r.barcode ? `Cod „${esc(r.barcode)}” atribuit articolului.` : "Cod șters de pe articol.", "ok");
       sectiuneaCV(corp, t, zonaM);
     } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la salvarea codului.", "eroare"); }
+  });
+  // [F140] Nivel minim de stoc (prag pentru stoc critic / necesar aprovizionare)
+  zona.querySelector("#cv-nm-set").addEventListener("click", async () => {
+    if (!val("#cv-art")) { arataMesaj(zonaM, "Alege întâi articolul din listă.", "eroare"); return; }
+    try {
+      const r = await api.post(`/tenants/${t.id}/stocuri/articole/${parseInt(val("#cv-art"))}/nivel-minim`, { nivel_minim: val("#cv-nm").trim() });
+      arataMesaj(zonaM, r.nivel_minim ? `Nivel minim ${r.nivel_minim} setat.` : "Nivel minim șters.", "ok");
+      sectiuneaCV(corp, t, zonaM);
+    } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la salvarea nivelului minim.", "eroare"); }
   });
   zona.querySelector("#cv-intrare").addEventListener("click", async () => {
     try {
@@ -1007,6 +1019,43 @@ async function sectiuneaCV(corp, t, zonaM) {
         sectiuneaCV(corp, t, zonaM);
       } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la reclasificare.", "eroare"); }
     });
+  });
+  // [F140] Analitica de stoc: critic / inert / ABC / consum perioade comparabile
+  zona.querySelector("#cv-ana").addEventListener("click", async () => {
+    try {
+      const r = await api.get(`/tenants/${t.id}/stocuri/analitica`);
+      const lista = (titlu, randuri, gol) => `
+        <div class="pf-frand-nume" style="margin:8px 0 4px">${titlu}</div>
+        ${!randuri.length ? `<div class="mig-gol">${gol}</div>`
+          : `<div class="pf-lista">${randuri.join("")}</div>`}`;
+      const critic = (r.critic || []).map((x) => `
+        <div class="pf-frand"><div class="pf-frand-text">
+          <div class="pf-frand-nume">${esc(x.denumire)}</div>
+          <div class="pf-frand-sub">stoc ${x.stoc} ${esc(x.um)} · nivel minim ${x.nivel_minim} · necesar ${x.necesar} ${esc(x.um)}</div>
+        </div></div>`);
+      const inert = (r.inert || []).map((x) => `
+        <div class="pf-frand"><div class="pf-frand-text">
+          <div class="pf-frand-nume">${esc(x.denumire)}</div>
+          <div class="pf-frand-sub">stoc ${x.stoc} ${esc(x.um)} · ultima mișcare ${esc(x.ultima_miscare)} · ${x.zile} zile</div>
+        </div></div>`);
+      const abc = (r.abc || []).map((x) => `
+        <div class="pf-frand"><div class="pf-frand-text">
+          <div class="pf-frand-nume">${esc(x.denumire)} · clasa ${esc(x.clasa)}</div>
+          <div class="pf-frand-sub">valoare stoc ${bani(x.valoare)} lei · cumulat ${x.pondere_cumulata}%</div>
+        </div></div>`);
+      const consum = (r.consum || []).map((x) => `
+        <div class="pf-frand"><div class="pf-frand-text">
+          <div class="pf-frand-nume">${esc(x.denumire)}</div>
+          <div class="pf-frand-sub">ieșiri ultimele 30 zile ${x.iesiri_30z} ${esc(x.um)} · 30 zile anterioare ${x.iesiri_30z_anterior} ${esc(x.um)}</div>
+        </div></div>`);
+      locZona.innerHTML = `
+        <div class="pf-card">
+          ${lista(`Stoc critic (sub nivel minim)`, critic, "Niciun articol sub nivel minim (sau niciun nivel minim setat).")}
+          ${lista(`Fără mișcare de peste ${r.zile_inert} zile`, inert, "Niciun articol inert.")}
+          ${lista(`Clasificare ABC (Pareto pe valoarea stocului)`, abc, "Niciun stoc de clasificat.")}
+          ${lista(`Consum — perioade comparabile`, consum, "Nicio ieșire în ultimele 60 de zile.")}
+        </div>`;
+    } catch (e) { locZona.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
   });
   zona.querySelector("#cv-fisa").addEventListener("click", async () => {
     if (!val("#cv-art")) return;

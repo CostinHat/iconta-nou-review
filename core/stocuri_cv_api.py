@@ -153,6 +153,66 @@ def inventar(conn, schema, corp):
     return {"rezultate": rez}
 
 
+def analitica(conn, schema, zile_inert=90):
+    """Analitica de stoc (F140). NU introduce valorizare per locatie (CMP global):
+      - critic: articole cu nivel_minim setat si stoc <= nivel_minim
+                (necesar aprovizionare = nivel_minim - stoc)
+      - inert:  articole cu stoc > 0 fara nicio miscare de peste `zile_inert` zile
+      - abc:    clasificare Pareto pe valoarea stocului (A <=80%, B <=95%, C restul)
+      - consum: iesiri in ultimele 30 zile vs cele 30 anterioare (perioade comparabile)
+    Data de referinta = CURRENT_DATE (Postgres)."""
+    zi = int(zile_inert) if str(zile_inert).lstrip("-").isdigit() else 90
+    critic, inert, abc, consum = [], [], [], []
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"SELECT id, denumire, um, nivel_minim FROM {schema}.articole ORDER BY denumire")
+        arts = cur.fetchall()
+        cur.execute(f"""SELECT articol_id, MAX(data) AS ultima,
+            COALESCE(SUM(CASE WHEN tip='iesire' AND data > CURRENT_DATE - 30
+                              THEN cantitate ELSE 0 END),0) AS iesiri30,
+            COALESCE(SUM(CASE WHEN tip='iesire' AND data <= CURRENT_DATE - 30
+                              AND data > CURRENT_DATE - 60 THEN cantitate ELSE 0 END),0) AS iesiri30ant,
+            (CURRENT_DATE - MAX(data)) AS zile_de_la
+            FROM {schema}.miscari_stoc GROUP BY articol_id""")
+        agg = {r["articol_id"]: r for r in cur.fetchall()}
+        for a in arts:
+            fisa = _m.fisa_magazie(_miscari(cur, schema, a["id"]))
+            stoc = fisa[-1]["sold_cantitate"] if fisa else Decimal("0")
+            val = _m._d(fisa[-1]["sold_valoare"]) if fisa else Decimal("0")
+            g = agg.get(a["id"])
+            nm = a["nivel_minim"]
+            if nm is not None and stoc <= nm:
+                critic.append({"articol_id": a["id"], "denumire": a["denumire"], "um": a["um"],
+                               "stoc": str(stoc), "nivel_minim": str(nm),
+                               "necesar": str(max(Decimal("0"), Decimal(str(nm)) - stoc))})
+            if stoc > 0 and g and g["zile_de_la"] is not None and g["zile_de_la"] > zi:
+                inert.append({"articol_id": a["id"], "denumire": a["denumire"], "um": a["um"],
+                              "stoc": str(stoc), "ultima_miscare": str(g["ultima"]),
+                              "zile": int(g["zile_de_la"])})
+            if val > 0:
+                abc.append({"articol_id": a["id"], "denumire": a["denumire"],
+                            "valoare": val})
+            if g and (g["iesiri30"] or g["iesiri30ant"]):
+                consum.append({"articol_id": a["id"], "denumire": a["denumire"], "um": a["um"],
+                               "iesiri_30z": str(g["iesiri30"]), "iesiri_30z_anterior": str(g["iesiri30ant"])})
+    # ABC: Pareto pe valoare cumulata
+    abc.sort(key=lambda x: x["valoare"], reverse=True)
+    total = sum((x["valoare"] for x in abc), Decimal("0"))
+    cumul = Decimal("0")
+    abc_out = []
+    for x in abc:
+        # clasa = banda in care INTRA articolul (cumulativul INAINTE de el), ca primul
+        # articol - oricat de dominant - sa fie mereu A; A pana la 80%, B pana la 95%, C restul.
+        pond_inainte = (cumul / total * 100) if total > 0 else Decimal("0")
+        clasa = "A" if pond_inainte < 80 else ("B" if pond_inainte < 95 else "C")
+        cumul += x["valoare"]
+        pond = (cumul / total * 100) if total > 0 else Decimal("0")
+        abc_out.append({"articol_id": x["articol_id"], "denumire": x["denumire"],
+                        "valoare": str(_m._q(x["valoare"])),
+                        "pondere_cumulata": str(_m._q(pond)), "clasa": clasa})
+    return {"critic": critic, "inert": inert, "abc": abc_out, "consum": consum,
+            "zile_inert": zi}
+
+
 def gaseste_barcode(conn, schema, barcode):
     """Articolul care poarta codul de bare dat, sau None. F141."""
     bc = (barcode or "").strip()
@@ -181,6 +241,26 @@ def set_barcode(conn, schema, articol_id, barcode):
         cur.execute(f"UPDATE {schema}.articole SET barcode=%s WHERE id=%s", (bc, articol_id))
     conn.commit()
     return {"articol_id": articol_id, "barcode": bc}
+
+
+def set_nivel_minim(conn, schema, articol_id, nivel):
+    """Seteaza (sau sterge, daca gol/negativ) nivelul minim de stoc al unui articol,
+    prag pentru raportul de stoc critic si necesar de aprovizionare. F140."""
+    nm = None
+    if nivel is not None and str(nivel).strip() != "":
+        try:
+            nm = Decimal(str(nivel))
+        except Exception:
+            return {"eroare": "nivel minim invalid"}
+        if nm < 0:
+            return {"eroare": "nivel minim negativ"}
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"SELECT id FROM {schema}.articole WHERE id=%s", (articol_id,))
+        if not cur.fetchone():
+            return None
+        cur.execute(f"UPDATE {schema}.articole SET nivel_minim=%s WHERE id=%s", (nm, articol_id))
+    conn.commit()
+    return {"articol_id": articol_id, "nivel_minim": str(nm) if nm is not None else None}
 
 
 def _stoc_locatie(cur, schema, articol_id, locatie):
