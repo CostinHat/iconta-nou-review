@@ -772,7 +772,7 @@ async function sectiuneaCV(corp, t, zonaM) {
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
         <select id="cv-art" class="camp-input" style="min-width:200px">
           <option value="">\u2014 articol nou \u2014</option>
-          ${arts.map((a) => `<option value="${a.id}">${esc(a.denumire)} \u00b7 stoc ${a.stoc} ${esc(a.um)}${a.cmp ? " \u00b7 CMP " + a.cmp : ""}</option>`).join("")}
+          ${arts.map((a) => `<option value="${a.id}">${esc(a.denumire)} \u00b7 stoc ${a.stoc} ${esc(a.um)}${a.cmp ? " \u00b7 CMP " + a.cmp : ""}${a.barcode ? " \u00b7 cod " + esc(a.barcode) : ""}</option>`).join("")}
         </select>
         <input type="text" id="cv-den" class="camp-input" placeholder="denumire (articol nou)" aria-label="Denumire articol nou" style="flex:1;min-width:160px">
         <input type="date" id="cv-data" class="camp-input">
@@ -781,6 +781,11 @@ async function sectiuneaCV(corp, t, zonaM) {
         <input type="text" id="cv-doc" class="camp-input" placeholder="document" aria-label="Document" style="width:130px">
         <input type="text" id="cv-loc" class="camp-input" placeholder="locație" aria-label="Locație" list="cv-loc-list" style="width:120px">
         <datalist id="cv-loc-list">${[...new Set((locInit || []).map((x) => x.locatie).filter((l) => l && l !== "(nespecificat)"))].map((l) => `<option value="${esc(l)}">`).join("")}</datalist>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+        <input type="text" id="cv-bc" class="camp-input" placeholder="cod de bare (scaneaz\u0103/tasteaz\u0103)" aria-label="Cod de bare" style="width:220px">
+        <button class="buton-secundar" id="cv-bc-cauta">Caut\u0103 articol dup\u0103 cod</button>
+        <button class="buton-secundar" id="cv-bc-set">Atribuie codul articolului selectat</button>
       </div>
       <p>
         <button class="buton-primar" id="cv-intrare">Intrare</button>
@@ -810,6 +815,24 @@ async function sectiuneaCV(corp, t, zonaM) {
 
     </div>`;
   const val = (id) => zona.querySelector(id).value;
+  // [F141] Coduri de bare: cauta articolul dupa cod / atribuie cod articolului selectat
+  zona.querySelector("#cv-bc-cauta").addEventListener("click", async () => {
+    const cod = val("#cv-bc").trim();
+    if (!cod) { arataMesaj(zonaM, "Scanează sau tastează un cod de bare.", "eroare"); return; }
+    try {
+      const a = await api.get(`/tenants/${t.id}/stocuri/barcode/${encodeURIComponent(cod)}`);
+      zona.querySelector("#cv-art").value = String(a.id);
+      arataMesaj(zonaM, `Selectat: ${esc(a.denumire)}.`, "ok");
+    } catch (e) { arataMesaj(zonaM, e.mesaj || "Niciun articol cu acest cod.", "eroare"); }
+  });
+  zona.querySelector("#cv-bc-set").addEventListener("click", async () => {
+    if (!val("#cv-art")) { arataMesaj(zonaM, "Alege întâi articolul din listă.", "eroare"); return; }
+    try {
+      const r = await api.post(`/tenants/${t.id}/stocuri/articole/${parseInt(val("#cv-art"))}/barcode`, { barcode: val("#cv-bc").trim() });
+      arataMesaj(zonaM, r.barcode ? `Cod „${esc(r.barcode)}” atribuit articolului.` : "Cod șters de pe articol.", "ok");
+      sectiuneaCV(corp, t, zonaM);
+    } catch (e) { arataMesaj(zonaM, e.mesaj || "Eroare la salvarea codului.", "eroare"); }
+  });
   zona.querySelector("#cv-intrare").addEventListener("click", async () => {
     try {
       const corpReq = { data: val("#cv-data"), cantitate: parseFloat(val("#cv-cant")) || 0,

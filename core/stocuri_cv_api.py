@@ -26,6 +26,7 @@ def articole(conn, schema):
                 cant = val = Decimal("0"); cmp = None
             out.append({"id": a["id"], "denumire": a["denumire"], "um": a["um"],
                         "cont_stoc": a["cont_stoc"], "cont_cheltuiala": a["cont_cheltuiala"],
+                        "barcode": a.get("barcode"), "nivel_minim": str(a["nivel_minim"]) if a.get("nivel_minim") is not None else None,
                         "stoc": str(cant), "valoare": str(val),
                         "cmp": str(cmp) if cmp is not None else None})
         return out
@@ -150,6 +151,36 @@ def inventar(conn, schema, corp):
                         "nota": f"{debit}={credit}", "inregistrare_id": iid})
     conn.commit()
     return {"rezultate": rez}
+
+
+def gaseste_barcode(conn, schema, barcode):
+    """Articolul care poarta codul de bare dat, sau None. F141."""
+    bc = (barcode or "").strip()
+    if not bc:
+        return None
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"""SELECT id, denumire, um, cont_stoc, cont_cheltuiala, barcode
+                        FROM {schema}.articole WHERE barcode=%s""", (bc,))
+        a = cur.fetchone()
+    return dict(a) if a else None
+
+
+def set_barcode(conn, schema, articol_id, barcode):
+    """Seteaza (sau sterge, daca gol) codul de bare al unui articol. Unic pe articole
+    (index partial WHERE barcode IS NOT NULL). F141."""
+    bc = (barcode or "").strip() or None
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"SELECT id FROM {schema}.articole WHERE id=%s", (articol_id,))
+        if not cur.fetchone():
+            return None
+        if bc is not None:
+            cur.execute(f"SELECT id FROM {schema}.articole WHERE barcode=%s AND id<>%s",
+                        (bc, articol_id))
+            if cur.fetchone():
+                return {"eroare": "codul de bare exista deja la alt articol"}
+        cur.execute(f"UPDATE {schema}.articole SET barcode=%s WHERE id=%s", (bc, articol_id))
+    conn.commit()
+    return {"articol_id": articol_id, "barcode": bc}
 
 
 def _stoc_locatie(cur, schema, articol_id, locatie):

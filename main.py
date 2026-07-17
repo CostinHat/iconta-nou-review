@@ -4914,6 +4914,34 @@ def cv_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
     return rez
 
 
+@app.get("/tenants/{tenant_id}/stocuri/barcode/{cod}")
+def cv_barcode_gaseste(tenant_id: int, cod: str, ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        a = _s.gaseste_barcode(conn, schema, cod)
+    if a is None:
+        raise HTTPException(404, "niciun articol cu acest cod de bare")
+    return a
+
+
+@app.post("/tenants/{tenant_id}/stocuri/articole/{articol_id}/barcode")
+def cv_barcode_set(tenant_id: int, articol_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import stocuri_cv_api as _s
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _s.set_barcode(conn, schema, articol_id, corp.get("barcode"))
+    if rez is None:
+        raise HTTPException(404, "articol inexistent")
+    if rez.get("eroare"):
+        raise HTTPException(400, rez["eroare"])
+    return rez
+
+
 # --- D112 ---
 
 @app.get("/tenants/{tenant_id}/s1005-xml")
