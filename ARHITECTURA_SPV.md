@@ -78,3 +78,47 @@ Fara raspuns pana la 17.08.2026: F127/F128 raman AMANAT. Raspunsul se consemneaz
 ## ORDINEA DE CONSTRUCTIE
 Conectorul SPV se construieste O DATA (OAuth + stocare token + refresh + retry/coada),
 apoi F126, F160, F121 sunt apeluri peste el. Cinci pozitii, un singur auth.
+
+# ============================================================
+# LECTII DIN CONCURENTA (verificat la sursa 17.07.2026)
+# ============================================================
+Surse: ajutor.smartbill.ro/article/982, smartbill.ro/e-factura, smartbill.ro/totul-despre-efactura,
+certsign.ro (interviu Mircea Capatana). Limita: verificat SmartBill; Oblio/FGO/EasyBill
+au acelasi flux dupa documentatia lor publica, dar nu au fost citite in detaliu.
+
+## CONFIRMARE: nu exista cale ascunsa
+SmartBill face IDENTIC ce face iConta: aplicatie inrolata o data, utilizatorul autorizeaza
+cu certificatul lui, 90 de zile, reinnoire automata care uneori esueaza -> email + reautorizare
+manuala. Aceleasi constrangeri ANAF pentru toata lumea.
+"SmartBill va putea accesa doar sectiunea e-Factura, nu si alte informatii ale companiei
+tale care se regasesc in SPV" -> NICI SMARTBILL NU ARE MESAJE SPV. F128 nu e o gaura
+in produsul iConta, e limita platformei ANAF pentru toti jucatorii cloud.
+
+## AVANTAJ STRUCTURAL iCONTA (decurge din decizia model (1))
+SmartBill autorizeaza PER FIRMA: fiecare client, cont propriu, autorizare proprie, 90 zile.
+Cabinet cu 40 de firme in SmartBill = 40 de autorizari, fiecare la 90 de zile.
+iConta autorizeaza PER CABINET: contabilul autorizeaza O DATA, tokenul acopera toate
+firmele pe care certificatul lui are drept. UNA, la 90 de zile, si aia automata.
+Nu e detaliu tehnic - e argument de vanzare. Vine direct din "platforma de cabinet",
+nu "platforma de firma".
+
+## DE APLICAT IN ECRANUL DE CONECTARE (cand se stabileste cu DS - Regula 0)
+1. AVERTISMENT 24 DE ORE: dupa inrolarea certificatului in SPV trebuie asteptate 24h
+   pana functioneaza (sursa: certSIGN/SmartBill). Fara mesaj explicit, cabinetul incearca
+   imediat, primeste eroare si crede ca e vina iConta. Text in ecran, nu in FAQ.
+2. LINK DE AUTORIZARE TRIMISIBIL: SmartBill genereaza un link pe care il trimiti celui
+   care are certificatul. La iConta contabilul E utilizatorul, deci nu e necesar la baza -
+   DAR tiparul e util invers: cabinetul trimite linkul unui client care are certificat propriu.
+   De evaluat cand se face ecranul.
+3. CERTIFICAT CLOUD = OK pentru autorizare, daca e instalat local prin vToken
+   ("versiunea digitala a certificatului, daca este instalata pe calculator, este echivalenta
+   cu un certificat pe token"). Deci contabilul cu certificat cloud POATE autoriza iConta.
+   Nu confunda cu blocantul SPVWS2 (acolo problema e serverul, nu clientul).
+
+## PENTRU TERMENI SI CONDITII (nu tehnic, dar decurge din arhitectura)
+Formularea SmartBill, de folosit ca model: "Trimiterea e-Facturii e obligatia intocmitorului
+si nu are nicio legatura cu procesul de autorizare in SPV a contului SmartBill."
+Aplicat la iConta: contabilul depune cu certificatul lui, pe firmele lui; iConta e unealta.
+Raspunderea pe depunere NU trece la iConta. Modelul (2) ar fi mutat-o.
+Firma (SRL) = vehicul comercial (contracte, facturi, GDPR-procesator), NU intra in lantul ANAF.
+Contul de dezvoltator OAuth e pe persoana fizica (CNP), nu pe CUI.
