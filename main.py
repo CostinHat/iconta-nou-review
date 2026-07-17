@@ -4613,6 +4613,37 @@ def banca_rec_facturi(tenant_id: int, ctx=Depends(cere_cabinet)):
         return {"facturi": _rec.facturi_deschise_detalii(conn, schema)}
 
 
+# --- rapoarte comerciale (F144 v1, read-only) ---
+def _perioada_an(de, pana):
+    """Fallback: daca lipsesc, perioada = anul curent (01.01 - 31.12)."""
+    import datetime
+    an = datetime.date.today().year
+    return (de or f"{an}-01-01", pana or f"{an}-12-31")
+
+@app.get("/tenants/{tenant_id}/rapoarte-comerciale")
+def rapoarte_comerciale(tenant_id: int, de: str = None, pana: str = None, ctx=Depends(cere_cabinet)):
+    from core import rapoarte_comerciale_api as _rc
+    de, pana = _perioada_an(de, pana)
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return {"vanzari": _rc.vanzari_pe_partener(conn, schema, de, pana),
+                "durata_incasare": _rc.durata_medie_incasare(conn, schema, de, pana),
+                "parteneri": _rc.lista_parteneri(conn, schema),
+                "de": de, "pana": pana}
+
+@app.get("/tenants/{tenant_id}/rapoarte-comerciale/fisa")
+def rapoarte_comerciale_fisa(tenant_id: int, cui: str, de: str = None, pana: str = None, ctx=Depends(cere_cabinet)):
+    from core import rapoarte_comerciale_api as _rc
+    de, pana = _perioada_an(de, pana)
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _rc.fisa_partener(conn, schema, cui, de, pana)
+
+
 # --- jurnal: editare/stergere/validare ciorne ---
 def _jurnal_rez(rez):
     if rez is None:

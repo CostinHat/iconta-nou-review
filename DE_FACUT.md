@@ -51,6 +51,14 @@ starea reverificata azi:
 3. **Audit design ramas**: spacing/padding inline (inchis explicit ca datorie acceptata), migrare
    paleta iconite (decizie amanata), anatomia ferestrei + alinierea tabelelor nesistematizate vizual
    (~20/30 ecrane nevazute cu ochii; verificatorul e curat pe ele dar nu prinde asezarea).
+4. **Dubla introducere a vanzarii la firmele CANTITATIV-VALORICE** (adaugat 17.07): emiterea facturii
+   si descarcarea gestiunii sunt doua acte deconectate prin design (miscari_stoc fara factura_id;
+   facturi_api.py fara referinta la stoc; /stocuri/iesire ruta manuala separata). La firmele pe
+   cantitativ-valoric acelasi eveniment economic se introduce de doua ori (factura + iesire manuala),
+   iar costul pe articol (miscari_stoc.valoare la CMP) nu are cheie de join spre vanzare. Efect direct:
+   profit-pe-produs / vanzari-pe-articol imposibile fara o punte factura->iesire stoc (lot propriu).
+   La firmele GLOBAL-VALORIC nu e defect, e metoda (cost pe articol inexistent prin constructie).
+   Temei complet si alternative respinse: DECIZII.md 17.07 "F144 profit-pe-produs RAMAS DESCHIS".
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza

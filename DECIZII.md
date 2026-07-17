@@ -217,3 +217,34 @@ diferenta reala. NUMARARE OARBA implicita (nu afiseaza scripticul): buna practic
 evita ajustarea numaratului la cifra asteptata.
 LIMITA: se reia cu tabel de sesiune daca apare un cabinet cu inventar pe echipa. Pana atunci
 NEVOI_RATATE.md capteaza semnalul.
+
+### 17.07.2026 F144 profit-pe-produs / articol / agent RAMAS DESCHIS — vanzarea si descarcarea gestiunii sunt acte deconectate prin design  (core/rapoarte_comerciale_api.py; F144 v1 = doar felia fara aceasta problema)
+DECIZIE: F144 v1 livreaza DOAR rapoartele care se pot construi pe schema actuala, read-only, din
+`facturi` (fisa client/furnizor, vanzari pe partener, durata medie de incasare). Profit pe produs,
+vanzari pe articol si vanzari pe agent NU se construiesc acum si NU se amana tacit — raman decizie
+deschisa cu temeiul de mai jos.
+TEMEI (verificat la sursa, Claude Code 17.07): vanzarea si descarcarea gestiunii sunt DOUA acte
+deconectate prin design, nu printr-o coloana lipsa. Dovezi:
+  - `miscari_stoc` NU are `factura_id` — se leaga doar de `inregistrare_id` (nota proprie) + `document`
+    text liber (tenant_template.sql, DDL miscari_stoc).
+  - `facturi_api.py` nu are NICIO referinta la stoc — emiterea facturii nu creeaza nicio iesire
+    (grep "miscari_stoc|stoc|iesire|articol" core/facturi_api.py = 0).
+  - descarcarea cantitativ-valorica e o ruta MANUALA separata (POST /tenants/{id}/stocuri/iesire,
+    main.py:4859), cu corp {articol_id, data, cantitate} tastat de om, fara referinta la factura.
+  - `factura_linii` nu are `articol_id` — venitul nu poate fi atribuit pe produs.
+Ruptura NU e uniforma pe cele doua metode de gestiune:
+  - CANTITATIV-VALORIC (miscari_stoc cu articol_id): ruptura e DEFECT — acelasi eveniment economic
+    introdus de doua ori (factura + iesire manuala). Costul exista pe articol (miscari_stoc.valoare
+    la CMP), dar nu are cheie de join spre vanzare.
+  - GLOBAL-VALORIC (stocuri.descarcare_gv, lunar din totaluri contabile): ruptura NU e defect, e
+    METODA. Costul pe articol nu exista prin constructie. Profit pe produs e IMPOSIBIL structural.
+ALTERNATIVA RESPINSA: coloana `cost_achizitie` pe `factura_linii` — a doua sursa de adevar pentru
+acelasi numar (costul traieste deja in descarcarea de gestiune, Lot 4). Ar diverge tacut.
+ALTERNATIVA RESPINSA: `articol_id` pe `factura_linii` SINGUR — nu rezolva: leaga venitul de articol,
+dar costul tot nu are cheie de join spre factura (miscari_stoc fara factura_id). Jumatate de punte.
+LIMITA DECLARATA: pentru firmele pe GLOBAL-VALORIC, profit pe produs ramane gri PERMANENT, indiferent
+de ce se construieste ulterior. NU se promite in UI (acelasi principiu ca adeverinta de venit / forecast:
+nu promitem un flux pe care nu-l putem tine).
+RAMAS DESCHIS: puntea factura -> iesire stoc pentru firmele CANTITATIV-VALORICE (elimina dubla
+introducere si creeaza cheia de join venit<->cost) = LOT PROPRIU, nu acum. Carenta dublei introduceri
+= DE_FACUT.md sectiunea CARENTE pct.4.

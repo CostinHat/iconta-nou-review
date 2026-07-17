@@ -199,6 +199,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "datefirma", titlu: "Date firm\u0103", desc: "Datele cerute de ANAF \u00een declara\u021bii",
       ...CULORI_CARD.ardezie,
       icon: '<path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/>', activ: true },
+    { cheie: "rapoarte", titlu: "Rapoarte comerciale", desc: "Vânzări pe partener, durata de încasare, fișă client",  // rap_com_v1
+      ...CULORI_CARD.violet,
+      icon: '<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/>', activ: true },
   ];
 
   corp.innerHTML = `
@@ -294,6 +297,8 @@ function meniuFirma(corp, nav, t) {
   if (bEtransport) bEtransport.addEventListener("click", () => { nav.deschide("e-Transport", (c2) => ecranEtransport(c2, nav, t)); });
   const bBalanta = corp.querySelector("#fa-balanta");
   if (bBalanta) bBalanta.addEventListener("click", () => { nav.deschide("Balanță de verificare", (c2) => ecranBalanta(c2, nav, t)); });
+  const bRapoarte = corp.querySelector("#fa-rapoarte");  // rap_com_v1
+  if (bRapoarte) bRapoarte.addEventListener("click", () => { nav.deschide("Rapoarte comerciale", (c2) => ecranRapoarte(c2, nav, t), { lat: "larg" }); });
   const bBanca = corp.querySelector("#fa-banca");
   if (bBanca) {
     bBanca.addEventListener("click", () => { nav.deschide("Bancă", (c2) => ecranBanca(c2, nav, t)); });
@@ -2051,6 +2056,96 @@ async function ecranBalanta(corp, nav, t) {
       } catch (e) { zona.innerHTML = `<div class="mig-gol">${e.message || "eroare"}</div>`; }
     });
   };
+  deseneaza();
+}
+
+
+// [rap_com_v1] F144 v1 — Rapoarte comerciale (read-only). Doar felia constructibila
+// pe schema actuala (fisa client/furnizor, vanzari pe partener, durata de incasare).
+// Profit/articol/agent = decizie deschisa (DECIZII.md 17.07 + DE_FACUT.md CARENTE pct.4).
+async function ecranRapoarte(corp, nav, t) {
+  let an = new Date().getFullYear();
+  let fisaCui = "";
+
+  const randeazaFisa = async () => {
+    const zona = corp.querySelector("#r-fisa");
+    if (!zona) return;
+    if (!fisaCui) { zona.innerHTML = ""; return; }
+    zona.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+    let f;
+    try {
+      f = await api.get(`/tenants/${t.id}/rapoarte-comerciale/fisa?cui=${encodeURIComponent(fisaCui)}&de=${an}-01-01&pana=${an}-12-31`);
+    } catch (e) { zona.innerHTML = `<div class="mig-gol">${esc((e && e.mesaj) || "eroare")}</div>`; return; }
+    const s = f.sumar || {};
+    const rand = (r) => `
+      <tr><td>${dataRo(r.data)}</td><td>${esc(r.numar)}</td>
+          <td>${r.directie === "emisa" ? "Emisă" : "Primită"}</td>
+          <td class="fd-td-num">${bani(r.total)}</td>
+          <td class="fd-td-num">${bani(r.decontat)}</td>
+          <td class="fd-td-num">${bani(r.sold)}</td>
+          <td>${r.stare === "achitata" ? "achitată" : "deschisă"}</td></tr>`;
+    zona.innerHTML = (f.facturi || []).length ? `
+      <table class="fd-tabel">
+        <thead><tr><th>Data</th><th>Număr</th><th>Direcție</th>
+          <th class="fd-td-num">Total</th><th class="fd-td-num">Decontat</th>
+          <th class="fd-td-num">Sold</th><th>Stare</th></tr></thead>
+        <tbody>${f.facturi.map(rand).join("")}
+          <tr><td colspan="3"><b>Total (${s.nr})</b></td>
+            <td class="fd-td-num"><b>${bani(s.facturat)}</b></td>
+            <td class="fd-td-num"><b>${bani(s.decontat)}</b></td>
+            <td class="fd-td-num"><b>${bani(s.sold)}</b></td><td></td></tr>
+        </tbody>
+      </table>` : `<div class="mig-gol">Nicio factură pentru acest partener în perioadă.</div>`;
+  };
+
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+    let d;
+    try {
+      d = await api.get(`/tenants/${t.id}/rapoarte-comerciale?de=${an}-01-01&pana=${an}-12-31`);
+    } catch (e) { corp.innerHTML = `<div class="mig-gol">${esc((e && e.mesaj) || "eroare")}</div>`; return; }
+    const v = d.vanzari || { parteneri: [], total_net: 0 };
+    const di = d.durata_incasare || {};
+    const randVanzari = (v.parteneri || []).map((p) => `
+      <tr><td>${esc(p.nume)}</td><td>${esc(p.cui || "")}</td>
+          <td class="fd-td-num">${p.nr}</td>
+          <td class="fd-td-num">${bani(p.net)}</td></tr>`).join("");
+    const optParteneri = (d.parteneri || []).map((p) =>
+      `<option value="${esc(p.cui)}"${p.cui === fisaCui ? " selected" : ""}>${esc(p.nume)}</option>`).join("");
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Rapoarte comerciale</h2>
+      <p class="pf-intro">Anul ${an}
+        <button class="buton-secundar" id="r-prev" style="margin-left:12px">← an</button>
+        <button class="buton-secundar" id="r-next">an →</button></p>
+      <div class="caseta-info"><span class="ci-mesaj">Profit pe produs și vânzări pe articol/agent nu apar aici: vânzarea și descărcarea gestiunii sunt documente separate, iar liniile de factură nu sunt legate de catalogul de produse.</span></div>
+
+      <h3 class="pf-subtitlu">Durata medie de încasare</h3>
+      <p class="pf-intro">${di.zile_medii != null
+        ? `<b>${di.zile_medii} zile</b> · din ${di.nr_facturi} facturi încasate integral`
+        : "Nicio factură încasată integral în perioadă."}</p>
+
+      <h3 class="pf-subtitlu">Vânzări pe partener</h3>
+      ${(v.parteneri || []).length ? `
+        <table class="fd-tabel">
+          <thead><tr><th>Partener</th><th>CUI</th>
+            <th class="fd-td-num">Facturi</th><th class="fd-td-num">Vânzări (net)</th></tr></thead>
+          <tbody>${randVanzari}
+            <tr><td colspan="3"><b>Total</b></td>
+              <td class="fd-td-num"><b>${bani(v.total_net)}</b></td></tr>
+          </tbody>
+        </table>` : `<div class="mig-gol">Nicio vânzare în perioadă.</div>`}
+
+      <h3 class="pf-subtitlu">Fișă client/furnizor</h3>
+      <p><select id="r-fisa-sel" class="camp-input" style="max-width:360px">
+        <option value="">— alege partenerul —</option>${optParteneri}</select></p>
+      <div id="r-fisa"></div>`;
+    corp.querySelector("#r-prev").addEventListener("click", () => { an--; deseneaza(); });
+    corp.querySelector("#r-next").addEventListener("click", () => { an++; deseneaza(); });
+    const sel = corp.querySelector("#r-fisa-sel");
+    sel.addEventListener("change", () => { fisaCui = sel.value; randeazaFisa(); });
+    if (fisaCui) randeazaFisa();
+  };
+
   deseneaza();
 }
 
