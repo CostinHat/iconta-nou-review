@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conectare SPV — iConta</title>
+  <link rel="stylesheet" href="/static/stil.css?v=6">
+</head>
+<body>
+  <!-- pagina de retur dupa autorizarea ANAF (fila deschisa din Setari -> Conectare SPV).
+       Clase DS: .panou (cap.16), .cap-titlu, .msg-ok/.msg-eroare (cap.6), .buton-primar (cap.1),
+       .camp-ajutor (cap.6), tokeni (cap.15). Centrare = pozitionare inline (cap.0). -->
+  <div style="min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px">
+    <div class="panou" style="max-width:460px;width:100%;text-align:center">
+      <div class="cap-titlu">Conectare SPV</div>
+      <div id="spv-cb-mesaj" style="margin:16px 0"></div>
+      <a class="buton-primar" href="/" style="display:inline-block;text-decoration:none">Deschide iConta</a>
+      <div class="camp-ajutor" style="margin-top:12px">Poți închide această filă.</div>
+    </div>
+  </div>
+  <script type="module">
+    const p = new URLSearchParams(location.search);
+    const el = document.getElementById("spv-cb-mesaj");
+    if (p.get("ok")) {
+      el.className = "msg-ok";
+      el.textContent = "✓ Autorizare reușită. iConta e conectat la SPV pentru cabinetul tău.";
+    } else {
+      el.className = "msg-eroare";
+      el.textContent = "Autorizarea nu a reușit: " + (p.get("eroare") || "eroare necunoscută") +
+                       ". Poți încerca din nou din Setări → Conectare SPV.";
+    }
+  </script>
+</body>
+</html>

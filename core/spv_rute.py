@@ -17,10 +17,15 @@ API (JSON), nu ecran.
 APEL REAL ANAF: /anaf/oauth/callback -> finalizeaza_autorizare (schimb code->token). Se
 executa doar cu state valid + code real, adica la testul real cu certificatul (pasul 5).
 """
+import urllib.parse
+
 from fastapi import Depends, HTTPException
+from fastapi.responses import RedirectResponse
 
 from core import db
 from core import spv_conector
+
+_PAGINA_RETUR = "/static/spv_callback.html"
 
 MODUL = "spv_rute"
 
@@ -51,13 +56,20 @@ def monteaza(app, dep_cabinet):
         """
         Callback OAuth (URL inregistrat la ANAF, exact). Fara auth de sesiune: identitatea
         cabinetului vine din state-ul semnat. State invalid => iesire INAINTE de orice apel ANAF.
+        Redirecteaza (303) catre pagina prietenoasa de retur (succes/eroare), nu JSON:
+        e o fila de browser deschisa din ecranul de conectare.
         """
+        def _retur(params):
+            return RedirectResponse(_PAGINA_RETUR + "?" + urllib.parse.urlencode(params), status_code=303)
         if error or not code:
-            return {"ok": False, "eroare": error or "cod lipsa"}
+            return _retur({"eroare": error or "cod lipsa"})
         try:
             firm = spv_conector.verifica_state(state)
         except spv_conector.EroareSpv as e:
-            return {"ok": False, "eroare": str(e)}
-        with db.get_conn() as conn:
-            token_id = spv_conector.finalizeaza_autorizare(conn, firm, code)  # APEL REAL ANAF
-        return {"ok": True, "firm": firm, "token_id": token_id}
+            return _retur({"eroare": str(e)})
+        try:
+            with db.get_conn() as conn:
+                spv_conector.finalizeaza_autorizare(conn, firm, code)  # APEL REAL ANAF
+        except spv_conector.EroareSpv as e:
+            return _retur({"eroare": str(e)})
+        return _retur({"ok": "1"})
