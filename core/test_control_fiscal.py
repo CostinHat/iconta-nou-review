@@ -90,3 +90,50 @@ def test_verdict_neclar_fara_restanta_gri_nu_verde():
 # D5: cod mort sters
 def test_trimestre_pana_la_sters():
     assert not hasattr(cf, "_trimestre_pana_la")
+
+
+# FAZA 3 — D394 (doar platitori de TVA, perioada = perioada TVA)
+def test_d394_platitor_lunar_datorat():
+    vector = {"platitor_tva": True, "tip_decont": "lunar"}
+    rez = cf.declaratii_datorate(vector, are_salariati=False, azi=date(2026, 2, 1))
+    assert ("D394", 2025, 12) in _chei(rez["datorate"])
+
+
+def test_d394_neplatitor_absent():
+    vector = {"platitor_tva": False}
+    rez = cf.declaratii_datorate(vector, are_salariati=False, azi=date(2026, 6, 1))
+    assert "D394" not in {d["tip"] for d in rez["datorate"]}
+    assert "D394" not in {n["tip"] for n in rez["neclar"]}
+
+
+def test_d394_platitor_None_gri():
+    rez = cf.declaratii_datorate({"platitor_tva": None}, are_salariati=False, azi=date(2026, 6, 1))
+    assert "D394" in {n["tip"] for n in rez["neclar"]}
+
+
+# FAZA 3 — D406 SAF-T (platitor: perioada TVA; neplatitor: trimestrial; sursa OPANAF 1783/2021)
+def test_d406_platitor_lunar_datorat():
+    vector = {"platitor_tva": True, "tip_decont": "lunar"}
+    rez = cf.declaratii_datorate(vector, are_salariati=False, azi=date(2026, 2, 1))
+    assert ("D406", 2025, 12) in _chei(rez["datorate"])
+
+
+def test_d406_neplatitor_trimestrial_datorat():
+    # neplatitorul NU are perioada fiscala TVA -> D406 TRIMESTRIAL (nu GRI, nu lunar)
+    vector = {"platitor_tva": False}
+    rez = cf.declaratii_datorate(vector, are_salariati=False, azi=date(2026, 2, 1))
+    chei = _chei(rez["datorate"])
+    assert ("D406", 2025, 12) in chei                 # T4 2025, termen 31 ian 2026
+    assert "D406" not in {n["tip"] for n in rez["neclar"]}
+
+
+def test_d406_platitor_tip_decont_None_gri():
+    # platitor CU periodicitate necunoscuta -> GRI (nu se ghiceste), principiul D3
+    vector = {"platitor_tva": True, "tip_decont": None}
+    rez = cf.declaratii_datorate(vector, are_salariati=False, azi=date(2026, 6, 1))
+    assert "D406" in {n["tip"] for n in rez["neclar"]}
+
+
+def test_d406_platitor_None_gri():
+    rez = cf.declaratii_datorate({"platitor_tva": None}, are_salariati=False, azi=date(2026, 6, 1))
+    assert "D406" in {n["tip"] for n in rez["neclar"]}

@@ -64,6 +64,19 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     def gri(tip, cauza):
         neclar.append({"tip": tip, "cauza": cauza})
 
+    def emite_tva(tip, tip_scad, cauza_periodicitate):
+        """Emite `tip` pe perioada fiscala TVA (lunar/trimestrial dupa tip_decont).
+        tip_decont necunoscut la un platitor -> gri cu cauza (principiul D3)."""
+        d = (tip_decont or "").strip().lower()
+        if d == "trimestrial":
+            for a, tri, lf in per_trim:
+                adauga(tip, a, lf, f"T{tri}", tip_scad)
+        elif d == "lunar":
+            for a, m in per_luni:
+                adauga(tip, a, m, _LUNI_NUME[m], tip_scad)
+        else:
+            gri(tip, cauza_periodicitate)
+
     platitor_tva = vector.get("platitor_tva")
     tip_decont = vector.get("tip_decont")
     regim_fiscal = vector.get("regim_fiscal")
@@ -73,16 +86,17 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     if platitor_tva is None:
         gri("D300", "Platitor de TVA necompletat in vectorul fiscal - nu pot sti daca datorezi D300.")
     elif platitor_tva:
-        decont = (tip_decont or "").strip().lower()
-        if decont == "trimestrial":
-            for a, tri, lf in per_trim:
-                adauga("D300", a, lf, f"T{tri}", "d300")
-        elif decont == "lunar":
-            for a, m in per_luni:
-                adauga("D300", a, m, _LUNI_NUME[m], "d300")
-        else:
-            gri("D300", "Tip decont TVA necompletat - nu pot sti periodicitatea D300 (lunar/trimestrial).")
+        emite_tva("D300", "d300", "Tip decont TVA necompletat - nu pot sti periodicitatea D300 (lunar/trimestrial).")
     # platitor_tva == False -> nu se datoreaza D300 (cunoscut)
+
+    # D394 informativa livrari/achizitii nationale — doar platitori normali de TVA (art.316),
+    # periodicitate = perioada fiscala TVA. Termen 30 luna urmatoare (scadente.py d394).
+    # OPANAF 3769/2015, actualizat OPANAF 2194/2025.
+    if platitor_tva is None:
+        gri("D394", "Platitor de TVA necompletat - nu pot sti daca datorezi D394.")
+    elif platitor_tva:
+        emite_tva("D394", "d394", "Tip decont TVA necompletat - nu pot sti periodicitatea D394.")
+    # neplatitor -> fara D394
 
     # D112 salariati (lunar) — are_salariati e fapt din DB, mereu cunoscut
     if are_salariati:
@@ -112,6 +126,20 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     elif operatiuni_ic:
         for a, m in per_luni:
             adauga("D390", a, m, _LUNI_NUME[m], "d390")
+
+    # D406 SAF-T — obligatorie tuturor din 2025 (mici de la 01.01.2025). Periodicitate:
+    # la PLATITORII de TVA = perioada fiscala TVA (lunar/trimestrial); la NEplatitori =
+    # TRIMESTRIAL (nu au perioada fiscala TVA). Sursa: OPANAF 1783/2021 Anexa nr.4,
+    # verificat 17.07.2026 la legislatie.just.ro/public/DetaliiDocument/248326 ("Contribuabilii
+    # care nu sunt inregistrati in scopuri de TVA transmit Declaratia D406 trimestrial").
+    # Termen: ultima zi a lunii urmatoare perioadei (scadente.py d406).
+    if platitor_tva is None:
+        gri("D406", "Platitor de TVA necompletat - nu pot sti periodicitatea D406.")
+    elif platitor_tva:
+        emite_tva("D406", "d406", "Tip decont TVA necompletat - nu pot sti periodicitatea D406.")
+    else:
+        for a, tri, lf in per_trim:   # neplatitor de TVA -> trimestrial
+            adauga("D406", a, lf, f"T{tri}", "d406")
 
     return {"datorate": datorate, "neclar": neclar}
 

@@ -133,7 +133,10 @@ def _data_nominala(tip, an, luna=None, trim=None):
     if tip in _ULTIMA_ZI:
         zi = _ultima_zi_luna(an_s, luna_s)
     else:
-        zi = _ZIUA.get(tip, 25)
+        # ziua nominala, dar NICIODATA peste ultima zi a lunii: d394 are ziua 30, care nu
+        # exista in februarie -> ultima zi (principiul legal: termen pe zi inexistenta = ultima
+        # zi a lunii). 25 nu e afectat (orice luna are >=28 zile).
+        zi = min(_ZIUA.get(tip, 25), _ultima_zi_luna(an_s, luna_s))
     return date(an_s, luna_s, zi)
 
 
