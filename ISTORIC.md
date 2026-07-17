@@ -1154,3 +1154,21 @@ data originala a evenimentului, marcate "arhivat 17.07". Codul ramane sursa de a
   Sanatate server. CORECTIE eticheta: semaforul "Sanatate server" e pe CPU/RAM/disk/uptime/DB/erori
   500+ (admin_sanatate.js), NU "pe tokeni" cum spunea eticheta din CARENTE.
 
+## Curatenie normative Pasul 2 (17.07) — markere REZOLVAT scoase din DE_FACUT.md
+
+Sectiuni din DE_FACUT.md verificate la sursa si curatate. Faptele erau deja jurnalizate aici, deci
+NU s-au duplicat entries — s-au scos doar markerele stale din backlog, cu trimitere la acoperirea
+existenta:
+- **§2 Blocate — D394 desktop**: rezolvat, valideaza headless prin core/duk.py (nu GUI). Acelasi
+  fapt ca "REZOLVARI CONFIRMATE 17.07" de mai sus. In DE_FACUT ramane doar o nota de rezolvare.
+- **§4 Infra — systemd 8010**: (REZOLVAT 13.07) scos din backlog; deja acoperit la ISTORIC:17
+  ("iconta-nou.service, systemd, enabled, Restart=always"). Verificat 17.07: systemctl enabled+active.
+  RAMAS deschis: reboot kernel (/var/run/reboot-required inca prezent, 6.8.0-124/-134 in asteptare).
+- **§5 Iteratii — cod 10 CM**: nota "neintegrat" era contrazisa de cod; rand CORECTAT in DE_FACUT
+  (nu sters, la cererea lui Costin), cu dovada. Vezi "REZOLVARI CONFIRMATE 17.07" pt integrare.
+- **§6 Ecrane firma neconstruite**: (REZOLVAT 13.07) sectiune scoasa din DE_FACUT; deja acoperita la
+  ISTORIC:19 + :37-53 (Control fiscal per firma LIVE commit dfa4be9, Declaratii per firma decl_firma_v1).
+  Verificat 17.07: firme.js:12/253 + declaratii.js:25 [decl_firma_v1], vector_fiscal_api.py, bilant_api.py.
+- **ANEXA Inventar functionalitati** (DE_FACUT): stersa ca duplicat al FUNCTIONALITATI.csv (registru
+  canonic din 16.07, 164 pozitii). Doua inventare = drift. In DE_FACUT ramane doar pointer la CSV.
+

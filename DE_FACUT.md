@@ -16,12 +16,9 @@ Ultima actualizare: 13.07.2026 seara (partea 5)
 - P2.7 Operațiuni speciale (5 eșantion): leasing, avansuri, sponsorizare, dividende, provizioane
 - P2.8 Partidă simplă: import bancă → Fișă D212 (vs calcul manual)
 
-### Cere Costin singur [C]
-- P1.1 Creează cont nou end-to-end: înregistrare → firmă → factură → contare → validare → balanță
-- P1.4 Recurente: șablon → cron → factură emisă
-- P1.5 WooCommerce: comandă demo → sincronizare → factură + contare
-- P2.9 KPI+forecast portal vs balanță; P2.10 Consolidare = suma firmelor; P2.11 AI learning
-- P5.24 Backup/restore: pg_dump → restore pe DB temp → login OK
+### Cere Costin singur [C] — DONE 14.07
+Rulate 14.07 (vezi jos "Actualizare 14.07" → RAMASE): P1.1, P1.4, P1.5 (simulat), P2.9-P2.11, P5.24.
+Backup automat LIVE (systemd timer zilnic 03:00, retentie 7z). Raman deschise doar [D] si [T].
 
 ### Cere telefon [T] — după HTTPS (nou.iconta.eu e sus)
 - P4.18 PWA: (FACUT iOS 14.07 - standalone+offline OK) ramas doar Android, verificare secundara
@@ -29,7 +26,9 @@ Ultima actualizare: 13.07.2026 seara (partea 5)
 - P4.20/21 Responsive portal <400px, landing <900px/<560px
 
 ## 2. Blocate — DUK / desktop ANAF
-- **D394** pe DUKIntegrator (validare desktop)
+- (REZOLVAT, arhivat 17.07) D394 valideaza acum headless prin core/duk.py (jar, nu GUI desktop) —
+  blocajul "validare desktop" nu mai exista (duk.py:154 "dovedit 15.07", CLAUDE.md status 16.07).
+  Nimic blocat pe desktop-DUK azi. (e-Transport prin API SPV = blocaj extern SPVWS2, tracked in CARENTE.)
 
 ## 3. Sesiune desktop (Word, nu SSH)
 - (PARTIAL) Audit design 12.07: INCHISE (canonic + verificator TOTAL 0 pe toate 30 ecrane): formatare bani/data/procent, culori-card, iconite, tipografie, culori/borduri/raza. Design System v2.9 + verificator 9 reguli, la zi.
@@ -46,96 +45,33 @@ starea reverificata azi:
    SPV (core/etransport.py: xml_notificare); trimiterea directa prin API SPV NU exista — blocaj
    extern SPVWS2 (acelasi blocant ca restul apelurilor SPV). Verificat 17.07: etransport.py are
    doar xml_notificare, nicio functie de trimitere.
-2. **Testare pilot P1-P5**: sectiunea de test business (P1-P5) intacta, niciun punct bifat. Task de
-   proces (checklist manual pe date reale), neverificabil prin cod. Deschis.
+2. **Testare pilot P1-P5**: partial. [C] (Costin) rulate 14.07 (P1.1/P1.4/P1.5-simulat/P2.9-2.11/
+   P5.24) + PWA iOS (P4.18). RAMAN: [D] validare fiscala cu Daniela (P1.2/P1.3/P2.6-2.8) + [T] telefon
+   (P4.19 pozeaza bon, P4.20/21 responsive, Android). Checklist manual, neverificabil prin cod.
 3. **Audit design ramas**: spacing/padding inline (inchis explicit ca datorie acceptata), migrare
    paleta iconite (decizie amanata), anatomia ferestrei + alinierea tabelelor nesistematizate vizual
    (~20/30 ecrane nevazute cu ochii; verificatorul e curat pe ele dar nu prinde asezarea).
 
 ## 4. Infra
-- **Reboot kernel** — "System restart required". Fereastră liniștită (downtime clienți, Daniela pilot).
-- (REZOLVAT 13.07) systemd pentru 8010: iconta-nou.service creat, enabled la boot, EnvironmentFile db.env+api_keys.env, Restart=always. Testat functional (login 401 corect din DB). Restart: sudo systemctl restart iconta-nou. Unit in repo: config_referinta_iconta-nou.service.
+- **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
+  6.8.0-117, in asteptare 6.8.0-124/-134). Fereastra linistita (downtime clienti, Daniela pilot).
+  (systemd 8010 REZOLVAT 13.07 — arhivat, vezi ISTORIC:17 "iconta-nou.service enabled".)
 
 ## 5. Iterații viitoare (nu urgente)
-- Cod 10 CM (reducere timp muncă) — exclus din dropdown; `calcul_cm_cod10` neintegrat în flux.
+- Cod 10 CM (reducere timp muncă, art. 19) — INTEGRAT, nu mai e iterație viitoare (corectat 17.07:
+  nota veche "exclus din dropdown, `calcul_cm_cod10` neintegrat" era contrazisă de cod). Dovadă:
+  `calcul_cm_cod10` definit (salarizare.py:208) + apelat în flux real (salariati_api.py:222) + în
+  dropdown (flux_concediu.js:14) + câmp venit condiționat (:105) + testat (test_salarizare.py).
+  Vezi ISTORIC "REZOLVĂRI CONFIRMATE 17.07".
 - raporteaza.js — verifică vizual data "cu_ora" în feed (migrat azi).
 - Verifică date CM de test invalide în alte tenant-uri (CCMAD corupt deja șters din tenant_002).
 
-## 6. (REZOLVAT 13.07) Ecrane firma neconstruite
-- Control fiscal per firma: LIVE (partea 3). Declaratii per firma: LIVE (partea 4, decl_firma_v1). Vector fiscal: exista in firma_profil + ecran in Migrare. Card Produse: reconectat (partea 4). Sectiunea inchisa.
-
 ---
 
-## ANEXA — Inventar functionalitati (referinta pentru testare)
-(mutat din ICONTA_TESTARE.md ca sa avem DOUA documente, nu trei)
-
-## A. INVENTAR FUNCTIONALITATI
-
-### 1. Cont & acces
-- Landing + inregistrare cabinet (CUI verificat ANAF, provisioning tenant automat)
-- Login (cabinet/client/superadmin), magic-link client
-- Suspendare cabinet (blocare instant per-request)
-- Chei API publice per cabinet (Setari cont)
-
-### 2. Portal client
-- Acasa: semafor ANAF colapsabil
-- Facturi (istoric, emitere, detalii, storno, model)
-- Declaratii depuse, Documente (balanta PDF + declaratii)
-- Solicitari (chat bidirectional + email), Povestea lunii, Recomanda
-- Pozeaza bon (multi-imagine, camera pe mobil)
-- Cifrele firmei: KPI YTD + Previziune bani 8 saptamani
-- PWA: manifest + service worker (test pe HTTPS)
-
-### 3. Facturare
-- Emitere inteligenta (CUI ANAF, cote AI pe linii, numerotare auto)
-- Proforme + avize (contoare separate, transformare in factura)
-- Facturi recurente (sabloane, cron 07:00, UI lista/adaugare/toggle)
-- Storno, contare automata (ciorna), TVA la incasare
-- Regim marja art. 312 / turism art. 311
-- WooCommerce: import comenzi -> facturi (config per firma, cron 07:30, idempotent)
-
-### 4. Contabilitate
-- Registru jurnal: ciorna/validata, editor linii, validare
-- Reconciliere bancara: import extras (XLS/CSV), matching exact/combo/FIFO,
-  ignora/readu, contare, AI sugestie invatata + semafor incredere
-- AI learning: ai_corectii per tenant (validari + corectii contabil)
-- Casa, Stocuri GV+CV, Retetar HoReCa, Raport Z, Amortizare MF
-- Period locking (perioade blocate, 423 la scriere)
-- Balanta de verificare (cabinet + portal), fallback denumiri OMFP
-- Operatiuni speciale (28): curs valutar, leasing, credite, avansuri,
-  necorporale, reevaluare, provizioane, productie, obiecte inventar,
-  decontari asociati, sponsorizari, subventii, comodat/chirii, deconturi,
-  bacsis, SGR, perisabilitati, zilieri, inventariere, lichidare, ONG etc.
-- Partida simpla PFA/II/IF: rip_operatiuni, import banca/casa, Fisa D212,
-  Registru-inventar
-
-### 5. Salarizare
-- Salariati CRUD, stat de plata, fluturasi PDF
-- Concedii medicale (Ordinul 506/1030/2026)
-- D112 cu CM (validat DUKIntegrator)
-
-### 6. Declaratii & raportari
-- D100, D101, D112, D205, D300, D301, D390, D394, D406 (dispatch core)
-- Bilant anual S1005/S1003 (XML validat)
-- e-Transport v1 (XML pentru upload manual)
-- Verificatoare: echilibru, trezorerie, TVA, coerenta stocuri
-- Control fiscal (semafor cross-portofoliu), Termene
-
-### 7. Cabinet
-- Firme (fisa cu ~18 module), De validat, Asistenti (competente, 4 ochi)
-- Sinteza zilei, Activitate, Capacitate, Pachete lunare
-- Consolidare portofoliu (KPI toate firmele + total)
-- Setari cont (profil, parola, cabinet, competente, chei API)
-
-### 8. API public (/api/v1, X-Api-Key)
-- GET firme / facturi / kpi / balanta
-
-### 9. Admin iConta (superadmin)
-- Raportari, Activitate cabinete (+suspendare), Sanatate server
-  (metrici 5 min, grafice SVG, alerte email Brevo)
-
-### 10. Migrare (7 straturi, testate)
-Firme, solduri initiale, solduri parteneri, salariati, asociati, MF, istoric declaratii
+## ANEXA — Inventar functionalitati
+Stersa 17.07: era duplicat al FUNCTIONALITATI.csv (registru canonic din 16.07, 164 pozitii cu
+ID / Stare / Sursa cod / Temei legal / Testat). Doua inventare = drift garantat. Sursa unica:
+**FUNCTIONALITATI.csv**.
 
 ## Actualizare 14.07.2026 (sfarsitul zilei)
 - INCHISE azi: F113, F152, F153 (gratuit v1+v2), descrieri CSV 103/103, dosarul rutelor 0a, audit vizual complet (~22 ecrane), regresia tenant_template
