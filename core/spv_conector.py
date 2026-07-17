@@ -238,6 +238,32 @@ def ia_token_activ(conn, accounting_firm_id):
     }
 
 
+def stare_conexiune(conn, accounting_firm_id, acum_dt=None):
+    """
+    Stare conexiune pentru ecran (FARA secrete, FARA apel ANAF): conectat + expirari.
+    'expira_curand' = access_expira sub marja cronului. None-uri daca nu e conectat.
+    """
+    acum_dt = acum_dt if acum_dt is not None else datetime.now(timezone.utc)
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT serial_certificat, access_expira, refresh_expira
+              FROM public.spv_token
+             WHERE accounting_firm_id = %s AND activ = true
+             ORDER BY id DESC LIMIT 1
+        """, (int(accounting_firm_id),))
+        r = cur.fetchone()
+    if not r:
+        return {"conectat": False}
+    prag = acum_dt + timedelta(days=MARJA_REFRESH_ZILE)
+    return {
+        "conectat": True,
+        "serial_certificat": r[0],
+        "access_expira": r[1].isoformat() if r[1] else None,
+        "refresh_expira": r[2].isoformat() if r[2] else None,
+        "expira_curand": bool(r[1] and r[1] <= prag),
+    }
+
+
 def dezactiveaza_token(conn, token_id):
     """activ=false (refresh esuat / revocat). Cronul + notificarea sunt separate."""
     with conn.cursor() as cur:

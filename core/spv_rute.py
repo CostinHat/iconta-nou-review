@@ -37,6 +37,15 @@ def monteaza(app, dep_cabinet):
         url, _state = spv_conector.url_autorizare(firm)
         return {"url": url, "expira_sec": spv_conector.STATE_DURATA_SEC}
 
+    @app.get("/spv/stare")
+    def spv_stare(ctx=Depends(dep_cabinet)):
+        """Starea conexiunii SPV pentru ecran (fara secrete, fara apel ANAF)."""
+        firm = ctx.get("firm")
+        if not firm:
+            raise HTTPException(400, "utilizatorul nu are cabinet asociat")
+        with db.get_conn() as conn:
+            return spv_conector.stare_conexiune(conn, firm)
+
     @app.get("/anaf/oauth/callback")
     def anaf_oauth_callback(code: str = "", state: str = "", error: str = ""):
         """

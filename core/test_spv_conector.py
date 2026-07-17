@@ -179,6 +179,19 @@ def test_refresh_salveaza_ambele_valori_noi(conn, monkeypatch):
     assert dupa["access_token"] != "acc-0" and dupa["refresh_token"] != "ref-0"
 
 
+def test_stare_conexiune_neconectat(conn):
+    assert s.stare_conexiune(conn, FIRM_TEST)["conectat"] is False
+
+
+def test_stare_conexiune_conectat_fara_secrete(conn):
+    _salveaza_initial(conn, serial="SER-1")
+    st = s.stare_conexiune(conn, FIRM_TEST)
+    assert st["conectat"] is True
+    assert st["serial_certificat"] == "SER-1"
+    assert "access_token" not in st and "refresh_token" not in st  # ecranul NU vede secrete
+    assert st["expira_curand"] is False   # expira peste 90 zile, marja e 7
+
+
 def test_refresh_esuat_dezactiveaza_tokenul(conn, monkeypatch):
     id0 = _salveaza_initial(conn, refresh="ref-0")
     tok = s.ia_token_activ(conn, FIRM_TEST)

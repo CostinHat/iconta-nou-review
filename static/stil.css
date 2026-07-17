@@ -2027,6 +2027,13 @@ html, body { overflow-y: hidden; }
 }
 .caseta-atentie .ca-mesaj { font-size: var(--text-mic); color: #7a2020; line-height: 1.4; margin-bottom: 12px; }
 .caseta-atentie .ca-actiuni { display: flex; gap: 8px; }
+/* caseta-info (v2.12): nota informativa STANDING, ne-distructiva (albastru-pal, nu rosu).
+   Distincta semantic de caseta-atentie (rosu = atentionare/actiune distructiva). */
+.caseta-info {
+  background: #eef4fd; border: 1px solid #b9c2cf; border-radius: var(--raza);
+  padding: 12px 14px; margin: 14px 0; max-width: 560px;
+}
+.caseta-info .ci-mesaj { font-size: var(--text-mic); color: var(--ardezie); line-height: 1.4; }
 /* ============ sfarsit STANDARD_BUTOANE ============ */
 /* [STANDARD_BUTOANE_MAPARE] clase vechi -> standard */
 /* strat de suprascriere eliminat — butoanele poarta clasele canonice (Lot BUTOANE) */

@@ -31,7 +31,7 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect"]}
+                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -68,6 +68,11 @@ for nume, t in fisiere.items():
         # Semnatura interzisa: randeazaMeniu*(continut,...) sau handler .cab-card care scrie in continut.
         if re.search(r'randeazaMeniu\w+\(\s*continut\b', lin):
             rap["card_inline"].append((nume, i, "", lin.strip()[:66]))
+        # CASETA_INFO (cap.5): nota informativa standing reprodusa ad-hoc inline (fundalul
+        # casetei-info #eef4fd) in loc de clasa .caseta-info. Culorile de paleta/iconita
+        # (#e9f0fe) au reguli proprii (CULOARE_CARD_HEX); nu intra aici.
+        if re.search(r'style="[^"]*background:\s*#eef4f[df]', lin, re.I) and "caseta-info" not in lin:
+            rap["caseta_info"].append((nume, i, "", lin.strip()[:66]))
         # CHECKBOX_DIALECT (cap.2): <label> cu checkbox si text-eticheta, dar fara .set-bifa
         # (dialect inline sau clasa ad-hoc). Excludem label-urile care POARTA set-bifa.
         if re.search(r'<label(?![^>]*set-bifa)[^>]*>\s*<input[^>]*type="checkbox"', lin) and "set-bifa" not in lin:

@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.11 · 13 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.12 · 17 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -79,6 +79,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 ## 5. Casete de atenționare, confirmări și INPUT
 
 - Stil unic: `.caseta-atentie` — fundal #fdf3f3, bordură 2px #d98c8c, mesaj în `.ca-mesaj`. Butoanele stau SUB casetă, pe clase canonice.
+- **Casetă informativă standing (v2.12)**: `.caseta-info` — fundal albastru-pal #eef4fd, bordură 1px #b9c2cf, mesaj în `.ci-mesaj`. Pentru o notă IMPORTANTĂ, PERMANENTĂ, informativă (nu o confirmare, nu un mesaj de stare tranzitoriu prin `arataMesaj`). Distinctă semantic de `.caseta-atentie`: roșul rămâne EXCLUSIV pentru atenționare/acțiune distructivă; informația neutră NU se colorează roșu. INTERZIS o notă informativă ad-hoc cu fundal albastru-pal inline (`style="background:#eef4fd…"`) — se folosește `.caseta-info`. Prins de regula CASETA_INFO în verificator.
 - **`confirm()`, `alert()` și `prompt()` native de browser sunt INTERZISE** (v2.0 — include prompt). Confirmări via `confirmaCaseta(zona, mesaj, laConfirm, {textOk})`. Input via formular în-ecran (câmp + buton), niciodată prompt nativ.
 - Mesajul spune exact ce se întâmplă și dacă e ireversibil.
 
@@ -165,6 +166,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Exemple conforme: `pac-rezumat`, `pac-deschide-zona` (dashed), `grila-campuri-compacta`.
 
 ## Changelog
+**v2.12 (17.07.2026)** — casetă informativă standing `.caseta-info` (albastru-pal #eef4fd, ne-distructivă), distinctă semantic de `.caseta-atentie` (roșu = distructiv); cap.5. Motivată de ecranul de conectare SPV (avertismentul de 24h cere o notă importantă, permanentă, informativă, fără regulă până acum). Regula CASETA_INFO în verificator (prinde note info ad-hoc cu fundal albastru-pal inline).
 **v2.11 (12.07.2026)** — panouri de conținut: clasa canonică `.panou` (alb + bordură #b9c2cf); reparate `pac-rezumat`/`pac-deschide-zona`/`grila-campuri-compacta` (gri pe gri); cap.16 nou. Carduri: 73 hex literal → `...CULORI_CARD.cheie` + regula CULOARE_CARD_HEX; decizie spacing închisă (rămâne literal).
 **v2.9 (12.07.2026)** — canonizat culorile/bordurile/raza din cod: 3 borduri + 6 culori ad-hoc → `var()`, 4 border-radius → `var(--raza)`; cap.15 nou + reguli RADIUS_INLINE (și culoare ad-hoc) în verificator. Landing exclus (sistem separat).
 **v2.8 (12.07.2026)** — sistem de tipografie: 6 tokeni de dimensiune + 7 clase de tip (stil.css); eliminat toate font-size literale inline (18 migrate în 9 ecrane); cap.14 nou + regula FONT_INLINE în verificator.
