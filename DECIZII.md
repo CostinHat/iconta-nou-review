@@ -96,7 +96,7 @@ Codul fiscal, a ce tipuri de absenta prorateaza. Risc fiscal pentru castig de co
 LIMITA: se reevalueaza cand apare un caz real (contabil care cere proratare automata pe absente
 nemotivate). Pana atunci contabilul ajusteaza manual.
 
-### 17.07.2026 F136 adeverinte: un singur tip, generic; NU "pentru banca"  (specificatie, neimplementat)
+### 17.07.2026 F136 adeverinte: un singur tip, generic; NU "pentru banca"  (LIVE, commit 6891bfc; core/adeverinta.py)
 DECIZIE: o singura adeverinta de salariat, generica, cu camp liber "scopul" si camp "mentiuni".
 TEMEI LEGAL (verificat la sursa): art. 34 alin. (5) Codul Muncii (Legea 53/2003) - angajatorul e
 obligat sa elibereze document care atesta ACTIVITATEA DESFASURATA, DURATA ACTIVITATII, SALARIUL,
@@ -111,3 +111,10 @@ adeverinta se mai cere doar in situatii speciale. Am fi construit pentru un flux
 cu o promisiune pe care n-o putem tine.
 CAZURI REALE RAMASE (fara format impus): gradinita/scoala, viza, notar, inchiriere, medic de
 familie, instanta. In ecran: nota onesta "pentru credit bancar, banca cere formularul propriu".
+DECIZII DE IMPLEMENTARE (17.07): nr. de iesire = input MANUAL al contabilului (nu contor cu
+schema) - F146 registratura l-ar automatiza; salariul = brut+net pe o luna de referinta (an/luna),
+net calculat prin salarizare.calcul_salariu. Datele auto: firma+salariat+net din DB; restul (CI,
+CIM, tip contract, departament, vechime, scop, mentiuni) = input.
+LIMITA: nu acoperim cerintele exacte per institutie (variaza) - doar minimul legal art.34(5).
+Vechimea "in munca/meserie/specialitate" totala (cariera) nu e in DB -> input manual; din
+data_angajare se poate pre-completa doar vechimea in ACEASTA firma.
