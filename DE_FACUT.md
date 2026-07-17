@@ -178,3 +178,36 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
 
 RAMAS — cere ochii/telefonul, NU SSH: **vezi CHECKLIST_BROWSER.md** (PWA P4.18-19, responsive
 P4.20-21, audit vizual ~12 ecrane ramase). Grup fiscal/D101G si ONG: lasate deoparte (fara cod nou).
+
+### REZULTAT INVENTAR (17.07.2026) - comparatie mecanica cu lista oficiala ANAF
+Sursa: static.anaf.ro/static/10/Anaf/Declaratii_R/descarcare_declaratii.htm
+
+CONSTRUITE (10 motoare + bilanturi): D100, D101, D112, D205, D212 (prin rip_api,
+flux separat de declaratii_api), D300, D301, D390, D394, D406 (+ _active, _stocuri),
+bilanturi S1005/S1003.
+
+LIPSA - NIVEL 2 (rutina de cabinet, MERITA construite):
+  D106 - dividende cuvenite actionarilor. Orice SRL care distribuie profit.
+         Cea mai frecventa din tot ce lipseste.
+  D230 - redirectionare 3.5% impozit. Anual, multi salariati.
+  D307 - ajustare TVA la transfer de active.
+
+LIPSA - NIVEL 3 (nisa, de decis explicit; nu se cara nedecise):
+  D204 (asocieri fara pers. juridica), D104/D107 (ONG), D108 (reprezentante),
+  D180 (nota certificare consultant fiscal), D223, D209, D221.
+
+LIPSA - NIVEL 4 (RESPINS: administrative, nu se genereaza din evidenta contabila;
+contabilul le face direct in SPV la infiintare/mentiuni):
+  D010, D017, D060, D093.
+
+LIPSA - marginale (de respins sau amanat cu motiv):
+  D393, D395, D711, D089, D600, D603, D200, D201, D220, D224.
+
+DECIZIE DEJA LUATA, documentata in cod (core/d101.py:43): D101G (grup fiscal) -
+"se adauga cand apare un caz real care le cere". NU e gaura, e scop.
+
+CONCLUZIE: "toate tipurile de declaratii" = 3 motoare reale (D106, D230, D307),
+nu 40. Restul = respingeri motivate. Mentenanta creste cu 3 abonamente, nu cu 30.
+
+REGULA PERMANENTA: orice declaratie noua intra in monitorul fiscal ODATA cu ea.
+Construita si nemonitorizata = datorie, nu functionalitate.
