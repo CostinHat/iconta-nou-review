@@ -7066,3 +7066,9 @@ def nota_ong(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
 
 # bon_flux_e6_v1
+
+
+# --- Conector SPV/ANAF (rute in core/spv_rute.py; montate aici ca sa refoloseasca
+#     cere_cabinet fara import circular). Ecranul de conectare = Regula 0, separat. ---
+from core import spv_rute as _spv_rute
+_spv_rute.monteaza(app, cere_cabinet)
