@@ -221,6 +221,22 @@ function meniuFirma(corp, nav, t) {
     bFacturi.addEventListener("click", () => {
       nav.deschide("Facturi", (c2) => randeazaFacturi(c2, nav, t.id, {}), { lat: "larg" }); /* facturi_larg_v1 */
     });
+    // [f131] alerta in aplicatie: badge cu nr. de facturi restante pe cardul Facturi
+    // (tiparul cab-card-badge din cabinet.js). Nu blocheaza randarea - se ataseaza cand vine raspunsul.
+    (async () => {
+      try {
+        const r = await api.get(`/tenants/${t.id}/scadentar`);
+        const n = (r && r.rezumat && r.rezumat.restanta) || 0;
+        if (n > 0) {
+          const b = document.createElement("span");
+          b.className = "cab-card-badge";
+          b.textContent = n;
+          b.title = `${n} factur${n === 1 ? "ă" : "i"} restant${n === 1 ? "ă" : "e"}`;
+          bFacturi.style.position = "relative";
+          bFacturi.appendChild(b);
+        }
+      } catch { /* scadentarul e best-effort pt badge; nu rupe cardul */ }
+    })();
   }
   const bSalariati = corp.querySelector("#fa-salariati");
   if (bSalariati && !bSalariati.disabled) {
