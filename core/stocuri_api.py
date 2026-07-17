@@ -28,7 +28,10 @@ def adauga_nir(conn, schema, nir):
     """nir: {numar, data, furnizor?, cui?, factura_ref?, linii: [...]}.
     Calculează prin motor, persistă NIR + linii, creează notele ciorne."""
     try:
-        rez = _m.nir_gv(nir["linii"])
+        rez = _m.nir_gv(nir["linii"], transport=nir.get("transport", 0),
+                        taxe=nir.get("taxe", 0),
+                        cont_transport=nir.get("cont_transport") or "401",
+                        cont_taxe=nir.get("cont_taxe") or "446")
     except (ValueError, KeyError) as e:
         return {"eroare": str(e)}
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -36,11 +39,13 @@ def adauga_nir(conn, schema, nir):
         ids = _noteaza(cur, schema, nir["data"], desc, rez["note"])
         cur.execute(f"""INSERT INTO {schema}.nir
                         (numar, data, furnizor, cui, factura_ref, cost_total,
-                         valoare_vanzare, adaos_total, tva_neexigibila, inregistrari_ids)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                         valoare_vanzare, adaos_total, tva_neexigibila, transport, taxe,
+                         inregistrari_ids)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
                     (nir["numar"], nir["data"], nir.get("furnizor"), nir.get("cui"),
                      nir.get("factura_ref"), rez["cost_total"], rez["valoare_vanzare"],
-                     rez["adaos_total"], rez["tva_neexigibila"], json.dumps(ids)))
+                     rez["adaos_total"], rez["tva_neexigibila"], rez["transport"], rez["taxe"],
+                     json.dumps(ids)))
         nid = cur.fetchone()["id"]
         for l in rez["linii"]:
             cur.execute(f"""INSERT INTO {schema}.nir_linii
@@ -51,7 +56,9 @@ def adauga_nir(conn, schema, nir):
                          Decimal(str(l.get("cota_tva", 21)))))
     conn.commit()
     return {"id": nid, "inregistrari": ids,
-            "cost_total": str(rez["cost_total"]), "adaos_total": str(rez["adaos_total"]),
+            "cost_total": str(rez["cost_total"]), "cost_baza_total": str(rez["cost_baza_total"]),
+            "transport": str(rez["transport"]), "taxe": str(rez["taxe"]),
+            "adaos_total": str(rez["adaos_total"]),
             "tva_neexigibila": str(rez["tva_neexigibila"]),
             "valoare_vanzare": str(rez["valoare_vanzare"])}
 

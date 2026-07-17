@@ -43,6 +43,57 @@ def test_nir_cantitate_zero():
         nir_gv([{"denumire": "x", "cantitate": 0,
                  "pret_achizitie": "1", "pret_vanzare": "2"}])
 
+# --- landed cost (F139): transport + taxe capitalizate in costul de achizitie ---
+def test_landed_repartizare_si_adaos():
+    # 2 linii egale (cost 100 fiecare), transport 10 + taxe 10 = 20 accesoriu
+    # -> 10 pe fiecare linie; cost efectiv 110; adaos scade cu 10 (de la 50 la 40)
+    r = nir_gv([{"denumire": "a", "cantitate": 1, "pret_achizitie": "100", "pret_vanzare": "181.50"},
+                {"denumire": "b", "cantitate": 1, "pret_achizitie": "100", "pret_vanzare": "181.50"}],
+               transport="10", taxe="10")
+    assert r["cost_baza_total"] == D("200.00")
+    assert r["cost_total"] == D("220.00")           # 200 baza + 20 accesoriu
+    assert r["adaos_total"] == D("80.00")           # fara landed ar fi 100
+    assert [l["landed"] for l in r["linii"]] == [D("10.00"), D("10.00")]
+    assert [l["cost"] for l in r["linii"]] == [D("110.00"), D("110.00")]
+
+def test_landed_note_conturi():
+    # transport pe 401, taxe pe 446 (default); linii separate in nota
+    r = nir_gv([{"denumire": "a", "cantitate": 1, "pret_achizitie": "100", "pret_vanzare": "181.50"},
+                {"denumire": "b", "cantitate": 1, "pret_achizitie": "100", "pret_vanzare": "181.50"}],
+               transport="10", taxe="10")
+    note = [(n["debit"], n["credit"], n["suma"]) for n in r["note"]]
+    assert ("371", "401", D("10.00")) in note       # transport capitalizat
+    assert ("371", "446", D("10.00")) in note       # taxe capitalizate
+    assert ("371", "401", D("200.00")) in note      # cost marfa de baza
+    assert ("371", "378", D("80.00")) in note       # adaos redus
+
+def test_landed_cont_configurabil():
+    r = nir_gv([{"denumire": "a", "cantitate": 1, "pret_achizitie": "100", "pret_vanzare": "300"}],
+               transport="30", cont_transport="408")
+    note = [(n["debit"], n["credit"], n["suma"]) for n in r["note"]]
+    assert ("371", "408", D("30.00")) in note
+
+def test_landed_rotunjire_exacta():
+    # 3 linii egale, transport 10 -> 3.33 + 3.33 + restul 3.34 = 10 exact
+    r = nir_gv([{"denumire": "a", "cantitate": 1, "pret_achizitie": "100", "pret_vanzare": "500"},
+                {"denumire": "b", "cantitate": 1, "pret_achizitie": "100", "pret_vanzare": "500"},
+                {"denumire": "c", "cantitate": 1, "pret_achizitie": "100", "pret_vanzare": "500"}],
+               transport="10")
+    landed = [l["landed"] for l in r["linii"]]
+    assert sum(landed) == D("10.00")
+    assert landed == [D("3.33"), D("3.33"), D("3.34")]
+
+def test_landed_vanzare_sub_cost_cu_accesoriu():
+    # vanzare 105 (fara TVA ~86.78) sub cost cu accesoriu 100+20=120 -> eroare
+    with pytest.raises(ValueError):
+        nir_gv([{"denumire": "x", "cantitate": 1, "pret_achizitie": "100", "pret_vanzare": "105"}],
+               transport="20")
+
+def test_landed_accesoriu_fara_baza():
+    with pytest.raises(ValueError):
+        nir_gv([{"denumire": "x", "cantitate": 1, "pret_achizitie": "0", "pret_vanzare": "10"}],
+               transport="5")
+
 # --- K ---
 def test_k_simplu():
     # adaos 500 la stoc 371=1785 cu 4428=285 -> K = 500/1500

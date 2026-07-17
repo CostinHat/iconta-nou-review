@@ -1167,6 +1167,13 @@ async function ecranStocuri(corp, nav, t) {
         </div>
         <div class="camp-eticheta">Articole: denumire \u00b7 cantitate \u00b7 pre\u021b achizi\u021bie \u00b7 pre\u021b raft (cu TVA) \u00b7 cot\u0103 TVA</div>
         <div id="sn-linii">${liniiNir.map(randLinie).join("")}</div>
+        <div class="camp-eticheta">Cost accesoriu (landed cost) — se repartizează proporțional în costul de achiziție (OMFP 1802/2014). Contul de credit se confirmă de contabil.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <input type="number" step="0.01" id="sn-transport" class="camp-input" placeholder="transport" aria-label="Transport" style="width:110px">
+          <input type="text" id="sn-cont-transport" class="camp-input" value="401" aria-label="Cont credit transport" style="width:120px">
+          <input type="number" step="0.01" id="sn-taxe" class="camp-input" placeholder="taxe" aria-label="Taxe" style="width:110px">
+          <input type="text" id="sn-cont-taxe" class="camp-input" value="446" aria-label="Cont credit taxe" style="width:120px">
+        </div>
         <p><button class="buton-secundar" id="sn-plus">+ articol</button>
            <button class="buton-primar" id="sn-salveaza" style="margin-left:6px">Salveaz\u0103 NIR (note ciorne)</button></p>
       </div>
@@ -1211,10 +1218,15 @@ async function ecranStocuri(corp, nav, t) {
           data: corp.querySelector("#sn-data").value,
           furnizor: corp.querySelector("#sn-furn").value || null,
           cui: corp.querySelector("#sn-cui").value || null,
+          transport: parseFloat(corp.querySelector("#sn-transport").value) || 0,
+          taxe: parseFloat(corp.querySelector("#sn-taxe").value) || 0,
+          cont_transport: corp.querySelector("#sn-cont-transport").value.trim() || null,
+          cont_taxe: corp.querySelector("#sn-cont-taxe").value.trim() || null,
           linii,
         });
         liniiNir = [];
-        zonaM.innerHTML = `<p class="pf-intro">NIR salvat \u00b7 ${r.inregistrari.length} note ciorne (cost ${r.cost_total}, adaos ${r.adaos_total}, TVA neex. ${r.tva_neexigibila}).</p>`;
+        const acc = (parseFloat(r.transport) || 0) + (parseFloat(r.taxe) || 0);
+        zonaM.innerHTML = `<p class="pf-intro">NIR salvat \u00b7 ${r.inregistrari.length} note ciorne (cost ${r.cost_total}${acc > 0 ? " din care accesoriu " + bani(acc) : ""}, adaos ${r.adaos_total}, TVA neex. ${r.tva_neexigibila}).</p>`;
         deseneaza();
       } catch (e) { zonaM.innerHTML = `<div class="mig-gol">${esc(e.mesaj || "eroare")}</div>`; }
     });

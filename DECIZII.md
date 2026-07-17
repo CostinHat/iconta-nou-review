@@ -185,3 +185,19 @@ unei extrapolari triviale; utilizatorul ar lua decizii de aprovizionare pe o cif
 LIMITA: daca apare cerere reala de reaprovizionare automata pe baza de consum, se reia ca item
 separat cu metoda stabilita explicit. ABC clasifica pe cumulativul INAINTE de item (primul
 articol e mereu A, oricat de dominant), nu dupa - altfel articolul dominant iesea clasa C.
+
+### 17.07.2026 F139 landed cost: contul de credit al accesoriului = confirmarea contabilului, nu ghicit  (core/stocuri.py nir_gv; LIVE)
+DECIZIE: transport + taxe se repartizeaza PROPORTIONAL cu costul de baza al liniilor (cheia
+standard cand nu e direct atribuibil), cu restul de rotunjire pe ultima linie ca suma repartizata
+sa fie EXACT accesoriul. Capitalizarea intra in 371 (reduce adaosul, intra in K/descarcare).
+Contul de CREDIT al accesoriului e PARAMETRU vizibil in formular, default 401 (transport furnizor)
+si 446 (taxe vamale), pe care contabilul il confirma sau schimba.
+TEMEI: OMFP 1802/2014 - costul de achizitie include taxele nerecuperabile de import si cheltuielile
+de transport direct atribuibile. Regula de aur (CLAUDE.md): codurile de cont sunt coduri fiscale,
+nu se ghicesc silentios in cod - de aceea contul e alegerea utilizatorului, cu default conventional
+VIZIBIL, nu ascuns intr-o constanta. Notele sunt ciorne (contabilul valideaza).
+ALTERNATIVA RESPINSA: (a) contul hardcodat 446 in motor fara ca utilizatorul sa-l vada - ar ascunde
+o alegere fiscala intr-o constanta; import vs achizitie interna cer conturi diferite. (b) repartizare
+pe cantitate/greutate - nu avem greutatea articolelor; proportional cu valoarea e cheia disponibila.
+LIMITA: TVA-ul aferent accesoriului (transport are TVA deductibil, taxele vamale nu) se trateaza
+SEPARAT de contabil - nir_gv capitalizeaza doar valoarea neta a accesoriului, nu-i calculeaza TVA-ul.
