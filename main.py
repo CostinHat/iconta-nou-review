@@ -4683,6 +4683,33 @@ def rapoarte_salvate_sterge(tenant_id: int, vid: int, ctx=Depends(cere_cabinet))
     return rez
 
 
+# --- registratura documente (F146: registru unic intrare-iesire) ---
+@app.get("/tenants/{tenant_id}/registratura")
+def registratura_lista(tenant_id: int, an: int = None, ctx=Depends(cere_cabinet)):
+    from core import registratura_api as _reg
+    import datetime as _dt
+    an = an or _dt.date.today().year
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _reg.lista(conn, schema, an)
+
+@app.post("/tenants/{tenant_id}/registratura")
+def registratura_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import registratura_api as _reg
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        rez = _reg.inregistreaza(conn, schema, corp, ctx["uid"])
+    if not rez.get("ok"):
+        mesaje = {"DIRECTIE_INVALIDA": "directie invalida (intrare/iesire)",
+                  "DESCRIERE_GOALA": "descrierea e obligatorie"}
+        raise HTTPException(422, mesaje.get(rez.get("cod"), "eroare"))
+    return rez
+
+
 # --- jurnal: editare/stergere/validare ciorne ---
 def _jurnal_rez(rez):
     if rez is None:

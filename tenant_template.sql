@@ -2109,6 +2109,23 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.rapoarte_salvate (
 );
 
 --
+-- F146 (registratura documente) — mirror al core/migrare_registratura.py
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.registratura (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    directie text NOT NULL CHECK (directie IN ('intrare','iesire')),
+    numar integer NOT NULL,
+    an integer NOT NULL,
+    data date NOT NULL,
+    descriere text NOT NULL,
+    partener text,
+    document_ref text,
+    creat_de integer,
+    creat_la timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT registratura_an_numar_unic UNIQUE (an, numar)
+);
+
+--
 -- F135 (pontaj informativ) — mirror al core/migrare_pontaj.py
 --
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.pontaj (

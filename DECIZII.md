@@ -280,3 +280,31 @@ notele ca sa stie ce s-a intamplat efectiv), SAU raman DOUA motoare separate cu 
 vector-driven pentru obligatii declarative, fact-driven (control_incrucisat) pentru coerenta contabila?
 De asta depinde nu doar D301/D205, ci si daca semaforul si controlul incrucisat converg sau nu.
 LIMITA: pana la decizie, D301/D205 lipsesc din semafor - documentat aici, NU absenta netratata (lectia D204).
+
+### 17.07.2026 Lot 6 F148 arhivare cloud AMANAT — nu doua integrari OAuth in paralel  (FUNCTIONALITATI.csv F148)
+DECIZIE: F148 (sincronizare arhiva in Drive/OneDrive) se amana pana cand OAuth-ul SPV (conectorul
+ANAF) e LIVE si testat. Nu se deschid doua integrari OAuth simultan. Lot 6 = F146 + F147 acum.
+TEMEI: F148 cere un AL DOILEA flux OAuth (Google/Microsoft), pe langa OAuth ANAF care e in curs si
+inca netestat complet (asteapta confirmarea inrolarii certificatului, 1-4 zile - vezi starea sesiunii
+17.07). Doua integrari OAuth deschise in paralel = suprafata de auth dubla, refresh/rotatie de token
+pe doi furnizori, si risc de a confunda un bug de flux cu altul exact cand SPV nu e inca inchis.
+ALTERNATIVA RESPINSA: construirea F148 acum, in paralel cu SPV - castig de viteza aparent, dar
+dubleaza complexitatea de autentificare intr-un moment fragil; un token stricat pe un flux ar
+ingreuna diagnoza pe celalalt.
+LIMITA / reevaluare: se reia cand OAuth SPV e confirmat LIVE si testat pe un cabinet real. Pana
+atunci arhiva ramane locala (F148 = doar sincronizarea externa, nu arhivarea in sine).
+
+### 17.07.2026 Lot 6 F146 registratura: registru UNIC intrare-iesire, v1 manual  (core/registratura_api.py; LIVE)
+DECIZIE: registratura = un singur numar secvential per an, comun intrarilor si iesirilor, cu coloana
+`directie` care marcheaza sensul (nu doua serii separate). v1 = registru MANUAL (contabilul
+inregistreaza orice document si primeste numarul); fara hook automat la facturi/adeverinte.
+TEMEI: registratura generala RO la firme private nu are format impus legal (instrument intern de
+organizare); practica cea mai comuna e registrul unic de intrare-iesire cu un numar curent pe an.
+Numarul se aloca din MAX(numar) per an +1 (resetare anuala naturala), cu UNIQUE(an, numar) care
+garanteaza seria. Contorul nu e o coloana separata in firma_profil - se deriva din tabel.
+ALTERNATIVA RESPINSA: doua serii separate (intrare 1..N, iesire 1..N) - unele firme le tin, dar
+registrul unic e mai simplu si mai raspandit; se poate adauga o a doua serie daca un cabinet o cere.
+ALTERNATIVA RESPINSA (v1): hook automat la emiterea facturii/adeverintei (nr_iesire din F136) -
+atinge fluxuri LIVE; se face dupa ce registrul manual e stabil. F136 nr_iesire ramane input manual
+pana atunci (asa cum e documentat in decizia F136 17.07).
+LIMITA: v1 nu leaga automat documentele existente; contabilul le inregistreaza cand vrea un numar.

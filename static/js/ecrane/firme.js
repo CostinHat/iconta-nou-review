@@ -202,6 +202,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "rapoarte", titlu: "Rapoarte comerciale", desc: "Vânzări pe partener, durata de încasare, fișă client",  // rap_com_v1
       ...CULORI_CARD.violet,
       icon: '<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/>', activ: true },
+    { cheie: "registratura", titlu: "Registratură", desc: "Numere de intrare/ieșire pe documente",  // registratura_v1
+      ...CULORI_CARD.ardezie,
+      icon: '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M8 13h6M8 16h6"/>', activ: true },
   ];
 
   corp.innerHTML = `
@@ -299,6 +302,8 @@ function meniuFirma(corp, nav, t) {
   if (bBalanta) bBalanta.addEventListener("click", () => { nav.deschide("Balanță de verificare", (c2) => ecranBalanta(c2, nav, t)); });
   const bRapoarte = corp.querySelector("#fa-rapoarte");  // rap_com_v1
   if (bRapoarte) bRapoarte.addEventListener("click", () => { nav.deschide("Rapoarte comerciale", (c2) => ecranRapoarte(c2, nav, t), { lat: "larg" }); });
+  const bRegistratura = corp.querySelector("#fa-registratura");  // registratura_v1
+  if (bRegistratura) bRegistratura.addEventListener("click", () => { nav.deschide("Registratură", (c2) => ecranRegistratura(c2, nav, t)); });
   const bBanca = corp.querySelector("#fa-banca");
   if (bBanca) {
     bBanca.addEventListener("click", () => { nav.deschide("Bancă", (c2) => ecranBanca(c2, nav, t)); });
@@ -2208,6 +2213,73 @@ async function ecranRapoarte(corp, nav, t) {
     if (fisaCui) randeazaFisa();
   };
 
+  deseneaza();
+}
+
+
+// [registratura_v1] F146 — Registratură documente (registru unic intrare-ieșire, v1 manual).
+async function ecranRegistratura(corp, nav, t) {
+  let an = new Date().getFullYear();
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+    let d;
+    try { d = await api.get(`/tenants/${t.id}/registratura?an=${an}`); }
+    catch (e) { corp.innerHTML = `<div class="mig-gol">${esc((e && e.mesaj) || "eroare")}</div>`; return; }
+    const rand = (r) => `
+      <div class="pf-frand">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${r.numar}/${r.an} · ${r.directie === "intrare" ? "Intrare" : "Ieșire"} · ${dataRo(r.data)}</div>
+          <div class="pf-frand-sub">${esc(r.descriere)}${r.partener ? " · " + esc(r.partener) : ""}</div>
+        </div>
+      </div>`;
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Registratură</h2>
+      <p class="pf-intro">Anul ${an} · registru unic de intrare-ieșire
+        <button class="buton-secundar" id="rg-prev" style="margin-left:12px">← an</button>
+        <button class="buton-secundar" id="rg-next">an →</button></p>
+      <div class="panou" style="margin-bottom:14px">
+        <div class="camp" style="margin-bottom:8px">
+          <label class="camp-eticheta">Direcție <span class="oblig">*</span></label>
+          <select class="camp-input" id="rg-dir" style="max-width:200px">
+            <option value="intrare">Intrare</option>
+            <option value="iesire">Ieșire</option></select>
+        </div>
+        <div class="camp" style="margin-bottom:8px">
+          <label class="camp-eticheta">Data</label>
+          <input type="date" class="camp-input" id="rg-data" style="max-width:200px" value="${new Date().toISOString().slice(0, 10)}">
+        </div>
+        <div class="camp" style="margin-bottom:8px">
+          <label class="camp-eticheta">Descriere <span class="oblig">*</span></label>
+          <input type="text" class="camp-input" id="rg-desc" placeholder="Ex. Factură furnizor X, adeverință salariat Y" autocomplete="off">
+        </div>
+        <div class="camp" style="margin-bottom:10px">
+          <label class="camp-eticheta">Partener</label>
+          <input type="text" class="camp-input" id="rg-part" placeholder="opțional" autocomplete="off">
+        </div>
+        <button class="buton-primar" id="rg-add">Înregistrează</button>
+        <span class="msg-eroare" id="rg-msg" style="margin-left:8px"></span>
+      </div>
+      <div class="pf-lista">${(d.inregistrari || []).length
+        ? d.inregistrari.map(rand).join("")
+        : `<div class="stare-goala">Niciun document înregistrat în ${an} încă. Prima înregistrare primește numărul 1.</div>`}</div>`;
+    corp.querySelector("#rg-prev").addEventListener("click", () => { an--; deseneaza(); });
+    corp.querySelector("#rg-next").addEventListener("click", () => { an++; deseneaza(); });
+    corp.querySelector("#rg-add").addEventListener("click", async () => {
+      const msg = corp.querySelector("#rg-msg"); msg.textContent = "";
+      const corpReq = {
+        directie: corp.querySelector("#rg-dir").value,
+        data: corp.querySelector("#rg-data").value || null,
+        descriere: corp.querySelector("#rg-desc").value.trim(),
+        partener: corp.querySelector("#rg-part").value.trim() || null,
+      };
+      if (!corpReq.descriere) { msg.textContent = "Descrierea e obligatorie."; return; }
+      try {
+        const r = await api.post(`/tenants/${t.id}/registratura`, corpReq);
+        if (r.an !== an) an = r.an;  // data dintr-un alt an -> sari la anul respectiv
+        deseneaza();
+      } catch (e) { msg.textContent = (e && e.mesaj) || "eroare"; }
+    });
+  };
   deseneaza();
 }
 
