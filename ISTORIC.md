@@ -1119,3 +1119,38 @@ verticala. Starea "gri" exista deja in DS (cf. CULORI din control.js) - nu a tre
 **Registru:** F166 (MT940) si F169 (control incrucisat) adaugate in FUNCTIONALITATI.csv ca LIVE.
 F163 (extindere la D112/D101/D100), F167 (Open Banking), F169-audit-preluare notate in DE_FACUT.
 
+---
+
+# REZOLVARI CONFIRMATE 17.07 (verificate retroactiv)
+
+Curatenie fisiere normative (BRIEF_CODE_CURATENIE.md, Pasul 1). Intrari din sectiunea CARENTE
+(inventar 13.07) confirmate rezolvate azi prin verificare la sursa (grep/test), mutate aici cu
+data originala a evenimentului, marcate "arhivat 17.07". Codul ramane sursa de adevar.
+
+- **F103+F060 alerte legislative programate** (eveniment original 13.07 seara, arhivat 17.07) —
+  LIVE. Dovada: FUNCTIONALITATI.csv:119 — DDL data_afisare + flux monitor->propunere anunt in admin
+  + afisare conditionata de data + cron zilnic 9:00, testat (emitere praguri 7/3/0, idempotenta,
+  filtru data viitoare). core/monitor_fiscal.py + anunturi_cabinet.
+- **Cod 10 CM (reducere timp munca, art. 19)** (eveniment original 13.07 seara, arhivat 17.07) —
+  integrat. Dovada: salarizare.py:208 calcul_cm_cod10 definit + salariati_api.py:222 apelat in flux
+  real + flux_concediu.js:14 in dropdown + camp venit conditionat (:105) + test_salarizare.py pass.
+  NOTA: DE_FACUT.md sectiunea 5 ("exclus din dropdown, calcul_cm_cod10 neintegrat") e o intrare
+  veche contrazisa de cod — de tratat la Pasul 2.
+- **D394 pe DUKIntegrator** (gasit rezolvat 15-16.07, netaguit, arhivat 17.07) — validat FARA ERORI.
+  Dovada: core/duk.py:15 versiune D394_31 + duk.py:154 "dovedit 15.07.2026 pe D394" + CLAUDE.md
+  status 16.07 (D394 in cele 9 declaratii confirmate valide) + core/test_d394.py pass. Blocajul
+  "validare desktop" ocolit prin jar headless (core/duk.py valideaza()), nu prin GUI DUK.
+- **PWA testat pe iPhone** (eveniment original 14.07, arhivat 17.07) — instalare/standalone/offline.
+  Dovada: static/manifest.json + static/sw.js prezente. (Testarea pe device = verificare manuala
+  raportata atunci; livrabilul de cod exista.)
+- **F076 retetar GV, bug gv_crono (antedatare)** (eveniment original 13.07 partea 5, arhivat 17.07)
+  — reparat, LIVE. Dovada: retete_api.py:40-41 + :126 [gv_crono] ("iesirea la data ei nu are voie
+  sa sparga fisa"; replay cronologic prinde spargerea miscarilor ulterioare de o iesire antedatata).
+- **Descrieri FUNCTIONALITATI.csv complete** (eveniment original 14.07, arhivat 17.07) — confirmat.
+  Dovada: 0 pozitii LIVE cu descriere <15 caractere (verificat cu csv reader). Scurte raman doar
+  pozitiile PLANIFICATE (scop propus, nu cod) — legitim.
+- **Admin auditat complet** (eveniment original 13.07 seara, arhivat 17.07) — 5/5 sub-ecrane.
+  Dovada: admin.js:19-33 sub-ecrane — Raportari, Activitate cabinete, Facturare gratuita, Anunturi,
+  Sanatate server. CORECTIE eticheta: semaforul "Sanatate server" e pe CPU/RAM/disk/uptime/DB/erori
+  500+ (admin_sanatate.js), NU "pe tokeni" cum spunea eticheta din CARENTE.
+

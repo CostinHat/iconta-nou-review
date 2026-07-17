@@ -38,17 +38,19 @@ Ultima actualizare: 13.07.2026 seara (partea 5)
   2. Categorii NEATACATE: spacing/padding/gap inline (fara inventar inca); wrapper alb pe formulare (cap.2 - verificatorul n-are regula, prins doar 1 manual); aliniere tabele (cap.4 sume la dreapta, neverificata sistematic); anatomia ferestrei (cap.1 entitate-antet/titlu-h2-corp, neauditata vizual).
   3. TASK 0a mai vechi (cerut 10.07, inca nefacut): audit cod mort + functionalitati ascunse ad-hoc fara conditie documentata + diferente cabinet/client inconsecvente.
 
-## CARENTE — inventar consolidat 13.07.2026 (functionalitati partiale/promise)
-1. (REZOLVAT 13.07 partea 5) F103+F060 alerte programate: testate integral, fix propuneri (markere buletin excluse). LIVE.
-2. (REZOLVAT 13.07 seara) Cod 10 CM integrat: dropdown + venit realizat + art.19 + FNUASS integral, testat.
-3. **D394 pe DUKIntegrator**: generatorul exista, validarea desktop blocata (sectiunea 2).
-4. (REZOLVAT 14.07) PWA testat pe iPhone: instalare, standalone, offline. Android secundar.
-5. (REZOLVAT 13.07 partea 5) F076 retetar GV: testat cu date reale, bug gv_crono (antedatare) reparat. LIVE.
-6. **e-Transport**: XML pentru upload MANUAL in SPV; trimiterea directa prin API SPV nu exista.
-7. (REZOLVAT 14.07) Descrieri FUNCTIONALITATI.csv complete: loturile 2-7 + F113, toate verificate la sursa; scurte raman doar pozitiile PLANIFICATE (legitim - scop propus, nu cod).
-8. (REZOLVAT 13.07 seara) Admin auditat complet: 5/5 sub-ecrane, semafor Sanatate pe tokeni.
-9. **Testare pilot**: sectiunea 1 (P1-P5) intacta — niciun punct bifat.
-10. **Audit design ramas**: spacing inline (inchis explicit ca datorie acceptata), paleta iconite migrare (decizie amanata azi), anatomie/aliniere tabele nesistematizate.
+## CARENTE — inventar (consolidat 13.07.2026, curatat 17.07.2026)
+Curatenie 17.07: 7 intrari confirmate rezolvate prin verificare la sursa (grep/test) mutate in
+ISTORIC.md, sectiunea "REZOLVARI CONFIRMATE 17.07 (verificate retroactiv)". Raman deschise, cu
+starea reverificata azi:
+1. **e-Transport — trimitere directa prin API SPV**: exista generarea XML pentru upload MANUAL in
+   SPV (core/etransport.py: xml_notificare); trimiterea directa prin API SPV NU exista — blocaj
+   extern SPVWS2 (acelasi blocant ca restul apelurilor SPV). Verificat 17.07: etransport.py are
+   doar xml_notificare, nicio functie de trimitere.
+2. **Testare pilot P1-P5**: sectiunea de test business (P1-P5) intacta, niciun punct bifat. Task de
+   proces (checklist manual pe date reale), neverificabil prin cod. Deschis.
+3. **Audit design ramas**: spacing/padding inline (inchis explicit ca datorie acceptata), migrare
+   paleta iconite (decizie amanata), anatomia ferestrei + alinierea tabelelor nesistematizate vizual
+   (~20/30 ecrane nevazute cu ochii; verificatorul e curat pe ele dar nu prinde asezarea).
 
 ## 4. Infra
 - **Reboot kernel** — "System restart required". Fereastră liniștită (downtime clienți, Daniela pilot).
