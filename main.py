@@ -1922,6 +1922,35 @@ def scadentar_get(tenant_id: int, ctx=Depends(cere_context)):
     with db.get_conn(schema) as conn:
         return _sc.pull(conn, schema)
 
+class OptInScadentarIn(BaseModel):
+    activ: bool
+
+@app.put("/tenants/{tenant_id}/scadentar/opt-in")
+def scadentar_optin(tenant_id: int, date: OptInScadentarIn, ctx=Depends(cere_context)):
+    """F131: activeaza/dezactiveaza notificarile email de scadenta pt firma (default OFF)."""
+    from core import scadentar as _sc
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = _sc.seteaza_optin(conn, date.activ)
+    if not r.get("ok"):
+        raise HTTPException(422, r.get("mesaj", "eroare"))
+    return r
+
+class SupapaScadentarIn(BaseModel):
+    stop: bool = False
+    amanata_pana: Optional[str] = None
+
+@app.put("/tenants/{tenant_id}/facturi/{factura_id}/notificare")
+def scadentar_supapa(tenant_id: int, factura_id: int, date: SupapaScadentarIn, ctx=Depends(cere_context)):
+    """F131: supapa per factura - nu notifica (stop) / amana pana la data X."""
+    from core import scadentar as _sc
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = _sc.seteaza_supapa(conn, factura_id, stop=date.stop, amanata_pana=date.amanata_pana)
+    if not r.get("ok"):
+        raise HTTPException(404, "factura inexistenta")
+    return r
+
 class ModelFacturaIn(BaseModel):
     font: Optional[str] = None
     culoare: Optional[str] = None

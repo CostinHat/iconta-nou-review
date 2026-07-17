@@ -75,14 +75,44 @@ def pull(conn, schema, azi=None, prag_zile=PRAG_ZILE):
     from datetime import date as _d
     azi = azi or _d.today()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute("SELECT COALESCE(notificari_scadenta_activ, false) AS activ FROM firma_profil WHERE id=1")
+        r = cur.fetchone()
+        optin = bool(r["activ"]) if r else False
         cur.execute(
             "SELECT f.id, f.numar, f.serie, f.data_emitere, f.data_scadenta, "
             "       COALESCE(f.total,0) AS suma, f.moneda, f.tert_nume, f.tert_cui, "
-            "       f.client_id, c.email "
+            "       f.client_id, c.email, "
+            "       COALESCE(f.notificare_stop, false) AS notificare_stop, f.notificare_amanata_pana "
             "  FROM facturi f "
             "  LEFT JOIN clienti c ON c.id = f.client_id "
             " WHERE f.directie = 'emisa' AND f.platita_la IS NULL "
             "   AND COALESCE(f.tip, 'factura') = 'factura' "
             "   AND f.storno_din_id IS NULL")
         facturi = [dict(r) for r in cur.fetchall()]
-    return scadentar(facturi, azi, prag_zile)
+    rez = scadentar(facturi, azi, prag_zile)
+    rez["optin"] = optin
+    return rez
+
+
+def seteaza_optin(conn, activ):
+    """Activeaza/dezactiveaza notificarile de scadenta pt firma. La ACTIVARE cere email
+    valid pe firma (Reply-To) - fara el clientul ar raspunde in gol."""
+    from core.notificari_scadenta import email_valid
+    with conn.cursor() as cur:
+        if activ:
+            cur.execute("SELECT email FROM firma_profil WHERE id=1")
+            r = cur.fetchone()
+            if not (r and email_valid(r[0])):
+                return {"ok": False, "mesaj": "Completează un email valid al firmei "
+                        "(Reply-To) înainte de a activa notificările."}
+        cur.execute("UPDATE firma_profil SET notificari_scadenta_activ=%s WHERE id=1", (bool(activ),))
+    return {"ok": True, "activ": bool(activ)}
+
+
+def seteaza_supapa(conn, factura_id, stop=False, amanata_pana=None):
+    """Supapa per factura: stop (nu notifica) + amana pana la data X (None = fara amanare).
+    UI trimite starea dorita completa."""
+    with conn.cursor() as cur:
+        cur.execute("UPDATE facturi SET notificare_stop=%s, notificare_amanata_pana=%s "
+                    "WHERE id=%s AND directie='emisa'", (bool(stop), amanata_pana or None, factura_id))
+        return {"ok": cur.rowcount > 0}

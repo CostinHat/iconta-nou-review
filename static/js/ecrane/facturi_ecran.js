@@ -141,6 +141,7 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
   const rez = d.rezumat || {};
   let vedere = "facturi";
 
+  const aziISO = new Date().toISOString().slice(0, 10);
   const randFacturi = () => {
     if (!(d.linii || []).length) return `<div class="mig-gol">Nicio factură emisă neîncasată.</div>`;
     return d.linii.map((l) => {
@@ -149,12 +150,20 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
         : l.stare === "scade_curand" ? `scade în ${l.zile} zile`
         : l.stare === "fara_scadenta" ? "fără scadență în sistem"
         : `scadență ${dataRo(l.data_scadenta)}`;
+      // supapa per factura - doar cand notificarile sunt active (altfel n-ar avea efect)
+      let valva = "";
+      if (d.optin) {
+        const amanat = l.notificare_amanata_pana && l.notificare_amanata_pana >= aziISO;
+        valva = l.notificare_stop ? ` · <b>notificări oprite</b> <span class="btn-link" data-reia="${l.id}">reia</span>`
+          : amanat ? ` · amânat până ${dataRo(l.notificare_amanata_pana)} <span class="btn-link" data-reia="${l.id}">reia</span>`
+          : ` · <span class="btn-link" data-stop="${l.id}">nu notifica</span> <span class="btn-link" data-amana="${l.id}">amână 30 zile</span>`;
+      }
       return `
       <div class="mig-frand" style="cursor:default">
         <span class="cf-dot" style="background:${s.dot};flex-shrink:0"></span>
         <div class="mig-frand-text">
           <div class="mig-frand-nume">${l.numar || "—"}${l.tert_nume ? " · " + esc(l.tert_nume) : ""}</div>
-          <div class="mig-frand-sub">${sub}</div>
+          <div class="mig-frand-sub">${sub}${valva}</div>
         </div>
         <span class="pf-frand-suma">${bani(l.suma)} ${l.moneda || "lei"}</span>
       </div>`;
@@ -177,9 +186,17 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
     }).join("");
   };
 
+  const reincarca = async () => { try { d = await api.get(`/tenants/${tenantId}/scadentar`); } catch {} deseneaza(); };
+  const supapa = async (fid, body) => {
+    try { await api.put(`/tenants/${tenantId}/facturi/${fid}/notificare`, body); await reincarca(); }
+    catch (e) { arataMesaj(corp.querySelector("#sc-msg"), e.mesaj || "Eroare.", "eroare"); }
+  };
+
   const deseneaza = () => {
     corp.innerHTML = `
       <h2 class="pf-titlu">Scadențar</h2>
+      <label class="set-bifa" style="margin:0 0 10px"><input type="checkbox" id="sc-optin"${d.optin ? " checked" : ""}> <span>Trimite automat notificări de plată clienților, în numele firmei</span></label>
+      <div id="sc-msg"></div>
       <div class="cf-sumar">
         <span class="cf-pastila"><span class="cf-dot" style="background:${SEM.restanta.dot}"></span>${rez.restanta || 0} restante</span>
         <span class="cf-pastila"><span class="cf-dot" style="background:${SEM.scade_curand.dot}"></span>${rez.scade_curand || 0} scad curând</span>
@@ -190,8 +207,23 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
         <button class="buton-secundar" id="sc-clienti"${vedere === "clienti" ? " disabled" : ""}>Fișă client</button>
       </p>
       <div class="mig-lista zebra-lista">${vedere === "facturi" ? randFacturi() : randClienti()}</div>`;
+    const chk = corp.querySelector("#sc-optin");
+    chk.addEventListener("change", async () => {
+      try {
+        await api.put(`/tenants/${tenantId}/scadentar/opt-in`, { activ: chk.checked });
+        d.optin = chk.checked;
+        arataMesaj(corp.querySelector("#sc-msg"), chk.checked ? "Notificări automate active." : "Notificări dezactivate.", "ok");
+        deseneaza();
+      } catch (e) { chk.checked = !chk.checked; arataMesaj(corp.querySelector("#sc-msg"), e.mesaj || "Eroare.", "eroare"); }
+    });
     corp.querySelector("#sc-facturi").addEventListener("click", () => { vedere = "facturi"; deseneaza(); });
     corp.querySelector("#sc-clienti").addEventListener("click", () => { vedere = "clienti"; deseneaza(); });
+    corp.querySelectorAll("[data-stop]").forEach((b) => b.addEventListener("click", () => supapa(b.dataset.stop, { stop: true })));
+    corp.querySelectorAll("[data-reia]").forEach((b) => b.addEventListener("click", () => supapa(b.dataset.reia, { stop: false, amanata_pana: null })));
+    corp.querySelectorAll("[data-amana]").forEach((b) => b.addEventListener("click", () => {
+      const pana = new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10);
+      supapa(b.dataset.amana, { stop: false, amanata_pana: pana });
+    }));
   };
   deseneaza();
 }
