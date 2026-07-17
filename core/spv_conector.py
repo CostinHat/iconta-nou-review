@@ -1,0 +1,359 @@
+# -*- coding: utf-8 -*-
+"""
+core/spv_conector.py — conectorul UNIC SPV/ANAF (OAuth2).
+
+Sursa arhitecturii: ARHITECTURA_SPV.md, sectiunea "CONECTORUL SPV" (17.07.2026).
+Parametrii OAuth (endpointuri, 90/365 zile, 1000 apeluri/min) sunt VERIFICATI la
+sursa oficiala ANAF (Oauth_procedura_inregistrare_aplicatii_portal_ANAF.pdf) — nu se
+recalculeaza din memorie.
+
+FACE: autorizare OAuth, stocare token (CRIPTAT Fernet), refresh cu ROTATIE, apel_anaf().
+NU FACE: e-Factura / e-Transport. Alea sunt F126/F160/F121, construite PESTE conector.
+Daca intra logica de facturi aici, scopul e ratat.
+
+CAPCANA CRITICA — ROTATIA REFRESH TOKEN-ULUI (ARHITECTURA_SPV.md):
+La /token cu grant_type=refresh_token, ANAF intoarce valori NOI si pentru access_token
+SI pentru refresh_token. AMANDOUA trebuie salvate. Daca salvezi doar access-ul nou,
+urmatorul refresh esueaza -> cabinetul reautorizeaza cu stickul. De aceea
+_proceseaza_raspuns_token() salveaza intotdeauna AMBELE valori din raspuns.
+
+APELURI REALE catre ANAF: schimba_cod_pe_token(), reimprospateaza_pereche(), apel_anaf().
+Testul functional real il face Costin cu certificatul lui (TestOauth). Testele din
+test_spv_conector.py folosesc MOCK, nu ANAF real.
+"""
+import os
+import json
+import base64
+import time
+import urllib.parse
+from datetime import datetime, timezone, timedelta
+
+import requests
+
+from core import nucleu
+from core import db
+
+MODUL = "spv_conector"
+
+# --- Parametri ANAF (env; endpointurile au fallback = valorile verificate la sursa) ---
+CLIENT_ID     = os.environ.get("ANAF_CLIENT_ID", "")
+CLIENT_SECRET = os.environ.get("ANAF_CLIENT_SECRET", "")
+REDIRECT_URI  = os.environ.get("ANAF_REDIRECT_URI", "")
+AUTHORIZE_URL = os.environ.get("ANAF_AUTHORIZE_URL", "https://logincert.anaf.ro/anaf-oauth2/v1/authorize")
+TOKEN_URL     = os.environ.get("ANAF_TOKEN_URL",     "https://logincert.anaf.ro/anaf-oauth2/v1/token")
+REVOKE_URL    = os.environ.get("ANAF_REVOKE_URL",    "https://logincert.anaf.ro/anaf-oauth2/v1/revoke")
+
+STATE_SECRET      = os.environ.get("JWT_SECRET", "")   # state = token semnat, fara tabel nou
+STATE_DURATA_SEC  = 600            # 10 minute (ARHITECTURA: state expira in 10 min)
+REFRESH_DURATA_ZILE = 365          # refresh token 365 zile (verificat la sursa ANAF)
+ACCES_IMPLICIT_SEC  = 90 * 86400   # fallback daca raspunsul nu da expires_in (90 zile)
+MARJA_REFRESH_ZILE  = 7            # cronul reimprospateaza sub aceasta marja
+MAX_BACKOFF_429     = 3            # reincercari la 429 (limita ANAF 1000/min)
+
+
+# ============================================================
+#  EXCEPTII
+# ============================================================
+class EroareSpv(Exception):
+    """Baza pentru erorile conectorului."""
+
+
+class EroareSpvNeconectat(EroareSpv):
+    """Nu exista token activ pentru cabinet (nu autorizat / refresh esuat)."""
+
+
+class EroareSpvFaraDrept(EroareSpv):
+    """403 ANAF: certificatul nu are drept pe CIF-ul cerut."""
+
+
+class EroareSpvRefreshEsuat(EroareSpv):
+    """Refresh-ul a esuat (refresh_token invalid/expirat)."""
+
+
+# ============================================================
+#  CRIPTARE (Fernet) — PURA (primeste cheia din env la apel)
+# ============================================================
+def _fernet():
+    """Instanta Fernet din SPV_FERNET_KEY. Ridica daca lipseste (nu stoca in clar)."""
+    from cryptography.fernet import Fernet
+    cheie = os.environ.get("SPV_FERNET_KEY", "")
+    if not cheie:
+        raise EroareSpv("SPV_FERNET_KEY lipseste din env — token-urile nu se stocheaza in clar")
+    return Fernet(cheie.encode() if isinstance(cheie, str) else cheie)
+
+
+def cripteaza(text):
+    """text (str) -> ciphertext (str). Pura fata de DB."""
+    return _fernet().encrypt(text.encode()).decode()
+
+
+def decripteaza(text):
+    """ciphertext (str) -> text (str)."""
+    return _fernet().decrypt(text.encode()).decode()
+
+
+# ============================================================
+#  JWT ANAF — decodare FARA verificare de semnatura
+#  (nu detinem cheia publica ANAF; ne trebuie doar claim-urile)
+# ============================================================
+def decodeaza_jwt(token):
+    """Intoarce payload-ul (dict) din segmentul de mijloc al JWT. Pura."""
+    try:
+        seg = token.split(".")[1]
+    except (AttributeError, IndexError):
+        return {}
+    seg += "=" * (-len(seg) % 4)
+    try:
+        return json.loads(base64.urlsafe_b64decode(seg.encode()))
+    except (ValueError, json.JSONDecodeError):
+        return {}
+
+
+# NECUNOSCUTA DECLARATA (ARHITECTURA_SPV.md): formatul JWT ANAF nu e documentat.
+# Numele exact al claim-ului cu serialul certificatului se CONFIRMA la primul token
+# real (decodare pe jwt.io — pasul 5 din ordinea de executie). Pana atunci incercam
+# un set de chei plauzibile si cadem pe 'sub'/marcaj. NU se ghiceste tacut.
+_CANDIDATI_SERIAL = ("serial_number", "serialNumber", "serial", "certSerial", "sub")
+
+
+def extrage_serial(payload):
+    """Serialul certificatului din claim-uri. Vezi NECUNOSCUTA DECLARATA. Pura."""
+    for k in _CANDIDATI_SERIAL:
+        v = payload.get(k)
+        if v:
+            return str(v)
+    return "NECONFIRMAT"   # se corecteaza la primul token real (jwt.io)
+
+
+# ============================================================
+#  STATE OAuth (CSRF) — semnat, fara tabel nou (reuse nucleu)
+# ============================================================
+def genereaza_state(accounting_firm_id, acum=None):
+    """State CSRF legat de cabinet, expira in 10 min. Pura (semnat cu STATE_SECRET)."""
+    return nucleu.creeaza_token(
+        {"firm": int(accounting_firm_id), "scop": "spv_state"},
+        STATE_SECRET, durata_sec=STATE_DURATA_SEC, acum=acum)
+
+
+def verifica_state(state, acum=None):
+    """Verifica state-ul, intoarce accounting_firm_id. Ridica EroareSpv la invalid/expirat."""
+    r = nucleu.verifica_token(state, STATE_SECRET, acum=acum)
+    if not r["ok"]:
+        raise EroareSpv("state invalid: %s" % r.get("mesaj", r.get("cod")))
+    p = r["payload"]
+    if p.get("scop") != "spv_state" or "firm" not in p:
+        raise EroareSpv("state cu scop gresit")
+    return int(p["firm"])
+
+
+def url_autorizare(accounting_firm_id, acum=None):
+    """(url_authorize, state). token_content_type=jwt pe QUERY aici (ARHITECTURA)."""
+    state = genereaza_state(accounting_firm_id, acum=acum)
+    q = urllib.parse.urlencode({
+        "response_type": "code",
+        "client_id": CLIENT_ID,
+        "redirect_uri": REDIRECT_URI,
+        "token_content_type": "jwt",
+        "state": state,
+    })
+    return f"{AUTHORIZE_URL}?{q}", state
+
+
+# ============================================================
+#  PARSARE RASPUNS /token -> valori de stocat (PURA)
+# ============================================================
+def valori_din_raspuns_token(tok, acum=None):
+    """
+    Din JSON-ul raspunsului /token extrage AMBELE valori + expirari + serial.
+    Pura (nu atinge DB/retea). ROTATIE: intoarce si access_token, si refresh_token noi.
+    """
+    acum = acum if acum is not None else int(time.time())
+    access = tok.get("access_token")
+    refresh = tok.get("refresh_token")
+    if not access or not refresh:
+        raise EroareSpv("raspuns /token fara access_token sau refresh_token")
+    expires_in = int(tok.get("expires_in") or 0) or ACCES_IMPLICIT_SEC
+    access_expira = datetime.fromtimestamp(acum + expires_in, tz=timezone.utc)
+    refresh_expira = datetime.fromtimestamp(acum, tz=timezone.utc) + timedelta(days=REFRESH_DURATA_ZILE)
+    serial = extrage_serial(decodeaza_jwt(access))
+    return {
+        "access_token": access,
+        "refresh_token": refresh,
+        "serial_certificat": serial,
+        "access_expira": access_expira,
+        "refresh_expira": refresh_expira,
+    }
+
+
+# ============================================================
+#  STOCARE (DB) — se dovedeste pe server
+# ============================================================
+def salveaza_token(conn, accounting_firm_id, valori, acum_dt=None):
+    """
+    UPSERT in spv_token pe (accounting_firm_id, serial_certificat).
+    access/refresh se stocheaza CRIPTAT. Reactiveaza (activ=true) si marcheaza
+    reimprospatat_la la UPDATE. Intoarce id-ul randului.
+    """
+    acum_dt = acum_dt if acum_dt is not None else datetime.now(timezone.utc)
+    with conn.cursor() as cur:
+        cur.execute("""
+            INSERT INTO public.spv_token
+                (accounting_firm_id, serial_certificat, access_token, refresh_token,
+                 access_expira, refresh_expira, activ)
+            VALUES (%s,%s,%s,%s,%s,%s, true)
+            ON CONFLICT (accounting_firm_id, serial_certificat) DO UPDATE SET
+                access_token   = EXCLUDED.access_token,
+                refresh_token  = EXCLUDED.refresh_token,
+                access_expira  = EXCLUDED.access_expira,
+                refresh_expira = EXCLUDED.refresh_expira,
+                activ          = true,
+                reimprospatat_la = %s
+            RETURNING id
+        """, (int(accounting_firm_id), valori["serial_certificat"],
+              cripteaza(valori["access_token"]), cripteaza(valori["refresh_token"]),
+              valori["access_expira"], valori["refresh_expira"], acum_dt))
+        return cur.fetchone()[0]
+
+
+def ia_token_activ(conn, accounting_firm_id):
+    """
+    Randul token activ pentru cabinet, cu access/refresh DECRIPTATE.
+    None daca nu exista token activ.
+    """
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT id, serial_certificat, access_token, refresh_token,
+                   access_expira, refresh_expira
+              FROM public.spv_token
+             WHERE accounting_firm_id = %s AND activ = true
+             ORDER BY id DESC LIMIT 1
+        """, (int(accounting_firm_id),))
+        r = cur.fetchone()
+    if not r:
+        return None
+    return {
+        "id": r[0], "serial_certificat": r[1],
+        "access_token": decripteaza(r[2]), "refresh_token": decripteaza(r[3]),
+        "access_expira": r[4], "refresh_expira": r[5],
+    }
+
+
+def dezactiveaza_token(conn, token_id):
+    """activ=false (refresh esuat / revocat). Cronul + notificarea sunt separate."""
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.spv_token SET activ=false WHERE id=%s", (int(token_id),))
+
+
+# ============================================================
+#  APELURI REALE catre ANAF (retea) — testate pe MOCK
+# ============================================================
+def _post_token(data):
+    """POST /token cu Basic Auth. Intoarce JSON. Ridica pe non-200."""
+    auth = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
+    r = requests.post(TOKEN_URL, data=data,
+                      headers={"Authorization": f"Basic {auth}",
+                               "Content-Type": "application/x-www-form-urlencoded"},
+                      timeout=30)
+    if r.status_code != 200:
+        raise EroareSpv("HTTP %s la /token: %s" % (r.status_code, r.text[:300]))
+    return r.json()
+
+
+def schimba_cod_pe_token(code):
+    """
+    Pasul 6 din flux: authorization_code -> token. token_content_type=jwt in BODY aici.
+    FEREASTRA 60 SECUNDE (procedura ANAF) — nu se amana. APEL REAL ANAF.
+    """
+    return _post_token({
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": REDIRECT_URI,
+        "token_content_type": "jwt",
+    })
+
+
+def reimprospateaza_pereche(refresh_token):
+    """grant_type=refresh_token -> pereche NOUA (access+refresh). APEL REAL ANAF."""
+    return _post_token({
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token,
+    })
+
+
+def finalizeaza_autorizare(conn, accounting_firm_id, code, acum=None):
+    """Callback: schimba codul pe token si salveaza (criptat). Intoarce id-ul randului."""
+    tok = schimba_cod_pe_token(code)
+    valori = valori_din_raspuns_token(tok, acum=acum)
+    return salveaza_token(conn, accounting_firm_id, valori)
+
+
+def reimprospateaza_token(conn, token_row, acum=None):
+    """
+    Refresh sincron pentru un rand token. Salveaza AMBELE valori noi (ROTATIE).
+    La esec: dezactiveaza tokenul si ridica EroareSpvRefreshEsuat.
+    """
+    firm_id = token_row.get("accounting_firm_id") or _firm_din_token(conn, token_row["id"])
+    try:
+        tok = reimprospateaza_pereche(token_row["refresh_token"])
+        valori = valori_din_raspuns_token(tok, acum=acum)
+    except EroareSpv:
+        dezactiveaza_token(conn, token_row["id"])
+        raise EroareSpvRefreshEsuat(
+            "refresh esuat pentru token %s — cabinetul reconecteaza SPV" % token_row["id"])
+    # serialul ramane cel cunoscut daca noul JWT nu-l expune
+    if valori["serial_certificat"] == "NECONFIRMAT":
+        valori["serial_certificat"] = token_row["serial_certificat"]
+    salveaza_token(conn, firm_id, valori)
+    nou = ia_token_activ(conn, firm_id)
+    nou["accounting_firm_id"] = firm_id
+    return nou
+
+
+def _firm_din_token(conn, token_id):
+    with conn.cursor() as cur:
+        cur.execute("SELECT accounting_firm_id FROM public.spv_token WHERE id=%s", (int(token_id),))
+        r = cur.fetchone()
+    return r[0] if r else None
+
+
+def _expirat(access_expira, acum_dt=None):
+    acum_dt = acum_dt if acum_dt is not None else datetime.now(timezone.utc)
+    return access_expira is None or access_expira <= acum_dt
+
+
+# ============================================================
+#  FUNCTIA UNICA DE APEL — TOATE apelurile ANAF trec prin ea
+# ============================================================
+def apel_anaf(accounting_firm_id, metoda, url, acum_dt=None, _dormi=time.sleep, **kw):
+    """
+    Apel autentificat catre ANAF (ARHITECTURA_SPV.md, FUNCTIA UNICA DE APEL).
+    Reguli: fara token activ -> EroareSpvNeconectat; access expirat -> refresh sincron;
+    401 -> refresh o data + retry o data; 429 -> backoff exponential; 403 -> EroareSpvFaraDrept.
+    APEL REAL ANAF.
+    """
+    with db.get_conn() as conn:
+        tok = ia_token_activ(conn, accounting_firm_id)
+        if not tok:
+            raise EroareSpvNeconectat("cabinetul %s nu are token SPV activ" % accounting_firm_id)
+        tok["accounting_firm_id"] = int(accounting_firm_id)
+        if _expirat(tok["access_expira"], acum_dt):
+            tok = reimprospateaza_token(conn, tok, acum=None)
+
+        incercat_refresh = False
+        backoff = 0
+        while True:
+            r = requests.request(metoda, url,
+                                 headers={**kw.pop("headers", {}),
+                                          "Authorization": "Bearer %s" % tok["access_token"]},
+                                 **kw)
+            if r.status_code == 401 and not incercat_refresh:
+                incercat_refresh = True
+                tok = reimprospateaza_token(conn, tok, acum=None)
+                continue
+            if r.status_code == 429 and backoff < MAX_BACKOFF_429:
+                _dormi(2 ** backoff)
+                backoff += 1
+                continue
+            if r.status_code == 403:
+                raise EroareSpvFaraDrept("403 ANAF: certificatul nu are drept (CIF/serviciu)")
+            return r
