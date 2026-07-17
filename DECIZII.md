@@ -86,7 +86,7 @@ ALTERNATIVA RESPINSA: pragul +14 (a doua somatie automata) - escaladarea o decid
 ALTERNATIVA RESPINSA: From pe domeniul firmei - ar pica SPF/DMARC -> spam.
 LIMITA: daca un cabinet cere praguri proprii, setul devine configurabil per firma.
 
-### 17.07.2026 F135 pontaj: informativ, NU alimenteaza proratarea  (specificatie, neimplementat)
+### 17.07.2026 F135 pontaj: informativ, NU alimenteaza proratarea  (LIVE, commit a52ded3; core/pontaj.py)
 DECIZIE: pontajul v1 = evidenta de prezenta pura. NU atinge calculul salarial.
 TEMEI: verificare la sursa (Claude Code, stat_plata liniile 32-33): brutul e DEJA proratat dupa
 concedii medicale - brut_lucrat = brut x (zile_luna - cm_zile) / zile_luna. Un pontaj care ar

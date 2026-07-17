@@ -88,3 +88,11 @@ Salariați → rând salariat → buton **Adeverință**:
 - [ ] Caseta de atenție (bancă) apare clar.
 - [ ] „Generează PDF" → se deschide PDF-ul; conține firma+CUI, nume+CNP, funcție COR, data angajării, brut+net, vechime, scop, temeiul art. 34(5).
 - [ ] Fără scop completat → mesaj de eroare (nu generează).
+
+## G. F135 Pontaj (construit 17.07) — verificare vizuală
+
+Salariați → rând salariat → buton **Pontaj**:
+- [ ] Grila arată doar zilele lucrătoare (weekendul + sărbătorile legale, inclusiv Vinerea Mare, lipsesc).
+- [ ] Rezumatul (prezent/absent/concediu) se actualizează la schimbarea unei stări.
+- [ ] Salariat angajat la mijloc de lună: zilele dinainte de angajare nu apar.
+- [ ] Navigarea ← lună / lună → funcționează.
