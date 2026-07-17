@@ -2082,3 +2082,14 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.notificari_scadenta (
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS notificari_scadenta_activ boolean NOT NULL DEFAULT false;
 ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS notificare_stop boolean NOT NULL DEFAULT false;
 ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS notificare_amanata_pana date;
+
+--
+-- F135 (pontaj informativ) — mirror al core/migrare_pontaj.py
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.pontaj (
+    salariat_id integer NOT NULL,
+    zi date NOT NULL,
+    stare text NOT NULL,
+    nota text,
+    CONSTRAINT pontaj_pkey PRIMARY KEY (salariat_id, zi)
+);

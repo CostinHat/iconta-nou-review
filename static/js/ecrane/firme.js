@@ -541,6 +541,48 @@ async function ecranControlFirma(corp, nav, t) {
       ${verifHtml || '<div class="mig-gol">Nicio verificare disponibilă.</div>'}
     </div>`;
 }
+// F135: pontaj lunar informativ - marcheaza exceptiile pe zilele lucratoare (fara sarbatori)
+async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
+  const ZI_SAPT = ["dum", "lun", "mar", "mie", "joi", "vin", "sâm"];
+  const STARI = [["prezent", "prezent"], ["absent_motivat", "absent motivat"],
+    ["absent_nemotivat", "absent nemotivat"], ["concediu_odihna", "concediu odihnă"],
+    ["concediu_medical", "concediu medical"], ["invoire", "învoire"], ["delegatie", "delegație"]];
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă pontajul…</p>`;
+    let g;
+    try { g = await api.get(`/tenants/${t.id}/salariati/${sid}/pontaj?an=${an}&luna=${luna}`); }
+    catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca pontajul.</p>`; return; }
+    const rez = g.rezumat || {};
+    const lucr = (g.zile || []).filter((z) => z.lucratoare && z.in_activitate);
+    const randuri = lucr.map((z) => {
+      const zid = new Date(z.zi + "T00:00:00").getDay();
+      const opts = STARI.map(([v, l]) => `<option value="${v}"${z.stare === v ? " selected" : ""}>${l}</option>`).join("");
+      return `<label class="camp"><span class="camp-eticheta">${String(z.zi_nr).padStart(2, "0")} ${ZI_SAPT[zid]}</span><select class="camp-input pj-sel" data-zi="${z.zi}">${opts}</select></label>`;
+    }).join("");
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Pontaj</h2>
+      <p class="pf-intro">${esc(nume || "")} · luna ${String(luna).padStart(2, "0")}/${an}
+        <button class="buton-secundar" id="pj-prev" style="margin-left:12px">← luna</button>
+        <button class="buton-secundar" id="pj-next">luna →</button></p>
+      <div class="cf-sumar">
+        <span class="cf-pastila">${rez.prezent || 0} prezent</span>
+        <span class="cf-pastila">${(rez.absent_motivat || 0) + (rez.absent_nemotivat || 0)} absent</span>
+        <span class="cf-pastila">${(rez.concediu_odihna || 0) + (rez.concediu_medical || 0)} concediu</span>
+        <span class="cf-pastila">${rez.invoire || 0} învoire · ${rez.delegatie || 0} delegație</span>
+      </div>
+      <p class="pf-intro">Doar zilele lucrătoare (weekendul și sărbătorile legale nu se pontează). Prezent = implicit; evidență informativă, nu schimbă statul de plată.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;max-width:900px">${randuri || '<div class="mig-gol">Nicio zi lucrătoare în perioada de activitate.</div>'}</div>
+      <div id="pj-msg" style="margin-top:10px"></div>`;
+    corp.querySelector("#pj-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#pj-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelectorAll(".pj-sel").forEach((sel) => sel.addEventListener("change", async () => {
+      try { await api.put(`/tenants/${t.id}/salariati/${sid}/pontaj`, { zi: sel.dataset.zi, stare: sel.value }); deseneaza(); }
+      catch (e) { arataMesaj(corp.querySelector("#pj-msg"), e.mesaj || "Eroare.", "eroare"); }
+    }));
+  };
+  deseneaza();
+}
+
 // F136: formular adeverinta salariat -> PDF (art. 34(5) Codul muncii)
 function formularAdeverinta(corp, nav, t, sid, nume, an, luna) {
   corp.innerHTML = `
@@ -616,6 +658,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
           <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Concediu</button>
           <button class="buton-secundar" data-adev="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Adeverință</button>
+          <button class="buton-secundar" data-pontaj="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Pontaj</button>
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Stat de plat\u0103</h2>
@@ -666,6 +709,8 @@ async function ecranSalariati(corp, nav, t) {
     }));
     corp.querySelectorAll("[data-adev]").forEach((b) => b.addEventListener("click", () =>  // f136_adeverinta
       nav.mergi("Adeverință", (c2) => formularAdeverinta(c2, nav, t, parseInt(b.dataset.adev), b.dataset.nume, an, luna))));
+    corp.querySelectorAll("[data-pontaj]").forEach((b) => b.addEventListener("click", () =>  // f135_pontaj
+      nav.mergi("Pontaj", (c2) => ecranPontaj(c2, nav, t, parseInt(b.dataset.pontaj), b.dataset.nume, an, luna))));
     corp.querySelectorAll("[data-reges]").forEach((b) => b.addEventListener("click", () => {
       const sid = parseInt(b.dataset.reges);
       zonaReges.innerHTML = `<div style="display:block;margin:10px 0;max-width:520px">

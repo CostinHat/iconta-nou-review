@@ -3150,6 +3150,32 @@ def tenant_adeverinta(tenant_id: int, salariat_id: int, date: AdeverintaIn, ctx=
     return Response(content=pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="adeverinta_{salariat_id}.pdf"'})
 
+@app.get("/tenants/{tenant_id}/salariati/{salariat_id}/pontaj")
+def tenant_pontaj_get(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=Depends(cere_context)):
+    """F135: grila lunara de pontaj (informativ) - zile lucratoare, exceptii, rezumat."""
+    from core import pontaj as _p
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        g = _p.grila(conn, schema, salariat_id, an, luna)
+    if g is None:
+        raise HTTPException(404, "salariat inexistent")
+    return g
+
+class PontajIn(BaseModel):
+    zi: str
+    stare: Optional[str] = None
+
+@app.put("/tenants/{tenant_id}/salariati/{salariat_id}/pontaj")
+def tenant_pontaj_set(tenant_id: int, salariat_id: int, date: PontajIn, ctx=Depends(cere_context)):
+    """F135: seteaza starea unei zile (stare goala/prezent = sterge exceptia)."""
+    from core import pontaj as _p
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = _p.seteaza(conn, schema, salariat_id, date.zi, date.stare)
+    if not r.get("ok"):
+        raise HTTPException(422, r.get("mesaj", "eroare"))
+    return r
+
 # cf_verificari_v1: verificari contabile reutilizabile (echilibru + trezorerie)
 def _verifica_documente_pozate(schema):  # verif_doc_pozate_v1
     """Documente pozate de clienti blocate in flux: necontate >3 zile sau note ciorna casa >3 zile."""
