@@ -211,3 +211,27 @@ nu 40. Restul = respingeri motivate. Mentenanta creste cu 3 abonamente, nu cu 30
 
 REGULA PERMANENTA: orice declaratie noua intra in monitorul fiscal ODATA cu ea.
 Construita si nemonitorizata = datorie, nu functionalitate.
+
+### RESTANTE DIN 17.07.2026 (consemnate ca sa nu se piarda)
+
+1. COD MORT OAUTH in main.py (~liniile 4953-5015): 3 rute scrise orb, netestate:
+   /anaf/oauth/start, /efactura/callback, /anaf/oauth/stare.
+   Dovada ca n-au rulat: public.anaf_tokens NU EXISTA in iconta_v2 (psql: relation
+   does not exist), iar CREATE TABLE era in handler. Zero consumatori in *.js/*.html.
+   /efactura/callback NU corespunde cu ce e inregistrat la ANAF (/anaf/oauth/callback).
+   SE STERG la construirea conectorului (regula 0a). E in BRIEF_CODE_CONECTOR_SPV.md.
+
+2. ALERTELE FISCALE NU AJUNG LA OM. Constatat 17.07: alerta monitor_fiscal despre
+   OPANAF 138/2026 (modificare D204) a stat 6 zile necitita in inboxul personal,
+   printre 104 mesaje. Monitorul PRINDE corect - dar mesajul se pierde.
+   Alertele fiscale trebuie sa apara IN APLICATIE (unde se uita contabilul oricum),
+   nu doar pe email. De verificat ce exista deja (F103 are banner/anunturi?) inainte
+   de a construi ceva nou.
+   NOTA: alerta asta a fost declansatorul intregului inventar declarativ. Monitorul
+   si-a facut treaba; canalul de livrare e problema.
+
+3. D212 IESE DIN TIPAR: merge prin core/rip_api.py + core/d212_engine.py, in afara
+   core/declaratii_api.py, unde sunt toate celelalte 9 (d100...d406).
+   INTREBARE DESCHISA pentru Costin: e intentionat (D212 = PF/PFA, alt regim) sau
+   e drift de arhitectura? Daca e intentionat -> se scrie motivul. Daca nu -> se aliniaza.
+   Pana la raspuns, NU se atinge.
