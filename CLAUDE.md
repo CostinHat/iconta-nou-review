@@ -172,12 +172,35 @@ UI intră simultan în `DESIGN_SYSTEM.md` ȘI în `verificator_conformitate.py`
 
 - `~/iconta_nou/DESIGN_SYSTEM.md` — reguli UI, v2.10+
 - `~/iconta_nou/verificator_conformitate.py` — gardian mecanic pentru DS
-- `~/iconta_nou/ICONTA_STATUS.md` — istoric versionat, actualizat DOAR la
-  finalul zilei de lucru, nu după fiecare task
+- `~/iconta_nou/ISTORIC.md` — CE s-a făcut, când, ce commit (include fostul
+  ICONTA_STATUS.md). Actualizat DOAR la finalul zilei, nu după fiecare task
+- `~/iconta_nou/DECIZII.md` — DE CE am făcut așa. Registru de decizii cu temei,
+  alternative respinse și limite. Se ADAUGĂ cronologic, nu se editează istoria.
+  Nu e normativ — norma trăiește unde se aplică și se verifică mecanic
 - `~/iconta_nou/DE_FACUT.md` — backlog
+- `~/iconta_nou/FUNCTIONALITATI.csv` — registrul canonic al funcționalităților.
+  Nicio funcționalitate nu trăiește în afara listei. Stări: LIVE / PLANIFICAT /
+  PARTIAL (blocat din exterior, cu carență) / RESPINS / AMANAT — niciuna implicită
+- `~/iconta_nou/ARHITECTURA_SPV.md` — decizii și parametri ANAF/SPV verificați la
+  sursă (OAuth, blocantul SPVWS2, conectorul)
 - `~/iconta_nou/anaf_surse/` — toate documentele oficiale ANAF descărcate
   (structuri XML, scheme SAF-T xlsx, versiuni.xml) — verifică AICI ÎNTÂI
   înainte de a căuta din nou pe internet, poate exista deja sursa.
+
+## Deciziile se scriu, nu rămân în chat
+Orice răspuns la un STOP (întrebare de direcție, arhitectură, fiscal, UI) este o
+DECIZIE și se scrie în `DECIZII.md` — cu temei, alternativa respinsă și limita.
+Motivul: sesiunea de chat se închide, codul rămâne fără explicație. Peste trei luni
+nimeni nu mai știe de ce pontajul e informativ sau de ce lipsește pragul +14.
+Formatul e în capul lui `DECIZII.md`.
+Norma rezultată intră unde se APLICĂ și se VERIFICĂ mecanic (DESIGN_SYSTEM.md +
+verificator, docstring de modul). `DECIZII.md` trimite acolo. Două surse de adevăr = drift.
+
+## Reorganizarea unui ecran existent = STOP
+Adăugarea unui element la sfârșitul unui rând = implementare, se face fără întrebare.
+Rearanjarea a ce era deja acolo (ordine, rupere de rânduri, mutare între zone) =
+schimbare de direcție, cere confirmare. Verificatorul prinde clasele greșite, NU
+prinde așezarea — de aceea aici disciplina nu e mecanică.
 
 ## Infrastructură
 
