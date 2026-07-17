@@ -65,3 +65,18 @@ Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prin
 
 ## Bug găsit în sesiune → deschide-l pe telefon/browser și confirmă vizual dacă vrei
 - Niciunul din cele 4 bug-uri reparate azi nu e vizual (toate backend). Nimic de re-confirmat cu ochii.
+
+---
+
+## E. F131 Scadențar (construit 17.07) — verificare vizuală
+
+Cardul **Facturi → Scadențar** (și badge-ul roșu pe cardul Facturi):
+- [ ] Badge roșu cu nr. de restante apare pe cardul Facturi (dacă există restante).
+- [ ] Scadențar: rezumat cu 3 pastile-semafor (restante roșu / scad curând galben / în termen verde), listă sortată pe urgență.
+- [ ] Bulinele de stare per factură au culorile corecte (cap.8).
+- [ ] Buton „Fișă client" comută la vederea agregată (sold + restant per client).
+- [ ] Comutator opt-in (checkbox) — la activare fără email de firmă → mesaj de eroare (nu se activează); cu email → se activează.
+- [ ] Supape per factură (când opt-in activ): „nu notifica" / „amână 30 zile" / „reia" funcționează și starea se reflectă.
+- [ ] Sume prin `bani()`, date prin `dataRo()` (fără format brut).
+
+Backend/logică deja testate prin SSH (18 teste + funcțional); aici doar randarea.
