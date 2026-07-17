@@ -3105,6 +3105,40 @@ def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=De
         raise HTTPException(404, "salariat inexistent")
     return Response(content=pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="fluturas_{salariat_id}_{an}_{luna:02d}.pdf"'})
+
+class AdeverintaIn(BaseModel):  # F136
+    scop: Optional[str] = None
+    mentiuni: Optional[str] = None
+    serie_ci: Optional[str] = None
+    nr_ci: Optional[str] = None
+    functie: Optional[str] = None
+    tip_contract: Optional[str] = None
+    nr_cim: Optional[str] = None
+    data_cim: Optional[str] = None
+    departament: Optional[str] = None
+    vechime_munca: Optional[str] = None
+    vechime_specialitate: Optional[str] = None
+    venit_an_precedent: Optional[float] = None
+    sporuri: Optional[str] = None
+    retineri: Optional[str] = None
+    nr_iesire: Optional[str] = None
+    data_iesire: Optional[str] = None
+    an: Optional[int] = None
+    luna: Optional[int] = None
+
+@app.post("/tenants/{tenant_id}/salariati/{salariat_id}/adeverinta")
+def tenant_adeverinta(tenant_id: int, salariat_id: int, date: AdeverintaIn, ctx=Depends(cere_cabinet)):
+    """F136: adeverinta de salariat (art. 34(5) Codul muncii) -> PDF."""
+    from fastapi.responses import Response
+    from core import adeverinta as _adv
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        pdf = _adv.pdf(conn, schema, salariat_id, date.dict())
+    if pdf is None:
+        raise HTTPException(404, "salariat inexistent")
+    return Response(content=pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="adeverinta_{salariat_id}.pdf"'})
+
 # cf_verificari_v1: verificari contabile reutilizabile (echilibru + trezorerie)
 def _verifica_documente_pozate(schema):  # verif_doc_pozate_v1
     """Documente pozate de clienti blocate in flux: necontate >3 zile sau note ciorna casa >3 zile."""

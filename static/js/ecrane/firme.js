@@ -541,6 +541,59 @@ async function ecranControlFirma(corp, nav, t) {
       ${verifHtml || '<div class="mig-gol">Nicio verificare disponibilă.</div>'}
     </div>`;
 }
+// F136: formular adeverinta salariat -> PDF (art. 34(5) Codul muncii)
+function formularAdeverinta(corp, nav, t, sid, nume, an, luna) {
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Adeverință</h2>
+    <p class="pf-intro">Pentru ${esc(nume || "salariat")}. Denumirea firmei, numele, CNP-ul, funcția COR, data angajării și salariul brut/net se completează automat din datele firmei. Restul, mai jos.</p>
+    <div class="caseta-atentie" style="margin:0 0 12px"><span class="ca-mesaj">Pentru credit bancar, băncile cer de obicei formularul propriu — un PDF generic nu e acceptat. Din 2026 verifică veniturile direct la ANAF.</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;max-width:820px">
+      <label class="camp"><span class="camp-eticheta">Scopul<span class="oblig">*</span></span><input id="ad-scop" class="camp-input" placeholder="ex. grădiniță, notar, instanță"></label>
+      <label class="camp"><span class="camp-eticheta">Funcția</span><input id="ad-functie" class="camp-input"></label>
+      <label class="camp"><span class="camp-eticheta">Departament</span><input id="ad-dept" class="camp-input"></label>
+      <label class="camp"><span class="camp-eticheta">Serie CI</span><input id="ad-serieci" class="camp-input"></label>
+      <label class="camp"><span class="camp-eticheta">Nr. CI</span><input id="ad-nrci" class="camp-input"></label>
+      <label class="camp"><span class="camp-eticheta">Tip contract</span><select id="ad-tip" class="camp-input"><option value="nedeterminata">nedeterminată</option><option value="determinata">determinată</option></select></label>
+      <label class="camp"><span class="camp-eticheta">Nr. CIM</span><input id="ad-nrcim" class="camp-input"></label>
+      <label class="camp"><span class="camp-eticheta">Dată CIM</span><input type="date" id="ad-datacim" class="camp-input"></label>
+      <label class="camp"><span class="camp-eticheta">Vechime în muncă</span><input id="ad-vm" class="camp-input" placeholder="ex. 8 ani 3 luni"></label>
+      <label class="camp"><span class="camp-eticheta">Vechime specialitate</span><input id="ad-vs" class="camp-input"></label>
+      <label class="camp"><span class="camp-eticheta">Nr. ieșire</span><input id="ad-nr" class="camp-input"></label>
+      <label class="camp"><span class="camp-eticheta">Data ieșirii</span><input type="date" id="ad-data" class="camp-input"></label>
+    </div>
+    <label class="camp" style="max-width:820px;margin-top:10px"><span class="camp-eticheta">Mențiuni (opțional)</span><textarea id="ad-mentiuni" class="camp-input" rows="2"></textarea></label>
+    <p style="margin-top:14px"><button class="buton-primar" id="ad-gen">Generează PDF</button> <button class="buton-secundar" id="ad-renunta" style="margin-left:8px">Renunță</button></p>
+    <div id="ad-msg"></div>`;
+  corp.querySelector("#ad-renunta").addEventListener("click", () => nav.inapoi && nav.inapoi());
+  corp.querySelector("#ad-gen").addEventListener("click", async () => {
+    const msg = corp.querySelector("#ad-msg");
+    const val = (id) => corp.querySelector(id).value.trim();
+    if (!val("#ad-scop")) { arataMesaj(msg, "Completează scopul adeverinței.", "eroare"); return; }
+    const body = {
+      scop: val("#ad-scop"), functie: val("#ad-functie"), departament: val("#ad-dept"),
+      serie_ci: val("#ad-serieci"), nr_ci: val("#ad-nrci"), tip_contract: corp.querySelector("#ad-tip").value,
+      nr_cim: val("#ad-nrcim"), data_cim: corp.querySelector("#ad-datacim").value || null,
+      vechime_munca: val("#ad-vm"), vechime_specialitate: val("#ad-vs"),
+      nr_iesire: val("#ad-nr"), data_iesire: corp.querySelector("#ad-data").value || null,
+      mentiuni: val("#ad-mentiuni"), an, luna,
+    };
+    const btn = corp.querySelector("#ad-gen"); btn.disabled = true; btn.textContent = "Se generează…";
+    try {
+      const r = await fetch(`/tenants/${t.id}/salariati/${sid}/adeverinta`, {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + sesiune.token(), "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!r.ok) throw new Error("pdf " + r.status);
+      const url = URL.createObjectURL(await r.blob());
+      window.open(url, "_blank");
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      arataMesaj(msg, "Adeverință generată.", "ok");
+    } catch { arataMesaj(msg, "Nu am putut genera adeverința.", "eroare"); }
+    finally { btn.disabled = false; btn.textContent = "Generează PDF"; }
+  });
+}
+
 async function ecranSalariati(corp, nav, t) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
@@ -562,6 +615,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-primar" data-flut="${s.id}">Flutura\u0219</button>
           <button class="buton-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
           <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Concediu</button>
+          <button class="buton-secundar" data-adev="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Adeverință</button>
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Stat de plat\u0103</h2>
@@ -610,6 +664,8 @@ async function ecranSalariati(corp, nav, t) {
     corp.querySelectorAll("[data-cm]").forEach((b) => b.addEventListener("click", () => {
       fluxConcediu(nav, t, { id: parseInt(b.dataset.cm), nume: b.dataset.nume });
     }));
+    corp.querySelectorAll("[data-adev]").forEach((b) => b.addEventListener("click", () =>  // f136_adeverinta
+      nav.mergi("Adeverință", (c2) => formularAdeverinta(c2, nav, t, parseInt(b.dataset.adev), b.dataset.nume, an, luna))));
     corp.querySelectorAll("[data-reges]").forEach((b) => b.addEventListener("click", () => {
       const sid = parseInt(b.dataset.reges);
       zonaReges.innerHTML = `<div style="display:block;margin:10px 0;max-width:520px">
