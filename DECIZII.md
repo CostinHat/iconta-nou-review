@@ -140,3 +140,33 @@ LIMITA: calendarul valabil [2024, 2099] (setul fix cu 6-7 ian din 2024; offset i
 2099). In afara -> ValueError VIZIBIL, nu rezultat tacut gresit (cum era 2025, care lipsea
 complet si dadea weekday<5). Setul de sarbatori fixe (art. 139 Codul muncii) se reverifica daca
 legea se schimba. NUMARATORUL cm_zile ramane suprascriabil de contabil (auto-calc = doar default).
+
+### 17.07.2026 Lot 4 Stoc — F138 multi-gestiune AMANAT PANA LA TESTARE (nu pe nedeterminat)  (specificatie, neimplementat)
+DECIZIE: multi-locatie descriptiva (Tier 1, doar eticheta pe miscare, CMP global) se
+construieste ACUM. Multi-gestiune cu CMP separat per depozit (Tier 3) se AMANA explicit
+pana la faza de testare/dare in folosinta a aplicatiei complete, nu pe nedeterminat.
+TEMEI: verificat SAF-T D406 - sectiunea de stocuri NU e obligatorie decat la cererea
+expresa ANAF (termen minim 30 zile de la solicitare), si chiar si atunci doar daca
+evidenta e cantitativ-valorica sau operativ-contabila. Stocurile pe global-valoric NU
+se raporteaza deloc (smarttax.ro, forum.sagasoft.ro - caz real cu depozit + puncte de
+lucru pe gestiuni distincte, global-valoric).
+TREI NIVELURI, nu doar "cu/fara multi-depozit":
+  1. Multi-LOCATIE (eticheta descriptiva pe miscare, CMP ramane global) - ieftin, aditiv,
+     NU atinge fiscalul. BUILDABIL ACUM.
+  2. Multi-GESTIUNE global-valoric (depozite separate, dar fiecare tot global-valoric) -
+     mediu, nu intra in raportarea D406 stocuri.
+  3. Multi-GESTIUNE cantitativ-valorica (CMP separat per depozit, transfer = ricoseu in
+     valorizare, D406 segmentat) - scump, ireversibil odata ce intra date reale.
+MOTIVUL AMANARII (nu respingerii): promisiunea de produs e "contabilitate completa".
+Nivelul 3 e parte din acea promisiune, dar formatul lui (separare stricta pe depozit vs.
+stoc comun cu raportare pe locatii, CMP unic vs per-gestiune) depinde de CUM lucreaza
+cabinetele-tinta - necunoscut azi. Construit pe ghicit, o corectie ulterioara nu e
+git revert, e o discutie cu un cabinet despre de ce cifrele lui din ultimele luni difera.
+REPER DE TIMP: reevaluare la faza de testare a aplicatiei complete (nu "cand apare
+cazul", ca sa nu devina a doua D204 - uitata pana o scoate la iveala intamplarea).
+Pana atunci: NEVOI_RATATE.md capteaza orice semnal real (cabinet care cere multi-depozit
+in discutii de vanzare/suport) + verificare directa in firma_profil (puncte de lucru
+existente) inainte de a intra in constructie.
+ALTERNATIVA RESPINSA: constructia acum a nivelului 3, pe presupunere - risc simetric cu
+ce a produs bug-ul CM de azi (forma gresita, scrisa o data, propagata tacut in CMP/D406
+pentru TOTI clientii, nu doar cel cu multi-depozit).
