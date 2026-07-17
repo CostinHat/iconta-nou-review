@@ -113,20 +113,30 @@ def _trimite_brevo(subiect, mesaj):
 
 
 # [p30_email_generic]
-def trimite_email_html(catre, subiect, html, attachments=None):
+def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
+                       expeditor_nume="iConta"):
     """Email HTML catre un destinatar arbitrar (nu doar alerta interna).
-    Refoloseste BREVO_KEY + sender. Intoarce True/False."""
+    Refoloseste BREVO_KEY + sender. Intoarce True/False.
+
+    reply_to: adresa la care raspunde destinatarul (Reply-To). From-ul RAMANE
+      ALERTA_DE_LA (contact@iconta.eu) - autorizat SPF/DKIM pe iconta.eu; NU se
+      trimite From pe alt domeniu (ar pica SPF/DMARC). Folosit de F131: emailul
+      pleaca in numele firmei (expeditor_nume='<Firma> prin iConta'), dar reply-to
+      = adresa firmei ca raspunsul clientului sa ajunga la ea, nu la iConta.
+    expeditor_nume: numele afisat al expeditorului (implicit 'iConta')."""
     if not BREVO_KEY:
         print("[email netrimis, fara BREVO_API_KEY] %s -> %s" % (subiect, catre))
         return False
     import json
     import urllib.request
     corp = {
-        "sender": {"email": ALERTA_DE_LA, "name": "iConta"},
+        "sender": {"email": ALERTA_DE_LA, "name": expeditor_nume},
         "to": [{"email": catre}],
         "subject": subiect,
         "htmlContent": html,
     }
+    if reply_to:
+        corp["replyTo"] = {"email": reply_to}
     if attachments:
         # attachments = list de {"content": <base64 str>, "name": <str>}
         corp["attachment"] = attachments

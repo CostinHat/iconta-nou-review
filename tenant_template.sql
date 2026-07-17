@@ -2068,3 +2068,17 @@ DROP TRIGGER IF EXISTS trg_verifica_perioada_blocata_rip ON TENANT_PLACEHOLDER.r
 CREATE TRIGGER trg_verifica_perioada_blocata_rip
 BEFORE INSERT OR UPDATE OR DELETE ON TENANT_PLACEHOLDER.rip_operatiuni
 FOR EACH ROW EXECUTE FUNCTION TENANT_PLACEHOLDER.verifica_perioada_blocata_rip();
+
+--
+-- F131 comp.5 (notificari scadenta) — mirror al core/migrare_notificari_scadenta.py (DDL idempotent)
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.notificari_scadenta (
+    factura_id integer NOT NULL,
+    prag integer NOT NULL,
+    trimis_la timestamptz NOT NULL DEFAULT now(),
+    stare text NOT NULL DEFAULT 'trimis',
+    CONSTRAINT notificari_scadenta_pkey PRIMARY KEY (factura_id, prag)
+);
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS notificari_scadenta_activ boolean NOT NULL DEFAULT false;
+ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS notificare_stop boolean NOT NULL DEFAULT false;
+ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS notificare_amanata_pana date;
