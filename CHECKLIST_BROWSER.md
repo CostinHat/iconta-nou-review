@@ -80,3 +80,11 @@ Cardul **Facturi → Scadențar** (și badge-ul roșu pe cardul Facturi):
 - [ ] Sume prin `bani()`, date prin `dataRo()` (fără format brut).
 
 Backend/logică deja testate prin SSH (18 teste + funcțional); aici doar randarea.
+
+## F. F136 Adeverință salariat (construit 17.07) — verificare vizuală
+
+Salariați → rând salariat → buton **Adeverință**:
+- [ ] Formularul se deschide ca fereastră; câmpuri DS (`.camp`/`.camp-input`), scop marcat obligatoriu (`.oblig`).
+- [ ] Caseta de atenție (bancă) apare clar.
+- [ ] „Generează PDF" → se deschide PDF-ul; conține firma+CUI, nume+CNP, funcție COR, data angajării, brut+net, vechime, scop, temeiul art. 34(5).
+- [ ] Fără scop completat → mesaj de eroare (nu generează).
