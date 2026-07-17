@@ -122,3 +122,113 @@ Aplicat la iConta: contabilul depune cu certificatul lui, pe firmele lui; iConta
 Raspunderea pe depunere NU trece la iConta. Modelul (2) ar fi mutat-o.
 Firma (SRL) = vehicul comercial (contracte, facturi, GDPR-procesator), NU intra in lantul ANAF.
 Contul de dezvoltator OAuth e pe persoana fizica (CNP), nu pe CUI.
+
+# ============================================================
+# CONECTORUL SPV — arhitectura (17.07.2026, inainte de cod)
+# ============================================================
+
+## DOMENIU
+FACE: autorizare OAuth, stocare token, refresh automat, functia unica apel_anaf().
+NU FACE: e-Factura, e-Transport. Alea sunt F126/F160/F121, construite PESTE conector.
+Daca intra logica de facturi in conector, scopul e ratat.
+
+## SCHEMA (in public, NU per tenant — tokenul apartine cabinetului, nu firmei)
+CREATE TABLE spv_token (
+  id                 SERIAL PRIMARY KEY,
+  accounting_firm_id INT NOT NULL,
+  serial_certificat  TEXT NOT NULL,        -- din JWT decodat
+  access_token       TEXT NOT NULL,        -- CRIPTAT (Fernet)
+  refresh_token      TEXT NOT NULL,        -- CRIPTAT (Fernet)
+  access_expira      TIMESTAMPTZ NOT NULL,
+  refresh_expira     TIMESTAMPTZ NOT NULL,
+  creat_la           TIMESTAMPTZ DEFAULT now(),
+  reimprospatat_la   TIMESTAMPTZ,
+  activ              BOOLEAN DEFAULT true,
+  UNIQUE (accounting_firm_id, serial_certificat)
+);
+CREATE TABLE spv_cui_acoperit (
+  token_id      INT REFERENCES spv_token(id) ON DELETE CASCADE,
+  cui           TEXT NOT NULL,
+  verificat_la  TIMESTAMPTZ,
+  are_drept     BOOLEAN,
+  UNIQUE (token_id, cui)
+);
+CRIPTARE: obligatorie. Procedura ANAF pune explicit responsabilitatea pastrarii
+securizate a token-urilor in seama dezvoltatorului. Cheia Fernet in ~/.iconta/api_keys.env
+(NU in git, NU in DB). Dump de DB fara env = inutilizabil.
+
+## CAPCANA CRITICA — ROTATIA REFRESH TOKEN-ULUI
+La refresh se obtin valori NOI si pentru access_token, SI pentru refresh_token.
+AMANDOUA trebuie salvate (temei: procedura oficiala ANAF, sectiunea Refresh Token JWT:
+"In Body se gasesc valorile noi pentru access_token si in refresh_token. Acestea
+trebuiesc salvate pentru a putea fi folosite in continuare").
+Daca salvezi doar access-ul nou -> urmatorul refresh esueaza -> cabinetul reautorizeaza
+cu stickul. Comentariu explicit in cod, altfel se pierde la prima refactorizare.
+
+## FLUXUL DE AUTORIZARE
+1. Contabil apasa "Conecteaza SPV"
+2. Backend: genereaza state (CSRF), legat de accounting_firm_id, expira in 10 min
+3. Redirect -> https://logincert.anaf.ro/anaf-oauth2/v1/authorize
+     ?response_type=code&client_id=..&redirect_uri=..&token_content_type=jwt&state=..
+   (scope gol; token_content_type=jwt pe QUERY aici)
+4. Contabil: alege certificatul de pe stick + PIN
+5. ANAF -> GET https://iconta.eu/anaf/oauth/callback?code=..&state=..
+6. Backend verifica state, apoi POST https://logincert.anaf.ro/anaf-oauth2/v1/token
+     Basic Auth (client_id:client_secret)
+     x-www-form-urlencoded: grant_type=authorization_code, code, redirect_uri,
+     token_content_type=jwt        <- in BODY aici, nu pe query
+   FEREASTRA 60 SECUNDE (procedura ANAF) - pasul 6 nu se amana.
+7. Decodeaza JWT -> serial_certificat, exp
+8. Salveaza criptat.
+
+## CRON REFRESH
+Zilnic 03:00 -> token-uri cu access_expira < now() + 7 zile
+POST /token: Basic Auth + grant_type=refresh_token + refresh_token
+Salveaza AMBELE valori noi (vezi CAPCANA CRITICA).
+Esec -> activ=false + notificare cabinet ("reconecteaza SPV").
+Marja 7 zile: generoasa la access 90 zile / refresh 365. Cabinet inactiv un an
+pierde accesul oricum - regula ANAF, nu bug.
+
+## FUNCTIA UNICA DE APEL
+def apel_anaf(accounting_firm_id, metoda, url, **kw):
+  1. ia token activ; lipsa/inactiv -> EroareSpvNeconectat
+  2. access expirat -> refresh sincron, apoi continua
+  3. request cu Bearer
+  4. 401 -> refresh o data, retry o data, apoi eroare
+  5. 429 -> backoff exponential (limita ANAF: 1000 apeluri/minut)
+  6. 403 -> EroareSpvFaraDrept (certificatul n-are drept pe CIF)
+REGULA: TOATE apelurile catre ANAF trec prin ea. Zero requests.get direct spre
+api.anaf.ro in restul codului. De pus regula in verificator_conformitate.py.
+
+## NECUNOSCUTA DECLARATA — ce CUI-uri acopera token-ul
+La SPVWS2 raspunsul da lista de CUI-uri. Prin OAuth: NEDOCUMENTAT. Procedura zice doar
+ca JWT-ul "contine informatii despre aplicatie, utilizator si nivelul de acces",
+fara sa specifice formatul.
+DECI: spv_cui_acoperit se populeaza EMPIRIC - la prima conectare, apel de test per CIF;
+403 -> are_drept=false. Nu presupunem, intrebam serviciul.
+Se clarifica in 5 minute la primul token real (decodare pe jwt.io). Pana atunci = limita.
+
+## FISIERE
+spv_conector.py       auth, token, refresh, apel_anaf
+spv_rute.py           GET /spv/autorizare, GET /anaf/oauth/callback
+spv_refresh.py        cron
+test_spv_conector.py  teste
+Migrare: cele 2 tabele in public. In tenant_template: NIMIC (nu e per tenant).
+
+## ORDINEA DE EXECUTIE
+1. Migrare schema
+2. spv_conector.py + teste pe refresh/rotatie (mock, nu ANAF real)
+3. Rute + callback
+4. STOP -> se citeste DESIGN_SYSTEM.md, se stabileste ecranul de conectare (Regula 0)
+5. TEST REAL cu stickul: autorizare -> https://api.anaf.ro/TestOauth/jaxrs/hello?name=X
+   -> decodare JWT -> aflam ce contine (rezolva NECUNOSCUTA de mai sus)
+   Acesta e testul functional real (regula 0c). TestOauth exista exact pentru asta.
+6. Cron
+7. Abia apoi F126.
+
+## INTREBARE TRIMISA LA ANAF (17.07.2026)
+Contact tehnic ANAF: spv.webservice@mfinante.ro
+INTREBARE TRIMISA 17.07.2026 catre spv.webservice@mfinante.ro, doua puncte:
+  (1) exista/se planifica transmitere declaratii prin WS?  -> deblocheaza F127
+  (2) se planifica OAuth pentru SPVWS2?                    -> deblocheaza F128 + rapoartele 'cerere'
+Fara raspuns pana la 17.08.2026: F127/F128 raman AMANAT. Raspunsul se consemneaza AICI.
