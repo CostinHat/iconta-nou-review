@@ -350,3 +350,94 @@ curat + repara latentul), apoi F161 pe deasupra; SAU (b) F161 ramane amanat pana
 determinarii. Decizia inainte de cod - garda schema + garda "umbla peste ce functioneaza" (gratuit LIVE).
 LIMITA: nu s-a verificat daca exista deja clienti-portal de cabinet in productie (care ar suferi de
 misclasificarea latenta); de verificat inainte de a atinge _eGratuit.
+
+---
+
+## F161 "Vreau contabil" — model de alocare (DESCHIS, apoi REDUS, 18.07.2026)
+
+Context: contul gratuit e o firma care are DEJA un contabil (altfel n-ar putea depune
+bilant). "Vreau contabil iConta" a fost initial inteles ca migrare/conversie — gresit.
+
+Clarificare Costin (in ordine):
+1. iConta NU aloca clientul catre cabinet. Temei: platforma nu e agentie de matchmaking;
+   alocarea l-ar pune pe Costin arbitru intre cabinete (de ce X si nu Y, ce raspundere pe
+   alegere proasta). Pozitie de evitat.
+2. Nu exista "invitatie" nici intr-un sens, nici in altul:
+   - cabinet vrea iConta -> se inregistreaza self-service (F108, LIVE);
+   - cabinet are client -> clientul are portal (LIVE).
+3. F161 ca "buton de conversie / vreau contabil" cu flux de acceptare NU exista ca atare.
+
+CE RAMANE (tehnic, nu model de business): cand un cabinet adauga o firma cu un CUI care
+exista deja ca tenant gratuit, tenantul existent se LEAGA de cabinet (datele raman) sau
+se creeaza tenant nou gol (datele se pierd)? = preluare tenant. De verificat la sursa
+(tenant_provisioning + ruta adaugare firma) inainte de a declara ceva de construit.
+
+BLOCAJ SECUNDAR REZOLVAT: determinarea gratuit-vs-cabinet era pe user, conversia pe tenant.
+Reparat 18.07 (commit cb3891f, Tema A): determinare acum tenant-based (_eGratuit =
+rol client && !tenant_are_cabinet). Dovada prod: 0 useri rol=client -> 0 reclasificari.
+Test ROLLBACK ambele directii. Tema B (schema noua tenant_requests) NU se construieste.
+
+---
+
+## Contul gratuit = varf de lance comercial contra SmartBill (18.07.2026)
+
+Pozitionare (Costin): SmartBill a crescut fiindca SAGA emitea facturi din ecranele
+CONTABILULUI — firma nu-si putea emite singura o factura fara sa treaca prin contabil,
+printr-un program facut pentru contabili. SmartBill a dat firmei un ecran de emitere
+simplu, facut pentru EA, separat de contabilitate.
+
+Contul gratuit iConta (F153) e aceeasi miscare: firma emite singura, comod, gratis;
+contabilul ei ramane pe SAGA cu bilantul. iConta NU concureaza SAGA pe contabilitate —
+o ocoleste pe partea slaba (emitere catre firma). Odata ce firma emite in iConta,
+piciorul e in usa pentru restul.
+
+CONSECINTA pe prioritati (F154-F160):
+- Ce face emiterea MAI USOARA decat SmartBill = prioritate reala (terenul de lupta).
+- e-Factura SPV in cont gratuit (F160) NU e optional: obligatoriu legal B2B, concurenta
+  o are. Firma care emite B2B fara SPV = oferta incompleta. F160 e parte din carlig.
+- F161 "vreau contabil" ca buton de conversie = NU exista. Valoarea contului gratuit e
+  emiterea in sine, deja LIVE.
+
+CARLIG SUPLIMENTAR (Costin): firmele au si alte nevoi pe care le fac singure, fara
+contabil — de identificat si adaugat la contul gratuit. Filtru: o functie apartine
+contului gratuit DOAR daca firma o face singura, azi, fara contabil, SI se poate livra
+fara a atinge partida dubla. Proforma trece; "vreau profitul" nu (cere contabilitate =
+teren SAGA, nu se concureaza acolo).
+
+---
+
+## Cont gratuit vs concurenta — paritate, lipsuri, "gratuit" conditionat (18.07.2026)
+
+Cercetare la sursa (SmartBill, Oblio, FGO, Factureanu), filtrata pe "firma face singura".
+
+PARITATE ATINSA (LIVE in cont gratuit, marcate retroactiv de Lot 7): facturi (F153),
+proforme+avize (F154), chitante (F157), model factura (F158), link plata (F159),
+WooCommerce (F156), recurente (F155). Miezul documentar = complet.
+
+LIPSURI fata de oferta gratuita a concurentei:
+1. e-Factura SPV (F160) — GOL DE PARITATE, singurul care conteaza. Universal la concurenta.
+   Obligatoriu legal B2B din 2025. BLOCAT pe OAuth ANAF (acelasi email ca F121/F126).
+2. Export catre programul contabilului (SAGA/WinMentor/Ciel) — ABSENT din registru.
+   Oblio il are. Nu e functie de firma, e PUNTEA care face pozitionarea posibila: firma
+   emite in iConta, contabilul ramane pe SAGA. Fara export, firma nu poate folosi iConta
+   fara sa-si enerveze contabilul. Posibil cel mai important gol strategic. De verificat
+   la sursa daca exista vreun export in cod.
+3. e-Factura primita -> NIR automat — ABSENT pentru cont gratuit. Oblio il are.
+   Diferentiator, nu paritate.
+
+"GRATUIT" CONDITIONAT IN PIATA (fiecare are alt asterisc):
+- SmartBill: 30 zile trial (12 luni doar firme in primul an). Apoi platit. Costuri ascunse
+  peste prag (credite >5E, upgrade fortat). = momeala de intrare.
+- Oblio: gratuit pe viata DOAR sub 3 documente/luna. Peste -> 29E/an. Simbolic.
+- FGO: gratuit NELIMITAT ca numar, DAR e-Factura se exporta MANUAL in XML si o incarci
+  tu in SPV. Fara trimitere directa in gratuit. = asteriscul lor.
+- Factureanu: singurul gratuit pe viata REAL, nelimitat, CU SPV direct, fara card. Etalon.
+
+GOL DE PIATA: nimeni nu da simultan gratuit-nelimitat + SPV-direct + fara card, in afara
+de Factureanu. POZITIONARE POSIBILA (daca se rezolva SPV direct): "gratuit nelimitat, SPV
+direct, SI legat de un cabinet real cand vrei contabilitate completa". Factureanu e doar
+facturare; iConta are contabilitatea in spate = diferentiator ne-egalabil de un facturator pur.
+
+REVERS CINSTIT: fara SPV direct, iConta e SUB FGO (care macar e nelimitat). SPV nu e un gol
+de paritate printre altele — e PRAGUL sub care oferta nu exista in piata. Ridica prioritatea
+confirmarii OAuth ANAF.
