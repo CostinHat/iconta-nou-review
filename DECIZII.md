@@ -974,3 +974,24 @@ Toate portile dovedite izolat (fara_token/nevalidat/deja_trimisa/upload). node -
 CARENTA declarata onest (nu colorata verde): recipisa LIVE (upload->stareMesaj->descarcare) e PENDING DREPT -
 se dovedeste doar cu un patron real cu certificat inrolat cu drept SPV pe CIF-ul lui (ca F176). Piesa separata
 ramasa: cron de poll stareMesaj/descarcare care avanseaza incarcat->ok/nok + preia recipisa.
+
+### 18.07.2026 F178 cron poll e-Factura - jumatatea de PRIMIRE, masina de stari completa  (core/spv_poll.py)
+DECIZIE: cronul de poll (stareMesaj/descarcare) NU e "dupa ce ai CIF real" - e jumatatea de PRIMIRE a
+propriului send. Fara el o factura urcata ramane blocata in 'incarcat' la infinit, nimic n-o avanseaza;
+masina de stari e incompleta si F160 nu functioneaza cu adevarat pentru un patron real chiar daca send-ul
+merge. Se construieste + unit-test ACUM; doar dovada LIVE (incarcat->ok live) ramane pending drept.
+GARDURI (toate implementate + testate): (1) reutilizeaza apel_anaf pe tokenul principalului (cabinet XOR
+gratuit, derivat din tenant) - nu duplica token/refresh; (2) scope strict: terminale (ok/nok/eroare_upload)
+NU se re-interogheaza (nu intra in de_polat); (3) token expirat -> apel_anaf face refresh, altfel SKIP randul,
+NU-l marca (auth-fail != factura respinsa) - test dedicat; (4) rata: 1000/min verificat la sursa (apel_anaf
+429 backoff) + sleep intre randuri + timer la 30 min; cuota ZILNICA stareMesaj/descarcare NU e in sursele
+locale -> conservator, NU fabricata; (5) timeout: blocat in in_prelucrare peste prag -> 'investigatie' (gri,
+verifica manual, nu abandon tacit); pragul (2z) conservator, ANAF nu documenteaza public timpul -> de confirmat
+la sursa; (6) parsare defensiva: logheaza raspunsul brut integral la prima interogare reala, forma neasteptata
+-> gri + log, nu swallow spre verde.
+DOVADA: 9 teste (6 clasificator pur pe formele documentate ANAF: in prelucrare/ok/nok/"XML cu erori"/timeout->
+investigatie/gunoi->neasteptat; 3 integrare DB+mock: ok->descarca recipisa salvata+sha, skip-auth nu marcheaza,
+terminal exclus din de_polat). Rulare reala (0 randuri, tabel curat), timer spv-poll activ (30 min). Starea
+'investigatie' adaugata la CHECK (per-tenant + template). Semafor buton: investigatie = gri, ne-retrimisibila.
+LIMITA (onest, ca F176): round-trip live incarcat->ok se dovedeste doar cu un patron real cu CIF cu drept SPV;
+descarcarea recipisei nu se coloreaza verde live pana atunci. Cuota zilnica + timpul de prelucrare = de confirmat.

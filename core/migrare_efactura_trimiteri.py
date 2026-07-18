@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS "{s}".efactura_trimiteri (
   factura_id        BIGINT NOT NULL REFERENCES "{s}".facturi(id),
   mediu             TEXT NOT NULL CHECK (mediu IN ('test','prod')),
   stare             TEXT NOT NULL DEFAULT 'pregatit'
-                    CHECK (stare IN ('pregatit','eroare_upload','incarcat','in_prelucrare','ok','nok')),
+                    CHECK (stare IN ('pregatit','eroare_upload','incarcat','in_prelucrare','ok','nok','investigatie')),
   index_incarcare   TEXT,
   execution_status  INTEGER,
   id_descarcare     TEXT,
@@ -40,6 +40,10 @@ CREATE TABLE IF NOT EXISTS "{s}".efactura_trimiteri (
 CREATE UNIQUE INDEX IF NOT EXISTS uq_efactura_trimiteri_viu
   ON "{s}".efactura_trimiteri (factura_id)
   WHERE mediu='prod' AND stare IN ('incarcat','in_prelucrare','ok');
+-- F178 (poll): starea 'investigatie' (blocat in prelucrare peste prag) - ALTER pt tabele existente
+ALTER TABLE "{s}".efactura_trimiteri DROP CONSTRAINT IF EXISTS efactura_trimiteri_stare_check;
+ALTER TABLE "{s}".efactura_trimiteri ADD CONSTRAINT efactura_trimiteri_stare_check
+  CHECK (stare IN ('pregatit','eroare_upload','incarcat','in_prelucrare','ok','nok','investigatie'));
 """
 
 

@@ -2174,7 +2174,7 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.efactura_trimiteri (
   factura_id        BIGINT NOT NULL REFERENCES TENANT_PLACEHOLDER.facturi(id),
   mediu             TEXT NOT NULL CHECK (mediu IN ('test','prod')),
   stare             TEXT NOT NULL DEFAULT 'pregatit'
-                    CHECK (stare IN ('pregatit','eroare_upload','incarcat','in_prelucrare','ok','nok')),
+                    CHECK (stare IN ('pregatit','eroare_upload','incarcat','in_prelucrare','ok','nok','investigatie')),
   index_incarcare   TEXT,
   execution_status  INTEGER,
   id_descarcare     TEXT,

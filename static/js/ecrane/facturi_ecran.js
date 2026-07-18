@@ -398,16 +398,16 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     const zonaSpv = corp.querySelector("#fd-spv-zona");
     // semafor: gri = netrimisa/pending drept; galben = in prelucrare; verde = ok (recipisa); rosu = nok/eroare
     const CUL = { ok: "var(--verde)", in_prelucrare: "var(--galben)", incarcat: "var(--galben)",
-                  nok: "var(--rosu-semafor)", eroare_upload: "var(--rosu-semafor)" };
+                  investigatie: "var(--gri-semafor)", nok: "var(--rosu-semafor)", eroare_upload: "var(--rosu-semafor)" };
     const ET = { ok: "trimisă (recipișă primită)", in_prelucrare: "în prelucrare la ANAF",
-                 incarcat: "încărcată, în prelucrare la ANAF", nok: "respinsă de ANAF",
-                 eroare_upload: "eroare la trimitere" };
+                 incarcat: "încărcată, în prelucrare la ANAF", investigatie: "blocată la ANAF — verifică în SPV",
+                 nok: "respinsă de ANAF", eroare_upload: "eroare la trimitere" };
     async function pictaStareSpv() {
       let st = null;
       try { const m = await api.get(`/tenants/${tenantId}/trimiteri-spv`); st = m[String(facturaId)]; } catch {}
       if (!st || !st.stare) return;   // netrimisa -> butonul ramane gri, fara text
       const cul = CUL[st.stare] || "var(--gri-semafor)";
-      bSpv.disabled = ["ok", "in_prelucrare", "incarcat"].includes(st.stare);  // send viu -> nu retrimite (idempotency)
+      bSpv.disabled = ["ok", "in_prelucrare", "incarcat", "investigatie"].includes(st.stare);  // send viu/blocat -> nu retrimite (idempotency)
       zonaSpv.innerHTML = `<span class="fd-stare" style="color:${cul}">SPV: ${ET[st.stare] || st.stare}</span>`
         + (st.error_message ? ` <span class="btn-link" id="fd-spv-det">vezi mesajul</span>` : "");
       corp.querySelector("#fd-spv-det")?.addEventListener("click", () =>

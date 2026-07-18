@@ -1,0 +1,9 @@
+[Unit]
+Description=iConta SPV poll e-Factura la 30 min (stareMesaj/descarcare)
+
+[Timer]
+OnCalendar=*-*-* *:07,37:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target
