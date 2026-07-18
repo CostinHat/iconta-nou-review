@@ -181,13 +181,22 @@ cu stickul. Comentariu explicit in cod, altfel se pierde la prima refactorizare.
 7. Decodeaza JWT -> serial_certificat, exp
 8. Salveaza criptat.
 
-## CRON REFRESH
-Zilnic 03:00 -> token-uri cu access_expira < now() + 7 zile
-POST /token: Basic Auth + grant_type=refresh_token + refresh_token
-Salveaza AMBELE valori noi (vezi CAPCANA CRITICA).
-Esec -> activ=false + notificare cabinet ("reconecteaza SPV").
-Marja 7 zile: generoasa la access 90 zile / refresh 365. Cabinet inactiv un an
-pierde accesul oricum - regula ANAF, nu bug.
+## CRON REFRESH  (IMPLEMENTAT 18.07 = F177, core/spv_refresh.py + spv-refresh.timer)
+Zilnic 03:30 (dupa backup 03:00), systemd timer (NU crontab) -> TOATE token-urile active
+cu access_expira < now() + MARJA (SPV_REFRESH_MARJA_ZILE, implicit 15 zile).
+Reutilizeaza reimprospateaza_token: POST /token grant_type=refresh_token, salveaza AMBELE
+valori noi criptate (vezi CAPCANA CRITICA).
+FAIL-SAFE: fiecare token in tranzactie separata; un esec NU opreste restul. La esec,
+tranzactia face ROLLBACK -> tokenul RAMANE activ si se reincearca a doua zi (15z marja =
+~15 incercari inainte de expirare). NU se dezactiveaza la prima eroare - o eroare ANAF
+tranzitorie (5xx/timeout) nu trebuie sa forteze reconectarea cand exista marja. Orice esec
+-> email Brevo (core.observare), nu tacit.
+Marja 15 zile > avertismentul UI de 7 zile (MARJA_REFRESH_ZILE): cronul actioneaza INAINTE
+ca ecranul sa alarmeze. Cabinet inactiv un an pierde accesul oricum (refresh 365z) - regula
+ANAF, nu bug; cronul continua sa alerteze.
+LIMITA: reimprospateaza_token trateaza orice non-200 la fel (nu distinge invalid_grant
+permanent de 5xx tranzitoriu). Rafinarea (deactivare doar pe invalid_grant) cere schimbare
+in _post_token - amanata pana la primul cabinet real; marja de 15z acopera tranzitoriile.
 
 ## FUNCTIA UNICA DE APEL
 def apel_anaf(accounting_firm_id, metoda, url, **kw):

@@ -1,0 +1,13 @@
+[Unit]
+Description=iConta SPV token refresh (F177 - reimprospatare access token 90z)
+After=network.target postgresql.service
+
+[Service]
+Type=oneshot
+User=costin
+WorkingDirectory=/home/costin/iconta_nou
+EnvironmentFile=/home/costin/.iconta/db.env
+EnvironmentFile=/home/costin/.iconta/api_keys.env
+ExecStart=/opt/iconta/venv/bin/python3 -m core.spv_refresh
+StandardOutput=append:/home/costin/iconta_nou/spv_refresh.log
+StandardError=append:/home/costin/iconta_nou/spv_refresh.log

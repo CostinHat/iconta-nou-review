@@ -780,3 +780,31 @@ e-Factura pe nedefinit. Tokenul admin deblocheaza dezvoltarea acum, fara sa afec
 LIMITA: tokenul id=21 traieste doar in DB, in afara ferestrei de backup 03:00 - la un restore se pierde
 si se reconecteaza (2 min, e autorizare, nu date). Ramas inainte de e-Factura: (a) popularea empirica
 spv_cui_acoperit, (b) cron refresh 90 zile (spv_refresh.py + timer), apoi (c) F126/F160 peste apel_anaf.
+
+### 18.07.2026 Cron refresh token SPV (F177) - golul #1 al conectorului, fundatia pentru F126  (core/spv_refresh.py; ARHITECTURA_SPV.md sectiunea CRON REFRESH)
+DECIZIE: refresh-ul automat al token-urilor SPV se face printr-un driver systemd (spv-refresh.timer,
+zilnic 03:30 dupa backup), care reimprospateaza TOATE token-urile active cu access_expira sub o marja de
+15 zile, refolosind spv_conector.reimprospateaza_token (rotatie: salveaza ambele valori noi).
+TEMEI: access token-ul ANAF expira la 90 zile; fara refresh automat cabinetul se deconecteaza TACIT si
+reautorizeaza cu stickul. Era golul #1 identificat la diagnosticul conectorului (F176). Functia de refresh
+exista deja - lipsea doar driverul.
+DECIZII DE DESIGN:
+- MARJA 15 zile > avertismentul UI de 7 zile (MARJA_REFRESH_ZILE): cronul actioneaza INAINTE ca ecranul
+  sa alarmeze, cu spatiu; "sub 15 zile", nu "la fix 90", ca sa nu prinzi exact expirarea.
+- FAIL-SAFE fara dezactivare la prima eroare: fiecare token in tranzactie separata (db.get_conn commit/
+  rollback); la esec rollback -> tokenul RAMANE activ, retry a doua zi. reimprospateaza_token cheama
+  dezactiveaza_token pe conn, dar rollback-ul o anuleaza - INTENTIONAT: cu 15z marja (~15 incercari),
+  o eroare ANAF tranzitorie nu trebuie sa forteze reconectarea cabinetului. Orice esec -> email Brevo.
+- EMAIL prin core.observare (in-process Python), NU curl ca la backup off-site: aici driverul ruleaza
+  ca user costin cu env-ul complet (acces la cod+venv), deci refolosim canalul canonic, nu unul paralel.
+- systemd timer, NU crontab (cerinta + pattern-ul proiectului = iconta-backup.timer).
+ALTERNATIVA RESPINSA: dezactivare la prima eroare (cum zicea prima varianta a arhitecturii "Esec ->
+activ=false") - ar forta reconectari inutile pe erori tranzitorii ANAF (frecvente) cand exista 15z marja.
+Tokenul moare doar cand refresh-ul chiar nu se mai poate reinnoi (refresh 365z expirat / invalid_grant
+persistent), cu alertare zilnica intre timp. Si: crontab - deprecat in proiect.
+DOVADA: test functional real pe token_id=21 (dev, certificat admin) - refresh fortat prin driver (marja
+200z) -> access_expira avansat cu 90z, reimprospatat_la setat, cifertext rotit (token nou criptat),
+decriptabil, serial identic; selectia normala (15z) = 0 pe tokenul proaspat. Timer activ, next 19.07 03:30.
+LIMITA: reimprospateaza_token trateaza orice non-200 la fel (nu distinge invalid_grant permanent de 5xx
+tranzitoriu) - rafinarea cere schimbare in _post_token, amanata pana la primul cabinet real; marja 15z
+acopera tranzitoriile. Testat pe un singur token dev, nu pe mai multe cabinete simultan.
