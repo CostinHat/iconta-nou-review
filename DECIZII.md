@@ -920,3 +920,25 @@ capata un "principal" (firm_id SAU tenant_id); /spv/autorizare gratuit pe cere_c
 Restul lantului F160 (generator+poarta+upload+tracking) e gata si asteapta doar cheia tokenului.
 LIMITA: pana la decizie, F160 = PARTIAL (lant gata, connect gratuit blocat). F126 (cabinet) NU e blocat de
 asta - are deja token per accounting_firm.
+
+### 18.07.2026 spv_token = PRINCIPAL (cabinet XOR firma gratuita), optiunea 1  (core/spv_conector.py; migrare_spv_token_principal.py)
+DECIZIE: tokenul SPV apartine unui PRINCIPAL - cabinet XOR firma self-service (gratuita) - nu unei
+tabele de firme. Un SINGUR tabel public.spv_token, cheiat pe accounting_firm_id SAU tenant_id.
+TEMEI: un singur tabel = o singura cale de refresh, F177 ramane SURSA UNICA de reinnoire. Determinarea
+gratuit-vs-cabinet e la nivel de tenant (reparat azi) - tokenul respecta aceeasi distinctie.
+ALTERNATIVE RESPINSE: (2) tabel separat pt gratuit = doua surse de adevar, F177 sare peste tokenul
+gratuit -> expira tacit = esec de siguranta; (3) accounting_firm_id sintetic per tenant gratuit =
+reconfleaza cabinet cu firma gratuita, anuleaza determinarea la nivel de tenant reparata azi = regresie.
+PATRU GARDURI (nenegociabile):
+1. XOR in DB, nu in cod: CHECK ((accounting_firm_id IS NOT NULL)::int + (tenant_id IS NOT NULL)::int = 1).
+   Plus unique partial: un singur token VIU (activ) per principal.
+2. Un singur resolver spv_principal(context) -> (kind, id). /spv/autorizare SI refresh-ul F177 branseaza
+   prin ACELASI loc (SQL-ul de principal centralizat), nu imprastiat prin connector.
+3. Capcana F177: query-ul de reinnoire NU filtreaza pe accounting_firm_id IS NOT NULL (ar sari tacit
+   peste tokenele gratuite). Selecteaza pe principal. TEST dedicat: token gratuit care expira -> cronul
+   il prinde. E regresul cel mai probabil.
+4. Poarta de autorizare STRANSA: cere_cabinet -> cere_context, DAR caller-ul trebuie sa DETINA principalul
+   (admin firma gratuita autorizeaza DOAR tenantul lui; admin cabinet doar firma lui). NU "orice user autentificat".
+ORTOGONAL: maparea CIF-uri per token (spv_cui_acoperit) ramane cum e, n-o atinge aici.
+LIMITA: pana la wiring-ul complet F160, cabinetul (F126) ramane neafectat; refactorul pastreaza calea
+cabinet identica (test_spv_conector verde).
