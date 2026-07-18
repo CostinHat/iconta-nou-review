@@ -1434,3 +1434,43 @@ F126/F127/F128 raman AMANATE.
 Round-trip-ul LIVE (upload->stareMesaj->descarcare recipisa) NU e dovedit - dev token n-are drept SPV pe niciun
 CIF real. Fundatia e completa si testata izolat (generator, validare, tracking, principal, porti, poll); doar
 proba live asteapta un CIF cu drept. Cuota zilnica ANAF + timpul de prelucrare = de confirmat la sursa.
+
+
+---
+
+# 18.07.2026 (partea 6 — noapte): F126 e-Factura LIVE cap-coada (jumatatea de PRIMIRE + four-eyes)
+
+Send-ul era acoperit de modelul principal (partea 5). Aici jumatatea de PRIMIRE + interfata cu patru
+ochi -> F126 LIVE cap-coada. Deciziile au temei in DECIZII.md; aici POINTER + commit-uri.
+
+## Params listaMesajeFactura verificati la SURSA OFICIALA (5354c6d)
+mfinante.gov.ro doc API (NU SmartBill, NU build vechi): filtru optional E=erori/T=trimisa/P=PRIMITA/
+R=mesaj cumparator -> primire = filtru=P; zile 1..60 obligatoriu; limita 1500/zi/CUI; host OAuth
+api.anaf.ro. Raspuns: id (descarcare), id_solicitare, data_creare, tip, cif_emitent, cif_beneficiar.
+Persistat in ARHITECTURA_SPV.md ("verifica aici intai"). Functia efactura_send.lista_mesaje.
+
+## F179 cron receive (48d0d6b) — tabel efactura_primite + pull
+Tabel PER-TENANT efactura_primite: id_mesaj_anaf UNIC (dedup), cif_emitent/cif_beneficiar, xml_brut+sha,
+status, factura_id NULL pana la four-eyes. Cron spv-receive.timer (30 min) listeaza filtru=P per tenant,
+descarca facturile noi, insereaza CIORNA. TREI garduri: dedup ON CONFLICT DO NOTHING (fereastra suprapusa);
+cif_beneficiar VALIDAT la insert (== CIF tenant, altfel SKIP anti-scurgere INTRE CHIRIASI); token mort ->
+SKIP (auth-fail != eroare). Reutilizeaza lista_mesaje/descarca prin apel_anaf pe principal (partajat cu
+F178, fara client paralel); principal_pentru_schema extras DRY. 4 teste + rulare reala prin stack.
+
+## F126 pasul 5 — four-eyes (1838d7f) — LIVE
+Ecran de validare (facturi_ecran.js, anatomia bonului OCR): date PARSATE + cont sugerat confirmat de om ->
+Valideaza (creeaza cheltuiala + leaga factura_id) / Respinge (motiv, nu sterge). Rute in main.py, gard =
+rol/acces la tenant + status=validata actiune umana explicita; idempotent FOR UPDATE.
+FOUR-EYES la primite = MASINA (cron F179 = ochiul 1) vs OM (contabil = ochiul 2), NU doi useri fizici -
+clarificat azi cu Costin. Grep INAINTE a confirmat ca regula creat_de != aprobat_de (doi oameni) traieste
+DOAR pe declaratii_coada (corecta acolo), NU s-a propagat la primite. Cabinet cu UN contabil poate valida.
+Conducta UNICA: valideaza reutilizeaza _factura_din_parsat (acelasi INSERT ca /import-efactura upload manual,
+extras DRY) -> factura directie=primita -> intra AUTOMAT in verificatorul TVA existent (D300 vs 4426), nu
+orfana. Coloane noi: motiv_respins, cont_cheltuiala. Backend dovedit HTTP cap-coada; ecran node+verificator 0.
+
+## Registru
+F126 -> LIVE (cap-coada: send + receive + four-eyes). F179 -> LIVE. F127/F128 raman AMANATE.
+
+## LIMITA (onest, ca F176)
+Round-trip-ul LIVE (trimite recipisa + primeste factura reala) se dovedeste doar cu un patron real cu CIF
+cu drept SPV. Ecranul four-eyes testat cu ciorna INJECTATA (factura parsata, factura_id NULL). Necolorat verde.
