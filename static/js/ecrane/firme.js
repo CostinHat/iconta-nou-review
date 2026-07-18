@@ -515,18 +515,22 @@ async function ecranControlFirma(corp, nav, t) {
   }
   const cul = _CF_CUL[d.stare] || _CF_CUL.gri;
 
-  // declaratii lipsa
-  let lipsaHtml = "";
-  if ((d.lipsa || []).length) {
-    lipsaHtml = d.lipsa.map((l) =>
-      `<div class="cf-rand-decl">
-        <div><b>${esc(l.tip)}</b> <span class="tip-micut">${esc(l.perioada || "")} · ${l.an}</span></div>
-        <div class="cf-termen">termen ${dataRo(l.termen)}</div>
-      </div>`
-    ).join("");
-  } else {
-    lipsaHtml = `<div class="stare-goala">Nicio declarație restantă — totul e depus la timp.</div>`;
-  }
+  // [semafor_b_v1] toate declaratiile (9/9), fiecare cu MOTIVUL (temei) pe orice culoare. DECIZII 18.07 B.
+  const _tcls = { "cf-rosu": "cf-termen-rosu", "cf-galben": "cf-termen-galben", "cf-verde": "cf-termen-verde" };
+  const grupDecl = (titlu, arr, clasa, cuTermen) => (arr && arr.length) ? `
+    <div class="cf-grup-titlu ${clasa || ""}">${titlu} (${arr.length})</div>
+    ${arr.map((x) => `<div class="cf-decl-item">
+      ${cuTermen
+        ? `<div class="cf-rand-decl"><div><b>${esc(x.tip)}</b> <span class="tip-micut">${esc(x.perioada || "")}${x.an ? " · " + x.an : ""}</span></div><div class="cf-termen ${_tcls[clasa] || ""}">termen ${dataRo(x.termen)}</div></div>`
+        : `<div class="cf-incr-cap"><span class="mig-sold-cont">${esc(x.tip)}</span></div>`}
+      ${x.motiv ? `<div class="cf-incr-temei">${esc(x.motiv)}</div>` : ""}
+    </div>`).join("")}` : "";
+  let lipsaHtml = grupDecl("Restanțe", d.lipsa, "cf-rosu", true)
+    + grupDecl("De urmărit", d.urmarit, "cf-galben", true)
+    + grupDecl("La zi", d.confirmate, "cf-verde", true)
+    + grupDecl("Nu pot verifica", d.neclar, "", false)
+    + grupDecl("Nu se datorează", d.neaplicabile, "", false);
+  if (!lipsaHtml) lipsaHtml = `<div class="stare-goala">Nicio obligație de evaluat încă pentru această firmă.</div>`;
 
   // verificari contabile (coerenta)
   const v = d.verificari_contabile || {};

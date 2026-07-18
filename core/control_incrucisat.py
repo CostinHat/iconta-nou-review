@@ -56,13 +56,14 @@ def _d(v):
     return Decimal(str(v or 0))
 
 
-def rulaje_luna(conn, schema, an, luna, conturi):
-    """Rulaje DEBIT/CREDIT pe LUNA (nu cumulat) pentru conturile date.
-    Cumulatul din documente_api.balanta() NU se poate compara cu D300 (care e lunar).
-    DOAR note validate: ciorna nu e evidenta (vezi Regula EVIDENTA in capul modulului)."""
-    inceput = "%04d-%02d-01" % (an, luna)
-    sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
+def rulaje_interval(conn, schema, data_de, data_pana, conturi):
+    """Rulaje DEBIT/CREDIT pe intervalul [data_de, data_pana) pentru conturile date, DOAR note
+    validate (ciorna nu e evidenta - Regula EVIDENTA din capul modulului). GENERAL: rulaj pe cont,
+    interval - refolosit de rulaje_luna SI de puntea fact-aware a semaforului (D205 anual). Datele =
+    'YYYY-MM-DD'. Sursa UNICA de citit un rulaj pe cont (regula "nu construi paralel")."""
     out = {c: {"debit": Decimal("0"), "credit": Decimal("0")} for c in conturi}
+    if not conturi:
+        return out
     with conn.cursor() as cur:
         cur.execute(f"""
             SELECT l.cont_debit AS cont, SUM(l.suma) AS s, 'debit' AS sens
@@ -78,11 +79,53 @@ def rulaje_luna(conn, schema, an, luna, conturi):
             WHERE i.data >= %s AND i.data < %s AND i.status = 'validata'
               AND l.cont_credit = ANY(%s)
             GROUP BY l.cont_credit
-        """, (inceput, sfarsit, list(conturi), inceput, sfarsit, list(conturi)))
+        """, (data_de, data_pana, list(conturi), data_de, data_pana, list(conturi)))
         for cont, suma, sens in cur.fetchall():
             if cont in out:
                 out[cont][sens] += _d(suma)
     return out
+
+
+def rulaje_luna(conn, schema, an, luna, conturi):
+    """Rulaje DEBIT/CREDIT pe LUNA (nu cumulat) pentru conturile date. Deleaga la rulaje_interval
+    (o singura sursa). Cumulatul din documente_api.balanta() NU se poate compara cu D300 (lunar)."""
+    inceput = "%04d-%02d-01" % (an, luna)
+    sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
+    return rulaje_interval(conn, schema, inceput, sfarsit, conturi)
+
+
+# ---- fapte fiscale pentru puntea semaforului (D205, D301). Traiesc LANGA sursa faptelor;
+#      control_fiscal_api le CHEAMA, nu le absoarbe (motoarele raman separate - DECIZII 18.07 B).
+
+def dividende_distribuite(conn, schema, an):
+    """(suma_457, are_note) pentru anul `an`, DOAR note validate. Dividende distribuite = rulaj pe
+    cont_debit LIKE '457%' (ACEEASI sursa ca d205.py, care genereaza D205). are_note = exista MACAR o
+    nota validata pe an - ca sa distingem "nu s-au distribuit dividende" de "nu pot verifica, lipsesc
+    note". Faptul pe care se decide D205 (semafor fact-aware)."""
+    de = "%04d-01-01" % an
+    pana = "%04d-01-01" % (an + 1)
+    with conn.cursor() as cur:
+        cur.execute(f"""SELECT COALESCE(SUM(l.suma), 0)
+                        FROM {schema}.inregistrari_linii l
+                        JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+                        WHERE i.data >= %s AND i.data < %s AND i.status='validata'
+                          AND l.cont_debit LIKE '457%%'""", (de, pana))
+        suma = _d(cur.fetchone()[0])
+        cur.execute(f"""SELECT 1 FROM {schema}.inregistrari
+                        WHERE data >= %s AND data < %s AND status='validata' LIMIT 1""", (de, pana))
+        are_note = cur.fetchone() is not None
+    return suma, are_note
+
+
+def d301_luni_operatiuni(conn, schema, an):
+    """Set de luni (1-12) din anul `an` cu operatiuni IC inregistrate (tabelul d301_operatiuni,
+    creat lazy de d301.py). Daca tabelul nu exista -> set gol. Faptul pe care se decide D301."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
+        if cur.fetchone()[0] is None:
+            return set()
+        cur.execute(f"SELECT DISTINCT luna FROM {schema}.d301_operatiuni WHERE an=%s", (an,))
+        return {r[0] for r in cur.fetchall()}
 
 
 def facturi_necontabilizate(conn, schema, an, luna):

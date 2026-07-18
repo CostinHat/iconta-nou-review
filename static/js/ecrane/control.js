@@ -76,13 +76,26 @@ async function detaliuFirma(corp, nav, firma) {
 
   const lipsa = d.lipsa || [];
   const urmarit = d.urmarit || [];
+  const confirmate = d.confirmate || [];
+  const neclar = d.neclar || [];
+  const neaplicabile = d.neaplicabile || [];
   const col = CULORI[d.stare] || CULORI.gri;
 
+  // [semafor_b_v1] fiecare declaratie poarta MOTIVUL (temei), pe orice culoare - aliniat cu
+  // sectiunea Declaratie vs contabilitate (cf-incr-temei). Decizie DECIZII 18.07 B.
   const randDecl = (arr, clasa) => arr.map((x) => `
-    <div class="mig-sold-rand cf-rand-decl">
-      <span class="mig-sold-cont">${x.tip}</span>
-      <span class="cf-perioada">${x.perioada}</span>
-      <span class="cf-termen ${clasa}">termen ${dataRo(x.termen)}</span>
+    <div class="cf-decl-item">
+      <div class="mig-sold-rand cf-rand-decl">
+        <span class="mig-sold-cont">${x.tip}</span>
+        <span class="cf-perioada">${x.perioada}</span>
+        <span class="cf-termen ${clasa}">termen ${dataRo(x.termen)}</span>
+      </div>
+      ${x.motiv ? `<div class="cf-incr-temei">${esc(x.motiv)}</div>` : ""}
+    </div>`).join("");
+  const randMotiv = (arr) => arr.map((x) => `
+    <div class="cf-decl-item">
+      <div class="cf-incr-cap"><span class="mig-sold-cont">${esc(x.tip)}</span></div>
+      <div class="cf-incr-temei">${esc(x.motiv || "")}</div>
     </div>`).join("");
 
   corp.innerHTML = `
@@ -93,6 +106,15 @@ async function detaliuFirma(corp, nav, firma) {
     ${urmarit.length ? `
       <div class="cf-grup-titlu cf-galben">De urmărit (${urmarit.length})</div>
       <div class="cf-decl">${randDecl(urmarit, "cf-termen-galben")}</div>` : ""}
+    ${confirmate.length ? `
+      <div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div>
+      <div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}
+    ${neclar.length ? `
+      <div class="cf-grup-titlu">Nu pot verifica (${neclar.length})</div>
+      <div class="cf-decl">${randMotiv(neclar)}</div>` : ""}
+    ${neaplicabile.length ? `
+      <div class="cf-grup-titlu">Nu se datorează (${neaplicabile.length})</div>
+      <div class="cf-decl">${randMotiv(neaplicabile)}</div>` : ""}
     ${(() => { /* [control_incrucisat_v1] declaratie vs contabilitate: trei stari + temei + remediu */
       const ti = (d.verificari_contabile || {}).tva_incrucisat;
       if (!ti) return "";
@@ -129,7 +151,7 @@ async function detaliuFirma(corp, nav, firma) {
       return `<div class="cf-grup-titlu cf-rosu">Verificări contabile (${probleme.length})</div>
         <div class="cf-decl">${probleme.map((p) => `<div class="mig-sold-rand cf-rand-decl"><span class="mig-sold-cont">${p}</span></div>`).join("")}</div>`;
     })()}
-    ${(!lipsa.length && !urmarit.length) ? `
+    ${d.stare === "verde" ? `
       <div class="mig-gata" style="padding:30px 0">
         <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="#1d9e75" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
         <div class="mig-gata-titlu">Totul depus la zi</div>

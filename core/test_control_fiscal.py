@@ -67,24 +67,29 @@ def test_vector_complet_fara_neclar():
     assert rez["neclar"] == []
 
 
-# verdict: prioritatea rosu > galben > gri > verde
-def test_verdict_toate_depuse_verde():
-    datorate = [{"tip": "D112", "an": 2026, "luna": 1, "termen": "2026-02-25", "perioada": "ian"}]
-    depuse = {("D112", 2026, 1)}
-    stare, lipsa, urmarit = cf._verdict(datorate, [], depuse, date(2026, 6, 1))
-    assert stare == "verde" and lipsa == [] and urmarit == []
+# clasificare + stare: prioritatea rosu > galben > gri > verde, cu MOTIV pe orice culoare
+_D = [{"tip": "D112", "an": 2026, "luna": 1, "termen": "2026-02-25", "perioada": "ian"}]
 
 
-def test_verdict_restanta_rosu():
-    datorate = [{"tip": "D112", "an": 2026, "luna": 1, "termen": "2026-02-25", "perioada": "ian"}]
-    stare, lipsa, _ = cf._verdict(datorate, [], set(), date(2026, 6, 1))
-    assert stare == "rosu" and len(lipsa) == 1
+def test_clasifica_depusa_confirmata_cu_motiv():
+    # depusa -> confirmate (verde) cu motiv, inclusiv data si "la termen"
+    lipsa, urmarit, confirmate = cf._clasifica(_D, {("D112", 2026, 1): date(2026, 2, 20)}, date(2026, 6, 1))
+    assert lipsa == [] and urmarit == [] and len(confirmate) == 1
+    m = confirmate[0]["motiv"]
+    assert "D112" in m and "depus" in m and "la termen" in m
 
 
-def test_verdict_neclar_fara_restanta_gri_nu_verde():
-    # nimic datorat/restant, dar exista o pozitie neclara -> gri, NU verde (fabricat)
-    stare, _, _ = cf._verdict([], [{"tip": "D300", "cauza": "x"}], set(), date(2026, 6, 1))
-    assert stare == "gri"
+def test_clasifica_restanta_cu_motiv():
+    lipsa, urmarit, _ = cf._clasifica(_D, {}, date(2026, 6, 1))
+    assert len(lipsa) == 1 and urmarit == []
+    assert "nedepus" in lipsa[0]["motiv"] and "depășit" in lipsa[0]["motiv"]
+
+
+def test_stare_prioritate():
+    assert cf._stare([], [], []) == "verde"
+    assert cf._stare([], [], [{"tip": "D300", "motiv": "x"}]) == "gri"     # gri nu se ascunde ca verde
+    assert cf._stare([], [1], [{"x": 1}]) == "galben"                       # galben > gri
+    assert cf._stare([1], [1], [1]) == "rosu"                                # rosu domina
 
 
 # D5: cod mort sters

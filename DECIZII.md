@@ -540,3 +540,23 @@ Aliniat control_incrucisat: "fiecare constatare isi declara temeiul si limita".
 Legatura cu #2 (punte factura->stoc): ambele rezolva aceeasi tensiune (surse de fapt
 contabil deconectate). Puntea din B se construieste CU #2 in minte - una singura
 refolosita, nu doua paralele.
+
+### 18.07.2026 Semafor B LIVRAT: D205/D301 fact-aware + motiv pe orice culoare  (core/control_fiscal_api.py, control_incrucisat.py; LIVE)
+Implementarea deciziei B din commit 898482a (aceeasi zi). Semaforul acopera acum 9/9.
+PUNTEA (motoare separate, nu fuziune): control_incrucisat capata functii generale de citit faptul din
+note validate - rulaje_interval (rulaj pe cont, interval; rulaje_luna deleaga la ea acum, o singura
+sursa - regula "nu construi paralel"), dividende_distribuite (rulaj 457 pe an, ca d205.py) si
+d301_luni_operatiuni (tabelul d301_operatiuni pe luna). control_fiscal_api.declaratii_fapt le CHEAMA,
+nu le absoarbe. Faptul face #2 (punte factura->stoc) refolosibil: rulaje_interval e general.
+D205: dividende distribuite = rulaj cont 457 in an -> datorata; fara 457 dar cu note -> nu se
+datoreaza; fara note -> gri (nu pot verifica). D301: doar neplatitori TVA, per luna cu operatiuni IC
+(d301_operatiuni); platitor TVA -> nu se datoreaza.
+MOTIV pe orice culoare (cerinta Costin): fiecare linie din evalueaza_firma poarta `motiv` textual cu
+temei - verde ("D300 depusa 24.04, la termen"), rosu ("nedepusa, termen depasit"), gri (cauza),
+neaplicabil ("nu se datoreaza - niciun rulaj 457"). UI: control.js + firme.js afiseaza motivul ca
+temei sub fiecare rand (pattern cf-incr-temei, aliniat control_incrucisat, direcvionat de brief).
+Verificat: 0 linii fara motiv pe tenant_002; D205 detectat pe rulaj 457 real. control_incrucisat 23
+teste intacte (delegarea rulaje_luna e behavior-preserving).
+LIMITA: D205 evaluat pe anul precedent (an-1); D301 pe orizontul scurt (an + dec an-1). Faptul D301 =
+ce s-a INREGISTRAT in d301_operatiuni (daca firma n-a inregistrat operatiunile IC, semaforul nu le
+vede - limita oricarui motor fact-driven, declarata in motiv: "nicio operatiune IC inregistrata").

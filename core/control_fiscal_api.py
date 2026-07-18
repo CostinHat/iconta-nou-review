@@ -144,36 +144,105 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     return {"datorate": datorate, "neclar": neclar}
 
 
-def _verdict(datorate, neclar, depuse, azi):
-    """Pur: din datorate + neclar + set-ul depuse -> (stare, lipsa, urmarit).
-    Prioritate: rosu (restanta cunoscuta) > galben (termen apropiat cunoscut) >
-    gri (nu pot sti - atribut vector lipsa) > verde. Gri nu poate fi ascuns ca verde."""
-    lipsa, urmarit = [], []
-    for d in datorate:
-        if (d["tip"], d["an"], d["luna"]) in depuse:
-            continue
-        term = datetime.date.fromisoformat(d["termen"])
-        if term < azi:
-            lipsa.append(d)          # termen trecut, nedepus -> restanta
+def _dmy(iso):
+    """'YYYY-MM-DD' -> 'zz.ll.aaaa' (pentru motiv, text afisat)."""
+    if not iso:
+        return ""
+    s = str(iso)[:10]
+    return "%s.%s.%s" % (s[8:10], s[5:7], s[0:4]) if len(s) == 10 else s
+
+
+def declaratii_fapt(conn_schema, schema, vector, azi):
+    """Declaratiile care se datoreaza pe FAPT, nu pe vector: D205 (dividende = rulaj 457) si D301
+    (operatiuni IC pe luna). Citeste faptul prin PUNTEA din control_incrucisat (motoare separate -
+    DECIZII 18.07 B: semaforul CHEAMA functia de fapt, n-o absoarbe). Intoarce {datorate, neaplicabile,
+    neclar}; datorate poarta `fapt` (de ce se datoreaza)."""
+    from core import control_incrucisat as _ci, scadente
+    an = azi.year
+    limita = azi + datetime.timedelta(days=PRAG_URMARIT_ZILE)
+    datorate, neaplicabile, neclar = [], [], []
+    platitor_tva = vector.get("platitor_tva")
+
+    # D205 — anuala pentru anul precedent (termen ultima zi februarie an curent). Fapt: rulaj 457.
+    Y = an - 1
+    term205 = scadente.scadenta_data("d205", Y)
+    if term205 <= limita:
+        suma, are_note = _ci.dividende_distribuite(conn_schema, schema, Y)
+        if suma > 0:
+            datorate.append({"tip": "D205", "an": Y, "luna": 12, "perioada": f"anual {Y}",
+                             "termen": term205.isoformat(),
+                             "fapt": f"dividende distribuite în {Y} (rulaj cont 457)"})
+        elif are_note:
+            neaplicabile.append({"tip": "D205",
+                                 "motiv": f"D205 nu se datorează — niciun rulaj pe cont 457 în {Y} (fără dividende distribuite)"})
         else:
-            urmarit.append(d)        # in fereastra, nedepus -> de urmarit
-    if lipsa:
-        stare = "rosu"
-    elif urmarit:
-        stare = "galben"
-    elif neclar:
-        stare = "gri"
+            neclar.append({"tip": "D205",
+                           "motiv": f"D205 — nu pot verifica: lipsesc note validate pe {Y} (nu știu dacă s-au distribuit dividende)"})
+
+    # D301 — lunar, DOAR neplatitori de TVA cu operatiuni IC (fapt: tabelul d301_operatiuni pe luna).
+    if platitor_tva is True:
+        neaplicabile.append({"tip": "D301",
+                             "motiv": "D301 nu se datorează — firma e plătitoare de TVA (D301 e pentru neînregistrați în scopuri de TVA)"})
     else:
-        stare = "verde"
-    return stare, lipsa, urmarit
+        luni_an = {a: _ci.d301_luni_operatiuni(conn_schema, schema, a) for a in (an - 1, an)}
+        vreo = False
+        for a, m in [(an - 1, 12)] + [(an, mm) for mm in range(1, 13)]:
+            if m in luni_an.get(a, set()):
+                term = scadente.scadenta_data("d301", a, luna=m)
+                if term <= limita:
+                    datorate.append({"tip": "D301", "an": a, "luna": m, "perioada": _LUNI_NUME[m],
+                                     "termen": term.isoformat(),
+                                     "fapt": f"operațiuni intracomunitare înregistrate în {_LUNI_NUME[m]} {a}"})
+                    vreo = True
+        if not vreo:
+            neaplicabile.append({"tip": "D301",
+                                 "motiv": "D301 nu se datorează — nicio operațiune intracomunitară înregistrată"})
+    return {"datorate": datorate, "neaplicabile": neaplicabile, "neclar": neclar}
+
+
+def _clasifica(datorate, depuse, azi):
+    """Pur: din datorate + depuse -> (lipsa, urmarit, confirmate), FIECARE cu `motiv` (de ce culoarea,
+    inclusiv verde). depuse: dict (tip,an,luna) -> data_depunere (date) sau None."""
+    lipsa, urmarit, confirmate = [], [], []
+    for d in datorate:
+        cheie = (d["tip"], d["an"], d["luna"])
+        fapt = (" · " + d["fapt"]) if d.get("fapt") else ""
+        term = datetime.date.fromisoformat(d["termen"])
+        termtxt = _dmy(d["termen"])
+        e = dict(d)
+        if cheie in depuse:
+            dd = depuse[cheie]
+            data_txt = (" " + _dmy(dd.isoformat())) if dd else ""
+            la_termen = ("" if not dd else (", la termen" if dd <= term else ", după termen"))
+            e["motiv"] = f"{d['tip']} {d['perioada']} depusă{data_txt}{la_termen} (termen {termtxt}){fapt}"
+            confirmate.append(e)
+        elif term < azi:
+            e["motiv"] = f"{d['tip']} {d['perioada']} nedepusă, termen {termtxt} depășit{fapt}"
+            lipsa.append(e)
+        else:
+            e["motiv"] = f"{d['tip']} {d['perioada']} nedepusă, termen {termtxt} (în fereastră){fapt}"
+            urmarit.append(e)
+    return lipsa, urmarit, confirmate
+
+
+def _stare(lipsa, urmarit, neclar):
+    """Prioritate: rosu (restanta cunoscuta) > galben (termen apropiat) > gri (nu pot sti) > verde.
+    Gri nu poate fi ascuns ca verde."""
+    if lipsa:
+        return "rosu"
+    if urmarit:
+        return "galben"
+    if neclar:
+        return "gri"
+    return "verde"
 
 
 def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
     """
-    Intoarce {stare, datorate, depuse, lipsa, urmarit, neclar} pentru o firma.
-    stare: 'verde' / 'galben' / 'gri' / 'rosu'.
-    conn_schema: conexiune cu search_path pe schema firmei (firma_profil, salariati)
-    conn_public: conexiune pe public (declaratii_depuse)
+    Intoarce {stare, datorate, depuse, lipsa, urmarit, confirmate, neclar, neaplicabile}.
+    stare: 'verde' / 'galben' / 'gri' / 'rosu'. Fiecare linie poarta `motiv` (pe orice culoare).
+    Acopera 9/9: D100/D101/D112/D300/D390/D394/D406 (vector) + D205/D301 (fapt, punte control_incrucisat).
+    conn_schema: search_path pe schema firmei; conn_public: public (declaratii_depuse).
     """
     azi = azi or datetime.date.today()
 
@@ -193,17 +262,32 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
 
     if not vector:
         return {"stare": "gri", "datorate": 0, "depuse": 0, "lipsa": [], "urmarit": [],
-                "neclar": [], "mesaj": "vector fiscal necompletat"}
+                "confirmate": [], "neaplicabile": [],
+                "neclar": [{"tip": "—", "motiv": "Vector fiscal necompletat — nu pot evalua obligațiile firmei."}],
+                "mesaj": "vector fiscal necompletat"}
 
     rez = declaratii_datorate(vector, are_sal, azi)
-    datorate, neclar = rez["datorate"], rez["neclar"]
+    datorate = list(rez["datorate"])
+    neclar = list(rez["neclar"])
 
-    # depuse din public
+    # D205/D301 pe fapt (punte)
+    fapt = declaratii_fapt(conn_schema, schema, vector, azi)
+    datorate += fapt["datorate"]
+    neaplicabile = fapt["neaplicabile"]
+    neclar += fapt["neclar"]
+
+    # depuse din public (cu data depunerii, pentru motivul verde)
     with conn_public.cursor() as cur:
-        cur.execute("SELECT tip, an, luna FROM public.declaratii_depuse WHERE tenant_id=%s", (tenant_id,))
-        depuse = {(t, a, l) for (t, a, l) in cur.fetchall()}
+        cur.execute("SELECT tip, an, luna, data_depunere FROM public.declaratii_depuse WHERE tenant_id=%s", (tenant_id,))
+        depuse = {}
+        for t, a, l, dd in cur.fetchall():
+            depuse[(t, a, l)] = dd.date() if hasattr(dd, "date") else dd
 
-    stare, lipsa, urmarit = _verdict(datorate, neclar, depuse, azi)
+    lipsa, urmarit, confirmate = _clasifica(datorate, depuse, azi)
+    # neclar uniformizat pe campul `motiv` (declaratii_datorate foloseste `cauza`)
+    neclar_m = [{"tip": n["tip"], "motiv": n.get("motiv") or n.get("cauza", "")} for n in neclar]
+    stare = _stare(lipsa, urmarit, neclar_m)
 
     return {"stare": stare, "datorate": len(datorate), "depuse": len(depuse),
-            "lipsa": lipsa, "urmarit": urmarit, "neclar": neclar}
+            "lipsa": lipsa, "urmarit": urmarit, "confirmate": confirmate,
+            "neclar": neclar_m, "neaplicabile": neaplicabile}
