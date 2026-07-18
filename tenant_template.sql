@@ -2221,3 +2221,29 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.efactura_primite (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS uq_efactura_primite_mesaj
   ON TENANT_PLACEHOLDER.efactura_primite (id_mesaj_anaf);
+
+--
+-- e-Transport: urmarirea trimiterilor UIT (F121) — mirror al core/migrare_etransport_trimiteri.py
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.etransport_trimiteri (
+  id                BIGSERIAL PRIMARY KEY,
+  mediu             TEXT NOT NULL CHECK (mediu IN ('test','prod')),
+  stare             TEXT NOT NULL DEFAULT 'pregatit'
+                    CHECK (stare IN ('pregatit','eroare_upload','incarcat','ok','nok')),
+  index_incarcare   TEXT,
+  uit               TEXT,
+  data_transport    DATE,
+  intracom          BOOLEAN NOT NULL DEFAULT false,
+  uit_valabil_pana  DATE,
+  execution_status  INTEGER,
+  error_message     TEXT,
+  ref_declarant     TEXT,
+  xml_trimis        TEXT,
+  xml_sha256        TEXT NOT NULL,
+  trimis_la         TIMESTAMPTZ,
+  creat_la          TIMESTAMPTZ NOT NULL DEFAULT now(),
+  actualizat_la     TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_etransport_trimiteri_viu
+  ON TENANT_PLACEHOLDER.etransport_trimiteri (xml_sha256)
+  WHERE mediu='prod' AND stare IN ('incarcat','ok');

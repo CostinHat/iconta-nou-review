@@ -1038,3 +1038,24 @@ ecranului = bon OCR four-eyes existent (cont editabil, buton-verde, confirmaCase
 LIMITA (onest, ca F176): import/recipisa LIVE pending drept - ecranul testat cu ciorna INJECTATA (factura
 parsata, factura_id NULL). Round-trip real se dovedeste cu un patron real cu CIF cu drept SPV.
 F126 -> LIVE (cap-coada: send + receive + four-eyes). F127/F128 raman AMANATE.
+
+### 18.07.2026 F121 e-Transport trimitere - pasul 2 mecanism (functii + garda timp + tabel)  (core/etransport_send.py)
+DECIZIE: mecanismul de trimitere e-Transport UIT construit peste conectorul principal (drept UNIFICAT):
+functii upload_uit/stare_uit/lista_uit prin apel_anaf pe spv_principal (fara client paralel), garda de
+timp UIT specifica, tabel etransport_trimiteri, orchestrator trimite cu porti in ordine.
+DREPT UNIFICAT (verificat la sursa, ARHITECTURA_SPV.md): acelasi token SPV acopera si e-Transport
+(JWT roluri EFACTURA+ETRANSPORT; OMFP 660/2017 = toate serviciile). spv_principal NU se dubleaza, NU e
+principal separat - optiunea (a). Per-CIF drept ramane empiric (403/fara drept pe lista/upload).
+PORTI (in ordine fixa, ca la e-Factura): 1) GARDA DE TIMP (fereastra_uit - specifica, NU copiata de la
+factura: max 3 zile inainte de miscare, UIT valabil 5z national/15z intracom, dupa expirare BLOCAT);
+2) IDEMPOTENCY (dedup xml_sha256 pe prod - upload ANAF nu e idempotent, UIT dublu); 3) VALIDARE pe TEST
+(mediu=test - NU exista validator fara auth ca validare/FACT1, confirmat la sursa; nu trimite prod nevalidat);
+4) UPLOAD prod -> scrie randul + UIT + valabilitate.
+ENDPOINT-URI la sursa: ETRANSPORT/ws/v1, PARAMETRII IN PATH (upload/ETRANSP/{cif}/{versiune=2},
+stareMesaj/{id}, lista/{zile}/{cif}) - diferit de e-Factura (FCTEL/rest, query). Persistat in ARHITECTURA_SPV.md.
+DOVADA: 8 teste (garda timp national/intracom/prea-devreme/expirat; URL path-params; porti trimite cu mock).
+Migrare etransport_trimiteri 2/2 + template.
+LIMITA (onest, ca F176): formatul EXACT al raspunsului upload/stareMesaj (ExecutionStatus/UIT) e din pattern
+ANAF, parsare DEFENSIVA, de confirmat la primul raspuns real. Trimiterea LIVE pending drept e-Transport pe CIF real.
+RAMAS: F121 UI (pasul 4) - buton Trimite UIT time-critical cu avertisment "mai ai X zile"/"UIT expira in Y".
+Cand F121 transmite -> F044 (generator) -> LIVE.
