@@ -5841,6 +5841,32 @@ def facturi_trimiteri_spv(tenant_id: int, ctx=Depends(cere_context)):
     return {str(r[0]): {"stare": r[1], "index_incarcare": r[2], "error_message": r[3]} for r in rows}
 
 
+def _factura_din_parsat(cur, schema, f):
+    """Insereaza o factura parsata (dict de la efactura_import.parseaza_xml) in facturi + linii.
+    Idempotent pe (numar, tert_cui, data_emitere). Intoarce (factura_id, creat_nou): daca exista
+    deja, intoarce id-ul EXISTENT + False (nu insereaza). Sursa UNICA a inserarii - folosit de
+    /import-efactura (upload manual) SI de validarea four-eyes a facturilor primite (nu doua conducte)."""
+    cur.execute(f"""SELECT id FROM {schema}.facturi
+                    WHERE numar=%s AND COALESCE(tert_cui,'')=%s AND data_emitere=%s""",
+                (f["numar"], f["tert_cui"], f["data_emitere"]))
+    ex = cur.fetchone()
+    if ex:
+        return ex[0], False
+    cur.execute(f"""INSERT INTO {schema}.facturi
+                    (numar, data_emitere, data_scadenta, total, tva, moneda, directie, status,
+                     xml, tert_nume, tert_cui)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,'importata',%s,%s,%s) RETURNING id""",
+                (f["numar"], f["data_emitere"], f["data_scadenta"], f["total"], f["tva"],
+                 f["moneda"], f["directie"], f["xml"], (f["tert_nume"] or "")[:255], (f["tert_cui"] or "")[:30]))
+    fid = cur.fetchone()[0]
+    for ln in f["linii"]:
+        cur.execute(f"""INSERT INTO {schema}.factura_linii
+                        (factura_id, descriere, cantitate, pret_unitar, cota_tva)
+                        VALUES (%s,%s,%s,%s,%s)""",
+                    (fid, ln["descriere"][:255], ln["cantitate"], ln["pret_unitar"], ln["cota_tva"]))
+    return fid, True
+
+
 @app.post("/tenants/{tenant_id}/import-efactura")
 async def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
                           ctx=Depends(cere_cabinet)):
@@ -5871,31 +5897,123 @@ async def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
                     except ValueError as e:
                         rezultate["erori"].append(f"{nume}: {e}")
                         continue
-                    cur.execute(f"""SELECT 1 FROM {schema}.facturi
-                                    WHERE numar=%s AND COALESCE(tert_cui,'')=%s
-                                      AND data_emitere=%s""",
-                                (f["numar"], f["tert_cui"], f["data_emitere"]))
-                    if cur.fetchone():
-                        rezultate["duplicate"] += 1
-                        continue
-                    cur.execute(f"""INSERT INTO {schema}.facturi
-                                    (numar, data_emitere, data_scadenta, total, tva,
-                                     moneda, directie, status, xml, tert_nume, tert_cui)
-                                    VALUES (%s,%s,%s,%s,%s,%s,%s,'importata',%s,%s,%s)
-                                    RETURNING id""",
-                                (f["numar"], f["data_emitere"], f["data_scadenta"],
-                                 f["total"], f["tva"], f["moneda"], f["directie"],
-                                 f["xml"], f["tert_nume"][:255], f["tert_cui"][:30]))
-                    fid = cur.fetchone()[0]
-                    for ln in f["linii"]:
-                        cur.execute(f"""INSERT INTO {schema}.factura_linii
-                                        (factura_id, descriere, cantitate, pret_unitar, cota_tva)
-                                        VALUES (%s,%s,%s,%s,%s)""",
-                                    (fid, ln["descriere"][:255], ln["cantitate"],
-                                     ln["pret_unitar"], ln["cota_tva"]))
-                    rezultate["importate"] += 1
+                    _fid, _nou = _factura_din_parsat(cur, schema, f)
+                    rezultate["importate" if _nou else "duplicate"] += 1
         conn.commit()
     return rezultate
+
+
+@app.get("/tenants/{tenant_id}/facturi-primite")
+def facturi_primite_lista(tenant_id: int, ctx=Depends(cere_context)):
+    """Facturi primite din SPV de VALIDAT (four-eyes): ciorne parsate + cont sugerat. Acces = are
+    acces la tenant (rol cu drept SAU proprietar gratuit); NU compara identitati (importatorul e cronul)."""
+    from core import efactura_import as _ef
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        out = []
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT id, cif_emitent, cif_beneficiar, status, xml_brut, factura_id
+                              FROM {schema}.efactura_primite WHERE status IN ('descarcata','ciorna')
+                              ORDER BY importat_la DESC LIMIT 100""")
+            rows = cur.fetchall()
+            for (pid, cife, cifb, status, xmlb, fid) in rows:
+                cur.execute(f"""SELECT cont_cheltuiala FROM {schema}.efactura_primite
+                                WHERE cif_emitent=%s AND cont_cheltuiala IS NOT NULL
+                                ORDER BY validat_la DESC NULLS LAST LIMIT 1""", (cife,))
+                pr = cur.fetchone()
+                info = {"id": pid, "cif_emitent": cife, "status": status, "factura_id": fid,
+                        "cont_sugerat": pr[0] if pr else ""}
+                try:
+                    f = _ef.parseaza_xml((xmlb or "").encode("utf-8"), cifb)
+                    info.update({"parsabila": True, "furnizor": f.get("tert_nume"),
+                                 "numar": f.get("numar"), "data": str(f.get("data_emitere") or ""),
+                                 "total": str(f.get("total") or ""), "tva": str(f.get("tva") or ""),
+                                 "moneda": f.get("moneda"),
+                                 "linii": [{"descriere": l["descriere"], "cantitate": str(l["cantitate"]),
+                                            "pret": str(l["pret_unitar"]), "cota": str(l["cota_tva"])}
+                                           for l in (f.get("linii") or [])]})
+                except Exception as e:
+                    info.update({"parsabila": False, "eroare_parse": str(e)[:200]})
+                out.append(info)
+    return {"primite": out}
+
+
+@app.get("/tenants/{tenant_id}/facturi-primite/{primita_id}/xml")
+def factura_primita_xml(tenant_id: int, primita_id: int, ctx=Depends(cere_context)):
+    """XML-ul brut arhivat (la click, nu in fata)."""
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT xml_brut FROM {schema}.efactura_primite WHERE id=%s", (primita_id,))
+            r = cur.fetchone()
+    if not r:
+        raise HTTPException(404, "factura primita inexistenta")
+    return {"xml": r[0] or ""}
+
+
+@app.post("/tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza")
+def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body(default={}),
+                              ctx=Depends(cere_context)):
+    """FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) +
+    leaga factura_id + status=validata. Idempotent (FOR UPDATE + verifica status). cont sugerat,
+    confirmat de om. Gard = acces la tenant + actiune umana explicita; NU identitate != importator."""
+    from core import efactura_import as _ef
+    cont = (corp.get("cont") or "").strip()
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT status, xml_brut, cif_beneficiar, factura_id
+                              FROM {schema}.efactura_primite WHERE id=%s FOR UPDATE""", (primita_id,))
+            r = cur.fetchone()
+            if not r:
+                raise HTTPException(404, "factura primita inexistenta")
+            status, xmlb, cifb, fid_ex = r
+            if status == "validata":          # idempotent - nu crea a doua cheltuiala
+                return {"stare": "deja_validata", "factura_id": fid_ex}
+            if status == "respinsa":
+                raise HTTPException(409, "factura a fost respinsa; nu se poate valida")
+            try:
+                f = _ef.parseaza_xml((xmlb or "").encode("utf-8"), cifb)
+            except Exception as e:
+                raise HTTPException(422, "XML neparsabil: %s" % str(e)[:200])
+            fid, _nou = _factura_din_parsat(cur, schema, f)   # leaga si factura existenta (dedup)
+            cur.execute(f"""UPDATE {schema}.efactura_primite
+                            SET status='validata', factura_id=COALESCE(%s, factura_id),
+                                cont_cheltuiala=%s, validat_la=now() WHERE id=%s
+                            RETURNING factura_id""", (fid, cont or None, primita_id))
+            fid_final = cur.fetchone()[0]
+        conn.commit()
+    return {"stare": "validata", "factura_id": fid_final}
+
+
+@app.post("/tenants/{tenant_id}/facturi-primite/{primita_id}/respinge")
+def factura_primita_respinge(tenant_id: int, primita_id: int, corp: dict = Body(default={}),
+                             ctx=Depends(cere_context)):
+    """Respinge o factura primita: status=respinsa + motiv. NU sterge randul (ramane cu istoric)."""
+    motiv = (corp.get("motiv") or "").strip()
+    if not motiv:
+        raise HTTPException(422, "motivul respingerii e obligatoriu")
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT status FROM {schema}.efactura_primite WHERE id=%s FOR UPDATE", (primita_id,))
+            r = cur.fetchone()
+            if not r:
+                raise HTTPException(404, "factura primita inexistenta")
+            if r[0] == "validata":
+                raise HTTPException(409, "factura a fost deja validata")
+            cur.execute(f"""UPDATE {schema}.efactura_primite SET status='respinsa', motiv_respins=%s
+                            WHERE id=%s""", (motiv, primita_id))
+        conn.commit()
+    return {"stare": "respinsa"}
 
 
 @app.post("/tenants/{tenant_id}/reges-config")

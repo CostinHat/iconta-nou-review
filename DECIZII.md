@@ -1018,3 +1018,23 @@ rulare reala prin stack (listaMesajeFactura prod filtru=P -> ANAF "fara drept", 
 activ (30 min, offset :17/:47 fata de F178 :07/:37). Migrare efactura_primite 2/2 scheme + template.
 LIMITA (onest, ca F176): importul LIVE (descarca factura reala) se dovedeste doar cu un CIF cu drept SPV.
 RAMAS pentru F126 complet: pasul 5 four-eyes (ecran contabil: ciorna -> validare -> cheltuiala + factura_id).
+
+### 18.07.2026 F126 e-Factura complet - pasul 5 four-eyes + LIVE cap-coada  (main.py rute facturi-primite; facturi_ecran.js)
+DECIZIE: pasul 5 (four-eyes UI) inchide F126 receive cap-coada. Ecran de validare a facturilor primite:
+prezinta datele PARSATE (nu XML brut - efactura_import.parseaza_xml, arhiva bruta la click), cont de
+cheltuiala SUGERAT (din istoricul aceluiasi furnizor) dar CONFIRMAT de om, doua actiuni Valideaza/Respinge.
+GARD FOUR-EYES (verificat la sursa - grep INAINTE de a scrie): patru-ochi la efactura_primite = separare
+AUTOMAT (cron F179 = ochiul 1) vs UMAN (contabil = ochiul 2), NU user A vs user B. Regula creat_de != aprobat_de
+traieste DOAR pe declaratii_coada (asistenti_api/coada_api) si e corecta ACOLO (om pregateste, om aproba);
+NU se copiaza la primite (masina importa, om valideaza). Un cabinet cu UN singur contabil trebuie sa poata
+valida. Gardul real = rol/acces la tenant + status='validata' actiune umana explicita; ZERO validated_by != imported_by.
+IDEMPOTENT: SELECT ... FOR UPDATE + verifica status (dublu-click/doua taburi -> deja_validata, nu a doua cheltuiala).
+CONDUCTA UNICA: valideaza reutilizeaza _factura_din_parsat (acelasi INSERT ca /import-efactura upload manual,
+extras DRY) -> factura directie=primita in facturi -> intra AUTOMAT in verificatorul TVA existent (D300 vs 4426),
+nu ramane orfana. cont_cheltuiala + motiv_respins adaugate la efactura_primite (respinsa NU se sterge - istoric).
+DOVADA: backend HTTP cap-coada (GET lista preview parsat; valideaza -> factura_id legat + validata + cont;
+idempotent deja_validata; respinge + motiv; 422 fara motiv); ecran node --check + verificator 0. Anatomia
+ecranului = bon OCR four-eyes existent (cont editabil, buton-verde, confirmaCaseta, fara confirm/alert).
+LIMITA (onest, ca F176): import/recipisa LIVE pending drept - ecranul testat cu ciorna INJECTATA (factura
+parsata, factura_id NULL). Round-trip real se dovedeste cu un patron real cu CIF cu drept SPV.
+F126 -> LIVE (cap-coada: send + receive + four-eyes). F127/F128 raman AMANATE.

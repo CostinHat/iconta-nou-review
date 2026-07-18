@@ -52,6 +52,13 @@ function meniuFacturi(corp, nav, tenantId, opt) {
         <div class="firme-optiune-titlu">Model factur\u0103</div>
         <div class="firme-optiune-desc">Logo, font \u0219i culoare</div>
       </button>
+      ${!opt.client ? `<button class="firme-optiune" id="fac-primite">
+        <div class="firme-optiune-icon accent-albastru">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+        </div>
+        <div class="firme-optiune-titlu">Facturi primite (SPV)</div>
+        <div class="firme-optiune-desc">De la furnizori — de validat înainte de cheltuieli</div>
+      </button>` : ""}
       ${!opt.client ? `<button class="firme-optiune" id="fac-recurente">
         <div class="firme-optiune-icon accent-recomanda">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v5h-5"/></svg>
@@ -71,9 +78,95 @@ function meniuFacturi(corp, nav, tenantId, opt) {
   corp.querySelector("#fac-scadentar").addEventListener("click", () => nav.mergi("Scadențar", (c) => scadentarEcran(c, nav, tenantId, opt)));  // f131_scadentar_v1
   corp.querySelector("#fac-emite").addEventListener("click", () => nav.mergi("Emite factur\u0103", (c) => emiteFactura(c, nav, tenantId, opt)));
   corp.querySelector("#fac-model").addEventListener("click", () => nav.mergi("Model factur\u0103", (c) => modelFactura(c, nav, tenantId, opt)));
+  corp.querySelector("#fac-primite")?.addEventListener("click", () => nav.mergi("Facturi primite", (c) => primiteSPV(c, nav, tenantId, opt)));  // [efactura_primite_v1] F126 four-eyes
   corp.querySelector("#fac-recurente")?.addEventListener("click", () => nav.mergi("Facturi recurente", (c) => listaRecurente(c, nav, tenantId, opt)));
   corp.querySelector("#fac-magazin")?.addEventListener("click", () => nav.mergi("Magazin online", (c) => ecranMagazin(c, nav, tenantId)));  // [wc_extras_v1] F156
 }  // fac_recurente_v1
+
+
+// ---------- FACTURI PRIMITE din SPV — four-eyes (F126, [efactura_primite_v1]) ----------
+// Anatomia ecranului de bon OCR: date parsate (nu XML brut), cont sugerat editabil (om confirma),
+// Valideaza (buton-verde) / Respinge (motiv in-ecran), XML brut la click. Fara confirm/alert.
+async function primiteSPV(corp, nav, tenantId, opt) {
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
+  let lista = [];
+  try { const r = await api.get(`/tenants/${tenantId}/facturi-primite`); lista = (r && r.primite) || []; } catch {}
+  if (!lista.length) {
+    corp.innerHTML = `<h2 class="pf-titlu">Facturi primite din SPV</h2>
+      <div class="stare-goala">Nicio factură primită de validat. Facturile de la furnizori apar aici automat din SPV; le validezi înainte să intre în cheltuieli.</div>`;
+    return;
+  }
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Facturi primite din SPV</h2>
+    <p class="pf-intro">De la furnizori · de validat înainte de cheltuieli.</p>
+    <div class="pf-lista zebra-lista">${lista.map((p) => `
+      <button class="buton-secundar pf-frand fac-primita-btn" data-id="${p.id}">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${esc(p.furnizor || p.cif_emitent || "—")}${p.numar ? " · " + esc(p.numar) : ""}</div>
+          <div class="pf-frand-sub">${p.data ? dataRo(p.data) : ""}${p.parsabila ? "" : ' · <span style="color:var(--rosu-semafor)">neparsabilă</span>'}</div>
+        </div>
+        <span class="pf-frand-suma">${p.total ? bani(p.total) + " " + (p.moneda || "lei") : ""}</span>
+      </button>`).join("")}</div>`;
+  corp.querySelectorAll(".fac-primita-btn").forEach((b) => b.addEventListener("click", () => {
+    const p = lista.find((x) => String(x.id) === b.dataset.id);
+    nav.mergi("Validare factură", (c) => primitaDetaliu(c, nav, tenantId, p, opt));
+  }));
+}
+
+function primitaDetaliu(corp, nav, tenantId, p, opt) {
+  const linii = p.linii || [];
+  corp.innerHTML = `
+    <h2 class="pf-titlu">Factură primită · ${esc(p.numar || "—")}</h2>
+    ${!p.parsabila ? `<div class="caseta-atentie" style="margin:0 0 12px"><div class="ca-mesaj">XML neparsabil — verifică XML-ul brut înainte de validare.</div></div>` : ""}
+    <div class="grila-doc" style="grid-template-columns:2fr 1fr 1fr 1fr">
+      <label class="camp"><span class="camp-eticheta">Furnizor</span><input class="camp-input" value="${esc((p.furnizor || "") + (p.cif_emitent ? " · " + p.cif_emitent : ""))}" readonly aria-label="Furnizor"></label>
+      <label class="camp"><span class="camp-eticheta">Data</span><input class="camp-input" value="${p.data ? dataRo(p.data) : ""}" readonly aria-label="Data"></label>
+      <label class="camp"><span class="camp-eticheta">TVA</span><input class="camp-input" value="${esc(p.tva || "")}" readonly aria-label="TVA"></label>
+      <label class="camp"><span class="camp-eticheta">Total</span><input class="camp-input" value="${esc(p.total || "")}" readonly aria-label="Total"></label>
+    </div>
+    <div style="margin-top:10px"><div class="camp-eticheta">Linii</div>
+      ${linii.map((l) => `<div class="pf-frand-sub">${esc(l.descriere)} · ${esc(l.cantitate)} × ${esc(l.pret)} · ${esc(l.cota)}%</div>`).join("") || '<div class="pf-frand-sub">—</div>'}</div>
+    <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:12px">
+      <label class="camp"><span class="camp-eticheta">Cont cheltuială (sugerat, confirmă)</span><input class="camp-input" id="pr-cont" value="${esc(p.cont_sugerat || "")}" placeholder="ex. 628" aria-label="Cont cheltuiala"></label>
+    </div>
+    <div style="margin-top:14px">
+      <button class="buton-verde" id="pr-valideaza">Validează (creează cheltuiala)</button>
+      <button class="btn-link" id="pr-respinge" style="margin-left:10px">Respinge</button>
+      <span class="btn-link" id="pr-xml" style="margin-left:10px">Vezi XML brut</span>
+    </div>
+    <div id="pr-zona" style="margin-top:10px"></div>
+    <div id="pr-xml-zona" style="margin-top:10px"></div>`;
+  const zona = corp.querySelector("#pr-zona");
+  corp.querySelector("#pr-valideaza").addEventListener("click", () => {
+    confirmaCaseta(zona, "Validezi factura și creezi cheltuiala? Intră în evidența contabilă.", async () => {
+      try {
+        const r = await api.post(`/tenants/${tenantId}/facturi-primite/${p.id}/valideaza`, { cont: corp.querySelector("#pr-cont").value.trim() });
+        arataMesaj(zona, "Validată. Cheltuiala creată (factura #" + (r.factura_id || "—") + ").", "ok");
+        setTimeout(() => nav.inapoi && nav.inapoi(), 900);
+      } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }
+    }, { textOk: "Validează" });
+  });
+  corp.querySelector("#pr-respinge").addEventListener("click", () => {
+    zona.innerHTML = `<label class="camp"><span class="camp-eticheta">Motiv respingere</span><input class="camp-input" id="pr-motiv" aria-label="Motiv respingere"></label>
+      <button class="buton-secundar" id="pr-respinge-ok" style="margin-top:8px">Respinge factura</button>`;
+    corp.querySelector("#pr-respinge-ok").addEventListener("click", async () => {
+      const motiv = corp.querySelector("#pr-motiv").value.trim();
+      if (!motiv) { arataMesaj(zona, "Scrie motivul respingerii.", "avert"); return; }
+      try {
+        await api.post(`/tenants/${tenantId}/facturi-primite/${p.id}/respinge`, { motiv });
+        arataMesaj(zona, "Respinsă (rămâne în istoric).", "ok");
+        setTimeout(() => nav.inapoi && nav.inapoi(), 900);
+      } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }
+    });
+  });
+  corp.querySelector("#pr-xml").addEventListener("click", async () => {
+    const xz = corp.querySelector("#pr-xml-zona");
+    try {
+      const r = await api.get(`/tenants/${tenantId}/facturi-primite/${p.id}/xml`);
+      xz.innerHTML = `<pre style="max-height:320px;overflow:auto;background:var(--gri-fundal-semafor);padding:8px;white-space:pre-wrap">${esc(r.xml || "")}</pre>`;
+    } catch (e) { arataMesaj(xz, e.mesaj || "nu am putut încărca XML-ul", "eroare"); }
+  });
+}
 
 // ---------- ISTORIC ---------- /* facback_null_fix_v1 */
 async function istoricFacturi(corp, nav, tenantId, opt) {

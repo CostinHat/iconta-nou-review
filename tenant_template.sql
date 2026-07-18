@@ -2215,7 +2215,9 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.efactura_primite (
                     CHECK (status IN ('descarcata','ciorna','validata','respinsa')),
   factura_id        BIGINT REFERENCES TENANT_PLACEHOLDER.facturi(id),
   importat_la       TIMESTAMPTZ NOT NULL DEFAULT now(),
-  validat_la        TIMESTAMPTZ
+  validat_la        TIMESTAMPTZ,
+  motiv_respins     TEXT,
+  cont_cheltuiala   TEXT
 );
 CREATE UNIQUE INDEX IF NOT EXISTS uq_efactura_primite_mesaj
   ON TENANT_PLACEHOLDER.efactura_primite (id_mesaj_anaf);

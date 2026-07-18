@@ -32,6 +32,9 @@ CREATE TABLE IF NOT EXISTS "{s}".efactura_primite (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS uq_efactura_primite_mesaj
   ON "{s}".efactura_primite (id_mesaj_anaf);
+-- four-eyes (pasul 5): motivul respingerii + contul de cheltuiala confirmat de om
+ALTER TABLE "{s}".efactura_primite ADD COLUMN IF NOT EXISTS motiv_respins  TEXT;
+ALTER TABLE "{s}".efactura_primite ADD COLUMN IF NOT EXISTS cont_cheltuiala TEXT;
 """
 
 
