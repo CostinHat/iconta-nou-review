@@ -18,6 +18,13 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   if (neconfigurat) {
     configureazaNumerotare(corp, nav, tenantId, opt);
   } else {
+    // [punte_stoc_v1] F172: la firma de CABINET cu gestiune cantitativa (are articole), incarca
+    // articolele de stoc pentru selectorul pe linie. Contul gratuit / portalul client NU tin
+    // gestiune -> nu se incarca, emit exact ca azi (fara poarta, fara articol_id).
+    opt.articole = [];
+    if (!opt.gratuit && !opt.client) {
+      try { opt.articole = (await api.get(`/tenants/${tenantId}/stocuri/articole`)).articole || []; } catch { opt.articole = []; }
+    }
     formularEmitere(corp, nav, tenantId, num, opt);
   }
 }
@@ -161,21 +168,36 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
 
   const zonaLinii = corp.querySelector("#em-linii");
   const linii = [];
+  const articole = opt.articole || [];        // [punte_stoc_v1] F172: articole de stoc (gol la gratuit)
+  let pleacaMarfaCurent = null;               // raspunsul la poarta "pleaca marfa acum?" pt emiterea curenta
 
   function adaugaLinie() {
     const idx = linii.length;
-    linii.push({ descriere: "", cantitate: 1, pret_unitar: 0, cota_tva: null });
+    linii.push({ descriere: "", cantitate: 1, pret_unitar: 0, cota_tva: null, articol_id: null });
     const rand = document.createElement("div");
-    rand.className = "em-linie";
     rand.dataset.idx = idx;
-    rand.innerHTML = `
+    const inputsHtml = `
       <input class="pr-input em-l-den" placeholder="Denumire (ex: p\u00e2ine, consultan\u021b\u0103)" aria-label="Denumire articol" autocomplete="off">
       <input class="pr-input em-l-cant" type="number" step="0.001" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
       <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" aria-label="Pre\u021b unitar" title="Pre\u021b unitar">
       <span class="em-l-cota" title="Cota TVA">\u2014</span>
       <button class="buton-sters em-l-sterge" title="\u0218terge">\u00d7</button>`;
+    if (articole.length) {
+      // [punte_stoc_v1] la firma CV: selector articol pe rand separat DEASUPRA grilei (grila neatinsa)
+      const selArticol = `
+        <select class="camp-input em-l-articol" aria-label="Articol de stoc" style="margin-bottom:6px">
+          <option value="">\u2014 f\u0103r\u0103 articol (serviciu) \u2014</option>
+          ${articole.map((a) => `<option value="${a.id}" data-den="${esc(a.denumire)}">${esc(a.denumire)} \u00b7 stoc ${esc(a.stoc)}</option>`).join("")}
+        </select>`;
+      rand.className = "em-linie-wrap";
+      rand.innerHTML = `${selArticol}<div class="em-linie">${inputsHtml}</div>`;
+    } else {
+      rand.className = "em-linie";
+      rand.innerHTML = inputsHtml;
+    }
     zonaLinii.appendChild(rand);
 
+    const selArt = rand.querySelector(".em-l-articol");
     const den = rand.querySelector(".em-l-den");
     const cant = rand.querySelector(".em-l-cant");
     const pret = rand.querySelector(".em-l-pret");
@@ -203,6 +225,14 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     });
     cant.addEventListener("input", () => { linii[idx].cantitate = parseFloat(cant.value) || 0; recalc(); });
     pret.addEventListener("input", () => { linii[idx].pret_unitar = parseFloat(pret.value) || 0; recalc(); });
+    if (selArt) selArt.addEventListener("change", () => {  // [punte_stoc_v1] F172
+      linii[idx].articol_id = selArt.value ? parseInt(selArt.value, 10) : null;
+      const o = selArt.selectedOptions[0];
+      if (linii[idx].articol_id && o && o.dataset.den) {
+        den.value = o.dataset.den;
+        den.dispatchEvent(new Event("input"));  // completeaza denumirea + declanseaza potrivirea cotei
+      }
+    });
     rand.querySelector(".em-l-sterge").addEventListener("click", () => {
       linii[idx] = null;
       rand.remove();
@@ -317,6 +347,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       linii: liniiVal.map((l) => ({
         descriere: l.descriere, cantitate: l.cantitate,
         pret_unitar: l.pret_unitar, cota_tva: l.cota_tva,
+        articol_id: l.articol_id || null,  // [punte_stoc_v1] F172
       })),
       tert_nume: corp.querySelector("#em-nume").value.trim() || null,
       tert_cui: corp.querySelector("#em-cui").value.trim() || null,
@@ -324,6 +355,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       moneda: monedaSel,
     };
     if (cursManual != null) payload.curs_manual = cursManual;
+    if (pleacaMarfaCurent !== null) payload.pleaca_marfa = pleacaMarfaCurent;  // [punte_stoc_v1] raspuns poarta
 
     const btn = corp.querySelector("#em-emite");
     if (btn) { btn.disabled = true; btn.textContent = "Se emite\u2026"; }
@@ -332,7 +364,13 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       const selTip = corp.querySelector("#em-tip");
       if (selTip) payload.tip = selTip.value;
       const r = await api.post(`/tenants/${tenantId}/facturi/emite`, payload);
-      rez2.innerHTML = `\u2713 Factura <b>${r.numar}</b> emis\u0103 \u00b7 total ${Number(r.total).toLocaleString("ro-RO", {minimumFractionDigits:2})} ${monedaSel}. A fost trimis\u0103 c\u0103tre contabil.`;
+      let notaStoc = "";  // [punte_stoc_v1] rezultatul descarcarii de gestiune, daca poarta a fost DA
+      if (r.descarcare) {
+        const nd = (r.descarcare.descarcate || []).length, ne = (r.descarcare.erori || []).length;
+        notaStoc = ` \u00b7 ${nd} articol${nd === 1 ? "" : "e"} desc\u0103rcat${nd === 1 ? "" : "e"} din gestiune`;
+        if (ne) notaStoc += ` (${ne} nu \u2014 stoc insuficient)`;
+      }
+      rez2.innerHTML = `\u2713 Factura <b>${esc(r.numar)}</b> emis\u0103 \u00b7 total ${Number(r.total).toLocaleString("ro-RO", {minimumFractionDigits:2})} ${monedaSel}${notaStoc}. A fost trimis\u0103 c\u0103tre contabil.`;
       rez2.className = "em-rezultat em-bun";
       setTimeout(() => { if (opt.dupaEmitere) opt.dupaEmitere(); }, 1200);
     } catch (e) {
@@ -378,7 +416,30 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     });
   }
 
-  corp.querySelector("#em-emite").addEventListener("click", () => trimiteEmitere(null));
+  // [punte_stoc_v1] F172: poarta "pleaca marfa acum?" INAINTE de emitere, la firma CV cu linie de
+  // articol (caseta-poarta, DS cap.5 v2.14). Fara articole -> emitere directa, flux identic cu azi.
+  function porniEmitere() {
+    const tip = (corp.querySelector("#em-tip") || {}).value || "factura";
+    const cuArticole = linii.filter((l) => l && l.articol_id).length;
+    if (cuArticole && tip === "factura") {
+      const rez = corp.querySelector("#em-rezultat");
+      rez.className = "em-rezultat";
+      rez.innerHTML = `
+        <div class="caseta-poarta">
+          <div class="cp-mesaj">Pleacă marfa acum? ${cuArticole} articol${cuArticole === 1 ? "" : "e"} de pe factură se descarcă din gestiune dacă marfa pleacă fizic azi. Dacă e avans, livrare ulterioară sau serviciu, alege „Nu, doar factură".</div>
+          <div class="cp-butoane">
+            <button class="buton-primar" id="em-poarta-da">Da, pleacă marfa</button>
+            <button class="buton-secundar em-buton-sec" id="em-poarta-nu">Nu, doar factură</button>
+          </div>
+        </div>`;
+      rez.querySelector("#em-poarta-da").addEventListener("click", () => { pleacaMarfaCurent = true; trimiteEmitere(null); });
+      rez.querySelector("#em-poarta-nu").addEventListener("click", () => { pleacaMarfaCurent = false; trimiteEmitere(null); });
+    } else {
+      pleacaMarfaCurent = null;
+      trimiteEmitere(null);
+    }
+  }
+  corp.querySelector("#em-emite").addEventListener("click", porniEmitere);
 }
 
 // audit_cab_lot1_v1

@@ -4653,6 +4653,7 @@ def rapoarte_comerciale(tenant_id: int, de: str = None, pana: str = None, ctx=De
         return {"vanzari": _rc.vanzari_pe_partener(conn, schema, de, pana),
                 "durata_incasare": _rc.durata_medie_incasare(conn, schema, de, pana),
                 "parteneri": _rc.lista_parteneri(conn, schema),
+                "profit_produs": _rc.profit_pe_produs(conn, schema, de, pana),  # [punte_stoc_v1] F144 LIVE la CV
                 "de": de, "pana": pana}
 
 @app.get("/tenants/{tenant_id}/rapoarte-comerciale/fisa")

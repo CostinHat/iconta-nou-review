@@ -203,3 +203,35 @@ def sterge_varianta(conn, schema, vid):
     with conn.cursor() as cur:
         cur.execute(f"DELETE FROM {schema}.rapoarte_salvate WHERE id=%s", (vid,))
         return {"ok": cur.rowcount > 0}
+
+
+def profit_pe_produs(conn, schema, de, pana):
+    """F144 (LIVE la CV prin puntea F172): profit pe articol = venit - cost, pe perioada.
+    Venit = factura_linii.articol_id (cantitate x pret_unitar net) pe facturi emise. Cost = miscari_stoc
+    legate prin factura_id (iesire la CMP). Join-ul devenit posibil dupa puntea factura->stoc.
+    Doar CV (articole cu descarcare legata). GV nu apare (cost pe articol inexistent prin constructie)."""
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"""
+            SELECT a.id, a.denumire,
+                   COALESCE(v.venit, 0) AS venit, COALESCE(c.cost, 0) AS cost, COALESCE(v.cant, 0) AS cant
+            FROM {schema}.articole a
+            LEFT JOIN (SELECT fl.articol_id, SUM(fl.cantitate * fl.pret_unitar) AS venit,
+                              SUM(fl.cantitate) AS cant
+                       FROM {schema}.factura_linii fl JOIN {schema}.facturi f ON f.id = fl.factura_id
+                       WHERE fl.articol_id IS NOT NULL AND f.directie='emisa'
+                         AND f.data_emitere BETWEEN %s AND %s
+                       GROUP BY fl.articol_id) v ON v.articol_id = a.id
+            LEFT JOIN (SELECT m.articol_id, SUM(m.valoare) AS cost
+                       FROM {schema}.miscari_stoc m JOIN {schema}.facturi f ON f.id = m.factura_id
+                       WHERE m.factura_id IS NOT NULL AND m.tip='iesire' AND f.directie='emisa'
+                         AND f.data_emitere BETWEEN %s AND %s
+                       GROUP BY m.articol_id) c ON c.articol_id = a.id
+            WHERE v.venit IS NOT NULL OR c.cost IS NOT NULL
+            ORDER BY (COALESCE(v.venit,0) - COALESCE(c.cost,0)) DESC
+        """, (de, pana, de, pana))
+        randuri = []
+        for r in cur.fetchall():
+            venit = Decimal(str(r["venit"] or 0)); cost = Decimal(str(r["cost"] or 0))
+            randuri.append({"articol": r["denumire"], "cant": _f(r["cant"]),
+                            "venit": _f(venit), "cost": _f(cost), "profit": _f(venit - cost)})
+    return randuri

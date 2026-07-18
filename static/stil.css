@@ -603,6 +603,12 @@ html, body {
 .mig-frand-sub { font-size: var(--text-mic); color: var(--gri); margin-top: 1px; }
 .mig-gri { color: #5a6472; background: #eef0f3; }
 .mig-gol { padding: 24px 16px; text-align: center; font-size: var(--text-mic); color: var(--gri); }
+/* [punte_stoc_v1] Casetă-poartă (DS cap.5 v2.14): întrebare obligatorie ÎNAINTE de o acțiune
+   consecventă (emitere cu descărcare de gestiune). Două alegeri care merg AMÂNDOUĂ înainte (nu
+   confirm/anulează). Fundal neutru, distinct de caseta-atentie (roșu) și caseta-info (albastru). */
+.caseta-poarta { background: #fbf7ee; border: 1px solid #e2d4b0; border-radius: 8px; padding: 14px 16px; margin: 12px 0; }
+.caseta-poarta .cp-mesaj { font-size: var(--text-mic); color: var(--ardezie); margin-bottom: 10px; }
+.caseta-poarta .cp-butoane { display: flex; gap: 8px; flex-wrap: wrap; }
 /* [stare_goala_v213] Stare goala canonica (DS cap.6 v2.13): lista cu 0 randuri = continut de
    ecran, nu mesaj de stare (arataMesaj). gol + cauza + iesire. Inlocuieste .cap-gol/.sa-gol
    (sterse) si utilizarile de stare-goala ale .mig-gol. --inline = linie in panou (alta anatomie). */

@@ -2165,6 +2165,17 @@ async function ecranRapoarte(corp, nav, t) {
           </tbody>
         </table>` : `<div class="stare-goala">Nicio vânzare în perioadă.</div>`}
 
+      <h3 class="pf-subtitlu">Profit pe produs</h3>
+      ${(d.profit_produs || []).length ? `
+        <table class="fd-tabel">
+          <thead><tr><th>Articol</th><th class="fd-td-num">Cant.</th>
+            <th class="fd-td-num">Venit</th><th class="fd-td-num">Cost</th><th class="fd-td-num">Profit</th></tr></thead>
+          <tbody>${(d.profit_produs || []).map((p) => `
+            <tr><td>${esc(p.articol)}</td><td class="fd-td-num">${p.cant}</td>
+              <td class="fd-td-num">${bani(p.venit)}</td><td class="fd-td-num">${bani(p.cost)}</td>
+              <td class="fd-td-num">${bani(p.profit)}</td></tr>`).join("")}</tbody>
+        </table>` : `<div class="stare-goala">Niciun profit pe produs în perioadă. Disponibil doar la gestiune cantitativă (CV), pe articolele descărcate din stoc la emitere (poarta „pleacă marfa"). La global-valoric costul pe articol nu există.</div>`}
+
       <h3 class="pf-subtitlu">Fișă client/furnizor</h3>
       <p><select id="r-fisa-sel" class="camp-input" style="max-width:360px">
         <option value="">— alege partenerul —</option>${optParteneri}</select></p>

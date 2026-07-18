@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.13 · 17 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.14 · 18 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -80,6 +80,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 - Stil unic: `.caseta-atentie` — fundal #fdf3f3, bordură 2px #d98c8c, mesaj în `.ca-mesaj`. Butoanele stau SUB casetă, pe clase canonice.
 - **Casetă informativă standing (v2.12)**: `.caseta-info` — fundal albastru-pal #eef4fd, bordură 1px #b9c2cf, mesaj în `.ci-mesaj`. Pentru o notă IMPORTANTĂ, PERMANENTĂ, informativă (nu o confirmare, nu un mesaj de stare tranzitoriu prin `arataMesaj`). Distinctă semantic de `.caseta-atentie`: roșul rămâne EXCLUSIV pentru atenționare/acțiune distructivă; informația neutră NU se colorează roșu. INTERZIS o notă informativă ad-hoc cu fundal albastru-pal inline (`style="background:#eef4fd…"`) — se folosește `.caseta-info`. Prins de regula CASETA_INFO în verificator.
+- **Casetă-poartă la o acțiune (v2.14)**: `.caseta-poarta` — o întrebare OBLIGATORIE înainte de o acțiune consecventă, cu DOUĂ alegeri care merg AMÂNDOUĂ înainte (nu confirmă/anulează — pentru acela e `confirmaCaseta`). Cazul canonic: emiterea unei facturi cu linii de stoc la o firmă cu gestiune cantitativă — „Pleacă marfa acum? DA (descarcă gestiunea) / NU (doar fiscal)". Structura: `.caseta-poarta` > `.cp-mesaj` (întrebarea + consecința) + `.cp-butoane` (butoanele canonice). Fundal neutru chihlimbar-pal #fbf7ee — distinct de `.caseta-atentie` (roșu, distructiv) și `.caseta-info` (albastru, informativ standing). Răspunsul e cerut ÎNAINTE de acțiune și NU se poate sări (nu bifă opțională, care se uită). INTERZISĂ reproducerea ad-hoc cu fundal inline (`style="background:#fbf7ee…"`) — se folosește `.caseta-poarta`. Prinsă de regula POARTA_INLINE în verificator.
 - **`confirm()`, `alert()` și `prompt()` native de browser sunt INTERZISE** (v2.0 — include prompt). Confirmări via `confirmaCaseta(zona, mesaj, laConfirm, {textOk})`. Input via formular în-ecran (câmp + buton), niciodată prompt nativ.
 - Mesajul spune exact ce se întâmplă și dacă e ireversibil.
 
@@ -167,6 +168,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 - Exemple conforme: `pac-rezumat`, `pac-deschide-zona` (dashed), `grila-campuri-compacta`.
 
 ## Changelog
+**v2.14 (18.07.2026)** — casetă-poartă `.caseta-poarta` (cap.5): întrebare obligatorie înainte de o acțiune consecventă, două alegeri care merg amândouă înainte (distinct de `confirmaCaseta`). Motivată de puntea factură→stoc (F172): „Pleacă marfa acum? DA/NU" înainte de emitere, la firmele cu gestiune cantitativă. Fundal chihlimbar-pal #fbf7ee, distinct de atenție (roșu) și info (albastru). Regula POARTA_INLINE în verificator.
 **v2.13 (17.07.2026)** — stare goală canonică `.stare-goala` (+ modificator `.stare-goala--inline`); cap.6. Lista cu 0 rânduri = conținut de ecran (gol + cauză + ieșire), nu mesaj de stare. Elimină `.cap-gol`/`.sa-gol` (foloseau `#999` hardcodat în loc de `var(--gri)`) și utilizările de stare-goală ale `.mig-gol`. ~40 apariții migrate; mesajele de eroare `.mig-gol` din `catch` (~50) = datorie separată către `arataMesaj` (DE_FACUT). Regula STARE_GOALA în verificator (clasă interzisă `cap-gol`/`sa-gol`/`mig-gol`-stare-goală + fundătură).
 **v2.12 (17.07.2026)** — casetă informativă standing `.caseta-info` (albastru-pal #eef4fd, ne-distructivă), distinctă semantic de `.caseta-atentie` (roșu = distructiv); cap.5. Motivată de ecranul de conectare SPV (avertismentul de 24h cere o notă importantă, permanentă, informativă, fără regulă până acum). Regula CASETA_INFO în verificator (prinde note info ad-hoc cu fundal albastru-pal inline).
 **v2.11 (12.07.2026)** — panouri de conținut: clasa canonică `.panou` (alb + bordură #b9c2cf); reparate `pac-rezumat`/`pac-deschide-zona`/`grila-campuri-compacta` (gri pe gri); cap.16 nou. Carduri: 73 hex literal → `...CULORI_CARD.cheie` + regula CULOARE_CARD_HEX; decizie spacing închisă (rămâne literal).
