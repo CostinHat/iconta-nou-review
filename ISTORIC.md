@@ -1290,3 +1290,48 @@ constructie); descarcarea GV ramane global-valorica lunara. Stoc insuficient -> 
 - v2.14 (dupa-amiaza): caseta-poarta `.caseta-poarta` - intrebare obligatorie inainte de o actiune
   consecventa, doua alegeri care merg amandoua inainte (distinct de confirmaCaseta). Motivata de
   poarta "pleaca marfa acum?". Ambele in verificator (STARE_GOALA, POARTA_INLINE).
+
+
+---
+
+# 18.07.2026 (partea 3 — seara): inventar declarativ nivel 2 + pachet igiena (4 teme)
+
+Continuarea zilei. Deciziile au temei complet in DECIZII.md; aici doar POINTER.
+
+## Inventar declarativ nivel 2 — 3 declaratii verificate la sursa, niciuna nu se construieste
+- **D106 RESPINS** (OPANAF 1292/2014, instr_106_2014.pdf) — se depune DOAR de societatile nationale /
+  firme de stat pentru varsaminte la buget; clientii iConta = cabinete cu firme PRIVATE. In afara
+  publicului. -> DECIZII.md commit 929735b.
+- **D230 RESPINS** — declaratie PERSONALA a salariatului (redirectionare 3.5% impozit), nu a firmei;
+  PFA merge prin D212. Nu apartine platformei de cabinet. -> DECIZII.md commit da1b3ed.
+- **D307 AMANAT** (prioritate joasa) — ajustare TVA la anularea codului de TVA, exceptie rara; se
+  reia la primul caz real. -> DECIZII.md commit da1b3ed.
+- Registru: D106/D230 RESPINS, D307 AMANAT in FUNCTIONALITATI.csv (F173/F174/F175).
+
+## Registru corectat la sursa
+- **F034 (D394) PARTIAL -> LIVE.** Motivul stale ("absent din control_fiscal_api.declaratii_datorate")
+  era contrazis de cod: grep D394 in control_fiscal_api.py = 6 hituri, conectat de semafor faza 3
+  (commit 3cc1455 din 17.07). Dovada grep in commit. -> commit b00e04f.
+- **Curatenie DE_FACUT.md**: CARENTE#4 (dubla introducere CV) inchis, D394-absent inchis, SAGA marcat
+  PARTIAL. -> commit 14077da.
+
+## Pachet BRIEF_CODE_PACHET_18IUL — 4 teme de igiena, executie in ordine
+- **Tema 0 (fara cod): harta de prioritati in DECIZII.md** — urgent (backup off-site F170); blocat pe
+  ANAF (cluster SPV F121/F126/F160, se deblocheaza la OAuth); la semnal, nu preventiv (integrari
+  PSD2/plati, concurenta tichete/COR/cost, F161, F307); cere om (SAGA import real, audit vizual ~20
+  ecrane, pilot Daniela). Miezul e complet; ce ramane = expansiune la cerere. -> commit a22b4b6.
+- **Tema 1 (URGENTA): backup off-site pe Hetzner Storage Box** — vezi partea 4 (executata dupa
+  provizionarea Storage Box de catre Costin).
+- **Tema 2 (igiena): mig-gol -> arataMesaj** — 48/53 aparitii mig-gol care erau de fapt mesaje de
+  EROARE/validare/loading in blocuri catch (nu stari goale) convertite la arataMesaj(zona, msg, tip)
+  cu tipul corect (eroare/avert/info). 5 template-embedded lasate deliberat si raportate (nu ghicite).
+  verificator TOTAL 0, node --check pe 7 fisiere. -> commit c86c9a3.
+- **Tema 3 (verificare + optiunea A): igiena preluarii tenant** — verificat la sursa (grep): cand un
+  cabinet adauga o firma cu CUI-ul unui cont gratuit VECHI, contul gratuit ramanea activ=true, logabil,
+  EMITENT cu acelasi CUI din alt loc (emitere dubla). Poarta de enforcement (auth refuza tenant gratuit
+  inactiv) si mecanismul de inchidere (/admin/conturi-gratuite/{id}/suspenda) EXISTAU deja; lipsea
+  declansarea + vizibilitatea. Costin a ales optiunea A: SEMNAL la creare, nu suspendare automata
+  (inchiderea unui cont = decizie umana). Cod: provision_tenant detecteaza coliziunea (match pe cifre
+  CUI, prinde prefix RO), firme.js + migrare_importa semnaleaza cabinetului. Test functional real pe
+  Postgres in tranzactie ROLLBACK (detectie pozitiva + non-match + CUI inexistent). -> DECIZII.md +
+  commit 5953ecc.
