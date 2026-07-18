@@ -147,10 +147,13 @@ flux separat de declaratii_api), D300, D301, D390, D394, D406 (+ _active, _stocu
 bilanturi S1005/S1003.
 
 LIPSA - NIVEL 2 (rutina de cabinet, MERITA construite):
-  D106 - dividende cuvenite actionarilor. Orice SRL care distribuie profit.
-         Cea mai frecventa din tot ce lipseste.
   D230 - redirectionare 3.5% impozit. Anual, multi salariati.
   D307 - ajustare TVA la transfer de active.
+  (D106 RESPINS 18.07 - eroare de inventar: NU e "cea mai frecventa", e in afara publicului iConta.
+   "Declaratie informativa privind dividendele cuvenite actionarilor" se depune DOAR de societatile
+   nationale / companiile nationale / firmele cu capital de stat (OPANAF 1292/2014 + instr_106_2014,
+   potrivit OG 64/2001). Clientii iConta = firme PRIVATE (SRL/PFA/micro) -> zero utilizatori.
+   Dividendele private sunt acoperite de D205 (LIVE). Vezi DECIZII.md 18.07.)
 
 LIPSA - NIVEL 3 (nisa, de decis explicit; nu se cara nedecise):
   D204 (asocieri fara pers. juridica), D104/D107 (ONG), D108 (reprezentante),
@@ -166,8 +169,9 @@ LIPSA - marginale (de respins sau amanat cu motiv):
 DECIZIE DEJA LUATA, documentata in cod (core/d101.py:43): D101G (grup fiscal) -
 "se adauga cand apare un caz real care le cere". NU e gaura, e scop.
 
-CONCLUZIE: "toate tipurile de declaratii" = 3 motoare reale (D106, D230, D307),
-nu 40. Restul = respingeri motivate. Mentenanta creste cu 3 abonamente, nu cu 30.
+CONCLUZIE: "toate tipurile de declaratii" = 2 motoare reale (D230, D307), nu 40
+(D106 RESPINS 18.07 - firme de stat, in afara publicului). Restul = respingeri
+motivate. Mentenanta creste cu 2 abonamente, nu cu 30.
 
 REGULA PERMANENTA: orice declaratie noua intra in monitorul fiscal ODATA cu ea.
 Construita si nemonitorizata = datorie, nu functionalitate.

@@ -631,3 +631,22 @@ F144 profit-pe-produs: decizia deschisa (17.07) INCHISA pentru CV - join venit(f
 <-> cost(miscari_stoc.factura_id la CMP). Verificat: Widget X venit 100 - cost 60 = profit 40.
 LIMITA (declarata): GV ramane fara profit-pe-produs (cost pe articol inexistent prin constructie);
 descarcarea GV ramane global-valorica lunara. Stoc insuficient la descarcare -> raportat, nu rupe factura.
+
+### 18.07.2026 D106 RESPINS - in afara publicului iConta (doar firme de stat)  (nu se construieste; DE_FACUT inventar)
+DECIZIE: D106 nu se construieste. In afara publicului tinta iConta.
+TEMEI (verificat la sursa): OPANAF 1292/20.05.2014 + instructiuni ANAF (instr_106_2014.pdf) - D106
+"Declaratie informativa privind dividendele cuvenite actionarilor" se depune DOAR de societatile
+nationale, companiile nationale si societatile cu capital de stat (stat actionar unic/majoritar/de
+control), potrivit OG 64/2001. Clientii iConta = cabinete cu firme PRIVATE (SRL/PFA/micro) - D106 nu
+li se aplica NICIODATA. Zero utilizatori. (Denumire + reglementare confirmate si pe static.anaf.ro/
+static/10/Anaf/Declaratii_R/106.html; validatorul exista oficial - versiuni.xml, D106Validator.jar
+J1.0.1 - dar nu conteaza, nu se construieste.)
+ALTERNATIVA RESPINSA: "e cea mai frecventa declaratie lipsa, orice SRL care distribuie profit"
+(inventar DE_FACUT 17.07) - EROARE de inventar. Frecventa presupusa era pe dividende in general, dar
+dividendele firmelor PRIVATE sunt acoperite deja de D205 (impozit retinut la sursa, LIVE). D106 e
+PARALELA pentru firme de stat, NU suprapunere redundanta cu D205 - alt public, alt obiect.
+LIMITA: daca iConta capata vreodata un client firma de stat (improbabil pentru cabinete private), se
+reia. Pana atunci zero utilizatori; fiecare formular construit = abonament permanent de mentenanta.
+CONSECINTA REGISTRU: nivelul 2 "merita construite" scade de la 3 la 2 (D230, D307). D106 nu figura in
+FUNCTIONALITATI.csv (nu era functionalitate planificata) - nimic de flipat acolo; corectat doar
+inventarul din DE_FACUT.md.
