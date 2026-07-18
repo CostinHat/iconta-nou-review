@@ -1059,3 +1059,22 @@ LIMITA (onest, ca F176): formatul EXACT al raspunsului upload/stareMesaj (Execut
 ANAF, parsare DEFENSIVA, de confirmat la primul raspuns real. Trimiterea LIVE pending drept e-Transport pe CIF real.
 RAMAS: F121 UI (pasul 4) - buton Trimite UIT time-critical cu avertisment "mai ai X zile"/"UIT expira in Y".
 Cand F121 transmite -> F044 (generator) -> LIVE.
+
+### 18.07.2026 F121 e-Transport UI (pasul 4) - buton Trimite UIT + semafor de timp -> F044+F121 LIVE  (etransport_ecran.js; main.py)
+DECIZIE: UI-ul de trimitere e-Transport peste cardul F044 existent (NU ecran nou): buton "Trimite UIT" +
+avertisment de fereastra + lista UIT-uri trimise. Inchide e-Transport cap-coada. F044 -> LIVE (XML-ul merge
+la API, nu doar manual) + F121 -> LIVE.
+GARDURI SPECIFICE e-Transport (cerinta pe TERMEN pe care factura n-o avea):
+1. SEMAFOR DE TIMP vizibil, SEPARAT de semaforul de trimitere (doua dimensiuni): fereastra ("declara pana
+   in X") + valabilitate UIT ("expira in Y"). verde=in fereastra/valabil, galben=aproape (~1 zi), rosu=expirat.
+   O notificare poate fi trimisa cu succes (trimitere verde) dar cu UIT aproape expirare (timp galben) - nu se contopesc.
+2. Butonul Trimite respecta portile backend: _fereastraUit client-side blocheaza butonul in afara ferestrei
+   cu motivul ("prea devreme", "expirat") - userul nu apasa ca sa esueze la ANAF; backend re-verifica (autoritar).
+3. Fara batch tacit: UIT-urile trimise sunt vizibile pe card cu semaforul de timp, nu ascunse intr-un cron.
+4. confirmaCaseta (fara confirm/alert), anatomia cardului.
+Rute: POST /etransport/trimite (genereaza XML + trimite() cu porti; intracom = tip AIC/10 -> UIT 15z),
+GET /etransport/trimiteri (semafor timp + trimitere calculate server-side).
+DOVADA: backend HTTP - POST blocheaza prea-devreme (blocat_timp cu motiv); GET intoarce 2 semafoare distincte
+(UIT_ROSU: trimitere=verde, timp=rosu; galben; verde). node --check + verificator 0. 8 teste unit backend.
+LIMITA (onest, ca F176): proba live (upload real + UIT de la ANAF) pending drept e-Transport pe CIF real -
+ecranul testat cu notificare injectata + poarta validare pe TEST. Necolorat verde dus-intors in direct.

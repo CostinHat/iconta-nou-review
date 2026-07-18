@@ -5365,6 +5365,63 @@ def etransport_xml(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
             "nota": "XML v2 pt. incarcare manuala in SPV (e-Transport). UIT-ul vine de la ANAF dupa upload."}
 
 
+@app.post("/tenants/{tenant_id}/etransport/trimite")
+def etransport_trimite(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_context)):
+    """Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp
+    -> idempotency -> validare pe TEST -> upload). Poll-ul stare NU e sincron. Live pending drept e-Transport."""
+    import re as _re2
+    from core import etransport as _egen, etransport_send as _es
+    principal = _spv_rute.spv_principal(ctx)
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id=1")
+            r0 = cur.fetchone()
+    cui = _re2.sub(r"\D", "", (r0[0] if r0 else "") or "")
+    if not cui:
+        raise HTTPException(422, "CUI firma lipsa in Profil firma")
+    try:
+        xml = _egen.xml_notificare(cui, corp)
+    except KeyError as e:
+        raise HTTPException(422, "camp lipsa: %s" % e)
+    data_transport = (corp.get("transport") or {}).get("data")
+    if not data_transport:
+        raise HTTPException(422, "data transport lipsa")
+    intracom = str(corp.get("cod_tip_operatiune")) == "10"   # AIC = achizitie intracomunitara -> UIT 15 zile
+    mediu = os.environ.get("ETRANSPORT_MEDIU", os.environ.get("EFACTURA_MEDIU", "prod"))
+    return _es.trimite(schema, principal, cui, xml, data_transport, intracom=intracom,
+                       mediu=mediu, ref=corp.get("ref"))
+
+
+@app.get("/tenants/{tenant_id}/etransport/trimiteri")
+def etransport_trimiteri_lista(tenant_id: int, ctx=Depends(cere_context)):
+    """UIT-uri trimise + semafor de TIMP (valabilitate UIT) SEPARAT de semaforul de trimitere. Fara apel ANAF."""
+    from datetime import date as _date
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT id, stare, uit, data_transport, uit_valabil_pana, intracom, error_message
+                              FROM {schema}.etransport_trimiteri WHERE mediu='prod'
+                              ORDER BY id DESC LIMIT 50""")
+            rows = cur.fetchall()
+    azi = _date.today()
+    out = []
+    for (tid, stare, uit, dt, valp, intra, err) in rows:
+        zile = (valp - azi).days if valp else None
+        timp = "gri" if zile is None else ("rosu" if zile < 0 else ("galben" if zile <= 1 else "verde"))
+        trimit = "verde" if stare in ("ok", "incarcat") else ("rosu" if stare in ("nok", "eroare_upload") else "gri")
+        out.append({"id": tid, "stare": stare, "uit": uit,
+                    "data_transport": str(dt) if dt else None,
+                    "uit_valabil_pana": str(valp) if valp else None,
+                    "zile_ramase": zile, "intracom": intra,
+                    "semafor_timp": timp, "semafor_trimitere": trimit, "error_message": err})
+    return {"trimiteri": out}
+
+
 @app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza")
 def banca_rec_reactiveaza(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:

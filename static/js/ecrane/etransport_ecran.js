@@ -1,8 +1,29 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
-import { api, arataMesaj } from "../api.js";
+import { api, arataMesaj, confirmaCaseta } from "../api.js";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
+
+// Garda de timp UIT client-side (oglinda etransport_send.fereastra_uit) — pt avertisment + blocare buton.
+// AIC (tip 10) = achizitie intracomunitara -> UIT valabil 15 zile; rest 5 zile. Backend re-verifica (autoritar).
+function _fereastraUit(dataTransport, intracom) {
+  if (!dataTransport) return { ok: false, mesaj: "Completează data transportului.", semafor: "gri" };
+  const azi = new Date(); azi.setHours(0, 0, 0, 0);
+  const dt = new Date(dataTransport + "T00:00:00");
+  const zi = 86400000;
+  const zileVal = intracom ? 15 : 5;
+  const valabilPana = new Date(dt.getTime() + zileVal * zi);
+  const zilePanaTransport = Math.round((dt - azi) / zi);
+  const zileRamase = Math.round((valabilPana - azi) / zi);
+  const preaDevreme = zilePanaTransport > 3;
+  const expirat = zileRamase < 0;
+  const ok = !preaDevreme && !expirat;
+  let mesaj, semafor;
+  if (preaDevreme) { mesaj = `Prea devreme: declari cu max 3 zile înainte (transport ${dataTransport}).`; semafor = "rosu"; }
+  else if (expirat) { mesaj = `Fereastră expirată: UIT ar fi fost valabil până la ${valabilPana.toISOString().slice(0,10)}.`; semafor = "rosu"; }
+  else { mesaj = `În fereastră. UIT valabil ${zileVal} zile (până la ${valabilPana.toISOString().slice(0,10)}).`; semafor = zileRamase <= 1 ? "galben" : "verde"; }
+  return { ok, mesaj, semafor, valabilPana: valabilPana.toISOString().slice(0,10), zileVal, zileRamase };
+}
 
 export async function ecranEtransport(corp, nav, t) {
   let bunuri = [{}];
@@ -63,8 +84,14 @@ export async function ecranEtransport(corp, nav, t) {
         </div>
         ${blocLoc("s", "Loc de pornire")}
         ${blocLoc("f", "Loc de sosire")}
-        <p style="margin-top:14px"><button class="buton-primar" id="et-genereaza">Genereaz\u0103 XML</button></p>
+        <div id="et-fereastra" style="margin-top:12px"></div>
+        <p style="margin-top:8px">
+          <button class="buton-primar" id="et-trimite">Trimite UIT \u00een SPV</button>
+          <button class="buton-secundar" id="et-genereaza" style="margin-left:8px">Doar genereaz\u0103 XML (manual)</button>
+        </p>
         <div id="et-mesaj"></div>
+        <div class="pf-frand-nume" style="margin:18px 0 6px">UIT-uri trimise</div>
+        <div id="et-trimiteri"><p class="ecran-nota">Se \u00eencarc\u0103\u2026</p></div>
       </div>`;
 
     corp.querySelector("#et-plus-bun").addEventListener("click", () => {
@@ -74,12 +101,11 @@ export async function ecranEtransport(corp, nav, t) {
       corp.querySelector("#et-bunuri").appendChild(div.firstElementChild);
     });
 
-    corp.querySelector("#et-genereaza").addEventListener("click", async () => {
-      const zona = corp.querySelector("#et-mesaj");
-      const v = (id) => (corp.querySelector("#" + id) || {}).value || "";
+    const v = (id) => (corp.querySelector("#" + id) || {}).value || "";
+    const construiesteCorp = () => {
       const loc = (p) => ({ cod_judet: v(p + "-judet"), localitate: v(p + "-localitate"),
         strada: v(p + "-strada"), numar: v(p + "-numar") || undefined });
-      const corpReq = {
+      return {
         ref: v("et-ref") || undefined,
         cod_tip_operatiune: v("et-tip"),
         bunuri: bunuri.map((_, i) => ({
@@ -95,8 +121,26 @@ export async function ecranEtransport(corp, nav, t) {
           denumire_org: v("t-denumire_org"), data: v("t-data") },
         start: loc("s"), final: loc("f"),
       };
+    };
+
+    // SEMAFOR DE TIMP (fereastra UIT) + blocarea butonului Trimite daca in afara ferestrei
+    const updateFereastra = () => {
+      const zf = corp.querySelector("#et-fereastra");
+      const btn = corp.querySelector("#et-trimite");
+      const f = _fereastraUit(v("t-data"), v("et-tip") === "10");
+      const cul = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu-semafor)", gri: "var(--gri-semafor)" }[f.semafor];
+      zf.innerHTML = `<span class="fd-stare" style="color:${cul}">Fereastră UIT: ${esc(f.mesaj)}</span>`;
+      btn.disabled = !f.ok;
+      btn.title = f.ok ? "" : f.mesaj;
+    };
+    corp.querySelector("#et-tip").addEventListener("change", updateFereastra);
+    corp.querySelector("#t-data").addEventListener("change", updateFereastra);
+    updateFereastra();
+
+    corp.querySelector("#et-genereaza").addEventListener("click", async () => {
+      const zona = corp.querySelector("#et-mesaj");
       try {
-        const r = await api.post(`/tenants/${t.id}/etransport-xml`, corpReq);
+        const r = await api.post(`/tenants/${t.id}/etransport-xml`, construiesteCorp());
         const blob = new Blob([r.xml], { type: "application/xml" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -105,7 +149,48 @@ export async function ecranEtransport(corp, nav, t) {
         zona.innerHTML = `<p class="pf-intro">XML generat si descarcat. ${esc(r.nota || "")}</p>`;
       } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }
     });
+
+    corp.querySelector("#et-trimite").addEventListener("click", () => {
+      const zona = corp.querySelector("#et-mesaj");
+      const f = _fereastraUit(v("t-data"), v("et-tip") === "10");
+      if (!f.ok) { arataMesaj(zona, f.mesaj, "avert"); return; }   // poarta de timp (backend re-verifica)
+      confirmaCaseta(zona, `Trimiți notificarea UIT în SPV? Se validează întâi pe TEST. ${f.mesaj}`, async () => {
+        arataMesaj(zona, "Se validează pe TEST și se trimite…", "info");
+        try {
+          const r = await api.post(`/tenants/${t.id}/etransport/trimite`, construiesteCorp());
+          if (r.stare === "blocat_timp") arataMesaj(zona, "Blocat (fereastră): " + (r.mesaj || ""), "avert");
+          else if (r.stare === "nevalidat") arataMesaj(zona, "Structură invalidă — NU s-a trimis:\n" + (r.erori || []).join("\n"), "avert");
+          else if (r.stare === "deja_trimisa") arataMesaj(zona, "Deja trimisă (UIT " + (r.uit || "") + ").", "info");
+          else if (r.stare === "incarcat") { arataMesaj(zona, "Trimisă. UIT: " + (r.uit || "—") + ".", "ok"); incarcaTrimiteri(); }
+          else { arataMesaj(zona, "Răspuns ANAF:\n" + (r.errors || [r.raspuns || "eroare"]).join("\n"), "avert"); incarcaTrimiteri(); }
+        } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }
+      }, { textOk: "Trimite UIT" });
+    });
+
+    incarcaTrimiteri();
   };
+
+  // Lista UIT-uri trimise — semafor de TIMP (valabilitate) SEPARAT de semaforul de trimitere (doua dimensiuni).
+  async function incarcaTrimiteri() {
+    const zona = corp.querySelector("#et-trimiteri");
+    if (!zona) return;
+    let lista = [];
+    try { const r = await api.get(`/tenants/${t.id}/etransport/trimiteri`); lista = (r && r.trimiteri) || []; } catch {}
+    if (!lista.length) { zona.innerHTML = `<div class="stare-goala stare-goala--inline">Nicio notificare trimisă încă. UIT-ul apare aici după transmitere.</div>`; return; }
+    const cul = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu-semafor)", gri: "var(--gri-semafor)" };
+    const etTimp = { verde: "în valabilitate", galben: "expiră curând", rosu: "EXPIRAT", gri: "—" };
+    const etTrim = { verde: "trimisă", rosu: "eroare", gri: "în lucru" };
+    zona.innerHTML = `<div class="pf-lista zebra-lista">${lista.map((u) => `
+      <div class="pf-frand" style="display:flex;justify-content:space-between;align-items:center">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${u.uit ? "UIT " + esc(u.uit) : "(fără UIT)"} · transport ${esc(u.data_transport || "—")}</div>
+          <div class="pf-frand-sub">
+            <span style="color:${cul[u.semafor_trimitere]}">trimitere: ${esc(etTrim[u.semafor_trimitere] || u.stare)}</span> ·
+            <span style="color:${cul[u.semafor_timp]}">timp: ${esc(etTimp[u.semafor_timp] || "")}${u.zile_ramase != null ? " (" + u.zile_ramase + "z)" : ""}</span>
+          </div>
+        </div>
+      </div>`).join("")}</div>`;
+  }
   deseneaza();
 }
 
