@@ -650,3 +650,20 @@ reia. Pana atunci zero utilizatori; fiecare formular construit = abonament perma
 CONSECINTA REGISTRU: nivelul 2 "merita construite" scade de la 3 la 2 (D230, D307). D106 nu figura in
 FUNCTIONALITATI.csv (nu era functionalitate planificata) - nimic de flipat acolo; corectat doar
 inventarul din DE_FACUT.md.
+
+### 18.07.2026 D230 RESPINS + D307 AMANAT (impreuna cu D106 - inventar nivel 2 inchis)  (FUNCTIONALITATI.csv F173-F175)
+Verificate la sursa cele 3 declaratii ramase "nivel 2" din inventarul 17.07; NICIUNA nu se
+construieste acum. (D106 = intrare proprie mai sus, 929735b: firme de stat, RESPINS.)
+D230 RESPINS: "declaratie de redirectionare a 3,5% din impozitul pe venit catre o entitate nonprofit"
+e declaratie PERSONALA a SALARIATULUI (persoana fizica), nu a firmei. Salariatul o depune singur;
+PFA o rezolva prin D212 (LIVE). Cabinetul nu depune declaratiile personale ale angajatilor clientilor
+sai - in afara modelului de produs. Temei: CF art. 123^1 (redirectionare, optiunea contribuabilului PF).
+D307 AMANAT (prioritate joasa): "ajustarea TVA in cazul anularii inregistrarii in scopuri de TVA"
+(transfer de active, leasing, anularea codului de TVA). SE APLICA firmelor private din portofoliu, DAR
+e o EXCEPTIE RARA - o data in viata firmei sau niciodata. Se construieste cand un cabinet real are
+efectiv cazul, NU preventiv (fiecare formular construit = abonament permanent de mentenanta; regula
+inventarului: nu se cara declaratii nedecise/nefolosite).
+CONSECINTA: inventarul "nivel 2 - merita construite" (3 pozitii pe 17.07) e INCHIS: 0 de construit acum
+(D106/D230 in afara publicului, D307 la cerere reala). Adaugate in FUNCTIONALITATI.csv F173/F174/F175.
+LIMITA: D307 se reia la primul caz real (semnal din suport/cabinet). D106/D230 doar daca se schimba
+publicul (firme de stat / depunere de declaratii personale) - improbabil.
