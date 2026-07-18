@@ -1249,7 +1249,8 @@ def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))
             try:
                 r = tenant_provisioning.provision_tenant(
                     conn, nume, str(f.cui), ctx["firm"], ctx["uid"], _TENANT_TEMPLATE)
-                creat.append({"cui": str(f.cui), "nume": nume, "tenant_id": r.get("tenant_id")})
+                creat.append({"cui": str(f.cui), "nume": nume, "tenant_id": r.get("tenant_id"),
+                              "coliziune_gratuit": r.get("coliziune_gratuit")})  # coliziune_gratuit_v1
                 if cuic:
                     existente.add(cuic)   # prinde și duplicate în același lot
             except Exception as e:
