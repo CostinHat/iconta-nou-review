@@ -200,13 +200,18 @@ def apel_anaf(accounting_firm_id, metoda, url, **kw):
 REGULA: TOATE apelurile catre ANAF trec prin ea. Zero requests.get direct spre
 api.anaf.ro in restul codului. De pus regula in verificator_conformitate.py.
 
-## NECUNOSCUTA DECLARATA — ce CUI-uri acopera token-ul
-La SPVWS2 raspunsul da lista de CUI-uri. Prin OAuth: NEDOCUMENTAT. Procedura zice doar
-ca JWT-ul "contine informatii despre aplicatie, utilizator si nivelul de acces",
-fara sa specifice formatul.
-DECI: spv_cui_acoperit se populeaza EMPIRIC - la prima conectare, apel de test per CIF;
-403 -> are_drept=false. Nu presupunem, intrebam serviciul.
-Se clarifica in 5 minute la primul token real (decodare pe jwt.io). Pana atunci = limita.
+## NECUNOSCUTA — ce CUI-uri acopera token-ul  (REZOLVATA 18.07.2026, pe token real)
+CONFIRMAT prin decodarea unui JWT real (certificat admin, 18.07): JWT-ul OAuth NU contine
+NICIO lista de CUI-uri. Payload-ul are doar: rolurile de SERVICIU la care are drept tokenul
+(roles = HELLO@EFACTURA@ETRANSPORT@SRV_EFACTURA@SRV_ETRANSPORT), serialul certificatului,
+issuer-ul certificatului (ex. DigiSign), clientappid-ul aplicatiei, exp/iat/nbf. Formatul:
+alg RS512, kid anaf_2023_2024; claim-uri utile: scope_data[] + campuri plate (efactura,
+etransport, roles, serial, sub).
+CONSECINTA (nu mai e optionala, e OBLIGATORIE): spv_cui_acoperit NU se poate popula din token.
+Se populeaza EMPIRIC - apel de test per CIF la un endpoint SPV real; 200 -> are_drept=true,
+403 -> are_drept=false. Certificatul poate emite e-Factura pe firmele pe care are drept SPV PJ,
+dar CARE sunt acele firme se afla doar intrerband ANAF per CIF, nu din token.
+Serialul certificatului = claim `serial` (si `sub` = acelasi fara ':'). extrage_serial il prinde.
 
 ## FISIERE
 spv_conector.py       auth, token, refresh, apel_anaf

@@ -762,3 +762,21 @@ LIMITA / RAMAS PENTRU PRODUCTIE REALA (in ordine): (a) cron refresh la 90 zile -
 spv_cui_acoperit la conectare (sondaj empiric per-CIF - necunoscuta "ce CUI-uri acopera tokenul", nerezolvata
 inca); (c) features F126/F160 peste conector (apeluri prin apel_anaf). Necunoscuta CUI se lamureste la
 prima conexiune reala de cabinet (decodare JWT + apel TestOauth).
+
+### 18.07.2026 (corectie) Token SPV id=21 = TOKEN DE DEZVOLTARE, se PASTREAZA  (rastoarna intrarea "token de test sters" de mai sus, commit 2216b35)
+DECIZIE: tokenul SPV real obtinut cu certificatul admin (Costin) se PASTREAZA ca token de DEZVOLTARE,
+pentru a construi si testa e-Factura (apel_anaf pe endpoint-uri SPV reale). accounting_firm_id=1 = mediu
+de test, NU conexiune de cabinet real. Rastoarna decizia anterioara de azi (stergerea tokenului de test):
+primul token (id=20) fusese deja sters cand a venit corectia; s-a re-autorizat -> token nou id=21, pastrat.
+TEMEI: dezvoltarea e-Factura are nevoie de un token valid pe SPV real; certificatul admin il furnizeaza
+fara sa astepte primul cabinet. Modelul de productie NU se schimba: cabinetele reale se conecteaza din UI
+(Setari -> Conectare SPV), fiecare cu certificatul LOR -> propriul token, accounting_firm_id = cabinetul
+LOGAT (nu hardcodat). Firma 1 + certificatul admin = doar bancul de test.
+NECUNOSCUTA CUI - REZOLVATA (vezi ARHITECTURA_SPV.md): JWT-ul decodat pe token real arata ca tokenul NU
+contine CUI-uri, doar roluri de serviciu (EFACTURA/ETRANSPORT). Deci spv_cui_acoperit se populeaza
+OBLIGATORIU empiric (apel per-CIF: 200/403), nu din token. Serialul = claim `serial`.
+ALTERNATIVA RESPINSA: sa astept primul cabinet real ca sa am token de dezvoltare - ar bloca constructia
+e-Factura pe nedefinit. Tokenul admin deblocheaza dezvoltarea acum, fara sa afecteze modelul de productie.
+LIMITA: tokenul id=21 traieste doar in DB, in afara ferestrei de backup 03:00 - la un restore se pierde
+si se reconecteaza (2 min, e autorizare, nu date). Ramas inainte de e-Factura: (a) popularea empirica
+spv_cui_acoperit, (b) cron refresh 90 zile (spv_refresh.py + timer), apoi (c) F126/F160 peste apel_anaf.
