@@ -68,9 +68,9 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
         for l in linii:
             cur.execute(
                 "INSERT INTO factura_linii (factura_id, descriere, um, cantitate, "
-                "pret_unitar, cota_tva) VALUES (%s,%s,%s,%s,%s,%s)",
+                "pret_unitar, cota_tva, articol_id) VALUES (%s,%s,%s,%s,%s,%s,%s)",
                 (factura_id, l["descriere"], l.get("um", "buc"),
-                 l["cantitate"], l["pret_unitar"], l["cota_tva"]))
+                 l["cantitate"], l["pret_unitar"], l["cota_tva"], l.get("articol_id")))
     return {"ok": True, "factura_id": factura_id,
             "total": float(t["total"]), "tva": float(t["tva"])}
 

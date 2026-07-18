@@ -76,9 +76,12 @@ def intrare(conn, schema, corp):
     return {"id": mid, "articol_id": aid, "valoare": str(val)}
 
 
-def iesire(conn, schema, corp):
-    """corp: {articol_id, data, cantitate, document?}. Valoare la CMP + notă ciornă
-    cont_cheltuiala = cont_stoc."""
+def iesire(conn, schema, corp, factura_id=None, commit=True):
+    """corp: {articol_id, data, cantitate, document?, locatie?}. Valoare la CMP + notă ciornă
+    cont_cheltuiala = cont_stoc.
+    factura_id: leagă mișcarea de o factură (puntea factură->stoc, F172); NULL la ieșirea manuală.
+    commit: False când puntea o cheamă ÎN tranzacția emiterii (atomicitate emit+descărcare).
+    Ambii parametri sunt aditivi - /stocuri/iesire rămâne identic (factura_id=None, commit=True)."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"SELECT * FROM {schema}.articole WHERE id=%s", (corp["articol_id"],))
         a = cur.fetchone()
@@ -96,14 +99,40 @@ def iesire(conn, schema, corp):
                         (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
                     (iid, a["cont_cheltuiala"], a["cont_stoc"], r["valoare"]))
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc
-                        (articol_id, data, tip, cantitate, valoare, document, inregistrare_id, locatie)
-                        VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s) RETURNING id""",
+                        (articol_id, data, tip, cantitate, valoare, document, inregistrare_id, locatie, factura_id)
+                        VALUES (%s,%s,'iesire',%s,%s,%s,%s,%s,%s) RETURNING id""",
                     (a["id"], corp["data"], Decimal(str(corp["cantitate"])), r["valoare"],
-                     corp.get("document"), iid, corp.get("locatie") or None))
+                     corp.get("document"), iid, corp.get("locatie") or None, factura_id))
         mid = cur.fetchone()["id"]
-    conn.commit()
+    if commit:
+        conn.commit()
     return {"id": mid, "cmp": str(r["cmp"]), "valoare": str(r["valoare"]),
             "nota": f"{a['cont_cheltuiala']}={a['cont_stoc']}", "inregistrare_id": iid}
+
+
+def descarca_factura(conn, schema, factura_id, data):
+    """Puntea factura->stoc (F172): descarca gestiunea pentru liniile facturii cu articol_id, in
+    tranzactia emiterii (NU commit aici - atomicitate). Refoloseste iesire() existent (nu motor
+    paralel), leaga fiecare miscare de factura prin factura_id. Liniile fara articol (servicii) se
+    ignora. O linie cu stoc insuficient NU rupe factura - se raporteaza in `erori` (patru-ochi:
+    notele raman ciorna). Intoarce {descarcate, erori}."""
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"""SELECT id, descriere, cantitate, articol_id FROM {schema}.factura_linii
+                        WHERE factura_id=%s AND articol_id IS NOT NULL ORDER BY id""", (factura_id,))
+        linii = cur.fetchall()
+    descarcate, erori = [], []
+    for l in linii:
+        rez = iesire(conn, schema,
+                     {"articol_id": l["articol_id"], "data": data, "cantitate": l["cantitate"],
+                      "document": f"Factura #{factura_id}"},
+                     factura_id=factura_id, commit=False)
+        if rez is None:
+            erori.append({"articol_id": l["articol_id"], "descriere": l["descriere"], "eroare": "articol inexistent"})
+        elif rez.get("eroare"):
+            erori.append({"articol_id": l["articol_id"], "descriere": l["descriere"], "eroare": rez["eroare"]})
+        else:
+            descarcate.append({"articol_id": l["articol_id"], "descriere": l["descriere"], "valoare": rez["valoare"]})
+    return {"descarcate": descarcate, "erori": erori}
 
 
 def inventar(conn, schema, corp):

@@ -771,6 +771,7 @@ class LinieEmitereIn(BaseModel):  # [p104_emitere_rute]
     cantitate: float = 1
     pret_unitar: float = 0
     cota_tva: Optional[float] = None  # None -> potrivire automata (nomenclator/AI)
+    articol_id: Optional[int] = None  # [punte_stoc_v1] F172: leaga linia de stoc (CV); None = serviciu
 
 class EmitereIn(BaseModel):
     tip: str = "factura"  # factura|proforma|aviz
@@ -783,6 +784,7 @@ class EmitereIn(BaseModel):
     data_scadenta: Optional[str] = None
     moneda: str = "RON"
     curs_manual: Optional[float] = None
+    pleaca_marfa: Optional[bool] = None  # [punte_stoc_v1] F172 poarta: DA descarca gestiunea, NU doar fiscal
 
 class NumerotareIn(BaseModel):
     serie: Optional[str] = None
@@ -2094,6 +2096,21 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
     linii = [l.model_dump() for l in date.linii]
     with db.get_conn(schema) as conn:
+        # [punte_stoc_v1] F172: contul gratuit NU tine gestiune (adevarul contabil, stoc inclus, e la
+        # contabil pe SAGA) -> nicio poarta, niciun articol_id; emite EXACT ca azi. Gratuit = tenant
+        # fara cabinet (accounting_firm_id NULL). Determinare tenant-based (aceeasi ca _eGratuit, Tema A).
+        with conn.cursor() as cur:
+            cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE id=%s", (tenant_id,))
+            row = cur.fetchone()
+        e_gratuit = bool(row) and row[0] is None
+        if e_gratuit:
+            for l in linii:
+                l["articol_id"] = None
+        are_stoc = any(l.get("articol_id") for l in linii)
+        # poarta doar la FACTURA (nu proforma/aviz), la firma CV cu linie de stoc, NON-gratuit
+        poarta_ceruta = (date.tip == "factura") and are_stoc and not e_gratuit
+        if poarta_ceruta and date.pleaca_marfa is None:
+            raise HTTPException(422, "Raspunde la poarta: pleaca marfa acum? (DA descarca gestiunea / NU doar fiscal)")
         platitor = _platitor_tva_firma(conn)
         try:
             r = facturi_api.emite_factura(
@@ -2103,6 +2120,11 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
                 platitor_tva=platitor, curs_manual=date.curs_manual, tip=date.tip)
         except ValueError as e:
             raise HTTPException(422, str(e))
+        # descarcare gestiune DOAR la poarta = DA, in ACEEASI tranzactie (atomic: emit + descarcare)
+        if poarta_ceruta and date.pleaca_marfa is True and isinstance(r, dict) and r.get("factura_id"):
+            from core import stocuri_cv_api as _cv
+            r["descarcare"] = _cv.descarca_factura(conn, schema, r["factura_id"],
+                                                   date.data_emitere or datetime.date.today().isoformat())
     # curs BNR indisponibil -> 409 cu detaliile pt frontend (Reincearca / Manual)
     if isinstance(r, dict) and r.get("ok") is False and r.get("cod") == "CURS_INDISPONIBIL":
         raise HTTPException(409, detail=r)

@@ -2138,6 +2138,24 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.contracte_sabloane (
 );
 
 --
+-- F172 (punte factura->stoc) — mirror al core/migrare_punte_stoc.py
+--
+ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS articol_id integer;
+ALTER TABLE TENANT_PLACEHOLDER.miscari_stoc  ADD COLUMN IF NOT EXISTS factura_id integer;
+DO $mig$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='factura_linii_articol_fk'
+                   AND connamespace='TENANT_PLACEHOLDER'::regnamespace) THEN
+        ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD CONSTRAINT factura_linii_articol_fk
+            FOREIGN KEY (articol_id) REFERENCES TENANT_PLACEHOLDER.articole(id) ON DELETE SET NULL;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='miscari_stoc_factura_fk'
+                   AND connamespace='TENANT_PLACEHOLDER'::regnamespace) THEN
+        ALTER TABLE TENANT_PLACEHOLDER.miscari_stoc ADD CONSTRAINT miscari_stoc_factura_fk
+            FOREIGN KEY (factura_id) REFERENCES TENANT_PLACEHOLDER.facturi(id) ON DELETE SET NULL;
+    END IF;
+END $mig$;
+
+--
 -- F135 (pontaj informativ) — mirror al core/migrare_pontaj.py
 --
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.pontaj (
