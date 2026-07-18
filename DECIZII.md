@@ -506,3 +506,37 @@ LIMITA DECLARATA:
     n-au cod de articol -> SAGA pune linia pe "Nedefinit", documentat acceptabil).
   - Doar facturi EMISE tip 'factura' (inclusiv storno, sume negative). Proforme/avize excluse (SAGA
     importa facturi).
+
+---
+
+## Semafor fiscal — fact-aware controlat (B) + motiv pe orice culoare (18.07.2026)
+
+Context: semaforul (control_fiscal_api) acopera 7/9. D205 si D301 lipsesc fiindca NU
+se datoreaza pe vector, ci pe FAPT: D205 doar la dividende distribuite (rulaj 457);
+D301 doar in lunile cu operatiuni IC. Semaforul, vector-driven, nu vede faptul.
+
+Doua motoare SEPARATE azi:
+- control_fiscal_api: "ce esti OBLIGAT sa depui si ai depus?" Vector-driven.
+- control_incrucisat: "ce ai declarat corespunde cu evidenta?" Fact-driven, note validata.
+Culori cu sensuri diferite: semafor rosu = "depune"; control rosu = "cifra gresita".
+
+DECIS: B (fact-aware controlat). Semaforul cheama o functie mica ce CITESTE faptul
+(457, operatiuni IC) si decide verde/rosu. Motoarele raman SEPARATE, legate printr-o
+punte (o functie), nu fuzionate. 9/9 real.
+
+C (fuziune) RESPINS: topeste "obligatie" si "adevar" intr-o culoare ambigua (rosu = ori
+"n-ai depus" ori "cifre gresite", contabilul nu mai stie ce sa faca din culoare) =
+distructie de semnal la nivel de PRODUS. Plus motor mare greu de intretinut (regula
+"nu construi paralel"). Riscul "firma noua vede semafor mut" = respins de Costin: firma
+de cont gratuit nu face contabilitate (F153 "fara panou fiscal"); firma de cabinet are
+contabil care valideaza. B da acelasi beneficiu (semafor constient de fapte) FARA costul.
+
+CERINTA (Costin): semaforul NU e doar culoare. Fiecare verdict poarta MOTIVUL, pe ORICE
+culoare, inclusiv verde. Temei: verdele tacit e cel mai slab semnal de audit (ambiguu
+intre "verificat curat" si "neverificat"). "D300 depusa 24.04 la termen, coerenta 4427"
+transmite ca sistemul a muncit. Increderea vine din a arata CUM s-a ajuns la culoare.
+Aliniat control_incrucisat: "fiecare constatare isi declara temeiul si limita".
+
+Legatura cu #2 (punte factura->stoc): ambele rezolva aceeasi tensiune (surse de fapt
+contabil deconectate). Puntea din B se construieste CU #2 in minte - una singura
+refolosita, nu doua paralele.
