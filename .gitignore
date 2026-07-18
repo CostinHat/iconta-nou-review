@@ -32,3 +32,6 @@ db.env
 _arhiva_patchuri/
 patch*.py
 log_arhiva/
+
+# brief-uri de lucru Costin (nu cod, nu se versioneaza)
+BRIEF_CODE_*.md
