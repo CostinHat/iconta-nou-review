@@ -404,6 +404,18 @@ def descarca(principal, id_descarcare, mediu="test"):
     return spv_conector.apel_anaf(principal, "GET", url, timeout=120)
 
 
+def principal_pentru_schema(conn, schema):
+    """Token owner (Principal) pentru o schema tenant: cabinet daca accounting_firm_id setat, altfel
+    gratuit (tenant). Partajat de cr-oanele SPV (poll F178 + receive F179) - un singur loc."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id, accounting_firm_id FROM public.tenants WHERE schema_name=%s", (schema,))
+        r = cur.fetchone()
+    if not r:
+        raise ValueError("schema %s fara tenant public" % schema)
+    tid, afid = r
+    return spv_conector.principal_firm(afid) if afid is not None else spv_conector.principal_tenant(tid)
+
+
 def lista_mesaje(principal, cif, mediu="test", zile=3, filtru="P"):
     """
     GET listaMesajeFactura?zile=N&cif=X&filtru=F prin apel_anaf (pe tokenul principalului).

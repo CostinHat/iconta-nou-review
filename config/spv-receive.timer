@@ -1,0 +1,9 @@
+[Unit]
+Description=iConta SPV receive e-Factura la 30 min (facturi furnizori)
+
+[Timer]
+OnCalendar=*-*-* *:17,47:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

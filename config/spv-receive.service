@@ -1,0 +1,13 @@
+[Unit]
+Description=iConta SPV receive e-Factura (F179 - facturi furnizori din SPV, filtru=P)
+After=network.target postgresql.service
+
+[Service]
+Type=oneshot
+User=costin
+WorkingDirectory=/home/costin/iconta_nou
+EnvironmentFile=/home/costin/.iconta/db.env
+EnvironmentFile=/home/costin/.iconta/api_keys.env
+ExecStart=/opt/iconta/venv/bin/python3 -m core.spv_receive
+StandardOutput=append:/home/costin/iconta_nou/spv_receive.log
+StandardError=append:/home/costin/iconta_nou/spv_receive.log

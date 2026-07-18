@@ -995,3 +995,26 @@ terminal exclus din de_polat). Rulare reala (0 randuri, tabel curat), timer spv-
 'investigatie' adaugata la CHECK (per-tenant + template). Semafor buton: investigatie = gri, ne-retrimisibila.
 LIMITA (onest, ca F176): round-trip live incarcat->ok se dovedeste doar cu un patron real cu CIF cu drept SPV;
 descarcarea recipisei nu se coloreaza verde live pana atunci. Cuota zilnica + timpul de prelucrare = de confirmat.
+
+### 18.07.2026 F179 cron receive e-Factura - jumatatea de PRIMIRE a F126 (pasii 3+4)  (core/spv_receive.py; migrare_efactura_primite.py)
+DECIZIE: cronul de RECEIVE (facturi furnizori din SPV) + tabelul efactura_primite (per-tenant). Listeaza
+filtru=P (FACTURA PRIMITA) per tenant, descarca facturile noi, le insereaza CIORNA. Pasii 3 (schema dedup)
+si 4 (cron) din ordinea aprobata; pasul 5 (four-eyes UI) ramas.
+SCHEMA efactura_primite (stabilita de Costin): id_mesaj_anaf UNIC (dedup), cif_emitent/cif_beneficiar,
+xml_brut + xml_sha256, status (descarcata/ciorna/validata/respinsa), factura_id NULL pana la four-eyes.
+TREI GARDURI (nenegociabile, implementate + testate):
+1. id_mesaj_anaf UNIC + ON CONFLICT DO NOTHING - cronul ruleaza la 30 min pe fereastra 2-3z suprapusa,
+   aceeasi factura apare la mai multe rulari; fara dedup = duplicate la fiecare rulare.
+2. cif_beneficiar VALIDAT la insert (== CIF tenant), nu doar stocat. Pe token de cabinet care acopera N
+   CIF-uri, factura se leaga de tenantul al carui CIF = cif_beneficiar; mismatch -> NU importa + log.
+   Anti-scurgere INTRE CHIRIASI la nivel de insert, nu de afisare.
+3. Masina de stari + factura_id NULL pana la four-eyes: descarcata (auto) -> ciorna (parsata, prezentata)
+   -> validata (om confirma, ABIA atunci cheltuiala + factura_id) / respinsa. NU auto-crea cheltuiala la
+   import; evidenta contabila doar din status=validata (filozofia control_incrucisat, nu falsifica in verde).
+REUTILIZARE: lista_mesaje/descarca prin apel_anaf pe principal (partajat cu F178, fara client paralel);
+principal_pentru_schema extras in efactura_send (folosit si de F178). Alimenteaza efactura_import existent.
+DOVADA: 4 teste (anti-scurgere, ciorna daca parsabila, descarcata fallback, dedup) + 23 SPV fara regresie;
+rulare reala prin stack (listaMesajeFactura prod filtru=P -> ANAF "fara drept", asteptat). Timer spv-receive
+activ (30 min, offset :17/:47 fata de F178 :07/:37). Migrare efactura_primite 2/2 scheme + template.
+LIMITA (onest, ca F176): importul LIVE (descarca factura reala) se dovedeste doar cu un CIF cu drept SPV.
+RAMAS pentru F126 complet: pasul 5 four-eyes (ecran contabil: ciorna -> validare -> cheltuiala + factura_id).

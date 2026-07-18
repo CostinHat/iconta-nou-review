@@ -57,14 +57,8 @@ def clasifica_stare(text, vechime_zile, prag_zile=None):
 
 
 def _principal_pentru_schema(conn, schema):
-    """Token owner pt o schema tenant: cabinet daca accounting_firm_id setat, altfel gratuit (tenant)."""
-    with conn.cursor() as cur:
-        cur.execute("SELECT id, accounting_firm_id FROM public.tenants WHERE schema_name=%s", (schema,))
-        r = cur.fetchone()
-    if not r:
-        raise ValueError("schema %s fara tenant public" % schema)
-    tid, afid = r
-    return spv_conector.principal_firm(afid) if afid is not None else spv_conector.principal_tenant(tid)
+    """Deleg la helper-ul partajat (efactura_send) - un singur loc pt derivarea principalului."""
+    return efs.principal_pentru_schema(conn, schema)
 
 
 def de_polat(conn, schema):

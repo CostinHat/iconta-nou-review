@@ -2197,3 +2197,25 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_efactura_trimiteri_viu
 --
 ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS tert_oras  text;
 ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS tert_judet text;
+
+--
+-- e-Factura PRIMITE de la furnizori din SPV (F126 receive, F179) — mirror al core/migrare_efactura_primite.py
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.efactura_primite (
+  id                BIGSERIAL PRIMARY KEY,
+  id_mesaj_anaf     TEXT NOT NULL,
+  id_solicitare     TEXT,
+  cif_emitent       TEXT NOT NULL,
+  cif_beneficiar    TEXT NOT NULL,
+  data_creare       TIMESTAMPTZ,
+  tip               TEXT,
+  xml_brut          TEXT,
+  xml_sha256        TEXT NOT NULL,
+  status            TEXT NOT NULL DEFAULT 'descarcata'
+                    CHECK (status IN ('descarcata','ciorna','validata','respinsa')),
+  factura_id        BIGINT REFERENCES TENANT_PLACEHOLDER.facturi(id),
+  importat_la       TIMESTAMPTZ NOT NULL DEFAULT now(),
+  validat_la        TIMESTAMPTZ
+);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_efactura_primite_mesaj
+  ON TENANT_PLACEHOLDER.efactura_primite (id_mesaj_anaf);
