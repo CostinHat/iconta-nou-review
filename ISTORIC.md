@@ -1335,3 +1335,40 @@ Continuarea zilei. Deciziile au temei complet in DECIZII.md; aici doar POINTER.
   CUI, prinde prefix RO), firme.js + migrare_importa semnaleaza cabinetului. Test functional real pe
   Postgres in tranzactie ROLLBACK (detectie pozitiva + non-match + CUI inexistent). -> DECIZII.md +
   commit 5953ecc.
+
+
+---
+
+# 18.07.2026 (partea 4 — seara): backup OFF-SITE pe Storage Box (Tema 1, F170 LIVE)
+
+Poarta Tema 1 s-a deschis: Costin a provizionat Hetzner Storage Box. Executata cap-coada.
+Temeiul complet + deciziile tehnice sunt in DECIZII.md; aici POINTER + dovada.
+
+## Ce era
+Backup LOCAL exista si mergea (iconta-backup.timer zilnic 03:00, pg_dump -Fc, retentie 7z,
+restaurare confirmata) - dar /var/backups sta pe ACELASI disc ca baza. Apara de stergere
+accidentala, NU de moartea discului. Lipsea copia off-site.
+
+## Ce s-a facut
+- **Cheie dedicata pe server** (nu parola, nu cheia de laptop): generata pentru userul postgres
+  (/var/lib/postgresql/.ssh/iconta-storagebox), publica instalata in Storage Box cu parola one-time
+  folosita O SINGURA DATA (install-ssh-key). Accesul e acum doar pe cheie.
+- **iconta-backup.sh v2** (config/ versionat + deployat /usr/local/bin): dupa dump-ul LOCAL (neatins,
+  SACRU), sincronizeaza pe Storage Box prin rsync-over-SSH port 23, confirma remote (sftp ls +
+  dimensiune), retentie off-site 30z (dupa data din nume, nu mtime remote). FAIL-SAFE: off-site ruleaza
+  sub `if` (suspenda set -e) -> esecul lui logheaza + numara, dar nu pica localul. La 2 esecuri
+  consecutive -> email Brevo (curl direct la acelasi endpoint ca observare.py; BREVO_API_KEY via systemd
+  EnvironmentFile citit ca root inainte de drop la postgres).
+- **Serviciul** iconta-backup.service: adaugat EnvironmentFile pentru cheia Brevo.
+
+## Dovada (test real, nu doar sintaxa)
+- Rulare completa: LOCAL OK + OFF-SITE OK; dump confirmat independent pe Storage Box prin sftp
+  (iconta_v2_20260718_143838.dump, 290870 octeti). Counter esecuri = 0.
+- Fail-safe: cheie stricata temporar -> 2 rulari cu off-site esuat, LOCAL a reusit de fiecare data,
+  counter -> 2, email Brevo TRIMIS la pragul 2; cheie restaurata -> off-site OK, counter -> 0.
+- -> FUNCTIONALITATI.csv F170 PLANIFICAT -> LIVE; DECIZII.md (temei + 4 decizii tehnice + alternative
+  respinse + limita).
+
+## Limita declarata
+Restaurarea DIN off-site nu a fost testata cap-coada (s-a dovedit upload + confirmare, nu un pg_restore
+din dump-ul remote). Storage Box = single-provider (nu geo-redundanta intre furnizori).

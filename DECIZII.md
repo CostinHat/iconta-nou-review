@@ -707,3 +707,32 @@ LIMITA: semnalul e informativ - nu impiedica emiterea din contul gratuit pana ca
 suspenda manual. Daca in practica coliziunile devin frecvente si suspendarea manuala nu tine pasul, se
 reevalueaza optiunea B (suspendare automata cu notificare). Match pe cifrele CUI (regexp_replace \D) -
 prinde prefix RO; nu s-a testat pe CUI cu spatii/puncte interne (nomenclatorul ANAF nu le foloseste).
+
+### 18.07.2026 Backup off-site pe Hetzner Storage Box (rsync-over-SSH, fail-safe)  (config/iconta-backup.sh v2; FUNCTIONALITATI.csv F170 LIVE)
+DECIZIE (raspuns la STOP Tema 1, Storage Box provizionat de Costin): backup-ul off-site se face pe
+Hetzner Storage Box prin rsync-over-SSH cu cheie dedicata (port 23), retentie off-site 30 zile (>7 local),
+fail-safe (esecul off-site NU pica backup-ul local), confirmare remote + email Brevo la 2 esecuri consecutive.
+TEMEI: /var/backups sta pe ACELASI disc Hetzner ca baza -> apara de stergere accidentala, NU de moartea
+discului. Sunt date fiscale ale unor firme reale. Copia off-site e conditia de supravietuire a discului.
+DECIZII TEHNICE (cu temei, ca sa nu se reinventeze):
+- CHEIE DEDICATA a userului postgres (cel care ruleaza backup-ul), nu parola, nu cheia de laptop
+  "iconta-hetzner". Cheia privata de laptop nu se copiaza pe server; s-a generat una noua pe server
+  (/var/lib/postgresql/.ssh/iconta-storagebox) si i s-a instalat publica in Storage Box. Parola one-time
+  a fost folosita O SINGURA DATA pentru install-ssh-key; accesul e acum doar pe cheie.
+- EMAIL prin curl DIRECT la endpoint-ul Brevo (nu import core/observare.py): userul postgres nu poate
+  accesa fiabil venv-ul/codul app din /home/costin; curl la acelasi https://api.brevo.com/v3/smtp/email
+  cu acelasi sender = ACELASI canal, fara dependenta fragila cross-user. BREVO_API_KEY ajunge in mediu
+  prin systemd EnvironmentFile (citit de systemd ca root INAINTE de drop la postgres) - postgres nu
+  citeste direct fisierul din home-ul lui Costin.
+- RETENTIE off-site pe DATA din NUMELE fisierului (regex pe iconta_v2_YYYYMMDD_), nu pe mtime remote:
+  shell-ul limitat al Storage Box nu expune find/mtime fiabil; numele e sursa determinista.
+- FAIL-SAFE structural: backup-ul local ruleaza PRIMUL si sub set -e (esecul lui trebuie sa fie zgomotos);
+  off-site ruleaza intr-o functie apelata sub `if` (care suspenda set -e) -> orice esec off-site se
+  logheaza + numara, dar iese cu succes, ca localul sa nu fie afectat.
+ALTERNATIVA RESPINSA: (a) rsync --delete oglindire director local->remote - ar fi limitat off-site la 7
+zile ca localul, pierzand marja de 30; (b) stergerea vreodata a backup-ului local - LOCAL = SACRU,
+niciodata sters de logica off-site; (c) S3/alt cloud - Storage Box e destul pentru un singur disc de aparat
+si e deja platit; multi-cloud geo-redundant = scop mai mare, la nevoie reala.
+LIMITA: restaurarea DIN off-site nu a fost testata cap-coada (s-a dovedit upload + confirmare remote +
+dimensiune, nu un pg_restore din dump-ul remote); Storage Box = single-provider (nu geo-redundanta intre
+furnizori). Daca datele cresc mult, retentia de 30z off-site trebuie recalibrata la spatiul Storage Box.

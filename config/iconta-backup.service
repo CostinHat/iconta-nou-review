@@ -1,8 +1,9 @@
 [Unit]
-Description=iConta DB backup (pg_dump iconta_v2)
+Description=iConta DB backup (pg_dump iconta_v2 + off-site Storage Box)
 [Service]
 Type=oneshot
 User=postgres
+EnvironmentFile=-/home/costin/.iconta/api_keys.env
 ExecStart=/usr/local/bin/iconta-backup.sh
 StandardOutput=append:/var/backups/iconta/backup.log
 StandardError=append:/var/backups/iconta/backup.log
