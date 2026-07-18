@@ -1474,3 +1474,40 @@ F126 -> LIVE (cap-coada: send + receive + four-eyes). F179 -> LIVE. F127/F128 ra
 ## LIMITA (onest, ca F176)
 Round-trip-ul LIVE (trimite recipisa + primeste factura reala) se dovedeste doar cu un patron real cu CIF
 cu drept SPV. Ecranul four-eyes testat cu ciorna INJECTATA (factura parsata, factura_id NULL). Necolorat verde.
+
+
+---
+
+# 18.07.2026 (partea 7 — noapte): e-Transport LIVE (F044+F121); clusterul SPV/OAuth complet
+
+Continuarea aceleiasi zile. Dupa e-Factura cap-coada, e-Transport prin acelasi conector.
+Deciziile au temei in DECIZII.md + ARHITECTURA_SPV.md; aici POINTER + commit-uri.
+
+## F044 -> LIVE + F121 -> LIVE (commit-uri 5a12361 mecanism, 5a3c247 UI)
+- F044 (generator XML UIT v2) -> LIVE: XML-ul merge acum la API prin F121, nu doar upload manual.
+- F121 (trimitere prin API SPV) -> LIVE: mecanism (upload_uit/stare_uit/lista_uit prin apel_anaf pe
+  spv_principal, fara client paralel) + orchestrator trimite (porti: timp -> idempotency -> validare pe
+  TEST -> upload) + UI pe cardul F044 (buton Trimite UIT, avertisment de fereastra, lista UIT-uri).
+
+## Drept UNIFICAT (verificat la sursa)
+Acelasi token SPV acopera si e-Transport: JWT-ul poarta ambele roluri de serviciu (EFACTURA+ETRANSPORT);
+OMFP 660/2017 = accesul SPV acopera toate serviciile. spv_principal REUTILIZAT, NU principal separat
+(optiunea a). Per-CIF drept ramane empiric (403/fara drept). Vezi ARHITECTURA_SPV.md.
+
+## Garda de timp UIT — specifica (diferenta de fond fata de factura)
+fereastra_uit: declarare max 3 zile INAINTE de miscare; UIT valabil 5 zile (national) / 15 zile
+(intracomunitar = AIC/tip 10). Folosire dupa expirare = BLOCATA. UI: DOUA semafoare distincte - de TIMP
+(valabilitate) SEPARAT de cel de TRIMITERE (o notificare poate fi trimisa=verde dar cu UIT aproape
+expirare=galben). Butonul Trimite blocat in afara ferestrei cu motiv (backend re-verifica autoritar).
+Tabel etransport_trimiteri (dedup xml_sha256 pe prod - upload ANAF nu e idempotent).
+
+## Endpoint-uri e-Transport (la sursa, DIFERITE de e-Factura)
+Host OAuth api.anaf.ro, path ETRANSPORT/ws/v1, PARAMETRII IN PATH: upload/ETRANSP/{cif}/{versiune=2},
+stareMesaj/{id}, lista/{zile}/{cif} - NU FCTEL/rest cu query ca e-Factura. NU exista validator fara auth
+(ca validare/FACT1) -> poarta pre-trimitere = validare pe TEST (mediu=test). Persistat in ARHITECTURA_SPV.md.
+
+## CLUSTERUL SPV/OAuth COMPLET
+e-Factura: F176 (conector OAuth) + F177 (refresh) + F178 (poll recipise) + F179 (receive) + F126/F160
+(send + four-eyes). e-Transport: F044 (generator) + F121 (trimitere). Un singur conector principal
+(cabinet XOR gratuit), doua servicii, drept unificat. Restanta transversala UNICA: proba live pe CIF cu
+drept SPV real (e-Factura si e-Transport) - cod complet + testat, necolorat verde in direct (ca F176).
