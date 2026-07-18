@@ -956,3 +956,21 @@ CONSTRUIT si dovedit optiunea 1: schema (tenant_id + CHECK XOR + unicitate parti
 DOVADA: 31 teste pass (23 conector + 8 generator); cabinet neafectat (apel_anaf(principal_firm(1)) live -> 200,
 token 21 intact, stare_conexiune conectat); migrare aplicata ca postgres (owner). Ortogonal: spv_cui_acoperit neatins.
 RAMAS pentru F160 complet: buton/ruta "Trimite in SPV" in portalul gratuit; recipisa live pending drept (ca F176).
+
+### 18.07.2026 F160 e-Factura din cont gratuit - ruta + buton, flux LIVE (mai putin recipisa)  (main.py; facturi_ecran.js)
+DECIZIE: ultima veriga F160 - ruta POST /tenants/{tid}/facturi/{fid}/trimite-spv + butonul "Trimite in SPV"
+per factura emisa. PORTI in ORDINE FIXA (efactura_send.trimite), niciuna sarita:
+1. TOKEN VIU (principalul are token activ?) -> altfel 409 fara_token ("conecteaza ANAF intai"). Nu upload fara token.
+2. VALIDARE/FACT1 (Regula 1) -> nok: intoarce erorile BR-RO, NU uploada. Diferentiatorul vs SmartBill.
+3. IDEMPOTENCY (send viu incarcat/in_prelucrare/ok pe factura+mediu) -> 409 deja_trimisa. Upload ANAF nu e idempotent.
+4. UPLOAD pe tokenul PRINCIPALULUI via apel_anaf -> scrie randul indiferent de rezultat (ok/eroare + mesaj integral).
+Principalul = spv_principal(ctx) (cabinet=firma lui, gratuit=tenantul lui); ruta pe cere_context, proprietate impusa.
+BUTON (Regula 0, DS): pe detaliul facturii emise (nu global), semafor cu tokeni (gri netrimisa/pending drept,
+galben in_prelucrare, verde ok+recipisa, rosu nok/eroare cu mesaj la click); confirmare prin confirmaCaseta
+(fara confirm()/alert()). Poll-ul stareMesaj/descarcare NU e sincron in ruta.
+DOVADA: stiva completa HTTP - token mintuit pt cabinet (firm 1) -> POST trimite-spv factura reala -> auth +
+spv_principal + 4 porti + upload live -> ExecutionStatus=1 "Nu aveti drept pentru CIF" (asteptat, dev token).
+Toate portile dovedite izolat (fara_token/nevalidat/deja_trimisa/upload). node --check + verificator 0.
+CARENTA declarata onest (nu colorata verde): recipisa LIVE (upload->stareMesaj->descarcare) e PENDING DREPT -
+se dovedeste doar cu un patron real cu certificat inrolat cu drept SPV pe CIF-ul lui (ca F176). Piesa separata
+ramasa: cron de poll stareMesaj/descarcare care avanseaza incarcat->ok/nok + preia recipisa.

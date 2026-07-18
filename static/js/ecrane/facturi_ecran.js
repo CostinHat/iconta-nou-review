@@ -346,6 +346,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-chitanta">Emite chitan\u021b\u0103</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura") ? '<button class="buton-secundar em-buton-sec" id="fd-saga">Export SAGA</button>' : ""}
+        ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec" id="fd-spv">Trimite în SPV</button>' : ""}
         ${f.transformat_in_id ? `<button class="btn-link" id="fd-vezi-transformata">transformat\u0103 \u00een ${esc(f.transformat_in_numar || "factur\u0103")}</button>` : ""}
       </div>
       <div class="fd-email-zona" id="fd-email-zona"></div>
@@ -353,6 +354,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       <div id="fd-plata-zona"></div>
       <div id="fd-chitanta-zona"></div>
       <div id="fd-saga-zona"></div>
+      <div id="fd-spv-zona"></div>
       <div class="fd-antet-linie">${dir ? dir.charAt(0).toUpperCase() + dir.slice(1) : ""} \u00b7 ${dataRo(f.data_emitere)}${f.data_scadenta ? " \u00b7 scaden\u021b\u0103 " + dataRo(f.data_scadenta) : ""}</div>
       ${partener ? `<div class="fd-antet-linie">${dir === "primit\u0103" ? "De la" : "C\u0103tre"}: ${partener}</div>` : ""}
     </div>
@@ -390,6 +392,50 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       arataMesaj(zona, "XML SAGA descărcat. În SAGA: Diverse → Import date din fișiere generate.", "ok");
     } catch (e) { arataMesaj(zona, (e && e.message) || "eroare", "eroare"); }
   });
+
+  const bSpv = corp.querySelector("#fd-spv");  // [efactura_send_v1] F160/F126 — trimitere e-Factura in SPV
+  if (bSpv) {
+    const zonaSpv = corp.querySelector("#fd-spv-zona");
+    // semafor: gri = netrimisa/pending drept; galben = in prelucrare; verde = ok (recipisa); rosu = nok/eroare
+    const CUL = { ok: "var(--verde)", in_prelucrare: "var(--galben)", incarcat: "var(--galben)",
+                  nok: "var(--rosu-semafor)", eroare_upload: "var(--rosu-semafor)" };
+    const ET = { ok: "trimisă (recipișă primită)", in_prelucrare: "în prelucrare la ANAF",
+                 incarcat: "încărcată, în prelucrare la ANAF", nok: "respinsă de ANAF",
+                 eroare_upload: "eroare la trimitere" };
+    async function pictaStareSpv() {
+      let st = null;
+      try { const m = await api.get(`/tenants/${tenantId}/trimiteri-spv`); st = m[String(facturaId)]; } catch {}
+      if (!st || !st.stare) return;   // netrimisa -> butonul ramane gri, fara text
+      const cul = CUL[st.stare] || "var(--gri-semafor)";
+      bSpv.disabled = ["ok", "in_prelucrare", "incarcat"].includes(st.stare);  // send viu -> nu retrimite (idempotency)
+      zonaSpv.innerHTML = `<span class="fd-stare" style="color:${cul}">SPV: ${ET[st.stare] || st.stare}</span>`
+        + (st.error_message ? ` <span class="btn-link" id="fd-spv-det">vezi mesajul</span>` : "");
+      corp.querySelector("#fd-spv-det")?.addEventListener("click", () =>
+        arataMesaj(zonaSpv, st.error_message, st.stare === "nok" ? "avert" : "eroare"));
+    }
+    pictaStareSpv();
+    bSpv.addEventListener("click", () => {
+      confirmaCaseta(zonaSpv,
+        "Trimiți factura în SPV (e-Factura ANAF)? Se validează întâi la ANAF — dacă structura nu e validă, nu se trimite nimic.",
+        async () => {
+          arataMesaj(zonaSpv, "Se validează la ANAF și se trimite…", "info");
+          try {
+            const r = await api.post(`/tenants/${tenantId}/facturi/${facturaId}/trimite-spv`, {});
+            if (r.stare === "nevalidat") {
+              arataMesaj(zonaSpv, "Structură invalidă — NU s-a trimis. ANAF:\n" + (r.erori || []).join("\n"), "avert");
+            } else if (r.stare === "incarcat" || r.stare === "in_prelucrare") {
+              arataMesaj(zonaSpv, "Trimisă în SPV (index " + (r.index_incarcare || "—") + "). ANAF o prelucrează; recipișa se preia separat.", "ok");
+              pictaStareSpv();
+            } else {
+              arataMesaj(zonaSpv, "Răspuns ANAF:\n" + (r.erori || [r.mesaj || "eroare"]).join("\n"), "avert");
+              pictaStareSpv();
+            }
+          } catch (e) {
+            arataMesaj(zonaSpv, e.mesaj || e.message || "eroare la trimitere", "eroare");
+          }
+        }, { textOk: "Trimite în SPV" });
+    });
+  }
 
   const bPlata = corp.querySelector("#fd-plata");  /* plati_fe_v1 */
   if (bPlata) bPlata.addEventListener("click", async () => {

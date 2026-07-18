@@ -405,43 +405,52 @@ def descarca(principal, id_descarcare, mediu="test"):
 
 def trimite(schema, factura_id, principal, mediu="test"):
     """
-    Orchestreaza upload-ul unei facturi si scrie randul in efactura_trimiteri INDIFERENT de
-    rezultat (regula: linia completa, error_message integral, nu doar la ok). Tranzactii
-    separate (randul 'pregatit' se comite INAINTE de upload, ca sa supravietuiasca unui crash
-    de retea). Intoarce dict cu tot ce s-a intamplat (pentru raport). NU face stareMesaj aici.
+    Trimite o factura in SPV cu PORTILE IN ORDINE FIXA (niciuna sarita):
+      1) TOKEN VIU: principalul are token activ? altfel stare='fara_token' (conecteaza ANAF intai).
+      2) VALIDARE/FACT1 (Regula 1): structura valida la validatorul ANAF? altfel stare='nevalidat'
+         + erorile BR-RO, FARA upload. Diferentiatorul vs SmartBill: nu trimitem gunoi.
+      3) IDEMPOTENCY: exista deja send VIU (incarcat/in_prelucrare/ok) pe factura+mediu? altfel
+         stare='deja_trimisa'. Upload-ul ANAF NU e idempotent - dubla trimitere = dubla factura.
+      4) UPLOAD prin apel_anaf pe tokenul principalului -> scrie randul INDIFERENT de rezultat
+         (ok/eroare_upload + error_message integral).
+    Poll-ul (stareMesaj/descarcare) ramane pe cron, NU sincron aici. Intoarce {stare, ...}.
+    genereaza_din_factura poate ridica EDateIncomplete (sector Bucuresti lipsa) / NotImplementedError
+    (taxare inversa) - apelantul (ruta) le mapeaza la 422.
     """
-    # 1) genereaza XML + amprenta + cif furnizor, scrie randul 'pregatit' (commit)
+    # P0: genereaza XML (poate ridica EDateIncomplete/NotImplementedError -> prinse de ruta)
     with db.get_conn() as conn:
+        # POARTA 1: token viu?
+        if spv_conector.ia_token_activ(conn, principal) is None:
+            return {"stare": "fara_token", "mesaj": "Conecteaza ANAF (SPV) inainte de a trimite factura."}
         xml, _factura = genereaza_din_factura(conn, schema, factura_id)
-        sha = hashlib.sha256(xml.encode("utf-8")).hexdigest()
         with conn.cursor() as cur:
             cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id=1")
             cif = "".join(c for c in str(cur.fetchone()[0] or "") if c.isdigit())
+    sha = hashlib.sha256(xml.encode("utf-8")).hexdigest()
+
+    # POARTA 2: validare structura pe validatorul ANAF - FARA upload daca nok
+    val_ok, val_msg = valideaza(xml)
+    if not val_ok:
+        return {"stare": "nevalidat", "validare_ok": False, "validare_mesaje": val_msg}
+
+    # POARTA 3: idempotency (send viu existent) + insert 'pregatit' in aceeasi tranzactie
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT id, stare FROM {schema}.efactura_trimiteri
+                WHERE factura_id=%s AND mediu=%s AND stare IN ('incarcat','in_prelucrare','ok')
+                LIMIT 1""", (factura_id, mediu))
+            viu = cur.fetchone()
+            if viu:
+                return {"stare": "deja_trimisa", "trimitere_id": viu[0], "stare_existenta": viu[1]}
             cur.execute(f"""INSERT INTO {schema}.efactura_trimiteri
                 (factura_id, mediu, stare, xml_trimis, xml_sha256, trimis_la)
                 VALUES (%s,%s,'pregatit',%s,%s, now()) RETURNING id""",
                         (factura_id, mediu, xml, sha))
             tid = cur.fetchone()[0]
 
-    rez = {"trimitere_id": tid, "cif": cif, "xml_sha256": sha, "mediu": mediu}
+    rez = {"trimitere_id": tid, "cif": cif, "xml_sha256": sha, "mediu": mediu, "validare_ok": True}
 
-    # 2) POARTA OBLIGATORIE (regula F160, diferentiatorul vs SmartBill): valideaza structura
-    # pe validatorul oficial ANAF INAINTE de orice upload. E gratis, fara auth, fara drept -
-    # nu exista scuza sa trimiti structura nevalidata la SPV. Nu trimitem gunoi.
-    val_ok, val_msg = valideaza(xml)
-    if not val_ok:
-        with db.get_conn() as conn:
-            with conn.cursor() as cur:
-                cur.execute(f"""UPDATE {schema}.efactura_trimiteri SET stare='nok',
-                    error_message=%s, actualizat_la=now(), finalizat_la=now() WHERE id=%s""",
-                            ("VALIDARE ANAF esuata (poarta, NEUPLOADAT):\n" + "\n".join(val_msg), tid))
-        rez.update({"stare": "nok", "validare_ok": False, "validare_mesaje": val_msg,
-                    "http": None, "execution_status": None, "index_incarcare": None,
-                    "raspuns": "blocat de poarta validare/FACT1 - nu s-a uploadat"})
-        return rez
-    rez["validare_ok"] = True
-
-    # 3) upload real prin apel_anaf (doar dupa ce validatorul a intors stare:ok)
+    # POARTA 4: upload real prin apel_anaf (scrie randul indiferent de rezultat)
     try:
         r = upload_ubl(principal, cif, xml, mediu)
         text = r.text or ""

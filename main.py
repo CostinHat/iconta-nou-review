@@ -5796,6 +5796,51 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
     return r
 
 
+@app.post("/tenants/{tenant_id}/facturi/{factura_id}/trimite-spv")
+def factura_trimite_spv(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
+    """Trimite o factura emisa in SPV (F126/F160). Porti in ordine fixa (efactura_send.trimite):
+    token viu -> validare/FACT1 -> idempotency -> upload pe tokenul PRINCIPALULUI (cabinet/gratuit).
+    Poll-ul stareMesaj/descarcare ramane pe cron. Recipisa live = pending drept (ca F176)."""
+    from core import efactura_send as _efs
+    principal = _spv_rute.spv_principal(ctx)   # token owner (cabinet XOR gratuit); 403 daca niciunul
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+    if not schema:
+        raise HTTPException(404, "tenant inexistent sau fara acces")
+    mediu = os.environ.get("EFACTURA_MEDIU", "prod")
+    try:
+        r = _efs.trimite(schema, factura_id, principal, mediu=mediu)
+    except _efs.EDateIncomplete as e:
+        raise HTTPException(422, str(e))
+    except NotImplementedError as e:
+        raise HTTPException(422, "Tip de factura netratat inca in e-Factura: %s" % e)
+    st = r.get("stare")
+    if st == "fara_token":
+        raise HTTPException(409, r.get("mesaj", "Conecteaza ANAF (SPV) inainte de a trimite."))
+    if st == "deja_trimisa":
+        raise HTTPException(409, "Factura are deja o trimitere activa in SPV (%s)." % r.get("stare_existenta"))
+    if st == "nevalidat":
+        return {"stare": "nevalidat", "erori": r.get("validare_mesaje", [])}
+    return {"stare": st, "index_incarcare": r.get("index_incarcare"),
+            "execution_status": r.get("execution_status"),
+            "erori": r.get("errors") or ([r.get("raspuns", "")] if st in ("nok", "eroare_upload") else []),
+            "mesaj": r.get("raspuns")}
+
+
+@app.get("/tenants/{tenant_id}/trimiteri-spv")
+def facturi_trimiteri_spv(tenant_id: int, ctx=Depends(cere_context)):
+    """Starea SPV cea mai recenta per factura (pentru semaforul butonului). Fara apel ANAF."""
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute(f"""SELECT DISTINCT ON (factura_id) factura_id, stare, index_incarcare, error_message
+                              FROM {schema}.efactura_trimiteri ORDER BY factura_id, id DESC""")
+            rows = cur.fetchall()
+    return {str(r[0]): {"stare": r[1], "index_incarcare": r[2], "error_message": r[3]} for r in rows}
+
+
 @app.post("/tenants/{tenant_id}/import-efactura")
 async def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
                           ctx=Depends(cere_cabinet)):
