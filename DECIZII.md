@@ -441,3 +441,45 @@ facturare; iConta are contabilitatea in spate = diferentiator ne-egalabil de un 
 REVERS CINSTIT: fara SPV direct, iConta e SUB FGO (care macar e nelimitat). SPV nu e un gol
 de paritate printre altele — e PRAGUL sub care oferta nu exista in piata. Ridica prioritatea
 confirmarii OAuth ANAF.
+
+---
+
+## Retentie cont gratuit inactiv — 1 an (18.07.2026)
+
+DECIS (Costin): un cont gratuit inactiv 12 luni se sterge.
+
+Doua feluri de "cont gratuit mort", tratate diferit:
+1. Mort prin MIGRARE — firma a ajuns la un cabinet iConta. Contul gratuit e un dublu
+   inutil cu acelasi CUI ca firma reala din cabinet. Datele gratuite NU se transfera
+   (contul gratuit e unealta de emitere, nu sursa de adevar contabil - facturile reale
+   sunt inregistrate de contabil, pastrate legal la el 5-10 ani). "Creeaza tenant nou gol"
+   la migrare = CORECT, nu bug. RAMAS de verificat la sursa: ce se intampla cu contul
+   gratuit vechi dupa migrare - ramane activ (firma poate emite din DOUA locuri cu acelasi
+   CUI)? Se inchide? De inchis la migrare = igiena.
+2. Mort prin ABANDON — firma s-a inregistrat, a emis cateva facturi, n-a mai intrat.
+   Nu s-a dus la niciun cabinet. -> tinta regulii de 12 luni.
+
+TEMEI GDPR (verificat la sursa 18.07.2026):
+- GDPR nu prescrie termen fix (Art. 5 storage limitation): datele nu se pastreaza mai
+  mult decat e necesar scopului. Termenul il decide operatorul, DAR trebuie justificat
+  si documentat. -> aceasta intrare e documentatia.
+- "Poate imi trebuie mai tarziu" e INTERZIS explicit ca temei (data minimisation).
+  Deci "il tinem in caz ca revine clientul" NU e o baza legala.
+- Exceptia de retentie contabila (5-10 ani, evidente fiscale) NU se aplica contului
+  gratuit: documentul contabil oficial e la contabil, nu ciornele din contul gratuit.
+  Pentru cont gratuit exista obligatia de STERGERE cand scopul (emitere activa) a incetat,
+  nu de pastrare.
+
+JUSTIFICAREA cifrei (1 an): scopul contului gratuit e emiterea activa. 12 luni fara login
+= scop incetat. 1 an acopera si firmele sezoniere (activitate pe val) fara sa piarda
+clientul care revine, dar nu tine date "in caz ca". Aliniat cu practica pietei (Glasgow
+Online: 1 an inactivitate -> stergere).
+
+CERINTE la implementare (GDPR, obligatorii cand se construieste):
+- Stergerea trebuie sa acopere SI backupurile. Contul sters ramane in dumpurile zilnice
+  max 7 zile (retentia backup existenta) - rezonabil, dar de stiut/documentat.
+- Preaviz inainte de stergere (buna practica, nu obligatoriu legal): email de avertisment
+  + fereastra de restaurare, ca sa nu para stergere abuziva.
+
+STARE: decizie luata, NU se construieste acum (0 conturi gratuite reale). Se implementeaza
+cand exista conturi + cand se construieste fluxul de preluare (punctul 1).
