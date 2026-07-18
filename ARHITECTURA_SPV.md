@@ -301,3 +301,35 @@ Dedup + import confirma cif_beneficiar == CIF-ul tenantului. Altfel o factura aj
 ## Refolosire (nu client paralel): descarcarea e efactura_send.descarca (partajata cu F178 poll).
 ## Four-eyes: factura furnizor importata intra CIORNA (status != validata); contabilul valideaza ->
 ## abia atunci NIR/cheltuieli. Alimenteaza efactura_import existent (nu import paralel).
+
+# ============================================================
+# e-Transport (F044 generator + F121 trimitere) — API OAuth (VERIFICAT LA SURSA 18.07.2026)
+# ============================================================
+Sursa oficiala: mfinante.gov.ro/etransport.mfinante.gov.ro + static.anaf.ro (doc etransport, ghid 2025).
+Host OAuth = api.anaf.ro (webserviceapl = ruta cert/mTLS). Path = /prod|test/ETRANSPORT/ws/v1/ - NU FCTEL/rest.
+PARAMETRII SUNT IN PATH, nu query (diferit de e-Factura).
+
+## ENDPOINT-URI
+- UPLOAD:    POST {api.anaf.ro}/{prod|test}/ETRANSPORT/ws/v1/upload/{standard}/{cif}/{versiune}
+             standard=ETRANSP; cif numeric <=13 cifre; versiune=2 (v1 inca acceptat). Body=XML, Content-Type application/xml.
+- STAREMESAJ: GET  {...}/ETRANSPORT/ws/v1/stareMesaj/{id_incarcare}   (id_incarcare din raspunsul upload)
+- LISTA:      GET  {...}/ETRANSPORT/ws/v1/lista/{zile}/{cif}          (zile 1..60; intoarce stari finale + erori)
+
+## VALIDATOR fara auth: NU EXISTA (verificat - nu s-a gasit dovada, spre deosebire de e-Factura validare/FACT1).
+POARTA PRE-TRIMITERE = upload pe TEST (mediu=test), NU "presupunem ca nu exista si trimitem direct pe prod".
+
+## TERMEN LEGAL STRICT (diferenta de fond fata de e-Factura - NU async lenes):
+- Declarare MAX 3 zile calendaristice INAINTE de data inceperii transportului (pana la punerea in miscare/frontiera).
+- Cod UIT valabil 5 zile (national) / 15 zile (achizitii intracomunitare) de la data declarata.
+- Modificabil in fereastra de 3 zile, inainte de miscarea vehiculului, pastrand UIT. Dupa expirare = interzis.
+- Consecinta: trimiterea trebuie PROMPTA + UI cu avertisment de fereastra. Nu se batch-uieste tacit.
+
+## DREPTUL e-Transport vs e-Factura (CRITIC, verificat):
+NU e separat la nivel de autorizare. JWT-ul token-ului (decodat 18.07, vezi NECUNOSCUTA rezolvata) poarta
+AMBELE roluri de serviciu: EFACTURA + ETRANSPORT (roles=HELLO@EFACTURA@ETRANSPORT@SRV_EFACTURA@SRV_ETRANSPORT).
+OMFP 660/2017: accesul SPV (reprezentant legal/desemnat/imputernicit) acopera TOATE serviciile disponibile.
+Deci: acelasi token SPV/principal acopera si e-Transport - spv_principal NU se dubleaza, NU e principal separat.
+DECIZIE DE MODEL (de confirmat cu Costin): (a) drept UNIFICAT - spv_principal acopera e-Transport, per-CIF
+verificat EMPIRIC pe ETRANSPORT/lista (403/fara drept), ca la e-Factura; (b) mapare per-serviciu pe token
+(EFACTURA da/nu, ETRANSPORT da/nu) citita din rolurile JWT - utila daca vreodata difera. Recomandat (a) +
+optional citirea rolurilor JWT ca sa STIM ca e-Transport e disponibil inainte de apel. NU principal separat.
