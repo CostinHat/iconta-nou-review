@@ -200,6 +200,19 @@ def apel_anaf(accounting_firm_id, metoda, url, **kw):
 REGULA: TOATE apelurile catre ANAF trec prin ea. Zero requests.get direct spre
 api.anaf.ro in restul codului. De pus regula in verificator_conformitate.py.
 
+## FINDING 18.07.2026 (primul apel real per-CIF pe listaMesajeFactura) — "fara drept" = 200, NU 403
+DOVEDIT pe SPV real: ANAF e-Factura semnaleaza lipsa dreptului pe un CIF cu
+  HTTP 200 + body {"eroare": "Nu aveti drept in SPV pentru CIF=<cui>"}
+NU cu 403. Deci presupunerea "403 -> are_drept=false" din arhitectura era INCOMPLETA:
+un status 200 poate ascunde un refuz de drept in campul "eroare". apel_anaf ramane corect
+(403 tot ridica EroareSpvFaraDrept), dar decizia are_drept se ia din TEXT, la nivelul
+apelantului care parseaza raspunsul, nu doar din status. 403 apare pentru alte refuzuri
+(serviciu/aplicatie); "fara drept pe acest CIF" vine ca 200+eroare.
+Endpoint verificat la sursa (build vechi /opt/iconta/main.py):
+  https://api.anaf.ro/prod/FCTEL/rest/listaMesajeFactura?zile=N&cif=X[&filtru=P]
+  raspuns: {"mesaje":[...]} = are drept (chiar si gol/"fara mesaje" = drept OK);
+           {"eroare":"...drept..."} = fara drept.
+
 ## NECUNOSCUTA — ce CUI-uri acopera token-ul  (REZOLVATA 18.07.2026, pe token real)
 CONFIRMAT prin decodarea unui JWT real (certificat admin, 18.07): JWT-ul OAuth NU contine
 NICIO lista de CUI-uri. Payload-ul are doar: rolurile de SERVICIU la care are drept tokenul
@@ -208,10 +221,21 @@ issuer-ul certificatului (ex. DigiSign), clientappid-ul aplicatiei, exp/iat/nbf.
 alg RS512, kid anaf_2023_2024; claim-uri utile: scope_data[] + campuri plate (efactura,
 etransport, roles, serial, sub).
 CONSECINTA (nu mai e optionala, e OBLIGATORIE): spv_cui_acoperit NU se poate popula din token.
-Se populeaza EMPIRIC - apel de test per CIF la un endpoint SPV real; 200 -> are_drept=true,
-403 -> are_drept=false. Certificatul poate emite e-Factura pe firmele pe care are drept SPV PJ,
-dar CARE sunt acele firme se afla doar intrerband ANAF per CIF, nu din token.
+Se populeaza EMPIRIC - apel de test per CIF la listaMesajeFactura; verdictul are_drept se ia
+din TEXTUL raspunsului, nu din status HTTP (vezi FINDING 18.07 de mai sus: "fara drept" = 200+eroare,
+nu 403). Lista de mesaje (chiar goala) = are drept; {"eroare":"...drept..."} = fara drept.
+Certificatul poate emite e-Factura pe firmele pe care are drept SPV PJ, dar CARE sunt acele firme
+se afla doar intreband ANAF per CIF, nu din token.
 Serialul certificatului = claim `serial` (si `sub` = acelasi fara ':'). extrage_serial il prinde.
+
+## CONTEXT — certificatul de dezvoltare (18.07.2026)
+Certificatul folosit la validarea conectorului e al ADMINISTRATORULUI platformei (Costin), NU al
+unui cabinet. Costin nu e cabinet: nu depune prin SPV, nu are drept SPV pe firme si nici nu trebuie.
+Verdictul "Nu aveti drept in SPV pentru CIF=<iConta>" e ASTEPTAT si CORECT, nu un bug. Rolul tokenului
+admin e strict sa testeze MECANISMUL (apel_anaf, criptare, refresh, sondaj per-CIF) pe SPV real -
+si mecanismul e VALIDAT cap-coada 18.07. Conexiunile de productie se fac PER CABINET din UI
+(Setari -> Conectare SPV), fiecare cabinet cu certificatul LUI, pe firmele LUI unde are drept SPV PJ;
+accounting_firm_id = cabinetul logat, niciodata hardcodat.
 
 ## FISIERE
 spv_conector.py       auth, token, refresh, apel_anaf
