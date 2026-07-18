@@ -102,15 +102,25 @@ def _jud(judet):
 _SECTOR_RE = re.compile(r"sector\s*([1-6])", re.IGNORECASE)
 
 
-def _localitate(judet_code, oras, adresa=""):
+class EDateIncomplete(ValueError):
+    """Date de factura insuficiente pentru un XML valid (ex. sector Bucuresti lipsa).
+    Butonul de trimitere blocheaza cu mesajul asta, NU trimite structura falsa."""
+
+
+def _localitate(judet_code, oras, adresa="", eticheta="firma"):
     """CityName (BT-37 vanzator / BT-52 cumparator). Regula BR-RO-100 (validator ANAF):
-    in Bucuresti (RO-B) localitatea trebuie sa fie SECTOR1..6, NU 'Bucuresti'. In rest =
-    orasul. Sectorul se cauta in oras + adresa (ex. adresa '...Sector 6' -> 'SECTOR6')."""
+    in Bucuresti (RO-B) localitatea trebuie sa fie SECTOR1..6, NU 'Bucuresti'. In rest = orasul.
+    STRICT (regula F160): daca e Bucuresti dar NU se extrage clar sectorul din oras+adresa, NU
+    inventa unul -> ridica EDateIncomplete. Sector gresit derivat = nok sau, mai rau, factura
+    acceptata cu date gresite. Filozofia control_incrucisat: gri (nu pot determina) nu se
+    falsifica in verde."""
     if judet_code == "RO-B":
         m = _SECTOR_RE.search("%s %s" % (oras or "", adresa or ""))
         if m:
             return "SECTOR" + m.group(1)
-        return oras or "-"   # fara sector detectabil -> ramane orasul (validatorul semnaleaza)
+        raise EDateIncomplete(
+            "Localitate incompleta (%s): firma e in Bucuresti dar lipseste sectorul "
+            "(SECTOR1..6) in adresa. Completeaza sectorul inainte de trimitere." % eticheta)
     return oras or "-"
 
 
@@ -238,7 +248,7 @@ def genereaza_xml(factura, linii, furnizor, client):
     P.append('<cac:AccountingSupplierParty><cac:Party>')
     P.append('<cac:PostalAddress>')
     P.append('<cbc:StreetName>%s</cbc:StreetName>' % _e(furnizor.get("adresa") or "-"))
-    P.append('<cbc:CityName>%s</cbc:CityName>' % _e(_localitate(sup_jud, furnizor.get("oras"), furnizor.get("adresa"))))
+    P.append('<cbc:CityName>%s</cbc:CityName>' % _e(_localitate(sup_jud, furnizor.get("oras"), furnizor.get("adresa"), "vanzator")))
     if furnizor.get("cod_postal"):
         P.append('<cbc:PostalZone>%s</cbc:PostalZone>' % _e(furnizor.get("cod_postal")))
     if sup_jud:
@@ -260,7 +270,7 @@ def genereaza_xml(factura, linii, furnizor, client):
     P.append('<cac:AccountingCustomerParty><cac:Party>')
     P.append('<cac:PostalAddress>')
     P.append('<cbc:StreetName>%s</cbc:StreetName>' % _e(client.get("adresa") or "-"))
-    P.append('<cbc:CityName>%s</cbc:CityName>' % _e(_localitate(cli_jud, client.get("oras"), client.get("adresa"))))
+    P.append('<cbc:CityName>%s</cbc:CityName>' % _e(_localitate(cli_jud, client.get("oras"), client.get("adresa"), "cumparator")))
     if client.get("cod_postal"):
         P.append('<cbc:PostalZone>%s</cbc:PostalZone>' % _e(client.get("cod_postal")))
     if cli_jud:
@@ -414,7 +424,24 @@ def trimite(schema, factura_id, mediu="test", firm_id=1):
             tid = cur.fetchone()[0]
 
     rez = {"trimitere_id": tid, "cif": cif, "xml_sha256": sha, "mediu": mediu}
-    # 2) upload real prin apel_anaf
+
+    # 2) POARTA OBLIGATORIE (regula F160, diferentiatorul vs SmartBill): valideaza structura
+    # pe validatorul oficial ANAF INAINTE de orice upload. E gratis, fara auth, fara drept -
+    # nu exista scuza sa trimiti structura nevalidata la SPV. Nu trimitem gunoi.
+    val_ok, val_msg = valideaza(xml)
+    if not val_ok:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(f"""UPDATE {schema}.efactura_trimiteri SET stare='nok',
+                    error_message=%s, actualizat_la=now(), finalizat_la=now() WHERE id=%s""",
+                            ("VALIDARE ANAF esuata (poarta, NEUPLOADAT):\n" + "\n".join(val_msg), tid))
+        rez.update({"stare": "nok", "validare_ok": False, "validare_mesaje": val_msg,
+                    "http": None, "execution_status": None, "index_incarcare": None,
+                    "raspuns": "blocat de poarta validare/FACT1 - nu s-a uploadat"})
+        return rez
+    rez["validare_ok"] = True
+
+    # 3) upload real prin apel_anaf (doar dupa ce validatorul a intors stare:ok)
     try:
         r = upload_ubl(firm_id, cif, xml, mediu)
         text = r.text or ""

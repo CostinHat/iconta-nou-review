@@ -893,3 +893,30 @@ dupa ce validatorul a confirmat ca BT-54 e obligatoriu, nu speculativ.
 LIMITA: cod postal cumparator (BT-53, optional) inca nestructurat; sectorul pt Bucuresti se deriva prin
 regex din adresa - daca adresa nu contine 'Sector N', ramane orasul (validatorul ar semnala). taxare
 inversa/neplatitor/storno inca netratate (v1).
+
+### 18.07.2026 F160 e-Factura cont gratuit: reguli de arhitectura + POARTA pe cheia token gratuit  (core/efactura_send.py)
+DECIZIE (3 reguli nenegociabile pentru trimiterea e-Factura, valabile si F126 si F160):
+1. POARTA validare/FACT1 OBLIGATORIE inainte de ORICE upload. trimite() cheama valideaza() si NU
+   uploadeaza daca validatorul nu intoarce stare:ok. E gratis, fara auth/drept - nu exista scuza sa
+   trimiti structura nevalidata la SPV. Diferentiatorul vs SmartBill: nu trimitem gunoi, validam la ANAF intai.
+2. _localitate() STRICT: daca in Bucuresti (RO-B) nu se extrage clar SECTOR1..6 din adresa, NU inventa ->
+   EDateIncomplete ("completeaza sectorul"), butonul blocheaza, nu trimite. Sector gresit = nok sau factura
+   acceptata cu date gresite. Filozofia control_incrucisat: gri nu se falsifica in verde.
+3. Upload real ramane NETESTAT live in dev (dev token n-are drept pe niciun CIF real, ca F176). Lantul e
+   dovedit izolat (generator, valideaza, tracking, mecanism OAuth), dar recipisa live (upload->stareMesaj->
+   descarcare) e "pending drept", declarat onest - nu se coloreaza verde. Se dovedeste doar cu user real /
+   CIF cu drept.
+TEMEI DOVADA: trimite() pe TEST tenant_002 -> poarta valideaza=ok, apoi upload -> "Nu aveti drept in SPV
+pentru CIF=14399840". 8 teste unitare (inclusiv sector strict + blocare).
+
+POARTA (STOP, cere decizie): F160 = e-Factura din CONTUL GRATUIT, dar conectorul SPV e CABINET-ONLY:
+  - public.spv_token.accounting_firm_id e NOT NULL; contul gratuit are accounting_firm_id NULL (tenant fara cabinet).
+  - /spv/autorizare e gardat pe cere_cabinet -> contul gratuit nici nu poate porni OAuth-ul.
+Deci tokenul gratuit nu are cum sa fie cheiat/stocat azi. E schimbare de SCHEMA pe tabel LIVE (spv_token) +
+modificare de cod LIVE (connect) -> nu se decide unilateral.
+PROPUNERE (de confirmat): spv_token primeste tenant_id (nullable) + accounting_firm_id devine nullable, cu
+CHECK ca exact unul e setat (cabinet XOR gratuit); ia_token_activ/apel_anaf/salveaza_token/url_autorizare
+capata un "principal" (firm_id SAU tenant_id); /spv/autorizare gratuit pe cere_context (nu cere_cabinet).
+Restul lantului F160 (generator+poarta+upload+tracking) e gata si asteapta doar cheia tokenului.
+LIMITA: pana la decizie, F160 = PARTIAL (lant gata, connect gratuit blocat). F126 (cabinet) NU e blocat de
+asta - are deja token per accounting_firm.

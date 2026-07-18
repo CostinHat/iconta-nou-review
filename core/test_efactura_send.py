@@ -25,7 +25,7 @@ def _factura_minima(**kw):
 
 def _furnizor(platitor=True):
     return {"nume": "FIRMA MEA SRL", "cui": "40372004", "reg_com": "J12/1/2020",
-            "adresa": "Bd. Test 10", "oras": "Bucuresti", "judet": "Bucuresti",
+            "adresa": "Bd. Test 10, Sector 2", "oras": "Bucuresti", "judet": "Bucuresti",
             "cod_postal": "010101", "iban": "RO49AAAA1B31007593840000", "platitor_tva": platitor}
 
 
@@ -80,6 +80,21 @@ def test_vat_supplier_doar_daca_platitor():
 def test_taxare_inversa_neimplementata_v1():
     with pytest.raises(NotImplementedError):
         ef.genereaza_xml(_factura_minima(taxare_inversa=True), _linii(), _furnizor(), _client())
+
+
+def test_bucuresti_cu_sector_devine_SECTORn():
+    xml = ef.genereaza_xml(_factura_minima(), _linii(), _furnizor(), _client())
+    sup = ET.fromstring(xml).find("cac:AccountingSupplierParty/cac:Party/cac:PostalAddress", NS)
+    assert sup.find("cbc:CityName", NS).text == "SECTOR2"          # derivat din 'Sector 2'
+    assert sup.find("cbc:CountrySubentity", NS).text == "RO-B"
+
+
+def test_localitate_stricta_blocheaza_fara_sector():
+    # Bucuresti (RO-B) fara sector in oras/adresa -> EDateIncomplete, NU se inventeaza sector
+    furn = _furnizor()
+    furn["adresa"] = "Bd. Fara Sector 999"   # niciun 'Sector N'
+    with pytest.raises(ef.EDateIncomplete):
+        ef.genereaza_xml(_factura_minima(), _linii(), furn, _client())
 
 
 def test_host_o_singura_constanta():
