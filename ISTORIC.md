@@ -1172,3 +1172,82 @@ existenta:
 - **ANEXA Inventar functionalitati** (DE_FACUT): stersa ca duplicat al FUNCTIONALITATI.csv (registru
   canonic din 16.07, 164 pozitii). Doua inventare = drift. In DE_FACUT ramane doar pointer la CSV.
 
+
+---
+
+# AUDIT BACKUP 17.07 (verificat la sursa)
+
+Pornit de la F170 marcat PLANIFICAT in FUNCTIONALITATI.csv. Verificarea la sursa a
+aratat ca jumatate din F170 era deja LIVE, nejurnalizat.
+
+- **Backup automat DB — LIVE** (activ din ~29.06, arhivat 17.07). Dovada:
+  `systemctl list-timers` -> iconta-backup.timer, OnCalendar 03:00, Persistent=true;
+  /etc/systemd/system/iconta-backup.service -> User=postgres,
+  ExecStart=/usr/local/bin/iconta-backup.sh; scriptul face `pg_dump -d iconta_v2 -Fc`
+  (baza intreaga, nu doar public), retentie 7 zile prin `find -mtime +7 -delete`,
+  log in /var/backups/iconta/backup.log. `crontab -l` root = gol (cron-urile
+  aplicatiei sunt in crontab-ul lui costin, nu root).
+- **Restaurare verificata — CONFIRMAT 17.07**. Dovada: createdb iconta_restore_test ->
+  pg_restore din iconta_v2_20260717_030000.dump -> ambele scheme tenant reaparute ->
+  dropdb. Fara erori. Baza vie neatinsa.
+  LIMITA DECLARATA: testul dovedeste ca dump-ul se restaureaza si schemele revin;
+  NU a numarat randurile. Verificare pe continut = alta tema.
+- **Alarma falsa investigata**: dump-ul a scazut 1.2M (15.07) -> 244K (16.07), -79%.
+  Cauza dovedita: stergerea firmelor de test dupa campania F124 (16.07), NU pierderea
+  schemelor. Dovada: `pg_restore -l | grep -c "SCHEMA - tenant"` = 2 pe dump-ul din
+  17.07, iar baza VIE are tot 2 (information_schema.schemata) - dump-ul reflecta
+  realitatea. Dump-ul din 15.07 (12 scheme) pastrat ca PASTRAT_20260715.dump, scos
+  de sub retentia de 7 zile (find cauta doar `iconta_v2_*.dump`).
+- **Fisiere moarte**: iconta-*.sql.gz (root, ~628K, identice, oprite 14.07) = backup
+  al bazei vechi `iconta` (port 8000). Nu backup activ.
+
+**RAMAS DESCHIS (F170): off-site.** /var/backups sta pe acelasi disc Hetzner ca baza.
+Apara de stergere accidentala, NU de moartea discului. Date fiscale ale clientilor
+reali. Decizie de scop (Storage Box vs S3) — cere Costin.
+
+**Registru necinstit gasit**: F170 = PLANIFICAT, desi backupul automat e LIVE din
+~29.06. Al treilea rand contrazis de cod azi, dupa randurile "de testat P1.4/P1.5"
+(F047/F110/F102/F111/F097) pe care F124 le declara testate pe 16.07. De tratat.
+
+
+---
+
+# 18.07.2026 — Cont gratuit: STRATEGIE + puntea SAGA (preponderent decizii, putin cod)
+
+Ziua a fost preponderent STRATEGIE, nu cod. Deciziile-cheie au temei complet in DECIZII.md;
+aici doar POINTER, fara a duplica continutul.
+
+## Strategie (contul gratuit ca produs)
+- **Cont gratuit = varf de lance comercial contra SmartBill.** Firma emite singura, comod, gratis;
+  contabilul ei ramane pe SAGA. iConta ocoleste SAGA pe partea slaba (emitere catre firma). Filtru
+  pt orice functie de cont gratuit: firma o face singura, fara contabil, fara a atinge partida dubla.
+  -> DECIZII.md commit 8d96eda.
+- **F161 "vreau contabil" NU e conversie.** Contul gratuit e o firma care are DEJA contabil; iConta
+  nu aloca clienti catre cabinete (nu e agentie de matchmaking). Butonul de conversie/acceptare nu
+  exista ca atare. Ramane doar intrebarea tehnica de preluare tenant (leaga vs create-new). -> 8d96eda.
+- **Retentie cont gratuit inactiv = 1 an** (GDPR storage limitation; exceptia contabila nu se aplica
+  contului gratuit; stergere din backup + preaviz). -> DECIZII.md commit afd67d9.
+- **Paritate atinsa vs concurenta; SPV direct (F160) = SINGURUL gol care conteaza,** blocat pe OAuth
+  ANAF. Fara SPV, iConta e sub FGO -> SPV e PRAGUL sub care oferta nu exista in piata. -> 8d96eda.
+- **Export catre programul contabilului = gol strategic** (verificat absent la sursa, si in buildul
+  vechi /opt/iconta). Puntea care face pozitionarea posibila. -> DECIZII.md 69ac61e + DE_FACUT.md.
+
+## Cod livrat azi
+- **Lot 7 cont gratuit** — investigatie la sursa: contul gratuit primeste {gratuit:true} = meniul
+  complet, deci 4 pozitii erau DEJA functionale, marcate gresit PLANIFICAT. Corectate retroactiv LIVE:
+  F154 proforme/avize, F157 chitante, F158 model factura, F159 link plata. F155 recurente = buton mort
+  reparat (gate-fix cere_cabinet->cere_context). F156 WooCommerce = ecranMagazin extras in woo_ecran.js
+  (reutilizat cabinet+gratuit) + gate-fix + optiune in meniul gratuit. Commits 37449d1, 5e81536.
+- **Determinare gratuit-vs-cabinet la nivel de TENANT** (reparatie securitate) — _eGratuit era pe
+  user.firm (NULL la orice client), nu distingea gratuit de client-portal gestionat. Mutat pe
+  tenant_are_cabinet (din tenant.accounting_firm_id). Dovada: 0 useri rol=client in prod -> 0
+  reclasificari; test ROLLBACK pe ambele directii. Commit cb3891f. (Deblocheaza F161 tehnic, dar F161
+  nu se construieste - vezi strategie.)
+- **F171 Export facturi emise catre SAGA — LIVE.** XML propriu SAGA (Diverse -> Import date din
+  fisiere generate), ruta READ-ONLY, fara schema, fara atingere pe emitere. Furnizor=firma-client ->
+  SAGA claseaza iesire prin CIF; nume fisier F_<cif>_<nr>_<data>.xml; sume net + TVA aritmetic
+  (Decimal ROUND_HALF_UP). Buton pe factura (single XML) + zip pe luna; merge si in cont gratuit.
+  Format verificat la sursa (manual.sagasoft.ro topic-76 + forum oficial). Testat: XML cap-coada pe
+  factura reala tenant_002 (F_14399840_1_10.06.2026.xml, net 10000 + TVA 2100 = 12100). Commit 54e85f5.
+  **LIMITA: NECONFIRMAT pe import real in SAGA** — encoding UTF-8 vs Windows-1250 + clasificarea ca
+  iesire cer verificare cu OCHI UMAN, nu se pot testa in cod.
