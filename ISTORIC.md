@@ -1251,3 +1251,42 @@ aici doar POINTER, fara a duplica continutul.
   factura reala tenant_002 (F_14399840_1_10.06.2026.xml, net 10000 + TVA 2100 = 12100). Commit 54e85f5.
   **LIMITA: NECONFIRMAT pe import real in SAGA** — encoding UTF-8 vs Windows-1250 + clasificarea ca
   iesire cer verificare cu OCHI UMAN, nu se pot testa in cod.
+
+
+---
+
+# 18.07.2026 (partea 2 — dupa-amiaza): semafor fact-aware + puntea factura->stoc
+
+Continuarea zilei (dimineata: cont gratuit + F171 SAGA + Tema A). Deciziile au temei complet in
+DECIZII.md; aici doar POINTER.
+
+## Semafor fiscal B (F022) — 9/9 real
+D205 si D301 conectate FACT-AWARE controlat: nu se datoreaza pe vector ci pe FAPT, citit printr-o
+PUNTE din note validate (D205 = rulaj cont 457; D301 = tabelul d301_operatiuni pe luna). Motoarele
+raman SEPARATE (semaforul cheama functia de fapt, n-o absoarbe) - varianta B, fuziunea C respinsa.
+Plus: fiecare verdict poarta MOTIVUL pe ORICE culoare, inclusiv verde ("D300 depusa 24.04, la termen")
+si neaplicabil ("D205 nu se datoreaza - niciun rulaj 457"). Puntea generala `rulaje_interval` extrasa
+din control_incrucisat (rulaj pe cont, interval; refolosibila). -> DECIZII.md commit 898482a.
+Cod: commit c377746 (control_fiscal_api + control_incrucisat + UI control.js/firme.js).
+
+## Punte factura->stoc (F172) + profit-pe-produs (F144 LIVE la CV)
+Vanzarea si descarcarea gestiunii erau acte deconectate (factura_linii fara articol_id, miscari_stoc
+fara factura_id). Decizia: intrebarea reala nu e "ce document descarca" ci "CAND pleaca marfa"
+(factura poate fi avans/serviciu/custodie). POARTA OBLIGATORIE la emitere: "Pleaca marfa acum? DA/NU".
+DA -> descarca gestiunea pe liniile cu articol (miscari_stoc legat prin factura_id); NU -> factura pur
+fiscala. Refoloseste iesire() existent (param aditivi commit/factura_id) + rulaje_interval - o punte,
+nu doua. Contul gratuit EXCLUS (nu tine gestiune; adevarul e la contabil pe SAGA). Schema aditiva:
+articol_id pe factura_linii, factura_id pe miscari_stoc (NULL-able, FK ON DELETE SET NULL).
+Profit-pe-produs (F144, decizie deschisa din 17.07) INCHISA pentru CV: join venit(factura_linii)<->
+cost(miscari_stoc la CMP). -> DECIZII.md commit 7894f7b. Cod: commit-uri f366f5a (schema+backend) +
+2fa69ab (poarta emitere + profit).
+GRIJA MAXIMA (atinge emiterea LIVE): emiterea FARA marfa (NU/serviciu/gratuit) ramane IDENTICA cu azi;
+poarta e aditiva, aprinsa doar la firma cabinet CV cu linie de articol.
+LIMITA declarata: la GLOBAL-VALORIC profit-pe-produs ramane GRI (cost pe articol inexistent prin
+constructie); descarcarea GV ramane global-valorica lunara. Stoc insuficient -> raportat, nu rupe factura.
+
+## Design System a crescut cu doua reguli intr-o zi
+- v2.13 (dimineata): stare goala canonica `.stare-goala` (gol + cauza + iesire).
+- v2.14 (dupa-amiaza): caseta-poarta `.caseta-poarta` - intrebare obligatorie inainte de o actiune
+  consecventa, doua alegeri care merg amandoua inainte (distinct de confirmaCaseta). Motivata de
+  poarta "pleaca marfa acum?". Ambele in verificator (STARE_GOALA, POARTA_INLINE).
