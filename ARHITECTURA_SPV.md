@@ -132,10 +132,14 @@ FACE: autorizare OAuth, stocare token, refresh automat, functia unica apel_anaf(
 NU FACE: e-Factura, e-Transport. Alea sunt F126/F160/F121, construite PESTE conector.
 Daca intra logica de facturi in conector, scopul e ratat.
 
-## SCHEMA (in public, NU per tenant — tokenul apartine cabinetului, nu firmei)
+## SCHEMA (in public, NU per tenant — tokenul apartine unui PRINCIPAL)
+PRINCIPAL (F160, 18.07): tokenul apartine unui cabinet XOR unei firme gratuite (self-service),
+nu unei tabele de firme. accounting_firm_id (cabinet) SAU tenant_id (gratuit), exact unul.
+Vezi core/migrare_spv_token_principal.py + spv_conector.py (Principal/_principal_sql, GARDUL 2).
 CREATE TABLE spv_token (
   id                 SERIAL PRIMARY KEY,
-  accounting_firm_id INT NOT NULL,
+  accounting_firm_id INT,                  -- cabinet (XOR tenant_id)
+  tenant_id          INT,                  -- firma gratuita (XOR accounting_firm_id)
   serial_certificat  TEXT NOT NULL,        -- din JWT decodat
   access_token       TEXT NOT NULL,        -- CRIPTAT (Fernet)
   refresh_token      TEXT NOT NULL,        -- CRIPTAT (Fernet)
@@ -144,7 +148,8 @@ CREATE TABLE spv_token (
   creat_la           TIMESTAMPTZ DEFAULT now(),
   reimprospatat_la   TIMESTAMPTZ,
   activ              BOOLEAN DEFAULT true,
-  UNIQUE (accounting_firm_id, serial_certificat)
+  CHECK ((accounting_firm_id IS NOT NULL)::int + (tenant_id IS NOT NULL)::int = 1)  -- GARDUL 1: XOR
+  -- + unicitate partiala (principal, serial) si un singur token VIU per principal (vezi DDL)
 );
 CREATE TABLE spv_cui_acoperit (
   token_id      INT REFERENCES spv_token(id) ON DELETE CASCADE,

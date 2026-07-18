@@ -384,26 +384,26 @@ def _parse_stare(text):
     return (st.group(1) if st else None, idd.group(1) if idd else None)
 
 
-def upload_ubl(firm_id, cif, xml, mediu="test"):
-    """POST /upload?standard=UBL&cif=X prin apel_anaf. Intoarce Response."""
+def upload_ubl(principal, cif, xml, mediu="test"):
+    """POST /upload?standard=UBL&cif=X prin apel_anaf (pe tokenul principalului). Intoarce Response."""
     url = "%s/upload?standard=UBL&cif=%s" % (fctel_base(mediu), cif)
-    return spv_conector.apel_anaf(firm_id, "POST", url, data=xml.encode("utf-8"),
+    return spv_conector.apel_anaf(principal, "POST", url, data=xml.encode("utf-8"),
                                   headers={"Content-Type": "application/xml"}, timeout=60)
 
 
-def stare_mesaj(firm_id, index_incarcare, mediu="test"):
+def stare_mesaj(principal, index_incarcare, mediu="test"):
     """GET /stareMesaj?id_incarcare=N prin apel_anaf. Intoarce Response."""
     url = "%s/stareMesaj?id_incarcare=%s" % (fctel_base(mediu), index_incarcare)
-    return spv_conector.apel_anaf(firm_id, "GET", url, timeout=30)
+    return spv_conector.apel_anaf(principal, "GET", url, timeout=30)
 
 
-def descarca(firm_id, id_descarcare, mediu="test"):
+def descarca(principal, id_descarcare, mediu="test"):
     """GET /descarcare?id=N prin apel_anaf. Intoarce Response (ZIP in .content)."""
     url = "%s/descarcare?id=%s" % (fctel_base(mediu), id_descarcare)
-    return spv_conector.apel_anaf(firm_id, "GET", url, timeout=120)
+    return spv_conector.apel_anaf(principal, "GET", url, timeout=120)
 
 
-def trimite(schema, factura_id, mediu="test", firm_id=1):
+def trimite(schema, factura_id, principal, mediu="test"):
     """
     Orchestreaza upload-ul unei facturi si scrie randul in efactura_trimiteri INDIFERENT de
     rezultat (regula: linia completa, error_message integral, nu doar la ok). Tranzactii
@@ -443,7 +443,7 @@ def trimite(schema, factura_id, mediu="test", firm_id=1):
 
     # 3) upload real prin apel_anaf (doar dupa ce validatorul a intors stare:ok)
     try:
-        r = upload_ubl(firm_id, cif, xml, mediu)
+        r = upload_ubl(principal, cif, xml, mediu)
         text = r.text or ""
         ex, index, errs = _parse_upload(text)
         rez.update({"http": r.status_code, "execution_status": ex,

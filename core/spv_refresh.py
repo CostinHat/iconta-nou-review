@@ -34,8 +34,10 @@ def token_uri_de_reimprospatat(conn, acum=None):
     acum = acum if acum is not None else datetime.now(timezone.utc)
     prag = acum + timedelta(days=MARJA_ZILE)
     with conn.cursor() as cur:
+        # GARDUL 3: selecteaza pe activ, NU pe accounting_firm_id IS NOT NULL - altfel ar sari
+        # tacit peste tokenele gratuite (tenant_id). Ambele principaluri intra in refresh.
         cur.execute("""
-            SELECT id, accounting_firm_id, serial_certificat, refresh_token, access_expira
+            SELECT id, accounting_firm_id, tenant_id, serial_certificat, refresh_token, access_expira
               FROM public.spv_token
              WHERE activ = true AND access_expira < %s
              ORDER BY access_expira
@@ -53,7 +55,8 @@ def ruleaza(acum=None):
 
     reusite = 0
     esecuri = []
-    for (tid, firm_id, serial, refresh_enc, access_expira) in randuri:
+    for (tid, firm_id, ten_id, serial, refresh_enc, access_expira) in randuri:
+        eticheta = ("firma %s" % firm_id) if firm_id is not None else ("gratuit tenant %s" % ten_id)
         try:
             # tranzactie per token: un esec nu strica commit-urile reusite (get_conn
             # face commit la succes / rollback la exceptie)
@@ -61,17 +64,18 @@ def ruleaza(acum=None):
                 token_row = {
                     "id": tid,
                     "accounting_firm_id": firm_id,
+                    "tenant_id": ten_id,
                     "serial_certificat": serial,
                     "refresh_token": s.decripteaza(refresh_enc),  # reimprospateaza_token cere clar
                 }
                 nou = s.reimprospateaza_token(conn, token_row)
             reusite += 1
-            print("  OK token %s (firma %s): access_expira %s -> %s"
-                  % (tid, firm_id, access_expira.isoformat(), nou["access_expira"].isoformat()))
+            print("  OK token %s (%s): access_expira %s -> %s"
+                  % (tid, eticheta, access_expira.isoformat(), nou["access_expira"].isoformat()))
         except Exception as e:
-            esecuri.append((tid, firm_id, type(e).__name__, str(e)[:200]))
-            print("  ESEC token %s (firma %s): %s: %s"
-                  % (tid, firm_id, type(e).__name__, e), file=sys.stderr)
+            esecuri.append((tid, eticheta, type(e).__name__, str(e)[:200]))
+            print("  ESEC token %s (%s): %s: %s"
+                  % (tid, eticheta, type(e).__name__, e), file=sys.stderr)
 
     if esecuri:
         _alerteaza_esecuri(esecuri)
@@ -82,7 +86,7 @@ def ruleaza(acum=None):
 
 def _alerteaza_esecuri(esecuri):
     """Email pe canalul comun (Brevo, core.observare). Nu construi canal paralel."""
-    linii = "\n".join("token %s (firma %s): %s — %s" % e for e in esecuri)
+    linii = "\n".join("token %s (%s): %s — %s" % e for e in esecuri)
     subiect = "Refresh token SPV esuat (%d)" % len(esecuri)
     mesaj = ("Reimprospatarea automata a esuat pentru %d token-uri SPV. Cabinetele afectate "
              "risca sa se deconecteze de la SPV si sa fie nevoite sa reconecteze din UI "

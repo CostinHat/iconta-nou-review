@@ -30,46 +30,66 @@ _PAGINA_RETUR = "/static/spv_callback.html"
 MODUL = "spv_rute"
 
 
-def monteaza(app, dep_cabinet):
-    """Inregistreaza cele doua rute SPV pe app. dep_cabinet = dependenta de context cabinet."""
+def spv_principal(ctx):
+    """
+    RESOLVER UNIC context->principal (GARDUL 2) cu PROPRIETATE (GARDUL 4):
+      - cabinet (are firm) -> principal_firm(firma LUI);
+      - gratuit (rol client cu tenant FARA cabinet) -> principal_tenant(tenantul LUI, din
+        user_tenants; verificat accounting_firm_id NULL = gratuit).
+    Nu deschide la "orice user autentificat": cine nu detine un principal SPV -> 403.
+    """
+    firm = ctx.get("firm")
+    if firm:
+        return spv_conector.principal_firm(firm)
+    if ctx.get("rol") == "client":
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""SELECT t.id FROM public.user_tenants ut
+                                 JOIN public.tenants t ON t.id = ut.tenant_id
+                                WHERE ut.user_id = %s AND t.accounting_firm_id IS NULL AND t.activ = true
+                                ORDER BY t.id LIMIT 1""", (ctx["uid"],))
+                r = cur.fetchone()
+        if r:
+            return spv_conector.principal_tenant(r[0])
+    raise HTTPException(403, "contul nu poate conecta SPV (nici cabinet, nici firma gratuita proprie)")
+
+
+def monteaza(app, dep_context):
+    """Inregistreaza rutele SPV. dep_context = dependenta de context autentificat (cere_context);
+    proprietatea principalului o impune spv_principal, nu dependenta (gratuit + cabinet, fiecare al lui)."""
 
     @app.get("/spv/autorizare")
-    def spv_autorizare(ctx=Depends(dep_cabinet)):
-        """Intoarce URL-ul de autorizare ANAF. Butonul care-l deschide = Regula 0 (UI)."""
-        firm = ctx.get("firm")
-        if not firm:
-            raise HTTPException(400, "utilizatorul nu are cabinet asociat")
-        url, _state = spv_conector.url_autorizare(firm)
+    def spv_autorizare(ctx=Depends(dep_context)):
+        """URL-ul de autorizare ANAF pentru principalul apelantului. Butonul = Regula 0 (UI)."""
+        principal = spv_principal(ctx)
+        url, _state = spv_conector.url_autorizare(principal)
         return {"url": url, "expira_sec": spv_conector.STATE_DURATA_SEC}
 
     @app.get("/spv/stare")
-    def spv_stare(ctx=Depends(dep_cabinet)):
+    def spv_stare(ctx=Depends(dep_context)):
         """Starea conexiunii SPV pentru ecran (fara secrete, fara apel ANAF)."""
-        firm = ctx.get("firm")
-        if not firm:
-            raise HTTPException(400, "utilizatorul nu are cabinet asociat")
+        principal = spv_principal(ctx)
         with db.get_conn() as conn:
-            return spv_conector.stare_conexiune(conn, firm)
+            return spv_conector.stare_conexiune(conn, principal)
 
     @app.get("/anaf/oauth/callback")
     def anaf_oauth_callback(code: str = "", state: str = "", error: str = ""):
         """
         Callback OAuth (URL inregistrat la ANAF, exact). Fara auth de sesiune: identitatea
-        cabinetului vine din state-ul semnat. State invalid => iesire INAINTE de orice apel ANAF.
-        Redirecteaza (303) catre pagina prietenoasa de retur (succes/eroare), nu JSON:
-        e o fila de browser deschisa din ecranul de conectare.
+        PRINCIPALULUI vine din state-ul semnat. State invalid => iesire INAINTE de orice apel ANAF.
+        Redirecteaza (303) catre pagina prietenoasa de retur (succes/eroare), nu JSON.
         """
         def _retur(params):
             return RedirectResponse(_PAGINA_RETUR + "?" + urllib.parse.urlencode(params), status_code=303)
         if error or not code:
             return _retur({"eroare": error or "cod lipsa"})
         try:
-            firm = spv_conector.verifica_state(state)
+            principal = spv_conector.verifica_state(state)
         except spv_conector.EroareSpv as e:
             return _retur({"eroare": str(e)})
         try:
             with db.get_conn() as conn:
-                spv_conector.finalizeaza_autorizare(conn, firm, code)  # APEL REAL ANAF
+                spv_conector.finalizeaza_autorizare(conn, principal, code)  # APEL REAL ANAF
         except spv_conector.EroareSpv as e:
             return _retur({"eroare": str(e)})
         return _retur({"ok": "1"})

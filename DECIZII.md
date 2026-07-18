@@ -942,3 +942,17 @@ PATRU GARDURI (nenegociabile):
 ORTOGONAL: maparea CIF-uri per token (spv_cui_acoperit) ramane cum e, n-o atinge aici.
 LIMITA: pana la wiring-ul complet F160, cabinetul (F126) ramane neafectat; refactorul pastreaza calea
 cabinet identica (test_spv_conector verde).
+
+### 18.07.2026 (construit) spv_token principal - cele 4 garduri verificate  (commit urmator)
+CONSTRUIT si dovedit optiunea 1: schema (tenant_id + CHECK XOR + unicitate partiala per principal +
+1 token viu/principal), connector refactorizat pe Principal, spv_rute cu resolver spv_principal
+(cere_context + proprietate), F177 pe principal. GARDURILE:
+1. XOR in DB: CHECK ((accounting_firm_id IS NOT NULL)::int + (tenant_id IS NOT NULL)::int = 1) + indecsi
+   partiali uq_spv_token_firm/tenant + _viu. 2. Resolver unic spv_principal (context) + principal_din_rand
+   (rand) -> acelasi tip Principal, _principal_sql = unicul loc cu schema cheii. 3. Capcana F177 prinsa:
+   query pe activ (nu pe accounting_firm_id IS NOT NULL) + TEST dedicat (test_cron_F177_prinde_token_gratuit,
+   test_refresh_gratuit_deriveaza_principal_tenant). 4. Poarta: cere_context, dar spv_principal cere
+   PROPRIETATEA (cabinet=firma lui; gratuit=tenantul lui din user_tenants, verificat accounting_firm_id NULL).
+DOVADA: 31 teste pass (23 conector + 8 generator); cabinet neafectat (apel_anaf(principal_firm(1)) live -> 200,
+token 21 intact, stare_conexiune conectat); migrare aplicata ca postgres (owner). Ortogonal: spv_cui_acoperit neatins.
+RAMAS pentru F160 complet: buton/ruta "Trimite in SPV" in portalul gratuit; recipisa live pending drept (ca F176).

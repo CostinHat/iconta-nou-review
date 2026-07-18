@@ -71,6 +71,42 @@ class EroareSpvRefreshEsuat(EroareSpv):
 
 
 # ============================================================
+#  PRINCIPAL — cabinet XOR firma gratuita (F160, DECIZII 18.07)
+#  Tokenul apartine unui PRINCIPAL, nu unei tabele de firme. Aici e SURSA UNICA a
+#  branch-ului cabinet/gratuit (GARDUL 2): ia_token_activ/salveaza/stare/refresh trec pe aici.
+# ============================================================
+from collections import namedtuple
+
+Principal = namedtuple("Principal", ["kind", "id"])   # kind: 'firm' (cabinet) | 'tenant' (gratuit)
+
+
+def principal_firm(fid):
+    return Principal("firm", int(fid))
+
+
+def principal_tenant(tid):
+    return Principal("tenant", int(tid))
+
+
+def _principal_sql(p):
+    """(cond_where, params, coloana) pentru un principal. Unicul loc care stie schema cheii."""
+    if p.kind == "firm":
+        return "accounting_firm_id = %s AND tenant_id IS NULL", (int(p.id),), "accounting_firm_id"
+    if p.kind == "tenant":
+        return "tenant_id = %s AND accounting_firm_id IS NULL", (int(p.id),), "tenant_id"
+    raise EroareSpv("principal invalid: %r" % (p,))
+
+
+def principal_din_rand(accounting_firm_id, tenant_id):
+    """Principalul unui rand spv_token (pt F177/refresh - GARDUL 3: nu presupune firm)."""
+    if accounting_firm_id is not None:
+        return principal_firm(accounting_firm_id)
+    if tenant_id is not None:
+        return principal_tenant(tenant_id)
+    raise EroareSpv("rand spv_token fara principal (nici firm, nici tenant)")
+
+
+# ============================================================
 #  CRIPTARE (Fernet) — PURA (primeste cheia din env la apel)
 # ============================================================
 def _fernet():
@@ -128,27 +164,27 @@ def extrage_serial(payload):
 # ============================================================
 #  STATE OAuth (CSRF) — semnat, fara tabel nou (reuse nucleu)
 # ============================================================
-def genereaza_state(accounting_firm_id, acum=None):
-    """State CSRF legat de cabinet, expira in 10 min. Pura (semnat cu STATE_SECRET)."""
+def genereaza_state(principal, acum=None):
+    """State CSRF legat de PRINCIPAL (cabinet sau gratuit), expira in 10 min. Pura."""
     return nucleu.creeaza_token(
-        {"firm": int(accounting_firm_id), "scop": "spv_state"},
+        {"pk": principal.kind, "pi": int(principal.id), "scop": "spv_state"},
         STATE_SECRET, durata_sec=STATE_DURATA_SEC, acum=acum)
 
 
 def verifica_state(state, acum=None):
-    """Verifica state-ul, intoarce accounting_firm_id. Ridica EroareSpv la invalid/expirat."""
+    """Verifica state-ul, intoarce Principal. Ridica EroareSpv la invalid/expirat."""
     r = nucleu.verifica_token(state, STATE_SECRET, acum=acum)
     if not r["ok"]:
         raise EroareSpv("state invalid: %s" % r.get("mesaj", r.get("cod")))
     p = r["payload"]
-    if p.get("scop") != "spv_state" or "firm" not in p:
+    if p.get("scop") != "spv_state" or "pk" not in p or "pi" not in p:
         raise EroareSpv("state cu scop gresit")
-    return int(p["firm"])
+    return Principal(p["pk"], int(p["pi"]))
 
 
-def url_autorizare(accounting_firm_id, acum=None):
+def url_autorizare(principal, acum=None):
     """(url_authorize, state). token_content_type=jwt pe QUERY aici (ARHITECTURA)."""
-    state = genereaza_state(accounting_firm_id, acum=acum)
+    state = genereaza_state(principal, acum=acum)
     q = urllib.parse.urlencode({
         "response_type": "code",
         "client_id": CLIENT_ID,
@@ -188,20 +224,23 @@ def valori_din_raspuns_token(tok, acum=None):
 # ============================================================
 #  STOCARE (DB) — se dovedeste pe server
 # ============================================================
-def salveaza_token(conn, accounting_firm_id, valori, acum_dt=None):
+def salveaza_token(conn, principal, valori, acum_dt=None):
     """
-    UPSERT in spv_token pe (accounting_firm_id, serial_certificat).
-    access/refresh se stocheaza CRIPTAT. Reactiveaza (activ=true) si marcheaza
-    reimprospatat_la la UPDATE. Intoarce id-ul randului.
+    UPSERT token pentru un PRINCIPAL (cabinet XOR gratuit). GARDUL 1: dezactiveaza intai orice
+    alt token VIU al principalului (alt serial), apoi upsert pe (coloana_principal, serial) - un
+    singur token viu per principal. access/refresh stocate CRIPTAT. Intoarce id-ul randului.
     """
     acum_dt = acum_dt if acum_dt is not None else datetime.now(timezone.utc)
+    where, params, col = _principal_sql(principal)
     with conn.cursor() as cur:
-        cur.execute("""
+        cur.execute("UPDATE public.spv_token SET activ=false WHERE " + where +
+                    " AND serial_certificat <> %s", params + (valori["serial_certificat"],))
+        cur.execute(f"""
             INSERT INTO public.spv_token
-                (accounting_firm_id, serial_certificat, access_token, refresh_token,
+                ({col}, serial_certificat, access_token, refresh_token,
                  access_expira, refresh_expira, activ)
             VALUES (%s,%s,%s,%s,%s,%s, true)
-            ON CONFLICT (accounting_firm_id, serial_certificat) DO UPDATE SET
+            ON CONFLICT ({col}, serial_certificat) WHERE {col} IS NOT NULL DO UPDATE SET
                 access_token   = EXCLUDED.access_token,
                 refresh_token  = EXCLUDED.refresh_token,
                 access_expira  = EXCLUDED.access_expira,
@@ -209,25 +248,26 @@ def salveaza_token(conn, accounting_firm_id, valori, acum_dt=None):
                 activ          = true,
                 reimprospatat_la = %s
             RETURNING id
-        """, (int(accounting_firm_id), valori["serial_certificat"],
+        """, (int(principal.id), valori["serial_certificat"],
               cripteaza(valori["access_token"]), cripteaza(valori["refresh_token"]),
               valori["access_expira"], valori["refresh_expira"], acum_dt))
         return cur.fetchone()[0]
 
 
-def ia_token_activ(conn, accounting_firm_id):
+def ia_token_activ(conn, principal):
     """
-    Randul token activ pentru cabinet, cu access/refresh DECRIPTATE.
-    None daca nu exista token activ.
+    Randul token activ pentru PRINCIPAL (cabinet sau gratuit), cu access/refresh DECRIPTATE.
+    Intoarce si accounting_firm_id + tenant_id (pt derivarea principalului la refresh). None daca lipseste.
     """
+    where, params, _ = _principal_sql(principal)
     with conn.cursor() as cur:
         cur.execute("""
             SELECT id, serial_certificat, access_token, refresh_token,
-                   access_expira, refresh_expira
+                   access_expira, refresh_expira, accounting_firm_id, tenant_id
               FROM public.spv_token
-             WHERE accounting_firm_id = %s AND activ = true
+             WHERE """ + where + """ AND activ = true
              ORDER BY id DESC LIMIT 1
-        """, (int(accounting_firm_id),))
+        """, params)
         r = cur.fetchone()
     if not r:
         return None
@@ -235,22 +275,24 @@ def ia_token_activ(conn, accounting_firm_id):
         "id": r[0], "serial_certificat": r[1],
         "access_token": decripteaza(r[2]), "refresh_token": decripteaza(r[3]),
         "access_expira": r[4], "refresh_expira": r[5],
+        "accounting_firm_id": r[6], "tenant_id": r[7],
     }
 
 
-def stare_conexiune(conn, accounting_firm_id, acum_dt=None):
+def stare_conexiune(conn, principal, acum_dt=None):
     """
     Stare conexiune pentru ecran (FARA secrete, FARA apel ANAF): conectat + expirari.
     'expira_curand' = access_expira sub marja cronului. None-uri daca nu e conectat.
     """
     acum_dt = acum_dt if acum_dt is not None else datetime.now(timezone.utc)
+    where, params, _ = _principal_sql(principal)
     with conn.cursor() as cur:
         cur.execute("""
             SELECT serial_certificat, access_expira, refresh_expira
               FROM public.spv_token
-             WHERE accounting_firm_id = %s AND activ = true
+             WHERE """ + where + """ AND activ = true
              ORDER BY id DESC LIMIT 1
-        """, (int(accounting_firm_id),))
+        """, params)
         r = cur.fetchone()
     if not r:
         return {"conectat": False}
@@ -306,40 +348,44 @@ def reimprospateaza_pereche(refresh_token):
     })
 
 
-def finalizeaza_autorizare(conn, accounting_firm_id, code, acum=None):
-    """Callback: schimba codul pe token si salveaza (criptat). Intoarce id-ul randului."""
+def finalizeaza_autorizare(conn, principal, code, acum=None):
+    """Callback: schimba codul pe token si salveaza (criptat) pentru principal. Intoarce id-ul."""
     tok = schimba_cod_pe_token(code)
     valori = valori_din_raspuns_token(tok, acum=acum)
-    return salveaza_token(conn, accounting_firm_id, valori)
+    return salveaza_token(conn, principal, valori)
 
 
 def reimprospateaza_token(conn, token_row, acum=None):
     """
-    Refresh sincron pentru un rand token. Salveaza AMBELE valori noi (ROTATIE).
+    Refresh sincron pentru un rand token. Salveaza AMBELE valori noi (ROTATIE). Deriva
+    PRINCIPALUL din rand (cabinet SAU gratuit - GARDUL 3: nu presupune firm).
     La esec: dezactiveaza tokenul si ridica EroareSpvRefreshEsuat.
     """
-    firm_id = token_row.get("accounting_firm_id") or _firm_din_token(conn, token_row["id"])
+    if token_row.get("accounting_firm_id") is not None or token_row.get("tenant_id") is not None:
+        principal = principal_din_rand(token_row.get("accounting_firm_id"), token_row.get("tenant_id"))
+    else:
+        principal = _principal_din_token(conn, token_row["id"])
     try:
         tok = reimprospateaza_pereche(token_row["refresh_token"])
         valori = valori_din_raspuns_token(tok, acum=acum)
     except EroareSpv:
         dezactiveaza_token(conn, token_row["id"])
         raise EroareSpvRefreshEsuat(
-            "refresh esuat pentru token %s — cabinetul reconecteaza SPV" % token_row["id"])
+            "refresh esuat pentru token %s — principalul reconecteaza SPV" % token_row["id"])
     # serialul ramane cel cunoscut daca noul JWT nu-l expune
     if valori["serial_certificat"] == "NECONFIRMAT":
         valori["serial_certificat"] = token_row["serial_certificat"]
-    salveaza_token(conn, firm_id, valori)
-    nou = ia_token_activ(conn, firm_id)
-    nou["accounting_firm_id"] = firm_id
-    return nou
+    salveaza_token(conn, principal, valori)
+    return ia_token_activ(conn, principal)
 
 
-def _firm_din_token(conn, token_id):
+def _principal_din_token(conn, token_id):
     with conn.cursor() as cur:
-        cur.execute("SELECT accounting_firm_id FROM public.spv_token WHERE id=%s", (int(token_id),))
+        cur.execute("SELECT accounting_firm_id, tenant_id FROM public.spv_token WHERE id=%s", (int(token_id),))
         r = cur.fetchone()
-    return r[0] if r else None
+    if not r:
+        raise EroareSpv("token %s inexistent" % token_id)
+    return principal_din_rand(r[0], r[1])
 
 
 def _expirat(access_expira, acum_dt=None):
@@ -350,18 +396,17 @@ def _expirat(access_expira, acum_dt=None):
 # ============================================================
 #  FUNCTIA UNICA DE APEL — TOATE apelurile ANAF trec prin ea
 # ============================================================
-def apel_anaf(accounting_firm_id, metoda, url, acum_dt=None, _dormi=time.sleep, **kw):
+def apel_anaf(principal, metoda, url, acum_dt=None, _dormi=time.sleep, **kw):
     """
-    Apel autentificat catre ANAF (ARHITECTURA_SPV.md, FUNCTIA UNICA DE APEL).
+    Apel autentificat catre ANAF pentru un PRINCIPAL (cabinet sau gratuit). FUNCTIA UNICA DE APEL.
     Reguli: fara token activ -> EroareSpvNeconectat; access expirat -> refresh sincron;
     401 -> refresh o data + retry o data; 429 -> backoff exponential; 403 -> EroareSpvFaraDrept.
     APEL REAL ANAF.
     """
     with db.get_conn() as conn:
-        tok = ia_token_activ(conn, accounting_firm_id)
+        tok = ia_token_activ(conn, principal)
         if not tok:
-            raise EroareSpvNeconectat("cabinetul %s nu are token SPV activ" % accounting_firm_id)
-        tok["accounting_firm_id"] = int(accounting_firm_id)
+            raise EroareSpvNeconectat("principalul %r nu are token SPV activ" % (principal,))
         if _expirat(tok["access_expira"], acum_dt):
             tok = reimprospateaza_token(conn, tok, acum=None)
 
