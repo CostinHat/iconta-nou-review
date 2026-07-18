@@ -560,3 +560,57 @@ teste intacte (delegarea rulaje_luna e behavior-preserving).
 LIMITA: D205 evaluat pe anul precedent (an-1); D301 pe orizontul scurt (an + dec an-1). Faptul D301 =
 ce s-a INREGISTRAT in d301_operatiuni (daca firma n-a inregistrat operatiunile IC, semaforul nu le
 vede - limita oricarui motor fact-driven, declarata in motiv: "nicio operatiune IC inregistrata").
+
+---
+
+## Punte factura -> stoc: poarta obligatorie "pleaca marfa acum?" (18.07.2026)
+
+Problema (verificata la sursa, neschimbata din 17.07): vanzarea si descarcarea gestiunii
+sunt acte deconectate. factura_linii fara articol_id, miscari_stoc fara factura_id,
+/stocuri/iesire ruta manuala separata. Rezultat: dubla introducere (omul factureaza SI
+descarca separat) + profit-pe-produs imposibil (nicio cheie de join venit<->cost).
+
+Aviz verificat (18.07): clone structural al facturii (aceeasi tabela `facturi` tip='aviz',
+aceleasi linii factura_linii, nu se contabilizeaza, NU atinge stocul). Distinctia
+"marfa cu factura vs cu aviz" NU exista in cod, e doar eticheta UI. Deci puntea NU e
+"factura->stoc SAU aviz->stoc" ca structuri diferite - ambele impart factura_linii.
+O singura schimbare structurala serveste amandoua.
+
+INTREBAREA REALA nu era "ce document descarca" ci "CAND pleaca marfa" - fiindca factura
+poate fi avans / livrare ulterioara / serviciu / custodie (clientul plateste dar marfa
+nu pleaca). Factura NU e momentul descarcarii.
+
+DECIS (Costin): POARTA OBLIGATORIE la emitere. Inainte de a emite factura, utilizatorul
+raspunde OBLIGATORIU: "Pleaca marfa acum? DA / NU". Nu poate emite fara raspuns.
+- DA -> factura descarca gestiunea: se genereaza iesirea din stoc (miscari_stoc legat
+  de factura prin factura_id), DOAR pe liniile care au articol de stoc. Liniile fara
+  articol (servicii) se ignora - poarta e una singura, se aplica doar unde are sens.
+- NU -> factura pur fiscala, stocul neatins (avans, livrare ulterioara, serviciu).
+
+De ce poarta obligatorie si nu bifa optionala: bifa se poate uita (stoc gresit tacit).
+Raspunsul cerut inainte de emitere NU se poate uita. "Nu mai are cum sa uite" (Costin).
+Un singur document (factura), nu obliga emiterea separata de aviz pentru fiecare vanzare.
+
+Avizul RAMANE pentru livrarea DECUPLATA de factura: cazul "am facturat luna trecuta cu
+NU, marfa pleaca azi" -> avizul de livrare descarca ce factura-cu-NU a lasat nedescarcat.
+Deci avizul nu se elimina; acopera livrarea ulterioara. Pentru cazul comun (facturez si
+livrez odata), poarta DA rezolva totul intr-un act.
+
+STRUCTURA (schema noua - de aceea aceasta decizie se scrie inainte de cod):
+- articol_id pe factura_linii (cheia care lipseste; serveste si factura si aviz, aceeasi
+  tabela). Optional pe linie: liniile de serviciu raman fara.
+- factura_id pe miscari_stoc (cheia de intoarcere, pentru profit-pe-produs).
+- descarcarea REFOLOSESTE iesire() existent (motorul CV, /stocuri/iesire main.py:5050) -
+  nu se construieste motor paralel. Puntea alimenteaza iesire(), nu il inlocuieste.
+- rulaje/join pentru profit-pe-produs refoloseste rulaje_interval (extras la semafor B,
+  c377746) - o punte, nu doua.
+
+LIMITE:
+- Global-valoric (GV): profit-pe-produs ramane GRI permanent (cost pe articol nu exista
+  prin constructie). Poarta se aplica doar la CV. La GV, descarcarea ramane global-valorica
+  lunara existenta (F088).
+- Facturi cu marfa + servicii mixte: DA descarca doar liniile cu articol_id, restul ignora.
+
+ATINGE COD LIVE (emiterea): de aceea e schema + poarta, nu "da-i drumul". Se construieste
+cu grija maxima: emiterea existenta NU se strica pentru cine emite fara marfa (NU = flux
+actual neatins). Poarta e aditiva, nu inlocuieste fluxul de emitere.
