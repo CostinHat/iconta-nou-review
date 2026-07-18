@@ -2165,3 +2165,29 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.pontaj (
     nota text,
     CONSTRAINT pontaj_pkey PRIMARY KEY (salariat_id, zi)
 );
+
+--
+-- e-Factura trimiteri (F126/F160, pasul 2) — mirror al core/migrare_efactura_trimiteri.py
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.efactura_trimiteri (
+  id                BIGSERIAL PRIMARY KEY,
+  factura_id        BIGINT NOT NULL REFERENCES TENANT_PLACEHOLDER.facturi(id),
+  mediu             TEXT NOT NULL CHECK (mediu IN ('test','prod')),
+  stare             TEXT NOT NULL DEFAULT 'pregatit'
+                    CHECK (stare IN ('pregatit','eroare_upload','incarcat','in_prelucrare','ok','nok')),
+  index_incarcare   TEXT,
+  execution_status  INTEGER,
+  id_descarcare     TEXT,
+  error_message     TEXT,
+  xml_trimis        TEXT,
+  xml_sha256        TEXT NOT NULL,
+  zip_raspuns_path  TEXT,
+  xml_semnat_sha256 TEXT,
+  trimis_la         TIMESTAMPTZ,
+  finalizat_la      TIMESTAMPTZ,
+  creat_la          TIMESTAMPTZ NOT NULL DEFAULT now(),
+  actualizat_la     TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_efactura_trimiteri_viu
+  ON TENANT_PLACEHOLDER.efactura_trimiteri (factura_id)
+  WHERE mediu='prod' AND stare IN ('incarcat','in_prelucrare','ok');

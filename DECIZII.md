@@ -839,3 +839,21 @@ factura trebuie sa capteze orasul separat inainte de send real; (2) doar factura
 (S/Z); taxare_inversa (AE), neplatitor TVA (O), storno/nota de credit (381) - netratate v1, se adauga
 dupa confirmare pe TEST. NU exista validator e-Factura local (DUK = doar declaratii) -> validatorul
 real e upload-ul TEST (pasul 2).
+
+### 18.07.2026 Tabel urmarire trimiteri e-Factura (efactura_trimiteri) - PER-TENANT + garda idempotenta  (core/migrare_efactura_trimiteri.py; tenant_template.sql)
+DECIZIE (schema stabilita de Costin, raspuns la poarta pasul 2): tabelul efactura_trimiteri traieste
+PER-TENANT (in fiecare tenant_NNN), nu in public. Masina de stari: pregatit -> eroare_upload | incarcat
+-> in_prelucrare -> ok | nok. Coloane pentru id-urile ANAF (index_incarcare, id_descarcare), amprente XML
+(xml_sha256, xml_semnat_sha256), mediu ('test'/'prod').
+TEMEI PER-TENANT: FK-ul e spre facturi(id), care e tabela per-tenant; trimiterea apartine facturii, nu
+cabinetului (tokenul e per-cabinet in public.spv_token, dar factura si trimiterea ei sunt ale firmei).
+GARDA CRITICA - index unic partial uq_efactura_trimiteri_viu pe (factura_id) WHERE mediu='prod' AND
+stare IN ('incarcat','in_prelucrare','ok'): un SINGUR send viu per factura pe PROD. Temei: upload-ul ANAF
+NU e idempotent - o dubla trimitere = dubla factura la ANAF (eroare cu consecinte fiscale reale). Pe
+'test' NU blocheaza (validari repetate permise in dezvoltare).
+ALTERNATIVA RESPINSA: tabel in public cu tenant_id - ar rupe coerenta cu restul (facturile sunt
+per-schema) si ar cere tenant_id peste tot; guard global fara mediu - ar bloca si validarile TEST repetate.
+DOVADA: migrare 2/2 scheme OK (tenant_001, tenant_002); test functional al indexului in tranzactie ROLLBACK:
+2x test permis, al 2-lea prod viu BLOCAT (UniqueViolation), prod/nok permis langa un viu, 0 reziduu.
+LIMITA: garda acopera doar starile 'viu' pe prod; o factura respinsa (nok) se poate re-trimite (corect).
+Curatarea/retentia xml_trimis (text mare) si zip_raspuns_path (fisier) - de decis cand creste volumul.
