@@ -327,3 +327,26 @@ adauga daca apare nevoia reala.
 LIMITA: partenerul se ia din clienti (sau campuri manuale la generare); furnizorii nu sunt inca in
 selector. v1 scoate PDF final (nu doc editabil) - editarea inainte de semnare o face utilizatorul in
 sablon sau dupa, in alt program.
+
+### 18.07.2026 Lot 7 F161 vreau contabil: BLOCAT pe determinarea gratuit-vs-cabinet (user vs tenant)  (STOP, neconstruit)
+DECIZIE: F161 (conversia contului gratuit sub un cabinet) NU se construieste inca. Blocant descoperit
+la sursa: determinarea "cont gratuit vs client gestionat de cabinet" e pe USER, nu pe TENANT.
+TEMEI (verificat 18.07): _eGratuit() = rol client && !u.firm (portal.js:18); session.firm =
+user.accounting_firm_id (auth_api:72), care e NULL pentru ORICE client. Deci un client gratuit si un
+client-portal de cabinet au amandoi firm=NULL -> _eGratuit=true pentru amandoi. Conversia F161
+schimba tenant.accounting_firm_id (nivel tenant), dar gate-ul UI e pe user -> dupa conversie userul
+ramane rol client cu accounting_firm_id NULL -> _eGratuit ramane true -> firma convertita ar vedea in
+continuare UI-ul gratuit, nu portalul gestionat. "Doar UPDATE accounting_firm_id" nu tranzitioneaza
+utilizatorul. (Efect secundar: pare un bug latent - un client-portal de cabinet, daca exista, ar fi
+clasificat gratuit.)
+CE CERE F161 DE FAPT: determinarea sa devina la nivel de TENANT (firma e gestionata daca
+tenant.accounting_firm_id e setat) - expus in context/sesiune (ex. tenant_are_cabinet) si folosit de
+_eGratuit. Schimbare de temelie a clasificarii gratuit/client (atinge comportament gratuit LIVE +
+repara bug latent), nu simplul wiring presupus de brief pentru Lot 7.
+ALTERNATIVA RESPINSA: construirea fluxului cabinet (cod invitatie + cerere + acceptare + UPDATE) fara
+fixul de determinare - ar livra o conversie care nu schimba experienta utilizatorului = fundatura.
+INTREBARE DESCHISA pentru Costin: (a) fac acum fixul de determinare tenant-based (deblocheaza F161
+curat + repara latentul), apoi F161 pe deasupra; SAU (b) F161 ramane amanat pana la o sesiune dedicata
+determinarii. Decizia inainte de cod - garda schema + garda "umbla peste ce functioneaza" (gratuit LIVE).
+LIMITA: nu s-a verificat daca exista deja clienti-portal de cabinet in productie (care ar suferi de
+misclasificarea latenta); de verificat inainte de a atinge _eGratuit.
