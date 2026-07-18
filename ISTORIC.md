@@ -1369,6 +1369,11 @@ accidentala, NU de moartea discului. Lipsea copia off-site.
 - -> FUNCTIONALITATI.csv F170 PLANIFICAT -> LIVE; DECIZII.md (temei + 4 decizii tehnice + alternative
   respinse + limita).
 
-## Limita declarata
-Restaurarea DIN off-site nu a fost testata cap-coada (s-a dovedit upload + confirmare, nu un pg_restore
-din dump-ul remote). Storage Box = single-provider (nu geo-redundanta intre furnizori).
+## Restaurare din off-site — testata cap-coada (aceeasi zi)
+Descarcat ultimul dump off-site prin sftp -> pg_restore intr-o baza de test (iconta_restore_offsite_test):
+pg_restore exit 0, 0 erori; scheme identice cu iconta_v2 (public+tenant_001+tenant_002), public.tenants
+2=2, tenant_002.facturi=5 -> dropdb. Baza vie iconta_v2 neatinsa, off-site remote intact. Off-site-ul nu
+doar se urca, ci se si RESTAUREAZA cap-coada.
+
+## Limita ramasa
+Storage Box = single-provider (nu geo-redundanta intre furnizori).

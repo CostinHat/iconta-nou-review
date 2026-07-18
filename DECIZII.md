@@ -733,6 +733,9 @@ ALTERNATIVA RESPINSA: (a) rsync --delete oglindire director local->remote - ar f
 zile ca localul, pierzand marja de 30; (b) stergerea vreodata a backup-ului local - LOCAL = SACRU,
 niciodata sters de logica off-site; (c) S3/alt cloud - Storage Box e destul pentru un singur disc de aparat
 si e deja platit; multi-cloud geo-redundant = scop mai mare, la nevoie reala.
-LIMITA: restaurarea DIN off-site nu a fost testata cap-coada (s-a dovedit upload + confirmare remote +
-dimensiune, nu un pg_restore din dump-ul remote); Storage Box = single-provider (nu geo-redundanta intre
-furnizori). Daca datele cresc mult, retentia de 30z off-site trebuie recalibrata la spatiul Storage Box.
+LIMITA: Storage Box = single-provider (nu geo-redundanta intre furnizori). Daca datele cresc mult,
+retentia de 30z off-site trebuie recalibrata la spatiul Storage Box.
+INCHISA 18.07 (aceeasi zi): restaurarea DIN off-site testata cap-coada - descarcat ultimul dump prin
+sftp -> pg_restore intr-o baza de test iconta_restore_offsite_test -> scheme identice cu iconta_v2
+(public+tenant_001+tenant_002), public.tenants 2=2, tenant_002.facturi=5 -> dropdb. Baza vie neatinsa.
+Deci off-site-ul nu doar se urca, ci se si RESTAUREAZA.
