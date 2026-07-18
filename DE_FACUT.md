@@ -51,14 +51,6 @@ starea reverificata azi:
 3. **Audit design ramas**: spacing/padding inline (inchis explicit ca datorie acceptata), migrare
    paleta iconite (decizie amanata), anatomia ferestrei + alinierea tabelelor nesistematizate vizual
    (~20/30 ecrane nevazute cu ochii; verificatorul e curat pe ele dar nu prinde asezarea).
-4. **Dubla introducere a vanzarii la firmele CANTITATIV-VALORICE** (adaugat 17.07): emiterea facturii
-   si descarcarea gestiunii sunt doua acte deconectate prin design (miscari_stoc fara factura_id;
-   facturi_api.py fara referinta la stoc; /stocuri/iesire ruta manuala separata). La firmele pe
-   cantitativ-valoric acelasi eveniment economic se introduce de doua ori (factura + iesire manuala),
-   iar costul pe articol (miscari_stoc.valoare la CMP) nu are cheie de join spre vanzare. Efect direct:
-   profit-pe-produs / vanzari-pe-articol imposibile fara o punte factura->iesire stoc (lot propriu).
-   La firmele GLOBAL-VALORIC nu e defect, e metoda (cost pe articol inexistent prin constructie).
-   Temei complet si alternative respinse: DECIZII.md 17.07 "F144 profit-pe-produs RAMAS DESCHIS".
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
@@ -76,17 +68,12 @@ starea reverificata azi:
   de ecran. Nu s-au atins în trecerea stărilor goale (scop separat, decis 17.07). Temă proprie:
   fiecare `catch` care scrie `.mig-gol` în zonă -> `arataMesaj(zona, mesaj, "eroare")`. Verificare
   funcțională reală per ecran (căi de eroare greu de atins), nu doar `node --check`.
-- **Export către programul contabilului (SAGA/WinMentor/Ciel) — GOL STRATEGIC** (adăugat 18.07,
-  verificat la sursă READ-ONLY): iConta NU are niciun export al datelor proprii (facturi/note/jurnal)
-  către un format pe care un program de contabilitate îl importă. Confirmat absent: singura rută cu
-  „export" e `/export-extracomunitar` (main.py:6077, operațiune fiscală de bunuri, nu date contabile);
-  `grep .dbf|csv.writer|export.*(nota|jurnal|factura|balanta)` = 0; toate hit-urile SAGA/Ciel din cod
-  sunt IMPORT/inbound (solduri_api.py:15/35, *_import_api.py, numere.py — iConta citește exporturi DIN
-  ele, nu scrie către ele). DE CE contează: e PUNTEA care face posibilă poziționarea „firma emite în
-  iConta, contabilul rămâne pe SAGA" (DECIZII.md 18.07 „cont gratuit = vârf de lance" + „paritate/
-  lipsuri", gol strategic #2). Fără export, firma nu poate folosi iConta fără să-și enerveze contabilul.
-  NU depinde de OAuth ANAF (spre deosebire de F160/SPV). De stabilit formatul-țintă cu Costin înainte
-  de construcție (ce importă SAGA/WinMentor/Ciel: XML? note contabile? format propriu?).
+- **Export către programul contabilului — PARȚIAL: SAGA LIVRAT (F171 18.07), WinMentor/Ciel rămân.**
+  SAGA: export facturi emise în XML propriu (Diverse → Import date), rută read-only, format verificat
+  la sursă (manual.sagasoft.ro topic-76). Puntea care face posibilă poziționarea „firma emite în iConta,
+  contabilul rămâne pe SAGA" (DECIZII.md 18.07). RĂMÂNE: WinMentor și Ciel (alt generator, altă
+  structură — codul e structurat pe format ca să le primească). LIMITA SAGA declarată: neconfirmat pe
+  import real (encoding UTF-8 vs Windows-1250 + clasificare ieșire = ochi uman). NU depinde de OAuth ANAF.
 - **Igienă la migrare: contul gratuit vechi rămâne activ după preluarea firmei de un cabinet** (adăugat
   18.07, punct de VERIFICAT, nu gol). Preluarea tenant = create-new e comportament CORECT (contul
   gratuit e unealtă de emitere, nu sursă de adevăr contabil; datele reale vin prin fluxul de migrare
@@ -147,8 +134,7 @@ INCHISE azi:
 BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
 1. **An fiscal modificat** (necalendaristic): lipsa coloana; stocuri_api.py/d101.py presupun
    calendaristic (date(an,1,1) hardcodat). Firma cu exercitiu modificat nu e suportata.
-2. **D394 absent din control_fiscal_api.declaratii_datorate**: modulul exista si valideaza,
-   dar nu apare in motorul de obligatii fiscale.
+   (D394-absent din semafor: REZOLVAT 18.07 - semafor faza 3 conecteaza D394+D406, acum 9/9.)
 
 RAMAS — cere ochii/telefonul, NU SSH: **vezi CHECKLIST_BROWSER.md** (PWA P4.18-19, responsive
 P4.20-21, audit vizual ~12 ecrane ramase). Grup fiscal/D101G si ONG: lasate deoparte (fara cod nou).
