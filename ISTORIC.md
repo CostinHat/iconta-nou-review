@@ -1377,3 +1377,60 @@ doar se urca, ci se si RESTAUREAZA cap-coada.
 
 ## Limita ramasa
 Storage Box = single-provider (nu geo-redundanta intre furnizori).
+
+
+---
+
+# 18.07.2026 (partea 5 — seara/noapte): e-Factura — fundatie SEND completa cap-coada
+
+Fundatia e-Factura construita cap-coada (mai putin round-trip-ul LIVE, pending drept SPV - ca F176).
+Deciziile au temei complet in DECIZII.md; aici POINTER + commit-uri.
+
+## Host corectat la sursa (LIVE), anuland corectia din 18.07
+Trei metode, trei host-uri (verificat live, dovada reproductibila): OAuth upload/stare/descarcare ->
+api.anaf.ro; validare structura (fara auth) -> webservicesp.anaf.ro; metoda cu certificat (mTLS) ->
+webserviceapl.anaf.ro (TLS handshake FAILURE fara cert). Nota din 18.07 care pusese webserviceapl pt
+upload = anulata cu dovada handshake. -> DECIZII.md + commit-uri 2407f4e, d486284.
+
+## Generator XML SEND (a95ec8e, 2407f4e)
+core/efactura_send.py — UBL 2.1 / CIUS-RO, reutilizeaza structura din build vechi dar loader rescris pe
+schema curenta (facturi.tert_*). DOVEDIT LA SURSA prin validare/FACT1 -> {"stare":"ok"}. Rotunjire fiscala
+ROUND_HALF_UP. Descoperiri BR-RO (la validator, nu ghicite): BR-RO-110 (BT-54 judet cumparator obligatoriu
+-> coloane facturi.tert_judet + tert_oras), BR-RO-100 (Bucuresti -> CityName SECTOR1..6 -> helper
+_localitate() strict: fara sector clar -> blocheaza "completeaza sectorul", nu inventeaza).
+
+## efactura_trimiteri (954a59f)
+Tabel PER-TENANT de urmarire trimiteri (masina de stari) + garda de idempotenta pe PROD (index unic
+partial: un singur send viu per factura - upload ANAF nu e idempotent).
+
+## spv_token = PRINCIPAL cabinet XOR gratuit (233d0af decizie, 8c21db7 cod)
+Tokenul apartine unui principal, nu unei tabele de firme. tenant_id XOR accounting_firm_id, CHECK in DB,
+resolver UNIC spv_principal(context) + _principal_sql. Connectorul refactorizat pe Principal; connect gratuit
+din UI (/spv/autorizare pe cere_context, cu proprietate). 4 garduri (XOR-DB, resolver unic, capcana F177
+prinsa cu test, poarta cu proprietate). Cabinet neafectat (apel_anaf(principal_firm(1)) live 200, token 21 intact).
+
+## F177 cron refresh 90z (9876da1) — LIVE
+Golul #1: reimprospatare automata a token-urilor sub marja 15z, prin acelasi reimprospateaza_token (rotatie).
+Fail-safe per token + email Brevo. F177 selecteaza pe principal (prinde si tokenele gratuite).
+
+## F160 ruta + buton (de73f9e reguli, 3bb6ec8 veriga) — SEND LIVE
+Ruta POST /tenants/{tid}/facturi/{fid}/trimite-spv cu 4 PORTI in ordine fixa (token viu -> validare/FACT1 ->
+idempotency -> upload pe token propriu) + GET trimiteri-spv (semafor) + buton "Trimite in SPV" per factura emisa
+(semafor gri/galben/verde/rosu, confirmaCaseta, fara confirm/alert). Dovedit prin HTTP cap-coada (auth ->
+spv_principal -> 4 porti -> upload live -> ExecutionStatus=1 "fara drept", asteptat pe dev token).
+
+## F178 cron poll — jumatatea de PRIMIRE (1fe542b) — LIVE
+core/spv_poll.py — stareMesaj/descarcare pe timer (30 min). Fara el o factura urcata ramanea blocata in
+incarcat la infinit (masina de stari incompleta). 6 garduri: reutilizeaza apel_anaf pe principal; scope strict
+(terminale ne-repollate); token expirat -> refresh sau SKIP (auth-fail != respinsa); timeout -> investigatie
+(gri); parsare defensiva (log brut, neasteptat -> gri); rata conservatoare. 9 teste.
+
+## Registru
+F160 (trimite) -> LIVE; F177 (refresh) -> LIVE; F178 (poll) -> LIVE; recipisa LIVE = in asteptarea dreptului
+SPV (ca F176 - dev token n-are drept pe CIF real; se probeaza cu primul patron real cu certificat inrolat).
+F126/F127/F128 raman AMANATE.
+
+## LIMITA (onest, necolorat verde)
+Round-trip-ul LIVE (upload->stareMesaj->descarcare recipisa) NU e dovedit - dev token n-are drept SPV pe niciun
+CIF real. Fundatia e completa si testata izolat (generator, validare, tracking, principal, porti, poll); doar
+proba live asteapta un CIF cu drept. Cuota zilnica ANAF + timpul de prelucrare = de confirmat la sursa.
