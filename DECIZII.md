@@ -667,3 +667,22 @@ CONSECINTA: inventarul "nivel 2 - merita construite" (3 pozitii pe 17.07) e INCH
 (D106/D230 in afara publicului, D307 la cerere reala). Adaugate in FUNCTIONALITATI.csv F173/F174/F175.
 LIMITA: D307 se reia la primul caz real (semnal din suport/cabinet). D106/D230 doar daca se schimba
 publicul (firme de stat / depunere de declaratii personale) - improbabil.
+
+### 18.07.2026 Harta de prioritati - ce ramane si de ce nu se face preventiv  (registru viu, orientare)
+Miezul e COMPLET: contabilitate, salarizare, 9/9 declaratii LIVE + validate DUK, stoc CV, facturare,
+control fiscal (semafor 9/9 fact-aware), export SAGA, punte factura->stoc. Ce ramane = EXPANSIUNE la
+cerere, nu goluri de miez.
+URGENT (se poate face ACUM): backup OFF-SITE (F170) - local e LIVE + restaurare confirmata, dar pe
+acelasi disc ca baza; nu supravietuieste mortii discului. Hetzner Storage Box.
+BLOCAT PE ANAF (se deblocheaza la confirmarea OAuth): clusterul SPV - F121 (e-Transport prin API),
+F126 (e-Factura SPV), F160 (e-Factura in cont gratuit = PRAGUL pozitionarii contra SmartBill/FGO,
+sub el oferta gratuita nu exista in piata). Nu se pot testa pana nu vine confirmarea inrolarii.
+LA SEMNAL (nu preventiv - fiecare = abonament de mentenanta): integrari (PSD2 F130, plati reale F123,
+borderouri curieri/card F132); paritate concurenta (tichete de masa F133, coduri COR F137, centre de
+cost F143, cloud extern F148); F161 (la primul client gratuit care CERE sa migreze sub cabinet);
+D307/F175 (la primul caz real de anulare cod TVA). Se construiesc cand un cabinet real are cazul.
+CERE OM (nu SSH): SAGA import real (confirmare encoding + clasificare iesire), audit vizual ~20 ecrane
+ramase, pilot fiscal cu Daniela [D], teste telefon [T].
+TEMEI: "toate tipurile" nu e o valoare - fiecare formular/integrare construit nefolosit e datorie de
+mentenanta (OPANAF/API se schimba anual), pentru un singur om. Expansiunea urmeaza cererea reala, nu o
+anticipeaza. Blocantul real unic care conteaza comercial = OAuth ANAF (clusterul SPV + gratuit).
