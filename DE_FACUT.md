@@ -191,30 +191,26 @@ Construita si nemonitorizata = datorie, nu functionalitate.
    e drift de arhitectura? Daca e intentionat -> se scrie motivul. Daca nu -> se aliniaza.
    Pana la raspuns, NU se atinge.
 
-## Actualizare 18.07.2026 — e-Factura: fundatie SEND completa; ce ramane
+## Actualizare 18.07.2026 — e-Factura: F126 LIVE cap-coada; ce ramane
 
-Fundatia SEND e construita cap-coada + testata izolat (vezi ISTORIC 18.07 partea 5). Ce ramane,
-separat pe DE PROBAT (blocat pe drept) vs DE CONSTRUIT (munca reala):
+Send + jumatatea de PRIMIRE + four-eyes construite si testate izolat (ISTORIC 18.07 partile 5-6).
+F126 -> LIVRAT. Ce ramane, separat pe DE PROBAT (blocat pe drept) vs DE CONSTRUIT (munca reala):
 
 ### DE PROBAT (blocat pe drept SPV — nu de construit, de dovedit cu un patron real)
-- **Round-trip LIVE upload -> stareMesaj -> descarcare recipisa**: cod complet (F160 send + F178 poll),
-  NEDOVEDIT live. Dev token (certificat admin) n-are drept SPV pe niciun CIF real. Se probeaza doar cu
-  primul patron real cu certificat inrolat pe CIF-ul LUI. Pana atunci nu se coloreaza verde (ca F176).
-- La primul caz real, **de confirmat LA SURSA** (parsarea defensiva e in cod, dar formele sunt din docs,
-  nu live): formatul exact JSON + structura ZIP din raspunsul stareMesaj/descarcare; cuota ZILNICA ANAF
-  (stareMesaj/descarcare); timpul normal de prelucrare (pragul de 2 zile pt starea 'investigatie' e conservator).
+- **Dus-intors LIVE (trimite recipisa + primeste factura reala)**: cod complet (F160 send + F178 poll +
+  F179 receive + four-eyes), NEDOVEDIT live. Dev token (certificat admin) n-are drept SPV pe niciun CIF real.
+  Se probeaza doar cu primul patron real cu certificat inrolat pe CIF-ul LUI. Pana atunci nu se coloreaza verde (ca F176).
+- La primul caz real, **de confirmat LA SURSA** (parsarea defensiva e in cod, formele sunt din docs, nu live):
+  formatul exact JSON + structura ZIP din raspunsul stareMesaj/descarcare; cuota ZILNICA ANAF; timpul normal
+  de prelucrare (pragul de 2 zile pt starea 'investigatie' e conservator).
 
 ### DE CONSTRUIT (munca reala ramasa)
-- **F126 cabinet complet** (pasul 5 din ordinea FAZA 0, NEINCEPUT): send pentru cabinet = deja acoperit de
-  modelul principal (principal_firm). Ramane PRIMIREA automata a facturilor de la furnizori din SPV:
-  listaMesajeFactura sens INTRARE + descarcare -> efactura_import existent -> NIR/cheltuieli.
-  - De verificat LA SURSA inainte: listaMesajeFactura sens intrare — parametri, filtru, fereastra de 60 zile.
-    Absent in cod curent (doar in build vechi /opt/iconta) -> verifica la listarea oficiala ANAF, NU copia din
-    vechi (lectia host-ului: build vechi = sursa istorica, nu autoritate).
+- **F127/F128 — AMANATE**: pendinte pe ANAF adaugand OAuth la SPVWS2. Deadline review 17.08.2026 (raspuns
+  asteptat de la spv.webservice@mfinante.ro). Fara raspuns pana atunci -> raman AMANATE.
 
-### Amanate — conditie cunoscuta (vezi FUNCTIONALITATI.csv F127/F128)
-- **F127/F128**: pendinte pe ANAF adaugand OAuth la SPVWS2. Deadline review 17.08.2026 (raspuns asteptat de la
-  spv.webservice@mfinante.ro). Fara raspuns pana atunci -> raman AMANATE.
-
-### Deja rezolvat (NU se rescrie ca TODO)
-- Cele 3 rute OAuth moarte din main.py — sterse deja la pas 1 conector (commit f3a33f3); grep 18.07 = niciuna.
+### LIVRAT 18.07 (mutat din backlog; detaliu in ISTORIC + FUNCTIONALITATI.csv)
+- **F126 e-Factura cap-coada**: SEND (model principal cabinet XOR gratuit + F160 + F178 poll recipisa) +
+  RECEIVE (F179 cron listaMesajeFactura filtru=P -> efactura_primite, dedup + anti-scurgere cif_beneficiar) +
+  FOUR-EYES (ecran validare, cont sugerat confirmat de om, cross-control TVA existent). listaMesajeFactura
+  verificat la sursa oficiala (mfinante API). Ramane doar dus-intorsul LIVE (mai sus, DE PROBAT).
+- Cele 3 rute OAuth moarte din main.py — sterse la pas 1 conector (f3a33f3). Daca mai apar in vreo lista, scoate-le.
