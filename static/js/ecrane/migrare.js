@@ -1329,7 +1329,7 @@ function importPlanConturiFirma(corp, nav, firma) {
           </div>`).join("")
         : `<div class="stare-goala">Niciun cont g\u0103sit cu acest termen.</div>`;
     } catch {
-      rezZona.innerHTML = `<div class="mig-gol">Eroare la c\u0103utare.</div>`;
+      arataMesaj(rezZona, "Eroare la căutare.", "eroare");
     }
   }
   cauta("");

@@ -2,7 +2,7 @@
 // Bandă de salut + 9 carduri pastel (grilă 3×3), fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD } from "../api.js";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
 import { randeazaListaFirme } from "./firme.js?v=4";
@@ -482,7 +482,7 @@ async function randeazaConsolidare(corp, nav) {
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
   let d = null;
   try { d = await api.get("/cabinet/consolidare"); }
-  catch (e) { corp.innerHTML = `<div class="mig-gol">${e.mesaj || e.message || "eroare"}</div>`; return; }
+  catch (e) { arataMesaj(corp, e.mesaj || e.message || "eroare", "eroare"); return; }
   const lei = (v) => baniRotund(v);
   const luni = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
     "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"];

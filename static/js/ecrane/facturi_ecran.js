@@ -273,7 +273,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   try {
     f = await api.get(`/tenants/${tenantId}/facturi/${facturaId}`);
   } catch {
-    corp.innerHTML = `<div class="mig-gol">Nu am putut \u00eenc\u0103rca factura.</div>`;
+    arataMesaj(corp, "Nu am putut încărca factura.", "eroare");
     corp.querySelector("#fac-back")?.addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
     return;
   }
@@ -608,7 +608,7 @@ async function modelFactura(corp, nav, tenantId, opt) {
   try {
     profil = await api.get(`/tenants/${tenantId}/firma-profil`);
   } catch {
-    corp.innerHTML = `<div class="mig-gol">Nu am putut \u00eenc\u0103rca profilul firmei.</div>`;
+    arataMesaj(corp, "Nu am putut încărca profilul firmei.", "eroare");
     corp.querySelector("#fac-back")?.addEventListener("click", () => meniuFacturi(corp, nav, tenantId, opt));
     return;
   }

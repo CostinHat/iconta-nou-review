@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api } from "../api.js";
+import { api, arataMesaj } from "../api.js";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -345,7 +345,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         if (!v && !c.optional) { lipsa = c.eticheta; break; }
         if (v) corpReq[c.nume] = c.tip === "numar" ? parseFloat(v) : v;
       }
-      if (lipsa) { zona.innerHTML = `<div class="mig-gol">Camp obligatoriu: ${esc(lipsa)}</div>`; return; }
+      if (lipsa) { arataMesaj(zona, "Camp obligatoriu: " + lipsa, "avert"); return; }
       if (opCurenta.multi) {
         corpReq[opCurenta.multi] = [...corp.querySelectorAll("#op-multi > div")].map((rand) => {
           const o = {};
@@ -355,13 +355,13 @@ export async function ecranOperatiuni(corp, nav, t) {
           });
           return o;
         }).filter((o) => Object.keys(o).length > 1 || (Object.keys(o).length === 1 && !o.tip));
-        if (!corpReq[opCurenta.multi].length) { zona.innerHTML = '<div class="mig-gol">Completeaza cel putin un rand.</div>'; return; }
+        if (!corpReq[opCurenta.multi].length) { arataMesaj(zona, "Completeaza cel putin un rand.", "avert"); return; }
       }
       try {
         const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`, corpReq);
         zona.innerHTML = `<p class="pf-intro">Nota generata (ciorna)${r.inregistrare_id ? " #" + r.inregistrare_id : ""}. O validezi din Registru jurnal.</p>`;
       } catch (e) {
-        zona.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")} 00b7 trimis: ${esc(JSON.stringify(corpReq))}</div>`;
+        arataMesaj(zona, (e.mesaj || e.message || "eroare") + " \u00b7 trimis: " + JSON.stringify(corpReq), "eroare");
       }
     });
   };

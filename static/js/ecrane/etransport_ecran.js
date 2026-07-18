@@ -1,5 +1,5 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
-import { api } from "../api.js";
+import { api, arataMesaj } from "../api.js";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
@@ -103,7 +103,7 @@ export async function ecranEtransport(corp, nav, t) {
         a.href = url; a.download = `etransport_${ziAzi}.xml`; a.click();
         URL.revokeObjectURL(url);
         zona.innerHTML = `<p class="pf-intro">XML generat si descarcat. ${esc(r.nota || "")}</p>`;
-      } catch (e) { zona.innerHTML = `<div class="mig-gol">${esc(e.mesaj || e.message || "eroare")}</div>`; }
+      } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }
     });
   };
   deseneaza();

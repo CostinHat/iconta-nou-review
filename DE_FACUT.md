@@ -58,16 +58,7 @@ starea reverificata azi:
   (systemd 8010 REZOLVAT 13.07 — arhivat, vezi ISTORIC:17 "iconta-nou.service enabled".)
 
 ## 5. Iterații viitoare (nu urgente)
-- **Mesaje de eroare cu `.mig-gol` -> `arataMesaj` (~50 apariții)** (adăugat 17.07): la migrarea
-  stărilor goale la `.stare-goala` (v2.13) au ieșit la iveală ~50 de utilizări `.mig-gol` care NU
-  sunt stări goale, ci mesaje de stare după acțiune — blocuri `catch` (`${e.mesaj}`), erori de
-  încărcare ("Nu am putut încărca X"), validări ("Câmp obligatoriu"), loading ("Se validează..."),
-  în rip_ecran.js, cabinet.js, etransport_ecran.js, operatiuni_ecran.js, facturi_ecran.js,
-  firme.js (majoritatea), asistenti.js, migrare.js. Temei: DESIGN_SYSTEM cap.6 le cere prin
-  `arataMesaj(el, txt, tip)` (tipuri: eroare/avert/info/ok) — sunt feedback tranzitoriu, nu conținut
-  de ecran. Nu s-au atins în trecerea stărilor goale (scop separat, decis 17.07). Temă proprie:
-  fiecare `catch` care scrie `.mig-gol` în zonă -> `arataMesaj(zona, mesaj, "eroare")`. Verificare
-  funcțională reală per ecran (căi de eroare greu de atins), nu doar `node --check`.
+- **Mesaje de eroare `.mig-gol` -> `arataMesaj`: FACUT 18.07 (48/53).** Cele ~50 utilizari `.mig-gol` din blocuri catch/validare/loading convertite la `arataMesaj(zona, txt, tip)` (eroare/avert/info) in rip_ecran/operatiuni/etransport/cabinet/migrare/firme/facturi_ecran. RAMAN 5 template-embedded (NU catch, HTML in template - lasate deliberat, nu se ghiceste): asistenti.js:330 (ternar in render), firme.js:428 (eroare conditionala inline in panou), :1315 (ramura ternar `${r.mesaj}`), :1343 (lista .map de mesaje - continut, nu feedback), :1689 (nota permanenta 'Atentie: nota legata de factura'). Verificator TOTAL 0. LIMITA: caile de eroare din catch nu au fost declansate runtime (greu de atins) - conversie mecanica + node-check + aliniere cu tiparul arataMesaj existent in app.
 - **Export către programul contabilului — PARȚIAL: SAGA LIVRAT (F171 18.07), WinMentor/Ciel rămân.**
   SAGA: export facturi emise în XML propriu (Diverse → Import date), rută read-only, format verificat
   la sursă (manual.sagasoft.ro topic-76). Puntea care face posibilă poziționarea „firma emite în iConta,
