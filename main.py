@@ -3719,7 +3719,7 @@ def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cer
 
 
 @app.post("/tenants/{tenant_id}/woocommerce/sincronizeaza")  # wc_sinc_v1
-def wc_sinc(tenant_id: int, ctx=Depends(cere_cabinet)):
+def wc_sinc(tenant_id: int, ctx=Depends(cere_context)):
     from core import woocommerce as _wc
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -3730,7 +3730,7 @@ def wc_sinc(tenant_id: int, ctx=Depends(cere_cabinet)):
 
 
 @app.get("/tenants/{tenant_id}/woocommerce/config")  # wc_config_get_v1
-def wc_config_get(tenant_id: int, ctx=Depends(cere_cabinet)):
+def wc_config_get(tenant_id: int, ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn() as conn, conn.cursor() as cur:
         try:
@@ -3742,7 +3742,7 @@ def wc_config_get(tenant_id: int, ctx=Depends(cere_cabinet)):
         return {"configurat": False, "url": None}
     return {"configurat": bool(r[0] and r[1]), "url": r[0]}
 @app.put("/tenants/{tenant_id}/woocommerce/config")  # wc_sinc_v1
-def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn() as conn, conn.cursor() as cur:
         cur.execute(f"""UPDATE {schema}.firma_profil

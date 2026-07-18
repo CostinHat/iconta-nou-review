@@ -11,6 +11,7 @@ import { ecranEtransport } from "./etransport_ecran.js";
 import { meniuMigrarePerFirma } from "./migrare.js?v=5";  // [p96_import_firma]
 import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
 import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
+import { ecranMagazin } from "./woo_ecran.js";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=2";  // [date_firma_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
@@ -277,7 +278,7 @@ function meniuFirma(corp, nav, t) {
   }
   const bMagazin = corp.querySelector("#fa-magazin");  // wc_fe_v1
   if (bMagazin) {
-    bMagazin.addEventListener("click", () => nav.deschide("Magazin online", (c2) => ecranMagazin(c2, nav, t)));
+    bMagazin.addEventListener("click", () => nav.deschide("Magazin online", (c2) => ecranMagazin(c2, nav, t.id)));
   }
   const bZ = corp.querySelector("#fa-raportz");
   if (bZ) {
@@ -2409,72 +2410,8 @@ async function ecranContracte(corp, nav, t) {
 }
 
 
-// ---------- MAGAZIN ONLINE (WooCommerce) ----------  // wc_fe_v1
-async function ecranMagazin(corp, nav, t) {
-  let mesajSucces = "";
-  async function randeazaPrincipal() {
-    nav.setInapoi(undefined);
-    corp.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
-    let cfg = { configurat: false, url: null };
-    try { cfg = await api.get(`/tenants/${t.id}/woocommerce/config`); } catch (e) {}
-    corp.innerHTML = `
-      <h2 class="pf-titlu">Magazin online</h2>
-      <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>
-      ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
-      <p style="margin:0 0 16px"><b>Stare:</b> ${cfg.configurat ? "conectat la " + cfg.url : "neconfigurat"}</p>
-      ${cfg.configurat ? '<button class="buton-primar" id="wc-sinc" style="margin-bottom:12px">Sincronizeaz\u0103 acum</button><br>' : ""}
-      <button class="buton-secundar" id="wc-btn-config">${cfg.configurat ? "Modific\u0103 configurarea" : "Configureaz\u0103 magazinul"}</button>
-      <div class="em-rezultat" id="wc-rezultat"></div>
-    `;
-    mesajSucces = "";
-    corp.querySelector("#wc-btn-config").addEventListener("click", randeazaConfig);
-    const zona = corp.querySelector("#wc-rezultat");
-    const bs = corp.querySelector("#wc-sinc");
-    if (bs) bs.addEventListener("click", async () => {
-      zona.innerHTML = `<p class="ecran-nota">Se sincronizeaza...</p>`;
-      try {
-        const r = await api.post(`/tenants/${t.id}/woocommerce/sincronizeaza`, {});
-        const n = (r.importate || []).length;
-        zona.innerHTML = `<span style="color:var(--verde)">${n} facturi importate, ${r.sarite || 0} deja existente.</span>`;
-      } catch (e) { zona.innerHTML = `<span style="color:var(--rosu)">${e.mesaj || "eroare"}</span>`; }
-    });
-  }
-  function randeazaConfig() {
-    nav.setInapoi(randeazaPrincipal);
-    corp.innerHTML = `
-      <h2 class="pf-titlu">Configurare magazin</h2>
-      <div class="camp" style="margin-bottom:10px">
-        <label class="camp-eticheta">URL magazin</label>
-        <input class="camp-input" id="wc-url" placeholder="https://magazin.ro" autocomplete="off" autofocus>
-      </div>
-      <div class="camp" style="margin-bottom:10px">
-        <label class="camp-eticheta">Consumer Key</label>
-        <input class="camp-input" id="wc-ck" placeholder="ck_..." autocomplete="off">
-      </div>
-      <div class="camp" style="margin-bottom:14px">
-        <label class="camp-eticheta">Consumer Secret</label>
-        <input class="camp-input" id="wc-cs" placeholder="cs_..." type="password" autocomplete="off">
-      </div>
-      <button class="buton-primar" id="wc-salveaza">Salveaz\u0103</button>
-      <button class="btn-link" id="wc-renunta" style="margin-left:10px">Renun\u021b\u0103</button>
-      <p class="ecran-nota" id="wc-msg" style="margin:10px 0 0"></p>
-    `;
-    corp.querySelector("#wc-renunta").addEventListener("click", randeazaPrincipal);
-    corp.querySelector("#wc-salveaza").addEventListener("click", async () => {
-      const msg = corp.querySelector("#wc-msg");
-      try {
-        await api.put(`/tenants/${t.id}/woocommerce/config`, {
-          url: corp.querySelector("#wc-url").value.trim() || null,
-          ck: corp.querySelector("#wc-ck").value.trim() || null,
-          cs: corp.querySelector("#wc-cs").value.trim() || null,
-        });
-        mesajSucces = "Configurare salvata.";
-        randeazaPrincipal();
-      } catch (e) { msg.innerHTML = '<span class="msg-eroare">' + (e.mesaj || "eroare") + '</span>'; }
-    });
-  }
-  randeazaPrincipal();
-}
+// [wc_extras_v1] ecranMagazin mutat in ./woo_ecran.js (reutilizat de cont gratuit F156).
+
 /* acces_client_ui_v1 */
 async function ecranAccesClient(corp, nav, t) {
   let mesajSucces = "";
