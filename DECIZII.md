@@ -808,3 +808,34 @@ decriptabil, serial identic; selectia normala (15z) = 0 pe tokenul proaspat. Tim
 LIMITA: reimprospateaza_token trateaza orice non-200 la fel (nu distinge invalid_grant permanent de 5xx
 tranzitoriu) - rafinarea cere schimbare in _post_token, amanata pana la primul cabinet real; marja 15z
 acopera tranzitoriile. Testat pe un singur token dev, nu pe mai multe cabinete simultan.
+
+### 18.07.2026 Host e-Factura = webserviceapl.anaf.ro (NU api.anaf.ro)  (core/efactura_send.py FCTEL_BASE_TPL)
+DECIZIE: baza REST pentru e-Factura (upload/stareMesaj/descarcare/listaMesajeFactura) =
+https://webserviceapl.anaf.ro/{prod|test}/FCTEL/rest. O SINGURA constanta (FCTEL_BASE_TPL,
+env-overridable EFACTURA_FCTEL_BASE) + helper fctel_base(mode); upload/stare/descarcare (pasul 2)
+o refolosesc, NU rescriu host prin apeluri.
+TEMEI: listarea oficiala ANAF (static.anaf.ro/.../url_eFactura.html) - sursa de autoritate.
+ALTERNATIVA RESPINSA: https://api.anaf.ro/{prod|test}/FCTEL/rest, copiat din build-ul vechi
+/opt/iconta/main.py - host ISTORIC/stale. Build-ul vechi e sursa istorica (util pt structura XML
+si nume endpoint), NU autoritate pe host. Nu se copiaza magic string din /opt/iconta.
+LIMITA: corect verificat pe listare; devine critic la primul upload TEST (pasul 2) - daca host-ul
+s-a schimbat din nou, acolo se vede. Generatorul pur (pasul 1) nu atinge host-ul.
+
+### 18.07.2026 Generator e-Factura XML SEND (pasul 1, F126/F160)  (core/efactura_send.py + test)
+DECIZIE: generatorul XML de trimitere (UBL 2.1 / CIUS-RO) e core/efactura_send.py - PUR (fara
+DB/retea in genereaza_xml), cu loader separat pe schema CURENTA. Fundatia comuna F126 (cabinet) +
+F160 (gratuit). Pasul 1 din ordinea aprobata (1->5); pasul 2 = upload pe TEST = validatorul real.
+TEMEI: reutilizarea structurii XML dovedite din build-ul vechi (_efx_build_xml) - reg de aur, nu
+rescriu de la zero - DAR loader rescris (build vechi citea tabel `clienti` inexistent; curentul are
+cumparatorul denormalizat pe facturi.tert_nume/tert_cui/tert_adresa). Rotunjire fiscala Decimal +
+ROUND_HALF_UP (regula iConta), nu round().
+DOVADA: 6 teste pe date minime construite manual (structura, sume, rotunjire half-up != bankers,
+VAT furnizor doar daca platitor, taxare_inversa ridica NotImplementedError, host o singura constanta)
++ test functional real pe tenant_002 factura 1: net 10000 / TVA 2100 / total 12100 = exact ca in DB,
+XML bine-format (ElementTree).
+LIMITE v1 (de rezolvat la/dupa TEST, NU ghicite): (1) cumparatorul are doar adresa libera in schema,
+CIUS cere oras (BT-52) - CityName = oras daca vine, altfel adresa libera (fallback), formularul de
+factura trebuie sa capteze orasul separat inainte de send real; (2) doar factura standard cu TVA
+(S/Z); taxare_inversa (AE), neplatitor TVA (O), storno/nota de credit (381) - netratate v1, se adauga
+dupa confirmare pe TEST. NU exista validator e-Factura local (DUK = doar declaratii) -> validatorul
+real e upload-ul TEST (pasul 2).
