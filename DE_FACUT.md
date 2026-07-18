@@ -76,6 +76,24 @@ starea reverificata azi:
   de ecran. Nu s-au atins în trecerea stărilor goale (scop separat, decis 17.07). Temă proprie:
   fiecare `catch` care scrie `.mig-gol` în zonă -> `arataMesaj(zona, mesaj, "eroare")`. Verificare
   funcțională reală per ecran (căi de eroare greu de atins), nu doar `node --check`.
+- **Export către programul contabilului (SAGA/WinMentor/Ciel) — GOL STRATEGIC** (adăugat 18.07,
+  verificat la sursă READ-ONLY): iConta NU are niciun export al datelor proprii (facturi/note/jurnal)
+  către un format pe care un program de contabilitate îl importă. Confirmat absent: singura rută cu
+  „export" e `/export-extracomunitar` (main.py:6077, operațiune fiscală de bunuri, nu date contabile);
+  `grep .dbf|csv.writer|export.*(nota|jurnal|factura|balanta)` = 0; toate hit-urile SAGA/Ciel din cod
+  sunt IMPORT/inbound (solduri_api.py:15/35, *_import_api.py, numere.py — iConta citește exporturi DIN
+  ele, nu scrie către ele). DE CE contează: e PUNTEA care face posibilă poziționarea „firma emite în
+  iConta, contabilul rămâne pe SAGA" (DECIZII.md 18.07 „cont gratuit = vârf de lance" + „paritate/
+  lipsuri", gol strategic #2). Fără export, firma nu poate folosi iConta fără să-și enerveze contabilul.
+  NU depinde de OAuth ANAF (spre deosebire de F160/SPV). De stabilit formatul-țintă cu Costin înainte
+  de construcție (ce importă SAGA/WinMentor/Ciel: XML? note contabile? format propriu?).
+- **Igienă la migrare: contul gratuit vechi rămâne activ după preluarea firmei de un cabinet** (adăugat
+  18.07, punct de VERIFICAT, nu gol). Preluarea tenant = create-new e comportament CORECT (contul
+  gratuit e unealtă de emitere, nu sursă de adevăr contabil; datele reale vin prin fluxul de migrare
+  al contabilului — decis în DECIZII.md commit afd67d9, cu retenție 1 an). RĂMÂNE de verificat: după
+  ce contabilul aduce firma în cabinet, contul gratuit vechi (același CUI) rămâne activ → firma ar
+  putea emite din două locuri cu același CUI. De închis contul gratuit la migrare = igienă. Doar de
+  verificat/tratat la migrare, nu acum.
 - Cod 10 CM (reducere timp muncă, art. 19) — INTEGRAT, nu mai e iterație viitoare (corectat 17.07:
   nota veche "exclus din dropdown, `calcul_cm_cod10` neintegrat" era contrazisă de cod). Dovadă:
   `calcul_cm_cod10` definit (salarizare.py:208) + apelat în flux real (salariati_api.py:222) + în
