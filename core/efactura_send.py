@@ -398,9 +398,42 @@ def stare_mesaj(principal, index_incarcare, mediu="test"):
 
 
 def descarca(principal, id_descarcare, mediu="test"):
-    """GET /descarcare?id=N prin apel_anaf. Intoarce Response (ZIP in .content)."""
+    """GET /descarcare?id=N prin apel_anaf. Intoarce Response (ZIP in .content).
+    Partajata intre F178 (poll recipise) si primirea F126 (facturi furnizori) - un singur client."""
     url = "%s/descarcare?id=%s" % (fctel_base(mediu), id_descarcare)
     return spv_conector.apel_anaf(principal, "GET", url, timeout=120)
+
+
+def lista_mesaje(principal, cif, mediu="test", zile=3, filtru="P"):
+    """
+    GET listaMesajeFactura?zile=N&cif=X&filtru=F prin apel_anaf (pe tokenul principalului).
+    Intoarce (mesaje, eroare): mesaje = lista de dict-uri cu campurile ANAF (id = id de descarcare,
+    id_solicitare = indexul incarcarii, data_creare, tip, cif_emitent, cif_beneficiar, detalii);
+    eroare = textul din campul 'eroare' (ex. fara mesaje / fara drept) sau None.
+
+    Parametri VERIFICATI LA SURSA OFICIALA (mfinante.gov.ro, doc API e-Factura; vezi ARHITECTURA_SPV.md):
+      - zile: 1..60 OBLIGATORIU (fereastra); cif: numeric OBLIGATORIU.
+      - filtru (optional): E=erori, T=trimisa, P=PRIMITA (facturi de la furnizori), R=mesaj cumparator.
+    Limita: listaMesajeFactura = 1500 apeluri/zi/CUI.
+
+    GARD PENTRU APELANT (cron receive, la construcTie): filtru=P intoarce ce a marcat ANAF ca 'primita',
+    dar dedup+import TREBUIE sa confirme cif_beneficiar == CIF-ul tenantului (nu doar tip=P). Pe un token
+    de cabinet care acopera N CIF-uri, factura importata se leaga de tenantul al carui CIF e cif_beneficiar,
+    nu de primul din bucla - altfel scurgere intre chiriasi.
+    """
+    zile = max(1, min(int(zile), 60))
+    cifn = "".join(c for c in str(cif) if c.isdigit())
+    url = "%s/listaMesajeFactura?zile=%d&cif=%s&filtru=%s" % (fctel_base(mediu), zile, cifn, filtru)
+    r = spv_conector.apel_anaf(principal, "GET", url, timeout=60)
+    try:
+        j = r.json()
+    except ValueError:
+        return [], "raspuns non-JSON de la listaMesajeFactura: %s" % (r.text or "")[:300]
+    if isinstance(j, dict) and j.get("eroare"):
+        return [], j.get("eroare")
+    if isinstance(j, dict):
+        return (j.get("mesaje") or []), None
+    return [], "forma neasteptata listaMesajeFactura: %s" % str(j)[:200]
 
 
 def trimite(schema, factura_id, principal, mediu="test"):

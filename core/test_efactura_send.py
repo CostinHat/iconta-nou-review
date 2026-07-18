@@ -97,6 +97,30 @@ def test_localitate_stricta_blocheaza_fara_sector():
         ef.genereaza_xml(_factura_minima(), _linii(), furn, _client())
 
 
+def test_lista_mesaje_parseaza_si_construieste_url(monkeypatch):
+    from core import spv_conector as sc
+    cap = {}
+    class _R:
+        text = ""
+        def json(self): return {"mesaje": [{"id": "9", "tip": "FACTURA PRIMITA", "cif_beneficiar": "123"}]}
+    monkeypatch.setattr(sc, "apel_anaf", lambda p, m, url, **kw: cap.update(url=url) or _R())
+    mesaje, err = ef.lista_mesaje(sc.principal_firm(1), "RO123", zile=99, filtru="P")
+    assert err is None and len(mesaje) == 1 and mesaje[0]["id"] == "9"
+    # zile clamp 99->60 (max oficial), cif doar cifre, filtru=P (FACTURA PRIMITA)
+    assert "zile=60" in cap["url"] and "cif=123" in cap["url"] and "filtru=P" in cap["url"]
+    assert "listaMesajeFactura" in cap["url"] and "api.anaf.ro" in cap["url"]
+
+
+def test_lista_mesaje_camp_eroare(monkeypatch):
+    from core import spv_conector as sc
+    class _R:
+        text = ""
+        def json(self): return {"eroare": "Nu exista mesaje in intervalul solicitat"}
+    monkeypatch.setattr(sc, "apel_anaf", lambda p, m, url, **kw: _R())
+    mesaje, err = ef.lista_mesaje(sc.principal_firm(1), "123")
+    assert mesaje == [] and "mesaje" in err
+
+
 def test_host_o_singura_constanta():
     # host OAuth verificat LIVE 18.07 = api.anaf.ro (webserviceapl = mTLS, TLS handshake fail)
     assert ef.fctel_base("prod") == "https://api.anaf.ro/prod/FCTEL/rest"

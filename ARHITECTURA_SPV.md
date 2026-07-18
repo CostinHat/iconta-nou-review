@@ -275,3 +275,29 @@ INTREBARE TRIMISA 17.07.2026 catre spv.webservice@mfinante.ro, doua puncte:
   (1) exista/se planifica transmitere declaratii prin WS?  -> deblocheaza F127
   (2) se planifica OAuth pentru SPVWS2?                    -> deblocheaza F128 + rapoartele 'cerere'
 Fara raspuns pana la 17.08.2026: F127/F128 raman AMANAT. Raspunsul se consemneaza AICI.
+
+# ============================================================
+# e-Factura PRIMIRE (F126) — listaMesajeFactura (VERIFICAT LA SURSA 18.07.2026)
+# ============================================================
+Sursa oficiala: mfinante.gov.ro doc API e-Factura + static.anaf.ro url_eFactura.html (NU build vechi,
+NU SmartBill). Host OAuth = api.anaf.ro (listarea listeaza webserviceapl = ruta cert/mTLS).
+
+## listaMesajeFactura (lista simpla)
+GET {api.anaf.ro}/{prod|test}/FCTEL/rest/listaMesajeFactura?zile={1..60}&cif={numeric}&filtru={F}
+- zile: 1..60 OBLIGATORIU (fereastra). cif: numeric OBLIGATORIU.
+- filtru (OPTIONAL): E=ERORI FACTURA, T=FACTURA TRIMISA, P=FACTURA PRIMITA (de la furnizori),
+  R=MESAJ CUMPARATOR primit/transmis. Pentru primire F126 -> filtru=P.
+- Limita: 1500 apeluri/zi/CUI (varianta paginata listaMesajePaginatieFactura = 100.000/zi/CUI,
+  cu startTime/endTime in ms + pagina - pentru intervale mari).
+- Raspuns JSON: {"mesaje":[...]} sau {"eroare":"..."}. Per mesaj: id (id de descarcare),
+  id_solicitare (indexul incarcarii), data_creare, tip (ex. FACTURA PRIMITA), detalii,
+  cif_emitent (vanzator), cif_beneficiar (cumparator).
+
+## GARD CRITIC (scurgere intre chiriasi): filtrare pe cif_beneficiar, NU doar pe tip=P
+filtru=P intoarce ce a marcat ANAF ca 'primita', dar pe un token de CABINET care acopera N CIF-uri,
+factura importata TREBUIE legata de tenantul al carui CIF == cif_beneficiar, nu de primul din bucla.
+Dedup + import confirma cif_beneficiar == CIF-ul tenantului. Altfel o factura ajunge la tenantul gresit.
+
+## Refolosire (nu client paralel): descarcarea e efactura_send.descarca (partajata cu F178 poll).
+## Four-eyes: factura furnizor importata intra CIORNA (status != validata); contabilul valideaza ->
+## abia atunci NIR/cheltuieli. Alimenteaza efactura_import existent (nu import paralel).
