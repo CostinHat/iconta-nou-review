@@ -97,6 +97,25 @@ def context_din_token(token, secret=None, acum=None):
 # ============================================================
 #  LOGIN — parte DB (se dovedește pe server)
 # ============================================================
+def _tenant_client(conn, u):
+    """Pentru un CLIENT: (nume_tenant, tenant_are_cabinet) din tenantul lui (user_tenants, LIMIT 1).
+    tenant_are_cabinet = tenantul e gestionat de un cabinet (accounting_firm_id setat). Determinarea
+    gratuit-vs-cabinet e la nivel de TENANT, NU user.firm (care e NULL la ORICE client, deci nu putea
+    distinge gratuit de client-portal gestionat). Vezi DECIZII.md 18.07 F161. Non-client -> (None, False)."""
+    import psycopg2.extras as _E
+    if u["rol"] != "client":
+        return None, False
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute(
+            "SELECT t.nume, t.accounting_firm_id FROM public.user_tenants ut "
+            "JOIN public.tenants t ON t.id = ut.tenant_id "
+            "WHERE ut.user_id = %s ORDER BY ut.tenant_id LIMIT 1", (u["id"],))
+        row = cur.fetchone()
+    if not row:
+        return None, False
+    return row["nume"], bool(row["accounting_firm_id"])
+
+
 def sesiune_pentru_user(conn, user_id, secret=None):
     """Emite token + user pentru un user_id deja autentificat (magic link). # sesiune_pentru_user_v1"""
     import psycopg2.extras as _E
@@ -114,21 +133,14 @@ def sesiune_pentru_user(conn, user_id, secret=None):
     if u["accounting_firm_id"] and u["firma_activa"] is False:
         return {"ok": False, "cod": "CABINET_SUSPENDAT", "mesaj": "Cabinetul este suspendat."}
     token = emite_token(u, secret=secret)
-    nume_tenant = None
-    if u["rol"] == "client":
-        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-            cur.execute(
-                "SELECT t.nume FROM public.user_tenants ut "
-                "JOIN public.tenants t ON t.id = ut.tenant_id "
-                "WHERE ut.user_id = %s ORDER BY ut.tenant_id LIMIT 1", (u["id"],))
-            row = cur.fetchone()
-        nume_tenant = row["nume"] if row else None
+    nume_tenant, tenant_are_cabinet = _tenant_client(conn, u)
     return {"ok": True, "token": token,
             "user": {"id": u["id"], "rol": u["rol"],
                      "nume": u.get("nume"), "prenume": u.get("prenume"),
                      "firm": u["accounting_firm_id"],
                      "nume_firma": u.get("nume_firma"),
                      "nume_tenant": nume_tenant,
+                     "tenant_are_cabinet": tenant_are_cabinet,
                      "poate_pregati": bool(u.get("poate_pregati")),
                      "poate_valida": bool(u.get("poate_valida")),
                      "poate_depune": bool(u.get("poate_depune"))}}
@@ -161,23 +173,15 @@ def login(conn, email, parola, secret=None):
         return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "email sau parolă greșite"}
 
     token = emite_token(u, secret=secret)
-    # [[p90_client_bara]] pentru client: numele firmei lui (tenant) din user_tenants
-    nume_tenant = None
-    if u["rol"] == "client":
-        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-            cur.execute(
-                "SELECT t.nume FROM public.user_tenants ut "
-                "JOIN public.tenants t ON t.id = ut.tenant_id "
-                "WHERE ut.user_id = %s ORDER BY ut.tenant_id LIMIT 1",
-                (u["id"],))
-            row = cur.fetchone()
-        nume_tenant = row["nume"] if row else None
+    # [[p90_client_bara]] pentru client: numele firmei lui (tenant) + daca e gestionat de cabinet
+    nume_tenant, tenant_are_cabinet = _tenant_client(conn, u)
     return {"ok": True, "token": token,
             "user": {"id": u["id"], "rol": u["rol"],
                      "nume": u.get("nume"), "prenume": u.get("prenume"),
                      "firm": u["accounting_firm_id"],
                      "nume_firma": u.get("nume_firma"),
                      "nume_tenant": nume_tenant,
+                     "tenant_are_cabinet": tenant_are_cabinet,
                      "poate_pregati": bool(u.get("poate_pregati")),
                      "poate_valida": bool(u.get("poate_valida")),
                      "poate_depune": bool(u.get("poate_depune"))},
