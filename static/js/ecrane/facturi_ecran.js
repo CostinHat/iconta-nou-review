@@ -112,11 +112,26 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
         <button class="buton-secundar" id="fac-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="fac-next">luna \u2192</button>
+        <button class="buton-secundar" id="fac-saga-luna" style="margin-left:12px">Export SAGA lun\u0103</button>
         ${maiSunt ? '<button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px">Vezi \u0219i facturile mai vechi din aceast\u0103 lun\u0103</button>' : ""}</p>
+      <div id="fac-saga-zona"></div>
       <div class="pf-lista zebra-lista">${corpuri}</div>`;
     corp.querySelector("#fac-mai-multe")?.addEventListener("click", () => { afisate += 10; deseneaza(); });
     corp.querySelector("#fac-prev").addEventListener("click", () => { afisate = 10; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#fac-next").addEventListener("click", () => { afisate = 10; luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelector("#fac-saga-luna")?.addEventListener("click", async () => {  // [export_saga_v1] F171
+      const zona = corp.querySelector("#fac-saga-zona");
+      try {
+        const resp = await fetch(`/tenants/${tenantId}/facturi/export-saga?an=${an}&luna=${luna}`, { headers: { Authorization: "Bearer " + sesiune.token() } });
+        if (resp.status === 404) { arataMesaj(zona, "Nicio factură emisă în luna aceasta.", "info"); return; }
+        if (!resp.ok) throw new Error("eroare " + resp.status);
+        const url = URL.createObjectURL(await resp.blob());
+        const a = document.createElement("a");
+        a.href = url; a.download = `export_saga_${an}_${String(luna).padStart(2, "0")}.zip`; a.click();
+        URL.revokeObjectURL(url);
+        arataMesaj(zona, "Arhivă SAGA descărcată (un XML per factură). În SAGA: Diverse → Import date din fișiere generate.", "ok");
+      } catch (e) { arataMesaj(zona, (e && e.message) || "eroare", "eroare"); }
+    });
     corp.querySelectorAll(".fac-cont").forEach((b) => b.addEventListener("click", async (ev) => {
       ev.stopPropagation();
       try {
@@ -330,12 +345,14 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         ${f.platita_la ? '<span class="fd-stare fd-stare-verde">pl\u0103tit\u0103</span>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-chitanta">Emite chitan\u021b\u0103</button>' : ""}
+        ${(f.directie === "emisa" && f.tip === "factura") ? '<button class="buton-secundar em-buton-sec" id="fd-saga">Export SAGA</button>' : ""}
         ${f.transformat_in_id ? `<button class="btn-link" id="fd-vezi-transformata">transformat\u0103 \u00een ${esc(f.transformat_in_numar || "factur\u0103")}</button>` : ""}
       </div>
       <div class="fd-email-zona" id="fd-email-zona"></div>
       <div class="fd-storno-zona" id="fd-storno-zona"></div>
       <div id="fd-plata-zona"></div>
       <div id="fd-chitanta-zona"></div>
+      <div id="fd-saga-zona"></div>
       <div class="fd-antet-linie">${dir ? dir.charAt(0).toUpperCase() + dir.slice(1) : ""} \u00b7 ${dataRo(f.data_emitere)}${f.data_scadenta ? " \u00b7 scaden\u021b\u0103 " + dataRo(f.data_scadenta) : ""}</div>
       ${partener ? `<div class="fd-antet-linie">${dir === "primit\u0103" ? "De la" : "C\u0103tre"}: ${partener}</div>` : ""}
     </div>
@@ -357,6 +374,22 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     ${blocValuta}`;
 
   corp.querySelector("#fac-back")?.addEventListener("click", () => istoricFacturi(corp, nav, tenantId, opt));
+
+  const bSaga = corp.querySelector("#fd-saga");  // [export_saga_v1] F171
+  if (bSaga) bSaga.addEventListener("click", async () => {
+    const zona = corp.querySelector("#fd-saga-zona");
+    try {
+      const resp = await fetch(`/tenants/${tenantId}/facturi/${facturaId}/export-saga`, { headers: { Authorization: "Bearer " + sesiune.token() } });
+      if (!resp.ok) throw new Error("eroare " + resp.status);
+      const cd = resp.headers.get("Content-Disposition") || "";
+      const m = cd.match(/filename="([^"]+)"/);
+      const url = URL.createObjectURL(await resp.blob());
+      const a = document.createElement("a");
+      a.href = url; a.download = m ? m[1] : "factura_saga.xml"; a.click();
+      URL.revokeObjectURL(url);
+      arataMesaj(zona, "XML SAGA descărcat. În SAGA: Diverse → Import date din fișiere generate.", "ok");
+    } catch (e) { arataMesaj(zona, (e && e.message) || "eroare", "eroare"); }
+  });
 
   const bPlata = corp.querySelector("#fd-plata");  /* plati_fe_v1 */
   if (bPlata) bPlata.addEventListener("click", async () => {

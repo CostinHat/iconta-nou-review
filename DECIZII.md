@@ -483,3 +483,26 @@ CERINTE la implementare (GDPR, obligatorii cand se construieste):
 
 STARE: decizie luata, NU se construieste acum (0 conturi gratuite reale). Se implementeaza
 cand exista conturi + cand se construieste fluxul de preluare (punctul 1).
+
+### 18.07.2026 F171 export SAGA: gol strategic LIVRAT (facturi emise -> XML SAGA), SAGA-only  (core/export_saga.py; LIVE)
+DECIZIE: exportul catre programul contabilului (gol strategic notat 18.07 in DE_FACUT + DECIZII
+"cont gratuit paritate/lipsuri") e LIVRAT pentru SAGA. Firma emite in iConta, exporta XML, contabilul
+importa in SAGA (Diverse -> Import date din fisiere generate). Puntea care face posibila pozitionarea
+"firma emite in iConta, contabilul ramane pe SAGA".
+TEMEI (verificat la sursa 18.07): structura XML si cele 3 reguli SAGA de la manual.sagasoft.ro/sagac/
+topic-76 + forum oficial. (1) directia se decide prin CIF (Furnizor=firma-client -> SAGA claseaza
+iesire, nu se marcheaza directia); (2) nume fisier obligatoriu F_<cif>_<nr>_<data>.xml; (3) data
+zz.ll.aaaa, moneda RON, sume/cota 2 zecimale punct. Rotunjire fiscala Decimal+ROUND_HALF_UP (reutilizat
+_q + totaluri_din_linii din facturi_api). Read-only: ruta noua citeste factura, produce XML; fara
+schema, fara UPDATE, fara atingere pe emitere/facturi_api.
+ALTERNATIVA RESPINSA: WinMentor/Ciel acum - SAGA acopera majoritatea pietei; codul e structurat pe
+format (un generator per format) ca sa primeasca altele ulterior, dar se livreaza doar SAGA.
+LIMITA DECLARATA:
+  - SAGA-only. WinMentor/Ciel = later (alt generator, alta structura XML).
+  - Encoding UTF-8 in XML - SAGA modern il accepta; de confirmat vizual la primul import real ca
+    diacriticele intra corect (SAGA vechi cerea Windows-1250). Daca pica, se schimba encoding-ul.
+  - Camp fara sursa in iConta lasat GOL, nu inventat: FurnizorCapital (nu exista in firma_profil),
+    ClientNrRegCom/Banca/IBAN (clienti n-are aceste campuri), CodArticolFurnizor/Client (facturile
+    n-au cod de articol -> SAGA pune linia pe "Nedefinit", documentat acceptabil).
+  - Doar facturi EMISE tip 'factura' (inclusiv storno, sume negative). Proforme/avize excluse (SAGA
+    importa facturi).

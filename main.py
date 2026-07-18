@@ -4769,6 +4769,48 @@ def contracte_genereaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere
                     headers={"Content-Disposition": 'attachment; filename="contract.pdf"'})
 
 
+# --- export facturi emise catre SAGA (F171, read-only) ---
+@app.get("/tenants/{tenant_id}/facturi/{factura_id}/export-saga")
+def export_saga_factura(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
+    from core import export_saga as _xs
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        date_f = _xs.date_factura(conn, schema, factura_id)
+    if date_f is None:
+        raise HTTPException(404, "factura inexistenta sau nu e emisa")
+    firma, factura, linii = date_f
+    xml = _xs.xml_factura(firma, factura, linii)
+    nume = _xs.nume_fisier(firma.get("cui"), factura.get("numar"), factura.get("data_emitere"))
+    return Response(content=xml, media_type="application/xml",
+                    headers={"Content-Disposition": 'attachment; filename="%s"' % nume})
+
+@app.get("/tenants/{tenant_id}/facturi/export-saga")
+def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
+    from core import export_saga as _xs
+    import io as _io, zipfile as _zip
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        ids = _xs.facturi_emise_luna(conn, schema, an, luna)
+        if not ids:
+            raise HTTPException(404, "nicio factura emisa in luna aleasa")
+        buf = _io.BytesIO()
+        with _zip.ZipFile(buf, "w", _zip.ZIP_DEFLATED) as z:
+            for fid in ids:
+                d = _xs.date_factura(conn, schema, fid)
+                if not d:
+                    continue
+                firma, factura, linii = d
+                z.writestr(_xs.nume_fisier(firma.get("cui"), factura.get("numar"), factura.get("data_emitere")),
+                           _xs.xml_factura(firma, factura, linii))
+    nume_zip = "export_saga_%04d_%02d.zip" % (an, luna)
+    return Response(content=buf.getvalue(), media_type="application/zip",
+                    headers={"Content-Disposition": 'attachment; filename="%s"' % nume_zip})
+
+
 # --- jurnal: editare/stergere/validare ciorne ---
 def _jurnal_rez(rez):
     if rez is None:
