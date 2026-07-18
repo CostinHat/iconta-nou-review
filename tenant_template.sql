@@ -2191,3 +2191,9 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.efactura_trimiteri (
 CREATE UNIQUE INDEX IF NOT EXISTS uq_efactura_trimiteri_viu
   ON TENANT_PLACEHOLDER.efactura_trimiteri (factura_id)
   WHERE mediu='prod' AND stare IN ('incarcat','in_prelucrare','ok');
+
+--
+-- e-Factura: adresa structurata cumparator (BT-52/BT-54) — mirror al core/migrare_efactura_adresa.py
+--
+ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS tert_oras  text;
+ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS tert_judet text;

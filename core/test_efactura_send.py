@@ -83,7 +83,10 @@ def test_taxare_inversa_neimplementata_v1():
 
 
 def test_host_o_singura_constanta():
-    assert ef.fctel_base("prod") == "https://webserviceapl.anaf.ro/prod/FCTEL/rest"
-    assert ef.fctel_base("test") == "https://webserviceapl.anaf.ro/test/FCTEL/rest"
-    assert ef.fctel_base("orice") == "https://webserviceapl.anaf.ro/prod/FCTEL/rest"  # fallback prod
-    assert "api.anaf.ro" not in ef.FCTEL_BASE_TPL  # host istoric respins
+    # host OAuth verificat LIVE 18.07 = api.anaf.ro (webserviceapl = mTLS, TLS handshake fail)
+    assert ef.fctel_base("prod") == "https://api.anaf.ro/prod/FCTEL/rest"
+    assert ef.fctel_base("test") == "https://api.anaf.ro/test/FCTEL/rest"
+    assert ef.fctel_base("orice") == "https://api.anaf.ro/prod/FCTEL/rest"  # fallback prod
+    assert "webserviceapl" not in ef.FCTEL_BASE_TPL   # ruta mTLS, nu OAuth
+    # validatorul de structura pe host propriu, fara token
+    assert "webservicesp.anaf.ro" in ef.FCTEL_VALIDARE_TPL

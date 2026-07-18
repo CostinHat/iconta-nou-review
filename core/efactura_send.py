@@ -10,11 +10,14 @@ Reutilizeaza STRUCTURA XML dovedita in build-ul vechi (_efx_build_xml), dar:
     build-ul vechi citea dintr-un tabel `clienti` care nu mai exista;
   - rotunjire fiscala explicita (Decimal + ROUND_HALF_UP, regula iConta), nu round().
 
-HOST e-Factura (DECIZIE 18.07, DECIZII.md): baza REST corecta =
-  https://webserviceapl.anaf.ro/{prod|test}/FCTEL/rest
-NU api.anaf.ro (host ISTORIC din /opt/iconta, stale). Sursa autoritate = listarea oficiala
-ANAF (static.anaf.ro/.../url_eFactura.html), nu build-ul vechi. O SINGURA constanta aici;
-upload/stare/descarcare (pasul 2) o refolosesc, nu rescriu host prin apeluri.
+HOST-uri e-Factura (VERIFICAT LIVE 18.07 - trei metode, trei host-uri; DECIZII.md):
+  - UPLOAD/stare/descarcare prin OAuth (Bearer)  -> api.anaf.ro/{prod|test}/FCTEL/rest
+    (TLS standard, accepta token; DOVADA: 200 cu token, 401 fara).
+  - VALIDARE structura (fara token/drept)         -> webservicesp.anaf.ro/prod/FCTEL/rest/validare/{std}
+  - Metoda cu CERTIFICAT (mTLS)                    -> webserviceapl.anaf.ro (cere cert client;
+    DOVADA: TLS handshake FAILURE fara certificat - inutilizabil server-side pe OAuth).
+Corectie fata de nota 18.07 care pusese webserviceapl pentru upload (aia e ruta mTLS).
+Fiecare host = o SINGURA constanta; upload/stare/descarcare o refolosesc, nu o rescriu.
 
 LIMITE v1 (de confirmat pe TEST la pasul 2, NU ghicite aici):
   - Cumparatorul are in schema doar tert_nume/tert_cui/tert_adresa (adresa libera);
@@ -33,11 +36,13 @@ from xml.sax.saxutils import escape as _xml_escape
 #  CONFIG HOST — o singura constanta (env-overridable)
 # ============================================================
 FCTEL_BASE_TPL = os.environ.get(
-    "EFACTURA_FCTEL_BASE", "https://webserviceapl.anaf.ro/%s/FCTEL/rest")
+    "EFACTURA_FCTEL_BASE", "https://api.anaf.ro/%s/FCTEL/rest")   # OAuth upload/stare/descarcare
+FCTEL_VALIDARE_TPL = os.environ.get(
+    "EFACTURA_VALIDARE_URL", "https://webservicesp.anaf.ro/prod/FCTEL/rest/validare/%s")  # structura, fara token
 
 
 def fctel_base(mode="prod"):
-    """Baza REST e-Factura pentru mode 'prod'/'test'. SINGURA sursa a host-ului."""
+    """Baza REST e-Factura (OAuth) pentru mode 'prod'/'test'. SINGURA sursa a host-ului."""
     mode = (mode or "prod").strip().lower()
     if mode not in ("prod", "test"):
         mode = "prod"
@@ -94,6 +99,21 @@ def _jud(judet):
     return ("RO-" + u) if u in _CODURI_JUD else ""
 
 
+_SECTOR_RE = re.compile(r"sector\s*([1-6])", re.IGNORECASE)
+
+
+def _localitate(judet_code, oras, adresa=""):
+    """CityName (BT-37 vanzator / BT-52 cumparator). Regula BR-RO-100 (validator ANAF):
+    in Bucuresti (RO-B) localitatea trebuie sa fie SECTOR1..6, NU 'Bucuresti'. In rest =
+    orasul. Sectorul se cauta in oras + adresa (ex. adresa '...Sector 6' -> 'SECTOR6')."""
+    if judet_code == "RO-B":
+        m = _SECTOR_RE.search("%s %s" % (oras or "", adresa or ""))
+        if m:
+            return "SECTOR" + m.group(1)
+        return oras or "-"   # fara sector detectabil -> ramane orasul (validatorul semnaleaza)
+    return oras or "-"
+
+
 def _um(um):
     return _UM.get(_norm(um)) or "C62"
 
@@ -134,8 +154,8 @@ def incarca_factura(conn, schema, factura_id):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(f"""SELECT id, numar, serie, data_emitere, data_scadenta, moneda,
-                               tert_nume, tert_cui, tert_adresa, taxare_inversa,
-                               tip, storno_din_id, total, tva
+                               tert_nume, tert_cui, tert_adresa, tert_oras, tert_judet,
+                               taxare_inversa, tip, storno_din_id, total, tva
                           FROM {schema}.facturi WHERE id = %s""", (int(factura_id),))
         factura = cur.fetchone()
         if not factura:
@@ -156,7 +176,9 @@ def incarca_factura(conn, schema, factura_id):
         "nume": factura.get("tert_nume"),
         "cui": factura.get("tert_cui"),
         "adresa": factura.get("tert_adresa"),
-        "oras": None, "judet": None, "cod_postal": None,   # nestructurat in schema (limita v1)
+        "oras": factura.get("tert_oras"),
+        "judet": factura.get("tert_judet"),
+        "cod_postal": None,   # cod postal cumparator: inca nestructurat (optional BT-53)
     }
     return dict(factura), [dict(l) for l in linii], dict(furnizor), client
 
@@ -216,7 +238,7 @@ def genereaza_xml(factura, linii, furnizor, client):
     P.append('<cac:AccountingSupplierParty><cac:Party>')
     P.append('<cac:PostalAddress>')
     P.append('<cbc:StreetName>%s</cbc:StreetName>' % _e(furnizor.get("adresa") or "-"))
-    P.append('<cbc:CityName>%s</cbc:CityName>' % _e(furnizor.get("oras") or "-"))
+    P.append('<cbc:CityName>%s</cbc:CityName>' % _e(_localitate(sup_jud, furnizor.get("oras"), furnizor.get("adresa"))))
     if furnizor.get("cod_postal"):
         P.append('<cbc:PostalZone>%s</cbc:PostalZone>' % _e(furnizor.get("cod_postal")))
     if sup_jud:
@@ -233,17 +255,16 @@ def genereaza_xml(factura, linii, furnizor, client):
     P.append('</cac:PartyLegalEntity>')
     P.append('</cac:Party></cac:AccountingSupplierParty>')
 
-    # --- Cumparator ---
-    # LIMITA v1: schema are doar adresa libera (tert_adresa). CityName = oras daca vine,
-    # altfel adresa libera (fallback documentat) ca BT-52 sa nu fie gol; TEST confirma.
+    # --- Cumparator --- (BT-52 oras, BT-54 judet - obligatorii pt RO, vezi BR-RO-110/100)
+    cli_jud = _jud(client.get("judet"))
     P.append('<cac:AccountingCustomerParty><cac:Party>')
     P.append('<cac:PostalAddress>')
     P.append('<cbc:StreetName>%s</cbc:StreetName>' % _e(client.get("adresa") or "-"))
-    P.append('<cbc:CityName>%s</cbc:CityName>' % _e(client.get("oras") or client.get("adresa") or "-"))
+    P.append('<cbc:CityName>%s</cbc:CityName>' % _e(_localitate(cli_jud, client.get("oras"), client.get("adresa"))))
     if client.get("cod_postal"):
         P.append('<cbc:PostalZone>%s</cbc:PostalZone>' % _e(client.get("cod_postal")))
-    if _jud(client.get("judet")):
-        P.append('<cbc:CountrySubentity>%s</cbc:CountrySubentity>' % _jud(client.get("judet")))
+    if cli_jud:
+        P.append('<cbc:CountrySubentity>%s</cbc:CountrySubentity>' % cli_jud)
     P.append('<cac:Country><cbc:IdentificationCode>RO</cbc:IdentificationCode></cac:Country>')
     P.append('</cac:PostalAddress>')
     if cli_vat:
@@ -306,3 +327,122 @@ def genereaza_din_factura(conn, schema, factura_id):
     """Convenienta: loader + generator intr-un pas. Intoarce (xml, factura)."""
     factura, linii, furnizor, client = incarca_factura(conn, schema, factura_id)
     return genereaza_xml(factura, linii, furnizor, client), factura
+
+
+def valideaza(xml, standard="FACT1"):
+    """
+    Valideaza STRUCTURA XML pe validatorul oficial ANAF (schematron CIUS-RO), FARA token si
+    FARA drept pe CIF - validare pura, publica. E judecatorul de structura (ca DUK pentru
+    declaratii): sursa de adevar, nu presupunerea din memorie. Intoarce (ok: bool, mesaje: list).
+    Apel direct (nu apel_anaf): endpoint fara autentificare, nu e un apel SPV.
+    """
+    import requests
+    r = requests.post(FCTEL_VALIDARE_TPL % standard, data=xml.encode("utf-8"),
+                      headers={"Content-Type": "text/plain"}, timeout=45)
+    try:
+        j = r.json()
+    except ValueError:
+        return False, ["raspuns non-JSON de la validator: %s" % (r.text or "")[:400]]
+    ok = (j.get("stare") == "ok")
+    mesaje = [m.get("message", "") for m in (j.get("Messages") or [])]
+    return ok, mesaje
+
+
+# ============================================================
+#  TRIMITERE SPV — prin apel_anaf (pasul 2). TOATE apelurile ANAF trec prin conector.
+# ============================================================
+import hashlib
+from core import db
+from core import spv_conector
+
+
+def _parse_upload(text):
+    """Din raspunsul XML al /upload: (execution_status, index_incarcare, [errorMessage...])."""
+    t = text or ""
+    ex = re.search(r'ExecutionStatus="(\d+)"', t)
+    idx = re.search(r'index_incarcare="(\d+)"', t)
+    errs = re.findall(r'errorMessage="([^"]*)"', t)
+    return (int(ex.group(1)) if ex else None,
+            idx.group(1) if idx else None, errs)
+
+
+def _parse_stare(text):
+    """Din raspunsul /stareMesaj: (stare, id_descarcare)."""
+    t = text or ""
+    st = re.search(r'stare="([^"]*)"', t)
+    idd = re.search(r'id_descarcare="(\d+)"', t)
+    return (st.group(1) if st else None, idd.group(1) if idd else None)
+
+
+def upload_ubl(firm_id, cif, xml, mediu="test"):
+    """POST /upload?standard=UBL&cif=X prin apel_anaf. Intoarce Response."""
+    url = "%s/upload?standard=UBL&cif=%s" % (fctel_base(mediu), cif)
+    return spv_conector.apel_anaf(firm_id, "POST", url, data=xml.encode("utf-8"),
+                                  headers={"Content-Type": "application/xml"}, timeout=60)
+
+
+def stare_mesaj(firm_id, index_incarcare, mediu="test"):
+    """GET /stareMesaj?id_incarcare=N prin apel_anaf. Intoarce Response."""
+    url = "%s/stareMesaj?id_incarcare=%s" % (fctel_base(mediu), index_incarcare)
+    return spv_conector.apel_anaf(firm_id, "GET", url, timeout=30)
+
+
+def descarca(firm_id, id_descarcare, mediu="test"):
+    """GET /descarcare?id=N prin apel_anaf. Intoarce Response (ZIP in .content)."""
+    url = "%s/descarcare?id=%s" % (fctel_base(mediu), id_descarcare)
+    return spv_conector.apel_anaf(firm_id, "GET", url, timeout=120)
+
+
+def trimite(schema, factura_id, mediu="test", firm_id=1):
+    """
+    Orchestreaza upload-ul unei facturi si scrie randul in efactura_trimiteri INDIFERENT de
+    rezultat (regula: linia completa, error_message integral, nu doar la ok). Tranzactii
+    separate (randul 'pregatit' se comite INAINTE de upload, ca sa supravietuiasca unui crash
+    de retea). Intoarce dict cu tot ce s-a intamplat (pentru raport). NU face stareMesaj aici.
+    """
+    # 1) genereaza XML + amprenta + cif furnizor, scrie randul 'pregatit' (commit)
+    with db.get_conn() as conn:
+        xml, _factura = genereaza_din_factura(conn, schema, factura_id)
+        sha = hashlib.sha256(xml.encode("utf-8")).hexdigest()
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id=1")
+            cif = "".join(c for c in str(cur.fetchone()[0] or "") if c.isdigit())
+            cur.execute(f"""INSERT INTO {schema}.efactura_trimiteri
+                (factura_id, mediu, stare, xml_trimis, xml_sha256, trimis_la)
+                VALUES (%s,%s,'pregatit',%s,%s, now()) RETURNING id""",
+                        (factura_id, mediu, xml, sha))
+            tid = cur.fetchone()[0]
+
+    rez = {"trimitere_id": tid, "cif": cif, "xml_sha256": sha, "mediu": mediu}
+    # 2) upload real prin apel_anaf
+    try:
+        r = upload_ubl(firm_id, cif, xml, mediu)
+        text = r.text or ""
+        ex, index, errs = _parse_upload(text)
+        rez.update({"http": r.status_code, "execution_status": ex,
+                    "index_incarcare": index, "errors": errs, "raspuns": text})
+        if r.status_code == 200 and ex == 0 and index:
+            stare, errmsg = "incarcat", None
+        else:
+            stare, errmsg = "nok", ("\n".join(errs) if errs else text[:4000])
+    except spv_conector.EroareSpvFaraDrept as e:
+        # 403 = certificatul nu are drept (CIF/serviciu) - NU e eroare de structura
+        rez.update({"http": 403, "execution_status": None, "index_incarcare": None,
+                    "errors": [], "raspuns": str(e), "fara_drept": True})
+        stare, errmsg, index, ex = "eroare_upload", "403 fara drept SPV: %s" % e, None, None
+    except Exception as e:
+        rez.update({"http": None, "execution_status": None, "index_incarcare": None,
+                    "errors": [], "raspuns": str(e)})
+        stare, errmsg, index, ex = "eroare_upload", "exceptie upload: %s" % str(e)[:2000], None, None
+
+    # 3) scrie rezultatul complet (commit) - INDIFERENT de rezultat
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(f"""UPDATE {schema}.efactura_trimiteri
+                SET stare=%s, index_incarcare=%s, execution_status=%s, error_message=%s,
+                    actualizat_la=now(),
+                    finalizat_la=CASE WHEN %s IN ('nok','eroare_upload') THEN now() ELSE finalizat_la END
+                WHERE id=%s""",
+                        (stare, index, ex, errmsg, stare, tid))
+    rez["stare"] = stare
+    return rez

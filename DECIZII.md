@@ -857,3 +857,39 @@ DOVADA: migrare 2/2 scheme OK (tenant_001, tenant_002); test functional al index
 2x test permis, al 2-lea prod viu BLOCAT (UniqueViolation), prod/nok permis langa un viu, 0 reziduu.
 LIMITA: garda acopera doar starile 'viu' pe prod; o factura respinsa (nok) se poate re-trimite (corect).
 Curatarea/retentia xml_trimis (text mare) si zip_raspuns_path (fisier) - de decis cand creste volumul.
+
+### 18.07.2026 (corectie host) e-Factura: TREI host-uri pentru TREI metode (verificat LIVE)  (core/efactura_send.py)
+DECIZIE: host-urile e-Factura, verificate live (nu din listare interpretata, nu din build vechi):
+  - UPLOAD/stare/descarcare prin OAuth (Bearer) -> https://api.anaf.ro/{prod|test}/FCTEL/rest
+  - VALIDARE structura (fara token/drept)        -> https://webservicesp.anaf.ro/prod/FCTEL/rest/validare/FACT1
+  - Metoda cu CERTIFICAT client (mTLS)           -> https://webserviceapl.anaf.ro/... (NU server-side OAuth)
+Fiecare = o singura constanta (FCTEL_BASE_TPL, FCTEL_VALIDARE_TPL).
+TEMEI (dovada reproductibila): (1) handshake TLS pur catre webserviceapl.anaf.ro -> SSLV3_ALERT_
+HANDSHAKE_FAILURE (cere certificat client); catre api.anaf.ro -> 401 (TLS ok, cere doar auth).
+(2) upload cu tokenul pe api.anaf.ro/test -> HTTP 200 + raspuns ANAF real ("Nu aveti drept..."),
+deci api.anaf.ro E host-ul OAuth. (3) validare pe webservicesp.anaf.ro -> 200 + verdict schematron.
+RASTOARNA decizia din 18.07 care pusese webserviceapl.anaf.ro pentru upload: aia e ruta mTLS din
+listare, nu OAuth. Corectia vine de la SURSA LIVE (handshake + raspuns), autoritate peste listarea
+interpretata gresit SI peste build-ul vechi (care avea api.anaf.ro corect pt OAuth). Regula ramane:
+host din verificare la sursa, nu din memorie.
+ALTERNATIVA RESPINSA: webserviceapl.anaf.ro pt upload (nu face handshake fara cert); un singur host
+pt toate (sunt trei metode distincte, trei host-uri).
+LIMITA: verificat live 18.07; daca ANAF muta host-urile, se reverifica cu aceleasi 3 comenzi.
+
+### 18.07.2026 e-Factura structura BR-RO validata la sursa (validator ANAF) + adresa cumparator  (core/efactura_send.py; migrare_efactura_adresa.py)
+DECIZIE: XML-ul de trimitere se valideaza pe validatorul oficial ANAF (webservicesp .../validare/FACT1),
+FARA drept pe CIF - judecatorul de structura, ca DUK pentru declaratii. Functia valideaza() intoarce
+(ok, mesaje). Decuplat de drept: putem valida structura chiar daca certificatul nu are drept SPV pe CIF.
+TEMEI (descoperit la sursa, nu ghicit): prima validare a picat cu:
+  - BR-RO-110: tara cumparator RO -> BT-54 (judet) OBLIGATORIU (cod ISO 3166-2:RO). Schema avea doar
+    tert_adresa text liber -> ADAUGAT facturi.tert_oras (BT-52) + facturi.tert_judet (BT-54).
+  - BR-RO-100: vanzator in Bucuresti (RO-B) -> localitatea (BT-37) trebuie SECTOR1..6, nu 'Bucuresti'.
+    Helper _localitate() deriva sectorul din oras+adresa; aplicat AMBELOR parti.
+Dupa populare (cumparator judet+oras) + regenerare -> validator: {"stare":"ok"}. Confirmat pe tenant_002
+factura 1 (vanzator DANTE Bucuresti -> SECTOR6/RO-B; cumparator -> SECTOR3/RO-B). 6 teste unitare pass.
+ALTERNATIVA RESPINSA: a ghici cardinalitatea BR-RO din memorie - validatorul e ieftin (0.16s) si
+autoritar; un nok pe TEST costa un ciclu, nu o depunere. Munca de schema (coloane tert) s-a facut DOAR
+dupa ce validatorul a confirmat ca BT-54 e obligatoriu, nu speculativ.
+LIMITA: cod postal cumparator (BT-53, optional) inca nestructurat; sectorul pt Bucuresti se deriva prin
+regex din adresa - daca adresa nu contine 'Sector N', ramane orasul (validatorul ar semnala). taxare
+inversa/neplatitor/storno inca netratate (v1).
