@@ -211,6 +211,11 @@ vs DE CONSTRUIT (munca reala):
 ### DE CONSTRUIT (munca reala ramasa)
 - **F127/F128 — AMANATE**: pendinte pe ANAF adaugand OAuth la SPVWS2. Deadline review 17.08.2026 (raspuns
   asteptat de la spv.webservice@mfinante.ro). Fara raspuns pana atunci -> raman AMANATE.
+- **v2 F163 — persistarea randurilor decontului D300 depus** (coloana/tabel la generare/depunere) -> abia atunci
+  D-vs-D real D390<->D300. Prerechizit: persistarea decontului depus, utila si pentru alte controale intre
+  declaratii. Azi doar declaratii_depuse (jurnal gol: tenant/an/luna/tip/data, fara valori de randuri/XML) exista.
+  Motiv (verificat la sursa 19.07, in DECIZII.md): randurile intracom R1_1/R5_1 ale D300 sunt manual-only si
+  nepersistate -> pana la persistare, F163 = D390 vs evidenta validata, nu D-vs-D. [PLANIFICAT]
 
 ### LIVRAT 18.07 (mutat din backlog; detaliu in ISTORIC + FUNCTIONALITATI.csv)
 - **F126 e-Factura cap-coada**: SEND (model principal cabinet XOR gratuit + F160 + F178 poll recipisa) +
