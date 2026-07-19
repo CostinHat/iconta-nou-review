@@ -1511,3 +1511,50 @@ e-Factura: F176 (conector OAuth) + F177 (refresh) + F178 (poll recipise) + F179 
 (send + four-eyes). e-Transport: F044 (generator) + F121 (trimitere). Un singur conector principal
 (cabinet XOR gratuit), doua servicii, drept unificat. Restanta transversala UNICA: proba live pe CIF cu
 drept SPV real (e-Factura si e-Transport) - cod complet + testat, necolorat verde in direct (ca F176).
+
+# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat
+
+Zi noua. Dupa clusterul SPV/e-Factura/e-Transport de ieri, intoarcere pe motorul de control fiscal.
+Deciziile au temei in DECIZII.md (intrarea 19.07 F163); aici POINTER + commit-uri.
+
+## F163 -> LIVE: D390 (bunuri IC) vs evidenta contabila validata (commit-uri 8c81ab5 engine, bba9f14 UI)
+Extinde motorul control_incrucisat (D-vs-contabilitate, ca verifica_tva/verifica_d112) pe o pereche noua,
+NU modul paralel. Bazele intracomunitare de BUNURI din D390 (livrari L / achizitii A, auto din facturi) vs
+evidenta contabila VALIDATA a acelorasi facturi (nota validata; ciorna nu e dovada). Fereastra aliniata la
+periodicitatea TVA (tip_decont): lunar 1 luna, trimestrial 3 luni insumate (D390 e mereu lunar).
+REGULA DIRECTIONALA (VIES = sursa mai autoritara, partenerul a raportat pe latura lui):
+- declarat la VIES DAR absent din evidenta validata = ROSU (remediu sugerat: contabilizeaza SAU corecteaza
+  recapitulativa - omul confirma, nu e mecanic)
+- invers (in evidenta, neraportat la VIES) = GRI (decalaj de perioada posibil)
+- ambele>0 cifre diferite = GRI (decalaj exigibilitate art.284, regularizari, rotunjire = legitim - niciodata
+  rosu pe cifre); ambele 0 = tacut.
+
+## Descoperire de scop: D-vs-D real NU e fezabil azi (in DECIZII.md, verificat la sursa)
+Randurile intracom ale D300 (R1_1 livrari, R5_1 achizitii) sunt MANUAL-ONLY (d300.calcul_d300 le ia doar din
+'manual', prin body la declaratii_api.py) si NEPERSISTATE: declaratii_depuse (coada_api.py) e jurnal gol
+(tenant/an/luna/tip/data, fara valori de randuri, fara XML depus). Un D300 regenerat ar da mereu 0 -> rosu pe
+orice firma cu IC (zgomot); reconstruit din aceleasi facturi ca D390 -> verde trivial. Deci controlul INTRE
+declaratii = D-vs-EVIDENTA-validata pana se persista decontul depus. v2 (prerechizit: persistarea randurilor
+declaratiilor depuse -> abia atunci D-vs-D real; util si altor controale). Servicii IC (P/S) tot v2 (d300 nu
+expune R3_1_1/R7_1_1).
+
+## F162 -> LIVE: D112 (salarii) vs contabilitate — deorfanizat (commit bba9f14)
+verifica_d112 exista de mai demult ca engine + teste, dar era ORFAN: 0 apeluri in UI, 0 randuri in registru
+(confirmat prin grep). Un engine de control fara UI nu produce valoare pentru contabil. Deorfanizat: rand nou
+F162 in FUNCTIONALITATI.csv + conectat in ecranul de control fiscal in aceeasi miscare cu F163.
+
+## Ecran: grup "Declaratie vs contabilitate" (TVA + D112 + D390 la un loc)
+Sectiunea din control.js itereaza peste toti 3 verificatorii D-vs-contabilitate sub un singur grup (contabilul
+vede toate controalele intr-un loc), aceeasi anatomie: dot semafor + mesaj + temei + limita + remediu. Gri se
+AFISEAZA gri (nu ascuns) - filozofia control_incrucisat: gri e informatie, nu absenta. In portofoliu, toti trei
+ridica firma la ROSU (OR logic, consecvent cu tva) - altfel un stat de plata necontabilizat (d112 rosu) ar fi
+invizibil la nivel de firma, exact riscul pe care portofoliul trebuie sa-l ridice. Filtrare anti-dublura pe
+etichete (findarile apar o singura data). Reutilizare totala a claselor existente (cf-grup-titlu/cf-decl/
+cf-incr-*) si a tokenilor de semafor (cap.8 DS) -> zero regula UI noua, verificator DS 0 candidate.
+
+## Verificat
+34/34 teste engine fara regresie (11 noi F163 pe cele 4 directii + 13 D112 + restul); verificator DS 0;
+node --check ESM OK; restart serviciu -> HTTP 200, zero erori la boot. Functional real tenant_002 iunie 2026:
+tva verde, D390 verde (IT livrare 5000 + DE achizitie 2000 contabilizate; rosu-sugerat pe aceleasi
+necontabilizate; RO exclus corect), D112 ROSU real (282 impozit/1250 CAS/500 CASS declarate, dar
+444/4315/4316=0 -> stat de plata necontabilizat - risc care inainte era invizibil la nivel de firma).
