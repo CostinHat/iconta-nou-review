@@ -1235,3 +1235,31 @@ AUDIT (directia a identificatori/chei + directia b frontend afisat): CURAT, nimi
 conform unde e gardianizat. Singura nonconformitate reala = mesajele backend ASCII (backend nu e gardianizat).
 LIMITA: lista celor 9 nu e exhaustiva pe tot backend-ul (main.py 7000+ linii); acopera cazurile clare gasite cu
 un set de cuvinte frecvente. Extinderea gardianului la backend (nu doar frontend) = imbunatatire viitoare, daca merita.
+
+### 19.07.2026 F187 export WinMENTOR: LIVE (servicii, dependent de config), Ciel BLOCAT pe specificatie  (core/export_winmentor.py; FUNCTIONALITATI.csv F187)
+DECIZIE: export facturi emise catre WinMENTOR LIVRAT, oglindeste F171 SAGA (reutilizeaza conducta
+date_factura/facturi_emise_luna/_firma), dar cu limita DECLARATA: NU e self-contained ca SAGA.
+TEMEI (verificat la sursa OFICIALA 19.07, pdftotext pe download.winmentor.ro/.../22 Structuri import,
+Facturi clienti.pdf Rev.1.2 + Articole noi.pdf): WinMentor cauta articolul in nomenclatorul lui; daca lipseste,
+in Articole.txt co-locat; altfel importul ESUEAZA (NU auto-creeaza). Deci export = DOUA fisiere INI (Facturi.txt
++ Articole.txt), cod articol derivat determinist consecvent. Corectie oficiala vs sursa secundara (blog): UM vine
+din TRANZACTIE (linia Facturi.txt), NU din Articole.txt; Clasa/GestiuneImplicita GOALE = valide. Gard encoding
+Windows-1250 (s/t moderne->cedila legacy, apoi strict; neencodabil->422, nu byte gresit tacit - riscul BR-RO).
+Gard factura: status='emisa' (facturi n-au 'validata'; exclude 'de_preluat'/'anulata').
+DEPENDENTA DE CONFIG (explicita, nu ascunsa): exportul WinMentor cere config nomenclator WinMentor al cabinetului
+(clasa, gestiune, UM pre-definite; constanta 'cod partener=cod fiscal' pt CodClient=CIF). v1 = SERVICII + articole
+simple (Serviciu=D, ContServiciu=704, Clasa/Gestiune goale); stoc complex cu gestiune = v2/dependent de cabinet real.
+Daca un cabinet emite marfuri cu gestiune, se semnaleaza ca exportul cere config, NU ca 'merge automat'.
+COLATERAL: reparat bug latent F171 - ruta /tenants/{tid}/facturi/{factura_id} era netipata -> capta literalele
+/facturi/export-saga si /facturi/export-winmentor (factura_id='export-...'->422), umbrind exportul-zip pe luna. Fix:
+{factura_id:int} (literalele trec la rutele lor). SAGA month export era nereachable de la F171 - nimeni nu-l lovise.
+ALTERNATIVA RESPINSA: (a) descrierea bruta ca CodArticol - respins, codurile WinMentor au format alfanumeric fix;
+(b) "toate articolele = serviciu" tacit - respins (fals-verde pt firme cu marfa); Serviciu/config = explicit, default
+servicii; (c) UTF-8 - respins, WinMentor cere Windows-1250; (d) Partner.txt companion in v1 - amanat v2 (CodClient=CIF
+cu config e suficient pt v1).
+CIEL = BLOCAT pe specificatie (NU planificat orb): 3 necunoscute - (1) versiune (v6/v7/NextUp au formate DIFERITE,
+sursa facturis.ro); (2) spec neclar publica (nu exista portal oficial ca WinMentor); (3) cere coduri ANALITICE pe
+care iConta poate sa nu le aiba la granularitatea Ciel. Se deblocheaza doar cu spec de la sursa Ciel / cabinet real
+care importa in Ciel. NU se construieste pe sursa secundara (ar rupe importul, ca BR-RO).
+LIMITA: round-trip real (import efectiv in WinMentor) pending cabinet real cu WinMentor configurat, ca proba SPV.
+Cod complet + verificat contra spec oficial (11 teste + functional real), dar necolorat verde importul live.

@@ -131,8 +131,9 @@ def _firma(conn, schema):
 def date_factura(conn, schema, factura_id):
     """(firma, factura, linii) pentru o factura EMISA. None daca inexistenta sau nu e emisa."""
     with conn.cursor() as cur:
+        # serie + tert_oras adaugate pentru export_winmentor (F187); SAGA (xml_factura) le ignora.
         cur.execute(f"""SELECT id, numar, data_emitere, data_scadenta, taxare_inversa, moneda,
-                        tert_nume, tert_cui, tert_adresa, directie, tip
+                        tert_nume, tert_cui, tert_adresa, directie, tip, serie, tert_oras
                         FROM {schema}.facturi WHERE id=%s""", (factura_id,))
         f = cur.fetchone()
         if not f or f[9] != "emisa":
@@ -143,16 +144,20 @@ def date_factura(conn, schema, factura_id):
                   "pret_unitar": l[3], "cota_tva": l[4]} for l in cur.fetchall()]
     factura = {"id": f[0], "numar": f[1], "data_emitere": f[2], "data_scadenta": f[3],
                "taxare_inversa": f[4], "moneda": f[5], "tert_nume": f[6], "tert_cui": f[7],
-               "tert_adresa": f[8]}
+               "tert_adresa": f[8], "serie": f[11], "tert_oras": f[12]}
     return _firma(conn, schema), factura, linii
 
 
-def facturi_emise_luna(conn, schema, an, luna):
-    """Id-urile facturilor EMISE (tip factura) dintr-o luna."""
+def facturi_emise_luna(conn, schema, an, luna, status=None):
+    """Id-urile facturilor EMISE (tip factura) dintr-o luna. status optional (F187: WinMentor cere
+    status='emisa' - doar facturi emise corect, nu 'de_preluat'/'anulata'); default None = comportament
+    SAGA neschimbat (toate emise)."""
+    filtru_status = " AND status=%s" if status else ""
+    params = [an, luna] + ([status] if status else [])
     with conn.cursor() as cur:
         cur.execute(f"""SELECT id FROM {schema}.facturi
                         WHERE directie='emisa' AND tip='factura'
                           AND EXTRACT(YEAR FROM data_emitere)=%s
-                          AND EXTRACT(MONTH FROM data_emitere)=%s
-                        ORDER BY data_emitere, id""", (an, luna))
+                          AND EXTRACT(MONTH FROM data_emitere)=%s{filtru_status}
+                        ORDER BY data_emitere, id""", tuple(params))
         return [r[0] for r in cur.fetchall()]

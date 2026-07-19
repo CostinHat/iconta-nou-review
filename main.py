@@ -2259,7 +2259,10 @@ def proforma_transforma(tenant_id: int, factura_id: int, ctx=Depends(cere_contex
         conn.commit()
     return rez
 
-@app.get("/tenants/{tenant_id}/facturi/{factura_id}")  # [p115_detalii_acces] acces client+gratuit+cabinet
+@app.get("/tenants/{tenant_id}/facturi/{factura_id:int}")  # [p115_detalii_acces] acces client+gratuit+cabinet
+# {factura_id:int} (F187): fara tipare int, ruta asta captura literalele /facturi/export-saga si
+# /facturi/export-winmentor (factura_id="export-..."->422 int_parsing), umbrindu-le. Bug latent la SAGA
+# month (F171) - export-zip pe luna era nereachable. :int face literalele sa treaca la rutele lor.
 def factura_detalii(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -4855,6 +4858,31 @@ def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_contex
                 z.writestr(_xs.nume_fisier(firma.get("cui"), factura.get("numar"), factura.get("data_emitere")),
                            _xs.xml_factura(firma, factura, linii))
     nume_zip = "export_saga_%04d_%02d.zip" % (an, luna)
+    return Response(content=buf.getvalue(), media_type="application/zip",
+                    headers={"Content-Disposition": 'attachment; filename="%s"' % nume_zip})
+
+
+@app.get("/tenants/{tenant_id}/facturi/export-winmentor")  # [F187]
+def export_winmentor_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
+    """Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip.
+    Doar facturi emise cu status='emisa'. Dependenta de config nomenclator WinMentor (vezi export_winmentor)."""
+    from core import export_winmentor as _wm
+    import io as _io, zipfile as _zip
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            fisiere = _wm.export_luna(conn, schema, an, luna)
+        except ValueError as e:  # caracter neencodabil cp1250 -> nu scrie byte gresit tacit
+            raise HTTPException(422, str(e))
+    if not fisiere:
+        raise HTTPException(404, "nicio factura emisa (status='emisa') in luna aleasa")
+    buf = _io.BytesIO()
+    with _zip.ZipFile(buf, "w", _zip.ZIP_DEFLATED) as z:
+        for nume, continut in fisiere.items():
+            z.writestr(nume, continut)
+    nume_zip = "export_winmentor_%04d_%02d.zip" % (an, luna)
     return Response(content=buf.getvalue(), media_type="application/zip",
                     headers={"Content-Disposition": 'attachment; filename="%s"' % nume_zip})
 

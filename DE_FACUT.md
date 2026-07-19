@@ -59,12 +59,18 @@ starea reverificata azi:
 
 ## 5. Iterații viitoare (nu urgente)
 - **Mesaje de eroare `.mig-gol` -> `arataMesaj`: FACUT 18.07 (48/53).** Cele ~50 utilizari `.mig-gol` din blocuri catch/validare/loading convertite la `arataMesaj(zona, txt, tip)` (eroare/avert/info) in rip_ecran/operatiuni/etransport/cabinet/migrare/firme/facturi_ecran. RAMAN 5 template-embedded (NU catch, HTML in template - lasate deliberat, nu se ghiceste): asistenti.js:330 (ternar in render), firme.js:428 (eroare conditionala inline in panou), :1315 (ramura ternar `${r.mesaj}`), :1343 (lista .map de mesaje - continut, nu feedback), :1689 (nota permanenta 'Atentie: nota legata de factura'). Verificator TOTAL 0. LIMITA: caile de eroare din catch nu au fost declansate runtime (greu de atins) - conversie mecanica + node-check + aliniere cu tiparul arataMesaj existent in app.
-- **Export către programul contabilului — PARȚIAL: SAGA LIVRAT (F171 18.07), WinMentor/Ciel rămân.**
-  SAGA: export facturi emise în XML propriu (Diverse → Import date), rută read-only, format verificat
-  la sursă (manual.sagasoft.ro topic-76). Puntea care face posibilă poziționarea „firma emite în iConta,
-  contabilul rămâne pe SAGA" (DECIZII.md 18.07). RĂMÂNE: WinMentor și Ciel (alt generator, altă
-  structură — codul e structurat pe format ca să le primească). LIMITA SAGA declarată: neconfirmat pe
-  import real (encoding UTF-8 vs Windows-1250 + clasificare ieșire = ochi uman). NU depinde de OAuth ANAF.
+- **Export către programul contabilului — SAGA (F171) + WinMentor (F187) LIVRATE; Ciel BLOCAT pe spec.**
+  SAGA (F171 18.07): facturi emise în XML propriu, format de la manual.sagasoft.ro topic-76.
+  WinMentor (F187 19.07 LIVE): două fișiere INI (Facturi.txt + Articole.txt) co-locate, structură de la
+  sursa OFICIALĂ (download.winmentor.ro/.../22 Structuri import, Facturi clienti.pdf Rev.1.2 + Articole noi.pdf),
+  encoding Windows-1250 cu gard, cod articol derivat consecvent. NU e self-contained ca SAGA — dependență de
+  config nomenclator WinMentor al cabinetului (clasă/gestiune/UM); v1=servicii, stoc complex=v2. Vezi DECIZII 19.07.
+  LIMITA (ambele): round-trip real (import efectiv) pending cabinet real — cod+spec verificate, necolorat verde live.
+- **Ciel — BLOCAT PE SPECIFICAȚIE (NU planificat orb).** 3 necunoscute verificate la sursă 19.07: (1) versiune —
+  Ciel v6/v7/NextUp au formate DIFERITE (facturis.ro); (2) spec neclar publică (nu există portal oficial ca
+  WinMentor); (3) cere coduri ANALITICE pe care iConta poate să nu le aibă la granularitatea Ciel. Se deblochează
+  DOAR cu specificația de la sursa Ciel / un cabinet real care importă în Ciel. NU se construiește pe sursă
+  secundară (ar rupe importul, ca BR-RO). [BLOCAT]
 - **Igienă cont gratuit / CUI dublu emitent — ACOPERIT de F092 (coliziune_gratuit_v1) + F185 (gardul invers).**
   Verificat la sursă 19.07. Preluarea tenant = create-new e CORECT (contul gratuit e unealtă de emitere, nu sursă
   contabilă; datele reale vin prin migrare — DECIZII commit afd67d9, retenție 1 an). Riscul „același CUI emite din
