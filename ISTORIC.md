@@ -1512,7 +1512,7 @@ e-Factura: F176 (conector OAuth) + F177 (refresh) + F178 (poll recipise) + F179 
 (cabinet XOR gratuit), doua servicii, drept unificat. Restanta transversala UNICA: proba live pe CIF cu
 drept SPV real (e-Factura si e-Transport) - cod complet + testat, necolorat verde in direct (ca F176).
 
-# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat + F164 (alerte pull->push)
+# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat + F164 (alerte pull->push) + F184 (punte legislatie->re-verificare)
 
 Zi noua. Dupa clusterul SPV/e-Factura/e-Transport de ieri, intoarcere pe motorul de control fiscal.
 Deciziile au temei in DECIZII.md (intrarea 19.07 F163); aici POINTER + commit-uri.
@@ -1598,3 +1598,49 @@ REAL tenant_002 iunie 2026 cu curatare (validator temporar): rulare1 livreaza 1 
 (DEDUP), rezolvat->reaparut a 2-a notif, gri 0 push. Routing: 7/7 parsare link in node (malformat->fallback;
 'validat' intact) + curl HTTP real (token cabinet) /control-fiscal/2 = ruta deschisa de click intoarce firma
 CORECTA (DANTE). node --check ESM + verificator DS 0 + rute existente byte-identice (cabinet.js/asistent.js neatinsi).
+
+## F184 -> LIVE: punte legislatie->re-verificare v1 - conformitate cota TVA pe perioada (commit df0f450)
+Ideea: cand o VALOARE legislativa se schimba, firmele afectate sa devina rosii - nu doar "legea s-a schimbat"
+generic (monitor_fiscal). Diagnostic la sursa (FAZA 0): valorile fiscale sunt PARAMETRIZATE cu DATA in
+common.COTE (cota() period-aware), NU hardcodate - deci fezabil. DAR verificatorii control_incrucisat (tva/d112/
+d390 din push F164) NU consuma cota() -> re-rularea lor dupa o schimbare de valoare nu produce nimic (compara
+declaratie vs contabilitate, ambele cu aceeasi cota). Golul = conecteaza checkuri VALUE-AWARE la push, nu re-rula.
+SOLUTIE v1: verifica_tva_pe_cota (verificatoare.py) era PRIMITIVA ORFANA (zero apelanti), per-tranzactie,
+period-aware, BLOCANT pe cota gresita. Deorfanizata printr-un wrapper la nivel de firma (control_incrucisat.
+verifica_cota_tva + constatare_cota_tva PURA), NU rescrisa. Itereaza liniile facturilor EMISE ale lunii, cheama
+primitiva per linie. Prinde cota veche folosita dupa schimbare (ex. 19% dupa 01.08.2025 cand standard = 21%,
+Legea 141/2025). Declansator = cota() period-aware pe data facturii (COTE-driven).
+
+## Gard anti-fals-pozitiv (F184)
+Se verifica DOAR liniile la o cota din FAMILIA STANDARD (istoricul tva_standard, {19,21}). Cotele reduse (9/5) si
+scutit NU depind de schimbarea cotei standard -> ignorate; altfel 9% ar aparea mereu "gresit" fata de 21% = rosu
+fals pe orice firma cu cota redusa. Rosu doar pe cota clar gresita PENTRU PERIOADA; gri daca nu pot citi
+facturile; verde/tacit daca toate liniile standard au cota corecta. Remediu sugerat (corecteaza cota - stornare+
+reemitere/factura de corectie - omul confirma, nu se ajusteaza automat).
+
+## Wiring F184 (reutilizare, nu paralel)
+Pull: grup SEPARAT "Conformitate facturi emise" in ecran - NU declaratie-vs-contabilitate, ci conformitate a
+facturii (aditiv, nu reorganizare -> DS 0). Push: verificator nou in alerte_control_fiscal, intra AUTOMAT in
+dedup-ul F164 (decide() e verificator-agnostic pe seturi de chei). Cron zilnic EXISTENT (notificari_scadenta
+08:00), portofoliu ridica firma la rosu. Declansator zilnic; COTE-driven proactiv la depasirea unei date = v2
+separat (poate inutil - de decis dupa ce v1 merge).
+
+## Igiena: reconciliere coliziune numere F
+FUNCTIONALITATI.csv = sursa de adevar pt F-numbers (registrul canonic). Planurile din DE_FACUT "Iteratii viitoare"
+primisera informal F162/F163/F164/F169, dar registrul foloseste deja acele numere pt features livrate azi/anterior
+(F162=D112, F163=D390, F164=push, F169=control incrucisat TVA). Re-numerotate planurile care coliza la F180-183
+(platitor_tva->F180, extindere control ramas D101/D100/D394->F181, cont_venit_implicit->F182, audit preluare->F183).
+Comentariile stale din cod ("(F163)" pt D112 = F162 canonic) corectate. ISTORIA (aceasta) neatinsa - log datat.
+
+## Limita onesta (F184, in DECIZII)
+Nu verifica clasificarea de PRODUS (daca produsul chiar cere cota standard), doar coerenta de PERIOADA. Declansator
+zilnic, nu instant - rosu apare a doua zi dupa schimbare (v2 daca instant conteaza). Cotele traiesc in COD
+(common.COTE) - o lege noua tot cere editare + deploy, nu update de config. monitor_fiscal (text) ramane deconectat
+de COTE (valori structurate) - proza informativa separata, nu declansator.
+
+## Verificat (F184)
+7 teste PURE constatare_cota_tva cu date reale via primitive period-aware (19% dupa 01.08.2025->rosu; 21%->verde;
+19% inainte de schimbare->verde period-corect; 9% redus->NU fals-pozitiv; scutit->ignorat; mix->doar linia gresita;
+temei+limita) + 50/50 fara regresie. Functional REAL tenant_002 cu curatare: factura emisa test 19% in 09/2025 ->
+verifica_cota_tva ROSU-sugerat pe factura corecta; verificatori_rosii din push include 'cota_tva'; endpoint HTTP
+/control-fiscal/2 (token cabinet) expune cota_tva_conformitate. Restart HTTP activ. node --check ESM + verificator DS 0.
