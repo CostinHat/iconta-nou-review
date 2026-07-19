@@ -51,6 +51,19 @@ starea reverificata azi:
 3. **Audit design ramas**: spacing/padding inline (inchis explicit ca datorie acceptata), migrare
    paleta iconite (decizie amanata), anatomia ferestrei + alinierea tabelelor nesistematizate vizual
    (~20/30 ecrane nevazute cu ochii; verificatorul e curat pe ele dar nu prinde asezarea).
+   **Inventar 19.07 (harta DS acoperit/manual):** verificatorul = regex pe linii, scaneaza doar
+   static/js/ecrane/*.js -> prinde SEMNATURA TEXTUALA, NU randarea. 28 gardieni (2 noi 19.07: ESC_LOCAL
+   cap.10 securitate + CASETA_ATENTIE cap.5). **9 reguli DS RAMAN verificare vizuala manuala** (randat/
+   comportamental, neautomatizabile): aliniere tabele (cap.4), anatomia ferestrei (cap.9), contrast randat
+   gri-pe-gri (cap.16/5), nimic-vizibil-decat-la-selectie (cap.2), navigare/setInapoi (cap.3), feedback
+   butoane (cap.1), structura semafor (cap.8), mesaje de stare semantice (cap.6), tabele PDF (cap.7).
+   Ecrane post-14.07 NEVERIFICATE vizual: control fiscal, e-Transport, SPV/gratuit, WinMentor UI.
+   **3 candidati de automatizare RESPINSI (fals-pozitive, nu se automatizeaza):** (a) card-inactiv fara
+   'activ' cap.2b - semnatura {cheie:...desc:...} partajata cu pasi wizard migrare (nr:), line-regex nu
+   distinge cert; (b) panou gri-pe-gri cap.16 - vizibilitatea depinde de parinte (panou alb vs corp gri) +
+   bordura, context necunoscut de regex (3 apariti background:var(--fundal): operatiuni:266+portal:424 au
+   bordura=vizibile, firme:1187 <pre> erori ambiguu - de privit vizual, nu clar violari); (c) background/
+   border hex ad-hoc cap.15 - prea multe bg-uri inline legitime, fals-pozitiv. Raportate, nu gardian.
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza

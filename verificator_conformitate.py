@@ -31,7 +31,8 @@ for f in sorted(os.listdir(BAZA)):
 
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline"]}
+                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
+                        "esc_local", "caseta_atentie"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -85,6 +86,18 @@ for nume, t in fisiere.items():
         # POARTA_INLINE (cap.5 v2.14): caseta-poarta (#fbf7ee) reprodusa ad-hoc inline in loc de .caseta-poarta
         if re.search(r'style="[^"]*background:\s*#fbf7ee', lin, re.I) and "caseta-poarta" not in lin:
             rap["poarta_inline"].append((nume, i, "", lin.strip()[:66]))
+        # ESC_LOCAL (cap.10, SECURITATE): variante locale de escaping (_esc/escB/escV/escS/escC/escJ) in loc
+        # de esc() canonic din api.js - risc XSS (variantele omit apostroful). Apel de functie, nu cuvant.
+        for em in re.finditer(r'\b(_esc|escB|escV|escS|escC|escJ)\s*\(', lin):
+            rap["esc_local"].append((nume, i, em.group(1), lin.strip()[:60]))
+        # CASETA_ATENTIE (cap.5): caseta de atentionare (#fdf3f3, per .caseta-atentie din stil.css) reprodusa
+        # ad-hoc inline in loc de clasa canonica. Simetric cu CASETA_INFO/POARTA_INLINE. NU #fdeef2 (ala e
+        # zebra/landing - login.js pagina-card-mare, exclus DS cap.15) ca sa nu dea fals-pozitiv.
+        if re.search(r'style="[^"]*background:\s*#fdf3f3', lin, re.I) and "caseta-atentie" not in lin:
+            rap["caseta_atentie"].append((nume, i, "", lin.strip()[:66]))
+        # CARD_INACTIV (cap.2b) NEAUTOMATIZAT: semnatura { cheie: ... desc: ... } e partajata intre carduri
+        # firme-optiune (cer activ) SI pasi de wizard migrare (nr:, .mig-pasi, NU cer activ) -> line-regex nu
+        # distinge cert fara euristici fragile. Ramane verificare manuala (DE_FACUT). Nu automatizat = fara fals-pozitive.
         # CHECKBOX_DIALECT (cap.2): <label> cu checkbox si text-eticheta, dar fara .set-bifa
         # (dialect inline sau clasa ad-hoc). Excludem label-urile care POARTA set-bifa.
         if re.search(r'<label(?![^>]*set-bifa)[^>]*>\s*<input[^>]*type="checkbox"', lin) and "set-bifa" not in lin:

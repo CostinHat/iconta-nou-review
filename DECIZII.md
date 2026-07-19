@@ -1263,3 +1263,21 @@ care iConta poate sa nu le aiba la granularitatea Ciel. Se deblocheaza doar cu s
 care importa in Ciel. NU se construieste pe sursa secundara (ar rupe importul, ca BR-RO).
 LIMITA: round-trip real (import efectiv in WinMentor) pending cabinet real cu WinMentor configurat, ca proba SPV.
 Cod complet + verificat contra spec oficial (11 teste + functional real), dar necolorat verde importul live.
+
+### 19.07.2026 Gardieni verificator: 2 adaugati (ESC, caseta-atentie), 3 candidati RESPINSI ca fals-pozitivi  (verificator_conformitate.py)
+DECIZIE: mutat 2 reguli DS din manual in automat - ESC_LOCAL (cap.10, securitate: variante locale _esc/escB/...
+in loc de esc() canonic, risc XSS) + CASETA_ATENTIE (cap.5: #fdf3f3 inline in loc de .caseta-atentie, simetric cu
+CASETA_INFO/POARTA_INLINE). Ambii 0 acum (protejeaza contra regresiei). TOTAL ramane 0.
+RESPINSI (fals-pozitive dovedite la rulare - un gardian zgomotos e mai rau ca lipsa lui, ca un control rosu pe
+diferenta legitima):
+  - card-inactiv fara 'activ' (cap.2b): gardianul a aprins 9 candidati in migrare.js care sunt PASI DE WIZARD
+    (nr:, .mig-pasi), NU carduri firme-optiune - semnatura {cheie:...desc:...} e partajata, line-regex nu distinge
+    cert firme-optiune de pasi de migrare fara euristici fragile.
+  - panou gri-pe-gri (cap.16): "invizibil" depinde de PARINTE (panou alb vs corp gri) + prezenta bordurii - context
+    pe care regex-ul pe linii nu-l stie. Cele 3 background:var(--fundal) gasite: 2 au bordura (vizibile), 1 <pre>
+    ambiguu - de privit vizual, nu clar violari.
+  - background/border hex ad-hoc (cap.15): prea multe bg-uri inline legitime -> extinderea CULORI_HARDCODATE de la
+    color: la background:/border: ar da fals-pozitive.
+TEMEI: cele 3 nu se pot distinge cert legitim-vs-gresit prin regex pe linii (cer context de randare / parinte /
+scop). Raman verificare manuala (DE_FACUT). 9 reguli DS raman audit vizual (randat/comportamental).
+LIMITA: verificatorul e regex pe linii, doar ecrane JS - prinde semnatura textuala, nu randarea/asezarea/comportamentul.
