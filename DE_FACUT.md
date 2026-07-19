@@ -216,6 +216,11 @@ vs DE CONSTRUIT (munca reala):
   declaratii. Azi doar declaratii_depuse (jurnal gol: tenant/an/luna/tip/data, fara valori de randuri/XML) exista.
   Motiv (verificat la sursa 19.07, in DECIZII.md): randurile intracom R1_1/R5_1 ale D300 sunt manual-only si
   nepersistate -> pana la persistare, F163 = D390 vs evidenta validata, nu D-vs-D. [PLANIFICAT]
+- **v2 F164 — digest email Brevo** (rezumat zilnic/saptamanal al rosurilor de control fiscal DESCHISE per cabinet,
+  pentru contabilii care nu intra zilnic in app). Completeaza v1 (clopotel in-app + click, LIVE 19.07): v1 rezolva
+  restanta 17.07 (alerta ajunge in app); digestul acopera cazul "contabil care nu intra zilnic". De construit CAND
+  exista semnal real ca se rateaza alerte, NU speculativ. Infra Brevo gata (5 module: observare.trimite_email_html/
+  _trimite_brevo, folosita de monitor_fiscal/spv_refresh/sinteza_zilnica/notificari_scadenta/pachete). [PLANIFICAT]
 
 ### LIVRAT 18.07 (mutat din backlog; detaliu in ISTORIC + FUNCTIONALITATI.csv)
 - **F126 e-Factura cap-coada**: SEND (model principal cabinet XOR gratuit + F160 + F178 poll recipisa) +
