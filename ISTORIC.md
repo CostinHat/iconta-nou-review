@@ -1512,7 +1512,7 @@ e-Factura: F176 (conector OAuth) + F177 (refresh) + F178 (poll recipise) + F179 
 (cabinet XOR gratuit), doua servicii, drept unificat. Restanta transversala UNICA: proba live pe CIF cu
 drept SPV real (e-Factura si e-Transport) - cod complet + testat, necolorat verde in direct (ca F176).
 
-# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat + F164 (alerte pull->push) + F184 (punte legislatie->re-verificare) + F185 (gard coliziune CUI invers) + F187 (export WinMentor) + verificator DS intarit (2 gardieni)
+# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat + F164 (alerte pull->push) + F184 (punte legislatie->re-verificare) + F185 (gard coliziune CUI invers) + F187 (export WinMentor) + verificator DS intarit (2 gardieni) + F188 (pre-completare ANAF v9)
 
 Zi noua. Dupa clusterul SPV/e-Factura/e-Transport de ieri, intoarcere pe motorul de control fiscal.
 Deciziile au temei in DECIZII.md (intrarea 19.07 F163); aici POINTER + commit-uri.
@@ -1751,3 +1751,44 @@ semafor (cap.8), mesaje de stare semantice (cap.6), tabele PDF (cap.7). ~20-30 e
 (control fiscal, e-Transport, SPV, gratuit, WinMentor UI). Verificatorul e curat pe ele, dar nu prinde asezarea.
 DE PRIVIT VIZUAL (nu confirmate violari): 3 background:var(--fundal) borderline - operatiuni_ecran:266 si portal:424
 au bordura (vizibile), firme:1187 <pre> erori ambiguu - merita un ochi, nu clar gresite.
+
+## F188 -> LIVE: pre-completare date firma din ANAF v9 la onboarding (commit 21ce813)
+Scop: userul introduce CUI-ul la inregistrare -> iConta pre-completeaza automat datele firmei din API-ul PUBLIC
+ANAF v9 (PlatitorTvaRest/v9/tva), userul confirma/corecteaza, nu tasteaza tot. Legal: datele propriei firme a
+userului. Doua puncte de conectare: register-gratuit (F160, self-serve) + adaugare firma-client la cabinet.
+Pre-completate: denumire (in formular), adresa/CAEN/nrRegCom/status TVA/TVA-incasare/activ (in firma_profil la
+creare). ~80%% infra exista deja (anaf_api.valideaza_cui + endpoint /public/verifica-cui + /tenants/{tid}/verifica-cui
++ coloane firma_profil) - munca = extindere parser (2 campuri: nrRegCom + RTVAI.statusTvaIncasare) + gard
+non-suprascriere + stocare in profil la creare (register_gratuit + tenant_creeaza).
+
+## Garduri F188 (masina sugereaza, omul decide - ca four-eyes)
+- NON-SUPRASCRIERE: ce a tastat userul manual NU se pierde (completeaza doar campul gol sau neatins de la ultima
+  pre-completare ANAF). La stocare COALESCE: gol ANAF nu suprascrie existentul; 'nume' setat de user neatins.
+  Datele ANAF pot fi stale -> campuri EDITABILE, userul corecteaza.
+- DEGRADARE GRATIOASA: CUI invalid / ANAF 404 / ANAF jos -> valideaza_cui intoarce {gasit:False} (HTTP 200, nu
+  exceptie) -> mesaj discret "completeaza manual", formular INTACT, nu crapa, nu sterge ce a tastat.
+- DEBOUNCE 500ms: un apel per CUI complet, nu pe fiecare tasta (rate limit ANAF 1/sec).
+
+## Bug latent reparat (F188) + campuri manuale
+Parserul valideaza_cui citea 'codCAEN', dar v9 real intoarce 'cod_CAEN' (underscore) -> CAEN era GOL pe date reale.
+Descoperit la apelul REAL pe 14399840 (regula de aur - verificat structura raspunsului real, nu presupus). Reparat
+(citeste cod_CAEN cu fallback codCAEN). RAMAN MANUALE (v9 nu le are): telefon, email, IBAN, cod postal - marcaj UX
+clar pre-completat vs de completat. Cod TVA intracom = VIES (serviciu SEPARAT, verifica_vies), NU amestecat in v9.
+
+## Deviatie onesta (F188, in DECIZII)
+NU am reorganizat UI-ul existent: register-gratuit foloseste buton "Verifica la ANAF" (pre-existent), cabinet
+foloseste blur (pre-existent) - ambele pre-completeaza, dar DS zice reorganizarea existentului = STOP. oras/judet
+NU se extrag inca din adresa structurata (adresa_sediu_social exista in v9) - flat adresa in v1, structurat = v2.
+
+## F127/F128 re-check (20.07, consemnat ARHITECTURA_SPV.md)
+Status NESCHIMBAT: SPVWS2 (/SPVWS2/rest/cerere) exista dar e READ-ONLY (interogare, fara depunere) -> F127 blocat;
+auth SPVWS2 ramane mTLS certificat LOCAL (PKCS#11), incompatibil cloud/OAuth -> F128 blocat pe adaugarea OAuth de
+catre ANAF, nu pe absenta API-ului de citire; niciun anunt ANAF de la 17.07; reevaluarea 17.08 ramane valida; nu e
+gaura competitiva (nici SmartBill n-are mesaje SPV).
+
+## Verificat (F188)
+3 garduri dovedite FUNCTIONAL: (a) stocare pe tenant_002 cu ANAF real (14399840) - blank->UPDATE->verify->RESTORE
+non-distructiv (caen=4754, reg_com=J2002000372404, adresa populate); (b) degradare gratioasa: /public/verifica-cui/99
+-> {gasit:False} HTTP 200; (c) non-suprascriere (node): user tastat->NU se pierde, gol->completeaza, re-verificare->
+update. Parser real intoarce nr_reg_com+tva_la_incasare noi + cod_caen reparat. node --check ESM ambele formulare +
+verificator DS 0 + restart activ.
