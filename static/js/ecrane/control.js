@@ -115,11 +115,17 @@ async function detaliuFirma(corp, nav, firma) {
     ${neaplicabile.length ? `
       <div class="cf-grup-titlu">Nu se datorează (${neaplicabile.length})</div>
       <div class="cf-decl">${randMotiv(neaplicabile)}</div>` : ""}
-    ${(() => { /* [control_incrucisat_v1] declaratie vs contabilitate: trei stari + temei + remediu */
-      const ti = (d.verificari_contabile || {}).tva_incrucisat;
-      if (!ti) return "";
-      const cls = ti.stare === "rosu" ? "cf-rosu" : (ti.stare === "gri" ? "" : "");
-      const randuri = (ti.constatari || []).map((c) => {
+    ${(() => { /* [control_incrucisat_v1 + F163_ui] declaratie vs contabilitate: TVA + D112 + D390,
+        aceeasi anatomie (dot + mesaj + temei + remediu + limita), sub un singur grup. Gri se AFISEAZA
+        gri (nu ascuns) - filozofia control_incrucisat: gri e informatie, nu absenta. */
+      const vc = d.verificari_contabile || {};
+      const verificatori = [vc.tva_incrucisat, vc.d112_incrucisat, vc.d390_incrucisat].filter(Boolean);
+      const cuFinding = verificatori.filter((v) => (v.constatari || []).length);
+      if (!cuFinding.length) return "";
+      const rang = { rosu: 3, galben: 2, gri: 1, verde: 0 };
+      const worst = cuFinding.reduce((m, v) => ((rang[v.stare] || 0) > (rang[m] || 0) ? v.stare : m), "verde");
+      const clsTitlu = worst === "rosu" ? "cf-rosu" : (worst === "galben" ? "cf-galben" : "");
+      const randConst = (c) => {
         const dot = CULORI[c.stare] ? CULORI[c.stare].dot : CULORI.gri.dot;
         let extra = "";
         if (c.remediu) {
@@ -134,10 +140,13 @@ async function detaliuFirma(corp, nav, firma) {
           <div class="cf-incr-temei">${esc(c.temei || "")}</div>
           ${extra}
         </div>`;
-      }).join("");
-      const limita = ti.limita ? `<div class="cf-incr-temei">${esc(ti.limita)}</div>` : "";
-      return `<div class="cf-grup-titlu ${cls}">Declarație vs contabilitate</div>
-        <div class="cf-decl">${randuri}${limita}</div>`;
+      };
+      const blocuri = cuFinding.map((v) =>
+        (v.constatari || []).map(randConst).join("")
+        + (v.limita ? `<div class="cf-incr-temei">${esc(v.limita)}</div>` : "")
+      ).join("");
+      return `<div class="cf-grup-titlu ${clsTitlu}">Declarație vs contabilitate</div>
+        <div class="cf-decl">${blocuri}</div>`;
     })()}
     ${(() => { /* cf_detaliu_contabil_v1 */
       const vc = d.verificari_contabile || null;
@@ -146,7 +155,8 @@ async function detaliuFirma(corp, nav, firma) {
       if (vc.echilibru && vc.echilibru.ok === false) probleme.push("balanță dezechilibrată");
       const tz = vc.trezorerie;
       if ((Array.isArray(tz) && tz.length) || (tz && !Array.isArray(tz) && tz.ok === false)) probleme.push("solduri creditoare trezorerie");
-      if (firma.contabil) firma.contabil.forEach((p) => { if (!probleme.includes(p) && p !== "balanta dezechilibrata" && p !== "solduri creditoare trezorerie" && p !== "TVA declarat diferă de contabilitate") probleme.push(p); }); /* cf_detaliu_contabil_v2 */
+      const dejaInIncrucisat = ["balanta dezechilibrata", "solduri creditoare trezorerie", "TVA declarat diferă de contabilitate", "Salarii declarate diferă de contabilitate", "Operațiuni intracomunitare declarate diferă de evidență"]; /* cf_detaliu_contabil_v2 + F163_ui: aratate deja in sectiunea Declaratie vs contabilitate */
+      if (firma.contabil) firma.contabil.forEach((p) => { if (!probleme.includes(p) && !dejaInIncrucisat.includes(p)) probleme.push(p); });
       if (!probleme.length) return "";
       return `<div class="cf-grup-titlu cf-rosu">Verificări contabile (${probleme.length})</div>
         <div class="cf-decl">${probleme.map((p) => `<div class="mig-sold-rand cf-rand-decl"><span class="mig-sold-cont">${p}</span></div>`).join("")}</div>`;
