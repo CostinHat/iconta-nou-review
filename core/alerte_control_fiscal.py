@@ -42,6 +42,7 @@ def _verificatori(ci):
         ("tva", "TVA", ci.verifica_tva),
         ("d112", "D112 (salarii)", ci.verifica_d112),
         ("d390", "D390 (intracom.)", ci.verifica_d390),
+        ("cota_tva", "cotă TVA facturi", ci.verifica_cota_tva),   # F184 (value-aware)
     )
 
 

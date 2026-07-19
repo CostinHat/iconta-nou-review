@@ -292,3 +292,54 @@ def test_fereastra_trimestrial_trei_luni():
 def test_fereastra_trimestrial_decembrie_trece_anul():
     luni, de, pana, et = _fereastra_tva("T", 2026, 12)
     assert luni == [10, 11, 12] and de == "2026-10-01" and pana == "2027-01-01"
+
+
+# ---- F184: conformitate cota TVA facturi emise (value-aware, wrapper peste verifica_tva_pe_cota) ----
+from core.control_incrucisat import constatare_cota_tva
+from datetime import date as _date
+
+def _linie(id, data, cota, cant=1, pret=1000):
+    return {"id": id, "numar": "F%d" % id, "data_emitere": data,
+            "cantitate": cant, "pret_unitar": pret, "cota_tva": cota}
+
+def test_cota_veche_dupa_schimbare_da_rosu():
+    # 19% pe o factura din 09/2025 (standard = 21% de la 01.08.2025) -> ROSU
+    r = constatare_cota_tva([_linie(1, _date(2025, 9, 10), 19)], 2025, 9)
+    assert r["stare"] == "rosu"
+    c = r["constatari"][0]
+    assert c["remediu"]["fel"] == "sugerat" and c["remediu"]["facturi"] == [1]
+    assert "19% în loc de 21%" in c["mesaj"]
+
+def test_cota_corecta_pe_perioada_da_verde():
+    # 21% pe o factura din 09/2025 -> VERDE
+    r = constatare_cota_tva([_linie(1, _date(2025, 9, 10), 21)], 2025, 9)
+    assert r["stare"] == "verde"
+
+def test_cota_veche_dar_inainte_de_schimbare_da_verde():
+    # 19% pe o factura din 06/2025 (standard era inca 19%) -> VERDE (period-corect)
+    r = constatare_cota_tva([_linie(1, _date(2025, 6, 10), 19)], 2025, 6)
+    assert r["stare"] == "verde"
+
+def test_cota_redusa_9_nu_e_fals_pozitiv():
+    # 9% (cota redusa) dupa 01.08.2025 -> IGNORAT, nu rosu (nu e in familia standard)
+    r = constatare_cota_tva([_linie(1, _date(2025, 9, 10), 9)], 2025, 9)
+    assert r["stare"] == "verde"          # nicio linie standard verificata cu problema
+    assert r["constatari"] == []          # 0 linii standard -> tacit
+
+def test_scutit_0_ignorat():
+    r = constatare_cota_tva([_linie(1, _date(2025, 9, 10), 0)], 2025, 9)
+    assert r["stare"] == "verde" and r["constatari"] == []
+
+def test_mix_prinde_doar_linia_gresita():
+    # factura 1: 19% gresit; factura 2: 21% corect; factura 3: 9% redus (ignorat)
+    r = constatare_cota_tva([_linie(1, _date(2025, 9, 1), 19),
+                             _linie(2, _date(2025, 9, 2), 21),
+                             _linie(3, _date(2025, 9, 3), 9)], 2025, 9)
+    assert r["stare"] == "rosu"
+    assert r["constatari"][0]["remediu"]["facturi"] == [1]   # doar 1
+
+def test_temei_si_limita_declarate():
+    r = constatare_cota_tva([_linie(1, _date(2025, 9, 10), 19)], 2025, 9)
+    c = r["constatari"][0]
+    assert "Legea 141/2025" in c["temei"] and "reduse" in c["temei"].lower()
+    assert "NEVERIFICAT" in r["limita"]

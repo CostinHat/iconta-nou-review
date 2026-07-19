@@ -590,3 +590,116 @@ def verifica_d390(conn, schema, an, luna):
                        "R3_1_1/R7_1_1); triangulație (T/R); coerența cu D300 DEPUS (rândurile R1_1/R5_1 "
                        "sunt manual-only, nepersistate — nu există decont depus de comparat)."),
             "modul": MODUL, "reguli": REGULI}
+
+
+# ============================================================
+#  F184 — Conformitate cota TVA pe facturile EMISE vs cota standard valabila LA DATA facturii.
+#
+#  NU e declaratie-vs-contabilitate, ci CONFORMITATE a facturilor emise (grup separat in ecran).
+#  Puntea legislatie->re-verificare (v1): conecteaza un check VALUE-AWARE la push-ul F164. Cotele
+#  fiscale traiesc parametrizate cu DATA in common.COTE; cota() e period-aware. Cand cota standard se
+#  schimba (ex. 19%->21% de la 01.08.2025, Legea 141/2025), o factura emisa la cota VECHE dupa schimbare
+#  e neconforma - dar declaratie-vs-contabilitate NU prinde asta (ambele laturi folosesc aceeasi cota).
+#
+#  Reutilizeaza PRIMITIVA verificatoare.verifica_tva_pe_cota (per-tranzactie, orfana pana acum), NU o
+#  rescrie. Wrapper la nivel de firma: itereaza liniile facturilor emise ale lunii, cheama primitiva.
+#  GARD anti-fals-pozitiv: se verifica DOAR liniile la o cota din FAMILIA STANDARD (istoricul tva_standard,
+#  ex. {19,21}); cotele REDUSE (9/5) si scutit (0) NU depind de schimbarea cotei standard -> se ignora
+#  (altfel 9% ar aparea mereu "gresit" fata de 21%). Rosu doar pe cota clar gresita pentru perioada; gri
+#  daca nu pot citi facturile; verde/tacit daca toate liniile standard au cota corecta.
+
+def _gri_cota_tva(an, luna, motiv):
+    return {"an": an, "luna": luna, "stare": "gri", "constatari": [{
+                "stare": "gri", "eticheta": "Cotă TVA facturi emise",
+                "temei": "Conformitatea cotei TVA nu s-a putut evalua.",
+                "mesaj": f"NU pot verifica cota TVA a facturilor emise: {motiv}",
+                "remediu": {"fel": "investigatie", "cauza": "Date lipsă sau necitibile.",
+                            "actiune": "Verifică facturile emise ale lunii, apoi reîncearcă.",
+                            "facturi": []}}],
+            "explicatie": "",
+            "limita": "Verificarea cotei TVA nu a fost efectuată — riscul rămâne neacoperit.",
+            "modul": MODUL, "reguli": REGULI}
+
+
+def verifica_cota_tva(conn, schema, an, luna):
+    """F184: cota TVA a facturilor EMISE ale lunii vs cota standard valabila LA DATA facturii.
+    Vezi capul sectiunii F184. Conexiunea pozitionata pe schema. Citeste liniile, delega la
+    constatare_cota_tva (PURA - testabila fara DB)."""
+    import psycopg2.extras as _E
+    inceput = "%04d-%02d-01" % (an, luna)
+    sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
+    try:
+        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+            cur.execute(f"""
+                SELECT f.id, f.numar, f.data_emitere, l.cantitate, l.pret_unitar, l.cota_tva
+                FROM {schema}.facturi f
+                JOIN {schema}.factura_linii l ON l.factura_id = f.id
+                WHERE f.directie = 'emisa' AND f.data_emitere >= %s AND f.data_emitere < %s
+                ORDER BY f.id
+            """, (inceput, sfarsit))
+            linii = [dict(r) for r in cur.fetchall()]
+    except Exception as e:
+        return _gri_cota_tva(an, luna, f"nu pot citi facturile emise ({e}).")
+    return constatare_cota_tva(linii, an, luna)
+
+
+def constatare_cota_tva(linii, an, luna):
+    """PURA (fara DB): din liniile facturilor EMISE {id, numar, data_emitere, cantitate, pret_unitar,
+    cota_tva}, verifica DOAR liniile la cota-familie-standard vs cota standard valabila la data facturii
+    (verificatoare.verifica_tva_pe_cota, period-aware). Cote reduse/scutit -> ignorate."""
+    from core import verificatoare as _vf
+    from core import common as _c
+    # familia cotelor standard = toate valorile istorice tva_standard (ex. {19, 21})
+    try:
+        standard_family = {int(round(float(v) * 100)) for _, v, _ in _c.COTE["tva_standard"]}
+    except Exception as e:
+        return _gri_cota_tva(an, luna, f"nu pot citi nomenclatorul cotelor ({e}).")
+
+    verificate = 0
+    gresite = {}   # factura_id -> {numar, cota_gasita, cota_corecta}
+    for l in linii:
+        try:
+            cota_int = int(round(float(l["cota_tva"])))
+        except Exception:
+            continue
+        if cota_int not in standard_family:
+            continue   # cota redusa/scutit -> in afara scopului (nu depinde de cota standard)
+        baza = _d(l["cantitate"]) * _d(l["pret_unitar"])
+        tva_linie = baza * _d(cota_int) / _d(100)
+        rez = _vf.verifica_tva_pe_cota(baza, tva_linie, l["data_emitere"])  # PRIMITIVA, nerescrisa
+        verificate += 1
+        if not rez.get("ok", True) and l["id"] not in gresite:
+            gresite[l["id"]] = {"numar": l["numar"], "cota_gasita": cota_int,
+                                "cota_corecta": rez.get("cota_pct")}
+
+    temei = ("Cota TVA de pe fiecare factură emisă trebuie să fie cota standard valabilă LA DATA facturii "
+             "(common.COTE tva_standard, cu dată de valabilitate). Legea 141/2025: cota standard 21% din "
+             "01.08.2025. LIMITĂ: se verifică doar liniile la cotă STANDARD; cotele reduse (9/5) și scutit "
+             "nu depind de schimbarea cotei standard. Nu se verifică dacă produsul necesită cota standard "
+             "(clasificare de produs), doar coerența de PERIOADĂ.")
+    limita = ("Verificat: cota liniilor la cotă standard de pe facturile EMISE ale lunii vs cota standard "
+              "valabilă la data facturii. NEVERIFICAT: cotele reduse/scutit (legitim neschimbate); "
+              "clasificarea de produs (dacă produsul chiar cere cota standard).")
+
+    if not gresite:
+        constatari = [] if verificate == 0 else [{
+            "stare": "verde", "eticheta": "Cotă TVA facturi emise", "temei": temei,
+            "mesaj": "Toate facturile emise folosesc cota TVA corectă pentru perioadă.", "remediu": None}]
+        return {"an": an, "luna": luna, "stare": "verde", "constatari": constatari,
+                "explicatie": "", "limita": limita, "modul": MODUL, "reguli": REGULI}
+
+    ids = sorted(gresite)
+    n = len(ids)
+    ex = gresite[ids[0]]
+    mesaj = (f"{n} factur{'ă' if n == 1 else 'i'} emis{'ă' if n == 1 else 'e'} cu cotă TVA greșită pentru "
+             f"perioadă (ex. {ex['cota_gasita']}% în loc de {ex['cota_corecta']}%).")
+    constatare = {"stare": "rosu", "eticheta": "Cotă TVA facturi emise", "temei": temei, "mesaj": mesaj,
+                  "remediu": {"fel": "sugerat",
+                              "cauza": (f"{n} facturi emise au cotă TVA neconformă perioadei "
+                                        f"(cotă veche folosită după schimbarea cotei standard)."),
+                              "actiune": ("Verifică și corectează cota (stornare + reemitere sau factură de "
+                                          "corecție). Cota o confirmă omul, nu se ajustează automat."),
+                              "facturi": ids}}
+    return {"an": an, "luna": luna, "stare": "rosu", "constatari": [constatare],
+            "explicatie": f"{n} facturi emise cu cotă TVA neconformă perioadei.",
+            "limita": limita, "modul": MODUL, "reguli": REGULI}

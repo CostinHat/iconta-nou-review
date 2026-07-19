@@ -1158,3 +1158,32 @@ deschid portofoliul general si sa las omul sa caute firma - respins de gard #3 (
 LIMITA: JS static, fara build - schimbarea e live la reincarcare. Verificat: 7/7 parsare in node (inclusiv
 malformat->fallback, rute existente intacte) + curl HTTP real (token cabinet): /control-fiscal/2 = ruta deschisa
 de click intoarce firma corecta. Apelantii existenti (cabinet.js/asistent.js, 2 args) neatinsi.
+
+### 19.07.2026 F184 — punte legislatie->re-verificare v1: cota TVA facturi emise, value-aware, la push  (core/control_incrucisat.py:verifica_cota_tva; FUNCTIONALITATI.csv F184)
+DECIZIE: puntea "cand o valoare legislativa se schimba, firmele afectate devin rosii" se face v1 conectand un
+check VALUE-AWARE (cota TVA facturi emise vs cota standard pe perioada) la push-ul F164 existent. Declansator =
+cronul zilnic existent (nu COTE-driven proactiv - ala e v2, poate inutil). Doar checkul acum.
+TEMEI (verificat la sursa 19.07):
+  1. Valorile fiscale sunt PARAMETRIZATE cu DATA in common.COTE (nu hardcodate); cota() e period-aware. Semnalul
+     de schimbare exista structural (ex. tva_standard 19->21 de la 01.08.2025, Legea 141/2025) - dar in COD (lege
+     noua = rand nou + deploy), nu in DB. monitor_fiscal (text) e DECONECTAT de COTE (scrie doar alerte_fiscale).
+  2. Verificatorii control_incrucisat (tva/d112/d390 din push F164) NU consuma cota() -> re-rularea lor dupa o
+     schimbare de valoare nu produce nimic (compara declaratie vs contabilitate, ambele cu aceeasi cota). Golul.
+  3. verifica_tva_pe_cota (verificatoare.py) era PRIMITIVA ORFANA (zero apelanti), per-tranzactie, period-aware,
+     BLOCANT pe cota gresita. Fructul jos: deorfanizat printr-un wrapper la nivel de firma, NU rescris.
+GARD ANTI-FALS-POZITIV: se verifica DOAR liniile la o cota din FAMILIA STANDARD (istoricul tva_standard, {19,21}).
+Cotele reduse (9/5) si scutit NU depind de schimbarea cotei standard -> ignorate; altfel 9% ar aparea mereu
+"gresit" fata de 21% = rosu fals pe orice firma cu cota redusa. Rosu doar pe cota clar gresita PENTRU PERIOADA.
+ALTERNATIVA RESPINSA:
+  (a) re-rula verificatorii existenti dupa schimbare - nu produc nimic (nu depind de valori). Respins (raport C).
+  (b) declansator COTE-driven proactiv acum - amanat v2: cronul zilnic prinde deja rosul a doua zi; proactiv are
+      sens doar daca ziua conteaza (de decis dupa ce v1 merge).
+  (c) monitor_fiscal ca declansator - respins: text, nu valoare structurata; ramane proza informativa separata.
+  (d) verifica pe (total-tva, tva) la nivel de factura - respins: factura poate avea cote mixte -> fals-pozitiv;
+      se verifica per LINIE, doar liniile standard.
+  (e) sub grupul "Declaratie vs contabilitate" - respins: e conformitate a facturilor emise, nu decl-vs-contab;
+      grup SEPARAT "Conformitate facturi emise" (aditiv, nu reorganizare).
+LIMITA / CE RASTOARNA DECIZIA:
+  - Nu verifica clasificarea de PRODUS (daca produsul chiar cere cota standard), doar coerenta de PERIOADA.
+  - Declansator zilnic, nu proactiv: un rosu apare a doua zi dupa schimbare, nu instant. v2 daca instant conteaza.
+  - Cotele traiesc in COD (common.COTE); o lege noua tot cere editare + deploy (nu update de config).

@@ -1757,6 +1757,8 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
                 r["stare"] = "rosu"; contabil.append("Salarii declarate diferă de contabilitate")
             if (v.get("d390_incrucisat") or {}).get("stare") == "rosu":
                 r["stare"] = "rosu"; contabil.append("Operațiuni intracomunitare declarate diferă de evidență")
+            if (v.get("cota_tva_conformitate") or {}).get("stare") == "rosu":
+                r["stare"] = "rosu"; contabil.append("Facturi emise cu cotă TVA greșită pentru perioadă")
         except Exception:
             pass
         try:  # stocuri contabil vs fise CV
@@ -3253,10 +3255,13 @@ def _verificari_contabile(schema, an, luna):
     tva_incr = _incrucisat(_ci.verifica_tva, "TVA")
     d112_incr = _incrucisat(_ci.verifica_d112, "salarii (D112)")
     d390_incr = _incrucisat(_ci.verifica_d390, "operatiuni intracomunitare (D390)")
+    # [F184] conformitate cota TVA facturi emise vs cota standard pe perioada (value-aware, NU decl-vs-contab)
+    cota_tva_incr = _incrucisat(_ci.verifica_cota_tva, "cotă TVA facturi emise")
     rezultat = {
         "tva_incrucisat": tva_incr,
         "d112_incrucisat": d112_incr,
         "d390_incrucisat": d390_incr,
+        "cota_tva_conformitate": cota_tva_incr,
         "echilibru": _vf.verifica_balanta(bal),
         "trezorerie": _vf.verifica_trezorerie(bal),
         "tva": _vf.coerenta_tva(bal.get("4427", {}).get("credit", 0), bal.get("4426", {}).get("debit", 0)),
