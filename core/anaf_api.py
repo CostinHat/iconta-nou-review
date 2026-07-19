@@ -98,19 +98,23 @@ def valideaza_cui(lista_cui, data_interogare=None):
             dg = f.get("date_generale", f.get("dategenerale", {})) or {}
             tva = f.get("inregistrare_scop_Tva", f.get("inregistrarescopTva", {})) or {}
             inactiv = f.get("stare_inactiv", {}) or {}
+            rtvai = f.get("inregistrare_RTVAI", {}) or {}   # TVA la incasare
             rezultate.append({
                 "cui": str(dg.get("cui", "")),
                 "denumire": (dg.get("denumire") or "").strip(),
                 "platitor_tva": bool(tva.get("scpTVA")),
+                "tva_la_incasare": bool(rtvai.get("statusTvaIncasare")),   # F188: RTVAI.statusTvaIncasare
                 "stare": (dg.get("stare_inregistrare") or dg.get("stareinregistrare") or "").strip(),
                 "inactiv": bool(inactiv.get("statusInactivi")),
                 "adresa": (dg.get("adresa") or "").strip(),
-                "cod_caen": (dg.get("codCAEN") or "").strip(),
+                # v9 real: campul e 'cod_CAEN' (underscore); 'codCAEN' = fallback compat
+                "cod_caen": (dg.get("cod_CAEN") or dg.get("codCAEN") or "").strip(),
+                "nr_reg_com": (dg.get("nrRegCom") or "").strip(),          # F188
                 "gasit": True,
             })
         for c in dj.get("notFound", []):
             rezultate.append({
-                "cui": str(c), "denumire": "", "platitor_tva": False,
-                "stare": "", "inactiv": False, "adresa": "", "gasit": False,
+                "cui": str(c), "denumire": "", "platitor_tva": False, "tva_la_incasare": False,
+                "stare": "", "inactiv": False, "adresa": "", "cod_caen": "", "nr_reg_com": "", "gasit": False,
             })
     return rezultate

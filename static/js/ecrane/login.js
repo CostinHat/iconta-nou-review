@@ -352,8 +352,11 @@ export function ecranLogin(radacina) {
     const buton = modal.querySelector("#gr-buton");
     const eroare = modal.querySelector("#gr-eroare");
     const arata = (t) => { eroare.textContent = t; eroare.hidden = false; };
+    let ultimAnaf = "";  /* [F188] non-suprascriere: denumirea pusa de ANAF la ultima verificare */
     cui.addEventListener("input", () => {  // CUI schimbat = denumirea veche nu mai e valabila
-      firma.value = ""; cuiInfo.textContent = "";
+      // [F188] NU sterge ce a tastat MANUAL userul; sterge doar pre-completarea ANAF veche
+      if (!firma.value.trim() || firma.value === ultimAnaf) firma.value = "";
+      ultimAnaf = ""; cuiInfo.textContent = "";
     });
     cuiBtn.addEventListener("click", async () => {
       const val = (cui.value || "").trim();
@@ -362,8 +365,9 @@ export function ecranLogin(radacina) {
       try {
         const r = await api.get(`/public/verifica-cui/${encodeURIComponent(val)}`);
         if (r && r.gasit) {
-          firma.value = r.denumire || "";
-          cuiInfo.textContent = `Găsit la ANAF: ${r.denumire}. Verifică să fie firma ta.`;
+          // [F188] SUGEREAZA, nu suprascrie orb: completeaza doar daca campul e gol sau neatins de user
+          if (!firma.value.trim() || firma.value === ultimAnaf) { firma.value = r.denumire || ""; ultimAnaf = r.denumire || ""; }
+          cuiInfo.textContent = `Din ANAF: ${r.denumire} — verifică. Adresa/CAEN/Reg.Com./TVA se preiau la creare.`;
           cuiInfo.style.color = "#16a34a";
         } else {
           cuiInfo.textContent = "Nu apare la ANAF prin acest CUI. Completează denumirea manual.";

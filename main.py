@@ -922,15 +922,21 @@ def register_gratuit(date: RegisterGratuitIn):
                                                     date.nume_firma.strip(), date.cui.replace("RO", "").strip(), _TENANT_TEMPLATE)
             if not r.get("ok"):
                 raise HTTPException(409, r.get("mesaj", "eroare"))
-            # [gratuit_tva_anaf_v1] platitor_tva din ANAF, nu default template
+            # [F188] pre-completare din ANAF v9 (date publice ale propriei firme): profil populat la creare
+            # (platitor_tva/tva_la_incasare/adresa/caen/reg_com). NU atinge 'nume' (setat de user). COALESCE:
+            # gol ANAF nu suprascrie existent. ANAF jos -> ramane default, corectabil din date_firma.
             try:
                 rez = anaf_api.valideaza_cui([date.cui.replace("RO", "").strip()])
                 if rez and rez[0].get("gasit"):
+                    d = rez[0]
                     with conn.cursor() as cur:
                         cur.execute("SELECT schema_name FROM public.tenants WHERE id = %s", (r["tenant_id"],))
                         sch = cur.fetchone()[0]
-                        cur.execute(f'UPDATE "{sch}".firma_profil SET platitor_tva = %s',
-                                    (bool(rez[0].get("platitor_tva")),))
+                        cur.execute(f'''UPDATE "{sch}".firma_profil SET platitor_tva=%s, tva_la_incasare=%s,
+                                        adresa=COALESCE(NULLIF(%s,''), adresa), caen=COALESCE(NULLIF(%s,''), caen),
+                                        reg_com=COALESCE(NULLIF(%s,''), reg_com)''',
+                                    (bool(d.get("platitor_tva")), bool(d.get("tva_la_incasare")),
+                                     d.get("adresa") or "", d.get("cod_caen") or "", d.get("nr_reg_com") or ""))
             except Exception:
                 pass  # ANAF jos -> ramane default, corectabil din vector fiscal
             conn.commit()
@@ -1021,6 +1027,20 @@ def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
         with db.get_conn() as conn:
             r = tenant_provisioning.provision_tenant(
                 conn, date.nume, date.cui, ctx["firm"], ctx["uid"], _TENANT_TEMPLATE)
+            # [F188] pre-completare din ANAF v9 in profilul firmei nou-create (adresa/caen/reg_com/tva).
+            # NU atinge 'nume' (setat de contabil). COALESCE: gol ANAF nu suprascrie. ANAF jos -> default.
+            try:
+                rez = anaf_api.valideaza_cui([str(date.cui).replace("RO", "").strip()])
+                if rez and rez[0].get("gasit"):
+                    d = rez[0]
+                    with conn.cursor() as cur:
+                        cur.execute(f'''UPDATE "{r["schema_name"]}".firma_profil SET platitor_tva=%s, tva_la_incasare=%s,
+                                        adresa=COALESCE(NULLIF(%s,''), adresa), caen=COALESCE(NULLIF(%s,''), caen),
+                                        reg_com=COALESCE(NULLIF(%s,''), reg_com)''',
+                                    (bool(d.get("platitor_tva")), bool(d.get("tva_la_incasare")),
+                                     d.get("adresa") or "", d.get("cod_caen") or "", d.get("nr_reg_com") or ""))
+            except Exception:
+                pass  # best-effort: ANAF jos -> profil ramane default, corectabil din date_firma
     except ValueError as e:
         raise HTTPException(400, str(e))
     return r

@@ -48,17 +48,22 @@ export function randeazaListaFirme(container, nav, inapoi) {
       `;
       const cui = corp.querySelector("#fn-cui"), nume = corp.querySelector("#fn-nume");
       const info = corp.querySelector("#fn-cui-info"), btn = corp.querySelector("#fn-salveaza");
-      let t = null;
+      let t = null, ultimAnaf = "";  /* [F188] non-suprascriere: retine ultima denumire pusa de ANAF */
       cui.addEventListener("input", () => {
         clearTimeout(t); btn.disabled = true; info.textContent = "";
         const v = cui.value.replace(/\D/g, "");
         if (v.length < 6) return;
-        t = setTimeout(async () => {
+        t = setTimeout(async () => {  /* debounce 500ms: un apel per CUI, nu pe fiecare tasta (rate limit ANAF) */
           info.textContent = "Verific la ANAF...";
           try {
             const r = await api.get("/public/verifica-cui/" + v);
-            if (r && r.gasit) { nume.value = r.denumire; info.textContent = "Găsită: " + r.denumire; btn.disabled = false; }
-            else { info.textContent = "CUI negăsit la ANAF. Poți completa denumirea manual."; btn.disabled = false; }
+            if (r && r.gasit) {
+              // [F188] SUGEREAZA, nu suprascrie orb: completeaza doar daca campul e gol sau neatins de user
+              // de la ultima pre-completare ANAF (userul poate corecta datele stale ANAF fara sa i se piarda).
+              if (!nume.value.trim() || nume.value === ultimAnaf) { nume.value = r.denumire; ultimAnaf = r.denumire; }
+              info.textContent = "Din ANAF: " + r.denumire + " — verifică. Adresa/CAEN/Reg.Com./TVA se preiau la creare.";
+              btn.disabled = false;
+            } else { info.textContent = "CUI negăsit la ANAF. Poți completa denumirea manual."; btn.disabled = false; }
           } catch (e) {
             info.textContent = "Nu am putut verifica la ANAF acum. Completează denumirea manual.";
             btn.disabled = false;

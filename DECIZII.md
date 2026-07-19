@@ -1281,3 +1281,25 @@ diferenta legitima):
 TEMEI: cele 3 nu se pot distinge cert legitim-vs-gresit prin regex pe linii (cer context de randare / parinte /
 scop). Raman verificare manuala (DE_FACUT). 9 reguli DS raman audit vizual (randat/comportamental).
 LIMITA: verificatorul e regex pe linii, doar ecrane JS - prinde semnatura textuala, nu randarea/asezarea/comportamentul.
+
+### 19.07.2026 F188 pre-completare ANAF v9 la onboarding: SUGEREAZA, userul CONFIRMA  (core/anaf_api.py + main.py; static/js/ecrane/login.js + firme.js)
+DECIZIE: la inregistrare (cont gratuit + cabinet adauga firma) CUI-ul pre-completeaza datele firmei din API-ul
+public ANAF v9 - denumire in formular, adresa/CAEN/nr.Reg.Com./TVA/TVA-incasare in firma_profil la creare.
+TEMEI: date PUBLICE ale propriei firme a userului (legal); infra exista deja ~80%% (anaf_api.valideaza_cui +
+endpoint /public/verifica-cui + /tenants/{tid}/verifica-cui + coloane firma_profil). Verificat la sursa cu apel
+REAL pe 14399840: v9 intoarce denumire/adresa/cod_CAEN/nrRegCom/scpTVA/RTVAI.statusTvaIncasare/stare_inactiv.
+Parser extins cu nrRegCom + statusTvaIncasare; REPARAT bug latent (citea 'codCAEN', real e 'cod_CAEN' -> CAEN era gol).
+GARDURI (aceeasi disciplina ca four-eyes: masina sugereaza, omul decide):
+  - NON-SUPRASCRIERE: nu se pierde ce a tastat userul manual (completeaza doar campul gol sau neatins de la ultima
+    pre-completare ANAF). Datele ANAF pot fi stale -> userul corecteaza, campuri EDITABILE.
+  - DEGRADARE GRATIOASA: CUI invalid / ANAF 404 / ANAF jos -> mesaj discret "completeaza manual", formular INTACT,
+    NU crapa, NU sterge ce a tastat. valideaza_cui intoarce {gasit:False} (HTTP 200), nu exceptie.
+  - DEBOUNCE 500ms: un apel per CUI complet, nu pe fiecare tasta (rate limit ANAF 1/sec).
+  - COALESCE la stocare: gol ANAF nu suprascrie existentul; 'nume' setat de user NU se atinge.
+RAMAN MANUALE (v9 nu le are): telefon, email, IBAN, cod postal - marcaj UX clar (pre-completat vs de completat).
+ALTERNATIVA RESPINSA: (a) suprascriere oarba a denumirii - respins (pierde input user, ANAF poate fi stale);
+(b) blocarea campurilor pre-completate - respins (userul trebuie sa poata corecta); (c) cod TVA intracom din v9 -
+NU e in v9, e VIES (serviciu separat verifica_vies) - amestecul ar fi gresit; VIES la onboarding = v2 daca merita.
+LIMITA: register-gratuit foloseste buton explicit "Verifica la ANAF" (pre-existent), cabinet foloseste blur -
+ambele pre-completeaza; nu am reorganizat UI-ul existent (DS: reorganizarea = STOP). oras/judet NU se extrag din
+adresa structurata inca (adresa_sediu_social exista in v9) - flat adresa in v1, structurat = v2.
