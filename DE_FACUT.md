@@ -65,13 +65,17 @@ starea reverificata azi:
   contabilul rămâne pe SAGA" (DECIZII.md 18.07). RĂMÂNE: WinMentor și Ciel (alt generator, altă
   structură — codul e structurat pe format ca să le primească). LIMITA SAGA declarată: neconfirmat pe
   import real (encoding UTF-8 vs Windows-1250 + clasificare ieșire = ochi uman). NU depinde de OAuth ANAF.
-- **Igienă la migrare: contul gratuit vechi rămâne activ după preluarea firmei de un cabinet** (adăugat
-  18.07, punct de VERIFICAT, nu gol). Preluarea tenant = create-new e comportament CORECT (contul
-  gratuit e unealtă de emitere, nu sursă de adevăr contabil; datele reale vin prin fluxul de migrare
-  al contabilului — decis în DECIZII.md commit afd67d9, cu retenție 1 an). RĂMÂNE de verificat: după
-  ce contabilul aduce firma în cabinet, contul gratuit vechi (același CUI) rămâne activ → firma ar
-  putea emite din două locuri cu același CUI. De închis contul gratuit la migrare = igienă. Doar de
-  verificat/tratat la migrare, nu acum.
+- **Igienă cont gratuit / CUI dublu emitent — ACOPERIT de F092 (coliziune_gratuit_v1) + F185 (gardul invers).**
+  Verificat la sursă 19.07. Preluarea tenant = create-new e CORECT (contul gratuit e unealtă de emitere, nu sursă
+  contabilă; datele reale vin prin migrare — DECIZII commit afd67d9, retenție 1 an). Riscul „același CUI emite din
+  două locuri (gratuit + cabinet)" e DETECTAT + gestionat, NU restanță deschisă:
+  - **F092 (18.07, direcția gratuit→cabinet):** la crearea tenantului de cabinet pe un CUI care are cont gratuit
+    activ, se SEMNALEAZĂ cabinetului (tenant_creeaza + migrare_importa). Poartă enforcement: cont gratuit suspendat
+    (activ=false) nu poate fi selectat/emite (auth_api.py:335). Închidere = superadmin (/admin/conturi-gratuite/
+    {id}/suspenda). Auto-close RESPINS explicit (GDPR — deținătorul decide).
+  - **F185 (19.07, direcția inversă cabinet→gratuit):** register gratuit pe un CUI deja sub cabinet → semnal
+    simetric la înregistrare (inregistreaza_cont_gratuit), tot fără blocaj/auto-close.
+  REZIDUAL: vizibilitate persistentă (raport superadmin de coliziuni active) = PLANIFICAT mai jos, nu gard critic.
 - Cod 10 CM (reducere timp muncă, art. 19) — INTEGRAT, nu mai e iterație viitoare (corectat 17.07:
   nota veche "exclus din dropdown, `calcul_cm_cod10` neintegrat" era contrazisă de cod). Dovadă:
   `calcul_cm_cod10` definit (salarizare.py:208) + apelat în flux real (salariati_api.py:222) + în
@@ -101,6 +105,11 @@ ID / Stare / Sursa cod / Temei legal / Testat). Doua inventare = drift garantat.
 - F166: parser MT940 (SWIFT) - LIVE 14.07 in banca_parser (marker :61:/:20:). RAMAS: validare pe fisier MT940 real din banca (campul :86: variaza per banca)
 - F167: Open Banking automat prin Enable Banking (AIS EU; tier gratuit Restricted Production pt conturi proprii = dogfooding; productie = contract + KYB + cost pe conexiuni). Dupa MT940. Automatizeaza ADUCEREA extrasului, nu doar citirea [PLANIFICAT-etapa-2]
 - F183 (re-numerotat din F169 — coliziune cu F169=control incrucisat TVA din registru): audit de PRELUARE firma - acelasi motor control_incrucisat aplicat la migrare: inventar transparent (ce pot/nu pot verifica), raport datat cu trei categorii (coerent / divergent / NEVERIFICAT-lipsa document), repetabil pe masura ce apar documentele. Acoperire profesionala la preluarea raspunderii [PLANIFICAT]
+- F186: raport superadmin de coliziuni CUI active (CUI cu cont gratuit + tenant de cabinet, ambele activ=true) -
+  vizibilitate PERSISTENTA pentru follow-up (superadmin vede lista si poate suspenda). Complement la semnalele de la
+  creare (F092 gratuit->cabinet, F185 cabinet->gratuit), care sunt EFEMERE (doar la momentul actiunii). Rezolva
+  handoff-ul: semnalul apare la cabinet/registrant, dar inchiderea o face superadmin - fara raport, superadmin nu
+  afla ce coliziuni pendinte exista. NU gard critic (riscul primar e deja detectat+gated); imbunatatire de proces [PLANIFICAT]
 - RAMASE: teste [C] DONE 14.07 (P1.1/P1.4/P1.5-simulat/P2.9-2.11/P5.24); backup automat LIVE (systemd timer zilnic 03:00, retentie 7z); [D] raman ca teste proprii; blocate extern: F034 D394 DUK, F044 e-Transport API SPV; F154-F161 roadmap gratuit PLANIFICATE; parse-extras de clarificat vs rip/import-banca
 
 ## Actualizare 16.07.2026 — re-testare completa a aplicatiei (portiunea SSH)

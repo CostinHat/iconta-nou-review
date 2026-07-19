@@ -938,7 +938,8 @@ def register_gratuit(date: RegisterGratuitIn):
             conn.rollback(); raise
         except Exception as e:
             conn.rollback(); raise HTTPException(400, str(e))
-    return {"ok": True}
+    # [F185] semnal simetric F092: CUI-ul e deja sub un cabinet -> avertizeaza registrantul (nu bloca)
+    return {"ok": True, "coliziune_cabinet": bool(r.get("coliziune_cabinet"))}
 
 @app.post("/auth/register")
 def register(date: RegisterIn):

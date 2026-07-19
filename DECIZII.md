@@ -1198,3 +1198,19 @@ deja implica deploy. Decalajul de o zi = nesemnificativ.
 LIMITA / CE RASTOARNA: daca vreodata cotele trec dintr-un tabel de config editabil FARA deploy (schimbare de
 arhitectura), instant-ul ar putea conta - atunci se reevalueaza. Distinct de v2 F164 (digest email), care ramane
 PLANIFICAT (nu respins).
+
+### 19.07.2026 F185 — gardul INVERS al coliziunii CUI (cabinet->gratuit), simetric cu F092  (core/auth_api.py inregistreaza_cont_gratuit; FUNCTIONALITATI.csv F185)
+DECIZIE: register cont gratuit pe un CUI DEJA sub un cabinet -> SEMNAL la inregistrare (coliziune_cabinet),
+simetric cu F092 (coliziune_gratuit_v1 = gratuit->cabinet). Doar semnal, NU blocaj, NU auto-inchidere.
+TEMEI (verificat la sursa 19.07): F092 acopera doar directia gratuit->cabinet (provision_tenant). inregistreaza_
+cont_gratuit (auth_api.py:301) verifica doar conturile gratuite (un CUI = un cont gratuit), NU si daca CUI-ul e
+sub un cabinet -> un CUI gestionat de un cabinet isi putea deschide cont gratuit self-serve NESEMNALAT (asimetrie).
+Riscul e simetric (emitere dubla pe acelasi CUI). Reutilizat pattern-ul F092 (regexp_replace pe cifrele CUI,
+activ=true), nu unul nou.
+ALTERNATIVA RESPINSA: (a) blocaj dur la inregistrare - respins: proprietarul poate avea motive legitime, il
+informezi nu-l opresti (consecvent cu decizia GDPR 18.07); (b) auto-inchidere a unuia - respins, inchiderea unui
+cont = decizie umana (aceeasi ca F092); (c) sa expun numele/detaliile cabinetului registrantului - respins din
+privacy: doar EXISTENTA (boolean).
+LIMITA: semnalul e informativ, nu impiedica emiterea din niciun cont pana la suspendare manuala (superadmin).
+Vizibilitatea persistenta pentru follow-up (raport superadmin de coliziuni active) = F186 PLANIFICAT, nu gard
+critic. Match pe cifrele CUI (prinde prefix RO); nu testat pe CUI cu spatii/puncte interne (ANAF nu le foloseste).

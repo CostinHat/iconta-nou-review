@@ -384,10 +384,17 @@ export function ecranLogin(radacina) {
       if (parola.value !== parola2.value) { arata("Parolele nu coincid."); return; }
       buton.disabled = true; buton.textContent = "Se creează…";
       try {
-        await api.post("/public/register-gratuit", {
+        const rg = await api.post("/public/register-gratuit", {
           email: email.value.trim(), parola: parola.value,
           nume_firma: firma.value.trim(), cui: (cui.value || "").trim(),
         });
+        // [F185] semnal simetric F092: CUI-ul e deja sub un cabinet -> avertizeaza, NU blocheaza (contul e creat).
+        // Stop + mesaj (ca F092 la cabinet); userul citeste, apoi intra manual. Aceeasi disciplina GDPR.
+        if (rg && rg.coliziune_cabinet) {
+          arata("Contul a fost creat. ATENȚIE: acest CUI este deja gestionat de un cabinet contabil — evită să emiți din ambele locuri cu același CUI (numerotare / e-Factură dublă). Contul gratuit rămâne al tău; închiderea o decizi tu.");
+          buton.disabled = true; buton.textContent = "Cont creat ✓";
+          return;
+        }
         try {
           const r = await api.post("/auth/login", { email: email.value.trim(), parola: parola.value });
           sesiune.intra(r.token, r.user);  // redirect DOAR dupa login reusit
