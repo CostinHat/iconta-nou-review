@@ -142,6 +142,15 @@ def _main():
     print("Notificari scadenta: trimise=%d, fara_reply_to=%d, fara_email_client=%d"
           % (tot["trimise"], tot["fara_reply_to"], tot["fara_email_client"]))
 
+    # [alerte_control_fiscal] Push in-app al findingurilor ROSII de control fiscal, agatat de acest
+    # cron zilnic (nu timer nou - reutilizeaza slotul de 08:00). Logica IZOLATA in modulul propriu;
+    # aici doar declansare, protejata: un esec al alertelor NU trebuie sa strice notificarile de scadenta.
+    try:
+        from core import alerte_control_fiscal
+        alerte_control_fiscal.ruleaza()
+    except Exception as e:
+        print("  ESEC alerte control fiscal: %s" % e)
+
 
 if __name__ == "__main__":
     _main()

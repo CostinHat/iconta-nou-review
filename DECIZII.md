@@ -1108,3 +1108,34 @@ LIMITA / CE RASTOARNA DECIZIA:
     D-vs-D real (D390 depus vs D300 depus). Prerechizit util si altor controale, nu doar F163.
   - v1 verifica doar BUNURI IC (livrari L / achizitii A, auto-maparea D390: emisa->L, primita->A). Servicii,
     triangulatie (T/R), si coerenta cu D300 DEPUS raman neacoperite (declarate ca limita in fiecare finding).
+
+### 19.07.2026 F164 — alerte control fiscal: pull->push prin clopotelul existent, dedup pe persistenta  (core/alerte_control_fiscal.py; FUNCTIONALITATI.csv F164)
+DECIZIE: findingurile ROSII de control fiscal (verifica_tva/d112/d390) se imping catre contabil printr-un
+strat de PUSH peste clopotelul in-app EXISTENT (notificari_api), nu printr-un canal nou. Cron zilnic agatat
+de core.notificari_scadenta (ruleaza deja 08:00), nu timer nou. O notificare AGREGATA per firma catre
+validatorii_cabinetului (contabilii). Doar ROSU; gri ramane pull.
+TEMEI: restanta 17.07 "alertele fiscale nu ajung la om" = lipsea stratul pull->push, NU canalul. Verificat la
+sursa (grep): control_fiscal e pull-only (2 endpoint-uri cere_cabinet, calcul la deschidere); clopotelul
+(public.notificari, badge+panou+read-state) exista si e declansat doar de de_validat/solicitare_client - niciun
+finding fiscal. Canal + tintire (validatorii_cabinetului) + dedup (pattern public.alerte_emise/F103) = infra
+reutilizabila. Destinatar = contabilul (findingurile cer corectii contabile), nu patronul.
+GARDUL CRITIC (dedup pe persistenta): jurnal public.alerte_control_emise, cheie (tenant, verificator, perioada).
+Un rosu care PERSISTA neschimbat = O SINGURA alerta, nu una pe zi (altfel spam zilnic pana la rezolvare).
+Re-notifica DOAR daca: apare un verificator rosu NOU pe firma, SAU un rosu dispare si reapare (rezolvat -> sters
+din jurnal -> reaparitia conteaza ca nou). Doua rulari aceeasi zi = o alerta. Jurnalizeaza DOAR ce s-a LIVRAT
+efectiv (0 contabili -> nu marca, retry cand apar validatori - altfel un finding ar fi suprimat fara sa-l fi vazut
+cineva).
+ALTERNATIVA RESPINSA:
+  (a) al doilea sistem de notificari - respins (clopotelul acopera; doua canale = drift).
+  (b) push la FIECARE rulare a unui rosu persistent - respins: spam zilnic; contabilul dezactiveaza tot canalul.
+  (c) email direct - amanat la v2 (digest Brevo), dupa ce push-ul in-app se dovedeste.
+  (d) gri in clopotel - respins: "nu pot verifica" e informatie, nu actiune; nu spamam cu ce nu se poate rezolva.
+  (e) push per finding (nu agregat) - respins: consecvent cu filtrarea anti-dublura din portofoliu, o firma = o alerta.
+  (f) CREATE la runtime in cron - imposibil: PG15+ revoca CREATE pe public de la iconta_user; tabel creat de
+      superuser (owner iconta_user, ca public.notificari), DDL = sursa de adevar in modul (DDL_JURNAL).
+LIMITA / CE RASTOARNA DECIZIA:
+  - Clopotelul ruteaza pe click doar link='validat' (navigator.js) - notificarea fiscala apare cu text+badge
+    corect, dar click-ul nu deschide inca ecranul de control. Routing 'control-fiscal:{tid}' = follow-up mic.
+  - Cronul verifica LUNA CURENTA (ca ecranul). Un rosu de luna trecuta nerezolvat iese din detectie la schimbarea
+    lunii (consecvent cu ecranul, care tot luna curenta arata).
+  - v2: digest email (Brevo) pentru contabilii care nu intra zilnic; routing click in clopotel.
