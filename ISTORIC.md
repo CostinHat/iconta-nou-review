@@ -1512,7 +1512,7 @@ e-Factura: F176 (conector OAuth) + F177 (refresh) + F178 (poll recipise) + F179 
 (cabinet XOR gratuit), doua servicii, drept unificat. Restanta transversala UNICA: proba live pe CIF cu
 drept SPV real (e-Factura si e-Transport) - cod complet + testat, necolorat verde in direct (ca F176).
 
-# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat + F164 (alerte pull->push) + F184 (punte legislatie->re-verificare)
+# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat + F164 (alerte pull->push) + F184 (punte legislatie->re-verificare) + F185 (gard coliziune CUI invers)
 
 Zi noua. Dupa clusterul SPV/e-Factura/e-Transport de ieri, intoarcere pe motorul de control fiscal.
 Deciziile au temei in DECIZII.md (intrarea 19.07 F163); aici POINTER + commit-uri.
@@ -1644,3 +1644,31 @@ de COTE (valori structurate) - proza informativa separata, nu declansator.
 temei+limita) + 50/50 fara regresie. Functional REAL tenant_002 cu curatare: factura emisa test 19% in 09/2025 ->
 verifica_cota_tva ROSU-sugerat pe factura corecta; verificatori_rosii din push include 'cota_tva'; endpoint HTTP
 /control-fiscal/2 (token cabinet) expune cota_tva_conformitate. Restart HTTP activ. node --check ESM + verificator DS 0.
+
+## F185 -> LIVE: gard coliziune CUI directia inversa (cabinet->gratuit) (commit b8a598e)
+Igiena cont gratuit / "CUI dublu emitent" (nota veche din DE_FACUT). Diagnostic la sursa (FAZA 0): NU e bug
+deschis - riscul "acelasi CUI emite din doua locuri (cont gratuit + tenant de cabinet)" e deja DETECTAT de F092
+(coliziune_gratuit_v1, 18.07): semnal la crearea tenantului de cabinet, poarta enforcement (cont suspendat nu
+emite, auth_api:335), inchidere superadmin, auto-close RESPINS (GDPR - detinatorul decide). Tokenul SPV NU e
+vulnerabil (apartine unui PRINCIPAL cabinet-XOR-gratuit, fiecare emite prin tokenul lui - nu cross-emisie).
+ASIMETRIE gasita: F092 acopera doar gratuit->cabinet. inregistreaza_cont_gratuit (auth_api:301) verifica doar
+conturile gratuite (un CUI = un cont gratuit), NU si daca CUI-ul e sub un cabinet -> un CUI gestionat de un
+cabinet isi putea deschide cont gratuit self-serve NESEMNALAT.
+REPARAT (F185, simetric): inregistreaza_cont_gratuit verifica si accounting_firm_id IS NOT NULL (reutilizeaza
+pattern-ul F092 - regexp_replace pe cifrele CUI, activ=true) -> coliziune_cabinet; register_gratuit il propaga;
+landing (login.js) opreste + avertizeaza ("acest CUI e deja gestionat de un cabinet contabil"). DOAR SEMNAL, NU
+blocaj, NU auto-inchidere (aceeasi disciplina GDPR ca 18.07). Privacy: expune doar EXISTENTA (boolean), nu
+numele/detaliile cabinetului.
+
+## Reconciliere nota + rezidual
+Nota stale "igiena cont gratuit / CUI dublu emitent" din DE_FACUT (era "punct de VERIFICAT") marcata ACOPERITA de
+F092 (gratuit->cabinet) + F185 (cabinet->gratuit), nu falsa restanta deschisa. Rezidual: vizibilitate persistenta
+(raport superadmin de coliziuni active - CUI cu gratuit + cabinet ambele activ=true) = F186 PLANIFICAT, complement
+la semnalele EFEMERE de la creare, nu gard critic.
+
+## Verificat (F185)
+Functional REAL cu curatare verificata: (A) inregistreaza_cont_gratuit pe CUI-ul lui tenant_002 (sub cabinet) ->
+coliziune_cabinet=True, contul SE CREEAZA (nu blocat); curatat (DROP schema provizionata + delete tenant+user),
+verificat ca revine la tenant_001/002 (schema nou-creata era tenant_003 FRESH, nu cea istorica - fals alarma
+verificata la sursa inainte de a continua). (B) CUI liber valid -> False. (C) CUI cu cont gratuit existent ->
+CUI_EXISTA neschimbat. py_compile + node --check ESM login.js + restart HTTP 200.

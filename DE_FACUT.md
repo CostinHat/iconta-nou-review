@@ -110,6 +110,11 @@ ID / Stare / Sursa cod / Temei legal / Testat). Doua inventare = drift garantat.
   creare (F092 gratuit->cabinet, F185 cabinet->gratuit), care sunt EFEMERE (doar la momentul actiunii). Rezolva
   handoff-ul: semnalul apare la cabinet/registrant, dar inchiderea o face superadmin - fara raport, superadmin nu
   afla ce coliziuni pendinte exista. NU gard critic (riscul primar e deja detectat+gated); imbunatatire de proces [PLANIFICAT]
+- GARD preventiv teste (INAINTE de primul client real): testele NU pot DROP SCHEMA fara prefix de test explicit
+  (test_*) sau tid dintr-un range rezervat. Motiv: la testul F185 (19.07), un cont gratuit provizionat de test a
+  primit numele reutilizat 'tenant_003' (max-existing+1, nu id-based) - DROP-ul de curatare a fost corect (schema
+  FRESH, verificat inainte), dar numele reutilizabil poate induce in eroare. Azi toate datele sunt de test -> fara
+  risc; devine OBLIGATORIU la primul cabinet real, cand un DROP gresit ar sterge date reale. [PLANIFICAT]
 - RAMASE: teste [C] DONE 14.07 (P1.1/P1.4/P1.5-simulat/P2.9-2.11/P5.24); backup automat LIVE (systemd timer zilnic 03:00, retentie 7z); [D] raman ca teste proprii; blocate extern: F034 D394 DUK, F044 e-Transport API SPV; F154-F161 roadmap gratuit PLANIFICATE; parse-extras de clarificat vs rip/import-banca
 
 ## Actualizare 16.07.2026 — re-testare completa a aplicatiei (portiunea SSH)
