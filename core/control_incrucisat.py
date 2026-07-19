@@ -23,7 +23,7 @@ Regula fiscala: D300 se calculeaza pe FACTURILE lunii (fapt generator, art. 281 
 balanta pe INREGISTRARILE contabile. Divergenta apare cand facturi emise nu sunt
 contabilizate. Nu e automat eroare - e semnal ca evidenta a ramas in urma.
 
-Comparatie D112 (F163): totalurile DECLARATE se citesc din XML-ul generat
+Comparatie D112 (F162): totalurile DECLARATE se citesc din XML-ul generat
 (angajatorA A_codOblig), NU dintr-o reagregare a salariatilor din pull(): generatorul
 RECALCULEAZA cas/cass/impozit pe salariatii cu concediu medical (baza CM, OUG 158/2005)
 si adauga suprataxa part-time separat. O reagregare ar fi o A TREIA cifra, care ar da
@@ -314,7 +314,7 @@ def note_salarii_ciorna(conn, schema, an, luna):
 
 
 def verifica_d112(conn, schema, an, luna):
-    """F163: D112 vs contabilitate. Gri daca declaratia nu se poate genera."""
+    """F162: D112 vs contabilitate. Gri daca declaratia nu se poate genera."""
     from core import d112 as _d112
     try:
         xml, _av = _d112.genereaza(conn, schema, an, luna)
