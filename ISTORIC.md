@@ -1512,7 +1512,7 @@ e-Factura: F176 (conector OAuth) + F177 (refresh) + F178 (poll recipise) + F179 
 (cabinet XOR gratuit), doua servicii, drept unificat. Restanta transversala UNICA: proba live pe CIF cu
 drept SPV real (e-Factura si e-Transport) - cod complet + testat, necolorat verde in direct (ca F176).
 
-# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat + F164 (alerte pull->push) + F184 (punte legislatie->re-verificare) + F185 (gard coliziune CUI invers) + F187 (export WinMentor)
+# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat + F164 (alerte pull->push) + F184 (punte legislatie->re-verificare) + F185 (gard coliziune CUI invers) + F187 (export WinMentor) + verificator DS intarit (2 gardieni)
 
 Zi noua. Dupa clusterul SPV/e-Factura/e-Transport de ieri, intoarcere pe motorul de control fiscal.
 Deciziile au temei in DECIZII.md (intrarea 19.07 F163); aici POINTER + commit-uri.
@@ -1719,3 +1719,35 @@ NU se construieste pe sursa secundara (ar rupe importul, ca BR-RO). Notat [BLOCA
 oficial; Item=cod;UM;cant;pret + Item_TVA; UM absent din Articole.txt; dedup articole pe cod; config override; gard
 cp1250 s/t->cedila + caracter neencodabil->exceptie) + functional REAL tenant_002 cu curatare (factura status=emisa
 cu diacritice -> ambele fisiere corecte, cod consecvent AD2090A939D5, cp1250 corect) + HTTP fara regresie. Restart activ.
+
+## Verificator DS intarit: 2 gardieni noi (26->28), 3 candidati respinsi (commit ece61da)
+Inventar DS (harta acoperit-automat vs manual): verificatorul = regex pe linii, scaneaza DOAR static/js/ecrane/
+*.js -> prinde SEMNATURA TEXTUALA a unei abateri, NU randarea/asezarea/comportamentul. Mutat 2 reguli din manual
+in automat (verificat o data, prins pe veci, protejeaza contra regresiei):
+- ESC_LOCAL (cap.10, SECURITATE - prioritate): prinde variante locale de escaping (_esc/escB/escV/escS/escC/escJ)
+  in loc de esc() canonic din api.js. Variantele omit apostroful -> risc XSS in atribute cu ghilimele simple.
+  Cod 0 acum (curatat anterior), dar era NEPROTEJAT contra regresiei - un fisier nou cu _esc ar fi trecut.
+- CASETA_ATENTIE (cap.5): #fdf3f3 inline in loc de clasa .caseta-atentie, simetric cu CASETA_INFO/POARTA_INLINE.
+  Rafinat la sursa: exclus #fdeef2 (ala e zebra/landing - login.js pagina-card-mare, exclus DS cap.15) ca sa nu
+  dea fals-pozitiv pe cod legitim.
+TOTAL ramane 0 (ambii gardieni curati - nu introduc candidati falsi).
+
+## 3 candidati de gardian RESPINSI ca neautomatizabili (fals-pozitive dovedite la rulare)
+Principiu (ca la controlul fiscal): un gardian care aprinde pe cod CORECT e mai rau ca lipsa lui - erodeaza
+increderea, ca un rosu pe diferenta legitima. Unde regex-ul pe linii nu distinge cert legitim-vs-gresit, se
+raporteaza, NU se automatizeaza:
+- card-inactiv fara 'activ' (cap.2b): gardianul a aprins 9 candidati in migrare.js care sunt PASI DE WIZARD
+  (nr:, .mig-pasi), NU carduri firme-optiune - semnatura {cheie:...desc:...} e partajata intre tipuri de card,
+  regex-ul nu distinge cert fara euristici fragile.
+- panou gri-pe-gri (cap.16): "invizibil" depinde de PARINTE (panou alb vs corp gri) + prezenta bordurii - context
+  de randare pe care regex-ul nu-l stie.
+- background/border hex ad-hoc (cap.15): extinderea CULORI_HARDCODATE de la color: la background:/border: ar prinde
+  prea multe bg-uri inline legitime -> zgomot.
+
+## Ce ramane verificare vizuala manuala (neautomatizabil)
+9 reguli DS randate/comportamentale: aliniere tabele (cap.4), anatomia ferestrei (cap.9), contrast randat gri-pe-gri
+(cap.16/5), nimic-vizibil-decat-la-selectie (cap.2), navigare/setInapoi (cap.3), feedback butoane (cap.1), structura
+semafor (cap.8), mesaje de stare semantice (cap.6), tabele PDF (cap.7). ~20-30 ecrane post-14.07 NEVERIFICATE vizual
+(control fiscal, e-Transport, SPV, gratuit, WinMentor UI). Verificatorul e curat pe ele, dar nu prinde asezarea.
+DE PRIVIT VIZUAL (nu confirmate violari): 3 background:var(--fundal) borderline - operatiuni_ecran:266 si portal:424
+au bordura (vizibile), firme:1187 <pre> erori ambiguu - merita un ochi, nu clar gresite.
