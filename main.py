@@ -129,7 +129,7 @@ def cere_cabinet(ctx=Depends(cere_context)):
                            WHERE u.id = %s""", (ctx["uid"],))
             r = cur.fetchone()
             if r and r[0] is False:
-                raise HTTPException(403, "Cabinetul este suspendat. Contactati furnizorul.")
+                raise HTTPException(403, "Cabinetul este suspendat. Contactați furnizorul.")
     return ctx
 
 # ICRD_AUDIT_LOG_V1 - activitate cabinete (portat din legacy /opt/iconta)
@@ -301,7 +301,7 @@ def admin_sanatate_test_alerta(ctx=Depends(cere_cabinet)):
         raise HTTPException(403, "Doar Admin iConta.")
     email = _email_superadmin()
     if not email:
-        raise HTTPException(500, "email superadmin negasit")
+        raise HTTPException(500, "email superadmin negăsit")
     import core.observare as _obs
     r = _obs.trimite_email_html(email, "TEST Alerta iConta - sanatate server",
         "<p>Test manual alerta sanatate. Daca ai primit acest email, livrarea functioneaza.</p>")
@@ -1116,7 +1116,7 @@ def magic_link_cere(date: MagicCereIn):
                 _obs.trimite_email_html(email, "Link de logare iConta", html)
             except Exception:
                 pass
-    return {"ok": True, "mesaj": "Daca emailul exista, ai primit linkul de logare."}
+    return {"ok": True, "mesaj": "Dacă emailul există, ai primit linkul de logare."}
 
 class MagicLoginIn(BaseModel):
     token: str
@@ -2875,7 +2875,7 @@ def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba, ctx=Depends(cere_cabin
             if not rt:
                 raise HTTPException(404, "bon inexistent")
             if (rt[0] or "bon") != "bon":
-                raise HTTPException(400, "documentul e chitanta; foloseste stingerea de factura, nu contarea pe cheltuiala")
+                raise HTTPException(400, "documentul e chitanță; folosește stingerea de factură, nu contarea pe cheltuială")
         suma_linii = sum(l.valoare for l in b.linii)
         if abs(suma_linii - b.total) > 0.05:
             raise HTTPException(400, f"suma articolelor ({suma_linii}) != total ({b.total})")
@@ -2958,7 +2958,7 @@ def _cere_perioada_deschisa(conn, schema, nota_id):
         cur.execute(f"SELECT data FROM {schema}.inregistrari WHERE id=%s", (nota_id,))
         r = cur.fetchone()
     if r and _perioada_blocata(conn, schema, r[0]):
-        raise HTTPException(423, "perioada este blocata (luna inchisa)")
+        raise HTTPException(423, "perioada este blocată (luna închisă)")
 
 @app.get("/tenants/{tenant_id}/perioade-blocate")
 def perioade_blocate_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
@@ -5482,7 +5482,7 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
                 raise HTTPException(422, "proforma/avizul nu se contabilizeaza (nu e document fiscal)")
             cur.execute(f"SELECT COUNT(*) AS n FROM {schema}.inregistrari WHERE factura_id=%s", (factura_id,))
             if cur.fetchone()["n"]:
-                raise HTTPException(422, "factura are deja inregistrare (ciorna sau validata)")
+                raise HTTPException(422, "factura are deja înregistrare (ciornă sau validată)")
             cur.execute(f"SELECT COALESCE(tva_la_incasare,false) AS b FROM {schema}.firma_profil WHERE id=1")
             tvai = cur.fetchone()["b"]
             cur.execute(f"""SELECT COALESCE(SUM(cantitate*pret_unitar),0) AS baza,
@@ -6132,7 +6132,7 @@ def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
                         (tenant_id,))
             chei = cur.fetchone()
             if not chei:
-                raise HTTPException(422, "chei REGES neconfigurate - foloseste reges-config")
+                raise HTTPException(422, "chei REGES neconfigurate - folosește reges-config")
             cur.execute(f"SELECT cnp, nume, prenume FROM {schema}.salariati WHERE id=%s",
                         (corp["salariat_id"],))
             s = cur.fetchone()

@@ -168,7 +168,7 @@ def login(conn, email, parola, secret=None):
     if not u or not u["activ"]:
         return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "email sau parolă greșite"}
     if u["accounting_firm_id"] and u["firma_activa"] is False:
-        return {"ok": False, "cod": "CABINET_SUSPENDAT", "mesaj": "Cabinetul este suspendat. Contactati furnizorul."}
+        return {"ok": False, "cod": "CABINET_SUSPENDAT", "mesaj": "Cabinetul este suspendat. Contactați furnizorul."}
     if not verifica_parola_orice(parola, u["password_hash"]):
         return {"ok": False, "cod": "AUTH_ESEC", "mesaj": "email sau parolă greșite"}
 

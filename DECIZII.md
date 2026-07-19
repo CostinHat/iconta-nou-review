@@ -1214,3 +1214,24 @@ privacy: doar EXISTENTA (boolean).
 LIMITA: semnalul e informativ, nu impiedica emiterea din niciun cont pana la suspendare manuala (superadmin).
 Vizibilitatea persistenta pentru follow-up (raport superadmin de coliziuni active) = F186 PLANIFICAT, nu gard
 critic. Match pe cifrele CUI (prinde prefix RO); nu testat pe CUI cu spatii/puncte interne (ANAF nu le foloseste).
+
+### 19.07.2026 Diacritice: reparate 9 mesaje backend user-facing; comentarii si Tier 2 neatinse  (main.py, core/auth_api.py, core/produse_api.py)
+DECIZIE: regula DS de diacritice ("textele afisate CU diacritice; cod/comentarii/markeri FARA") aplicata la
+mesajele backend user-facing ASCII. Reparate 9 stringuri clar afisate userului (HTTPException/mesaj): Contactati->
+Contactati (2x), negasit, "Daca emailul exista", chitanta/foloseste/factura/cheltuiala, blocata/inchisa,
+inregistrare/ciorna/validata, foloseste (reges-config marker PASTRAT), "denumire lipsa". Corectate DOAR
+adjectivele/verbele gresite; substantivele articulate corecte (perioada/luna/factura ca subiect) lasate.
+CE NU S-A ATINS (temei):
+  1. Diacritice in comentarii/docstring = IN AFARA regulii DS. Regula acopera identificatori/chei/markeri, NU
+     comentarii (verificat cu Costin 19.07). Comentariile nu se afiseaza, nu-s gardianizate (verificatorul verifica
+     doar text AFISAT fara diacritice, directia b). ~340 linii py + ~85 js pre-existente NU se sweep-uiesc - churn
+     cosmetic fara valoare, zero risc functional. Include si docstring-urile F163/F184 din sesiune.
+  2. Tier 2 (campul `motiv` cu "exista deja" in articole_import/retete_import/stocuri_cv) NEATINS: campul `motiv`
+     DUBLEAZA ca marker (comparat in cod/teste: motiv=="cnp_invalid"/"cont_nepartener"/"cui_invalid"). Un text si
+     marker SI afisat nu se atinge (riscul de a rupe o comparatie nu merita corectia cosmetica).
+  3. Harta judetelor din d394.py ("ARGES"/"ARGEȘ"->cod) = chei de normalizare intentionate, alimenteaza D394
+     (ANAF). Neatins - diacriticele pot rupe validarea, cheia dubla e deliberata.
+AUDIT (directia a identificatori/chei + directia b frontend afisat): CURAT, nimic de reparat - codul era deja
+conform unde e gardianizat. Singura nonconformitate reala = mesajele backend ASCII (backend nu e gardianizat).
+LIMITA: lista celor 9 nu e exhaustiva pe tot backend-ul (main.py 7000+ linii); acopera cazurile clare gasite cu
+un set de cuvinte frecvente. Extinderea gardianului la backend (nu doar frontend) = imbunatatire viitoare, daca merita.

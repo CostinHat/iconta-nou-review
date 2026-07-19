@@ -66,7 +66,7 @@ def creeaza(conn, denumire, um="buc", pret_unitar=0, cota_tva=None,
     """
     d = (denumire or "").strip()
     if not d:
-        return {"ok": False, "cod": "GOL", "mesaj": "denumire lipsa"}
+        return {"ok": False, "cod": "GOL", "mesaj": "denumire lipsă"}
 
     existent = cauta_dupa_denumire(conn, d)
     if existent:
