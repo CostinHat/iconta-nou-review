@@ -1512,7 +1512,7 @@ e-Factura: F176 (conector OAuth) + F177 (refresh) + F178 (poll recipise) + F179 
 (cabinet XOR gratuit), doua servicii, drept unificat. Restanta transversala UNICA: proba live pe CIF cu
 drept SPV real (e-Factura si e-Transport) - cod complet + testat, necolorat verde in direct (ca F176).
 
-# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat + F164 (alerte pull->push) + F184 (punte legislatie->re-verificare) + F185 (gard coliziune CUI invers)
+# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat + F164 (alerte pull->push) + F184 (punte legislatie->re-verificare) + F185 (gard coliziune CUI invers) + F187 (export WinMentor)
 
 Zi noua. Dupa clusterul SPV/e-Factura/e-Transport de ieri, intoarcere pe motorul de control fiscal.
 Deciziile au temei in DECIZII.md (intrarea 19.07 F163); aici POINTER + commit-uri.
@@ -1672,3 +1672,50 @@ coliziune_cabinet=True, contul SE CREEAZA (nu blocat); curatat (DROP schema prov
 verificat ca revine la tenant_001/002 (schema nou-creata era tenant_003 FRESH, nu cea istorica - fals alarma
 verificata la sursa inainte de a continua). (B) CUI liber valid -> False. (C) CUI cu cont gratuit existent ->
 CUI_EXISTA neschimbat. py_compile + node --check ESM login.js + restart HTTP 200.
+
+## F187 -> LIVE: export contabil WinMENTOR (commit f4b6bbb)
+Al doilea format de export catre programul contabilului, dupa SAGA (F171). Puntea "firma emite in iConta,
+contabilul ramane pe programul lui". Serializer INI: DOUA fisiere text co-locate intr-un zip - Facturi.txt
+([InfoPachet]/[Factura_N]/[Items_N]) + Articole.txt ([ArticoleNoi_<cod>]). WinMentor cauta articolul in
+nomenclatorul lui; daca lipseste, in Articole.txt co-locat; altfel importul ESUEAZA (NU auto-creeaza) - de
+aceea ambele fisiere. Cod articol DERIVAT determinist din descriere (A+sha1[:11]), CONSECVENT intre cele doua
+fisiere (daca diverg, WinMentor nu gaseste articolul). Encoding Windows-1250 cu GARD: s/t moderne (virgula,
+U+0219/021B) NU sunt in cp1250 -> normalizate la s/t cedila (forma legacy WinMentor), apoi encode STRICT;
+caracter tot neencodabil -> 422 (nu byte gresit tacit - riscul BR-RO). Reutilizeaza conducta SAGA
+(date_factura/facturi_emise_luna/_firma) ADITIV - date_factura extins cu serie/tert_oras, facturi_emise_luna cu
+status optional; SAGA neschimbat. Endpoint /tenants/{tid}/facturi/export-winmentor -> zip.
+
+## Verificare la SURSA OFICIALA (nu blog)
+Structura extrasa cu pdftotext din PDF-urile OFICIALE WinMentor (download.winmentor.ro/.../22 Structuri import
+din alte aplicatii/, Facturi clienti.pdf Rev.1.2 + Articole noi.pdf). Regula de aur a platit: BLOGUL GRESEA -
+zicea ca denumireUM e in Articole.txt; spec oficial (linia 99-100): "Unitatea de masura implicita va fi preluata
+din tranzactia importata" - UM vine din linia Facturi.txt, NU din Articole.txt. La fel, Clasa/GestiuneImplicita
+apar GOALE in exemplele oficiale -> optionale. GATE corectat la sursa: facturi.status nu are 'validata' (ala e
+pt note/e-Factura primite); valorile reale sunt 'emisa'/'de_preluat'/'anulata' -> gard = status='emisa'.
+
+## Limita DECLARATA (in DECIZII, nu ascunsa)
+WinMentor NU e self-contained ca SAGA (care era un XML cu descrieri libere). Dependenta de config nomenclator
+WinMentor al cabinetului: clasa, gestiune, UM trebuie sa PRE-EXISTE; constanta "cod partener=cod fiscal" pt
+CodClient=CIF. v1 = facturi de SERVICII + articole simple (Serviciu=D, ContServiciu=704, Clasa/Gestiune goale =
+spec-valid). Stoc complex cu gestiune = v2/dependent de cabinet real. Daca un cabinet emite marfuri, se semnaleaza
+ca exportul cere config, NU ca "merge automat". Round-trip real (import efectiv in WinMentor) = pending cabinet
+real cu nomenclator configurat, ca proba SPV - cod+spec verificate, necolorat verde live.
+
+## Bug latent reparat colateral (F171 SAGA month)
+Ruta /tenants/{tid}/facturi/{factura_id} era NETIPATA -> capta literalele /facturi/export-saga si
+/facturi/export-winmentor (factura_id="export-..." -> 422 int_parsing), umbrindu-le. Exportul-zip pe LUNA la SAGA
+era nereachable inca de la F171 (18.07) - nimeni nu-l lovise (UI folosea export single-invoice). Fix: {factura_id:int}
+-> literalele trec la rutele lor. Confirmat: WinMentor month 404-ruta-merge, SAGA month 200-reparat, detaliu factura
+int 200-fara regresie.
+
+## Ciel -> BLOCAT pe specificatie (nu planificat orb)
+3 necunoscute verificate la sursa 19.07: (1) versiune - Ciel v6/v7/NextUp au formate DIFERITE (facturis.ro); (2)
+spec neclar publica (nu exista portal oficial ca WinMentor); (3) cere coduri ANALITICE pe care iConta poate sa nu
+le aiba la granularitatea Ciel. Se deblocheaza DOAR cu spec de la sursa Ciel / cabinet real care importa in Ciel.
+NU se construieste pe sursa secundara (ar rupe importul, ca BR-RO). Notat [BLOCAT] in DE_FACUT.
+
+## Verificat (F187)
+11 teste (cod determinist+consecvent intre Facturi/Articole; structura ambelor fisiere camp cu camp contra spec
+oficial; Item=cod;UM;cant;pret + Item_TVA; UM absent din Articole.txt; dedup articole pe cod; config override; gard
+cp1250 s/t->cedila + caracter neencodabil->exceptie) + functional REAL tenant_002 cu curatare (factura status=emisa
+cu diacritice -> ambele fisiere corecte, cod consecvent AD2090A939D5, cp1250 corect) + HTTP fara regresie. Restart activ.
