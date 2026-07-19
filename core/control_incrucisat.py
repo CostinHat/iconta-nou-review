@@ -383,3 +383,210 @@ def verifica_tva(conn, schema, an, luna):
                    "(necesită SPV)."),
         "modul": MODUL, "reguli": REGULI,
     }
+
+
+# ============================================================
+#  F163 — D390 (operațiuni intracomunitare de BUNURI) vs EVIDENȚA contabilă validată.
+#
+#  NU e control declarație-vs-declarație (D390↔D300). Verificat la sursă (19.07.2026,
+#  vezi DECIZII.md): rândurile intracom ale D300 (R1_1 livrări, R5_1 achiziții) sunt
+#  MANUAL-ONLY (d300.calcul_d300 le ia doar din `manual`, transmis prin body la generare,
+#  declaratii_api.py) și NEPERSISTATE — public.declaratii_depuse (coada_api.py) e jurnal gol
+#  (tenant/an/lună/tip/dată, fără valori de rânduri, fără XML depus). Un D300 regenerat de
+#  aici ar avea mereu R1_1=R5_1=0 -> roșu pe orice firmă cu IC (zgomot); iar reconstruit din
+#  aceleași facturi ca D390 -> verde trivial (aceeași sursă). Deci a doua sursă REALĂ e
+#  evidența contabilă validată, nu a doua declarație. Când se vor persista rândurile
+#  declarațiilor depuse -> abia atunci D-vs-D real (v2, prerechizit comun mai multor controale).
+#
+#  Regula direcțională (VIES = sursă mai autoritară pentru IC — partenerul a raportat pe latura
+#  lui): declarat la VIES DAR absent din evidența validată = ROȘU (semnal tare + risc ANAF);
+#  invers (în evidență, neraportat la VIES) = GRI (poate fi decalaj de perioadă); cifre diferite
+#  = GRI (decalaj exigibilitate art.284, regularizări, rotunjire = legitim); ambele 0 = tăcut.
+#  Remediu roșu = SUGERAT (corecția e în contabilitate SAU în recapitulativă — o confirmă omul,
+#  nu e mecanică). DOAR BUNURI (auto-maparea D390: emisă->L, primită->A); serviciile IC (P/S)
+#  rămân v2 (D390 le ia manual, iar d300 nu expune R3_1_1/R7_1_1).
+
+D390_PERECHI = (
+    ("Livrări intracomunitare de bunuri", "L", "emisa",
+     "art. 294 alin.(2) lit.a) și d) Cod fiscal (livrări scutite cu drept de deducere)"),
+    ("Achiziții intracomunitare de bunuri", "A", "primita",
+     "art. 278 Cod fiscal (locul) / taxare inversă"),
+)
+
+
+def _fereastra_tva(tip_dec, an, luna):
+    """Fereastra de comparație = perioada fiscală TVA după tip_decont. D390 e MEREU lunar; pentru
+    firmă trimestrială se însumează cele 3 luni ale trimestrului și se compară cu o singură fereastră.
+    Întoarce (luni, data_de, data_pana, eticheta). Datele = 'YYYY-MM-DD', interval [de, pana)."""
+    t = str(tip_dec or "").strip().lower()
+    if t == "t" or "trim" in t:
+        tri = (luna - 1) // 3
+        luni = [tri * 3 + 1, tri * 3 + 2, tri * 3 + 3]
+        eticheta = "trimestrul %d/%d" % (tri + 1, an)
+    elif t == "s" or "sem" in t:
+        sem = (luna - 1) // 6
+        luni = list(range(sem * 6 + 1, sem * 6 + 7))
+        eticheta = "semestrul %d/%d" % (sem + 1, an)
+    elif t == "a" or t.startswith("an"):
+        luni = list(range(1, 13))
+        eticheta = "anul %d" % an
+    else:
+        luni = [luna]
+        eticheta = "%02d/%d" % (luna, an)
+    data_de = "%04d-%02d-01" % (an, luni[0])
+    lm = luni[-1]
+    data_pana = ("%04d-01-01" % (an + 1,)) if lm == 12 else ("%04d-%02d-01" % (an, lm + 1))
+    return luni, data_de, data_pana, eticheta
+
+
+def facturi_ic(conn, schema, data_de, data_pana):
+    """Facturile IC (partener UE, non-RO) în [data_de, data_pana), grupate pe directie, fiecare cu
+    starea de contabilizare (are notă VALIDATĂ) și are_ciorna. Clasificarea UE = ACEEAȘI ca d390
+    (refolosesc _CUI_UE + TARI_UE, nu construiesc paralel): emisă->livrări (L), primită->achiziții (A),
+    doar BUNURI (auto-maparea D390). CUI-ul: întâi clientul din nomenclator, altfel tert_cui (ca d390.pull:
+    facturile PRIMITE n-au niciodată client_id)."""
+    import psycopg2.extras as _E
+    from core.d390 import _CUI_UE, TARI_UE
+    out = {"emisa": [], "primita": []}
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute(f"""
+            SELECT f.id, f.numar, f.directie, f.total, f.tva, f.tert_nume,
+                   c.cui AS c_cui, f.tert_cui,
+                   EXISTS (SELECT 1 FROM {schema}.inregistrari i
+                           WHERE i.factura_id = f.id AND i.status = 'validata') AS contabilizata,
+                   EXISTS (SELECT 1 FROM {schema}.inregistrari ic
+                           WHERE ic.factura_id = f.id AND ic.status = 'ciorna') AS are_ciorna
+            FROM {schema}.facturi f
+            LEFT JOIN {schema}.clienti c ON c.id = f.client_id
+            WHERE f.data_emitere >= %s AND f.data_emitere < %s
+            ORDER BY f.id
+        """, (data_de, data_pana))
+        for r in cur.fetchall():
+            cui = (r["c_cui"] or r["tert_cui"] or "").strip().upper().replace(" ", "").replace("-", "")
+            m = _CUI_UE.match(cui)
+            if not m:
+                continue
+            tara = m.group(1)
+            if tara == "RO" or tara not in TARI_UE:
+                continue
+            if r["directie"] in out:
+                out[r["directie"]].append(dict(r))
+    return out
+
+
+def compara_d390(baze, ic_facturi):
+    """PURA: bazele IC declarate în D390 (din facturi) vs evidența contabilă VALIDATĂ a acelorași
+    facturi IC. baze = {"L": int, "A": int} (din res.rezumat D390); ic_facturi = {"emisa":[...],
+    "primita":[...]} de la facturi_ic(). Regula direcțională documentată în capul secțiunii F163."""
+    rez = []
+    for eticheta, cheie, directie, art in D390_PERECHI:
+        decl = _d(baze.get(cheie, 0))
+        facturi = ic_facturi.get(directie, [])
+        necontate = [f for f in facturi if not f.get("contabilizata")]
+        contab = sum(_d(f.get("total")) - _d(f.get("tva")) for f in facturi if f.get("contabilizata"))
+        dif = decl - contab
+        temei = (f"D390 baza {cheie} (facturi intracomunitare, auto — art. 325 Cod fiscal, declarația "
+                 f"recapitulativă) vs evidența contabilă validată a acelorași facturi ({art}; "
+                 f"OMFP 1802/2014). Numai note validate — ciorna e propunere, nu dovadă. "
+                 f"LIMITĂ: doar BUNURI IC, nu servicii (P/S); nu se compară cu D300 depus (nepersistat).")
+        baza = {"eticheta": eticheta, "declarat": decl, "contabil": contab,
+                "diferenta": dif, "temei": temei}
+        # ambele 0 -> nimic de raportat
+        if decl == 0 and contab == 0:
+            continue
+        # coerent (inclusiv toleranța de rotunjire la leu)
+        if abs(dif) <= TOLERANTA:
+            rez.append(dict(baza, stare="verde",
+                mesaj=f"{eticheta}: D390 și evidența validată coincid ({decl} lei).", remediu=None))
+            continue
+        # ROȘU: declarat la VIES, dar NIMIC în evidența validată (semnal tare)
+        if decl > 0 and contab == 0:
+            cioarna = [f for f in necontate if f.get("are_ciorna")]
+            cauza = (f"D390 declară {decl} lei operațiuni intracomunitare la VIES, dar nicio factură IC "
+                     f"nu are notă validată în evidența contabilă")
+            if cioarna:
+                cauza += f" ({len(cioarna)} au note în ciornă, neconfirmate)"
+            cauza += "."
+            rez.append(dict(baza, stare="rosu",
+                mesaj=(f"{eticheta}: D390 declară {decl} lei, evidența validată are 0 lei "
+                       f"(diferență {dif} lei)."),
+                remediu={"fel": "sugerat", "cauza": cauza,
+                    "actiune": ("Verifică operațiunile: fie contabilizează facturile IC (notă validată, "
+                                "patru ochi), fie corectează declarația recapitulativă dacă au fost "
+                                "raportate greșit la VIES. Corecția o confirmă omul — nu e mecanică."),
+                    "facturi": [f["id"] for f in necontate]}))
+            continue
+        # GRI invers: evidență validată > declarat (în contabilitate, neraportat la VIES) — mai puțin sigur
+        if dif < -TOLERANTA:
+            rez.append(dict(baza, stare="gri",
+                mesaj=(f"{eticheta}: evidența validată are {contab} lei, D390 declară {decl} lei "
+                       f"(diferență {dif} lei)."),
+                remediu={"fel": "investigatie",
+                    "cauza": ("Operațiuni IC în evidența validată care nu apar în D390 — mai puțin sigur "
+                              "decât inversul (poate fi decalaj de perioadă: nota validată în această "
+                              "fereastră, recapitulativa cu altă cadență, sau operațiune neraportată încă)."),
+                    "actiune": ("Verifică dacă operațiunile trebuie raportate la VIES pentru această "
+                                "perioadă sau au fost/urmează a fi raportate în altă recapitulativă."),
+                    "facturi": []}))
+            continue
+        # GRI: ambele > 0, cifre diferite — NICIODATĂ roșu pe diferență de cifre
+        rez.append(dict(baza, stare="gri",
+            mesaj=(f"{eticheta}: D390 declară {decl} lei, evidența validată are {contab} lei "
+                   f"(diferență {dif} lei)."),
+            remediu={"fel": "investigatie",
+                "cauza": ("Ambele au valori, dar diferite — nu se declară roșu pe diferență de cifre "
+                          "(decalaj de exigibilitate art. 284, regularizări, rotunjire = legitime)."),
+                "actiune": ("Verifică: facturi IC încă necontabilizate, storno, corecții de perioadă, "
+                            "operațiuni cu data în altă fereastră decât înregistrarea."),
+                "facturi": [f["id"] for f in necontate]}))
+    return rez
+
+
+def verifica_d390(conn, schema, an, luna):
+    """F163: D390 (bunuri IC) vs evidența contabilă validată a facturilor IC. Fereastra = periodicitatea
+    TVA (tip_decont): lunar 1 lună, trimestrial 3 luni. Gri dacă D390 nu se poate genera. Vezi capul
+    secțiunii F163 pentru filozofie (NU e D-vs-D)."""
+    from core import d390 as _d390
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT tip_decont FROM {schema}.firma_profil WHERE id = 1")
+        row = cur.fetchone()
+    tip_dec = row[0] if row else None
+    luni, data_de, data_pana, fereastra = _fereastra_tva(tip_dec, an, luna)
+    try:
+        baze = {"L": 0, "A": 0}
+        for m in luni:
+            _xml, res = _d390.genereaza(conn, schema, an, m)
+            rezumat = res["rezumat"] if isinstance(res, dict) else getattr(res, "rezumat", {})
+            baze["L"] += int(rezumat.get("L", 0))
+            baze["A"] += int(rezumat.get("A", 0))
+    except Exception as e:
+        return {"an": an, "luna": luna, "fereastra": fereastra, "stare": "gri", "constatari": [{
+                    "stare": "gri", "eticheta": "Intracomunitar",
+                    "temei": "D390 nu s-a putut genera.",
+                    "mesaj": f"NU pot verifica operațiunile intracomunitare: D390 nu se poate calcula ({e}).",
+                    "remediu": {"fel": "investigatie", "cauza": "Date lipsă sau profil incomplet.",
+                                "actiune": "Completează profilul firmei și facturile, apoi reîncearcă.",
+                                "facturi": []}}],
+                "explicatie": "",
+                "limita": "Verificarea D390 nu a fost efectuată — riscul rămâne neacoperit.",
+                "modul": MODUL, "reguli": REGULI}
+    ic_facturi = facturi_ic(conn, schema, data_de, data_pana)
+    constatari = compara_d390(baze, ic_facturi)
+    if any(c["stare"] == "rosu" for c in constatari):
+        stare = "rosu"
+    elif any(c["stare"] == "gri" for c in constatari):
+        stare = "gri"
+    else:
+        stare = "verde"
+    necontate_tot = sum(1 for d in ("emisa", "primita")
+                        for f in ic_facturi.get(d, []) if not f.get("contabilizata"))
+    return {"an": an, "luna": luna, "fereastra": fereastra, "stare": stare,
+            "constatari": constatari,
+            "explicatie": (f"{necontate_tot} facturi intracomunitare fără notă validată în fereastră."
+                           if necontate_tot else ""),
+            "limita": ("Verificat: D390 bunuri IC (livrări L / achiziții A, auto din facturi) vs evidența "
+                       f"contabilă validată a acelorași facturi, pe fereastra TVA ({fereastra}). "
+                       "NEVERIFICAT: servicii IC (P/S — D390 le ia manual, iar d300 nu expune "
+                       "R3_1_1/R7_1_1); triangulație (T/R); coerența cu D300 DEPUS (rândurile R1_1/R5_1 "
+                       "sunt manual-only, nepersistate — nu există decont depus de comparat)."),
+            "modul": MODUL, "reguli": REGULI}

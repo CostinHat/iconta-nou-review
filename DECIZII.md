@@ -1078,3 +1078,33 @@ DOVADA: backend HTTP - POST blocheaza prea-devreme (blocat_timp cu motiv); GET i
 (UIT_ROSU: trimitere=verde, timp=rosu; galben; verde). node --check + verificator 0. 8 teste unit backend.
 LIMITA (onest, ca F176): proba live (upload real + UIT de la ANAF) pending drept e-Transport pe CIF real -
 ecranul testat cu notificare injectata + poarta validare pe TEST. Necolorat verde dus-intors in direct.
+
+### 19.07.2026 F163 — control intre declaratii: azi D-vs-EVIDENTA, nu D-vs-D  (core/control_incrucisat.py:verifica_d390; FUNCTIONALITATI.csv F163)
+DECIZIE: F163 (control incrucisat intre declaratii) se face v1 ca D390 (bunuri IC) vs EVIDENTA contabila
+VALIDATA, NU declaratie-vs-declaratie (D390<->D300). Motorul existent (verifica_tva/verifica_d112 sunt deja
+D-vs-contabilitate) se extinde pe o pereche noua; nu se construieste modul paralel.
+TEMEI (verificat la sursa azi, nu din memorie):
+  1. Randurile intracom ale D300 (R1_1 livrari, R5_1 achizitii) sunt MANUAL-ONLY: d300.calcul_d300 le
+     populeaza DOAR din dict-ul 'manual' (transmis prin body la generare, declaratii_api.py:_d300), nu din
+     facturi. Bucla automata pe facturi umple doar colectata pe cote (R9/R10/R11) si deductibila (R22/R74/R76).
+  2. Manualul NU se persista: public.declaratii_depuse (coada_api.py) e jurnal gol - (tenant_id, an, luna, tip,
+     data_depunere, sursa), fara valori de randuri, fara XML depus. Nu exista tabel cu decontul depus.
+  => Un D300 regenerat de F163 fara manual are mereu R1_1=R5_1=0 -> ROSU pe orice firma cu IC (zgomot, nu
+     semnal); iar reconstruit din aceleasi facturi ca D390 -> VERDE trivial (aceeasi sursa). Deci a doua sursa
+     reala pentru cross-check e evidenta contabila validata (note status='validata'), nu a doua declaratie.
+REGULA DIRECTIONALA (asimetrica, VIES = sursa mai autoritara pt IC - partenerul a raportat pe latura lui):
+  declarat la VIES (D390) DAR absent din evidenta validata = ROSU (remediu SUGERAT: contabilizeaza SAU
+  corecteaza recapitulativa - corectia o confirma omul, nu e mecanica); invers (in evidenta, neraportat la
+  VIES) = GRI (decalaj de perioada posibil); ambele>0 cifre diferite = GRI (decalaj exigibilitate art.284,
+  regularizari, rotunjire = legitime) - NICIODATA rosu pe diferenta de cifre; ambele 0 = tacut.
+ALTERNATIVA RESPINSA:
+  (a) D-vs-D real acum, regenerand D300 -> rosu fals pe orice IC (vezi temei 1-2). Respins: zgomot erodeaza
+      increderea (mai rau decat lipsa controlului).
+  (b) Reconstruire D300 din aceleasi facturi ca D390 -> verde trivial, zero semnal. Respins: circular.
+  (c) Servicii IC (D390 bazaP/bazaS) in v1 -> respins: d300 nu expune R3_1_1/R7_1_1 azi; ar cere extinderea
+      generatorului (reparatie reala), nu mapping paralel. Ramane v2.
+LIMITA / CE RASTOARNA DECIZIA:
+  - v2 F163 = persistarea randurilor declaratiilor DEPUSE (coloana/tabel la generare/depunere). Abia atunci
+    D-vs-D real (D390 depus vs D300 depus). Prerechizit util si altor controale, nu doar F163.
+  - v1 verifica doar BUNURI IC (livrari L / achizitii A, auto-maparea D390: emisa->L, primita->A). Servicii,
+    triangulatie (T/R), si coerenta cu D300 DEPUS raman neacoperite (declarate ca limita in fiecare finding).

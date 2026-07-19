@@ -193,3 +193,102 @@ def test_toleranta_nu_ascunde_eroare_reala():
 def test_temeiul_declara_toleranta():
     r = compara_d112({"602": 100}, _rd(imp=100), nr_salariati=40)
     assert "Toleranță 20" in r[0]["temei"] and "rotunj" in r[0]["temei"]
+
+
+# ---- F163: D390 (bunuri IC) vs EVIDENȚA contabilă validată ----
+# NU e D-vs-D (rândurile R1_1/R5_1 ale D300 sunt manual-only, nepersistate — vezi DECIZII 19.07).
+# Regula direcțională: declarat la VIES DAR absent din evidența validată = ROȘU; invers = GRI;
+# cifre diferite = GRI (niciodată roșu pe cifre); ambele 0 = tăcut.
+from core.control_incrucisat import compara_d390, _fereastra_tva
+
+
+def _fic(id, directie, total, tva, contab=False, ciorna=False):
+    return {"id": id, "numar": "F%d" % id, "directie": directie,
+            "total": Decimal(str(total)), "tva": Decimal(str(tva)),
+            "contabilizata": contab, "are_ciorna": ciorna}
+
+
+def test_d390_ambele_zero_nimic_de_raportat():
+    r = compara_d390({"L": 0, "A": 0}, {"emisa": [], "primita": []})
+    assert r == []
+
+
+def test_d390_coerent_da_verde():
+    # o livrare IC de 1000 (total 1000, tva 0 — scutit), contabilizată -> D390 L=1000 vs evidență 1000
+    ic = {"emisa": [_fic(1, "emisa", 1000, 0, contab=True)], "primita": []}
+    r = compara_d390({"L": 1000, "A": 0}, ic)
+    assert len(r) == 1 and r[0]["stare"] == "verde" and r[0]["remediu"] is None
+
+
+def test_d390_declarat_la_vies_absent_din_evidenta_da_rosu_sugerat():
+    # ROȘU direcțional: D390 declară achiziții IC, dar factura nu are notă validată
+    ic = {"emisa": [], "primita": [_fic(7, "primita", 500, 105)]}  # 500 bază, necontabilizată
+    r = compara_d390({"L": 0, "A": 500}, ic)
+    c = [x for x in r if x["eticheta"].startswith("Achiziții")][0]
+    assert c["stare"] == "rosu"
+    assert c["remediu"]["fel"] == "sugerat"          # corecția e în contabilitate SAU recapitulativă
+    assert c["remediu"]["facturi"] == [7]
+    assert "VIES" in c["remediu"]["cauza"]
+
+
+def test_d390_evidenta_fara_vies_da_gri_nu_rosu():
+    # INVERS: în evidența validată apar achiziții IC, dar D390=0 -> GRI (decalaj posibil), NU roșu
+    ic = {"emisa": [], "primita": [_fic(3, "primita", 800, 168, contab=True)]}
+    r = compara_d390({"L": 0, "A": 0}, ic)
+    c = [x for x in r if x["eticheta"].startswith("Achiziții")][0]
+    assert c["stare"] == "gri"
+    assert c["remediu"]["fel"] == "investigatie"
+
+
+def test_d390_cifre_diferite_ambele_pozitive_da_gri_nu_rosu():
+    # ambele > 0 dar diferite -> GRI (decalaj exigibilitate/regularizări/rotunjire = legitim)
+    ic = {"emisa": [], "primita": [_fic(4, "primita", 600, 126, contab=True)]}  # evidență 600
+    r = compara_d390({"L": 0, "A": 900}, ic)                                     # D390 declară 900
+    c = [x for x in r if x["eticheta"].startswith("Achiziții")][0]
+    assert c["stare"] == "gri"
+    assert c["remediu"]["fel"] == "investigatie"
+    # PRINCIPIU: nu se propune ajustarea contului
+    assert "ajust" not in (c["remediu"]["actiune"] + c["remediu"]["cauza"]).lower()
+
+
+def test_d390_ciorna_nu_conteaza_ca_evidenta():
+    # factura cu notă CIORNĂ (nevalidată) -> tot ROȘU (ciorna nu e dovadă)
+    ic = {"emisa": [], "primita": [_fic(9, "primita", 500, 105, contab=False, ciorna=True)]}
+    r = compara_d390({"L": 0, "A": 500}, ic)
+    c = [x for x in r if x["eticheta"].startswith("Achiziții")][0]
+    assert c["stare"] == "rosu"
+    assert "ciorn" in c["remediu"]["cauza"]
+    assert c["remediu"]["facturi"] == [9]
+
+
+def test_d390_toleranta_rotunjire_leu():
+    # D390 rotunjește la leu; 1000 vs 999.50 în evidență = coerent
+    ic = {"emisa": [_fic(1, "emisa", Decimal("999.50"), 0, contab=True)], "primita": []}
+    r = compara_d390({"L": 1000, "A": 0}, ic)
+    assert r[0]["stare"] == "verde"
+
+
+def test_d390_temei_si_limita_pe_fiecare_constatare():
+    ic = {"emisa": [], "primita": [_fic(7, "primita", 500, 105)]}
+    r = compara_d390({"L": 0, "A": 500}, ic)
+    for c in r:
+        assert "art. 325" in c["temei"]                 # temei legal recapitulativă
+        assert "doar BUNURI" in c["temei"]              # limită explicită servicii
+        assert "D300 depus" in c["temei"]               # limită explicită D-vs-D
+
+
+def test_fereastra_lunar_o_luna():
+    luni, de, pana, et = _fereastra_tva("lunar", 2026, 3)
+    assert luni == [3] and de == "2026-03-01" and pana == "2026-04-01"
+
+
+def test_fereastra_trimestrial_trei_luni():
+    # firmă trimestrială: luna 8 -> trimestrul 3 (iul-sep), fereastră [07-01, 10-01)
+    luni, de, pana, et = _fereastra_tva("trimestrial", 2026, 8)
+    assert luni == [7, 8, 9] and de == "2026-07-01" and pana == "2026-10-01"
+    assert "trimestrul 3" in et
+
+
+def test_fereastra_trimestrial_decembrie_trece_anul():
+    luni, de, pana, et = _fereastra_tva("T", 2026, 12)
+    assert luni == [10, 11, 12] and de == "2026-10-01" and pana == "2027-01-01"
