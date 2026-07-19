@@ -225,6 +225,10 @@ vs DE CONSTRUIT (munca reala):
   restanta 17.07 (alerta ajunge in app); digestul acopera cazul "contabil care nu intra zilnic". De construit CAND
   exista semnal real ca se rateaza alerte, NU speculativ. Infra Brevo gata (5 module: observare.trimite_email_html/
   _trimite_brevo, folosita de monitor_fiscal/spv_refresh/sinteza_zilnica/notificari_scadenta/pachete). [PLANIFICAT]
+- **v2 F184 — declansator COTE-driven proactiv (re-verificare instant la depasirea unei date de valabilitate din
+  common.COTE): RESPINS.** Temei: cotele traiesc IN COD (common.COTE); o cota noua cere oricum editare + deploy
+  manual; cronul zilnic (F184 v1) prinde firmele neconforme a doua zi. Declansatorul instant n-ar castiga nimic
+  real fata de un eveniment care deja implica deploy. Decalajul de o zi = nesemnificativ. [RESPINS]
 
 ### LIVRAT 18.07 (mutat din backlog; detaliu in ISTORIC + FUNCTIONALITATI.csv)
 - **F126 e-Factura cap-coada**: SEND (model principal cabinet XOR gratuit + F160 + F178 poll recipisa) +

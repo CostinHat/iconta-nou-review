@@ -1187,3 +1187,14 @@ LIMITA / CE RASTOARNA DECIZIA:
   - Nu verifica clasificarea de PRODUS (daca produsul chiar cere cota standard), doar coerenta de PERIOADA.
   - Declansator zilnic, nu proactiv: un rosu apare a doua zi dupa schimbare, nu instant. v2 daca instant conteaza.
   - Cotele traiesc in COD (common.COTE); o lege noua tot cere editare + deploy (nu update de config).
+
+### 19.07.2026 v2 F184 (declansator COTE-driven proactiv) — RESPINS  (DE_FACUT.md; firmeaza "amanat v2" din decizia F184 de mai sus)
+DECIZIE: declansatorul COTE-driven proactiv (re-verificare INSTANT la depasirea unei date de valabilitate din
+common.COTE) NU se construieste. In decizia F184 de mai sus era notat "amanat v2, poate inutil"; se firmeaza acum
+ca RESPINS, nu doar amanat.
+TEMEI: cotele traiesc IN COD (common.COTE); o cota noua cere oricum editare + deploy manual; cronul zilnic (F184
+v1) prinde firmele neconforme a doua zi. Declansatorul instant n-ar castiga nimic real fata de un eveniment care
+deja implica deploy. Decalajul de o zi = nesemnificativ.
+LIMITA / CE RASTOARNA: daca vreodata cotele trec dintr-un tabel de config editabil FARA deploy (schimbare de
+arhitectura), instant-ul ar putea conta - atunci se reevalueaza. Distinct de v2 F164 (digest email), care ramane
+PLANIFICAT (nu respins).
