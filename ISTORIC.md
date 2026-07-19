@@ -1512,7 +1512,7 @@ e-Factura: F176 (conector OAuth) + F177 (refresh) + F178 (poll recipise) + F179 
 (cabinet XOR gratuit), doua servicii, drept unificat. Restanta transversala UNICA: proba live pe CIF cu
 drept SPV real (e-Factura si e-Transport) - cod complet + testat, necolorat verde in direct (ca F176).
 
-# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat
+# 19.07.2026 — Control incrucisat INTRE declaratii: F163 (D390) LIVE + F162 (D112) deorfanizat + F164 (alerte pull->push)
 
 Zi noua. Dupa clusterul SPV/e-Factura/e-Transport de ieri, intoarcere pe motorul de control fiscal.
 Deciziile au temei in DECIZII.md (intrarea 19.07 F163); aici POINTER + commit-uri.
@@ -1558,3 +1558,43 @@ node --check ESM OK; restart serviciu -> HTTP 200, zero erori la boot. Functiona
 tva verde, D390 verde (IT livrare 5000 + DE achizitie 2000 contabilizate; rosu-sugerat pe aceleasi
 necontabilizate; RO exclus corect), D112 ROSU real (282 impozit/1250 CAS/500 CASS declarate, dar
 444/4315/4316=0 -> stat de plata necontabilizat - risc care inainte era invizibil la nivel de firma).
+
+## F164 -> LIVE: alerte control fiscal pull->push in clopotelul existent (commit 7d1e02b)
+Restanta 17.07 ("alertele fiscale nu ajung la om"): findingurile ROSII din control_incrucisat (tva/d112/d390)
+se calculau DOAR la deschiderea manuala a ecranului (pull) - un stat de plata necontabilizat (D112 rosu)
+ramanea invizibil daca nimeni nu deschidea ecranul. Diagnostic la sursa: problema NU era lipsa canalului
+(clopotelul in-app exista, badge+panou+read-state) ci lipsa stratului de PUSH - findingurile nu erau conectate.
+SOLUTIE (core/alerte_control_fiscal.py): NU canal nou. Cron zilnic AGATAT de core.notificari_scadenta (ruleaza
+deja 08:00 - nu timer nou) itereaza firmele, si pentru fiecare cu ROSU nou/reaparut scrie O notificare AGREGATA
+("Firma X: N controale in rosu (D112, D390)", link=control-fiscal:{tid}) in clopotelul CONTABILILOR
+(validatorii_cabinetului - ei corecteaza, nu patronul). Doar ROSU se pusheaza; gri ramane pull (informatie, nu
+actiune). NU atinge engine-ul si NU atinge ecranul (ramane pull, sursa de adevar).
+
+## Gardul critic - dedup pe persistenta (public.alerte_control_emise, pattern alerte_emise/F103)
+Cheie (tenant, verificator, perioada). Un rosu care PERSISTA neschimbat = O SINGURA alerta, nu una pe zi (altfel
+spam zilnic pana la rezolvare -> contabilul dezactiveaza canalul). Re-notifica DOAR la verificator rosu NOU pe
+firma SAU rosu rezolvat-apoi-reaparut (rezolvat -> sters din jurnal -> reaparitia conteaza ca nou). Doua rulari
+aceeasi zi = o alerta (idempotent). Jurnalizeaza doar ce s-a LIVRAT efectiv (0 contabili -> retry cand apar
+validatori, nu marca fals - descoperit pe tenant_002, al carui cabinet n-avea validatori). Tabel creat prin
+superuser (owner iconta_user, ca notificari - PG15+ revoca CREATE public de la rolul aplicatiei).
+
+## Routing pe click: notificarea deschide ecranul FIRMEI (commit 65c5eb1)
+Click pe notificare (link=control-fiscal:{tid}) deschide ecranul de control fiscal FILTRAT pe firma respectiva,
+nu portofoliul general (contabilul a dat click pe "Firma X are N rosii", vrea firma X). Param optional
+randeazaControl(corp, nav, tidAuto) -> auto-drill in detaliul firmei reutilizand EXACT click-ul de rand
+(detaliuFirma, obiect firma complet, aceeasi stiva). tid malformat -> log + fallback, nu ecran alb.
+
+## Reparatie cauza-radacina: window._navGlobal era cod mort
+Routing-ul clopotelului se facea prin window._navGlobal, dar acesta NU era atribuit NICAIERI -> cazul 'validat'
+era cod mort (click nu ruta nimic). Handler-ul clopotelului e functie de modul, in afara closure-ului unde
+traieste `nav`. Reparat minimal: window._navGlobal = nav la crearea navigatorului (realizeaza pattern-ul deja
+presupus de cod), + cazul nou langa 'validat' (nu rescriu dispatcher-ul). Efect secundar intentionat: click pe
+notificarea 'de_validat' acum chiar duce acasa (inainte nu facea nimic).
+
+## Verificat (F164)
+9 teste dedup PURE (rosu nou notifica; persistent NU; verificator nou notifica; rezolvat se sterge; rezolvat->
+reaparut notifica; gri/verde zero push; doua rulari o alerta; text agregat) + 43/43 fara regresie. Functional
+REAL tenant_002 iunie 2026 cu curatare (validator temporar): rulare1 livreaza 1 notif, rulare2 aceeasi zi 0
+(DEDUP), rezolvat->reaparut a 2-a notif, gri 0 push. Routing: 7/7 parsare link in node (malformat->fallback;
+'validat' intact) + curl HTTP real (token cabinet) /control-fiscal/2 = ruta deschisa de click intoarce firma
+CORECTA (DANTE). node --check ESM + verificator DS 0 + rute existente byte-identice (cabinet.js/asistent.js neatinsi).
