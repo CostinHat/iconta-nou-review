@@ -13,7 +13,7 @@ const CULORI = {
 const LUNI = ["", "ian", "feb", "mar", "apr", "mai", "iun", "iul", "aug", "sep", "oct", "noi", "dec"];
 
 
-export async function randeazaControl(corp, nav) {
+export async function randeazaControl(corp, nav, tidAuto) {
   corp.innerHTML = `<p class="ecran-nota">Se evaluează portofoliul…</p>`;
   let date = { firme: [], sumar: {} };
   try {
@@ -64,6 +64,15 @@ export async function randeazaControl(corp, nav) {
     rand.addEventListener("click", () => nav.deschide("Detaliu firm\u0103", (cc, nn) => detaliuFirma(cc, nn, f)));  // [p122_nav_stiva]
     lista.appendChild(rand);
   });
+
+  // [F164_routing] deschis din notificarea de control fiscal (link control-fiscal:{tid}) -> auto-drill in
+  // detaliul FIRMEI, reutilizand exact click-ul de rand (acelasi obiect firma: nume+contabil, aceeasi stiva
+  // portofoliu->detaliu). Firma negasita (fara acces / tid gresit) -> ramai pe portofoliu, nu crapa.
+  if (tidAuto != null) {
+    const f = firme.find((x) => x.tenant_id === tidAuto);
+    if (f) nav.deschide("Detaliu firm\u0103", (cc, nn) => detaliuFirma(cc, nn, f));
+    else console.warn("[control] firma", tidAuto, "negasita in portofoliu (fara acces sau tid gresit)");
+  }
 }
 
 async function detaliuFirma(corp, nav, firma) {

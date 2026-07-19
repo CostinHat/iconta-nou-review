@@ -1139,3 +1139,22 @@ LIMITA / CE RASTOARNA DECIZIA:
   - Cronul verifica LUNA CURENTA (ca ecranul). Un rosu de luna trecuta nerezolvat iese din detectie la schimbarea
     lunii (consecvent cu ecranul, care tot luna curenta arata).
   - v2: digest email (Brevo) pentru contabilii care nu intra zilnic; routing click in clopotel.
+
+### 19.07.2026 F164 routing clopotel: click pe notificare -> ecranul firmei; window._navGlobal era mort  (static/js/navigator.js + static/js/ecrane/control.js)
+DECIZIE: click pe notificarea de control fiscal (link="control-fiscal:{tid}") deschide ecranul de control
+al FIRMEI respective (auto-drill in detaliu), nu portofoliul general - contabilul a dat click pe "Firma X are
+N rosii", vrea firma X. Implementat prin param optional randeazaControl(corp, nav, tidAuto): dupa portofoliu,
+gaseste firma dupa tenant_id si reutilizeaza EXACT click-ul de rand (detaliuFirma cu obiectul firma complet,
+aceeasi stiva portofoliu->detaliu). tid malformat -> log + fallback (ramai pe ecran), nu ecran alb.
+TEMEI / DESCOPERIRE: routing-ul clopotelului se facea prin window._navGlobal, dar acesta NU era atribuit
+nicaieri -> cazul 'validat' era COD MORT (click nu ruta nimic). Handler-ul clopotelului e functie de modul, in
+afara closure-ului creeazaNavigator unde traieste `nav`. Reparat minimal-invaziv: window._navGlobal = nav la
+crearea navigatorului (realizeaza pattern-ul deja presupus de cod), + cazul nou de routing langa 'validat'
+(nu rescriu dispatcher-ul). EFECT SECUNDAR (intentionat de autorul original): click pe notificarea 'de_validat'
+acum chiar duce acasa (inainte nu facea nimic) - comportament dorit, nu regresie.
+ALTERNATIVA RESPINSA: (a) threading `nav` prin _clopotInit + panou builder - mai mult refactor si risc de ordine
+de initializare (nav e const definit dupa apelul _clopotInit); global-ul e pattern-ul existent, 1 linie. (b) sa
+deschid portofoliul general si sa las omul sa caute firma - respins de gard #3 (filtrat pe firma, nu lista).
+LIMITA: JS static, fara build - schimbarea e live la reincarcare. Verificat: 7/7 parsare in node (inclusiv
+malformat->fallback, rute existente intacte) + curl HTTP real (token cabinet): /control-fiscal/2 = ruta deschisa
+de click intoarce firma corecta. Apelantii existenti (cabinet.js/asistent.js, 2 args) neatinsi.

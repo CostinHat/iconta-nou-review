@@ -263,6 +263,10 @@ export function creeazaNavigator(radacina, desktopRandator) {
   };
 
   randeazaDesktop();
+  // [clopot_routing] expune nav-ul curent pentru routing-ul notificarilor din clopotel.
+  // Handler-ul clopotelului (functie de modul, in afara acestui closure) il citea deja prin
+  // window._navGlobal, dar nu era atribuit nicaieri -> routing mort. Aici se realizeaza pattern-ul.
+  window._navGlobal = nav;
   return nav;
 }
 
@@ -315,9 +319,19 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
         const it = document.createElement("button");
         it.className = "clopot-item" + (n.citit ? "" : " clopot-necitit");
         it.innerHTML = `<div class="clopot-text">${(n.text||"").replace(/[<>&]/g,"")}</div><div class="clopot-cand">${_clopotData(n.cand)}</div>`;
-        it.addEventListener("click", () => {
+        it.addEventListener("click", async () => {
           panou.remove();
           if (n.link === "validat" && window._navGlobal) { try { window._navGlobal.acasa(); } catch {} }
+          // [F164_routing] notificare de control fiscal -> deschide ecranul FIRMEI respective (nu portofoliul).
+          // Format link: "control-fiscal:{tid}". tid malformat -> log + fallback (ramai pe ecran, nu ecran alb).
+          else if (typeof n.link === "string" && n.link.startsWith("control-fiscal:") && window._navGlobal) {
+            const tid = parseInt(n.link.slice("control-fiscal:".length), 10);
+            if (!Number.isFinite(tid)) { console.warn("[clopot] link control-fiscal malformat:", n.link); return; }
+            try {
+              const { randeazaControl } = await import("./ecrane/control.js");
+              window._navGlobal.deschide("Control fiscal", (corp, nn) => randeazaControl(corp, nn, tid), { nivel: "cabinet" });
+            } catch (e) { console.warn("[clopot] nu am putut deschide control fiscal:", e); }
+          }
         });
         lista.appendChild(it);
       });
