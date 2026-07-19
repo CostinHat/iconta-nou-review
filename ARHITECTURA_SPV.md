@@ -67,6 +67,15 @@ INTREBARE TRIMISA 17.07.2026 catre spv.webservice@mfinante.ro, doua puncte:
   (2) se planifica OAuth pentru SPVWS2?                    -> deblocheaza F128 + rapoartele 'cerere'
 Fara raspuns pana la 17.08.2026: F127/F128 raman AMANAT. Raspunsul se consemneaza AICI.
 
+## RE-CHECK 20.07.2026 (verificare la sursa dupa intrebarea din 17.07) — STATUS NESCHIMBAT
+- SPVWS2 (webserviced.anaf.ro/SPVWS2/rest/cerere) EXISTA, dar e READ-ONLY (interogare: D100/D112/D205/D394,
+  vector fiscal, situatie sintetica, fisa rol). NU are operatie de DEPUNERE -> F127 ramane blocat
+  ("pentru viitor" in README oficial ClientSPV).
+- Autentificarea SPVWS2 ramane mTLS certificat LOCAL (PKCS#11), incompatibil cloud/OAuth -> F128 blocat pe
+  ADAUGAREA OAuth de catre ANAF, nu pe absenta API-ului (API-ul de CITIRE exista).
+- Niciun anunt ANAF de OAuth pe SPVWS2 sau de depunere prin WS de la 17.07. Reevaluarea 17.08 ramane valida.
+- Nu e gaura competitiva (nici SmartBill nu are mesaje SPV - limita ANAF pentru toti jucatorii cloud, DECIZII:54).
+
 ## STARE FUNCTIONALITATI (17.07.2026)
 - F126, F160, F121 : temei tehnic confirmat prin OAuth. Se pot construi server-side.
 - F127 (transmitere declaratii): AMANAT. Nu exista API. README oficial il listeaza
