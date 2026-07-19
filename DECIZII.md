@@ -1303,3 +1303,31 @@ NU e in v9, e VIES (serviciu separat verifica_vies) - amestecul ar fi gresit; VI
 LIMITA: register-gratuit foloseste buton explicit "Verifica la ANAF" (pre-existent), cabinet foloseste blur -
 ambele pre-completeaza; nu am reorganizat UI-ul existent (DS: reorganizarea = STOP). oras/judet NU se extrag din
 adresa structurata inca (adresa_sediu_social exista in v9) - flat adresa in v1, structurat = v2.
+
+### 20.07.2026 MARKETING — ce se poate afirma onest despre "contabilitate completa"  (temei: inventar FUNCTIONALITATI.csv + verdict verificat)
+DECIZIE: afirmatiile de marketing se ancoreaza in inventarul REAL (180 functionalitati, ~161 LIVE), nu in impresie.
+Pozitionare: "contabilitate completa" = MASA (paritate cu competitia); "control fiscal automat" = DIFERENTIATOR
+(varf de lance in mesaj).
+TEMEI (verificat la sursa 20.07, inventar pe 7 zone): COMPLET - facturare, contabilitate primara (carte mare +
+inchidere + casa + balanta + partida simpla), declaratii-GENERARE (toate 9, validate DUK), stocuri (NIR/CV/GV/
+inventar/transfer), control fiscal. PARTIAL - salarizare (lipsa fisier bancar salarii + coduri COR), banca (lipsa
+Open Banking, azi import de fisier). BLOCAT - depunerea declaratiilor direct la ANAF (F127: nu exista API de
+depunere pt niciun soft cloud). NEPROBAT LIVE - e-Factura round-trip pe CIF real cu drept SPV (cod complet, pending
+ca F176).
+
+AFIRMATII PERMISE (adevarate, aparabile legal):
+- "Software PENTRU contabilitate completa" - NU "oferim contabilitate" (CECCAR: iConta e INSTRUMENT, contabilul
+  autorizat presteaza serviciul). Zone COMPLET: facturare, contabilitate primara, declaratii-generare, stocuri,
+  control. PARTIAL declarat: salarizare, banca.
+- "Genereaza si valideaza toate declaratiile (D100-D406 SAF-T) pe validatorul oficial ANAF (DUK)" - diferentiator.
+- "Control fiscal automat: control incrucisat D300/D112/D390/cota TVA + semafor + alerte" - COMPLET+, varf de lance.
+- "Depunerea o faci din SPV cu XML verificat de iConta (ANAF nu ofera depunere prin API niciunui soft cloud)" -
+  onest, transforma limita ANAF (comuna tuturor) in non-problema, nu o ascunde.
+
+AFIRMATII INTERZISE (overclaim / fals - risc legal + erodare incredere):
+- "Depune cu un click la ANAF" - FALS (F127 blocat, depunere manuala din SPV).
+- "e-Factura functionala live end-to-end" - PREMATUR (round-trip neprobat pe CIF real cu drept SPV). A se afirma
+  DOAR dupa proba live reala.
+- "100%% fara alt tool" - FALS (portal SPV necesar pt depunere + mesaje SPV).
+LIMITA: inventarul reflecta starea 20.07.2026; se reevalueaza cand F127 (depunere) sau proba e-Factura live se
+deblocheaza -> atunci afirmatiile INTERZISE de mai sus pot deveni permise. Pana atunci, NU.
