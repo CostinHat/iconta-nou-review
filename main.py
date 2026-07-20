@@ -3073,18 +3073,20 @@ def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
         with conn.cursor() as cur:
             cur.execute(f"""
                 SELECT i.id, i.data, i.numar, i.descriere, i.sursa, i.status, i.factura_id,
-                       l.cont_debit, l.cont_credit, l.suma
+                       l.cont_debit, l.cont_credit, l.suma, l.centru_cost_id, cc.nume AS centru_nume
                 FROM {schema}.inregistrari i
                 JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
+                LEFT JOIN {schema}.centre_cost cc ON cc.id = l.centru_cost_id
                 WHERE date_trunc('month', i.data) = %s
                 ORDER BY i.data, i.id, l.id
             """, (f"{an}-{luna:02d}-01",))
             note = {}
-            for iid, data, nr, desc, sursa, status, fid, deb, cre, suma in cur.fetchall():
+            for iid, data, nr, desc, sursa, status, fid, deb, cre, suma, cc_id, cc_nume in cur.fetchall():
                 if iid not in note:
                     note[iid] = {"id": iid, "data": data.isoformat(), "numar": nr,
                                  "descriere": desc, "sursa": sursa, "status": status, "factura_id": fid, "linii": []}
-                note[iid]["linii"].append({"debit": deb, "credit": cre, "suma": float(suma)})
+                note[iid]["linii"].append({"debit": deb, "credit": cre, "suma": float(suma),
+                                           "centru_cost_id": cc_id, "centru_nume": cc_nume})
     return {"note": list(note.values())}
 @app.post("/tenants/{tenant_id}/horeca/import-amef")
 async def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
@@ -5001,6 +5003,41 @@ def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
             raise HTTPException(404, "tenant inexistent sau fara acces")
         _cere_perioada_deschisa(conn, schema, nota_id)
         return _jurnal_rez(_j.valideaza(conn, schema, nota_id))
+
+
+# [F143 Faza 1] centre de cost — nomenclator per firma (dimensiune pe linia de nota)
+@app.get("/tenants/{tenant_id}/centre-cost")
+def centre_cost_lista(tenant_id: int, doar_active: bool = False, ctx=Depends(cere_cabinet)):
+    from core import centre_cost_api as _cc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return {"centre": _cc.lista(conn, schema, doar_active=doar_active)}
+
+@app.post("/tenants/{tenant_id}/centre-cost")
+def centre_cost_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import centre_cost_api as _cc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        r = _cc.adauga(conn, schema, corp.get("nume"))
+        if r.get("eroare"):
+            raise HTTPException(400, r["eroare"])
+        return r
+
+@app.put("/tenants/{tenant_id}/centre-cost/{centru_id}")
+def centre_cost_activ(tenant_id: int, centru_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    from core import centre_cost_api as _cc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        r = _cc.seteaza_activ(conn, schema, centru_id, bool(corp.get("activ", True)))
+        if r is None:
+            raise HTTPException(404, "centru inexistent")
+        return r
 
 
 @app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora")

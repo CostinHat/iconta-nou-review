@@ -229,6 +229,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "contracte", titlu: "Contracte", desc: "Generează din șabloane cu datele partenerului",  // contracte_v1
       ...CULORI_CARD.ardezie,
       icon: '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M9 13l2 2 4-4"/>', activ: true },
+    { cheie: "centrecost", titlu: "Centre de cost", desc: "Dimensiune pe notele manuale, pentru raport realizat pe centru",  // [F143]
+      ...CULORI_CARD.teal,
+      icon: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>', activ: true },
   ];
 
   // [tip_firma_v1] carduri filtrate pe regimul firmei (srl = partida dubla / pfa = partida simpla).
@@ -340,6 +343,8 @@ function meniuFirma(corp, nav, t) {
   if (bRegistratura) bRegistratura.addEventListener("click", () => { nav.deschide("Registratură", (c2) => ecranRegistratura(c2, nav, t)); });
   const bContracte = corp.querySelector("#fa-contracte");  // contracte_v1
   if (bContracte) bContracte.addEventListener("click", () => { nav.deschide("Contracte", (c2) => ecranContracte(c2, nav, t)); });
+  const bCentre = corp.querySelector("#fa-centrecost");  // [F143]
+  if (bCentre) bCentre.addEventListener("click", () => { nav.deschide("Centre de cost", (c2) => ecranCentreCost(c2, nav, t)); });
   const bBanca = corp.querySelector("#fa-banca");
   if (bBanca) {
     bBanca.addEventListener("click", () => { nav.deschide("Bancă", (c2) => ecranBanca(c2, nav, t)); });
@@ -1692,6 +1697,7 @@ async function ecranJurnal(corp, nav, t) {
     ? `<span style="color:var(--galben);font-weight:600">\u25cf Ciorn\u0103</span>`
     : `<span style="color:var(--verde);font-weight:600">\u25cf Validat\u0103</span>`;
 
+  let centre = [];  // [F143] centre active, pentru selectorul de pe linia de nota manuala
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let note = [];
@@ -1699,6 +1705,12 @@ async function ecranJurnal(corp, nav, t) {
       const r = await api.get(`/tenants/${t.id}/jurnal?an=${an}&luna=${luna}`);
       note = (r && r.note) || [];
     } catch {}
+    try {
+      const rc = await api.get(`/tenants/${t.id}/centre-cost?doar_active=true`);
+      centre = (rc && rc.centre) || [];
+    } catch { centre = []; }
+    const optCentru = (sel) => `<option value="">— centru —</option>` +
+      centre.map((c) => `<option value="${c.id}"${sel === c.id ? " selected" : ""}>${esc(c.nume)}</option>`).join("");
     const rand = (n) => {
       if (inEditare === n.id) return editor(n);
       const butoane = n.status === "ciorna" ? `
@@ -1709,7 +1721,7 @@ async function ecranJurnal(corp, nav, t) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${dataRo(n.data)} \u00b7 ${esc(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
-            <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${bani(l.suma)}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + esc(n.sursa) : ""}</div>
+            <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${bani(l.suma)}${l.centru_nume ? ` \u00b7 <span style="color:var(--teal)">${esc(l.centru_nume)}</span>` : ""}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + esc(n.sursa) : ""}</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:stretch">${butoane}</div>
         </div>`;
@@ -1725,6 +1737,7 @@ async function ecranJurnal(corp, nav, t) {
             <span style="align-self:center">=</span>
             <input type="text" class="camp-input je-cre" placeholder="credit" aria-label="Cont credit" value="${esc(l.credit)}" style="width:90px">
             <input type="number" step="0.01" class="camp-input je-sum" value="${l.suma.toFixed(2)}" style="width:120px">
+            <select class="camp-input je-centru" aria-label="Centru de cost" style="width:140px">${optCentru(l.centru_cost_id)}</select>
             <button class="buton-secundar je-scoate">\u2212</button>
           </div>`).join("")}</div>
         <p><button class="buton-secundar" id="je-plus">+ linie</button></p>
@@ -1800,6 +1813,7 @@ async function ecranJurnal(corp, nav, t) {
           <span style="align-self:center">=</span>
           <input type="text" class="camp-input je-cre" placeholder="credit" aria-label="Cont credit" style="width:90px">
           <input type="number" step="0.01" class="camp-input je-sum" placeholder="0,00" aria-label="Sum\u0103" style="width:120px">
+          <select class="camp-input je-centru" aria-label="Centru de cost" style="width:140px">${optCentru(null)}</select>
           <button class="buton-secundar je-scoate">\u2212</button>`;
         zona.appendChild(d); leaga();
       });
@@ -1809,6 +1823,7 @@ async function ecranJurnal(corp, nav, t) {
           debit: r.querySelector(".je-deb").value.trim(),
           credit: r.querySelector(".je-cre").value.trim(),
           suma: parseFloat(r.querySelector(".je-sum").value) || 0,
+          centru_cost_id: (r.querySelector(".je-centru") && r.querySelector(".je-centru").value) || null,  // [F143]
         }));
         try {
           if (inEditare === "nou") {
@@ -1822,6 +1837,47 @@ async function ecranJurnal(corp, nav, t) {
         } catch (e) { eroare(e, "Eroare la salvare"); }
       });
     }
+  };
+  deseneaza();
+}
+
+
+// [F143] Centre de cost — nomenclator de management (dimensiune pe notele manuale)
+async function ecranCentreCost(corp, nav, t) {
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+    let centre = [];
+    try { const r = await api.get(`/tenants/${t.id}/centre-cost`); centre = (r && r.centre) || []; } catch {}
+    const rand = (c) => `
+      <div class="pf-frand">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${esc(c.nume)}</div>
+          <div class="pf-frand-sub">${c.activ ? "activ" : "inactiv — nu se mai oferă la note noi"}</div>
+        </div>
+        <button class="buton-secundar" data-toggle="${c.id}" data-activ="${c.activ ? 1 : 0}">${c.activ ? "Dezactivează" : "Reactivează"}</button>
+      </div>`;
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Centre de cost</h2>
+      <p class="pf-intro">Dimensiune de management pe notele manuale (Registru jurnal). Un centru scos din uz se dezactivează — rămâne pe notele vechi, nu se mai oferă la note noi.</p>
+      <div style="display:flex;gap:8px;max-width:520px;margin-bottom:12px">
+        <input type="text" id="cc-nume" class="camp-input" placeholder="Nume centru (ex: Vânzări, Producție)" style="flex:1">
+        <button class="buton-primar" id="cc-add">Adaugă</button>
+      </div>
+      <div id="cc-mesaj"></div>
+      <div class="pf-lista">${centre.length ? centre.map(rand).join("") : '<div class="stare-goala">Niciun centru încă. Adaugă primul.</div>'}</div>`;
+    const msg = corp.querySelector("#cc-mesaj");
+    const adauga = async () => {
+      const nume = corp.querySelector("#cc-nume").value.trim();
+      if (!nume) { arataMesaj(msg, "Scrie un nume.", "avert"); return; }
+      try { await api.post(`/tenants/${t.id}/centre-cost`, { nume }); deseneaza(); }
+      catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la adăugare.", "eroare"); }
+    };
+    corp.querySelector("#cc-add").addEventListener("click", adauga);
+    corp.querySelector("#cc-nume").addEventListener("keydown", (e) => { if (e.key === "Enter") adauga(); });
+    corp.querySelectorAll("[data-toggle]").forEach((b) => b.addEventListener("click", async () => {
+      try { await api.put(`/tenants/${t.id}/centre-cost/${b.dataset.toggle}`, { activ: b.dataset.activ !== "1" }); deseneaza(); }
+      catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare.", "eroare"); }
+    }));
   };
   deseneaza();
 }

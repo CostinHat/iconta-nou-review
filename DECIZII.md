@@ -1463,3 +1463,30 @@ LIMITA: motorul acopera rectificarea sumei DATORATE (cazul dominant). Deducerile
 AMEF (model 8#) au reguli diferite per cod_oblig (ex. cod 103: suma_plata=suma_dat-suma_redu, suma_ded nu se
 completeaza) - nu se acopera speculativ, la primul caz real, extras iterativ pe validator (ca D307). Fara
 ecran dedicat de corectii inca - generabila prin API/dispecer.
+
+### 20.07.2026 F143 centre de cost - management accounting intern, fazat  (02_ddl_centre_cost.sql, centre_cost_api.py, jurnal_api.py, firme.js; FUNCTIONALITATI.csv F143)
+DECIZIE: F143 (centre de cost + bugete) se construieste ca MANAGEMENT ACCOUNTING INTERN, fazat.
+VERIFICAT LA SURSA (CONCURENTA.csv, 20.07): cei 4 concurenti care il au - FGO (analiza cheltuieli pe
+furnizori/centre), Keez (centre + linii de buget), WinMentor (modul Bugete plan venituri/cheltuieli),
+Nexus ERP (centre cost+profit + bugete) - sunt TOTI vendori pt firme private, dimensiune interna
+"unde se duc banii pe departament vs plan". ZERO legatura cu contabilitatea bugetara publica (institutii
+publice / clasificatie bugetara / angajamente) - alt vocabular, alta schema. Deci sigur de construit.
+SCOP + FAZARE (dupa verificarea amplorii la sursa - notele n-au azi nicio dimensiune; inserarea in
+inregistrari_linii e descentralizata, 11 INSERT-uri in 6 module):
+- Dimensiune pe LINIE (nu pe antet): centrul e proprietatea liniei de cheltuiala/venit (clasa 6/7); o
+  nota poate acoperi mai multe centre. Nullable = nealocat.
+- Faza 1 = doar note MANUALE (jurnal_api, 2 INSERT-uri). Notele AUTOMATE (casa/stocuri/banca/retete)
+  raman NULL - a le atribui centru cere reguli per-sursa = design mare, la caz real (Faza 3).
+- Step A (LIVE): fundatia DB - tabel centre_cost + coloana centru_cost_id + FK, template + 02_ddl_*.sql
+  aplicat pe toate tenant-urile.
+- Step B (LIVE): centre_cost_api (CRUD: adauga/lista/dezactiveaza; NU stergere - FK pe linii istorice,
+  se dezactiveaza) + jurnal_api poarta centru_cost_id + rute + card "Centre de cost" (ecran management,
+  ales de Costin vs inline) + selector pe linia de nota + afisare in registru.
+- Step C (URMEAZA): raport "realizat pe centru de cost" (GROUP BY centru, clasele 6/7, tiparul
+  rapoarte_comerciale_api).
+- Faza 2 (buget vs realizat): tabel bugete separat + ecran setare + raport varianta. NECONSTRUIT azi.
+ALTERNATIVA RESPINSA: dimensiune pe toate cele 11 puncte de inserare din start - respinsa, s-ar propaga
+necontrolat ("adauga un camp peste tot") + notele automate n-au cum sa aleaga centru fara reguli.
+LIMITA: PFA (partida simpla) vede cardul dar centrele au sens redus la partida simpla; nu s-a filtrat pe
+tip_firma (management accounting = optional la ambele). Bugetele si raportul de varianta = Faza 2, nedecise
+in detaliu (per cont-clasa vs global, periodicitate) - se stabilesc cand se ajunge acolo.

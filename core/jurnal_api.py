@@ -10,6 +10,17 @@ def _nota(cur, schema, nota_id):
     return cur.fetchone()
 
 
+def _centru(l):
+    """[F143] centru_cost_id de pe o linie -> int sau None (nealocat). Gol/0 = nealocat."""
+    v = l.get("centru_cost_id")
+    if v in (None, "", 0, "0"):
+        return None
+    try:
+        return int(v)
+    except (TypeError, ValueError):
+        return None
+
+
 def creeaza(conn, schema, descriere, data, linii):
     """Creeaza o nota manuala noua, ca ciorna. linii = [{debit, credit, suma}], min 1 linie."""
     if not linii:
@@ -26,9 +37,10 @@ def creeaza(conn, schema, descriere, data, linii):
         nota_id = cur.fetchone()["id"]
         for l in linii:
             cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                (inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id)
+                VALUES (%s,%s,%s,%s,%s)""",
                 (nota_id, str(l["debit"]).strip(), str(l["credit"]).strip(),
-                 Decimal(str(l["suma"]))))
+                 Decimal(str(l["suma"])), _centru(l)))
     conn.commit()
     return {"ok": True, "id": nota_id}
 def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
@@ -55,9 +67,10 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
             cur.execute(f"DELETE FROM {schema}.inregistrari_linii WHERE inregistrare_id=%s", (nota_id,))
             for l in linii:
                 cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                    (inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)""",
+                    (inregistrare_id, cont_debit, cont_credit, suma, centru_cost_id)
+                    VALUES (%s,%s,%s,%s,%s)""",
                     (nota_id, str(l["debit"]).strip(), str(l["credit"]).strip(),
-                     Decimal(str(l["suma"]))))
+                     Decimal(str(l["suma"])), _centru(l)))
             # ai_corectie_v2: cont schimbat de contabil => corectie invatata
             try:
                 _cont_nou = str(linii[0]["debit"]).strip()
