@@ -1792,3 +1792,33 @@ non-distructiv (caen=4754, reg_com=J2002000372404, adresa populate); (b) degrada
 -> {gasit:False} HTTP 200; (c) non-suprascriere (node): user tastat->NU se pierde, gol->completeaza, re-verificare->
 update. Parser real intoarce nr_reg_com+tva_la_incasare noi + cod_caen reparat. node --check ESM ambele formulare +
 verificator DS 0 + restart activ.
+
+# 20.07.2026 — F133 tichete/bilete de valoare: Faza 1 (masa) + Faza 2a (vacanta) + Faza 2b1 (cadou)
+Tratamentul fiscal 2026 verificat LA SURSA (nu din memorie - regulile s-au schimbat). Temeiul, alternativele
+si limitele fiecarei faze in DECIZII.md (intrari 20.07 F133); aici POINTER + commit-uri + ce e LIVE.
+
+**Faza 1 — tichete de masa (LIVE):** plafon (45 lei) in common.COTE cu data+temei; nr tichete = zile lucrate
+(pontajul F135 e informativ - premisa "0 fara pontaj" RASTURNATA la sursa, step 3); CASS 10% + impozit 10% pe
+valoarea nominala, in calcul_salariu; stat+fluturas+monografie (642=5328 acordare, 421=4316 CASS retinut);
+D112 include tichetele, VALIDAT DUK izolat + real. Commits 1e40782, 73ea4ab, 9e71f37, 4204544.
+
+**Faza 2a — tichete de vacanta (LIVE):** suma one-off/luna (beneficii_lunare), acelasi tratament fiscal ca masa
+(CASS+impozit, FARA CAS/CAM); plafon neimpozabil informativ 6 salarii minime/an -> semnal "peste plafon anual";
+stat/fluturas/monografie + UI "+ vacanta"; D112 include vacanta, VALIDAT DUK. Commits a3c901e, 66e4260, 16afca4, 2cf770b.
+
+**Faza 2b (cadou) SPARTA:** 2b1 (neimpozabil <=300, cazul comun) acum; 2b2 (taxarea diferentei peste prag CA
+SALARIU - CAS+CASS+CAM+impozit adaugat la brut, chirurgie pe calcul_salariu+D112) = AMANAT la caz real (rar).
+
+**Faza 2b1 step 1 (model, cd3a487):** beneficii_lunare + coloana eveniment (4 legale: paste/craciun/8martie/1iunie
++ 'altul'), unique extins (salariat,an,luna,tip,eveniment) - un cadou per eveniment; beneficii_api: seteaza cu
+eveniment + validare, lista_luna agregat (SUM/salariat), cadou_detalii_luna (per eveniment + flag taxabil).
+
+**Faza 2b1 step 2 (stat/monografie/UI, ea3aee4) — DE AZI:** cadoul e NEIMPOZABIL (<=300/eveniment legal) -> NU
+atinge calcul_salariu/D112. Facut vizibil: (a) stat_plata cadou total/salariat + flag cadou_taxabil (>300 sau
+nelegal), inclus in total_disponibil (primit pe card, ca vacanta), FARA a atinge net/taxe; (b) fluturas: linie
+"Tichete cadou (neimpozabil, pe card separat)" + in TOTAL DISPONIBIL, retinerea ramane doar pt masa/vacanta;
+(c) monografie note_lunare: cheltuiala cadou 642=5328 pe valoarea TOTALA, adaugata separat de calcul_salariu
+(5328 nu e cont D112 -> nu rupe control_coerenta); (d) firme.js: afisaj "cadou <suma>" + semnal ROSU "taxabil"
++ buton "+ cadou" cu selector eveniment + valoare. Test functional tenant_002: paste300+craciun500+altul100=900
+-> taxabil True, net NEATINS, total_disponibil +900; doar paste300 -> taxabil False; nota 642=5328=300; fluturas
+PDF valid cu cadou. LIVE (restart activ). RAMAS: Faza 2b2 (taxare peste prag) la caz real.

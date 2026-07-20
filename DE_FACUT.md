@@ -100,6 +100,13 @@ starea reverificata azi:
   `calcul_cm_cod10` definit (salarizare.py:208) + apelat în flux real (salariati_api.py:222) + în
   dropdown (flux_concediu.js:14) + câmp venit condiționat (:105) + testat (test_salarizare.py).
   Vezi ISTORIC "REZOLVĂRI CONFIRMATE 17.07".
+- **F133 tichete/bilete de valoare — Faza 1 (masă) + 2a (vacanță) + 2b1 (cadou neimpozabil) LIVE; RĂMÂNE 2b2.**
+  Închise 20.07 (stat+fluturaș+monografie+UI+D112 unde e cazul; detaliu ISTORIC 20.07 + DECIZII). **Deschis: Faza 2b2 —
+  cadou TAXABIL (>300 lei/eveniment sau eveniment nelegal).** În 2b1 se SEMNALEAZĂ roșu pe stat dar NU se taxează automat
+  (contabilul tratează manual până la 2b2). 2b2 = chirurgie pe calcul_salariu + D112: DIFERENȚA peste prag (nu toată suma)
+  se taxează INTEGRAL ca salariu (CAS 25% + CASS 10% + CAM 2.25% + impozit 10%, adăugată la brut) — pistă diferită de
+  masă/vacanță (care e doar CASS+impozit). AMÂNAT deliberat la caz real (rar); vezi DECIZII 20.07 F133 Faza 2b1. [PLANIFICAT]
+  RESIDUAL 2b1: multiplicatorul per copil minor la plafon (300 × (1+copii)) — nemodelat, tot 2b2/temă separată.
 - raporteaza.js — verifică vizual data "cu_ora" în feed (migrat azi).
 - Verifică date CM de test invalide în alte tenant-uri (CCMAD corupt deja șters din tenant_002).
 
