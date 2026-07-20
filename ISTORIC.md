@@ -1822,3 +1822,29 @@ nelegal), inclus in total_disponibil (primit pe card, ca vacanta), FARA a atinge
 + buton "+ cadou" cu selector eveniment + valoare. Test functional tenant_002: paste300+craciun500+altul100=900
 -> taxabil True, net NEATINS, total_disponibil +900; doar paste300 -> taxabil False; nota 642=5328=300; fluturas
 PDF valid cu cadou. LIVE (restart activ). RAMAS: Faza 2b2 (taxare peste prag) la caz real.
+
+# 20.07.2026 — F134 plata salariilor pe card: fisier SEPA / ISO 20022 pain.001.001.03 (LIVE, fazat)
+Din inventarul de deschideri (7 PLANIFICAT), atacat F134 - se sprijina pe salarizarea tocmai inchisa
+(F133), dimensiune medie, fara dependente externe. Format ales de Costin (STOP, DECIZII 20.07 F134):
+SEPA pain.001.001.03, NU proprietar pe banca - standard PUBLICAT verificabil la sursa, bank-agnostic.
+
+**Step 1 (prereq IBAN, commit a93e4f3):** salariati.iban varchar(34) pe toate tenant-urile + template
+(07_ddl_iban_salariat.sql). salariati_api.iban_valid() PURA - IBAN romanesc (RO + 24) + cifra de control
+mod-97 (ISO 13616/7064), aceeasi disciplina ca CUI/CNP (un IBAN gresit trimite banii altcuiva). iban in
+_CAMPURI_API + SELECT-uri + valideaza_salariat; SalariatIn/Edit. UI: camp in formular salariat + buton
+"IBAN ✓/⚠" pe stat (editor inline, semnal cand lipseste). Test tenant_002: iban_valid pe exemplul standard
+RO49AAAA1B31007593840000 -> True; corupt/scurt/non-RO/gol -> False; update+respingere IBAN gresit (422)+golire.
+
+**Step 2 (generator, commit f240054):** core/plata_salarii.py genereaza_pain001(conn,schema,an,luna) ->
+(xml, meta). SUMA = NET cash (aceeasi cifra ca D112); tichetele (masa/vacanta/cadou) NU se aduna - card de
+beneficii SEPARAT, nu transfer bancar. Doar salariatii cu IBAN valid + net>0; cei fara IBAN -> EXCLUSI si
+RAPORTATI (meta['fara_iban']), nu platiti tacit; firma fara IBAN / niciun IBAN -> ValueError. Diacritice
+transliterate la charset SEPA; suma 2 zecimale HALF_UP. GARANTIA: XML validat pe XSD-ul OFICIAL
+(sepa_surse/pain.001.001.03.xsd, de pe iso20022.org) INAINTE de download - refuz daca banca l-ar respinge,
+ca DUK la declaratii. main.py: GET plata-salarii-preview (cati/total/cine fara IBAN) + plata-salarii-fisier
+(download), auth ca stat-plata, ValueError->422. firme.js: buton "Fisier plata card (SEPA)" pe stat ->
+preview cu avertisment rosu -> "Descarca". Gardian core/test_plata_salarii.py (11 teste pure: mod-97 +
+charset SEPA + rotunjire) PASS. E2E autentificat HTTP tenant_002: preview {nr_plati:1,total:2968}, download
+valid pe XSD, debtor!=creditor; izolat: multi-plata (2), fara_iban raportat, cai de eroare. tenant_002 curatat.
+LIMITA (in DE_FACUT): fisier valid pe XSD-ul ISO, dar importul REAL intr-o banca anume (round-trip pe platforma
+corporate) = de dovedit cu cont bancar real - aceeasi natura ca SAGA/WinMentor. Doar RON domestic (RO IBAN).

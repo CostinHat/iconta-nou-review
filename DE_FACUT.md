@@ -107,6 +107,14 @@ starea reverificata azi:
   se taxează INTEGRAL ca salariu (CAS 25% + CASS 10% + CAM 2.25% + impozit 10%, adăugată la brut) — pistă diferită de
   masă/vacanță (care e doar CASS+impozit). AMÂNAT deliberat la caz real (rar); vezi DECIZII 20.07 F133 Faza 2b1. [PLANIFICAT]
   RESIDUAL 2b1: multiplicatorul per copil minor la plafon (300 × (1+copii)) — nemodelat, tot 2b2/temă separată.
+- **F134 plata salariilor pe card (fișier SEPA pain.001) — LIVE 20.07; RĂMÂNE round-trip bancă reală.**
+  Generatorul ISO 20022 pain.001.001.03 e LIVE (commit-uri a93e4f3 + f240054; detaliu ISTORIC 20.07 + DECIZII
+  20.07 F134): sumă = net cash, IBAN salariat cu validare mod-97, salariați fără IBAN excluși+raportați, XML
+  validat pe XSD-ul oficial înainte de download. **Deschis (necolorat verde live): importul REAL într-o bancă
+  anume** — round-trip pe platforma corporate a băncii pilot, de dovedit cu un cont bancar real. Aceeași natură
+  ca limita SAGA/WinMentor (jos): cod + XSD verificate la sursă, dar nu importat efectiv într-o bancă. NU e
+  blocaj de construit — e probă cu bancă reală. Reziduu: doar RON domestic (RO IBAN); plăți în valută/IBAN
+  străin = temă separată dacă apare cazul.
 - raporteaza.js — verifică vizual data "cu_ora" în feed (migrat azi).
 - Verifică date CM de test invalide în alte tenant-uri (CCMAD corupt deja șters din tenant_002).
 
