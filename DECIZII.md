@@ -1331,3 +1331,25 @@ AFIRMATII INTERZISE (overclaim / fals - risc legal + erodare incredere):
 - "100%% fara alt tool" - FALS (portal SPV necesar pt depunere + mesaje SPV).
 LIMITA: inventarul reflecta starea 20.07.2026; se reevalueaza cand F127 (depunere) sau proba e-Factura live se
 deblocheaza -> atunci afirmatiile INTERZISE de mai sus pot deveni permise. Pana atunci, NU.
+
+### 20.07.2026 D212/PFA: partida simpla separata, INTENTIONAT (nu drift)  (core/rip_api.py + d212_engine.py; firma_profil.tip_firma de introdus)
+CONSTATARE (grep 20.07): D212 ruteaza prin core/rip_api.py (fisa_d212) + d212_engine.py, IN AFARA
+core/declaratii_api.py unde stau celelalte 9 (D100-D406). VERIFICAT LA SURSA: declaratii_api.py are ZERO
+referinte D212; rip_api importa calculeaza_d212 din d212_engine.
+DECIZIE: INTENTIONAT, nu drift. D212 ramane separat.
+TEMEI: D212 = regim PARTIDA SIMPLA (registru incasari-plati / RIP), celelalte 9 = PARTIDA DUBLA (note
+contabile validate). Surse de date DIFERITE - unirea lor ar amesteca cele doua sisteme contabile.
+NU e paralel cu un discriminator existent (verificat 20.07): baza_contabila ('A') = norma pt nomenclatorul
+D406/SAF-T, regim_fiscal = micro/profit (regimul CIT al SRL) - NICIUNUL nu discrimineaza srl/pfa (partida
+dubla vs simpla). Deci tip_firma e discriminator GENUIN NOU, nu dublura -> justificat.
+CONSECINTA (de introdus - flux planificat, inca neconstruit): tip_firma (srl/pfa) in firma_profil ca
+discriminator UNIC pentru doua fluxuri:
+  - meniu (firme.js): PFA arata cardul Incasari/plati + D212, ascunde partida dubla; SRL invers. (Azi cardul
+    'rip' e vizibil universal - firme.js:188 - starea pe care asta o schimba.)
+  - migrare (migrare_api.STRATURI): PFA ruleaza strat 'rip', sare solduri/plan_conturi/solduri_parteneri
+    (fara sens la partida simpla). Azi STRATURI = firme/vector_fiscal/solduri/solduri_parteneri/salariati/
+    asociati/mijloace_fixe/istoric_declaratii/plan_conturi (fara 'rip', fara ramificatie pe tip).
+ALTERNATIVA RESPINSA: "cardurile vizibile universal, contabilul discerne" - respinsa la momentul preluarii:
+migrarea trebuie sa STIE pe ce cale ruteaza straturile de import; discernamantul uman nu ruteaza cod.
+LIMITA: PFA n-are balanta de deschidere - registrul e cronologic; se importa operatiunile anului curent.
+Round-trip real (migrare + flux PFA cap-coada) pending primul cabinet cu PFA.
