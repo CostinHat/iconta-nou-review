@@ -1569,3 +1569,19 @@ monografie: 421=4316 include CASS tichete, 642=5328 pt nominalul acordat (achizi
 LIMITA: absentele nemotivate din pontaj NU reduc zilele de tichete (pontajul nu alimenteaza payroll, F135) -
 tichetele urmeaza exact zilele de salariu (luna - CM). Daca in viitor se vrea reducerea tichetelor pe
 absente nemotivate, ar cere alimentarea payroll din pontaj = rasturnarea F135, tema separata.
+
+### 20.07.2026 F133 step 4 - D112 include tichetele (VALIDAT DUK) - Faza 1 completa  (d112.py)
+DECIZIE: D112 declara tichetele corect. Bazele DIVERG (confirmat structural): baza CASS include valoarea
+nominala a tichetelor, baza CAS NU (tichetele n-au CAS). Sumele declarate includ CASS+impozit pe tichete.
+TEMEI: dovedit pe validatorul oficial DUK (judecatorul final, CLAUDE.md) - stare VALID FARA ERORI cu un
+salariat cu tichete (brut 5000 + 45 lei x 23 zile, 07/2026):
+  - B4_5 (baza CASS) = 6035 = 5000 + 1035 nominal tichete; B4_7 (baza CAS) = 5000 (fara tichete)
+  - B4_6 (CASS) = 604 (500 salariu + 104 tichete); angajatorA 432 (CASS total) = 604
+  - angajatorA 602 (impozit) = 359 (include impozitul pe tichete)
+IMPLEMENTARE: pull() paseaza tichet_valoare+tichet_zile la calcul_salariu si extrage cass_tichete/
+impozit_tichete/tichete_nominal; _d112_genereaza normalizeaza imp la salariu-only (imp din calc e TOTAL),
+apoi adauga uniform tichetele dupa ambele ramuri (normala + CM), baza CASS = b4base + nominal.
+Non-regresie: test_d112 + test_salarizare 24/24. Baseline (fara tichete) ramane valid.
+F133 Faza 1 = LIVE INTEGRAL (config -> calcul -> stat/fluturas/monografie -> D112, cap-coada).
+LIMITA: combinatia CM + tichete pe acelasi salariat in aceeasi luna - tichetele se adauga peste valorile
+recalculate din CM; acoperit in cod dar nedovedit izolat pe DUK (cazul rar). Tichete vacanta/cadou = Faza 2.

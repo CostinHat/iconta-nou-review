@@ -131,7 +131,13 @@ def _d112_genereaza(prof, salariati, an, luna):
         cas = _d112int(s.get("cas"))
         cass = _d112int(s.get("cass"))
         _cas_w = cas; _cass_w = cass  # worked-only pt topup part-time+CM - d112_ptcm_v1
-        imp = _d112int(s.get("impozit"))
+        # [F133] tichete: CASS + impozit pe tichete se adauga peste salariu(+CM), uniform mai jos.
+        # imp din s = TOTAL (salariu+tichete) -> il reducem la salariu-only aici (in ramura CM
+        # imp se recalculeaza oricum fara tichete). Tichetele n-au CAS.
+        cass_tichete = _d112int(s.get("cass_tichete", 0))
+        impozit_tichete = _d112int(s.get("impozit_tichete", 0))
+        tichete_nom = _d112int(s.get("tichete_nominal", 0))
+        imp = _d112int(s.get("impozit")) - impozit_tichete
         ore = int(s.get("ore_zi") or 8)
         if ore not in (6, 7, 8):
             ore = 8
@@ -193,6 +199,11 @@ def _d112_genereaza(prof, salariati, an, luna):
             c1_12 += cm_base
         else:
             zile = nzl
+        # [F133] adauga tichetele uniform (dupa ambele ramuri): CASS + impozit pe tichete,
+        # baza CASS include nominalul; baza CAS (b4base) NU se atinge (tichetele n-au CAS).
+        cass += cass_tichete
+        imp += impozit_tichete
+        baza_cass = b4base + tichete_nom
         ore_lucr = zile * ore
         casa_sn = _d112_casa(s.get("judet_casa") or prof.get("judet"))
         dataang = _d112_data(s.get("data_angajare"))
@@ -231,7 +242,7 @@ def _d112_genereaza(prof, salariati, an, luna):
         a.extend(_b3)
         a.append('    <asiguratB4 B4_1="%d" B4_3="%d" B4_5="%d" B4_6="%d" B4_7="%d" B4_8="%d" B4_14="%d" '
                  'B4_5P="%d" B4_6P="%d" B4_7P="%d" B4_8P="%d" B4_7S="0" B4_7C="0" B4_8D="%d" B4_6D="%d"/>'
-                 % (zile, brut, b4base, cass, b4base, cas, bazac, b4_5p, b4_6p, b4_7p, b4_8p, b4_8d, b4_6d))
+                 % (zile, brut, baza_cass, cass, b4base, cas, bazac, b4_5p, b4_6p, b4_7p, b4_8p, b4_8d, b4_6d))
         a.extend(_dl)
         a.append('    <asiguratE1 E1_1="%d" E1_2="%d" E1_3="0" E1_4="0" E1_5="0" E1_6="%d" E1_7="%d" '
                  'E1_41="0" E1_42="0" E1_421="0" E1_422="0"/>' % (brute, b4base, imp, imp))
@@ -327,6 +338,7 @@ def pull(conn, schema, an, luna):
             "scutit_pt": bool(s.get("scutit_contrib_minim")),
             "scutit": bool(s.get("scutit_contrib_minim")),
             "motiv_exceptare": s.get("motiv_exceptare"),
+            "tichet_masa_valoare": s.get("tichet_masa_valoare") or 0,  # [F133]
             "cm": cm,
             "zile_cm": sum(x["zile_ang"] + x["zile_fnuass"] for x in cm),
             # calcul din core.salarizare (facilitate/deducere/contributii pe brut)
@@ -353,17 +365,24 @@ def pull(conn, schema, an, luna):
         brut_int = float(s["brut"] or 0)
         zile_cm_s = int(s.get("zile_cm") or 0)
         brut_lucrat = (brut_int * max(nzl - zile_cm_s, 0) / nzl) if (nzl and zile_cm_s) else brut_int
+        # [F133] tichete de masa: aceleasi zile ca proratarea salariului (nzl - cm), NU din pontaj
+        tichet_zile = max(nzl - zile_cm_s, 0)
         r = _sz.calcul_salariu(brut_lucrat,
                                persoane=s.get("persoane_intretinere") or 0,
                                la_data=ref,
                                norma_intreaga=not s.get("part_time"),
-                               venit_brut_total=brut_int)
+                               venit_brut_total=brut_int,
+                               tichet_valoare=float(s.get("tichet_masa_valoare") or 0),
+                               tichet_zile=tichet_zile)
         s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
         s["facilitate"] = r.get("facilitate", 0)
         s["cas"] = r.get("cas", 0)
         s["cass"] = r.get("cass", 0)
-        s["impozit"] = r.get("impozit", 0)
+        s["impozit"] = r.get("impozit", 0)          # TOTAL (salariu + tichete)
         s["deducere"] = (r.get("deducere") or {}).get("total", 0)
+        s["cass_tichete"] = r.get("cass_tichete", 0)        # [F133] CASS pe tichete
+        s["impozit_tichete"] = r.get("impozit_tichete", 0)  # impozit pe tichete
+        s["tichete_nominal"] = r.get("tichete_nominal", 0)  # valoare tichete (baza CASS)
         # part-time supra-taxare (art. 146(5^6)/168(6^1) CF, structura D112 v7):
         # part_time = ROUND(prag_pt * zile_lucrate / NZL); daca 0 < baza < part_time
         # -> B4_*P la prag, diferenta pe angajator. Exceptati: scutit+motiv 1-5.
