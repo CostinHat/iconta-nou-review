@@ -2101,6 +2101,19 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS tip_firma c
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil DROP CONSTRAINT IF EXISTS tip_firma_valid;
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD CONSTRAINT tip_firma_valid CHECK (tip_firma IN ('srl', 'pfa'));
 
+-- [F143 centre_cost, Faza 1] mirror al 02_ddl_centre_cost.sql: firmele NOI trebuie sa aiba
+-- tabelul + coloana. Dimensiune management accounting intern (centru de cost pe linia de nota).
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.centre_cost (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nume varchar(100) NOT NULL,
+    activ boolean NOT NULL DEFAULT true,
+    creat_la timestamptz NOT NULL DEFAULT now()
+);
+ALTER TABLE TENANT_PLACEHOLDER.inregistrari_linii ADD COLUMN IF NOT EXISTS centru_cost_id integer;
+ALTER TABLE TENANT_PLACEHOLDER.inregistrari_linii DROP CONSTRAINT IF EXISTS inregistrari_linii_centru_cost_fk;
+ALTER TABLE TENANT_PLACEHOLDER.inregistrari_linii ADD CONSTRAINT inregistrari_linii_centru_cost_fk
+    FOREIGN KEY (centru_cost_id) REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
+
 --
 -- F145 (rapoarte configurabile salvabile) — mirror al core/migrare_rapoarte_salvate.py
 --
