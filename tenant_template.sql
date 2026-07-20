@@ -2125,6 +2125,10 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.bugete (
     CONSTRAINT bugete_centru_an_unic UNIQUE (centru_cost_id, an)
 );
 
+-- [F133 tichete masa, Faza 1] mirror al 04_ddl_tichet_masa.sql: valoarea nominala a unui
+-- tichet de masa per salariat (0 = nu primeste). Plafonul legal traieste in common.COTE.
+ALTER TABLE TENANT_PLACEHOLDER.salariati ADD COLUMN IF NOT EXISTS tichet_masa_valoare numeric NOT NULL DEFAULT 0;
+
 --
 -- F145 (rapoarte configurabile salvabile) — mirror al core/migrare_rapoarte_salvate.py
 --

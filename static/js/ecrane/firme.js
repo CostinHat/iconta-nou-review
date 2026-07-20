@@ -498,6 +498,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ${camp("persoane_intretinere", "Persoane \u00een \u00eentre\u021binere", "numar", { pas: "1" })}
       ${camp("judet_casa", "Jude\u021b CAS/CASS", "text")}
       ${camp("cor", "Cod COR", "text")}
+      ${camp("tichet_masa_valoare", "Tichet de mas\u0103 (lei/zi lucrat\u0103, 0 = f\u0103r\u0103)", "numar")}
       ${camp("scutit_contrib_minim", "Scutit contribu\u021bie minim\u0103", "checkbox")}
     </div>
     <p style="margin-top:12px">
@@ -521,6 +522,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       persoane_intretinere: corp.querySelector("#sn-persoane_intretinere").value ? Number(corp.querySelector("#sn-persoane_intretinere").value) : 0,
       judet_casa: corp.querySelector("#sn-judet_casa").value.trim() || null,
       cor: corp.querySelector("#sn-cor").value.trim() || null,
+      tichet_masa_valoare: corp.querySelector("#sn-tichet_masa_valoare").value ? Number(corp.querySelector("#sn-tichet_masa_valoare").value) : 0,  // [F133]
       scutit_contrib_minim: corp.querySelector("#sn-scutit_contrib_minim").checked,
     };
     try {

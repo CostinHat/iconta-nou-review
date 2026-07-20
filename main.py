@@ -709,6 +709,7 @@ class SalariatIn(BaseModel):
     scutit_contrib_minim: bool = False
     motiv_exceptare: Optional[int] = None
     cor: Optional[str] = None
+    tichet_masa_valoare: Optional[float] = None  # [F133]
 
 class SalariatEdit(BaseModel):
     nume: Optional[str] = None
@@ -724,6 +725,7 @@ class SalariatEdit(BaseModel):
     scutit_contrib_minim: Optional[bool] = None
     motiv_exceptare: Optional[int] = None
     cor: Optional[str] = None
+    tichet_masa_valoare: Optional[float] = None  # [F133]
 
 class MigrareValideazaIn(BaseModel):
     cui_uri: list[str]

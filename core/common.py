@@ -168,6 +168,12 @@ COTE = {
         (date(2026, 7, 1), Decimal("4600"), "OUG 89/2025 art.III lit.b (venit brut total, S2 2026)"),
         (date(2026, 1, 1), Decimal("4300"), "OUG 89/2025 art.III lit.b (venit brut total, S1 2026)"),
     ],
+    # [F133] valoarea maxima legala a unui tichet de masa / zi lucrata. Legea 201/2025
+    # (MO 1106/28.11.2025): 45 lei pt S1 2026 + iul-sep 2026 (reindexare dupa octombrie).
+    # Tichetele de masa: CASS 10% + impozit 10% (Legea 296/2023), fara CAS/CAM.
+    "tichet_masa_plafon": [
+        (date(2026, 1, 1), Decimal("45"), "Legea 201/2025 (MO 1106/2025)"),
+    ],
 }
 
 

@@ -1520,3 +1520,24 @@ latura favorabila era scrisa; codul implementa binar, deci venituri-sub-plan=ros
 Faza 2 completa; F143 = LIVE integral (Faza 1 + Faza 2).
 LIMITA: buget anual -> varianta se compara pe an intreg (nu pro-ratare la sub-perioada). Raportul liber
 [de,pana] din Faza 1 ramane pt drill-down operational; varianta e vederea anuala de planificare.
+
+### 20.07.2026 F133 Faza 1 - tichete de masa (tratament fiscal verificat la sursa + scop)  (04_ddl_tichet_masa.sql, common.py, salariati_api.py, d112.py)
+DECIZIE: se construieste Faza 1 = DOAR tichete de MASA, cap-coada (config -> calcul -> stat -> D112).
+Vacanta + cadou = Faza 2 (tema viitoare). Optiunea A confirmata de Costin (semnal deja prezent:
+tichetele de masa sunt cvasi-universale, "GOL REAL de salarizare" - CONCURENTA.csv:78).
+TRATAMENT FISCAL 2026 (VERIFICAT LA SURSA 20.07, nu din memorie - s-a schimbat):
+- valoare max 45 lei/zi lucrata (Legea 201/2025, MO 1106/28.11.2025; S1 + iul-sep 2026, reindexare oct).
+- CASS 10% + impozit 10% pe valoarea tichetelor; FARA CAS, FARA CAM. Din 2024 (Legea 296/2023) tichetele
+  au fost scoase din exceptia CASS -> intra in baza CASS. Efectiv ~19% retinut din nominal.
+- doar zile efectiv lucrate (nu concediu/CM/absente) -> nr tichete = zile lucrate din pontaj (F135).
+- impozitul pe tichete NU beneficiaza de deducere personala (aia e pe salariu).
+D112 IN SCOP (verificat 20.07): d112.py IGNORA azi tichetele - citeste doar brut/cass/impozit/baza, iar
+`bazac` (brut-facilitate) e folosit pt AMBELE baze CAS si CASS. Tichetele adauga la baza CASS + impozit
+DAR NU la baza CAS -> bazele diverg, deci D112 chiar cere modificare (nu e optional). Inclus in Faza 1
+ca sa nu ramana gaura (reteneri fara declarare = D112 gresit).
+CONFIG (step 1 LIVE): plafonul (45) traieste in common.COTE cu data+temei (ca restul valorilor fiscale);
+per salariat se stocheaza DOAR valoarea aleasa de firma (salariati.tichet_masa_valoare, 0=fara), validata
+0..plafon la input. Nr de tichete NU se stocheaza - se ia din zilele lucrate la calcul.
+LIMITA: peste-plafon nu se permite la input (un tichet de masa nu poate depasi maximul legal). Faza 1 nu
+atinge tichete vacanta/cadou. Numarul de zile lucrate vine din pontaj - daca pontajul lipseste pe luna,
+se decide la step calcul cum se prezuma (zile lucratoare standard vs 0).
