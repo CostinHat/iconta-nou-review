@@ -2138,10 +2138,12 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.beneficii_lunare (
     luna integer NOT NULL,
     tip varchar(20) NOT NULL,
     valoare numeric(14,2) NOT NULL DEFAULT 0,
+    eveniment varchar(20) NOT NULL DEFAULT '',  -- [F133 Faza 2b1] cadou: paste/craciun/8martie/1iunie/altul
     CONSTRAINT beneficii_lunare_tip_ck CHECK (tip IN ('vacanta', 'cadou')),
+    CONSTRAINT beneficii_lunare_eveniment_ck CHECK (eveniment IN ('', 'paste', 'craciun', '8martie', '1iunie', 'altul')),
     CONSTRAINT beneficii_lunare_luna_ck CHECK (luna BETWEEN 1 AND 12),
     CONSTRAINT beneficii_lunare_val_ck CHECK (valoare >= 0),
-    CONSTRAINT beneficii_lunare_unic UNIQUE (salariat_id, an, luna, tip)
+    CONSTRAINT beneficii_lunare_unic_v2 UNIQUE (salariat_id, an, luna, tip, eveniment)
 );
 
 --

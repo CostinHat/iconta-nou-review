@@ -2454,7 +2454,8 @@ def salariat_beneficiu_lunar(tenant_id: int, salariat_id: int, corp: dict = Body
         raise HTTPException(400, "an/luna invalide")
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
-        r = _ben.seteaza(conn, schema, salariat_id, an, luna, corp.get("tip"), corp.get("valoare"))
+        r = _ben.seteaza(conn, schema, salariat_id, an, luna, corp.get("tip"), corp.get("valoare"),
+                         eveniment=corp.get("eveniment", ""))
         if r is None:
             raise HTTPException(404, "salariat inexistent")
         if r.get("eroare"):

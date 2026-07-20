@@ -1618,3 +1618,22 @@ FIX AFISAJ (calc NEATINS): stat + fluturas arata acum explicit reținerea pe tic
 CASS salariu); reținerea pe tichete = separat. Pe fluturas: taxa pe tichete inainte de NET (reduce cash),
 valoarea tichetelor DUPA NET (pe card) + TOTAL DISPONIBIL.
 LIMITA: "net" pe stat ramane net-ul CASH (corect fiscal/legal); "total disponibil" arata imaginea completa.
+
+### 20.07.2026 F133 Faza 2b1 - tichete cadou (neimpozabil <=300 + semnal la >300), fiscal verificat  (06_ddl_cadou_eveniment.sql, beneficii_api.py)
+DECIZIE: Faza 2b (cadou) spartita in 2b1 (neimpozabil, cazul comun) + 2b2 (taxare peste prag).
+Se construieste 2b1: cadou <=300 lei/eveniment legal = NEIMPOZABIL (doar cheltuiala 642=5328, fara taxa,
+fara D112), cu SEMNAL clar daca >300 sau eveniment nelegal (deferat la 2b2 - NU se trateaza tacit gresit).
+TRATAMENT FISCAL 2026 (VERIFICAT LA SURSA): cadou neimpozabil <=300 lei/persoana/EVENIMENT, doar pt
+evenimente LEGALE (paste, craciun, 8 martie, 1 iunie). Peste 300 sau alt eveniment: DIFERENTA (nu toata
+suma) se taxeaza INTEGRAL ca salariu (CAS 25% + CASS 10% + CAM 2.25% + impozit 10%) - se adauga la brut.
+DECIZII DE SCOP (confirmate de Costin): (a) doar 2b1 acum (neimpozabil + semnal), taxarea peste prag = 2b2
+la caz real (rar, chirurgie pe calcul_salariu+D112). (b) coloana eveniment cu 4 legale + 'altul' (nelegal
+-> taxabil). (c) plafon SIMPLU 300/salariat/eveniment - MULTIPLICATORUL per copil minor (300 x (1+copii))
+NU se modeleaza in 2b1, se lasa pt 2b2/tema separata (minim viabil intai).
+MODEL (step 1 LIVE): beneficii_lunare primeste coloana eveniment + unique extins (salariat,an,luna,tip,
+eveniment) - un cadou per eveniment; vacanta ramane unica (eveniment=''). beneficii_api: seteaza cu
+eveniment + validare, lista_luna agregat (SUM), cadou_detalii_luna (per eveniment + flag taxabil).
+DE CE cadoul e diferit de masa/vacanta: taxarea peste prag = CA SALARIU (CAS+CASS+CAM, adaugat la brut),
+NU pista paralela CASS+impozit. De aceea 2b2 e separat si amanat.
+LIMITA: in 2b1, cadoul TAXABIL (>300 sau nelegal) se raporteaza cu semnal dar NU se taxeaza automat -
+contabilul trateaza manual pana la 2b2. Cheltuiala (642) se inregistreaza pe valoarea totala.
