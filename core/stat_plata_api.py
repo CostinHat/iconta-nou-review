@@ -30,6 +30,10 @@ def stat_plata(conn, schema, an, luna):
     # [F133 Faza 2a] tichete de vacanta acordate in luna (one-off, din beneficii_lunare)
     vac_luna = _ben.lista_luna(conn, schema, an, luna, "vacanta")
     plafon_vac_an = 6 * float(_common.cota("salariu_minim", ref)[0])  # 6 salarii minime/an
+    # [F133 Faza 2b1] tichete cadou acordate in luna: NEIMPOZABIL (nu atinge calcul_salariu/D112).
+    # total/salariat (SUM evenimente) + flag taxabil (>300 sau eveniment nelegal -> semnal, tratare la 2b2).
+    cadou_luna = _ben.lista_luna(conn, schema, an, luna, "cadou")
+    cadou_det = _ben.cadou_detalii_luna(conn, schema, an, luna)
     stat = []
     for sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val in randuri:
         c_cm = cm.get(sid)
@@ -51,6 +55,8 @@ def stat_plata(conn, schema, an, luna):
                                          tichet_vacanta=float(vac or 0))
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
         vac_an = _ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) if vac else 0
+        cadou = cadou_luna.get(sid, 0)  # [F133 Faza 2b1] total cadou (neimpozabil in 2b1)
+        cadou_taxabil = any(d["taxabil"] for d in cadou_det.get(sid, []))  # >300 sau nelegal
         stat.append({
             "id": sid,
             "nume": f"{nume or ''} {prenume or ''}".strip(),
@@ -64,14 +70,16 @@ def stat_plata(conn, schema, an, luna):
             "tichete_zile": tichet_zile if float(tichet_val or 0) > 0 else 0,
             "tichete_vacanta": float(calc.get("tichete_vacanta", 0)),
             "vacanta_peste_plafon": bool(vac and vac_an > plafon_vac_an),
+            "cadou": float(cadou or 0),  # [F133 Faza 2b1] neimpozabil, primit pe card
+            "cadou_taxabil": bool(cadou_taxabil),  # semnal: >300 sau eveniment nelegal (2b2)
             "cass_tichete": float(calc.get("cass_tichete", 0)),
             "impozit_tichete": float(calc.get("impozit_tichete", 0)),
             # [F133] pt afisaj transparent: impozit salariu (fara tichete), retinerea pe tichete,
             # valoarea totala a tichetelor si totalul disponibil (cash net + tichete pe card separat).
             "impozit_salariu": float(calc["impozit"]) - float(calc.get("impozit_tichete", 0)),
             "retinut_tichete": float(calc.get("cass_tichete", 0)) + float(calc.get("impozit_tichete", 0)),
-            "valoare_tichete": float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)),
-            "total_disponibil": float(calc["net"]) + float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)),
+            "valoare_tichete": float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0),
+            "total_disponibil": float(calc["net"]) + float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0),
             "cost": float(calc["cost_angajator"]),
             "cm_zile": cm_zile,
             "cm_brut": c_cm["brut"] if c_cm else 0,
@@ -110,6 +118,7 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     tichet_zile = max(zile_luna - cm_zile, 0)  # [F133] aceleasi zile ca proratarea salariului
     brut_lucrat = float(brut or 0) * max(zile_luna - cm_zile, 0) / zile_luna if zc else float(brut or 0)
     vac = _ben.lista_luna(conn, schema, an, luna, "vacanta").get(salariat_id, 0)  # [F133 Faza 2a]
+    cadou = _ben.lista_luna(conn, schema, an, luna, "cadou").get(salariat_id, 0)  # [F133 Faza 2b1] neimpozabil
     calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
                                      norma_intreaga=not part_time,
                                      venit_brut_total=float(brut or 0),
@@ -168,15 +177,20 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     # primeste PE CARD SEPARAT (nu cash) -> se arata DUPA net, + total disponibil = net + tichete.
     are_masa = float(calc.get("tichete_nominal", 0) or 0) > 0
     are_vac = float(calc.get("tichete_vacanta", 0) or 0) > 0
-    if are_masa or are_vac:
-        i = len(linii) - 1  # inaintea SALARIU NET
-        linii.insert(i, ("  CASS tichete (10%) - retinut din salariu", -calc["cass_tichete"])); i += 1
-        linii.insert(i, ("  Impozit tichete (10%) - retinut din salariu", -imp_tichete))
-        val_tichete = float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0))
+    are_cadou = float(cadou or 0) > 0  # [F133 Faza 2b1] cadou neimpozabil - fara retinere, primit pe card
+    if are_masa or are_vac or are_cadou:
+        # retinerea (CASS+impozit) apare DOAR pt masa/vacanta (taxabile); cadoul e neimpozabil in 2b1
+        if are_masa or are_vac:
+            i = len(linii) - 1  # inaintea SALARIU NET
+            linii.insert(i, ("  CASS tichete (10%) - retinut din salariu", -calc["cass_tichete"])); i += 1
+            linii.insert(i, ("  Impozit tichete (10%) - retinut din salariu", -imp_tichete))
+        val_tichete = float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0)
         if are_masa:
             linii.append((f"Tichete masa ({tichet_zile} zile x {float(tichet_val):g} lei, pe card)", calc["tichete_nominal"]))
         if are_vac:
             linii.append(("Tichete vacanta (pe card separat)", calc["tichete_vacanta"]))
+        if are_cadou:
+            linii.append(("Tichete cadou (neimpozabil, pe card separat)", float(cadou)))
         linii.append(("TOTAL DISPONIBIL (net + tichete)", float(calc["net"]) + val_tichete))
 
     rows = []

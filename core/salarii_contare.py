@@ -35,11 +35,17 @@ def document_ref(an, luna):
 def note_lunare(conn, schema, an, luna):
     """Notele statului de plata, agregate pe (debit, credit) din monografie_salariu
     per salariat. Sursa: aceiasi salariati pe care ii declara D112."""
-    from core import d112 as _d112, salarizare as _sz
+    from core import d112 as _d112, salarizare as _sz, beneficii_api as _ben
     from datetime import date as _dt
     _prof, salariati = _d112.pull(conn, schema, an, luna)
     ref = _dt(an, luna, 1)
     agg = {}
+    # [F133 Faza 2b1] cadou NEIMPOZABIL: nu trece prin calcul_salariu/D112, dar e cheltuiala reala
+    # (bilete de valoare 642=5328) pe valoarea TOTALA acordata in luna. Acordarea, nu achizitia
+    # biletelor (5328=5121/401 = tranzactie separata). 5328 nu e cont D112 -> nu rupe control_coerenta.
+    cadou_total = sum(_ben.lista_luna(conn, schema, an, luna, "cadou").values())
+    if cadou_total > 0:
+        agg[("642", "5328")] = agg.get(("642", "5328"), Decimal("0")) + _d(cadou_total)
     for s in salariati:
         # pull() a calculat DEJA salariatul, cu toti parametrii (persoane, norma,
         # venit contractual, brut lucrat). NU recalculam: al doilea calcul ar fi a

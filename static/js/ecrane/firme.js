@@ -709,7 +709,7 @@ async function ecranSalariati(corp, nav, t) {
         <div class="pf-frand" style="flex-wrap:wrap">
           <div class="pf-frand-text" style="flex:1 1 100%">
             <div class="pf-frand-nume">${esc(s.nume)}</div>
-            <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span> · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
+            <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;width:100%">
           <button class="buton-primar" data-flut="${s.id}">Flutura\u0219</button>
@@ -718,6 +718,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-adev="${s.id}" data-nume="${esc(s.nume)}">Adeverință</button>
           <button class="buton-secundar" data-pontaj="${s.id}" data-nume="${esc(s.nume)}">Pontaj</button>
           <button class="buton-secundar" data-vac="${s.id}" data-val="${s.tichete_vacanta || 0}" data-nume="${esc(s.nume)}">+ vacanță</button>
+          <button class="buton-secundar" data-cadou="${s.id}" data-nume="${esc(s.nume)}">+ cadou</button>
           </div>
         </div>`).join("");
     corp.innerHTML = `
@@ -730,6 +731,7 @@ async function ecranSalariati(corp, nav, t) {
         <button class="buton-primar" id="sp-salariat-nou" style="margin-left:12px">+ Salariat nou</button></p>
       <div id="sp-reges-zona"></div>
       <div id="sp-vac-zona"></div>
+      <div id="sp-cadou-zona"></div>
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
@@ -790,6 +792,31 @@ async function ecranSalariati(corp, nav, t) {
           await api.put(`/tenants/${t.id}/salariati/${sid}/beneficiu-lunar`, { an, luna, tip: "vacanta", valoare });
           zonaVac.innerHTML = ""; deseneaza();
         } catch (e) { arataMesaj(corp.querySelector("#vac-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+      });
+    }));
+    // [F133 Faza 2b1] + cadou: neimpozabil <=300/eveniment legal; selector eveniment + valoare
+    const zonaCadou = corp.querySelector("#sp-cadou-zona");
+    corp.querySelectorAll("[data-cadou]").forEach((b) => b.addEventListener("click", () => {
+      const sid = b.dataset.cadou;
+      const evenimente = [["paste", "Paște"], ["craciun", "Crăciun"], ["8martie", "8 Martie"],
+                          ["1iunie", "1 Iunie"], ["altul", "alt eveniment (taxabil)"]];
+      zonaCadou.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
+        <span class="camp-eticheta">Tichete cadou · ${esc(b.dataset.nume)} · ${String(luna).padStart(2,"0")}/${an}:</span>
+        <select id="cadou-ev" class="camp-input" style="width:200px">${evenimente.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select>
+        <input type="number" step="0.01" min="0" id="cadou-input" class="camp-input" placeholder="valoare (lei)" style="width:150px">
+        <button class="buton-primar" id="cadou-save">Salvează</button>
+        <button class="buton-secundar" id="cadou-cancel">Renunță</button></div>
+        <div class="camp-eticheta" style="color:var(--gri)">Neimpozabil ≤ 300 lei/eveniment pentru evenimente legale; peste 300 sau alt eveniment = semnalat ca taxabil.</div>
+        <div id="cadou-msg"></div>`;
+      corp.querySelector("#cadou-input").focus();
+      corp.querySelector("#cadou-cancel").addEventListener("click", () => { zonaCadou.innerHTML = ""; });
+      corp.querySelector("#cadou-save").addEventListener("click", async () => {
+        const valoare = parseFloat(corp.querySelector("#cadou-input").value) || 0;
+        const eveniment = corp.querySelector("#cadou-ev").value;
+        try {
+          await api.put(`/tenants/${t.id}/salariati/${sid}/beneficiu-lunar`, { an, luna, tip: "cadou", eveniment, valoare });
+          zonaCadou.innerHTML = ""; deseneaza();
+        } catch (e) { arataMesaj(corp.querySelector("#cadou-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
       });
     }));
     corp.querySelectorAll("[data-reges]").forEach((b) => b.addEventListener("click", () => {
