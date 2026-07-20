@@ -5049,6 +5049,36 @@ def centre_cost_raport(tenant_id: int, de: str, pana: str, ctx=Depends(cere_cabi
             raise HTTPException(404, "tenant inexistent sau fara acces")
         return _cc.raport_realizat(conn, schema, de, pana)
 
+# [F143 Faza 2] bugete anuale pe centru + varianta buget vs realizat
+@app.get("/tenants/{tenant_id}/centre-cost/varianta")
+def centre_cost_varianta(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    """Buget vs realizat pe an, per centru (note validate, clasele 6/7)."""
+    from core import centre_cost_api as _cc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _cc.raport_varianta(conn, schema, an)
+
+@app.put("/tenants/{tenant_id}/centre-cost/{centru_id}/buget")
+def centre_cost_buget(tenant_id: int, centru_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """Seteaza bugetul anual (cheltuieli + venituri) al unui centru pe un an."""
+    from core import centre_cost_api as _cc
+    an = corp.get("an")
+    if not isinstance(an, int) or an < 2020 or an > 2100:
+        raise HTTPException(400, "an invalid")
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        r = _cc.seteaza_buget(conn, schema, centru_id, an,
+                              corp.get("buget_cheltuieli"), corp.get("buget_venituri"))
+        if r is None:
+            raise HTTPException(404, "centru inexistent")
+        if r.get("eroare"):
+            raise HTTPException(400, r["eroare"])
+        return r
+
 
 @app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora")
 def banca_rec_ignora(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):

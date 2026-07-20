@@ -82,3 +82,61 @@ def raport_realizat(conn, schema, de, pana):
         nr = cur.fetchone()
     return {"centre": centre,
             "nealocat": {"cheltuieli": _f(nr["cheltuieli"]), "venituri": _f(nr["venituri"])}}
+
+
+def seteaza_buget(conn, schema, centru_id, an, buget_cheltuieli, buget_venituri):
+    """Upsert bugetul anual al unui centru (per clasa: cheltuieli + venituri). Un rand per
+    (centru, an) - re-setarea inlocuieste. Sume >= 0."""
+    from decimal import Decimal
+    try:
+        ch = Decimal(str(buget_cheltuieli or 0))
+        ve = Decimal(str(buget_venituri or 0))
+    except Exception:
+        return {"eroare": "sume invalide"}
+    if ch < 0 or ve < 0:
+        return {"eroare": "bugetul nu poate fi negativ"}
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT 1 FROM {schema}.centre_cost WHERE id = %s", (centru_id,))
+        if not cur.fetchone():
+            return None
+        cur.execute(f"""INSERT INTO {schema}.bugete
+                        (centru_cost_id, an, buget_cheltuieli, buget_venituri)
+                        VALUES (%s, %s, %s, %s)
+                        ON CONFLICT (centru_cost_id, an) DO UPDATE
+                        SET buget_cheltuieli = EXCLUDED.buget_cheltuieli,
+                            buget_venituri = EXCLUDED.buget_venituri""",
+                    (centru_id, an, ch, ve))
+    conn.commit()
+    return {"ok": True}
+
+
+def raport_varianta(conn, schema, an):
+    """Buget vs realizat pe an, per centru. Realizat = note VALIDATE pe tot anul (clasele 6/7).
+    Include toate centrele (buget 0 daca nesetat). Abaterea o interpreteaza UI (la cheltuieli
+    depasirea e rea, la venituri e buna)."""
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"""
+            SELECT cc.id, cc.nume, cc.activ,
+                   COALESCE(b.buget_cheltuieli, 0) AS buget_cheltuieli,
+                   COALESCE(b.buget_venituri, 0) AS buget_venituri,
+                   COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '6%%' AND i.id IS NOT NULL), 0) AS realizat_cheltuieli,
+                   COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '7%%' AND i.id IS NOT NULL), 0) AS realizat_venituri
+            FROM {schema}.centre_cost cc
+            LEFT JOIN {schema}.bugete b ON b.centru_cost_id = cc.id AND b.an = %s
+            LEFT JOIN {schema}.inregistrari_linii l ON l.centru_cost_id = cc.id
+            LEFT JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+              AND i.status = 'validata' AND i.data BETWEEN %s AND %s
+            GROUP BY cc.id, cc.nume, cc.activ, b.buget_cheltuieli, b.buget_venituri
+            ORDER BY cc.nume
+        """, (an, f"{an}-01-01", f"{an}-12-31"))
+        centre = []
+        for r in cur.fetchall():
+            bch, bve = _f(r["buget_cheltuieli"]), _f(r["buget_venituri"])
+            rch, rve = _f(r["realizat_cheltuieli"]), _f(r["realizat_venituri"])
+            centre.append({
+                "id": r["id"], "nume": r["nume"], "activ": r["activ"],
+                "buget_cheltuieli": bch, "realizat_cheltuieli": rch,
+                "buget_venituri": bve, "realizat_venituri": rve,
+                "net_buget": round(bve - bch, 2), "net_realizat": round(rve - rch, 2),
+            })
+    return {"an": an, "centre": centre}
