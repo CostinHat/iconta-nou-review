@@ -4,6 +4,7 @@ Include CM: asiguratB3 + asiguratD + angajatorC2 (OUG 158/2005).
 pull() citeste salariati + concedii_medicale din schema tenantului."""
 import re
 from core import scadente as _scad
+from core import beneficii_api as _ben
 
 def _nzl(an, luna):
     # Zile lucratoare din luna, FARA sarbatori legale (OUG 158/2005 art.10). Sursa UNICA
@@ -308,6 +309,8 @@ def pull(conn, schema, an, luna):
         cur.execute(f"""SELECT * FROM {schema}.concedii_medicale
                         WHERE an=%s AND luna=%s""", (an, luna))
         cms = [dict(r) for r in cur.fetchall()]
+    # [F133 Faza 2a] tichete de vacanta acordate in luna (one-off, din beneficii_lunare)
+    vac_luna = _ben.lista_luna(conn, schema, an, luna, "vacanta")
     pe_sal = {}
     for c in cms:
         pe_sal.setdefault(c["salariat_id"], []).append({
@@ -339,6 +342,7 @@ def pull(conn, schema, an, luna):
             "scutit": bool(s.get("scutit_contrib_minim")),
             "motiv_exceptare": s.get("motiv_exceptare"),
             "tichet_masa_valoare": s.get("tichet_masa_valoare") or 0,  # [F133]
+            "tichet_vacanta": vac_luna.get(s["id"], 0),  # [F133 Faza 2a]
             "cm": cm,
             "zile_cm": sum(x["zile_ang"] + x["zile_fnuass"] for x in cm),
             # calcul din core.salarizare (facilitate/deducere/contributii pe brut)
@@ -373,7 +377,8 @@ def pull(conn, schema, an, luna):
                                norma_intreaga=not s.get("part_time"),
                                venit_brut_total=brut_int,
                                tichet_valoare=float(s.get("tichet_masa_valoare") or 0),
-                               tichet_zile=tichet_zile)
+                               tichet_zile=tichet_zile,
+                               tichet_vacanta=float(s.get("tichet_vacanta") or 0))
         s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
         s["facilitate"] = r.get("facilitate", 0)
         s["cas"] = r.get("cas", 0)
@@ -382,7 +387,8 @@ def pull(conn, schema, an, luna):
         s["deducere"] = (r.get("deducere") or {}).get("total", 0)
         s["cass_tichete"] = r.get("cass_tichete", 0)        # [F133] CASS pe tichete
         s["impozit_tichete"] = r.get("impozit_tichete", 0)  # impozit pe tichete
-        s["tichete_nominal"] = r.get("tichete_nominal", 0)  # valoare tichete (baza CASS)
+        # [F133] baza CASS D112 = valoarea TOTALA a biletelor (masa + vacanta)
+        s["tichete_nominal"] = r.get("tichete_nominal", 0) + r.get("tichete_vacanta", 0)
         # part-time supra-taxare (art. 146(5^6)/168(6^1) CF, structura D112 v7):
         # part_time = ROUND(prag_pt * zile_lucrate / NZL); daca 0 < baza < part_time
         # -> B4_*P la prag, diferenta pe angajator. Exceptati: scutit+motiv 1-5.
