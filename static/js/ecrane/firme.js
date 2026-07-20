@@ -1844,6 +1844,9 @@ async function ecranJurnal(corp, nav, t) {
 
 // [F143] Centre de cost — nomenclator de management (dimensiune pe notele manuale)
 async function ecranCentreCost(corp, nav, t) {
+  const azi = new Date();
+  const anCur = azi.getFullYear();
+  const aziIso = `${anCur}-${String(azi.getMonth() + 1).padStart(2, "0")}-${String(azi.getDate()).padStart(2, "0")}`;
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let centre = [];
@@ -1864,7 +1867,16 @@ async function ecranCentreCost(corp, nav, t) {
         <button class="buton-primar" id="cc-add">Adaugă</button>
       </div>
       <div id="cc-mesaj"></div>
-      <div class="pf-lista">${centre.length ? centre.map(rand).join("") : '<div class="stare-goala">Niciun centru încă. Adaugă primul.</div>'}</div>`;
+      <div class="pf-lista">${centre.length ? centre.map(rand).join("") : '<div class="stare-goala">Niciun centru încă. Adaugă primul.</div>'}</div>
+      <h3 class="cap-titlu" style="margin-top:22px">Realizat pe centre</h3>
+      <p class="pf-intro">Din notele validate: cheltuieli (clasa 6) și venituri (clasa 7) pe fiecare centru, în perioada aleasă.</p>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+        <input type="date" id="cc-de" class="camp-input" value="${anCur}-01-01" style="width:160px" aria-label="De la">
+        <span>–</span>
+        <input type="date" id="cc-pana" class="camp-input" value="${aziIso}" style="width:160px" aria-label="Până la">
+        <button class="buton-secundar" id="cc-raport">Vezi realizat</button>
+      </div>
+      <div id="cc-raport-zona"></div>`;
     const msg = corp.querySelector("#cc-mesaj");
     const adauga = async () => {
       const nume = corp.querySelector("#cc-nume").value.trim();
@@ -1878,6 +1890,32 @@ async function ecranCentreCost(corp, nav, t) {
       try { await api.put(`/tenants/${t.id}/centre-cost/${b.dataset.toggle}`, { activ: b.dataset.activ !== "1" }); deseneaza(); }
       catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare.", "eroare"); }
     }));
+    const raportZona = corp.querySelector("#cc-raport-zona");
+    const linieRaport = (nume, ch, ve, net, inactiv) => `
+      <div class="pf-frand">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${esc(nume)}${inactiv ? " · <span style='color:var(--gri)'>inactiv</span>" : ""}</div>
+          <div class="pf-frand-sub">cheltuieli ${bani(ch)} · venituri ${bani(ve)}</div>
+        </div>
+        <div style="font-weight:600;align-self:center;color:${net >= 0 ? 'var(--verde)' : 'var(--rosu)'}">${bani(net)}</div>
+      </div>`;
+    corp.querySelector("#cc-raport").addEventListener("click", async () => {
+      const de = corp.querySelector("#cc-de").value, pana = corp.querySelector("#cc-pana").value;
+      if (!de || !pana) { arataMesaj(msg, "Alege perioada.", "avert"); return; }
+      raportZona.innerHTML = `<p class="ecran-nota">Se calculează...</p>`;
+      try {
+        const r = await api.get(`/tenants/${t.id}/centre-cost/raport?de=${de}&pana=${pana}`);
+        const centre = (r && r.centre) || [];
+        const nz = (r && r.nealocat) || { cheltuieli: 0, venituri: 0 };
+        let html = centre.length
+          ? centre.map((c) => linieRaport(c.nume, c.cheltuieli, c.venituri, c.net, !c.activ)).join("")
+          : `<div class="stare-goala">Niciun centru definit.</div>`;
+        if (nz.cheltuieli || nz.venituri) {
+          html += linieRaport("Nealocat (fără centru)", nz.cheltuieli, nz.venituri, nz.venituri - nz.cheltuieli, false);
+        }
+        raportZona.innerHTML = `<div class="pf-lista">${html}</div>`;
+      } catch (e) { arataMesaj(raportZona, (e && e.mesaj) || "Eroare la raport.", "eroare"); }
+    });
   };
   deseneaza();
 }

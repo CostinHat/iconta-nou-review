@@ -1482,8 +1482,9 @@ inregistrari_linii e descentralizata, 11 INSERT-uri in 6 module):
 - Step B (LIVE): centre_cost_api (CRUD: adauga/lista/dezactiveaza; NU stergere - FK pe linii istorice,
   se dezactiveaza) + jurnal_api poarta centru_cost_id + rute + card "Centre de cost" (ecran management,
   ales de Costin vs inline) + selector pe linia de nota + afisare in registru.
-- Step C (URMEAZA): raport "realizat pe centru de cost" (GROUP BY centru, clasele 6/7, tiparul
-  rapoarte_comerciale_api).
+- Step C (LIVE): raport "realizat pe centru de cost" (GROUP BY centru, cheltuieli clasa 6 / venituri
+  clasa 7 din note VALIDATE pe perioada, + linie "nealocat" pentru coverage; ciornele si notele din
+  afara perioadei excluse - dovedit pe test). Faza 1 completa.
 - Faza 2 (buget vs realizat): tabel bugete separat + ecran setare + raport varianta. NECONSTRUIT azi.
 ALTERNATIVA RESPINSA: dimensiune pe toate cele 11 puncte de inserare din start - respinsa, s-ar propaga
 necontrolat ("adauga un camp peste tot") + notele automate n-au cum sa aleaga centru fara reguli.

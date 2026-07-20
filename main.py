@@ -5039,6 +5039,16 @@ def centre_cost_activ(tenant_id: int, centru_id: int, corp: dict = Body(...), ct
             raise HTTPException(404, "centru inexistent")
         return r
 
+@app.get("/tenants/{tenant_id}/centre-cost/raport")
+def centre_cost_raport(tenant_id: int, de: str, pana: str, ctx=Depends(cere_cabinet)):
+    """Realizat pe centru de cost, perioada [de, pana] (note validate, clasele 6/7)."""
+    from core import centre_cost_api as _cc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        return _cc.raport_realizat(conn, schema, de, pana)
+
 
 @app.post("/tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora")
 def banca_rec_ignora(tenant_id: int, linie_id: int, ctx=Depends(cere_cabinet)):

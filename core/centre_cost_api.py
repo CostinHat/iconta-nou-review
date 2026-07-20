@@ -43,3 +43,42 @@ def seteaza_activ(conn, schema, centru_id, activ):
         n = cur.rowcount
     conn.commit()
     return {"ok": True} if n else None
+
+
+def _f(v):
+    return round(float(v or 0), 2)
+
+
+def raport_realizat(conn, schema, de, pana):
+    """Realizat pe centru de cost, perioada [de, pana], din note VALIDATE (nu ciorne).
+    cheltuieli = SUM linii cu cont_debit clasa 6; venituri = SUM linii cu cont_credit clasa 7.
+    Include si centrele fara activitate (0). Liniile fara centru nu intra pe centre, dar se
+    raporteaza separat ca 'nealocat' (cat din cheltuieli/venituri nu e atribuit niciunui centru)."""
+    with conn.cursor(cursor_factory=RealDictCursor) as cur:
+        cur.execute(f"""
+            SELECT cc.id, cc.nume, cc.activ,
+                   COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '6%%' AND i.id IS NOT NULL), 0) AS cheltuieli,
+                   COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '7%%' AND i.id IS NOT NULL), 0) AS venituri
+            FROM {schema}.centre_cost cc
+            LEFT JOIN {schema}.inregistrari_linii l ON l.centru_cost_id = cc.id
+            LEFT JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+              AND i.status = 'validata' AND i.data BETWEEN %s AND %s
+            GROUP BY cc.id, cc.nume, cc.activ
+            ORDER BY cc.nume
+        """, (de, pana))
+        centre = []
+        for r in cur.fetchall():
+            ch, ve = _f(r["cheltuieli"]), _f(r["venituri"])
+            centre.append({"id": r["id"], "nume": r["nume"], "activ": r["activ"],
+                           "cheltuieli": ch, "venituri": ve, "net": round(ve - ch, 2)})
+        # nealocat: linii de clasa 6/7 din note validate FARA centru (coverage)
+        cur.execute(f"""
+            SELECT COALESCE(SUM(l.suma) FILTER (WHERE l.cont_debit LIKE '6%%'), 0) AS cheltuieli,
+                   COALESCE(SUM(l.suma) FILTER (WHERE l.cont_credit LIKE '7%%'), 0) AS venituri
+            FROM {schema}.inregistrari_linii l
+            JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+            WHERE l.centru_cost_id IS NULL AND i.status = 'validata' AND i.data BETWEEN %s AND %s
+        """, (de, pana))
+        nr = cur.fetchone()
+    return {"centre": centre,
+            "nealocat": {"cheltuieli": _f(nr["cheltuieli"]), "venituri": _f(nr["venituri"])}}
