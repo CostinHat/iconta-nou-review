@@ -18,7 +18,7 @@ CALCUL+DB stau în module (au pull+genereaza). Aici doar: validare cerere (pură
 """
 from __future__ import annotations
 
-from core import (d100, d101, d112, d205, d300, d301, d390, d394, d406)
+from core import (d100, d101, d112, d205, d300, d301, d390, d394, d406, d710)
 
 REGULI = "2026.1"
 MODUL = "declaratii_api"
@@ -61,6 +61,11 @@ def _d394(conn, schema, b):
 def _d406(conn, schema, b):
     return d406.genereaza(conn, schema, b["an"], b["luna"])
 
+def _d710(conn, schema, b):
+    # D710 = rectificativa a D100 (corectie obligatii). `obligatii` = corectiile aduse
+    # de contabil (ce a declarat gresit vs corect), nu se recalculeaza automat.
+    return d710.genereaza(conn, schema, b["an"], b["trim"], b["obligatii"])
+
 
 # tip -> (periodicitate, adaptor). Adăugarea unei declarații = o linie aici.
 DECLARATII = {
@@ -73,12 +78,24 @@ DECLARATII = {
     "d390": ("lunar",       _d390),
     "d394": ("lunar",       _d394),
     "d406": ("lunar",       _d406),
+    # d710 = rectificativa (corecteaza D100 trimestrial). "trimestrial" pentru parametrul
+    # `trim`; cere in plus `obligatii` (vezi valideaza_cerere). NU e obligatie periodica -
+    # nu intra in semaforul de restante (control_fiscal_api / termene_api): e la cerere,
+    # depusa doar cand exista o eroare de corectat. Vezi DECIZII 20.07.
+    "d710": ("trimestrial", _d710),
 }
 
 
+# Tipuri disponibile DOAR prin API/dispecer, nu in selectorul generic din UI: cer parametri
+# pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
+# `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
+# ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
+_DOAR_API = frozenset(("d710",))
+
+
 def tipuri():
-    """Lista tipurilor suportate (pentru frontend / validare)."""
-    return sorted(DECLARATII.keys())
+    """Lista tipurilor pentru selectorul generic din UI (periodice, an/luna/trim)."""
+    return sorted(k for k in DECLARATII if k not in _DOAR_API)
 
 
 def periodicitate(tip):
@@ -114,6 +131,12 @@ def valideaza_cerere(tip, body):
         if not isinstance(trim, int) or trim < 1 or trim > 4:
             erori.append("trimestru invalid: %r (aștept 1-4)" % (trim,))
     # 'anual' nu cere nimic în plus față de an
+
+    # d710 (rectificativa): cere lista de corectii `obligatii` [{cod_oblig, suma_dat_i, suma_dat_c}]
+    if tip == "d710":
+        obl = body.get("obligatii")
+        if not isinstance(obl, list) or not obl:
+            erori.append("d710 cere `obligatii` (lista de corectii, nevida)")
 
     return erori
 

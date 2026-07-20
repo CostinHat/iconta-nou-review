@@ -1436,3 +1436,30 @@ nisa) + abonament permanent de mentenanta. Exact eroarea de inventar D230/D106.
 LIMITA: D207 se reia la primul caz real de plata catre nerezident. D392 reevaluat doar daca suspendarea
 nu se prelungeste in 2027. D710: structura XML reala (validator D710_56) inca de confirmat vs d100.py
 inainte de a decide reutilizare vs motor propriu (verificare in curs, pre-cod).
+
+### 20.07.2026 F192 D710 LIVE — motor propriu declaratie rectificativa (nu extensie D100)  (core/d710.py; FUNCTIONALITATI.csv F192)
+DECIZIE: D710 construit ca MOTOR PROPRIU, nu extensie a d100.py. Verificat la sursa inainte de cod
+(validator D710Validator.jar / D710_56, descarcat + instalat in ~/duk/dist/lib): namespace propriu
+(declaratie710, mfp:anaf:dgti:d710:declaratie:v2) DIFERIT de D100 -> structura XML nu se reutilizeaza.
+Se reutilizeaza din d100 DOAR ce e identic la sursa: nomenclatorul COD_BUGETAR + utilitarele
+_nr_evid / _scadenta_zile (codurile de obligatii/scadente sunt comune).
+TEMEI: fiecare regula extrasa din validator (constant pool + mesaje) si dovedita iterativ pe DUK,
+stare valid FARA ERORI pe date inventate izolat (micro 121 + profit 103, toate trimestrele):
+  - fiecare suma are pereche Initial (_I) / Corectat (_C) - esenta rectificarii
+  - suma_plata = suma_dat (rectificare suma datorata); totalPlata_A = SUMA(dat_I+plata_I+dat_C+plata_C)
+  - d_recN: atribut introdus DE LA perioada 12.2025 - nu se pune pt perioade anterioare (regula validator)
+  - cod 121 (micro) trim4: scadenta 25.06 an urmator, nu 25.01 (R15) - termen special de definitivare
+  - cota doar la cod 121; cod bugetar determinat de cod_oblig (nomenclator)
+INTEGRARE: (a) declaratii_api.py DISPECER - da (adaptor _d710, cere `obligatii`=corectiile). (b) selector
+UI generic - NU: ecranul generic da doar an/luna/trim, nu `obligatii` -> ar aparea in dropdown si ar esua;
+exclus prin _DOAR_API, ramane in DECLARATII (+ test cheie DUK). (c) semafor/monitor de restante
+(control_fiscal_api, termene_api) - NU: D710 e RECTIFICATIVA (eveniment, la cerere), nu obligatie periodica
+cu termen; a o pune acolo ar genera fals-restanta pe toate firmele. "Monitorizarea" ei corecta = disponibila
+in dispecer + validata DUK + testata (test_d710.py, 25 teste). Regula "orice declaratie noua intra in monitor"
+se aplica declaratiilor PERIODICE; o rectificativa nu e datorata recurent.
+ALTERNATIVA RESPINSA: extinderea d100.py cu un flag rectificativ - respinsa la sursa (namespace/structura/
+atribute I-C diferite; d100 nici nu are atribut de rectificare, "d_rec eliminat" in d100.py).
+LIMITA: motorul acopera rectificarea sumei DATORATE (cazul dominant). Deducerile/reducerile/sponsorizarile/
+AMEF (model 8#) au reguli diferite per cod_oblig (ex. cod 103: suma_plata=suma_dat-suma_redu, suma_ded nu se
+completeaza) - nu se acopera speculativ, la primul caz real, extras iterativ pe validator (ca D307). Fara
+ecran dedicat de corectii inca - generabila prin API/dispecer.
