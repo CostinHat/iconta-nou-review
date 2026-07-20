@@ -75,7 +75,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    functie_baza=True, la_data=None,
                    norma_intreaga=True, venit_brut_total=None,
                    exceptat_suprataxare=False,
-                   tichet_valoare=0, tichet_zile=0):
+                   tichet_valoare=0, tichet_zile=0, tichet_vacanta=0):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -120,9 +120,14 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
     tichet_val, _ = c.cota("tichet_masa_plafon", la_data)
     tv = _dec(tichet_valoare)
     tv = min(tv, tichet_val) if tv > 0 else Decimal(0)
-    tichete_nominal = tv * _dec(tichet_zile)
-    cass_tichete = tichete_nominal * cota_cass
-    baza_imp_tichete = tichete_nominal - cass_tichete
+    tichete_nominal = tv * _dec(tichet_zile)                      # tichete de masa
+    # [F133 Faza 2a] tichete de vacanta: suma one-off, ACELASI tratament fiscal ca masa
+    # (CASS 10% + impozit 10%, fara CAS/CAM/deducere). Plafonul anual (6 sal.minime) se
+    # verifica de apelant (are total_an); calculul taxeaza suma primita.
+    tichete_vac = _dec(tichet_vacanta) if _dec(tichet_vacanta) > 0 else Decimal(0)
+    bilete_taxabile = tichete_nominal + tichete_vac
+    cass_tichete = bilete_taxabile * cota_cass
+    baza_imp_tichete = bilete_taxabile - cass_tichete
     if baza_imp_tichete < 0:
         baza_imp_tichete = Decimal(0)
     impozit_tichete = baza_imp_tichete * cota_imp
@@ -167,12 +172,13 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
         "cam": _q(cam),
         "cas_suprataxa": _q(cas_suprataxa),
         "cass_suprataxa": _q(cass_suprataxa),
-        # [F133] tichete de masa (0 daca nu primeste / fara pontaj)
-        "tichete_nominal": _q(tichete_nominal),   # valoarea tichetelor acordate
-        "cass_tichete": _q(cass_tichete),          # CASS retinut pe tichete (inclus in baza CASS D112)
-        "impozit_tichete": _q(impozit_tichete),    # impozit pe tichete (inclus in "impozit")
-        # angajatorul suporta valoarea nominala a tichetelor (le cumpara) - cost real
-        "cost_angajator": _q(b + cam + cas_suprataxa + cass_suprataxa + tichete_nominal),
+        # [F133] tichete (0 daca nu primeste / fara pontaj). cass/impozit = pe masa + vacanta
+        "tichete_nominal": _q(tichete_nominal),    # tichete de MASA (valoare x zile)
+        "tichete_vacanta": _q(tichete_vac),        # tichete de VACANTA (suma one-off) - Faza 2a
+        "cass_tichete": _q(cass_tichete),          # CASS pe masa + vacanta (inclus in baza CASS D112)
+        "impozit_tichete": _q(impozit_tichete),    # impozit pe masa + vacanta (inclus in "impozit")
+        # angajatorul suporta valoarea nominala a biletelor (le cumpara) - cost real
+        "cost_angajator": _q(b + cam + cas_suprataxa + cass_suprataxa + tichete_nominal + tichete_vac),
     }
 
 
