@@ -1539,5 +1539,13 @@ CONFIG (step 1 LIVE): plafonul (45) traieste in common.COTE cu data+temei (ca re
 per salariat se stocheaza DOAR valoarea aleasa de firma (salariati.tichet_masa_valoare, 0=fara), validata
 0..plafon la input. Nr de tichete NU se stocheaza - se ia din zilele lucrate la calcul.
 LIMITA: peste-plafon nu se permite la input (un tichet de masa nu poate depasi maximul legal). Faza 1 nu
-atinge tichete vacanta/cadou. Numarul de zile lucrate vine din pontaj - daca pontajul lipseste pe luna,
-se decide la step calcul cum se prezuma (zile lucratoare standard vs 0).
+atinge tichete vacanta/cadou.
+DECIZIE (step 2, calcul - 20.07): daca PONTAJUL LIPSESTE pe luna, zilele lucrate pt tichete = 0, NU se
+prezuma zile lucratoare standard. TEMEI: tichetele se acorda pe zile EFECTIV lucrate, documentate prin
+pontaj; fara pontaj nu exista dovada -> nu se calculeaza tacit o baza de tichete nedocumentata (o baza
+prezumata ar duce la CASS/impozit declarate pe zile care poate n-au fost lucrate). Alegerea sigura =
+0 + semnal ca lipseste pontajul.
+FISCAL (step 2, verificat pe calcul): impozitul pe tichete se aplica pe (nominal - CASS_tichete) - CASS
+e deductibila din baza impozitului (regula Cod fiscal venit-contributii), efectiv ~19% retinut din nominal
+(nu 20%). "impozit" returnat de calcul_salariu = TOTAL salariu+tichete; cost_angajator include valoarea
+nominala (angajatorul cumpara tichetele). Judecatorul final pt corectitudinea D112 = validatorul DUK (step 4).

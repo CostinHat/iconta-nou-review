@@ -74,7 +74,8 @@ def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0,
 def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    functie_baza=True, la_data=None,
                    norma_intreaga=True, venit_brut_total=None,
-                   exceptat_suprataxare=False):
+                   exceptat_suprataxare=False,
+                   tichet_valoare=0, tichet_zile=0):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -110,8 +111,25 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
     baza_imp = baza_contrib - cas - cass - _dec(ded["total"])
     if baza_imp < 0:
         baza_imp = Decimal(0)
-    impozit = baza_imp * cota_imp
-    net = b - cas - cass - impozit
+
+    # [F133] TICHETE DE MASA: CASS 10% + impozit 10% pe valoarea nominala; FARA CAS, FARA CAM,
+    # FARA deducere personala (aceea e pe salariu). Contributia (CASS) e deductibila din baza
+    # impozitului (regula Cod fiscal: impozit pe venit-contributii) -> impozit pe (nominal-cass).
+    # Nr tichete = zile efectiv lucrate (0 fara pontaj - decis 20.07). Valoarea plafonata la
+    # maximul legal (siguranta; inputul e deja validat 0..plafon in salariati_api).
+    tichet_val, _ = c.cota("tichet_masa_plafon", la_data)
+    tv = _dec(tichet_valoare)
+    tv = min(tv, tichet_val) if tv > 0 else Decimal(0)
+    tichete_nominal = tv * _dec(tichet_zile)
+    cass_tichete = tichete_nominal * cota_cass
+    baza_imp_tichete = tichete_nominal - cass_tichete
+    if baza_imp_tichete < 0:
+        baza_imp_tichete = Decimal(0)
+    impozit_tichete = baza_imp_tichete * cota_imp
+
+    # impozitul returnat = TOTAL (salariu + tichete), ca sa fie corect pt net/monografie/D112
+    impozit = baza_imp * cota_imp + impozit_tichete
+    net = b - cas - cass - cass_tichete - impozit
 
     cam = b * cota_cam
 
@@ -149,7 +167,12 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
         "cam": _q(cam),
         "cas_suprataxa": _q(cas_suprataxa),
         "cass_suprataxa": _q(cass_suprataxa),
-        "cost_angajator": _q(b + cam + cas_suprataxa + cass_suprataxa),
+        # [F133] tichete de masa (0 daca nu primeste / fara pontaj)
+        "tichete_nominal": _q(tichete_nominal),   # valoarea tichetelor acordate
+        "cass_tichete": _q(cass_tichete),          # CASS retinut pe tichete (inclus in baza CASS D112)
+        "impozit_tichete": _q(impozit_tichete),    # impozit pe tichete (inclus in "impozit")
+        # angajatorul suporta valoarea nominala a tichetelor (le cumpara) - cost real
+        "cost_angajator": _q(b + cam + cas_suprataxa + cass_suprataxa + tichete_nominal),
     }
 
 
