@@ -1512,7 +1512,11 @@ UNIQUE(centru,an)), 03_ddl_bugete.sql aplicat pe toate tenant-urile + template.
 Step B (LIVE): centre_cost_api.seteaza_buget (upsert ON CONFLICT centru+an) + raport_varianta(an)
 (buget vs realizat pe tot anul, clasele 6/7) + rute GET /varianta, PUT /{id}/buget.
 Step C (LIVE): sectiune "Bugete si varianta (anual)" in ecranul Centre de cost - selector de an, buget
-ch/ve editabil per centru, realizat + abatere colorata alaturi (depasire chelt=rosu, peste plan venit=verde).
+ch/ve editabil per centru, realizat + abatere colorata alaturi. REGULA DE COLORARE (binara, fara stare
+neutra): ROSU = orice abatere NEFAVORABILA (cheltuieli PESTE buget: realizat>buget; SAU venituri SUB plan:
+realizat<buget). VERDE = favorabil SAU exact pe tinta (cheltuieli la/sub buget; venituri la/peste plan).
+Fara culoare daca bugetul respectiv = 0 (nesetat). Confirmat 20.07 - documentat complet (initial doar
+latura favorabila era scrisa; codul implementa binar, deci venituri-sub-plan=rosu venea implicit).
 Faza 2 completa; F143 = LIVE integral (Faza 1 + Faza 2).
 LIMITA: buget anual -> varianta se compara pe an intreg (nu pro-ratare la sub-perioada). Raportul liber
 [de,pana] din Faza 1 ramane pt drill-down operational; varianta e vederea anuala de planificare.

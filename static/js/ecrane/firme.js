@@ -1878,7 +1878,7 @@ async function ecranCentreCost(corp, nav, t) {
       </div>
       <div id="cc-raport-zona"></div>
       <h3 class="cap-titlu" style="margin-top:22px">Bugete și varianță (anual)</h3>
-      <p class="pf-intro">Plan anual pe centru (cheltuieli + venituri), comparat cu realizatul din notele validate ale anului. La cheltuieli, depășirea planului e roșu; la venituri, peste plan e verde.</p>
+      <p class="pf-intro">Plan anual pe centru (cheltuieli + venituri), comparat cu realizatul din notele validate ale anului. Abaterea e colorată: <b>roșu</b> = orice abatere nefavorabilă (cheltuieli peste buget sau venituri sub plan), <b>verde</b> = favorabil sau exact pe țintă. Fără culoare dacă bugetul respectiv nu e setat.</p>
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
         <label class="camp-eticheta" for="cc-an">An</label>
         <input type="number" id="cc-an" class="camp-input" value="${anCur}" style="width:100px">
