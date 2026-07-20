@@ -2095,6 +2095,12 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS notificari_
 ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS notificare_stop boolean NOT NULL DEFAULT false;
 ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS notificare_amanata_pana date;
 
+-- [tip_firma_v1] mirror al 01_ddl_tip_firma.sql: firmele NOI trebuie sa aiba coloana,
+-- altfel INSERT-ul din provision_tenant (tip_firma) crapa. srl=partida dubla / pfa=partida simpla.
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS tip_firma character varying(4) NOT NULL DEFAULT 'srl';
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil DROP CONSTRAINT IF EXISTS tip_firma_valid;
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD CONSTRAINT tip_firma_valid CHECK (tip_firma IN ('srl', 'pfa'));
+
 --
 -- F145 (rapoarte configurabile salvabile) — mirror al core/migrare_rapoarte_salvate.py
 --

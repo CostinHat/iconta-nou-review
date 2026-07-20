@@ -1353,3 +1353,57 @@ ALTERNATIVA RESPINSA: "cardurile vizibile universal, contabilul discerne" - resp
 migrarea trebuie sa STIE pe ce cale ruteaza straturile de import; discernamantul uman nu ruteaza cod.
 LIMITA: PFA n-are balanta de deschidere - registrul e cronologic; se importa operatiunile anului curent.
 Round-trip real (migrare + flux PFA cap-coada) pending primul cabinet cu PFA.
+
+### 20.07.2026 F189 tip_firma SRL/PFA — filtrare carduri + selector la creare  (firme.js, tenant_provisioning.py, auth_api.py, tenant_template.sql; FUNCTIONALITATI.csv:F189)
+DECIZIE: se implementeaza fluxul PLANIFICAT in decizia de mai sus (D212/PFA separat). La creare firma
+se alege regimul (selector Tip firma, default srl). Meniul firmei ascunde la PFA cardurile de partida
+dubla (Declaratii, Registru jurnal, Balanta, Bilant, Operatiuni speciale) si ascunde la SRL cardul
+Incasari/plati. Control fiscal ramane vizibil la PFA (semafor partial, acceptat).
+TEMEI: partida simpla PFA/II/IF (OMFP 170/2015, ca F077 Registru incasari/plati) nu produce
+declaratii de partida dubla / jurnal / balanta / bilant -> cardurile respective n-au sens la PFA.
+Discriminatorul tip_firma e deja stabilit genuin nou (nu baza_contabila, nu regim_fiscal) in decizia
+precedenta. Verificat functional 20.07: provision PFA+SRL prin codul real -> tip_firma persistat,
+lista il intoarce, filtrul ascunde/arata corect; ROLLBACK, zero firme test pe prod.
+ALTERNATIVA RESPINSA: (a) a tine tip_firma in public.tenants ca sa fie usor de citit in lista -
+respinsa, coloana traieste deja in firma_profil (schema-per-tenant) din 01_ddl_tip_firma.sql; a o
+dubla in public.tenants = doua surse de adevar (drift). In loc, lista (auth_api.tenantii_userului)
+aduce tip_firma per schema, cu SAVEPOINT pe fiecare firma ca o firma fara profil sa nu avorteze
+tranzactia si sa degradeze silentios toate firmele la 'srl'. (b) a lasa selectorul sa scrie doar in
+firma_profil-ul existent, fara a atinge template-ul - respinsa: VERIFICAT LA SURSA ca tenant_template.sql
+(schema firmelor NOI) NU avea coloana tip_firma, deci INSERT-ul din provision_tenant ar fi crapat la
+orice firma noua. Adaugat DDL in template, oglindit dupa 01_ddl_tip_firma.sql (coloana + CHECK).
+LIMITA: filtrul e pe cheia cardului (lista DOAR_SRL/DOAR_PFA in firme.js) - un card nou adaugat la
+meniu apare implicit la ambele regimuri pana e clasificat explicit. Migrarea (straturi_pentru) era deja
+filtrata pe tip_firma inainte de aceasta tema. Round-trip real PFA cap-coada ramane pending primul PFA.
+
+### 20.07.2026 F190/F191 Import RIP la preluare PFA + meniu migrare filtrat pe regim  (rip_migrare_api.py, main.py, migrare.js; FUNCTIONALITATI.csv:F190,F191)
+DECIZIE: ruta POST /tenants/{id}/rip-import/incarca (import registru incasari-plati la preluarea unui
+PFA, istoric cronologic, NU balanta de deschidere) + buton "Import RIP" doar la PFA in meniul de
+migrare per-firma. Importul e idempotent la reimport (dedup). Meniul de migrare per-firma ascunde
+straturile de partida dubla cand firma e PFA.
+TEMEI: preluarea PFA = partida simpla (OMFP 170/2015). Ruta urmeaza tiparul verificat la sursa al
+celorlalte rute de import (solduri/salariati/istoric): upload -> parse -> raport respinse INAINTE de
+commit -> import atomic -> seteaza_status('rip') pentru reminder().
+FIX LA SURSA (bug preexistent gasit prin test functional): core/rip_migrare_api._norm_metoda intorcea
+'casa', dar CHECK-ul DB pe rip_operatiuni.metoda cere IN ('numerar','banca') (verificat pe tenant_002 +
+aliniat cu modulul live core/rip_api.py, care foloseste 'numerar'). Orice import de operatiune cash ar
+fi esuat. Corectat la 'numerar'.
+DEDUP (cheia de identitate): VERIFICAT LA SURSA - rip_operatiuni NU are unique constraint (doar PK pe id),
+tabela goala pe tenant_002 (fara pattern empiric). Cheia aleasa = (data_operatiune, tip, suma, explicatie,
+metoda). 'tip' INCLUS peste sugestia initiala: aceeasi suma/data/explicatie pe sens opus (incasare vs
+plata) sunt operatiuni distincte, nu duplicate. 'categorie'/'document' EXCLUSE: reclasificabile de
+contabil - includerea lor ar sparge idempotenta dupa reclasificare. Verificat functional: reimportul
+aceluiasi fisier de 2x -> a doua rulare importate=0, sarite_duplicat=2, registrul ramane la 2 randuri.
+MENIU FILTRAT (sursa unica de adevar): straturile ascunse la PFA vin din migrare_api.straturi_pentru
+(deja filtreaza pe STRATURI_META), expus prin GET /migrare/straturi - NU o lista duplicata in JS.
+ALTERNATIVA RESPINSA: (a) lista de straturi de dubla hardcodata in migrare.js - respinsa, ar fi a doua
+sursa de adevar fata de STRATURI_META (drift); in loc, endpoint + filtru pe cheia stratului. (b) dedup
+pe unique constraint DB - respinsa acum (ar cere migratie de schema pe toate tenant-urile + decizie de
+identitate batuta in cuie); dedup in cod la import e suficient pentru scopul (reimport sigur). (c) a
+ascunde straturile de dubla si pentru Articole/Retete la PFA - nu: n-au cheie de strat in STRATURI_META,
+raman la ambele (stoc/gestiune poate exista si la PFA cu gestiune CV).
+LIMITA: dedup e fata de starea DINAINTE + ce s-a inserat in acelasi batch (un fisier cu doua randuri
+strict identice pastreaza doar unul - tratat ca dublura de export, nu ca doua operatiuni reale). Daca
+/migrare/straturi pica, meniul degradeaza gratios (arata tot); RIP ramane gated separat pe tip==='pfa',
+deci nu apare la SRL nici in fallback. Reimportul dupa ce contabilul a EDITAT manual o operatiune
+preluata (schimba suma/explicatie) nu o mai recunoaste ca duplicat - acceptabil (a devenit alt rand).

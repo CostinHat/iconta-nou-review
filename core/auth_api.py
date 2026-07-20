@@ -380,4 +380,20 @@ def tenantii_userului(conn, user_id):
                 "JOIN public.user_tenants ut ON ut.tenant_id = t.id "
                 "WHERE ut.user_id = %s AND t.activ = true ORDER BY t.nume",
                 (user_id,))
-        return [dict(r) for r in cur.fetchall()]
+        lista = [dict(r) for r in cur.fetchall()]
+    # [tip_firma_v1] tip_firma traieste in {schema}.firma_profil (schema-per-tenant),
+    # nu in public.tenants -> il aducem per firma. Default 'srl' daca profilul lipseste.
+    with conn.cursor() as cur:
+        for t in lista:
+            # savepoint per firma: o interogare esuata (schema fara firma_profil)
+            # abortul tranzactiei psycopg2 -> altfel toate firmele urmatoare ar cadea pe 'srl'
+            try:
+                cur.execute("SAVEPOINT sp_tip")
+                cur.execute(f'SELECT tip_firma FROM "{t["schema_name"]}".firma_profil WHERE id=1')
+                row = cur.fetchone()
+                t["tip_firma"] = (row[0] if row and row[0] else "srl")
+                cur.execute("RELEASE SAVEPOINT sp_tip")
+            except Exception:
+                cur.execute("ROLLBACK TO SAVEPOINT sp_tip")
+                t["tip_firma"] = "srl"  # firma fara profil inca -> partida dubla implicit
+    return lista

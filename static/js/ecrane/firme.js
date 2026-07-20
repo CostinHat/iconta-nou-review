@@ -41,6 +41,13 @@ export function randeazaListaFirme(container, nav, inapoi) {
           <input class="camp-input" id="fn-nume" placeholder="Se completează automat de la ANAF">
         </div>
         <div class="camp" style="margin-bottom:14px">
+          <label class="camp-eticheta">Tip firmă</label>
+          <select class="camp-input" id="fn-tip">
+            <option value="srl" selected>SRL / SA (partidă dublă)</option>
+            <option value="pfa">PFA / II / IF (partidă simplă)</option>
+          </select>
+        </div>
+        <div class="camp" style="margin-bottom:14px">
           <label class="camp-eticheta">Email client (primește automat acces la portal)</label>
           <input class="camp-input" id="fn-email" type="email" placeholder="Opțional: emailul patronului — primește acces în portal" autocomplete="off">
         </div>
@@ -76,7 +83,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
         if (emailCl && !emailCl.includes("@")) { info.innerHTML = '<span class="msg-eroare">Emailul nu pare valid. Lasă gol dacă nu inviți pe nimeni acum.</span>'; return; }
         btn.disabled = true; btn.textContent = "Se creează...";
         try {
-          const rT = await api.post("/tenants", { nume: nume.value.trim(), cui: cui.value.replace(/\D/g, "") });
+          const rT = await api.post("/tenants", { nume: nume.value.trim(), cui: cui.value.replace(/\D/g, ""), tip_firma: corp.querySelector("#fn-tip").value });  /* [tip_firma_v1] */
           if (emailCl) await api.post(`/tenants/${rT.tenant_id}/client-acces`, { email: emailCl, nume: "" });
           const cg = rT.coliziune_gratuit;  /* coliziune_gratuit_v1: semnaleaza cont gratuit vechi cu acelasi CUI */
           if (cg) {
@@ -224,10 +231,20 @@ function meniuFirma(corp, nav, t) {
       icon: '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M9 13l2 2 4-4"/>', activ: true },
   ];
 
+  // [tip_firma_v1] carduri filtrate pe regimul firmei (srl = partida dubla / pfa = partida simpla).
+  // SRL-only ascunse la PFA: declaratii, jurnal, balanta, bilant, operatiuni.
+  // PFA-only ascunsa la SRL: rip (Incasari/plati). 'control' ramane vizibil la PFA (semafor
+  // partial, decis-acceptat). Restul cardurilor apar la ambele regimuri.
+  const tip = (t.tip_firma || "srl").toLowerCase();
+  const DOAR_SRL = ["declaratii", "jurnal", "balanta", "bilant", "operatiuni"];
+  const DOAR_PFA = ["rip"];
+  const vizibile = optiuni.filter((o) =>
+    tip === "pfa" ? !DOAR_SRL.includes(o.cheie) : !DOAR_PFA.includes(o.cheie));
+
   corp.innerHTML = `
-    
+
     <div class="firme-optiuni">
-      ${optiuni.map((o) => `
+      ${vizibile.map((o) => `
         <button class="firme-optiune" id="fa-${o.cheie}"${o.activ ? "" : ' disabled style="opacity:.55;cursor:default"'}>
           <div class="firme-optiune-icon" style="background:${o.bg}; color:${o.fg}">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${o.icon}</svg>
@@ -340,7 +357,7 @@ function meniuFirma(corp, nav, t) {
   const bImport = corp.querySelector("#fa-import");
   if (bImport) {
     bImport.addEventListener("click", () => {
-      nav.mergi("Import date", (c) => meniuMigrarePerFirma(c, nav, { tenant_id: t.id, nume: t.nume }));  // entitatea e in antet (DS cap.1), nu in titlu
+      nav.mergi("Import date", (c) => meniuMigrarePerFirma(c, nav, { tenant_id: t.id, nume: t.nume, tip_firma: t.tip_firma }));  // entitatea e in antet (DS cap.1), nu in titlu. tip_firma -> pasul RIP doar la PFA
     });
   }
 }

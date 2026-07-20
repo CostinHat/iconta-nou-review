@@ -92,7 +92,7 @@ def cui_valid(cui):
     return r == ctrl
 
 
-def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template):
+def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template, tip_firma="srl"):
     # cui_control_v1: cifra de control CUI validata OFFLINE, inainte de orice - ANAF
     # (anaf_api.valideaza_cui) e best-effort in rutele de register (except: pass), deci
     # cand ANAF e jos un CUI malformat ajungea tenant real -> sparge toate declaratiile
@@ -137,11 +137,16 @@ def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template)
             "ON CONFLICT DO NOTHING",
             (user_id, tenant_id))
     # profil_la_provisionare_v1: profil minim (numerotare facturi functionala din prima)
+    # [tip_firma_v1] tip_firma (srl/pfa) decide straturii de migrare + cardurile vizibile.
+    # CHECK (srl/pfa) pe coloana: normalizam la sursa, default srl daca vine altceva.
+    _tip = (tip_firma or "srl").strip().lower()
+    if _tip not in ("srl", "pfa"):
+        _tip = "srl"
     with conn.cursor() as cur:
         cur.execute(
-            f"INSERT INTO {schema_noua}.firma_profil (id, nume, cui, serie_factura, urmator_numar_factura) "
-            "VALUES (1, %s, %s, '', 1) ON CONFLICT (id) DO NOTHING",
-            (nume, str(cui)))
+            f"INSERT INTO {schema_noua}.firma_profil (id, nume, cui, serie_factura, urmator_numar_factura, tip_firma) "
+            "VALUES (1, %s, %s, '', 1, %s) ON CONFLICT (id) DO NOTHING",
+            (nume, str(cui), _tip))
     # coliziune_gratuit_v1 (Tema 3, decis 18.07 - optiunea A): dupa preluare, un cont
     # gratuit VECHI cu ACELASI CUI ramane activ si poate emite din alt loc -> emitere
     # dubla pe un singur CUI (numerotare divergenta). NU suspendam automat (inchiderea

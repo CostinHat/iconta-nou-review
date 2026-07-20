@@ -1358,27 +1358,47 @@ function importPlanConturiFirma(corp, nav, firma) {
 // ---------- MENIU MIGRARE PER FIRMA [p96_import_firma] ----------
 // Deschis din fisa unei firme (cardul "Import date") - sare peste pasul de
 // selectie a firmei, duce direct in ecranul de import per-strat pentru firma curenta.
-export function meniuMigrarePerFirma(corp, nav, firma) {
+export async function meniuMigrarePerFirma(corp, nav, firma) {
   nav.setInapoi(null);
   latime(corp, false);
+  corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
+  // [p_pfa_rip 20.07] Straturile aplicabile regimului vin din backend (straturi_pentru),
+  // sursa unica de adevar - meniul NU reinventeaza in JS ce strat apartine carui regim.
+  // Pasii cu 'strat' apar doar daca stratul e aplicabil; pasii fara 'strat' (articole,
+  // retete) raman mereu. Daca endpointul pica -> aplicabile=null -> arata tot (gratios).
+  const tip = (firma.tip_firma || "srl").toLowerCase();
+  let aplicabile = null;
+  try {
+    const r = await api.get(`/migrare/straturi?tip_firma=${encodeURIComponent(tip)}`);
+    aplicabile = (r && r.straturi) || null;
+  } catch {}
   const PASI = [
-    { titlu: "Vector fiscal", desc: "TVA, regim, intracomunitar", fn: (c, n) => formularVectorFirma(c, n, firma) },
-    { titlu: "Solduri ini\u021biale", desc: "Balan\u021ba de deschidere", fn: (c, n) => importSolduriFirma(c, n, firma) },
-    { titlu: "Solduri parteneri", desc: "4111/401 pe client \u0219i furnizor", fn: (c, n) => importParteneriFirma(c, n, firma) },
-    { titlu: "Salaria\u021bi", desc: "Nume, CNP, salariu, contract", fn: (c, n) => importSalariatiFirma(c, n, firma) },
-    { titlu: "Asocia\u021bi", desc: "Nume, cot\u0103 % (D205)", fn: (c, n) => importAsociatiFirma(c, n, firma) },
-    { titlu: "Mijloace fixe", desc: "Registru amortizare", fn: (c, n) => importMijloaceFirma(c, n, firma) },
-    { titlu: "Istoric declara\u021bii", desc: "Ce s-a depus deja", fn: (c, n) => importIstoricFirma(c, n, firma) },
-    { titlu: "Plan de conturi", desc: "Cont\u0103 analitice/nestandard", fn: (c, n) => importPlanConturiFirma(c, n, firma) },
+    { titlu: "Vector fiscal", desc: "TVA, regim, intracomunitar", strat: "vector_fiscal", fn: (c, n) => formularVectorFirma(c, n, firma) },
+    { titlu: "Solduri ini\u021biale", desc: "Balan\u021ba de deschidere", strat: "solduri", fn: (c, n) => importSolduriFirma(c, n, firma) },
+    { titlu: "Solduri parteneri", desc: "4111/401 pe client \u0219i furnizor", strat: "solduri_parteneri", fn: (c, n) => importParteneriFirma(c, n, firma) },
+    { titlu: "Salaria\u021bi", desc: "Nume, CNP, salariu, contract", strat: "salariati", fn: (c, n) => importSalariatiFirma(c, n, firma) },
+    { titlu: "Asocia\u021bi", desc: "Nume, cot\u0103 % (D205)", strat: "asociati", fn: (c, n) => importAsociatiFirma(c, n, firma) },
+    { titlu: "Mijloace fixe", desc: "Registru amortizare", strat: "mijloace_fixe", fn: (c, n) => importMijloaceFirma(c, n, firma) },
+    { titlu: "Istoric declara\u021bii", desc: "Ce s-a depus deja", strat: "istoric_declaratii", fn: (c, n) => importIstoricFirma(c, n, firma) },
+    { titlu: "Plan de conturi", desc: "Cont\u0103 analitice/nestandard", strat: "plan_conturi", fn: (c, n) => importPlanConturiFirma(c, n, firma) },
     { titlu: "Articole \u0219i stoc ini\u021bial", desc: "Nomenclator + cantit\u0103\u021bi la CMP (gestiune CV)", fn: (c, n) => importArticoleFirma(c, n, firma) },
     { titlu: "Re\u021bete (HoReCa)", desc: "Re\u021betar: ingrediente \u0219i cantit\u0103\u021bi pe por\u021bie", fn: (c, n) => importReteteFirma(c, n, firma) },
   ];
+  // [p_pfa_rip 20.07] Pas DOAR pentru PFA (partida simpla): registru incasari-plati.
+  // Gated explicit pe tip==='pfa' (robust chiar daca /migrare/straturi pica).
+  if (tip === "pfa") {
+    PASI.push({ titlu: "Import RIP", desc: "Registru \u00eencas\u0103ri-pl\u0103\u021bi (istoric PFA, partid\u0103 simpl\u0103)", strat: "rip", fn: (c, n) => importRipFirma(c, n, firma) });
+  }
+  // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla)
+  const pasiVizibili = aplicabile
+    ? PASI.filter((p) => !p.strat || aplicabile.includes(p.strat))
+    : PASI;
   corp.innerHTML = `
     <p class="mig-intro">Alege ce vrei s\u0103 aduci pentru aceast\u0103 firm\u0103.</p>
     <div class="mig-lista" id="mig-pasi"></div>
   `;
   const lista = corp.querySelector("#mig-pasi");
-  PASI.forEach((p) => {
+  pasiVizibili.forEach((p) => {
     const rand = document.createElement("button");
     rand.className = "mig-frand";
     rand.innerHTML = `
@@ -1522,4 +1542,66 @@ function previzualizeazaArticole(corp, nav, firma, date) {
       arataMesaj(corp.querySelector("#mig-eroare"), (e && e.mesaj) || "Eroare la import.", "eroare");
     }
   });
+}
+
+// [p_pfa_rip 20.07] Import registru incasari-plati (RIP) \u2014 preluare PFA (partida simpla).
+// Istoric cronologic al anului curent, NU balanta de deschidere. Ruta importa imediat
+// (un singur pas): randurile ambigue/incomplete se RAPORTEAZA, cele valide se scriu.
+function importRipFirma(corp, nav, firma) {
+  corp.innerHTML = `
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 registrul de \u00eencas\u0103ri-pl\u0103\u021bi (istoric cronologic: dat\u0103 \u00b7 tip \u00b7 explica\u021bie \u00b7 sum\u0103 \u00b7 categorie \u00b7 metod\u0103). Partida simpl\u0103 nu are balan\u021b\u0103 de deschidere \u2014 soldul rezult\u0103 din opera\u021biuni.</p>
+    <label class="mig-drop" id="mig-drop">
+      <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
+      <div class="mig-drop-titlu" id="mig-drop-titlu">\u00cencarc\u0103 registrul</div>
+      <div class="mig-drop-desc">Excel sau CSV</div>
+    </label>
+    <div class="mig-eroare" id="mig-eroare"></div>
+    <div id="mig-preview"></div>
+  `;
+  const fileInput = corp.querySelector("#mig-file");
+  fileInput.addEventListener("change", async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    corp.querySelector("#mig-drop-titlu").textContent = file.name;
+    const eroare = corp.querySelector("#mig-eroare");
+    arataMesaj(eroare, "Import registru \u00eencas\u0103ri-pl\u0103\u021bi\u2026", "info");
+    try {
+      const fd = new FormData();
+      fd.append("fisier", file);
+      const r = await fetch(`/tenants/${firma.tenant_id}/rip-import/incarca`, {
+        method: "POST", headers: { "Authorization": "Bearer " + sesiune.token() }, body: fd,
+      });
+      const date = await r.json();
+      if (!r.ok) throw { mesaj: (date && (date.detail || date.mesaj)) || ("eroare " + r.status) };
+      eroare.textContent = "";
+      previzualizeazaRip(corp, nav, firma, date);
+    } catch (e) {
+      arataMesaj(eroare, (e && e.mesaj) || "Eroare la import.", "eroare");
+    }
+  });
+}
+
+function previzualizeazaRip(corp, nav, firma, date) {
+  latime(corp, true);
+  const raport = date.raport || {};
+  const respinse = raport.respinse || [];
+  const importate = date.importate || 0;
+  const dubluri = date.sarite_duplicat || 0;
+  const banda = [
+    `<span class="mig-eq mig-eq-ok">${importate} importate</span>`,
+    dubluri ? `<span class="mig-eq mig-eq-gri">${dubluri} deja existente (s\u0103rite)</span>` : "",
+    respinse.length ? `<span class="mig-eq mig-eq-no">${respinse.length} respinse</span>` : "",
+  ].filter(Boolean).join(" ");
+  const zona = corp.querySelector("#mig-preview");
+  zona.innerHTML = `
+    <div class="mig-sold-rezumat"><b>${importate}</b> opera\u021biuni importate${dubluri ? ` \u00b7 ${dubluri} s\u0103rite (deja \u00een registru)` : ""}${raport.metoda_prezumata ? ` \u00b7 ${raport.metoda_prezumata} cu metod\u0103 prezumat\u0103 (banc\u0103)` : ""}</div>
+    <div class="mig-coer">${banda}</div>
+    ${respinse.length ? `
+      <div class="mig-eticheta" style="margin-top:10px">R\u00e2nduri respinse (de corectat \u00een fi\u0219ier \u0219i re\u00eenc\u0103rcat):</div>
+      <div class="mig-lista">
+        ${respinse.map((x) => `<div class="mig-rand mig-rand-rosu"><span>R\u00e2nd ${x.rand}</span><span>${esc(x.motiv)}</span></div>`).join("")}
+      </div>` : `<p class="mig-intro" style="margin-top:10px">Registrul a fost preluat integral. Stratul RIP e marcat ca gata.</p>`}
+  `;
+  nav.setInapoi(() => meniuMigrarePerFirma(corp, nav, firma));
 }

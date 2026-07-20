@@ -10,7 +10,28 @@ Tabelul se auto-creează (CREATE TABLE IF NOT EXISTS) la pornire.
 from __future__ import annotations
 
 # straturile de migrare, în ordinea logică (firme întâi — creează tenant-urile)
-STRATURI = ["firme", "vector_fiscal", "solduri", "solduri_parteneri", "salariati", "asociati", "mijloace_fixe", "istoric_declaratii", "plan_conturi"]  # [p82_vector] [p95_plan_conturi]
+# 'regim' = pentru ce tip de firma se aplica stratul:
+#   'ambele' -> SRL si PFA; 'dubla' -> doar SRL (partida dubla); 'simpla' -> doar PFA (RIP).
+STRATURI_META = [
+    ("firme",              "ambele"),
+    ("vector_fiscal",      "ambele"),
+    ("solduri",            "dubla"),
+    ("solduri_parteneri",  "dubla"),
+    ("salariati",          "ambele"),
+    ("asociati",           "dubla"),
+    ("mijloace_fixe",      "dubla"),
+    ("istoric_declaratii", "ambele"),
+    ("plan_conturi",       "dubla"),
+    ("rip",                "simpla"),
+]  # [p82_vector] [p95_plan_conturi] [p_pfa_rip 20.07]
+STRATURI = [s for s, _ in STRATURI_META]
+
+
+def straturi_pentru(tip_firma):
+    """Straturile aplicabile unui tip de firma ('srl' | 'pfa')."""
+    tip = (tip_firma or "srl").strip().lower()
+    vrut = "dubla" if tip == "srl" else "simpla"
+    return [s for s, regim in STRATURI_META if regim in ("ambele", vrut)]
 STARI = ("gata", "in_lucru")
 
 
@@ -71,14 +92,15 @@ def seteaza_status(conn, firm_id, strat, stare, nota=""):
     return {"strat": strat, "stare": stare, "nota": (nota or "").strip()}
 
 
-def reminder(conn, firm_id):
+def reminder(conn, firm_id, tip_firma="srl"):
     """
     Pentru cardul Firme: straturile care NU sunt 'gata' și au fost declarate
     'in_lucru' (cu notă). Întoarce listă [{strat, nota}].
+    Filtrat pe tip_firma: PFA nu vede straturi de partida dubla, SRL nu vede rip.
     """
     status = citeste_status(conn, firm_id)
     out = []
-    for strat in STRATURI:
+    for strat in straturi_pentru(tip_firma):
         s = status.get(strat)
         if s and s["stare"] == "in_lucru":
             out.append({"strat": strat, "nota": s["nota"]})

@@ -21,7 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from core import nucleu as _nucleu, articole_import_api, retete_import_api
+from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_migrare_api
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
@@ -649,6 +649,7 @@ class DeclaratieIn(BaseModel):
 class TenantNou(BaseModel):
     nume: str
     cui: Optional[str] = None
+    tip_firma: str = "srl"  # [tip_firma_v1] srl (partida dubla) / pfa (partida simpla)
 
 class TenantEdit(BaseModel):
     nume: Optional[str] = None
@@ -1026,7 +1027,8 @@ def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
     try:  # tenant_cui_400
         with db.get_conn() as conn:
             r = tenant_provisioning.provision_tenant(
-                conn, date.nume, date.cui, ctx["firm"], ctx["uid"], _TENANT_TEMPLATE)
+                conn, date.nume, date.cui, ctx["firm"], ctx["uid"], _TENANT_TEMPLATE,
+                tip_firma=date.tip_firma)
             # [F188] pre-completare din ANAF v9 in profilul firmei nou-create (adresa/caen/reg_com/tva).
             # NU atinge 'nume' (setat de contabil). COALESCE: gol ANAF nu suprascrie. ANAF jos -> default.
             try:
@@ -1286,6 +1288,14 @@ def migrare_status_citeste(ctx=Depends(cere_cabinet)):
         status = migrare_api.citeste_status(conn, ctx["firm"])
         rem = migrare_api.reminder(conn, ctx["firm"])
     return {"straturi": migrare_api.STRATURI, "status": status, "reminder": rem}
+
+
+@app.get("/migrare/straturi")
+def migrare_straturi_aplicabile(tip_firma: str = "srl", ctx=Depends(cere_cabinet)):
+    """[p_pfa_rip 20.07] Straturile de migrare aplicabile unui regim (srl/pfa).
+    Sursa unica de adevar = migrare_api.straturi_pentru (filtreaza pe STRATURI_META),
+    ca meniul per-firma sa nu reinventeze in JS ce strat apartine carui regim."""
+    return {"straturi": migrare_api.straturi_pentru(tip_firma)}
 
 
 @app.post("/migrare/status")
@@ -1735,6 +1745,44 @@ def istoric_import_salveaza(tenant_id: int, date: IstoricDeclImportIn, ctx=Depen
             return istoric_declaratii_import_api.importa(conn, tenant_id, randuri)
         except ValueError as e:  # randuri invalide -> 422 cu mesaj
             raise HTTPException(422, str(e))
+
+
+# ============================================================
+#  MIGRARE STRAT PFA — REGISTRU INCASARI/PLATI (RIP, partida simpla)
+#  [p_pfa_rip 20.07] Preluarea unui PFA: istoric cronologic al anului curent,
+#  NU balanta de deschidere (partida simpla nu are sold-rand separat).
+# ============================================================
+@app.post("/tenants/{tenant_id}/rip-import/incarca")
+async def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_rol("admin_firma"))):
+    """
+    Import registru incasari-plati la preluarea unui PFA. Parseaza fisierul, RAPORTEAZA
+    randurile respinse (ambigue/incomplete) INAINTE de commit, apoi importa operatiunile
+    valide intr-o tranzactie atomica (rip_migrare_api.importa) si marcheaza stratul 'rip'
+    pentru reminder(): 'gata' daca nimic respins, 'in_lucru' cu nota daca au ramas randuri.
+    """
+    schema = _schema_sau_404(ctx, tenant_id)
+    continut = await fisier.read()
+    try:
+        date, raport = rip_migrare_api.extrage_operatiuni(continut, fisier.filename or "")
+    except ValueError as e:
+        raise HTTPException(400, str(e))
+    ops = date.get("operatiuni", [])
+    respinse = raport.get("respinse", [])
+    if not ops and not respinse:
+        raise HTTPException(400, "fișierul nu conține operațiuni de import")
+    # import atomic (importa face commit/rollback propriu); erori DB -> nimic scris
+    with db.get_conn(schema) as conn:
+        rez = rip_migrare_api.importa(conn, schema, ops)
+    if rez["erori"]:
+        raise HTTPException(422, "import eșuat: " + str(rez["erori"][0].get("motiv", "eroare la scriere")))
+    # marcheaza stratul rip (public.migrare_status, per cabinet) pentru reminder()
+    with db.get_conn() as conn:
+        if respinse:
+            migrare_api.seteaza_status(conn, ctx["firm"], "rip", "in_lucru",
+                                       f"{len(respinse)} rânduri respinse la import — de completat")
+        else:
+            migrare_api.seteaza_status(conn, ctx["firm"], "rip", "gata", "")
+    return {"importate": rez["importate"], "sarite_duplicat": rez.get("sarite_duplicat", 0), "raport": raport}
 
 
 
