@@ -731,7 +731,9 @@ async function ecranSalariati(corp, nav, t) {
         <button class="buton-secundar" id="sp-next">luna \u2192</button>
         <button class="buton-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
         <button class="buton-secundar" id="sp-reges-poll">R\u0103spunsuri REGES</button>
-        <button class="buton-primar" id="sp-salariat-nou" style="margin-left:12px">+ Salariat nou</button></p>
+        <button class="buton-primar" id="sp-salariat-nou" style="margin-left:12px">+ Salariat nou</button>
+        <button class="buton-secundar" id="sp-plata-card" style="margin-left:12px">Fișier plată card (SEPA)</button></p>
+      <div id="sp-plata-zona"></div>
       <div id="sp-reges-zona"></div>
       <div id="sp-vac-zona"></div>
       <div id="sp-cadou-zona"></div>
@@ -740,6 +742,37 @@ async function ecranSalariati(corp, nav, t) {
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
     corp.querySelector("#sp-salariat-nou").addEventListener("click", () => nav.mergi("Salariat nou", (c2) => formularSalariatNou(c2, nav, t, deseneaza)));
+    // [F134] fisier de plata pe card (SEPA pain.001): preview (cati, total, cine fara IBAN) -> download
+    const zonaPlata = corp.querySelector("#sp-plata-zona");
+    corp.querySelector("#sp-plata-card").addEventListener("click", async () => {
+      zonaPlata.innerHTML = `<p class="ecran-nota">Se pregătește...</p>`;
+      let m;
+      try {
+        m = await api.get(`/tenants/${t.id}/plata-salarii-preview?an=${an}&luna=${luna}`);
+      } catch (e) { zonaPlata.innerHTML = ""; arataMesaj(zonaPlata, (e && e.mesaj) || "Nu se poate genera fișierul.", "eroare"); return; }
+      const avert = (m.fara_iban && m.fara_iban.length)
+        ? `<div style="color:var(--rosu);margin-top:6px">⚠ ${m.fara_iban.length} salariat(i) fără IBAN, excluși din fișier: ${m.fara_iban.map(esc).join(", ")}. Completează IBAN-ul (buton „IBAN ⚠") ca să-i incluzi.</div>`
+        : "";
+      zonaPlata.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
+        <div class="pf-frand-nume">Plată salarii pe card · ${String(luna).padStart(2,"0")}/${an}</div>
+        <div class="pf-frand-sub">${m.nr_plati} plată/plăți · total ${bani(m.total)} lei · format SEPA pain.001</div>
+        ${avert}
+        <p style="margin-top:8px"><button class="buton-primar" id="plata-descarca">Descarcă fișierul</button>
+          <button class="buton-secundar" id="plata-inchide" style="margin-left:6px">Închide</button></p></div>`;
+      corp.querySelector("#plata-inchide").addEventListener("click", () => { zonaPlata.innerHTML = ""; });
+      corp.querySelector("#plata-descarca").addEventListener("click", async () => {
+        try {
+          const resp = await fetch(`/tenants/${t.id}/plata-salarii-fisier?an=${an}&luna=${luna}`, {
+            headers: { "Authorization": "Bearer " + sesiune.token() } });
+          if (!resp.ok) throw new Error();
+          const blob = await resp.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url; a.download = `plata_salarii_${an}_${String(luna).padStart(2,"0")}.xml`; a.click();
+          URL.revokeObjectURL(url);
+        } catch { arataMesaj(zonaPlata, "Nu am putut descărca fișierul.", "eroare"); }
+      });
+    });
     const zonaReges = corp.querySelector("#sp-reges-zona");
     corp.querySelector("#sp-reges-cfg").addEventListener("click", () => {
       zonaReges.innerHTML = `<div style="display:block;margin:10px 0">

@@ -3243,6 +3243,42 @@ def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=De
     return Response(content=pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="fluturas_{salariat_id}_{an}_{luna:02d}.pdf"'})
 
+
+@app.get("/tenants/{tenant_id}/plata-salarii-preview")
+def tenant_plata_salarii_preview(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    """[F134] Sumar inainte de generarea fisierului SEPA: cate plati, total, cine e exclus (fara IBAN)."""
+    from core import plata_salarii as _ps
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        cur = conn.cursor(); cur.execute("SELECT nume FROM public.tenants WHERE id=%s", (tenant_id,))
+        nf = (cur.fetchone() or [""])[0]
+        try:
+            _xml, meta = _ps.genereaza_pain001(conn, schema, an, luna, nume_firma_fallback=nf)
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+    return meta
+
+
+@app.get("/tenants/{tenant_id}/plata-salarii-fisier")
+def tenant_plata_salarii_fisier(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    """[F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download)."""
+    from fastapi.responses import Response
+    from core import plata_salarii as _ps
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        cur = conn.cursor(); cur.execute("SELECT nume FROM public.tenants WHERE id=%s", (tenant_id,))
+        nf = (cur.fetchone() or [""])[0]
+        try:
+            xml, meta = _ps.genereaza_pain001(conn, schema, an, luna, nume_firma_fallback=nf)
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+    return Response(content=xml, media_type="application/xml",
+                    headers={"Content-Disposition": f'attachment; filename="{meta["fisier"]}"'})
+
 class AdeverintaIn(BaseModel):  # F136
     scop: Optional[str] = None
     mentiuni: Optional[str] = None
