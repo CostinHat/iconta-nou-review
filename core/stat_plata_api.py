@@ -13,7 +13,8 @@ def stat_plata(conn, schema, an, luna):
     ref = date(an, luna, 1)
     with conn.cursor() as cur:
         cur.execute(f"""
-            SELECT id, nume, prenume, salariu_brut, persoane_intretinere, part_time, ore_zi
+            SELECT id, nume, prenume, salariu_brut, persoane_intretinere, part_time, ore_zi,
+                   tichet_masa_valoare
             FROM {schema}.salariati WHERE activ = true ORDER BY nume, prenume
         """)
         randuri = cur.fetchall()
@@ -25,17 +26,22 @@ def stat_plata(conn, schema, an, luna):
         """, (an, luna))
         cm = {r[0]: {"zile": int(r[1]), "net": float(r[2]), "brut": float(r[3])} for r in cur.fetchall()}
     stat = []
-    for sid, nume, prenume, brut, pers, part_time, ore_zi in randuri:
+    for sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val in randuri:
         c_cm = cm.get(sid)
         # zile lucratoare FARA sarbatori (OUG 158/2005 art.10) - numitorul proratarii CM
         zile_luna = _scad.zile_lucratoare_luna(an, luna)
-        if c_cm and c_cm["zile"] > 0:
-            brut_lucrat = float(brut or 0) * max(zile_luna - c_cm["zile"], 0) / zile_luna
+        cm_zile = c_cm["zile"] if (c_cm and c_cm["zile"] > 0) else 0
+        # [F133] tichete de masa: zile efectiv lucrate = ACELEASI zile ca proratarea salariului
+        # (zile lucratoare - concediu medical). NU din pontaj (F135 = informativ, DECIZII 20.07 opt.A).
+        tichet_zile = max(zile_luna - cm_zile, 0)
+        if cm_zile > 0:
+            brut_lucrat = float(brut or 0) * max(zile_luna - cm_zile, 0) / zile_luna
         else:
             brut_lucrat = float(brut or 0)
         calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
                                          norma_intreaga=not part_time,
-                                         venit_brut_total=float(brut or 0))
+                                         venit_brut_total=float(brut or 0),
+                                         tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile)
         stat.append({
             "id": sid,
             "nume": f"{nume or ''} {prenume or ''}".strip(),
@@ -45,8 +51,12 @@ def stat_plata(conn, schema, an, luna):
             "net": float(calc["net"]), "cam": float(calc["cam"]),
             "cas_suprataxa": float(calc.get("cas_suprataxa", 0)),
             "cass_suprataxa": float(calc.get("cass_suprataxa", 0)),
+            "tichete_nominal": float(calc.get("tichete_nominal", 0)),
+            "tichete_zile": tichet_zile if float(tichet_val or 0) > 0 else 0,
+            "cass_tichete": float(calc.get("cass_tichete", 0)),
+            "impozit_tichete": float(calc.get("impozit_tichete", 0)),
             "cost": float(calc["cost_angajator"]),
-            "cm_zile": c_cm["zile"] if c_cm else 0,
+            "cm_zile": cm_zile,
             "cm_brut": c_cm["brut"] if c_cm else 0,
         })
     return stat
@@ -64,13 +74,13 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     ref = date(an, luna, 1)
     with conn.cursor() as cur:
         cur.execute(f"""
-            SELECT nume, prenume, salariu_brut, persoane_intretinere, part_time
+            SELECT nume, prenume, salariu_brut, persoane_intretinere, part_time, tichet_masa_valoare
             FROM {schema}.salariati WHERE id = %s
         """, (salariat_id,))
         r = cur.fetchone()
     if not r:
         return None
-    nume, prenume, brut, pers, part_time = r
+    nume, prenume, brut, pers, part_time, tichet_val = r
     with conn.cursor() as cur:
         cur.execute(f"""
             SELECT COALESCE(SUM(zile),0), COALESCE(SUM(net),0), COALESCE(SUM(brut_ang+brut_fnuass),0)
@@ -79,10 +89,13 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
         zc, cm_net, cm_brut = cur.fetchone()
     # zile lucratoare FARA sarbatori (OUG 158/2005 art.10)
     zile_luna = _scad.zile_lucratoare_luna(an, luna)
-    brut_lucrat = float(brut or 0) * max(zile_luna - int(zc or 0), 0) / zile_luna if zc else float(brut or 0)
+    cm_zile = int(zc or 0)
+    tichet_zile = max(zile_luna - cm_zile, 0)  # [F133] aceleasi zile ca proratarea salariului
+    brut_lucrat = float(brut or 0) * max(zile_luna - cm_zile, 0) / zile_luna if zc else float(brut or 0)
     calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
                                      norma_intreaga=not part_time,
-                                     venit_brut_total=float(brut or 0))
+                                     venit_brut_total=float(brut or 0),
+                                     tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile)
 
     with conn.cursor() as _cur:
         _cur.execute(f"SELECT culoare_factura, font_factura FROM {schema}.firma_profil WHERE id = 1")
@@ -116,18 +129,28 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
         Spacer(1, 10),
     ]
 
+    # [F133] impozitul din calc e TOTAL (salariu+tichete); pe fluturas il aratam separat
+    imp_tichete = calc.get("impozit_tichete", 0)
+    imp_salariu = calc["impozit"] - imp_tichete
     linii = [
         ("Salariu brut", calc["brut"]),
         ("Facilitate salariu minim (netaxabil)", calc["facilitate"]),
         ("CAS (25%)", -calc["cas"]),
         ("CASS (10%)", -calc["cass"]),
         ("Deducere personala", calc["deducere"]["total"]),
-        ("Impozit pe venit", -calc["impozit"]),
+        ("Impozit pe venit", -imp_salariu),
         ("SALARIU NET", calc["net"]),
     ]
     if zc:
         linii.insert(1, (f"Zile concediu medical: {int(zc)}", None))
         linii.insert(len(linii) - 1, ("Indemnizatie CM (neta)", cm_net))
+    # [F133] tichete de masa: bloc distinct inainte de NET (nominalul se primeste in tichete,
+    # nu numerar; CASS+impozit pe tichete se retin din salariul cash - reduc NET-ul).
+    if float(calc.get("tichete_nominal", 0) or 0) > 0:
+        i_net = len(linii) - 1
+        linii.insert(i_net, (f"Tichete masa ({tichet_zile} zile x {float(tichet_val):g} lei, in tichete)", calc["tichete_nominal"]))
+        linii.insert(i_net + 1, ("  CASS tichete (10%)", -calc["cass_tichete"]))
+        linii.insert(i_net + 2, ("  Impozit tichete (10%)", -imp_tichete))
 
     rows = []
     for eticheta, val in linii:

@@ -1549,3 +1549,23 @@ FISCAL (step 2, verificat pe calcul): impozitul pe tichete se aplica pe (nominal
 e deductibila din baza impozitului (regula Cod fiscal venit-contributii), efectiv ~19% retinut din nominal
 (nu 20%). "impozit" returnat de calcul_salariu = TOTAL salariu+tichete; cost_angajator include valoarea
 nominala (angajatorul cumpara tichetele). Judecatorul final pt corectitudinea D112 = validatorul DUK (step 4).
+
+### 20.07.2026 F133 step 3 - RASTOARNA decizia "0 fara pontaj" (premisa invalidata la sursa)
+DECIZIE: numarul de zile pentru tichetele de masa = ACELEASI zile lucrate pe care payroll-ul le foloseste
+deja pentru salariu (zile_lucratoare_luna - concediu_medical), NU din pontaj. Rastoarna decizia
+"0 fara pontaj" de mai sus (step 2), care pleca dintr-o premisa GRESITA despre pontaj.
+TEMEI (verificat la sursa 20.07, step 3): (a) pontajul (F135) stocheaza DOAR exceptiile - prezenta e
+implicita (lipsa unui rand pe zi lucratoare = "prezent", pontaj.py:6-7,31) -> modelul NU poate distinge
+"pontaj neintrodus" de "tot prezent" (ambele = 0 randuri) -> "0 fara pontaj" nu e exprimabil; (b) F135 a
+decis EXPLICIT ca pontajul e informativ si NU alimenteaza calculul salarial (pontaj.py:4, DECIZII 17.07);
+(c) payroll-ul deriva deja zilele lucrate ca zile_lucratoare_luna - cm_zile (proratarea brut_lucrat +
+snapshot main.py:6003), fara pontaj. Deci sursa reala a "zilelor efectiv lucrate documentate" nu e
+pontajul, ci luna standard minus absentele documentate (CM). Tichetele urmeaza aceeasi baza ca salariul ->
+o singura notiune de "zile lucrate" in tot statul, coerenta. Costin a ales optiunea A (20.07).
+IMPLEMENTARE (step 3 LIVE): stat_plata + fluturas trec tichet_valoare (din salariat) + tichet_zile
+(=zile_lucratoare-cm_zile) in calcul_salariu; linie/bloc distinct de tichete in stat si pe fluturas;
+monografie: 421=4316 include CASS tichete, 642=5328 pt nominalul acordat (achizitia biletelor 5328=5121/401
+= tranzactie separata, in afara statului).
+LIMITA: absentele nemotivate din pontaj NU reduc zilele de tichete (pontajul nu alimenteaza payroll, F135) -
+tichetele urmeaza exact zilele de salariu (luna - CM). Daca in viitor se vrea reducerea tichetelor pe
+absente nemotivate, ar cere alimentarea payroll din pontaj = rasturnarea F135, tema separata.

@@ -181,13 +181,21 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
 # ============================================================
 def monografie_salariu(calc):
     """Generează notele din rezultatul calcul_salariu."""
+    # [F133] CASS retinut = salariu + tichete (tichetele intra in baza CASS); impozitul
+    # returnat e deja TOTAL (salariu+tichete). Reteneri suportate din salariul cash (421).
+    cass_total = _dec(calc["cass"]) + _dec(calc.get("cass_tichete", 0))
     note = [
         _nota("641", "421", calc["brut"]),       # cheltuială salarii brute
         _nota("421", "4315", calc["cas"]),        # CAS reținut (angajat)
-        _nota("421", "4316", calc["cass"]),       # CASS reținut (angajat)
-        _nota("421", "444", calc["impozit"]),     # impozit pe venit
+        _nota("421", "4316", cass_total),         # CASS reținut (salariu + tichete)
+        _nota("421", "444", calc["impozit"]),     # impozit pe venit (salariu + tichete)
         _nota("646", "436", calc["cam"]),         # CAM angajator
     ]
+    # [F133] acordarea tichetelor de masa: cheltuiala (642) din biletele de valoare (5328).
+    # Achizitia biletelor (5328=5121/401) e tranzactie separata, in afara statului.
+    tichete_nom = _dec(calc.get("tichete_nominal", 0))
+    if tichete_nom > 0:
+        note.append(_nota("642", "5328", tichete_nom))  # cheltuiala tichete de masa acordate
     # suprataxare part-time (art.146 Cod fiscal): diferența CAS/CASS suportată
     # de angajator peste venitul real, până la baza-podea (minim - facilitate)
     cas_supra = calc.get("cas_suprataxa", 0)
