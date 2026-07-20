@@ -1652,3 +1652,21 @@ DISCIPLINA IBAN (step 1): un IBAN gresit trimite banii altcuiva -> se valideaza 
 ISO 13616/ISO 7064) INAINTE de inserare, exact ca CUI/CNP (iban_valid in salariati_api, functie pura). IBAN
 romanesc: RO + 22 caractere (24 total); optional (gol = fara plata pe card, semnalat pe stat "IBAN ⚠").
 LIMITA: doar RON domestic (RO IBAN). Plati in valuta / IBAN strain = tema separata daca apare cazul real.
+
+### 20.07.2026 F137 coduri COR pe contracte - nomenclator national validat la sursa  (08_ddl_cor_ocupatii.sql, cor_incarca.py, core/cor_api.py, salariati_api.py, main.py, firme.js)
+DECIZIE: COR (Clasificarea Ocupatiilor din Romania) devine nomenclator VALIDAT (era free-text nevalidat).
+Codul se alege dintr-o lista oficiala, se valideaza la salvare (inexistent -> respins), nu se mai tasteaza liber.
+SURSA (STOP, procurare - data.gov.ro inaccesibil din mediul de build): Costin a descarcat fisierul OFICIAL
+de pe data.gov.ro (dataset "Clasificarea Ocupatiilor din Romania", lista alfabetica, Ordin 573/180/2024,
+MO 344/12.04.2024). ALTERNATIVA RESPINSA: copie GitHub neoficiala - sursa secundara, regula de aur cere oficialul.
+Fisierul e un doc Word exportat "Flat OPC" XML; lista traieste in /word/document.xml ca paragrafe alternand
+cod (6 cifre) -> denumire. Parsat de cor_incarca.py: 4422 ocupatii unice, toate 6 cifre (auto-validat, refuza
+incarcarea daca structura difera). VERIFICAT LA SURSA - niciun cod inventat.
+ARHITECTURA: nomenclator NATIONAL (acelasi pt toate firmele) -> tabel GLOBAL public.cor_ocupatii, NU per-tenant
+(nu intra in tenant_template). Cautare diacritic-insensitiva (nume oficiale cu ă/î/ș/ț, user tasteaza fara) pe
+coloana normalizata denumire_cauta. Endpoint GET /cor (orice user logat). Validare la creare+editare salariat
+(_verifica_cor); import bulk ramane lax (date de migrare, ca inainte). REGES: cod + versiune 10 (COR 2010/ISCO-08).
+LIMITA: nomenclatorul e un SNAPSHOT (Ordin 573/180/2024) - la un ordin nou de actualizare COR se reruleaza
+cor_incarca.py cu fisierul nou. Fluxul REGES de AdaugareContract (care trimite codul) nu e inca cablat - cand va
+fi, ia codul din salariatul deja validat. Editarea COR pe angajatii existenti = buton inline pe stat (nu exista
+formular de editare salariat complet).

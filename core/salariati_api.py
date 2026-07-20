@@ -63,6 +63,17 @@ def _db_spre_api(row):
 # ============================================================
 #  VALIDARE — PURĂ
 # ============================================================
+def _verifica_cor(conn, cod):
+    """[F137] Ridica ValueError daca 'cod' e completat dar nu exista in nomenclatorul COR
+    (public.cor_ocupatii). Gol = permis (COR optional). REGES respinge un cod inexistent."""
+    cod = (str(cod).strip() if cod is not None else "")
+    if not cod:
+        return
+    from core import cor_api
+    if not cor_api.exista(conn, cod):
+        raise ValueError("cod COR inexistent in nomenclator: %s (alege din lista)" % cod)
+
+
 def valideaza_salariat(date):
     """Verifică datele unui salariat. Întoarce listă erori (gol = ok)."""
     erori = []
@@ -129,6 +140,7 @@ def creeaza_salariat(conn, **date):
     erori = valideaza_salariat(date)
     if erori:
         raise ValueError("; ".join(erori))
+    _verifica_cor(conn, date.get("cor"))  # [F137] codul COR (daca e dat) trebuie sa existe in nomenclator
     campuri_api = {k: date[k] for k in _CAMPURI_API if k in date and date[k] is not None}
     campuri_db = _api_spre_db(campuri_api)
     cols = list(campuri_db.keys())
@@ -171,6 +183,8 @@ def actualizeaza_salariat(conn, salariat_id, **date):
     erori = [e for e in erori if e != "nume obligatoriu"]
     if erori:
         raise ValueError("; ".join(erori))
+    if "cor" in campuri_api:
+        _verifica_cor(conn, campuri_api.get("cor"))  # [F137] valideaza doar daca se schimba COR-ul
     campuri = _api_spre_db(campuri_api)
     seturi = ", ".join("%s = %%s" % k for k in campuri)
     vals = list(campuri.values()) + [salariat_id]

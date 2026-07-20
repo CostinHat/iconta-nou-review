@@ -2446,6 +2446,15 @@ def salariat_actualizeaza(tenant_id: int, salariat_id: int, date: SalariatEdit,
         raise HTTPException(422, str(e))
 
 
+@app.get("/cor")
+def cor_cauta(q: str = "", ctx=Depends(cere_context)):
+    """[F137] Cauta in nomenclatorul COR national dupa cod (prefix) sau denumire (substring,
+    diacritic-insensitiv). Pt lookup-ul de ocupatie pe contract/salariat. Orice user logat."""
+    from core import cor_api
+    with db.get_conn() as conn:
+        return {"rezultate": cor_api.cauta(conn, q)}
+
+
 @app.put("/tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar")
 def salariat_beneficiu_lunar(tenant_id: int, salariat_id: int, corp: dict = Body(...),
                              ctx=Depends(cere_rol("admin_firma", "angajat"))):

@@ -470,6 +470,44 @@ async function ecranVerificari(corp, nav, t) {
 
 // [salariati] Stat de plata lunar + fluturasi
 
+// [F137] lookup COR: input de cautare (cod sau denumire) -> lista rezultate din /cor -> selectie
+// seteaza codul in inputul ascuns #<prefix>-cor. Valoarea se seteaza DOAR prin selectie (nu free-text),
+// ca sa nu ajunga in DB un cod inexistent (backend valideaza si el). Refoloseste zona inline existenta.
+function legaCorLookup(scope, prefix, codInitial, denInitial) {
+  const cauta = scope.querySelector(`#${prefix}-cor-cauta`);
+  const hid = scope.querySelector(`#${prefix}-cor`);
+  const rez = scope.querySelector(`#${prefix}-cor-rez`);
+  if (!cauta || !hid || !rez) return;
+  if (codInitial) { hid.value = codInitial; cauta.value = denInitial ? `${codInitial} — ${denInitial}` : codInitial; }
+  let timer;
+  cauta.addEventListener("input", () => {
+    hid.value = "";  // orice tastare invalideaza selectia anterioara pana la o noua alegere
+    clearTimeout(timer);
+    const q = cauta.value.trim();
+    if (q.length < 2) { rez.innerHTML = ""; return; }
+    timer = setTimeout(async () => {
+      let list = [];
+      try { const r = await api.get(`/cor?q=${encodeURIComponent(q)}`); list = (r && r.rezultate) || []; }
+      catch { rez.innerHTML = ""; return; }
+      rez.innerHTML = list.length
+        ? list.map((o) => `<div class="cor-opt" data-cod="${o.cod}" data-den="${esc(o.denumire)}" style="padding:6px 8px;cursor:pointer;border-bottom:1px solid var(--linie)">${o.cod} — ${esc(o.denumire)}</div>`).join("")
+        : `<div style="padding:6px 8px;color:var(--gri)">nicio ocupație găsită</div>`;
+      rez.querySelectorAll("[data-cod]").forEach((el) => el.addEventListener("click", () => {
+        hid.value = el.dataset.cod;
+        cauta.value = `${el.dataset.cod} — ${el.dataset.den}`;
+        rez.innerHTML = "";
+      }));
+    }, 300);
+  });
+}
+
+function campCorLookup(prefix) {
+  return `<div class="camp"><label class="camp-eticheta" for="${prefix}-cor-cauta">Ocupație (COR)</label>
+    <input type="text" id="${prefix}-cor-cauta" class="camp-input" placeholder="cod sau denumire (ex. programator)" autocomplete="off">
+    <input type="hidden" id="${prefix}-cor">
+    <div id="${prefix}-cor-rez" style="max-height:180px;overflow:auto"></div></div>`;
+}
+
 function formularSalariatNou(corp, nav, t, dupaSalvare) {
   const camp = (id, eticheta, tip, extra) => {
     const optional = !(extra && extra.obligatoriu);
@@ -497,7 +535,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ${camp("salariu_brut", "Salariu brut", "numar", { obligatoriu: true })}
       ${camp("persoane_intretinere", "Persoane \u00een \u00eentre\u021binere", "numar", { pas: "1" })}
       ${camp("judet_casa", "Jude\u021b CAS/CASS", "text")}
-      ${camp("cor", "Cod COR", "text")}
+      ${campCorLookup("sn")}
       ${camp("iban", "IBAN (cont salariu pe card)", "text")}
       ${camp("tichet_masa_valoare", "Tichet de mas\u0103 (lei/zi lucrat\u0103, 0 = f\u0103r\u0103)", "numar")}
       ${camp("scutit_contrib_minim", "Scutit contribu\u021bie minim\u0103", "checkbox")}
@@ -506,6 +544,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       <button class="buton-primar" id="sn-salveaza">Salveaz\u0103</button>
       <button class="buton-secundar" id="sn-gata" style="margin-left:6px">Gata, \u00eenapoi la list\u0103</button></p>
     <div id="sn-mesaj"></div>`;
+  legaCorLookup(corp, "sn");  // [F137] lookup ocupatie COR
   corp.querySelector("#sn-gata").addEventListener("click", () => nav.inapoiPas());
   corp.querySelector("#sn-salveaza").addEventListener("click", async () => {
     const zona = corp.querySelector("#sn-mesaj");
@@ -722,6 +761,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-vac="${s.id}" data-val="${s.tichete_vacanta || 0}" data-nume="${esc(s.nume)}">+ vacanță</button>
           <button class="buton-secundar" data-cadou="${s.id}" data-nume="${esc(s.nume)}">+ cadou</button>
           <button class="buton-secundar" data-iban="${s.id}" data-val="${esc(s.iban || "")}" data-nume="${esc(s.nume)}">IBAN ${s.iban ? "✓" : "⚠"}</button>
+          <button class="buton-secundar" data-cor="${s.id}" data-val="${esc(s.cor || "")}" data-nume="${esc(s.nume)}">COR ${s.cor ? "✓" : "⚠"}</button>
           </div>
         </div>`).join("");
     corp.innerHTML = `
@@ -738,6 +778,7 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-vac-zona"></div>
       <div id="sp-cadou-zona"></div>
       <div id="sp-iban-zona"></div>
+      <div id="sp-cor-zona"></div>
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
@@ -875,6 +916,26 @@ async function ecranSalariati(corp, nav, t) {
           await api.put(`/tenants/${t.id}/salariati/${sid}`, { iban });  // "" = sterge (goleste contul)
           zonaIban.innerHTML = ""; deseneaza();
         } catch (e) { arataMesaj(corp.querySelector("#iban-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+      });
+    }));
+    // [F137] cod ocupatie COR: lookup din nomenclator, editabil pe rand (necesar REGES)
+    const zonaCor = corp.querySelector("#sp-cor-zona");
+    corp.querySelectorAll("[data-cor]").forEach((b) => b.addEventListener("click", () => {
+      const sid = b.dataset.cor;
+      zonaCor.innerHTML = `<div style="margin:10px 0;max-width:520px">
+        <div class="camp-eticheta" style="margin-bottom:6px">Ocupație COR · ${esc(b.dataset.nume)}:</div>
+        ${campCorLookup("cor-edit")}
+        <p style="margin-top:8px"><button class="buton-primar" id="cor-save">Salvează</button>
+          <button class="buton-secundar" id="cor-cancel" style="margin-left:6px">Renunță</button></p>
+        <div id="cor-msg"></div></div>`;
+      legaCorLookup(zonaCor, "cor-edit", b.dataset.val);
+      corp.querySelector("#cor-cancel").addEventListener("click", () => { zonaCor.innerHTML = ""; });
+      corp.querySelector("#cor-save").addEventListener("click", async () => {
+        const cor = corp.querySelector("#cor-edit-cor").value.trim();
+        try {
+          await api.put(`/tenants/${t.id}/salariati/${sid}`, { cor });  // "" = sterge; cod invalid respins de backend
+          zonaCor.innerHTML = ""; deseneaza();
+        } catch (e) { arataMesaj(corp.querySelector("#cor-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
       });
     }));
     corp.querySelectorAll("[data-reges]").forEach((b) => b.addEventListener("click", () => {
