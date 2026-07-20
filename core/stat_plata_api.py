@@ -7,6 +7,8 @@ from reportlab.pdfgen import canvas
 from core.pdf_fonturi import init_fonturi, font
 from core import salarizare
 from core import scadente as _scad
+from core import beneficii_api as _ben
+from core import common as _common
 
 def stat_plata(conn, schema, an, luna):
     """Calcul salarii pentru toti salariatii activi, la data de referinta (an, luna)."""
@@ -25,6 +27,9 @@ def stat_plata(conn, schema, an, luna):
             FROM {schema}.concedii_medicale WHERE an = %s AND luna = %s GROUP BY salariat_id
         """, (an, luna))
         cm = {r[0]: {"zile": int(r[1]), "net": float(r[2]), "brut": float(r[3])} for r in cur.fetchall()}
+    # [F133 Faza 2a] tichete de vacanta acordate in luna (one-off, din beneficii_lunare)
+    vac_luna = _ben.lista_luna(conn, schema, an, luna, "vacanta")
+    plafon_vac_an = 6 * float(_common.cota("salariu_minim", ref)[0])  # 6 salarii minime/an
     stat = []
     for sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val in randuri:
         c_cm = cm.get(sid)
@@ -38,10 +43,14 @@ def stat_plata(conn, schema, an, luna):
             brut_lucrat = float(brut or 0) * max(zile_luna - cm_zile, 0) / zile_luna
         else:
             brut_lucrat = float(brut or 0)
+        vac = vac_luna.get(sid, 0)  # [F133 Faza 2a] tichete vacanta acordate in luna
         calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
                                          norma_intreaga=not part_time,
                                          venit_brut_total=float(brut or 0),
-                                         tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile)
+                                         tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
+                                         tichet_vacanta=float(vac or 0))
+        # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
+        vac_an = _ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) if vac else 0
         stat.append({
             "id": sid,
             "nume": f"{nume or ''} {prenume or ''}".strip(),
@@ -53,6 +62,8 @@ def stat_plata(conn, schema, an, luna):
             "cass_suprataxa": float(calc.get("cass_suprataxa", 0)),
             "tichete_nominal": float(calc.get("tichete_nominal", 0)),
             "tichete_zile": tichet_zile if float(tichet_val or 0) > 0 else 0,
+            "tichete_vacanta": float(calc.get("tichete_vacanta", 0)),
+            "vacanta_peste_plafon": bool(vac and vac_an > plafon_vac_an),
             "cass_tichete": float(calc.get("cass_tichete", 0)),
             "impozit_tichete": float(calc.get("impozit_tichete", 0)),
             "cost": float(calc["cost_angajator"]),
@@ -92,10 +103,12 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     cm_zile = int(zc or 0)
     tichet_zile = max(zile_luna - cm_zile, 0)  # [F133] aceleasi zile ca proratarea salariului
     brut_lucrat = float(brut or 0) * max(zile_luna - cm_zile, 0) / zile_luna if zc else float(brut or 0)
+    vac = _ben.lista_luna(conn, schema, an, luna, "vacanta").get(salariat_id, 0)  # [F133 Faza 2a]
     calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
                                      norma_intreaga=not part_time,
                                      venit_brut_total=float(brut or 0),
-                                     tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile)
+                                     tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
+                                     tichet_vacanta=float(vac or 0))
 
     with conn.cursor() as _cur:
         _cur.execute(f"SELECT culoare_factura, font_factura FROM {schema}.firma_profil WHERE id = 1")
@@ -146,11 +159,16 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
         linii.insert(len(linii) - 1, ("Indemnizatie CM (neta)", cm_net))
     # [F133] tichete de masa: bloc distinct inainte de NET (nominalul se primeste in tichete,
     # nu numerar; CASS+impozit pe tichete se retin din salariul cash - reduc NET-ul).
-    if float(calc.get("tichete_nominal", 0) or 0) > 0:
-        i_net = len(linii) - 1
-        linii.insert(i_net, (f"Tichete masa ({tichet_zile} zile x {float(tichet_val):g} lei, in tichete)", calc["tichete_nominal"]))
-        linii.insert(i_net + 1, ("  CASS tichete (10%)", -calc["cass_tichete"]))
-        linii.insert(i_net + 2, ("  Impozit tichete (10%)", -imp_tichete))
+    are_masa = float(calc.get("tichete_nominal", 0) or 0) > 0
+    are_vac = float(calc.get("tichete_vacanta", 0) or 0) > 0
+    if are_masa or are_vac:
+        i = len(linii) - 1  # inaintea SALARIU NET
+        if are_masa:
+            linii.insert(i, (f"Tichete masa ({tichet_zile} zile x {float(tichet_val):g} lei, in tichete)", calc["tichete_nominal"])); i += 1
+        if are_vac:
+            linii.insert(i, ("Tichete vacanta (in tichete)", calc["tichete_vacanta"])); i += 1
+        linii.insert(i, ("  CASS tichete (10%)", -calc["cass_tichete"])); i += 1
+        linii.insert(i, ("  Impozit tichete (10%)", -imp_tichete))
 
     rows = []
     for eticheta, val in linii:

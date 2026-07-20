@@ -709,13 +709,14 @@ async function ecranSalariati(corp, nav, t) {
         <div class="pf-frand">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${esc(s.nume)}</div>
-            <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}</div>
+            <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}</div>
           </div>
           <button class="buton-primar" data-flut="${s.id}">Flutura\u0219</button>
           <button class="buton-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
           <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Concediu</button>
           <button class="buton-secundar" data-adev="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Adeverință</button>
           <button class="buton-secundar" data-pontaj="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Pontaj</button>
+          <button class="buton-secundar" data-vac="${s.id}" data-val="${s.tichete_vacanta || 0}" data-nume="${esc(s.nume)}" style="margin-left:6px">+ vacanță</button>
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Stat de plat\u0103</h2>
@@ -726,6 +727,7 @@ async function ecranSalariati(corp, nav, t) {
         <button class="buton-secundar" id="sp-reges-poll">R\u0103spunsuri REGES</button>
         <button class="buton-primar" id="sp-salariat-nou" style="margin-left:12px">+ Salariat nou</button></p>
       <div id="sp-reges-zona"></div>
+      <div id="sp-vac-zona"></div>
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
@@ -768,6 +770,26 @@ async function ecranSalariati(corp, nav, t) {
       nav.mergi("Adeverință", (c2) => formularAdeverinta(c2, nav, t, parseInt(b.dataset.adev), b.dataset.nume, an, luna))));
     corp.querySelectorAll("[data-pontaj]").forEach((b) => b.addEventListener("click", () =>  // f135_pontaj
       nav.mergi("Pontaj", (c2) => ecranPontaj(c2, nav, t, parseInt(b.dataset.pontaj), b.dataset.nume, an, luna))));
+    // [F133 Faza 2a] + vacanta: input one-off pe luna curenta, pe randul salariatului
+    const zonaVac = corp.querySelector("#sp-vac-zona");
+    corp.querySelectorAll("[data-vac]").forEach((b) => b.addEventListener("click", () => {
+      const sid = b.dataset.vac;
+      zonaVac.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
+        <span class="camp-eticheta">Tichete vacanță · ${esc(b.dataset.nume)} · ${String(luna).padStart(2,"0")}/${an}:</span>
+        <input type="number" step="0.01" min="0" id="vac-input" class="camp-input" value="${b.dataset.val}" style="width:150px">
+        <button class="buton-primar" id="vac-save">Salvează</button>
+        <button class="buton-secundar" id="vac-cancel">Renunță</button></div>
+        <div id="vac-msg"></div>`;
+      const inp = corp.querySelector("#vac-input"); inp.focus(); inp.select();
+      corp.querySelector("#vac-cancel").addEventListener("click", () => { zonaVac.innerHTML = ""; });
+      corp.querySelector("#vac-save").addEventListener("click", async () => {
+        const valoare = parseFloat(inp.value) || 0;
+        try {
+          await api.put(`/tenants/${t.id}/salariati/${sid}/beneficiu-lunar`, { an, luna, tip: "vacanta", valoare });
+          zonaVac.innerHTML = ""; deseneaza();
+        } catch (e) { arataMesaj(corp.querySelector("#vac-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+      });
+    }));
     corp.querySelectorAll("[data-reges]").forEach((b) => b.addEventListener("click", () => {
       const sid = parseInt(b.dataset.reges);
       zonaReges.innerHTML = `<div style="display:block;margin:10px 0;max-width:520px">

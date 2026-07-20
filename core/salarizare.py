@@ -197,11 +197,11 @@ def monografie_salariu(calc):
         _nota("421", "444", calc["impozit"]),     # impozit pe venit (salariu + tichete)
         _nota("646", "436", calc["cam"]),         # CAM angajator
     ]
-    # [F133] acordarea tichetelor de masa: cheltuiala (642) din biletele de valoare (5328).
-    # Achizitia biletelor (5328=5121/401) e tranzactie separata, in afara statului.
-    tichete_nom = _dec(calc.get("tichete_nominal", 0))
+    # [F133] acordarea biletelor de valoare (masa + vacanta): cheltuiala (642) din biletele
+    # de valoare (5328). Achizitia biletelor (5328=5121/401) e tranzactie separata.
+    tichete_nom = _dec(calc.get("tichete_nominal", 0)) + _dec(calc.get("tichete_vacanta", 0))
     if tichete_nom > 0:
-        note.append(_nota("642", "5328", tichete_nom))  # cheltuiala tichete de masa acordate
+        note.append(_nota("642", "5328", tichete_nom))  # cheltuiala tichete (masa + vacanta) acordate
     # suprataxare part-time (art.146 Cod fiscal): diferența CAS/CASS suportată
     # de angajator peste venitul real, până la baza-podea (minim - facilitate)
     cas_supra = calc.get("cas_suprataxa", 0)

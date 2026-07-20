@@ -2444,6 +2444,24 @@ def salariat_actualizeaza(tenant_id: int, salariat_id: int, date: SalariatEdit,
         raise HTTPException(422, str(e))
 
 
+@app.put("/tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar")
+def salariat_beneficiu_lunar(tenant_id: int, salariat_id: int, corp: dict = Body(...),
+                             ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    """[F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou) - upsert; 0 = sterge."""
+    from core import beneficii_api as _ben
+    an, luna = corp.get("an"), corp.get("luna")
+    if not isinstance(an, int) or not isinstance(luna, int) or luna < 1 or luna > 12:
+        raise HTTPException(400, "an/luna invalide")
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = _ben.seteaza(conn, schema, salariat_id, an, luna, corp.get("tip"), corp.get("valoare"))
+        if r is None:
+            raise HTTPException(404, "salariat inexistent")
+        if r.get("eroare"):
+            raise HTTPException(400, r["eroare"])
+        return r
+
+
 @app.delete("/tenants/{tenant_id}/salariati/{salariat_id}")
 def salariat_sterge(tenant_id: int, salariat_id: int,
                     ctx=Depends(cere_rol("admin_firma", "angajat"))):
