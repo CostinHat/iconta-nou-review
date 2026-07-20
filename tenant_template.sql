@@ -2129,6 +2129,21 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.bugete (
 -- tichet de masa per salariat (0 = nu primeste). Plafonul legal traieste in common.COTE.
 ALTER TABLE TENANT_PLACEHOLDER.salariati ADD COLUMN IF NOT EXISTS tichet_masa_valoare numeric NOT NULL DEFAULT 0;
 
+-- [F133 beneficii one-off, Faza 2a] mirror al 05_ddl_beneficii_lunare.sql: tichete de vacanta
+-- (si cadou la 2b) = sume one-off per salariat/an/luna/tip (nu config permanent ca masa).
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.beneficii_lunare (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    salariat_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.salariati(id),
+    an integer NOT NULL,
+    luna integer NOT NULL,
+    tip varchar(20) NOT NULL,
+    valoare numeric(14,2) NOT NULL DEFAULT 0,
+    CONSTRAINT beneficii_lunare_tip_ck CHECK (tip IN ('vacanta', 'cadou')),
+    CONSTRAINT beneficii_lunare_luna_ck CHECK (luna BETWEEN 1 AND 12),
+    CONSTRAINT beneficii_lunare_val_ck CHECK (valoare >= 0),
+    CONSTRAINT beneficii_lunare_unic UNIQUE (salariat_id, an, luna, tip)
+);
+
 --
 -- F145 (rapoarte configurabile salvabile) — mirror al core/migrare_rapoarte_salvate.py
 --

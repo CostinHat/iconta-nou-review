@@ -1585,3 +1585,21 @@ Non-regresie: test_d112 + test_salarizare 24/24. Baseline (fara tichete) ramane 
 F133 Faza 1 = LIVE INTEGRAL (config -> calcul -> stat/fluturas/monografie -> D112, cap-coada).
 LIMITA: combinatia CM + tichete pe acelasi salariat in aceeasi luna - tichetele se adauga peste valorile
 recalculate din CM; acoperit in cod dar nedovedit izolat pe DUK (cazul rar). Tichete vacanta/cadou = Faza 2.
+
+### 20.07.2026 F133 Faza 2a - tichete de vacanta (one-off pe luna) - fiscal verificat + model  (05_ddl_beneficii_lunare.sql, beneficii_api.py)
+DECIZIE: Faza 2 spartita in 2a (vacanta) + 2b (cadou), complexitate inegala. Se construieste 2a intai
+(vacanta), input ONE-OFF pe luna (confirmat de Costin), NU config permanent ca tichetele de masa.
+TRATAMENT FISCAL 2026 (VERIFICAT LA SURSA): tichete de vacanta = CASS 10% + impozit 10% pe valoare,
+FARA CAS (art. 142 lit. r CF) si FARA CAM; plafon neimpozabil 6 salarii minime brute/an (~24.300 lei).
+Acelasi tratament fiscal ca tichetele de masa -> se pot folosi aceleasi cai (CASS+impozit, fara CAS/CAM/
+deducere) in calcul_salariu; diferenta = sursa (suma one-off vs valoare x zile) + plafonul anual.
+MODEL (step 1 LIVE): tabel beneficii_lunare (salariat_id, an, luna, tip, valoare, UNIQUE pe cele 4),
+CHECK tip IN (vacanta,cadou) - EXTENSIBIL pt 2b (cadou adauga tip='cadou' + eventual eveniment). API
+beneficii_api (seteaza upsert / lista_luna / total_an pt plafonul anual). Sumele one-off se introduc pe
+luna de acordare, nu ca valoare standing pe salariat.
+DE CE spart de tichetele de masa (nu extins tabelul salariati): masa = valoare permanenta/zi; vacanta/cadou
+= evenimente punctuale intr-o luna -> alt model de date (per luna), altfel nu s-ar putea da o vacanta in
+iulie fara sa apara si in restul lunilor.
+LIMITA: peste plafonul anual (6 sal.minime) suma devine taxabila integral - 2a acopera cazul SUB plafon
+(comun) + semnal la depasire; taxarea integrala peste plafon = deferata (edge rar, ca la cadou 2b).
+Steps urmatoare 2a: calcul (integrare in calcul_salariu) -> stat/monografie -> D112 (validat DUK).
