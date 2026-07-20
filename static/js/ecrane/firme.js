@@ -707,16 +707,18 @@ async function ecranSalariati(corp, nav, t) {
       ? `<div class="stare-goala">Niciun salariat activ încă.</div>`
       : stat.map((s) => `
         <div class="pf-frand">
-          <div class="pf-frand-text">
+          <div class="pf-frand-text" style="min-width:0">
             <div class="pf-frand-nume">${esc(s.nume)}</div>
             <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}</div>
           </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;flex-shrink:0">
           <button class="buton-primar" data-flut="${s.id}">Flutura\u0219</button>
-          <button class="buton-secundar" data-reges="${s.id}" style="margin-left:6px">REGES</button>
-          <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Concediu</button>
-          <button class="buton-secundar" data-adev="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Adeverință</button>
-          <button class="buton-secundar" data-pontaj="${s.id}" data-nume="${esc(s.nume)}" style="margin-left:6px">Pontaj</button>
-          <button class="buton-secundar" data-vac="${s.id}" data-val="${s.tichete_vacanta || 0}" data-nume="${esc(s.nume)}" style="margin-left:6px">+ vacanță</button>
+          <button class="buton-secundar" data-reges="${s.id}">REGES</button>
+          <button class="buton-secundar" data-cm="${s.id}" data-nume="${esc(s.nume)}">Concediu</button>
+          <button class="buton-secundar" data-adev="${s.id}" data-nume="${esc(s.nume)}">Adeverință</button>
+          <button class="buton-secundar" data-pontaj="${s.id}" data-nume="${esc(s.nume)}">Pontaj</button>
+          <button class="buton-secundar" data-vac="${s.id}" data-val="${s.tichete_vacanta || 0}" data-nume="${esc(s.nume)}">+ vacanță</button>
+          </div>
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Stat de plat\u0103</h2>
