@@ -1508,7 +1508,11 @@ DECIZIE: bugete pe centru de cost, cu variantele decise la sursa (Regula de Aur,
    centre; un al doilea card ar fragmenta feature-ul. Sectiune "Bugete (anual)" cu selector de an: buget
    ch/ve editabil per centru + realizat + varianta alaturi.
 SCHEMA (step A LIVE): tabel bugete (id, centru_cost_id FK, an, buget_cheltuieli, buget_venituri,
-UNIQUE(centru,an)), 03_ddl_bugete.sql aplicat pe toate tenant-urile + template. Step B (backend: set/get
-buget + query varianta) si step C (UI) urmeaza.
+UNIQUE(centru,an)), 03_ddl_bugete.sql aplicat pe toate tenant-urile + template.
+Step B (LIVE): centre_cost_api.seteaza_buget (upsert ON CONFLICT centru+an) + raport_varianta(an)
+(buget vs realizat pe tot anul, clasele 6/7) + rute GET /varianta, PUT /{id}/buget.
+Step C (LIVE): sectiune "Bugete si varianta (anual)" in ecranul Centre de cost - selector de an, buget
+ch/ve editabil per centru, realizat + abatere colorata alaturi (depasire chelt=rosu, peste plan venit=verde).
+Faza 2 completa; F143 = LIVE integral (Faza 1 + Faza 2).
 LIMITA: buget anual -> varianta se compara pe an intreg (nu pro-ratare la sub-perioada). Raportul liber
 [de,pana] din Faza 1 ramane pt drill-down operational; varianta e vederea anuala de planificare.

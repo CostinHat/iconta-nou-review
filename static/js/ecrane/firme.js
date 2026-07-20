@@ -1876,7 +1876,15 @@ async function ecranCentreCost(corp, nav, t) {
         <input type="date" id="cc-pana" class="camp-input" value="${aziIso}" style="width:160px" aria-label="Până la">
         <button class="buton-secundar" id="cc-raport">Vezi realizat</button>
       </div>
-      <div id="cc-raport-zona"></div>`;
+      <div id="cc-raport-zona"></div>
+      <h3 class="cap-titlu" style="margin-top:22px">Bugete și varianță (anual)</h3>
+      <p class="pf-intro">Plan anual pe centru (cheltuieli + venituri), comparat cu realizatul din notele validate ale anului. La cheltuieli, depășirea planului e roșu; la venituri, peste plan e verde.</p>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+        <label class="camp-eticheta" for="cc-an">An</label>
+        <input type="number" id="cc-an" class="camp-input" value="${anCur}" style="width:100px">
+        <button class="buton-secundar" id="cc-bugete">Vezi bugete</button>
+      </div>
+      <div id="cc-bugete-zona"></div>`;
     const msg = corp.querySelector("#cc-mesaj");
     const adauga = async () => {
       const nume = corp.querySelector("#cc-nume").value.trim();
@@ -1916,6 +1924,45 @@ async function ecranCentreCost(corp, nav, t) {
         raportZona.innerHTML = `<div class="pf-lista">${html}</div>`;
       } catch (e) { arataMesaj(raportZona, (e && e.mesaj) || "Eroare la raport.", "eroare"); }
     });
+    // [F143 Faza 2] bugete anuale + varianta buget vs realizat
+    const bugeteZona = corp.querySelector("#cc-bugete-zona");
+    const randBuget = (c) => {
+      const dch = c.realizat_cheltuieli - c.buget_cheltuieli;  // >0 = peste buget (rau la cheltuieli)
+      const dve = c.realizat_venituri - c.buget_venituri;      // >=0 = peste plan (bun la venituri)
+      const chTxt = c.buget_cheltuieli ? ` <span style="color:${dch > 0 ? 'var(--rosu)' : 'var(--verde)'}">(${dch > 0 ? '+' : ''}${bani(dch)})</span>` : "";
+      const veTxt = c.buget_venituri ? ` <span style="color:${dve >= 0 ? 'var(--verde)' : 'var(--rosu)'}">(${dve >= 0 ? '+' : ''}${bani(dve)})</span>` : "";
+      return `<div class="pf-frand" style="align-items:center">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">${esc(c.nume)}${c.activ ? "" : " · <span style='color:var(--gri)'>inactiv</span>"}</div>
+          <div class="pf-frand-sub">chelt: buget ${bani(c.buget_cheltuieli)} / realizat ${bani(c.realizat_cheltuieli)}${chTxt} · venit: buget ${bani(c.buget_venituri)} / realizat ${bani(c.realizat_venituri)}${veTxt}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <input type="number" step="0.01" class="camp-input bg-ch" value="${c.buget_cheltuieli}" style="width:100px" aria-label="Buget cheltuieli">
+          <input type="number" step="0.01" class="camp-input bg-ve" value="${c.buget_venituri}" style="width:100px" aria-label="Buget venituri">
+          <button class="buton-secundar bg-save" data-c="${c.id}">Salvează</button>
+        </div>
+      </div>`;
+    };
+    const incarcaBugete = async () => {
+      const an = parseInt(corp.querySelector("#cc-an").value) || anCur;
+      bugeteZona.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+      try {
+        const r = await api.get(`/tenants/${t.id}/centre-cost/varianta?an=${an}`);
+        const centre = (r && r.centre) || [];
+        bugeteZona.innerHTML = centre.length
+          ? `<div class="pf-lista">${centre.map(randBuget).join("")}</div>`
+          : `<div class="stare-goala">Niciun centru definit — adaugă un centru mai sus.</div>`;
+        bugeteZona.querySelectorAll(".bg-save").forEach((b) => b.addEventListener("click", async () => {
+          const row = b.closest(".pf-frand");
+          try {
+            await api.put(`/tenants/${t.id}/centre-cost/${b.dataset.c}/buget`,
+              { an, buget_cheltuieli: row.querySelector(".bg-ch").value, buget_venituri: row.querySelector(".bg-ve").value });
+            incarcaBugete();
+          } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la salvare buget.", "eroare"); }
+        }));
+      } catch (e) { arataMesaj(bugeteZona, (e && e.mesaj) || "Eroare.", "eroare"); }
+    };
+    corp.querySelector("#cc-bugete").addEventListener("click", incarcaBugete);
   };
   deseneaza();
 }
