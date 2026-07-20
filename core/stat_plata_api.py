@@ -16,7 +16,7 @@ def stat_plata(conn, schema, an, luna):
     with conn.cursor() as cur:
         cur.execute(f"""
             SELECT id, nume, prenume, salariu_brut, persoane_intretinere, part_time, ore_zi,
-                   tichet_masa_valoare
+                   tichet_masa_valoare, iban
             FROM {schema}.salariati WHERE activ = true ORDER BY nume, prenume
         """)
         randuri = cur.fetchall()
@@ -35,7 +35,7 @@ def stat_plata(conn, schema, an, luna):
     cadou_luna = _ben.lista_luna(conn, schema, an, luna, "cadou")
     cadou_det = _ben.cadou_detalii_luna(conn, schema, an, luna)
     stat = []
-    for sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val in randuri:
+    for sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val, iban in randuri:
         c_cm = cm.get(sid)
         # zile lucratoare FARA sarbatori (OUG 158/2005 art.10) - numitorul proratarii CM
         zile_luna = _scad.zile_lucratoare_luna(an, luna)
@@ -72,6 +72,7 @@ def stat_plata(conn, schema, an, luna):
             "vacanta_peste_plafon": bool(vac and vac_an > plafon_vac_an),
             "cadou": float(cadou or 0),  # [F133 Faza 2b1] neimpozabil, primit pe card
             "cadou_taxabil": bool(cadou_taxabil),  # semnal: >300 sau eveniment nelegal (2b2)
+            "iban": (iban or "").strip(),  # [F134] cont beneficiar pt plata pe card ('' = lipsa -> semnal)
             "cass_tichete": float(calc.get("cass_tichete", 0)),
             "impozit_tichete": float(calc.get("impozit_tichete", 0)),
             # [F133] pt afisaj transparent: impozit salariu (fara tichete), retinerea pe tichete,

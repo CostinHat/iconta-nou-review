@@ -498,6 +498,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ${camp("persoane_intretinere", "Persoane \u00een \u00eentre\u021binere", "numar", { pas: "1" })}
       ${camp("judet_casa", "Jude\u021b CAS/CASS", "text")}
       ${camp("cor", "Cod COR", "text")}
+      ${camp("iban", "IBAN (cont salariu pe card)", "text")}
       ${camp("tichet_masa_valoare", "Tichet de mas\u0103 (lei/zi lucrat\u0103, 0 = f\u0103r\u0103)", "numar")}
       ${camp("scutit_contrib_minim", "Scutit contribu\u021bie minim\u0103", "checkbox")}
     </div>
@@ -522,6 +523,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       persoane_intretinere: corp.querySelector("#sn-persoane_intretinere").value ? Number(corp.querySelector("#sn-persoane_intretinere").value) : 0,
       judet_casa: corp.querySelector("#sn-judet_casa").value.trim() || null,
       cor: corp.querySelector("#sn-cor").value.trim() || null,
+      iban: corp.querySelector("#sn-iban").value.trim().replace(/\s/g, "").toUpperCase() || null,  // [F134]
       tichet_masa_valoare: corp.querySelector("#sn-tichet_masa_valoare").value ? Number(corp.querySelector("#sn-tichet_masa_valoare").value) : 0,  // [F133]
       scutit_contrib_minim: corp.querySelector("#sn-scutit_contrib_minim").checked,
     };
@@ -719,6 +721,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-pontaj="${s.id}" data-nume="${esc(s.nume)}">Pontaj</button>
           <button class="buton-secundar" data-vac="${s.id}" data-val="${s.tichete_vacanta || 0}" data-nume="${esc(s.nume)}">+ vacanță</button>
           <button class="buton-secundar" data-cadou="${s.id}" data-nume="${esc(s.nume)}">+ cadou</button>
+          <button class="buton-secundar" data-iban="${s.id}" data-val="${esc(s.iban || "")}" data-nume="${esc(s.nume)}">IBAN ${s.iban ? "✓" : "⚠"}</button>
           </div>
         </div>`).join("");
     corp.innerHTML = `
@@ -732,6 +735,7 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-reges-zona"></div>
       <div id="sp-vac-zona"></div>
       <div id="sp-cadou-zona"></div>
+      <div id="sp-iban-zona"></div>
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
@@ -817,6 +821,27 @@ async function ecranSalariati(corp, nav, t) {
           await api.put(`/tenants/${t.id}/salariati/${sid}/beneficiu-lunar`, { an, luna, tip: "cadou", eveniment, valoare });
           zonaCadou.innerHTML = ""; deseneaza();
         } catch (e) { arataMesaj(corp.querySelector("#cadou-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+      });
+    }));
+    // [F134] IBAN salariat: cont beneficiar pt fisierul de plata pe card (editabil pe rand)
+    const zonaIban = corp.querySelector("#sp-iban-zona");
+    corp.querySelectorAll("[data-iban]").forEach((b) => b.addEventListener("click", () => {
+      const sid = b.dataset.iban;
+      zonaIban.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
+        <span class="camp-eticheta">IBAN salariu · ${esc(b.dataset.nume)}:</span>
+        <input type="text" id="iban-input" class="camp-input" value="${esc(b.dataset.val)}" placeholder="RO.. cont pe card" style="width:280px">
+        <button class="buton-primar" id="iban-save">Salvează</button>
+        <button class="buton-secundar" id="iban-cancel">Renunță</button></div>
+        <div class="camp-eticheta" style="color:var(--gri)">IBAN românesc (RO + 22 caractere); gol = fără plată pe card.</div>
+        <div id="iban-msg"></div>`;
+      const inp = corp.querySelector("#iban-input"); inp.focus();
+      corp.querySelector("#iban-cancel").addEventListener("click", () => { zonaIban.innerHTML = ""; });
+      corp.querySelector("#iban-save").addEventListener("click", async () => {
+        const iban = inp.value.trim().replace(/\s/g, "").toUpperCase();
+        try {
+          await api.put(`/tenants/${t.id}/salariati/${sid}`, { iban });  // "" = sterge (goleste contul)
+          zonaIban.innerHTML = ""; deseneaza();
+        } catch (e) { arataMesaj(corp.querySelector("#iban-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
       });
     }));
     corp.querySelectorAll("[data-reges]").forEach((b) => b.addEventListener("click", () => {

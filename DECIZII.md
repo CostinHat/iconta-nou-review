@@ -1637,3 +1637,18 @@ DE CE cadoul e diferit de masa/vacanta: taxarea peste prag = CA SALARIU (CAS+CAS
 NU pista paralela CASS+impozit. De aceea 2b2 e separat si amanat.
 LIMITA: in 2b1, cadoul TAXABIL (>300 sau nelegal) se raporteaza cu semnal dar NU se taxeaza automat -
 contabilul trateaza manual pana la 2b2. Cheltuiala (642) se inregistreaza pe valoarea totala.
+
+### 20.07.2026 F134 plata salarii pe card - format SEPA/ISO 20022 pain.001 (fazat) + prereq IBAN salariat  (07_ddl_iban_salariat.sql, salariati_api.py, stat_plata_api.py, main.py, firme.js)
+DECIZIE (STOP, format ales de Costin): fisierul de plata a salariilor pe card = SEPA / ISO 20022
+pain.001.001.03 (SEPA Credit Transfer Initiation). NU format proprietar pe banca.
+TEMEI: (a) standard PUBLICAT, verificabil la sursa (XSD ISO 20022/EPC) - regula de aur, nu ghicim structura
+XML; (b) bank-agnostic: acceptat de importul corporate al bancilor RO pentru plati RON multiple -> UN singur
+format, nu N parsere proprietare care se rup la fiecare banca; (c) formatele proprietare (BT/BCR/ING CSV) cer
+spec-ul exact al fiecarei banci, unele fara sursa publica (ar rupe importul, ca argumentul BR-RO/Ciel).
+ALTERNATIVA RESPINSA: CSV/TXT proprietar pe banca pilot - lock pe o banca, sursa incompleta/neverificabila.
+FAZARE: step 1 (azi LIVE) = prerequizit IBAN salariat (coloana + API + UI + validare); step 2 = generatorul
+pain.001 propriu-zis (validat pe XSD oficial procurat la sursa) + endpoint + buton pe stat de plata.
+DISCIPLINA IBAN (step 1): un IBAN gresit trimite banii altcuiva -> se valideaza cifra de control (mod-97,
+ISO 13616/ISO 7064) INAINTE de inserare, exact ca CUI/CNP (iban_valid in salariati_api, functie pura). IBAN
+romanesc: RO + 22 caractere (24 total); optional (gol = fara plata pe card, semnalat pe stat "IBAN ⚠").
+LIMITA: doar RON domestic (RO IBAN). Plati in valuta / IBAN strain = tema separata daca apare cazul real.

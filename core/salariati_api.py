@@ -23,7 +23,21 @@ _NORME = ("intreaga", "partiala")
 _CAMPURI_API = ("cnp", "nume", "prenume", "data_angajare", "tip_norma", "ore_zi",
                 "salariu_brut", "persoane_intretinere", "judet_casa", "activ",
                 "scutit_contrib_minim", "motiv_exceptare", "cor",
-                "tichet_masa_valoare")  # [F133]
+                "tichet_masa_valoare",  # [F133]
+                "iban")  # [F134] cont beneficiar pt plata pe card
+
+
+def iban_valid(iban):
+    """[F134] Verifica un IBAN romanesc: format (RO + 24 caractere) + cifra de control mod-97
+    (ISO 13616/ISO 7064). PURA. NU se accepta IBAN neverificat in fisierul de plata catre banca
+    (un IBAN gresit trimite banii altcuiva) - aceeasi disciplina ca CUI/CNP."""
+    s = re.sub(r"\s", "", str(iban or "")).upper()
+    if not re.match(r"^RO\d{2}[A-Z0-9]{20}$", s):  # RON domestic: RO + 2 control + 4 banca + 16 cont
+        return False
+    # mod-97: primele 4 caractere la coada, literele -> numere (A=10..Z=35), rest mod 97 == 1
+    rearanjat = s[4:] + s[:4]
+    numeric = "".join(str(int(c, 36)) if c.isalpha() else c for c in rearanjat)
+    return int(numeric) % 97 == 1
 
 
 def _api_spre_db(date):
@@ -81,6 +95,11 @@ def valideaza_salariat(date):
                     erori.append(f"tichet_masa_valoare depaseste plafonul legal ({plafon:g} lei/tichet)")
         except (TypeError, ValueError):
             erori.append("tichet_masa_valoare invalid")
+    # [F134] IBAN optional; daca e completat trebuie sa fie IBAN romanesc valid (mod-97)
+    iban = date.get("iban")
+    if iban is not None and str(iban).strip():
+        if not iban_valid(iban):
+            erori.append("IBAN invalid (astept IBAN romanesc: RO + 22 caractere, cifra de control corecta)")
     return erori
 
 
@@ -96,7 +115,7 @@ def lista_salariati(conn, activ=None):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, cnp, nume, prenume, data_angajare, part_time, ore_zi, "
-            "salariu_brut, persoane_intretinere, activ, cor, tichet_masa_valoare "
+            "salariu_brut, persoane_intretinere, activ, cor, tichet_masa_valoare, iban "
             "FROM salariati" + cond + " ORDER BY nume, prenume", val)
         return [_db_spre_api(dict(r)) for r in cur.fetchall()]
 
@@ -133,7 +152,7 @@ def detalii_salariat(conn, salariat_id):
         cur.execute(
             "SELECT id, cnp, nume, prenume, data_angajare, part_time, ore_zi, "
             "salariu_brut, persoane_intretinere, judet_casa, activ, "
-            "scutit_contrib_minim, motiv_exceptare, cor, tichet_masa_valoare "
+            "scutit_contrib_minim, motiv_exceptare, cor, tichet_masa_valoare, iban "
             "FROM salariati WHERE id = %s", (salariat_id,))
         r = cur.fetchone()
     return _db_spre_api(dict(r)) if r else None

@@ -2129,6 +2129,10 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.bugete (
 -- tichet de masa per salariat (0 = nu primeste). Plafonul legal traieste in common.COTE.
 ALTER TABLE TENANT_PLACEHOLDER.salariati ADD COLUMN IF NOT EXISTS tichet_masa_valoare numeric NOT NULL DEFAULT 0;
 
+-- [F134 plata pe card] mirror al 07_ddl_iban_salariat.sql: IBAN-ul salariatului (cont beneficiar)
+-- pentru fisierul de plata SEPA pain.001. Optional (doar cei platiti pe card). Validat in salariati_api.
+ALTER TABLE TENANT_PLACEHOLDER.salariati ADD COLUMN IF NOT EXISTS iban varchar(34);
+
 -- [F133 beneficii one-off, Faza 2a] mirror al 05_ddl_beneficii_lunare.sql: tichete de vacanta
 -- (si cadou la 2b) = sume one-off per salariat/an/luna/tip (nu config permanent ca masa).
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.beneficii_lunare (

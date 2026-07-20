@@ -710,6 +710,7 @@ class SalariatIn(BaseModel):
     motiv_exceptare: Optional[int] = None
     cor: Optional[str] = None
     tichet_masa_valoare: Optional[float] = None  # [F133]
+    iban: Optional[str] = None  # [F134] cont beneficiar pt plata pe card
 
 class SalariatEdit(BaseModel):
     nume: Optional[str] = None
@@ -726,6 +727,7 @@ class SalariatEdit(BaseModel):
     motiv_exceptare: Optional[int] = None
     cor: Optional[str] = None
     tichet_masa_valoare: Optional[float] = None  # [F133]
+    iban: Optional[str] = None  # [F134] cont beneficiar pt plata pe card
 
 class MigrareValideazaIn(BaseModel):
     cui_uri: list[str]
