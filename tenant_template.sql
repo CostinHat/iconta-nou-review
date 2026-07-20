@@ -2114,6 +2114,17 @@ ALTER TABLE TENANT_PLACEHOLDER.inregistrari_linii DROP CONSTRAINT IF EXISTS inre
 ALTER TABLE TENANT_PLACEHOLDER.inregistrari_linii ADD CONSTRAINT inregistrari_linii_centru_cost_fk
     FOREIGN KEY (centru_cost_id) REFERENCES TENANT_PLACEHOLDER.centre_cost(id);
 
+-- [F143 bugete, Faza 2] mirror al 03_ddl_bugete.sql: buget anual per centru, per clasa
+-- (cheltuieli + venituri). UNIQUE(centru, an) = un rand de buget per centru pe an.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.bugete (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    centru_cost_id integer NOT NULL REFERENCES TENANT_PLACEHOLDER.centre_cost(id),
+    an integer NOT NULL,
+    buget_cheltuieli numeric(14,2) NOT NULL DEFAULT 0,
+    buget_venituri numeric(14,2) NOT NULL DEFAULT 0,
+    CONSTRAINT bugete_centru_an_unic UNIQUE (centru_cost_id, an)
+);
+
 --
 -- F145 (rapoarte configurabile salvabile) — mirror al core/migrare_rapoarte_salvate.py
 --

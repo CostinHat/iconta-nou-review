@@ -1491,3 +1491,24 @@ necontrolat ("adauga un camp peste tot") + notele automate n-au cum sa aleaga ce
 LIMITA: PFA (partida simpla) vede cardul dar centrele au sens redus la partida simpla; nu s-a filtrat pe
 tip_firma (management accounting = optional la ambele). Bugetele si raportul de varianta = Faza 2, nedecise
 in detaliu (per cont-clasa vs global, periodicitate) - se stabilesc cand se ajunge acolo.
+
+### 20.07.2026 F143 Faza 2 - bugete pe centru de cost (granularitate + periodicitate + UI)  (03_ddl_bugete.sql, bugete)
+DECIZIE: bugete pe centru de cost, cu variantele decise la sursa (Regula de Aur, reper CONCURENTA.csv):
+1. GRANULARITATE = per clasa: o pereche (buget_cheltuieli, buget_venituri) per (centru, an), NU un buget
+   net unic. TEMEI: raportul Faza 1 e deja per-clasa (cheltuieli/venituri/net); un buget net global ar
+   ascunde depasirea pe cheltuieli mascata de venituri sub plan (net-ul poate coincide accidental).
+   Concurenta confirma separarea: WinMentor "plan venituri/cheltuieli", Nexus "bugete diferentiate",
+   Keez "linii de buget". Gestioneaza natural si centrele doar-cheltuieli (buget_venituri=0).
+   RESPINS: buget net unic (pierde exact finetea pe care raportul o ofera deja).
+2. PERIODICITATE = anuala (per centru/an). TEMEI: cel mai simplu de intretinut pentru un cabinet mic - o
+   cifra per centru/an/tip vs 12x lunar / 4x trimestrial; bugetul anual e unitatea uzuala de planificare,
+   varianta se raporteaza pe an (realizat-in-an vs buget-an), consistent. RESPINS: lunar/trimestrial
+   (4-12x efortul de introducere, beneficiu marginal la scara de cabinet).
+3. UI = extensie a ecranului Centre de cost existent, NU ecran nou. TEMEI: bugetele-s intrinsec legate de
+   centre; un al doilea card ar fragmenta feature-ul. Sectiune "Bugete (anual)" cu selector de an: buget
+   ch/ve editabil per centru + realizat + varianta alaturi.
+SCHEMA (step A LIVE): tabel bugete (id, centru_cost_id FK, an, buget_cheltuieli, buget_venituri,
+UNIQUE(centru,an)), 03_ddl_bugete.sql aplicat pe toate tenant-urile + template. Step B (backend: set/get
+buget + query varianta) si step C (UI) urmeaza.
+LIMITA: buget anual -> varianta se compara pe an intreg (nu pro-ratare la sub-perioada). Raportul liber
+[de,pana] din Faza 1 ramane pt drill-down operational; varianta e vederea anuala de planificare.
