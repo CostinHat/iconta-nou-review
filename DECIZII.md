@@ -1407,3 +1407,32 @@ strict identice pastreaza doar unul - tratat ca dublura de export, nu ca doua op
 /migrare/straturi pica, meniul degradeaza gratios (arata tot); RIP ramane gated separat pe tip==='pfa',
 deci nu apare la SRL nici in fallback. Reimportul dupa ce contabilul a EDITAT manual o operatiune
 preluata (schimba suma/explicatie) nu o mai recunoaste ca duplicat - acceptabil (a devenit alt rand).
+
+### 20.07.2026 F129 SPART - verificare individuala a 5 declaratii (D392/D094/D207/D700/D710)  (FUNCTIONALITATI.csv F192-F196)
+DECIZIE: F129 ("Declaratii D392, D094, D207, D700, D710", bundle generic "informative/inregistrare
+ramase", PLANIFICAT din analiza concurentei 13.07) era inventar NEEXAMINAT individual - exact tiparul
+D230. Trecute toate 5 prin regula de aur la sursa oficiala ANAF (20.07). Verdicte individuale, F129
+dizolvat, inlocuit cu 5 intrari (F192-F196):
+- D710 (F192) DE CONSTRUIT: declaratie rectificativa a D100 (corectare obligatii bugetul de stat,
+  autoimpunere/retinere). Aplicabila LARG (oricine depune D100). Activa (OPANAF 649/2025). Model de cod
+  = d100.py (LIVE). Singura din 5 clar de construit.
+- D207 (F193) AMANAT (ca D307): informativa impozit retinut la sursa pe beneficiari NEREZIDENTI (art.
+  224 CF, OPANAF 179/2022 actualiz. 303/2026 - activa). Aplicabila dar NISA (doar firme cu plati la
+  nerezidenti). Model structural = D205 (LIVE). Se construieste la caz real, nu preventiv.
+- D392 (F194) RESPINS: depunerea 392A/392B SUSPENDATA prin lege pana la 31.12.2026 (art. LXII OUG
+  115/2023). Nu se construieste motor pentru declaratie cu depunere suspendata legal.
+- D094 (F195) RESPINS: nu mai exista de sine-statator - inglobat in D700 sectiunea B.II (mentiuni
+  schimbare perioada fiscala). CONFIRMAT LA SURSA: lipseste din nomenclatorul DUK (anaf_surse/versiuni.xml),
+  spre deosebire de celelalte 4 care au validator. Obligatia se satisface prin D700.
+- D700 (F196) RESPINS: declaratie de mentiuni ADMINISTRATIVE (modificare vector fiscal/domiciliu/perioada),
+  depusa direct in SPV la schimbare - nu se genereaza din evidenta contabila. Aliniat deciziei "nivel 4"
+  din 17.07 (D010/D060/D093 administrative, RESPINSE).
+TEMEI: fiecare verificat la sursa oficiala 20.07 (static.anaf.ro formulare OPANAF + nomenclator DUK
+versiuni.xml local). Publicul iConta = firme private SRL/PFA/micro; D207 nisa, D392 suspendat, D094
+abrogat, D700 administrativ.
+ALTERNATIVA RESPINSA: a construi bundle-ul intreg (5 motoare) asa cum figura in registru - ar fi
+insemnat 4 motoare inutile (2 pt declaratii inexistente/suspendate, 1 administrativ facut in SPV, 1
+nisa) + abonament permanent de mentenanta. Exact eroarea de inventar D230/D106.
+LIMITA: D207 se reia la primul caz real de plata catre nerezident. D392 reevaluat doar daca suspendarea
+nu se prelungeste in 2027. D710: structura XML reala (validator D710_56) inca de confirmat vs d100.py
+inainte de a decide reutilizare vs motor propriu (verificare in curs, pre-cod).
