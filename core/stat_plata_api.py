@@ -66,6 +66,12 @@ def stat_plata(conn, schema, an, luna):
             "vacanta_peste_plafon": bool(vac and vac_an > plafon_vac_an),
             "cass_tichete": float(calc.get("cass_tichete", 0)),
             "impozit_tichete": float(calc.get("impozit_tichete", 0)),
+            # [F133] pt afisaj transparent: impozit salariu (fara tichete), retinerea pe tichete,
+            # valoarea totala a tichetelor si totalul disponibil (cash net + tichete pe card separat).
+            "impozit_salariu": float(calc["impozit"]) - float(calc.get("impozit_tichete", 0)),
+            "retinut_tichete": float(calc.get("cass_tichete", 0)) + float(calc.get("impozit_tichete", 0)),
+            "valoare_tichete": float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)),
+            "total_disponibil": float(calc["net"]) + float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)),
             "cost": float(calc["cost_angajator"]),
             "cm_zile": cm_zile,
             "cm_brut": c_cm["brut"] if c_cm else 0,
@@ -157,22 +163,25 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     if zc:
         linii.insert(1, (f"Zile concediu medical: {int(zc)}", None))
         linii.insert(len(linii) - 1, ("Indemnizatie CM (neta)", cm_net))
-    # [F133] tichete de masa: bloc distinct inainte de NET (nominalul se primeste in tichete,
-    # nu numerar; CASS+impozit pe tichete se retin din salariul cash - reduc NET-ul).
+    # [F133] tichete: doar TAXA (CASS+impozit) se retine din salariul CASH -> reduce NET-ul,
+    # deci ramane INAINTE de SALARIU NET (coloana reconciliaza la net). Valoarea tichetelor se
+    # primeste PE CARD SEPARAT (nu cash) -> se arata DUPA net, + total disponibil = net + tichete.
     are_masa = float(calc.get("tichete_nominal", 0) or 0) > 0
     are_vac = float(calc.get("tichete_vacanta", 0) or 0) > 0
     if are_masa or are_vac:
         i = len(linii) - 1  # inaintea SALARIU NET
+        linii.insert(i, ("  CASS tichete (10%) - retinut din salariu", -calc["cass_tichete"])); i += 1
+        linii.insert(i, ("  Impozit tichete (10%) - retinut din salariu", -imp_tichete))
+        val_tichete = float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0))
         if are_masa:
-            linii.insert(i, (f"Tichete masa ({tichet_zile} zile x {float(tichet_val):g} lei, in tichete)", calc["tichete_nominal"])); i += 1
+            linii.append((f"Tichete masa ({tichet_zile} zile x {float(tichet_val):g} lei, pe card)", calc["tichete_nominal"]))
         if are_vac:
-            linii.insert(i, ("Tichete vacanta (in tichete)", calc["tichete_vacanta"])); i += 1
-        linii.insert(i, ("  CASS tichete (10%)", -calc["cass_tichete"])); i += 1
-        linii.insert(i, ("  Impozit tichete (10%)", -imp_tichete))
+            linii.append(("Tichete vacanta (pe card separat)", calc["tichete_vacanta"]))
+        linii.append(("TOTAL DISPONIBIL (net + tichete)", float(calc["net"]) + val_tichete))
 
     rows = []
     for eticheta, val in linii:
-        bold = eticheta == "SALARIU NET"
+        bold = eticheta in ("SALARIU NET", "TOTAL DISPONIBIL (net + tichete)")
         lbl_st = st_lbl_b if bold else st_lbl
         val_st = st_val_b if bold else st_val
         val_txt = _bani(val, "lei") if val is not None else ""

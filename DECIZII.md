@@ -1603,3 +1603,18 @@ iulie fara sa apara si in restul lunilor.
 LIMITA: peste plafonul anual (6 sal.minime) suma devine taxabila integral - 2a acopera cazul SUB plafon
 (comun) + semnal la depasire; taxarea integrala peste plafon = deferata (edge rar, ca la cadou 2b).
 Steps urmatoare 2a: calcul (integrare in calcul_salariu) -> stat/monografie -> D112 (validat DUK).
+
+### 20.07.2026 F133 - clarificare fiscala tichete: net CASH scade cu taxa, valoarea pe card separat  (stat_plata_api.py)
+DECIZIE: net-ul de salariu (CASH) SCADE corect cu doar TAXA pe tichete (CASS+impozit), NU cu valoarea
+lor; valoarea tichetelor se primeste pe card SEPARAT. Calculul era corect - problema era AFISAJUL care
+ascundea re. Semnalat de Costin ("net scade in loc sa creasca, CASS pe vacanta nu apare").
+VERIFICAT LA SURSA (Edenred/impozitul.ro): "Reținerile CASS și impozit se fac direct din salariul net...
+nu se scade întreaga sumă din salariul net - doar impozitele și CASS-ul. Valoarea netă a tichetelor se
+adaugă la venitul disponibil, chiar dacă sunt virate pe un card separat." Manual (brut 5000, vacanta 3000):
+CASS tichete 300 + impozit 270 = 570 retinut din cash -> net 2984->2414; +3000 pe card = disponibil 5414
+(cu +2430 fata de fara vacanta = 3000-570).
+FIX AFISAJ (calc NEATINS): stat + fluturas arata acum explicit reținerea pe tichete (CASS+impozit) +
+"total disponibil = net cash + tichete pe card". Impozitul principal din stat = salariu-only (consistent cu
+CASS salariu); reținerea pe tichete = separat. Pe fluturas: taxa pe tichete inainte de NET (reduce cash),
+valoarea tichetelor DUPA NET (pe card) + TOTAL DISPONIBIL.
+LIMITA: "net" pe stat ramane net-ul CASH (corect fiscal/legal); "total disponibil" arata imaginea completa.
