@@ -122,6 +122,12 @@ starea reverificata azi:
   rerulează `cor_incarca.py` cu fișierul nou (întreținere periodică, nu bug); (2) fluxul REGES `AdaugareContract`
   (care trimite codul COR + versiunea la ANAF) NU e încă cablat — `mesaj_adaugare_contract` există în
   reges_client.py dar nu e apelat; când se cablează, ia codul din salariatul deja validat. NU e blocaj — extindere.
+- **F125 clasificare manuală D390 — LIVE 21.07; RĂMÂNE (opțional) marcaj tip pe factură.**
+  Reclasificare + adăugare e LIVE (commit-uri 6ead435 + ff272aa; detaliu ISTORIC 21.07 + DECIZII 21.07 F125):
+  contabilul reclasifică operațiunile auto (L/A → P/S/T/R) + adaugă linii manuale, pe pasul 2 al D390, persistat,
+  fără dublă numărare, validat DUK. **Deschis (opțional, scop mai mare — NU blocaj):** marcajul `tip_d390` direct
+  pe factură (la emitere/editare), ca D390 să citească tipul din factură în loc de reclasificare per-perioadă.
+  Amânat deliberat — atinge modelul de facturi + fluxul de emitere; reclasificarea per-perioadă acoperă nevoia acum.
 - raporteaza.js — verifică vizual data "cu_ora" în feed (migrat azi).
 - Verifică date CM de test invalide în alte tenant-uri (CCMAD corupt deja șters din tenant_002).
 

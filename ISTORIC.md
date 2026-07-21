@@ -1873,3 +1873,28 @@ Test: core/test_cor.py (4 teste normalizare diacritice, de care depinde cautarea
 coduri + E2E HTTP: /cor cauta dupa cod+denumire, validare creare/editare (263501 acceptat, 999999 respins), stat
 include cor. 39 teste PASS (0 regresii), verificator DS 0 nou. LIMITA (DE_FACUT): nomenclatorul e SNAPSHOT (Ordin
 573/180/2024) - la un ordin nou de actualizare se reruleaza cor_incarca.py; fluxul REGES AdaugareContract inca necablat.
+
+# 21.07.2026 — F125 clasificare manuala D390: reclasificare + adaugare (LIVE, fazat)
+Al patrulea item din inventarul de deschideri atacat (dupa F134, F137). Era doar avertisment; clasificarea
+serviciilor (P/S) si triangulatiei (T/R) se facea IN AFARA aplicatiei. Temei/decizii in DECIZII 21.07 F125.
+
+DECIZIE MODEL (STOP, Costin): RECLASIFICARE + adaugare, NU add-only. Constatare la sursa: d390.calcul_d390
+mapeaza ORICE factura IC pe bunuri (emisa->L, primita->A); pt firme cu servicii IC facturate, add-only ar DUBLA
+numararea. Alternativa "marcaj tip_d390 pe factura" (cea mai curata) amanata - atinge modelul facturi + emiterea.
+
+Step 1 (model+backend, commit 6ead435): 2 tabele per tenant/an/luna - d390_reclasificare (override tip pe o
+operatiune auto, per directie+partener: emisa L/T/P/R, primita A/S - INLOCUIESTE, nu adauga) + d390_manual (linii
+pur manuale P/S/T/R fara factura). 09_ddl (owner iconta_user) + template. d390.calcul_d390(...reclasificari=)
+aplica override-ul; genereaza AUTO-TRAGE din DB cand nu-s date explicit -> toate caile (wizard, pachet, control
+incrucisat verifica_d390) vad aceleasi clasificari (rezolva nota veche "P/S raman v2"). _facturi_ic = sursa unica
+a filtrului IC (calcul + operatiuni_auto, fara dublura). d390_clasificare_api: stare/salveaza_reclasificare
+(valideaza tranzitia)/manual_adauga/sterge. main.py: 4 endpoint-uri /tenants/{id}/d390-clasificare.
+DOVADA (regula de aur): XML cu reclasificare L->P + linie manuala S = stare VALID pe DUK (d390), fara erori.
+
+Step 2 (UI, commit ff272aa): panou "Clasificare intracomunitara" pe PASUL 2 al declaratiei D390 (declaratii.js,
+doar pt d390, additiv - nu reorganizez wizardul generic): lista operatiunilor auto cu selector de tip +
+adaugare/stergere linii manuale + "Regenereaza D390". Fix endpoint: d390.pull are nume necalificate -> rezolv
+schema cu o conexiune, apoi db.get_conn(schema) pozitionat (nu get_conn() simplu - dadea 500 pe stare). Formular
+manual cu .camp + .camp-eticheta (regula DS ETICHETE_LIPSA), verificator DS 0 nou.
+Test: test_d390.py 8 teste (+4 F125) PASS + E2E autentificat tenant_002 (reclasificare emisa IT->P reflectata in
+stare, tranzitie ilegala emisa->A respinsa 422, reset sterge override, manual add + tara non-UE respinsa). curatat.
