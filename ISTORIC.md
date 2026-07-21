@@ -2024,3 +2024,14 @@ window.open cara doar URL-ul, nu obiectul din raspunsul POST. (3) app.js: citest
 (fallback {rol:"client"} daca lipseste). DOVADA: curl real pe endpoint (tenant 2) -> nume_tenant="DANTE INTERNATIONAL
 SA", tenant_are_cabinet=true; scriere cu token preview=403, citire=200 (guard intact); node --check ambele JS OK;
 verificator DS fara neconformitati noi. De ce prin URL si nu doar prin raspuns -> DECIZII 21.07 F197.
+
+# 21.07.2026 — F187 FIX: Export WinMentor lunar nu descarca nimic (filtru status gresit)
+BUG (Costin, DANTE iunie 2026): "Export SAGA luna" descarca zip, "Export WinMentor luna" nu face nimic la click.
+Diagnostic la sursa (curl real, acelasi tenant/luna): SAGA 200/zip, WinMentor 404 "nicio factura emisa". Frontend
+identic (facturi_ecran.js 216 vs 229) — ambele lovesc ruta corecta, dar WinMentor 404 -> handler arata mesaj "info",
+zero download. Cauza in DB: cele 2 facturi emise DANTE (ALTEX/AUCHAN) au status='de_preluat', dar export_winmentor
+cerea facturi_emise_luna(status='emisa') -> 0. 'emisa' ca STATUS nu se seteaza nicaieri (grep); 'de_preluat' e
+starea normala a facturii emise. FIX: scos filtrul status='emisa' din export_winmentor.export_luna -> paritate cu
+SAGA (aceleasi facturi in ambele). Actualizate docstring-uri + mesajul 404. DOVADA: curl DANTE dupa fix -> 200, zip
+cu Facturi.txt (2 facturi ALTEX+AUCHAN) + Articole.txt; pytest 13 passed (11 vechi + 2 regresie: status nefiltrat,
+factura de_preluat inclusa). SAGA neatins. De ce + limita (anulata/storno neexcluse in ambele) -> DECIZII 21.07 F187-fix.

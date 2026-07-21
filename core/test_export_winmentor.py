@@ -123,3 +123,36 @@ def test_encoding_1250_caracter_neencodabil_semnaleaza():
     with pytest.raises(ValueError) as ei:
         wm.encode_1250("Factura → client 中文", unde="Facturi.txt")
     assert "neencodabil" in str(ei.value).lower()
+
+
+# ---- REGRESIE F187-fix 21.07: WinMentor exporta facturile emise indiferent de status ----
+# Bug real (DANTE iunie 2026): facturile emise au status='de_preluat' (starea NORMALA la creare,
+# vezi facturi_api creeaza / main.py default). Filtrul vechi status='emisa' le excludea -> 404,
+# desi SAGA (fara filtru) le exporta. Cauza-radacina: 'de_preluat' e starea normala, nu una de exclus.
+
+def test_export_luna_NU_filtreaza_pe_status_emisa(monkeypatch):
+    """export_luna trebuie sa ceara facturile FARA a impune status='emisa' (paritate cu SAGA)."""
+    from core import export_saga as _xs
+    apeluri = {}
+    def _spy(conn, schema, an, luna, status=None):
+        apeluri["status"] = status
+        return [1]
+    monkeypatch.setattr(_xs, "facturi_emise_luna", _spy)
+    firma, factura, linii = _factura()
+    monkeypatch.setattr(_xs, "date_factura", lambda conn, schema, fid: (firma, factura, linii))
+    rez = wm.export_luna(None, "sch", 2026, 6)
+    assert apeluri["status"] is None, "WinMentor a reintrodus filtrul pe status (bug F187 reaparut)"
+    assert rez and "Facturi.txt" in rez and "Articole.txt" in rez
+
+def test_export_luna_include_factura_de_preluat(monkeypatch):
+    """O factura emisa cu status='de_preluat' (cazul real DANTE) TREBUIE sa ajunga in export."""
+    from core import export_saga as _xs
+    # facturi_emise_luna real filtreaza pe status doar daca i se cere; aici confirmam ca id-ul
+    # unei facturi 'de_preluat' (returnat cand NU se filtreaza) chiar produce continut txt.
+    monkeypatch.setattr(_xs, "facturi_emise_luna",
+                        lambda conn, schema, an, luna, status=None: [] if status else [42])
+    firma, factura, linii = _factura(numar="7")
+    monkeypatch.setattr(_xs, "date_factura", lambda conn, schema, fid: (firma, factura, linii))
+    rez = wm.export_luna(None, "sch", 2026, 6)
+    assert rez is not None, "factura de_preluat exclusa din export (regresie F187)"
+    assert b"NrDoc=7" in rez["Facturi.txt"]

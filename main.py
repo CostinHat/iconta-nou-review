@@ -5118,7 +5118,7 @@ def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_contex
 @app.get("/tenants/{tenant_id}/facturi/export-winmentor")  # [F187]
 def export_winmentor_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
     """Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip.
-    Doar facturi emise cu status='emisa'. Dependenta de config nomenclator WinMentor (vezi export_winmentor)."""
+    Facturile emise ale lunii (paritate cu SAGA, fara filtru status). Dependenta de config nomenclator WinMentor (vezi export_winmentor)."""
     from core import export_winmentor as _wm
     import io as _io, zipfile as _zip
     with db.get_conn() as conn:
@@ -5130,7 +5130,7 @@ def export_winmentor_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_c
         except ValueError as e:  # caracter neencodabil cp1250 -> nu scrie byte gresit tacit
             raise HTTPException(422, str(e))
     if not fisiere:
-        raise HTTPException(404, "nicio factura emisa (status='emisa') in luna aleasa")
+        raise HTTPException(404, "nicio factura emisa in luna aleasa")
     buf = _io.BytesIO()
     with _zip.ZipFile(buf, "w", _zip.ZIP_DEFLATED) as z:
         for nume, continut in fisiere.items():

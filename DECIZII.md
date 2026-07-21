@@ -1796,3 +1796,23 @@ _pvUser() intai). (b) A baga nume_tenant in payload-ul JWT — respins: CLAUDE.m
 (c) Endpoint nou GET /portal/eu apelat de tab-ul nou — respins ca surplus: valoarea e deja cunoscuta la emitere.
 LIMITA: daca URL-ul e trunchiat (u lipsa/corupt), app.js cade pe fallback {rol:"client"} = portal client (nu gratuit),
 degradare acceptabila. Guard-ul read-only (token preview -> 403 pe scriere) ramane backstop-ul; confirmat 403/200.
+
+### 21.07.2026 F187-fix — WinMentor exporta facturile emise FARA filtru pe status (paritate cu SAGA)  (core/export_winmentor.py, main.py:5119)
+DECIZIE: exportul WinMentor lunar nu mai impune status='emisa'; exporta toate facturile directie='emisa'
+tip='factura' din luna, exact ca SAGA.
+TEMEI (verificare la sursa, bug reprodus): DANTE iunie 2026 — SAGA descarca (200, zip), WinMentor da 404
+"nicio factura emisa". Curl pe ambele rute, acelasi tenant/luna: SAGA 200/1521B, WinMentor 404. Cauza in DB
+(tenant_002.facturi): cele 2 facturi emise (ALTEX, AUCHAN) au status='de_preluat', singurul status prezent.
+export_winmentor.export_luna cerea facturi_emise_luna(status='emisa') -> 0 rezultate. 'emisa' ca STATUS nu se
+seteaza nicaieri prin cod (grep: niciun SET status='emisa'); e doar param-default in semnatura creeaza_factura,
+suprascris peste tot cu 'de_preluat' (facturi_api.py:197/309, main.py:4015 default, woocommerce.py:56). Deci
+'de_preluat' = starea NORMALA a facturii emise (asteapta preluarea in contabilitate = chiar scopul exportului),
+iar filtrul F187 excludea practic toate facturile reale. Testele F187 (11) treceau fiindca erau PUR unitare pe
+functiile txt, fara DB — nu atingeau calea de query.
+ALTERNATIVA RESPINSA: (a) a lasa filtrul si a "muta" facturile pe status='emisa' — respins: ar cere o tranzitie
+de status inexistenta in flux si ar rupe SAGA-paritatea; premisa "de_preluat=neemisa corect" e falsa. (b) a filtra
+status NOT IN ('anulata','storno') doar la WinMentor — respins: ar rupe din nou paritatea cu SAGA (care nu filtreaza).
+LIMITA: NICIUNUL dintre exporturi (SAGA sau WinMentor) nu exclude azi 'anulata'/'storno' — DANTE n-are astfel de
+facturi, deci nereprodus. Daca se doreste excluderea lor, e o schimbare UNIFORMA pe facturi_emise_luna (afecteaza
+ambele exporturi) + un default nou — de decis separat, nu se strecoara in acest fix. Regresie: test_export_winmentor.py
++2 teste (status nefiltrat + factura de_preluat inclusa).

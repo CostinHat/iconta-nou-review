@@ -13,7 +13,8 @@ locatie, altfel importul esueaza - NU auto-creeaza):
     intre cele doua fisiere - daca diverg, WinMentor nu gaseste articolul).
 
 REUTILIZEAZA conducta SAGA (export_saga.date_factura/facturi_emise_luna/_firma) - doar IESIREA difera.
-Doar facturi EMISE cu status='emisa' (nu 'de_preluat'/'anulata'; facturi n-au status 'validata').
+Facturile EMISE ale lunii (directie='emisa', tip='factura'), paritate cu SAGA - fara filtru pe status
+(F187-fix 21.07: 'de_preluat' e starea normala a facturii emise, nu una de exclus).
 
 DEPENDENTA DE CONFIG (NU e self-contained ca SAGA - declarat explicit, DECIZII 19.07):
   WinMentor cere ca UM, clasa, gestiunea sa PRE-EXISTE in nomenclatorul cabinetului. v1 = facturi de
@@ -152,11 +153,13 @@ def articole_txt(linii_toate, config=None):
 # ---- orchestrator (reutilizeaza conducta SAGA) ----
 
 def export_luna(conn, schema, an, luna, config=None):
-    """Intoarce {'Facturi.txt': bytes, 'Articole.txt': bytes} (cp1250) pentru facturile EMISE cu
-    status='emisa' din luna. Gol (None) daca nicio factura. Reutilizeaza export_saga.facturi_emise_luna
-    (cu status='emisa') + date_factura."""
+    """Intoarce {'Facturi.txt': bytes, 'Articole.txt': bytes} (cp1250) pentru facturile EMISE din
+    luna. Gol (None) daca nicio factura. Reutilizeaza export_saga.facturi_emise_luna + date_factura.
+    F187-fix: NU se filtreaza pe status='emisa' - 'de_preluat' e starea NORMALA a unei facturi emise
+    (asteapta tocmai preluarea in contabilitate = scopul exportului); filtrul vechi excludea practic
+    toate facturile reale. Paritate cu SAGA (aceleasi facturi in ambele exporturi). Vezi DECIZII 21.07."""
     from core import export_saga as _xs
-    ids = _xs.facturi_emise_luna(conn, schema, an, luna, status="emisa")
+    ids = _xs.facturi_emise_luna(conn, schema, an, luna)
     if not ids:
         return None
     facturi = []
