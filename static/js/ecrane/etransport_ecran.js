@@ -1,5 +1,5 @@
 // [etransport] Notificare e-Transport - formular dedicat (structura imbricata), genereaza XML pt SPV
-import { api, arataMesaj, confirmaCaseta } from "../api.js";
+import { api, arataMesaj, confirmaCaseta, dataRo } from "../api.js";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const JUDETE = ["AB","AR","AG","BC","BH","BN","BT","BV","BR","B","BZ","CS","CL","CJ","CT","CV","DB","DJ","GL","GR","GJ","HR","HD","IL","IS","IF","MM","MH","MS","NT","OT","PH","SM","SJ","SB","SV","TR","TM","TL","VS","VL","VN"];
@@ -19,9 +19,9 @@ function _fereastraUit(dataTransport, intracom) {
   const expirat = zileRamase < 0;
   const ok = !preaDevreme && !expirat;
   let mesaj, semafor;
-  if (preaDevreme) { mesaj = `Prea devreme: declari cu max 3 zile înainte (transport ${dataTransport}).`; semafor = "rosu"; }
-  else if (expirat) { mesaj = `Fereastră expirată: UIT ar fi fost valabil până la ${valabilPana.toISOString().slice(0,10)}.`; semafor = "rosu"; }
-  else { mesaj = `În fereastră. UIT valabil ${zileVal} zile (până la ${valabilPana.toISOString().slice(0,10)}).`; semafor = zileRamase <= 1 ? "galben" : "verde"; }
+  if (preaDevreme) { mesaj = `Prea devreme: declari cu max 3 zile înainte (transport ${dataRo(dataTransport)}).`; semafor = "rosu"; }
+  else if (expirat) { mesaj = `Fereastră expirată: UIT ar fi fost valabil până la ${dataRo(valabilPana.toISOString().slice(0,10))}.`; semafor = "rosu"; }
+  else { mesaj = `În fereastră. UIT valabil ${zileVal} zile (până la ${dataRo(valabilPana.toISOString().slice(0,10))}).`; semafor = zileRamase <= 1 ? "galben" : "verde"; }
   return { ok, mesaj, semafor, valabilPana: valabilPana.toISOString().slice(0,10), zileVal, zileRamase };
 }
 
@@ -183,7 +183,7 @@ export async function ecranEtransport(corp, nav, t) {
     zona.innerHTML = `<div class="pf-lista zebra-lista">${lista.map((u) => `
       <div class="pf-frand" style="display:flex;justify-content:space-between;align-items:center">
         <div class="pf-frand-text">
-          <div class="pf-frand-nume">${u.uit ? "UIT " + esc(u.uit) : "(fără UIT)"} · transport ${esc(u.data_transport || "—")}</div>
+          <div class="pf-frand-nume">${u.uit ? "UIT " + esc(u.uit) : "(fără UIT)"} · transport ${u.data_transport ? dataRo(u.data_transport) : "—"}</div>
           <div class="pf-frand-sub">
             <span style="color:${cul[u.semafor_trimitere]}">trimitere: ${esc(etTrim[u.semafor_trimitere] || u.stare)}</span> ·
             <span style="color:${cul[u.semafor_timp]}">timp: ${esc(etTimp[u.semafor_timp] || "")}${u.zile_ramase != null ? " (" + u.zile_ramase + "z)" : ""}</span>

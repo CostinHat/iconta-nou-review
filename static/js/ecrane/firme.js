@@ -7,7 +7,7 @@ import { fluxConcediu } from "./flux_concediu.js?v=8";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=7";
 import { ecranRip } from "./rip_ecran.js";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=2";
-import { ecranEtransport } from "./etransport_ecran.js?v=1";
+import { ecranEtransport } from "./etransport_ecran.js?v=2";
 import { meniuMigrarePerFirma } from "./migrare.js?v=5";  // [p96_import_firma]
 import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
 import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
@@ -454,7 +454,7 @@ async function ecranVerificari(corp, nav, t) {
         </div><span class="cab-pct ${r.d205_vs_457.coerent ? "pct-verde" : "pct-rosu"}"></span></div>` : ""}
         ${vs ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Stocuri (contabil vs fi\u0219e CV)</div>
-          <div class="pf-frand-sub">${vs.ok ? "in regula" : vs.conturi.filter(c=>!c.ok).map(c=>`cont ${c.cod || c.cont}: contabil ${c.sold_contabil} vs fi\u0219e ${c.valoare_fise_cv} (dif ${c.diferenta})`).join(" \u00b7 ")}</div>
+          <div class="pf-frand-sub">${vs.ok ? "in regula" : vs.conturi.filter(c=>!c.ok).map(c=>`cont ${c.cod || c.cont}: contabil ${bani(c.sold_contabil)} vs fi\u0219e ${bani(c.valoare_fise_cv)} (dif ${bani(c.diferenta)})`).join(" \u00b7 ")}</div>
         </div><span class="cab-pct ${vs.ok ? 'pct-verde' : 'pct-rosu'}"></span></div>` : ""}
         ${intra ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Intrastat (prag 1.000.000 lei/flux, an ${an})</div>

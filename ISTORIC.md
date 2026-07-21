@@ -1935,3 +1935,23 @@ butonului = HTTP 200, zip Facturi.txt+Articole.txt, cp1250 valid, ș/ț->cedila 
 caracter neencodabil (emoji)->422; factura restaurata, tenant_002 curat. node-check + verificator DS 0 nou. Restart activ.
 RAMAS din audit: control fiscal / e-Transport / SPV+gratuit inca de privit cu ochii (checklist dat 21.07); WinMentor
 UI acum EXISTA de verificat. LIMITA: round-trip real import WinMentor pending cabinet configurat.
+
+# 21.07.2026 — Audit vizual 4 ecrane (partea automatizabila) + 2 findings ISO/bani reparate
+Auditul celor 4 ecrane post-14.07 (control fiscal / e-Transport / SPV+gratuit / WinMentor): partea automatizabila
+= grep pe sursele JS care produc DOM-ul (SPA client-side -> curl da doar shell-ul, nu DOM randat) + date API.
+Rezultat baseline: empty-state .stare-goala prezent pe toate 4; ICOANE rezolva (shield etc.); WinMentor buton+async+
+nume fisier OK; portal client = doar ecrane read-only (zero actiuni cabinet); dedup alerte control IMPLEMENTAT
+(dejaInIncrucisat). DOUA findings reale prinse de grep (DS cap.4, nu prinse de verificator - string calculat, nu
+${x.data} in innerHTML), reparate acum:
+
+1. e-Transport (etransport_ecran.js): date ISO brute in loc de dataRo. Mesajele time-gate (:22 transport ${dataTransport},
+   :23/:24 valabilPana.toISOString()) + lista "UIT-uri trimise" (:186 u.data_transport) -> toate prin dataRo() (zz.ll.aaaa).
+   Extins la :22 (acelasi dataTransport brut, aceeasi clasa - altfel 1 din 3 branse ramanea ISO). import + dataRo.
+2. Control fiscal per-firma (firme.js:457): sold_contabil / valoare_fise_cv / diferenta afisate RAW -> prin bani()
+   (1.234,50 nu 1234.5), pe verificarea "Stocuri contabil vs fise CV".
+
+Cache-bust: etransport_ecran.js?v=1->2 (firme.js), firme.js?v=4->5 (cabinet.js + asistent.js). DOVADA (regula de aur):
+dataRo/bani rulate VERBATIM (sursa api.js) pe intrarile reale -> "2026-07-24"->24.07.2026 (si cu ora), 1234.5->1.234,50,
+-89.9->-89,90, 1234567.8->1.234.567,80. node-check 4 fisiere + verificator DS 0 nou. Fara restart (doar frontend).
+RAMAS strict pentru ochi (Edge, negrepabil): aliniere/spacing, contrast gri-pe-gri, culorile efective ale semaforului,
+.buton-activ pe toggle, fereastra fara scroll orizontal - vezi checklist-ul 21.07.
