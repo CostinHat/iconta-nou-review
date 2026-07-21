@@ -78,6 +78,12 @@ starea reverificata azi:
   limit-ul e deja rezolvat prin exceptare.
 
 ## 5. Iterații viitoare (nu urgente)
+- **Breadcrumb/subtitlu preview „Facturare gratuită"** — deschis 21.07 (audit vizual F197). În preview-ul
+  portalului client, când contul e gratuit (fără cabinet) subtitlul arată „Facturare gratuită"; de verificat că
+  breadcrumb-ul/antetul din modul preview nu induce în eroare cabinetul (e portal client, nu contul gratuit al
+  cabinetului). Cosmetic, necesită privit cu ochiul pe cazul gratuit real.
+- **Nume fișier la descărcarea balanțelor** — deschis 21.07. De uniformizat numele fișierului descărcat (balanță)
+  cu tiparul celorlalte exporturi (`export_<tip>_<an>_<luna>`), ca la SAGA/WinMentor. Minor, de confirmat vizual.
 - **Mesaje de eroare `.mig-gol` -> `arataMesaj`: FACUT 18.07 (48/53).** Cele ~50 utilizari `.mig-gol` din blocuri catch/validare/loading convertite la `arataMesaj(zona, txt, tip)` (eroare/avert/info) in rip_ecran/operatiuni/etransport/cabinet/migrare/firme/facturi_ecran. RAMAN 5 template-embedded (NU catch, HTML in template - lasate deliberat, nu se ghiceste): asistenti.js:330 (ternar in render), firme.js:428 (eroare conditionala inline in panou), :1315 (ramura ternar `${r.mesaj}`), :1343 (lista .map de mesaje - continut, nu feedback), :1689 (nota permanenta 'Atentie: nota legata de factura'). Verificator TOTAL 0. LIMITA: caile de eroare din catch nu au fost declansate runtime (greu de atins) - conversie mecanica + node-check + aliniere cu tiparul arataMesaj existent in app.
 - **Export către programul contabilului — SAGA (F171) + WinMentor (F187) LIVRATE; Ciel BLOCAT pe spec.**
   SAGA (F171 18.07): facturi emise în XML propriu, format de la manual.sagasoft.ro topic-76.
@@ -86,6 +92,11 @@ starea reverificata azi:
   encoding Windows-1250 cu gard, cod articol derivat consecvent. NU e self-contained ca SAGA — dependență de
   config nomenclator WinMentor al cabinetului (clasă/gestiune/UM); v1=servicii, stoc complex=v2. Vezi DECIZII 19.07.
   LIMITA (ambele): round-trip real (import efectiv) pending cabinet real — cod+spec verificate, necolorat verde live.
+  - **Exclude `anulata`/`storno` UNIFORM pe ambele exporturi (SAGA + WinMentor)** — deschis 21.07 din F187-fix.
+    Azi WinMentor a fost aliniat la SAGA (fără filtru status, `de_preluat` inclus). Dar NICIUNUL nu exclude azi
+    facturile `anulata`/`storno` (DANTE n-are, deci nereprodus). Fixul corect e o singură schimbare pe
+    `export_saga.facturi_emise_luna` (default `status NOT IN ('anulata','storno')`) ca să afecteze ambele deodată —
+    NU un filtru pus doar pe unul (ar rupe iar paritatea). De decis + un default nou. Vezi DECIZII 21.07 F187-fix.
 - **Ciel — BLOCAT PE SPECIFICAȚIE (NU planificat orb).** 3 necunoscute verificate la sursă 19.07: (1) versiune —
   Ciel v6/v7/NextUp au formate DIFERITE (facturis.ro); (2) spec neclar publică (nu există portal oficial ca
   WinMentor); (3) cere coduri ANALITICE pe care iConta poate să nu le aibă la granularitatea Ciel. Se deblochează

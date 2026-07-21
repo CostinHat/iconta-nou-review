@@ -2035,3 +2035,44 @@ starea normala a facturii emise. FIX: scos filtrul status='emisa' din export_win
 SAGA (aceleasi facturi in ambele). Actualizate docstring-uri + mesajul 404. DOVADA: curl DANTE dupa fix -> 200, zip
 cu Facturi.txt (2 facturi ALTEX+AUCHAN) + Articole.txt; pytest 13 passed (11 vechi + 2 regresie: status nefiltrat,
 factura de_preluat inclusa). SAGA neatins. De ce + limita (anulata/storno neexcluse in ambele) -> DECIZII 21.07 F187-fix.
+
+# ============================================================
+# === Sfârșit de zi 21.07.2026 (recap consolidat) ===
+# ============================================================
+# Sinteză peste intrările per-task de mai sus (F125, F120, F187 UI, audit vizual, F197, nginx, F187-fix).
+# ICONTA_STATUS.md NU se recreează — e înglobat aici (CLAUDE.md, o singură sursă). Detaliul + commit-urile
+# fiecărui task rămân în intrările proprii de mai sus și în git log; aici doar CE s-a închis, grupat.
+
+## ÎNCHIS AZI (verificat)
+
+1. AUDIT VIZUAL 4/4 — findings prinse DOAR cu ochiul/mâna pe buton, nu de grep/verificator/teste:
+   - e-Transport: rând UM/greutăți re-aliniat + simetrie etichete (dd8a6e8, cf9d7ae).
+   - Control fiscal: „Verificări contabile" nu mai arată ca link mort → text clar (0cffaf9, cf9d7ae).
+   - SPV/gratuit: preview portal + guard read-only + banner (parte din F197, vezi 3).
+   - WinMentor UI: butonul „Export WinMentor lună" cablat (drift de registru corectat, 9b52388).
+   META-LECȚIE: cele 11 teste unitare F187 treceau fără să atingă DB → butonul real pica pe date reale
+   (DANTE, status='de_preluat'). Auditul vizual cu mâna pe buton a fost SINGURUL care a prins-o. De aici
+   regula: după orice feature cu buton→rută→date, o probă vizuală pe date reale, nu doar teste unitare verzi.
+
+2. F197 PREVIZUALIZARE PORTAL CLIENT din cabinet (feature nou, decizie iunie neonorată → onorată):
+   buton „Previzualizează portalul" pe fișa firmei (Acces client), guard read-only pe BACKEND (token
+   preview → 403 pe orice scriere, confirmat curl 403/200), banner PREVIZUALIZARE proeminent, și fix-ul
+   de context tenant (userul cu nume_tenant+tenant_are_cabinet trece prin URL → portal client corect, nu
+   cădere pe „Facturare gratuită"). Commit-uri: f065cda, d90b1e5, 9096ac9.
+
+3. REGRESIE INFRA nginx /static/ (429 pe prod): config nou-iconta aplica rate limit și pe modulele ES →
+   429 → pagină albă (fals-diagnosticat inițial ca „bug preview"). Exceptare limit_req pe /static/
+   restaurată (da89307). Infra, nu în repo — procedura + de ce în DECIZII/ISTORIC 21.07.
+
+4. WINMENTOR STATUS-FIX (F187-fix): filtrul status='emisa' excludea facturile 'de_preluat' (starea NORMALĂ
+   a facturii emise) → 404 pe toate facturile reale, deși SAGA le exporta. Scos filtrul → paritate SAGA.
+   Dovadă: curl DANTE 200 + zip (ALTEX+AUCHAN); pytest 13 (11+2 regresie). Commit 7c67aec, DECIZII 21.07.
+
+## DESCHIS (mutat în DE_FACUT.md, nu se pierde)
+- Exclude 'anulata'/'storno' UNIFORM pe ambele exporturi (o schimbare pe facturi_emise_luna, nu pe unul).
+- Cache-Control immutable pe asset-uri versionate ?v= (deja în DE_FACUT §4, optimizare, nu blocant).
+- Breadcrumb/subtitlu preview „Facturare gratuită" — de privit vizual pe cazul gratuit real.
+- Nume fișier la descărcarea balanțelor — uniformizat cu tiparul export_<tip>_<an>_<luna>.
+
+## STARE GRUPURI
+- GRUP C ÎNCHIS: e-Transport + Control fiscal + SPV/gratuit + WinMentor — toate confirmate vizual.
