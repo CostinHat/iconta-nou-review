@@ -2000,3 +2000,14 @@ FIX: adaugat "location /static/ { proxy_pass 127.0.0.1:8010; }" FARA limit_req i
 vechi). Procedura prod: backup nou-iconta.bak-21iul -> insert (python, nu sed) -> nginx -t TRECE -> systemctl reload
 nginx (zero downtime) -> verificat 40x /static/js/app.js = 40x200/0x429, API inca trece. Detaliu + de ce in DECIZII 21.07.
 DE_FACUT (secundar): Cache-Control immutable pe ?v=. NOTA: nginx e INFRA (nu in repo) - decizia+procedura raman aici.
+
+# 21.07.2026 — F197 FIX: preview portal spargea read-only (token in-memory fragil) + banner lipsa
+BUG critic raportat de Costin (test vizual): in preview a putut trimite o solicitare (scriere client reusita) +
+bannerul lipsea. Diagnostic la sursa (reprodus): BACKEND-UL E CORECT - POST /portal/solicitari cu token preview -> 403,
+cu client real -> 200. Bug in FRONTEND: bannerul lipsea -> estePreview()=false -> intraPreview nu pusese tokenul
+preview -> tab-ul folosea alt token (in-memory _tokenPreview pierdut la re-render/reload -> fallback pe sessionStorage
+copiat de window.open -> non-preview -> mutatia trecea). FIX: token preview mutat de la in-memory la CHEIE PROPRIE in
+sessionStorage (iconta_pv_token, per-tab izolat, precedenta absoluta) -> determinist, supravietuieste reload, tab-ul
+preview foloseste DOAR tokenul preview. Banner: .caseta-info -> .caseta-atentie (rosu, proeminent, cerut vizibil).
+Backend-ul (guard _preview_readonly_guard) e backstop-ul. DOVADA: reprodus 403 preview / 200 client; node-check +
+verificator 0. Cache-bust portal?v=10; sesiune.js/app.js no-cache (nginx serveste /static/ dupa fix-ul de azi).

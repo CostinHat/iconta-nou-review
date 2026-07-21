@@ -1761,3 +1761,21 @@ ce cauta pe .js/.css). Adaugat "location /static/ { proxy_pass 127.0.0.1:8010; }
 PROCEDURA PROD (nginx = daca crapa, cade site-ul): backup (.bak-21iul) -> insert -> nginx -t (TRECE) -> reload (nu
 restart, zero downtime) -> verificat 40 cereri rapide /static/js/app.js = 40x200, 0x429; API inca trece (401 pe /portal).
 LIMITA/SECUNDAR (DE_FACUT): Cache-Control immutable pe asset-uri versionate ?v= ar taia si revalidarile (optimizare).
+
+### 21.07.2026 F197 fix: preview portal spargea read-only (token in-memory fragil) -> token pe cheie sessionStorage  (sesiune.js, portal.js)
+BUG CRITIC (Costin, test vizual): in preview portal a putut TRIMITE o solicitare (scriere client reusita) + bannerul
+LIPSEA. Parea guard de securitate absent.
+DIAGNOSTIC LA SURSA (regula de aur, reprodus): backend-ul e CORECT - POST /portal/solicitari cu token preview -> 403,
+cu token client real -> 200. Guard-ul (_preview_readonly_guard) functioneaza. BUG-UL era in FRONTEND: bannerul lipsea
+-> estePreview() era false -> intraPreview nu pusese tokenul preview -> tab-ul folosea alt token. CAUZA: override-ul
+IN-MEMORY (let _tokenPreview) e fragil - se pierde la re-render/reload/instanta modul dublata; la pierdere, token()
+cadea pe sessionStorage (tokenul copiat de window.open) -> non-preview -> mutatia trecea.
+DECIZIE: tokenul preview trece de la IN-MEMORY la o CHEIE PROPRIE in sessionStorage (iconta_pv_token/pv_user).
+sessionStorage e per-tab izolat (izolare_tab_v1) -> NU localStorage, sesiunea cabinet din tab-ul ei ramane intacta
+(exact intentia initiala). Avantaj vs in-memory: DETERMINIST - supravietuieste re-render/reload; PRECEDENTA absoluta
+in token()/user()/estePreview() -> tab-ul preview foloseste DOAR tokenul preview, niciodata tokenul real. Logout =
+curata cheile PV + window.close. Backend-ul (guard) ramane backstop-ul: chiar daca frontendul ar gresi, tokenul
+preview e read-only pe server.
+BANNER: de la .caseta-info (albastru-pal, se putea rata) la .caseta-atentie (rosu, proeminent) - "PREVIZUALIZARE -
+doar vizualizare", cerut vizibil. Aici rosul e justificat (semnaleaza mod restrictionat + actiuni dezactivate).
+DOVADA: reprodus POST solicitari preview 403 / client 200; frontend determinist (cheie sessionStorage, nu in-memory).

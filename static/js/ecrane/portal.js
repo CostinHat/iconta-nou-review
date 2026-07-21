@@ -48,7 +48,7 @@ export function desktopPortal(continut, nav) {
   const carduriVizibile = _eGratuit() ? CARDURI.filter((c) => GRATUIT_CARDURI.has(c.cheie)) : CARDURI;
 
   continut.innerHTML = `
-    ${sesiune.estePreview() ? '<div class="caseta-info" style="margin-bottom:12px"><span class="ci-mesaj"><b>Previzualizare</b> — vezi portalul exact ca acest client. Doar vizualizare; acțiunile sunt dezactivate în acest mod.</span></div>' : ""}
+    ${sesiune.estePreview() ? '<div class="caseta-atentie" style="margin-bottom:12px"><span class="ca-mesaj"><b>PREVIZUALIZARE — doar vizualizare.</b> Vezi portalul exact ca acest client. Acțiunile (trimitere solicitări, pozare bon, orice input) sunt dezactivate în acest mod.</span></div>' : ""}
     <div class="cab-salut portal-sus" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
       <div>
         <div class="cab-salut-nume">${firma}</div>

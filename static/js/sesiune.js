@@ -7,15 +7,22 @@
 
 const CHEIE_TOKEN = "iconta_token";
 const CHEIE_USER = "iconta_user";
+// [F-preview] token de PREVIZUALIZARE portal pe cheie PROPRIE in sessionStorage (per-tab izolat, ca
+// izolare_tab_v1 - NU localStorage, deci sesiunea cabinet din tab-ul ei ramane intacta). DETERMINIST:
+// supravietuieste re-render/reload; are precedenta absoluta -> tab-ul preview foloseste DOAR tokenul
+// preview (read-only pe backend), niciodata tokenul real copiat de window.open (bugul in-memory).
+const CHEIE_PV_TOKEN = "iconta_pv_token";
+const CHEIE_PV_USER = "iconta_pv_user";
 
 let _abonati = [];  // callback-uri notificate la schimbarea sesiunii
 
-// [F-preview] token de PREVIZUALIZARE portal, tab-local, IN-MEMORY (NU sessionStorage) -> sesiunea
-// cabinet din tab-ul ei ramane intacta; nu persista la reload; logout in preview inchide tab-ul.
-let _tokenPreview = null, _userPreview = null;
-
 function _user() {
   try { return JSON.parse(sessionStorage.getItem(CHEIE_USER)); }
+  catch { return null; }
+}
+
+function _pvUser() {
+  try { return JSON.parse(sessionStorage.getItem(CHEIE_PV_USER)); }
   catch { return null; }
 }
 
@@ -25,31 +32,32 @@ function _anunta() {
 
 export const sesiune = {
   token() {
-    return _tokenPreview || sessionStorage.getItem(CHEIE_TOKEN);
+    // preview are PRECEDENTA absoluta (tab-ul preview nu foloseste niciodata tokenul cabinet copiat)
+    return sessionStorage.getItem(CHEIE_PV_TOKEN) || sessionStorage.getItem(CHEIE_TOKEN);
   },
 
   user() {
-    return _userPreview || _user();
+    return _pvUser() || _user();
   },
 
   rol() {
-    const u = _userPreview || _user();
+    const u = _pvUser() || _user();
     return u ? u.rol : null;
   },
 
   esteLogat() {
-    return !!(_tokenPreview || sessionStorage.getItem(CHEIE_TOKEN));
+    return !!(sessionStorage.getItem(CHEIE_PV_TOKEN) || sessionStorage.getItem(CHEIE_TOKEN));
   },
 
-  // [F-preview] activeaza previzualizarea portal: token + user DOAR in-memory (nu sessionStorage)
+  // [F-preview] activeaza previzualizarea portal: token + user pe cheile PV (sessionStorage, per-tab)
   intraPreview(token, user) {
-    _tokenPreview = token;
-    _userPreview = Object.assign({ preview: true }, user || {});
+    sessionStorage.setItem(CHEIE_PV_TOKEN, token);
+    sessionStorage.setItem(CHEIE_PV_USER, JSON.stringify(Object.assign({ preview: true }, user || {})));
     _anunta();
   },
 
   estePreview() {
-    return !!_tokenPreview;
+    return !!sessionStorage.getItem(CHEIE_PV_TOKEN);
   },
 
   // setează sesiunea după login reușit (token + user din răspunsul serverului)
@@ -61,8 +69,9 @@ export const sesiune = {
 
   // șterge sesiunea (logout sau token expirat)
   iesi() {
-    if (_tokenPreview) {  // [F-preview] logout in preview = inchide tab-ul, NU sterge sesiunea cabinet
-      _tokenPreview = null; _userPreview = null;
+    if (sessionStorage.getItem(CHEIE_PV_TOKEN)) {  // [F-preview] logout in preview = curata cheile PV + inchide tab
+      sessionStorage.removeItem(CHEIE_PV_TOKEN);
+      sessionStorage.removeItem(CHEIE_PV_USER);
       window.close();
       return;
     }
