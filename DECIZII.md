@@ -1854,3 +1854,24 @@ de vanzare) + typos; selectorul din plan_omfp e sigur si arata denumirea. (b) to
 LIMITA: planul OMFP din cod nu contine 702/703 (semifabricate/produse reziduale) - daca vreo firma le cere ca
 implicit, se adauga in plan_omfp (un loc), selectorul le mosteneste. Azi 6 conturi acopera cazurile reale
 (707 marfa / 704 servicii / 701 produse = defaults uzuale). Fallback 707, coerent cu COALESCE-ul de la emitere.
+
+### 21.07.2026 F186 — raport coliziuni CUI: live read, report-only, in ecranul Facturare gratuita  (main.py /admin/coliziuni-cui, admin_gratuite.js)
+DECIZIE: raport superadmin al coliziunilor CUI active (cont gratuit + firma cabinet pe acelasi CUI, ambele
+activ=true). Live read (self-join la deschidere), report-only (fara actiune automata), sectiune in ecranul
+Facturare gratuita existent.
+TEMEI (verificare la sursa + DA gate cu Costin 21.07):
+  - Detectia REUTILIZATA, nu rescrisa: acelasi match pe cifrele CUI (regexp_replace(cui,'\D','')) ca F092
+    (tenant_provisioning.provision_tenant) si F185 (auth_api.inregistreaza_cont_gratuit). Semnalele lor sunt
+    EFEMERE (doar la eveniment); F186 = vizibilitatea persistenta lipsa.
+  - Suspendarea REUTILIZATA: ruta /admin/conturi-gratuite/{id}/suspenda exista deja; blocul de coliziuni o
+    apeleaza pe contul gratuit (latura care poate emite dublu). Zero ruta noua de mutatie.
+ALTERNATIVA RESPINSA (DA gate):
+  - Materializat intr-un tabel coliziuni_cui: respins — setul e 100% derivabil din public.tenants curent;
+    materializarea cere sincronizare (ce faci cand coliziunea se rezolva) -> drift. Live = zero drift, mai simplu.
+  - Card nou dedicat: respins — coliziunile privesc conturile gratuite, stau langa ele (reutilizare buton
+    suspendare); un card nou ar dubla surface-ul pentru ceva rar.
+  - Actiune automata (suspendare la detectie): respins — GDPR signal-not-block, aceeasi disciplina ca F185/F092
+    (inchiderea unui cont = decizie umana; superadmin decide).
+LIMITA: privacy — raportul e pentru SUPERADMIN (Admin iConta), care vede oricum ambele laturi in panourile lui;
+arata numele cabinetului. NU e acelasi caz ca F185 (unde REGISTRANTUL vede doar existenta, boolean). Un gratuit
+poate coliziona cu mai multe cabinete -> mai multe randuri (corect). Vezi si DECIZII 18.07 (F092) / 19.07 (F185).

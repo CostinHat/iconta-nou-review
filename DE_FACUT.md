@@ -177,11 +177,6 @@ ID / Stare / Sursa cod / Temei legal / Testat). Doua inventare = drift garantat.
 - F166: parser MT940 (SWIFT) - LIVE 14.07 in banca_parser (marker :61:/:20:). RAMAS: validare pe fisier MT940 real din banca (campul :86: variaza per banca)
 - F167: Open Banking automat prin Enable Banking (AIS EU; tier gratuit Restricted Production pt conturi proprii = dogfooding; productie = contract + KYB + cost pe conexiuni). Dupa MT940. Automatizeaza ADUCEREA extrasului, nu doar citirea [PLANIFICAT-etapa-2]
 - F183 (re-numerotat din F169 — coliziune cu F169=control incrucisat TVA din registru): audit de PRELUARE firma - acelasi motor control_incrucisat aplicat la migrare: inventar transparent (ce pot/nu pot verifica), raport datat cu trei categorii (coerent / divergent / NEVERIFICAT-lipsa document), repetabil pe masura ce apar documentele. Acoperire profesionala la preluarea raspunderii [PLANIFICAT]
-- F186: raport superadmin de coliziuni CUI active (CUI cu cont gratuit + tenant de cabinet, ambele activ=true) -
-  vizibilitate PERSISTENTA pentru follow-up (superadmin vede lista si poate suspenda). Complement la semnalele de la
-  creare (F092 gratuit->cabinet, F185 cabinet->gratuit), care sunt EFEMERE (doar la momentul actiunii). Rezolva
-  handoff-ul: semnalul apare la cabinet/registrant, dar inchiderea o face superadmin - fara raport, superadmin nu
-  afla ce coliziuni pendinte exista. NU gard critic (riscul primar e deja detectat+gated); imbunatatire de proces [PLANIFICAT]
 - GARD preventiv teste (INAINTE de primul client real): testele NU pot DROP SCHEMA fara prefix de test explicit
   (test_*) sau tid dintr-un range rezervat. Motiv: la testul F185 (19.07), un cont gratuit provizionat de test a
   primit numele reutilizat 'tenant_003' (max-existing+1, nu id-based) - DROP-ul de curatare a fost corect (schema

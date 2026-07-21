@@ -606,6 +606,34 @@ def admin_cont_gratuit_reactiveaza(tenant_id: int, ctx=Depends(cere_cabinet)):
         with conn.cursor() as cur:
             cur.execute("UPDATE public.tenants SET activ=true WHERE id=%s AND accounting_firm_id IS NULL", (tenant_id,))
     return {"ok": True}
+@app.get("/admin/coliziuni-cui")  # [F186] raport PERSISTENT coliziuni CUI: acelasi CUI la un cont gratuit SI la o firma de cabinet, ambele active
+def admin_coliziuni_cui(ctx=Depends(cere_cabinet)):
+    """Vizibilitatea persistenta care lipsea: semnalele F092 (gratuit->cabinet) si F185 (cabinet->gratuit)
+    sunt EFEMERE (doar la momentul preluarii/inregistrarii). Aici superadmin vede lista curenta si poate
+    suspenda contul gratuit (ruta existenta). Report-only, GDPR signal-not-block: NU blocheaza/sterge automat.
+    Live read (self-join pe cifrele CUI, aceeasi conventie ca F092/F185) - zero drift, derivat din starea curenta."""
+    if ctx["rol"] != "superadmin":
+        raise HTTPException(403, "Doar Admin iConta.")
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute(r"""
+                SELECT g.id AS gratuit_id, g.nume AS gratuit_nume, g.cui AS gratuit_cui,
+                       g.creat_la AS gratuit_creat,
+                       (SELECT COUNT(*) FROM public.audit_log a
+                          JOIN public.user_tenants ut ON ut.user_id = a.user_id
+                          WHERE ut.tenant_id = g.id AND a.actiune LIKE '%%/facturi/emite%%') AS gratuit_nr_facturi,
+                       c.id AS cabinet_tenant_id, c.nume AS cabinet_nume, af.nume AS firm_nume
+                FROM public.tenants g
+                JOIN public.tenants c
+                  ON regexp_replace(COALESCE(g.cui,''),'\D','','g') = regexp_replace(COALESCE(c.cui,''),'\D','','g')
+                 AND regexp_replace(COALESCE(g.cui,''),'\D','','g') <> ''
+                LEFT JOIN public.accounting_firms af ON af.id = c.accounting_firm_id
+                WHERE g.accounting_firm_id IS NULL     AND g.activ = true
+                  AND c.accounting_firm_id IS NOT NULL AND c.activ = true
+                ORDER BY g.creat_la DESC
+            """)
+            rows = cur.fetchall()
+    return {"coliziuni": rows}
 @app.get("/admin/activitate/cabinet/{firm_id}")
 def admin_activitate_cabinet(firm_id: int, limita: int = 200, ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":

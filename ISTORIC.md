@@ -2093,3 +2093,15 @@ main.py:5853 COALESCE(...,'707')) se putea schimba doar direct in DB. F182 adaug
 DOVADA (HTTP end-to-end tenant_002): GET intoarce cont+optiuni; set 704 -> 200, persista la GET; invalid 999 -> 422
 cu mesaj clar; query exact de la emitere intoarce 704 dupa set; restore 707. node --check ESM OK; verificator DS 0.
 Registru: F182 LIVE. De ce clasa 70 si nu toata clasa 7 -> DECIZII 21.07 F182.
+
+# 21.07.2026 — F186 LIVE: raport coliziuni CUI active (superadmin), complement persistent la F092/F185
+Enhancement Grup D (non-core, GDPR signal-not-block). F092 (gratuit->cabinet) si F185 (cabinet->gratuit)
+semnaleaza coliziunea de CUI DOAR la momentul evenimentului (efemer); superadmin n-avea unde vedea lista curenta.
+- BACKEND (main.py): GET /admin/coliziuni-cui (guard superadmin) - self-join pe public.tenants cu match pe
+  cifrele CUI (aceeasi conventie regexp ca F092/F185), gratuit (accounting_firm_id NULL, activ) x cabinet
+  (NOT NULL, activ), + nume cabinet + nr facturi emise din gratuit. Live read, zero materializare (zero drift).
+- FRONTEND (admin_gratuite.js): sectiune .dec-avert sus in ecranul Facturare gratuita; buton "Suspenda gratuitul"
+  reutilizeaza ruta existenta /admin/conturi-gratuite/{id}/suspenda pe contul gratuit. Report-only, nimic automat.
+DOVADA: detectie SQL cu coliziune fabricata in tranzactie ROLLBACK -> 1 rand cu numele cabinetului (AMZUICA...),
+0 randuri ramase dupa rollback (zero mutatie persistata); endpoint 200 superadmin {coliziuni:[]} pe date curate,
+403 non-superadmin (guard); node --check ESM + verificator DS 0. Registru: F186 LIVE. De ce live+report-only -> DECIZII 21.07.
