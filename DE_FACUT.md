@@ -134,7 +134,11 @@ starea reverificata azi:
   agregatele F094, on-demand, doar patron. **Deschis (mic, opțional):** analiza nu se persistă (se regenerează la
   cerere) — dacă se dorește istoric al analizelor AI, e o extindere; nu blocaj. Analiza e sugestie, nu verdict.
 - raporteaza.js — verifică vizual data "cu_ora" în feed (migrat azi).
-- Verifică date CM de test invalide în alte tenant-uri (CCMAD corupt deja șters din tenant_002).
+- (VERIFICAT, curat 21.07.2026) Date CM de test invalide în alte tenant-uri — scanate TOATE tenant-urile
+  (doar tenant_001 + tenant_002 există), 0 rânduri în `concedii_medicale` pe fiecare → nimic invalid, nimic de
+  șters. Criterii aplicate la sursă (OUG 158/2005): cod ne-numeric (tip „CCMAD") / cod în afara nomenclatorului
+  (01-10, 12-15, 17, 51) / imposibil net>0 & brut=0 / salariat orfan / zile≤0 & indemnizație>0. CCMAD-ul corupt
+  fusese deja șters din tenant_002.
 
 ---
 
