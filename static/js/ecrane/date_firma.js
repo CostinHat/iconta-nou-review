@@ -111,6 +111,17 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     <h2 class="pf-titlu" style="margin-top:26px">Vector fiscal</h2>
     <p class="pf-intro">Ce declara\u021bii datoreaz\u0103 firma. Termenele \u0219i controlul fiscal pornesc de aici.</p>
     <div class="grila-doc">${VECTOR.map((c) => campVector(c, v[c.k])).join("")}</div>
+
+    <h2 class="pf-titlu" style="margin-top:26px">Cont contabil</h2>
+    <p class="pf-intro">Contul de venit folosit implicit la emiterea facturilor. Se poate schimba pe fiecare factur\u0103.</p>
+    <div class="grila-doc">
+      <label class="camp">
+        <span class="camp-eticheta">Cont venit implicit</span>
+        <span class="camp-ajutor">Clasa 70 (cifra de afaceri): 707 m\u0103rfuri, 704 servicii, 701 produse.</span>
+        <select class="camp-input" id="df-cont_venit">${Object.entries(d.conturi_venit || {}).map(([k, t]) =>
+          `<option value="${esc(k)}"${String(k) === String(d.profil.cont_venit_implicit) ? " selected" : ""}>${esc(k)} \u2014 ${esc(t)}</option>`).join("")}</select>
+      </label>
+    </div>
     <div id="df-msg"></div>
     <div class="dec-bara">
       <button class="buton-primar" id="df-salveaza">Salveaz\u0103</button>
@@ -124,6 +135,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     for (const c of CAMPURI) {
       date[c.k] = (corp.querySelector(`#df-${c.k}`).value || "").trim();
     }
+    date.cont_venit_implicit = corp.querySelector("#df-cont_venit").value;  // [F182] preferinta contabila la emitere
     // validare preventiva in ecran: nu trimitem ca sa aflam de la server (DS cap.6)
     const goale = CAMPURI.filter((c) => c.ob && !date[c.k]);
     if (goale.length) {

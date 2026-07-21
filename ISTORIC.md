@@ -2081,3 +2081,15 @@ factura de_preluat inclusa). SAGA neatins. De ce + limita (anulata/storno neexcl
   emisa/de_preluat), iar excluderea notei de credit (storno = factură negativă cu storno_din_id) dintr-un
   export de DOCUMENTE ar rupe contabilitatea din programul destinație (reversarea n-ar mai intra în cărți).
   Temei complet + limita (dacă apare vreodată anulare-ca-status) în DECIZII 21.07.
+
+# 21.07.2026 — F182 LIVE: cont venit implicit setabil din UI (Date firma > Cont contabil)
+Enhancement Grup D (UI+DB, non-core). Pana acum cont_venit_implicit (folosit la contabilizarea facturii,
+main.py:5853 COALESCE(...,'707')) se putea schimba doar direct in DB. F182 adauga:
+- BACKEND (firma_profil_api.py): CONTURI_VENIT derivat din plan_omfp (clasa 70: 701/704/705/706/707/708),
+  cont_venit_valid() (respinge 76x/74x/78x + typos), citeste_date intoarce valoarea + optiunile, salveaza_date
+  valideaza la sursa (cont invalid -> 422). Motorul contabil NEATINS (citea deja coloana).
+- FRONTEND (date_firma.js): sectiune noua "Cont contabil" cu select (pattern canonic .camp/.grila-doc, DS cap.6/9),
+  APENDAT dupa Vector fiscal (nu reorganizare). Salvarea trimite cont_venit_implicit prin /firma-profil/date existent.
+DOVADA (HTTP end-to-end tenant_002): GET intoarce cont+optiuni; set 704 -> 200, persista la GET; invalid 999 -> 422
+cu mesaj clar; query exact de la emitere intoarce 704 dupa set; restore 707. node --check ESM OK; verificator DS 0.
+Registru: F182 LIVE. De ce clasa 70 si nu toata clasa 7 -> DECIZII 21.07 F182.

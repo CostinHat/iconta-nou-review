@@ -1839,3 +1839,18 @@ prin facturi_emise_luna fara filtru).
 LIMITA: daca vreodata apare o functie reala de ANULARE factura (status='anulata' = document nul, nu doar reversat),
 atunci DA se adauga excluderea — dar in facturi_emise_luna (un loc, ambele exporturi o mostenesc) si abia atunci,
 la cazul real. Azi nu exista, deci nu se cara nedecis. Vezi si DECIZII 21.07 F187-fix (paritatea).
+
+### 21.07.2026 F182 — cont venit implicit setabil din UI: doar clasa 70, nu toata clasa 7  (core/firma_profil_api.py, static/js/ecrane/date_firma.js)
+DECIZIE: selectorul si validarea pentru cont_venit_implicit permit DOAR conturi din clasa 70 (cifra de
+afaceri: 701/704/705/706/707/708), derivate din core/plan_omfp.PLAN_OMFP (sursa unica), nu toata clasa 7.
+TEMEI (verificare la sursa): (1) coloana firma_profil.cont_venit_implicit + citirea la emitere existau deja
+(main.py:5853, COALESCE(...,'707') -> facturi.factura_emisa(cont_venit=...)); F182 = doar UI+DB+validare, motorul
+contabil NEATINS. (2) Un cont de venit pe o FACTURA DE VANZARE e din clasa 70 (venituri din exploatare - cifra de
+afaceri). 74x (subventii), 76x (venituri financiare - dobanzi/curs), 78x (venituri din provizioane) sunt venituri,
+dar NU se factureaza catre client -> a le oferi ca implicit la emitere ar produce o nota contabila gresita.
+ALTERNATIVA RESPINSA: (a) camp text liber cu validare "incepe cu 7" — respins: ar permite 766/741 (venit, dar nu
+de vanzare) + typos; selectorul din plan_omfp e sigur si arata denumirea. (b) toata clasa 7 — respins, motiv (2).
+(c) hardcodarea listei in JS — respins: sursa e plan_omfp (CLAUDE.md: nu se hardcodeaza valori, se citesc din sursa).
+LIMITA: planul OMFP din cod nu contine 702/703 (semifabricate/produse reziduale) - daca vreo firma le cere ca
+implicit, se adauga in plan_omfp (un loc), selectorul le mosteneste. Azi 6 conturi acopera cazurile reale
+(707 marfa / 704 servicii / 701 produse = defaults uzuale). Fallback 707, coerent cu COALESCE-ul de la emitere.

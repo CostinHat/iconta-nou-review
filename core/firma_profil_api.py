@@ -12,6 +12,25 @@ MODUL = "firma_profil_api"
 FONTURI = ("sans", "serif", "mono")
 
 # ============================================================
+#  CONT VENIT IMPLICIT — [F182] contul de venit folosit implicit la emitere factura
+# ============================================================
+# Sursa unica: planul OMFP (core/plan_omfp.PLAN_OMFP). Se permit DOAR conturile din
+# clasa 70 (cifra de afaceri) — NU clasa 7 intreaga: 74x (subventii), 76x (venituri
+# financiare), 78x (provizioane) nu sunt venituri din vanzare care se factureaza.
+# Fallback la 707 (marfuri), la fel ca COALESCE-ul de la emitere (main.py). Vezi DECIZII 21.07 F182.
+import re as _re
+from core import plan_omfp as _plan
+
+CONTURI_VENIT = {c: _plan.PLAN_OMFP[c] for c in sorted(_plan.PLAN_OMFP)
+                 if _re.fullmatch(r"70[0-9]", c)}
+CONT_VENIT_IMPLICIT_DEFAULT = "707"
+
+
+def cont_venit_valid(cont):
+    """PURA: True daca `cont` e un cont de venit din exploatare (clasa 70) valid."""
+    return str(cont or "").strip() in CONTURI_VENIT
+
+# ============================================================
 #  CITIRE profil (pentru preview + model)
 # ============================================================
 def citeste_profil(conn):
@@ -101,13 +120,16 @@ def lipsuri(profil):
 
 
 def citeste_date(conn):
-    """Profilul complet + lipsurile, pentru ecranul Date firma."""
+    """Profilul complet + lipsurile + optiunile de cont venit, pentru ecranul Date firma."""
     import psycopg2.extras as _E
+    coloane = list(CAMPURI_FISCALE) + ["cont_venit_implicit"]  # [F182] preferinta contabila, nu camp fiscal obligatoriu
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT %s FROM firma_profil LIMIT 1" % ", ".join(CAMPURI_FISCALE))
+        cur.execute("SELECT %s FROM firma_profil LIMIT 1" % ", ".join(coloane))
         r = cur.fetchone()
     prof = dict(r) if r else {}
-    return {"profil": prof, "lipsuri": lipsuri(prof)}
+    if not str(prof.get("cont_venit_implicit") or "").strip():
+        prof["cont_venit_implicit"] = CONT_VENIT_IMPLICIT_DEFAULT  # coerent cu COALESCE-ul de la emitere
+    return {"profil": prof, "lipsuri": lipsuri(prof), "conturi_venit": CONTURI_VENIT}
 
 
 def salveaza_date(conn, date):
@@ -122,6 +144,14 @@ def salveaza_date(conn, date):
             return {"ok": False, "camp": camp,
                     "mesaj": "%s e obligatoriu — fara el nu se pot depune: %s."
                              % (ETICHETE.get(camp, camp), ", ".join(decl))}
+    # [F182] cont venit implicit: optional, dar daca vine trebuie sa fie cont de venit (clasa 70) valid.
+    # Refuz un cont invalid la sursa — altfel emiterea ar scrie o nota contabila pe un cont gresit.
+    if "cont_venit_implicit" in (date or {}):
+        cv = str(date.get("cont_venit_implicit") or "").strip()
+        if not cont_venit_valid(cv):
+            return {"ok": False, "camp": "cont_venit_implicit",
+                    "mesaj": "Contul de venit implicit trebuie sa fie un cont din clasa 70 (cifra de afaceri)."}
+        curat["cont_venit_implicit"] = cv
     if not curat:
         return {"ok": True, "profil": citeste_date(conn)["profil"]}
     seturi = ", ".join("%s = %%s" % k for k in curat)
