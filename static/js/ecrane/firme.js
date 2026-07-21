@@ -2780,9 +2780,22 @@ async function ecranAccesClient(corp, nav, t) {
       <h3 style="margin:0 0 8px">Conturi client</h3>
       <div id="ac-lista" style="margin-bottom:16px"><p class="ecran-nota">Se încarcă...</p></div>
       <button class="buton-secundar" id="ac-btn-invita">Invit\u0103 client nou</button>
+      <button class="buton-secundar" id="ac-btn-preview" style="margin-left:8px">Previzualizeaz\u0103 portalul</button>
+      <div id="ac-msg" style="margin-top:10px"></div>
     `;
     mesajSucces = "";
     corp.querySelector("#ac-btn-invita").addEventListener("click", randeazaFormular);
+    corp.querySelector("#ac-btn-preview").addEventListener("click", async (e) => {  // [F-preview] deschide portalul clientului in tab nou, read-only
+      const b = e.currentTarget; const _t = b.textContent;
+      b.disabled = true; b.textContent = "Se preg\u0103te\u0219te\u2026";  // cap.1 feedback async
+      try {
+        const r = await api.post(`/tenants/${t.id}/acces-portal`, {});
+        window.open(`/#acces=${r.token}`, "_blank");
+      } catch (err) {
+        arataMesaj(corp.querySelector("#ac-msg"), (err && err.mesaj) || "Nu am putut deschide previzualizarea.", "eroare");
+      }
+      b.disabled = false; b.textContent = _t;
+    });
     const zona = corp.querySelector("#ac-lista");
     try {
       const r = await api.get(`/tenants/${t.id}/client-acces`);

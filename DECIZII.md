@@ -1723,3 +1723,26 @@ export prin URL-ul exact al butonului = HTTP 200 zip cu Facturi.txt + Articole.t
 ș/ț moderne -> cedila legacy (Denumire "Consultanţă ŞI mentenanţă", octeti cp1250, zero virgula moderna);
 caracter neencodabil (emoji) -> 422. Factura restaurata, tenant_002 curat. node-check + verificator DS 0 nou.
 LIMITA (neschimbata): round-trip real (import efectiv in WinMentor) ramane pending cabinet cu WinMentor configurat.
+
+### 21.07.2026 F197 previzualizare portal client din cabinet - feature nou (decizie iunie neonorata, livrata)  (auth_api.py, main.py, sesiune.js, app.js, firme.js, portal.js)
+CONTEXT: diagnostic la cerere - "Acces Client" preview (buton dashboard -> portal in tab nou, #acces, ruta acces-portal)
+NU exista si N-A existat niciodata (git -S = zero); ce s-a construit in iunie sub nume asemanator = INVITATIA prin email
+("Acces client", card in meniul firmei), mecanism diferit. Costin: construim acum feature-ul de preview.
+DECIZIE (Costin, scop): buton in FISA FIRMEI (nu dashboard) -> portal client in TAB NOU, mod preview read-only.
+RUTA NOUA POST /tenants/{id}/acces-portal, NU refolosire client-acces/portal-acces-cont. DE CE: alea-s pentru clientul
+REAL (invitatie + auto-servire); preview e un mod DISTINCT (emis de cabinet, read-only, tab-local) - refolosirea ar
+amesteca doua contracte de acces si ar risca sa dea clientului real capabilitati preview sau invers.
+READ-ONLY PE BACKEND (critic): token marcat preview=True in payload -> middleware _preview_readonly_guard blocheaza
+ORICE metoda mutanta (POST/PUT/DELETE/PATCH -> 403), GET permis. Guard la nivel de REQUEST, nu ascuns butoane in UI
+(UI-ul se ocoleste - un client rau-intentionat cu tokenul ar putea POST direct). Singura aparare reala = pe server.
+TOKEN IN-MEMORY (sesiune.intraPreview), NU sessionStorage: sesiunea cabinet (in tab-ul ei, sessionStorage izolat
+per-tab din izolare_tab_v1) ramane intacta; tokenul preview nu persista la reload; logout in preview = window.close()
+(inchide tab-ul, NU sterge sesiunea cabinet). #acces=<token> in app.js (regex accepta punctul - e JWT).
+CONSTRANGERE: portalul rezolva firma prin user_tenants[uid] (_tenant_client) -> preview EMITE pentru un user client
+REAL al firmei; daca firma n-are client invitat -> 400 cu indrumare la "Acces client". ALTERNATIVA (rol dedicat
+preview-client fara user real) RESPINSA acum - ar cere gating nou peste tot (cere_client/_tenant_client/portal); minim
+viabil = refolosire user client real + flag preview.
+UI: buton "Previzualizeaza portalul" in ecranul Acces client (NU card nou - ar coliziona cu cardul "Acces client"
+existent). Banner .caseta-info "Previzualizare - doar vizualizare" (DS cap.5: rosul e EXCLUSIV pt distructiv; preview =
+info neutra -> albastru, nu caseta-atentie rosie, desi sugerata - "echivalent DS").
+DOVADA: E2E autentificat - cabinet emite (200, preview=True), GET portal 200, POST mutatie 403, firma fara client 400.

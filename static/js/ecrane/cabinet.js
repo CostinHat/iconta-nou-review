@@ -5,7 +5,7 @@
 import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
-import { randeazaListaFirme } from "./firme.js?v=5";
+import { randeazaListaFirme } from "./firme.js?v=6";
 import { randeazaMigrare } from "./migrare.js?v=5";
 import { randeazaControl } from "./control.js?v=1";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js"; // [p17_activitate]

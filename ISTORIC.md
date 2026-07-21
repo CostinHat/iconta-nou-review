@@ -1971,3 +1971,22 @@ link) + .mig-sold-rand (grid de solduri, context gresit). FARA handler -> buton 
 Decizie: text informativ, nu drill-down (remediul actionabil = butonul cf-incr-btn, separat, cablat) -> scos stilul de
 link, aliniat la pattern-ul canonic de constatare (cf-incr-rand + cf-incr-cap + punct rosu CULORI.rosu.dot + text normal),
 esc(p) adaugat, clase mig-sold-* eliminate. Confirmat vizual (text cu buline rosii, nu link). Cache-bust control.js?v=1.
+
+# 21.07.2026 — F197 previzualizare portal client din cabinet (feature nou, decizie iunie neonorata)
+Diagnostic (la cerere): "Acces Client" preview (buton -> portal in tab nou, #acces, ruta acces-portal) N-A existat
+niciodata (git -S zero); in iunie s-a construit INVITATIA email ("Acces client", card in meniul firmei), alt mecanism.
+Costin a cerut sa livram acum preview-ul. Temei/decizii in DECIZII 21.07 F197.
+
+MODEL: token client REAL al firmei, marcat preview=True in payload (auth_api.construieste_payload/context_din_token).
+Ruta NOUA POST /tenants/{id}/acces-portal (cere admin_firma/angajat) -> gaseste userul client activ al firmei
+(user_tenants, rol=client), emite token preview; firma fara client -> 400 cu indrumare. NU refolosire client-acces
+(alea-s pt clientul real). READ-ONLY PE BACKEND: middleware _preview_readonly_guard - token preview + metoda mutanta
+-> 403, GET permis (bypass-proof, nu ascuns butoane). Frontend: sesiune.intraPreview (token IN-MEMORY, nu sessionStorage
+-> sesiunea cabinet intacta; logout = window.close()); app.js #acces=<token> (regex cu punct, e JWT) -> cade in switch
+(client -> portal); buton "Previzualizeaza portalul" in ecranul Acces client (fisa firmei, nu card nou); banner
+.caseta-info in desktopPortal cand estePreview() (DS cap.5 - info neutra albastra, nu rosu).
+
+DOVADA (regula de aur): E2E autentificat pe user client temporar (tenant 2) - cabinet emite preview (HTTP 200,
+preview=True), GET /portal/firme 200, POST mutatie 403 ("Previzualizare - doar vizualizare"), firma fara client (tenant
+1) 400; user temporar sters. node-check 6 fisiere JS + PY OK + verificator DS 0 nou. Cache-bust portal?v=9, firme?v=6;
+app.js + sesiune.js neversionate intentionat (singleton) -> hard-refresh o data. Restart activ. F197 LIVE in registru.

@@ -168,6 +168,28 @@ def _inregistreaza_activitate(method, path, status, auth_header):
     except Exception:
         pass
 
+_METODE_MUTATIE = ("POST", "PUT", "DELETE", "PATCH")
+
+
+@app.middleware("http")
+async def _preview_readonly_guard(request: Request, call_next):
+    """[F-preview] Read-only enforcement pe BACKEND: un token de PREVIZUALIZARE portal blocheaza
+    orice mutatie (POST/PUT/DELETE/PATCH -> 403); GET permis. La nivel de request (nu ascuns butoane
+    in UI - UI-ul se ocoleste). Tokenul preview e emis de /tenants/{id}/acces-portal, marcat preview=True."""
+    if request.method in _METODE_MUTATIE:
+        auth = request.headers.get("authorization")
+        if auth and auth.startswith("Bearer "):
+            try:
+                ctx = auth_api.context_din_token(auth[7:])
+            except Exception:
+                ctx = None
+            if ctx and ctx.get("ok") and ctx.get("preview"):
+                from fastapi.responses import JSONResponse
+                return JSONResponse(status_code=403, content={
+                    "detail": "Previzualizare — doar vizualizare. Acțiunile sunt dezactivate în modul preview."})
+    return await call_next(request)
+
+
 @app.middleware("http")
 async def _audit_middleware(request: Request, call_next):
     response = await call_next(request)
@@ -1201,6 +1223,28 @@ def client_acces_revoca(tenant_id: int, user_id: int, ctx=Depends(cere_rol("admi
                            AND id IN (SELECT user_id FROM public.user_tenants WHERE tenant_id=%s)""",
                         (user_id, tenant_id))
     return {"ok": True}
+
+
+@app.post("/tenants/{tenant_id}/acces-portal")  # [F-preview] previzualizare portal client din cabinet
+def acces_portal_preview(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "angajat"))):
+    """Emite un token de PREVIZUALIZARE (read-only, tab-local) pentru portalul clientului firmei.
+    Cabinetul vede exact ce vede clientul, fara sa poata scrie (guard pe backend, nu doar UI).
+    Necesita un cont de client al firmei (rol=client in user_tenants); daca nu exista -> 400 cu indrumare."""
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        with conn.cursor() as cur:
+            cur.execute("""SELECT u.id FROM public.users u
+                           JOIN public.user_tenants ut ON ut.user_id = u.id
+                           WHERE ut.tenant_id=%s AND u.rol='client' AND u.activ=true
+                           ORDER BY u.id LIMIT 1""", (tenant_id,))
+            row = cur.fetchone()
+    if not row:
+        raise HTTPException(400, "Firma nu are inca un cont de client. Invita unul din 'Acces client', apoi poti previzualiza.")
+    # token de client, marcat preview -> read-only middleware blocheaza orice mutatie
+    token = auth_api.emite_token({"id": row[0], "rol": "client", "accounting_firm_id": None, "preview": True})
+    return {"token": token}
+
 
 @app.put("/tenants/{tenant_id}")
 def tenant_actualizeaza(tenant_id: int, date: TenantEdit,

@@ -66,11 +66,14 @@ def construieste_payload(user_row):
     Din rândul user (dict) construiește payload-ul token (doar ce e necesar).
     NU pune email/nume în token — minim necesar pentru autorizare.
     """
-    return {
+    p = {
         "uid": user_row["id"],
         "rol": user_row["rol"],
         "firm": user_row.get("accounting_firm_id"),
     }
+    if user_row.get("preview"):  # [F-preview] token de previzualizare portal (read-only), tab-local
+        p["preview"] = True
+    return p
 
 
 def emite_token(user_row, secret=None, durata=None, acum=None):
@@ -91,7 +94,8 @@ def context_din_token(token, secret=None, acum=None):
     if not r["ok"]:
         return r
     p = r["payload"]
-    return {"ok": True, "uid": p.get("uid"), "rol": p.get("rol"), "firm": p.get("firm")}
+    return {"ok": True, "uid": p.get("uid"), "rol": p.get("rol"), "firm": p.get("firm"),
+            "preview": bool(p.get("preview"))}  # [F-preview] read-only enforcement pe backend
 
 
 # ============================================================
