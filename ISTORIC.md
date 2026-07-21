@@ -1955,3 +1955,11 @@ dataRo/bani rulate VERBATIM (sursa api.js) pe intrarile reale -> "2026-07-24"->2
 -89.9->-89,90, 1234567.8->1.234.567,80. node-check 4 fisiere + verificator DS 0 nou. Fara restart (doar frontend).
 RAMAS strict pentru ochi (Edge, negrepabil): aliniere/spacing, contrast gri-pe-gri, culorile efective ale semaforului,
 .buton-activ pe toggle, fereastra fara scroll orizontal - vezi checklist-ul 21.07.
+
+VERIFICARE VIZUALA (Costin, Edge) — e-Transport INCHIS: (a) rand UM/greutati era cu baseline rupt (input "Greutate
+bruta" mai jos) - cauza: grid inline pe .camp flex-column cu eticheta lunga rupta pe 2 randuri, input coborat. Fix:
+randBun -> clasa canonica "grila-campuri grila-campuri-compacta" (DS cap.9/16, pattern operatiuni_ecran.js:310) -
+.grila-campuri .camp {justify-content:flex-end} aliniaza inputurile jos + fundal alb (era gri-linie). align-items:start
+NU rezolva (aliniaza varfurile celulelor, nu inputurile). (b) simetrie etichete: "Greutate neta/bruta (kg)" -> "Gr.
+neta/bruta (kg)" (ambele, doar in e-Transport - grep confirmat neregasite altundeva) ca sa incapa pe un rand.
+Data transport zz.ll.aaaa confirmata. Confirmat vizual. Cache-bust etransport?v=2->4.

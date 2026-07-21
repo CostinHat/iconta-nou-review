@@ -44,14 +44,14 @@ export async function ecranEtransport(corp, nav, t) {
     </div>`;
 
   const randBun = (i) => `
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:8px;padding:8px;border:1px solid var(--linie);border-radius:var(--raza)">
+    <div class="grila-campuri grila-campuri-compacta">
       ${sel(`b${i}-cod_scop`, "Scop *", [["101","Comercializare"],["201","Productie"],["301","Gratuitati"],["401","Echipament comercial"],["501","Mijloace fixe"],["601","Uz propriu"],["703","Livrare cu instalare"],["704","Transfer intre gestiuni"],["705","Bunuri puse la dispozitie"],["9901","Altele"]])}
       ${inp(`b${i}-cod_tarifar`, "Cod tarifar (NC) *")}
       ${inp(`b${i}-denumire`, "Denumire marf\u0103 *")}
       ${inp(`b${i}-cantitate`, "Cantitate *", "number")}
       ${inp(`b${i}-um`, "UM *", "text", "H87", 'placeholder="H87=buc, KGM=kg"')}
-      ${inp(`b${i}-greutate_neta`, "Greutate net\u0103 (kg) *", "number")}
-      ${inp(`b${i}-greutate_bruta`, "Greutate brut\u0103 (kg) *", "number")}
+      ${inp(`b${i}-greutate_neta`, "Gr. net\u0103 (kg) *", "number")}
+      ${inp(`b${i}-greutate_bruta`, "Gr. brut\u0103 (kg) *", "number")}
       ${inp(`b${i}-valoare_fara_tva`, "Valoare f\u0103r\u0103 TVA *", "number")}
     </div>`;
 
