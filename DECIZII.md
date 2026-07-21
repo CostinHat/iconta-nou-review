@@ -1746,3 +1746,18 @@ UI: buton "Previzualizeaza portalul" in ecranul Acces client (NU card nou - ar c
 existent). Banner .caseta-info "Previzualizare - doar vizualizare" (DS cap.5: rosul e EXCLUSIV pt distructiv; preview =
 info neutra -> albastru, nu caseta-atentie rosie, desi sugerata - "echivalent DS").
 DOVADA: E2E autentificat - cabinet emite (200, preview=True), GET portal 200, POST mutatie 403, firma fara client 400.
+
+### 21.07.2026 nginx: /static/ scutit de rate limit pe nou-iconta (regresie config, fals-alarma "bug preview")  (/etc/nginx/sites-available/nou-iconta - INFRA, nu repo)
+SIMPTOM: pagina alba la incarcarea portalului pe prod (nou.iconta.eu), console HTTP 429 pe module ES (date_firma.js,
+emitere_ecran.js etc.). Parea bug de preview - NU era: rate limiting nginx pe serving-ul static.
+CAUZA (regresie de config): config-ul VECHI iconta avea "location /static/ { proxy_pass ... }" FARA limit_req (static
+scutit); config-ul NOU nou-iconta (nou.iconta.eu) a PIERDUT acest bloc -> /static/ cadea sub "location /" = zona
+iconta_gen (20r/s, burst 60), gandita pt API. Un SPA cere zeci de module ES in rafala per load (app.js -> ~10 importuri
+-> firme.js trage ~10 ecrane = 30-50+ cereri); _StaticNoCache pune Cache-Control:no-cache -> revalidare la fiecare load;
+preview-ul deschide TAB NOU -> dubla rafala. Bucket-ul de 60 se golea mai repede decat 20r/s -> 429 pe module -> alb.
+DECIZIE: staticele se scutesc de rate limit (o singura pagina cere legitim zeci de fisiere; limita de brute-force n-are
+ce cauta pe .js/.css). Adaugat "location /static/ { proxy_pass 127.0.0.1:8010; }" FARA limit_req, INAINTE de "location /"
+(oglindeste config-ul vechi). Limita generala + auth (5r/m) raman neschimbate pt rutele reale.
+PROCEDURA PROD (nginx = daca crapa, cade site-ul): backup (.bak-21iul) -> insert -> nginx -t (TRECE) -> reload (nu
+restart, zero downtime) -> verificat 40 cereri rapide /static/js/app.js = 40x200, 0x429; API inca trece (401 pe /portal).
+LIMITA/SECUNDAR (DE_FACUT): Cache-Control immutable pe asset-uri versionate ?v= ar taia si revalidarile (optimizare).

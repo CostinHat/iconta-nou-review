@@ -69,6 +69,13 @@ starea reverificata azi:
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
   6.8.0-117, in asteptare 6.8.0-124/-134). Fereastra linistita (downtime clienti, Daniela pilot).
   (systemd 8010 REZOLVAT 13.07 — arhivat, vezi ISTORIC:17 "iconta-nou.service enabled".)
+- **Cache-Control immutable pe asset-uri versionate `?v=`** (optimizare, NU blocant). Azi 21.07 s-a scutit `/static/`
+  de rate limit nginx (regresie config nou-iconta → 429 pe module ES → pagină albă; vezi DECIZII/ISTORIC 21.07). Secundar:
+  `_StaticNoCache` pune `Cache-Control: no-cache` → browserul revalidează fiecare modul la fiecare load (cerere la
+  server chiar și pt 304). Pentru fișierele cerute cu `?v=N` (URL unic per versiune) s-ar putea servi `Cache-Control:
+  public, max-age=…, immutable` → browserul nici nu revalidează → taie zeci de cereri per load. Neversionatele
+  (app.js, sesiune.js, index.html) rămân `no-cache`. Câștig: mai puține cereri + load mai rapid. Nu urgent — rate
+  limit-ul e deja rezolvat prin exceptare.
 
 ## 5. Iterații viitoare (nu urgente)
 - **Mesaje de eroare `.mig-gol` -> `arataMesaj`: FACUT 18.07 (48/53).** Cele ~50 utilizari `.mig-gol` din blocuri catch/validare/loading convertite la `arataMesaj(zona, txt, tip)` (eroare/avert/info) in rip_ecran/operatiuni/etransport/cabinet/migrare/firme/facturi_ecran. RAMAN 5 template-embedded (NU catch, HTML in template - lasate deliberat, nu se ghiceste): asistenti.js:330 (ternar in render), firme.js:428 (eroare conditionala inline in panou), :1315 (ramura ternar `${r.mesaj}`), :1343 (lista .map de mesaje - continut, nu feedback), :1689 (nota permanenta 'Atentie: nota legata de factura'). Verificator TOTAL 0. LIMITA: caile de eroare din catch nu au fost declansate runtime (greu de atins) - conversie mecanica + node-check + aliniere cu tiparul arataMesaj existent in app.

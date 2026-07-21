@@ -1990,3 +1990,13 @@ DOVADA (regula de aur): E2E autentificat pe user client temporar (tenant 2) - ca
 preview=True), GET /portal/firme 200, POST mutatie 403 ("Previzualizare - doar vizualizare"), firma fara client (tenant
 1) 400; user temporar sters. node-check 6 fisiere JS + PY OK + verificator DS 0 nou. Cache-bust portal?v=9, firme?v=6;
 app.js + sesiune.js neversionate intentionat (singleton) -> hard-refresh o data. Restart activ. F197 LIVE in registru.
+
+# 21.07.2026 — INFRA nginx: /static/ scutit de rate limit pe nou-iconta (fals-alarma "bug preview")
+Pagina alba pe prod (nou.iconta.eu) la load portal: console 429 pe module ES. NU bug de cod - rate limiting nginx.
+Regresie de config: config vechi iconta avea "location /static/" fara limit_req; config nou nou-iconta l-a pierdut ->
+/static/ cadea sub "location /" (zona iconta_gen 20r/s burst 60, pt API). SPA cere zeci de module in rafala/load +
+_StaticNoCache (no-cache -> revalidare) + preview deschide tab nou (dubla rafala) -> bucket golit -> 429 -> alb.
+FIX: adaugat "location /static/ { proxy_pass 127.0.0.1:8010; }" FARA limit_req inainte de "location /" (mirror config
+vechi). Procedura prod: backup nou-iconta.bak-21iul -> insert (python, nu sed) -> nginx -t TRECE -> systemctl reload
+nginx (zero downtime) -> verificat 40x /static/js/app.js = 40x200/0x429, API inca trece. Detaliu + de ce in DECIZII 21.07.
+DE_FACUT (secundar): Cache-Control immutable pe ?v=. NOTA: nginx e INFRA (nu in repo) - decizia+procedura raman aici.
