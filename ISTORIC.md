@@ -1919,3 +1919,19 @@ Test (regula de aur): apel Claude REAL pe cabinet cu respingeri fabricate -> ana
 + 5 recomandari), GROUNDING confirmat (mentioneaza CUI/CAS + firma din datele reale, nu inventeaza); fallback fara
 date ("nu exista respingeri") + cheie lipsa. Date de test curatate din declaratii_coada. verificator DS 0 nou.
 LIMITA (DE_FACUT): analiza e SUGESTIE AI, nu verdict (contabilul o cantareste); nu se persista (regenerare la cerere).
+
+# 21.07.2026 — F187 UI: butonul WinMentor cablat (drift de registru corectat)
+Iesit la iveala din auditul vizual al celor 4 ecrane post-14.07: F187 (export WinMentor, LIVE 19.07 in backend -
+export_winmentor.py + endpoint + 11 teste + spec oficiala) NU avea buton in frontend - zero "winmentor" in
+static/js/. Registrul (FUNCTIONALITATI.csv F187) afirma totusi "Facturi (buton export luna)" = buton FANTOMA.
+Drift: registru LIVE-cu-UI vs realitate LIVE-doar-backend; exportul inaccesibil din aplicatie. Decizie Costin
+(varianta c): cablez butonul SI aliniez registrul, un commit. Vezi DECIZII 21.07 F187.
+
+Buton "Export WinMentor luna" langa "Export SAGA luna" (Istoric facturi). Pattern identic cu SAGA (buton-secundar,
+fetch zip cu Bearer, download, 404->info, mesaj ok cu calea import MENTOR->INTERNE->Facturi iesire) + feedback async
+cap.1 CORECT (dezactivare + "Se genereaza..." - pe care SAGA nu-l face). Registrul F187 acces UI aliniat la realitate.
+DOVADA prin fluxul butonului: flip temporar factura tenant_002 la emisa+diacritice -> export prin URL-ul exact al
+butonului = HTTP 200, zip Facturi.txt+Articole.txt, cp1250 valid, ș/ț->cedila legacy ("Consultanţă ŞI mentenanţă"),
+caracter neencodabil (emoji)->422; factura restaurata, tenant_002 curat. node-check + verificator DS 0 nou. Restart activ.
+RAMAS din audit: control fiscal / e-Transport / SPV+gratuit inca de privit cu ochii (checklist dat 21.07); WinMentor
+UI acum EXISTA de verificat. LIMITA: round-trip real import WinMentor pending cabinet configurat.

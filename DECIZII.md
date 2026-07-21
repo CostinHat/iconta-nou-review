@@ -1705,3 +1705,21 @@ CUI/CAS/firma din date, nu fabrica. Temperatura 0.4 (grounded, nu creativ).
 ON-DEMAND (cost): apel platit -> NU se ruleaza automat la deschiderea ecranului, doar la buton. Fallback curat
 (ai_client.disponibil()==False sau lipsa date -> mesaj, nu eroare). Doar patron (ca F094).
 LIMITA: analiza e sugestie AI, nu verdict - contabilul o cantareste. Nu se persista (se regenereaza la cerere).
+
+### 21.07.2026 F187 UI - butonul WinMentor CABLAT + drift de registru corectat  (facturi_ecran.js, FUNCTIONALITATI.csv)
+CONSTATARE (audit vizual pe cele 4 ecrane post-14.07): F187 (export WinMentor) era LIVE in backend (export_winmentor.py
++ endpoint /facturi/export-winmentor, 11 teste, spec oficiala verificata) DAR butonul nu era cablat in frontend -
+in tot static/js/ zero apariti "winmentor". Registrul (FUNCTIONALITATI.csv F187) afirma insa acces UI "Facturi
+(buton export luna)" - un buton FANTOMA. Doua surse de adevar divergente: registrul zicea LIVE-cu-UI, realitatea
+LIVE-doar-backend. Exportul era inaccesibil din aplicatie.
+DECIZIE (Costin, varianta c): se cableaza butonul SI se aliniaza registrul, intr-un commit - realitatea devine
+egala cu registrul (elimina drift-ul, nu doar il documenteaza).
+IMPLEMENTARE: buton "Export WinMentor luna" langa "Export SAGA luna" in Istoric facturi. Pattern identic cu SAGA
+(buton-secundar, fetch zip cu Bearer, download, 404->mesaj info, mesaj ok cu calea de import WinMentor) PLUS
+feedback async cap.1 CORECT (dezactivare + "Se genereaza..." pe durata cererii - pe care butonul SAGA nu-l face).
+Fara ICOANE noi (buton text), fara hex crud. Registrul F187 acces UI -> "buton CABLAT 21.07 langa Export SAGA".
+DOVADA (regula de aur, prin fluxul butonului): flip temporar factura tenant_002 la status=emisa + diacritice ->
+export prin URL-ul exact al butonului = HTTP 200 zip cu Facturi.txt + Articole.txt; encoding cp1250 valid;
+ș/ț moderne -> cedila legacy (Denumire "Consultanţă ŞI mentenanţă", octeti cp1250, zero virgula moderna);
+caracter neencodabil (emoji) -> 422. Factura restaurata, tenant_002 curat. node-check + verificator DS 0 nou.
+LIMITA (neschimbata): round-trip real (import efectiv in WinMentor) ramane pending cabinet cu WinMentor configurat.

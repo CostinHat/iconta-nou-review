@@ -206,6 +206,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         <button class="buton-secundar" id="fac-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="fac-next">luna \u2192</button>
         <button class="buton-secundar" id="fac-saga-luna" style="margin-left:12px">Export SAGA lun\u0103</button>
+        <button class="buton-secundar" id="fac-winmentor-luna">Export WinMentor lun\u0103</button>
         ${maiSunt ? '<button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px">Vezi \u0219i facturile mai vechi din aceast\u0103 lun\u0103</button>' : ""}</p>
       <div id="fac-saga-zona"></div>
       <div class="pf-lista zebra-lista">${corpuri}</div>`;
@@ -224,6 +225,22 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         URL.revokeObjectURL(url);
         arataMesaj(zona, "Arhivă SAGA descărcată (un XML per factură). În SAGA: Diverse → Import date din fișiere generate.", "ok");
       } catch (e) { arataMesaj(zona, (e && e.message) || "eroare", "eroare"); }
+    });
+    corp.querySelector("#fac-winmentor-luna")?.addEventListener("click", async () => {  // [export_winmentor_v1] F187
+      const zona = corp.querySelector("#fac-saga-zona");
+      const btn = corp.querySelector("#fac-winmentor-luna");
+      const _t = btn.textContent; btn.disabled = true; btn.textContent = "Se generează…";  // cap.1 feedback async
+      try {
+        const resp = await fetch(`/tenants/${tenantId}/facturi/export-winmentor?an=${an}&luna=${luna}`, { headers: { Authorization: "Bearer " + sesiune.token() } });
+        if (resp.status === 404) { arataMesaj(zona, "Nicio factură emisă în luna aceasta.", "info"); return; }
+        if (!resp.ok) throw new Error("eroare " + resp.status);
+        const url = URL.createObjectURL(await resp.blob());
+        const a = document.createElement("a");
+        a.href = url; a.download = `export_winmentor_${an}_${String(luna).padStart(2, "0")}.zip`; a.click();
+        URL.revokeObjectURL(url);
+        arataMesaj(zona, "Arhivă WinMentor descărcată (Facturi.txt + Articole.txt). În WinMentor: MENTOR → INTERNE → Import date din alte aplicații → Facturi ieșire.", "ok");
+      } catch (e) { arataMesaj(zona, (e && e.message) || "eroare", "eroare"); }
+      finally { btn.disabled = false; btn.textContent = _t; }
     });
     corp.querySelectorAll(".fac-cont").forEach((b) => b.addEventListener("click", async (ev) => {
       ev.stopPropagation();
