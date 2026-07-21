@@ -75,10 +75,13 @@ function randeaza() {
       .catch(() => { alert("Eroare la logare."); randeaza(); });
     return;
   }
-  const _acc = (location.hash.match(/#acces=([\w.\-]+)/) || [])[1];  /* [F-preview] token JWT (are puncte) */
+  const _hp = new URLSearchParams(location.hash.slice(1));  /* [F-preview] #acces=<token>&u=<json user> */
+  const _acc = _hp.get("acces");
   if (_acc) {
     location.hash = "";
-    sesiune.intraPreview(_acc, { rol: "client" });  /* in-memory, tab-local -> cade in switch (client -> portal) */
+    let _u = { rol: "client" };  /* fallback: fara user -> portal client (nu gratuit) */
+    try { const _raw = _hp.get("u"); if (_raw) _u = JSON.parse(_raw); } catch { /* URL trunchiat -> fallback */ }
+    sesiune.intraPreview(_acc, _u);  /* user cu nume_tenant/tenant_are_cabinet -> portal client corect, nu gratuit */
   }
   if (!sesiune.esteLogat()) {
     radacina.innerHTML = "";

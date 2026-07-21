@@ -1779,3 +1779,20 @@ preview e read-only pe server.
 BANNER: de la .caseta-info (albastru-pal, se putea rata) la .caseta-atentie (rosu, proeminent) - "PREVIZUALIZARE -
 doar vizualizare", cerut vizibil. Aici rosul e justificat (semnaleaza mod restrictionat + actiuni dezactivate).
 DOVADA: reprodus POST solicitari preview 403 / client 200; frontend determinist (cheie sessionStorage, nu in-memory).
+
+### 21.07.2026 F197 — contextul de tenant al preview-ului trece prin URL, nu doar prin raspunsul rutei  (main.py acces-portal, static/js/app.js, firme.js)
+DECIZIE: /tenants/{id}/acces-portal intoarce {token, user:{rol, nume_tenant, tenant_are_cabinet}}, iar
+firme.js pune userul in URL-ul de deschidere (URLSearchParams: #acces=<token>&u=<json>); app.js il citeste si-l
+paseaza la intraPreview. Fara asta, preview-ul fabrica {rol:"client"} minimal -> _eGratuit()=!undefined=true ->
+cadea pe portalul gratuit (4 carduri) in loc de portalul client gestionat (Solicitari/Documente/Povestea).
+TEMEI (verificare la sursa care a schimbat planul): diagnosticul initial cerea doar "ruta sa intoarca user +
+app.js sa-l paseze". Dar grep pe firme.js:2792 a aratat ca preview-ul se deschide cu window.open(URL, "_blank") —
+in tab-ul nou ajunge DOAR tokenul din URL, obiectul user din raspunsul POST ramane in tab-ul cabinetului. Deci
+userul TREBUIE carat explicit prin URL, altfel app.js n-are de unde sa-l primeasca. Valorile confirmate pe endpoint
+real (curl, tenant 2 DANTE): nume_tenant="DANTE INTERNATIONAL SA", tenant_are_cabinet=true (accounting_firm_id=1).
+ALTERNATIVA RESPINSA: (a) sessionStorage copiat de window.open catre tab-ul nou — respins: pentru a fi citit de tab
+opener-ul ar fi trebuit sa scrie cheile PV, ceea ce ar fi flipat si tab-ul cabinetului in preview (cab citeste
+_pvUser() intai). (b) A baga nume_tenant in payload-ul JWT — respins: CLAUDE.md "minim necesar in token, fara nume".
+(c) Endpoint nou GET /portal/eu apelat de tab-ul nou — respins ca surplus: valoarea e deja cunoscuta la emitere.
+LIMITA: daca URL-ul e trunchiat (u lipsa/corupt), app.js cade pe fallback {rol:"client"} = portal client (nu gratuit),
+degradare acceptabila. Guard-ul read-only (token preview -> 403 pe scriere) ramane backstop-ul; confirmat 403/200.

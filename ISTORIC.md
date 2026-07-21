@@ -2011,3 +2011,16 @@ sessionStorage (iconta_pv_token, per-tab izolat, precedenta absoluta) -> determi
 preview foloseste DOAR tokenul preview. Banner: .caseta-info -> .caseta-atentie (rosu, proeminent, cerut vizibil).
 Backend-ul (guard _preview_readonly_guard) e backstop-ul. DOVADA: reprodus 403 preview / 200 client; node-check +
 verificator 0. Cache-bust portal?v=10; sesiune.js/app.js no-cache (nginx serveste /static/ dupa fix-ul de azi).
+
+# 21.07.2026 — F197 FIX (2): preview cadea pe portalul GRATUIT (context de tenant lipsa)
+Dupa fix-ul de read-only/banner (F197 FIX 1), a doua carenta vizuala: preview-ul DANTE arata portalul de
+FACTURARE GRATUITA (4 carduri, "firma ta") in loc de portalul client gestionat (9 zone: Solicitari/Documente/
+Povestea lunii, nume "DANTE INTERNATIONAL SA"). Diagnostic la sursa: _eGratuit() (portal.js:21) = rol==="client"
+&& !tenant_are_cabinet. Preview fabrica user {rol:"client"} fara tenant_are_cabinet -> !undefined=true -> gratuit.
+FIX (3 fisiere): (1) main.py acces-portal intoarce {token, user:{rol, nume_tenant, tenant_are_cabinet}}, calculat
+din public.tenants pe tenantul previzualizat (nume + accounting_firm_id), la fel ca la login (_tenant_client).
+(2) firme.js: userul trece prin URL catre tab-ul nou (URLSearchParams #acces=<token>&u=<json>) — necesar fiindca
+window.open cara doar URL-ul, nu obiectul din raspunsul POST. (3) app.js: citeste u din URL, il paseaza la intraPreview
+(fallback {rol:"client"} daca lipseste). DOVADA: curl real pe endpoint (tenant 2) -> nume_tenant="DANTE INTERNATIONAL
+SA", tenant_are_cabinet=true; scriere cu token preview=403, citire=200 (guard intact); node --check ambele JS OK;
+verificator DS fara neconformitati noi. De ce prin URL si nu doar prin raspuns -> DECIZII 21.07 F197.

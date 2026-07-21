@@ -1233,17 +1233,24 @@ def acces_portal_preview(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "an
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
             raise HTTPException(404, "tenant inexistent sau fara acces")
-        with conn.cursor() as cur:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute("""SELECT u.id FROM public.users u
                            JOIN public.user_tenants ut ON ut.user_id = u.id
                            WHERE ut.tenant_id=%s AND u.rol='client' AND u.activ=true
                            ORDER BY u.id LIMIT 1""", (tenant_id,))
             row = cur.fetchone()
+            # [F-preview] identitatea tenantului previzualizat: nume_tenant + tenant_are_cabinet
+            # (accounting_firm_id setat) -> exact ce foloseste portal.js/_eGratuit ca la login.
+            cur.execute("SELECT nume, accounting_firm_id FROM public.tenants WHERE id=%s", (tenant_id,))
+            tr = cur.fetchone()
     if not row:
         raise HTTPException(400, "Firma nu are inca un cont de client. Invita unul din 'Acces client', apoi poti previzualiza.")
     # token de client, marcat preview -> read-only middleware blocheaza orice mutatie
-    token = auth_api.emite_token({"id": row[0], "rol": "client", "accounting_firm_id": None, "preview": True})
-    return {"token": token}
+    token = auth_api.emite_token({"id": row["id"], "rol": "client", "accounting_firm_id": None, "preview": True})
+    # user cu contextul de tenant: fara el, tab-ul de preview cade pe portalul gratuit (bug F197).
+    return {"token": token, "user": {"rol": "client",
+                                     "nume_tenant": tr["nume"] if tr else None,
+                                     "tenant_are_cabinet": bool(tr and tr["accounting_firm_id"])}}
 
 
 @app.put("/tenants/{tenant_id}")

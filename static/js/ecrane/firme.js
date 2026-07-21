@@ -2790,7 +2790,10 @@ async function ecranAccesClient(corp, nav, t) {
       b.disabled = true; b.textContent = "Se preg\u0103te\u0219te\u2026";  // cap.1 feedback async
       try {
         const r = await api.post(`/tenants/${t.id}/acces-portal`, {});
-        window.open(`/#acces=${r.token}`, "_blank");
+        // [F-preview] tokenul + userul (nume_tenant/tenant_are_cabinet) trec prin URL catre tab-ul nou;
+        // fara user, preview-ul cade pe portalul gratuit (F197). URLSearchParams encodeaza corect JSON-ul.
+        const _p = new URLSearchParams({ acces: r.token, u: JSON.stringify(r.user || { rol: "client" }) });
+        window.open(`/#${_p.toString()}`, "_blank");
       } catch (err) {
         arataMesaj(corp.querySelector("#ac-msg"), (err && err.mesaj) || "Nu am putut deschide previzualizarea.", "eroare");
       }
