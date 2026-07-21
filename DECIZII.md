@@ -1670,3 +1670,23 @@ LIMITA: nomenclatorul e un SNAPSHOT (Ordin 573/180/2024) - la un ordin nou de ac
 cor_incarca.py cu fisierul nou. Fluxul REGES de AdaugareContract (care trimite codul) nu e inca cablat - cand va
 fi, ia codul din salariatul deja validat. Editarea COR pe angajatii existenti = buton inline pe stat (nu exista
 formular de editare salariat complet).
+
+### 21.07.2026 F125 clasificare manuala D390 - RECLASIFICARE + adaugare (nu add-only)  (09_ddl_d390_clasificare.sql, d390.py, d390_clasificare_api.py, main.py)
+DECIZIE (STOP, model ales de Costin): clasificarea manuala D390 = RECLASIFICARE a operatiunilor auto-derivate
++ ADAUGARE de linii pur manuale. NU add-only.
+CONTEXT (constatat la sursa): d390.calcul_d390 mapeaza ORICE factura intracomunitara pe BUNURI (emisa->L,
+primita->A). Pentru o firma cu facturi de SERVICII IC in sistem, ele-s numarate ca bunuri; daca s-ar adauga
+si o linie P/S manuala pt acelasi partener -> DUBLA numarare.
+ALTERNATIVE RESPINSE: (a) add-only (backend il suporta deja, minim) - dubla numarare cand serviciile-s
+facturate prin aplicatie; (b) marcaj tip_d390 pe factura - cel mai curat conceptual dar atinge modelul de
+facturi + fluxul de emitere = scop mai mare, amanat.
+MODEL: auto ramane L/A implicit. Contabilul RECLASIFICA per (directie, partener) la un tip legal pentru acea
+directie (emisa: L/T/P/R; primita: A/S) -> override in d390_reclasificare (inlocuieste tipul, NU adauga ->
+fara dubla numarare). Plus linii pur manuale (P/S/T/R fara factura) in d390_manual. Ambele per tenant/an/luna,
+PERSISTATE - ca toate caile care genereaza D390 (wizard, pachet, control incrucisat verifica_d390) sa vada
+ACELEASI clasificari (d390.genereaza auto-trage din DB cand nu-s date explicit). Rezolva si nota veche din
+control_incrucisat (P/S "raman v2").
+VALIDARE: tranzitiile la sursa (achizitia nu poate deveni livrare si invers); codO obligatoriu pt L/T/P/R
+(ca d390.valideaza). DOVADA: XML cu reclasificare (L->P) + linie manuala (S) = stare VALID pe DUK (d390),
+fara erori. _facturi_ic extras ca sursa unica a filtrului IC (folosit de calcul_d390 + operatiuni_auto, fara dublura).
+FAZARE: step 1 (azi) = model + calcul + API + endpoint + teste + DUK; step 2 = UI (ecran clasificare pe D390).

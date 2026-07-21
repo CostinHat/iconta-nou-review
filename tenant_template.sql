@@ -2150,6 +2150,21 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.beneficii_lunare (
     CONSTRAINT beneficii_lunare_unic_v2 UNIQUE (salariat_id, an, luna, tip, eveniment)
 );
 
+-- [F125] mirror al 09_ddl_d390_clasificare.sql: clasificarea manuala D390 (reclasificare + adaugare).
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.d390_reclasificare (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    an integer NOT NULL, luna integer NOT NULL,
+    directie text NOT NULL, tara varchar(2) NOT NULL, cod varchar(20) NOT NULL,
+    tip char(1) NOT NULL,
+    UNIQUE (an, luna, directie, tara, cod)
+);
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.d390_manual (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    an integer NOT NULL, luna integer NOT NULL,
+    tip char(1) NOT NULL, tara varchar(2) NOT NULL,
+    cod varchar(20) NOT NULL DEFAULT '', den text NOT NULL DEFAULT '', baza numeric NOT NULL DEFAULT 0
+);
+
 --
 -- F145 (rapoarte configurabile salvabile) — mirror al core/migrare_rapoarte_salvate.py
 --

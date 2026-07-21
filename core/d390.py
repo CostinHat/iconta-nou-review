@@ -77,13 +77,12 @@ class Rezultat:
     avertismente: list = field(default_factory=list)
 
 
-def calcul_d390(prof, an, luna, facturi, manual=None):
-    """Calcul PUR. facturi: dict cu cui, nume, directie, total, tva.
-    manual: listă opțională de dict-uri {tip, tara, cod, den, baza} introduse de contabil
-            (pentru P/S/T/R care nu se pot deriva automat din facturi)."""
-    ops = {}
+def _facturi_ic(facturi):
+    """Facturile INTRACOMUNITARE valide -> [{directie, tara, cod, den, baza}] + (skip_nocui,
+    skip_dom). Latura auto, FĂRĂ tip încă (tipul se decide separat: default L/A + reclasificare).
+    Sursa unică a filtrului IC — folosit și de calcul_d390 și de operatiuni_auto (fără dublură)."""
+    out = []
     skip_nocui = skip_dom = 0
-
     for f in facturi:
         raw = (f.get("cui") or "").strip().upper().replace(" ", "").replace("-", "")
         m = _CUI_UE.match(raw)
@@ -94,11 +93,47 @@ def calcul_d390(prof, an, luna, facturi, manual=None):
         if tara == "RO" or tara not in TARI_UE:
             skip_dom += 1
             continue
-        tip = "L" if f.get("directie") == "emisa" else "A"   # bunuri
-        den = (f.get("nume") or "")[:200]
-        baza = Decimal(str(f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
-        k = (tip, tara, cod, den)
-        ops[k] = ops.get(k, Decimal("0")) + baza
+        out.append({"directie": f.get("directie"), "tara": tara, "cod": cod,
+                    "den": (f.get("nume") or "")[:200],
+                    "baza": Decimal(str(f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))})
+    return out, skip_nocui, skip_dom
+
+
+def operatiuni_auto(facturi, reclasificari=None):
+    """[F125] Pentru UI: operațiunile auto-derivate din facturi, agregate pe (directie, tara, cod,
+    den), cu tipul curent (default L/A sau reclasificat). Contabilul le vede și le reclasifică."""
+    recl = reclasificari or {}
+    ic, _, _ = _facturi_ic(facturi)
+    agg = {}
+    for o in ic:
+        k = (o["directie"], o["tara"], o["cod"], o["den"])
+        agg[k] = agg.get(k, Decimal("0")) + o["baza"]
+    out = []
+    for (directie, tara, cod, den), b in agg.items():
+        tip_def = "L" if directie == "emisa" else "A"
+        out.append({"directie": directie, "tara": tara, "cod": cod, "den": den,
+                    "baza": _int(b), "tip_default": tip_def,
+                    "tip_curent": recl.get((directie, tara, cod), tip_def)})
+    return sorted(out, key=lambda x: (x["directie"], x["tara"], x["cod"]))
+
+
+def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
+    """Calcul PUR. facturi: dict cu cui, nume, directie, total, tva.
+    manual: listă opțională de dict-uri {tip, tara, cod, den, baza} introduse de contabil
+            (linii pur manuale, fără factură în sistem).
+    reclasificari: dict {(directie, tara, cod): tip} — override-ul tipului unei operațiuni
+            auto-derivate (emisă implicit L, primită implicit A). RECLASIFICĂ, nu adaugă →
+            fără dublă numărare a facturilor de servicii (F125). Vezi DECIZII 21.07."""
+    ops = {}
+    recl = reclasificari or {}
+    ic, skip_nocui, skip_dom = _facturi_ic(facturi)
+    for o in ic:
+        tip_def = "L" if o["directie"] == "emisa" else "A"       # implicit: bunuri
+        tip = recl.get((o["directie"], o["tara"], o["cod"]), tip_def)  # override contabil
+        if tip not in TIPURI:
+            tip = tip_def
+        k = (tip, o["tara"], o["cod"], o["den"])
+        ops[k] = ops.get(k, Decimal("0")) + o["baza"]
 
     # operațiuni manuale (P/S/T/R)
     for op in (manual or []):
@@ -232,9 +267,32 @@ def pull(conn, schema, an, luna):
     return prof, facturi
 
 
-def genereaza(conn, schema, an, luna, manual=None):
+def pull_manual(conn, schema, an, luna):
+    """[F125] Liniile pur manuale D390 pentru luna (introduse de contabil, fără factură)."""
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT tip, tara, cod, den, baza FROM {schema}.d390_manual "
+                    f"WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
+        return [{"tip": t, "tara": ta, "cod": c, "den": d, "baza": b}
+                for (t, ta, c, d, b) in cur.fetchall()]
+
+
+def pull_reclasificari(conn, schema, an, luna):
+    """[F125] Override-urile de tip pe operațiuni auto-derivate: {(directie, tara, cod): tip}."""
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT directie, tara, cod, tip FROM {schema}.d390_reclasificare "
+                    f"WHERE an=%s AND luna=%s", (an, luna))
+        return {(dir_, ta, c): t for (dir_, ta, c, t) in cur.fetchall()}
+
+
+def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
     prof, facturi = pull(conn, schema, an, luna)
-    res = calcul_d390(prof, an, luna, facturi, manual)
+    # [F125] dacă nu s-au dat explicit (ex. în teste), se iau din evidența persistată — ca toate
+    # căile (wizard, pachet, control încrucișat) să vadă ACELEAȘI clasificări.
+    if manual is None:
+        manual = pull_manual(conn, schema, an, luna)
+    if reclasificari is None:
+        reclasificari = pull_reclasificari(conn, schema, an, luna)
+    res = calcul_d390(prof, an, luna, facturi, manual, reclasificari)
     return build_xml(res), res

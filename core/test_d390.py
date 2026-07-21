@@ -10,7 +10,7 @@ Doua buguri gasite prin audit pe date reale (16.07.2026):
    aveau cui="" -> respinse tacit -> D390 genera mereu "0 operatiuni".
 """
 import pytest
-from core.d390 import calcul_d390, build_xml, valideaza
+from core.d390 import calcul_d390, build_xml, valideaza, operatiuni_auto
 
 
 def _prof():
@@ -51,3 +51,39 @@ def test_factura_fara_cui_ue_valid_e_ignorata():
     res = calcul_d390(_prof(), 2026, 6, facturi)
     assert res.nr_opi == 0
     assert "excluse" in " ".join(res.avertismente)
+
+
+# ---------- F125: clasificare manuala (reclasificare + adaugare) ----------
+_FACT_IC = [{"cui": "IT00905811006", "nume": "AUCHAN ITALIA SPA", "directie": "emisa", "total": 5000, "tva": 0}]
+
+
+def test_reclasificare_muta_tipul_fara_dubla_numarare():
+    """Auto pune emisa->L (bunuri). Reclasificat L->P (serviciu prestat) -> valoarea trece
+    din L in P, NU se adauga (fara dubla numarare). nr_opi ramane 1."""
+    recl = {("emisa", "IT", "00905811006"): "P"}
+    res = calcul_d390(_prof(), 2026, 6, _FACT_IC, reclasificari=recl)
+    assert res.rezumat["L"] == 0
+    assert res.rezumat["P"] == 5000
+    assert res.nr_opi == 1
+
+
+def test_reclasificare_ignora_tip_invalid():
+    """Un tip care nu e in nomenclator -> revine la default (nu strica calculul)."""
+    res = calcul_d390(_prof(), 2026, 6, _FACT_IC, reclasificari={("emisa", "IT", "00905811006"): "Z"})
+    assert res.rezumat["L"] == 5000
+
+
+def test_linie_manuala_se_adauga():
+    man = [{"tip": "S", "tara": "DE", "cod": "136695976", "den": "SERVICE", "baza": 1000}]
+    res = calcul_d390(_prof(), 2026, 6, [], manual=man)
+    assert res.rezumat["S"] == 1000
+    assert res.nr_opi == 1
+
+
+def test_operatiuni_auto_arata_tipul_curent():
+    """Pt UI: operatiunea auto arata tip_default si tip_curent (reclasificat)."""
+    recl = {("emisa", "IT", "00905811006"): "P"}
+    ops = operatiuni_auto(_FACT_IC, recl)
+    assert len(ops) == 1
+    assert ops[0]["tip_default"] == "L" and ops[0]["tip_curent"] == "P"
+    assert ops[0]["baza"] == 5000
