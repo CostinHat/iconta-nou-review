@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc } from "../api.js";
+import { api, esc, bani, arataMesaj } from "../api.js";
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -180,6 +180,7 @@ async function pas2(corp, nav) {
 
   corp.innerHTML = `
     <p class="mig-intro">Pasul 2 din 3 — verifică <b>${S.tip.toUpperCase()}</b> · ${etPerioada()}</p>
+    ${S.tip === "d390" ? '<div id="dec-d390-clasif"></div>' : ""}
     ${blocANAF}
     ${avert.length ? `<div class="dec-avert">
         <div class="dec-avert-cap">Avertismente (${avert.length})</div>
@@ -195,6 +196,63 @@ async function pas2(corp, nav) {
     <p class="ecran-nota">${esc(S.rezultat.limita || "")}</p>
   `;
   corp.querySelector("#dec-trimite").addEventListener("click", () => pas3(corp, nav));
+  if (S.tip === "d390") randeazaClasificareD390(corp, nav);
+}
+
+// [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
+// linii manuale. Modifica evidenta persistata; "Regenereaza" reface pas2 cu noile clasificari.
+const _D390_TIP_DIR = {
+  emisa: [["L", "Livrare bunuri (L)"], ["T", "Triangulație (T)"], ["P", "Servicii prestate (P)"], ["R", "Agricol special (R)"]],
+  primita: [["A", "Achiziție bunuri (A)"], ["S", "Servicii primite (S)"]],
+};
+async function randeazaClasificareD390(corp, nav) {
+  const zona = corp.querySelector("#dec-d390-clasif");
+  if (!zona) return;
+  let d;
+  try { d = await api.get(`/tenants/${S.tenant_id}/d390-clasificare?an=${S.an}&luna=${S.luna}`); }
+  catch { zona.innerHTML = ""; return; }
+  const auto = d.auto || [], manual = d.manual || [];
+  const optSel = (dir, cur) => (_D390_TIP_DIR[dir] || []).map(([v, l]) => `<option value="${v}" ${v === cur ? "selected" : ""}>${l}</option>`).join("");
+  zona.innerHTML = `<details class="dec-xml" open><summary>Clasificare intracomunitară (servicii / triangulație)</summary>
+    ${auto.length ? `<div class="camp-eticheta" style="margin:6px 0">Operațiuni din facturi — verifică tipul:</div>
+      ${auto.map((o) => `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:4px 0;border-bottom:1px solid var(--linie)">
+        <span style="flex:1 1 220px">${o.directie === "emisa" ? "↗ emisă" : "↘ primită"} · ${esc(o.tara)}${esc(o.cod)} ${esc(o.den || "")}</span>
+        <span style="min-width:90px;text-align:right">${bani(o.baza)} lei</span>
+        <select class="camp-input dec-recl" data-dir="${o.directie}" data-tara="${esc(o.tara)}" data-cod="${esc(o.cod)}" style="width:200px">${optSel(o.directie, o.tip_curent)}</select>
+      </div>`).join("")}` : `<div class="camp-eticheta" style="margin:6px 0;color:var(--gri)">Nicio operațiune din facturi în perioadă.</div>`}
+    <div class="camp-eticheta" style="margin:10px 0 4px">Linii adăugate manual (fără factură în sistem):</div>
+    ${manual.length ? manual.map((m) => `<div style="display:flex;gap:8px;align-items:center;padding:2px 0">
+        <span style="flex:1 1 220px">${esc(m.tip)} · ${esc(m.tara)}${esc(m.cod)} ${esc(m.den || "")}</span>
+        <span style="min-width:90px;text-align:right">${bani(m.baza)} lei</span>
+        <button class="btn-link dec-man-del" data-id="${m.id}">șterge</button></div>`).join("") : `<div class="camp-eticheta" style="color:var(--gri)">—</div>`}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:8px">
+      <label class="camp" style="width:160px"><span class="camp-eticheta">Tip</span><select id="man-tip" class="camp-input"><option value="P">Servicii prestate (P)</option><option value="S">Servicii primite (S)</option><option value="T">Triangulație (T)</option><option value="R">Agricol special (R)</option></select></label>
+      <label class="camp" style="width:100px"><span class="camp-eticheta">Țară</span><input id="man-tara" class="camp-input" placeholder="DE"></label>
+      <label class="camp" style="width:150px"><span class="camp-eticheta">Cod partener</span><input id="man-cod" class="camp-input" placeholder="fără prefix țară"></label>
+      <label class="camp" style="width:150px"><span class="camp-eticheta">Denumire</span><input id="man-den" class="camp-input"></label>
+      <label class="camp" style="width:110px"><span class="camp-eticheta">Bază (lei)</span><input id="man-baza" type="number" class="camp-input"></label>
+      <button class="buton-secundar" id="man-add">+ adaugă</button>
+    </div>
+    <div id="dec-clasif-msg"></div>
+    <p style="margin-top:8px"><button class="buton-primar" id="dec-regen">Regenerează D390</button>
+      <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
+  </details>`;
+  zona.querySelectorAll(".dec-recl").forEach((sel) => sel.addEventListener("change", async () => {
+    try { await api.put(`/tenants/${S.tenant_id}/d390-clasificare/reclasificare`, { an: S.an, luna: S.luna, directie: sel.dataset.dir, tara: sel.dataset.tara, cod: sel.dataset.cod, tip: sel.value }); }
+    catch (e) { arataMesaj(zona.querySelector("#dec-clasif-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+  }));
+  zona.querySelectorAll(".dec-man-del").forEach((b) => b.addEventListener("click", async () => {
+    try { await api.del(`/tenants/${S.tenant_id}/d390-clasificare/manual/${b.dataset.id}?an=${S.an}&luna=${S.luna}`); randeazaClasificareD390(corp, nav); }
+    catch (e) { arataMesaj(zona.querySelector("#dec-clasif-msg"), (e && e.mesaj) || "Eroare la ștergere.", "eroare"); }
+  }));
+  zona.querySelector("#man-add").addEventListener("click", async () => {
+    const b = { an: S.an, luna: S.luna, tip: zona.querySelector("#man-tip").value,
+      tara: zona.querySelector("#man-tara").value.trim().toUpperCase(), cod: zona.querySelector("#man-cod").value.trim(),
+      den: zona.querySelector("#man-den").value.trim(), baza: parseFloat(zona.querySelector("#man-baza").value) || 0 };
+    try { await api.post(`/tenants/${S.tenant_id}/d390-clasificare/manual`, b); randeazaClasificareD390(corp, nav); }
+    catch (e) { arataMesaj(zona.querySelector("#dec-clasif-msg"), (e && e.mesaj) || "Eroare la adăugare.", "eroare"); }
+  });
+  zona.querySelector("#dec-regen").addEventListener("click", () => pas2(corp, nav));
 }
 
 // ---------- PAS 3: trimite in coada ----------

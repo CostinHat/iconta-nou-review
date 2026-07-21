@@ -3290,8 +3290,11 @@ def tenant_plata_salarii_fisier(tenant_id: int, an: int, luna: int, ctx=Depends(
 
 
 # ---- [F125] clasificare manuala D390 (reclasificare + adaugare) ----
-def _schema_cabinet_sau_404(ctx, tenant_id, conn):
-    schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+def _schema_cabinet_sau_404(ctx, tenant_id):
+    """Rezolva schema tenantului (conexiune separata); d390.pull foloseste nume necalificate,
+    deci apelantul deschide apoi db.get_conn(schema) pozitionat pe schema."""
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
         raise HTTPException(404, "tenant inexistent sau fara acces")
     return schema
@@ -3301,8 +3304,8 @@ def _schema_cabinet_sau_404(ctx, tenant_id, conn):
 def d390_clasificare_stare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Operatiunile auto-derivate (cu tipul curent) + liniile manuale, pt ecranul de clasificare."""
     from core import d390_clasificare_api as _cl
-    with db.get_conn() as conn:
-        schema = _schema_cabinet_sau_404(ctx, tenant_id, conn)
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
         return _cl.stare(conn, schema, an, luna)
 
 
@@ -3310,33 +3313,33 @@ def d390_clasificare_stare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_
 def d390_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """Override tip pe o operatiune auto: {an, luna, directie, tara, cod, tip}."""
     from core import d390_clasificare_api as _cl
-    with db.get_conn() as conn:
-        schema = _schema_cabinet_sau_404(ctx, tenant_id, conn)
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
         r = _cl.salveaza_reclasificare(conn, schema, corp.get("an"), corp.get("luna"),
                                        corp.get("directie"), corp.get("tara"), corp.get("cod"), corp.get("tip"))
-        if r.get("eroare"):
-            raise HTTPException(422, r["eroare"])
-        return r
+    if r.get("eroare"):
+        raise HTTPException(422, r["eroare"])
+    return r
 
 
 @app.post("/tenants/{tenant_id}/d390-clasificare/manual")
 def d390_manual_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """Adauga linie pur manuala: {an, luna, tip, tara, cod, den, baza}."""
     from core import d390_clasificare_api as _cl
-    with db.get_conn() as conn:
-        schema = _schema_cabinet_sau_404(ctx, tenant_id, conn)
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
         r = _cl.manual_adauga(conn, schema, corp.get("an"), corp.get("luna"), corp.get("tip"),
                               corp.get("tara"), corp.get("cod"), corp.get("den"), corp.get("baza"))
-        if r.get("eroare"):
-            raise HTTPException(422, r["eroare"])
-        return r
+    if r.get("eroare"):
+        raise HTTPException(422, r["eroare"])
+    return r
 
 
 @app.delete("/tenants/{tenant_id}/d390-clasificare/manual/{mid}")
 def d390_manual_sterge(tenant_id: int, mid: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from core import d390_clasificare_api as _cl
-    with db.get_conn() as conn:
-        schema = _schema_cabinet_sau_404(ctx, tenant_id, conn)
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
         return _cl.manual_sterge(conn, schema, an, luna, mid)
 
 
