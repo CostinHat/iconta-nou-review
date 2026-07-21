@@ -1898,3 +1898,24 @@ schema cu o conexiune, apoi db.get_conn(schema) pozitionat (nu get_conn() simplu
 manual cu .camp + .camp-eticheta (regula DS ETICHETE_LIPSA), verificator DS 0 nou.
 Test: test_d390.py 8 teste (+4 F125) PASS + E2E autentificat tenant_002 (reclasificare emisa IT->P reflectata in
 stare, tranzitie ilegala emisa->A respinsa 422, reset sterge override, manual add + tara non-UE respinsa). curatat.
+
+# 21.07.2026 — F120 educatie AI pe tipare: strat generativ peste F094 (LIVE)
+Al cincilea item din inventarul de deschideri atacat (dupa F134, F137, F125). Stratul AI era prevazut inca de
+la F094 (tipare_api docstring: "materia prima pentru viitorul strat AI ... AI-ul (stratul 5) va citi exact aceste
+agregate"). Acum LIVE. Temei/decizii in DECIZII 21.07 F120.
+
+Ce face: buton "Genereaza analiza AI" pe ecranul G (Tipare de erori, doar patron) -> Claude citeste agregatele
+deterministe de respingere (motive/tipuri/firme, din tipare()) si intoarce o explicatie a tiparelor + 3-5
+recomandari concrete. tipare_api.analiza_ai(conn, cabinet_id) + main.py GET /tipare/ai + tipare.js (buton + zona).
+
+DECIZII cheie: (a) REFOLOSIRE core.ai_client, nu client paralel - model ales DELIBERAT de proiect
+(claude-sonnet-4-6, "echilibru calitate/cost pentru narativ"); NU l-am suprascris cu opus fiindca alegerea de
+model e o decizie deja in cod (skill claude-api: default opus e pt cod NOU, aici e conventie stabilita). (b)
+GROUNDING (regula de aur pe AI): promptul da DOAR agregatele reale, sistemul interzice inventarea cifrelor/
+firmelor/motivelor, temperatura 0.4. (c) ON-DEMAND: apel platit -> doar la buton, nu automat la deschidere;
+fallback curat daca ai_client.disponibil()==False sau lipsa date (mesaj, nu eroare).
+
+Test (regula de aur): apel Claude REAL pe cabinet cu respingeri fabricate -> analiza structurata in romana (tipare
++ 5 recomandari), GROUNDING confirmat (mentioneaza CUI/CAS + firma din datele reale, nu inventeaza); fallback fara
+date ("nu exista respingeri") + cheie lipsa. Date de test curatate din declaratii_coada. verificator DS 0 nou.
+LIMITA (DE_FACUT): analiza e SUGESTIE AI, nu verdict (contabilul o cantareste); nu se persista (regenerare la cerere).

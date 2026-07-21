@@ -128,6 +128,11 @@ starea reverificata azi:
   fără dublă numărare, validat DUK. **Deschis (opțional, scop mai mare — NU blocaj):** marcajul `tip_d390` direct
   pe factură (la emitere/editare), ca D390 să citească tipul din factură în loc de reclasificare per-perioadă.
   Amânat deliberat — atinge modelul de facturi + fluxul de emitere; reclasificarea per-perioadă acoperă nevoia acum.
+- **F120 educație AI pe tipare — LIVE 21.07; nimic critic deschis.**
+  Analiza generativă AI pe ecranul G (Tipare de erori) e LIVE (commit a557889; detaliu ISTORIC 21.07 + DECIZII
+  21.07 F120): buton „Generează analiză AI" → Claude explică tiparele de respingere + recomandări, grounded pe
+  agregatele F094, on-demand, doar patron. **Deschis (mic, opțional):** analiza nu se persistă (se regenerează la
+  cerere) — dacă se dorește istoric al analizelor AI, e o extindere; nu blocaj. Analiza e sugestie, nu verdict.
 - raporteaza.js — verifică vizual data "cu_ora" în feed (migrat azi).
 - Verifică date CM de test invalide în alte tenant-uri (CCMAD corupt deja șters din tenant_002).
 
