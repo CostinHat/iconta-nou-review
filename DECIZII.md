@@ -1690,3 +1690,18 @@ VALIDARE: tranzitiile la sursa (achizitia nu poate deveni livrare si invers); co
 (ca d390.valideaza). DOVADA: XML cu reclasificare (L->P) + linie manuala (S) = stare VALID pe DUK (d390),
 fara erori. _facturi_ic extras ca sursa unica a filtrului IC (folosit de calcul_d390 + operatiuni_auto, fara dublura).
 FAZARE: step 1 (azi) = model + calcul + API + endpoint + teste + DUK; step 2 = UI (ecran clasificare pe D390).
+
+### 21.07.2026 F120 educatie AI pe tipare - strat generativ peste F094 (grounded, on-demand)  (tipare_api.py, ai_client.py, main.py, tipare.js)
+DECIZIE: stratul AI generativ prevazut inca de la F094 (tipare_api docstring: "materia prima pentru viitorul
+strat AI ... AI-ul (stratul 5) va citi exact aceste agregate"). Butonul "Genereaza analiza AI" pe ecranul G cere
+lui Claude explicatii + recomandari concrete din agregatele deterministe de respingere.
+MODEL (refolosire, NU paralel): core.ai_client existent - model ales DELIBERAT de proiect (claude-sonnet-4-6,
+comentariu "echilibru calitate/cost pentru narativ"). NU l-am suprascris cu opus: alegerea de model e o decizie
+deja luata in cod (ai_client + raportari_ai il folosesc); F120 e exact caz "narativ". Skill claude-api spune
+default opus pt cod NOU, dar aici exista conventie stabilita = decizia userului.
+GROUNDING (regula de aur pe AI): promptul da DOAR agregatele reale (motive/tipuri/firme din tipare()); sistemul
+cere explicit "foloseste DOAR datele furnizate, nu inventa cifre/firme/motive". Verificat: analiza reala mentioneaza
+CUI/CAS/firma din date, nu fabrica. Temperatura 0.4 (grounded, nu creativ).
+ON-DEMAND (cost): apel platit -> NU se ruleaza automat la deschiderea ecranului, doar la buton. Fallback curat
+(ai_client.disponibil()==False sau lipsa date -> mesaj, nu eroare). Doar patron (ca F094).
+LIMITA: analiza e sugestie AI, nu verdict - contabilul o cantareste. Nu se persista (se regenereaza la cerere).

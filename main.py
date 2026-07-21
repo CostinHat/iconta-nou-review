@@ -620,6 +620,15 @@ def tipare_panou(ctx=Depends(cere_rol("admin_firma"))):
         return tipare_api.tipare(conn, cab)
 
 
+@app.get("/tipare/ai")  # [F120] analiza generativa AI peste tiparele de respingere (doar patron)
+def tipare_ai_panou(ctx=Depends(cere_rol("admin_firma"))):
+    cab = ctx.get("firm")
+    if not cab:
+        raise HTTPException(400, "fara cabinet asociat")
+    with db.get_conn() as conn:
+        return tipare_api.analiza_ai(conn, cab)
+
+
 # ============================================================
 #  MODELE intrare
 # ============================================================

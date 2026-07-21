@@ -71,3 +71,41 @@ def tipare(conn, cabinet_id):
     # rezumat: avem date sau nu (pentru mesajul de gol)
     out["are_date"] = bool(out["motive"] or any(t["respinse"] for t in out["tipuri"]))
     return out
+
+
+# ============================================================
+#  F120 — strat AI generativ peste agregatele de mai sus
+# ============================================================
+def analiza_ai(conn, cabinet_id):
+    """[F120] Analiza generativa: citeste agregatele deterministe (tipare) si cere lui Claude o
+    explicatie a tiparelor + recomandari CONCRETE. GROUNDED strict pe datele furnizate (fara cifre
+    inventate). Refoloseste core.ai_client (model ales de proiect). Fallback curat daca AI indisponibil
+    sau nu-s date - apelantul afiseaza mesajul, nu crapa ecranul."""
+    from core import ai_client
+    date = tipare(conn, cabinet_id)
+    if not date.get("are_date"):
+        return {"disponibil": False, "motiv": "Nu exista inca respingeri de analizat."}
+    if not ai_client.disponibil():
+        return {"disponibil": False, "motiv": "Asistentul AI nu e configurat pe acest server."}
+
+    motive = "\n".join("- %s: %d respingeri" % (m["motiv"], m["n"]) for m in date["motive"][:15])
+    tipuri = "\n".join("- %s: %d din %d respinse (%d%%)" % (t["tip"].upper(), t["respinse"], t["total"], t["pct"])
+                       for t in date["tipuri"] if t["respinse"] > 0)
+    firme = "\n".join("- %s: %d respinse din %d" % (f["nume"], f["respinse"], f["total"]) for f in date["firme"][:10])
+
+    sistem = ("Esti asistentul unui cabinet de contabilitate din Romania. Analizezi tiparele de respingere "
+              "a declaratiilor fiscale la ANAF si propui recomandari CONCRETE, actionabile, pentru a reduce "
+              "respingerile. Foloseste DOAR datele furnizate - nu inventa cifre, firme sau motive care nu apar. "
+              "Raspunzi in romana, concis si structurat: intai ce tipare observi (2-3 fraze), apoi 3-5 recomandari "
+              "practice cu bullet. Fara introduceri de politete, direct la analiza.")
+    prompt = ("Date agregate ale cabinetului (respingeri reale de declaratii):\n\n"
+              "MOTIVE DE RESPINGERE RECURENTE:\n%s\n\n"
+              "TIPURI DE DECLARATII CU RATA DE RESPINGERE:\n%s\n\n"
+              "FIRME CU CELE MAI MULTE RESPINGERI:\n%s\n\n"
+              "Analizeaza tiparele si propune recomandari."
+              % (motive or "(niciunul)", tipuri or "(niciunul)", firme or "(niciuna)"))
+    try:
+        text = ai_client.genereaza_text(prompt, sistem=sistem, max_tokens=1000, temperatura=0.4)
+    except Exception as e:
+        return {"disponibil": False, "motiv": "Nu am putut genera analiza acum (%s)." % type(e).__name__}
+    return {"disponibil": True, "analiza": text}

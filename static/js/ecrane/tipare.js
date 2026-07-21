@@ -1,7 +1,8 @@
-// tipare.js — Ecran G: Educatie pe tipare (statistic, fara AI).
-// Trei sectiuni: motive de respingere, tipuri cu rata, firme cu respingeri.
-// Doar patron (regula 4). La teste se umple; AI-ul (stratul 5) il foloseste.
-import { api } from "../api.js";
+// tipare.js — Ecran G: Educatie pe tipare (statistic + [F120] analiza generativa AI).
+// Trei sectiuni statistice: motive de respingere, tipuri cu rata, firme cu respingeri.
+// Plus [F120] buton "Genereaza analiza AI" care cere lui Claude explicatii + recomandari.
+// Doar patron (regula 4).
+import { api, esc } from "../api.js";
 
 function bara(pct) {
   // bara de proportie pentru rata de respingere
@@ -113,6 +114,26 @@ export async function randeazaTipare(corp, nav) {
   `;
 
   corp.innerHTML = `<div class="tip-ecran">${sectMotive}${sectTipuri}${sectFirme}
-    <p class="cap-nota">Tiparele se construiesc din respingerile reale. Mai târziu, asistentul AI
-    va folosi exact aceste date ca să propună corecții.</p></div>`;
+    <div class="tip-analiza" style="margin-top:16px">
+      <h3 class="tip-titlu">Analiză AI</h3>
+      <p class="cap-nota">Claude citește exact tiparele de mai sus și propune explicații și recomandări concrete.</p>
+      <p><button class="buton-primar" id="tip-ai">Generează analiză AI</button></p>
+      <div id="tip-ai-rez"></div>
+    </div></div>`;
+  corp.querySelector("#tip-ai").addEventListener("click", async () => {
+    const btn = corp.querySelector("#tip-ai");
+    const rez = corp.querySelector("#tip-ai-rez");
+    btn.disabled = true; rez.innerHTML = `<p class="ecran-nota">Se analizează… (câteva secunde)</p>`;
+    try {
+      const r = await api.get("/tipare/ai");
+      if (r && r.disponibil) {
+        rez.innerHTML = `<div class="pf-frand" style="display:block;white-space:pre-wrap">${esc(r.analiza || "")}</div>`;
+      } else {
+        rez.innerHTML = `<p class="ecran-nota">${esc((r && r.motiv) || "Analiza nu e disponibilă acum.")}</p>`;
+      }
+    } catch (e) {
+      rez.innerHTML = `<p class="ecran-nota">Nu am putut genera analiza.</p>`;
+    }
+    btn.disabled = false;
+  });
 }
