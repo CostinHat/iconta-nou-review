@@ -133,7 +133,9 @@ starea reverificata azi:
   21.07 F120): buton „Generează analiză AI" → Claude explică tiparele de respingere + recomandări, grounded pe
   agregatele F094, on-demand, doar patron. **Deschis (mic, opțional):** analiza nu se persistă (se regenerează la
   cerere) — dacă se dorește istoric al analizelor AI, e o extindere; nu blocaj. Analiza e sugestie, nu verdict.
-- raporteaza.js — verifică vizual data "cu_ora" în feed (migrat azi).
+- (VERIFICAT vizual 21.07.2026) raporteaza.js — data "cu_ora" în feed afișează corect dată+oră completă
+  ("21.07.2026 12:06") pe fir (`.rap-fir-data`) și pe fiecare mesaj (`.rap-mesaj-data`), prin `dataRo(iso,"cu_ora")`.
+  Ecran: dashboard cabinet → card "Suport" → "Sesizările mele". Verificat cu o sesizare de test (ștearsă după).
 - (VERIFICAT, curat 21.07.2026) Date CM de test invalide în alte tenant-uri — scanate TOATE tenant-urile
   (doar tenant_001 + tenant_002 există), 0 rânduri în `concedii_medicale` pe fiecare → nimic invalid, nimic de
   șters. Criterii aplicate la sursă (OUG 158/2005): cod ne-numeric (tip „CCMAD") / cod în afara nomenclatorului
