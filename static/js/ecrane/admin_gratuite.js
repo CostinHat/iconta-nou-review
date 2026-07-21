@@ -29,7 +29,7 @@ async function randeaza(corp, nav) {
         <div class="pf-frand" data-zebra="${i % 2}">
           <div class="pf-frand-text">
             <div class="pf-frand-nume">${esc(k.gratuit_nume || "—")}${k.gratuit_cui ? " · " + esc(k.gratuit_cui) : ""}</div>
-            <div class="pf-frand-sub">gratuit: ${k.gratuit_nr_facturi ?? 0} facturi emise · creat ${dataRo(k.gratuit_creat, "cu_ora")} — sub cabinet: <b>${esc(k.firm_nume || k.cabinet_nume || "—")}</b></div>
+            <div class="pf-frand-sub">gratuit: ${k.gratuit_nr_facturi ?? 0} facturi emise · creat ${dataRo(k.gratuit_creat, "cu_ora")} — firma: <b>${esc(k.cabinet_nume || "—")}</b> · cabinet: <b>${esc(k.firm_nume || "—")}</b></div>
           </div>
           <button class="buton-sters" data-coliz="${i}" style="margin-left:10px">Suspendă gratuitul</button>
         </div>`).join("")}</div>
