@@ -5,7 +5,7 @@
 import { api, ICOANE, CULORI_CARD } from "../api.js";
 import { semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
-import { randeazaControl } from "./control.js";
+import { randeazaControl } from "./control.js?v=1";
 import { randeazaTermene } from "./termene.js";
 import { randeazaValidat } from "./validat.js";
 import { randeazaListaFirme } from "./firme.js?v=5";

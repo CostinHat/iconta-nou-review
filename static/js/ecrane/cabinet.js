@@ -7,7 +7,7 @@ import { semaforCard as _semaforCard } from "./semafor.js";  // [p87_asistent]
 import { sesiune } from "../sesiune.js";
 import { randeazaListaFirme } from "./firme.js?v=5";
 import { randeazaMigrare } from "./migrare.js?v=5";
-import { randeazaControl } from "./control.js";
+import { randeazaControl } from "./control.js?v=1";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js"; // [p17_activitate]
 import { randeazaSetari } from "./setari.js"; // [p28_setari]
 import { randeazaRecomanda } from "./recomanda.js"; // [p31_recomanda]

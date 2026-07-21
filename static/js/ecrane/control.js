@@ -190,7 +190,7 @@ async function detaliuFirma(corp, nav, firma) {
       if (firma.contabil) firma.contabil.forEach((p) => { if (!probleme.includes(p) && !dejaInIncrucisat.includes(p)) probleme.push(p); });
       if (!probleme.length) return "";
       return `<div class="cf-grup-titlu cf-rosu">Verificări contabile (${probleme.length})</div>
-        <div class="cf-decl">${probleme.map((p) => `<div class="mig-sold-rand cf-rand-decl"><span class="mig-sold-cont">${p}</span></div>`).join("")}</div>`;
+        <div class="cf-decl">${probleme.map((p) => `<div class="cf-incr-rand"><div class="cf-incr-cap"><span class="cf-dot" style="background:${CULORI.rosu.dot}"></span><span>${esc(p)}</span></div></div>`).join("")}</div>`;
     })()}
     ${d.stare === "verde" ? `
       <div class="mig-gata" style="padding:30px 0">

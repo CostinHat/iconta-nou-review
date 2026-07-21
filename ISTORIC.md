@@ -1963,3 +1963,11 @@ randBun -> clasa canonica "grila-campuri grila-campuri-compacta" (DS cap.9/16, p
 NU rezolva (aliniaza varfurile celulelor, nu inputurile). (b) simetrie etichete: "Greutate neta/bruta (kg)" -> "Gr.
 neta/bruta (kg)" (ambele, doar in e-Transport - grep confirmat neregasite altundeva) ca sa incapa pe un rand.
 Data transport zz.ll.aaaa confirmata. Confirmat vizual. Cache-bust etransport?v=2->4.
+
+VERIFICARE VIZUALA — Control fiscal INCHIS: blocul "Verificari contabile (N)" din drill-down-ul firmei (control.js:193,
+dashboard cabinet - NU ecranControlFirma/firme.js care e curat) randa problemele ("solduri creditoare trezorerie" etc.)
+cu clase imprumutate din ecranul de migrare solduri: .mig-sold-cont (color var(--albastru)+bold+monospace = arata ca
+link) + .mig-sold-rand (grid de solduri, context gresit). FARA handler -> buton mort din cauza stilului, nu drill-down.
+Decizie: text informativ, nu drill-down (remediul actionabil = butonul cf-incr-btn, separat, cablat) -> scos stilul de
+link, aliniat la pattern-ul canonic de constatare (cf-incr-rand + cf-incr-cap + punct rosu CULORI.rosu.dot + text normal),
+esc(p) adaugat, clase mig-sold-* eliminate. Confirmat vizual (text cu buline rosii, nu link). Cache-bust control.js?v=1.
