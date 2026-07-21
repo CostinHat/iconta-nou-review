@@ -1848,3 +1848,28 @@ charset SEPA + rotunjire) PASS. E2E autentificat HTTP tenant_002: preview {nr_pl
 valid pe XSD, debtor!=creditor; izolat: multi-plata (2), fara_iban raportat, cai de eroare. tenant_002 curatat.
 LIMITA (in DE_FACUT): fisier valid pe XSD-ul ISO, dar importul REAL intr-o banca anume (round-trip pe platforma
 corporate) = de dovedit cu cont bancar real - aceeasi natura ca SAGA/WinMentor. Doar RON domestic (RO IBAN).
+
+# 20.07.2026 — F137 coduri COR pe contracte: nomenclator national validat (LIVE), commit bf9cbd3
+Al treilea item din inventarul de deschideri atacat azi (dupa F134). COR era free-text nevalidat; REGES
+respinge un cod inexistent -> devine nomenclator VALIDAT la sursa. Temei/decizii in DECIZII 20.07 F137.
+
+SURSA (STOP procurare - data.gov.ro inaccesibil din mediul de build, timeout; GitHub merge): Costin a
+descarcat fisierul OFICIAL de pe data.gov.ro (dataset Clasificarea Ocupatiilor din Romania, lista alfabetica,
+Ordin 573/180/2024, MO 344/12.04.2024) in cor_surse/cor2024.xml. Alternativa (copie GitHub) RESPINSA - regula
+de aur cere oficialul. Fisierul e doc Word "Flat OPC" XML; lista in /word/document.xml = paragrafe alternand
+cod (6 cifre) -> denumire. cor_incarca.py: 4422 ocupatii unice, auto-validat (refuza daca structura/cifrele difera).
+
+MODEL: nomenclator NATIONAL -> tabel GLOBAL public.cor_ocupatii (08_ddl_cor_ocupatii.sql), NU per-tenant.
+core/cor_api.py: cauta (cod prefix / denumire substring, diacritic-insensitiv pe coloana normalizata
+denumire_cauta - numele au ă/î/ș/ț, userul tasteaza fara), exista, denumire. main.py GET /cor (orice user logat).
+salariati_api._verifica_cor: codul se valideaza la creare+editare salariat (inexistent -> 422); import bulk ramane
+lax (date migrare). REGES foloseste codul (deja validat) + versiune 10 (COR 2010/ISCO-08).
+
+UI (firme.js): camp lookup "Ocupatie (COR)" in formularul salariat (cauti -> selectezi din lista, codul se
+seteaza DOAR prin selectie, nu free-text) + buton "COR ✓/⚠" pe stat (editor inline pt angajatii existenti,
+refoloseste acelasi lookup). stat_plata expune cor. Corectat token bordura inline (--linie, nu --bordura inexistent).
+
+Test: core/test_cor.py (4 teste normalizare diacritice, de care depinde cautarea) + loader auto-valideaza 4422
+coduri + E2E HTTP: /cor cauta dupa cod+denumire, validare creare/editare (263501 acceptat, 999999 respins), stat
+include cor. 39 teste PASS (0 regresii), verificator DS 0 nou. LIMITA (DE_FACUT): nomenclatorul e SNAPSHOT (Ordin
+573/180/2024) - la un ordin nou de actualizare se reruleaza cor_incarca.py; fluxul REGES AdaugareContract inca necablat.

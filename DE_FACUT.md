@@ -115,6 +115,13 @@ starea reverificata azi:
   ca limita SAGA/WinMentor (jos): cod + XSD verificate la sursă, dar nu importat efectiv într-o bancă. NU e
   blocaj de construit — e probă cu bancă reală. Reziduu: doar RON domestic (RO IBAN); plăți în valută/IBAN
   străin = temă separată dacă apare cazul.
+- **F137 coduri COR pe contracte — LIVE 20.07; RĂMÂNE refresh snapshot la ordin nou + flux REGES contract.**
+  Nomenclator COR național validat e LIVE (commit bf9cbd3; detaliu ISTORIC 20.07 + DECIZII 20.07 F137):
+  public.cor_ocupatii cu 4422 ocupații din fișierul oficial data.gov.ro (Ordin 573/180/2024), lookup căutabil +
+  validare la salvare. **Deschis:** (1) nomenclatorul e un SNAPSHOT — la un ordin nou de actualizare COR se
+  rerulează `cor_incarca.py` cu fișierul nou (întreținere periodică, nu bug); (2) fluxul REGES `AdaugareContract`
+  (care trimite codul COR + versiunea la ANAF) NU e încă cablat — `mesaj_adaugare_contract` există în
+  reges_client.py dar nu e apelat; când se cablează, ia codul din salariatul deja validat. NU e blocaj — extindere.
 - raporteaza.js — verifică vizual data "cu_ora" în feed (migrat azi).
 - Verifică date CM de test invalide în alte tenant-uri (CCMAD corupt deja șters din tenant_002).
 
