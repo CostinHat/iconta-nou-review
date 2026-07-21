@@ -1816,3 +1816,26 @@ LIMITA: NICIUNUL dintre exporturi (SAGA sau WinMentor) nu exclude azi 'anulata'/
 facturi, deci nereprodus. Daca se doreste excluderea lor, e o schimbare UNIFORMA pe facturi_emise_luna (afecteaza
 ambele exporturi) + un default nou — de decis separat, nu se strecoara in acest fix. Regresie: test_export_winmentor.py
 +2 teste (status nefiltrat + factura de_preluat inclusa).
+
+### 21.07.2026 Export contabil (SAGA+WinMentor) — NU se exclud facturile storno; se exporta TOT  (RESPINS deschiderea din F187-fix)
+DECIZIE: exporturile catre programul contabilului (SAGA + WinMentor, prin export_saga.facturi_emise_luna)
+raman FARA filtru de excludere storno/anulare. Se exporta toate facturile emise ale lunii, inclusiv notele
+de credit (storno). Open item-ul "exclude anulata/storno uniform" (deschis chiar azi din F187-fix) = RESPINS.
+TEMEI (verificare la sursa, care a rasturnat premisa):
+  1. Facturile NU iau niciodata status 'anulata'/'storno' — singurele atribuiri de status in facturi_api.py
+     sunt 'emisa' / 'de_preluat'; DB confirma doar aceste doua valori. Nu exista endpoint de "anulare" factura.
+     Deci un filtru `status NOT IN ('anulata','storno')` ar fi COD MORT (exclude zero randuri) — patch fantoma.
+  2. Stornarea nu traieste intr-un status: storneaza() (facturi_api.py:281) creeaza o factura NOUA cu linii
+     negative + storno_din_id catre original; statusul ramane 'de_preluat'. "Exclude storno" ar insemna
+     `storno_din_id IS NOT NULL`, adica ascunderea NOTEI DE CREDIT din export.
+  3. Semantica contabila: un export de DOCUMENTE (nu un raport de solduri) trebuie sa contina toate documentele,
+     inclusiv storno-ul. Daca originalul a fost exportat/inregistrat intr-o luna anterioara, ascunderea storno-ului
+     ar lasa reversarea neinregistrata in programul contabil -> sold gresit. rapoarte_comerciale exclude storno
+     doar pentru ca NETEAZA (sold = total - decontat + storno) — alta semantica decat un export de documente.
+ALTERNATIVA RESPINSA: filtrul `status NOT IN ('anulata','storno') AND storno_din_id IS NULL` (ca in
+rapoarte_comerciale_api.py:56-57) — respins pentru export: partea de status e moarta, iar `storno_din_id IS NULL`
+ar introduce un bug contabil (nota de credit neexportata). Paritatea SAGA=WinMentor se pastreaza si asa (ambele
+prin facturi_emise_luna fara filtru).
+LIMITA: daca vreodata apare o functie reala de ANULARE factura (status='anulata' = document nul, nu doar reversat),
+atunci DA se adauga excluderea — dar in facturi_emise_luna (un loc, ambele exporturi o mostenesc) si abia atunci,
+la cazul real. Azi nu exista, deci nu se cara nedecis. Vezi si DECIZII 21.07 F187-fix (paritatea).

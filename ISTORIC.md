@@ -2069,10 +2069,15 @@ factura de_preluat inclusa). SAGA neatins. De ce + limita (anulata/storno neexcl
    Dovadă: curl DANTE 200 + zip (ALTEX+AUCHAN); pytest 13 (11+2 regresie). Commit 7c67aec, DECIZII 21.07.
 
 ## DESCHIS (mutat în DE_FACUT.md, nu se pierde)
-- Exclude 'anulata'/'storno' UNIFORM pe ambele exporturi (o schimbare pe facturi_emise_luna, nu pe unul).
 - Cache-Control immutable pe asset-uri versionate ?v= (deja în DE_FACUT §4, optimizare, nu blocant).
 - Breadcrumb/subtitlu preview „Facturare gratuită" — de privit vizual pe cazul gratuit real.
 - Nume fișier la descărcarea balanțelor — uniformizat cu tiparul export_<tip>_<an>_<luna>.
 
 ## STARE GRUPURI
 - GRUP C ÎNCHIS: e-Transport + Control fiscal + SPV/gratuit + WinMentor — toate confirmate vizual.
+
+## RESPINS azi (zero cod, verificat la sursă)
+- Exclude 'anulata'/'storno' din exporturile SAGA+WinMentor — RESPINS: facturile n-au acel status (doar
+  emisa/de_preluat), iar excluderea notei de credit (storno = factură negativă cu storno_din_id) dintr-un
+  export de DOCUMENTE ar rupe contabilitatea din programul destinație (reversarea n-ar mai intra în cărți).
+  Temei complet + limita (dacă apare vreodată anulare-ca-status) în DECIZII 21.07.

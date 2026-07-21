@@ -92,11 +92,8 @@ starea reverificata azi:
   encoding Windows-1250 cu gard, cod articol derivat consecvent. NU e self-contained ca SAGA — dependență de
   config nomenclator WinMentor al cabinetului (clasă/gestiune/UM); v1=servicii, stoc complex=v2. Vezi DECIZII 19.07.
   LIMITA (ambele): round-trip real (import efectiv) pending cabinet real — cod+spec verificate, necolorat verde live.
-  - **Exclude `anulata`/`storno` UNIFORM pe ambele exporturi (SAGA + WinMentor)** — deschis 21.07 din F187-fix.
-    Azi WinMentor a fost aliniat la SAGA (fără filtru status, `de_preluat` inclus). Dar NICIUNUL nu exclude azi
-    facturile `anulata`/`storno` (DANTE n-are, deci nereprodus). Fixul corect e o singură schimbare pe
-    `export_saga.facturi_emise_luna` (default `status NOT IN ('anulata','storno')`) ca să afecteze ambele deodată —
-    NU un filtru pus doar pe unul (ar rupe iar paritatea). De decis + un default nou. Vezi DECIZII 21.07 F187-fix.
+  (Excluderea 'anulata'/'storno' din export = RESPINS 21.07: facturile n-au acel status, iar ascunderea notei de
+  credit ar rupe contabilitatea din programul destinație. Temei complet în DECIZII 21.07.)
 - **Ciel — BLOCAT PE SPECIFICAȚIE (NU planificat orb).** 3 necunoscute verificate la sursă 19.07: (1) versiune —
   Ciel v6/v7/NextUp au formate DIFERITE (facturis.ro); (2) spec neclar publică (nu există portal oficial ca
   WinMentor); (3) cere coduri ANALITICE pe care iConta poate să nu le aibă la granularitatea Ciel. Se deblochează
