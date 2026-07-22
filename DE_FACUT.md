@@ -211,6 +211,14 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
 1. **An fiscal modificat** (necalendaristic): lipsa coloana; stocuri_api.py/d101.py presupun
    calendaristic (date(an,1,1) hardcodat). Firma cu exercitiu modificat nu e suportata.
    (D394-absent din semafor: REZOLVAT 18.07 - semafor faza 3 conecteaza D394+D406, acum 9/9.)
+2. **Fus orar server vs utilizator** (semnalat 22.07, la F183 antet "cu_ora"): datetime.now() pe
+   server intoarce ora SERVERULUI (UTC pe Hetzner: 04:36), nu ora locala a utilizatorului roman
+   (19:40 Europe/Bucharest) -> "Audit rulat 22.07.2026, 04:36" e derutant. Afecteaza ORICE
+   timestamp "cu_ora" trimis de backend, nu doar F183 (audit_log, recipise SPV, etc.). Chestiune
+   GLOBALA: fie backend-ul emite in Europe/Bucharest (TZ=... in systemd sau zoneinfo la formatare),
+   fie trimite ISO cu offset si frontendul (dataRo) converteste la ora locala a browserului. De
+   decis unde se face conversia (o singura sursa, nu per-modul). NEVERIFICAT: daca alte ecrane care
+   deja arata "cu_ora" au aceeasi abatere (probabil da).
 
 RAMAS — cere ochii/telefonul, NU SSH: **vezi CHECKLIST_BROWSER.md** (PWA P4.18-19, responsive
 P4.20-21, audit vizual ~12 ecrane ramase). Grup fiscal/D101G si ONG: lasate deoparte (fara cod nou).

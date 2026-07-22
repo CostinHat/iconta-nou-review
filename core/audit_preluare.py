@@ -24,6 +24,7 @@ gri-urile trec in verde/rosu -> raportul e REPETABIL (datat cu momentul rularii,
 REUTILIZEAZA cod existent (regula "nu construi paralel"):
   - solduri_api.verifica_echilibru  (echilibru balanta de deschidere, PURA)
   - solduri_parteneri_api.coerenta  (Sigma parteneri pe sintetic vs sold balanta)
+  - pdf_util.bani                   (format monetar romanesc canonic 1.234,56 - DS cap.7)
 
 SCOP v1 (DA gate 22.07.2026): balanta (echilibru) + solduri parteneri (Sigma=sold) + istoric
 declaratii vs solduri fiscale + PFA/RIP (coerenta interna registru). Acopera ambele regimuri:
@@ -31,6 +32,7 @@ partida dubla (SRL) si partida simpla (PFA). NEVERIFICAT v1 (ramane vizibil gri 
 nu tacut): asociati/cote, mijloace fixe, salariati, vector fiscal vs documente.
 """
 from decimal import Decimal
+from core.pdf_util import bani
 
 MODUL = "audit_preluare"
 REGULI = "2026.1"
@@ -41,16 +43,21 @@ def _d(v):
     return Decimal(str(v or 0))
 
 
+def _lei(x):
+    """Suma in format romanesc canonic + ' lei' (1.234,56 lei). Sursa unica: pdf_util.bani (DS cap.7)."""
+    return bani(x, "lei")
+
+
 # Conturi de datorii/creante fiscale la deschidere -> declaratia care le explica. Un sold preluat
 # pe aceste conturi FARA declaratia corespunzatoare in istoricul importat = SEMNAL (gri, nu rosu:
 # soldurile fiscale au cauze legitime -> remediu investigatie, nu acuzatie mecanica).
 CONT_DECL_FISCAL = (
-    ("4423", "D300", "TVA de plata"),
+    ("4423", "D300", "TVA de plată"),
     ("4424", "D300", "TVA de recuperat"),
     ("444",  "D112", "impozit pe venituri din salarii"),
     ("4315", "D112", "CAS"),
     ("4316", "D112", "CASS"),
-    ("436",  "D112", "contributia asiguratorie pentru munca"),
+    ("436",  "D112", "contribuția asiguratorie pentru muncă"),
     ("4411", "D101", "impozit pe profit"),
     ("441",  "D101", "impozit pe profit"),
 )
@@ -66,7 +73,7 @@ def _verde(et, temei, mesaj):
     return _c("verde", et, temei, mesaj, None)
 
 
-def _gri(et, temei, mesaj, actiune, cauza="Lipseste un document necesar verificarii."):
+def _gri(et, temei, mesaj, actiune, cauza="Lipsește un document necesar verificării."):
     return _c("gri", et, temei, mesaj,
               {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})
 
@@ -91,48 +98,48 @@ def _rows_solduri_initiale(conn, schema):
 def verifica_balanta(conn, schema):
     """Balanta de deschidere se echilibreaza (debit=credit). Reutilizeaza solduri_api.verifica_echilibru."""
     from core.solduri_api import verifica_echilibru
-    et = "Balanta de deschidere"
-    temei = ("Balanta de deschidere trebuie sa aiba totalul debitor egal cu cel creditor "
-             "(solduri_initiale). O balanta dezechilibrata face toata contabilitatea preluata "
-             "sa porneasca gresit.")
+    et = "Balanța de deschidere"
+    temei = ("Balanța de deschidere trebuie să aibă totalul debitor egal cu cel creditor "
+             "(solduri_initiale). O balanță dezechilibrată face toată contabilitatea preluată "
+             "să pornească greșit.")
     rows = _rows_solduri_initiale(conn, schema)
     if rows is None:
         return [_gri(et, temei,
-                     "Balanta de deschidere nu a fost importata - nu pot verifica echilibrul.",
-                     "Importa balanta de deschidere (Migrare > Solduri initiale), apoi reia auditul.")]
+                     "Balanța de deschidere nu a fost importată — nu pot verifica echilibrul.",
+                     "Importă balanța de deschidere (Migrare › Solduri inițiale), apoi reia auditul.")]
     if not rows:
-        return [_gri(et, temei, "Balanta de deschidere e goala - nu pot verifica echilibrul.",
-                     "Importa o balanta cu conturi, apoi reia auditul.")]
+        return [_gri(et, temei, "Balanța de deschidere e goală — nu pot verifica echilibrul.",
+                     "Importă o balanță cu conturi, apoi reia auditul.")]
     ok, td, tc, dif = verifica_echilibru(rows)
     if ok:
-        return [_verde(et, temei, f"Balanta de deschidere se echilibreaza ({td:.2f} lei).")]
+        return [_verde(et, temei, f"Balanța de deschidere se echilibrează ({_lei(td)}).")]
     return [_rosu(et, temei,
-                  f"Balanta: debit {td:.2f} lei, credit {tc:.2f} lei (diferenta {dif:.2f} lei).",
-                  cauza="Totalul debitor difera de cel creditor.",
-                  actiune=("Verifica exportul balantei de la contabilul anterior: conturi omise, "
-                           "sold pe cont gresit, randuri de total incluse din greseala. Reimporta "
-                           "balanta corecta (Migrare > Solduri initiale)."))]
+                  f"Balanța: debit {_lei(td)}, credit {_lei(tc)} (diferență {_lei(dif)}).",
+                  cauza="Totalul debitor diferă de cel creditor.",
+                  actiune=("Verifică exportul balanței de la contabilul anterior: conturi omise, "
+                           "sold pe cont greșit, rânduri de total incluse din greșeală. Reimportă "
+                           "balanța corectă (Migrare › Solduri inițiale)."))]
 
 
 def verifica_parteneri(conn, schema):
     """Sigma solduri parteneri pe sintetic (4111/401) = sold sintetic din balanta.
     Reutilizeaza solduri_parteneri_api.coerenta (search_path e pe schema prin SET LOCAL)."""
     from core.solduri_parteneri_api import coerenta
-    et = "Solduri parteneri vs balanta"
-    temei = ("Suma soldurilor pe parteneri (4111 clienti, 401 furnizori) trebuie sa egaleze soldul "
-             "sinteticului din balanta de deschidere. Defalcarea pe partener nu poate depasi sau rata "
-             "totalul din balanta.")
+    et = "Solduri parteneri vs balanță"
+    temei = ("Suma soldurilor pe parteneri (4111 clienți, 401 furnizori) trebuie să egaleze soldul "
+             "sinteticului din balanța de deschidere. Defalcarea pe partener nu poate depăși sau rata "
+             "totalul din balanță.")
     with conn.cursor() as cur:
         cur.execute("SELECT to_regclass(%s)", (schema + ".solduri_parteneri",))
         if cur.fetchone()[0] is None:
             return [_gri(et, temei,
-                         "Soldurile pe parteneri nu au fost importate - nu pot verifica defalcarea.",
-                         "Importa soldurile pe parteneri (Migrare > Solduri parteneri), apoi reia auditul.")]
+                         "Soldurile pe parteneri nu au fost importate — nu pot verifica defalcarea.",
+                         "Importă soldurile pe parteneri (Migrare › Solduri parteneri), apoi reia auditul.")]
         cur.execute(f"SELECT cont, sold_debitor, sold_creditor FROM {schema}.solduri_parteneri")
         randuri = [{"cont": c, "debit": sd, "credit": sc} for c, sd, sc in cur.fetchall()]
     if not randuri:
-        return [_gri(et, temei, "Nu exista solduri pe parteneri de verificat.",
-                     "Importa soldurile pe parteneri (Migrare > Solduri parteneri), apoi reia auditul.")]
+        return [_gri(et, temei, "Nu există solduri pe parteneri de verificat.",
+                     "Importă soldurile pe parteneri (Migrare › Solduri parteneri), apoi reia auditul.")]
     return constatare_parteneri(coerenta(conn, randuri))
 
 
@@ -140,44 +147,44 @@ def constatare_parteneri(rez_coerenta):
     """PURA (fara DB): din rezultatul solduri_parteneri_api.coerenta [{cont, suma_parteneri,
     sold_balanta, diferenta, coincide}], produce constatari. coincide=None -> gri (balanta nu are
     sinteticul); True -> verde; False -> rosu (defalcare != sold)."""
-    et = "Solduri parteneri vs balanta"
-    temei = ("Suma soldurilor pe parteneri (4111 clienti, 401 furnizori) trebuie sa egaleze soldul "
-             "sinteticului din balanta de deschidere. Defalcarea pe partener nu poate depasi sau rata "
-             "totalul din balanta.")
+    et = "Solduri parteneri vs balanță"
+    temei = ("Suma soldurilor pe parteneri (4111 clienți, 401 furnizori) trebuie să egaleze soldul "
+             "sinteticului din balanța de deschidere. Defalcarea pe partener nu poate depăși sau rata "
+             "totalul din balanță.")
     out = []
     for r in rez_coerenta:
         cont = r["cont"]
         if r["coincide"] is None:
             out.append(_gri(et, temei,
-                            f"Contul {cont}: parteneri {r['suma_parteneri']:.2f} lei, dar balanta nu are "
-                            f"acest sold - nu pot compara.",
-                            "Importa balanta de deschidere care contine contul, apoi reia."))
+                            f"Contul {cont}: parteneri {_lei(r['suma_parteneri'])}, dar balanța nu are "
+                            f"acest sold — nu pot compara.",
+                            "Importă balanța de deschidere care conține contul, apoi reia."))
         elif r["coincide"]:
             out.append(_verde(et, temei,
-                              f"Contul {cont}: defalcarea pe parteneri ({r['suma_parteneri']:.2f} lei) "
-                              f"coincide cu balanta."))
+                              f"Contul {cont}: defalcarea pe parteneri ({_lei(r['suma_parteneri'])}) "
+                              f"coincide cu balanța."))
         else:
             out.append(_rosu(et, temei,
-                             f"Contul {cont}: parteneri {r['suma_parteneri']:.2f} lei vs balanta "
-                             f"{r['sold_balanta']:.2f} lei (diferenta {r['diferenta']:.2f} lei).",
-                             cauza="Suma partenerilor nu egaleaza soldul sintetic din balanta.",
-                             actiune=("Verifica: partener omis din defalcare, sold pe cont gresit, sau "
-                                      "balanta si defalcarea preluate din momente diferite.")))
+                             f"Contul {cont}: parteneri {_lei(r['suma_parteneri'])} vs balanță "
+                             f"{_lei(r['sold_balanta'])} (diferență {_lei(r['diferenta'])}).",
+                             cauza="Suma partenerilor nu egalează soldul sintetic din balanță.",
+                             actiune=("Verifică: partener omis din defalcare, sold pe cont greșit, sau "
+                                      "balanța și defalcarea preluate din momente diferite.")))
     return out
 
 
 def verifica_istoric_fiscal(conn, schema, tenant_id, conn_public):
     """Solduri de deschidere pe conturi fiscale <-> istoricul declaratiilor importat. Doar SEMNAL (gri):
     un sold fiscal fara declaratia care-l explica in istoric merita verificat, nu e rosu automat."""
-    et = "Istoric declaratii vs solduri fiscale"
-    temei = ("Un sold de deschidere pe un cont de datorie/creanta fiscala provine dintr-o declaratie "
-             "depusa anterior. La preluare, un sold fara declaratia care-l explica in istoricul importat "
-             "e un semnal de verificat - nu o certitudine (soldurile fiscale au cauze legitime).")
+    et = "Istoric declarații vs solduri fiscale"
+    temei = ("Un sold de deschidere pe un cont de datorie/creanță fiscală provine dintr-o declarație "
+             "depusă anterior. La preluare, un sold fără declarația care-l explică în istoricul importat "
+             "e un semnal de verificat — nu o certitudine (soldurile fiscale au cauze legitime).")
     rows = _rows_solduri_initiale(conn, schema)
     if rows is None:
         return [_gri(et, temei,
-                     "Balanta de deschidere nu a fost importata - nu pot lega soldurile fiscale de istoric.",
-                     "Importa balanta de deschidere (Migrare > Solduri initiale), apoi reia.")]
+                     "Balanța de deschidere nu a fost importată — nu pot lega soldurile fiscale de istoric.",
+                     "Importă balanța de deschidere (Migrare › Solduri inițiale), apoi reia.")]
     with conn_public.cursor() as cur:
         cur.execute("SELECT DISTINCT tip FROM public.declaratii_depuse WHERE tenant_id=%s", (tenant_id,))
         tipuri_depuse = {r[0] for r in cur.fetchall()}
@@ -192,29 +199,29 @@ def constatare_istoric_fiscal(net, tipuri_depuse):
     (set), produce SEMNALE gri. Un sold fiscal fara declaratia care-l explica in istoric -> gri (nu rosu:
     soldurile fiscale au cauze legitime). Fara istoric deloc -> gri (nu pot confirma). Cu istoric si fara
     nepotrivire -> verde."""
-    et = "Istoric declaratii vs solduri fiscale"
-    temei = ("Un sold de deschidere pe un cont de datorie/creanta fiscala provine dintr-o declaratie "
-             "depusa anterior. La preluare, un sold fara declaratia care-l explica in istoricul importat "
-             "e un semnal de verificat - nu o certitudine (soldurile fiscale au cauze legitime).")
+    et = "Istoric declarații vs solduri fiscale"
+    temei = ("Un sold de deschidere pe un cont de datorie/creanță fiscală provine dintr-o declarație "
+             "depusă anterior. La preluare, un sold fără declarația care-l explică în istoricul importat "
+             "e un semnal de verificat — nu o certitudine (soldurile fiscale au cauze legitime).")
     out = []
     if not tipuri_depuse:
         out.append(_gri(et, temei,
-                        "Istoricul declaratiilor nu a fost importat - nu pot confirma ce s-a depus inainte "
+                        "Istoricul declarațiilor nu a fost importat — nu pot confirma ce s-a depus înainte "
                         "de preluare.",
-                        "Importa istoricul declaratiilor (Migrare > Istoric declaratii), apoi reia."))
+                        "Importă istoricul declarațiilor (Migrare › Istoric declarații), apoi reia."))
     for cont, decl, denum in CONT_DECL_FISCAL:
         sold = abs(_d(net.get(cont, 0)))
         if sold <= TOLERANTA or decl in tipuri_depuse:
             continue
         out.append(_gri(et, temei,
-                        f"Sold de deschidere pe {cont} ({denum}, {sold:.2f} lei) fara {decl} in istoricul importat.",
-                        f"Verifica daca {decl} a fost depusa inainte de preluare si importa-o in istoric, "
-                        f"sau confirma ca soldul are alta natura.",
-                        cauza=f"Soldul pe {cont} sugereaza o obligatie {decl} anterioara care nu apare in "
+                        f"Sold de deschidere pe {cont} ({denum}, {_lei(sold)}) fără {decl} în istoricul importat.",
+                        f"Verifică dacă {decl} a fost depusă înainte de preluare și importă-o în istoric, "
+                        f"sau confirmă că soldul are altă natură.",
+                        cauza=f"Soldul pe {cont} sugerează o obligație {decl} anterioară care nu apare în "
                               f"istoricul preluat."))
     if not out and tipuri_depuse:
         out.append(_verde(et, temei,
-                          f"Soldurile fiscale de deschidere au acoperire in istoricul declaratiilor "
+                          f"Soldurile fiscale de deschidere au acoperire în istoricul declarațiilor "
                           f"importat ({', '.join(sorted(tipuri_depuse))})."))
     return out
 
@@ -222,10 +229,6 @@ def constatare_istoric_fiscal(net, tipuri_depuse):
 def verifica_rip(conn, schema):
     """PFA (partida simpla): coerenta interna a registrului de incasari-plati preluat. Lista goala =
     firma nu are RIP (nu e PFA cu istoric preluat) -> verificarea nu apare, nu se falsifica."""
-    et = "Registru incasari-plati (PFA)"
-    temei = ("La partida simpla nu exista balanta: registrul e cronologic, iar soldul e implicit din "
-             "Sigma incasari - Sigma plati. Coerenta interna = sold implicit ne-negativ + operatiuni "
-             "clasificate fiscal.")
     with conn.cursor() as cur:
         cur.execute("SELECT to_regclass(%s)", (schema + ".rip_operatiuni",))
         if cur.fetchone()[0] is None:
@@ -246,28 +249,28 @@ def constatare_rip(inc, plati, n_total, n_neclasificat):
     """PURA (fara DB): coerenta registrului RIP preluat. Sold implicit = Sigma incasari - Sigma plati;
     negativ -> rosu (semnal). Operatiuni neclasificate -> gri (reclasificare). n_total=0 se trateaza in
     apelant (lista goala = firma nu e PFA cu RIP)."""
-    et = "Registru incasari-plati (PFA)"
-    temei = ("La partida simpla nu exista balanta: registrul e cronologic, iar soldul e implicit din "
-             "Sigma incasari - Sigma plati. Coerenta interna = sold implicit ne-negativ + operatiuni "
+    et = "Registru încasări-plăți (PFA)"
+    temei = ("La partida simplă nu există balanță: registrul e cronologic, iar soldul e implicit din "
+             "Σ încasări − Σ plăți. Coerența internă = sold implicit ne-negativ + operațiuni "
              "clasificate fiscal.")
     sold = _d(inc) - _d(plati)
     out = []
     if sold < -TOLERANTA:
         out.append(_rosu(et, temei,
-                         f"Registru: incasari {_d(inc):.2f} lei, plati {_d(plati):.2f} lei, sold implicit "
-                         f"{sold:.2f} lei ({n_total} operatiuni).",
-                         cauza="Soldul implicit al registrului preluat e negativ (plati > incasari cumulat).",
-                         actiune=("Verifica registrul de la contabilul anterior: operatiuni de incasare "
-                                  "omise, sume sau tip gresite, sold de report neinclus.")))
+                         f"Registru: încasări {_lei(inc)}, plăți {_lei(plati)}, sold implicit "
+                         f"{_lei(sold)} ({n_total} operațiuni).",
+                         cauza="Soldul implicit al registrului preluat e negativ (plăți > încasări cumulat).",
+                         actiune=("Verifică registrul de la contabilul anterior: operațiuni de încasare "
+                                  "omise, sume sau tip greșite, sold de report neinclus.")))
     else:
         out.append(_verde(et, temei,
-                          f"Registrul preluat e coerent: incasari {_d(inc):.2f} lei, plati {_d(plati):.2f} "
-                          f"lei, sold implicit {sold:.2f} lei ne-negativ ({n_total} operatiuni)."))
+                          f"Registrul preluat e coerent: încasări {_lei(inc)}, plăți {_lei(plati)}, "
+                          f"sold implicit {_lei(sold)} ne-negativ ({n_total} operațiuni)."))
     if n_neclasificat:
         out.append(_gri(et, temei,
-                        f"{n_neclasificat} din {n_total} operatiuni sunt \"neclasificat\" - categoria fiscala lipseste.",
-                        "Reclasifica operatiunile in ecranul RIP (activitate / cheltuiala deductibila / limitata).",
-                        cauza="Operatiuni preluate fara categorie fiscala (necesara la D212 / registru)."))
+                        f"{n_neclasificat} din {n_total} operațiuni sunt „neclasificat” — categoria fiscală lipsește.",
+                        "Reclasifică operațiunile în ecranul RIP (activitate / cheltuială deductibilă / limitată).",
+                        cauza="Operațiuni preluate fără categorie fiscală (necesară la D212 / registru)."))
     return out
 
 
@@ -286,7 +289,7 @@ def audit(conn, schema, tenant_id, conn_public):
         except Exception as e:  # izolare: un check picat nu ascunde restul
             constatari.append(_gri(fn.__name__, "Verificarea nu a rulat.",
                                     f"NU pot rula verificarea ({e}).",
-                                    "Reincearca; daca persista, verifica datele preluate ale firmei.",
+                                    "Reîncearcă; dacă persistă, verifică datele preluate ale firmei.",
                                     cauza="Eroare la verificare."))
     coerent = [c for c in constatari if c["stare"] == "verde"]
     divergent = [c for c in constatari if c["stare"] == "rosu"]
@@ -294,9 +297,9 @@ def audit(conn, schema, tenant_id, conn_public):
     stare = "rosu" if divergent else ("gri" if neverificat else ("verde" if coerent else "gri"))
     return {"stare": stare, "constatari": constatari,
             "coerent": len(coerent), "divergent": len(divergent), "neverificat": len(neverificat),
-            "limita": ("Verificat: echilibru balanta, defalcare parteneri vs sintetic, solduri fiscale vs "
-                       "istoric declaratii, coerenta registru PFA. NEVERIFICAT (v1): asociati/cote, mijloace "
-                       "fixe, salariati, vector fiscal vs documente - lipsa lor ramane vizibila prin gri, nu "
-                       "tacuta. Auditul verifica coerenta INTERNA a pachetului preluat, NU corectitudinea "
-                       "evidentei contabilului anterior."),
+            "limita": ("Verificat: echilibru balanță, defalcare parteneri vs sintetic, solduri fiscale vs "
+                       "istoric declarații, coerență registru PFA. NEVERIFICAT (v1): asociați/cote, mijloace "
+                       "fixe, salariați, vector fiscal vs documente — lipsa lor rămâne vizibilă prin gri, nu "
+                       "tăcută. Auditul verifică coerența INTERNĂ a pachetului preluat, NU corectitudinea "
+                       "evidenței contabilului anterior."),
             "modul": MODUL, "reguli": REGULI}
