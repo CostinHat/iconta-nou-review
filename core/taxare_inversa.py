@@ -9,6 +9,7 @@
 - neaplicare corecta -> beneficiarul PIERDE dreptul de deducere (norme 109 al. 4)."""
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
+from core.pdf_util import bani
 
 B = Decimal("0.01")
 PRAG_ELECTRONICE = Decimal("22500")
@@ -40,7 +41,7 @@ def se_aplica(categorie, valoare_fara_tva, furnizor_tva, beneficiar_tva, la_data
     if c["expira"] and ref > c["expira"]:
         raise ValueError(f"taxarea inversa pt. lit. {c['lit']}) a expirat la {c['expira']} - regim normal")
     if c["prag"] and Decimal(str(valoare_fara_tva)) < c["prag"]:
-        raise ValueError(f"sub pragul de {c['prag']} lei/factura (lit. {c['lit']}) - regim normal cu TVA")
+        raise ValueError(f"sub pragul de {bani(c['prag'], 'lei')}/factura (lit. {c['lit']}) - regim normal cu TVA")
     return True, f"taxare inversa - art. 331 alin. (2) lit. {c['lit']}) Cod fiscal"
 
 def tva_beneficiar(valoare_fara_tva, cota=21):

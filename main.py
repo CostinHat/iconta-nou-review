@@ -22,6 +22,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_migrare_api
+from core.pdf_util import bani
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
@@ -6903,7 +6904,7 @@ def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         d = r["diferenta"]
-        descr = (corp.get("descriere") or "Decontare valuta") +                 f" {corp['valoare_valuta']} {corp.get('moneda','EUR')} curs {curs_dec}" +                 (f", dif. {d['sens']} {d['diferenta']} lei ({d['cont']})" if d["cont"] else "")
+        descr = (corp.get("descriere") or "Decontare valuta") +                 f" {corp['valoare_valuta']} {corp.get('moneda','EUR')} curs {curs_dec}" +                 (f", dif. {d['sens']} {bani(d['diferenta'], 'lei')} ({d['cont']})" if d["cont"] else "")
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'banca','ciorna') RETURNING id""",
@@ -7337,7 +7338,7 @@ def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
                 if not _oi.e_obiect_inventar(corp["valoare"], ref,
                                              bool(corp.get("durata_sub_1_an"))):
                     raise ValueError(f"valoarea depaseste pragul MF de "
-                                     f"{_oi.prag_mf(ref)} lei (OUG 8/2026) - "
+                                     f"{bani(_oi.prag_mf(ref), 'lei')} (OUG 8/2026) - "
                                      "inregistreaza ca mijloc fix")
                 r = _oi.nota_achizitie(corp["valoare"], corp.get("cota", 21))
                 d0 = "Achizitie obiect de inventar 303+4426=401"

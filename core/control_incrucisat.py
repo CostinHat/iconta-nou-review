@@ -46,6 +46,7 @@ ce inca nu s-a intamplat. O factura cu nota ciorna ramane "necontabilizata" -> r
 remediu SUGERAT (asteapta validare), nu executabil (nota exista deja, nu se dubleaza).
 """
 from decimal import Decimal
+from core.pdf_util import bani
 
 TOLERANTA = Decimal("1")  # 1 leu: D300 rotunjeste la leu, contabilitatea are bani
 MODUL = "control_incrucisat"
@@ -54,6 +55,11 @@ REGULI = "2026.2"
 
 def _d(v):
     return Decimal(str(v or 0))
+
+
+def _lei(x):
+    """Suma in format romanesc canonic + ' lei' (1.234,56 lei). Sursa unica: pdf_util.bani (DS cap.7)."""
+    return bani(x, "lei")
 
 
 def rulaje_interval(conn, schema, data_de, data_pana, conturi):
@@ -185,8 +191,8 @@ def compara_tva(d300_R, rulaje, necontate=None):
         temei = (f"D300 rând {rand} (facturi {fel} în lună, art. 281 CF) vs "
                  f"rulaj {sens} cont {cont} pe lună, numai note validate "
                  f"(ciorna e propunere, nu evidență).")
-        mesaj = (f"{eticheta}: D300 declară {decl} lei, contul {cont} are {contabil} lei "
-                 f"(diferență {dif} lei).")
+        mesaj = (f"{eticheta}: D300 declară {_lei(decl)}, contul {cont} are {_lei(contabil)} "
+                 f"(diferență {_lei(dif)}).")
         baza = {"eticheta": eticheta, "declarat": decl, "contabil": contabil,
                 "diferenta": dif, "temei": temei}
         if abs(dif) <= TOLERANTA:
@@ -200,7 +206,7 @@ def compara_tva(d300_R, rulaje, necontate=None):
                 cauza = f"{len(fara_nota)} facturi {fel} nu sunt contabilizate"
                 if cu_ciorna:
                     cauza += f", iar {len(cu_ciorna)} au note în ciornă, neconfirmate"
-                cauza += f"; TVA-ul lor ({tva_grup} lei) explică exact diferența."
+                cauza += f"; TVA-ul lor ({_lei(tva_grup)}) explică exact diferența."
                 rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
                     "fel": "executabil", "cauza": cauza,
                     "actiune": "Contabilizează facturile listate.",
@@ -210,7 +216,7 @@ def compara_tva(d300_R, rulaje, necontate=None):
                 rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
                     "fel": "sugerat",
                     "cauza": (f"{len(cu_ciorna)} note ciornă create, așteaptă validare; "
-                              f"TVA-ul lor ({tva_grup} lei) explică exact diferența."),
+                              f"TVA-ul lor ({_lei(tva_grup)}) explică exact diferența."),
                     "actiune": ("Un al doilea utilizator validează notele (patru ochi). "
                                 "Până atunci operațiunile nu sunt în evidență."),
                     "facturi": [],
@@ -264,7 +270,7 @@ def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0):
         cod_txt = "+".join(coduri)
         temei = (f"D112 angajatorA cod {cod_txt} (din XML-ul generat) vs "
                  f"rulaj credit cont {cont} pe lună, numai note validate. "
-                 f"Toleranță {tol} lei: D112 rotunjește la leu, evidența ține bani "
+                 f"Toleranță {_lei(tol)}: D112 rotunjește la leu, evidența ține bani "
                  f"({nr_salariati} salariați × 0,5 lei).")
         baza = {"eticheta": eticheta, "declarat": decl, "contabil": contabil,
                 "diferenta": dif, "temei": temei}
@@ -272,8 +278,8 @@ def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0):
             rez.append(dict(baza, stare="verde",
                             mesaj=f"{eticheta}: D112 și contul {cont} coincid.", remediu=None))
             continue
-        mesaj = (f"{eticheta}: D112 declară {decl} lei, contul {cont} are {contabil} lei "
-                 f"(diferență {dif} lei).")
+        mesaj = (f"{eticheta}: D112 declară {_lei(decl)}, contul {cont} are {_lei(contabil)} "
+                 f"(diferență {_lei(dif)}).")
         if contabil == 0 and decl > 0 and not note_ciorna:
             rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
                 "fel": "executabil",
@@ -497,19 +503,19 @@ def compara_d390(baze, ic_facturi):
         # coerent (inclusiv toleranța de rotunjire la leu)
         if abs(dif) <= TOLERANTA:
             rez.append(dict(baza, stare="verde",
-                mesaj=f"{eticheta}: D390 și evidența validată coincid ({decl} lei).", remediu=None))
+                mesaj=f"{eticheta}: D390 și evidența validată coincid ({_lei(decl)}).", remediu=None))
             continue
         # ROȘU: declarat la VIES, dar NIMIC în evidența validată (semnal tare)
         if decl > 0 and contab == 0:
             cioarna = [f for f in necontate if f.get("are_ciorna")]
-            cauza = (f"D390 declară {decl} lei operațiuni intracomunitare la VIES, dar nicio factură IC "
+            cauza = (f"D390 declară {_lei(decl)} operațiuni intracomunitare la VIES, dar nicio factură IC "
                      f"nu are notă validată în evidența contabilă")
             if cioarna:
                 cauza += f" ({len(cioarna)} au note în ciornă, neconfirmate)"
             cauza += "."
             rez.append(dict(baza, stare="rosu",
-                mesaj=(f"{eticheta}: D390 declară {decl} lei, evidența validată are 0 lei "
-                       f"(diferență {dif} lei)."),
+                mesaj=(f"{eticheta}: D390 declară {_lei(decl)}, evidența validată are {_lei(contab)} "
+                       f"(diferență {_lei(dif)})."),
                 remediu={"fel": "sugerat", "cauza": cauza,
                     "actiune": ("Verifică operațiunile: fie contabilizează facturile IC (notă validată, "
                                 "patru ochi), fie corectează declarația recapitulativă dacă au fost "
@@ -519,8 +525,8 @@ def compara_d390(baze, ic_facturi):
         # GRI invers: evidență validată > declarat (în contabilitate, neraportat la VIES) — mai puțin sigur
         if dif < -TOLERANTA:
             rez.append(dict(baza, stare="gri",
-                mesaj=(f"{eticheta}: evidența validată are {contab} lei, D390 declară {decl} lei "
-                       f"(diferență {dif} lei)."),
+                mesaj=(f"{eticheta}: evidența validată are {_lei(contab)}, D390 declară {_lei(decl)} "
+                       f"(diferență {_lei(dif)})."),
                 remediu={"fel": "investigatie",
                     "cauza": ("Operațiuni IC în evidența validată care nu apar în D390 — mai puțin sigur "
                               "decât inversul (poate fi decalaj de perioadă: nota validată în această "
@@ -531,8 +537,8 @@ def compara_d390(baze, ic_facturi):
             continue
         # GRI: ambele > 0, cifre diferite — NICIODATĂ roșu pe diferență de cifre
         rez.append(dict(baza, stare="gri",
-            mesaj=(f"{eticheta}: D390 declară {decl} lei, evidența validată are {contab} lei "
-                   f"(diferență {dif} lei)."),
+            mesaj=(f"{eticheta}: D390 declară {_lei(decl)}, evidența validată are {_lei(contab)} "
+                   f"(diferență {_lei(dif)})."),
             remediu={"fel": "investigatie",
                 "cauza": ("Ambele au valori, dar diferite — nu se declară roșu pe diferență de cifre "
                           "(decalaj de exigibilitate art. 284, regularizări, rotunjire = legitime)."),

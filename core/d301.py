@@ -19,6 +19,7 @@ Separare strictă: calcul pur / validare / XML / DB / orchestrare.
 """
 import re
 from core import common as c
+from core.pdf_util import bani
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -109,8 +110,8 @@ def calcul_d301(prof, an, luna, operatiuni_raw):
     res = Rezultat(an=an, luna=luna, prof=prof, operatiuni=ops,
                    totaluri={t: tuple(tot[t]) for t in TIPURI_OP},
                    total_plata_a=total_plata, mij_transp=mij)
-    res.avertismente.append("D301 %d/%d: %d operațiuni, TVA total %d lei."
-                            % (luna, an, len(ops), sum(tot[t][1] for t in TIPURI_OP)))
+    res.avertismente.append("D301 %d/%d: %d operațiuni, TVA total %s."
+                            % (luna, an, len(ops), bani(sum(tot[t][1] for t in TIPURI_OP), "lei")))
     return res
 
 
