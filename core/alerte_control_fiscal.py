@@ -83,17 +83,8 @@ def text_alerta(nume_firma, rosii):
     return "%s: %d %s în roșu (%s)" % (nume_firma or "Firmă", n, cuv, etichete)
 
 
-# Jurnal de idempotenta (pattern public.alerte_emise / F103). SURSA DE ADEVAR a schemei.
-# Creat de SUPERUSER (PG15+ a revocat CREATE pe public de la rolul aplicatiei; iconta_user are
-# doar DML). Aplicare: sudo -u postgres psql -d iconta_v2 -c "<DDL>" + ALTER OWNER TO iconta_user.
-DDL_JURNAL = """
-CREATE TABLE IF NOT EXISTS public.alerte_control_emise (
-    tenant_id   integer     NOT NULL,
-    verificator text        NOT NULL,
-    perioada    text        NOT NULL,
-    emisa_la    timestamptz NOT NULL DEFAULT now(),
-    CONSTRAINT alerte_control_emise_pkey PRIMARY KEY (tenant_id, verificator, perioada)
-)"""
+# Jurnal de idempotenta (pattern public.alerte_emise / F103) al alertelor de control.
+# Schema in core/migrare_alerte_control_emise.py (migrare public normala, rulata ca iconta_user).
 
 
 def emite_pentru_firma(tenant_id, nume, schema, cabinet_id, an, luna):

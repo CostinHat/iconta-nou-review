@@ -393,17 +393,21 @@ vs DE CONSTRUIT (munca reala):
 - **PRIVILEGII + BOOTSTRAP DB NEREPRODUCTIBILE (starea de prod nu e in git)** [PLANIFICAT]. GRANT CREATE ON SCHEMA
   public TO iconta_user exista DOAR pe prod (aplicat manual 22.07 ca postgres, DECIZII [INFRA]); un server nou NU-l
   primeste -> migrarile public ar pica cu "permission denied". Nu e singurul: verificare statica 22.07 a gasit ca
-  obiectele din public s-au nascut prin cai neversionateste - (a) constanta-string DDL_JURNAL (alerte_control_fiscal)
-  + pas MANUAL "sudo -u postgres psql + ALTER OWNER TO iconta_user"; (b) tabele fara NICIUN DDL in cod, create
-  manual (notificari, audit_log, alerte_fiscale, alerte_emise - ultimele 3 inca owned de postgres); (c) o functie
-  runtime-DDL MOARTA (pachete_api.ensure_tabela, zero apelanti). Un server nou nu poate fi reconstruit din git.
-  PROPUNERE (de consemnat reproductibil, NU aplicat inca): un script unic checked-in `infra/bootstrap_public.sql`
-  rulat O DATA ca postgres la provisionarea unui server, continand: (1) GRANT CREATE ON SCHEMA public TO iconta_user;
-  (2) DDL-ul + ALTER OWNER pentru tabelele care azi traiesc doar in prod (alerte_control_emise/DDL_JURNAL, notificari,
-  audit_log, alerte_fiscale, alerte_emise). Dupa bootstrap, ORICE obiect public nou intra prin migrare_* (deja in
-  git, ruleaza ca iconta_user datorita GRANT-ului) -> se retrag pattern-urile DDL_JURNAL-string + tabela-manuala +
-  functia moarta ensure_tabela. Se leaga de itemul "F165 nu acopera public" (auditul public ar verifica exact ce
-  bootstrap-ul + migrarile garanteaza). De decis: bootstrap.sql simplu vs un runner Python (ca migrare_*) care il aplica.
+  obiectele din public s-au nascut prin cai neversionate. Curatat 22.07: DDL_JURNAL -> migrare_alerte_control_emise.py
+  (in git); ensure_tabela moarta -> stearsa; ALTER OWNER pe audit_log/alerte_fiscale/alerte_emise -> iconta_user.
+  RAMAS nereproductibil (traieste doar in prod):
+  * GRANT CREATE ON SCHEMA public TO iconta_user;
+  * ALTER OWNER pe cele 11 tabele INCA owned de postgres (asteapta DA, DECIZII [INFRA] 22.07): anunturi_cabinet,
+    api_chei, cor_ocupatii, curs_bnr_zilnic, metrici_sanatate, reges_chei, reges_mesaje, solicitari_client,
+    spv_cui_acoperit, spv_token, tokene_activare;
+  * DDL-ul tabelelor create manual, fara CREATE in cod: pachet_povestea (feature poveste VIU, ensure_tabela stearsa),
+    notificari, + cele owned de postgres de mai sus. Un server nou nu le primeste -> rutele care le folosesc crapa.
+  FORMA DECISA (Costin 22.07): SQL SIMPLU checked-in `infra/bootstrap_public.sql`, NU runner Python. Motiv: ruleaza
+  INAINTE ca app-ul si privilegiile sa existe (la provisionarea serverului, ca postgres); un runner Python ar depinde
+  de exact ce instaleaza (venv, GRANT, conexiune) - dependenta circulara. Continut: GRANT + toate ALTER OWNER + DDL-ul
+  tabelelor care azi traiesc doar in prod. Dupa bootstrap, ORICE obiect public nou intra prin migrare_* (ruleaza ca
+  iconta_user datorita GRANT). Se leaga de "F165 nu acopera public" (auditul public ar verifica exact ce garanteaza
+  bootstrap + migrarile). NU se construieste acum.
 - **v2 F164 — digest email Brevo** (rezumat zilnic/saptamanal al rosurilor de control fiscal DESCHISE per cabinet,
   pentru contabilii care nu intra zilnic in app). Completeaza v1 (clopotel in-app + click, LIVE 19.07): v1 rezolva
   restanta 17.07 (alerta ajunge in app); digestul acopera cazul "contabil care nu intra zilnic". De construit CAND

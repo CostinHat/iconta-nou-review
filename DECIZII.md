@@ -2134,3 +2134,24 @@ SCHEMA public FROM iconta_user il anuleaza fara pierdere de date.
 ALTERNATIVA RESPINSA: rulare one-off ca postgres pentru fiecare DDL public - respins (nu rezolva cauza; perpetueaza
 workaround-urile lazy). LIMITA: daca politica de securitate cere separarea rol-app de rol-migrare, se creeaza un rol
 de migrare dedicat cu CREATE pe public si app-user-ul ramane fara - refactor viitor, nu azi (un singur rol acum).
+
+### 22.07.2026 [INFRA] Ownership mixt pe schema public -> migrari imposibile pe tabelele owned de postgres  (ALTER OWNER + curatare DDL runtime)
+DECIZIE: tabelele din public trebuie sa fie toate owned de iconta_user, altfel orice ALTER/migrare viitoare pe
+ele pica (GRANT CREATE ON SCHEMA public da voie sa CREEZI obiecte noi, dar NU sa ALTER-uiesti un tabel al altui
+owner - asta cere ownership). ALTER OWNER TO iconta_user aplicat (ca postgres) pe: audit_log, alerte_fiscale,
+alerte_emise (cele 3 raportate initial). Curatare aferenta a DDL-ului runtime pe public: (1) pachete_api.ensure_tabela
+STEARSA (cod mort, zero apelanti; pachet_povestea e tabel de feature VIU - 5 rute /pachete/.../poveste - creat pe
+cale non-cod, ramane in prod, DDL-ul lui reproductibil merge in infra/bootstrap_public.sql); (2) alerte_control_fiscal.
+DDL_JURNAL (constanta-string + pas manual superuser) -> migrare_alerte_control_emise.py (migrare publica normala,
+rulata ca iconta_user; comentariul "manual superuser" retras).
+TEMEI: verificat la sursa - GRANT CREATE nu acopera ALTER pe tabel de alt owner (Postgres: ALTER TABLE cere sa fii
+owner sau superuser). Ownership mixt = un subset de tabele public pe care app-user-ul nu le poate migra niciodata
+-> exact cauza ALTER-urilor lazy/manuale de pana acum.
+CONSTATARE NOUA (verificare \dt+ dupa cele 3): ownership NU e inca uniform. Public are 28 tabele, 17 owned de
+iconta_user, si INCA 11 owned de postgres, negasite prin grep (n-au DDL in cod deloc): anunturi_cabinet, api_chei,
+cor_ocupatii, curs_bnr_zilnic, metrici_sanatate, reges_chei, reges_mesaje, solicitari_client, spv_cui_acoperit,
+spv_token, tokene_activare. Toate par tabele de feature vii. ALTER OWNER pe ele = actiune de prod dincolo de "cele
+trei" raportate -> asteapta DA (nu se ating unilateral). Pana atunci: orice migrare viitoare pe aceste 11 va pica.
+LIMITA: ownership-ul e stare de prod (nu git) - la fel ca GRANT-ul, intra in itemul bootstrap (DE_FACUT). ALTER
+OWNER e reversibil. Aparare: verificare \dt+ (17/28 iconta_user dupa cele 3); migrare_alerte_control_emise ruleaza
+OK ca iconta_user; suita verde + verificator DS 0.

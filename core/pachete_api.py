@@ -12,17 +12,9 @@ from decimal import Decimal
 from core import motor, ai_client, observare
 
 
-# ---------- tabela poveste (public) ----------
-def ensure_tabela(conn):
-    with conn.cursor() as cur:
-        cur.execute("""CREATE TABLE IF NOT EXISTS public.pachet_povestea(
-            tenant_id INTEGER NOT NULL,
-            an INTEGER NOT NULL,
-            luna INTEGER NOT NULL,
-            text TEXT NOT NULL,
-            status TEXT NOT NULL DEFAULT 'ciorna',
-            updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-            PRIMARY KEY (tenant_id, an, luna))""")
+# Tabela public.pachet_povestea (tenant_id, an, luna, text, status, updated_at) traieste in prod;
+# DDL-ul ei reproductibil sta in infra/bootstrap_public.sql (vezi DE_FACUT) - nu se creeaza lazy
+# din cod (functia ensure_tabela era moarta, fara apelanti; stearsa 22.07).
 
 
 # ---------- date lunare (pe schema tenantului) ----------
