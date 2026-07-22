@@ -393,6 +393,17 @@ vs DE CONSTRUIT (munca reala):
   fara ALTER OWNER). Idempotent (IF NOT EXISTS + guard pe constrangeri/identity), DOVEDIT pe baza temporara locala
   (rulat de 2 ori zero erori, 23 tabele + 16 secvente iconta_user, FK/identity functionale; NU pe prod). Fara date/
   secrete. REGULA PERMANENTA in header: orice obiect public nou intra prin migrare_*, NU in bootstrap.
+- **NU EXISTA procedura de deploy / provisionare server nou** [PLANIFICAT]. Constatat 22.07 (cautare: grep
+  provisionare/deploy/server nou pe toate .md + docs/ gol + fara README): nu exista nicaieri o secventa "cum ridici
+  un server iConta de la zero". Ce exista = note operationale RAZLETE, nu procedura: CLAUDE.md sectiunea
+  Infrastructura (restart, cale venv, info DB - 4 note), BRIEF_CODE_PACHET_18IUL.md (backup Storage Box). Consecinta:
+  infra/bootstrap_public.sql are in header sub-secventa lui (createdb+role -> bootstrap -> app -> migrare_*), dar nu
+  are procedura-gazda care sa-l inglobeze; pasii dispersati (deps OS, install postgres, creare rol+baza, venv,
+  systemd unit iconta-nou.service, env files ~/.iconta/db.env + api_keys.env, aplicare tenant_template + *.sql DDL,
+  lantul migrare_*, bootstrap_public) nu sunt scrisi nicaieri cap-coada. NU s-a inventat una acum (regula: nu
+  inventez procedura). DE DECIS separat cat de departe merge: runbook complet cap-coada vs checklist minim vs doar
+  o sectiune "Server nou" in CLAUDE.md care insiruie pasii + trimite la fisierele-sursa (bootstrap header ramane
+  sursa, nu se copiaza). Referinta la bootstrap se adauga ATUNCI, in procedura-gazda, nu razlet.
 - **F165 NU acopera schema PUBLIC** [PLANIFICAT — acum cu REFERINTA]. Ramane de construit auditul public (analog
   F165, poarta in suita). Acum are reper: `infra/bootstrap_public.sql` (genesis) + migrarile public (evolutie) =
   starea asteptata a schemei public; un audit-public ar compara schema live cu (bootstrap + migrari aplicate),
