@@ -2035,7 +2035,7 @@ async function ecranCentreCost(corp, nav, t) {
       <h2 class="pf-titlu">Centre de cost</h2>
       <p class="pf-intro">Dimensiune de management pe notele manuale (Registru jurnal). Un centru scos din uz se dezactivează — rămâne pe notele vechi, nu se mai oferă la note noi.</p>
       <div style="display:flex;gap:8px;max-width:520px;margin-bottom:12px">
-        <input type="text" id="cc-nume" class="camp-input" placeholder="Nume centru (ex: Vânzări, Producție)" style="flex:1">
+        <input type="text" id="cc-nume" class="camp-input" placeholder="Nume centru (ex: Vânzări, Producție)" aria-label="Nume centru" style="flex:1">
         <button class="buton-primar" id="cc-add">Adaugă</button>
       </div>
       <div id="cc-mesaj"></div>

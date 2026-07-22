@@ -49,7 +49,11 @@ for nume, t in fisiere.items():
                 if cuv.lower() == "plata" and lin[poz+5:poz+6] not in ("_", "-"):
                     continue
                 rap["diacritice"].append((nume, i, cuv, lin.strip()[:66]))
-        if (re.search(r'value="(0|1|0\.00|0,00)"', lin) and "<option" not in lin) or re.search(r'value="\$\{(azi|ziAzi)', lin):
+        # exclus input-urile native de data/timp: value/min/max TREBUIE sa fie ISO (cerinta HTML),
+        # iar un default rezonabil pe un FILTRU (De la/Pana la) e UX corect, nu precompletare fortata.
+        _input_data_nativ = re.search(r'type="(date|month|datetime-local|time|week)"', lin)
+        if (re.search(r'value="(0|1|0\.00|0,00)"', lin) and "<option" not in lin) or \
+           (re.search(r'value="\$\{(azi|ziAzi)', lin) and not _input_data_nativ):
             rap["precompletari"].append((nume, i, "", lin.strip()[:66]))
         for bm in re.finditer(r'<button[^>]*class="([^"]*)"', lin):
             cls = set(bm.group(1).split())
