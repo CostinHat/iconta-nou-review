@@ -22,6 +22,7 @@ from __future__ import annotations
 import datetime
 
 from core import scadente  # sursa unica de scadente + zile lucratoare (fara import circular)
+from core.common import azi_ro  # [fus] ziua RO pentru verdictul de zi (la termen/intarziat), robust la OS TZ
 from core import firma_profil_api as _fp  # [F180] stare_tva_anaf (comparatie platitor_tva vs snapshot)
 
 PRAG_URMARIT_ZILE = 7   # termen in <= 7 zile, nedepus -> galben
@@ -45,7 +46,7 @@ def declaratii_datorate(vector, are_salariati, azi=None):
                   (fiecare cu {tip, cauza}). Se afiseaza GRI, cu buton catre Vectorul fiscal.
     vector = dict cu regim_fiscal, platitor_tva, tip_decont, operatiuni_ic (oricare poate fi None).
     """
-    azi = azi or datetime.date.today()
+    azi = azi or azi_ro()   # [fus] verdict de zi (lipsa vs urmarit) = zi RO
     an = azi.year
     limita = azi + datetime.timedelta(days=PRAG_URMARIT_ZILE)
     datorate, neclar = [], []
@@ -276,7 +277,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
     Acopera 9/9: D100/D101/D112/D300/D390/D394/D406 (vector) + D205/D301 (fapt, punte control_incrucisat).
     conn_schema: search_path pe schema firmei; conn_public: public (declaratii_depuse).
     """
-    azi = azi or datetime.date.today()
+    azi = azi or azi_ro()   # [fus] verdict de zi (lipsa vs urmarit) = zi RO
 
     # vector + salariati
     with conn_schema.cursor() as cur:
@@ -312,7 +313,8 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
 
     # depuse din public (cu data depunerii, pentru motivul verde)
     with conn_public.cursor() as cur:
-        cur.execute("SELECT tip, an, luna, data_depunere FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tenant_id,))  # [F163v2] vederea = depunerea curentă (nr_depunere max)
+        cur.execute("SELECT tip, an, luna, (data_depunere AT TIME ZONE 'Europe/Bucharest')::date AS data_depunere "
+                    "FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tenant_id,))  # [F163v2] vederea = depunerea curentă (nr_depunere max)
         depuse = {}
         for t, a, l, dd in cur.fetchall():
             depuse[(t, a, l)] = dd.date() if hasattr(dd, "date") else dd

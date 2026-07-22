@@ -128,8 +128,8 @@ def emite_pentru_firma(tenant_id, nume, schema, cabinet_id, an, luna):
 def ruleaza(azi=None):
     """Cron: itereaza firmele de cabinet active, push in-app pe rosu nou/reaparut. Perioada = luna
     curenta (ca ecranul de control). Firme standalone (fara cabinet) sar (n-au contabili de notificat)."""
-    import datetime
-    azi = azi or datetime.date.today()
+    from core.common import azi_ro
+    azi = azi or azi_ro()   # [fus] cronul decide ce declaratii sunt datorate = zi RO, robust la OS TZ
     an, luna = azi.year, azi.month
     with db.get_conn() as cp:
         with cp.cursor() as cur:

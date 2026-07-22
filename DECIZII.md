@@ -2284,3 +2284,29 @@ prod era MITIGAT doar fiindca JWT_SECRET E setat (api_keys.env) - dar codul perm
 Aparare: 8 teste (secret gol la semnare/verificare -> exceptie; cfg_secret absent/gol -> exceptie; boot fara
 JWT_SECRET -> refuz, test pe functie) + suita 486 verde + verificator DS 0 + PROD: restart normal (JWT_SECRET setat)
 + login real (emite+verifica cu cheia reala -> ok, ruta protejata 200).
+
+### 22.07.2026 [INFRA/CORECTITUDINE] Fus orar = invarianta de provisionare (garda boot) + verdictele de zi in azi_ro()
+DECIZIE: (a) garda de boot main.verifica_fus_orar - app-ul REFUZA sa porneasca daca OS TZ SAU PG timezone !=
+Europe/Bucharest (langa verifica_secrete_obligatorii, aceeasi forma ca JWT_SECRET); (b) helper unic common.azi_ro()
+(data in Europe/Bucharest) folosit DOAR in cele 3 puncte VERDICT-CRITICAL: control_fiscal_api._clasifica (azi,
+lipsa vs urmarit), etransport_send.fereastra_uit (acum, UIT expirat/valabil), alerte_control_fiscal cron (azi,
+ce declaratii sunt datorate) + extragerea PG a data_depunere cu AT TIME ZONE 'Europe/Bucharest' (verdictul
+la-termen). Callerii semaforului din main (portofoliu + detaliu) trec pe azi_ro; 4441 folosea deja default-ul.
+TEMEI (verificat la sursa, numaratoare aratata): NU era bug azi - server + PG ambele Europe/Bucharest (timedatectl
++ SHOW timezone), zero utcnow(); cele 10 now(timezone.utc) sunt aware-UTC pt durate/expirari/ISO extern (corect).
+Riscul era LATENT si DUBLU: (i) date.today()/datetime.now() urmeaza OS TZ -> pe un server UTC verdictele Python ar
+SARI ZIUA in fereastra 00:00-02:59 ora RO (dovada: depunere 28 iul 00:30 RO = 27 iul 21:30 UTC -> fals "la termen");
+(ii) data_depunere (timestamptz) urmeaza PG timezone, NU OS TZ -> o nepotrivire OS<->PG ar face semaforul-`azi` (OS)
+si data_depunere (PG) sa DEZACORDE pe cele doua laturi ale aceluiasi verdict. Tratam CAUZA (invarianta impusa la
+boot) + robustete in cod pe punctele verdict.
+DE CE DOAR PUNCTELE VERDICT-CRITICAL, nu toate cele 46 date.today(): restul e afisare/context (an/luna, feed,
+antete) unde OS-TZ = Bucharest ajunge; conversia in masa ar fi zgomot + risc de regresie. Scop strict. CANDIDAT
+NECONVERTIT semnalat (nu atins): termene_api.termene_firma (azi filtreaza termenele viitoare) - la limita verdict/
+afisare, de decis separat.
+ALTERNATIVA RESPINSA: doar (a) garda, fara (b) - respins: garda protejeaza doar la boot; daca ar fi cumva ocolita
+(rol de migrare, container), verdictele Python ar sari ziua. (b) le face corecte indiferent. LIMITA: display-ul
+"cu_ora" (datetime.now() in antete) ramane ora serverului (Bucharest, corect azi + impus de garda); browser-local =
+decizie de display separata, low-prio (public romanesc).
+Aparare: 12 teste (azi_ro in fereastra 00:00-02:59 nu sare ziua, in afara coincide; garda boot OS-UTC/PG-UTC ->
+refuz, corect -> trece) + suita 490 verde + verificator DS 0 + PROD: restart normal (OS+PG=Bucharest), semafor
+inca corect (D300 iunie confirmata prin azi_ro).

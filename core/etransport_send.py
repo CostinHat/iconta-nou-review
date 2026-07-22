@@ -27,7 +27,7 @@ from datetime import date, datetime, timedelta
 
 from core import db
 from core import spv_conector
-from core.common import cfg
+from core.common import cfg, azi_ro
 
 # Config din env — citită LA APEL prin cfg() (nu înghețată la import, item 5).
 # ETRANSPORT_BASE (host OAuth, webserviceapl = cert), ETRANSPORT_VERSIUNE (int,
@@ -52,7 +52,7 @@ def fereastra_uit(data_transport, intracom=False, acum=None):
     Reguli: declarare max 3 zile INAINTE de data transportului; UIT valabil 5 zile (national) /
     15 zile (intracomunitar). Folosire dupa expirare = blocata. Intoarce dict cu verdictul.
     """
-    acum = acum if acum is not None else date.today()
+    acum = acum if acum is not None else azi_ro()   # [fus] verdict UIT expirat/valabil = zi RO, robust la OS TZ
     dt = data_transport if isinstance(data_transport, date) else \
         datetime.strptime(str(data_transport)[:10], "%Y-%m-%d").date()
     zile_val = 15 if intracom else 5

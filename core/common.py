@@ -41,6 +41,18 @@ def cfg_secret(cheie):
             "(ar face tokenurile forjabile). Setează %s în env." % (cheie, cheie))
     return v
 
+
+def azi_ro(acum=None):
+    """Data calendaristică în Europe/Bucharest, pentru VERDICTE de zi (la termen vs întârziat,
+    fereastra UIT e-Transport, cron alerte) — robustă la fusul procesului, spre deosebire de
+    date.today() care urmează OS TZ și ar sări ziua pe un server UTC. Se folosește DOAR unde ziua
+    decide un verdict; restul (afișare/context) rămâne date.today(). `acum` (datetime aware) =
+    hook de test determinist. Vezi DECIZII 22.07."""
+    import datetime, zoneinfo
+    buc = zoneinfo.ZoneInfo("Europe/Bucharest")
+    acum = acum if acum is not None else datetime.datetime.now(buc)
+    return acum.astimezone(buc).date()
+
 _CENT = Decimal("0.01")
 
 # nivelurile unei probleme semnalate

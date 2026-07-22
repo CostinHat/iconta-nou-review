@@ -23,6 +23,7 @@ from pydantic import BaseModel
 
 from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_migrare_api
 from core.pdf_util import bani, data_ro
+from core.common import azi_ro  # [fus] ziua RO pentru verdictele de zi (semafor), robust la OS TZ
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
@@ -47,6 +48,30 @@ def verifica_secrete_obligatorii(env=None):
             "(fără ele autentificarea ar fi forjabilă cu cheie goală)" % ", ".join(lipsa))
 
 
+def verifica_fus_orar(offset_local=None, pg_tz=None):
+    """App-ul REFUZĂ să pornească dacă OS TZ SAU PG timezone != Europe/Bucharest. Un fus greșit sare
+    ziua pe verdictele de zi (la termen/întârziat, fereastra UIT, cron alerte) SAU creează nepotrivire
+    OS<->PG între cele două laturi ale aceluiași verdict. Invariantă de provisionare (ca JWT_SECRET),
+    nu presupunere. Vezi DECIZII 22.07. offset_local/pg_tz injectabile pt test."""
+    import datetime, zoneinfo
+    buc = datetime.datetime.now(zoneinfo.ZoneInfo("Europe/Bucharest")).utcoffset()
+    if offset_local is None:
+        offset_local = datetime.datetime.now().astimezone().utcoffset()   # fusul PROCESULUI
+    if offset_local != buc:
+        raise RuntimeError(
+            "OS TZ nu e Europe/Bucharest (offset proces %s != %s) — app-ul refuză să pornească "
+            "(verdictele de zi ar sări ziua)" % (offset_local, buc))
+    if pg_tz is None:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SHOW timezone")
+                pg_tz = cur.fetchone()[0]
+    if pg_tz != "Europe/Bucharest":
+        raise RuntimeError(
+            "PG timezone nu e Europe/Bucharest (%s) — app-ul refuză să pornească "
+            "(nepotrivire OS<->PG pe verdictele de zi)" % pg_tz)
+
+
 # ============================================================
 #  LIFECYCLE — pool deschis la pornire, închis la oprire
 # ============================================================
@@ -55,6 +80,7 @@ async def lifespan(app):
     global _TENANT_TEMPLATE
     verifica_secrete_obligatorii()   # fail-fast INAINTE de orice: fara JWT_SECRET nu pornim
     db.init_pool()
+    verifica_fus_orar()   # fail-fast: OS TZ + PG timezone = Europe/Bucharest (invarianta de provisionare)
     import asyncio as _asyncio_lifespan  # ICRD_LIFESPAN_ALERTE_V1
     _asyncio_lifespan.create_task(_bucla_alerte_sanatate())
     try:
@@ -1909,7 +1935,7 @@ async def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx
 def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
     """Semafor pentru toate firmele cabinetului + sumar (verde/galben/rosu)."""
     import datetime
-    azi = datetime.date.today()
+    azi = azi_ro()   # [fus] verdict semafor per firma (la termen/intarziat) = zi RO, robust la OS TZ
     out = []
     sumar = {"verde": 0, "galben": 0, "rosu": 0, "gri": 0}
     with db.get_conn() as conn:
@@ -1976,7 +2002,7 @@ def control_fiscal_detaliu(tenant_id: int, ctx=Depends(cere_cabinet)):
     import datetime
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as cs, db.get_conn() as cp:
-        r = control_fiscal_api.evalueaza_firma(cs, cp, tenant_id, schema, datetime.date.today())
+        r = control_fiscal_api.evalueaza_firma(cs, cp, tenant_id, schema, azi_ro())   # [fus] verdict de zi = zi RO
     try:  # cf_verificari_v1
         azi = datetime.date.today()
         r["verificari_contabile"] = _verificari_contabile(schema, azi.year, azi.month)

@@ -64,3 +64,50 @@ def test_boot_fara_jwt_secret_refuza():
 def test_boot_cu_jwt_secret_trece():
     from main import verifica_secrete_obligatorii
     verifica_secrete_obligatorii(env={"JWT_SECRET": "x"})   # nu ridica
+
+
+# ============================================================
+#  FUS ORAR — verdictele de zi in Europe/Bucharest (robust la OS TZ). DECIZII 22.07.
+# ============================================================
+import datetime as _dt
+import zoneinfo as _zi
+from core.common import azi_ro
+
+_UTC = _zi.ZoneInfo("UTC")
+_BUC = _zi.ZoneInfo("Europe/Bucharest")
+
+
+def test_azi_ro_in_fereastra_00_03_nu_sare_ziua():
+    # instant real: 27 iul 22:00 UTC = 28 iul 01:00 ora Romaniei (fereastra 00:00-02:59)
+    instant = _dt.datetime(2026, 7, 27, 22, 0, tzinfo=_UTC)
+    # azi_ro() -> ZIUA ROMANIEI (28), corect pt verdictul de zi
+    assert azi_ro(acum=instant) == _dt.date(2026, 7, 28)
+    # "date.today() sub proces UTC" ar da ziua UTC (27) -> SARE ziua
+    assert instant.astimezone(_UTC).date() == _dt.date(2026, 7, 27)
+    # ele DIFERA in fereastra -> exact bug-ul evitat
+    assert azi_ro(acum=instant) != instant.astimezone(_UTC).date()
+
+
+def test_azi_ro_in_afara_ferestrei_coincide():
+    # la pranz ambele dau aceeasi zi (fereastra e doar 00:00-02:59)
+    instant = _dt.datetime(2026, 7, 27, 12, 0, tzinfo=_UTC)
+    assert azi_ro(acum=instant) == instant.astimezone(_UTC).date() == _dt.date(2026, 7, 27)
+
+
+# ---- garda de boot pe fus (test pe FUNCTIE, offset/pg_tz injectate) ----
+
+def test_boot_os_tz_gresit_refuza():
+    from main import verifica_fus_orar
+    buc_off = _dt.datetime.now(_BUC).utcoffset()
+    # OS pe UTC (offset 0) -> refuz, chiar daca PG e corect
+    with pytest.raises(RuntimeError):
+        verifica_fus_orar(offset_local=_dt.timedelta(0), pg_tz="Europe/Bucharest")
+    # PG pe UTC -> refuz, chiar daca OS e corect
+    with pytest.raises(RuntimeError):
+        verifica_fus_orar(offset_local=buc_off, pg_tz="UTC")
+
+
+def test_boot_fus_corect_trece():
+    from main import verifica_fus_orar
+    buc_off = _dt.datetime.now(_BUC).utcoffset()
+    verifica_fus_orar(offset_local=buc_off, pg_tz="Europe/Bucharest")   # nu ridica

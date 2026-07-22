@@ -224,14 +224,21 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
 1. **An fiscal modificat** (necalendaristic): lipsa coloana; stocuri_api.py/d101.py presupun
    calendaristic (date(an,1,1) hardcodat). Firma cu exercitiu modificat nu e suportata.
    (D394-absent din semafor: REZOLVAT 18.07 - semafor faza 3 conecteaza D394+D406, acum 9/9.)
-2. **Fus orar server vs utilizator** (semnalat 22.07, la F183 antet "cu_ora"): datetime.now() pe
-   server intoarce ora SERVERULUI (UTC pe Hetzner: 04:36), nu ora locala a utilizatorului roman
-   (19:40 Europe/Bucharest) -> "Audit rulat 22.07.2026, 04:36" e derutant. Afecteaza ORICE
-   timestamp "cu_ora" trimis de backend, nu doar F183 (audit_log, recipise SPV, etc.). Chestiune
-   GLOBALA: fie backend-ul emite in Europe/Bucharest (TZ=... in systemd sau zoneinfo la formatare),
-   fie trimite ISO cu offset si frontendul (dataRo) converteste la ora locala a browserului. De
-   decis unde se face conversia (o singura sursa, nu per-modul). NEVERIFICAT: daca alte ecrane care
-   deja arata "cu_ora" au aceeasi abatere (probabil da).
+2. **Fus orar** [VERDICTELE REZOLVATE 22.07; DISPLAY browser-local ramane]. CORECTIE la premisa veche
+   ("UTC pe Hetzner"): verificat la sursa 22.07 (timedatectl + SHOW timezone) -> serverul E Europe/Bucharest
+   (EEST +03) SI PG timezone = Europe/Bucharest. Deci NU era bug azi - toate verdictele de zi foloseau ora RO.
+   Riscul era LATENT si dublu: (i) salt de zi pe verdictele Python (date.today) daca OS-ul ar deveni UTC;
+   (ii) nepotrivire OS<->PG intre cele doua laturi ale aceluiasi verdict. REPARAT: (a) garda de boot
+   main.verifica_fus_orar - app-ul REFUZA sa porneasca daca OS TZ sau PG timezone != Europe/Bucharest
+   (invarianta de provisionare, langa verifica_secrete_obligatorii); (b) helper common.azi_ro() folosit DOAR
+   in cele 3 puncte verdict-critical (semafor _clasifica, fereastra UIT e-Transport, cron alerte) + extragere
+   PG a data_depunere cu AT TIME ZONE 'Europe/Bucharest'. NU s-au convertit cele 46 date.today() (restul e
+   afisare/context, OS-TZ corect ajunge). Vezi DECIZII 22.07. CANDIDAT NECONVERTIT (semnalat, nu atins per scop):
+   termene_api.termene_firma (azi filtreaza termenele viitoare in [azi, azi+60]) - decide ce apare ca "de urmarit",
+   e la limita verdict/afisare; de decis daca trece si el pe azi_ro. RAMAS DISPLAY: timestamp-urile "cu_ora"
+   (datetime.now() in antete/feed) arata acum ora serverului = Bucharest (corect, garda o impune); daca vreodata
+   un user din alt fus vrea ora LUI, se trece pe ISO+offset + dataRo converteste la ora browserului - decizie de
+   display separata, low-prio (publicul e romanesc).
 3. **Ramura PFA a auditului de preluare (F183)** [PARCURSA REAL 22.07, DECIZII [PROD]]: creat tenant_003
    PFA de test prin fluxul real (POST /tenants tip_firma='pfa') + 3 operatiuni RIP prin rutele reale ->
    auditul HTTP arata DOAR constatarea RIP (verde), ZERO termeni de partida dubla. RAMIFICAT pe regim: limita
@@ -434,6 +441,9 @@ vs DE CONSTRUIT (munca reala):
   SECRETE: procedura va TRIMITE la main.verifica_secrete_obligatorii ca lista canonica a secretelor (referinta, nu
   copie — lista traieste in cod si e executabila: app-ul refuza sa porneasca fara ele); env files (~/.iconta/*.env)
   sunt parte din provisionare, nu din git (secretele nu intra in git, nici ca nume).
+  FUS ORAR = invarianta de provisionare: OS TZ + PG timezone = Europe/Bucharest, impuse de garda de boot
+  main.verifica_fus_orar (referinta, nu copie - app-ul refuza sa porneasca daca fusul e gresit). Procedura seteaza
+  TZ-ul (timedatectl set-timezone Europe/Bucharest + PG timezone) inainte de primul boot.
 - **F165 NU acopera schema PUBLIC** [PLANIFICAT — acum cu REFERINTA]. Ramane de construit auditul public (analog
   F165, poarta in suita). Acum are reper: `infra/bootstrap_public.sql` (genesis) + migrarile public (evolutie) =
   starea asteptata a schemei public; un audit-public ar compara schema live cu (bootstrap + migrari aplicate),
