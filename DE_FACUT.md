@@ -390,6 +390,20 @@ vs DE CONSTRUIT (munca reala):
   privilegii care ar fi impiedicat un auto-fix e ridicat (GRANT CREATE), deci un audit-public cu suggest/migrare e
   acum fezabil ca app-user. Ramane de decis daca public primeste un template versionat (ca tenant) sau doar un
   registru de migrari public rulate.
+- **PRIVILEGII + BOOTSTRAP DB NEREPRODUCTIBILE (starea de prod nu e in git)** [PLANIFICAT]. GRANT CREATE ON SCHEMA
+  public TO iconta_user exista DOAR pe prod (aplicat manual 22.07 ca postgres, DECIZII [INFRA]); un server nou NU-l
+  primeste -> migrarile public ar pica cu "permission denied". Nu e singurul: verificare statica 22.07 a gasit ca
+  obiectele din public s-au nascut prin cai neversionateste - (a) constanta-string DDL_JURNAL (alerte_control_fiscal)
+  + pas MANUAL "sudo -u postgres psql + ALTER OWNER TO iconta_user"; (b) tabele fara NICIUN DDL in cod, create
+  manual (notificari, audit_log, alerte_fiscale, alerte_emise - ultimele 3 inca owned de postgres); (c) o functie
+  runtime-DDL MOARTA (pachete_api.ensure_tabela, zero apelanti). Un server nou nu poate fi reconstruit din git.
+  PROPUNERE (de consemnat reproductibil, NU aplicat inca): un script unic checked-in `infra/bootstrap_public.sql`
+  rulat O DATA ca postgres la provisionarea unui server, continand: (1) GRANT CREATE ON SCHEMA public TO iconta_user;
+  (2) DDL-ul + ALTER OWNER pentru tabelele care azi traiesc doar in prod (alerte_control_emise/DDL_JURNAL, notificari,
+  audit_log, alerte_fiscale, alerte_emise). Dupa bootstrap, ORICE obiect public nou intra prin migrare_* (deja in
+  git, ruleaza ca iconta_user datorita GRANT-ului) -> se retrag pattern-urile DDL_JURNAL-string + tabela-manuala +
+  functia moarta ensure_tabela. Se leaga de itemul "F165 nu acopera public" (auditul public ar verifica exact ce
+  bootstrap-ul + migrarile garanteaza). De decis: bootstrap.sql simplu vs un runner Python (ca migrare_*) care il aplica.
 - **v2 F164 — digest email Brevo** (rezumat zilnic/saptamanal al rosurilor de control fiscal DESCHISE per cabinet,
   pentru contabilii care nu intra zilnic in app). Completeaza v1 (clopotel in-app + click, LIVE 19.07): v1 rezolva
   restanta 17.07 (alerta ajunge in app); digestul acopera cazul "contabil care nu intra zilnic". De construit CAND
