@@ -219,6 +219,17 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
    fie trimite ISO cu offset si frontendul (dataRo) converteste la ora locala a browserului. De
    decis unde se face conversia (o singura sursa, nu per-modul). NEVERIFICAT: daca alte ecrane care
    deja arata "cu_ora" au aceeasi abatere (probabil da).
+3. **Ramura PFA a auditului de preluare (F183) - nevazuta in UI reala** (22.07): partida simpla
+   (audit ruleaza DOAR verificarea RIP, fara balanta) e confirmata DOAR prin teste (test_pfa_ruleaza_
+   doar_rip cu FakeConn) + E2E rollback pe tenant_002 (tip_firma='pfa' setat temporar). NICIODATA vazuta
+   pe un PFA real in ecran (cabinetul n-are inca niciun PFA - ambii tenanti sunt SRL). De verificat vizual
+   la primul PFA real preluat: apar doar constatarile RIP, antetul, remediile - fara "importa balanta".
+4. **test_spv_conector rosu permanent** (22.07): test_url_autorizare_contine_parametrii esueaza constant
+   pe `iconta.eu%2Fanaf%2Foauth%2Fcallback in url` fiindca redirect_uri/client_id sunt goale in shell-ul
+   de test (env SPV din api_keys.env NU se incarca la pytest). Modul neatins - e doar mediul de test. Un
+   test rosu permanent devine zgomot (ascunde regresii reale). De ales: fie testul incarca variabila
+   (setdefault pe ANAF_REDIRECT_URI/client_id ca la SPV_FERNET_KEY), fie skip explicit cu motiv documentat
+   cand env lipseste. NU se lasa rosu "acceptat" - un rosu permanent normalizeaza rosul.
 
 RAMAS — cere ochii/telefonul, NU SSH: **vezi CHECKLIST_BROWSER.md** (PWA P4.18-19, responsive
 P4.20-21, audit vizual ~12 ecrane ramase). Grup fiscal/D101G si ONG: lasate deoparte (fara cod nou).

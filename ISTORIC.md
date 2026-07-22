@@ -2105,3 +2105,58 @@ semnaleaza coliziunea de CUI DOAR la momentul evenimentului (efemer); superadmin
 DOVADA: detectie SQL cu coliziune fabricata in tranzactie ROLLBACK -> 1 rand cu numele cabinetului (AMZUICA...),
 0 randuri ramase dupa rollback (zero mutatie persistata); endpoint 200 superadmin {coliziuni:[]} pe date curate,
 403 non-superadmin (guard); node --check ESM + verificator DS 0. Registru: F186 LIVE. De ce live+report-only -> DECIZII 21.07.
+
+# 22.07.2026 — F183 audit de preluare LIVE + fix login bounce tacit + clasa BACKEND_UI_BRUT inchisa (canonice backend + garda .py)
+Patru fire: un feature nou (F183), un bug de UX prins de Costin (login), o clasa de abateri DS inchisa la sursa
+(sume/date brute in backend), si doi candidati JS reziduali. Commit-uri: 8d0eae2, 75eae8e, 6e23954 (F183);
+9de75ea (login); cd988a6, 73b0094, b919d81 (BACKEND_UI_BRUT); 4e3c0a3 (firme.js); 301a6bc (F183 regim).
+
+**F183 audit de PRELUARE firma (LIVE, core/audit_preluare.py).** Cand un cabinet preia o firma cu istoric de la
+alt contabil, verifica COERENTA INTERNA a pachetului importat si raporteaza transparent ce se poate / nu se poate
+verifica (3 stari: coerent/divergent/NEVERIFICAT). Motor SEPARAT de control_incrucisat (nu "acelasi motor la
+migrare" cum era conceput in DE_FACUT): la preluare ambele surse sunt EXTERNE (documente de la contabilul
+anterior), nu declaratie-generata-in-iConta vs note-iConta; ruland control_incrucisat pe luna preluata rulaje=0
+-> rosu fals pe tot. Reutilizeaza doar ANATOMIA (stari+temei+remediu) + solduri_api.verifica_echilibru +
+solduri_parteneri_api.coerenta. SCOP v1 (DA gate): balanta echilibrata + Sigma parteneri=sold sintetic + solduri
+fiscale vs istoric declaratii (SEMNAL gri, nu rosu) + RIP PFA (sold implicit ne-negativ + operatiuni clasificate).
+Locatie: fisa firmei > Control fiscal > buton "Audit de preluare", REPETABIL, regenerat la cerere (fara tabel
+snapshot - derivabil din documente, zero drift). ANTET: "Firma in iConta din <data>" (creat_la, proxy preluare,
+NU data legala de preluare) + "Audit rulat <data cu ora>" (doua rulari/zi se disting). RAMIFICARE PE REGIM
+(rafinare aceeasi zi, gate Costin optiunea 1): audit() citeste tip_firma via migrare_api.straturi_pentru (SURSA
+UNICA regim->straturi, zero drift) - PFA (partida simpla) ruleaza DOAR RIP; verificarile de partida dubla NU apar
+(un gri "importa balanta" ar fi remediu IMPOSIBIL la partida simpla). Aparare: core/test_audit_preluare.py (12
+teste pe nucleele PURE + test PFA doar-RIP + non-regresie SRL); E2E rollback tenant_002. Registru F183 LIVE.
+De ce motor separat + scop + ramificare regim -> DECIZII 22.07.
+
+**Fix login bounce TACIT (9de75ea).** Credentiale gresite pe login -> intoarcere in ecranul de logare FARA mesaj
+(refuz tacit, incalca "nimic nu se blocheaza fara motiv"). Cauza la sursa (api.js): ORICE 401 declansa
+sesiune.iesi() + arunca "sesiune expirata" generic. Dar /auth/login intoarce LEGITIM 401 la credentiale gresite
+({"detail":"email sau parola gresite"}); la login NU e sesiune de expirat -> iesi() re-randa ecranul, detasand
+nodul unde login.js scria mesajul (scriere in nod mort = bounce tacit), iar mesajul real era ARUNCAT si inlocuit.
+FIX: 401 declanseaza logout DOAR daca s-a trimis un token (aveam sesiune): `if (r.status===401 && token)`. Fara
+token -> cade pe handlerul normal care citeste date.detail. Toate caile de esec au acum mesaj explicit (credentiale
+/ cont inactiv / cabinet suspendat / rate limit 429 prietenos / server 5xx). Verificat la sursa: curl 401 corect
+dintotdeauna, doar frontendul il inghitea. Confirmat vizual de Costin.
+
+**Clasa BACKEND_UI_BRUT inchisa (cd988a6, 73b0094, b919d81; DESIGN_SYSTEM v2.15 cap.4).** Diagnostic la sursa:
+garzile DS (BANI/DATA/DIACRITICE) scaneaza DOAR .js (verificator os.listdir cu endswith('.js')) -> text formatat
+in backend care ajunge la user scapa COMPLET (dovada: F183 arata "40800.00 lei" brut). PASUL 1: reparate ~20 situri
+de sume - control_incrucisat (16, ecranul Declaratie-vs-contabilitate), common.problema (central, bani pe MONEDA_
+CAMP -> toate alertele plafon/TVA/balanta "5.000,00 lei"), d112/taxare_inversa/main. FALS-POZITIV corectat: d300:273
+era deja formatat (_f cu separator de mii) -> revertit. PASUL 2: canonic NOU pdf_util.data_ro (oglinda Python a
+dataRo din api.js, langa bani) adoptat unde se formatau date pentru user (sinteza_zilnica email, scadente, chitanta);
+GARDA BACKEND_UI_BRUT scaneaza .py dupa sume/date brute in campuri user-facing (mesaj/temei/cauza/motiv/avert/
+descriere/actiune), cu heuristici anti-fals-pozitiv: SUME doar f-string/%-format (sabloanele .format din CODURI
+formatate central), DATE doar strftime("%d...") = display uman (isoformat/%Y = ISO/XML/JSON/log excluse), "%s lei"
+= pre-formatat. EXCEPTII documentate: XML/SAF-T (etransport, d406), export_winmentor, unitati :g, comentarii. Norma
+simultan in DESIGN_SYSTEM v2.15 + verificator + DECIZII 22.07. Diacriticele audit_preluare.py corectate (cd988a6).
+
+**2 candidati JS reziduali din firme.js (4e3c0a3) -> verificator TOTAL 0.** :2048 <input type=date value=${aziIso}>
+= FALS-POZITIV (value pe input type=date TREBUIE ISO, cerinta HTML; default pe filtru raport = UX corect) -> rafinat
+PRECOMPLETARI sa excluda input-urile native de data/timp. :2038 <input placeholder> fara label = BUG REAL a11y
+(placeholder dispare la tastare, nu e eticheta accesibila) -> fix aria-label. verificator TOTAL 0.
+
+BLOCK NOTABIL: verificatorul acopera acum si backendul (BACKEND_UI_BRUT), nu doar .js - o clasa intreaga de drift
+(sume/date brute in Python) care putea reintra tacit e inchisa mecanic. Ramas (DE_FACUT): ramura PFA a auditului
+vazuta doar prin teste+E2E, nu in UI reala (primul PFA real); test_spv_conector rosu permanent (env); fus orar
+"cu_ora" = ora server (global).
