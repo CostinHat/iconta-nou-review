@@ -10,21 +10,16 @@ prin round-trip real in DB (INSERT + refresh mock + citire + ROLLBACK) — daca 
 Apara si PRINCIPALUL (F160): tokenul e cheiat pe cabinet XOR gratuit, iar cronul F177 NU
 sare peste tokenele gratuite (GARDUL 3).
 
-Env setat INAINTE de import (constantele modulului se citesc la import).
+Env de test in core/conftest.py (constantele modulului se citesc la import; conftest ruleaza primul).
 Testele DB ruleaza pe server (get skip daca DB indisponibil), cu ROLLBACK — zero reziduu.
 """
-import os
 import json
 import base64
 import time
 
-# --- env de test, INAINTE de importul modulului (constante la import) ---
-from cryptography.fernet import Fernet
-os.environ.setdefault("SPV_FERNET_KEY", Fernet.generate_key().decode())
-os.environ.setdefault("JWT_SECRET", "test-secret-spv")
-os.environ.setdefault("ANAF_CLIENT_ID", "TEST_CLIENT")
-os.environ.setdefault("ANAF_REDIRECT_URI", "https://iconta.eu/anaf/oauth/callback")
-
+# env de test (SPV_FERNET_KEY/JWT_SECRET/ANAF_CLIENT_ID/ANAF_REDIRECT_URI) e setat in core/conftest.py,
+# INAINTE de colectare -> constantele spv_conector (citite la import) sunt garantat prezente indiferent
+# de ordinea in care testele importa modulul. Vezi conftest pentru de ce nu aici.
 import pytest
 import psycopg2
 

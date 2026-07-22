@@ -224,12 +224,14 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
    doar_rip cu FakeConn) + E2E rollback pe tenant_002 (tip_firma='pfa' setat temporar). NICIODATA vazuta
    pe un PFA real in ecran (cabinetul n-are inca niciun PFA - ambii tenanti sunt SRL). De verificat vizual
    la primul PFA real preluat: apar doar constatarile RIP, antetul, remediile - fara "importa balanta".
-4. **test_spv_conector rosu permanent** (22.07): test_url_autorizare_contine_parametrii esueaza constant
-   pe `iconta.eu%2Fanaf%2Foauth%2Fcallback in url` fiindca redirect_uri/client_id sunt goale in shell-ul
-   de test (env SPV din api_keys.env NU se incarca la pytest). Modul neatins - e doar mediul de test. Un
-   test rosu permanent devine zgomot (ascunde regresii reale). De ales: fie testul incarca variabila
-   (setdefault pe ANAF_REDIRECT_URI/client_id ca la SPV_FERNET_KEY), fie skip explicit cu motiv documentat
-   cand env lipseste. NU se lasa rosu "acceptat" - un rosu permanent normalizeaza rosul.
+4. **test_spv_conector rosu permanent** — REZOLVAT 22.07 (core/conftest.py). Cauza reala (verificata la
+   sursa): spv_conector citeste ANAF_CLIENT_ID/REDIRECT_URI la IMPORT (constante de modul); setdefault-ul
+   din test_spv_conector.py rula PREA TARZIU cand alt test importa modulul tranzitiv (via main) primul ->
+   constanta inghetase goala in suita completa (trecea izolat). FIX: mutat setdefault in core/conftest.py
+   (ruleaza inaintea colectarii -> inaintea oricarui import), placeholdere NU secrete (redirect_uri = URL
+   public de callback, client_id fictiv). Curatat duplicarea din test (os/Fernet neutilizate scoase).
+   DOVADA: suita completa 438 passed 0 failed; mutatie negativa (redirect_uri gresit -> testul PICA) =
+   verifica real construcția URL-ului, nu trece vacuu.
 
 RAMAS — cere ochii/telefonul, NU SSH: **vezi CHECKLIST_BROWSER.md** (PWA P4.18-19, responsive
 P4.20-21, audit vizual ~12 ecrane ramase). Grup fiscal/D101G si ONG: lasate deoparte (fara cod nou).
