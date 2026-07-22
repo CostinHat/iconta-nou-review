@@ -240,15 +240,20 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
             "UPDATE public.declaratii_coada SET stare='depusa', depus_la=now(), "
             "spv_index=%s, depus_de=%s, depus_de_id=%s WHERE id=%s",
             (spv_index, depus_de, depus_de_id, coada_id))
-        # [F163v2] persistăm ȘI xml-ul depus + randurile (res serializat, din payload) — erau în
-        # `p` dar se aruncau. ON CONFLICT DO NOTHING păstrat: la re-depunere de ACELAȘI tip pe
-        # aceeași perioadă, prima depunere rămâne (jurnal append-only, non-distructiv). Versionarea
-        # rectificativelor de același tip = decizie de scop separată (DE_FACUT F163v2, PK-ul azi
-        # blochează 2 rânduri/perioadă/tip). randuri = jsonb (None la d112 -> SQL NULL).
+        # [F163v2 varianta A] persistăm xml + randuri (res serializat, din payload) cu VERSIONARE:
+        # nr_depunere = MAX(existente)+1 calculat în ACEEAȘI instrucțiune. Fiecare depunere (inclusiv
+        # rectificativa de același tip) = rând nou, cu xml/randuri proprii; "curenta" = nr_depunere
+        # maxim (vederea declaratii_depuse_curente). NU mai e ON CONFLICT DO NOTHING (first-write-wins
+        # devenea fals fiscal odată ce persistăm valori — vezi DECIZII F163v2). PK-ul
+        # (tenant,an,luna,tip,nr_depunere) e garda la cursă: două depuneri concurente care calculează
+        # același nr_depunere -> a doua pică pe PK (conflictul NU se înghite tăcut). randuri = jsonb
+        # (None la d112 -> SQL NULL).
         randuri = p.get("randuri")
         cur.execute(
-            "INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri) "
-            "VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT DO NOTHING",
+            "INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
+            "SELECT %s,%s,%s,%s,%s,%s, COALESCE(MAX(nr_depunere),0)+1 "
+            "FROM public.declaratii_depuse WHERE tenant_id=%s AND an=%s AND luna=%s AND tip=%s",
             (r["tenant_id"], an, luna, r["tip"], p.get("xml"),
-             _E.Json(randuri) if randuri is not None else None))
+             _E.Json(randuri) if randuri is not None else None,
+             r["tenant_id"], an, luna, r["tip"]))
     return {"ok": True, "stare": "depusa", "an": an, "luna": luna}

@@ -119,25 +119,9 @@ def extrage(continut, nume_fisier=""):
     return out
 
 
-def asigura_coloana_sursa(conn):
-    """Adauga coloana sursa daca lipseste (default 'iconta')."""
-    with conn.cursor() as cur:
-        cur.execute("""
-            DO $$ BEGIN
-              IF NOT EXISTS (
-                SELECT 1 FROM information_schema.columns
-                WHERE table_schema='public' AND table_name='declaratii_depuse' AND column_name='sursa'
-              ) THEN
-                ALTER TABLE public.declaratii_depuse ADD COLUMN sursa TEXT NOT NULL DEFAULT 'iconta';
-              END IF;
-            END $$;
-        """)
-    conn.commit()
-
-
 def rezumat(conn, tenant_id):
-    """{are_istoric, randuri} pentru o firma (doar randurile din migrare)."""
-    asigura_coloana_sursa(conn)
+    """{are_istoric, randuri} pentru o firma (doar randurile din migrare).
+    Coloana `sursa` e garantata de migrare_declaratii_depuse_randuri (public), nu mai lazy."""
     with conn.cursor() as cur:
         cur.execute("SELECT count(*) FROM public.declaratii_depuse WHERE tenant_id=%s AND sursa='migrare'",
                     (tenant_id,))
@@ -194,7 +178,6 @@ def importa(conn, tenant_id, randuri):
         raise ValueError("%d randuri nu pot intra: %s. Istoricul declaratiilor sta la "
                          "baza termenelor si a controlului fiscal."
                          % (len(er), "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6])))
-    asigura_coloana_sursa(conn)
     with conn.cursor() as cur:
         cur.execute("DELETE FROM public.declaratii_depuse WHERE tenant_id=%s AND sursa='migrare'",
                     (tenant_id,))

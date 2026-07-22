@@ -310,7 +310,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
 
     # depuse din public (cu data depunerii, pentru motivul verde)
     with conn_public.cursor() as cur:
-        cur.execute("SELECT tip, an, luna, data_depunere FROM public.declaratii_depuse WHERE tenant_id=%s", (tenant_id,))
+        cur.execute("SELECT tip, an, luna, data_depunere FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tenant_id,))  # [F163v2] vederea = depunerea curentă (nr_depunere max)
         depuse = {}
         for t, a, l, dd in cur.fetchall():
             depuse[(t, a, l)] = dd.date() if hasattr(dd, "date") else dd

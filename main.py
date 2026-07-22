@@ -2022,7 +2022,7 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
                 continue
             with db.get_conn() as cp:
                 with cp.cursor() as cur:
-                    cur.execute("SELECT tip, an, luna FROM public.declaratii_depuse WHERE tenant_id=%s", (tid,))
+                    cur.execute("SELECT tip, an, luna FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tid,))  # [F163v2] vederea = depunerea curentă
                     depuse = {(t, a, l) for (t, a, l) in cur.fetchall()}
             term = termene_api.termene_firma(vector, are_sal, depuse, azi)
             firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "termene": term})

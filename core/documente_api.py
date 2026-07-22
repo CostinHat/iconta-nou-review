@@ -139,7 +139,7 @@ def declaratii_depuse(conn, tenant_id):
     with conn.cursor() as cur:
         cur.execute("""
             SELECT an, luna, tip, data_depunere
-            FROM public.declaratii_depuse
+            FROM public.declaratii_depuse_curente
             WHERE tenant_id = %s
             ORDER BY an DESC, luna DESC, tip
         """, (tenant_id,))

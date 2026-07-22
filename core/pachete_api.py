@@ -52,7 +52,7 @@ def _profil(conn_schema):
 def _declaratii_depuse(conn_public, tenant_id, an, luna):
     with conn_public.cursor() as cur:
         cur.execute(
-            "SELECT tip FROM public.declaratii_depuse "
+            "SELECT tip FROM public.declaratii_depuse_curente "
             " WHERE tenant_id=%s AND an=%s AND luna=%s", (tenant_id, an, luna))
         return [r[0].upper() for r in cur.fetchall()]
 

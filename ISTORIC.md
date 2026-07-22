@@ -2298,3 +2298,34 @@ PK/semantica; DE_FACUT). Item nou DE_FACUT: F165 NU acopera schema public (nici 
 DOVADA: 6 teste + E2E prin marcheaza_depusa REAL (payload->coada->depunere->declaratii_depuse, Decimal 4427.50
 pastrat valoric, tenant_id sintetic 990163 in ROLLBACK + curatat complet). migrare public aplicata OK. Suita 466
 verde + verificator DS 0. F165 neafectat (declaratii_depuse e public, nu in template-ul tenant).
+
+## 22.07.2026 fir 11 — F163v2 varianta A: versionarea depunerilor + GRANT CREATE pe public + eliminare workaround lazy
+
+Continuare F163v2: rectificativa de acelasi tip pe aceeasi perioada era ignorata tacit (ON CONFLICT DO NOTHING) ->
+fals fiscal odata ce persistam VALORI (ar compara cu actul inlocuit). Varianta A (DA Costin): nr_depunere in PK +
+vedere "curente".
+
+BLOCAJ INFRA verificat la sursa: ADD PRIMARY KEY pe public creeaza index -> iconta_user (owner tabel, putea ADD
+COLUMN) n-avea CREATE pe schema public (PG16 revoca implicit de la PUBLIC). Tranzactie rollback curata. DECIZIE
+(DA Costin): GRANT CREATE ON SCHEMA public TO iconta_user, o data ca postgres -> migrarile public devin first-class
+ca app-user (dovada: migrare_versiune a rulat CA iconta_user). De ce GRANT si nu one-off privilegiat: fara mecanism,
+fiecare DDL public cere superuser -> de acolo a venit ALTER-ul lazy. Tratam cauza. Contraargument PG15 shadowing
+considerat si respins (iconta_user detine deja tabelele public + creeaza scheme tenant; risc intra-rol, nu cross-rol;
+reversibil prin REVOKE). Vezi DECIZII 22.07 [INFRA].
+
+CONSTRUIT:
+  - migrare_declaratii_depuse_versiune.py (public, idempotent): ADD nr_depunere NOT NULL DEFAULT 1 (backfill la 1)
+    -> DROP PK vechi -> ADD PK (tenant,an,luna,tip,nr_depunere) -> CREATE OR REPLACE VIEW declaratii_depuse_curente
+    (DISTINCT ON per perioada, nr_depunere DESC). Verificat: FARA FK spre declaratii_depuse (PK sigur de refacut).
+  - coada_api.marcheaza_depusa: ON CONFLICT ELIMINAT; INSERT ... SELECT nr_depunere=COALESCE(MAX,0)+1 (PK = garda
+    la cursa, conflictul nu se inghite tacut).
+  - 6 cititori de logica -> vedere (control_fiscal_api, documente_api, portal_api, pachete_api, audit_preluare,
+    main.py:2025). Verificat la sursa fiecare vrea "curenta"; count-migrare (istoric:142) RAMANE pe tabel (bookkeeping).
+  - WORKAROUND LAZY ELIMINAT: asigura_coloana_sursa sters (functie + 2 apeluri); `sursa` mutata in
+    migrare_declaratii_depuse_randuri (ADD COLUMN IF NOT EXISTS sursa NOT NULL DEFAULT 'iconta'). Fara cod mort.
+
+DOVADA: testul care justifica tema - versionare prin marcheaza_depusa REAL: re-depunere acelasi tip -> 2 randuri
+(nr 1/2) cu xml/randuri proprii, vederea "curente" da valorile NOI (<RECTIFICAT/>, colectata 200), initiala
+(<INITIAL/>, 100) citibila in tabel. Verificat ux_coada_activa partial (exclude 'depusa') -> rectificativa in coada
+dupa depunerea initiala. Suita 466 verde + verificator DS 0 + vederea interogabila de iconta_user. DE_FACUT:
+"conventie migrari public" REZOLVAT; "F165 nu acopera public" ramane dar acum realizabil (blocaj privilegii ridicat).

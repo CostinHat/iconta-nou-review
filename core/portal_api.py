@@ -39,6 +39,6 @@ def declaratii_depuse(conn, tenant_id):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
-            "SELECT tip, an, luna, data_depunere FROM public.declaratii_depuse "
+            "SELECT tip, an, luna, data_depunere FROM public.declaratii_depuse_curente "
             "WHERE tenant_id = %s ORDER BY an DESC, luna DESC, tip", (tenant_id,))
         return [dict(r) for r in cur.fetchall()]

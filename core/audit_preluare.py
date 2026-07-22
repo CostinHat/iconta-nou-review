@@ -186,7 +186,7 @@ def verifica_istoric_fiscal(conn, schema, tenant_id, conn_public):
                      "Balanța de deschidere nu a fost importată — nu pot lega soldurile fiscale de istoric.",
                      "Importă balanța de deschidere (Migrare › Solduri inițiale), apoi reia.")]
     with conn_public.cursor() as cur:
-        cur.execute("SELECT DISTINCT tip FROM public.declaratii_depuse WHERE tenant_id=%s", (tenant_id,))
+        cur.execute("SELECT DISTINCT tip FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tenant_id,))  # [F163v2] pe vedere (DISTINCT tip e agnostic la versiuni, dar consistent)
         tipuri_depuse = {r[0] for r in cur.fetchall()}
     net = {}
     for r in rows:

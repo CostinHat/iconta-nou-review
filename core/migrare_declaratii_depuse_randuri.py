@@ -10,19 +10,24 @@ asigura_coloana_sursa din istoric_declaratii_import_api, workaround fiindca migr
 nu acopera public). F165 auditeaza doar tenant vs template; public n-are template/audit
 -> vezi DE_FACUT.
 
-Idempotent (ADD COLUMN IF NOT EXISTS):
+Idempotent (ADD COLUMN IF NOT EXISTS). Consolideaza TOATE coloanele adaugate lui
+declaratii_depuse pe schema public:
   - xml text     — XML-ul efectiv depus (era in payload-ul cozii, se arunca la jurnal);
   - randuri jsonb — `res` serializat (asdict + default=str), pentru control D-vs-D real
     (D390<->D300 etc.) fara reparsare XML. NULL pentru d112 (nu expune totaluri
-    structurate — vezi temeiul din coada_api.randuri_din_res / DECIZII F163v2).
-Ambele NULLABLE: randurile istorice depuse inainte de v2 raman fara xml/randuri (corect —
-nu fabricam ce nu s-a capturat).
+    structurate — vezi temeiul din coada_api.randuri_din_res / DECIZII F163v2);
+  - sursa text NOT NULL DEFAULT 'iconta' — 'iconta' (depus din app) vs 'migrare' (import
+    istoric de la contabilul anterior). Era adaugata LAZY (asigura_coloana_sursa, workaround
+    fiindca migrare_* nu acoperea public); golul e inchis (GRANT CREATE pe public, DECIZII
+    22.07), workaround-ul eliminat -> aici e locul normativ. xml/randuri NULLABLE (istoricul
+    de dinainte de v2 ramane fara — nu fabricam ce nu s-a capturat).
 """
 from core import db
 
 DDL = """
 ALTER TABLE public.declaratii_depuse ADD COLUMN IF NOT EXISTS xml text;
 ALTER TABLE public.declaratii_depuse ADD COLUMN IF NOT EXISTS randuri jsonb;
+ALTER TABLE public.declaratii_depuse ADD COLUMN IF NOT EXISTS sursa text NOT NULL DEFAULT 'iconta';
 """
 
 
@@ -37,8 +42,8 @@ def verifica(conn):
     with conn.cursor() as cur:
         cur.execute(
             "SELECT count(*) FROM information_schema.columns WHERE table_schema='public' "
-            "AND table_name='declaratii_depuse' AND column_name IN ('xml','randuri')")
-        return cur.fetchone()[0] == 2
+            "AND table_name='declaratii_depuse' AND column_name IN ('xml','randuri','sursa')")
+        return cur.fetchone()[0] == 3
 
 
 def _main():

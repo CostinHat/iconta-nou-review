@@ -95,27 +95,50 @@ def test_d112_randuri_null_in_db():
         db.pool().putconn(conn)
 
 
-def test_rectificativa_acelasi_tip_nu_distruge_depunerea_initiala():
-    """Re-depunere de ACELASI (tenant,an,luna,tip): ON CONFLICT DO NOTHING -> prima ramane."""
+def _pune_coada_aprobata(cur, tip, xml, res):
+    """Insereaza o intrare de coada 'aprobata' cu payload (xml + randuri), intoarce coada_id."""
+    payload = {"xml": xml, "randuri": coada_api.randuri_din_res(res), "_an": 2026, "_luna": 6}
+    cur.execute("""INSERT INTO public.declaratii_coada
+        (cabinet_id, tenant_id, tip, perioada, stare, payload, hash, creat_de)
+        VALUES (1,%s,%s,'25/07/2026','aprobata',%s,%s,'tester') RETURNING id""",
+        (_TID, tip, _E.Json(payload), tip + xml))
+    return cur.fetchone()[0]
+
+
+def test_rectificativa_versioneaza_si_vederea_da_valorile_noi():
+    """TESTUL CARE JUSTIFICA TEMA: re-depunere acelasi tip aceeasi perioada -> DOUA randuri
+    (nr_depunere 1 si 2), fiecare cu xml/randuri proprii; vederea 'curente' da valorile NOI;
+    depunerea initiala ramane citibila din TABEL. Prin marcheaza_depusa REAL (nu INSERT brut)."""
     conn = _conn()
     try:
+        # ux_coada_activa (partial, exclude 'depusa') cere: depui prima INAINTE de a pune a doua
         with conn.cursor() as cur:
-            # depunerea initiala
-            cur.execute(
-                "INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri) "
-                "VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT DO NOTHING",
-                (_TID, 2026, 6, "d300", "<INITIAL/>", _E.Json({"colectata": "100"})))
-            # rectificativa: acelasi PK, xml diferit
-            cur.execute(
-                "INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri) "
-                "VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT DO NOTHING",
-                (_TID, 2026, 6, "d300", "<RECTIFICAT/>", _E.Json({"colectata": "200"})))
-            cur.execute("SELECT xml, randuri FROM public.declaratii_depuse "
+            id1 = _pune_coada_aprobata(cur, "d300", "<INITIAL/>", _RezFake(colectata=Decimal("100")))
+        coada_api.marcheaza_depusa(conn, id1, depus_de="tester")     # id1 -> 'depusa'
+        with conn.cursor() as cur:
+            id2 = _pune_coada_aprobata(cur, "d300", "<RECTIFICAT/>", _RezFake(colectata=Decimal("200")))
+        coada_api.marcheaza_depusa(conn, id2, depus_de="tester")     # rectificativa -> nr_depunere 2
+
+        with conn.cursor() as cur:
+            # TABEL: doua randuri, nr_depunere 1 si 2, xml/randuri proprii
+            cur.execute("SELECT nr_depunere, xml, randuri FROM public.declaratii_depuse "
+                        "WHERE tenant_id=%s AND tip='d300' ORDER BY nr_depunere", (_TID,))
+            randuri_tabel = cur.fetchall()
+            # VEDERE: un singur rand, cel curent (nr_depunere max) = valorile NOI
+            cur.execute("SELECT nr_depunere, xml, randuri FROM public.declaratii_depuse_curente "
                         "WHERE tenant_id=%s AND tip='d300'", (_TID,))
-            rows = cur.fetchall()
-        assert len(rows) == 1                       # un singur rand (PK unique)
-        assert rows[0][0] == "<INITIAL/>"           # prima depunere NEATINSA (non-distructiv)
-        assert rows[0][1]["colectata"] == "100"
+            curent = cur.fetchall()
+
+        assert [r[0] for r in randuri_tabel] == [1, 2]                    # doua versiuni
+        assert randuri_tabel[0][1] == "<INITIAL/>"                        # initiala citibila in tabel
+        assert Decimal(randuri_tabel[0][2]["colectata"]) == Decimal("100")
+        assert randuri_tabel[1][1] == "<RECTIFICAT/>"
+        assert Decimal(randuri_tabel[1][2]["colectata"]) == Decimal("200")
+
+        assert len(curent) == 1                                          # vederea: o singura curenta
+        assert curent[0][0] == 2                                         # nr_depunere max
+        assert curent[0][1] == "<RECTIFICAT/>"                           # valorile NOI, nu cele vechi
+        assert Decimal(curent[0][2]["colectata"]) == Decimal("200")
     finally:
         conn.rollback()
         db.pool().putconn(conn)

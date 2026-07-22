@@ -371,27 +371,25 @@ vs DE CONSTRUIT (munca reala):
 ### DE CONSTRUIT (munca reala ramasa)
 - **F127/F128 — AMANATE**: pendinte pe ANAF adaugand OAuth la SPVWS2. Deadline review 17.08.2026 (raspuns
   asteptat de la spv.webservice@mfinante.ro). Fara raspuns pana atunci -> raman AMANATE.
-- **v2 F163 — persistarea randurilor decontului depus** [LIVRAT 22.07.2026, PARTIAL — vezi versionare mai jos]
-  public.declaratii_depuse are acum xml text + randuri jsonb (migrare_declaratii_depuse_randuri.py); la depunere
-  (coada_api.marcheaza_depusa) se persista XML-ul + `res` serializat (asdict+default=str). d112 -> randuri NULL
-  (nu expune totaluri, F181). Abia acum se poate D-vs-D real fara reparsare XML. Vezi DECIZII 22.07 F163v2.
-  RAMAS (cere DA, schimbare de scop):
-  * VERSIONARE RECTIFICATIVE DE ACELASI TIP. PK azi = (tenant_id,an,luna,tip) + ON CONFLICT DO NOTHING ->
-    re-depunerea aceluiasi tip pe aceeasi perioada e ignorata tacit (xml/randuri raman cele initiale). D710
-    (rectificativa D100) e tip separat, deci coexista; problema e doar re-depunerea ACELUIASI tip (ex. D300
-    corectat). Varianta propusa: coloana nr_depunere/versiune in PK -> istoric append-only al depunerilor per
-    perioada; `depunerea curenta` = max(versiune). NU aplicat unilateral (schimba PK + semantica jurnalului +
-    toti cititorii declaratii_depuse). Alternativa mai ieftina: ON CONFLICT DO UPDATE (ultima castiga, fara
-    istoric). De decis care.
+- **v2 F163 — persistarea randurilor decontului depus** [LIVRAT 22.07.2026, INCL. VERSIONARE varianta A]
+  public.declaratii_depuse are xml text + randuri jsonb + nr_depunere (versiune). La depunere
+  (coada_api.marcheaza_depusa) se persista XML + `res` serializat (asdict+default=str) cu nr_depunere=MAX+1;
+  "curenta" = vederea public.declaratii_depuse_curente; cei 6 cititori de logica trec pe vedere, istoricul ramane
+  in tabel. d112 -> randuri NULL (nu expune totaluri, F181). Versionare (A, nu B) - vezi DECIZII 22.07 F163v2 +
+  [INFRA] GRANT CREATE. RAMAS:
   * D-vs-D pe D300<->D390: randurile intracom R1_1/R5_1 ale D300 raman manual-only (nepersistate in `res`) ->
-    pana la capturarea lor, controlul incrucisat pe acele randuri = partial. Persistarea `res` acopera restul.
-- **F165 NU acopera schema PUBLIC.** F165 (audit_schema) compara doar schemele tenant_ vs tenant_template.sql.
-  Tabelele din `public` (declaratii_depuse, tenants, users, audit_log etc.) n-au nici template, nici audit, nici
-  migrare_* clasic (bucla e pe tenant_). Dovada vie: coloana `sursa` a fost adaugata LAZY (asigura_coloana_sursa,
-  DO $$ IF NOT EXISTS ALTER) fiindca n-avea unde altundeva; F163v2 a fost prima migrare "ca lumea" pe public
-  (migrare_declaratii_depuse_randuri.py, un singur ALTER, fara bucla). DE CONSTRUIT: fie un template + audit pentru
-  public (analog F165), fie cel putin o conventie de migrare public documentata (un registru de migrari public
-  rulate), ca sa nu se mai recurga la ALTER-uri lazy imprastiate. [PLANIFICAT]
+    pana la capturarea lor, controlul incrucisat pe acele randuri = partial. Persistarea `res` acopera restul. [PLANIFICAT]
+- **Conventie migrari pe schema PUBLIC** [REZOLVAT 22.07.2026]. Cauza (migrare_* bucla doar tenant_, iconta_user
+  n-avea CREATE pe public -> ALTER-uri lazy ca workaround) e inchisa: GRANT CREATE ON SCHEMA public TO iconta_user
+  (DECIZII 22.07 [INFRA]) face migrarile pe public first-class ca app-user. Tipar stabilit: migrare_*.py cu un
+  singur ALTER/DDL pe public (fara bucla tenant), aplica/verifica/_main - ex. migrare_declaratii_depuse_randuri +
+  _versiune. Workaround-ul lazy asigura_coloana_sursa ELIMINAT (sursa mutata in migrare normala, fara cod mort).
+- **F165 NU acopera schema PUBLIC** [PLANIFICAT — acum REALIZABIL dupa GRANT]. F165 (audit_schema) compara doar
+  schemele tenant_ vs tenant_template.sql. Tabelele `public` (declaratii_depuse, tenants, users, audit_log etc.)
+  n-au template/audit. DE CONSTRUIT: template + audit pentru public (analog F165, cu poarta in suita). Blocajul de
+  privilegii care ar fi impiedicat un auto-fix e ridicat (GRANT CREATE), deci un audit-public cu suggest/migrare e
+  acum fezabil ca app-user. Ramane de decis daca public primeste un template versionat (ca tenant) sau doar un
+  registru de migrari public rulate.
 - **v2 F164 — digest email Brevo** (rezumat zilnic/saptamanal al rosurilor de control fiscal DESCHISE per cabinet,
   pentru contabilii care nu intra zilnic in app). Completeaza v1 (clopotel in-app + click, LIVE 19.07): v1 rezolva
   restanta 17.07 (alerta ajunge in app); digestul acopera cazul "contabil care nu intra zilnic". De construit CAND

@@ -2090,3 +2090,47 @@ LIMITA: rectificativa de acelasi tip pe aceeasi perioada nu-si persista xml/rand
 la decizia de versionare. Aparare: 6 teste (randuri_din_res dataclass/d112-None, round-trip Decimal prin jsonb,
 d112 NULL in DB, rectificativa non-distructiva, d710 coexista) + E2E prin marcheaza_depusa real (payload->coada->
 depunere->declaratii_depuse, Decimal pastrat, TID sintetic curatat). Suita 466 verde + verificator DS 0.
+
+### 22.07.2026 F163v2 varianta A: versionarea depunerilor (nr_depunere in PK + vedere "curente")  (migrare_declaratii_depuse_versiune.py + coada_api.marcheaza_depusa + 6 cititori)
+DECIZIE (rasturna "ON CONFLICT DO NOTHING pastrat" din intrarea F163v2 de mai sus, care astepta DA): PK devine
+(tenant_id,an,luna,tip,nr_depunere); marcheaza_depusa insereaza nr_depunere=MAX+1 (fara ON CONFLICT); "curenta"
+= vederea public.declaratii_depuse_curente (DISTINCT ON per perioada, nr_depunere DESC). Cei 6 cititori de logica
+(control_fiscal_api:313, documente_api, portal_api, pachete_api, audit_preluare:189, main.py:2025) trec pe vedere;
+istoricul ramane in tabel. Cititorul de bookkeeping (istoric_declaratii_import_api:142, count WHERE sursa='migrare')
+RAMANE pe tabel (numara importuri dupa sursa, nu "declaratii curente").
+TEMEI: de ce A (versionare) si NU B (ON CONFLICT DO UPDATE): odata ce persistam VALORI (xml+randuri), first-write-
+wins (sau last-wins fara istoric) devine FALS FISCAL - rectificativa D300/D390/D394 e practica normala; controlul
+D-vs-D ar compara cu actul INLOCUIT, nu cu cel in vigoare, iar depunerea inlocuita ar deveni necitibila. Varianta A
+pastreaza AMBELE (audit trail al depunerilor) + expune curenta prin vedere. Verificat la sursa: FARA FK spre
+declaratii_depuse (PK refacut fara efecte referentiale); ux_coada_activa e partial (exclude 'depusa') deci
+rectificativa se pune in coada dupa ce prima e depusa. ON CONFLICT ELIMINAT: PK-ul (cu nr_depunere) e garda la
+cursa - doua depuneri concurente care calculeaza acelasi MAX+1 -> a doua pica pe PK (conflictul NU se inghite tacut,
+cerinta explicita).
+ALTERNATIVA RESPINSA: (B) ON CONFLICT DO UPDATE - respins (mai sus: pierde actul inlocuit, controlul minte).
+(migrare INSERT sursa='migrare' ramane nr_depunere=1 default + DELETE-then-insert idempotent; coliziune cu o
+depunere iconta pe acelasi (tenant,an,luna,tip,1) = pre-existenta si azi pe PK vechi, nu regresie - istoric de
+dinainte de iConta nu se suprapune in practica cu depuneri iConta).
+LIMITA: vederea da ULTIMA versiune; daca cineva vrea sa vada explicit o versiune anume, interogheaza tabelul cu
+nr_depunere. Aparare: test versionare prin marcheaza_depusa REAL (2 randuri nr 1/2 cu xml/randuri proprii, vederea
+da valorile NOI, initiala citibila in tabel) + 5 teste F163v2 pastrate. Suita 466 verde.
+
+### 22.07.2026 [INFRA] GRANT CREATE ON SCHEMA public TO iconta_user  (decizie de infrastructura, nu de cod)
+DECIZIE: iconta_user (user-ul aplicatiei) primeste CREATE pe schema public, o data, aplicat ca postgres.
+CONTEXT: F163v2-versiune cerea ADD PRIMARY KEY pe public.declaratii_depuse = creare de index in schema public.
+iconta_user DETINE tabelul (putea ADD COLUMN) dar n-avea CREATE pe schema public (PG15+ revoca implicit CREATE de
+la PUBLIC pe schema public) -> "permission denied for schema public". Tranzactia a dat rollback curat (nimic stricat).
+TEMEI: de ce GRANT (mecanism) si NU rulare one-off privilegiata (fiecare DDL public ca postgres): fara CREATE,
+FIECARE migrare pe public ar cere un pas manual de superuser -> exact de acolo a venit ALTER-ul lazy asigura_
+coloana_sursa (workaround in cod fiindca nu exista un mecanism curat). Tratam CAUZA: cu GRANT, migrarile pe public
+sunt first-class ca app-user (dovada: migrare_declaratii_depuse_versiune a rulat CA iconta_user, nu ca postgres),
+la fel ca tenant-migrarile. Asa se poate elimina workaround-ul lazy (facut: sursa mutata in migrare normala).
+CONTRAARGUMENT considerat (PG15 search_path shadowing): revocarea CREATE de la PUBLIC pe public in PG15 tinteste
+atacul in care un user ne-privilegiat creeaza obiecte in public care "umbresc" (shadow) functii/tabele apelate fara
+schema calificata de alti useri -> escaladare. NU se aplica material aici: iconta_user NU e un rol ne-privilegiat
+oarecare - DETINE deja toate tabelele din public si CREEAZA scheme tenant (are CREATE pe baza de date); nu exista
+un al doilea rol de privilegiat mai mare pe care sa-l pacaleasca (postgres nu ruleaza cod app cu search_path pe
+public al lui iconta_user). Riscul de shadowing e intra-rol, nu cross-rol. In plus e REVERSIBIL: REVOKE CREATE ON
+SCHEMA public FROM iconta_user il anuleaza fara pierdere de date.
+ALTERNATIVA RESPINSA: rulare one-off ca postgres pentru fiecare DDL public - respins (nu rezolva cauza; perpetueaza
+workaround-urile lazy). LIMITA: daca politica de securitate cere separarea rol-app de rol-migrare, se creeaza un rol
+de migrare dedicat cu CREATE pe public si app-user-ul ramane fara - refactor viitor, nu azi (un singur rol acum).
