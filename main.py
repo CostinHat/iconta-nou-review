@@ -1958,6 +1958,21 @@ def control_fiscal_detaliu(tenant_id: int, ctx=Depends(cere_cabinet)):
     return r
 
 
+@app.get("/control-fiscal/{tenant_id}/audit-preluare")
+def control_fiscal_audit_preluare(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """F183: audit de PRELUARE firma — coerenta INTERNA a pachetului preluat de la contabilul anterior
+    (balanta echilibrata, defalcare parteneri vs sintetic, solduri fiscale vs istoric declaratii, RIP la
+    PFA). Motor separat (core/audit_preluare), NU control_incrucisat: la preluare ambele surse sunt EXTERNE.
+    Repetabil, datat cu momentul rularii — gri-urile trec in verde/rosu pe masura ce apar documentele."""
+    import datetime
+    from core import audit_preluare
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as cs, db.get_conn() as cp:
+        r = audit_preluare.audit(cs, schema, tenant_id, cp)
+    r["data"] = datetime.date.today().isoformat()
+    return r
+
+
 
 # ============================================================
 #  TERMENE — scadente viitoare pe portofoliu (orizont 60 zile)

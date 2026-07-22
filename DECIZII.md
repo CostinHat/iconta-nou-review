@@ -1875,3 +1875,38 @@ ALTERNATIVA RESPINSA (DA gate):
 LIMITA: privacy — raportul e pentru SUPERADMIN (Admin iConta), care vede oricum ambele laturi in panourile lui;
 arata numele cabinetului. NU e acelasi caz ca F185 (unde REGISTRANTUL vede doar existenta, boolean). Un gratuit
 poate coliziona cu mai multe cabinete -> mai multe randuri (corect). Vezi si DECIZII 18.07 (F092) / 19.07 (F185).
+
+### 22.07.2026 F183 audit de preluare = motor SEPARAT, nu control_incrucisat pe luna de migrare  (core/audit_preluare.py; main.py GET /control-fiscal/{tid}/audit-preluare; static/js/ecrane/control.js; LIVE)
+DECIZIE: auditul de preluare firma e un motor NOU (core/audit_preluare.py) care verifica COERENTA
+INTERNA a pachetului preluat de la contabilul anterior - NU "acelasi motor control_incrucisat aplicat
+la migrare" cum era conceput in DE_FACUT. Reutilizeaza doar ANATOMIA (3 stari verde=coerent /
+rosu=divergent / gri=NEVERIFICAT + temei + remediu executabil/sugerat/investigatie) + reutilizeaza cod:
+solduri_api.verifica_echilibru si solduri_parteneri_api.coerenta.
+TEMEI (verificat la sursa 22.07, grep + citit control_incrucisat.py integral): control_incrucisat
+compara doua surse INTERNE iConta - o declaratie GENERATA din iConta (d300/d112/d390.genereaza) vs NOTE
+VALIDATE in iConta (rulaje_luna). La preluare NICIUNA nu exista: contabilitatea in iConta incepe DUPA
+preluare, facturile istorice nu-s in sistem. Ruland control_incrucisat pe luna preluata rulaje_luna=0
+-> rosu fals "necontabilizat" pe TOT. La preluare ambele surse sunt EXTERNE (documente de la contabilul
+anterior); intrebarea nu e "declarat vs contabilizat" ci "pachetul preluat e coerent cu el insusi?".
+Motoare separate care se cheama, nu se absorb (aliniat DECIZII 18.07 B). Nota din rip_migrare_api.py:204
+anticipa deja F183 la preluare.
+SCOP v1 (raspuns la DA gate, 3 intrebari - Costin):
+  - LOCATIE: fisa firmei (Control fiscal > detaliu > buton "Audit de preluare"), repetabil oricand.
+    RESPINS pas-final-in-flux-migrare: auditul e TRANSVERSAL peste straturi, nu un strat cu "gata verde",
+    si trebuie re-rulabil DUPA migrare, nu doar in timpul ei.
+  - VERIFICARI: (1) balanta echilibrata; (2) Sigma solduri parteneri = sold sintetic din balanta;
+    (3) sold de deschidere pe cont fiscal fara declaratia care-l explica in istoric = SEMNAL gri (NU
+    rosu automat - soldurile fiscale au cauze legitime); (4) RIP PFA sold implicit ne-negativ + operatiuni
+    clasificate. Acopera ambele regimuri: partida dubla (SRL) + partida simpla (PFA).
+  - PERSISTENTA: regenerare la cerere, raport datat cu momentul rularii. RESPINS tabel-snapshot: setul e
+    100% derivabil din documentele importate; materializarea cere sincronizare la reimport -> drift
+    (acelasi rationament ca F186 live-not-materialized).
+ALTERNATIVA RESPINSA: a extinde control_incrucisat cu un mod "preluare" - respins: ar amesteca doua
+intrebari diferite (declarat-vs-contabilizat vs coerenta-pachet-extern) intr-un motor si ar cere ramuri
+"daca e preluare" prin toata logica de comparatie (regula "motoare separate", "nu construi paralel").
+LIMITA: auditul verifica coerenta INTERNA a pachetului preluat, NU corectitudinea evidentei contabilului
+anterior (RIP-ul preluat e punct de plecare, nu adevar garantat). NEVERIFICAT v1, ramas gri VIZIBIL (nu
+tacut, prin lipsa checkului): asociati/cote (100% + capital 1012), mijloace fixe (valoare ramasa vs
+21x-28x), salariati (421/431x), vector fiscal vs documente. Ce ar rasturna / extinde: audit D-vs-D real
+la preluare cere persistarea randurilor declaratiilor depuse (acelasi blocant ca F163, capul sectiunii
+in control_incrucisat). Aparare: core/test_audit_preluare.py (11 teste pe nucleele PURE).

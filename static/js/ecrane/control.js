@@ -197,6 +197,13 @@ async function detaliuFirma(corp, nav, firma) {
         <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="#1d9e75" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
         <div class="mig-gata-titlu">Totul depus la zi</div>
       </div>` : ""}
+    <div class="cf-grup-titlu" style="margin-top:20px">Audit de preluare</div>
+    <div class="cf-decl" id="cf-audit-zona">
+      <div class="cf-incr-temei">Coerența internă a pachetului preluat de la contabilul anterior:
+        balanță, solduri parteneri, istoric declarații, registru PFA. Raport datat, repetabil pe
+        măsură ce apar documentele.</div>
+      <button class="buton-secundar" id="cf-audit-run" style="margin-top:10px">Rulează auditul de preluare</button>
+    </div>
   `;
 
   // [control_incrucisat_v1] remediu executabil: contabilizeaza facturile cu cauza dovedita.
@@ -228,4 +235,48 @@ async function detaliuFirma(corp, nav, firma) {
         }
       }, { textOk: "Contabilizeaz\u0103" });
   }));
+
+  // [F183] audit de preluare \u2014 ruleaza la cerere (repetabil, datat), randeaza cele trei categorii
+  // reutilizand anatomia de constatare (dot + mesaj + temei + remediu). Motor separat pe backend.
+  const randA = (c) => {
+    const dot = CULORI[c.stare] ? CULORI[c.stare].dot : CULORI.gri.dot;
+    const r = c.remediu;
+    const extra = r ? `<div class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b><br>${esc(r.actiune || "")}</div>` : "";
+    return `<div class="cf-incr-rand">
+      <div class="cf-incr-cap"><span class="cf-dot" style="background:${dot}"></span><span>${esc(c.mesaj || "")}</span></div>
+      <div class="cf-incr-temei">${esc(c.temei || "")}</div>
+      ${extra}
+    </div>`;
+  };
+  async function ruleazaAudit() {
+    const zona = corp.querySelector("#cf-audit-zona");
+    const btn = corp.querySelector("#cf-audit-run");
+    if (btn) { btn.disabled = true; btn.textContent = "Se ruleaz\u0103\u2026"; }
+    let a;
+    try {
+      a = await api.get(`/control-fiscal/${firma.tenant_id}/audit-preluare`);
+    } catch (e) {
+      if (btn) { btn.disabled = false; btn.textContent = "Ruleaz\u0103 auditul de preluare"; }
+      arataMesaj(zona, `Nu am putut rula auditul: ${e.mesaj || e.message}`, "avert");
+      return;
+    }
+    const grup = (titlu, stare, cls) => {
+      const arr = (a.constatari || []).filter((c) => c.stare === stare);
+      if (!arr.length) return "";
+      return `<div class="cf-grup-titlu ${cls}">${titlu} (${arr.length})</div>${arr.map(randA).join("")}`;
+    };
+    const col = CULORI[a.stare] || CULORI.gri;
+    zona.innerHTML = `
+      <div class="cf-incr-temei">Audit rulat ${dataRo(a.data)} \u00b7 <span style="color:${col.dot}">${col.txt}</span>
+        \u00b7 ${a.coerent} coerent \u00b7 ${a.divergent} divergent \u00b7 ${a.neverificat} neverificat</div>
+      ${grup("Coerent", "verde", "cf-verde")}
+      ${grup("Divergent", "rosu", "cf-rosu")}
+      ${grup("Neverificat", "gri", "")}
+      ${a.limita ? `<div class="cf-incr-temei">${esc(a.limita)}</div>` : ""}
+      <button class="buton-secundar" id="cf-audit-run" style="margin-top:12px">Reruleaz\u0103 auditul</button>
+    `;
+    corp.querySelector("#cf-audit-run").addEventListener("click", ruleazaAudit);
+  }
+  const auditBtn = corp.querySelector("#cf-audit-run");
+  if (auditBtn) auditBtn.addEventListener("click", ruleazaAudit);
 }
