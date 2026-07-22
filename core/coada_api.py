@@ -51,6 +51,21 @@ def calcul_hash(payload):
     return hashlib.sha256(s.encode("utf-8")).hexdigest()
 
 
+def randuri_din_res(res):
+    """[F163v2] Serializează `res` (dataclass) -> dict JSON-safe (Decimal->str via default=str)
+    pentru payload/jsonb (persistare în public.declaratii_depuse.randuri). PURĂ.
+
+    d112 e EXCEPȚIA: d112.genereaza întoarce (xml, avertismente) unde al 2-lea element e o
+    LISTĂ de avertismente, NU un dataclass cu totaluri structurate. Aici -> None (randuri NULL).
+    Temeiul: d112 își ține agregatele în variabile de structură XML, nu le expune ca res;
+    a-l refactoriza ca să le întoarcă e o decizie de arhitectură pe modulul validat DUK (F181),
+    NU se face aici. Vezi DECIZII 22.07 F163v2."""
+    import dataclasses
+    if not dataclasses.is_dataclass(res):
+        return None
+    return json.loads(json.dumps(dataclasses.asdict(res), default=str))
+
+
 # ============================================================
 #  ADĂUGARE în coadă — DB
 # ============================================================
@@ -60,7 +75,9 @@ def adauga_in_coada(conn, cabinet_id, tenant_id, tip, an, payload,
     """
     Pune o declarație generată în coadă, stare 'la_senior'.
     perioada = data scadenței (zz/ll/aaaa), calculată din tip+an+luna/trim.
-    payload (jsonb) conține xml + rezultat + an/luna pentru depunere ulterioară.
+    payload (jsonb) conține xml + avertismente + randuri (res serializat, F163v2; None la
+    d112) + an/luna/trim pentru depunere ulterioară. Cheia `randuri` se persistă în
+    public.declaratii_depuse la marcheaza_depusa (control D-vs-D fără reparsare XML).
     Întoarce {ok, coada_id, perioada} sau {ok:False, cod} dacă există deja o
     intrare activă (constrângerea ux_coada_activa).
     """
@@ -223,8 +240,15 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
             "UPDATE public.declaratii_coada SET stare='depusa', depus_la=now(), "
             "spv_index=%s, depus_de=%s, depus_de_id=%s WHERE id=%s",
             (spv_index, depus_de, depus_de_id, coada_id))
+        # [F163v2] persistăm ȘI xml-ul depus + randurile (res serializat, din payload) — erau în
+        # `p` dar se aruncau. ON CONFLICT DO NOTHING păstrat: la re-depunere de ACELAȘI tip pe
+        # aceeași perioadă, prima depunere rămâne (jurnal append-only, non-distructiv). Versionarea
+        # rectificativelor de același tip = decizie de scop separată (DE_FACUT F163v2, PK-ul azi
+        # blochează 2 rânduri/perioadă/tip). randuri = jsonb (None la d112 -> SQL NULL).
+        randuri = p.get("randuri")
         cur.execute(
-            "INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip) "
-            "VALUES (%s,%s,%s,%s) ON CONFLICT DO NOTHING",
-            (r["tenant_id"], an, luna, r["tip"]))
+            "INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri) "
+            "VALUES (%s,%s,%s,%s,%s,%s) ON CONFLICT DO NOTHING",
+            (r["tenant_id"], an, luna, r["tip"], p.get("xml"),
+             _E.Json(randuri) if randuri is not None else None))
     return {"ok": True, "stare": "depusa", "an": an, "luna": luna}

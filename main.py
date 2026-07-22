@@ -2712,7 +2712,12 @@ def coada_adauga(date: CoadaIn, ctx=Depends(cere_rol("admin_firma", "angajat")))
             xml, res = declaratii_api.genereaza(conn, schema, date.tip, body)
     except ValueError as e:
         raise HTTPException(422, str(e))
-    payload = {"xml": xml, "avertismente": (res if isinstance(res, list) else getattr(res, "avertismente", None))}
+    # [F163v2] păstrăm și `res` întreg (serializat) în payload, nu doar avertismente: e singura
+    # cale prin care rândurile depuse ajung persistate (marcheaza_depusa le scrie în
+    # declaratii_depuse.randuri). d112 -> randuri None (randuri_din_res, temei acolo).
+    payload = {"xml": xml,
+               "avertismente": (res if isinstance(res, list) else getattr(res, "avertismente", None)),
+               "randuri": coada_api.randuri_din_res(res)}
     # 2) pune în coadă (pe public), stare 'la_senior'
     with db.get_conn() as conn:
         r = coada_api.adauga_in_coada(

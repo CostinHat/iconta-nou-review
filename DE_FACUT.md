@@ -371,11 +371,27 @@ vs DE CONSTRUIT (munca reala):
 ### DE CONSTRUIT (munca reala ramasa)
 - **F127/F128 — AMANATE**: pendinte pe ANAF adaugand OAuth la SPVWS2. Deadline review 17.08.2026 (raspuns
   asteptat de la spv.webservice@mfinante.ro). Fara raspuns pana atunci -> raman AMANATE.
-- **v2 F163 — persistarea randurilor decontului D300 depus** (coloana/tabel la generare/depunere) -> abia atunci
-  D-vs-D real D390<->D300. Prerechizit: persistarea decontului depus, utila si pentru alte controale intre
-  declaratii. Azi doar declaratii_depuse (jurnal gol: tenant/an/luna/tip/data, fara valori de randuri/XML) exista.
-  Motiv (verificat la sursa 19.07, in DECIZII.md): randurile intracom R1_1/R5_1 ale D300 sunt manual-only si
-  nepersistate -> pana la persistare, F163 = D390 vs evidenta validata, nu D-vs-D. [PLANIFICAT]
+- **v2 F163 — persistarea randurilor decontului depus** [LIVRAT 22.07.2026, PARTIAL — vezi versionare mai jos]
+  public.declaratii_depuse are acum xml text + randuri jsonb (migrare_declaratii_depuse_randuri.py); la depunere
+  (coada_api.marcheaza_depusa) se persista XML-ul + `res` serializat (asdict+default=str). d112 -> randuri NULL
+  (nu expune totaluri, F181). Abia acum se poate D-vs-D real fara reparsare XML. Vezi DECIZII 22.07 F163v2.
+  RAMAS (cere DA, schimbare de scop):
+  * VERSIONARE RECTIFICATIVE DE ACELASI TIP. PK azi = (tenant_id,an,luna,tip) + ON CONFLICT DO NOTHING ->
+    re-depunerea aceluiasi tip pe aceeasi perioada e ignorata tacit (xml/randuri raman cele initiale). D710
+    (rectificativa D100) e tip separat, deci coexista; problema e doar re-depunerea ACELUIASI tip (ex. D300
+    corectat). Varianta propusa: coloana nr_depunere/versiune in PK -> istoric append-only al depunerilor per
+    perioada; `depunerea curenta` = max(versiune). NU aplicat unilateral (schimba PK + semantica jurnalului +
+    toti cititorii declaratii_depuse). Alternativa mai ieftina: ON CONFLICT DO UPDATE (ultima castiga, fara
+    istoric). De decis care.
+  * D-vs-D pe D300<->D390: randurile intracom R1_1/R5_1 ale D300 raman manual-only (nepersistate in `res`) ->
+    pana la capturarea lor, controlul incrucisat pe acele randuri = partial. Persistarea `res` acopera restul.
+- **F165 NU acopera schema PUBLIC.** F165 (audit_schema) compara doar schemele tenant_ vs tenant_template.sql.
+  Tabelele din `public` (declaratii_depuse, tenants, users, audit_log etc.) n-au nici template, nici audit, nici
+  migrare_* clasic (bucla e pe tenant_). Dovada vie: coloana `sursa` a fost adaugata LAZY (asigura_coloana_sursa,
+  DO $$ IF NOT EXISTS ALTER) fiindca n-avea unde altundeva; F163v2 a fost prima migrare "ca lumea" pe public
+  (migrare_declaratii_depuse_randuri.py, un singur ALTER, fara bucla). DE CONSTRUIT: fie un template + audit pentru
+  public (analog F165), fie cel putin o conventie de migrare public documentata (un registru de migrari public
+  rulate), ca sa nu se mai recurga la ALTER-uri lazy imprastiate. [PLANIFICAT]
 - **v2 F164 — digest email Brevo** (rezumat zilnic/saptamanal al rosurilor de control fiscal DESCHISE per cabinet,
   pentru contabilii care nu intra zilnic in app). Completeaza v1 (clopotel in-app + click, LIVE 19.07): v1 rezolva
   restanta 17.07 (alerta ajunge in app); digestul acopera cazul "contabil care nu intra zilnic". De construit CAND

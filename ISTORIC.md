@@ -2272,3 +2272,29 @@ DOVADA: suita 460 verde + verificator DS 0 + CLI arata 0/2 drift HARD (cele 2 ta
 E2E: DROP link_plata REAL pe tenant_002 in ROLLBACK -> drift HARD detectat + SQL sugerat corect
 ('ALTER TABLE "tenant_002".facturi ADD COLUMN IF NOT EXISTS link_plata text;') + tenant_002 NEATINS dupa rollback.
 Suggest-don't-apply: repararea ramane un migrare_* numit + mirror template, revizuit de om (nu gaura in migrari).
+
+## 22.07.2026 fir 10 — F163v2: persistarea declaratiei depuse (xml + randuri jsonb) in public.declaratii_depuse
+
+Verificare la sursa INAINTE de cod (3 constatari care au contrazis premisa "res e deja in payload, doar il scriem"):
+(1) la main.py:2715 payload-ul retinea {xml, avertismente} si ARUNCA restul lui res - docstring adauga_in_coada:63
+MINTEA ("xml + rezultat"). (2) res NU e uniform: 8/9 declaratii intorc un @dataclass, dar d112 intoarce
+(xml, LISTA-avertismente) - fara totaluri structurate. (3) PK public.declaratii_depuse=(tenant_id,an,luna,tip) +
+ON CONFLICT DO NOTHING: D710 (rectificativa D100) e tip separat -> coexista; dar re-depunerea ACELUIASI tip pe
+aceeasi perioada e ignorata tacit (first-write-wins, non-distructiv). Plus: coloana `sursa` fusese adaugata LAZY
+(asigura_coloana_sursa) fiindca migrare_* nu acopera schema PUBLIC.
+
+CONSTRUIT (5 decizii, DECIZII 22.07 F163v2):
+  - migrare_declaratii_depuse_randuri.py: prima migrare "ca lumea" pe PUBLIC (un ALTER, fara bucla tenant) -
+    ADD COLUMN IF NOT EXISTS xml text + randuri jsonb (nullable);
+  - coada_api.randuri_din_res: asdict + default=str (Decimal->str, round-trip valoric); d112/lista -> None cu temei;
+  - main.py 2712 (singurul call-site care face enqueue): payload pastreaza `randuri` (res intreg); docstring corectat;
+  - coada_api.marcheaza_depusa: INSERT scrie si xml + randuri (ON CONFLICT DO NOTHING pastrat, append-only);
+  - d112 -> randuri NULL, FARA refactor d112.genereaza (F181 - risc pe modul validat DUK).
+
+RESPINS: refactor d112 (F181); ON CONFLICT DO UPDATE / versionare rectificative acelasi tip (asteapta DA - schimba
+PK/semantica; DE_FACUT). Item nou DE_FACUT: F165 NU acopera schema public (nici template, nici audit, nici migrare_*
+- de construit template+audit public sau conventie de migrari public).
+
+DOVADA: 6 teste + E2E prin marcheaza_depusa REAL (payload->coada->depunere->declaratii_depuse, Decimal 4427.50
+pastrat valoric, tenant_id sintetic 990163 in ROLLBACK + curatat complet). migrare public aplicata OK. Suita 466
+verde + verificator DS 0. F165 neafectat (declaratii_depuse e public, nu in template-ul tenant).

@@ -2056,3 +2056,37 @@ LIMITA: poarta compara data_type + is_nullable (ce a cerut Costin), NU precizia 
 (zgomot/fals-pozitiv). Char-length change (varchar(50)->(255)) nu e prins. Suggest-ul e best-effort (revizuit de om).
 Aparare: 11 teste (9 pure compara/suggest + poarta reala + mutatie negativa din ref real) + dovada E2E (DROP
 link_plata real pe tenant_002 in ROLLBACK -> drift HARD + SQL sugerat corect, tenant neatins). Suita 460 verde.
+
+### 22.07.2026 F163v2 persistarea declaratiei depuse (xml + randuri jsonb) in public.declaratii_depuse  (migrare_declaratii_depuse_randuri.py + coada_api.py + main.py)
+DECIZIE: la depunere se persista si XML-ul depus si `res` (randurile calculate, jsonb), nu doar metadatele
+(tenant/an/luna/tip). Prerechizit pentru control D-vs-D real (D390<->D300 etc.) fara reparsare XML.
+Cinci decizii de implementare, toate verificate la sursa:
+1. MIGRARE PE SCHEMA PUBLIC (nu tenant): public.declaratii_depuse e GLOBAL. migrare_* clasic bucleaza schemele
+   tenant_; aici un singur ALTER pe public (ADD COLUMN IF NOT EXISTS xml text, randuri jsonb). E prima migrare
+   "ca lumea" pe public (precedentul era ALTER-ul lazy asigura_coloana_sursa - workaround fiindca migrare_* nu
+   acopera public; vezi DE_FACUT). Coloane NULLABLE: depunerile istorice raman fara xml/randuri (nu fabricam).
+2. `res` PASTRAT INTREG IN PAYLOAD, nu doar avertismente. Verificat la sursa: la main.py:2715 payload-ul retinea
+   {xml, avertismente} si ARUNCA restul lui res (docstring adauga_in_coada:63 MINTEA - zicea "xml + rezultat",
+   codul pastra doar avertismente; docstring corectat). Doar call-site-ul de DEPUNERE (2712) face enqueue ->
+   acolo se adauga `randuri`; celelalte doua (2925 validare DUK, 2949 preview) NU persista (returneaza raspuns),
+   deci nu li se adauga res (ar fi dead data in raspuns fara consumator).
+3. SERIALIZARE asdict + default=str (coada_api.randuri_din_res): dataclass-urile de rezultat contin Decimal
+   (sume fiscale) -> json.dumps crapa fara default=str (acelasi truc ca la calcul_hash). Decimal->str, round-trip
+   valoric (Decimal(str)==Decimal, testat).
+4. d112 -> randuri NULL, cu temei in cod, FARA refactor. Verificat la sursa: d112.genereaza intoarce
+   (xml, avertismente) unde al 2-lea e o LISTA, nu un dataclass cu totaluri (isi tine agregatele in variabile de
+   structura XML). randuri_din_res(lista) -> None. A-l face sa intoarca totaluri = decizie de arhitectura pe
+   modulul validat DUKIntegrator = F181, NU se face aici (ar risca regresie pe declaratia cu cele mai grele
+   cazuri - CM/part-time). NULL onest > totaluri fabricate.
+5. JURNAL APPEND-ONLY, ON CONFLICT DO NOTHING PASTRAT. Verificat la sursa: PK=(tenant_id,an,luna,tip), INSERT cu
+   ON CONFLICT DO NOTHING. D710 (rectificativa D100) e tip SEPARAT -> rand nou, coexista cu d100 (fara conflict).
+   DAR re-depunerea ACELUIASI tip pe aceeasi perioada -> ignorata tacit (first-write-wins), deci xml/randuri raman
+   cele initiale. Non-distructiv (nu suprascrie), dar nu capteaza rectificativa de acelasi tip.
+ALTERNATIVA RESPINSA: (a) refactor d112 ca sa expuna totaluri - respins (F181, risc pe modul validat). (b) ON
+CONFLICT DO UPDATE (ultima depunere castiga) - NU aplicat unilateral: schimba semantica jurnalului. (c) versionare
+(PK + nr_depunere, istoric append-only al rectificativelor de acelasi tip) - PROPUSA, asteapta DA (schimbare de PK
+= decizie de scop; DE_FACUT). Pana la DA: comportamentul actual pastrat exact, doar imbogatit cu xml/randuri.
+LIMITA: rectificativa de acelasi tip pe aceeasi perioada nu-si persista xml/randuri (ON CONFLICT DO NOTHING) pana
+la decizia de versionare. Aparare: 6 teste (randuri_din_res dataclass/d112-None, round-trip Decimal prin jsonb,
+d112 NULL in DB, rectificativa non-distructiva, d710 coexista) + E2E prin marcheaza_depusa real (payload->coada->
+depunere->declaratii_depuse, Decimal pastrat, TID sintetic curatat). Suita 466 verde + verificator DS 0.
