@@ -2228,3 +2228,22 @@ DOVADA: suita 447 verde + verificator DS 0 + FUNCTIONALITATI.csv F180 LIVE + tes
 in tranzactie ROLLBACK -> regim_tva_anaf.stare=rosu + stare firma=rosu + remediu=investigatie, tenant_002 NEATINS).
 LIMITA (DE_FACUT): firma needitata la care ANAF s-a schimbat post-onboarding ramane verde pana la un cron periodic
 (F184-style) de reimprospatare snapshot — enhancement viitor, nu blocant.
+
+## 22.07.2026 fir 8 — reparare rand F183 in FUNCTIONALITATI.csv + garda automata (test)
+
+BUG gasit (dupa F180): randul F183 avea 10 campuri in loc de 9. Cauza (verificat cu csv.reader): campul Acces UI
+"Control fiscal > Detaliu firma > Audit de preluare (buton, repetabil)" era scris FARA ghilimele -> virgula din
+"(buton, repetabil)" il spargea in doua -> toate campurile decalate cu 1. IMPACT REAL: raportari_ai.py (F152)
+filtreaza pe r[7].startswith("LIVE") -> cu decalajul r[7] era "OMFP 1802/2014..." (nu "LIVE") -> F183 EXCLUS
+TACIT din baza de cunostinte AI. AI-ul nu stia ca "Audit de preluare" e LIVE. FIX chirurgical: ghilimele pe Acces UI
+(o linie). Verificat: 193 randuri = 9 campuri; scan santinela (ID=F\\d+, Stare pe col 7) curat; F183 reapare in baza
+AI (177 LIVE); triaj AI LIVE prin F152 pe 2 intrebari reale -> raspunde (nu escaladeaza), il recunoaste LIVE, acces
+corect.
+
+GARDA AUTOMATA (DA Costin): core/test_registru_functionalitati.py in suita, NU in verificator (verificatorul iese
+mereu 0 = raportor, nu gate; suita e verde-obligatoriu). Doua checkuri: (1) nr campuri == header pe fiecare rand
+(checkul de aur, prinde clasa F183); (2) ID = F\\d+ (prinde decalaje care totalizeaza fortuit N campuri). Citeste
+cu csv.reader utf-8-sig EXACT ca raportari_ai.py. Mesaj de esec explicit (ce rand, cate campuri vs asteptat, de ce
+conteaza). Respins checkul 3 (vocabular de stari) - cupleaza la lista extensibila, rosu fals la stare noua. De ce
+test si nu verificator -> DECIZII 22.07. DOVADA: 2 teste + mutatie negativa (reintrodus bug F183 pe copie -> prins);
+suita 449 verde.

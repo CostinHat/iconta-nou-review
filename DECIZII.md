@@ -2013,3 +2013,20 @@ la o reimprospatare (live-la-salvare acopera doar cazul editarii). Reimprospatar
 enhancement viitor, in afara scopului. ANAF jos la salvare -> snapshot ramane vechi, fara avertisment (degradare
 acceptabila, declarata in limita constatarii). Aparare: teste pe control_fiscal_api (verde/rosu/gri) + pe rutele
 de salvare (divergenta -> avertisment, ANAF jos -> fara) + FUNCTIONALITATI.csv F180.
+
+### 22.07.2026 Garda integritate FUNCTIONALITATI.csv = TEST pytest, nu verificator  (core/test_registru_functionalitati.py)
+DECIZIE: integritatea structurala a registrului se apara printr-un TEST in suita (nr campuri == header +
+ID = F\\d+), NU printr-o regula in verificator_conformitate.py.
+TEMEI: verificat la sursa - verificatorul NU are sys.exit (iese mereu 0) => e raportor de nits DS, nu gate;
+nu exista hook pre-commit/pre-push, nu e in CI/Makefile => se ruleaza pe disciplina. Suita, in schimb, e
+verde-obligatoriu => un rand malformat RUPE suita inainte de commit. Integritatea registrului e un INVARIANT
+(registrul e baza de cunostinte a AI-ului F152/raportari_ai.py; un rand decalat face functionalitatea invizibila
+pentru AI - dovedit F183: r[7] nu mai era "LIVE" -> exclus tacit din baza), nu o conventie de stil advisory.
+Testul citeste cu csv.reader (utf-8-sig) EXACT ca raportari_ai.py, ca sa valideze ce vede EL.
+ALTERNATIVA RESPINSA: (a) in verificator - respins: raporteaza, nu blocheaza (exit 0); ar mosteni disciplina
+manuala. (b) al treilea check "Stare in vocabular {LIVE/PLANIFICAT/PARTIAL/RESPINS/AMANAT}" - RESPINS de Costin:
+cupleaza la o lista extensibila -> o stare noua legitima ar da rosu fals; nu normalizam un rosu fragil (lectia
+22.07, eliminarea rosului permanent). Doar cele doua checkuri zero-mentenanta, zero fals-pozitiv.
+LIMITA: testul prinde decalaje structurale (nr campuri / ID mutat), NU o eroare semantica intr-un camp corect
+plasat (ex. descriere gresita). Aparare: 2 teste + mutatie negativa dovedita (reintroducerea bug-ului F183 pe o
+copie -> check nr-campuri PRINDE; rand N-campuri cu ID decalat -> check ID PRINDE). Suita 449 verde.
