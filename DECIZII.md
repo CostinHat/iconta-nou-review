@@ -2167,3 +2167,27 @@ TEMEI: intentia era ownership uniform pe tot public (nu doar esantionul raportat
 \dt cosmetic): ALTER TABLE ... ADD COLUMN IF NOT EXISTS ca iconta_user pe curs_bnr_zilnic + spv_token (2 din
 fostele postgres-owned), in tranzactie ROLLBACK -> reusit, coloana de test disparuta la rollback. Migrarile
 public merg acum pe orice tabel. LIMITA: e stare de prod, intra integral in bootstrap (DE_FACUT, lista completa).
+
+### 22.07.2026 F163 D-vs-D real (D390 vs D300 depus) — a treia comparatie, deblocat de F198  (control_incrucisat.compara_d390_vs_d300 + verifica_d390)
+DECIZIE: verifica_d390 capata o A TREIA comparatie (nu inlocuieste evidenta validata): D390 baza IC (L/A)
+vs D300 DEPUS randurile R1_1 (livrari) / R5_1 (achizitii), citite din public.declaratii_depuse_curente.randuri
+(persistate la depunere de F198). Functie-sora compara_d390_vs_d300 (PURA) + helper _d300_depus_randuri (citeste
+depunerea curenta pe fereastra TVA). Findings-urile se adauga in `constatari` -> curg automat in stare + UI +
+push F164 (verificator-agnostice, zero cod nou acolo).
+TEMEI: F198 (persistarea `randuri` la depunere) a inlaturat exact blocajul documentat in capul sectiunii F163
+(19.07): inainte, R1_1/R5_1 erau manual-only SI nepersistate -> un D300 reconstruit dadea mereu 0 (zgomot) sau
+verde trivial (aceeasi sursa). Acum se citeste D300-ul EFECTIV DEPUS -> reflecta ce a declarat real contabilul
+(inclusiv randurile manuale) -> comparatie legitima. Reguli (aceeasi directie ca v1, VIES mai autoritar):
+D390>0 & D300 nu declara -> ROSU sugerat; cifre diferite (sau D300>0 & D390=0) -> GRI (decalaj exigibilitate,
+NICIODATA rosu pe cifre); randuri NULL (pre-F198/import) sau zero D300 depus -> GRI (absenta nu e divergenta);
+ambele 0 -> tacut. GARD pe ambiguitate (contabilul vede CAUZA, nu doar cifra): cheie R1_1/R5_1 absenta din
+`randuri->R` (manual-only neintrodus) -> tratata ca 0 DAR temeiul spune explicit "R1_1 absent - randurile intracom
+sunt manual-only".
+ALTERNATIVA RESPINSA: a inlocui evidenta validata cu D-vs-D - respins (a treia sursa, nu substitut; evidenta
+valida ramane, e alt unghi). Rosu pe cifre diferite - respins (v1: decalaj exigibilitate legitim).
+LIMITA DECLARATA (registru + aici): dovada functionala e pe depunere d300 FABRICATA in ROLLBACK, NU pe date reale -
+ZERO D300 depus vreodata prin app (toate 5 depunerile din prod sunt sursa='migrare', import istoric fara randuri).
+Deci D-vs-D e corect ca LOGICA + citire, dar nedovedit pe o depunere reala pana cand prima firma depune un D300
+prin flux. Aparare: 9 teste (7 pure compara_d390_vs_d300 pe cele 5 cazuri + achizitii + tacut; 2 DB _d300_depus_
+randuri pe depunere fabricata) + E2E verifica_d390 pe tenant_002 (a treia comparatie curge, verde livrari + rosu
+achizitii). Suita 475 verde + verificator DS 0.

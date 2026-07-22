@@ -343,3 +343,103 @@ def test_temei_si_limita_declarate():
     c = r["constatari"][0]
     assert "Legea 141/2025" in c["temei"] and "reduse" in c["temei"].lower()
     assert "NEVERIFICAT" in r["limita"]
+
+
+# ============================================================
+#  F163 D-vs-D REAL (deblocat F198): D390 vs D300 DEPUS (compara_d390_vs_d300)
+# ============================================================
+from core.control_incrucisat import compara_d390_vs_d300, _d300_depus_randuri
+
+
+def _randuri(**R):
+    """randuri persistat al unui D300 depus, cu dict-ul R (chei R1_1/R5_1 -> int)."""
+    return {"R": {k: v for k, v in R.items()}}
+
+
+def test_dvsd_rosu_d390_livrare_d300_fara_R1_1():
+    # D390 livrări 5000, D300 depus FĂRĂ R1_1 (manual-only neintrodus) -> ROȘU sugerat
+    r = compara_d390_vs_d300({"L": 5000, "A": 0}, gasit=True, randuri=_randuri())
+    liv = [c for c in r if c["eticheta"].startswith("Livrări")][0]
+    assert liv["stare"] == "rosu"
+    assert liv["remediu"]["fel"] == "sugerat"
+    assert "R1_1 absent" in liv["temei"] and "manual-only" in liv["temei"]   # contabilul vede CAUZA
+
+
+def test_dvsd_verde_ambele_5000():
+    r = compara_d390_vs_d300({"L": 5000, "A": 0}, gasit=True, randuri=_randuri(R1_1=5000))
+    liv = [c for c in r if c["eticheta"].startswith("Livrări")][0]
+    assert liv["stare"] == "verde" and liv["remediu"] is None
+
+
+def test_dvsd_gri_pe_cifre_diferite():
+    # ambele > 0 dar diferite -> GRI (decalaj exigibilitate), NICIODATĂ roșu pe cifre
+    r = compara_d390_vs_d300({"L": 5000, "A": 0}, gasit=True, randuri=_randuri(R1_1=4000))
+    liv = [c for c in r if c["eticheta"].startswith("Livrări")][0]
+    assert liv["stare"] == "gri"
+    assert "exigibilitate" in liv["temei"] and liv["remediu"] is None
+
+
+def test_dvsd_gri_pe_randuri_null():
+    # D300 depus dar fără rânduri persistate (pre-F198 / import) -> GRI, nu roșu
+    r = compara_d390_vs_d300({"L": 5000, "A": 0}, gasit=True, randuri=None)
+    assert len(r) == 1 and r[0]["stare"] == "gri"
+    assert "fără rânduri persistate" in r[0]["mesaj"]
+
+
+def test_dvsd_gri_pe_zero_depuneri():
+    # niciun D300 depus în fereastră -> GRI, nu roșu
+    r = compara_d390_vs_d300({"L": 5000, "A": 0}, gasit=False, randuri=None)
+    assert len(r) == 1 and r[0]["stare"] == "gri"
+    assert "Nu există D300 depus" in r[0]["mesaj"]
+
+
+def test_dvsd_ambele_zero_tacut():
+    r = compara_d390_vs_d300({"L": 0, "A": 0}, gasit=True, randuri=_randuri())
+    assert r == []                                             # tăcut
+
+
+def test_dvsd_achizitii_R5_1():
+    # achiziții: D390 A=3000 vs D300 R5_1 absent -> ROȘU pe achiziții
+    r = compara_d390_vs_d300({"L": 0, "A": 3000}, gasit=True, randuri=_randuri())
+    ach = [c for c in r if c["eticheta"].startswith("Achiziții")][0]
+    assert ach["stare"] == "rosu" and "R5_1 absent" in ach["temei"]
+
+
+# --- DB: _d300_depus_randuri prin depunere d300 FABRICATĂ în ROLLBACK (tenant_002 = id 2) ---
+import psycopg2.extras as _E
+from core import db as _db
+
+
+def _conn():
+    _db.init_pool(); return _db.pool().getconn()
+
+
+def test_d300_depus_randuri_citeste_depunere_fabricata():
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
+                        "VALUES (2, 2026, 6, 'd300', '<x/>', %s, 1)",
+                        (_E.Json({"R": {"R1_1": 5000, "R5_1": 3000}}),))
+            gasit, randuri = _d300_depus_randuri(conn, "tenant_002", 2026, 6)
+        assert gasit is True
+        assert randuri["R"]["R1_1"] == 5000 and randuri["R"]["R5_1"] == 3000
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+
+
+def test_d300_depus_randuri_null_si_zero_depuneri():
+    conn = _conn()
+    try:
+        # zero depuneri d300 pt tenant_002 in 2026/7 -> gasit False
+        with conn.cursor() as cur:
+            g0, r0 = _d300_depus_randuri(conn, "tenant_002", 2026, 7)
+        assert g0 is False and r0 is None
+        # depunere cu randuri NULL -> gasit True, randuri None
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
+                        "VALUES (2, 2026, 7, 'd300', '<x/>', NULL, 1)")
+            g1, r1 = _d300_depus_randuri(conn, "tenant_002", 2026, 7)
+        assert g1 is True and r1 is None
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)

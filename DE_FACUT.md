@@ -376,9 +376,21 @@ vs DE CONSTRUIT (munca reala):
   (coada_api.marcheaza_depusa) se persista XML + `res` serializat (asdict+default=str) cu nr_depunere=MAX+1;
   "curenta" = vederea public.declaratii_depuse_curente; cei 6 cititori de logica trec pe vedere, istoricul ramane
   in tabel. d112 -> randuri NULL (nu expune totaluri, F181). Versionare (A, nu B) - vezi DECIZII 22.07 F163v2 +
-  [INFRA] GRANT CREATE. RAMAS:
-  * D-vs-D pe D300<->D390: randurile intracom R1_1/R5_1 ale D300 raman manual-only (nepersistate in `res`) ->
-    pana la capturarea lor, controlul incrucisat pe acele randuri = partial. Persistarea `res` acopera restul. [PLANIFICAT]
+  [INFRA] GRANT CREATE.
+- **F163 D-vs-D real (D390 vs D300 depus)** [LIVRAT 22.07.2026] control_incrucisat.compara_d390_vs_d300 +
+  _d300_depus_randuri, a treia comparatie in verifica_d390 (citeste declaratii_depuse_curente.randuri->R->R1_1/
+  R5_1). Deblocat de F198. Reguli directionale ca v1 (D390>0 & D300 nu declara -> rosu; cifre diferite -> gri;
+  randuri NULL / zero depus -> gri; R1_1/R5_1 absente manual-only -> temei explicit). UI + push F164 agnostice.
+  Vezi DECIZII 22.07 F163 D-vs-D. LIMITA: dovada functionala pe depunere FABRICATA (zero D300 depus real prin app).
+  RAMAS: servicii IC (P/S) = v3 - d300 nu expune R3_1_1/R7_1_1 (D390 le ia manual); doar bunuri azi.
+- **FLUXUL DE DEPUNERE D300 NU A FOST PARCURS NICIODATA END-TO-END PRIN APP** [PLANIFICAT — semnal de PRODUS, nu F163].
+  Constatat 22.07 la F163 D-vs-D: public.declaratii_depuse are 5 depuneri, TOATE sursa='migrare' (import istoric de
+  la contabilul anterior), ZERO sursa='iconta'. Deci niciun D300 (si de fapt nicio declaratie) n-a fost generat +
+  aprobat + depus prin fluxul coada->marcheaza_depusa in productie. Consecinte: (a) F163 D-vs-D e nedovedit pe date
+  reale pana la prima depunere reala; (b) mai grav ca semnal de produs - fie fluxul de depunere are o frictiune care
+  face contabilii sa depuna direct in SPV (nu prin app), fie firma de test n-a fost dusa cap-coada. De investigat CE
+  opreste o depunere reala (UI? drept SPV? obisnuinta?), nu de "reparat" F163. Se leaga de dus-intors LIVE e-Factura
+  (tot nedovedit live, pending drept SPV).
 - **Conventie migrari pe schema PUBLIC** [REZOLVAT 22.07.2026]. Cauza (migrare_* bucla doar tenant_, iconta_user
   n-avea CREATE pe public -> ALTER-uri lazy ca workaround) e inchisa: GRANT CREATE ON SCHEMA public TO iconta_user
   (DECIZII 22.07 [INFRA]) face migrarile pe public first-class ca app-user. Tipar stabilit: migrare_*.py cu un
