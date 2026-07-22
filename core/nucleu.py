@@ -75,7 +75,11 @@ def verifica_parola(parola, hash_stocat):
 #  TOKEN semnat HMAC-SHA256, cu expirare
 # ============================================================
 def creeaza_token(payload, secret, durata_sec=3600, acum=None):
-    """payload: dict. Adaugă 'exp'. Întoarce string token."""
+    """payload: dict. Adaugă 'exp'. Întoarce string token.
+    GARDĂ SECURITATE: secret gol/None -> excepție. HMAC cu cheie goală e forjabil de oricine
+    (cheia publică = ""), deci NICIODATĂ nu semnăm cu cheie goală. Vezi DECIZII 22.07."""
+    if not secret:
+        raise ValueError("secret gol la semnarea tokenului — refuz (ar fi forjabil cu cheie goală)")
     acum = acum if acum is not None else int(time.time())
     date = {**payload, "exp": acum + durata_sec}
     corp = _b64e(json.dumps(date, separators=(",", ":"), sort_keys=True).encode())
@@ -84,7 +88,11 @@ def creeaza_token(payload, secret, durata_sec=3600, acum=None):
 
 
 def verifica_token(token, secret, acum=None):
-    """Întoarce {ok, payload} sau {ok:False, cod, mesaj}."""
+    """Întoarce {ok, payload} sau {ok:False, cod, mesaj}.
+    GARDĂ SECURITATE: secret gol/None -> excepție (orice token forjat cu cheie goală ar trece).
+    Vezi DECIZII 22.07."""
+    if not secret:
+        raise ValueError("secret gol la verificarea tokenului — refuz (orice token forjat cu cheie goală ar trece)")
     acum = acum if acum is not None else int(time.time())
     try:
         corp, sig_b64 = token.split(".")

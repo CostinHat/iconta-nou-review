@@ -32,7 +32,7 @@ import requests
 
 from core import nucleu
 from core import db
-from core.common import cfg
+from core.common import cfg, cfg_secret
 
 MODUL = "spv_conector"
 
@@ -43,9 +43,9 @@ MODUL = "spv_conector"
 _AUTHORIZE_URL_DEFAULT = "https://logincert.anaf.ro/anaf-oauth2/v1/authorize"
 _TOKEN_URL_DEFAULT     = "https://logincert.anaf.ro/anaf-oauth2/v1/token"
 
-# STATE_SECRET ramane citit LA IMPORT in acest pas: semneaza/verifica JWT (state CSRF),
-# forma catastrofala daca s-ar schimba la cald; se trateaza separat (DE_FACUT item 5).
-STATE_SECRET      = os.environ.get("JWT_SECRET", "")   # state = token semnat, fara tabel nou
+# STATE_SECRET = JWT_SECRET (state CSRF = token semnat, fara tabel nou). Citit LA APEL prin
+# cfg_secret (EXCEPTIE DURA la absenta/gol, NICIODATA default — secret gol = tokenuri forjabile).
+# Vezi DECIZII 22.07 (vulnerabilitate default gol pe cheie HMAC).
 STATE_DURATA_SEC  = 600            # 10 minute (ARHITECTURA: state expira in 10 min)
 REFRESH_DURATA_ZILE = 365          # refresh token 365 zile (verificat la sursa ANAF)
 ACCES_IMPLICIT_SEC  = 90 * 86400   # fallback daca raspunsul nu da expires_in (90 zile)
@@ -170,12 +170,12 @@ def genereaza_state(principal, acum=None):
     """State CSRF legat de PRINCIPAL (cabinet sau gratuit), expira in 10 min. Pura."""
     return nucleu.creeaza_token(
         {"pk": principal.kind, "pi": int(principal.id), "scop": "spv_state"},
-        STATE_SECRET, durata_sec=STATE_DURATA_SEC, acum=acum)
+        cfg_secret("JWT_SECRET"), durata_sec=STATE_DURATA_SEC, acum=acum)
 
 
 def verifica_state(state, acum=None):
     """Verifica state-ul, intoarce Principal. Ridica EroareSpv la invalid/expirat."""
-    r = nucleu.verifica_token(state, STATE_SECRET, acum=acum)
+    r = nucleu.verifica_token(state, cfg_secret("JWT_SECRET"), acum=acum)
     if not r["ok"]:
         raise EroareSpv("state invalid: %s" % r.get("mesaj", r.get("cod")))
     p = r["payload"]

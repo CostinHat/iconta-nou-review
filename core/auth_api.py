@@ -17,15 +17,16 @@ Roluri: baza are 4 (superadmin/admin_firma/angajat/client). nucleu.ROLURI are 3.
 Se dovedește pe server (parte DB): query users/tenants/user_tenants.
 """
 from __future__ import annotations
-import os
 
 from core import nucleu, db
+from core.common import cfg, cfg_secret
 
 REGULI = "2026.1"
 MODUL = "auth_api"
 
-SECRET = os.environ.get("JWT_SECRET", "")
-DURATA_TOKEN_SEC = int(os.environ.get("ICONTA_TOKEN_DURATA_SEC", str(8 * 3600)))
+# JWT_SECRET = SECRET de semnare token — citit LA APEL prin cfg_secret (EXCEPȚIE DURĂ la absență/gol,
+# NICIODATĂ default: un secret gol face tokenurile forjabile, bypass de auth). DURATA_TOKEN_SEC = durată
+# (nu secret), lazy prin cfg. Vezi DECIZII 22.07.
 
 _BCRYPT_PREFIX = ("$2a$", "$2b$", "$2y$")
 
@@ -78,8 +79,8 @@ def construieste_payload(user_row):
 
 def emite_token(user_row, secret=None, durata=None, acum=None):
     """Emite token semnat pentru un user. Pură (delegă la nucleu)."""
-    secret = SECRET if secret is None else secret
-    durata = DURATA_TOKEN_SEC if durata is None else durata
+    secret = cfg_secret("JWT_SECRET") if secret is None else secret
+    durata = cfg("ICONTA_TOKEN_DURATA_SEC", str(8 * 3600), int) if durata is None else durata
     return nucleu.creeaza_token(construieste_payload(user_row), secret,
                                 durata_sec=durata, acum=acum)
 
@@ -89,7 +90,7 @@ def context_din_token(token, secret=None, acum=None):
     Verifică token-ul, întoarce contextul {ok, uid, rol, firm} sau {ok:False,...}.
     Rutele cer asta la fiecare request protejat.
     """
-    secret = SECRET if secret is None else secret
+    secret = cfg_secret("JWT_SECRET") if secret is None else secret
     r = nucleu.verifica_token(token, secret, acum=acum)
     if not r["ok"]:
         return r

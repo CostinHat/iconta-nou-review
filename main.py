@@ -33,11 +33,27 @@ _TENANT_TEMPLATE = None
 
 
 # ============================================================
+#  FAIL-FAST secrete obligatorii la pornire (testabil separat)
+# ============================================================
+def verifica_secrete_obligatorii(env=None):
+    """App-ul REFUZĂ să pornească fără secretele critice. JWT_SECRET absent = tokenuri forjabile
+    (default gol pe cheie HMAC = bypass complet de auth). JWT_SECRET acoperă și auth_api.SECRET și
+    spv_conector.STATE_SECRET (același env). Vezi DECIZII 22.07. Ridică RuntimeError la absență."""
+    env = os.environ if env is None else env
+    lipsa = [k for k in ("JWT_SECRET",) if not (env.get(k) or "").strip()]
+    if lipsa:
+        raise RuntimeError(
+            "secrete obligatorii absente din env: %s — app-ul refuză să pornească "
+            "(fără ele autentificarea ar fi forjabilă cu cheie goală)" % ", ".join(lipsa))
+
+
+# ============================================================
 #  LIFECYCLE — pool deschis la pornire, închis la oprire
 # ============================================================
 @asynccontextmanager
 async def lifespan(app):
     global _TENANT_TEMPLATE
+    verifica_secrete_obligatorii()   # fail-fast INAINTE de orice: fara JWT_SECRET nu pornim
     db.init_pool()
     import asyncio as _asyncio_lifespan  # ICRD_LIFESPAN_ALERTE_V1
     _asyncio_lifespan.create_task(_bucla_alerte_sanatate())

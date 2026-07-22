@@ -265,14 +265,15 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
    FIECARE fisier + verificator DS 0 + test functional (env setat DUPA import schimba comportamentul).
    Decizia "17 vs 15+deleted, si de ce raman cele JWT" -> DECIZII.md 22.07.
 
-   RAMAS DESCHIS (3 var, 2 fisiere) — read-la-import intentionat, se trateaza separat cu testul lor:
-   - auth_api.py: SECRET (=JWT_SECRET) + DURATA_TOKEN_SEC. Fisier neatins in acest pas (contine SECRET,
-     semnare/verificare token pe TOATE sesiunile - forma catastrofala; DURATA_TOKEN_SEC e sigur, dar sta in
-     acelasi fisier -> amanat impreuna).
-   - spv_conector.py: STATE_SECRET (=JWT_SECRET). State CSRF generat la /authorize, verificat la /callback -
-     cereri diferite, potential peste restart -> de analizat pe cont propriu inainte de conversie.
-   Cand se face: adauga test dedicat (JWT_SECRET setat dupa import + token semnat cu el valideaza),
-   DA gate explicit inainte (atinge semnarea).
+   CELE 3 JWT [REZOLVAT 22.07.2026 — S-A DOVEDIT VULNERABILITATE, nu tema de config]. La analiza inainte de
+   conversie s-a gasit ca SECRET + STATE_SECRET aveau default GOL (os.environ.get("JWT_SECRET", "")) folosit
+   TACUT prin HMAC-ul din nucleu (fara garda pe secret gol) -> daca JWT_SECRET lipseste, tokenurile se semneaza
+   cu cheie goala (publica) = BYPASS COMPLET de auth (oricine forjeaza orice uid/rol). Reparat pe 3 straturi:
+   (1) nucleu.creeaza_token/verifica_token ridica la secret gol/None; (2) common.cfg_secret (exceptie dura la
+   absenta/gol, elimina default-ul) pt SECRET+STATE_SECRET; (3) main.verifica_secrete_obligatorii = fail-fast la
+   pornire (app-ul refuza sa porneasca fara JWT_SECRET). DURATA_TOKEN_SEC -> lazy prin cfg (nu-i secret). Vezi
+   DECIZII 22.07. SPV_FERNET_KEY avea si el default gol DAR era deja gardat (if not cheie: raise) -> nu era vuln,
+   neatins.
    EXCLUSE cu motiv (raman la import, OK): cron-uri standalone (spv_poll/receive/refresh - proces propriu,
    env systemd, nu-s importate in teste) si main.py (entry-point, TENANT_TEMPLATE_PATH are default).
 

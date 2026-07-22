@@ -2257,3 +2257,30 @@ date importate) = nota de reachabilitate in DE_FACUT, NEREPARATA.
 Aparare: 15 teste audit (limita PFA fara termeni SRL + SRL cu ei + rip-gol->gri; aserție pe TEXT) + suita 477 verde +
 verificator DS 0 + HTTP REAL pe ambii tenanti: PFA tenant_003 verde, ZERO termeni SRL in limita; SRL tenant_002 rosu,
 toti termenii SRL prezenti (neschimbat).
+
+### 22.07.2026 [SECURITATE] Default gol pe cheie HMAC = bypass complet de auth (tokenuri forjabile) — reparat pe 3 straturi
+DECIZIE: eliminat default-ul gol de pe secretele JWT + garda dura la orice nivel. auth_api.SECRET si
+spv_conector.STATE_SECRET (ambele = JWT_SECRET) citeau os.environ.get("JWT_SECRET", "") - default GOL - iar
+nucleu.creeaza_token/verifica_token faceau hmac.new(secret.encode(), ...) FARA garda pe secret gol. Consecinta:
+daca JWT_SECRET lipseste din env, app-ul pornea TACUT si semna/verifica tokenurile cu cheie HMAC goala (publica =
+"") -> oricine forjeaza un token valid pentru orice uid/rol (inclusiv superadmin) = BYPASS COMPLET de autentificare.
+REPARAT PE 3 STRATURI (aparare in adancime): (1) GRANITA CRIPTO - nucleu.creeaza_token + verifica_token ridica
+ValueError la secret gol/None (nu semnam/verificam NICIODATA cu cheie goala, indiferent de apelant; verificat la
+sursa ca astea sunt SINGURELE 2 functii de semnare/verificare cu secret - restul hash-urilor sunt de integritate/
+parola, alta clasa); (2) cfg_secret in common - citire la apel cu EXCEPTIE DURA la absenta/gol, NICIODATA default,
+pentru SECRET + STATE_SECRET; (3) FAIL-FAST la pornire - main.verifica_secrete_obligatorii ridica daca JWT_SECRET
+absent -> app-ul REFUZA sa porneasca (nu ruleaza nesigur tacit). JWT_SECRET acopera si SECRET si STATE_SECRET
+(acelasi env). DURATA_TOKEN_SEC -> lazy prin cfg (nu-i secret).
+COMPLETARE la nota DECIZII 22.07 (config lazy, "cele 3 JWT raman la import"): rationamentul de atunci era despre
+TIMING-ul citirii (import vs lazy) si "forma catastrofala daca s-ar schimba la cald" - NU despre default-ul gol.
+Vulnerabilitatea (default "" pe cheie HMAC) era PRE-EXISTENTA si NU era pe radar; conversia lazy planificata a
+scos-o la iveala la analiza. Deci nu era tema de config, era gaura de securitate.
+VERIFICARE ALTE SECRETE (cerut inainte de reparatie): SPV_FERNET_KEY avea si el default gol DAR era deja gardat
+(_fernet: if not cheie: raise EroareSpv) -> fail-fast, NU vulnerabilitate, neatins. Niciun alt secret cu default
+gol negardat. Semnare/verificare cu secret = DOAR nucleu.creeaza_token/verifica_token (api_public sha256=cheie API,
+password-hash scrypt, hash-uri de continut = alta clasa, fara secret de server).
+ALTERNATIVA RESPINSA: normalizare/patch la citire - respins (e vuln, se elimina cauza: default-ul). LIMITA: azi pe
+prod era MITIGAT doar fiindca JWT_SECRET E setat (api_keys.env) - dar codul permitea boot silentios-nesigur.
+Aparare: 8 teste (secret gol la semnare/verificare -> exceptie; cfg_secret absent/gol -> exceptie; boot fara
+JWT_SECRET -> refuz, test pe functie) + suita 486 verde + verificator DS 0 + PROD: restart normal (JWT_SECRET setat)
++ login real (emite+verifica cu cheia reala -> ok, ruta protejata 200).

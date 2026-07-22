@@ -28,6 +28,19 @@ def cfg(cheie, default="", cast=str):
     `default` e string (ca env), `cast` îl convertește la tipul real (int/float)."""
     return cast(os.environ.get(cheie, default))
 
+
+def cfg_secret(cheie):
+    """Secret din env, citit LA APEL, cu EXCEPȚIE DURĂ la absență/gol — NICIODATĂ default,
+    NICIODATĂ None tăcut. Un secret gol pe o cheie HMAC = bypass complet de autentificare
+    (tokenuri forjabile cu cheie goală, publică). De aceea nu are default (vezi DECIZII 22.07).
+    Se folosește pentru JWT_SECRET etc. — nu pentru config obișnuit (ăla e cfg())."""
+    v = os.environ.get(cheie, "")
+    if not v:
+        raise RuntimeError(
+            "secret obligatoriu absent din env: %s — refuz să semnez/verific cu cheie goală "
+            "(ar face tokenurile forjabile). Setează %s în env." % (cheie, cheie))
+    return v
+
 _CENT = Decimal("0.01")
 
 # nivelurile unei probleme semnalate
