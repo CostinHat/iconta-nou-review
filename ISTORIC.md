@@ -2358,16 +2358,38 @@ Arc de o zi, în ordine (fiecare cu fir/commit propriu mai sus + DECIZII):
     toate depunerile = migrare). Parcurs cap-coadă pe tenant_002 (test) -> primul d300 cu sursa=iconta + randuri;
     F163 verde corect pe date reale. Semantica 'depusă' = stare internă (nu transmite ANAF). [59de8f1]
 
-ÎNCHIS azi (DE_FACUT): config lazy (item 5, partial - JWT rămân); db.env în conftest (item 6 - documentat, nu rezolvat);
-convenție migrări public (GRANT); bootstrap nereproductibil; F163 D-vs-D; F198 persistare+versionare.
+13. **BUG tip-case** — canonizare `tip` la LOWERCASE (cheie de join) + CHECK pe declaratii_depuse/coada;
+    upper DOAR la randare (3 motiv backend + 4 ecrane UI). Prins de prima depunere reală (app lowercase vs
+    semafor uppercase -> depusă apărea nedepusă). Forma ANAF trăiește în CHEIE_DUK, nu în coloană. [bd8cff2]
+14. **Ramura PFA audit (F183)** parcursă REAL (tenant_003 PFA prin flux HTTP + RIP prin rute) + **limită/NEVERIFICAT
+    ramificate pe regim** (PFA nu mai vede termeni de partidă dublă) + RIP-gol -> gri cu temei. [01f491e]
+15. **[SECURITATE] Vuln JWT default gol** — SECRET/STATE_SECRET aveau `os.environ.get("JWT_SECRET","")` folosit tăcut
+    prin HMAC = bypass complet de auth dacă env lipsește. Reparat pe 3 straturi: gardă cripto (nucleu raise pe secret
+    gol), cfg_secret (excepție dură), fail-fast la boot (verifica_secrete_obligatorii). [14df3e7]
+16. **Fus orar** — gardă boot verifica_fus_orar (OS TZ + PG timezone = Europe/Bucharest, invariantă) + azi_ro() în
+    verdictele de zi (semafor, e-Transport UIT, cron alerte, termene) + data_depunere AT TIME ZONE. Server ERA deja
+    Bucharest (premisa veche "UTC pe Hetzner" infirmată); risc latent + dublu închis. [a9d6590, 4f87f60]
+17. **db.env**: `idb()` în ~/.bashrc (psql ca iconta_user din db.env, fără parole în bashrc/git). [pt "role costin"].
 
-RĂMÂNE DESCHIS: (a) **BUG tip case** - depunerile prin app (lowercase 'd300') nu se potrivesc cu semaforul (uppercase
-'D300') -> apar ca nedepuse; nereparated, de decis fix (normalizare la citire vs stocare). (b) fus orar "cu_ora" =
-ora server (global). (c) ramura PFA a auditului văzută doar prin teste+E2E, nu în UI reală (primul PFA real).
-(d) **JWT lazy** - cele 3 (auth_api.SECRET+DURATA, spv_conector.STATE_SECRET) rămân la import, cer test dedicat + DA.
-(e) db.env în shell -> conftest sau runner (rosu de mediu indistinct de real). (f) runbook server nou (nu există
-procedură deploy; bootstrap e o piesă). (g) F165-pe-public (audit schemă public, acum realizabil - are reper bootstrap).
-(h) onboarding competențe (admin nu-și poate depune fără să-și activeze singur - owner-bypass vs four-eyes). (i) F164v2
-digest email Brevo (condiționat de semnal real că se ratează alerte). (j) servicii IC (P/S) în F163 = v3.
+ÎNCHIS azi: config lazy (partial - JWT tratate ca securitate) · F180 · registru F183 + gardă · F165 · F198/F163v2
+persistare+versionare · GRANT+ownership public 100% · bootstrap_public.sql · F163 D-vs-D + prima depunere reală ·
+bug tip-case · convenție migrări public · ramura PFA + limită ramificată · **vuln JWT (3 straturi)** · fus orar
+(verdicte) · idb() psql · test_spv_conector.
 
-STARE: suita 475 verde, verificator DS 0, ownership public uniform, prima depunere reală în jurnal (append-only).
+RĂMÂNE DESCHIS (grupat): INFRA — runbook deploy server nou; F165-pe-public; pytest depinde de db.env (conftest/runner).
+PRODUS — fricțiune onboarding competențe depunere; fus display browser-local (low-prio). SPV (blocat pe drept) —
+dus-întors LIVE e-Factură/e-Transport; F127/F128 (deadline ANAF 17.08). FISCAL — F164v2 digest Brevo; F163 servicii
+IC v3; D230/D307; obs4 neclasificat RIP doar prin import. VIZUAL (cere ochii, NU SSH) — CHECKLIST_BROWSER (PWA,
+responsive, ~12 ecrane). RESPINSE — F149/F161/F184/D106/D101G.
+
+LECȚIE CONSEMNATĂ — cele 3 bug-uri au ieșit la iveală PARCURGÂND CĂI REALE, nu citind cod: (1) **tip-case** — prima
+depunere reală D300 prin app (fluxul niciodată exercitat) a arătat că semaforul n-o recunoaște (lowercase vs
+uppercase); (2) **texte PFA** — primul audit real pe un PFA a arătat că limita comunică un PFA concepte de partidă
+dublă (conținut fals la adresa lui); (3) **JWT default gol** — analiza înainte de a converti lazy a scos o
+vulnerabilitate PRE-EXISTENTĂ (bypass de auth) care nu era pe radar. Tiparul: un flux/ramură/config care "merge pe
+prod doar fiindcă mediul e norocos" (env setat, server Bucharest, toate depunerile uppercase din migrare) ascunde
+fragilitatea până la primul parcurs real. Regula întărită: exercită calea reală (depune real, creează PFA real,
+analizează secretul), nu presupune din cod că merge.
+
+STARE FINALĂ: suită 490 verde, verificator DS 0, ownership public 100% iconta_user, garde de boot active
+(JWT_SECRET + fus orar), verdictele de zi robuste la OS TZ, prima depunere reală în jurnal (append-only).
