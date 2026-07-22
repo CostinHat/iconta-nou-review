@@ -22,7 +22,7 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_migrare_api
-from core.pdf_util import bani
+from core.pdf_util import bani, data_ro
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
@@ -3845,7 +3845,7 @@ def chitanta_emite(tenant_id: int, c: ChitantaEmite, ctx=Depends(cere_context)):
                 if r[0] and not nrtxt.startswith(str(r[0])):
                     nrtxt = str(r[0]) + nrtxt
                 reprezentand = "contravaloare factura %s din %s" % (
-                    nrtxt, r[6].strftime("%d.%m.%Y") if r[6] else "")
+                    nrtxt, data_ro(r[6]))
             cur.execute(f"SELECT COALESCE(serie_chitanta, 'CH') FROM {schema}.firma_profil LIMIT 1")
             rs = cur.fetchone()
             serie = (rs[0] if rs else None) or "CH"
@@ -3895,7 +3895,7 @@ def chitanta_pdf(tenant_id: int, chitanta_id: int, ctx=Depends(cere_context)):
         te = cur.fetchone() or (None, None)
     pdf = _ch.pdf_chitanta({"nume": te[0], "cui": te[1]},
                            {"serie": r[0], "numar": r[1],
-                            "data": r[2].strftime("%d.%m.%Y") if r[2] else "",
+                            "data": data_ro(r[2]),
                             "client_nume": r[3], "client_cui": r[4], "suma": float(r[5] or 0),
                             "reprezentand": r[6]})
     return Response(content=pdf, media_type="application/pdf",

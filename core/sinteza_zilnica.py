@@ -13,6 +13,7 @@ import sys
 import datetime
 import psycopg2
 import psycopg2.extras as _E
+from core.pdf_util import data_ro as _data_ro
 
 from core import observare
 
@@ -91,7 +92,7 @@ def sinteza_cabinet(conn, cabinet_id, zi):
 
 
 def _html(nume_cabinet, zi, d):  # [p68_doar_pozitive] afiseaza doar randuri cu valoare > 0
-    data_ro = zi.strftime("%d.%m.%Y")
+    data_ro = _data_ro(zi)
 
     def rand(eticheta, val, accent=None):
         if not val:
@@ -166,7 +167,7 @@ def ruleaza(test_email=None):
                 continue
             nume = _nume_cabinet(conn, cab)
             html = _html(nume, zi, d)
-            subiect = "Sinteza zilei %s - %s" % (zi.strftime("%d.%m"), nume)
+            subiect = "Sinteza zilei %s - %s" % (_data_ro(zi, "zi_luna"), nume)
             catre = test_email or p["email"]
             ok = observare.trimite_email_html(catre, subiect, html)
             if ok:

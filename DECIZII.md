@@ -1910,3 +1910,32 @@ tacut, prin lipsa checkului): asociati/cote (100% + capital 1012), mijloace fixe
 21x-28x), salariati (421/431x), vector fiscal vs documente. Ce ar rasturna / extinde: audit D-vs-D real
 la preluare cere persistarea randurilor declaratiilor depuse (acelasi blocant ca F163, capul sectiunii
 in control_incrucisat). Aparare: core/test_audit_preluare.py (11 teste pe nucleele PURE).
+
+### 22.07.2026 Formatare sume/date in BACKEND: canonice Python + garda pe .py  (core/pdf_util.py; verificator BACKEND_UI_BRUT; DESIGN_SYSTEM v2.15 cap.4)
+DECIZIE: text destinat utilizatorului construit in Python (mesaj/temei/cauza/motiv/avert/descriere/
+actiune, erori afisate, email, PDF) se formateaza prin SURSE CANONICE unice: pdf_util.bani (sume, deja
+existent) + pdf_util.data_ro (date, NOU - oglinda Python a dataRo din api.js). O garda noua in verificator
+(BACKEND_UI_BRUT) scaneaza fisierele .py si prinde sume/date brute in aceste campuri.
+TEMEI (verificat la sursa 22.07): garzile DS (BANI_NEFORMATATI, DATA_DIALECT, DATA_BRUTA) scaneaza DOAR .js
+(verificator_conformitate.py:27, os.listdir(BAZA) cu endswith('.js')). Backendul emitea text formatat care
+ajungea la user si scapa COMPLET (dovada: F183 arata "40800.00 lei"; inventar - control_incrucisat avea 16
+situri). Sursa canonica de date lipsea in Python (fiecare modul isi facea strftime propriu).
+DECIZII DE DESIGN ale garzii (ca sa nu dea fals-pozitive - lectii platite):
+  - SUME: flag doar f-string ({x} lei) si %-format (%d lei) - unde valoarea e pe linie. Sabloanele
+    .format() (common.CODURI) NU se flag: sunt umplute CENTRAL in common.problema(), care aplica bani() pe
+    campurile din MONEDA_CAMP. Un placeholder "{gasit} lei" fara prefix f e formatat la locul umplerii, nu
+    la definitie. Orice camp monetar NOU intr-un sablon se adauga in MONEDA_CAMP (altfel randeaza brut).
+  - DATE: flag DOAR strftime("%d...") = zi-intai = data pentru OCHI. isoformat() si strftime("%Y...") sunt
+    ISO -> DATA/XML/JSON/log, NICIODATA display uman -> NU se flag (altfel ~15 fals-pozitive: campuri JSON
+    API formatate client-side, timestamp de log, valori interne).
+  - "%s lei" = string DEJA compus (lectia d300.py:273: _f formateaza deja cu separator de mii; a cere
+    bani() pe el crapa cu ConversionSyntax). Nu se flag.
+EXCEPTII documentate in garda: XML/SAF-T (etransport_send, d406 - ISO cerut de spec ANAF), export_winmentor
+(format cerut de destinatie), valori unitare :g (tichet/plafon per-unitate), comentarii/docstring.
+ALTERNATIVA RESPINSA: fix doar punctual, fara garda - respins: clasa reapare tacut (cum a intrat la F183).
+Garda + canonice = clasa inchisa. RESPINS si a flag TOATE isoformat/strftime - ar ineca semnalul in
+fals-pozitive (JSON API e corect sa trimita ISO, se formateaza client-side).
+NORMA: DESIGN_SYSTEM v2.15 cap.4 (regula backend) + verificator BACKEND_UI_BRUT (gardian) - simultan, ca
+orice norma noua. LIMITA: garda nu vede sume fara "lei" ({debit} ≠ {credit}) si nici template-uri umplute
+necentralizat - de aceea common.problema centralizeaza. Reparate azi: control_incrucisat (16), common/d112/
+taxare_inversa/main (sume), sinteza_zilnica/scadente/main (date). d300:273 = fals-pozitiv (deja formatat).

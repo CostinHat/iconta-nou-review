@@ -110,8 +110,15 @@ def problema(cod, nivel=BLOCANT, **campuri):
     if cod not in CODURI:
         raise ValueError(f"cod de eroare neînregistrat în common.CODURI: {cod!r}")
     sablon, temei = CODURI[cod]
+    # Câmpurile MONETARE se formatează canonic (1.234,56) DOAR pentru mesaj — șabloanele CODURI au deja
+    # sufixul „lei", deci bani() fără monedă. Valorile brute rămân în return (folosite programatic de
+    # apelanți). Sursă unică de formatare: pdf_util.bani (DS cap.7). Orice câmp monetar NOU dintr-un
+    # șablon TREBUIE adăugat aici, altfel se randează brut (garda .py nu vede șabloanele .format).
+    from core.pdf_util import bani
+    MONEDA_CAMP = {"gasit", "asteptat", "baza", "diferenta", "diferenta_solduri", "debit", "credit", "sold"}
+    afis = {k: (bani(v) if k in MONEDA_CAMP and v is not None else v) for k, v in campuri.items()}
     try:
-        mesaj = sablon.format(**campuri)
+        mesaj = sablon.format(**afis)
     except KeyError as e:
         raise ValueError(f"lipsește câmpul {e} pentru mesajul codului {cod!r}")
     return {"ok": False, "cod": cod, "nivel": nivel,

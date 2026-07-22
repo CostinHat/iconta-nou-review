@@ -5,6 +5,7 @@ pull() citeste salariati + concedii_medicale din schema tenantului."""
 import re
 from core import scadente as _scad
 from core import beneficii_api as _ben
+from core.pdf_util import bani
 
 def _nzl(an, luna):
     # Zile lucratoare din luna, FARA sarbatori legale (OUG 158/2005 art.10). Sursa UNICA
@@ -294,8 +295,8 @@ def _d112_genereaza(prof, salariati, an, luna):
     H.append('  </angajator>')
     H.extend(AS)
     H.append('</declaratieUnica>')
-    av.append("D112: %d salariati - impozit %d, CAS %d, CASS %d, CAM %d lei (luna %d/%d)."
-              % (n, sum_imp, sum_cas, sum_cass, cam_total, luna, an))
+    av.append("D112: %d salariati - impozit %s, CAS %s, CASS %s, CAM %s lei (luna %d/%d)."
+              % (n, bani(sum_imp), bani(sum_cas), bani(sum_cass), bani(cam_total), luna, an))
     return ("\n".join(H), av)
 
 

@@ -147,6 +147,7 @@ def scadenta_data(tip, an, luna=None, trim=None):
 
 
 def scadenta(tip, an, luna=None, trim=None):
-    """Scadența ca string 'zz/ll/aaaa' (mutată la zi lucrătoare). Pură."""
+    """Scadența ca string 'zz.ll.aaaa' (mutată la zi lucrătoare), format RO canonic. Pură."""
+    from core.pdf_util import data_ro
     d = scadenta_data(tip, an, luna=luna, trim=trim)
-    return d.strftime("%d/%m/%Y")
+    return data_ro(d)

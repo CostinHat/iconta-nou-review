@@ -32,7 +32,7 @@ for f in sorted(os.listdir(BAZA)):
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
                         "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
-                        "esc_local", "caseta_atentie"]}
+                        "esc_local", "caseta_atentie", "backend_ui_brut"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -158,6 +158,63 @@ for nume, t in fisiere.items():
             vecini = "\n".join(linii[max(0,i-3):i] + linii[i:i+4])
             if "camp-eticheta" not in vecini and "<label" not in vecini and "aria-label" not in vecini:
                 rap["etichete_lipsa"].append((nume, i, "", lin.strip()[:66]))
+
+# ============================================================================================
+# BACKEND_UI_BRUT (DS cap.4 date + cap.7 sume): sume/date BRUTE in text destinat UTILIZATORULUI,
+# construit in Python (mesaj/temei/cauza/motiv/avert/descriere/actiune). Garzile BANI/DATA de mai
+# sus scaneaza DOAR .js; backendul emite text care ajunge la user si scapa complet (dovedit F183,
+# 22.07). Sursa canonica unica: pdf_util.bani + pdf_util.data_ro. Vezi DESIGN_SYSTEM cap.4/7.
+#
+# EXCEPTII documentate (NU sunt violari, nu se cere formator canonic):
+#  - XML/SAF-T (etransport_send, d406): ISO cerut de spec ANAF, nu de UI.
+#  - export_winmentor: strftime cu format cerut de programul destinatie.
+#  - :g lipit de lei = valoare UNITARA intentionata (tichet/plafon per-unitate), nu suma-total.
+#  - "%s lei" = string DEJA compus (lectia d300.py:273 - _f formateaza deja; nu se cere bani() pe
+#    text care contine deja o suma formatata).
+#  - isoformat() si strftime("%Y...") = format ISO -> DATA/XML/JSON/log, NICIODATA display uman
+#    (camp JSON formatat client-side prin dataRo, timestamp de log, valoare interna). Se flag DOAR
+#    strftime("%d...") = zi-intai = data pentru OCHI, care trebuie sa treaca prin data_ro.
+#  - sabloane .format() umplute CENTRAL (common.CODURI -> common.problema aplica bani pe campurile
+#    monetare): flag-am doar f-string-uri (valoarea e pe linie) si %-format; un "{x} lei" fara prefix f
+#    e placeholder .format, formatat aiurea = la locul umplerii, nu aici (altfel fals-pozitiv pe CODURI).
+#  - comentarii (#) si docstring-uri (""" ... """) - nu se randeaza.
+RE_SUMA_FSTR  = re.compile(r'\{[^{}]*\}\s*lei\b')                   # {x} lei intr-un f-string
+RE_SUMA_PCT   = re.compile(r'%[df]\s*lei\b')                        # %d lei / %f lei (valoare pe linie)
+RE_ARE_FSTR   = re.compile(r'''\bf["']''')                          # linia contine un f-string
+RE_UNIT_G     = re.compile(r':g\}?\s*lei')                          # {x:g} lei = rata unitara
+RE_PCT_S_LEI  = re.compile(r'%s\s*lei\b')                           # %s lei = string pre-formatat
+RE_DATA_DISP  = re.compile(r'\.strftime\(\s*["\']%d[./]')          # strftime("%d.%m/%d/%m") = display RO
+RE_FORMATATOR = re.compile(r'\b(bani|data_ro|_lei|_dmy|_data_ro|_f|_q)\s*\(')  # deja canonic/local-ok
+PY_EXCEPT_FILE = {"etransport_send.py", "d406.py", "export_winmentor.py",
+                  "pdf_util.py", "verificator_conformitate.py"}
+BAZA_PY = os.path.expanduser("~/iconta_nou")
+for pdir in (os.path.join(BAZA_PY, "core"), BAZA_PY):
+    for f in sorted(os.listdir(pdir)):
+        cale = os.path.join(pdir, f)
+        if not f.endswith(".py") or f.startswith("test_") or f in PY_EXCEPT_FILE or not os.path.isfile(cale):
+            continue
+        with open(cale, encoding="utf-8") as h:
+            src = h.read()
+        in_doc = False
+        for i, lin in enumerate(src.split("\n"), 1):
+            s = lin.strip()
+            q = s.count('"""') + s.count("'''")
+            if in_doc:
+                if q % 2 == 1:
+                    in_doc = False
+                continue
+            if q % 2 == 1:
+                in_doc = True
+                continue
+            if s.startswith("#") or ('"' not in lin and "'" not in lin):
+                continue
+            if RE_FORMATATOR.search(lin):
+                continue
+            suma_bruta = (RE_SUMA_PCT.search(lin) or (RE_ARE_FSTR.search(lin) and RE_SUMA_FSTR.search(lin)))
+            if suma_bruta and not RE_UNIT_G.search(lin) and not RE_PCT_S_LEI.search(lin):
+                rap["backend_ui_brut"].append((f, i, "suma", s[:60]))
+            if RE_DATA_DISP.search(lin):
+                rap["backend_ui_brut"].append((f, i, "data", s[:60]))
 
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
