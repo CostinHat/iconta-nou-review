@@ -260,6 +260,20 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
    EXCLUSE cu motiv (raman la import, OK): cron-uri standalone (spv_poll/receive/refresh - proces propriu,
    env systemd, nu-s importate in teste) si main.py (entry-point, TENANT_TEMPLATE_PATH are default).
 
+6. **TEMA suita depinde de env-ul din shell (db.env), nu de un mediu de test controlat** (constatat 22.07
+   la baseline-ul temei config lazy). Shell-ul interactiv NU are env-ul DB pe care systemd il injecteaza
+   serviciului (EnvironmentFile=/home/costin/.iconta/db.env). Fara `set -a; . db.env; set +a` inainte de
+   pytest, suita da 1 ROSU de mediu ("pool neinitializat - cheama init_pool()") la
+   test_etransport_send::test_trimite_nevalidat_nu_uploadeaza_prod (nu are skipif pe DB) + alte DB-teste sar.
+   Cu db.env sursat: 438 verde. ACEEASI CLASA cu item 4 (test_spv_conector rosu in suita completa): un rosu
+   de MEDIU e indistinct de un rosu REAL -> ascunde regresii sau da alarme false.
+   FIX de decis (verifica intai ce exista): (a) conftest.py sa sourceze db.env la colectare (os.environ.setdefault
+   din fisier, ca pentru JWT_SECRET/ANAF azi), SAU (b) un runner/Makefile care porneste pytest cu env-ul complet
+   (EnvironmentFile-urile serviciului), ca rularea suitei sa nu depinda de ce ai in shell. Atentie: db.env are
+   secrete reale de prod (parola DB) - conftest care le citeste NU se comiteste cu ele hardcodate; se citeste
+   fisierul, nu se copiaza continutul. De confirmat: testele care ating DB lovesc iconta_v2 real (tenant_002)
+   sau o baza de test separata? Daca real -> conftest care sourceaza prod e riscant, prefera runner explicit.
+
 RAMAS — cere ochii/telefonul, NU SSH: **vezi CHECKLIST_BROWSER.md** (PWA P4.18-19, responsive
 P4.20-21, audit vizual ~12 ecrane ramase). Grup fiscal/D101G si ONG: lasate deoparte (fara cod nou).
 
