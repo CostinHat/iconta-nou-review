@@ -55,7 +55,7 @@ export async function randeazaTermene(corp, nav) {
       const rand = document.createElement("button");
       rand.className = "term-item";
       rand.innerHTML = `
-        <span class="term-tip">${it.tip}</span>
+        <span class="term-tip">${(it.tip||"").toUpperCase()}</span>
         <span class="term-nr">${it.nr_firme} ${it.nr_firme === 1 ? "firmă" : "firme"}</span>
         <svg class="term-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
       `;
@@ -68,7 +68,7 @@ export async function randeazaTermene(corp, nav) {
 
 function detaliuTermen(corp, nav, grup, item) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${item.tip}</b> · scadență ${dataLunga(grup.termen)} · <b>${item.nr_firme}</b> ${item.nr_firme === 1 ? "firmă" : "firme"}</p>
+    <p class="mig-intro"><b>${(item.tip||"").toUpperCase()}</b> · scadență ${dataLunga(grup.termen)} · <b>${item.nr_firme}</b> ${item.nr_firme === 1 ? "firmă" : "firme"}</p>
     <div class="mig-lista" id="term-firme"></div>
   `;
 

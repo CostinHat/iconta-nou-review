@@ -47,20 +47,20 @@ def test_istoric_lipsa_da_gri():
 
 def test_sold_fiscal_fara_declaratie_da_semnal_gri():
     # sold pe 4315 (CAS) dar D112 NU e in istoric -> gri, referind D112
-    r = constatare_istoric_fiscal({"4315": Decimal("500")}, {"D300"})
+    r = constatare_istoric_fiscal({"4315": Decimal("500")}, {"d300"})
     semnal = [c for c in r if "4315" in c["mesaj"]]
     assert semnal and semnal[0]["stare"] == "gri"
     assert "D112" in semnal[0]["mesaj"]
 
 
 def test_sold_fiscal_cu_declaratie_da_verde():
-    r = constatare_istoric_fiscal({"4423": Decimal("100")}, {"D300"})
+    r = constatare_istoric_fiscal({"4423": Decimal("100")}, {"d300"})
     assert len(r) == 1 and r[0]["stare"] == "verde"
 
 
 def test_sold_fiscal_sub_toleranta_ignorat():
     # sold zero pe conturile fiscale, dar exista istoric -> verde (nimic de semnalat)
-    r = constatare_istoric_fiscal({"4423": Decimal("0.00")}, {"D300"})
+    r = constatare_istoric_fiscal({"4423": Decimal("0.00")}, {"d300"})
     assert len(r) == 1 and r[0]["stare"] == "verde"
 
 

@@ -396,20 +396,12 @@ vs DE CONSTRUIT (munca reala):
   competentele la prima depunere; sau un default poate_* = true pentru rolul admin_firma la creare. De cantarit intre
   "control intern real" (four-eyes) si "un om nu se poate bloca singur". PARCURS O DATA 22.07 (tenant_002 test, DECIZII
   [PROD]) - fluxul MERGE cap-coada odata activate competentele; frictiunea e onboarding-ul, nu mecanismul.
-- **BUG: tip declaratie stocat INCONSISTENT (case) intre surse -> semaforul nu recunoaste depunerile prin app**
-  [BUG confirmat 22.07, NEREPARAT — de decis fix]. Prins de validarea lantului dupa prima depunere reala D300:
-  declaratii_datorate (control_fiscal_api) produce tip UPPERCASE ('D300','D101'...); depunerea prin app
-  (coada->marcheaza_depusa) stocheaza tip LOWERCASE ('d300', = ce trimite clientul, cheile dispecerului
-  declaratii_api sunt lowercase); importul istoric (migrare) stocheaza UPPERCASE. _clasifica matcheaza
-  (tip,an,luna) EXACT -> 'D300' != 'd300' -> D300 depusa prin app apare ca "nedepusa/urmarit" in semafor.
-  DOVADA: tenant_002 2026/06 are d300 depus real (sursa=iconta) dar semaforul il arata in 'urmarit' ("D300 iun
-  nedepusa"). N-a fost prins pana acum fiindca toate depunerile erau migrare (uppercase, se potriveau). AFECTEAZA:
-  control_fiscal_api.evalueaza_firma (semafor), main.py:2025 (termene), posibil audit_preluare (DISTINCT tip) si
-  orice matcher tip case-sensitive. FIX de decis: (a) normalizare la CITIRE - upper() pe tip cand se construieste
-  dict-ul `depuse` in toti matcherii (acopera si randul existent lowercase, fara migrare de date); (b) normalizare
-  la STOCARE - marcheaza_depusa scrie tip.upper() (canonic, consistent cu migrare) + un UPDATE one-time pe randul
-  d300 existent. (a) e mai sigur (nu atinge date), (b) mai curat (o sursa canonica). Recomand (a) + eventual (b)
-  pe termen lung. NEREPARAT - astept decizia.
+- **BUG tip case: canonizare la stocare + CHECK** [REZOLVAT 22.07.2026, varianta b]. `tip` = cheie de join ->
+  canonic LOWERCASE la stocare; forma ANAF uppercase in duk.CHEIE_DUK, upper DOAR la randare. CHECK (tip=lower(tip))
+  pe declaratii_depuse + declaratii_coada apara cauza. Fix: istoric_import (store lowercase; validarea ramane upper
+  contra nomenclator), declaratii_datorate/termene/audit/marcheaza_depusa lowercase, UPDATE 5 randuri, upper la
+  randare (3 motiv backend + control.js/termene.js/activitate_cabinet.js). Respins (a) normalizare la citire (patch,
+  lasa date inconsistente). Dovada: semafor tenant_002 2026/06 arata "D300 iun depusa" (era nedepusa). DECIZII 22.07.
 - **Conventie migrari pe schema PUBLIC** [REZOLVAT 22.07.2026]. Cauza (migrare_* bucla doar tenant_, iconta_user
   n-avea CREATE pe public -> ALTER-uri lazy ca workaround) e inchisa: GRANT CREATE ON SCHEMA public TO iconta_user
   (DECIZII 22.07 [INFRA]) face migrarile pe public first-class ca app-user. Tipar stabilit: migrare_*.py cu un

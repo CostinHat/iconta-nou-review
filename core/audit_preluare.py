@@ -51,15 +51,16 @@ def _lei(x):
 # Conturi de datorii/creante fiscale la deschidere -> declaratia care le explica. Un sold preluat
 # pe aceste conturi FARA declaratia corespunzatoare in istoricul importat = SEMNAL (gri, nu rosu:
 # soldurile fiscale au cauze legitime -> remediu investigatie, nu acuzatie mecanica).
+# [tip_lowercase] decl = CHEIE de join (canonic lowercase, ca declaratii_depuse.tip); upper la display.
 CONT_DECL_FISCAL = (
-    ("4423", "D300", "TVA de plată"),
-    ("4424", "D300", "TVA de recuperat"),
-    ("444",  "D112", "impozit pe venituri din salarii"),
-    ("4315", "D112", "CAS"),
-    ("4316", "D112", "CASS"),
-    ("436",  "D112", "contribuția asiguratorie pentru muncă"),
-    ("4411", "D101", "impozit pe profit"),
-    ("441",  "D101", "impozit pe profit"),
+    ("4423", "d300", "TVA de plată"),
+    ("4424", "d300", "TVA de recuperat"),
+    ("444",  "d112", "impozit pe venituri din salarii"),
+    ("4315", "d112", "CAS"),
+    ("4316", "d112", "CASS"),
+    ("436",  "d112", "contribuția asiguratorie pentru muncă"),
+    ("4411", "d101", "impozit pe profit"),
+    ("441",  "d101", "impozit pe profit"),
 )
 
 
@@ -213,16 +214,17 @@ def constatare_istoric_fiscal(net, tipuri_depuse):
         sold = abs(_d(net.get(cont, 0)))
         if sold <= TOLERANTA or decl in tipuri_depuse:
             continue
+        _D = decl.upper()   # upper DOAR la randare (decl e cheie lowercase)
         out.append(_gri(et, temei,
-                        f"Sold de deschidere pe {cont} ({denum}, {_lei(sold)}) fără {decl} în istoricul importat.",
-                        f"Verifică dacă {decl} a fost depusă înainte de preluare și importă-o în istoric, "
+                        f"Sold de deschidere pe {cont} ({denum}, {_lei(sold)}) fără {_D} în istoricul importat.",
+                        f"Verifică dacă {_D} a fost depusă înainte de preluare și importă-o în istoric, "
                         f"sau confirmă că soldul are altă natură.",
-                        cauza=f"Soldul pe {cont} sugerează o obligație {decl} anterioară care nu apare în "
+                        cauza=f"Soldul pe {cont} sugerează o obligație {_D} anterioară care nu apare în "
                               f"istoricul preluat."))
     if not out and tipuri_depuse:
         out.append(_verde(et, temei,
                           f"Soldurile fiscale de deschidere au acoperire în istoricul declarațiilor "
-                          f"importat ({', '.join(sorted(tipuri_depuse))})."))
+                          f"importat ({', '.join(sorted(t.upper() for t in tipuri_depuse))})."))
     return out
 
 

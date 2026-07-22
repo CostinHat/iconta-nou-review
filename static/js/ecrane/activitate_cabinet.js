@@ -83,7 +83,7 @@ export async function randeazaActivitateCabinet(corp, nav) {
           <span class="ac-cand">${dataOraRo(e.cand)}</span>
           <span class="ac-cine">${e.cine}</span>
           <span class="ac-act"><span class="cab-pct ${a.cls}"></span>${a.txt}</span>
-          <span class="ac-decl">${e.tip} · ${e.perioada}</span>
+          <span class="ac-decl">${(e.tip||"").toUpperCase()} · ${e.perioada}</span>
           <span class="ac-firma">${e.firma}</span>
         </div>${motiv}`;
     }).join("");

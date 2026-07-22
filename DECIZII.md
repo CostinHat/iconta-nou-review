@@ -2211,3 +2211,28 @@ CORECT (coerent -> verde), consistent cu logica testului fabricat. LIMITA "dovad
 LIMITA/RAMAS: verdictul verde e pe o depunere COERENTA (introdusa de mine sa se potriveasca); divergenta reala
 (rosu) ramane dovedita doar pe fabricat/E2E - o va confirma prima depunere reala unde contabilul uita R1_1. Fluxul
 a fost parcurs O SINGURA data; fricțiunea de permisiuni (adminul default nu poate depune) = item DE_FACUT.
+
+### 22.07.2026 tip declaratie = CHEIE de join, canonic LOWERCASE la stocare + CHECK  (control_fiscal_api, termene_api, audit_preluare, coada_api, istoric_import, migrare_declaratii_tip_lowercase, UI)
+DECIZIE: `tip` (declaratii_depuse, declaratii_coada) e CHEIE DE JOIN, nu text de afisare -> O SINGURA forma la
+stocare: LOWERCASE. Forma ANAF (uppercase) traieste in duk.CHEIE_DUK si se face .upper() DOAR la randare, nu in
+coloana. CHECK (tip = lower(tip)) pe ambele tabele apara cauza (nu simptomul).
+TEMEI (verificat la sursa, numaratoare aratata inainte de alegere): forma cu care codul LUCREAZA efectiv e
+lowercase - dispecerul declaratii_api._DISPECER ({"d300":...}), duk.CHEIE_DUK are cheie lowercase -> valoare
+uppercase (dovada explicita ca lowercase=intern, uppercase=extern/ANAF), scadente.py normalizeaza .lower(),
+main.py:2689 .upper() e explicit "pentru afisare". Bug prins de prima depunere reala: app stoca lowercase
+('d300'), import istoric .upper() ('D300'), semafor (declaratii_datorate) producea uppercase -> match esuat ->
+depunerile prin app apareau NEDEPUSE. RESPINS varianta (a) normalizare la CITIRE: lasa datele inconsistente si
+obliga fiecare cititor viitor sa-si aminteasca upper(); (a) e patch, nu cauza. RESPINS "jurnal uppercase" (minim
+dar contrazice: tip e cheie interna, nu forma depusa - forma ANAF sta in CHEIE_DUK, nu in coloana).
+VERIFICAT INAINTE de UPDATE (cerut): tip NU e cheie de dedup persistata / link / URL care s-ar rupe -
+alerte_control_emise.verificator = nume verificatori (tva/d112/d390), notificari.link = string static, ruta
+/declaratii/{tip} = generare (lowercase, dispecer). declaratii_coada avea deja 1 rand lowercase (CHECK OK).
+CONSECINTA (blast radius, varianta 1 aleasa de Costin): stocare lowercase peste tot (istoric_import store,
+declaratii_datorate, termene_api, audit_preluare CONT_DECL, marcheaza_depusa) - VALIDAREA istoricului ramane
+uppercase (contra TIPURI_CUNOSCUTE = nomenclator ANAF), doar STOCAREA e lowercase; upper la RANDARE (3 motiv-uri
+backend + 4 puncte UI: control.js, termene.js, activitate_cabinet.js; pachete.js NU - rz.tip e tip-rezultat, iar
+"depuse" face deja .upper()). UPDATE 5 randuri migrare uppercase->lowercase + CHECK pe ambele tabele.
+F163 _d300_depus_randuri filtreaza 'd300' lowercase = corect PRIN CONSTRUCTIE (CHECK-ul garanteaza, nu accidental).
+LIMITA: TIPURI_CUNOSCUTE (nomenclator ANAF, uppercase) ramane forma de validare/display - nu e coloana, e constanta.
+Aparare: suita 475 verde + verificator DS 0 + TEST FUNCTIONAL care justifica tema: semaforul pe tenant_002 2026/06
+arata acum "D300 iun depusa 22.07.2026, la termen" (era 'urmarit/nedepusa'). node --check ESM pe 3 ecrane + restart activ.

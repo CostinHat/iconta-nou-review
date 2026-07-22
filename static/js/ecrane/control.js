@@ -95,7 +95,7 @@ async function detaliuFirma(corp, nav, firma) {
   const randDecl = (arr, clasa) => arr.map((x) => `
     <div class="cf-decl-item">
       <div class="mig-sold-rand cf-rand-decl">
-        <span class="mig-sold-cont">${x.tip}</span>
+        <span class="mig-sold-cont">${(x.tip||"").toUpperCase()}</span>
         <span class="cf-perioada">${x.perioada}</span>
         <span class="cf-termen ${clasa}">termen ${dataRo(x.termen)}</span>
       </div>
@@ -103,7 +103,7 @@ async function detaliuFirma(corp, nav, firma) {
     </div>`).join("");
   const randMotiv = (arr) => arr.map((x) => `
     <div class="cf-decl-item">
-      <div class="cf-incr-cap"><span class="mig-sold-cont">${esc(x.tip)}</span></div>
+      <div class="cf-incr-cap"><span class="mig-sold-cont">${esc((x.tip||"").toUpperCase())}</span></div>
       <div class="cf-incr-temei">${esc(x.motiv || "")}</div>
     </div>`).join("");
 

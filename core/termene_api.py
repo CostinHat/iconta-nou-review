@@ -32,6 +32,7 @@ def termene_firma(vector, are_salariati, depuse, azi=None):
     an = azi.year
 
     def adauga(tip, a, luna_p, perioada):
+        tip = tip.lower()   # [tip_lowercase] cheie de join canonic; upper la randare (UI/termene.js)
         term = cf._termen(a, luna_p)
         if azi <= term <= limita and (tip, a, luna_p) not in depuse:
             out.append({"tip": tip, "an": a, "luna": luna_p,

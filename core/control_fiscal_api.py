@@ -56,14 +56,16 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     per_luni = [(an - 1, 12)] + [(an, m) for m in range(1, 13)]
     per_trim = [(an - 1, 4, 12)] + [(an, tri, lf) for tri, lf in enumerate([3, 6, 9, 12], start=1)]
 
+    # [tip_lowercase] tip = CHEIE de join (canonic lowercase, ca dispecerul/CHEIE_DUK); forma ANAF
+    # uppercase traieste in CHEIE_DUK + se face upper() DOAR la randare, nu in coloana. Vezi DECIZII.
     def adauga(tip, a, luna_perioada, perioada_txt, tip_scad):
         term = _termen(a, luna_perioada, tip=tip_scad)
         if term <= limita:
-            datorate.append({"tip": tip, "an": a, "luna": luna_perioada,
+            datorate.append({"tip": tip.lower(), "an": a, "luna": luna_perioada,
                              "termen": term.isoformat(), "perioada": perioada_txt})
 
     def gri(tip, cauza):
-        neclar.append({"tip": tip, "cauza": cauza})
+        neclar.append({"tip": tip.lower(), "cauza": cauza})
 
     def emite_tva(tip, tip_scad, cauza_periodicitate):
         """Emite `tip` pe perioada fiscala TVA (lunar/trimestrial dupa tip_decont).
@@ -118,7 +120,7 @@ def declaratii_datorate(vector, are_salariati, azi=None):
             # D101 pentru anul precedent, termen 25 martie an curent
             term = _termen(an - 1, tip="d101")
             if term <= limita:
-                datorate.append({"tip": "D101", "an": an - 1, "luna": 12,
+                datorate.append({"tip": "d101", "an": an - 1, "luna": 12,
                                  "termen": term.isoformat(), "perioada": f"anual {an-1}"})
 
     # D390 operatiuni intracomunitare (lunar)
@@ -170,19 +172,19 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
     if term205 <= limita:
         suma, are_note = _ci.dividende_distribuite(conn_schema, schema, Y)
         if suma > 0:
-            datorate.append({"tip": "D205", "an": Y, "luna": 12, "perioada": f"anual {Y}",
+            datorate.append({"tip": "d205", "an": Y, "luna": 12, "perioada": f"anual {Y}",
                              "termen": term205.isoformat(),
                              "fapt": f"dividende distribuite în {Y} (rulaj cont 457)"})
         elif are_note:
-            neaplicabile.append({"tip": "D205",
+            neaplicabile.append({"tip": "d205",
                                  "motiv": f"D205 nu se datorează — niciun rulaj pe cont 457 în {Y} (fără dividende distribuite)"})
         else:
-            neclar.append({"tip": "D205",
+            neclar.append({"tip": "d205",
                            "motiv": f"D205 — nu pot verifica: lipsesc note validate pe {Y} (nu știu dacă s-au distribuit dividende)"})
 
     # D301 — lunar, DOAR neplatitori de TVA cu operatiuni IC (fapt: tabelul d301_operatiuni pe luna).
     if platitor_tva is True:
-        neaplicabile.append({"tip": "D301",
+        neaplicabile.append({"tip": "d301",
                              "motiv": "D301 nu se datorează — firma e plătitoare de TVA (D301 e pentru neînregistrați în scopuri de TVA)"})
     else:
         luni_an = {a: _ci.d301_luni_operatiuni(conn_schema, schema, a) for a in (an - 1, an)}
@@ -191,12 +193,12 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
             if m in luni_an.get(a, set()):
                 term = scadente.scadenta_data("d301", a, luna=m)
                 if term <= limita:
-                    datorate.append({"tip": "D301", "an": a, "luna": m, "perioada": _LUNI_NUME[m],
+                    datorate.append({"tip": "d301", "an": a, "luna": m, "perioada": _LUNI_NUME[m],
                                      "termen": term.isoformat(),
                                      "fapt": f"operațiuni intracomunitare înregistrate în {_LUNI_NUME[m]} {a}"})
                     vreo = True
         if not vreo:
-            neaplicabile.append({"tip": "D301",
+            neaplicabile.append({"tip": "d301",
                                  "motiv": "D301 nu se datorează — nicio operațiune intracomunitară înregistrată"})
     return {"datorate": datorate, "neaplicabile": neaplicabile, "neclar": neclar}
 
@@ -215,13 +217,13 @@ def _clasifica(datorate, depuse, azi):
             dd = depuse[cheie]
             data_txt = (" " + _dmy(dd.isoformat())) if dd else ""
             la_termen = ("" if not dd else (", la termen" if dd <= term else ", după termen"))
-            e["motiv"] = f"{d['tip']} {d['perioada']} depusă{data_txt}{la_termen} (termen {termtxt}){fapt}"
+            e["motiv"] = f"{d['tip'].upper()} {d['perioada']} depusă{data_txt}{la_termen} (termen {termtxt}){fapt}"
             confirmate.append(e)
         elif term < azi:
-            e["motiv"] = f"{d['tip']} {d['perioada']} nedepusă, termen {termtxt} depășit{fapt}"
+            e["motiv"] = f"{d['tip'].upper()} {d['perioada']} nedepusă, termen {termtxt} depășit{fapt}"
             lipsa.append(e)
         else:
-            e["motiv"] = f"{d['tip']} {d['perioada']} nedepusă, termen {termtxt} (în fereastră){fapt}"
+            e["motiv"] = f"{d['tip'].upper()} {d['perioada']} nedepusă, termen {termtxt} (în fereastră){fapt}"
             urmarit.append(e)
     return lipsa, urmarit, confirmate
 

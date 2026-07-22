@@ -140,7 +140,7 @@ def verifica_randuri(randuri, azi=None):
     azi = azi or _dt.date.today()
     er = []
     for i, r in enumerate(randuri or [], start=2):
-        tip = str(r.get("tip") or "").strip().upper()
+        tip = str(r.get("tip") or "").strip().upper()   # VALIDARE contra TIPURI_CUNOSCUTE (uppercase, nomenclator ANAF)
         an = int(r.get("an") or 0)
         luna = r.get("luna")
         if tip and tip not in TIPURI_CUNOSCUTE:
@@ -186,7 +186,8 @@ def importa(conn, tenant_id, randuri):
             cur.execute("""
                 INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, data_depunere, sursa)
                 VALUES (%s,%s,%s,%s,%s,'migrare')
-            """, (tenant_id, r.get("an"), r.get("luna"), r["tip"],
+            """, (tenant_id, r.get("an"), r.get("luna"),
+                  str(r["tip"]).strip().lower(),   # [tip_lowercase] canonic la STOCARE (CHECK-ul il impune)
                   r.get("data_depunere")))
             n += 1
     conn.commit()

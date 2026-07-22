@@ -249,11 +249,12 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
         # același nr_depunere -> a doua pică pe PK (conflictul NU se înghite tăcut). randuri = jsonb
         # (None la d112 -> SQL NULL).
         randuri = p.get("randuri")
+        tip_c = (r["tip"] or "").lower()   # [tip_lowercase] canonic la stocare (cheie de join); CHECK il impune
         cur.execute(
             "INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
             "SELECT %s,%s,%s,%s,%s,%s, COALESCE(MAX(nr_depunere),0)+1 "
             "FROM public.declaratii_depuse WHERE tenant_id=%s AND an=%s AND luna=%s AND tip=%s",
-            (r["tenant_id"], an, luna, r["tip"], p.get("xml"),
+            (r["tenant_id"], an, luna, tip_c, p.get("xml"),
              _E.Json(randuri) if randuri is not None else None,
-             r["tenant_id"], an, luna, r["tip"]))
+             r["tenant_id"], an, luna, tip_c))
     return {"ok": True, "stare": "depusa", "an": an, "luna": luna}
