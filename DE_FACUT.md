@@ -384,32 +384,20 @@ vs DE CONSTRUIT (munca reala):
   (DECIZII 22.07 [INFRA]) face migrarile pe public first-class ca app-user. Tipar stabilit: migrare_*.py cu un
   singur ALTER/DDL pe public (fara bucla tenant), aplica/verifica/_main - ex. migrare_declaratii_depuse_randuri +
   _versiune. Workaround-ul lazy asigura_coloana_sursa ELIMINAT (sursa mutata in migrare normala, fara cod mort).
-- **F165 NU acopera schema PUBLIC** [PLANIFICAT — acum REALIZABIL dupa GRANT]. F165 (audit_schema) compara doar
-  schemele tenant_ vs tenant_template.sql. Tabelele `public` (declaratii_depuse, tenants, users, audit_log etc.)
-  n-au template/audit. DE CONSTRUIT: template + audit pentru public (analog F165, cu poarta in suita). Blocajul de
-  privilegii care ar fi impiedicat un auto-fix e ridicat (GRANT CREATE), deci un audit-public cu suggest/migrare e
-  acum fezabil ca app-user. Ramane de decis daca public primeste un template versionat (ca tenant) sau doar un
-  registru de migrari public rulate.
-- **PRIVILEGII + BOOTSTRAP DB NEREPRODUCTIBILE (starea de prod nu e in git)** [PLANIFICAT]. GRANT CREATE ON SCHEMA
-  public TO iconta_user exista DOAR pe prod (aplicat manual 22.07 ca postgres, DECIZII [INFRA]); un server nou NU-l
-  primeste -> migrarile public ar pica cu "permission denied". Nu e singurul: verificare statica 22.07 a gasit ca
-  obiectele din public s-au nascut prin cai neversionate. Curatat 22.07: DDL_JURNAL -> migrare_alerte_control_emise.py
-  (in git); ensure_tabela moarta -> stearsa; ALTER OWNER pe audit_log/alerte_fiscale/alerte_emise -> iconta_user.
-  STARE DE PROD, nereproductibila din git (aplicata manual 22.07 ca postgres, DECIZII [INFRA]):
-  * GRANT CREATE ON SCHEMA public TO iconta_user;
-  * OWNERSHIP: TOT public e acum iconta_user (28 tabele + 18 secvente + 1 vedere, 100%, verificat \dt+/\ds+).
-    ALTER OWNER aplicat pe 14 tabele care erau owned de postgres: audit_log, alerte_fiscale, alerte_emise (primele 3)
-    + anunturi_cabinet, api_chei, cor_ocupatii, curs_bnr_zilnic, metrici_sanatate, reges_chei, reges_mesaje,
-    solicitari_client, spv_cui_acoperit, spv_token, tokene_activare (restul 11).
-  * DDL-ul tabelelor create manual, fara CREATE in cod: pachet_povestea (feature poveste VIU, ensure_tabela stearsa),
-    notificari, + toate cele 14 de mai sus (n-au DDL in cod). Un server nou nu le primeste -> rutele care le folosesc crapa.
-  FORMA DECISA (Costin 22.07): SQL SIMPLU checked-in `infra/bootstrap_public.sql`, NU runner Python. Motiv: ruleaza
-  INAINTE ca app-ul si privilegiile sa existe (la provisionarea serverului, ca postgres); un runner Python ar depinde
-  de exact ce instaleaza (venv, GRANT, conexiune) - dependenta circulara. Continut: (1) GRANT CREATE; (2) DDL-ul
-  COMPLET al schemei public (toate cele 28 tabele + secvente + vederea), cu owner iconta_user - un pg_dump --schema-only
-  al schemei public (owner deja uniform azi) e punctul de plecare canonic, curatat manual. Dupa bootstrap, ORICE
-  obiect public nou intra prin migrare_* (ruleaza ca iconta_user datorita GRANT). Se leaga de "F165 nu acopera public"
-  (auditul public ar verifica exact ce garanteaza bootstrap + migrarile). NU se construieste acum.
+- **PRIVILEGII + BOOTSTRAP DB NEREPRODUCTIBILE** [REZOLVAT 22.07.2026] `infra/bootstrap_public.sql`. Starea de prod
+  care nu se putea reconstrui din git (GRANT + DDL-ul tabelelor publice fara CREATE nicaieri in git) e acum intr-un
+  script SQL checked-in, rulat o data ca postgres la provisionarea unui server nou (header explica cum/cand/ordine).
+  Categorizare la sursa (o singura sursa de adevar): EXCLUSE cele 5 cu CREATE deja in git (alerte_control_emise,
+  migrare_status, cor_ocupatii, spv_token, spv_cui_acoperit); INCLUSE 23 fara CREATE, din care declaratii_depuse la
+  GENESIS (migrarile ii adauga coloanele). GRANT CREATE + SET SESSION AUTHORIZATION iconta_user (ownership uniform
+  fara ALTER OWNER). Idempotent (IF NOT EXISTS + guard pe constrangeri/identity), DOVEDIT pe baza temporara locala
+  (rulat de 2 ori zero erori, 23 tabele + 16 secvente iconta_user, FK/identity functionale; NU pe prod). Fara date/
+  secrete. REGULA PERMANENTA in header: orice obiect public nou intra prin migrare_*, NU in bootstrap.
+- **F165 NU acopera schema PUBLIC** [PLANIFICAT — acum cu REFERINTA]. Ramane de construit auditul public (analog
+  F165, poarta in suita). Acum are reper: `infra/bootstrap_public.sql` (genesis) + migrarile public (evolutie) =
+  starea asteptata a schemei public; un audit-public ar compara schema live cu (bootstrap + migrari aplicate),
+  exact cum F165-tenant compara cu tenant_template.sql. Blocajul de privilegii e ridicat (GRANT CREATE) -> suggest/
+  auto-migrare fezabil ca iconta_user. De decis: template public versionat unic vs (bootstrap + lant de migrari).
 - **v2 F164 — digest email Brevo** (rezumat zilnic/saptamanal al rosurilor de control fiscal DESCHISE per cabinet,
   pentru contabilii care nu intra zilnic in app). Completeaza v1 (clopotel in-app + click, LIVE 19.07): v1 rezolva
   restanta 17.07 (alerta ajunge in app); digestul acopera cazul "contabil care nu intra zilnic". De construit CAND
