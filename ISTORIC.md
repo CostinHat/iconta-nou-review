@@ -2329,3 +2329,45 @@ DOVADA: testul care justifica tema - versionare prin marcheaza_depusa REAL: re-d
 (<INITIAL/>, 100) citibila in tabel. Verificat ux_coada_activa partial (exclude 'depusa') -> rectificativa in coada
 dupa depunerea initiala. Suita 466 verde + verificator DS 0 + vederea interogabila de iconta_user. DE_FACUT:
 "conventie migrari public" REZOLVAT; "F165 nu acopera public" ramane dar acum realizabil (blocaj privilegii ridicat).
+
+## ═══ ÎNCHIDERE DE ZI 22.07.2026 (recap complet al firului) ═══
+
+Arc de o zi, în ordine (fiecare cu fir/commit propriu mai sus + DECIZII):
+1. **F183 audit preluare** — antet (firma în iConta din data, ora la audit), abateri DS în raport
+   (sume RO + diacritice), ramificare pe REGIM (PFA rulează doar RIP). [commits 75eae8e..301a6bc]
+2. **Fix login bounce** — refuz tăcut la credențiale greșite: 401 pe login nu mai declanșează logout. [9de75ea]
+3. **BACKEND_UI_BRUT** — canonice backend (bani + data_ro) + gardă .py în verificator (sume/date brute în text
+   destinat userului, construit în Python, scăpau garzilor .js). Verificator TOTAL 0. [73b0094..4e3c0a3]
+4. **Config lazy** (DE_FACUT item 5) — env citit la APEL prin common.cfg (15 din 19 var, 4 fișiere; REVOKE_URL
+   mort șters). Cele 3 JWT rămân la import (separat). [bde2e52]
+5. **F180** — avertisment regim TVA vs ANAF (snapshot separat + live la salvare) + semafor roșu Control fiscal.
+   Verificat fiscal la sursă (v9 scpTVA boolean). [b8f931e]
+6. **Bug registru F183** — Acces UI neescapat (virgulă) spărgea rândul (10 câmpuri) -> F163... nu, F183 invizibil
+   pentru AI (F152). Reparat + **gardă de integritate registru în suită** (nr câmpuri + ID=F\d+). [f96ea3e, be7def9]
+7. **F165** — auditor conformitate schemă tenant vs template (detect + SUGEREAZĂ SQL, nu aplică) + poartă în suită.
+   Drift curent = zero (preventiv). [6ccabef]
+8. **F198 / F163v2** — persistarea declarației depuse (xml + randuri jsonb) în public.declaratii_depuse +
+   **versionare varianta A** (nr_depunere în PK + vedere declaratii_depuse_curente; ON CONFLICT eliminat). [6604ff4, 9cc77c4]
+9. **[INFRA] GRANT CREATE ON SCHEMA public + ownership 100% iconta_user** (14 ALTER OWNER) + curățare DDL runtime
+   (ensure_tabela mort șters, DDL_JURNAL -> migrare, workaround lazy sursa eliminat). Public 28 tabele + 18 secv +
+   1 vedere, toate iconta_user. [9e154d4, df3268b]
+10. **infra/bootstrap_public.sql** — genesis reproductibil al schemei public (filtrat: exclude ce are CREATE în git;
+    declaratii_depuse la genesis), idempotent, testat pe bază temporară locală. [908459e]
+11. **F163 D-vs-D real** (D390 vs D300 depus) — a treia comparație în verifica_d390, deblocată de F198. [defa535]
+12. **PRIMA depunere D300 reală prin app** — fluxul coada->aproba->depune nu fusese exercitat NICIODATĂ (coada goală,
+    toate depunerile = migrare). Parcurs cap-coadă pe tenant_002 (test) -> primul d300 cu sursa=iconta + randuri;
+    F163 verde corect pe date reale. Semantica 'depusă' = stare internă (nu transmite ANAF). [59de8f1]
+
+ÎNCHIS azi (DE_FACUT): config lazy (item 5, partial - JWT rămân); db.env în conftest (item 6 - documentat, nu rezolvat);
+convenție migrări public (GRANT); bootstrap nereproductibil; F163 D-vs-D; F198 persistare+versionare.
+
+RĂMÂNE DESCHIS: (a) **BUG tip case** - depunerile prin app (lowercase 'd300') nu se potrivesc cu semaforul (uppercase
+'D300') -> apar ca nedepuse; nereparated, de decis fix (normalizare la citire vs stocare). (b) fus orar "cu_ora" =
+ora server (global). (c) ramura PFA a auditului văzută doar prin teste+E2E, nu în UI reală (primul PFA real).
+(d) **JWT lazy** - cele 3 (auth_api.SECRET+DURATA, spv_conector.STATE_SECRET) rămân la import, cer test dedicat + DA.
+(e) db.env în shell -> conftest sau runner (rosu de mediu indistinct de real). (f) runbook server nou (nu există
+procedură deploy; bootstrap e o piesă). (g) F165-pe-public (audit schemă public, acum realizabil - are reper bootstrap).
+(h) onboarding competențe (admin nu-și poate depune fără să-și activeze singur - owner-bypass vs four-eyes). (i) F164v2
+digest email Brevo (condiționat de semnal real că se ratează alerte). (j) servicii IC (P/S) în F163 = v3.
+
+STARE: suita 475 verde, verificator DS 0, ownership public uniform, prima depunere reală în jurnal (append-only).

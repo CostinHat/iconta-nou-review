@@ -133,6 +133,15 @@ regula nu se aplică.
   bug la fel de grav ca unul care crapă vizibil — de fapt mai grav, pentru
   că ascunde problema. Verifică mereu ce se întâmplă dacă interogarea din
   interiorul unui `try` chiar aruncă excepție.
+- **Testele nu presupun gol un interval unde pot ajunge date reale.** Un
+  fixture care scrie într-un tabel PARTAJAT (public.*, ex. declaratii_depuse)
+  pe o perioadă plauzibilă (2026/luna curentă) intră în coliziune de PK cu
+  prima depunere reală pe acel interval — testul „verde azi" pică mâine, fără
+  ca cineva să fi schimbat cod. Fixture-urile pe tabele partajate folosesc
+  perioade SINTETICE, evident nereale (an 2099) și/sau tenant_id sintetic,
+  rulate în ROLLBACK. Lecție prinsă 22.07: prima depunere reală D300 pe
+  tenant_002 2026/06 a intrat în coliziune cu un test care insera fabricat pe
+  aceeași perioadă.
 
 ## Global-first pentru CSS/UI
 
