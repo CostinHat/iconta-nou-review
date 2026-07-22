@@ -237,17 +237,28 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
    constanta INGHETATA la primul import, ordine accidentala. In productie merge (systemd incarca env
    inainte de proces), dar in teste/orice context programatic e capcana (item 4 = dovada; conftest a stins
    ROSUL, nu fragilitatea structurala).
-   PRIORITATE: spv_conector.py (7: CLIENT_ID/SECRET, REDIRECT_URI, AUTHORIZE/TOKEN/REVOKE_URL, STATE_SECRET
-   - secrete + STATE_SECRET care a muscat azi) + auth_api.py (SECRET=JWT_SECRET, importat foarte larg),
-   apoi observare.py (6: praguri + BREVO_KEY + emailuri), efactura_send.py (2), etransport_send.py (2).
-   FIX: functie cfg(cheie, default) sau proprietati -> citire la APEL, ordinea de import devine PERMANENT
-   irelevanta (nu doar sub pytest).
-   EXCLUSE cu motiv: cron-uri standalone (spv_poll/receive/refresh - proces propriu, env systemd, nu-s
-   importate in teste -> citirea la import e OK) si main.py (entry-point, TENANT_TEMPLATE_PATH are default).
-   EFECT SECUNDAR UTIL in productie: o valoare din env modificata NU mai cere restart de proces ca sa fie
-   citita. RISC de verificat LA SURSA inainte (nu presupus): daca vreun loc se bazeaza pe faptul ca valoarea
-   e STABILA pe durata procesului (ex. secret cache-uit, URL folosit la comparatie), citirea-la-apel schimba
-   semantica - de confirmat ca nimeni nu depinde de stabilitatea in-proces inainte de conversie.
+   FIX aplicat: helper `cfg(cheie, default="", cast=str)` in common.py -> citire la APEL.
+
+   FACUT 22.07 (fir 6, commit config-lazy): verificare la sursa a tuturor 19 (unde e folosita fiecare +
+   depinde ceva de stabilitatea in-proces). Concluzie: env inghetat de systemd -> citire-la-import ==
+   citire-la-apel bit-cu-bit; nimeni nu compara cu un snapshot inghetat; niciun consumator extern nu importa
+   bindingul. CONVERTITE 15 + 1 STERSA (REVOKE_URL era declarat dar NEFOLOSIT nicaieri -> cod mort, eliminat):
+   observare.py (6: praguri float + emailuri + BREVO_KEY), efactura_send.py (2: FCTEL_BASE/VALIDARE ->
+   accesori fctel_base/fctel_validare_url), etransport_send.py (2: BASE + VERSIUNE int), spv_conector.py
+   (5 non-secret: CLIENT_ID/SECRET, REDIRECT_URI, AUTHORIZE_URL, TOKEN_URL). DOVADA: suita 438 verde dupa
+   FIECARE fisier + verificator DS 0 + test functional (env setat DUPA import schimba comportamentul).
+   Decizia "17 vs 15+deleted, si de ce raman cele JWT" -> DECIZII.md 22.07.
+
+   RAMAS DESCHIS (3 var, 2 fisiere) — read-la-import intentionat, se trateaza separat cu testul lor:
+   - auth_api.py: SECRET (=JWT_SECRET) + DURATA_TOKEN_SEC. Fisier neatins in acest pas (contine SECRET,
+     semnare/verificare token pe TOATE sesiunile - forma catastrofala; DURATA_TOKEN_SEC e sigur, dar sta in
+     acelasi fisier -> amanat impreuna).
+   - spv_conector.py: STATE_SECRET (=JWT_SECRET). State CSRF generat la /authorize, verificat la /callback -
+     cereri diferite, potential peste restart -> de analizat pe cont propriu inainte de conversie.
+   Cand se face: adauga test dedicat (JWT_SECRET setat dupa import + token semnat cu el valideaza),
+   DA gate explicit inainte (atinge semnarea).
+   EXCLUSE cu motiv (raman la import, OK): cron-uri standalone (spv_poll/receive/refresh - proces propriu,
+   env systemd, nu-s importate in teste) si main.py (entry-point, TENANT_TEMPLATE_PATH are default).
 
 RAMAS — cere ochii/telefonul, NU SSH: **vezi CHECKLIST_BROWSER.md** (PWA P4.18-19, responsive
 P4.20-21, audit vizual ~12 ecrane ramase). Grup fiscal/D101G si ONG: lasate deoparte (fara cod nou).

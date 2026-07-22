@@ -32,17 +32,19 @@ import requests
 
 from core import nucleu
 from core import db
+from core.common import cfg
 
 MODUL = "spv_conector"
 
-# --- Parametri ANAF (env; endpointurile au fallback = valorile verificate la sursa) ---
-CLIENT_ID     = os.environ.get("ANAF_CLIENT_ID", "")
-CLIENT_SECRET = os.environ.get("ANAF_CLIENT_SECRET", "")
-REDIRECT_URI  = os.environ.get("ANAF_REDIRECT_URI", "")
-AUTHORIZE_URL = os.environ.get("ANAF_AUTHORIZE_URL", "https://logincert.anaf.ro/anaf-oauth2/v1/authorize")
-TOKEN_URL     = os.environ.get("ANAF_TOKEN_URL",     "https://logincert.anaf.ro/anaf-oauth2/v1/token")
-REVOKE_URL    = os.environ.get("ANAF_REVOKE_URL",    "https://logincert.anaf.ro/anaf-oauth2/v1/revoke")
+# --- Parametri ANAF (env, cititi LA APEL prin cfg — item 5; endpointurile au
+#     fallback = valorile verificate la sursa). Chei: ANAF_CLIENT_ID / ANAF_CLIENT_SECRET,
+#     ANAF_REDIRECT_URI, ANAF_AUTHORIZE_URL, ANAF_TOKEN_URL. (ANAF_REVOKE_URL era declarat
+#     dar nefolosit nicaieri -> eliminat, nu convertit.) ---
+_AUTHORIZE_URL_DEFAULT = "https://logincert.anaf.ro/anaf-oauth2/v1/authorize"
+_TOKEN_URL_DEFAULT     = "https://logincert.anaf.ro/anaf-oauth2/v1/token"
 
+# STATE_SECRET ramane citit LA IMPORT in acest pas: semneaza/verifica JWT (state CSRF),
+# forma catastrofala daca s-ar schimba la cald; se trateaza separat (DE_FACUT item 5).
 STATE_SECRET      = os.environ.get("JWT_SECRET", "")   # state = token semnat, fara tabel nou
 STATE_DURATA_SEC  = 600            # 10 minute (ARHITECTURA: state expira in 10 min)
 REFRESH_DURATA_ZILE = 365          # refresh token 365 zile (verificat la sursa ANAF)
@@ -187,12 +189,12 @@ def url_autorizare(principal, acum=None):
     state = genereaza_state(principal, acum=acum)
     q = urllib.parse.urlencode({
         "response_type": "code",
-        "client_id": CLIENT_ID,
-        "redirect_uri": REDIRECT_URI,
+        "client_id": cfg("ANAF_CLIENT_ID"),
+        "redirect_uri": cfg("ANAF_REDIRECT_URI"),
         "token_content_type": "jwt",
         "state": state,
     })
-    return f"{AUTHORIZE_URL}?{q}", state
+    return f"{cfg('ANAF_AUTHORIZE_URL', _AUTHORIZE_URL_DEFAULT)}?{q}", state
 
 
 # ============================================================
@@ -317,8 +319,8 @@ def dezactiveaza_token(conn, token_id):
 # ============================================================
 def _post_token(data):
     """POST /token cu Basic Auth. Intoarce JSON. Ridica pe non-200."""
-    auth = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
-    r = requests.post(TOKEN_URL, data=data,
+    auth = base64.b64encode(f"{cfg('ANAF_CLIENT_ID')}:{cfg('ANAF_CLIENT_SECRET')}".encode()).decode()
+    r = requests.post(cfg("ANAF_TOKEN_URL", _TOKEN_URL_DEFAULT), data=data,
                       headers={"Authorization": f"Basic {auth}",
                                "Content-Type": "application/x-www-form-urlencoded"},
                       timeout=30)
@@ -335,7 +337,7 @@ def schimba_cod_pe_token(code):
     return _post_token({
         "grant_type": "authorization_code",
         "code": code,
-        "redirect_uri": REDIRECT_URI,
+        "redirect_uri": cfg("ANAF_REDIRECT_URI"),
         "token_content_type": "jwt",
     })
 

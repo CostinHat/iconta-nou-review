@@ -13,21 +13,18 @@ Logica de throttling + decizie prag e PURĂ (testabilă fără DB/email).
 Trimiterea efectivă Brevo se dovedește pe server.
 """
 from __future__ import annotations
-import os
 import time
+
+from core.common import cfg
 
 REGULI = "2026.1"
 MODUL = "observare"
 
-# — praguri implicite (calibrate pe trafic real la deploy) —
-PRAG_QUERY_LENT_SEC = float(os.environ.get("ICONTA_PRAG_QUERY_SEC", "2.0"))
-PRAG_POOL_PCT = float(os.environ.get("ICONTA_PRAG_POOL_PCT", "80"))   # % din maxconn
-THROTTLE_MIN = float(os.environ.get("ICONTA_ALERTA_THROTTLE_MIN", "15"))
-
-# email destinatar alerte + sender (Brevo deja configurat pe iconta.eu)
-ALERTA_CATRE = os.environ.get("ICONTA_ALERTA_EMAIL", "contact@iconta.eu")
-ALERTA_DE_LA = os.environ.get("ICONTA_SENDER_EMAIL", "contact@iconta.eu")
-BREVO_KEY = os.environ.get("BREVO_API_KEY", "")
+# Config din env — citită LA APEL prin cfg() (nu înghețată la import, item 5).
+# Praguri (float): ICONTA_PRAG_QUERY_SEC=2.0, ICONTA_PRAG_POOL_PCT=80 (% maxconn),
+#   ICONTA_ALERTA_THROTTLE_MIN=15. Email: ICONTA_ALERTA_EMAIL (destinatar),
+#   ICONTA_SENDER_EMAIL (sender). Cheie Brevo: BREVO_API_KEY.
+_EMAIL_IMPLICIT = "contact@iconta.eu"   # destinatar + sender impliciti (SPF/DKIM iconta.eu)
 
 # stare throttling: {cheie_alerta: ultima_trimitere_epoch}
 _ultima_alerta = {}
@@ -42,7 +39,7 @@ def trebuie_trimisa(cheie, acum=None, throttle_min=None, stare=None):
     Pură: primește acum + stare, nu citește ceasul/global direct.
     """
     acum = acum if acum is not None else time.time()
-    throttle_min = THROTTLE_MIN if throttle_min is None else throttle_min
+    throttle_min = cfg("ICONTA_ALERTA_THROTTLE_MIN", "15", float) if throttle_min is None else throttle_min
     stare = _ultima_alerta if stare is None else stare
     ultima = stare.get(cheie)
     if ultima is None or (acum - ultima) >= throttle_min * 60:
@@ -65,7 +62,7 @@ def evalueaza_pool(folosite, maxconn, prag_pct=None):
     """
     Întoarce (alerta_da, pct, mesaj). Pură.
     """
-    prag = PRAG_POOL_PCT if prag_pct is None else prag_pct
+    prag = cfg("ICONTA_PRAG_POOL_PCT", "80", float) if prag_pct is None else prag_pct
     pct = pool_ocupare_pct(folosite, maxconn)
     if pct >= prag:
         return True, pct, ("Pool DB la %.0f%% (%d/%d conexiuni). "
@@ -76,7 +73,7 @@ def evalueaza_pool(folosite, maxconn, prag_pct=None):
 
 def evalueaza_durata(eticheta, durata_sec, prag_sec=None):
     """Întoarce (alerta_da, mesaj) pentru o operație cronometrată. Pură."""
-    prag = PRAG_QUERY_LENT_SEC if prag_sec is None else prag_sec
+    prag = cfg("ICONTA_PRAG_QUERY_SEC", "2.0", float) if prag_sec is None else prag_sec
     if durata_sec >= prag:
         return True, ("Operație lentă: %s a durat %.2fs (prag %.1fs)."
                       % (eticheta, durata_sec, prag))
@@ -89,21 +86,22 @@ def evalueaza_durata(eticheta, durata_sec, prag_sec=None):
 def _trimite_brevo(subiect, mesaj):
     """Trimite email via Brevo. Întoarce True/False. Izolat — singurul loc
     care știe de Brevo; schimbi aici pt Slack/alt canal."""
-    if not BREVO_KEY:
+    brevo_key = cfg("BREVO_API_KEY")
+    if not brevo_key:
         # fără cheie (ex. local): doar log, nu crăpa aplicația
         print("[ALERTĂ netrimisă, fără BREVO_API_KEY] %s — %s" % (subiect, mesaj))
         return False
     import json
     import urllib.request
     payload = json.dumps({
-        "sender": {"email": ALERTA_DE_LA, "name": "iConta Alerte"},
-        "to": [{"email": ALERTA_CATRE}],
+        "sender": {"email": cfg("ICONTA_SENDER_EMAIL", _EMAIL_IMPLICIT), "name": "iConta Alerte"},
+        "to": [{"email": cfg("ICONTA_ALERTA_EMAIL", _EMAIL_IMPLICIT)}],
         "subject": "[iConta] " + subiect,
         "textContent": mesaj,
     }).encode()
     req = urllib.request.Request(
         "https://api.brevo.com/v3/smtp/email", data=payload,
-        headers={"api-key": BREVO_KEY, "content-type": "application/json"})
+        headers={"api-key": brevo_key, "content-type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=10) as r:
             return r.status in (200, 201)
@@ -116,21 +114,22 @@ def _trimite_brevo(subiect, mesaj):
 def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
                        expeditor_nume="iConta"):
     """Email HTML catre un destinatar arbitrar (nu doar alerta interna).
-    Refoloseste BREVO_KEY + sender. Intoarce True/False.
+    Refoloseste cheia Brevo + sender-ul (env, citit la apel). Intoarce True/False.
 
     reply_to: adresa la care raspunde destinatarul (Reply-To). From-ul RAMANE
-      ALERTA_DE_LA (contact@iconta.eu) - autorizat SPF/DKIM pe iconta.eu; NU se
+      ICONTA_SENDER_EMAIL (implicit contact@iconta.eu) - autorizat SPF/DKIM pe iconta.eu; NU se
       trimite From pe alt domeniu (ar pica SPF/DMARC). Folosit de F131: emailul
       pleaca in numele firmei (expeditor_nume='<Firma> prin iConta'), dar reply-to
       = adresa firmei ca raspunsul clientului sa ajunga la ea, nu la iConta.
     expeditor_nume: numele afisat al expeditorului (implicit 'iConta')."""
-    if not BREVO_KEY:
+    brevo_key = cfg("BREVO_API_KEY")
+    if not brevo_key:
         print("[email netrimis, fara BREVO_API_KEY] %s -> %s" % (subiect, catre))
         return False
     import json
     import urllib.request
     corp = {
-        "sender": {"email": ALERTA_DE_LA, "name": expeditor_nume},
+        "sender": {"email": cfg("ICONTA_SENDER_EMAIL", _EMAIL_IMPLICIT), "name": expeditor_nume},
         "to": [{"email": catre}],
         "subject": subiect,
         "htmlContent": html,
@@ -143,7 +142,7 @@ def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
     payload = json.dumps(corp).encode()
     req = urllib.request.Request(
         "https://api.brevo.com/v3/smtp/email", data=payload,
-        headers={"api-key": BREVO_KEY, "content-type": "application/json"})
+        headers={"api-key": brevo_key, "content-type": "application/json"})
     try:
         with urllib.request.urlopen(req, timeout=15) as r:
             return r.status in (200, 201)

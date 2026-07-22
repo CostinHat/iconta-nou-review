@@ -26,27 +26,30 @@ LIMITE v1 (de confirmat pe TEST la pasul 2, NU ghicite aici):
   - Doar factura standard cu TVA (categorii S/Z). taxare_inversa (AE), neplatitor TVA (O),
     storno/nota de credit (381) NU sunt tratate in v1 - se adauga dupa confirmare pe TEST.
 """
-import os
 import re
 import unicodedata
 from decimal import Decimal, ROUND_HALF_UP
 from xml.sax.saxutils import escape as _xml_escape
 
-# ============================================================
-#  CONFIG HOST — o singura constanta (env-overridable)
-# ============================================================
-FCTEL_BASE_TPL = os.environ.get(
-    "EFACTURA_FCTEL_BASE", "https://api.anaf.ro/%s/FCTEL/rest")   # OAuth upload/stare/descarcare
-FCTEL_VALIDARE_TPL = os.environ.get(
-    "EFACTURA_VALIDARE_URL", "https://webservicesp.anaf.ro/prod/FCTEL/rest/validare/%s")  # structura, fara token
+from core.common import cfg
 
-
+# ============================================================
+#  CONFIG HOST — env citit LA APEL (cfg), o singura sursa per host
+# ============================================================
 def fctel_base(mode="prod"):
-    """Baza REST e-Factura (OAuth) pentru mode 'prod'/'test'. SINGURA sursa a host-ului."""
+    """Baza REST e-Factura (OAuth) pentru mode 'prod'/'test'. SINGURA sursa a host-ului.
+    Host din EFACTURA_FCTEL_BASE (implicit api.anaf.ro/%s/FCTEL/rest), citit la apel."""
     mode = (mode or "prod").strip().lower()
     if mode not in ("prod", "test"):
         mode = "prod"
-    return FCTEL_BASE_TPL % mode
+    return cfg("EFACTURA_FCTEL_BASE", "https://api.anaf.ro/%s/FCTEL/rest") % mode
+
+
+def fctel_validare_url(standard="FACT1"):
+    """URL validator de structura (schematron CIUS-RO), FARA token. SINGURA sursa.
+    Din EFACTURA_VALIDARE_URL (implicit webservicesp.anaf.ro/.../validare/%s), citit la apel."""
+    return cfg("EFACTURA_VALIDARE_URL",
+               "https://webservicesp.anaf.ro/prod/FCTEL/rest/validare/%s") % standard
 
 
 # CIUS-RO: structura romaneasca peste EN16931 (valoare din build vechi, de confirmat pe TEST)
@@ -347,7 +350,7 @@ def valideaza(xml, standard="FACT1"):
     Apel direct (nu apel_anaf): endpoint fara autentificare, nu e un apel SPV.
     """
     import requests
-    r = requests.post(FCTEL_VALIDARE_TPL % standard, data=xml.encode("utf-8"),
+    r = requests.post(fctel_validare_url(standard), data=xml.encode("utf-8"),
                       headers={"Content-Type": "text/plain"}, timeout=45)
     try:
         j = r.json()

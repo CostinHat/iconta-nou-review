@@ -2171,3 +2171,31 @@ BLOCK NOTABIL: verificatorul acopera acum si backendul (BACKEND_UI_BRUT), nu doa
 (sume/date brute in Python) care putea reintra tacit e inchisa mecanic; suita de teste ramane VERDE complet (438,
 zero rosu permanent). Ramas (DE_FACUT): ramura PFA a auditului vazuta doar prin teste+E2E, nu in UI reala (primul
 PFA real); fus orar "cu_ora" = ora server (global). [test_spv rosu permanent -> REZOLVAT, fir 5.]
+
+## 22.07.2026 fir 6 — config lazy (DE_FACUT item 5): env citit la APEL, nu la import
+
+Aceeasi clasa de fragilitate care a produs item 4 (env inghetat la primul import, ordine accidentala; merge
+in productie pe systemd, capcana sub pytest). Verificare la sursa a TUTUROR 19 variabilelor inainte de orice
+conversie (grep pe fiecare constanta + unde e folosita valoarea + depinde ceva de stabilitatea in-proces):
+concluzie ca env inghetat de systemd -> citire-la-import == citire-la-apel bit-cu-bit, nimeni nu compara cu un
+snapshot, niciun consumator extern nu importa bindingul. Decizia "15+1 sters vs 17, si de ce raman JWT" -> DECIZII 22.07.
+
+FACUT: helper `cfg(cheie, default="", cast=str)` in common.py (o singura definitie, citire la apel + cast la
+tipul real). CONVERTITE 15, in ordinea gate-uita cu suita dupa FIECARE fisier:
+  1. observare.py (6): praguri float (ICONTA_PRAG_QUERY_SEC/POOL_PCT/THROTTLE_MIN) + emailuri + BREVO_KEY;
+     `os` devenit mort -> scos; email implicit factorizat in _EMAIL_IMPLICIT (o sursa).
+  2. efactura_send.py (2): FCTEL_BASE_TPL + FCTEL_VALIDARE_TPL -> accesori fctel_base()/fctel_validare_url()
+     (simetrici, single-source per host); test_efactura actualizat (nu mai lovea atribute de modul).
+  3. etransport_send.py (2): ETRANSPORT_BASE (host) + ETRANSPORT_VERSIUNE (cast int, atentie tip real).
+  4. spv_conector.py (5 non-secret): CLIENT_ID/SECRET, REDIRECT_URI, AUTHORIZE_URL, TOKEN_URL; test_spv
+     actualizat (assert pe _AUTHORIZE_URL_DEFAULT, nu pe atribut). STERS: REVOKE_URL (declarat, NEFOLOSIT
+     nicaieri in tot repo -> cod mort, regula "reparatie reala").
+RAMAS DESCHIS (3 var, read-la-import intentionat, DE_FACUT item 5): auth_api.SECRET + DURATA_TOKEN_SEC
+(fisier neatins - contine SECRET, semnare pe toate sesiunile) + spv_conector.STATE_SECRET (state generat la
+/authorize, verificat la /callback - cereri diferite, potential peste restart). Se fac separat, cu test dedicat
+(JWT_SECRET setat dupa import + token semnat valideaza) si DA gate.
+
+DOVADA: suita completa 438 passed 0 failed dupa FIECARE din cele 4 fisiere (baseline stabilit intai cu
+db.env sursat: fara el, 1 rosu de mediu "pool neinitializat" - shell interactiv n-are env-ul DB pe care
+systemd il injecteaza serviciului, exact patologia temei). verificator DS = 0 candidate. Test functional:
+env setat DUPA import schimba comportamentul pe toate 4 modulele (prag, URL authorize, host efactura, versiune).

@@ -95,7 +95,7 @@ def test_state_modificat_arunca():
 
 def test_url_autorizare_contine_parametrii():
     url, st = s.url_autorizare(s.principal_firm(7))
-    assert s.AUTHORIZE_URL in url
+    assert s._AUTHORIZE_URL_DEFAULT in url   # env ANAF_AUTHORIZE_URL neconfigurat -> default (cfg la apel)
     assert "response_type=code" in url
     assert "token_content_type=jwt" in url
     assert "state=" in url

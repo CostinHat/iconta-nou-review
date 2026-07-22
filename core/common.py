@@ -13,11 +13,20 @@ Reguli de dependență (graf aciclic, fără interferențe între module):
   - main.py importă din module; modulele NU știu de main.py
 """
 from __future__ import annotations
+import os
 from collections import defaultdict
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 
 VERSIUNE_COMMON = "2026.1"
+
+
+def cfg(cheie, default="", cast=str):
+    """Config din env citită LA APEL, nu la import (item 5 DE_FACUT). Ordinea de
+    import devine irelevantă (nu mai îngheață o valoare goală sub pytest), iar o
+    valoare schimbată în env nu mai cere restart de proces ca să fie citită.
+    `default` e string (ca env), `cast` îl convertește la tipul real (int/float)."""
+    return cast(os.environ.get(cheie, default))
 
 _CENT = Decimal("0.01")
 

@@ -126,6 +126,6 @@ def test_host_o_singura_constanta():
     assert ef.fctel_base("prod") == "https://api.anaf.ro/prod/FCTEL/rest"
     assert ef.fctel_base("test") == "https://api.anaf.ro/test/FCTEL/rest"
     assert ef.fctel_base("orice") == "https://api.anaf.ro/prod/FCTEL/rest"  # fallback prod
-    assert "webserviceapl" not in ef.FCTEL_BASE_TPL   # ruta mTLS, nu OAuth
+    assert "webserviceapl" not in ef.fctel_base("prod")   # ruta mTLS, nu OAuth
     # validatorul de structura pe host propriu, fara token
-    assert "webservicesp.anaf.ro" in ef.FCTEL_VALIDARE_TPL
+    assert "webservicesp.anaf.ro" in ef.fctel_validare_url()

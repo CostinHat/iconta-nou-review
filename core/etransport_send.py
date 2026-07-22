@@ -21,25 +21,26 @@ LIMITA (onest, ca la e-Factura): formatul EXACT al raspunsului upload/stareMesaj
 erori) e din pattern-ul ANAF, NU dovedit live - parsare DEFENSIVA, se logheaza brut la primul raspuns real.
 Trimiterea live ramane pending drept e-Transport pe CIF real.
 """
-import os
 import re
 import hashlib
 from datetime import date, datetime, timedelta
 
 from core import db
 from core import spv_conector
+from core.common import cfg
 
-ETRANSPORT_BASE_TPL = os.environ.get(
-    "ETRANSPORT_BASE", "https://api.anaf.ro/%s/ETRANSPORT/ws/v1")   # host OAuth (webserviceapl = cert)
-VERSIUNE_XML = int(os.environ.get("ETRANSPORT_VERSIUNE", "2"))       # v2 curent (v1 inca acceptat)
+# Config din env — citită LA APEL prin cfg() (nu înghețată la import, item 5).
+# ETRANSPORT_BASE (host OAuth, webserviceapl = cert), ETRANSPORT_VERSIUNE (int,
+# implicit 2 = v2 curent; v1 inca acceptat) — vezi etransport_base() / versiune la trimite().
 
 
 def etransport_base(mediu="test"):
-    """Baza REST e-Transport pentru mediu 'prod'/'test'. SINGURA sursa a host-ului."""
+    """Baza REST e-Transport pentru mediu 'prod'/'test'. SINGURA sursa a host-ului.
+    Host din ETRANSPORT_BASE (implicit api.anaf.ro/%s/ETRANSPORT/ws/v1), citit la apel."""
     mediu = (mediu or "test").strip().lower()
     if mediu not in ("prod", "test"):
         mediu = "test"
-    return ETRANSPORT_BASE_TPL % mediu
+    return cfg("ETRANSPORT_BASE", "https://api.anaf.ro/%s/ETRANSPORT/ws/v1") % mediu
 
 
 # ============================================================
@@ -75,7 +76,7 @@ def fereastra_uit(data_transport, intracom=False, acum=None):
 # ============================================================
 def upload_uit(principal, cif, xml, versiune=None, mediu="test"):
     """POST /upload/ETRANSP/{cif}/{versiune}. Intoarce Response."""
-    versiune = versiune if versiune is not None else VERSIUNE_XML
+    versiune = versiune if versiune is not None else cfg("ETRANSPORT_VERSIUNE", "2", int)
     cifn = "".join(c for c in str(cif) if c.isdigit())
     url = "%s/upload/ETRANSP/%s/%s" % (etransport_base(mediu), cifn, versiune)
     return spv_conector.apel_anaf(principal, "POST", url, data=xml.encode("utf-8"),

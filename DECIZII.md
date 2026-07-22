@@ -1966,3 +1966,25 @@ LIMITA: regimul se citeste din firma_profil.tip_firma; absent/necunoscut -> trat
 ca straturi_pentru. Aparare: test_audit_preluare.py::test_pfa_ruleaza_doar_rip_zero_importa_balanta (FakeConn
 PFA: doar constatari RIP, zero "balanta"/"parteneri") + non-regresie pe cele 11 teste SRL. Verificat E2E pe
 tenant_002 (rollback: tip_firma='pfa' + RIP injectat -> doar RIP; SRL neschimbat).
+
+### 22.07.2026 Config lazy: convertite 15 din 19, cele 3 JWT raman la import  (common.cfg; observare/efactura/etransport/spv_conector; DE_FACUT item 5)
+DECIZIE: din cele 19 env citite la nivel de modul, se convertesc la citire-la-apel (cfg) 15 + se sterge 1
+mort (REVOKE_URL); raman intentionat la import 3 legate de JWT_SECRET (auth_api.SECRET, auth_api.DURATA_TOKEN_SEC,
+spv_conector.STATE_SECRET). Nu 17 cate anticipa inventarul, ci 15+1: fisierul auth_api.py nu s-a atins deloc
+in acest pas, deci si DURATA_TOKEN_SEC (sigur in sine) a fost amanat impreuna cu SECRET-ul din acelasi fisier.
+TEMEI: verificare la sursa a tuturor 19 (grep pe fiecare constanta + unde e folosita valoarea). (1) Env inghetat
+de systemd pe durata procesului -> citire-la-import == citire-la-apel bit-cu-bit; singura diferenta reala e
+sub pytest/context programatic (item 4). (2) Niciun loc nu compara valoarea cu un snapshot inghetat (URL-urile
+se folosesc doar la construit request; redirect_uri se trimite identic la /authorize si /token, ANAF il compara,
+nu noi). (3) Niciun consumator EXTERN nu importa bindingul (`from spv_conector import CLIENT_ID` -> zero). (4)
+REVOKE_URL declarat dar nefolosit nicaieri -> cod mort (regula "reparatie reala"), eliminat nu convertit.
+ALTERNATIVA RESPINSA: (A) convertim toate 19 intr-un pas - respins de Costin: cele 2 JWT (SECRET+STATE_SECRET)
+sunt sigure doar prin PROPRIETATEA deployment-ului (env inghetat), nu prin cod; castig zero (nimeni nu roteste
+JWT_SECRET la cald), risc de forma catastrofala (semnare/verificare = TOATE sesiunile). Se trateaza separat, cu
+test dedicat + DA gate. (B) convertim si DURATA_TOKEN_SEC acum (e sigur, int) - respins: ar cere editarea
+auth_api.py, exact fisierul cu SECRET-ul sensibil, contra listei explicite de 4 fisiere; amanat cu el.
+LIMITA: dovada e pe env inghetat de systemd - daca vreodata env s-ar schimba la cald (nu se intampla azi),
+semantica citirii-la-apel difera de cea veche. Cele 3 ramase (STATE_SECRET in plus: state generat la /authorize
+si verificat la /callback, cereri diferite potential peste restart) cer analiza proprie inainte de conversie.
+Aparare: suita 438 verde dupa fiecare fisier + verificator DS 0 + dovada functionala (env setat DUPA import
+schimba comportamentul). Norma traieste in docstring-ul common.cfg + comentariile de la fiecare punct de citire.
