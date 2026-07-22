@@ -1939,3 +1939,30 @@ NORMA: DESIGN_SYSTEM v2.15 cap.4 (regula backend) + verificator BACKEND_UI_BRUT 
 orice norma noua. LIMITA: garda nu vede sume fara "lei" ({debit} ≠ {credit}) si nici template-uri umplute
 necentralizat - de aceea common.problema centralizeaza. Reparate azi: control_incrucisat (16), common/d112/
 taxare_inversa/main (sume), sinteza_zilnica/scadente/main (date). d300:273 = fals-pozitiv (deja formatat).
+
+### 22.07.2026 F183 audit ramifica pe REGIM: PFA -> doar RIP, verificarile de partida dubla NU apar  (core/audit_preluare.py audit(); test_audit_preluare.py)
+DECIZIE: audit() citeste tip_firma si ruleaza doar verificarile aplicabile regimului. La partida simpla
+(PFA) ruleaza DOAR coerenta registrului RIP; verificarile de partida dubla (balanta, parteneri, istoric-
+vs-solduri-fiscale) NU apar deloc. La SRL, invers: partida dubla ruleaza, RIP nu (gol prin definitie).
+TEMEI (diagnostic la sursa 22.07, demo injectata-in-rollback pe tenant_002): auditul rula TOATE cele 4
+verificari neconditionat, fara sa citeasca tip_firma. Pe un PFA (care N-ARE balanta prin definitie -
+partida simpla, registru cronologic), verifica_balanta/parteneri/istoric intorceau gri "Balanta nu a fost
+importata - importa balanta de deschidere". Adica un REMEDIU IMPOSIBIL: partida simpla nu are ce balanta
+sa importe. Asta incalca contractul modulului (fiecare constatare = temei + limita + remediu ACTIONABIL);
+un gri cu remediu care nu se poate executa e zgomot inselator, nu informatie.
+DE CE "sare" si nu "nu se aplica" (optiunea A vs B la gate): un rand "nu se aplica - partida simpla" ar
+rula tot verificarea (munca inutila) si ar adauga text pe ecran pentru ceva ce omul stie deja (a preluat
+un PFA). Remediul imposibil e problema, nu invizibilitatea; se elimina la sursa (nu se ruleaza), nu se
+comenteaza. Un PFA vede DOAR ce are sens pentru el.
+SURSA UNICA a maparii regim->straturi: migrare_api.straturi_pentru(tip_firma) / STRATURI_META (solduri/
+solduri_parteneri = 'dubla', rip = 'simpla'). Auditul NU redefineste ce regim are ce strat - il citeste de
+acolo (o singura sursa, zero drift). Legatura audit->strat: balanta<->solduri, parteneri<->solduri_parteneri,
+istoric-fiscal<->solduri (checkul are nevoie de balanta de deschidere pentru soldurile conturilor fiscale,
+deci e partida dubla desi stratul 'istoric_declaratii' e 'ambele' - stratul e despre IMPORT, checkul despre
+CORELARE cu balanta), rip<->rip.
+ALTERNATIVA RESPINSA: (B) "nu se aplica" vizibil - respins (mai sus). (C) lasat cum e (doar diagnostic) -
+respins de Costin: primul PFA real ar vedea gri-uri "importa balanta" derutante.
+LIMITA: regimul se citeste din firma_profil.tip_firma; absent/necunoscut -> tratat 'srl' (partida dubla),
+ca straturi_pentru. Aparare: test_audit_preluare.py::test_pfa_ruleaza_doar_rip_zero_importa_balanta (FakeConn
+PFA: doar constatari RIP, zero "balanta"/"parteneri") + non-regresie pe cele 11 teste SRL. Verificat E2E pe
+tenant_002 (rollback: tip_firma='pfa' + RIP injectat -> doar RIP; SRL neschimbat).

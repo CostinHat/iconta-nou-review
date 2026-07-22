@@ -107,9 +107,50 @@ class _FakeConn:
 
 
 def test_audit_fara_documente_da_gri_nu_verde():
-    # nicio sursa importata -> totul gri (NEVERIFICAT), stare gri, NU verde tacut
+    # nicio sursa importata (firma_profil absent -> tratat 'srl') -> checks partida dubla toate gri
     r = audit(_FakeConn(), "tenant_x", 1, _FakeConn())
     assert r["stare"] == "gri"
     assert r["divergent"] == 0 and r["coerent"] == 0
     assert r["neverificat"] >= 1
     assert r["modul"] == "audit_preluare"
+
+
+# ---- PFA (partida simpla): DOAR verificarea RIP, zero verificari de partida dubla ----
+
+class _PfaCur:
+    """Simuleaza un PFA: firma_profil.tip_firma='pfa', rip_operatiuni populat, FARA solduri_initiale."""
+    def __init__(self): self._rows = []
+    def execute(self, sql, params=None):
+        s = sql.lower()
+        if "to_regclass" in s:
+            self._rows = [("exista",)]          # firma_profil + rip_operatiuni exista
+        elif "tip_firma" in s:
+            self._rows = [("pfa",)]
+        elif "rip_operatiuni" in s and "sum" in s:
+            self._rows = [(1500, 500, 4, 1)]     # inc, plati, n_total, n_neclasificat
+        else:
+            self._rows = []
+    def fetchone(self): return self._rows[0] if self._rows else None
+    def fetchall(self): return self._rows
+    def __enter__(self): return self
+    def __exit__(self, *a): return False
+
+
+class _PfaConn:
+    def cursor(self, **kw): return _PfaCur()
+
+
+def test_pfa_ruleaza_doar_rip_zero_importa_balanta():
+    r = audit(_PfaConn(), "tenant_pfa", 1, _PfaConn())
+    # TOATE constatarile sunt despre registrul RIP - nicio verificare de partida dubla
+    assert r["constatari"], "PFA cu RIP trebuie sa produca constatari"
+    for c in r["constatari"]:
+        assert "Registru" in c["eticheta"], f"constatare non-RIP la PFA: {c['eticheta']}"
+    # ZERO "importa balanta / parteneri" (remediu imposibil la partida simpla)
+    tot = " ".join(c["mesaj"] + (c.get("remediu") or {}).get("actiune", "") for c in r["constatari"])
+    assert "balanț" not in tot.lower() and "balanta" not in tot.lower()
+    assert "parteneri" not in tot.lower()
+    # RIP-ul chiar s-a evaluat: sold ne-negativ (verde) + neclasificat (gri)
+    stari = {c["stare"] for c in r["constatari"]}
+    assert "verde" in stari and "gri" in stari
+    assert r["divergent"] == 0

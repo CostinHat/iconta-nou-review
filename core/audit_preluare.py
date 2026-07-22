@@ -274,16 +274,41 @@ def constatare_rip(inc, plati, n_total, n_neclasificat):
     return out
 
 
+def _tip_firma(conn, schema):
+    """tip_firma din firma_profil ('srl'/'pfa'/...), sau None daca lipseste. Defensiv: orice eroare
+    (coloana/tabel absent pe schema veche) -> None, tratat ca 'srl' de straturi_pentru."""
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT to_regclass(%s)", (schema + ".firma_profil",))
+            if cur.fetchone()[0] is None:
+                return None
+            cur.execute(f"SELECT tip_firma FROM {schema}.firma_profil LIMIT 1")
+            row = cur.fetchone()
+            return row[0] if row else None
+    except Exception:
+        return None
+
+
 def audit(conn, schema, tenant_id, conn_public):
-    """Orchestrator F183: ruleaza toate verificarile aplicabile si grupeaza pe cele TREI categorii
-    cerute. `conn` pozitionat pe schema (get_conn(schema), SET LOCAL search_path); `conn_public` pe
-    public (istoric declaratii_depuse). Data raportului o pune apelantul (repetabil, datat cu acum).
+    """Orchestrator F183: ruleaza verificarile APLICABILE REGIMULUI si grupeaza pe cele TREI categorii.
+    Regimul (partida dubla SRL vs simpla PFA) vine din migrare_api.straturi_pentru(tip_firma) - SURSA
+    UNICA a ce strat se aplica carui regim, NU se dubleaza aici. Legatura audit->strat: balanta<->solduri,
+    parteneri<->solduri_parteneri, istoric-fiscal<->solduri (nevoie de balanta de deschidere), rip<->rip.
+    La PFA (fara balanta prin definitie) verificarile de partida dubla NU apar - un gri "importa balanta"
+    ar fi remediu IMPOSIBIL (partida simpla n-are balanta), incalcand contractul temei/limita/remediu.
+    `conn` pe schema (SET LOCAL search_path); `conn_public` pe public. Data o pune apelantul (datat, acum).
     Un check care crapa nu doboara restul -> gri cu cauza (izolare, ca _incrucisat din main.py)."""
+    from core.migrare_api import straturi_pentru
+    straturi = set(straturi_pentru(_tip_firma(conn, schema)))
+    plan = []
+    if "solduri" in straturi:  # partida dubla (SRL): balanta + parteneri + istoric-vs-solduri-fiscale
+        plan += [(verifica_balanta, (conn, schema)),
+                 (verifica_parteneri, (conn, schema)),
+                 (verifica_istoric_fiscal, (conn, schema, tenant_id, conn_public))]
+    if "rip" in straturi:      # partida simpla (PFA): coerenta registrului
+        plan.append((verifica_rip, (conn, schema)))
     constatari = []
-    for fn, args in ((verifica_balanta, (conn, schema)),
-                     (verifica_parteneri, (conn, schema)),
-                     (verifica_istoric_fiscal, (conn, schema, tenant_id, conn_public)),
-                     (verifica_rip, (conn, schema))):
+    for fn, args in plan:
         try:
             constatari += fn(*args)
         except Exception as e:  # izolare: un check picat nu ascunde restul
@@ -297,9 +322,10 @@ def audit(conn, schema, tenant_id, conn_public):
     stare = "rosu" if divergent else ("gri" if neverificat else ("verde" if coerent else "gri"))
     return {"stare": stare, "constatari": constatari,
             "coerent": len(coerent), "divergent": len(divergent), "neverificat": len(neverificat),
-            "limita": ("Verificat: echilibru balanță, defalcare parteneri vs sintetic, solduri fiscale vs "
-                       "istoric declarații, coerență registru PFA. NEVERIFICAT (v1): asociați/cote, mijloace "
-                       "fixe, salariați, vector fiscal vs documente — lipsa lor rămâne vizibilă prin gri, nu "
-                       "tăcută. Auditul verifică coerența INTERNĂ a pachetului preluat, NU corectitudinea "
-                       "evidenței contabilului anterior."),
+            "limita": ("Verificat, în funcție de regim: la partidă dublă (SRL) — echilibru balanță, "
+                       "defalcare parteneri vs sintetic, solduri fiscale vs istoric declarații; la partidă "
+                       "simplă (PFA) — coerența registrului RIP (fără balanță, prin definiție). NEVERIFICAT "
+                       "(v1): asociați/cote, mijloace fixe, salariați, vector fiscal vs documente — lipsa lor "
+                       "rămâne vizibilă prin gri, nu tăcută. Auditul verifică coerența INTERNĂ a pachetului "
+                       "preluat, NU corectitudinea evidenței contabilului anterior."),
             "modul": MODUL, "reguli": REGULI}
