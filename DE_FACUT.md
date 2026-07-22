@@ -297,6 +297,9 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
    secrete reale de prod (parola DB) - conftest care le citeste NU se comiteste cu ele hardcodate; se citeste
    fisierul, nu se copiaza continutul. De confirmat: testele care ating DB lovesc iconta_v2 real (tenant_002)
    sau o baza de test separata? Daca real -> conftest care sourceaza prod e riscant, prefera runner explicit.
+   PARTIAL 22.07: accesul psql interactiv rezolvat separat - functia idb() in ~/.bashrc (sourceaza db.env intr-un
+   subshell + psql "$DATABASE_URL" ca iconta_user; parola ramane in db.env, NU in .bashrc/git). Rezolva "role costin
+   does not exist" (user OS costin != user DB iconta_user). RAMAS: pytest care depinde de db.env in shell (fix a/b).
 
 RAMAS — cere ochii/telefonul, NU SSH: **vezi CHECKLIST_BROWSER.md** (PWA P4.18-19, responsive
 P4.20-21, audit vizual ~12 ecrane ramase). Grup fiscal/D101G si ONG: lasate deoparte (fara cod nou).
