@@ -2156,7 +2156,18 @@ simultan in DESIGN_SYSTEM v2.15 + verificator + DECIZII 22.07. Diacriticele audi
 PRECOMPLETARI sa excluda input-urile native de data/timp. :2038 <input placeholder> fara label = BUG REAL a11y
 (placeholder dispare la tastare, nu e eticheta accesibila) -> fix aria-label. verificator TOTAL 0.
 
+**Fir 5: test_spv_conector rosu permanent inchis (65c8baf).** test_url_autorizare_contine_parametrii picase
+constant in suita completa (dar trecea IZOLAT). Cauza reala (verificata la sursa - NU env lipsa cum paruse):
+spv_conector citeste ANAF_CLIENT_ID/REDIRECT_URI la IMPORT (constante de modul, :39-46); setdefault-ul din
+test_spv_conector.py rula PREA TARZIU cand alt test importa modulul tranzitiv (via main) INAINTE -> constanta
+inghetase goala. FIX: cele 4 setdefault (SPV_FERNET_KEY/JWT_SECRET/ANAF_CLIENT_ID/ANAF_REDIRECT_URI) mutate in
+core/conftest.py (incarcat de pytest INAINTEA colectarii -> inaintea oricarui import de modul, indiferent de
+ordinea testelor). Placeholdere, NU secrete (redirect_uri = URL public de callback ARHITECTURA_SPV.md, client_id
+fictiv). NU skip - testul RULEAZA, acoperirea pe construcția URL-ului de autorizare pastrata; duplicarea din test
+curatata (os/Fernet neutilizate scoase). DOVADA: suita completa 438 passed, 0 failed (era 1 rosu permanent) +
+mutatie negativa (ANAF_REDIRECT_URI gresit -> assertion FAILS), deci verifica real, nu trece vacuu.
+
 BLOCK NOTABIL: verificatorul acopera acum si backendul (BACKEND_UI_BRUT), nu doar .js - o clasa intreaga de drift
-(sume/date brute in Python) care putea reintra tacit e inchisa mecanic. Ramas (DE_FACUT): ramura PFA a auditului
-vazuta doar prin teste+E2E, nu in UI reala (primul PFA real); test_spv_conector rosu permanent (env); fus orar
-"cu_ora" = ora server (global).
+(sume/date brute in Python) care putea reintra tacit e inchisa mecanic; suita de teste ramane VERDE complet (438,
+zero rosu permanent). Ramas (DE_FACUT): ramura PFA a auditului vazuta doar prin teste+E2E, nu in UI reala (primul
+PFA real); fus orar "cu_ora" = ora server (global). [test_spv rosu permanent -> REZOLVAT, fir 5.]
