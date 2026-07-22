@@ -177,7 +177,14 @@ ID / Stare / Sursa cod / Temei legal / Testat). Doua inventare = drift garantat.
   RAMAS (enhancement, NU blocant): firma needitata la care ANAF s-a schimbat post-onboarding ramane verde pana la
   o reimprospatare -> cron periodic F184-style care reinterog. ANAF scpTVA pe portofoliu si updateaza snapshot-ul.
   De construit CAND exista semnal real ca se rateaza divergente, nu speculativ. [PLANIFICAT]
-- F165: auditor conformitate schema tenant vs template + auto-ALTER (drift recurent pe tenant_003/004: link_plata, sursa_externa lipseau); rulat la provisionare + verificabil on-demand [PLANIFICAT]
+- F165: auditor conformitate schema tenant vs template [LIVRAT 22.07.2026] core/audit_schema.py.
+  Realizat: motor diff (ref din template in ROLLBACK + introspectie information_schema, normalizeaza zgomotul
+  nextval) + poarta (test_audit_schema.py pica la drift template->tenant) + CLI on-demand (python3 -m
+  core.audit_schema) care SUGEREAZA SQL (corp migrare_*), NU aplica. Drift curent verificat = ZERO (link_plata/
+  sursa_externa deja backfill-uite; nu era "tenant_003/004", inventarul era gresit - doar tenant_001/002 exista).
+  RESPINS in implementare (vezi DECIZII 22.07): auto-ALTER (lasa gaura in migrari - suggest-don't-apply);
+  whitelist tabele extra (cupleaza la lista extensibila - poarta doar pe directia template->tenant, extra=info);
+  ecran superadmin (YAGNI). LIMITA: compara data_type+nullable, NU precizia varchar/numeric si NU default-uri.
 - F168: la lansare publica, email automat catre conturile create in perioada beta (site in lucru); sterge BETA_COD_ACCES din env pt acces public [PLANIFICAT]
 - F181 (re-numerotat din F163 — coliziune cu F163=D390 din registru): control incrucisat RAMAS D101 / D100 / D394. LIVRAT 19.07: D112=F162, D390=F163 (vezi registru). Text tehnic pastrat: extindere control incrucisat la D112 / D101 / D100 / D390 / D394; acelasi tipar ca TVA. CONSTATARE 15.07 (analiza la sursa): D300 intoarce (xml, res) cu res['R'] = randurile -> comparabil direct. D112 intoarce doar (xml, avertismente) si isi tine agregatele in variabile de structura XML (c2_d14/d15/d16...), NU expune totaluri contabile. Doua cai: (a) parsare XML = fragil, se rupe tacut la schimbare de structura ANAF; (b) d112.genereaza sa intoarca si totalurile (CAS/CASS/impozit/CAM) = refactor pe modul validat DUKIntegrator. Recalcularea paralela din salarizare.calcul_salariu NU e echivalenta (ar compara contabilitatea cu propriul calcul, nu cu ce se declara efectiv - un bug in D112 ar trece neobservat). Conturi tinta (verificate in salarizare.py): CAS=4315, CASS=4316, impozit=444, CAM=436, brut=421. Decizie de arhitectura, nu extindere mecanica [PLANIFICAT]
 - F166: parser MT940 (SWIFT) - LIVE 14.07 in banca_parser (marker :61:/:20:). RAMAS: validare pe fisier MT940 real din banca (campul :86: variaza per banca)

@@ -2247,3 +2247,28 @@ cu csv.reader utf-8-sig EXACT ca raportari_ai.py. Mesaj de esec explicit (ce ran
 conteaza). Respins checkul 3 (vocabular de stari) - cupleaza la lista extensibila, rosu fals la stare noua. De ce
 test si nu verificator -> DECIZII 22.07. DOVADA: 2 teste + mutatie negativa (reintrodus bug F183 pe copie -> prins);
 suita 449 verde.
+
+## 22.07.2026 fir 9 — F165: auditor conformitate schema tenant vs tenant_template.sql
+
+Verificare la sursa INAINTE de cod: (1) tenant_provisioning aplica template-ul INTEGRAL la tenantii NOI (replace
+TENANT_PLACEHOLDER pe tot fisierul -> consistenti prin constructie); driftul loveste doar EXISTENTII cand
+template-ul se schimba fara un migrare_*. (2) exista 14 migrare_*.py idempotente - convenția REPARA driftul dar pe
+DISCIPLINA, nimic nu-l PRINDE mecanic (cauza link_plata). (3) DIAGNOSTIC REAL rulat (ref din template in ROLLBACK
+vs fiecare tenant): drift CURENT = ZERO. tenant_001/002 conforme; link_plata/sursa_externa deja backfill-uite (2/2
+coloane). Inventarul DE_FACUT ("tenant_003/004") era GRESIT - doar 001/002 exista. Cele 6 "tip-diferit" din prima
+rulare = fals-pozitive integral (numele schemei in nextval('schema.seq'); normalizat). Cele 2 "tabele extra" pe
+tenant_002 (d301_operatiuni=lazy prin d301.py, d205_beneficiari=legacy fara CREATE in cod) = benigne, gardate
+to_regclass. CONCLUZIE: valoarea F165 e PREVENTIVA (garda), nu cleanup.
+
+DECIZIE (Costin): audit + poarta + SUGEREAZA SQL, fara auto-ALTER, fara ecran. DECIZII 22.07.
+CONSTRUIT: core/audit_schema.py - motor (ref din template in ROLLBACK + introspectie information_schema, filosofia
+DUK: lucrul real e judecatorul; normalizeaza zgomotul nextval) + compara (directia HARD template->tenant: tabela/
+coloana lipsa, tip, nullable; directia INFORMATIV tenant->template: extra, NU pica -> zero whitelist) +
+sugereaza_alter (corp migrare_* ADD COLUMN IF NOT EXISTS, avertisment pe NOT NULL fara default) + CLI _main
+(python3 -m core.audit_schema, exit code, suggest, NU aplica). test_audit_schema.py: 9 pure + poarta reala (toti
+tenantii conform) + mutatie negativa (coloana scoasa din ref real -> HARD).
+
+DOVADA: suita 460 verde + verificator DS 0 + CLI arata 0/2 drift HARD (cele 2 tabele extra = info adnotat) +
+E2E: DROP link_plata REAL pe tenant_002 in ROLLBACK -> drift HARD detectat + SQL sugerat corect
+('ALTER TABLE "tenant_002".facturi ADD COLUMN IF NOT EXISTS link_plata text;') + tenant_002 NEATINS dupa rollback.
+Suggest-don't-apply: repararea ramane un migrare_* numit + mirror template, revizuit de om (nu gaura in migrari).

@@ -2030,3 +2030,29 @@ cupleaza la o lista extensibila -> o stare noua legitima ar da rosu fals; nu nor
 LIMITA: testul prinde decalaje structurale (nr campuri / ID mutat), NU o eroare semantica intr-un camp corect
 plasat (ex. descriere gresita). Aparare: 2 teste + mutatie negativa dovedita (reintroducerea bug-ului F183 pe o
 copie -> check nr-campuri PRINDE; rand N-campuri cu ID decalat -> check ID PRINDE). Suita 449 verde.
+
+### 22.07.2026 F165 auditor schema tenant: detecteaza + SUGEREAZA SQL, NU aplica  (core/audit_schema.py + test_audit_schema.py)
+DECIZIE: auditor care compara schema fiecarui tenant cu tenant_template.sql; detecteaza driftul si
+EMITE SQL-ul de reparatie (corp migrare_*), dar NU-l aplica automat. Poarta = test in suita (pica la drift
+template->tenant); CLI on-demand pentru inspectie pe prod. FARA auto-ALTER, FARA ecran superadmin.
+TEMEI: (1) verificat la sursa - driftul CURENT e ZERO: tenant_001/002 conforme, link_plata/sursa_externa deja
+backfill-uite; cele 6 "tip-diferit" din primul diagnostic erau fals-pozitive integral (numele schemei in
+nextval, normalizat acum). Valoarea e PREVENTIVA, nu cleanup. (2) tenant_provisioning aplica template-ul integral
+la tenantii NOI (consistenti prin constructie); driftul loveste doar EXISTENTII cand template-ul se schimba fara
+un migrare_*. Convenția migrare_* repara, dar pe DISCIPLINA - nimic nu-l PRINDE mecanic (cazul link_plata). Poarta
+converteste driftul tacut in rosu la dev. (3) Motorul construieste ref din template in ROLLBACK + introspecteaza
+information_schema (filosofia DUK: lucrul real e judecatorul, nu parsare SQL de mana).
+ALTERNATIVA RESPINSA: (a) AUTO-ALTER (aplica ADD COLUMN automat) - RESPINS de Costin: ar repara schema dar ar lasa
+gaura in procesul de migrari (fix aplicat, decizie nedocumentata, nimic in git) = incalca "reparatie reala, nu
+patch". Migrarea sugerata devine un migrare_* NUMIT, cu mirror in template, revizuit de om. (b) WHITELIST pe cele
+2 tabele extra (d205_beneficiari, d301_operatiuni) ca sa nu dea rosu fals - RESPINS: cupleaza la o lista
+extensibila (aceeasi lectie ca vocabularul de Stari, respins azi la garda de registru). In loc: poarta e STRICT pe
+directia template->tenant (lipsa/tip/nullable = clasa link_plata); directia inversa (extra in tenant) = DOAR raport
+informativ, nu pica -> zero whitelist de intretinut. (c) ecran superadmin (ca F186) - RESPINS: YAGNI (superadmin=
+Costin, testul enforce la dev); CLI acopera inspectia pe prod. (d) auto-ALTER pe tip/NOT-NULL/DROP - exclus prin
+design chiar daca auto-ALTER s-ar alege candva: ALTER TYPE poate trunchia/lock-ui, NOT NULL fara default esueaza pe
+tabela cu date, DROP pierde date. Doar ADD COLUMN nullable/cu-default ar fi vreodata "sigur".
+LIMITA: poarta compara data_type + is_nullable (ce a cerut Costin), NU precizia varchar/numeric si NU default-urile
+(zgomot/fals-pozitiv). Char-length change (varchar(50)->(255)) nu e prins. Suggest-ul e best-effort (revizuit de om).
+Aparare: 11 teste (9 pure compara/suggest + poarta reala + mutatie negativa din ref real) + dovada E2E (DROP
+link_plata real pe tenant_002 in ROLLBACK -> drift HARD + SQL sugerat corect, tenant neatins). Suita 460 verde.
