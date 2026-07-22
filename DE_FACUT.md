@@ -232,6 +232,22 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
    public de callback, client_id fictiv). Curatat duplicarea din test (os/Fernet neutilizate scoase).
    DOVADA: suita completa 438 passed 0 failed; mutatie negativa (redirect_uri gresit -> testul PICA) =
    verifica real construcția URL-ului, nu trece vacuu.
+5. **TEMA config lazy: env citit la NIVEL DE MODUL** (inventar 22.07, aceeasi clasa care a produs item 4).
+   19 variabile in 5 fisiere importate TRANZITIV (via main) citesc os.getenv/os.environ la IMPORT ->
+   constanta INGHETATA la primul import, ordine accidentala. In productie merge (systemd incarca env
+   inainte de proces), dar in teste/orice context programatic e capcana (item 4 = dovada; conftest a stins
+   ROSUL, nu fragilitatea structurala).
+   PRIORITATE: spv_conector.py (7: CLIENT_ID/SECRET, REDIRECT_URI, AUTHORIZE/TOKEN/REVOKE_URL, STATE_SECRET
+   - secrete + STATE_SECRET care a muscat azi) + auth_api.py (SECRET=JWT_SECRET, importat foarte larg),
+   apoi observare.py (6: praguri + BREVO_KEY + emailuri), efactura_send.py (2), etransport_send.py (2).
+   FIX: functie cfg(cheie, default) sau proprietati -> citire la APEL, ordinea de import devine PERMANENT
+   irelevanta (nu doar sub pytest).
+   EXCLUSE cu motiv: cron-uri standalone (spv_poll/receive/refresh - proces propriu, env systemd, nu-s
+   importate in teste -> citirea la import e OK) si main.py (entry-point, TENANT_TEMPLATE_PATH are default).
+   EFECT SECUNDAR UTIL in productie: o valoare din env modificata NU mai cere restart de proces ca sa fie
+   citita. RISC de verificat LA SURSA inainte (nu presupus): daca vreun loc se bazeaza pe faptul ca valoarea
+   e STABILA pe durata procesului (ex. secret cache-uit, URL folosit la comparatie), citirea-la-apel schimba
+   semantica - de confirmat ca nimeni nu depinde de stabilitatea in-proces inainte de conversie.
 
 RAMAS — cere ochii/telefonul, NU SSH: **vezi CHECKLIST_BROWSER.md** (PWA P4.18-19, responsive
 P4.20-21, audit vizual ~12 ecrane ramase). Grup fiscal/D101G si ONG: lasate deoparte (fara cod nou).
