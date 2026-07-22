@@ -2191,3 +2191,23 @@ Deci D-vs-D e corect ca LOGICA + citire, dar nedovedit pe o depunere reala pana 
 prin flux. Aparare: 9 teste (7 pure compara_d390_vs_d300 pe cele 5 cazuri + achizitii + tacut; 2 DB _d300_depus_
 randuri pe depunere fabricata) + E2E verifica_d390 pe tenant_002 (a treia comparatie curge, verde livrari + rosu
 achizitii). Suita 475 verde + verificator DS 0.
+
+### 22.07.2026 [PROD] Primul parcurs real al fluxului de depunere D300 (tenant_002) + F163 dovedit pe date reale
+DECIZIE: s-a parcurs cap-coada, PE PROD (tenant de test), fluxul de depunere care nu fusese exercitat niciodata
+(coada complet goala; toate cele 5 depuneri existente = sursa='migrare'). Doua mutatii de prod (autorizate de
+Costin, dupa confirmare ca tenant_002 = TEST): (1) POST /eu/competente ca user 34 -> poate_pregati/valida/depune
+= True (self-serve, legitim - adminul isi activeaza competentele); (2) depunere reala D300 pe tenant_002 2026/06
+(perioada cu IC real: D390 L=5000, A=2000), cu manual R1_1=5000 / R5_1=2000 coerente -> coada 25 la_senior ->
+aprobata -> depusa; declaratii_depuse are acum PRIMUL d300 cu sursa='iconta' + randuri populate (nr_depunere=1).
+CONFIRMARE PRE-MUTATIE (pas 0): tenant_002 = DANTE INTERNATIONAL SA (CUI 14399840 = eMAG, date PUBLICE folosite ca
+test; CLAUDE.md il declara firma de test); doar 2 tenanti (celalalt = entitatea proprie a cabinetului AMZUICA);
+ZERO firma "Daniela" in sistem. Nu s-a atins istoricul fiscal al vreunui client real.
+SEMANTICA 'depusa' verificata la sursa: marcheaza_depusa doar UPDATE stare + INSERT jurnal; spv_index ramane NULL
+(nu s-a transmis nimic la ANAF); depus_la = timestamp intern. 'depusa' = stare interna de jurnal (patru-ochi), NU
+transmitere confirmata la ANAF. Deci depunerea de test nu pretinde o depunere ANAF reala.
+REZULTAT F163 pe date REALE: verde pe ambele (D390 5000/2000 coincid cu D300 depus R1_1=5000/R5_1=2000) - verdict
+CORECT (coerent -> verde), consistent cu logica testului fabricat. LIMITA "dovada doar pe depunere fabricata"
+(registru F163) SE RIDICA -> exista acum o depunere reala prin app cu verdict corect.
+LIMITA/RAMAS: verdictul verde e pe o depunere COERENTA (introdusa de mine sa se potriveasca); divergenta reala
+(rosu) ramane dovedita doar pe fabricat/E2E - o va confirma prima depunere reala unde contabilul uita R1_1. Fluxul
+a fost parcurs O SINGURA data; fricțiunea de permisiuni (adminul default nu poate depune) = item DE_FACUT.

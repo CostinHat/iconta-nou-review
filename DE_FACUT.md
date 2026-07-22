@@ -383,14 +383,19 @@ vs DE CONSTRUIT (munca reala):
   randuri NULL / zero depus -> gri; R1_1/R5_1 absente manual-only -> temei explicit). UI + push F164 agnostice.
   Vezi DECIZII 22.07 F163 D-vs-D. LIMITA: dovada functionala pe depunere FABRICATA (zero D300 depus real prin app).
   RAMAS: servicii IC (P/S) = v3 - d300 nu expune R3_1_1/R7_1_1 (D390 le ia manual); doar bunuri azi.
-- **FLUXUL DE DEPUNERE D300 NU A FOST PARCURS NICIODATA END-TO-END PRIN APP** [PLANIFICAT — semnal de PRODUS, nu F163].
-  Constatat 22.07 la F163 D-vs-D: public.declaratii_depuse are 5 depuneri, TOATE sursa='migrare' (import istoric de
-  la contabilul anterior), ZERO sursa='iconta'. Deci niciun D300 (si de fapt nicio declaratie) n-a fost generat +
-  aprobat + depus prin fluxul coada->marcheaza_depusa in productie. Consecinte: (a) F163 D-vs-D e nedovedit pe date
-  reale pana la prima depunere reala; (b) mai grav ca semnal de produs - fie fluxul de depunere are o frictiune care
-  face contabilii sa depuna direct in SPV (nu prin app), fie firma de test n-a fost dusa cap-coada. De investigat CE
-  opreste o depunere reala (UI? drept SPV? obisnuinta?), nu de "reparat" F163. Se leaga de dus-intors LIVE e-Factura
-  (tot nedovedit live, pending drept SPV).
+- **FRICTIUNE PRODUS: admin de cabinet nu-si poate depune propria munca fara sa-si activeze singur competente**
+  [PLANIFICAT — intrebare deschisa de PRODUS, nu bug, NU se repara acum]. Descoperit 22.07 la primul parcurs REAL
+  al fluxului de depunere (care nu fusese exercitat niciodata - coada complet goala, toate 5 depunerile = migrare).
+  CONSTATARE: poate_valida/poate_depune au default false; _are_permisiune n-are bypass de owner (doar superadmin);
+  four-eyes off nu blocheaza, dar permisiunile blocheaza -> adminul (rol admin_firma) lovește 403 "nu ai permisiunea
+  de a valida" la aprobare. Exista self-serve POST /eu/competente (isi seteaza singur, fara restrictii), DAR nimic in
+  fluxul de depunere nu-l indruma acolo. Plauzibil de-asta n-a depus nimeni prin app.
+  INTREBAREA DESCHISA (de decis, nu de reparat): un OWNER cu bypass automat (admin = poate tot implicit) ar rezolva
+  frictiunea DAR ar goli four-eyes de sens la cabinetele cu UN SINGUR om (acolo pregatirea si validarea sunt oricum
+  aceeasi persoana - patru_ochi_posibil deja False). Alternativ: onboarding care indruma adminul sa-si activeze
+  competentele la prima depunere; sau un default poate_* = true pentru rolul admin_firma la creare. De cantarit intre
+  "control intern real" (four-eyes) si "un om nu se poate bloca singur". PARCURS O DATA 22.07 (tenant_002 test, DECIZII
+  [PROD]) - fluxul MERGE cap-coada odata activate competentele; frictiunea e onboarding-ul, nu mecanismul.
 - **Conventie migrari pe schema PUBLIC** [REZOLVAT 22.07.2026]. Cauza (migrare_* bucla doar tenant_, iconta_user
   n-avea CREATE pe public -> ALTER-uri lazy ca workaround) e inchisa: GRANT CREATE ON SCHEMA public TO iconta_user
   (DECIZII 22.07 [INFRA]) face migrarile pe public first-class ca app-user. Tipar stabilit: migrare_*.py cu un

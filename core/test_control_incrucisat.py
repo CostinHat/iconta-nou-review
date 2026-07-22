@@ -415,13 +415,14 @@ def _conn():
 
 
 def test_d300_depus_randuri_citeste_depunere_fabricata():
+    # perioada SINTETICA (2099) ca sa nu coincida cu depuneri reale (PK tenant/an/luna/tip/nr)
     conn = _conn()
     try:
         with conn.cursor() as cur:
             cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
-                        "VALUES (2, 2026, 6, 'd300', '<x/>', %s, 1)",
+                        "VALUES (2, 2099, 6, 'd300', '<x/>', %s, 1)",
                         (_E.Json({"R": {"R1_1": 5000, "R5_1": 3000}}),))
-            gasit, randuri = _d300_depus_randuri(conn, "tenant_002", 2026, 6)
+            gasit, randuri = _d300_depus_randuri(conn, "tenant_002", 2099, 6)
         assert gasit is True
         assert randuri["R"]["R1_1"] == 5000 and randuri["R"]["R5_1"] == 3000
     finally:
@@ -431,15 +432,15 @@ def test_d300_depus_randuri_citeste_depunere_fabricata():
 def test_d300_depus_randuri_null_si_zero_depuneri():
     conn = _conn()
     try:
-        # zero depuneri d300 pt tenant_002 in 2026/7 -> gasit False
+        # zero depuneri d300 pt tenant_002 in 2099/7 (sintetic) -> gasit False
         with conn.cursor() as cur:
-            g0, r0 = _d300_depus_randuri(conn, "tenant_002", 2026, 7)
+            g0, r0 = _d300_depus_randuri(conn, "tenant_002", 2099, 7)
         assert g0 is False and r0 is None
         # depunere cu randuri NULL -> gasit True, randuri None
         with conn.cursor() as cur:
             cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
-                        "VALUES (2, 2026, 7, 'd300', '<x/>', NULL, 1)")
-            g1, r1 = _d300_depus_randuri(conn, "tenant_002", 2026, 7)
+                        "VALUES (2, 2099, 7, 'd300', '<x/>', NULL, 1)")
+            g1, r1 = _d300_depus_randuri(conn, "tenant_002", 2099, 7)
         assert g1 is True and r1 is None
     finally:
         conn.rollback(); _db.pool().putconn(conn)
