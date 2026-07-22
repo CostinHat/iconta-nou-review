@@ -31,6 +31,14 @@ async function cere(metoda, cale, corp) {
     return await _cere(metoda, cale, corp);
   } finally { deblocheaza(); }
 }
+// [login_401_v1] mesaj de eroare din raspuns, cu text prietenos pe statusuri fara corp
+// (429 rate limit nginx = HTML, fara detail). Zero esec tacit: mereu un motiv lizibil.
+function _mesajEroare(status, date) {
+  if (date && (date.detail || date.mesaj)) return date.detail || date.mesaj;
+  if (status === 429) return "prea multe încercări — așteaptă un minut și reîncearcă";
+  if (status === 502 || status === 503 || status === 504) return "serverul e temporar indisponibil — reîncearcă în câteva momente";
+  return "eroare " + status;
+}
 async function _cere(metoda, cale, corp) {
   const optiuni = {
     method: metoda,
@@ -42,8 +50,10 @@ async function _cere(metoda, cale, corp) {
 
   const r = await fetch(cale, optiuni);
 
-  // 401 = token invalid/expirat -> deconectare curată
-  if (r.status === 401) {
+  // 401 = token invalid/expirat -> deconectare curată. DOAR daca aveam sesiune (token trimis):
+  // /auth/login intoarce legitim 401 la credentiale gresite, iar acolo NU e sesiune de expirat -
+  // iesi() ar re-randa ecranul si ar inghiti mesajul real ("email sau parola gresite"). [login_401_v1]
+  if (r.status === 401 && token) {
     sesiune.iesi();
     throw { cod: 401, mesaj: "sesiune expirată, autentifică-te din nou" };
   }
@@ -52,8 +62,7 @@ async function _cere(metoda, cale, corp) {
   try { date = await r.json(); } catch { date = null; }
 
   if (!r.ok) {
-    const mesaj = (date && (date.detail || date.mesaj)) || ("eroare " + r.status);
-    throw { cod: r.status, mesaj };
+    throw { cod: r.status, mesaj: _mesajEroare(r.status, date) };
   }
   return date;
 }
@@ -71,15 +80,14 @@ async function _cereForm(cale, formData) {
   if (token) optiuni.headers["Authorization"] = "Bearer " + token;
   optiuni.body = formData;
   const r = await fetch(cale, optiuni);
-  if (r.status === 401) {
+  if (r.status === 401 && token) {  // [login_401_v1] doar cu sesiune (vezi _cere)
     sesiune.iesi();
     throw { cod: 401, mesaj: "sesiune expirată, autentifică-te din nou" };
   }
   let date = null;
   try { date = await r.json(); } catch { date = null; }
   if (!r.ok) {
-    const mesaj = (date && (date.detail || date.mesaj)) || ("eroare " + r.status);
-    throw { cod: r.status, mesaj };
+    throw { cod: r.status, mesaj: _mesajEroare(r.status, date) };
   }
   return date;
 }
