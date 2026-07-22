@@ -2236,3 +2236,24 @@ F163 _d300_depus_randuri filtreaza 'd300' lowercase = corect PRIN CONSTRUCTIE (C
 LIMITA: TIPURI_CUNOSCUTE (nomenclator ANAF, uppercase) ramane forma de validare/display - nu e coloana, e constanta.
 Aparare: suita 475 verde + verificator DS 0 + TEST FUNCTIONAL care justifica tema: semaforul pe tenant_002 2026/06
 arata acum "D300 iun depusa 22.07.2026, la termen" (era 'urmarit/nedepusa'). node --check ESM pe 3 ecrane + restart activ.
+
+### 22.07.2026 [PROD] Ramura PFA a auditului F183 parcursa real + limita ramificata pe regim  (audit_preluare + tenant_003 test)
+DECIZIE: (1) creat tenant PFA de test prin FLUXUL REAL (POST /tenants tip_firma='pfa', CUI cu cifra de control
+valida 42000774 calculata nu inventata) -> tenant_003; + 3 operatiuni RIP prin rutele reale (rip/operatiuni +
+valideaza). RAMANE pe prod ca prima dovada reala a ramurii PFA (ca depunerea tenant_002, tenant de test). (2)
+limita auditului + lista NEVERIFICAT RAMIFICATE pe regim: PFA vede DOAR ce-l priveste (coerenta registrului
+incasari-plati + salariati/vector neverificate), NU termeni de partida dubla (balanta/parteneri/asociati/mij.fixe).
+TEMEI: auditul comunica unui PFA concepte care nu exista in partida simpla = continut FALS la adresa lui, erodeaza
+increderea in raport (nu cosmetic). Mecanismul de regim EXISTA (straturi_pentru/STRATURI_META) si se REUTILIZEAZA -
+dar STRATURI_META are doar (strat, regim), NU textele; deci am adaugat maparea minima text<->strat (_VERIFICAT_DESC,
+_NEVERIFICAT_V1) filtrata prin `straturi` (din straturi_pentru), NU un mecanism de regim nou (semnalat inainte, cf.
+directivei). Descriptorul RIP reformulat sa nu mai contina "balanta" (chiar negat: era "fara balanta" -> "sold
+implicit din Sigma incasari - Sigma plati") ca PFA sa fie PUR fara termeni SRL. (3) obs3: verifica_rip cu tabel dar
+0 operatiuni validate -> GRI cu temei+remediu explicit ("importa registrul sau introdu operatiuni"), NU raport gol
+(regula: fiecare verdict poarta motivatia, inclusiv griul).
+ALTERNATIVA RESPINSA: text hardcodat cu ambele regimuri (continut fals la PFA). LIMITA/RAMAS: obs4 (categoria
+'neclasificat' nu se poate adauga manual - _valideaza o respinge - deci gri-pe-neclasificat se declanseaza doar pe
+date importate) = nota de reachabilitate in DE_FACUT, NEREPARATA.
+Aparare: 15 teste audit (limita PFA fara termeni SRL + SRL cu ei + rip-gol->gri; aserție pe TEXT) + suita 477 verde +
+verificator DS 0 + HTTP REAL pe ambii tenanti: PFA tenant_003 verde, ZERO termeni SRL in limita; SRL tenant_002 rosu,
+toti termenii SRL prezenti (neschimbat).

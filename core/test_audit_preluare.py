@@ -7,8 +7,41 @@ fiscal fara declaratia care-l explica -> gri (SEMNAL), NICIODATA rosu automat.
 """
 from decimal import Decimal
 from core.audit_preluare import (
-    constatare_parteneri, constatare_istoric_fiscal, constatare_rip, audit,
+    constatare_parteneri, constatare_istoric_fiscal, constatare_rip, audit, limita_pe_regim,
 )
+from core.migrare_api import straturi_pentru
+
+# termeni SPECIFICI partidei duble (SRL) - NU trebuie sa apara in auditul unui PFA
+_TERMENI_SRL = ("balanț", "parteneri", "asociați", "mijloace fixe", "sintetic")
+
+
+def test_limita_pfa_fara_niciun_termen_srl():
+    # ramura PFA: limita nu comunica concepte de partida dubla (continut fals la adresa lui)
+    lim = limita_pe_regim(straturi_pentru("pfa")).lower()
+    for t in _TERMENI_SRL:
+        assert t.lower() not in lim, "termen SRL '%s' aparut la PFA: %s" % (t, lim)
+    assert "încasări-plăți" in lim and "partidă simplă" in lim
+    # NEVERIFICAT la PFA = doar salariati + vector (ambele), NU asociati/mijloace fixe (dubla)
+    assert "salariați" in lim and "vector fiscal" in lim
+
+
+def test_limita_srl_are_termenii_partidei_duble():
+    lim = limita_pe_regim(straturi_pentru("srl")).lower()
+    assert "balanț" in lim and "parteneri" in lim and "partidă dublă" in lim
+    assert "asociați" in lim and "mijloace fixe" in lim   # NEVERIFICAT v1 SRL
+    assert "rip" not in lim                                # SRL nu vede RIP
+
+
+def test_rip_fara_operatiuni_validate_da_gri_cu_temei():
+    # [obs3] PFA cu tabel RIP dar 0 operatiuni validate -> gri cu temei+remediu, NU raport gol
+    # (fiecare verdict poarta motivatia). tenant_001 are tabelul din template, fara operatiuni validate.
+    from core import db, audit_preluare as ap
+    db.init_pool()
+    with db.get_conn("tenant_001") as cs:
+        r = ap.verifica_rip(cs, "tenant_001")
+    assert r and r[0]["stare"] == "gri"
+    assert "nicio operațiune validată" in r[0]["mesaj"]
+    assert r[0]["remediu"] and r[0]["remediu"]["actiune"]   # temei + remediu, nu gol
 
 
 # ---- parteneri: coincide None/True/False -> gri/verde/rosu ----

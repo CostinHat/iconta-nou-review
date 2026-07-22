@@ -232,11 +232,14 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
    fie trimite ISO cu offset si frontendul (dataRo) converteste la ora locala a browserului. De
    decis unde se face conversia (o singura sursa, nu per-modul). NEVERIFICAT: daca alte ecrane care
    deja arata "cu_ora" au aceeasi abatere (probabil da).
-3. **Ramura PFA a auditului de preluare (F183) - nevazuta in UI reala** (22.07): partida simpla
-   (audit ruleaza DOAR verificarea RIP, fara balanta) e confirmata DOAR prin teste (test_pfa_ruleaza_
-   doar_rip cu FakeConn) + E2E rollback pe tenant_002 (tip_firma='pfa' setat temporar). NICIODATA vazuta
-   pe un PFA real in ecran (cabinetul n-are inca niciun PFA - ambii tenanti sunt SRL). De verificat vizual
-   la primul PFA real preluat: apar doar constatarile RIP, antetul, remediile - fara "importa balanta".
+3. **Ramura PFA a auditului de preluare (F183)** [PARCURSA REAL 22.07, DECIZII [PROD]]: creat tenant_003
+   PFA de test prin fluxul real (POST /tenants tip_firma='pfa') + 3 operatiuni RIP prin rutele reale ->
+   auditul HTTP arata DOAR constatarea RIP (verde), ZERO termeni de partida dubla. RAMIFICAT pe regim: limita
+   + NEVERIFICAT arata la PFA doar ce-l priveste (via straturi_pentru + mapare text<->strat minima). obs3:
+   RIP fara operatiuni validate -> gri cu temei (nu raport gol). RAMAS (obs4, nota de reachabilitate, NEREPARAT):
+   categoria 'neclasificat' NU se poate adauga manual la RIP (rip_api._valideaza respinge categorie invalida) ->
+   constatarea gri-pe-neclasificat din audit se declanseaza DOAR pe date IMPORTATE (rip-import), nu pe intrare
+   manuala. De decis daca importul permite neclasificat (ar trebui, pt reclasificare) sau daca e ok asa.
 4. **test_spv_conector rosu permanent** — REZOLVAT 22.07 (core/conftest.py). Cauza reala (verificata la
    sursa): spv_conector citeste ANAF_CLIENT_ID/REDIRECT_URI la IMPORT (constante de modul); setdefault-ul
    din test_spv_conector.py rula PREA TARZIU cand alt test importa modulul tranzitiv (via main) primul ->

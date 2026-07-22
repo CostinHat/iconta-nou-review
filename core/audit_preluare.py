@@ -51,6 +51,23 @@ def _lei(x):
 # Conturi de datorii/creante fiscale la deschidere -> declaratia care le explica. Un sold preluat
 # pe aceste conturi FARA declaratia corespunzatoare in istoricul importat = SEMNAL (gri, nu rosu:
 # soldurile fiscale au cauze legitime -> remediu investigatie, nu acuzatie mecanica).
+# Ramificare pe regim a TEXTELOR limitei (STRATURI_META are doar (strat, regim), NU textele -> aici
+# e maparea text<->strat care lipseste; regimul insusi vine din straturi_pentru, NU se dubleaza).
+# _VERIFICAT_DESC: ce verifica auditul, pe stratul de care depinde (istoric-fiscal cere balanta=solduri).
+_VERIFICAT_DESC = (
+    ("solduri",           "echilibru balanță"),
+    ("solduri_parteneri", "defalcare parteneri vs sintetic"),
+    ("solduri",           "solduri fiscale vs istoric declarații"),
+    ("rip",               "coerența registrului de încasări-plăți (sold implicit din Σ încasări − Σ plăți)"),
+)
+# _NEVERIFICAT_V1: straturi cu verificare NEIMPLEMENTATA in v1 (raman gri vizibil), cu textul lor.
+_NEVERIFICAT_V1 = (
+    ("asociați/cote",              "asociati"),
+    ("mijloace fixe",              "mijloace_fixe"),
+    ("salariați",                  "salariati"),
+    ("vector fiscal vs documente", "vector_fiscal"),
+)
+
 # [tip_lowercase] decl = CHEIE de join (canonic lowercase, ca declaratii_depuse.tip); upper la display.
 CONT_DECL_FISCAL = (
     ("4423", "d300", "TVA de plată"),
@@ -229,8 +246,13 @@ def constatare_istoric_fiscal(net, tipuri_depuse):
 
 
 def verifica_rip(conn, schema):
-    """PFA (partida simpla): coerenta interna a registrului de incasari-plati preluat. Lista goala =
-    firma nu are RIP (nu e PFA cu istoric preluat) -> verificarea nu apare, nu se falsifica."""
+    """PFA (partida simpla): coerenta interna a registrului de incasari-plati preluat. Tabel absent
+    -> lista goala (nu e PFA cu strat RIP). Tabel prezent dar ZERO operatiuni validate -> GRI cu temei
+    explicit (nu raport gol: fiecare verdict poarta motivatia, inclusiv griul)."""
+    et = "Registru încasări-plăți (PFA)"
+    temei = ("La partida simplă nu există balanță: registrul e cronologic, iar soldul e implicit din "
+             "Σ încasări − Σ plăți. Coerența internă = sold implicit ne-negativ + operațiuni "
+             "clasificate fiscal.")
     with conn.cursor() as cur:
         cur.execute("SELECT to_regclass(%s)", (schema + ".rip_operatiuni",))
         if cur.fetchone()[0] is None:
@@ -243,7 +265,10 @@ def verifica_rip(conn, schema):
             FROM {schema}.rip_operatiuni WHERE status='validata'""")
         inc, plati, n, neclas = cur.fetchone()
     if not n:
-        return []
+        return [_gri(et, temei,
+                     "Registrul de încasări-plăți nu are nicio operațiune validată — nu pot verifica coerența.",
+                     "Importă registrul (Migrare › RIP) sau introdu operațiuni și validează-le, apoi reia auditul.",
+                     cauza="Fără operațiuni RIP validate la partidă simplă nu există ce corela.")]
     return constatare_rip(inc, plati, n, neclas)
 
 
@@ -324,10 +349,21 @@ def audit(conn, schema, tenant_id, conn_public):
     stare = "rosu" if divergent else ("gri" if neverificat else ("verde" if coerent else "gri"))
     return {"stare": stare, "constatari": constatari,
             "coerent": len(coerent), "divergent": len(divergent), "neverificat": len(neverificat),
-            "limita": ("Verificat, în funcție de regim: la partidă dublă (SRL) — echilibru balanță, "
-                       "defalcare parteneri vs sintetic, solduri fiscale vs istoric declarații; la partidă "
-                       "simplă (PFA) — coerența registrului RIP (fără balanță, prin definiție). NEVERIFICAT "
-                       "(v1): asociați/cote, mijloace fixe, salariați, vector fiscal vs documente — lipsa lor "
-                       "rămâne vizibilă prin gri, nu tăcută. Auditul verifică coerența INTERNĂ a pachetului "
-                       "preluat, NU corectitudinea evidenței contabilului anterior."),
-            "modul": MODUL, "reguli": REGULI}
+            "limita": limita_pe_regim(straturi), "modul": MODUL, "reguli": REGULI}
+
+
+def limita_pe_regim(straturi):
+    """PURA. Textul `limita` RAMIFICAT pe regim, din setul de straturi (straturi_pentru) - PFA nu vede
+    termeni de partida dubla (balanta/parteneri/asociati/mij.fixe), SRL nu vede RIP. Reutilizeaza
+    mecanismul de regim existent (straturi), nu construieste altul; textele vin din _VERIFICAT_DESC /
+    _NEVERIFICAT_V1 (STRATURI_META n-are texte, doar (strat, regim))."""
+    straturi = set(straturi)
+    regim_lbl = "partidă dublă (SRL)" if "solduri" in straturi else "partidă simplă (PFA)"
+    verificat = [d for s, d in _VERIFICAT_DESC if s in straturi]
+    neverif = [t for t, s in _NEVERIFICAT_V1 if s in straturi]
+    limita = "Verificat (%s): %s." % (regim_lbl, ", ".join(verificat) if verificat else "—")
+    if neverif:
+        limita += (" NEVERIFICAT (v1): %s — lipsa lor rămâne vizibilă prin gri, nu tăcută."
+                   % ", ".join(neverif))
+    limita += " Auditul verifică coerența INTERNĂ a pachetului preluat, NU corectitudinea evidenței contabilului anterior."
+    return limita
