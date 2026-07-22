@@ -8,6 +8,7 @@ cu numarul de firme. Perspectiva = privire inainte (vs control_fiscal = privire 
 from __future__ import annotations
 import datetime
 from core import control_fiscal_api as cf
+from core.common import azi_ro  # [fus] fereastra [azi, azi+60] = VERDICT (ce vede contabilul), zi RO
 
 ORIZONT_ZILE = 60
 
@@ -17,7 +18,7 @@ def termene_firma(vector, are_salariati, depuse, azi=None):
     Intoarce lista declaratiilor datorate VIITOARE (termen in [azi, azi+orizont]), nedepuse.
     depuse = set de (tip, an, luna).
     """
-    azi = azi or datetime.date.today()
+    azi = azi or azi_ro()   # [fus] fereastra termenelor decide ce apare -> zi RO, robust la OS TZ
     limita = azi + datetime.timedelta(days=ORIZONT_ZILE)
     # luam toate datorate (control_fiscal include fereastra de urmarire);
     # pentru termene ne extindem pe orizontul mare evaluand direct scadentarul
@@ -63,7 +64,7 @@ def portofoliu(firme_eval, azi=None):
     Intoarce {grupuri:[{termen, items:[{tip, nr_firme, firme:[...]}]}], urmatoarea}.
     Grupat pe data termen, apoi pe tip, cu numarul si lista de firme.
     """
-    azi = azi or datetime.date.today()
+    azi = azi or azi_ro()   # [fus] fereastra termenelor decide ce apare -> zi RO, robust la OS TZ
     # acumulator: termen -> tip -> lista firme
     acc = {}
     for fe in firme_eval:

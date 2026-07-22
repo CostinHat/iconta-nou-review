@@ -232,10 +232,10 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
    main.verifica_fus_orar - app-ul REFUZA sa porneasca daca OS TZ sau PG timezone != Europe/Bucharest
    (invarianta de provisionare, langa verifica_secrete_obligatorii); (b) helper common.azi_ro() folosit DOAR
    in cele 3 puncte verdict-critical (semafor _clasifica, fereastra UIT e-Transport, cron alerte) + extragere
-   PG a data_depunere cu AT TIME ZONE 'Europe/Bucharest'. NU s-au convertit cele 46 date.today() (restul e
-   afisare/context, OS-TZ corect ajunge). Vezi DECIZII 22.07. CANDIDAT NECONVERTIT (semnalat, nu atins per scop):
-   termene_api.termene_firma (azi filtreaza termenele viitoare in [azi, azi+60]) - decide ce apare ca "de urmarit",
-   e la limita verdict/afisare; de decis daca trece si el pe azi_ro. RAMAS DISPLAY: timestamp-urile "cu_ora"
+   PG a data_depunere cu AT TIME ZONE 'Europe/Bucharest'. Adaugat ulterior: termene_api.termene_firma + portofoliu
+   (fereastra [azi, azi+60] decide CE VEDE contabilul - un termen scadent azi ar disparea din lista exact in ziua
+   critica -> e verdict, nu afisare) trec si ele pe azi_ro. NU s-au convertit cele 46 date.today() (restul e
+   afisare/context, OS-TZ corect ajunge). Vezi DECIZII 22.07. RAMAS DISPLAY: timestamp-urile "cu_ora"
    (datetime.now() in antete/feed) arata acum ora serverului = Bucharest (corect, garda o impune); daca vreodata
    un user din alt fus vrea ora LUI, se trece pe ISO+offset + dataRo converteste la ora browserului - decizie de
    display separata, low-prio (publicul e romanesc).

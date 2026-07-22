@@ -2037,8 +2037,7 @@ def control_fiscal_audit_preluare(tenant_id: int, ctx=Depends(cere_cabinet)):
 @app.get("/termene")
 def termene_portofoliu(ctx=Depends(cere_cabinet)):
     """Scadente viitoare grupate pe data + tip, cu numarul de firme."""
-    import datetime
-    azi = datetime.date.today()
+    azi = azi_ro()   # [fus] fereastra scadentelor = verdict (ce vede contabilul), zi RO
     with db.get_conn() as conn:
         firme = auth_api.tenantii_userului(conn, ctx["uid"])
     firme_eval = []
