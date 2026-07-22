@@ -431,6 +431,9 @@ vs DE CONSTRUIT (munca reala):
   inventez procedura). DE DECIS separat cat de departe merge: runbook complet cap-coada vs checklist minim vs doar
   o sectiune "Server nou" in CLAUDE.md care insiruie pasii + trimite la fisierele-sursa (bootstrap header ramane
   sursa, nu se copiaza). Referinta la bootstrap se adauga ATUNCI, in procedura-gazda, nu razlet.
+  SECRETE: procedura va TRIMITE la main.verifica_secrete_obligatorii ca lista canonica a secretelor (referinta, nu
+  copie — lista traieste in cod si e executabila: app-ul refuza sa porneasca fara ele); env files (~/.iconta/*.env)
+  sunt parte din provisionare, nu din git (secretele nu intra in git, nici ca nume).
 - **F165 NU acopera schema PUBLIC** [PLANIFICAT — acum cu REFERINTA]. Ramane de construit auditul public (analog
   F165, poarta in suita). Acum are reper: `infra/bootstrap_public.sql` (genesis) + migrarile public (evolutie) =
   starea asteptata a schemei public; un audit-public ar compara schema live cu (bootstrap + migrari aplicate),
