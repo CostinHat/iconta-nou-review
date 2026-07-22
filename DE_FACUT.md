@@ -395,19 +395,21 @@ vs DE CONSTRUIT (munca reala):
   primeste -> migrarile public ar pica cu "permission denied". Nu e singurul: verificare statica 22.07 a gasit ca
   obiectele din public s-au nascut prin cai neversionate. Curatat 22.07: DDL_JURNAL -> migrare_alerte_control_emise.py
   (in git); ensure_tabela moarta -> stearsa; ALTER OWNER pe audit_log/alerte_fiscale/alerte_emise -> iconta_user.
-  RAMAS nereproductibil (traieste doar in prod):
+  STARE DE PROD, nereproductibila din git (aplicata manual 22.07 ca postgres, DECIZII [INFRA]):
   * GRANT CREATE ON SCHEMA public TO iconta_user;
-  * ALTER OWNER pe cele 11 tabele INCA owned de postgres (asteapta DA, DECIZII [INFRA] 22.07): anunturi_cabinet,
-    api_chei, cor_ocupatii, curs_bnr_zilnic, metrici_sanatate, reges_chei, reges_mesaje, solicitari_client,
-    spv_cui_acoperit, spv_token, tokene_activare;
+  * OWNERSHIP: TOT public e acum iconta_user (28 tabele + 18 secvente + 1 vedere, 100%, verificat \dt+/\ds+).
+    ALTER OWNER aplicat pe 14 tabele care erau owned de postgres: audit_log, alerte_fiscale, alerte_emise (primele 3)
+    + anunturi_cabinet, api_chei, cor_ocupatii, curs_bnr_zilnic, metrici_sanatate, reges_chei, reges_mesaje,
+    solicitari_client, spv_cui_acoperit, spv_token, tokene_activare (restul 11).
   * DDL-ul tabelelor create manual, fara CREATE in cod: pachet_povestea (feature poveste VIU, ensure_tabela stearsa),
-    notificari, + cele owned de postgres de mai sus. Un server nou nu le primeste -> rutele care le folosesc crapa.
+    notificari, + toate cele 14 de mai sus (n-au DDL in cod). Un server nou nu le primeste -> rutele care le folosesc crapa.
   FORMA DECISA (Costin 22.07): SQL SIMPLU checked-in `infra/bootstrap_public.sql`, NU runner Python. Motiv: ruleaza
   INAINTE ca app-ul si privilegiile sa existe (la provisionarea serverului, ca postgres); un runner Python ar depinde
-  de exact ce instaleaza (venv, GRANT, conexiune) - dependenta circulara. Continut: GRANT + toate ALTER OWNER + DDL-ul
-  tabelelor care azi traiesc doar in prod. Dupa bootstrap, ORICE obiect public nou intra prin migrare_* (ruleaza ca
-  iconta_user datorita GRANT). Se leaga de "F165 nu acopera public" (auditul public ar verifica exact ce garanteaza
-  bootstrap + migrarile). NU se construieste acum.
+  de exact ce instaleaza (venv, GRANT, conexiune) - dependenta circulara. Continut: (1) GRANT CREATE; (2) DDL-ul
+  COMPLET al schemei public (toate cele 28 tabele + secvente + vederea), cu owner iconta_user - un pg_dump --schema-only
+  al schemei public (owner deja uniform azi) e punctul de plecare canonic, curatat manual. Dupa bootstrap, ORICE
+  obiect public nou intra prin migrare_* (ruleaza ca iconta_user datorita GRANT). Se leaga de "F165 nu acopera public"
+  (auditul public ar verifica exact ce garanteaza bootstrap + migrarile). NU se construieste acum.
 - **v2 F164 — digest email Brevo** (rezumat zilnic/saptamanal al rosurilor de control fiscal DESCHISE per cabinet,
   pentru contabilii care nu intra zilnic in app). Completeaza v1 (clopotel in-app + click, LIVE 19.07): v1 rezolva
   restanta 17.07 (alerta ajunge in app); digestul acopera cazul "contabil care nu intra zilnic". De construit CAND

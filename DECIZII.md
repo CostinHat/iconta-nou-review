@@ -2155,3 +2155,15 @@ trei" raportate -> asteapta DA (nu se ating unilateral). Pana atunci: orice migr
 LIMITA: ownership-ul e stare de prod (nu git) - la fel ca GRANT-ul, intra in itemul bootstrap (DE_FACUT). ALTER
 OWNER e reversibil. Aparare: verificare \dt+ (17/28 iconta_user dupa cele 3); migrare_alerte_control_emise ruleaza
 OK ca iconta_user; suita verde + verificator DS 0.
+
+### 22.07.2026 [INFRA] cont. — DA pe cele 11: public 100% iconta_user (rezolutia intrarii de mai sus)
+DECIZIE (raspuns la STOP-ul de mai sus, "cele 3 erau esantionul, nu lista inchisa; intentia era ownership uniform"):
+ALTER OWNER TO iconta_user aplicat pe TOATE cele 11 tabele ramase (anunturi_cabinet, api_chei, cor_ocupatii,
+curs_bnr_zilnic, metrici_sanatate, reges_chei, reges_mesaje, solicitari_client, spv_cui_acoperit, spv_token,
+tokene_activare). VERIFICAT si obiectele dependente (ALTER TABLE OWNER NU propaga la secvente/vederi): secvente
+18/18 iconta_user, vederi 1/1 (declaratii_depuse_curente), zero obiecte non-iconta_user de orice tip (relkind
+r/S/v/m/p). STARE FINALA: public = 28 tabele + 18 secvente + 1 vedere, 100% iconta_user, 0 postgres.
+TEMEI: intentia era ownership uniform pe tot public (nu doar esantionul raportat). DOVADA FUNCTIONALA (nu doar
+\dt cosmetic): ALTER TABLE ... ADD COLUMN IF NOT EXISTS ca iconta_user pe curs_bnr_zilnic + spv_token (2 din
+fostele postgres-owned), in tranzactie ROLLBACK -> reusit, coloana de test disparuta la rollback. Migrarile
+public merg acum pe orice tabel. LIMITA: e stare de prod, intra integral in bootstrap (DE_FACUT, lista completa).
