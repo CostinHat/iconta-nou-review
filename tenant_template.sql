@@ -2317,3 +2317,9 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.etransport_trimiteri (
 CREATE UNIQUE INDEX IF NOT EXISTS uq_etransport_trimiteri_viu
   ON TENANT_PLACEHOLDER.etransport_trimiteri (xml_sha256)
   WHERE mediu='prod' AND stare IN ('incarcat','ok');
+
+-- F180: snapshot ANAF pentru platitor_tva (mirror in core/migrare_platitor_tva_anaf.py).
+-- platitor_tva_anaf = scpTVA de la ANAF v9, SEPARAT de platitor_tva (editabil manual).
+-- NULL = fara snapshot -> Control fiscal arata GRI. Data = cand a fost interogat ANAF.
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS platitor_tva_anaf boolean;
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS platitor_tva_anaf_data date;

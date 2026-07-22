@@ -142,3 +142,25 @@ def test_d406_platitor_tip_decont_None_gri():
 def test_d406_platitor_None_gri():
     rez = cf.declaratii_datorate({"platitor_tva": None}, are_salariati=False, azi=date(2026, 6, 1))
     assert "D406" in {n["tip"] for n in rez["neclar"]}
+
+
+# [F180] constatare_regim_tva: platitor_tva local vs snapshot ANAF
+def test_constatare_regim_tva_divergenta_rosu_cu_remediu():
+    c = cf.constatare_regim_tva(local=True, anaf=False, data=date(2026, 7, 22))
+    assert c["stare"] == "rosu"
+    assert c["eticheta"] == "Regim TVA vs ANAF"
+    assert c["remediu"]["fel"] == "investigatie"          # NICIODATA buton auto pe regim
+    assert "SPV" in c["remediu"]["actiune"]
+    assert "2026-07-22" in c["limita"]                    # data snapshot in limita
+
+
+def test_constatare_regim_tva_coincid_verde():
+    c = cf.constatare_regim_tva(local=True, anaf=True, data=date(2026, 7, 22))
+    assert c["stare"] == "verde"
+    assert "remediu" not in c                             # verde nu propune actiune
+
+
+def test_constatare_regim_tva_fara_snapshot_gri():
+    c = cf.constatare_regim_tva(local=True, anaf=None, data=None)
+    assert c["stare"] == "gri"
+    assert "fără snapshot" in c["mesaj"] or "snapshot" in c["limita"]

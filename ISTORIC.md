@@ -2199,3 +2199,32 @@ DOVADA: suita completa 438 passed 0 failed dupa FIECARE din cele 4 fisiere (base
 db.env sursat: fara el, 1 rosu de mediu "pool neinitializat" - shell interactiv n-are env-ul DB pe care
 systemd il injecteaza serviciului, exact patologia temei). verificator DS = 0 candidate. Test functional:
 env setat DUPA import schimba comportamentul pe toate 4 modulele (prag, URL authorize, host efactura, versiune).
+
+## 22.07.2026 fir 7 — F180: avertisment regim TVA vs ANAF + semafor rosu Control fiscal
+
+Verificare la sursa INAINTE de cod (regula 7 + regula 3): (1) platitor_tva traieste in firma_profil (2 rute de
+editare manuala: /firma-profil/regim-tva + /vector); (2) F188 SUPRASCRIE aceeasi coloana la onboarding -> azi NU
+exista valoare ANAF de comparat; (3) niciun mecanism de comparare profil-vs-ANAF existent (control_incrucisat =
+doar declaratie-vs-contabilitate); (4) /control-fiscal itereaza TOATE firmele -> live-per-firma acolo neviabil.
+FISCAL la sursa (apel v9 raw pe CUI 14399840): scpTVA = boolean "platitor la data interogarii" (perioade_TVA =
+trail, nu valoare); TVA la incasare (RTVAI) si SplitTVA = fatete SEPARATE -> comparatie apples-to-apples, zero
+fals-pozitiv din granularitate. DECIZIE (Costin): snapshot separat + live la salvare, signal-not-block. DECIZII 22.07.
+
+CONSTRUIT in felii, cu suita verde dupa fiecare:
+  - SCHEMA: firma_profil + platitor_tva_anaf boolean + platitor_tva_anaf_data date (nullable=fara snapshot->gri).
+    core/migrare_platitor_tva_anaf.py (tipar migrare_*: idempotent, loop schemata) + mirror tenant_template.sql.
+    Rulat: 2/2 scheme OK.
+  - firma_profil_api: stare_tva_anaf (verde/rosu/gri, PURA) + avertisment_tva_anaf (PURA) + citeste_tva +
+    seteaza_snapshot_tva.
+  - RUTE (regim-tva + vector): apel ANAF live pe CUI INAINTE de a tine conexiunea pe schema (helper _anaf_tva_check
+    in main, nu ridica niciodata); reimprospateaza snapshot + intoarce avertisment la divergenta (salveaza oricum).
+  - PREFILL F188 (ambele cai register): populeaza si snapshot-ul = valoarea ANAF la onboarding (local==snapshot->verde).
+  - CONTROL FISCAL: control_fiscal_api.constatare_regim_tva (PURA, contract stare/temei/limita/remediu=investigatie)
+    integrata in evalueaza_firma (escaladeaza stare la rosu); ruta portofoliu adauga motiv in `contabil` (randat deja).
+  - TESTE: 9 pure (test_firma_profil_api nou + test_control_fiscal extins).
+
+DOVADA: suita 447 verde + verificator DS 0 + FUNCTIONALITATI.csv F180 LIVE + test FUNCTIONAL REAL pe tenant_002
+(live ANAF: local!=ANAF -> avertisment, == -> none; gri fara snapshot; cale ROSIE end-to-end cu divergenta fortata
+in tranzactie ROLLBACK -> regim_tva_anaf.stare=rosu + stare firma=rosu + remediu=investigatie, tenant_002 NEATINS).
+LIMITA (DE_FACUT): firma needitata la care ANAF s-a schimbat post-onboarding ramane verde pana la un cron periodic
+(F184-style) de reimprospatare snapshot — enhancement viitor, nu blocant.

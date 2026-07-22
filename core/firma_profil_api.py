@@ -31,6 +31,52 @@ def cont_venit_valid(cont):
     return str(cont or "").strip() in CONTURI_VENIT
 
 # ============================================================
+#  [F180] REGIM TVA vs ANAF — snapshot separat + comparatie
+# ============================================================
+# platitor_tva = valoare EDITABILA manual (Configurare emitere / Vector fiscal).
+# platitor_tva_anaf = snapshot al scpTVA de la ANAF v9 (SEPARAT), + data interogarii.
+# Comparatia e apples-to-apples: scpTVA = "platitor la data interogarii" (verificat la
+# sursa 22.07). Vezi DECIZII.md 22.07 F180. Fara snapshot -> "gri" (nu rosu).
+def stare_tva_anaf(local, anaf):
+    """PURA. Stare F180 din platitor_tva(local) vs platitor_tva_anaf(snapshot).
+    `anaf` None (fara snapshot / ANAF necunoscut) -> 'gri'; difera -> 'rosu';
+    coincid -> 'verde'. `local` None (vector necompletat) -> 'gri' (nu comparam)."""
+    if anaf is None or local is None:
+        return "gri"
+    return "verde" if bool(local) == bool(anaf) else "rosu"
+
+
+def avertisment_tva_anaf(local, anaf_val):
+    """PURA. Avertisment F180 (dict) daca valoarea manuala difera de scpTVA ANAF, altfel
+    None. `anaf_val` None (ANAF necunoscut) -> None (nu avertizam pe necunoscut)."""
+    if anaf_val is None or local is None or bool(local) == bool(anaf_val):
+        return None
+    _txt = lambda b: "platitoare TVA" if b else "neplatitoare TVA"
+    return {"camp": "platitor_tva", "local": bool(local), "anaf": bool(anaf_val),
+            "mesaj": ("Ai setat firma ca %s, dar ANAF o are ca %s. Verifica in SPV; poti salva oricum."
+                      % (_txt(local), _txt(anaf_val)))}
+
+
+def citeste_tva(conn):
+    """(cui, platitor_tva, platitor_tva_anaf, platitor_tva_anaf_data) din firma_profil."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT cui, platitor_tva, platitor_tva_anaf, platitor_tva_anaf_data "
+                    "FROM firma_profil LIMIT 1")
+        row = cur.fetchone()
+    if not row:
+        return {"cui": None, "platitor_tva": None, "platitor_tva_anaf": None, "data": None}
+    return {"cui": row[0], "platitor_tva": row[1],
+            "platitor_tva_anaf": row[2], "data": row[3]}
+
+
+def seteaza_snapshot_tva(conn, scp_tva):
+    """Scrie snapshot-ul ANAF (scpTVA la data curenta). `scp_tva` = bool. Idempotent
+    pe firma_profil (singleton). Comiterea o face apelantul."""
+    with conn.cursor() as cur:
+        cur.execute("UPDATE firma_profil SET platitor_tva_anaf=%s, "
+                    "platitor_tva_anaf_data=CURRENT_DATE", (bool(scp_tva),))
+
+# ============================================================
 #  CITIRE profil (pentru preview + model)
 # ============================================================
 def citeste_profil(conn):

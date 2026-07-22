@@ -1988,3 +1988,28 @@ semantica citirii-la-apel difera de cea veche. Cele 3 ramase (STATE_SECRET in pl
 si verificat la /callback, cereri diferite potential peste restart) cer analiza proprie inainte de conversie.
 Aparare: suita 438 verde dupa fiecare fisier + verificator DS 0 + dovada functionala (env setat DUPA import
 schimba comportamentul). Norma traieste in docstring-ul common.cfg + comentariile de la fiecare punct de citire.
+
+### 22.07.2026 F180 model: snapshot ANAF separat + live la salvare, compara scpTVA-vs-boolean  (firma_profil 2 coloane noi; anaf_api; control_fiscal_api; main rute regim-tva/vector)
+DECIZIE: avertisment la editarea manuala a platitor_tva vs ANAF + constatare rosie in Control fiscal la
+divergenta. Model ales: (1) 2 coloane noi in firma_profil - platitor_tva_anaf boolean + platitor_tva_anaf_data
+date (snapshot ANAF, SEPARAT de coloana editabila platitor_tva); (2) live valideaza_cui DOAR la salvarea manuala
+(o firma): reimprospateaza snapshot + avertizeaza la divergenta, SIGNAL-NOT-BLOCK (omul salveaza oricum, ca F185);
+(3) prefill F188 populeaza si snapshot-ul; (4) Control fiscal compara OFFLINE platitor_tva vs snapshot: verde
+(coincid) / rosu (difera, remediu=investigatie) / gri (fara snapshot sau ANAF necunoscut).
+TEMEI: (a) F188 suprascrie ACEEASI coloana platitor_tva (main.py ~1000/1055) -> azi nu exista valoare ANAF de
+comparat; fara coloana snapshot separata comparatia e imposibila. (b) /control-fiscal itereaza TOATE firmele
+cabinetului (main.py:1902) -> apel ANAF live per firma acolo = N apeluri/pagina, latenta + rate-limit ANAF (max
+1 req/sec, anaf_api) -> comparatia din Control fiscal TREBUIE offline pe snapshot. (c) VERIFICAT FISCAL LA SURSA
+(apel live v9 raw pe CUI 14399840, 22.07): ANAF intoarce inregistrare_scop_Tva.scpTVA = boolean "platitor la
+data interogarii" (deja incorporeaza istoricul; perioade_TVA = trail, nu valoare contradictorie); TVA la incasare
+(RTVAI.statusTvaIncasare) si SplitTVA sunt fatete SEPARATE. Deci platitor_tva(local, bool) vs scpTVA(ANAF, bool)
+= apples-to-apples, zero fals-pozitiv din granularitate. Snapshot stocheaza scpTVA + data, nu o aplatizare.
+ALTERNATIVA RESPINSA: (2) snapshot-only fara live la salvare - respins de Costin: rosu permanent pe snapshot
+vechi = fals-pozitiv care normalizeaza rosul (lectia test_spv_conector). (3) live-only fara coloana - respins:
+neviabil in /control-fiscal (N apeluri/pagina). Blocare la salvare - respins: firma poate avea dreptate cu ANAF
+in urma (mentiune tocmai depusa); rosul persistent din Control fiscal e nag-ul durabil, nu blocajul.
+LIMITA: firma NEEDITATA niciodata dar la care ANAF s-a schimbat post-onboarding -> local==snapshot==verde pana
+la o reimprospatare (live-la-salvare acopera doar cazul editarii). Reimprospatare periodica (cron F184-style) =
+enhancement viitor, in afara scopului. ANAF jos la salvare -> snapshot ramane vechi, fara avertisment (degradare
+acceptabila, declarata in limita constatarii). Aparare: teste pe control_fiscal_api (verde/rosu/gri) + pe rutele
+de salvare (divergenta -> avertisment, ANAF jos -> fara) + FUNCTIONALITATI.csv F180.

@@ -997,10 +997,14 @@ def register_gratuit(date: RegisterGratuitIn):
                     with conn.cursor() as cur:
                         cur.execute("SELECT schema_name FROM public.tenants WHERE id = %s", (r["tenant_id"],))
                         sch = cur.fetchone()[0]
+                        # [F180] snapshot ANAF = aceeasi valoare cu platitor_tva la onboarding
+                        # (local==snapshot -> verde); data = azi. Vezi DECIZII 22.07 F180.
                         cur.execute(f'''UPDATE "{sch}".firma_profil SET platitor_tva=%s, tva_la_incasare=%s,
+                                        platitor_tva_anaf=%s, platitor_tva_anaf_data=CURRENT_DATE,
                                         adresa=COALESCE(NULLIF(%s,''), adresa), caen=COALESCE(NULLIF(%s,''), caen),
                                         reg_com=COALESCE(NULLIF(%s,''), reg_com)''',
                                     (bool(d.get("platitor_tva")), bool(d.get("tva_la_incasare")),
+                                     bool(d.get("platitor_tva")),
                                      d.get("adresa") or "", d.get("cod_caen") or "", d.get("nr_reg_com") or ""))
             except Exception:
                 pass  # ANAF jos -> ramane default, corectabil din vector fiscal
@@ -1052,10 +1056,13 @@ def register(date: RegisterIn):
                                 'nume = COALESCE(NULLIF(%s, \'\'), nume), '
                                 'caen = COALESCE(NULLIF(%s, \'\'), caen), '
                                 'adresa = COALESCE(NULLIF(%s, \'\'), adresa), '
-                                'platitor_tva = %s',
+                                'platitor_tva = %s, '
+                                # [F180] snapshot ANAF = aceeasi valoare la onboarding (verde), data = azi
+                                'platitor_tva_anaf = %s, platitor_tva_anaf_data = CURRENT_DATE',
                                 ((d.get("denumire") or "").strip(),
                                  (d.get("cod_caen") or "").strip(),
                                  (d.get("adresa") or "").strip(),
+                                 bool(d.get("platitor_tva")),
                                  bool(d.get("platitor_tva"))))
                 except Exception:
                     pass  # ANAF jos -> profilul ramane de completat manual
@@ -1937,6 +1944,9 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
                 contabil.append("prag Intrastat depasit")
         except Exception:
             pass
+        # [F180] regim TVA local vs snapshot ANAF (stare deja escaladata in evalueaza_firma)
+        if (r.get("regim_tva_anaf") or {}).get("stare") == "rosu":
+            contabil.append("Regim TVA diferă de ANAF")
         sumar[r["stare"]] = sumar.get(r["stare"], 0) + 1
         out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
                     "stare": r["stare"], "lipsa": len(r["lipsa"]), "urmarit": len(r["urmarit"]),
@@ -2032,6 +2042,23 @@ def _schema_sau_404(ctx, tenant_id):
     if not schema:
         raise HTTPException(404, "tenant inexistent sau fără acces")
     return schema
+
+
+def _anaf_tva_check(cui, valoare_manuala):
+    """[F180] Live ANAF v9 pe CUI. Întoarce (anaf_val|None, avertisment|None). NU atinge
+    DB și NU ridică niciodată (ANAF jos/notFound -> (None,None), salvarea trece —
+    signal-not-block). anaf_val None = ANAF necunoscut -> snapshot NU se reîmprospătează."""
+    try:
+        c = (cui or "").replace("RO", "").strip()
+        if not c:
+            return None, None
+        rez = anaf_api.valideaza_cui([c])
+        if not (rez and rez[0].get("gasit")):
+            return None, None
+        anaf_val = bool(rez[0].get("platitor_tva"))
+        return anaf_val, _fp.avertisment_tva_anaf(valoare_manuala, anaf_val)
+    except Exception:
+        return None, None
 
 # [p97_produse_rute] NOMENCLATOR PRODUSE — rute generice pe tenant (cabinet + client + gratuit)
 # guard unificat: _schema_sau_404 accepta orice user cu acces la tenant (schema_tenant)
@@ -2169,11 +2196,22 @@ class RegimTvaIn(BaseModel):
 @app.post("/tenants/{tenant_id}/firma-profil/regim-tva")  # [tva_config_v1] setat la Configurare emitere
 def firma_profil_regim_tva(tenant_id: int, date: RegimTvaIn, ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
+    # [F180] CUI din public.tenants -> apel ANAF live FARA a tine conexiunea pe schema
+    with db.get_conn() as cpub:
+        with cpub.cursor() as cur:
+            cur.execute("SELECT cui FROM public.tenants WHERE id = %s", (tenant_id,))
+            row = cur.fetchone()
+    anaf_val, avert = _anaf_tva_check(row[0] if row else None, date.platitor_tva)
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
             cur.execute("UPDATE firma_profil SET platitor_tva = %s", (date.platitor_tva,))
+        if anaf_val is not None:                      # ANAF a raspuns -> reimprospateaza snapshot
+            _fp.seteaza_snapshot_tva(conn, anaf_val)
         conn.commit()
-    return {"ok": True, "platitor_tva": date.platitor_tva}
+    r = {"ok": True, "platitor_tva": date.platitor_tva}
+    if avert:                                          # divergenta -> informeaza, nu blocheaza
+        r["avertisment"] = avert
+    return r
 
 @app.get("/tenants/{tenant_id}/firma-profil/date")  # [date_firma_v1]
 def firma_profil_date(tenant_id: int, ctx=Depends(cere_context)):
@@ -2366,12 +2404,18 @@ def vector_salveaza(tenant_id: int, date: VectorIn, ctx=Depends(cere_rol("admin_
             row = cur.fetchone()
     t_nume = row[0] if row else None
     t_cui = row[1] if row else None
+    # [F180] apel ANAF live pe CUI INAINTE de a deschide conexiunea pe schema
+    anaf_val, avert = _anaf_tva_check(t_cui, date.platitor_tva)
     with db.get_conn(schema) as conn:
         rez = vector_fiscal_api.salveaza(conn, date.regim_fiscal, date.platitor_tva,
                                          date.tip_decont, date.operatiuni_ic,
                                          nume=t_nume, cui=t_cui)
+        if rez.get("ok") and anaf_val is not None:     # salvat + ANAF a raspuns -> snapshot
+            _fp.seteaza_snapshot_tva(conn, anaf_val)
     if not rez.get("ok"):
         raise HTTPException(400, rez.get("mesaj", "vector invalid"))
+    if avert:                                          # divergenta -> informeaza, nu blocheaza
+        rez["avertisment"] = avert
     # marcheaza stratul de migrare ca gata
     try:
         with db.get_conn() as c:

@@ -170,7 +170,13 @@ ID / Stare / Sursa cod / Temei legal / Testat). Doua inventare = drift garantat.
 > Planurile de mai jos primisera informal F162/F163/F164/F169, dar registrul foloseste deja acele numere
 > pentru features LIVRATE (F162=D112, F163=D390, F164=push control fiscal, F169=control incrucisat TVA).
 > Re-numerotate aici la F180+ (peste max registru=179) ca sa nu coliza. Istoria (ISTORIC.md) ramane neatinsa.
-- F180 (re-numerotat din F162 — coliziune cu F162=D112 din registru): platitor_tva editat manual vs ANAF -> avertisment la salvare vector fiscal + semafor rosu Control fiscal la divergenta [PLANIFICAT]
+- F180 (re-numerotat din F162 — coliziune cu F162=D112 din registru): platitor_tva editat manual vs ANAF -> avertisment la salvare vector fiscal + semafor rosu Control fiscal la divergenta [LIVRAT 22.07.2026]
+  Model: snapshot ANAF separat (firma_profil.platitor_tva_anaf + data) + live valideaza_cui la salvarea manuala
+  (regim-tva/vector, signal-not-block) + constatare Control fiscal offline (verde/rosu/gri). Verificat fiscal la
+  sursa (v9 scpTVA = boolean; TVA la incasare/split = fatete separate). Vezi DECIZII 22.07 F180 + FUNCTIONALITATI.csv.
+  RAMAS (enhancement, NU blocant): firma needitata la care ANAF s-a schimbat post-onboarding ramane verde pana la
+  o reimprospatare -> cron periodic F184-style care reinterog. ANAF scpTVA pe portofoliu si updateaza snapshot-ul.
+  De construit CAND exista semnal real ca se rateaza divergente, nu speculativ. [PLANIFICAT]
 - F165: auditor conformitate schema tenant vs template + auto-ALTER (drift recurent pe tenant_003/004: link_plata, sursa_externa lipseau); rulat la provisionare + verificabil on-demand [PLANIFICAT]
 - F168: la lansare publica, email automat catre conturile create in perioada beta (site in lucru); sterge BETA_COD_ACCES din env pt acces public [PLANIFICAT]
 - F181 (re-numerotat din F163 — coliziune cu F163=D390 din registru): control incrucisat RAMAS D101 / D100 / D394. LIVRAT 19.07: D112=F162, D390=F163 (vezi registru). Text tehnic pastrat: extindere control incrucisat la D112 / D101 / D100 / D390 / D394; acelasi tipar ca TVA. CONSTATARE 15.07 (analiza la sursa): D300 intoarce (xml, res) cu res['R'] = randurile -> comparabil direct. D112 intoarce doar (xml, avertismente) si isi tine agregatele in variabile de structura XML (c2_d14/d15/d16...), NU expune totaluri contabile. Doua cai: (a) parsare XML = fragil, se rupe tacut la schimbare de structura ANAF; (b) d112.genereaza sa intoarca si totalurile (CAS/CASS/impozit/CAM) = refactor pe modul validat DUKIntegrator. Recalcularea paralela din salarizare.calcul_salariu NU e echivalenta (ar compara contabilitatea cu propriul calcul, nu cu ce se declara efectiv - un bug in D112 ar trece neobservat). Conturi tinta (verificate in salarizare.py): CAS=4315, CASS=4316, impozit=444, CAM=436, brut=421. Decizie de arhitectura, nu extindere mecanica [PLANIFICAT]

@@ -22,6 +22,7 @@ from __future__ import annotations
 import datetime
 
 from core import scadente  # sursa unica de scadente + zile lucratoare (fara import circular)
+from core import firma_profil_api as _fp  # [F180] stare_tva_anaf (comparatie platitor_tva vs snapshot)
 
 PRAG_URMARIT_ZILE = 7   # termen in <= 7 zile, nedepus -> galben
 
@@ -237,6 +238,35 @@ def _stare(lipsa, urmarit, neclar):
     return "verde"
 
 
+def constatare_regim_tva(local, anaf, data=None):
+    """[F180] Constatare 'Regim TVA vs ANAF' din platitor_tva(local) vs snapshot ANAF(anaf).
+    PURA. Contract control_incrucisat: stare(verde/rosu/gri) + temei + limita, iar pe rosu
+    +mesaj +remediu (investigatie — NICIODATA buton auto pe regimul fiscal). Vezi DECIZII 22.07 F180."""
+    st = _fp.stare_tva_anaf(local, anaf)
+    _txt = lambda b: "plătitoare TVA" if b else "neplătitoare TVA"
+    data_txt = data.isoformat() if hasattr(data, "isoformat") else (data or "—")
+    c = {"eticheta": "Regim TVA vs ANAF", "stare": st, "local": local, "anaf": anaf,
+         "data_anaf": data_txt,
+         "temei": "firma_profil.platitor_tva (setat manual) vs snapshot ANAF v9 scpTVA."}
+    if st == "gri":
+        c["mesaj"] = "Regimul TVA nu a fost comparat cu ANAF (fără snapshot)."
+        c["limita"] = ("Fără valoare ANAF stocată — se populează la onboarding sau la "
+                       "salvarea regimului TVA.")
+    elif st == "verde":
+        c["mesaj"] = "Regimul TVA din iConta coincide cu ANAF."
+        c["limita"] = ("Comparat cu snapshot ANAF de la %s; ANAF poate fi în urmă cu o "
+                       "mențiune recentă." % data_txt)
+    else:  # rosu
+        c["mesaj"] = ("Regim TVA în iConta: %s; la ANAF: %s (snapshot %s)."
+                      % (_txt(local), _txt(anaf), data_txt))
+        c["limita"] = ("Comparat cu snapshot ANAF de la %s; ANAF poate fi în urmă cu o "
+                       "mențiune recentă." % data_txt)
+        c["remediu"] = {"fel": "investigatie",
+                        "actiune": ("Verifică în SPV statutul de plătitor TVA. Corectează Vectorul "
+                                    "fiscal dacă valoarea din iConta e greșită, sau depune mențiuni la ANAF.")}
+    return c
+
+
 def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
     """
     Intoarce {stare, datorate, depuse, lipsa, urmarit, confirmate, neclar, neaplicabile}.
@@ -248,12 +278,14 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
 
     # vector + salariati
     with conn_schema.cursor() as cur:
-        cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic FROM firma_profil LIMIT 1")
+        cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, "
+                    "platitor_tva_anaf, platitor_tva_anaf_data FROM firma_profil LIMIT 1")
         row = cur.fetchone()
         vector = {}
         if row:
             vector = {"regim_fiscal": row[0], "platitor_tva": row[1],
-                      "tip_decont": row[2], "operatiuni_ic": row[3]}
+                      "tip_decont": row[2], "operatiuni_ic": row[3],
+                      "platitor_tva_anaf": row[4], "platitor_tva_anaf_data": row[5]}
         cur.execute("SELECT to_regclass('salariati')")
         are_sal = False
         if cur.fetchone()[0]:
@@ -288,6 +320,13 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
     neclar_m = [{"tip": n["tip"], "motiv": n.get("motiv") or n.get("cauza", "")} for n in neclar]
     stare = _stare(lipsa, urmarit, neclar_m)
 
+    # [F180] regim TVA local vs snapshot ANAF — divergenta = rosu (constatare cu remediu investigatie)
+    regim_tva_anaf = constatare_regim_tva(vector.get("platitor_tva"), vector.get("platitor_tva_anaf"),
+                                          vector.get("platitor_tva_anaf_data"))
+    if regim_tva_anaf["stare"] == "rosu":
+        stare = "rosu"
+
     return {"stare": stare, "datorate": len(datorate), "depuse": len(depuse),
             "lipsa": lipsa, "urmarit": urmarit, "confirmate": confirmate,
-            "neclar": neclar_m, "neaplicabile": neaplicabile}
+            "neclar": neclar_m, "neaplicabile": neaplicabile,
+            "regim_tva_anaf": regim_tva_anaf}
