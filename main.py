@@ -1969,7 +1969,11 @@ def control_fiscal_audit_preluare(tenant_id: int, ctx=Depends(cere_cabinet)):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as cs, db.get_conn() as cp:
         r = audit_preluare.audit(cs, schema, tenant_id, cp)
+        with cp.cursor() as cur:  # creat_la = de cand e firma in iConta sub cabinet (proxy preluare)
+            cur.execute("SELECT creat_la FROM public.tenants WHERE id=%s", (tenant_id,))
+            row = cur.fetchone()
     r["data"] = datetime.date.today().isoformat()
+    r["in_iconta_din"] = row[0].date().isoformat() if row and row[0] else None
     return r
 
 

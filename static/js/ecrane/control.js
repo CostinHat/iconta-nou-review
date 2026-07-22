@@ -267,7 +267,7 @@ async function detaliuFirma(corp, nav, firma) {
     };
     const col = CULORI[a.stare] || CULORI.gri;
     zona.innerHTML = `
-      <div class="cf-incr-temei">Audit rulat ${dataRo(a.data)} \u00b7 <span style="color:${col.dot}">${col.txt}</span>
+      <div class="cf-incr-temei">${a.in_iconta_din ? `Firm\u0103 \u00een iConta din ${dataRo(a.in_iconta_din)} \u00b7 ` : ""}Audit rulat ${dataRo(a.data)} \u00b7 <span style="color:${col.dot}">${col.txt}</span>
         \u00b7 ${a.coerent} coerent \u00b7 ${a.divergent} divergent \u00b7 ${a.neverificat} neverificat</div>
       ${grup("Coerent", "verde", "cf-verde")}
       ${grup("Divergent", "rosu", "cf-rosu")}
