@@ -383,7 +383,7 @@ async function formularVectorFirma(corp, nav, f) {
   const regim = f.regim_fiscal;   // fara fallback tacit; null la vector necompletat
   const partidaSimpla = f.regim_contabil === "simpla";   // PFA/profesie liberala: n-are regim CIT (micro/profit)
   const decont = f.tip_decont;   // fara preselectie tacita; obligatoriu la plator TVA (ANAF v9 nu aduce periodicitatea)
-  const ic = !!f.operatiuni_ic;
+  const ic = f.operatiuni_ic;    // raw true/false/null: fara preselectie tacita, obligatoriu (decide obligatia D390)
   const tva = !!tvaInit;
   corp.innerHTML = `
     <h2 class="mig-form-titlu">Verificare fiscal\u0103</h2>
@@ -414,10 +414,13 @@ async function formularVectorFirma(corp, nav, f) {
         </div>
       </div>
       <div class="vf-grup">
-        <div class="vf-eticheta">Opera\u021biuni intracomunitare?</div>
+        <div class="vf-eticheta">Opera\u021biuni intracomunitare? <span class="oblig">*</span></div>
+        <span class="camp-ajutor">Livr\u0103ri, achizi\u021bii sau prest\u0103ri c\u0103tre/de la parteneri din UE.
+          D390 se depune numai pentru lunile \u00een care exist\u0103 astfel de opera\u021biuni (instruc\u021biuni
+          completare D390, anexa OPANAF 394/2017, pct. 1.2).</span>
         <div class="vf-optiuni" id="vf-ic">
-          <button class="vf-opt ${ic?"vf-on":""}" data-v="da">Da</button>
-          <button class="vf-opt ${!ic?"vf-on":""}" data-v="nu">Nu</button>
+          <button class="vf-opt ${ic === true ? "vf-on" : ""}" data-v="da">Da</button>
+          <button class="vf-opt ${ic === false ? "vf-on" : ""}" data-v="nu">Nu</button>
         </div>
       </div>
       <div class="mig-eroare" id="vf-eroare"></div>
@@ -451,7 +454,8 @@ async function formularVectorFirma(corp, nav, f) {
       regim_fiscal: getRegim(),
       platitor_tva: platitor,
       tip_decont: platitor ? getDecont() : null,
-      operatiuni_ic: getIc() === "da",
+      // obligatoriu, fara default tacit: nimic ales -> null -> backend respinge (400). NU coercem la false.
+      operatiuni_ic: getIc() === "da" ? true : (getIc() === "nu" ? false : null),
     };
     try {
       await api.post(`/tenants/${f.tenant_id}/vector`, payload);

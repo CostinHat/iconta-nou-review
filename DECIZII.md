@@ -2815,3 +2815,25 @@ pct.1.2). Bifa de profil e un indicator, nu adevarul lunar; cand contrazice fapt
 se semnaleaza (nu se ascunde, nu se blocheaza).
 DOVADA: pytest 927 (matrice 64 NESCHIMBATA, d390_fapt=None); verificator TOTAL 0; functional pe DANTE (semafor):
 D390 iunie = restanta reala (avea IC, nedepusa), mai NU e restanta falsa.
+
+### 23.07.2026 operatiuni_ic obligatoriu la migrare (al 5-lea camp DEFAULT_FISCAL_TACIT)  (vector_fiscal_api; main VectorIn; migrare.js; verificator; DESIGN_SYSTEM cap.17 v2.19)
+CONSTATARE (§3, raportata anterior): in formularul de migrare `tip_decont` era obligatoriu (.oblig *), dar
+`Operatiuni intracomunitare?` NU — cu "Nu" preselectat implicit; iar `salveaza` facea `ic = bool(operatiuni_ic)`
+-> o firma prin formular primea mereu True/False, niciodata None. Gap: default tacit False pe un camp care DECIDE
+obligatia D390 (o firma cu operatiuni IC unde contabilul nu schimba "Nu" -> D390 ratat).
+DECIZIE: operatiuni_ic devine obligatoriu la migrare, ca tip_decont, fara default tacit.
+- VectorIn.operatiuni_ic: Optional[bool]=None (nu bool=False); salveaza respinge None -> 400 IC_LIPSA (verificat prin
+  proba HTTP: POST /vector fara operatiuni_ic -> 400 "alege Da sau Nu"; check-ul fireste PRIMUL, inainte de regim).
+- citeste intoarce operatiuni_ic None cand e None (nu False tacit) - simetric cu platitor_tva - ca frontendul sa
+  distinga "nesetat" de "Nu".
+- migrare.js: fara preselectie (valoare raw true/false/null: `ic===true`/`ic===false`), trimite null cand nu e ales,
+  .camp-ajutor cu temeiul (instr. D390, anexa OPANAF 394/2017 pct.1.2).
+- DEFAULT_FISCAL_TACIT extins la al 5-lea camp (boolean: True/False/false + "da"/"nu"), .py+.js, regula in
+  DESIGN_SYSTEM cap.17 v2.19 SIMULTAN cu verificatorul (norma + gardian mecanic in acelasi loc).
+TEMEI: acelasi principiu ca tip_decont (23.07) - un camp care decide obligatii, care nu se poate autocompleta din
+ANAF, se cere EXPLICIT. operatiuni_ic e declarat de contabil (profil), nu vine din ANAF v9. Combinat cu item 1+2
+(faptul lunar primeaza), bifa gresita nu mai ascunde D390: faptul o contrazice + se semnaleaza.
+DOVADA: pytest 927; verificator TOTAL 0 (DEFAULT_FISCAL_TACIT 0, fara fals-pozitive pe payload-ul nou); proba HTTP
+400 pe operatiuni_ic lipsa; tenant_001 intact (400 inainte de write).
+LIMITA: firmele EXISTENTE cu operatiuni_ic deja setat (True/False explicit) raman valide; cele cu None (create in
+afara fluxului de migrare, ex. audit-preluare) vor cere completarea la prima editare a vectorului.

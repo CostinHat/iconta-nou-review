@@ -850,7 +850,7 @@ class VectorIn(BaseModel):  # [p82_vector]
     regim_fiscal: Optional[str] = None  # [regim] partida simpla -> NULL valid; Optional doar ca sa nu pice la boundary
     platitor_tva: bool
     tip_decont: Optional[str] = None
-    operatiuni_ic: bool = False
+    operatiuni_ic: Optional[bool] = None   # obligatoriu la migrare (ca tip_decont) -> None respins in salveaza, fara default tacit
 
 class ProdusPotrivesteIn(BaseModel):  # [p97_produse_rute]
     denumire: str

@@ -37,7 +37,8 @@ def citeste(conn_schema):
         "regim_fiscal": regim,
         "platitor_tva": bool(tva) if tva is not None else None,
         "tip_decont": decont,
-        "operatiuni_ic": bool(ic) if ic is not None else False,
+        # None = necompletat (nu False tacit) -> frontendul distinge "nesetat" de "Nu" (fara preselectie). Vezi DECIZII 23.07.
+        "operatiuni_ic": bool(ic) if ic is not None else None,
         "completat": completat,
     }
 
@@ -49,6 +50,11 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
     regim_in = (regim_fiscal or "").strip().lower()
 
     tva = bool(platitor_tva)
+    # operatiuni_ic OBLIGATORIU la migrare (ca tip_decont) - decide obligatia D390. Fara default tacit:
+    # None (necompletat) -> eroare, nu False. Vezi DECIZII 23.07 + DESIGN_SYSTEM cap.17.
+    if operatiuni_ic is None:
+        return {"ok": False, "cod": "IC_LIPSA",
+                "mesaj": "Operațiuni intracomunitare: alege Da sau Nu (obligatoriu)."}
     ic = bool(operatiuni_ic)
 
     decont = (tip_decont or "").strip().lower()
