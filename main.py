@@ -2142,10 +2142,12 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
                 term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt)
                 firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "termene": term})
         except Exception as e:
-            # [T1] o firma care crapa NU dispare din ecran: gri cu temei (doctrina 23.07 — gri = "nu am putut", nu tacere)
+            # [T1] o firma care crapa NU dispare din ecran: gri cu temei (doctrina 23.07 — gri = "nu am putut", nu tacere).
+            # [item4] numele tehnic al exceptiei merge DOAR in log (%r); pe ecran - temei citibil pentru contabil (DS cap.6).
             _LOG_VERDICT.warning("termene: evaluare esuata tenant %s -> gri (%r)", tid, e)
             neevaluate.append({"tenant_id": tid, "nume": f.get("nume"),
-                               "cauza": "Nu am putut evalua această firmă (%s)." % type(e).__name__})
+                               "cauza": "Nu am putut evalua această firmă acum — a apărut o eroare internă. "
+                                        "Am notat-o; reîncearcă mai târziu sau anunță suportul."})
     return termene_api.portofoliu(firme_eval, azi, neevaluate)
 
 

@@ -259,8 +259,13 @@ def test_semafor_d390_flag_false_fapt_false_nimic():
     assert not any(d["tip"] == "d390" for d in rez["datorate"])
     assert not any(n["tip"] == "d390" and "declară FĂRĂ" in n["cauza"] for n in rez["neclar"])
 
-def test_semafor_d390_neplatitor_flag_false_dar_facturi_ic_semnaleaza():
-    # neplatitor: profil fara IC dar facturi IC reale -> gri (art.317/contradictie), nu tacere
+def test_semafor_d390_neplatitor_flag_false_nu_consulta_faptul():
+    # POARTA (regresie tenant_001): neplatitor cu flag False -> D390 neaplicabil PRIN FORMA. Faptul NU se consulta
+    # (nu atinge DB -> nu crapa pe d301_operatiuni lipsa la scheme vechi de partida simpla). Nimic D390 emis.
+    # Rastoarna aserția de la item 2 (neplatitor nu mai fabrica semnal pe facturi IC - obligatia lui e art. 317, nu fapt).
     v = {"platitor_tva": False, "tip_decont": None, "operatiuni_ic": False, "regim_fiscal": "micro"}
-    rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23), d390_fapt=lambda a, m: True)
-    assert any(n["tip"] == "d390" for n in rez["neclar"])
+    apelat = []
+    rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23),
+                                d390_fapt=lambda a, m: apelat.append((a, m)) or True)
+    assert apelat == []                                         # faptul NU e consultat la neplatitor
+    assert not any(n["tip"] == "d390" for n in rez["neclar"])   # nimic D390 emis (flag False -> nimic)

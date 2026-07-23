@@ -231,23 +231,16 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
             gri("D390", "Profilul firmei declară FĂRĂ operațiuni intracomunitare, dar există facturi "
                         "intracomunitare în perioada %s. Verificați Vectorul fiscal (operațiuni intracomunitare) — "
                         "D390 se datorează pentru lunile cu astfel de operațiuni." % luni_txt)
-    else:                                        # NEplatitor: D390 depinde de art. 317 (necunoscut). Flag SAU fapt IC -> gri.
-        are_ic = bool(operatiuni_ic)
-        if operatiuni_ic is False:               # profil declara fara IC -> verificam faptul pe lunile inchise
-            for a, m in per_luni:
-                term = _termen(a, m, tip="d390")
-                if _in_fereastra(term) and d390_fapt(a, m) is True:
-                    are_ic = True
-                    break
+    else:                                        # NEplatitor: D390 e neaplicabil PRIN FORMA pe fapt.
+        # POARTA: faptul D390 (d390_fapt -> DB per luna) se consulta DOAR la platitori (art. 316). Un neplatitor nu are
+        # D390 pe fapt - obligatia depinde de inregistrarea art. 317, pe care n-o urmarim (facturile IC nu o dovedesc).
+        # Decizie pe FLAG, fara DB -> nu atinge tabele care pot lipsi la un tenant de partida simpla (ex. d301_operatiuni).
         if operatiuni_ic is None:
             gri("D390", "Operatiuni intracomunitare necompletat - nu pot sti daca datorezi D390.")
-        elif are_ic and operatiuni_ic is False:  # contradictie la neplatitor: profil fara IC dar facturi IC reale
-            gri("D390", "Profilul firmei declară FĂRĂ operațiuni intracomunitare, dar există facturi "
-                        "intracomunitare. Dacă firma e înregistrată pentru operațiuni IC (art. 317), D390 se "
-                        "datorează pentru lunile respective. Verificați Vectorul fiscal.")
-        elif are_ic:                             # flag True -> art. 317 gri (ca inainte)
+        elif operatiuni_ic:                      # flag True -> art. 317 gri (nu stim daca e inregistrat)
             gri("D390", "D390 se depune de persoanele înregistrate conform art. 316 sau art. 317 "
                         "(OPANAF 705/2020, pct. 1.1). Nu avem înregistrată calitatea art. 317 pentru această firmă.")
+        # operatiuni_ic False -> neplatitor fara IC declarate -> nimic (D390 neaplicabil prin forma)
 
     # D406 SAF-T — obligatorie tuturor din 2025 (mici de la 01.01.2025). Periodicitate:
     # la PLATITORII de TVA = perioada fiscala TVA (lunar/trimestrial); la NEplatitori =

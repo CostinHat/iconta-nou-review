@@ -94,3 +94,24 @@ def test_matrice_forma(tip_firma, platitor_tva, salariati, operatiuni_ic, d205_n
     if rupt:
         pytest.fail("[%s tva=%s sal=%s ic=%s d205=%s dep=%s] " % (
             tip_firma, platitor_tva, salariati, operatiuni_ic, d205_note, depuse_toate) + " | ".join(rupt))
+
+
+# ---- REGRESIE tenant_001 (UndefinedTable in termene): faptul D390 doar la platitor ----
+@pytest.mark.parametrize("tip_firma", ["srl", "pfa"])
+@pytest.mark.parametrize("platitor_tva", [True, False, None])
+@pytest.mark.parametrize("operatiuni_ic", [True, False, None])
+def test_d390_fapt_consultat_doar_la_platitor(tip_firma, platitor_tva, operatiuni_ic):
+    """Faptul D390 (d390_fapt -> DB per luna) se consulta DOAR la platitori (art. 316). Un neplatitor nu are
+    D390 pe fapt (obligatia depinde de art. 317, nu de facturi). Altfel o schema incompleta (ex. d301_operatiuni
+    lipsa la un tenant vechi de partida simpla) rupe evaluarea -> firma cade in neevaluate. Poarta = platitor_tva.
+    Aserția care ar fi prins regresia din 01b353b (bucla neplatitor apela faptul)."""
+    partida_simpla = regim_contabil(tip_firma) == "simpla"
+    vector = {"tip_firma": tip_firma, "regim_fiscal": None if partida_simpla else "profit",
+              "platitor_tva": platitor_tva, "tip_decont": "lunar" if platitor_tva else None,
+              "operatiuni_ic": operatiuni_ic, "partida_simpla": partida_simpla, "tva_data_inceput": None}
+    apeluri = []
+    def fapt(a, m):
+        apeluri.append((a, m)); return None
+    cf.obligatii_datorate(vector, are_salariati=False, azi=AZI, d390_fapt=fapt)
+    if platitor_tva is not True:
+        assert apeluri == [], "d390_fapt apelat la non-platitor (platitor=%r): %s" % (platitor_tva, apeluri[:3])

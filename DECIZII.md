@@ -2837,3 +2837,33 @@ DOVADA: pytest 927; verificator TOTAL 0 (DEFAULT_FISCAL_TACIT 0, fara fals-pozit
 400 pe operatiuni_ic lipsa; tenant_001 intact (400 inainte de write).
 LIMITA: firmele EXISTENTE cu operatiuni_ic deja setat (True/False explicit) raman valide; cele cu None (create in
 afara fluxului de migrare, ex. audit-preluare) vor cere completarea la prima editare a vectorului.
+
+### 23.07.2026 Regresie termene (UndefinedTable) — poarta D390 pe fapt = platitor; d301 scos din primitiva
+CONSTATARE: dupa 01b353b, /termene crapa pe tenant_001 (PFA partida simpla, neplatitor) cu
+"relation tenant_001.d301_operatiuni does not exist" -> firma cadea in neevaluate, iar 27.07 arata 1 firma in
+loc de 2. Cauza: bucla de verificare a contradictiei la NEplatitor (item 2) apela d390_fapt -> d390_are_operatiuni
+-> SELECT pe d301_operatiuni, tabela care lipseste la scheme vechi de partida simpla.
+DECIZIE (nu try/except - poarta prin forma):
+- POARTA = platitor_tva: faptul D390 (d390_fapt, atinge DB per luna) se consulta DOAR la platitori (art. 316).
+  Un neplatitor nu are D390 pe fapt - obligatia lui depinde de inregistrarea art. 317, pe care n-o urmarim
+  (facturile IC nu o dovedesc). Neplatitor -> decizie pe FLAG (True=art.317 gri; False=nimic; None=gri necompletat),
+  fara DB. Cade si semnalul de contradictie la neplatitor (corect: la un neplatitor facturile IC nu implica D390).
+- d301_operatiuni SCOS din d390_are_operatiuni: e artefact D301 / NEplatitori, irelevant pentru D390 al unui
+  platitor (singurii apelanti ramasi dupa poarta) - cod mort + fragil. Raman sursele reale: facturi IC + d390_manual.
+- Mesaj (item 4): neevaluate nu mai scurge type(e).__name__ ("UndefinedTable") pe ecran; numele tehnic ramane in
+  log (_LOG_VERDICT.warning %r), pe ecran temei citibil (DS cap.6).
+- Aserție de regresie (item 5): test_matrice.test_d390_fapt_consultat_doar_la_platitor - pentru fiecare config,
+  d390_fapt invocat DOAR la platitor (stub care inregistreaza; neplatitor = zero apeluri). Ar fi prins bug-ul.
+DOVADA: pytest 945 (matrice 64 intacta + 18 cazuri de poarta); verificator TOTAL 0; functional: tenant_001 reapare
+cu D112 (iun 27.07 + iul 25.08), 27.07 = 2 firme (AMZUICA+DANTE), neevaluate=[].
+
+### 23.07.2026 [RAPORT, nereparat] Drift de schema: d301_operatiuni + d205_beneficiari lipsesc din template
+Comparatie schema-tenant vs tenant_template.sql (43 tabele): tenant_001, tenant_002, tenant_003 - ZERO tabele
+lipsa fata de template. DAR tenant_002 are 2 tabele EXTRA care NU sunt in template: d301_operatiuni si
+d205_beneficiari (create ad-hoc doar pe tenant_002, netrecute in template). Inversul ipotezei initiale ("tenant_001
+are drift") - de fapt TEMPLATE-ul e incomplet, iar tenant_002 e outlier-ul.
+CONSECINTA: orice tenant provizionat din template (tenant_001, tenant_003, viitoarele) NU are aceste tabele.
+Generarea D301 (decont special TVA neplatitori) si functiile pe d205_beneficiari sunt rupte pentru toti in afara de
+tenant_002. NEREPARAT (cerut doar raport). De reparat separat: adauga cele 2 tabele in tenant_template.sql (din
+DDL-ul real de pe tenant_002) + backfill tenant_001/003 + poarta F165 (care compara si coloane, nu doar tabele).
+Vezi DE_FACUT.
