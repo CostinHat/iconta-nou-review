@@ -2504,3 +2504,14 @@ logica. A DOUA oara azi cand portile verzi acopera o cale reala neparcursa - pri
 **Verificat la sursa:** d301_operatiuni NU are writer nicaieri (nici INSERT/ruta/UI) - D301 genereaza XML dintr-o
 tabela populata doar manual/extern (feature-completeness gap raportat, nu blocant). F165 (item 4) marca DEJA
 tabele_lipsa (template->tenant) ca HARD - nimic de construit acolo.
+
+**CONSTATARE PROPRIE — d205_vs_457 producea ROSU FALS (a TREIA oara azi, poarta verde peste un fals vizibil
+utilizatorului):** verificarea "D205 vs cont 457" din _verificari_contabile citea suma D205 din tabela
+d205_beneficiari care e goala peste TOT (zero writeri) -> SUM=0. Deci pe ORICE firma cu dividende repartizate
+(rulaj 1171->457 > 0) checkul dadea buline ROSIE "D205: 0 lei vs 457: X lei" - o acuzatie falsa de dividende
+nedeclarate, chiar daca D205 era depusa (prin d205.py, cont 457). NU e curatenie de cod mort - e aceeasi clasa cu
+restantele INVENTATE de dimineata (D100 pe PFA, poz.2): o poarta verde (945 teste) acoperea un verdict fals VIZIBIL
+in panoul de verificari al firmei. Cele trei de azi: (1) blocajul onboarding PFA - cale reala neparcursa; (2) crash
+/termene - cale de cod negardata; (3) d205_vs_457 - verdict fals randat. Tiparul comun: verdele mecanic nu dovedeste
+corectitudinea unei cai pe care nicio poarta n-o exercita pe date reale. Reparat: verificarea eliminata integral (D205
+-vs-457 pe FAPT traieste in semafor, declaratii_fapt pe rulaj 457).

@@ -494,3 +494,13 @@ vs DE CONSTRUIT (munca reala):
   art. 317 → dacă datorează D390). De reevaluat dacă ANAF publică ROI/art.317 printr-un alt serviciu web.
 
 
+
+## GAP funcționalitate — D301 fără cale de introducere operațiuni (raportat 23.07.2026, neconstruit)
+D301 (Decont special TVA, F032 „LIVE") generează XML din tabela `d301_operatiuni`, dar **nimeni nu o poate popula
+din aplicație**: zero INSERT în cod, nicio rută, niciun ecran (verificat la sursă 23.07 — `grep` pe INSERT/@app/UI).
+Contabilul NU are cale să introducă operațiunile intracomunitare ale unui neplătitor înregistrat art. 317 (achiziții
+UE de servicii/bunuri). Consecință: D301 e **inutilizabil în practică** — generatorul + validarea XML merg, dar pe o
+tabelă mereu goală (populabilă doar prin SQL direct / import extern). NU e blocant (tabela e acum canonică în template,
+generarea/semaforul citesc corect), dar F032 e „LIVE" doar pe jumătate (generare fără intrare). DE DECIS: ecran de
+introducere operațiuni D301 (ca RIP/registru) SAU import (extras/facturi UE → d301_operatiuni), la caz real. Vezi
+DECIZII 23.07. Nu construi nimic până nu apare nevoia reală (neplătitor cu achiziții IC).
