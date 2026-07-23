@@ -2676,3 +2676,19 @@ DOVADA: /migrare/vector expune regim_contabil (tenant_001=simpla); POST vector c
 400); pytest 518 verde; verificator TOTAL 0; node --check pe migrare.js/firme.js OK.
 LIMITA: garda DEFAULT_FISCAL_TACIT ramane pe `.py` - dar fallback-urile frontend vizate sunt acum sterse;
 follow-up-ul din commit-ul precedent e INCHIS.
+
+### 23.07.2026 DEFAULT_FISCAL_TACIT extins pe .js + filtrarea pasilor de migrare nu ghiceste la eroare  (verificator; migrare.js; DESIGN_SYSTEM cap.17 v2.17)
+DECIZIE: garda DEFAULT_FISCAL_TACIT scaneaza acum si `.js` (aceleasi 3 campuri regim_fiscal/tip_firma/platitor_tva;
+formele `field || "lit"` si ternar `? ... : "lit"` cu literalul fiscal in ramura ELSE = default). NU prinde maparea
+valoare->eticheta (`=== "profit" ? "profit" : ...`, literal in THEN). Curatate: migrare.js:1370 (`tip_firma || "srl"`
+sters). Filtrarea pasilor de migrare: la eroare `/migrare/straturi` (aplicabile null/gol) NU se mai afiseaza toti
+pasii ("arata tot" gratios) - un PFA ar fi vazut pasii de partida dubla; se afiseaza stare-goala canonica +
+reincercare. straturi_pentru ramane SURSA UNICA a filtrarii (nu se deriva in JS din regim_contabil).
+TEMEI: fallback-ul tacit pe frontend ajunge la fel de rau ca pe backend (dovedit: regim || "micro" fabrica D100).
+"Arata tot" la eroare inseamna un PFA vede intrebari de partida dubla = nonsens. Necunoscut -> stare-goala, nu ghicit.
+T4 RAPORTAT (decizie Costin): `tip_decont || "trimestrial"` (migrare.js) NU se poate citi din ANAF v9 - parserul
+(anaf_api.py:98-117) extrage doar platitor_tva/stare/inactiv/denumire, NU periodicitatea decontului (e din prag/
+optiune D010, nu din snapshot scpTVA). Deci nu e "citeste in loc de default"; ramane default. De decis daca se
+elimina (intreaba mereu) sau se pastreaza (trimestrial = default rezonabil pt firma mica). NEatins.
+DOVADA: pytest 518 verde; verificator TOTAL 0 (DEFAULT_FISCAL_TACIT 0 pe .py+.js); node --check migrare.js OK;
+simulare eroare /migrare/straturi -> stare-goala, zero pasi (raspuns OK -> 5 straturi la PFA).

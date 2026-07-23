@@ -1363,16 +1363,23 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
   nav.setInapoi(null);
   latime(corp, false);
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
-  // [p_pfa_rip 20.07] Straturile aplicabile regimului vin din backend (straturi_pentru),
-  // sursa unica de adevar - meniul NU reinventeaza in JS ce strat apartine carui regim.
-  // Pasii cu 'strat' apar doar daca stratul e aplicabil; pasii fara 'strat' (articole,
-  // retete) raman mereu. Daca endpointul pica -> aplicabile=null -> arata tot (gratios).
-  const tip = (firma.tip_firma || "srl").toLowerCase();
+  // [p_pfa_rip 20.07] Straturile aplicabile regimului vin din backend (straturi_pentru), SURSA UNICA -
+  // meniul NU reinventeaza in JS ce strat apartine carui regim (nu deriva din regim_contabil aici).
+  // Pasii cu 'strat' apar doar daca stratul e aplicabil; pasii fara 'strat' (articole/retete) raman mereu.
+  const tip = firma.tip_firma.toLowerCase();   // backendul garanteaza tip_firma; fara fallback tacit
   let aplicabile = null;
   try {
     const r = await api.get(`/migrare/straturi?tip_firma=${encodeURIComponent(tip)}`);
     aplicabile = (r && r.straturi) || null;
   } catch {}
+  if (!aplicabile || !aplicabile.length) {
+    // straturi_pentru nu a raspuns -> NU ghicim filtrarea in JS (un PFA ar vedea pasii de partida dubla).
+    // Stare-goala canonica + reincercare, nu "arata tot".
+    corp.innerHTML = `<div class="stare-goala">Nu am putut încărca pașii de import pentru firmă.
+      <button class="btn-link" id="mig-reincearca">Reîncearcă</button></div>`;
+    corp.querySelector("#mig-reincearca").addEventListener("click", () => meniuMigrarePerFirma(corp, nav, firma));
+    return;
+  }
   const PASI = [
     { titlu: "Vector fiscal", desc: "TVA, regim, intracomunitar", strat: "vector_fiscal", fn: (c, n) => formularVectorFirma(c, n, firma) },
     { titlu: "Solduri ini\u021biale", desc: "Balan\u021ba de deschidere", strat: "solduri", fn: (c, n) => importSolduriFirma(c, n, firma) },
@@ -1390,10 +1397,9 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
   if (tip === "pfa") {
     PASI.push({ titlu: "Import RIP", desc: "Registru \u00eencas\u0103ri-pl\u0103\u021bi (istoric PFA, partid\u0103 simpl\u0103)", strat: "rip", fn: (c, n) => importRipFirma(c, n, firma) });
   }
-  // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla)
-  const pasiVizibili = aplicabile
-    ? PASI.filter((p) => !p.strat || aplicabile.includes(p.strat))
-    : PASI;
+  // ascunde straturile neaplicabile regimului (ex: PFA nu vede partida dubla). aplicabile = garantat
+  // non-null aici (altfel am iesit mai sus cu stare-goala) -> filtram mereu, fara "arata tot".
+  const pasiVizibili = PASI.filter((p) => !p.strat || aplicabile.includes(p.strat));
   corp.innerHTML = `
     <p class="mig-intro">Alege ce vrei s\u0103 aduci pentru aceast\u0103 firm\u0103.</p>
     <div class="mig-lista" id="mig-pasi"></div>

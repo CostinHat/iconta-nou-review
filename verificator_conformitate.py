@@ -258,6 +258,19 @@ for pdir in (os.path.join(BAZA_PY, "core"), BAZA_PY):
             if RE_DATA_DISP.search(lin):
                 rap["backend_ui_brut"].append((f, i, "data", s[:60]))
 
+# DEFAULT_FISCAL_TACIT si pe .js: aceleasi 3 campuri; forme JS `field || "lit"` si ternar `... ? ... : "lit"`
+# unde litералul fiscal e ramura ELSE (= default cand campul lipseste). NU prinde `field === "lit" ? "lit" : …`
+# (mapare valoare->eticheta, nu default) - ramura ELSE de acolo nu e literal fiscal. Frontendul foloseste FAPTUL
+# expus de backend (regim_contabil / tip_firma), nu defaulteaza inline. Vezi DESIGN_SYSTEM cap.17.
+RE_JS_FISCAL = re.compile(r'''\b(regim_fiscal|tip_firma|platitor_tva)\b[^\n]{0,60}?(\|\||\?[^\n?]{0,40}?:)\s*["'](micro|profit|srl|pfa)["']''')
+for nume, t in fisiere.items():
+    for i, lin in enumerate(t.split("\n"), 1):
+        s = lin.strip()
+        if s.startswith("//") or s.startswith("*") or s.startswith("/*"):
+            continue
+        if RE_JS_FISCAL.search(lin):
+            rap["default_fiscal_tacit"].append((nume, i, "fiscal-lit-js", s[:60]))
+
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)
