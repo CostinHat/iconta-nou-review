@@ -37,16 +37,17 @@ Pentru FIECARE ecran, 4 verificări obiective din Design System:
 **NUMEROTARE CANONICĂ (fixată 23.07.2026):** pozițiile 1–12 = ordinea ACESTEI liste, nu ordinea în care sunt
 atacate. Se scrie „poziția N" (fixă), nu „N/12" derivat din ordinea de lucru. Ordinea DE ATAC o dă Costin,
 independent de poziție. (Corecție la commitul de închidere care numea Control fiscal „1/12" — e poziția **2**.)
+**ÎNCHISE: poziția 2 (Control fiscal) + poziția 3 (Termene), 23.07.2026. Rămân 10** (1, 4–12).
 
 Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prinde randarea):
 
 1. [ ] **Declarații** (listă + flux 3 pași per declarație) — `declaratii_api.py` + `declaratii.js`
 2. [x] **Control fiscal** — **ÎNCHIS 23.07.2026** (SRL+PFA, comituri ac5ab4f→9693c1f). Semafor cross-portofoliu + Declarație vs contabilitate. `control_fiscal_api.py` + `control.js`.
-3. [ ] **Termene** ← **URMĂTORUL DE ATACAT** (ordinea de atac, nu poziția). `termene_api.py` + `termene.js`.
-   Motiv: împarte primitivele cu semaforul (vector, `tip_decont`, `platitor_tva_anaf_inceput`, `azi_ro`);
-   `termene_api` a fost fabricantul de D100 pe PFA (`regim_fiscal or "micro"`) și e singurul consumator reparat
-   azi FĂRĂ verificare vizuală; fereastra `[azi, azi+60]` interacționează cu mărginirea la data înregistrării
-   TVA (Pasul B), netestată în browser.
+3. [x] **Termene** — **ÎNCHIS 23.07.2026** (comituri 80c260b→b3fb563). `termene_api.py` + `termene.js`.
+   8 reparații (vezi ISTORIC 23.07 poz.3): sub-raportare D394/D406/D101 (consolidare pe primitivă unică), D390 pe
+   fapt lunar (nu flag fix), d205_vs_457 roșu fals (cod mort scos), neevaluate gri cu temei, regresie d301 negardat,
+   §4 mărginire TVA, edge decembrie an+1, dataLunga → dataRo + gard DATA_DIALECT extins. Prezentare P1–P4.
+   RĂMAS vizual (Costin): eticheta de perioadă cu an se vede abia în decembrie (fereastra traversează anul).
 4. [ ] **Setări cont** (profil, parolă, cabinet, competențe, chei API)
 5. [ ] **Recomandă**
 6. [ ] **Admin*** (Raportări, Activitate cabinete, Sănătate server — grafice SVG)

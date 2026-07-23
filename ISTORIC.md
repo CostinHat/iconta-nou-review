@@ -2528,3 +2528,44 @@ d205_vs_457 - verdict fals randat; (4) 5 formatoare locale de data - gaura de ga
 crapa la randare. Verdele mecanic (sintaxa, tipul, ruta care curge) NU dovedeste ca o INTERACTIUNE reala merge.
 Ce ar fi prins-o: un test de interactiune (jsdom/headless care apasa rand-firma) SAU un contract explicit al
 obiectului-firma (deschideFirma sa valideze {id,nume,cui,tip_firma} si sa arunce clar). Ambele = workstream separat.
+
+## 23.07.2026 — Ecran poziția 3 din lista C (CHECKLIST_BROWSER) — TERMENE — ÎNCHIS
+Comituri: 80c260b → a5f889a → 792f8d8 → 5f5c1b5 → 238b427 → cb8618a → ee09fcc → 6cce866 → 01b353b →
+444dc53 → 91b9051 → 84db870 → 6a8d1c3 → d735c33 + d236cf6 → b3fb563 (fix P2, tip_firma în payload).
+
+**CE S-A REPARAT, în ordine de gravitate:**
+1. **Sub-raportare: D394/D406/D101 nu apăreau DELOC în Termene.** Cauză: `termene_firma` reimplementa inline
+   maparea „cine ce datorează". Consolidat într-o primitivă unică (`obligatii_datorate`) cu fereastră
+   parametrizabilă (7z semafor / 60z termene). Efect: matricea de 64 acoperă acum și Termene, care avea zero acoperire.
+2. **D390 tratat ca obligație lunară fixă pe flag static.** Corectat: fapt lunar din facturi IC + `d390_manual`.
+   Temei: instrucțiuni completare D390, anexa OPANAF 394/2017 pct.1.2. Poarta inversată: faptul primează, flag-ul
+   decide doar pe perioadă deschisă. Costuri asimetrice: înapoi decidem pe fapt (restanță falsă = acuzație
+   nefondată), înainte afișăm pe incertitudine (termen ascuns = amendă).
+3. **d205_vs_457 producea ROȘU FALS pe orice firmă cu dividende** (tabelă goală peste tot, SUM=0 vs cont 457).
+   Cod mort eliminat complet: citire (main.py) + funcție (verificatoare.py) + randare (firme.js) + whitelist F165.
+4. **Firma neevaluabilă dispărea tăcut** (`try/except: continue`). Canal `neevaluate`, gri cu temei — a prins
+   regresia de la pct.5 în aceeași zi.
+5. **Regresie proprie:** `d390_are_operatiuni` interoga `d301_operatiuni` fără garda pe care `d301.py` și
+   `control_incrucisat.py` o au → cabinetul dispărea din toate termenele. Poarta corectă = `platitor_tva`.
+6. **§4:** ruta `/termene` nu aducea `platitor_tva_anaf_inceput` → fără mărginire la data înregistrării TVA.
+   Asimetrie cu semaforul, închisă.
+7. **Edge decembrie:** `an = azi.year` fix → perioadele an+1 nu se generau. Teste la 15.12 și 28.12.
+8. **dataLunga = formator local**, încălcare DATA_DIALECT (DS cap.4). Garda avea gaură; extinsă, a prins 5
+   formatoare locale pe tot frontendul (2 reale — cabinet, portal — reparate înainte să ajungem la acele ecrane).
+
+**CONSTATARE DE PROCES — de cinci ori azi toate porțile au trecut și interacțiunea reală a căzut:** (1) onboarding
+PFA, (2) crash /termene, (3) d205_vs_457, (4) 5 formatoare locale, (5) P2 obiect parțial. Tiparul: verde mecanic
+(sintaxă, tip, rută care curge) nu dovedește că o interacțiune reală merge. Niciun test nu apasă un buton.
+
+**NOTĂ pe cazul 5:** `meniuFirma` cere `tip_firma` cu contract strict fiindcă am eliminat azi `|| "srl"` de acolo.
+Fallback-ul mort masca lipsa câmpului. Nu e argument să-l punem înapoi — e ilustrarea că un default tacit nu previne
+bug-uri, ci le transformă în date greșite tăcute. Aici a apărut imediat, ca eroare, și s-a reparat prin completarea
+contractului (`{id, nume, cui, tip_firma}`).
+
+**DECIZII:** eticheta de perioadă poartă anul doar când diferă de anul curent (decizie de conținut, nu format DS).
+Netestat vizual — se va vedea abia în decembrie, când fereastra traversează anul.
+
+**DE_FACUT:** gap D301 (tabelă fără writer — contabilul nu poate introduce operațiuni IC din aplicație). Test de
+interacțiune (headless care apasă) sau contract explicit al obiectului-firmă — consemnat ca workstream separat, NEDECIS.
+
+**CHECKLIST_BROWSER: pozițiile 2 și 3 închise. Rămân 10** (1, 4–12).
