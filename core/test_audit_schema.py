@@ -64,10 +64,10 @@ def test_compara_nullable_diferit_e_hard():
 def test_compara_extra_in_tenant_NU_e_hard():
     # tabela/coloana extra in tenant (lazy/legacy) -> informativ, NU pica (fara whitelist)
     ref = {"t": {"id": _meta()}}
-    ten = {"t": {"id": _meta(), "vechi": _meta("text")}, "d301_operatiuni": {"id": _meta()}}
+    ten = {"t": {"id": _meta(), "vechi": _meta("text")}, "tabela_extra_x": {"id": _meta()}}
     d = a.compara(ref, ten)
     assert not a.are_drift_hard(d)                    # extra nu e drift hard
-    assert d["tabele_extra"] == ["d301_operatiuni"]
+    assert d["tabele_extra"] == ["tabela_extra_x"]
     assert d["coloane_extra"] == {"t": ["vechi"]}
 
 

@@ -2166,6 +2166,18 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.d390_manual (
 );
 
 --
+-- [d301_canonic 23.07] Decont special TVA neplatitori (D301) — mutat din CREATE lazy (d301.py:ensure_tabel,
+-- ELIMINAT) in template = o singura sursa de adevar (aliniat cu decizia 22.07 anti-lazy). id SERIAL (nu IDENTITY)
+-- ca sa coincida cu tabelele deja create lazy pe tenantii existenti (tenant_001/002) -> zero drift F165.
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.d301_operatiuni (
+    id SERIAL PRIMARY KEY, an integer, luna integer, tip integer DEFAULT 1,
+    nr_doc text, data_doc text, val_valuta numeric DEFAULT 0,
+    tip_valuta text DEFAULT 'EUR', curs numeric DEFAULT 1, tva numeric DEFAULT 0,
+    creat timestamp DEFAULT now()
+);
+
+--
 -- F145 (rapoarte configurabile salvabile) — mirror al core/migrare_rapoarte_salvate.py
 --
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.rapoarte_salvate (

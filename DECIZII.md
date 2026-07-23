@@ -2867,3 +2867,28 @@ Generarea D301 (decont special TVA neplatitori) si functiile pe d205_beneficiari
 tenant_002. NEREPARAT (cerut doar raport). De reparat separat: adauga cele 2 tabele in tenant_template.sql (din
 DDL-ul real de pe tenant_002) + backfill tenant_001/003 + poarta F165 (care compara si coloane, nu doar tabele).
 Vezi DE_FACUT.
+
+### 23.07.2026 CORECTIE + rezolvare: d301 canonizat, d205 legacy eliminat (raportul anterior de "drift" era gresit)
+CORECTIE la DECIZII/DE_FACUT din 91b9051: afirmatia "generarea D301 e rupta pentru toti tenantii in afara de
+tenant_002" e FALSA. Verificat la sursa: d301.py:ensure_tabel facea CREATE TABLE IF NOT EXISTS lazy (gardat), deci
+D301 se auto-vindeca la prima folosire - dovedit functional pe tenant_001 (pull creeaza tabela, 0 crash). Cauza reala
+a crash-ului din termene: d390_are_operatiuni interoga d301_operatiuni FARA garda pe care d301.py si control_incrucisat
+o au. Deja reparat (91b9051, d301 scos din primitiva).
+DECIZIE (Costin, optiunea 1 pt d301 / optiunea 3 pt d205):
+- d301_operatiuni CANONIZAT: mutat din CREATE lazy (ensure_tabel ELIMINAT din d301.py) in tenant_template.sql
+  (o singura sursa de adevar, aliniat cu decizia 22.07 anti-lazy). id SERIAL (ca sa coincida cu tabelele deja
+  create lazy pe tenantii existenti -> zero drift F165). Backfill idempotent tenant_003 (001/002 aveau deja).
+  F165: d301 scos din _EXTRA_CUNOSCUTE (nu mai e extra - e in template; test_toti_tenantii_conform il verifica HARD).
+- d205_beneficiari: cod mort ELIMINAT (reparatie reala, nu petic). Zero writeri in tot codul; unicul consumator era
+  verificarea d205_vs_457 din _verificari_contabile care citea suma_bruta din tabela mereu goala -> rosu fals pe
+  orice firma cu dividende (1171->457). Sters: citirea (main.py), coerenta_d205_457 (verificatoare.py), randarea
+  (firme.js), din whitelist F165. D205-vs-457 pe FAPT traieste deja in semafor (control_incrucisat.dividende_
+  distribuite via declaratii_fapt). Tabela ramane pe tenant_002 NEATINSA (fara DROP - nu inspectam date necunoscute),
+  fara consumatori -> extra informativ in F165.
+CONSTATARE (raportata, nereparata): d301_operatiuni NU are writer nicaieri in cod (nici INSERT, nici ruta, nici UI) -
+D301 genereaza XML dintr-o tabela care se populeaza doar manual/extern. Feature-completeness gap (D301 n-are UI de
+introducere operatiuni IC), NU blocant - generarea + semaforul citesc corect. De decis daca merita UI/import D301.
+ITEM 4 (F165 tabele lipsa = eroare): era DEJA implementat - compara() marcheaza tabele_lipsa (template->tenant) HARD
+si are_drift_hard il include (test_audit_schema linia 44-45 + test real toti_tenantii_conform). Nimic de construit.
+DOVADA: pytest 945 (test real tenant-vs-template cu d301 nou verde); verificator TOTAL 0; backfill dovedit
+inainte/dupa (tenant_003 creat, 001/002 idempotent skip).

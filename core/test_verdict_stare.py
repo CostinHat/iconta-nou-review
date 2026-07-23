@@ -57,7 +57,7 @@ def test_construieste_contabil_verificator_care_arunca_da_gri(monkeypatch):
 
 
 def test_constatare_esuata_e_gri_cu_temei():
-    # documente_pozate / d205_vs_457 care crapa -> gri cu temei, nu tacere (main.py _verificari_contabile).
+    # documente_pozate care crapa -> gri cu temei, nu tacere (main.py _verificari_contabile).
     import main
     c = main._constatare_esuata("Documente pozate — verificare eșuată", "documentele pozate", ValueError("x"))
     assert c["stare"] == "gri" and "Nu am putut verifica" in c["mesaj"] and "x" in c["temei"]

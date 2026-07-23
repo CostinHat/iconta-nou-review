@@ -494,10 +494,3 @@ vs DE CONSTRUIT (munca reala):
   art. 317 → dacă datorează D390). De reevaluat dacă ANAF publică ROI/art.317 printr-un alt serviciu web.
 
 
-## Drift de schema (raportat 23.07.2026, nereparat) — d301_operatiuni + d205_beneficiari lipsesc din template
-Comparatie tabele schema-tenant vs tenant_template.sql: cele 3 tenanturi n-au tabele LIPSA fata de template, dar
-**tenant_002 are 2 tabele EXTRA absente din template**: `d301_operatiuni` + `d205_beneficiari` (create ad-hoc doar
-acolo). Deci template-ul e incomplet -> tenant_001/003 + orice tenant nou NU le au. Rupt pentru ele: generarea D301
-(decont special TVA) + functiile pe d205_beneficiari. DE FACUT: (1) extrage DDL-ul real de pe tenant_002 pentru
-ambele; (2) adauga in tenant_template.sql (ca migrare reproductibila, nu ad-hoc); (3) backfill tenant_001/003;
-(4) extinde F165 sa prinda tabele lipsa (nu doar coloane). Vezi DECIZII 23.07.

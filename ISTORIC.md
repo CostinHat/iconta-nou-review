@@ -2474,3 +2474,33 @@ verificate la sursă.
 - **§4 (marginirea la înregistrarea TVA) neatins**, cum s-a decis: ruta `/termene` NU aduce
   `platitor_tva_anaf_inceput` în vector → `tva_data_inceput=None` → Termene nu mărginește (rămâne pentru proba
   vizuală a lui Costin). Motorul știe să mărginească; termene doar nu-l hrănește cu data.
+
+## 23.07.2026 — Ecran poz.3 (Termene): D390 pe fapt, regresie UndefinedTable, d301 canonizat, d205 legacy eliminat
+Continuare poz.3. Comituri: ee09fcc/6cce866 (D390 pe fapt lunar + §4 marginire), 444dc53 (operatiuni_ic obligatoriu),
+01b353b (fapt primeaza + semnal contradictie), 91b9051 (regresie UndefinedTable - poarta D390=platitor + d301 scos
+din primitiva) + commitul de canonizare d301/d205 de acum.
+
+**CORECTIE la o afirmatie FALSA din raportul anterior (91b9051):** am scris "generarea D301 e rupta pentru
+majoritatea tenantilor (toti in afara de tenant_002)". NEADEVARAT. `d301.py:ensure_tabel` facea CREATE TABLE IF
+NOT EXISTS lazy (gardat) -> D301 se auto-vindeca la prima folosire; dovedit functional pe tenant_001 (pull creeaza
+tabela, 0 crash). Cauza reala a crash-ului din /termene: `d390_are_operatiuni` interoga `d301_operatiuni` FARA garda
+pe care `d301.py` si `control_incrucisat.py` o au. Deja reparat (91b9051: d301 scos din primitiva + poarta D390=platitor).
+
+**Canonizare (decizie Costin):** d301_operatiuni mutat din CREATE lazy in tenant_template.sql (ensure_tabel ELIMINAT
+= o singura sursa, aliniat cu 22.07 anti-lazy) + backfill idempotent tenant_003. d205_beneficiari = cod mort eliminat
+(zero writeri; unicul consumator era verificarea d205_vs_457 care citea o tabela mereu goala -> rosu fals pe firme cu
+dividende) - sters din main.py/verificatoare.py/firme.js/whitelist F165; tabela ramane pe tenant_002 neatinsa, fara
+consumatori. D205-vs-457 real traieste in semafor (declaratii_fapt pe rulaj 457). Vezi DECIZII 23.07.
+
+**CONSTATARE DE PROCES (item 5, formularea corecta):** 945 teste verzi cu crash-ul din /termene neprins NU inseamna
+ca provisioning-ul era netestat in consecinte (lazy-create se auto-vindeca, D301 nu era rupt). Inseamna ca exista o
+CALE DE COD NEGARDATA (d390_are_operatiuni pe un neplatitor de partida simpla) pe care NICIO poarta n-a parcurs-o:
+matricea de 64 rula cu d390_fapt=None (nu atingea DB), niciun test de RUTA nu evalua portofoliul pe un tenant real.
+Testul care ar fi prins-o = unul de ruta pe portofoliu (/termene sau /control-fiscal pe tenanti reali), NU de
+provisioning. Aserția adaugata (test_matrice.test_d390_fapt_consultat_doar_la_platitor) prinde clasa la nivel de
+logica. A DOUA oara azi cand portile verzi acopera o cale reala neparcursa - prima a fost blocajul de onboarding PFA
+(vezi 23.07 ecran poz.2, "o poarta statica + teste unitare verzi NU dovedesc ca un REGIM intreg poate parcurge un flux").
+
+**Verificat la sursa:** d301_operatiuni NU are writer nicaieri (nici INSERT/ruta/UI) - D301 genereaza XML dintr-o
+tabela populata doar manual/extern (feature-completeness gap raportat, nu blocant). F165 (item 4) marca DEJA
+tabele_lipsa (template->tenant) ca HARD - nimic de construit acolo.

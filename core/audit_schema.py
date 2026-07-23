@@ -16,8 +16,8 @@ DOUA DIRECTII, tratate diferit (DECIZII 22.07 F165):
     E clasa link_plata: template a castigat ceva, tenantul vechi n-a primit -> codul crapa.
   - tenant -> template (tabela/coloana EXTRA in tenant): DOAR RAPORT informativ, NU pica.
     Ar cere un whitelist ever-growing (cuplare la lista extensibila = rosu fals; aceeasi
-    lectie ca vocabularul de Stari, 22.07). Ex. cunoscute: d301_operatiuni (creat lazy de
-    d301.py, gardat to_regclass), d205_beneficiari (legacy in tenant_002, doar citit-daca-exista).
+    lectie ca vocabularul de Stari, 22.07). (23.07: d301_operatiuni mutat in template - nu mai e
+    extra; d205_beneficiari = legacy mort pe tenant_002, fara consumatori - ramane extra informativ.)
 
 ZGOMOT NORMALIZAT: column_default contine numele schemei in nextval('schema.seq') -> ar da
 6 tip-diferit fals pe orice tenant. Se normalizeaza inainte de comparatie (lectia primului
@@ -39,11 +39,10 @@ MODUL = "audit_schema"
 # schema temporara in care se materializeaza template-ul pentru comparatie (mereu in ROLLBACK)
 SCHEMA_REF = "zaudit_schema_ref"
 
-# tabele EXTRA cunoscute (informativ, NU cauza de pica) - documentate, nu whitelist de pica
-_EXTRA_CUNOSCUTE = {
-    "d301_operatiuni": "creat lazy de core/d301.py (CREATE IF NOT EXISTS), gardat to_regclass",
-    "d205_beneficiari": "legacy in tenant_002, fara CREATE in cod, doar citit-daca-exista (to_regclass)",
-}
+# tabele EXTRA cunoscute (informativ, NU cauza de pica) - documentate, nu whitelist de pica.
+# 23.07: golit - d301_operatiuni mutat in template (nu mai e extra); d205_beneficiari sters din cod (legacy mort,
+# zero consumatori) -> ramane pe tenant_002 ca extra informativ neanotat, nu se mai whitelist-eaza. Vezi DECIZII 23.07.
+_EXTRA_CUNOSCUTE = {}
 
 
 # ============================================================

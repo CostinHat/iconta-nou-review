@@ -3746,23 +3746,10 @@ def _verificari_contabile(schema, an, luna):
     except Exception as e:
         # gri, nu tacere: chiar daca azi nu e surfacat in pastila, devine corect cand cineva il surfaceaza.
         rezultat["documente_pozate"] = _constatare_esuata("Documente pozate — verificare eșuată", "documentele pozate", e)
-    try:  # verif_d205_457_v1 (NC-28 backlog #97)
-        with db.get_conn() as conn2, conn2.cursor() as cur2:
-            cur2.execute(f"SELECT to_regclass('{schema}.d205_beneficiari')")
-            are_tabel = cur2.fetchone()[0] is not None
-            suma_d205 = 0
-            if are_tabel:
-                cur2.execute(f"SELECT COALESCE(SUM(suma_bruta),0) FROM {schema}.d205_beneficiari "
-                            f"WHERE an=%s AND tip_venit='08'", (an,))
-                suma_d205 = cur2.fetchone()[0]
-            cur2.execute(f"""SELECT COALESCE(SUM(l.suma),0) FROM {schema}.inregistrari_linii l
-                            JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
-                            WHERE l.cont_debit='1171' AND l.cont_credit='457'
-                            AND EXTRACT(YEAR FROM i.data) = %s""", (an,))
-            suma_457 = cur2.fetchone()[0]
-        rezultat["d205_vs_457"] = _vf.coerenta_d205_457(suma_d205, suma_457)
-    except Exception as e:
-        rezultat["d205_vs_457"] = _constatare_esuata("D205 vs 457 — verificare eșuată", "coerența D205 vs contul 457", e)
+    # [d205_legacy_eliminat 23.07] Verificarea d205_vs_457 a fost ELIMINATA: citea suma D205 din tabela
+    # d205_beneficiari care NU are niciun writer in cod -> suma_d205 era mereu 0 -> orice firma cu dividende
+    # (1171->457) primea rosu fals. D205 real foloseste cont 457 din d205.py; coerenta D205-vs-457 pe FAPT
+    # traieste deja in semafor (control_incrucisat.dividende_distribuite via declaratii_fapt). Vezi DECIZII 23.07.
     return rezultat
 
 

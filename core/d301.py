@@ -171,14 +171,9 @@ def build_xml(res):
     return "\n".join(H)
 
 
-def ensure_tabel(cur):
-    cur.execute("""CREATE TABLE IF NOT EXISTS d301_operatiuni (
-        id SERIAL PRIMARY KEY, an integer, luna integer, tip integer DEFAULT 1,
-        nr_doc text, data_doc text, val_valuta numeric DEFAULT 0,
-        tip_valuta text DEFAULT 'EUR', curs numeric DEFAULT 1, tva numeric DEFAULT 0,
-        creat timestamp DEFAULT now())""")
-
-
+# [d301_canonic 23.07] ensure_tabel (CREATE TABLE IF NOT EXISTS lazy) ELIMINAT: d301_operatiuni traieste acum
+# in tenant_template.sql (o singura sursa, aliniat cu decizia 22.07 anti-lazy). pull() e read-only pe tabela
+# garantata de template/backfill. Vezi DECIZII 23.07.
 def pull(conn, schema, an, luna):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -186,11 +181,9 @@ def pull(conn, schema, an, luna):
                     "declarant_nume, declarant_prenume, declarant_functie "
                     "FROM firma_profil WHERE id = 1")
         prof = cur.fetchone() or {}
-        ensure_tabel(cur)
         cur.execute("SELECT tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva "
                     "FROM d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
         ops = [dict(r) for r in cur.fetchall()]
-    conn.commit()
     return prof, ops
 
 
