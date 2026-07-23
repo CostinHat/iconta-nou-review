@@ -34,20 +34,28 @@ Pentru FIECARE ecran, 4 verificări obiective din Design System:
 3. **Panouri** (cap.16 + cap.2): fundal alb + bordură `#b9c2cf`; formularele **NU** într-un wrapper alb pe gri (caseta invizibilă gri-pe-gri).
 4. **Semafoare** (cap.8): culori din tokeni (verde/galben/roșu), nu nuanțe ad-hoc.
 
+**NUMEROTARE CANONICĂ (fixată 23.07.2026):** pozițiile 1–12 = ordinea ACESTEI liste, nu ordinea în care sunt
+atacate. Se scrie „poziția N" (fixă), nu „N/12" derivat din ordinea de lucru. Ordinea DE ATAC o dă Costin,
+independent de poziție. (Corecție la commitul de închidere care numea Control fiscal „1/12" — e poziția **2**.)
+
 Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prinde randarea):
 
-- [ ] Declarații (listă + flux 3 pași per declarație)
-- [ ] Control fiscal (semafor cross-portofoliu + secțiunea Declarație vs contabilitate)
-- [ ] Termene
-- [ ] Setări cont (profil, parolă, cabinet, competențe, chei API)
-- [ ] Recomandă
-- [ ] Admin* (Raportări, Activitate cabinete, Sănătate server — grafice SVG)
-- [ ] e-Transport (XML upload manual)
-- [ ] Produse
-- [ ] Tipare (asistenți)
-- [ ] Semafor (validat / de validat)
-- [ ] Pachete lunare
-- [ ] Capacitate
+1. [ ] **Declarații** (listă + flux 3 pași per declarație) — `declaratii_api.py` + `declaratii.js`
+2. [x] **Control fiscal** — **ÎNCHIS 23.07.2026** (SRL+PFA, comituri ac5ab4f→9693c1f). Semafor cross-portofoliu + Declarație vs contabilitate. `control_fiscal_api.py` + `control.js`.
+3. [ ] **Termene** ← **URMĂTORUL DE ATACAT** (ordinea de atac, nu poziția). `termene_api.py` + `termene.js`.
+   Motiv: împarte primitivele cu semaforul (vector, `tip_decont`, `platitor_tva_anaf_inceput`, `azi_ro`);
+   `termene_api` a fost fabricantul de D100 pe PFA (`regim_fiscal or "micro"`) și e singurul consumator reparat
+   azi FĂRĂ verificare vizuală; fereastra `[azi, azi+60]` interacționează cu mărginirea la data înregistrării
+   TVA (Pasul B), netestată în browser.
+4. [ ] **Setări cont** (profil, parolă, cabinet, competențe, chei API)
+5. [ ] **Recomandă**
+6. [ ] **Admin*** (Raportări, Activitate cabinete, Sănătate server — grafice SVG)
+7. [ ] **e-Transport** (XML upload manual)
+8. [ ] **Produse**
+9. [ ] **Tipare** (asistenți)
+10. [ ] **Semafor** (validat / de validat)
+11. [ ] **Pachete lunare**
+12. [ ] **Capacitate**
 
 ## D. Categorii neatacate sistematic (DE_FACUT §3.2) — de decis, nu neapărat de reparat
 

@@ -2394,7 +2394,7 @@ analizează secretul), nu presupune din cod că merge.
 STARE FINALĂ: suită 490 verde, verificator DS 0, ownership public 100% iconta_user, garde de boot active
 (JWT_SECRET + fus orar), verdictele de zi robuste la OS TZ, prima depunere reală în jurnal (append-only).
 
-## 23.07.2026 — Ecran 1/12 din CHECKLIST_BROWSER (Control fiscal) — închis pe SRL și PFA
+## 23.07.2026 — Ecran poziția 2 din lista C (CHECKLIST_BROWSER) — Control fiscal — închis pe SRL și PFA
 Comituri: ac5ab4f → 3b7aaa9 → cb1f831 → f9198b5 → 34e4d86 → 8d8e9c7 (matrice de stări 32) → 732f976 (Pasul B:
 D300/D394 mărginite la înregistrarea TVA din ANAF v9 + D390 neplătitor=gri + matrice 64) → f7ce7e8 (Pasul C:
 prezentare — temei nedublat, antet complet, ordine decizională, restanțe veche-prima) + commitul C4 de acum.
@@ -2440,4 +2440,9 @@ frontend→backend (fallback UI needeselectabil + gardă doar pe `.py`), pe care
 nici verdictul-pe-cod nu-l vedeau. Lecția: o gardă statică + teste unitare verzi NU dovedesc că un REGIM întreg
 poate parcurge un flux; doar un parcurs real cap-la-cap o dovedește.
 
-**CHECKLIST_BROWSER: ecran 1/12 închis (Control fiscal). Rămân 11.**
+**CHECKLIST_BROWSER — NUMEROTARE CANONICĂ (corecție la „1/12"):** N/12 urmează ordinea listei din secțiunea C,
+NU ordinea de atac. Canonic: 1=Declarații, **2=Control fiscal (ÎNCHIS azi, SRL+PFA, comituri ac5ab4f→9693c1f)**,
+3=Termene, 4=Setări cont, 5=Recomandă, 6=Admin*, 7=e-Transport, 8=Produse, 9=Tipare, 10=Semafor, 11=Pachete
+lunare, 12=Capacitate. „1/12" din commitul de închidere a fost impropriu — Control fiscal e **poziția 2**, nu
+prima. Ordinea DE ATAC o dă Costin, independent de poziție. Următorul atacat (alegerea lui Costin): **poziția 3
+(Termene)**. Rămân 11 poziții (1 și 3–12).
