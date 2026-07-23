@@ -472,3 +472,16 @@ vs DE CONSTRUIT (munca reala):
   UNIFICAT) + garda de timp UIT (3z inainte, 5z/15z valabilitate) + UI (buton Trimite UIT, 2 semafoare
   timp/trimitere). Endpoint ETRANSPORT/ws/v1 la sursa. Ramane doar dus-intorsul LIVE (mai sus, DE PROBAT).
 - Cele 3 rute OAuth moarte din main.py — sterse la pas 1 conector (f3a33f3). Daca mai apar in vreo lista, scoate-le.
+
+## Actualizare 23.07.2026 — din închiderea ecranului 1/12 (Control fiscal)
+1. **Smoke test end-to-end pe REGIM** [NEDECIS]: creează un tenant PFA, parcurge TOȚI pașii de migrare prin
+   RUTELE REALE (nu unitar), aserție zero 4xx pe tot fluxul. Motiv: blocajul de onboarding PFA a trăit tot
+   sprintul PFA cu 518 teste verzi + verificator TOTAL 0 — nicio poartă statică/unitară nu parcurge un regim
+   întreg cap-la-cap. Ar fi prins 400-ul necondiționat de la pasul Vector fiscal. (vezi ISTORIC 23.07, constatarea de proces)
+2. **Verificare a posteriori a perioadei de decont** [PLANIFICAT]: după un an de date, Control fiscal compară
+   `tip_decont` declarat cu CA reală (sub/peste 100.000 € curs BNR 31.12) + existența achizițiilor
+   intracomunitare de bunuri — aceeași formă ca F163 (declarat vs fapt, trei stări + temei). Art. 322 alin.(2).
+3. **FINDING: `tip_firma` needitabil post-creare** [CONSEMNAT, neconstruit]: se setează doar la crearea firmei
+   (selector `#fn-tip`), nu există cale UI de corecție; o firmă creată cu tip greșit (ex. cabinet individual pus
+   ca SRL — cazul AMZUICĂ) cere edit DB direct. De decis dacă merită editor de tip_firma (cu re-evaluarea
+   consecințelor: carduri, straturi migrare, semafor).

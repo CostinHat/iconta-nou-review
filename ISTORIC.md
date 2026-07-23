@@ -2393,3 +2393,43 @@ analizează secretul), nu presupune din cod că merge.
 
 STARE FINALĂ: suită 490 verde, verificator DS 0, ownership public 100% iconta_user, garde de boot active
 (JWT_SECRET + fus orar), verdictele de zi robuste la OS TZ, prima depunere reală în jurnal (append-only).
+
+## 23.07.2026 — Ecran 1/12 din CHECKLIST_BROWSER (Control fiscal) — închis pe SRL și PFA
+Comituri: ac5ab4f → 3b7aaa9 → cb1f831 → f9198b5 → 34e4d86 (+ commiturile de reparare a semaforului din aceeași zi).
+
+**LANȚUL CAUZAL (partea importantă — UN SINGUR defect, 7 manifestări, 4 straturi):**
+`tip_firma` DEFAULT 'srl' tăcut + needitabil post-creare
+→ firma cabinetului (AMZUICĂ BOGDAN-FLORIAN, cabinet individual / profesie liberală) creată ca SRL-micro
+→ semafor Control fiscal cu restanțe INVENTATE D100/D101/D406 (persoană juridică, pe o persoană fizică)
+→ aceeași boală în BACKEND: `regim_fiscal or "micro"` (termene_api) fabrica D100 pe un PFA
+→ primitivele `regim_contabil()` / `regim_efectiv()` / `tip_firma_nrm()` în `migrare_api` — faptul într-un SINGUR
+   loc, contract strict (KeyError pe cheie absentă, fără `.get`, fără fallback)
+→ gardă `DEFAULT_FISCAL_TACIT` în verificator + DESIGN_SYSTEM cap.17 (interzice fallback pe literal fiscal)
+→ aceeași boală în FRONTEND, pe care garda `.py` n-o vedea: **BLOCAJ REAL** — un PFA nu putea completa pasul
+   Vector fiscal deloc (fallback "micro" pre-selectat, butoanele n-au deselect → `getRegim()` mereu ne-gol → 400
+   necondiționat de la `salveaza`)
+→ gardă extinsă pe `.js` (v2.17) + frontendul folosește FAPTUL expus de backend (`regim_contabil`), nu ghicește
+→ al 4-lea câmp: `tip_decont || "trimestrial"` defaulta pe EXCEPȚIE, nu pe regulă → obligatoriu la migrare, cu
+   criteriul art. 322 afișat prin `.camp-ajutor`; garda extinsă (v2.18); `termene_api` nu mai ghicește periodicitatea.
+
+**VERIFICAT LA SURSĂ:**
+- **OPANAF 407/2025**, MO 310/08.04.2025 — înlocuiește Anexa 5 la OPANAF 1783/2021. Cabinet individual / profesie
+  liberală → excludere D406 la Anexa 5 **pct.4 lit.q)**. Temeiul din cod corectat (era "1783/2021 pct.4" generic).
+- **Art. 322 Cod fiscal**: alin.(1) LUNA = regula; alin.(2) TRIMESTRUL = excepția, sub 100.000 € (curs BNR 31.12)
+  ȘI fără achiziții intracomunitare de bunuri.
+
+**DECIZII (în DECIZII.md):**
+- **D406 la PFA în partidă DUBLĂ: RESPINS cu temei** (Anexa 5 pct.4 lit.a — enumerare necondiționată a persoanelor
+  fizice; condiția de partidă dublă e DOAR la lit.n pentru asociații fără scop patrimonial; pct.3 lit.s vizează
+  doar persoane juridice). Atributul de „mod de organizare a contabilității" **NU se construiește**. Răstoarnă
+  limita deschisă consemnată anterior (care presupunea că un PFA în partidă dublă ar datora D406).
+
+**CONSTATARE DE PROCES (cea mai importantă):**
+Blocajul de onboarding pe TOT regimul PFA a existat de la lansarea sprintului PFA (F189, 20.07), cu **518 teste
+verzi și verificator TOTAL 0 pe toată perioada**. Toate porțile sunt statice sau unitare; NICIUNA nu parcurge un
+flux complet ca PFA. Regula „test funcțional după modificare de backend" a fost respectată — dar defectul era
+frontend→backend (fallback UI needeselectabil + gardă doar pe `.py`), pe care nici testele unitare, nici garda,
+nici verdictul-pe-cod nu-l vedeau. Lecția: o gardă statică + teste unitare verzi NU dovedesc că un REGIM întreg
+poate parcurge un flux; doar un parcurs real cap-la-cap o dovedește.
+
+**CHECKLIST_BROWSER: ecran 1/12 închis (Control fiscal). Rămân 11.**
