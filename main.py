@@ -3028,10 +3028,19 @@ def notificari_citit_una(nid: int, ctx=Depends(cere_cabinet)):
 #  DECLARAȚII
 # ============================================================
 @app.get("/declaratii/tipuri")
-def declaratii_tipuri(ctx=Depends(cere_cabinet)):
+def declaratii_tipuri(tenant_id: Optional[int] = None, ctx=Depends(cere_cabinet)):
+    # [G1] tenant_id OBLIGATORIU: aplicabilitatea prin forma depinde de firma. Fara firma -> 400 (NU {} tacit -
+    # "nimic exclus" implicit = tiparul eliminat de 5 ori azi). UI-ul re-cere la fiecare schimbare de firma.
+    if tenant_id is None:
+        raise HTTPException(400, "tenant_id obligatoriu — alege firma întâi")
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT tip_firma FROM firma_profil WHERE id = 1")
+            row = cur.fetchone()
     return {"tipuri": declaratii_api.tipuri(),
-            "periodicitate": {t: declaratii_api.periodicitate(t)
-                              for t in declaratii_api.tipuri()}}
+            "periodicitate": {t: declaratii_api.periodicitate(t) for t in declaratii_api.tipuri()},
+            "neaplicabile": control_fiscal_api.neaplicabile_forma(row[0] if row else None)}
 
 
 @app.post("/declaratii/{tip}/valideaza")  # duk_valideaza_v1

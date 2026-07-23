@@ -38,6 +38,29 @@ def _termen(an, luna=None, tip="d300"):
     return scadente.scadenta_data(tip, an, luna=luna)
 
 
+# [G1] SURSA UNICA a temeiului de excludere PRIN FORMA (partida simpla -> declaratii de persoana juridica).
+# Constanta de modul: consumata de neaplicabile_forma (API publica) SI de obligatii_datorate (inline, pe
+# partida_simpla). Temei nedupli­cat, un singur loc. Vezi DECIZII 23.07.
+_NEAP_FORMA_SIMPLA = {
+    "d100": "D100 nu se datorează — impozitul pe veniturile microîntreprinderilor e al persoanelor "
+            "juridice; PFA (partidă simplă) depune Declarația unică (D212).",
+    "d101": "D101 nu se datorează — impozitul pe profit e al persoanelor juridice; PFA (partidă "
+            "simplă) depune Declarația unică (D212).",
+    "d406": "D406 (SAF-T) nu se datorează — OPANAF 407/2025, Anexa 5 pct.4 lit.q) exclude "
+            "persoanele fizice (PFA/II/PFL) de la obligația SAF-T (enumerare necondiționată).",
+}
+
+
+def neaplicabile_forma(tip_firma):
+    """Declaratiile NEaplicabile PRIN FORMA pentru o firma cu acest tip_firma (independent de fereastra/fapt).
+    Partida simpla (PFA/II/PFL) -> D100/D101/D406 (declaratii de persoana juridica); {} pentru persoane
+    juridice (aplicabilitatea lor depinde de FAPTE - platitor_tva/salariati/dividende - nu de forma).
+    Refolosit de obligatii_datorate (semafor+termene) SI de declaratii_api (selector + poarta backend).
+    O mapare (_NEAP_FORMA_SIMPLA), trei consumatori. Vezi DECIZII 23.07."""
+    from core.migrare_api import regim_contabil
+    return dict(_NEAP_FORMA_SIMPLA) if regim_contabil(tip_firma) == "simpla" else {}
+
+
 def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None):
     """
     SURSA UNICA a mapicarii 'cine ce declaratie datoreaza' (regim/TVA/decont/IC/salariati),
@@ -162,10 +185,8 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     # profit). PFA/partida simpla NU le datoreaza: impozitul pe venit PFA se depune prin Declaratia unica
     # (D212), rutata separat (rip_api/d212_engine). Deci "nu se datoreaza" (cunoscut), NU gri. Vezi DECIZII 23.07.
     if partida_simpla:
-        neaplic("D100", "D100 nu se datorează — impozitul pe veniturile microîntreprinderilor e al persoanelor "
-                        "juridice; PFA (partidă simplă) depune Declarația unică (D212).")
-        neaplic("D101", "D101 nu se datorează — impozitul pe profit e al persoanelor juridice; PFA (partidă "
-                        "simplă) depune Declarația unică (D212).")
+        neaplic("D100", _NEAP_FORMA_SIMPLA["d100"])   # [G1] temei din constanta unica
+        neaplic("D101", _NEAP_FORMA_SIMPLA["d101"])
     elif regim_fiscal is None:
         cauza_r = "Regim fiscal necompletat - nu pot sti daca datorezi D100 (micro) sau D101 (profit)."
         gri("D100", cauza_r)
@@ -255,8 +276,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     # neconditionata; conditia de partida dubla e DOAR la lit.n) pt asociatii fara scop patrimonial; pct.3
     # lit.s) vizeaza doar persoane juridice). Deci nici PFA in partida dubla nu datoreaza. Restul: dupa TVA.
     if partida_simpla:
-        neaplic("D406", "D406 (SAF-T) nu se datorează — OPANAF 407/2025, Anexa 5 pct.4 lit.q) exclude "
-                        "persoanele fizice (PFA/II/PFL) de la obligația SAF-T (enumerare necondiționată).")
+        neaplic("D406", _NEAP_FORMA_SIMPLA["d406"])   # [G1] temei din constanta unica
     elif platitor_tva is None:
         gri("D406", "Platitor de TVA necompletat - nu pot sti periodicitatea D406.")
     elif platitor_tva:

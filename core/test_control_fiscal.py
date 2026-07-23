@@ -269,3 +269,14 @@ def test_semafor_d390_neplatitor_flag_false_nu_consulta_faptul():
                                 d390_fapt=lambda a, m: apelat.append((a, m)) or True)
     assert apelat == []                                         # faptul NU e consultat la neplatitor
     assert not any(n["tip"] == "d390" for n in rez["neclar"])   # nimic D390 emis (flag False -> nimic)
+
+
+# ---- G1: neaplicabile_forma = sursa unica excludere prin forma (partida simpla) ----
+def test_neaplicabile_forma_pfa_vs_juridic():
+    assert set(cf.neaplicabile_forma("pfa")) == {"d100", "d101", "d406"}
+    assert "D212" in cf.neaplicabile_forma("pfa")["d101"]
+    assert cf.neaplicabile_forma("srl") == {}
+    # NOTA (finding, nereparat): regim_contabil trateaza ca 'simpla' DOAR 'pfa'; 'ii'/'if'/'pfl' -> 'dubla'
+    # (tip_firma_nrm nu le normalizeaza la pfa). OK daca DB stocheaza 'pfa' pt toate entitatile de partida
+    # simpla (selectorul de creare), dar de verificat separat daca II/IF pot ajunge cu tip_firma propriu.
+    assert cf.neaplicabile_forma("srl") == cf.neaplicabile_forma(None) == {}   # juridic/necunoscut -> nimic exclus

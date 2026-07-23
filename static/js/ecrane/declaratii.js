@@ -33,7 +33,7 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
   S = {
     inceput_la: acum.toISOString(),          // cronometru efort (datoria p15)
     pas: 1,
-    firme: [], tipuri: [], periodicitate: {},
+    firme: [], tipuri: [], periodicitate: {}, neaplicabile: {},   // [G1] neaplicabile prin forma, per firma
     firmaFixa: firmaFixa || null,
     tenant_id: firmaFixa ? firmaFixa.tenant_id : null, tip: null,
     an: acum.getFullYear(),
@@ -43,15 +43,26 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
-    const [t, d] = await Promise.all([ api.get("/tenants"), api.get("/declaratii/tipuri") ]);
+    const t = await api.get("/tenants");
     S.firme = Array.isArray(t) ? t : (t.tenants || t.firme || []);
-    S.tipuri = d.tipuri || [];
-    S.periodicitate = d.periodicitate || {};
+    if (S.tenant_id) await incarcaTipuri(S.tenant_id);   // [G1] firma fixa -> tipurile+neaplicabile ale ei
   } catch {
-    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca firmele sau tipurile de declarații.</p>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca firmele.</p>`;
     return;
   }
   pas1(corp, nav);
+}
+
+// [G1] tipurile SI neaplicabile prin forma depind de FIRMA -> ruta cere tenant_id; se re-cer la fiecare schimbare de firma.
+async function incarcaTipuri(tenantId) {
+  try {
+    const d = await api.get(`/declaratii/tipuri?tenant_id=${tenantId}`);
+    S.tipuri = d.tipuri || [];
+    S.periodicitate = d.periodicitate || {};
+    S.neaplicabile = d.neaplicabile || {};
+  } catch {
+    S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {};
+  }
 }
 
 // ---------- PAS 1: firma + tip + perioada ----------
@@ -60,6 +71,20 @@ function pas1(corp, nav) {
   const f = corp.closest(".fereastra"); if (f) f.classList.remove("fer-larg");
   S.pas = 1;
   const per = S.tip ? S.periodicitate[S.tip] : null;
+
+  // [G1] optiunile de tip depind de FIRMA: fara firma -> selectorul cere firma; tipurile neaplicabile prin
+  // forma (D101/D406 la un PFA) apar DEZACTIVATE cu temeiul scurt (nu ascunse tacit; temei complet in title).
+  function optiuniTip() {
+    if (!S.tenant_id) return `<option value="">— alege firma întâi —</option>`;
+    if (!S.tipuri.length) return `<option value="">— nu am putut încărca tipurile —</option>`;
+    return `<option value="">— alege tipul —</option>` + S.tipuri.map((tp) => {
+      const et = `${tp.toUpperCase()} · ${S.periodicitate[tp] || ""}`;
+      const neap = S.neaplicabile[tp];
+      return neap
+        ? `<option value="${tp}" disabled title="${esc(neap)}">${et} — nu se aplică (partidă simplă)</option>`
+        : `<option value="${tp}" ${tp === S.tip ? "selected" : ""}>${et}</option>`;
+    }).join("");
+  }
 
   corp.innerHTML = `
     <p class="mig-intro">Pasul 1 din 3 — alege firma, tipul declarației și perioada.</p>
@@ -73,10 +98,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
       </label>`}
       <label class="camp">
         <span class="camp-eticheta">Tip declarație</span>
-        <select id="dec-tip" class="camp-input">
-          <option value="">— alege tipul —</option>
-          ${S.tipuri.map((tp) => `<option value="${tp}" ${tp===S.tip?"selected":""}>${tp.toUpperCase()} · ${S.periodicitate[tp]||""}</option>`).join("")}
-        </select>
+        <select id="dec-tip" class="camp-input">${optiuniTip()}</select>
       </label>
       <div id="dec-perioada">${randPerioada(per)}</div>
     </div>
@@ -90,8 +112,15 @@ ${S.firmaFixa ? "" : `      <label class="camp">
   const cont = corp.querySelector("#dec-continua");
   const zonaP = corp.querySelector("#dec-perioada");
 
-  function refresh() {
-    if (selFirma) S.tenant_id = selFirma.value ? parseInt(selFirma.value) : null;
+  async function refresh() {
+    if (selFirma) {
+      const nou = selFirma.value ? parseInt(selFirma.value) : null;
+      if (nou !== S.tenant_id) {   // [G1] firma schimbata -> re-cere tipurile+neaplicabile ale ei, re-randeaza selectorul
+        S.tenant_id = nou; S.tip = null;
+        if (nou) await incarcaTipuri(nou); else { S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; }
+        selTip.innerHTML = optiuniTip();
+      }
+    }
     S.tip = selTip.value || null;
     const p = S.tip ? S.periodicitate[S.tip] : null;
     zonaP.innerHTML = randPerioada(p);

@@ -153,5 +153,15 @@ def genereaza(conn, schema, tip, body):
     erori = valideaza_cerere(tip, body)
     if erori:
         raise ValueError("; ".join(erori))
+    # [G1] POARTA PRIN FORMA: tipul neaplicabil pt tip_firma-ul firmei (ex. D101/D406 la un PFA) -> refuz cu
+    # TEMEI, nu XML gol. UI-ul dezactiveaza optiunea; backendul decide (o firma nu poate depune ce n-o priveste).
+    # Sursa unica de excludere = control_fiscal_api.neaplicabile_forma (aceeasi ca semaforul/termene). DECIZII 23.07.
+    from core import control_fiscal_api as _cf
+    with conn.cursor() as cur:
+        cur.execute("SELECT tip_firma FROM firma_profil WHERE id = 1")
+        _row = cur.fetchone()
+    _neap = _cf.neaplicabile_forma(_row[0] if _row else None)
+    if tip in _neap:
+        raise ValueError(_neap[tip])
     _per, adaptor = DECLARATII[tip]
     return adaptor(conn, schema, body)

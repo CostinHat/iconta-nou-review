@@ -2932,3 +2932,30 @@ frontendul (firme.js 80, facturi 18...) = DATORIE ACCEPTATA explicit (v2.11, DE_
 inchis ca datorie acceptata"). NU e gaura accidentala, e decizie. Extinderea gardei = 217 flag-uri = curatenie
 frontend-wide (revenire pe decizia v2.11), workstream separat - RAPORTAT, nu facut orb. Vezi G1 (STOP separat).
 DOVADA: pytest 945; verificator TOTAL 0; node --check pe declaratii/cabinet/pachete/portal.
+
+### 23.07.2026 Declaratii poz.1 — G1 filtrare tip_firma (o mapare, trei consumatori) + poarta backend
+G1: ecranul Declaratii arata toate cele 9 tipuri indiferent de firma -> un PFA vedea D101/D406 (persoana juridica).
+VERIFICAT: NU exista primitiva separata "aplicabil prin forma"; excluderea era inline in obligatii_datorate.
+DECIZIE (Costin): EXTRAG, nu scriu a treia mapare.
+- control_fiscal_api._NEAP_FORMA_SIMPLA (constanta) + neaplicabile_forma(tip_firma) -> {tip: temei} (partida
+  simpla=pfa -> D100/D101/D406; {} juridic). SURSA UNICA: obligatii_datorate o foloseste (temei nedupli­cat, pe
+  partida_simpla, NU re-derivat din tip_firma - altfel crapa cand vectorul de test are partida_simpla fara tip_firma),
+  declaratii_api o foloseste (poarta), ruta o expune (selector). Trei consumatori, o mapare.
+- Ruta GET /declaratii/tipuri CERE tenant_id (fara -> 400, NU {} tacit - "nimic exclus" implicit = tiparul eliminat
+  de 5 ori azi). Include neaplicabile: {tip: temei}. Standalone: dropdown gol/"alege firma" pana la firma; re-cerut
+  la fiecare schimbare de firma (refresh async).
+- POARTA BACKEND: declaratii_api.genereaza citeste tip_firma si respinge cu ValueError->422+temei daca tipul e
+  neaplicabil prin forma (POST /declaratii/{tip} SI /valideaza). UI dezactiveaza, backend decide. Dovada: POST d101
+  pe tenant_001 (PFA) -> 422 cu temei D101/D212, nu XML gol.
+- UI forma A (Costin): <select> pastrat, <option disabled title="<temei complet>">TIP · per — nu se aplica (partida
+  simpla)</option>. B (carduri cap.2b) = reorganizare de anatomie, NU acum. Motiv: temeiul esential ("nu se aplica,
+  partida simpla") incape in optiune, complet in title; se reconsidera daca ecranul se rescrie.
+FINDING (nereparat): regim_contabil trateaza ca 'simpla' DOAR 'pfa'; 'ii'/'if'/'pfl' -> 'dubla'. OK daca DB
+stocheaza 'pfa' pt toate entitatile de partida simpla; de verificat separat daca II/IF pot avea tip_firma propriu.
+
+### 23.07.2026 G4-garda style inline (display/flex/gap/color) — MASURAT, decizie ceruta
+Masurat exact: 136 aparitii display:/flex/gap/color inline in ~15 fisiere (firme.js 53, cabinet 14, asistenti 10,
+portal 7...). NU doar panoul D390 (reparat). Extinderea gardii = 136 flag-uri = verificator TOTAL 0 IMPOSIBIL fara
+curatarea celor 136 (reveni pe decizia v2.11 "spacing inline = datorie acceptata", pt display/flex/color; spacing
+gap/margin ramane acceptat). E workstream dedicat (15 fisiere, risc de eroare), NU un fix de ecran. RAPORTAT, garda
+NEextinsa in acest commit (ar rupe TOTAL 0). De decis: curatare frontend-wide programata vs ramane datorie.
