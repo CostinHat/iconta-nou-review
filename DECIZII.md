@@ -2692,3 +2692,20 @@ optiune D010, nu din snapshot scpTVA). Deci nu e "citeste in loc de default"; ra
 elimina (intreaba mereu) sau se pastreaza (trimestrial = default rezonabil pt firma mica). NEatins.
 DOVADA: pytest 518 verde; verificator TOTAL 0 (DEFAULT_FISCAL_TACIT 0 pe .py+.js); node --check migrare.js OK;
 simulare eroare /migrare/straturi -> stare-goala, zero pasi (raspuns OK -> 5 straturi la PFA).
+
+### 23.07.2026 tip_decont: al 4-lea camp fiscal in DEFAULT_FISCAL_TACIT; obligatoriu la migrare, fara default  (migrare.js; termene_api; verificator; DESIGN_SYSTEM cap.17 v2.18)
+DECIZIE: tip_decont (periodicitatea decontului TVA) e camp care DECIDE obligatii (periodicitatea D300/D394/D406)
+-> intra in garda DEFAULT_FISCAL_TACIT (al 4-lea camp; literale lunar/trimestrial), .py+.js. Eliminat defaultul
+tacit: migrare.js `|| "trimestrial"` (pre-selectie) si termene_api `or "lunar"`. La migrare, pentru platitorii
+TVA e OBLIGATORIU, fara preselectie (submit fara el -> 400); non-platitor -> null, intrebarea nu apare.
+TEMEI (langa intrebare, prin .camp-ajutor - forma DS canonica de ghidaj camp neautocompletabil, NU caseta-atentie
+care e rosu/distructiv): "Lunar (regula, art. 322 alin. 1 Cod fiscal); trimestrial doar daca in anul precedent
+cifra de afaceri < 100.000 euro (curs BNR 31.12) SI fara achizitii intracomunitare de bunuri - art. 322 alin. 2".
+DE CE fara default: periodicitatea NU vine din ANAF v9 (parserul anaf_api.py aduce doar scpTVA/stare/inactiv, nu
+decontul; e din prag cifra afaceri / optiune D010) -> a o ghici "trimestrial" ar fabrica termene D300 gresite.
+termene_api: decont necompletat -> NU emite termene D300 (nu ghiceste; semaforul o marcheaza deja gri).
+FIRME EXISTENTE (raportat, neatins): 1 firma are tip_decont setat (tenant_002 = DANTE, platitor TVA, 'lunar' -
+valoare EXPLICITA corecta, nu default); cei 2 PFA au null (corect). Migrata (migrare_status vector_fiscal gata).
+Niciuna cu 'trimestrial' suspect din default -> nimic de curatat.
+DOVADA: pytest 518; verificator TOTAL 0 (DEFAULT_FISCAL_TACIT 0, tip_decont inclus, .py+.js); curl platitor TVA
+fara tip_decont -> 400; cu 'lunar' -> 200 (tenant_002 nemodificat).

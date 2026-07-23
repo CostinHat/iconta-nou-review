@@ -27,7 +27,7 @@ def termene_firma(vector, are_salariati, depuse, azi=None):
     # reconstruim datorate pe orizontul mare: cf.declaratii_datorate foloseste fereastra de 7 zile,
     # deci o reimplementam aici cu limita extinsa prin acelasi mecanism _termen.
     platitor_tva = bool(vector.get("platitor_tva"))
-    decont = (vector.get("tip_decont") or "lunar").lower()
+    decont = (vector.get("tip_decont") or "").lower()   # fara default tacit; "" (necompletat) -> nu ghicim periodicitatea
     # [regim] regimul CIT EFECTIV: partida simpla (pfa) => None => nu emite D100/D101. Callerul da
     # vector cu tip_firma + regim_fiscal (contract strict al regim_efectiv). Vezi DECIZII 23.07.
     regim = regim_efectiv(vector)
@@ -46,9 +46,11 @@ def termene_firma(vector, are_salariati, depuse, azi=None):
         if decont == "trimestrial":
             for tri, lf in enumerate([3, 6, 9, 12], start=1):
                 adauga("D300", an, lf, f"T{tri}")
-        else:
+        elif decont == "lunar":
             for luna in range(1, 13):
                 adauga("D300", an, luna, luni[luna])
+        # decont necompletat (vector incomplet) -> NU emitem termene D300; periodicitatea e necunoscuta,
+        # nu se ghiceste (semaforul o marcheaza deja gri). Vezi DECIZII 23.07.
     if are_salariati:
         for luna in range(1, 13):
             adauga("D112", an, luna, luni[luna])

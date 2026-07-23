@@ -382,7 +382,7 @@ async function formularVectorFirma(corp, nav, f) {
   }
   const regim = f.regim_fiscal;   // fara fallback tacit; null la vector necompletat
   const partidaSimpla = f.regim_contabil === "simpla";   // PFA/profesie liberala: n-are regim CIT (micro/profit)
-  const decont = f.tip_decont || "trimestrial";
+  const decont = f.tip_decont;   // fara preselectie tacita; obligatoriu la plator TVA (ANAF v9 nu aduce periodicitatea)
   const ic = !!f.operatiuni_ic;
   const tva = !!tvaInit;
   corp.innerHTML = `
@@ -404,7 +404,10 @@ async function formularVectorFirma(corp, nav, f) {
         </div>
       </div>
       <div class="vf-grup" id="vf-decont-grup" style="${tva?"":"display:none"}">
-        <div class="vf-eticheta">Periodicitate decont TVA</div>
+        <div class="vf-eticheta">Periodicitate decont TVA <span class="oblig">*</span></div>
+        <span class="camp-ajutor">Lunar (regula, art. 322 alin. 1 Cod fiscal). Trimestrial doar dacă în anul
+          precedent cifra de afaceri a fost sub 100.000 euro (curs BNR 31.12) ȘI nu ați efectuat achiziții
+          intracomunitare de bunuri — art. 322 alin. 2.</span>
         <div class="vf-optiuni" id="vf-decont">
           <button class="vf-opt ${decont==="lunar"?"vf-on":""}" data-v="lunar">Lunar</button>
           <button class="vf-opt ${decont==="trimestrial"?"vf-on":""}" data-v="trimestrial">Trimestrial</button>

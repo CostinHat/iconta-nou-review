@@ -211,13 +211,13 @@ RE_FLAG_STARE_LIT = re.compile(r'_flag\(\s*["\'](rosu|galben|verde|gri)["\']')
 # incrucisat:346/381/720+, audit_preluare:349 - `stare = "rosu" if any(...) else ...`), sintactic identica cu
 # o escaladare gresita. O regula pe forma plain ar fi numai fals-pozitive. Nu e exprimabila mecanic - vezi DECIZII.
 RE_STARE_SUBSCRIPT_LIT = re.compile(r'''\w+\[["']stare["']\]\s*=\s*["'](rosu|galben|verde|gri)["']''')
-# DEFAULT_FISCAL_TACIT: un camp fiscal decisiv (regim_fiscal/tip_firma/platitor_tva) NU se defaulteaza pe
+# DEFAULT_FISCAL_TACIT: un camp fiscal decisiv (regim_fiscal/tip_firma/platitor_tva/tip_decont) NU se defaulteaza pe
 # LITERAL inline (x or "micro" / x || "srl" / ... else "pfa"). Faptul + normalizarea + default-ul traiesc
 # INTR-UN singur loc — primitivele din migrare_api (regim_contabil, regim_efectiv, tip_firma_nrm). O cale care
 # re-defaulteaza inline reintroduce bug-ul termene ("regim_fiscal or 'micro'" -> D100 fabricat pe un PFA).
 # Se prinde forma or/||/else (fallback pe CITIRE); atribuirea simpla `x = "srl"` NU (declaratie, nu fallback).
 # Exceptat: migrare_api.py (primitivele - singurul loc unde literalul e legitim). Vezi DESIGN_SYSTEM.
-RE_DEFAULT_FISCAL = re.compile(r'''\b(regim_fiscal|tip_firma|platitor_tva)\b[^\n]{0,80}?(\bor\b|\|\||\belse\b)\s*["'](micro|profit|srl|pfa)["']''')
+RE_DEFAULT_FISCAL = re.compile(r'''\b(regim_fiscal|tip_firma|platitor_tva|tip_decont)\b[^\n]{0,80}?(\bor\b|\|\||\belse\b)\s*["'](micro|profit|srl|pfa|lunar|trimestrial)["']''')
 FISCAL_EXEMPT_FILE = {"migrare_api.py"}
 RE_DATA_DISP  = re.compile(r'\.strftime\(\s*["\']%d[./]')          # strftime("%d.%m/%d/%m") = display RO
 RE_FORMATATOR = re.compile(r'\b(bani|data_ro|_lei|_dmy|_data_ro|_f|_q)\s*\(')  # deja canonic/local-ok
@@ -258,11 +258,11 @@ for pdir in (os.path.join(BAZA_PY, "core"), BAZA_PY):
             if RE_DATA_DISP.search(lin):
                 rap["backend_ui_brut"].append((f, i, "data", s[:60]))
 
-# DEFAULT_FISCAL_TACIT si pe .js: aceleasi 3 campuri; forme JS `field || "lit"` si ternar `... ? ... : "lit"`
+# DEFAULT_FISCAL_TACIT si pe .js: aceleasi 4 campuri (+ tip_decont); forme JS `field || "lit"` si ternar `... ? ... : "lit"`
 # unde litералul fiscal e ramura ELSE (= default cand campul lipseste). NU prinde `field === "lit" ? "lit" : …`
 # (mapare valoare->eticheta, nu default) - ramura ELSE de acolo nu e literal fiscal. Frontendul foloseste FAPTUL
 # expus de backend (regim_contabil / tip_firma), nu defaulteaza inline. Vezi DESIGN_SYSTEM cap.17.
-RE_JS_FISCAL = re.compile(r'''\b(regim_fiscal|tip_firma|platitor_tva)\b[^\n]{0,60}?(\|\||\?[^\n?]{0,40}?:)\s*["'](micro|profit|srl|pfa)["']''')
+RE_JS_FISCAL = re.compile(r'''\b(regim_fiscal|tip_firma|platitor_tva|tip_decont)\b[^\n]{0,60}?(\|\||\?[^\n?]{0,40}?:)\s*["'](micro|profit|srl|pfa|lunar|trimestrial)["']''')
 for nume, t in fisiere.items():
     for i, lin in enumerate(t.split("\n"), 1):
         s = lin.strip()
