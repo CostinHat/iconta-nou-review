@@ -68,8 +68,19 @@ def extrage_cui_din_fisier(continut, nume_fisier=""):
     return cui_uri
 
 
+def _tva_inceput_activ(tva):
+    """Data începerii înregistrării TVA ACTIVE (perioada fără data_sfarsit), 'YYYY-MM-DD' sau None.
+    Doar dacă scpTVA=True. Fapt de la ANAF (inregistrare_scop_Tva.perioade_TVA[].data_inceput_ScpTVA)."""
+    if not tva.get("scpTVA"):
+        return None
+    for p in (tva.get("perioade_TVA") or tva.get("perioadeTVA") or []):
+        if not (p.get("data_sfarsit_ScpTVA") or "").strip():   # perioada activă (fără sfârșit)
+            return (p.get("data_inceput_ScpTVA") or "").strip() or None
+    return None
+
+
 def valideaza_cui(lista_cui, data_interogare=None):
-    """Întoarce [{cui, denumire, platitor_tva, stare, inactiv, gasit}], ordine păstrată, fără duplicate."""
+    """Întoarce [{cui, denumire, platitor_tva, tva_data_inceput, stare, inactiv, gasit}], ordine păstrată."""
     azi = data_interogare or date.today().isoformat()
 
     curatate, vazute = [], set()
@@ -103,6 +114,7 @@ def valideaza_cui(lista_cui, data_interogare=None):
                 "cui": str(dg.get("cui", "")),
                 "denumire": (dg.get("denumire") or "").strip(),
                 "platitor_tva": bool(tva.get("scpTVA")),
+                "tva_data_inceput": _tva_inceput_activ(tva),   # data începerii înregistrării TVA active (fapt ANAF)
                 "tva_la_incasare": bool(rtvai.get("statusTvaIncasare")),   # F188: RTVAI.statusTvaIncasare
                 "stare": (dg.get("stare_inregistrare") or dg.get("stareinregistrare") or "").strip(),
                 "inactiv": bool(inactiv.get("statusInactivi")),
@@ -114,7 +126,7 @@ def valideaza_cui(lista_cui, data_interogare=None):
             })
         for c in dj.get("notFound", []):
             rezultate.append({
-                "cui": str(c), "denumire": "", "platitor_tva": False, "tva_la_incasare": False,
+                "cui": str(c), "denumire": "", "platitor_tva": False, "tva_data_inceput": None, "tva_la_incasare": False,
                 "stare": "", "inactiv": False, "adresa": "", "cod_caen": "", "nr_reg_com": "", "gasit": False,
             })
     return rezultate

@@ -69,12 +69,12 @@ def citeste_tva(conn):
             "platitor_tva_anaf": row[2], "data": row[3]}
 
 
-def seteaza_snapshot_tva(conn, scp_tva):
-    """Scrie snapshot-ul ANAF (scpTVA la data curenta). `scp_tva` = bool. Idempotent
-    pe firma_profil (singleton). Comiterea o face apelantul."""
+def seteaza_snapshot_tva(conn, scp_tva, data_inceput=None):
+    """Scrie snapshot-ul ANAF (scpTVA + data inceperii inregistrarii TVA la data curenta). `scp_tva` = bool;
+    `data_inceput` = 'YYYY-MM-DD'|None (fapt ANAF, doar la platitor). Idempotent pe firma_profil (singleton)."""
     with conn.cursor() as cur:
-        cur.execute("UPDATE firma_profil SET platitor_tva_anaf=%s, "
-                    "platitor_tva_anaf_data=CURRENT_DATE", (bool(scp_tva),))
+        cur.execute("UPDATE firma_profil SET platitor_tva_anaf=%s, platitor_tva_anaf_data=CURRENT_DATE, "
+                    "platitor_tva_anaf_inceput=%s", (bool(scp_tva), data_inceput or None))
 
 # ============================================================
 #  CITIRE profil (pentru preview + model)

@@ -2323,3 +2323,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_etransport_trimiteri_viu
 -- NULL = fara snapshot -> Control fiscal arata GRI. Data = cand a fost interogat ANAF.
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS platitor_tva_anaf boolean;
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS platitor_tva_anaf_data date;
+-- [B1] data inceperii inregistrarii in scopuri de TVA (fapt ANAF v9: perioade_TVA.data_inceput_ScpTVA activa)
+-- -> declaratii_datorate margineste fereastra D300/D394 la perioadele DE DUPA inregistrare (nu restante inainte).
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS platitor_tva_anaf_inceput date;

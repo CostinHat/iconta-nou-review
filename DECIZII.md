@@ -2709,3 +2709,24 @@ valoare EXPLICITA corecta, nu default); cei 2 PFA au null (corect). Migrata (mig
 Niciuna cu 'trimestrial' suspect din default -> nimic de curatat.
 DOVADA: pytest 518; verificator TOTAL 0 (DEFAULT_FISCAL_TACIT 0, tip_decont inclus, .py+.js); curl platitor TVA
 fara tip_decont -> 400; cu 'lunar' -> 200 (tenant_002 nemodificat).
+
+### 23.07.2026 Pasul B: D300/D394 marginite la inregistrarea TVA (fapt ANAF) + D390 la neplatitor = gri, nu tacere
+B1 — VERIFICAT LA SURSA (LIVE, nu din parser): raspunsul ANAF v9 (webservicesp.anaf.ro/.../v9/tva) contine
+`inregistrare_scop_Tva.perioade_TVA[]` cu `data_inceput_ScpTVA` / `data_sfarsit_ScpTVA` (DANTE: 2002-02-01, activ;
+cabinet AMZUICA: 2023-11-01 -> 2024-02-08, anulat). DECIZIE: se parseaza data inceperii inregistrarii ACTIVE
+(perioada fara data_sfarsit) ca FAPT ANAF, se stocheaza snapshot (firma_profil.platitor_tva_anaf_inceput, langa
+platitor_tva_anaf), si declaratii_datorate MARGINESTE fereastra D300/D394 la perioadele DE DUPA inregistrare -
+perioadele anterioare NU sunt restante, nu apar deloc (emite_tva(marginit=True)). D406 NU e marginit (obligatie
+SAF-T, nu perioada TVA). Firma fara snapshot (inceput NULL) -> fara margine (fereastra completa, gratios).
+Lant: anaf_api._tva_inceput_activ -> _anaf_tva_check (3-tuplu) -> seteaza_snapshot_tva(data) -> coloana ->
+evalueaza_firma vector.tva_data_inceput -> emite_tva. Proba e2e: POST vector DANTE -> platitor_tva_anaf_inceput=2002-02-01.
+B2 — D390 la NEPLATITOR cu operatiuni IC: nu emite tacut, nu omite tacut. Fara faptul inregistrarii art. 317 ->
+GRI cu temei: "D390 se depune de persoanele inregistrate conform art. 316 sau art. 317 (OPANAF 705/2020, pct.1.1).
+Nu avem inregistrata calitatea art. 317 pentru aceasta firma." (platitor art.316 -> D390 datorat, ca inainte.)
+RETRAGE aserția "neplatitor => zero D390" din matrice: era prea stricta (art. 317 exista); corect e gri.
+B3 — matricea extinsa la 64 config (6 dimensiuni: + operatiuni_ic, + depuse). Calea VERDE (confirmate) testata
+prin _clasifica cu `depuse` -> aserția "fiecare verdict are temei" exercitata SI pe verde (motiv din _clasifica).
+DOVADA: 582 teste verde (matrice 64), verificator TOTAL 0, snapshot e2e (DANTE 2002-02-01), D300 marginit
+(inreg. aprilie -> doar apr/mai/iun), D390 neplatitor+IC -> gri cu temei.
+LIMITA: art. 317 (inregistrare speciala pt IC) NU e un camp in vector -> un neplatitor cu IC ramane GRI (corect:
+nu stim). Daca se aduce art. 317 din ANAF (alt camp v9) -> se poate rezolva verde/rosu. Nedecis.
