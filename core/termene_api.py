@@ -51,6 +51,7 @@ def portofoliu(firme_eval, azi=None, neevaluate=None):
                 t["tip"], {"an": t["an"], "incert": bool(t.get("incert")), "firme": []})
             g["firme"].append({"tenant_id": fe["tenant_id"], "nume": fe["nume"],
                                "cui": fe.get("cui"), "tip_firma": fe.get("tip_firma"),   # [P2] deschideFirma cere {id,nume,cui,tip_firma}
+                               "regim_contabil": fe.get("regim_contabil"),               # [regim_card] contract strict meniuFirma
                                "perioada": t["perioada"]})
 
     grupuri = []

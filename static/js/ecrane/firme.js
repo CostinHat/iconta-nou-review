@@ -151,100 +151,101 @@ export function deschideFirma(t, nav) {   // [P2] reutilizat din termene.js — 
 // meniul de acțiuni pe o firmă (facturi activ; restul se activează pe rând)
 function meniuFirma(corp, nav, t) {
   const optiuni = [
-    { cheie: "facturi", titlu: "Facturi", desc: "Emite și vezi facturile firmei",
+    { cheie: "facturi", regim: "ambele", titlu: "Facturi", desc: "Emite și vezi facturile firmei",
       ...CULORI_CARD.albastru,
       icon: '<path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h4"/>', activ: true },
-    { cheie: "produse", titlu: "Produse", desc: "Nomenclator cu cote TVA, potrivire AI",
+    { cheie: "produse", regim: "ambele", titlu: "Produse", desc: "Nomenclator cu cote TVA, potrivire AI",
       icon: '<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>', activ: true },  // [produse_firma_v1]
-    { cheie: "declaratii", titlu: "Declarații", desc: "D112, D300, D101 și restul",
+    { cheie: "declaratii", regim: "ambele", titlu: "Declarații", desc: "D112, D300, D101 și restul",
       ...CULORI_CARD.verde,
       icon: '<path d="M9 13h6M9 17h4M9 9h1"/><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/>', activ: true },
-    { cheie: "control", titlu: "Control fiscal", desc: "Semafor conformare pe firmă",
+    { cheie: "control", regim: "ambele", titlu: "Control fiscal", desc: "Semafor conformare pe firmă",
       ...CULORI_CARD.teal,
       icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>', activ: true },
-    { cheie: "salariati", titlu: "Salariați", desc: "Stat plată, fluturași, D112",
+    { cheie: "salariati", regim: "ambele", titlu: "Salariați", desc: "Stat plată, fluturași, D112",
       ...CULORI_CARD.piersica,
       icon: '<circle cx="9" cy="7" r="3"/><path d="M2 21v-1a6 6 0 0 1 12 0v1"/><path d="M16 3.5a3 3 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.7"/>', activ: true },
-    { cheie: "bonuri", titlu: "Bonuri și chitanțe", desc: "Pozate de client \u2014 certifică și contează",
+    { cheie: "bonuri", regim: "ambele", titlu: "Bonuri și chitanțe", desc: "Pozate de client \u2014 certifică și contează",
       ...CULORI_CARD.piersica,
       icon: '<path d="M9 11l3 3 8-8"/><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>', activ: true },
-    { cheie: "jurnal", titlu: "Registru jurnal", desc: "Notele contabile ale firmei",
+    { cheie: "jurnal", regim: "dubla", titlu: "Registru jurnal", desc: "Notele contabile ale firmei",
       ...CULORI_CARD.ardezie,
       icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', activ: true },
-    { cheie: "raportz", titlu: "Raport Z", desc: "Incasari zilnice \u2192 nota automata",
+    { cheie: "raportz", regim: "ambele", titlu: "Raport Z", desc: "Incasari zilnice \u2192 nota automata",
       ...CULORI_CARD.chihlimbar,
       icon: '<path d="M4 4h16M4 4l16 16M4 20h16"/>', activ: true },
-    { cheie: "stocuri", titlu: "Stocuri", desc: "NIR, adaos, desc\u0103rcare gestiune",
+    { cheie: "stocuri", regim: "dubla", titlu: "Stocuri", desc: "NIR, adaos, desc\u0103rcare gestiune",
       ...CULORI_CARD.chihlimbar,
       icon: '<path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', activ: true },
-    { cheie: "balanta", titlu: "Balan\u021b\u0103 de verificare", desc: "PDF lunar, solduri si rulaje",
+    { cheie: "balanta", regim: "dubla", titlu: "Balan\u021b\u0103 de verificare", desc: "PDF lunar, solduri si rulaje",
       ...CULORI_CARD.albastru,
       icon: '<path d="M12 3v18M3 7h18M6 7l-3 5h6l-3-5zM18 7l-3 5h6l-3-5z"/>', activ: true },
-    { cheie: "bilant", titlu: "Bilan\u021b anual", desc: "S1005 micro / S1003 mici, validare ANAF",
+    { cheie: "bilant", regim: "dubla", titlu: "Bilan\u021b anual", desc: "S1005 micro / S1003 mici, validare ANAF",
       ...CULORI_CARD.albastru,
       icon: '<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>', activ: true },
-    { cheie: "casa", titlu: "Cas\u0103", desc: "Registru de cas\u0103, plafoane numerar",
+    { cheie: "casa", regim: "ambele", titlu: "Cas\u0103", desc: "Registru de cas\u0103, plafoane numerar",
       ...CULORI_CARD.verde,
       icon: '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M6 12h.01M18 12h.01"/>', activ: true },
-    { cheie: "etransport", titlu: "e-Transport", desc: "Notificare UIT, XML pentru SPV",
+    { cheie: "etransport", regim: "ambele", titlu: "e-Transport", desc: "Notificare UIT, XML pentru SPV",
       ...CULORI_CARD.chihlimbar,
       icon: '<path d="M1 8h13v8H1zM14 11h4l3 3v2h-7z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>', activ: true },
-    { cheie: "operatiuni", titlu: "Operatiuni speciale", desc: "Leasing, marja, IC, sponsorizari si altele",
+    { cheie: "operatiuni", regim: "dubla", titlu: "Operatiuni speciale", desc: "Leasing, marja, IC, sponsorizari si altele",
       ...CULORI_CARD.violet,
       icon: '<path d="M12 2l2 4 4 .5-3 3 .8 4.5L12 12l-3.8 2 .8-4.5-3-3 4-.5z"/><path d="M5 18h14M5 21h14"/>', activ: true },
-    { cheie: "rip", titlu: "Incasari/plati", desc: "Partida simpla PFA/II/IF, Fisa D212",
+    { cheie: "rip", regim: "simpla", titlu: "Incasari/plati", desc: "Partida simpla PFA/II/IF, Fisa D212",
       ...CULORI_CARD.verde,
       icon: '<path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', activ: true },
-    { cheie: "banca", titlu: "Banc\u0103", desc: "Import extras, propuneri contare",
+    { cheie: "banca", regim: "ambele", titlu: "Banc\u0103", desc: "Import extras, propuneri contare",
       ...CULORI_CARD.albastru,
       icon: '<path d="M3 21h18M4 18h16M6 18V9M10 18V9M14 18V9M18 18V9M2 9l10-6 10 6"/>', activ: true },
-    { cheie: "magazin", titlu: "Magazin online", desc: "WooCommerce \u2192 facturi automate",
+    { cheie: "magazin", regim: "ambele", titlu: "Magazin online", desc: "WooCommerce \u2192 facturi automate",
       ...CULORI_CARD.violet,
       icon: '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>', activ: true },  // wc_fe_v1
-    { cheie: "verificari", titlu: "Verific\u0103ri", desc: "Echilibru, trezorerie, TVA",
+    { cheie: "verificari", regim: "ambele", titlu: "Verific\u0103ri", desc: "Echilibru, trezorerie, TVA",
       ...CULORI_CARD.albastru,
       icon: '<path d="M9 11l3 3 8-8"/><path d="M21 12v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/>', activ: true },
-    { cheie: "solicitari", titlu: "Solicitări client", desc: "Mesaje primite de la firma-client",
+    { cheie: "solicitari", regim: "ambele", titlu: "Solicitări client", desc: "Mesaje primite de la firma-client",
       ...CULORI_CARD.piersica,
       icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>', activ: true },
-    { cheie: "acces", titlu: "Acces client", desc: "Invită clientul în portal",
+    { cheie: "acces", regim: "ambele", titlu: "Acces client", desc: "Invită clientul în portal",
       ...CULORI_CARD.verde,
       icon: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/>', activ: true },
-    { cheie: "import", titlu: "Import date", desc: "Toate straturile de migrare, pentru aceast\u0103 firm\u0103",
+    { cheie: "import", regim: "ambele", titlu: "Import date", desc: "Toate straturile de migrare, pentru aceast\u0103 firm\u0103",
       ...CULORI_CARD.albastru,
       icon: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>', activ: true },
     // [date_firma_v1] Datele pe care ANAF le cere in declaratii (CUI, denumire, CAEN,
     // adresa, banca, IBAN, telefon, reg.com). Pana acum nu se puteau completa din
     // interfata deloc - firma_profil_api salva doar font/culoare/logo. O firma noua
     // nu putea depune nimic pana nu se intervenea direct in baza de date.
-    { cheie: "datefirma", titlu: "Date firm\u0103", desc: "Datele cerute de ANAF \u00een declara\u021bii",
+    { cheie: "datefirma", regim: "ambele", titlu: "Date firm\u0103", desc: "Datele cerute de ANAF \u00een declara\u021bii",
       ...CULORI_CARD.ardezie,
       icon: '<path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9v.01M9 12v.01M9 15v.01M9 18v.01"/>', activ: true },
-    { cheie: "rapoarte", titlu: "Rapoarte comerciale", desc: "Vânzări pe partener, durata de încasare, fișă client",  // rap_com_v1
+    { cheie: "rapoarte", regim: "ambele", titlu: "Rapoarte comerciale", desc: "Vânzări pe partener, durata de încasare, fișă client",  // rap_com_v1
       ...CULORI_CARD.violet,
       icon: '<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/>', activ: true },
-    { cheie: "registratura", titlu: "Registratură", desc: "Numere de intrare/ieșire pe documente",  // registratura_v1
+    { cheie: "registratura", regim: "ambele", titlu: "Registratură", desc: "Numere de intrare/ieșire pe documente",  // registratura_v1
       ...CULORI_CARD.ardezie,
       icon: '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M8 13h6M8 16h6"/>', activ: true },
-    { cheie: "contracte", titlu: "Contracte", desc: "Generează din șabloane cu datele partenerului",  // contracte_v1
+    { cheie: "contracte", regim: "ambele", titlu: "Contracte", desc: "Generează din șabloane cu datele partenerului",  // contracte_v1
       ...CULORI_CARD.ardezie,
       icon: '<path d="M4 4h11l5 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M14 4v5h5"/><path d="M9 13l2 2 4-4"/>', activ: true },
-    { cheie: "centrecost", titlu: "Centre de cost", desc: "Dimensiune pe notele manuale, pentru raport realizat pe centru",  // [F143]
+    { cheie: "centrecost", regim: "dubla", titlu: "Centre de cost", desc: "Dimensiune pe notele manuale, pentru raport realizat pe centru",  // [F143]
       ...CULORI_CARD.teal,
       icon: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>', activ: true },
   ];
 
-  // [tip_firma_v1] carduri filtrate pe regimul firmei (srl = partida dubla / pfa = partida simpla).
-  // SRL-only ascunse la PFA: jurnal, balanta, bilant, operatiuni (concepte de partida dubla). 'declaratii' SCOS
-  // din lista 23.07: un PFA datoreaza D112/D300/D394/D301/D390 -> cardul apare la orice tip_firma, iar D100/D101/
-  // D406 (persoana juridica) apar dezactivate cu temei in dropdown prin neaplicabile_forma (G1). Simetric cu
-  // bug-ul de dimineata (PFA primea D101 ca restanta): acolo fals pozitiv, aici era fals negativ.
-  // PFA-only ascunsa la SRL: rip (Incasari/plati). 'control' ramane vizibil la PFA (semafor partial, decis-acceptat).
-  const tip = t.tip_firma.toLowerCase();   // backendul (tenantii_userului) garanteaza tip_firma; fara fallback mort
-  const DOAR_SRL = ["jurnal", "balanta", "bilant", "operatiuni"];
-  const DOAR_PFA = ["rip"];
-  const vizibile = optiuni.filter((o) =>
-    tip === "pfa" ? !DOAR_SRL.includes(o.cheie) : !DOAR_PFA.includes(o.cheie));
+  // [regim_card 23.07] Vizibilitatea cardurilor deriva prin regim_contabil (O SURSA, ca STRATURI_META), NU din
+  // liste hardcodate DOAR_SRL/DOAR_PFA (a 4-a sursa paralela la aceeasi intrebare, eliminata - dupa termene,
+  // semafor, neaplicabile_forma). Fiecare card declara `regim` OBLIGATORIU (ambele/simpla/dubla) - garda CARD_REGIM
+  // in verificator il impune (fara default tacit). Contract STRICT pe t.regim_contabil (expus de backend,
+  // auth_api:409): daca lipseste -> esec VIZIBIL, nu degradare tacita la "doar ambele" (doctrina P2: meniuFirma cu
+  // tip_firma). 'declaratii'=ambele (PFA datoreaza D112/D300/...; D100/D101/D406 dezactivate in dropdown prin G1).
+  // Casa=ambele (Legea 70/2015 plafon PFA). Vezi DESIGN_SYSTEM cap.18 + DECIZII 23.07.
+  const regimFirma = t.regim_contabil;
+  if (regimFirma !== "simpla" && regimFirma !== "dubla") {
+    throw new Error("regim_contabil lipsa/invalid pe firma (" + regimFirma + ") — contract strict, nu degradez tacit");
+  }
+  const vizibile = optiuni.filter((o) => o.regim === "ambele" || o.regim === regimFirma);
 
   corp.innerHTML = `
 

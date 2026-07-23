@@ -2980,3 +2980,23 @@ PARTIDA DUBLA -> filtrare INCOMPLETA (ar trebui DOAR_SRL, ca jurnal/balanta). Pr
 (WooCommerce->facturi), Banca (import extras -> si RIP la PFA) = plauzibil aplicabile unui PFA platitor TVA/e-commerce.
 Casa (5311) - la fel partida dubla, nementionat dar aceeasi categorie. NU e "ambele intentionat" - lista hardcodata
 nu le include. NEREPARAT (raport). De decis daca Stocuri/Centre de cost/Casa intra in DOAR_SRL.
+
+### 23.07.2026 Carduri pe firma — regim obligatoriu + filtrare prin regim_contabil (a 4-a sursa paralela eliminata)
+DOAR_SRL/DOAR_PFA (firme.js) = liste hardcodate pe tip_firma = a 4-a sursa la aceeasi intrebare ("ce se aplica unei
+firme de regim X"), dupa termene/semafor/neaplicabile_forma. Unificat prin regim_contabil (fapt UNIC).
+DECIZIE (Costin, confirmat):
+1. Fiecare card din meniuFirma.optiuni declara `regim` (ambele/simpla/dubla) OBLIGATORIU, fara default tacit
+   (aceeasi clasa cu DEFAULT 'srl'/or "micro" eliminate azi). Garda CARD_REGIM in verificator (card fara regim =
+   eroare) + DS cap.18, simultan. Dovada mutatie: scot regim de pe un card -> CARD_REGIM prinde.
+2. Vizibilitate: optiuni.filter(o => o.regim==="ambele" || o.regim===t.regim_contabil). t.regim_contabil cu
+   CONTRACT STRICT (throw daca lipseste, NU degradare tacita la "doar ambele" - doctrina P2). Calea termene->fisa
+   propaga acum regim_contabil (ca tip_firma la P2): main.py /termene + portofoliu + termene.js.
+3. Mapare: jurnal/balanta/bilant/operatiuni/stocuri/centrecost -> dubla; rip -> simpla; casa -> ambele (A, Legea
+   70/2015 plafon PFA); declaratii -> ambele (fix); restul explicit ambele.
+4. DOAR_SRL/DOAR_PFA STERSE.
+DOVADA: pytest 946; verificator TOTAL 0 (CARD_REGIM 0, mutatie prinde); node --check firme/termene; functional
+PFA(simpla) ascunde [jurnal,stocuri,balanta,bilant,operatiuni,centrecost], arata rip/declaratii/casa; SRL(dubla)
+ascunde doar rip.
+A (raport, DECIS ambele): Casa NU e partida dubla curata - face contare 5311 (partida dubla) SI verificare plafoane
+(Legea 70/2015 art.1, se aplica PFA/II/IF fara exceptie). Vizibil la PFA. Filtrarea fina a operatiunilor 5311 din
+interior = DE_FACUT (ca declaratii). Vezi DE_FACUT + DESIGN_SYSTEM cap.18.

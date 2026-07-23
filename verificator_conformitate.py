@@ -32,7 +32,7 @@ for f in sorted(os.listdir(BAZA)):
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
                         "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
-                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit"]}
+                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -82,6 +82,11 @@ for nume, t in fisiere.items():
         # Semnatura interzisa: randeazaMeniu*(continut,...) sau handler .cab-card care scrie in continut.
         if re.search(r'randeazaMeniu\w+\(\s*continut\b', lin):
             rap["card_inline"].append((nume, i, "", lin.strip()[:66]))
+        # CARD_REGIM (cap.18): cardul din meniuFirma (firme.js optiuni) declara `regim` (ambele/simpla/dubla)
+        # OBLIGATORIU imediat dupa cheie - FARA default tacit. Vizibilitatea deriva prin regim_contabil (o sursa,
+        # nu listele DOAR_SRL/DOAR_PFA - eliminate 23.07). Scoped la firme.js (unicul loc cu optiuni de card pe firma).
+        if nume.endswith("firme.js") and re.search(r'\{\s*cheie:\s*"[a-z]+",\s+(?!regim:)', lin):
+            rap["card_regim"].append((nume, i, "", lin.strip()[:66]))
         # CASETA_INFO (cap.5): nota informativa standing reprodusa ad-hoc inline (fundalul
         # casetei-info #eef4fd) in loc de clasa .caseta-info. Culorile de paleta/iconita
         # (#e9f0fe) au reguli proprii (CULOARE_CARD_HEX); nu intra aici.

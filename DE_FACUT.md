@@ -512,3 +512,11 @@ nu inline). Extinderea gardii (FONT_INLINE/RADIUS_INLINE) la display/flex/color 
 (per fisier, verificat vizual), revenire pe decizia v2.11 (spacing gap/margin ramane acceptat). DECIZIE 23.07 (Costin,
 optiunea b): ramane datorie v2.11, garda NEatinsa; curatarea = workstream dedicat cand se programeaza, NU coada de ecran.
 Panoul D390 (declaratii.js) deja curatat in commitul poz.1. Vezi DECIZII 23.07.
+
+## Casă — card "ambele" dar contarea 5311 din interior e partidă dublă (raportat 23.07.2026, nereparat)
+Cardul Casă e vizibil la orice regim (regim="ambele") fiindca VERIFICAREA PLAFOANELOR (Legea 70/2015 art.1 alin.1,
+plafon sold casierie 50.000 lei - FARA exceptie pentru PFA/II/IF) il priveste pe PFA. DAR operatiunile de contare din
+interior (casa_api.CATEGORII: 5311=4111, 401=5311, 5311=581, 581=5311, 542=5311) sunt partida DUBLA - un PFA le vede
+desi nu i se aplica (partida simpla = RIP, nu note 5311). DE FACUT: filtrare FINA in interiorul cardului (ca la
+declaratii cu neaplicabile_forma) - la partida simpla se arata DOAR verificarea plafoanelor, nu operatiunile de
+contare. Consemnat, neconstruit. Temei vizibilitate card: Legea 70/2015. Vezi DECIZII 23.07 + DESIGN_SYSTEM cap.18.

@@ -115,7 +115,7 @@ function detaliuTermen(corp, nav, grup, item) {
     `;
     // [P2] tenant_id -> id; deschideFirma->meniuFirma cere {id, nume, cui, tip_firma} (contract strict, meniuFirma:241).
     // tip_firma lipsea din payload -> t.tip_firma.toLowerCase() crapa la randarea fisei. Adaugat in /termene.
-    rand.addEventListener("click", () => deschideFirma({ id: f.tenant_id, nume: f.nume, cui: f.cui, tip_firma: f.tip_firma }, nav));
+    rand.addEventListener("click", () => deschideFirma({ id: f.tenant_id, nume: f.nume, cui: f.cui, tip_firma: f.tip_firma, regim_contabil: f.regim_contabil }, nav));
     lista.appendChild(rand);
   });
 }
