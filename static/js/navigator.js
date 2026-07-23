@@ -328,7 +328,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
             const tid = parseInt(n.link.slice("control-fiscal:".length), 10);
             if (!Number.isFinite(tid)) { console.warn("[clopot] link control-fiscal malformat:", n.link); return; }
             try {
-              const { randeazaControl } = await import("./ecrane/control.js");
+              const { randeazaControl } = await import("./ecrane/control.js?v=1");  // ?v=1 aliniat cu cabinet/asistent — fara versiune ar instantia o a doua copie a modulului
               window._navGlobal.deschide("Control fiscal", (corp, nn) => randeazaControl(corp, nn, tid), { nivel: "cabinet" });
             } catch (e) { console.warn("[clopot] nu am putut deschide control fiscal:", e); }
           }

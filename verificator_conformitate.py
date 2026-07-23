@@ -32,7 +32,7 @@ for f in sorted(os.listdir(BAZA)):
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
                         "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
-                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim"]}
+                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -288,6 +288,39 @@ for nume, t in fisiere.items():
             continue
         if RE_JS_FISCAL.search(lin):
             rap["default_fiscal_tacit"].append((nume, i, "fiscal-lit-js", s[:60]))
+
+# IMPORT_VERSIUNE (cap.19): acelasi modul importat cu tokeni de versiune DIVERGENTI (?v=7 intr-un loc,
+# fara versiune in altul) => browserul trateaza `/x.js` si `/x.js?v=7` ca DOUA module distincte, ruleaza
+# DOUA instante, iar starea/efectele uneia nu se vad in cealalta. Simptom prins 23.07: antetul din firme.js
+# aparea pe calea FIRME dar lipsea pe calea TERMENE (termene.js importa ./firme.js fara ?v, restul ?v=7).
+# Grupam pe calea REZOLVATA relativ la fisierul care importa (nu pe basename — doua fisiere omonime din
+# directoare diferite pot avea legitim versiuni proprii). Un modul cu >1 token distinct de versiune = eroare.
+RE_IMPORT_JS = re.compile(r'''(?:from|import\()\s*["']([^"']+\.js(?:\?[^"']*)?)["']''')
+BAZA_JS = os.path.expanduser("~/iconta_nou/static/js")
+_imp = {}  # cale_rezolvata -> list de (fisier_relativ, linie, token_versiune)
+for rad, _dirs, _fis in os.walk(BAZA_JS):
+    for f in sorted(_fis):
+        if not f.endswith(".js") or ".bak" in f:
+            continue
+        cale = os.path.join(rad, f)
+        rel_fis = os.path.relpath(cale, BAZA_JS)
+        with open(cale, encoding="utf-8") as h:
+            for i, lin in enumerate(h.read().split("\n"), 1):
+                s = lin.strip()
+                if s.startswith("//") or s.startswith("*"):
+                    continue
+                for m in RE_IMPORT_JS.finditer(lin):
+                    spec = m.group(1)
+                    mod, _, ver = spec.partition("?")
+                    if not mod.startswith("."):
+                        continue  # doar module locale relative (nu URL-uri externe)
+                    rez = os.path.normpath(os.path.join(rad, mod))
+                    _imp.setdefault(rez, []).append((rel_fis, i, ver or "(fara)"))
+for rez, aparitii in sorted(_imp.items()):
+    if len(set(v for _, _, v in aparitii)) > 1:
+        modrel = os.path.relpath(rez, BAZA_JS)
+        for rel_fis, i, ver in aparitii:
+            rap["import_versiune"].append((rel_fis, i, ver, "%s importat ca %s" % (modrel, ver)))
 
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
