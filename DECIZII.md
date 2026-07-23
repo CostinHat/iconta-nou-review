@@ -2507,3 +2507,27 @@ ALTE EXCEPTII INGHITITE PE CAI DE VERDICT (raportate, cf. cererii - NEreparate f
     Skip la nivel de date, severitate mica, dar o linie malformata scapa tacit de verificare.
 LIMITA: log-ul depinde de configul de logging al uvicorn (propagare la root). Numele "iconta.verdict" e stabil
 pentru grep. GRI nu depinde de log - e in payload, il vede contabilul indiferent de telemetrie.
+
+### 23.07.2026 Trei forme de tacere pe cai de verdict, trei raspunsuri  (audit_preluare; main.py; control_incrucisat)
+DECIZIE: tacerea pe o cale de verdict nu are un singur remediu - depinde de NATURA ei:
+ (1) VERIFICARE PICATA (crapa in rulare) -> GRI cu temei. _construieste_contabil (tura anterioara) + acum
+     documente_pozate (main.py:3717) si d205_vs_457 (main.py:3734) prin _constatare_esuata. Chiar nesurfacate azi
+     in pastila, devin corecte cand cineva le surfaceaza - mai bine corecte acum decat descoperite atunci.
+ (2) VERIFICARE CARE NU PORNESTE (regimul necitibil ingusteaza tacit setul auditat) -> GRI + CE S-A SARIT.
+     audit_preluare: _tip_firma nu mai inghite orice except drept 'absenta' (ghicea SRL tacit, iar un audit care
+     sare peste jumatate din verificari fara sa spuna e mai grav decat unul care crapa vizibil). Existenta
+     tabel/coloana se PROBEAZA (to_regclass + information_schema) -> absenta legitima ramane None (SRL default);
+     eroarea REALA propaga, iar audit() o intoarce ca gri "regim nedeterminabil - audit INCOMPLET, N straturi
+     nerulate" + lista straturilor (ambele regimuri). Nedeterminarea e vizibila, nu ascunsa intr-un default.
+ (3) LINIE SARITA (o linie de date neparsabila, nu verificarea) -> LIMITA DECLARATA, nu gri global. control_
+     incrucisat cota TVA: linia cu cota neparsabila se CONTORIZEAZA si se declara in limita ("N linii cu cota
+     neparsabila - NEVERIFICATE"), dar verdictul ramane pe ce s-a putut verifica. Gri global ar ascunde verdele
+     real pe restul liniilor - o minciuna in cealalta directie.
+TEMEI: gri = "nu am putut verifica". Se aplica la o VERIFICARE care nu a produs verdict (1,2), NU la o linie
+dintr-o verificare care a produs verdict pe rest (3). A confunda nivelurile (linie vs verificare) ar strica
+increderea in ambele sensuri: tacerea ascunde probleme, gri-ul global ascunde verdele real.
+ALTERNATIVA RESPINSA: acelasi tratament (gri) pentru toate trei - respins de Costin: linia sarita nu e
+verificare picata; gri global pe ea ar ascunde verdele real al celorlalte linii.
+LIMITA: _tip_firma probeaza existenta coloanei (information_schema) inainte de SELECT - o eroare intre probe si
+SELECT (fereastra minuscula) ar propaga -> gri, corect. Straturile sarite din (2) sunt derivate din
+_VERIFICAT_DESC (ambele regimuri), nu hardcodate.

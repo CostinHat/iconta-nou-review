@@ -802,11 +802,13 @@ def constatare_cota_tva(linii, an, luna):
         return _gri_cota_tva(an, luna, f"nu pot citi nomenclatorul cotelor ({e}).")
 
     verificate = 0
+    nedeterminabile = 0   # linii cu cota neparsabila: SARITE, dar declarate in limita - nu ascunse tacit.
     gresite = {}   # factura_id -> {numar, cota_gasita, cota_corecta}
     for l in linii:
         try:
             cota_int = int(round(float(l["cota_tva"])))
         except Exception:
+            nedeterminabile += 1   # skip la nivel de LINIE (nu gri global - ar ascunde verdele real pe rest)
             continue
         if cota_int not in standard_family:
             continue   # cota redusa/scutit -> in afara scopului (nu depinde de cota standard)
@@ -826,6 +828,10 @@ def constatare_cota_tva(linii, an, luna):
     limita = ("Verificat: cota liniilor la cotă standard de pe facturile EMISE ale lunii vs cota standard "
               "valabilă la data facturii. NEVERIFICAT: cotele reduse/scutit (legitim neschimbate); "
               "clasificarea de produs (dacă produsul chiar cere cota standard).")
+    if nedeterminabile:
+        # linia sarita nu se ascunde: verdictul ramane pe ce s-a putut verifica, dar spune ce n-a intrat.
+        limita += (" %d linie/linii cu cotă neparsabilă — NEVERIFICATE (verdictul acoperă doar liniile cu "
+                   "cotă citibilă)." % nedeterminabile)
 
     if not gresite:
         constatari = [] if verificate == 0 else [{

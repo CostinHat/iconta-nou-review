@@ -302,18 +302,42 @@ def constatare_rip(inc, plati, n_total, n_neclasificat):
 
 
 def _tip_firma(conn, schema):
-    """tip_firma din firma_profil ('srl'/'pfa'/...), sau None daca lipseste. Defensiv: orice eroare
-    (coloana/tabel absent pe schema veche) -> None, tratat ca 'srl' de straturi_pentru."""
-    try:
-        with conn.cursor() as cur:
-            cur.execute("SELECT to_regclass(%s)", (schema + ".firma_profil",))
-            if cur.fetchone()[0] is None:
-                return None
-            cur.execute(f"SELECT tip_firma FROM {schema}.firma_profil LIMIT 1")
-            row = cur.fetchone()
-            return row[0] if row else None
-    except Exception:
-        return None
+    """tip_firma din firma_profil ('srl'/'pfa'/...) sau None daca firma_profil / coloana tip_firma LIPSESTE
+    (schema veche) -> tratat ca 'srl' de straturi_pentru (default legitim). Existenta tabelului/coloanei se
+    PROBEAZA (to_regclass + information_schema), nu prin except - ca sa NU inghitim o eroare reala de DB drept
+    'absenta'. Orice eroare reala PROPAGA; audit() o trateaza ca regim NEDETERMINABIL (gri + straturi sarite),
+    nu ca absenta tacuta care ingusteaza auditul. Vezi DECIZII 23.07."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass(%s)", (schema + ".firma_profil",))
+        if cur.fetchone()[0] is None:
+            return None                                   # tabel absent -> SRL default (legitim)
+        cur.execute("SELECT 1 FROM information_schema.columns WHERE table_schema=%s "
+                    "AND table_name='firma_profil' AND column_name='tip_firma'", (schema,))
+        if cur.fetchone() is None:
+            return None                                   # coloana absenta (schema veche) -> SRL default (legitim)
+        cur.execute(f"SELECT tip_firma FROM {schema}.firma_profil LIMIT 1")
+        row = cur.fetchone()
+        return row[0] if row else None
+
+
+def _audit_regim_nedeterminat(e):
+    """Regim (SRL/PFA) NEDETERMINABIL dintr-o EROARE (nu absenta legitima): auditul NU ghiceste SRL tacit.
+    Un audit care sare peste jumatate din verificari fara sa spuna e mai grav decat unul care crapa vizibil
+    -> gri cu temei + lista straturilor nerulate (ambele regimuri). Vezi DECIZII 23.07."""
+    from core.migrare_api import straturi_pentru
+    toate = set(straturi_pentru("srl")) | set(straturi_pentru("pfa"))
+    sarite = [d for s, d in _VERIFICAT_DESC if s in toate]
+    return {"stare": "gri",
+            "constatari": [_gri("regim nedeterminabil",
+                "Auditul aplica straturi diferite dupa regim (SRL partida dubla / PFA partida simpla); fara "
+                "regim nu stiu care se aplica, deci nu pot rula auditul complet.",
+                "Nu am putut determina regimul firmei (SRL/PFA) — audit INCOMPLET, %d straturi nerulate." % len(sarite),
+                "Verifica firma_profil.tip_firma (SRL/PFA), apoi reia auditul.",
+                cauza="Nu pot citi tip_firma din firma_profil (%s)." % e)],
+            "coerent": 0, "divergent": 0, "neverificat": 1,
+            "limita": ("Audit NErulat: regimul (SRL/PFA) nu s-a putut determina. Straturi nerulate: %s. "
+                       "Lipsa lor e vizibila prin gri, nu tacuta." % ", ".join(sarite)),
+            "modul": MODUL, "reguli": REGULI}
 
 
 def audit(conn, schema, tenant_id, conn_public):
@@ -326,7 +350,12 @@ def audit(conn, schema, tenant_id, conn_public):
     `conn` pe schema (SET LOCAL search_path); `conn_public` pe public. Data o pune apelantul (datat, acum).
     Un check care crapa nu doboara restul -> gri cu cauza (izolare, ca _incrucisat din main.py)."""
     from core.migrare_api import straturi_pentru
-    straturi = set(straturi_pentru(_tip_firma(conn, schema)))
+    try:
+        tip = _tip_firma(conn, schema)
+    except Exception as e:
+        # regim NEDETERMINABIL (eroare reala, nu absenta) -> nu ghicim SRL tacit; gri + straturi sarite.
+        return _audit_regim_nedeterminat(e)
+    straturi = set(straturi_pentru(tip))
     plan = []
     if "solduri" in straturi:  # partida dubla (SRL): balanta + parteneri + istoric-vs-solduri-fiscale
         plan += [(verifica_balanta, (conn, schema)),

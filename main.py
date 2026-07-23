@@ -1942,17 +1942,21 @@ import logging as _logging
 _LOG_VERDICT = _logging.getLogger("iconta.verdict")
 
 
-def _verificator_esuat(contabil, eticheta, nume, e):
-    """Un verificator care CRAPA nu e 'nimic de raportat' - e 'nu am putut verifica' = GRI cu temei, nu tacere.
+def _constatare_esuata(eticheta, nume, e):
+    """Constatare GRI pentru un verificator care CRAPA (nu 'nimic de raportat' - e 'nu am putut verifica').
     Excepția înghițită face firma să pară mai curată decât e (minciună prin omisiune). GRI nu escaladeaza
     pastila_firma (rezistenta se pastreaza - un esec izolat nu doboara semaforul), dar il anunta pe CONTABIL,
     care decide. Doua straturi: GRI = principal (il vede contabilul); log = secundar (sa se vada daca pica
-    SISTEMATIC). Vezi DECIZII 23.07."""
+    SISTEMATIC). Vezi DECIZII 23.07. Intoarce constatarea (apelantul o pune unde e vizibila)."""
     _LOG_VERDICT.warning("verificator esuat pe cale de verdict: %s -> gri (%r)", nume, e)
-    contabil.append(_flag_constatare("gri", eticheta,
-        "Nu am putut verifica %s." % nume,
+    return _flag_constatare("gri", eticheta, "Nu am putut verifica %s." % nume,
         "Verificarea a eșuat (%s). GRI înseamnă 'nu am putut verifica', NU 'curat' — o constatare reală "
-        "poate lipsi. Reîncarcă; dacă persistă, semnalează." % e))
+        "poate lipsi. Reîncarcă; dacă persistă, semnalează." % e)
+
+
+def _verificator_esuat(contabil, eticheta, nume, e):
+    """Varianta pt lista de constatari (contabil): adauga constatarea gri. Vezi _constatare_esuata."""
+    contabil.append(_constatare_esuata(eticheta, nume, e))
 
 
 def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
@@ -3714,8 +3718,9 @@ def _verificari_contabile(schema, an, luna):
     }
     try:  # verif_doc_pozate_v1
         rezultat["documente_pozate"] = _verifica_documente_pozate(schema)
-    except Exception:
-        pass
+    except Exception as e:
+        # gri, nu tacere: chiar daca azi nu e surfacat in pastila, devine corect cand cineva il surfaceaza.
+        rezultat["documente_pozate"] = _constatare_esuata("Documente pozate — verificare eșuată", "documentele pozate", e)
     try:  # verif_d205_457_v1 (NC-28 backlog #97)
         with db.get_conn() as conn2, conn2.cursor() as cur2:
             cur2.execute(f"SELECT to_regclass('{schema}.d205_beneficiari')")
@@ -3731,8 +3736,8 @@ def _verificari_contabile(schema, an, luna):
                             AND EXTRACT(YEAR FROM i.data) = %s""", (an,))
             suma_457 = cur2.fetchone()[0]
         rezultat["d205_vs_457"] = _vf.coerenta_d205_457(suma_d205, suma_457)
-    except Exception:
-        pass
+    except Exception as e:
+        rezultat["d205_vs_457"] = _constatare_esuata("D205 vs 457 — verificare eșuată", "coerența D205 vs contul 457", e)
     return rezultat
 
 

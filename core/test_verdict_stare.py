@@ -56,6 +56,22 @@ def test_construieste_contabil_verificator_care_arunca_da_gri(monkeypatch):
     assert "stoc DB down" in gri[0]["temei"]
 
 
+def test_constatare_esuata_e_gri_cu_temei():
+    # documente_pozate / d205_vs_457 care crapa -> gri cu temei, nu tacere (main.py _verificari_contabile).
+    import main
+    c = main._constatare_esuata("Documente pozate — verificare eșuată", "documentele pozate", ValueError("x"))
+    assert c["stare"] == "gri" and "Nu am putut verifica" in c["mesaj"] and "x" in c["temei"]
+
+
+def test_audit_regim_nedeterminat_e_gri_cu_straturi_sarite():
+    # audit_preluare: regimul necitibil (eroare) -> gri + lista straturilor nerulate, NU report fals-curat.
+    from core import audit_preluare as ap
+    r = ap._audit_regim_nedeterminat(RuntimeError("DB down"))
+    assert r["stare"] == "gri"
+    assert "INCOMPLET" in r["constatari"][0]["mesaj"] and r["neverificat"] == 1
+    assert "Straturi nerulate" in r["limita"] and "balanță" in r["limita"]
+
+
 def test_header_nu_poate_fi_verde_cu_blocant_dedesubt():
     # Motivul incarnat: header "la zi" + banner verde peste un BLOCANT e cea mai grava minciuna. Un
     # sold creditor 5121 (BLOCANT) devine constatare rosie (stare_din_nivel(BLOCANT)); pastila_firma peste

@@ -330,6 +330,14 @@ def test_scutit_0_ignorat():
     r = constatare_cota_tva([_linie(1, _date(2025, 9, 10), 0)], 2025, 9)
     assert r["stare"] == "verde" and r["constatari"] == []
 
+def test_linie_cota_neparsabila_declarata_in_limita_nu_gri_global():
+    # o linie cu cota neparsabila NU face verdictul gri global (ar ascunde verdele real pe restul); e
+    # contorizata si declarata in limita. Verdictul ramane pe ce s-a putut verifica.
+    r = constatare_cota_tva([_linie(1, _date(2025, 9, 10), 21),     # corecta -> verde
+                             _linie(2, _date(2025, 9, 10), "N/A")], 2025, 9)  # neparsabila -> sarita
+    assert r["stare"] == "verde"                                    # NU gri global
+    assert "neparsabil" in r["limita"] and "1 linie" in r["limita"]
+
 def test_mix_prinde_doar_linia_gresita():
     # factura 1: 19% gresit; factura 2: 21% corect; factura 3: 9% redus (ignorat)
     r = constatare_cota_tva([_linie(1, _date(2025, 9, 1), 19),
