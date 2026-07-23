@@ -3,8 +3,9 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api } from "../api.js";
+import { api, dataRo } from "../api.js";
 
+// LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
 
@@ -103,7 +104,7 @@ function randeazaLucru(corp, nav) {
   const rz = S.rezumat || {};
   const depuse = (rz.declaratii_depuse || []).join(", ") || "—";
   corp.innerHTML = `
-    <p class="mig-intro">${esc(rz.nume_firma||"Firma")} · ${LUNI[S.luna-1]} ${S.an}</p>
+    <p class="mig-intro">${esc(rz.nume_firma||"Firma")} · ${dataRo(`${S.an}-${String(S.luna).padStart(2,"0")}`, "luna_an")}</p>
     <div class="panou pac-rezumat">
       <div class="pac-rez-rand"><span>Venituri</span><b>${bani(rz.venituri)}</b></div>
       <div class="pac-rez-rand"><span>Cheltuieli</span><b>${bani(rz.cheltuieli)}</b></div>
@@ -131,7 +132,7 @@ function deschideModal(corp, nav) {
       <div class="pacm-cap">
         <div>
           <div class="pacm-titlu">Povestea lunii</div>
-          <div class="pacm-sub">${esc(rz.nume_firma||"Firma")} · ${LUNI[S.luna-1]} ${S.an}</div>
+          <div class="pacm-sub">${esc(rz.nume_firma||"Firma")} · ${dataRo(`${S.an}-${String(S.luna).padStart(2,"0")}`, "luna_an")}</div>
         </div>
         <button class="pacm-x" id="pacm-x" aria-label="Inchide">✕</button>
       </div>

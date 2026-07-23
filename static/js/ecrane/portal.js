@@ -366,8 +366,6 @@ async function ecranPovestea(corp, nav) {
     lista = (r && r.povesti) || [];
   } catch (e) { err = e; }
   if (err) { corp.innerHTML = `<h2 class="pf-titlu">Povestea lunii</h2><p class="msg-eroare">${err.mesaj || "Nu am putut încărca rapoartele."}</p>`; return; }
-  const luni = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
-                "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"];
   if (!lista.length) {
     corp.innerHTML = `
       <h2 class="pf-titlu">Povestea lunii</h2>
@@ -384,7 +382,7 @@ async function ecranPovestea(corp, nav) {
   const corpuri = lista.map((p) => `
     <div class="pf-frand">
       <div class="pf-frand-text">
-        <div class="pf-frand-nume">${luni[p.luna] || p.luna} ${p.an}</div>
+        <div class="pf-frand-nume">${dataRo(`${p.an}-${String(p.luna).padStart(2,"0")}`, "luna_an")}</div>
         <div class="pf-frand-sub">${(p.text || "").slice(0, 80)}...</div>
         <div class="pf-frand-sub">${fmtDif(p)}</div>
       </div>
@@ -400,7 +398,7 @@ async function ecranPovestea(corp, nav) {
       const p = lista[i];
       corp.querySelector("#pov-detaliu").innerHTML = `
         <div class="pov-card">
-          <h3>${luni[p.luna] || p.luna} ${p.an}</h3>
+          <h3>${dataRo(`${p.an}-${String(p.luna).padStart(2,"0")}`, "luna_an")}</h3>
           <div class="pov-text">${(p.text || "").replace(/\n/g, "<br>")}</div>
           ${typeof p.diferenta === "number" ? `<div class="pov-dif">${fmtDif(p)}</div>` : ""}
         </div>`;
@@ -653,8 +651,6 @@ async function ecranCifre(corp, nav) {
   }
   const k = d.kpi || {};
   const lei = (v) => baniRotund(v) + " lei";
-  const luni = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
-    "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"];
   const rand = (eticheta, valoare, culoare) => `
     <div class="pf-frand">
       <div class="pf-frand-text"><div class="pf-frand-nume">${eticheta}</div></div>
@@ -662,7 +658,7 @@ async function ecranCifre(corp, nav) {
     </div>`;
   corp.innerHTML = `
     <h2 class="pf-titlu">Cifrele firmei</h2>
-    <p class="pf-intro">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${luni[d.luna]} ${d.an}. Date din contabilitate \u2014 lunile nedepuse pot lipsi.</p>
+    <p class="pf-intro">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${dataRo(`${d.an}-${String(d.luna).padStart(2,"0")}`, "luna_an")}. Date din contabilitate \u2014 lunile nedepuse pot lipsi.</p>
     <div class="pf-lista">
       ${rand("Venituri", lei(k.venituri))}
       ${rand("Cheltuieli", lei(k.cheltuieli))}

@@ -481,8 +481,6 @@ async function randeazaConsolidare(corp, nav) {
   try { d = await api.get("/cabinet/consolidare"); }
   catch (e) { arataMesaj(corp, e.mesaj || e.message || "eroare", "eroare"); return; }
   const lei = (v) => baniRotund(v);
-  const luni = ["", "ianuarie", "februarie", "martie", "aprilie", "mai", "iunie",
-    "iulie", "august", "septembrie", "octombrie", "noiembrie", "decembrie"];
   const cap = `
     <div class="pf-frand" style="font-weight:600">
       <div class="pf-frand-text" style="flex:2">Firma</div>
@@ -501,7 +499,7 @@ async function randeazaConsolidare(corp, nav) {
     </div>`;
   corp.innerHTML = `
     <h2 class="pf-titlu">Consolidare portofoliu</h2>
-    <p class="pf-intro">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${luni[d.luna]} ${d.an}. Valori \u00een lei.</p>
+    <p class="pf-intro">Cumulat de la \u00eenceputul anului, p\u00e2n\u0103 la ${dataRo(`${d.an}-${String(d.luna).padStart(2, "0")}`, "luna_an")}. Valori \u00een lei.</p>
     <div class="pf-lista zebra-lista">
       ${cap}
       ${(d.firme || []).map((f) => rand(esc(f.nume), f.kpi)).join("")}

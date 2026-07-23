@@ -2916,3 +2916,19 @@ Pas de prezentare pe Termene (poziția 3 DESCHISĂ, recaptura la Costin). Patru 
   (10px, cap.8 buline+text). Aliniat 1:1 cu semaforul (același caz e deja gri acolo). Perioadă închisă = obligație
   cunoscută, fără bulină. Backend: flag `incert` pe itemul D390 emis pe lună deschisă (obligatii_datorate, doar
   termene jos!=None) -> matricea intactă (d390_fapt=None nu-l setează).
+
+### 23.07.2026 Declaratii poz.1 — G2/G3/G4 (prezentare); G4-garda raportata, nu extinsa
+G2: pas2 din declaratii.js ignora eroarea (catch(e) -> mesaj generic). Aliniat la pas3: afiseaza e.mesaj (422 cu
+temei / gri cu limita) - exact unde contabilul are nevoie. api.js arunca {cod, mesaj}.
+G3: eticheta de perioada folosea formator local (LUNI[S.luna-1] ${S.an}) in loc de dataRo("luna_an"). Reparat in
+etPerioada (LUNI ramane pentru picker). Garda DATA_DIALECT extinsa PRECIS: prinde array-lună folosit ca ETICHETA
+luna-an (indexare urmata de ${...an}), NU luna-doar (fara echivalent dataRo) si NU pickerul (.map). Rulata pe tot
+frontendul -> 6 etichete locale (declaratii/cabinet:504/pachete:106,134/portal:387,403,665) reparate la dataRo;
+3 array-uri moarte sterse (cabinet, 2x portal). TRIM (trimestru) ramane local - fara echivalent dataRo.
+G4: panoul de clasificare D390 (F125) avea style inline display/flex/gap/color (contra cap.0). Reparat: clase
+.dec-recl-rand/.dec-recl-desc/.dec-recl-suma/.dec-recl/.dec-man-rand/.dec-man-form/.dec-clasif-gol; width/margin
+raman inline (pozitionare permisa cap.0). GARDA NU extinsa: display/flex/gap/color inline = 217 aparitii pe tot
+frontendul (firme.js 80, facturi 18...) = DATORIE ACCEPTATA explicit (v2.11, DE_FACUT §3.2 "spacing/padding inline
+inchis ca datorie acceptata"). NU e gaura accidentala, e decizie. Extinderea gardei = 217 flag-uri = curatenie
+frontend-wide (revenire pe decizia v2.11), workstream separat - RAPORTAT, nu facut orb. Vezi G1 (STOP separat).
+DOVADA: pytest 945; verificator TOTAL 0; node --check pe declaratii/cabinet/pachete/portal.

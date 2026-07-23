@@ -135,8 +135,13 @@ for nume, t in fisiere.items():
         # = parsare manuala a unei date -> forma functiei dataLunga (gaura descoperita 23.07: forma veche o rata).
         # Precis pe UTILIZARE, nu pe declaratie: NU atinge pickerele de luna (LUNI.map(...) pt <option>) sau
         # etichetele din stare (LUNI[S.luna-1], fara parseInt) - acelea sunt legitime. Exceptat api.js (sursa canonica).
-        _data_local = (not nume.endswith("api.js")
-                       and re.search(r'\w*luni\w*\s*\[\s*parseInt\(', lin, re.I))
+        # doua forme prin array de luni: (a) parsare completa (dataLunga: luni[parseInt(...)]); (b) eticheta
+        # luna-AN (luni[<idx>] ... ${...an}) care ocoleste dataRo("luna_an"). NU prinde luna-DOAR (luni[r.luna]
+        # fara an - nu are echivalent dataRo, legitim) si nici pickerul (LUNI.map pt <option>). Gaura a doua
+        # descoperita 23.07 pe ecranul Declaratii (etPerioada). Exceptat api.js (sursa canonica).
+        _data_local = (not nume.endswith("api.js") and (
+            re.search(r'\w*luni\w*\s*\[\s*parseInt\(', lin, re.I)
+            or re.search(r'\w*luni\w*\s*\[[^\]]+\][^\n]{0,30}?\ban\b', lin, re.I)))
         if re.search(r'toLocaleDateString', lin) or re.search(r'const\s+fmt\w*\s*=.*split\("-"\)', lin) or _data_local:
             rap["data_dialect"].append((nume, i, "", lin.strip()[:66]))
         # DATA_BRUTA: ${x.data} sau ${x.data_ceva} afisat direct in template fara dataRo (exclus value= de input si payload)

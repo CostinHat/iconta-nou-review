@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj } from "../api.js";
+import { api, esc, bani, arataMesaj, dataRo } from "../api.js";
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -153,9 +153,11 @@ async function pas2(corp, nav) {
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
   } catch (e) {
+    // [G2] surfaceaza eroarea SPECIFICA (422 cu temei / gri cu limita), nu un mesaj generic - exact unde
+    // contabilul are nevoie de ea. Aliniat cu pas3. api.js arunca {cod, mesaj}.
     corp.innerHTML = `
       <p class="mig-intro">Pasul 2 din 3 — generare</p>
-      <div class="dec-eroare">Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.</div>
+      <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     return;
   }
@@ -215,17 +217,17 @@ async function randeazaClasificareD390(corp, nav) {
   const optSel = (dir, cur) => (_D390_TIP_DIR[dir] || []).map(([v, l]) => `<option value="${v}" ${v === cur ? "selected" : ""}>${l}</option>`).join("");
   zona.innerHTML = `<details class="dec-xml" open><summary>Clasificare intracomunitară (servicii / triangulație)</summary>
     ${auto.length ? `<div class="camp-eticheta" style="margin:6px 0">Operațiuni din facturi — verifică tipul:</div>
-      ${auto.map((o) => `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:4px 0;border-bottom:1px solid var(--linie)">
-        <span style="flex:1 1 220px">${o.directie === "emisa" ? "↗ emisă" : "↘ primită"} · ${esc(o.tara)}${esc(o.cod)} ${esc(o.den || "")}</span>
-        <span style="min-width:90px;text-align:right">${bani(o.baza)} lei</span>
-        <select class="camp-input dec-recl" data-dir="${o.directie}" data-tara="${esc(o.tara)}" data-cod="${esc(o.cod)}" style="width:200px">${optSel(o.directie, o.tip_curent)}</select>
-      </div>`).join("")}` : `<div class="camp-eticheta" style="margin:6px 0;color:var(--gri)">Nicio operațiune din facturi în perioadă.</div>`}
+      ${auto.map((o) => `<div class="dec-recl-rand">
+        <span class="dec-recl-desc">${o.directie === "emisa" ? "↗ emisă" : "↘ primită"} · ${esc(o.tara)}${esc(o.cod)} ${esc(o.den || "")}</span>
+        <span class="dec-recl-suma">${bani(o.baza)} lei</span>
+        <select class="camp-input dec-recl" data-dir="${o.directie}" data-tara="${esc(o.tara)}" data-cod="${esc(o.cod)}">${optSel(o.directie, o.tip_curent)}</select>
+      </div>`).join("")}` : `<div class="camp-eticheta dec-clasif-gol" style="margin:6px 0">Nicio operațiune din facturi în perioadă.</div>`}
     <div class="camp-eticheta" style="margin:10px 0 4px">Linii adăugate manual (fără factură în sistem):</div>
-    ${manual.length ? manual.map((m) => `<div style="display:flex;gap:8px;align-items:center;padding:2px 0">
-        <span style="flex:1 1 220px">${esc(m.tip)} · ${esc(m.tara)}${esc(m.cod)} ${esc(m.den || "")}</span>
-        <span style="min-width:90px;text-align:right">${bani(m.baza)} lei</span>
-        <button class="btn-link dec-man-del" data-id="${m.id}">șterge</button></div>`).join("") : `<div class="camp-eticheta" style="color:var(--gri)">—</div>`}
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:8px">
+    ${manual.length ? manual.map((m) => `<div class="dec-man-rand">
+        <span class="dec-recl-desc">${esc(m.tip)} · ${esc(m.tara)}${esc(m.cod)} ${esc(m.den || "")}</span>
+        <span class="dec-recl-suma">${bani(m.baza)} lei</span>
+        <button class="btn-link dec-man-del" data-id="${m.id}">șterge</button></div>`).join("") : `<div class="camp-eticheta dec-clasif-gol">—</div>`}
+    <div class="dec-man-form" style="margin-top:8px">
       <label class="camp" style="width:160px"><span class="camp-eticheta">Tip</span><select id="man-tip" class="camp-input"><option value="P">Servicii prestate (P)</option><option value="S">Servicii primite (S)</option><option value="T">Triangulație (T)</option><option value="R">Agricol special (R)</option></select></label>
       <label class="camp" style="width:100px"><span class="camp-eticheta">Țară</span><input id="man-tara" class="camp-input" placeholder="DE"></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Cod partener</span><input id="man-cod" class="camp-input" placeholder="fără prefix țară"></label>
@@ -295,8 +297,9 @@ async function pas3(corp, nav) {
 function etPerioada() {
   const per = S.periodicitate[S.tip];
   if (per === "anual") return `anul ${S.an}`;
-  if (per === "trimestrial") return `${TRIM[S.trim-1]} ${S.an}`;
-  return `${LUNI[S.luna-1]} ${S.an}`;
+  if (per === "trimestrial") return `${TRIM[S.trim-1]} ${S.an}`;   // TRIM = etichete de trimestru, fara echivalent dataRo (legitim)
+  // [G3] eticheta luna-an prin dataRo canonic (nu LUNI[S.luna-1] local); LUNI ramane pentru picker
+  return dataRo(`${S.an}-${String(S.luna).padStart(2, "0")}`, "luna_an");
 }
 
 // audit_cab_lot1_v1

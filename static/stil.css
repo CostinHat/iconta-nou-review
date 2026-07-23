@@ -1333,6 +1333,14 @@ html, body {
 .dec-avert-cap { font-weight: 600; color: #8a6d1f; margin-bottom: 6px; font-size: var(--text-mic); }
 .dec-avert ul { margin: 0; padding-left: 18px; font-size: var(--text-mic); color: var(--ardezie); }
 .dec-avert li { margin: 3px 0; }
+/* [G4 23.07] clasificare D390 — layout prin clase, nu style inline (cap.0). width/margin raman inline (pozitionare permisa). */
+.dec-recl-rand { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 4px 0; border-bottom: 1px solid var(--linie); }
+.dec-recl-desc { flex: 1 1 220px; }
+.dec-recl-suma { min-width: 90px; text-align: right; }
+.dec-recl { width: 200px; }
+.dec-man-rand { display: flex; gap: 8px; align-items: center; padding: 2px 0; }
+.dec-man-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: end; }
+.dec-clasif-gol { color: var(--gri); }
 .dec-ok {
   border: 1px solid #aedcc0; background: #eef8f1;
   border-radius: var(--raza); padding: 12px 14px; margin: 4px 0 14px;
