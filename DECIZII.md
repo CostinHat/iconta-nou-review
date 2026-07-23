@@ -2482,3 +2482,28 @@ LIMITA: azi_ro() folosit si in detaliu (era date.today() - ora serverului), cons
 _construieste_contabil inghite exceptiile per-verificare (try/except) - un verificator picat -> constatarea lui
 lipseste tacit din pastila (aceeasi filozofie ca inainte: un esec izolat nu doboara semaforul). E acceptat, dar
 notat: daca un verificator ar pica sistematic, firma ar parea mai curata decat e. De monitorizat.
+
+### 23.07.2026 Excepția înghițită pe o cale de verdict = minciună prin omisiune; gri e răspunsul corect  (main.py: _verificator_esuat, _construieste_contabil)
+DECIZIE: cele 3 `except: pass` din _construieste_contabil (verificari contabile / stocuri / Intrastat) devin
+constatare GRI cu temei explicit ("Nu am putut verifica X" + eroarea), nu tacere. GRI nu escaladeaza pastila_firma
+(rezistenta se pastreaza - un esec izolat nu doboara semaforul), dar il anunta pe CONTABIL, care decide.
+TEMEI: un verificator care CRAPA nu e "nimic de raportat" - e "nu am putut verifica", exact definitia griului.
+Excepția înghițită face firma să pară mai curată decât e = minciună prin omisiune. Telemetria ma anunta pe MINE;
+griul il anunta pe CONTABIL. Doua straturi, in ordine: GRI = principal (main.py _flag_constatare("gri",...));
+LOG = secundar (_LOG_VERDICT "iconta.verdict".warning, sa se vada daca un verificator pica SISTEMATIC - journalctl
+-u iconta-nou | grep "verificator esuat"). Telemetria dupa gri, nu in loc de.
+ALTERNATIVA RESPINSA: telemetrie ca solutie principala - respins de Costin: ma anunta pe mine, nu pe cel care
+vede ecranul. Contabilul trebuie sa vada "nu am putut verifica", nu sa creada ca e curat.
+ALTE EXCEPTII INGHITITE PE CAI DE VERDICT (raportate, cf. cererii - NEreparate fara decizie):
+ DEJA CORECTE (gri-on-except, modelul aplicat acum): control_incrucisat.py:327/364/678/714/787/801 (verificatorii
+  isi intorc gri cu cauza la except) + main.py:3692 (_incrucisat wrapper -> gri). Nimic de facut.
+ SILENTIOASE, DE DECIS:
+  - main.py:3717 (documente_pozate) si 3734 (d205_vs_457) in _verificari_contabile: `except: pass`. Pe calea de
+    verdict, dar momentan NEsurfacate in contabil/pastila (atasate la verificari_contabile, nefolosite de semafor).
+    Un esec acolo omite tacit sub-rezultatul. Severitate mai mica (nu minte pastila azi), dar tot tacere.
+  - audit_preluare.py:315 (_tip_firma -> None la except): ingusteaza tacit ce verificari de audit ruleaza (o firma
+    cu tip_firma necitibil primeste mai putine verificari, fara gri). Cale de verdict (audit F183).
+  - control_incrucisat.py:809 (`continue` pe cota_tva neparsabila): sare o LINIE de factura din verificarea cotei.
+    Skip la nivel de date, severitate mica, dar o linie malformata scapa tacit de verificare.
+LIMITA: log-ul depinde de configul de logging al uvicorn (propagare la root). Numele "iconta.verdict" e stabil
+pentru grep. GRI nu depinde de log - e in payload, il vede contabilul indiferent de telemetrie.

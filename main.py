@@ -1938,6 +1938,23 @@ def _flag_constatare(stare, eticheta, mesaj, temei, remediu=None):
             "temei": temei or "", "remediu": remediu}
 
 
+import logging as _logging
+_LOG_VERDICT = _logging.getLogger("iconta.verdict")
+
+
+def _verificator_esuat(contabil, eticheta, nume, e):
+    """Un verificator care CRAPA nu e 'nimic de raportat' - e 'nu am putut verifica' = GRI cu temei, nu tacere.
+    Excepția înghițită face firma să pară mai curată decât e (minciună prin omisiune). GRI nu escaladeaza
+    pastila_firma (rezistenta se pastreaza - un esec izolat nu doboara semaforul), dar il anunta pe CONTABIL,
+    care decide. Doua straturi: GRI = principal (il vede contabilul); log = secundar (sa se vada daca pica
+    SISTEMATIC). Vezi DECIZII 23.07."""
+    _LOG_VERDICT.warning("verificator esuat pe cale de verdict: %s -> gri (%r)", nume, e)
+    contabil.append(_flag_constatare("gri", eticheta,
+        "Nu am putut verifica %s." % nume,
+        "Verificarea a eșuat (%s). GRI înseamnă 'nu am putut verifica', NU 'curat' — o constatare reală "
+        "poate lipsi. Reîncarcă; dacă persistă, semnalează." % e))
+
+
 def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
     """Constatarile contabile STRUCTURATE ale unei firme + verificari_contabile brute (vc). UN SINGUR loc,
     folosit de LISTA (portofoliu) SI de DETALIU -> severitatea (pastila_firma) e aceeasi indiferent cine
@@ -1966,8 +1983,9 @@ def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
             if vd.get("stare") == "rosu":
                 prima = next((c for c in (vd.get("constatari") or []) if c.get("stare") == "rosu"), {})
                 contabil.append(_flag_constatare(prima.get("stare"), et, prima.get("mesaj"), prima.get("temei"), prima.get("remediu")))
-    except Exception:
-        pass
+    except Exception as e:
+        _verificator_esuat(contabil, "Verificări contabile — eșuate",
+                           "verificările contabile (echilibru, trezorerie, declarație vs contabilitate)", e)
     try:  # stocuri contabil vs fise CV
         vs = verificare_stocuri(tid, ctx)
         if not vs.get("ok", True):
@@ -1976,8 +1994,8 @@ def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
                      if difs else "Soldul contabil diferă de fișele de magazie CV.")
             # verificare_stocuri NU declara `nivel` (cauze legitime) -> stare_din_nivel(None)=gri. Vezi DECIZII 23.07.
             contabil.append(_flag_constatare(stare_din_nivel(vs.get("nivel")), "Diferențe stocuri", mesaj, vs.get("nota")))
-    except Exception:
-        pass
+    except Exception as e:
+        _verificator_esuat(contabil, "Verificare stocuri — eșuată", "stocurile (sold contabil vs fișe CV)", e)
     try:  # praguri Intrastat
         ip = intrastat_praguri(tid, an, ctx)
         fluxuri = [nume for nume in ("introduceri", "expedieri") if ip[nume]["status"] != "sub_prag"]
@@ -1985,8 +2003,8 @@ def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
             # Intrastat declara nivel=AVERTISMENT (intrastat.NIVEL_STATUS) -> galben prin stare_din_nivel.
             contabil.append(_flag_constatare(stare_din_nivel(ip.get("nivel")), "Prag Intrastat depășit",
                                              "Prag Intrastat depășit pe: " + ", ".join(fluxuri) + ".", ip.get("nota")))
-    except Exception:
-        pass
+    except Exception as e:
+        _verificator_esuat(contabil, "Verificare Intrastat — eșuată", "pragurile Intrastat", e)
     # [F180] regim TVA local vs snapshot ANAF (constatare structurata deja produsa de evalueaza_firma)
     rta = regim_tva_anaf or {}
     if rta.get("stare") == "rosu":

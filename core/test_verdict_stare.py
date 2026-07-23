@@ -27,6 +27,35 @@ def test_pastila_gri_nu_escaladeaza():
     assert pastila_firma("gri", [_c("galben")]) == "galben"
 
 
+def test_verificator_esuat_da_gri_cu_temei_nu_absenta():
+    # Un verificator care crapa NU e "nimic de raportat" - e "nu am putut verifica" = GRI cu temei.
+    import main
+    contabil = []
+    main._verificator_esuat(contabil, "Verificare stocuri — eșuată", "stocurile", ValueError("boom"))
+    assert len(contabil) == 1
+    c = contabil[0]
+    assert c["stare"] == "gri"                         # gri, nu absenta si nu verde
+    assert "Nu am putut verifica" in c["mesaj"]
+    assert "boom" in c["temei"] and "nu am putut verifica" in c["temei"].lower()
+    # gri nu escaladeaza -> nu doboara semaforul (rezistenta pastrata)
+    assert pastila_firma("verde", [c]) == "verde"
+
+
+def test_construieste_contabil_verificator_care_arunca_da_gri(monkeypatch):
+    # Integrare: un verificator care ARUNCA (ex. DB down) -> constatare gri in contabil, NU tacere.
+    import main
+    monkeypatch.setattr(main, "_verificari_contabile", lambda *a, **k: {})
+    monkeypatch.setattr(main, "intrastat_praguri", lambda *a, **k:
+                        {"introduceri": {"status": "sub_prag"}, "expedieri": {"status": "sub_prag"}, "nivel": None})
+    def _boom(*a, **k):
+        raise RuntimeError("stoc DB down")
+    monkeypatch.setattr(main, "verificare_stocuri", _boom)
+    contabil, vc = main._construieste_contabil("tenant_x", 1, {"uid": 0}, 2026, 7, {})
+    gri = [c for c in contabil if c["stare"] == "gri" and "stocuri" in c["eticheta"].lower()]
+    assert gri, "verificator picat trebuie sa dea o constatare gri, nu absenta"
+    assert "stoc DB down" in gri[0]["temei"]
+
+
 def test_header_nu_poate_fi_verde_cu_blocant_dedesubt():
     # Motivul incarnat: header "la zi" + banner verde peste un BLOCANT e cea mai grava minciuna. Un
     # sold creditor 5121 (BLOCANT) devine constatare rosie (stare_din_nivel(BLOCANT)); pastila_firma peste
