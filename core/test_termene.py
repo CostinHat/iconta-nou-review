@@ -5,6 +5,7 @@ Pana la 23.07.2026 modulul avea ZERO teste; ecranul Termene reimplementa maparea
 """
 import datetime
 from core import termene_api
+from core import control_fiscal_api
 
 V_TVA_LUNAR = {"regim_fiscal": "profit", "platitor_tva": True, "tip_decont": "lunar",
                "operatiuni_ic": False, "partida_simpla": False}
@@ -57,3 +58,26 @@ def test_termene_respecta_depuse():
     out = termene_api.termene_firma(V_TVA_LUNAR, are_salariati=False,
                                     depuse={("d300", 2026, 6)}, azi=datetime.date(2026, 7, 23))
     assert ("d300", 2026, 6) not in {(d["tip"], d["an"], d["luna"]) for d in out}
+
+
+# ---------- T3: D390 la neplatitor cu IC = gri (neclar), nu scadenta ferma (emergent din T2) ----------
+
+def test_termene_d390_neplatitor_ic_nu_e_scadenta():
+    """Termene adopta verdictul semaforului: D390 la neplatitor cu IC e gri (art.317 necunoscut),
+    intra in `neclar`, NU in `datorate` -> nu apare ca scadenta ferma. Nu-l fabrica, nu-l reafiseaza."""
+    v = {"regim_fiscal": "micro", "platitor_tva": False, "tip_decont": None,
+         "operatiuni_ic": True, "partida_simpla": False}
+    azi = datetime.date(2026, 7, 23)
+    out = termene_api.termene_firma(v, are_salariati=False, depuse=set(), azi=azi)
+    assert "d390" not in _tips(out)                         # NU fabricat ca termen ferm
+    rez = control_fiscal_api.obligatii_datorate(v, are_salariati=False, azi=azi,
+                                                jos=azi, sus_zile=termene_api.ORIZONT_ZILE)
+    assert any(n["tip"] == "d390" for n in rez["neclar"])   # e gri in motor (adoptat, nu inventat)
+
+
+def test_termene_pfa_fara_declaratii_persoana_juridica():
+    """PFA (partida simpla) nu primeste D100/D101/D406 in Termene (motorul le pune neaplicabile)."""
+    v = {"regim_fiscal": None, "platitor_tva": False, "tip_decont": None,
+         "operatiuni_ic": False, "partida_simpla": True}
+    out = termene_api.termene_firma(v, are_salariati=False, depuse=set(), azi=datetime.date(2026, 7, 23))
+    assert not ({"d100", "d101", "d406"} & _tips(out))
