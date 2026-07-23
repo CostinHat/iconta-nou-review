@@ -64,6 +64,11 @@ starea reverificata azi:
    bordura, context necunoscut de regex (3 apariti background:var(--fundal): operatiuni:266+portal:424 au
    bordura=vizibile, firme:1187 <pre> erori ambiguu - de privit vizual, nu clar violari); (c) background/
    border hex ad-hoc cap.15 - prea multe bg-uri inline legitime, fals-pozitiv. Raportate, nu gardian.
+4. **Inventar declarații LIVE vs. accesibile din UI** (constatat 23.07 la închiderea poziției 1 CHECKLIST_BROWSER):
+   un motor de declarație poate fi LIVE în backend dar fără intrare din interfață. Cazuri consemnate azi:
+   **D710 LIVE dar inaccesibil din UI**; **D301 fără writer** (contabilul nu poate introduce operațiuni IC din
+   aplicație — vezi și ISTORIC 23.07 poz.3, gap D301). DE FĂCUT: inventar sistematic care declarații LIVE au / n-au
+   cale din UI, ca să nu existe capabilități moarte pentru utilizator. Sursa motoarelor: `core/declaratii_api.py`.
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza

@@ -37,11 +37,18 @@ Pentru FIECARE ecran, 4 verificări obiective din Design System:
 **NUMEROTARE CANONICĂ (fixată 23.07.2026):** pozițiile 1–12 = ordinea ACESTEI liste, nu ordinea în care sunt
 atacate. Se scrie „poziția N" (fixă), nu „N/12" derivat din ordinea de lucru. Ordinea DE ATAC o dă Costin,
 independent de poziție. (Corecție la commitul de închidere care numea Control fiscal „1/12" — e poziția **2**.)
-**ÎNCHISE: poziția 2 (Control fiscal) + poziția 3 (Termene), 23.07.2026. Rămân 10** (1, 4–12).
+**ÎNCHISE: poziția 1 (Declarații) + poziția 2 (Control fiscal) + poziția 3 (Termene), 23.07.2026. Rămân 9** (4–12).
 
 Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prinde randarea):
 
-1. [ ] **Declarații** (listă + flux 3 pași per declarație) — `declaratii_api.py` + `declaratii.js`
+1. [x] **Declarații** — **ÎNCHIS 23.07.2026** (comituri 497c83c→a552a78 + d6485f4 + ac288ea). `declaratii_api.py` + `declaratii.js`.
+   Verificat vizual pe 3 firme (2 PFA + 1 SRL): dropdown D100/D101/D406 dezactivate + temei pe PFA, cardul Declarații
+   vizibil la PFA, filtrarea cardurilor pe `regim_contabil`. Reparat (vezi ISTORIC 23.07 poz.1): G1 `neaplicabile_forma`
+   (o mapare, 3 consumatori, poartă 422), `DOAR_SRL` pe Declarații = fals negativ, listele `DOAR_SRL`/`DOAR_PFA`
+   eliminate (cardul declară `regim`, vizibilitatea derivă prin `regim_contabil` — gardă CARD_REGIM), G2/G3/G4.
+   BUG cache/instanță surfacat aici: antet lipsă pe calea Termene (firme.js importat cu versiuni divergente) → gardă
+   IMPORT_VERSIUNE (DS cap.19) + antet explicit în meniuFirma (DS cap.9).
+   RĂMAS consemnat (nereparat): Casă card „ambele" (5311 partidă dublă, filtrare fină în interior); D710 LIVE inaccesibil UI; D301 fără writer.
 2. [x] **Control fiscal** — **ÎNCHIS 23.07.2026** (SRL+PFA, comituri ac5ab4f→9693c1f). Semafor cross-portofoliu + Declarație vs contabilitate. `control_fiscal_api.py` + `control.js`.
 3. [x] **Termene** — **ÎNCHIS 23.07.2026** (comituri 80c260b→b3fb563). `termene_api.py` + `termene.js`.
    8 reparații (vezi ISTORIC 23.07 poz.3): sub-raportare D394/D406/D101 (consolidare pe primitivă unică), D390 pe

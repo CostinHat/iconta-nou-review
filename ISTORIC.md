@@ -2569,3 +2569,45 @@ Netestat vizual — se va vedea abia în decembrie, când fereastra traversează
 interacțiune (headless care apasă) sau contract explicit al obiectului-firmă — consemnat ca workstream separat, NEDECIS.
 
 **CHECKLIST_BROWSER: pozițiile 2 și 3 închise. Rămân 10** (1, 4–12).
+
+## 23.07.2026 — Ecran poziția 1 (Declarații) — ÎNCHIS + gardă IMPORT_VERSIUNE + antet explicit
+Comituri: 497c83c → d17fab0 → b3f011d → 29aff0c → a552a78 (Declarații / carduri pe firmă) +
+d6485f4 (versiune de modul consecventă + gardă IMPORT_VERSIUNE) + ac288ea (antet explicit `meniuFirma`).
+
+**POZIȚIA 1 (Declarații) — verificată vizual, ÎNCHISĂ:** dropdown cu D100/D101/D406 dezactivate + temei
+pe PFA; cardul Declarații vizibil la PFA; filtrarea cardurilor pe `regim_contabil` confirmată pe 3 firme
+(2 PFA + 1 SRL).
+
+**CE S-A REPARAT la poziția 1:**
+1. **G1: `neaplicabile_forma`** — o singură mapare „ce nu se aplică formei fiscale", trei consumatori, poartă
+   backend 422. A eliminat a treia sursă paralelă la aceeași întrebare.
+2. **`DOAR_SRL` pe cardul Declarații = fals negativ** — PFA nu putea genera D112/D300/D394/D301/D390 din fișă.
+   Oglinda bug-ului de dimineață (declarații scoase din `DOAR_SRL`, 29aff0c).
+3. **A patra sursă paralelă la „ce se aplică regimului X" eliminată** (a552a78): listele `DOAR_SRL`/`DOAR_PFA`
+   șterse; fiecare card declară `regim` OBLIGATORIU, vizibilitatea derivă prin `regim_contabil` (o singură sursă).
+   Gardă CARD_REGIM. DS cap.18.
+4. G2 eroare surfacată; G3 etichete → `dataRo` + gardă DATA_DIALECT extinsă; G4 panoul de clasificare D390 în clase.
+
+**BUG DE CACHE/INSTANȚĂ (surfacat la verificarea vizuală a poziției 1):** antetul montat de `firme.js` apărea pe
+calea FIRME dar lipsea pe calea TERMENE. Cauză: `termene.js` importa `./firme.js` FĂRĂ versiune, restul `?v=7` →
+browserul instanția DOUĂ copii ale modulului ES (`/firme.js` ≠ `/firme.js?v=7`); a doua (calea Termene) nu vedea
+starea primei. **NU era regresie din a552a78** — instanță veche a modulului. Reparat (d6485f4): versiuni aliniate +
+**gardă IMPORT_VERSIUNE** (grupare pe calea REZOLVATĂ relativ la fișierul care importă, nu pe basename; >1 token
+distinct de versiune = eroare; acoperă și `import()` dinamic). Garda a prins o **A DOUA divergență** pe care
+sweep-ul manual grep o ratase (nu prindea `import()` dinamic): `navigator.js` deschidea `./ecrane/control.js`
+dinamic FĂRĂ versiune vs `?v=1` din cabinet/asistent. DS cap.19 nou (v2.23). A șaptea gaură de gardă găsită azi.
+
+**ÎNTĂRIRE (ac288ea, commit SEPARAT, NU fix):** `meniuFirma` randează antetul EXPLICIT (`<h2 class="pf-titlu">`
+cu `nume · CUI`, text identic cu titlul ferestrei, prin `esc()`) în loc să depindă de auto-h2 din navigator
+(`_steaza`: prepend prin MutationObserver + euristica „fără h2" + timing). Rezultat vizual identic, determinist.
+Condiția `!querySelector("h2")` din `_steaza` devine falsă → nu se dublează. DS cap.9.
+
+**NEREPARAT, consemnat:**
+- **Casă = „ambele" la card**, dar contarea 5311 din interior e partidă dublă. Temei vizibilitate: Legea 70/2015
+  art.1 alin.(1), plafoane numerar fără excepție pentru PFA/II/IF. Se filtrează fin în interior, NU se ascunde cardul.
+- **Datorie de style inline (v2.11, acceptată):** extinderea gărzii display/flex/gap = workstream separat, netouchat.
+- **D710 LIVE dar inaccesibil din UI.** **D301 fără writer** (contabilul nu poate introduce operațiuni IC din app).
+
+**DE_FACUT:** inventar declarații LIVE vs. accesibile din UI (D710 LIVE fără intrare UI, D301 fără writer).
+
+**CHECKLIST_BROWSER: pozițiile 1, 2, 3 închise. Rămân 9** (4–12).
