@@ -520,15 +520,25 @@ def test_verifica_d390_dvsd_foloseste_perioada_depusa_nu_luna_curenta():
 
 
 # ---- garda salariati pe verifica_d112 (fara salariati -> absent, nu verde pe 0-vs-0) ----
-from core.control_incrucisat import verifica_d112 as _verifica_d112
+from core.control_incrucisat import verifica_d112 as _verifica_d112, verifica_tva as _verifica_tva
 
+# REGULA (nu cazul): un verificator declarat-vs-contabil al carui SUBIECT nu exista (fara salariati,
+# neplatitor TVA, ...) NU produce verdict -> absent, nu verde pe 0-vs-0. Verdele = "am verificat, e ok";
+# fara subiect n-a verificat nimic. Cate un test pe fiecare verificator atins.
 def test_verifica_d112_fara_salariati_e_absent_nu_verde():
-    # tenant_003 (PFA) n-are salariati -> D112 nu se datoreaza; verifica_d112 NU produce verdict (constatari
-    # goale), nu verde pe 0-vs-0. Verdele ar minti: "am verificat, coincide" despre un subiect inexistent.
     conn = _conn()
     try:
-        v = _verifica_d112(conn, "tenant_003", 2026, 7)
-        assert v["constatari"] == []                     # absent, nu verde
+        v = _verifica_d112(conn, "tenant_003", 2026, 7)   # PFA fara salariati -> subiect inexistent
+        assert v["constatari"] == []                      # absent, nu verde
         assert "nu se datorează" in v["limita"]
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+
+def test_verifica_tva_neplatitor_e_absent_nu_verde():
+    conn = _conn()
+    try:
+        v = _verifica_tva(conn, "tenant_003", 2026, 7)    # neplatitor TVA -> D300 fara subiect
+        assert v["constatari"] == []                      # absent, NU verde "coincid" pe 0-vs-0
+        assert "neplătitoare de TVA" in v["limita"]
     finally:
         conn.rollback(); _db.pool().putconn(conn)

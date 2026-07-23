@@ -2563,3 +2563,31 @@ DOVADA: tenant_003 (PFA) - zero restante, D100/D101/D406 neaplicabile cu temei, 
 NEschimbat (D406 datorat, D100/D101 gri pe regim None). 96 teste (5 noi).
 LIMITA: evalueaza_firma citeste tip_firma din firma_profil (adaugat universal de F189); o schema fara coloana ar
 pica -> firma gri (acelasi mod ca orice coloana lipsa presupusa de SELECT).
+
+### 23.07.2026 Verde fals pe 0-vs-0 = verificare fara subiect (clasa, nu caz)  (control_incrucisat.py: verifica_tva, verifica_d112)
+DECIZIE (regula, nu caz): un verificator declarat-vs-contabil al carui SUBIECT nu exista (fara salariati,
+neplatitor TVA, fara operatiuni IC, fara facturi) NU produce verdict -> absent (constatari goale), nu verde.
+Verde = "am verificat si e in regula"; fara subiect n-a verificat nimic. Verdele fals pe 0-vs-0 e din aceeasi
+clasa cu restantele inventate (PFA) - semaforul MINTE ACTIV, nu e doar incomplet.
+TEMEI: 0-vs-0 verde afirma o coincidenta intre doua zerouri care nu inseamna "corect", ci "nimic de verificat".
+Un contabil care vede verde crede ca s-a verificat ceva. Nuanta: subiect care EXISTA dar e gol legitim (platitor
+TVA cu luna nula -> decont nul coincide) RAMANE verde - acolo verificarea A avut subiect.
+TRATAREA CLASEI (toti verificatorii declarat-vs-contabil, verificat 23.07):
+ - verifica_tva (D300): garda pe platitor_tva==False -> absent (REPARAT). platitor_tva==True gol = verde legitim;
+   None (vector incomplet) lasat sa ruleze (D300-declaratie e deja gri la nivel de semafor).
+ - verifica_d112 (salarii): garda pe nr_sal==0 -> absent (reparat anterior azi).
+ - verifica_d390 (IC): compara_d390 TACUT pe 0=0, D-vs-D gri -> deja corect, lasat.
+ - verifica_cota_tva (facturi emise): verificate==0 -> constatari=[] (absent) -> deja se auto-garda pe subiect
+   (linii la cota standard), lasat.
+ - verifica_d394 / verifica_d205 / verifica_d301: NU EXISTA ca verificatori cross-check (sunt declaratii in
+   declaratii_datorate/declaratii_fapt, nu comparatii declarat-vs-contabil). Nimic de gardat.
+ - NU sunt in clasa: coerenta_tva (r.tva, randat pct-INFO neutru, nu verde); documente_pozate (verificare de
+   lucru-in-asteptare, nu declarat-vs-contabil); echilibru/trezorerie (afisate DOAR pe problema, nu pe 0).
+AMBIGUU - RAPORTAT, NEDECIS (cf. regulii "nu decide singur"): d205_vs_457 (coerenta_d205_457, surfacat VIZIBIL in
+firme.js cu pct-VERDE pe coerent). Subiectul = dividende distribuite (EVENIMENT, nu proprietate structurala).
+0-vs-0 poate fi: (a) confirmare legitima ca AMBELE surse arata zero dividende, sau (b) verde fara subiect (nu s-au
+distribuit dividende). Nu decid intre a si b - o firma cu profit care n-a distribuit e "subiect capabil dar gol",
+o firma fara profit e "fara subiect". De decis cu Costin daca coerenta_d205_457 primeste garda (absent cand ambele
+0) sau ramane verde (confirmare de coerenta).
+DOVADA: verifica_tva(tenant_003 neplatitor)=absent; verifica_tva(tenant_002 platitor)=ruleaza normal. 97 teste
+(1 nou: verifica_tva neplatitor absent; d112 deja acoperit).
