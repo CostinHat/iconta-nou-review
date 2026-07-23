@@ -2515,3 +2515,16 @@ in panoul de verificari al firmei. Cele trei de azi: (1) blocajul onboarding PFA
 /termene - cale de cod negardata; (3) d205_vs_457 - verdict fals randat. Tiparul comun: verdele mecanic nu dovedeste
 corectitudinea unei cai pe care nicio poarta n-o exercita pe date reale. Reparat: verificarea eliminata integral (D205
 -vs-457 pe FAPT traieste in semafor, declaratii_fapt pe rulaj 457).
+
+**CONSTATARE DE PROCES — al 5-lea caz azi (toate portile trec, interactiunea reala cade):** P2 (navigare din
+Termene la fisa firmei) a trecut de pytest 945 + verificator 0 + node --check + curl pe ruta, dar CLICK-ul real pe
+rand crapa fisa: deschideFirma trimitea {id, nume, cui} iar meniuFirma:241 cere `t.tip_firma.toLowerCase()` (contract
+strict, fara fallback) -> undefined.toLowerCase() -> "eroare neasteptata". Cauza: tenantii_userului NU intoarce
+tip_firma (doar id/nume/schema/cui/activ); obiectul partial rupea contractul fisei. Reparat la sursa: tip_firma
+adaugat in payload-ul /termene (il aveam deja din firma_profil, vector[tip_firma]) -> {id, nume, cui, tip_firma}
+complet. TIPARUL COMUN al celor 5 de azi: nicio poarta nu APASA un buton / nu parcurge o interactiune reala pe date
+reale. Cele 5: (1) onboarding PFA - regim intreg neparcurs; (2) crash /termene - cale de cod negardata; (3)
+d205_vs_457 - verdict fals randat; (4) 5 formatoare locale de data - gaura de gard; (5) P2 - obiect partial care
+crapa la randare. Verdele mecanic (sintaxa, tipul, ruta care curge) NU dovedeste ca o INTERACTIUNE reala merge.
+Ce ar fi prins-o: un test de interactiune (jsdom/headless care apasa rand-firma) SAU un contract explicit al
+obiectului-firma (deschideFirma sa valideze {id,nume,cui,tip_firma} si sa arunce clar). Ambele = workstream separat.

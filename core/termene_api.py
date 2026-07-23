@@ -50,7 +50,8 @@ def portofoliu(firme_eval, azi=None, neevaluate=None):
             g = acc.setdefault(t["termen"], {}).setdefault(
                 t["tip"], {"an": t["an"], "incert": bool(t.get("incert")), "firme": []})
             g["firme"].append({"tenant_id": fe["tenant_id"], "nume": fe["nume"],
-                               "cui": fe.get("cui"), "perioada": t["perioada"]})   # [P2] cui -> deschideFirma
+                               "cui": fe.get("cui"), "tip_firma": fe.get("tip_firma"),   # [P2] deschideFirma cere {id,nume,cui,tip_firma}
+                               "perioada": t["perioada"]})
 
     grupuri = []
     for termen in sorted(acc.keys()):

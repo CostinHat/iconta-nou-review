@@ -113,8 +113,9 @@ function detaliuTermen(corp, nav, grup, item) {
         <div class="mig-frand-sub">perioada ${etichetaPerioada(f.perioada, item.an)}</div>
       </div>
     `;
-    // [P2] tenant_id -> id (deschideFirma cere {id, nume, cui}); calea exista, ii lipsea doar cui (adaugat in /termene)
-    rand.addEventListener("click", () => deschideFirma({ id: f.tenant_id, nume: f.nume, cui: f.cui }, nav));
+    // [P2] tenant_id -> id; deschideFirma->meniuFirma cere {id, nume, cui, tip_firma} (contract strict, meniuFirma:241).
+    // tip_firma lipsea din payload -> t.tip_firma.toLowerCase() crapa la randarea fisei. Adaugat in /termene.
+    rand.addEventListener("click", () => deschideFirma({ id: f.tenant_id, nume: f.nume, cui: f.cui, tip_firma: f.tip_firma }, nav));
     lista.appendChild(rand);
   });
 }
