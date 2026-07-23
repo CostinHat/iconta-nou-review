@@ -129,3 +129,23 @@ def test_termene_d390_fara_fapt_pe_bifa():
     azi = datetime.date(2026, 7, 23)
     out = termene_api.termene_firma(_V_IC, are_salariati=False, depuse=set(), azi=azi)
     assert any(d["tip"] == "d390" for d in out)
+
+
+# ---------- §4: marginirea la inregistrarea TVA (inchide asimetria cu semaforul) ----------
+
+def test_termene_marginire_inregistrare_tva_in_fereastra():
+    """Firma inregistrata TVA in interiorul ferestrei -> perioadele DINAINTE de inregistrare nu apar
+    (motorul margineste D300/D394/D406 la data ANAF, ca semaforul). Vezi §4 / DECIZII 23.07 B1."""
+    azi = datetime.date(2026, 7, 23)                       # fereastra [23.07, 21.09]
+    v = {"regim_fiscal": "profit", "platitor_tva": True, "tip_decont": "lunar",
+         "operatiuni_ic": False, "partida_simpla": False,
+         "tva_data_inceput": datetime.date(2026, 8, 1)}    # inregistrata TVA de la 01.08.2026
+    d300 = {(d["an"], d["luna"]) for d in
+            termene_api.termene_firma(v, False, set(), azi) if d["tip"] == "d300"}
+    # fara margine: iunie (termen 27.07) ar aparea
+    d300_nemarginit = {(d["an"], d["luna"]) for d in
+                       termene_api.termene_firma({**v, "tva_data_inceput": None}, False, set(), azi)
+                       if d["tip"] == "d300"}
+    assert (2026, 6) in d300_nemarginit    # fara margine iunie apare
+    assert (2026, 6) not in d300           # cu inreg. 01.08 -> iunie (dinainte) dispare
+    assert (2026, 7) not in d300           # iulie tot dinainte de inregistrare -> dispare

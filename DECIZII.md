@@ -2784,3 +2784,15 @@ funcțională pe DANTE real (mai închisă=False, iunie închisă cu facturi IC=
 iunie datorat, mai NU e restanță; termene: iunie+iulie).
 LIMITĂ (raportată, follow-up): primitiva face ~4 interogări/lună/firmă; la portofolii mari s-ar batch-ui pe an.
 Azi (3 firme) e neglijabil. Marcaj `tip_d390` pe factură (F125 open) ar înlocui derivarea per-lună cu citire directă.
+
+### 23.07.2026 §4 Termene — marginirea la inregistrarea TVA (inchide asimetria cu semaforul)  (main.py /termene; test_termene)
+CONTEXT: la consolidarea T2 s-a lasat deliberat termene FARA marginire (ruta nu aducea platitor_tva_anaf_inceput),
+pentru proba vizuala. DECIZIE: ruta /termene aduce acum platitor_tva_anaf_inceput in vector (tva_data_inceput) si
+motorul (obligatii_datorate.emite_tva marginit=True) margineste D300/D394/D406 la perioadele DE DUPA inregistrare -
+exact ca semaforul. Motorul stia deja sa margineasca (B1, DECIZII 23.07); ii lipsea doar coloana.
+TEMEI: asimetrie intre ecrane = bug latent. O firma inregistrata TVA in interiorul ferestrei de 60z ar fi vazut in
+Termene scadente D300/D394 pe perioade DINAINTE de inregistrare (perioade care nu se datoreaza). Semaforul le
+excludea, termene nu -> acelasi fapt, doua verdicte. Acum unificat.
+DOVADA: pytest 922 (test nou: inreg. 01.08 -> iunie/iulie dispar din termene; fara margine iunie apare); verificator
+TOTAL 0. LIMITA: firmele fara snapshot (tva_data_inceput NULL) raman nemarginit (fereastra completa) - corect,
+faptul ANAF lipseste.
