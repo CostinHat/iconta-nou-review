@@ -2408,3 +2408,32 @@ LIMITA / DE DECIS SEPARAT: escaladarea PASTILEI-FIRMA (semafor lista) ramane pe 
 (AVERTISMENT): mismatch in directia inversa fata de trezorerie (unde firma era mai putin severa). De decis cu
 Costin daca pastila-firma la Intrastat ar trebui coborata la galben acum ca severitatea reala e AVERTISMENT.
 Ar rasturna decizia de nivel: daca INS ar face declararea blocanta pt vreo operatiune ANAF (nu e cazul azi).
+
+### 23.07.2026 Pastila-firma nu poate depasi severitatea maxima a constatarilor  (core/common.py: pastila_firma; main.py bucla portofoliu)
+DECIZIE: pastila-firma din semaforul de lista = ESCALADARE, calculata INTR-UN SINGUR loc (common.pastila_firma)
+ca severitatea MAXIMA intre starea de baza (declaratii) si constatarile firmei. Nu poate depasi max(constatari).
+Inlocuieste cele 5 escaladari inline imprastiate (balanta/trezorerie/cross-checks/stocuri/Intrastat), fiecare
+cu literal "rosu"/"galben". gri (necunoscut) NU escaladeaza; base 'gri' se pastreaza daca nimic confirmat nu urca.
+TEMEI: rosu pe lista = "intra, e blocant". Daca inauntru e doar avertisment, lista MINTE. Un contabil care
+invata ca rosul minte va ignora si rosurile reale -> supra-escaladarea erodeaza increderea in intreg semaforul.
+Pastila e un rezumat al constatarilor de sub ea; nu poate spune mai mult decat spun ele.
+CONSECINTE (mecanism uniform, nu doar Intrastat - cf. cererii "nu repara doar cazul Intrastat"):
+ - Intrastat (AVERTISMENT) -> pastila GALBEN (era rosu literal). Cazul care a declansat.
+ - Trezorerie (BLOCANT) -> pastila ROSU (era galben). Un sold creditor pe 5121 e blocant; pastila galben
+   ASCUNDEA un blocant din lista (sub-escaladare la fel de nesincera ca supra-escaladarea).
+ - Stocuri (gri, fara nivel) -> NU mai escaladeaza (era verde->galben). "Nu pot verifica" nu face firma
+   problematica pe lista; ramane in detaliu.
+RASTOARNA PARTIAL decizia "23.07 Culoarea de verdict deriva din nivel" (paragraful "DOUA AXE": acolo pastila
+si constatarea erau tratate ca axe INDEPENDENTE, cu firma galben + constatare rosu acceptata). Corectie: axele
+se CALCULEAZA distinct (constatarea din nivel motor; pastila din max constatari), dar sunt LEGATE prin max -
+pastila nu e independenta, e marginita de constatari. Restul acelei decizii (culoarea nu se alege la randare,
+mapare unica nivel->culoare) ramane.
+ALTERNATIVA RESPINSA: a lasa pastila ca axa libera (escaladari per-verificator cu literal) - respins: produce
+exact minciuna de mai sus si e imprastiata, imposibil de rationat unitar.
+ALTA ESCALADARE CU LITERAL SEMNALATA (neatinsa, cf. cererii de a raporta, nu repara): control_fiscal_api.py:331
+`stare = "rosu"` (regim TVA vs ANAF, in evalueaza_firma). NU e supra-escaladare (e conditionata de constatarea
+regim rosu, deci EGALEAZA severitatea ei) si e oricum acoperita downstream de pastila_firma. Dar e un literal
+in evalueaza_firma, care e folosit SI de ecranul de detaliu (unde pastila_firma nu se aplica). De decis cu
+Costin daca evalueaza_firma trece si ea pe pastila_firma (unificare deplina) sau ramane sursa proprie a
+starii de declaratii. LIMITA: _stare(lipsa,urmarit) din control_fiscal_api NU e vizat - acela e SURSA axei de
+declaratii (lipsa=restanta=rosu), nu o escaladare peste constatari.

@@ -3,8 +3,34 @@
 # common.stare_din_nivel(nivel), mapare UNICA. Vezi DECIZII 23.07.
 from decimal import Decimal
 
-from core.common import stare_din_nivel, BLOCANT, AVERTISMENT
+from core.common import stare_din_nivel, pastila_firma, BLOCANT, AVERTISMENT
 from core import verificatoare as vf
+
+
+def _c(stare):
+    return {"stare": stare}
+
+
+def test_pastila_nu_depaseste_max_constatari():
+    # Intrastat AVERTISMENT (galben) singur -> pastila galben, NU rosu (supra-escaladare = minciuna).
+    assert pastila_firma("verde", [_c("galben")]) == "galben"
+    # trezorerie BLOCANT (rosu) -> pastila rosu (nu se sub-escaladeaza la galben).
+    assert pastila_firma("verde", [_c("rosu")]) == "rosu"
+    # max intre mai multe: galben + rosu -> rosu.
+    assert pastila_firma("verde", [_c("galben"), _c("rosu")]) == "rosu"
+
+
+def test_pastila_gri_nu_escaladeaza():
+    # stocuri gri ('nu pot verifica') NU face firma verde sa para problematica.
+    assert pastila_firma("verde", [_c("gri")]) == "verde"
+    # dar un confirmat bate baza gri (necompletat) -> galben.
+    assert pastila_firma("gri", [_c("galben")]) == "galben"
+
+
+def test_pastila_pastreaza_baza_daca_nimic_confirmat():
+    assert pastila_firma("gri", [_c("gri")]) == "gri"      # necompletat ramane necompletat
+    assert pastila_firma("verde", []) == "verde"
+    assert pastila_firma("rosu", [_c("gri")]) == "rosu"    # baza rosu (restanta) nu se coboara
 
 
 def test_mapare_nivel_stare():

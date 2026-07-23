@@ -69,6 +69,20 @@ def stare_din_nivel(nivel):
     return {BLOCANT: "rosu", AVERTISMENT: "galben"}.get(nivel, "gri")
 
 
+_RANG_STARE = {"verde": 1, "galben": 2, "rosu": 3}  # gri (necunoscut) = 0: NU escaladeaza pastila
+
+
+def pastila_firma(base, constatari):
+    """Pastila-firma (semafor de lista) = ESCALADARE: severitatea MAXIMA intre starea de baza (declaratii)
+    si constatarile firmei. NU poate DEPASI max(constatari) - supra-escaladarea erodeaza increderea in
+    semafor: un rosu pe lista care 'minte' (blocant afara, doar avertisment inauntru) invata contabilul ca
+    rosul minte, si va ignora si rosurile reale. Un SINGUR loc, nu escaladari imprastiate cu literal per
+    verificator. gri (necunoscut, 'nu pot verifica') NU escaladeaza - nu face firma necompletata; base 'gri'
+    se pastreaza daca nimic confirmat nu escaladeaza. constatari = [{'stare': ...}, ...]. Vezi DECIZII 23.07."""
+    rang = max([_RANG_STARE.get(base, 0)] + [_RANG_STARE.get((c or {}).get("stare"), 0) for c in constatari])
+    return base if rang == 0 else {1: "verde", 2: "galben", 3: "rosu"}[rang]
+
+
 # ============================================================
 #  BANI — Decimal, niciodată float
 # ============================================================
