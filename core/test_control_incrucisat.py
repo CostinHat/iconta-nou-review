@@ -517,3 +517,18 @@ def test_verifica_d390_dvsd_foloseste_perioada_depusa_nu_luna_curenta():
     an_d, luna_d, _ = rec
     et = "%02d/%d" % (luna_d, an_d)
     assert any(("perioada %s" % et) in c["eticheta"] for c in dvsd)
+
+
+# ---- garda salariati pe verifica_d112 (fara salariati -> absent, nu verde pe 0-vs-0) ----
+from core.control_incrucisat import verifica_d112 as _verifica_d112
+
+def test_verifica_d112_fara_salariati_e_absent_nu_verde():
+    # tenant_003 (PFA) n-are salariati -> D112 nu se datoreaza; verifica_d112 NU produce verdict (constatari
+    # goale), nu verde pe 0-vs-0. Verdele ar minti: "am verificat, coincide" despre un subiect inexistent.
+    conn = _conn()
+    try:
+        v = _verifica_d112(conn, "tenant_003", 2026, 7)
+        assert v["constatari"] == []                     # absent, nu verde
+        assert "nu se datorează" in v["limita"]
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)

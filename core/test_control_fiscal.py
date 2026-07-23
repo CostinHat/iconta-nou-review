@@ -164,3 +164,27 @@ def test_constatare_regim_tva_fara_snapshot_gri():
     c = cf.constatare_regim_tva(local=True, anaf=None, data=None)
     assert c["stare"] == "gri"
     assert "fără snapshot" in c["mesaj"] or "snapshot" in c["limita"]
+
+
+# ---- F189+ : ramificare Control fiscal pe tip_firma (partida simpla) ----
+def test_pfa_d100_d101_d406_neaplicabile_nu_restante():
+    # PFA (partida simpla): D100/D101 (persoana juridica) si D406 (SAF-T, OPANAF 1783/2021 Anexa 5 pct.4
+    # exclude partida simpla) NU se datoreaza -> neaplicabile cu motiv, nu datorate/gri. Zero restante inventate.
+    v = {"platitor_tva": False, "regim_fiscal": None, "operatiuni_ic": False, "partida_simpla": True}
+    rez = cf.declaratii_datorate(v, are_salariati=False, azi=date(2026, 7, 23))
+    dat = {d["tip"] for d in rez["datorate"]}
+    neap = {d["tip"]: d["motiv"] for d in rez["neaplicabile"]}
+    assert "d406" not in dat                             # NU restanta inventata
+    assert {"d100", "d101", "d406"} <= set(neap)
+    assert "D212" in neap["d100"] and "D212" in neap["d101"]
+    assert "1783" in neap["d406"] and "partid" in neap["d406"].lower()
+
+def test_srl_neschimbat_d406_datorat_d100_d101_gri():
+    # SRL (partida dubla): NEschimbat - D406 trimestrial datorat, D100/D101 gri pe regim None, nimic neaplicabil.
+    v = {"platitor_tva": False, "regim_fiscal": None}   # fara partida_simpla -> juridic
+    rez = cf.declaratii_datorate(v, are_salariati=False, azi=date(2026, 7, 23))
+    dat = {d["tip"] for d in rez["datorate"]}
+    neclar = {d["tip"] for d in rez["neclar"]}
+    assert "d406" in dat                                 # SRL neplatitor -> D406 trimestrial
+    assert {"d100", "d101"} <= neclar                    # regim None -> gri (neschimbat)
+    assert not rez["neaplicabile"]

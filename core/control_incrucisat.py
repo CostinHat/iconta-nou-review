@@ -342,6 +342,12 @@ def verifica_d112(conn, schema, an, luna):
     rulaje = rulaje_luna(conn, schema, an, luna, ("444", "4315", "4316", "436"))
     ciorne = note_salarii_ciorna(conn, schema, an, luna)
     nr_sal = int(totaluri.get("_nr_salariati", 0))
+    if nr_sal == 0:
+        # gardă: fără salariați, D112 nu se datorează -> NU producem verdict. Verdele pe 0-vs-0 ar fi
+        # minciuna ("am verificat, coincide" despre un subiect inexistent) - absent, nu verde. DECIZII 23.07.
+        return {"an": an, "luna": luna, "stare": "verde", "constatari": [],
+                "explicatie": "", "limita": "Fără salariați în lună — D112 nu se datorează, nimic de verificat.",
+                "modul": MODUL, "reguli": REGULI}
     constatari = compara_d112(totaluri, rulaje, ciorne, nr_sal)
     stare = "rosu" if any(c["stare"] == "rosu" for c in constatari) else "verde"
     return {"an": an, "luna": luna, "stare": stare, "constatari": constatari,

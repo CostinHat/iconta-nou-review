@@ -49,7 +49,7 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     azi = azi or azi_ro()   # [fus] verdict de zi (lipsa vs urmarit) = zi RO
     an = azi.year
     limita = azi + datetime.timedelta(days=PRAG_URMARIT_ZILE)
-    datorate, neclar = [], []
+    datorate, neclar, neaplicabile = [], [], []
 
     # D2: perioadele candidate pornesc de la decembrie / T4 al anului precedent (termen 25 ian
     # an curent), altfel decembrie an-1 e invizibil PERMANENT (in an-1 termenul e viitor, in an
@@ -68,6 +68,10 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     def gri(tip, cauza):
         neclar.append({"tip": tip.lower(), "cauza": cauza})
 
+    def neaplic(tip, motiv):
+        # "nu se datoreaza" (cunoscut), NU gri ("nu pot verifica"). Se afiseaza in grupul Nu se datoreaza.
+        neaplicabile.append({"tip": tip.lower(), "motiv": motiv})
+
     def emite_tva(tip, tip_scad, cauza_periodicitate):
         """Emite `tip` pe perioada fiscala TVA (lunar/trimestrial dupa tip_decont).
         tip_decont necunoscut la un platitor -> gri cu cauza (principiul D3)."""
@@ -85,6 +89,10 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     tip_decont = vector.get("tip_decont")
     regim_fiscal = vector.get("regim_fiscal")
     operatiuni_ic = vector.get("operatiuni_ic")
+    # partida_simpla (PFA/II/PFL): derivat din tip_firma prin straturi_pentru (mecanismul F189 existent),
+    # NU un atribut nou. Criteriul legii pentru D406 e MODUL de contabilitate (partida simpla), nu forma
+    # juridica - dar in modelul actual tip_firma<->partida e 1:1 (srl=dubla, pfa=simpla). Vezi DECIZII 23.07.
+    partida_simpla = bool(vector.get("partida_simpla"))
 
     # D300 TVA — depinde de platitor_tva (DACA datoreaza) + tip_decont (PERIODICITATEA)
     if platitor_tva is None:
@@ -107,8 +115,15 @@ def declaratii_datorate(vector, are_salariati, azi=None):
         for a, m in per_luni:
             adauga("D112", a, m, _LUNI_NUME[m], "d112")
 
-    # D100 (micro, trimestrial) / D101 (profit, anual) — depind de regim_fiscal
-    if regim_fiscal is None:
+    # D100 (micro, trimestrial) / D101 (profit, anual) — declaratii de PERSOANA JURIDICA (impozit micro/
+    # profit). PFA/partida simpla NU le datoreaza: impozitul pe venit PFA se depune prin Declaratia unica
+    # (D212), rutata separat (rip_api/d212_engine). Deci "nu se datoreaza" (cunoscut), NU gri. Vezi DECIZII 23.07.
+    if partida_simpla:
+        neaplic("D100", "D100 nu se datorează — impozitul pe veniturile microîntreprinderilor e al persoanelor "
+                        "juridice; PFA (partidă simplă) depune Declarația unică (D212).")
+        neaplic("D101", "D101 nu se datorează — impozitul pe profit e al persoanelor juridice; PFA (partidă "
+                        "simplă) depune Declarația unică (D212).")
+    elif regim_fiscal is None:
         cauza_r = "Regim fiscal necompletat - nu pot sti daca datorezi D100 (micro) sau D101 (profit)."
         gri("D100", cauza_r)
         gri("D101", cauza_r)
@@ -137,15 +152,21 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     # verificat 17.07.2026 la legislatie.just.ro/public/DetaliiDocument/248326 ("Contribuabilii
     # care nu sunt inregistrati in scopuri de TVA transmit Declaratia D406 trimestrial").
     # Termen: ultima zi a lunii urmatoare perioadei (scadente.py d406).
-    if platitor_tva is None:
+    # PFA/partida simpla EXCLUS EXPLICIT (OPANAF 1783/2021, Anexa nr.5 pct.4: persoanele care conduc
+    # contabilitatea in partida simpla nu depun D406) -> nu se datoreaza. Restul: dupa inregistrarea TVA.
+    if partida_simpla:
+        neaplic("D406", "D406 (SAF-T) nu se datorează — OPANAF 1783/2021, Anexa nr.5 pct.4 exclude persoanele "
+                        "care conduc contabilitatea în partidă simplă (PFA/II/PFL). Obligația apare doar dacă "
+                        "optează pentru partidă dublă.")
+    elif platitor_tva is None:
         gri("D406", "Platitor de TVA necompletat - nu pot sti periodicitatea D406.")
     elif platitor_tva:
         emite_tva("D406", "d406", "Tip decont TVA necompletat - nu pot sti periodicitatea D406.")
     else:
-        for a, tri, lf in per_trim:   # neplatitor de TVA -> trimestrial
+        for a, tri, lf in per_trim:   # neplatitor de TVA (partida dubla) -> trimestrial
             adauga("D406", a, lf, f"T{tri}", "d406")
 
-    return {"datorate": datorate, "neclar": neclar}
+    return {"datorate": datorate, "neclar": neclar, "neaplicabile": neaplicabile}
 
 
 def _dmy(iso):
@@ -282,13 +303,17 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
     # vector + salariati
     with conn_schema.cursor() as cur:
         cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, "
-                    "platitor_tva_anaf, platitor_tva_anaf_data FROM firma_profil LIMIT 1")
+                    "platitor_tva_anaf, platitor_tva_anaf_data, tip_firma FROM firma_profil LIMIT 1")
         row = cur.fetchone()
         vector = {}
         if row:
+            from core.migrare_api import straturi_pentru
             vector = {"regim_fiscal": row[0], "platitor_tva": row[1],
                       "tip_decont": row[2], "operatiuni_ic": row[3],
-                      "platitor_tva_anaf": row[4], "platitor_tva_anaf_data": row[5]}
+                      "platitor_tva_anaf": row[4], "platitor_tva_anaf_data": row[5],
+                      "tip_firma": row[6],
+                      # partida_simpla derivat prin mecanismul F189 (straturi_pentru), NU atribut nou. DECIZII 23.07.
+                      "partida_simpla": "rip" in set(straturi_pentru(row[6]))}
         cur.execute("SELECT to_regclass('salariati')")
         are_sal = False
         if cur.fetchone()[0]:
@@ -308,7 +333,8 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
     # D205/D301 pe fapt (punte)
     fapt = declaratii_fapt(conn_schema, schema, vector, azi)
     datorate += fapt["datorate"]
-    neaplicabile = fapt["neaplicabile"]
+    # neaplicabile = D100/D101/D406 (partida simpla, din declaratii_datorate) + D205/D301 pe fapt.
+    neaplicabile = list(rez.get("neaplicabile", [])) + fapt["neaplicabile"]
     neclar += fapt["neclar"]
 
     # depuse din public (cu data depunerii, pentru motivul verde)

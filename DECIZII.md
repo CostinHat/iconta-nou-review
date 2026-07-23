@@ -2531,3 +2531,35 @@ verificare picata; gri global pe ea ar ascunde verdele real al celorlalte linii.
 LIMITA: _tip_firma probeaza existenta coloanei (information_schema) inainte de SELECT - o eroare intre probe si
 SELECT (fereastra minuscula) ar propaga -> gri, corect. Straturile sarite din (2) sunt derivate din
 _VERIFICAT_DESC (ambele regimuri), nu hardcodate.
+
+### 23.07.2026 Control fiscal ramificat pe tip_firma (PFA/partida simpla) — CORECTEAZA F189 "semafor partial acceptat"  (control_fiscal_api.py: declaratii_datorate/evalueaza_firma; control_incrucisat.py: verifica_d112)
+CORECTIE la DECIZII 20.07 F189: acolo s-a scris "Control fiscal ramane vizibil la PFA (semafor partial,
+acceptat)". PREMISA FALSA: semaforul nu era doar INCOMPLET, producea verdicte ACTIV GRESITE pe un PFA -
+restante D406 INVENTATE, verde GOL pe D112 (0 salariati), "nu pot verifica" pe D100/D101 (declaratii de
+persoana juridica ce nu se aplica). Cauza (verificat la sursa 23.07): declaratii_datorate decidea pe VECTOR
+(regim_fiscal/platitor_tva/tip_decont/operatiuni_ic/salariati) si NU citea tip_firma - filtrarea pe regim
+(straturi_pentru, aplicata auditului) NU se aplica aici.
+DECIZIE: declaratii_datorate ramifica pe partida_simpla (PFA): D100, D101 (impozit micro/profit = persoana
+juridica; PFA depune D212) si D406 (SAF-T) -> NEAPLICABILE cu temei ("nu se datoreaza"), NU datorate/gri.
+verifica_d112 -> garda pe salariati: nr_sal==0 => constatari goale (absent), nu verde pe 0-vs-0.
+TEMEI: D406 - OPANAF 1783/2021, Anexa nr.5 pct.4 exclude EXPLICIT persoanele care conduc contabilitatea in
+partida simpla (PFA/II/PFL) [verificat la sursa: legislatie.just.ro/public/DetaliiDocument/248326]. D100/D101 -
+Cod fiscal Titlul II (persoane juridice); PFA = Titlul IV, Declaratia unica D212 (rutata separat, rip_api).
+RULE 1 (metadata): STRATURI_META acopera STRATURI DE MIGRARE, nu declaratii - NU exista mapare declaratie->regim.
+NU am inventat un registru DECLARATII_META (over-engineering pt 3 declaratii). Am reutilizat discriminatorul
+existent: partida_simpla = "rip" in straturi_pentru(tip_firma) (mecanismul F189), + ramificatie inline pt cele 3.
+RULE 2 (criteriu): folosesc criteriul LEGII (partida simpla), derivat din tip_firma prin straturi_pentru. In
+modelul actual tip_firma<->partida e 1:1 (srl=dubla, pfa=simpla). Un PFA care OPTEAZA pentru partida dubla (rar,
+il face obligat la D406) ar cere un atribut propriu; azi nu exista in model. Daca apare -> atribut separat, nu tip_firma.
+RULE 5 (care din 9 nu se aplica PFA, fiecare la sursa): NEAPLICABILE la PFA = D100/D101 (persoana juridica),
+D406 (partida simpla exclus). RAMAN vector/fapt-driven (se aplica si la PFA, dupa atribut, NU dupa forma):
+D300/D394 (dupa inregistrarea TVA - un PFA POATE fi platitor TVA), D390 (dupa operatiuni_ic), D112 (dupa
+salariati), D205/D301 (pe fapt: dividende / operatiuni IC). Niciuna dintre acestea nu e tip_firma-gated.
+RULE 4 (verde pe 0-vs-0 fara subiect - clasa raportata, NEreparata in afara de d112): verifica_tva (D300) e in
+aceeasi clasa - pe tenant_003 (neplatitor) produce verde "TVA colectata/deductibila coincid" desi firma nu face
+TVA, fara garda pe platitor_tva. verifica_d390 NU e in clasa (compara_d390 e tacut pe 0; D-vs-D e gri). De decis
+daca verifica_tva primeste garda pe platitor_tva (analog cu d112 pe salariati).
+DOVADA: tenant_003 (PFA) - zero restante, D100/D101/D406 neaplicabile cu temei, D112 absent; tenant_002 (SRL)
+NEschimbat (D406 datorat, D100/D101 gri pe regim None). 96 teste (5 noi).
+LIMITA: evalueaza_firma citeste tip_firma din firma_profil (adaugat universal de F189); o schema fara coloana ar
+pica -> firma gri (acelasi mod ca orice coloana lipsa presupusa de SELECT).
