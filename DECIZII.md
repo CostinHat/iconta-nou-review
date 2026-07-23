@@ -2459,3 +2459,26 @@ bannerul "Totul depus la zi" pe d.stare=="verde") poate CONTRAZICE o constatare 
 afisata dedesubt, si poate diferi de pastila din lista (care le include). Cauza: contabilul se construieste
 in bucla de portofoliu, nu intr-o functie partajata cu detaliul. Fix real = extragerea construirii contabilului
 intr-o functie unica, folosita de AMBELE (lista + detaliu), apoi pastila_firma pe ea. DE DECIS cu Costin (nu reparat).
+
+### 23.07.2026 Construirea `contabil` = functie partajata lista+detaliu; headerul de detaliu reflecta constatarile  (main.py: _construieste_contabil; control_fiscal_detaliu; control.js)
+DECIZIE: constatarile contabile ale unei firme se construiesc INTR-UN SINGUR loc (main._construieste_contabil),
+folosit de LISTA (portofoliu) SI de DETALIU. Ambele aplica pastila_firma pe rezultat. Headerul de detaliu
+(d.stare) include acum constatarile contabile (trezorerie/stocuri/Intrastat/balanta/cross-checks), nu doar
+declaratii + regim. Frontendul de detaliu foloseste d.contabil (proaspat) in loc de firma.contabil (snapshot
+de lista) - header si body din ACELASI calcul, nu se pot contrazice.
+TEMEI: header "la zi" + banner verde "Totul depus la zi" peste o constatare BLOCANT (trezorerie 5121 creditor)
+e cea mai grava forma de minciuna - contabilul inchide ecranul multumit, cu un blocant nevazut. Severitatea se
+calculeaza intr-un singur loc, din constatari reale, indiferent cine intreaba (lista sau detaliu).
+COST (verificat inainte, cf. cererii): calea de detaliu rula DEJA _verificari_contabile (partea grea -
+regenereaza D300/D112/D390). Functia partajata adauga pe detaliu doar verificare_stocuri (O(articole) query-uri
+usoare) + intrastat_praguri (1 query). Marginal, nu incetineste detaliul.
+VERIFICAT FUNCTIONAL: tenant_002 (SRL) - headerul include acum [rosu] Solduri creditoare trezorerie (BLOCANT);
+tenant_003 (PFA gol: 0 articole/facturi/note) - ZERO constatari contabile, nicio scurgere SRL-only. Testul
+test_header_nu_poate_fi_verde_cu_blocant_dedesubt incarneaza regula (baza verde + BLOCANT -> header rosu, nu verde).
+ALTERNATIVA RESPINSA: a lasa detaliul sa recalculeze doar r["stare"] fara constatarile complete, sau a-l lasa
+sa citeasca firma.contabil din lista - respins: prima nu vede stocuri/Intrastat; a doua leaga detaliul de un
+snapshot de lista (staleness + doua surse). O functie, o severitate.
+LIMITA: azi_ro() folosit si in detaliu (era date.today() - ora serverului), consistent cu portofoliul.
+_construieste_contabil inghite exceptiile per-verificare (try/except) - un verificator picat -> constatarea lui
+lipseste tacit din pastila (aceeasi filozofie ca inainte: un esec izolat nu doboara semaforul). E acceptat, dar
+notat: daca un verificator ar pica sistematic, firma ar parea mai curata decat e. De monitorizat.

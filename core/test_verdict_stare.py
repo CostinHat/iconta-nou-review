@@ -27,6 +27,15 @@ def test_pastila_gri_nu_escaladeaza():
     assert pastila_firma("gri", [_c("galben")]) == "galben"
 
 
+def test_header_nu_poate_fi_verde_cu_blocant_dedesubt():
+    # Motivul incarnat: header "la zi" + banner verde peste un BLOCANT e cea mai grava minciuna. Un
+    # sold creditor 5121 (BLOCANT) devine constatare rosie (stare_din_nivel(BLOCANT)); pastila_firma peste
+    # o baza verde NU poate ramane verde - severitatea de sus nu poate fi mai buna decat ce e sub ea.
+    blocant = {"stare": stare_din_nivel(BLOCANT)}   # trezorerie -> rosu
+    assert pastila_firma("verde", [blocant]) != "verde"
+    assert pastila_firma("verde", [blocant]) == "rosu"
+
+
 def test_pastila_pastreaza_baza_daca_nimic_confirmat():
     assert pastila_firma("gri", [_c("gri")]) == "gri"      # necompletat ramane necompletat
     assert pastila_firma("verde", []) == "verde"

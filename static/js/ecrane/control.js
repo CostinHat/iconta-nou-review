@@ -197,7 +197,9 @@ async function detaliuFirma(corp, nav, firma) {
         Cross-check-urile D-vs-contabilitate apar deja in «Declaratie vs contabilitate» -> filtrate dupa
         eticheta ca sa nu se dubleze. (Reparatie clasa BACKEND_UI_BRUT/verdict: temeiul nu se mai pierde.) */
       const dejaInIncrucisat = ["TVA declarat diferă de contabilitate", "Salarii declarate diferă de contabilitate", "Operațiuni intracomunitare declarate diferă de evidență", "Facturi emise cu cotă TVA greșită pentru perioadă"];
-      const items = (firma.contabil || []).filter((c) => c && typeof c === "object" && !dejaInIncrucisat.includes(c.eticheta));
+      // d.contabil = calcul PROASPAT din detaliu (aceeasi functie ca lista, aceeasi severitate ca headerul);
+      // firma.contabil = snapshot din lista, doar fallback. Asa headerul si aceste constatari NU se contrazic.
+      const items = ((d.contabil || firma.contabil) || []).filter((c) => c && typeof c === "object" && !dejaInIncrucisat.includes(c.eticheta));
       if (!items.length) return "";
       const rang = { rosu: 3, galben: 2, gri: 1, verde: 0 };
       const worst = items.reduce((m, c) => ((rang[c.stare] || 0) > (rang[m] || 0) ? c.stare : m), "verde");

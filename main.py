@@ -1931,19 +1931,75 @@ async def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx
 # ============================================================
 #  CONTROL FISCAL — semafor conformare per portofoliu
 # ============================================================
+def _flag_constatare(stare, eticheta, mesaj, temei, remediu=None):
+    # [verdict_colapsat] constatare STRUCTURATA (dot + mesaj + temei + remediu), randata identic cu D390/TVA
+    # in control.js. `eticheta` = label scurt (sumar de lista + dedup fata de «Declaratie vs contabilitate»).
+    return {"stare": stare, "eticheta": eticheta, "mesaj": mesaj or eticheta,
+            "temei": temei or "", "remediu": remediu}
+
+
+def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
+    """Constatarile contabile STRUCTURATE ale unei firme + verificari_contabile brute (vc). UN SINGUR loc,
+    folosit de LISTA (portofoliu) SI de DETALIU -> severitatea (pastila_firma) e aceeasi indiferent cine
+    intreaba (headerul de detaliu nu mai poate fi mai bun decat ce e sub el). Cost pe calea de detaliu:
+    _verificari_contabile rula deja acolo (partea grea - regenereaza D300/D112/D390); se adauga doar
+    verificare_stocuri (O(articole) query-uri usoare) + intrastat_praguri (1 query). Vezi DECIZII 23.07.
+    Intoarce (contabil, vc)."""
+    contabil = []
+    vc = None
+    try:
+        vc = _verificari_contabile(schema, an, luna)
+        ech = vc.get("echilibru") or {}
+        if not ech.get("ok", True):
+            contabil.append(_flag_constatare(stare_din_nivel(ech.get("nivel")), "Balanță dezechilibrată", ech.get("mesaj"), ech.get("temei")))
+        tz = vc.get("trezorerie") or []
+        tz_probleme = tz if isinstance(tz, list) else ([tz] if isinstance(tz, dict) and not tz.get("ok", True) else [])
+        for p in tz_probleme:
+            contabil.append(_flag_constatare(stare_din_nivel(p.get("nivel")), "Solduri creditoare trezorerie", p.get("mesaj"), p.get("temei")))
+        # [control_incrucisat_v1 + F163_ui] declaratie vs evidenta. Constatarea INTREAGA e in «Declaratie vs
+        # contabilitate»; aici doar sumarul (eticheta + temei). Etichete = EXACT cele filtrate in control.js.
+        for cheie, et in (("tva_incrucisat", "TVA declarat diferă de contabilitate"),
+                          ("d112_incrucisat", "Salarii declarate diferă de contabilitate"),
+                          ("d390_incrucisat", "Operațiuni intracomunitare declarate diferă de evidență"),
+                          ("cota_tva_conformitate", "Facturi emise cu cotă TVA greșită pentru perioadă")):
+            vd = vc.get(cheie) or {}
+            if vd.get("stare") == "rosu":
+                prima = next((c for c in (vd.get("constatari") or []) if c.get("stare") == "rosu"), {})
+                contabil.append(_flag_constatare(prima.get("stare"), et, prima.get("mesaj"), prima.get("temei"), prima.get("remediu")))
+    except Exception:
+        pass
+    try:  # stocuri contabil vs fise CV
+        vs = verificare_stocuri(tid, ctx)
+        if not vs.get("ok", True):
+            difs = [c for c in vs.get("conturi", []) if not c.get("ok")]
+            mesaj = ("Sold contabil diferit de fișele CV pe conturile: " + ", ".join(c["cont"] for c in difs) + "."
+                     if difs else "Soldul contabil diferă de fișele de magazie CV.")
+            # verificare_stocuri NU declara `nivel` (cauze legitime) -> stare_din_nivel(None)=gri. Vezi DECIZII 23.07.
+            contabil.append(_flag_constatare(stare_din_nivel(vs.get("nivel")), "Diferențe stocuri", mesaj, vs.get("nota")))
+    except Exception:
+        pass
+    try:  # praguri Intrastat
+        ip = intrastat_praguri(tid, an, ctx)
+        fluxuri = [nume for nume in ("introduceri", "expedieri") if ip[nume]["status"] != "sub_prag"]
+        if fluxuri:
+            # Intrastat declara nivel=AVERTISMENT (intrastat.NIVEL_STATUS) -> galben prin stare_din_nivel.
+            contabil.append(_flag_constatare(stare_din_nivel(ip.get("nivel")), "Prag Intrastat depășit",
+                                             "Prag Intrastat depășit pe: " + ", ".join(fluxuri) + ".", ip.get("nota")))
+    except Exception:
+        pass
+    # [F180] regim TVA local vs snapshot ANAF (constatare structurata deja produsa de evalueaza_firma)
+    rta = regim_tva_anaf or {}
+    if rta.get("stare") == "rosu":
+        contabil.append(_flag_constatare(rta.get("stare"), "Regim TVA diferă de ANAF", rta.get("mesaj"), rta.get("temei"), rta.get("remediu")))
+    return contabil, vc
+
+
 @app.get("/control-fiscal")
 def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
     """Semafor pentru toate firmele cabinetului + sumar (verde/galben/rosu)."""
-    import datetime
     azi = azi_ro()   # [fus] verdict semafor per firma (la termen/intarziat) = zi RO, robust la OS TZ
     out = []
     sumar = {"verde": 0, "galben": 0, "rosu": 0, "gri": 0}
-    def _flag(stare, eticheta, mesaj, temei, remediu=None):
-        # [verdict_colapsat] constatare STRUCTURATA de portofoliu (nu string de afisare colapsat, clasa
-        # BACKEND_UI_BRUT verdict): dot + mesaj + temei + remediu, randata identic cu D390/TVA in control.js.
-        # `eticheta` = label scurt (sumar de lista + dedup fata de «Declaratie vs contabilitate»).
-        return {"stare": stare, "eticheta": eticheta, "mesaj": mesaj or eticheta,
-                "temei": temei or "", "remediu": remediu}
     with db.get_conn() as conn:
         firme = auth_api.tenantii_userului(conn, ctx["uid"])
     for f in firme:
@@ -1957,58 +2013,8 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
                 r = control_fiscal_api.evalueaza_firma(cs, cp, tid, schema, azi)
         except Exception:
             r = {"stare": "gri", "datorate": 0, "depuse": 0, "lipsa": [], "urmarit": []}
-        contabil = []  # cf_verificari_v1 — constatari STRUCTURATE (mesaj+temei+remediu), nu string colapsat
-        try:
-            v = _verificari_contabile(schema, azi.year, azi.month)
-            # Escaladarea pastilei-firma se face O SINGURA DATA la final (_pastila_firma), din stares
-            # constatarilor - NU inline cu literal per verificator. Aici doar CONSTRUIM constatarile.
-            ech = v.get("echilibru") or {}
-            if not ech.get("ok", True):
-                contabil.append(_flag(stare_din_nivel(ech.get("nivel")), "Balanță dezechilibrată", ech.get("mesaj"), ech.get("temei")))
-            tz = v.get("trezorerie") or []
-            tz_probleme = tz if isinstance(tz, list) else ([tz] if isinstance(tz, dict) and not tz.get("ok", True) else [])
-            if tz_probleme:
-                for p in tz_probleme:
-                    contabil.append(_flag(stare_din_nivel(p.get("nivel")), "Solduri creditoare trezorerie", p.get("mesaj"), p.get("temei")))
-            # [control_incrucisat_v1 + F163_ui] declaratie vs evidenta. Constatarea INTREAGA e in sectiunea
-            # «Declaratie vs contabilitate»; aici doar sumarul de portofoliu (eticheta + temei).
-            for cheie, et in (("tva_incrucisat", "TVA declarat diferă de contabilitate"),
-                              ("d112_incrucisat", "Salarii declarate diferă de contabilitate"),
-                              ("d390_incrucisat", "Operațiuni intracomunitare declarate diferă de evidență"),
-                              ("cota_tva_conformitate", "Facturi emise cu cotă TVA greșită pentru perioadă")):
-                vd = v.get(cheie) or {}
-                if vd.get("stare") == "rosu":
-                    prima = next((c for c in (vd.get("constatari") or []) if c.get("stare") == "rosu"), {})
-                    # control_incrucisat produce deja verdict-color (verde/rosu/gri) -> passthrough, nu literal.
-                    contabil.append(_flag(prima.get("stare"), et, prima.get("mesaj"), prima.get("temei"), prima.get("remediu")))
-        except Exception:
-            pass
-        try:  # stocuri contabil vs fise CV
-            vs = verificare_stocuri(tid, ctx)
-            if not vs.get("ok", True):
-                difs = [c for c in vs.get("conturi", []) if not c.get("ok")]
-                mesaj = ("Sold contabil diferit de fi\u0219ele CV pe conturile: " + ", ".join(c["cont"] for c in difs) + "."
-                         if difs else "Soldul contabil difer\u0103 de fi\u0219ele de magazie CV.")
-                # verificare_stocuri NU declara `nivel` (nota admite cauze legitime: note ciorna
-                # nevalidate) -> stare_din_nivel(None)=gri, nu inventam severitate. Vezi DECIZII 23.07.
-                contabil.append(_flag(stare_din_nivel(vs.get("nivel")), "Diferen\u021be stocuri", mesaj, vs.get("nota")))
-        except Exception:
-            pass
-        try:  # praguri Intrastat
-            ip = intrastat_praguri(tid, azi.year, ctx)
-            fluxuri = [nume for nume in ("introduceri", "expedieri") if ip[nume]["status"] != "sub_prag"]
-            if fluxuri:
-                # Intrastat declara nivel=AVERTISMENT (intrastat.NIVEL_STATUS) -> galben prin stare_din_nivel.
-                # Escaladarea pastilei o face _pastila_firma la final (galben, nu rosu literal ca inainte).
-                contabil.append(_flag(stare_din_nivel(ip.get("nivel")), "Prag Intrastat depășit",
-                                      "Prag Intrastat depășit pe: " + ", ".join(fluxuri) + ".", ip.get("nota")))
-        except Exception:
-            pass
-        # [F180] regim TVA local vs snapshot ANAF (constatare structurata deja produsa de evalueaza_firma)
-        rta = r.get("regim_tva_anaf") or {}
-        if rta.get("stare") == "rosu":
-            # constatare_regim_tva produce deja verdict-color -> passthrough, nu literal.
-            contabil.append(_flag(rta.get("stare"), "Regim TVA diferă de ANAF", rta.get("mesaj"), rta.get("temei"), rta.get("remediu")))
+        # Constatarile contabile: functie PARTAJATA cu detaliul (aceeasi severitate, oricine intreaba).
+        contabil, _vc = _construieste_contabil(schema, tid, ctx, azi.year, azi.month, r.get("regim_tva_anaf"))
         # Pastila-firma = escaladare unica din constatari (nu poate depasi severitatea lor maxima).
         r["stare"] = pastila_firma(r["stare"], contabil)
         sumar[r["stare"]] = sumar.get(r["stare"], 0) + 1
@@ -2020,14 +2026,18 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
 
 @app.get("/control-fiscal/{tenant_id}")
 def control_fiscal_detaliu(tenant_id: int, ctx=Depends(cere_cabinet)):
-    """Detaliu conformare pentru o firma: lista lipsa + de urmarit."""
-    import datetime
+    """Detaliu conformare pentru o firma: lista lipsa + de urmarit + constatari contabile."""
+    azi = azi_ro()   # [fus] verdict de zi = zi RO (acelasi ca portofoliul)
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as cs, db.get_conn() as cp:
-        r = control_fiscal_api.evalueaza_firma(cs, cp, tenant_id, schema, azi_ro())   # [fus] verdict de zi = zi RO
-    try:  # cf_verificari_v1
-        azi = datetime.date.today()
-        r["verificari_contabile"] = _verificari_contabile(schema, azi.year, azi.month)
+        r = control_fiscal_api.evalueaza_firma(cs, cp, tenant_id, schema, azi)
+    try:  # cf_verificari_v1 — ACEEASI functie partajata ca lista: severitatea (pastila_firma) e identica.
+        contabil, vc = _construieste_contabil(schema, tenant_id, ctx, azi.year, azi.month, r.get("regim_tva_anaf"))
+        r["verificari_contabile"] = vc
+        r["contabil"] = contabil
+        # Headerul de detaliu nu poate fi mai bun decat ce e sub el: pastila_firma peste constatari (ex.
+        # trezorerie BLOCANT -> nu mai poate ramane "la zi" cu rosu dedesubt). Vezi DECIZII 23.07.
+        r["stare"] = pastila_firma(r["stare"], contabil)
     except Exception:
         pass
     return r
