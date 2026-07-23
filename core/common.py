@@ -60,6 +60,15 @@ BLOCANT = "blocant"        # nu se poate depune/contabiliza
 AVERTISMENT = "avertisment"  # legal, dar riscant (ex. sold peste plafon)
 
 
+def stare_din_nivel(nivel):
+    """Mapare UNICA nivel-motor -> stare de verdict. Randarea NU-si mai alege culoarea: deriva din
+    nivelul DECLARAT de motor. BLOCANT -> rosu, AVERTISMENT -> galben, absent/necunoscut -> gri
+    (nu inventa severitate la randare; lipsa nivelului la un motor = decizie de fond, nu default de
+    culoare). NB: galbenul din pastila-firma (semafor de lista) e ALTA axa - nu se imprumuta cu asta.
+    Vezi DECIZII 23.07 (doua axe: severitate constatare vs escaladare pastila)."""
+    return {BLOCANT: "rosu", AVERTISMENT: "galben"}.get(nivel, "gri")
+
+
 # ============================================================
 #  BANI — Decimal, niciodată float
 # ============================================================

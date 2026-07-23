@@ -195,6 +195,14 @@ RE_PCT_S_LEI  = re.compile(r'%s\s*lei\b')                           # %s lei = s
 # O lista de string-uri legitima NU se numeste asa (foloseste `mesaje`, `etichete`, `motive`).
 RE_VERDICT_APPEND = re.compile(r'\b(contabil|constatari|probleme|verdicte|findinguri)\s*\.append\(\s*f?["\']')
 RE_VERDICT_LIT    = re.compile(r'\b(contabil|constatari|probleme|verdicte)\s*\+?=\s*\[\s*f?["\']')
+# Sub-regula (aceeasi familie): stratul de agregare NU-si alege culoarea de verdict ca LITERAL. Constatarea
+# de afisare (_flag) primeste culoarea DERIVATA din nivelul motorului (common.stare_din_nivel) sau prin
+# passthrough (`.get("stare")`), niciodata un literal "rosu"/"galben"/... la locul apelului (dovedit 23.07:
+# _flag("galben",...) slabea un BLOCANT de trezorerie la galben). LIMITA: ancorat pe helperul de afisare
+# `_flag(` - un motor care isi DECLARA verdictul (audit_preluare `_c("verde",...)`, control_incrucisat
+# `stare="rosu"`) e legitim si NU trebuie prins; regula sintactica pura nu separa "motor declara" de
+# "agregator recoloreaza", deci ancoram pe numele constructorului de afisare, nu pe orice literal de culoare.
+RE_FLAG_STARE_LIT = re.compile(r'_flag\(\s*["\'](rosu|galben|verde|gri)["\']')
 RE_DATA_DISP  = re.compile(r'\.strftime\(\s*["\']%d[./]')          # strftime("%d.%m/%d/%m") = display RO
 RE_FORMATATOR = re.compile(r'\b(bani|data_ro|_lei|_dmy|_data_ro|_f|_q)\s*\(')  # deja canonic/local-ok
 PY_EXCEPT_FILE = {"etransport_send.py", "d406.py", "export_winmentor.py",
@@ -222,6 +230,8 @@ for pdir in (os.path.join(BAZA_PY, "core"), BAZA_PY):
                 continue
             if RE_VERDICT_APPEND.search(lin) or RE_VERDICT_LIT.search(lin):
                 rap["verdict_colapsat"].append((f, i, "verdict->str", s[:60]))
+            if RE_FLAG_STARE_LIT.search(lin):
+                rap["verdict_colapsat"].append((f, i, "stare-literal", s[:60]))
             if RE_FORMATATOR.search(lin):
                 continue
             suma_bruta = (RE_SUMA_PCT.search(lin) or (RE_ARE_FSTR.search(lin) and RE_SUMA_FSTR.search(lin)))

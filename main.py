@@ -23,7 +23,7 @@ from pydantic import BaseModel
 
 from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_migrare_api
 from core.pdf_util import bani, data_ro
-from core.common import azi_ro  # [fus] ziua RO pentru verdictele de zi (semafor), robust la OS TZ
+from core.common import azi_ro, stare_din_nivel  # [fus] ziua RO; [verdict] mapare UNICA nivel->culoare
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
@@ -1963,13 +1963,15 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
             ech = v.get("echilibru") or {}
             if not ech.get("ok", True):
                 r["stare"] = "rosu"
-                contabil.append(_flag("rosu", "Balanță dezechilibrată", ech.get("mesaj"), ech.get("temei")))
+                contabil.append(_flag(stare_din_nivel(ech.get("nivel")), "Balanță dezechilibrată", ech.get("mesaj"), ech.get("temei")))
             tz = v.get("trezorerie") or []
             tz_probleme = tz if isinstance(tz, list) else ([tz] if isinstance(tz, dict) and not tz.get("ok", True) else [])
             if tz_probleme:
+                # AXA PASTILA-FIRMA (semafor lista): trezoreria urca firma verde->galben. SEPARATA de
+                # severitatea constatarii (BLOCANT->rosu, prin stare_din_nivel) - nu se imprumuta culori.
                 if r["stare"] == "verde": r["stare"] = "galben"
                 for p in tz_probleme:
-                    contabil.append(_flag("galben", "Solduri creditoare trezorerie", p.get("mesaj"), p.get("temei")))
+                    contabil.append(_flag(stare_din_nivel(p.get("nivel")), "Solduri creditoare trezorerie", p.get("mesaj"), p.get("temei")))
             # [control_incrucisat_v1 + F163_ui] declaratie vs evidenta = serios -> rosu. Constatarea INTREAGA
             # e in sectiunea «Declaratie vs contabilitate»; aici doar sumarul de portofoliu (eticheta + temei).
             for cheie, et in (("tva_incrucisat", "TVA declarat diferă de contabilitate"),
@@ -1980,7 +1982,8 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
                 if vd.get("stare") == "rosu":
                     r["stare"] = "rosu"
                     prima = next((c for c in (vd.get("constatari") or []) if c.get("stare") == "rosu"), {})
-                    contabil.append(_flag("rosu", et, prima.get("mesaj"), prima.get("temei"), prima.get("remediu")))
+                    # control_incrucisat produce deja verdict-color (verde/rosu/gri) -> passthrough, nu literal.
+                    contabil.append(_flag(prima.get("stare"), et, prima.get("mesaj"), prima.get("temei"), prima.get("remediu")))
         except Exception:
             pass
         try:  # stocuri contabil vs fise CV
@@ -1990,22 +1993,27 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
                 difs = [c for c in vs.get("conturi", []) if not c.get("ok")]
                 mesaj = ("Sold contabil diferit de fi\u0219ele CV pe conturile: " + ", ".join(c["cont"] for c in difs) + "."
                          if difs else "Soldul contabil difer\u0103 de fi\u0219ele de magazie CV.")
-                contabil.append(_flag("galben", "Diferen\u021be stocuri", mesaj, vs.get("nota")))
+                # verificare_stocuri NU declara `nivel` (nota admite cauze legitime: note ciorna
+                # nevalidate) -> stare_din_nivel(None)=gri, nu inventam severitate. Vezi DECIZII 23.07.
+                contabil.append(_flag(stare_din_nivel(vs.get("nivel")), "Diferen\u021be stocuri", mesaj, vs.get("nota")))
         except Exception:
             pass
         try:  # praguri Intrastat
             ip = intrastat_praguri(tid, azi.year, ctx)
             fluxuri = [nume for nume in ("introduceri", "expedieri") if ip[nume]["status"] != "sub_prag"]
             if fluxuri:
-                r["stare"] = "rosu"
-                contabil.append(_flag("rosu", "Prag Intrastat depășit",
+                r["stare"] = "rosu"   # AXA PASTILA-FIRMA (separata de severitatea constatarii)
+                # intrastat_praguri NU declara `nivel` -> stare_din_nivel(None)=gri (nu inventam la randare).
+                # GAP semnalat: status='depasit' e severitate reala; motorul ar trebui sa declare nivel. Vezi DECIZII 23.07.
+                contabil.append(_flag(stare_din_nivel(ip.get("nivel")), "Prag Intrastat depășit",
                                       "Prag Intrastat depășit pe: " + ", ".join(fluxuri) + ".", ip.get("nota")))
         except Exception:
             pass
         # [F180] regim TVA local vs snapshot ANAF (constatare structurata deja produsa de evalueaza_firma)
         rta = r.get("regim_tva_anaf") or {}
         if rta.get("stare") == "rosu":
-            contabil.append(_flag("rosu", "Regim TVA diferă de ANAF", rta.get("mesaj"), rta.get("temei"), rta.get("remediu")))
+            # constatare_regim_tva produce deja verdict-color -> passthrough, nu literal.
+            contabil.append(_flag(rta.get("stare"), "Regim TVA diferă de ANAF", rta.get("mesaj"), rta.get("temei"), rta.get("remediu")))
         sumar[r["stare"]] = sumar.get(r["stare"], 0) + 1
         out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
                     "stare": r["stare"], "lipsa": len(r["lipsa"]), "urmarit": len(r["urmarit"]),

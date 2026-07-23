@@ -2352,3 +2352,35 @@ element de list-literal) = colaps. O lista de string-uri legitima nu poarta nume
 de sistem din _verifica_si_alerta a fost redenumita `alerte`, nu carve-out in garda). Raport: 0.
 LIMITA: garda prinde numele din setul curat; o lista de verdicte cu alt nume (ex. `rezultate`) ar scapa -
 setul se extinde cand apare cazul. Nu prinde asezarea, doar colapsul la string.
+
+### 23.07.2026 Culoarea de verdict deriva din nivelul motorului, nu din literal la randare  (core/common.py: stare_din_nivel; main.py bucla portofoliu; verificator: RE_FLAG_STARE_LIT)
+DECIZIE: constatarea de afisare (_flag) NU-si mai alege culoarea ca literal. Culoarea deriva din nivelul
+DECLARAT de motor, printr-o mapare UNICA (common.stare_din_nivel): BLOCANT -> rosu, AVERTISMENT -> galben,
+absent/necunoscut -> gri. Motoarele care produc deja verdict-color (control_incrucisat, constatare_regim_tva:
+verde/rosu/gri) trec prin passthrough (`.get("stare")`), nu prin mapare. Niciun literal de culoare la locul apelului.
+TEMEI: verificare la sursa. verifica_trezorerie/verifica_balanta intorc nivel=BLOCANT ("nu se poate
+depune/contabiliza", common.py:59). Reparatia B (F163) colapsase trezoreria la _flag("galben",...) - un
+literal ales la randare care SLABEA un BLOCANT (sold creditor pe 5121 = imposibilitate contabila certa) la
+"de urmarit". Culoarea corecta deriva din nivel: BLOCANT -> rosu.
+DOUA AXE, NU SE IMPRUMUTA CULORI:
+ (a) SEVERITATEA CONSTATARII = nivelul motorului (BLOCANT/AVERTISMENT/absent) -> dot-ul constatarii in detaliu.
+ (b) ESCALADAREA PASTILEI-FIRMA = semaforul din lista de portofoliu (verde->galben "de urmarit" pe trezorerie,
+     ca o firma cu un 5121 negativ sa nu apara integral rosie in overview). Ramane neatinsa, pe axa ei.
+ Consecinta acceptata: firma poate avea pastila GALBEN in lista SI o constatare cu dot ROSU in detaliu -
+ granularitati diferite, corect. Galbenul e stare de PASTILA-FIRMA, nu de constatare; modelul de constatare
+ ramane verde/rosu/gri (galbenul apare la constatare doar daca un motor declara explicit AVERTISMENT).
+NIVEL ABSENT = GRI, NU SE INVENTEAZA (doua GAP-uri semnalate, decizie de fond inainte de a adauga nivel):
+ - verificare_stocuri: {conturi, ok, nota} fara nivel; nota admite cauze legitime (note ciorna nevalidate,
+   operatiuni in afara fiselor CV) -> gri ("nu pot verifica") e corect semantic. Probabil NU cere nivel.
+ - intrastat_praguri: status (sub_prag|atentie|depasit) fara nivel common. status='depasit' e severitate
+   REALA si neambigua (cumulat >= prag), iar pastila-firma e deja escaladata la rosu -> constatare gri langa
+   firma rosie = nepotrivire care SEMNALEAZA gap-ul. Candidat serios pt nivel=AVERTISMENT in motor
+   (obligatie de declarare INS, "legal dar riscant", nu BLOCANT). DE DECIS cu Costin inainte de a-l adauga.
+ALTERNATIVA RESPINSA: a mapa status Intrastat->culoare la randare (depasit->rosu) - respins: ar fi exact
+anti-pattern-ul reparat (constatarea isi alege culoarea la randare, printr-un map bespoke). Severitatea se
+declara in MOTOR, randarea doar deriva/passthrough.
+GARDA: verificator RE_FLAG_STARE_LIT (categoria verdict_colapsat, tag "stare-literal") - _flag() cu literal
+"rosu"/"galben"/"verde"/"gri" ca prim arg = colaps. LIMITA: ancorat pe helperul de afisare `_flag(`. O regula
+generala "orice literal de culoare in stratul de agregare" NU e exprimabila mecanic: un motor care isi
+DECLARA verdictul (audit_preluare `_c("verde",...)`, control_incrucisat `stare="rosu"`) e legitim, iar sintaxa
+nu separa "motor declara sursa" de "agregator recoloreaza upstream". Ancoram pe numele constructorului de afisare.
