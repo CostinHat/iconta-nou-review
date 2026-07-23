@@ -504,3 +504,11 @@ tabelă mereu goală (populabilă doar prin SQL direct / import extern). NU e bl
 generarea/semaforul citesc corect), dar F032 e „LIVE" doar pe jumătate (generare fără intrare). DE DECIS: ecran de
 introducere operațiuni D301 (ca RIP/registru) SAU import (extras/facturi UE → d301_operatiuni), la caz real. Vezi
 DECIZII 23.07. Nu construi nimic până nu apare nevoia reală (neplătitor cu achiziții IC).
+
+## Garda style inline (display/flex/gap/color) — NEextinsa, datorie acceptata v2.11 (masurat + decis 23.07.2026)
+Scop MASURAT la sursa: 136 aparitii `display:`/`flex`/`gap:`/`color:` inline in ~15 fisiere (firme.js 53, cabinet 14,
+asistenti 10, portal 7, plus login/etransport/facturi/rip/flux/raporteaza). Contravin DS cap.0 (layout/culoare = clase,
+nu inline). Extinderea gardii (FONT_INLINE/RADIUS_INLINE) la display/flex/color -> 136 flag-uri = curatare frontend-wide
+(per fisier, verificat vizual), revenire pe decizia v2.11 (spacing gap/margin ramane acceptat). DECIZIE 23.07 (Costin,
+optiunea b): ramane datorie v2.11, garda NEatinsa; curatarea = workstream dedicat cand se programeaza, NU coada de ecran.
+Panoul D390 (declaratii.js) deja curatat in commitul poz.1. Vezi DECIZII 23.07.

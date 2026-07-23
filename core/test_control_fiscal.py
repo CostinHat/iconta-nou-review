@@ -276,7 +276,9 @@ def test_neaplicabile_forma_pfa_vs_juridic():
     assert set(cf.neaplicabile_forma("pfa")) == {"d100", "d101", "d406"}
     assert "D212" in cf.neaplicabile_forma("pfa")["d101"]
     assert cf.neaplicabile_forma("srl") == {}
-    # NOTA (finding, nereparat): regim_contabil trateaza ca 'simpla' DOAR 'pfa'; 'ii'/'if'/'pfl' -> 'dubla'
-    # (tip_firma_nrm nu le normalizeaza la pfa). OK daca DB stocheaza 'pfa' pt toate entitatile de partida
-    # simpla (selectorul de creare), dar de verificat separat daca II/IF pot ajunge cu tip_firma propriu.
+    # regim_contabil trateaza ca 'simpla' DOAR 'pfa' — CORECT prin CONSTRANGERE DB (verificat la sursa 23.07):
+    # firma_profil.tip_firma are CHECK IN ('srl','pfa') (tenant_002 real + tenant_template.sql:2102) -> 'ii'/'if'/
+    # 'pfl' IMPOSIBILE (INSERT ar crapa). Selectorul de creare (#fn-tip) are o singura optiune value='pfa' =
+    # "PFA/II/IF/profesii liberale" -> le colapseaza la 'pfa'. Deci II/IF sunt stocate 'pfa' -> D101/D406 corect
+    # excluse. NU e bug.
     assert cf.neaplicabile_forma("srl") == cf.neaplicabile_forma(None) == {}   # juridic/necunoscut -> nimic exclus
