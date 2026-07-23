@@ -63,10 +63,12 @@ def termene_firma(vector, are_salariati, depuse, azi=None):
     return out
 
 
-def portofoliu(firme_eval, azi=None):
+def portofoliu(firme_eval, azi=None, neevaluate=None):
     """
     firme_eval = lista de {tenant_id, nume, termene:[...]} (termene = output termene_firma).
-    Intoarce {grupuri:[{termen, items:[{tip, nr_firme, firme:[...]}]}], urmatoarea}.
+    neevaluate = lista de {tenant_id, nume, cauza} - firme care NU au putut fi evaluate; NU se ascund
+      (gri cu temei, aceeasi doctrina ca semaforul, DECIZII 23.07: gri = "nu am putut", nu tacere).
+    Intoarce {grupuri:[{termen, items:[{tip, nr_firme, firme:[...]}]}], urmatoarea, neevaluate}.
     Grupat pe data termen, apoi pe tip, cu numarul si lista de firme.
     """
     azi = azi or azi_ro()   # [fus] fereastra termenelor decide ce apare -> zi RO, robust la OS TZ
@@ -95,4 +97,4 @@ def portofoliu(firme_eval, azi=None):
         urmatoarea = {"termen": g["termen"], "zile": g["zile"],
                       "tip": top["tip"], "nr_firme": top["nr_firme"]}
 
-    return {"grupuri": grupuri, "urmatoarea": urmatoarea}
+    return {"grupuri": grupuri, "urmatoarea": urmatoarea, "neevaluate": neevaluate or []}

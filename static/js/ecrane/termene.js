@@ -28,6 +28,7 @@ export async function randeazaTermene(corp, nav) {
     return;
   }
   const grupuri = date.grupuri || [];
+  const neeval = date.neevaluate || [];
 
   corp.innerHTML = `
     <p class="mig-intro">Scadențele care urmează în următoarele 60 de zile, grupate pe dată. Click pe o declarație ca să vezi firmele.</p>
@@ -36,6 +37,7 @@ export async function randeazaTermene(corp, nav) {
   const lista = corp.querySelector("#term-lista");
   if (grupuri.length === 0) {
     lista.innerHTML = `<div class="stare-goala">Nicio scadență în următoarele 60 de zile.</div>`;
+    randeazaNeevaluate(corp, neeval);   // [T1] chiar si fara scadente, firmele neevaluate NU dispar tacut
     return;
   }
 
@@ -64,6 +66,33 @@ export async function randeazaTermene(corp, nav) {
     });
     lista.appendChild(bloc);
   });
+
+  randeazaNeevaluate(corp, neeval);   // [T1] gri cu temei, sub scadente
+}
+
+// [T1] firmele care nu au putut fi evaluate — afisate explicit (gri cu temei), nu omise.
+// Reutilizeaza clasele DS existente (.mig-intro / .mig-lista / .mig-frand), fara regula noua.
+function randeazaNeevaluate(corp, neeval) {
+  if (!neeval || !neeval.length) return;
+  const bloc = document.createElement("div");
+  bloc.innerHTML = `
+    <p class="mig-intro">Nu am putut evalua ${neeval.length} ${neeval.length === 1 ? "firmă" : "firme"} — apar aici ca să nu dispară tăcut din listă.</p>
+    <div class="mig-lista"></div>
+  `;
+  const l = bloc.querySelector(".mig-lista");
+  neeval.forEach((f) => {
+    const rand = document.createElement("div");
+    rand.className = "mig-frand";
+    rand.style.cursor = "default";
+    rand.innerHTML = `
+      <div class="mig-frand-text">
+        <div class="mig-frand-nume">${f.nume}</div>
+        <div class="mig-frand-sub">${f.cauza}</div>
+      </div>
+    `;
+    l.appendChild(rand);
+  });
+  corp.appendChild(bloc);
 }
 
 function detaliuTermen(corp, nav, grup, item) {

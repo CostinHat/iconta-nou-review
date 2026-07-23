@@ -2099,13 +2099,14 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         firme = auth_api.tenantii_userului(conn, ctx["uid"])
     firme_eval = []
+    neevaluate = []   # [T1] firme care nu au putut fi evaluate — NU dispar tacut (gri cu temei, ca semaforul)
     for f in firme:
         tid = f.get("id")
         try:
             with db.get_conn() as c:
                 schema = auth_api.schema_tenant(c, ctx["uid"], tid)
             if not schema:
-                continue
+                continue   # fara acces la tenant — nu se afiseaza (identic cu semaforul /control-fiscal)
             with db.get_conn(schema) as cs:
                 with cs.cursor() as cur:
                     cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, tip_firma FROM firma_profil LIMIT 1")
@@ -2119,6 +2120,9 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
                         cur.execute("SELECT count(*) FROM salariati WHERE activ=true")
                         are_sal = cur.fetchone()[0] > 0
             if not vector:
+                # [T1] firma exista dar vectorul fiscal e gol -> nu se ascunde: gri cu temei (ca evalueaza_firma)
+                neevaluate.append({"tenant_id": tid, "nume": f.get("nume"),
+                                   "cauza": "Vector fiscal necompletat — nu pot evalua obligațiile firmei."})
                 continue
             with db.get_conn() as cp:
                 with cp.cursor() as cur:
@@ -2126,9 +2130,12 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
                     depuse = {(t, a, l) for (t, a, l) in cur.fetchall()}
             term = termene_api.termene_firma(vector, are_sal, depuse, azi)
             firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "termene": term})
-        except Exception:
-            continue
-    return termene_api.portofoliu(firme_eval, azi)
+        except Exception as e:
+            # [T1] o firma care crapa NU dispare din ecran: gri cu temei (doctrina 23.07 — gri = "nu am putut", nu tacere)
+            _LOG_VERDICT.warning("termene: evaluare esuata tenant %s -> gri (%r)", tid, e)
+            neevaluate.append({"tenant_id": tid, "nume": f.get("nume"),
+                               "cauza": "Nu am putut evalua această firmă (%s)." % type(e).__name__})
+    return termene_api.portofoliu(firme_eval, azi, neevaluate)
 
 
 
