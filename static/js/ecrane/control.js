@@ -83,7 +83,8 @@ async function detaliuFirma(corp, nav, firma) {
     d = await api.get(`/control-fiscal/${firma.tenant_id}`);
   } catch {}
 
-  // [C4] restantele ordonate dupa vechimea depasirii termenului (cel mai vechi intai; termen ISO -> sort lexical).
+  // [C4, decizie 23.07] LISTA PLATA (fara grupare pe tip - gruparea fragmenteaza semnalul de urgenta, singurul
+  // criteriu decizional la restante). Ordonata dupa vechimea depasirii termenului (cel mai vechi intai; ISO -> sort lexical).
   const lipsa = (d.lipsa || []).slice().sort((a, b) => (a.termen || "").localeCompare(b.termen || ""));
   const urmarit = (d.urmarit || []).slice().sort((a, b) => (a.termen || "").localeCompare(b.termen || ""));
   const confirmate = d.confirmate || [];

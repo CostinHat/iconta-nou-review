@@ -2752,3 +2752,11 @@ lista goala -> .stare-goala (cap.6) nu se aplica (context de bara, nu de continu
 DOVADA: 582 teste (2 actualizate la C1 + matrice A1 pe temei structurat), verificator TOTAL 0, captura de date
 (structura ecranului) pe tenant_001 PFA + tenant_002 SRL. Capturi PIXEL = pasul de audit browser al lui Costin
 (fara browser headless in mediul de dezvoltare).
+
+### 23.07.2026 C4 restante: lista plata, fara grupare pe tip (fara primitiva DS noua)
+DECIZIE: restantele raman LISTA PLATA ordonata dupa vechimea depasirii termenului (cel mai vechi intai). NU se
+grupeaza pe tip si NU se adauga un separator/primitiva vizuala noua in DESIGN_SYSTEM.
+TEMEI: gruparea pe tip FRAGMENTEAZA semnalul de urgenta, care e SINGURUL criteriu decizional la restante (ce a
+depasit cel mai mult termenul se plateste intai, indiferent de tip). O primitiva DS pentru un singur ecran = cod
+mort (regula noua intretinuta pentru un consumator). Se reconsidera daca apar 3+ ecrane cu aceeasi nevoie de
+sub-grupare vizuala. Inchide flag-ul C4 din raportul precedent.

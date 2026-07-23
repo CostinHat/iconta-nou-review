@@ -493,9 +493,3 @@ vs DE CONSTRUIT (munca reala):
   adrese. Art. 317 / ROI = registru separat. Fără el, un neplătitor cu IC rămâne gri (nu știm dacă e înregistrat
   art. 317 → dacă datorează D390). De reevaluat dacă ANAF publică ROI/art.317 printr-un alt serviciu web.
 
-## Actualizare 23.07.2026 (Pasul C — prezentare Control fiscal)
-- **C4 grupare restanțe pe tip — separator vizual canonic LIPSEȘTE** [DE DECIS cu Costin]: ordonarea după
-  vechimea depășirii (cel mai vechi întâi) e făcută (control.js, sort pe termen ISO). Dar gruparea VIZUALĂ pe
-  tip cere un separator canonic care NU există în DESIGN_SYSTEM (grep: fără cf-subgrup/separator/divider).
-  Per disciplina DS ("regula nu există în scris -> STOP, nu inventa pattern generic"), NU l-am construit.
-  De stabilit forma separatorului de sub-grup (sau confirmat că ordonarea e suficientă).

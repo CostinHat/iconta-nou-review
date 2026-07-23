@@ -2395,7 +2395,15 @@ STARE FINALĂ: suită 490 verde, verificator DS 0, ownership public 100% iconta_
 (JWT_SECRET + fus orar), verdictele de zi robuste la OS TZ, prima depunere reală în jurnal (append-only).
 
 ## 23.07.2026 — Ecran 1/12 din CHECKLIST_BROWSER (Control fiscal) — închis pe SRL și PFA
-Comituri: ac5ab4f → 3b7aaa9 → cb1f831 → f9198b5 → 34e4d86 (+ commiturile de reparare a semaforului din aceeași zi).
+Comituri: ac5ab4f → 3b7aaa9 → cb1f831 → f9198b5 → 34e4d86 → 8d8e9c7 (matrice de stări 32) → 732f976 (Pasul B:
+D300/D394 mărginite la înregistrarea TVA din ANAF v9 + D390 neplătitor=gri + matrice 64) → f7ce7e8 (Pasul C:
+prezentare — temei nedublat, antet complet, ordine decizională, restanțe veche-prima) + commitul C4 de acum.
+
+**CORECȚIE la o declarație prematură:** commitul de închidere de zi 4e9aea6 a declarat „ecran 1/12 închis" la
+34e4d86 — PREMATUR. Ecranul NU era închis: au urmat Pasul B (matricea de stări a scos că înregistrarea TVA la
+mijloc de an nu era modelată → D300/D394 mărginite la data înregistrării, fapt ANAF v9; D390 la neplătitor devenit
+gri cu temei) și Pasul C (prezentarea). Lecția e chiar constatarea de proces de mai jos: o poartă statică verde
+NU înseamnă ecran închis; abia parcurgerea reală (matricea de stări + auditul de prezentare) l-a închis efectiv.
 
 **LANȚUL CAUZAL (partea importantă — UN SINGUR defect, 7 manifestări, 4 straturi):**
 `tip_firma` DEFAULT 'srl' tăcut + needitabil post-creare
