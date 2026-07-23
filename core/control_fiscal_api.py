@@ -38,18 +38,30 @@ def _termen(an, luna=None, tip="d300"):
     return scadente.scadenta_data(tip, an, luna=luna)
 
 
-def declaratii_datorate(vector, are_salariati, azi=None):
+def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE):
     """
-    Intoarce {"datorate": [...], "neclar": [...]}.
-      - datorate: declaratiile cu termen trecut sau in fereastra de urmarire (fapt cunoscut).
+    SURSA UNICA a mapicarii 'cine ce declaratie datoreaza' (regim/TVA/decont/IC/salariati),
+    inclusiv marginirea la inregistrarea TVA (B1) si D390 art.317 gri la neplatitor (B2).
+    Intoarce {"datorate": [...], "neclar": [...], "neaplicabile": [...]}, cu termenul in fereastra:
+      - sus = azi + sus_zile   (semafor PRAG_URMARIT_ZILE=7 / termene ORIZONT_ZILE=60)
+      - jos = None -> fara limita inferioara (semafor: include restantele, 'privire inapoi')
+              data -> termen >= jos (termene: doar viitorul, 'privire inainte')
+    Consumatori: declaratii_datorate (semafor, wrapper) + termene_api.termene_firma. Maparea obligatiilor
+    traieste AICI, intr-un singur loc - NU se recopiaza (drift = bug; ex. termene fabrica candva D100 pe PFA).
+      - datorate: declaratiile cu termen in fereastra (fapt cunoscut).
       - neclar:   declaratiile pe care NU le pot stabili fiindca lipseste un atribut din vector
                   (fiecare cu {tip, cauza}). Se afiseaza GRI, cu buton catre Vectorul fiscal.
-    vector = dict cu regim_fiscal, platitor_tva, tip_decont, operatiuni_ic (oricare poate fi None).
+    vector = dict cu regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, partida_simpla, tva_data_inceput
+             (oricare poate fi None; partida_simpla derivat de caller din tip_firma, ca la semafor).
     """
     azi = azi or azi_ro()   # [fus] verdict de zi (lipsa vs urmarit) = zi RO
     an = azi.year
-    limita = azi + datetime.timedelta(days=PRAG_URMARIT_ZILE)
+    limita = azi + datetime.timedelta(days=sus_zile)
     datorate, neclar, neaplicabile = [], [], []
+
+    def _in_fereastra(term):
+        # sursa UNICA de adevar pentru 'ce intra in fereastra' (jos optional, sus obligatoriu)
+        return (jos is None or term >= jos) and term <= limita
 
     # D2: perioadele candidate pornesc de la decembrie / T4 al anului precedent (termen 25 ian
     # an curent), altfel decembrie an-1 e invizibil PERMANENT (in an-1 termenul e viitor, in an
@@ -61,7 +73,7 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     # uppercase traieste in CHEIE_DUK + se face upper() DOAR la randare, nu in coloana. Vezi DECIZII.
     def adauga(tip, a, luna_perioada, perioada_txt, tip_scad):
         term = _termen(a, luna_perioada, tip=tip_scad)
-        if term <= limita:
+        if _in_fereastra(term):
             datorate.append({"tip": tip.lower(), "an": a, "luna": luna_perioada,
                              "termen": term.isoformat(), "perioada": perioada_txt})
 
@@ -148,7 +160,7 @@ def declaratii_datorate(vector, are_salariati, azi=None):
         elif regim == "profit":
             # D101 pentru anul precedent, termen 25 martie an curent
             term = _termen(an - 1, tip="d101")
-            if term <= limita:
+            if _in_fereastra(term):
                 datorate.append({"tip": "d101", "an": an - 1, "luna": 12,
                                  "termen": term.isoformat(), "perioada": f"anual {an-1}"})
 
@@ -186,6 +198,12 @@ def declaratii_datorate(vector, are_salariati, azi=None):
             adauga("D406", a, lf, f"T{tri}", "d406")
 
     return {"datorate": datorate, "neclar": neclar, "neaplicabile": neaplicabile}
+
+
+def declaratii_datorate(vector, are_salariati, azi=None):
+    """Semaforul (privire inapoi): fereastra [restante ... azi+7], fara limita inferioara.
+    Wrapper subtire peste obligatii_datorate - comportament NESCHIMBAT (matricea de 64 il apara)."""
+    return obligatii_datorate(vector, are_salariati, azi)
 
 
 def _dmy(iso):

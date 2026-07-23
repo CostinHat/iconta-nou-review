@@ -2111,9 +2111,13 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
                 with cs.cursor() as cur:
                     cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, tip_firma FROM firma_profil LIMIT 1")
                     row = cur.fetchone()
+                    from core.migrare_api import regim_contabil
                     vector = {"regim_fiscal": row[0], "platitor_tva": row[1],
                               "tip_decont": row[2], "operatiuni_ic": row[3],
-                              "tip_firma": row[4]} if row else {}   # [regim] tip_firma -> regim_efectiv (termene)
+                              "tip_firma": row[4],
+                              # [T2] partida_simpla din primitiva UNICA (ca semaforul) -> motorul nu emite D100/D101/D406 la PFA.
+                              # [§4] tva_data_inceput DELIBERAT omis: termene NU margineste la inreg. TVA (proba vizuala separata).
+                              "partida_simpla": regim_contabil(row[4]) == "simpla"} if row else {}
                     cur.execute("SELECT to_regclass('salariati')")
                     are_sal = False
                     if cur.fetchone()[0]:

@@ -8,7 +8,6 @@ cu numarul de firme. Perspectiva = privire inainte (vs control_fiscal = privire 
 from __future__ import annotations
 import datetime
 from core import control_fiscal_api as cf
-from core.migrare_api import regim_efectiv  # [regim] primitiva UNICA (partida simpla => None), langa STRATURI_META
 from core.common import azi_ro  # [fus] fereastra [azi, azi+60] = VERDICT (ce vede contabilul), zi RO
 
 ORIZONT_ZILE = 60
@@ -16,51 +15,20 @@ ORIZONT_ZILE = 60
 
 def termene_firma(vector, are_salariati, depuse, azi=None):
     """
-    Intoarce lista declaratiilor datorate VIITOARE (termen in [azi, azi+orizont]), nedepuse.
-    depuse = set de (tip, an, luna).
+    Declaratiile datorate VIITOARE (termen in [azi, azi+ORIZONT_ZILE]), nedepuse.
+
+    Refoloseste MOTORUL UNIC control_fiscal_api.obligatii_datorate (aceeasi mapare 'cine ce datoreaza'
+    ca semaforul), cu fereastra parametrizata: jos=azi (doar viitor), sus=60z. NU reimplementeaza
+    maparea local (drift-ul vechi fabrica D100 pe PFA; vezi DECIZII 23.07). Consecinte automate:
+      - marginirea B1, D394/D406/D101, D100 micro etc. vin din motor (termene nu mai sub-raporteaza);
+      - D390 la neplatitor cu IC intra in `neclar` (gri art.317), NU in `datorate` -> nu apare ca scadenta
+        ferma. Termene NU reafiseaza gri-ul (privire inainte; "nu pot verifica" e treaba semaforului).
+    depuse = set de (tip, an, luna) (tip lowercase, ca 'datorate').
+    vector trebuie sa poarte partida_simpla (derivat de caller din tip_firma, ca la semafor).
     """
     azi = azi or azi_ro()   # [fus] fereastra termenelor decide ce apare -> zi RO, robust la OS TZ
-    limita = azi + datetime.timedelta(days=ORIZONT_ZILE)
-    # luam toate datorate (control_fiscal include fereastra de urmarire);
-    # pentru termene ne extindem pe orizontul mare evaluand direct scadentarul
-    out = []
-    # reconstruim datorate pe orizontul mare: cf.declaratii_datorate foloseste fereastra de 7 zile,
-    # deci o reimplementam aici cu limita extinsa prin acelasi mecanism _termen.
-    platitor_tva = bool(vector.get("platitor_tva"))
-    decont = (vector.get("tip_decont") or "").lower()   # fara default tacit; "" (necompletat) -> nu ghicim periodicitatea
-    # [regim] regimul CIT EFECTIV: partida simpla (pfa) => None => nu emite D100/D101. Callerul da
-    # vector cu tip_firma + regim_fiscal (contract strict al regim_efectiv). Vezi DECIZII 23.07.
-    regim = regim_efectiv(vector)
-    ic = bool(vector.get("operatiuni_ic"))
-    luni = ["", "ian", "feb", "mar", "apr", "mai", "iun", "iul", "aug", "sep", "oct", "noi", "dec"]
-    an = azi.year
-
-    def adauga(tip, a, luna_p, perioada):
-        tip = tip.lower()   # [tip_lowercase] cheie de join canonic; upper la randare (UI/termene.js)
-        term = cf._termen(a, luna_p)
-        if azi <= term <= limita and (tip, a, luna_p) not in depuse:
-            out.append({"tip": tip, "an": a, "luna": luna_p,
-                        "termen": term.isoformat(), "perioada": perioada})
-
-    if platitor_tva:
-        if decont == "trimestrial":
-            for tri, lf in enumerate([3, 6, 9, 12], start=1):
-                adauga("D300", an, lf, f"T{tri}")
-        elif decont == "lunar":
-            for luna in range(1, 13):
-                adauga("D300", an, luna, luni[luna])
-        # decont necompletat (vector incomplet) -> NU emitem termene D300; periodicitatea e necunoscuta,
-        # nu se ghiceste (semaforul o marcheaza deja gri). Vezi DECIZII 23.07.
-    if are_salariati:
-        for luna in range(1, 13):
-            adauga("D112", an, luna, luni[luna])
-    if regim == "micro":
-        for tri, lf in enumerate([3, 6, 9, 12], start=1):
-            adauga("D100", an, lf, f"T{tri}")
-    if ic:
-        for luna in range(1, 13):
-            adauga("D390", an, luna, luni[luna])
-    return out
+    rez = cf.obligatii_datorate(vector, are_salariati, azi, jos=azi, sus_zile=ORIZONT_ZILE)
+    return [d for d in rez["datorate"] if (d["tip"], d["an"], d["luna"]) not in depuse]
 
 
 def portofoliu(firme_eval, azi=None, neevaluate=None):
