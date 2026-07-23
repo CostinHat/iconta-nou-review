@@ -179,44 +179,73 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                 datorate.append({"tip": "d101", "an": an - 1, "luna": 12,
                                  "termen": term.isoformat(), "perioada": f"anual {an-1}"})
 
-    # D390 operatiuni intracomunitare (lunar). Se depune de persoanele inregistrate art. 316 (platitor normal)
-    # SAU art. 317 (special, pt achizitii/servicii IC). [B2] La neplatitor cu operatiuni IC nu STIM daca e
-    # inregistrat art. 317 -> gri cu temei, NU emitem tacut si NU omitem tacut.
-    if operatiuni_ic is None:
-        gri("D390", "Operatiuni intracomunitare necompletat - nu pot sti daca datorezi D390.")
-    elif operatiuni_ic:
-        if platitor_tva:                       # inregistrat art. 316 -> D390 pe FAPT lunar (nu obligatie fixa)
-            for a, m in per_luni:
-                term = _termen(a, m, tip="d390")
-                if not _in_fereastra(term):
-                    continue                   # in afara ferestrei -> nici nu intrebam faptul (economie interogari)
-                if d390_fapt is None:
-                    adauga("D390", a, m, _LUNI_NUME[m], "d390")   # fara fapt -> bifa decide (matricea de 64 / compat)
-                    continue
-                fapt = d390_fapt(a, m)
-                if fapt is True:
+    # D390 operatiuni intracomunitare — pe FAPT lunar (nu obligatie fixa). Se depune NUMAI pentru lunile in care ia
+    # nastere exigibilitatea operatiunilor IC (instr. completare D390, anexa OPANAF 394/2017 pct.1.2; OPANAF 705/2020).
+    # FAPTUL PRIMEAZA: d390_fapt=True -> datorat INDIFERENT de bifa operatiuni_ic; bifa conteaza DOAR cand faptul e
+    # None (luna deschisa, nu se poate sti inca). Fara callback (matrice/teste) -> bifa decide (compat istoric).
+    if d390_fapt is None:
+        # COMPAT — comportament istoric NESCHIMBAT (matricea de 64 il apara): bifa decide.
+        if operatiuni_ic is None:
+            gri("D390", "Operatiuni intracomunitare necompletat - nu pot sti daca datorezi D390.")
+        elif operatiuni_ic:
+            if platitor_tva:
+                for a, m in per_luni:
                     adauga("D390", a, m, _LUNI_NUME[m], "d390")
-                elif fapt is False:
-                    # luna INCHISA fara operatiuni IC -> D390 NU se datoreaza. Cost asimetric: o restanta falsa
-                    # pe D390 = acuzatie nefondata. Semafor (privire inapoi): confirmam cu temei doar pe ULTIMA
-                    # luna inchisa (nu inundam grupul "Nu se datoreaza" cu tot istoricul). Termene: skip tacit
-                    # (o luna inchisa fara operatiuni nu e scadenta).
-                    if jos is None and (a, m) == ultima_inchisa:
-                        neaplic_luna("D390", a, m,
-                            "D390 nu se datorează pe %s %d — nicio operațiune intracomunitară în lună. Se depune "
-                            "numai pentru lunile în care ia naștere exigibilitatea (instr. completare D390, "
-                            "anexa OPANAF 705/2020; principiu identic OPANAF 394/2017 pct.1.2)." % (_LUNI_NUME[m], a))
-                else:
-                    # None = luna DESCHISA (curenta/viitoare). Cost asimetric: un termen ascuns care se
-                    # materializeaza = amenda. Termene (privire inainte): AFISAM - nu putem exclude operatiuni
-                    # pana la finalul lunii. Semafor (privire inapoi): perioadele candidate ar trebui inchise;
-                    # daca apare deschisa in fereastra -> gri cu temei (nu restanta falsa).
+            else:
+                gri("D390", "D390 se depune de persoanele înregistrate conform art. 316 sau art. 317 "
+                            "(OPANAF 705/2020, pct. 1.1). Nu avem înregistrată calitatea art. 317 pentru această firmă.")
+        # operatiuni_ic False -> nimic (istoric)
+    elif platitor_tva:                          # art. 316: FAPTUL primeaza; bifa decide doar pe luna deschisa
+        contradictie = []
+        for a, m in per_luni:
+            term = _termen(a, m, tip="d390")
+            if not _in_fereastra(term):
+                continue                        # in afara ferestrei -> nici nu intrebam faptul (economie interogari)
+            fapt = d390_fapt(a, m)
+            if fapt is True:
+                adauga("D390", a, m, _LUNI_NUME[m], "d390")     # datorat, INDIFERENT de bifa
+                if operatiuni_ic is False:
+                    contradictie.append((a, m))                 # profil "fara IC" vs facturi IC reale -> semnal
+            elif fapt is False:
+                # luna INCHISA fara operatiuni -> nu se datoreaza (cost asimetric: restanta falsa = acuzatie).
+                # Semafor confirma cu temei doar pe ULTIMA luna inchisa; termene skip tacit.
+                if jos is None and (a, m) == ultima_inchisa:
+                    neaplic_luna("D390", a, m,
+                        "D390 nu se datorează pe %s %d — nicio operațiune intracomunitară în lună. Se depune numai "
+                        "pentru lunile în care ia naștere exigibilitatea (instr. completare D390, anexa OPANAF "
+                        "394/2017 pct.1.2; OPANAF 705/2020)." % (_LUNI_NUME[m], a))
+            else:
+                # None = luna DESCHISA -> BIFA decide (faptul nu se poate sti inca; cost asimetric: termen ascuns = amenda).
+                if operatiuni_ic:               # profil declara IC -> nu putem exclude: termene afiseaza, semafor gri
                     if jos is not None:
                         adauga("D390", a, m, _LUNI_NUME[m], "d390")
                     else:
                         gri("D390", "Perioada %s %d încă deschisă — nu pot stabili încă exigibilitatea "
                                     "operațiunilor intracomunitare." % (_LUNI_NUME[m], a))
-        else:                                  # neplatitor cu operatiuni IC: art. 317? faptul lipseste -> gri
+                elif operatiuni_ic is None:      # profil necompletat -> gri necompletat (doar semafor)
+                    if jos is None:
+                        gri("D390", "Operatiuni intracomunitare necompletat - nu pot sti daca datorezi D390.")
+                # operatiuni_ic False + luna deschisa -> profil declara fara IC -> nu emitem
+        if contradictie:                        # [contradictie] operatiuni_ic=False vs facturi IC reale -> semnal, nu blocare (ca F185)
+            luni_txt = ", ".join("%s %d" % (_LUNI_NUME[m], a) for (a, m) in contradictie)
+            gri("D390", "Profilul firmei declară FĂRĂ operațiuni intracomunitare, dar există facturi "
+                        "intracomunitare în perioada %s. Verificați Vectorul fiscal (operațiuni intracomunitare) — "
+                        "D390 se datorează pentru lunile cu astfel de operațiuni." % luni_txt)
+    else:                                        # NEplatitor: D390 depinde de art. 317 (necunoscut). Flag SAU fapt IC -> gri.
+        are_ic = bool(operatiuni_ic)
+        if operatiuni_ic is False:               # profil declara fara IC -> verificam faptul pe lunile inchise
+            for a, m in per_luni:
+                term = _termen(a, m, tip="d390")
+                if _in_fereastra(term) and d390_fapt(a, m) is True:
+                    are_ic = True
+                    break
+        if operatiuni_ic is None:
+            gri("D390", "Operatiuni intracomunitare necompletat - nu pot sti daca datorezi D390.")
+        elif are_ic and operatiuni_ic is False:  # contradictie la neplatitor: profil fara IC dar facturi IC reale
+            gri("D390", "Profilul firmei declară FĂRĂ operațiuni intracomunitare, dar există facturi "
+                        "intracomunitare. Dacă firma e înregistrată pentru operațiuni IC (art. 317), D390 se "
+                        "datorează pentru lunile respective. Verificați Vectorul fiscal.")
+        elif are_ic:                             # flag True -> art. 317 gri (ca inainte)
             gri("D390", "D390 se depune de persoanele înregistrate conform art. 316 sau art. 317 "
                         "(OPANAF 705/2020, pct. 1.1). Nu avem înregistrată calitatea art. 317 pentru această firmă.")
 

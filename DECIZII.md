@@ -2796,3 +2796,22 @@ excludea, termene nu -> acelasi fapt, doua verdicte. Acum unificat.
 DOVADA: pytest 922 (test nou: inreg. 01.08 -> iunie/iulie dispar din termene; fara margine iunie apare); verificator
 TOTAL 0. LIMITA: firmele fara snapshot (tva_data_inceput NULL) raman nemarginit (fereastra completa) - corect,
 faptul ANAF lipseste.
+
+### 23.07.2026 D390 — faptul PRIMEAZA peste bifa + contradictie profil-vs-facturi semnalata  (control_fiscal_api obligatii_datorate)
+CONSTATARE (item 1): dupa consolidare, operatiuni_ic=False ramasese POARTA TARE (`elif operatiuni_ic:`) - un
+platitor cu bifa False dar cu facturi IC reale nu primea D390 si faptul nu se consulta deloc. Contrar naturii
+D390 (obligatie pe FAPT, nu pe declaratia de profil).
+DECIZIE (item 1): INVERSAT - faptul primeaza. Ramura D390 pentru platitor consulta d390_fapt pentru FIECARE luna
+din fereastra, indiferent de bifa. fapt=True -> D390 datorat (indiferent de operatiuni_ic). Bifa conteaza DOAR
+cand faptul e None (luna deschisa): profil IC -> afisam/gri; profil fara IC -> nu emitem; profil None -> gri
+necompletat. Compat: d390_fapt=None (matrice/teste pure) pastreaza comportamentul istoric pe bifa (ramura separata).
+DECIZIE (item 2): contradictie operatiuni_ic=False DAR facturi IC reale (fapt True pe o luna) -> SEMNAL gri cu
+temei ("profilul firmei declara FARA operatiuni intracomunitare, dar exista facturi intracomunitare in perioada X"),
+NU blocare - ca F185. La platitor: D390 se datoreaza oricum (fapt) + semnalul. La neplatitor: gri (art.317 /
+contradictie) in loc de tacere. Semnalul intra in `neclar` -> Control fiscal il arata gri; termene il ignora
+(privire inainte), dar D390 datorat (fapt) apare si acolo.
+TEMEI: D390 se depune pe exigibilitatea operatiunilor IN LUNA (instr. completare D390, anexa OPANAF 394/2017
+pct.1.2). Bifa de profil e un indicator, nu adevarul lunar; cand contrazice faptul, faptul castiga si divergenta
+se semnaleaza (nu se ascunde, nu se blocheaza).
+DOVADA: pytest 927 (matrice 64 NESCHIMBATA, d390_fapt=None); verificator TOTAL 0; functional pe DANTE (semafor):
+D390 iunie = restanta reala (avea IC, nedepusa), mai NU e restanta falsa.

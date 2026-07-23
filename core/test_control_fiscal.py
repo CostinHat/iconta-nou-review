@@ -237,3 +237,30 @@ def test_semafor_d390_fara_fapt_pastreaza_comportamentul_pe_bifa():
     rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23))
     assert any(d["tip"] == "d390" for d in rez["datorate"])
     assert not any(n["tip"] == "d390" for n in rez["neaplicabile"])
+
+
+# ---- D390: faptul PRIMEAZA peste flag; contradictie flag-vs-facturi = semnal (item 1+2, 23.07) ----
+
+def test_semafor_d390_fapt_primeaza_peste_flag_false():
+    # d390_fapt=True -> D390 datorat INDIFERENT de operatiuni_ic=False (faptul primeaza)
+    v = {"platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False, "regim_fiscal": "profit"}
+    rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23), d390_fapt=lambda a, m: True)
+    assert any(d["tip"] == "d390" for d in rez["datorate"])
+
+def test_semafor_d390_contradictie_flag_false_dar_facturi_ic():
+    # operatiuni_ic=False dar facturi IC (fapt True) -> semnal gri cu temei (nu blocare)
+    v = {"platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False, "regim_fiscal": "profit"}
+    rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23), d390_fapt=lambda a, m: True)
+    assert sum(1 for n in rez["neclar"] if n["tip"] == "d390" and "declară FĂRĂ" in n["cauza"]) == 1
+
+def test_semafor_d390_flag_false_fapt_false_nimic():
+    v = {"platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False, "regim_fiscal": "profit"}
+    rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23), d390_fapt=lambda a, m: False)
+    assert not any(d["tip"] == "d390" for d in rez["datorate"])
+    assert not any(n["tip"] == "d390" and "declară FĂRĂ" in n["cauza"] for n in rez["neclar"])
+
+def test_semafor_d390_neplatitor_flag_false_dar_facturi_ic_semnaleaza():
+    # neplatitor: profil fara IC dar facturi IC reale -> gri (art.317/contradictie), nu tacere
+    v = {"platitor_tva": False, "tip_decont": None, "operatiuni_ic": False, "regim_fiscal": "micro"}
+    rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23), d390_fapt=lambda a, m: True)
+    assert any(n["tip"] == "d390" for n in rez["neclar"])

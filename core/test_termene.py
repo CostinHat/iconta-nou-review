@@ -149,3 +149,13 @@ def test_termene_marginire_inregistrare_tva_in_fereastra():
     assert (2026, 6) in d300_nemarginit    # fara margine iunie apare
     assert (2026, 6) not in d300           # cu inreg. 01.08 -> iunie (dinainte) dispare
     assert (2026, 7) not in d300           # iulie tot dinainte de inregistrare -> dispare
+
+
+def test_termene_d390_fapt_primeaza_peste_flag_false():
+    """Item 1 in termene: luna inchisa cu operatiuni (fapt True) -> D390 apare desi operatiuni_ic=False."""
+    azi = datetime.date(2026, 7, 23)
+    v = {"regim_fiscal": "profit", "platitor_tva": True, "tip_decont": "lunar",
+         "operatiuni_ic": False, "partida_simpla": False}
+    fapt = lambda a, m: True if (a, m) == (2026, 6) else (None if (a, m) == (2026, 7) else False)
+    out = termene_api.termene_firma(v, False, set(), azi, d390_fapt=fapt)
+    assert (2026, 6) in {(d["an"], d["luna"]) for d in out if d["tip"] == "d390"}
