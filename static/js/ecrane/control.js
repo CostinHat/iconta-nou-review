@@ -26,7 +26,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
   const s = date.sumar || {};
 
   corp.innerHTML = `
-    <p class="mig-intro">Starea fiscală a fiecărei firme: ce s-a depus vs ce e datorat, cu termenele ANAF.</p>
+    <p class="mig-intro">Starea fiscală a fiecărei firme: declarațiile datorate vs depuse (cu termenele ANAF) și coerența lor cu contabilitatea — TVA (F163), salarii, operațiuni intracomunitare, cota facturilor emise (F184), echilibru și trezorerie.</p>
     <div class="cf-sumar">
       <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.verde.dot}"></span>${s.verde || 0} la zi</span>
       <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.galben.dot}"></span>${s.galben || 0} de urmărit</span>
@@ -83,8 +83,9 @@ async function detaliuFirma(corp, nav, firma) {
     d = await api.get(`/control-fiscal/${firma.tenant_id}`);
   } catch {}
 
-  const lipsa = d.lipsa || [];
-  const urmarit = d.urmarit || [];
+  // [C4] restantele ordonate dupa vechimea depasirii termenului (cel mai vechi intai; termen ISO -> sort lexical).
+  const lipsa = (d.lipsa || []).slice().sort((a, b) => (a.termen || "").localeCompare(b.termen || ""));
+  const urmarit = (d.urmarit || []).slice().sort((a, b) => (a.termen || "").localeCompare(b.termen || ""));
   const confirmate = d.confirmate || [];
   const neclar = d.neclar || [];
   const neaplicabile = d.neaplicabile || [];
@@ -122,21 +123,23 @@ async function detaliuFirma(corp, nav, firma) {
 
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · <span style="color:${col.dot}">${col.txt}</span></p>
+    ${/* [C3] ordine dupa utilitate decizionala: restante (blocheaza) -> de urmarit -> nu pot verifica (cere
+        actiune de la contabil) -> nu se datoreaza (inchis, cu temei) -> la zi (confirmate) ultima. */""}
     ${lipsa.length ? `
       <div class="cf-grup-titlu cf-rosu">Restanțe (${lipsa.length})</div>
       <div class="cf-decl">${randDecl(lipsa, "cf-termen-rosu")}</div>` : ""}
     ${urmarit.length ? `
       <div class="cf-grup-titlu cf-galben">De urmărit (${urmarit.length})</div>
       <div class="cf-decl">${randDecl(urmarit, "cf-termen-galben")}</div>` : ""}
-    ${confirmate.length ? `
-      <div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div>
-      <div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}
     ${neclar.length ? `
       <div class="cf-grup-titlu">Nu pot verifica (${neclar.length})</div>
       <div class="cf-decl">${randMotiv(neclar)}</div>` : ""}
     ${neaplicabile.length ? `
       <div class="cf-grup-titlu">Nu se datorează (${neaplicabile.length})</div>
       <div class="cf-decl">${randMotiv(neaplicabile)}</div>` : ""}
+    ${confirmate.length ? `
+      <div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div>
+      <div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}
     ${(() => { /* [control_incrucisat_v1 + F163_ui] declaratie vs contabilitate: TVA + D112 + D390,
         aceeasi anatomie (dot + mesaj + temei + remediu + limita), sub un singur grup. Gri se AFISEAZA
         gri (nu ascuns) - filozofia control_incrucisat: gri e informatie, nu absenta. */

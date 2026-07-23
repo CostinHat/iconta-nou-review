@@ -58,12 +58,12 @@ def test_matrice_forma(tip_firma, platitor_tva, salariati, operatiuni_ic, d205_n
         rupt.append("A2 dublu datorate+neaplicabile: %s" % sorted(dat & neap))
 
     # A1/A3: FIECARE verdict are temei explicit — inclusiv VERDE (confirmate) si GRI (neclar)
-    for d in confirmate:                       # VERDE
+    for d in confirmate:                       # VERDE: motiv = "Depusă ..." (info noua, nu duplica antetul)
         if not d.get("motiv"):
             rupt.append("A1 verde fara temei: %s" % d.get("tip"))
-    for d in lipsa + urmarit:                  # rosu/galben
-        if not d.get("motiv"):
-            rupt.append("A1 restanta/urmarit fara temei: %s" % d.get("tip"))
+    for d in lipsa + urmarit:                  # rosu/galben: temei STRUCTURAT (antet: perioada + termen), C1
+        if not (d.get("perioada") and d.get("termen")):
+            rupt.append("A1 restanta/urmarit fara perioada/termen: %s" % d.get("tip"))
     for d in neclar:                           # GRI
         if not (d.get("cauza") or d.get("motiv")):
             rupt.append("A3 gri fara temei: %s" % d.get("tip"))

@@ -2730,3 +2730,25 @@ DOVADA: 582 teste verde (matrice 64), verificator TOTAL 0, snapshot e2e (DANTE 2
 (inreg. aprilie -> doar apr/mai/iun), D390 neplatitor+IC -> gri cu temei.
 LIMITA: art. 317 (inregistrare speciala pt IC) NU e un camp in vector -> un neplatitor cu IC ramane GRI (corect:
 nu stim). Daca se aduce art. 317 din ANAF (alt camp v9) -> se poate rezolva verde/rosu. Nedecis.
+
+### 23.07.2026 Pasul C — prezentare Control fiscal (C1-C5)
+C1 (CAUZA, nu afisarea): temeiul duplicat pe restante = _clasifica genera un motiv AUTO-CONTINUT ("D300 dec
+nedepusa, termen 26.01.2026 depasit") care repeta tip/perioada/termen randate DEJA structurat in antet
+(cf-rand-decl). Verificat la sursa: NU e double-render, NU e dedup alerte_control_emise (alertele lucreaza pe
+(tenant, verificator, perioada), nu consuma motiv). Reparat la CAUZA: motiv = doar ADITIV - confirmate: data
+depunerii + la/dupa termen; lipsa/urmarit: DOAR faptul (D205/D301 "de ce e datorat"), statusul e implicit din
+sectiune (Restante) + termenul rosu. Restanta simpla -> motiv "" (temei structurat). Rastoarna partial DECIZII
+18.07 B ("fiecare declaratie poarta motiv"): temeiul restantei e STRUCTURAT, nu prose duplicat.
+C2: antetul acoperea doar axa declaratiilor; rescris sa acopere axele LIVE ale semaforului (verificat in
+FUNCTIONALITATI.csv): declaratii datorate vs depuse + coerenta cu contabilitatea (F163 TVA/salarii/IC, F184 cota
+facturi emise, echilibru/trezorerie). F185 (coliziune CUI) NU intra - e la register/landing, nu in semafor.
+C3: ordinea sectiunilor dupa utilitate decizionala: Restante -> De urmarit -> Nu pot verifica (gri) -> Nu se
+datoreaza (inchis, cu temei) -> La zi (confirmate) ultima.
+C4: ordonare restante dupa vechimea depasirii (cel mai vechi intai) - FACUT. Grupare vizuala pe tip cu separator
+canonic - NEFACUT: separatorul nu exista in DS -> STOP (nu inventez). Vezi DE_FACUT.
+C5 (raportat, neatins): "Firmă activă: Nicio firmă selectată" (navigator.js:100, .subbara-gol) = stare legitima de
+SUB-BARA (contextul firmei active), afisata DOAR cand nu e firma in lucru (conditional corect, nu bug). NU e
+lista goala -> .stare-goala (cap.6) nu se aplica (context de bara, nu de continut). Lasat.
+DOVADA: 582 teste (2 actualizate la C1 + matrice A1 pe temei structurat), verificator TOTAL 0, captura de date
+(structura ecranului) pe tenant_001 PFA + tenant_002 SRL. Capturi PIXEL = pasul de audit browser al lui Costin
+(fara browser headless in mediul de dezvoltare).

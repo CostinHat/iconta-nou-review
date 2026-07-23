@@ -485,3 +485,17 @@ vs DE CONSTRUIT (munca reala):
    (selector `#fn-tip`), nu există cale UI de corecție; o firmă creată cu tip greșit (ex. cabinet individual pus
    ca SRL — cazul AMZUICĂ) cere edit DB direct. De decis dacă merită editor de tip_firma (cu re-evaluarea
    consecințelor: carduri, straturi migrare, semafor).
+
+## Actualizare 23.07.2026 (Pasul B) — art. 317 neexpus de ANAF v9
+- **D390 la neplătitor cu operațiuni IC = GRI permanent** [BLOCAT DIN EXTERIOR]: verificat LIVE (26766053 + 14399840)
+  că ANAF v9 (`PlatitorTvaRest/v9/tva`) NU expune înregistrarea art. 317 (înregistrare specială pt operațiuni
+  intracomunitare / cod special RO). Secțiuni disponibile: scpTVA(art.316), RTVAI, SplitTVA, stare_inactiv,
+  adrese. Art. 317 / ROI = registru separat. Fără el, un neplătitor cu IC rămâne gri (nu știm dacă e înregistrat
+  art. 317 → dacă datorează D390). De reevaluat dacă ANAF publică ROI/art.317 printr-un alt serviciu web.
+
+## Actualizare 23.07.2026 (Pasul C — prezentare Control fiscal)
+- **C4 grupare restanțe pe tip — separator vizual canonic LIPSEȘTE** [DE DECIS cu Costin]: ordonarea după
+  vechimea depășirii (cel mai vechi întâi) e făcută (control.js, sort pe termen ISO). Dar gruparea VIZUALĂ pe
+  tip cere un separator canonic care NU există în DESIGN_SYSTEM (grep: fără cf-subgrup/separator/divider).
+  Per disciplina DS ("regula nu există în scris -> STOP, nu inventa pattern generic"), NU l-am construit.
+  De stabilit forma separatorului de sub-grup (sau confirmat că ordonarea e suficientă).

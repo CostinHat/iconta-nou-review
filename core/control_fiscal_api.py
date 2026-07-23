@@ -247,24 +247,27 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
 def _clasifica(datorate, depuse, azi):
     """Pur: din datorate + depuse -> (lipsa, urmarit, confirmate), FIECARE cu `motiv` (de ce culoarea,
     inclusiv verde). depuse: dict (tip,an,luna) -> data_depunere (date) sau None."""
+    # [C1] motiv = doar ce NU e in antet (tip·perioada·termen se randeaza structurat in rand). Confirmate:
+    # data depunerii + la/dupa termen (info noua). Lipsa/urmarit: DOAR faptul (D205/D301 "de ce e datorat");
+    # statusul "nedepusa/termen depasit" e implicit din sectiune (Restante) + termenul rosu din antet.
     lipsa, urmarit, confirmate = [], [], []
     for d in datorate:
         cheie = (d["tip"], d["an"], d["luna"])
-        fapt = (" · " + d["fapt"]) if d.get("fapt") else ""
+        fapt = d.get("fapt") or ""
+        fapt_sufix = (" · " + fapt) if fapt else ""
         term = datetime.date.fromisoformat(d["termen"])
-        termtxt = _dmy(d["termen"])
         e = dict(d)
         if cheie in depuse:
             dd = depuse[cheie]
             data_txt = (" " + _dmy(dd.isoformat())) if dd else ""
-            la_termen = ("" if not dd else (", la termen" if dd <= term else ", după termen"))
-            e["motiv"] = f"{d['tip'].upper()} {d['perioada']} depusă{data_txt}{la_termen} (termen {termtxt}){fapt}"
+            la_termen = ("" if not dd else (" la termen" if dd <= term else " după termen"))
+            e["motiv"] = f"Depusă{data_txt}{la_termen}{fapt_sufix}"
             confirmate.append(e)
         elif term < azi:
-            e["motiv"] = f"{d['tip'].upper()} {d['perioada']} nedepusă, termen {termtxt} depășit{fapt}"
+            e["motiv"] = fapt                 # restanta: temeiul e structurat (antet + sectiune); doar faptul e nou
             lipsa.append(e)
         else:
-            e["motiv"] = f"{d['tip'].upper()} {d['perioada']} nedepusă, termen {termtxt} (în fereastră){fapt}"
+            e["motiv"] = fapt                 # de urmarit: idem
             urmarit.append(e)
     return lipsa, urmarit, confirmate
 
