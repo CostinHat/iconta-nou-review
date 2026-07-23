@@ -2959,3 +2959,24 @@ portal 7...). NU doar panoul D390 (reparat). Extinderea gardii = 136 flag-uri = 
 curatarea celor 136 (reveni pe decizia v2.11 "spacing inline = datorie acceptata", pt display/flex/color; spacing
 gap/margin ramane acceptat). E workstream dedicat (15 fisiere, risc de eroare), NU un fix de ecran. RAPORTAT, garda
 NEextinsa in acest commit (ar rupe TOTAL 0). De decis: curatare frontend-wide programata vs ramane datorie.
+
+### 23.07.2026 Declaratii poz.1 — DOAR_SRL prea grosier pe cardul Declaratii (fals negativ, oglinda dimineata)
+CONSTATARE: cardul "Declaratii" din fisa firmei (meniuFirma) era in DOAR_SRL -> ascuns COMPLET la PFA. Dar un PFA
+datoreaza D112/D300/D394/D301/D390 -> contabilul nu le putea genera din fisa. Aceeasi clasa cu bug-ul de dimineata,
+in OGLINDA: acolo fals POZITIV (PFA primea D101 ca restanta), aici fals NEGATIV (PFA nu putea genera D112).
+DECIZIE: 'declaratii' SCOS din DOAR_SRL (firme.js:242). Cardul apare la orice tip_firma. Filtrarea FINA (D100/D101/
+D406 dezactivate cu temei la partida simpla, restul selectabile) o face deja G1 in dropdown, prin neaplicabile_forma
+- declaratiiPerFirma o cere o data la deschidere (firma fixa), aceeasi primitiva ca standalone, fara logica separata.
+DOVADA: node --check; pytest 946; verificator TOTAL 0; functional PFA(tenant_001) -> selectabile d112/d205/d300/d301/
+d390/d394, dezactivate d100/d101/d406.
+RESTUL DOAR_SRL nemodificat (verificat justificat): jurnal/balanta/bilant/operatiuni = concepte de partida dubla.
+
+### 23.07.2026 [RAPORT] Filtrarea cardurilor fisei = DOAR_SRL/DOAR_PFA hardcodat (firme.js), NU STRATURI_META
+Constatare ceruta separat: cardurile Stocuri/Produse/Banca/Magazin/Centre de cost apar la PFA. Cauza: vizibilitatea
+cardurilor din meniuFirma e guvernata de listele HARDCODATE DOAR_SRL/DOAR_PFA (firme.js:242-243), NU de STRATURI_META
+(aceea guverneaza STRATURILE DE MIGRARE - straturi_pentru in migrare_api, alta filtrare). Apar la PFA fiindca NU sunt
+in DOAR_SRL. Analiza: Stocuri (NIR/descarcare gestiune 371/607) + Centre de cost (analitic pe conturi) = concepte de
+PARTIDA DUBLA -> filtrare INCOMPLETA (ar trebui DOAR_SRL, ca jurnal/balanta). Produse (nomenclator TVA), Magazin
+(WooCommerce->facturi), Banca (import extras -> si RIP la PFA) = plauzibil aplicabile unui PFA platitor TVA/e-commerce.
+Casa (5311) - la fel partida dubla, nementionat dar aceeasi categorie. NU e "ambele intentionat" - lista hardcodata
+nu le include. NEREPARAT (raport). De decis daca Stocuri/Centre de cost/Casa intra in DOAR_SRL.

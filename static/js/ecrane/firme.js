@@ -235,11 +235,13 @@ function meniuFirma(corp, nav, t) {
   ];
 
   // [tip_firma_v1] carduri filtrate pe regimul firmei (srl = partida dubla / pfa = partida simpla).
-  // SRL-only ascunse la PFA: declaratii, jurnal, balanta, bilant, operatiuni.
-  // PFA-only ascunsa la SRL: rip (Incasari/plati). 'control' ramane vizibil la PFA (semafor
-  // partial, decis-acceptat). Restul cardurilor apar la ambele regimuri.
+  // SRL-only ascunse la PFA: jurnal, balanta, bilant, operatiuni (concepte de partida dubla). 'declaratii' SCOS
+  // din lista 23.07: un PFA datoreaza D112/D300/D394/D301/D390 -> cardul apare la orice tip_firma, iar D100/D101/
+  // D406 (persoana juridica) apar dezactivate cu temei in dropdown prin neaplicabile_forma (G1). Simetric cu
+  // bug-ul de dimineata (PFA primea D101 ca restanta): acolo fals pozitiv, aici era fals negativ.
+  // PFA-only ascunsa la SRL: rip (Incasari/plati). 'control' ramane vizibil la PFA (semafor partial, decis-acceptat).
   const tip = t.tip_firma.toLowerCase();   // backendul (tenantii_userului) garanteaza tip_firma; fara fallback mort
-  const DOAR_SRL = ["declaratii", "jurnal", "balanta", "bilant", "operatiuni"];
+  const DOAR_SRL = ["jurnal", "balanta", "bilant", "operatiuni"];
   const DOAR_PFA = ["rip"];
   const vizibile = optiuni.filter((o) =>
     tip === "pfa" ? !DOAR_SRL.includes(o.cheie) : !DOAR_PFA.includes(o.cheie));
