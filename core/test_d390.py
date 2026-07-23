@@ -9,8 +9,19 @@ Doua buguri gasite prin audit pe date reale (16.07.2026):
    fara fisa de client si TOATE facturile PRIMITE (care n-au niciodata client_id)
    aveau cui="" -> respinse tacit -> D390 genera mereu "0 operatiuni".
 """
+import datetime
 import pytest
+from core import d390
 from core.d390 import calcul_d390, build_xml, valideaza, operatiuni_auto
+
+
+def test_d390_are_operatiuni_luna_deschisa_none_fara_db():
+    """Poarta perioadei DESCHISE: luna curenta/viitoare -> None INAINTE de orice interogare (conn nefolosit).
+    D390 nu e obligatie lunara fixa; luna deschisa nu se poate decide inca (exigibilitatea nu s-a nascut)."""
+    AZI = datetime.date(2026, 7, 23)
+    assert d390.d390_are_operatiuni(None, "x", 2026, 7, azi=AZI) is None    # luna curenta, inca deschisa
+    assert d390.d390_are_operatiuni(None, "x", 2026, 12, azi=AZI) is None   # viitoare
+    assert d390.d390_are_operatiuni(None, "x", 2099, 1, azi=AZI) is None    # mult in viitor
 
 
 def _prof():

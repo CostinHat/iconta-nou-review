@@ -2760,3 +2760,27 @@ TEMEI: gruparea pe tip FRAGMENTEAZA semnalul de urgenta, care e SINGURUL criteri
 depasit cel mai mult termenul se plateste intai, indiferent de tip). O primitiva DS pentru un singur ecran = cod
 mort (regula noua intretinuta pentru un consumator). Se reconsidera daca apar 3+ ecrane cu aceeasi nevoie de
 sub-grupare vizuala. Inchide flag-ul C4 din raportul precedent.
+
+### 23.07.2026 Termene poz.3 — D390 pe FAPT lunar, o primitivă / două comportamente  (d390.py; control_fiscal_api; termene_api; main.py)
+PROBLEMA: obligatii_datorate emitea D390 pentru FIECARE lună cât timp bifa statică operatiuni_ic=True
+(obligație lunară fixă) — contrar instr. completare D390 (anexa OPANAF 705/2020; principiu identic OPANAF
+394/2017 pct.1.2 la D394): D390 se depune NUMAI pentru lunile în care ia naștere exigibilitatea operațiunilor IC.
+DECIZIE: primitivă unică `d390.d390_are_operatiuni(conn, schema, an, luna, azi) -> bool|None` (unde stă deja
+cunoașterea per-lună): True/False = perioadă ÎNCHISĂ (fapt din facturi IC + d390_manual + d301_operatiuni),
+None = perioadă DESCHISĂ (exigibilitatea nu se poate stabili încă). `obligatii_datorate` primește callback
+`d390_fapt` (default None = comportament vechi pe bifă → apără matricea de 64) și îl consultă:
+  - False => D390 NU se datorează acea lună.
+  - True  => datorat.
+  - None  => apelantul decide după DIRECȚIE (parametrul `jos`).
+TEMEI — COST ASIMETRIC: o restanță D390 falsă = acuzație nefondată; un termen ascuns care se materializează =
+amendă. Deci ÎNAPOI (semafor, jos=None) decidem pe FAPT — luna închisă fără operațiuni nu e restanță (confirmare
+cu temei doar pe ultima lună închisă, nu tot istoricul); ÎNAINTE (termene, jos=dată) AFIȘĂM pe incertitudine —
+luna deschisă (None) apare, fiindcă nu putem exclude operațiuni până la finalul ei.
+Flag-ul operatiuni_ic RĂMÂNE în vector (indicator de profil: dacă e False/None nu se ajunge la fapt), dar NU mai
+decide singur obligația lunară. Semaforul (evalueaza_firma) construiește closure-ul (are conn_schema); termene
+(ruta /termene) la fel, cât timp `cs` e deschis.
+DOVADĂ: pytest 921 (matrice 64 + test_control_fiscal NESCHIMBATE, d390_fapt=None); verificator TOTAL 0; verificare
+funcțională pe DANTE real (mai închisă=False, iunie închisă cu facturi IC=True, iulie/aug deschise=None → semafor:
+iunie datorat, mai NU e restanță; termene: iunie+iulie).
+LIMITĂ (raportată, follow-up): primitiva face ~4 interogări/lună/firmă; la portofolii mari s-ar batch-ui pe an.
+Azi (3 firme) e neglijabil. Marcaj `tip_d390` pe factură (F125 open) ar înlocui derivarea per-lună cu citire directă.

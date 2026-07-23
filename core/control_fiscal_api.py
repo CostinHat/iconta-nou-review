@@ -38,7 +38,7 @@ def _termen(an, luna=None, tip="d300"):
     return scadente.scadenta_data(tip, an, luna=luna)
 
 
-def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE):
+def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None):
     """
     SURSA UNICA a mapicarii 'cine ce declaratie datoreaza' (regim/TVA/decont/IC/salariati),
     inclusiv marginirea la inregistrarea TVA (B1) si D390 art.317 gri la neplatitor (B2).
@@ -53,9 +53,15 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                   (fiecare cu {tip, cauza}). Se afiseaza GRI, cu buton catre Vectorul fiscal.
     vector = dict cu regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, partida_simpla, tva_data_inceput
              (oricare poate fi None; partida_simpla derivat de caller din tip_firma, ca la semafor).
+    d390_fapt = callback optional (an, luna) -> bool|None pentru D390 pe FAPT lunar (nu bifa statica):
+             True=luna cu operatiuni IC -> datorat; False=luna inchisa fara -> nu se datoreaza (cu temei);
+             None=luna deschisa -> apelantul decide dupa directie (jos): semafor gri, termene afiseaza.
+             d390_fapt=None (implicit) -> comportament vechi (bifa operatiuni_ic decide), apara matricea de 64.
     """
     azi = azi or azi_ro()   # [fus] verdict de zi (lipsa vs urmarit) = zi RO
     an = azi.year
+    # ultima luna INCHISA (perioada de raportare curenta pt D390 pe fapt) - relativ la azi
+    ultima_inchisa = (an - 1, 12) if azi.month == 1 else (an, azi.month - 1)
     limita = azi + datetime.timedelta(days=sus_zile)
     datorate, neclar, neaplicabile = [], [], []
 
@@ -88,6 +94,10 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     def neaplic(tip, motiv):
         # "nu se datoreaza" (cunoscut), NU gri ("nu pot verifica"). Se afiseaza in grupul Nu se datoreaza.
         neaplicabile.append({"tip": tip.lower(), "motiv": motiv})
+
+    def neaplic_luna(tip, a, luna_p, motiv):
+        # neaplicabil pe o LUNA anume (D390 pe fapt) - poarta an/luna in plus fata de neaplic simplu.
+        neaplicabile.append({"tip": tip.lower(), "an": a, "luna": luna_p, "motiv": motiv})
 
     def emite_tva(tip, tip_scad, cauza_periodicitate, marginit=False):
         """Emite `tip` pe perioada fiscala TVA (lunar/trimestrial dupa tip_decont). tip_decont necunoscut la
@@ -175,9 +185,37 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     if operatiuni_ic is None:
         gri("D390", "Operatiuni intracomunitare necompletat - nu pot sti daca datorezi D390.")
     elif operatiuni_ic:
-        if platitor_tva:                       # inregistrat art. 316 -> D390 lunar
+        if platitor_tva:                       # inregistrat art. 316 -> D390 pe FAPT lunar (nu obligatie fixa)
             for a, m in per_luni:
-                adauga("D390", a, m, _LUNI_NUME[m], "d390")
+                term = _termen(a, m, tip="d390")
+                if not _in_fereastra(term):
+                    continue                   # in afara ferestrei -> nici nu intrebam faptul (economie interogari)
+                if d390_fapt is None:
+                    adauga("D390", a, m, _LUNI_NUME[m], "d390")   # fara fapt -> bifa decide (matricea de 64 / compat)
+                    continue
+                fapt = d390_fapt(a, m)
+                if fapt is True:
+                    adauga("D390", a, m, _LUNI_NUME[m], "d390")
+                elif fapt is False:
+                    # luna INCHISA fara operatiuni IC -> D390 NU se datoreaza. Cost asimetric: o restanta falsa
+                    # pe D390 = acuzatie nefondata. Semafor (privire inapoi): confirmam cu temei doar pe ULTIMA
+                    # luna inchisa (nu inundam grupul "Nu se datoreaza" cu tot istoricul). Termene: skip tacit
+                    # (o luna inchisa fara operatiuni nu e scadenta).
+                    if jos is None and (a, m) == ultima_inchisa:
+                        neaplic_luna("D390", a, m,
+                            "D390 nu se datorează pe %s %d — nicio operațiune intracomunitară în lună. Se depune "
+                            "numai pentru lunile în care ia naștere exigibilitatea (instr. completare D390, "
+                            "anexa OPANAF 705/2020; principiu identic OPANAF 394/2017 pct.1.2)." % (_LUNI_NUME[m], a))
+                else:
+                    # None = luna DESCHISA (curenta/viitoare). Cost asimetric: un termen ascuns care se
+                    # materializeaza = amenda. Termene (privire inainte): AFISAM - nu putem exclude operatiuni
+                    # pana la finalul lunii. Semafor (privire inapoi): perioadele candidate ar trebui inchise;
+                    # daca apare deschisa in fereastra -> gri cu temei (nu restanta falsa).
+                    if jos is not None:
+                        adauga("D390", a, m, _LUNI_NUME[m], "d390")
+                    else:
+                        gri("D390", "Perioada %s %d încă deschisă — nu pot stabili încă exigibilitatea "
+                                    "operațiunilor intracomunitare." % (_LUNI_NUME[m], a))
         else:                                  # neplatitor cu operatiuni IC: art. 317? faptul lipseste -> gri
             gri("D390", "D390 se depune de persoanele înregistrate conform art. 316 sau art. 317 "
                         "(OPANAF 705/2020, pct. 1.1). Nu avem înregistrată calitatea art. 317 pentru această firmă.")
@@ -205,10 +243,11 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     return {"datorate": datorate, "neclar": neclar, "neaplicabile": neaplicabile}
 
 
-def declaratii_datorate(vector, are_salariati, azi=None):
+def declaratii_datorate(vector, are_salariati, azi=None, *, d390_fapt=None):
     """Semaforul (privire inapoi): fereastra [restante ... azi+7], fara limita inferioara.
-    Wrapper subtire peste obligatii_datorate - comportament NESCHIMBAT (matricea de 64 il apara)."""
-    return obligatii_datorate(vector, are_salariati, azi)
+    Wrapper subtire peste obligatii_datorate - comportament NESCHIMBAT fara d390_fapt (matricea de 64 il apara).
+    d390_fapt = callback D390 pe fapt lunar, dat de evalueaza_firma (are conn_schema); None in teste/matrice."""
+    return obligatii_datorate(vector, are_salariati, azi, d390_fapt=d390_fapt)
 
 
 def _dmy(iso):
@@ -374,7 +413,10 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
                 "neclar": [{"tip": "—", "motiv": "Vector fiscal necompletat — nu pot evalua obligațiile firmei."}],
                 "mesaj": "vector fiscal necompletat"}
 
-    rez = declaratii_datorate(vector, are_sal, azi)
+    # [D390-fapt] semaforul intreaba faptul lunar (facturi IC + manual + d301), nu bifa statica operatiuni_ic.
+    from core import d390 as _d390
+    _d390_fapt = lambda a, l: _d390.d390_are_operatiuni(conn_schema, schema, a, l, azi)
+    rez = declaratii_datorate(vector, are_sal, azi, d390_fapt=_d390_fapt)
     datorate = list(rez["datorate"])
     neclar = list(rez["neclar"])
 

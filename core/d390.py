@@ -25,6 +25,7 @@ Serviciile (P/S) și triangulația (T/R) = clasificare manuală de contabil (pri
 totalPlata_A = nrOPI + bazaL + bazaT + bazaA + bazaP + bazaS + bazaR (formula oficială).
 """
 import re
+import datetime
 from core import common as c
 from dataclasses import dataclass, field
 from decimal import Decimal
@@ -282,6 +283,32 @@ def pull_reclasificari(conn, schema, an, luna):
         cur.execute(f"SELECT directie, tara, cod, tip FROM {schema}.d390_reclasificare "
                     f"WHERE an=%s AND luna=%s", (an, luna))
         return {(dir_, ta, c): t for (dir_, ta, c, t) in cur.fetchall()}
+
+
+def d390_are_operatiuni(conn, schema, an, luna, azi=None):
+    """Fapt per-luna: exista operatiuni intracomunitare in (an, luna)? -> True | False | None.
+      True/False = perioada INCHISA (luna incheiata inainte de azi): fapt STABILIT din
+                   facturi IC (_facturi_ic) + d390_manual (F125) + d301_operatiuni (IC neplatitori).
+      None       = perioada DESCHISA (curenta/viitoare): exigibilitatea nu se poate stabili inca.
+    Temei: D390 se depune NUMAI pentru lunile in care ia nastere exigibilitatea operatiunilor IC
+    (instructiuni completare D390, anexa OPANAF 705/2020; acelasi principiu ca OPANAF 394/2017 pct.1.2
+    la D394). NU e obligatie lunara fixa -> poarta (control_fiscal_api.obligatii_datorate) intreaba
+    faptul lunar, nu bifa statica operatiuni_ic din profil. Vezi DECIZII 23.07."""
+    azi = azi or c.azi_ro()
+    prima_urm = datetime.date(an + 1, 1, 1) if luna == 12 else datetime.date(an, luna + 1, 1)
+    if prima_urm > azi:
+        return None                         # luna nu s-a incheiat -> perioada deschisa
+    _prof, facturi = pull(conn, schema, an, luna)
+    ic, _s1, _s2 = _facturi_ic(facturi)
+    if ic:
+        return True
+    if pull_manual(conn, schema, an, luna):
+        return True
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT 1 FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s LIMIT 1", (an, luna))
+        if cur.fetchone():
+            return True
+    return False
 
 
 def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):

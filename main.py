@@ -2123,17 +2123,21 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
                     if cur.fetchone()[0]:
                         cur.execute("SELECT count(*) FROM salariati WHERE activ=true")
                         are_sal = cur.fetchone()[0] > 0
-            if not vector:
-                # [T1] firma exista dar vectorul fiscal e gol -> nu se ascunde: gri cu temei (ca evalueaza_firma)
-                neevaluate.append({"tenant_id": tid, "nume": f.get("nume"),
-                                   "cauza": "Vector fiscal necompletat — nu pot evalua obligațiile firmei."})
-                continue
-            with db.get_conn() as cp:
-                with cp.cursor() as cur:
-                    cur.execute("SELECT tip, an, luna FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tid,))  # [F163v2] vederea = depunerea curentă
-                    depuse = {(t, a, l) for (t, a, l) in cur.fetchall()}
-            term = termene_api.termene_firma(vector, are_sal, depuse, azi)
-            firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "termene": term})
+                if not vector:
+                    # [T1] firma exista dar vectorul fiscal e gol -> nu se ascunde: gri cu temei (ca evalueaza_firma)
+                    neevaluate.append({"tenant_id": tid, "nume": f.get("nume"),
+                                       "cauza": "Vector fiscal necompletat — nu pot evalua obligațiile firmei."})
+                    continue
+                with db.get_conn() as cp:
+                    with cp.cursor() as cur:
+                        cur.execute("SELECT tip, an, luna FROM public.declaratii_depuse_curente WHERE tenant_id=%s", (tid,))  # [F163v2] vederea = depunerea curentă
+                        depuse = {(t, a, l) for (t, a, l) in cur.fetchall()}
+                # [D390-fapt] termene intreaba faptul lunar prin cs (conn pe schema firmei, cat timp e deschis):
+                # luna deschisa -> AFISAM (nu putem exclude operatiuni pana la finalul lunii); vezi obligatii_datorate.
+                from core import d390 as _d390
+                _fapt = lambda a, l: _d390.d390_are_operatiuni(cs, schema, a, l, azi)
+                term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt)
+                firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "termene": term})
         except Exception as e:
             # [T1] o firma care crapa NU dispare din ecran: gri cu temei (doctrina 23.07 — gri = "nu am putut", nu tacere)
             _LOG_VERDICT.warning("termene: evaluare esuata tenant %s -> gri (%r)", tid, e)

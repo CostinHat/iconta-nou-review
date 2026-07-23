@@ -210,3 +210,30 @@ def test_regim_efectiv_strict_keyerror_pe_cheie_absenta():
         _regim_efectiv({"regim_fiscal": "micro"})     # tip_firma absent -> KeyError, fara fallback
     with _pytest.raises(KeyError):
         _regim_efectiv({"tip_firma": "srl"})          # regim_fiscal absent -> KeyError
+
+
+# ---- D390 pe FAPT lunar (semafor, privire inapoi): nicio restanta falsa ----
+# obligatii_datorate consulta d390_fapt(an, luna) in loc de bifa statica operatiuni_ic.
+# Cost asimetric: o restanta D390 falsa = acuzatie nefondata -> inapoi decidem pe fapt.
+
+def test_semafor_d390_luna_inchisa_fara_operatiuni_nu_e_restanta():
+    v = {"platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": True, "regim_fiscal": "profit"}
+    rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23),
+                                d390_fapt=lambda a, m: False)   # nicio luna cu operatiuni IC
+    assert not any(d["tip"] == "d390" for d in rez["datorate"])          # NICIO restanta falsa
+    # confirmare cu temei DOAR pe ultima luna inchisa (iunie), nu tot istoricul
+    d390_neaplic = [n for n in rez["neaplicabile"] if n["tip"] == "d390"]
+    assert len(d390_neaplic) == 1 and d390_neaplic[0].get("luna") == 6
+
+def test_semafor_d390_luna_cu_operatiuni_ramane_datorata():
+    v = {"platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": True, "regim_fiscal": "profit"}
+    rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23),
+                                d390_fapt=lambda a, m: True)    # fiecare luna are operatiuni
+    assert any(d["tip"] == "d390" for d in rez["datorate"])
+
+def test_semafor_d390_fara_fapt_pastreaza_comportamentul_pe_bifa():
+    # d390_fapt=None (matricea de 64) -> bifa decide, D390 lunar ca inainte
+    v = {"platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": True, "regim_fiscal": "profit"}
+    rez = cf.obligatii_datorate(v, are_salariati=False, azi=date(2026, 7, 23))
+    assert any(d["tip"] == "d390" for d in rez["datorate"])
+    assert not any(n["tip"] == "d390" for n in rez["neaplicabile"])

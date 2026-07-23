@@ -100,3 +100,32 @@ def test_termene_decembrie_28_trage_perioada_an_nou():
     out = termene_api.termene_firma(V_TVA_LUNAR, are_salariati=False, depuse=set(),
                                     azi=datetime.date(2026, 12, 28))
     assert any(d["tip"] == "d300" and d["an"] == 2027 and d["luna"] == 1 for d in out)
+
+
+# ---------- D390 pe FAPT lunar (termene, privire inainte: afisam pe incertitudine) ----------
+# Cost asimetric: un termen ascuns care se materializeaza = amenda -> inainte afisam pe incertitudine.
+
+_V_IC = {"regim_fiscal": "profit", "platitor_tva": True, "tip_decont": "lunar",
+         "operatiuni_ic": True, "partida_simpla": False}
+
+def test_termene_d390_luna_deschisa_se_afiseaza():
+    """Luna DESCHISA (fapt None) -> D390 se AFISEAZA in termene (nu putem exclude operatiuni pana la final)."""
+    azi = datetime.date(2026, 7, 23)
+    fapt = lambda a, m: None if (a, m) == (2026, 7) else False   # iulie deschisa; iunie inchisa fara IC
+    out = termene_api.termene_firma(_V_IC, are_salariati=False, depuse=set(), azi=azi, d390_fapt=fapt)
+    d390_luni = {(d["an"], d["luna"]) for d in out if d["tip"] == "d390"}
+    assert (2026, 7) in d390_luni          # deschisa -> afisata (incertitudine)
+    assert (2026, 6) not in d390_luni      # inchisa fara operatiuni -> nu apare (nu e scadenta)
+
+def test_termene_d390_luna_inchisa_cu_operatiuni_apare():
+    azi = datetime.date(2026, 7, 23)
+    fapt = lambda a, m: True if (a, m) == (2026, 6) else (None if (a, m) == (2026, 7) else False)
+    out = termene_api.termene_firma(_V_IC, are_salariati=False, depuse=set(), azi=azi, d390_fapt=fapt)
+    d390_luni = {(d["an"], d["luna"]) for d in out if d["tip"] == "d390"}
+    assert (2026, 6) in d390_luni          # inchisa cu operatiuni -> datorata
+
+def test_termene_d390_fara_fapt_pe_bifa():
+    # d390_fapt=None -> bifa decide (compat); D390 pe lunile din fereastra
+    azi = datetime.date(2026, 7, 23)
+    out = termene_api.termene_firma(_V_IC, are_salariati=False, depuse=set(), azi=azi)
+    assert any(d["tip"] == "d390" for d in out)
