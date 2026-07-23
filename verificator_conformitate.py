@@ -32,7 +32,7 @@ for f in sorted(os.listdir(BAZA)):
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
                         "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
-                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat"]}
+                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -211,6 +211,14 @@ RE_FLAG_STARE_LIT = re.compile(r'_flag\(\s*["\'](rosu|galben|verde|gri)["\']')
 # incrucisat:346/381/720+, audit_preluare:349 - `stare = "rosu" if any(...) else ...`), sintactic identica cu
 # o escaladare gresita. O regula pe forma plain ar fi numai fals-pozitive. Nu e exprimabila mecanic - vezi DECIZII.
 RE_STARE_SUBSCRIPT_LIT = re.compile(r'''\w+\[["']stare["']\]\s*=\s*["'](rosu|galben|verde|gri)["']''')
+# DEFAULT_FISCAL_TACIT: un camp fiscal decisiv (regim_fiscal/tip_firma/platitor_tva) NU se defaulteaza pe
+# LITERAL inline (x or "micro" / x || "srl" / ... else "pfa"). Faptul + normalizarea + default-ul traiesc
+# INTR-UN singur loc — primitivele din migrare_api (regim_contabil, regim_efectiv, tip_firma_nrm). O cale care
+# re-defaulteaza inline reintroduce bug-ul termene ("regim_fiscal or 'micro'" -> D100 fabricat pe un PFA).
+# Se prinde forma or/||/else (fallback pe CITIRE); atribuirea simpla `x = "srl"` NU (declaratie, nu fallback).
+# Exceptat: migrare_api.py (primitivele - singurul loc unde literalul e legitim). Vezi DESIGN_SYSTEM.
+RE_DEFAULT_FISCAL = re.compile(r'''\b(regim_fiscal|tip_firma|platitor_tva)\b[^\n]{0,80}?(\bor\b|\|\||\belse\b)\s*["'](micro|profit|srl|pfa)["']''')
+FISCAL_EXEMPT_FILE = {"migrare_api.py"}
 RE_DATA_DISP  = re.compile(r'\.strftime\(\s*["\']%d[./]')          # strftime("%d.%m/%d/%m") = display RO
 RE_FORMATATOR = re.compile(r'\b(bani|data_ro|_lei|_dmy|_data_ro|_f|_q)\s*\(')  # deja canonic/local-ok
 PY_EXCEPT_FILE = {"etransport_send.py", "d406.py", "export_winmentor.py",
@@ -240,6 +248,8 @@ for pdir in (os.path.join(BAZA_PY, "core"), BAZA_PY):
                 rap["verdict_colapsat"].append((f, i, "verdict->str", s[:60]))
             if RE_FLAG_STARE_LIT.search(lin) or RE_STARE_SUBSCRIPT_LIT.search(lin):
                 rap["verdict_colapsat"].append((f, i, "stare-literal", s[:60]))
+            if f not in FISCAL_EXEMPT_FILE and RE_DEFAULT_FISCAL.search(lin):
+                rap["default_fiscal_tacit"].append((f, i, "fiscal-lit", s[:60]))
             if RE_FORMATATOR.search(lin):
                 continue
             suma_bruta = (RE_SUMA_PCT.search(lin) or (RE_ARE_FSTR.search(lin) and RE_SUMA_FSTR.search(lin)))

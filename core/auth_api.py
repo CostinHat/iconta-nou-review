@@ -396,9 +396,11 @@ def tenantii_userului(conn, user_id):
                 cur.execute("SAVEPOINT sp_tip")
                 cur.execute(f'SELECT tip_firma FROM "{t["schema_name"]}".firma_profil WHERE id=1')
                 row = cur.fetchone()
-                t["tip_firma"] = (row[0] if row and row[0] else "srl")
+                from core.migrare_api import tip_firma_nrm  # default 'srl' -> UNICA primitiva, nu literal inline
+                t["tip_firma"] = tip_firma_nrm(row[0] if row else None)
                 cur.execute("RELEASE SAVEPOINT sp_tip")
             except Exception:
+                from core.migrare_api import tip_firma_nrm
                 cur.execute("ROLLBACK TO SAVEPOINT sp_tip")
-                t["tip_firma"] = "srl"  # firma fara profil inca -> partida dubla implicit
+                t["tip_firma"] = tip_firma_nrm(None)  # firma fara profil -> srl (partida dubla), prin primitiva
     return lista

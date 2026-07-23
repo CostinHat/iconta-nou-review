@@ -89,9 +89,9 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     tip_decont = vector.get("tip_decont")
     regim_fiscal = vector.get("regim_fiscal")
     operatiuni_ic = vector.get("operatiuni_ic")
-    # partida_simpla (PFA/II/PFL): derivat din tip_firma prin straturi_pentru (mecanismul F189 existent),
-    # NU un atribut nou. Criteriul legii pentru D406 e MODUL de contabilitate (partida simpla), nu forma
-    # juridica - dar in modelul actual tip_firma<->partida e 1:1 (srl=dubla, pfa=simpla). Vezi DECIZII 23.07.
+    # partida_simpla (PFA/II/PFL): derivat din tip_firma prin migrare_api.regim_contabil (fapt UNIC, NU
+    # atribut nou). D406: PFA/persoane fizice sunt excluse NECONDITIONAT (OPANAF 407/2025 Anexa 5 pct.4 lit.a);
+    # nici PFA in partida dubla nu datoreaza (conditia de partida dubla e doar la lit.n asociatii). DECIZII 23.07.
     partida_simpla = bool(vector.get("partida_simpla"))
 
     # D300 TVA — depinde de platitor_tva (DACA datoreaza) + tip_decont (PERIODICITATEA)
@@ -152,12 +152,12 @@ def declaratii_datorate(vector, are_salariati, azi=None):
     # verificat 17.07.2026 la legislatie.just.ro/public/DetaliiDocument/248326 ("Contribuabilii
     # care nu sunt inregistrati in scopuri de TVA transmit Declaratia D406 trimestrial").
     # Termen: ultima zi a lunii urmatoare perioadei (scadente.py d406).
-    # PFA/partida simpla EXCLUS EXPLICIT (OPANAF 1783/2021, Anexa nr.5 pct.4: persoanele care conduc
-    # contabilitatea in partida simpla nu depun D406) -> nu se datoreaza. Restul: dupa inregistrarea TVA.
+    # PFA/II/PFL EXCLUSE NECONDITIONAT de la D406 (OPANAF 407/2025, Anexa 5 pct.4 lit.a), enumerare
+    # neconditionata; conditia de partida dubla e DOAR la lit.n) pt asociatii fara scop patrimonial; pct.3
+    # lit.s) vizeaza doar persoane juridice). Deci nici PFA in partida dubla nu datoreaza. Restul: dupa TVA.
     if partida_simpla:
-        neaplic("D406", "D406 (SAF-T) nu se datorează — OPANAF 1783/2021, Anexa nr.5 pct.4 exclude persoanele "
-                        "care conduc contabilitatea în partidă simplă (PFA/II/PFL). Obligația apare doar dacă "
-                        "optează pentru partidă dublă.")
+        neaplic("D406", "D406 (SAF-T) nu se datorează — OPANAF 407/2025, Anexa 5 pct.4 lit.q) exclude "
+                        "persoanele fizice (PFA/II/PFL) de la obligația SAF-T (enumerare necondiționată).")
     elif platitor_tva is None:
         gri("D406", "Platitor de TVA necompletat - nu pot sti periodicitatea D406.")
     elif platitor_tva:
@@ -307,13 +307,13 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
         row = cur.fetchone()
         vector = {}
         if row:
-            from core.migrare_api import straturi_pentru
+            from core.migrare_api import regim_contabil
             vector = {"regim_fiscal": row[0], "platitor_tva": row[1],
                       "tip_decont": row[2], "operatiuni_ic": row[3],
                       "platitor_tva_anaf": row[4], "platitor_tva_anaf_data": row[5],
                       "tip_firma": row[6],
-                      # partida_simpla derivat prin mecanismul F189 (straturi_pentru), NU atribut nou. DECIZII 23.07.
-                      "partida_simpla": "rip" in set(straturi_pentru(row[6]))}
+                      # partida_simpla din regim_contabil (FAPTUL intr-un singur loc, nu recopiat). DECIZII 23.07.
+                      "partida_simpla": regim_contabil(row[6]) == "simpla"}
         cur.execute("SELECT to_regclass('salariati')")
         are_sal = False
         if cur.fetchone()[0]:

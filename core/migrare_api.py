@@ -27,11 +27,18 @@ STRATURI_META = [
 STRATURI = [s for s, _ in STRATURI_META]
 
 
+def tip_firma_nrm(tip_firma):
+    """tip_firma normalizat (lower+trim), default 'srl' la lipsă/None — UNICUL loc cu default-ul de creare
+    (srl = partidă dublă implicit). Nu validează în {srl,pfa} (CHECK-ul DB o face); doar normalizează.
+    Consumatorii (auth_api, tenant_provisioning, regim_contabil) îl folosesc — NU redau `or "srl"` inline.
+    Vezi DESIGN_SYSTEM cap. DEFAULT_FISCAL_TACIT + DECIZII 23.07."""
+    return (tip_firma or "srl").strip().lower()
+
+
 def regim_contabil(tip_firma):
     """'dubla' | 'simpla' din tip_firma — UN SINGUR loc unde scrie faptul (srl=partidă dublă, pfa=partidă
-    simplă). Necunoscut/absent (None) -> 'dubla' (srl implicit, ca default-ul de creare). straturi_pentru()
-    + regim_efectiv() îl folosesc; regula NU se recopiază în altă parte. Vezi DECIZII 23.07."""
-    return "simpla" if (tip_firma or "srl").strip().lower() == "pfa" else "dubla"
+    simplă). straturi_pentru() + regim_efectiv() îl folosesc; regula NU se recopiază. Vezi DECIZII 23.07."""
+    return "simpla" if tip_firma_nrm(tip_firma) == "pfa" else "dubla"
 
 
 def straturi_pentru(tip_firma):

@@ -13,7 +13,7 @@ Valori acceptate de motor (control_fiscal_api.declaratii_datorate):
   operatiuni_ic: bool (-> D390 lunar)
 """
 
-from core.migrare_api import regim_contabil  # [regim] fapt UNIC tip_firma->partida (langa STRATURI_META)
+from core.migrare_api import regim_contabil, tip_firma_nrm  # [regim] fapt UNIC + normalizare tip_firma (default 'srl')
 
 _REGIMURI = ("micro", "profit")
 _DECONTURI = ("lunar", "trimestrial")
@@ -65,7 +65,7 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
         cur.execute("SELECT tip_firma FROM firma_profil WHERE id = 1")
         _r = cur.fetchone()
         exista = _r is not None
-        tip_firma = _r[0] if exista else "srl"
+        tip_firma = tip_firma_nrm(_r[0] if exista else None)   # default 'srl' -> primitiva, nu literal inline
         # regim CIT dupa MODUL de contabilitate (partida simpla/dubla), nu dupa ce trimite clientul:
         if regim_contabil(tip_firma) == "simpla":
             # PFA/II/PFL n-are regim CIT (impozit pe venit prin D212). Gol -> NULL valid; valoare ne-goala

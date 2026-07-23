@@ -138,8 +138,9 @@ def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template,
             (user_id, tenant_id))
     # profil_la_provisionare_v1: profil minim (numerotare facturi functionala din prima)
     # [tip_firma_v1] tip_firma (srl/pfa) decide straturii de migrare + cardurile vizibile.
-    # CHECK (srl/pfa) pe coloana: normalizam la sursa, default srl daca vine altceva.
-    _tip = (tip_firma or "srl").strip().lower()
+    # CHECK (srl/pfa) pe coloana: normalizam prin primitiva (default srl la lipsa), validam la {srl,pfa}.
+    from core.migrare_api import tip_firma_nrm  # default 'srl' -> UNICA primitiva, nu literal inline
+    _tip = tip_firma_nrm(tip_firma)
     if _tip not in ("srl", "pfa"):
         _tip = "srl"
     with conn.cursor() as cur:

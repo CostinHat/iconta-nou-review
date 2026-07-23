@@ -2637,3 +2637,26 @@ DOVADA: P3 - curl salveaza regim='' pe tenant_001 -> 200, NULL stocat; curl regi
 termene tenant_001 -> D112 iun/iul, FARA D100; pytest 518 verde (3 noi: contract regim_efectiv), verificator TOTAL 0.
 LIMITA: PFA in partida dubla (rar, dar legal -> datoreaza D406) ramane netratat - cere atribut propriu de mod de
 contabilitate, decuplat de tip_firma (intrebare deschisa, vezi raport 23.07). regim_contabil ramane 1:1 tip<->partida.
+
+### 23.07.2026 D406 la PFA in partida DUBLA: RESPINS (nu se datoreaza) + fapt fiscal intr-un singur loc + garda DEFAULT_FISCAL_TACIT  (control_fiscal_api; migrare_api; verificator; DESIGN_SYSTEM cap.17)
+RASTOARNA limita deschisa din "23.07 regim_efectiv" ("PFA in partida dubla -> datoreaza D406, ramane netratat,
+cere atribut propriu de mod de contabilitate"). CORECTIE, verificat la sursa (OPANAF 407/2025, MO 310/08.04.2025,
+care modifica Anexa 5 la OPANAF 1783/2021 - [legislatie.just.ro/Public/DetaliiDocument/296490]):
+DECIZIE: PFA / II / profesii liberale sunt excluse de la D406 NECONDITIONAT - deci nici PFA in partida dubla NU
+datoreaza. NU se construieste atributul de mod de organizare a contabilitatii.
+TEMEI: Anexa 5 pct.4 lit.a) = enumerare NECONDITIONATA a persoanelor fizice; conditia de partida dubla apare
+DOAR la lit.n) (asociatii/persoane fara scop patrimonial); pct.3 lit.s) vizeaza doar persoane juridice. Deci
+optiunea pentru partida dubla NU muta PFA-ul in obligatie. Stringul temei din cod: "OPANAF 1783/2021 Anexa 5
+pct.4" -> "OPANAF 407/2025, Anexa 5 pct.4 lit.q)".
+CONSECINTA: tip_firma<->partida ramane 1:1 in model (regim_contabil); nu mai e nevoie de decuplare. Limita
+deschisa se INCHIDE (respinsa cu temei, nu amanata).
+FAPT INTR-UN SINGUR LOC (consolidare): control_fiscal_api deriva partida_simpla prin migrare_api.regim_contabil
+(nu mai "rip" in straturi_pentru inline). Default-ul 'srl' + normalizarea tip_firma traiesc in tip_firma_nrm
+(migrare_api) - auth_api / tenant_provisioning / vector_fiscal_api il refolosesc, nu redau `or "srl"` inline.
+GARDA: DEFAULT_FISCAL_TACIT (verificator + DESIGN_SYSTEM cap.17) - interzice fallback pe literal (or/||/else
+"micro"/"profit"/"srl"/"pfa") pe regim_fiscal/tip_firma/platitor_tva, exceptat migrare_api.py (primitivele).
+Prinde forma or/||/else (fallback pe CITIRE, ca bug-ul termene); atribuirea simpla `x="srl"` NU (declaratie).
+LIMITA garda: scaneaza `.py`; fallback-urile de AFISARE din frontend (migrare.js/firme.js: `tip_firma || "srl"`,
+`regim_fiscal || "micro"`) raman follow-up separat (nu s-a atins frontend in acest commit).
+DOVADA: pytest complet verde + verificator TOTAL 0 (DEFAULT_FISCAL_TACIT 0). Reparate: termene_api, vector_fiscal_api,
+auth_api, tenant_provisioning, control_fiscal_api.
