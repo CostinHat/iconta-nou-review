@@ -37,8 +37,25 @@ def test_stocuri_fara_nivel_e_gri():
     assert stare_din_nivel(rez_stocuri.get("nivel")) == "gri"
 
 
-def test_intrastat_fara_nivel_e_gri():
-    # intrastat_praguri intoarce status (sub_prag|atentie|depasit) dar NU un `nivel` common ->
-    # maparea din cheia absenta da gri. GAP semnalat (motorul ar trebui sa declare nivel).
-    rez_intrastat = {"introduceri": {"status": "depasit"}, "nota": "..."}
-    assert stare_din_nivel(rez_intrastat.get("nivel")) == "gri"
+def test_intrastat_depasit_e_AVERTISMENT_deci_galben():
+    # depasirea pragului INS = obligatie de declarare (situatie determinata, legal dar riscanta) ->
+    # motorul declara nivel=AVERTISMENT -> galben. NU gri (verificarea A determinat), NU rosu (nu blocheaza).
+    from core import intrastat as _is
+    from core.common import AVERTISMENT
+    r = _is.analiza_flux({1: 600000, 2: 600000})   # cumulat 1.2M > prag 1M -> depasit
+    assert r["status"] == "depasit" and r["nivel"] == AVERTISMENT
+    assert stare_din_nivel(r["nivel"]) == "galben"
+
+
+def test_intrastat_atentie_e_AVERTISMENT():
+    from core import intrastat as _is
+    from core.common import AVERTISMENT
+    r = _is.analiza_flux({1: 850000})              # 85% din prag -> atentie
+    assert r["status"] == "atentie" and r["nivel"] == AVERTISMENT
+
+
+def test_intrastat_sub_prag_fara_nivel_e_gri():
+    from core import intrastat as _is
+    r = _is.analiza_flux({1: 100000})              # sub 80% -> sub_prag, fara nivel (nu genereaza constatare)
+    assert r["status"] == "sub_prag" and r["nivel"] is None
+    assert stare_din_nivel(r["nivel"]) == "gri"

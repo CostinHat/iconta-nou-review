@@ -2384,3 +2384,27 @@ GARDA: verificator RE_FLAG_STARE_LIT (categoria verdict_colapsat, tag "stare-lit
 generala "orice literal de culoare in stratul de agregare" NU e exprimabila mecanic: un motor care isi
 DECLARA verdictul (audit_preluare `_c("verde",...)`, control_incrucisat `stare="rosu"`) e legitim, iar sintaxa
 nu separa "motor declara sursa" de "agregator recoloreaza upstream". Ancoram pe numele constructorului de afisare.
+
+### 23.07.2026 Intrastat: nivel=AVERTISMENT (nu gri, nu BLOCANT)  (core/intrastat.py: NIVEL_STATUS; main.py: intrastat_praguri.nivel)
+DECIZIE: depasirea/apropierea pragului Intrastat = constatare de nivel AVERTISMENT (galben prin
+stare_din_nivel). Motorul (intrastat.analiza_flux) declara nivelul din status: depasit -> AVERTISMENT,
+atentie(>=80%) -> AVERTISMENT, sub_prag -> None. Inlocuieste gri-ul interimar de la reparatia de mapare.
+TEMEI: verificare la sursa (core/intrastat.py:1-6, Ordinul INS 1604/2025, MO 1022/05.11.2025). Prag 2026 =
+1.000.000 lei/flux (introduceri/expedieri separat). Obligatia de declarare lunara la INS (intrastat.ro,
+coduri NC8) incepe cu LUNA in care cumulatul de la inceputul anului depaseste pragul.
+DE CE AVERTISMENT si NU GRI: gri inseamna "nu pot verifica" (incertitudine). Dar verificarea A DETERMINAT
+ceva concret: cumulatul a depasit pragul, obligatia exista. Gri ar fi o minciuna - ascunde un fapt stabilit.
+Situatie determinata, nu absenta de date.
+DE CE AVERTISMENT si NU BLOCANT (rosu de severitate): BLOCANT = "nu se poate depune/contabiliza"
+(common.py:59). Depasirea pragului NU impiedica nimic in iConta - contabilizarea si depunerile ANAF merg
+normal. Naste o obligatie EXTERNA, la alta institutie (INS), nu la ANAF. Definitia AVERTISMENT ("legal, dar
+riscant", common.py:60) se potriveste exact: legal sa continui, dar ai o obligatie de declarare de onorat.
+ATENTIE (80%) tot AVERTISMENT: obligatia e iminenta, nu inca activa, dar "riscant" (esti pe cale sa o nasti).
+Nu gri (85% e determinat), nu un nivel propriu (common are doar BLOCANT/AVERTISMENT).
+MECANISM: nivelul se declara in MOTOR (intrastat.NIVEL_STATUS), randarea doar deriva culoarea (stare_din_nivel)
+- coerent cu decizia "culoarea nu se alege la randare". Consecinta: constatarea Intrastat trece de la gri la galben.
+LIMITA / DE DECIS SEPARAT: escaladarea PASTILEI-FIRMA (semafor lista) ramane pe rosu la Intrastat
+(main.py: r["stare"]="rosu") - axa separata, neatinsa. Rezulta firma cu pastila ROSIE si constatarea GALBENA
+(AVERTISMENT): mismatch in directia inversa fata de trezorerie (unde firma era mai putin severa). De decis cu
+Costin daca pastila-firma la Intrastat ar trebui coborata la galben acum ca severitatea reala e AVERTISMENT.
+Ar rasturna decizia de nivel: daca INS ar face declararea blocanta pt vreo operatiune ANAF (nu e cazul azi).

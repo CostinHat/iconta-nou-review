@@ -6963,7 +6963,10 @@ def intrastat_praguri(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
         return {"cumulat": str(r["cumulat"]), "status": r["status"],
                 "luna_depasirii": r["luna_depasirii"], "procent": str(r["procent"]),
                 "prag": str(r["prag"])}
-    return {"an": an, "introduceri": fmt(ri), "expedieri": fmt(re_),
+    # nivel agregat pt constatare (severitatea vine din motor, cf. intrastat.NIVEL_STATUS): AVERTISMENT
+    # daca vreun flux e atentie/depasit, altfel None. Randarea deriva culoarea prin stare_din_nivel.
+    nivel = ri.get("nivel") or re_.get("nivel")
+    return {"an": an, "introduceri": fmt(ri), "expedieri": fmt(re_), "nivel": nivel,
             "nota": "obligatia de declarare la INS (intrastat.ro) incepe cu luna "
                     "depasirii pragului, separat pe flux (Ordin INS 1604/2025)"}
 
