@@ -15,7 +15,9 @@ def test_fara_tva_beneficiar():
         m.se_aplica("deseuri", 1000, True, False, AZI)
 
 def test_telefoane_sub_prag():
-    with pytest.raises(ValueError, match="22500"):
+    # mesajul backend formateaza pragul RO (commit 73b0094 "sume format RO in text backend"):
+    # "sub pragul de 22.500,00 lei/factura ..." — testul verifica pragul in forma efectiva, nu cifra bruta.
+    with pytest.raises(ValueError, match=r"22\.500,00 lei"):
         m.se_aplica("telefoane", 20000, True, True, AZI)
 
 def test_telefoane_peste_prag():
