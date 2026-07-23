@@ -2437,3 +2437,25 @@ in evalueaza_firma, care e folosit SI de ecranul de detaliu (unde pastila_firma 
 Costin daca evalueaza_firma trece si ea pe pastila_firma (unificare deplina) sau ramane sursa proprie a
 starii de declaratii. LIMITA: _stare(lipsa,urmarit) din control_fiscal_api NU e vizat - acela e SURSA axei de
 declaratii (lipsa=restanta=rosu), nu o escaladare peste constatari.
+
+### 23.07.2026 evalueaza_firma escaladeaza prin pastila_firma (un singur loc pt severitate)  (core/control_fiscal_api.py:331; verificator: RE_STARE_SUBSCRIPT_LIT)
+DECIZIE: escaladarea starii firmei in evalueaza_firma (regim TVA vs ANAF) trece de la literal
+(`if regim=="rosu": stare="rosu"`) la common.pastila_firma(stare, [regim_tva_anaf]) - severitatea vine din
+constatare, un SINGUR loc unde se decide. Inchide "poarta al saselea caz de maine": "e oricum acoperit
+downstream de pastila_firma in bucla de portofoliu" era adevarat, dar lasa o escaladare literala paralela.
+TEMEI: un singur loc unde se decide severitatea > redundanta corecta azi. _stare(lipsa,urmarit) NU e atins -
+e SURSA axei de declaratii (lipsa=restanta=rosu), nu escaladare peste constatari (corect identificat de Costin).
+GARDA: verificator RE_STARE_SUBSCRIPT_LIT (regula sora cu RE_FLAG_STARE_LIT) - prinde mutatia `x["stare"]="lit"`
+(forma de agregator, ca vechea bucla). LIMITA (nu e exprimabila mecanic pt forma plain): `stare = "rosu"` simplu
+e folosit LEGITIM de motoarele care isi calculeaza verdictul propriu din constatari (control_incrucisat:346/381/
+720+, audit_preluare:349, forma `stare = "rosu" if any(...) else ...`), sintactic identic cu o escaladare gresita.
+O regula pe forma plain = numai fals-pozitive. Se prinde doar forma subscript; forma plain ramane aparata
+arhitectural (pastila_firma = singura escaladare de entitate), nu mecanic.
+LIMITA / FINDING SEMNALAT (neatins, cf. cererii): ecranul de DETALIU (main.py:2021 control_fiscal_detaliu)
+foloseste r["stare"] din evalueaza_firma, care vede DOAR declaratii + regim - NU constatarile contabile
+(balanta/trezorerie/stocuri/Intrastat/cross-checks, calculate doar in bucla de portofoliu). Ataseaza
+verificari_contabile dar NU recalculeaza r["stare"]. Consecinta: headerul de detaliu ("DANTE · la zi", plus
+bannerul "Totul depus la zi" pe d.stare=="verde") poate CONTRAZICE o constatare rosie (ex. trezorerie BLOCANT)
+afisata dedesubt, si poate diferi de pastila din lista (care le include). Cauza: contabilul se construieste
+in bucla de portofoliu, nu intr-o functie partajata cu detaliul. Fix real = extragerea construirii contabilului
+intr-o functie unica, folosita de AMBELE (lista + detaliu), apoi pastila_firma pe ea. DE DECIS cu Costin (nu reparat).

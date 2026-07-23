@@ -22,7 +22,7 @@ from __future__ import annotations
 import datetime
 
 from core import scadente  # sursa unica de scadente + zile lucratoare (fara import circular)
-from core.common import azi_ro  # [fus] ziua RO pentru verdictul de zi (la termen/intarziat), robust la OS TZ
+from core.common import azi_ro, pastila_firma  # [fus] ziua RO; [semafor] escaladare unica din constatari
 from core import firma_profil_api as _fp  # [F180] stare_tva_anaf (comparatie platitor_tva vs snapshot)
 
 PRAG_URMARIT_ZILE = 7   # termen in <= 7 zile, nedepus -> galben
@@ -324,11 +324,13 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
     neclar_m = [{"tip": n["tip"], "motiv": n.get("motiv") or n.get("cauza", "")} for n in neclar]
     stare = _stare(lipsa, urmarit, neclar_m)
 
-    # [F180] regim TVA local vs snapshot ANAF — divergenta = rosu (constatare cu remediu investigatie)
+    # [F180] regim TVA local vs snapshot ANAF — divergenta = constatare cu remediu investigatie. Escaladarea
+    # peste starea de declaratii se face prin pastila_firma (severitatea vine din constatare, NU literal) -
+    # un singur loc unde se decide severitatea, cf. DECIZII 23.07. _stare(lipsa,urmarit) de mai sus e SURSA
+    # axei de declaratii, nu escaladare - ramane neatins.
     regim_tva_anaf = constatare_regim_tva(vector.get("platitor_tva"), vector.get("platitor_tva_anaf"),
                                           vector.get("platitor_tva_anaf_data"))
-    if regim_tva_anaf["stare"] == "rosu":
-        stare = "rosu"
+    stare = pastila_firma(stare, [regim_tva_anaf])
 
     return {"stare": stare, "datorate": len(datorate), "depuse": len(depuse),
             "lipsa": lipsa, "urmarit": urmarit, "confirmate": confirmate,

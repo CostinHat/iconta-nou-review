@@ -203,6 +203,14 @@ RE_VERDICT_LIT    = re.compile(r'\b(contabil|constatari|probleme|verdicte)\s*\+?
 # `stare="rosu"`) e legitim si NU trebuie prins; regula sintactica pura nu separa "motor declara" de
 # "agregator recoloreaza", deci ancoram pe numele constructorului de afisare, nu pe orice literal de culoare.
 RE_FLAG_STARE_LIT = re.compile(r'_flag\(\s*["\'](rosu|galben|verde|gri)["\']')
+# Regula sora (extinsa dincolo de _flag): MUTATIA unei stari de verdict la un literal - `x["stare"] = "rosu"`
+# (forma de AGREGATOR: escaladeaza starea unei entitati deja construite, cum era vechea bucla de portofoliu
+# `r["stare"]="rosu"`). Severitatea trebuie sa vina din constatari (common.pastila_firma) sau din nivel, nu
+# dintr-un literal. LIMITA: prinde DOAR forma subscript `x["stare"]=lit`. Forma plain `stare = "rosu"` NU e
+# prinsa: e folosita LEGITIM de motoarele care isi calculeaza verdictul propriu din constatari (control_
+# incrucisat:346/381/720+, audit_preluare:349 - `stare = "rosu" if any(...) else ...`), sintactic identica cu
+# o escaladare gresita. O regula pe forma plain ar fi numai fals-pozitive. Nu e exprimabila mecanic - vezi DECIZII.
+RE_STARE_SUBSCRIPT_LIT = re.compile(r'''\w+\[["']stare["']\]\s*=\s*["'](rosu|galben|verde|gri)["']''')
 RE_DATA_DISP  = re.compile(r'\.strftime\(\s*["\']%d[./]')          # strftime("%d.%m/%d/%m") = display RO
 RE_FORMATATOR = re.compile(r'\b(bani|data_ro|_lei|_dmy|_data_ro|_f|_q)\s*\(')  # deja canonic/local-ok
 PY_EXCEPT_FILE = {"etransport_send.py", "d406.py", "export_winmentor.py",
@@ -230,7 +238,7 @@ for pdir in (os.path.join(BAZA_PY, "core"), BAZA_PY):
                 continue
             if RE_VERDICT_APPEND.search(lin) or RE_VERDICT_LIT.search(lin):
                 rap["verdict_colapsat"].append((f, i, "verdict->str", s[:60]))
-            if RE_FLAG_STARE_LIT.search(lin):
+            if RE_FLAG_STARE_LIT.search(lin) or RE_STARE_SUBSCRIPT_LIT.search(lin):
                 rap["verdict_colapsat"].append((f, i, "stare-literal", s[:60]))
             if RE_FORMATATOR.search(lin):
                 continue
