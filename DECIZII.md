@@ -2660,3 +2660,19 @@ LIMITA garda: scaneaza `.py`; fallback-urile de AFISARE din frontend (migrare.js
 `regim_fiscal || "micro"`) raman follow-up separat (nu s-a atins frontend in acest commit).
 DOVADA: pytest complet verde + verificator TOTAL 0 (DEFAULT_FISCAL_TACIT 0). Reparate: termene_api, vector_fiscal_api,
 auth_api, tenant_provisioning, control_fiscal_api.
+
+### 23.07.2026 Blocaj real: PFA nu putea trece pasul Vector fiscal la migrare (formularul forta un regim)  (auth_api; main.py /migrare/vector; migrare.js; firme.js)
+CONSTATARE (nu cosmetic, cum banuiam initial): butoanele vf-opt din migrare.js NU au deselect (handlerul `grup`
+scoate vf-on de la toate si-l pune pe cel apasat) -> "micro" pre-selectat la un PFA (fallback `|| "micro"`) nu
+putea fi scos -> getRegim() intorcea mereu un regim ne-gol -> POST /tenants/{id}/vector -> salveaza (gardat P2b)
+respingea cu 400 NECONDITIONAT. Deci un PFA nu putea completa vectorul deloc.
+DECIZIE: frontendul ramifica pe FAPTUL expus de backend, nu ghiceste. auth_api.tenantii_userului adauga
+regim_contabil (derivat din tip_firma prin migrare_api.regim_contabil - expunere, nicio regula noua);
+/migrare/vector il propaga. migrare.js: sterge `|| "micro"`; partida simpla -> ascunde intrebarea de regim
+si trimite regim_fiscal=null (salveaza accepta -> NULL); lista afiseaza regim null ca "—", nu "micro".
+firme.js: sterge `|| "srl"` (fallback mort - backendul garanteaza tip_firma); eticheta selector la creare
+include "profesii liberale" (PFA/II/IF/profesii liberale - partida simpla).
+DOVADA: /migrare/vector expune regim_contabil (tenant_001=simpla); POST vector cu regim_fiscal=null -> 200 (era
+400); pytest 518 verde; verificator TOTAL 0; node --check pe migrare.js/firme.js OK.
+LIMITA: garda DEFAULT_FISCAL_TACIT ramane pe `.py` - dar fallback-urile frontend vizate sunt acum sterse;
+follow-up-ul din commit-ul precedent e INCHIS.

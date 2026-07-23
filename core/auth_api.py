@@ -403,4 +403,8 @@ def tenantii_userului(conn, user_id):
                 from core.migrare_api import tip_firma_nrm
                 cur.execute("ROLLBACK TO SAVEPOINT sp_tip")
                 t["tip_firma"] = tip_firma_nrm(None)  # firma fara profil -> srl (partida dubla), prin primitiva
+            # [regim] expune FAPTUL existent (partida simpla/dubla) derivat din tip_firma - frontendul nu-l
+            # recalculeaza si nu defaulteaza regim inline. Nicio regula noua, doar expunere. Vezi DECIZII 23.07.
+            from core.migrare_api import regim_contabil
+            t["regim_contabil"] = regim_contabil(t["tip_firma"])
     return lista

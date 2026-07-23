@@ -44,7 +44,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
           <label class="camp-eticheta">Tip firmă</label>
           <select class="camp-input" id="fn-tip">
             <option value="srl" selected>SRL / SA (partidă dublă)</option>
-            <option value="pfa">PFA / II / IF (partidă simplă)</option>
+            <option value="pfa">PFA / II / IF / profesii liberale (partidă simplă)</option>
           </select>
         </div>
         <div class="camp" style="margin-bottom:14px">
@@ -238,7 +238,7 @@ function meniuFirma(corp, nav, t) {
   // SRL-only ascunse la PFA: declaratii, jurnal, balanta, bilant, operatiuni.
   // PFA-only ascunsa la SRL: rip (Incasari/plati). 'control' ramane vizibil la PFA (semafor
   // partial, decis-acceptat). Restul cardurilor apar la ambele regimuri.
-  const tip = (t.tip_firma || "srl").toLowerCase();
+  const tip = t.tip_firma.toLowerCase();   // backendul (tenantii_userului) garanteaza tip_firma; fara fallback mort
   const DOAR_SRL = ["declaratii", "jurnal", "balanta", "bilant", "operatiuni"];
   const DOAR_PFA = ["rip"];
   const vizibile = optiuni.filter((o) =>

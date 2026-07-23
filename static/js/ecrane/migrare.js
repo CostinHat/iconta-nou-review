@@ -343,7 +343,7 @@ async function wizardVector(corp, nav) {
     let sub = "de completat";
     if (f.are_vector) {
       const p = [];
-      p.push(f.regim_fiscal === "profit" ? "profit" : "micro");
+      p.push(f.regim_fiscal === "profit" ? "profit" : (f.regim_fiscal === "micro" ? "micro" : "—"));  // null -> —, nu default tacit
       if (f.platitor_tva) p.push("TVA " + (f.tip_decont || ""));
       else p.push("neplatitor TVA");
       if (f.operatiuni_ic) p.push("intracomunitar");
@@ -380,7 +380,8 @@ async function formularVectorFirma(corp, nav, f) {
       if (z) tvaInit = !!z.platitor_tva;
     } catch {}
   }
-  const regim = f.regim_fiscal || "micro";
+  const regim = f.regim_fiscal;   // fara fallback tacit; null la vector necompletat
+  const partidaSimpla = f.regim_contabil === "simpla";   // PFA/profesie liberala: n-are regim CIT (micro/profit)
   const decont = f.tip_decont || "trimestrial";
   const ic = !!f.operatiuni_ic;
   const tva = !!tvaInit;
@@ -388,13 +389,13 @@ async function formularVectorFirma(corp, nav, f) {
     <h2 class="mig-form-titlu">Verificare fiscal\u0103</h2>
     <p class="mig-form-cui">${esc(f.nume)} \u00b7 CUI ${esc(f.cui)}</p>
     <div class="vf-form">
-      <div class="vf-grup">
+      ${partidaSimpla ? "" : `<div class="vf-grup">
         <div class="vf-eticheta">Regim fiscal</div>
         <div class="vf-optiuni" id="vf-regim">
           <button class="vf-opt ${regim==="micro"?"vf-on":""}" data-v="micro">Microintreprindere</button>
           <button class="vf-opt ${regim==="profit"?"vf-on":""}" data-v="profit">Impozit pe profit</button>
         </div>
-      </div>
+      </div>`}
       <div class="vf-grup">
         <div class="vf-eticheta">Pl\u0103titoare de TVA?</div>
         <div class="vf-optiuni" id="vf-tva">
@@ -433,7 +434,7 @@ async function formularVectorFirma(corp, nav, f) {
     const on = z.querySelector(".vf-on");
     return () => (z.querySelector(".vf-on") || {}).dataset?.v;
   }
-  const getRegim = grup("#vf-regim");
+  const getRegim = partidaSimpla ? (() => null) : grup("#vf-regim");   // partida simpla: nu trimite regim_fiscal
   const getTva = grup("#vf-tva", (v) => {
     corp.querySelector("#vf-decont-grup").style.display = (v === "da") ? "" : "none";
   });

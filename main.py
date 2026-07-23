@@ -1544,6 +1544,7 @@ def migrare_vector_status(ctx=Depends(cere_cabinet)):
         out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
                     "are_vector": bool(v.get("completat")),
                     "regim_fiscal": v.get("regim_fiscal"),
+                    "regim_contabil": f.get("regim_contabil"),   # [regim] partida simpla/dubla -> ascunde regim la PFA
                     "platitor_tva": v.get("platitor_tva"),
                     "tip_decont": v.get("tip_decont"),
                     "operatiuni_ic": v.get("operatiuni_ic")})
