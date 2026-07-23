@@ -247,8 +247,14 @@ function meniuFirma(corp, nav, t) {
   }
   const vizibile = optiuni.filter((o) => o.regim === "ambele" || o.regim === regimFirma);
 
+  // [antet_explicit 23.07] Antetul firmei (nume · CUI) se randeaza EXPLICIT aici, nu se lasa pe seama
+  // auto-h2 din navigator (_steaza: prepend <h2 class="pf-titlu"> prin MutationObserver DACA corpul n-are
+  // deja unul). Dependenta de auto-h2 e fragila (observer + euristica "fara h2" + timing). Textul e IDENTIC
+  // cu titlul ferestrei pasat de deschideFirma, deci conditia !querySelector("h2") din _steaza devine falsa
+  // si antetul NU se dubleaza. Robustete, nu schimbare vizuala (DS cap.9: antetul = titlul ecranului).
+  const antetFirma = (t.nume || "Firmă") + " · CUI " + (t.cui || "");
   corp.innerHTML = `
-
+    <h2 class="pf-titlu">${esc(antetFirma)}</h2>
     <div class="firme-optiuni">
       ${vizibile.map((o) => `
         <button class="firme-optiune" id="fa-${o.cheie}"${o.activ ? "" : ' disabled style="opacity:.55;cursor:default"'}>
