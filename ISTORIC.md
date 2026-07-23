@@ -2446,3 +2446,31 @@ NU ordinea de atac. Canonic: 1=Declarații, **2=Control fiscal (ÎNCHIS azi, SRL
 lunare, 12=Capacitate. „1/12" din commitul de închidere a fost impropriu — Control fiscal e **poziția 2**, nu
 prima. Ordinea DE ATAC o dă Costin, independent de poziție. Următorul atacat (alegerea lui Costin): **poziția 3
 (Termene)**. Rămân 11 poziții (1 și 3–12).
+
+## 23.07.2026 — Ecran poziția 3 (Termene): pregătire + T1–T4 (consolidare pe motorul semaforului)
+Pregătire (raport, fără cod) → 4 teme, un commit fiecare. Ecranul avea **zero teste** înainte (modulul
+`termene_api` reimplementa singur maparea „cine ce declarație datorează", exact tiparul care fabricase D100
+pe PFA). Dovadă după fiecare: pytest complet + verificator TOTAL 0. Capturile vizuale le face Costin.
+
+**SCHIMBARE VIZIBILĂ PENTRU UTILIZATOR (T2) — corecție de sub-raportare în Termene:** până acum ecranul
+Termene NU afișa deloc **D394, D406 și D101** — le rata complet, fiindcă maparea locală emitea numai
+D300/D112/D100/D390. După consolidarea pe motorul unic al semaforului, un plătitor de TVA vede acum și
+scadențele D394/D406 (lunar/trimestrial, după decont), iar o firmă pe profit vede D101 anual — când termenul
+cade în fereastra de 60 de zile și declarația nu e depusă. Nu e detaliu de refactor: sunt scadențe reale care
+lipseau din ochiul contabilului. Termenele noilor declarații vin din `_termen` partajat (→ `scadente.py`),
+verificate la sursă.
+
+- **T1** (`fix(termene): firma neevaluabila NU dispare tacut`): ruta `/termene` avea `except: continue` la
+  nivel de firmă → o firmă care crapă dispărea din scadențar (minciună prin omisiune). Acum: canal `neevaluate`
+  (gri cu temei), afișat inclusiv când nu există scadențe. Aceeași doctrină ca semaforul (23.07).
+- **T2** (`refactor(termene): motor unic de emitere`): `control_fiscal_api.obligatii_datorate(vector, are_sal,
+  azi, *, jos, sus_zile)` = sursa UNICĂ a mapării; `declaratii_datorate` = wrapper (jos=None, 7z, semafor
+  NESCHIMBAT — matricea de 64 trece intactă); `termene_firma` = wrapper (jos=azi, 60z). Duplicarea eliminată.
+- **T3** (inclus în T2): D390 la neplătitor cu operațiuni IC intră în `neclar` (gri art. 317), NU în `datorate`
+  → nu mai apare ca scadență fermă în Termene. Termene adoptă verdictul semaforului, nu-l fabrică.
+- **T4** (inclus în T2): perioadele candidate extinse la an+1 (fereastra de 60z poate trece în anul următor);
+  filtrul `[jos, sus]` pe termen = sursă unică. Testat explicit la `15.12` (perioada dec via termen în ian) și
+  `28.12` (trage perioada ian-an+1, pe care bucla veche `an=azi.year` o rata).
+- **§4 (marginirea la înregistrarea TVA) neatins**, cum s-a decis: ruta `/termene` NU aduce
+  `platitor_tva_anaf_inceput` în vector → `tva_data_inceput=None` → Termene nu mărginește (rămâne pentru proba
+  vizuală a lui Costin). Motorul știe să mărginească; termene doar nu-l hrănește cu data.

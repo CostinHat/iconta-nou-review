@@ -81,3 +81,22 @@ def test_termene_pfa_fara_declaratii_persoana_juridica():
          "operatiuni_ic": False, "partida_simpla": True}
     out = termene_api.termene_firma(v, are_salariati=False, depuse=set(), azi=datetime.date(2026, 7, 23))
     assert not ({"d100", "d101", "d406"} & _tips(out))
+
+
+# ---------- T4: edge decembrie — perioadele anului urmator se genereaza (an+1) ----------
+
+def test_termene_decembrie_15_cross_an_prin_perioada_curenta():
+    """15.12 -> fereastra [15.12.2026, 13.02.2027]: perioada dec-2026 (termen ian-2027) apare;
+    perioada ian-2027 (termen 25.02) e in AFARA -> inca niciun an 2027."""
+    out = termene_api.termene_firma(V_TVA_LUNAR, are_salariati=False, depuse=set(),
+                                    azi=datetime.date(2026, 12, 15))
+    assert any(d["tip"] == "d300" and d["an"] == 2026 and d["luna"] == 12 for d in out)
+    assert all(d["an"] <= 2026 for d in out)
+
+
+def test_termene_decembrie_28_trage_perioada_an_nou():
+    """28.12 -> fereastra [28.12.2026, 26.02.2027]: perioada ian-2027 (D300 termen 25.02.2027) INTRA
+    -> dovada ca perioadele an+1 se genereaza (bug-ul vechi an=azi.year le rata)."""
+    out = termene_api.termene_firma(V_TVA_LUNAR, are_salariati=False, depuse=set(),
+                                    azi=datetime.date(2026, 12, 28))
+    assert any(d["tip"] == "d300" and d["an"] == 2027 and d["luna"] == 1 for d in out)

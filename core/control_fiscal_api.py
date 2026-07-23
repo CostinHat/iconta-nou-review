@@ -66,8 +66,13 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     # D2: perioadele candidate pornesc de la decembrie / T4 al anului precedent (termen 25 ian
     # an curent), altfel decembrie an-1 e invizibil PERMANENT (in an-1 termenul e viitor, in an
     # bucla nu-l acopera). Filtrul term<=limita taie singur ce e in viitor.
-    per_luni = [(an - 1, 12)] + [(an, m) for m in range(1, 13)]
-    per_trim = [(an - 1, 4, 12)] + [(an, tri, lf) for tri, lf in enumerate([3, 6, 9, 12], start=1)]
+    # [T4] +an+1: fereastra de termene (60z) poate trece in anul urmator (dec -> termene in ian/feb an+1);
+    # bucla veche an=azi.year le rata. Filtrul _in_fereastra e sursa unica de adevar - supra-generarea NU
+    # adauga fals la semafor (fereastra de 7z taie orice perioada an+1). Vezi test_termene decembrie 15/28.
+    per_luni = [(an - 1, 12)] + [(an, m) for m in range(1, 13)] + [(an + 1, m) for m in range(1, 13)]
+    per_trim = ([(an - 1, 4, 12)]
+                + [(an, tri, lf) for tri, lf in enumerate([3, 6, 9, 12], start=1)]
+                + [(an + 1, tri, lf) for tri, lf in enumerate([3, 6, 9, 12], start=1)])
 
     # [tip_lowercase] tip = CHEIE de join (canonic lowercase, ca dispecerul/CHEIE_DUK); forma ANAF
     # uppercase traieste in CHEIE_DUK + se face upper() DOAR la randare, nu in coloana. Vezi DECIZII.
