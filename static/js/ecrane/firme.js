@@ -143,7 +143,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
 }
 
 // deschide o firmă: setează "În lucru" + spațiul de lucru (meniu de acțiuni)
-function deschideFirma(t, nav) {
+export function deschideFirma(t, nav) {   // [P2] reutilizat din termene.js — deschide fisa firmei
   nav.setFirmaInLucru(t.nume || "");
   nav.deschide((t.nume || "Firmă") + " \u00b7 CUI " + (t.cui || ""), (corp) => meniuFirma(corp, nav, t), { lat: "larg" });
 }

@@ -82,11 +82,14 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
 
     # [tip_lowercase] tip = CHEIE de join (canonic lowercase, ca dispecerul/CHEIE_DUK); forma ANAF
     # uppercase traieste in CHEIE_DUK + se face upper() DOAR la randare, nu in coloana. Vezi DECIZII.
-    def adauga(tip, a, luna_perioada, perioada_txt, tip_scad):
+    def adauga(tip, a, luna_perioada, perioada_txt, tip_scad, incert=False):
         term = _termen(a, luna_perioada, tip=tip_scad)
         if _in_fereastra(term):
-            datorate.append({"tip": tip.lower(), "an": a, "luna": luna_perioada,
-                             "termen": term.isoformat(), "perioada": perioada_txt})
+            item = {"tip": tip.lower(), "an": a, "luna": luna_perioada,
+                    "termen": term.isoformat(), "perioada": perioada_txt}
+            if incert:
+                item["incert"] = True   # [P4] perioada DESCHISA (D390 posibil, nu ferm) -> marcaj gri-semafor in UI
+            datorate.append(item)
 
     def gri(tip, cauza):
         neclar.append({"tip": tip.lower(), "cauza": cauza})
@@ -218,7 +221,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                 # None = luna DESCHISA -> BIFA decide (faptul nu se poate sti inca; cost asimetric: termen ascuns = amenda).
                 if operatiuni_ic:               # profil declara IC -> nu putem exclude: termene afiseaza, semafor gri
                     if jos is not None:
-                        adauga("D390", a, m, _LUNI_NUME[m], "d390")
+                        adauga("D390", a, m, _LUNI_NUME[m], "d390", incert=True)   # [P4] perioada deschisa = posibil, nu ferm
                     else:
                         gri("D390", "Perioada %s %d încă deschisă — nu pot stabili încă exigibilitatea "
                                     "operațiunilor intracomunitare." % (_LUNI_NUME[m], a))

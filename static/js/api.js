@@ -236,7 +236,8 @@ export const ICOANE = {
 // dataRo — SINGURA functie de formatare data in aplicatie (Design System cap.4).
 // Accepta: string ISO (yyyy-mm-dd), obiect Date, sau null/gol -> "".
 // stil "scurt" (implicit): zz.ll.aaaa (numeric, aliniabil in tabele).
-// stil "lung": "11 iulie 2026" (pentru titluri).
+// stil "lung": "11 iulie 2026" (pentru titluri). "luna_an": "iulie 2026" (perioade lunare, fara zi).
+// "zi_luna_text": "11 iul". "zi_luna": "11.07". "cu_ora": "11.07.2026 14:30".
 const _LUNI_RO = ["ianuarie","februarie","martie","aprilie","mai","iunie","iulie","august","septembrie","octombrie","noiembrie","decembrie"];
 const _LUNI_SCURT = ["ian","feb","mar","apr","mai","iun","iul","aug","sep","oct","noi","dec"];
 export function dataRo(d, stil) {
@@ -262,6 +263,7 @@ export function dataRo(d, stil) {
     return `${zz}.${ll}.${aa} ${hh}:${mi}`;
   }
   if (stil === "zi_luna_text") return `${dt.getDate()} ${_LUNI_SCURT[dt.getMonth()]}`;
+  if (stil === "luna_an") return `${_LUNI_RO[dt.getMonth()]} ${aa}`;   // "iulie 2026" — perioade lunare (balante, decont), fara zi
   if (stil === "zi_luna") return `${zz}.${ll}`;
   return `${zz}.${ll}.${aa}`;
 }

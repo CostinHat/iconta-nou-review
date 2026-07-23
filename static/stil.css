@@ -768,6 +768,8 @@ html, body {
 .term-tip { font-weight: 700; color: #1f4e79; }
 .term-nr { color: #44516b; }
 .term-chev { color: var(--gri-semafor); }
+/* [P4] eticheta text 10px a starii gri (cap.8: bulina + eticheta text) pentru D390 pe perioada deschisa */
+.term-posibil { font-size: 10px; color: var(--gri-semafor); margin-left: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
 
 
 /* ---------- DE VALIDAT ---------- */
@@ -2073,6 +2075,11 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
 .pct-info {
   background: radial-gradient(circle at 65% 30%, #7fb5e6, #3d8fd6 60%) !important;
   box-shadow: 0 0 6px rgba(61,143,214,0.45) !important; }
+/* [P4 23.07] starea GRI (incert/necunoscut) — implementeaza starea gri din cap.8 (var(--gri-semafor)).
+   Ex.: D390 pe perioada DESCHISA in Termene (posibil, nu ferm). Nuanta deschisa din gradient = exceptie HEX_SEMAFOR. */
+.pct-gri, .asi-sem-gri {
+  background: radial-gradient(circle at 65% 30%, #c7cdd8, var(--gri-semafor) 60%) !important;
+  box-shadow: 0 0 6px rgba(154,163,178,0.4) !important; }
 /* ============ sfarsit STANDARD_SEMAFOR ============ */
 
 

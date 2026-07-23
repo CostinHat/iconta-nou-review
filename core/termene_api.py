@@ -42,19 +42,23 @@ def portofoliu(firme_eval, azi=None, neevaluate=None):
     Grupat pe data termen, apoi pe tip, cu numarul si lista de firme.
     """
     azi = azi or azi_ro()   # [fus] fereastra termenelor decide ce apare -> zi RO, robust la OS TZ
-    # acumulator: termen -> tip -> lista firme
+    # acumulator: termen -> tip -> {an, incert, firme}. (an+incert sunt determinate de PERIOADA, deci egale
+    # pentru toate firmele dintr-un grup (termen,tip) - un termen+tip = o singura perioada.)
     acc = {}
     for fe in firme_eval:
         for t in fe["termene"]:
-            acc.setdefault(t["termen"], {}).setdefault(t["tip"], []).append(
-                {"tenant_id": fe["tenant_id"], "nume": fe["nume"], "perioada": t["perioada"]})
+            g = acc.setdefault(t["termen"], {}).setdefault(
+                t["tip"], {"an": t["an"], "incert": bool(t.get("incert")), "firme": []})
+            g["firme"].append({"tenant_id": fe["tenant_id"], "nume": fe["nume"],
+                               "cui": fe.get("cui"), "perioada": t["perioada"]})   # [P2] cui -> deschideFirma
 
     grupuri = []
     for termen in sorted(acc.keys()):
         items = []
         for tip in sorted(acc[termen].keys()):
-            firme = acc[termen][tip]
-            items.append({"tip": tip, "nr_firme": len(firme), "firme": firme})
+            g = acc[termen][tip]
+            items.append({"tip": tip, "nr_firme": len(g["firme"]), "an": g["an"],   # [P1c] an perioada
+                          "incert": g["incert"], "firme": g["firme"]})               # [P4] perioada deschisa
         zile = (datetime.date.fromisoformat(termen) - azi).days
         grupuri.append({"termen": termen, "zile": zile, "items": items})
 

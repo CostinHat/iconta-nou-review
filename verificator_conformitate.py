@@ -130,8 +130,14 @@ for nume, t in fisiere.items():
         # FMT_LOCAL: definitie locala de format monetar (const fmt = ...toLocaleString) in loc de bani() canonic
         if re.search(r'const\s+(?!pct\b)\w+\s*=.*toLocaleString\("ro-RO"', lin):
             rap["fmt_local"].append((nume, i, "", lin.strip()[:66]))
-        # DATA_DIALECT: functie locala de formatare data (toLocaleDateString sau split("-") pt reordonare zi/luna/an) in loc de dataRo()
-        if re.search(r'toLocaleDateString', lin) or re.search(r'const\s+fmt\w*\s*=.*split\("-"\)', lin):
+        # DATA_DIALECT: formator LOCAL de data in loc de dataRo() din api.js. Prinde: toLocaleDateString;
+        # const fmt=...split("-"); SI un array de nume de luni INDEXAT prin parseInt (ex. luni[parseInt(p[1])-1])
+        # = parsare manuala a unei date -> forma functiei dataLunga (gaura descoperita 23.07: forma veche o rata).
+        # Precis pe UTILIZARE, nu pe declaratie: NU atinge pickerele de luna (LUNI.map(...) pt <option>) sau
+        # etichetele din stare (LUNI[S.luna-1], fara parseInt) - acelea sunt legitime. Exceptat api.js (sursa canonica).
+        _data_local = (not nume.endswith("api.js")
+                       and re.search(r'\w*luni\w*\s*\[\s*parseInt\(', lin, re.I))
+        if re.search(r'toLocaleDateString', lin) or re.search(r'const\s+fmt\w*\s*=.*split\("-"\)', lin) or _data_local:
             rap["data_dialect"].append((nume, i, "", lin.strip()[:66]))
         # DATA_BRUTA: ${x.data} sau ${x.data_ceva} afisat direct in template fara dataRo (exclus value= de input si payload)
         # ICOANE_LOCAL: dictionar local de iconite (building/report/shield cu <path) in loc de ICOANE canonic

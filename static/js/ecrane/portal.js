@@ -480,15 +480,14 @@ async function ecranDocumente(corp, nav) {
     let luni = [], err = null;
     try { const r = await api.get("/portal/documente/luni"); luni = (r && r.luni) || []; } catch (e) { err = e; }
     if (err) { corp.innerHTML = `<h2 class="pf-titlu">Balanțe lunare</h2><p class="msg-eroare">${err.mesaj || "Nu am putut încărca lista."}</p>`; return; }
-    const numeLuni = ["ianuarie","februarie","martie","aprilie","mai","iunie","iulie","august","septembrie","octombrie","noiembrie","decembrie"];
     const corpuri = !luni.length
       ? `<div class="stare-goala">Nicio lună cu date contabile încă.</div>`
       : luni.map((iso) => {
-        const [an, ll] = iso.split("-");
+        const [an, ll] = iso.split("-");   // pastrat pentru data-bal; eticheta trece prin dataRo (P1b)
         return `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">Balanța de verificare · ${numeLuni[parseInt(ll)-1]} ${an}</div>
+            <div class="pf-frand-nume">Balanța de verificare · ${dataRo(iso, "luna_an")}</div>
             <div class="pf-frand-sub">generată automat din datele contabile</div>
           </div>
           <button class="buton-primar" data-bal="${an}-${ll}">Descarcă PDF</button>

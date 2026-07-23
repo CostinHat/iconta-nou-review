@@ -2892,3 +2892,27 @@ ITEM 4 (F165 tabele lipsa = eroare): era DEJA implementat - compara() marcheaza 
 si are_drift_hard il include (test_audit_schema linia 44-45 + test real toti_tenantii_conform). Nimic de construit.
 DOVADA: pytest 945 (test real tenant-vs-template cu d301 nou verde); verificator TOTAL 0; backfill dovedit
 inainte/dupa (tenant_003 creat, 001/002 idempotent skip).
+
+### 23.07.2026 Termene poz.3 — prezentare (P1-P4), decizii de conținut  (termene.js; api.js dataRo; verificator; stil.css; DS cap.4/8 v2.20)
+Pas de prezentare pe Termene (poziția 3 DESCHISĂ, recaptura la Costin). Patru puncte, un commit UI:
+- P1a: eliminat formatorul LOCAL `dataLunga` din termene.js -> `dataRo(d,'lung')` = "27 iulie 2026" (anul inclus,
+  rezolvă ambiguitatea din fereastra care traversează anul, introdusă de noi la T4). cap.4 (DATA_DIALECT).
+- P1b: gard DATA_DIALECT avea gaură (prindea `toLocaleDateString`/`const fmt=...split`, NU forma `dataLunga` =
+  array de luni indexat prin parseInt). Extins (precis pe UTILIZARE `luni[parseInt(...)]`, nu pe declarație -> nu
+  atinge pickerele `LUNI.map`). Rulat pe tot frontendul: 5 formatoare locale (termene/cabinet/portal = formatoare
+  reale -> convertite la dataRo; declaratii/pachete = pickere legitime, neatinse). Stil nou `luna_an` ("iulie 2026")
+  pentru portal (balanțe lunare, from `to_char YYYY-MM`). Regula în DS v2.20 simultan.
+- P1c [DECIZIE DE CONȚINUT, nu format DS]: eticheta de perioadă afișează anul din `d.an` DOAR când diferă de anul
+  curent ("iun" / "iun 2027"). Motiv: în fereastra normală (an curent) anul e redundant; devine necesar doar când
+  fereastra de 60z trece în an+1 (dec). `dataRo` e pentru DATE, nu pentru etichete de perioadă (string backend
+  `_LUNI_NUME[m]`) -> decizia trăiește în UI (etichetaPerioada în termene.js), consemnată aici. Backend: `an` +
+  `incert` propagate prin portofoliu (un grup termen+tip = o perioadă -> egale pe toate firmele).
+- P2: rândurile de firmă din detaliu nu mai sunt fundătură (cursor:default) -> `deschideFirma(t,nav)` (firme.js:146,
+  exportat), cursor:pointer. Calea EXISTA, lipsea `cui` în datele /termene (adăugat) + maparea `tenant_id`->`id`.
+  Fără rută nouă.
+- P3: nimic de schimbat — cap.2a interzice non-modal, cap.9 scroll intern = pattern sancționat pentru liste lungi.
+  Confirmat că modalul folosește `max-height: calc(100vh - 48px)` (stil.css:253) + `.fereastra-corp{overflow-y:auto}`.
+- P4: D390 pe perioadă DESCHISĂ = incertitudine -> bulină `.pct-gri` (var(--gri-semafor), cap.8) + etichetă "posibil"
+  (10px, cap.8 buline+text). Aliniat 1:1 cu semaforul (același caz e deja gri acolo). Perioadă închisă = obligație
+  cunoscută, fără bulină. Backend: flag `incert` pe itemul D390 emis pe lună deschisă (obligatii_datorate, doar
+  termene jos!=None) -> matricea intactă (d390_fapt=None nu-l setează).

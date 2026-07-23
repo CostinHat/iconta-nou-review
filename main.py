@@ -2140,7 +2140,7 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
                 from core import d390 as _d390
                 _fapt = lambda a, l: _d390.d390_are_operatiuni(cs, schema, a, l, azi)
                 term = termene_api.termene_firma(vector, are_sal, depuse, azi, d390_fapt=_fapt)
-                firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "termene": term})
+                firme_eval.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"), "termene": term})   # [P2] cui pt deschideFirma
         except Exception as e:
             # [T1] o firma care crapa NU dispare din ecran: gri cu temei (doctrina 23.07 — gri = "nu am putut", nu tacere).
             # [item4] numele tehnic al exceptiei merge DOAR in log (%r); pe ecran - temei citibil pentru contabil (DS cap.6).

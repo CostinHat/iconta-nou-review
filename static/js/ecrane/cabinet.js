@@ -356,10 +356,7 @@ async function actualizeazaTermene(grila) {
     const r = await api.get("/termene");
     const u = r && r.urmatoarea;
     if (!u) { zona.innerHTML = "Nicio scadență apropiată"; return; }  // [p80_texte_scurte]
-    const luni = ["ian","feb","mar","apr","mai","iun","iul","aug","sep","oct","noi","dec"];
-    const p = u.termen.split("-");
-    const dataTxt = `${parseInt(p[2])} ${luni[parseInt(p[1]) - 1]}`;
-    zona.innerHTML = `Următoarea scadență: <b>${dataTxt}</b>`;
+    zona.innerHTML = `Următoarea scadență: <b>${dataRo(u.termen, "zi_luna_text")}</b>`;   // [P1b] dataRo canonic, nu formator local
   } catch {}
 }
 
