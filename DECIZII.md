@@ -2591,3 +2591,20 @@ o firma fara profit e "fara subiect". De decis cu Costin daca coerenta_d205_457 
 0) sau ramane verde (confirmare de coerenta).
 DOVADA: verifica_tva(tenant_003 neplatitor)=absent; verifica_tva(tenant_002 platitor)=ruleaza normal. 97 teste
 (1 nou: verifica_tva neplatitor absent; d112 deja acoperit).
+
+### 23.07.2026 Criteriul clasei "verde fals pe 0-vs-0": proprietate structurala vs eveniment (inchide clasa)
+DECIZIE: d205_vs_457 RAMANE verde pe 0-vs-0 (raspuns la intrebarea deschisa din intrarea anterioara). Criteriul
+care separa clasa "verde fals pe 0-vs-0 = verificare fara subiect":
+ - SUBIECT ca PROPRIETATE STRUCTURALA (firma ARE sau NU salariati; ESTE sau NU platitor TVA): daca proprietatea
+   lipseste, verificatorul n-are OBIECT -> nu produce verdict -> ABSENT. (verifica_d112, verifica_tva).
+ - SUBIECT ca EVENIMENT (orice firma POATE distribui dividende / face o operatiune): 0-vs-0 e o CONSTATARE
+   VALIDA - verificarea are obiect si face munca reala, confirma ca cele doua surse (declaratie D205 vs cont 457)
+   sunt de acord ca evenimentul n-a avut loc. -> VERDE. (d205_vs_457).
+TEMEI: la un eveniment, 0-vs-0 nu inseamna "n-am verificat nimic", inseamna "am verificat si ambele surse
+confirma ca n-au fost dividende". Daca dividendele apareau intr-o singura sursa (D205 fara 457, sau invers),
+dif != 0 -> coerent=False -> ROSU (verificat: coerenta_d205_457 intoarce coerent = (dif==0); firme.js randeaza
+pct-rosu pe !coerent). Deci verificarea discrimineaza real - nu e un verde care minte, e un verde castigat.
+Diferenta de d112/tva: acolo, fara subiectul structural, generatorul compara doua zerouri care nu POT fi
+altceva (un neplatitor n-are cum sa aiba D300 nenul) - 0-vs-0 e tautologic, nu constatare.
+CLASA INCHISA: verifica_tva + verifica_d112 = structural, garda -> absent (reparate). verifica_d390/cota_tva =
+deja corecte. d205_vs_457 = eveniment -> verde ramane. Nimic altceva de reparat pe aceasta clasa.
