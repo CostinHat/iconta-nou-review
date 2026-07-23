@@ -8,6 +8,7 @@ cu numarul de firme. Perspectiva = privire inainte (vs control_fiscal = privire 
 from __future__ import annotations
 import datetime
 from core import control_fiscal_api as cf
+from core.migrare_api import regim_efectiv  # [regim] primitiva UNICA (partida simpla => None), langa STRATURI_META
 from core.common import azi_ro  # [fus] fereastra [azi, azi+60] = VERDICT (ce vede contabilul), zi RO
 
 ORIZONT_ZILE = 60
@@ -27,7 +28,9 @@ def termene_firma(vector, are_salariati, depuse, azi=None):
     # deci o reimplementam aici cu limita extinsa prin acelasi mecanism _termen.
     platitor_tva = bool(vector.get("platitor_tva"))
     decont = (vector.get("tip_decont") or "lunar").lower()
-    regim = (vector.get("regim_fiscal") or "micro").lower()
+    # [regim] regimul CIT EFECTIV: partida simpla (pfa) => None => nu emite D100/D101. Callerul da
+    # vector cu tip_firma + regim_fiscal (contract strict al regim_efectiv). Vezi DECIZII 23.07.
+    regim = regim_efectiv(vector)
     ic = bool(vector.get("operatiuni_ic"))
     luni = ["", "ian", "feb", "mar", "apr", "mai", "iun", "iul", "aug", "sep", "oct", "noi", "dec"]
     an = azi.year

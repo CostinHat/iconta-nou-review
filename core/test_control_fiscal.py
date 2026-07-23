@@ -188,3 +188,23 @@ def test_srl_neschimbat_d406_datorat_d100_d101_gri():
     assert "d406" in dat                                 # SRL neplatitor -> D406 trimestrial
     assert {"d100", "d101"} <= neclar                    # regim None -> gri (neschimbat)
     assert not rez["neaplicabile"]
+
+
+# ---- primitiva regim_efectiv (partida simpla => None neconditionat; contract strict, fara .get) ----
+from core.migrare_api import regim_efectiv as _regim_efectiv
+import pytest as _pytest
+
+def test_regim_efectiv_pfa_e_None_neconditionat():
+    assert _regim_efectiv({"tip_firma": "pfa", "regim_fiscal": "micro"}) is None   # ignora regim scris
+    assert _regim_efectiv({"tip_firma": "pfa", "regim_fiscal": None}) is None
+
+def test_regim_efectiv_srl_intoarce_regimul_sau_None():
+    assert _regim_efectiv({"tip_firma": "srl", "regim_fiscal": "micro"}) == "micro"
+    assert _regim_efectiv({"tip_firma": "srl", "regim_fiscal": "PROFIT"}) == "profit"
+    assert _regim_efectiv({"tip_firma": "srl", "regim_fiscal": None}) is None       # vector necompletat
+
+def test_regim_efectiv_strict_keyerror_pe_cheie_absenta():
+    with _pytest.raises(KeyError):
+        _regim_efectiv({"regim_fiscal": "micro"})     # tip_firma absent -> KeyError, fara fallback
+    with _pytest.raises(KeyError):
+        _regim_efectiv({"tip_firma": "srl"})          # regim_fiscal absent -> KeyError

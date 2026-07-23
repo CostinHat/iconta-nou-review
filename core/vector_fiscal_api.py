@@ -13,6 +13,8 @@ Valori acceptate de motor (control_fiscal_api.declaratii_datorate):
   operatiuni_ic: bool (-> D390 lunar)
 """
 
+from core.migrare_api import regim_contabil  # [regim] fapt UNIC tip_firma->partida (langa STRATURI_META)
+
 _REGIMURI = ("micro", "profit")
 _DECONTURI = ("lunar", "trimestrial")
 
@@ -44,10 +46,7 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
              nume=None, cui=None):  # [p83_upsert] UPSERT
     """Scrie vectorul. Valideaza valorile. Daca nu e platitor TVA, decontul devine NULL.
     Daca randul firma_profil (id=1) nu exista, il creeaza (nume+cui obligatorii la insert)."""
-    regim = (regim_fiscal or "").strip().lower()
-    if regim not in _REGIMURI:
-        return {"ok": False, "cod": "REGIM_INVALID",
-                "mesaj": "regim_fiscal trebuie sa fie 'micro' sau 'profit'"}
+    regim_in = (regim_fiscal or "").strip().lower()
 
     tva = bool(platitor_tva)
     ic = bool(operatiuni_ic)
@@ -61,9 +60,25 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
         decont = None
 
     with conn_schema.cursor() as cur:
-        # exista randul?
-        cur.execute("SELECT 1 FROM firma_profil WHERE id = 1")
-        exista = cur.fetchone() is not None
+        # tip_firma se citeste SERVER-SIDE din firma_profil (NU vine din client). Rand absent -> INSERT
+        # cu default 'srl' (partida dubla).
+        cur.execute("SELECT tip_firma FROM firma_profil WHERE id = 1")
+        _r = cur.fetchone()
+        exista = _r is not None
+        tip_firma = _r[0] if exista else "srl"
+        # regim CIT dupa MODUL de contabilitate (partida simpla/dubla), nu dupa ce trimite clientul:
+        if regim_contabil(tip_firma) == "simpla":
+            # PFA/II/PFL n-are regim CIT (impozit pe venit prin D212). Gol -> NULL valid; valoare ne-goala
+            # -> eroare explicita (nu stocam micro/profit inexistent la partida simpla). Vezi DECIZII 23.07.
+            if regim_in:
+                return {"ok": False, "cod": "REGIM_LA_PARTIDA_SIMPLA",
+                        "mesaj": "Firmă în partidă simplă (PFA/II/PFL) — nu are regim micro/profit; lasă regimul gol."}
+            regim = None
+        else:
+            if regim_in not in _REGIMURI:
+                return {"ok": False, "cod": "REGIM_INVALID",
+                        "mesaj": "regim_fiscal trebuie sa fie 'micro' sau 'profit'"}
+            regim = regim_in
         if exista:
             cur.execute(
                 "UPDATE firma_profil "

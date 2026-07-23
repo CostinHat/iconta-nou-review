@@ -847,7 +847,7 @@ class MigrareStatusIn(BaseModel):
     nota: str = ""
 
 class VectorIn(BaseModel):  # [p82_vector]
-    regim_fiscal: str
+    regim_fiscal: Optional[str] = None  # [regim] partida simpla -> NULL valid; Optional doar ca sa nu pice la boundary
     platitor_tva: bool
     tip_decont: Optional[str] = None
     operatiuni_ic: bool = False
@@ -2104,10 +2104,11 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
                 continue
             with db.get_conn(schema) as cs:
                 with cs.cursor() as cur:
-                    cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic FROM firma_profil LIMIT 1")
+                    cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, tip_firma FROM firma_profil LIMIT 1")
                     row = cur.fetchone()
                     vector = {"regim_fiscal": row[0], "platitor_tva": row[1],
-                              "tip_decont": row[2], "operatiuni_ic": row[3]} if row else {}
+                              "tip_decont": row[2], "operatiuni_ic": row[3],
+                              "tip_firma": row[4]} if row else {}   # [regim] tip_firma -> regim_efectiv (termene)
                     cur.execute("SELECT to_regclass('salariati')")
                     are_sal = False
                     if cur.fetchone()[0]:

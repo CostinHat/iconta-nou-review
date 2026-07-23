@@ -2608,3 +2608,32 @@ Diferenta de d112/tva: acolo, fara subiectul structural, generatorul compara dou
 altceva (un neplatitor n-are cum sa aiba D300 nenul) - 0-vs-0 e tautologic, nu constatare.
 CLASA INCHISA: verifica_tva + verifica_d112 = structural, garda -> absent (reparate). verifica_d390/cota_tva =
 deja corecte. d205_vs_457 = eveniment -> verde ramane. Nimic altceva de reparat pe aceasta clasa.
+
+### 23.07.2026 regim_efectiv — primitiva unica pt regimul CIT; ramificare termene + salveaza pe partida simpla  (migrare_api: regim_contabil/regim_efectiv; termene_api; vector_fiscal_api; main.py VectorIn)
+CONTEXT: dupa corectia de date pe tenant_001 (tip_firma pfa, regim_fiscal NULL), doua cai FABRICAU inca gresit:
+termene_api (regim None->"micro"->emitea D100) si vector_fiscal_api.salveaza (respingea NULL -> P0: salvarea
+vectorului PFA rupta, 400/422). Regresie expusa de UPDATE-ul de azi, reparata in acelasi commit.
+DECIZIE: o SINGURA primitiva, langa STRATURI_META (unde traia deja faptul tip_firma->partida, inline in
+straturi_pentru):
+ - regim_contabil(tip_firma) -> 'dubla' | 'simpla' — UN SINGUR loc unde scrie faptul (srl=dubla, pfa=simpla).
+   straturi_pentru refactorizat sa-l foloseasca (nu mai recopiaza regula).
+ - regim_efectiv(profil) -> 'micro' | 'profit' | None. Partida simpla (pfa) => None NECONDITIONAT (impozit pe
+   venit prin D212, nu regim CIT). Contract STRICT: profil TREBUIE sa aiba tip_firma + regim_fiscal, altfel
+   KeyError (fara .get, fara fallback - callerul da profil complet).
+ADOPTIE (doar cei doi care FABRICA obligatii; NU d100.py/migrare.js/declaratii_fapt in acest commit):
+ - termene_api.termene_firma: regim = regim_efectiv(vector) -> None nu emite D100/D101. main.py:2107 adauga
+   tip_firma la SELECT + vector (contractul strict cere cheia).
+ - vector_fiscal_api.salveaza: citeste tip_firma SERVER-SIDE din firma_profil (NU din client). Partida simpla
+   => regim_fiscal gol -> NULL valid; valoare ne-goala -> eroare explicita (REGIM_LA_PARTIDA_SIMPLA). Altfel =>
+   micro/profit obligatoriu. VectorIn.regim_fiscal: Optional[str]=None DOAR ca sa nu pice la boundary (Pydantic).
+TEMEI: partida simpla n-are regim CIT (OMFP 170/2015 + Art.68 Cod fiscal; profesie liberala/PFA -> D212). Faptul
+tip_firma->partida traia inline in straturi_pentru; o a treia copie in termene/salveaza ar fi drift. O primitiva,
+langa fapt, importata de consumatori.
+ALTERNATIVA RESPINSA (corectii Costin fata de prima propunere): (a) "rip" in straturi_pentru() ca test de partida
+- respins, indirect; extras ca regim_contabil, fapt explicit. (b) regim_efectiv cu .get()/fallback - respins;
+contract strict, KeyError pe cheie absenta (o cale care uita tip_firma trebuie sa CRAPE, nu sa presupuna srl).
+(c) tip_firma in VectorIn - respins; se citeste server-side, clientul nu decide forma juridica.
+DOVADA: P3 - curl salveaza regim='' pe tenant_001 -> 200, NULL stocat; curl regim='micro' -> 400 eroare explicita;
+termene tenant_001 -> D112 iun/iul, FARA D100; pytest 518 verde (3 noi: contract regim_efectiv), verificator TOTAL 0.
+LIMITA: PFA in partida dubla (rar, dar legal -> datoreaza D406) ramane netratat - cere atribut propriu de mod de
+contabilitate, decuplat de tip_firma (intrebare deschisa, vezi raport 23.07). regim_contabil ramane 1:1 tip<->partida.

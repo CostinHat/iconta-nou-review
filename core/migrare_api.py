@@ -27,11 +27,28 @@ STRATURI_META = [
 STRATURI = [s for s, _ in STRATURI_META]
 
 
+def regim_contabil(tip_firma):
+    """'dubla' | 'simpla' din tip_firma — UN SINGUR loc unde scrie faptul (srl=partidă dublă, pfa=partidă
+    simplă). Necunoscut/absent (None) -> 'dubla' (srl implicit, ca default-ul de creare). straturi_pentru()
+    + regim_efectiv() îl folosesc; regula NU se recopiază în altă parte. Vezi DECIZII 23.07."""
+    return "simpla" if (tip_firma or "srl").strip().lower() == "pfa" else "dubla"
+
+
 def straturi_pentru(tip_firma):
     """Straturile aplicabile unui tip de firma ('srl' | 'pfa')."""
-    tip = (tip_firma or "srl").strip().lower()
-    vrut = "dubla" if tip == "srl" else "simpla"
+    vrut = regim_contabil(tip_firma)   # 'dubla' | 'simpla' — fapt UNIC (regim_contabil), nu recopiat
     return [s for s, regim in STRATURI_META if regim in ("ambele", vrut)]
+
+
+def regim_efectiv(profil: dict) -> str | None:
+    """Regimul CIT EFECTIV al firmei: 'micro' | 'profit' | None. Partidă simplă (pfa) => None NECONDIȚIONAT
+    (profesie liberală/PFA: impozit pe venit prin D212, nu regim CIT), oricât ar scrie regim_fiscal. Contract
+    STRICT: profil TREBUIE să aibă 'tip_firma' + 'regim_fiscal' (KeyError altfel — fără .get, fără fallback;
+    callerul dă profil complet). Vezi DECIZII 23.07."""
+    if regim_contabil(profil["tip_firma"]) == "simpla":
+        return None
+    rf = profil["regim_fiscal"]
+    return rf.strip().lower() if rf else None
 STARI = ("gata", "in_lucru")
 
 
