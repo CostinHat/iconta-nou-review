@@ -2310,3 +2310,45 @@ decizie de display separata, low-prio (public romanesc).
 Aparare: 12 teste (azi_ro in fereastra 00:00-02:59 nu sare ziua, in afara coincide; garda boot OS-UTC/PG-UTC ->
 refuz, corect -> trece) + suita 490 verde + verificator DS 0 + PROD: restart normal (OS+PG=Bucharest), semafor
 inca corect (D300 iunie confirmata prin azi_ro).
+
+### 23.07.2026 F163 fereastra D-vs-D = ultima perioada cu D300 depus  (core/control_incrucisat.py: _d300_depus_recent, verifica_d390; commit la aceasta sesiune)
+DECIZIE: sub-verificarea D390-vs-D300-depus isi alege propria fereastra = cea mai recenta perioada (per
+tip_decont: luna/trimestru/semestru) pentru care EXISTA un D300 depus prin aplicatie, si RECALCULEAZA baza
+D390 pe ACEA perioada. Ambele laturi = aceeasi perioada. Perioada evaluata se afiseaza explicit in verdict
+("perioada 06/2026"), fiind alta decat restul ecranului (luna curenta).
+TEMEI: verificare la sursa. D300 pe luna N se depune in N+1 (coada_api.py: luna persistata = ultima luna a
+perioadei TVA - lunar->luna, trim->trim*3). Fereastra veche = luna curenta -> D300 al lunii curente nu e
+depus NICIODATA la momentul verificarii -> F163 permanent gri in exploatare (dovedit: D300 iunie depus
+22.07 nu era vazut, semaforul cerea D300 iulie inexistent). Confirmat functional pe tenant_002: verdictul
+iese din gri si compara 06/2026 cu 06/2026 (L=5000 vs R1_1=5000, A=2000 vs R5_1=2000, coincid).
+ALTERNATIVA RESPINSA (1): "ultimul D300 depus comparat cu D390 CURENT" - respins: ar compara perioade
+DIFERITE (D300 iunie vs D390 iulie), un fals-pozitiv mai rau decat gri-ul, pentru ca arata rosu/divergenta
+pe o nepotrivire care e doar decalaj de perioada, nu eroare reala. Corectitudinea cere aceeasi perioada pe
+ambele laturi.
+ALTERNATIVA RESPINSA (2): mutarea INTREGULUI F163 pe ultima perioada depusa (inclusiv D390-vs-evidenta) -
+respins: D390-vs-evidenta compara doua surse LIVE (baza D390 din facturi + evidenta contabila validata),
+mereu disponibile pe luna curenta; le muta inapoi ar pierde semnalul pe luna in lucru. D-vs-D compara o
+sursa PERSISTATA (D300 depus, disponibil abia luna urmatoare). Disponibilitate diferita = fereastra
+separata, nu una comuna. _fereastra_tva ramane neatins (folosit de latura live); D-vs-D are calcul propriu.
+LIMITA: gri legitim daca firma n-a depus niciun D300 prin aplicatie (comparatia devine posibila dupa prima
+depunere). Neverificat: servicii IC (P/S, d300 nu expune R3_1_1/R7_1_1), triangulatie. Ar rasturna decizia:
+daca ANAF ar schimba periodicitatea de depunere D300 fata de perioada fiscala.
+
+### 23.07.2026 F163/B verdictele UI nu se colapseaza la string in backend  (main.py bucla portofoliu; verificator_conformitate.py: VERDICT_COLAPSAT; static/js/ecrane/control.js: randA)
+DECIZIE: o constatare/verdict destinat UI-ului se transporta STRUCTURAT (stare + eticheta + mesaj + TEMEI +
+remediu; contractul control_incrucisat), niciodata colapsat la un string-eticheta in backend. Frontend-ul
+randeaza printr-un renderer unic de anatomie (randA), fara cale paralela (bare-label eliminat).
+TEMEI: verificare la sursa. main.py (portofoliu) colapsa constatarile la string ("solduri creditoare
+trezorerie", "diferente stocuri", ...) -> in detaliul firmei apareau ca eticheta seaca, fara temei, spre
+deosebire de D390/TVA/D112. Engine-ul PRODUCE deja temeiul (common.problema, constatare_regim_tva); se
+pierdea la colapsare. Aceeasi clasa ca BACKEND_UI_BRUT (sume brute in text de backend, inchisa 22.07 F183),
+alta forma: verdict, nu suma. Cauza, nu simptom: payload-ul duce constatarile intregi.
+ALTERNATIVA RESPINSA: a lasa lista compacta de portofoliu (string-uri) si a adauga o a doua sursa
+structurata doar pentru detaliu - respins: doua cai de randare pentru acelasi verdict = drift. O sursa
+structurata, doua vederi (sumar de lista pe .eticheta, detaliu pe randA).
+GARDA: verificator_conformitate.py categoria VERDICT_COLAPSAT - regula MECANICA: intr-o lista cu nume de
+verdict (contabil|constatari|probleme|verdicte|findinguri), un element string LITERAL (append sau prim
+element de list-literal) = colaps. O lista de string-uri legitima nu poarta nume de verdict (lista de alerte
+de sistem din _verifica_si_alerta a fost redenumita `alerte`, nu carve-out in garda). Raport: 0.
+LIMITA: garda prinde numele din setul curat; o lista de verdicte cu alt nume (ex. `rezultate`) ar scapa -
+setul se extinde cand apare cazul. Nu prinde asezarea, doar colapsul la string.

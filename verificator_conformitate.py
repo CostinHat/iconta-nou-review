@@ -32,7 +32,7 @@ for f in sorted(os.listdir(BAZA)):
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
                         "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
-                        "esc_local", "caseta_atentie", "backend_ui_brut"]}
+                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -187,6 +187,14 @@ RE_SUMA_PCT   = re.compile(r'%[df]\s*lei\b')                        # %d lei / %
 RE_ARE_FSTR   = re.compile(r'''\bf["']''')                          # linia contine un f-string
 RE_UNIT_G     = re.compile(r':g\}?\s*lei')                          # {x:g} lei = rata unitara
 RE_PCT_S_LEI  = re.compile(r'%s\s*lei\b')                           # %s lei = string pre-formatat
+# VERDICT_COLAPSAT (clasa BACKEND_UI_BRUT, forma "verdict" nu "suma"): o constatare/verdict destinat
+# UI-ului trebuie sa fie STRUCTURAT (dot + mesaj + TEMEI + remediu; contractul control_incrucisat), nu
+# un string-eticheta colapsat in backend care pierde temeiul (dovedit F163, 23.07: „solduri creditoare
+# trezorerie" fara temei). Regula MECANICA: intr-o lista cu nume de verdict (contabil/constatari/
+# probleme/verdicte), un element care e string LITERAL (append sau prim element de list-literal) = colaps.
+# O lista de string-uri legitima NU se numeste asa (foloseste `mesaje`, `etichete`, `motive`).
+RE_VERDICT_APPEND = re.compile(r'\b(contabil|constatari|probleme|verdicte|findinguri)\s*\.append\(\s*f?["\']')
+RE_VERDICT_LIT    = re.compile(r'\b(contabil|constatari|probleme|verdicte)\s*\+?=\s*\[\s*f?["\']')
 RE_DATA_DISP  = re.compile(r'\.strftime\(\s*["\']%d[./]')          # strftime("%d.%m/%d/%m") = display RO
 RE_FORMATATOR = re.compile(r'\b(bani|data_ro|_lei|_dmy|_data_ro|_f|_q)\s*\(')  # deja canonic/local-ok
 PY_EXCEPT_FILE = {"etransport_send.py", "d406.py", "export_winmentor.py",
@@ -212,6 +220,8 @@ for pdir in (os.path.join(BAZA_PY, "core"), BAZA_PY):
                 continue
             if s.startswith("#") or ('"' not in lin and "'" not in lin):
                 continue
+            if RE_VERDICT_APPEND.search(lin) or RE_VERDICT_LIT.search(lin):
+                rap["verdict_colapsat"].append((f, i, "verdict->str", s[:60]))
             if RE_FORMATATOR.search(lin):
                 continue
             suma_bruta = (RE_SUMA_PCT.search(lin) or (RE_ARE_FSTR.search(lin) and RE_SUMA_FSTR.search(lin)))

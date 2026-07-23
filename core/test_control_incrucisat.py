@@ -348,7 +348,8 @@ def test_temei_si_limita_declarate():
 # ============================================================
 #  F163 D-vs-D REAL (deblocat F198): D390 vs D300 DEPUS (compara_d390_vs_d300)
 # ============================================================
-from core.control_incrucisat import compara_d390_vs_d300, _d300_depus_randuri
+from core.control_incrucisat import (compara_d390_vs_d300, _d300_depus_randuri,
+                                     _d300_depus_recent, verifica_d390)
 
 
 def _randuri(**R):
@@ -444,3 +445,67 @@ def test_d300_depus_randuri_null_si_zero_depuneri():
         assert g1 is True and r1 is None
     finally:
         conn.rollback(); _db.pool().putconn(conn)
+
+
+# ============================================================
+#  F163 D-vs-D: fereastra PROPRIE = cea mai recenta perioada depusa (reparat gri permanent, 23.07).
+#  Latura D390-vs-evidenta ramane pe luna curenta; D-vs-D isi alege perioada cu D300 depus.
+# ============================================================
+import pytest
+
+
+def test_dvsd_perioada_afisata_in_eticheta():
+    # perioada evaluata (alta decat restul ecranului) TREBUIE sa apara explicit in verdict.
+    r = compara_d390_vs_d300({"L": 5000, "A": 0}, gasit=True, randuri=_randuri(R1_1=5000), perioada="06/2026")
+    liv = [c for c in r if c["eticheta"].startswith("Livrări")][0]
+    assert "perioada 06/2026" in liv["eticheta"]
+    assert "perioada 06/2026" in liv["mesaj"]      # mesajul e derivat din eticheta
+
+
+def test_fereastra_tva_reconstruieste_trimestrul_din_luna_depusa():
+    # D300 trimestrial se depune cu luna = ultima luna a trimestrului (coada_api: trim*3). Fereastra
+    # D-vs-D reconstruieste cele 3 luni din acea luna -> baza D390 recalculata pe TOT trimestrul.
+    luni, de, pana, et = _fereastra_tva("trimestrial", 2026, 6)
+    assert luni == [4, 5, 6] and et == "trimestrul 2/2026"
+    assert de == "2026-04-01" and pana == "2026-07-01"
+
+
+def test_d300_depus_recent_alege_cea_mai_recenta():
+    # mai multe depuneri d300 sintetice -> _d300_depus_recent ia (an DESC, luna DESC). 2099 domina realul.
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            for an, luna in ((2098, 12), (2099, 3), (2099, 6)):
+                cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
+                            "VALUES (2, %s, %s, 'd300', '<x/>', %s, 1)",
+                            (an, luna, _E.Json({"R": {"R1_1": an}})))
+            rec = _d300_depus_recent(conn, "tenant_002")
+        assert rec is not None
+        an_d, luna_d, randuri_d = rec
+        assert (an_d, luna_d) == (2099, 6) and randuri_d["R"]["R1_1"] == 2099
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+
+
+def test_d300_depus_recent_none_pe_schema_inexistenta():
+    conn = _conn()
+    try:
+        assert _d300_depus_recent(conn, "tenant_inexistent_9999") is None
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+
+
+def test_verifica_d390_dvsd_foloseste_perioada_depusa_nu_luna_curenta():
+    # tenant_002 are D300 iunie depus. Verificat pe luna CURENTA (iulie, fara D300 depus) -> D-vs-D NU
+    # mai e gri „nicio depunere", ci compara pe perioada efectiv depusa (06/2026), afisata in eticheta.
+    with _db.get_conn("tenant_002") as conn:
+        rec = _d300_depus_recent(conn, "tenant_002")
+        if rec is None:
+            pytest.skip("tenant_002 fara D300 depus prin aplicatie")
+        r = verifica_d390(conn, "tenant_002", 2026, 7)   # iulie = luna curenta la 23.07
+    dvsd = [c for c in r["constatari"] if "D300 depus" in c["eticheta"]]
+    assert dvsd, "sub-verificarea D-vs-D lipseste"
+    assert all("Nicio depunere" not in c["mesaj"] for c in dvsd)   # a iesit din gri-ul permanent
+    an_d, luna_d, _ = rec
+    et = "%02d/%d" % (luna_d, an_d)
+    assert any(("perioada %s" % et) in c["eticheta"] for c in dvsd)

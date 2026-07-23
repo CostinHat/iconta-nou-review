@@ -561,20 +561,23 @@ D390_D300_PERECHI = (
 )
 
 
-def compara_d390_vs_d300(baze, gasit, randuri):
-    """PURA. baze = {"L": int, "A": int} (bazele IC din D390). gasit = există D300 depus în fereastră
-    (bool). randuri = dict-ul `randuri` persistat al D300 depus (sau None = depus fără rânduri).
+def compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
+    """PURA. baze = {"L": int, "A": int} (bazele IC din D390, recalculate pe ACEEAȘI perioadă ca D300
+    depus). gasit = există D300 depus (bool). randuri = dict-ul `randuri` persistat al D300 depus (sau
+    None = depus fără rânduri). perioada = eticheta perioadei evaluate (ex. "06/2026", "trimestrul
+    2/2026") — se afișează explicit, fiindcă e alta decât restul ecranului (luna curentă).
     Reguli (cap secțiune F163 + regula direcțională VIES): zero depus -> GRI; randuri NULL -> GRI;
     D390>0 & D300 nu declară -> ROȘU (sugerat); ambele>0 diferite (sau D300>0 & D390=0) -> GRI (decalaj
     exigibilitate, NICIODATĂ roșu pe cifre); ambele 0 -> tăcut."""
+    per_sufix = (", perioada %s" % perioada) if perioada else ""
     if not gasit:
-        return [{"eticheta": "D390 vs D300 depus", "stare": "gri",
+        return [{"eticheta": "D390 vs D300 depus" + per_sufix, "stare": "gri",
                  "mesaj": "Nu există D300 depus în fereastră — nu pot compara recapitulativa cu decontul.",
                  "temei": ("D-vs-D real (F163, deblocat F198): D390 bază IC vs D300 depus (rânduri persistate). "
                            "Niciun D300 depus prin aplicație în fereastra TVA -> nimic de comparat. GRI, nu roșu."),
                  "remediu": None}]
     if randuri is None:
-        return [{"eticheta": "D390 vs D300 depus", "stare": "gri",
+        return [{"eticheta": "D390 vs D300 depus" + per_sufix, "stare": "gri",
                  "mesaj": "D300 depus fără rânduri persistate — nu pot compara.",
                  "temei": ("D300 din fereastră a fost depus fără rânduri persistate (depunere anterioară "
                            "persistării F198 sau import istoric). GRI, nu roșu — absența datelor nu e divergență."),
@@ -582,6 +585,7 @@ def compara_d390_vs_d300(baze, gasit, randuri):
     R = (randuri or {}).get("R") or {}
     rez = []
     for eticheta, cheie, rand in D390_D300_PERECHI:
+        eticheta = eticheta + per_sufix
         decl = _d(baze.get(cheie, 0))
         prezent = rand in R
         d300 = _d(R.get(rand, 0))
@@ -635,6 +639,25 @@ def _d300_depus_randuri(conn, schema, an, luna):
     return (r is not None), (r[0] if r else None)
 
 
+def _d300_depus_recent(conn, schema):
+    """(an, luna, randuri) pentru CEA MAI RECENTĂ depunere D300 prin aplicație (tip='d300',
+    public.declaratii_depuse_curente) a firmei — luna = ultima lună a perioadei TVA (cf. coada_api:
+    lunar->luna, trim->trim*3, anual->12). None dacă firma n-a depus niciun D300 prin aplicație.
+    randuri poate fi None (depunere pre-F198). AICI e reparat gri-ul permanent al D-vs-D: fereastra NU
+    e luna curentă (D300 se depune în luna URMĂTOARE -> mereu gri), ci ultima perioadă efectiv depusă;
+    baza D390 se recalculează pe ACEA perioadă (apelantul), ca ambele laturi să fie aceeași perioadă."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
+        row = cur.fetchone()
+        if not row:
+            return None
+        cur.execute("SELECT an, luna, randuri FROM public.declaratii_depuse_curente "
+                    "WHERE tenant_id = %s AND tip = 'd300' ORDER BY an DESC, luna DESC LIMIT 1",
+                    (row[0],))
+        r = cur.fetchone()
+    return (r[0], r[1], r[2]) if r else None
+
+
 def verifica_d390(conn, schema, an, luna):
     """F163: D390 (bunuri IC) vs evidența contabilă validată a facturilor IC. Fereastra = periodicitatea
     TVA (tip_decont): lunar 1 lună, trimestrial 3 luni. Gri dacă D390 nu se poate genera. Vezi capul
@@ -666,9 +689,33 @@ def verifica_d390(conn, schema, an, luna):
     ic_facturi = facturi_ic(conn, schema, data_de, data_pana)
     constatari = compara_d390(baze, ic_facturi)
     # [F163 D-vs-D real, deblocat F198] A TREIA sursă: D390 vs D300 DEPUS (randuri persistate).
-    # D300 depus = o singură dată pe fereastra TVA, cu luna = ultima lună a ferestrei (luni[-1]).
-    gasit_d300, randuri_d300 = _d300_depus_randuri(conn, schema, an, luni[-1])
-    constatari += compara_d390_vs_d300(baze, gasit_d300, randuri_d300)
+    # Fereastra PROPRIE (nu luna curentă — D300 se depune în luna următoare, altfel permanent gri):
+    # cea mai recentă perioadă cu D300 depus. Baza D390 se RECALCULEAZĂ pe acea perioadă, ca ambele
+    # laturi să fie ACEEAȘI perioadă (comparație reală, nu perioade diferite). Perioada = afișată explicit.
+    rec_d300 = _d300_depus_recent(conn, schema)
+    if rec_d300 is None:
+        constatari.append({"eticheta": "D390 vs D300 depus", "stare": "gri",
+            "mesaj": "Nicio depunere D300 prin aplicație — nu am cu ce compara recapitulativa.",
+            "temei": ("D-vs-D real (F163): D390 bază IC vs rândurile intracomunitare ale D300 EFECTIV "
+                      "DEPUS (persistate F198). Nicio depunere D300 persistată -> comparația devine "
+                      "posibilă după prima depunere prin aplicație. GRI, nu roșu — absență, nu divergență."),
+            "remediu": None})
+    else:
+        an_d, luna_d, randuri_d = rec_d300
+        luni_d, _de_d, _pana_d, eticheta_d = _fereastra_tva(tip_dec, an_d, luna_d)
+        try:
+            baze_d = {"L": 0, "A": 0}
+            for m in luni_d:
+                _x, res_d = _d390.genereaza(conn, schema, an_d, m)
+                rez_d = res_d["rezumat"] if isinstance(res_d, dict) else getattr(res_d, "rezumat", {})
+                baze_d["L"] += int(rez_d.get("L", 0))
+                baze_d["A"] += int(rez_d.get("A", 0))
+            constatari += compara_d390_vs_d300(baze_d, True, randuri_d, perioada=eticheta_d)
+        except Exception as e:
+            constatari.append({"eticheta": "D390 vs D300 depus, perioada %s" % eticheta_d, "stare": "gri",
+                "mesaj": "NU pot recalcula D390 pe perioada depusă (%s) pentru comparație (%s)." % (eticheta_d, e),
+                "temei": "D-vs-D real (F163): baza D390 se recalculează pe perioada D300 depus; recalcularea a eșuat.",
+                "remediu": None})
     if any(c["stare"] == "rosu" for c in constatari):
         stare = "rosu"
     elif any(c["stare"] == "gri" for c in constatari):
@@ -682,9 +729,11 @@ def verifica_d390(conn, schema, an, luna):
             "explicatie": (f"{necontate_tot} facturi intracomunitare fără notă validată în fereastră."
                            if necontate_tot else ""),
             "limita": ("Verificat: D390 bunuri IC (livrări L / achiziții A, auto din facturi) vs (1) evidența "
-                       f"contabilă validată a acelorași facturi ȘI (2) D300 DEPUS (rânduri persistate F198), pe "
-                       f"fereastra TVA ({fereastra}). D-vs-D real: R1_1/R5_1 din D300 depus sunt manual-only "
-                       "(gri dacă absente sau dacă D300 depus fără rânduri / neexistent). NEVERIFICAT: servicii "
+                       f"contabilă validată a acelorași facturi pe fereastra TVA curentă ({fereastra}) ȘI (2) D300 "
+                       "DEPUS (rânduri persistate F198), pe CEA MAI RECENTĂ perioadă efectiv depusă (afișată în "
+                       "verdict, alta decât luna curentă — D300 se depune în luna următoare), cu baza D390 "
+                       "recalculată pe acea perioadă. D-vs-D real: R1_1/R5_1 din D300 depus sunt manual-only (gri "
+                       "dacă absente sau dacă D300 depus fără rânduri / nicio depunere). NEVERIFICAT: servicii "
                        "IC (P/S — D390 le ia manual, iar d300 nu expune R3_1_1/R7_1_1); triangulație (T/R)."),
             "modul": MODUL, "reguli": REGULI}
 

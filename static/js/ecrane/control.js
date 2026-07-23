@@ -49,7 +49,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
     let detaliu = f.stare === "rosu" ? `${f.lipsa} restanț${f.lipsa === 1 ? "ă" : "e"}`
       : f.stare === "galben" ? `${f.urmarit} de urmărit`
       : f.stare === "verde" ? "totul la zi" : "vector necompletat";
-    if ((f.contabil || []).length) detaliu += " \u00b7 " + f.contabil.join(" \u00b7 ");
+    if ((f.contabil || []).length) detaliu += " \u00b7 " + f.contabil.map((c) => (c && c.eticheta) || c).join(" \u00b7 ");
     const rand = document.createElement("button");
     rand.className = "mig-frand";
     rand.innerHTML = `
@@ -106,6 +106,19 @@ async function detaliuFirma(corp, nav, firma) {
       <div class="cf-incr-cap"><span class="mig-sold-cont">${esc((x.tip||"").toUpperCase())}</span></div>
       <div class="cf-incr-temei">${esc(x.motiv || "")}</div>
     </div>`).join("");
+
+  // [F183/verdict] renderer UNIC de anatomie constatare (dot + mesaj + temei + remediu) — folosit de
+  // «Verificări contabile» ȘI de auditul de preluare. Fără cale paralelă de randare (bare-label eliminat).
+  const randA = (c) => {
+    const dot = CULORI[c.stare] ? CULORI[c.stare].dot : CULORI.gri.dot;
+    const r = c.remediu;
+    const extra = r ? `<div class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b><br>${esc(r.actiune || "")}</div>` : "";
+    return `<div class="cf-incr-rand">
+      <div class="cf-incr-cap"><span class="cf-dot" style="background:${dot}"></span><span>${esc(c.mesaj || "")}</span></div>
+      <div class="cf-incr-temei">${esc(c.temei || "")}</div>
+      ${extra}
+    </div>`;
+  };
 
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · <span style="color:${col.dot}">${col.txt}</span></p>
@@ -179,18 +192,18 @@ async function detaliuFirma(corp, nav, firma) {
       return `<div class="cf-grup-titlu ${clsT}">Conformitate facturi emise</div>
         <div class="cf-decl">${randuri}${limita}</div>`;
     })()}
-    ${(() => { /* cf_detaliu_contabil_v1 */
-      const vc = d.verificari_contabile || null;
-      if (!vc) return "";
-      const probleme = [];
-      if (vc.echilibru && vc.echilibru.ok === false) probleme.push("balanță dezechilibrată");
-      const tz = vc.trezorerie;
-      if ((Array.isArray(tz) && tz.length) || (tz && !Array.isArray(tz) && tz.ok === false)) probleme.push("solduri creditoare trezorerie");
-      const dejaInIncrucisat = ["balanta dezechilibrata", "solduri creditoare trezorerie", "TVA declarat diferă de contabilitate", "Salarii declarate diferă de contabilitate", "Operațiuni intracomunitare declarate diferă de evidență", "Facturi emise cu cotă TVA greșită pentru perioadă"]; /* cf_detaliu_contabil_v2 + F163_ui + F184: aratate deja in sectiunile de control */
-      if (firma.contabil) firma.contabil.forEach((p) => { if (!probleme.includes(p) && !dejaInIncrucisat.includes(p)) probleme.push(p); });
-      if (!probleme.length) return "";
-      return `<div class="cf-grup-titlu cf-rosu">Verificări contabile (${probleme.length})</div>
-        <div class="cf-decl">${probleme.map((p) => `<div class="cf-incr-rand"><div class="cf-incr-cap"><span class="cf-dot" style="background:${CULORI.rosu.dot}"></span><span>${esc(p)}</span></div></div>`).join("")}</div>`;
+    ${(() => { /* cf_detaliu_contabil_v3: constatari STRUCTURATE din portofoliu (firma.contabil = {stare,
+        eticheta, mesaj, temei, remediu}), randate prin randA — dot + mesaj + TEMEI + remediu, nu bare-label.
+        Cross-check-urile D-vs-contabilitate apar deja in «Declaratie vs contabilitate» -> filtrate dupa
+        eticheta ca sa nu se dubleze. (Reparatie clasa BACKEND_UI_BRUT/verdict: temeiul nu se mai pierde.) */
+      const dejaInIncrucisat = ["TVA declarat diferă de contabilitate", "Salarii declarate diferă de contabilitate", "Operațiuni intracomunitare declarate diferă de evidență", "Facturi emise cu cotă TVA greșită pentru perioadă"];
+      const items = (firma.contabil || []).filter((c) => c && typeof c === "object" && !dejaInIncrucisat.includes(c.eticheta));
+      if (!items.length) return "";
+      const rang = { rosu: 3, galben: 2, gri: 1, verde: 0 };
+      const worst = items.reduce((m, c) => ((rang[c.stare] || 0) > (rang[m] || 0) ? c.stare : m), "verde");
+      const clsTitlu = worst === "rosu" ? "cf-rosu" : (worst === "galben" ? "cf-galben" : "");
+      return `<div class="cf-grup-titlu ${clsTitlu}">Verificări contabile (${items.length})</div>
+        <div class="cf-decl">${items.map(randA).join("")}</div>`;
     })()}
     ${d.stare === "verde" ? `
       <div class="mig-gata" style="padding:30px 0">
@@ -237,17 +250,7 @@ async function detaliuFirma(corp, nav, firma) {
   }));
 
   // [F183] audit de preluare \u2014 ruleaza la cerere (repetabil, datat), randeaza cele trei categorii
-  // reutilizand anatomia de constatare (dot + mesaj + temei + remediu). Motor separat pe backend.
-  const randA = (c) => {
-    const dot = CULORI[c.stare] ? CULORI[c.stare].dot : CULORI.gri.dot;
-    const r = c.remediu;
-    const extra = r ? `<div class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b><br>${esc(r.actiune || "")}</div>` : "";
-    return `<div class="cf-incr-rand">
-      <div class="cf-incr-cap"><span class="cf-dot" style="background:${dot}"></span><span>${esc(c.mesaj || "")}</span></div>
-      <div class="cf-incr-temei">${esc(c.temei || "")}</div>
-      ${extra}
-    </div>`;
-  };
+  // reutilizand randA (renderer unic de anatomie, definit mai sus). Motor separat pe backend.
   async function ruleazaAudit() {
     const zona = corp.querySelector("#cf-audit-zona");
     const btn = corp.querySelector("#cf-audit-run");

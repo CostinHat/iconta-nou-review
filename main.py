@@ -316,17 +316,17 @@ def _poate_alerta(categorie):
 
 def _verifica_si_alerta():
     m = _citeste_metrici_pentru_alerte()
-    probleme = []
+    alerte = []
     if m["ram_procent"] is not None and m["ram_procent"] >= _PRAG_RAM_PROCENT and _poate_alerta("ram"):
-        probleme.append(f"RAM folosita: {m['ram_procent']}% (prag {_PRAG_RAM_PROCENT}%)")
+        alerte.append(f"RAM folosita: {m['ram_procent']}% (prag {_PRAG_RAM_PROCENT}%)")
     if m["disc_procent"] is not None and m["disc_procent"] >= _PRAG_DISC_PROCENT and _poate_alerta("disc"):
-        probleme.append(f"Disc folosit: {m['disc_procent']}% (prag {_PRAG_DISC_PROCENT}%)")
+        alerte.append(f"Disc folosit: {m['disc_procent']}% (prag {_PRAG_DISC_PROCENT}%)")
     if m["load1"] is not None and m["load1"] >= 0.7 * m["cpu_count"] and _poate_alerta("load"):
-        probleme.append(f"Load average: {round(m['load1'], 2)} (prag {round(0.7 * m['cpu_count'], 2)})")
+        alerte.append(f"Load average: {round(m['load1'], 2)} (prag {round(0.7 * m['cpu_count'], 2)})")
     if m["conexiuni_db"] is not None and m["conexiuni_db"] >= _PRAG_CONEXIUNI_DB and _poate_alerta("conexiuni_db"):
-        probleme.append(f"Conexiuni DB active: {m['conexiuni_db']} (prag {_PRAG_CONEXIUNI_DB})")
+        alerte.append(f"Conexiuni DB active: {m['conexiuni_db']} (prag {_PRAG_CONEXIUNI_DB})")
     if m["erori_noi"] and m["erori_noi"] > 0 and _poate_alerta("erori"):
-        probleme.append(f"{m['erori_noi']} eroare/erori server (500+) in ultimele 10 minute")
+        alerte.append(f"{m['erori_noi']} eroare/erori server (500+) in ultimele 10 minute")
     # ICRD_ISTORIC_SANATATE_V1 - salveaza instantaneu pentru grafice
     try:
         with db.get_conn() as conn:
@@ -339,14 +339,14 @@ def _verifica_si_alerta():
     except Exception:
         pass
 
-    if not probleme:
+    if not alerte:
         return
     email = _email_superadmin()
     if not email:
         return
     html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
             "<p>Alerta sanatate server iConta:</p><ul>" +
-            "".join("<li>" + p + "</li>" for p in probleme) +
+            "".join("<li>" + p + "</li>" for p in alerte) +
             "</ul><p>Verifica panoul 'Sanatate server' din Admin iConta.</p></div>")
     import core.observare as _obs
     _obs.trimite_email_html(email, "Alerta iConta - sanatate server", html)
@@ -1938,6 +1938,12 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
     azi = azi_ro()   # [fus] verdict semafor per firma (la termen/intarziat) = zi RO, robust la OS TZ
     out = []
     sumar = {"verde": 0, "galben": 0, "rosu": 0, "gri": 0}
+    def _flag(stare, eticheta, mesaj, temei, remediu=None):
+        # [verdict_colapsat] constatare STRUCTURATA de portofoliu (nu string de afisare colapsat, clasa
+        # BACKEND_UI_BRUT verdict): dot + mesaj + temei + remediu, randata identic cu D390/TVA in control.js.
+        # `eticheta` = label scurt (sumar de lista + dedup fata de «Declaratie vs contabilitate»).
+        return {"stare": stare, "eticheta": eticheta, "mesaj": mesaj or eticheta,
+                "temei": temei or "", "remediu": remediu}
     with db.get_conn() as conn:
         firme = auth_api.tenantii_userului(conn, ctx["uid"])
     for f in firme:
@@ -1951,44 +1957,55 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
                 r = control_fiscal_api.evalueaza_firma(cs, cp, tid, schema, azi)
         except Exception:
             r = {"stare": "gri", "datorate": 0, "depuse": 0, "lipsa": [], "urmarit": []}
-        contabil = []  # cf_verificari_v1 + cf_toate_verificarile_v1
+        contabil = []  # cf_verificari_v1 — constatari STRUCTURATE (mesaj+temei+remediu), nu string colapsat
         try:
             v = _verificari_contabile(schema, azi.year, azi.month)
-            if not (v["echilibru"] or {}).get("ok", True):
-                r["stare"] = "rosu"; contabil.append("balanta dezechilibrata")
-            tz = v["trezorerie"]
-            if (isinstance(tz, list) and tz) or (isinstance(tz, dict) and not tz.get("ok", True)):
+            ech = v.get("echilibru") or {}
+            if not ech.get("ok", True):
+                r["stare"] = "rosu"
+                contabil.append(_flag("rosu", "Balanță dezechilibrată", ech.get("mesaj"), ech.get("temei")))
+            tz = v.get("trezorerie") or []
+            tz_probleme = tz if isinstance(tz, list) else ([tz] if isinstance(tz, dict) and not tz.get("ok", True) else [])
+            if tz_probleme:
                 if r["stare"] == "verde": r["stare"] = "galben"
-                contabil.append("solduri creditoare trezorerie")
-            # [control_incrucisat_v1 + F163_ui] declaratie vs evidenta = serios -> rosu.
-            # Aceiasi verificatori D-vs-contabilitate ridica starea firmei in portofoliu.
-            if (v.get("tva_incrucisat") or {}).get("stare") == "rosu":
-                r["stare"] = "rosu"; contabil.append("TVA declarat diferă de contabilitate")
-            if (v.get("d112_incrucisat") or {}).get("stare") == "rosu":
-                r["stare"] = "rosu"; contabil.append("Salarii declarate diferă de contabilitate")
-            if (v.get("d390_incrucisat") or {}).get("stare") == "rosu":
-                r["stare"] = "rosu"; contabil.append("Operațiuni intracomunitare declarate diferă de evidență")
-            if (v.get("cota_tva_conformitate") or {}).get("stare") == "rosu":
-                r["stare"] = "rosu"; contabil.append("Facturi emise cu cotă TVA greșită pentru perioadă")
+                for p in tz_probleme:
+                    contabil.append(_flag("galben", "Solduri creditoare trezorerie", p.get("mesaj"), p.get("temei")))
+            # [control_incrucisat_v1 + F163_ui] declaratie vs evidenta = serios -> rosu. Constatarea INTREAGA
+            # e in sectiunea «Declaratie vs contabilitate»; aici doar sumarul de portofoliu (eticheta + temei).
+            for cheie, et in (("tva_incrucisat", "TVA declarat diferă de contabilitate"),
+                              ("d112_incrucisat", "Salarii declarate diferă de contabilitate"),
+                              ("d390_incrucisat", "Operațiuni intracomunitare declarate diferă de evidență"),
+                              ("cota_tva_conformitate", "Facturi emise cu cotă TVA greșită pentru perioadă")):
+                vd = v.get(cheie) or {}
+                if vd.get("stare") == "rosu":
+                    r["stare"] = "rosu"
+                    prima = next((c for c in (vd.get("constatari") or []) if c.get("stare") == "rosu"), {})
+                    contabil.append(_flag("rosu", et, prima.get("mesaj"), prima.get("temei"), prima.get("remediu")))
         except Exception:
             pass
         try:  # stocuri contabil vs fise CV
             vs = verificare_stocuri(tid, ctx)
             if not vs.get("ok", True):
                 if r["stare"] == "verde": r["stare"] = "galben"
-                contabil.append("diferen\u021be stocuri")
+                difs = [c for c in vs.get("conturi", []) if not c.get("ok")]
+                mesaj = ("Sold contabil diferit de fi\u0219ele CV pe conturile: " + ", ".join(c["cont"] for c in difs) + "."
+                         if difs else "Soldul contabil difer\u0103 de fi\u0219ele de magazie CV.")
+                contabil.append(_flag("galben", "Diferen\u021be stocuri", mesaj, vs.get("nota")))
         except Exception:
             pass
         try:  # praguri Intrastat
             ip = intrastat_praguri(tid, azi.year, ctx)
-            if (ip["introduceri"]["status"] != "sub_prag") or (ip["expedieri"]["status"] != "sub_prag"):
+            fluxuri = [nume for nume in ("introduceri", "expedieri") if ip[nume]["status"] != "sub_prag"]
+            if fluxuri:
                 r["stare"] = "rosu"
-                contabil.append("prag Intrastat depasit")
+                contabil.append(_flag("rosu", "Prag Intrastat depășit",
+                                      "Prag Intrastat depășit pe: " + ", ".join(fluxuri) + ".", ip.get("nota")))
         except Exception:
             pass
-        # [F180] regim TVA local vs snapshot ANAF (stare deja escaladata in evalueaza_firma)
-        if (r.get("regim_tva_anaf") or {}).get("stare") == "rosu":
-            contabil.append("Regim TVA diferă de ANAF")
+        # [F180] regim TVA local vs snapshot ANAF (constatare structurata deja produsa de evalueaza_firma)
+        rta = r.get("regim_tva_anaf") or {}
+        if rta.get("stare") == "rosu":
+            contabil.append(_flag("rosu", "Regim TVA diferă de ANAF", rta.get("mesaj"), rta.get("temei"), rta.get("remediu")))
         sumar[r["stare"]] = sumar.get(r["stare"], 0) + 1
         out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
                     "stare": r["stare"], "lipsa": len(r["lipsa"]), "urmarit": len(r["urmarit"]),
