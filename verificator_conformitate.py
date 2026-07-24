@@ -362,11 +362,21 @@ if not os.path.exists(_cv):
 else:
     _inv = _felie_py(open(_cv, encoding="utf-8").read(), "VC_RANDATE = {", ("\n};",))
     _randate = set(re.findall(r'\n\s*(\w+)\s*:', _inv))
+# al DOILEA consumator care alege chei vc pe NUME: ecranVerificari (firme.js, endpoint /firme/{id}/verificari,
+# vc brut pe luna). Aceeasi paritate de randare, acelasi mecanism: inventar declarat VC_VERIFICARI (randat sau
+# ignorat-cu-motiv). Cross-check-urile sunt ignorate declarat aici (apartin exclusiv verdictului Control fiscal).
+_vf_randate = set()
+_fj = os.path.join(BAZA, "firme.js")
+if os.path.exists(_fj):
+    _vfinv = _felie_py(open(_fj, encoding="utf-8").read(), "VC_VERIFICARI = {", ("\n};",))
+    _vf_randate = set(re.findall(r'\n\s*(\w+)\s*:', _vfinv))
 if not _produse:
     rap["verdict_paritate"].append(("main.py", 0, "parsare", "n-am putut extrage cheile vc produse (_verificari_contabile) — verifica ancora"))
 for _cheie in sorted(_produse):
     if _cheie not in _randate:
         rap["verdict_paritate"].append(("main.py -> control_verdict.js", 0, "randare", "cheie vc `%s` produsa dar fara intrare in VC_RANDATE" % _cheie))
+    if _cheie not in _vf_randate:
+        rap["verdict_paritate"].append(("main.py -> firme.js/ecranVerificari", 0, "randare", "cheie vc `%s` produsa dar fara intrare in VC_VERIFICARI" % _cheie))
     if _cheie not in _pliate and _cheie not in _fara_sev:
         rap["verdict_paritate"].append(("main.py", 0, "severitate", "cheie vc `%s` nici pliata in contabil, nici in VC_FARA_SEVERITATE" % _cheie))
 

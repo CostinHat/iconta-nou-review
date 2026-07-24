@@ -69,6 +69,12 @@ starea reverificata azi:
    **D710 LIVE dar inaccesibil din UI**; **D301 fără writer** (contabilul nu poate introduce operațiuni IC din
    aplicație — vezi și ISTORIC 23.07 poz.3, gap D301). DE FĂCUT: inventar sistematic care declarații LIVE au / n-au
    cale din UI, ca să nu existe capabilități moarte pentru utilizator. Sursa motoarelor: `core/declaratii_api.py`.
+5. **Formator de dată local care ocolește DATA_DIALECT** (constatat 24.07 la investigarea `ecranVerificari`,
+   `firme.js`): antetul „Verificări" formatează perioada cu `${String(luna).padStart(2,"0")}/${an}` (luna/an
+   compus manual) în loc de `dataRo(...)` — încalcă DS cap.4, dar garda DATA_DIALECT nu-l prinde (caută
+   `luni[...]`/`toLocaleDateString`/`split("-")`, nu forma `padStart`). Separat de consolidarea verdictului
+   (neatins azi). DE DECIS: (a) reparație punctuală → `dataRo("luna_an")`; (b) extindere DATA_DIALECT să prindă
+   forma `padStart(...)/${an}` (risc de fals-pozitiv pe alte `padStart`). O regulă nouă intră simultan în DS + verificator.
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza

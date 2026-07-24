@@ -423,6 +423,22 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
 }
 
 // [verificari] Verificari coerenta pe firma: echilibru, trezorerie, TVA
+// [paritate_randare 24.07] Inventar DECLARAT pt garda VERDICT_PARITATE (DS cap.20). ecranVerificari consuma vc
+// BRUT de la /firme/{id}/verificari (pe luna) si alege chei pe NUME. Fiecare cheie vc PRODUSA de backend trebuie
+// sa fie ori randata mai jos, ori ignorata AICI cu motiv — nu tacut (aceeasi clasa care ascundea salariile pe
+// cardul din fisa). Citit ca TEXT de verificator_conformitate.py (paritate de randare, al doilea consumator), nu
+// la runtime. Randare noua NU se adauga aici — doar declaratia; cross-check-urile raman exclusiv in verdict.
+const VC_VERIFICARI = {
+  echilibru:             "randat — Echilibru balanță",
+  trezorerie:            "randat — Trezorerie (solduri creditoare)",
+  documente_pozate:      "randat — Documente pozate de clienți",
+  tva:                   "randat — TVA (rezultat + sold)",
+  note:                  "randat — contor de note contabile în antet",
+  tva_incrucisat:        "IGNORAT — acest ecran arată doar coerența brută lunară; cross-check-urile declarație-vs-contabilitate aparțin exclusiv verdictului din Control fiscal (control_verdict.js)",
+  d112_incrucisat:       "IGNORAT — idem (salarii D112 vs contabilitate)",
+  d390_incrucisat:       "IGNORAT — idem (operațiuni intracomunitare D390 vs evidență)",
+  cota_tva_conformitate: "IGNORAT — idem (cotă TVA facturi emise vs perioadă)",
+};
 async function ecranVerificari(corp, nav, t) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
