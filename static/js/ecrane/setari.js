@@ -178,11 +178,11 @@ export async function randeazaSetari(corp, nav) {
       <div class="panou">
         <div class="cap-titlu">Date profil</div>
         <label class="camp">
-          <span class="camp-eticheta">Prenume</span>
+          <span class="camp-eticheta">Nume</span>
           <input id="set-nume" class="camp-input" type="text" value="${esc(u.nume)}">
         </label>
         <label class="camp">
-          <span class="camp-eticheta">Nume</span>
+          <span class="camp-eticheta">Prenume</span>
           <input id="set-prenume" class="camp-input" type="text" value="${esc(u.prenume)}">
         </label>
         <button class="buton-primar" id="set-salveaza-profil">Salveaz\u0103 profilul</button>
