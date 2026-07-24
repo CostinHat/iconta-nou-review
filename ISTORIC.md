@@ -2711,3 +2711,29 @@ CARENTE 8.
 gardă inline) — risc mic, DE_FACUT CARENTE 7.
 
 **CHECKLIST_BROWSER: poziția 6 (Admin) închisă. Rămân 7** (5, 7–12).
+
+## 24.07.2026 — Ecran poziția 5 (Recomandă): verificat vizual complet (cabinet + asistent + client) + 1 bug reparat
+Verificare la sursă (raport, fără cod) + verificare vizuală: A (cabinet + asistent), B (client via magic-link DANTE).
+
+**HARTA:** două features SEPARATE (nu divergență poziția 2 — DECIZII 24.07): cabinet `recomanda.js/randeazaRecomanda`
+(`/recomanda`, cere_cabinet, max 20; 3 intrări: card cabinet + link-mic + card asistent) și client
+`portal.js/ecranRecomanda` (`/portal/recomanda`, cere_client, max 10; 2 intrări: card portal + link-mic). Backend
+partajat pe trimitere (`_trimite_recomandari`).
+
+**BUG găsit + reparat:** culoarea textului de succes lipsea pe rezultatul per-email din portal (client) — randare
+neutră, divergentă de convenția DS (cap.6/8) și de geamănul cabinet. Reparat (`0610f32`, precedat de `a9db4bc`
+retras): fiecare rând rezultat primește clasa canonică pe TEXT — `.msg-ok` (verde succes) / `.msg-eroare` (roșu),
+simetric cu erorile aceluiași ecran; fără element nou (abordarea bulină `.cab-pct` a fost anulată la corecția de
+direcție). Cabinetul avea deja succesul verde prin `arataMesaj(...,"ok")` → `.msg-ok`. Bump `portal.js?v=10→11`
+(app.js) ca fix-ul să treacă de cache-ul pe URL versionat (SW nu cache-uiește JS — tratează doar `navigate`).
+
+**COLATERAL reparat înainte** (`c15a15d`): `recomanda.js:35` sanitizare inline `.replace(/[<>&]/)` → `esc` canonic.
+
+**VIZUAL:** toate 8 puncte confirmate — A (cabinet + asistent: modal preview + trimitere + mesaje), B (client via
+magic-link DANTE: preview toggle + trimitere per-email colorată).
+
+**DE_FACUT (prioritate mică, neatins):** CARENTE 10 — în previzualizarea admin read-only (Facturare gratuită →
+Recomandă), acțiunea e blocată corect dar mesajul e generic „A apărut o eroare" (nu „dezactivat în previzualizare");
++ restul ecranului Facturare gratuită netestat.
+
+**CHECKLIST_BROWSER: poziția 5 (Recomandă) închisă. Rămân 6** (7–12).

@@ -111,6 +111,14 @@ starea reverificata azi:
    de preocuparea de infra. Alternativă (opțiunea 2): aplică `BETA_COD_ACCES` pe TOATE căile de emitere a sesiunii
    (+`magic-login`) ȘI repară oracolul (același răspuns pt parolă greșită vs. parolă bună fără cod, sau poarta ÎNAINTE
    de credențiale) — necesară doar dacă unele `/public/*` (ex. magic-link) trebuie să rămână deschise intenționat.
+10. **[UI, prioritate mică] Mesaj generic „A apărut o eroare" în modul previzualizare admin (read-only)** (constatat
+   24.07 la închiderea poziției 5, `portal.js:456`): în previzualizarea portalului client (F197, read-only, accesată
+   prin Facturare gratuită → previzualizare cont, DANTE), acțiunea client „Recomandă" (POST `/portal/recomanda`) e
+   blocată **intenționat** de middleware-ul read-only → catch-ul generic afișează „A apărut o eroare. Încearcă din
+   nou." Acțiunea e dezactivată corect, dar mesajul NU comunică asta (ar trebui „dezactivat în previzualizare").
+   DE VERIFICAT altă dată: (1) dacă ALTE acțiuni din modul previzualizare afișează același mesaj generic în loc de unul
+   explicit „dezactivat în previzualizare"; (2) restul ecranului **Facturare gratuită** (admin), netestat azi dincolo
+   de acest caz particular. Prioritate mică (nu blochează, doar UX de mesaj).
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
