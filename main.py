@@ -2881,7 +2881,7 @@ def coada_lista(stare: Optional[str] = None, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/coada/{coada_id}/aproba")
-def coada_aproba(coada_id: int, ctx=Depends(cere_rol("admin_firma"))):
+def coada_aproba(coada_id: int, ctx=Depends(cere_rol("admin_firma", "angajat"))):
     with db.get_conn() as conn:
         if not _are_permisiune(ctx, "poate_valida"):
             raise HTTPException(status_code=403, detail="nu ai permisiunea de a valida declarații")
@@ -2901,8 +2901,10 @@ def coada_aproba(coada_id: int, ctx=Depends(cere_rol("admin_firma"))):
 
 @app.post("/coada/{coada_id}/respinge")
 def coada_respinge(coada_id: int, date: RespingeIn,
-                   ctx=Depends(cere_rol("admin_firma"))):
+                   ctx=Depends(cere_rol("admin_firma", "angajat"))):
     with db.get_conn() as conn:
+        if not _are_permisiune(ctx, "poate_valida"):
+            raise HTTPException(status_code=403, detail="nu ai permisiunea de a valida declarații")
         r = coada_api.respinge(conn, coada_id, str(ctx["uid"]), date.motiv, respins_de_id=int(ctx["uid"]))
     if not r["ok"]:  # [motiv_lipsa_400_v1] MOTIV_LIPSA e input invalid -> 400
         _cod = r.get("cod")
@@ -2919,7 +2921,7 @@ def coada_respinge(coada_id: int, date: RespingeIn,
 
 @app.post("/coada/{coada_id}/depune")
 def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
-                 ctx=Depends(cere_rol("admin_firma"))):
+                 ctx=Depends(cere_rol("admin_firma", "angajat"))):
     with db.get_conn() as conn:
         if not _are_permisiune(ctx, "poate_depune"):
             raise HTTPException(status_code=403, detail="nu ai permisiunea de a depune declarații")

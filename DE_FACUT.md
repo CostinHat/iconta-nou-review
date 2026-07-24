@@ -194,7 +194,7 @@ starea reverificata azi:
 ## Coada de validare — enforcement inconsecvent (poz.10, 24.07)
 Toate trei verificate la sursă ȘI dovedite vizual pe DANTE (patron localhost:8010 + asistent nou.iconta.eu).
 
-- **[A — PRIORITAR] Delegarea validării nu funcționează.** `/coada/{id}/aproba`, `/respinge`, `/depune` au
+- **[A — REPARAT 24.07] Delegarea validării nu funcționează.** `/coada/{id}/aproba`, `/respinge`, `/depune` au
   `Depends(cere_rol("admin_firma"))`; un asistent cu `poate_valida` primește **403 „rol insuficient pentru această
   acțiune"** ÎNAINTE ca `_are_permisiune(ctx,"poate_valida")` din corp să conteze — helperul e **cod mort** pentru
   angajați. Frontend-ul (validat.js L76-92) randează Aprobă/Respinge pe **FLAGUL de permisiune**, nu pe rol → butonul
@@ -205,6 +205,11 @@ Toate trei verificate la sursă ȘI dovedite vizual pe DANTE (patron localhost:8
   `_are_permisiune` să fie poarta fină (cum e deja intenționat). Verificat: `_are_permisiune` (main.py:5061) citește
   flagul pe APELANT, corect. ATENȚIE la `/respinge`: nu are deloc check de `_are_permisiune` în corp — la slăbirea
   dependenței trebuie adăugat, altfel orice angajat ar putea respinge.
+  **REPARAT 24.07** (main.py, cele 3 rute → `cere_rol("admin_firma","angajat")`; `/respinge` a primit `_are_permisiune("poate_valida")`
+  pe tiparul din aproba). Test funcțional real pe DANTE (după restart): asistent cu `poate_valida` /aproba/120 → **200**
+  (aprobare reală, apoi restaurat la_senior); asistent fără `poate_valida` /aproba + /respinge → **403 „nu ai permisiunea de a
+  valida"** (nu „rol insuficient" — dependența trece acum, poarta fină `_are_permisiune` decide); patron → trece pe toate trei.
+  verificator TOTAL 0. Corpurile existente + anti-self/nu_dezactivezi_admin neatinse.
 
 - **[B] Declarație cu erori DUK intră în coadă, prezentată ca succes.** Verificat vizual: D300 iulie 2026 → pasul 2
   „Validatorul ANAF a găsit erori" (E: validari globale, atribut `cont` prezent dar vid) → butonul „Trimite în coadă"
