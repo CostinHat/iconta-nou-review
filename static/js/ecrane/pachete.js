@@ -162,7 +162,9 @@ function deschideModal(corp, nav) {
   const btnTrimite = ov.querySelector("#pacm-trimite");
 
   function actualizeazaStare() {
-    stareEl.textContent = S.status === "aprobat" ? "Stare: aprobată ✓ — gata de trimis" : (S.text ? "Stare: ciornă" : "");
+    if (S.status === "aprobat") arataMesaj(stareEl, "Stare: aprobată ✓ — gata de trimis", "ok");
+    else if (S.text) arataMesaj(stareEl, "Stare: ciornă", "info");
+    else arataMesaj(stareEl, "", "info");
     btnTrimite.disabled = (S.status !== "aprobat");
     btnTrimite.title = (S.status === "aprobat") ? "" : "Aprobă întâi povestea";
   }
@@ -178,10 +180,10 @@ function deschideModal(corp, nav) {
     btn.disabled = true; btn.textContent = "Se generează…";
     try {
       const r = await api.post(`/pachete/${S.tenant_id}/genereaza?an=${S.an}&luna=${S.luna}`, {});
-      if (r && r.ok) { ta.value = r.text || ""; S.text = ta.value; S.status = "ciorna"; actualizeazaStare(); stareEl.textContent = "Generată de AI — citește, editează și aprobă."; }
-      else if (r && r.cod === "AI_INDISPONIBIL") { stareEl.textContent = "AI indisponibil (cheie lipsă). Scrie manual."; }
-      else { stareEl.textContent = "Nu am putut genera. " + ((r && r.mesaj) || ""); }
-    } catch { stareEl.textContent = "Eroare la generare."; }
+      if (r && r.ok) { ta.value = r.text || ""; S.text = ta.value; S.status = "ciorna"; actualizeazaStare(); arataMesaj(stareEl, "Generată de AI — citește, editează și aprobă.", "info"); }
+      else if (r && r.cod === "AI_INDISPONIBIL") { arataMesaj(stareEl, "AI indisponibil (cheie lipsă). Scrie manual.", "eroare"); }
+      else { arataMesaj(stareEl, "Nu am putut genera. " + ((r && r.mesaj) || ""), "eroare"); }
+    } catch { arataMesaj(stareEl, "Eroare la generare.", "eroare"); }
     btn.disabled = false; btn.textContent = "✨ Generează cu AI";
   });
 
@@ -201,11 +203,11 @@ function deschideModal(corp, nav) {
 
   ov.querySelector("#pacm-salveaza").addEventListener("click", async () => {
     await _salveaza(ta.value, "ciorna", stareEl); actualizeazaStare();
-    stareEl.textContent = "Ciornă salvată."; _reflectaStareEcran(corp);
+    arataMesaj(stareEl, "Ciornă salvată.", "info"); _reflectaStareEcran(corp);
   });
   ov.querySelector("#pacm-aproba").addEventListener("click", async () => {
     await _salveaza(ta.value, "aprobat", stareEl); actualizeazaStare();
-    stareEl.textContent = "Aprobată ✓"; _reflectaStareEcran(corp);
+    arataMesaj(stareEl, "Aprobată ✓", "ok"); _reflectaStareEcran(corp);
   });
   btnTrimite.addEventListener("click", async () => {
     btnTrimite.disabled = true; btnTrimite.textContent = "Se trimite…";
@@ -238,11 +240,11 @@ function _reflectaStareEcran(corp) {
 
 async function _salveaza(text, status, stareEl) {  // audit_cab_lot1_v1
   text = (text||"").trim();
-  if (!text) { if (stareEl) stareEl.textContent = "Scrie povestea întâi."; return; }
+  if (!text) { if (stareEl) arataMesaj(stareEl, "Scrie povestea întâi.", "eroare"); return; }
   try {
     const r = await api.post(`/pachete/${S.tenant_id}/poveste?an=${S.an}&luna=${S.luna}`, { text, status });
     if (r && r.ok) { S.status = status; S.text = text; }
-  } catch { if (stareEl) stareEl.textContent = "Nu am putut salva."; }
+  } catch { if (stareEl) arataMesaj(stareEl, "Nu am putut salva.", "eroare"); }
 }
 
 // audit_cab_lot1_v1
