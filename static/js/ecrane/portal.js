@@ -449,7 +449,7 @@ async function ecranRecomanda(corp, nav) {
       const rez = (r && r.rezultate) || [];
       bTr.disabled = false; bTr.textContent = "Trimite recomandarea";
       zona.innerHTML = rez.map((x) =>
-        `<div class="pf-frand"><div class="pf-frand-text">${esc(x.email)} — ${x.stare === "trimis" ? "trimis" : "eșuat"}</div></div>`
+        `<div class="pf-frand"><div class="pf-frand-text">${esc(x.email)} — ${x.stare === "trimis" ? "trimis" : "eșuat"}</div><span class="cab-pct ${x.stare === "trimis" ? "pct-verde" : "pct-rosu"}"></span></div>`
       ).join("");
     } catch {
       bTr.disabled = false; bTr.textContent = "Trimite recomandarea";
