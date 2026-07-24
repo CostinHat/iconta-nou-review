@@ -383,7 +383,7 @@ async function ecranPovestea(corp, nav) {
     <div class="pf-frand">
       <div class="pf-frand-text">
         <div class="pf-frand-nume">${dataRo(`${p.an}-${String(p.luna).padStart(2,"0")}`, "luna_an")}</div>
-        <div class="pf-frand-sub">${(p.text || "").slice(0, 80)}...</div>
+        <div class="pf-frand-sub">${esc(p.text || "").slice(0, 80)}...</div>
         <div class="pf-frand-sub">${fmtDif(p)}</div>
       </div>
     </div>`).join("");
@@ -399,7 +399,7 @@ async function ecranPovestea(corp, nav) {
       corp.querySelector("#pov-detaliu").innerHTML = `
         <div class="pov-card">
           <h3>${dataRo(`${p.an}-${String(p.luna).padStart(2,"0")}`, "luna_an")}</h3>
-          <div class="pov-text">${(p.text || "").replace(/\n/g, "<br>")}</div>
+          <div class="pov-text">${esc(p.text || "").replace(/\n/g, "<br>")}</div>
           ${typeof p.diferenta === "number" ? `<div class="pov-dif">${fmtDif(p)}</div>` : ""}
         </div>`;
     });
