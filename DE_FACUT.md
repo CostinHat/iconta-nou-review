@@ -90,6 +90,11 @@ starea reverificata azi:
    `suspenda cabinet`). DE FĂCUT (amânat, nu reparat azi): standardizare pe `cere_rol("superadmin")` sau helper
    `cere_superadmin`. Niciun gardian nu-l prinde (backend, nu DS) — dacă se repară, eventual o gardă mecanică pe
    rutele `/admin/*` fără gate superadmin explicit.
+8. **Logica „bulină roșie = fără răspuns" din Raportări (Admin) neverificată vizual — lipsă date de test** (constatat
+   24.07 la închiderea poziției 6): ecranul Admin → Raportări (`admin_raportari.js` + `/raportari/admin`) marchează
+   sesizările fără răspuns cu bulină roșie, dar nu există nicio sesizare în sistem, deci starea „fără răspuns" n-a
+   putut fi produsă la verificarea vizuală pe superadmin. NU e bug cunoscut — doar neverificat. DE FĂCUT: creează o
+   sesizare de test (sau așteaptă una reală) și confirmă vizual bulina roșie + tranziția la „cu răspuns".
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza

@@ -37,7 +37,7 @@ Pentru FIECARE ecran, 4 verificări obiective din Design System:
 **NUMEROTARE CANONICĂ (fixată 23.07.2026):** pozițiile 1–12 = ordinea ACESTEI liste, nu ordinea în care sunt
 atacate. Se scrie „poziția N" (fixă), nu „N/12" derivat din ordinea de lucru. Ordinea DE ATAC o dă Costin,
 independent de poziție. (Corecție la commitul de închidere care numea Control fiscal „1/12" — e poziția **2**.)
-**ÎNCHISE: poziția 1 (Declarații) + poziția 2 (Control fiscal) + poziția 3 (Termene) — 23.07.2026; poziția 4 (Setări cont) — 24.07.2026. Rămân 8** (5–12).
+**ÎNCHISE: poziția 1 (Declarații) + poziția 2 (Control fiscal) + poziția 3 (Termene) — 23.07.2026; pozițiile 4 (Setări cont) și 6 (Admin) — 24.07.2026. Rămân 7** (5, 7–12).
 
 Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prinde randarea):
 
@@ -60,7 +60,8 @@ Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prin
    3 bug-uri: (1) XSS latent — `esc` local slab în setari.js (nume cheie API în conținut de element) → 5 ecrane mutate pe `esc` canonic + gardă ESC_LOCAL extinsă la redefiniri (DS cap.10); (2) etichete Prenume/Nume inversate — doar etichete UI, datele corecte (verificat auth_api + round-trip); (3) acces lipsă rol asistent — omisiune, deblocat prin gating existent (card ultimul pe dashboard asistent, fără ecran nou). Verificat vizual pe DANTE + cont asistent senior.
    RĂMAS consemnat (colateral, neatins): CARENTE 6 salut asistent `u.nume`→`u.prenume`; CARENTE 5 `padStart` ocolește DATA_DIALECT.
 5. [ ] **Recomandă**
-6. [ ] **Admin*** (5 sub-ecrane, `admin.js` desktopAdmin: Raportări, Activitate cabinete, Facturare gratuită, Anunțuri, Sănătate server — grafice SVG)
+6. [x] **Admin*** — **ÎNCHIS 24.07.2026** (verificat vizual pe cont superadmin real, fără reparații; vezi ISTORIC 24.07 poz.6). 5 sub-ecrane (`admin.js` desktopAdmin: Raportări, Activitate cabinete, Facturare gratuită, Anunțuri, Sănătate server — grafice SVG). Toate randează corect.
+   RĂMAS: CARENTE 8 — „bulină roșie = fără răspuns" din Raportări neverificată (lipsă date de test); CARENTE 7 — gating admin inconsecvent (risc mic).
 7. [ ] **e-Transport** (XML upload manual)
 8. [ ] **Produse**
 9. [ ] **Tipare** (asistenți)

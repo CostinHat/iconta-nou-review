@@ -2687,3 +2687,27 @@ asistent senior** (card apare ultimul, deschide, arată exact 2 secțiuni).
 `u.prenume`. CARENTE 5 — `padStart(luna)/${an}` din antetul „Verificări" ocolește DATA_DIALECT.
 
 **CHECKLIST_BROWSER: poziția 4 (Setări cont) închisă. Rămân 8** (5–12).
+
+## 24.07.2026 — Ecran poziția 6 (Admin iConta): 5 sub-ecrane verificate vizual (superadmin), fără reparații
+Verificare la sursă (raport, fără cod) + verificare vizuală pe cont superadmin real.
+
+**HARTA:** desktop exclusiv superadmin (`app.js:99` → `desktopAdmin`, admin.js), 5 carduri → 5 sub-ecrane: Raportări
+(`admin_raportari.js`, `/raportari/admin`), Activitate cabinete (`admin_activitate.js`), Facturare gratuită
+(`admin_gratuite.js`), Anunțuri (`admin.js` local, `/admin/anunturi` + alerte-fiscale F103), Sănătate server
+(`admin_sanatate.js`, grafice SVG + istoric 24h). Toate rutele `/admin/*` superadmin-gated.
+
+**Endpoint-uri partajate (2), NU divergență poziția 2:** `/admin/activitate/cabinete` și
+`/admin/activitate/conturi-gratuite` — consumate și de ecranele complete (Activitate/Gratuite), și de Anunțuri ca
+SELECTOR de destinatari. Reutilizare de listă în scop diferit (raport vs. targeting), nu un verdict randat divergent.
+
+**VIZUAL (cont superadmin real):** toate 5 sub-ecranele randează corect, inclusiv graficele SVG (Sănătate server).
+Fără reparații necesare.
+
+**EXCEPȚIE (neverificabilă azi, lipsă date):** logica „bulină roșie = fără răspuns" din Raportări nu s-a putut
+verifica — nicio sesizare existentă în sistem, deci starea „fără răspuns" n-a putut fi produsă. Consemnat DE_FACUT
+CARENTE 8.
+
+**COLATERAL (consemnat, neatins):** gating admin inconsecvent (`Depends(cere_rol("superadmin"))` vs `cere_cabinet` +
+gardă inline) — risc mic, DE_FACUT CARENTE 7.
+
+**CHECKLIST_BROWSER: poziția 6 (Admin) închisă. Rămân 7** (5, 7–12).
