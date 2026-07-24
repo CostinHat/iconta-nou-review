@@ -2,7 +2,7 @@
 // Trei sectiuni: 1) cabinet (cat e de facut vs ritm), 2) pe asistent
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
-import { api } from "../api.js";
+import { api, esc } from "../api.js";
 
 function celulaCifra(valoare, eticheta, accent) {
   const c = accent || "#1a1d21";
@@ -48,7 +48,7 @@ export async function randeazaCapacitate(corp, nav) {
       const rol = a.poate_valida ? "senior" : "junior";
       randuriAsist += `
         <tr>
-          <td>${(a.nume || "—").replace(/[<>&]/g, "")} <span class="cap-rol">${rol}</span></td>
+          <td>${esc(a.nume || "—")} <span class="cap-rol">${rol}</span></td>
           <td class="cap-num">${a.in_lucru ?? 0}</td>
           <td class="cap-num">${a.pregatite_luna ?? 0}</td>
           <td class="cap-num">${a.depuse_luna ?? 0}</td>

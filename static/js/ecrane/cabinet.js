@@ -104,7 +104,7 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
   if (pa.length) {
     asist = pa.map((a) => `
       <button class="sa-asist sa-clic" data-ecran="capacitate">
-        <span class="sa-asist-nume">${(a.nume || "").replace(/[<>&]/g,"")}</span>
+        <span class="sa-asist-nume">${esc(a.nume)}</span>
         <span class="sa-asist-cifre">${a.create_ || 0} pregatite${a.respinse ? " · " + a.respinse + " respinse" : ""}</span>
       </button>`).join("");
   } else {
@@ -120,8 +120,8 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
       const cl = e.actiune === "respins" ? "pct-rosu" : "pct-verde";
       const ora = e.cand ? new Date(e.cand).toLocaleTimeString("ro-RO",{hour:"2-digit",minute:"2-digit"}) : "";
       return `<li class="sa-ev"><span class="sa-pct ${cl}"></span>
-        <span class="sa-ev-txt"><b>${(e.cine||"").replace(/[<>&]/g,"")}</b> ${act}
-        ${(e.tip||"").toUpperCase()} ${e.firma ? "· " + (e.firma||"").replace(/[<>&]/g,"") : ""}</span>
+        <span class="sa-ev-txt"><b>${esc(e.cine)}</b> ${act}
+        ${(e.tip||"").toUpperCase()} ${e.firma ? "· " + esc(e.firma) : ""}</span>
         <span class="sa-ev-ora">${ora}</span></li>`;
     }).join("");
   } else {

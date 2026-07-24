@@ -44,7 +44,7 @@ export async function randeazaTipare(corp, nav) {
   } else {
     motive.forEach((m) => {
       randMotive += `<tr>
-        <td>${(m.motiv || "").replace(/[<>&]/g, "")}</td>
+        <td>${esc(m.motiv)}</td>
         <td class="cap-num">${m.n}</td>
       </tr>`;
     });
@@ -95,7 +95,7 @@ export async function randeazaTipare(corp, nav) {
     firme.forEach((f) => {
       const cui = f.cui ? ` <span class="cap-rol">${f.cui}</span>` : "";
       randFirme += `<tr>
-        <td>${(f.nume || "").replace(/[<>&]/g, "")}${cui}</td>
+        <td>${esc(f.nume)}${cui}</td>
         <td class="cap-num">${f.respinse}</td>
         <td class="cap-num">${f.total}</td>
       </tr>`;

@@ -105,6 +105,14 @@ for nume, t in fisiere.items():
         # o primitiva de securitate. api.js (sursa canonica) e in static/js/, NU in ecrane/ -> nu se auto-flag.
         if re.search(r'\bfunction\s+esc\s*\(', lin) or re.search(r'\b(?:const|let|var)\s+esc\s*=', lin):
             rap["esc_local"].append((nume, i, "redef-esc", lin.strip()[:60]))
+        # ESC_LOCAL extins v3 (cap.10): STRIP inline de caractere HTML (.replace(/[...<>&...]/,...)) ca sanitizare
+        # ad-hoc in loc de esc canonic. NU e XSS (scoate <>), dar e DATA-LOSSY (scoate & din nume: "A&B"->"AB") si
+        # o a doua sursa de sanitizare. Prinde orice clasa de caractere care contine TOATE din <>& (robust la
+        # reordonare/caractere extra). api.js (sursa canonica) e in static/js/, nescanat -> fara auto-flag.
+        for _ms in re.finditer(r'\.replace\(\s*/\[([^\]]*)\]/', lin):
+            if all(ch in _ms.group(1) for ch in "<>&"):
+                rap["esc_local"].append((nume, i, "strip-html", lin.strip()[:60]))
+                break
         # CASETA_ATENTIE (cap.5): caseta de atentionare (#fdf3f3, per .caseta-atentie din stil.css) reprodusa
         # ad-hoc inline in loc de clasa canonica. Simetric cu CASETA_INFO/POARTA_INLINE. NU #fdeef2 (ala e
         # zebra/landing - login.js pagina-card-mare, exclus DS cap.15) ca sa nu dea fals-pozitiv.
