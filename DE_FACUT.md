@@ -155,6 +155,15 @@ starea reverificata azi:
      (`focus()+return`, fără `arataMesaj`) ȘI câmpul nu e marcat cu asterisc (`.oblig`/`*`). Invers față de cazurile de mai
      sus: acolo asterisc fără enforcement, aici enforcement fără mesaj și fără asterisc. Ambele goluri cap.6. Fix: asterisc
      + `arataMesaj "eroare"`, ambele.
+   - **[C3 — același ecran, mai grav decât C2] produse_ecran.js L144-148 (`#pr-salveaza`)** — `try { await api.post(...);
+     zona.innerHTML=""; reincarca(); } catch {}` cu **catch GOL**. O salvare eșuată (500, rețea, tenant greșit) e complet
+     TĂCUTĂ: formularul se golește, utilizatorul crede că s-a salvat. Tiparul e-Transport (acțiune eșuată prezentată ca
+     reușită), aici pe nomenclatorul care alimentează cota TVA din facturi. Fix: `arataMesaj "eroare"` în catch.
+   - **[C2b] lipsește și mesajul de succes** după POST (niciun `arataMesaj "ok"`) — cap.6 „succes: text verde după
+     revenirea din formular". Doar ștergerea are feedback (L72, eroare).
+   - **[minor, colateral] câmpul `um` fără validare/normalizare** — acceptă orice string. Verificat pe DANTE: produs cu
+     `um='buc1'` (typo la introducere) intră în DB și se afișează verbatim în listă și, implicit, pe factură. De decis la
+     reparare: listă închisă de UM sau normalizare.
    - **[minor] produse `pret_unitar: parseFloat(...)||0`** — 0 acceptat. `pret_unitar` alimentează F144 (profit pe produs);
      la reparare de verificat dacă 0 falsifică marja sau e legitim.
    - **[candidat, NEDECIS]** gardian mecanic în verificator pentru cap.6 („ecran cu asterisc + `api.post` fără validare
