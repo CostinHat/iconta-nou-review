@@ -3102,3 +3102,22 @@ fi stiut ce lipseste; testat efectiv, a extrapolat singur "firma este la zi", de
 interdictia fara date e insuficienta.
 VERIFICAT: la sursa (prompt L78-86, _declaratii_depuse, evalueaza_firma), apoi vizual pe
 DANTE (26 restante identificate corect, mentionate pe tipuri si perioade).
+
+### 24.07.2026 Capacitate — pct_acceptare pe cohortă + etichete de perioadă (REPARAT); încărcarea per-asistent (AMÂNAT, decizie fondator)
+REPARAT: pct_acceptare (capacitate_api.py, secțiunea "pe asistent") folosea `respinse` pe `respins_la>=luna` și
+`pregatite` pe `creat_la>=luna` — ferestre diferite, deci `acceptate=pregatite-respinse` putea ieși NEGATIV
+(respingeri în luna curentă ale unor declarații pregătite luna trecută → pct sub 0%). Fix: `respinse` numărat pe
+ACEEAȘI cohortă (`creat_la>=luna AND respins_la IS NOT NULL`) → subset al `pregatite` → `acceptate>=0` prin
+CONSTRUCȚIE, nu prin max(0). Plus etichete de perioadă în ecran (capacitate.js): "Pe asistent" = luna curentă,
+"Timp mediu pe tip" = istoric complet (clasa `.cap-rol` existentă, fără hex).
+AMÂNAT (întrebări de fond, de decis de fondator):
+- `in_lucru` se atribuie pe `creat_de_id` → un asistent care DOAR validează/depune apare cu încărcare 0.
+  Întrebare: "capacitate" = doar pregătire, sau tot fluxul (pregătire+validare+depunere)?
+- `in_lucru` include starea `la_senior` → declarația așteaptă la senior, dar se numără la PREGĂTITOR.
+  Întrebare: a cui e încărcarea când mingea e la senior? Opțiuni + implicații: (a) rămâne la pregătitor (owner-ul
+  livrării) — subestimează seniorul; (b) trece la senior cât e `la_senior` (cine are acțiunea acum) — subestimează
+  pregătitorul între timp; (c) se numără la ambii cu etichetă — dublă-numărare vizibilă.
+TEMEI: semantica "încărcării" depinde de fluxul REAL de lucru al cabinetelor (cine e responsabil în fiecare stare),
+necunoscut din cod — de decis de fondator pe baza modului real de lucru, nu unilateral din cod.
+VERIFICAT: la sursă (capacitate_api.capacitate integral, query-urile per-asistent + timp); fix pct pe cohortă
+verificat logic (respinse ⊆ pregatite).

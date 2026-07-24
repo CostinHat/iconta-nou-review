@@ -88,7 +88,7 @@ def capacitate(conn, cabinet_id):
                 "  COUNT(*) FILTER (WHERE stare = ANY(%(active)s)) AS in_lucru, "
                 "  COUNT(*) FILTER (WHERE creat_la >= %(p)s) AS pregatite_luna, "
                 "  COUNT(*) FILTER (WHERE depus_la >= %(p)s) AS depuse_luna, "
-                "  COUNT(*) FILTER (WHERE respins_la >= %(p)s) AS respinse_luna "
+                "  COUNT(*) FILTER (WHERE creat_la >= %(p)s AND respins_la IS NOT NULL) AS respinse_luna "
                 "  FROM public.declaratii_coada "
                 " WHERE cabinet_id = %(c)s AND creat_de_id = %(u)s",
                 {"active": list(_STARI_ACTIVE), "p": prima_zi,

@@ -57,7 +57,7 @@ export async function randeazaCapacitate(corp, nav) {
     });
   }
   const sectAsist = `
-    <h3 class="cap-titlu">Pe asistent</h3>
+    <h3 class="cap-titlu">Pe asistent<span class="cap-rol">luna curentă</span></h3>
     <div class="cap-tabel-wrap">
       <table class="cap-tabel">
         <thead><tr>
@@ -85,7 +85,7 @@ export async function randeazaCapacitate(corp, nav) {
     });
   }
   const sectTimp = `
-    <h3 class="cap-titlu">Timp mediu pe tip</h3>
+    <h3 class="cap-titlu">Timp mediu pe tip<span class="cap-rol">istoric complet</span></h3>
     <div class="cap-tabel-wrap">
       <table class="cap-tabel">
         <thead><tr>
