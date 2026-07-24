@@ -191,6 +191,35 @@ starea reverificata azi:
   rutele `/produse` sunt pe `cere_context` (orice user autentificat, inclusiv `client`). **Neexpus prin UI** (portalul
   client n-are butoanele), dar **poartă deschisă**. Temei: DECIZII.md 24.07 „Roluri pe /produse".
 
+## Coada de validare — enforcement inconsecvent (poz.10, 24.07)
+Toate trei verificate la sursă ȘI dovedite vizual pe DANTE (patron localhost:8010 + asistent nou.iconta.eu).
+
+- **[A — PRIORITAR] Delegarea validării nu funcționează.** `/coada/{id}/aproba`, `/respinge`, `/depune` au
+  `Depends(cere_rol("admin_firma"))`; un asistent cu `poate_valida` primește **403 „rol insuficient pentru această
+  acțiune"** ÎNAINTE ca `_are_permisiune(ctx,"poate_valida")` din corp să conteze — helperul e **cod mort** pentru
+  angajați. Frontend-ul (validat.js L76-92) randează Aprobă/Respinge pe **FLAGUL de permisiune**, nu pe rol → butonul
+  apare și eșuează. CONSECINȚĂ DE PRODUS: bannerul promite „nimeni nu depune ce a pregătit singur", dar dacă doar
+  admin_firma poate valida, patronul validează ce a pregătit tot el. Modelul patru-ochi e neîndeplinibil prin asistenți,
+  iar flagul „Poate valida" din ecranul Asistenți e decorativ (patronul îl bifează, nu produce efect). FIX PROPUS
+  (de decis): dependența devine `cere_rol("admin_firma","angajat")` — ca la `POST /coada` — sau `cere_cabinet`, lăsând
+  `_are_permisiune` să fie poarta fină (cum e deja intenționat). Verificat: `_are_permisiune` (main.py:5061) citește
+  flagul pe APELANT, corect. ATENȚIE la `/respinge`: nu are deloc check de `_are_permisiune` în corp — la slăbirea
+  dependenței trebuie adăugat, altfel orice angajat ar putea respinge.
+
+- **[B] Declarație cu erori DUK intră în coadă, prezentată ca succes.** Verificat vizual: D300 iulie 2026 → pasul 2
+  „Validatorul ANAF a găsit erori" (E: validari globale, atribut `cont` prezent dar vid) → butonul „Trimite în coadă"
+  ACTIV, nerestricționat (declaratii.js 212-229, fără ramură pe `stare==="valid"`) → ecran de confirmare cu BIFĂ VERDE
+  „Trimisă în coada de validare", fără nicio urmă a erorii. Backend: `coada_adauga` (main.py 2846-2856) RE-GENEREAZĂ
+  server-side (bine: coada nu poate fi păcălită cu XML fabricat de client) dar NU re-validează DUK; singurele respingeri
+  sunt 409 duplicat / 422 eșec de generare. Garanția din `duk_valideaza_v1` („nu se mai trimite nevalidat") e advisory,
+  nu enforced. Atenuant real: coada afișează badge „neverificat" pe rând, deci seniorul vede starea.
+
+- **[C, colateral — bug de generare, altă temă]** D300 iulie 2026 pe DANTE produce eroare DUK: „eroare atribut: cont:
+  atribut prezent dar vid nepermis". De investigat separat de audit.
+
+- **[minor]** În coadă rândul afișează „D300 · 25.08.2026" pentru o declarație de iulie 2026 — probabil termenul de
+  depunere, dar e ambiguu pe un ecran de validare. De clarificat eticheta (perioadă vs termen).
+
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
   6.8.0-117, in asteptare 6.8.0-124/-134). Fereastra linistita (downtime clienti, Daniela pilot).
