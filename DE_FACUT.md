@@ -80,6 +80,16 @@ starea reverificata azi:
    „Salut, {nume de familie}". Aceeași familie cu etichetarea inversată Prenume/Nume din Setări (confuzie nume/prenume).
    Neatins azi (temă separată). DE FĂCUT: `u.prenume || u.nume || u.email` (fallback la nume dacă prenumele lipsește),
    reparație punctuală în `asistent.js`.
+7. **Gating admin inconsecvent — `Depends(cere_rol("superadmin"))` vs. `cere_cabinet` + gardă inline** (constatat 24.07
+   la investigarea poziției 6 Admin, `main.py`): rutele `/admin/*` sunt gate-uite pe două tipare, ambele corecte azi —
+   (a) prin dependință `Depends(cere_rol("superadmin"))` (`/admin/anunturi`, `/admin/alerte-fiscale`); (b) prin
+   `Depends(cere_cabinet)` + `if ctx["rol"] != "superadmin": raise 403` în corp (`/admin/sanatate*`,
+   `/admin/activitate/cabinete`, `/admin/cabinete/{id}/suspenda|reactiveaza`, `/admin/conturi-gratuite`). **NU e
+   vulnerabilitate** (toate verifică efectiv superadmin), **risc mic**. Dar tiparul (b) e FRAGIL: o rută admin nouă
+   copiată din șablonul `cere_cabinet` care uită linia inline ar fi tăcut expusă oricărui non-client (inclusiv
+   `suspenda cabinet`). DE FĂCUT (amânat, nu reparat azi): standardizare pe `cere_rol("superadmin")` sau helper
+   `cere_superadmin`. Niciun gardian nu-l prinde (backend, nu DS) — dacă se repară, eventual o gardă mecanică pe
+   rutele `/admin/*` fără gate superadmin explicit.
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
