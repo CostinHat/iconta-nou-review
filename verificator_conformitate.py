@@ -99,6 +99,12 @@ for nume, t in fisiere.items():
         # de esc() canonic din api.js - risc XSS (variantele omit apostroful). Apel de functie, nu cuvant.
         for em in re.finditer(r'\b(_esc|escB|escV|escS|escC|escJ)\s*\(', lin):
             rap["esc_local"].append((nume, i, em.group(1), lin.strip()[:60]))
+        # ESC_LOCAL extins (cap.10, SECURITATE): REDEFINIRE locala a lui `esc` intr-un ecran (function esc /
+        # const|let|var esc =) in loc de importul canonic din api.js. O copie locala poate fi mai SLABA (setari.js
+        # escapa DOAR `"` -> XSS pe <> in continut de element, gasit 24.07) si oricum e a doua sursa de adevar pt
+        # o primitiva de securitate. api.js (sursa canonica) e in static/js/, NU in ecrane/ -> nu se auto-flag.
+        if re.search(r'\bfunction\s+esc\s*\(', lin) or re.search(r'\b(?:const|let|var)\s+esc\s*=', lin):
+            rap["esc_local"].append((nume, i, "redef-esc", lin.strip()[:60]))
         # CASETA_ATENTIE (cap.5): caseta de atentionare (#fdf3f3, per .caseta-atentie din stil.css) reprodusa
         # ad-hoc inline in loc de clasa canonica. Simetric cu CASETA_INFO/POARTA_INLINE. NU #fdeef2 (ala e
         # zebra/landing - login.js pagina-card-mare, exclus DS cap.15) ca sa nu dea fals-pozitiv.

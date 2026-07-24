@@ -1,8 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, arataMesaj } from "../api.js";
-
-const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+import { api, esc, arataMesaj } from "../api.js";
 
 // tipuri de camp: data | numar | text | select(optiuni) | bool
 // conditie: {camp: "tip", val: "rata"} - campul apare doar cand alt camp are valoarea
