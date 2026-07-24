@@ -3,7 +3,7 @@
 // Backend: GET /tenants, GET /pachete/{tid}/rezumat, POST /pachete/{tid}/genereaza,
 //          GET+POST /pachete/{tid}/poveste, POST /pachete/{tid}/trimite.
 
-import { api, dataRo, esc } from "../api.js";
+import { api, dataRo, esc, arataMesaj } from "../api.js";
 
 // LUNI = pentru pickerul de luna (<option>); etichetele luna-an trec prin dataRo("luna_an"). [G3 23.07]
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
@@ -211,8 +211,11 @@ function deschideModal(corp, nav) {
     btnTrimite.disabled = true; btnTrimite.textContent = "Se trimite…";
     try {
       const r = await api.post(`/pachete/${S.tenant_id}/trimite?an=${S.an}&luna=${S.luna}`, {});
-      if (r && r.ok) { stareEl.textContent = "Trimis la " + r.email + " ✓"; }
-    } catch { stareEl.textContent = "Nu am putut trimite. Verifică emailul firmei și aprobarea."; }
+      if (r && r.ok) { arataMesaj(stareEl, "Trimis la " + r.email + " ✓", "ok"); }
+    } catch (e) {
+      // api.js impacheteaza HTTPException(400, detail) in e.mesaj (via _mesajEroare); nu exista e.detail.
+      arataMesaj(stareEl, (e && e.mesaj) || "Nu am putut trimite. Verifică emailul firmei și aprobarea.", "eroare");
+    }
     btnTrimite.disabled = false; btnTrimite.textContent = "Trimite";
   });
 }
