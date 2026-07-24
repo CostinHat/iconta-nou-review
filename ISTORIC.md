@@ -2775,3 +2775,33 @@ Verificat vizual pe DANTE (localhost:8010). Guard câmpuri required (commit `d67
 PREZENȚA câmpurilor, nu formatele/enum-urile din schemă.
 
 **CHECKLIST_BROWSER: poziția 7 (e-Transport) închisă. Rămân 4** (9–12).
+
+## 24.07.2026 — Ecran poziția 9 (Tipare + management asistenți): ÎNCHIS (verificat parțial — F120 neverificabil, lipsă date)
+Verificat vizual pe DANTE, cont patron (localhost:8010) + cont asistent (nou.iconta.eu). Eticheta acoperă două ecrane:
+`tipare.js` (`/tipare`, `/tipare/ai` — `cere_rol("admin_firma")`) și `asistenti.js` (`/asistenti*` — `Depends(cere_cabinet)`
++ `_cer_admin_cabinet(ctx)` în corp).
+
+**FUNCȚIONEAZĂ:**
+- **Asistenți (patron):** listă cu 2 asistenți, permisiuni citibile instant (bifă verde / punct gri pe pregăti/valida/
+  depune), calitatea echipei pe 30 zile, Editează/Vizualizează, selector de firme alocate, text explicativ patru-ochi
+  corect („permite aprobarea, dar niciodată a ceea ce a pregătit el însuși").
+- Butonul „Dezactivează asistentul" **NU apare pe propriul card** (patron) — acțiunea imposibilă nu e oferită; concordă cu
+  garda anti-self + `nu_dezactivezi_admin` din backend.
+- **Tipare:** nu e card top-level; calea reală e **Activitate → „Tipare de erori"** (cabinet.js:260-266). Se deschide corect,
+  stare goală canonică cu text care explică ce va apărea și de unde vin datele.
+- **Rol asistent:** desktopul NU expune cardul Activitate (deci nici Tipare) și nici Asistenți. Separarea UI↔backend
+  consecventă cu `cere_rol("admin_firma")`.
+
+**VERIFICAT PARȚIAL (limită consemnată, NU declarat funcțional):** Tipare cu date reale + analiza AI (F120) NU au putut fi
+văzute — ecranul e gol pe DANTE (nu există încă respingeri). Randarea listei de tipare și F120 rămân neverificate vizual.
+
+**GĂSIT, consemnat în CARENTE 13 (nereparat):** C2c — salvarea permisiunilor/firmelor nu afișează mesaj de succes (identic
+cu C2b de la produse) → a generat CONCLUZIA DE TIPAR: golul e sistemic, fix global la sesiunea cap.6.
+
+**NOTĂ DE PROCES:** în cursul poziției am semnalat o presupusă auto-escaladare de permisiuni (asistent care își setează
+singur `poate_valida`). **FALS** — verificat la sursă: corpurile apelează `_cer_admin_cabinet(ctx)` ca primă linie (403).
+Alarma a venit din citirea doar a funcțiilor DB, fără corpul endpoint-ului. Patch-ul aplicat a fost revertit curat, fără
+restart — serviciul a rulat tot timpul pe codul original. Lecție: grep pe semnături NU e verificare la sursă — regula 7
+cere corpul.
+
+**CHECKLIST_BROWSER: poziția 9 (Tipare) închisă. Rămân 3** (10–12).

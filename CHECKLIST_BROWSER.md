@@ -37,7 +37,7 @@ Pentru FIECARE ecran, 4 verificări obiective din Design System:
 **NUMEROTARE CANONICĂ (fixată 23.07.2026):** pozițiile 1–12 = ordinea ACESTEI liste, nu ordinea în care sunt
 atacate. Se scrie „poziția N" (fixă), nu „N/12" derivat din ordinea de lucru. Ordinea DE ATAC o dă Costin,
 independent de poziție. (Corecție la commitul de închidere care numea Control fiscal „1/12" — e poziția **2**.)
-**ÎNCHISE: poziția 1 (Declarații) + poziția 2 (Control fiscal) + poziția 3 (Termene) — 23.07.2026; pozițiile 4 (Setări cont), 5 (Recomandă), 6 (Admin), 7 (e-Transport) și 8 (Produse) — 24.07.2026. Rămân 4** (9–12).
+**ÎNCHISE: poziția 1 (Declarații) + poziția 2 (Control fiscal) + poziția 3 (Termene) — 23.07.2026; pozițiile 4 (Setări cont), 5 (Recomandă), 6 (Admin), 7 (e-Transport), 8 (Produse) și 9 (Tipare) — 24.07.2026. Rămân 3** (10–12).
 
 Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prinde randarea):
 
@@ -70,7 +70,9 @@ Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prin
 8. [x] **Produse** — **ÎNCHIS 24.07.2026** (verificat vizual pe DANTE, cont principal + cont asistent; vezi ISTORIC 24.07 poz.8). `produse_ecran.js` + `/produse` (cere_context).
    FUNCȚIONEAZĂ: stare goală canonică, potrivire AI cotă cu discriminare reală (21% consultanta/capcană, 11% pâine albă, temei art.291 alin.(2)), persistă în DB, ștergere cu confirmare, acces asistent complet.
    RĂMAS (CARENTE 13, sesiune dedicată): C2 refuz tăcut denumire + fără asterisc; C3 `catch {}` gol (salvare eșuată tăcută); C2b fără mesaj succes; minor pret||0; minor `um` nevalidat (DANTE `buc1`); p123 UI editare lipsă (PUT orfan, DECIS păstrat). Rol client pe /produse = restanță DECIS (DE_FACUT).
-9. [ ] **Tipare** (asistenți)
+9. [x] **Tipare** (asistenți) — **ÎNCHIS 24.07.2026** (verificat vizual: patron localhost + asistent nou.iconta.eu; vezi ISTORIC 24.07 poz.9). Două ecrane: `tipare.js` (`/tipare` cere_rol admin_firma) + `asistenti.js` (`/asistenti*` cere_cabinet + `_cer_admin_cabinet`).
+   FUNCȚIONEAZĂ: management asistenți (permisiuni, calitate 30z, patru-ochi, firme alocate); „Dezactivează" absent pe propriul card; Tipare sub Activitate → „Tipare de erori", stare goală canonică; asistentul nu vede Activitate/Asistenți.
+   PARȚIAL (limită): Tipare cu date reale + F120 (AI) NEVERIFICATE — ecran gol pe DANTE (fără respingeri). RĂMAS: CARENTE 13 C2c (fără mesaj succes la salvare). Notă proces: alarmă falsă auto-escaladare (RBAC enforced via `_cer_admin_cabinet`), patch revertit fără restart.
 10. [ ] **Semafor** (validat / de validat)
 11. [ ] **Pachete lunare**
 12. [ ] **Capacitate**
