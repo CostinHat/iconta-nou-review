@@ -3034,3 +3034,14 @@ ALTERNATIVA RESPINSA: consolidarea celor doua renderere intr-o primitiva UI comu
 (textarea + preview + trimite + rezultate) e acceptata ca pret al separarii pe rol.
 LIMITA: daca cele doua diverg in comportament de TRIMITERE (nu doar prezentare), se reconsidera. Backend-ul e deja unificat
 pe trimitere, deci riscul e mic. Colateral reparat 24.07: recomanda.js:35 sanitizare inline (.replace(/[<>&]/g,"")) -> esc canonic.
+
+### 24.07.2026 Editare produs — endpoint PUT pastrat (main.py:2224 PUT /produse/{produs_id}; produse_ecran.js)
+DECIZIE: PUT /tenants/{id}/produse/{produs_id} NU se sterge ca endpoint mort; se construieste UI de editare (restanta).
+TEMEI: produsele sunt referite prin articol_id in podul factura->descarcare stoc si in F144 (profit pe produs);
+stergerea+recrearea ca substitut de editare ar rupe istoricul acelor legaturi. Editarea (denumire, pret de lista, cota TVA)
+e operatiune legitima.
+ALTERNATIVA RESPINSA: stergerea endpoint-ului pe regula „fara cod mort" — respinsa pentru ca absenta UI nu dovedeste ca
+functionalitatea e nedorita, iar marcatorul [p123_scot_butoane] e nedocumentat (istoric pierdut la snapshot cbf24ce;
+verificat in DECIZII/ISTORIC/DE_FACUT/CHECKLIST si in build-ul vechi /opt/iconta — absent peste tot).
+LIMITA: motivul scoaterii butoanelor ramane nerecuperabil din git/documente. Detalii + restanta UI: DE_FACUT.md, sectiunea
+„Editare produs — UI lipsa (24.07)".
