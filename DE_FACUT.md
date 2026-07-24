@@ -161,6 +161,11 @@ starea reverificata azi:
      reușită), aici pe nomenclatorul care alimentează cota TVA din facturi. Fix: `arataMesaj "eroare"` în catch.
    - **[C2b] lipsește și mesajul de succes** după POST (niciun `arataMesaj "ok"`) — cap.6 „succes: text verde după
      revenirea din formular". Doar ștergerea are feedback (L72, eroare).
+   - **[C2c — același gol, alt ecran] asistenti.js** — salvarea permisiunilor/firmelor unui asistent nu afișează niciun
+     mesaj de succes (verificat vizual pe DANTE, cont patron: bifat „Poate pregăti" + Salvează → dialogul se închide, zero
+     confirmare). Identic cu C2b de la produse_ecran.js. **CONCLUZIE DE TIPAR:** lipsa mesajului de succes după salvare
+     apare pe cel puțin două ecrane independente → nu e accident local. La sesiunea dedicată cap.6, fix-ul se gândește
+     GLOBAL (inventar al tuturor handlerelor de submit fără `arataMesaj "ok"`), nu ecran cu ecran.
    - **[minor, colateral] câmpul `um` fără validare/normalizare** — acceptă orice string. Verificat pe DANTE: produs cu
      `um='buc1'` (typo la introducere) intră în DB și se afișează verbatim în listă și, implicit, pe factură. De decis la
      reparare: listă închisă de UM sau normalizare.
