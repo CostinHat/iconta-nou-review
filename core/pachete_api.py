@@ -70,34 +70,59 @@ def rezumat_luna(conn_schema, conn_public, tenant_id, an, luna):
 
 
 # ---------- narativ AI ----------
-def _prompt_poveste(rz, an, luna):
-    LUNI = ["", "ianuarie","februarie","martie","aprilie","mai","iunie",
-            "iulie","august","septembrie","octombrie","noiembrie","decembrie"]
+LUNI = ["", "ianuarie","februarie","martie","aprilie","mai","iunie",
+        "iulie","august","septembrie","octombrie","noiembrie","decembrie"]
+
+
+def _restante_desc(lipsa):
+    """Restantele curente (control_fiscal_api.evalueaza_firma -> lipsa) ca text scurt,
+    sau None daca nu exista restante. Fiecare item: {tip, an, luna, ...}."""
+    parts = []
+    for d in (lipsa or []):
+        tip = (d.get("tip") or "").upper()
+        l, a = d.get("luna"), d.get("an")
+        per = (" " + LUNI[l]) if (l and 1 <= l <= 12) else ""
+        if a:
+            per += " " + str(a)
+        parts.append((tip + per).strip())
+    return ", ".join(parts) if parts else None
+
+
+def _prompt_poveste(rz, an, luna, restante_desc=None):
     depuse = ", ".join(rz["declaratii_depuse"]) if rz["declaratii_depuse"] else "nicio declaratie"
+    restante_linie = (("- Declaratii RESTANTE (nedepuse, termen depasit): %s\n" % restante_desc)
+                      if restante_desc else "- Declaratii restante: niciuna\n")
     return (
         "Esti contabilul firmei si scrii un scurt rezumat lunar pentru patronul firmei, "
         "in limba romana, pe intelesul unui om care NU e contabil. Ton cald, profesional, clar. "
         "NU folosi jargon contabil. 2-3 paragrafe scurte. Fara titlu, fara semnatura.\n\n"
         "Date despre %s, luna %s %d:\n"
         "- Venituri: %.2f lei\n- Cheltuieli: %.2f lei\n- Rezultat: %.2f lei (%s)\n"
-        "- Declaratii depuse la ANAF: %s\n\n"
-        "Scrie povestea lunii: cum a mers firma, ce inseamna rezultatul in termeni simpli, "
-        "si linisteste-l ca declaratiile au fost depuse la timp. Daca rezultatul e pierdere, "
-        "explica fara alarmism. Daca nu sunt date, spune simplu ca luna a fost fara activitate inregistrata."
+        "- Declaratii depuse la ANAF: %s\n"
+        "%s\n"
+        "Scrie povestea lunii: cum a mers firma, ce inseamna rezultatul in termeni simpli. "
+        "Daca rezultatul e pierdere, explica fara alarmism. "
+        "NU afirma ca firma e la zi sau ca nu are restante decat daca lista de datorate/lipsa e goala; "
+        "daca exista restante, mentioneaza-le concret, fara alarmism. "
+        "Daca nu sunt date, spune simplu ca luna a fost fara activitate inregistrata."
     ) % (rz["nume_firma"] or "firma", LUNI[luna] if 1 <= luna <= 12 else str(luna), an,
-         rz["venituri"], rz["cheltuieli"], rz["rezultat"], rz["tip"], depuse)
+         rz["venituri"], rz["cheltuieli"], rz["rezultat"], rz["tip"], depuse, restante_linie)
 
 
-def genereaza_poveste(conn_schema, conn_public, tenant_id, an, luna):
-    """Cheama AI sa scrie un draft. Daca AI indisponibil -> intoarce ok=False, motiv."""
+def genereaza_poveste(conn_schema, conn_public, tenant_id, an, luna, schema):
+    """Cheama AI sa scrie un draft. Daca AI indisponibil -> intoarce ok=False, motiv.
+    schema: numele schemei firmei (pentru control_fiscal_api.evalueaza_firma -> restante)."""
     rz = rezumat_luna(conn_schema, conn_public, tenant_id, an, luna)
     if not ai_client.disponibil():
         return {"ok": False, "cod": "AI_INDISPONIBIL", "rezumat": rz}
+    from core import control_fiscal_api as _cf
+    ev = _cf.evalueaza_firma(conn_schema, conn_public, tenant_id, schema)
+    restante_desc = _restante_desc(ev.get("lipsa"))
     try:
-        text = ai_client.genereaza_text(_prompt_poveste(rz, an, luna), max_tokens=900)
+        text = ai_client.genereaza_text(_prompt_poveste(rz, an, luna, restante_desc), max_tokens=900)
     except Exception as e:
         return {"ok": False, "cod": "AI_EROARE", "mesaj": str(e), "rezumat": rz}
-    return {"ok": True, "text": text, "rezumat": rz}
+    return {"ok": True, "text": text, "rezumat": rz, "restante": restante_desc}
 
 
 # ---------- CRUD poveste ----------

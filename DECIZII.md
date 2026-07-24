@@ -3089,3 +3089,16 @@ existent: badge „neverificat" apare pe rand si persista dupa aprobare.
 ALTERNATIVA RESPINSA (provizoriu): poarta hard pe stare==="valid" — blocheaza cazurile in care eroarea DUK e fals-pozitiva.
 LIMITA: decizia finala nu e luata; pana atunci ecranul de succes ramane inselator pe declaratiile cu erori. Colateral de
 investigat separat: bug generare D300 iulie (atribut `cont` vid); etichetare perioada vs termen in coada (minor).
+
+### 24.07.2026 Povestea lunara — conformitate afirmata pe date incomplete (REPARAT)
+DECIZIE: promptul primeste restantele reale (datorate/lipsa din evalueaza_firma), nu doar
+lista celor depuse; instructiunea hardcodata de reasigurare e eliminata; interdictie
+explicita de a afirma "la zi / fara restante" cand lista de lipsa e nevida.
+TEMEI: raportul lunar pleaca la client in numele cabinetului. Promptul impunea o afirmatie
+de conformitate pe care sistemul nu o putea verifica — incalca principiul "verde se castiga
+prin adevar, nu prin ajustare". Doua ecrane ale aceluiasi produs se contraziceau.
+ALTERNATIVA RESPINSA: doar interdictie de ton, fara alimentarea cu date — modelul tot nu ar
+fi stiut ce lipseste; testat efectiv, a extrapolat singur "firma este la zi", deci
+interdictia fara date e insuficienta.
+VERIFICAT: la sursa (prompt L78-86, _declaratii_depuse, evalueaza_firma), apoi vizual pe
+DANTE (26 restante identificate corect, mentionate pe tipuri si perioade).

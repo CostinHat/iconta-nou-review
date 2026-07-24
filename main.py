@@ -2973,7 +2973,7 @@ def pachet_rezumat(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)
 def pachet_genereaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     schema = _pachet_schema(ctx, tenant_id)
     with db.get_conn(schema) as cs, db.get_conn() as cp:
-        return _pachete.genereaza_poveste(cs, cp, tenant_id, an, luna)
+        return _pachete.genereaza_poveste(cs, cp, tenant_id, an, luna, schema)
 
 @app.get("/pachete/{tenant_id}/poveste")
 def pachet_poveste_get(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
