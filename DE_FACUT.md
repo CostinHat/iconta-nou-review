@@ -680,3 +680,19 @@ interior (casa_api.CATEGORII: 5311=4111, 401=5311, 5311=581, 581=5311, 542=5311)
 desi nu i se aplica (partida simpla = RIP, nu note 5311). DE FACUT: filtrare FINA in interiorul cardului (ca la
 declaratii cu neaplicabile_forma) - la partida simpla se arata DOAR verificarea plafoanelor, nu operatiunile de
 contare. Consemnat, neconstruit. Temei vizibilitate card: Legea 70/2015. Vezi DECIZII 23.07 + DESIGN_SYSTEM cap.18.
+
+## Versionare CSS/JS — ?v= hardcodat în index.html (raportat 24.07.2026; REEVALUAT 24.07.2026)
+CORECȚIE față de nota inițială (care spunea "risc sistemic de prospețime"): NU e un risc de prospețime. Static-ul
+(CSS+JS) e servit prin `_StaticNoCache` (main.py:118) cu `Cache-Control: no-cache` + ETag → browserul revalidează
+automat la fiecare reload (304 dacă fișierul nu s-a schimbat, 200 cu conținut nou dacă ETag-ul diferă). Deci orice
+modificare de CSS/JS ajunge la utilizatori FĂRĂ bump manual de `?v=`. Verificat la sursă: `curl -I` pe /static →
+`cache-control: no-cache`; revalidare cu ETag potrivit → `304`; comentariul din cod spune literal "browserul
+revalideaza automat (304), fara ?v= manual". Ce rămâne: `?v=` hardcodat în index.html e REDUNDANT (belt-and-
+suspenders), iar JS-ul (`app.js` + module) n-are deloc `?v=` și tot ajunge fresh. DE CURĂȚAT (cosmetic, nu
+funcțional): eliminarea `?v=` din index.html ca să nu inducă în eroare că ar fi mecanismul de prospețime. Fără
+urgență. Consemnat.
+
+## spv_callback.html la ?v=6 vs index.html ?v=9 — divergență COSMETICĂ de versiune (raportat 24.07.2026, reevaluat)
+`static/spv_callback.html` referă `stil.css?v=6`, index.html `?v=9`. NU e risc de CSS vechi (no-cache+ETag
+revalidează oricum — vezi nota de mai sus); e doar o divergență cosmetică a string-ului `?v=`. De aliniat/eliminat
+odată cu curățarea `?v=` de mai sus. Consemnat.

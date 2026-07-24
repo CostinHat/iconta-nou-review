@@ -3018,6 +3018,15 @@ def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn, c
                 _obs.trimite_email_html(email, subiect, html)
         return r
 
+@app.get("/pachete/{tenant_id}/preview")
+def pachet_preview(tenant_id: int, an: int, luna: int, text: str = "", ctx=Depends(cere_cabinet)):
+    # preview = ACELASI _html ca trimiterea (corp + semnatura din DB). text vine din editor,
+    # deci reflecta ciorna needitata, nu doar ce e salvat in pachet_povestea.
+    schema = _pachet_schema(ctx, tenant_id)
+    with db.get_conn(schema) as cs, db.get_conn() as cp:
+        html = _pachete.preview_html(cs, cp, tenant_id, an, luna, text, ctx.get("uid"), ctx.get("firm"))
+    return {"html": html}
+
 @app.post("/pachete/{tenant_id}/trimite")
 def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     schema = _pachet_schema(ctx, tenant_id)

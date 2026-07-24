@@ -189,12 +189,18 @@ function deschideModal(corp, nav) {
 
   // toggle preview email
   let modPreview = false;
-  btnVezi.addEventListener("click", () => {
+  btnVezi.addEventListener("click", async () => {
     modPreview = !modPreview;
     if (modPreview) {
-      preview.innerHTML = _previewEmail(rz, ta.value);
       editor.style.display = "none"; preview.style.display = "block";
       btnVezi.textContent = "Înapoi la editare";
+      preview.innerHTML = `<div class="pacm-mail">Se încarcă previzualizarea…</div>`;
+      try {
+        const r = await api.get(`/pachete/${S.tenant_id}/preview?an=${S.an}&luna=${S.luna}&text=${encodeURIComponent(ta.value)}`);
+        preview.innerHTML = (r && r.html) || "";
+      } catch (e) {
+        preview.innerHTML = `<div class="pacm-mail">${esc((e && e.mesaj) || "Nu am putut încărca previzualizarea.")}</div>`;
+      }
     } else {
       editor.style.display = "block"; preview.style.display = "none";
       btnVezi.textContent = "Vezi ca email";
@@ -220,17 +226,6 @@ function deschideModal(corp, nav) {
     }
     btnTrimite.disabled = false; btnTrimite.textContent = "Trimite";
   });
-}
-
-function _previewEmail(rz, text) {
-  const LL = String(S.luna).padStart(2,"0");
-  return `
-    <div class="pacm-mail">
-      <div class="pacm-mail-h">Raport lunar — ${esc(rz.nume_firma||"Firma")}</div>
-      <div class="pacm-mail-sub">Luna ${LL}/${S.an}</div>
-      <div class="pacm-mail-box">${esc(text).replace(/\n/g,"<br>")}</div>
-      <div class="pacm-mail-foot">Trimis prin iConta.</div>
-    </div>`;
 }
 
 function _reflectaStareEcran(corp) {

@@ -188,6 +188,15 @@ def semnatura_cabinet(conn_public, uid, firm_id):
     return "Cu salutări,"
 
 
+def preview_html(conn_schema, conn_public, tenant_id, an, luna, text, uid, firm):
+    """HTML-ul emailului pentru un text dat (ciorna din editor, nu neaparat salvata),
+    cu semnatura reala compusa din DB. Aceeasi functie _html ca trimite() -> preview
+    identic cu emailul trimis. text vine din editor prin ruta, NU din pachet_povestea."""
+    prof = _profil(conn_schema)
+    semnatura = semnatura_cabinet(conn_public, uid, firm)
+    return _html(prof.get("nume"), an, luna, text or "", semnatura)
+
+
 def trimite(conn_schema, conn_public, tenant_id, an, luna, semnatura=""):
     """Trimite povestea aprobata la antreprenor. Necesita email + status aprobat."""
     rz = rezumat_luna(conn_schema, conn_public, tenant_id, an, luna)
