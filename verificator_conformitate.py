@@ -32,7 +32,7 @@ for f in sorted(os.listdir(BAZA)):
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
                         "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
-                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune"]}
+                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune", "verdict_paritate"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -321,6 +321,54 @@ for rez, aparitii in sorted(_imp.items()):
         modrel = os.path.relpath(rez, BAZA_JS)
         for rel_fis, i, ver in aparitii:
             rap["import_versiune"].append((rel_fis, i, ver, "%s importat ca %s" % (modrel, ver)))
+
+# ============================================================================================
+# VERDICT_PARITATE (DS cap.20): renderer-ul verdictului de control fiscal (control_verdict.js) alege chei pe
+# NUME din payload-ul verificari_contabile (vc). O cheie noua produsa de backend fara consumator ramane
+# INVIZIBILA, tacut (cazul DANTE 24.07: cele 4 rosii pe salarii nu apareau pe cardul din fisa). Doua parities,
+# ambele mecanice, peste cheile PRODUSE efectiv (parsate din sursa, nu hardcodate — o cheie noua e prinsa auto):
+#  1. RANDARE: fiecare cheie vc ∈ inventarul declarat VC_RANDATE din control_verdict.js.
+#  2. SEVERITATE: fiecare cheie vc e ori pliata in `contabil` (_construieste_contabil -> pastila_firma), ori
+#     declarata VC_FARA_SEVERITATE (cu motiv) in main.py.
+# Limita (ca la CARD_REGIM): garanteaza ca fiecare cheie e DECLARATA undeva, nu ca directiva chiar randeaza /
+# ridica severitatea. Inchide clasa "omisiune tacuta", nu "declarat ca no-op".
+def _felie_py(text, ancora, capete):
+    i = text.find(ancora)
+    if i < 0:
+        return ""
+    rest = text[i + len(ancora):]
+    poz = [rest.find(c) for c in capete if rest.find(c) >= 0]
+    return rest[:min(poz)] if poz else rest
+
+_main_src = open(os.path.join(BAZA_PY, "main.py"), encoding="utf-8").read()
+# chei PRODUSE: dict-ul `rezultat = {...}` din _verificari_contabile + orice rezultat["x"] = ...
+_vf = _felie_py(_main_src, "def _verificari_contabile", ("\ndef ",))
+_produse = set()
+_mrez = re.search(r'rezultat\s*=\s*\{(.*?)\n    \}', _vf, re.S)
+if _mrez:
+    _produse |= set(re.findall(r'"(\w+)"\s*:', _mrez.group(1)))
+_produse |= set(re.findall(r'rezultat\[\s*"(\w+)"\s*\]\s*=', _vf))
+# chei PLIATE in contabil (severitate): vc.get("x") + tuplul (cheie, eticheta) din _construieste_contabil
+_cc = _felie_py(_main_src, "def _construieste_contabil", ("\ndef ",))
+_pliate = set(re.findall(r'vc\.get\(\s*"(\w+)"', _cc))
+_pliate |= set(re.findall(r'"(\w+_incrucisat|cota_tva_conformitate)"\s*,', _cc))
+# exceptii de severitate declarate (cu motiv)
+_fara_sev = set(re.findall(r'"(\w+)"\s*:', _felie_py(_main_src, "VC_FARA_SEVERITATE = {", ("\n}",))))
+# inventar de randare declarat in control_verdict.js
+_randate = set()
+_cv = os.path.join(BAZA, "control_verdict.js")
+if not os.path.exists(_cv):
+    rap["verdict_paritate"].append(("control_verdict.js", 0, "lipsa", "modulul renderer-ului verdictului lipseste"))
+else:
+    _inv = _felie_py(open(_cv, encoding="utf-8").read(), "VC_RANDATE = {", ("\n};",))
+    _randate = set(re.findall(r'\n\s*(\w+)\s*:', _inv))
+if not _produse:
+    rap["verdict_paritate"].append(("main.py", 0, "parsare", "n-am putut extrage cheile vc produse (_verificari_contabile) — verifica ancora"))
+for _cheie in sorted(_produse):
+    if _cheie not in _randate:
+        rap["verdict_paritate"].append(("main.py -> control_verdict.js", 0, "randare", "cheie vc `%s` produsa dar fara intrare in VC_RANDATE" % _cheie))
+    if _cheie not in _pliate and _cheie not in _fara_sev:
+        rap["verdict_paritate"].append(("main.py", 0, "severitate", "cheie vc `%s` nici pliata in contabil, nici in VC_FARA_SEVERITATE" % _cheie))
 
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")

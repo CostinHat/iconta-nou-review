@@ -10,6 +10,7 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js?v=2";
 import { ecranEtransport } from "./etransport_ecran.js?v=4";
 import { meniuMigrarePerFirma } from "./migrare.js?v=5";  // [p96_import_firma]
 import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=1";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=2";  // [date_firma_v1]
@@ -580,15 +581,13 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
   });
 }
 
-// [control_firma_v1] Control fiscal per firma: semafor + declaratii lipsa + verificari contabile
-const _CF_CUL = {
-  verde:  { dot:"radial-gradient(circle at 65% 30%, #6fc494, var(--verde) 60%)", txt:"la zi",      bg:"var(--verde-fundal)" },
-  galben: { dot:"radial-gradient(circle at 65% 30%, #f0cd7a, var(--galben) 60%)", txt:"de urmărit", bg:"var(--galben-fundal)" },
-  rosu:   { dot:"radial-gradient(circle at 65% 30%, #ff8a80, var(--rosu-semafor) 60%)", txt:"restanță", bg:"var(--rosu-fundal)" },
-  gri:    { dot:"var(--gri-semafor)", txt:"vector necompletat", bg:"var(--gri-fundal-semafor)" },
-};
+// [control_firma_v1 + consolidat 24.07] Control fiscal per firma. Corpul verdictului (declaratii + TOATE
+// verificarile contabile) e randat de control_verdict.js — renderer UNIC, acelasi cu ecranul Control fiscal
+// (detaliuFirma). Inainte, aceasta functie citea un subset hardcodat din verificari_contabile (echilibru/
+// tva/documente) si nu atingea cross-check-urile -> constatarile BLOCANTE pe salarii/trezorerie nu apareau
+// (cazul DANTE 24.07). Aici raman doar anteta (semafor mare) + delegarea. Vezi DESIGN_SYSTEM cap.20.
 async function ecranControlFirma(corp, nav, t) {
-  corp.innerHTML = `<p class="ecran-nota">Se evalueaz\u0103 situa\u021bia fiscal\u0103...</p>`;
+  corp.innerHTML = `<p class="ecran-nota">Se evaluează situația fiscală...</p>`;
   let d;
   try {
     d = await api.get(`/control-fiscal/${t.id}`);
@@ -596,37 +595,7 @@ async function ecranControlFirma(corp, nav, t) {
     corp.innerHTML = `<p class="msg-eroare">${(e && e.mesaj) || "Nu am putut evalua controlul fiscal."}</p>`;
     return;
   }
-  const cul = _CF_CUL[d.stare] || _CF_CUL.gri;
-
-  // [semafor_b_v1] toate declaratiile (9/9), fiecare cu MOTIVUL (temei) pe orice culoare. DECIZII 18.07 B.
-  const _tcls = { "cf-rosu": "cf-termen-rosu", "cf-galben": "cf-termen-galben", "cf-verde": "cf-termen-verde" };
-  const grupDecl = (titlu, arr, clasa, cuTermen) => (arr && arr.length) ? `
-    <div class="cf-grup-titlu ${clasa || ""}">${titlu} (${arr.length})</div>
-    ${arr.map((x) => `<div class="cf-decl-item">
-      ${cuTermen
-        ? `<div class="cf-rand-decl"><div><b>${esc(x.tip)}</b> <span class="tip-micut">${esc(x.perioada || "")}${x.an ? " · " + x.an : ""}</span></div><div class="cf-termen ${_tcls[clasa] || ""}">termen ${dataRo(x.termen)}</div></div>`
-        : `<div class="cf-incr-cap"><span class="mig-sold-cont">${esc(x.tip)}</span></div>`}
-      ${x.motiv ? `<div class="cf-incr-temei">${esc(x.motiv)}</div>` : ""}
-    </div>`).join("")}` : "";
-  let lipsaHtml = grupDecl("Restanțe", d.lipsa, "cf-rosu", true)
-    + grupDecl("De urmărit", d.urmarit, "cf-galben", true)
-    + grupDecl("La zi", d.confirmate, "cf-verde", true)
-    + grupDecl("Nu pot verifica", d.neclar, "", false)
-    + grupDecl("Nu se datorează", d.neaplicabile, "", false);
-  if (!lipsaHtml) lipsaHtml = `<div class="stare-goala">Nicio obligație de evaluat încă pentru această firmă.</div>`;
-
-  // verificari contabile (coerenta)
-  const v = d.verificari_contabile || {};
-  const vRand = (eticheta, ok, detaliu) =>
-    `<div class="cf-verif">
-      <span class="cf-verif-dot" style="background:${ok ? "var(--verde)" : "var(--rosu-semafor)"}"></span>
-      <span class="cf-verif-txt">${eticheta}${detaliu ? ` <span class="tip-micut">${detaliu}</span>` : ""}</span>
-    </div>`;
-  let verifHtml = "";
-  if (v.echilibru) verifHtml += vRand("Echilibru balan\u021b\u0103", v.echilibru.ok);
-  if (v.tva) verifHtml += vRand("TVA vs contabilitate", (v.tva.suma === 0 || v.tva.rezultat), `${v.tva.rezultat === "de_plata" ? "de plat\u0103" : (v.tva.rezultat === "de_recuperat" ? "de recuperat" : "")} ${bani(v.tva.suma || 0)} lei`);  /* [audit_v2] cheia tehnica tradusa */
-  if (v.documente_pozate) verifHtml += vRand("Documente pozate", v.documente_pozate.ok, v.documente_pozate.bonuri_neverificate ? `${v.documente_pozate.bonuri_neverificate} neverificate` : "");
-
+  const cul = CULORI_VERDICT[d.stare] || CULORI_VERDICT.gri;
   corp.innerHTML = `
     <h2 class="pf-titlu">Control fiscal</h2>
     <p class="pf-intro">Situația fiscală a firmei: ce s-a depus vs ce e datorat, cu verificări de coerență.</p>
@@ -635,14 +604,8 @@ async function ecranControlFirma(corp, nav, t) {
       <span class="cf-stare-txt">${cul.txt}</span>
       <span class="cf-stare-cifre tip-micut">${d.datorate || 0} datorate · ${d.depuse || 0} depuse</span>
     </div>
-    <div class="panou" style="margin-top:14px">
-      <h3 class="cap-titlu">Declarații de depus</h3>
-      ${lipsaHtml}
-    </div>
-    <div class="panou" style="margin-top:14px">
-      <h3 class="cap-titlu">Verificări de coerență</h3>
-      ${verifHtml || '<div class="stare-goala">Nicio verificare disponibilă încă.</div>'}
-    </div>`;
+    ${randeazaCorpVerdict(d, { mod: "fisa" })}`;
+  legaVerdict(corp, nav, { tenant_id: t.id, nume: t.nume, reincarca: () => ecranControlFirma(corp, nav, t) });
 }
 // F135: pontaj lunar informativ - marcheaza exceptiile pe zilele lucratoare (fara sarbatori)
 async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {

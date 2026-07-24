@@ -1963,6 +1963,18 @@ def _verificator_esuat(contabil, eticheta, nume, e):
     contabil.append(_constatare_esuata(eticheta, nume, e))
 
 
+# [paritate_severitate 24.07] Chei din verificari_contabile (vc) care NU se pliaza in `contabil` -> nu urca
+# pastila_firma (severitatea firmei). Declarate EXPLICIT, cu motiv — nu judecate: garda le SCOATE la iveala
+# (VERDICT_PARITATE sub-regula severitate, in verificator), decizia de a le urca in pastila ramane a lui Costin.
+# Contractul: fiecare cheie vc e ori pliata in `contabil` (mai jos), ori aici. O cheie noua fara niciuna =
+# eroare in verificator. Vezi DESIGN_SYSTEM cap.20.
+VC_FARA_SEVERITATE = {
+    "documente_pozate": "verificare de flux operational (bonuri/note de casa confirmate de client, necontate); informativa, nu ridica inca severitatea firmei — vezi comentariul din _verificari_contabile",
+    "tva": "coerenta bruta 4427/4426 pe balanta; severitatea TVA vine din tva_incrucisat (D300 vs contabilitate), nu din soldurile brute",
+    "note": "contor de note contabile pe perioada, nu o constatare",
+}
+
+
 def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
     """Constatarile contabile STRUCTURATE ale unei firme + verificari_contabile brute (vc). UN SINGUR loc,
     folosit de LISTA (portofoliu) SI de DETALIU -> severitatea (pastila_firma) e aceeasi indiferent cine
