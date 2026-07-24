@@ -60,7 +60,7 @@ Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prin
    3 bug-uri: (1) XSS latent — `esc` local slab în setari.js (nume cheie API în conținut de element) → 5 ecrane mutate pe `esc` canonic + gardă ESC_LOCAL extinsă la redefiniri (DS cap.10); (2) etichete Prenume/Nume inversate — doar etichete UI, datele corecte (verificat auth_api + round-trip); (3) acces lipsă rol asistent — omisiune, deblocat prin gating existent (card ultimul pe dashboard asistent, fără ecran nou). Verificat vizual pe DANTE + cont asistent senior.
    RĂMAS consemnat (colateral, neatins): CARENTE 6 salut asistent `u.nume`→`u.prenume`; CARENTE 5 `padStart` ocolește DATA_DIALECT.
 5. [ ] **Recomandă**
-6. [ ] **Admin*** (Raportări, Activitate cabinete, Sănătate server — grafice SVG)
+6. [ ] **Admin*** (5 sub-ecrane, `admin.js` desktopAdmin: Raportări, Activitate cabinete, Facturare gratuită, Anunțuri, Sănătate server — grafice SVG)
 7. [ ] **e-Transport** (XML upload manual)
 8. [ ] **Produse**
 9. [ ] **Tipare** (asistenți)
