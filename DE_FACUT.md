@@ -138,6 +138,21 @@ starea reverificata azi:
    (codTarifar/denumire goale), dar **NU** e validare completă de schemă (nu prinde enum-uri invalide, formate, tipuri).
    DE FĂCUT: obține XSD-ul eTransport **v2** de la ANAF (`static.anaf.ro` / SPV) → validare `lxml.etree.XMLSchema` la
    generare, ca plasă autoritară. Sursa DUK (`~/duk`) are doar v1.
+13. **[UI/FISCAL — sesiune dedicată, verificare vizuală pe fiecare ecran ca la poziția 7] Asteriscuri fără enforcement**
+   (audit 24.07, sweep 10 ecrane). Regula: DS cap.6 — „Niciodată tăcere la o acțiune eșuată" + „Validări preventive cu
+   mesaj explicativ". Cazuri verificate la sursă:
+   - **[C — PRIORITAR] emitere_ecran.js L131/L352** — „Denumire beneficiar" cu asterisc, `tert_nume: …||null` fără
+     check; `emite_factura` (facturi_api.py:195) validează DOAR `linii`. Rezultat: **factură emisă „cu succes" fără
+     beneficiar** (clonă etransport, pe document fiscal). PREREECHIZIT înainte de a decide garda: **verificare la sursă
+     Cod fiscal art.319 alin.(20)** — elementele obligatorii ale facturii — ca să decizi gardă pe `client_id` SAU
+     `tert_nume`. Fix-ul trebuie să acopere AMBELE moduri de emitere (client salvat + terț one-off).
+   - **[B] rip_ecran.js L103** — zero validare client-side; backend respinge vizibil (`rip_api.py:30/32`, OMFP 170/2015).
+     Doar UX preventiv lipsă.
+   - **[B] login.js L428/L514** — asterisc pe CUI, absent din pre-check-ul client; backend înregistrare îl prinde. UX
+     preventiv.
+   - **[minor]** `0` acceptat pe câmp numeric cu asterisc: emitere `pret_unitar`, rip `suma`, flux_concediu `data_sfarsit`.
+   - **[candidat, NEDECIS]** gardian mecanic în verificator pentru cap.6 („ecran cu asterisc + `api.post` fără validare
+     de câmp") — risc mare de fals-pozitive, temă separată.
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
