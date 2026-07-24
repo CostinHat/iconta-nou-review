@@ -181,6 +181,11 @@ starea reverificata azi:
   FALS — `produse` și `articole` sunt tabele complet separate, fără FK în niciun sens; `DELETE FROM produse` nu atinge
   niciun istoric. Formulat din memorie, neverificat (încălcare regula 7 — verificare la sursă). Decizia rămâne, temeiul e altul.
 
+## Restricție rol client pe /produse (DECIS 24.07)
+- **[scop, DECIS 24.07]** POST creează / PUT / DELETE pe `/produse` trebuie limitate la roluri de cabinet. Azi toate
+  rutele `/produse` sunt pe `cere_context` (orice user autentificat, inclusiv `client`). **Neexpus prin UI** (portalul
+  client n-are butoanele), dar **poartă deschisă**. Temei: DECIZII.md 24.07 „Roluri pe /produse".
+
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
   6.8.0-117, in asteptare 6.8.0-124/-134). Fereastra linistita (downtime clienti, Daniela pilot).

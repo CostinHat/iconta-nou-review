@@ -2737,3 +2737,23 @@ Recomandă), acțiunea e blocată corect dar mesajul e generic „A apărut o er
 + restul ecranului Facturare gratuită netestat.
 
 **CHECKLIST_BROWSER: poziția 5 (Recomandă) închisă. Rămân 6** (7–12).
+
+## 24.07.2026 — Ecran poziția 8 (Produse): verificat vizual (cont principal + asistent), fără reparații
+Verificare la sursă (hartă + auth) + vizuală pe DANTE, cont principal + cont asistent (firmă alocată).
+
+**HARTA:** renderer unic `produse_ecran.js/randeazaProduse`, cale unică (cardul „Produse" din meniuFirma, cabinet+asistent).
+Toate rutele `/produse` pe `cere_context` (inclusiv client) cu gardă inline `_schema_sau_404` → fără cross-tenant. Rol:
+DECIZII 24.07 „Roluri pe /produse" (asistent CRUD, client doar citire — restanță în DE_FACUT).
+
+**FUNCȚIONEAZĂ (vizual):** stare goală canonică (DS STARE_GOALA); potrivire AI cotă cu **discriminare reală** — 21% pe
+„consultanta" + pe capcana „cotă redusă", 11% pe „pâine albă", temei art.291 alin.(2) citat în `justificare`, badge colorat
+diferit pe cotă; cota AI persistă corect în DB la salvare; ștergere cu confirmare; acces asistent complet.
+
+**GĂSIT, CONSEMNAT în CARENTE 13 (nereparat, sesiune dedicată):** C2 refuz tăcut pe `denumire` + fără asterisc; C3 `catch {}`
+gol (salvare eșuată complet tăcută — tipar e-Transport); C2b fără mesaj de succes; minor `pret_unitar||0`; minor `um`
+nevalidat (dovadă DANTE `um='buc1'`); p123 fără UI de editare (PUT orfan — DECIS păstrat, DE_FACUT).
+
+**CORECTAT în cursul poziției:** temeiul din DECIZII 24.07 „Editare produs" era FALS (`articol_id`) — `produse` și `articole`
+sunt tabele separate fără FK; înlocuit cu temeiul real (metadata cotei) și consemnat ca încălcare a regulii 7.
+
+**CHECKLIST_BROWSER: poziția 8 (Produse) închisă. Rămân 5** (7, 9–12).

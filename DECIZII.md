@@ -3050,3 +3050,15 @@ functionalitatea e nedorita, iar marcatorul [p123_scot_butoane] e nedocumentat (
 verificat in DECIZII/ISTORIC/DE_FACUT/CHECKLIST si in build-ul vechi /opt/iconta — absent peste tot).
 LIMITA: motivul scoaterii butoanelor ramane nerecuperabil din git/documente. Detalii + restanta UI: DE_FACUT.md, sectiunea
 „Editare produs — UI lipsa (24.07)".
+
+### 24.07.2026 Roluri pe /produse
+DECIZIE: asistent = CRUD complet (confirma comportamentul actual); client = DOAR CITIRE (GET lista + POST potriveste).
+Fara POST creeaza / PUT / DELETE pentru rol client.
+TEMEI: nomenclatorul de produse e al cabinetului si alimenteaza cota TVA de pe facturi (produse.justificare/categorie/sursa
+= argument la control fiscal). Asistentul e personal al cabinetului, lucreaza pe firmele alocate — acces legitim. Contul
+gratuit de facturare (rol client, accounting_firm_id NULL) nu trebuie sa poata altera nomenclatorul cabinetului.
+VERIFICAT LA SURSA 24.07: toate rutele /produse sunt pe cere_context (orice user autentificat, inclusiv client), cu garda
+inline _schema_sau_404(ctx, tenant_id) → fara cross-tenant. Confirmat vizual pe rol asistent (DANTE): vede lista, are
+„+ Adauga produs" si stergere — identic cu contul principal.
+LIMITA: portalul client nu expune azi butoanele prin UI, deci nu e gaura activa, ci poarta deschisa. Implementarea
+restrictiei e restanta (DE_FACUT.md).
