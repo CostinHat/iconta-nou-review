@@ -1,7 +1,7 @@
 // recomanda.js — cardul Recomanda: invita un cabinet in iConta.
 // Trimite email(uri) de invitatie cu buton "Incearca iConta".
 // "Vezi ce trimite" = preview exact al emailului (acelasi HTML ca cel trimis).
-import { api, arataMesaj } from "../api.js";
+import { api, esc, arataMesaj } from "../api.js";
 
 export function randeazaRecomanda(corp, nav) {
   corp.innerHTML = `
@@ -32,7 +32,7 @@ export function randeazaRecomanda(corp, nav) {
         <div class="rec-modal-cap">
           <div>
             <div class="rec-modal-titlu">Așa arată invitația</div>
-            <div class="rec-modal-sub">Subiect: ${(date.subiect||"").replace(/[<>&]/g,"")}</div>
+            <div class="rec-modal-sub">Subiect: ${esc(date.subiect)}</div>
           </div>
           <button class="rec-modal-x" id="rec-modal-x" aria-label="Închide">✕</button>
         </div>

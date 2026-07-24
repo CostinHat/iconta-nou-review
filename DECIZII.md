@@ -3020,3 +3020,17 @@ LIMITA: garda garanteaza ca fiecare cheie e DECLARATA (randat/ignorat), nu ca di
 de scop se schimba (cross-check-urile devin dorite in „Verificari"), se muta din IGNORAT in randat + se adauga
 randarea. Colateral neatins: formatorul de data local din antet (padStart(luna)/${an}) ocoleste DATA_DIALECT —
 DE_FACUT CARENTE 5.
+
+### 24.07.2026 Recomanda cabinet vs client = doua features separate, nu divergenta  (recomanda.js + portal.js:ecranRecomanda; raport poz.5 CHECKLIST_BROWSER)
+DECIZIE: „Recomanda" e implementat de DOUA renderere separate, ACCEPTAT ca separare legitima — NU de urmarit spre consolidare:
+ - recomanda.js/randeazaRecomanda (cabinet + asistent) -> invita un CABINET; endpoint /recomanda + /recomanda/preview (cere_cabinet), max 20 adrese.
+ - portal.js/ecranRecomanda (client) -> invita un ANTREPRENOR; endpoint /portal/recomanda + preview (cere_client), max 10 adrese.
+TEMEI: audienta, endpoint, auth si limita DIFERITE. NU e clasa poziției 2 (un payload partajat randat divergent) — sunt
+doua fluxuri distincte care doar poarta acelasi nume. Trimiterea efectiva e deja PARTAJATA pe backend
+(_trimite_recomandari + _mesaj_recomanda_client_html), deci logica de trimitere are o singura sursa; doar prezentarea si
+audienta difera.
+ALTERNATIVA RESPINSA: consolidarea celor doua renderere intr-o primitiva UI comuna — ar cupla doua fluxuri separate pe rol
+(cere_cabinet vs cere_client), cu texte/limite/endpoint diferite, pentru un castig mic. Duplicarea de prezentare
+(textarea + preview + trimite + rezultate) e acceptata ca pret al separarii pe rol.
+LIMITA: daca cele doua diverg in comportament de TRIMITERE (nu doar prezentare), se reconsidera. Backend-ul e deja unificat
+pe trimitere, deci riscul e mic. Colateral reparat 24.07: recomanda.js:35 sanitizare inline (.replace(/[<>&]/g,"")) -> esc canonic.
