@@ -3121,3 +3121,17 @@ TEMEI: semantica "încărcării" depinde de fluxul REAL de lucru al cabinetelor 
 necunoscut din cod — de decis de fondator pe baza modului real de lucru, nu unilateral din cod.
 VERIFICAT: la sursă (capacitate_api.capacitate integral, query-urile per-asistent + timp); fix pct pe cohortă
 verificat logic (respinse ⊆ pregatite).
+VERIFICAT LA SURSĂ 24.07 — modelul de atribuire firmă↔asistent:
+- Atribuirea firmă↔asistent EXISTĂ și e completă: `public.user_tenants` + `asistenti_api.py`
+  (`atribuie_firma`/`elimina_firma`, bife în ecranul Asistenți, regula zero-firme). Populat real pe DANTE
+  (user 34 admin_firma + 43 angajat au rânduri pe tenant_002). NU e de construit.
+- Cele două axe există în date, dar Capacitate le confundă: `user_tenants` = cine RĂSPUNDE (atribuire),
+  `creat_de_id` = cine A LUCRAT. Panoul grupează pe `creat_de_id`. Stadiul 1 = re-JOIN pe `user_tenants`,
+  FĂRĂ schemă nouă → cost redus dramatic (reorientare de query, nu sprint).
+- DECIZIE DESCHISĂ (fondator): "răspunde de firmă" = SET de asistenți (many-to-many, cum e acum, zero cod)
+  sau RESPONSABIL PRINCIPAL unic (coloană/flag nou)? Setul e flexibil dar ambiguu pentru reputație/selecție
+  (stadiul 2); responsabilul unic e clar dar impune un model care poate nu se potrivește cabinetelor ce împart
+  o firmă. De decis ÎNAINTE de stadiul 2.
+  DECIS 24.07: SET many-to-many (rămâne modelul actual, zero schemă nouă). Temei: reflectă realitatea cabinetului
+  care crește (firmă complexă = mai mulți asistenți pe ea); owner unic ar fi rigid. Stadiul 2 va deriva contribuția
+  per asistent din creat_de_id ÎN CADRUL setului, fără owner impus.
