@@ -95,6 +95,22 @@ starea reverificata azi:
    sesizările fără răspuns cu bulină roșie, dar nu există nicio sesizare în sistem, deci starea „fără răspuns" n-a
    putut fi produsă la verificarea vizuală pe superadmin. NU e bug cunoscut — doar neverificat. DE FĂCUT: creează o
    sesizare de test (sau așteaptă una reală) și confirmă vizual bulina roșie + tranziția la „cu răspuns".
+9. **[SECURITATE — nu UI] Poarta `BETA_COD_ACCES` ocolită complet + oracol de credențiale la login** (constatat
+   24.07, `main.py`; verificat la sursă):
+   - **Finding A — bypass total prin magic-link.** `BETA_COD_ACCES` se verifică într-un SINGUR loc: `/auth/login`
+     (main.py:998), după validarea parolei. Căile publice `/public/magic-link` (1236) + `/public/magic-login` (1262)
+     emit **sesiune completă FĂRĂ** verificarea codului. Orice titular de cont **activ** își cere un link pe email și
+     intră, ocolind poarta. Anulează scopul porții („site în lucru") pentru exact populația vizată (conturi existente
+     valide). Nu dă acces non-titularilor (magic-link cere user activ + acces la inbox), dar golește poarta de sens.
+   - **Finding B — oracol de credențiale.** Poarta e DUPĂ verificarea parolei: credențiale greșite → `401`; corecte +
+     fără cod → `403 "Site in lucru"`. Răspunsul distinge perechile email+parolă **valide** (403) de invalide (401)
+     chiar fără codul beta → scurgere de validitate credențiale. (Enumerarea de email e evitată corect la magic-link,
+     dar nu aici.)
+   NEREPARAT azi (cerut explicit). PROPUNERE (neimplementată) — **opțiunea 1: mută poarta la reverse proxy** (nginx
+   basic-auth / IP-allowlist): acoperă TOT (inclusiv `/public/*`), fără găuri per-rută și fără oracol; `main.py` scapă
+   de preocuparea de infra. Alternativă (opțiunea 2): aplică `BETA_COD_ACCES` pe TOATE căile de emitere a sesiunii
+   (+`magic-login`) ȘI repară oracolul (același răspuns pt parolă greșită vs. parolă bună fără cod, sau poarta ÎNAINTE
+   de credențiale) — necesară doar dacă unele `/public/*` (ex. magic-link) trebuie să rămână deschise intenționat.
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
