@@ -119,6 +119,15 @@ starea reverificata azi:
    DE VERIFICAT altă dată: (1) dacă ALTE acțiuni din modul previzualizare afișează același mesaj generic în loc de unul
    explicit „dezactivat în previzualizare"; (2) restul ecranului **Facturare gratuită** (admin), netestat azi dincolo
    de acest caz particular. Prioritate mică (nu blochează, doar UX de mesaj).
+11. **[DECIZIE DE PRODUS — nu bug tehnic] e-Transport `/trimite` + `/trimiteri` pe `cere_context` (inclusiv client)
+   vs `etransport-xml` pe `cere_cabinet`** (constatat 24.07, main.py:5979/6009 vs 5956): `/tenants/{id}/etransport/trimite`
+   (submit SPV, F121) și `/etransport/trimiteri` (listă) acceptă orice rol autentificat cu acces la tenant, **inclusiv
+   `client`**; `etransport-xml` (generare XML) e cabinet-only. **NU e cross-tenant** (`schema_tenant` enforced inline),
+   **NU e reachable din UI azi** (ecranul e doar în meniuFirma cabinet; portalul client nu-l are). ÎNTREBAREA DE DECIS
+   (produs, nu reparație tehnică): clientul ar trebui să poată trimite **singur** notificări e-Transport la SPV —
+   analog dreptului legal de reprezentant care depune declarații fără contabil — SAU restrâns la cabinet ca
+   `etransport-xml`? Dacă decizia e „restrâns" → `trimite`/`trimiteri` devin `cere_cabinet` (aliniat cu sibling-ul).
+   Rămâne decizie de scop. Familie apropiată de CARENTE 7 (gating inconsecvent), dar aici întrebarea e de DREPT, nu de robustețe.
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
