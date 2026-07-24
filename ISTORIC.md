@@ -2836,3 +2836,44 @@ Atenuant existent: badge „neverificat" persistă pe rând.
 în coadă.
 
 **CHECKLIST_BROWSER: poziția 10 rămâne [~] (nu [x]) până se decide [B]. Rămân 3** (10–12), din care 10 parțial.
+
+## 24.07.2026 — Sesiune SSH: Pachete lunare (poz.11) + Capacitate (poz.12) închise; corecție ?v=
+
+Audit + reparații pe modulul Pachete lunare și panoul Capacitate. Verificator TOTAL 0 permanent; verificare la sursă
++ funcțională reală la fiecare pas. Commit-uri azi (această sesiune): 293df99, f35c28c, f99c469, 09258f1, f0c2d99,
+aedc4ea, 6f6b536, bdc10f8 (DECIZII SET), f67752e (CHECKLIST), + acest ISTORIC.
+
+### Poz.11 Pachete lunare — ÎNCHIS (trei fire)
+- Cauza-rădăcină: povestea AI primea DOAR declarațiile depuse + instrucțiune hardcodată de reasigurare → afirma
+  conformitate neverificabilă. Acum primește restanțele reale din control_fiscal_api.evalueaza_firma (aceeași sursă
+  ca portalul), plus interdicție de a afirma "la zi" când lista de lipsă e nevidă (293df99).
+- (a) Calea NEAPROBATA verificată DIRECT pe API (fără UI): POST /pachete/002/trimite pe ciornă →
+  400 {"detail":"Aproba povestea inainte de trimitere."} — cauza specifică, nu generică.
+- (b) Email real semnat livrat: semnătura era mereu goală (ctx din token nu poartă numele); acum se compune din DB
+  (users + accounting_firms) = nume contabil + cabinet, cu diacritice (09258f1). Preview = ACELAȘI _html ca trimiterea,
+  sursă unică prin rută GET /pachete/{tid}/preview (f0c2d99).
+- (c) Portal client verificat la sursă → XSS STOCAT cabinet→client găsit și reparat: p.text era injectat brut în
+  innerHTML în portal.js (listă + detaliu); escapat la ambele, esc înainte de slice/replace (aedc4ea). Confirmat vizual
+  pe DANTE producție. Injecția de test scoasă din pachet_povestea; scan pe TOȚI tenanții pentru markup = 0.
+- UI: editorul umple modalul (fix lanț flex: min-height 60vh + min-height:0 + height:100%), stare colorată canonic prin
+  arataMesaj (msg-ok/info/eroare), care închide și un bug de clasă persistentă (f99c469).
+
+### Poz.12 Capacitate — ÎNCHIS ca audit
+- Panou verificat la sursă (capacitate_api.py integral). Reparat pct_acceptare: respinse și pregatite erau pe ferestre
+  de timp diferite → pct putea ieși NEGATIV; acum pe aceeași cohortă (respinse ⊆ pregatite) → ≥0 prin CONSTRUCȚIE, fără
+  max(0). Etichete de perioadă ("Pe asistent"=luna curentă, "Timp"=istoric complet), clasa .cap-rol existentă (6f6b536).
+- Verificat la sursă: "timp mediu pe tip" măsoară DOAR generarea de declarații (inceput_la/creat_la scrise exclusiv de
+  POST /coada); facturare/bancă/note/e-Factura/pachete NU sunt măsurate — felie îngustă din munca reală a cabinetului.
+- Atribuirea firmă↔asistent EXISTĂ și e completă (public.user_tenants + asistenti_api.py atribuie_firma/elimina_firma),
+  populată real pe DANTE — NU de construit. Capacitate grupează pe creat_de_id (cine a LUCRAT), nu pe user_tenants (cine
+  RĂSPUNDE) — două axe confundate.
+- DECIS (fondator): model SET many-to-many (rămâne, zero schemă nouă). RĂMAS stadiul 1 = re-JOIN Capacitate pe
+  user_tenants — specificat, NECONSTRUIT. Poziționarea strategică (instrument de creștere, gol SAGA/Keez, cerere
+  nevalidată) = apreciere a fondatorului, consemnată în DECIZII 24.07 marcată ca atare (neverificată în cod).
+
+### Corecție importantă — versionarea ?v= (DE_FACUT reevaluat)
+Nota inițială "?v= hardcodat = risc sistemic de prospețime" era FALSĂ. Verificat la sursă: static-ul (CSS+JS) e servit cu
+Cache-Control: no-cache + ETag (main.py _StaticNoCache) → browserul revalidează automat (curl -I → no-cache; revalidare cu
+ETag potrivit → 304). Bump-ul ?v= manual e REDUNDANT; JS-ul n-are ?v= și tot ajunge fresh. Bump-ul ?v=10 propus a fost
+REVERTIT, notele din DE_FACUT corectate (parte din f0c2d99). Rămâne doar curățare cosmetică (eliminare ?v=, aliniere
+spv_callback la ?v=6).

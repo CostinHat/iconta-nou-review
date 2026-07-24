@@ -3135,3 +3135,9 @@ VERIFICAT LA SURSĂ 24.07 — modelul de atribuire firmă↔asistent:
   DECIS 24.07: SET many-to-many (rămâne modelul actual, zero schemă nouă). Temei: reflectă realitatea cabinetului
   care crește (firmă complexă = mai mulți asistenți pe ea); owner unic ar fi rigid. Stadiul 2 va deriva contribuția
   per asistent din creat_de_id ÎN CADRUL setului, fără owner impus.
+POZIȚIONARE STRATEGICĂ (fondator, 24.07 — apreciere a FONDATORULUI, marcată ca atare; NU verificare independentă în cod):
+Capacitate e poziționat ca INSTRUMENT DE CREȘTERE a cabinetului, nu doar raportare internă. Fondatorul consideră un
+GOL DE PIAȚĂ față de SAGA/Keez (evaluarea fondatorului, NEverificată în cod în această sesiune). Cererea e încă
+NEVALIDATĂ — nu s-a confirmat cu cabinete reale că folosesc/plătesc pentru acest instrument; riscul principal înainte
+de stadiul 2 = cererea nevalidată. Cele două stadii rămân cum sunt descrise mai sus (stadiul 1 = re-JOIN user_tenants
+fără schemă nouă; stadiul 2 = contribuție per asistent din creat_de_id în cadrul setului).
