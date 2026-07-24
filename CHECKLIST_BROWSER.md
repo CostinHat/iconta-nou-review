@@ -37,7 +37,7 @@ Pentru FIECARE ecran, 4 verificări obiective din Design System:
 **NUMEROTARE CANONICĂ (fixată 23.07.2026):** pozițiile 1–12 = ordinea ACESTEI liste, nu ordinea în care sunt
 atacate. Se scrie „poziția N" (fixă), nu „N/12" derivat din ordinea de lucru. Ordinea DE ATAC o dă Costin,
 independent de poziție. (Corecție la commitul de închidere care numea Control fiscal „1/12" — e poziția **2**.)
-**ÎNCHISE: poziția 1 (Declarații) + poziția 2 (Control fiscal) + poziția 3 (Termene), 23.07.2026. Rămân 9** (4–12).
+**ÎNCHISE: poziția 1 (Declarații) + poziția 2 (Control fiscal) + poziția 3 (Termene) — 23.07.2026; poziția 4 (Setări cont) — 24.07.2026. Rămân 8** (5–12).
 
 Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prinde randarea):
 
@@ -56,7 +56,9 @@ Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prin
    fapt lunar (nu flag fix), d205_vs_457 roșu fals (cod mort scos), neevaluate gri cu temei, regresie d301 negardat,
    §4 mărginire TVA, edge decembrie an+1, dataLunga → dataRo + gard DATA_DIALECT extins. Prezentare P1–P4.
    RĂMAS vizual (Costin): eticheta de perioadă cu an se vede abia în decembrie (fereastra traversează anul).
-4. [ ] **Setări cont** (profil, parolă, cabinet, competențe, chei API)
+4. [x] **Setări cont** — **ÎNCHIS 24.07.2026** (comituri b1878f0 + f700e2d + c7bee1f, vezi ISTORIC 24.07 poz.4). `setari.js` + `cabinet.js`/`asistent.js`.
+   3 bug-uri: (1) XSS latent — `esc` local slab în setari.js (nume cheie API în conținut de element) → 5 ecrane mutate pe `esc` canonic + gardă ESC_LOCAL extinsă la redefiniri (DS cap.10); (2) etichete Prenume/Nume inversate — doar etichete UI, datele corecte (verificat auth_api + round-trip); (3) acces lipsă rol asistent — omisiune, deblocat prin gating existent (card ultimul pe dashboard asistent, fără ecran nou). Verificat vizual pe DANTE + cont asistent senior.
+   RĂMAS consemnat (colateral, neatins): CARENTE 6 salut asistent `u.nume`→`u.prenume`; CARENTE 5 `padStart` ocolește DATA_DIALECT.
 5. [ ] **Recomandă**
 6. [ ] **Admin*** (Raportări, Activitate cabinete, Sănătate server — grafice SVG)
 7. [ ] **e-Transport** (XML upload manual)

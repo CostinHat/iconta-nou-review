@@ -2649,3 +2649,41 @@ schimbat pe „Verificări" (doar declarație + gardă).
 DATA_DIALECT (cap.4), garda nu-l prinde (nu e forma `luni[]`/`toLocaleDateString`). CARENTE 5, cu două opțiuni scrise.
 
 **CHECKLIST_BROWSER: poziția 2 (Control fiscal) — consolidare 24.07 peste închiderea 23.07. Rămân 9** (4–12).
+
+## 24.07.2026 — Ecran poziția 4 (Setări cont): 3 bug-uri găsite + reparate (1 de securitate)
+Comituri: b1878f0 (XSS `esc` local + gardă ESC_LOCAL extinsă) + f700e2d (etichete Prenume/Nume) + c7bee1f (acces asistent).
+
+**HARTA (verificată la sursă înainte de vizual):** o singură cale de acces — cardul „Setări cont" din `cabinet.js`
+(nivel cabinet). Șase secțiuni, fiecare cu endpoint propriu **single-consumer** (`/eu/cabinet`, `/eu/competente`,
+`/cabinet/api-chei`, `/spv/stare`+`/spv/autorizare`, `/eu/profil`, `/eu/schimba-parola`) — **niciun risc de tip
+poziția 2** (fără payload partajat cu renderere divergente).
+
+**BUG 1 — XSS latent (SECURITATE), reparat b1878f0.** `setari.js:5` avea un `esc` local care escapa DOAR `"`; la
+randarea numelui unei chei API (user-controlled, POST `/cabinet/api-chei`) în **conținut de element** (setari.js:261),
+un nume `<img onerror=...>` se executa. Celelalte 4 folosiri erau în `value="..."` (atribut) — contenite din noroc.
+Gardianul ESC_LOCAL nu-l prindea (căuta `_esc/escB/…`, nu o redefinire locală `esc`). Reparat ca **CLASĂ**: 5 ecrane
+redefineau `esc` local (setari — slab; rip/operatiuni/pachete/etransport — escapau `&<>"`, copii divergente fără `'`)
+→ toate importă acum `esc` canonic din api.js (`&<>"'`). Gardă ESC_LOCAL extinsă să prindă redefinirea locală `esc`
+(`function`/`const`/`let`/`var`). DS cap.10 (v2.26).
+
+**BUG 2 — etichete Prenume/Nume inversate, reparat f700e2d.** Vizual: câmpul „Prenume" arăta numele de familie.
+Verificat end-to-end la sursă: **NU inversare de date** — `auth_api.actualizeaza_profil` scrie `nume→nume`,
+`prenume→prenume` (fără swap), binding frontend consistent, round-trip corect. Doar cele două **etichete UI** erau
+schimbate între ele. Reparație: swap DOAR al textelor de etichetă; id/value/save neatinse (un swap de date ar fi
+introdus fix inversarea ascunsă).
+
+**BUG 3 — asistentul n-avea acces la Setări cont, reparat c7bee1f.** Cauză: **OMISIUNE** — cardul trăia doar în lista
+`cabinet.js` (desktop admin); `desktopAsistent` nu-l lista. Backend deja deschis: `/eu/schimba-parola` + `/eu/profil`
+= `cere_cabinet` = orice rol în afară de `client` → asistent acceptat. Gating `setari.js:8-19` arată non-adminilor
+doar Date profil + Schimbă parola. Deblocat prin **reutilizarea** lui `randeazaSetari` (fără ecran nou, fără atingere
+setari.js): card ultimul în grila asistentului + ramură de click. Calea non-admin n-a mai rulat până acum (cabinet e
+admin-only).
+
+**DOVEZI:** verificator TOTAL 0 după fiecare; ESC_LOCAL se declanșează pe redefinire (`redef-esc`), revine la 0; test
+funcțional `esc` canonic neutralizează payload-ul `<img>`; node --check pe toate. **Verificat vizual pe DANTE + cont
+asistent senior** (card apare ultimul, deschide, arată exact 2 secțiuni).
+
+**DE_FACUT (colateral, neatins):** CARENTE 6 — salutul asistentului (`asistent.js:32`) folosește `u.nume` în loc de
+`u.prenume`. CARENTE 5 — `padStart(luna)/${an}` din antetul „Verificări" ocolește DATA_DIALECT.
+
+**CHECKLIST_BROWSER: poziția 4 (Setări cont) închisă. Rămân 8** (5–12).
