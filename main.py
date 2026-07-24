@@ -3021,9 +3021,8 @@ def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn, c
 @app.post("/pachete/{tenant_id}/trimite")
 def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     schema = _pachet_schema(ctx, tenant_id)
-    nume = (ctx.get("prenume") or ctx.get("nume") or "")
-    semnatura = ("Cu salutari,\n" + nume) if nume else "Cu salutari,"
     with db.get_conn(schema) as cs, db.get_conn() as cp:
+        semnatura = _pachete.semnatura_cabinet(cp, ctx.get("uid"), ctx.get("firm"))
         r = _pachete.trimite(cs, cp, tenant_id, an, luna, semnatura=semnatura)
     if not r.get("ok"):
         cod = r.get("cod")

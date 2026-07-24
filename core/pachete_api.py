@@ -165,6 +165,29 @@ def _html(nume_firma, an, luna, poveste, semnatura):
     ) % (esc(nume_firma), luna, an, esc(poveste), esc(semnatura))
 
 
+def semnatura_cabinet(conn_public, uid, firm_id):
+    """Compune semnatura raportului: nume contabil (public.users by uid) + nume cabinet
+    (public.accounting_firms by firm_id). ctx-ul din token NU poarta numele, de aceea query aici.
+    Fallback in cascada: doar cabinet daca lipseste contabilul; formula neutra daca lipsesc ambele.
+    Nu intoarce niciodata string gol sau 'None'."""
+    nume_contabil = nume_cabinet = ""
+    with conn_public.cursor() as cur:
+        if uid:
+            cur.execute("SELECT prenume, nume FROM public.users WHERE id=%s", (uid,))
+            r = cur.fetchone()
+            if r:
+                nume_contabil = " ".join(p.strip() for p in (r[0], r[1]) if p and p.strip())
+        if firm_id:
+            cur.execute("SELECT nume FROM public.accounting_firms WHERE id=%s", (firm_id,))
+            r = cur.fetchone()
+            if r and r[0]:
+                nume_cabinet = r[0].strip()
+    linii = [x for x in (nume_contabil, nume_cabinet) if x]
+    if linii:
+        return "Cu salutări,\n" + "\n".join(linii)
+    return "Cu salutări,"
+
+
 def trimite(conn_schema, conn_public, tenant_id, an, luna, semnatura=""):
     """Trimite povestea aprobata la antreprenor. Necesita email + status aprobat."""
     rz = rezumat_luna(conn_schema, conn_public, tenant_id, an, luna)
