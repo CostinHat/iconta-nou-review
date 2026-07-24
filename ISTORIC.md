@@ -2849,7 +2849,7 @@ aedc4ea, 6f6b536, bdc10f8 (DECIZII SET), f67752e (CHECKLIST), + acest ISTORIC.
   ca portalul), plus interdicție de a afirma "la zi" când lista de lipsă e nevidă (293df99).
 - (a) Calea NEAPROBATA verificată DIRECT pe API (fără UI): POST /pachete/002/trimite pe ciornă →
   400 {"detail":"Aproba povestea inainte de trimitere."} — cauza specifică, nu generică.
-- (b) Email real semnat livrat: semnătura era mereu goală (ctx din token nu poartă numele); acum se compune din DB
+- (b) Semnătură reală compusă din DB (livrarea efectivă a emailului NU a fost testată în această sesiune): semnătura era mereu goală (ctx din token nu poartă numele); acum se compune din DB
   (users + accounting_firms) = nume contabil + cabinet, cu diacritice (09258f1). Preview = ACELAȘI _html ca trimiterea,
   sursă unică prin rută GET /pachete/{tid}/preview (f0c2d99).
 - (c) Portal client verificat la sursă → XSS STOCAT cabinet→client găsit și reparat: p.text era injectat brut în
