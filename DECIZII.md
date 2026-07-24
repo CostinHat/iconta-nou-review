@@ -3000,3 +3000,23 @@ ascunde doar rip.
 A (raport, DECIS ambele): Casa NU e partida dubla curata - face contare 5311 (partida dubla) SI verificare plafoane
 (Legea 70/2015 art.1, se aplica PFA/II/IF fara exceptie). Vizibil la PFA. Filtrarea fina a operatiunilor 5311 din
 interior = DE_FACUT (ca declaratii). Vezi DE_FACUT + DESIGN_SYSTEM cap.18.
+
+### 24.07.2026 ecranVerificari ramane scoped pe coerenta bruta-lunara  (firme.js VC_VERIFICARI + verificator VERDICT_PARITATE + DS cap.20; commit ac7e135)
+DECIZIE: ecranul „Verificari" (firme.js/ecranVerificari, endpoint /firme/{id}/verificari, vc BRUT pe luna) randeaza
+DOAR coerenta bruta lunara — echilibru, trezorerie, documente_pozate, tva, note (+ stocuri, Intrastat din endpoint-uri
+proprii). Cross-check-urile declaratie-vs-contabilitate (tva_incrucisat, d112_incrucisat, d390_incrucisat,
+cota_tva_conformitate) sunt EXCLUSE explicit prin inventarul VC_VERIFICARI (marcate IGNORAT cu motiv) — apartin
+exclusiv verdictului din Control fiscal (control_verdict.js).
+TEMEI: acelasi endpoint trimite tot vc, deci cross-check-urile ajung si aici; dar „Verificari" e alt SCOP (coerenta
+bruta pe o luna aleasa, navigabila prev/next) si alta interactiune decat verdictul „starea acum". A le randa ar dubla
+constatarile verdictului pe un ecran cu alta intentie. Declaratia (nu omisiunea tacuta) le tine sub garda:
+VERDICT_PARITATE (paritate randare) cere fiecare cheie vc ori randata, ori declarata aici — al doilea consumator pe
+acelasi mecanism ca VC_RANDATE (control_verdict.js).
+ALTERNATIVA RESPINSA: (a) consolidarea lui ecranVerificari in renderer-ul verdictului — ar reorganiza un ecran
+distinct si ar aduce cross-check-uri nedorite acolo; (b) lasat necuprins de garda — ar ramane aceeasi omisiune tacuta
+(clasa DANTE), doar nedeclarata. Ambele respinse: se DECLARA cu motiv, sub garda. Fara randare noua (nimic vizual nu
+se schimba pe ecran).
+LIMITA: garda garanteaza ca fiecare cheie e DECLARATA (randat/ignorat), nu ca directiva chiar randeaza. Daca decizia
+de scop se schimba (cross-check-urile devin dorite in „Verificari"), se muta din IGNORAT in randat + se adauga
+randarea. Colateral neatins: formatorul de data local din antet (padStart(luna)/${an}) ocoleste DATA_DIALECT —
+DE_FACUT CARENTE 5.

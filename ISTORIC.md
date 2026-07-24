@@ -2611,3 +2611,41 @@ Condiția `!querySelector("h2")` din `_steaza` devine falsă → nu se dublează
 **DE_FACUT:** inventar declarații LIVE vs. accesibile din UI (D710 LIVE fără intrare UI, D301 fără writer).
 
 **CHECKLIST_BROWSER: pozițiile 1, 2, 3 închise. Rămân 9** (4–12).
+
+## 24.07.2026 — Ecran poziția 2 (Control fiscal): consolidare renderer verdict + gardă VERDICT_PARITATE
+Comituri: 4e43254 (renderer unic + gardă cu 2 parități) + ac7e135 (paritate de randare extinsă la ecranVerificari).
+
+**BUG DE CLASĂ, nu caz izolat.** Patru suprafețe consumă payload-ul de control fiscal: lista de portofoliu (feed
+`contabil`, exhaustiv — NU în clasă), detaliul (`control.js`), cardul din fișă (`firme.js/ecranControlFirma`) și
+`ecranVerificari`. Ultimele TREI alegeau chei din `verificari_contabile` pe NUME; fiecare omitea tăcut alt subset.
+Simptom prins vizual pe DANTE: cele 4 roșii pe salarii (D112 vs contabilitate) + 5121 sold creditor nu apăreau pe
+cardul din fișă, deși același endpoint (`/control-fiscal/{id}`) le trimitea. Omisiunea s-a repetat **INDEPENDENT de
+trei ori** → semn de CLASĂ, nu caz. Regula „verde nu poate acoperi blocant" (23.07) nu o acoperea: e omisiune de
+câmp în frontend, nu colaps de literal în backend.
+
+**CONSOLIDARE.** `control_verdict.js` nou — renderer UNIC al corpului verdictului (`randeazaCorpVerdict`) + paletă
+de semafor unică (a înlocuit `CULORI` din control.js + `_CF_CUL` din firme.js, două copii). Detaliul și cardul din
+fișă delegă amândouă (doar anteta proprie rămâne locală). **−267/+94** linii. `ecranVerificari` NU se consolidează
+(scop propriu, endpoint separat — vezi DECIZII 24.07), dar intră sub gardă prin inventar declarat.
+
+**GARDĂ VERDICT_PARITATE — partea care repară CLASA.** Două parități mecanice, pe cheile PRODUSE parsate din
+`_verificari_contabile` (nu hardcodate — o cheie nouă e prinsă automat):
+- **RANDARE:** fiecare cheie vc ∈ inventarul declarat al fiecărui consumator care alege pe nume — `VC_RANDATE`
+  (control_verdict.js) ȘI `VC_VERIFICARI` (firme.js/ecranVerificari: randat / IGNORAT-cu-motiv).
+- **SEVERITATE:** fiecare cheie vc fie pliată în `contabil` (→ `pastila_firma`), fie în `VC_FARA_SEVERITATE`
+  (main.py) cu motiv. Prinde scurgerea inversă (roșu în corp, header verde) — ce garda 23.07 n-o vedea.
+
+**DS cap.20 nou (v2.24 + v2.25):** secțiunile pot diferi LEGITIM între ecrane (altă altitudine), cheile dintr-o
+secțiune randată NU. Sortare C4 (restanțe pe termen) în renderer.
+
+**DOVEZI:** verificator TOTAL 0, VERDICT_PARITATE 0, IMPORT_VERSIUNE 0. Garda se declanșează pe AMBII consumatori
+(cheie vc nedeclarată → erori randare + severitate; `d112_incrucisat` scos din VC_VERIFICARI → eroare
+`firme.js/ecranVerificari`; revin la 0 la restaurare). Test funcțional node (payload cu constatările DANTE):
+`mod:"fisa"` randează acum salarii roșu 266 / CAS 1250 + 5121 sold creditor + secțiunile Declarație vs
+contabilitate / Verificări contabile. node --check × 3, py_compile main.py + verificator. Nimic vizual nu s-a
+schimbat pe „Verificări" (doar declarație + gardă).
+
+**DE_FACUT (colateral, neatins):** antetul `ecranVerificari` formatează perioada cu `padStart(luna)/${an}` — ocolește
+DATA_DIALECT (cap.4), garda nu-l prinde (nu e forma `luni[]`/`toLocaleDateString`). CARENTE 5, cu două opțiuni scrise.
+
+**CHECKLIST_BROWSER: poziția 2 (Control fiscal) — consolidare 24.07 peste închiderea 23.07. Rămân 9** (4–12).

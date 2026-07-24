@@ -50,6 +50,7 @@ Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prin
    IMPORT_VERSIUNE (DS cap.19) + antet explicit în meniuFirma (DS cap.9).
    RĂMAS consemnat (nereparat): Casă card „ambele" (5311 partidă dublă, filtrare fină în interior); D710 LIVE inaccesibil UI; D301 fără writer.
 2. [x] **Control fiscal** — **ÎNCHIS 23.07.2026** (SRL+PFA, comituri ac5ab4f→9693c1f). Semafor cross-portofoliu + Declarație vs contabilitate. `control_fiscal_api.py` + `control.js`.
+   **Consolidare 24.07** (comituri 4e43254 + ac7e135, vezi ISTORIC 24.07 poz.2): 3 renderere per-firmă alegeau chei `vc` pe nume, fiecare cu altă omisiune tăcută (DANTE: salarii + 5121 nu apăreau pe card) → renderer UNIC de corp (`control_verdict.js`, detaliu + card fișă) + gardă **VERDICT_PARITATE** cu 2 parități (randare + severitate); `ecranVerificari` scoped + declarat (`VC_VERIFICARI`). DS cap.20. Nimic vizual nou — nu cere re-verificare pe ecran.
 3. [x] **Termene** — **ÎNCHIS 23.07.2026** (comituri 80c260b→b3fb563). `termene_api.py` + `termene.js`.
    8 reparații (vezi ISTORIC 23.07 poz.3): sub-raportare D394/D406/D101 (consolidare pe primitivă unică), D390 pe
    fapt lunar (nu flag fix), d205_vs_457 roșu fals (cod mort scos), neevaluate gri cu temei, regresie d301 negardat,
