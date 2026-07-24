@@ -5967,6 +5967,11 @@ def etransport_xml(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
     cui = re.sub(r"\D", "", r.get("cui") or "")
     if not cui:
         raise HTTPException(422, "CUI firma lipsa in Profil firma")
+    lipsa = _e.campuri_required_lipsa(corp)
+    if lipsa:
+        raise HTTPException(422, {"cod": "CAMPURI_LIPSA",
+            "mesaj": "Câmpuri obligatorii lipsă (schema eTransport): " + "; ".join(x["eticheta"] for x in lipsa),
+            "campuri": lipsa})
     try:
         xml = _e.xml_notificare(cui, corp)
     except KeyError as e:
@@ -5992,6 +5997,11 @@ def etransport_trimite(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
     cui = _re2.sub(r"\D", "", (r0[0] if r0 else "") or "")
     if not cui:
         raise HTTPException(422, "CUI firma lipsa in Profil firma")
+    lipsa = _egen.campuri_required_lipsa(corp)
+    if lipsa:
+        raise HTTPException(422, {"cod": "CAMPURI_LIPSA",
+            "mesaj": "Câmpuri obligatorii lipsă (schema eTransport): " + "; ".join(x["eticheta"] for x in lipsa),
+            "campuri": lipsa})
     try:
         xml = _egen.xml_notificare(cui, corp)
     except KeyError as e:

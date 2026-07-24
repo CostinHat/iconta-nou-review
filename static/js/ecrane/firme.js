@@ -7,7 +7,7 @@ import { fluxConcediu } from "./flux_concediu.js?v=8";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=7";
 import { ecranRip } from "./rip_ecran.js";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=2";
-import { ecranEtransport } from "./etransport_ecran.js?v=4";
+import { ecranEtransport } from "./etransport_ecran.js?v=5";
 import { meniuMigrarePerFirma } from "./migrare.js?v=5";  // [p96_import_firma]
 import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=1";  // renderer unic verdict control fiscal (DS cap.20)

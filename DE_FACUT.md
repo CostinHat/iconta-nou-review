@@ -128,6 +128,16 @@ starea reverificata azi:
    analog dreptului legal de reprezentant care depune declarații fără contabil — SAU restrâns la cabinet ca
    `etransport-xml`? Dacă decizia e „restrâns" → `trimite`/`trimiteri` devin `cere_cabinet` (aliniat cu sibling-ul).
    Rămâne decizie de scop. Familie apropiată de CARENTE 7 (gating inconsecvent), dar aici întrebarea e de DREPT, nu de robustețe.
+12. **[FISCAL] Validare XSD offline e-Transport BLOCATĂ — lipsă schema v2** (constatat 24.07 la implementarea guard-ului
+   de câmpuri required): aplicația generează XML eTransport **v2** (`mfp:anaf:dgti:eTransport:declaratie:v2`), dar
+   singurul XSD local e **v1** (`~/duk/xsd/etr/SchemaSimtic_20230126.xsd`, `targetNamespace=…declaratie:v1`), **structural
+   diferit** — dovedit cu lxml pe exemplul oficial v2: atribute transport redenumite (`codOrgTransport` v2 vs
+   `codTaraTransportator` v1), elemente locație redenumite (`locStartTraseuRutier` v2 vs `locIncarcare` v1), enum
+   `codScopOperatiune` (`101` v2 vs 6 cifre `100101…` v1). Validarea v2 pe XSD v1 e **imposibilă**. Guard-ul de PREZENȚĂ
+   a câmpurilor required (`core/etransport.py:campuri_required_lipsa`, client+backend) e LIVE și acoperă cazul găsit
+   (codTarifar/denumire goale), dar **NU** e validare completă de schemă (nu prinde enum-uri invalide, formate, tipuri).
+   DE FĂCUT: obține XSD-ul eTransport **v2** de la ANAF (`static.anaf.ro` / SPV) → validare `lxml.etree.XMLSchema` la
+   generare, ca plasă autoritară. Sursa DUK (`~/duk`) are doar v1.
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza

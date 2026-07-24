@@ -23,6 +23,43 @@ function _fereastraUit(dataTransport, intracom) {
   return { ok, mesaj, semafor, valabilPana: valabilPana.toISOString().slice(0,10), zileVal, zileRamase };
 }
 
+// Oglinda client a core/etransport.py:campuri_required_lipsa — blocheaza generarea/trimiterea cu campuri
+// required goale, cu mesaj clar per camp. Backendul RE-valideaza autoritar (defense-in-depth); acolo e sursa.
+function campuriLipsaCorp(c) {
+  const lip = [];
+  const sir = (v, et) => { if (v == null || String(v).trim() === "") lip.push(et); };
+  const poz = (v, et) => { if (!(parseFloat(v) > 0)) lip.push(et); };
+  sir(c.cod_tip_operatiune, "Tip operațiune");
+  const bunuri = c.bunuri || [];
+  if (!bunuri.length) lip.push("Cel puțin un bun transportat");
+  bunuri.forEach((b, i) => {
+    const n = i + 1;
+    sir(b.cod_scop, `Bun ${n}: Scop`);
+    sir(b.cod_tarifar, `Bun ${n}: Cod tarifar (NC)`);
+    sir(b.denumire, `Bun ${n}: Denumire marfă`);
+    sir(b.um, `Bun ${n}: UM`);
+    poz(b.cantitate, `Bun ${n}: Cantitate`);
+    poz(b.greutate_neta, `Bun ${n}: Greutate netă`);
+    poz(b.greutate_bruta, `Bun ${n}: Greutate brută`);
+  });
+  const p = c.partener || {};
+  sir(p.cod_tara, "Partener: Cod țară");
+  sir(p.denumire, "Partener: Denumire");
+  const t = c.transport || {};
+  sir(t.nr_vehicul, "Transport: Nr. vehicul");
+  sir(t.cod_tara_org, "Transport: Țara transportator");
+  sir(t.cod_org, "Transport: CUI transportator");
+  sir(t.denumire_org, "Transport: Denumire transportator");
+  sir(t.data, "Transport: Data transport");
+  [["start", "Loc de pornire"], ["final", "Loc de sosire"]].forEach(([k, nume]) => {
+    const l = c[k] || {};
+    sir(l.cod_judet, `${nume}: Județ`);
+    sir(l.localitate, `${nume}: Localitate`);
+    sir(l.strada, `${nume}: Strada`);
+  });
+  return lip;
+}
+
 export async function ecranEtransport(corp, nav, t) {
   let bunuri = [{}];
   const ziAzi = new Date().toISOString().slice(0, 10);
@@ -112,7 +149,7 @@ export async function ecranEtransport(corp, nav, t) {
           um: v(`b${i}-um`), greutate_neta: parseFloat(v(`b${i}-greutate_neta`) || "0"),
           greutate_bruta: parseFloat(v(`b${i}-greutate_bruta`) || "0"),
           valoare_fara_tva: parseFloat(v(`b${i}-valoare_fara_tva`) || "0"),
-        })).filter((b) => b.denumire),
+        })).filter((b) => (b.cod_tarifar && String(b.cod_tarifar).trim()) || (b.denumire && String(b.denumire).trim())),  // pastram randul inceput -> guard-ul blocheaza vizibil ce lipseste (nu drop tacit); randul complet gol se ignora
         partener: { cod_tara: v("p-cod_tara"), cod: v("p-cod") || undefined, denumire: v("p-denumire") },
         transport: { nr_vehicul: v("t-nr_vehicul"), nr_remorca1: v("t-nr_remorca1") || undefined,
           cod_tara_org: v("t-cod_tara_org"), cod_org: v("t-cod_org"),
@@ -137,8 +174,11 @@ export async function ecranEtransport(corp, nav, t) {
 
     corp.querySelector("#et-genereaza").addEventListener("click", async () => {
       const zona = corp.querySelector("#et-mesaj");
+      const _corp = construiesteCorp();
+      const _lip = campuriLipsaCorp(_corp);
+      if (_lip.length) { arataMesaj(zona, "Completează câmpurile obligatorii: " + _lip.join("; "), "eroare"); return; }
       try {
-        const r = await api.post(`/tenants/${t.id}/etransport-xml`, construiesteCorp());
+        const r = await api.post(`/tenants/${t.id}/etransport-xml`, _corp);
         const blob = new Blob([r.xml], { type: "application/xml" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -150,6 +190,8 @@ export async function ecranEtransport(corp, nav, t) {
 
     corp.querySelector("#et-trimite").addEventListener("click", () => {
       const zona = corp.querySelector("#et-mesaj");
+      const _lip = campuriLipsaCorp(construiesteCorp());
+      if (_lip.length) { arataMesaj(zona, "Completează câmpurile obligatorii: " + _lip.join("; "), "eroare"); return; }
       const f = _fereastraUit(v("t-data"), v("et-tip") === "10");
       if (!f.ok) { arataMesaj(zona, f.mesaj, "avert"); return; }   // poarta de timp (backend re-verifica)
       confirmaCaseta(zona, `Trimiți notificarea UIT în SPV? Se validează întâi pe TEST. ${f.mesaj}`, async () => {

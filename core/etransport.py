@@ -55,3 +55,52 @@ def xml_notificare(cui_declarant, corp):
     H.append('  </notificare>')
     H.append('</eTransport>')
     return "\n".join(H)
+
+
+def campuri_required_lipsa(corp):
+    """Campuri OBLIGATORII (schema eTransport) goale/lipsa -> lista {camp, eticheta}. Backendul e POARTA
+    autoritara: NU se omite tacit un atribut required (fostul _a returna "" pe gol -> XML invalid generat
+    "cu succes", cauza bug-ului 24.07: codTarifar+denumire lipseau din XML lasand campurile goale).
+    Etichetele = numele din formular (etransport_ecran.js). Obligativitatea: atribute use="required" din
+    SchemaSimtic (nume comune v1/v2) + structura exemplelor oficiale v2. NB: XSD-ul local e v1, STRUCTURAL
+    diferit de v2 (atribute/elemente redenumite, enum-uri schimbate) -> validarea XSD completa cere schema v2,
+    care lipseste pe sistem (DE_FACUT). Acest guard acopera PREZENTA campurilor required, nu tot XSD-ul."""
+    lipsa = []
+    def _sir(v, camp, et):
+        if v is None or str(v).strip() == "":
+            lipsa.append({"camp": camp, "eticheta": et})
+    def _poz(v, camp, et):
+        try:
+            ok = float(v) > 0
+        except (TypeError, ValueError):
+            ok = False
+        if not ok:
+            lipsa.append({"camp": camp, "eticheta": et})
+    _sir(corp.get("cod_tip_operatiune"), "et-tip", "Tip operațiune")
+    bunuri = corp.get("bunuri") or []
+    if not bunuri:
+        lipsa.append({"camp": "et-bunuri", "eticheta": "Cel puțin un bun transportat"})
+    for i, b in enumerate(bunuri):
+        n = i + 1
+        _sir(b.get("cod_scop"), f"b{i}-cod_scop", f"Bun {n}: Scop")
+        _sir(b.get("cod_tarifar"), f"b{i}-cod_tarifar", f"Bun {n}: Cod tarifar (NC)")
+        _sir(b.get("denumire"), f"b{i}-denumire", f"Bun {n}: Denumire marfă")
+        _sir(b.get("um"), f"b{i}-um", f"Bun {n}: UM")
+        _poz(b.get("cantitate"), f"b{i}-cantitate", f"Bun {n}: Cantitate")
+        _poz(b.get("greutate_neta"), f"b{i}-greutate_neta", f"Bun {n}: Greutate netă")
+        _poz(b.get("greutate_bruta"), f"b{i}-greutate_bruta", f"Bun {n}: Greutate brută")
+    p = corp.get("partener") or {}
+    _sir(p.get("cod_tara"), "p-cod_tara", "Partener: Cod țară")
+    _sir(p.get("denumire"), "p-denumire", "Partener: Denumire")
+    t = corp.get("transport") or {}
+    _sir(t.get("nr_vehicul"), "t-nr_vehicul", "Transport: Nr. vehicul")
+    _sir(t.get("cod_tara_org"), "t-cod_tara_org", "Transport: Țara transportator")
+    _sir(t.get("cod_org"), "t-cod_org", "Transport: CUI transportator")
+    _sir(t.get("denumire_org"), "t-denumire_org", "Transport: Denumire transportator")
+    _sir(t.get("data"), "t-data", "Transport: Data transport")
+    for cheie, nume, pre in (("start", "Loc de pornire", "s"), ("final", "Loc de sosire", "f")):
+        l = corp.get(cheie) or {}
+        _sir(l.get("cod_judet"), f"{pre}-judet", f"{nume}: Județ")
+        _sir(l.get("localitate"), f"{pre}-localitate", f"{nume}: Localitate")
+        _sir(l.get("strada"), f"{pre}-strada", f"{nume}: Strada")
+    return lipsa
