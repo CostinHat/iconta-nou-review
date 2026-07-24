@@ -3062,3 +3062,30 @@ inline _schema_sau_404(ctx, tenant_id) → fara cross-tenant. Confirmat vizual p
 „+ Adauga produs" si stergere — identic cu contul principal.
 LIMITA: portalul client nu expune azi butoanele prin UI, deci nu e gaura activa, ci poarta deschisa. Implementarea
 restrictiei e restanta (DE_FACUT.md).
+
+### 24.07.2026 Delegarea validarii in coada — REPARAT  (main.py rute /coada/{id}/aproba|respinge|depune; commit c4cb8da)
+DECIZIE: /coada/{id}/aproba, /respinge, /depune trec de la cere_rol("admin_firma") la cere_rol("admin_firma","angajat");
+_are_permisiune(ctx, flag) din corp ramane poarta fina. /respinge primeste in plus check-ul _are_permisiune (nu avea niciunul).
+TEMEI: dependenta prea stricta bloca angajatul cu 403 „rol insuficient" INAINTE ca poarta fina sa conteze, facand
+_are_permisiune cod mort pentru asistenti. Frontendul (validat.js L76-92) randeaza butoanele pe FLAG → apareau si esuau.
+Consecinta de produs: flagul „Poate valida" era decorativ, iar modelul patru-ochi promis pe banner („nimeni nu depune ce a
+pregatit singur") era neindeplinibil prin asistenti — patronul valida ce pregatea tot el.
+VERIFICAT: la sursa (3 straturi: buton validat.js L76-92, dependenta, helper main.py:5061), apoi curl real (asistent cu flag
+200 „aprobata"; fara flag 403 „nu ai permisiunea de a valida", NU „rol insuficient"; patron fara regresie), apoi vizual pe
+DANTE (asistentul aproba, randul trece in „APROBATE, DE DEPUS", apare corect „nu ai dreptul de depunere" — flagurile
+valida/depune sunt independente). Commit fix: c4cb8da.
+ALTERNATIVA RESPINSA: a lasa dependenta stricta si a filtra doar in frontend — ar fi pastrat _are_permisiune cod mort si
+n-ar fi rezolvat delegarea reala; slabirea dependentei FARA _are_permisiune pe /respinge ar fi deschis o gaura (respingere
+de catre orice angajat).
+LIMITA: —
+
+### 24.07.2026 Declaratie cu erori DUK in coada — AMANATA  (nedecis; DE_FACUT.md „Coada de validare")
+DECIZIE: nedecisa (amanata). Fapt verificat vizual: o declaratie cu „Validatorul ANAF a gasit erori" poate fi trimisa in
+coada (buton nerestrictionat) si primeste ecran de confirmare cu bifa verde „Trimisa in coada de validare", fara urma a
+erorii. Backendul re-genereaza server-side dar NU re-valideaza DUK.
+PROPUNERE (de confirmat): transparenta, nu blocaj. Butonul ramane activ (contabilul poate sti ca eroarea e falsa), dar
+confirmarea nu mai afirma succes curat — arata „trimisa cu N erori de validare", iar coada evidentiaza randul. Atenuant
+existent: badge „neverificat" apare pe rand si persista dupa aprobare.
+ALTERNATIVA RESPINSA (provizoriu): poarta hard pe stare==="valid" — blocheaza cazurile in care eroarea DUK e fals-pozitiva.
+LIMITA: decizia finala nu e luata; pana atunci ecranul de succes ramane inselator pe declaratiile cu erori. Colateral de
+investigat separat: bug generare D300 iulie (atribut `cont` vid); etichetare perioada vs termen in coada (minor).

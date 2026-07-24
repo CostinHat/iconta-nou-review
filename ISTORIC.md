@@ -2805,3 +2805,34 @@ restart — serviciul a rulat tot timpul pe codul original. Lecție: grep pe sem
 cere corpul.
 
 **CHECKLIST_BROWSER: poziția 9 (Tipare) închisă. Rămân 3** (10–12).
+
+## 24.07.2026 — Ecran poziția 10 (Semafor / coadă de validare): ÎNCHIS PARȚIAL [~] + reparat delegarea validării
+Verificat vizual pe DANTE, patron + asistent, flux complet: Declarații pas 1–3 → coadă → aprobare. Eticheta „Semafor
+(validat / de validat)" acoperă ecranul „De validat" (`validat.js`) + rutele de coadă din `main.py`
+(`/coada`, `/coada/{id}/aproba|respinge|depune`).
+
+**FUNCȚIONEAZĂ:**
+- Ecran „De validat" cu stare goală canonică; coada afișează pregătitorul și badge „neverificat".
+- Patru-ochi la nivel de flux: patron pregătește, asistent validează.
+- Delegarea validării — DUPĂ fix-ul c4cb8da (vezi mai jos și DECIZII 24.07).
+- Flagurile valida/depune independente: asistentul cu „Poate valida" aprobă, rândul trece în „APROBATE, DE DEPUS", iar la
+  depunere apare corect „nu ai dreptul de depunere".
+- Eroarea de rol e **vizibilă, nu tăcută** (cap.6 respectat): „nu ai permisiunea de a valida", nu „rol insuficient".
+
+**REPARAT ÎN CURSUL POZIȚIEI [A] — delegarea validării (commit c4cb8da, vezi DECIZII 24.07):** cele 3 rute
+(`/coada/{id}/aproba|respinge|depune`) aveau `Depends(cere_rol("admin_firma"))`, blocând un asistent cu `poate_valida` cu
+403 „rol insuficient" ÎNAINTE ca `_are_permisiune(ctx,"poate_valida")` din corp să conteze (cod mort pentru angajați).
+Frontendul (`validat.js` L76-92) randează butoanele pe FLAG → apăreau și eșuau; modelul patru-ochi era neîndeplinibil prin
+asistenți, flagul „Poate valida" decorativ. Fix: dependența → `cere_rol("admin_firma","angajat")`; `/respinge` a primit
+`_are_permisiune("poate_valida")` în corp (nu avea niciun check). Dovadă: curl real (asistent cu flag 200 „aprobata"; fără
+flag 403; patron fără regresie) + vizual pe DANTE.
+
+**RESTANȚĂ [B] — declarație cu erori DUK în coadă prezentată ca succes:** decizie AMÂNATĂ (propunere de transparență scrisă
+în DECIZII.md). O declarație cu „Validatorul ANAF a găsit erori" poate fi trimisă în coadă (buton nerestricționat) și
+primește ecran de confirmare cu bifă verde, fără urmă a erorii; backendul re-generează server-side dar NU re-validează DUK.
+Atenuant existent: badge „neverificat" persistă pe rând.
+
+**COLATERAL de investigat separat:** [C] bug generare D300 iulie (atribut `cont` vid); [minor] etichetă perioadă vs termen
+în coadă.
+
+**CHECKLIST_BROWSER: poziția 10 rămâne [~] (nu [x]) până se decide [B]. Rămân 3** (10–12), din care 10 parțial.
