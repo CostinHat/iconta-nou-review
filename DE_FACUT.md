@@ -165,9 +165,12 @@ starea reverificata azi:
   `[p123_scot_butoane]` din `ecrane/produse_ecran.js` **nu e documentat nicăieri**: absent din DECIZII.md / ISTORIC.md /
   DE_FACUT.md / CHECKLIST_BROWSER.md, prezent doar în snapshotul inițial `cbf24ce` fără commit incremental, absent din
   build-ul vechi `/opt/iconta` (altă arhitectură, fără ecran de produse). Istoric pierdut la snapshot, motiv nerecuperabil.
-- **DECIS 24.07**: endpoint-ul **NU e cod mort** — se păstrează, se construiește UI de editare. Temei: editarea e legitimă
-  (denumire, preț de listă, cotă TVA), iar produsele sunt referite prin `articol_id` în podul factură→descărcare stoc și
-  în F144; ștergerea+recrearea ca substitut de editare ar rupe istoricul acelor legături.
+- **DECIS 24.07**: endpoint-ul **NU e cod mort** — se păstrează, se construiește UI de editare. **Temei (CORECTAT 24.07,
+  verificat la sursă)**: ștergerea+recrearea pierde metadata cotei — `justificare`, `categorie`, `sursa`, `confirmat`
+  (`produse` L969), rezultatul potrivirii AI și argumentul la un control fiscal; editarea (denumire, preț de listă, cotă
+  TVA) e legitimă și trebuie s-o păstreze. **CORECȚIE**: temeiul inițial (`articol_id` în podul factură→stoc + F144) e
+  FALS — `produse` și `articole` sunt tabele complet separate, fără FK în niciun sens; `DELETE FROM produse` nu atinge
+  niciun istoric. Formulat din memorie, neverificat (încălcare regula 7 — verificare la sursă). Decizia rămâne, temeiul e altul.
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza

@@ -3037,9 +3037,14 @@ pe trimitere, deci riscul e mic. Colateral reparat 24.07: recomanda.js:35 saniti
 
 ### 24.07.2026 Editare produs — endpoint PUT pastrat (main.py:2224 PUT /produse/{produs_id}; produse_ecran.js)
 DECIZIE: PUT /tenants/{id}/produse/{produs_id} NU se sterge ca endpoint mort; se construieste UI de editare (restanta).
-TEMEI: produsele sunt referite prin articol_id in podul factura->descarcare stoc si in F144 (profit pe produs);
-stergerea+recrearea ca substitut de editare ar rupe istoricul acelor legaturi. Editarea (denumire, pret de lista, cota TVA)
-e operatiune legitima.
+TEMEI (corectat 24.07, dupa verificare la sursa): stergerea+recrearea unui produs pierde metadata cotei — `justificare`,
+`categorie`, `sursa`, `confirmat` (produse L969) — care e rezultatul potrivirii AI si e argumentul in fata unui control
+fiscal. Editarea (denumire, pret de lista, cota TVA) e operatiune legitima care trebuie sa pastreze aceasta metadata.
+CORECTIE: temeiul initial invoca `articol_id` in podul factura->stoc si F144. FALS, verificat la sursa: `produse` si
+`articole` sunt tabele complet separate, fara FK in niciun sens (produse n-are articol_id, articole n-are produs_id);
+`articol_id` din factura_linii/miscari_stoc/retete_linii refera `articole`. DELETE FROM produse nu atinge niciun istoric.
+Temeiul initial a fost formulat din memorie, nu verificat — incalcare a regulii 7 (verificare la sursa). Decizia (pastram
+endpoint-ul) ramane, temeiul e altul.
 ALTERNATIVA RESPINSA: stergerea endpoint-ului pe regula „fara cod mort" — respinsa pentru ca absenta UI nu dovedeste ca
 functionalitatea e nedorita, iar marcatorul [p123_scot_butoane] e nedocumentat (istoric pierdut la snapshot cbf24ce;
 verificat in DECIZII/ISTORIC/DE_FACUT/CHECKLIST si in build-ul vechi /opt/iconta — absent peste tot).
