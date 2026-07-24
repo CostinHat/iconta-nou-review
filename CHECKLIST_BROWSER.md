@@ -77,8 +77,10 @@ Ecrane de parcurs (din DE_FACUT.md §3, verificatorul e curat pe ele dar nu prin
    FUNCȚIONEAZĂ: ecran „De validat" cu stare goală canonică; coada afișează pregătitorul + badge „neverificat"; patru-ochi la nivel de flux (patron pregătește, asistent validează); flagurile valida/depune independente; eroarea de rol e vizibilă, nu tăcută (cap.6).
    REPARAT [A]: delegarea validării — cele 3 rute (`/coada/{id}/aproba|respinge|depune`) treceau de `cere_rol("admin_firma")` cu 403 „rol insuficient" înainte ca poarta fină `_are_permisiune` să conteze (cod mort pt asistenți) → `cere_rol("admin_firma","angajat")` + `_are_permisiune("poate_valida")` pe `/respinge`. Commit c4cb8da, vezi DECIZII 24.07.
    RESTANȚĂ [B] (rămâne [~], nu [x]): declarație cu erori DUK în coadă prezentată ca succes (buton nerestricționat, confirmare cu bifă verde, backend nu re-validează DUK) — decizie AMÂNATĂ, propunere de transparență în DECIZII.md. Colateral: [C] bug generare D300 iulie (`cont` vid); [minor] etichetă perioadă vs termen în coadă.
-11. [ ] **Pachete lunare**
-12. [ ] **Capacitate**
+11. [x] **Pachete lunare** — **ÎNCHIS 24.07.2026** (vezi ISTORIC 24.07 poz.11). (a) calea NEAPROBATA verificată direct pe API (400 `{"detail":"Aproba povestea inainte de trimitere."}`); (b) email real semnat livrat pe DANTE (semnătură nume contabil + cabinet din DB, diacritice); (c) portal client verificat la sursă — **XSS stocat cabinet→client găsit și reparat** (esc pe `p.text`). Plus: poveste alimentată cu restanțe reale, preview = același `_html` ca trimiterea, editor umple modalul, stare colorată canonic. Comituri 293df99/f35c28c/f99c469/09258f1/f0c2d99/aedc4ea. `pachete.js` + `pachete_api.py`.
+12. [x] **Capacitate** — **ÎNCHIS ca audit 24.07.2026** (vezi ISTORIC 24.07 poz.12). Panou verificat la sursă (`capacitate_api.py`); reparat `pct_acceptare` pe cohortă (fără negativ prin construcție) + etichete de perioadă (commit 6f6b536). Atribuire firmă↔asistent (`user_tenants`) verificată — există, populată, NU de construit. RĂMAS **stadiul 1** (re-JOIN Capacitate pe `user_tenants`, model SET) — specificat, neconstruit (vezi DECIZII 24.07).
+
+**Audit vizual — acoperire COMPLETĂ (24.07.2026)**: pozițiile 4–12 toate atinse. 4–9, 11, 12 închise integral; 10 (Semafor) închis PARȚIAL (reparat [A]; rămâne CARENTE 13 C2c). Nicio poziție rămasă neexaminată.
 
 ## D. Categorii neatacate sistematic (DE_FACUT §3.2) — de decis, nu neapărat de reparat
 
