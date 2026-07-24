@@ -151,8 +151,23 @@ starea reverificata azi:
    - **[B] login.js L428/L514** — asterisc pe CUI, absent din pre-check-ul client; backend înregistrare îl prinde. UX
      preventiv.
    - **[minor]** `0` acceptat pe câmp numeric cu asterisc: emitere `pret_unitar`, rip `suma`, flux_concediu `data_sfarsit`.
+   - **[C2 — clasă distinctă] produse_ecran.js L138-146 (`#pr-salveaza`)** — `denumire` e blocat, dar refuzul e TĂCUT
+     (`focus()+return`, fără `arataMesaj`) ȘI câmpul nu e marcat cu asterisc (`.oblig`/`*`). Invers față de cazurile de mai
+     sus: acolo asterisc fără enforcement, aici enforcement fără mesaj și fără asterisc. Ambele goluri cap.6. Fix: asterisc
+     + `arataMesaj "eroare"`, ambele.
+   - **[minor] produse `pret_unitar: parseFloat(...)||0`** — 0 acceptat. `pret_unitar` alimentează F144 (profit pe produs);
+     la reparare de verificat dacă 0 falsifică marja sau e legitim.
    - **[candidat, NEDECIS]** gardian mecanic în verificator pentru cap.6 („ecran cu asterisc + `api.post` fără validare
      de câmp") — risc mare de fals-pozitive, temă separată.
+
+## Editare produs — UI lipsă (24.07)
+- **PUT `/tenants/{id}/produse/{produs_id}`** (main.py:2224) există în backend **fără consumator frontend**. Marcatorul
+  `[p123_scot_butoane]` din `ecrane/produse_ecran.js` **nu e documentat nicăieri**: absent din DECIZII.md / ISTORIC.md /
+  DE_FACUT.md / CHECKLIST_BROWSER.md, prezent doar în snapshotul inițial `cbf24ce` fără commit incremental, absent din
+  build-ul vechi `/opt/iconta` (altă arhitectură, fără ecran de produse). Istoric pierdut la snapshot, motiv nerecuperabil.
+- **DECIS 24.07**: endpoint-ul **NU e cod mort** — se păstrează, se construiește UI de editare. Temei: editarea e legitimă
+  (denumire, preț de listă, cotă TVA), iar produsele sunt referite prin `articol_id` în podul factură→descărcare stoc și
+  în F144; ștergerea+recrearea ca substitut de editare ar rupe istoricul acelor legături.
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
