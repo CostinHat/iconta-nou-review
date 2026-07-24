@@ -2757,3 +2757,21 @@ nevalidat (dovadă DANTE `um='buc1'`); p123 fără UI de editare (PUT orfan — 
 sunt tabele separate fără FK; înlocuit cu temeiul real (metadata cotei) și consemnat ca încălcare a regulii 7.
 
 **CHECKLIST_BROWSER: poziția 8 (Produse) închisă. Rămân 5** (7, 9–12).
+
+## 24.07.2026 — Ecran poziția 7 (e-Transport): ÎNCHIS, guard câmpuri required dovedit în browser (5 probe)
+Verificat vizual pe DANTE (localhost:8010). Guard câmpuri required (commit `d67b347`) dovedit în browser, 5 probe:
+
+1. **Formular gol + „Doar generează XML"** → blocaj, mesaj roșu care numește fiecare câmp lipsă cu zona lui
+   (Transport: Nr. vehicul; Loc de sosire: Strada etc.), XML negenerat.
+2. **Formular gol + „Trimite UIT în SPV"** → blocaj identic (guard pe AMBELE butoane).
+3. **Bun cu cod tarifar + cantitate dar DENUMIRE GOALĂ** → blocaj „Bun 1: Denumire marfă" — bug-ul de silent-drop
+   reparat, dovedit vizual (înainte bunul dispărea tăcut din XML).
+4. **Rând de bun complet gol lângă unul valid** → TRECE, ignorat ca necompletat (fără fals blocaj, anti-fals-pozitiv
+   confirmat).
+5. **XML descărcat verificat pe disc**: exact un `<bunuriTransportate>` (grâu), rândul gol absent din payload —
+   filtrul de validare și cel de scriere sunt consecvente. Namespace confirmat: `mfp:anaf:dgti:eTransport:declaratie:v2`.
+
+**RESTANȚĂ (CARENTE 12):** validarea XSD offline rămâne blocată — schema v2 nu e pe server. Guard-ul acoperă
+PREZENȚA câmpurilor, nu formatele/enum-urile din schemă.
+
+**CHECKLIST_BROWSER: poziția 7 (e-Transport) închisă. Rămân 4** (9–12).
