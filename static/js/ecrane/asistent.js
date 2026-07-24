@@ -13,6 +13,7 @@ import { randeazaRecomanda } from "./recomanda.js"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=6"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js"; // [p63_pachete]
 import { randeazaDeclaratii } from "./declaratii.js"; // [p44_declaratii]
+import { randeazaSetari } from "./setari.js"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;
@@ -47,6 +48,8 @@ export async function desktopAsistent(continut, nav) {
       sinteza:"Invită un cabinet în iConta" },
     { cheie:"raport",    titlu:"Raportează",     icon:"report",    ...CULORI_CARD.ardezie,
       sinteza:"Raportează o problemă către iConta" },
+    { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  ...CULORI_CARD.ardezie,
+      sinteza:"Parolă și date de profil" },
   ];
 
   continut.innerHTML = `
@@ -92,6 +95,8 @@ export async function desktopAsistent(continut, nav) {
       card.addEventListener("click", () => nav.deschide("Raporteaza", (corp) => randeazaRaporteaza(corp, nav)));
     } else if (c.cheie === "declaratii") {  // [p44_declaratii]
       card.addEventListener("click", () => nav.deschide("Declarații", (corp) => randeazaDeclaratii(corp, nav)));
+    } else if (c.cheie === "setari") {  // [p28_setari] gating in setari.js -> non-admin vede doar Date profil + Schimba parola
+      card.addEventListener("click", () => nav.deschide("Setări cont", (corp) => randeazaSetari(corp, nav)));
     } else {
       card.addEventListener("click", () => inLucru(c.titlu)(nav));
     }

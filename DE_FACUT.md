@@ -75,6 +75,11 @@ starea reverificata azi:
    `luni[...]`/`toLocaleDateString`/`split("-")`, nu forma `padStart`). Separat de consolidarea verdictului
    (neatins azi). DE DECIS: (a) reparație punctuală → `dataRo("luna_an")`; (b) extindere DATA_DIALECT să prindă
    forma `padStart(...)/${an}` (risc de fals-pozitiv pe alte `padStart`). O regulă nouă intră simultan în DS + verificator.
+6. **Salutul asistentului folosește `u.nume` (nume de familie) în loc de `u.prenume`** (constatat 24.07 la deblocarea
+   accesului Setări pentru asistent, `asistent.js:32`): `const prenume = u.nume || u.email` → antetul afișează
+   „Salut, {nume de familie}". Aceeași familie cu etichetarea inversată Prenume/Nume din Setări (confuzie nume/prenume).
+   Neatins azi (temă separată). DE FĂCUT: `u.prenume || u.nume || u.email` (fallback la nume dacă prenumele lipsește),
+   reparație punctuală în `asistent.js`.
 
 ## 4. Infra
 - **Reboot kernel** — inca necesar (verificat 17.07: /var/run/reboot-required prezent; ruleaza
