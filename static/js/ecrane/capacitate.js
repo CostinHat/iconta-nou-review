@@ -3,6 +3,7 @@
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
 import { api, esc } from "../api.js";
+import { randeazaAsistenti } from "./asistenti.js";
 
 function celulaCifra(valoare, eticheta, accent) {
   const c = accent || "#1a1d21";
@@ -25,6 +26,24 @@ export async function randeazaCapacitate(corp, nav) {
   const cab = d.cabinet || {};
   const asistenti = d.asistenti || [];
   const timp = d.timp || { pe_tip: [], total_mostre: 0 };
+
+  // --- PRAG ECHILIBRU: sub 5 actori care poarta munca (patron inclus),
+  // semnalul e gol pe echipa mica -> nu afisam cifrele, ci empty state + indrumare.
+  const PRAG_ECHILIBRU = 5;
+  if (asistenti.length < PRAG_ECHILIBRU) {
+    corp.innerHTML = `
+      <div class="cap-ecran">
+        <div class="stare-goala">
+          <p>Într-o echipă care crește, munca nu se împarte singură în mod egal.</p>
+          <p>Unii duc trei firme, alții șapte — și afli abia când cineva cedează în perioada de declarații. Capacitate îți arată cine cât duce, unde e presiune și unde e loc, ca s-o echilibrezi din vreme, nu în criză.</p>
+          <p>Semnalul are sens de la 5 asistenți în sus. Momentan ai ${asistenti.length} — până atunci, îi vezi pe toți dintr-o privire.</p>
+          <p><button type="button" class="buton-secundar" id="cap-adauga-asistenti">Adaugă asistenți</button></p>
+        </div>
+      </div>`;
+    corp.querySelector("#cap-adauga-asistenti").addEventListener("click",
+      () => nav.deschide("Asistenți", (c) => randeazaAsistenti(c, nav), { nivel: "cabinet" }));
+    return;
+  }
 
   // --- 1) CABINET ---
   const sectCabinet = `
