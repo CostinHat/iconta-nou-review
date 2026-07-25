@@ -18,7 +18,7 @@ CLASE_BUTON_OK = {"buton-primar", "buton-secundar", "buton-sters", "buton-verde"
 CLASE_COMPONENTA_OK = {"firme-optiune", "cab-card", "acces-card", "meniu-card", "sub-inapoi",
                        "firme-inapoi", "rap-tab", "ac-per", "mig-dec", "vf-opt", "sa-asist",
                        "val-btn", "mf-font-opt", "mf-culoare-opt", "pagina-card-buton",
-                       "pagina-bara-acces", "pacm-x", "acces-x", "rec-modal-x", "pf-frand"}
+                       "pagina-bara-acces", "pacm-x", "acces-x", "rec-modal-x", "pf-frand", "func-card"}  # func-card = selector card grupa (F203), ca cab-card/acces-card/meniu-card
 # culori-token permise inline (semafor canonic + entitate + fir)
 ZEBRA_INTERZISE = {"#fdeef2", "#eaf2fb", "#f4f7fb", "#f7f8fa"}  # alternante vechi, inlocuite de STANDARD_ZEBRA
 CULORI_OK = {"#1d7a4d", "#c9961f", "#ff3b30", "#1d4ed8", "#5b6b7c", "#1d3a5f", "#8a97a5", "#e11d1d"}
