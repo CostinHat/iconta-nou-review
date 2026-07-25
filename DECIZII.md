@@ -3159,3 +3159,10 @@ ACTUALIZARE 25.07.2026 (mecanism iSpv VERIFICAT + decizii fondator) — la intra
 - DECIZIE (fondator): iConta ofera PRELUCRAREA mesajelor SPV (clasificare, legare la firma, termen, alerta in semafor, arhivare la dosar), cu INCARCARE de catre cabinet. Descarcarea ramane alegerea cabinetului: manual din SPV, sau prin unealta terta procurata singur (ex. iSpv, care are API de integrare). iConta indruma NEUTRU, nu recomanda si nu garanteaza un furnizor anume.
 - REZULTAT: daca ANAF deschide vreodata OAuth pe SPVWS2, se schimba doar SURSA DE ALIMENTARE - prelucrarea e deja construita.
 - STATUT: prelucrarea = POSIBILITATE DESCHISA, neplanificata. NU se construieste fara DA explicit si fara verificarea de fezabilitate.
+
+FEZABILITATE (verificat la sursa 25.07.2026) — REZULTAT NEGATIV pe punctul critic:
+- Descarcare SPV = UNUL CATE UNUL (/listaMesaje listeaza in bloc, /descarcare?id ia cate unul — ARHITECTURA:56,58) -> incarcare MANUALA = FRICTIUNE REALA la volum.
+- ZERO exemplare SPV reale pe server (find gol; declaratii_coada 0 transmise / spv_index NULL; doar mock-uri in teste) -> extractibilitatea textului NEestimabila fara un mesaj real procurat.
+- F152 (raportari_ai = triaj sesizari), F164 (semafor pe verificatori FIXI), F042 (arhiva = bonuri OCR) sunt SPECIALIZATE, NU refolosibile generic pentru prelucrarea mesajelor SPV.
+- CONSECINTA: "prelucrare cu INCARCARE MANUALA" NU e viabila in forma discutata. Ramane posibila DOAR daca alimentarea vine AUTOMAT (unealta terta cu API, sau OAuth pe SPVWS2 daca ANAF deschide).
+- STATUT F128: ramane AMANAT. Nu mai exista cale de ocolire ieftina.
