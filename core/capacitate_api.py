@@ -80,6 +80,24 @@ def capacitate(conn, cabinet_id):
             " ORDER BY prenume, nume", (cabinet_id,))
         procesatori = cur.fetchall()
 
+        # firme atribuite prin user_tenants -- DOAR firmele cabinetului curent
+        # (tenants.accounting_firm_id = cabinet), exclus rol='client' care are
+        # rand in user_tenants doar pentru acces portal (nu firma atribuita).
+        # Query SEPARAT, agregat pe user_tenants -> NU atinge declaratii_coada,
+        # deci metricile de debit NU se dubleaza (many-to-many izolat).
+        cur.execute(
+            "SELECT ut.user_id, COUNT(*) AS firme_atribuite "
+            "  FROM public.user_tenants ut "
+            "  JOIN public.tenants t ON t.id = ut.tenant_id "
+            "  JOIN public.users   u ON u.id = ut.user_id "
+            " WHERE t.accounting_firm_id = %(c)s "
+            "   AND t.activ = true "
+            "   AND u.rol <> 'client' "
+            " GROUP BY ut.user_id",
+            {"c": cabinet_id})
+        firme_map = {row["user_id"]: int(row["firme_atribuite"])
+                     for row in cur.fetchall()}
+
         asistenti = []
         for p in procesatori:
             uid = p["id"]
@@ -107,6 +125,7 @@ def capacitate(conn, cabinet_id):
                 "pregatite_luna": pregatite,
                 "depuse_luna": int(s["depuse_luna"]),
                 "pct_acceptate": pct,
+                "firme_atribuite": firme_map.get(uid, 0),
                 "poate_valida": p["poate_valida"],
             })
         out["asistenti"] = asistenti

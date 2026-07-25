@@ -40,7 +40,7 @@ export async function randeazaCapacitate(corp, nav) {
   // --- 2) PE ASISTENT ---
   let randuriAsist = "";
   if (!asistenti.length) {
-    randuriAsist = `<tr><td colspan="5" class="stare-goala">Niciun procesator cu competențe.</td></tr>`;
+    randuriAsist = `<tr><td colspan="6" class="stare-goala">Niciun procesator cu competențe.</td></tr>`;
   } else {
     asistenti.forEach((a) => {
       const pct = (a.pct_acceptate === null || a.pct_acceptate === undefined)
@@ -49,6 +49,7 @@ export async function randeazaCapacitate(corp, nav) {
       randuriAsist += `
         <tr>
           <td>${esc(a.nume || "—")} <span class="cap-rol">${rol}</span></td>
+          <td class="cap-num">${a.firme_atribuite ?? 0}</td>
           <td class="cap-num">${a.in_lucru ?? 0}</td>
           <td class="cap-num">${a.pregatite_luna ?? 0}</td>
           <td class="cap-num">${a.depuse_luna ?? 0}</td>
@@ -61,7 +62,7 @@ export async function randeazaCapacitate(corp, nav) {
     <div class="cap-tabel-wrap">
       <table class="cap-tabel">
         <thead><tr>
-          <th>Asistent</th><th class="cap-num">În lucru</th>
+          <th>Asistent</th><th class="cap-num">Firme</th><th class="cap-num">În lucru</th>
           <th class="cap-num">Pregătite</th><th class="cap-num">Depuse</th>
           <th class="cap-num">% acceptate</th>
         </tr></thead>
