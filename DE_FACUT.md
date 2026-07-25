@@ -697,9 +697,5 @@ urgență. Consemnat.
 revalidează oricum — vezi nota de mai sus); e doar o divergență cosmetică a string-ului `?v=`. De aliniat/eliminat
 odată cu curățarea `?v=` de mai sus. Consemnat.
 
-## Istoric git fără remote — single point of failure pe cod (raportat 25.07.2026)
-`git remote -v` pe repo-ul din `~/iconta_nou` (iconta-prod) întoarce GOL — niciun remote configurat. Istoricul git
-există DOAR local pe server; dacă serverul cade / e reprovizionat, întreg `git log` se pierde. Backup-ul Hetzner
-Storage Box acoperă fișiere + DB, dar NU neapărat și istoricul git (`.git/`). De adăugat un remote privat
-(GitHub/GitLab) ca plasă de siguranță pentru cod: `git remote add origin <URL>` + `git push -u origin main`.
-Neurgent, dar risc real de single point of failure pe istoric. Consemnat.
+## Istoric git — remote off-site configurat (REZOLVAT 25.07.2026)
+REZOLVAT: `~/iconta_nou` are acum remote privat off-site — `github-cont:CostinHat/iconta-v2` (GitHub privat, prin cheia de cont). Istoricul (768 commit-uri) e împins pe GitHub → nu mai e single point of failure pe server. Repo-ul vechi `CostinHat/iconta` rămâne NEATINS ca arhivă (istoria /opt/iconta, nelegată; zero force). Cadență țintă: push zilnic (acum manual după fiecare sesiune; de automatizat cu un timer dacă vrem).
