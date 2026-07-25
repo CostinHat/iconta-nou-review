@@ -696,6 +696,30 @@ def admin_activitate_cabinet(firm_id: int, limita: int = 200, ctx=Depends(cere_c
     return {"activitate": rows}
 
 
+class StergereCabinetIn(BaseModel):
+    confirmare: str
+
+
+@app.post("/gdpr/sterge-cabinet/{cabinet_id}/previzualizare")  # [F200] GDPR art.17 pas 1 (superadmin)
+def gdpr_sterge_previzualizare(cabinet_id: int, ctx=Depends(cere_rol("superadmin"))):
+    from core import gdpr_sterge as _gs
+    with db.get_conn() as conn:
+        try:
+            return _gs.previzualizare(conn, cabinet_id)
+        except ValueError as e:
+            raise HTTPException(404, str(e))
+
+
+@app.post("/gdpr/sterge-cabinet/{cabinet_id}/executa")  # [F200] GDPR art.17 pas 2 (superadmin, confirmare typed-back)
+def gdpr_sterge_executa(cabinet_id: int, date: StergereCabinetIn, ctx=Depends(cere_rol("superadmin"))):
+    from core import gdpr_sterge as _gs
+    with db.get_conn() as conn:
+        try:
+            return _gs.executa(conn, cabinet_id, date.confirmare, ctx.get("uid"))
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+
+
 @app.get("/gdpr/export-cabinet")  # [F199] GDPR art.20 portabilitate — export complet cabinet
 def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("admin_firma"))):
     from core import gdpr_export as _ge
