@@ -394,6 +394,40 @@ for _cheie in sorted(_produse):
     if _cheie not in _pliate and _cheie not in _fara_sev:
         rap["verdict_paritate"].append(("main.py", 0, "severitate", "cheie vc `%s` nici pliata in contabil, nici in VC_FARA_SEVERITATE" % _cheie))
 
+# --- GRUPE_FUNC (pagina Functionalitati) vs FUNCTIONALITATI.csv: registrul nu trebuie sa se departeze tacit ---
+rap["grupe_func_stale"] = []
+try:
+    import sys as _sys, json as _json, csv as _csv
+    _sys.path.insert(0, BAZA_PY)
+    import genereaza_grupe_functii as _gen
+    _asteptat = _gen.repartizeaza()
+    _login = open(os.path.join(BAZA, "login.js"), encoding="utf-8").read()
+    _m = re.search(r"const GRUPE_FUNC = (\[.*?\]);", _login)
+    if not _m:
+        rap["grupe_func_stale"].append(("login.js", 0, "parsare", "GRUPE_FUNC negasit in login.js"))
+    else:
+        _pagina = _json.loads(_m.group(1))
+        _cod = {}
+        for _r in _csv.reader(open(os.path.join(BAZA_PY, "FUNCTIONALITATI.csv"), encoding="utf-8")):
+            if len(_r) > 2 and _r[2].strip().startswith("F"):
+                _cod[_r[0].strip()] = _r[2].strip()
+        _ea = {g["titlu"]: set(g["functii"]) for g in _asteptat}
+        _pa = {g["titlu"]: set(g["functii"]) for g in _pagina}
+        _ta = sum(len(v) for v in _ea.values()); _tp = sum(len(v) for v in _pa.values())
+        if _ta != _tp:
+            rap["grupe_func_stale"].append(("login.js GRUPE_FUNC", 0, "total",
+                "TOTAL: CSV %d, pagina %d (difera cu %d) -> ruleaza: python3 genereaza_grupe_functii.py --scrie" % (_ta, _tp, abs(_ta - _tp))))
+        for _t in _gen.GRUPE:
+            _a = _ea.get(_t, set()); _p = _pa.get(_t, set())
+            if _a != _p:
+                _lipsa = sorted(_a - _p); _extra = sorted(_p - _a)
+                _det = "CSV %d, pagina %d" % (len(_a), len(_p))
+                if _lipsa: _det += "; lipseste din pagina: " + ", ".join("%s (%s)" % (f, _cod.get(f, "?")) for f in _lipsa)
+                if _extra: _det += "; in pagina dar nu in CSV: " + ", ".join(_extra)
+                rap["grupe_func_stale"].append(("login.js GRUPE_FUNC", 0, _t[:14], _det))
+except Exception as _e:
+    rap["grupe_func_stale"] = [("genereaza_grupe_functii", 0, "eroare", str(_e)[:90])]
+
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)
