@@ -696,6 +696,23 @@ def admin_activitate_cabinet(firm_id: int, limita: int = 200, ctx=Depends(cere_c
     return {"activitate": rows}
 
 
+@app.get("/gdpr/export-cabinet")  # [F199] GDPR art.20 portabilitate — export complet cabinet
+def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("admin_firma"))):
+    from core import gdpr_export as _ge
+    if ctx["rol"] == "superadmin":
+        cab = cabinet_id
+        if not cab:
+            raise HTTPException(422, "cabinet_id obligatoriu pentru superadmin")
+    else:
+        cab = ctx.get("firm")
+    if not cab:
+        raise HTTPException(400, "fara cabinet asociat")
+    with db.get_conn() as conn:
+        _zip = _ge.export_cabinet(conn, cab)
+    return Response(content=_zip, media_type="application/zip",
+                    headers={"Content-Disposition": 'attachment; filename="gdpr-export-cabinet-%s.zip"' % cab})
+
+
 @app.get("/capacitate")  # [p70_capacitate] panou capacitate (doar patron)
 def capacitate_panou(ctx=Depends(cere_rol("admin_firma"))):
     cab = ctx.get("firm")
