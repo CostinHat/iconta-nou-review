@@ -2232,3 +2232,13 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .cf-incr-remediu { font-size: var(--text-mic); margin-top: 6px; padding: 8px 10px; background: var(--galben-fundal); border-radius: 8px; line-height: 1.45; }
 .cf-incr-rand { padding: 10px 4px; border-bottom: 1px solid #eef0f3; }
 .cf-incr-cap { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+
+/* [F203] Pagina Functionalitati (landing) — grila 7 grupe + lista grupa */
+.func-grila { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.func-card { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 14px 16px; background: #fff; border: 0.5px solid #b9c2cf; border-radius: var(--raza); cursor: pointer; text-align: left; font: inherit; color: inherit; }
+.func-card:hover { background: var(--fundal); transform: translateY(-1px); box-shadow: 0 3px 9px rgba(20,30,45,0.12); }
+.func-card-icon { color: var(--albastru); }
+.func-card-titlu { font-weight: 600; color: var(--ardezie); }
+.func-card-nr { font-size: var(--text-mic); color: var(--gri); }
+.func-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.func-lista li { padding: 7px 11px; background: #fff; border: 0.5px solid #dfe4ea; border-radius: 7px; font-size: var(--text-mic); color: #1a1d21; }

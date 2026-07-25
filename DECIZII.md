@@ -3166,3 +3166,8 @@ FEZABILITATE (verificat la sursa 25.07.2026) — REZULTAT NEGATIV pe punctul cri
 - F152 (raportari_ai = triaj sesizari), F164 (semafor pe verificatori FIXI), F042 (arhiva = bonuri OCR) sunt SPECIALIZATE, NU refolosibile generic pentru prelucrarea mesajelor SPV.
 - CONSECINTA: "prelucrare cu INCARCARE MANUALA" NU e viabila in forma discutata. Ramane posibila DOAR daca alimentarea vine AUTOMAT (unealta terta cu API, sau OAuth pe SPVWS2 daca ANAF deschide).
 - STATUT F128: ramane AMANAT. Nu mai exista cale de ocolire ieftina.
+
+### 25.07.2026 Landing — card „Funcționalități" înlocuiește „Facturare gratuită"; pâlnie gratuită publică ÎNCHISĂ temporar  (login.js + stil.css; F203)
+DECIZIE (pilot): cardul mare landing „Facturare gratuită" (SINGURUL punct de intrare UI spre înregistrarea gratuită self-service) e ÎNLOCUIT cu „Funcționalități" — deschide client-side cele 7 grupe. Fără URL nou (SPA fără rutare pe path); nav.deschide e shell autentificat, deci fereastra e replică VIZUALĂ a modalului DS.
+CONSECINȚĂ: pâlnia de înscriere gratuită PUBLICĂ e ÎNCHISĂ temporar — DECIZIE DE PILOT, NU abandonare. Backend F153-F160 INTACT; doar intrarea de pe landing e scoasă. Reactivabilă oricând.
+PRECIZARE: „cont gratuit" (firmă FĂRĂ cabinet) NU e „portal client" (client al unui cabinet). Portalul client e neschimbat; închiderea vizează DOAR pâlnia publică de cont gratuit.
