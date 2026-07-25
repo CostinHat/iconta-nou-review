@@ -3141,3 +3141,12 @@ GOL DE PIAȚĂ față de SAGA/Keez (evaluarea fondatorului, NEverificată în co
 NEVALIDATĂ — nu s-a confirmat cu cabinete reale că folosesc/plătesc pentru acest instrument; riscul principal înainte
 de stadiul 2 = cererea nevalidată. Cele două stadii rămân cum sunt descrise mai sus (stadiul 1 = re-JOIN user_tenants
 fără schemă nouă; stadiul 2 = contribuție per asistent din creat_de_id în cadrul setului).
+
+### 25.07.2026 SPV mesaje (F128) — concluzia strategica corectata, blocaj tehnic neschimbat  (ARHITECTURA_SPV.md:77; CONCURENTA.csv iSpv.ro)
+VERIFICAT azi (firul SPV):
+- Keez NU transmite declaratii; are monitorizare mesaje SPV prin EXPERTI CECCAR cu certificate proprii (model de SERVICIU uman, nu tehnic cloud). Sursa: blog public Keez.
+- Cele trei randuri din CONCURENTA erau capabilitati DIFERITE confundate intr-una: SAGA = transmitere directa (desktop+certificat); Keez = monitorizare SPV (serviciu/certificat); SmartBill = depunere + vector fiscal.
+- F128 (monitorizare mesaje SPV) ramane AMANAT, motiv tehnic VALID: SPVWS2 cere mTLS/PKCS#11 certificat LOCAL, incompatibil OAuth (ARHITECTURA:21-22, :74). Reevaluare 17.08.2026.
+- CORECTAT ARHITECTURA:77: premisa "niciun jucator cloud nu poate" era prea absoluta. Limita e pentru cloud FARA acces la certificat; cei care au mesaje SPV o fac pe cale de certificat (om sau agent), nu prin API cloud.
+- CALE A TREIA identificata, NEDECISA: agent local / extensie browser care ruleaza unde e tokenul cabinetului -> ar ocoli mTLS FARA ca iConta sa detina certificate (pastreaza ARHITECTURA:6 "iConta NU detine certificat"). NU e decis, NU e planificat.
+- DESCHIS: de investigat cum face iSpv.ro (ispv.ro/mesaje-spv) - mecanism neverificat.

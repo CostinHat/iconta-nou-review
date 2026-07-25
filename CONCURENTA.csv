@@ -83,3 +83,4 @@ Ciel/NextUp,Fluturas trimis automat prin SMS/email,Distributia automata a flutur
 Ciel/NextUp,Diurna cu valoare deductibila/nedeductibila separata,Campuri distincte pe decont,DA (F040 plafon),paritate aproximativa
 Ciel/NextUp,Coduri CM noi (cod 16) la zi,Actualizare permanenta a codurilor de indemnizatie,"PARTIAL (iConta: codurile OUG 158, cod 10 neintegrat)",
 Nexus ERP,Centre de cost si profit + bugete diferentiate,"Analiza pe centre, urmarirea bugetelor",GOL,a 4-a confirmare a golului centre de cost/bugete
+iSpv.ro,Sincronizare automata mesaje SPV + descarcare atasamente,"Sincronizare automata a mesajelor SPV cu descarcare atasamente; plan ""Contabil""",GOL,Sursa: ispv.ro/mesaje-spv (public). MECANISM NEVERIFICAT (agent local? certificat detinut? altceva?). Corelat cu F128 (blocat mTLS).

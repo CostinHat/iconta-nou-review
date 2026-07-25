@@ -74,7 +74,7 @@ Fara raspuns pana la 17.08.2026: F127/F128 raman AMANAT. Raspunsul se consemneaz
 - Autentificarea SPVWS2 ramane mTLS certificat LOCAL (PKCS#11), incompatibil cloud/OAuth -> F128 blocat pe
   ADAUGAREA OAuth de catre ANAF, nu pe absenta API-ului (API-ul de CITIRE exista).
 - Niciun anunt ANAF de OAuth pe SPVWS2 sau de depunere prin WS de la 17.07. Reevaluarea 17.08 ramane valida.
-- Nu e gaura competitiva (nici SmartBill nu are mesaje SPV - limita ANAF pentru toti jucatorii cloud, DECIZII:54).
+- Limita e pentru cloud FARA acces la certificat local. Competitorii care au mesaje SPV (ex. Keez; iSpv.ro - vezi CONCURENTA.csv) o fac prin CERTIFICAT (expert uman cu semnatura sau agent local), NU prin API cloud. Blocajul tehnic F128 ramane neschimbat (mTLS/PKCS#11, :21-22 si :74); se corecteaza doar concluzia strategica - premisa "niciun jucator cloud nu poate" era prea absoluta (DECIZII 25.07).
 
 ## STARE FUNCTIONALITATI (17.07.2026)
 - F126, F160, F121 : temei tehnic confirmat prin OAuth. Se pot construi server-side.
