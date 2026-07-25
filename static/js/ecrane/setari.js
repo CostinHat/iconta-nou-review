@@ -13,6 +13,7 @@ export async function randeazaSetari(corp, nav) {
     if (eAdmin) itemi.push({ cheie: "competente", titlu: "Ce pot face" });
     if (eAdmin) itemi.push({ cheie: "chei", titlu: "Chei API" });
     if (eAdmin) itemi.push({ cheie: "spv", titlu: "Conectare SPV" });
+    if (eAdmin) itemi.push({ cheie: "gdpr", titlu: "Datele cabinetului (GDPR)" });
     itemi.push({ cheie: "profil", titlu: "Date profil" });
     itemi.push({ cheie: "parola", titlu: "Schimbă parola" });
     corp.innerHTML = `
@@ -34,6 +35,7 @@ export async function randeazaSetari(corp, nav) {
     else if (cheie === "competente") randeazaCompetente();
     else if (cheie === "chei") randeazaChei();
     else if (cheie === "spv") randeazaSPV();
+    else if (cheie === "gdpr") randeazaGDPR();
     else if (cheie === "profil") randeazaProfil();
     else if (cheie === "parola") randeazaParola();
   }
@@ -170,6 +172,78 @@ export async function randeazaSetari(corp, nav) {
         } else { arataMesaj(msg, "Nu am putut porni autorizarea.", "eroare"); }
       } catch (e) { arataMesaj(msg, "Eroare la pornirea autorizării.", "eroare"); }
       btn.disabled = false; btn.textContent = text;
+    });
+  }
+
+  async function randeazaGDPR() {
+    corp.innerHTML = butonInapoi() + '<p class="ecran-nota">Se încarcă...</p>';
+    legaInapoi();
+    let cab = null;
+    try { const r = await api.get("/eu/cabinet"); if (r && r.ok) cab = r.cabinet; } catch {}
+    const numeCab = ((cab && cab.nume) || "").trim();
+    corp.innerHTML = butonInapoi() + `
+      <div class="panou">
+        <div class="cap-titlu">Export date cabinet</div>
+        <p class="ecran-nota">Descarci o arhivă ZIP cu toate datele cabinetului: firmele, utilizatorii, facturile, documentele contabile, jurnalul de audit și fișierele atașate (poze bonuri, e-Factură). Format: fișiere JSON per tabelă + fișierele originale. Îți exerciți dreptul la portabilitate (GDPR art. 20), oricând, fără intervenția noastră.</p>
+        <div class="caseta-atentie"><div class="ca-mesaj">Arhiva conține date personale (ale clienților, salariaților și partenerilor). Păstreaz-o în siguranță și nu o distribui.</div></div>
+        <button class="buton-primar" id="gdpr-export">Descarcă arhiva cabinetului</button>
+        <div class="" id="gdpr-export-msg"></div>
+      </div>
+
+      <div class="panou" style="margin-top:16px">
+        <div class="cap-titlu">Cerere de ștergere cont</div>
+        <div class="caseta-atentie"><div class="ca-mesaj">
+          <b>Ștergerea este ireversibilă.</b> Se șterg definitiv toate firmele cabinetului, utilizatorii, facturile, declarațiile, documentele și fișierele — prin distrugerea completă a bazei de date a cabinetului.<br><br>
+          <b>Ce NU se poate șterge imediat:</b> copiile de siguranță (backup) rămân până la 30 de zile, apoi se suprascriu automat. Ștergerea selectivă dintr-un backup nu e posibilă tehnic.<br><br>
+          Nu se șterge nimic acum. Depui o cerere; o executăm noi manual, după verificare.
+        </div></div>
+        <div class="caseta-info"><span class="ci-mesaj">Îți răspundem în cel mult 5 zile lucrătoare de la depunere. Termenul legal maxim de răspuns este de 30 de zile (GDPR art. 12).</span></div>
+        <label class="camp">
+          <span class="camp-eticheta">Motivul cererii (opțional)</span>
+          <textarea id="gdpr-motiv" class="camp-input" rows="3" placeholder="ex: încetăm activitatea"></textarea>
+        </label>
+        <label class="camp">
+          <span class="camp-eticheta">Pentru confirmare, retastează denumirea exactă a cabinetului: <b>${esc(numeCab)}</b></span>
+          <input id="gdpr-confirm" class="camp-input" type="text" autocomplete="off" placeholder="Denumirea cabinetului">
+        </label>
+        <button class="buton-sters" id="gdpr-cere" disabled>Trimite cererea de ștergere</button>
+        <div class="" id="gdpr-cere-msg"></div>
+      </div>`;
+    legaInapoi();
+
+    const btnEx = corp.querySelector("#gdpr-export");
+    btnEx.addEventListener("click", async () => {
+      const msg = corp.querySelector("#gdpr-export-msg");
+      const txt = btnEx.textContent;
+      btnEx.disabled = true; btnEx.textContent = "Se pregătește arhiva…";
+      arataMesaj(msg, "Se generează arhiva. Poate dura până la un minut pentru cabinete mari.", "info");
+      try {
+        const resp = await fetch("/gdpr/export-cabinet", { headers: { Authorization: "Bearer " + sesiune.token() } });
+        if (!resp.ok) throw new Error("eroare " + resp.status);
+        const url = URL.createObjectURL(await resp.blob());
+        const a = document.createElement("a");
+        a.href = url; a.download = "export-cabinet.zip"; a.click();
+        URL.revokeObjectURL(url);
+        arataMesaj(msg, "Arhivă descărcată. Verifică folderul de descărcări.", "ok");
+      } catch (e) { arataMesaj(msg, "Nu am putut genera arhiva. Încearcă din nou.", "eroare"); }
+      btnEx.disabled = false; btnEx.textContent = txt;
+    });
+
+    const inp = corp.querySelector("#gdpr-confirm");
+    const btnCe = corp.querySelector("#gdpr-cere");
+    inp.addEventListener("input", () => { btnCe.disabled = inp.value.trim() !== numeCab || !numeCab; });
+    btnCe.addEventListener("click", () => {
+      const msg = corp.querySelector("#gdpr-cere-msg");
+      confirmaCaseta(btnCe, "Trimiți cererea de ștergere a cabinetului? Datele vor fi șterse definitiv de echipa iConta după verificare.", async () => {
+        btnCe.disabled = true;
+        arataMesaj(msg, "Se trimite cererea…", "info");
+        try {
+          const r = await api.post("/gdpr/cerere-stergere", { confirmare_nume: inp.value.trim(), motiv: corp.querySelector("#gdpr-motiv").value.trim() || null });
+          if (r && r.ok) {
+            arataMesaj(msg, "Cerere înregistrată (#" + r.cerere_id + "). Îți răspundem în cel mult 5 zile lucrătoare.", "ok");
+          } else { arataMesaj(msg, "Nu am putut înregistra cererea.", "eroare"); btnCe.disabled = false; }
+        } catch (e) { arataMesaj(msg, e.mesaj || "Eroare la trimiterea cererii.", "eroare"); btnCe.disabled = false; }
+      }, { textOk: "Trimite cererea" });
     });
   }
 

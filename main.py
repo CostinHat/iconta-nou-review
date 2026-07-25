@@ -700,6 +700,11 @@ class StergereCabinetIn(BaseModel):
     confirmare: str
 
 
+class CerereStergereIn(BaseModel):  # [F200b] cabinetul DEPUNE o cerere; NU executa
+    confirmare_nume: str
+    motiv: Optional[str] = None
+
+
 @app.post("/gdpr/sterge-cabinet/{cabinet_id}/previzualizare")  # [F200] GDPR art.17 pas 1 (superadmin)
 def gdpr_sterge_previzualizare(cabinet_id: int, ctx=Depends(cere_rol("superadmin"))):
     from core import gdpr_sterge as _gs
@@ -733,8 +738,32 @@ def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("
         raise HTTPException(400, "fara cabinet asociat")
     with db.get_conn() as conn:
         _zip = _ge.export_cabinet(conn, cab)
+        try:  # [F199] jurnalizare export (cine/cand, FARA continut)
+            with conn.cursor() as _cur:
+                _cur.execute(
+                    "INSERT INTO public.audit_log (user_id, actiune, entitate, entitate_id, detalii) "
+                    "VALUES (%s,'gdpr_export',%s,%s,%s)",
+                    (ctx.get("uid"), "cabinet", cab, _json_audit.dumps({"octeti": len(_zip)})))
+            conn.commit()
+        except Exception:
+            pass
     return Response(content=_zip, media_type="application/zip",
                     headers={"Content-Disposition": 'attachment; filename="gdpr-export-cabinet-%s.zip"' % cab})
+
+
+@app.post("/gdpr/cerere-stergere")  # [F200b] GDPR art.17 — cabinetul DEPUNE o cerere; superadmin executa. NU sterge nimic.
+def gdpr_cerere_stergere(date: CerereStergereIn, ctx=Depends(cere_rol("admin_firma"))):
+    from core import gdpr_cerere as _gc
+    cab = ctx.get("firm")
+    if not cab:
+        raise HTTPException(400, "fara cabinet asociat")
+    with db.get_conn() as conn:
+        try:
+            r = _gc.depune_cerere(conn, cab, ctx.get("uid"), date.confirmare_nume, date.motiv)
+            conn.commit()
+            return r
+        except ValueError as e:
+            raise HTTPException(422, str(e))
 
 
 @app.get("/capacitate")  # [p70_capacitate] panou capacitate (doar patron)

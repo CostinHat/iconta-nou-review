@@ -28,7 +28,8 @@ EXPLICIT = {"F164": "Control fiscal", "F108": "Cabinet si portal client", "F002"
     "F115": "Cabinet si portal client", "F144": "Contabilitate", "F145": "Contabilitate",
     "F147": "Cabinet si portal client", "F152": "Cabinet si portal client", "F028": "Fiscalitate",
     "F081": "Control fiscal", "F009": "Contabilitate", "F182": "Facturare si e-Factura",
-    "F187": "Facturare si e-Factura"}
+    "F187": "Facturare si e-Factura",
+    "F204": "Cabinet si portal client", "F205": "Cabinet si portal client"}
 # cross-check-urile fiscale -> Control fiscal (NU Fiscalitate, desi numele incepe cu declaratia)
 CROSS = {"F162", "F163", "F169", "F180", "F184"}
 # EXCLUSE: infrastructura invizibila utilizatorului + variante superadmin + pagina insasi + cont gratuit inchis
