@@ -3172,3 +3172,24 @@ DECIZIE (pilot): cardul mare landing „Facturare gratuită" (SINGURUL punct de 
 CONSECINȚĂ: pâlnia de înscriere gratuită PUBLICĂ e ÎNCHISĂ temporar — DECIZIE DE PILOT, NU abandonare. Backend F153-F160 INTACT; doar intrarea de pe landing e scoasă. Reactivabilă oricând.
 PRECIZARE: „cont gratuit" (firmă FĂRĂ cabinet) NU e „portal client" (client al unui cabinet). Portalul client e neschimbat; închiderea vizează DOAR pâlnia publică de cont gratuit.
 LISTĂ (F203, actualizare azi): din pagina Funcționalități s-au scos F153 (Cont de facturare gratuită) + F160 (e-Factura SPV pentru contul gratuit) — nu afișăm funcții inaccesibile cât pâlnia gratuită e închisă; se readaugă la redeschiderea înscrierii (F154-F159 erau deja excluse). Corecție grupare: F187 (Export facturi WinMENTOR) mutat din Stocuri în Facturare — căzuse pe keyword-ul „articol" (perechea lui, F171 SAGA, era deja corect la Facturare).
+
+### 25.07.2026 AWS Bedrock EU pentru Claude — DECIS: se migrează, dar DUPĂ pilot  (core/ai_client.py; nefacut)
+DECIS (Costin): apelurile Claude se migrează de pe api.anthropic.com (SUA) pe AWS Bedrock cu profil de inferență EU. NU acum — prioritate DUPĂ lansarea pilotului.
+MOTIV: elimină complet transferul extra-UE (imaginile de bonuri + datele financiare rămân în UE) → secțiunea SCC/DPF din documentația GDPR DISPARE.
+EFORT: cod MIC — un singur punct de intrare (core/ai_client.py; toate cele 6 apeluri trec prin el, zero anthropic direct în afară). Se schimbă doar: clasa clientului (Anthropic → AnthropicBedrock, ~3 constructori de centralizat), ID-urile de model (claude-sonnet-4-6 → profil EU eu.anthropic.claude-...), credențialele (AWS key/secret + regiune în loc de ANTHROPIC_API_KEY). ACELAȘI SDK anthropic, ACELAȘI format messages.create. Efort REAL = operațional: cont AWS + acces Bedrock EU + activare model în regiunea EU + IAM + testare (OCR imagine + text) + comparație cost/latență.
+PRERECHIZITE de verificat la implementare: (1) AnthropicBedrock există în SDK-ul instalat; (2) boto3 prezent (extra anthropic[bedrock]); (3) modelul dorit ARE profil de inferență EU pe Bedrock.
+PÂNĂ ATUNCI: rămâne api.anthropic.com, acoperit de DPF + clauze standard (Anthropic e certificat EU-US Data Privacy Framework; DPA încorporat automat în termenii comerciali).
+
+### 25.07.2026 Criptare la nivel de disc (LUKS) — DECIS: NU se implementează; risc asumat  (infra Hetzner)
+DECIS (Costin): NU se implementează criptare de disc. Risc ASUMAT, documentat.
+STARE (verificat la sursă): root sda1 = ext4 NEcriptat; PostgreSQL (/var/lib/postgresql/16/main) pe el; niciun crypto_LUKS / crypttab / dm-crypt. Deci CNP / IBAN / nume — pe disc ÎN CLAR.
+MOTIV: vectorul pe care LUKS îl acoperă = accesul FIZIC la disc într-un centru de date Hetzner — probabilitate foarte mică. Costul = migrare de infrastructură pe sistem VIU (reinstalare sau volum criptat separat pentru directorul DB), cu risc operațional real.
+COMPENSARE (documentată pentru art. 32): acces fizic controlat de Hetzner; criptare în tranzit (HTTPS/Let's Encrypt); control acces pe roluri; jurnal de audit; parole scrypt (OWASP); tokenuri SPV criptate Fernet; alertă pe acces anormal (F202).
+DE REEVALUAT: dacă apare oricum o migrare de server, LUKS se face ATUNCI (efort suplimentar zero).
+DE RIDICAT LA AVOCAT: dacă art. 32 GDPR + Legea 190/2018 cer explicit criptare la DEPOZITARE pentru CNP, decizia se schimbă.
+
+### 25.07.2026 Retenție 1 an inactivitate — CLARIFICARE scop + problemă tehnică  (DECIZII:447; nefacut)
+CLARIFICARE la decizia din 18.07 (Retenție cont gratuit inactiv): acoperă DOAR conturile GRATUITE (tenants.accounting_firm_id IS NULL, self-service fără cabinet). Conturile de CABINET (clienții contabilului) NU intră.
+CONTEXT: pâlnia gratuită publică e ÎNCHISĂ azi (F203) → zero conturi vizate → NU e presantă tehnic.
+DECIS: rămâne decizie VALIDĂ; se implementează ODATĂ cu redeschiderea înscrierii gratuite. NU intră în T&C ca promisiune ACTIVĂ până nu e implementată (altfel = promisiune nerespectată).
+PROBLEMĂ TEHNICĂ (de rezolvat la implementare): users NU are coloană last_login (doar activ, creat_la). A deriva inactivitatea din audit_log e NESIGUR — audit_log are retenție 12 luni (F201), exact fereastra de inactivitate, deci s-ar șterge CHIAR înregistrarea de login necesară. SOLUȚIA corectă: coloană dedicată users.ultima_logare timestamptz, actualizată la fiecare login (fiabilă, supraviețuiește retenției audit_log).
