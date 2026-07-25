@@ -696,3 +696,10 @@ urgență. Consemnat.
 `static/spv_callback.html` referă `stil.css?v=6`, index.html `?v=9`. NU e risc de CSS vechi (no-cache+ETag
 revalidează oricum — vezi nota de mai sus); e doar o divergență cosmetică a string-ului `?v=`. De aliniat/eliminat
 odată cu curățarea `?v=` de mai sus. Consemnat.
+
+## Istoric git fără remote — single point of failure pe cod (raportat 25.07.2026)
+`git remote -v` pe repo-ul din `~/iconta_nou` (iconta-prod) întoarce GOL — niciun remote configurat. Istoricul git
+există DOAR local pe server; dacă serverul cade / e reprovizionat, întreg `git log` se pierde. Backup-ul Hetzner
+Storage Box acoperă fișiere + DB, dar NU neapărat și istoricul git (`.git/`). De adăugat un remote privat
+(GitHub/GitLab) ca plasă de siguranță pentru cod: `git remote add origin <URL>` + `git push -u origin main`.
+Neurgent, dar risc real de single point of failure pe istoric. Consemnat.
