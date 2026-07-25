@@ -3150,3 +3150,12 @@ VERIFICAT azi (firul SPV):
 - CORECTAT ARHITECTURA:77: premisa "niciun jucator cloud nu poate" era prea absoluta. Limita e pentru cloud FARA acces la certificat; cei care au mesaje SPV o fac pe cale de certificat (om sau agent), nu prin API cloud.
 - CALE A TREIA identificata, NEDECISA: agent local / extensie browser care ruleaza unde e tokenul cabinetului -> ar ocoli mTLS FARA ca iConta sa detina certificate (pastreaza ARHITECTURA:6 "iConta NU detine certificat"). NU e decis, NU e planificat.
 - DESCHIS: de investigat cum face iSpv.ro (ispv.ro/mesaje-spv) - mecanism neverificat.
+
+ACTUALIZARE 25.07.2026 (mecanism iSpv VERIFICAT + decizii fondator) — la intrarea SPV mesaje (F128) de mai sus:
+- iSpv Connector VERIFICAT (ispv.ro/termeni-si-conditii): componenta LOCALA preia sesiunea SPV autentificata cu certificatul PROPRIU al utilizatorului -> serverele iSpv sincronizeaza mesajele si depun declaratii. Cauza reala = CUSTODIA certificatului, NU cloud-vs-desktop, NU drepturi.
+- F127 (depunere declaratii): "nu exista API" e ADEVARAT despre API, dar FALS ca imposibilitate - iSpv depune prin sesiune autentificata pe portal. De reconsiderat impreuna cu F128.
+- GDPR: NU e blocant. Delegarea de sesiune e permisa cu temei + informare + masuri tehnice + contract de imputernicire -> trece in CERINTE DE PROIECTARE. Consecintele juridice sunt identice pentru noi si pentru iSpv si NU depind de numarul de firme din portofoliu.
+- DECIZIE (fondator): agent local RESPINS in AMBELE variante (delegare de sesiune SAU descarcare locala). Motiv: cost permanent de distributie+suport pe statii necontrolate, fragilitate la schimbari de portal ANAF, contrazice pozitionarea "cloud" din MARKETING.md. NU e respingere tehnica - calea functioneaza, dar nu e a noastra.
+- DECIZIE (fondator): iConta ofera PRELUCRAREA mesajelor SPV (clasificare, legare la firma, termen, alerta in semafor, arhivare la dosar), cu INCARCARE de catre cabinet. Descarcarea ramane alegerea cabinetului: manual din SPV, sau prin unealta terta procurata singur (ex. iSpv, care are API de integrare). iConta indruma NEUTRU, nu recomanda si nu garanteaza un furnizor anume.
+- REZULTAT: daca ANAF deschide vreodata OAuth pe SPVWS2, se schimba doar SURSA DE ALIMENTARE - prelucrarea e deja construita.
+- STATUT: prelucrarea = POSIBILITATE DESCHISA, neplanificata. NU se construieste fara DA explicit si fara verificarea de fezabilitate.

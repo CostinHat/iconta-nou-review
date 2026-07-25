@@ -100,8 +100,16 @@ SmartBill face IDENTIC ce face iConta: aplicatie inrolata o data, utilizatorul a
 cu certificatul lui, 90 de zile, reinnoire automata care uneori esueaza -> email + reautorizare
 manuala. Aceleasi constrangeri ANAF pentru toata lumea.
 "SmartBill va putea accesa doar sectiunea e-Factura, nu si alte informatii ale companiei
-tale care se regasesc in SPV" -> NICI SMARTBILL NU ARE MESAJE SPV. F128 nu e o gaura
-in produsul iConta, e limita platformei ANAF pentru toti jucatorii cloud.
+tale care se regasesc in SPV" -> OAuth (e-Factura) NU deschide mesajele SPV prin API cloud pentru NIMENI.
+DAR asta NU inseamna ca "niciun jucator cloud nu poate" (corectie a afirmatiei absolute, ca la :77):
+competitorii care AU mesaje SPV o fac pe cale de CERTIFICAT, nu prin API cloud.
+
+MECANISM VERIFICAT (25.07.2026, ispv.ro/termeni-si-conditii): iSpv foloseste "iSpv Connector", o componenta
+LOCALA care preia sesiunea SPV autentificata cu certificatul PROPRIU al utilizatorului si o transmite
+serverelor iSpv, care sincronizeaza mesajele si depun declaratii. Keez o face prin experti CECCAR cu
+certificate proprii. CAUZA REALA a blocajului F128 = CUSTODIA certificatului (cine tine cheia), NU
+cloud-vs-desktop si NU drepturile - cabinetele au imputernicire SPV ca oricine. Blocajul tehnic F128
+(SPVWS2 = mTLS/PKCS#11) ramane neschimbat (:21-22, :74).
 
 ## AVANTAJ STRUCTURAL iCONTA (decurge din decizia model (1))
 SmartBill autorizeaza PER FIRMA: fiecare client, cont propriu, autorizare proprie, 90 zile.

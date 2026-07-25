@@ -1,0 +1,2 @@
+# Normalizare line-endings: CSV mereu LF (CONCURENTA.csv era CRLF -> diff pe tot fisierul)
+*.csv text eol=lf
