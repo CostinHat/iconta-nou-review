@@ -10,9 +10,15 @@
 | Politică de confidențialitate (GDPR) | DESCHIS | Nu există document public. |
 | Consimțământ la înregistrare | DESCHIS | `RegisterIn`/`RegisterGratuitIn` (main.py:733,1012) nu cer accept T&C/GDPR. |
 | Contract de împuternicire / DPA cabinet↔iConta | DESCHIS | iConta = procesator pt datele clienților cabinetului (DECIZII:46). Contract lipsă. |
-| Retenție cont inactiv (1 an) | DECIS; implementare DESCHIS | Decis 18.07, temei GDPR Art.5 (DECIZII:447). Ștergerea trebuie să acopere și backupurile (DECIZII:479). Neconstruit. |
 | Disclaimer „instrument, nu prestare" (zid CECCAR) | DESCHIS | Poziționare în MARKETING, nereflectată juridic (de pus în T&C). |
-| Plan notificare breach (GDPR 72h) | DESCHIS | Fără procedură. |
+| **Export date cabinet (art. 20)** | REZOLVAT | **F199** (commit `821184d`): `GET /gdpr/export-cabinet` (admin_firma/superadmin) → ZIP cu public + toate schemele tenant + fișiere disc + MANIFEST. |
+| **Ștergere completă cabinet (art. 17)** | REZOLVAT | **F200** (commit `e3d5892`): 2 pași + confirmare typed-back + jurnal `gdpr_stergeri` fără date personale. Backup Storage Box NU se șterge (dump integral, expiră 30z). |
+| **Retenție audit_log (art. 5)** | REZOLVAT | **F201** (commit `894b182`): cron zilnic, șterge audit_log > 12 luni. |
+| **Alertă acces anormal (art. 33 pregătire)** | REZOLVAT | **F202** (commit `b819f75`): cron 15 min pe audit_log, dedup persistent, alertă Brevo. |
+| Retenție cont inactiv (1 an) | DECIS, NEIMPLEMENTAT | Decis 18.07 (DECIZII:447), NECONSTRUIT (fără cron; ALTA decât retenția audit_log F201). **De IMPLEMENTAT sau de SCOS din DECIZII înainte ca avocatul să scrie T&C — nu poate rămâne promisiune nerespectată.** |
+| Drepturi GDPR — UI/procedură pentru export & ștergere | DESCHIS | F199/F200 există DOAR ca API superadmin, fără UI. Dacă T&C promite drepturile → trebuie buton SAU procedură declarată (cerere pe email + termen de răspuns). |
+| Praguri alertă acces anormal — calibrare | DESCHIS | F202 cu valori GHICITE (8 tenanți / 300 acțiuni / 10 min). De calibrat pe trafic real în pilot. |
+| Plan notificare breach (GDPR 72h) | DESCHIS | Detectare = F202 (art.33 pregătire, REZOLVAT); procedura completă de notificare 72h (ANSPDCP + persoane vizate) rămâne DESCHIS. |
 
 ## 2. Comercial
 

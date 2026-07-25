@@ -1,6 +1,6 @@
 """GDPR art.5 minimizare — retentie pe public.audit_log.
-Sterge inregistrarile mai vechi de AUDIT_LOG_RETENTIE_LUNI (implicit 6 luni).
-Rulat zilnic din cron (04:00). N=6: audit_log = jurnal de acces/actiuni per apel API;
+Sterge inregistrarile mai vechi de AUDIT_LOG_RETENTIE_LUNI (implicit 12 luni).
+Rulat zilnic din cron (04:00). N=12: acopera un AN FISCAL complet (intrebarile de audit vin la
 util operational pentru suport + investigatie securitate ~2 trimestre; peste atat nu
 mai e necesar (minimizare). Configurabil prin env.
 Cron: 0 4 * * * cd ~/iconta_nou && . db.env && python3 -m core.audit_retentie"""
@@ -9,9 +9,9 @@ from core import db
 
 def luni():
     try:
-        return max(1, int(os.environ.get("AUDIT_LOG_RETENTIE_LUNI", "6")))
+        return max(1, int(os.environ.get("AUDIT_LOG_RETENTIE_LUNI", "12")))
     except (ValueError, TypeError):
-        return 6
+        return 12
 
 def ruleaza(_luni=None):
     n = _luni if _luni is not None else luni()
