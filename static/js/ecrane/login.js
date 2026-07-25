@@ -57,7 +57,7 @@ export function ecranLogin(radacina) {
   bara.innerHTML = `
     <div class="pagina-bara-stanga">
       <img class="pagina-bara-logo" src="/static/logo_simbol.png" alt="">
-      <span class="pagina-bara-marca">iConta</span>
+      <span class="pagina-bara-marca">iConta.eu</span>
     </div>
     <button class="pagina-bara-acces" id="pagina-acces-btn">Acces</button>
   `;
@@ -68,7 +68,7 @@ export function ecranLogin(radacina) {
   corp.innerHTML = `
     <div class="pagina-hero">
       <h1 class="pagina-hero-titlu">Un singur sistem.<br>Toate procesele.</h1>
-      <p class="pagina-hero-sub">\u00cencarci documentele. iConta le prelucreaz\u0103, propune contarea \u0219i verific\u0103 automat obliga\u021biile fiscale.</p>
+      <p class="pagina-hero-sub">\u00cencarci documentele. iConta.eu le prelucreaz\u0103, propune contarea \u0219i verific\u0103 automat obliga\u021biile fiscale.</p>
     </div>
     <div class="pagina-carduri-sectiune">
       <div class="pagina-carduri-wrap">
@@ -130,7 +130,7 @@ export function ecranLogin(radacina) {
     modal.innerHTML = `
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
-        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
       </div>
       <div class="acces-alegere">
@@ -140,7 +140,7 @@ export function ecranLogin(radacina) {
           </div>
           <div class="acces-card-text">
             <div class="acces-card-titlu">Intră în cont</div>
-            <div class="acces-card-sub">Ai deja un cont iConta</div>
+            <div class="acces-card-sub">Ai deja un cont iConta.eu</div>
           </div>
           <svg class="acces-card-sageata" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
@@ -168,7 +168,7 @@ export function ecranLogin(radacina) {
       <button type="button" class="nav-sageata" id="login-la-alegere" title="Înapoi" aria-label="Înapoi" style="position:absolute;top:14px;left:14px"><span aria-hidden="true">←</span></button>
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
-        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
       </div>
       <button class="acces-card meniu-card" id="lg-client">
@@ -194,7 +194,7 @@ export function ecranLogin(radacina) {
       <button type="button" class="nav-sageata" id="lgc-inapoi" title="Înapoi" aria-label="Înapoi" style="position:absolute;top:14px;left:14px"><span aria-hidden="true">←</span></button>
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
-        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
         <span class="login-tagline">Portalul tău, fără parolă</span>
       </div>
       <form id="lg-form-client" onsubmit="return false">
@@ -233,7 +233,7 @@ export function ecranLogin(radacina) {
       <button type="button" class="nav-sageata" id="login-inapoi" title="Înapoi" aria-label="Înapoi" style="position:absolute;top:14px;left:14px"><span aria-hidden="true">←</span></button>
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
-        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
       </div>
       <form id="login-form" onsubmit="return false">
@@ -310,7 +310,7 @@ export function ecranLogin(radacina) {
     modal.innerHTML = `
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
-        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
         <div class="login-subtagline">Cont de facturare gratuită</div>
       </div>
@@ -420,7 +420,7 @@ export function ecranLogin(radacina) {
     modal.innerHTML = `
       <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
       <div class="login-brand">
-        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
         <div class="login-subtagline">Înregistrează cabinetul tău</div>
       </div>
