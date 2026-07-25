@@ -35,3 +35,12 @@ log_arhiva/
 
 # brief-uri de lucru Costin (nu cod, nu se versioneaza)
 BRIEF_CODE_*.md
+
+# intarire secrete/artefacte (adaugat la pregatirea repo GitHub)
+.venv/
+*.key
+*.pem
+*.p12
+*.pfx
+id_*
+*.sqlite
