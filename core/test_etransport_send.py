@@ -23,6 +23,15 @@ from core import etransport_send as et
 PRIN = sc.principal_firm(1)
 
 
+def _db_ok():
+    try:
+        _db.init_pool()
+        with _db.get_conn():
+            return True
+    except Exception:
+        return False
+
+
 class _R:
     def __init__(self, text="", status=200):
         self.text = text; self.status_code = status
@@ -90,6 +99,7 @@ def test_trimite_blocat_timp_nu_atinge_reteaua(monkeypatch):
     assert r["stare"] == "blocat_timp"
 
 
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_trimite_nevalidat_nu_uploadeaza_prod(monkeypatch):
     # POARTA 3: validarea pe TEST intoarce erori -> nu se trimite pe prod
     monkeypatch.setattr(sc, "apel_anaf", lambda p, m, url, **kw: _R(UP_ERR))
@@ -98,14 +108,6 @@ def test_trimite_nevalidat_nu_uploadeaza_prod(monkeypatch):
                    mediu="prod", acum=azi)
     assert r["stare"] == "nevalidat" and r["erori"]
 
-
-def _db_ok():
-    try:
-        _db.init_pool()
-        with _db.get_conn():
-            return True
-    except Exception:
-        return False
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

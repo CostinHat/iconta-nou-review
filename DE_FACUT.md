@@ -444,7 +444,7 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
    EXCLUSE cu motiv (raman la import, OK): cron-uri standalone (spv_poll/receive/refresh - proces propriu,
    env systemd, nu-s importate in teste) si main.py (entry-point, TENANT_TEMPLATE_PATH are default).
 
-6. **TEMA suita depinde de env-ul din shell (db.env), nu de un mediu de test controlat** (constatat 22.07
+6. **TEMA suita depinde de env-ul din shell (db.env), nu de un mediu de test controlat** — REZOLVAT 26.07.2026 (fix a: conftest.py la radacina) (constatat 22.07
    la baseline-ul temei config lazy). Shell-ul interactiv NU are env-ul DB pe care systemd il injecteaza
    serviciului (EnvironmentFile=/home/costin/.iconta/db.env). Fara `set -a; . db.env; set +a` inainte de
    pytest, suita da 1 ROSU de mediu ("pool neinitializat - cheama init_pool()") la
@@ -459,7 +459,7 @@ BUG-URI DE FOND notate separat (NU in scopul re-testarii de azi, de investigat):
    sau o baza de test separata? Daca real -> conftest care sourceaza prod e riscant, prefera runner explicit.
    PARTIAL 22.07: accesul psql interactiv rezolvat separat - functia idb() in ~/.bashrc (sourceaza db.env intr-un
    subshell + psql "$DATABASE_URL" ca iconta_user; parola ramane in db.env, NU in .bashrc/git). Rezolva "role costin
-   does not exist" (user OS costin != user DB iconta_user). RAMAS: pytest care depinde de db.env in shell (fix a/b).
+   does not exist" (user OS costin != user DB iconta_user). REZOLVAT 26.07.2026 (fix a): conftest.py la radacina sourceaza ~/.iconta/db.env la colectare (CITESTE fisierul, nu comite secrete; nu suprascrie ce e deja in mediu) -> suita ruleaza la fel indiferent cum e pornita. Garda _db_ok() ramane: db.env lipsa / baza jos -> testele de DB SAR VIZIBIL (antet db.env + reportchars 's' forteaza motivele), nu tacut. Adaugat skipif si pe test_trimite_nevalidat_nu_uploadeaza_prod (il rata -> dadea rosu-de-mediu la baza gresita). Testele ating DB real cu ROLLBACK (zero reziduu). Normal: 946 passed, 0 skipped.
 
 RAMAS — cere ochii/telefonul, NU SSH: **vezi CHECKLIST_BROWSER.md** (PWA P4.18-19, responsive
 P4.20-21, audit vizual ~12 ecrane ramase). Grup fiscal/D101G si ONG: lasate deoparte (fara cod nou).
