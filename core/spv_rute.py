@@ -33,30 +33,18 @@ MODUL = "spv_rute"
 def spv_principal(ctx):
     """
     RESOLVER UNIC context->principal (GARDUL 2) cu PROPRIETATE (GARDUL 4):
-      - cabinet (are firm) -> principal_firm(firma LUI);
-      - gratuit (rol client cu tenant FARA cabinet) -> principal_tenant(tenantul LUI, din
-        user_tenants; verificat accounting_firm_id NULL = gratuit).
+      - cabinet (are firm) -> principal_firm(firma LUI).
     Nu deschide la "orice user autentificat": cine nu detine un principal SPV -> 403.
     """
     firm = ctx.get("firm")
     if firm:
         return spv_conector.principal_firm(firm)
-    if ctx.get("rol") == "client":
-        with db.get_conn() as conn:
-            with conn.cursor() as cur:
-                cur.execute("""SELECT t.id FROM public.user_tenants ut
-                                 JOIN public.tenants t ON t.id = ut.tenant_id
-                                WHERE ut.user_id = %s AND t.accounting_firm_id IS NULL AND t.activ = true
-                                ORDER BY t.id LIMIT 1""", (ctx["uid"],))
-                r = cur.fetchone()
-        if r:
-            return spv_conector.principal_tenant(r[0])
-    raise HTTPException(403, "contul nu poate conecta SPV (nici cabinet, nici firma gratuita proprie)")
+    raise HTTPException(403, "contul nu poate conecta SPV (fara cabinet)")
 
 
 def monteaza(app, dep_context):
     """Inregistreaza rutele SPV. dep_context = dependenta de context autentificat (cere_context);
-    proprietatea principalului o impune spv_principal, nu dependenta (gratuit + cabinet, fiecare al lui)."""
+    proprietatea principalului o impune spv_principal, nu dependenta (cabinet)."""
 
     @app.get("/spv/autorizare")
     def spv_autorizare(ctx=Depends(dep_context)):

@@ -294,38 +294,6 @@ def inregistreaza_cabinet(conn, email, parola, nume_cabinet, nume=None, prenume=
     return {"ok": True, "user_id": user_id, "firm_id": firm_id}
 
 
-def inregistreaza_cont_gratuit(conn, email, parola, nume_firma, cui, sql_template):
-    """[gratuit_v1] Cont gratuit: user rol 'client' FARA cabinet + tenant propriu
-    (accounting_firm_id NULL). Spatiul de lucru = portalul existent, cod neatins."""
-    import psycopg2.extras as _E
-    from core import tenant_provisioning as _tp
-    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT 1 FROM public.users WHERE email = %s", (email,))
-        if cur.fetchone():
-            return {"ok": False, "cod": "EMAIL_EXISTA", "mesaj": "email deja înregistrat"}
-        cur.execute("SELECT 1 FROM public.tenants WHERE cui = %s AND accounting_firm_id IS NULL", (str(cui),))
-        if cur.fetchone():  # [gratuit_v1] un CUI = un cont gratuit (limitare abuz)
-            return {"ok": False, "cod": "CUI_EXISTA", "mesaj": "există deja un cont gratuit pentru acest CUI"}
-        # [F185 coliziune_cabinet_v1] gardul INVERS al F092 (coliziune_gratuit_v1): F092 semnaleaza
-        # cabinetului cand preia un CUI care are cont gratuit; aici semnalam registrantului cand CUI-ul
-        # e DEJA sub un cabinet (risc simetric de emitere dubla pe acelasi CUI). Doar SEMNAL, NU blocaj
-        # si NU auto-inchidere - aceeasi disciplina GDPR ca la 18.07 (detinatorul decide). Match pe
-        # cifrele CUI (regexp), ca F092. Privacy: doar EXISTENTA (boolean), nu numele/detaliile cabinetului.
-        cui_cifre = "".join(ch for ch in str(cui) if ch.isdigit())
-        cur.execute(
-            "SELECT 1 FROM public.tenants WHERE accounting_firm_id IS NOT NULL AND activ = true "
-            "  AND regexp_replace(COALESCE(cui,''),'\\D','','g') = %s LIMIT 1", (cui_cifre,))
-        coliziune_cabinet = cur.fetchone() is not None
-        h = nucleu.hash_parola(parola)
-        cur.execute(
-            "INSERT INTO public.users (email, password_hash, rol, accounting_firm_id) "
-            "VALUES (%s,%s,'client',NULL) RETURNING id", (email, h))
-        user_id = cur.fetchone()["id"]
-    r = _tp.provision_tenant(conn, nume_firma, cui, None, user_id, sql_template)
-    return {"ok": True, "user_id": user_id, "tenant_id": r["tenant_id"],
-            "coliziune_cabinet": coliziune_cabinet}
-
-
 # ============================================================
 #  ACCES TENANT — izolare: userul vede DOAR tenanții lui
 # ============================================================

@@ -148,30 +148,7 @@ def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template,
             f"INSERT INTO {schema_noua}.firma_profil (id, nume, cui, serie_factura, urmator_numar_factura, tip_firma) "
             "VALUES (1, %s, %s, '', 1, %s) ON CONFLICT (id) DO NOTHING",
             (nume, str(cui), _tip))
-    # coliziune_gratuit_v1 (Tema 3, decis 18.07 - optiunea A): dupa preluare, un cont
-    # gratuit VECHI cu ACELASI CUI ramane activ si poate emite din alt loc -> emitere
-    # dubla pe un singur CUI (numerotare divergenta). NU suspendam automat (inchiderea
-    # unui cont = decizie); doar SEMNALAM cabinetului. Suspendarea ramane actiune
-    # explicita: /admin/conturi-gratuite/{id}/suspenda (superadmin). Match pe cifrele
-    # CUI (regexp) ca sa prinda si randuri gratuite stocate cu prefix RO.
-    coliziune = None
-    cui_cifre = "".join(ch for ch in str(cui) if ch.isdigit())
-    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(
-            "SELECT t.id, t.nume, "
-            " (SELECT COUNT(*) FROM public.audit_log a "
-            "    JOIN public.user_tenants ut ON ut.user_id=a.user_id "
-            "    WHERE ut.tenant_id=t.id AND a.actiune LIKE '%%/facturi/emite%%') AS nr_facturi "
-            "FROM public.tenants t "
-            "WHERE t.accounting_firm_id IS NULL AND t.activ=true "
-            "  AND regexp_replace(COALESCE(t.cui,''),'\\D','','g')=%s",
-            (cui_cifre,))
-        row = cur.fetchone()
-        if row:
-            coliziune = {"tenant_id": row["id"], "nume": row["nume"],
-                         "nr_facturi": row["nr_facturi"]}
-    return {"ok": True, "tenant_id": tenant_id, "schema_name": schema_noua,
-            "coliziune_gratuit": coliziune}
+    return {"ok": True, "tenant_id": tenant_id, "schema_name": schema_noua}
 
 
 # ============================================================

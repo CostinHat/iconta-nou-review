@@ -489,18 +489,7 @@ def admin_anunt_creeaza(date: AnuntIn, ctx=Depends(cere_rol("superadmin"))):
     data_af = (date.data_afisare or "").strip() or None
     n = 0
     with db.get_conn() as conn, conn.cursor() as cur:
-        seg = (date.segment or "cabinete")
-        if seg == "gratuit":  # [anunturi_gratuit_v1] conturi gratuite: alese sau toate
-            if date.tenant_ids:
-                for tid in date.tenant_ids:
-                    cur.execute("INSERT INTO public.anunturi_cabinet (tenant_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (int(tid), mesaj, data_af))
-                    n += 1
-            else:
-                cur.execute("SELECT id FROM public.tenants WHERE accounting_firm_id IS NULL AND activ")
-                for (tid,) in cur.fetchall():
-                    cur.execute("INSERT INTO public.anunturi_cabinet (tenant_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (tid, mesaj, data_af))
-                    n += 1
-        elif date.cabinet_ids:  # [anunturi_alese_v1] cabinete alese cu bife
+        if date.cabinet_ids:  # [anunturi_alese_v1] cabinete alese cu bife
             for cid in date.cabinet_ids:
                 cur.execute("INSERT INTO public.anunturi_cabinet (cabinet_id, mesaj, data_afisare) VALUES (%s,%s,%s)", (int(cid), mesaj, data_af))
                 n += 1
@@ -537,13 +526,8 @@ def admin_alerta_tratata(aid: int, ctx=Depends(cere_rol("superadmin"))):
 def eu_anunturi(ctx=Depends(cere_cabinet)):
     from psycopg2.extras import RealDictCursor
     with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-        if ctx.get("firm"):
-            cur.execute("""SELECT id, mesaj, creat_la FROM public.anunturi_cabinet
-                       WHERE cabinet_id=%s AND confirmat_la IS NULL AND (data_afisare IS NULL OR data_afisare <= CURRENT_DATE) ORDER BY id""", (ctx["firm"],))
-        else:  # [anunturi_gratuit_v1] cont gratuit: anunturile tenantului propriu
-            cur.execute("""SELECT a.id, a.mesaj, a.creat_la FROM public.anunturi_cabinet a
-                       JOIN public.user_tenants ut ON ut.tenant_id = a.tenant_id
-                       WHERE ut.user_id=%s AND a.confirmat_la IS NULL AND (a.data_afisare IS NULL OR a.data_afisare <= CURRENT_DATE) ORDER BY a.id""", (ctx["uid"],))
+        cur.execute("""SELECT id, mesaj, creat_la FROM public.anunturi_cabinet
+                       WHERE cabinet_id=%s AND confirmat_la IS NULL AND (data_afisare IS NULL OR data_afisare <= CURRENT_DATE) ORDER BY id""", (ctx.get("firm"),))
         rows = [dict(r) for r in cur.fetchall()]
     for r in rows:
         r["creat_la"] = str(r["creat_la"])
@@ -552,12 +536,8 @@ def eu_anunturi(ctx=Depends(cere_cabinet)):
 @app.post("/eu/anunturi/{aid}/confirma")
 def eu_anunt_confirma(aid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn, conn.cursor() as cur:
-        if ctx.get("firm"):
-            cur.execute("""UPDATE public.anunturi_cabinet SET confirmat_la=now()
-                       WHERE id=%s AND cabinet_id=%s AND confirmat_la IS NULL RETURNING id""", (aid, ctx["firm"]))
-        else:  # [anunturi_gratuit_v1]
-            cur.execute("""UPDATE public.anunturi_cabinet a SET confirmat_la=now()
-                       FROM public.user_tenants ut WHERE a.id=%s AND ut.tenant_id=a.tenant_id AND ut.user_id=%s AND a.confirmat_la IS NULL RETURNING a.id""", (aid, ctx["uid"]))
+        cur.execute("""UPDATE public.anunturi_cabinet SET confirmat_la=now()
+                       WHERE id=%s AND cabinet_id=%s AND confirmat_la IS NULL RETURNING id""", (aid, ctx.get("firm")))
         r = cur.fetchone()
         conn.commit()
     if not r:
@@ -612,71 +592,6 @@ def admin_cabinet_reactiveaza(firm_id: int, ctx=Depends(cere_cabinet)):
             cur.execute("UPDATE public.accounting_firms SET activ=true WHERE id=%s", (firm_id,))
     return {"ok": True}
 
-@app.get("/admin/activitate/conturi-gratuite")
-def admin_conturi_gratuite(ctx=Depends(cere_cabinet)):
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("""
-                SELECT t.id, t.nume, t.cui, t.activ, t.creat_la,
-                       (SELECT COUNT(DISTINCT ut.user_id) FROM public.user_tenants ut WHERE ut.tenant_id = t.id) AS nr_useri,
-                       (SELECT MAX(a.created_at) FROM public.audit_log a
-                          JOIN public.user_tenants ut2 ON ut2.user_id = a.user_id
-                          WHERE ut2.tenant_id = t.id) AS ultima_activitate,
-                       (SELECT COUNT(*) FROM public.audit_log a2
-                          JOIN public.user_tenants ut3 ON ut3.user_id = a2.user_id
-                          WHERE ut3.tenant_id = t.id AND a2.actiune LIKE '%%/facturi/emite%%') AS nr_facturi
-                FROM public.tenants t
-                WHERE t.accounting_firm_id IS NULL
-                ORDER BY t.creat_la DESC
-            """)
-            rows = cur.fetchall()
-    return {"conturi": rows}
-@app.post("/admin/conturi-gratuite/{tenant_id}/suspenda")
-def admin_cont_gratuit_suspenda(tenant_id: int, ctx=Depends(cere_cabinet)):
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("UPDATE public.tenants SET activ=false WHERE id=%s AND accounting_firm_id IS NULL", (tenant_id,))
-    return {"ok": True}
-@app.post("/admin/conturi-gratuite/{tenant_id}/reactiveaza")
-def admin_cont_gratuit_reactiveaza(tenant_id: int, ctx=Depends(cere_cabinet)):
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
-    with db.get_conn() as conn:
-        with conn.cursor() as cur:
-            cur.execute("UPDATE public.tenants SET activ=true WHERE id=%s AND accounting_firm_id IS NULL", (tenant_id,))
-    return {"ok": True}
-@app.get("/admin/coliziuni-cui")  # [F186] raport PERSISTENT coliziuni CUI: acelasi CUI la un cont gratuit SI la o firma de cabinet, ambele active
-def admin_coliziuni_cui(ctx=Depends(cere_cabinet)):
-    """Vizibilitatea persistenta care lipsea: semnalele F092 (gratuit->cabinet) si F185 (cabinet->gratuit)
-    sunt EFEMERE (doar la momentul preluarii/inregistrarii). Aici superadmin vede lista curenta si poate
-    suspenda contul gratuit (ruta existenta). Report-only, GDPR signal-not-block: NU blocheaza/sterge automat.
-    Live read (self-join pe cifrele CUI, aceeasi conventie ca F092/F185) - zero drift, derivat din starea curenta."""
-    if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
-    with db.get_conn() as conn:
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute(r"""
-                SELECT g.id AS gratuit_id, g.nume AS gratuit_nume, g.cui AS gratuit_cui,
-                       g.creat_la AS gratuit_creat,
-                       (SELECT COUNT(*) FROM public.audit_log a
-                          JOIN public.user_tenants ut ON ut.user_id = a.user_id
-                          WHERE ut.tenant_id = g.id AND a.actiune LIKE '%%/facturi/emite%%') AS gratuit_nr_facturi,
-                       c.id AS cabinet_tenant_id, c.nume AS cabinet_nume, af.nume AS firm_nume
-                FROM public.tenants g
-                JOIN public.tenants c
-                  ON regexp_replace(COALESCE(g.cui,''),'\D','','g') = regexp_replace(COALESCE(c.cui,''),'\D','','g')
-                 AND regexp_replace(COALESCE(g.cui,''),'\D','','g') <> ''
-                LEFT JOIN public.accounting_firms af ON af.id = c.accounting_firm_id
-                WHERE g.accounting_firm_id IS NULL     AND g.activ = true
-                  AND c.accounting_firm_id IS NOT NULL AND c.activ = true
-                ORDER BY g.creat_la DESC
-            """)
-            rows = cur.fetchall()
-    return {"coliziuni": rows}
 @app.get("/admin/activitate/cabinet/{firm_id}")
 def admin_activitate_cabinet(firm_id: int, limita: int = 200, ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
@@ -1079,56 +994,6 @@ def login(date: LoginIn):
     return {"token": r["token"], "user": r["user"]}
 
 
-class RegisterGratuitIn(BaseModel):
-    email: str
-    parola: str
-    nume_firma: str
-    cui: str
-
-@app.post("/public/register-gratuit")  # [gratuit_v1]
-def register_gratuit(date: RegisterGratuitIn):
-    if len(date.parola or "") < 8:
-        raise HTTPException(422, "parola: minim 8 caractere")
-    if not (date.nume_firma or "").strip() or not (date.cui or "").strip():
-        raise HTTPException(422, "denumirea firmei si CUI-ul sunt obligatorii")
-    if not _TENANT_TEMPLATE:
-        raise HTTPException(500, "template tenant indisponibil pe server")
-    with db.get_conn() as conn:
-        try:
-            r = auth_api.inregistreaza_cont_gratuit(conn, date.email.strip().lower(), date.parola,
-                                                    date.nume_firma.strip(), date.cui.replace("RO", "").strip(), _TENANT_TEMPLATE)
-            if not r.get("ok"):
-                raise HTTPException(409, r.get("mesaj", "eroare"))
-            # [F188] pre-completare din ANAF v9 (date publice ale propriei firme): profil populat la creare
-            # (platitor_tva/tva_la_incasare/adresa/caen/reg_com). NU atinge 'nume' (setat de user). COALESCE:
-            # gol ANAF nu suprascrie existent. ANAF jos -> ramane default, corectabil din date_firma.
-            try:
-                rez = anaf_api.valideaza_cui([date.cui.replace("RO", "").strip()])
-                if rez and rez[0].get("gasit"):
-                    d = rez[0]
-                    with conn.cursor() as cur:
-                        cur.execute("SELECT schema_name FROM public.tenants WHERE id = %s", (r["tenant_id"],))
-                        sch = cur.fetchone()[0]
-                        # [F180] snapshot ANAF = aceeasi valoare cu platitor_tva la onboarding
-                        # (local==snapshot -> verde); data = azi. Vezi DECIZII 22.07 F180.
-                        cur.execute(f'''UPDATE "{sch}".firma_profil SET platitor_tva=%s, tva_la_incasare=%s,
-                                        platitor_tva_anaf=%s, platitor_tva_anaf_data=CURRENT_DATE,
-                                        platitor_tva_anaf_inceput=%s,
-                                        adresa=COALESCE(NULLIF(%s,''), adresa), caen=COALESCE(NULLIF(%s,''), caen),
-                                        reg_com=COALESCE(NULLIF(%s,''), reg_com)''',
-                                    (bool(d.get("platitor_tva")), bool(d.get("tva_la_incasare")),
-                                     bool(d.get("platitor_tva")), d.get("tva_data_inceput"),
-                                     d.get("adresa") or "", d.get("cod_caen") or "", d.get("nr_reg_com") or ""))
-            except Exception:
-                pass  # ANAF jos -> ramane default, corectabil din vector fiscal
-            conn.commit()
-        except HTTPException:
-            conn.rollback(); raise
-        except Exception as e:
-            conn.rollback(); raise HTTPException(400, str(e))
-    # [F185] semnal simetric F092: CUI-ul e deja sub un cabinet -> avertizeaza registrantul (nu bloca)
-    return {"ok": True, "coliziune_cabinet": bool(r.get("coliziune_cabinet"))}
-
 @app.post("/auth/register")
 def register(date: RegisterIn):
     with db.get_conn() as conn:
@@ -1487,8 +1352,7 @@ def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))
             try:
                 r = tenant_provisioning.provision_tenant(
                     conn, nume, str(f.cui), ctx["firm"], ctx["uid"], _TENANT_TEMPLATE)
-                creat.append({"cui": str(f.cui), "nume": nume, "tenant_id": r.get("tenant_id"),
-                              "coliziune_gratuit": r.get("coliziune_gratuit")})  # coliziune_gratuit_v1
+                creat.append({"cui": str(f.cui), "nume": nume, "tenant_id": r.get("tenant_id")})
                 if cuic:
                     existente.add(cuic)   # prinde și duplicate în același lot
             except Exception as e:
@@ -2528,19 +2392,9 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
     linii = [l.model_dump() for l in date.linii]
     with db.get_conn(schema) as conn:
-        # [punte_stoc_v1] F172: contul gratuit NU tine gestiune (adevarul contabil, stoc inclus, e la
-        # contabil pe SAGA) -> nicio poarta, niciun articol_id; emite EXACT ca azi. Gratuit = tenant
-        # fara cabinet (accounting_firm_id NULL). Determinare tenant-based (aceeasi ca _eGratuit, Tema A).
-        with conn.cursor() as cur:
-            cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE id=%s", (tenant_id,))
-            row = cur.fetchone()
-        e_gratuit = bool(row) and row[0] is None
-        if e_gratuit:
-            for l in linii:
-                l["articol_id"] = None
         are_stoc = any(l.get("articol_id") for l in linii)
-        # poarta doar la FACTURA (nu proforma/aviz), la firma CV cu linie de stoc, NON-gratuit
-        poarta_ceruta = (date.tip == "factura") and are_stoc and not e_gratuit
+        # poarta doar la FACTURA (nu proforma/aviz), la firma CV cu linie de stoc
+        poarta_ceruta = (date.tip == "factura") and are_stoc
         if poarta_ceruta and date.pleaca_marfa is None:
             raise HTTPException(422, "Raspunde la poarta: pleaca marfa acum? (DA descarca gestiunea / NU doar fiscal)")
         platitor = _platitor_tva_firma(conn)

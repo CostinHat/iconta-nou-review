@@ -15,12 +15,6 @@ const ICON = {
   documente: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
 };
 
-function _eGratuit() {  // [gratuit_v1] cont fara cabinet — determinare la nivel de TENANT (tenant_are_cabinet).
-  // NU pe user.firm: acela e user.accounting_firm_id, NULL la ORICE client, deci nu distingea contul
-  // gratuit de un client-portal gestionat de cabinet. Vezi DECIZII.md 18.07 F161.
-  try { const u = sesiune.user(); return !!u && u.rol === "client" && !u.tenant_are_cabinet; } catch { return false; }
-}
-
 export function desktopPortal(continut, nav) {
   const u = sesiune.user() || {};
   const firma = u.nume_tenant || u.nume_firma || "firma ta";
@@ -43,29 +37,27 @@ export function desktopPortal(continut, nav) {
   ];
   const CARD_BON = { cheie: "bon", titlu: "Pozează bon sau chitanță", icon: "facturi", ...CULORI_CARD.piersica,
       sinteza: "Fotografiază documentul, iConta.eu îl citește" };  /* portal_layout_v2 */
-  // [gratuit_v1] contul fara cabinet: doar cardurile cu sens (fara contabil)
-  const GRATUIT_CARDURI = new Set(["facturi", "cifre", "acces-cont"]);
-  const carduriVizibile = _eGratuit() ? CARDURI.filter((c) => GRATUIT_CARDURI.has(c.cheie)) : CARDURI;
+  const carduriVizibile = CARDURI;
 
   continut.innerHTML = `
     ${sesiune.estePreview() ? '<div class="caseta-atentie" style="margin-bottom:12px"><span class="ca-mesaj"><b>PREVIZUALIZARE — doar vizualizare.</b> Vezi portalul exact ca acest client. Acțiunile (trimitere solicitări, pozare bon, orice input) sunt dezactivate în acest mod.</span></div>' : ""}
     <div class="cab-salut portal-sus" style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px">
       <div>
         <div class="cab-salut-nume">${firma}</div>
-        <div class="cab-salut-sub">${_eGratuit() ? "Facturare gratuită" : "Portal Client"}</div>
+        <div class="cab-salut-sub">Portal Client</div>
       </div>
       <button class="cab-card cab-card-mic accent-recomanda" id="portal-recomanda-mic">
         <div class="cab-card-cap">${SVG(ICON["recomanda"], CULORI_CARD.chihlimbar.fg)}<span class="cab-card-titlu">Recomand\u0103</span></div>
       </button>
     </div>
     <div class="cab-grila">
-      ${_eGratuit() ? "" : `<div class="pa-status" id="pa-status" style="grid-column: span 2; margin:0"><p class="ecran-nota">Se verifică situația la ANAF...</p></div>`}
-      ${_eGratuit() ? "" : `<div id="pa-bon-slot" style="display:flex"></div>`}
+      <div class="pa-status" id="pa-status" style="grid-column: span 2; margin:0"><p class="ecran-nota">Se verifică situația la ANAF...</p></div>
+      <div id="pa-bon-slot" style="display:flex"></div>
     </div>
   `;
 
   const grila = continut.querySelector(".cab-grila");
-  if (!_eGratuit()) {  // [gratuit_v1] fluxul bon->contabil nu exista la gratuit
+  {
     const c = CARD_BON;
     const card = document.createElement("button");
     card.className = "cab-card";
@@ -88,7 +80,7 @@ export function desktopPortal(continut, nav) {
     grila.appendChild(card);
   });
 
-  if (!_eGratuit()) actualizeazaStatusAcasa(continut);  // [gratuit_v1] fara panou fiscal la gratuit
+  actualizeazaStatusAcasa(continut);
 }
 
 function deschideCard(cheie, nav) {
@@ -218,15 +210,15 @@ async function actualizeazaStatusAcasa(continut) {
   if (d.mesaj === "vector fiscal necompletat" || d.stare === "gri") {
     zona.innerHTML = `<div class="pa-card pa-neutru">
       <div class="pa-titlu">Situația fiscală se configurează</div>
-      <div class="pa-sub">${_eGratuit() ? "Completează profilul firmei pentru situația fiscală." : "Contabilul tău finalizează încă setarea firmei."}</div>
+      <div class="pa-sub">Contabilul tău finalizează încă setarea firmei.</div>
     </div>`;
     return;
   }
 
-  let clasa = "pa-verde", titlu = "Totul e la zi", sub = _eGratuit() ? "Nicio declarație restantă." : "Nicio declarație restantă. Contabilul tău are situația sub control.";
+  let clasa = "pa-verde", titlu = "Totul e la zi", sub = "Nicio declarație restantă. Contabilul tău are situația sub control.";
   if (d.stare === "rosu") {
     clasa = "pa-rosu"; titlu = `${restante.length} ${restante.length === 1 ? "declarație trebuie depusă" : "declarații trebuie depuse"}`;
-    sub = _eGratuit() ? "Verifică scadențele în lista de mai jos." : "Contabilul tău se ocupă.";
+    sub = "Contabilul tău se ocupă.";
   } else if (d.stare === "galben") {
     clasa = "pa-galben"; titlu = `${urmarit.length} ${urmarit.length === 1 ? "termen apropiat" : "termene apropiate"}`;
     sub = "Scadențe în perioada următoare.";
@@ -272,7 +264,7 @@ async function deschideFacturi(corp, nav) {
     corp.innerHTML = `<p class="msg-eroare">Nu am putut identifica firma.</p>`;
     return;
   }
-  randeazaFacturi(corp, nav, tenantId, _eGratuit() ? { gratuit: true } : { client: true });  // [p125_portal_curat] + [gratuit_v1] gratuit = meniul complet (emitere, recurente)
+  randeazaFacturi(corp, nav, tenantId, { client: true });  // [p125_portal_curat] portal client
 }
 
 // ---------- DECLARATII DEPUSE ----------

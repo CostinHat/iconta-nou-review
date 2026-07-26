@@ -19,10 +19,10 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
     configureazaNumerotare(corp, nav, tenantId, opt);
   } else {
     // [punte_stoc_v1] F172: la firma de CABINET cu gestiune cantitativa (are articole), incarca
-    // articolele de stoc pentru selectorul pe linie. Contul gratuit / portalul client NU tin
+    // articolele de stoc pentru selectorul pe linie. Portalul client NU tine
     // gestiune -> nu se incarca, emit exact ca azi (fara poarta, fara articol_id).
     opt.articole = [];
-    if (!opt.gratuit && !opt.client) {
+    if (!opt.client) {
       try { opt.articole = (await api.get(`/tenants/${tenantId}/stocuri/articole`)).articole || []; } catch { opt.articole = []; }
     }
     formularEmitere(corp, nav, tenantId, num, opt);

@@ -3202,3 +3202,37 @@ Două decizii de EXCLUDERE (listă albă, cu motiv în cod):
 - **„Admin iConta" rămâne „Admin iConta", nu „Admin iConta.eu".** E numele propriu al panoului de administrare (breadcrumb, antet, mesaje 403 „Doar Admin iConta"), tratat ca substantiv de produs, nu ca apariție a mărcii. „Admin iConta.eu" ar citi ciudat și dublează sufixul într-un nume compus. Garda îl sare per-apariție.
 
 Restul materialului public — inclusiv alertele INTERNE (`[iConta]` prefix subiect, „iConta Alerte" nume expeditor), emailurile ops „Alerta iConta – sanatate server" și titlul tehnic FastAPI „iConta API" — a fost normalizat la „iConta.eu". Verificat ÎNAINTE la sursă că nu depinde nimic funcțional de aceste string-uri: cheia de dedup a alertelor e pe câmpuri structurate (`alerte_emise(alerta_id,prag)`, `alerte_acces_dedup.cheie=user_id`, `observare.trebuie_trimisa(cheie)`), NU pe subiect; niciun test nu asertează pe ele; titlul API nu e consumat de clienți generați (nicun SDK/swagger în repo). Normalizate 21 de literale rămase în main.py+observare.py (welcome, magic-link, portal-body, asistent, recomandare — scăpări de la corecția precedentă — plus internele de mai sus).
+
+### 26.07.2026 Contul de facturare gratuită — ELIMINAT DEFINITIV din produs (portalul clientului INTACT)
+Contul de facturare gratuită (F153-F160 + gărzile de coliziune F185/F186) a fost scos definitiv. Pâlnia
+publică era deja închisă pe 25.07 (cardul de landing înlocuit cu Funcționalități, F203); acum se scoate și
+CODUL, nu doar poarta de intrare.
+
+DE CE: produsul se vinde CABINETELOR de contabilitate. Contul gratuit era o firmă FĂRĂ cabinet
+(`accounting_firm_id NULL`, user rol `client`, tenant propriu) care emitea singură — nu are consumator în
+modelul de preț (cabinetul e clientul plătitor; o firmă fără cabinet nu intră în ofertă). 0 conturi gratuite
+reale în DB la momentul eliminării (0 tenanți `accounting_firm_id NULL`, 0 useri client fără cabinet) → zero
+migrare, zero date pierdute.
+
+CE S-A SCOS (verificat la sursă întâi, hartă arătată înainte de a atinge): rutele `/public/register-gratuit`,
+`/admin/activitate/conturi-gratuite`, `/admin/conturi-gratuite/{id}/suspenda|reactiveaza`, `/admin/coliziuni-cui`
+(F186); `auth_api.inregistreaza_cont_gratuit` (cu gardul invers F185); sub-logica `coliziune_gratuit_v1` din
+`tenant_provisioning` (F092); ramura gratuit din `spv_principal` (XOR → o singură cale: cabinetul); ramurile
+`_eGratuit()`/`e_gratuit`/`opt.gratuit` din portal.js/emitere/facturi_ecran; segmentul „gratuit" din anunțuri
+(admin); ecranul de înregistrare `randeazaInregistrareGratuita` (login.js, deja orfan); `admin_gratuite.js`
+(șters); breadcrumb-ul gratuit din navigator.
+
+VOCABULARUL NOU (ca să nu se confunde la o eventuală revenire): NU mai există „cont gratuit" ca produs.
+Rolul `client` înseamnă de-acum EXCLUSIV **portalul clientului** = o firmă gestionată DE un cabinet, care
+intră la `/portal/bon` să vadă/emită/pozeze. Distincția istorică „gratuit vs. client de cabinet" (ambele rol
+`client`, DECIZII 18.07 F161) dispare: orice `client` are cabinet.
+
+CE NU S-A ATINS (dovedit funcțional): **portalul clientului** — `/portal/bon` testat real după modificare;
+provisioning-ul de cabinet (F092 core) și pre-completarea ANAF la „Adaugă firmă" (F188) rămân, doar cu calea
+gratuit scoasă din ele; `woo_ecran.js` (WooCommerce) rămâne, folosit de cabinet din firme.js. SPV: singura
+atingere pe subsistem = ramura gratuit din `spv_principal` (acceptată explicit ca simplificare a XOR-ului),
+dovedită cu cele 23 de teste SPV + probă reală pe conector (`apel_anaf` TestOauth/hello).
+
+FUNCTIONALITATI.csv: F153-F160 + F185/F186 marcate `ELIMINAT 26.07.2026` cu motiv (rândurile RĂMÂN, istoricul
+nu se pierde); F092/F188 rămân LIVE cu notă „sub-logica gratuit scoasă". Pagina publică Funcționalități:
+număr NESCHIMBAT (141) — pozițiile gratuit erau deja excluse din pagină (F203).

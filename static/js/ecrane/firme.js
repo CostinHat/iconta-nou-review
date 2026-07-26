@@ -86,14 +86,6 @@ export function randeazaListaFirme(container, nav, inapoi) {
         try {
           const rT = await api.post("/tenants", { nume: nume.value.trim(), cui: cui.value.replace(/\D/g, ""), tip_firma: corp.querySelector("#fn-tip").value });  /* [tip_firma_v1] */
           if (emailCl) await api.post(`/tenants/${rT.tenant_id}/client-acces`, { email: emailCl, nume: "" });
-          const cg = rT.coliziune_gratuit;  /* coliziune_gratuit_v1: semnaleaza cont gratuit vechi cu acelasi CUI */
-          if (cg) {
-            const nf = cg.nr_facturi ? `${cg.nr_facturi} facturi emise` : "fără facturi emise încă";
-            arataMesaj(info, `Firma a fost creată. ATENȚIE: există un cont gratuit cu același CUI (${cg.nume || "cont gratuit"}, ${nf}) care încă poate emite din alt loc — adevărul contabil e la tine. Închiderea lui se face de Admin iConta (Suspendă cont gratuit).`, "avert");
-            btn.textContent = "Înapoi la listă"; btn.disabled = false;
-            btn.onclick = () => { nav.inapoi(); incarca(); };
-            return;
-          }
           nav.inapoi(); incarca();
         } catch (e) {
           info.textContent = e.mesaj || e.message || "Eroare la creare.";

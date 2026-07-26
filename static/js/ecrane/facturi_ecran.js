@@ -6,7 +6,6 @@
 import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani } from "../api.js";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js";
 import { randeazaEmitere } from "./emitere_ecran.js?v=6";
-import { ecranMagazin } from "./woo_ecran.js";  // [wc_extras_v1] F156
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -66,13 +65,6 @@ function meniuFacturi(corp, nav, tenantId, opt) {
         <div class="firme-optiune-titlu">Facturi recurente</div>
         <div class="firme-optiune-desc">\u0218abloane emise automat lunar</div>
       </button>` : ""}
-      ${opt.gratuit ? `<button class="firme-optiune" id="fac-magazin">
-        <div class="firme-optiune-icon accent-albastru">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        </div>
-        <div class="firme-optiune-titlu">Magazin online</div>
-        <div class="firme-optiune-desc">WooCommerce → facturi automate</div>
-      </button>` : ""}
     </div>`;
   corp.querySelector("#fac-istoric").addEventListener("click", () => nav.mergi("Istoric facturi", (c) => istoricFacturi(c, nav, tenantId, opt)));  // faza_b_traseu_v1
   corp.querySelector("#fac-scadentar").addEventListener("click", () => nav.mergi("Scadențar", (c) => scadentarEcran(c, nav, tenantId, opt)));  // f131_scadentar_v1
@@ -80,7 +72,6 @@ function meniuFacturi(corp, nav, tenantId, opt) {
   corp.querySelector("#fac-model").addEventListener("click", () => nav.mergi("Model factur\u0103", (c) => modelFactura(c, nav, tenantId, opt)));
   corp.querySelector("#fac-primite")?.addEventListener("click", () => nav.mergi("Facturi primite", (c) => primiteSPV(c, nav, tenantId, opt)));  // [efactura_primite_v1] F126 four-eyes
   corp.querySelector("#fac-recurente")?.addEventListener("click", () => nav.mergi("Facturi recurente", (c) => listaRecurente(c, nav, tenantId, opt)));
-  corp.querySelector("#fac-magazin")?.addEventListener("click", () => nav.mergi("Magazin online", (c) => ecranMagazin(c, nav, tenantId)));  // [wc_extras_v1] F156
 }  // fac_recurente_v1
 
 
@@ -197,7 +188,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
             <div class="pf-frand-sub">${dataRo(f.data_emitere)}${dir ? " \u00b7 " + dir : ""}${storno}${tipTag}</div>
           </div>
           <span class="pf-frand-suma">${suma}</span>
-          ${(!opt.client && !opt.gratuit && !f.contabilizata) ? `<span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
+          ${(!opt.client && !f.contabilizata) ? `<span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
         </button>`;
         }).join("");
     corp.innerHTML = `
@@ -450,7 +441,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         ${statusTxt ? `<span class="fd-stare">${esc(statusTxt)}</span>` : ""}
         <button class="buton-secundar em-buton-sec fd-pdf-btn" id="fd-pdf">PDF factur\u0103</button>
         <button class="buton-secundar em-buton-sec fd-email-btn" id="fd-email">Trimite pe email</button>
-        ${(!opt.client && !opt.gratuit && f.directie === "emisa" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
+        ${(!opt.client && f.directie === "emisa" && !f.storno_din_id) ? '<button class="buton-secundar em-buton-sec fd-storno-btn" id="fd-storno">Storneaz\u0103</button>' : ""}
         ${(f.tip && f.tip !== "factura" && !f.transformat_in_id) ? '<button class="buton-secundar em-buton-sec" id="fd-transforma">Transform\u0103 \u00een factur\u0103</button>' : ""}
         ${f.platita_la ? '<span class="fd-stare fd-stare-verde">pl\u0103tit\u0103</span>' : ""}
         ${(f.directie === "emisa" && f.tip === "factura" && !f.storno_din_id && !f.platita_la) ? '<button class="buton-secundar em-buton-sec" id="fd-plata">Link plat\u0103</button>' : ""}

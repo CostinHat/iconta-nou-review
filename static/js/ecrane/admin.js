@@ -6,7 +6,6 @@ import { sesiune } from "../sesiune.js";
 import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=5";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=6";
-import { randeazaAdminGratuite } from "./admin_gratuite.js";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=3";
 
 // iconite SVG inline (autonome)
@@ -22,9 +21,6 @@ const DEF = [
   { cheie:"activitate", titlu:"Activitate cabinete", icon: "activitate", ...CULORI_CARD.verde,
     sinteza:"Cine e activ, cine nu",
     actiune:(nav) => nav.deschide("Activitate cabinete", (corp) => randeazaAdminActivitate(corp, nav)) },
-  { cheie:"gratuite", titlu:"Facturare gratuită", icon: "facturi", ...CULORI_CARD.albastru,
-    sinteza:"Conturi gratuite: cine e activ, cine nu",
-    actiune:(nav) => nav.deschide("Facturare gratuită", (corp) => randeazaAdminGratuite(corp, nav)) },
   { cheie:"anunturi", titlu:"Anunțuri", icon: "anunturi", ...CULORI_CARD.chihlimbar,
     sinteza:"Banner la logare pentru cabinete",
     actiune:(nav) => nav.deschide("Anunțuri", (corp) => randeazaAdminAnunturi(corp, nav), { lat: "larg" }) },  /* anunturi_larg_v1 */
@@ -63,17 +59,15 @@ export function desktopAdmin(continut, nav) {
 // admin_anunturi_fe_v1
 async function randeazaAdminAnunturi(corp, nav) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
-  let cabinete = [], gratuite = [];
+  let cabinete = [];
   try {
-    const [r, g] = await Promise.all([api.get("/admin/activitate/cabinete"), api.get("/admin/activitate/conturi-gratuite")]);
+    const r = await api.get("/admin/activitate/cabinete");
     cabinete = (r && r.cabinete) || [];
-    gratuite = (g && g.conturi) || [];
   } catch {}
   // [anunturi_meniu_v1] DS cap.2a: optiunile se deschid ca pasi de navigator, nu inline
-  const stare = window._anStare = window._anStare || { segment: null, cabIds: null, tenIds: null };  // persistenta intre re-randari (mergi/inapoi re-executa radacina)
+  const stare = window._anStare = window._anStare || { segment: null, cabIds: null };  // persistenta intre re-randari (mergi/inapoi re-executa radacina)
   const rezumat = () => {
     if (stare.segment === "cabinete") return stare.cabIds ? `${stare.cabIds.length} cabinete alese` : "toate cabinetele";
-    if (stare.segment === "gratuit") return stare.tenIds ? `${stare.tenIds.length} conturi alese` : "toate conturile gratuite";
     return "nimeni ales înc\u0103";
   };
   const meniu = () => {
@@ -87,11 +81,6 @@ async function randeazaAdminAnunturi(corp, nav) {
           <div class="firme-optiune-titlu">Cabinete</div>
           <div class="firme-optiune-desc">${stare.segment === "cabinete" ? esc(rezumat()) : "alege cabinetele destinatare"}</div>
         </button>
-        <button class="firme-optiune" id="an-op-gr">
-          <div class="firme-optiune-icon accent-verde"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg></div>
-          <div class="firme-optiune-titlu">Facturare gratuit\u0103</div>
-          <div class="firme-optiune-desc">${stare.segment === "gratuit" ? esc(rezumat()) : "alege conturile gratuite"}</div>
-        </button>
         <button class="firme-optiune" id="an-op-msg">
           <div class="firme-optiune-icon accent-roz"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg></div>
           <div class="firme-optiune-titlu">Mesaj</div>
@@ -100,21 +89,18 @@ async function randeazaAdminAnunturi(corp, nav) {
       </div>
       <div id="an-propuneri"></div>`;
     corp.querySelector("#an-op-cab").addEventListener("click", () => nav.mergi("Cabinete", (c) => pasSelectie(c, "cabinete")));
-    corp.querySelector("#an-op-gr").addEventListener("click", () => nav.mergi("Facturare gratuit\u0103", (c) => pasSelectie(c, "gratuit")));
     corp.querySelector("#an-op-msg").addEventListener("click", () => nav.mergi("Mesaj", (c) => pasMesaj(c)));
     incarcaPropuneri(corp);
   };
   function pasSelectie(c, seg) {
-    const eGr = seg === "gratuit";
-    const lista = eGr ? gratuite : cabinete;
-    const idsCur = eGr ? stare.tenIds : stare.cabIds;
+    const idsCur = stare.cabIds;
     c.innerHTML = `
-      <h2 class="pf-titlu">${eGr ? "Conturi de facturare gratuit\u0103" : "Cabinete destinatare"}</h2>
+      <h2 class="pf-titlu">Cabinete destinatare</h2>
       <p class="mig-intro">Bifeaz\u0103 destinatarii. Nimic bifat = anun\u021bul merge la to\u021bi.</p>
       <input type="text" class="camp-input" id="sel-cauta" placeholder="caut\u0103" style="max-width:340px;margin-bottom:10px">
       <div class="pf-lista zebra-lista" id="an-sel-lista">
-        ${lista.map((x, i) => `<label class="pf-frand set-bifa sel-rand" data-zebra="${i % 2}" style="cursor:pointer;display:flex;align-items:center;gap:12px"><input type="checkbox" class="sel-bifa" value="${x.id}" ${idsCur && idsCur.includes(x.id) ? "checked" : ""} style="flex-shrink:0">
-          <div class="pf-frand-text" style="flex:1;text-align:left"><div class="pf-frand-nume">${esc(x.nume || "")}</div>${eGr ? `<div class="pf-frand-sub">CUI ${esc(x.cui || "")}</div>` : ""}</div>
+        ${cabinete.map((x, i) => `<label class="pf-frand set-bifa sel-rand" data-zebra="${i % 2}" style="cursor:pointer;display:flex;align-items:center;gap:12px"><input type="checkbox" class="sel-bifa" value="${x.id}" ${idsCur && idsCur.includes(x.id) ? "checked" : ""} style="flex-shrink:0">
+          <div class="pf-frand-text" style="flex:1;text-align:left"><div class="pf-frand-nume">${esc(x.nume || "")}</div></div>
         </label>`).join("")}
       </div>`;
     c.querySelector("#sel-cauta").addEventListener("input", (e) => {
@@ -125,7 +111,7 @@ async function randeazaAdminAnunturi(corp, nav) {
       const ids = [...c.querySelectorAll(".sel-bifa:checked")].map((b) => Number(b.value));
       stare.segment = seg;
       const val = ids.length ? ids : null;
-      if (eGr) { stare.tenIds = val; stare.cabIds = null; } else { stare.cabIds = val; stare.tenIds = null; }
+      stare.cabIds = val;
     };
     c.querySelectorAll(".sel-bifa").forEach((b) => b.addEventListener("change", salveaza));
     salveaza();
@@ -146,9 +132,9 @@ async function randeazaAdminAnunturi(corp, nav) {
       const msg = c.querySelector("#an-msg");
       const mesaj = ta.value.trim();
       if (!mesaj) { arataMesaj(msg, "Scrie mesajul.", "eroare"); return; }
-      if (!stare.segment) { arataMesaj(msg, "Alege \u00eent\u00e2i destinatarii (Cabinete sau Facturare gratuit\u0103).", "eroare"); return; }
+      if (!stare.segment) { arataMesaj(msg, "Alege \u00eent\u00e2i destinatarii (Cabinete).", "eroare"); return; }
       try {
-        const r = await api.post("/admin/anunturi", { mesaj, segment: stare.segment, cabinet_ids: stare.cabIds, tenant_ids: stare.tenIds, cabinet_id: null, data_afisare: c.querySelector("#an-data").value || null });
+        const r = await api.post("/admin/anunturi", { mesaj, segment: stare.segment, cabinet_ids: stare.cabIds, cabinet_id: null, data_afisare: c.querySelector("#an-data").value || null });
         arataMesaj(msg, `Trimis c\u0103tre ${r.trimise} destinatar${r.trimise === 1 ? "" : "i"}.`, "ok");
         ta.value = "";
       } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
