@@ -160,7 +160,7 @@ export function ecranLogin(radacina) {
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
     modal.querySelector("#acces-intra").addEventListener("click", randeazaLogin);
-    modal.querySelector("#acces-client-nou").addEventListener("click", randeazaInregistrare);
+    modal.querySelector("#acces-client-nou").addEventListener("click", randeazaPreturiInainte);
   }
 
   // ---------- ecran 2a: login (doua cai explicite) ----------  // ux_login_camera_v1
@@ -314,6 +314,23 @@ export function ecranLogin(radacina) {
   }
 
   // ---------- ecran 2b: inregistrare cabinet nou ----------
+  function randeazaPreturiInainte() {  // [preturi_reg_v1] mereu pretul INTAI, apoi Continua -> formularul existent. O singura cale, fara detectie de provenienta. Continut din preturi.js (sursa unica).
+    modal.classList.remove("acces-modal-inreg");
+    modal.innerHTML = `
+      <button type="button" class="nav-sageata" id="pr-inapoi" title="Înapoi" aria-label="Înapoi" style="position:absolute;top:14px;left:14px"><span aria-hidden="true">←</span></button>
+      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div class="login-brand">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
+        <div class="login-subtagline">${esc(PRETURI_TITLU)}</div>
+      </div>
+      <div class="preturi-text preturi-text-modal">${preturiHTML()}</div>
+      <button class="buton-primar" id="pr-continua" style="margin-top:16px">Continuă</button>
+    `;
+    modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
+    modal.querySelector("#pr-inapoi").addEventListener("click", randeazaAlegere);
+    modal.querySelector("#pr-continua").addEventListener("click", randeazaInregistrare);
+  }
+
   function randeazaInregistrare() {
     modal.classList.add("acces-modal-inreg");
     modal.innerHTML = `

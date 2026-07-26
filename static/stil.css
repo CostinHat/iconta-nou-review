@@ -2255,3 +2255,6 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .preturi-text li { margin: 4px 0; color: #1a1d21; }
 .preturi-text .preturi-eticheta { font-weight: 600; margin-bottom: 4px; }
 .preturi-text .preturi-nota { font-weight: 600; color: var(--ardezie); }
+
+/* [preturi_reg_v1] preturile in modalul Acces (Client nou): scroll intern, Continua mereu vizibil */
+.preturi-text-modal { max-height: 52vh; overflow-y: auto; text-align: left; margin: 4px 0 0; padding-right: 6px; }
