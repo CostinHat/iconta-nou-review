@@ -2,6 +2,7 @@
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
 import { api, arataMesaj, CULORI_CARD, ICOANE, esc } from "../api.js";
+import { PRETURI_TITLU, PRETURI_SUBTITLU, preturiHTML } from "./preturi.js";  // [preturi_v1] sursa unica a continutului de preturi
 import { sesiune } from "../sesiune.js";
 
 function svgIcon(paths, w = 24) {
@@ -462,7 +463,9 @@ export function ecranLogin(radacina) {
 
 
 // [F203] Pagina Functionalitati (client-side; replica VIZUALA a modalului DS - nav.deschide e shell autentificat, indisponibil pre-login)
+// <GRUPE_FUNC_AUTO> generat de genereaza_grupe_functii.py --scrie; NU edita manual intre ancore (gardat de GRUPE_FUNC_STALE)
 const GRUPE_FUNC = [{"titlu": "Contabilitate", "icon": "brief", "functii": ["Avansuri furnizori/clienti", "Bacsis HoReCa", "Bilant anual S1005/S1003", "Blocare perioade", "Centre de cost + bugete (management accounting intern)", "Contabilitate ONG", "Decontari asociati", "Deconturi deplasare si diurna", "Editor note contabile", "Incredere si invatare AI", "Leasing financiar si operational", "Lichidare/radiere societate", "Motor contabil (carte mare + inchidere)", "Perisabilitati si scazaminte", "Productie in curs si produse finite", "Provizioane si ajustari", "Rapoarte comerciale", "Rapoarte configurabile salvabile", "Reevaluare imobilizari", "Registru incasari/plati (partida simpla)", "SGR (garantie-returnare)", "Sponsorizari si credit fiscal", "Subventii"]}, {"titlu": "Fiscalitate", "icon": "declaratii", "functii": ["Coada de validare patru-ochi", "Curs valutar BNR", "D406 Active (SAF-T anual)", "D406 SAF-T lunar", "Declaratia D100", "Declaratia D101 + IMCA", "Declaratia D112", "Declaratia D205 + distribuire dividende", "Declaratia D300", "Declaratia D301", "Declaratia D390 (VIES)", "Declaratia D394", "Declaratia D710 (rectificativa D100)", "Diferente de curs valutar", "Dispatch declaratii", "Import/export extracomunitar", "Motor D212 (PFA/II/IF)", "Persistarea declaratiei depuse (xml + randuri) - F163v2", "Regim special agentii de turism", "Regim special agricultori", "Regim special aur de investitii", "Regim special marja (second-hand)", "Regula cotelor de TVA", "TVA la incasare", "Taxare inversa interna", "Trimitere D390 clasificari manuale"]}, {"titlu": "Control fiscal", "icon": "shield", "functii": ["Audit de preluare firma", "Avertisment regim TVA vs ANAF + semafor Control fiscal", "Calculul scadentelor", "Conformitate cota TVA facturi emise (punte legislatie->re-verificare v1)", "Control incrucisat: D112 (salarii) vs contabilitate", "Control incrucisat: D390 (bunuri IC) vs evidenta validata + D300 depus (D-vs-D real F198)", "Control incrucisat: declaratie vs contabilitate (TVA)", "Educatie AI pe tipare (varianta generativa)", "Educatie pe tipare de erori", "Push in-app findinguri rosii control fiscal (pull->push)", "Semafor conformare fiscala", "Vector fiscal per firma", "Verificatoare de coerenta", "Verificator praguri Intrastat"]}, {"titlu": "Facturare si e-Factura", "icon": "facturi", "functii": ["Chitante emise", "Comodat, chirii, refacturari", "Conector OAuth SPV/ANAF", "Conector WooCommerce", "Cont venit implicit setabil din UI", "Contare facturi + TVA + storno", "Export facturi emise catre SAGA", "Export facturi emise catre WinMENTOR", "Facturi recurente", "Import e-Factura (UBL)", "Link de plata pe factura", "Nomenclator produse + cota AI", "Notificare e-Transport", "Notificari de plata si alerte neplatnici", "Operatiuni intracomunitare", "PDF factura", "Parteneri (clienti/furnizori)", "Profil firma + model factura", "Trimitere e-Transport prin API SPV", "Validare CUI la ANAF", "e-Factura SPV complet"]}, {"titlu": "Salarizare", "icon": "users", "functii": ["Adeverinte salariati", "Calcul salarizare (brut->net)", "Client REGES-ONLINE", "Cod 10 CM in flux", "Coduri COR pe contracte", "Contracte de munca speciale", "Plata salariilor pe card (fisier bancar)", "Pontaj angajati", "Salariati (CRUD)", "Stat de plata + fluturasi", "Tichete de masa + vacanta + cadou in stat plata (Faza 1 + 2a + 2b1)"]}, {"titlu": "Stocuri, banca si casa", "icon": "building", "functii": ["Analitica de stoc", "Coduri de bare in gestiune", "Contabilizare extras de cont", "Credite bancare si garantii", "D406 Stocuri (la cerere)", "Import Raport Z din AMEF", "Import articole si stoc initial CV", "Import extras bancar MT940 (SWIFT)", "Inventar pe mobil", "Inventariere anuala", "Landed cost pe NIR", "Obiecte de inventar", "Parser extras bancar", "Punte factura -> stoc (descarcare la emitere)", "Reconciliere bancara (matching)", "Registru de casa + plafoane", "Retetar HoReCa (GV)", "Stocuri cantitativ-valorice (CMP)", "Stocuri global-valorice", "Transfer intre gestiuni"]}, {"titlu": "Cabinet si portal client", "icon": "documente", "functii": ["API portal (read-only, izolat)", "API public v1", "Alerte legislative programate", "Autoservire export date cabinet (buton)", "Canal de sesizari (Raporteaza)", "Cerere de stergere cont din aplicatie (GDPR art.17)", "Chei API publice per cabinet", "Documente pentru portal", "Forecast cash-flow 8 saptamani", "Generare contracte", "Import la preluarea firmei", "Inregistrare cabinet self-service", "KPI client (portal)", "Magic-link (login fara parola)", "Management actori de cabinet", "Notificari in-app + email", "Notificari pe evenimente", "Panou Capacitate", "Povestea lunii (pachet lunar)", "Pre-completare date firma din ANAF v9 la onboarding", "Previzualizare portal client din cabinet (Acces Client)", "Registratura documente", "Scadente viitoare pe portofoliu", "Starea migrarii pe straturi", "Suspendare cabinet", "Triaj AI al sesizarilor"]}];
+// </GRUPE_FUNC_AUTO>
 
 function _funcOverlay(inner) {
   const o = document.createElement("div");
@@ -484,8 +487,20 @@ function deschideFereastraGrupa(gr) {
   );
 }
 
+function deschideFereastraPreturi() {  // [preturi_v1] continut din preturi.js (sursa unica), afisat ca fereastra ca la grupe
+  _funcOverlay(
+    `<div class="fereastra"><div class="fereastra-antet"><span class="fereastra-titlu">${esc(PRETURI_TITLU)}</span>` +
+    `<button class="nav-x" type="button" title="Închide" aria-label="Închide">✕</button></div>` +
+    `<div class="fereastra-corp"><div class="preturi-text">${preturiHTML()}</div></div></div>`
+  );
+}
+
 function deschideFunctionalitati() {
-  const carduri = GRUPE_FUNC.map((gr, i) =>
+  // [preturi_v1] cardul Preturi = PRIMUL, scris de mana (in afara zonei auto GRUPE_FUNC); nu se sterge la --scrie
+  const cardPreturi =
+    `<button class="func-card func-card-preturi" type="button" data-preturi="1"><span class="func-card-icon">${svgIcon(ICOANE.gauge, 26)}</span>` +
+    `<span class="func-card-titlu">${esc(PRETURI_TITLU)}</span><span class="func-card-nr">${esc(PRETURI_SUBTITLU)}</span></button>`;
+  const carduri = cardPreturi + GRUPE_FUNC.map((gr, i) =>
     `<button class="func-card" type="button" data-i="${i}"><span class="func-card-icon">${svgIcon(ICOANE[gr.icon], 26)}</span>` +
     `<span class="func-card-titlu">${esc(gr.titlu)}</span><span class="func-card-nr">${gr.functii.length} funcții</span></button>`
   ).join("");
@@ -494,6 +509,7 @@ function deschideFunctionalitati() {
     `<button class="nav-x" type="button" title="Închide" aria-label="Închide">✕</button></div>` +
     `<div class="fereastra-corp"><div class="func-grila">${carduri}</div></div></div>`
   );
-  o.querySelectorAll(".func-card").forEach((b) =>
+  o.querySelector(".func-card-preturi").addEventListener("click", deschideFereastraPreturi);
+  o.querySelectorAll(".func-card:not(.func-card-preturi)").forEach((b) =>
     b.addEventListener("click", () => deschideFereastraGrupa(GRUPE_FUNC[+b.dataset.i])));
 }

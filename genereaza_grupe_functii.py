@@ -93,9 +93,12 @@ def as_json(csv_path=CSV_DEFAULT):
     return json.dumps(repartizeaza(csv_path), ensure_ascii=False)
 
 def scrie_login(login_path=LOGIN_DEFAULT, csv_path=CSV_DEFAULT):
+    # [preturi_v1] scrie DOAR intre ancorele GRUPE_FUNC_AUTO -> continutul scris de mana (ex. cardul Preturi) e neatins
     s = open(login_path, encoding="utf-8").read()
-    s2, n = re.subn(r"const GRUPE_FUNC = \[.*?\];", "const GRUPE_FUNC = " + as_json(csv_path) + ";", s, count=1)
-    assert n == 1, "ancora GRUPE_FUNC gasita de %d ori" % n
+    bloc = "const GRUPE_FUNC = " + as_json(csv_path) + ";"
+    s2, n = re.subn(r"(// <GRUPE_FUNC_AUTO>[^\n]*\n).*?(// </GRUPE_FUNC_AUTO>)",
+                    lambda m: m.group(1) + bloc + "\n" + m.group(2), s, count=1, flags=re.S)
+    assert n == 1, "ancore GRUPE_FUNC_AUTO gasite de %d ori" % n
     open(login_path, "w", encoding="utf-8").write(s2)
 
 if __name__ == "__main__":

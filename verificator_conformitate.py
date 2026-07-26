@@ -402,7 +402,8 @@ try:
     import genereaza_grupe_functii as _gen
     _asteptat = _gen.repartizeaza()
     _login = open(os.path.join(BAZA, "login.js"), encoding="utf-8").read()
-    _m = re.search(r"const GRUPE_FUNC = (\[.*?\]);", _login)
+    _zona = re.search(r"// <GRUPE_FUNC_AUTO>.*?// </GRUPE_FUNC_AUTO>", _login, re.S)  # [preturi_v1] valideaza DOAR zona auto (nu continutul scris de mana din afara ancorelor)
+    _m = re.search(r"const GRUPE_FUNC = (\[.*?\]);", _zona.group(0) if _zona else "")
     if not _m:
         rap["grupe_func_stale"].append(("login.js", 0, "parsare", "GRUPE_FUNC negasit in login.js"))
     else:

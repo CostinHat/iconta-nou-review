@@ -2246,3 +2246,12 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 /* [termeni_v1] subsol public cu link Termeni si conditii */
 .pagina-subsol{text-align:center;padding:24px 20px 40px;color:var(--gri);font-size:.9rem;border-top:1px solid var(--linie)}
 .pagina-subsol a{color:var(--albastru);text-decoration:none}
+
+/* [preturi_v1] cardul Preturi (primul, distinct verde) + textul din fereastra */
+.func-card-preturi .func-card-icon { color: var(--verde); }
+.preturi-text h3 { font-size: 1.05rem; font-weight: 700; color: var(--ardezie); margin: 20px 0 6px; }
+.preturi-text p { margin: 0 0 10px; color: #1a1d21; line-height: 1.55; }
+.preturi-text ul { margin: 0 0 14px; padding-left: 20px; }
+.preturi-text li { margin: 4px 0; color: #1a1d21; }
+.preturi-text .preturi-eticheta { font-weight: 600; margin-bottom: 4px; }
+.preturi-text .preturi-nota { font-weight: 600; color: var(--ardezie); }
