@@ -517,6 +517,28 @@ for _rel in ("main.py", "core/notificari_scadenta.py", "core/observare.py"):  # 
                 continue
             _brand_flag(os.path.basename(_rel), _i, _cod_fara_comentariu_py(_lin))
 
+
+# --- GHID_ZONA (DS cap.22): continutul ghidurilor sub aceleasi reguli ca orice interfata ---
+rap["ghid_zona"] = []
+_GHID_MD = os.path.join(BAZA_PY, "ghid")
+if os.path.isdir(_GHID_MD):
+    _re_hex = re.compile(r"#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b")
+    for _gf in sorted(os.listdir(_GHID_MD)):
+        if not _gf.endswith(".md"):
+            continue
+        for _gi, _gl in enumerate(open(os.path.join(_GHID_MD, _gf), encoding="utf-8"), 1):
+            _st = _gl.strip()[:60]
+            if _re_hex.search(_gl):
+                rap["ghid_zona"].append((_gf, _gi, "culoare", "hex literal - foloseste tokeni (cap.15): " + _st))
+            if re.search(r"style\s*=", _gl):
+                rap["ghid_zona"].append((_gf, _gi, "stil-inline", "style= inline interzis - clase+tokeni: " + _st))
+            if re.search(r"font-size", _gl, re.I):
+                rap["ghid_zona"].append((_gf, _gi, "tipografie", "font-size literal - scara cap.14: " + _st))
+            if re.search(r"border-radius", _gl, re.I):
+                rap["ghid_zona"].append((_gf, _gi, "raza", "border-radius literal - var(--raza) cap.15: " + _st))
+            if re.search(r"<svg|<path", _gl, re.I):
+                rap["ghid_zona"].append((_gf, _gi, "icoane", "SVG inline - foloseste ICOANE canonic (cap.13): " + _st))
+
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)

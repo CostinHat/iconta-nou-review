@@ -1027,7 +1027,7 @@ def register(date: RegisterIn):
     try:  # [alerta_cont_nou_v1] notificare interna la fiecare cont nou de cabinet (fara date personale)
         from datetime import datetime as _dt
         from zoneinfo import ZoneInfo as _Z
-        _acum = _dt.now(_Z("Europe/Bucharest")).strftime("%d.%m.%Y %H:%M:%S")
+        _acum = _dt.now(_Z("Europe/Bucharest")).strftime("%Y-%m-%d %H:%M:%S")
         _mesaj_cn = ("S-a inregistrat un cont nou de cabinet pe iConta.eu la %s (ora Romaniei). "
                      "Alerta nu contine date personale." % _acum)
         _ok_cn = _obs._trimite_brevo("Cont nou de cabinet", _mesaj_cn)
@@ -8224,3 +8224,133 @@ def nota_ong(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
 #     cere_cabinet fara import circular). Ecranul de conectare = Regula 0, separat. ---
 from core import spv_rute as _spv_rute
 _spv_rute.monteaza(app, cere_context)  # proprietatea principalului o impune spv_principal (cabinet XOR gratuit)
+
+
+# ============================================================
+#  PAGINI PUBLICE DE GHID (DS cap.22) — /ghid/{slug}
+# ============================================================
+import re as _ghid_re
+import html as _ghid_html
+
+_GHID_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ghid")
+_GHID_SLUG_RE = _ghid_re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+
+# Shell public: leaga stil.css, foloseste DOAR clase + tokeni. Fara <style> inline,
+# fara culori scrise direct (invers fata de /public/termeni). Antet+subsol in linia
+# partii publice existente (bara .pagina-bara, link inapoi, link Termeni).
+_GHID_PAGINA = """<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLU}} · iConta.eu</title>
+<link rel="stylesheet" href="/static/stil.css">
+<link rel="manifest" href="/static/manifest.json">
+<link rel="apple-touch-icon" href="/static/icon-192.png">
+</head>
+<body>
+<div class="ghid-shell">
+  <header class="pagina-bara">
+    <a class="pagina-bara-stanga" href="/">
+      <img class="pagina-bara-logo" src="/static/logo_simbol.png" alt="iConta.eu">
+      <span class="pagina-bara-marca">iConta.eu</span>
+    </a>
+    <a class="pagina-bara-acces" href="/">Intră în cont</a>
+  </header>
+  <main class="ghid-wrap">
+{{CORP}}
+    <hr>
+    <p class="ghid-subsol"><a href="/">← iConta.eu</a> · <a href="/public/termeni">Termeni și condiții</a></p>
+  </main>
+</div>
+</body>
+</html>"""
+
+
+def _ghid_titlu(txt):
+    for _ln in txt.split("\n"):
+        if _ln.startswith("# "):
+            return _ln[2:].strip()
+    return "Ghid"
+
+
+def _ghid_semafor(linii):
+    """Semafor grafic (DS cap.8/22): linii 'rosu|galben|verde|gri: text' -> randuri cu LED
+    colorat DOAR prin token (--rosu-semafor/--galben/--verde/--gri-semafor), ordinea din fisier."""
+    randuri = []
+    for _ln in linii:
+        _s = _ln.strip()
+        if not _s:
+            continue
+        _m = _ghid_re.match(r'^(rosu|galben|verde|gri)\s*:\s*(.*)$', _s, _ghid_re.I)
+        if not _m:
+            continue
+        _cul = _m.group(1).lower()
+        _txt = _ghid_html.escape(_m.group(2).strip())
+        randuri.append(
+            '<div class="ghid-semafor-rand ghid-semafor-%s"><span class="ghid-semafor-led"></span>'
+            '<span class="ghid-semafor-text">%s</span></div>' % (_cul, _txt))
+    return '<div class="ghid-semafor">' + "".join(randuri) + '</div>'
+
+
+def _ghid_containers(txt):
+    """Sintaxa proprie, simpla de scris de mana: blocuri ':::nume ... :::' -> <div class=nume>
+    (markdown randat inauntru prin md_in_html). ':::ghid-semafor' e special (linii culoare:text)."""
+    linii = txt.split("\n")
+    out = []
+    i = 0
+    n = len(linii)
+    while i < n:
+        ln = linii[i]
+        m = _ghid_re.match(r'^:::\s*([a-z0-9-]+)\s*$', ln.strip())
+        if m:
+            nume = m.group(1)
+            j = i + 1
+            corp = []
+            while j < n and linii[j].strip() != ":::":
+                corp.append(linii[j])
+                j += 1
+            if nume == "ghid-semafor":
+                out.append(_ghid_semafor(corp))
+            else:
+                out.append('<div class="%s" markdown="1">' % nume)
+                out.append("")
+                out.extend(corp)
+                out.append("")
+                out.append("</div>")
+            i = j + 1
+        else:
+            out.append(ln)
+            i += 1
+    return "\n".join(out)
+
+
+def _ghid_randeaza(txt):
+    import markdown as _md
+    return _md.markdown(_ghid_containers(txt),
+                        extensions=["extra", "sane_lists", "md_in_html", "attr_list"])
+
+
+def _ghid_pagina_html(titlu, corp_html):
+    return _GHID_PAGINA.replace("{{TITLU}}", _ghid_html.escape(titlu)).replace("{{CORP}}", corp_html)
+
+
+def _ghid_404():
+    return Response(
+        content=_ghid_pagina_html("Ghid inexistent",
+                                  "<h1>Ghid inexistent</h1><p>Pagina căutată nu există sau a fost mutată.</p>"),
+        media_type="text/html; charset=utf-8", status_code=404)
+
+
+@app.get("/ghid/{slug}")
+def public_ghid(slug: str):
+    """Pagina publica de ghid (DS cap.22). Fara autentificare. slug -> ghid/{slug}.md -> markdown -> shell."""
+    if not _GHID_SLUG_RE.match(slug or ""):
+        return _ghid_404()
+    cale = os.path.join(_GHID_DIR, slug + ".md")
+    if not os.path.isfile(cale):
+        return _ghid_404()
+    txt = open(cale, encoding="utf-8").read()
+    return Response(content=_ghid_pagina_html(_ghid_titlu(txt), _ghid_randeaza(txt)),
+                    media_type="text/html; charset=utf-8")
+

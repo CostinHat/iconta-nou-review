@@ -2258,3 +2258,52 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 
 /* [preturi_reg_v1] preturile in modalul Acces (Client nou): scroll intern, Continua mereu vizibil */
 .preturi-text-modal { max-height: 52vh; overflow-y: auto; text-align: left; margin: 4px 0 0; padding-right: 6px; }
+
+
+/* ============================================================
+   PAGINI PUBLICE DE GHID (DS cap.22) — /ghid/{slug}
+   Totul din tokeni. Fara hex, fara px de font, fara radius literal.
+   ============================================================ */
+.ghid-shell { min-height: 100dvh; background: var(--fundal); display: flex; flex-direction: column; }
+.ghid-wrap { max-width: 820px; width: 100%; margin: 0 auto; padding: 32px 24px 80px; box-sizing: border-box; }
+
+/* tipografia continutului randat din markdown (scara cap.14, culori cap.15) */
+.ghid-wrap h1 { font-size: var(--text-titlu); font-weight: 800; color: var(--ardezie); line-height: 1.25; margin: 8px 0 16px; }
+.ghid-wrap h2 { font-size: var(--text-sectiune); font-weight: 700; color: var(--ardezie); margin: 32px 0 10px; }
+.ghid-wrap h3 { font-size: var(--text); font-weight: 700; color: var(--ardezie); margin: 24px 0 8px; }
+.ghid-wrap p, .ghid-wrap li { font-size: var(--text-mic); color: var(--gri); line-height: 1.65; }
+.ghid-wrap a { color: var(--albastru); }
+.ghid-wrap strong { color: var(--ardezie); }
+.ghid-wrap blockquote { border-left: 3px solid var(--linie); margin: 16px 0; padding: 4px 0 4px 16px; color: var(--gri-clar); }
+.ghid-wrap hr { border: none; border-top: 1px solid var(--linie); margin: 28px 0; }
+.ghid-subsol { font-size: var(--text-desc); color: var(--gri); margin-top: 28px; }
+
+/* .ghid-temei — temei legal: bordura laterala, fara fundal propriu */
+.ghid-temei { border-left: 3px solid var(--albastru); padding: 4px 0 4px 16px; margin: 20px 0; }
+.ghid-temei p, .ghid-temei li { color: var(--ardezie); }
+
+/* .ghid-exemplu — exemplu numeric (SC Exemplu SRL) */
+.ghid-exemplu { background: var(--alb); border: 1px solid var(--linie); border-radius: var(--raza); padding: 18px 20px; margin: 20px 0; }
+.ghid-exemplu p, .ghid-exemplu li { color: var(--ardezie); }
+
+/* .ghid-semafor — semaforul in rol grafic (DS cap.8: ordine rosu -> galben -> verde, doar marime/rol diferit) */
+.ghid-semafor { display: flex; flex-direction: column; gap: 12px; margin: 22px 0; }
+.ghid-semafor-rand { display: flex; align-items: center; gap: 14px; }
+.ghid-semafor-led { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; }
+.ghid-semafor-text { font-size: var(--text-mic); color: var(--ardezie); }
+.ghid-semafor-rosu   .ghid-semafor-led { background: var(--rosu-semafor); }
+.ghid-semafor-galben .ghid-semafor-led { background: var(--galben); }
+.ghid-semafor-verde  .ghid-semafor-led { background: var(--verde); }
+.ghid-semafor-gri    .ghid-semafor-led { background: var(--gri-semafor); }
+
+/* .ghid-comparatie — manual vs automat (tabel din markdown) */
+.ghid-comparatie { margin: 22px 0; overflow-x: auto; }
+.ghid-comparatie table { width: 100%; border-collapse: collapse; }
+.ghid-comparatie th, .ghid-comparatie td { border: 1px solid var(--linie); padding: 10px 14px; text-align: left; font-size: var(--text-mic); color: var(--ardezie); vertical-align: top; }
+.ghid-comparatie th { background: var(--fundal); font-weight: 700; }
+.ghid-comparatie tbody td:last-child { color: var(--verde); }
+
+/* .ghid-procedura — pasi numerotati */
+.ghid-procedura ol { margin: 22px 0; padding: 0; counter-reset: pas; list-style: none; }
+.ghid-procedura li { position: relative; padding: 4px 0 16px 44px; color: var(--gri); font-size: var(--text-mic); line-height: 1.6; }
+.ghid-procedura li::before { counter-increment: pas; content: counter(pas); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--albastru); color: var(--alb); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: var(--text-mic); }

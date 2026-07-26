@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.15 · 22 iulie 2026 (migrat din docx în .md, editabil prin SSH)*
+*Document normativ · v2.29 · 26 iulie 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -202,7 +202,116 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
   - **Comentarii (`//`, `#`) și docstring-uri** — nu se randează, nu-s material public.
   - **`iconta_nou` / `iconta-nou` / `iconta_v2`** — cale de cod / unit systemd / schemă DB; cu „c" mic, nu marca.
 
+## 22. Pagini publice de ghid
+
+**Domeniu:** rutele `/ghid/{slug}`. Pagini publice, indexabile, care explică o problemă fiscală reală și arată cum o rezolvă iConta.eu.
+
+**Graniță.** Ghidurile sunt **înăuntrul** sistemului de design, nu alături de el. Nu beneficiază de scutirea acordată landing-ului. Verificatorul le păzește ca pe ecranele aplicației.
+
+---
+
+### 1. Ce se refolosește, fără excepție
+
+**Culori:** exclusiv tokenii din cap.15 — `--ardezie` (text), `--gri`/`--gri-clar` (text secundar), `--albastru` (accent), `--linie` (borduri), `--fundal`/`--alb` (fundaluri), plus stările `--rosu`/`--verde`/`--galben`. Niciun hex în CSS-ul ghidurilor, niciun `<style>` inline în shell.
+
+**Tipografie:** scara din cap.14 — `--text-titlu` 22px · `--text-sectiune` 19px · `--text` 17px · `--text-mic` 15px · `--text-desc` 13px · `--text-micut` 12px — plus clasele `.tip-*`. Fără dimensiuni în pixeli scrise de mână.
+
+**Raze:** `--raza`. Fără valori inline.
+
+**Icoane:** exclusiv din `ICOANE`. Fără SVG-uri locale.
+
+**Semafor:** `--verde`, `--galben`, `--rosu-semafor`, cu grila existentă.
+
+---
+
+### 2. Relația cu landing-ul
+
+Landing-ul folosește azi valori hexazecimale scrise direct (accent, butoane, hero) și o familie de font proprie. Este o excepție istorică, tolerată prin lista albă a verificatorului.
+
+**Ghidurile nu moștenesc această excepție.** Ele folosesc tokeni.
+
+Consecința practică: dacă un token nu produce rezultatul vizual dorit lângă landing, **se schimbă tokenul**, nu se scrie hex în ghid. Divergența se rezolvă în sus, către sistem, niciodată în jos.
+
+Alinierea landing-ului la tokeni rămâne o sarcină deschisă. Până se face, tranziția vizuală dintre landing și ghid poate fi ușor perceptibilă. Este acceptat temporar; nu este un motiv de a introduce hex în ghiduri.
+
+---
+
+### 3. Componente proprii
+
+Ghidurile au cinci componente pe care aplicația nu le are, pentru că nu-i sunt necesare. Toate se construiesc din tokenii existenți.
+
+**`.ghid-temei`** — blocul de temei legal.
+Conține articolul citat exact și sursa. Se distinge prin bordură laterală, nu prin culoare de fundal proprie. Este elementul care susține credibilitatea paginii; nu se prescurtează și nu se parafrazează.
+
+**`.ghid-exemplu`** — blocul de exemplu numeric.
+Date fictive plauzibile („SC Exemplu SRL", sume rotunde credibile). Niciodată date reale de clienți, niciodată date din tenanții de test. Sumele se formatează cu funcțiile canonice de bani.
+
+**`.ghid-semafor`** — semaforul, în rol grafic.
+Aceiași tokeni și aceeași ordine roșu → galben → verde ca la capitolul semaforului. Diferă exclusiv prin mărime și prin rol: aici este ilustrație, nu stare de sistem. Nu introduce culori noi și nu inversează ordinea.
+
+**`.ghid-comparatie`** — tabel manual contra automat.
+Două coloane. Stânga descrie procedura manuală, complet și onest. Dreapta descrie ce face iConta.eu. Coloana din stânga nu se caricaturizează — un contabil recunoaște imediat o descriere falsă a propriei munci și pierde încrederea în tot restul paginii.
+
+**`.ghid-procedura`** — pași numerotați.
+Procedura manuală, pas cu pas, utilizabilă și fără produs. Aceasta este partea care aduce trafic și încredere.
+
+---
+
+### 4. Regula variației
+
+**Variația vine din conținut, nu din stil.**
+
+Fiecare pagină alege dintre cele cinci componente pe cele relevante subiectului ei. O pagină despre controlul încrucișat folosește semaforul și tabelul de comparație. Una despre salarizare folosește exemplul numeric și procedura.
+
+Paginile arată diferit pentru că *sunt* diferite, nu pentru că li se schimbă culorile, fonturile sau spațierile.
+
+**Interzis:** paletă proprie per pagină, font propriu per pagină, componente inventate ad-hoc pentru o singură pagină.
+
+Dacă un subiect cere o componentă care nu există, aceasta se adaugă în acest capitol înainte de a fi folosită — nu invers.
+
+---
+
+### 5. Structura unei pagini
+
+Ordinea este fixă. Ce lipsește se omite; ce există nu se reordonează.
+
+1. Titlu — problema, în cuvintele contabilului
+2. Durerea concretă — ce se întâmplă azi, fără produs
+3. Temeiul legal — `.ghid-temei`
+4. Procedura manuală — `.ghid-procedura`
+5. Exemplu numeric — `.ghid-exemplu`
+6. Comparație — `.ghid-comparatie`
+7. Ce face iConta.eu — scurt, la final
+8. Legătură către înregistrare
+
+Proporția: aproximativ 80% din conținut este valoare independentă de produs (temei, procedură, exemplu), aproximativ 20% este produsul. O pagină care începe cu produsul nu se clasează și nu convinge.
+
+---
+
+### 6. Conținut: ce se poate afirma
+
+Fiecare afirmație dintr-o pagină provine exclusiv din lista de afirmații permise din registrul de marketing. Nicio afirmație din lista interzisă, în nicio formă, nici parafrazată.
+
+Fiecare temei legal se verifică la sursa oficială înainte de publicare, nu din memorie.
+
+---
+
+### 7. Randare
+
+Textul unei pagini stă într-un fișier Markdown separat. Nu în registrul de funcționalități — un text de 600–1000 de cuvinte într-o celulă face fișierul ilizibil.
+
+Shell-ul care randează leagă foaia de stil canonică și folosește clase și tokeni. Fără `<style>` inline, fără culori scrise direct în șablon.
+
+---
+
+### 8. Verificator
+
+Zona `/ghid` intră sub verificator, cu regulile aplicabile oricărei interfețe: culori din tokeni, tipografie din scară, raze din tokeni, icoane din setul canonic, formatare de bani și date prin funcțiile canonice.
+
+Nu se adaugă pe lista albă a claselor publice.
+
 ## Changelog
+**v2.29 (26.07.2026)** — cap.22 nou: **Pagini publice de ghid** (`/ghid/{slug}`), INAUNTRUL sistemului de design (nu scutite ca landing-ul). Ruta publica citeste `ghid/{slug}.md`, randeaza markdown -> shell care leaga `stil.css` si foloseste clase+tokeni (fara `<style>` inline, invers fata de /public/termeni); slug inexistent -> 404 curat. 5 componente noi din tokeni: `.ghid-temei` / `.ghid-exemplu` / `.ghid-semafor` / `.ghid-comparatie` / `.ghid-procedura`; semaforul grafic refoloseste `--verde`/`--galben`/`--rosu-semafor` si ordinea din cap.8 (doar marime/rol diferit, zero culori noi). Marcaj in markdown prin containere `:::nume ... :::`. Verificator extins cu regula **GHID_ZONA** (scaneaza `ghid/*.md`: hex/style/font-size/border-radius/SVG inline interzise); clasele de ghid NU sunt pe lista alba. FUNCTIONALITATI.csv: coloana noua `ghid_slug` (goala = fara pagina). Pagina de proba `proba-ghid` (umplutura, se sterge la prima pagina reala).
 **v2.28 (26.07.2026)** — cap.21 nou: marca **„iConta.eu" peste tot** în material public (MARKETING.md cap. BRAND). Gardă **BRAND_EU** în verificator: scanează frontend (`js/mjs/html`) + literalele de email din backend (`main.py`, `notificari_scadenta`, `observare`), semnalează `iConta` neurmat de `.eu`; al doilea assert `iConta.eu.eu`=0. Excepții documentate (listă albă cu motiv): „Admin iConta" (nume panou), `<SoftwareCompanyName>`/`<SoftwareID>` SAF-T (fiscal), comentarii/docstring, `iconta_nou`/`iconta-nou`/`iconta_v2`. Normalizate 21 literale backend rămase (welcome/magic-link/portal/asistent/recomandare + alerte interne + titlu API).
 **v2.27 (24.07.2026)** — cap.10 extins a treia formă: `ESC_LOCAL` prinde și **strip inline** de caractere HTML (`.replace(/[<>&]/g, …)`) — sanitizare ad-hoc, data-lossy (scoate `&` din nume), a doua sursă de sanitizare. Convertite 6 apariții → `esc` canonic (tipare.js ×2, capacitate.js ×1, cabinet.js ×3; recomanda.js reparat separat). Regex robust la reordonarea clasei (prinde orice clasă ce conține `<>&`).
 **v2.26 (24.07.2026)** — cap.10 extins (SECURITATE): `esc` se importă din api.js, nu se redefinește local. `ESC_LOCAL` prinde acum și **redefinirea locală** a lui `esc` (`function esc`/`const|let|var esc =`), nu doar variantele `_esc`/`escB`/… Cauză: `setari.js` avea un `esc` local care escapa DOAR `"` → XSS pe `<>` în conținut de element (numele cheii API, user-controlled, la randare). Reparate 5 ecrane care redefineau `esc` local (setari — slab; rip/operatiuni/pachete/etransport — escapau `&<>"`, dar tot copii divergente fără `'`) → toate importă acum `esc` canonic (`&<>"'`). api.js (sursa) e în static/js/, nescanat de gardă → fără auto-flag.

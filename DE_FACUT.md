@@ -744,3 +744,8 @@ LIMITA = fără `api_keys.env`, integrările externe neacoperite — detaliu în
      `users.ultima_logare` (NU derivat din `audit_log` — se șterge la retenția de 12 luni). (DECIZII 25.07.)
    - **SAF-T `<SoftwareCompanyName>` / `<SoftwareID>` (d406.py)** — rămân „iConta" (identificare software către ANAF);
      schimbarea = decizie **fiscală separată**, neatinsă de corecția de brand și de gardianul BRAND_EU. (DECIZII 26.07.)
+
+## Pagini publice de ghid — datorii deschise (26.07.2026)
+- **Aliniere landing la tokeni:** azi `pagina-*` are hex hardcodat (#0f6cbd, #3d8fd6, #1F2937, #6B7280) si font propriu ("Segoe UI Variable Display"); ghidurile folosesc tokeni -> divergenta vizuala la tranzitia landing<->ghid, ACCEPTATA temporar. De adus landing-ul pe tokeni (atunci se scoate si exceptia din verificator).
+- **/public/termeni:** shell-ul are `<style>` inline cu culori proprii (#1d3a5f, #f4f6f9 ...) -> de adus la clase + tokeni, ca la ghiduri (cap.22).
+- **Paginile de continut de ghid:** se scriu treptat (una cate una), NU toate deodata. Pagina de proba `ghid/proba-ghid.md` se sterge/inlocuieste la prima pagina reala.
