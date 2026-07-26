@@ -705,6 +705,8 @@ odată cu curățarea `?v=` de mai sus. Consemnat.
 `GRUPE_FUNC_STALE`; cluster GDPR F199-F205 (probat HTTP end-to-end pe cont fabricat); marca „iConta.eu" peste tot +
 gardian `BRAND_EU` (probat pe subiect+corp de email RANDAT, nu pe sursă). Istoric git remote off-site = REZOLVAT
 25.07 (`github-cont:CostinHat/iconta-v2`, push manual per sesiune — de automatizat cu timer dacă vrem).
+**Suita de teste = REZOLVATĂ 26.07: 946/946 verzi în 22.34s cu `db.env`** (scoasă din punch-list, era poziția 2;
+LIMITA = fără `api_keys.env`, integrările externe neacoperite — detaliu în ISTORIC 26.07).
 
 **Punch-list pilot — deschis, ordonat după ce blochează:**
 
@@ -713,26 +715,27 @@ gardian `BRAND_EU` (probat pe subiect+corp de email RANDAT, nu pe sursă). Istor
    pilotul cu cabinet real nu pornește. Acțiune: trimite briefingul. La avocat se ridică ȘI decizia „criptare disc NU"
    (pct.7).
 
-2. **Suita de teste — nimeni nu știe câte TREC azi.** Verificat la sursă 26.07: **946 colectate / 94 fișiere
-   `test_*.py`** (colectare, NU trecere). Notele vechi „382" și „438" erau STALE → înlocuite. Rularea depinde încă de
-   env-ul din shell (`db.env`) — vezi „TEMA suita depinde de env" mai sus (fix conftest/runner NEDECIS). **DESCHIS:**
-   obiectivul e o **rulare completă cu env real**; câte trec / câte pică azi **nu știe nimeni** (regresii ascunse
-   altfel de un roșu de mediu indistinct de unul real).
-
-3. **e-Factura round-trip pe CIF real — niciodată probat cap-coadă.** Emiterea+trimiterea+recepția SPV (F176/F127/
+2. **e-Factura round-trip pe CIF real — niciodată probat cap-coadă.** Emiterea+trimiterea+recepția SPV (F176/F127/
    F179) sunt LIVE pe cod, dar dovada s-a făcut pe token dev (fără drept SPV pe un CIF real). Se probează DOAR cu
    primul patron real cu certificat înrolat pe CIF-ul LUI. Necolorat verde live. (Vezi secțiunea SPV mai sus.)
 
-4. **F143 faza 2 — bugete pe centre de cost.** F143 (centre de cost) e la faza 1; faza 2 = bugete per centru
+3. **F143 faza 2 — bugete pe centre de cost.** F143 (centre de cost) e la faza 1; faza 2 = bugete per centru
    (planificat vs realizat). NECONSTRUIT. Extindere, nu blocaj — la caz real / cerere.
 
-5. **Praguri alertă acces anormal (F202) — de calibrat în pilot.** Pragurile implicite (8 tenanți distincți / 300
+4. **Praguri alertă acces anormal (F202) — de calibrat în pilot.** Pragurile implicite (8 tenanți distincți / 300
    acțiuni / 10 min; dedup 60 min) sunt conservatoare, alese fără trafic real. De recalibrat pe tiparul din pilot
    (fals-pozitive vs ratări). Configurabile prin env — nu cod.
 
-6. **F127/F128 SPV — AMÂNATE, reevaluare 17.08.** (Detaliu în secțiunea SPV mai sus.) Cauza reală = **custodia
+5. **F127/F128 SPV — AMÂNATE, reevaluare 17.08.** (Detaliu în secțiunea SPV mai sus.) Cauza reală = **custodia
    certificatului** calificat într-un SaaS cloud, NU „cloud nu poate tehnic"; **agentul local RESPINS**. Pendinte pe
    ANAF adăugând OAuth la SPVWS2; fără răspuns până pe 17.08 → rămân amânate.
+
+6. **[prioritate joasă, igienă] conftest/runner care sourcează `db.env` automat.** Suita a trecut 946/946 pe 26.07,
+   dar DOAR fiindcă `db.env` a fost sourcat manual în shell înainte de `pytest`; fără el, testele care ating DB dau
+   roșu de mediu („pool neinițializat"), indistinct de un roșu real. DE FĂCUT (fix a/b din „TEMA suita depinde de env"
+   mai sus): (a) `conftest.py` care citește `db.env` la colectare (`os.environ.setdefault`, ca pentru JWT/ANAF), SAU
+   (b) un runner/Makefile care pornește pytest cu env-ul complet al serviciului. Atenție: `db.env` are secrete reale de
+   prod — se citește fișierul, nu se hardcodează conținutul în git. NU blocant.
 
 7. **Decizii amânate (watch — detaliu în DECIZII.md):**
    - **Bedrock EU pentru Claude** — DECIS: se migrează, dar DUPĂ pilot (DECIZII 25.07).

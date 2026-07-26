@@ -2926,3 +2926,12 @@ corp RANDAT** (ce ar pleca efectiv la destinatar), nu pe sursa din cod: **6 rute
 (nume cabinet/email/link/firmă), **zero `iConta.eu.eu`, zero placeholder neînlocuit**; alerta a emis subiect
 `[iConta.eu] …`. Probă negativă a gardianului în DOUĂ locuri (un `iConta` bare într-un `.js` frontend + unul într-un
 literal din main.py → `BRAND_EU` prinde 2, apoi 0 după restaurare). Cont fabricat curățat.
+
+**Suita completă de teste rulată — 946/946 verzi.** După verificare la sursă a siguranței (ce DB/scheme ating
+testele), suita a rulat integral: **946 passed in 22.34s, exit 0, zero picate / erori / skipped**. Nicio regresie.
+Rularea a confirmat și disciplina de izolare: scrierile în DB sunt fie pe date SINTETICE cu `rollback` (an 2099 /
+tenant 990163, alese să nu coincidă cu real), fie pe date FABRICATE cu curățare (`test_gdpr_functional`, singurul cu
+commit, pe cabinet inventat). Post-rulare: **0 cabinete „ZZ TEST", 0 declarații sintetice — producția neatinsă**.
+**LIMITA rulării (explicită):** rulat cu **DOAR `db.env` sourcat**, FĂRĂ `api_keys.env` — deci ramurile care apelează
+Brevo / ANAF / SPV / Anthropic întorc `False` fără cheie (sau folosesc placeholder-ele de test din conftest) și **NU
+sunt acoperite** de această rulare. „946 verzi" = logica pură + DB (prod, cu rollback), NU integrările externe reale.
