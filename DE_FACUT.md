@@ -1,9 +1,38 @@
 # iConta — DE FĂCUT
 
 **Doar viitorul: ce e deschis. Când termini, ștergi rândul. Trecutul e în ISTORIC.md + git log.**
-Ultima actualizare: 26.07.2026 (punch-list pilot jos)
+Ultima actualizare: 26.07.2026 (rezolvat azi + deschis, sus)
 
 ---
+
+## 26.07.2026 — pilot: rezolvat azi + deschis
+
+**REZOLVATE azi** (detaliu + commit-uri în ISTORIC.md / git):
+- Suita de teste: **946/946** verde (cu `db.env` sursat).
+- **`conftest.py`** la rădăcină sourceașă automat `db.env` — suita nu mai depinde de shell; skip pe DB = semnal vizibil.
+- **„Am uitat parola"** pentru conturile de cabinet (token hash, single-use, rate-limit, invalidare sesiuni).
+
+**DESCHISE — prioritate RIDICATĂ:**
+- **T&C public:** pe server e încă varianta de lucru cu marcaje interne, randată prin filtrare — de urcat fișierul public curat și de scos filtrarea.
+- **Răspunsul avocatului (13 marcaje `[AVOCAT:]` în T&C)** — blochează orice angajament comercial ferm până la primire.
+- **Magic-link: tokenurile stocate în CLAR în DB** — cine ajunge la un dump/backup se autentifică drept orice client. De trecut pe hash (ca la resetarea de parolă).
+
+**DESCHISE — restul:**
+- e-Factura round-trip pe CIF real (cu drept SPV).
+- F143 faza 2.
+- Praguri F202.
+- F127/F128 SPV (review 17.08).
+- Imagine `og:image` dedicată per ghid (1200×630) — azi toate folosesc `logo_login.png`.
+- Google Search Console: înregistrare `iconta.eu` + trimitere sitemap (manual, Costin).
+- Aliniere landing la tokeni (azi hex hardcodat + font propriu; divergență acceptată temporar).
+- `/public/termeni` la clase + tokeni (azi `<style>` inline cu culori proprii).
+- Prompt caching pe `/portal/bon`.
+- Cod mort: `ai_client.citeste_imagine`.
+- Font original pentru logo (azi „.eu" în Fredoka Medium substitut).
+- Pagini de ghid următoare (candidat: SAF-T / D406).
+
+---
+
 
 ## 1. Testare pentru pilot (din planul P1-P5, orientat business)
 
@@ -730,7 +759,7 @@ LIMITA = fără `api_keys.env`, integrările externe neacoperite — detaliu în
    certificatului** calificat într-un SaaS cloud, NU „cloud nu poate tehnic"; **agentul local RESPINS**. Pendinte pe
    ANAF adăugând OAuth la SPVWS2; fără răspuns până pe 17.08 → rămân amânate.
 
-6. **[prioritate joasă, igienă] conftest/runner care sourcează `db.env` automat.** Suita a trecut 946/946 pe 26.07,
+6. **[REZOLVAT 26.07 — conftest.py rădăcină] conftest/runner care sourcează `db.env` automat.** Suita a trecut 946/946 pe 26.07,
    dar DOAR fiindcă `db.env` a fost sourcat manual în shell înainte de `pytest`; fără el, testele care ating DB dau
    roșu de mediu („pool neinițializat"), indistinct de un roșu real. DE FĂCUT (fix a/b din „TEMA suita depinde de env"
    mai sus): (a) `conftest.py` care citește `db.env` la colectare (`os.environ.setdefault`, ca pentru JWT/ANAF), SAU
@@ -744,15 +773,3 @@ LIMITA = fără `api_keys.env`, integrările externe neacoperite — detaliu în
      `users.ultima_logare` (NU derivat din `audit_log` — se șterge la retenția de 12 luni). (DECIZII 25.07.)
    - **SAF-T `<SoftwareCompanyName>` / `<SoftwareID>` (d406.py)** — rămân „iConta" (identificare software către ANAF);
      schimbarea = decizie **fiscală separată**, neatinsă de corecția de brand și de gardianul BRAND_EU. (DECIZII 26.07.)
-
-## Pagini publice de ghid — datorii deschise (26.07.2026)
-- **Aliniere landing la tokeni:** azi `pagina-*` are hex hardcodat (#0f6cbd, #3d8fd6, #1F2937, #6B7280) si font propriu ("Segoe UI Variable Display"); ghidurile folosesc tokeni -> divergenta vizuala la tranzitia landing<->ghid, ACCEPTATA temporar. De adus landing-ul pe tokeni (atunci se scoate si exceptia din verificator).
-- **/public/termeni:** shell-ul are `<style>` inline cu culori proprii (#1d3a5f, #f4f6f9 ...) -> de adus la clase + tokeni, ca la ghiduri (cap.22).
-- **Paginile de continut de ghid:** se scriu treptat (una cate una), NU toate deodata. Pagina de proba `ghid/proba-ghid.md` se sterge/inlocuieste la prima pagina reala.
-
-## Ghiduri publice — SEO per pagina (26.07.2026, INAINTE de a doua pagina) — REZOLVAT 26.07.2026 (front-matter description + canonical + OG + JSON-LD; index /ghid; sitemap; robots)
-- Shell-ul de ghid (_GHID_PAGINA, main.py) seteaza `<title>` PER PAGINA, derivat din H1 (`{H1} · iConta.eu`) -> nu e identic intre pagini. DAR nu seteaza deloc `<meta name="description">` -> toate paginile de ghid sunt fara descriere proprie (Google alege singur snippetul, fara control per pagina). De adaugat, INAINTE de a doua pagina: mecanism per-pagina pentru meta description (si, optional, un titlu SEO dedicat, distinct de H1, ~60 caractere) — ex. front-matter in .md (`title:`/`description:`) citit de ruta. Fara el, a doua pagina concureaza cu prima pe acelasi snippet gol.
-
-## Ghiduri publice — indexare: ramase (26.07.2026)
-- **Imagine og dedicata per ghid:** azi `og:image` = /static/logo_login.png (provizoriu, identic pe toate paginile). De facut o imagine sociala dedicata per ghid (1200x630) — altfel toate linkurile arata la fel cand sunt trimise pe WhatsApp / puse pe LinkedIn.
-- **Google Search Console:** de inregistrat iconta.eu si de trimis sitemap-ul (https://iconta.eu/sitemap.xml). [Costin, manual — sa nu se uite.]

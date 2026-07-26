@@ -2935,3 +2935,30 @@ commit, pe cabinet inventat). Post-rulare: **0 cabinete „ZZ TEST", 0 declaraț
 **LIMITA rulării (explicită):** rulat cu **DOAR `db.env` sourcat**, FĂRĂ `api_keys.env` — deci ramurile care apelează
 Brevo / ANAF / SPV / Anthropic întorc `False` fără cheie (sau folosesc placeholder-ele de test din conftest) și **NU
 sunt acoperite** de această rulare. „946 verzi" = logica pură + DB (prod, cu rollback), NU integrările externe reale.
+
+## 26.07.2026 — Restul zilei: gratuit eliminat, site public, prețuri, ghiduri live
+
+**`conftest.py` la rădăcină — suita nu mai depinde de shell (commit 460ce2e).** Cele 14 „skipped" din rularea inițială erau teste de integrare DB sărite fiindcă `pytest` fusese pornit fără `db.env` sourcat — skip TĂCUT care arăta verde. Fix: `conftest.py` la rădăcină sourceașă automat `~/.iconta/db.env` la colectare (citește fișierul, nu comite secrete), indiferent cum e pornită suita. Garda `_db_ok()` rămâne: db.env lipsă / bază jos → testele de DB SAR VIZIBIL (antet + `reportchars 's'`). Reparat și `test_trimite_nevalidat_nu_uploadeaza_prod`, care n-avea `skipif` și dădea roșu-de-mediu la bază greșită (mutat `_db_ok` sus + gardat). **Probat:** rulare normală FĂRĂ env manual = **946 passed, 0 skipped** (înainte, 14 sărite tăcut); bază jos → skip vizibil, 0 failed.
+
+**Facturarea gratuită ELIMINATĂ definitiv (commit 88e61f4).** F153-F160, F159, F185, F186 → **ELIMINAT 26.07**. Contul de facturare gratuită scos complet din produs; **zero conturi reale în DB** (verificat). Portalul clientului **INTACT**, probat funcțional pe `/portal/bon`. Vocabular nou în registru, ca să nu se confunde istoria: **ELIMINAT** (a fost LIVE și se retrage) ≠ **RESPINS** (nu s-a construit niciodată).
+
+**Poarta beta scoasă — site DESCHIS public (commit 8711263 + ops).** Câmpul „cod acces" la login = DERIVAT dintr-o singură sursă (`BETA_COD_ACCES`, via `/public/config`). Deschisă prima dată în fereastra 11:33-14:41 (verificat: **zero conturi create** în acea fereastră), apoi env-ul golit definitiv → **site public de la 16:25:33**. **Notificare pe email la fiecare cont nou de cabinet** prin `observare._trimite_brevo` (fără date personale — doar că s-a creat un cont și când); probat real cu 2 conturi fabricate (`trimisa=True` în uvicorn.log), apoi șterse din DB (commit 51f1aac).
+
+**Prețuri — sursă unică, în modal + în „Client nou" (commit-uri 650bc3c, b079cea).** Card „Prețuri" (primul) în modalul Funcționalități + prețurile ÎNTÂI în fluxul „Client nou", ambele din `preturi.js` (o singură sursă, protejată de generator). Trepte PROGRESIVE **10/8/6 lei** per firmă administrată (fără TVA); **30 de bonuri OCR incluse**, 0,20 lei peste; **15% la plata anuală**; preț blocat 12 luni (24 pentru primele 20 de cabinete).
+
+**Termeni și condiții în aplicație (commit 4ce89af).** Pagină publică `/public/termeni` (markdown→HTML din fișier), **bifă obligatorie validată pe BACKEND** (nu doar JS), acord stocat cu versiunea (cine, când, ce versiune). **LIMITĂ (de reținut):** pe server e încă varianta de LUCRU, cu marcaje interne ([AVOCAT:], notă internă, anexă), randată prin FILTRARE; **versiunea publică curată NU a fost încă urcată.**
+
+**„Am uitat parola" pentru conturile de cabinet (commit 01b0f8b).** Flux separat de magic-link: token stocat DOAR ca hash sha256, expiră 60 min, single-use (consumat atomic), răspuns IDENTIC la email inexistent (anti-enumerare), rate-limit per IP, invalidarea sesiunilor vechi, audit_log. **Probat real cap-coadă.**
+
+**Logo „iConta.eu" în fereastra de logare + manifest PWA (commit 889d03b).** `logo_login.png` refăcut cu „iConta.eu" (simbol + cloud + canvas neschimbate); `manifest.json` name/short_name → „iConta.eu". Servit live (etag nou, `no-cache`). **Notă onestă:** „.eu" e într-un font substitut (Fredoka Medium) — fontul original al wordmark-ului nu există ca fișier pe server; „iConta" a rămas pixelii originali.
+
+**Infrastructura paginilor de ghid (commit 907b66d).** Capitol nou (cap.22) în DESIGN_SYSTEM.md, 5 componente din tokeni (`.ghid-temei/.ghid-exemplu/.ghid-semafor/.ghid-comparatie/.ghid-procedura`), rută publică `/ghid/{slug}` (md→shell cu clase+tokeni, fără `<style>` inline; 404 curat), gardian `GHID_ZONA` în verificator, coloană `ghid_slug` în FUNCTIONALITATI.csv.
+
+**SEO complet pentru ghiduri (commit ab4d620).** Front-matter per pagină (title/description/published/modified), meta description, `<link rel=canonical>`, Open Graph (title/description/url/type/site_name/locale/image), JSON-LD Article (publisher = FISCALOS ICONTA SRL / iConta.eu, inLanguage ro-RO), index `/ghid` generat din CSV+fișiere (legat din subsolul landing-ului), `sitemap.xml` generat automat, `robots.txt`. **Probat:** `lang=ro`, un singur `<h1>`, 404 corect, JSON-LD valid, sitemap XML valid.
+
+**TREI pagini de ghid publicate — fiecare cu temeiul verificat la sursă (commit-uri ed0a3fe, 0d4d858, f9f1383):**
+- **control-incrucisat-d390** (F163). Eroare prinsă LA VERIFICARE: termenul D390 **nu mai e în art. 325** — scos prin **OUG 70/2024**, stabilit acum prin **OPANAF 6073/2024**; corectat și în MARKETING.md (commit cb3d70b).
+- **cota-tva-avans-inainte-livrare-dupa** (F184). Art. 291 alin. (4) și (6), art. 282 alin. (2); cote Legea 141/2025 (21%/11%). **Limita produsului scrisă explicit în pagină:** motorul se uită la DATA FACTURII, nu la faptul generator → dă roșu pe o stornare legitimă la 19% după 1.08; semnalează, contabilul confirmă.
+- **ce-verifici-cand-preiei-o-firma-de-la-alt-contabil** (F183). Art. 10 alin. (4) din Legea 82/1991, citat exact; balanța = art. 22 + OMFP 1802/2014. Punctul forte scris ca atare: motorul raportează ce NU verifică (asociați/mijloace fixe/salariați/vector) — gri vizibil.
+
+**Verificator TOTAL 0 și suita 946/946 după fiecare pas.**
