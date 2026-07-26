@@ -72,6 +72,5 @@
   curate, permanent.
 - Design: semaforul (verde/galben/roșu) = element-semnătură (e produsul). Ton cald + riguros fiscal (art.
   de lege citat corect).
-- Prima pagină-șablon construită: control-incrucisat-d390 (art. 325 CF verificat). URL pattern:
-  iconta.eu/ghid/{slug}.
+- STARE (26.07.2026): NELIVRAT — plan, nu realitate. La sursă NU există ruta /ghid/{slug}, niciun șablon și nicio pagină; infrastructura nu e începută. Prima pagină-șablon planificată: control-incrucisat-d390 (temeiul legal — articolul din Codul fiscal — se citează și se verifică la sursă când se scrie pagina, nu se presupune). URL pattern intenționat: iconta.eu/ghid/{slug}.
 - Fiecare afirmație din pagini DOAR din lista PERMISE, niciodată din INTERZISE.
