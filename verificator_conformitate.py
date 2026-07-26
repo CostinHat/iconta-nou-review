@@ -428,6 +428,94 @@ try:
 except Exception as _e:
     rap["grupe_func_stale"] = [("genereaza_grupe_functii", 0, "eroare", str(_e)[:90])]
 
+# ============================================================================================
+# BRAND_EU (MARKETING.md, cap. BRAND / DESIGN_SYSTEM.md cap.21): marca se scrie PESTE TOT
+# "iConta.eu" in orice material PUBLIC. Scaneaza frontend (static/**/*.{js,mjs,html}) +
+# literalele publice din backend (main.py = rute care emit email/UI; notificari_scadenta.py +
+# observare.py = canalele de email). Semnaleaza orice "iConta" NEURMAT de ".eu". Al DOILEA
+# assert al regulii: zero "iConta.eu.eu" (dublura aparuta din corectii peste corectii). Motiv
+# si exceptii: DECIZII 26.07.2026.
+#
+# LISTA ALBA (fiecare cu motiv scris):
+#  - "Admin iConta"          -> nume propriu al panoului de administrare (decizie fondator,
+#                               DECIZII 26.07), NU o aparitie a marcii. Sarit per-aparitie
+#                               (secventa "Admin " imediat inaintea marcii).
+#  - "<SoftwareCompanyName>" -> identificarea softului catre ANAF in SAF-T (core/d406.py:418).
+#                               Camp FISCAL, nu cosmetica; schimbarea = decizie separata (DECIZII
+#                               26.07). d406.py e IN AFARA scopului scanat (fisier fiscal, alaturi
+#                               de <SoftwareID>); garda ramane defensiva daca fisierul intra vreodata.
+#  - comentarii (// in js/html, # in py — inclusiv trailing) si docstring-uri (triple-quote)
+#                            -> nu se randeaza, nu-s material public.
+#  - iconta_nou / iconta-nou / iconta_v2 -> cale de cod / unit systemd / schema DB. Sunt cu 'c'
+#                               mic; regexul marcii ("iConta", C mare) NU le prinde oricum.
+RE_BRAND = re.compile(r'iConta(?!\.eu)')
+RE_BRAND_DBL = re.compile(r'iConta\.eu\.eu')
+rap["brand_eu"] = []
+
+def _brand_hits(text):
+    """Nr. aparitii "iConta" bare din `text`, sarind "Admin iConta" (nume panou)."""
+    h = 0
+    for m in RE_BRAND.finditer(text):
+        st = m.start()
+        if text[max(0, st - 6):st] == "Admin ":
+            continue
+        h += 1
+    return h
+
+def _cod_fara_comentariu_py(linia):
+    """Taie comentariul # (trailing/intreg) respectand string-urile — hex #rrggbb din ele raman cod."""
+    in_s = None
+    for idx, ch in enumerate(linia):
+        if in_s:
+            if ch == in_s:
+                in_s = None
+        elif ch in ("'", '"'):
+            in_s = ch
+        elif ch == "#":
+            return linia[:idx]
+    return linia
+
+def _brand_flag(rel, i, text):
+    if "<SoftwareCompanyName>" in text:  # camp fiscal SAF-T (decizie separata)
+        return
+    s = text.strip()
+    if _brand_hits(text):
+        rap["brand_eu"].append((rel, i, "bare", s[:60]))
+    if RE_BRAND_DBL.search(text):
+        rap["brand_eu"].append((rel, i, ".eu.eu", s[:60]))
+
+_BRAND_STATIC = os.path.expanduser("~/iconta_nou/static")
+for _rad, _d, _fis in os.walk(_BRAND_STATIC):  # frontend: js/mjs/html
+    for _f in sorted(_fis):
+        if not _f.endswith((".js", ".mjs", ".html")) or ".bak" in _f:
+            continue
+        _rel = os.path.relpath(os.path.join(_rad, _f), _BRAND_STATIC)
+        with open(os.path.join(_rad, _f), encoding="utf-8") as _h:
+            for _i, _lin in enumerate(_h.read().split("\n"), 1):
+                if _lin.strip().startswith(("//", "/*", "*", "<!--")):  # comentariu
+                    continue
+                _brand_flag(_rel, _i, _lin)
+
+for _rel in ("main.py", "core/notificari_scadenta.py", "core/observare.py"):  # backend: material public
+    _cale = os.path.join(BAZA_PY, _rel)
+    if not os.path.isfile(_cale):
+        continue
+    _in_doc = False
+    with open(_cale, encoding="utf-8") as _h:
+        for _i, _lin in enumerate(_h.read().split("\n"), 1):
+            _s = _lin.strip()
+            _q = _s.count('"""') + _s.count("'''")
+            if _in_doc:
+                if _q % 2 == 1:
+                    _in_doc = False
+                continue
+            if _q % 2 == 1:  # deschide docstring (nu single-line, care are q par)
+                _in_doc = True
+                continue
+            if _s.startswith("#"):
+                continue
+            _brand_flag(os.path.basename(_rel), _i, _cod_fara_comentariu_py(_lin))
+
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)

@@ -97,7 +97,7 @@ async def lifespan(app):
     db.inchide_pool()
 
 
-app = FastAPI(title="iConta API", version="2026.1", lifespan=lifespan)
+app = FastAPI(title="iConta.eu API", version="2026.1", lifespan=lifespan)
 
 @app.exception_handler(Exception)
 async def _handler_perioada_blocata(request: Request, exc: Exception):
@@ -345,11 +345,11 @@ def _verifica_si_alerta():
     if not email:
         return
     html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
-            "<p>Alerta sanatate server iConta:</p><ul>" +
+            "<p>Alerta sanatate server iConta.eu:</p><ul>" +
             "".join("<li>" + p + "</li>" for p in alerte) +
             "</ul><p>Verifica panoul 'Sanatate server' din Admin iConta.</p></div>")
     import core.observare as _obs
-    _obs.trimite_email_html(email, "Alerta iConta - sanatate server", html)
+    _obs.trimite_email_html(email, "Alerta iConta.eu - sanatate server", html)
 
 async def _bucla_alerte_sanatate():
     import asyncio as _asyncio
@@ -368,7 +368,7 @@ def admin_sanatate_test_alerta(ctx=Depends(cere_cabinet)):
     if not email:
         raise HTTPException(500, "email superadmin negăsit")
     import core.observare as _obs
-    r = _obs.trimite_email_html(email, "TEST Alerta iConta - sanatate server",
+    r = _obs.trimite_email_html(email, "TEST Alerta iConta.eu - sanatate server",
         "<p>Test manual alerta sanatate. Daca ai primit acest email, livrarea functioneaza.</p>")
     return {"trimis_catre": email, "rezultat": str(r)}
 
@@ -1138,10 +1138,10 @@ def register(date: RegisterIn):
     if not r["ok"]:
         raise HTTPException(400, r["mesaj"])
     try:  # register_email_v1: email de bun venit
-        html = ("<p>Buna,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.</p>"
+        html = ("<p>Buna,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.eu.</p>"
                 "<p>Te poti loga oricand cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
                 "<p>Firma proprie a cabinetului este deja adaugata in portofoliu.</p>") % (date.nume_cabinet, date.email)
-        _obs.trimite_email_html(date.email, "Bine ai venit pe iConta", html)
+        _obs.trimite_email_html(date.email, "Bine ai venit pe iConta.eu", html)
     except Exception:
         pass
     if date.cui and _TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
@@ -1289,7 +1289,7 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#magic=" + tok
     _pm = ("<p style='border-left:3px solid #3d8fd6;padding-left:12px;color:#334155'>%s</p>" % date.mesaj.strip()) if (date.mesaj or "").strip() else ""  # client_mesaj_v1
-    html = ("<p>Buna,</p>" + _pm + "<p>Ai primit acces la portalul iConta pentru firma <b>%s</b>.</p>"
+    html = ("<p>Buna,</p>" + _pm + "<p>Ai primit acces la portalul iConta.eu pentru firma <b>%s</b>.</p>"
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in portal</a></p>"
             "<p>Linkul e valabil 48 de ore.</p>") % (d.get("nume", ""), link)
     _obs.trimite_email_html(email, "Acces portal iConta.eu — " + d.get("nume", ""), html)
@@ -1317,11 +1317,11 @@ def magic_link_cere(date: MagicCereIn):
             conn.commit()
             baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
             link = baza + "/#magic=" + tok
-            html = ("<p>Buna,</p><p>Apasa butonul pentru a intra in iConta, fara parola:</p>"
-                    "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in iConta</a></p>"
+            html = ("<p>Buna,</p><p>Apasa butonul pentru a intra in iConta.eu, fara parola:</p>"
+                    "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in iConta.eu</a></p>"
                     "<p>Linkul e valabil 15 minute si poate fi folosit o singura data.</p>") % link
             try:
-                _obs.trimite_email_html(email, "Link de logare iConta", html)
+                _obs.trimite_email_html(email, "Link de logare iConta.eu", html)
             except Exception:
                 pass
     return {"ok": True, "mesaj": "Dacă emailul există, ai primit linkul de logare."}
@@ -3280,7 +3280,7 @@ def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
             cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '48 hours')", (tok, uid))
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#magic=" + tok
-    html = ("<p>Buna,</p><p>Ai primit acces la portalul iConta pentru firma <b>%s</b>.</p>"
+    html = ("<p>Buna,</p><p>Ai primit acces la portalul iConta.eu pentru firma <b>%s</b>.</p>"
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in portal</a></p>"
             "<p>Linkul e valabil 48 de ore.</p>") % (t.get("nume", ""), link)
     _obs.trimite_email_html(email, "Acces portal iConta.eu — " + t.get("nume", ""), html)
@@ -4465,11 +4465,11 @@ def _mesaj_recomanda_client_html(nume_firma):
     return (
         "<div style='font-family:sans-serif;font-size:15px;color:#111;max-width:540px;line-height:1.55'>"
         "<p>Buna,</p>"
-        "<p>Sunt client iConta si ma tine departe de batai de cap cu ANAF - "
+        "<p>Sunt client iConta.eu si ma tine departe de batai de cap cu ANAF - "
         "imi arata din timp daca am ceva de depus sau de platit, inainte sa fie o problema.</p>"
         "<p>M-am gandit ca ti-ar prinde bine si tie.</p>"
         "<p style='margin:24px 0'><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
-        "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>Vezi iConta</a></p>"
+        "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>Vezi iConta.eu</a></p>"
         "</div>"
     )
 
@@ -4686,11 +4686,11 @@ def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_rol("admin_firma"))):
             cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '48 hours')", (tok, uid))
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#activare=" + tok
-    html = ("<p>Buna,</p><p>Ai fost adaugat ca asistent in cabinetul tau pe iConta.</p>"
+    html = ("<p>Buna,</p><p>Ai fost adaugat ca asistent in cabinetul tau pe iConta.eu.</p>"
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Activeaza contul</a></p>"
             "<p>Dupa activare, intra cu emailul <b>%s</b> si parola setata. Linkul e valabil 48 de ore.</p>") % (link, email)
     try:
-        _obs.trimite_email_html(email, "Acces asistent iConta", html)
+        _obs.trimite_email_html(email, "Acces asistent iConta.eu", html)
     except Exception:
         pass
     return {"ok": True, "user_id": uid}
@@ -4955,8 +4955,8 @@ def _mesaj_promo_html(nume_cabinet):
         "<!-- [p32_mesaj] -->"
         "<div style='font-family:sans-serif;font-size:15px;color:#111;max-width:540px;line-height:1.55'>"
         "<p>Bună,</p>"
-        "<p>" + cine + " folosește <b>iConta</b> și s-a gândit că ți-ar prinde bine și ție.</p>"
-        "<p>iConta e contabilitatea în cloud care lucrează pentru tine și echipa ta:</p>"
+        "<p>" + cine + " folosește <b>iConta.eu</b> și s-a gândit că ți-ar prinde bine și ție.</p>"
+        "<p>iConta.eu e contabilitatea în cloud care lucrează pentru tine și echipa ta:</p>"
         "<ul style='margin:14px 0;padding-left:20px'>"
         "<li style='" + _li + "'><b>Te apără</b> &mdash; semaforul fiscal te avertizează înainte "
         "să depui ceva ce-ți aduce control.</li>"
@@ -4969,7 +4969,7 @@ def _mesaj_promo_html(nume_cabinet):
         "</ul>"
         "<p>Mai puțin timp pierdut, mai puține greșeli costisitoare.</p>"
         "<p style='margin:24px 0'><a href='" + _APP_URL + "' style='background:#2563eb;color:#fff;"
-        "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>Încearcă iConta</a></p>"
+        "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>Încearcă iConta.eu</a></p>"
         "</div>"
     )
 
@@ -4994,7 +4994,7 @@ def trimite_recomandari(date: RecomandareIn, ctx=Depends(cere_cabinet)):
         r = auth_api.get_cabinet(conn, ctx["firm"])
     nume_cabinet = (r.get("cabinet") or {}).get("nume", "") if r.get("ok") else ""
     html = _mesaj_promo_html(nume_cabinet)
-    rezultate = _trimite_recomandari(emails, html, "O recomandare pentru cabinetul tau: iConta")
+    rezultate = _trimite_recomandari(emails, html, "O recomandare pentru cabinetul tau: iConta.eu")
     return {"ok": True, "rezultate": rezultate}
 
 

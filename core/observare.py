@@ -94,9 +94,9 @@ def _trimite_brevo(subiect, mesaj):
     import json
     import urllib.request
     payload = json.dumps({
-        "sender": {"email": cfg("ICONTA_SENDER_EMAIL", _EMAIL_IMPLICIT), "name": "iConta Alerte"},
+        "sender": {"email": cfg("ICONTA_SENDER_EMAIL", _EMAIL_IMPLICIT), "name": "iConta.eu Alerte"},
         "to": [{"email": cfg("ICONTA_ALERTA_EMAIL", _EMAIL_IMPLICIT)}],
-        "subject": "[iConta] " + subiect,
+        "subject": "[iConta.eu] " + subiect,
         "textContent": mesaj,
     }).encode()
     req = urllib.request.Request(
