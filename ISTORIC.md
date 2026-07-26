@@ -2877,3 +2877,52 @@ Cache-Control: no-cache + ETag (main.py _StaticNoCache) → browserul revalideaz
 ETag potrivit → 304). Bump-ul ?v= manual e REDUNDANT; JS-ul n-are ?v= și tot ajunge fresh. Bump-ul ?v=10 propus a fost
 REVERTIT, notele din DE_FACUT corectate (parte din f0c2d99). Rămâne doar curățare cosmetică (eliminare ?v=, aliniere
 spv_callback la ?v=6).
+
+## 25.07.2026 — Pagina Funcționalități (F203) + cluster GDPR (F199-F205) + închiderea pâlniei gratuite
+
+**Pagina Funcționalități (F203).** Cardul landing „Facturare gratuită" înlocuit cu „Funcționalități": fereastră cu 7
+grupe (Contabilitate, Fiscalitate, Control fiscal, Facturare/e-Factura, Salarizare, Stocuri/bancă/casă,
+Cabinet/portal client), **139 poziții LIVE** din FUNCTIONALITATI.csv (registrul canonic). Generatorul
+`genereaza_grupe_functii.py --scrie` (sursă unică = CSV Stare=LIVE, reguli EXPLICIT/EXCLUDE/keyword) rescrie
+`GRUPE_FUNC` din login.js; **gardian nou `GRUPE_FUNC_STALE`** în verificator prinde driftul CSV↔pagină (total + per
+grupă) → registrul nu se mai poate depărta tăcut de pagină. Commit F203 (login.js + stil.css). Vezi DECIZII 25.07.
+
+**Cluster GDPR — drepturile persoanei vizate, complet (F199-F205).**
+- F199 export cabinet (art.20) + F200 ștergere cabinet (art.17, superadmin, DROP SCHEMA cu confirmare typed-back) +
+  F201 retenție `audit_log` (art.5, cron 12 luni) + F202 alertă acces anormal (art.33, cron) — LIVE 25.07, fiecare
+  probat real pe cont fabricat.
+- F204 buton export **self-service** (art.20, oricând, fără intervenție) + F205 **cerere de ștergere din aplicație**
+  (formular cu typed-back al denumirii, email la contact@iconta.eu prin Brevo, jurnal `gdpr_cereri_stergere` ca dovadă
+  de primire — **NU execută nimic**; execuția rămâne manuală la superadmin). Commit-uri a0e958f (motor F205) +
+  c673fea (UI F204+F205).
+- **Probat cu apel HTTP end-to-end pe cont fabricat**: token `admin_firma` real → GET export (200, ZIP valid),
+  POST cerere cu typed-back greșit (422) + corect (200, jurnal scris + email anunțat), `audit_log` `gdpr_export`
+  jurnalizat; cont curățat complet. Nu doar unitar — pe rutele reale, autentificat.
+
+**Închiderea temporară a pâlniei de înscriere gratuită.** Landing nu mai expune înscrierea la cont gratuit (decizie
+fondator, DECIZII 25.07). **Backend-ul F153-F160 rămâne INTACT** — doar poarta publică de intrare e închisă; se
+redeschide fără reconstrucție. (De asta decizia „retenție 1 an inactivitate" e legată de redeschidere — vezi DE_FACUT.)
+
+## 26.07.2026 — Marca „iConta.eu" peste tot (corecție + gardian) — verificat pe TEXT RANDAT, nu pe sursă
+
+**Corecția de brand în aplicația autentificată (commit c9da858, 29 înlocuiri).** „iConta" → „iConta.eu" în shell-ul
+autentificat. **Bug găsit LA SURSĂ:** `navigator.js:63` (`<span class="bara-marca">iConta</span>`, marca din bara de
+sus) **scăpase de corecția de pe 24.07**, care prinsese doar login.js/index.html (landing) — de aceea landing-ul era
+corect, dar aplicația autentificată nu. Cuprins: bara de sus, titlul filei (spv_callback), copy UI
+(setări/cabinet/portal/migrare/asistent/recomandă/control) + literalele de email client-facing (subiecte + corpuri).
+
+**Gardian `BRAND_EU` + temei scris (commit 0a03233).** Regulă mecanică în `verificator_conformitate.py`: scanează
+frontend (js/mjs/html) + literalele publice backend (main.py, notificari_scadenta, observare); semnalează `iConta`
+neurmat de `.eu`; al doilea assert `iConta.eu.eu`=0. Listă albă cu motiv scris la fiecare (Admin iConta,
+`<SoftwareCompanyName>`/`<SoftwareID>` SAF-T, comentarii/docstring, `iconta_nou`/`iconta-nou`/`iconta_v2`). Cap.21 în
+DESIGN_SYSTEM.md + intrare DECIZII.md 26.07. Adus repo la conformitate: **21 literale backend** rămase
+(welcome/magic-link/portal/asistent/recomandare + alerte interne `[iConta.eu]`/„iConta.eu Alerte" + titlu FastAPI).
+
+**PROBAT, nu doar compilat.** `py_compile` + serviciu `active` NU sunt suficiente — corpurile de email sunt
+f-string-uri unde o eroare de format cade la **RUNTIME**, nu la compilare. Verificarea finală a fost pe **subiect +
+corp RANDAT** (ce ar pleca efectiv la destinatar), nu pe sursa din cod: **6 rute reale** apelate pe cont fabricat
+(welcome, magic-link, portal, invitație asistent, recomandare + o alertă prin `observare._trimite_brevo`), cu
+`urllib.urlopen` interceptat → **zero email trimis**, payload Brevo capturat. Toate randate corect: `%s`-urile umplute
+(nume cabinet/email/link/firmă), **zero `iConta.eu.eu`, zero placeholder neînlocuit**; alerta a emis subiect
+`[iConta.eu] …`. Probă negativă a gardianului în DOUĂ locuri (un `iConta` bare într-un `.js` frontend + unul într-un
+literal din main.py → `BRAND_EU` prinde 2, apoi 0 după restaurare). Cont fabricat curățat.

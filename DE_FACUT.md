@@ -1,7 +1,7 @@
 # iConta — DE FĂCUT
 
 **Doar viitorul: ce e deschis. Când termini, ștergi rândul. Trecutul e în ISTORIC.md + git log.**
-Ultima actualizare: 13.07.2026 seara (partea 5)
+Ultima actualizare: 26.07.2026 (punch-list pilot jos)
 
 ---
 
@@ -544,7 +544,9 @@ vs DE CONSTRUIT (munca reala):
 
 ### DE CONSTRUIT (munca reala ramasa)
 - **F127/F128 — AMANATE**: pendinte pe ANAF adaugand OAuth la SPVWS2. Deadline review 17.08.2026 (raspuns
-  asteptat de la spv.webservice@mfinante.ro). Fara raspuns pana atunci -> raman AMANATE.
+  asteptat de la spv.webservice@mfinante.ro). Fara raspuns pana atunci -> raman AMANATE. **Cauza reala = custodia
+  certificatului calificat** intr-un SaaS cloud (cine tine certificatul), NU „cloud nu poate tehnic"; **agentul local**
+  (soft pe statia contabilului) a fost **RESPINS** ca solutie. Vezi DECIZII 25.07 (concluzia strategica corectata).
 - **v2 F163 — persistarea randurilor decontului depus** [LIVRAT 22.07.2026, INCL. VERSIONARE varianta A]
   public.declaratii_depuse are xml text + randuri jsonb + nr_depunere (versiune). La depunere
   (coada_api.marcheaza_depusa) se persista XML + `res` serializat (asdict+default=str) cu nr_depunere=MAX+1;
@@ -697,5 +699,45 @@ urgență. Consemnat.
 revalidează oricum — vezi nota de mai sus); e doar o divergență cosmetică a string-ului `?v=`. De aliniat/eliminat
 odată cu curățarea `?v=` de mai sus. Consemnat.
 
-## Istoric git — remote off-site configurat (REZOLVAT 25.07.2026)
-REZOLVAT: `~/iconta_nou` are acum remote privat off-site — `github-cont:CostinHat/iconta-v2` (GitHub privat, prin cheia de cont). Istoricul (768 commit-uri) e împins pe GitHub → nu mai e single point of failure pe server. Repo-ul vechi `CostinHat/iconta` rămâne NEATINS ca arhivă (istoria /opt/iconta, nelegată; zero force). Cadență țintă: push zilnic (acum manual după fiecare sesiune; de automatizat cu un timer dacă vrem).
+## Actualizare 26.07.2026 — restanță 25+26.07: livrări + punch-list pilot
+
+**Livrate 25-26.07 (mutate în ISTORIC, scoase din backlog):** pagina Funcționalități (F203, 139 poziții) + gardian
+`GRUPE_FUNC_STALE`; cluster GDPR F199-F205 (probat HTTP end-to-end pe cont fabricat); marca „iConta.eu" peste tot +
+gardian `BRAND_EU` (probat pe subiect+corp de email RANDAT, nu pe sursă). Istoric git remote off-site = REZOLVAT
+25.07 (`github-cont:CostinHat/iconta-v2`, push manual per sesiune — de automatizat cu timer dacă vrem).
+
+**Punch-list pilot — deschis, ordonat după ce blochează:**
+
+1. **[BLOCHEAZĂ PILOTUL] Avocat — briefing gata, netrimis.** `BRIEFING_JURIDIC_iConta.md` e redactat dar NU a plecat
+   la avocat. Fără avizul juridic (T&C, răspundere CECCAR „software PENTRU contabilitate", nu „oferim contabilitate")
+   pilotul cu cabinet real nu pornește. Acțiune: trimite briefingul. La avocat se ridică ȘI decizia „criptare disc NU"
+   (pct.7).
+
+2. **Suita de teste — nimeni nu știe câte TREC azi.** Verificat la sursă 26.07: **946 colectate / 94 fișiere
+   `test_*.py`** (colectare, NU trecere). Notele vechi „382" și „438" erau STALE → înlocuite. Rularea depinde încă de
+   env-ul din shell (`db.env`) — vezi „TEMA suita depinde de env" mai sus (fix conftest/runner NEDECIS). **DESCHIS:**
+   obiectivul e o **rulare completă cu env real**; câte trec / câte pică azi **nu știe nimeni** (regresii ascunse
+   altfel de un roșu de mediu indistinct de unul real).
+
+3. **e-Factura round-trip pe CIF real — niciodată probat cap-coadă.** Emiterea+trimiterea+recepția SPV (F176/F127/
+   F179) sunt LIVE pe cod, dar dovada s-a făcut pe token dev (fără drept SPV pe un CIF real). Se probează DOAR cu
+   primul patron real cu certificat înrolat pe CIF-ul LUI. Necolorat verde live. (Vezi secțiunea SPV mai sus.)
+
+4. **F143 faza 2 — bugete pe centre de cost.** F143 (centre de cost) e la faza 1; faza 2 = bugete per centru
+   (planificat vs realizat). NECONSTRUIT. Extindere, nu blocaj — la caz real / cerere.
+
+5. **Praguri alertă acces anormal (F202) — de calibrat în pilot.** Pragurile implicite (8 tenanți distincți / 300
+   acțiuni / 10 min; dedup 60 min) sunt conservatoare, alese fără trafic real. De recalibrat pe tiparul din pilot
+   (fals-pozitive vs ratări). Configurabile prin env — nu cod.
+
+6. **F127/F128 SPV — AMÂNATE, reevaluare 17.08.** (Detaliu în secțiunea SPV mai sus.) Cauza reală = **custodia
+   certificatului** calificat într-un SaaS cloud, NU „cloud nu poate tehnic"; **agentul local RESPINS**. Pendinte pe
+   ANAF adăugând OAuth la SPVWS2; fără răspuns până pe 17.08 → rămân amânate.
+
+7. **Decizii amânate (watch — detaliu în DECIZII.md):**
+   - **Bedrock EU pentru Claude** — DECIS: se migrează, dar DUPĂ pilot (DECIZII 25.07).
+   - **Criptare disc (LUKS)** — DECIS: NU se implementează, risc asumat; de ridicat la avocat odată cu briefingul (pct.1).
+   - **Retenție 1 an inactivitate** — doar conturi gratuite, la **redeschiderea pâlniei**; necesită coloană
+     `users.ultima_logare` (NU derivat din `audit_log` — se șterge la retenția de 12 luni). (DECIZII 25.07.)
+   - **SAF-T `<SoftwareCompanyName>` / `<SoftwareID>` (d406.py)** — rămân „iConta" (identificare software către ANAF);
+     schimbarea = decizie **fiscală separată**, neatinsă de corecția de brand și de gardianul BRAND_EU. (DECIZII 26.07.)
