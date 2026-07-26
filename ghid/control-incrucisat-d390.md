@@ -1,3 +1,9 @@
+---
+title: Control încrucișat D390 vs decontul de TVA
+description: Reconciliază D390 (390 VIES) cu decontul de TVA: temei legal, procedură și controlul încrucișat automat care prinde diferențele intracomunitare.
+published: 2026-07-26
+modified: 2026-07-26
+---
 # Control încrucișat D390 vs decontul de TVA: cum prinzi diferențele înainte de ANAF
 
 Declarația recapitulativă (390 VIES) și decontul de TVA pleacă din aceleași operațiuni intracomunitare, dar se completează separat — una pe coduri de partener, celălalt pe rânduri agregate. Când cele două nu se potrivesc, sau când ce ai declarat la VIES nu se regăsește în evidența contabilă, diferența nu rămâne a ta: partenerul din alt stat membru raportează operațiunea pe latura lui, iar sistemul VIES o confruntă automat. Așa ajunge la firmă o notificare de neconcordanță intracomunitară — uneori fără o greșeală reală, doar un decalaj de exigibilitate sau o factură contabilizată târziu. Dar trebuie explicată, cu documente, la termen.

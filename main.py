@@ -8227,23 +8227,26 @@ _spv_rute.monteaza(app, cere_context)  # proprietatea principalului o impune spv
 
 
 # ============================================================
-#  PAGINI PUBLICE DE GHID (DS cap.22) — /ghid/{slug}
+#  PAGINI PUBLICE DE GHID (DS cap.22) — /ghid/{slug} + index + sitemap + robots
 # ============================================================
 import re as _ghid_re
 import html as _ghid_html
+import json as _ghid_json
 
 _GHID_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ghid")
 _GHID_SLUG_RE = _ghid_re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+_GHID_BAZA = "https://iconta.eu"          # domeniu canonic public (canonical, og:url, sitemap)
+_GHID_OG_IMAGINE = _GHID_BAZA + "/static/logo_login.png"   # provizoriu; DE_FACUT: imagine dedicata per ghid
 
-# Shell public: leaga stil.css, foloseste DOAR clase + tokeni. Fara <style> inline,
-# fara culori scrise direct (invers fata de /public/termeni). Antet+subsol in linia
-# partii publice existente (bara .pagina-bara, link inapoi, link Termeni).
+# Shell public: leaga stil.css, foloseste DOAR clase + tokeni (fara <style> inline, fara culori
+# scrise direct). {{META}} = description + canonical + Open Graph + JSON-LD, construite PER PAGINA.
 _GHID_PAGINA = """<!doctype html>
 <html lang="ro">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{TITLU}} · iConta.eu</title>
+{{META}}
 <link rel="stylesheet" href="/static/stil.css">
 <link rel="manifest" href="/static/manifest.json">
 <link rel="apple-touch-icon" href="/static/icon-192.png">
@@ -8260,11 +8263,33 @@ _GHID_PAGINA = """<!doctype html>
   <main class="ghid-wrap">
 {{CORP}}
     <hr>
-    <p class="ghid-subsol"><a href="/">← iConta.eu</a> · <a href="/public/termeni">Termeni și condiții</a></p>
+    <p class="ghid-subsol"><a href="/ghid">Toate ghidurile</a> · <a href="/">← iConta.eu</a> · <a href="/public/termeni">Termeni și condiții</a></p>
   </main>
 </div>
 </body>
 </html>"""
+
+
+def _ghid_frontmatter(txt):
+    """Front-matter simplu la inceputul fisierului, intre linii '---':
+        ---
+        title: ...        (optional; altfel titlul = primul H1)
+        description: ...  (meta description + og:description; sub 160 caractere)
+        published: 2026-07-26   (data publicarii)
+        modified: 2026-07-26    (data ultimei actualizari)
+        ---
+    Intoarce (meta_dict cu chei lowercase, corp_markdown fara front-matter). Fara front-matter -> ({}, txt)."""
+    linii = txt.split("\n")
+    if linii and linii[0].strip() == "---":
+        for i in range(1, len(linii)):
+            if linii[i].strip() == "---":
+                meta = {}
+                for ln in linii[1:i]:
+                    if ":" in ln:
+                        k, v = ln.split(":", 1)
+                        meta[k.strip().lower()] = v.strip().strip('"').strip("'")
+                return meta, "\n".join(linii[i + 1:]).lstrip("\n")
+    return {}, txt
 
 
 def _ghid_titlu(txt):
@@ -8272,6 +8297,14 @@ def _ghid_titlu(txt):
         if _ln.startswith("# "):
             return _ln[2:].strip()
     return "Ghid"
+
+
+def _ghid_mtime(cale):
+    import datetime as _d
+    try:
+        return _d.date.fromtimestamp(os.path.getmtime(cale)).isoformat()
+    except Exception:
+        return ""
 
 
 def _ghid_semafor(linii):
@@ -8331,26 +8364,145 @@ def _ghid_randeaza(txt):
                         extensions=["extra", "sane_lists", "md_in_html", "attr_list"])
 
 
-def _ghid_pagina_html(titlu, corp_html):
-    return _GHID_PAGINA.replace("{{TITLU}}", _ghid_html.escape(titlu)).replace("{{CORP}}", corp_html)
+def _ghid_pagina_html(titlu, descriere, canonical, corp_html, noindex=False, jsonld=None, og_type="article"):
+    meta = []
+    if noindex:
+        meta.append('<meta name="robots" content="noindex">')
+    if descriere:
+        _d = _ghid_html.escape(descriere)
+        meta.append('<meta name="description" content="%s">' % _d)
+    if canonical:
+        _c = _ghid_html.escape(canonical)
+        meta.append('<link rel="canonical" href="%s">' % _c)
+        meta.append('<meta property="og:url" content="%s">' % _c)
+    meta.append('<meta property="og:type" content="%s">' % og_type)
+    meta.append('<meta property="og:site_name" content="iConta.eu">')
+    meta.append('<meta property="og:locale" content="ro_RO">')
+    meta.append('<meta property="og:title" content="%s">' % _ghid_html.escape(titlu))
+    if descriere:
+        meta.append('<meta property="og:description" content="%s">' % _ghid_html.escape(descriere))
+    meta.append('<meta property="og:image" content="%s">' % _ghid_html.escape(_GHID_OG_IMAGINE))
+    if jsonld:
+        _s = _ghid_json.dumps(jsonld, ensure_ascii=False).replace("<", "\\u003c")
+        meta.append('<script type="application/ld+json">%s</script>' % _s)
+    return (_GHID_PAGINA
+            .replace("{{TITLU}}", _ghid_html.escape(titlu))
+            .replace("{{META}}", "\n".join(meta))
+            .replace("{{CORP}}", corp_html))
 
 
 def _ghid_404():
     return Response(
-        content=_ghid_pagina_html("Ghid inexistent",
-                                  "<h1>Ghid inexistent</h1><p>Pagina căutată nu există sau a fost mutată.</p>"),
+        content=_ghid_pagina_html("Ghid inexistent", "", "",
+                                  "<h1>Ghid inexistent</h1><p>Pagina căutată nu există sau a fost mutată.</p>",
+                                  noindex=True),
         media_type="text/html; charset=utf-8", status_code=404)
+
+
+def _ghid_lista():
+    """Lista ghidurilor PUBLICATE = slug-urile din coloana ghid_slug (FUNCTIONALITATI.csv) care au fisier
+    ghid/{slug}.md. Sursa UNICA pentru index + sitemap. Fiecare: {slug, titlu, descriere, published, modified}."""
+    import csv as _csv
+    out, vazut = [], set()
+    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "FUNCTIONALITATI.csv")
+    try:
+        with open(csv_path, encoding="utf-8-sig") as f:
+            for r in _csv.reader(f):
+                if len(r) < 10:
+                    continue
+                slug = r[9].strip()
+                if not slug or not _GHID_SLUG_RE.match(slug) or slug in vazut:
+                    continue
+                cale = os.path.join(_GHID_DIR, slug + ".md")
+                if not os.path.isfile(cale):
+                    continue
+                vazut.add(slug)
+                meta, corp = _ghid_frontmatter(open(cale, encoding="utf-8").read())
+                out.append({"slug": slug,
+                            "titlu": meta.get("title") or _ghid_titlu(corp),
+                            "descriere": meta.get("description", ""),
+                            "published": meta.get("published", ""),
+                            "modified": meta.get("modified", "") or _ghid_mtime(cale)})
+    except Exception:
+        pass
+    out.sort(key=lambda g: g["slug"])
+    return out
 
 
 @app.get("/ghid/{slug}")
 def public_ghid(slug: str):
-    """Pagina publica de ghid (DS cap.22). Fara autentificare. slug -> ghid/{slug}.md -> markdown -> shell."""
+    """Pagina publica de ghid (DS cap.22). Fara autentificare. slug -> ghid/{slug}.md -> markdown -> shell.
+    Front-matter per pagina: title (optional), description, published, modified."""
     if not _GHID_SLUG_RE.match(slug or ""):
         return _ghid_404()
     cale = os.path.join(_GHID_DIR, slug + ".md")
     if not os.path.isfile(cale):
         return _ghid_404()
-    txt = open(cale, encoding="utf-8").read()
-    return Response(content=_ghid_pagina_html(_ghid_titlu(txt), _ghid_randeaza(txt)),
+    meta, corp_md = _ghid_frontmatter(open(cale, encoding="utf-8").read())
+    h1 = _ghid_titlu(corp_md)
+    titlu = meta.get("title") or h1
+    descriere = meta.get("description", "")
+    canonical = _GHID_BAZA + "/ghid/" + slug
+    jsonld = {"@context": "https://schema.org", "@type": "Article",
+              "headline": h1, "description": descriere, "inLanguage": "ro-RO",
+              "datePublished": meta.get("published", ""),
+              "dateModified": meta.get("modified", "") or _ghid_mtime(cale),
+              "author": {"@type": "Organization", "name": "iConta.eu", "url": _GHID_BAZA},
+              "publisher": {"@type": "Organization", "name": "iConta.eu", "legalName": "FISCALOS ICONTA SRL",
+                            "url": _GHID_BAZA,
+                            "logo": {"@type": "ImageObject", "url": _GHID_BAZA + "/static/icon-512.png"}},
+              "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
+              "image": _GHID_OG_IMAGINE}
+    jsonld = {k: v for k, v in jsonld.items() if v not in ("", None)}
+    return Response(content=_ghid_pagina_html(titlu, descriere, canonical, _ghid_randeaza(corp_md), jsonld=jsonld),
                     media_type="text/html; charset=utf-8")
 
+
+@app.get("/ghid")
+def public_ghid_index():
+    """Index-ul ghidurilor: legat din subsol, ca paginile sa nu existe doar in sitemap. Generat din _ghid_lista()."""
+    guides = _ghid_lista()
+    items = []
+    for g in guides:
+        t = _ghid_html.escape(g["titlu"])
+        items.append('<h2><a href="/ghid/%s">%s</a></h2>' % (g["slug"], t))
+        if g["descriere"]:
+            items.append('<p>%s</p>' % _ghid_html.escape(g["descriere"]))
+    corp = ('<h1>Ghiduri fiscale iConta.eu</h1>'
+            '<p>Ghiduri practice pentru contabili: temei legal verificat la sursă, procedura manuală și '
+            'ce automatizează iConta.eu. Se adaugă pe măsură ce le scriem.</p>'
+            + ("".join(items) if items else "<p>În curând.</p>"))
+    return Response(content=_ghid_pagina_html(
+        "Ghiduri fiscale",
+        "Ghiduri fiscale practice pentru contabili — temei legal, proceduri și controalele automate iConta.eu.",
+        _GHID_BAZA + "/ghid", corp, og_type="website"),
+        media_type="text/html; charset=utf-8")
+
+
+@app.get("/sitemap.xml")
+def public_sitemap():
+    """Sitemap generat din aceleasi surse ca index-ul (CSV + fisiere) — nu scris de mana."""
+    guides = _ghid_lista()
+
+    def u(loc, lastmod=None):
+        s = "  <url><loc>%s</loc>" % _ghid_html.escape(loc)
+        if lastmod:
+            s += "<lastmod>%s</lastmod>" % lastmod
+        return s + "</url>"
+
+    lastmods = [g["modified"] for g in guides if g["modified"]]
+    urls = [u(_GHID_BAZA + "/"),
+            u(_GHID_BAZA + "/ghid", max(lastmods) if lastmods else None)]
+    for g in guides:
+        urls.append(u(_GHID_BAZA + "/ghid/" + g["slug"], g["modified"] or None))
+    urls.append(u(_GHID_BAZA + "/public/termeni"))
+    xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+           + "\n".join(urls) + "\n</urlset>\n")
+    return Response(content=xml, media_type="application/xml; charset=utf-8")
+
+
+@app.get("/robots.txt")
+def public_robots():
+    txt = "User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n" % _GHID_BAZA
+    return Response(content=txt, media_type="text/plain; charset=utf-8")

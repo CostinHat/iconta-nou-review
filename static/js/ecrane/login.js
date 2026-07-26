@@ -97,6 +97,7 @@ export function ecranLogin(radacina) {
     </div>
     <footer class="pagina-subsol">
       <a href="/public/termeni" target="_blank" rel="noopener">Termeni și condiții</a>
+      <span> · </span><a href="/ghid">Ghiduri</a>
       <span> · </span><span>© iConta.eu · contact@iconta.eu</span>
     </footer>
   `;

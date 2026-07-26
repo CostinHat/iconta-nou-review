@@ -750,5 +750,9 @@ LIMITA = fără `api_keys.env`, integrările externe neacoperite — detaliu în
 - **/public/termeni:** shell-ul are `<style>` inline cu culori proprii (#1d3a5f, #f4f6f9 ...) -> de adus la clase + tokeni, ca la ghiduri (cap.22).
 - **Paginile de continut de ghid:** se scriu treptat (una cate una), NU toate deodata. Pagina de proba `ghid/proba-ghid.md` se sterge/inlocuieste la prima pagina reala.
 
-## Ghiduri publice — SEO per pagina (26.07.2026, INAINTE de a doua pagina)
+## Ghiduri publice — SEO per pagina (26.07.2026, INAINTE de a doua pagina) — REZOLVAT 26.07.2026 (front-matter description + canonical + OG + JSON-LD; index /ghid; sitemap; robots)
 - Shell-ul de ghid (_GHID_PAGINA, main.py) seteaza `<title>` PER PAGINA, derivat din H1 (`{H1} · iConta.eu`) -> nu e identic intre pagini. DAR nu seteaza deloc `<meta name="description">` -> toate paginile de ghid sunt fara descriere proprie (Google alege singur snippetul, fara control per pagina). De adaugat, INAINTE de a doua pagina: mecanism per-pagina pentru meta description (si, optional, un titlu SEO dedicat, distinct de H1, ~60 caractere) — ex. front-matter in .md (`title:`/`description:`) citit de ruta. Fara el, a doua pagina concureaza cu prima pe acelasi snippet gol.
+
+## Ghiduri publice — indexare: ramase (26.07.2026)
+- **Imagine og dedicata per ghid:** azi `og:image` = /static/logo_login.png (provizoriu, identic pe toate paginile). De facut o imagine sociala dedicata per ghid (1200x630) — altfel toate linkurile arata la fel cand sunt trimise pe WhatsApp / puse pe LinkedIn.
+- **Google Search Console:** de inregistrat iconta.eu si de trimis sitemap-ul (https://iconta.eu/sitemap.xml). [Costin, manual — sa nu se uite.]
