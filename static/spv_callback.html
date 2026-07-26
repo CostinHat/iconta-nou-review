@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conectare SPV — iConta</title>
+  <title>Conectare SPV — iConta.eu</title>
   <link rel="stylesheet" href="/static/stil.css?v=6">
 </head>
 <body>
@@ -14,7 +14,7 @@
     <div class="panou" style="max-width:460px;width:100%;text-align:center">
       <div class="cap-titlu">Conectare SPV</div>
       <div id="spv-cb-mesaj" style="margin:16px 0"></div>
-      <a class="buton-primar" href="/" style="display:inline-block;text-decoration:none">Deschide iConta</a>
+      <a class="buton-primar" href="/" style="display:inline-block;text-decoration:none">Deschide iConta.eu</a>
       <div class="camp-ajutor" style="margin-top:12px">Poți închide această filă.</div>
     </div>
   </div>
@@ -23,7 +23,7 @@
     const el = document.getElementById("spv-cb-mesaj");
     if (p.get("ok")) {
       el.className = "msg-ok";
-      el.textContent = "✓ Autorizare reușită. iConta e conectat la SPV pentru cabinetul tău.";
+      el.textContent = "✓ Autorizare reușită. iConta.eu e conectat la SPV pentru cabinetul tău.";
     } else {
       el.className = "msg-eroare";
       el.textContent = "Autorizarea nu a reușit: " + (p.get("eroare") || "eroare necunoscută") +

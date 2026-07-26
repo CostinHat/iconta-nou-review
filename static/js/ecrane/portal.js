@@ -42,7 +42,7 @@ export function desktopPortal(continut, nav) {
       sinteza: "Email și acces suplimentar la portal" },
   ];
   const CARD_BON = { cheie: "bon", titlu: "Pozează bon sau chitanță", icon: "facturi", ...CULORI_CARD.piersica,
-      sinteza: "Fotografiază documentul, iConta îl citește" };  /* portal_layout_v2 */
+      sinteza: "Fotografiază documentul, iConta.eu îl citește" };  /* portal_layout_v2 */
   // [gratuit_v1] contul fara cabinet: doar cardurile cu sens (fara contabil)
   const GRATUIT_CARDURI = new Set(["facturi", "cifre", "acces-cont"]);
   const carduriVizibile = _eGratuit() ? CARDURI.filter((c) => GRATUIT_CARDURI.has(c.cheie)) : CARDURI;
@@ -417,7 +417,7 @@ async function ecranRecomanda(corp, nav) {
   } catch {}
   corp.innerHTML = `
     <h2 class="pf-titlu">Recomandă</h2>
-    <p class="pf-intro">Invită un antreprenor prieten să afle despre iConta.</p>
+    <p class="pf-intro">Invită un antreprenor prieten să afle despre iConta.eu.</p>
     <div class="pov-card" style="margin-bottom:16px">
       <button type="button" id="rec-vezi-mesaj" class="buton-secundar">Vezi mesajul</button>
       <div id="rec-preview" style="display:none;margin-top:10px;border:1px solid var(--linie);border-radius:var(--raza);padding:16px;background:var(--fundal)">${previewHtml}</div>
@@ -547,7 +547,7 @@ async function ecranBon(corp, nav) {
     curataUrls(); draft = null;
     corp.innerHTML = `
       <h2 class="pf-titlu">Pozează bon sau chitanță</h2>
-      <p class="pf-intro">Fotografiază sau încarcă bonul fiscal ori chitanța. iConta citește documentul automat, apoi tu îl trimiți contabilului.</p>
+      <p class="pf-intro">Fotografiază sau încarcă bonul fiscal ori chitanța. iConta.eu citește documentul automat, apoi tu îl trimiți contabilului.</p>
       ${(mesajSucces || _pozareMesaj) ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + (mesajSucces || _pozareMesaj) + '</p>' : ""}
       <input type="file" id="bon-fisier" accept="image/*" capture="environment" multiple hidden>
       <input type="file" id="bon-fisier-galerie" accept="image/*" multiple hidden>

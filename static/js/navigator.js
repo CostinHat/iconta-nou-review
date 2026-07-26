@@ -60,7 +60,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     bara.className = "bara";
     bara.innerHTML = `
       <img class="bara-logo-img" src="/static/logo_simbol.png" alt="">
-      <span class="bara-marca">iConta</span>
+      <span class="bara-marca">iConta.eu</span>
       ${ctx.verigi.map((v) => `<span class="bara-chevron" aria-hidden="true">\u203a</span>` +
         `<span class="${v.slab ? "bara-veriga-slab" : "bara-veriga"}">${v.text}</span>`).join("")}
       <span class="bara-spatiu"></span>
@@ -408,7 +408,7 @@ async function _anunturiBanner(ecran) {
     el.style.zIndex = "300";
     el.innerHTML = `<div class="fereastra" style="max-width:520px">
       <div class="fereastra-corp">
-        <h2 class="pf-titlu">Mesaj de la iConta</h2>
+        <h2 class="pf-titlu">Mesaj de la iConta.eu</h2>
         <p class="anunt-text">${(a.mesaj || "").replace(/[<>&]/g, "")}</p>
         <button class="buton-primar anunt-ok">Am \u00een\u021beles</button>
       </div></div>`;

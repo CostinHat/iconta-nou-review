@@ -125,7 +125,7 @@ export async function randeazaRaporteaza(corp, nav) {
     const titlu = primul.length > 70 ? primul.slice(0, 70) + "…" : primul;
     const mesaje = f.mesaje.map((m) => {
       const cls = m.rol_autor === "utilizator" ? "rap-msg-eu" : "rap-msg-admin";
-      const cine = m.rol_autor === "admin" ? "iConta" : (m.rol_autor === "ai" ? "Asistent AI" : "Eu");
+      const cine = m.rol_autor === "admin" ? "iConta.eu" : (m.rol_autor === "ai" ? "Asistent AI" : "Eu");
       const poze = (m.atasamente || []).map((a) =>
         `<a href="${a.cale}" target="_blank" class="rap-img-link"><img class="rap-img" src="${a.cale}" alt="captura"></a>`
       ).join("");

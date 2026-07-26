@@ -140,7 +140,7 @@ export async function randeazaSetari(corp, nav) {
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
         <div class="cap-titlu">Conectare SPV</div>
-        <p class="ecran-nota">Autorizezi iConta să lucreze cu SPV/ANAF (e-Factura, e-Transport) folosind certificatul tău. Autorizarea se face o singură dată pentru tot cabinetul.</p>
+        <p class="ecran-nota">Autorizezi iConta.eu să lucreze cu SPV/ANAF (e-Factura, e-Transport) folosind certificatul tău. Autorizarea se face o singură dată pentru tot cabinetul.</p>
         <div class="caseta-info"><span class="ci-mesaj">După înrolarea certificatului în SPV, așteaptă 24 de ore înainte de prima conectare. Altfel ANAF răspunde cu eroare, deși totul e configurat corect.</span></div>
         <div id="spv-stare" style="margin:10px 0"></div>
         <button class="buton-primar" id="spv-conecteaza">Conectează SPV</button>
@@ -234,7 +234,7 @@ export async function randeazaSetari(corp, nav) {
     inp.addEventListener("input", () => { btnCe.disabled = inp.value.trim() !== numeCab || !numeCab; });
     btnCe.addEventListener("click", () => {
       const msg = corp.querySelector("#gdpr-cere-msg");
-      confirmaCaseta(btnCe, "Trimiți cererea de ștergere a cabinetului? Datele vor fi șterse definitiv de echipa iConta după verificare.", async () => {
+      confirmaCaseta(btnCe, "Trimiți cererea de ștergere a cabinetului? Datele vor fi șterse definitiv de echipa iConta.eu după verificare.", async () => {
         btnCe.disabled = true;
         arataMesaj(msg, "Se trimite cererea…", "info");
         try {

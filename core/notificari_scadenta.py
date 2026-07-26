@@ -62,7 +62,7 @@ def _email_corp(firma_nume, f, prag):
         "<p>Vă rugăm să efectuați plata sau să ne contactați "
         "dacă aveți întrebări.</p>"
         "<hr><p style='font-size:12px;color:#667'>Acest mesaj vă este trimis "
-        "în numele <b>%s</b> prin platforma iConta. Răspundeți la acest "
+        "în numele <b>%s</b> prin platforma iConta.eu. Răspundeți la acest "
         "email pentru a contacta direct firma.</p>"
         % (f.get("numar") or "—", firma_nume, suma, f.get("moneda") or "lei",
            f.get("data_scadenta"), _eticheta(prag), firma_nume)
@@ -111,7 +111,7 @@ def emite_pentru_firma(conn, schema, azi=None):
                     f["client_email"],
                     "Factura %s - %s" % (f["numar"] or "", _eticheta(prag)),
                     _email_corp(firma_nume, f, prag),
-                    reply_to=firma_email, expeditor_nume="%s prin iConta" % firma_nume)
+                    reply_to=firma_email, expeditor_nume="%s prin iConta.eu" % firma_nume)
                 stare = "trimis" if ok else "fara_reply_to"  # esec Brevo -> nu bloca pragul
             cur.execute("INSERT INTO notificari_scadenta (factura_id, prag, stare) "
                         "VALUES (%s, %s, %s) ON CONFLICT (factura_id, prag) DO NOTHING",

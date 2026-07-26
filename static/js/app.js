@@ -28,7 +28,7 @@ function ecranActivare(tok) {  /* activare_fe_v1 */
     <div class="pagina-login" style="display:flex;align-items:center;justify-content:center;min-height:100dvh">
       <div style="background:#fff;border-radius:12px;box-shadow:0 3px 12px rgba(20,30,45,0.14);padding:28px;width:min(420px,92vw)">
         <h2 style="margin:0 0 6px">Activare cont</h2>
-        <p class="ecran-nota" style="margin:0 0 16px">Seteaz\u0103-\u021bi parola pentru portalul iConta.</p>
+        <p class="ecran-nota" style="margin:0 0 16px">Seteaz\u0103-\u021bi parola pentru portalul iConta.eu.</p>
         <div class="camp" style="margin-bottom:12px">
           <label class="camp-eticheta">Parol\u0103 nou\u0103 (minim 8 caractere)</label>
           <input class="camp-input" type="password" id="act-p1">

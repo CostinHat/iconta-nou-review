@@ -5,7 +5,7 @@ import { api, esc, arataMesaj } from "../api.js";
 
 export function randeazaRecomanda(corp, nav) {
   corp.innerHTML = `
-    <p class="mig-intro">Invită un cabinet prieten să încerce iConta. Îi trimitem un email cu o invitație.</p>
+    <p class="mig-intro">Invită un cabinet prieten să încerce iConta.eu. Îi trimitem un email cu o invitație.</p>
     <div class="panou" style="max-width:560px">
       <div class="rec-cap">
         <h3 class="cap-titlu">Adrese de email</h3>

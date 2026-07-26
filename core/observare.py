@@ -112,7 +112,7 @@ def _trimite_brevo(subiect, mesaj):
 
 # [p30_email_generic]
 def trimite_email_html(catre, subiect, html, attachments=None, reply_to=None,
-                       expeditor_nume="iConta"):
+                       expeditor_nume="iConta.eu"):
     """Email HTML catre un destinatar arbitrar (nu doar alerta interna).
     Refoloseste cheia Brevo + sender-ul (env, citit la apel). Intoarce True/False.
 

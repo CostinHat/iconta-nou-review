@@ -287,7 +287,7 @@ function randeazaMeniuFirme(corp, nav) {
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M8 11l4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
         </div>
         <div class="firme-optiune-titlu">Migrare cabinet</div>
-        <div class="firme-optiune-desc">Adu-ți tot cabinetul în iConta — firmele se validează automat la ANAF</div>
+        <div class="firme-optiune-desc">Adu-ți tot cabinetul în iConta.eu — firmele se validează automat la ANAF</div>
       </button>
     </div>
   `;

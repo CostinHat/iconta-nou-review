@@ -223,7 +223,7 @@ export function legaVerdict(corp, nav, firma) {
     };
     const col = CULORI[a.stare] || CULORI.gri;
     zona.innerHTML = `
-      <div class="cf-incr-temei">${a.in_iconta_din ? `Firmă în iConta din ${dataRo(a.in_iconta_din)} · ` : ""}Audit rulat ${dataRo(a.data, "cu_ora")} · <span style="color:${col.dot}">${col.txt}</span> · ${a.coerent} coerent · ${a.divergent} divergent · ${a.neverificat} neverificat</div>
+      <div class="cf-incr-temei">${a.in_iconta_din ? `Firmă în iConta.eu din ${dataRo(a.in_iconta_din)} · ` : ""}Audit rulat ${dataRo(a.data, "cu_ora")} · <span style="color:${col.dot}">${col.txt}</span> · ${a.coerent} coerent · ${a.divergent} divergent · ${a.neverificat} neverificat</div>
       ${grup("Coerent", "verde", "cf-verde")}
       ${grup("Divergent", "rosu", "cf-rosu")}
       ${grup("Neverificat", "gri", "")}

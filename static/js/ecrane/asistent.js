@@ -45,9 +45,9 @@ export async function desktopAsistent(continut, nav) {
     { cheie:"pachete",   titlu:"Pachete lunare", icon:"mail",      ...CULORI_CARD.violet,
       sinteza:"Trimite pachetul lunar către clienți" },
     { cheie:"recomanda", titlu:"Recomandă",      icon:"gift",      ...CULORI_CARD.chihlimbar,
-      sinteza:"Invită un cabinet în iConta" },
+      sinteza:"Invită un cabinet în iConta.eu" },
     { cheie:"raport",    titlu:"Raportează",     icon:"report",    ...CULORI_CARD.ardezie,
-      sinteza:"Raportează o problemă către iConta" },
+      sinteza:"Raportează o problemă către iConta.eu" },
     { cheie:"setari",    titlu:"Setări cont",    icon:"settings",  ...CULORI_CARD.ardezie,
       sinteza:"Parolă și date de profil" },
   ];

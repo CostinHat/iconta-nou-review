@@ -1292,7 +1292,7 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
     html = ("<p>Buna,</p>" + _pm + "<p>Ai primit acces la portalul iConta pentru firma <b>%s</b>.</p>"
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in portal</a></p>"
             "<p>Linkul e valabil 48 de ore.</p>") % (d.get("nume", ""), link)
-    _obs.trimite_email_html(email, "Acces portal iConta — " + d.get("nume", ""), html)
+    _obs.trimite_email_html(email, "Acces portal iConta.eu — " + d.get("nume", ""), html)
     return {"ok": True, "user_id": uid}
 
 class ActivareIn(BaseModel):
@@ -3080,7 +3080,7 @@ def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn, c
                 subiect = "Raportul lunar - " + (luni_n[luna] if 1 <= luna <= 12 else str(luna)) + " " + str(an)
                 html = ("<div style='font-family:sans-serif;font-size:15px;color:#111'>"
                         "<p>Buna,</p><p>Contabilul tau a pregatit raportul lunar pentru <b>" +
-                        (nume or "firma ta") + "</b>. Il gasesti in portalul iConta, la Povestea lunii.</p>"
+                        (nume or "firma ta") + "</b>. Il gasesti in portalul iConta.eu, la Povestea lunii.</p>"
                         "<p><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
                         "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>"
                         "Deschide portalul</a></p></div>")
@@ -3283,7 +3283,7 @@ def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
     html = ("<p>Buna,</p><p>Ai primit acces la portalul iConta pentru firma <b>%s</b>.</p>"
             "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Intra in portal</a></p>"
             "<p>Linkul e valabil 48 de ore.</p>") % (t.get("nume", ""), link)
-    _obs.trimite_email_html(email, "Acces portal iConta — " + t.get("nume", ""), html)
+    _obs.trimite_email_html(email, "Acces portal iConta.eu — " + t.get("nume", ""), html)
     return {"ok": True}
 @app.delete("/portal/acces-cont/acces/{user_id}")
 def portal_revoca_acces(user_id: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
@@ -4985,7 +4985,7 @@ def recomanda_preview(ctx=Depends(cere_cabinet)):
         r = auth_api.get_cabinet(conn, ctx["firm"])
     nume_cabinet = (r.get("cabinet") or {}).get("nume", "") if r.get("ok") else ""
     return {"ok": True, "html": _mesaj_promo_html(nume_cabinet),
-            "subiect": "O recomandare pentru cabinetul tau: iConta"}
+            "subiect": "O recomandare pentru cabinetul tau: iConta.eu"}
 
 @app.post("/recomanda")
 def trimite_recomandari(date: RecomandareIn, ctx=Depends(cere_cabinet)):

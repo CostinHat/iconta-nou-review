@@ -129,7 +129,7 @@ function wizardFirme(corp, nav) {
 function pasInput(corp, nav) {
   nav.setInapoi(() => meniuMigrare(corp, nav));
   corp.innerHTML = `
-    <p class="mig-intro">Încarcă-ți tot portofoliul în iConta. Verificăm fiecare CUI direct la ANAF și completăm automat denumirea și datele firmei.</p>
+    <p class="mig-intro">Încarcă-ți tot portofoliul în iConta.eu. Verificăm fiecare CUI direct la ANAF și completăm automat denumirea și datele firmei.</p>
     <div class="mig-eticheta">Lipește CUI-urile firmelor (unul pe linie)</div>
     <textarea id="mig-text" class="mig-textarea" placeholder="14837428&#10;1590082&#10;RO14399840"></textarea>
     <div class="mig-sau"><span></span>sau<span></span></div>
@@ -196,7 +196,7 @@ async function incarcaFisier(file) {
 function pasRezultate(corp, nav, rezultate) {
   nav.setInapoi(() => pasInput(corp, nav));
   corp.innerHTML = `
-    <p class="mig-intro">Am verificat <b>${rezultate.length} CUI-uri</b> la ANAF. Bifează firmele pe care le aduci în iConta.</p>
+    <p class="mig-intro">Am verificat <b>${rezultate.length} CUI-uri</b> la ANAF. Bifează firmele pe care le aduci în iConta.eu.</p>
     <div class="mig-lista" id="mig-lista"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-importa">Importă firmele bifate</button>
@@ -221,7 +221,7 @@ function pasRezultate(corp, nav, rezultate) {
   function actButon() {
     const n = lista.querySelectorAll('input[type=checkbox]:checked').length;
     const b = corp.querySelector("#mig-importa");
-    b.textContent = n ? `Importă ${n} ${n === 1 ? "firmă" : "firme"} în iConta` : "Importă firmele bifate";
+    b.textContent = n ? `Importă ${n} ${n === 1 ? "firmă" : "firme"} în iConta.eu` : "Importă firmele bifate";
     b.disabled = n === 0;
   }
   lista.addEventListener("change", actButon); actButon();
@@ -261,7 +261,7 @@ function pasFinal(corp, nav, raport) {
   const sumar = `
     <div class="mig-gata">
       <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="#1d9e75" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>
-      <div class="mig-gata-titlu">${creat.length} ${creat.length === 1 ? "firmă adăugată" : "firme adăugate"} în iConta</div>
+      <div class="mig-gata-titlu">${creat.length} ${creat.length === 1 ? "firmă adăugată" : "firme adăugate"} în iConta.eu</div>
     </div>
     ${avert}`;
   randeazaDecizie(corp, nav, "firme", sumar, "Importul firmelor e complet?");
@@ -1146,7 +1146,7 @@ async function wizardIstoric(corp, nav) {
 
   const cuIst = firme.filter((f) => f.are_istoric).length;
   corp.innerHTML = `
-    <p class="mig-intro">Importă declarațiile deja depuse anul curent (la vechiul program). Astfel iConta nu le mai cere ca restanță.</p>
+    <p class="mig-intro">Importă declarațiile deja depuse anul curent (la vechiul program). Astfel iConta.eu nu le mai cere ca restanță.</p>
     <div class="mig-progres">${cuIst} din ${firme.length} firme au istoric</div>
     <div class="mig-lista" id="mig-firme"></div>
     <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Istoric</button>
