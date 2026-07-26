@@ -1024,6 +1024,16 @@ def register(date: RegisterIn):
         _obs.trimite_email_html(date.email, "Bine ai venit pe iConta.eu", html)
     except Exception:
         pass
+    try:  # [alerta_cont_nou_v1] notificare interna la fiecare cont nou de cabinet (fara date personale)
+        from datetime import datetime as _dt
+        from zoneinfo import ZoneInfo as _Z
+        _acum = _dt.now(_Z("Europe/Bucharest")).strftime("%d.%m.%Y %H:%M:%S")
+        _mesaj_cn = ("S-a inregistrat un cont nou de cabinet pe iConta.eu la %s (ora Romaniei). "
+                     "Alerta nu contine date personale." % _acum)
+        _ok_cn = _obs._trimite_brevo("Cont nou de cabinet", _mesaj_cn)
+        print("[alerta_cont_nou] trimisa=%s | %s" % (_ok_cn, _mesaj_cn), flush=True)
+    except Exception as _e:
+        print("[alerta_cont_nou] netrimisa: %s" % _e, flush=True)
     if date.cui and _TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
         try:
             with db.get_conn() as conn:
