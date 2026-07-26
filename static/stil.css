@@ -2242,3 +2242,7 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .func-card-nr { font-size: var(--text-mic); color: var(--gri); }
 .func-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .func-lista li { padding: 7px 11px; background: #fff; border: 0.5px solid #dfe4ea; border-radius: 7px; font-size: var(--text-mic); color: #1a1d21; }
+
+/* [termeni_v1] subsol public cu link Termeni si conditii */
+.pagina-subsol{text-align:center;padding:24px 20px 40px;color:var(--gri);font-size:.9rem;border-top:1px solid var(--linie)}
+.pagina-subsol a{color:var(--albastru);text-decoration:none}

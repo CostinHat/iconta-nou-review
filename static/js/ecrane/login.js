@@ -94,6 +94,10 @@ export function ecranLogin(radacina) {
           </div>
         </div>`).join("")}
     </div>
+    <footer class="pagina-subsol">
+      <a href="/public/termeni" target="_blank" rel="noopener">Termeni și condiții</a>
+      <span> · </span><span>© iConta.eu · contact@iconta.eu</span>
+    </footer>
   `;
   radacina.appendChild(corp);
 
@@ -347,6 +351,7 @@ export function ecranLogin(radacina) {
         <input type="password" class="camp-input" id="reg-parola2" autocomplete="off">
       </label>
       <div class="login-eroare" id="reg-eroare" hidden></div>
+      <label class="set-bifa" style="margin:4px 0 12px"><input type="checkbox" id="reg-termeni"> <span>Am citit și accept <a href="/public/termeni" target="_blank" rel="noopener">Termenii și condițiile</a></span></label>
       <button class="buton-primar" id="reg-buton">Creează cont</button>
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
@@ -413,6 +418,10 @@ export function ecranLogin(radacina) {
         arataEroare("Parolele nu coincid.");
         return;
       }
+      if (!modal.querySelector("#reg-termeni")?.checked) {
+        arataEroare("Trebuie să accepți Termenii și condițiile.");
+        return;
+      }
       buton.disabled = true;
       buton.textContent = "Se creează…";
       const { nume, prenume } = separaNume((numeAdmin && numeAdmin.value) || "");
@@ -425,6 +434,7 @@ export function ecranLogin(radacina) {
             cui: (cui.value || "").trim(),  /* register_primul_tenant_v1 */
             nume,
             prenume,
+            accept_termeni: !!modal.querySelector("#reg-termeni")?.checked,  /* [termeni_v1] */
           });
         }
         const r = await api.post("/auth/login", {

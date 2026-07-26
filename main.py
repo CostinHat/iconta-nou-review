@@ -722,6 +722,7 @@ class RegisterIn(BaseModel):
     nume: Optional[str] = None
     prenume: Optional[str] = None
     cui: Optional[str] = None  # register_primul_tenant_v1
+    accept_termeni: bool = False  # [termeni_v1] bifa obligatorie, validata pe BACKEND
 
 class DeclaratieIn(BaseModel):
     tenant_id: int
@@ -996,12 +997,23 @@ def login(date: LoginIn):
 
 @app.post("/auth/register")
 def register(date: RegisterIn):
+    if not date.accept_termeni:  # [termeni_v1] fara bifa -> contul NU se creeaza (gard pe backend, nu doar JS)
+        raise HTTPException(400, "Trebuie sa accepti Termenii si conditiile pentru a crea contul.")
     with db.get_conn() as conn:
         r = auth_api.inregistreaza_cabinet(
             conn, date.email, date.parola, date.nume_cabinet,
             nume=date.nume, prenume=date.prenume)
     if not r["ok"]:
         raise HTTPException(400, r["mesaj"])
+    try:  # [termeni_v1] dovada de consimtamant: cine, cand, ce versiune (linia 3 din fisier)
+        with db.get_conn() as conn, conn.cursor() as cur:
+            cur.execute("INSERT INTO public.acord_termeni (user_id, cabinet_id, email, versiune) "
+                        "VALUES (%s,%s,%s,%s)",
+                        (r.get("user_id"), r.get("firm_id"), date.email.strip().lower(),
+                         _termeni_versiune(open(_TERMENI_PATH, encoding="utf-8").read())))
+            conn.commit()
+    except Exception as _e:
+        print("[termeni] acord neinregistrat pentru %s: %s" % (date.email, _e))
     try:  # register_email_v1: email de bun venit
         html = ("<p>Buna,</p><p>Contul cabinetului <b>%s</b> a fost creat pe iConta.eu.</p>"
                 "<p>Te poti loga oricand cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
@@ -1167,6 +1179,62 @@ class ActivareIn(BaseModel):
 # === MAGIC LINK === # magic_link_v1
 class MagicCereIn(BaseModel):
     email: str
+
+_TERMENI_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "TERMENI_SI_CONDITII.md")
+
+def _termeni_versiune(txt):
+    """Versiunea = linia 3 din fisier (fara markdown bold). Stocata la acceptare ca dovada."""
+    linii = txt.split("\n")
+    return (linii[2].strip().strip("*").strip() if len(linii) > 2 else "necunoscuta")
+
+def _termeni_public_md(txt):
+    """Randeaza fisierul PUBLIC, dar ELIMINA ce fisierul insusi marcheaza intern: nota 'de eliminat
+    inainte de publicare', pasajele [AVOCAT: ...] si Anexa interna (pentru avocat). Cand textul se
+    finalizeaza (notele scoase manual) filtrarea devine no-op -> fisierul ramane inlocuibil fara cod."""
+    out, in_anexa = [], False
+    for ln in txt.split("\n"):
+        s = ln.strip()
+        if s.startswith("## Anex") and "intern" in s.lower():
+            in_anexa = True
+        if in_anexa:
+            continue
+        if s.startswith("> **Not") and "intern" in s.lower():
+            continue
+        if s.startswith(">") and "[AVOCAT:" in s:
+            continue
+        out.append(ln)
+    return "\n".join(out)
+
+_TERMENI_PAGINA = """<!doctype html><html lang="ro"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Termeni si conditii - iConta.eu</title>
+<link rel="stylesheet" href="/static/stil.css">
+<style>
+body{background:#f4f6f9;margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1d3a5f;line-height:1.6}
+.tc-bara{display:flex;align-items:center;gap:10px;padding:14px 22px;background:#1d3a5f;color:#fff;font-weight:600}
+.tc-bara a{color:#fff;text-decoration:none}
+.tc-wrap{max-width:820px;margin:0 auto;padding:30px 22px 90px}
+.tc-wrap h1{font-size:1.7rem;margin:.2em 0 .3em}
+.tc-wrap h2{font-size:1.2rem;margin:1.6em 0 .4em}
+.tc-wrap p,.tc-wrap li{color:#33445a}
+.tc-wrap a{color:#1d4ed8}
+.tc-wrap blockquote{border-left:3px solid #b9c2cf;margin:1em 0;padding:.2em 0 .2em 14px;color:#5b6b7c;background:#eef4fd}
+.tc-wrap hr{border:none;border-top:1px solid #dbe1ea;margin:1.6em 0}
+.tc-inapoi{margin-top:44px}
+</style></head><body>
+<div class="tc-bara"><a href="/">iConta.eu</a><span>&middot; Termeni si conditii</span></div>
+<main class="tc-wrap">%(corp)s<p class="tc-inapoi"><a href="/">&larr; Inapoi la iConta.eu</a></p></main>
+</body></html>"""
+
+@app.get("/public/termeni")  # [termeni_v1] markdown->HTML DIN FISIER (inlocuibil fara cod); exclude notele interne marcate in fisier
+def public_termeni():
+    import markdown as _md
+    try:
+        txt = open(_TERMENI_PATH, encoding="utf-8").read()
+    except Exception:
+        raise HTTPException(404, "Termenii nu sunt disponibili momentan.")
+    corp = _md.markdown(_termeni_public_md(txt), extensions=["extra", "sane_lists"])
+    return Response(content=_TERMENI_PAGINA % {"corp": corp}, media_type="text/html; charset=utf-8")
 
 @app.get("/public/config")  # [beta_gate_v1] doar STAREA portii (bool), NU valoarea codului
 def public_config():
