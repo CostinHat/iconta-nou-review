@@ -1168,6 +1168,11 @@ class ActivareIn(BaseModel):
 class MagicCereIn(BaseModel):
     email: str
 
+@app.get("/public/config")  # [beta_gate_v1] doar STAREA portii (bool), NU valoarea codului
+def public_config():
+    return {"beta": bool(os.environ.get("BETA_COD_ACCES", "").strip())}
+
+
 @app.post("/public/magic-link")
 def magic_link_cere(date: MagicCereIn):
     """Trimite link de logare fara parola. Raspuns identic indiferent daca emailul exista (fara enumerare)."""

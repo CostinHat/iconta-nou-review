@@ -242,10 +242,6 @@ export function ecranLogin(radacina) {
         <span class="camp-eticheta">Parol\u0103<span class="oblig">*</span></span>
         <input type="password" class="camp-input" name="password" id="login-parola" autocomplete="current-password">
       </label>
-      <label class="camp">
-        <span class="camp-eticheta">Cod acces</span>
-        <input type="text" class="camp-input" id="login-cod" autocomplete="off" placeholder="doar \u00een perioada de testare">
-      </label>
       <div class="login-eroare" id="login-eroare" hidden></div>
       <button type="submit" class="buton-primar" id="login-buton">Autentificare</button>
       <button type="button" class="btn-link" id="acc-magic" style="margin-top:10px;display:block">Trimite-mi link de logare (fără parolă)</button>
@@ -254,6 +250,18 @@ export function ecranLogin(radacina) {
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
     modal.querySelector("#login-inapoi").addEventListener("click", randeazaLogin);
+    // [beta_gate_v1] campul de cod = DERIVAT din BETA_COD_ACCES (o singura sursa), via /public/config;
+    // apare DOAR cand poarta e activa. La repunerea portii diseara reapare singur, fara schimbare de cod.
+    api.get("/public/config").then((cfg) => {
+      if (cfg && cfg.beta) {
+        const er = modal.querySelector("#login-eroare");
+        if (!er) return;
+        const lbl = document.createElement("label");
+        lbl.className = "camp";
+        lbl.innerHTML = '<span class="camp-eticheta">Cod acces</span><input type="text" class="camp-input" id="login-cod" autocomplete="off" placeholder="doar \u00een perioada de testare">';
+        er.parentNode.insertBefore(lbl, er);
+      }
+    }).catch(() => {});
 
     const email = modal.querySelector("#login-email");
     const parola = modal.querySelector("#login-parola");
