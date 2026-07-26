@@ -57,9 +57,46 @@ function ecranActivare(tok) {  /* activare_fe_v1 */
     } catch (e) { msg.textContent = e.message; }
   });
 }
+function ecranResetParola(tok) {  /* [reset_parola_v1] setare parola noua din linkul de resetare (oglinda ecranActivare) */
+  radacina.innerHTML = `
+    <div class="pagina-login" style="display:flex;align-items:center;justify-content:center;min-height:100dvh">
+      <div style="background:#fff;border-radius:12px;box-shadow:0 3px 12px rgba(20,30,45,0.14);padding:28px;width:min(420px,92vw)">
+        <h2 style="margin:0 0 6px">Parolă nouă</h2>
+        <p class="ecran-nota" style="margin:0 0 16px">Setează o parolă nouă pentru contul tău iConta.eu.</p>
+        <div class="camp" style="margin-bottom:12px">
+          <label class="camp-eticheta">Parolă nouă (minim 8 caractere)</label>
+          <input class="camp-input" type="password" id="rst-p1">
+        </div>
+        <div class="camp" style="margin-bottom:16px">
+          <label class="camp-eticheta">Repetă parola</label>
+          <input class="camp-input" type="password" id="rst-p2">
+        </div>
+        <p class="ecran-nota" id="rst-msg" style="margin:0 0 10px"></p>
+        <button class="buton-primar" id="rst-btn" style="width:100%">Setează parola</button>
+      </div>
+    </div>`;
+  const msg = radacina.querySelector("#rst-msg");
+  radacina.querySelector("#rst-btn").addEventListener("click", async () => {
+    const p1 = radacina.querySelector("#rst-p1").value, p2 = radacina.querySelector("#rst-p2").value;
+    if (p1.length < 8) { msg.textContent = "Parola trebuie să aibă minim 8 caractere."; return; }
+    if (p1 !== p2) { msg.textContent = "Parolele nu coincid."; return; }
+    try {
+      const r = await fetch("/public/reset-parola/seteaza", { method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: tok, parola: p1 }) });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || "Eroare");
+      location.hash = "";  /* parola schimbata -> login normal cu parola noua */
+      try { sesiune.iesi(); } catch (_e) { sessionStorage.clear(); location.reload(); }
+    } catch (e) { msg.textContent = e.message; }
+  });
+}
+
 function randeaza() {
   const _act = (location.hash.match(/#activare=([\w-]+)/) || [])[1];  /* activare_fe_v1 */
   if (_act) { ecranActivare(_act); return; }
+  const _rst = (location.hash.match(/#reset=([\w-]+)/) || [])[1];  /* [reset_parola_v1] */
+  if (_rst) { ecranResetParola(_rst); return; }
   const _mag = (location.hash.match(/#magic=([\w-]+)/) || [])[1];  /* magic_login_fe_v1 */
   if (_mag) {
     location.hash = "";

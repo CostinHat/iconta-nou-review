@@ -167,12 +167,15 @@ def cere_cabinet(ctx=Depends(cere_context)):
     # [suspendare-live] cabinet suspendat => 403 imediat, nu doar la login
     if ctx["rol"] != "superadmin":
         with db.get_conn() as conn, conn.cursor() as cur:
-            cur.execute("""SELECT af.activ FROM public.users u
+            cur.execute("""SELECT af.activ, extract(epoch FROM u.sesiuni_valide_de) FROM public.users u
                            LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id
                            WHERE u.id = %s""", (ctx["uid"],))
             r = cur.fetchone()
             if r and r[0] is False:
                 raise HTTPException(403, "Cabinetul este suspendat. Contactați furnizorul.")
+            # [reset_parola_v1] sesiune emisa INAINTE de o schimbare de parola (iat < sesiuni_valide_de) -> invalidata
+            if r and r[1] is not None and ctx.get("iat") is not None and ctx["iat"] < r[1]:
+                raise HTTPException(401, "Sesiune încheiată (parola a fost schimbată). Autentifică-te din nou.")
     return ctx
 
 # ICRD_AUDIT_LOG_V1 - activitate cabinete (portat din legacy /opt/iconta)
@@ -1240,6 +1243,73 @@ def public_termeni():
 def public_config():
     return {"beta": bool(os.environ.get("BETA_COD_ACCES", "").strip())}
 
+
+class ResetCereIn(BaseModel):
+    email: str
+
+class ResetSeteazaIn(BaseModel):
+    token: str
+    parola: str
+
+_reset_rate = {}  # [reset_parola_v1] rate-limit in-memory per IP (single worker uvicorn) — anti-spam prin emailurile noastre
+def _ip_client(request):
+    xff = request.headers.get("x-forwarded-for")
+    return (xff.split(",")[0].strip() if xff else (request.client.host if request.client else "?"))
+def _rate_limit_reset(request):
+    import time as _t
+    ip = _ip_client(request); acum = _t.time()
+    q = [t for t in _reset_rate.get(ip, []) if acum - t < 900]  # fereastra 15 min
+    if len(q) >= 5:
+        raise HTTPException(429, "Prea multe cereri. Încearcă din nou peste câteva minute.")
+    q.append(acum); _reset_rate[ip] = q
+
+@app.post("/public/reset-parola/cere")  # [reset_parola_v1] "Am uitat parola" cabinet — raspuns IDENTIC (anti-enumerare), rate-limited
+def reset_parola_cere(date: ResetCereIn, request: Request):
+    _rate_limit_reset(request)
+    from core import reset_parola as _rp
+    with db.get_conn() as conn:
+        token, u = _rp.cere_reset(conn, date.email)
+        conn.commit()
+    if token and u:
+        try:
+            baza = os.environ.get("ICONTA_BAZA_URL", "https://iconta.eu")
+            link = baza + "/#reset=" + token
+            nume = (u.get("prenume") or u.get("nume") or "").strip()
+            html = ("<p>Buna%s,</p>"
+                    "<p>Am primit o cerere de resetare a parolei contului tau de cabinet pe iConta.eu.</p>"
+                    "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;padding:10px 22px;border-radius:6px;text-decoration:none'>Seteaza o parola noua</a></p>"
+                    "<p>Linkul e valabil 60 de minute si poate fi folosit o singura data. "
+                    "Daca nu tu ai cerut resetarea, ignora acest mesaj — parola ramane neschimbata.</p>"
+                    % ((" " + nume) if nume else "", link))
+            _obs.trimite_email_html(u["email"], "Resetare parola iConta.eu", html)
+        except Exception:
+            pass
+        try:
+            with db.get_conn() as c, c.cursor() as cur:
+                cur.execute("INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'reset_parola_cerut')", (u["user_id"],))
+                c.commit()
+        except Exception:
+            pass
+    return {"ok": True, "mesaj": "Dacă adresa e înregistrată, vei primi un mesaj cu instrucțiuni de resetare."}
+
+@app.post("/public/reset-parola/seteaza")  # [reset_parola_v1] valideaza tokenul (single-use), seteaza parola, invalideaza sesiunile
+def reset_parola_seteaza(date: ResetSeteazaIn):
+    if len(date.parola or "") < 8:
+        raise HTTPException(422, "Parola trebuie să aibă minim 8 caractere.")
+    from core import reset_parola as _rp
+    with db.get_conn() as conn:
+        try:
+            r = _rp.seteaza(conn, date.token, date.parola)
+            conn.commit()
+        except ValueError:
+            raise HTTPException(400, "Link invalid, expirat sau deja folosit. Cere alt link din sectiunea Am uitat parola.")
+    try:
+        with db.get_conn() as c, c.cursor() as cur:
+            cur.execute("INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'reset_parola_schimbat')", (r["user_id"],))
+            c.commit()
+    except Exception:
+        pass
+    return {"ok": True}
 
 @app.post("/public/magic-link")
 def magic_link_cere(date: MagicCereIn):

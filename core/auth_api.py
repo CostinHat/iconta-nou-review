@@ -96,6 +96,7 @@ def context_din_token(token, secret=None, acum=None):
         return r
     p = r["payload"]
     return {"ok": True, "uid": p.get("uid"), "rol": p.get("rol"), "firm": p.get("firm"),
+            "iat": p.get("iat"),  # [reset_parola_v1] pt invalidarea sesiunilor la schimbarea parolei
             "preview": bool(p.get("preview"))}  # [F-preview] read-only enforcement pe backend
 
 

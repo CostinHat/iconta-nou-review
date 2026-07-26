@@ -230,6 +230,39 @@ export function ecranLogin(radacina) {
     email.addEventListener("keydown", (e) => { if (e.key === "Enter") btn.click(); });
   }
 
+  function randeazaResetCere() {  // [reset_parola_v1] "Am uitat parola": email -> raspuns IDENTIC (anti-enumerare)
+    modal.classList.remove("acces-modal-inreg");
+    modal.innerHTML = `
+      <button type="button" class="nav-sageata" id="rst-inapoi" title="Înapoi" aria-label="Înapoi" style="position:absolute;top:14px;left:14px"><span aria-hidden="true">←</span></button>
+      <button class="acces-x" id="acces-x" aria-label="Închide">✕</button>
+      <div class="login-brand">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
+        <div class="login-subtagline">Am uitat parola</div>
+      </div>
+      <p class="ecran-nota" style="margin:0 0 12px">Introdu emailul contului de cabinet. Dacă adresa e înregistrată, primești pe email un link de resetare, valabil 60 de minute.</p>
+      <label class="camp">
+        <span class="camp-eticheta">Email</span>
+        <input type="email" class="camp-input" id="rst-email" autocomplete="username" autofocus>
+      </label>
+      <button class="buton-primar" id="rst-trimite">Trimite linkul de resetare</button>
+      <p id="rst-msg" style="margin:10px 0 0"></p>
+    `;
+    modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
+    modal.querySelector("#rst-inapoi").addEventListener("click", randeazaLogin);
+    const btn = modal.querySelector("#rst-trimite");
+    const msg = modal.querySelector("#rst-msg");
+    btn.addEventListener("click", async () => {
+      const em = (modal.querySelector("#rst-email").value || "").trim();
+      if (!em.includes("@")) { arataMesaj(msg, "Completează un email valid.", "eroare"); return; }
+      btn.disabled = true;
+      try {
+        const r = await api.post("/public/reset-parola/cere", { email: em });
+        arataMesaj(msg, (r && r.mesaj) || "Dacă adresa e înregistrată, vei primi un mesaj.", "info");
+      } catch (e) { arataMesaj(msg, e.mesaj || "Prea multe cereri. Încearcă mai târziu.", "info"); }
+      btn.disabled = false;
+    });
+  }
+
   function formCabinet() {
     modal.innerHTML = `
       <button type="button" class="nav-sageata" id="login-inapoi" title="Înapoi" aria-label="Înapoi" style="position:absolute;top:14px;left:14px"><span aria-hidden="true">←</span></button>
@@ -250,6 +283,7 @@ export function ecranLogin(radacina) {
       <div class="login-eroare" id="login-eroare" hidden></div>
       <button type="submit" class="buton-primar" id="login-buton">Autentificare</button>
       <button type="button" class="btn-link" id="acc-magic" style="margin-top:10px;display:block">Trimite-mi link de logare (fără parolă)</button>
+      <button type="button" class="btn-link" id="acc-reset" style="margin-top:4px;display:block">Am uitat parola</button>
       <p id="acc-magic-msg" style="margin:6px 0 0"></p>
       </form>
     `;
@@ -280,6 +314,8 @@ export function ecranLogin(radacina) {
         arataMesaj(msg, r.mesaj, "info");
       } catch (e) { arataMesaj(msg, e.mesaj || e.message, "eroare"); }
     });
+    const bReset = modal.querySelector("#acc-reset");  // [reset_parola_v1]
+    if (bReset) bReset.addEventListener("click", randeazaResetCere);
     const buton = modal.querySelector("#login-buton");
     const eroare = modal.querySelector("#login-eroare");
 

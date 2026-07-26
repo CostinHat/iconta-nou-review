@@ -81,7 +81,7 @@ def creeaza_token(payload, secret, durata_sec=3600, acum=None):
     if not secret:
         raise ValueError("secret gol la semnarea tokenului — refuz (ar fi forjabil cu cheie goală)")
     acum = acum if acum is not None else int(time.time())
-    date = {**payload, "exp": acum + durata_sec}
+    date = {**payload, "iat": acum, "exp": acum + durata_sec}  # [reset_parola_v1] iat pt invalidarea sesiunilor
     corp = _b64e(json.dumps(date, separators=(",", ":"), sort_keys=True).encode())
     sig = hmac.new(secret.encode(), corp.encode(), hashlib.sha256).digest()
     return f"{corp}.{_b64e(sig)}"
