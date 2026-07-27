@@ -1297,8 +1297,15 @@ class ResetSeteazaIn(BaseModel):
 
 _reset_rate = {}  # [reset_parola_v1] rate-limit in-memory per IP (single worker uvicorn) — anti-spam prin emailurile noastre
 def _ip_client(request):
+    # [xff_realip_v1] nginx suprascrie X-Real-IP cu $remote_addr (nefalsificabil); primul hop XFF e
+    # controlat de client -> citim X-Real-IP, altfel ULTIMUL hop XFF (adaugat de nginx), altfel peer TCP.
+    xr = request.headers.get("x-real-ip")
+    if xr:
+        return xr.strip()
     xff = request.headers.get("x-forwarded-for")
-    return (xff.split(",")[0].strip() if xff else (request.client.host if request.client else "?"))
+    if xff:
+        return xff.split(",")[-1].strip()
+    return request.client.host if request.client else "?"
 _magic_rate = {}  # [magic_link_v1] rate-limit per IP pt /public/magic-link (aceleasi praguri ca reset)
 def _rate_limit_email(store, request):
     """Anti-spam prin emailurile noastre: max 5 cereri / 15 min per IP (in-memory, single worker)."""
