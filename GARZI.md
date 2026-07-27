@@ -43,13 +43,20 @@ Legenda stării: **ACOPERIT** / **PARȚIAL** / **LIPSĂ**
 ### 0. Mascarea erorii (transversal — cauza rădăcină)
 **Eșec:** `except` care întoarce default gol; eroarea nu ajunge nicăieri; un query rupt
 produce zero rânduri, iar declarația iese validă structural și goală.
-**Stare: PARȚIAL.**
+**Stare: ACOPERIT.**
 - `core/d406.py` — 6 măști scoase (27.07), zero rămase. Fiecare cauză cu mesajul ei.
 - `d112/d300/d390` — `except: return 0` scoase (27.07), regula în `numere.numar_fiscal`.
 - Rămân 2 în `core/jurnal_api.py:84,141` — pe scrierea în `ai_corectii`. Clasă mai blândă
   (nu strică nota contabilă, pierde tăcut date de învățare), dar tot tăcere.
-- **Niciun gard mecanic nu împiedică reintroducerea.** Cel mai ieftin gard care lipsește:
-  scan AST care interzice `except` cu corp mut peste un `cur.execute`, cu whitelist adnotat.
+- ACOPERIT: `core/test_masti.py` (27.07) — scan AST pe tot repo-ul; orice `except` cu corp
+  mut peste un query pică. Regula: **înghițirea e permisă, tăcerea nu** — handlerul trebuie
+  să spună ce a eșuat (`observare.esec_secundar`) sau să poarte marcajul `# MASCA MOTIVATA:`
+  cu explicația. Dovedit prin mutație pe cod real.
+- Cele 15 măști peste query din `main.py` și `jurnal_api.py` (audit_log, metrici, precompletare
+  ANAF, învățare AI) sunt acum zgomotoase. Nu li s-a schimbat comportamentul: efectul secundar
+  tot nu oprește operația principală — dar lasă urmă.
+- LIMITĂ DECLARATĂ: acoperă doar măștile peste query. Cele peste conversii numerice sunt
+  tratate separat (`numere.numar_fiscal`). Nu verifică dacă eticheta e corectă.
 
 ### 1. Intrare date
 **Eșec:** câmp lipsă → NULL → 0; import duplicat; valoare cu virgulă zecimală devenită 0;

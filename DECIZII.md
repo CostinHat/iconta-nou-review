@@ -3449,3 +3449,39 @@ IDOR. Ambele raman in lista de garduri lipsa.
 
 DOVADA: mutatie pe cod REAL - ruta `/mutant/scurgere` adaugata in main.py, garda a picat cu
 calea si linia in mesaj; main.py restaurat dupa.
+
+### 27.07.2026 Măști peste query: `except: pass` -> înghițit, dar NU tăcut + gard mecanic
+
+FAPT: 63 de handlere `except` cu corp mut in tot repo-ul, dintre care 15 peste un QUERY.
+Un query rupt sub o masca produce zero randuri, iar generatorul scoate o declaratie VALIDA
+STRUCTURAL si GOALA - clasa de defect care a produs aproape tot ce s-a gasit in iulie
+(d406 GeneralLedgerEntries gol pentru orice firma; d406 SourceDocuments fara facturi desi
+existau 5 reale).
+
+JUDECATA PE FIECARE: toate cele 15 sunt "efect secundar care nu trebuie sa opreasca operatia
+principala" - alegere CORECTA. Un audit_log care crapa nu trebuie sa impiedice login-ul.
+Problema nu era inghitirea, era TACEREA: nimic, nicaieri, nu spunea ca s-a intamplat.
+
+CAZUL CARE SCHIMBA GRAVITATEA: 5 dintre masti sunt pe scrierea in `public.audit_log` - chiar
+sursa pe care o citeste `core/alerta_acces.py` ca sa detecteze acces anormal. Daca scrierea
+esueaza tacit, gardul de securitate raporteaza linistit "0 verificati" pe o baza care nu se
+scrie. O masca tacuta poate dezactiva un gard fara ca nimeni sa afle.
+
+DECIZIE: nu se scot mastile, se fac ZGOMOTOASE. `observare.esec_secundar(eticheta, e,
+alerta=False)` - log intotdeauna, alerta doar unde tacerea are cost legal sau de securitate
+(evidenta prelucrarilor GDPR, provisionare esuata). Alerta pe orice ar produce zgomot, iar
+un canal zgomotos se ignora - alt fel de tacere. Corpul original al handlerului e PASTRAT
+(inclusiv `return None`), logul se adauga ca prim rand: zero schimbare de comportament.
+
+GARD: `core/test_masti.py` - scan AST pe tot repo-ul. Orice `except` mut peste un query pica.
+Escape hatch explicit: marcajul `# MASCA MOTIVATA: <motiv>`, pentru cazurile unde tacerea
+chiar e decizia corecta. Patru teste, dintre care unul de mutatie pe cod real si doua care
+verifica exact granita (marcajul scuteste; un handler care logheaza nu e masca).
+
+LIMITA DECLARATA: acopera doar mastile peste QUERY. Cele peste conversii numerice au fost
+tratate separat (core/numere.numar_fiscal). Nu verifica daca eticheta e corecta, doar ca
+handlerul spune ceva.
+
+RIDICAT, NEREZOLVAT: `main.py:1063` inghite `provision_tenant` in `register`. Daca
+provisionarea crapa, raspunsul e SUCCES si userul ramane cu cont fara firma. Facut zgomotos
++ alerta, comportamentul NESCHIMBAT - e decizie de produs, in DE_FACUT.

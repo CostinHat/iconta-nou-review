@@ -212,3 +212,29 @@ def verifica_pool(pool_obj, maxconn):
     if alerta:
         alerteaza("pool_plin", "Pool DB aproape epuizat", mesaj)
     return pct
+
+
+# ============================================================
+#  ESEC PE CALE SECUNDARA — inghitit, dar NU tacut
+# ============================================================
+def esec_secundar(eticheta, eroare, alerta=False):
+    """Un efect secundar a esuat. Operatia principala continua, dar eroarea NU dispare.
+
+    DE CE (27.07.2026): 15 locuri aveau `except: pass` peste un query. Alegerea de a nu
+    opri operatia principala e corecta - un audit_log care crapa nu trebuie sa impiedice
+    login-ul. Dar tacerea nu era o alegere, era o scapare: nimic, nicaieri, nu spunea ca
+    s-a intamplat. Un audit_log care esueaza tacut e mai rau decat unul absent, pentru ca
+    `alerta_acces` il citeste ca sa detecteze acces anormal - deci gardul de securitate ar
+    raporta linistit "0 verificati" pe o baza care nu se scrie.
+
+    alerta=True doar pentru caile unde tacerea are cost legal sau de securitate (evidenta
+    prelucrarilor GDPR, provisionare esuata). Restul: log. Alerta pe orice ar produce
+    zgomot, iar un canal zgomotos se ignora - alt fel de tacere.
+    """
+    print("[esec secundar: %s] %s: %s" % (eticheta, type(eroare).__name__, eroare), flush=True)
+    if alerta:
+        import traceback
+        alerteaza("secundar_%s" % eticheta,
+                  "Esec pe cale secundara: %s" % eticheta,
+                  "Operatia principala a continuat, dar '%s' a esuat:\n\n%s"
+                  % (eticheta, traceback.format_exc()))

@@ -211,7 +211,8 @@ def _inregistreaza_activitate(method, path, status, auth_header):
                     "INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) "
                     "VALUES (%s,%s,%s,%s)",
                     (uid, tenant_id, actiune, _json_audit.dumps({"status": status})))
-    except Exception:
+    except Exception as _e:
+        _obs.esec_secundar("audit_log activitate", _e)  # inghitit, dar nu tacut (27.07.2026)
         pass
 
 _METODE_MUTATIE = ("POST", "PUT", "DELETE", "PATCH")
@@ -295,7 +296,8 @@ def _citeste_metrici_pentru_alerte():
                       AND (detalii->>'status')::int >= 500
                 """)
                 rezultat["erori_noi"] = cur.fetchone()[0]
-    except Exception:
+    except Exception as _e:
+        _obs.esec_secundar("metrici sanatate: citire", _e)  # inghitit, dar nu tacut (27.07.2026)
         pass
     return rezultat
 
@@ -306,7 +308,8 @@ def _email_superadmin():
                 cur.execute("SELECT email FROM public.users WHERE rol='superadmin' AND activ=true ORDER BY id LIMIT 1")
                 r = cur.fetchone()
         return r[0] if r else None
-    except Exception:
+    except Exception as _e:
+        _obs.esec_secundar("email superadmin", _e)  # inghitit, dar nu tacut (27.07.2026)
         return None
 
 def _poate_alerta(categorie):
@@ -339,7 +342,8 @@ def _verifica_si_alerta():
                     "(ram_procent, disc_procent, load1, conexiuni_db, erori_noi) "
                     "VALUES (%s,%s,%s,%s,%s)",
                     (m["ram_procent"], m["disc_procent"], m["load1"], m["conexiuni_db"], m["erori_noi"]))
-    except Exception:
+    except Exception as _e:
+        _obs.esec_secundar("metrici sanatate: scriere", _e)  # inghitit, dar nu tacut (27.07.2026)
         pass
 
     if not alerte:
@@ -445,7 +449,8 @@ def admin_sanatate(ctx=Depends(cere_cabinet)):
                 db_info["conexiuni"] = cur.fetchone()[0]
                 cur.execute("SELECT pg_size_pretty(pg_database_size(current_database()))")
                 db_info["marime"] = cur.fetchone()[0]
-    except Exception:
+    except Exception as _e:
+        _obs.esec_secundar("admin sanatate: info DB", _e)  # inghitit, dar nu tacut (27.07.2026)
         pass
 
     # --- erori recente (status >= 500 in ultimele 24h) ---
@@ -464,7 +469,8 @@ def admin_sanatate(ctx=Depends(cere_cabinet)):
                 rows = cur.fetchall()
                 erori_24h = len(rows)
                 lista_erori = rows[:50]
-    except Exception:
+    except Exception as _e:
+        _obs.esec_secundar("admin sanatate: erori 24h", _e)  # inghitit, dar nu tacut (27.07.2026)
         pass
 
     return {
@@ -663,7 +669,8 @@ def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("
                     "VALUES (%s,'gdpr_export',%s,%s,%s)",
                     (ctx.get("uid"), "cabinet", cab, _json_audit.dumps({"octeti": len(_zip)})))
             conn.commit()
-        except Exception:
+        except Exception as _e:
+            _obs.esec_secundar("audit_log export GDPR", _e, alerta=True)  # inghitit, dar nu tacut (27.07.2026)
             pass
     return Response(content=_zip, media_type="application/zip",
                     headers={"Content-Disposition": 'attachment; filename="gdpr-export-cabinet-%s.zip"' % cab})
@@ -1011,7 +1018,8 @@ def login(date: LoginIn):
                 cur.execute(
                     "INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'login')",
                     (r["user"]["id"],))
-    except Exception:
+    except Exception as _e:
+        _obs.esec_secundar("audit_log login", _e)  # inghitit, dar nu tacut (27.07.2026)
         pass
     return {"token": r["token"], "user": r["user"]}
 
@@ -1094,10 +1102,12 @@ def register(date: RegisterIn):
                                  bool(d.get("platitor_tva")),
                                  bool(d.get("platitor_tva")),
                                  d.get("tva_data_inceput")))
-                except Exception:
+                except Exception as _e:
+                    _obs.esec_secundar("precompletare ANAF la register", _e)  # inghitit, dar nu tacut (27.07.2026)
                     pass  # ANAF jos -> profilul ramane de completat manual
                 conn.commit()
-        except Exception:
+        except Exception as _e:
+            _obs.esec_secundar("provisionare tenant la register", _e, alerta=True)  # inghitit, dar nu tacut (27.07.2026)
             pass  # inregistrarea nu pica din cauza primului tenant
     return {"user_id": r["user_id"], "firm_id": r["firm_id"]}
 
@@ -1142,7 +1152,8 @@ def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
                                         reg_com=COALESCE(NULLIF(%s,''), reg_com)''',
                                     (bool(d.get("platitor_tva")), bool(d.get("tva_la_incasare")),
                                      d.get("adresa") or "", d.get("cod_caen") or "", d.get("nr_reg_com") or ""))
-            except Exception:
+            except Exception as _e:
+                _obs.esec_secundar("precompletare ANAF la firma noua", _e)  # inghitit, dar nu tacut (27.07.2026)
                 pass  # best-effort: ANAF jos -> profil ramane default, corectabil din date_firma
     except ValueError as e:
         raise HTTPException(400, str(e))
@@ -1347,7 +1358,8 @@ def reset_parola_cere(date: ResetCereIn, request: Request):
             with db.get_conn() as c, c.cursor() as cur:
                 cur.execute("INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'reset_parola_cerut')", (u["user_id"],))
                 c.commit()
-        except Exception:
+        except Exception as _e:
+            _obs.esec_secundar("audit_log reset parola cerut", _e)  # inghitit, dar nu tacut (27.07.2026)
             pass
     return {"ok": True, "mesaj": "Dacă adresa e înregistrată, vei primi un mesaj cu instrucțiuni de resetare."}
 
@@ -1366,7 +1378,8 @@ def reset_parola_seteaza(date: ResetSeteazaIn):
         with db.get_conn() as c, c.cursor() as cur:
             cur.execute("INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'reset_parola_schimbat')", (r["user_id"],))
             c.commit()
-    except Exception:
+    except Exception as _e:
+        _obs.esec_secundar("audit_log reset parola schimbat", _e)  # inghitit, dar nu tacut (27.07.2026)
         pass
     return {"ok": True}
 
