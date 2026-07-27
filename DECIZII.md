@@ -3246,3 +3246,20 @@ dovedită cu cele 23 de teste SPV + probă reală pe conector (`apel_anaf` TestO
 FUNCTIONALITATI.csv: F153-F160 + F185/F186 marcate `ELIMINAT 26.07.2026` cu motiv (rândurile RĂMÂN, istoricul
 nu se pierde); F092/F188 rămân LIVE cu notă „sub-logica gratuit scoasă". Pagina publică Funcționalități:
 număr NESCHIMBAT (141) — pozițiile gratuit erau deja excluse din pagină (F203).
+
+### 27.07.2026 [EROARE PROPRIE + REVOCARE] d205_beneficiari readus gresit in template
+
+Am declarat "D205 rupt pentru 2 din 3 firme" pornind DOAR de la structura DB (tabelul
+exista doar in tenant_002), fara sa verific consumatorii in cod. Am adaugat tabelul in
+tenant_template.sql si l-am creat pe tenant_001/003 (commit 74e87fe). Am acuzat pe nedrept
+gardul F165 de "blind spot".
+
+FAPT: tabelul are ZERO consumatori. core/d205.py citeste din `asociati` + rulaj 457 pe
+inregistrari_linii. Decizia din 23.07 (cod mort eliminat, tabelul ramane extra informativ
+pe tenant_002) era CORECTA, iar gardul si-a facut treaba.
+
+REVOCAT: git revert 74e87fe + DROP pe tenant_001/003. Starea dinainte restaurata.
+
+LECTIE: absenta unui tabel dintr-un tenant NU dovedeste ca ceva e rupt. Ipoteza "lipseste
+deci e defect" cere verificarea consumatorilor INAINTE de orice reparatie - aceeasi regula
+de verificare-la-sursa, aplicata si structurii de date, nu doar valorilor fiscale.
