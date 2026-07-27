@@ -3937,3 +3937,20 @@ validare picata. SCOASA. Verificarea corecta: zero ecrane cu asterisc fara valid
 
 LECTIE: un criteriu de masurare prea ingust produce fals-pozitive care duc la reparatii
 inutile pe cod care functiona. A patra oara azi cand masuratoarea mea a fost gresita, nu codul.
+
+### 27.07.2026 SEO: Search Console verificat + sitemap trimis + meta social pe landing
+
+Search Console: proprietate de tip DOMENIU (`sc-domain:iconta.eu`, acopera si subdomeniile),
+verificata prin TXT DNS pus de Claus Web. Sitemap trimis: `https://iconta.eu/sitemap.xml`
+(la proprietatile de tip domeniu se cere URL complet, nu doar numele fisierului). 6 URL-uri:
+landing, /ghid, 3 pagini de ghid, /public/termeni.
+
+GASIT PE DRUM: landingul (`static/index.html`) n-avea NICIUN meta social - nici og:image, nici
+og:title, nici description. Paginile de ghid le aveau toate (main.py:8463). Deci un link catre
+iconta.eu dat pe WhatsApp sau Facebook aparea fara titlu, descriere si imagine - exact pagina
+data cel mai des. Reparat, text din MARKETING.md (lista PERMISE: "control fiscal automat", NU
+"oferim contabilitate" - zidul CECCAR; D406 absent, e pe INTERZISE pana la reparare).
+
+RAMAS: `og:image` foloseste `logo_login.png` (337 KB, logo, nu imagine sociala). Formatul
+potrivit pentru preview e 1200x630. Aceeasi limita ca la ghiduri (main.py:8321 o noteaza ca
+provizorie) - acum se aplica si landingului.

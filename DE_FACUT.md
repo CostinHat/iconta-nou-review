@@ -34,7 +34,6 @@ Pana atunci: F035/F036/F037 = PARTIAL; D406 pe INTERZISE in MARKETING.
 - Praguri F202.
 - F127/F128 SPV (review 17.08).
 - Imagine `og:image` dedicată per ghid (1200×630) — azi toate folosesc `logo_login.png`.
-- Google Search Console: înregistrare `iconta.eu` + trimitere sitemap (manual, Costin).
 - Aliniere landing la tokeni (azi hex hardcodat + font propriu; divergență acceptată temporar).
 - `/public/termeni` la clase + tokeni (azi `<style>` inline cu culori proprii).
 - Prompt caching pe `/portal/bon`.

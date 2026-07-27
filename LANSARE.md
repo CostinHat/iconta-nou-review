@@ -29,6 +29,7 @@
 | Trecere beta → acces public | ÎN LUCRU | Azi: poartă beta activă (`BETA_COD_ACCES` setat în proces). Public = F168: email conturi beta + șterge codul din env [PLANIFICAT, DE_FACUT:348]. |
 | Mesaj diferențiator | DECIS | „control fiscal automat"; a NU revendica „depune cu un click" (FALS/INTERZIS). |
 | Testimoniale/referințe pilot | DESCHIS | Depind de pilot; nimic încă. |
+| Google Search Console + sitemap | REZOLVAT | 27.07.2026: proprietate `sc-domain:iconta.eu` verificată prin TXT DNS; `https://iconta.eu/sitemap.xml` trimis (6 URL-uri: landing, /ghid, 3 pagini de ghid, /public/termeni). Indexarea durează zile. |
 
 ## 3. Operațional
 
