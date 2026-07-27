@@ -277,3 +277,27 @@ def agrega_conturi(note, solduri_initiale=None):
         sold = si.get(ct, Decimal(0)) + rd[ct] - rc[ct]
         out[ct] = {"debit": _q(rd[ct]), "credit": _q(rc[ct]), "sold": _q(sold)}
     return out
+
+
+def cere_coloane(rand, chei, unde=""):
+    """Verifica CA EXISTA cheile intr-un rand citit din DB. Cheie lipsa -> ValueError.
+
+    DE CE (27.07.2026): `SELECT *` NU crapa cand o coloana dispare din schema - query-ul
+    reuseste si randul iese pur si simplu fara cheia aceea. Apoi `s.get("x")` da None, iar
+    None e o absenta LEGITIMA pentru un camp optional. Rezultatul: valoarea devine tacit 0.
+
+    Dovedit pe D112: cu `salariu_brut` redenumita, generarea a scos o declaratie de 1333
+    caractere cu suma 0, in loc de 1890 cu 5000. Depunere la ANAF cu salarii zero, fara
+    niciun semnal. Gaura apare exact intre doua comportamente CORECTE: SELECT * tolerant
+    si absenta tratata ca zero.
+
+    CE VERIFICA: PREZENTA cheii, nu valoarea. `salariu_brut = 0` e legitim (salariat in
+    concediu medical toata luna); `salariu_brut` INEXISTENT nu e.
+    """
+    lipsa = [c for c in chei if c not in rand]
+    if lipsa:
+        raise ValueError(
+            "coloane lipsa%s: %s. Randul citit din baza nu are aceste campuri - schema "
+            "nu se potriveste cu ce asteapta codul (SELECT * nu semnaleaza asta singur)."
+            % ((" in %s" % unde) if unde else "", ", ".join(lipsa)))
+    return rand

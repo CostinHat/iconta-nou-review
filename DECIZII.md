@@ -3485,3 +3485,43 @@ handlerul spune ceva.
 RIDICAT, NEREZOLVAT: `main.py:1063` inghite `provision_tenant` in `register`. Daca
 provisionarea crapa, raspunsul e SUCCES si userul ramane cu cont fara firma. Facut zgomotos
 + alerta, comportamentul NESCHIMBAT - e decizie de produs, in DE_FACUT.
+
+### 27.07.2026 `SELECT *` + absență tratată ca zero = D112 cu salarii ZERO, tăcut
+
+CUM A IESIT LA IVEALA: construind teste pe `pull()` - granita cod<->baza, netestata pana azi.
+Cele ~175 de teste pe generatoare sunt toate PURE (cheama calcul_dXXX/build_xml cu fixturi in
+memorie) si nu ating schema. Un test de mutatie a picat: `d112.pull` NU crapa cand o coloana
+disparea.
+
+FAPT DOVEDIT pe schema temporara cu ROLLBACK: cu `salariu_brut` redenumita, D112 a emis 1333
+caractere cu suma 0, in loc de 1890 cu 5000. Declaratie depusa la ANAF cu salarii ZERO, fara
+niciun semnal.
+
+MECANISMUL, si de ce e insidios: `SELECT *` NU crapa la coloana lipsa - query-ul reuseste si
+randul iese pur si simplu fara cheia aceea. Apoi `s.get("salariu_brut")` da None, iar
+`numar_fiscal(None)` intoarce legitim 0 (regula de azi: absenta e legitima, invalidul e
+eroare). Gaura apare EXACT INTRE DOUA COMPORTAMENTE CORECTE: SELECT * tolerant si absenta
+tratata ca zero. Niciuna dintre reguli nu e gresita separat.
+
+REPARAT: `common.cere_coloane(rand, chei, unde)` - verifica PREZENTA cheii, nu valoarea.
+`salariu_brut = 0` ramane legitim (salariat in concediu medical toata luna); `salariu_brut`
+INEXISTENT nu e. Aplicata in `d112.pull` cu `_COLOANE_SALARIAT` = contract explicit cu schema.
+Dovedita prin mutatie in ambele sensuri: cu garda -> ValueError care numeste coloana; fara
+garda -> testul pica.
+
+LIMITA DECLARATA: garda verifica randurile CITITE, deci pe o tabela GOALA trece - o coloana
+disparuta pe o firma fara salariati nu se semnaleaza. Prima versiune a testului de mutatie
+picase exact asa (fixtura nu insera niciun salariat), ceea ce a scos limita la iveala.
+
+CE NU S-A FACUT si de ce: (a) nu s-a atins `numar_fiscal` - absenta chiar e legitima pentru
+campuri optionale (`motiv_exceptare` lipseste normal); (b) nu s-a inlocuit `SELECT *` cu lista
+de coloane - ar fi insemnat sa ghicesc lista completa fara sa citesc tot modulul.
+
+DOUA ARTEFACTE PROPRII, consemnate: in prima proba am citit `sal[0].get("salariu_brut")` si am
+raportat `brut=None` - dar `pull` intoarce dicturi TRANSFORMATE, cu cheia `brut`. Concluzia a
+stat in picioare pentru ca dovada reala era DIFERENTA DE XML, nu print-urile.
+
+ZERO REGRESIE: D112 pe tenant_001 si tenant_002, SHA256 identic cu referinta.
+
+RAMAS DESCHIS: aceeasi constructie `SELECT *` in d394, bilant_api, rip_api, stocuri_cv_api,
+reconciliere_api, jurnal_api, salariati_api. Vezi DE_FACUT.

@@ -78,8 +78,21 @@ cotă TVA inexistentă la data documentului; semn inversat.
   ever-growing produce roșu fals). Consecință acceptată: un tabel creat ad-hoc într-un
   tenant rămâne „extra informativ" — cazul `d205_beneficiari`, care s-a dovedit legitim
   (cod mort, zero consumatori).
+- ACOPERIT parțial: `core/test_pull_declaratii.py` (27.07) — teste pe `pull()`, granița
+  cod↔bază, pe schemă temporară din template cu ROLLBACK. Două clase: `pull` **vede** datele
+  care există, și `pull` **crapă zgomotos** când schema nu se potrivește. Cele ~175 de teste
+  pe generatoare erau toate pure (`calcul_dXXX` + `build_xml` cu fixturi) — `pull()` nu era
+  atins de niciunul, deși acolo au trăit toate defectele din iulie.
+- ACOPERIT: `common.cere_coloane` — `SELECT *` nu crapă la coloană lipsă; rândul iese fără
+  cheie, `get()` dă `None`, iar absența e tratată legitim ca 0. Dovedit pe D112: cu
+  `salariu_brut` redenumită, declarația ieșea cu salarii ZERO (1333 car. în loc de 1890).
+  Garda verifică PREZENȚA cheii; valoarea 0 rămâne legitimă.
+- LIMITĂ DECLARATĂ: `cere_coloane` verifică rândurile CITITE, deci **o tabelă goală trece**.
+  O coloană dispărută pe o firmă fără salariați nu se semnalează.
 - LIPSĂ: verificare statică a query-urilor din cod contra schemei reale (`audit_cod_schema.py`
   a fost prototipat local pe 27.07, **nu e pe server**). Ar prinde defectul înainte de rulare.
+- LIPSĂ: aceeași gardă la celelalte `SELECT *` pe date fiscale (d394, bilant_api, rip_api,
+  stocuri_cv_api, reconciliere_api). Vezi DE_FACUT.
 
 ### 3. Calcul fiscal
 **Eșec:** cotă/prag greșit, rotunjire greșită, graniță de perioadă — **și bază zero pentru

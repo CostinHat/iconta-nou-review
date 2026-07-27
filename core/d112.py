@@ -298,6 +298,14 @@ def _d112_genereaza(prof, salariati, an, luna):
     return ("\n".join(H), av)
 
 
+# Coloanele din `salariati` pe care D112 le CITESTE efectiv (vezi maparea de la finalul
+# lui pull). Lista e un CONTRACT cu schema: daca una dispare, generarea se opreste zgomotos
+# in loc sa declare zero.
+_COLOANE_SALARIAT = ("id", "nume", "prenume", "cnp", "data_angajare", "salariu_brut",
+                     "ore_zi", "judet_casa", "part_time", "persoane_intretinere",
+                     "scutit_contrib_minim", "motiv_exceptare", "tichet_masa_valoare")
+
+
 def pull(conn, schema, an, luna):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -305,6 +313,14 @@ def pull(conn, schema, an, luna):
         prof = dict(cur.fetchone() or {})
         cur.execute(f"SELECT * FROM {schema}.salariati WHERE activ = true ORDER BY id")
         sal = [dict(r) for r in cur.fetchall()]
+        # GARDA COLOANE (27.07.2026): SELECT * nu crapa cand o coloana dispare din schema -
+        # randul iese fara cheia aceea, s.get() da None, iar None e absenta legitima ->
+        # valoarea devine TACIT 0. Dovedit: cu salariu_brut redenumita, D112 emitea o
+        # declaratie cu salarii ZERO, fara niciun semnal. Verificam PREZENTA cheii; valoarea
+        # 0 ramane legitima (salariat in concediu medical toata luna).
+        from core.common import cere_coloane
+        for _r in sal:
+            cere_coloane(_r, _COLOANE_SALARIAT, "salariati")
         cur.execute(f"""SELECT * FROM {schema}.concedii_medicale
                         WHERE an=%s AND luna=%s""", (an, luna))
         cms = [dict(r) for r in cur.fetchall()]
