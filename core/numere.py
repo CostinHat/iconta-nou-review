@@ -50,3 +50,37 @@ def numar(v, strict=False):
             raise ValueError("valoare numerica neinterpretabila: %r" % (v,))
         return 0.0
     return -x if neg else x
+
+# ============================================================
+#  VALOARE FISCALA — conversie care NU inghite gunoiul
+# ============================================================
+def numar_fiscal(x, camp=""):
+    """Converteste o valoare destinata unui calcul fiscal. Intoarce Decimal.
+
+    REGULA (27.07.2026): ABSENTA e legitima, INVALIDUL e eroare.
+      - None sau sir gol -> Decimal(0). Un camp optional negol nu e o eroare.
+      - orice altceva neconvertibil (text, "12,5" cu virgula romaneasca, nan,
+        infinit, lista) -> ValueError.
+
+    DE CE: d112._d112int, d300._int si d390._int aveau `except: return 0`. O
+    valoare stricata devenea TACIT zero intr-o declaratie depusa la ANAF. Cel mai
+    periculos caz nu e textul evident gresit, ci "12,5" - un numar scris cu virgula
+    zecimala romaneasca, perfect plauzibil, care iesea 0 lei.
+
+    Tiparul corect exista deja in cod: d205._i si d101._i fac aceeasi conversie FARA
+    masca. Aceasta functie e locul unic al regulii - nu se recopiaza.
+    """
+    from decimal import Decimal, InvalidOperation
+    unde = (" pentru %s" % camp) if camp else ""
+    if x is None or (isinstance(x, str) and not x.strip()):
+        return Decimal(0)
+    if isinstance(x, bool):
+        raise ValueError("valoare fiscala booleana%s: %r" % (unde, x))
+    try:
+        d = Decimal(str(x).strip())
+    except (InvalidOperation, ValueError, TypeError):
+        raise ValueError("valoare fiscala invalida%s: %r "
+                         "(zecimalele se scriu cu punct, nu cu virgula)" % (unde, x))
+    if not d.is_finite():
+        raise ValueError("valoare fiscala nefinita%s: %r" % (unde, x))
+    return d

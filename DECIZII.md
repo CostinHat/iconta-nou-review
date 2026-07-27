@@ -3381,3 +3381,43 @@ cele 7 module din crontab CHEAMA cron.ruleaza. Un job nou nesupravegheat pica su
 
 LIMITA DECLARATA: nu prinde jobul care nu porneste deloc (cron oprit, reboot, crontab
 stricat). Heartbeat/deadman = task deschis in DE_FACUT.
+
+### 27.07.2026 Valori fiscale stricate deveneau tacit ZERO (d112/d300/d390)
+
+FAPT: `_d112int`, `d300._int` si `d390._int` aveau `except: return 0`. Orice valoare
+neconvertibila devenea 0 lei intr-o declaratie depusa la ANAF, fara niciun semnal.
+
+CEL MAI PERICULOS CAZ nu e textul evident gresit, ci `"12,5"` - un numar scris cu VIRGULA
+zecimala romaneasca, plauzibil intr-un import sau intr-un camp completat de om. Iesea 0.
+La fel: nan, infinit, lista, dict. Iar in d300 o `pro_rata` prezenta dar invalida devenea
+100% - deducere INTEGRALA declarata acolo unde firma are drept partial.
+
+TIPARUL CORECT EXISTA DEJA: `d205._i` si `d101._i` fac aceeasi conversie FARA masca. Nu s-a
+inventat o regula - s-au aliniat trei functii la cea deja folosita.
+
+REGULA: ABSENTA e legitima, INVALIDUL e eroare. None/"" -> 0 (un camp optional negol nu e
+greseala; `s.get("motiv_exceptare")` lipseste normal). Orice altceva neconvertibil ->
+ValueError cu campul si valoarea in mesaj.
+
+LOC: `core/numere.py`, langa `numar()`. Prima varianta o pusesem in `common.py` fara sa
+verific ca `numere.py` exista - iar acel fisier se declara explicit "sursa UNICA pentru
+parsarea numerelor" si poarta in docstring chiar lecția asta (extras din 9 copii pe 15.07,
+dintre care 6 transformau "(200)" in 0.0 tacut). Mutata.
+
+DE CE NU SE CONTOPESC cu `numar()`: numar() parseaza INTRARE UMANA (formate RO/EN, paranteze
+contabile, sufixe "lei") si intoarce float; numar_fiscal() primeste o valoare care INTRA
+INTR-O DECLARATIE, intoarce Decimal (float pe bani pierde precizie la insumare) si respinge
+nan/inf/bool, pe care numar() le lasa sa treaca. "12,5" e VALID la import si INVALID la
+generare. Doua roluri, doua reguli, acelasi fisier.
+
+DOVADA ZERO REGRESIE: D112/D300/D390 pe tenant_001 si tenant_002 (iunie 2026), inainte si
+dupa, comparate prin SHA256 + diff pe continut - identice. Plus test de regresie ca
+rotunjirea aritmetica din D112 (112.5 -> 113) e neatinsa.
+
+LECTIE DE METODA: prima verificare a "zero regresie" folosea `hash()` pe string - randomizat
+per proces in Python, deci compara doua procese diferite si a raportat 6 diferente FALSE
+(lungimile erau identice, ceea ce trebuia sa ma puna pe ganduri). Poarta a blocat corect
+commitul. Comparatia de artefacte se face pe SHA256 sau diff, niciodata pe hash().
+
+NEATINS DELIBERAT: rotunjirea din D390 foloseste `round()` (bancara). Daca ANAF cere
+aritmetica si acolo, e schimbare FISCALA - se verifica la sursa. Task in DE_FACUT.

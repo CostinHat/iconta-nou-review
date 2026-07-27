@@ -46,10 +46,9 @@ def _esc(v):
 
 
 def _int(x):
-    try:
-        return int(Decimal(str(x)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
-    except Exception:
-        return 0
+    # MASCA SCOASA 27.07.2026 (vezi core.common.numar_fiscal).
+    from core.numere import numar_fiscal
+    return int(numar_fiscal(x, "D300").quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
 def _digits(x):
@@ -211,10 +210,13 @@ def calcul_d300(prof, an, luna, facturi, manual=None):
     # NU e "taxa deductibila x pro-rata direct" (asa calcula gresit modulul vechi) -
     # e o AJUSTARE separata, aditionala la R28. La pro_rata=100% (cazul uzual),
     # ajustarea e 0 - nu exista de ajustat.
-    try:
-        pro_rata = float(prof.get("pro_rata"))
-    except Exception:
-        pro_rata = 100.0
+    # Pro-rata ABSENTA = 100% (cazul uzual, fara activitate mixta). Dar o valoare
+    # PREZENTA si invalida nu mai devine tacit 100% - ar declara deducere integrala
+    # acolo unde firma are drept partial. Absenta e legitima, invalidul e eroare.
+    from core.numere import numar_fiscal
+    _pr = prof.get("pro_rata")
+    pro_rata = 100.0 if _pr is None or (isinstance(_pr, str) and not _pr.strip()) \
+        else float(numar_fiscal(_pr, "pro_rata"))
     r31_2 = 0
     if pro_rata < 100:
         r31_2 = _int(Decimal(str(r28_2)) * Decimal(str(100 - pro_rata)) / Decimal(100) * -1)

@@ -55,10 +55,13 @@ def _esc(v):
 
 
 def _int(x):
-    try:
-        return int(round(float(x)))
-    except Exception:
-        return 0
+    # MASCA SCOASA 27.07.2026 (vezi core.common.numar_fiscal).
+    # ROTUNJIREA RAMANE NEATINSA: round() e bancara (112.5 -> 112). D112 documenteaza
+    # ca ANAF cere rotunjire ARITMETICA si ca cea bancara a fost RESPINSA de validator
+    # (regula A91b). Daca aceeasi regula se aplica si la D390, e o schimbare FISCALA -
+    # se verifica la sursa oficiala inainte, nu se schimba din drum. Vezi DE_FACUT.
+    from core.numere import numar_fiscal
+    return int(round(float(numar_fiscal(x, "D390"))))
 
 
 def _tara_xml(t):

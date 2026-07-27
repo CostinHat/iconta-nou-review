@@ -24,10 +24,8 @@ _D112_NS = "mfp:anaf:dgti:declaratie_unica:declaratie:v7"
 def _cm_media6(brut, data_ang, an, luna):  # cm_media6_v1
     """Media zilnica reala pe ultimele 6 luni (OUG 158). Returneaza (d17, d18, media).
     Presupune brut constant pe ferestra (istoric variabil/mariri -> deferat)."""
-    try:
-        brut = float(brut or 0)
-    except Exception:
-        brut = 0.0
+    from core.numere import numar_fiscal
+    brut = float(numar_fiscal(brut, "brut concediu medical"))
     ay = al = None
     if data_ang:
         try:
@@ -82,10 +80,10 @@ def _d112int(x):
     112.5 -> 112), care contrazice regula ANAF (112.5 -> 113) - dovedit prin
     validator: CAM calculat 112, cerut 113 (regula A91b)."""
     from decimal import Decimal, ROUND_HALF_UP
-    try:
-        return int(Decimal(str(float(x or 0))).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
-    except Exception:
-        return 0
+    from core.numere import numar_fiscal
+    # MASCA SCOASA 27.07.2026: `except: return 0` facea ca o valoare stricata sa
+    # devina tacit 0 lei in declaratie. Rotunjirea ramane NESCHIMBATA (aritmetica).
+    return int(numar_fiscal(x, "D112").quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 def _d112_data(s):
     """ISO 'AAAA-LL-ZZ' -> 'ZZ.LL.AAAA'. Daca nu se potriveste, intoarce ca atare."""
     s = (s or "").strip()
