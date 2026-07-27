@@ -976,12 +976,30 @@ class DepuneIn(BaseModel):
 # ============================================================
 #  AUTH
 # ============================================================
+_EMAIL_RE = _re_audit.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")  # [email_valid_v1]
+_login_fail = {}  # [login_lockout_v1] esecuri per CONT (email); per-IP e la nginx (iconta_auth 5r/m)
+def _login_blocat(email):
+    import time as _t
+    q = [t for t in _login_fail.get(email, []) if _t.time() - t < 900]
+    _login_fail[email] = q
+    return len(q) >= 5
+def _login_esec(email):
+    import time as _t
+    _login_fail.setdefault(email, []).append(_t.time())
+def _login_reset(email):
+    _login_fail.pop(email, None)
+
 @app.post("/auth/login")
 def login(date: LoginIn):
+    _email = (date.email or "").strip().lower()
+    if _login_blocat(_email):  # [login_lockout_v1] 5 esecuri / 15 min per cont
+        raise HTTPException(429, "Prea multe încercări eșuate pentru acest cont. Încearcă din nou peste câteva minute.")
     with db.get_conn() as conn:
         r = auth_api.login(conn, date.email, date.parola)
     if not r["ok"]:
+        _login_esec(_email)
         raise HTTPException(401, r["mesaj"])
+    _login_reset(_email)
     # [beta_gate_v1] poarta beta: daca BETA_COD_ACCES e setat, cere codul.
     # Parola corecta dar fara cod -> 403 "in lucru" (contul ramane valid pt lansare).
     _cod = os.environ.get("BETA_COD_ACCES", "").strip()
@@ -1004,6 +1022,8 @@ def register(date: RegisterIn):
         raise HTTPException(400, "Trebuie sa accepti Termenii si conditiile pentru a crea contul.")
     if not _nucleu.parola_ok(date.parola):  # [parola_min_v1] aceeasi cerinta ca activare/reset/schimbare
         raise HTTPException(400, _nucleu.PAROLA_MESAJ)
+    if not _EMAIL_RE.match((date.email or "").strip()):  # [email_valid_v1] email obligatoriu + format valid
+        raise HTTPException(400, "Introdu o adresă de email validă.")
     with db.get_conn() as conn:
         r = auth_api.inregistreaza_cabinet(
             conn, date.email, date.parola, date.nume_cabinet,
