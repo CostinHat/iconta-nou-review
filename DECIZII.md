@@ -3558,3 +3558,31 @@ LIMITA DECLARATA: poarta se vede doar in ecranul de declaratii (pas 2 -> pas 3).
 /coada genereaza din nou declaratia si NU are poarta - un apel direct de API trimite pe zero
 fara intrebare. Acceptat: poarta e ajutor pentru om, nu control de integritate; controlul e
 gardul din cod.
+
+### 27.07.2026 Consolidare: o singura aplicatie, un singur venv, un singur domeniu
+
+CERUTA de Costin: "vreau sa inceteze asta, vreau sa fie ordine". Traiau in paralel: buildul
+vechi /opt/iconta (port 8000, serviciu inactiv) SI buildul viu ~/iconta_nou (8010), doua
+domenii, doua servicii systemd, configuri nginx duplicate, .bak-uri risipite.
+
+CAPCANA care a impus ordinea pasilor: /opt/iconta NU era doar buildul vechi - acolo traia
+VENV-UL din care rula aplicatia VIE (ExecStart=/opt/iconta/venv/bin/uvicorn, plus toate cele
+8 joburi cron). Un `rm -rf /opt/iconta` ar fi oprit productia instant, iar backupul nu l-ar
+fi adus inapoi: backupul e pg_dump pe baza, nu pe fisiere.
+
+ORDINEA: venv nou in ~/iconta_nou (pachete identice, dovedit prin diff pe pip freeze) ->
+POARTA 1 (aplicatia se importa + suita verde pe venv-ul nou) -> mutat systemd + crontab ->
+POARTA 2 (site-ul raspunde 200, poarta de azi prezenta in JS-ul servit) -> ARHIVAT buildul
+vechi ca tar.gz in /var/backups/iconta/arhiva (regula "buildul vechi e sursa de adevar
+istorica" din 15.07 - nu se pierde, doar nu mai sta in cale) -> STERS.
+
+SCOS: /opt/iconta, serviciul iconta.service, /etc/nginx/sites-available/nou-iconta si toate
+.bak-urile de acolo, .bak-urile din repo, BRIEF_CODE_*.md (mutate in _arhiva_briefuri).
+RAMAS INTENTIONAT: /opt/duk (validatorul oficial ANAF, folosit de core/duk.py) si ~/duk.
+
+BACKUP EXTINS: `iconta-config-backup.sh` (zilnic 03:15) salveaza ce NU e nici in git, nici
+in pg_dump: ~/.iconta/*.env (secrete), unitatile systemd, configurarile nginx, crontab-ul,
+scripturile din /usr/local/bin. Fara ele, un server nou se reconstruia din memorie. Costin
+ceruse un al doilea server la Hetzner pentru asta; raspuns: un al doilea server ar fi exact
+dublura de eliminat (inca o masina de actualizat si tinut in sincron), iar problema reala -
+configurarile nesalvate - se rezolva extinzand backupul care exista deja.
