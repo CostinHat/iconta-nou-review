@@ -32,6 +32,7 @@ CERERI = [
     ("d406", {"an": 2026, "luna": 6}),
 ]
 LIMITA = 75
+MARCAJ_COTA = "# ROTUNJIRE PE COTA"
 
 
 def _db_ok():
@@ -108,3 +109,39 @@ def test_d390_pe_firma_fara_operatiuni_da_mesaj_citibil():
         c.rollback()
     m = str(e.value)
     assert "nu se depune pe zero" in m and "325" in m, m[:120]
+
+
+def test_toate_generatoarele_rotunjesc_aritmetic():
+    """ANAF cere rotunjire ARITMETICA (half-up), nu bancara - documentat explicit la D112
+    (regula A91b: CAM calculat 112, cerut 113). `round()` din Python e BANCARA (half-to-even).
+
+    27.07.2026: d390 era singurul din 10 generatoare cu round() bancar. Aliniat.
+    Un generator nou care foloseste round() pe o valoare fiscala pica aici.
+    """
+    import pathlib, re
+    rad = pathlib.Path(__file__).resolve().parent
+    vinovati = []
+    for f in sorted(rad.glob("d[0-9]*.py")):
+        for nr, linie in enumerate(f.read_text(encoding="utf-8").split("\n"), 1):
+            if linie.strip().startswith("#"):
+                continue
+            if not re.search(r"\bint\(round\(", linie):
+                continue
+            # Escape hatch adnotat, ca la masti: rotunjirea pe COTA (procent) e legitima -
+            # cotele fiscale RO sunt intregi (21/11/9/5/0), deci bancar == aritmetic.
+            # Doar rotunjirea pe SUME (lei) trebuie half-up.
+            if MARCAJ_COTA in linie:
+                continue
+            vinovati.append("%s:%d" % (f.name, nr))
+    assert not vinovati, (
+        "rotunjire BANCARA pe valoare fiscala: %s\n"
+        "-> foloseste Decimal.quantize(ROUND_HALF_UP), sau marcheaza linia cu "
+        "'%s' daca e rotunjire pe procent, nu pe lei." % (vinovati, MARCAJ_COTA))
+
+
+def test_rotunjirea_e_identica_intre_generatoare():
+    from core.d390 import _int as a
+    from core.d300 import _int as b
+    from core.d112 import _d112int as c
+    for v in (112.5, 0.5, 2.5, 1000.5, 112.4, 112.6):
+        assert a(v) == b(v) == c(v), "rotunjiri divergente pe %s: %s/%s/%s" % (v, a(v), b(v), c(v))

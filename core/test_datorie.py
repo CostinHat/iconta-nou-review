@@ -41,15 +41,6 @@ def _db_ok():
 # ============================================================
 #  DATORIE FISCALA
 # ============================================================
-@pytest.mark.xfail(strict=True, reason="DATORIE 27.07.2026 [FISCAL, cere verificare la "
-                                       "sursa]: d390._int foloseste round() = rotunjire "
-                                       "BANCARA; D112 documenteaza ca ANAF cere ARITMETICA "
-                                       "(regula A91b). Nu se stie daca se aplica si la D390.")
-def test_d390_rotunjeste_aritmetic_ca_d112():
-    from core.d390 import _int
-    assert _int(112.5) == 113, "rotunjire bancara (112) in loc de aritmetica (113)"
-
-
 # ============================================================
 #  DATORIE TEHNICA
 # ============================================================

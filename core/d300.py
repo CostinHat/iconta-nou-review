@@ -108,12 +108,12 @@ def _segmente(f):
         out = []
         for (cant, pret, cota) in linii:
             baza = Decimal(str(cant)) * Decimal(str(pret))
-            ci = None if cota is None else int(round(float(cota)))
+            ci = None if cota is None else int(round(float(cota)))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
             out.append((ci, baza))
         return out
     baza = Decimal(str(f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
     tva = Decimal(str(f.get("tva") or 0))
-    ci = int(round(float(tva) / float(baza) * 100)) if (baza and tva) else None
+    ci = int(round(float(tva) / float(baza) * 100)) if (baza and tva) else None  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
     return [(ci, baza)]
 
 
@@ -323,7 +323,7 @@ def valideaza(res):
     # marja ±1% pe cotele cu valori. Cota standard vine din common (cu data perioadei
     # declarate), ca să fie corectă și pe perioade cu 19% (înainte de 01.08.2025).
     cota_std_dec, _ = c.cota("tva_standard", date(res.an, res.luna, 1))
-    cota_std = int(round(float(cota_std_dec) * 100))   # 21 sau 19
+    cota_std = int(round(float(cota_std_dec) * 100))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
 
     def marja(baza_k, tva_k, cota):
         b = res.R.get(baza_k, 0)

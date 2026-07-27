@@ -3714,3 +3714,29 @@ Aceeasi distinctie ca in restul zilei: a SOCOTI nu e acelasi lucru cu a DEPUNE.
 
 TOATE cele 5 declaratii pe tenant_001: D300 valid, D301 valid, D394 valid, D112 valid,
 D390 refuzat corect cu temei legal in mesaj.
+
+### 27.07.2026 Rotunjirea D390: bancara -> aritmetica (aliniere, cu rationament)
+
+INTREBAREA din registrul de datorie: `d390._int` folosea `round()` = rotunjire BANCARA
+(112.5 -> 112), in timp ce D112 documenteaza ca ANAF cere ARITMETICA si ca cea bancara a fost
+RESPINSA de validator (regula A91b: CAM calculat 112, cerut 113).
+
+VERIFICAT LA SURSA: OPANAF 705/2020 si instructiunile formularului 390 VIES NU prevad o regula
+de rotunjire. Sursa nu confirma, dar nici nu interzice cea aritmetica.
+
+DECIZIE luata pe RATIONAMENT (consemnat ca atare, nu pe temei direct):
+  (a) CONSECVENTA: d390 era SINGURUL din 10 generatoare cu rotunjire bancara pe sume.
+  (b) RISC ASIMETRIC: daca ANAF asteapta aritmetica si la D390 - cum o cere explicit la D112 -
+      bancara produce declaratii gresite; invers, aritmetica nu strica nimic.
+  (c) Rotunjirea aritmetica e norma in fiscalitatea romaneasca.
+
+IMPACT MASURAT: diferenta apare doar la .5 exact (7 din 10 valori de test difera). Pe datele
+actuale NU se manifesta - toate bazele sunt rotunde - dar asta e noroc, nu garantie.
+Zero regresie dovedita: nr_opi/rezumat/total identice pe tenant_002 lunile 5/6/7; D390 iunie
+validat ANAF "valid".
+
+GARDUL A GASIT CEVA NEASTEPTAT: d300 avea 3 `int(round(...))` - dar pe COTE, nu pe sume
+(21.0 -> 21; 0.21*100 -> 21; deducerea cotei din raportul tva/baza). Cotele fiscale RO sunt
+intregi (21/11/9/5/0), deci bancar == aritmetic acolo. Gardul initial era prea larg.
+RESTRANS cu escape hatch adnotat - marcajul `# ROTUNJIRE PE COTA`, acelasi tipar ca
+`# MASCA MOTIVATA` de la masti: exceptia e permisa, dar trebuie DECLARATA pe linie.

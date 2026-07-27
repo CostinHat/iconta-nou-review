@@ -57,13 +57,25 @@ def _esc(v):
 
 
 def _int(x):
-    # MASCA SCOASA 27.07.2026 (vezi core.common.numar_fiscal).
-    # ROTUNJIREA RAMANE NEATINSA: round() e bancara (112.5 -> 112). D112 documenteaza
-    # ca ANAF cere rotunjire ARITMETICA si ca cea bancara a fost RESPINSA de validator
-    # (regula A91b). Daca aceeasi regula se aplica si la D390, e o schimbare FISCALA -
-    # se verifica la sursa oficiala inainte, nu se schimba din drum. Vezi DE_FACUT.
+    """Baza D390 in lei intregi, rotunjire ARITMETICA (half-up).
+
+    27.07.2026 - trecut de la `round()` (BANCARA) la ROUND_HALF_UP. Rationament:
+      (a) VERIFICAT LA SURSA: OPANAF 705/2020 si instructiunile de completare NU prevad o
+          regula de rotunjire pentru D390 - deci nu se interzice cea aritmetica;
+      (b) CONSECVENTA: d390 era SINGURUL din cele 10 generatoare cu rotunjire bancara;
+          d112/d300/d406/d710/d100/d101/d205 folosesc toate ROUND_HALF_UP;
+      (c) RISC ASIMETRIC: la D112 ANAF cere EXPLICIT rotunjire aritmetica si a RESPINS-o pe
+          cea bancara prin validator (regula A91b, CAM 112 cerut 113). Daca aceeasi asteptare
+          exista si la D390, bancara produce declaratii gresite; invers, aritmetica nu strica
+          nimic - nicio sursa n-o interzice.
+    Diferenta apare doar la .5 exact (112.5: bancar 112, aritmetic 113). Pe datele actuale
+    nu se manifesta (toate bazele sunt rotunde), dar asta e noroc, nu garantie.
+
+    MASCA SCOASA 27.07.2026: numar_fiscal ridica pe valoare invalida (vezi core/numere.py).
+    """
+    from decimal import Decimal, ROUND_HALF_UP
     from core.numere import numar_fiscal
-    return int(round(float(numar_fiscal(x, "D390"))))
+    return int(numar_fiscal(x, "D390").quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
 def _tara_xml(t):
