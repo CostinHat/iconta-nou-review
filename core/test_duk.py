@@ -71,3 +71,39 @@ def test_saft_are_jar_propriu():
     from core.duk import TIPURI_SAFT, JAR_SAFT
     assert "d406" in TIPURI_SAFT
     assert "AnLunaUI" in JAR_SAFT
+def _apeluri_valideaza(src):
+    """Extrage apelurile _duk.valideaza(...) cu paranteze ECHILIBRATE.
+    Un regex [^)]* se opreste la prima paranteza inchisa - deci ar rata argumentele
+    care contin apeluri (body.get("an")) si ar da fals-negativ. Dovedit 27.07.2026:
+    prima versiune a acestei garzi picase pe cod CORECT, exact asa."""
+    import re
+    out = []
+    for m in re.finditer(r"_duk\.valideaza\(", src):
+        i = m.end(); adanc = 1
+        while i < len(src) and adanc:
+            if src[i] == "(": adanc += 1
+            elif src[i] == ")": adanc -= 1
+            i += 1
+        out.append(src[m.start():i])
+    return out
+
+
+def test_ruta_valideaza_trimite_an_si_luna():
+    """D406 (SAF-T) se valideaza cu jar separat care CERE an/luna ca parametri.
+    Ruta care cheama duk.valideaza fara ele primeste GRI garantat - o validare care
+    nu se intampla niciodata, fara ca nimic sa semnaleze. Dovedit 27.07.2026: asa a
+    fost din constructie, desi XML-ul trecea la ANAF cand era rulat manual."""
+    import pathlib
+    src = (pathlib.Path(__file__).resolve().parent.parent / "main.py").read_text(encoding="utf-8")
+    apeluri = _apeluri_valideaza(src)
+    assert apeluri, "nu mai exista apel _duk.valideaza in main.py - actualizeaza garda"
+    for a in apeluri:
+        assert "an=" in a and "luna=" in a, "apel fara an/luna: %s" % a
+
+
+def test_garda_apeluri_prinde_apelul_fara_an_luna():
+    """Mutatie: pe un apel FARA an/luna garda trebuie sa vada lipsa; pe unul cu
+    argumente imbricate trebuie sa le vada pe amandoua."""
+    assert _apeluri_valideaza("rez = _duk.valideaza(xml, tip)") == ["_duk.valideaza(xml, tip)"]
+    a = _apeluri_valideaza('_duk.valideaza(xml, tip, an=body.get("an"), luna=body.get("luna"))')[0]
+    assert "an=" in a and "luna=" in a

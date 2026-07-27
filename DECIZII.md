@@ -3296,3 +3296,35 @@ NEATINS: Payments ramane gol. Nu e ascundere - chitante si casa_operatiuni au ZE
 in toti tenantii; nu exista date de plati de raportat. XSD nu pune minOccurs pe Payments
 (deci implicit obligatoriu), dar experimentul pe DUK din 16.07 arata ca sectiunea goala e
 RESPINSA si absenta e ACCEPTATA. Se reia cand exista prima plata reala.
+
+### 27.07.2026 D406 nu s-a validat NICIODATA din aplicatie (an/luna nepasate la duk.valideaza)
+
+FAPT: main.py chema _duk.valideaza(xml, tip) FARA an/luna. D406 e SAF-T, se valideaza cu
+DUKIntegrator_AnLunaUI.jar care le cere ca parametri; fara ele _valideaza_saft intoarce GRI
+intotdeauna. Butonul de validare D406 n-a validat nimic vreodata - desi jar-ul, jre8
+(1.8.0_492) si calea sunt corecte si functionale.
+
+DE CE N-A PRINS NIMENI: verdictul gri e ONEST ("XML generat, dar NU validat la ANAF", cu
+temei). Nu a mintit niciodata cu verde. Un gri permanent arata insa ca validator lipsa, nu
+ca apel gresit - si nu exista test care sa lege ruta de semnatura ceruta de validator.
+
+DOVADA ca XML-ul e bun: DUKIntegrator_AnLunaUI -v D406 pe tenant_002/iunie 2026 ->
+"Validare fara erori", r.txt=ok. Inclusiv cu structura noua (linii reale, commit 426fe97)
+SI cu o factura sparta in doua linii (InvoiceLine=2, DUK valid) - probata pe date fabricate
+in tranzactie cu rollback, pentru ca in datele reale TOATE facturile au exact o linie:
+ramura multi-linie era scrisa si niciodata executata.
+
+REPARAT: an/luna se paseaza din body. GARDA: test_ruta_valideaza_trimite_an_si_luna citeste
+main.py si cere an=/luna= pe fiecare apel _duk.valideaza, cu extragere pe paranteze
+ECHILIBRATE.
+
+TREI LECTII DESPRE GARZI, toate traite azi la ACEEASI garda:
+1. Prima versiune folosea regex [^)]* si pica pe cod CORECT - se oprea la prima paranteza
+   inchisa din body.get("an"). Garda cu fals-pozitiv e la fel de inutila ca una cu
+   fals-negativ.
+2. A doua crapa cu NameError (re neimportat) - deci "pica" pe orice, inclusiv pe mutant.
+   Testul de mutatie a trecut FALS. Un test care eroreaza nu dovedeste nimic: mutatia
+   trebuie sa verifice MOTIVUL esecului, nu doar ca a esuat.
+3. A treia data mutatia a raportat FAIL desi garda functiona: verificarea citea
+   `pytest -q | tail -3`, unde mesajul e trunchiat la "AssertionEr...". Verificarea unei
+   garzi trebuie sa citeasca output COMPLET (--tb=long in fisier), nu coada trunchiata.

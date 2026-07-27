@@ -3213,7 +3213,12 @@ def declaratie_valideaza(tip: str, date: DeclaratieIn,
             xml, res = declaratii_api.genereaza(conn, schema, tip, body)
     except ValueError as e:
         raise HTTPException(422, str(e))
-    rez = _duk.valideaza(xml, tip)  # java blocant; timeout in duk.valideaza
+    # an/luna OBLIGATORII pentru D406 (27.07.2026): SAF-T se valideaza cu
+    # DUKIntegrator_AnLunaUI.jar, care le primeste ca parametri; fara ele
+    # _valideaza_saft intoarce GRI intotdeauna - deci validarea D406 din aplicatie
+    # nu s-a facut NICIODATA, desi calea merge (dovedit manual pe tenant_002/iunie
+    # 2026: "Validare fara erori"). Celelalte declaratii le ignora (optionale).
+    rez = _duk.valideaza(xml, tip, an=body.get("an"), luna=body.get("luna"))  # java blocant
     return {"tip": tip, "stare": rez["stare"], "erori": rez["erori"],
             "temei": rez["temei"], "limita": rez["limita"],
             "avertismente": getattr(res, "avertismente", None),
