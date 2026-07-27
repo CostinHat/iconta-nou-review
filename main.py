@@ -1277,13 +1277,17 @@ _reset_rate = {}  # [reset_parola_v1] rate-limit in-memory per IP (single worker
 def _ip_client(request):
     xff = request.headers.get("x-forwarded-for")
     return (xff.split(",")[0].strip() if xff else (request.client.host if request.client else "?"))
-def _rate_limit_reset(request):
+_magic_rate = {}  # [magic_link_v1] rate-limit per IP pt /public/magic-link (aceleasi praguri ca reset)
+def _rate_limit_email(store, request):
+    """Anti-spam prin emailurile noastre: max 5 cereri / 15 min per IP (in-memory, single worker)."""
     import time as _t
     ip = _ip_client(request); acum = _t.time()
-    q = [t for t in _reset_rate.get(ip, []) if acum - t < 900]  # fereastra 15 min
+    q = [t for t in store.get(ip, []) if acum - t < 900]  # fereastra 15 min
     if len(q) >= 5:
         raise HTTPException(429, "Prea multe cereri. Încearcă din nou peste câteva minute.")
-    q.append(acum); _reset_rate[ip] = q
+    q.append(acum); store[ip] = q
+def _rate_limit_reset(request):
+    _rate_limit_email(_reset_rate, request)
 
 @app.post("/public/reset-parola/cere")  # [reset_parola_v1] "Am uitat parola" cabinet — raspuns IDENTIC (anti-enumerare), rate-limited
 def reset_parola_cere(date: ResetCereIn, request: Request):
@@ -1334,8 +1338,9 @@ def reset_parola_seteaza(date: ResetSeteazaIn):
     return {"ok": True}
 
 @app.post("/public/magic-link")
-def magic_link_cere(date: MagicCereIn):
+def magic_link_cere(date: MagicCereIn, request: Request):
     """Trimite link de logare fara parola. Raspuns identic indiferent daca emailul exista (fara enumerare)."""
+    _rate_limit_email(_magic_rate, request)  # [magic_link_v1] anti-spam: 5/15min per IP (ca reset)
     import secrets as _sec
     email = (date.email or "").strip().lower()
     with db.get_conn() as conn, conn.cursor() as cur:
