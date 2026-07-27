@@ -27,7 +27,7 @@ function inLucru(titlu) {
 
 export async function desktopAsistent(continut, nav) {
   const u = sesiune.user() || {};
-  const prenume = u.nume || u.email || "";
+  const prenume = u.prenume || u.nume || u.email || "";  /* [salut_prenume 27.07.2026] afisa numele de familie */
   const poateValida = !!u.poate_valida;
 
   // [p25_bara3] bara 3 e in navigator acum, nu aici

@@ -2369,7 +2369,7 @@ def produse_potriveste(tenant_id: int, date: ProdusPotrivesteIn, ctx=Depends(cer
     return produse_api.potriveste(date.denumire, platitor_tva=date.platitor_tva)
 
 @app.post("/tenants/{tenant_id}/produse")
-def produse_creeaza(tenant_id: int, date: ProdusCreeazaIn, ctx=Depends(cere_context)):
+def produse_creeaza(tenant_id: int, date: ProdusCreeazaIn, ctx=Depends(cere_cabinet)):  # [rol_produse 27.07.2026] DECIS 24.07: scrierea e de cabinet
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         r = produse_api.creeaza(conn, date.denumire, um=date.um,
@@ -2381,7 +2381,7 @@ def produse_creeaza(tenant_id: int, date: ProdusCreeazaIn, ctx=Depends(cere_cont
 
 @app.put("/tenants/{tenant_id}/produse/{produs_id}")
 def produse_actualizeaza(tenant_id: int, produs_id: int, date: ProdusUpdateIn,
-                         ctx=Depends(cere_context)):
+                         ctx=Depends(cere_cabinet)):  # [rol_produse 27.07.2026]:
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         r = produse_api.actualizeaza(conn, produs_id, denumire=date.denumire,
@@ -2393,7 +2393,7 @@ def produse_actualizeaza(tenant_id: int, produs_id: int, date: ProdusUpdateIn,
     return r
 
 @app.delete("/tenants/{tenant_id}/produse/{produs_id}")
-def produse_sterge(tenant_id: int, produs_id: int, ctx=Depends(cere_context)):
+def produse_sterge(tenant_id: int, produs_id: int, ctx=Depends(cere_cabinet)):  # [rol_produse 27.07.2026]
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         r = produse_api.sterge(conn, produs_id)

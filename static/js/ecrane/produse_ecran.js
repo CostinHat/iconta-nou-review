@@ -14,7 +14,11 @@ export async function randeazaProduse(corp, nav, tenantId, opt = {}) {
   try {
     const r = await api.get(`/tenants/${tenantId}/produse`);
     lista = (r && r.produse) || [];
-  } catch {}
+  } catch (e) {
+    /* [catch_tacut 27.07.2026] o salvare esuata parea reusita: formularul
+       se golea, omul credea ca s-a salvat. DS cap.6 - niciodata tacere. */
+    arataMesaj(zona, (e && e.mesaj) || "Nu am putut salva. Incearca din nou.", "eroare");
+  }
 
   corp.innerHTML = `
     
@@ -145,6 +149,10 @@ function formularAdauga(corp, tenantId, reincarca) {
       await api.post(`/tenants/${tenantId}/produse`, payload);
       zona.innerHTML = "";
       reincarca();
-    } catch {}
+    } catch (e) {
+      /* [catch_tacut 27.07.2026] o salvare esuata parea reusita: formularul
+         se golea, omul credea ca s-a salvat. DS cap.6 - niciodata tacere. */
+      arataMesaj(zona, (e && e.mesaj) || "Nu am putut salva. Incearca din nou.", "eroare");
+    }
   });
 }
