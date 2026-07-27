@@ -186,7 +186,7 @@ UI intră simultan în `DESIGN_SYSTEM.md` ȘI în `verificator_conformitate.py`
 - `~/iconta_nou/DECIZII.md` — DE CE am făcut așa. Registru de decizii cu temei,
   alternative respinse și limite. Se ADAUGĂ cronologic, nu se editează istoria.
   Nu e normativ — norma trăiește unde se aplică și se verifică mecanic
-- `~/iconta_nou/DE_FACUT.md` — backlog
+- `~/iconta_nou/LANSARE.md` — backlog
 - `~/iconta_nou/FUNCTIONALITATI.csv` — registrul canonic al funcționalităților.
   Nicio funcționalitate nu trăiește în afara listei. Stări: LIVE / PLANIFICAT /
   PARTIAL (blocat din exterior, cu carență) / RESPINS / AMANAT — niciuna implicită
@@ -247,3 +247,15 @@ fiecare, cu starea reală (ACOPERIT / PARȚIAL / LIPSĂ) și limita declarată a
 Se actualizează în ACELAȘI commit cu gardul livrat — un registru stale dă fals sentiment de
 acoperire. Înainte de a construi un gard nou: citește categoria acolo, ca să nu dublezi
 unul existent și să nu ratezi limita deja cunoscută.
+
+## DE_FACUT.md nu mai există (27.07.2026)
+Șters la cererea lui Costin: „a fost o capcană". 806 linii pe care nimeni nu le citea integral
+— iar aproape tot ce s-a reparat pe 27.07 era deja consemnat acolo ca amânat. Registrul exista,
+disciplina de a scrie exista; lipsea mecanismul care să-l facă imposibil de uitat.
+Ce l-a înlocuit:
+- **`core/test_datorie.py`** — datoria verificabilă mecanic, ca `xfail(strict=True)`. Rulează la
+  fiecare commit; când se repară, testul PICĂ și anunță. Nu se poate uita.
+- **`GARZI.md`** — gardurile pe categorii de eșec, fiecare cu limita declarată.
+- **`LANSARE.md`** — ce NU se poate automatiza: decizii, blocaje externe, datorie acceptată.
+Regula: verificabil mecanic → test, nu notă. Notă → doar cu decizie și motiv, altfel e amânare
+cu altă formă.

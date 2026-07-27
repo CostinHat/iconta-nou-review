@@ -81,3 +81,45 @@ o dovadă reproductibilă (test în suită sau comandă care se poate rula), nu 
 „Un singur deployment activ | REZOLVAT (25.07)" era fals — pe 27.07 `/opt/iconta` era viu, cu
 venv-ul din care rula aplicația. Nimeni nu mințise; nimic nu verifica afirmația. Datoria
 verificabilă mecanic trăiește acum în `core/test_datorie.py`.*
+
+---
+
+## Rămas din DE_FACUT.md (închis 27.07.2026)
+
+`LANSARE.md` a fost șters. Tot ce era **reparabil din cod** s-a reparat pe 27.07; ce a rămas
+nu e cod. Datoria verificabilă mecanic trăiește în `core/test_datorie.py` (rulează la fiecare
+commit, acum gol). Gardurile și limitele lor declarate sunt în `GARZI.md`.
+
+### Blochează pilotul
+| Ce | Stare |
+|---|---|
+| Briefing juridic pentru avocat | REDACTAT, NETRIMIS. **Nu e pe server** — doar pe Desktop, deci nici în git, nici în backup. |
+
+### Decizii de produs, deschise
+| Ce | Context |
+|---|---|
+| Bypass owner pe patru-ochi | Cabinet cu un singur om: patru-ochi devine frecare la fiecare depunere. |
+| `tip_firma` needitabil după creare | Trecerea PFA↔SRL cere migrare de date; azi nu se poate schimba deloc. |
+| Ecran de introducere D301 | Generatorul și tabelul există; nu există UI de completare. |
+| e-Transport `/trimite` pentru rol client | Azi cabinet-only; de decis dacă clientul trimite singur. |
+| D230 / D307 | Respinse ca scop pe 20.07. De reconfirmat. |
+
+### Blocate extern (nu depind de noi)
+| Ce | Blocaj |
+|---|---|
+| F127/F128 — depunere prin SPV | SPVWS2 e read-only, fără API de submisie. Re-verificat 19.07. Review 17.08. |
+| Round-trip e-Factura / e-Transport | Cere patron cu certificat digital pe firmă reală. |
+| Import Ciel | Fără specificație de format. |
+| Art. 317 (cod special TVA) | ANAF nu-l expune în API-ul public. |
+| XSD e-Transport v2 | Schema oficială nepublicată; validare offline imposibilă. |
+
+### Datorie acceptată explicit (decis, nu uitat)
+| Ce | Decizie |
+|---|---|
+| ~136 style-uri inline | Decis 23.07: se lasă. Verificatorul le tolerează deliberat. |
+| Audit vizual ~20 ecrane | Verificatorul prinde semnătura textuală, nu randarea. Limită în `GARZI.md`. |
+| 20 module fără test propriu | Măsurat 27.07. Acoperite indirect prin teste de integrare. |
+| 19 ecrane fără mesaj de succes | Măsurat 27.07. Tipar real; reparația e globală, nu ecran cu ecran. |
+| `og:image` = logo, nu 1200×630 | Preview social arată logo întins. Cosmetic. |
+| `nou.iconta.eu` | Nu mai răspunde; rămân certificatul certbot (expiră 07.10) și DNS-ul. |
+| T&C: 4 clauze completate provizoriu | Plafon = sume 12 luni; păstrare 90 zile; preaviz 30 zile; DPA la cerere. Avocatul confirmă sau schimbă. |
