@@ -30,6 +30,8 @@ tip_venit = 25 -> categoria uzuala pentru dividende (1.a). rezid=1 (rezident RO)
 e cazul standard; statR/cifS raman goale pentru rezidenti.
 """
 from __future__ import annotations
+
+from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -127,9 +129,9 @@ def build_xml(res):
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
            'cui="%s" den=%s adresa=%s totalPlata_A="%d">'
            % (NS, NS, res.an,
-              _esc((prof.get("declarant_nume") or "ADMINISTRATOR")[:74]),
-              _esc((prof.get("declarant_prenume") or "-")[:74]),
-              _esc((prof.get("declarant_functie") or "ADMINISTRATOR")[:74]),
+              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
+              _esc(_t(prof.get("declarant_prenume") or "-")),
+              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
               "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()),
               _esc(prof.get("nume")), _esc(prof.get("adresa")), total_control))
     H.append(hdr)

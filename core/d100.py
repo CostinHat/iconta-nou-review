@@ -28,6 +28,8 @@ REGULI EXTRASE DIN VALIDATOR (constant pool, D100Validator.jar v9):
     - "Pt cod obligatie 121, cota trebuie sa fie = 1"
 """
 from __future__ import annotations
+
+from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import datetime as _dt
@@ -163,9 +165,9 @@ def build_xml(res):
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
            'cui=%s den=%s adresa=%s'
            % (NS, NS, res.luna, res.an,
-              _esc((prof.get("declarant_nume") or "ADMINISTRATOR")[:74]),
-              _esc((prof.get("declarant_prenume") or "-")[:74]),
-              _esc((prof.get("declarant_functie") or "ADMINISTRATOR")[:74]),
+              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
+              _esc(_t(prof.get("declarant_prenume") or "-")),
+              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
               _esc(prof.get("cui")), _esc(prof.get("nume")), _esc(prof.get("adresa"))))
     tel = (prof.get("telefon") or "").strip()
     if tel:

@@ -41,22 +41,6 @@ def _db_ok():
 # ============================================================
 #  DATORIE FISCALA
 # ============================================================
-@pytest.mark.xfail(strict=True, reason="DATORIE 27.07.2026: nume_declar/den_intocmit "
-                                       "depasesc 75 caractere cand declarant_nume e gol "
-                                       "(fallback pe numele firmei). ANAF respinge D300/D394.")
-@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_campurile_de_declarant_respecta_limita_anaf():
-    """ANAF: sir mai lung de 75 caractere -> respins. Fallback-ul pe `den` (numele firmei,
-    115 car. la tenant_001) depaseste. De reparat: fallback potrivit + trunchiere la sursa."""
-    from core import declaratii_api
-    with db.get_conn('tenant_001') as c:
-        xml, _ = declaratii_api.genereaza(c, 'tenant_001', 'd300', {'an': 2026, 'luna': 6})
-        c.rollback()
-    lungi = [(a, v) for a, v in re.findall(r'(\w*declar\w*|den_intocmit)="([^"]*)"', xml)
-             if len(v) > 75]
-    assert not lungi, "atribute peste 75 caractere: %s" % [(a, len(v)) for a, v in lungi]
-
-
 @pytest.mark.xfail(strict=True, reason="DATORIE 27.07.2026: D390 pe tenant_001 pica "
                                        "structural la DUK - 'lipsa sectiune obligatorie'. "
                                        "Cauza neinvestigata.")

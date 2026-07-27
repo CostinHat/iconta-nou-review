@@ -43,6 +43,8 @@ Structura reala <declaratie101>:
     grup fiscal). Se adauga cand apare un caz real care le cere.
 """
 from __future__ import annotations
+
+from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -148,9 +150,9 @@ def build_xml(res):
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
            'cif="%s" denumire=%s adresa=%s'
            % (NS, NS, res.an, res.an, res.an, res.an,
-              _esc((prof.get("declarant_nume") or "ADMINISTRATOR")[:74]),
-              _esc((prof.get("declarant_prenume") or "-")[:74]),
-              _esc((prof.get("declarant_functie") or "ADMINISTRATOR")[:74]),
+              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
+              _esc(_t(prof.get("declarant_prenume") or "-")),
+              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
               "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()),
               _esc(prof.get("nume")), _esc(prof.get("adresa"))))
     tel = (prof.get("telefon") or "").strip()

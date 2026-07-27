@@ -3653,3 +3653,33 @@ Restaurarea din off-site a fost testata cap-coada pe 18.07 (pg_restore exit 0, s
 identice, tenant_002.facturi=5). Corectat: ce lipseste e REPETAREA automata, nu proba.
 A zecea oara azi cand o afirmatie de-a mea despre stare s-a dovedit gresita la verificare -
 si al doilea registru gasit desincronizat in aceeasi zi, ceea ce intareste decizia de mai sus.
+
+### 27.07.2026 Limita ANAF de 75 caractere: reparata la SURSA, in toate declaratiile
+
+GASIT prin verificarea vizuala de catre Costin (poarta de declaratie goala pe iconta.eu),
+apoi extins prin masurare pe toate declaratiile: pe tenant_001 (denumire reala de 115
+caractere - nume + titulaturi profesionale), D300/D301/D390/D394/D112 erau TOATE respinse de
+ANAF cu "sir mai lung de 75 caractere". Campurile: `den`, `adresa`, `adresaR`, `den_intocmit`,
+`nume_declar`, `denumire`.
+
+CE ERA INAINTE, si de ce conteaza: trunchierea `[:74]` EXISTA deja in 6 din 11 locuri unde se
+emite `declarant_nume`, din 15.07 - cu un comentariu care descrie exact acest defect. Regula
+era cunoscuta si aplicata pe jumatate, doar pe campul care crapase atunci. Celelalte campuri
+au ramas neatinse pana au crapat si ele. Tiparul: se repara SIMPTOMUL vazut, nu CLASA.
+
+REPARAT: `common.text_anaf(v)` - sursa unica, normalizeaza spatiile multiple si trunchiaza la
+74 (marja sub pragul ANAF). Aplicata in toate cele 9 generatoare; cele 6 `[:74]` locale au fost
+inlocuite cu apelul comun, ca regula sa nu mai poata diverge.
+
+TRUNCHIEREA E LEGITIMA aici, nu o ascundere: forma scurta a denumirii e acceptata de ANAF, iar
+CUI-ul identifica firma. Nu se pierde informatie fiscala.
+
+DOVADA: D300/D301/D394/D112 pe tenant_001 -> validator ANAF "valid, fara erori" (erau respinse
+inainte). Zero regresie pe tenant_002 (denumire scurta): SHA256 identic pe toate cele 8
+declaratii. D390 ramane respins, dar din ALT motiv (structura, sectiune lipsa la zero
+operatiuni) - ramane in registrul de datorie.
+
+MECANISMUL DE DATORIE S-A DECLANSAT PENTRU PRIMA DATA: itemul era `xfail(strict=True)` in
+`test_datorie.py`; dupa reparatie testul a inceput sa TREACA, iar `strict` l-a facut sa PICE -
+semnal automat ca e timpul sa se inchida. Asa se inchide un item: nu se sterge, se MUTA ca
+gard permanent (`core/test_limita_text_anaf.py`), cu test de mutatie propriu.

@@ -24,6 +24,8 @@ Serviciile (P/S) și triangulația (T/R) = clasificare manuală de contabil (pri
 
 totalPlata_A = nrOPI + bazaL + bazaT + bazaA + bazaP + bazaS + bazaR (formula oficială).
 """
+
+from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
 import re
 import datetime
 from core import common as c
@@ -212,10 +214,10 @@ def build_xml(res):
            'luna="%d" an="%d" d_rec="0" nume_declar="%s" prenume_declar="%s" '
            'functie_declar="%s" cui="%s" den="%s" adresa="%s"'
            % (NS, NS, res.luna, res.an,
-              _esc(prof.get("declarant_nume") or "ADMINISTRATOR"),
-              _esc(prof.get("declarant_prenume") or "-"),
-              _esc(prof.get("declarant_functie") or "ADMINISTRATOR"),
-              _esc(cui), _esc(den), _esc(adr)))
+              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
+              _esc(_t(prof.get("declarant_prenume") or "-")),
+              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
+              _esc(cui), _esc(_t(den)), _esc(_t(adr))))
     if tel:
         hdr += ' telefon="%s"' % _esc(tel)
     if mail:

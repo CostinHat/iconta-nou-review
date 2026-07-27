@@ -301,3 +301,27 @@ def cere_coloane(rand, chei, unde=""):
             "nu se potriveste cu ce asteapta codul (SELECT * nu semnaleaza asta singur)."
             % ((" in %s" % unde) if unde else "", ", ".join(lipsa)))
     return rand
+
+
+# ANAF respinge orice atribut de text peste 75 de caractere ("sir mai lung de 75
+# caractere"). 74 = marja fata de limita, tiparul deja folosit in d100/d101/d112/d205/d710.
+LIMITA_TEXT_ANAF = 74
+
+
+def text_anaf(v, limita=LIMITA_TEXT_ANAF):
+    """Text pentru un atribut XML de declaratie: curatat si TRUNCHIAT la limita ANAF.
+
+    DE CE (27.07.2026): trunchierea `[:74]` exista deja in 6 din 11 locuri unde se emite
+    `declarant_nume` - deci regula era cunoscuta si aplicata pe jumatate. In plus acoperea
+    DOAR numele declarantului; campurile care chiar au crapat la validator sunt altele:
+    `den` (numele firmei, 115 caractere la o firma reala), `adresa` (97), `den_intocmit`.
+
+    Dovedit pe tenant_001: D300, D301, D390, D394 si D112 emiteau toate atribute peste 75
+    de caractere, iar ANAF le respingea cu un mesaj pe care contabilul nu-l poate lega de
+    campul din ecran.
+
+    Trunchierea e legitima aici: numele lung e o denumire completa cu titulaturi, iar ANAF
+    accepta forma scurta. Nu se pierde nicio informatie fiscala - CUI-ul identifica firma.
+    """
+    t = " ".join(str(v or "").split())      # normalizeaza spatiile multiple
+    return t[:limita]

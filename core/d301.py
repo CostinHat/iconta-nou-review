@@ -17,6 +17,8 @@ baza = round(val_valuta × curs_valutar, 0). totalPlata_A = INT(Σbaze + Σtva).
 
 Separare strictă: calcul pur / validare / XML / DB / orchestrare.
 """
+
+from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
 import re
 from core import common as c
 from core.pdf_util import bani
@@ -170,14 +172,14 @@ def build_xml(res):
              'nr_evid="%s" baza1="%d" tva1="%d" baza2="%d" tva2="%d" baza3="%d" tva3="%d" '
              'baza4="%d" tva4="%d" baza5="%d" tva5="%d" totalPlata_A="%d" '
              'nume_declarant="%s" prenume_declarant="%s" functia_declarant="%s">'
-             % (NS, res.luna, res.an, res.mij_transp, _esc(cif), _esc(den), _esc(adr),
+             % (NS, res.luna, res.an, res.mij_transp, _esc(cif), _esc(_t(den)), _esc(_t(adr)),
                 _esc(_clean_bc(prof.get("banca"))), _esc(_clean_bc(prof.get("iban") or prof.get("cont"))),
                 nr_evidenta(res.an, res.luna, res.mij_transp),
                 t[1][0], t[1][1], t[2][0], t[2][1], t[3][0], t[3][1],
                 t[4][0], t[4][1], t[5][0], t[5][1], res.total_plata_a,
-                _esc(prof.get("declarant_nume") or "ADMINISTRATOR"),
-                _esc(prof.get("declarant_prenume") or "-"),
-                _esc(prof.get("declarant_functie") or "ADMINISTRATOR")))
+                _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
+                _esc(_t(prof.get("declarant_prenume") or "-")),
+                _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR"))))
     for op in res.operatiuni:
         H.append('  <sectiune tip_operatie="%d" nr_doc="%s" data_doc="%s" val_valuta="%.2f" '
                  'tip_valuta="%s" curs_valutar="%.4f" baza="%d" tva="%d"/>'

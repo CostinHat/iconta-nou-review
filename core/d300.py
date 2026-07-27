@@ -21,6 +21,8 @@ Maparea automată din facturi: emisă->colectată, primită->deductibilă, pe co
 Operațiunile speciale (intracomunitar, taxare inversă, regularizări, scutiri)
 se pun prin dict-ul `manual` (rânduri introduse de contabil), nu derivate din facturi.
 """
+
+from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
 import re
 from dataclasses import dataclass, field
 from datetime import date
@@ -347,12 +349,12 @@ def build_xml(res):
     A = [
         'luna="%d"' % res.luna, 'an="%d"' % res.an,
         'depusReprezentant="0"', 'bifa_interne="0"', 'temei="0"',
-        'nume_declar="%s"' % _esc(prof.get("declarant_nume") or den or "ADMINISTRATOR"),
-        'prenume_declar="%s"' % _esc(prof.get("declarant_prenume") or "-"),
-        'functie_declar="%s"' % _esc(prof.get("declarant_functie") or "ADMINISTRATOR"),
+        'nume_declar="%s"' % _esc(_t(prof.get("declarant_nume") or den or "ADMINISTRATOR")),
+        'prenume_declar="%s"' % _esc(_t(prof.get("declarant_prenume") or "-")),
+        'functie_declar="%s"' % _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
         'cui="%s"' % _esc(cui),
-        'den="%s"' % _esc(den),
-        'adresa="%s"' % _esc(adr),
+        'den="%s"' % _esc(_t(den)),
+        'adresa="%s"' % _esc(_t(adr)),
         'banca="%s"' % _esc(_clean_bc(prof.get("banca"))),
         'cont="%s"' % _esc(_clean_bc(prof.get("iban") or prof.get("cont"))),
         'caen="%s"' % _esc(_digits(prof.get("caen")) or "0"),

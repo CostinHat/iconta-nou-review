@@ -29,6 +29,8 @@ STRUCTURA (ordinea conteaza):
 """
 from __future__ import annotations
 
+from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+
 import re
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
@@ -551,10 +553,10 @@ def build_xml(res):
              'tip_intocmit="0" den_intocmit="%s" cif_intocmit="%s" calitate_intocmit="%s" '
              'optiune="0" totalPlata_A="%d">'
              % (NS, res.luna, res.an, tip_d394(res.luna), sistem_tva, res.op_efectuate,
-                _esc(cui), _esc(prof.get("caen") or ""), _esc(prof.get("nume") or ""),
-                _esc(adr), _esc(prof.get("telefon") or ""),
-                _esc(cui), _esc(rep_den), _esc(rep_fct), _esc(adr),
-                _esc(prof.get("nume") or ""), _esc(cui),
+                _esc(cui), _esc(prof.get("caen") or ""), _esc(_t(prof.get("nume") or "")),
+                _esc(_t(adr)), _esc(prof.get("telefon") or ""),
+                _esc(cui), _esc(_t(rep_den)), _esc(_t(rep_fct)), _esc(_t(adr)),
+                _esc(_t(prof.get("nume") or "")), _esc(cui),
                 _esc(prof.get("declarant_functie") or "ADMINISTRATOR"),
                 res.total_plata_a))
     # <informatii> INAINTE de <rezumat1> (atentionare ANAF in structD394)

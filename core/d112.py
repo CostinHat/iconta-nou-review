@@ -2,6 +2,8 @@
 """D112 - generator VALIDAT DUKIntegrator (portat din monolit /opt/iconta 04.07.2026).
 Include CM: asiguratB3 + asiguratD + angajatorC2 (OUG 158/2005).
 pull() citeste salariati + concedii_medicale din schema tenantului."""
+
+from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
 import re
 from core import scadente as _scad
 from core import beneficii_api as _ben
@@ -108,9 +110,10 @@ def _d112_genereaza(prof, salariati, an, luna):
     # "nume_declar: sir mai lung de 75 caractere" pe o denumire de cabinet de 117.
     # Trunchiem defensiv la 74 (sub limita), pentru orice firma cu denumire lunga -
     # solutia corecta ramane completarea declarant_nume in profil (ecranul Date firma).
-    nume_d = (prof.get("declarant_nume") or den_f or "ADMINISTRATOR")[:74]
-    pren_d = (prof.get("declarant_prenume") or "-")[:74]
-    func_d = (prof.get("declarant_functie") or "ADMINISTRATOR")[:74]
+    # [:74] local inlocuit cu _t (common.text_anaf) - aceeasi regula, un singur loc.
+    nume_d = _t(prof.get("declarant_nume") or den_f or "ADMINISTRATOR")
+    pren_d = _t(prof.get("declarant_prenume") or "-")
+    func_d = _t(prof.get("declarant_functie") or "ADMINISTRATOR")
     if not cui_f:
         av.append("CUI firma lipsa - completeaza Profil firma.")
     if caen_f == "0000":
@@ -273,7 +276,7 @@ def _d112_genereaza(prof, salariati, an, luna):
              'nume_declar="%s" prenume_declar="%s" functie_declar="%s">'
              % (_D112_NS, luna, an, _d112esc(nume_d), _d112esc(pren_d), _d112esc(func_d)))
     H.append('  <angajator cif="%s" caen="%s" den="%s" casaAng="%s" datCAM="1" bifa_CAM="0" '
-             'totalPlata_A="%d">' % (cui_f, caen_f, _d112esc(den_f), casa_ang, total_plata))
+             'totalPlata_A="%d">' % (cui_f, caen_f, _d112esc(_t(den_f)), casa_ang, total_plata))
     # angajatorA ("sectiunea Creante" in mesajul validatorului; tag-ul real e
     # "angajatorA"). Structura oficiala (structura_D112_0126_030226.pdf,
     # confirmat prin lista completa de elemente <angajatorX>) o pozitioneaza
