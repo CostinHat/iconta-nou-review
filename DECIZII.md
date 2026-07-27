@@ -3855,3 +3855,26 @@ Puse in git.
 RAMAN DESCHISE, cu decizie: poarta pe declaratia goala e doar in ecran (POST /coada n-are);
 Payments D406 gol (zero date de plati in model); 16 `SELECT *` in module de UI; deadman extern
 pentru heartbeat; subdomeniul nou.iconta.eu (redirect inainte de stergere).
+
+### 27.07.2026 `register` nu mai minte cand prima firma nu se creeaza (varianta (c))
+
+PROBLEMA consemnata mai devreme azi: blocul `try` din `register` acoperea `provision_tenant`.
+La esec, raspunsul spunea SUCCES, iar userul intra in aplicatie cu cont valid si ZERO firme,
+fara nicio explicatie. Facut zgomotos (alerta), dar comportamentul ramasese neschimbat -
+era decizie de produs.
+
+DECIZIE (varianta c din cele trei propuse): contul se creeaza si RAMANE valid - e util,
+userul se poate loga si adauga firma manual. Dar raspunsul poarta `firma_creata: false` +
+un avertisment citibil, iar ecranul il arata dupa logare.
+
+De ce nu (a) "ramane asa": o minciuna tacuta e exact clasa vanata toata ziua.
+De ce nu (b) "register esueaza": s-ar pierde un cont valid pentru un esec la un pas
+secundar, iar userul ar trebui sa reia totul.
+
+LEGAT SI IN UI, altfel n-ar fi servit la nimic: `login.js` facea `await api.post(...)` si
+ARUNCA raspunsul. Acum il citeste; la esec pastreaza avertismentul si il arata prin
+`arataMesaj(..., "info")` DUPA intrarea in aplicatie - mesaj de stare, nu caseta permanenta,
+pentru ca situatia e temporara (firma se adauga din ecranul Firme). DS cap.5/cap.6.
+
+Nota de metoda: backend-ul singur ar fi fost o reparatie invizibila. Cand raspunsul unei rute
+capata un camp nou, trebuie verificat CINE il consuma - altfel adevarul se opreste la HTTP.

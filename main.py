@@ -1060,7 +1060,14 @@ def register(date: RegisterIn):
             print("[alerta_cont_nou] throttled (dedup) | %s" % _mesaj_cn, flush=True)
     except Exception as _e:
         print("[alerta_cont_nou] netrimisa: %s" % _e, flush=True)
+    # [register_firma_v2 27.07.2026] Provisionarea primei firme poate esua (ANAF jos, schema
+    # incompleta, DB). Inainte, esecul era INGHITIT si raspunsul spunea SUCCES - userul ramanea
+    # cu cont valid si FARA firma, fara sa stie. Contul NU se anuleaza (e valid si util), dar
+    # raspunsul poarta adevarul, iar ecranul il arata.
+    _firma_ok = None                       # None = nu s-a incercat (fara CUI la inregistrare)
+    _firma_motiv = ""
     if date.cui and _TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
+        _firma_ok = False
         try:
             with db.get_conn() as conn:
                 _cui = date.cui.replace("RO", "").strip()
@@ -1096,13 +1103,23 @@ def register(date: RegisterIn):
                                  bool(d.get("platitor_tva")),
                                  d.get("tva_data_inceput")))
                 except Exception as _e:
-                    _obs.esec_secundar("precompletare ANAF la register", _e)  # inghitit, dar nu tacut (27.07.2026)
-                    pass  # ANAF jos -> profilul ramane de completat manual
+                    # ANAF jos -> profilul ramane de completat manual. Firma EXISTA, doar
+                    # datele preluate lipsesc - deci NU e esec de provisionare.
+                    _obs.esec_secundar("precompletare ANAF la register", _e)
                 conn.commit()
+                _firma_ok = True
         except Exception as _e:
-            _obs.esec_secundar("provisionare tenant la register", _e, alerta=True)  # inghitit, dar nu tacut (27.07.2026)
-            pass  # inregistrarea nu pica din cauza primului tenant
-    return {"user_id": r["user_id"], "firm_id": r["firm_id"]}
+            # Contul RAMANE valid: userul se poate loga si adauga firma manual din ecranul
+            # Firme. Dar raspunsul NU mai minte cu succes - vezi register_firma_v2 mai sus.
+            _obs.esec_secundar("provisionare tenant la register", _e, alerta=True)
+            _firma_motiv = ("Contul a fost creat, dar firma nu a putut fi adaugata automat. "
+                            "Te poti loga si o adaugi din ecranul Firme.")
+    raspuns = {"user_id": r["user_id"], "firm_id": r["firm_id"]}
+    if _firma_ok is not None:
+        raspuns["firma_creata"] = _firma_ok
+        if _firma_motiv:
+            raspuns["avertisment"] = _firma_motiv
+    return raspuns
 
 
 # ============================================================
