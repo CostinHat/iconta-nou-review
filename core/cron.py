@@ -53,7 +53,12 @@ def ruleaza(nume, fn):
                   % (inceput, nume, traceback.format_exc()), flush=True)
         sys.exit(1)
     durata = time.time() - t0
-    bate(nume, durata)
+    # Bataia e efect secundar: un job nou, inca neadaugat in RITMURI, NU trebuie sa cada
+    # din cauza asta. Dar o spune, ca lipsa supravegherii sa nu fie tacuta.
+    try:
+        bate(nume, durata)
+    except ValueError as e:
+        print("[heartbeat] %s" % e, flush=True)
     print("%s job OK: %s (%.1fs)" % (inceput, nume, durata), flush=True)
     return rez
 
@@ -76,7 +81,16 @@ RITMURI = {
 
 
 def bate(nume, durata_sec=None):
-    """Consemneaza o rulare REUSITA. Esecul consemnarii nu strica jobul, dar o SPUNE."""
+    """Consemneaza o rulare REUSITA. Esecul consemnarii nu strica jobul, dar o SPUNE.
+
+    Numele TREBUIE sa fie in RITMURI: altfel nimeni nu-l supravegheaza, iar randul doar
+    se acumuleaza in tabel. (27.07.2026: o verificare manuala scrisese randul 'proba' in
+    productie - exact felul de reziduu care nu trebuie lasat in urma.)
+    """
+    if nume not in RITMURI:
+        raise ValueError(
+            "job necunoscut in heartbeat: %r. Adauga-l in cron.RITMURI cu pragul lui, "
+            "altfel nimic nu-i supravegheaza lipsa." % nume)
     try:
         from core import db
         try:

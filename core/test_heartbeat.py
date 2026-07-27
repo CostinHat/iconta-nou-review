@@ -79,3 +79,13 @@ def test_esecul_nu_consemneaza_bataie(monkeypatch):
     with pytest.raises(SystemExit):
         cron.ruleaza("proba", lambda: (_ for _ in ()).throw(RuntimeError("x")))
     assert batai == [], "esecul a fost consemnat ca rulare reusita"
+
+
+def test_bate_refuza_numele_necunoscute():
+    """Un nume care nu e in RITMURI nu e supravegheat de nimeni - deci n-are ce cauta in
+    tabel. Altfel probele de dezvoltare se acumuleaza in productie (s-a intamplat pe
+    27.07: randul 'proba' scris de o verificare manuala)."""
+    import pytest
+    from core import cron
+    with pytest.raises(ValueError):
+        cron.bate("nume_inventat_fara_ritm")
