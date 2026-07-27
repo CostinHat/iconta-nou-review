@@ -109,4 +109,5 @@ def _main():
 
 
 if __name__ == "__main__":
-    _main()
+    from core import cron
+    cron.ruleaza("woocommerce", _main)

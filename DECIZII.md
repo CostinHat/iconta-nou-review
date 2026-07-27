@@ -3348,3 +3348,36 @@ a esuat"; clienti -> mesajul lui. Generarea normala: 182 conturi, DUK valid.
 
 LECTIE: "am scos mastile din fisierul X" nu e o afirmatie verificabila fara numarat. Numarul
 de masti ramase se tipareste in aceeasi comanda cu reparatia.
+
+### 27.07.2026 Joburile de fundal esuau TACIT — ambalaj comun `core/cron.py`
+
+FAPT: crontab-ul nu are MAILTO si serverul n-are MTA local (verificat: `which sendmail mail`
+-> nimic). Cele 7 joburi cron scriau in fisiere de log pe care nu le citeste nimeni. Un job
+mort arata identic cu unul care n-a avut nimic de facut - dovedit chiar azi: woocommerce.log
+tacea de 12 zile si a fost nevoie de investigatie ca sa se stabileasca daca e defect (nu era:
+wc_url e NULL in toti tenantii).
+
+GRAVITATE: joburile emit facturi recurente, trimit notificari de scadenta, detecteaza acces
+anormal (securitate, la 15 min) si aplica retentia GDPR. `facturi_recurente._main` n-avea
+niciun try/except: un esec la primul tenant oprea jobul pentru TOATE firmele.
+
+DOCTRINA EXISTA DEJA, scrisa in iconta-backup.sh: "Off-site care esueaza TACIT e mai rau
+decat lipsa lui -> se logheaza + alerteaza" (FAIL_PRAG=2, email Brevo). Singurul job pe
+systemd o respecta; cele pe cron, nu.
+
+DECIZIE: ambalaj Python unic `core/cron.py` (`ruleaza(nume, fn)`), NU wrapper shell si NU
+migrare la systemd timers. Motive: (a) canalul de alertare + throttling traiesc deja in
+observare.alerteaza, iar shell-ul n-ar avea acces la ele - regula "nu construi canal paralel"
+(gdpr_cerere.py); (b) migrarea cron->systemd e schimbare de infrastructura, se decide separat.
+Ambalajul: traceback in log + alerta cu throttling pe cheie + exit 1. Pe succes tipareste
+marca de timp si durata, ca tacerea sa nu se mai confunde cu moartea.
+
+ALERTA NU MASCHEAZA ESECUL: daca trimiterea alertei crapa, se tipareste "ALERTA NETRIMISA"
+si se iese TOT cu 1. Un canal care inghite eroarea pe care trebuia s-o semnaleze ar fi
+aceeasi clasa cu `except: pass`.
+
+GARDA: `core/test_cron.py` - patru teste, dintre care unul mecanic verifica sa fiecare din
+cele 7 module din crontab CHEAMA cron.ruleaza. Un job nou nesupravegheat pica suita.
+
+LIMITA DECLARATA: nu prinde jobul care nu porneste deloc (cron oprit, reboot, crontab
+stricat). Heartbeat/deadman = task deschis in DE_FACUT.

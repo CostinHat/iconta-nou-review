@@ -784,3 +784,5 @@ LIMITA = fără `api_keys.env`, integrările externe neacoperite — detaliu în
      `users.ultima_logare` (NU derivat din `audit_log` — se șterge la retenția de 12 luni). (DECIZII 25.07.)
    - **SAF-T `<SoftwareCompanyName>` / `<SoftwareID>` (d406.py)** — rămân „iConta" (identificare software către ANAF);
      schimbarea = decizie **fiscală separată**, neatinsă de corecția de brand și de gardianul BRAND_EU. (DECIZII 26.07.)
+
+- **[gard, DESCHIS 27.07.2026] Heartbeat pentru joburile de fundal.** `core/cron.py` prinde jobul care CRAPA (alerta + exit 1). NU prinde jobul care nu porneste deloc: cron oprit, reboot fara restaurarea crontab-ului, linie stricata in crontab, server jos la ora rularii. Pentru asta e nevoie de un deadman: fiecare job isi scrie ultima rulare reusita (tabel `public.cron_batai`), iar un verificator alerteaza cand un job a depasit intervalul asteptat. De decis: unde ruleaza verificatorul (el insusi e un job care poate muri - candidat pentru systemd timer, singurul mecanism care supravietuieste unui crontab pierdut).

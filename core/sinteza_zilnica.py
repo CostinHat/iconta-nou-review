@@ -186,4 +186,5 @@ if __name__ == "__main__":
         i = sys.argv.index("--test")
         if i + 1 < len(sys.argv):
             test = sys.argv[i + 1]
-    ruleaza(test_email=test)
+    from core import cron
+    cron.ruleaza("sinteza_zilnica", lambda: ruleaza(test_email=test))

@@ -28,4 +28,5 @@ def ruleaza(_luni=None):
 
 if __name__ == "__main__":
     import json, datetime
-    print("%s audit_retentie: %s" % (datetime.datetime.now().isoformat(timespec="seconds"), json.dumps(ruleaza())))
+    from core import cron
+    cron.ruleaza("audit_retentie", lambda: print("%s audit_retentie: %s" % (datetime.datetime.now().isoformat(timespec="seconds"), json.dumps(ruleaza()))))

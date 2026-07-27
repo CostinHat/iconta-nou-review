@@ -153,4 +153,5 @@ def emite_alerte_programate(conn):
     return emise
 
 if __name__ == "__main__":
-    _main()
+    from core import cron
+    cron.ruleaza("monitor_fiscal", _main)

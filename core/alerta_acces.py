@@ -58,4 +58,5 @@ def ruleaza(trimite=None, **override):
 
 if __name__ == "__main__":
     import json, datetime
-    print("%s alerta_acces: %s" % (datetime.datetime.now().isoformat(timespec="seconds"), json.dumps(ruleaza())))
+    from core import cron
+    cron.ruleaza("alerta_acces", lambda: print("%s alerta_acces: %s" % (datetime.datetime.now().isoformat(timespec="seconds"), json.dumps(ruleaza()))))
