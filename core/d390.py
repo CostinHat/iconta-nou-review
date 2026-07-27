@@ -313,7 +313,18 @@ def d390_are_operatiuni(conn, schema, an, luna, azi=None):
     return False
 
 
-def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):
+def calculeaza(conn, schema, an, luna, manual=None, reclasificari=None):
+    """Calculul D390, FARA poarta fiscala. Intoarce doar `res`.
+
+    Separat de `genereaza` pe 27.07.2026: EMITEREA are o poarta (D390 nu se depune pe zero,
+    OPANAF 705/2020 pct. 1.2), dar CALCULUL nu trebuie s-o aiba. Verificatorii incrucisati
+    (control_incrucisat.verifica_d390) au nevoie de bazele IC ca sa compare cu evidenta si cu
+    D300 depus - iar acolo "zero operatiuni" e un raspuns legitim (baza 0), nu o eroare.
+
+    Fara separarea asta, poarta de la emitere transforma orice luna fara operatiuni intr-un
+    verdict GRI pe intreg verificatorul, ascunzand sub-verificarea D-vs-D. Regresie reala,
+    prinsa de suita imediat dupa adaugarea portii.
+    """
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
     prof, facturi = pull(conn, schema, an, luna)
@@ -324,4 +335,31 @@ def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):
     if reclasificari is None:
         reclasificari = pull_reclasificari(conn, schema, an, luna)
     res = calcul_d390(prof, an, luna, facturi, manual, reclasificari)
+    return res
+
+
+def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):
+    """Genereaza XML-ul D390. Refuza luna fara operatiuni (vezi poarta de mai jos)."""
+    res = calculeaza(conn, schema, an, luna, manual, reclasificari)
+    # POARTA FISCALA (27.07.2026, verificat la sursa): D390 NU se depune pe zero.
+    # OPANAF 705/2020, Instructiuni pct. 1.2: "Persoanele impozabile inregistrate in scopuri
+    # de TVA depun declaratia recapitulativa NUMAI pentru lunile calendaristice in care ia
+    # nastere exigibilitatea taxei" (art. 325 Cod fiscal, Legea 227/2015). O luna fara
+    # operatiuni intracomunitare NU produce obligatie de depunere.
+    #
+    # Validatorul ANAF confirma regula structural: cu zero <operatie> respinge cu "lipsa
+    # sectiune obligatorie"; cu o singura operatiune, acelasi XML e valid (dovedit pe
+    # tenant_001/iunie 2026). Deci sectiunea <operatie> e minOccurs=1 - structura oglindeste
+    # regula fiscala.
+    #
+    # Inainte de asta generatorul emitea un XML gol pe care ANAF il respingea, iar contabilul
+    # primea un mesaj de structura in loc de "nu ai ce depune". Acelasi tipar ca la d205
+    # ("D205 fara niciun beneficiar de venit").
+    if res.nr_opi == 0:
+        raise ValueError(
+            "D390 nu se depune pe zero: luna %02d/%d nu are nicio operatiune intracomunitara. "
+            "Declaratia recapitulativa se depune NUMAI pentru lunile in care ia nastere "
+            "exigibilitatea taxei (OPANAF 705/2020 pct. 1.2; art. 325 Cod fiscal). "
+            "Daca ar fi trebuit sa existe operatiuni, verifica daca facturile UE sunt "
+            "introduse si daca partenerii au cod de TVA valid." % (luna, an))
     return build_xml(res), res

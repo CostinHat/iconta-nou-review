@@ -41,19 +41,6 @@ def _db_ok():
 # ============================================================
 #  DATORIE FISCALA
 # ============================================================
-@pytest.mark.xfail(strict=True, reason="DATORIE 27.07.2026: D390 pe tenant_001 pica "
-                                       "structural la DUK - 'lipsa sectiune obligatorie'. "
-                                       "Cauza neinvestigata.")
-@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_d390_trece_validatorul_pe_firma_reala():
-    from core import declaratii_api, duk
-    with db.get_conn('tenant_001') as c:
-        xml, _ = declaratii_api.genereaza(c, 'tenant_001', 'd390', {'an': 2026, 'luna': 6})
-        c.rollback()
-    r = duk.valideaza(xml, 'd390')
-    assert r["stare"] == "valid", r["erori"][:200]
-
-
 @pytest.mark.xfail(strict=True, reason="DATORIE 27.07.2026 [FISCAL, cere verificare la "
                                        "sursa]: d390._int foloseste round() = rotunjire "
                                        "BANCARA; D112 documenteaza ca ANAF cere ARITMETICA "

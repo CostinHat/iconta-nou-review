@@ -687,7 +687,10 @@ def verifica_d390(conn, schema, an, luna):
     try:
         baze = {"L": 0, "A": 0}
         for m in luni:
-            _xml, res = _d390.genereaza(conn, schema, an, m)
+            # calculeaza(), NU genereaza(): la VERIFICARE zero operatiuni e baza 0, nu eroare.
+            # genereaza() are poarta fiscala (D390 nu se depune pe zero) - corecta la emitere,
+            # gresita aici: ar face verificatorul gri pe orice luna fara operatiuni.
+            res = _d390.calculeaza(conn, schema, an, m)
             rezumat = res["rezumat"] if isinstance(res, dict) else getattr(res, "rezumat", {})
             baze["L"] += int(rezumat.get("L", 0))
             baze["A"] += int(rezumat.get("A", 0))
@@ -722,7 +725,7 @@ def verifica_d390(conn, schema, an, luna):
         try:
             baze_d = {"L": 0, "A": 0}
             for m in luni_d:
-                _x, res_d = _d390.genereaza(conn, schema, an_d, m)
+                res_d = _d390.calculeaza(conn, schema, an_d, m)
                 rez_d = res_d["rezumat"] if isinstance(res_d, dict) else getattr(res_d, "rezumat", {})
                 baze_d["L"] += int(rez_d.get("L", 0))
                 baze_d["A"] += int(rez_d.get("A", 0))

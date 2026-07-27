@@ -3683,3 +3683,34 @@ MECANISMUL DE DATORIE S-A DECLANSAT PENTRU PRIMA DATA: itemul era `xfail(strict=
 `test_datorie.py`; dupa reparatie testul a inceput sa TREACA, iar `strict` l-a facut sa PICE -
 semnal automat ca e timpul sa se inchida. Asa se inchide un item: nu se sterge, se MUTA ca
 gard permanent (`core/test_limita_text_anaf.py`), cu test de mutatie propriu.
+
+### 27.07.2026 D390 nu se depune pe zero — regula FISCALA, nu defect de structura
+
+SIMPTOM: D390 pe tenant_001 (zero operatiuni IC) respins de ANAF cu "lipsa sectiune
+obligatorie". Il consemnasem ca "defect structural, cauza neinvestigata".
+
+VERIFICAT LA SURSA: OPANAF 705/2020, Instructiuni pct. 1.2 - "Persoanele impozabile
+inregistrate in scopuri de TVA depun declaratia recapitulativa NUMAI pentru lunile
+calendaristice in care ia nastere exigibilitatea taxei", art. 325 Cod fiscal (Legea 227/2015).
+O luna fara operatiuni intracomunitare NU produce obligatie de depunere.
+
+DECI validatorul avea dreptate, iar generatorul gresea: emitea un XML pe care ANAF il respinge
+corect. Structura oglindeste regula fiscala (<operatie> minOccurs=1). Dovedit prin mutatie:
+acelasi XML cu o operatiune fabricata (in ROLLBACK) trece "valid".
+
+LECTIA: o eroare de STRUCTURA de la validator poate fi o regula FISCALA codificata in schema.
+Daca as fi "reparat structura" - emitand o sectiune goala ca sa treaca validatorul - as fi
+produs o declaratie care nu trebuia sa existe. A doua oara azi cand verificarea la sursa a
+schimbat complet diagnosticul (prima: d205_beneficiari).
+
+REGRESIE PROPRIE, prinsa imediat de suita: poarta pusa in `genereaza` a rupt
+`control_incrucisat.verifica_d390`, care chema generatorul doar ca sa AFLE bazele IC. Acolo
+zero operatiuni e un raspuns legitim (baza 0), nu o eroare - iar exceptia facea intreg
+verificatorul GRI si ascundea sub-verificarea D-vs-D.
+
+REPARAT PRIN SEPARARE: `d390.calculeaza()` (pull + calcul, fara poarta) si `d390.genereaza()`
+(calculeaza + poarta fiscala + XML). Verificatorii folosesc calculul, emiterea are poarta.
+Aceeasi distinctie ca in restul zilei: a SOCOTI nu e acelasi lucru cu a DEPUNE.
+
+TOATE cele 5 declaratii pe tenant_001: D300 valid, D301 valid, D394 valid, D112 valid,
+D390 refuzat corect cu temei legal in mesaj.

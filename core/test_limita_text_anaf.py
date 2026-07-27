@@ -78,3 +78,33 @@ def test_atributele_respecta_limita_anaf(tip, body):
     xml = xml.decode("utf-8") if isinstance(xml, bytes) else xml
     lungi = [(a, len(v)) for a, v in re.findall(r'(\w+)="([^"]*)"', xml) if len(v) > LIMITA]
     assert not lungi, "atribute peste %d caractere (ANAF le respinge): %s" % (LIMITA, lungi)
+
+
+# ============================================================
+#  D390 nu se depune pe zero (regula fiscala, nu structura)
+# ============================================================
+def test_d390_refuza_luna_fara_operatiuni():
+    """OPANAF 705/2020 pct. 1.2 + art. 325 Cod fiscal: declaratia recapitulativa se depune
+    NUMAI pentru lunile in care ia nastere exigibilitatea taxei. O luna fara operatiuni
+    intracomunitare nu produce obligatie.
+
+    Verificat la sursa 27.07.2026. Validatorul ANAF confirma structural: zero <operatie> ->
+    "lipsa sectiune obligatorie"; cu o operatiune, acelasi XML e valid.
+    """
+    import core.d390 as d390
+    src = __import__("pathlib").Path(d390.__file__).read_text(encoding="utf-8")
+    i = src.index("def genereaza(")
+    corp = src[i:src.index("\n", src.index("return build_xml(res), res", i))]
+    assert "res.nr_opi == 0" in corp and "raise ValueError" in corp, \
+        "d390.genereaza nu mai refuza luna fara operatiuni"
+    assert "705/2020" in corp, "poarta fara temei legal citat"
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d390_pe_firma_fara_operatiuni_da_mesaj_citibil():
+    with db.get_conn("tenant_001") as c:
+        with pytest.raises(ValueError) as e:
+            declaratii_api.genereaza(c, "tenant_001", "d390", {"an": 2026, "luna": 6})
+        c.rollback()
+    m = str(e.value)
+    assert "nu se depune pe zero" in m and "325" in m, m[:120]
