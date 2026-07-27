@@ -3954,3 +3954,19 @@ data cel mai des. Reparat, text din MARKETING.md (lista PERMISE: "control fiscal
 RAMAS: `og:image` foloseste `logo_login.png` (337 KB, logo, nu imagine sociala). Formatul
 potrivit pentru preview e 1200x630. Aceeasi limita ca la ghiduri (main.py:8321 o noteaza ca
 provizorie) - acum se aplica si landingului.
+
+### 27.07.2026 Reboot dupa 9 saptamani + un bug gasit de el (init_pool mascat)
+
+Serverul rula din 26.05 pe kernel 6.8.0-117, cu TREI actualizari de securitate instalate si
+neactivate (124, 134, 136). Repornit: kernel 6.8.0-136 activ, toate serviciile revenite singure
+(systemd enabled), crontab intact (9 linii), timere active, site 200.
+
+BUG GASIT DE REBOOT: rulind `core.cron` prin `ssh host 'comanda'` (care NU incarca .env),
+heartbeat-ul a crapat cu "pool neinitializat - cheama init_pool() la startup". Cauza reala:
+`init_pool()` era invelit in `try/except: pass`, deci esecul lui (variabile de mediu lipsa)
+disparea, iar eroarea aparea mai jos, cu alt mesaj, in get_conn. Aceeasi clasa vanata toata
+ziua - in cod scris de mine cu doua ore inainte.
+
+Serviciul systemd are EnvironmentFile, deci in productie ruleaza corect (dovedit: timerul de
+la 18:20). Dar daca DB-ul chiar ar fi jos, heartbeat-ul ar fi crapat cu un mesaj care ascunde
+cauza. REPARAT: init_pool nemascat in ambele locuri (bate + verifica_batai).

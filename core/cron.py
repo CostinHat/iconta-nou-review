@@ -93,10 +93,7 @@ def bate(nume, durata_sec=None):
             "altfel nimic nu-i supravegheaza lipsa." % nume)
     try:
         from core import db
-        try:
-            db.init_pool()
-        except Exception:
-            pass
+        db.init_pool()          # nemascat - vezi nota din verifica_batai
         with db.get_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -127,10 +124,10 @@ def verifica_batai(acum=None, ritmuri=None):
     from core import db
     ritmuri = ritmuri or RITMURI
     acum = acum or datetime.datetime.now(datetime.timezone.utc)
-    try:
-        db.init_pool()
-    except Exception:
-        pass
+    # init_pool NU se mascheaza (27.07.2026): daca esueaza, get_conn de mai jos crapa
+    # oricum, dar cu mesajul "pool neinitializat" - cauza reala (variabile de mediu
+    # lipsa) ramane ascunsa. Dovedit rulind modulul fara .env dupa reboot.
+    db.init_pool()
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT nume, ultima_reusita FROM public.cron_batai")
