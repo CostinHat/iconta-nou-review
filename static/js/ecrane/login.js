@@ -339,11 +339,6 @@ export function ecranLogin(radacina) {
           cod_acces: (document.getElementById("login-cod")?.value || "").trim(),
         });
         sesiune.intra(r.token, r.user);
-        if (_avertReg) {
-          /* mesaj de stare, nu caseta permanenta: situatia e temporara (firma se adauga
-             din ecranul Firme). DS cap.6 - arataMesaj e singura cale pentru stari. */
-          setTimeout(() => arataMesaj(document.body, _avertReg, "avert"), 400);
-        }
       } catch (e) {
         arataEroare(e.mesaj || "Autentificare eșuată.");
         buton.disabled = false;
@@ -505,6 +500,11 @@ export function ecranLogin(radacina) {
           parola: parola.value,
         });
         sesiune.intra(r.token, r.user);
+        if (_avertReg) {
+          /* mesaj de stare, nu caseta permanenta: situatia e temporara (firma se adauga
+             din ecranul Firme). DS cap.6 - arataMesaj e singura cale pentru stari. */
+          setTimeout(() => arataMesaj(document.body, _avertReg, "avert"), 400);
+        }
       } catch (e) {
         arataEroare(e.mesaj || "Nu am putut crea contul.");
         buton.disabled = false;
