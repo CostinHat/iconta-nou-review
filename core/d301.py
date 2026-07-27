@@ -115,19 +115,35 @@ def calcul_d301(prof, an, luna, operatiuni_raw):
     return res
 
 
-def valideaza(res):
+def erori_generare(prof):
+    """Campurile de PROFIL obligatorii pentru D301. Lista goala = se poate genera.
+
+    Acelasi nume si aceeasi semnatura ca la d100/d101/d205/d710 - aceeasi situatie,
+    aceeasi rezolvare. Verificarile EXISTAU de mult in `valideaza(res)`, dar valideaza()
+    NU era chemata niciodata din genereaza(): XML-ul iesea cu banca="" si cont="", iar
+    ANAF il respingea cu "atribut prezent dar vid nepermis". Contabilul primea eroarea
+    criptica a validatorului in loc de "completeaza IBAN-ul". Acelasi defect ca la D300, acelasi fisier-frate.
+
+    Sursa UNICA: valideaza() cheama tot functia asta, nu-si repeta verificarile.
+    """
     erori = []
-    prof = res.prof
-    if res.luna < 1 or res.luna > 12:
-        erori.append("Lună invalidă.")
     if not _NEDIGIT.sub("", prof.get("cui") or ""):
         erori.append("LIPSĂ CIF persoană impozabilă.")
-    if not prof.get("nume"):
+    if not str(prof.get("nume") or "").strip():
         erori.append("LIPSĂ denumire.")
     if not _clean_bc(prof.get("banca")):
         erori.append("LIPSĂ bancă (obligatorie la D301).")
     if not _clean_bc(prof.get("iban") or prof.get("cont")):
         erori.append("LIPSĂ cont (obligatoriu la D301).")
+    return erori
+
+def valideaza(res):
+    erori = []
+    prof = res.prof
+    if res.luna < 1 or res.luna > 12:
+        erori.append("Lună invalidă.")
+    # Campurile de profil: sursa unica e erori_generare (chemata si din genereaza).
+    erori.extend(erori_generare(prof))
     for op in res.operatiuni:
         if op.tip not in TIPURI_OP:
             erori.append("Tip operațiune %s invalid." % op.tip)
@@ -191,5 +207,9 @@ def genereaza(conn, schema, an, luna):
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
     prof, ops = pull(conn, schema, an, luna)
+    # POARTA (27.07.2026): profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF.
+    erori = erori_generare(prof)
+    if erori:
+        raise ValueError("D301 nu se poate genera: " + " ".join(erori))
     res = calcul_d301(prof, an, luna, ops)
     return build_xml(res), res

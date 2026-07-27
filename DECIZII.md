@@ -3586,3 +3586,33 @@ scripturile din /usr/local/bin. Fara ele, un server nou se reconstruia din memor
 ceruse un al doilea server la Hetzner pentru asta; raspuns: un al doilea server ar fi exact
 dublura de eliminat (inca o masina de actualizat si tinut in sincron), iar problema reala -
 configurarile nesalvate - se rezolva extinzand backupul care exista deja.
+
+### 27.07.2026 D300/D301: verificarea de profil era scrisa dar NU era poarta
+
+GASIT prin verificarea VIZUALA a portii de declaratie goala (Costin, pe iconta.eu): D300 pe
+PFA TEST a trecut de poarta, dar validatorul ANAF l-a respins cu "eroare atribut: banca:
+atribut prezent dar vid nepermis".
+
+FAPT: `d300.valideaza(res)` verifica banca/cont/CAEN/CUI si intoarce mesaje CLARE ("LIPSĂ
+bancă — obligatorie la D300") - dar NU era chemata niciodata din `genereaza()`. La fel
+`d301.valideaza`. In schimb d100/d101/d205/d710 cheama `erori_generare(prof)` si BLOCHEAZA.
+Deci verificarea exista, era corecta, si nu apara nimic: XML-ul iesea cu banca="" si cont="",
+iar contabilul primea eroarea criptica a validatorului in loc de "completeaza IBAN-ul".
+
+AMPLOARE: 2 din 3 firme reale (tenant_002 fara iban, tenant_003 fara banca si iban). Adica
+D300 si D301 erau nedepunabile pentru majoritatea firmelor, fara ca nimic sa spuna de ce.
+
+REPARAT prin ALINIERE la tiparul existent, nu prin invenite: `erori_generare(prof)` in d300 si
+d301, acelasi nume si aceeasi semnatura ca la celelalte patru generatoare (aceeasi situatie =
+aceeasi rezolvare). Chemata din `genereaza()`, ridica ValueError -> ruta o transforma in 422 ->
+ecranul o arata in `.dec-eroare`. `valideaza(res)` cheama tot functia asta si nu-si mai repeta
+verificarile (sursa unica, fara constructie paralela).
+
+GARD: `core/test_poarta_profil.py` - daca un generator DEFINESTE erori_generare, `genereaza()`
+trebuie s-o CHEME. Un gard scris care nu e poarta nu apara nimic; asta e clasa de defect
+vanata toata ziua (verificator de schema care raporta fara sa blocheze, masti peste query,
+validare D406 care nu rula).
+
+NOTA DE PROCES: defectul a iesit la iveala prin verificare cu OCHII, nu prin suita. Cele 1008
+teste erau verzi peste el, iar verificatorul de conformitate la fel. DE_FACUT are deja notata
+limita: verificatorul prinde semnatura textuala, nu randarea si nu comportamentul.

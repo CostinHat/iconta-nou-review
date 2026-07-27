@@ -276,6 +276,30 @@ def calcul_d300(prof, an, luna, facturi, manual=None):
     return res
 
 
+def erori_generare(prof):
+    """Campurile de PROFIL obligatorii pentru D300. Lista goala = se poate genera.
+
+    Acelasi nume si aceeasi semnatura ca la d100/d101/d205/d710 - aceeasi situatie,
+    aceeasi rezolvare. Verificarile EXISTAU de mult in `valideaza(res)`, dar valideaza()
+    NU era chemata niciodata din genereaza(): XML-ul iesea cu banca="" si cont="", iar
+    ANAF il respingea cu "atribut prezent dar vid nepermis". Contabilul primea eroarea
+    criptica a validatorului in loc de "completeaza IBAN-ul". Dovedit 27.07.2026 pe tenant_002 si tenant_003 (2 din 3 firme).
+
+    Sursa UNICA: valideaza() cheama tot functia asta, nu-si repeta verificarile.
+    """
+    erori = []
+    if not _digits(prof.get("cui")):
+        erori.append("LIPSĂ CUI firmă.")
+    if not str(prof.get("nume") or "").strip():
+        erori.append("LIPSĂ denumire firmă.")
+    if not _clean_bc(prof.get("banca")):
+        erori.append("LIPSĂ bancă — obligatorie la D300.")
+    if not _clean_bc(prof.get("iban") or prof.get("cont")):
+        erori.append("LIPSĂ cont/IBAN — obligatoriu la D300.")
+    if not _digits(prof.get("caen")):
+        erori.append("LIPSĂ CAEN — obligatoriu la D300.")
+    return erori
+
 def valideaza(res):
     """Verifică regulile ANAF. Întoarce listă de erori (gol = ok)."""
     erori = []
@@ -291,19 +315,8 @@ def valideaza(res):
     if tip == "T" and luna not in (2, 3, 5, 6, 8, 9, 11, 12):
         erori.append("tip_decont=T (trimestrial) cere luna în (02,03,05,06,08,09,11,12).")
 
-    # bancă/cont obligatorii
-    banca = _clean_bc(prof.get("banca"))
-    cont = _clean_bc(prof.get("iban") or prof.get("cont"))
-    if not banca:
-        erori.append("LIPSĂ bancă — obligatorie la D300.")
-    if not cont:
-        erori.append("LIPSĂ cont/IBAN — obligatoriu la D300.")
-    # CAEN obligatoriu
-    if not _digits(prof.get("caen")):
-        erori.append("LIPSĂ CAEN — obligatoriu la D300.")
-    # CUI
-    if not _digits(prof.get("cui")):
-        erori.append("LIPSĂ CUI firmă.")
+    # Campurile de profil: sursa unica e erori_generare (chemata si din genereaza).
+    erori.extend(erori_generare(prof))
 
     # marja ±1% pe cotele cu valori. Cota standard vine din common (cu data perioadei
     # declarate), ca să fie corectă și pe perioade cu 19% (înainte de 01.08.2025).
@@ -386,5 +399,9 @@ def genereaza(conn, schema, an, luna, manual=None):
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
     prof, facturi = pull(conn, schema, an, luna)
+    # POARTA (27.07.2026): profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF.
+    erori = erori_generare(prof)
+    if erori:
+        raise ValueError("D300 nu se poate genera: " + " ".join(erori))
     res = calcul_d300(prof, an, luna, facturi, manual)
     return build_xml(res), res
