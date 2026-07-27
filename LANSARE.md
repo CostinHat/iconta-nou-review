@@ -98,7 +98,7 @@ commit, acum gol). Gardurile și limitele lor declarate sunt în `GARZI.md`.
 ### Decizii de produs, deschise
 | Ce | Context |
 |---|---|
-| Bypass owner pe patru-ochi | Cabinet cu un singur om: patru-ochi devine frecare la fiecare depunere. |
+| ~~Bypass owner pe patru-ochi~~ | **NU E O DECIZIE DESCHISĂ** (verificat 27.07). `coada_api.aproba` cere DOUĂ condiții cumulate: patronul să fi activat regula (`patru_ochi_activ`, implicit oprită) ȘI să fie posibilă (`patru_ochi_posibil`: minim 2 utilizatori activi, cu pregătitor și validator distincți). Într-un cabinet cu un singur om nu se declanșează niciodată. Nota era rămasă în urmă. |
 | `tip_firma` needitabil după creare | Trecerea PFA↔SRL cere migrare de date; azi nu se poate schimba deloc. |
 | Ecran de introducere D301 | Generatorul și tabelul există; nu există UI de completare. |
 | e-Transport `/trimite` pentru rol client | Azi cabinet-only; de decis dacă clientul trimite singur. |
