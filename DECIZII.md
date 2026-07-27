@@ -3878,3 +3878,20 @@ pentru ca situatia e temporara (firma se adauga din ecranul Firme). DS cap.5/cap
 
 Nota de metoda: backend-ul singur ar fi fost o reparatie invizibila. Cand raspunsul unei rute
 capata un camp nou, trebuie verificat CINE il consuma - altfel adevarul se opreste la HTTP.
+
+### 27.07.2026 [CORECTIE] Reparatia `register` fusese pe jumatate — UI-ul tot arunca raspunsul
+
+Commitul e0e05f7 a intrat cu backend-ul reparat si UI-ul NEatins: patch-ul pe `login.js`
+picase pe a doua ancora (`sesiune.intra` avea alta indentare decat presupusesem), dar comanda
+a CONTINUAT - a scos itemul din DE_FACUT si a comis. Deci: backend trimitea `firma_creata`,
+UI-ul il arunca, iar registrul spunea "rezolvat".
+
+Aceeasi clasa vanata toata ziua, produsa de mine in ultima runda: POARTA LIPSEA DIN COMANDA.
+A doua oara azi (prima: commit cu suita rosie la heartbeat).
+
+REPARAT ACUM, cu ancora luata din fisier (nu scrisa din memorie) si cu verificare in trei
+puncte dupa scriere: captarea raspunsului, testul `firma_creata === false`, afisarea. Plus
+proba ca fisierul SERVIT de pe iconta.eu contine codul nou - nu doar cel de pe disc.
+
+Tipul mesajului: `avert` (galben), nu `info` (gri) - DS cap.6. Situatia cere actiune din
+partea omului (sa adauge firma), nu e o simpla informare.

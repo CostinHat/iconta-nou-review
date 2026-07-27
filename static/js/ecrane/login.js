@@ -339,6 +339,11 @@ export function ecranLogin(radacina) {
           cod_acces: (document.getElementById("login-cod")?.value || "").trim(),
         });
         sesiune.intra(r.token, r.user);
+        if (_avertReg) {
+          /* mesaj de stare, nu caseta permanenta: situatia e temporara (firma se adauga
+             din ecranul Firme). DS cap.6 - arataMesaj e singura cale pentru stari. */
+          setTimeout(() => arataMesaj(document.body, _avertReg, "avert"), 400);
+        }
       } catch (e) {
         arataEroare(e.mesaj || "Autentificare eșuată.");
         buton.disabled = false;
@@ -481,8 +486,11 @@ export function ecranLogin(radacina) {
       buton.textContent = "Se creează…";
       const { nume, prenume } = separaNume((numeAdmin && numeAdmin.value) || "");
       try {
-        {
-          await api.post("/auth/register", {
+        /* [register_firma_v2 27.07.2026] Raspunsul de la register poarta `firma_creata`.
+           Inainte era ARUNCAT: daca provisionarea primei firme esua, userul intra in
+           aplicatie si gasea zero firme, fara nicio explicatie. Contul e valid, deci NU
+           blocam intrarea - dar avertismentul se pastreaza si se arata dupa logare. */
+        const _reg = await api.post("/auth/register", {
             email: email.value.trim(),
             parola: parola.value,
             nume_cabinet: cabinet.value.trim(),
@@ -490,8 +498,8 @@ export function ecranLogin(radacina) {
             nume,
             prenume,
             accept_termeni: !!modal.querySelector("#reg-termeni")?.checked,  /* [termeni_v1] */
-          });
-        }
+        });
+        const _avertReg = (_reg && _reg.firma_creata === false) ? (_reg.avertisment || "") : "";
         const r = await api.post("/auth/login", {
           email: email.value.trim(),
           parola: parola.value,
