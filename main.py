@@ -1002,6 +1002,8 @@ def login(date: LoginIn):
 def register(date: RegisterIn):
     if not date.accept_termeni:  # [termeni_v1] fara bifa -> contul NU se creeaza (gard pe backend, nu doar JS)
         raise HTTPException(400, "Trebuie sa accepti Termenii si conditiile pentru a crea contul.")
+    if not _nucleu.parola_ok(date.parola):  # [parola_min_v1] aceeasi cerinta ca activare/reset/schimbare
+        raise HTTPException(400, _nucleu.PAROLA_MESAJ)
     with db.get_conn() as conn:
         r = auth_api.inregistreaza_cabinet(
             conn, date.email, date.parola, date.nume_cabinet,
@@ -1320,8 +1322,8 @@ def reset_parola_cere(date: ResetCereIn, request: Request):
 
 @app.post("/public/reset-parola/seteaza")  # [reset_parola_v1] valideaza tokenul (single-use), seteaza parola, invalideaza sesiunile
 def reset_parola_seteaza(date: ResetSeteazaIn):
-    if len(date.parola or "") < 8:
-        raise HTTPException(422, "Parola trebuie să aibă minim 8 caractere.")
+    if not _nucleu.parola_ok(date.parola):
+        raise HTTPException(400, _nucleu.PAROLA_MESAJ)
     from core import reset_parola as _rp
     with db.get_conn() as conn:
         try:
@@ -1385,8 +1387,8 @@ def magic_login(date: MagicLoginIn):
 
 @app.post("/public/activare")
 def activare_cont(date: ActivareIn):
-    if len(date.parola or "") < 8:
-        raise HTTPException(400, "parola trebuie sa aiba minim 8 caractere")
+    if not _nucleu.parola_ok(date.parola):
+        raise HTTPException(400, _nucleu.PAROLA_MESAJ)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute("""SELECT user_id FROM public.tokene_activare
@@ -4920,8 +4922,8 @@ def eu_competente_set(date: CompetenteIn, ctx=Depends(cere_cabinet)):
 
 @app.post("/eu/schimba-parola")
 def eu_schimba_parola(date: SchimbaParolaIn, ctx=Depends(cere_cabinet)):
-    if len(date.parola_noua or "") < 8:
-        raise HTTPException(422, "Parola noua trebuie sa aiba minim 8 caractere.")
+    if not _nucleu.parola_ok(date.parola_noua):
+        raise HTTPException(400, _nucleu.PAROLA_MESAJ)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("SELECT password_hash FROM public.users WHERE id = %s", (ctx["uid"],))

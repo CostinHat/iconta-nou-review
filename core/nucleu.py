@@ -131,3 +131,13 @@ def poate(rol, actiune):
     if permise is None:
         raise ValueError(f"acțiune necunoscută: {actiune!r}")
     return rol in permise
+
+# [parola_min_v1] Cerinta UNICA de parola, aplicata pe BACKEND peste tot (inregistrare cabinet,
+# activare, schimbare, resetare). DOAR lungime minima — fara complexitate, fara blacklist.
+PAROLA_MIN = 8
+PAROLA_MESAJ = "Parola trebuie să aibă minim %d caractere." % PAROLA_MIN
+
+def parola_ok(parola):
+    """True daca parola respecta cerinta unica (lungimea minima)."""
+    return len(parola or "") >= PAROLA_MIN
+
