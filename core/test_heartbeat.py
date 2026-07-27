@@ -60,15 +60,15 @@ def test_bate_nu_strica_jobul_cand_db_e_jos(monkeypatch, capsys):
     def _crapa():
         raise RuntimeError("DB jos")
     monkeypatch.setattr("core.db.get_conn", lambda *a, **k: _crapa())
-    cron.bate("proba_db_jos", 1.0)
+    cron.bate("alerta_acces", 1.0)
     assert "bataie neconsemnata" in capsys.readouterr().out
 
 
 def test_ruleaza_consemneaza_bataia(monkeypatch):
     batai = []
     monkeypatch.setattr(cron, "bate", lambda n, d=None: batai.append((n, d)))
-    cron.ruleaza("proba", lambda: 42)
-    assert batai and batai[0][0] == "proba", "rularea reusita nu si-a consemnat bataia"
+    cron.ruleaza("alerta_acces", lambda: 42)
+    assert batai and batai[0][0] == "alerta_acces", "rularea reusita nu si-a consemnat bataia"
 
 
 def test_esecul_nu_consemneaza_bataie(monkeypatch):
@@ -77,7 +77,7 @@ def test_esecul_nu_consemneaza_bataie(monkeypatch):
     monkeypatch.setattr(cron, "bate", lambda n, d=None: batai.append(n))
     monkeypatch.setattr("core.observare.alerteaza", lambda *a, **k: True)
     with pytest.raises(SystemExit):
-        cron.ruleaza("proba", lambda: (_ for _ in ()).throw(RuntimeError("x")))
+        cron.ruleaza("alerta_acces", lambda: (_ for _ in ()).throw(RuntimeError("x")))
     assert batai == [], "esecul a fost consemnat ca rulare reusita"
 
 
