@@ -11,8 +11,12 @@ Structura AuditFile (OECD SAF-T 2.0 adaptat RO):
   GeneralLedgerEntries    — Journal → Transaction → TransactionLine (note contabile)
   SourceDocuments         — SalesInvoices, PurchaseInvoices, Payments, MovementOfGoods
 
-⚠️ STADIU: Header + MasterFiles + GeneralLedgerEntries complet din XSD.
-   SourceDocuments: schelet (InvoiceStructure are sub-structuri mari — de extins cu DUK).
+⚠️ STADIU (27.07.2026): Header + MasterFiles + GeneralLedgerEntries complet din XSD; trece validarea
+   STRUCTURALA a DUKIntegrator. SourceDocuments NU e depunabil: SalesInvoices/PurchaseInvoices se emit,
+   dar cu O SINGURA linie sintetica per factura (cont 707/371, cantitate 1, pret = net total) — NU
+   liniile reale pe produs (factura_linii nu e atins); Payments = gol. Fisierul TRECE DUK structural,
+   dar e INCOMPLET fata de ce cere ANAF (facturi la nivel de InvoiceLine). NU se depune pana la
+   reparare (linii reale + Payments). Vezi DECIZII 27.07.
    Validare finală: DUKIntegrator_AnLunaUI.jar (-v D406 fisier.xml $ $ an=AAAA luna=LL).
 
 CORECȚII față de prima schiță (confirmate din XSD):

@@ -3,6 +3,16 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 27.07.2026 — D406 (SAF-T) NU e depunabil: gap cunoscut
+
+Verificat la sursa (git + ANAF). In D406 periodic, SourceDocuments (SalesInvoices/PurchaseInvoices) e OBLIGATORIU la nivel de linie de factura (InvoiceLine cu AccountID + TaxInformation). Generatorul nostru (core/d406.py) emite, de la snapshot-ul initial (cbf24ce), o SINGURA linie sintetica per factura (cont 707/371, cantitate 1, pret = net total, descriere = numele partenerului), NU liniile reale din `factura_linii` (n. atins niciodata); Payments = gol.
+
+Proba DUK din IULIE (15-16.07, nu iunie) a fost pe STRUCTURA: 15.07 validatorul accepta "orice gunoi" (namespace), apoi "36 erori -> 1", apoi 16.07 "VALID pe date reale + profil minim izolat — 5 discrepante structurale". DUK verifica FORMA, nu completitudinea continutului -> un fisier cu facturi sintetice trece validarea dar e INCOMPLET fata de cerinta ANAF.
+
+CONSECINTE (27.07): afirmatia PERMISE "D100-D406 pe DUK" era inselatoare pentru D406 -> mutata pe INTERZISE; F035/F036/F037 -> PARTIAL. Generatorul NU se repara acum (sesiune separata). REPARATIA presupune: SalesInvoices/PurchaseInvoices cu liniile REALE pe produs (din factura_linii: cod, cantitate, pret unitar, AccountID + TaxInformation pe fiecare linie) + sectiunea Payments; apoi re-validare DUK pe CONTINUT real.
+
+---
+
 ## Cum se foloseste
 - Se ADAUGA la sfarsit, cronologic. Nu se editeaza istoria. O decizie rasturnata primeste
   intrare noua care trimite la cea veche.

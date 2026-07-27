@@ -5,6 +5,17 @@ Ultima actualizare: 26.07.2026 (rezolvat azi + deschis, sus)
 
 ---
 
+## 27.07.2026 — D406 (SAF-T) NEDEPUNABIL — prioritate maxima
+
+Generatorul D406 produce un fisier care trece DUK STRUCTURAL dar e INCOMPLET: SourceDocuments are o singura linie sintetica per factura (nu liniile reale din `factura_linii`) si Payments gol -> NU se poate depune. DE REPARAT (sesiune separata, NEatins azi):
+- SalesInvoices/PurchaseInvoices cu liniile REALE pe produs (`factura_linii`: cod, cantitate, pret unitar, AccountID + TaxInformation pe fiecare linie).
+- Sectiunea Payments (incasari/plati).
+- Re-validare DUK pe CONTINUT real (nu doar structura) + confirmare depunabilitate.
+- Dupa reparare: D406 inapoi pe LIVE (CSV) + repus pe PERMISE (MARKETING) + se poate scrie pagina de ghid.
+Pana atunci: F035/F036/F037 = PARTIAL; D406 pe INTERZISE in MARKETING.
+
+---
+
 ## 26.07.2026 — pilot: rezolvat azi + deschis
 
 **REZOLVATE azi** (detaliu + commit-uri în ISTORIC.md / git):
