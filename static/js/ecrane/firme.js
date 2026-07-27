@@ -47,6 +47,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
             <option value="srl" selected>SRL / SA (partidă dublă)</option>
             <option value="pfa">PFA / II / IF / profesii liberale (partidă simplă)</option>
           </select>
+          <p class="camp-ajutor">Tipul <strong>nu se mai poate schimba</strong> după creare: determină sistemul contabil (partidă dublă sau simplă) și, odată introduse date, acestea nu pot fi mutate în celălalt regim. Verifică înainte de a continua.</p>
         </div>
         <div class="camp" style="margin-bottom:14px">
           <label class="camp-eticheta">Email client (primește automat acces la portal)</label>

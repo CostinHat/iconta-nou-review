@@ -99,7 +99,7 @@ commit, acum gol). Gardurile și limitele lor declarate sunt în `GARZI.md`.
 | Ce | Context |
 |---|---|
 | ~~Bypass owner pe patru-ochi~~ | **NU E O DECIZIE DESCHISĂ** (verificat 27.07). `coada_api.aproba` cere DOUĂ condiții cumulate: patronul să fi activat regula (`patru_ochi_activ`, implicit oprită) ȘI să fie posibilă (`patru_ochi_posibil`: minim 2 utilizatori activi, cu pregătitor și validator distincți). Într-un cabinet cu un singur om nu se declanșează niciodată. Nota era rămasă în urmă. |
-| `tip_firma` needitabil după creare | Trecerea PFA↔SRL cere migrare de date; azi nu se poate schimba deloc. |
+| ~~`tip_firma` needitabil~~ | **NU E O DECIZIE DESCHISĂ, e restricție corectă** (verificat 27.07). PFA ține partidă simplă, SRL partidă dublă; schimbarea tipului pe o firmă cu date ar lăsa înregistrări într-un regim care nu le recunoaște (11 module depind de `tip_firma`, prin `straturi_pentru`/`regim_efectiv`). 27.07: adăugat avertisment la creare — „tipul nu se mai poate schimba după creare". **Rămâne real**: nu există ștergere de firmă, deci o firmă creată cu tipul greșit rămâne așa. De decis dacă se adaugă ștergere (firmă fără date). |
 | Ecran de introducere D301 | Generatorul și tabelul există; nu există UI de completare. |
 | e-Transport `/trimite` pentru rol client | Azi cabinet-only; de decis dacă clientul trimite singur. |
 | D230 / D307 | Respinse ca scop pe 20.07. De reconfirmat. |
