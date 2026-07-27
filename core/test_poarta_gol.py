@@ -66,8 +66,6 @@ def test_res_None_da_None():
 def test_toate_tipurile_din_dispecer_sunt_acoperite_sau_declarate():
     """Fiecare tip stie ori sa numere, ori sa spuna ca nu poate. Niciunul nu cade
     accidental pe zero."""
-    from core import declaratii_api as da
-    tipuri = [t for t in dir(da) if False]  # placeholder, vezi mai jos
     for tip in ("d100", "d101", "d112", "d205", "d300", "d301", "d390", "d394", "d406", "d710"):
         r = N(tip, _R())
         assert r is None or isinstance(r, int), "%s da %r" % (tip, r)

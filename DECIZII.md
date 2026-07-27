@@ -3827,3 +3827,31 @@ REGISTRUL DE DATORIE E GOL. Cele 7 itemuri deschise dimineata: 5 reparate, 1 res
 masuratoare (float in numar()), 1 inchis prin verificare la sursa (D390 pe zero era regula
 fiscala, nu defect). Testul de igiena a fost corectat: registrul GOL e starea DORITA, nu o
 eroare - prima zi cand s-a intamplat.
+
+### 27.07.2026 Inventarul a ceea ce a fost amanat — si un symlink care ar fi doborat site-ul
+
+Cerut de Costin la finalul zilei: "inventariaza tot ce ai zis nu acum / e minor".
+
+GASIT, GRAV: `/etc/nginx/sites-enabled/nou-iconta` era SYMLINK MORT - fisierul din
+sites-available fusese sters la curatenie, symlink-ul nu. Nginx mergea din configul incarcat
+in MEMORIE, deci site-ul parea perfect sanatos. La primul `reload` sau `reboot`, nginx NU ar
+mai fi pornit si site-ul ar fi cazut.
+
+CAUZA: comanda de reparare a symlink-ului NU A RULAT NICIODATA - output-ul ei s-a pierdut in
+conversatie, iar eu am presupus ca s-a executat. Exact clasa de defect vanata toata ziua:
+starea presupusa, nu verificata. REPARAT + dovedit prin `systemctl restart nginx` complet, nu
+doar reload.
+
+GASIT, MEDIU: `DE_FACUT.md` marca drept DESCHIS cinci lucruri REZOLVATE in aceeasi zi
+(heartbeat, rotunjire D390, numar() float, SELECT *, cere_coloane pe tabela goala). Aceeasi
+desincronizare diagnosticata dimineata la LANSARE.md. Inchise cu starea reala.
+
+GASIT, MIC: 12 `pass` inerte sub `esec_secundar` (pastrate deliberat ca sa nu schimb
+comportamentul, apoi nerevenite); cod mort intr-un test scris de mine (`if False` placeholder);
+`_arhiva_briefuri/` - 9 fisiere pe disc, scoase din git, nesalvate de niciun backup (nici
+pg_dump, nici config backup). Cea mai proasta stare posibila: nici urmarite, nici sterse.
+Puse in git.
+
+RAMAN DESCHISE, cu decizie: poarta pe declaratia goala e doar in ecran (POST /coada n-are);
+Payments D406 gol (zero date de plati in model); 16 `SELECT *` in module de UI; deadman extern
+pentru heartbeat; subdomeniul nou.iconta.eu (redirect inainte de stergere).

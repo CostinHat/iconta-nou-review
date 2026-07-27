@@ -84,7 +84,6 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
             except Exception as _e:
                 from core import observare as _obs
                 _obs.esec_secundar("invatare AI la editare nota", _e)  # inghitit, dar nu tacut (27.07.2026)
-                pass
         seturi, valori = [], []
         if descriere is not None:
             seturi.append("descriere=%s"); valori.append(descriere)
@@ -143,6 +142,5 @@ def valideaza(conn, schema, nota_id):
         except Exception as _e:
             from core import observare as _obs
             _obs.esec_secundar("invatare AI la validare nota", _e)  # inghitit, dar nu tacut (27.07.2026)
-            pass
     conn.commit()
     return {"ok": True}

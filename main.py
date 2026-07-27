@@ -213,7 +213,6 @@ def _inregistreaza_activitate(method, path, status, auth_header):
                     (uid, tenant_id, actiune, _json_audit.dumps({"status": status})))
     except Exception as _e:
         _obs.esec_secundar("audit_log activitate", _e)  # inghitit, dar nu tacut (27.07.2026)
-        pass
 
 _METODE_MUTATIE = ("POST", "PUT", "DELETE", "PATCH")
 
@@ -298,7 +297,6 @@ def _citeste_metrici_pentru_alerte():
                 rezultat["erori_noi"] = cur.fetchone()[0]
     except Exception as _e:
         _obs.esec_secundar("metrici sanatate: citire", _e)  # inghitit, dar nu tacut (27.07.2026)
-        pass
     return rezultat
 
 def _email_superadmin():
@@ -344,7 +342,6 @@ def _verifica_si_alerta():
                     (m["ram_procent"], m["disc_procent"], m["load1"], m["conexiuni_db"], m["erori_noi"]))
     except Exception as _e:
         _obs.esec_secundar("metrici sanatate: scriere", _e)  # inghitit, dar nu tacut (27.07.2026)
-        pass
 
     if not alerte:
         return
@@ -451,7 +448,6 @@ def admin_sanatate(ctx=Depends(cere_cabinet)):
                 db_info["marime"] = cur.fetchone()[0]
     except Exception as _e:
         _obs.esec_secundar("admin sanatate: info DB", _e)  # inghitit, dar nu tacut (27.07.2026)
-        pass
 
     # --- erori recente (status >= 500 in ultimele 24h) ---
     erori_24h = 0
@@ -471,7 +467,6 @@ def admin_sanatate(ctx=Depends(cere_cabinet)):
                 lista_erori = rows[:50]
     except Exception as _e:
         _obs.esec_secundar("admin sanatate: erori 24h", _e)  # inghitit, dar nu tacut (27.07.2026)
-        pass
 
     return {
         "server": {"load1": load1, "load5": load5, "load15": load15, "ram": ram, "disc": disc},
@@ -671,7 +666,6 @@ def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("
             conn.commit()
         except Exception as _e:
             _obs.esec_secundar("audit_log export GDPR", _e, alerta=True)  # inghitit, dar nu tacut (27.07.2026)
-            pass
     return Response(content=_zip, media_type="application/zip",
                     headers={"Content-Disposition": 'attachment; filename="gdpr-export-cabinet-%s.zip"' % cab})
 
@@ -1020,7 +1014,6 @@ def login(date: LoginIn):
                     (r["user"]["id"],))
     except Exception as _e:
         _obs.esec_secundar("audit_log login", _e)  # inghitit, dar nu tacut (27.07.2026)
-        pass
     return {"token": r["token"], "user": r["user"]}
 
 
@@ -1360,7 +1353,6 @@ def reset_parola_cere(date: ResetCereIn, request: Request):
                 c.commit()
         except Exception as _e:
             _obs.esec_secundar("audit_log reset parola cerut", _e)  # inghitit, dar nu tacut (27.07.2026)
-            pass
     return {"ok": True, "mesaj": "Dacă adresa e înregistrată, vei primi un mesaj cu instrucțiuni de resetare."}
 
 @app.post("/public/reset-parola/seteaza")  # [reset_parola_v1] valideaza tokenul (single-use), seteaza parola, invalideaza sesiunile
@@ -1380,7 +1372,6 @@ def reset_parola_seteaza(date: ResetSeteazaIn):
             c.commit()
     except Exception as _e:
         _obs.esec_secundar("audit_log reset parola schimbat", _e)  # inghitit, dar nu tacut (27.07.2026)
-        pass
     return {"ok": True}
 
 @app.post("/public/magic-link")
