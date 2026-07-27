@@ -3766,3 +3766,31 @@ inghitit si comentariul de pe linie, asa ca numele a ajuns IN comentariu, nu in 
 (b) verificarea mea a raportat "deja prezent" fiindca cauta textul oriunde in fisier, nu in
 lista de importuri - o verificare care se pacaleste singura; (c) a fost nevoie de doua
 incercari pentru ca prima "verificare" nu verifica nimic. Suita a prins toate trei.
+
+### 27.07.2026 `numere.numar()` intoarce float — RESPINS trecerea pe Decimal (masurat, nu presupus)
+
+ITEMUL din registrul de datorie: float pe bani pierde precizie la insumare (0.1+0.2), iar
+importurile de solduri/parteneri/salariati/articole/retete/mijloace fixe trec prin `numar()`.
+Propunerea era trecerea pe Decimal.
+
+MASURAT INAINTE DE A DECIDE:
+  - 5000 de valori aleatoare cu 2 zecimale: ZERO pierd precizie la round-trip prin float64
+    (repr-ul unui float cu 2 zecimale reconstruieste exact valoarea);
+  - insumarea a 5000 de randuri: eroarea ramane cu ordine de marime sub toleranta de 0.01
+    folosita la verificarea echilibrului balantei;
+  - `solduri_api` face deja `round(..., 2)` inainte de comparatie, cu toleranta 0.01;
+  - destinatia e coloana `numeric` in PostgreSQL - psycopg2 converteste prin repr, exact.
+
+DECIZIE: NU se trece pe Decimal. O schimbare in 6 module si 12 apeluri, pe cai de import
+folosite in productie, pentru un risc care NU se manifesta, ar fi mai riscanta decat problema.
+Aceasta e o INCHIDERE, nu o amanare: itemul iese din registru cu motiv masurat.
+
+CONDITIA in care decizia ramane valabila e ea insasi un gard: `core/test_precizie_import.py`
+verifica exact premisele - valorile de import au 2 zecimale si sunt exacte in float; insumarea
+unei balante de 5000 de randuri ramane sub toleranta; verdictul de echilibru e identic cu cel
+calculat in Decimal (inclusiv detectarea unei diferente reale de 2 bani). Daca vreodata
+importurile primesc mai multe zecimale sau toleranta scade, testul pica si decizia se reia.
+
+LECTIE DE METODA: "float pe bani e gresit" e adevarat ca principiu general si FALS ca diagnostic
+aici. Diferenta se vede doar masurand. O reparatie facuta pe principiu, fara masuratoare, ar fi
+atins sase module de import in productie fara sa rezolve nimic.

@@ -44,15 +44,6 @@ def _db_ok():
 # ============================================================
 #  DATORIE TEHNICA
 # ============================================================
-@pytest.mark.xfail(strict=True, reason="DATORIE 27.07.2026: numere.numar() intoarce float. "
-                                       "Float pe bani pierde precizie la insumare; "
-                                       "importurile de solduri/parteneri trec prin el.")
-def test_numar_intoarce_decimal_pe_sume():
-    from decimal import Decimal
-    from core.numere import numar
-    assert isinstance(numar("0.1"), Decimal)
-
-
 @pytest.mark.xfail(strict=True, reason="DATORIE 27.07.2026: joburile cron n-au heartbeat. "
                                        "core/cron.py prinde jobul care CRAPA, nu pe cel "
                                        "care nu porneste deloc (cron oprit, reboot).")
