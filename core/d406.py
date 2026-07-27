@@ -1131,6 +1131,12 @@ def pull(conn, schema, an, luna):
                             partener_id=pid, partener_nume=r["tert_nume"] or "",
                             tip=itype, cont=("4111" if este_v else "401"), linii=linii)
                 (facturi_vanzare if este_v else facturi_cumparare).append(f)
+        except ValueError:
+            # Eroare de CONTINUT (reconciliere linii-antet), nu de citire: trece
+            # nemodificata. Altfel garda de mai sus ar fi raportata drept "citirea a
+            # esuat" - cauza reala ascunsa sub un mesaj tehnic gresit, adica exact
+            # invelisul pe care il scoatem aici.
+            raise
         except Exception as e:
             # MASCA SCOASA (27.07.2026): `except: pass` facea ca orice query rupt sa
             # produca SalesInvoices/PurchaseInvoices goale intr-un XML valid structural.
