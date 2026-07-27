@@ -240,3 +240,10 @@ zero" cu `<GeneralLedgerEntries/>` self-closed, fără a fabrica tranzacții.
 `test_d406.py` (11 teste) apără fiecare regresie + validează pe DUK. Vezi
 `git log` pentru istoricul complet al tuturor reparațiilor, fiecare cu mesaj
 detaliat.
+
+## GARZI.md
+Registrul gardurilor: categoriile de eșec ale unui sistem contabil și ce gard acoperă
+fiecare, cu starea reală (ACOPERIT / PARȚIAL / LIPSĂ) și limita declarată a fiecărui gard.
+Se actualizează în ACELAȘI commit cu gardul livrat — un registru stale dă fals sentiment de
+acoperire. Înainte de a construi un gard nou: citește categoria acolo, ca să nu dublezi
+unul existent și să nu ratezi limita deja cunoscută.
