@@ -455,7 +455,7 @@ async function ecranVerificari(corp, nav, t) {
     };
     corp.innerHTML = `
       <h2 class="pf-titlu">Verific\u0103ri</h2>
-      <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an} \u00b7 ${r ? r.note : 0} note contabile
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${r ? r.note : 0} note contabile
         <button class="buton-secundar" id="vf-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="vf-next">luna \u2192</button></p>
       <div class="pf-lista">
@@ -635,7 +635,7 @@ async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
     }).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Pontaj</h2>
-      <p class="pf-intro">${esc(nume || "")} · luna ${String(luna).padStart(2, "0")}/${an}
+      <p class="pf-intro">${esc(nume || "")} · luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="pj-prev" style="margin-left:12px">← luna</button>
         <button class="buton-secundar" id="pj-next">luna →</button></p>
       <div class="cf-sumar">
@@ -742,7 +742,7 @@ async function ecranSalariati(corp, nav, t) {
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Stat de plat\u0103</h2>
-      <p class="pf-intro">Luna ${String(luna).padStart(2,"0")}/${an}
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="sp-next">luna \u2192</button>
         <button class="buton-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
@@ -771,7 +771,7 @@ async function ecranSalariati(corp, nav, t) {
         ? `<div style="color:var(--rosu);margin-top:6px">⚠ ${m.fara_iban.length} salariat(i) fără IBAN, excluși din fișier: ${m.fara_iban.map(esc).join(", ")}. Completează IBAN-ul (buton „IBAN ⚠") ca să-i incluzi.</div>`
         : "";
       zonaPlata.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
-        <div class="pf-frand-nume">Plată salarii pe card · ${String(luna).padStart(2,"0")}/${an}</div>
+        <div class="pf-frand-nume">Plată salarii pe card · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}</div>
         <div class="pf-frand-sub">${m.nr_plati} plată/plăți · total ${bani(m.total)} lei · format SEPA pain.001</div>
         ${avert}
         <p style="margin-top:8px"><button class="buton-primar" id="plata-descarca">Descarcă fișierul</button>
@@ -833,7 +833,7 @@ async function ecranSalariati(corp, nav, t) {
     corp.querySelectorAll("[data-vac]").forEach((b) => b.addEventListener("click", () => {
       const sid = b.dataset.vac;
       zonaVac.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
-        <span class="camp-eticheta">Tichete vacanță · ${esc(b.dataset.nume)} · ${String(luna).padStart(2,"0")}/${an}:</span>
+        <span class="camp-eticheta">Tichete vacanță · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
         <input type="number" step="0.01" min="0" id="vac-input" class="camp-input" value="${b.dataset.val}" style="width:150px">
         <button class="buton-primar" id="vac-save">Salvează</button>
         <button class="buton-secundar" id="vac-cancel">Renunță</button></div>
@@ -855,7 +855,7 @@ async function ecranSalariati(corp, nav, t) {
       const evenimente = [["paste", "Paște"], ["craciun", "Crăciun"], ["8martie", "8 Martie"],
                           ["1iunie", "1 Iunie"], ["altul", "alt eveniment (taxabil)"]];
       zonaCadou.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
-        <span class="camp-eticheta">Tichete cadou · ${esc(b.dataset.nume)} · ${String(luna).padStart(2,"0")}/${an}:</span>
+        <span class="camp-eticheta">Tichete cadou · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
         <select id="cadou-ev" class="camp-input" style="width:200px">${evenimente.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}</select>
         <input type="number" step="0.01" min="0" id="cadou-input" class="camp-input" placeholder="valoare (lei)" style="width:150px">
         <button class="buton-primar" id="cadou-save">Salvează</button>
@@ -1409,7 +1409,7 @@ async function ecranStocuri(corp, nav, t) {
       </div>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Stocuri</h2>
-      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="s-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="s-next">luna \u2192</button>
         <button class="buton-primar" id="s-desc" style="margin-left:12px">Descarc\u0103 gestiunea lunii</button></p>
@@ -1491,7 +1491,7 @@ async function ecranStocuri(corp, nav, t) {
     });
     corp.querySelector("#s-desc").addEventListener("click", () => {
       const bD = corp.querySelector("#s-desc");
-      confirmaCaseta(bD.parentElement || bD, `Descarci gestiunea pe ${String(luna).padStart(2, "0")}/${an}? Se calculează din notele VALIDATE.`, async () => {  // audit_cab_lot2_v1
+      confirmaCaseta(bD.parentElement || bD, `Descarci gestiunea pe ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}? Se calculează din notele VALIDATE.`, async () => {  // audit_cab_lot2_v1
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/descarcare?an=${an}&luna=${luna}`, {});
         zonaM.innerHTML = r.mesaj
@@ -1536,7 +1536,7 @@ async function ecranCasa(corp, nav, t) {
         </div>`).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Cas\u0103</h2>
-      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 sold final <b>${bani(reg.sold_final)} lei</b>
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 sold final <b>${bani(reg.sold_final)} lei</b>
         <button class="buton-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="c-next">luna \u2192</button></p>
       ${avert}
@@ -1822,7 +1822,7 @@ async function ecranRaportZ(corp, nav, t) {
       const dz = new Date(corp.querySelector("#z-data").value || new Date());
       const anz = dz.getFullYear(), lz = dz.getMonth() + 1;
       const zb = document.createElement("p");
-      zb.innerHTML = `<button class="buton-secundar" id="z-desc-gv">Descarc\u0103 gestiunea GV ${String(lz).padStart(2,"0")}/${anz} (not\u0103 ciorn\u0103)</button>`;
+      zb.innerHTML = `<button class="buton-secundar" id="z-desc-gv">Descarc\u0103 gestiunea GV ${dataRo(`${anz}-${String(lz).padStart(2, "0")}-01`, "luna_an_numeric")} (not\u0103 ciorn\u0103)</button>`;
       zona.appendChild(zb);
       zb.querySelector("#z-desc-gv").addEventListener("click", async () => {
         try {
@@ -1902,7 +1902,7 @@ async function ecranJurnal(corp, nav, t) {
     const ciorne = note.filter((n) => n.status === "ciorna").length;
     corp.innerHTML = `
       <h2 class="pf-titlu">Registru jurnal</h2>
-      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:var(--galben);font-weight:600">${ciorne} de validat</span>` : ""}
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:var(--galben);font-weight:600">${ciorne} de validat</span>` : ""}
         <button class="buton-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="j-next">luna \u2192</button>
         <button class="buton-primar" id="j-amort" style="margin-left:12px">Genereaz\u0103 amortizarea</button>
@@ -2369,7 +2369,7 @@ async function ecranBalanta(corp, nav, t) {
   const deseneaza = () => {
     corp.innerHTML = `
       <h2 class="pf-titlu">Balan\u021b\u0103 de verificare</h2>
-      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="b-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="b-next">luna \u2192</button></p>
       <p><button class="buton-primar" id="b-pdf">Descarc\u0103 PDF</button></p>

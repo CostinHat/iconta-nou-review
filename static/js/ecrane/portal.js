@@ -515,7 +515,7 @@ async function ecranDocumente(corp, nav) {
       <div class="pf-lista zebra-lista">${!decl.length ? '<div class="stare-goala">Nicio declarație depusă încă.</div>' : decl.map((d) => `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${d.tip} · ${String(d.luna).padStart(2,"0")}/${d.an}</div>
+            <div class="pf-frand-nume">${d.tip} · ${dataRo(`${d.an}-${String(d.luna).padStart(2, "0")}-01`, "luna_an_numeric")}</div>
             <div class="pf-frand-sub">depusă ${dataRo(d.data)}</div>
           </div>
           <span class="pf-frand-ok">✓ depusă</span>

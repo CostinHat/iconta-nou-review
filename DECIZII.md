@@ -3895,3 +3895,23 @@ proba ca fisierul SERVIT de pe iconta.eu contine codul nou - nu doar cel de pe d
 
 Tipul mesajului: `avert` (galben), nu `info` (gri) - DS cap.6. Situatia cere actiune din
 partea omului (sa adauge firma), nu e o simpla informare.
+
+### 27.07.2026 Perioada luna/an in antete: ramane NUMERICA (07/2026) — decizie Costin
+
+CONSTATARE: perioada era compusa manual cu `${String(luna).padStart(2,"0")}/${an}`, incalcand
+DS cap.4 (dataRo = singura functie de formatare). Garda DATA_DIALECT nu prindea forma asta.
+
+INTREBAREA PUSA: se converteste la `dataRo(..., "luna_an")`? Ar fi respectat regula, DAR ar fi
+schimbat textul afisat: "Luna 07/2026" -> "Luna iulie 2026".
+
+DECIZIA COSTIN: ramane forma NUMERICA. Deci nu codul se aliniaza la regula, ci REGULA capata
+forma folosita efectiv: `dataRo` primeste stilul `luna_an_numeric` (07/2026), consemnat in DS
+cap.4 (v2.21) alaturi de `luna_an` ("iulie 2026", pentru titluri narative).
+
+REZULTAT: textul afisat e NESCHIMBAT pentru utilizator; se schimba doar CINE il produce -
+formatarea trece prin functia unica, `padStart` local ramane interzis. Garda DATA_LUNA_AN
+intra in verificator ODATA cu regula (DS + verificator simultan).
+
+CATE ERAU DE FAPT: nota din DE_FACUT vorbea de UN caz, in firme.js. Masuratoarea a gasit 15,
+in PATRU fisiere (firme.js 12, facturi_ecran.js 1, rip_ecran.js 1, portal.js 1). Si aici
+registrul descria simptomul vazut, nu clasa - al treilea caz azi.

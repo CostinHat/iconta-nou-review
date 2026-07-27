@@ -92,6 +92,13 @@ for nume, t in fisiere.items():
         # (#e9f0fe) au reguli proprii (CULOARE_CARD_HEX); nu intra aici.
         if re.search(r'style="[^"]*background:\s*#eef4f[df]', lin, re.I) and "caseta-info" not in lin:
             rap["caseta_info"].append((nume, i, "", lin.strip()[:66]))
+        # DATA_LUNA_AN (cap.4 v2.21, 27.07.2026): perioada luna/an compusa MANUAL cu padStart in
+        # loc de dataRo(..., "luna_an_numeric"). Garda DATA_DIALECT nu prindea forma asta (cauta
+        # luni[...]/toLocaleDateString/split("-")). Gasita in firme.js x12 + facturi_ecran.js x2.
+        # Forma AFISATA ramane numerica (07/2026, decis 27.07) - se schimba doar CINE o produce.
+        if re.search(r'String\(\w+\)\.padStart\(2, ?"0"\)\}/\$\{', lin):
+            rap["data_dialect"].append((nume, i, "", lin.strip()[:66]))
+
         # POARTA_INLINE (cap.5 v2.14): caseta-poarta (#fbf7ee) reprodusa ad-hoc inline in loc de .caseta-poarta
         if re.search(r'style="[^"]*background:\s*#fbf7ee', lin, re.I) and "caseta-poarta" not in lin:
             rap["poarta_inline"].append((nume, i, "", lin.strip()[:66]))

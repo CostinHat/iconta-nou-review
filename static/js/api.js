@@ -263,7 +263,8 @@ export function dataRo(d, stil) {
     return `${zz}.${ll}.${aa} ${hh}:${mi}`;
   }
   if (stil === "zi_luna_text") return `${dt.getDate()} ${_LUNI_SCURT[dt.getMonth()]}`;
-  if (stil === "luna_an") return `${_LUNI_RO[dt.getMonth()]} ${aa}`;   // "iulie 2026" — perioade lunare (balante, decont), fara zi
+  if (stil === "luna_an") return `${_LUNI_RO[dt.getMonth()]} ${aa}`;   // "iulie 2026" — titluri/texte narative
+  if (stil === "luna_an_numeric") return `${String(dt.getMonth() + 1).padStart(2, "0")}/${aa}`;  // "07/2026" — antete de ecran (DS v2.21)
   if (stil === "zi_luna") return `${zz}.${ll}`;
   return `${zz}.${ll}.${aa}`;
 }

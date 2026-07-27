@@ -193,7 +193,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         }).join("");
     corp.innerHTML = `
       <h2 class="pf-titlu">Istoric facturi</h2>
-      <p class="pf-intro">Luna ${String(luna).padStart(2, "0")}/${an}
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="fac-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="fac-next">luna \u2192</button>
         <button class="buton-secundar" id="fac-saga-luna" style="margin-left:12px">Export SAGA lun\u0103</button>
