@@ -100,9 +100,9 @@ commit, acum gol). Gardurile și limitele lor declarate sunt în `GARZI.md`.
 |---|---|
 | ~~Bypass owner pe patru-ochi~~ | **NU E O DECIZIE DESCHISĂ** (verificat 27.07). `coada_api.aproba` cere DOUĂ condiții cumulate: patronul să fi activat regula (`patru_ochi_activ`, implicit oprită) ȘI să fie posibilă (`patru_ochi_posibil`: minim 2 utilizatori activi, cu pregătitor și validator distincți). Într-un cabinet cu un singur om nu se declanșează niciodată. Nota era rămasă în urmă. |
 | ~~`tip_firma` needitabil~~ | **NU E O DECIZIE DESCHISĂ, e restricție corectă** (verificat 27.07). PFA ține partidă simplă, SRL partidă dublă; schimbarea tipului pe o firmă cu date ar lăsa înregistrări într-un regim care nu le recunoaște (11 module depind de `tip_firma`, prin `straturi_pentru`/`regim_efectiv`). 27.07: adăugat avertisment la creare — „tipul nu se mai poate schimba după creare". **Rămâne real**: nu există ștergere de firmă, deci o firmă creată cu tipul greșit rămâne așa. De decis dacă se adaugă ștergere (firmă fără date). |
-| Ecran de introducere D301 | Generatorul și tabelul există; nu există UI de completare. |
-| e-Transport `/trimite` pentru rol client | Azi cabinet-only; de decis dacă clientul trimite singur. |
-| D230 / D307 | Respinse ca scop pe 20.07. De reconfirmat. |
+| ~~Ecran D301~~ | **LIVRAT 27.07** (commit 74ccac2): panou în fluxul de generare, rute `/d301-operatiuni`, cotă period-aware. A scos la iveală și un bug fiscal în generator — rollup S4.1→S4 lipsă, D301 respins de ANAF pe servicii UE. Reparat, cu 5 teste de regresie. |
+| ~~e-Transport pentru client~~ | **NU E DECIZIE DESCHISĂ** (verificat 27.07). `/etransport/trimite` și `/trimiteri` au deja `cere_context` — clientul poate trimite. Doar `/etransport-xml` (generarea) e `cere_cabinet`. Nota era greșită. |
+| ~~D230 / D307~~ | **DECIS 18.07**, nu deschis. D230 RESPINS (redirecționare 3,5% către ONG — în afara publicului nostru). D307 AMÂNAT, prioritate joasă, la cerere reală. Consemnate în FUNCTIONALITATI.csv F173-F175. |
 
 ### Blocate extern (nu depind de noi)
 | Ce | Blocaj |
