@@ -1307,12 +1307,13 @@ def _ip_client(request):
         return xff.split(",")[-1].strip()
     return request.client.host if request.client else "?"
 _magic_rate = {}  # [magic_link_v1] rate-limit per IP pt /public/magic-link (aceleasi praguri ca reset)
-def _rate_limit_email(store, request):
-    """Anti-spam prin emailurile noastre: max 5 cereri / 15 min per IP (in-memory, single worker)."""
+_cui_rate = {}  # [verifica_cui_v1] rate-limit /public/verifica-cui (protejeaza cheia ANAF)
+def _rate_limit_email(store, request, maxreq=5, fereastra=900):
+    """Anti-spam per IP (in-memory, single worker). Implicit 5 cereri / 15 min."""
     import time as _t
     ip = _ip_client(request); acum = _t.time()
-    q = [t for t in store.get(ip, []) if acum - t < 900]  # fereastra 15 min
-    if len(q) >= 5:
+    q = [t for t in store.get(ip, []) if acum - t < fereastra]
+    if len(q) >= maxreq:
         raise HTTPException(429, "Prea multe cereri. Încearcă din nou peste câteva minute.")
     q.append(acum); store[ip] = q
 def _rate_limit_reset(request):
@@ -2627,7 +2628,8 @@ def facturi_storno(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
 
 # ICRD_PUBLIC_VERIFICA_CUI_V1
 @app.get("/public/verifica-cui/{cui}")
-def public_verifica_cui(cui: str):
+def public_verifica_cui(cui: str, request: Request):
+    _rate_limit_email(_cui_rate, request, maxreq=10)  # [verifica_cui_v1] protejeaza cheia ANAF (10/15min per IP)
     try:
         rez = anaf_api.valideaza_cui([cui])
     except Exception as e:
