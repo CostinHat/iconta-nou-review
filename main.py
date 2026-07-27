@@ -1052,8 +1052,11 @@ def register(date: RegisterIn):
         _acum = _dt.now(_Z("Europe/Bucharest")).strftime("%Y-%m-%d %H:%M:%S")
         _mesaj_cn = ("S-a inregistrat un cont nou de cabinet pe iConta.eu la %s (ora Romaniei). "
                      "Alerta nu contine date personale." % _acum)
-        _ok_cn = _obs._trimite_brevo("Cont nou de cabinet", _mesaj_cn)
-        print("[alerta_cont_nou] trimisa=%s | %s" % (_ok_cn, _mesaj_cn), flush=True)
+        if _obs.trebuie_trimisa("cont_nou_cabinet"):  # [alerta_dedup_v1] throttle anti-flood (implicit 15 min)
+            _ok_cn = _obs._trimite_brevo("Cont nou de cabinet", _mesaj_cn)
+            print("[alerta_cont_nou] trimisa=%s | %s" % (_ok_cn, _mesaj_cn), flush=True)
+        else:
+            print("[alerta_cont_nou] throttled (dedup) | %s" % _mesaj_cn, flush=True)
     except Exception as _e:
         print("[alerta_cont_nou] netrimisa: %s" % _e, flush=True)
     if date.cui and _TENANT_TEMPLATE:  # register_primul_tenant_v1: entitatea proprie = prima firma
