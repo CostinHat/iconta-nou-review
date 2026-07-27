@@ -156,7 +156,10 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
 - ACOPERIT: `perioade_blocate`; declarația depusă persistată cu rânduri (F163v2);
   `verificatoare.echilibru_nota` / `balanta`.
 - ACOPERIT: backup local + off-site cu alertare la N eșecuri consecutive.
-- LIPSĂ: **test de restaurare**. „Backup reușit" nu dovedește că se poate restaura.
+- ACOPERIT: restaurarea din off-site **a fost testată cap-coadă pe 18.07** (`pg_restore` exit 0,
+  scheme identice cu producția, `tenant_002.facturi=5`, apoi `dropdb`). Am scris inițial aici
+  „LIPSĂ" fără să verific — vezi ISTORIC 18.07. Ce lipsește e **repetarea automată**: proba a
+  fost făcută o dată, manual; nimic n-o reia periodic.
 - LIPSĂ: verificare nocturnă Σdebit=Σcredit per perioadă/tenant + orfani.
 
 ### 8. Integritate cod — arbori paraleli

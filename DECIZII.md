@@ -3616,3 +3616,40 @@ validare D406 care nu rula).
 NOTA DE PROCES: defectul a iesit la iveala prin verificare cu OCHII, nu prin suita. Cele 1008
 teste erau verzi peste el, iar verificatorul de conformitate la fel. DE_FACUT are deja notata
 limita: verificatorul prinde semnatura textuala, nu randarea si nu comportamentul.
+
+### 27.07.2026 Registrul de datorie devine TEST, nu listă (cerut de Costin)
+
+CONSTATAREA lui Costin: "mereu lasam cate ceva in urma de care nu mai stim si de care nu ne
+mai amintim decat cand crapa ceva". Corecta, si cu dovada in aceeasi zi: aproape tot ce am
+reparat pe 27.07 era DEJA consemnat ca amanat in DE_FACUT.md (80.000 de caractere, 33 de
+sectiuni). Registrul exista, disciplina de a scrie exista - lipsea mecanismul care sa-l faca
+imposibil de uitat.
+
+MAI RAU: un registru neverificat se DESINCRONIZEAZA. `LANSARE.md` declara "Un singur
+deployment activ | REZOLVAT (25.07)" - dar pe 27.07 `/opt/iconta` era viu, cu chiar venv-ul
+din care rula aplicatia. Nimeni nu mintise; nimic nu verifica afirmatia.
+
+MECANISM: `core/test_datorie.py`. Fiecare item amanat = un test care afirma comportamentul
+CORECT, marcat `xfail(strict=True)` cu motivul si data. Consecinte: (1) suita ARATA datoria
+la fiecare rulare (`-rxX`), nu o ascunde; (2) cand cineva repara defectul, testul TRECE si
+`strict=True` il face sa PICE - semnal ca e timpul sa se inchida itemul. Datoria devine
+zgomotoasa, ca mastile reparate azi.
+
+DOUA TESTE DE IGIENA A REGISTRULUI: fiecare item are eticheta DATORIE + data + motiv de peste
+60 de caractere (un motiv scurt e inutil peste trei luni); si niciun item mai vechi de 90 de
+zile - la trei luni se repara sau se RESPINGE explicit in DECIZII, nu se cara mai departe.
+
+CE RAMANE IN DE_FACUT/LANSARE: doar ce NU se poate automatiza - decizii de produs, verificari
+vizuale, sarcini juridice, dependente de terti. Daca un item e verificabil mecanic si e tot
+acolo, e in locul gresit.
+
+PRIMII 7 ITEMI: limita 75 caractere pe campurile de declarant (D300/D394 respinse de ANAF);
+D390 pica structural la DUK; rotunjirea D390 (bancara vs aritmetica, cere sursa oficiala);
+numere.numar() intoarce float pe sume; cere_coloane nu prinde tabela goala; SELECT * fara
+garda in 5 module; lipsa heartbeat pentru joburi.
+
+CORECTIE PROPRIE, consemnata: in GARZI.md scrisesem "LIPSA: test de restaurare" - FALS.
+Restaurarea din off-site a fost testata cap-coada pe 18.07 (pg_restore exit 0, scheme
+identice, tenant_002.facturi=5). Corectat: ce lipseste e REPETAREA automata, nu proba.
+A zecea oara azi cand o afirmatie de-a mea despre stare s-a dovedit gresita la verificare -
+si al doilea registru gasit desincronizat in aceeasi zi, ceea ce intareste decizia de mai sus.

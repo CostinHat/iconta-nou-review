@@ -72,3 +72,11 @@
 | Date reale de clienți în materiale | DECIS | Niciodată publicate (GDPR/secret fiscal); exemple fictive în SEO (MARKETING). |
 | Semafor fiscal — fals-pozitive | DECIS | Gardieni zgomotoși respinși; verdict doar pe ce s-a putut verifica (DECIZII). |
 | Consecvență brand (iConta.eu) | REZOLVAT | Landing corectat 25.07 (10 ocurențe). |
+
+---
+
+*27.07.2026 — REGULA DE VERIFICARE: un rând marcat REZOLVAT în acest registru trebuie să aibă
+o dovadă reproductibilă (test în suită sau comandă care se poate rula), nu doar o notă. Motivul:
+„Un singur deployment activ | REZOLVAT (25.07)" era fals — pe 27.07 `/opt/iconta` era viu, cu
+venv-ul din care rula aplicația. Nimeni nu mințise; nimic nu verifica afirmația. Datoria
+verificabilă mecanic trăiește acum în `core/test_datorie.py`.*

@@ -796,3 +796,21 @@ LIMITA = fără `api_keys.env`, integrările externe neacoperite — detaliu în
 - **[LIMITĂ CUNOSCUTĂ 27.07.2026] `cere_coloane` nu prinde tabela goală.** Garda verifică rândurile CITITE; o coloană dispărută pe o firmă fără salariați/facturi nu se semnalează. Corect ca mecanism, dar acoperirea depinde de existența datelor. Alternativa (verificare la nivel de `information_schema` înainte de query) ar prinde și cazul gol — de evaluat dacă merită costul unui query în plus la fiecare `pull`.
 
 - **[DE FACUT peste 2-4 saptamani, 27.07.2026] Scoaterea subdomeniului `nou.iconta.eu`.** A fost util cat timp buildul vechi (port 8000, `/opt/iconta`) traia pe `iconta.eu`; acum ambele domenii merg la 8010, serviciul `iconta` e `inactive` si nimic nu asculta pe 8000. Doua domenii pentru aceeasi aplicatie = confuzie. **AZI s-a facut doar pasul sigur:** `ICONTA_BAZA_URL` mutat de pe `nou.iconta.eu` pe `iconta.eu` (era folosit la linkul de resetare a parolei, `main.py:1345` — deci emailurile de reset trimiteau pe subdomeniul vechi in timp ce restul emailurilor trimiteau pe domeniul principal). **DE VERIFICAT INAINTE de a scoate subdomeniul:** (1) `ANAF_REDIRECT_URI` e pe `iconta.eu` — NU se atinge, e inregistrat exact la ANAF si reinregistrarea nu e imediata; (2) certificatul `nou.iconta.eu` expira 07.10.2026 — daca subdomeniul dispare inainte, certbot va esua la reinnoire (de scos si din certbot, nu doar din nginx); (3) utilizatorii pot avea linkuri vechi salvate — de lasat un redirect 301 `nou.iconta.eu -> iconta.eu` o perioada, in loc de stergere brusca. Config: `/etc/nginx/sites-available/nou-iconta` (+ 2 `.bak`).
+
+---
+
+## REGISTRUL DE DATORIE — `core/test_datorie.py` (27.07.2026)
+
+**Ce e verificabil mecanic nu mai stă aici, stă ca test.** Fiecare item amânat e un test cu
+`xfail(strict=True)`, cu motivul și data în mesaj. Rulează la fiecare commit, apare în raport
+(`pytest -rxX`), și când cineva îl repară testul PICĂ — te anunță că e timpul să-l scoți.
+
+De ce: acest fișier are 80.000 de caractere și nimeni nu-l poate ține minte. Iar un registru
+neverificat se desincronizează — `LANSARE.md` declara „Un singur deployment activ: REZOLVAT
+(25.07)", dar pe 27.07 `/opt/iconta` era viu, cu chiar venv-ul din care rula aplicația.
+
+**Aici rămâne doar ce NU se poate automatiza:** decizii de produs, verificări vizuale, sarcini
+juridice, lucruri care depind de terți. Dacă un item e verificabil mecanic și e tot aici, e în
+locul greșit.
+
+Vezi datoria curentă: `./venv/bin/python -m pytest core/test_datorie.py -rxX`
