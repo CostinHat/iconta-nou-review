@@ -3814,6 +3814,37 @@ def d390_manual_sterge(tenant_id: int, mid: int, an: int, luna: int, ctx=Depends
         return _cl.manual_sterge(conn, schema, an, luna, mid)
 
 
+# [D301 27.07.2026] Introducerea operatiunilor D301 (decont special TVA). Geaman cu
+# d390-clasificare: grila lunara + adaugare + stergere, cere_cabinet (operatiuni de contabil).
+@app.get("/tenants/{tenant_id}/d301-operatiuni")
+def d301_operatiuni_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    """Operatiunile lunii + nomenclatoare (tipuri, valute, cote period-aware) pt ecranul D301."""
+    from core import d301_operatiuni_api as _op
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return _op.lista(conn, schema, an, luna)
+
+
+@app.post("/tenants/{tenant_id}/d301-operatiuni")
+def d301_operatiuni_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """Adauga o operatiune: {an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, cota}."""
+    from core import d301_operatiuni_api as _op
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = _op.adauga(conn, schema, corp.get("an"), corp.get("luna"), corp)
+    if r.get("eroare"):
+        raise HTTPException(422, r["eroare"])
+    return r
+
+
+@app.delete("/tenants/{tenant_id}/d301-operatiuni/{op_id}")
+def d301_operatiuni_sterge(tenant_id: int, op_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    from core import d301_operatiuni_api as _op
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return _op.sterge(conn, schema, an, luna, op_id)
+
+
 class AdeverintaIn(BaseModel):  # F136
     scop: Optional[str] = None
     mentiuni: Optional[str] = None

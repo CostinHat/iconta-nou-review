@@ -105,9 +105,24 @@ def calcul_d301(prof, an, luna, operatiuni_raw):
         ops.append(op)
         if tip in tot:
             tot[tip][0] += baza; tot[tip][1] += tva
+        # OPANAF 592/2016, instructiunile formularului 301: "In sectiunea 4.1 se preiau DIN
+        # sectiunea 4 doar achizitiile de servicii intracomunitare pentru care beneficiarul e
+        # obligat la plata TVA cf. art. 307 alin. (2)". S4.1 (tip 5) e SUBSET al S4 (structura
+        # ANAF d301: baza4 = "Total S4 (S4=S4.1+S4.2)"), deci fiecare operatiune tip 5 se preia
+        # SI in totalul S4. Fara asta baza4=0 cand exista servicii si declaratia e respinsa
+        # (DUK R32: "4.1 fara 4"). E regula FISCALA, nu ocolire de validator. totalPlata_A
+        # ramane formula oficiala (baza1..5 + tva1..5) - suma de control, nu TVA datorat.
+        if tip == 5:
+            tot[4][0] += baza; tot[4][1] += tva
         if tip == 2:
             mij = 1
 
+    # totalPlata_A e SUMA DE CONTROL (checksum), NU TVA-ul datorat. Structura ANAF (d301 poz.28)
+    # o defineste EXPLICIT: totalPlata_A = INT(baza1+..+baza5 + tva1+..+tva5), iar DUKIntegrator
+    # o impune (regula R28: respinge orice alta valoare). Cu rollup-ul S4.1->S4, serviciul apare
+    # in baza4 SI in baza5, deci checksum-ul il numara de doua ori PRIN DEFINITIE - nu e dubla
+    # impozitare: TVA-ul datorat ramane tva4 (serviciul o singura data, prin rollup). Un total pe
+    # sectiunile 1-4 (6022) e respins de ANAF (dovedit: R28 cere 12044). DUK = judecatorul final.
     total_plata = sum(tot[t][0] + tot[t][1] for t in TIPURI_OP)
     res = Rezultat(an=an, luna=luna, prof=prof, operatiuni=ops,
                    totaluri={t: tuple(tot[t]) for t in TIPURI_OP},
@@ -181,10 +196,14 @@ def build_xml(res):
                 _esc(_t(prof.get("declarant_prenume") or "-")),
                 _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR"))))
     for op in res.operatiuni:
-        H.append('  <sectiune tip_operatie="%d" nr_doc="%s" data_doc="%s" val_valuta="%.2f" '
-                 'tip_valuta="%s" curs_valutar="%.4f" baza="%d" tva="%d"/>'
-                 % (op.tip, _esc(op.nr_doc), _esc(op.data_doc), op.val_valuta,
-                    op.tip_valuta, op.curs, op.baza, op.tva))
+        # OPANAF 592/2016: serviciile (tip 5 = S4.1) se preiau DIN S4 -> apar ca operatiune de
+        # sectiune 4 SI ca detaliu 4.1. DUK cere baza4=suma(sectiuni tip 4) (R24/R25) si o
+        # sectiune 4 cand exista 4.1 (R32), deci o operatiune tip 5 emite AMBELE randuri.
+        for tp in ((4, 5) if op.tip == 5 else (op.tip,)):
+            H.append('  <sectiune tip_operatie="%d" nr_doc="%s" data_doc="%s" val_valuta="%.2f" '
+                     'tip_valuta="%s" curs_valutar="%.4f" baza="%d" tva="%d"/>'
+                     % (tp, _esc(op.nr_doc), _esc(op.data_doc), op.val_valuta,
+                        op.tip_valuta, op.curs, op.baza, op.tva))
     H.append('</declaratie301>')
     return "\n".join(H)
 

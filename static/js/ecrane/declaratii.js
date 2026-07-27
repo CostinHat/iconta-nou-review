@@ -212,6 +212,7 @@ async function pas2(corp, nav) {
   corp.innerHTML = `
     <p class="mig-intro">Pasul 2 din 3 — verifică <b>${S.tip.toUpperCase()}</b> · ${etPerioada()}</p>
     ${S.tip === "d390" ? '<div id="dec-d390-clasif"></div>' : ""}
+    ${S.tip === "d301" ? '<div id="dec-d301-op"></div>' : ""}
     ${blocANAF}
     ${avert.length ? `<div class="dec-avert">
         <div class="dec-avert-cap">Avertismente (${avert.length})</div>
@@ -239,6 +240,7 @@ async function pas2(corp, nav) {
   const _bNu = corp.querySelector("#dec-gol-nu");
   if (_bNu) _bNu.addEventListener("click", () => pas1(corp, nav));
   if (S.tip === "d390") randeazaClasificareD390(corp, nav);
+  if (S.tip === "d301") randeazaOperatiuniD301(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -295,6 +297,71 @@ async function randeazaClasificareD390(corp, nav) {
     catch (e) { arataMesaj(zona.querySelector("#dec-clasif-msg"), (e && e.mesaj) || "Eroare la adăugare.", "eroare"); }
   });
   zona.querySelector("#dec-regen").addEventListener("click", () => pas2(corp, nav));
+}
+
+// [D301 27.07.2026] panou introducere operatiuni D301 (decont special TVA), afisat in pas2 cand
+// tip==="d301". Geaman cu randeazaClasificareD390: grila lunii + adaugare + stergere + regenerare.
+// FISCAL: baza = val_valuta x curs (AFISATA, nestocata - generatorul o recalculeaza). TVA = baza x
+// cota; cota din selector (standard period-aware din backend, nu literal), TVA calculat SE STOCHEAZA
+// (d301.calcul_d301 il citeste din DB, nu-l recalculeaza). Etichetele celor 5 tipuri + valutele +
+// cotele vin din backend (sursa unica, EXACT ca formularul oficial) - nu le rescriu in JS.
+async function randeazaOperatiuniD301(corp, nav) {
+  const zona = corp.querySelector("#dec-d301-op");
+  if (!zona) return;
+  let d;
+  try { d = await api.get(`/tenants/${S.tenant_id}/d301-operatiuni?an=${S.an}&luna=${S.luna}`); }
+  catch { zona.innerHTML = ""; return; }
+  const ops = d.operatiuni || [], tipuri = d.tipuri || [], valute = d.valute || [], cote = d.cote || [];
+  const grila = ops.length
+    ? ops.map((o) => `<div class="dec-man-rand">
+        <span class="dec-recl-desc" title="${esc(o.eticheta)}">Tip ${o.tip} · ${esc(o.nr_doc)}${o.data_doc ? " · " + esc(o.data_doc) : ""} · ${esc(o.tip_valuta)} ${bani(o.val_valuta)} × ${esc(String(o.curs))}</span>
+        <span class="dec-recl-suma">${bani(o.baza)} bază · ${bani(o.tva)} TVA (lei)</span>
+        <button class="btn-link dec-d301-del" data-id="${o.id}">șterge</button></div>`).join("")
+    : `<div class="stare-goala stare-goala--inline">Nicio operațiune pe ${etPerioada()}. D301 se depune doar cu achiziții intracomunitare / taxare inversă — introdu-le mai jos; fără ele, declarația e pe zero.</div>`;
+  zona.innerHTML = `<details class="dec-xml" open><summary>Operațiuni D301 — introducere (${ops.length})</summary>
+    ${grila}
+    <div class="camp-eticheta" style="margin:10px 0 4px">Adaugă operațiune:</div>
+    <div class="dec-man-form">
+      <label class="camp" style="width:320px"><span class="camp-eticheta">Tip operațiune <span class="oblig">*</span></span>
+        <select id="d301-tip" class="camp-input">${tipuri.map((t) => `<option value="${t.val}">${t.val} — ${esc(t.eticheta)}</option>`).join("")}</select></label>
+      <label class="camp" style="width:150px"><span class="camp-eticheta">Nr. document <span class="oblig">*</span></span><input id="d301-nrdoc" class="camp-input"></label>
+      <label class="camp" style="width:130px"><span class="camp-eticheta">Data document <span class="oblig">*</span></span><input id="d301-datadoc" class="camp-input" placeholder="ZZ.LL.AAAA"></label>
+      <label class="camp" style="width:90px"><span class="camp-eticheta">Valută <span class="oblig">*</span></span>
+        <select id="d301-valuta" class="camp-input">${valute.map((v) => `<option value="${v}" ${v === "EUR" ? "selected" : ""}>${v}</option>`).join("")}</select></label>
+      <label class="camp" style="width:110px"><span class="camp-eticheta">Val. valută <span class="oblig">*</span></span><input id="d301-val" type="number" step="0.01" class="camp-input"></label>
+      <label class="camp" style="width:100px"><span class="camp-eticheta">Curs <span class="oblig">*</span></span><input id="d301-curs" type="number" step="0.0001" class="camp-input"></label>
+      <label class="camp" style="width:150px"><span class="camp-eticheta">Cotă TVA <span class="oblig">*</span></span>
+        <select id="d301-cota" class="camp-input">${cote.map((c) => `<option value="${c.val}">${esc(c.eticheta)}</option>`).join("")}</select></label>
+      <button class="buton-secundar" id="d301-add">+ adaugă</button>
+    </div>
+    <div class="camp-ajutor" id="d301-preview" style="margin-top:4px"></div>
+    <div id="d301-msg"></div>
+    <p style="margin-top:8px"><button class="buton-primar" id="d301-regen">Regenerează D301</button>
+      <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
+  </details>`;
+  const gv = (id) => zona.querySelector(id);
+  function preview() {
+    const val = parseFloat(gv("#d301-val").value) || 0;
+    const curs = parseFloat(gv("#d301-curs").value) || 0;
+    const cota = parseInt(gv("#d301-cota").value) || 0;
+    const baza = Math.round(val * curs);
+    const tva = Math.round(baza * cota / 100);
+    gv("#d301-preview").textContent = (val && curs) ? `Bază ${bani(baza)} lei · TVA ${cota}% = ${bani(tva)} lei (se stochează)` : "";
+  }
+  ["#d301-val", "#d301-curs", "#d301-cota"].forEach((s) => gv(s).addEventListener("input", preview));
+  zona.querySelectorAll(".dec-d301-del").forEach((b) => b.addEventListener("click", async () => {
+    try { await api.del(`/tenants/${S.tenant_id}/d301-operatiuni/${b.dataset.id}?an=${S.an}&luna=${S.luna}`); randeazaOperatiuniD301(corp, nav); }
+    catch (e) { arataMesaj(gv("#d301-msg"), (e && e.mesaj) || "Eroare la ștergere.", "eroare"); }
+  }));
+  gv("#d301-add").addEventListener("click", async () => {
+    const b = { an: S.an, luna: S.luna, tip: parseInt(gv("#d301-tip").value),
+      nr_doc: gv("#d301-nrdoc").value.trim(), data_doc: gv("#d301-datadoc").value.trim(),
+      tip_valuta: gv("#d301-valuta").value, val_valuta: parseFloat(gv("#d301-val").value) || 0,
+      curs: parseFloat(gv("#d301-curs").value) || 0, cota: parseInt(gv("#d301-cota").value) };
+    try { await api.post(`/tenants/${S.tenant_id}/d301-operatiuni`, b); randeazaOperatiuniD301(corp, nav); }
+    catch (e) { arataMesaj(gv("#d301-msg"), (e && e.mesaj) || "Eroare la adăugare.", "eroare"); }
+  });
+  gv("#d301-regen").addEventListener("click", () => pas2(corp, nav));
 }
 
 // [poarta_gol_v1 27.07.2026] O declaratie GOALA legitima (firma fara activitate) si una

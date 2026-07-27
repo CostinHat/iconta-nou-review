@@ -11,6 +11,21 @@ Proba DUK din IULIE (15-16.07, nu iunie) a fost pe STRUCTURA: 15.07 validatorul 
 
 CONSECINTE (27.07): afirmatia PERMISE "D100-D406 pe DUK" era inselatoare pentru D406 -> mutata pe INTERZISE; F035/F036/F037 -> PARTIAL. Generatorul NU se repara acum (sesiune separata). REPARATIA presupune: SalesInvoices/PurchaseInvoices cu liniile REALE pe produs (din factura_linii: cod, cantitate, pret unitar, AccountID + TaxInformation pe fiecare linie) + sectiunea Payments; apoi re-validare DUK pe CONTINUT real.
 
+## 27.07.2026 -- D301: ecran de introducere + rollup fiscal S4.1->S4 (bug prins de proba DUK)
+
+D301 (decont special TVA) avea generatorul (core/d301.py) dar ZERO cale de introducere a operatiunilor: fara rute, fara UI -> tabela d301_operatiuni netouched -> declaratie mereu goala. Adaugat: ecran incorporat in fluxul de declaratii (declaratii.js, panou d301 in pas2, geaman cu d390-clasificare), rute GET/POST/DELETE /tenants/{id}/d301-operatiuni (cere_cabinet), backend core/d301_operatiuni_api.py.
+
+Decizii fiscale, verificate LA SURSA (nu deduse din DUK):
+- Cota TVA: 21% standard / 11% redusa / 0% (Legea 141/2025, din 01.08.2025). Standardul vine din common.cota('tva_standard', data) PERIOD-AWARE, nu constanta literala (o cota hardcodata devine gresita la urmatoarea schimbare, ca 19->21).
+- TVA se CALCULEAZA (baza x cota) si se STOCHEAZA: d301.calcul_d301 CITESTE tva din DB, nu-l recalculeaza (doar baza=val x curs). Fara stocare -> tva=0 -> declaratie valida structural dar substantial gresita (fals-verde). baza NU se stocheaza (generatorul o recalculeaza; tabela n-are coloana baza).
+- data_doc: format ANAF ZZ.LL.AAAA (structura poz.35, C(10), DA), validat la backend -- DUK respinge orice altceva ("data calendaristica eronata").
+
+ROLLUP S4.1->S4 (bug REAL prins de proba, contrar afirmatiei "tip 5 cu parinte 4 - facut deja"): OPANAF 592/2016, instructiunile formularului 301: "In sectiunea 4.1 se preiau DIN sectiunea 4 doar achizitiile de servicii intracomunitare pentru care beneficiarul e obligat la plata TVA cf. art. 307 alin. (2)". Deci S4.1 (tip 5) e SUBSET al S4. calcul_d301 punea tip 5 DOAR in tot[5] -> baza4=0 -> DUK respingea (R32: "4.1 fara 4"; R24/R25: baza4 != suma sectiunilor tip 4). D301 fusese "validat" pe un caz FARA tip 5 -- acelasi tipar verde-pe-cazul-care-nu-atinge-defectul. Reparat: tip 5 se preia SI in tot[4] (header) SI emite ambele randuri <sectiune tip=4>+<sectiune tip=5> (detaliu). totalPlata_A ramane formula oficiala (baza1..5 + tva1..5, SUMA DE CONTROL, nu TVA datorat): DUKIntegrator R28 o impune si RESPINGE orice alt total (dovedit numeric: total pe sectiunile 1-4 = 6022 -> R28 cere 12044). Cu rollup, checksum-ul include serviciul in baza4 SI baza5 PRIN DEFINITIE -- nu e dubla impozitare: TVA-ul DATORAT e tva4 (serviciul o singura data). DUK = judecatorul final peste instructiunile PDF (CLAUDE.md). Regresie: core/test_d301_rollup.py.
+
+Proba: operatiune tip 5 (servicii UE, EUR, curs 4.9770, cota 21%) pe tenant_001 iunie 2026 -> D301 -> DUKIntegrator "valid" (baza4=baza5=4977, tva 1045, totalPlata_A=12044); op de proba stearsa. Porti: pytest 1048 passed, verificator TOTAL 0, DUK valid. NOTA: proba pe tenant_001, NU tenant_002 -- tenant_002 (DANTE INTERNATIONAL) n-are IBAN in profil, generatorul refuza corect; nu s-a fabricat un IBAN pe o firma reala.
+
+LECTIE (regula, nu caz izolat): totalPlata_A NU e TVA-ul datorat, e SUMA DE CONTROL definita de structura ANAF (poz.28) ca baza1..5 + tva1..5. Doua lucruri diferite cu acelasi nume "total". Regula "cele 4 sectiuni" din instructiuni priveste COLOANELE (curs, baza, TVA), nu totalul. Cu rollup, checksum-ul include serviciul in baza4 SI baza5 prin definitie -- fara dubla impozitare, pentru ca TVA-ul DATORAT ramane tva4. Consecinta pentru orice generator viitor: cand structura ANAF are un camp "total", verifica DACA e suma fiscala sau checksum de structura. Un checksum NU se "corecteaza" dupa logica fiscala -- se calculeaza cum cere structura, altfel DUK il respinge (aici R28). DUK = judecatorul final peste instructiunile PDF.
+
 ---
 
 ## Cum se foloseste
