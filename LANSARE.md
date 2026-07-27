@@ -45,7 +45,7 @@
 
 | De rezolvat | Statut | Notă |
 |---|---|---|
-| HTTPS/certificate | REZOLVAT | Let's Encrypt pe iconta.eu + nou.iconta.eu. |
+| HTTPS/certificate | REZOLVAT | Let's Encrypt pe iconta.eu + www. Reînnoire automată (certbot.timer). Certificatul `nou.iconta.eu` șters 27.07 — subdomeniul nu mai e folosit. |
 | Rate-limiting brute-force | REZOLVAT | nginx `limit_req` pe /auth/login (ambele domenii) + fail2ban. |
 | Un singur deployment activ | REZOLVAT | iconta.eu comutat pe 8010 (25.07); vechiul (8000) oprit+dezactivat. |
 | Izolare multi-tenant | REZOLVAT | schema-per-tenant + gardă acces (fixuri securitate C-2/H-1). |
@@ -121,5 +121,5 @@ commit, acum gol). Gardurile și limitele lor declarate sunt în `GARZI.md`.
 | 20 module fără test propriu | Măsurat 27.07. Acoperite indirect prin teste de integrare. |
 | 19 ecrane fără mesaj de succes | Măsurat 27.07. Tipar real; reparația e globală, nu ecran cu ecran. |
 | `og:image` = logo, nu 1200×630 | Preview social arată logo întins. Cosmetic. |
-| `nou.iconta.eu` | Nu mai răspunde; rămân certificatul certbot (expiră 07.10) și DNS-ul. |
+| `nou.iconta.eu` | ÎNCHIS 27.07: certificat șters din certbot, config nginx scos. Rămâne doar înregistrarea DNS (inofensivă — nu mai are ce servi). |
 | T&C: 4 clauze completate provizoriu | Plafon = sume 12 luni; păstrare 90 zile; preaviz 30 zile; DPA la cerere. Avocatul confirmă sau schimbă. |

@@ -4001,3 +4001,21 @@ Costin 27.07). Fisierul si-a consumat rostul.
 Fisiere normative ramase (9): CLAUDE.md, DESIGN_SYSTEM.md, DECIZII.md, ISTORIC.md, LANSARE.md,
 GARZI.md, MARKETING.md, ARHITECTURA_SPV.md, TERMENI_SI_CONDITII.md + FUNCTIONALITATI.csv si
 CONCURENTA.csv. Fiecare are un rost distinct; niciunul nu e copie a altuia.
+
+### 27.07.2026 nou.iconta.eu inchis + symlink nginx reparat (a doua oara)
+
+SUBDOMENIU: nu mai raspunde (HTTP 000), zero dependente in cod/.env/systemd. Certificatul
+Let's Encrypt (expira 07.10) a fost STERS din certbot - altfel reinnoirea automata ar fi
+esuat in octombrie pe un domeniu care nu mai serveste nimic, generand alerte inutile. DNS-ul
+ramane, e inofensiv.
+
+GASIT PE DRUM, mai important: `/etc/nginx/sites-enabled/iconta` era FISIER NORMAL (2018 octeti),
+nu symlink, iar `sites-available/iconta` avea alta versiune (1120 octeti). Deci o editare in
+sites-available - locul unde se editeaza in mod normal - N-AR FI AVUT NICIUN EFECT, iar
+diferenta ar fi aparut abia la un reload. Probabil ramas de la repararea symlink-ului mort de
+mai devreme in aceeasi zi. REPARAT: versiunea VIE copiata in sites-available, enabled redevenit
+symlink. Dovedit prin `systemctl restart nginx` complet, nu doar reload.
+
+A doua oara azi cand configurarea nginx era rupta fara sa se vada: prima data un symlink orfan
+(ar fi doborat site-ul la reboot), acum un fisier care ocolea sursa. Ambele invizibile cat timp
+nginx rula din memorie.
