@@ -3986,3 +3986,18 @@ ziua - in cod scris de mine cu doua ore inainte.
 Serviciul systemd are EnvironmentFile, deci in productie ruleaza corect (dovedit: timerul de
 la 18:20). Dar daca DB-ul chiar ar fi jos, heartbeat-ul ar fi crapat cu un mesaj care ascunde
 cauza. REPARAT: init_pool nemascat in ambele locuri (bate + verifica_batai).
+
+### 27.07.2026 Sterse trei copii moarte langa sursa canonica
+
+`INVENTAR_LIVE.md` (25.07) si `PLANIFICATE_export.md` (16.07) erau EXPORTURI din
+`FUNCTIONALITATI.csv` - copii inghetate langa sursa vie, deja divergente. Exact tiparul care
+a costat ziua de azi: cineva citeste copia si crede ca e adevarul (vezi DE_FACUT.md, LANSARE.md
+care declara "un singur deployment REZOLVAT" cand /opt/iconta era viu). Daca e nevoie de o
+lista de pozitii LIVE, se genereaza din CSV pe loc, nu se pastreaza.
+
+`CHECKLIST_BROWSER.md` (16.07) - verificarile care cer ochi/telefon. Facute (confirmat de
+Costin 27.07). Fisierul si-a consumat rostul.
+
+Fisiere normative ramase (9): CLAUDE.md, DESIGN_SYSTEM.md, DECIZII.md, ISTORIC.md, LANSARE.md,
+GARZI.md, MARKETING.md, ARHITECTURA_SPV.md, TERMENI_SI_CONDITII.md + FUNCTIONALITATI.csv si
+CONCURENTA.csv. Fiecare are un rost distinct; niciunul nu e copie a altuia.
