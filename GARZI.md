@@ -111,11 +111,15 @@ fundal pe tenantul greșit.
 
 ### 6. Acces
 **Eșec:** rută fără dependență de rol; IDOR (id din URL neverificat contra tenantului).
-**Stare: LIPSĂ (verificat manual curat, gard absent).**
-- Verificat 27.07 prin AST: 375 rute, 17 fără `Depends` — toate public legitim (`/`, login,
-  register, `/public/*`, ghid, sitemap, robots).
-- **LIPSĂ: gardul mecanic.** Scriptul AST există (folosit o dată); nu e în suită. Cel mai
-  ieftin gard rămas — o rută nouă nepăzită trece azi neobservată.
+**Stare: PARȚIAL.**
+- ACOPERIT: `core/test_rute_autentificate.py` (27.07) — AST pe `main.py` **și**
+  `core/spv_rute.py`; orice rută fără `Depends` trebuie să fie în lista `PUBLICE`, declarată
+  explicit cu motivul. Lista e verificată și invers: o intrare care nu mai corespunde unei
+  rute fără auth pică (nu se acumulează acoperire moartă). Dovedit prin mutație pe cod real.
+- Cele 3 rute din `core/spv_rute.py` (declarate cu `@app.get` *în interiorul* funcției
+  `monteaza`) fuseseră ratate de auditul manual — garda le acoperă.
+- LIMITĂ DECLARATĂ: verifică PREZENȚA dependenței, nu corectitudinea ei. O rută de cabinet
+  care cere din greșeală `cere_client` trece.
 - LIPSĂ: test de acces încrucișat (obiect din alt tenant → 404).
 - DESCHIS: gating admin inconsecvent (`cere_rol("superadmin")` vs `cere_cabinet` + gardă
   inline) — DE_FACUT poz. 7.
@@ -189,9 +193,7 @@ A cincea, din aceeași zi, la altă gardă:
 
 ## Ce lipsește, în ordinea raportului cost/acoperire
 
-1. **Gard mecanic pe autentificarea rutelor** (cat. 6) — scriptul AST există deja, e de mutat
-   în suită. O rută nouă nepăzită trece azi neobservată.
-2. **Gard anti-mască** (cat. 0) — scan AST, `except` cu corp mut peste `cur.execute`.
+1. **Gard anti-mască** (cat. 0) — scan AST, `except` cu corp mut peste `cur.execute`.
    Cauza rădăcină a majorității defectelor găsite în iulie.
 3. **Mutantul zero sistematic** (cat. 9) — ieftin, lovește exact clasa „declarație goală".
 4. **Test de restaurare backup** (cat. 7) — backupul netestat e o presupunere.

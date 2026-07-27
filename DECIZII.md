@@ -3421,3 +3421,31 @@ commitul. Comparatia de artefacte se face pe SHA256 sau diff, niciodata pe hash(
 
 NEATINS DELIBERAT: rotunjirea din D390 foloseste `round()` (bancara). Daca ANAF cere
 aritmetica si acolo, e schimbare FISCALA - se verifica la sursa. Task in DE_FACUT.
+
+### 27.07.2026 Gard mecanic pe autentificarea rutelor (`core/test_rute_autentificate.py`)
+
+CONTEXT: auditul manual din aceeasi zi a gasit 375 de rute in main.py, 17 fara `Depends` -
+toate public legitim. Curat, dar nimic nu impiedica o ruta noua nepazita sa treaca
+neobservata: nu se vede in UI, nu strica niciun test, nu apare in niciun log.
+
+CE A RATAT AUDITUL MANUAL: 3 rute din `core/spv_rute.py`, declarate cu `@app.get` in
+INTERIORUL functiei `monteaza(app, ...)` - proiectul nu foloseste APIRouter, deci rutele
+nu sunt toate la nivel de modul. Garda scaneaza ambele fisiere.
+
+DECIZIE: lista `PUBLICE` e o lista de HOTARARI, nu de constatari - fiecare intrare poarta
+motivul pe linie (de ce ruta aceea NU poate avea auth). Verificata si invers: o intrare
+care nu mai corespunde unei rute fara auth PICA, ca lista sa nu acumuleze acoperire moarta.
+
+`/anaf/oauth/callback` ramane public prin necesitate: ANAF redirecteaza acolo si nu are cum
+sa poarte sesiunea noastra; e aparat de `state` semnat.
+
+IMPLEMENTARE PE AST, NU REGEX: un regex pe semnatura se opreste la prima paranteza inchisa
+si rateaza `Depends(cere_rol("a","b"))` dupa un `Body(...)` - exact greseala facuta de trei
+ori azi. Exista test de regresie dedicat pentru cazul asta.
+
+LIMITA DECLARATA (scrisa in docstring si in GARZI.md): verifica PREZENTA dependentei, nu
+CORECTITUDINEA ei. O ruta de cabinet care cere din greseala `cere_client` trece. Nu acopera
+IDOR. Ambele raman in lista de garduri lipsa.
+
+DOVADA: mutatie pe cod REAL - ruta `/mutant/scurgere` adaugata in main.py, garda a picat cu
+calea si linia in mesaj; main.py restaurat dupa.
