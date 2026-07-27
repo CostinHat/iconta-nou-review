@@ -188,8 +188,12 @@ nimic de făcut.
 - ACOPERIT: `core/cron.py` — traceback în log + alertă (canal unic, cu throttling) + exit 1.
   `test_cron.py` verifică mecanic că fiecare din cele 7 module din crontab cheamă
   `cron.ruleaza`. Alerta care crapă nu maschează eșecul.
-- LIPSĂ: **heartbeat/deadman** — nu prinde jobul care nu pornește deloc (cron oprit, reboot,
-  crontab stricat). Vezi DE_FACUT.
+- ACOPERIT: **heartbeat** (27.07) — fiecare rulare reușită scrie în `public.cron_batai`;
+  `core/cron.verifica_batai` compară cu pragul per job (ritm ×2 + marjă) și alertează.
+  Rulează pe **systemd timer** la 6 ore, nu pe cron — singurul mecanism care supraviețuiește
+  unui crontab pierdut. `bootstrap()` evită falsul-pozitiv la instalare.
+- LIMITĂ DECLARATĂ: verificatorul rulează pe **același server**. Server jos = nici el nu
+  rulează, nimeni nu află. Un deadman extern (ping către un serviciu terț) ar acoperi și asta.
 
 ### 11. Interfață (Design System)
 **Eșec:** dialecte de formatare, culori hardcodate, stări goale ad-hoc.

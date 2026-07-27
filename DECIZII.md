@@ -3794,3 +3794,36 @@ importurile primesc mai multe zecimale sau toleranta scade, testul pica si deciz
 LECTIE DE METODA: "float pe bani e gresit" e adevarat ca principiu general si FALS ca diagnostic
 aici. Diferenta se vede doar masurand. O reparatie facuta pe principiu, fara masuratoare, ar fi
 atins sase module de import in productie fara sa rezolve nimic.
+
+### 27.07.2026 Heartbeat pentru joburile de fundal — ULTIMUL item din registrul de datorie
+
+`cron.ruleaza` (construit tot azi) prinde jobul care CRAPA. Nu prinde jobul care nu porneste
+DELOC: cron oprit, reboot fara restaurarea crontab-ului, linie stearsa, server jos la ora
+rularii. Dovada ca problema e reala, din aceeasi zi: woocommerce.log tacea de 12 zile si a
+fost nevoie de investigatie ca sa se stabileasca daca e defect (nu era - wc_url NULL).
+
+MECANISM: `public.cron_batai` (nume, ultima_reusita, durata, rulari). `cron.ruleaza` scrie o
+bataie DOAR la rulare reusita - un job care crapa mereu nu trebuie sa para sanatos.
+`verifica_batai` compara cu pragul PER JOB: ritm x2 + marja, pentru ca ritmurile difera de la
+15 minute (alerta_acces) la 96 de ore (sinteza_zilnica, care ruleaza luni-vineri: vineri 19:00
+-> luni 19:00 sunt 72h normale).
+
+RULEAZA PE SYSTEMD TIMER, nu pe cron (iconta-heartbeat.timer, la 6 ore): un verificator de
+cron-uri pornit tot din cron ar muri odata cu ele. Acelasi rationament ca la backup.
+
+EXIT 0 CHIAR CU CONSTATARI: semnalul e ALERTA, nu codul de iesire. Cu exit 1, systemd marca
+serviciul "failed" la fiecare rulare cu intarzieri - si atunci un esec REAL al heartbeat-ului
+(DB jos, cod stricat) ar arata identic cu functionarea normala. Exit 1 ramane doar cand
+verificarea INSASI n-a putut rula. Un semnal care se aprinde mereu nu mai e semnal.
+
+BOOTSTRAP: la instalare, joburile fara nicio bataie primesc una initiala. Fara asta,
+sinteza_zilnica aparea "intarziata" din prima secunda desi doar nu-i venise randul - iar un
+fals-pozitiv la instalare invata omul sa ignore alerta.
+
+LIMITA DECLARATA: verificatorul ruleaza pe ACELASI server. Server jos = nici el nu ruleaza.
+Un deadman EXTERN ar acoperi si asta; nu s-a construit.
+
+REGISTRUL DE DATORIE E GOL. Cele 7 itemuri deschise dimineata: 5 reparate, 1 respins cu
+masuratoare (float in numar()), 1 inchis prin verificare la sursa (D390 pe zero era regula
+fiscala, nu defect). Testul de igiena a fost corectat: registrul GOL e starea DORITA, nu o
+eroare - prima zi cand s-a intamplat.

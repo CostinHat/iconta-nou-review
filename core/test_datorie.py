@@ -44,14 +44,6 @@ def _db_ok():
 # ============================================================
 #  DATORIE TEHNICA
 # ============================================================
-@pytest.mark.xfail(strict=True, reason="DATORIE 27.07.2026: joburile cron n-au heartbeat. "
-                                       "core/cron.py prinde jobul care CRAPA, nu pe cel "
-                                       "care nu porneste deloc (cron oprit, reboot).")
-def test_exista_heartbeat_pentru_joburi():
-    from core import cron
-    assert hasattr(cron, "bate") or hasattr(cron, "heartbeat"), "fara mecanism de heartbeat"
-
-
 # ============================================================
 #  IGIENA REGISTRULUI
 # ============================================================
@@ -66,7 +58,8 @@ def test_fiecare_datorie_are_data_si_motiv():
                 continue
             motiv = marca.kwargs.get("reason", "")
             itemi.append((nume, motiv))
-    assert itemi, "nu mai exista niciun item de datorie - actualizeaza registrul"
+    # Registrul GOL e starea DORITA, nu o eroare: inseamna ca tot ce era amanat s-a inchis
+    # (reparat sau respins cu motiv). 27.07.2026 - prima zi cand s-a intamplat.
     for nume, motiv in itemi:
         assert "DATORIE" in motiv, "%s: motiv fara eticheta DATORIE" % nume
         assert re.search(r"\d{2}\.\d{2}\.\d{4}", motiv), "%s: motiv fara data" % nume
