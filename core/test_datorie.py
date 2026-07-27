@@ -53,32 +53,6 @@ def test_numar_intoarce_decimal_pe_sume():
     assert isinstance(numar("0.1"), Decimal)
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 27.07.2026: common.cere_coloane verifica "
-                                       "randurile CITITE, deci o tabela GOALA trece. "
-                                       "Coloana disparuta pe firma fara salariati = tacere.")
-def test_cere_coloane_prinde_si_tabela_goala():
-    from core.common import cere_coloane
-    with pytest.raises(ValueError):
-        for r in []:                      # zero randuri = zero verificari azi
-            cere_coloane(r, ("salariu_brut",), "salariati")
-        raise AssertionError("nimic verificat pe lista goala")
-
-
-@pytest.mark.xfail(strict=True, reason="DATORIE 27.07.2026: SELECT * pe date fiscale in "
-                                       "d394/bilant_api/rip_api/stocuri_cv_api/"
-                                       "reconciliere_api - fara garda de coloane.")
-def test_niciun_select_stea_pe_date_fiscale_fara_garda():
-    rad = pathlib.Path(__file__).resolve().parent
-    vinovati = []
-    for f in sorted(rad.glob("*.py")):
-        if f.name.startswith("test_"):
-            continue
-        s = f.read_text(encoding="utf-8")
-        if "SELECT *" in s and "cere_coloane" not in s:
-            vinovati.append(f.name)
-    assert not vinovati, "SELECT * fara cere_coloane: %s" % vinovati
-
-
 @pytest.mark.xfail(strict=True, reason="DATORIE 27.07.2026: joburile cron n-au heartbeat. "
                                        "core/cron.py prinde jobul care CRAPA, nu pe cel "
                                        "care nu porneste deloc (cron oprit, reboot).")

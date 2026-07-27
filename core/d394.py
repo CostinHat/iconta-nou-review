@@ -30,6 +30,8 @@ STRUCTURA (ordinea conteaza):
 from __future__ import annotations
 
 from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+from core.common import cere_coloane_cursor  # [garda coloane 27.07.2026]
+_COLOANE_PROFIL = ("nume", "cui", "adresa", "caen")   # minimul citit de aici
 
 import re
 from dataclasses import dataclass, field
@@ -650,6 +652,7 @@ def pull(conn, schema, an, luna):
     sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT * FROM firma_profil WHERE id = 1")
+        cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         prof = dict(cur.fetchone() or {})
         # partener: emise -> clienti (client_id); primite -> tert_* (furnizorul).
         # proformele nu se raporteaza (nu sunt facturi fiscale).

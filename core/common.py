@@ -303,6 +303,32 @@ def cere_coloane(rand, chei, unde=""):
     return rand
 
 
+def cere_coloane_cursor(cur, chei, unde=""):
+    """Ca `cere_coloane`, dar verifica pe CURSOR - deci prinde si tabela GOALA.
+
+    DE CE (27.07.2026): `cere_coloane` verifica randurile CITITE. Pe zero randuri n-are ce
+    verifica si trece - o coloana disparuta pe o firma fara salariati nu se semnala. Limita
+    reala, consemnata cand a fost gasita.
+
+    `cur.description` descrie ce a intors query-ul indiferent cate randuri sunt: pe tabela
+    goala da tot lista completa de coloane (dovedit pe tenant_003.salariati: 0 randuri, 20 de
+    coloane). Zero cost - nu e query in plus, e metadata pe care driverul o are deja.
+
+    Se cheama IMEDIAT dupa `cur.execute`, inainte de fetch.
+    """
+    col = {d[0] for d in (cur.description or ())}
+    if not col:
+        raise ValueError("cursorul nu a intors coloane%s - query-ul n-a rulat?"
+                         % ((" la %s" % unde) if unde else ""))
+    lipsa = [c for c in chei if c not in col]
+    if lipsa:
+        raise ValueError(
+            "coloane lipsa%s: %s. Query-ul a reusit dar schema nu are aceste campuri - "
+            "SELECT * nu semnaleaza asta singur, iar valorile ar deveni tacit zero."
+            % ((" in %s" % unde) if unde else "", ", ".join(lipsa)))
+    return True
+
+
 # ANAF respinge orice atribut de text peste 75 de caractere ("sir mai lung de 75
 # caractere"). 74 = marja fata de limita, tiparul deja folosit in d100/d101/d112/d205/d710.
 LIMITA_TEXT_ANAF = 74

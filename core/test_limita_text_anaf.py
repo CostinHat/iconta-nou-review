@@ -145,3 +145,41 @@ def test_rotunjirea_e_identica_intre_generatoare():
     from core.d112 import _d112int as c
     for v in (112.5, 0.5, 2.5, 1000.5, 112.4, 112.6):
         assert a(v) == b(v) == c(v), "rotunjiri divergente pe %s: %s/%s/%s" % (v, a(v), b(v), c(v))
+
+
+# ============================================================
+#  Garda coloane pe CURSOR (prinde si tabela goala)
+# ============================================================
+def test_cere_coloane_cursor_prinde_si_tabela_goala():
+    """`cere_coloane` verifica randurile CITITE - pe zero randuri n-are ce verifica.
+    `cere_coloane_cursor` foloseste cur.description, care descrie query-ul indiferent
+    cate randuri sunt. Asa se acopera firma fara salariati/facturi."""
+    from core.common import cere_coloane_cursor
+
+    class _CurGol:
+        description = [("id",), ("nume",)]
+
+    assert cere_coloane_cursor(_CurGol(), ("id", "nume")) is True
+    with pytest.raises(ValueError) as e:
+        cere_coloane_cursor(_CurGol(), ("id", "salariu_brut"), "salariati")
+    assert "salariu_brut" in str(e.value)
+
+    class _CurMort:
+        description = None
+    with pytest.raises(ValueError):
+        cere_coloane_cursor(_CurMort(), ("id",))
+
+
+def test_generatoarele_cu_select_stea_au_garda():
+    """Orice generator de declaratie care face SELECT * trebuie sa cheme garda de coloane.
+    Restul modulelor (stocuri/casa/retete/reconciliere) sunt UI, nu hranesc declaratii -
+    verificat 27.07: niciun core/d*.py nu le importa."""
+    import pathlib
+    rad = pathlib.Path(__file__).resolve().parent
+    vinovati = []
+    for nume in ("d100", "d101", "d112", "d205", "d300", "d301", "d390", "d394", "d406",
+                 "d710", "bilant_api"):
+        s = (rad / ("%s.py" % nume)).read_text(encoding="utf-8")
+        if "SELECT *" in s and "cere_coloane_cursor" not in s:
+            vinovati.append(nume)
+    assert not vinovati, "SELECT * fara garda de coloane in: %s" % vinovati

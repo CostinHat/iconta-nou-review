@@ -3,7 +3,7 @@
 Include CM: asiguratB3 + asiguratD + angajatorC2 (OUG 158/2005).
 pull() citeste salariati + concedii_medicale din schema tenantului."""
 
-from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+from core.common import text_anaf as _t, cere_coloane_cursor  # limita 75 car. ANAF + garda coloane (27.07.2026)
 import re
 from core import scadente as _scad
 from core import beneficii_api as _ben
@@ -319,11 +319,11 @@ def pull(conn, schema, an, luna):
         # GARDA COLOANE (27.07.2026): SELECT * nu crapa cand o coloana dispare din schema -
         # randul iese fara cheia aceea, s.get() da None, iar None e absenta legitima ->
         # valoarea devine TACIT 0. Dovedit: cu salariu_brut redenumita, D112 emitea o
-        # declaratie cu salarii ZERO, fara niciun semnal. Verificam PREZENTA cheii; valoarea
-        # 0 ramane legitima (salariat in concediu medical toata luna).
-        from core.common import cere_coloane
-        for _r in sal:
-            cere_coloane(_r, _COLOANE_SALARIAT, "salariati")
+        # declaratie cu salarii ZERO, fara niciun semnal.
+        # Pe CURSOR, nu pe randuri: asa prinde si firma FARA salariati (tabela goala are
+        # cur.description complet). Verificam PREZENTA coloanei; valoarea 0 ramane legitima
+        # (salariat in concediu medical toata luna).
+        cere_coloane_cursor(cur, _COLOANE_SALARIAT, "salariati")
         cur.execute(f"""SELECT * FROM {schema}.concedii_medicale
                         WHERE an=%s AND luna=%s""", (an, luna))
         cms = [dict(r) for r in cur.fetchall()]

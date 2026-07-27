@@ -3,6 +3,8 @@
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 from core import bilant as _b
+from core.common import cere_coloane_cursor  # [garda coloane 27.07.2026]
+_COLOANE_PROFIL = ("nume", "cui", "adresa", "caen")   # minimul citit de aici
 
 def _solduri_la(cur, schema, an):
     """Solduri finale la 31.12.an: solduri_initiale + miscari validate pana la 31.12.an."""
@@ -57,6 +59,7 @@ def genereaza(conn, schema, an):
     av = []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
+        cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         p = dict(cur.fetchone() or {})
         s_fin = _solduri_la(cur, schema, an)
         s_ini = _solduri_initiale(cur, schema)
@@ -88,6 +91,7 @@ def genereaza_s1003(conn, schema, an):
     av = []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
+        cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         p = dict(cur.fetchone() or {})
         s_fin = _solduri_la(cur, schema, an)
         s_ini = _solduri_initiale(cur, schema)

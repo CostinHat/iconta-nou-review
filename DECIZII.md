@@ -3740,3 +3740,29 @@ GARDUL A GASIT CEVA NEASTEPTAT: d300 avea 3 `int(round(...))` - dar pe COTE, nu 
 intregi (21/11/9/5/0), deci bancar == aritmetic acolo. Gardul initial era prea larg.
 RESTRANS cu escape hatch adnotat - marcajul `# ROTUNJIRE PE COTA`, acelasi tipar ca
 `# MASCA MOTIVATA` de la masti: exceptia e permisa, dar trebuie DECLARATA pe linie.
+
+### 27.07.2026 Garda de coloane pe CURSOR — inchide si cazul "tabela goala"
+
+DOUA DATORII inchise deodata, pentru ca aveau aceeasi solutie.
+
+(1) `cere_coloane` verifica randurile CITITE, deci pe o tabela GOALA n-avea ce verifica si
+trecea - o coloana disparuta pe o firma fara salariati ramanea tacuta. Limita fusese
+consemnata onest cand a fost gasita, in aceeasi zi.
+
+(2) `SELECT *` fara garda in mai multe module.
+
+SOLUTIA: `common.cere_coloane_cursor(cur, chei, unde)` - verifica pe `cur.description`, care
+descrie ce a intors query-ul INDIFERENT cate randuri sunt. Dovedit pe tenant_003.salariati:
+0 randuri, 20 de coloane in description. Zero cost - nu e query in plus, e metadata pe care
+driverul o are deja. Se cheama imediat dupa execute, inainte de fetch.
+
+PRIORITIZARE PE DOVADA, nu pe lista: masurat care module hranesc efectiv o declaratie -
+`grep` pe core/d*.py arata ca NICIUN generator nu importa stocuri_cv_api/casa_api/rip_api/
+retete_api/reconciliere_api/jurnal_api. Acelea sunt UI. Gardate: d112 (salariati), d394 si
+bilant_api (firma_profil) - singurele SELECT * care ajung intr-o depunere la ANAF.
+
+TREI GRESELI PROPRII, consemnate: (a) am pus importul in d112 cu un regex `(.+)$` care a
+inghitit si comentariul de pe linie, asa ca numele a ajuns IN comentariu, nu in import;
+(b) verificarea mea a raportat "deja prezent" fiindca cauta textul oriunde in fisier, nu in
+lista de importuri - o verificare care se pacaleste singura; (c) a fost nevoie de doua
+incercari pentru ca prima "verificare" nu verifica nimic. Suita a prins toate trei.
