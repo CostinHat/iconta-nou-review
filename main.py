@@ -1175,7 +1175,7 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
     tok = "ml_" + _sec.token_urlsafe(32)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '48 hours')", (tok, uid))
+            _pune_token(cur, tok, uid, "48 hours")
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#magic=" + tok
     _pm = ("<p style='border-left:3px solid #3d8fd6;padding-left:12px;color:#334155'>%s</p>" % date.mesaj.strip()) if (date.mesaj or "").strip() else ""  # client_mesaj_v1
@@ -1190,6 +1190,18 @@ class ActivareIn(BaseModel):
     parola: str
 
 # === MAGIC LINK === # magic_link_v1
+# [token_hash_v1] Tokenurile de acces (magic-link + activare) se stocheaza DOAR ca hash sha256:
+# un dump/backup nu mai permite impersonarea. Clarul traieste doar in link (email). Mecanica = ca la reset.
+def _hash_tok(t):
+    import hashlib
+    return hashlib.sha256((t or "").encode("utf-8")).hexdigest()
+
+def _pune_token(cur, tok, user_id, interval_sql):
+    """Curata expiratele/folositele, apoi stocheaza DOAR hash-ul tokenului (nu clarul)."""
+    cur.execute("DELETE FROM public.tokene_activare WHERE expira < now() OR folosit = true")
+    cur.execute("INSERT INTO public.tokene_activare (token_hash, user_id, expira) "
+                "VALUES (%s, %s, now() + (%s)::interval)", (_hash_tok(tok), user_id, interval_sql))
+
 class MagicCereIn(BaseModel):
     email: str
 
@@ -1331,7 +1343,7 @@ def magic_link_cere(date: MagicCereIn):
         r = cur.fetchone()
         if r:
             tok = "ml_" + _sec.token_urlsafe(32)
-            cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '15 minutes')", (tok, r[0]))
+            _pune_token(cur, tok, r[0], "15 minutes")
             conn.commit()
             baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
             link = baza + "/#magic=" + tok
@@ -1354,11 +1366,11 @@ def magic_login(date: MagicLoginIn):
         raise HTTPException(401, "link invalid")
     with db.get_conn() as conn, conn.cursor() as cur:
         cur.execute("""SELECT user_id FROM public.tokene_activare
-                       WHERE token=%s AND NOT folosit AND expira > now()""", (tok,))
+                       WHERE token_hash=%s AND NOT folosit AND expira > now()""", (_hash_tok(tok),))
         r = cur.fetchone()
         if not r:
             raise HTTPException(401, "link expirat sau folosit")
-        cur.execute("UPDATE public.tokene_activare SET folosit=true WHERE token=%s", (tok,))
+        cur.execute("UPDATE public.tokene_activare SET folosit=true WHERE token_hash=%s", (_hash_tok(tok),))
         conn.commit()
     with db.get_conn() as conn:
         rez = auth_api.sesiune_pentru_user(conn, r[0])
@@ -1373,13 +1385,13 @@ def activare_cont(date: ActivareIn):
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute("""SELECT user_id FROM public.tokene_activare
-                           WHERE token=%s AND NOT folosit AND expira > now()""", (date.token,))
+                           WHERE token_hash=%s AND NOT folosit AND expira > now()""", (_hash_tok(date.token),))
             r = cur.fetchone()
             if not r:
                 raise HTTPException(400, "link de activare invalid sau expirat")
             cur.execute("UPDATE public.users SET password_hash=%s, parola_schimbata=true, activ=true WHERE id=%s",
                         (_nucleu.hash_parola(date.parola), r["user_id"]))
-            cur.execute("UPDATE public.tokene_activare SET folosit=true WHERE token=%s", (date.token,))
+            cur.execute("UPDATE public.tokene_activare SET folosit=true WHERE token_hash=%s", (_hash_tok(date.token),))
     return {"ok": True}
 
 @app.delete("/tenants/{tenant_id}/client-acces/{user_id}")
@@ -3284,7 +3296,7 @@ def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
                 uid = cur.fetchone()["id"]
                 cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s)", (uid, t["id"]))
             tok = "ml_" + _sec2.token_urlsafe(32)
-            cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '48 hours')", (tok, uid))
+            _pune_token(cur, tok, uid, "48 hours")
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#magic=" + tok
     html = ("<p>Buna,</p><p>Ai primit acces la portalul iConta.eu pentru firma <b>%s</b>.</p>"
@@ -4690,7 +4702,7 @@ def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_rol("admin_firma"))):
             uid = cur.fetchone()["id"]
         with conn.cursor() as cur:
             tok = _sec.token_urlsafe(32)
-            cur.execute("INSERT INTO public.tokene_activare (token, user_id, expira) VALUES (%s, %s, now() + interval '48 hours')", (tok, uid))
+            _pune_token(cur, tok, uid, "48 hours")
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#activare=" + tok
     html = ("<p>Buna,</p><p>Ai fost adaugat ca asistent in cabinetul tau pe iConta.eu.</p>"
