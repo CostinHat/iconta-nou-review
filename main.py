@@ -2381,7 +2381,7 @@ def produse_creeaza(tenant_id: int, date: ProdusCreeazaIn, ctx=Depends(cere_cabi
 
 @app.put("/tenants/{tenant_id}/produse/{produs_id}")
 def produse_actualizeaza(tenant_id: int, produs_id: int, date: ProdusUpdateIn,
-                         ctx=Depends(cere_cabinet)):  # [rol_produse 27.07.2026]:
+                         ctx=Depends(cere_cabinet)):  # [rol_produse 27.07.2026]
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         r = produse_api.actualizeaza(conn, produs_id, denumire=date.denumire,
