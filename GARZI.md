@@ -102,7 +102,12 @@ că intrarea a fost înghițită**.
 - ACOPERIT: `control_incrucisat.py` — D112 vs rulaj, D300 vs jurnal, D390 vs evidență +
   D300 depus. Trei stări (verde/roșu/**gri**), temei + limită pe fiecare constatare.
 - ACOPERIT parțial: regula bazei nule. `d205.genereaza` refuză explicit să emită fără
-  beneficiar. Nu e aplicată sistematic la celelalte declarații.
+  beneficiar. La celelalte, `declaratii_api.numar_operatiuni` numără operațiunile, iar ecranul
+  pune o **poartă** (DS cap.5 `.caseta-poarta`) înainte de trimiterea în coadă: omul confirmă
+  că firma chiar n-a avut activitate. Nu blochează depunerea pe zero (obligație reală), dar
+  golul nu mai trece tăcut. `None` = nu se poate număra (d101/d112) → fără poartă.
+- LIMITĂ DECLARATĂ: poarta e doar în ecran. `POST /coada` regenerează declarația și n-are
+  poartă — un apel direct de API trimite pe zero fără întrebare.
 - LIPSĂ: gard care interzice cote literale în cod (azi nimic nu împiedică un `* 0.19`).
 - LIPSĂ: teste golden pe cifre calculate de mână din exemplul oficial.
 - DESCHIS: rotunjirea din D390 e bancară (`round()`), în timp ce D112 documentează că ANAF

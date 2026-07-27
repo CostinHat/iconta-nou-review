@@ -221,12 +221,23 @@ async function pas2(corp, nav) {
       <summary>Vezi XML-ul generat</summary>
       <pre class="dec-xml-pre">${esc(xml)}</pre>
     </details>
-    <div class="dec-bara">
+    ${_esteGoala() ? `<div class="caseta-poarta">
+        <div class="cp-mesaj">Declarația nu conține nicio operațiune. Dacă firma chiar n-a avut activitate în perioadă, se depune așa. Dacă a avut, întoarce-te și verifică dacă documentele perioadei sunt introduse și contabilizate.</div>
+        <div class="cp-butoane">
+          <button class="buton-primar" id="dec-gol-da">Da, fără activitate — trimite</button>
+          <button class="buton-secundar" id="dec-gol-nu">Nu, mă întorc să verific</button>
+        </div>
+      </div>` : `<div class="dec-bara">
       <button class="buton-primar" id="dec-trimite">Trimite în coadă →</button>
-    </div>
+    </div>`}
     <p class="ecran-nota">${esc(S.rezultat.limita || "")}</p>
   `;
-  corp.querySelector("#dec-trimite").addEventListener("click", () => pas3(corp, nav));
+  const _bt = corp.querySelector("#dec-trimite");
+  if (_bt) _bt.addEventListener("click", () => pas3(corp, nav));
+  const _bDa = corp.querySelector("#dec-gol-da");
+  if (_bDa) _bDa.addEventListener("click", () => pas3(corp, nav));
+  const _bNu = corp.querySelector("#dec-gol-nu");
+  if (_bNu) _bNu.addEventListener("click", () => pas1(corp, nav));
   if (S.tip === "d390") randeazaClasificareD390(corp, nav);
 }
 
@@ -284,6 +295,16 @@ async function randeazaClasificareD390(corp, nav) {
     catch (e) { arataMesaj(zona.querySelector("#dec-clasif-msg"), (e && e.mesaj) || "Eroare la adăugare.", "eroare"); }
   });
   zona.querySelector("#dec-regen").addEventListener("click", () => pas2(corp, nav));
+}
+
+// [poarta_gol_v1 27.07.2026] O declaratie GOALA legitima (firma fara activitate) si una
+// golita de un query rupt arata IDENTIC: acelasi XML valid, aceleasi zero randuri. Validatorul
+// ANAF nu poate face diferenta. Poarta (DS cap.5 v2.14, .caseta-poarta) cere omului sa confirme
+// FAPTUL, nu regula: nu spunem noi care declaratie se depune pe zero - aia e chestiune fiscala.
+// `operatiuni === null` inseamna "nu se poate numara" (d101/d112) -> fara poarta, nu falsificam
+// necunoscutul in zero.
+function _esteGoala() {
+  return S.rezultat && S.rezultat.operatiuni === 0;
 }
 
 // ---------- PAS 3: trimite in coada ----------

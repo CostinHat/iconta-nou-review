@@ -3235,6 +3235,10 @@ def declaratie_valideaza(tip: str, date: DeclaratieIn,
     return {"tip": tip, "stare": rez["stare"], "erori": rez["erori"],
             "temei": rez["temei"], "limita": rez["limita"],
             "avertismente": getattr(res, "avertismente", None),
+            # [poarta_gol_v1 27.07.2026] cate operatiuni are declaratia; None = nu se poate
+            # numara (d101/d112). Ecranul pune o poarta la 0, ca declaratia goala legitima
+            # sa nu mai arate identic cu cea golita de un query rupt.
+            "operatiuni": declaratii_api.numar_operatiuni(tip, res),
             "xml_b64": _b64.b64encode(xml.encode()).decode()}
 
 
@@ -3256,7 +3260,8 @@ def declaratie_genereaza(tip: str, date: DeclaratieIn,
     except ValueError as e:
         raise HTTPException(422, str(e))
     avert = getattr(res, "avertismente", None)
-    return {"tip": tip, "xml": xml, "avertismente": avert}
+    return {"tip": tip, "xml": xml, "avertismente": avert,
+            "operatiuni": declaratii_api.numar_operatiuni(tip, res)}  # [poarta_gol_v1]
 
 
 # ============================================================

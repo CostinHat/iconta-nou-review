@@ -3525,3 +3525,36 @@ ZERO REGRESIE: D112 pe tenant_001 si tenant_002, SHA256 identic cu referinta.
 
 RAMAS DESCHIS: aceeasi constructie `SELECT *` in d394, bilant_api, rip_api, stocuri_cv_api,
 reconciliere_api, jurnal_api, salariati_api. Vezi DE_FACUT.
+
+### 27.07.2026 Poarta pe declaratia GOALA (DA Costin) — `.caseta-poarta` inainte de depunere
+
+PROBLEMA: o declaratie goala LEGITIMA (firma fara activitate in perioada) si una golita de un
+query rupt arata IDENTIC - acelasi XML valid structural, aceleasi zero randuri. DUKIntegrator
+nu poate face diferenta: un D390 cu zero operatiuni e corect structural. Toata ziua de 27.07
+a fost despre exact clasa asta (d406 cu registru gol, D112 cu salarii zero).
+
+DECIZIE DE CONTINUT — poarta INTREABA, nu sfatuieste: mesajul NU spune care declaratie se
+depune pe zero si care nu. Aia e afirmatie FISCALA si cere verificare la sursa oficiala
+(regula valorilor fiscale). Poarta cere omului sa confirme FAPTUL ("firma n-a avut activitate
+in perioada"), nu regula. Nu blocheaza depunerea pe zero - e obligatie reala pentru multe
+declaratii - dar nu o mai lasa sa treaca tacut.
+
+DS cap.5, alegerea tiparului: `.caseta-poarta` (v2.14, chihlimbar #fbf7ee), NU `.caseta-atentie`.
+DS spune explicit ca "rosul ramane EXCLUSIV pentru atentionare/actiune distructiva" - o
+declaratie goala nu e distructiva. Poarta e definita ca "intrebare OBLIGATORIE inainte de o
+actiune consecventa... raspunsul e cerut INAINTE de actiune si NU se poate sari" - exact cazul.
+Butonul "Trimite in coada" e INLOCUIT de poarta cand e gol, nu adaugat langa (nu se poate sari).
+
+NUMARATOAREA, intr-un singur loc: `declaratii_api.numar_operatiuni(tip, res)`. Nu s-a atins
+niciun generator si niciun dataclass - functia citeste ce exista deja (nr_opi la d390,
+op_efectuate la d394, listele la d301/d205/d100/d710/d406, randurile nenule la d300).
+
+ONESTITATE: None, NU zero, pentru ce nu se poate numara. `d112.genereaza` intoarce o LISTA de
+avertismente (nu dataclass); `d101` lucreaza pe solduri si n-are notiunea de operatiuni. Un tip
+nou nemapat da tot None. "Nu stiu" nu se falsifica in "zero" - aceeasi regula ca verdictul GRI
+de la validator. Altfel poarta ar aparea la fiecare D112 si ar deveni reflex, adica inutila.
+
+LIMITA DECLARATA: poarta se vede doar in ecranul de declaratii (pas 2 -> pas 3). Ruta POST
+/coada genereaza din nou declaratia si NU are poarta - un apel direct de API trimite pe zero
+fara intrebare. Acceptat: poarta e ajutor pentru om, nu control de integritate; controlul e
+gardul din cod.

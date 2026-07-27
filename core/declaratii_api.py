@@ -165,3 +165,47 @@ def genereaza(conn, schema, tip, body):
         raise ValueError(_neap[tip])
     _per, adaptor = DECLARATII[tip]
     return adaptor(conn, schema, body)
+
+
+# ============================================================
+#  CATE OPERATIUNI ARE DECLARATIA (27.07.2026)
+# ============================================================
+def numar_operatiuni(tip, res):
+    """Numarul de operatiuni din declaratia generata. None = NU se poate numara.
+
+    DE CE: o declaratie goala LEGITIMA (firma fara activitate) si una goala pentru ca
+    s-a rupt un query arata IDENTIC - acelasi XML valid structural, aceleasi zero randuri.
+    DUKIntegrator nu poate face diferenta: un D390 cu zero operatiuni e corect structural.
+    Toata ziua de 27.07 a fost despre exact clasa asta de defect.
+
+    Numarul urca la UI, care pune o POARTA inainte de trimiterea in coada: omul confirma
+    ca firma chiar n-a avut activitate. Nu blocheaza depunerea pe zero - e obligatie reala
+    pentru multe declaratii - dar nu o mai lasa sa treaca tacut.
+
+    None, NU zero, pentru ce nu se poate numara: d112 intoarce o LISTA de avertismente (nu
+    dataclass), iar d101 n-are notiunea de operatiuni (lucreaza pe solduri). "Nu stiu" nu se
+    falsifica in "zero" - aceeasi regula ca verdictul GRI de la validator.
+    """
+    if res is None or isinstance(res, list):
+        return None
+    t = (tip or "").lower()
+    if t in ("d100", "d710"):
+        return len(getattr(res, "obligatii", None) or [])
+    if t == "d205":
+        return len(getattr(res, "beneficiari", None) or [])
+    if t == "d301":
+        return len(getattr(res, "operatiuni", None) or [])
+    if t == "d390":
+        return int(getattr(res, "nr_opi", 0) or 0)
+    if t == "d394":
+        return int(getattr(res, "op_efectuate", 0) or 0)
+    if t == "d406":
+        return (len(getattr(res, "note", None) or []) +
+                len(getattr(res, "facturi_vanzare", None) or []) +
+                len(getattr(res, "facturi_cumparare", None) or []))
+    if t == "d300":
+        R = getattr(res, "R", None)
+        if not isinstance(R, dict):
+            return None
+        return sum(1 for v in R.values() if v)      # randuri completate, nenule
+    return None
