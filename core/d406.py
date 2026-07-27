@@ -16,7 +16,8 @@ Structura AuditFile (OECD SAF-T 2.0 adaptat RO):
    dar cu O SINGURA linie sintetica per factura (cont 707/371, cantitate 1, pret = net total) — NU
    liniile reale pe produs (factura_linii nu e atins); Payments = gol. Fisierul TRECE DUK structural,
    dar e INCOMPLET fata de ce cere ANAF (facturi la nivel de InvoiceLine). NU se depune pana la
-   reparare (linii reale + Payments). Vezi DECIZII 27.07.
+   reparare: linii reale FACUTA 27.07 (cantitate/UM/pret/descriere/cota din
+   factura_linii). Payments ramane gol - zero date de plati in model. Vezi DECIZII 27.07.
    Validare finală: DUKIntegrator_AnLunaUI.jar (-v D406 fisier.xml $ $ an=AAAA luna=LL).
 
 CORECȚII față de prima schiță (confirmate din XSD):
@@ -1037,8 +1038,9 @@ def pull(conn, schema, an, luna):
                                          descriere="", debit=Decimal("0"), credit=suma,
                                          cont_partener_id=pid))
             note = list(nmap.values())
-        except Exception:
-            pass
+        except Exception as e:
+            # MASCA SCOASA (27.07.2026) - vezi nota de la blocul facturi.
+            raise RuntimeError("D406: citirea notelor a esuat - %s" % e) from e
         facturi_vanzare, facturi_cumparare, plati = [], [], []
         try:
             # COLOANE REALE facturi (dovedit 16.07.2026 prin \d tenant_002.facturi):
@@ -1048,6 +1050,26 @@ def pull(conn, schema, an, luna):
             # vechi cerea coloane inexistente -> arunca -> except: pass -> 0 facturi in
             # SalesInvoices/PurchaseInvoices, DESI existau 5 facturi reale in iunie
             # (aceeasi clasa de bug ca la note: schema presupusa != schema reala).
+            # LINII REALE (27.07.2026). Codul anterior emitea o SINGURA linie sintetica
+            # per factura: cantitate=1, pret_unitar=net, um=H87 implicit, descriere=
+            # numele partenerului, cota DEDUSA din antet (tva/net*100). Dovedit fals pe
+            # date reale (tenant_002, factura 7 "Deseuri fier vechi"): in DB 1000 kg x
+            # 5,00 lei/kg; in SAF-T iesea 1 buc x 5000 lei. Cantitate, UM si descriere
+            # FALSE catre ANAF. In plus cota dedusa din antet e gresita pe factura cu
+            # cote mixte (21% + 11% -> o cota medie care nu corespunde niciunei linii).
+            # factura_linii are descriere/um/cantitate/pret_unitar/cota_tva. uom_unece()
+            # exista din 16.07 (d406.py:101) si traducea deja 'buc'/'kg' in H87/KGM -
+            # era scrisa si NEAPELATA aici.
+            cur.execute("SELECT factura_id, id, descriere, um, "
+                        "COALESCE(cantitate,0) AS cantitate, "
+                        "COALESCE(pret_unitar,0) AS pret_unitar, "
+                        "COALESCE(cota_tva,0) AS cota_tva "
+                        "FROM factura_linii WHERE factura_id IN "
+                        "(SELECT id FROM facturi WHERE data_emitere >= %s AND data_emitere < %s) "
+                        "ORDER BY factura_id, id", (di, ds))
+            linii_pe_factura = {}
+            for lr in cur.fetchall():
+                linii_pe_factura.setdefault(lr["factura_id"], []).append(lr)
             cur.execute("SELECT id, numar, data_emitere, tert_cui, tert_nume, "
                         "COALESCE(total,0) AS total, COALESCE(tva,0) AS tva, "
                         "COALESCE(taxare_inversa,false) AS ti, storno_din_id, directie "
@@ -1056,32 +1078,64 @@ def pull(conn, schema, an, luna):
                 total = Decimal(str(r["total"]))
                 tva = Decimal(str(r["tva"]))
                 net = total - tva
-                cota = (tva / net * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP) if net else Decimal(0)
                 este_v = (r["directie"] or "emisa") in ("emisa", "vanzare")
-                # InvoiceType = COD SAFcodeType (nomenclator Nom_Tipuri_facturi): 380 =
-                # factura comerciala, 381 = nota de credit (storno). Valoarea DB 'tip'
-                # ("factura") NU e cod valid.
+                # InvoiceType = COD SAFcodeType (Nom_Tipuri_facturi): 380 factura
+                # comerciala, 381 nota de credit (storno). Valoarea DB 'tip' NU e cod valid.
                 itype = "381" if r["storno_din_id"] else "380"
-                # TaxCode dupa cota si sensul operatiunii. Vanzari: nomenclatorul
-                # "Livrari" (TAXCODE_LIVRARI). Achizitii: nomenclatorul "Achizitii ded
-                # 100%" (300501 = achizitii interne standard; 300101 = achizitii
-                # intracomunitare/taxare inversa, cota 0 la raportor).
-                if este_v:
-                    tcod = TAXCODE_LIVRARI.get(int(cota), "310312")
-                else:
-                    tcod = "300101" if (r["ti"] or cota == 0) else "300501"
                 pid = _partener_registration_number(r["tert_cui"]) or "0"
-                linie = LinieFactura(nr=1, cont=("707" if este_v else "371"),
-                                     descriere=r["tert_nume"] or "Factura", cantitate=Decimal(1),
-                                     pret_unitar=net, valoare=net,
-                                     sens=("C" if este_v else "D"), tva_cod=tcod, tva_procent=cota,
-                                     tva_suma=tva)
+                cont_l = "707" if este_v else "371"
+                sens = "C" if este_v else "D"
+                linii = []
+                for idx, lr in enumerate(linii_pe_factura.get(r["id"], []), 1):
+                    cant = Decimal(str(lr["cantitate"]))
+                    pret = Decimal(str(lr["pret_unitar"]))
+                    cota_l = Decimal(str(lr["cota_tva"])).quantize(Decimal("1"), rounding=ROUND_HALF_UP)
+                    val = (cant * pret).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+                    tva_l = (val * cota_l / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+                    # TaxCode PE LINIE, dupa cota liniei si sensul operatiunii.
+                    if este_v:
+                        tcod_l = TAXCODE_LIVRARI.get(int(cota_l), "310312")
+                    else:
+                        tcod_l = "300101" if (r["ti"] or cota_l == 0) else "300501"
+                    um_cod, _um_stiut = uom_unece(lr["um"])
+                    linii.append(LinieFactura(nr=idx, cont=cont_l,
+                                              descriere=lr["descriere"] or "Produs/serviciu",
+                                              cantitate=cant, um=um_cod, pret_unitar=pret,
+                                              valoare=val, sens=sens, tva_cod=tcod_l,
+                                              tva_procent=cota_l, tva_suma=tva_l))
+                if linii:
+                    # RECONCILIERE OBLIGATORIE: liniile trebuie sa dea antetul. Divergenta
+                    # tacuta intre doua surse ale aceleiasi facturi = eroare, nu detaliu.
+                    nl = sum(l.valoare for l in linii)
+                    tl = sum(l.tva_suma for l in linii)
+                    if abs(nl - net) > Decimal("0.01") or abs(tl - tva) > Decimal("0.01"):
+                        raise ValueError(
+                            "D406: factura %s nu se reconciliaza - antet net=%s tva=%s, "
+                            "linii net=%s tva=%s. Corecteaza factura inainte de generare."
+                            % (r["numar"] or r["id"], net, tva, nl, tl))
+                else:
+                    # Factura fara linii in DB. NU se inventeaza cantitate: 1 x net, UM
+                    # implicita, descriere care SPUNE ca detaliul lipseste (semnal in XML,
+                    # nu mimare de detaliu real).
+                    cota = (tva / net * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP) if net else Decimal(0)
+                    if este_v:
+                        tcod_l = TAXCODE_LIVRARI.get(int(cota), "310312")
+                    else:
+                        tcod_l = "300101" if (r["ti"] or cota == 0) else "300501"
+                    linii = [LinieFactura(nr=1, cont=cont_l,
+                                          descriere="Factura fara detaliu de linii",
+                                          cantitate=Decimal(1), um=UOM_IMPLICIT, pret_unitar=net,
+                                          valoare=net, sens=sens, tva_cod=tcod_l,
+                                          tva_procent=cota, tva_suma=tva)]
                 f = Factura(nr=r["numar"] or str(r["id"]), data=r["data_emitere"],
                             partener_id=pid, partener_nume=r["tert_nume"] or "",
-                            tip=itype, cont=("4111" if este_v else "401"), linii=[linie])
+                            tip=itype, cont=("4111" if este_v else "401"), linii=linii)
                 (facturi_vanzare if este_v else facturi_cumparare).append(f)
-        except Exception:
-            pass
+        except Exception as e:
+            # MASCA SCOASA (27.07.2026): `except: pass` facea ca orice query rupt sa
+            # produca SalesInvoices/PurchaseInvoices goale intr-un XML valid structural.
+            # Clasa de bug din 16.07. Orice garda pusa deasupra ar fi fost inghitita aici.
+            raise RuntimeError("D406: citirea facturilor a esuat - %s" % e) from e
     return prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati
 
 

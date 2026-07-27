@@ -3263,3 +3263,36 @@ REVOCAT: git revert 74e87fe + DROP pe tenant_001/003. Starea dinainte restaurata
 LECTIE: absenta unui tabel dintr-un tenant NU dovedeste ca ceva e rupt. Ipoteza "lipseste
 deci e defect" cere verificarea consumatorilor INAINTE de orice reparatie - aceeasi regula
 de verificare-la-sursa, aplicata si structurii de date, nu doar valorilor fiscale.
+
+### 27.07.2026 D406 SourceDocuments: linii REALE + masti scoase din pull()
+
+CONTEXT: commitul efe73d7 ("D406 nedepunabil: corectez claim-ul + notez gap-ul") a scris
+in d406.py "Vezi DECIZII 27.07" DAR nu a scris intrarea in registru. Referinta era moarta;
+DECIZII.md e citit de raportari_ai.py ca baza de cunostinte. Se repara aici.
+
+DEFECT DOVEDIT pe date reale (tenant_002, iunie 2026): SourceDocuments emitea o singura
+linie SINTETICA per factura - cantitate=1, pret_unitar=net, um=H87, descriere=numele
+partenerului, cota dedusa din antet. Factura 7 "Deseuri fier vechi": in DB 1000 kg x 5,00
+lei; in SAF-T iesea 1 buc x 5000 lei. Cantitate, UM si descriere FALSE catre ANAF. Pe
+deseuri (taxare inversa) cantitatea nu e detaliu decorativ.
+
+Al doilea defect, latent: cota dedusa din antet (tva/net*100) da o cota MEDIE pe factura
+cu cote mixte (21%+11%) -> TaxCode care nu corespunde niciunei linii. Invizibil azi (toate
+facturile au o linie), real la prima factura cu doua cote.
+
+REPARAT: pull() citeste factura_linii (descriere/um/cantitate/pret_unitar/cota_tva), o
+linie SAF-T per linie de factura, TaxCode pe cota liniei. uom_unece() exista din 16.07 si
+era SCRISA SI NEAPELATA aici - 'buc'/'kg' din DB nu sunt coduri UN/ECE, se mapeaza.
+
+MASTI SCOASE: cele doua `except: pass` din pull() (note + facturi) devin re-ridicare cu
+context. Fara asta, reconcilierea adaugata mai jos ar fi fost inghitita - orice garda pusa
+deasupra unei masti e decorativa.
+
+GARDA NOUA: liniile trebuie sa reconcilieze cu antetul (toleranta 0,01). Divergenta tacuta
+intre doua surse ale aceleiasi facturi = eroare, nu detaliu. Factura fara linii primeste
+descrierea "Factura fara detaliu de linii" - semnal in XML, nu mimare de detaliu real.
+
+NEATINS: Payments ramane gol. Nu e ascundere - chitante si casa_operatiuni au ZERO randuri
+in toti tenantii; nu exista date de plati de raportat. XSD nu pune minOccurs pe Payments
+(deci implicit obligatoriu), dar experimentul pe DUK din 16.07 arata ca sectiunea goala e
+RESPINSA si absenta e ACCEPTATA. Se reia cand exista prima plata reala.
