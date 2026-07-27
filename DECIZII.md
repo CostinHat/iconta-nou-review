@@ -3915,3 +3915,25 @@ intra in verificator ODATA cu regula (DS + verificator simultan).
 CATE ERAU DE FAPT: nota din DE_FACUT vorbea de UN caz, in firme.js. Masuratoarea a gasit 15,
 in PATRU fisiere (firme.js 12, facturi_ecran.js 1, rip_ecran.js 1, portal.js 1). Si aici
 registrul descria simptomul vazut, nu clasa - al treilea caz azi.
+
+### 27.07.2026 Catch-uri goale pe SCRIERE (3) — restul sunt degradare gratioasa, nu tacere
+
+MASURAT: 16 `catch {}` in frontend. Citite toate, nu reparate in bloc:
+  - 13 sunt pe CITIRE, cu fallback pe lista goala (`try { lista = await get() } catch {}`).
+    Ecranul arata stare goala in loc sa crape. E degradare gratioasa, nu tacere periculoasa -
+    NU se ating.
+  - 3 sunt pe SCRIERE, unde esecul parea succes: firme.js (mesaj catre client netrimis),
+    cabinet.js (setarea patru-ochi nesalvata, dar elementul disparea), navigator.js
+    (confirmarea unui anunt - disparea de pe ecran si reaparea la reincarcare).
+    REPARATE: mesaj de eroare in loc de tacere.
+
+ASTERISC FARA VALIDARE: raportul initial spunea 3 ecrane (date_firma, flux_concediu, validat).
+FALS - toate trei AU validare; masuratoarea mea cauta doar `arataMesaj(..., "eroare")`, iar
+ecranele folosesc si alte forme canonice (`msg-eroare` prin innerHTML in flux_concediu:136-139,
+`er.textContent` + flag `obligatoriu` in validat.js:171). Am apucat sa adaug o validare DUBLA
+in flux_concediu, cu nume de campuri ghicite (`zile` in loc de `zile_cm`) si asezata INAUNTRUL
+try-ului, dupa `btn.disabled = true` - ar fi blocat butonul pe "Se salveaza..." la orice
+validare picata. SCOASA. Verificarea corecta: zero ecrane cu asterisc fara validare.
+
+LECTIE: un criteriu de masurare prea ingust produce fals-pozitive care duc la reparatii
+inutile pe cod care functiona. A patra oara azi cand masuratoarea mea a fost gresita, nu codul.

@@ -439,7 +439,11 @@ async function _indicatorPatruOchi() {  /* po_indicator_v1 */
         await api.post("/eu/patru-ochi", { activ: false });
         el.remove();
         _educatiePatruOchi(document.querySelector(".desktop-continut"));
-      } catch {}
+      } catch (e) {
+        /* [catch_scriere 27.07.2026] setarea patru-ochi nesalvata parea salvata:
+           elementul disparea oricum. Control intern - nu are voie sa taca. */
+        arataMesaj(el, (e && e.mesaj) || "Nu am putut salva setarea. Incearca din nou.", "eroare");
+      }
     }, { textOk: "Dezactiveaz\u0103" });
   });
   bara.appendChild(el);

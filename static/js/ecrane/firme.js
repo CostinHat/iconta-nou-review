@@ -410,7 +410,10 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
     try {
       await api.post(`/tenants/${t.id}/solicitari`, { mesaj: txt });
       await randeazaSolicitariCabinet(corp, nav, t);
-    } catch {}
+    } catch (e) {
+      /* [catch_scriere 27.07.2026] mesajul netrimis parea trimis. DS cap.6. */
+      arataMesaj(corp, (e && e.mesaj) || "Nu am putut trimite mesajul.", "eroare");
+    }
   });
 }
 
