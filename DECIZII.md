@@ -3328,3 +3328,23 @@ TREI LECTII DESPRE GARZI, toate traite azi la ACEEASI garda:
 3. A treia data mutatia a raportat FAIL desi garda functiona: verificarea citea
    `pytest -q | tail -3`, unde mesajul e trunchiat la "AssertionEr...". Verificarea unei
    garzi trebuie sa citeasca output COMPLET (--tb=long in fisier), nu coada trunchiata.
+
+### 27.07.2026 D406: ultimele 4 masti din pull() (nomenclatoare) - si de ce le ratasem
+
+Dimineata am scos 2 masti din pull() (note + facturi) si am declarat fisierul curat. Erau
+6. Cele 4 ramase acopereau plan_conturi, clienti, furnizori si derivarea partenerilor din
+facturi - la cateva linii distanta de cele reparate.
+
+DE CE PROBA INITIALA A PARUT SA LE ABSOLVE: redenumind plan_conturi, generarea a esuat
+zgomotos - deci "pare reparat". De fapt masca inghitise eroarea ca de obicei; in PostgreSQL
+un query esuat OTRAVESTE tranzactia, asa ca a crapat blocul URMATOR (cel reparat dimineata),
+cu mesajul "citirea notelor a esuat". Cauza reala ascunsa sub un mesaj gresit - exact clasa
+reparata azi cu ValueError neinvelit. Inainte de reparatia din amonte, toate 4 ar fi inghitit
+tacut -> registru de conturi GOL intr-un XML valid structural.
+
+REPARAT: fiecare masca devine RuntimeError cu cauza proprie. Dovedit prin mutatie pe date
+reale (rename tabela in tranzactie cu rollback): plan_conturi -> "citirea planului de conturi
+a esuat"; clienti -> mesajul lui. Generarea normala: 182 conturi, DUK valid.
+
+LECTIE: "am scos mastile din fisierul X" nu e o afirmatie verificabila fara numarat. Numarul
+de masti ramase se tipareste in aceeasi comanda cu reparatia.

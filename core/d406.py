@@ -949,20 +949,32 @@ def pull(conn, schema, an, luna):
                 conturi.append(Cont(id=simb, descriere=r["denumire"], cont_standard=sintetic,
                                     tip=r["tip"], sold_inchidere_d=Decimal(str(r["sd"])),
                                     sold_inchidere_c=Decimal(str(r["sc"]))))
-        except Exception:
-            pass
+        except Exception as e:
+            # MASCA SCOASA (27.07.2026, al doilea val). In PostgreSQL un query esuat
+            # OTRAVESTE tranzactia: masca ascundea cauza, iar eroarea aparea abia in
+            # blocul urmator, cu mesaj gresit ('citirea notelor a esuat' cand de fapt
+            # picase planul de conturi). Dovedit pe tenant_002 prin redenumirea tabelei.
+            raise RuntimeError("D406: citirea planului de conturi a esuat - %s" % e) from e
         try:
             cur.execute("SELECT id, nume, cui, oras FROM clienti ORDER BY id")
             for r in cur.fetchall():
                 clienti.append(Partener(id=str(r["id"]), nume=r["nume"] or "", cui=r["cui"] or "", oras=r["oras"] or ""))
-        except Exception:
-            pass
+        except Exception as e:
+            # MASCA SCOASA (27.07.2026, al doilea val). In PostgreSQL un query esuat
+            # OTRAVESTE tranzactia: masca ascundea cauza, iar eroarea aparea abia in
+            # blocul urmator, cu mesaj gresit ('citirea notelor a esuat' cand de fapt
+            # picase nomenclatorul de clienti). Dovedit pe tenant_002 prin redenumirea tabelei.
+            raise RuntimeError("D406: citirea nomenclatorului de clienti a esuat - %s" % e) from e
         try:
             cur.execute("SELECT id, nume, cui, oras FROM furnizori ORDER BY id")
             for r in cur.fetchall():
                 furnizori.append(Partener(id=str(r["id"]), nume=r["nume"] or "", cui=r["cui"] or "", oras=r["oras"] or ""))
-        except Exception:
-            pass
+        except Exception as e:
+            # MASCA SCOASA (27.07.2026, al doilea val). In PostgreSQL un query esuat
+            # OTRAVESTE tranzactia: masca ascundea cauza, iar eroarea aparea abia in
+            # blocul urmator, cu mesaj gresit ('citirea notelor a esuat' cand de fapt
+            # picase nomenclatorul de furnizori). Dovedit pe tenant_002 prin redenumirea tabelei.
+            raise RuntimeError("D406: citirea nomenclatorului de furnizori a esuat - %s" % e) from e
         # FALLBACK: daca nomenclatoarele clienti/furnizori sunt goale (dovedit
         # 16.07.2026: facturile create direct NU populeaza automat clienti/
         # furnizori - limitare cunoscuta, nereparata inca la sursa), derivam
@@ -997,8 +1009,12 @@ def pull(conn, schema, an, luna):
                     if rid:
                         furnizori.append(Partener(id=rid, nume=r["tert_nume"] or "",
                                                   cui=r["tert_cui"] or "", oras=""))
-        except Exception:
-            pass
+        except Exception as e:
+            # MASCA SCOASA (27.07.2026, al doilea val). In PostgreSQL un query esuat
+            # OTRAVESTE tranzactia: masca ascundea cauza, iar eroarea aparea abia in
+            # blocul urmator, cu mesaj gresit ('citirea notelor a esuat' cand de fapt
+            # picase derivarea partenerilor din facturi). Dovedit pe tenant_002 prin redenumirea tabelei.
+            raise RuntimeError("D406: derivarea partenerilor din facturi a esuat - %s" % e) from e
         try:
             # COLOANE REALE (dovedit 16.07.2026 prin \d tenant_002.inregistrari_linii):
             # cont_debit, cont_credit, suma - NU cont/debit/credit cum interoga codul
