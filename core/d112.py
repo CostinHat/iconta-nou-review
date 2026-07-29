@@ -401,6 +401,7 @@ def pull(conn, schema, an, luna):
                                la_data=ref,
                                norma_intreaga=not s.get("part_time"),
                                venit_brut_total=brut_int,
+                               data_angajare=s.get("data_angajare"),
                                tichet_valoare=float(s.get("tichet_masa_valoare") or 0),
                                tichet_zile=tichet_zile,
                                tichet_vacanta=float(s.get("tichet_vacanta") or 0))

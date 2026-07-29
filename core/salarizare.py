@@ -75,7 +75,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    functie_baza=True, la_data=None,
                    norma_intreaga=True, venit_brut_total=None,
                    exceptat_suprataxare=False,
-                   tichet_valoare=0, tichet_zile=0, tichet_vacanta=0):
+                   tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -162,6 +162,34 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
     # norma_intreaga ramane conditie pentru FACILITATE (HG 146/2026 cere norma intreaga),
     # nu pentru suprataxare.
     baza_podea = sm - facilitate_val
+    # PRORATARE luna de ANGAJARE (OUG 156/2024 art.LXVI alin.(5) = OUG 89/2025 art.III + OMF 1855/2022
+    # pct.2): nivelul de referinta al suprataxarii se prorateaza pe zilele lucrate din luna in care
+    # contractul devine activ. INTERPRETARE cu temei, NU text explicit (verificat la sursa 29.07.2026):
+    # OMF 1855/2022 (proratarea) e din 2022, dinaintea facilitatii, si NU tranzeaza combinatia. Aleg B:
+    # derogarea spune 'NIVELUL... SE DIMINUEAZA cu 300 lei' -> REDEFINESTE nivelul (3750 in S1 / 4125 in
+    # S2), iar OMF prorateaza 'nivelul aferent zilelor lucrate' = nivelul DEJA diminuat:
+    #   prag = (sm - facilitate) x zile_lucrate / zile_lucratoare.
+    # Argument in plus: alin.(4) prevede EXPLICIT proratarea facilitatii de 300; alin.(5) doar redefineste
+    # nivelul - daca voia 300 intregi peste un prag proratat, ar fi scris-o (ca la alin.4). Alternativa A
+    # (prorateaza sm intreg, apoi scade 300 intreg) e mai putin fidela literei. De reconfirmat daca apare
+    # o norma/ghid ANAF care tranzeaza explicit. INCETAREA ramane nemodelata (data_incetare lipseste - vezi
+    # test_datorie).
+    if data_angajare is not None and la_data is not None:
+        from datetime import date as _date
+        import calendar as _cal
+        from core import scadente as _scad
+        _da = data_angajare if isinstance(data_angajare, _date) else None
+        if _da is None:
+            try:
+                _da = _date.fromisoformat(str(data_angajare)[:10])
+            except (ValueError, TypeError):
+                _da = None
+        if _da is not None and (_da.year, _da.month) == (la_data.year, la_data.month):
+            _ultima = _date(la_data.year, la_data.month, _cal.monthrange(la_data.year, la_data.month)[1])
+            _zl = _scad.zile_lucratoare_luna(la_data.year, la_data.month)
+            _za = _scad.zile_lucratoare_interval(_da, _ultima)
+            if _zl:
+                baza_podea = baza_podea * _dec(_za) / _dec(_zl)
     cas_suprataxa = Decimal(0)
     cass_suprataxa = Decimal(0)
     if (not exceptat_suprataxare) and baza_contrib < baza_podea:

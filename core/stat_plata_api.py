@@ -16,7 +16,7 @@ def stat_plata(conn, schema, an, luna):
     with conn.cursor() as cur:
         cur.execute(f"""
             SELECT id, nume, prenume, salariu_brut, persoane_intretinere, part_time, ore_zi,
-                   tichet_masa_valoare, iban, cor
+                   tichet_masa_valoare, iban, cor, data_angajare
             FROM {schema}.salariati WHERE activ = true ORDER BY nume, prenume
         """)
         randuri = cur.fetchall()
@@ -35,7 +35,7 @@ def stat_plata(conn, schema, an, luna):
     cadou_luna = _ben.lista_luna(conn, schema, an, luna, "cadou")
     cadou_det = _ben.cadou_detalii_luna(conn, schema, an, luna)
     stat = []
-    for sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val, iban, cor in randuri:
+    for sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang in randuri:
         c_cm = cm.get(sid)
         # zile lucratoare FARA sarbatori (OUG 158/2005 art.10) - numitorul proratarii CM
         zile_luna = _scad.zile_lucratoare_luna(an, luna)
@@ -51,6 +51,7 @@ def stat_plata(conn, schema, an, luna):
         calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
                                          norma_intreaga=not part_time,
                                          venit_brut_total=float(brut or 0),
+                                         data_angajare=data_ang,
                                          tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
                                          tichet_vacanta=float(vac or 0))
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
@@ -101,13 +102,13 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     ref = date(an, luna, 1)
     with conn.cursor() as cur:
         cur.execute(f"""
-            SELECT nume, prenume, salariu_brut, persoane_intretinere, part_time, tichet_masa_valoare
+            SELECT nume, prenume, salariu_brut, persoane_intretinere, part_time, tichet_masa_valoare, data_angajare
             FROM {schema}.salariati WHERE id = %s
         """, (salariat_id,))
         r = cur.fetchone()
     if not r:
         return None
-    nume, prenume, brut, pers, part_time, tichet_val = r
+    nume, prenume, brut, pers, part_time, tichet_val, data_ang = r
     with conn.cursor() as cur:
         cur.execute(f"""
             SELECT COALESCE(SUM(zile),0), COALESCE(SUM(net),0), COALESCE(SUM(brut_ang+brut_fnuass),0)
@@ -124,6 +125,7 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
                                      norma_intreaga=not part_time,
                                      venit_brut_total=float(brut or 0),
+                                     data_angajare=data_ang,
                                      tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
                                      tichet_vacanta=float(vac or 0))
 

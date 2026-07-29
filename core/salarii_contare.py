@@ -56,7 +56,8 @@ def note_lunare(conn, schema, an, luna):
             (s.get("brut_lucrat") if s.get("brut_lucrat") is not None else s.get("brut")) or 0,
             persoane=s.get("persoane_intretinere") or 0, la_data=ref,
             norma_intreaga=not s.get("part_time"),
-            venit_brut_total=float(s.get("brut") or 0))
+            venit_brut_total=float(s.get("brut") or 0),
+            data_angajare=s.get("data_angajare"))
         for n in _sz.monografie_salariu(calc):
             k = (n["debit"], n["credit"])
             agg[k] = agg.get(k, Decimal("0")) + _d(n["suma"])

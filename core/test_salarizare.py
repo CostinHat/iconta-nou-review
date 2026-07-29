@@ -172,3 +172,16 @@ def test_suprataxa_baza_pe_minimul_diminuat_ambele_semestre():
     s2 = calcul_salariu(2000, norma_intreaga=False, venit_brut_total=2000, la_data=SEM2)
     assert s2["cas_suprataxa"] == Decimal("531.25")    # S2 2026 (sm=4325, fac=200): (4325-200-2000)*25% CAS
     assert s2["cass_suprataxa"] == Decimal("212.50")   # S2: (4325-200-2000)*10% CASS - OUG 89/2025: baza = sm diminuat cu 200
+
+
+def test_suprataxa_prag_prorata_luna_angajare():
+    # Angajare la MIJLOC de luna: nivelul de referinta al suprataxarii se prorateaza pe zilele lucrate
+    # din luna. Iunie 2026: 21 zile lucratoare; angajat pe 16 -> 11 zile lucrate (fara sarbatori).
+    from datetime import date
+    r = calcul_salariu(1000, norma_intreaga=False, venit_brut_total=1000,
+                       la_data=date(2026, 6, 1), data_angajare=date(2026, 6, 16))
+    assert r["cas_suprataxa"] == Decimal("241.07")    # prag=(4050-300)x11/21=1964.29; (1964.29-1000)x25% - OUG 156/2024 art.LXVI alin.(5) + OMF 1855/2022 pct.2 (interpretare B)
+    assert r["cass_suprataxa"] == Decimal("96.43")    # (1964.29-1000)x10% CASS - nivelul DIMINUAT (sm-facilitate) proratat pe zile lucrate
+    # contract activ toata luna (fara data_angajare) -> prag INTREG 3750, suprataxare mai mare: proratarea chiar reduce
+    r_full = calcul_salariu(1000, norma_intreaga=False, venit_brut_total=1000, la_data=date(2026, 6, 1))
+    assert r_full["cas_suprataxa"] == Decimal("687.50")   # (3750-1000)x25% - fara proratare, pe pragul intreg
