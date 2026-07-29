@@ -42,6 +42,11 @@ Trei cazuri, toate cu suita verde luni de zile:
 Cauza e aceeași: testele reproduceau implementarea. Un test scris din citirea codului
 **încremenește codul, inclusiv greșelile lui**.
 
+**Observație de metodă (29.07.2026).** Verificarea la sursă a unui singur test (facilitatea la
+salariul minim) a scos trei fațete ale aceleiași lipse de model — contractul n-are dimensiune
+temporală. Nu s-ar fi văzut din cod: fiecare fațetă arată ca un caz izolat până când se citește
+articolul întreg, care le enumeră pe toate patru într-un singur alineat.
+
 ## Regula
 
 **Orice test care afirmă o valoare, o cotă, un prag, o rotunjire sau o structură fiscală
