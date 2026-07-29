@@ -95,11 +95,20 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
     plafon_fac, _ = c.cota("plafon_facilitate_salariu_minim", la_data)
 
     # FACILITATE (OUG 89/2025 art.III) - conditii CUMULATIVE:
-    #   (a) norma intreaga  (b) functie de baza  (c) brut EXACT = salariul minim
+    #   (a) norma intreaga  (b) functie de baza  (c) salariul de baza CONTRACTUAL = salariul minim
     #   (d) venit brut total (fara tichete) <= plafon (4300 S1 / 4600 S2)
+    # (c) se judeca pe brutul CONTRACTUAL (vbt), NU pe `brut` (= brut_lucrat la apelantii care
+    # proratesc CM). OUG 156/2024 art.LXVI lit.a: "salariul de baza brut lunar STABILIT POTRIVIT
+    # CONTRACTULUI ... EGAL cu ... salariul minim". Un salariat pe minim cu zile de CM are
+    # brut_lucrat < sm dar contractual = sm -> pastreaza facilitatea INTREAGA (reparat 29.07; inainte
+    # `b == sm` rula pe brut_lucrat si o pierdea complet pe orice luna cu CM).
+    # ATENTIE daca se adauga SPORURI in model: (c) cere salariul de baza FARA sporuri, (d) cere
+    # venitul brut TOTAL (cu sporuri). Azi coincid (o singura coloana salariu_brut, fara sporuri) ->
+    # ambele pe vbt. Cu sporuri separate diverg: (c) ramane pe baza, (d) trece pe baza+sporuri, iar
+    # venit_brut_total trebuie redefinit + un parametru nou pentru baza contractuala.
     vbt = _dec(venit_brut_total) if venit_brut_total is not None else b
     facilitate = facilitate_val if (
-        norma_intreaga and functie_baza and b == sm and vbt <= plafon_fac
+        norma_intreaga and functie_baza and vbt == sm and vbt <= plafon_fac
     ) else Decimal(0)
     baza_contrib = b - facilitate
 

@@ -145,3 +145,20 @@ def test_facilitatea_ramane_conditionata_de_norma_intreaga():
     partial = calcul_salariu(brut=4050, la_data=date(2026, 6, 1), norma_intreaga=False)
     assert intreg["facilitate"] > 0
     assert partial["facilitate"] == 0
+
+
+def test_facilitate_pe_minim_cu_cm_ramane_intreaga():
+    """REGRESIE (29.07.2026): salariat pe salariul minim, norma intreaga, cu zile de CM ->
+    brut_lucrat < salariu_brut = sm. Facilitatea se judeca pe brutul CONTRACTUAL (OUG 156/2024
+    art.LXVI lit.a), nu pe cel lucrat -> ramane INTREAGA (300 in S1 2026), iar baza contributiilor
+    = brut_lucrat - 300. Inainte de reparatie egalitatea rula pe brut_lucrat si facilitatea se
+    pierdea complet pe orice luna cu CM. la_data EXPLICIT in S1 (sm=4050): in S2 (sm=4325) un
+    contract de 4050 da 0 oricum, deci n-ar dovedi nimic."""
+    from core.common import _dec, _q, cota
+    brut_lucrat = 3497.73                              # 4050 proratat pentru 3 zile de CM
+    r = calcul_salariu(brut_lucrat, la_data=SEM1, norma_intreaga=True, venit_brut_total=4050)
+    assert r["facilitate"] == Decimal("300.00")        # INTREAGA, nu 0 (bug reparat)
+    # baza contributiilor = brut_lucrat - facilitatea intreaga (nu brut_lucrat gol)
+    cota_cas, _ = cota("cas", SEM1)
+    baza_contrib = _dec(brut_lucrat) - r["facilitate"]
+    assert r["cas"] == _q(baza_contrib * cota_cas)

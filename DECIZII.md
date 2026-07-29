@@ -4122,3 +4122,21 @@ Parlamentului/Guvernului. (2) ANAF - procedura: formulare, structuri XML, valida
 instructiuni de completare. Publica TARZIU: legea intra in vigoare la 1 ianuarie,
 instructiunile apar in februarie. (3) Presa fiscala - semnal ca s-a intamplat ceva, niciodata
 temei. Cand ghidul ANAF difera de lege, legea castiga.
+
+### 29.07.2026 Doua reguli dintr-un bug de facilitate salariala expus de o aliniere
+
+Bug (verificat la sursa OUG 156/2024 art.LXVI lit.a): facilitatea salariala se pierdea complet pe
+lunile cu concediu medical pentru un salariat pe salariul minim. Cauza: egalitatea din conditia
+facilitatii (calcul_salariu) rula pe brutul LUCRAT (proratat cu zilele), nu pe cel CONTRACTUAL.
+Reparat: egalitatea pe vbt (contractual). Doua reguli generale:
+
+1. **O aliniere care repara ceva poate EXPUNE un defect latent.** Pe 15.07 s-a mutat primul argument
+al lui calcul_salariu din brut_intreg in brut_lucrat, ca sa alinieze plafonul si deducerea cu statul
+de plata - corect. Dar conditia (c) a facilitatii folosea acelasi argument si era corecta din
+INTAMPLARE (brut_intreg = contractual). Dupa aliniere a devenit gresita pe lunile cu CM. Cand se
+schimba ce INSEAMNA un argument, se verifica TOTI consumatorii lui, nu doar cei pe care ii repari.
+
+2. **Un control incrucisat prinde DIVERGENTA, nu eroarea comuna.** Garda de coerenta nota-vs-D112 n-a
+prins bug-ul pentru ca ambele laturi (salarii_contare si d112.pull) foloseau brut_lucrat - gresite
+identic, deci zero divergenta. Un control care compara doua cai ce impartasesc aceeasi sursa gresita
+raporteaza verde. Se verifica ce ACOPERA controlul, nu doar ca exista.
