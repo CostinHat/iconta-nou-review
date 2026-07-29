@@ -259,3 +259,18 @@ Ce l-a înlocuit:
 - **`LANSARE.md`** — ce NU se poate automatiza: decizii, blocaje externe, datorie acceptată.
 Regula: verificabil mecanic → test, nu notă. Notă → doar cu decizie și motiv, altfel e amânare
 cu altă formă.
+
+## LOCUL DE LUCRU — verificare obligatorie la fiecare sesiune (29.07.2026)
+
+**Se lucrează EXCLUSIV pe server: `costin@178.105.201.56`, `~/iconta_nou`, branch `main`.**
+Acolo e singura aplicație. Nu există alta.
+
+**Înainte de PRIMA modificare din fiecare sesiune, verifici și arăți:**
+
+Trebuie să iasă `/home/costin/iconta_nou` și `iconta-prod`. Dacă nu iese așa, **te
+oprești** și spui unde ești și cum ai ajuns acolo. Nu modifici nimic până nu se confirmă.
+
+**De ce.** Pe 27.07.2026 s-au pierdut ore reparând cod care nu rulează nicăieri: fuseseră
+raportate trei defecte „confirmate" (D101 pe coloane greșite, arbori paraleli `declaratii/`
+și `motor/`, 946 de teste cu fake-uri) care nu existau pe server — erau într-o copie locală.
+Serverul are **un singur arbore: `core/`**. Nu există `declaratii/` și nu există `motor/`.
