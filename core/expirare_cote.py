@@ -71,21 +71,22 @@ def _mesaj(x):
 def ruleaza(prag_zile=None, la_data=None, alerteaza=None):
     prag = prag_zile if prag_zile is not None else _prag_zile()
     _alerteaza = alerteaza or observare.alerteaza
-    care = cote_care_expira(prag, la_data=la_data)
+    care = cote_care_expira(prag, la_data=la_data)   # sortat crescator dupa zilele ramase
     if not care:
         print("toate valorile fiscale sunt în termen (prag %d zile)" % prag)
         return {"prag_zile": prag, "expira": 0, "alerte_trimise": 0}
-    trimise = 0
-    for x in care:
-        et = ETICHETE.get(x["nume"], x["nume"])
-        mesaj = _mesaj(x)
-        subiect = (("Valoare fiscală EXPIRATĂ: %s" % et) if x["zile"] < 0
-                   else ("Valoare fiscală expiră în %d zile: %s" % (x["zile"], et)))
-        cheie = "expirare_cota:%s:%s" % (x["nume"], x["expira"].isoformat())
-        print(mesaj)
-        if _alerteaza(cheie, subiect, mesaj):
-            trimise += 1
-    return {"prag_zile": prag, "expira": len(care), "alerte_trimise": trimise}
+    # O SINGURA alerta pe rulare, toate valorile grupate (cate un paragraf, in ordinea zilelor
+    # ramase). Trei valori din acelasi pachet legislativ expira in aceeasi zi -> trei emailuri
+    # identice ca substanta ar transforma canalul in zgomot, iar un canal zgomotos se ignora
+    # (aceeasi regula ca la cron.py). O singura cheie de throttling pe rulare, nu per valoare.
+    corp = (chr(10) + chr(10)).join(_mesaj(x) for x in care)
+    n = len(care)
+    subiect = ("O valoare fiscală expiră în următoarele %d zile" % prag if n == 1
+               else "%d valori fiscale expiră în următoarele %d zile" % (n, prag))
+    cheie = "expirare_cote:" + ",".join("%s@%s" % (x["nume"], x["expira"].isoformat()) for x in care)
+    print(corp)
+    trimise = 1 if _alerteaza(cheie, subiect, corp) else 0
+    return {"prag_zile": prag, "expira": n, "alerte_trimise": trimise}
 
 
 if __name__ == "__main__":

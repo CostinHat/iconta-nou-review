@@ -17,23 +17,25 @@ def test_lista_goala_nu_alerteaza_iese_zero():
     assert apeluri == []   # in 2020 nimic nu expira in urmatoarea zi -> nu se alerteaza
 
 
-def test_lista_nevida_alerteaza_o_data_cu_mesaj_complet():
+def test_lista_nevida_o_singura_alerta_cu_toate_valorile():
     apeluri = []
     def _mock(cheie, subiect, mesaj):
         apeluri.append((cheie, subiect, mesaj))
         return True
     r = ec.ruleaza(prag_zile=400, la_data=date(2026, 7, 29), alerteaza=_mock)
-    assert r["expira"] >= 1
-    assert r["alerte_trimise"] == r["expira"] == len(apeluri)   # o alerta per valoare, o singura data
-    sm = [a for a in apeluri if "salariu_minim" in a[0]]
-    assert sm, "salariul minim expira in 400 de zile si trebuie alertat"
-    _, _subiect, mesaj = sm[0]
-    assert "Salariul minim" in mesaj                       # numele uman
+    assert r["expira"] >= 3
+    assert r["alerte_trimise"] == 1 and len(apeluri) == 1   # O SINGURA alerta pe rulare, nu per valoare
+    cheie, subiect, mesaj = apeluri[0]
+    assert "valori fiscale expiră" in subiect and str(r["expira"]) in subiect and "400" in subiect
+    # corpul grupeaza TOATE valorile in acelasi email
+    assert "Salariul minim" in mesaj
+    assert "Facilitatea la salariul minim" in mesaj
+    assert "Plafonul facilității la salariul minim" in mesaj
+    # detaliile pe salariu_minim: temei (din sursa), data expirarii, ce se strica
     _, temei = cota("salariu_minim", date(2026, 7, 1))
-    assert temei in mesaj                                   # temeiul (din sursa, nu hardcodat)
-    assert "2027-07-01" in mesaj                            # data expirarii
-    assert "Monitorul Oficial" in mesaj and "actualiz" in mesaj.lower()   # ce sa faca, unde
-    assert "REFUZA" in mesaj                                # ce se strica
+    assert temei in mesaj and "2027-07-01" in mesaj
+    assert "Monitorul Oficial" in mesaj and "actualiz" in mesaj.lower() and "REFUZA" in mesaj
+    assert cheie.startswith("expirare_cote:")   # o singura cheie de throttling pe rulare
 
 
 def test_acoperire_completa_fiecare_valoare_cu_expirare_are_eticheta():
