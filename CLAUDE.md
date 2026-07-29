@@ -267,6 +267,8 @@ Acolo e singura aplicație. Nu există alta.
 
 **Înainte de PRIMA modificare din fiecare sesiune, verifici și arăți:**
 
+    pwd; hostname; git log --oneline -1
+
 Trebuie să iasă `/home/costin/iconta_nou` și `iconta-prod`. Dacă nu iese așa, **te
 oprești** și spui unde ești și cum ai ajuns acolo. Nu modifici nimic până nu se confirmă.
 
