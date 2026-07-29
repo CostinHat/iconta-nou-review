@@ -4154,3 +4154,17 @@ XML-ul depus. E intentionat err-on-refuse: asimetria justifica prudenta - un ref
 pune data_incetare (varianta buna oricum), o permitere gresita inseamna pierderea istoricului care sustine
 o declaratie deja depusa. A nu se prezenta garda ca fiind mai fina decat e. Vezi si datoria state_plata
 (tabel mort, test_datorie).
+
+### 29.07.2026 Agenda: surse PAZITE MECANIC (nu "surse care nu pot minti")
+
+Agenda nu e derivata din surse care nu pot minti - e derivata din surse PAZITE MECANIC. Diferenta:
+DE_FACUT.md a murit pentru ca nimic nu-l verifica (806 linii necitite, 5 itemi "DESCHIS" de fapt
+rezolvati); TESTE.md si GARZI.md sunt tot scrise de mana, dar garda anti-stale (core/test_agenda.py) pica
+suita cand raman in urma codului. Partea manuala trebuie tinuta MINIMA tocmai de aceea - fiecare camp scris
+de om e o sursa care poate diverge.
+
+REGULA DE REDIRECTIONARE (Costin, 29.07.2026): "Daca apare ceva ce nu stim acum si vrem sa schimbam
+directia, MODIFICAM AGENDA INTAI, apoi ne tinem de ea." Practic: agenda (TESTE.md + test_datorie.py) e
+sursa; ce nu e acolo nu se lucreaza. Un lucru nou se adauga in TESTE.md sau ca xfail INAINTE de a incepe.
+Claude semnaleaza cand i se cere ceva din afara agendei - nu refuza, intreaba, asteapta decizia. Context:
+pe 27.07 s-a lucrat o zi intreaga la reparatii deja consemnate ca amanate intr-un registru necitit.

@@ -283,6 +283,7 @@ Acolo e singura aplicație. Nu există alta.
 **Înainte de PRIMA modificare din fiecare sesiune, verifici și arăți:**
 
     pwd; hostname; git log --oneline -1
+    ./venv/bin/python -m core.agenda
 
 Trebuie să iasă `/home/costin/iconta_nou` și `iconta-prod`. Dacă nu iese așa, **te
 oprești** și spui unde ești și cum ai ajuns acolo. Nu modifici nimic până nu se confirmă.
@@ -291,3 +292,18 @@ oprești** și spui unde ești și cum ai ajuns acolo. Nu modifici nimic până 
 raportate trei defecte „confirmate" (D101 pe coloane greșite, arbori paraleli `declaratii/`
 și `motor/`, 946 de teste cu fake-uri) care nu existau pe server — erau într-o copie locală.
 Serverul are **un singur arbore: `core/`**. Nu există `declaratii/` și nu există `motor/`.
+
+**Ritualul de agendă (29.07.2026).** PRIMA ACȚIUNE din fiecare sesiune, înainte de orice altceva:
+rulează agenda (`./venv/bin/python -m core.agenda`) și ARATĂ rezultatul. Nu începe să lucrezi la ce ți
+se cere până n-ai arătat unde suntem.
+
+DACĂ ți se cere ceva care NU e în agendă: spune-o explicit, cu formula „Asta nu e în agendă. Următorul
+pas din agendă e X. Modificăm agenda întâi, sau lăsăm X pentru mai târziu?" Nu refuza — semnalează și
+așteaptă decizia.
+
+Motivul: fără asta, planul se erodează fără ca nimeni să observe. S-a întâmplat: pe 27.07 s-a lucrat o zi
+întreagă la reparații care erau deja consemnate ca amânate într-un registru pe care nimeni nu-l citea.
+
+REGULA DE REDIRECȚIONARE: dacă apare ceva ce nu știm acum și vrem să schimbăm direcția, MODIFICĂM AGENDA
+ÎNTÂI, apoi ne ținem de ea. Agenda (TESTE.md + test_datorie.py) e sursa; ce nu e acolo nu se lucrează. Un
+lucru nou se adaugă în TESTE.md sau ca xfail ÎNAINTE de a începe lucrul la el.

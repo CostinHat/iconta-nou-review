@@ -21,6 +21,17 @@ zero. Invers ar însemna să verifici de două ori — sau, mai probabil, a doua
 
 ---
 
+## În lucru acum
+
+Firul curent — de aici derivă URMATORUL PAS al agendei. Se ține la ZI (regula de
+redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
+
+- fir: Modelarea contractului în timp (Sesiunea A · salarizare)
+- ultim: 2a comis (795fe8a) — istoric de salariu, citiri fiscale date-aware, lit.a rezolvat
+- urmator: 2b — retragerea completă a salariu_brut (scrieri salariati_api/import/firme.js pe istoric, afișări pe salariu_curent, scoaterea coloanei). NEÎNCEPUT.
+
+---
+
 # SESIUNEA A — alinierea la legislație
 
 ## Problema
@@ -97,28 +108,53 @@ Rezultatul sesiunii A: o suită care afirmă legea, nu implementarea.
 
 ## Inventarul de acoperit în A
 
-| Modul | Teste azi | Stare |
-|---|---|---|
-| d100 | 10 | |
-| d101 | 11 | |
-| d112 | 4 | |
-| d205 | 5 | |
-| d300 | 4 | |
-| d301 | 5 (create 28.07) | |
-| d390 | 9 | |
-| d394 | 44 | |
-| d406 | 11 | |
-| d710 | 13 | |
-| salarizare | | |
-| contribuții | | |
-| TVA (cote, exigibilitate) | | |
-| amortizare | | |
+Coloana `Verificat la sursă`: `√ DD.MM` = testele afirmă LEGEA (actele în `Temeiuri`), verificat la data
+aceea; gol = neverificat. `Teste azi` numește FIȘIERUL. Contopiri (14→11 module reale): contribuții ⊂
+salarizare, amortizare ⊂ d101, TVA cote/exigibilitate ⊂ d300. Garda anti-stale (test_agenda) pică un `√`
+dacă fișierul s-a schimbat după acea dată.
+
+| Modul | Teste azi (fișier) | Verificat la sursă | Temeiuri |
+|---|---|---|---|
+| d100 | test_d100.py | | |
+| d101 | test_d101.py (+ amortizare) | | |
+| d112 | test_d112.py (+ contribuții) | √ 29.07 | OUG 156/2024 art.LXVI; OUG 89/2025 art.III; CF art.146(5^6)-(5^7); OMF 1855/2022 |
+| d205 | test_d205.py | | |
+| d300 | test_d300.py (+ TVA cote: test_tva_incasare.py) | | |
+| d301 | test_d301_rollup.py | | |
+| d390 | test_d390.py | | |
+| d394 | test_d394.py | | |
+| d406 | test_limita_text_anaf.py (SAF-T XSD, parțial) | | |
+| d710 | test_d710.py | | |
+| salarizare | test_salarizare.py (facilitate, suprataxare, contribuții) | √ 29.07 | OUG 156/2024 art.LXVI; OUG 89/2025 art.III; CF art.146(5^6)-(5^7); OMF 1855/2022 |
 
 Numărul de teste nu e ținta. Ținta e ca fiecare cifră afirmată să aibă temei.
 
 ---
 
 # SESIUNEA B — testarea pe flux
+
+## Starea sesiunii B
+
+| Fază | Stare | Când |
+|---|---|---|
+| Faza 0 — decuplarea suitei de firmele persistente | închisă | 29.07 |
+| Faza 1 — cele 7 firme (F1–F7) pe flux | neîncepută | |
+
+Etapele fluxului (Faza 1), `√ DD.MM` = etapa are teste cap-coadă pe o firmă:
+| Etapă | Stare |
+|---|---|
+| 1. Migrare / preluare | |
+| 2. Configurare firmă | |
+| 3. Intrare documente primare | |
+| 4. Salarizare | |
+| 5. Contabilizare | |
+| 6. Sfârșit de lună | |
+| 7. Verificări interne | |
+| 8. Declarații — generare | |
+| 9. Declarații — depunere | |
+| 10. Ieșiri externe | |
+| 11. Transversal | |
+
 
 ## De ce pe flux, nu pe zone
 
