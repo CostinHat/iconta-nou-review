@@ -77,6 +77,7 @@ RITMURI = {
     "notificari_scadenta": 50,    # zilnic 08:00
     "monitor_fiscal":      50,    # zilnic 09:00 + luni 08:00
     "sinteza_zilnica":     96,    # luni-vineri 19:00 (72h peste weekend + marja)
+    "expirare_cote":       800,   # LUNAR, ziua 1 06:00 (~730h; 800 prinde o luna ratata)
 }
 
 
