@@ -4094,3 +4094,31 @@ RAMAS DESCHIS (xfail in test_datorie): cota() intoarce TACIT ultima valoare cuno
 o data viitoare. In ianuarie 2027 salariul minim va fi cel din iulie 2026, fara semnal.
 Cotele au "de cand", n-au "pana cand" - iar pentru valorile actualizate anual prin HG, lipsa
 unei valori noi nu inseamna ca cea veche ramane, ci ca nimeni n-a actualizat registrul.
+
+### 29.07.2026 Valorile fiscale expira — `cota()` nu mai intoarce tacit valoarea veche
+
+FAPT: `cota(nume, la_data)` intorcea ultima valoare cunoscuta pentru ORICE data viitoare.
+In ianuarie 2027, D112 ar fi generat cu salariul minim din iulie 2026 (4325) - o cifra
+plauzibila si gresita intr-o declaratie depusa la ANAF, fara niciun semnal.
+
+CAUZA, ca tipar: cotele au "de cand", n-au "pana cand". Pentru valorile actualizate periodic
+prin act normativ nou (HG anuala la salariul minim, OUG la facilitati), lipsa unei valori
+pentru anul urmator NU inseamna ca cea veche ramane - inseamna ca nimeni n-a actualizat
+registrul. Prima interpretare produce declaratii gresite IN TACERE.
+
+REPARAT: `EXPIRA_DUPA_LUNI` marcheaza valorile cu termen; `cota()` RIDICA daca data ceruta
+depaseste valabilitatea ultimei intrari, cu mesaj care spune din cand e valoarea, pana cand
+era valabila, si ce trebuie facut. `strict=False` pentru rapoarte istorice, EXPLICIT.
+Adaugat `cote_care_expira(in_zile)` - baza jobului lunar de avertizare.
+
+DE CE "SEMNAL, NU DECIZIE": nimic nu scrie automat in COTE si nu se va scrie. O valoare
+fiscala citita automat dintr-o pagina si pusa in registru ar fi exact tiparul vanat de trei
+zile - o cifra plauzibila fara temei verificat. Sistemul spune CE sa verifici si CAND;
+verificarea la sursa si actualizarea raman manuale.
+
+SURSELE, in ordinea autoritatii (stabilit 29.07): (1) Monitorul Oficial - norma: legi, OUG,
+HG, ordine. Din 12 temeiuri din registru, majoritatea NU sunt ANAF, ci acte ale
+Parlamentului/Guvernului. (2) ANAF - procedura: formulare, structuri XML, validator,
+instructiuni de completare. Publica TARZIU: legea intra in vigoare la 1 ianuarie,
+instructiunile apar in februarie. (3) Presa fiscala - semnal ca s-a intamplat ceva, niciodata
+temei. Cand ghidul ANAF difera de lege, legea castiga.

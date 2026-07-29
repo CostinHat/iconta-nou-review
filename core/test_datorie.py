@@ -44,31 +44,6 @@ def _db_ok():
 # ============================================================
 #  DATORIE TEHNICA
 # ============================================================
-@pytest.mark.xfail(strict=True, reason="DATORIE 29.07.2026: common.cota() intoarce TACIT "
-                                       "ultima valoare cunoscuta pentru o data viitoare. "
-                                       "In ianuarie 2027, salariul minim va fi cel din iulie "
-                                       "2026 (4325) fara niciun semnal, iar declaratiile vor "
-                                       "folosi o valoare care nu mai e a nimanui.")
-def test_cota_semnaleaza_valoarea_expirata():
-    """O cota fara termen de expirare devine tacit gresita cand legea se schimba.
-
-    Cotele au 'de cand', nu au 'pana cand'. Pentru cele care se ACTUALIZEAZA ANUAL prin
-    hotarare de guvern (salariu minim, plafoane, norme de venit), lipsa unei valori pentru
-    anul urmator NU inseamna ca valoarea veche ramane - inseamna ca nimeni n-a actualizat
-    registrul. Diferenta conteaza: prima interpretare produce declaratii gresite in tacere.
-
-    De reparat: valorile anuale primesc 'valabil_pana', iar cota() ridica (sau macar
-    avertizeaza) cand data ceruta o depaseste.
-    """
-    from datetime import date
-    from core.common import cota
-    import warnings
-    with warnings.catch_warnings(record=True) as w:
-        warnings.simplefilter("always")
-        val, _ = cota("salariu_minim", date(2029, 1, 1))
-    assert w, "cota() n-a semnalat ca valoarea e din alt an, pentru o data cu 3 ani in viitor"
-
-
 # ============================================================
 #  IGIENA REGISTRULUI
 # ============================================================

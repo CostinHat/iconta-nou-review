@@ -241,18 +241,86 @@ COTE = {
 }
 
 
-def cota(nume, la_data=None):
-    """
-    Întoarce (valoare, temei) valabilă la data dată (implicit azi).
-    Permite semnalarea greșelilor de PERIOADĂ, nu doar de moment.
+# Valori care se ACTUALIZEAZA PERIODIC prin act normativ nou (HG, OUG, lege).
+# Pentru ele, lipsa unei valori pentru anul urmator NU inseamna ca cea veche ramane -
+# inseamna ca nimeni n-a actualizat registrul. Diferenta conteaza: prima interpretare
+# produce declaratii gresite IN TACERE.
+#
+# 29.07.2026: cota() intorcea tacit ultima valoare cunoscuta pentru orice data viitoare.
+# In ianuarie 2027, D112 ar fi folosit salariul minim din iulie 2026 fara niciun semnal.
+# {nume: luni_de_valabilitate_de_la_ultima_intrare}
+EXPIRA_DUPA_LUNI = {
+    "salariu_minim": 12,                      # HG anuala, uneori si la mijloc de an
+    "facilitate_salariu_minim": 12,           # OUG anuala
+    "plafon_facilitate_salariu_minim": 12,    # OUG anuala
+    "plafon_mijloc_fix": 24,                  # se schimba rar, dar se schimba
+}
+
+
+def cota(nume, la_data=None, strict=True):
+    """Intoarce (valoare, temei) valabila la data data (implicit azi).
+
+    Permite semnalarea greselilor de PERIOADA, nu doar de moment.
+
+    EXPIRARE (29.07.2026): pentru valorile din EXPIRA_DUPA_LUNI, daca data ceruta depaseste
+    termenul de valabilitate al ultimei intrari, se RIDICA. Motivul: o cifra plauzibila si
+    gresita intr-o declaratie depusa la ANAF e mai rea decat o eroare la generare. Cine chiar
+    vrea valoarea veche (rapoarte istorice, comparatii) cheama cu strict=False.
     """
     if nume not in COTE:
         raise ValueError(f"cotă necunoscută: {nume!r}")
     la_data = la_data or date.today()
-    for din, valoare, temei in sorted(COTE[nume], key=lambda r: r[0], reverse=True):
+    intrari = sorted(COTE[nume], key=lambda r: r[0], reverse=True)
+    for din, valoare, temei in intrari:
         if la_data >= din:
+            luni = EXPIRA_DUPA_LUNI.get(nume)
+            if strict and luni and din == intrari[0][0]:
+                limita = _adauga_luni(din, luni)
+                if la_data > limita:
+                    raise ValueError(
+                        f"{nume}: ultima valoare cunoscută este din {din.isoformat()} "
+                        f"({temei}), valabilă până la {limita.isoformat()}. "
+                        f"S-a cerut pentru {la_data.isoformat()}. "
+                        f"Verifică dacă a apărut un act normativ nou și actualizează COTE "
+                        f"în core/common.py. Nu se folosește valoarea veche: ar produce o "
+                        f"cifră plauzibilă și greșită într-o declarație depusă la ANAF."
+                    )
             return valoare, temei
     raise ValueError(f"nicio valoare pentru {nume!r} la data {la_data}")
+
+
+def _adauga_luni(d, luni):
+    """Data + N luni, cu ultima zi a lunii daca ziua nu exista (31 ian + 1 luna = 28/29 feb)."""
+    an = d.year + (d.month - 1 + luni) // 12
+    luna = (d.month - 1 + luni) % 12 + 1
+    zi = d.day
+    while zi > 1:
+        try:
+            return date(an, luna, zi)
+        except ValueError:
+            zi -= 1
+    return date(an, luna, 1)
+
+
+def cote_care_expira(in_zile=60, la_data=None):
+    """Valorile a caror valabilitate se termina in urmatoarele `in_zile`.
+
+    Folosit de jobul lunar de avertizare: schimbarile fiscale nu sunt aleatorii (salariul
+    minim se schimba in decembrie sau iulie), deci un termen anuntat inainte e mai util
+    decat o stire de presa dupa.
+    """
+    la_data = la_data or date.today()
+    rez = []
+    for nume, luni in EXPIRA_DUPA_LUNI.items():
+        if nume not in COTE:
+            continue
+        din, valoare, temei = sorted(COTE[nume], key=lambda r: r[0], reverse=True)[0]
+        limita = _adauga_luni(din, luni)
+        zile = (limita - la_data).days
+        if zile <= in_zile:
+            rez.append({"nume": nume, "valoare": valoare, "temei": temei,
+                        "din": din, "expira": limita, "zile": zile})
+    return sorted(rez, key=lambda r: r["zile"])
 
 
 # ============================================================
