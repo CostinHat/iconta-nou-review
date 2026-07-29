@@ -76,3 +76,40 @@ def test_codurile_de_obligatie_corecte():
     assert 'A_codOblig="412"' in xml  # CAS
     assert 'A_codOblig="432"' in xml  # CASS
     assert 'A_codOblig="480"' in xml  # CAM
+
+
+# ============================================================
+#  SUPRATAXARE part-time: campurile ANAF asigExc / motivExc (art. 146 alin.(5^6)-(5^7) CF).
+#  Sesiunea A (29.07.2026): cod verificat CORECT la sursa; se adauga testele care lipseau.
+# ============================================================
+def _sal_ex(brut=5000, **extra):
+    """_sal() cu chei suprascrise (scutit / motiv_exceptare / pt_aplica) pentru cazurile de suprataxare."""
+    s = _sal(brut)[0].copy()
+    s.update(extra)
+    return [s]
+
+
+def test_scutit_motiv_valid_emite_asigexc1_si_motivexc():
+    xml, _ = _d112_genereaza(_prof(), _sal_ex(scutit=True, motiv_exceptare=1), 2026, 6)
+    assert 'asigExc="1"' in xml    # art. 146 alin.(5^7) lit.a) CF - elev/student <26 ani: exceptat de la suprataxare
+    assert 'motivExc="1"' in xml   # structura D112 (ANAF): motivExc (1-5 = literele a-e) se declara DOAR cand asigExc=1
+
+
+def test_sub_minim_nescutit_emite_asigexc2_fara_motivexc():
+    xml, _ = _d112_genereaza(_prof(), _sal_ex(brut=2000, pt_aplica=True), 2026, 6)
+    assert 'asigExc="2"' in xml    # art. 146 alin.(5^6) CF - venit sub minim, NEexceptat: contributia minima e datorata
+    assert 'motivExc' not in xml   # structura D112: motivExc NU se declara la asigExc=2, doar la asigExc=1 (exceptat)
+
+
+def test_scutit_motiv_invalid_nu_emite_asigexc1():
+    for motiv in (0, 6, None):
+        xml, _ = _d112_genereaza(_prof(), _sal_ex(scutit=True, motiv_exceptare=motiv), 2026, 6)
+        assert 'asigExc="1"' not in xml, motiv   # art. 146 (5^7): motivExc valid e 1-5 (lit. a-e); motiv in afara NU e exceptare, altfel ANAF respinge declaratia
+        assert 'motivExc' not in xml, motiv      # fara asigExc=1 nu se declara motivExc
+
+
+def test_peste_minim_asigexc_zero():
+    xml, _ = _d112_genereaza(_prof(), _sal(6000), 2026, 6)
+    assert 'asigExc="0"' in xml     # art. 146 alin.(5^6) CF - venit >= salariul minim: suprataxarea nu se aplica (asigExc=0)
+    assert 'asigExc="1"' not in xml and 'asigExc="2"' not in xml   # nici exceptat, nici suprataxat
+    assert 'motivExc' not in xml    # asigExc=0 -> fara motivExc

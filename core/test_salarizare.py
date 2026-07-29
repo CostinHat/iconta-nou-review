@@ -162,3 +162,13 @@ def test_facilitate_pe_minim_cu_cm_ramane_intreaga():
     cota_cas, _ = cota("cas", SEM1)
     baza_contrib = _dec(brut_lucrat) - r["facilitate"]
     assert r["cas"] == _q(baza_contrib * cota_cas)
+
+
+def test_suprataxa_baza_pe_minimul_diminuat_ambele_semestre():
+    # baza suprataxarii = (salariu_minim - facilitate - brut) x cota, pe MINIMUL DIMINUAT (OUG 89/2025)
+    s1 = calcul_salariu(2000, norma_intreaga=False, venit_brut_total=2000, la_data=SEM1)
+    assert s1["cas_suprataxa"] == Decimal("437.50")    # S1 2026 (sm=4050, fac=300): (4050-300-2000)*25% CAS - art.146(5^6) CF
+    assert s1["cass_suprataxa"] == Decimal("175.00")   # S1: (4050-300-2000)*10% CASS - OUG 89/2025: baza = sm diminuat cu 300
+    s2 = calcul_salariu(2000, norma_intreaga=False, venit_brut_total=2000, la_data=SEM2)
+    assert s2["cas_suprataxa"] == Decimal("531.25")    # S2 2026 (sm=4325, fac=200): (4325-200-2000)*25% CAS
+    assert s2["cass_suprataxa"] == Decimal("212.50")   # S2: (4325-200-2000)*10% CASS - OUG 89/2025: baza = sm diminuat cu 200
