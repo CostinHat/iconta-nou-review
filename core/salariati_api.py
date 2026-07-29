@@ -24,7 +24,7 @@ _NORME = ("intreaga", "partiala")
 # trece prin salariu_istoric.salariu_la(). salariu_brut se retrage complet din tabel in 2b.
 # NU adauga citiri fiscale noi pe salariati.salariu_brut.
 _CAMPURI_API = ("cnp", "nume", "prenume", "data_angajare", "tip_norma", "ore_zi",
-                "salariu_brut", "persoane_intretinere", "judet_casa", "data_incetare",
+                "persoane_intretinere", "judet_casa", "data_incetare",  # [2b] salariu_brut -> salariu_istoric
                 "scutit_contrib_minim", "motiv_exceptare", "cor",
                 "tichet_masa_valoare",  # [F133]
                 "iban")  # [F134] cont beneficiar pt plata pe card
@@ -139,12 +139,17 @@ def lista_salariati(conn, activ=None):
         cond = " WHERE data_incetare IS NULL OR data_incetare >= CURRENT_DATE"
     elif activ is False:
         cond = " WHERE data_incetare < CURRENT_DATE"
+    from core import salariu_istoric as _si
+    from datetime import date as _dm
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, cnp, nume, prenume, data_angajare, part_time, ore_zi, "
-            "salariu_brut, persoane_intretinere, data_incetare, cor, tichet_masa_valoare, iban "
+            "persoane_intretinere, data_incetare, cor, tichet_masa_valoare, iban "
             "FROM salariati" + cond + " ORDER BY nume, prenume", val)
-        return [_db_spre_api(dict(r)) for r in cur.fetchall()]
+        rows = [dict(r) for r in cur.fetchall()]
+        for r in rows:
+            r["salariu_brut"] = _si.salariu_la(cur, None, r["id"], _dm.today())  # [2b] salariul curent din istoric
+    return [_db_spre_api(r) for r in rows]
 
 
 # ============================================================
@@ -162,11 +167,17 @@ def creeaza_salariat(conn, **date):
     cols = list(campuri_db.keys())
     vals = list(campuri_db.values())
     ph = ", ".join(["%s"] * len(cols))
+    from core import salariu_istoric as _si
+    from datetime import date as _dm
     with conn.cursor() as cur:
         cur.execute(
             "INSERT INTO salariati (%s) VALUES (%s) RETURNING id"
             % (", ".join(cols), ph), vals)
         sid = cur.fetchone()[0]
+        # [PASUL 2b] salariul de baza trece pe salariu_istoric (SURSA UNICA), nu pe salariati.salariu_brut
+        _sb = date.get("salariu_brut")
+        if _sb is not None:
+            _si.seteaza(cur, sid, _sb, date.get("data_angajare") or _dm.today().isoformat())
     return {"ok": True, "salariat_id": sid}
 
 
@@ -176,38 +187,51 @@ def creeaza_salariat(conn, **date):
 def detalii_salariat(conn, salariat_id):
     """Un salariat complet, sau None."""
     import psycopg2.extras as _E
+    from core import salariu_istoric as _si
+    from datetime import date as _dm
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, cnp, nume, prenume, data_angajare, part_time, ore_zi, "
-            "salariu_brut, persoane_intretinere, judet_casa, data_incetare, "
+            "persoane_intretinere, judet_casa, data_incetare, "
             "scutit_contrib_minim, motiv_exceptare, cor, tichet_masa_valoare, iban "
             "FROM salariati WHERE id = %s", (salariat_id,))
         r = cur.fetchone()
-    return _db_spre_api(dict(r)) if r else None
+        if r:
+            r = dict(r)
+            r["salariu_brut"] = _si.salariu_la(cur, None, salariat_id, _dm.today())  # [2b] curent din istoric
+    return _db_spre_api(r) if r else None
 
 
 # ============================================================
 #  EDITARE (doar câmpurile trimise, validate)
 # ============================================================
 def actualizeaza_salariat(conn, salariat_id, **date):
-    """Editează câmpurile date (validate). Întoarce {ok} sau ridică ValueError."""
+    """Editează câmpurile date (validate). salariu_brut e o SCHIMBARE DE SALARIU -> intrare NOUĂ în
+    salariu_istoric la valabil_din (implicit azi), nu UPDATE pe salariati (PASUL 2b, sursă unică)."""
+    from core import salariu_istoric as _si
+    from datetime import date as _dm
     campuri_api = {k: v for k, v in date.items() if k in _CAMPURI_API and v is not None}
-    if not campuri_api:
+    _sb = date.get("salariu_brut")
+    if not campuri_api and _sb is None:
         return {"ok": True, "neschimbat": True}
-    erori = valideaza_salariat({**campuri_api, "nume": campuri_api.get("nume", "x")})
-    # la editare parțială, 'nume' poate lipsi — punem placeholder ca să nu dea fals-pozitiv
+    erori = valideaza_salariat({**campuri_api, "salariu_brut": _sb,
+                                "data_angajare": date.get("data_angajare"),
+                                "data_incetare": date.get("data_incetare"),
+                                "nume": campuri_api.get("nume", "x")})
     erori = [e for e in erori if e != "nume obligatoriu"]
     if erori:
         raise ValueError("; ".join(erori))
-    if "cor" in campuri_api:
-        _verifica_cor(conn, campuri_api.get("cor"))  # [F137] valideaza doar daca se schimba COR-ul
-    campuri = _api_spre_db(campuri_api)
-    seturi = ", ".join("%s = %%s" % k for k in campuri)
-    vals = list(campuri.values()) + [salariat_id]
     with conn.cursor() as cur:
-        cur.execute("UPDATE salariati SET %s WHERE id = %%s" % seturi, vals)
-        ok = cur.rowcount > 0
-    return {"ok": ok}
+        if campuri_api:
+            if "cor" in campuri_api:
+                _verifica_cor(conn, campuri_api.get("cor"))
+            campuri = _api_spre_db(campuri_api)
+            seturi = ", ".join("%s = %%s" % k for k in campuri)
+            cur.execute("UPDATE salariati SET %s WHERE id = %%s" % seturi,
+                        list(campuri.values()) + [salariat_id])
+        if _sb is not None:
+            _si.seteaza(cur, salariat_id, _sb, date.get("valabil_din") or _dm.today().isoformat())
+    return {"ok": True}
 
 
 # ============================================================

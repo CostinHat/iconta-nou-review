@@ -246,19 +246,25 @@ def importa(conn, randuri):
             part_time = (r.get("tip_norma", "intreaga") == "partiala")
             cur.execute("""
                 INSERT INTO salariati
-                  (cnp, nume, prenume, data_angajare, part_time, ore_zi, salariu_brut,
-                   persoane_intretinere, judet_casa, activ, cor)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true,%s)
+                  (cnp, nume, prenume, data_angajare, part_time, ore_zi,
+                   persoane_intretinere, judet_casa, cor)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ON CONFLICT (cnp) DO UPDATE SET
                   nume=EXCLUDED.nume, prenume=EXCLUDED.prenume,
                   data_angajare=EXCLUDED.data_angajare, part_time=EXCLUDED.part_time,
-                  ore_zi=EXCLUDED.ore_zi, salariu_brut=EXCLUDED.salariu_brut,
+                  ore_zi=EXCLUDED.ore_zi,
                   persoane_intretinere=EXCLUDED.persoane_intretinere,
                   judet_casa=EXCLUDED.judet_casa, cor=EXCLUDED.cor
+                RETURNING id
             """, (r["cnp"], r["nume"], r["prenume"], r.get("data_angajare"),
                   part_time, r.get("ore_zi", 8),
-                  r.get("salariu_brut", 0), r.get("persoane_intretinere", 0),
+                  r.get("persoane_intretinere", 0),
                   r.get("judet_casa", ""), r.get("cor", "")))
+            # [PASUL 2b] salariul de baza pe salariu_istoric (sursa unica); reparat si activ (coloana retrasa PASUL 1)
+            _sid = cur.fetchone()[0]
+            from core import salariu_istoric as _si
+            from datetime import date as _dm
+            _si.seteaza(cur, _sid, r.get("salariu_brut", 0), r.get("data_angajare") or _dm.today().isoformat())
             importati += 1
     conn.commit()
     return {"importati": importati, "sarite_cnp": sarite}

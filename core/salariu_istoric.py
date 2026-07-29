@@ -18,18 +18,34 @@ from core import scadente as _scad
 from core.common import cota, _dec
 
 
+def _t(schema, tabela):
+    return ("%s.%s" % (schema, tabela)) if schema else tabela
+
+
 def salariu_la(cur, schema, salariat_id, data):
     """Salariul de baza valabil la `data` (ultima intrare din istoric cu valabil_din <= data).
-    Bridge tranzitie: daca istoricul e gol, valoarea curenta din salariati.salariu_brut."""
-    cur.execute(f"SELECT salariu_brut FROM {schema}.salariu_istoric "
-                f"WHERE salariat_id=%s AND valabil_din <= %s ORDER BY valabil_din DESC LIMIT 1",
-                (salariat_id, data))
+    schema=None -> tabela necalificata (context search_path, ex. salariati_api). Bridge tranzitie:
+    daca istoricul e gol, valoarea curenta din salariati.salariu_brut (se retrage in 2b-coloana)."""
+    cur.execute("SELECT salariu_brut FROM %s "
+                "WHERE salariat_id=%%s AND valabil_din <= %%s ORDER BY valabil_din DESC LIMIT 1"
+                % _t(schema, "salariu_istoric"), (salariat_id, data))
     r = cur.fetchone()
     if r is not None:
-        return r[0]
-    cur.execute(f"SELECT salariu_brut FROM {schema}.salariati WHERE id=%s", (salariat_id,))  # [tranzitie] bridge
+        return r["salariu_brut"] if isinstance(r, dict) else r[0]   # accepta tuplu SAU RealDictRow
+    cur.execute("SELECT salariu_brut FROM %s WHERE id=%%s" % _t(schema, "salariati"), (salariat_id,))  # [tranzitie] bridge
     r = cur.fetchone()
-    return r[0] if r else None
+    if r is None:
+        return None
+    return r["salariu_brut"] if isinstance(r, dict) else r[0]
+
+
+def seteaza(cur, salariat_id, salariu_brut, valabil_din):
+    """Scrie o intrare de salariu in ISTORIC (UPSERT pe salariat+data). SURSA UNICA a salariului
+    contractual (PASUL 2b) - toate scrierile (creare/editare/import) trec pe aici, nu pe
+    salariati.salariu_brut. Context search_path pe schema tenant (necalificat)."""
+    cur.execute("INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) VALUES (%s, %s, %s) "
+                "ON CONFLICT (salariat_id, valabil_din) DO UPDATE SET salariu_brut = EXCLUDED.salariu_brut",
+                (salariat_id, valabil_din, salariu_brut))
 
 
 def salariu_curent(cur, schema, salariat_id, azi=None):

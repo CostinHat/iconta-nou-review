@@ -33,18 +33,22 @@ def _d_ro(d):
 
 def date_auto(conn, schema, salariat_id, an, luna):
     """Datele care se completeaza AUTOMAT din DB. None daca salariatul nu exista."""
+    from core import salariu_istoric as _si
+    _brut = 0.0
     with conn.cursor() as cur:
         cur.execute("SELECT nume, cui, adresa, patron_nume, declarant_nume, "
                     "declarant_functie FROM firma_profil WHERE id = 1")
         f = cur.fetchone() or (None,) * 6
-        cur.execute("SELECT nume, prenume, cnp, cor, data_angajare, salariu_brut, "
+        cur.execute("SELECT nume, prenume, cnp, cor, data_angajare, "
                     "part_time, persoane_intretinere FROM salariati WHERE id = %s", (salariat_id,))
         s = cur.fetchone()
+        if s:
+            _brut = float(_si.salariu_la(cur, None, salariat_id, date(an, luna, 1)) or 0)  # [2b] salariul lunii din istoric
     if not s:
         return None
-    brut = float(s[5] or 0)
-    calc = salarizare.calcul_salariu(brut, persoane=s[7] or 0, la_data=date(an, luna, 1),
-                                     norma_intreaga=not s[6], venit_brut_total=brut)
+    brut = _brut
+    calc = salarizare.calcul_salariu(brut, persoane=s[6] or 0, la_data=date(an, luna, 1),
+                                     norma_intreaga=not s[5], venit_brut_total=brut)
     return {
         "firma_nume": f[0] or "", "firma_cui": f[1] or "", "firma_adresa": f[2] or "",
         "reprezentant": f[3] or f[4] or "Administrator", "repr_functie": f[5] or "Administrator",

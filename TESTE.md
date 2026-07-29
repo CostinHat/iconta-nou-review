@@ -27,8 +27,8 @@ Firul curent — de aici derivă URMATORUL PAS al agendei. Se ține la ZI (regul
 redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 - fir: Modelarea contractului în timp (Sesiunea A · salarizare)
-- ultim: 2a comis (795fe8a) — istoric de salariu, citiri fiscale date-aware, lit.a rezolvat
-- urmator: 2b — retragerea completă a salariu_brut (scrieri salariati_api/import/firme.js pe istoric, afișări pe salariu_curent, scoaterea coloanei). NEÎNCEPUT.
+- ultim: 2b-scrieri comis — creare/editare/import scriu pe salariu_istoric, citiri pe salariu_curent (reparat si bug-ul activ din import, PASUL 1)
+- urmator: 2b-coloană — DROP salariati.salariu_brut din tabel + migrare, UI schimbare salariu (valabil_din), scoaterea bridge-ului salariu_la. NEÎNCEPUT.
 
 ---
 
