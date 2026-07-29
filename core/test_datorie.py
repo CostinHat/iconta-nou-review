@@ -124,3 +124,15 @@ def test_datorie_d390_trunchiere_neexercitata():
 def test_datorie_d710_trunchiere_in_garda():
     from core.test_limita_text_anaf import CERERI
     assert any(t == "d710" for t, _ in CERERI), "d710 lipseste din garda de 75 (test_limita_text_anaf)"
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 29.07.2026: pragul de suprataxare nu se prorateaza la INCETAREA contractului la mijloc de luna (OMF 1855/2022 pct.2). Cauza: salariati n-are data_incetare/data_plecare - nu se poate sti ca respectivul contract a fost activ o fractiune din luna. Cere modelarea incetarii contractului, care atinge si lichidarea, ultima zi lucrata si perioada activa din D112. Consecinta azi: suprataxare supra-aplicata la lunile cu incetare.")
+def test_datorie_suprataxare_prorata_la_incetare():
+    # Prerechizitul MECANIC al proratarii la incetare: modelul salariati sa poata exprima ca un
+    # contract a fost activ doar o fractiune din luna. Fara data_incetare/data_plecare nu se stie
+    # cate zile a fost activ -> pragul de suprataxare ramane pe salariul minim INTREG (supra-aplicat).
+    tpl = pathlib.Path(__file__).resolve().parent.parent / "tenant_template.sql"
+    ddl = tpl.read_text(encoding="utf-8")
+    i = ddl.index("TENANT_PLACEHOLDER.salariati (")
+    bloc = ddl[i:ddl.index(");", i)]
+    assert "data_incetare" in bloc or "data_plecare" in bloc
