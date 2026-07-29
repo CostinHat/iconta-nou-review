@@ -4071,3 +4071,26 @@ pure NU sunt cuplare. Ambele semnături sunt acum într-o gardă mecanică perma
 
 Consecință generală: un scan care „iese gol" nu e dovadă până nu arăți că gardul ar fi PRINS cazul
 pozitiv. „Se pare că le-am găsit pe toate" a fost greșit de trei ori azi.
+
+### 29.07.2026 `d112._sal_minim` era a doua sursa de adevar — si dadea gresit pe 2025
+
+FAPT: salariul minim era hardcodat in d112 (4050 pentru <=2026/06, 4325 dupa, fallback 4325
+pentru 2027+), desi `common.COTE` il tine cu perioada si temei. Comentariul de deasupra
+recunostea problema: "a doua sursa de adevar + drift pe 2027+".
+
+BUG ASCUNS, gasit la inlocuire: pentru 2025 dadea 4050. Valoarea reala e 3700 (HG 1006/2024).
+Deci D112 pe 2025 folosea un salariu minim cu 350 lei mai mare la calculul facilitatilor si
+al plafoanelor. Nu era vizibil pentru ca nu s-a generat D112 pe 2025 - ar fi aparut la prima
+declaratie rectificativa.
+
+REPARAT: citeste din registru. Verificat: 2026/06 -> 4050, 2026/07 -> 4325, 2025/03 -> 3700.
+
+LECTIE: o valoare copiata din registru intr-un modul nu ramane sincronizata. Nu se strica
+zgomotos - ramane plauzibila si devine gresita cand legea se schimba. Cautati "a doua sursa
+de adevar" ca tipar, nu ca eroare izolata: registrul de cote exista din iunie, dar 7 module
+il folosesc si restul au copii.
+
+RAMAS DESCHIS (xfail in test_datorie): cota() intoarce TACIT ultima valoare cunoscuta pentru
+o data viitoare. In ianuarie 2027 salariul minim va fi cel din iulie 2026, fara semnal.
+Cotele au "de cand", n-au "pana cand" - iar pentru valorile actualizate anual prin HG, lipsa
+unei valori noi nu inseamna ca cea veche ramane, ci ca nimeni n-a actualizat registrul.

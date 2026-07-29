@@ -16,12 +16,19 @@ def _nzl(an, luna):
     return _scad.zile_lucratoare_luna(an, luna)
 
 def _sal_minim(an, luna):
-    # salariul minim brut pe economie (HG 146/2026). Actualizabil anual.
-    if an == 2026:
-        return 4050 if luna <= 6 else 4325
-    if an < 2026:
-        return 4050
-    return 4325  # 2027+ fallback pana la actualizare
+    """Salariul minim brut pe economie, din registrul unic de cote.
+
+    29.07.2026: era hardcodat aici (4050/4325 + fallback 4325 pentru 2027+), desi
+    common.COTE il tine cu perioada si temei (HG 1510/2024, HG 146/2026). A doua sursa de
+    adevar: la urmatoarea majorare se schimba in doua locuri, iar fallback-ul ar fi dat
+    tacit o valoare care nu mai e a nimanui.
+
+    Registrul RIDICA daca nu exista valoare pentru data ceruta - preferabil unei cifre
+    plauzibile si gresite intr-o declaratie depusa la ANAF."""
+    from datetime import date as _date
+    from core.common import cota
+    valoare, _temei = cota("salariu_minim", _date(an, luna, 1))
+    return int(valoare)
 _D112_NS = "mfp:anaf:dgti:declaratie_unica:declaratie:v7"
 def _cm_media6(brut, data_ang, an, luna):  # cm_media6_v1
     """Media zilnica reala pe ultimele 6 luni (OUG 158). Returneaza (d17, d18, media).
