@@ -231,3 +231,19 @@ def test_d112_pull_prorateaza_facilitatea_la_incetare(schema):
     _, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
     assert len(sal) == 1
     assert float(sal[0]["facilitate"]) == 200.0, sal[0].get("facilitate")   # 300 x 14/21 (incetare 20 iun 2026), nu 300 intreg
+
+
+def test_d112_facilitate_prorata_la_mentinere_partiala(schema):
+    # GARD PERMANENT (mutat din test_datorie dupa modelarea salariu_istoric, PASUL 2a): facilitatea se
+    # prorateaza pe zilele in care salariul e MENTINUT la minim (OUG 156/2024 art.LXVI alin.4 lit.a).
+    # Salariat la minim (4050) pana pe 15 iun, marit la 5000 din 16 -> facilitate pe zilele 1-15 (10/21).
+    from core import d112
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id, nume, prenume, cnp, data_angajare, salariu_brut, ore_zi, "
+                    "part_time) OVERRIDING SYSTEM VALUE VALUES "
+                    "(1,'MARIRE','A','1900101410011','2026-01-01',5000,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) "
+                    "VALUES (1,'2026-01-01',4050),(1,'2026-06-16',5000)")
+    _, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
+    assert len(sal) == 1
+    assert round(float(sal[0]["facilitate"]), 2) == round(300 * 10 / 21, 2), sal[0].get("facilitate")  # 142.86 = 300 x 10/21 (zile la minim 1-15 iun)

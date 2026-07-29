@@ -127,26 +127,6 @@ def test_datorie_d710_trunchiere_in_garda():
 
 
 @pytest.mark.xfail(strict=True, reason=(
-    "DATORIE 29.07.2026: facilitatea nu se prorateaza dupa art. LXVI alin.(4) lit.a) OUG 156/2024 "
-    "(preluat OUG 89/2025) - 'perioada din luna in care salariul de baza este MENTINUT la nivelul "
-    "salariului minim'. Cauza: salariati are o singura coloana salariu_brut, valoarea CURENTA, fara "
-    "istoric. Nu se poate sti daca salariul a fost la minim toata luna sau doar o parte (marire/scadere "
-    "la mijloc de luna). Consecinta: salariat caruia i se mareste salariul pe 15 ale lunii primeste "
-    "facilitatea INTREAGA, desi legea o cere proratata. "
-    "ACEEASI LIPSA, TREI FATETE - modelul n-are dimensiune temporala pe contract: "
-    "lit.b) angajare -> REZOLVAT (data_angajare exista); lit.d) incetare -> xfail, cere data_incetare; "
-    "lit.a) mentinere -> acest xfail, cere istoric de salariu. Cand se modeleaza contractul in timp "
-    "(perioada de valabilitate + istoric de salariu), cad toate trei odata. Pana atunci, fiecare e o "
-    "eroare separata in calcul."))
-def test_datorie_facilitate_prorata_la_mentinere_partiala():
-    # Prerechizitul MECANIC (lit.a): modelul sa stie DACA salariul a fost la minim toata luna sau doar o
-    # parte. salariati are doar salariu_brut CURENT, fara istoric -> mentinerea partiala nu se poate prorata.
-    tpl = pathlib.Path(__file__).resolve().parent.parent / "tenant_template.sql"
-    ddl = tpl.read_text(encoding="utf-8")
-    assert "salariu_istoric" in ddl or "istoric_salariu" in ddl or "salariati_istoric" in ddl
-
-
-@pytest.mark.xfail(strict=True, reason=(
     "DATORIE 29.07.2026: state_plata exista in schema dar nimic nu scrie in el. Statul de plata se "
     "recalculeaza la fiecare afisare, deci un stat 'emis' in ianuarie si reafisat in iulie poate iesi "
     "ALTFEL daca s-a schimbat cota, salariul minim sau codul intre timp. Pentru un document care se "

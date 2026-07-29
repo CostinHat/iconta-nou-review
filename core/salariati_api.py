@@ -20,6 +20,9 @@ MODUL = "salariati_api"
 
 _CNP = re.compile(r"^\d{13}$")
 _NORME = ("intreaga", "partiala")
+# [tranzitie 29.07.2026] salariu_brut nu mai e citit de calculul fiscal (d112, stat_plata); acela
+# trece prin salariu_istoric.salariu_la(). salariu_brut se retrage complet din tabel in 2b.
+# NU adauga citiri fiscale noi pe salariati.salariu_brut.
 _CAMPURI_API = ("cnp", "nume", "prenume", "data_angajare", "tip_norma", "ore_zi",
                 "salariu_brut", "persoane_intretinere", "judet_casa", "data_incetare",
                 "scutit_contrib_minim", "motiv_exceptare", "cor",

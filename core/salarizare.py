@@ -75,7 +75,8 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    functie_baza=True, la_data=None,
                    norma_intreaga=True, venit_brut_total=None,
                    exceptat_suprataxare=False,
-                   tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None):
+                   tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
+                   facilitate_prorata=None):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -135,14 +136,21 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
             _za = _scad.zile_lucratoare_interval(_start, _end)
             if _zl:
                 _prorata = _dec(_za) / _dec(_zl)
-    facilitate = facilitate_val if (
-        norma_intreaga and functie_baza and vbt == sm and vbt <= plafon_fac
-    ) else Decimal(0)
-    # Proratarea FACILITATII la luna de ANGAJARE - TEXT EXPLICIT (nu interpretare, spre deosebire de prag):
-    # OUG 156/2024 art.LXVI alin.(4) lit.b) = OUG 89/2025 art.III: "suma de 300/respectiv 200 lei SE
-    # DIMINUEAZA in functie de ... data de la care angajatii NOI sunt incadrati in munca la nivelul
-    # salariului minim". Aceeasi baza ca pragul (zile lucrate / zile lucratoare).
-    facilitate = facilitate * _prorata
+    if facilitate_prorata is not None:
+        # PASUL 2a (lit.a) - TEXT EXPLICIT (OUG 156/2024 art.LXVI alin.(4) lit.a): "suma de 300/200 lei SE
+        # DIMINUEAZA in functie de perioada din luna in care salariul de baza este MENTINUT la nivelul
+        # minim". Apelantul (fiscal) a calculat din salariu_istoric fractia de zile ACTIVE si LA MINIM ->
+        # facilitate = facilitate_val x acea fractie. Inlocuieste si eligibilitatea (vbt==sm) si proratarea
+        # pe fereastra activa (alin.4 lit.b/c/d): pe zilele la minim, minimul <= plafon automat. Norma
+        # intreaga ramane conditie (HG 146/2026). Vezi core/salariu_istoric.py.
+        facilitate = facilitate_val * _dec(facilitate_prorata) if (norma_intreaga and functie_baza) else Decimal(0)
+    else:
+        # Forma clasica (fara istoric): eligibilitate vbt==sm + proratare pe fereastra activa (alin.4
+        # lit.b) angajare / lit.d) incetare). TEXT EXPLICIT (spre deosebire de prag - vezi baza_podea).
+        facilitate = facilitate_val if (
+            norma_intreaga and functie_baza and vbt == sm and vbt <= plafon_fac
+        ) else Decimal(0)
+        facilitate = facilitate * _prorata
     baza_contrib = b - facilitate
 
     cas = baza_contrib * cota_cas

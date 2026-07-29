@@ -1156,6 +1156,21 @@ ALTER TABLE TENANT_PLACEHOLDER.salariati ALTER COLUMN id ADD GENERATED ALWAYS AS
 -- Name: solduri_initiale; Type: TABLE; Schema: TENANT_PLACEHOLDER; Owner: postgres
 --
 
+CREATE TABLE TENANT_PLACEHOLDER.salariu_istoric (
+    id integer NOT NULL,
+    salariat_id integer NOT NULL,
+    valabil_din date NOT NULL,
+    salariu_brut numeric NOT NULL,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT salariu_istoric_pozitiv CHECK (salariu_brut >= 0)
+);
+ALTER TABLE TENANT_PLACEHOLDER.salariu_istoric OWNER TO iconta_user;
+ALTER TABLE TENANT_PLACEHOLDER.salariu_istoric ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME TENANT_PLACEHOLDER.salariu_istoric_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1
+);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_salariu_istoric_sal_data
+  ON TENANT_PLACEHOLDER.salariu_istoric (salariat_id, valabil_din);
+
 CREATE TABLE TENANT_PLACEHOLDER.solduri_initiale (
     id integer NOT NULL,
     cont text NOT NULL,

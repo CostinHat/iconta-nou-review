@@ -37,7 +37,14 @@ def stat_plata(conn, schema, an, luna):
     cadou_luna = _ben.lista_luna(conn, schema, an, luna, "cadou")
     cadou_det = _ben.cadou_detalii_luna(conn, schema, an, luna)
     stat = []
+    import calendar as _cal
+    from core import salariu_istoric as _si  # [tranzitie 29.07.2026] salariul contractual DATE-AWARE, nu salariati.salariu_brut
+    _ultima_luna = date(an, luna, _cal.monthrange(an, luna)[1])
+    _cs_sal = conn.cursor()
     for sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang, data_inc in randuri:
+        brut = _si.salariu_la(_cs_sal, schema, sid, _ultima_luna)  # salariul contractual din istoric
+        _zlm, _zll = _si.zile_la_minim(_cs_sal, schema, sid, an, luna, data_ang, data_inc)
+        _fac_prorata = (_zlm / _zll) if _zll else 0.0  # lit.a): zile ACTIVE si LA MINIM
         c_cm = cm.get(sid)
         # zile lucratoare FARA sarbatori (OUG 158/2005 art.10) - numitorul proratarii CM
         zile_luna = _scad.zile_lucratoare_luna(an, luna)
@@ -55,6 +62,7 @@ def stat_plata(conn, schema, an, luna):
                                          venit_brut_total=float(brut or 0),
                                          data_angajare=data_ang,
                                          data_incetare=data_inc,
+                                         facilitate_prorata=_fac_prorata,
                                          tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
                                          tichet_vacanta=float(vac or 0))
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
@@ -91,6 +99,7 @@ def stat_plata(conn, schema, an, luna):
             "cm_zile": cm_zile,
             "cm_brut": c_cm["brut"] if c_cm else 0,
         })
+    _cs_sal.close()
     return stat
 
 def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
@@ -113,6 +122,13 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     if not r:
         return None
     nume, prenume, brut, pers, part_time, tichet_val, data_ang, data_inc = r
+    import calendar as _cal2
+    from core import salariu_istoric as _si  # [tranzitie] date-aware, nu salariati.salariu_brut
+    _um = date(an, luna, _cal2.monthrange(an, luna)[1])
+    with conn.cursor() as _csf:
+        brut = _si.salariu_la(_csf, schema, salariat_id, _um)
+        _zlm, _zll = _si.zile_la_minim(_csf, schema, salariat_id, an, luna, data_ang, data_inc)
+    _fac_prorata = (_zlm / _zll) if _zll else 0.0
     with conn.cursor() as cur:
         cur.execute(f"""
             SELECT COALESCE(SUM(zile),0), COALESCE(SUM(net),0), COALESCE(SUM(brut_ang+brut_fnuass),0)
@@ -131,6 +147,7 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
                                      venit_brut_total=float(brut or 0),
                                      data_angajare=data_ang,
                                      data_incetare=data_inc,
+                                     facilitate_prorata=_fac_prorata,
                                      tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
                                      tichet_vacanta=float(vac or 0))
 

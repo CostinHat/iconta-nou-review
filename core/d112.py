@@ -358,6 +358,7 @@ def pull(conn, schema, an, luna):
     for s in sal:
         cm = pe_sal.get(s["id"], [])
         salariati.append({
+            "id": s.get("id"),
             "nume": s.get("nume"), "prenume": s.get("prenume") or "-",
             "cnp": s.get("cnp"), "brut": s.get("salariu_brut"),
             "data_angajare": str(s.get("data_angajare") or ""),
@@ -393,8 +394,14 @@ def pull(conn, schema, an, luna):
     #  - norma_intreaga: facilitatea (HG 146/2026 o da doar la norma intreaga)
     #  - venit_brut_total: plafonul facilitatii se judeca pe brutul CONTRACTUAL
     #  - brut_lucrat: pe zilele de CM salariul nu se plateste de angajator
+    from core import salariu_istoric as _si  # [tranzitie 29.07.2026] salariul contractual DATE-AWARE, nu salariati.salariu_brut
+    _ultima_luna = _dt(an, luna, _cal.monthrange(an, luna)[1])
+    _cs_sal = conn.cursor()
     for s in salariati:
-        brut_int = float(s["brut"] or 0)
+        _sal_luna = float(_si.salariu_la(_cs_sal, schema, s["id"], _ultima_luna) or 0)
+        _zlm, _zll = _si.zile_la_minim(_cs_sal, schema, s["id"], an, luna, s.get("data_angajare"), s.get("data_incetare"))
+        _fac_prorata = (_zlm / _zll) if _zll else 0.0  # lit.a): fractia de zile ACTIVE si LA MINIM
+        brut_int = _sal_luna
         zile_cm_s = int(s.get("zile_cm") or 0)
         brut_lucrat = (brut_int * max(nzl - zile_cm_s, 0) / nzl) if (nzl and zile_cm_s) else brut_int
         # [F133] tichete de masa: aceleasi zile ca proratarea salariului (nzl - cm), NU din pontaj
@@ -406,6 +413,7 @@ def pull(conn, schema, an, luna):
                                venit_brut_total=brut_int,
                                data_angajare=s.get("data_angajare"),
                                data_incetare=s.get("data_incetare"),
+                               facilitate_prorata=_fac_prorata,
                                tichet_valoare=float(s.get("tichet_masa_valoare") or 0),
                                tichet_zile=tichet_zile,
                                tichet_vacanta=float(s.get("tichet_vacanta") or 0))
@@ -423,7 +431,7 @@ def pull(conn, schema, an, luna):
         # part_time = ROUND(prag_pt * zile_lucrate / NZL); daca 0 < baza < part_time
         # -> B4_*P la prag, diferenta pe angajator. Exceptati: scutit+motiv 1-5.
         zile_lucr = max(nzl - int(s.get("zile_cm") or 0), 0)
-        baza = float(s["brut"] or 0)
+        baza = _sal_luna  # [tranzitie] date-aware, nu salariati.salariu_brut
         scutit = bool(s.get("scutit_pt"))
         prag_zile = round(prag_pt * zile_lucr / nzl) if nzl else 0
         if not scutit and 0 < baza < prag_zile:
@@ -433,6 +441,7 @@ def pull(conn, schema, an, luna):
             s["cass_min_pt"] = round(prag_zile * 0.10)
         else:
             s["pt_aplica"] = False
+    _cs_sal.close()
     return prof, salariati
 
 
