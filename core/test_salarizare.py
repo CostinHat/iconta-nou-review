@@ -185,3 +185,13 @@ def test_suprataxa_prag_prorata_luna_angajare():
     # contract activ toata luna (fara data_angajare) -> prag INTREG 3750, suprataxare mai mare: proratarea chiar reduce
     r_full = calcul_salariu(1000, norma_intreaga=False, venit_brut_total=1000, la_data=date(2026, 6, 1))
     assert r_full["cas_suprataxa"] == Decimal("687.50")   # (3750-1000)x25% - fara proratare, pe pragul intreg
+
+
+def test_facilitate_prorata_luna_angajare():
+    # OUG 156/2024 art.LXVI alin.(4) lit.b) (TEXT EXPLICIT): facilitatea de 300 lei SE DIMINUEAZA
+    # la incadrarea NOUA la nivelul minim. Iunie 2026: angajat pe 16 -> 11/21 zile lucrate.
+    from datetime import date
+    r = calcul_salariu(4050, la_data=date(2026, 6, 1), data_angajare=date(2026, 6, 16), venit_brut_total=4050)
+    assert r["facilitate"] == Decimal("157.14")     # 300 x 11/21 - alin.(4) lit.b) proratare la angajare noua
+    r_full = calcul_salariu(4050, la_data=date(2026, 6, 1), venit_brut_total=4050)
+    assert r_full["facilitate"] == Decimal("300.00")  # contract activ toata luna -> facilitate nediminuata

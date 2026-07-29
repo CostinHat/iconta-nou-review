@@ -126,7 +126,7 @@ def test_datorie_d710_trunchiere_in_garda():
     assert any(t == "d710" for t, _ in CERERI), "d710 lipseste din garda de 75 (test_limita_text_anaf)"
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 29.07.2026: pragul de suprataxare nu se prorateaza la INCETAREA contractului la mijloc de luna (OMF 1855/2022 pct.2). Cauza: salariati n-are data_incetare/data_plecare - nu se poate sti ca respectivul contract a fost activ o fractiune din luna. Cere modelarea incetarii contractului, care atinge si lichidarea, ultima zi lucrata si perioada activa din D112. Consecinta azi: suprataxare supra-aplicata la lunile cu incetare.")
+@pytest.mark.xfail(strict=True, reason="DATORIE 29.07.2026: la INCETAREA contractului la mijloc de luna NU se prorateaza nici pragul de suprataxare (OMF 1855/2022 pct.2), nici facilitatea de 300/200 lei (OUG 156/2024 art.LXVI alin.4 lit.d). Cauza: salariati n-are data_incetare/data_plecare - nu se poate sti ca respectivul contract a fost activ o fractiune din luna. Cere modelarea incetarii contractului, care atinge si lichidarea, ultima zi lucrata si perioada activa din D112. Consecinta azi: suprataxare supra-aplicata SI facilitate supra-acordata la lunile cu incetare.")
 def test_datorie_suprataxare_prorata_la_incetare():
     # Prerechizitul MECANIC al proratarii la incetare: modelul salariati sa poata exprima ca un
     # contract a fost activ doar o fractiune din luna. Fara data_incetare/data_plecare nu se stie

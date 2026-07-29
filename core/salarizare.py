@@ -107,9 +107,33 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
     # ambele pe vbt. Cu sporuri separate diverg: (c) ramane pe baza, (d) trece pe baza+sporuri, iar
     # venit_brut_total trebuie redefinit + un parametru nou pentru baza contractuala.
     vbt = _dec(venit_brut_total) if venit_brut_total is not None else b
+    # PRORATA luna de ANGAJARE (zile lucrate / zile lucratoare din luna, fara sarbatori) - UN SINGUR loc,
+    # folosita SI la facilitate SI la pragul de suprataxare. 1 daca nu e luna de angajare (contract activ tot).
+    _prorata = Decimal(1)
+    if data_angajare is not None and la_data is not None:
+        from datetime import date as _date
+        import calendar as _cal
+        from core import scadente as _scad
+        _da = data_angajare if isinstance(data_angajare, _date) else None
+        if _da is None:
+            try:
+                _da = _date.fromisoformat(str(data_angajare)[:10])
+            except (ValueError, TypeError):
+                _da = None
+        if _da is not None and (_da.year, _da.month) == (la_data.year, la_data.month):
+            _ultima = _date(la_data.year, la_data.month, _cal.monthrange(la_data.year, la_data.month)[1])
+            _zl = _scad.zile_lucratoare_luna(la_data.year, la_data.month)
+            _za = _scad.zile_lucratoare_interval(_da, _ultima)
+            if _zl:
+                _prorata = _dec(_za) / _dec(_zl)
     facilitate = facilitate_val if (
         norma_intreaga and functie_baza and vbt == sm and vbt <= plafon_fac
     ) else Decimal(0)
+    # Proratarea FACILITATII la luna de ANGAJARE - TEXT EXPLICIT (nu interpretare, spre deosebire de prag):
+    # OUG 156/2024 art.LXVI alin.(4) lit.b) = OUG 89/2025 art.III: "suma de 300/respectiv 200 lei SE
+    # DIMINUEAZA in functie de ... data de la care angajatii NOI sunt incadrati in munca la nivelul
+    # salariului minim". Aceeasi baza ca pragul (zile lucrate / zile lucratoare).
+    facilitate = facilitate * _prorata
     baza_contrib = b - facilitate
 
     cas = baza_contrib * cota_cas
@@ -161,35 +185,18 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
     # cu declaratie pe propria raspundere -> parametrul exceptat_suprataxare.
     # norma_intreaga ramane conditie pentru FACILITATE (HG 146/2026 cere norma intreaga),
     # nu pentru suprataxare.
-    baza_podea = sm - facilitate_val
-    # PRORATARE luna de ANGAJARE (OUG 156/2024 art.LXVI alin.(5) = OUG 89/2025 art.III + OMF 1855/2022
-    # pct.2): nivelul de referinta al suprataxarii se prorateaza pe zilele lucrate din luna in care
-    # contractul devine activ. INTERPRETARE cu temei, NU text explicit (verificat la sursa 29.07.2026):
-    # OMF 1855/2022 (proratarea) e din 2022, dinaintea facilitatii, si NU tranzeaza combinatia. Aleg B:
-    # derogarea spune 'NIVELUL... SE DIMINUEAZA cu 300 lei' -> REDEFINESTE nivelul (3750 in S1 / 4125 in
-    # S2), iar OMF prorateaza 'nivelul aferent zilelor lucrate' = nivelul DEJA diminuat:
-    #   prag = (sm - facilitate) x zile_lucrate / zile_lucratoare.
-    # Argument in plus: alin.(4) prevede EXPLICIT proratarea facilitatii de 300; alin.(5) doar redefineste
-    # nivelul - daca voia 300 intregi peste un prag proratat, ar fi scris-o (ca la alin.4). Alternativa A
-    # (prorateaza sm intreg, apoi scade 300 intreg) e mai putin fidela literei. De reconfirmat daca apare
-    # o norma/ghid ANAF care tranzeaza explicit. INCETAREA ramane nemodelata (data_incetare lipseste - vezi
-    # test_datorie).
-    if data_angajare is not None and la_data is not None:
-        from datetime import date as _date
-        import calendar as _cal
-        from core import scadente as _scad
-        _da = data_angajare if isinstance(data_angajare, _date) else None
-        if _da is None:
-            try:
-                _da = _date.fromisoformat(str(data_angajare)[:10])
-            except (ValueError, TypeError):
-                _da = None
-        if _da is not None and (_da.year, _da.month) == (la_data.year, la_data.month):
-            _ultima = _date(la_data.year, la_data.month, _cal.monthrange(la_data.year, la_data.month)[1])
-            _zl = _scad.zile_lucratoare_luna(la_data.year, la_data.month)
-            _za = _scad.zile_lucratoare_interval(_da, _ultima)
-            if _zl:
-                baza_podea = baza_podea * _dec(_za) / _dec(_zl)
+    # Pragul de suprataxare = nivelul de referinta DIMINUAT, proratat pe luna de angajare cu ACEEASI
+    # _prorata ca facilitatea. TEMEI (verificat la sursa 29.07.2026): OUG 156/2024 art.LXVI alin.(5) =
+    # OUG 89/2025 art.III - derogarea "NIVELUL... SE DIMINUEAZA cu 300 lei" REDEFINESTE nivelul (3750 in
+    # S1 / 4125 in S2); OMF 1855/2022 pct.2 prorateaza "nivelul aferent zilelor lucrate" = nivelul DEJA
+    # diminuat. OMF e din 2022, dinaintea facilitatii, si NU tranzeaza combinatia -> aleg B (nivelul
+    # diminuat, proratat). Argument: alin.(4) prorateaza EXPLICIT facilitatea (vezi mai sus), alin.(5) doar
+    # redefineste nivelul - daca voia 300 intregi peste un prag proratat, ar fi scris-o (ca la alin.4).
+    # Alternativa A (sm intreg proratat, apoi 300 intreg) e mai putin fidela literei. De reconfirmat la o
+    # norma/ghid ANAF explicit.
+    # DIFERENTA DE TEMEI: pragul (alin.5) se prorateaza prin INTERPRETARE; facilitatea (alin.4 lit.b) prin
+    # TEXT EXPLICIT. INCETAREA ramane nemodelata (data_incetare lipseste - vezi test_datorie).
+    baza_podea = (sm - facilitate_val) * _prorata
     cas_suprataxa = Decimal(0)
     cass_suprataxa = Decimal(0)
     if (not exceptat_suprataxare) and baza_contrib < baza_podea:
