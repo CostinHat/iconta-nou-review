@@ -26,6 +26,23 @@ Proba: operatiune tip 5 (servicii UE, EUR, curs 4.9770, cota 21%) pe tenant_001 
 
 LECTIE (regula, nu caz izolat): totalPlata_A NU e TVA-ul datorat, e SUMA DE CONTROL definita de structura ANAF (poz.28) ca baza1..5 + tva1..5. Doua lucruri diferite cu acelasi nume "total". Regula "cele 4 sectiuni" din instructiuni priveste COLOANELE (curs, baza, TVA), nu totalul. Cu rollup, checksum-ul include serviciul in baza4 SI baza5 prin definitie -- fara dubla impozitare, pentru ca TVA-ul DATORAT ramane tva4. Consecinta pentru orice generator viitor: cand structura ANAF are un camp "total", verifica DACA e suma fiscala sau checksum de structura. Un checksum NU se "corecteaza" dupa logica fiscala -- se calculeaza cum cere structura, altfel DUK il respinge (aici R28). DUK = judecatorul final peste instructiunile PDF.
 
+## 29.07.2026 -- Faza 0 (curatenie date de test): criterii si lectii
+
+Context: golirea completa a bazei de firme/cabinete/utilizatori (TESTE.md Faza 0), inainte de cele 7 firme derivate din legislatie.
+
+CRITERIU stergere: un tabel din public se sterge la curatenia de date DOAR daca are legatura STRUCTURALA cu firma/cabinetul/userul (FK sau coloana tenant_id/firm_id/user_id). Numarul de randuri NU e criteriu. alerte_fiscale (39 randuri) e tabel GLOBAL cu stiri ANAF reale scrapate de monitor_fiscal - fara nicio legatura la firma. Stergerea n-ar fi curatat niciun reziduu si ar fi pierdut istoric care nu se reface (ANAF roteste pagina de noutati). PASTRAT.
+
+CRITERIU izolare test de integrare: depinde de CINE detine conexiunea.
+ - functie CITITOARE care primeste conn -> traieste in tranzactia fixturii -> ROLLBACK curata (tiparul test_pull_declaratii);
+ - functie SCRIITOARE care isi deschide propria conexiune si comite -> ROLLBACK-ul fixturii n-are ce anula -> schema efemera COMISA + DROP la teardown, cu DROP IF EXISTS la setup pentru siguranta la crash.
+Nu se refactorizeaza cod de productie ca sa serveasca un test (coada nu misca cainele). Gasit 29.07 la decuplarea test_spv_receive si test_etransport_send de tenant_002.
+
+SCAN COMPLET (nu partial): scanul dupa teste cuplate la tenant a gasit PATRU fisiere, nu doua cate la prima cautare - test_spv_receive, test_etransport_send, test_limita_text_anaf, test_control_incrucisat. Un scan partial da impresia ca s-a terminat.
+
+LECTIE (gard cu punct orb): un gard care sare pe SINGURA firma unde ar trebui sa prinda are punct orb fix unde traieste bug-ul. 27.07: reparasem limita de 75 de caractere si scrisesem gardul test_limita_text_anaf pe tenant_001 (denumire 115 car.). Toate cele 5 generatoare care inca emiteau den/adresa BRUT (d100/d101/d205/d406/d710) sareau cu "nu se datoreaza" - deci gardul era verde exact pentru ca nu atingea cazul. Descoperit 29.07 abia cand testul a fost decuplat de firma persistenta si a primit o firma efemera care datora toate declaratiile. Consecinta pentru orice gard: daca sare pe cazul-limita, nu e gard - verifica ce ACOPERA efectiv, nu cate teste trec.
+
+TEMEI limite de lungime SAF-T (d406): <Name>=SAFlongtextType 256, <StreetName>/<LastName>=SAFmiddle2textType 70, din XSD-ul SAF-T. NU 75 (limita ANAF pentru declaratiile clasice D1xx/D3xx). Verificat la sursa 29.07 - _t() cu 74 ar fi depasit la StreetName/LastName si ar fi trunchiat inutil Name. Fiecare format are limitele lui; nu se presupune ca sunt aceleasi. Golurile reziduale (d205/d390 neexercitate, d710 lipsa din garda) -> xfail(strict) in test_datorie.py, cad singure la Faza 1.
+
 ---
 
 ## Cum se foloseste
@@ -4034,3 +4051,23 @@ symlink. Dovedit prin `systemctl restart nginx` complet, nu doar reload.
 A doua oara azi cand configurarea nginx era rupta fara sa se vada: prima data un symlink orfan
 (ar fi doborat site-ul la reboot), acum un fisier care ocolea sursa. Ambele invizibile cat timp
 nginx rula din memorie.
+
+### 29.07.2026 Faza 0: scan după SIMPTOM vs după CLASĂ STRUCTURALĂ
+
+Decuplarea suitei de firmele persistente (tenant_001/002/003) a fost făcută în TREI runde de
+scan parțial în aceeași zi: întâi 2 teste, apoi încă 4, apoi încă 7 după wipe — fiecare rundă
+PĂREA completă. De fiecare dată scanul fusese după SIMPTOM (grep pe „tenant_00X"), iar simptomul
+apărea și acolo unde NU era cuplare (numele pasat ca string unei funcții pure de audit de schemă)
+și lipsea acolo unde cuplarea era mascată (scriitor cu `INSERT INTO tenant_002.<tabelă>` într-o
+fixtură, nu `get_conn`).
+
+REGULA: nu scanezi după simptomul-string, ci după CLASA STRUCTURALĂ a cuplării — ce anume face un
+test să depindă de o firmă din baza. Clasa are exact două semnături: (a) `get_conn("tenant_00X")` —
+sesiune legată de schema persistentă; (b) SQL `FROM/INTO/JOIN/UPDATE/DELETE FROM tenant_00X.<tabelă>`
+— interogare pe datele persistente. Numele efemere (`ztest_*`) și argumentele-string către funcții
+pure NU sunt cuplare. Ambele semnături sunt acum într-o gardă mecanică permanentă
+(`core/test_teste_decuplate.py`), cu un test-mutație care dovedește că regex-ul chiar prinde cuplarea
+și nu dă fals-pozitiv — altfel o gardă care nu prinde nimic ar da o falsă siguranță.
+
+Consecință generală: un scan care „iese gol" nu e dovadă până nu arăți că gardul ar fi PRINS cazul
+pozitiv. „Se pare că le-am găsit pe toate" a fost greșit de trei ori azi.

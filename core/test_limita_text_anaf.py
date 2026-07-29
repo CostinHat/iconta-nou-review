@@ -22,14 +22,21 @@ import re
 
 import pytest
 
-from core import db, declaratii_api
+from core import db, declaratii_api, tenant_provisioning as tp
+
+SCHEMA_T = "ztest_limita"
+# Nume FABRICAT de peste 75 de caractere - ideea testului era DENUMIREA lunga, nu firma anume (29.07).
+NUME_LUNG = ("CABINET INDIVIDUAL DE CONTABILITATE, CONSULTANTA FISCALA SI AUDIT FINANCIAR "
+             "TESTUL ALFA-BETA-GAMA-DELTA EXPERT CONTABIL AUTORIZAT")
 
 CERERI = [
     ("d100", {"an": 2026, "trim": 2}), ("d101", {"an": 2025}),
     ("d112", {"an": 2026, "luna": 6}), ("d205", {"an": 2026}),
     ("d300", {"an": 2026, "luna": 6}), ("d301", {"an": 2026, "luna": 6}),
     ("d390", {"an": 2026, "luna": 6}), ("d394", {"an": 2026, "luna": 6}),
-    ("d406", {"an": 2026, "luna": 6}),
+    # d406 SCOS din garda ANAF-75 (29.07): SAF-T are limite PROPRII din XSD (SAFmiddle2textType=70,
+    # SAFlongtextType=256) - un Name de 256 e valid acolo, deci pragul 75 nu se aplica. Trunchierea
+    # d406 (Name 256, StreetName/LastName 70) e pazita de validarea XSD SAF-T, nu de acest gard.
 ]
 LIMITA = 75
 MARCAJ_COTA = "# ROTUNJIRE PE COTA"
@@ -42,6 +49,30 @@ def _db_ok():
             return True
     except Exception:
         return False
+
+
+@pytest.fixture
+def firma_nume_lung():
+    """Schema efemera din tenant_template cu firma cu denumire >75 car., ROLLBACK garantat.
+    genereaza() e CITITOR (primeste conn) -> traieste in tranzactia fixturii, deci ROLLBACK curata
+    (tiparul test_pull_declaratii). Decuplat de tenant_001 (29.07)."""
+    db.init_pool()
+    with db.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_T)
+                cur.execute(tp.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), SCHEMA_T))
+                cur.execute("SET search_path TO %s, public" % SCHEMA_T)
+                cur.execute(
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
+                    "declarant_nume, declarant_prenume, declarant_functie, platitor_tva, tip_decont, regim_fiscal) "
+                    "VALUES (1, %s, '14399840', 'Str. Testul 1', 'Bucuresti', 'B', '6920', 'BCR', "
+                    "'RO49BCRA0000000000000000', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')",
+                    (NUME_LUNG,))
+            yield conn, SCHEMA_T
+        finally:
+            conn.rollback()
 
 
 def test_functia_trunchiaza_si_normalizeaza():
@@ -67,15 +98,13 @@ def test_niciun_generator_nu_mai_trunchiaza_local():
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 @pytest.mark.parametrize("tip,body", CERERI)
-def test_atributele_respecta_limita_anaf(tip, body):
-    """Pe firma reala cu denumire de 115 caractere - cazul care a produs defectul."""
-    with db.get_conn("tenant_001") as c:
-        try:
-            xml, _ = declaratii_api.genereaza(c, "tenant_001", tip, dict(body))
-        except ValueError:
-            pytest.skip("%s nu se datoreaza / profil incomplet pe tenant_001" % tip)
-        finally:
-            c.rollback()
+def test_atributele_respecta_limita_anaf(tip, body, firma_nume_lung):
+    """Firma efemera cu denumire >75 car. (cazul care a produs defectul) - decuplat de tenant_001."""
+    conn, schema = firma_nume_lung
+    try:
+        xml, _ = declaratii_api.genereaza(conn, schema, tip, dict(body))
+    except ValueError:
+        pytest.skip("%s nu se datoreaza / profil incomplet pe firma efemera" % tip)
     xml = xml.decode("utf-8") if isinstance(xml, bytes) else xml
     lungi = [(a, len(v)) for a, v in re.findall(r'(\w+)="([^"]*)"', xml) if len(v) > LIMITA]
     assert not lungi, "atribute peste %d caractere (ANAF le respinge): %s" % (LIMITA, lungi)
@@ -102,11 +131,12 @@ def test_d390_refuza_luna_fara_operatiuni():
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_d390_pe_firma_fara_operatiuni_da_mesaj_citibil():
-    with db.get_conn("tenant_001") as c:
-        with pytest.raises(ValueError) as e:
-            declaratii_api.genereaza(c, "tenant_001", "d390", {"an": 2026, "luna": 6})
-        c.rollback()
+def test_d390_pe_firma_fara_operatiuni_da_mesaj_citibil(firma_nume_lung):
+    # DECUPLAT (29.07): firma efemera FARA operatiuni IC (refolosim fixtura firma_nume_lung) ->
+    # d390.genereaza refuza luna pe zero. genereaza e CITITOR; ROLLBACK-ul fixturii curata schema.
+    conn, schema = firma_nume_lung
+    with pytest.raises(ValueError) as e:
+        declaratii_api.genereaza(conn, schema, "d390", {"an": 2026, "luna": 6})
     m = str(e.value)
     assert "nu se depune pe zero" in m and "325" in m, m[:120]
 

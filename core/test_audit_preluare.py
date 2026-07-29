@@ -33,12 +33,20 @@ def test_limita_srl_are_termenii_partidei_duble():
 
 
 def test_rip_fara_operatiuni_validate_da_gri_cu_temei():
-    # [obs3] PFA cu tabel RIP dar 0 operatiuni validate -> gri cu temei+remediu, NU raport gol
-    # (fiecare verdict poarta motivatia). tenant_001 are tabelul din template, fara operatiuni validate.
-    from core import db, audit_preluare as ap
+    # [obs3] PFA cu tabel RIP dar 0 operatiuni validate -> gri cu temei+remediu, NU raport gol.
+    # DECUPLAT (29.07): schema efemera cu rip_operatiuni GOL din template (nu tenant_001). verifica_rip
+    # e CITITOR calificat pe schema; il rulam in aceeasi tranzactie care creeaza schema, apoi ROLLBACK.
+    from core import db, audit_preluare as ap, tenant_provisioning as tp
     db.init_pool()
-    with db.get_conn("tenant_001") as cs:
-        r = ap.verifica_rip(cs, "tenant_001")
+    with db.get_conn() as cs:
+        try:
+            with cs.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS ztest_audit_rip CASCADE")
+                cur.execute(tp.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), "ztest_audit_rip"))
+            r = ap.verifica_rip(cs, "ztest_audit_rip")
+        finally:
+            cs.rollback()
     assert r and r[0]["stare"] == "gri"
     assert "nicio operațiune validată" in r[0]["mesaj"]
     assert r[0]["remediu"] and r[0]["remediu"]["actiune"]   # temei + remediu, nu gol

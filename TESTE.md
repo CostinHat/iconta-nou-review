@@ -2,8 +2,13 @@
 
 **29.07.2026.** Registrul campaniei de testare a aplicației.
 
-Campania are **două sesiuni distincte**, în ordine:
+Campania are **două sesiuni distincte** (A, B), precedate de o **Faza 0** de pregătire — în ordine:
 
+- **Faza 0 — decuplarea suitei de firmele persistente (GATA, 29.07).** Niciun test nu mai
+  depinde de o firmă din baza (`tenant_001/002/003`): cine atinge baza își construiește
+  subiectul pe schemă efemeră din `tenant_template` (comisă + DROP pentru scriitori, ROLLBACK
+  pentru cititori) sau pe fake cursor. Prerechizit pentru B — firmele F1–F7 se **construiesc**,
+  nu se presupun. Gardă permanentă: `core/test_teste_decuplate.py`. Vezi DECIZII 29.07.
 - **Sesiunea A — alinierea la legislație.** Fiecare test fiscal se rescrie ca să afirme
   **regula de drept**, nu implementarea. Un test o dată; se validează, apoi următorul. Nu
   are nevoie de date; e pură.

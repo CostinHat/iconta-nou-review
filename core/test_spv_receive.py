@@ -4,6 +4,12 @@ Teste core/spv_receive.py (F179) — pe MOCK (retea + parser), niciodata pe ANAF
 
 Apara cele 3 garduri: anti-scurgere (cif_beneficiar == CIF tenant la insert), dedup pe id_mesaj_anaf,
 masina de stari (ciorna daca parsabila / descarcata fallback; NU creeaza cheltuiala - four-eyes).
+
+IZOLARE (29.07.2026): NU mai depinde de tenant_002 persistent. Un test care depindea de o firma
+din baza testa prezenta firmei, nu logica. importa_mesaj e SCRIITOR care isi deschide propria
+conexiune si COMITE -> ROLLBACK-ul fixturii n-are ce anula (spre deosebire de pull() care primeste
+conn si traieste in tranzactia fixturii). Deci: schema efemera COMISA din tenant_template + DROP la
+teardown, cu DROP IF EXISTS la setup pentru siguranta la crash. Vezi DECIZII 29.07.
 """
 import os
 
@@ -20,9 +26,11 @@ from core import spv_conector as sc
 from core import efactura_send as efs
 from core import efactura_import as efi
 from core import spv_receive as rcv
+from core import tenant_provisioning as tp
 
-CIF_TENANT = "14399840"   # tenant_002 (DANTE) - controlat direct (param al importa_mesaj)
+CIF_TENANT = "14399840"
 PRIN = sc.principal_firm(1)
+SCHEMA_T = "ztest_spv"
 
 
 class _Resp:
@@ -47,73 +55,74 @@ def _db_ok():
 pytestmark = pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 
 
+@pytest.fixture
+def schema():
+    """Schema efemera COMISA din tenant_template + DROP la teardown. importa_mesaj isi deschide
+    propria conexiune si comite -> schema trebuie sa fie VIZIBILA (comisa), nu in tranzactia noastra."""
+    _db.init_pool()
+    with _db.get_conn() as conn:          # get_conn comite la iesirea din bloc -> schema devine vizibila
+        with conn.cursor() as cur:
+            cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_T)
+            cur.execute(tp.parametrizeaza_template(
+                open("tenant_template.sql", encoding="utf-8").read(), SCHEMA_T))
+    yield SCHEMA_T
+    with _db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_T)
+
+
 @pytest.fixture(autouse=True)
 def _mock_retea(monkeypatch):
-    # descarca -> ZIP fake; extrage_fisiere -> un XML; nu atingem ANAF
     monkeypatch.setattr(efs, "descarca", lambda p, i, m: _Resp())
     monkeypatch.setattr(efi, "extrage_fisiere", lambda nume, cont: [("f.xml", b"<Invoice/>")])
     yield
 
 
-@pytest.fixture
-def curata():
-    ids = []
-    yield ids
+def _rand(schema, id_mesaj):
     with _db.get_conn() as c:
         with c.cursor() as cur:
-            for i in ids:
-                cur.execute("DELETE FROM tenant_002.efactura_primite WHERE id_mesaj_anaf=%s", (i,))
-
-
-def _rand(id_mesaj):
-    with _db.get_conn() as c:
-        with c.cursor() as cur:
-            cur.execute("SELECT status, cif_beneficiar, cif_emitent, factura_id "
-                        "FROM tenant_002.efactura_primite WHERE id_mesaj_anaf=%s", (id_mesaj,))
+            cur.execute(f"SELECT status, cif_beneficiar, cif_emitent, factura_id "
+                        f"FROM {schema}.efactura_primite WHERE id_mesaj_anaf=%s", (id_mesaj,))
             return cur.fetchone()
 
 
-def test_anti_scurgere_cif_beneficiar_gresit(curata, monkeypatch):
+def test_anti_scurgere_cif_beneficiar_gresit(schema, monkeypatch):
     monkeypatch.setattr(efi, "parseaza_xml", lambda x, c: None)
     st = _stat()
     msg = {"id": "MSGX1", "cif_beneficiar": "99999999", "cif_emitent": "111"}  # NU e tenantul
-    rcv.importa_mesaj("tenant_002", PRIN, CIF_TENANT, msg, st)
-    curata.append("MSGX1")
+    rcv.importa_mesaj(schema, PRIN, CIF_TENANT, msg, st)
     assert st["scurgere_evitata"] == 1
-    assert _rand("MSGX1") is None   # NU s-a importat (scurgere evitata la insert)
+    assert _rand(schema, "MSGX1") is None   # NU s-a importat (scurgere evitata la insert)
 
 
-def test_import_ciorna_daca_parsabila(curata, monkeypatch):
+def test_import_ciorna_daca_parsabila(schema, monkeypatch):
     monkeypatch.setattr(efi, "parseaza_xml", lambda x, c: {"numar": "F1"})   # parsabila
     st = _stat()
     msg = {"id": "MSGX2", "cif_beneficiar": CIF_TENANT, "cif_emitent": "RO111", "id_solicitare": "S1", "tip": "FACTURA PRIMITA"}
-    rcv.importa_mesaj("tenant_002", PRIN, CIF_TENANT, msg, st)
-    curata.append("MSGX2")
-    r = _rand("MSGX2")
+    rcv.importa_mesaj(schema, PRIN, CIF_TENANT, msg, st)
+    r = _rand(schema, "MSGX2")
     assert r and r[0] == "ciorna" and r[1] == CIF_TENANT and r[3] is None   # factura_id NULL (four-eyes)
     assert st["ciorna"] == 1
 
 
-def test_descarcata_daca_neparsabila(curata, monkeypatch):
+def test_descarcata_daca_neparsabila(schema, monkeypatch):
     def _cade(x, c): raise ValueError("XML invalid")
     monkeypatch.setattr(efi, "parseaza_xml", _cade)
     st = _stat()
     msg = {"id": "MSGX3", "cif_beneficiar": CIF_TENANT, "cif_emitent": "222"}
-    rcv.importa_mesaj("tenant_002", PRIN, CIF_TENANT, msg, st)
-    curata.append("MSGX3")
-    assert _rand("MSGX3")[0] == "descarcata"   # fallback, nu ciorna
+    rcv.importa_mesaj(schema, PRIN, CIF_TENANT, msg, st)
+    assert _rand(schema, "MSGX3")[0] == "descarcata"   # fallback, nu ciorna
     assert st["descarcata"] == 1
 
 
-def test_dedup_nu_reimporta(curata, monkeypatch):
+def test_dedup_nu_reimporta(schema, monkeypatch):
     monkeypatch.setattr(efi, "parseaza_xml", lambda x, c: None)
     st = _stat()
     msg = {"id": "MSGX4", "cif_beneficiar": CIF_TENANT, "cif_emitent": "333"}
-    rcv.importa_mesaj("tenant_002", PRIN, CIF_TENANT, msg, st)
-    rcv.importa_mesaj("tenant_002", PRIN, CIF_TENANT, msg, st)   # a 2-a oara
-    curata.append("MSGX4")
+    rcv.importa_mesaj(schema, PRIN, CIF_TENANT, msg, st)
+    rcv.importa_mesaj(schema, PRIN, CIF_TENANT, msg, st)   # a 2-a oara
     assert st["ciorna"] == 1 and st["deja"] == 1
     with _db.get_conn() as c:
         with c.cursor() as cur:
-            cur.execute("SELECT count(*) FROM tenant_002.efactura_primite WHERE id_mesaj_anaf='MSGX4'")
+            cur.execute(f"SELECT count(*) FROM {schema}.efactura_primite WHERE id_mesaj_anaf='MSGX4'")
             assert cur.fetchone()[0] == 1   # un singur rand (dedup)

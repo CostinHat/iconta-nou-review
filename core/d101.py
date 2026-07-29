@@ -154,7 +154,7 @@ def build_xml(res):
               _esc(_t(prof.get("declarant_prenume") or "-")),
               _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
               "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()),
-              _esc(prof.get("nume")), _esc(prof.get("adresa"))))
+              _esc(_t(prof.get("nume"))), _esc(_t(prof.get("adresa")))))
     tel = (prof.get("telefon") or "").strip()
     if tel:
         hdr += ' telefon=%s' % _esc(tel)

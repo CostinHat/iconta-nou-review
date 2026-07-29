@@ -4,6 +4,11 @@ Teste core/etransport_send.py (F121) — pe MOCK, niciodata pe ANAF real.
 
 Apara: garda de timp UIT (fereastra legala 3z inainte / 5-15z valabilitate), construirea URL-urilor
 (path params ETRANSP/versiune), si portile trimite (blocat_timp, nevalidat, upload -> incarcat + UIT).
+
+IZOLARE (29.07.2026): testele care ATING baza NU mai depind de tenant_002 persistent. et.trimite e
+SCRIITOR care isi deschide propria conexiune si comite -> schema efemera COMISA din tenant_template +
+DROP la teardown (nu ROLLBACK - vezi DECIZII 29.07). Testele PURE (fereastra_uit, URL-uri pe mock) nu
+ating baza si raman neschimbate.
 """
 import os
 from datetime import date, timedelta
@@ -19,8 +24,10 @@ import pytest
 from core import db as _db
 from core import spv_conector as sc
 from core import etransport_send as et
+from core import tenant_provisioning as tp
 
 PRIN = sc.principal_firm(1)
+SCHEMA_T = "ztest_etr"
 
 
 def _db_ok():
@@ -30,6 +37,24 @@ def _db_ok():
             return True
     except Exception:
         return False
+
+
+@pytest.fixture
+def schema():
+    """Schema efemera COMISA din tenant_template + DROP la teardown (et.trimite comite pe conexiunea lui)."""
+    _db.init_pool()
+    with _db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_T)
+            cur.execute(tp.parametrizeaza_template(
+                open("tenant_template.sql", encoding="utf-8").read(), SCHEMA_T))
+            cur.execute("INSERT INTO %s.firma_profil (id, nume, cui, adresa, oras, judet, caen, "
+                        "platitor_tva, tip_decont) VALUES "
+                        "(1, 'PROBA SRL', '14399840', 'Str. Test 1', 'Bucuresti', 'B', '6202', true, 'L')" % SCHEMA_T)
+    yield SCHEMA_T
+    with _db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_T)
 
 
 class _R:
@@ -79,7 +104,6 @@ def test_url_upload_stare_lista(monkeypatch):
     et.upload_uit(PRIN, "RO14399840", "<x/>", versiune=2, mediu="test")
     et.stare_uit(PRIN, "777", mediu="test")
     et.lista_uit(PRIN, 99, "RO14399840", mediu="test")
-    urls = dict((u.split("/ws/v1/")[1].split("/")[0], (m, u)) for m, u in cap["urls"])
     # upload: ETRANSP + cif doar cifre + versiune, in PATH
     assert "/ETRANSPORT/ws/v1/upload/ETRANSP/14399840/2" in cap["urls"][0][1] and cap["urls"][0][0] == "POST"
     assert "/ETRANSPORT/ws/v1/stareMesaj/777" in cap["urls"][1][1]
@@ -88,42 +112,38 @@ def test_url_upload_stare_lista(monkeypatch):
 
 
 # ============================================================
-#  PORTI trimite — mock
+#  PORTI trimite — mock. Testele care ATING baza folosesc schema efemera (nu tenant_002).
 # ============================================================
 def test_trimite_blocat_timp_nu_atinge_reteaua(monkeypatch):
+    # blocat_timp se intoarce INAINTE de orice atingere de baza -> nu are nevoie de schema (fara marker DB)
     def _nu(*a, **k): raise AssertionError("nu trebuia sa apeleze ANAF")
     monkeypatch.setattr(sc, "apel_anaf", _nu)
     azi = date(2026, 7, 18)
-    r = et.trimite("tenant_002", PRIN, "14399840", "<x/>", data_transport=azi + timedelta(days=10),
+    r = et.trimite(SCHEMA_T, PRIN, "14399840", "<x/>", data_transport=azi + timedelta(days=10),
                    intracom=False, mediu="prod", acum=azi)   # prea devreme
     assert r["stare"] == "blocat_timp"
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_trimite_nevalidat_nu_uploadeaza_prod(monkeypatch):
+def test_trimite_nevalidat_nu_uploadeaza_prod(schema, monkeypatch):
     # POARTA 3: validarea pe TEST intoarce erori -> nu se trimite pe prod
     monkeypatch.setattr(sc, "apel_anaf", lambda p, m, url, **kw: _R(UP_ERR))
     azi = date(2026, 7, 18)
-    r = et.trimite("tenant_002", PRIN, "14399840", "<x/>", data_transport=azi, intracom=False,
+    r = et.trimite(schema, PRIN, "14399840", "<x/>", data_transport=azi, intracom=False,
                    mediu="prod", acum=azi)
     assert r["stare"] == "nevalidat" and r["erori"]
 
 
-
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_trimite_prod_incarcat_scrie_uit_si_valabilitate(monkeypatch):
+def test_trimite_prod_incarcat_scrie_uit_si_valabilitate(schema, monkeypatch):
     monkeypatch.setattr(sc, "apel_anaf", lambda p, m, url, **kw: _R(UP_OK))   # TEST + prod ambele ok
     azi = date(2026, 7, 18)
-    r = et.trimite("tenant_002", PRIN, "14399840", "<uniqXML_TEST/>", data_transport=azi,
+    r = et.trimite(schema, PRIN, "14399840", "<uniqXML_TEST/>", data_transport=azi,
                    intracom=False, mediu="prod", acum=azi)
-    try:
-        assert r["stare"] == "incarcat" and r["uit"] == "ABC12345"
-        with _db.get_conn() as c:
-            with c.cursor() as cur:
-                cur.execute("SELECT stare, uit, uit_valabil_pana, index_incarcare FROM tenant_002.etransport_trimiteri WHERE id=%s", (r["trimitere_id"],))
-                row = cur.fetchone()
-        assert row[0] == "incarcat" and row[1] == "ABC12345" and row[2] == azi + timedelta(days=5)
-    finally:
-        with _db.get_conn() as c:
-            with c.cursor() as cur:
-                cur.execute("DELETE FROM tenant_002.etransport_trimiteri WHERE id=%s", (r["trimitere_id"],))
+    assert r["stare"] == "incarcat" and r["uit"] == "ABC12345"
+    with _db.get_conn() as c:
+        with c.cursor() as cur:
+            cur.execute(f"SELECT stare, uit, uit_valabil_pana, index_incarcare "
+                        f"FROM {schema}.etransport_trimiteri WHERE id=%s", (r["trimitere_id"],))
+            row = cur.fetchone()
+    assert row[0] == "incarcat" and row[1] == "ABC12345" and row[2] == azi + timedelta(days=5)

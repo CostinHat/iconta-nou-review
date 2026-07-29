@@ -133,7 +133,7 @@ def build_xml(res):
               _esc(_t(prof.get("declarant_prenume") or "-")),
               _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
               "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()),
-              _esc(prof.get("nume")), _esc(prof.get("adresa")), total_control))
+              _esc(_t(prof.get("nume"))), _esc(_t(prof.get("adresa"))), total_control))
     H.append(hdr)
     # sect_II se INCHIDE (linia 26 din structura oficiala) INAINTE de <benef>
     # (linia 27) - sunt elemente FRATI, ambele copii ai radacinii, nu benef in

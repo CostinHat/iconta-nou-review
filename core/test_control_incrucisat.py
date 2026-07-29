@@ -414,13 +414,24 @@ def test_dvsd_achizitii_R5_1():
     assert ach["stare"] == "rosu" and "R5_1 absent" in ach["temei"]
 
 
-# --- DB: _d300_depus_randuri prin depunere d300 FABRICATĂ în ROLLBACK (tenant_002 = id 2) ---
+# --- DB: _d300_depus_randuri prin depunere d300 FABRICATA in ROLLBACK. DECUPLAT de tenant_002
+# persistent (29.07): _d300_depus_* mapeaza schema->id prin public.tenants (SELECT id ... WHERE
+# schema_name=%s), deci fabricam SI un rand tenants sintetic in aceeasi tranzactie cu ROLLBACK.
+# Nu depinde de nicio firma din baza. Vezi DECIZII 29.07.
 import psycopg2.extras as _E
 from core import db as _db
+from core import tenant_provisioning as _tp
 
 
 def _conn():
     _db.init_pool(); return _db.pool().getconn()
+
+
+def _tenant_fabricat(cur, schema_name):
+    """Rand public.tenants SINTETIC -> id, ca _d300_depus_* sa mapeze schema->id fara tenant real."""
+    cur.execute("INSERT INTO public.tenants (schema_name, nume) VALUES (%s, 'PROBA CI') RETURNING id",
+                (schema_name,))
+    return cur.fetchone()[0]
 
 
 def test_d300_depus_randuri_citeste_depunere_fabricata():
@@ -428,10 +439,11 @@ def test_d300_depus_randuri_citeste_depunere_fabricata():
     conn = _conn()
     try:
         with conn.cursor() as cur:
+            tid = _tenant_fabricat(cur, "ztest_ci")
             cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
-                        "VALUES (2, 2099, 6, 'd300', '<x/>', %s, 1)",
-                        (_E.Json({"R": {"R1_1": 5000, "R5_1": 3000}}),))
-            gasit, randuri = _d300_depus_randuri(conn, "tenant_002", 2099, 6)
+                        "VALUES (%s, 2099, 6, 'd300', '<x/>', %s, 1)",
+                        (tid, _E.Json({"R": {"R1_1": 5000, "R5_1": 3000}})))
+            gasit, randuri = _d300_depus_randuri(conn, "ztest_ci", 2099, 6)
         assert gasit is True
         assert randuri["R"]["R1_1"] == 5000 and randuri["R"]["R5_1"] == 3000
     finally:
@@ -441,15 +453,17 @@ def test_d300_depus_randuri_citeste_depunere_fabricata():
 def test_d300_depus_randuri_null_si_zero_depuneri():
     conn = _conn()
     try:
-        # zero depuneri d300 pt tenant_002 in 2099/7 (sintetic) -> gasit False
         with conn.cursor() as cur:
-            g0, r0 = _d300_depus_randuri(conn, "tenant_002", 2099, 7)
+            tid = _tenant_fabricat(cur, "ztest_ci")
+        # zero depuneri d300 in 2099/7 (sintetic) -> gasit False
+        with conn.cursor() as cur:
+            g0, r0 = _d300_depus_randuri(conn, "ztest_ci", 2099, 7)
         assert g0 is False and r0 is None
         # depunere cu randuri NULL -> gasit True, randuri None
         with conn.cursor() as cur:
             cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
-                        "VALUES (2, 2099, 7, 'd300', '<x/>', NULL, 1)")
-            g1, r1 = _d300_depus_randuri(conn, "tenant_002", 2099, 7)
+                        "VALUES (%s, 2099, 7, 'd300', '<x/>', NULL, 1)", (tid,))
+            g1, r1 = _d300_depus_randuri(conn, "ztest_ci", 2099, 7)
         assert g1 is True and r1 is None
     finally:
         conn.rollback(); _db.pool().putconn(conn)
@@ -483,11 +497,12 @@ def test_d300_depus_recent_alege_cea_mai_recenta():
     conn = _conn()
     try:
         with conn.cursor() as cur:
+            tid = _tenant_fabricat(cur, "ztest_ci")
             for an, luna in ((2098, 12), (2099, 3), (2099, 6)):
                 cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
-                            "VALUES (2, %s, %s, 'd300', '<x/>', %s, 1)",
-                            (an, luna, _E.Json({"R": {"R1_1": an}})))
-            rec = _d300_depus_recent(conn, "tenant_002")
+                            "VALUES (%s, %s, %s, 'd300', '<x/>', %s, 1)",
+                            (tid, an, luna, _E.Json({"R": {"R1_1": an}})))
+            rec = _d300_depus_recent(conn, "ztest_ci")
         assert rec is not None
         an_d, luna_d, randuri_d = rec
         assert (an_d, luna_d) == (2099, 6) and randuri_d["R"]["R1_1"] == 2099
@@ -504,13 +519,28 @@ def test_d300_depus_recent_none_pe_schema_inexistenta():
 
 
 def test_verifica_d390_dvsd_foloseste_perioada_depusa_nu_luna_curenta():
-    # tenant_002 are D300 iunie depus. Verificat pe luna CURENTA (iulie, fara D300 depus) -> D-vs-D NU
-    # mai e gri „nicio depunere", ci compara pe perioada efectiv depusa (06/2026), afisata in eticheta.
-    with _db.get_conn("tenant_002") as conn:
-        rec = _d300_depus_recent(conn, "tenant_002")
-        if rec is None:
-            pytest.skip("tenant_002 fara D300 depus prin aplicatie")
-        r = verifica_d390(conn, "tenant_002", 2026, 7)   # iulie = luna curenta la 23.07
+    # DECUPLAT (29.07): schema efemera + tenants sintetic + D300 depus (2026/6) fabricat, tot in ROLLBACK.
+    # Verificat pe luna CURENTA (iulie, fara D300 depus) -> D-vs-D NU mai e gri „nicio depunere", ci
+    # compara pe perioada efectiv depusa (06/2026), afisata in eticheta.
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("DROP SCHEMA IF EXISTS ztest_ci_d390 CASCADE")
+            cur.execute(_tp.parametrizeaza_template(
+                open("tenant_template.sql", encoding="utf-8").read(), "ztest_ci_d390"))
+            cur.execute("INSERT INTO ztest_ci_d390.firma_profil (id, nume, cui, platitor_tva, tip_decont) "
+                        "VALUES (1, 'PROBA CI', '14399840', true, 'L')")
+            tid = _tenant_fabricat(cur, "ztest_ci_d390")
+            cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
+                        "VALUES (%s, 2026, 6, 'd300', '<x/>', %s, 1)", (tid, _E.Json({"R": {"R1_1": 5000}})))
+            # d390.calculeaza (chemat de verifica_d390) interogheaza firma_profil NECALIFICAT ->
+            # search_path pe schema efemera. SET LOCAL = anulat de rollback, nu polueaza pool-ul.
+            cur.execute("SET LOCAL search_path TO ztest_ci_d390, public")
+            rec = _d300_depus_recent(conn, "ztest_ci_d390")
+            assert rec is not None, "depunerea fabricata trebuie vazuta (decuplare corecta)"
+            r = verifica_d390(conn, "ztest_ci_d390", 2026, 7)   # iulie = luna curenta, fara D300 depus
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
     dvsd = [c for c in r["constatari"] if "D300 depus" in c["eticheta"]]
     assert dvsd, "sub-verificarea D-vs-D lipseste"
     assert all("Nicio depunere" not in c["mesaj"] for c in dvsd)   # a iesit din gri-ul permanent
@@ -526,18 +556,35 @@ from core.control_incrucisat import verifica_d112 as _verifica_d112, verifica_tv
 # neplatitor TVA, ...) NU produce verdict -> absent, nu verde pe 0-vs-0. Verdele = "am verificat, e ok";
 # fara subiect n-a verificat nimic. Cate un test pe fiecare verificator atins.
 def test_verifica_d112_fara_salariati_e_absent_nu_verde():
+    # DECUPLAT (29.07): schema efemera cu firma_profil (PFA), tabela salariati GOALA -> nr_sal=0.
+    # d112.genereaza ruleaza pe schema (calificat + SET LOCAL pt orice acces necalificat), tot in ROLLBACK.
     conn = _conn()
     try:
-        v = _verifica_d112(conn, "tenant_003", 2026, 7)   # PFA fara salariati -> subiect inexistent
+        with conn.cursor() as cur:
+            cur.execute("DROP SCHEMA IF EXISTS ztest_ci_d112 CASCADE")
+            cur.execute(_tp.parametrizeaza_template(
+                open("tenant_template.sql", encoding="utf-8").read(), "ztest_ci_d112"))
+            cur.execute("INSERT INTO ztest_ci_d112.firma_profil (id, nume, cui, platitor_tva) "
+                        "VALUES (1, 'PROBA CI PFA', '14399840', false)")
+            cur.execute("SET LOCAL search_path TO ztest_ci_d112, public")
+            v = _verifica_d112(conn, "ztest_ci_d112", 2026, 7)   # fara salariati -> subiect inexistent
         assert v["constatari"] == []                      # absent, nu verde
         assert "nu se datorează" in v["limita"]
     finally:
         conn.rollback(); _db.pool().putconn(conn)
 
 def test_verifica_tva_neplatitor_e_absent_nu_verde():
+    # DECUPLAT (29.07): schema efemera cu firma_profil platitor_tva=false -> garda "neplatitor"
+    # intoarce INAINTE de orice generare D300. Tot in ROLLBACK, fara firma persistenta.
     conn = _conn()
     try:
-        v = _verifica_tva(conn, "tenant_003", 2026, 7)    # neplatitor TVA -> D300 fara subiect
+        with conn.cursor() as cur:
+            cur.execute("DROP SCHEMA IF EXISTS ztest_ci_tva CASCADE")
+            cur.execute(_tp.parametrizeaza_template(
+                open("tenant_template.sql", encoding="utf-8").read(), "ztest_ci_tva"))
+            cur.execute("INSERT INTO ztest_ci_tva.firma_profil (id, nume, cui, platitor_tva) "
+                        "VALUES (1, 'PROBA CI', '14399840', false)")
+            v = _verifica_tva(conn, "ztest_ci_tva", 2026, 7)    # neplatitor TVA -> D300 fara subiect
         assert v["constatari"] == []                      # absent, NU verde "coincid" pe 0-vs-0
         assert "neplătitoare de TVA" in v["limita"]
     finally:

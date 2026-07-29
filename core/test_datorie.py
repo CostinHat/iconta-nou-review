@@ -81,3 +81,46 @@ def test_datoria_nu_imbatraneste_nelimitat():
             vechi.append(data.isoformat())
     assert not vechi, ("datorie mai veche de 90 de zile: %s -> repar-o sau RESPINGE-O "
                        "explicit in DECIZII.md" % sorted(vechi))
+import re as _re, io as _io
+
+
+def _exercita_trunchiere_den(tip, body):
+    """Genereaza <tip> pe firma efemera cu nume >75 car. si afirma ca niciun atribut nu depaseste 75.
+    Fix-ul de trunchiere (29.07) e aplicat in generator; testul il EXERCITA - dar doar daca firma
+    datoreaza declaratia. Fara datele care o declanseaza, generatorul sare -> xfail pana la Faza 1."""
+    from core import db as _db, tenant_provisioning as _tp, declaratii_api
+    _db.init_pool()
+    with _db.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS ztest_dat CASCADE")
+                cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), "ztest_dat"))
+                cur.execute("SET LOCAL search_path TO ztest_dat, public")
+                cur.execute("INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, banca, iban, "
+                            "tip_decont, regim_fiscal, platitor_tva) VALUES "
+                            "(1, %s, '14399840', 'Str Test 1', 'Bucuresti', 'B', 'BCR', "
+                            "'RO49BCRA0000000000000000', 'L', 'real', true)", ("CABINET " + "X" * 120,))
+                xml, _ = declaratii_api.genereaza(conn, "ztest_dat", tip, dict(body))
+            t = xml.decode("utf-8") if isinstance(xml, (bytes, bytearray)) else xml
+            lungi = [(a, len(v)) for a, v in _re.findall(r'(\w+)="([^"]*)"', t) if len(v) > 75]
+            assert not lungi, "atribute >75: %s" % lungi
+        finally:
+            conn.rollback()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 29.07.2026: fix trunchiere den/adresa aplicat in d205, dar NEEXERCITAT - d205 sare 'nu se datoreaza' pe firma fara beneficiari. Il exercita o firma Faza 1 cu dividende.")
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_datorie_d205_trunchiere_neexercitata():
+    _exercita_trunchiere_den("d205", {"an": 2026})
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 29.07.2026: fix trunchiere den/adresa aplicat in d390, dar NEEXERCITAT - d390 sare 'nu se datoreaza' pe firma fara operatiuni IC. Il exercita o firma Faza 1 cu achizitii intracomunitare.")
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_datorie_d390_trunchiere_neexercitata():
+    _exercita_trunchiere_den("d390", {"an": 2026, "luna": 6})
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 29.07.2026: fix trunchiere den/adresa aplicat in d710, dar d710 nu e in CERERI din test_limita_text_anaf - niciun test ii verifica trunchierea. De adaugat cand se cunoaste profilul care il datoreaza.")
+def test_datorie_d710_trunchiere_in_garda():
+    from core.test_limita_text_anaf import CERERI
+    assert any(t == "d710" for t, _ in CERERI), "d710 lipseste din garda de 75 (test_limita_text_anaf)"
