@@ -143,15 +143,20 @@ regula nu se aplică.
   tenant_002 2026/06 a intrat în coliziune cu un test care insera fabricat pe
   aceeași perioadă.
 
-## Verificare prin mutație — curăță `__pycache__` după
+## Verificare prin mutație — două capcane
 
-Când un test nou se verifică prin MUTAȚIE (strici în cod ce verifică testul, confirmi că pică,
-apoi revert cu `git checkout`), bytecode-ul compilat `__pycache__/*.pyc` poate rămâne cu codul
-MUTAT chiar dacă `.py` a revenit (git status curat). Rulările următoare încarcă `.pyc`-ul stale
-→ teste care pică fără cauză vizibilă în sursă (dovedit 29.07.2026: 2 teste D112 păreau poluate de
-alt test; erau pe bytecode mutat, ~10 pași pierduți vânând o poluare inexistentă). REGULĂ: după
-orice rundă de mutație, `find . -name __pycache__ -type d -exec rm -rf {} +` (sau rulează cu
-`PYTHONDONTWRITEBYTECODE=1`). Semnal de `.pyc` stale: un `print` de debug care „schimbă” rezultatul.
+Verificarea prin MUTAȚIE (strici în cod ce verifică testul, confirmi că pică, apoi revert) are DOUĂ
+capcane, ambele plătite pe 29.07.2026:
+
+1. **`git checkout -- fișier` ȘTERGE lucrul NECOMIS.** Reverteaza la HEAD, nu la starea de dinainte
+   de mutație. Dacă implementarea pe care o testezi e încă necomisă, o pierzi (pățit: proratarea din
+   salarizare.py). REVERT prin backup de conținut, nu git checkout:
+   `cp fișier /tmp/f.bak` → mută → testează → `cp /tmp/f.bak fișier`.
+2. **`.pyc` stale otrăvește rulările următoare.** Bytecode-ul din `.py`-ul mutat rămâne în
+   `__pycache__` chiar după ce `.py` a revenit (git status curat) → teste care pică fără cauză
+   vizibilă (pățit: 2 teste D112 păreau poluate de alt test, ~10 pași pierduți). După orice rundă de
+   mutație: `find . -name __pycache__ -type d -exec rm -rf {} +` (sau `PYTHONDONTWRITEBYTECODE=1`).
+   Semnal de `.pyc` stale: un `print` de debug care „schimbă” rezultatul.
 
 ## Global-first pentru CSS/UI
 
