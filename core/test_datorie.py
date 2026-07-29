@@ -126,18 +126,6 @@ def test_datorie_d710_trunchiere_in_garda():
     assert any(t == "d710" for t, _ in CERERI), "d710 lipseste din garda de 75 (test_limita_text_anaf)"
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 29.07.2026: la INCETAREA contractului la mijloc de luna NU se prorateaza nici pragul de suprataxare (OMF 1855/2022 pct.2), nici facilitatea de 300/200 lei (OUG 156/2024 art.LXVI alin.4 lit.d). Cauza: salariati n-are data_incetare/data_plecare - nu se poate sti ca respectivul contract a fost activ o fractiune din luna. Cere modelarea incetarii contractului, care atinge si lichidarea, ultima zi lucrata si perioada activa din D112. Consecinta azi: suprataxare supra-aplicata SI facilitate supra-acordata la lunile cu incetare.")
-def test_datorie_suprataxare_prorata_la_incetare():
-    # Prerechizitul MECANIC al proratarii la incetare: modelul salariati sa poata exprima ca un
-    # contract a fost activ doar o fractiune din luna. Fara data_incetare/data_plecare nu se stie
-    # cate zile a fost activ -> pragul de suprataxare ramane pe salariul minim INTREG (supra-aplicat).
-    tpl = pathlib.Path(__file__).resolve().parent.parent / "tenant_template.sql"
-    ddl = tpl.read_text(encoding="utf-8")
-    i = ddl.index("TENANT_PLACEHOLDER.salariati (")
-    bloc = ddl[i:ddl.index(");", i)]
-    assert "data_incetare" in bloc or "data_plecare" in bloc
-
-
 @pytest.mark.xfail(strict=True, reason=(
     "DATORIE 29.07.2026: facilitatea nu se prorateaza dupa art. LXVI alin.(4) lit.a) OUG 156/2024 "
     "(preluat OUG 89/2025) - 'perioada din luna in care salariul de baza este MENTINUT la nivelul "
@@ -156,3 +144,20 @@ def test_datorie_facilitate_prorata_la_mentinere_partiala():
     tpl = pathlib.Path(__file__).resolve().parent.parent / "tenant_template.sql"
     ddl = tpl.read_text(encoding="utf-8")
     assert "salariu_istoric" in ddl or "istoric_salariu" in ddl or "salariati_istoric" in ddl
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "DATORIE 29.07.2026: state_plata exista in schema dar nimic nu scrie in el. Statul de plata se "
+    "recalculeaza la fiecare afisare, deci un stat 'emis' in ianuarie si reafisat in iulie poate iesi "
+    "ALTFEL daca s-a schimbat cota, salariul minim sau codul intre timp. Pentru un document care se "
+    "semneaza si se da salariatului, asta e o problema de integritate, nu de performanta. De decis: se "
+    "persista la emitere (cu hash, ca declaratiile depuse) sau tabelul se scoate ca sa nu para ca exista "
+    "ceva ce nu exista."))
+def test_datorie_state_plata_se_persista():
+    # Prerechizit MECANIC: statul de plata sa fie PERSISTAT la emitere. Azi state_plata (salariat_id+luna)
+    # e tabel mort - zero INSERT in cod -> statul se recalculeaza de fiecare data (risc de integritate).
+    import re as _re
+    rad = pathlib.Path(__file__).resolve().parent
+    patt = _re.compile(r"insert\s+into\s+[\"\w.{}]*state_plata", _re.IGNORECASE)
+    scrie = any(patt.search(f.read_text(encoding="utf-8")) for f in rad.glob("*.py"))
+    assert scrie, "nimic nu scrie in state_plata - statul de plata nu se persista la emitere"

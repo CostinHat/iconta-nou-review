@@ -117,23 +117,25 @@ def test_d112_pull_vede_salariatul(schema):
     with schema.cursor() as cur:
         cur.execute(
             "INSERT INTO salariati (nume, prenume, cnp, data_angajare, salariu_brut, "
-            "activ, ore_zi, part_time) VALUES "
-            "('POPESCU','ION','1900101410011','2026-01-01',5000,true,8,false)")
+            "ore_zi, part_time) VALUES "
+            "('POPESCU','ION','1900101410011','2026-01-01',5000,8,false)")
     prof, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
     assert prof.get("cui") == "14399840"
     assert len(sal) == 1, "salariatul activ nu ajunge in pull"
     assert sal[0]["nume"] == "POPESCU"
 
 
-def test_d112_pull_ignora_salariatul_inactiv(schema):
+def test_d112_pull_ignora_salariatul_plecat(schema):
+    # Contract incetat INAINTE de luna calculata (data_incetare 2026-05-31 < iunie) -> exclus din D112.
+    # Sub Optiunea A, "a plecat" = data_incetare, nu boolean activ (PASUL 1).
     from core import d112
     with schema.cursor() as cur:
         cur.execute(
-            "INSERT INTO salariati (nume, prenume, cnp, data_angajare, salariu_brut, "
-            "activ, ore_zi, part_time) VALUES "
-            "('DEMISIONAT','X','1900101410011','2026-01-01',5000,false,8,false)")
+            "INSERT INTO salariati (nume, prenume, cnp, data_angajare, data_incetare, salariu_brut, "
+            "ore_zi, part_time) VALUES "
+            "('DEMISIONAT','X','1900101410011','2026-01-01','2026-05-31',5000,8,false)")
     _, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
-    assert sal == [], "salariatii inactivi nu trebuie sa intre in D112"
+    assert sal == [], "salariatii cu contract incetat inainte de luna nu intra in D112"
 
 
 def test_d301_pull_vede_operatiunea(schema):
@@ -154,8 +156,8 @@ def _seamana_salariat(conn):
     with conn.cursor() as cur:
         cur.execute(
             "INSERT INTO salariati (nume, prenume, cnp, data_angajare, salariu_brut, "
-            "activ, ore_zi, part_time) VALUES "
-            "('POPESCU','ION','1900101410011','2026-01-01',5000,true,8,false)")
+            "ore_zi, part_time) VALUES "
+            "('POPESCU','ION','1900101410011','2026-01-01',5000,8,false)")
 
 
 def _seamana_d301(conn):
@@ -214,3 +216,18 @@ def test_schema_temporara_chiar_dispare():
             assert cur.fetchone() is None, \
                 "schema %s a ramas in baza - ROLLBACK-ul n-a functionat" % SCHEMA_T
         conn.rollback()
+
+
+def test_d112_pull_prorateaza_facilitatea_la_incetare(schema):
+    # REGRESIE (PASUL 1): incetare la mijloc de luna -> facilitatea se prorateaza (OUG 156/2024 art.LXVI
+    # alin.4 lit.d). Bug prins de proba functionala: pull() reconstruia dict-ul salariatului FARA
+    # data_incetare -> calcul primea None -> facilitate INTREAGA (300) in loc de proratata.
+    from core import d112
+    with schema.cursor() as cur:
+        cur.execute(
+            "INSERT INTO salariati (nume, prenume, cnp, data_angajare, data_incetare, salariu_brut, "
+            "ore_zi, part_time) VALUES "
+            "('MIN','A','1900101410011','2026-01-01','2026-06-20',4050,8,false)")
+    _, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
+    assert len(sal) == 1
+    assert float(sal[0]["facilitate"]) == 200.0, sal[0].get("facilitate")   # 300 x 14/21 (incetare 20 iun 2026), nu 300 intreg

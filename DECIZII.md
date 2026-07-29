@@ -4140,3 +4140,17 @@ schimba ce INSEAMNA un argument, se verifica TOTI consumatorii lui, nu doar cei 
 prins bug-ul pentru ca ambele laturi (salarii_contare si d112.pull) foloseau brut_lucrat - gresite
 identic, deci zero divergenta. Un control care compara doua cai ce impartasesc aceeasi sursa gresita
 raporteaza verde. Se verifica ce ACOPERA controlul, nu doar ca exista.
+
+### 29.07.2026 Garda sterge_salariat: limita cunoscuta pe "D112 depus"
+
+Hard-delete-ul unui salariat (redefinit ca DOAR pentru greseala de introducere - un salariat creat
+din eroare, fara nicio luna declarata; vezi PASUL 1 data_incetare) refuza daca salariatul are concedii
+medicale SAU daca tenantul are vreun D112 depus pentru o luna >= luna angajarii.
+
+LIMITA: `public.declaratii_depuse` e la nivel de tenant+luna, cu XML - NU per-salariat. Deci verificarea
+"e salariatul asta intr-un D112 depus" e GROSIERA: refuza pentru orice D112 depus care i-ar acoperi
+perioada activa, chiar daca salariatul nu era efectiv in acel D112. Nu se poate mai fin fara sa parsezi
+XML-ul depus. E intentionat err-on-refuse: asimetria justifica prudenta - un refuz gresit inseamna ca omul
+pune data_incetare (varianta buna oricum), o permitere gresita inseamna pierderea istoricului care sustine
+o declaratie deja depusa. A nu se prezenta garda ca fiind mai fina decat e. Vezi si datoria state_plata
+(tabel mort, test_datorie).

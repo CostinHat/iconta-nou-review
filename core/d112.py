@@ -313,7 +313,7 @@ def _d112_genereaza(prof, salariati, an, luna):
 # in loc sa declare zero.
 _COLOANE_SALARIAT = ("id", "nume", "prenume", "cnp", "data_angajare", "salariu_brut",
                      "ore_zi", "judet_casa", "part_time", "persoane_intretinere",
-                     "scutit_contrib_minim", "motiv_exceptare", "tichet_masa_valoare")
+                     "scutit_contrib_minim", "motiv_exceptare", "tichet_masa_valoare", "data_incetare")
 
 
 def pull(conn, schema, an, luna):
@@ -321,7 +321,9 @@ def pull(conn, schema, an, luna):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
         prof = dict(cur.fetchone() or {})
-        cur.execute(f"SELECT * FROM {schema}.salariati WHERE activ = true ORDER BY id")
+        from datetime import date as _dsal
+        cur.execute(f"SELECT * FROM {schema}.salariati WHERE (data_incetare IS NULL OR data_incetare >= %s) ORDER BY id",
+                    (_dsal(an, luna, 1),))
         sal = [dict(r) for r in cur.fetchall()]
         # GARDA COLOANE (27.07.2026): SELECT * nu crapa cand o coloana dispare din schema -
         # randul iese fara cheia aceea, s.get() da None, iar None e absenta legitima ->
@@ -359,6 +361,7 @@ def pull(conn, schema, an, luna):
             "nume": s.get("nume"), "prenume": s.get("prenume") or "-",
             "cnp": s.get("cnp"), "brut": s.get("salariu_brut"),
             "data_angajare": str(s.get("data_angajare") or ""),
+            "data_incetare": s.get("data_incetare"),
             "ore_zi": s.get("ore_zi") or 8,
             "judet_casa": s.get("judet"),
             "part_time": bool(s.get("part_time")),
@@ -402,6 +405,7 @@ def pull(conn, schema, an, luna):
                                norma_intreaga=not s.get("part_time"),
                                venit_brut_total=brut_int,
                                data_angajare=s.get("data_angajare"),
+                               data_incetare=s.get("data_incetare"),
                                tichet_valoare=float(s.get("tichet_masa_valoare") or 0),
                                tichet_zile=tichet_zile,
                                tichet_vacanta=float(s.get("tichet_vacanta") or 0))

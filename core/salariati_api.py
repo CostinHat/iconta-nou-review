@@ -21,7 +21,7 @@ MODUL = "salariati_api"
 _CNP = re.compile(r"^\d{13}$")
 _NORME = ("intreaga", "partiala")
 _CAMPURI_API = ("cnp", "nume", "prenume", "data_angajare", "tip_norma", "ore_zi",
-                "salariu_brut", "persoane_intretinere", "judet_casa", "activ",
+                "salariu_brut", "persoane_intretinere", "judet_casa", "data_incetare",
                 "scutit_contrib_minim", "motiv_exceptare", "cor",
                 "tichet_masa_valoare",  # [F133]
                 "iban")  # [F134] cont beneficiar pt plata pe card
@@ -111,6 +111,15 @@ def valideaza_salariat(date):
     if iban is not None and str(iban).strip():
         if not iban_valid(iban):
             erori.append("IBAN invalid (astept IBAN romanesc: RO + 22 caractere, cifra de control corecta)")
+    # data_incetare (optional) >= data_angajare - contract activ o perioada coerenta (backstop: CHECK in DB)
+    di, da = date.get("data_incetare"), date.get("data_angajare")
+    if di is not None and str(di).strip() and da is not None and str(da).strip():
+        try:
+            from datetime import date as _date
+            if _date.fromisoformat(str(di)[:10]) < _date.fromisoformat(str(da)[:10]):
+                erori.append("data incetarii nu poate fi inainte de data angajarii")
+        except (ValueError, TypeError):
+            erori.append("data incetarii sau angajarii invalida")
     return erori
 
 
@@ -118,15 +127,19 @@ def valideaza_salariat(date):
 #  LISTĂ
 # ============================================================
 def lista_salariati(conn, activ=None):
-    """Salariații, opțional filtrați pe activ (True/False)."""
+    """Salariații, opțional filtrați pe cei ÎN SERVICIU (activ=True) / PLECAȚI (activ=False).
+    'În serviciu' = data_incetare NULL sau în viitor. Parametrul `activ` e păstrat pentru
+    compatibilitate API; sursa reală e data_incetare (Opțiunea A, PASUL 1)."""
     import psycopg2.extras as _E
     cond, val = "", []
-    if activ is not None:
-        cond = " WHERE activ = %s"; val.append(activ)
+    if activ is True:
+        cond = " WHERE data_incetare IS NULL OR data_incetare >= CURRENT_DATE"
+    elif activ is False:
+        cond = " WHERE data_incetare < CURRENT_DATE"
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, cnp, nume, prenume, data_angajare, part_time, ore_zi, "
-            "salariu_brut, persoane_intretinere, activ, cor, tichet_masa_valoare, iban "
+            "salariu_brut, persoane_intretinere, data_incetare, cor, tichet_masa_valoare, iban "
             "FROM salariati" + cond + " ORDER BY nume, prenume", val)
         return [_db_spre_api(dict(r)) for r in cur.fetchall()]
 
@@ -163,7 +176,7 @@ def detalii_salariat(conn, salariat_id):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, cnp, nume, prenume, data_angajare, part_time, ore_zi, "
-            "salariu_brut, persoane_intretinere, judet_casa, activ, "
+            "salariu_brut, persoane_intretinere, judet_casa, data_incetare, "
             "scutit_contrib_minim, motiv_exceptare, cor, tichet_masa_valoare, iban "
             "FROM salariati WHERE id = %s", (salariat_id,))
         r = cur.fetchone()
@@ -197,15 +210,39 @@ def actualizeaza_salariat(conn, salariat_id, **date):
 # ============================================================
 #  ȘTERGERE — protejată (concedii medicale legate)
 # ============================================================
+def _refuz_sterge():
+    return {"ok": False, "cod": "ARE_LUNI_DECLARATE",
+            "mesaj": ("Salariatul are luni declarate. Nu se sterge - completeaza data incetarii "
+                      "contractului, altfel se pierde istoricul care sustine declaratiile deja depuse.")}
+
+
 def sterge_salariat(conn, salariat_id):
-    """Șterge salariatul DOAR dacă nu are concedii medicale legate."""
+    """Hard-delete DOAR pentru greseala de introducere: salariat fara nicio luna declarata. La PLECARE
+    NU se sterge - se completeaza data_incetare (istoricul sustine declaratiile depuse). Refuza daca are
+    concedii medicale, apare in stat de plata (state_plata) sau tenantul are vreun D112 depus pentru o
+    luna >= luna angajarii (grosier per tenant+luna: declaratii_depuse nu e per-salariat -> err-on-refuse,
+    vezi DECIZII + datoria state_plata)."""
     with conn.cursor() as cur:
-        cur.execute("SELECT count(*) FROM concedii_medicale WHERE salariat_id = %s",
-                    (salariat_id,))
-        nr = cur.fetchone()[0]
-        if nr:
-            return {"ok": False, "cod": "ARE_CONCEDII",
-                    "mesaj": "salariatul are %d concedii medicale — nu poate fi șters" % nr}
+        cur.execute("SELECT data_angajare FROM salariati WHERE id = %s", (salariat_id,))
+        r = cur.fetchone()
+        if not r:
+            return {"ok": False, "cod": "INEXISTENT"}
+        data_ang = r[0]
+        cur.execute("SELECT count(*) FROM concedii_medicale WHERE salariat_id = %s", (salariat_id,))
+        if cur.fetchone()[0]:
+            return _refuz_sterge()
+        cur.execute("SELECT count(*) FROM state_plata WHERE salariat_id = %s", (salariat_id,))
+        if cur.fetchone()[0]:
+            return _refuz_sterge()
+        cur.execute("SELECT id FROM public.tenants WHERE schema_name = current_schema()")
+        t = cur.fetchone()
+        if t and data_ang is not None:
+            cur.execute("SELECT count(*) FROM public.declaratii_depuse "
+                        "WHERE tenant_id = %s AND tip = %s "
+                        "AND make_date(an, luna, 1) >= date_trunc(%s, %s::date)",
+                        (t[0], "d112", "month", data_ang))
+            if cur.fetchone()[0]:
+                return _refuz_sterge()
         cur.execute("DELETE FROM salariati WHERE id = %s", (salariat_id,))
         sters = cur.rowcount > 0
     return {"ok": sters}

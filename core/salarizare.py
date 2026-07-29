@@ -75,7 +75,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    functie_baza=True, la_data=None,
                    norma_intreaga=True, venit_brut_total=None,
                    exceptat_suprataxare=False,
-                   tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None):
+                   tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -110,20 +110,29 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
     # PRORATA luna de ANGAJARE (zile lucrate / zile lucratoare din luna, fara sarbatori) - UN SINGUR loc,
     # folosita SI la facilitate SI la pragul de suprataxare. 1 daca nu e luna de angajare (contract activ tot).
     _prorata = Decimal(1)
-    if data_angajare is not None and la_data is not None:
+    if la_data is not None:
         from datetime import date as _date
         import calendar as _cal
         from core import scadente as _scad
-        _da = data_angajare if isinstance(data_angajare, _date) else None
-        if _da is None:
+        def _pd(v):
+            if v is None:
+                return None
+            if isinstance(v, _date):
+                return v
             try:
-                _da = _date.fromisoformat(str(data_angajare)[:10])
+                return _date.fromisoformat(str(v)[:10])
             except (ValueError, TypeError):
-                _da = None
-        if _da is not None and (_da.year, _da.month) == (la_data.year, la_data.month):
-            _ultima = _date(la_data.year, la_data.month, _cal.monthrange(la_data.year, la_data.month)[1])
+                return None
+        _da, _di = _pd(data_angajare), _pd(data_incetare)
+        _prima = _date(la_data.year, la_data.month, 1)
+        _ultima = _date(la_data.year, la_data.month, _cal.monthrange(la_data.year, la_data.month)[1])
+        # fereastra ACTIVA din luna: [max(prima, angajare), min(ultima, incetare)]. Prorata DOAR daca
+        # contractul a fost activ o fractiune (angajare dupa prima zi SAU incetare inainte de ultima).
+        _start = _da if (_da is not None and _da > _prima) else _prima
+        _end = _di if (_di is not None and _di < _ultima) else _ultima
+        if _start > _prima or _end < _ultima:
             _zl = _scad.zile_lucratoare_luna(la_data.year, la_data.month)
-            _za = _scad.zile_lucratoare_interval(_da, _ultima)
+            _za = _scad.zile_lucratoare_interval(_start, _end)
             if _zl:
                 _prorata = _dec(_za) / _dec(_zl)
     facilitate = facilitate_val if (

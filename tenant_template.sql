@@ -1130,8 +1130,9 @@ CREATE TABLE TENANT_PLACEHOLDER.salariati (
     tip_asigurat text,
     scutit_contrib_minim boolean DEFAULT false,
     motiv_exceptare smallint,
-    activ boolean DEFAULT true,
-    creat_la timestamp with time zone DEFAULT now() NOT NULL
+    data_incetare date,
+    creat_la timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT salariati_incetare_dupa_angajare CHECK (data_incetare IS NULL OR data_incetare >= data_angajare)
 );
 
 

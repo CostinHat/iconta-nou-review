@@ -195,3 +195,15 @@ def test_facilitate_prorata_luna_angajare():
     assert r["facilitate"] == Decimal("157.14")     # 300 x 11/21 - alin.(4) lit.b) proratare la angajare noua
     r_full = calcul_salariu(4050, la_data=date(2026, 6, 1), venit_brut_total=4050)
     assert r_full["facilitate"] == Decimal("300.00")  # contract activ toata luna -> facilitate nediminuata
+
+
+def test_suprataxa_si_facilitate_prorata_la_incetare():
+    # GARD PERMANENT (mutat din test_datorie dupa modelarea data_incetare, PASUL 1): la INCETAREA
+    # contractului la mijloc de luna, ATAT pragul de suprataxare (alin.5) CAT SI facilitatea (alin.4
+    # lit.d) se prorateaza pe zilele ACTIVE. Iunie 2026, incetare pe 20 -> 14 zile lucrate din 21.
+    from datetime import date
+    rf = calcul_salariu(4050, la_data=date(2026, 6, 1), data_incetare=date(2026, 6, 20), venit_brut_total=4050)
+    assert rf["facilitate"] == Decimal("200.00")     # 300 x 14/21 - alin.(4) lit.d) proratare facilitate la incetare
+    rp = calcul_salariu(1000, norma_intreaga=False, venit_brut_total=1000,
+                        la_data=date(2026, 6, 1), data_incetare=date(2026, 6, 20))
+    assert rp["cas_suprataxa"] == Decimal("375.00")  # (3750 x 14/21 - 1000) x 25% - alin.(5) prag proratat la incetare

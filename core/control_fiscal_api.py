@@ -449,7 +449,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
         cur.execute("SELECT to_regclass('salariati')")
         are_sal = False
         if cur.fetchone()[0]:
-            cur.execute("SELECT count(*) FROM salariati WHERE activ=true")
+            cur.execute("SELECT count(*) FROM salariati WHERE data_incetare IS NULL OR data_incetare >= CURRENT_DATE")
             are_sal = cur.fetchone()[0] > 0
 
     if not vector:

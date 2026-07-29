@@ -548,6 +548,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ${camp("prenume", "Prenume", "text")}
       ${camp("cnp", "CNP", "text")}
       ${camp("data_angajare", "Data angaj\u0103rii", "data")}
+      ${camp("data_incetare", "Data încetării (gol = activ)", "data")}
       ${camp("tip_norma", "Tip norm\u0103", "select", { optiuni: [["intreaga","\u00centreag\u0103"],["partiala","Par\u021bial\u0103"]] })}
       ${camp("ore_zi", "Ore/zi (norm\u0103 par\u021bial\u0103)", "numar", { pas: "0.5" })}
       ${camp("salariu_brut", "Salariu brut", "numar", { obligatoriu: true })}
@@ -574,6 +575,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       prenume: corp.querySelector("#sn-prenume").value.trim() || null,
       cnp: corp.querySelector("#sn-cnp").value.trim() || null,
       data_angajare: corp.querySelector("#sn-data_angajare").value || null,
+      data_incetare: corp.querySelector("#sn-data_incetare").value || null,
       tip_norma: corp.querySelector("#sn-tip_norma").value,
       ore_zi: corp.querySelector("#sn-ore_zi").value ? Number(corp.querySelector("#sn-ore_zi").value) : null,
       salariu_brut: brut ? Number(brut) : 0,
@@ -742,6 +744,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-cadou="${s.id}" data-nume="${esc(s.nume)}">+ cadou</button>
           <button class="buton-secundar" data-iban="${s.id}" data-val="${esc(s.iban || "")}" data-nume="${esc(s.nume)}">IBAN ${s.iban ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-cor="${s.id}" data-val="${esc(s.cor || "")}" data-nume="${esc(s.nume)}">COR ${s.cor ? "✓" : "⚠"}</button>
+          <button class="buton-secundar" data-incet="${s.id}" data-val="${esc(s.data_incetare || "")}" data-nume="${esc(s.nume)}">${s.data_incetare ? "Plecat " + s.data_incetare : "Încetare"}</button>
           </div>
         </div>`).join("");
     corp.innerHTML = `
@@ -759,6 +762,7 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-cadou-zona"></div>
       <div id="sp-iban-zona"></div>
       <div id="sp-cor-zona"></div>
+      <div id="sp-incet-zona"></div>
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
@@ -896,6 +900,28 @@ async function ecranSalariati(corp, nav, t) {
           await api.put(`/tenants/${t.id}/salariati/${sid}`, { iban });  // "" = sterge (goleste contul)
           zonaIban.innerHTML = ""; deseneaza();
         } catch (e) { arataMesaj(corp.querySelector("#iban-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+      });
+    }));
+    // PASUL 1: incetarea contractului (data_incetare). Marcheaza PLECAREA - inlocuieste stergerea la
+    // plecare (istoricul sustine declaratiile depuse). DESIGN_SYSTEM cap.5 (INPUT): input in-ecran + buton.
+    const zonaIncet = corp.querySelector("#sp-incet-zona");
+    corp.querySelectorAll("[data-incet]").forEach((b) => b.addEventListener("click", () => {
+      const sid = b.dataset.incet;
+      zonaIncet.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
+        <span class="camp-eticheta">Data încetării contractului · ${esc(b.dataset.nume)}:</span>
+        <input type="date" id="incet-input" class="camp-input" value="${esc(b.dataset.val)}" style="width:180px">
+        <button class="buton-primar" id="incet-save">Salvează</button>
+        <button class="buton-secundar" id="incet-cancel">Renunță</button></div>
+        <div class="camp-eticheta" style="color:var(--gri)">Gol = contract activ. La plecare NU se șterge salariatul — se completează data încetării (istoricul susține declarațiile depuse).</div>
+        <div id="incet-msg"></div>`;
+      corp.querySelector("#incet-input").focus();
+      corp.querySelector("#incet-cancel").addEventListener("click", () => { zonaIncet.innerHTML = ""; });
+      corp.querySelector("#incet-save").addEventListener("click", async () => {
+        const data_incetare = corp.querySelector("#incet-input").value || null;
+        try {
+          await api.put(`/tenants/${t.id}/salariati/${sid}`, { data_incetare });
+          zonaIncet.innerHTML = ""; deseneaza();
+        } catch (e) { arataMesaj(corp.querySelector("#incet-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
       });
     }));
     // [F137] cod ocupatie COR: lookup din nomenclator, editabil pe rand (necesar REGES)
