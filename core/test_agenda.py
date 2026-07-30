@@ -69,7 +69,7 @@ def test_fiecare_modul_A_are_fisier_de_test():
     a = agenda.stare_sesiune_a()
     assert a is not None, "Inventarul sesiunii A lipseste din TESTE.md"
     lipsa = []
-    for rand in a[2]:
+    for rand in a["rows"]:
         if not rand["fisiere"]:
             lipsa.append(rand["modul"] + " (niciun fisier numit)")
             continue
@@ -88,7 +88,7 @@ def test_verificarile_A_nu_sunt_in_urma_codului():
     assert a is not None
     azi = datetime.date.today()
     stale = []
-    for rand in a[2]:
+    for rand in a["rows"]:
         if not rand["verificat"] or "." not in rand["verificat"]:
             continue
         zi, luna = rand["verificat"].split(".")[:2]

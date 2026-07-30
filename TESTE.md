@@ -120,26 +120,77 @@ Rezultatul sesiunii A: o suită care afirmă legea, nu implementarea.
 
 ## Inventarul de acoperit în A
 
-Coloana `Verificat la sursă`: `√ DD.MM` = testele afirmă LEGEA (actele în `Temeiuri`), verificat la data
-aceea; gol = neverificat. `Teste azi` numește FIȘIERUL. Contopiri (14→11 module reale): contribuții ⊂
-salarizare, amortizare ⊂ d101, TVA cote/exigibilitate ⊂ d300. Garda anti-stale (test_agenda) pică un `√`
-dacă fișierul s-a schimbat după acea dată.
+Per CLUSTER de reguli, nu per fișier (30.07.2026) — un √ pe fișier ascundea că doar o parte din
+reguli era verificată (vezi salarizare 29.07). `Verificat la sursă`: `√ DD.MM` = testele afirmă
+LEGEA la data aceea (garda anti-stale pică `√`-ul dacă codul se schimbă substanțial după). `Risc`:
+**FISCAL** = produce o cifră într-o declarație, greșeala e INVIZIBILĂ (validatorul acceptă) și ajunge
+la ANAF; **STRUCTURA** = mapare/nomenclator/checksum/XML, greșeala e VIZIBILĂ (validatorul respinge).
+Estimare de structură — se rafinează la citirea fiecărui modul.
 
-| Modul | Teste azi (fișier) | Verificat la sursă | Temeiuri |
-|---|---|---|---|
-| d100 | test_d100.py | | |
-| d101 | test_d101.py (+ amortizare) | | |
-| d112 | test_d112.py (+ contribuții) | √ 29.07 | OUG 156/2024 art.LXVI; OUG 89/2025 art.III; CF art.146(5^6)-(5^7); OMF 1855/2022 |
-| d205 | test_d205.py | | |
-| d300 | test_d300.py (+ TVA cote: test_tva_incasare.py) | | |
-| d301 | test_d301_rollup.py | | |
-| d390 | test_d390.py | | |
-| d394 | test_d394.py | | |
-| d406 | test_limita_text_anaf.py (SAF-T XSD, parțial) | | |
-| d710 | test_d710.py | | |
-| salarizare | test_salarizare.py (facilitate, suprataxare, contribuții) | √ 29.07 | OUG 156/2024 art.LXVI; OUG 89/2025 art.III; CF art.146(5^6)-(5^7); OMF 1855/2022 |
+| Cluster | Modul | Teste | Verificat la sursă | Risc | Temeiuri |
+|---|---|---|---|---|---|
+| facilitate salariu minim | salarizare | test_salarizare.py | √ 29.07 | FISCAL | OUG 156/2024 art.LXVI; OUG 89/2025 art.III; HG 146/2026 |
+| suprataxare part-time | salarizare | test_salarizare.py | √ 29.07 | FISCAL | CF art.146 alin.(5^6)-(5^7); art.168 alin.(6^1) |
+| proratare angajare/incetare | salarizare | test_salarizare.py | √ 29.07 | FISCAL | OUG 156/2024 art.LXVI alin.(4); OMF 1855/2022 pct.2 |
+| deducere personala | salarizare | test_salarizare.py |  | FISCAL |  |
+| tichete masa/vacanta | salarizare | test_salarizare.py |  | FISCAL |  |
+| concedii medicale | salarizare | test_salarizare.py |  | FISCAL |  |
+| nomenclator cod_oblig<->cod_bugetar | d100 | test_d100.py |  | STRUCTURA |  |
+| cota micro 121 (flag) | d100 | test_d100.py |  | STRUCTURA |  |
+| checksum totalPlata_A (R11b) | d100 | test_d100.py |  | STRUCTURA |  |
+| scadente/nr_evidenta | d100 | test_d100.py |  | STRUCTURA |  |
+| structura P1-P53 | d101 | test_d101.py |  | STRUCTURA |  |
+| cota profit 16% + IMCA | d101 | test_d101.py |  | FISCAL |  |
+| R17 Data_S / termen | d101 | test_d101.py |  | STRUCTURA |  |
+| amortizare | d101 | test_d101.py |  | FISCAL |  |
+| baze contributii (CAS/CASS/imp/CAM) | d112 | test_d112.py |  | FISCAL |  |
+| concedii medicale (asiguratB3/D) | d112 | test_d112.py |  | FISCAL |  |
+| suprataxare prag | d112 | test_d112.py | √ 29.07 | FISCAL | CF art.146 alin.(5^6) |
+| rotunjire aritmetica (A91b) | d112 | test_d112.py |  | FISCAL |  |
+| limita text 75 | d112 | test_d112.py |  | STRUCTURA |  |
+| nomenclator cod_oblig | d112 | test_d112.py |  | STRUCTURA |  |
+| sect_II tip_venit (impozit retinut) | d205 | test_d205.py |  | FISCAL |  |
+| checksum totalPlata_A | d205 | test_d205.py |  | STRUCTURA |  |
+| trunchiere den/adresa | d205 | test_d205.py |  | STRUCTURA |  |
+| rotunjire | d205 | test_d205.py |  | FISCAL |  |
+| cote TVA -> randuri | d300 | test_d300.py |  | FISCAL |  |
+| exigibilitate / TVA la incasare | d300 | test_tva_incasare.py |  | FISCAL |  |
+| taxare inversa | d300 | test_d300.py |  | FISCAL |  |
+| pro-rata deducere | d300 | test_d300.py |  | FISCAL |  |
+| randuri / checksum | d300 | test_d300.py |  | STRUCTURA |  |
+| rotunjire aritmetica | d300 | test_d300.py |  | FISCAL |  |
+| ajustari | d300 | test_d300.py |  | FISCAL |  |
+| tipuri operatiune 1-5 | d301 | test_d301_rollup.py |  | FISCAL |  |
+| rollup S4.1->S4 | d301 | test_d301_rollup.py |  | FISCAL |  |
+| checksum totalPlata_A (R28) | d301 | test_d301_rollup.py |  | STRUCTURA |  |
+| baza = val x curs | d301 | test_d301_rollup.py |  | FISCAL |  |
+| cota TVA | d301 | test_d301_rollup.py |  | FISCAL |  |
+| tipuri operatiune IC (L/A/P/S) | d390 | test_d390.py |  | FISCAL |  |
+| nomenclator tari (HR->CR) | d390 | test_d390.py |  | STRUCTURA |  |
+| rotunjire aritmetica (A91b) | d390 | test_d390.py |  | FISCAL |  |
+| reclasificari manuale | d390 | test_d390.py |  | FISCAL |  |
+| exigibilitate / prag | d390 | test_d390.py |  | FISCAL |  |
+| tipuri operatiune (pct.215) | d394 | test_d394.py |  | STRUCTURA |  |
+| tip_partener | d394 | test_d394.py |  | STRUCTURA |  |
+| cote acceptate | d394 | test_d394.py |  | FISCAL |  |
+| rezumat1 campuri complete | d394 | test_d394.py |  | STRUCTURA |  |
+| nomenclator codPR (art.331) | d394 | test_d394.py |  | STRUCTURA |  |
+| taxare inversa | d394 | test_d394.py |  | FISCAL |  |
+| totalPlata_A (R17) | d394 | test_d394.py |  | STRUCTURA |  |
+| plan conturi pe norma | d406 | test_limita_text_anaf.py |  | STRUCTURA |  |
+| UoM UN/ECE | d406 | test_limita_text_anaf.py |  | STRUCTURA |  |
+| MovementType nomenclator | d406 | test_limita_text_anaf.py |  | STRUCTURA |  |
+| BaseRate (encoding pro-rata) | d406 | test_limita_text_anaf.py |  | STRUCTURA |  |
+| registration_number (00+CUI) | d406 | test_limita_text_anaf.py |  | STRUCTURA |  |
+| SourceDocuments (facturi reale, PARTIAL) | d406 | test_limita_text_anaf.py |  | FISCAL |  |
+| structura XSD (Header/MasterFiles/GLE) | d406 | test_limita_text_anaf.py |  | STRUCTURA |  |
+| structura declaratie710 | d710 | test_d710.py |  | STRUCTURA |  |
+| nomenclator COD_BUGETAR | d710 | test_d710.py |  | STRUCTURA |  |
+| checksum R11b | d710 | test_d710.py |  | STRUCTURA |  |
+| R15 termen definitivare | d710 | test_d710.py |  | STRUCTURA |  |
+| scadente | d710 | test_d710.py |  | STRUCTURA |  |
 
-Numărul de teste nu e ținta. Ținta e ca fiecare cifră afirmată să aibă temei.
+Numărul nu e ținta. Ținta: fiecare cluster FISCAL să aibă cifra afirmată cu temei citat la sursă.
 
 ---
 

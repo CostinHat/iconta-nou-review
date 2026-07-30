@@ -52,22 +52,28 @@ def _randuri_tabel(text, titlu):
 
 
 def stare_sesiune_a():
-    """(verificate, total, randuri). Rand: {modul, fisiere, verificat, temeiuri}."""
+    """{rows, fiscal:(verif,total), structura:(verif,total)} - per CLUSTER (30.07), cu risc.
+    Rand: {cluster, modul, fisiere, verificat, risc, temeiuri}."""
     r = _randuri_tabel(_text(_TESTE), "## Inventarul de acoperit în A")
     if not r:
         return None
-    r = r[1:]
-    out = []
-    for cel in r:
-        if len(cel) < 3:
+    rows = []
+    for cel in r[1:]:
+        if len(cel) < 5:
             continue
         data = None
-        if _VERIF in cel[2]:
-            m = re.search(r"\d{1,2}\.\d{1,2}", cel[2])
+        if _VERIF in cel[3]:
+            m = re.search(r"\d{1,2}\.\d{1,2}", cel[3])
             data = m.group(0) if m else "?"
-        out.append({"modul": cel[0], "fisiere": re.findall(r"test_\w+\.py", cel[1]),
-                    "verificat": data, "temeiuri": cel[3] if len(cel) > 3 else ""})
-    return sum(1 for x in out if x["verificat"]), len(out), out
+        rows.append({"cluster": cel[0], "modul": cel[1],
+                     "fisiere": re.findall(r"test_\w+\.py", cel[2]),
+                     "verificat": data, "risc": cel[4].strip().upper(),
+                     "temeiuri": cel[5] if len(cel) > 5 else ""})
+    fisc = [x for x in rows if x["risc"].startswith("FISC")]
+    stru = [x for x in rows if x["risc"].startswith("STRUC")]
+    return {"rows": rows,
+            "fiscal": (sum(1 for x in fisc if x["verificat"]), len(fisc)),
+            "structura": (sum(1 for x in stru if x["verificat"]), len(stru))}
 
 
 def stare_sesiune_b():
@@ -195,8 +201,13 @@ def raport(tehnic=True):
     L = ["═══ AGENDA iConta ═══  (%s)" % datetime.date.today().isoformat(), ""]
     L.append("UNDE SUNTEM")
     a = stare_sesiune_a()
-    L.append("  Sesiunea A (aliniere la legislatie):  %s" %
-             ("%d din %d module verificate la sursa" % (a[0], a[1]) if a else "necunoscut (Inventar lipseste)"))
+    if a:
+        fv, ft = a["fiscal"]
+        sv, st = a["structura"]
+        _sa = "%d/%d clustere FISCALE (risc invizibil) \u00b7 %d/%d structura verificate la sursa" % (fv, ft, sv, st)
+    else:
+        _sa = "necunoscut (Inventar lipseste)"
+    L.append("  Sesiunea A (aliniere la legislatie):  %s" % _sa)
     b = stare_sesiune_b()
     L.append("  Sesiunea B (testare pe flux):         %s" %
              ("%s (%s), etape %d/%d" % (b["faza"], b["stare"], b["etape_facute"], b["etape_total"]) if b else "necunoscut"))
