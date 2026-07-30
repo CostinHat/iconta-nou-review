@@ -27,15 +27,15 @@ Firul curent — de aici derivă URMATORUL PAS al agendei. Se ține la ZI (regul
 redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 - fir: Temeiuri citabile mecanic + reverificarea locurilor fără temei (Sesiunea A · transversal)
-- ultim: PASUL 3 (parțial, 78b7b6b) — normalizat citările EXPLICITE validator+structură (10× `DUK regula`, 4× `eFactura regula`, 18× `ANAF structura`; F160 exclus). + decizia coliziunii R-cod LUATĂ (varianta A, consemnată în DECIZII la 234f9ae).
-- urmator: remediere agendă+garduri (garda variantă c: reset √ doar la schimbare de assert/valoare; garda extinsă pe toate 4 sursele; mecanica de poartă în CLAUDE.md; d112 revenit la √ 29.07 împreună cu garda), APOI canonizarea celor 8 mențiuni bare clare de regulă (opțiunea A) + ambiguele. IN LUCRU.
+- ultim: remediere agendă + PASUL 3 categoria validator, canonizat (lanț 02affc9..e1bdc8e): agenda adevărată în 4 locuri; garda anti-stale varianta c (AST, reset doar la schimbare substanțială); garda extinsă (GARZI derivat din categorii + risc, anti-duplicat titlu); d112 √ 29.07; cele 8 mențiuni bare → `DUK/eFactura regula`; procedura §2.5/§4 în CLAUDE.md.
+- urmator: PASUL 4 — gard core/test_temeiuri.py (3 forme: `DUK/eFactura regula`, `ANAF structura`, temei normativ; regex pe forma reală a codurilor literă+cifre; codurile bare = rânduri, NU se cer — opțiunea A; escape hatch `# TEMEI LIBER`; mutație). NEÎNCEPUT.
 - pasi:
   1. [GATA] formatele în CLAUDE.md §3.1 (temei normativ + validator/XSD).
   2. [GATA] inventar (255 normativ: 142 canonice / 113 de normalizat; validator reclasificat).
-  2b. locuri FĂRĂ temei, pe module cu validarea ta. NEÎNCEPUT.
-  3. [PARȚIAL] validator EXPLICIT + structură (78b7b6b). RĂMAS: 8 mențiuni bare clare (opțiunea A: doar cu marker); ambiguele (d394 R17=rând las; d100 „R17+Rcota" proză); cele 113 normative (spațiere `art. `, `Cod fiscal`→`CF`) pe adnotări.
-  4. gard core/test_temeiuri.py + extinderea gărzii anti-stale (variantă c + toate 4 sursele agendei).
-  5. core/temeiuri.py: funcție + CLI pe ambele categorii.
+  2b. locuri FĂRĂ temei în core/d*.py + core/salarizare.py, pe module cu validarea ta. NEÎNCEPUT.
+  3. [PARȚIAL] validator+structură normalizat + cele 8 bare canonizate + pseudo-coduri reformulate. RĂMAS: cele 113 citări normative (spațiere `art. `, `Cod fiscal`→`CF`, `alin/lit`) pe adnotări — text afișat rămâne natural + citare canonică în comentariu (decizia #1).
+  4. gard core/test_temeiuri.py (vezi „urmator").
+  5. core/temeiuri.py: funcție + `python -m core.temeiuri "<act|regulă>"` pe ambele categorii.
 
 - fir (în așteptare): Modelarea contractului în timp (Sesiunea A · salarizare)
 - ultim: 2b-scrieri comis — creare/editare/import scriu pe salariu_istoric, citiri pe salariu_curent (reparat si bug-ul activ din import, PASUL 1)
