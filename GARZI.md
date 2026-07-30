@@ -223,17 +223,6 @@ A cincea, din aceeași zi, la altă gardă:
 
 ---
 
-## Ce lipsește, în ordinea raportului cost/acoperire
-
-1. **Gard anti-mască** (cat. 0) — scan AST, `except` cu corp mut peste `cur.execute`.
-   Cauza rădăcină a majorității defectelor găsite în iulie.
-3. **Mutantul zero sistematic** (cat. 9) — ieftin, lovește exact clasa „declarație goală".
-4. **Test de restaurare backup** (cat. 7) — backupul netestat e o presupunere.
-5. **Izolare tenanți: test încrucișat** (cat. 5).
-6. **`audit_cod_schema.py` pe server** (cat. 2) — verificare statică query-uri vs schemă reală.
-
----
-
 ## Reguli de scris în acest registru
 
 - Starea se schimbă **doar cu dovadă în același commit**.

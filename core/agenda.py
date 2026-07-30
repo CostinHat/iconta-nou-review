@@ -118,18 +118,39 @@ def datorii_deschise():
 
 
 def garduri_lipsa():
+    """DERIVAT din categoriile GARZI marcate cu bullet-uri `- LIPSĂ:` (sursa unica; NU o lista de
+    mana care se desincronizeaza). Fiecare categorie -> {categorie, risc (Esec), lipsuri:[...]}.
+    Riscul e ce lasa deschis gardul absent - ca cine citeste agenda sa stie ce e in joc."""
     r = _text(_GARZI)
-    if not r or "## Ce lipsește" not in r:
+    if not r:
         return None
-    dupa = r[r.index("## Ce lipsește"):]
-    out = []
-    for ln in dupa.splitlines()[1:]:
-        t = ln.strip()
-        if t.startswith("## "):
-            break
-        m = re.match(r"\d+\.\s+\*\*(.+?)\*\*", t)
+    out, cat, esec, lipsuri, in_esec = [], None, [], [], False
+
+    def _flush():
+        if cat and lipsuri:
+            out.append({"categorie": cat, "risc": " ".join(esec).strip(), "lipsuri": list(lipsuri)})
+
+    for ln in r.splitlines():
+        s = ln.strip()
+        m = re.match(r"###\s+\d+\.\s+(.+)", s)
         if m:
-            out.append(m.group(1).strip())
+            _flush()
+            cat, esec, lipsuri, in_esec = m.group(1).strip(), [], [], False
+            continue
+        if cat is None:
+            continue
+        me = re.match(r"\*\*E[sș]ec:\*\*\s*(.*)", s)
+        if me:
+            in_esec, esec = True, [me.group(1).strip()]
+            continue
+        if in_esec:
+            if s == "" or s.startswith("**") or s.startswith("- ") or s.startswith("#"):
+                in_esec = False
+            else:
+                esec.append(s)
+        if re.match(r"- LIPS[ĂA]:", s):
+            lipsuri.append(re.sub(r"^- LIPS[ĂA]:\s*", "", s))
+    _flush()
     return out
 
 
@@ -188,9 +209,18 @@ def raport(tehnic=True):
         L.append("  (nicio datorie xfail)")
     else:
         L += ["  · %s - %s" % (n, mo) for n, mo in d]
-    L += ["", "GARDURI LIPSA"]
+    L += ["", "GARDURI LIPSA (derivat din categoriile GARZI marcate LIPSĂ)"]
     g = garduri_lipsa()
-    L += (["  necunoscut"] if g is None else ["  · %s" % x for x in g])
+    if g is None:
+        L.append("  necunoscut")
+    elif not g:
+        L.append("  (nicio categorie cu LIPSĂ)")
+    else:
+        for c in g:
+            risc = (" — risc: " + c["risc"][:110]) if c["risc"] else ""
+            L.append("  · %s%s" % (c["categorie"], risc))
+            for lp in c["lipsuri"]:
+                L.append("      - %s" % lp[:110])
     L += ["", "STARE TEHNICA"]
     if tehnic:
         ps, vs, ss = stare_tehnica()
