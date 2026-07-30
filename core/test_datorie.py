@@ -149,3 +149,18 @@ def test_datorie_staleness_sesiune_b_content():
     # Se aprinde (xpass -> strict pica) cand prima etapa a Fazei 1 primeste bifa = are teste N3 cap-coada.
     b = agenda.stare_sesiune_b()
     assert b is not None and b["etape_facute"] > 0
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 30.07.2026: cele 8 mentiuni canonizate la DUK/eFactura regula n-au fost re-verificate la sursa - s-a schimbat doar markerul. Daca vreuna cita o regula GRESITA inainte, canonizarea a facut-o sa arate corect si sa ramana greșita. De verificat fiecare cod (A91b, R28, R17, R11b, R15, F10_68, BR-RO-100, BR-RO-110) contra documentatiei de validator: ce spune regula si daca e cea aplicabila acolo.")
+def test_datorie_reguli_validator_verificate_la_sursa():
+    # Se inchide cand verificarea la sursa e consemnata in DECIZII.md (marker stabil, case-insensitive).
+    # strict=True: cand devine adevarat, xpass -> pica -> semnaleaza sa scoti xfail-ul.
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "reguli validator verificate la sursa" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 30.07.2026: R17/R28/R32 din D300/D394 au fost lasate bare ca RANDURI de declaratie, dedus din CONTEXT, nu verificat in structura oficiala a formularului. Daca vreunul e de fapt regula de validator, a rămas nemarcat si gardul nu-l va prinde. De verificat in structura oficiala D300 si D394 ce reprezinta fiecare.")
+def test_datorie_d300_d394_randuri_vs_reguli_verificate():
+    # Se inchide cand verificarea in structura oficiala e consemnata in DECIZII.md (marker stabil).
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "d300/d394 randuri-vs-reguli verificate in structura oficiala" in dz.lower()
