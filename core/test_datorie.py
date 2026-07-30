@@ -164,3 +164,10 @@ def test_datorie_d300_d394_randuri_vs_reguli_verificate():
     # Se inchide cand verificarea in structura oficiala e consemnata in DECIZII.md (marker stabil).
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "d300/d394 randuri-vs-reguli verificate in structura oficiala" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 30.07.2026: formatul ANAF structura <formular> <versiune> nu e pazit mecanic. Fraza 'structura oficiala D300' apare identic in proza explicativa si in citare, deci un gard ar da fals-pozitive pe descrieri. Cele 18 mentiuni au fost canonizate manual la PASUL 3; o regresie viitoare rămâne pe seama review-ului. De reluat daca apare o forma de marcare care distinge citarea de proza (ex. un prefix sau un registru separat de structuri).")
+def test_datorie_gard_structura_absent():
+    # Se inchide cand test_temeiuri.py capata un gard de structura (functie cu 'structura' in nume).
+    tt = (pathlib.Path(__file__).resolve().parent / "test_temeiuri.py").read_text(encoding="utf-8")
+    assert re.search(r"def test_\w*structura\w*\(", tt)
