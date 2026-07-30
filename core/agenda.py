@@ -77,14 +77,16 @@ def stare_sesiune_b():
         return None
     faze = faze[1:]
     faza = "necunoscut"
+    stare_faza = ""
     for cel in faze:
         if len(cel) >= 2 and "închis" not in cel[1].lower() and "gata" not in cel[1].lower():
             faza = cel[0].split("—")[0].strip()
+            stare_faza = cel[1].strip()
             break
     dupa = txt[txt.index("## Starea sesiunii B"):] if (txt and "## Starea sesiunii B" in txt) else ""
     et = _randuri_tabel(dupa, "| Etapă | Stare |")  # ancora = antetul, deci randurile sunt deja datele
     facute = sum(1 for c in et if len(c) > 1 and _VERIF in c[1])
-    return {"faza": faza, "etape_facute": facute, "etape_total": len(et)}
+    return {"faza": faza, "stare": stare_faza, "etape_facute": facute, "etape_total": len(et)}
 
 
 def urmatorul_pas():
@@ -176,7 +178,7 @@ def raport(tehnic=True):
              ("%d din %d module verificate la sursa" % (a[0], a[1]) if a else "necunoscut (Inventar lipseste)"))
     b = stare_sesiune_b()
     L.append("  Sesiunea B (testare pe flux):         %s" %
-             ("%s, etape %d/%d" % (b["faza"], b["etape_facute"], b["etape_total"]) if b else "necunoscut"))
+             ("%s (%s), etape %d/%d" % (b["faza"], b["stare"], b["etape_facute"], b["etape_total"]) if b else "necunoscut"))
     L.append("  Ultimul commit: %s" % ultim_commit())
     L += ["", "URMATORUL PAS", "  %s" % urmatorul_pas(), "", "DESCHIS ACUM (datoria mecanica)"]
     d = datorii_deschise()

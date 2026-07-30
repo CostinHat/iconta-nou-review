@@ -27,14 +27,14 @@ Firul curent — de aici derivă URMATORUL PAS al agendei. Se ține la ZI (regul
 redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 - fir: Temeiuri citabile mecanic + reverificarea locurilor fără temei (Sesiunea A · transversal)
-- ultim: PASUL 3 (parțial) — normalizat citările EXPLICITE ale categoriei validator+structură: 10× `DUK regula`, 4× `eFactura regula` (BR-RO), 18× `ANAF structura` (4× VERSIUNE NECUNOSCUTA: D394/bilanț/D101/D205); F160 exclus. Comis acum. Înainte: PASUL 1 (650d3d5).
-- urmator: DECIZIE (coliziune de cod) — `R17/R28/R32…` sunt RÂND în D300 dar REGULĂ DUK în D1xx/D7xx; gardul nu poate cere „DUK regula R28" fără să strice rândurile D300. Plus ~11 mențiuni de regulă fără cuvântul „regula". De rezolvat înainte de gard/2b. NEÎNCEPUT.
+- ultim: PASUL 3 (parțial, 78b7b6b) — normalizat citările EXPLICITE validator+structură (10× `DUK regula`, 4× `eFactura regula`, 18× `ANAF structura`; F160 exclus). + decizia coliziunii R-cod LUATĂ (varianta A, consemnată în DECIZII la 234f9ae).
+- urmator: remediere agendă+garduri (garda variantă c: reset √ doar la schimbare de assert/valoare; garda extinsă pe toate 4 sursele; mecanica de poartă în CLAUDE.md; d112 revenit la √ 29.07 împreună cu garda), APOI canonizarea celor 8 mențiuni bare clare de regulă (opțiunea A) + ambiguele. IN LUCRU.
 - pasi:
   1. [GATA] formatele în CLAUDE.md §3.1 (temei normativ + validator/XSD).
   2. [GATA] inventar (255 normativ: 142 canonice / 113 de normalizat; validator reclasificat).
   2b. locuri FĂRĂ temei, pe module cu validarea ta. NEÎNCEPUT.
-  3. [PARȚIAL] normalizat validator EXPLICIT + structură (acest commit). RĂMAS: coliziunea R-cod (rând D300 vs regulă DUK) + ~11 mențiuni fără „regula"; + cele 113 normative (spațiere `art. `, `Cod fiscal`→`CF`) pe adnotări (text afișat rămâne natural).
-  4. gard core/test_temeiuri.py: regexul NU poate keyui doar pe forma `R\d` — coliziune rând/regulă. De decis: prefix obligatoriu la reguli + rândurile rămân bare, SAU rândurile devin `rd.28`. 3 forme (DUK/eFactura regula, ANAF structura, temei normativ) + escape hatch `# TEMEI LIBER` + mutație.
+  3. [PARȚIAL] validator EXPLICIT + structură (78b7b6b). RĂMAS: 8 mențiuni bare clare (opțiunea A: doar cu marker); ambiguele (d394 R17=rând las; d100 „R17+Rcota" proză); cele 113 normative (spațiere `art. `, `Cod fiscal`→`CF`) pe adnotări.
+  4. gard core/test_temeiuri.py + extinderea gărzii anti-stale (variantă c + toate 4 sursele agendei).
   5. core/temeiuri.py: funcție + CLI pe ambele categorii.
 
 - fir (în așteptare): Modelarea contractului în timp (Sesiunea A · salarizare)
@@ -338,35 +338,11 @@ Fișierul de așteptări se scrie **înainte**, din temeiurile verificate în se
 
 # Cum se consemnează
 
-- **Rezultatul fiecărei etape** — în tabelele de stare de mai jos, cu data.
+- **Rezultatul fiecărei etape** — în „Starea sesiunii B" (Faza 1) și „Inventarul de acoperit în A" de mai sus, cu data.
 - **Defectele găsite** — în `DECIZII.md`, cu **cauza**, nu doar cu simptomul.
 - **Ce nu se repară imediat** — `xfail(strict=True)` în `core/test_datorie.py`, NU notă
   într-un fișier. Un registru pe care trebuie să ți-l amintești nu funcționează.
 - **Gardurile noi** — în `GARZI.md`, în aceeași zi.
-
-## Starea sesiunii A
-
-| Modul | Teste verificate | Discrepanțe găsite | Data |
-|---|---|---|---|
-| | | | |
-
-## Starea sesiunii B
-
-| Etapă | Stare | Data | Observații |
-|---|---|---|---|
-| Faza 0 — curățenie | | | |
-| Faza 1 — cele 7 firme | | | |
-| 1. Migrare | | | |
-| 2. Configurare | | | |
-| 3. Documente primare | | | |
-| 4. Salarizare | | | |
-| 5. Contabilizare | | | |
-| 6. Sfârșit de lună | | | |
-| 7. Verificări interne | | | |
-| 8. Declarații — generare | | | |
-| 9. Declarații — depunere | | | |
-| 10. Ieșiri externe | | | |
-| 11. Transversal | | | |
 
 ---
 

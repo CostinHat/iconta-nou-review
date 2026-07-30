@@ -231,7 +231,6 @@ A cincea, din aceeași zi, la altă gardă:
 4. **Test de restaurare backup** (cat. 7) — backupul netestat e o presupunere.
 5. **Izolare tenanți: test încrucișat** (cat. 5).
 6. **`audit_cod_schema.py` pe server** (cat. 2) — verificare statică query-uri vs schemă reală.
-7. **Heartbeat joburi** (cat. 10).
 
 ---
 
