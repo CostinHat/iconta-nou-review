@@ -4168,3 +4168,38 @@ directia, MODIFICAM AGENDA INTAI, apoi ne tinem de ea." Practic: agenda (TESTE.m
 sursa; ce nu e acolo nu se lucreaza. Un lucru nou se adauga in TESTE.md sau ca xfail INAINTE de a incepe.
 Claude semnaleaza cand i se cere ceva din afara agendei - nu refuza, intreaba, asteapta decizia. Context:
 pe 27.07 s-a lucrat o zi intreaga la reparatii deja consemnate ca amanate intr-un registru necitit.
+
+## 30.07.2026 — Procedura de lucru scrisa in CLAUDE.md (roluri Code/arhitect, bucla pe pasi, temei, porti)
+
+De ce. In 27-30.07.2026 s-au pierdut ore repetat din trei cauze de PROCEDURA, nu de cod:
+(1) o sesiune a lucrat pe o copie locala in loc de server — defectele raportate ("confirmate")
+nu existau pe productie; (2) instructiuni detaliate au trait doar in conversatie si la /clear
+s-au pierdut, desi agenda arata corect ce urmeaza; (3) arhitectul a formulat brief-uri pe
+presupuneri marcate ca fapte si a modificat direct cod — deci nimeni nu-l putea corecta.
+
+Decizia. S-a fixat, de comun acord cu Costin, procedura completa de lucru: rolurile (Code
+executa si cauta temeiul; arhitectul valideaza independent si NU modifica NIMIC — doar comenzi
+de citire; Costin decide lansarea), bucla pe pasi cu commit+push la fiecare pas, pasii traiesc
+in TESTE.md la "In lucru acum" (nu in chat) cu format obligatoriu, temeiul = actul normativ
+citat cu ierarhia Monitorul Oficial > ANAF > comentarii (legea castiga peste ghid), cele cinci
+porti de validare cu proba functionala obligatorie si output vizibil, ritualul de inceput,
+opririle obligatorii si regula "agenda se modifica intai". Textul normativ traieste in CLAUDE.md
+(sectiunea "PROCEDURA DE LUCRU (30.07.2026)"), unde se aplica si se citeste la fiecare sesiune —
+aici e doar decizia si motivul.
+
+Alternativa respinsa. Un registru-nota separat, de tip DE_FACUT.md — respins: exact tiparul care
+a murit necitit (sters pe 27.07, 806 linii pe care nimeni nu le citea integral). Norma sta unde
+se aplica (CLAUDE.md) si e pazita mecanic unde se poate (garda anti-stale core/test_agenda.py,
+datoria din core/test_datorie.py); DECIZII.md trimite acolo, nu dubleaza. Doua surse de adevar
+= drift.
+
+Ce a inlocuit. Sectiunea "LOCUL DE LUCRU — verificare obligatorie la fiecare sesiune (29.07.2026)"
+din CLAUDE.md — versiune mai veche a aceluiasi ritual + regula de redirectionare, superseded de
+sectiunile 5 si 7 ale noii proceduri (ritualul adauga acum `git rev-parse`). Faptul ei unic —
+serverul are un singur arbore `core/`, fara `declaratii/` si fara `motor/` — a fost PASTRAT ca
+nota separata, ca sa nu se piarda la stergere.
+
+Limita. Procedura e disciplina scrisa, mecanica doar partial: automate sunt doar ritualul
+(`core.agenda`) si garda anti-stale. "Arhitectul nu modifica" si "proba functionala a rulat" se
+tin prin conventie — inca nu exista un gardian care sa le forteze. De reconfirmat daca apare
+unul.

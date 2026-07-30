@@ -275,35 +275,197 @@ Ce l-a înlocuit:
 Regula: verificabil mecanic → test, nu notă. Notă → doar cu decizie și motiv, altfel e amânare
 cu altă formă.
 
-## LOCUL DE LUCRU — verificare obligatorie la fiecare sesiune (29.07.2026)
+## Un singur arbore pe server (29.07.2026)
 
-**Se lucrează EXCLUSIV pe server: `costin@178.105.201.56`, `~/iconta_nou`, branch `main`.**
-Acolo e singura aplicație. Nu există alta.
+Se lucrează EXCLUSIV pe server (`~/iconta_nou`, branch `main`) — acolo e singura aplicație, nu
+există alta. Serverul are **un singur arbore: `core/`**; nu există `declaratii/` și nu există
+`motor/`. Pe 27.07.2026 s-au pierdut ore reparând trei defecte „confirmate" (D101 pe coloane
+greșite, arbori paraleli, 946 de teste cu fake-uri) care nu existau pe server — erau într-o
+copie locală. Ritualul de început, opririle și regula de redirecționare sunt în „PROCEDURA DE
+LUCRU (30.07.2026)" de mai jos (supersedă fostul „LOCUL DE LUCRU (29.07.2026)").
 
-**Înainte de PRIMA modificare din fiecare sesiune, verifici și arăți:**
+# PROCEDURA DE LUCRU (30.07.2026)
 
-    pwd; hostname; git log --oneline -1
-    ./venv/bin/python -m core.agenda
+## De ce exista
 
-Trebuie să iasă `/home/costin/iconta_nou` și `iconta-prod`. Dacă nu iese așa, **te
-oprești** și spui unde ești și cum ai ajuns acolo. Nu modifici nimic până nu se confirmă.
+In 27-30.07.2026 s-au pierdut ore repetat din trei cauze de procedura:
+- o sesiune a lucrat pe o copie locala in loc de server; defectele raportate nu existau pe
+  productie
+- instructiuni detaliate au trait doar in conversatie; la /clear s-au pierdut, desi agenda
+  arata corect ce urmeaza
+- arhitectul a formulat brief-uri pe presupuneri marcate ca fapte, si a modificat direct cod -
+  deci nimeni nu-l putea corecta
 
-**De ce.** Pe 27.07.2026 s-au pierdut ore reparând cod care nu rulează nicăieri: fuseseră
-raportate trei defecte „confirmate" (D101 pe coloane greșite, arbori paraleli `declaratii/`
-și `motor/`, 946 de teste cu fake-uri) care nu existau pe server — erau într-o copie locală.
-Serverul are **un singur arbore: `core/`**. Nu există `declaratii/` și nu există `motor/`.
+## 1. Rolurile
 
-**Ritualul de agendă (29.07.2026).** PRIMA ACȚIUNE din fiecare sesiune, înainte de orice altceva:
-rulează agenda (`./venv/bin/python -m core.agenda`) și ARATĂ rezultatul. Nu începe să lucrezi la ce ți
-se cere până n-ai arătat unde suntem.
+### Code - executa si cauta temeiul
+- cauta in legislatie temeiul pentru orice valoare, cota, prag, rotunjire sau structura fiscala
+- citeaza TEXTUL actului normativ: act, articol, alineat, litera
+- propune ce trebuie schimbat, cu temeiul atasat
+- dupa validare: implementeaza, scrie testele cu temeiul citat PE LINIE langa assert, verifica
+  prin mutatie, ruleaza proba functionala
+- comite si impinge pe server
+- raporteaza
 
-DACĂ ți se cere ceva care NU e în agendă: spune-o explicit, cu formula „Asta nu e în agendă. Următorul
-pas din agendă e X. Modificăm agenda întâi, sau lăsăm X pentru mai târziu?" Nu refuza — semnalează și
-așteaptă decizia.
+Cine executa trebuie sa stie DE CE, altfel aplica orb.
 
-Motivul: fără asta, planul se erodează fără ca nimeni să observe. S-a întâmplat: pe 27.07 s-a lucrat o zi
-întreagă la reparații care erau deja consemnate ca amânate într-un registru pe care nimeni nu-l citea.
+### Arhitect (chat) - valideaza si verifica
+- valideaza temeiul gasit de Code: actul e cel corect, textul citat spune ce se afirma, e act
+  normativ si nu comentariu de pe site fiscal
+- verifica INDEPENDENT fiecare pas, cu propriile comenzi, NU citind raportul lui Code
+- da drumul la pasul urmator sau arata exact unde difera
+- formuleaza pasii urmatori, marcand explicit ce e verificat si ce e presupunere
 
-REGULA DE REDIRECȚIONARE: dacă apare ceva ce nu știm acum și vrem să schimbăm direcția, MODIFICĂM AGENDA
-ÎNTÂI, apoi ne ținem de ea. Agenda (TESTE.md + test_datorie.py) e sursa; ce nu e acolo nu se lucrează. Un
-lucru nou se adaugă în TESTE.md sau ca xfail ÎNAINTE de a începe lucrul la el.
+ARHITECTUL NU MODIFICA NIMIC. Nici cod, nici fisiere normative, nici baza, nici commit-uri.
+Comenzile lui contin exclusiv citire: cat, grep, sed -n, psql -c "SELECT", pytest, curl,
+git log, ls, wc.
+
+SEMNAL DE INCALCARE: daca o comanda data de arhitect contine > >> sed -i git add git commit
+git push INSERT UPDATE DELETE DROP ALTER rm cp mv - e incalcare de procedura si se refuza.
+
+### Costin - decide lansarea
+Decide daca aplicatia poate fi pusa pe piata. Tehnicul e la Code si la arhitect.
+
+## 2. Bucla de lucru
+
+UN PAS = cea mai mica bucata care lasa aplicatia FUNCTIONALA. Nu "un punct din lista": daca
+scoaterea unei coloane cere reparate cinci locuri care o citesc, pasul cuprinde toate cinci.
+
+1. Code cauta temeiul in legislatie, citeaza textul, propune schimbarea
+2. Arhitectul valideaza temeiul - sau arata unde nu se tine
+3. Code implementeaza: cod, teste cu temeiul pe linie, mutatie, proba functionala
+4. Code comite si impinge pe server. UN PAS NESALVAT PE SERVER NU S-A INTAMPLAT
+5. Code raporteaza
+6. Arhitectul verifica independent, cu comenzile lui
+7. Validare sau respingere cu motiv -> pasul urmator
+
+Salvarea pe server la fiecare pas face ca spatiul in care lucreaza Code sa devina detaliu.
+
+## 2.1 De unde vin pasii
+
+Pasii unui fir traiesc in TESTE.md, la "In lucru acum". NU in conversatie.
+
+Format obligatoriu:
+
+- fir: <numele lucrului, cu contextul>
+- ultim: <ce s-a terminat> (<hash commit>)
+- urmator: <pasul urmator>. <STARE>
+- pasi:
+  1. <fisier, functie, ce se schimba concret>
+  2. <...>
+
+STARE = NEINCEPUT | IN LUCRU | BLOCAT: <motiv>
+
+CINE SI CAND:
+- Arhitectul formuleaza pasii INAINTE de a incepe firul. Concret: nu "repara D300", ci
+  "d300.py:264 - cota vine ca fractie din registru, D394 o cere ca procent intreg".
+- Code ii scrie in TESTE.md ca PRIMA actiune a firului, inainte de orice modificare de cod.
+
+CAND LISTA SE DOVEDESTE GRESITA PE DRUM:
+Code rescrie lista in TESTE.md si raporteaza, INAINTE sa execute ce a descoperit.
+Nu se executa o lista mai mare decat cea scrisa. Daca pasul creste, lista creste intai.
+
+CAND UN PAS E PREA MARE PENTRU O SESIUNE:
+Se sparge, cu commit intre bucati. Fiecare bucata lasa aplicatia functionala. In TESTE.md
+bucatile apar ca pasi SEPARATI, fiecare cu starea lui (ex: 2b-scrieri, 2b-coloana), nu ca
+subpuncte.
+
+CE NU E UN PAS:
+- "verifica daca e in regula" - fara criteriu de terminare
+- "repara zona X" - nu spune ce anume
+- ceva ce nu se poate comite singur fara sa lase codul rupt
+
+## 3. Ce inseamna "temei"
+
+TEMEIUL E ACTUL NORMATIV, CU TEXTUL CITAT. Act, articol, alineat, litera.
+
+Ierarhia surselor:
+1. Monitorul Oficial - norma. Legi, ordonante, hotarari, ordine. Majoritatea valorilor fiscale
+   NU vin de la ANAF, ci de la Parlament sau Guvern.
+2. ANAF - procedura: formulare, structuri XML, validator, instructiuni de completare. Publica
+   TARZIU: legea intra in vigoare la 1 ianuarie, instructiunile apar in februarie.
+3. Comentarii, presa fiscala, ghiduri neoficiale - pot arata UNDE sa cauti. NU sunt temei,
+   niciodata.
+
+Cand ghidul ANAF difera de lege, LEGEA CASTIGA.
+
+UNDE NU EXISTA TEMEI LEGAL, NU SE CONSTRUIESTE. Nu se inventeaza, nu se interpreteaza liber,
+nu se completeaza cu "ce pare rezonabil". Daca legea nu transeaza, se consemneaza ca
+xfail(strict=True) in core/test_datorie.py cu motivul "temei neverificat: <ce anume>".
+
+Un test scris pe presupunere e mai periculos decat absenta lui: da siguranta falsa, iar cand
+cineva il vede rosu repara CODUL ca sa se potriveasca cu presupunerea.
+
+INTERPRETAREA, cand e inevitabila: daca doua acte se combina si niciunul nu transeaza
+combinatia, se marcheaza in cod ca INTERPRETARE CU TEMEI, nu ca text explicit - cu argumentul,
+alternativa respinsa, si nota "de reconfirmat daca apare o norma care transeaza".
+
+## 4. Ce verifica arhitectul la validare
+
+Toate cinci, nu patru din cinci:
+1. commit-ul e pe origin/main - verificat cu git log, nu din raport
+2. suita e verde - rulata de arhitect
+3. verificatorul de conformitate: TOTAL 0
+4. aplicatia porneste si site-ul raspunde 200
+5. PROBA FUNCTIONALA A RULAT, CU OUTPUT VIZIBIL
+
+Punctul 5 e cel mai important si cel mai usor de sarit. Pe 29.07, reparatia facilitatii a
+trecut toate testele, dar d112.pull reconstruia dict-ul fara campul nou, deci declaratia iesea
+gresita. A prins-o proba pe schema efemera, nu suita.
+
+FORMA PROBEI: schema efemera din tenant_template, datele care exercita exact cazul reparat,
+generarea completa pana la declaratie, verificarea cifrei, ROLLBACK. Fara output vizibil,
+pasul nu e inchis.
+
+## 5. Predarea lucrului intre sesiuni
+
+Pasii se scriu la INCEPUTUL firului (vezi 2.1), nu la inchidere.
+La inchiderea sesiunii se actualizeaza doar: ultim, urmator, STARE - plus lista rescrisa, daca
+s-a schimbat pe drum.
+
+RITUALUL DE INCEPUT al fiecarei sesiuni, prima actiune, inainte de orice altceva:
+
+  pwd; hostname; git log --oneline -1
+  git rev-parse --is-inside-work-tree
+  ./venv/bin/python -m core.agenda
+
+Trebuie sa iasa /home/costin/iconta_nou, iconta-prod, si arbore git valid. Daca nu - OPRIRE
+IMEDIATA, cu raport. Nu se lucreaza pe alta copie.
+
+## 6. Oprirea obligatorie
+
+Sesiunea SE OPRESTE si raporteaza daca:
+- structura presupusa in brief nu se regaseste in cod: fisier inexistent, functie cu alta
+  semnatura, tabel fara coloana asteptata, ancora de patch care nu se potriveste
+- temeiul cautat nu se gaseste sau nu transeaza
+- o poarta de validare pica
+- se apropie limita de context inainte de terminarea pasului
+
+NU SE INVENTEAZA, NU SE ADAPTEAZA, NU SE CONSTRUIESTE PE PRESUPUNERE.
+
+Cand o sesiune se opreste pentru limita de context: comite ce e complet si functional, scrie
+predarea in TESTE.md, raporteaza.
+
+## 7. Regula de redirectionare
+
+AGENDA SE MODIFICA INTAI, APOI SE EXECUTA.
+
+Ce se lucreaza intra in TESTE.md la "In lucru acum" INAINTE de a incepe - FIRUL SI PASII LUI,
+nu doar titlul firului. Ce nu e acolo, nu se lucreaza.
+
+Daca se cere ceva din afara agendei, sesiunea semnaleaza: "Asta nu e in agenda. Urmatorul pas
+din agenda e X. Modificam agenda intai, sau lasam X pentru mai tarziu?" Nu refuza - intreaba.
+
+Pe 27.07 s-a lucrat o zi intreaga la reparatii care erau deja consemnate ca amanate intr-un
+registru pe care nimeni nu-l citea.
+
+## 8. Ce nu e responsabilitatea noastra
+
+DATELE INTRODUSE DE CONTABIL. Corectitudinea lor e raspunderea lui profesionala.
+
+A noastra e:
+- sa le ducem NEALTERATE de la introducere pana la declaratie
+- sa aplicam corect legea peste ele
+
+Bug-ul din 29.07 era exact in prima categorie: contabilul scrisese 4050 lei in contract, iar
+aplicatia trimitea 3497 la calcul. Aia e imputabila noua.
