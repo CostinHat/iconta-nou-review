@@ -4203,3 +4203,24 @@ Limita. Procedura e disciplina scrisa, mecanica doar partial: automate sunt doar
 (`core.agenda`) si garda anti-stale. "Arhitectul nu modifica" si "proba functionala a rulat" se
 tin prin conventie — inca nu exista un gardian care sa le forteze. De reconfirmat daca apare
 unul.
+
+## 30.07.2026 -- Coliziune de token la citarea regulilor de validator (rand vs regula)
+
+Context: firul "temeiuri citabile mecanic" (format in CLAUDE.md §3.1). La normalizarea citarilor
+de regula de validator (PASUL 3) s-a descoperit ca acelasi token are sensuri diferite in module
+diferite: R28 e RAND de declaratie in D300 (d300.py: "R32 = TOTAL TAXA DEDUSA (rd.31+...)"), dar
+REGULA DUK in D301 (checksum-ul care respinge orice alta valoare). La fel R17, R15, R11b.
+
+Regula (optiunea A, decisa cu Costin):
+Un token poate avea sensuri diferite in module diferite (R28 = rand in D300, regula DUK in
+D301). Un gard care deduce sensul din FORMA tokenului va gresi intr-unul din sensuri. Corect e
+sa ceara MARCARE explicita: gardul prinde ce e insotit de 'regula'/'validator'/'DUKIntegrator',
+nu orice token care seamana cu un cod. Pretul - o mentiune complet bare nu e prinsa - e acceptat:
+nici omul n-ar putea s-o deosebeasca.
+
+Respinsa optiunea B (dezambiguizare prin rescrierea randurilor D300 in 'rd.28'): ar rescrie
+referinte de rand corecte azi doar pentru comoditatea unui gard. Nu se rescrie cod corect pentru
+un gard.
+
+Aplicare: gardul (core/test_temeiuri.py, PASUL 4) cere forma canonica DOAR pe liniile cu marker
+de regula; codurile R bare (randuri) raman neatinse. Norma de format traieste in CLAUDE.md §3.1.
