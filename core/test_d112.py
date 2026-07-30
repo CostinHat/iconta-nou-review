@@ -3,7 +3,7 @@
 declaratii (secțiunea angajatorA lipsea complet - "sectiunea Creante este
 obligatorie pt cif <> cif AJPIS").
 
-Trei bug-uri, toate confirmate prin validatorul oficial + structura oficiala
+Trei bug-uri, toate confirmate prin validatorul oficial + ANAF structura D112 0126_030226
 (structura_D112_0126_030226.pdf):
 
 1. <angajatorA> lipsea complet din XML - exista deja add_oblig() care o
@@ -11,12 +11,12 @@ Trei bug-uri, toate confirmate prin validatorul oficial + structura oficiala
 
 2. Rotunjire: round() Python (bancar, half-to-even) aplicat INAINTE de
    _d112int() facea ca 112.5 sa devina 112 in loc de 113 - contrazicea regula
-   explicita din structura oficiala ("Contributiile se rotunjesc aritmetic").
+   explicita din ANAF structura D112 0126_030226 ("Contributiile se rotunjesc aritmetic").
    4 locuri afectate: cas, cass, imp, d17 (media CM).
 
 3. Pozitia <angajatorA>: trebuie sa fie PRIMA in <angajator>, inaintea lui
    angajatorB/C1/C2/C4 - confirmat din lista completa de elemente din
-   structura oficiala (linia 391 vine inaintea liniei 919 = angajatorB).
+   ANAF structura D112 0126_030226 (linia 391 vine inaintea liniei 919 = angajatorB).
 """
 from core.d112 import _d112int, _d112_genereaza
 
@@ -62,7 +62,7 @@ def test_angajatorA_apare_in_xml():
 
 
 def test_angajatorA_e_prima_in_angajator():
-    """Regresie: mutata gresit dupa C4 prima data - structura oficiala o are
+    """Regresie: mutata gresit dupa C4 prima data - ANAF structura D112 0126_030226 o are
     PRIMA (linia 391 din document, inaintea lui angajatorB la linia 919)."""
     xml, av = _d112_genereaza(_prof(), _sal(), 2026, 6)
     poz_A = xml.index("<angajatorA ")

@@ -52,7 +52,7 @@ def test_generatoarele_nu_mai_inghit_gunoiul():
 
 def test_d112_pastreaza_rotunjirea_aritmetica():
     """Regresie: reparatia mastii NU are voie sa atinga rotunjirea (ANAF cere
-    aritmetica, nu bancara - dovedit prin validator, regula A91b)."""
+    aritmetica, nu bancara - dovedit prin validator, DUK regula A91b)."""
     from core.d112 import _d112int
     assert _d112int(112.5) == 113
     assert _d112int(112.4) == 112

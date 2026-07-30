@@ -1,7 +1,7 @@
 """
 Modul D301 — Decont special de TVA (ANAF v1, OPANAF 592/2016, structură din 2013).
 
-REFĂCUT DE LA ZERO după structura OFICIALĂ ANAF (structura_D301_20130327).
+REFĂCUT DE LA ZERO după ANAF structura D301 20130327 (structura_D301_20130327).
 
 D301 se depune de persoane NEînregistrate în scopuri de TVA normal (art.316),
 dar care fac achiziții intracomunitare sau operațiuni cu plata TVA prin taxare inversă.
@@ -119,7 +119,7 @@ def calcul_d301(prof, an, luna, operatiuni_raw):
 
     # totalPlata_A e SUMA DE CONTROL (checksum), NU TVA-ul datorat. Structura ANAF (d301 poz.28)
     # o defineste EXPLICIT: totalPlata_A = INT(baza1+..+baza5 + tva1+..+tva5), iar DUKIntegrator
-    # o impune (regula R28: respinge orice alta valoare). Cu rollup-ul S4.1->S4, serviciul apare
+    # o impune (DUK regula R28: respinge orice alta valoare). Cu rollup-ul S4.1->S4, serviciul apare
     # in baza4 SI in baza5, deci checksum-ul il numara de doua ori PRIN DEFINITIE - nu e dubla
     # impozitare: TVA-ul datorat ramane tva4 (serviciul o singura data, prin rollup). Un total pe
     # sectiunile 1-4 (6022) e respins de ANAF (dovedit: R28 cere 12044). DUK = judecatorul final.

@@ -111,9 +111,9 @@ class EDateIncomplete(ValueError):
 
 
 def _localitate(judet_code, oras, adresa="", eticheta="firma"):
-    """CityName (BT-37 vanzator / BT-52 cumparator). Regula BR-RO-100 (validator ANAF):
+    """CityName (BT-37 vanzator / BT-52 cumparator). eFactura regula BR-RO-100 (validator ANAF):
     in Bucuresti (RO-B) localitatea trebuie sa fie SECTOR1..6, NU 'Bucuresti'. In rest = orasul.
-    STRICT (regula F160): daca e Bucuresti dar NU se extrage clar sectorul din oras+adresa, NU
+    STRICT (funcționalitatea F160): daca e Bucuresti dar NU se extrage clar sectorul din oras+adresa, NU
     inventa unul -> ridica EDateIncomplete. Sector gresit derivat = nok sau, mai rau, factura
     acceptata cu date gresite. Filozofia control_incrucisat: gri (nu pot determina) nu se
     falsifica in verde."""
@@ -268,7 +268,7 @@ def genereaza_xml(factura, linii, furnizor, client):
     P.append('</cac:PartyLegalEntity>')
     P.append('</cac:Party></cac:AccountingSupplierParty>')
 
-    # --- Cumparator --- (BT-52 oras, BT-54 judet - obligatorii pt RO, vezi BR-RO-110/100)
+    # --- Cumparator --- (BT-52 oras, BT-54 judet - obligatorii pt RO, vezi eFactura regula BR-RO-110 / eFactura regula BR-RO-100)
     cli_jud = _jud(client.get("judet"))
     P.append('<cac:AccountingCustomerParty><cac:Party>')
     P.append('<cac:PostalAddress>')

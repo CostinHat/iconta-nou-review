@@ -166,7 +166,7 @@ def build_xml(res):
     # denumire (nu "den"), scadenta si cod_bug lipseau complet.
     # Scadenta = format ZZLLAA (6 cifre COMPACTE, nu cu puncte - "25.03.2026"
     # a fost respins ca "sir mai lung de 6 caractere"). Formula EXACTA din
-    # regula R17 a validatorului: "daca an Data_S in [2022,2025] atunci
+    # DUK regula R17 a validatorului: "daca an Data_S in [2022,2025] atunci
     # LL=LL+6" (LL=12 din Data_S=31.12.an -> 12+6=18 -> 6, anul+1).
     scad_luna = 12 + 6
     scad_an = res.an

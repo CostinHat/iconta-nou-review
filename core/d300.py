@@ -1,7 +1,7 @@
 """
 Modul D300 — Decont de TVA (ANAF v12, conform OPANAF 174/2026 + Legea 141/2025).
 
-REFĂCUT DE LA ZERO după structura OFICIALĂ ANAF (structura_D300_v12.0.0_10022026).
+REFĂCUT DE LA ZERO după ANAF structura D300 v12.0.0 (structura_D300_v12.0.0_10022026).
 
 Separare strictă:
   - CALCUL PUR : calcul_d300(prof, an, luna, facturi, manual=None) -> Rezultat

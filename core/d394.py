@@ -41,7 +41,7 @@ MODUL = "d394"
 REGULI = "2026.1"
 NS = "mfp:anaf:dgti:d394:declaratie:v5"
 
-# op1.tip — lista din structura oficiala (pct. 215). NOUA tipuri.
+# op1.tip — lista din ANAF structura D394 VERSIUNE NECUNOSCUTA (pct. 215). NOUA tipuri.
 TIPURI = ("A", "L", "C", "V", "AI", "LS", "AS", "ASI", "N")
 
 # tip_partener (pct. 216/36)

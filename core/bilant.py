@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """S1005 - situatii financiare anuale microentitati (OMF 107/2025, XSD v14).
 Motor PUR: mapare balanta -> F10 (bilant prescurtat) + rulaje -> F20 (cont prescurtat micro).
-Sursa formule rânduri: structura oficiala ANAF structura_SC (F10_BS, F20_micro).
+Sursa formule rânduri: ANAF structura bilant VERSIUNE NECUNOSCUTA structura_SC (F10_BS, F20_micro).
 Conventii:
   solduri: dict cont(text) -> (sold_debitor, sold_creditor)  [solduri FINALE la 31.12]
   rulaje:  dict cont(text) -> (rulaj_debitor, rulaj_creditor) [cumulate an, clasele 6/7]
@@ -147,7 +147,7 @@ def xml_s1005(prof, an, f10p, f10c, f20p, f20c):
     # 2=an curent). Ex: rand 6 -> F10_0061; rand 301 -> F10_3011; rand 302 -> F10_3021
     # (creante, componentele lui F10_0061 - regula validator F10_68/69: F10_0061 =
     # F10_3011 + F10_3021). Vechea formatare ("F10_0" + str(k) pentru k>=100) producea
-    # F10_03011 in loc de F10_3011 - "atribut necunoscut" in XSD + regula F10_68 pica
+    # F10_03011 in loc de F10_3011 - "atribut necunoscut" in XSD + DUK regula F10_68 pica
     # (F10_3011/F10_3021 lipseau, deci suma iesea 0 != 19040). Dovedit pe validatorul
     # oficial S1005/S1003 (16.07.2026, XSD ~/duk/xsd/s1005_20260312.xsd).
     def bloc(tag, dp, dc):

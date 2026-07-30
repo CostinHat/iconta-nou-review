@@ -84,10 +84,10 @@ def _d112_casa(judet):
     return _D112_CASA.get(j, "_B")
 def _d112int(x):
     """Rotunjire ARITMETICA (nu bancara): daca partea zecimala >= 0.5, se adauga 1
-    - regula explicita din structura oficiala D112 ("Contributiile se rotunjesc
+    - regula explicita din ANAF structura D112 0126_030226 ("Contributiile se rotunjesc
     aritmetic"). round() din Python foloseste rotunjire bancara (half-to-even:
     112.5 -> 112), care contrazice regula ANAF (112.5 -> 113) - dovedit prin
-    validator: CAM calculat 112, cerut 113 (regula A91b)."""
+    validator: CAM calculat 112, cerut 113 (DUK regula A91b)."""
     from decimal import Decimal, ROUND_HALF_UP
     from core.numere import numar_fiscal
     # MASCA SCOASA 27.07.2026: `except: return 0` facea ca o valoare stricata sa
@@ -285,7 +285,7 @@ def _d112_genereaza(prof, salariati, an, luna):
     H.append('  <angajator cif="%s" caen="%s" den="%s" casaAng="%s" datCAM="1" bifa_CAM="0" '
              'totalPlata_A="%d">' % (cui_f, caen_f, _d112esc(_t(den_f)), casa_ang, total_plata))
     # angajatorA ("sectiunea Creante" in mesajul validatorului; tag-ul real e
-    # "angajatorA"). Structura oficiala (structura_D112_0126_030226.pdf,
+    # "angajatorA"). ANAF structura D112 0126_030226 (structura_D112_0126_030226.pdf,
     # confirmat prin lista completa de elemente <angajatorX>) o pozitioneaza
     # PRIMA, inaintea lui angajatorB - nu dupa cum presupusesem gresit prima
     # data (mutand-o dupa C4 a produs aceeasi eroare "gresit pozitionata",

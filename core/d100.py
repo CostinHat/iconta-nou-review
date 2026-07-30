@@ -173,7 +173,7 @@ def build_xml(res):
     if tel:
         hdr += ' telefon=%s' % _esc(tel)
     # totalPlata_A = SUMA(suma_dat + suma_ded + suma_plata + suma_rest) pe toate
-    # obligatiile, nu doar suma_dat - dovedit prin regula R11b pe validator.
+    # obligatiile, nu doar suma_dat - dovedit prin DUK regula R11b pe validator.
     # suma_ded/suma_rest raman 0 (necompletate) la o obligatie simpla, deci
     # totalul e suma_dat + suma_plata = 2 x suma_dat cand suma_plata = suma_dat.
     total_control = sum(o.suma_dat * 2 for o in res.obligatii)

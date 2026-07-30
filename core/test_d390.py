@@ -48,7 +48,7 @@ def test_operatiune_primita_UE_intra_in_calcul():
 
 def test_rezumat_e_element_separat_in_xml():
     """<rezumat> exista ca element propriu, nu atribute pe radacina (dovedit pe
-    structura oficiala ANAF, structura_D390_2020_180320.pdf: '<rezumat> 1 aparitie')."""
+    ANAF structura D390 2020_180320, structura_D390_2020_180320.pdf: '<rezumat> 1 aparitie')."""
     res = calcul_d390(_prof(), 2026, 6, [
         {"cui": "IT00905811006", "nume": "X", "directie": "emisa", "total": 100, "tva": 0}])
     xml = build_xml(res)

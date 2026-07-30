@@ -143,7 +143,7 @@ def test_d390_pe_firma_fara_operatiuni_da_mesaj_citibil(firma_nume_lung):
 
 def test_toate_generatoarele_rotunjesc_aritmetic():
     """ANAF cere rotunjire ARITMETICA (half-up), nu bancara - documentat explicit la D112
-    (regula A91b: CAM calculat 112, cerut 113). `round()` din Python e BANCARA (half-to-even).
+    (DUK regula A91b: CAM calculat 112, cerut 113). `round()` din Python e BANCARA (half-to-even).
 
     27.07.2026: d390 era singurul din 10 generatoare cu round() bancar. Aliniat.
     Un generator nou care foloseste round() pe o valoare fiscala pica aici.

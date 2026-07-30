@@ -86,7 +86,7 @@ class RezultatD710:
 def _scadenta_d710(cod, an, luna):
     """(zi, luna, an) scadentei per cod_oblig. Standard = 25 a lunii urmatoare
     (_scadenta_zile). EXCEPTIE cod 121 (impozit micro) trim4 (luna 12): scadenta e
-    25.06 an urmator - termenul special de definitivare (regula R15 validator D710)."""
+    25.06 an urmator - termenul special de definitivare (DUK regula R15 validator D710)."""
     if cod == "121" and luna == 12:
         return 25, 6, an + 1
     return _scadenta_zile(an, luna)

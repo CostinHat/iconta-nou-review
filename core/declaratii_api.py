@@ -32,7 +32,7 @@ def _d100(conn, schema, b):
     return d100.genereaza(conn, schema, b["an"], b["trim"], b.get("cota"))
 
 def _d101(conn, schema, b):
-    # d101.genereaza() a fost rescris 16.07.2026 pe structura oficiala D101
+    # d101.genereaza() a fost rescris 16.07.2026 pe ANAF structura D101 VERSIUNE NECUNOSCUTA
     # individual (nu D101G grup) - semnatura noua: (conn, schema, an, manual=None).
     # manual = suprascrieri optionale (venituri_totale, cheltuieli_totale etc.)
     manual = dict(b.get("date_extra") or {})

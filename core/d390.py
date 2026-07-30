@@ -2,7 +2,7 @@
 Modul D390 — Declarație recapitulativă VIES privind livrările/achizițiile/
 prestările intracomunitare (ANAF v3, OPANAF 705/11.03.2020).
 
-REFĂCUT DE LA ZERO după structura OFICIALĂ ANAF (structura_D390_2020_180320).
+REFĂCUT DE LA ZERO după ANAF structura D390 2020_180320 (structura_D390_2020_180320).
 
 Separare strictă:
   - CALCUL PUR : calcul_d390(prof, an, luna, facturi, manual=None) -> Rezultat
@@ -65,7 +65,7 @@ def _int(x):
       (b) CONSECVENTA: d390 era SINGURUL din cele 10 generatoare cu rotunjire bancara;
           d112/d300/d406/d710/d100/d101/d205 folosesc toate ROUND_HALF_UP;
       (c) RISC ASIMETRIC: la D112 ANAF cere EXPLICIT rotunjire aritmetica si a RESPINS-o pe
-          cea bancara prin validator (regula A91b, CAM 112 cerut 113). Daca aceeasi asteptare
+          cea bancara prin validator (DUK regula A91b, CAM 112 cerut 113). Daca aceeasi asteptare
           exista si la D390, bancara produce declaratii gresite; invers, aritmetica nu strica
           nimic - nicio sursa n-o interzice.
     Diferenta apare doar la .5 exact (112.5: bancar 112, aritmetic 113). Pe datele actuale

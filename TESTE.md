@@ -27,15 +27,15 @@ Firul curent — de aici derivă URMATORUL PAS al agendei. Se ține la ZI (regul
 redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 - fir: Temeiuri citabile mecanic + reverificarea locurilor fără temei (Sesiunea A · transversal)
-- ultim: PASUL 1 — formatele de citare scrise în CLAUDE.md §3.1: temei normativ (`<TIP> <nr>/<an> …`) + validator/XSD (`DUK regula <cod>`, `XSD <element> maxLength <n>`). Comis acum. Înainte: agenda-numara-toata-suita (fbb1e72).
-- urmator: PASUL 2 — inventarul citărilor existente în tot core/, pe ambele categorii separat (câte canonice / câte în formă liberă). DOAR raport. IN LUCRU
+- ultim: PASUL 3 (parțial) — normalizat citările EXPLICITE ale categoriei validator+structură: 10× `DUK regula`, 4× `eFactura regula` (BR-RO), 18× `ANAF structura` (4× VERSIUNE NECUNOSCUTA: D394/bilanț/D101/D205); F160 exclus. Comis acum. Înainte: PASUL 1 (650d3d5).
+- urmator: DECIZIE (coliziune de cod) — `R17/R28/R32…` sunt RÂND în D300 dar REGULĂ DUK în D1xx/D7xx; gardul nu poate cere „DUK regula R28" fără să strice rândurile D300. Plus ~11 mențiuni de regulă fără cuvântul „regula". De rezolvat înainte de gard/2b. NEÎNCEPUT.
 - pasi:
   1. [GATA] formatele în CLAUDE.md §3.1 (temei normativ + validator/XSD).
-  2. inventar în tot core/, ambele categorii separat (fișier+linie; canonice vs libere). DOAR raport.
-  2b. locuri FĂRĂ nicio citare, din oricare categorie (core/d*.py + core/salarizare.py): caut sursa, citez textul, propun; validare; scriu. Spart pe module, commit între ele.
-  3. normalizează formele libere → canonic, pentru ambele categorii; act neidentificabil → `# TEMEI NECLAR: <text>`, listat separat.
-  4. gard core/test_temeiuri.py: două verificări (format normativ + format validator/XSD); escape hatch `# TEMEI LIBER: <motiv>`; test de mutație.
-  5. core/temeiuri.py: funcție + `python -m core.temeiuri "<act|regulă>"` → locurile din ambele categorii (fișier, linie, context).
+  2. [GATA] inventar (255 normativ: 142 canonice / 113 de normalizat; validator reclasificat).
+  2b. locuri FĂRĂ temei, pe module cu validarea ta. NEÎNCEPUT.
+  3. [PARȚIAL] normalizat validator EXPLICIT + structură (acest commit). RĂMAS: coliziunea R-cod (rând D300 vs regulă DUK) + ~11 mențiuni fără „regula"; + cele 113 normative (spațiere `art. `, `Cod fiscal`→`CF`) pe adnotări (text afișat rămâne natural).
+  4. gard core/test_temeiuri.py: regexul NU poate keyui doar pe forma `R\d` — coliziune rând/regulă. De decis: prefix obligatoriu la reguli + rândurile rămân bare, SAU rândurile devin `rd.28`. 3 forme (DUK/eFactura regula, ANAF structura, temei normativ) + escape hatch `# TEMEI LIBER` + mutație.
+  5. core/temeiuri.py: funcție + CLI pe ambele categorii.
 
 - fir (în așteptare): Modelarea contractului în timp (Sesiunea A · salarizare)
 - ultim: 2b-scrieri comis — creare/editare/import scriu pe salariu_istoric, citiri pe salariu_curent (reparat si bug-ul activ din import, PASUL 1)

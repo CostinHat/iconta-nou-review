@@ -5,9 +5,9 @@ Sursa UNICA a DDL-ului (mirror in tenant_template.sql). Idempotent (ADD COLUMN I
 Se aplica: tenanti NOI prin template; EXISTENTI prin `python3 -m core.migrare_efactura_adresa`.
 
 DE CE (verificat la SURSA, nu speculativ): validatorul oficial ANAF (webservicesp.anaf.ro/.../
-validare/FACT1) a respins prima factura cu BR-RO-110: daca tara cumparatorului e RO, judetul
+validare/FACT1) a respins prima factura cu eFactura regula BR-RO-110: daca tara cumparatorului e RO, judetul
 (BT-54) e OBLIGATORIU (cod ISO 3166-2:RO). Schema avea doar tert_adresa (text liber). Adaug:
-  - facturi.tert_oras  -> BT-52 (localitate cumparator; pt Bucuresti = SECTOR1..6, BR-RO-100)
+  - facturi.tert_oras  -> BT-52 (localitate cumparator; pt Bucuresti = SECTOR1..6, eFactura regula BR-RO-100)
   - facturi.tert_judet -> BT-54 (judet cumparator, ex. 'B' / 'Cluj' -> RO-B / RO-CJ)
 Ambele NULL-able (nu ating facturile vechi). Vezi DECIZII.md 18.07 "e-Factura structura BR-RO".
 """

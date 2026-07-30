@@ -90,7 +90,7 @@ def test_xml_nu_are_cui_luna_tip_oblig_pe_obligatie():
 
 
 def test_totalPlata_A_e_suma_dat_plus_suma_plata():
-    """Regula R11b: totalPlata_A = suma_dat + suma_ded + suma_plata + suma_rest.
+    """DUK regula R11b: totalPlata_A = suma_dat + suma_ded + suma_plata + suma_rest.
     Cu suma_plata = suma_dat si ded/rest = 0, e 2x suma_dat."""
     res = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "103", "suma_dat": 2400}])
     xml = build_xml(res)
