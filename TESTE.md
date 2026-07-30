@@ -128,7 +128,7 @@ dacă fișierul s-a schimbat după acea dată.
 |---|---|---|---|
 | d100 | test_d100.py | | |
 | d101 | test_d101.py (+ amortizare) | | |
-| d112 | test_d112.py (+ contribuții) | √ 29.07 | OUG 156/2024 art.LXVI; OUG 89/2025 art.III; CF art.146(5^6)-(5^7); OMF 1855/2022 |
+| d112 | test_d112.py (+ contribuții) | √ 30.07 | OUG 156/2024 art.LXVI; OUG 89/2025 art.III; CF art.146(5^6)-(5^7); OMF 1855/2022 |
 | d205 | test_d205.py | | |
 | d300 | test_d300.py (+ TVA cote: test_tva_incasare.py) | | |
 | d301 | test_d301_rollup.py | | |
