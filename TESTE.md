@@ -27,15 +27,16 @@ Firul curent — de aici derivă URMATORUL PAS al agendei. Se ține la ZI (regul
 redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 - fir: Temeiuri citabile mecanic + reverificarea locurilor fără temei (Sesiunea A · transversal)
-- ultim: PASUL 4 (parțial) — gard core/test_temeiuri.py pe regulile de validator: `regula <cod>` fără prefix → roșu; `DUK regula`/`eFactura regula` OK; cod bare fără „regula" = rând de declarație, NU se cere (opțiunea A); mutație în ambele sensuri; escape hatch `# TEMEI LIBER`.
-- urmator: PASUL 5 — core/temeiuri.py: funcție + `python -m core.temeiuri "<act|regulă>"` → locurile care citează actul/regula (fișier, linie, context), pe ambele categorii. NEÎNCEPUT.
+- ultim: PASUL 5 — core/temeiuri.py: `gaseste(query)` + CLI `python -m core.temeiuri "<act|regulă>"`. Forme PARȚIALE (cauți actul: „OUG 89/2025" prinde și citările cu articol), ambele categorii, + funcția care conține linia (ast) — arată CE face codul acolo. Probat pe OUG 89/2025 (16 locuri).
+- urmator: PASUL 2b — locuri FĂRĂ temei în core/d*.py + core/salarizare.py (cotă/prag/rotunjire/limită/eligibilitate/structură aplicate fără citare): caut temeiul la sursă, citez textul, propun; validare; scriu — pe module, commit între ele. SAU normalizarea celor 113 citări normative (PASUL 3 rest). De ales. NEÎNCEPUT.
 - pasi:
-  1. [GATA] formatele în CLAUDE.md §3.1 (temei normativ + validator/XSD).
-  2. [GATA] inventar (255 normativ: 142 canonice / 113 de normalizat; validator reclasificat).
-  2b. locuri FĂRĂ temei în core/d*.py + core/salarizare.py, pe module cu validarea ta. NEÎNCEPUT.
-  3. [PARȚIAL] validator+structură normalizat + 8 bare canonizate. RĂMAS: cele 113 normative (spațiere `art. `, `Cod fiscal`→`CF`) pe adnotări — UI natural + citare canonică în comentariu (decizia #1).
-  4. [PARȚIAL] gard validator-regulă GATA. RĂMAS: forma `ANAF structura` NU se poate păzi mecanic (proză „structura oficiala D300" = citare textual; raportat 30.07); forma normativă intră după cele 113.
-  5. core/temeiuri.py: funcție + CLI (vezi „urmator").
+  1. [GATA] formatele în CLAUDE.md §3.1.
+  2. [GATA] inventar.
+  2b. [NEÎNCEPUT] locuri FĂRĂ temei, pe module cu validarea ta.
+  3. [PARȚIAL] validator+structură+canonizare GATA. RĂMAS: cele 113 normative (spațiere `art. `, `Cod fiscal`→`CF`) pe adnotări (UI natural + citare canonică în comentariu, decizia #1).
+  4. [PARȚIAL] gard validator-regulă GATA. Structura + normativul: nepăzite mecanic — datorii xfail (proză=citare / cele 113).
+  5. [GATA] core/temeiuri.py: funcție + CLI, ambele categorii, forme parțiale, funcția-container.
+  Datorii deschise (xfail, în agenda): re-verificarea la sursă a codurilor de regulă; R17/R28/R32 D300/D394 rând-vs-regulă; gardul de structură.
 
 - fir (în așteptare): Modelarea contractului în timp (Sesiunea A · salarizare)
 - ultim: 2b-scrieri comis — creare/editare/import scriu pe salariu_istoric, citiri pe salariu_curent (reparat si bug-ul activ din import, PASUL 1)

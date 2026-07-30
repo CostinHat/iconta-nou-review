@@ -64,3 +64,22 @@ def test_gard_temeiuri_prinde_si_tace():
     assert not _incalcari_temei("    # de verificat in structura oficiala D300"), "fals-pozitiv pe proza (structura)"
     # ESCAPE HATCH:
     assert not _incalcari_temei("    # regula A91b  # TEMEI LIBER: mostra didactica"), "escape hatch ignorat"
+
+
+def test_temeiuri_gaseste_act_pe_forme_partiale():
+    """`gaseste` prinde ACTUL si in citarile cu articol (cauti actul, nu potrivirea exacta) si
+    populeaza functia care contine fiecare linie (prin ast)."""
+    from core import temeiuri
+    hits = temeiuri.gaseste("OUG 89/2025")
+    assert hits, "OUG 89/2025 negasit (ar trebui in salarizare)"
+    assert any("art.III" in h["context"] for h in hits), "nu prinde forma partiala cu articol (art.III)"
+    assert all(isinstance(h["functie"], str) and h["functie"] for h in hits), "functia nepopulata"
+
+
+def test_temeiuri_gaseste_regula_si_gol():
+    from core import temeiuri
+    hits = temeiuri.gaseste("A91b")
+    assert hits and any("DUK regula A91b" in h["context"] for h in hits), "nu gaseste regula validator canonizata"
+    # query construit prin concatenare: forma UNITA nu apare in sursa (nici in acest test) -> [] real
+    absent = "OUG-" + "inexistent-" + "77zz/1899"
+    assert temeiuri.gaseste(absent) == [], "gaseste ceva pe un act inexistent"
