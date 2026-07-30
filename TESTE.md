@@ -27,7 +27,7 @@ Firul curent — de aici derivă URMATORUL PAS al agendei. Se ține la ZI (regul
 redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 - fir: Modelarea contractului în timp (Sesiunea A · salarizare)
-- ultim: 2b-scrieri comis — creare/editare/import scriu pe salariu_istoric, citiri pe salariu_curent (reparat si bug-ul activ din import, PASUL 1)
+- ultim: agenda-numara-toata-suita — STARE TEHNICA numără acum `pytest` de la rădăcină (1088 colectate / 1082 passed), nu doar `core/` (765 / 759); gardă `test_stare_tehnica_numara_toata_suita` (comis acum). Înainte: 2b-scrieri (13b3c47).
 - urmator: 2b-coloană — DROP salariati.salariu_brut din tabel + migrare, UI schimbare salariu (valabil_din), scoaterea bridge-ului salariu_la. NEÎNCEPUT.
 
 ---

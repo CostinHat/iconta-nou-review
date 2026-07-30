@@ -19,6 +19,12 @@ _GARZI = _RAD / "GARZI.md"
 _DATORIE = _RAD / "core" / "test_datorie.py"
 _VERIF = "√"   # √
 
+# Suita pentru STARE TEHNICA: rulata din _RAD, FARA filtru de cale, ca sa numere EXACT ce
+# numara `pytest -q` de la radacina (core/ + testele de la radacina), nu doar core/. Un scope
+# mai ingust face STARE TEHNICA sa afiseze un numar fals (bug 30.07.2026: core/ 759 vs 1082).
+# Pazit de core/test_agenda.py::test_stare_tehnica_numara_toata_suita.
+PYTEST_ARGS = ["-q", "-p", "no:cacheprovider"]
+
 
 def _text(f):
     try:
@@ -140,7 +146,7 @@ def stare_tehnica():
     py = venv if os.path.exists(venv) else "python3"
     ps = vs = ss = "necunoscut"
     try:
-        r = subprocess.run([py, "-m", "pytest", "core/", "-q", "-p", "no:cacheprovider"],
+        r = subprocess.run([py, "-m", "pytest", *PYTEST_ARGS],
                            cwd=str(_RAD), capture_output=True, text=True, timeout=180)
         m = re.search(r"(\d+ passed[^\n]*)", r.stdout)
         ps = m.group(1) if m else "necunoscut"

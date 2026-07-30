@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Garda anti-stale a agendei: pica daca TESTE.md a ramas in urma codului. Diferenta fata de DE_FACUT.md
 (care a murit necitit): agenda e scrisa de mana DAR pazita mecanic - docul in urma codului pica suita."""
+import os
+import re
 import subprocess
 import datetime
 import pathlib
@@ -65,3 +67,29 @@ def test_fiecare_xfail_apare_in_raport():
 def test_agenda_ruleaza_fara_eroare():
     rap = agenda.raport(tehnic=False)
     assert "AGENDA iConta" in rap and "URMATORUL PAS" in rap and "DESCHIS ACUM" in rap
+
+
+def test_stare_tehnica_numara_toata_suita():
+    """STARE TEHNICA trebuie sa numere suita de la RADACINA (core/ + radacina), nu un subset.
+    Bug 30.07.2026: agenda rula `pytest core/` (colecta doar un subset), dar suita reala e cea
+    de la radacina -> STARE TEHNICA afisa un numar mai mic decat realitatea. Compara SCOPE-ul
+    colectat (--collect-only), nu ruleaza suita de doua ori. (Fara literal cu numar+passed in
+    text, ca traceback-ul la esec sa nu otraveasca regexul din stare_tehnica.)"""
+    py = str(_RAD / "venv" / "bin" / "python3")
+    if not os.path.exists(py):
+        py = "python3"
+
+    def _colectate(scope):
+        # UN singur -q: dublu -q schimba formatul --collect-only si dispare 'N tests collected'
+        args = ["--collect-only", "-q"] + [x for x in scope if x != "-q"]
+        r = subprocess.run([py, "-m", "pytest"] + args,
+                           cwd=str(_RAD), capture_output=True, text=True, timeout=120)
+        m = re.search(r"(\d+) tests? collected", r.stdout)
+        return int(m.group(1)) if m else None
+
+    n_agenda = _colectate(agenda.PYTEST_ARGS)   # scope-ul REAL folosit de stare_tehnica
+    n_radacina = _colectate([])                 # radacina, fara niciun filtru
+    assert n_agenda is not None and n_radacina is not None, \
+        "nu s-a putut parsa 'N tests collected' din pytest --collect-only"
+    assert n_agenda == n_radacina, \
+        "STARE TEHNICA numara %d, radacina are %d -> agenda ar afisa un numar fals" % (n_agenda, n_radacina)
