@@ -188,7 +188,7 @@ def build_xml(res):
                  % (o.cod_oblig, o.scadenta, o.suma_dat, o.suma_dat, o.nr_evid))
         if o.cod_bugetar:
             linie += ' cod_bugetar=%s' % _esc(o.cod_bugetar)
-        # cota: OBLIGATORIU si numai pt. cod_oblig 121 (micro) - reguli R17 + Rcota
+        # cota: OBLIGATORIU si numai pt. cod_oblig 121 (micro) - cerinta validatorului
         # ("cota se completeaza daca si numai daca cod_oblig=121"; "cota trebuie = 1").
         if o.cota:
             linie += ' cota=%s' % _esc(o.cota)

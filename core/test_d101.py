@@ -67,8 +67,8 @@ def test_denumire_nu_den():
 
 def test_scadenta_format_zzllaa_compact():
     """Regresie: 'scadenta="25.03.2026"' respins ('sir mai lung de 6
-    caractere'). Formatul e ZZLLAA compact, 6 cifre. Formula reala (regula
-    R17): pentru Data_S in [2022,2025], LL=luna+6 (nu +3)."""
+    caractere'). Formatul e ZZLLAA compact, 6 cifre. Formula reala
+    (DUK regula R17): pentru Data_S in [2022,2025], LL=luna+6 (nu +3)."""
     res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
     xml = build_xml(res)
     assert 'scadenta="250626"' in xml

@@ -118,7 +118,7 @@ def build_xml(res):
     Timp = sum(b.imp1 for b in res.beneficiari)
     # totalPlata_A = suma(nrben)+suma(Tcastig)+suma(Tpierd)+suma(T_VB)+
     # suma(T_GAR)+suma(Tbaza)+suma(Timp) - formula EXACTA din ANAF structura D205 VERSIUNE NECUNOSCUTA
-    # (nu doar Timp, cum pusesem prima data - R15 respinsese exact asta:
+    # (nu doar Timp, cum pusesem prima data - DUK regula R15 respinsese exact asta:
     # cerea 11001, primea 1000).
     total_control = nrben + Tcastig + Tpierd + T_VB + T_GAR + Tbaza + Timp
 

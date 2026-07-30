@@ -112,7 +112,7 @@ def calcul_d710(prof, an, luna, obligatii):
             scadenta=scad, nr_evid=_nr_evid(cod, luna, an, zi_s, luna_s, an_s),
             cota=str(o.get("cota") or ""))
         obl.append(r)
-        # totalPlata_A = suma de control ceruta de validator (R11b): SUMA sumelor
+        # totalPlata_A = suma de control ceruta de validator (DUK regula R11b): SUMA sumelor
         # datorat + plata pe fiecare obligatie, ambele laturi (initial + corectat).
         # Dovedit pe validator: 100(dat_I)+100(plata_I)+150(dat_C)+150(plata_C)=500.
         total += (r.suma_dat_i + r.suma_plata_i + r.suma_dat_c + r.suma_plata_c)

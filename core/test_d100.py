@@ -51,7 +51,7 @@ def test_calcul_micro():
 
 
 def test_micro_are_cota_1_pe_obligatie():
-    """Reguli R17 + Rcota: cod_oblig 121 CERE cota="1" pe <obligatie>; profitul (103)
+    """Cerinta validatorului (D100): cod_oblig 121 CERE cota="1" pe <obligatie>; profitul (103)
     NU are cota. Fara ea, validatorul respinge micro-ul."""
     xm = build_xml(calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "121", "suma_dat": 1000, "cota": "1"}]))
     lin_m = [l for l in xm.split("\n") if "<obligatie" in l][0]

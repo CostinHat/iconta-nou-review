@@ -40,7 +40,7 @@ def test_tip5_emite_sectiune_4_si_4_1_in_xml():
 def test_tva_datorat_o_singura_data_desi_checksum_include_4_1():
     # Grija fiscala corecta: TVA-ul DATORAT nu se dubleaza. tva4 (sectiunea 4, serviciul o
     # SINGURA data prin rollup) = 1045, NU 2090. In schimb totalPlata_A e SUMA DE CONTROL
-    # (checksum ANAF: baza1..5 + tva1..5, structura poz.28), impusa de DUKIntegrator R28 -
+    # (checksum ANAF: baza1..5 + tva1..5, structura poz.28), impusa de DUK regula R28 -
     # include 4.1 PRIN DEFINITIE (dovedit numeric: DUK respinge un total pe sectiunile 1-4).
     res = d301.calcul_d301(PROF, 2026, 6, [_op(5, 1000, 4.9770, 1045)])
     assert res.totaluri[4][1] == 1045               # TVA DATORAT (S4) - serviciul o data

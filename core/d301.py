@@ -122,7 +122,7 @@ def calcul_d301(prof, an, luna, operatiuni_raw):
     # o impune (DUK regula R28: respinge orice alta valoare). Cu rollup-ul S4.1->S4, serviciul apare
     # in baza4 SI in baza5, deci checksum-ul il numara de doua ori PRIN DEFINITIE - nu e dubla
     # impozitare: TVA-ul datorat ramane tva4 (serviciul o singura data, prin rollup). Un total pe
-    # sectiunile 1-4 (6022) e respins de ANAF (dovedit: R28 cere 12044). DUK = judecatorul final.
+    # sectiunile 1-4 (6022) e respins de ANAF (dovedit: DUK regula R28 cere 12044). DUK = judecatorul final.
     total_plata = sum(tot[t][0] + tot[t][1] for t in TIPURI_OP)
     res = Rezultat(an=an, luna=luna, prof=prof, operatiuni=ops,
                    totaluri={t: tuple(tot[t]) for t in TIPURI_OP},

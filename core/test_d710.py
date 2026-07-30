@@ -49,7 +49,7 @@ def test_xml_are_perechea_initial_corectat():
 
 
 def test_totalPlata_A_suma_dat_plus_plata_ambele_laturi():
-    """R11b: totalPlata_A = dat_I + plata_I + dat_C + plata_C = 100+100+150+150 = 500."""
+    """DUK regula R11b: totalPlata_A = dat_I + plata_I + dat_C + plata_C = 100+100+150+150 = 500."""
     res = calcul_d710(_prof(), 2025, 3, _obl(i=100, c=150))
     assert res.total_plata_a == 500
     assert 'totalPlata_A="500"' in build_xml(res)
@@ -67,7 +67,7 @@ def test_d_recN_doar_de_la_perioada_12_2025():
 
 
 def test_scadenta_micro_trim4_e_25_iunie_an_urmator():
-    """Cod 121 (micro) trim4 (luna 12): scadenta 25.06 an urmator, nu 25.01 (R15)."""
+    """Cod 121 (micro) trim4 (luna 12): scadenta 25.06 an urmator, nu 25.01 (DUK regula R15)."""
     assert _scadenta_d710("121", 2025, 12) == (25, 6, 2026)
     # celelalte trimestre: 25 a lunii urmatoare
     assert _scadenta_d710("121", 2025, 3) == (25, 4, 2025)
