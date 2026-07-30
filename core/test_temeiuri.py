@@ -19,6 +19,9 @@ import pathlib
 
 _RAD = pathlib.Path(__file__).resolve().parent.parent
 # cod real de regula: litera(e) + cifra (A91b, R28, R11b, F10_68) sau EN16931 (BR-RO-100).
+# Case: re.IGNORECASE la finditer e GLOBAL (al 3-lea arg pozitional) -> se aplica si lui _COD,
+# deci [A-Z] prinde si minuscule; "regula a91b" e prins la fel ca "regula A91b". Proza fara cifra
+# ("regula fiscala", "regula de aur") tot NU se prinde (lipseste \d) - selectia e structurala.
 _COD = r"(?:[A-Z][A-Za-z0-9]*\d[A-Za-z0-9_]*|BR-[A-Z]{1,3}-\d+)"
 
 
@@ -52,6 +55,7 @@ def test_gard_temeiuri_prinde_si_tace():
     # PRINDE (necanonic):
     assert _incalcari_temei("    # dovedit prin regula A91b pe validator"), "nu prinde 'regula A91b' bare"
     assert _incalcari_temei("    # regula BR-RO-100 (validator ANAF)"), "nu prinde 'regula BR-RO-100' bare"
+    assert _incalcari_temei("    # dovedit prin regula a91b minuscula"), "nu prinde codul cu minuscula (IGNORECASE e global)"
     # TACE (canonic sau irelevant):
     assert not _incalcari_temei("    # DUK regula A91b pe validator"), "fals-pozitiv pe 'DUK regula'"
     assert not _incalcari_temei("    # eFactura regula BR-RO-100 (RO-CIUS)"), "fals-pozitiv pe 'eFactura regula'"
