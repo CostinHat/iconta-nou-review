@@ -171,3 +171,62 @@ def test_garda_substantial_distinge_docstring_de_assert():
         "fals-pozitiv: schimbarea de docstring/comentariu reseteaza bifa"
     assert _cod_substantial_diferit(baza, assert_schimbat) is True, \
         "ratare: schimbarea de assert NU reseteaza bifa"
+
+
+def _fisiere_din_garzi_acoperit(text):
+    """Fisierele numite in bullet-urile ACOPERIT din GARZI (bulletul + continuarile lui indentate).
+    NU si cele din LIPSA/PARTIAL - acolo un fisier poate lipsi legitim (e chiar gardul care lipseste)."""
+    fisiere = []
+    inside = False
+    for line in text.splitlines():
+        s = line.lstrip()
+        if s.startswith("- "):
+            inside = s.startswith("- ACOPERIT") or (s.startswith("- **") and "ACOPERIT" in s)
+        elif s.startswith("#"):
+            inside = False
+        if inside:
+            fisiere += re.findall(r"core/[\w/]+\.py", line)
+            fisiere += re.findall(r"\btest_\w+\.py", line)
+    return fisiere
+
+
+def test_garzi_acoperit_are_fisierele_numite():
+    """Un gard marcat ACOPERIT trebuie sa aiba fisierul pe care il numeste - altfel registrul minte
+    in sens invers (spune acoperit ce nu exista). Simetric cu Inventarul A."""
+    g = (_RAD / "GARZI.md").read_text(encoding="utf-8")
+    lipsa = []
+    for tok in _fisiere_din_garzi_acoperit(g):
+        ok = (_RAD / tok).exists() if tok.startswith("core/") else \
+            ((_RAD / "core" / tok).exists() or (_RAD / tok).exists())
+        if not ok:
+            lipsa.append(tok)
+    assert not lipsa, "GARZI ACOPERIT numeste fisiere inexistente: %s" % sorted(set(lipsa))
+
+
+def _titluri_h2(text):
+    return [ln.strip() for ln in text.splitlines() if ln.startswith("## ")]
+
+
+def _h2_duplicate(titluri):
+    return sorted({t for t in titluri if titluri.count(t) > 1})
+
+
+def test_teste_md_fara_titluri_duplicate():
+    """Doua sectiuni cu acelasi titlu = drift: agenda citeste PRIMA, a doua ramane stale invizibil.
+    Exact bug-ul din 30.07 (doua '## Starea sesiunii B')."""
+    dubluri = _h2_duplicate(_titluri_h2((_RAD / "TESTE.md").read_text(encoding="utf-8")))
+    assert not dubluri, "titluri ## duplicate in TESTE.md (agenda citeste doar primul): %s" % dubluri
+
+
+def test_garzi_si_duplicat_prind_defectul():
+    """Mutatie pe cele doua garzi noi: fabricam defectul, garda il prinde; pe curat, tace."""
+    # fisier-exista: tokenii din ACOPERIT sunt extrasi, cei din LIPSA sunt ignorati
+    fals = ("- ACOPERIT: `core/exista_ac.py` — foo\n"
+            "  test_exista_ac.py bar\n"
+            "- LIPSA: **Y** — core/planificat_lipsa.py\n")
+    toks = _fisiere_din_garzi_acoperit(fals)
+    assert "core/exista_ac.py" in toks and "test_exista_ac.py" in toks, "nu extrage fisierele din ACOPERIT"
+    assert "core/planificat_lipsa.py" not in toks, "scaneaza gresit fisiere din LIPSA (pot lipsi legitim)"
+    # anti-duplicat: prinde dublura, tace pe unic
+    assert _h2_duplicate(["## A", "## B", "## A"]) == ["## A"], "nu prinde titlul duplicat"
+    assert _h2_duplicate(["## A", "## B"]) == [], "fals-pozitiv pe titluri unice"

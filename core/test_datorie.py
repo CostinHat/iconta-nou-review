@@ -25,6 +25,7 @@ import re
 import pytest
 
 from core import db
+from core import agenda
 
 _AZI = datetime.date(2026, 7, 27)
 
@@ -141,3 +142,10 @@ def test_datorie_state_plata_se_persista():
     patt = _re.compile(r"insert\s+into\s+[\"\w.{}]*state_plata", _re.IGNORECASE)
     scrie = any(patt.search(f.read_text(encoding="utf-8")) for f in rad.glob("*.py"))
     assert scrie, "nimic nu scrie in state_plata - statul de plata nu se persista la emitere"
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 30.07.2026: staleness pe continutul Sesiunii B nu se poate verifica mecanic pana nu exista teste N3 (cap-coada pe firma). Etapele Fazei 1 sunt neincepute si nu se mapeaza pe fisiere, deci nu exista pe ce compara 'marcat done vs realitate'. Cade singur cand apar testele N3.")
+def test_datorie_staleness_sesiune_b_content():
+    # Se aprinde (xpass -> strict pica) cand prima etapa a Fazei 1 primeste bifa = are teste N3 cap-coada.
+    b = agenda.stare_sesiune_b()
+    assert b is not None and b["etape_facute"] > 0
