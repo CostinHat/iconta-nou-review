@@ -335,7 +335,35 @@ scoaterea unei coloane cere reparate cinci locuri care o citesc, pasul cuprinde 
 2. Arhitectul valideaza temeiul - sau arata unde nu se tine
 3. Code implementeaza: cod, teste cu temeiul pe linie, mutatie, proba functionala
 4. Code comite si impinge pe server. UN PAS NESALVAT PE SERVER NU S-A INTAMPLAT
-5. Code raporteaza
+5. Code raporteaza. Raportul contine OBLIGATORIU cinci elemente:
+
+   a) PROBA FUNCTIONALA, CU OUTPUT BRUT
+      Nu "am verificat, e corect". Comanda rulata si ce a tiparit, cu cifrele.
+      Exemplu bun: "calcul_salariu(3497.73, venit_brut_total=4050) -> facilitate 300.00
+      (era 0.00)". Exemplu inutil: "facilitatea se calculeaza corect acum".
+      Arhitectul nu poate reproduce proba dupa fapt - ruleaza in tranzactie anulata. Deci
+      output-ul brut e singura dovada.
+
+   b) MUTATIA, CU OUTPUT
+      Ce ai stricat, ce test a picat, mesajul de esec. Un test care trece nu dovedeste nimic
+      pana nu se arata ca pica atunci cand trebuie.
+
+   c) TEMEIUL CU TEXTUL CITAT
+      Nu doar "OUG 89/2025 art.III". Fragmentul din lege pe care se sprijina schimbarea.
+      Arhitectul valideaza ca textul spune ce se afirma - fara text, nu poate.
+      Daca pasul nu invoca nicio regula fiscala, se scrie "N/A - schimbare de tooling".
+
+   d) CE N-AI VERIFICAT, EXPLICIT
+      Ce ai presupus, ce ai luat din memorie, ce n-ai putut confirma la sursa.
+      Cel mai valoros element din raport. Pe 29.07, un brief al arhitectului afirma ca
+      "generatorul face deja rollup-ul" - era presupunere, si Code a descoperit ca nu.
+      Simetric: cand Code marcheaza ce presupune, arhitectul verifica exact acolo.
+
+   e) CE AI ATINS DIN CE NU ERA IN PLAN
+      Daca ai modificat un fisier care nu era in lista de pasi, spune care si de ce.
+      Un pas care atinge mai mult decat s-a declarat e un pas care a crescut - vezi §2.1.
+
+   Un raport fara a) si b) nu se valideaza. Arhitectul cere sa fie rulate.
 6. Arhitectul verifica independent, cu comenzile lui
 7. Validare sau respingere cu motiv -> pasul urmator
 
@@ -447,6 +475,32 @@ gresita. A prins-o proba pe schema efemera, nu suita.
 FORMA PROBEI: schema efemera din tenant_template, datele care exercita exact cazul reparat,
 generarea completa pana la declaratie, verificarea cifrei, ROLLBACK. Fara output vizibil,
 pasul nu e inchis.
+
+CE NU POATE VERIFICA ARHITECTUL DIN AFARA
+
+Doua lucruri nu se pot reproduce dupa fapt:
+- proba functionala - ruleaza pe schema efemera in tranzactie anulata; nu lasa urma
+- mutatia - se face in timpul lucrului
+
+Pentru astea, arhitectul se sprijina pe output-ul brut din raport (§2 etapa 5, a si b). Un
+raport care le descrie in loc sa le arate nu e dovada. Cifrele concrete sunt verificabile prin
+coerenta: daca raportul spune "facilitate 142.86" si cifra se leaga cu calculul din lege
+(300 x 11/21), nu poate fi inventata.
+
+Al treilea lucru pe care arhitectul il face SEPARAT, nici din comanda nici din raport: citeste
+articolul din lege si compara cu ce face codul. Aia e responsabilitatea lui si nu se
+externalizeaza.
+
+## Mecanica portii (lectii 30.07.2026, platite)
+
+Poarta e ce se ruleaza, nu ce se spune - iar doua capcane au lasat rezultate false:
+
+- **Exit-code-ul REAL al lui pytest, nu al ultimei comenzi din pipe.** `pytest -q | tail -1 && git
+  commit` verifica iesirea lui `tail` (mereu 0), nu a lui pytest - a lasat un commit ROSU sa treaca
+  (234f9ae, 30.07). Corect: `pytest -q > log 2>&1; PY=$?; tail -1 log; [ $PY -eq 0 ] && git commit`.
+- **Garda anti-stale citeste data ultimului COMMIT (`git log --format=%at`), nu working tree-ul.**
+  Rulata INAINTE de commit vede versiunea veche si da verde fals; abia dupa commit devine rosie.
+  Ordinea pentru orice garda care citeste starea din git: commit INTAI, apoi poarta.
 
 ## 5. Predarea lucrului intre sesiuni
 
