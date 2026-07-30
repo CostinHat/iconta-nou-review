@@ -26,8 +26,19 @@ zero. Invers ar însemna să verifici de două ori — sau, mai probabil, a doua
 Firul curent — de aici derivă URMATORUL PAS al agendei. Se ține la ZI (regula de
 redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
-- fir: Modelarea contractului în timp (Sesiunea A · salarizare)
-- ultim: agenda-numara-toata-suita — STARE TEHNICA numără acum `pytest` de la rădăcină (1088 colectate / 1082 passed), nu doar `core/` (765 / 759); gardă `test_stare_tehnica_numara_toata_suita` (comis acum). Înainte: 2b-scrieri (13b3c47).
+- fir: Temeiuri citabile mecanic + reverificarea locurilor fără temei (Sesiunea A · transversal)
+- ultim: PASUL 1 — formatele de citare scrise în CLAUDE.md §3.1: temei normativ (`<TIP> <nr>/<an> …`) + validator/XSD (`DUK regula <cod>`, `XSD <element> maxLength <n>`). Comis acum. Înainte: agenda-numara-toata-suita (fbb1e72).
+- urmator: PASUL 2 — inventarul citărilor existente în tot core/, pe ambele categorii separat (câte canonice / câte în formă liberă). DOAR raport. IN LUCRU
+- pasi:
+  1. [GATA] formatele în CLAUDE.md §3.1 (temei normativ + validator/XSD).
+  2. inventar în tot core/, ambele categorii separat (fișier+linie; canonice vs libere). DOAR raport.
+  2b. locuri FĂRĂ nicio citare, din oricare categorie (core/d*.py + core/salarizare.py): caut sursa, citez textul, propun; validare; scriu. Spart pe module, commit între ele.
+  3. normalizează formele libere → canonic, pentru ambele categorii; act neidentificabil → `# TEMEI NECLAR: <text>`, listat separat.
+  4. gard core/test_temeiuri.py: două verificări (format normativ + format validator/XSD); escape hatch `# TEMEI LIBER: <motiv>`; test de mutație.
+  5. core/temeiuri.py: funcție + `python -m core.temeiuri "<act|regulă>"` → locurile din ambele categorii (fișier, linie, context).
+
+- fir (în așteptare): Modelarea contractului în timp (Sesiunea A · salarizare)
+- ultim: 2b-scrieri comis — creare/editare/import scriu pe salariu_istoric, citiri pe salariu_curent (reparat si bug-ul activ din import, PASUL 1)
 - urmator: 2b-coloană — DROP salariati.salariu_brut din tabel + migrare, UI schimbare salariu (valabil_din), scoaterea bridge-ului salariu_la. NEÎNCEPUT.
 
 ---

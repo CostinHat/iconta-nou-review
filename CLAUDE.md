@@ -400,6 +400,37 @@ INTERPRETAREA, cand e inevitabila: daca doua acte se combina si niciunul nu tran
 combinatia, se marcheaza in cod ca INTERPRETARE CU TEMEI, nu ca text explicit - cu argumentul,
 alternativa respinsa, si nota "de reconfirmat daca apare o norma care transeaza".
 
+## 3.1 Formatul de citare a temeiului (citabil mecanic)
+
+Fiecare loc care aplică o regulă fiscală citează sursa într-un format CONSTANT — ca la o
+schimbare legislativă să găsești cu grep exact locurile afectate. Fără format constant,
+căutarea e incompletă, deci mai periculoasă decât lipsa completă: pare că ai găsit tot.
+
+**Temei normativ (act).**
+
+    <TIP> <nr>/<an> [art.<art> | pct.<pct>] [alin.(<alin>)] [lit.<lit>]
+
+- TIP ∈ { Legea, OUG, OG, HG, OMF, OMFP, OPANAF, CF (Cod fiscal), CPF (Cod procedură fiscală) }.
+- `<nr>/<an>` obligatoriu pentru Legea/OUG/OG/HG/OMF/OMFP/OPANAF. `CF` și `CPF` sunt coduri, NU
+  au nr/an → se trece direct la `art.`.
+- `art` = arabic sau roman (`art.146`, `art.III`, `art.LXVI`). Normele contabile (OMFP) se
+  citează pe puncte: `pct.<n>`, cu interval permis (`pct.111-116`).
+- `alin.(<n>)` permite caret pentru exponent: `alin.(5^6)`. `art.`/`pct.`, `alin.`, `lit.` sunt
+  toate OPȚIONALE — actul + nr/an singur e citare validă.
+
+Exemple: `OUG 89/2025 art.III alin.(4) lit.b` · `CF art.146 alin.(5^6)` · `OMFP 1802/2014 pct.111-116` · `OPANAF 592/2016`
+
+**Referință de validator / structură (NU e normă).**
+
+Regulile validatorului DUK și limitele din XSD-urile ANAF nu sunt acte normative (tier 2–3, vezi
+§3), dar cer același grep la o schimbare de versiune ANAF — deci au convenția lor:
+
+    DUK regula <cod>              (ex: DUK regula A91b, DUK regula R28)
+    XSD <element> maxLength <n>   (ex: XSD StreetName maxLength 70, XSD Name maxLength 256)
+
+O regulă de validator NU se scrie ca temei normativ (ar fi fals — vezi lecția D301: `totalPlata_A`
+e checksum de structură ANAF, nu regulă fiscală).
+
 ## 4. Ce verifica arhitectul la validare
 
 Toate cinci, nu patru din cinci:
