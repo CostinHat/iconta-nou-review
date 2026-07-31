@@ -215,3 +215,9 @@ def test_deducere_4plus_persoane_45pct():
     # 0.45 * 4325 = 1946.25.
     assert deducere_personala(4325, persoane=4, la_data=SEM2)["baza"] == Decimal("1946.25")
     assert deducere_personala(4325, persoane=5, la_data=SEM2)["baza"] == Decimal("1946.25")
+
+def test_tanar_sub26_brut_mic_primeste_deducere():
+    # FIX2 (Cod fiscal art.77 alin.10 lit.a): tanarul <26 are DOAR limita superioara de venit
+    # (brut <= sm+2000); NU exista limita inferioara. brut 1500 (part-time, sub salariul minim)
+    # trebuie sa primeasca deducerea suplimentara de 15% x salariu minim. 0.15 * 4325 = 648.75.
+    assert deducere_personala(1500, sub_26=True, la_data=SEM2)["tineri"] == Decimal("648.75")

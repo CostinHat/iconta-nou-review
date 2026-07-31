@@ -59,8 +59,8 @@ def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0,
             pct = max(Decimal(0), pct - Decimal("0.005") * trepte)
         ded_baza = pct * sm
 
-    # — suplimentar tineri <26 (brut între 2000 și plafon) —
-    tineri = PCT_TINERI * sm if (sub_26 and PRAG_VENIT_DEDUCERE < b <= plafon) else Decimal(0)
+    # — suplimentar tineri <26 (doar limita superioara: brut <= sm+2000, art.77 alin.10 lit.a) —
+    tineri = PCT_TINERI * sm if (sub_26 and b <= plafon) else Decimal(0)
     # — suplimentar copii la școală (indiferent de venit) —
     copii = DEDUCERE_COPIL_SCOALA * _dec(copii_scoala)
 
