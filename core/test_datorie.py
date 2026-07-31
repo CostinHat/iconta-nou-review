@@ -232,3 +232,15 @@ def test_datorie_cm_dfield_coduri_speciale():
     # Se inchide cand D112 cu CM cod 08 (maternitate) si 06 (urgente) trece DUKIntegrator, consemnat in DECIZII.md.
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "cm d112 coduri speciale d-field validate duk" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: D394 exclude linia scutita (cota 0) catre partener cu CUI (structD394 pct.217: cota 0 permisa doar pentru LS/AS/ASI/N/V) - o linie scutita pe o factura tip L catre partener RO cu CUI e IGNORATA cu avertisment, nu inclusa. Proba DUK pe factura MULTI-COTA cu exact acest caz (21+11+scutit catre CUI -> DUK valid + incadrare corecta a scutitului) NEFACUTA - probele D394 (test_d300_d394_paritate) folosesc date care evita cazul (A4 = date consistente fara scutit-catre-CUI). Se inchide cand proba e facuta si consemnata in DECIZII.md.")
+def test_datorie_d394_scutit_catre_cui_proba_duk():
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "d394 linie scutita catre cui proba duk facuta" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: factura_pdf - fix-ul cota_tva None -> eroare (runda 1 B) presupune ca genereaza_pdf atinge linia INAINTE de alte campuri lipsa; testul verifica DOAR ca ridica pe cota None, NU ca PDF-ul se genereaza corect pe un profil REAL complet (reportlab, toate campurile firma/factura). Se inchide cand PDF-ul e probat pe profil real (genereaza bytes valizi) si consemnat in DECIZII.md.")
+def test_datorie_factura_pdf_proba_pe_profil_real():
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "factura_pdf probat pe profil real complet" in dz.lower()
