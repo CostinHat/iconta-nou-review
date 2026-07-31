@@ -4253,3 +4253,19 @@ Norma traieste unde se aplica si se verifica mecanic: core/common.py (tabelul + 
 core/test_expirare_cote_de_baza.py::test_salariu_minim_2025_este_4050_hg_1506 (golden pe 4050 + HG 1506).
 Datoria xfail test_datorie_salariu_minim_2025_gresit_in_common e INCHISA si stearsa din test_datorie.py.
 Marker: salariu minim 2025 corectat 4050 hg 1506.
+
+ADDENDUM 31.07.2026 (verificare la sursa ceruta de arhitect, runda 4):
+- 2026 H1 = 4050 CONFIRMAT LA SURSA (nu mai e "dedus din absenta"): textul oficial al HG
+  salariului minim 2026 (mmuncii.gov.ro/.../2025/12/HG_Salariul_minim_2026.pdf) - ART.1
+  stabileste 4325 lei de la 1 IULIE 2026, iar ART.2 abroga HG 1506/2024 (MO 1185/28.11.2024)
+  EXACT la 1 iulie 2026. Deci HG 1506/2024 (4050) a fost in vigoare CONTINUU de la 1 ian 2025
+  pana la 1 iul 2026, acoperind tot semestrul 1 din 2026. cota() intoarce corect 4050 pt orice
+  data 2025-01-01..2026-06-30.
+- HG 598/2024 = 3700 lei de la 1 iul 2024 CONFIRMAT la legislatie.just.ro
+  (Public/DetaliiDocument/283807). "HG 1006/2024" (atribuit gresit lui 3700 in tabelul vechi)
+  NU e actul salariului minim - eroare de atribuire, deja scoasa din cod (grep 1006 in *.py: 0).
+- SUPERSEDA intrarea din 29.07.2026 "d112._sal_minim era a doua sursa de adevar" (mai sus in
+  acest registru): acolo se afirma "valoarea reala e 3700 (HG 1006/2024)" si se raporteaza
+  "2025/03 -> 3700" ca reparatie - GRESIT pe ambele. Valoarea reala 2025 = 4050 (HG 1506/2024).
+  Aceea a fost sursa credintei gresite care a bagat 3700 in tabel. d112 citeste din registru,
+  deci urmeaza automat corectia: 2025/03 -> 4050 acum.

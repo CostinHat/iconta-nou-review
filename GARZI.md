@@ -110,6 +110,16 @@ că intrarea a fost înghițită**.
   poartă — un apel direct de API trimite pe zero fără întrebare.
 - LIPSĂ: gard care interzice cote literale în cod (azi nimic nu împiedică un `* 0.19`).
 - LIPSĂ: teste golden pe cifre calculate de mână din exemplul oficial.
+- LIPSĂ: gard de **derivă legislativă** (deschis 31.07.2026). Garda anti-stale a agendei
+  (`core/test_agenda.py`) e UNIDIRECȚIONALĂ: prinde codul schimbat sub o bifă (ancoră =
+  commit), NU legea schimbată sub un cod care stă — un act care modifică art.77 fără ca
+  nimeni să atingă fișierul lasă bifa verde la infinit. Cere: temeiuri structurate
+  (act+nr+articol+dată) citibile mecanic, o sursă de adevăr externă pentru „actul X s-a
+  modificat după data D", reset al bifei la orice atingere a unui act citat. Fundație
+  parțială: `core/temeiuri.py` găsește deja locurile care citează un act; lipsește partea
+  care întreabă dacă actul s-a schimbat. Nu se începe acum — clusterele nebifate sunt risc
+  prezent. (Poziția cerută pt. DE_FACUT.md, care nu mai există; trăiește aici, în registrul
+  gardurilor.)
 - DESCHIS: rotunjirea din D390 e bancară (`round()`), în timp ce D112 documentează că ANAF
   cere aritmetică. Schimbare fiscală — se verifică la sursă. Vezi DE_FACUT.
 

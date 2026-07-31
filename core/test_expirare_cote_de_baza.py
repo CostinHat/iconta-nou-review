@@ -18,7 +18,7 @@ from core.common import COTE, EXPIRA_DUPA_LUNI, cota, cote_care_expira
 
 def test_valoarea_curenta_se_intoarce_normal():
     v, t = cota("salariu_minim", date(2026, 6, 1))
-    assert int(v) == 4050 and "HG" in t   # HG 1506/2024, 4050 ramane in vigoare si in 2026 H1
+    assert int(v) == 4050 and "1506" in t   # 2026 H1: HG 1506/2024 in vigoare 01.01.2025..30.06.2026 (abrogat la 01.07.2026 de HG salariu minim 2026, ART.2)
 
 
 def test_salariu_minim_2025_este_4050_hg_1506():
