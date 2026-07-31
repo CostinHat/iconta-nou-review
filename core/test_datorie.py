@@ -201,3 +201,11 @@ def test_datorie_tichete_masa_zile_efectiv_lucrate():
     # si consemnat in DECIZII.md (marker stabil, case-insensitive).
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "tichete masa zile efectiv lucrate din pontaj implementat" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE (INTERPRETARE NEAPLICATA) 31.07.2026: voucherele de vacanta peste plafonul anual (6 sal.minime, OUG 8/2009 art.1) ar pierde exceptia CAS (CF art.142 lit.r 'acordate potrivit legii') -> ar datora CAS pe exces. Codul NU aplica (ramane CASS+impozit, fara CAS). Motiv: DUK RESPINGE declararea CAS pe exces prin baza B4_7 (S731: B4_7 recalculat din salariu; S74: B4_8=B4_7x25%) - D112 nu are slot pentru CAS non-salarial. Singura cale DUK-valida = tratarea excesului ca venit salarial (efecte pe deducerea art.77) = a doua interpretare, cere decizie de scop. Se inchide cand modelul de declarare e decis, implementat si DUK-valid, consemnat in DECIZII.md.")
+def test_datorie_cas_peste_plafon_vacanta():
+    # Se inchide cand CAS pe excesul de vacanta e declarat corect in D112 si validat pe DUK, consemnat
+    # in DECIZII.md (marker stabil, case-insensitive).
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "cas peste plafon vacanta declarat in d112 validat duk" in dz.lower()

@@ -4300,3 +4300,36 @@ de scop (Costin) de a rasturna/rafina F135. Pana atunci: DATORIE xfail
 ALTERNATIVA RESPINSA acum: a improviza scaderea din pontaj fara a rezolva ambiguitatea "neintrodus
 vs tot prezent" -> ar zero-iza tichetele oricui n-are pontaj introdus -> regresie mai rea decat
 supra-acordarea. Nu se aplica fara decizia de scop.
+
+## 31.07.2026 — CAS peste plafonul voucherelor de vacanta: interpretare, NEAPLICATA (DUK respinge)
+
+INTREBARE: voucherele de vacanta peste plafonul anual (6 salarii minime, OUG 8/2009 art.1) datoreaza CAS?
+
+INTERPRETARE (temei): CF art.142 lit.r excepteaza de la CAS "biletele de valoare ... acordate POTRIVIT
+LEGII". Peste plafonul legal, voucherul nu mai e "acordat potrivit legii" -> excesul pierde exceptia ->
+ar datora CAS 25% (ca orice avantaj salarial). Directia e conservatoare (sub-taxarea aduce control,
+supra-taxarea nu). NU exista text ANAF explicit pe acest caz - e INTERPRETARE, nu certitudine.
+
+OBSTACOL LA DECLARATIE (dovedit pe DUK, 31.07.2026): incercarea de a declara CAS-ul pe exces prin
+inflatarea bazei CAS B4_7 (salariu + exces) e RESPINSA de validatorul oficial (proba: salariat brut
+5000 + vacanta 30000, iun 2026):
+  - S731 (eroare): "Baza cas B4_7(10700) diferit de suma calculata(5000)" - DUK RECALCULEAZA B4_7 din
+    baza salariala (B1/B2) si respinge orice adaos non-salarial;
+  - S74 (atentionare): B4_8 trebuie = B4_7_calculat x 25%.
+Deci sectiunea B4 din D112 NU are slot pentru CAS pe un element non-salarial. Singura cale DUK-valida ar
+fi sa tratezi excesul ca VENIT SALARIAL (adaugat in baza B1/bazac), ca sa curga corect prin B4_7 - DAR
+asta e o A DOUA interpretare, mai grea: excesul ar reduce si deducerea personala (art.77, degresiva pe
+brut) si ar schimba tratamentul impozitului (salariu cu deducere vs tichet fara). Doua interpretari
+stivuite pe un caz fara text ANAF = fragil la control.
+
+ALTERNATIVA PASTRATA (singura DUK-valida azi): excesul ramane tratat ca restul voucherelor - CASS 10% +
+impozit 10%, FARA CAS (comportamentul actual). E sub-taxare in cazul extrem (>6 sal.minime/an vacanta =
+>25.950 lei in S2 2026), dar produce o declaratie VALIDA. A aplica CAS pe exces prin inflatarea B4_7 ar
+fi transformat o declaratie valida intr-una respinsa de DUK - regresie (valid -> invalid).
+
+LIMITA DECLARATA: (a) nu exista text ANAF explicit pe taxarea excesului; (b) chiar corecta fiind
+interpretarea CAS, D112 nu o poate exprima fara a trata excesul ca salariu (cu efecte pe deducere).
+DECIZIE DE SCOP necesara (Costin): (i) se trateaza excesul ca venit salarial in D112, cu efectele pe
+deducere, sau (ii) se lasa sub-taxarea documentata pana la un text ANAF care transeaza. Pana atunci:
+DATORIE xfail (test_datorie_cas_peste_plafon_vacanta), vizibila in agenda. Cazul e RAR. De reconfirmat
+daca apare o norma/instructiune ANAF care transeaza.
