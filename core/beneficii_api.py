@@ -5,7 +5,9 @@ Tichete de vacanta (2a) si cadou (2b) NU sunt config permanent ca tichetele de m
 sunt sume acordate intr-o luna anume. Se stocheaza per (salariat, an, luna, tip).
 
 Tratament fiscal (verificat la sursa 2026):
-- vacanta: CASS 10% + impozit 10%, FARA CAS/CAM; plafon neimpozabil 6 salarii minime/an.
+- vacanta: CASS 10% + impozit 10%, FARA CAS/CAM. 6 salarii minime/an = nivelul MAXIM care
+  poate fi acordat potrivit legii (OUG 8/2009 art.1), NU un plafon de scutire: voucherele
+  SE impoziteaza (10% + CASS 10%) inclusiv sub acest nivel.
 - cadou (2b): sub 300 lei/eveniment = neimpozabil; peste = taxat integral ca salariu.
 """
 from decimal import Decimal

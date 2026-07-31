@@ -133,6 +133,8 @@ Estimare de structură — se rafinează la citirea fiecărui modul.
 | deducere personala | salarizare | test_salarizare.py | √ 31.07 | FISCAL | Cod fiscal art.77 alin.(4)/(10)(a); pliant ANAF AJFP Vrancea (deducere personala) | test_deducere_degresiva_pe_trepte test_deducere_copil_scoala test_deducere_zero_fara_functie_baza test_deducere_4plus_persoane_45pct test_tanar_sub26_brut_mic_primeste_deducere test_deducere_la_data_obligatoriu |
 | tichete masa/vacanta | salarizare | test_salarizare.py |  | FISCAL |  |  |
 | concedii medicale | salarizare | test_salarizare.py |  | FISCAL |  |  |
+| tichete culturale | salarizare | test_salarizare.py |  | FISCAL |  |  |
+| tichete cresa | salarizare | test_salarizare.py |  | FISCAL |  |  |
 | nomenclator cod_oblig<->cod_bugetar | d100 | test_d100.py |  | STRUCTURA |  |  |
 | cota micro 121 (flag) | d100 | test_d100.py |  | STRUCTURA |  |  |
 | checksum totalPlata_A (R11b) | d100 | test_d100.py |  | STRUCTURA |  |  |
