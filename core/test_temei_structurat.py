@@ -89,3 +89,15 @@ def test_salariu_minim_expira_la_1_ianuarie_2027():
     with pytest.raises(ValueError) as e:
         cota("salariu_minim", _d(2027, 1, 15))                   # 2027: RIDICA, nu intoarce 4325
     assert "2026-12-31" in str(e.value)
+
+
+def test_url_completat_doar_din_sursa_deschisa():
+    """URL just.ro completat DOAR unde sursa a fost efectiv deschisa in sesiune (HG 146/2026,
+    HG 1506/2024). Restul raman None - nu se inventeaza (REGULA DE AUR)."""
+    from datetime import date as _d
+    _, t46 = cota("salariu_minim", _d(2026, 7, 1))
+    assert t46.url and "308231" in t46.url and "just.ro" in t46.url
+    _, t1506 = cota("salariu_minim", _d(2025, 3, 1))
+    assert t1506.url and "291450" in t1506.url
+    _, ttva = cota("tva_standard", _d(2026, 1, 1))
+    assert ttva.url is None   # neverificat -> None, nu inventat

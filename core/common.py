@@ -285,9 +285,9 @@ COTE = {
         (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", data_out=None)),
     ],
     "salariu_minim": [
-        (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", data_out="2026-12-31", estimat=True)),  # cadenta 1 ian/1 iul: data_out scurt (semestrial) DELIBERAT, ESTIMAT - eroare devreme > cifra moarta (ca 3700)
+        (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", data_out="2026-12-31", estimat=True, url="https://legislatie.just.ro/Public/DetaliiDocumentAfis/308231")),  # cadenta 1 ian/1 iul: data_out scurt (semestrial) DELIBERAT, ESTIMAT - eroare devreme > cifra moarta (ca 3700)
         # HG 146/2026 art.2 abroga HG 1506/2024 de la 01.07.2026; 4050 valabil 2025 + 2026 H1.
-        (date(2025, 1, 1), Decimal("4050"), Temei("HG", 1506, 2024, data_in="2025-01-01", data_out="2026-06-30")),  # abroga HG 598/2024=3700
+        (date(2025, 1, 1), Decimal("4050"), Temei("HG", 1506, 2024, data_in="2025-01-01", data_out="2026-06-30", url="https://legislatie.just.ro/Public/DetaliiDocument/291450")),  # abroga HG 598/2024=3700
     ],
     "facilitate_salariu_minim": [
         # OUG 89/2025 art.III (+ Ordin 605/2026 pt aplicare); data_out estimat anual.
