@@ -123,9 +123,9 @@ def conn_schema_d300():
                 cur.execute("SET search_path TO %s, public" % SCHEMA_T)
                 cur.execute(
                     "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
-                    "platitor_tva, tip_decont, declarant_nume, declarant_prenume, declarant_functie) "
+                    "email, telefon, regim_fiscal, platitor_tva, tip_decont, declarant_nume, declarant_prenume, declarant_functie) "
                     "VALUES (1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202','BCR',"
-                    "'RO49RNCB0000000000000001',true,'L','Pop','Ion','administrator') "
+                    "'RO49RNCB0000000000000001','a@b.ro','0700000000','real',true,'L','Pop','Ion','administrator') "
                     "ON CONFLICT (id) DO UPDATE SET banca=EXCLUDED.banca, iban=EXCLUDED.iban")
             yield conn
         finally:
@@ -149,3 +149,35 @@ def test_proba_d300_factura_scutita_prin_granita_reparata_duk_valid(conn_schema_
     xml, res = d300.genereaza(conn_schema_d300, SCHEMA_T, 2026, 6)
     rez = _duk.valideaza(xml, "d300", an=2026, luna=6)
     assert rez["stare"] == "valid", "DUK a respins D300 (factura cu linie scutita): %s" % rez
+
+
+@_pt.mark.skipif(not _db_ok() or not _duk.poate_valida("d394"), reason="DB sau DUK d394 indisponibil")
+def test_proba_d394_factura_scutita_prin_granita_reparata_duk_valid(conn_schema_d300):
+    """D394 (informativa domestica): factura emisa prin granita REPARATA, cu linie 21% + linie
+    SCUTITA (cota 0), catre partener RO -> D394 valid la DUK. Fiecare generator isi trateaza
+    propriile campuri: valid pe D300 nu e dovada pentru D394."""
+    from core import facturi_api, declaratii_api
+    r = facturi_api.emite_factura(conn_schema_d300,
+        [{"descriere": "Consultanta IT", "cantitate": 1, "pret_unitar": 1000, "cota_tva": 21},
+         {"descriere": "Servicii medicale scutite", "cantitate": 1, "pret_unitar": 500, "cota_tva": 0}],
+        tert_nume="CLIENT RO SRL", tert_cui="RO14399840",
+        data_emitere="2026-06-15", moneda="RON", platitor_tva=True)
+    assert r.get("factura_id"), "emitere esuata: %r" % r
+    xml, res = declaratii_api.genereaza(conn_schema_d300, SCHEMA_T, "d394", {"an": 2026, "luna": 6})
+    rez = _duk.valideaza(xml, "d394", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins D394 (linie scutita): %s" % rez
+
+
+@_pt.mark.skipif(not _db_ok() or not _duk.poate_valida("d390"), reason="DB sau DUK d390 indisponibil")
+def test_proba_d390_livrare_ic_scutita_prin_granita_reparata_duk_valid(conn_schema_d300):
+    """D390 (recapitulativ VIES): livrare intracomunitara emisa prin granita reparata, cota 0
+    (scutit cu drept, partener UE) -> D390 valid la DUK."""
+    from core import facturi_api, declaratii_api
+    r = facturi_api.emite_factura(conn_schema_d300,
+        [{"descriere": "Livrare IC bunuri", "cantitate": 1, "pret_unitar": 2000, "cota_tva": 0}],
+        tert_nume="KUNDE DE GMBH", tert_cui="DE811569869",
+        data_emitere="2026-06-20", moneda="RON", platitor_tva=True)
+    assert r.get("factura_id"), "emitere esuata: %r" % r
+    xml, res = declaratii_api.genereaza(conn_schema_d300, SCHEMA_T, "d390", {"an": 2026, "luna": 6})
+    rez = _duk.valideaza(xml, "d390", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins D390 (livrare IC scutita): %s" % rez
