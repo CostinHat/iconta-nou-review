@@ -18,8 +18,12 @@ REGULI = "2026.1"
 MODUL = "salarizare"
 
 # deduceri (Cod fiscal art. 77)
-PCT_DEDUCERE_BAZA = Decimal("0.20")        # 0 persoane în întreținere
-PCT_PER_PERSOANA = Decimal("0.05")          # +5% per persoană (max 4)
+# Deducere personala de baza — procent din salariul minim, dupa nr. persoanelor in
+# intretinere (Cod fiscal art.77 alin.4). Cheia 4 = "4 sau mai multe persoane".
+_PCT_DEDUCERE_BAZA = {
+    0: Decimal("0.20"), 1: Decimal("0.25"), 2: Decimal("0.30"),
+    3: Decimal("0.35"), 4: Decimal("0.45"),
+}
 PCT_TINERI = Decimal("0.15")                # +15% × salariu minim, tineri <26
 DEDUCERE_COPIL_SCOALA = Decimal("100")      # +100 lei/copil la școală
 PRAG_VENIT_DEDUCERE = Decimal("2000")       # plafon = salariu_minim + 2000
@@ -49,7 +53,7 @@ def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0,
     if b > plafon:
         ded_baza = Decimal(0)
     else:
-        pct = PCT_DEDUCERE_BAZA + PCT_PER_PERSOANA * min(persoane, 4)
+        pct = _PCT_DEDUCERE_BAZA[min(persoane, 4)]
         if b > sm:
             trepte = floor((b - sm) / 50)
             pct = max(Decimal(0), pct - Decimal("0.005") * trepte)

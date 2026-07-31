@@ -207,3 +207,11 @@ def test_suprataxa_si_facilitate_prorata_la_incetare():
     rp = calcul_salariu(1000, norma_intreaga=False, venit_brut_total=1000,
                         la_data=date(2026, 6, 1), data_incetare=date(2026, 6, 20))
     assert rp["cas_suprataxa"] == Decimal("375.00")  # (3750 x 14/21 - 1000) x 25% - alin.(5) prag proratat la incetare
+
+
+def test_deducere_4plus_persoane_45pct():
+    # FIX1 (Cod fiscal art.77 alin.4): 4 SAU MAI MULTE persoane in intretinere -> 45% x salariu
+    # minim (nu 40%). brut = salariu minim (fara degresivitate) izoleaza procentul de baza.
+    # 0.45 * 4325 = 1946.25.
+    assert deducere_personala(4325, persoane=4, la_data=SEM2)["baza"] == Decimal("1946.25")
+    assert deducere_personala(4325, persoane=5, la_data=SEM2)["baza"] == Decimal("1946.25")

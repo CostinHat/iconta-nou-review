@@ -171,3 +171,11 @@ def test_datorie_gard_structura_absent():
     # Se inchide cand test_temeiuri.py capata un gard de structura (functie cu 'structura' in nume).
     tt = (pathlib.Path(__file__).resolve().parent / "test_temeiuri.py").read_text(encoding="utf-8")
     assert re.search(r"def test_\w*structura\w*\(", tt)
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: deducere personala de baza 45% pentru 4+ persoane (Cod fiscal art.77 alin.4) confirmata pe pliant ANAF (AJFP Vrancea) + redare text codificat (noulcodfiscal.ro), NEGASIT direct la MO/legislatie.just.ro - documentul consolidat e prea mare pentru fetch (intoarce doar Titlul I). De reverificat tabelul alin.4 in Monitorul Oficial si consemnat in DECIZII.md.")
+def test_datorie_deducere_45pct_4plus_neconfirmat_la_mo():
+    # Se inchide cand reverificarea la MO e consemnata in DECIZII.md (marker stabil, case-insensitive).
+    # strict=True: cand devine adevarat, xpass -> pica -> semnaleaza sa scoti xfail-ul.
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "deducere 45% 4+ verificat in monitorul oficial" in dz.lower()
