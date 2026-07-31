@@ -99,3 +99,64 @@ def test_lipsa_caen_e_prinsa_la_generare():
     prof = dict(_prof())
     del prof["caen"]
     assert any("CAEN" in e for e in erori_generare(prof))
+
+
+# ── CONTRACT UNIFORM A1 (modul 6/10, C2, 31.07.2026) ──
+# genereaza(conn, schema, perioada, manual) prin pull() -> calcul_d101 -> build_xml.
+# N/A temei fiscal (schimbare de tooling: uniformizare contract, comportament identic).
+# NOTA: proba DUK-valid NU e aici - D101 build_xml e RESPINS de DUK (P1 sectiune necunoscuta +
+# cod_bug placeholder), pre-existent refactorului. Consemnat: test_datorie_d101_build_xml_respins_de_duk.
+from core.common import Perioada
+from core import db as _db, tenant_provisioning as _tp, d101 as _d101
+
+_SCHEMA_D101 = "ztest_d101_contract"
+
+
+def _db_ok():
+    try:
+        _db.init_pool()
+        with _db.get_conn():
+            return True
+    except Exception:
+        return False
+
+
+@pytest.fixture
+def conn_schema_profit():
+    """Schema temporara, firma_profil completa (caen obligatoriu D101) + note validate:
+    venit 100000 (cont 707) si cheltuiala 60000 (cont 607) in 2026. ROLLBACK garantat."""
+    _db.init_pool()
+    with _db.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA_D101)
+                cur.execute(_tp.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA_D101))
+                cur.execute("SET search_path TO %s, public" % _SCHEMA_D101)
+                cur.execute(
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, "
+                    "regim_fiscal, platitor_tva, tip_decont, declarant_nume, declarant_prenume, declarant_functie) "
+                    "VALUES (1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202','real',true,'L','Pop','Ion','administrator') "
+                    "ON CONFLICT (id) DO UPDATE SET caen=EXCLUDED.caen")
+                cur.execute("INSERT INTO inregistrari (data, status, sursa) "
+                            "VALUES ('2026-06-15','validata','test') RETURNING id")
+                iid = cur.fetchone()[0]
+                cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
+                            "VALUES (%s,'4111','707',100000)", (iid,))
+                cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
+                            "VALUES (%s,'607','401',60000)", (iid,))
+            yield conn
+        finally:
+            conn.rollback()
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d101_contract_pull_genereaza_perioada(conn_schema_profit):
+    """C2 contract uniform: genereaza(conn, schema, Perioada(an), manual) prin pull().
+    Venit 100000 - cheltuieli 60000 = profit 40000; impozit 16%% = 6400 (P11=P15)."""
+    xml, res = _d101.genereaza(conn_schema_profit, _SCHEMA_D101, Perioada(2026))
+    assert res.an == 2026
+    assert res.P.get("P1") == 100000 and res.P.get("P2") == 60000, "venituri/cheltuieli din pull"
+    assert res.P.get("P3") == 40000, "profit contabil"
+    assert res.P.get("P11") == 6400 and res.total_plata_a == 6400, (
+        "impozit 16%% pe 40000 = 6400; got P11=%s total=%s" % (res.P.get("P11"), res.total_plata_a))

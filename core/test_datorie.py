@@ -42,6 +42,32 @@ def _db_ok():
 # ============================================================
 #  DATORIE FISCALA
 # ============================================================
+
+def _duk_d101_ok():
+    try:
+        from core import duk
+        return duk.poate_valida("d101")
+    except Exception:
+        return False
+
+
+@pytest.mark.skipif(not _duk_d101_ok(), reason="DUK d101 indisponibil")
+@pytest.mark.xfail(strict=True, reason=(
+    "DATORIE FISCALA 31.07.2026: D101 build_xml e RESPINS de validatorul oficial DUK - "
+    "'sectiune necunoscuta (P1)' (P-values emise ca elemente <P1>...</P1>) SI cod_bug='5503XXXXXX' "
+    "placeholder literal hardcodat in build_xml. D101 generat NU poate fi depus la ANAF. "
+    "Descoperit la conversia contract C2 (modul 6/10); build_xml/calcul_d101 pre-existente, "
+    "neatinse de refactor. Cere investigatie structura D101 la validator (metoda D1xx din CLAUDE.md)."))
+def test_datorie_d101_build_xml_respins_de_duk():
+    """D101 la validatorul oficial: structura corecta => DUK 'valid'. Azi: respins."""
+    from core import d101, duk
+    res = d101.calcul_d101(
+        {"cui": "14399840", "nume": "PROBA SRL", "adresa": "Str. Test 1", "caen": "6202"},
+        2026, venituri_totale=100000, cheltuieli_totale=60000)
+    xml = d101.build_xml(res)
+    rez = duk.valideaza(xml, "d101", an=2026)
+    assert rez["stare"] == "valid", "DUK a respins D101: %s" % rez.get("erori")
+
 # ============================================================
 #  DATORIE TEHNICA
 # ============================================================

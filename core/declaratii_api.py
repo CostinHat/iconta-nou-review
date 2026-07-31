@@ -40,7 +40,7 @@ def _d101(conn, schema, b):
     manual = dict(b.get("date_extra") or {})
     if b.get("ca_an_precedent_eur"):
         manual.setdefault("ca_an_precedent_eur", b["ca_an_precedent_eur"])
-    return d101.genereaza(conn, schema, b["an"], manual or None)
+    return d101.genereaza(conn, schema, Perioada(b["an"]), manual or None)
 
 def _d112(conn, schema, b):
     return d112.genereaza(conn, schema, b["an"], b["luna"])

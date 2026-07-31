@@ -182,9 +182,11 @@ def build_xml(res):
     return "\n".join(H)
 
 
-def genereaza(conn, schema, an, manual=None):
+def pull(conn, schema, perioada):
+    """Citeste profilul firmei si totalurile anuale: venituri (cont 7x) si cheltuieli (cont 6x)
+    din note VALIDATE, in fereastra anului [inceput, sfarsit) din perioada.interval()."""
     import psycopg2.extras as _E
-    manual = dict(manual or {})
+    _inc, _sf = perioada.interval()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT nume, cui, adresa, oras, judet, caen, "
                     "declarant_nume, declarant_prenume, declarant_functie "
@@ -193,8 +195,6 @@ def genereaza(conn, schema, an, manual=None):
         if prof.get("oras"):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
-        inceput = "%04d-01-01" % an
-        sfarsit = "%04d-01-01" % (an + 1)
         cur.execute(
             "SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' THEN l.suma "
             "ELSE 0 END),0) AS venituri, "
@@ -202,15 +202,22 @@ def genereaza(conn, schema, an, manual=None):
             "ELSE 0 END),0) AS cheltuieli "
             "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
             "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s",
-            (inceput, sfarsit))
+            (_inc.isoformat(), _sf.isoformat()))
         r = cur.fetchone() or {"venituri": 0, "cheltuieli": 0}
+    return prof, r
 
+
+def genereaza(conn, schema, perioada, manual=None):
+    """D101 anual (contract uniform A1). Foloseste perioada.an. `manual` = suprascrieri optionale
+    ale campurilor de calcul (venituri_totale, cheltuieli_totale etc.); o cheie necunoscuta e
+    respinsa de calcul_d101 (TypeError), nu ignorata tacut."""
+    manual = dict(manual or {})
+    prof, r = pull(conn, schema, perioada)
     erori = erori_generare(prof)
     if erori:
         raise ValueError(" ".join(erori))
-
     args = dict(venituri_totale=r["venituri"], cheltuieli_totale=r["cheltuieli"])
     args.update(manual)
-    res = calcul_d101(prof, an, **args)
+    res = calcul_d101(prof, perioada.an, **args)
     xml = build_xml(res)
     return xml, res
