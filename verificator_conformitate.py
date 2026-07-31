@@ -546,6 +546,43 @@ if os.path.isdir(_GHID_MD):
             if re.search(r"<svg|<path", _gl, re.I):
                 rap["ghid_zona"].append((_gf, _gi, "icoane", "SVG inline - foloseste ICOANE canonic (cap.13): " + _st))
 
+# --- GARD TVA LITERAL (ratchet): cotele TVA se iau din common.cota("tva_standard") period-aware.
+# O cota literala (0.21/0.19/0.11 sau 21/19/11 pe linie cu "cota") devine gresita la urmatoarea
+# schimbare (ca 19->21 la 01.08.2025). Ratchet: numarul de restante poate doar SCADEA.
+#   - count <= TVA_BASELINE  -> AVERTISMENT (NU intra in TOTAL, nu blocheaza commit-ul);
+#   - count >  TVA_BASELINE  -> BLOCHEAZA (intra in rap/TOTAL): s-a introdus o cota noua.
+# Cand se repara restante, se coboara TVA_BASELINE. La 0, orice cota literala blocheaza.
+TVA_BASELINE = 80   # masurat 31.07.2026; ratchet - poate doar sa scada
+_re_tva_dec = re.compile(r"(?<![\w.])0\.(?:21|19|11)(?![\w])")
+_re_tva_int = re.compile(r"(?<![\w.])(?:21|19|11)(?![\w.%])")
+_TVA_EXCLUSE = {"common.py", "verificator_conformitate.py", "cote_tva.py",
+                "d406.py", "d300.py", "d301.py", "d390.py", "d394.py", "amef_import.py",
+                "export_winmentor.py"}
+_tva_hits = []
+for _r2, _d2, _f2 in os.walk(BAZA_PY):
+    if "venv" in _r2 or "/." in _r2 or "_arhiva" in _r2 or "/static" in _r2 or "/duk" in _r2:
+        continue
+    if os.path.relpath(_r2, BAZA_PY) not in (".", "core"):
+        continue
+    for _f in _f2:
+        if not _f.endswith(".py") or _f in _TVA_EXCLUSE:
+            continue
+        for _i, _ln in enumerate(open(os.path.join(_r2, _f), encoding="utf-8", errors="replace"), 1):
+            _st = _ln.strip()
+            if _st.startswith("#"):
+                continue
+            if _re_tva_dec.search(_ln) or (_re_tva_int.search(_ln) and "cota" in _ln.lower()):
+                _tva_hits.append((os.path.relpath(os.path.join(_r2, _f), BAZA_PY), _i, _st[:60]))
+_tva_n = len(_tva_hits)
+if _tva_n > TVA_BASELINE:
+    rap["tva_cota_literala"] = [("REGRESIE", _tva_n, "base=%d" % TVA_BASELINE,
+        "cota TVA literala noua (%d > baseline %d) - foloseste common.cota('tva_standard')" % (_tva_n, TVA_BASELINE))]
+print("\n### GARD TVA (avertisment, ratchet):")
+print("  cote TVA literale in cod+teste (in afara sursei unice): %d (baseline %d)%s" % (
+    _tva_n, TVA_BASELINE, "  <== BLOCHEAZA" if _tva_n > TVA_BASELINE else ""))
+if _tva_n < TVA_BASELINE:
+    print("  -> restante reparate: coboara TVA_BASELINE la %d in verificator." % _tva_n)
+
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)
