@@ -656,6 +656,66 @@ except Exception as _etemei:
     print("")
     print("### GARD TEMEI STRUCTURAT: NEVERIFICAT (import COTE esuat: %s)" % _etemei)
 
+# --- GARD IZOLARE TENANTI (structural): orice ruta /tenants/{tenant_id}/* care deschide o conexiune
+# (get_conn) TREBUIE sa rezolve accesul prin auth_api.schema_tenant - direct SAU printr-un RESOLVER
+# (functie al carei corp cheama schema_tenant). O ruta care atinge DB cu tenant_id din URL fara
+# verificare de acces = IDOR potential (datele altui client). Criteriu STRUCTURAL (nu semantic),
+# deci definibil curat. Ratchet: baseline 0 (masurat 31.07: 227/228 rezolva; 1 nu atinge DB).
+IZOLARE_BASELINE = 0
+try:
+    _mn = open(os.path.join(BAZA_PY, "main.py"), encoding="utf-8").read().split("\n")
+    _defn = re.compile(r"(\s*)(?:async )?def (\w+)\(")
+    _defs = []
+    for _i, _l in enumerate(_mn):
+        _m = _defn.match(_l)
+        if _m:
+            _defs.append((_i, _m.group(2), len(_m.group(1))))
+    _defs.append((len(_mn), "__end__", 0))
+    def _body_iz(_k):
+        _di = _defs[_k][0]; _j = _k + 1
+        while _j < len(_defs) and _defs[_j][2] > _defs[_k][2]:
+            _j += 1
+        return "\n".join(_mn[_di:_defs[_j][0]])
+    _resolveri = set()
+    for _k in range(len(_defs) - 1):
+        if "schema_tenant" in _body_iz(_k):
+            _resolveri.add(_defs[_k][1])
+    _reruta = re.compile(r"\s*@app\.(get|post|put|delete|patch)\(")
+    _redef = re.compile(r"\s*(?:async )?def ")
+    _starts = []
+    for _i, _l in enumerate(_mn):
+        if _reruta.match(_l):
+            _j = _i + 1
+            while _j < len(_mn) and not _redef.match(_mn[_j]):
+                _j += 1
+            _starts.append((_i, _j))
+    _starts.append((len(_mn), len(_mn)))
+    _redn = re.compile(r"(?:async )?def (\w+)")
+    _repath = re.compile(r'@app\.\w+\("([^"]+)"')
+    _iz_gap = []
+    for _k in range(len(_starts) - 1):
+        _deci, _defi = _starts[_k]
+        _decs = "\n".join(_mn[_deci:_defi]); _b = "\n".join(_mn[_defi:_starts[_k+1][0]])
+        if "tenants/{tenant_id}" not in _decs:
+            continue
+        _dm = _redn.search(_b); _dn = _dm.group(1) if _dm else ""
+        _atinge = "get_conn(" in _b
+        _ok = ("schema_tenant" in _b) or any(_r in _b for _r in _resolveri if _r and _r != _dn)
+        if _atinge and not _ok:
+            _pm = _repath.search(_decs)
+            _iz_gap.append((_pm.group(1) if _pm else "?", _dn or "?"))
+    if len(_iz_gap) > IZOLARE_BASELINE:
+        rap["izolare_fara_acces"] = [("LEAK-POTENTIAL", 0, _pp, "ruta /tenants/{id}/* atinge DB fara schema_tenant: " + _dd) for _pp, _dd in _iz_gap]
+    print("")
+    print("### GARD IZOLARE TENANTI (structural):")
+    print("  rute /tenants/{id}/* care ating DB fara schema_tenant: %d (baseline %d)%s" % (
+        len(_iz_gap), IZOLARE_BASELINE, "  <== BLOCHEAZA" if len(_iz_gap) > IZOLARE_BASELINE else ""))
+    for _pp, _dd in _iz_gap:
+        print("  GAP %-50s %s" % (_pp, _dd))
+except Exception as _eiz:
+    print("")
+    print("### GARD IZOLARE TENANTI: NEVERIFICAT (%s)" % _eiz)
+
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)
