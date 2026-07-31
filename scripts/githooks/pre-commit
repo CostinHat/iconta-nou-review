@@ -1,0 +1,28 @@
+#!/bin/sh
+# Poarta mecanica pre-commit (iConta). Ruleaza SUITA INTREAGA (pytest) + verificator_conformitate.py
+# la FIECARE commit, MEREU, fara argumente si fara subset - nu se poate ocoli tastand alt pytest.
+# Respinge commit-ul daca pytest nu iese 0 SAU verificatorul nu da "TOTAL: 0".
+#
+# Instalare (o singura data, per clona - .git/hooks NU intra in git):
+#     git config core.hooksPath scripts/githooks
+#
+# De ce (31.07.2026): un `pytest && git commit` a lasat sa treaca un commit ROSU pentru ca pytest
+# rulase pe un subset (doar core/). O poarta care depinde de ce comanda tastezi nu e poarta.
+ROOT=$(git rev-parse --show-toplevel) || exit 1
+cd "$ROOT" || exit 1
+PY=./venv/bin/python
+[ -x "$PY" ] || PY=python3
+echo "[pre-commit] pytest (suita intreaga, ~32s)..."
+"$PY" -m pytest -q > /tmp/precommit_pytest.log 2>&1
+RC=$?
+tail -1 /tmp/precommit_pytest.log
+if [ "$RC" -ne 0 ]; then
+    echo "[pre-commit] RESPINS: pytest exit $RC (suita rosie). Log complet: /tmp/precommit_pytest.log"
+    exit 1
+fi
+TOT=$("$PY" verificator_conformitate.py 2>&1 | grep -i "TOTAL")
+echo "[pre-commit] verificator: $TOT"
+case "$TOT" in
+    *"TOTAL: 0"*) echo "[pre-commit] OK - poarta verde, commit permis." ; exit 0 ;;
+    *) echo "[pre-commit] RESPINS: verificatorul nu da TOTAL 0." ; exit 1 ;;
+esac
