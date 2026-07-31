@@ -68,7 +68,8 @@ def stare_sesiune_a():
         rows.append({"cluster": cel[0], "modul": cel[1],
                      "fisiere": re.findall(r"test_\w+\.py", cel[2]),
                      "verificat": data, "risc": cel[4].strip().upper(),
-                     "temeiuri": cel[5] if len(cel) > 5 else ""})
+                     "temeiuri": cel[5] if len(cel) > 5 else "",
+                     "functie": re.findall(r"test_\w+", cel[6]) if len(cel) > 6 else []})
     fisc = [x for x in rows if x["risc"].startswith("FISC")]
     stru = [x for x in rows if x["risc"].startswith("STRUC")]
     return {"rows": rows,
