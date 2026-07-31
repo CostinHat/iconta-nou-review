@@ -35,3 +35,55 @@ def test_cota_zero_scutit_e_valoare_valida_nu_absenta():
 def test_cota_prezenta_se_intoarce_ca_atare():
     assert cota_ceruta({"cota": 11}) == 11
     assert cota_ceruta({"cota": 21}) == 21
+
+
+# ── TEMA B: emitere — cota NEDETERMINATA (AI picat) blocheaza, nu ghiceste 21 ──
+import pytest as _pt
+from core import db as _db, tenant_provisioning as _tp
+
+SCHEMA_T = "ztest_granite_cota"
+
+
+def _db_ok():
+    try:
+        _db.init_pool()
+        with _db.get_conn():
+            return True
+    except Exception:
+        return False
+
+
+@_pt.fixture
+def conn_schema():
+    """Schema temporara din template + firma_profil minima. ROLLBACK garantat."""
+    _db.init_pool()
+    with _db.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_T)
+                cur.execute(_tp.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), SCHEMA_T))
+                cur.execute("SET search_path TO %s, public" % SCHEMA_T)
+                cur.execute(
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, "
+                    "platitor_tva, tip_decont) VALUES "
+                    "(1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202',true,'L') "
+                    "ON CONFLICT (id) DO UPDATE SET nume=EXCLUDED.nume")
+            yield conn
+        finally:
+            conn.rollback()
+
+
+@_pt.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_emitere_linie_fara_cota_cu_ai_picat_blocheaza(conn_schema, monkeypatch):
+    """AI indisponibil + produs NOU fara cota -> potriveste_cota NEDETERMINAT -> linia ramane
+    fara cota -> emiterea RIDICA, NU produce 21 tacut in decont. (azi: fallback 21, emite)."""
+    from core import ai_client, facturi_api
+    monkeypatch.setattr(ai_client, "disponibil", lambda: False)
+    with _pt.raises(ValueError) as e:
+        facturi_api._potriveste_linii(
+            conn_schema,
+            [{"descriere": "produs complet necunoscut zzz-qwerty", "cantitate": 1, "pret_unitar": 100}],
+            platitor_tva=True)
+    m = str(e.value).lower()
+    assert "cot" in m and ("nedetermin" in m or "explicit" in m), "mesaj neclar: %s" % e.value

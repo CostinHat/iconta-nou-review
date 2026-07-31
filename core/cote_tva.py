@@ -162,6 +162,14 @@ def rezumat_pentru_ai():
     return "\n".join(linii)
 
 
+def _nedeterminat(motiv):
+    """Cota TVA nu s-a putut determina (AI indisponibil/esuat/raspuns invalid). NU se ghiceste
+    21: un 21 marcat \"fallback\" ajunge in decont exact ca unul tacit daca factura se emite
+    oricum. Se intoarce fara cota -> linia ramane incompleta -> emiterea se blocheaza (baza nula)."""
+    return {"ok": False, "cod": "NEDETERMINAT", "cota": None, "categorie": "necunoscut",
+            "justificare": motiv, "incredere": "mica", "sursa": "nedeterminat"}
+
+
 def potriveste_cota(denumire, platitor_tva=True):
     """  [p96_potriveste]
     Potriveste denumirea unui produs/serviciu cu cota TVA corecta, folosind
@@ -188,9 +196,8 @@ def potriveste_cota(denumire, platitor_tva=True):
         import ai_client  # rulare directa
 
     if not ai_client.disponibil():
-        return {"ok": True, "cota": COTA_STANDARD, "categorie": "necunoscut",
-                "justificare": "AI indisponibil; s-a aplicat cota standard 21%. Verifica manual.",
-                "incredere": "mica", "sursa": "fallback"}
+        return _nedeterminat("AI indisponibil; cota TVA nu s-a putut determina. "
+                             "Declara cota explicit pe linie.")
 
     sistem = (
         "Esti un expert fiscal roman. Stabilesti cota de TVA corecta pentru un "
@@ -211,9 +218,8 @@ def potriveste_cota(denumire, platitor_tva=True):
         raspuns = ai_client.genereaza_text(prompt, sistem=sistem,
                                            max_tokens=300, temperatura=0)
     except Exception as e:
-        return {"ok": True, "cota": COTA_STANDARD, "categorie": "necunoscut",
-                "justificare": f"AI a esuat ({e}); cota standard 21%. Verifica manual.",
-                "incredere": "mica", "sursa": "fallback"}
+        return _nedeterminat("AI a esuat (%s); cota TVA nu s-a putut determina. "
+                             "Declara cota explicit pe linie." % e)
 
     # extrag JSON-ul (poate veni cu text in jur)
     txt = raspuns.strip()
@@ -223,13 +229,13 @@ def potriveste_cota(denumire, platitor_tva=True):
         a = int(txt.find("{")); b = int(txt.rfind("}"))
         obj = json.loads(txt[a:b+1])
     except Exception:
-        return {"ok": True, "cota": COTA_STANDARD, "categorie": "necunoscut",
-                "justificare": "Raspuns AI neinterpretabil; cota standard 21%. Verifica manual.",
-                "incredere": "mica", "sursa": "fallback"}
+        return _nedeterminat("Raspuns AI neinterpretabil; cota TVA nu s-a putut determina. "
+                             "Declara cota explicit pe linie.")
 
     cota = obj.get("cota")
     if cota not in (COTA_STANDARD, COTA_REDUSA):
-        cota = COTA_STANDARD
+        return _nedeterminat("AI a intors o cota neacceptata (%r); cota TVA nu s-a putut "
+                             "determina. Declara cota explicit." % cota)
     return {"ok": True, "cota": int(cota),
             "categorie": obj.get("categorie") or "standard",
             "justificare": obj.get("justificare") or "",

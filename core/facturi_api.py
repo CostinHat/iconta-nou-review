@@ -54,6 +54,11 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
     """
     if not linii:
         raise ValueError("factura trebuie să aibă cel puțin o linie")
+    for _l in linii:
+        if _l.get("cota_tva") is None:
+            raise ValueError("linie fara cota TVA (%r): declara cota explicit - o linie fara "
+                             "cota e intrare incompleta, nu cota standard"
+                             % (_l.get("descriere") or "",))
     if directie not in ("emisa", "primita"):
         raise ValueError("directie trebuie 'emisa' sau 'primita'")
     t = totaluri_din_linii(linii)
@@ -187,7 +192,12 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
                                     um=linie.get("um", "buc"),
                                     pret_unitar=linie.get("pret_unitar", 0),
                                     platitor_tva=platitor_tva)
-            linie["cota_tva"] = r.get("cota_tva", 21)
+            if r.get("cota_tva") is None:
+                # auto-match esuat (AI indisponibil/nedeterminat): intrare incompleta, NU cota 21
+                raise ValueError("cota TVA nedeterminata pentru %r: nomenclatorul/AI nu a putut "
+                                 "stabili cota. Declara cota explicit pe linie."
+                                 % (linie.get("descriere") or "",))
+            linie["cota_tva"] = r["cota_tva"]
         out.append(linie)
     return out
 
@@ -297,7 +307,7 @@ def storneaza(conn, factura_id):
             "um": l.get("um", "buc"),
             "cantitate": -abs(float(l.get("cantitate", 0))),
             "pret_unitar": float(l.get("pret_unitar", 0)),
-            "cota_tva": float(l.get("cota_tva", 21)),
+            "cota_tva": float(l["cota_tva"]),
         })
     num = numerotare(conn)
     serie = num["serie"]; numar_int = num["urmator_numar"]
