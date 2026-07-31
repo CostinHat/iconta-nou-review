@@ -224,3 +224,19 @@ def test_garzi_si_duplicat_prind_defectul():
     assert "core/planificat_lipsa.py" not in toks, "scaneaza gresit fisiere din LIPSA (pot lipsi legitim)"
     assert _h2_duplicate(["## A", "## B", "## A"]) == ["## A"], "nu prinde titlul duplicat"
     assert _h2_duplicate(["## A", "## B"]) == [], "fals-pozitiv pe titluri unice"
+
+
+
+def test_fiecare_fisier_test_are_cel_putin_un_test():
+    """GARZI cat.9 (onestitatea testelor): un fisier test_*.py (exclus venv) cu 0 functii 'def test_'
+    pare acoperire care NU exista - pytest nu-l colecteaza, dar numele sugereaza suita. Un script
+    functional nu trebuie sa poarte prefixul test_. Prinde scripturile deghizate; verde cand nu exista."""
+    goale = []
+    for f in sorted(_RAD.rglob("test_*.py")):
+        if "venv" in f.parts:
+            continue
+        src = f.read_text(encoding="utf-8", errors="replace")
+        if not re.search(r"^\s*(async\s+)?def test_", src, re.MULTILINE):
+            goale.append(str(f.relative_to(_RAD)))
+    assert not goale, ("fisiere test_*.py cu 0 functii 'def test_' (redenumeste-le fara prefixul test_ "
+                       "- sunt scripturi, nu suita): %s" % goale)

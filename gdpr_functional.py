@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Test functional GDPR pe cont FABRICAT — F199 (export) + F200b (cerere stergere).
 
-Ruleaza: /opt/iconta/venv/bin/python3 test_gdpr_functional.py
+Ruleaza: /opt/iconta/venv/bin/python3 gdpr_functional.py
 Creeaza un cabinet fabricat, exercita ambele fluxuri REAL (DB + email mock),
 apoi curata TOT dupa el (finally). Nu atinge date reale."""
 import glob, os, io, json, zipfile

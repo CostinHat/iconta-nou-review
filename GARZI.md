@@ -179,7 +179,7 @@ fișiere necolectate).
   declarații.**
 - LIPSĂ: **mutantul zero sistematic** — forțezi fiecare generator să întoarcă `[]` și suita
   trebuie să devină roșie. Se aplică azi ad-hoc, la reparații.
-- LIPSĂ: gard că nr. fișierelor colectate = nr. fișierelor de test din repo.
+- ACOPERIT (31.07): gard că fiecare `test_*.py` (exclus venv) are ≥1 funcție `def test_` — `core/test_agenda.py::test_fiecare_fisier_test_are_cel_putin_un_test`, cu mutație. Un `test_*.py` cu 0 teste e script deghizat în suită (pytest nu-l colectează, dar numele sugerează acoperire). Prins pe `test_gdpr_functional` → redenumit `gdpr_functional.py`.
 
 ### 10. Joburi de fundal
 **Eșec:** job care crapă nesupravegheat; job mort care arată identic cu unul care n-a avut
