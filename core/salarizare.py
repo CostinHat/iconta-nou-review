@@ -41,8 +41,15 @@ def _nota(debit, credit, suma, temei=None):
 #  DEDUCERE PERSONALĂ (art. 77)
 # ============================================================
 def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0,
-                       functie_baza=True, la_data=None):
-    """Întoarce {baza, tineri, copii, total} — sume scăzute din baza impozitului."""
+                       functie_baza=True, *, la_data):
+    """Întoarce {baza, tineri, copii, total} — sume scăzute din baza impozitului.
+
+    la_data e OBLIGATORIU (keyword-only): deducerea depinde de salariul minim din LUNA de
+    realizare a venitului (pliant ANAF). Fara el nu se ghiceste luna curenta - se ridica.
+    """
+    if la_data is None:
+        raise ValueError("deducere_personala: la_data (luna de salarizare) e obligatoriu; "
+                         "nu se ghiceste luna curenta - salariul minim depinde de luna venitului")
     if not functie_baza:
         return {"baza": _q(0), "tineri": _q(0), "copii": _q(0), "total": _q(0)}
     sm, _ = c.cota("salariu_minim", la_data)
@@ -160,7 +167,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
     cas = baza_contrib * cota_cas
     cass = baza_contrib * cota_cass
 
-    ded = deducere_personala(b, persoane, sub_26, copii_scoala, functie_baza, la_data)
+    ded = deducere_personala(b, persoane, sub_26, copii_scoala, functie_baza, la_data=la_data)
 
     baza_imp = baza_contrib - cas - cass - _dec(ded["total"])
     if baza_imp < 0:

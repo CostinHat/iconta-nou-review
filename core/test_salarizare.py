@@ -221,3 +221,11 @@ def test_tanar_sub26_brut_mic_primeste_deducere():
     # (brut <= sm+2000); NU exista limita inferioara. brut 1500 (part-time, sub salariul minim)
     # trebuie sa primeasca deducerea suplimentara de 15% x salariu minim. 0.15 * 4325 = 648.75.
     assert deducere_personala(1500, sub_26=True, la_data=SEM2)["tineri"] == Decimal("648.75")
+
+
+def test_deducere_la_data_obligatoriu():
+    # FIX4: la_data (luna de salarizare) e OBLIGATORIU. Un apel fara el trebuie sa dea eroare,
+    # nu sa ghiceasca luna curenta - salariul minim depinde de luna de realizare a venitului.
+    import pytest
+    with pytest.raises((TypeError, ValueError)):
+        deducere_personala(6000)
