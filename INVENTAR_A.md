@@ -18,3 +18,12 @@ GENERAT de `genereaza_inventar_a.py` (nu edita direct partea de tabel). Structur
 | facilitate_salariu_minim | 200 | OUG 89/2025 art.III | 2026-07-01 | 2026-12-31 (ESTIMAT) | FISCAL | √ 31.07 | OUG 89/2025 art.III + HG 146/2026; conditii cumulative norma/functie/contractual/plafon |
 | plafon_facilitate_salariu_minim | 4600 | OUG 89/2025 art.III lit.b | 2026-07-01 | 2026-12-31 (ESTIMAT) | FISCAL | √ 31.07 | venit brut total: S1 4300 / S2 4600 |
 | tichet_masa_plafon | 45 | Legea 201/2025 | 2026-01-01 | 2026-09-30 (ESTIMAT) | FISCAL | PARTIAL 31.07 | fond fiscal verificat (45, imp/CASS, plafon); deschis: D2 nr tichete, D3 exces vacanta |
+
+## Reguli-algoritm cu temei la nivel de functie (NU cote - proposal point 2)
+
+| Modul | Functie | Temei |
+|---|---|---|
+| salarizare.py | deducere_personala | CF art.77 alin.(4) (scara degresiva 20/25/30/35/45%, prag salariu minim+2000) + alin.(10) lit.a (deducere 100 lei/copil scolarizat). |
+| salarizare.py | _pd | pragul (alin.5) se prorateaza prin INTERPRETARE; facilitatea (alin.4 lit.b) prin |
+| salarizare.py | procent_cm | OUG 158/2005 art.17(1) (progresiv 55/65/75, forma Legea 141/2025); art.20(3) + Legea 136/2020 (carantina 07=100%); art.25(1) (maternitate 08=85%); art.30(1) (ingrijire copil 09=85%). |
+| salarizare.py | taxe_cm | CF art.139(1)(o)+140 (CAS 25% pe indemnizatie); art.155(1) lit.i (CASS 10% cod 01/07/10); art.78 (impozit 10%). |

@@ -23,3 +23,16 @@ def test_overlay_judecati_umane_pastrat_la_regenerare():
     assert g.OVERLAY.endswith("INVENTAR_A_OVERLAY.tsv")     # overlay = sursa separata, persistenta
     ov = g.overlay()
     assert ov.get("salariu_minim", {}).get("risc") == "FISCAL"
+
+
+def test_inventar_a_vede_algoritmii_cu_temei_la_nivel_de_functie():
+    """Deducerea personala si procentele CM sunt ALGORITMI (nu cote in COTE) - au marker TEMEI:
+    la nivel de functie (proposal point 2, nu se atomizeaza in cote false). Inventarul A trebuie
+    sa le vada, altfel bifele clusterelor de azi stau pe temeiuri care nu sunt in registru."""
+    alg = {r["functie"]: r for r in g.algoritmi_cu_temei()}
+    assert "deducere_personala" in alg, "deducerea personala nu apare in inventar"
+    assert "art.77" in alg["deducere_personala"]["temei"]
+    assert "procent_cm" in alg
+    assert "158/2005" in alg["procent_cm"]["temei"] and "141/2025" in alg["procent_cm"]["temei"]
+    txt = g.genereaza()
+    assert "deducere_personala" in txt and "procent_cm" in txt   # apar in artefactul generat

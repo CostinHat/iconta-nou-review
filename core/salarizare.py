@@ -46,6 +46,8 @@ def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0,
 
     la_data e OBLIGATORIU (keyword-only): deducerea depinde de salariul minim din LUNA de
     realizare a venitului (pliant ANAF). Fara el nu se ghiceste luna curenta - se ridica.
+
+    TEMEI: CF art.77 alin.(4) (scara degresiva 20/25/30/35/45%, prag salariu minim+2000) + alin.(10) lit.a (deducere 100 lei/copil scolarizat).
     """
     if la_data is None:
         raise ValueError("deducere_personala: la_data (luna de salarizare) e obligatoriu; "
@@ -298,7 +300,8 @@ def procent_cm(cod, zile_episod, procent_accident=100):
     """Procent indemnizatie dupa cod (nomenclator Legea 125/2006, art. 17-31 OUG 158/2005).
     01=55/65/75 progresiv (Legea 141/2025); 02/03/04=80 sau 100 (FAAMBP, param);
     05/06/07/12/14/51=100 (07 carantina: art.20(3) OUG 158/2005, 100% permanent prin Legea 136/2020); 13/15=75; 08/09=85. Cod 10 (reducere timp munca) NU are
-    procent - formula speciala art. 19 (diferenta venit, max 25% din baza) -> ValueError."""
+    procent - formula speciala art. 19 (diferenta venit, max 25% din baza) -> ValueError.
+    TEMEI: OUG 158/2005 art.17(1) (progresiv 55/65/75, forma Legea 141/2025); art.20(3) + Legea 136/2020 (carantina 07=100%); art.25(1) (maternitate 08=85%); art.30(1) (ingrijire copil 09=85%)."""
     cod = str(cod or "01").zfill(2)
     if cod == "01":
         if zile_episod <= 7: return Decimal("0.55")
@@ -381,6 +384,7 @@ def taxe_cm(brut, cod="01", la_data=None):
     - CASS 10% DOAR pentru codurile 01/07/10; scutit pentru rest (08 maternitate,
       15/16/17, 09 ingrijire copil, 05/06/51/91/92/12/13/14 etc.)
     - impozit 10% pe (brut - cass), fara deducere personala pe indemnizatie
+    TEMEI: CF art.139(1)(o)+140 (CAS 25% pe indemnizatie); art.155(1) lit.i (CASS 10% cod 01/07/10); art.78 (impozit 10%).
     Intoarce {cas, cass, impozit, net}."""
     from core import common as _c
     b = _dec(brut)

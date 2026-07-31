@@ -12,7 +12,7 @@ in cod.
 
 Rulare:  python3 genereaza_inventar_a.py            (dry-run: afiseaza)
          python3 genereaza_inventar_a.py --scrie    (scrie INVENTAR_A.md)"""
-import os, sys
+import os, sys, re
 
 _DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _DIR)
@@ -50,6 +50,27 @@ def overlay():
     return o
 
 
+def algoritmi_cu_temei():
+    """Functii cu marker TEMEI: in docstring (reguli-algoritm, NU cote - proposal point 2:
+    formula traieste in cod, temeiul se adnoteaza la nivel de functie, nu se atomizeaza in
+    cote false). Scaneaza core/*.py."""
+    rows = []
+    core_dir = os.path.join(_DIR, "core")
+    for fn in sorted(os.listdir(core_dir)):
+        if not fn.endswith(".py") or fn.startswith("test_"):
+            continue
+        cur = None
+        for ln in open(os.path.join(core_dir, fn), encoding="utf-8", errors="replace"):
+            m = re.match(r"\s*def\s+(\w+)", ln)
+            if m:
+                cur = m.group(1)
+            mt = re.search(r"TEMEI:\s*(.+)", ln)
+            if mt and cur:
+                rows.append({"modul": fn, "functie": cur,
+                             "temei": mt.group(1).strip().rstrip(chr(34)).strip()})
+    return rows
+
+
 def genereaza():
     rows = structura()
     ov = overlay()
@@ -69,6 +90,12 @@ def genereaza():
     orfane = [k for k in ov if k not in {r["cluster"] for r in rows}]
     if orfane:
         L += ["", "**Overlay ORFAN** (judecata umana fara cota in cod, de reconciliat): " + ", ".join(orfane)]
+    alg = algoritmi_cu_temei()
+    if alg:
+        L += ["", "## Reguli-algoritm cu temei la nivel de functie (NU cote - proposal point 2)",
+              "", "| Modul | Functie | Temei |", "|---|---|---|"]
+        for a in alg:
+            L.append("| %s | %s | %s |" % (a["modul"], a["functie"], a["temei"]))
     return "\n".join(L) + "\n"
 
 
