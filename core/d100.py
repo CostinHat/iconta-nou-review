@@ -29,7 +29,7 @@ REGULI EXTRASE DIN VALIDATOR (constant pool, D100Validator.jar v9):
 """
 from __future__ import annotations
 
-from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+from core.common import text_anaf as _t, cheie_manual  # limita 75 car. ANAF (27.07.2026)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import datetime as _dt
@@ -198,10 +198,12 @@ def build_xml(res):
     return "\n".join(H)
 
 
-def genereaza(conn, schema, an, trim, cota=None):
-    """D100 trimestrial: `trim` (1-4) -> luna raportare = trim*3."""
+def pull(conn, schema, perioada):
+    """Citeste profilul firmei si veniturile (cont 70x, note VALIDATE) din fereastra
+    trimestrului. Fereastra [inceput, sfarsit) din perioada.interval() = identica cu
+    intervalul vechi (trim*3, luna-2..luna+1)."""
     import psycopg2.extras as _E
-    luna = trim * 3
+    _inc, _sf = perioada.interval()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT nume, cui, adresa, oras, judet, regim_fiscal, "
                     "declarant_nume, declarant_prenume, declarant_functie "
@@ -210,15 +212,24 @@ def genereaza(conn, schema, an, trim, cota=None):
         if prof.get("oras"):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
-        inceput = "%04d-%02d-01" % (an, luna - 2)
-        sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
         cur.execute(
             "SELECT COALESCE(SUM(l.suma),0) AS venituri FROM inregistrari_linii l "
             "JOIN inregistrari i ON i.id = l.inregistrare_id "
             "WHERE i.status='validata' AND l.cont_credit LIKE '70%%' "
-            "AND i.data >= %s AND i.data < %s", (inceput, sfarsit))
+            "AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
         r = cur.fetchone() or {"venituri": 0}
+    return prof, r["venituri"]
 
+
+def genereaza(conn, schema, perioada, manual=None):
+    """D100 trimestrial (contract uniform A1). `perioada.trim` (1-4) -> luna raportare = trim*3.
+    `manual` accepta DOAR cheia 'cota' (procent impozit; micro implicit 1, profit implicit 16)."""
+    if perioada.trim is None or not (1 <= perioada.trim <= 4):
+        raise ValueError("D100 trimestrial: trim invalid: %r" % perioada.trim)
+    cota = cheie_manual(manual, "cota").get("cota")
+    an, luna = perioada.an, perioada.trim * 3
+    prof, venituri = pull(conn, schema, perioada)
+    # POARTA (27.07.2026): profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF.
     erori = erori_generare(prof)
     if erori:
         raise ValueError(" ".join(erori))
@@ -227,12 +238,12 @@ def genereaza(conn, schema, an, trim, cota=None):
     regim = (prof.get("regim_fiscal") or "").lower()
     if regim == "micro":
         c = Decimal(str(cota)) if cota is not None else Decimal("1")
-        suma = _i(Decimal(str(r["venituri"])) * c / Decimal(100))
+        suma = _i(Decimal(str(venituri)) * c / Decimal(100))
         if suma > 0:
             obligatii.append({"cod_oblig": "121", "suma_dat": suma, "cota": "1"})
     elif regim == "profit":
         c = Decimal(str(cota)) if cota is not None else Decimal("16")
-        suma = _i(Decimal(str(r["venituri"])) * c / Decimal(100))
+        suma = _i(Decimal(str(venituri)) * c / Decimal(100))
         if suma > 0:
             obligatii.append({"cod_oblig": "103", "suma_dat": suma})
 

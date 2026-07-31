@@ -95,3 +95,70 @@ def test_totalPlata_A_e_suma_dat_plus_suma_plata():
     res = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "103", "suma_dat": 2400}])
     xml = build_xml(res)
     assert 'totalPlata_A="4800"' in xml
+
+
+# ── CONTRACT UNIFORM A1 (modul 5/10, C1, 31.07.2026) — proba pana la declaratie ──
+# genereaza(conn, schema, perioada, manual) prin pull() -> calcul_d100 -> build_xml -> DUK valid.
+# N/A temei fiscal (schimbare de tooling: uniformizare contract, comportament identic).
+from core.common import Perioada
+from core import db as _db, tenant_provisioning as _tp, duk as _duk, d100 as _d100
+
+_SCHEMA_D100 = "ztest_d100_contract"
+_D100_DUK = _duk.poate_valida("d100")
+
+
+def _db_ok():
+    try:
+        _db.init_pool()
+        with _db.get_conn():
+            return True
+    except Exception:
+        return False
+
+
+@pytest.fixture
+def conn_schema_micro():
+    """Schema temporara, firma_profil MICRO completa + o nota validata cu venit (cont 704,
+    10000 lei, 2026-05-15 = T2). ROLLBACK garantat."""
+    _db.init_pool()
+    with _db.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA_D100)
+                cur.execute(_tp.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA_D100))
+                cur.execute("SET search_path TO %s, public" % _SCHEMA_D100)
+                cur.execute(
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, "
+                    "regim_fiscal, platitor_tva, tip_decont, declarant_nume, declarant_prenume, declarant_functie) "
+                    "VALUES (1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202','micro',true,'L','Pop','Ion','administrator') "
+                    "ON CONFLICT (id) DO UPDATE SET regim_fiscal=EXCLUDED.regim_fiscal")
+                cur.execute("INSERT INTO inregistrari (data, status, sursa) "
+                            "VALUES ('2026-05-15','validata','test') RETURNING id")
+                iid = cur.fetchone()[0]
+                cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
+                            "VALUES (%s,'4111','704',10000)", (iid,))
+            yield conn
+        finally:
+            conn.rollback()
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d100_contract_pull_genereaza_perioada(conn_schema_micro):
+    """C1 contract uniform: genereaza(conn, schema, Perioada(an, trim=), manual={'cota':..}).
+    Micro, venit 10000 in T2 -> impozit 1%% = 100 (cod_oblig 121, cota 1 - cerinta DUK)."""
+    xml, res = _d100.genereaza(conn_schema_micro, _SCHEMA_D100, Perioada(2026, trim=2), {"cota": "1"})
+    assert res.an == 2026 and res.luna == 6, "trim=2 -> luna raportare 6"
+    assert len(res.obligatii) == 1
+    o = res.obligatii[0]
+    assert o.cod_oblig == "121" and o.suma_dat == 100 and o.cota == "1", (
+        "micro 10000*1%%=100 asteptat; got cod=%s suma=%s cota=%s" % (o.cod_oblig, o.suma_dat, o.cota))
+    assert 'cota="1"' in xml
+
+
+@pytest.mark.skipif(not _db_ok() or not _D100_DUK, reason="DB sau DUK d100 indisponibil")
+def test_d100_contract_proba_duk_valid(conn_schema_micro):
+    """Proba pana la declaratie: D100 generat prin contractul uniform trece validatorul OFICIAL DUK."""
+    xml, res = _d100.genereaza(conn_schema_micro, _SCHEMA_D100, Perioada(2026, trim=2), {"cota": "1"})
+    rez = _duk.valideaza(xml, "d100", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins D100: %s" % rez

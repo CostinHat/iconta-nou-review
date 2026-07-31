@@ -30,7 +30,8 @@ MODUL = "declaratii_api"
 #  Fiecare primește (conn, schema, body) și cheamă genereaza corect.
 # ============================================================
 def _d100(conn, schema, b):
-    return d100.genereaza(conn, schema, b["an"], b["trim"], b.get("cota"))
+    return d100.genereaza(conn, schema, Perioada(b["an"], trim=b["trim"]),
+                          {"cota": b["cota"]} if b.get("cota") is not None else None)
 
 def _d101(conn, schema, b):
     # d101.genereaza() a fost rescris 16.07.2026 pe ANAF structura D101 VERSIUNE NECUNOSCUTA
