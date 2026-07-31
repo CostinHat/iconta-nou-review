@@ -146,7 +146,7 @@ def test_d301_pull_vede_operatiunea(schema):
         cur.execute(
             "INSERT INTO d301_operatiuni (an, luna, tip, nr_doc, data_doc, val_valuta, "
             "tip_valuta, curs, tva) VALUES (2026,6,5,'F1','2026-06-10',100,'EUR',4.97,105)")
-    prof, ops = d301.pull(schema, SCHEMA_T, 2026, 6)
+    prof, ops = d301.pull(schema, SCHEMA_T, Perioada(2026, luna=6))
     assert prof.get("cui") == "14399840"
     assert len(ops) == 1, "operatiunea D301 nu ajunge in pull"
 

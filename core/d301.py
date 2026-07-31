@@ -89,8 +89,9 @@ class Rezultat:
     avertismente: list = field(default_factory=list)
 
 
-def calcul_d301(prof, an, luna, operatiuni_raw):
+def calcul_d301(prof, perioada, operatiuni_raw):
     """PUR. operatiuni_raw: listă de dict {tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva}."""
+    an, luna = perioada.an, perioada.luna
     ops = []
     tot = {t: [0, 0] for t in TIPURI_OP}
     mij = 0
@@ -211,8 +212,9 @@ def build_xml(res):
 # [d301_canonic 23.07] ensure_tabel (CREATE TABLE IF NOT EXISTS lazy) ELIMINAT: d301_operatiuni traieste acum
 # in tenant_template.sql (o singura sursa, aliniat cu decizia 22.07 anti-lazy). pull() e read-only pe tabela
 # garantata de template/backfill. Vezi DECIZII 23.07.
-def pull(conn, schema, an, luna):
+def pull(conn, schema, perioada):
     import psycopg2.extras as _E
+    an, luna = perioada.an, perioada.luna
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT nume, cui, adresa, oras, judet, banca, iban, "
                     "declarant_nume, declarant_prenume, declarant_functie "
@@ -224,13 +226,15 @@ def pull(conn, schema, an, luna):
     return prof, ops
 
 
-def genereaza(conn, schema, an, luna):
-    if luna < 1 or luna > 12:
-        raise ValueError("Luna invalidă: %r" % luna)
-    prof, ops = pull(conn, schema, an, luna)
+def genereaza(conn, schema, perioada, manual=None):
+    if manual:
+        raise ValueError("D301 nu acceptă 'manual' (chei: %s)" % sorted(manual))
+    if perioada.luna is None or not (1 <= perioada.luna <= 12):
+        raise ValueError("D301 lunar: luna invalidă: %r" % perioada.luna)
+    prof, ops = pull(conn, schema, perioada)
     # POARTA (27.07.2026): profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF.
     erori = erori_generare(prof)
     if erori:
         raise ValueError("D301 nu se poate genera: " + " ".join(erori))
-    res = calcul_d301(prof, an, luna, ops)
+    res = calcul_d301(prof, perioada, ops)
     return build_xml(res), res
