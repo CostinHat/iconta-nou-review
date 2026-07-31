@@ -656,62 +656,89 @@ except Exception as _etemei:
     print("")
     print("### GARD TEMEI STRUCTURAT: NEVERIFICAT (import COTE esuat: %s)" % _etemei)
 
-# --- GARD IZOLARE TENANTI (structural): orice ruta /tenants/{tenant_id}/* care deschide o conexiune
-# (get_conn) TREBUIE sa rezolve accesul prin auth_api.schema_tenant - direct SAU printr-un RESOLVER
-# (functie al carei corp cheama schema_tenant). O ruta care atinge DB cu tenant_id din URL fara
-# verificare de acces = IDOR potential (datele altui client). Criteriu STRUCTURAL (nu semantic),
-# deci definibil curat. Ratchet: baseline 0 (masurat 31.07: 227/228 rezolva; 1 nu atinge DB).
+# --- GARD IZOLARE TENANTI (structural, CODEBASE-WIDE): orice ruta cu {tenant_id} in path care
+# deschide get_conn TREBUIE sa rezolve accesul - prin auth_api.schema_tenant SAU printr-un RESOLVER
+# (functie al carei corp cheama schema_tenant SAU scopeaza public.tenants pe accounting_firm_id/
+# user_tenants, ex. _api_schema pt API-key). Enumereaza rutele din TOT codebase-ul (@<var>.<verb>),
+# nu doar main.py @app - ca sa nu taca la migrarea spre APIRouter / fisiere separate. META-GARD:
+# semnaleaza un APIRouter definit dar nemontat (rute posibil neverificate). Ratchet: baseline 0.
 IZOLARE_BASELINE = 0
 try:
-    _mn = open(os.path.join(BAZA_PY, "main.py"), encoding="utf-8").read().split("\n")
-    _defn = re.compile(r"(\s*)(?:async )?def (\w+)\(")
-    _defs = []
-    for _i, _l in enumerate(_mn):
-        _m = _defn.match(_l)
-        if _m:
-            _defs.append((_i, _m.group(2), len(_m.group(1))))
-    _defs.append((len(_mn), "__end__", 0))
-    def _body_iz(_k):
-        _di = _defs[_k][0]; _j = _k + 1
-        while _j < len(_defs) and _defs[_j][2] > _defs[_k][2]:
-            _j += 1
-        return "\n".join(_mn[_di:_defs[_j][0]])
-    _resolveri = set()
-    for _k in range(len(_defs) - 1):
-        if "schema_tenant" in _body_iz(_k):
-            _resolveri.add(_defs[_k][1])
-    _reruta = re.compile(r"\s*@app\.(get|post|put|delete|patch)\(")
-    _redef = re.compile(r"\s*(?:async )?def ")
-    _starts = []
-    for _i, _l in enumerate(_mn):
-        if _reruta.match(_l):
-            _j = _i + 1
-            while _j < len(_mn) and not _redef.match(_mn[_j]):
-                _j += 1
-            _starts.append((_i, _j))
-    _starts.append((len(_mn), len(_mn)))
-    _redn = re.compile(r"(?:async )?def (\w+)")
-    _repath = re.compile(r'@app\.\w+\("([^"]+)"')
-    _iz_gap = []
-    for _k in range(len(_starts) - 1):
-        _deci, _defi = _starts[_k]
-        _decs = "\n".join(_mn[_deci:_defi]); _b = "\n".join(_mn[_defi:_starts[_k+1][0]])
-        if "tenants/{tenant_id}" not in _decs:
+    _iz_files = []
+    for _r, _d, _fs in os.walk(BAZA_PY):
+        if any(_x in _r for _x in ("venv", "/.", "_arhiva", "/static", "/duk", "node_modules")):
             continue
-        _dm = _redn.search(_b); _dn = _dm.group(1) if _dm else ""
-        _atinge = "get_conn(" in _b
-        _ok = ("schema_tenant" in _b) or any(_r in _b for _r in _resolveri if _r and _r != _dn)
-        if _atinge and not _ok:
-            _pm = _repath.search(_decs)
-            _iz_gap.append((_pm.group(1) if _pm else "?", _dn or "?"))
-    if len(_iz_gap) > IZOLARE_BASELINE:
-        rap["izolare_fara_acces"] = [("LEAK-POTENTIAL", 0, _pp, "ruta /tenants/{id}/* atinge DB fara schema_tenant: " + _dd) for _pp, _dd in _iz_gap]
+        for _f in _fs:
+            if _f.endswith(".py") and not _f.startswith("test_"):
+                _iz_files.append(os.path.join(_r, _f))
+    _redefn = re.compile(r"(\s*)(?:async )?def (\w+)\(")
+    _reroute = re.compile(r"\s*@(\w+)\.(get|post|put|delete|patch)\(")
+    _reredef = re.compile(r"\s*(?:async )?def ")
+    _repath = re.compile(r"@\w+\.\w+\(.([^\"]+)")
+    _redn = re.compile(r"(?:async )?def (\w+)")
+    def _iz_resolver(_bd):
+        return ("schema_tenant" in _bd or
+                ("public.tenants" in _bd and ("accounting_firm_id" in _bd or "user_tenants" in _bd)))
+    _resolveri = set()
+    _route_files = []
+    _router_defs = []
+    for _p in _iz_files:
+        _src = open(_p, encoding="utf-8").read()
+        _ls = _src.split("\n")
+        _ds = []
+        for _i, _l in enumerate(_ls):
+            _m = _redefn.match(_l)
+            if _m:
+                _ds.append((_i, _m.group(2), len(_m.group(1))))
+        _ds.append((len(_ls), "__end__", 0))
+        for _k in range(len(_ds) - 1):
+            _j = _k + 1
+            while _j < len(_ds) and _ds[_j][2] > _ds[_k][2]:
+                _j += 1
+            if _iz_resolver("\n".join(_ls[_ds[_k][0]:_ds[_j][0]])):
+                _resolveri.add(_ds[_k][1])
+        if _reroute.search(_src):
+            _route_files.append(_p)
+        for _mm in re.finditer(r"(\w+)\s*=\s*APIRouter\(", _src):
+            _router_defs.append((_p, _mm.group(1)))
+    _iz_gap = []
+    for _p in _route_files:
+        _ls = open(_p, encoding="utf-8").read().split("\n")
+        _starts = []
+        for _i, _l in enumerate(_ls):
+            if _reroute.match(_l):
+                _j = _i + 1
+                while _j < len(_ls) and not _reredef.match(_ls[_j]):
+                    _j += 1
+                _starts.append((_i, _j))
+        _starts.append((len(_ls), len(_ls)))
+        for _k in range(len(_starts) - 1):
+            _deci, _defi = _starts[_k]
+            _decs = "\n".join(_ls[_deci:_defi]); _b = "\n".join(_ls[_defi:_starts[_k+1][0]])
+            if "{tenant_id}" not in _decs:
+                continue
+            _dm = _redn.search(_b); _dn = _dm.group(1) if _dm else ""
+            _atinge = "get_conn(" in _b
+            _ok = _iz_resolver(_b) or any(_rr in _b for _rr in _resolveri if _rr and _rr != _dn)
+            if _atinge and not _ok:
+                _pm = _repath.search(_decs)
+                _iz_gap.append((os.path.basename(_p), _pm.group(1) if _pm else "?", _dn or "?"))
+    _allsrc = "\n".join(open(_p, encoding="utf-8").read() for _p in _iz_files)
+    _meta = [(os.path.basename(_pf), _rv) for _pf, _rv in _router_defs
+             if ("include_router(%s" % _rv) not in _allsrc]
+    if len(_iz_gap) > IZOLARE_BASELINE or _meta:
+        rap["izolare_fara_acces"] = (
+            [("LEAK-POTENTIAL", 0, _pp, "ruta {tenant_id} atinge DB fara acces in %s: %s" % (_ff, _dd)) for _ff, _pp, _dd in _iz_gap]
+            + [("META-ROUTER", 0, _ff, "APIRouter %s definit dar nemontat - rute posibil neverificate" % _rv) for _ff, _rv in _meta])
     print("")
-    print("### GARD IZOLARE TENANTI (structural):")
-    print("  rute /tenants/{id}/* care ating DB fara schema_tenant: %d (baseline %d)%s" % (
-        len(_iz_gap), IZOLARE_BASELINE, "  <== BLOCHEAZA" if len(_iz_gap) > IZOLARE_BASELINE else ""))
-    for _pp, _dd in _iz_gap:
-        print("  GAP %-50s %s" % (_pp, _dd))
+    print("### GARD IZOLARE TENANTI (codebase-wide: %d fisiere-rute, %d resolveri, %d routere):" % (
+        len(_route_files), len(_resolveri), len(_router_defs)))
+    print("  rute {tenant_id} care ating DB fara acces: %d (baseline %d)%s" % (
+        len(_iz_gap), IZOLARE_BASELINE, "  <== BLOCHEAZA" if (len(_iz_gap) > IZOLARE_BASELINE or _meta) else ""))
+    for _ff, _pp, _dd in _iz_gap:
+        print("  GAP %-42s %s (%s)" % (_pp, _dd, _ff))
+    for _ff, _rv in _meta:
+        print("  META APIRouter %s NEMONTAT (%s)" % (_rv, _ff))
 except Exception as _eiz:
     print("")
     print("### GARD IZOLARE TENANTI: NEVERIFICAT (%s)" % _eiz)
