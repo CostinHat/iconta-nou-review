@@ -4333,3 +4333,25 @@ DECIZIE DE SCOP necesara (Costin): (i) se trateaza excesul ca venit salarial in 
 deducere, sau (ii) se lasa sub-taxarea documentata pana la un text ANAF care transeaza. Pana atunci:
 DATORIE xfail (test_datorie_cas_peste_plafon_vacanta), vizibila in agenda. Cazul e RAR. De reconfirmat
 daca apare o norma/instructiune ANAF care transeaza.
+
+## 31.07.2026 — DECIZIE DE SCOP D3: excesul de vacanta = avantaj salarial integral (var i, AMANAT)
+
+Completeaza intrarea de mai sus ("CAS peste plafonul voucherelor de vacanta ... NEAPLICATA"). Costin a
+ales varianta (i), cu amanarea implementarii.
+
+Decizie de scop (Costin): excesul de vacanta = avantaj salarial integral. RATIONAMENT (miezul deciziei):
+starea actuala NU e conservatoare, e INCOERENTA - codul taxeaza excesul cu CASS + impozit dar NU cu CAS.
+Cele trei scutiri (CF art.76 alin.(3) lit.h impozit, art.142 lit.r CAS, art.157 alin.(2) CASS) sunt
+conditionate de ACEEASI formula - "acordate potrivit legii". Nu exista citire care sa piarda doua si sa
+pastreze a treia. Deci excesul peste 6 salarii minime = avantaj salarial INTEGRAL: CAS + CASS + impozit,
+si intra in baza salariala.
+
+NU se implementeaza acum: baza salariala atinge clusterul DEDUCERE PERSONALA (bifat 31.07). Un exces care
+mareste brutul misca deducerea (art.77, degresiva pe venit). Se face la clusterul D112, cu tot lantul sub
+ochi (calcul -> pull -> _d112_genereaza -> DUK), nu acum, izolat.
+
+ALTERNATIVA RESPINSA: (ii) sub-taxare documentata pana la un text ANAF - respinsa pentru ca lasa in cod o
+impartire ARBITRARA a scutirilor (pierzi CASS+impozit dar pastrezi CAS scutit), nu o pozitie fiscala.
+
+LIMITA DECLARATA: (a) nu exista text ANAF explicit pe tratamentul excesului; (b) DUK nu accepta CAS pe
+exces decat prin baza salariala (S731/S74, dovedit 31.07). Caz RAR (>25.950 lei/an vacanta la sm 4325).

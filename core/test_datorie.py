@@ -203,9 +203,17 @@ def test_datorie_tichete_masa_zile_efectiv_lucrate():
     assert "tichete masa zile efectiv lucrate din pontaj implementat" in dz.lower()
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE (INTERPRETARE NEAPLICATA) 31.07.2026: voucherele de vacanta peste plafonul anual (6 sal.minime, OUG 8/2009 art.1) ar pierde exceptia CAS (CF art.142 lit.r 'acordate potrivit legii') -> ar datora CAS pe exces. Codul NU aplica (ramane CASS+impozit, fara CAS). Motiv: DUK RESPINGE declararea CAS pe exces prin baza B4_7 (S731: B4_7 recalculat din salariu; S74: B4_8=B4_7x25%) - D112 nu are slot pentru CAS non-salarial. Singura cale DUK-valida = tratarea excesului ca venit salarial (efecte pe deducerea art.77) = a doua interpretare, cere decizie de scop. Se inchide cand modelul de declarare e decis, implementat si DUK-valid, consemnat in DECIZII.md.")
+@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 31.07.2026: excesul voucherelor de vacanta peste plafonul anual (6 sal.minime, OUG 8/2009 art.1) = avantaj salarial INTEGRAL (CAS+CASS+impozit, in baza salariala). Decizie de scop (Costin, DECIZII 31.07): cele 3 scutiri (CF art.76(3)h, 142 lit.r, 157(2)) sunt conditionate de aceeasi formula 'acordate potrivit legii' - nu exista citire care sa piarda doua si sa pastreze a treia. Codul azi taxeaza CASS+impozit dar NU CAS = INCOERENT, nu conservator. DE IMPLEMENTAT la clusterul D112 (nu acum): excesul intra in baza salariala, deci misca deducerea personala (art.77, degresiva) - se face cu tot lantul sub ochi. DUK accepta CAS pe exces DOAR prin baza salariala (S731/S74). Se inchide cand e implementat la D112, DUK-valid, consemnat in DECIZII.md.")
 def test_datorie_cas_peste_plafon_vacanta():
     # Se inchide cand CAS pe excesul de vacanta e declarat corect in D112 si validat pe DUK, consemnat
     # in DECIZII.md (marker stabil, case-insensitive).
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "cas peste plafon vacanta declarat in d112 validat duk" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: doua citate literale la clusterul tichete confirmate din sursa SECUNDARA (noulcodfiscal.ro), NEreverificat verbatim pe legislatie.just.ro (portalul randeaza dinamic, pagina se trunchiaza la fetch automat): (a) art.25 alin.(3) - litera exacta b) vs c) pt deductibilitatea la profit a tichetelor de masa/vacanta; (b) art.78 alin.(2) lit.a) - textul care confirma ca CASS-ul se deduce din baza impozitului pe tichete (bifa #3). Fondul e confirmat prin DERIVARE (art.157 face CASS obligatorie din 2024 -> art.78 deduce contributiile obligatorii), dar litera de pe portalul autoritativ ramane de reconfirmat pe PDF-ul MO. Se inchide cand citatele sunt reconfirmate verbatim si consemnate in DECIZII.md.")
+def test_datorie_citate_literale_tichete_portal():
+    # Se inchide cand art.25 alin.(3) lit.b/c si art.78 alin.(2) lit.a sunt reconfirmate verbatim de pe
+    # legislatie.just.ro (nu doar noulcodfiscal) si consemnate in DECIZII.md (marker stabil).
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "citate literale tichete reconfirmate verbatim pe portal" in dz.lower()
