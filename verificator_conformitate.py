@@ -632,6 +632,30 @@ for _h in _gri_reg["EXCLUS"]:
 if _n_gri < GRI_BASELINE:
     print("  -> grii reparate: coboara GRI_BASELINE la %d in verificator." % _n_gri)
 
+# --- GARD TEMEI STRUCTURAT (common.COTE): fiecare valoare fiscala poarta un Temei structurat
+# (act/nr/an/art/alin/lit/data_in/data_out/url), nu string liber. Structurat = grep-abil la o
+# schimbare de lege + data_out (garda de EXPIRARE, mecanismul principal de deriva - nu exista API
+# legislativ RO fiabil). Ratchet: baseline = intrari INCA cu temei string (0 dupa etapa 2); orice
+# intrare noua cu string in loc de Temei -> BLOCHEAZA.
+TEMEI_BASELINE = 0
+try:
+    from core.common import COTE as _COTE, Temei as _Temei
+    _cote_string = []
+    for _nume, _intrari in _COTE.items():
+        for _e in _intrari:
+            if not isinstance(_e[2], _Temei):
+                _cote_string.append((_nume, 0, "string", "temei nestructurat - foloseste common.Temei(act/nr/an/...)"))
+    if len(_cote_string) > TEMEI_BASELINE:
+        rap["temei_nestructurat"] = _cote_string
+    print("")
+    print("### GARD TEMEI STRUCTURAT (common.COTE):")
+    print("  intrari COTE cu temei string (nestructurat): %d (baseline %d)%s" % (
+        len(_cote_string), TEMEI_BASELINE,
+        "  <== BLOCHEAZA" if len(_cote_string) > TEMEI_BASELINE else ""))
+except Exception as _etemei:
+    print("")
+    print("### GARD TEMEI STRUCTURAT: NEVERIFICAT (import COTE esuat: %s)" % _etemei)
+
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)
