@@ -14,7 +14,7 @@ GENERAT de `genereaza_inventar_a.py` (nu edita direct partea de tabel). Structur
 | cass | 0.10 | CF art.156 | 2018-01-01 | — | FISCAL | √ 31.07 | CF art.156 10% |
 | impozit_venit | 0.10 | CF art.78 | 2018-01-01 | — | FISCAL | √ 31.07 | CF art.78 10% |
 | cam | 0.0225 | CF art.220^1 | 2018-01-01 | — | FISCAL | √ 31.07 | CF art.220^1 2.25% (angajator) |
-| salariu_minim | 4325 | HG 146/2026 | 2026-07-01 | 2027-07-01 (ESTIMAT) | FISCAL | √ 31.07 | HG 146/2026 (4325 S2 2026); HG 1506/2024 corectat 4050 (era 3700, act gresit) |
-| facilitate_salariu_minim | 200 | OUG 89/2025 art.III | 2026-07-01 | 2027-07-01 (ESTIMAT) | FISCAL | √ 31.07 | OUG 89/2025 art.III + HG 146/2026; conditii cumulative norma/functie/contractual/plafon |
-| plafon_facilitate_salariu_minim | 4600 | OUG 89/2025 art.III lit.b | 2026-07-01 | 2027-07-01 (ESTIMAT) | FISCAL | √ 31.07 | venit brut total: S1 4300 / S2 4600 |
+| salariu_minim | 4325 | HG 146/2026 | 2026-07-01 | 2026-12-31 (ESTIMAT) | FISCAL | √ 31.07 | HG 146/2026 (4325 S2 2026); HG 1506/2024 corectat 4050 (era 3700, act gresit) |
+| facilitate_salariu_minim | 200 | OUG 89/2025 art.III | 2026-07-01 | 2026-12-31 (ESTIMAT) | FISCAL | √ 31.07 | OUG 89/2025 art.III + HG 146/2026; conditii cumulative norma/functie/contractual/plafon |
+| plafon_facilitate_salariu_minim | 4600 | OUG 89/2025 art.III lit.b | 2026-07-01 | 2026-12-31 (ESTIMAT) | FISCAL | √ 31.07 | venit brut total: S1 4300 / S2 4600 |
 | tichet_masa_plafon | 45 | Legea 201/2025 | 2026-01-01 | 2026-09-30 (ESTIMAT) | FISCAL | PARTIAL 31.07 | fond fiscal verificat (45, imp/CASS, plafon); deschis: D2 nr tichete, D3 exces vacanta |

@@ -31,7 +31,7 @@ def test_salariu_minim_2025_este_4050_hg_1506():
 
 
 def test_valoarea_expirata_ridica():
-    """2027 depaseste valabilitatea de 12 luni a intrarii din 01.07.2026."""
+    """2027 depaseste data_out (2026-12-31, cadenta semestriala) a intrarii din 01.07.2026."""
     with pytest.raises(ValueError) as e:
         cota("salariu_minim", date(2027, 9, 1))
     m = str(e.value)

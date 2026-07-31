@@ -68,7 +68,7 @@ def test_salariu_minim_data_out_estimat():
     marcat ESTIMAT (regula data_out)."""
     from datetime import date as _d
     _, t = cota("salariu_minim", _d(2026, 7, 1))
-    assert t.data_out == _d(2027, 7, 1) and t.estimat is True
+    assert t.data_out == _d(2026, 12, 31) and t.estimat is True
 
 
 def test_tva_standard_fara_data_out_nu_expira():
@@ -77,3 +77,15 @@ def test_tva_standard_fara_data_out_nu_expira():
     _, t = cota("tva_standard", _d(2026, 1, 1))
     assert t.data_out is None
     assert cota("tva_standard", _d(2035, 1, 1))[0] > 0
+
+
+def test_salariu_minim_expira_la_1_ianuarie_2027():
+    """Salariul minim are cadenta ISTORICA semestriala/anuala (4050 de la 1 ian 2025, 4325 de la
+    1 iul 2026). Daca majorarea vine la 1 ian 2027, un proxy de 12 luni (data_out 2027-07-01) ar
+    tacea 6 luni si ar calcula cu o valoare moarta - exact ce s-a intamplat cu 3700. data_out
+    scurt deliberat (2026-12-31): mai bine eroare devreme decat cifra gresita tacut."""
+    from datetime import date as _d
+    assert cota("salariu_minim", _d(2026, 12, 1))[0] == 4325     # inca in S2 2026: ok
+    with pytest.raises(ValueError) as e:
+        cota("salariu_minim", _d(2027, 1, 15))                   # 2027: RIDICA, nu intoarce 4325
+    assert "2026-12-31" in str(e.value)

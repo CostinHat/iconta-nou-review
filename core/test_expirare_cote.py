@@ -33,7 +33,7 @@ def test_lista_nevida_o_singura_alerta_cu_toate_valorile():
     assert "Plafonul facilității la salariul minim" in mesaj
     # detaliile pe salariu_minim: temei (din sursa), data expirarii, ce se strica
     _, temei = cota("salariu_minim", date(2026, 7, 1))
-    assert temei in mesaj and "2027-07-01" in mesaj
+    assert temei in mesaj and "2026-12-31" in mesaj   # data_out scurt (cadenta semestriala salariu minim)
     assert "Monitorul Oficial" in mesaj and "actualiz" in mesaj.lower() and "REFUZA" in mesaj
     assert cheie.startswith("expirare_cote:")   # o singura cheie de throttling pe rulare
 

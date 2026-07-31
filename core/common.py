@@ -285,17 +285,17 @@ COTE = {
         (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", data_out=None)),
     ],
     "salariu_minim": [
-        (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", data_out="2027-07-01", estimat=True)),
+        (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", data_out="2026-12-31", estimat=True)),  # cadenta 1 ian/1 iul: data_out scurt (semestrial) DELIBERAT, ESTIMAT - eroare devreme > cifra moarta (ca 3700)
         # HG 146/2026 art.2 abroga HG 1506/2024 de la 01.07.2026; 4050 valabil 2025 + 2026 H1.
         (date(2025, 1, 1), Decimal("4050"), Temei("HG", 1506, 2024, data_in="2025-01-01", data_out="2026-06-30")),  # abroga HG 598/2024=3700
     ],
     "facilitate_salariu_minim": [
         # OUG 89/2025 art.III (+ Ordin 605/2026 pt aplicare); data_out estimat anual.
-        (date(2026, 7, 1), Decimal("200"), Temei("OUG", 89, 2025, art="III", data_in="2026-07-01", data_out="2027-07-01", estimat=True)),
+        (date(2026, 7, 1), Decimal("200"), Temei("OUG", 89, 2025, art="III", data_in="2026-07-01", data_out="2026-12-31", estimat=True)),
         (date(2025, 1, 1), Decimal("300"), Temei("OUG", 115, 2023, data_in="2025-01-01", data_out="2026-06-30")),
     ],
     "plafon_facilitate_salariu_minim": [
-        (date(2026, 7, 1), Decimal("4600"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-07-01", data_out="2027-07-01", estimat=True)),  # venit brut total, S2 2026
+        (date(2026, 7, 1), Decimal("4600"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-07-01", data_out="2026-12-31", estimat=True)),  # venit brut total, S2 2026
         (date(2026, 1, 1), Decimal("4300"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-01-01", data_out="2026-06-30")),  # S1 2026
     ],
     # [F133] tichet de masa / zi lucrata. Legea 201/2025 (MO 1106/28.11.2025): 45 lei S1 2026 +

@@ -11,7 +11,7 @@ def test_structura_derivata_din_cote():
     m = {r["cluster"]: r for r in g.structura()}
     assert "salariu_minim" in m
     assert "HG 146/2026" in m["salariu_minim"]["temei"]
-    assert m["salariu_minim"]["data_out"].startswith("2027-07-01")
+    assert m["salariu_minim"]["data_out"].startswith("2026-12-31")
     assert "ESTIMAT" in m["salariu_minim"]["data_out"]
     assert "tva_standard" in m and "Legea 141/2025" in m["tva_standard"]["temei"]
     assert m["tva_standard"]["data_out"].startswith("—")   # TVA nu expira
