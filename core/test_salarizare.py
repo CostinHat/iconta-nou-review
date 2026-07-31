@@ -6,7 +6,7 @@ Cazuri verificate cifra-cu-cifra contra sursei oficiale 2026
 from decimal import Decimal
 from datetime import date
 from core.salarizare import (
-    calcul_salariu, deducere_personala, taxe_cm, calcul_cm, calcul_cm_cod10,
+    calcul_salariu, deducere_personala, taxe_cm, calcul_cm, calcul_cm_cod10, procent_cm,
 )
 
 SEM2 = date(2026, 9, 1)   # salariu minim 4325
@@ -229,3 +229,10 @@ def test_deducere_la_data_obligatoriu():
     import pytest
     with pytest.raises((TypeError, ValueError)):
         deducere_personala(6000)
+
+
+def test_carantina_cod07_este_100pct():
+    # Cod 07 (carantina) = 100% din baza de calcul (OUG 158/2005 art.20 alin.(3), majorat permanent
+    # prin Legea 136/2020), NU 75%. Confirmat la sursa (concedii medicale runda 2-3).
+    assert procent_cm("07", 10) == Decimal("1.00")
+    assert procent_cm("07", 3) == Decimal("1.00")   # nu progresiv - mereu 100%

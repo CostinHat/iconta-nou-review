@@ -297,7 +297,7 @@ def monografie_plata(net, cont_trezorerie="5121"):
 def procent_cm(cod, zile_episod, procent_accident=100):
     """Procent indemnizatie dupa cod (nomenclator Legea 125/2006, art. 17-31 OUG 158/2005).
     01=55/65/75 progresiv (Legea 141/2025); 02/03/04=80 sau 100 (FAAMBP, param);
-    05/06/12/14/51=100; 07/13/15=75; 08/09=85. Cod 10 (reducere timp munca) NU are
+    05/06/07/12/14/51=100 (07 carantina: art.20(3) OUG 158/2005, 100% permanent prin Legea 136/2020); 13/15=75; 08/09=85. Cod 10 (reducere timp munca) NU are
     procent - formula speciala art. 19 (diferenta venit, max 25% din baza) -> ValueError."""
     cod = str(cod or "01").zfill(2)
     if cod == "01":
@@ -309,9 +309,9 @@ def procent_cm(cod, zile_episod, procent_accident=100):
                          "foloseste calcul_cm_cod10")
     if cod in ("02", "03", "04"):  # accidente munca/boala prof: 80% sau 100% (aviz ITM)
         return Decimal(str(procent_accident)) / 100
-    if cod in ("05", "06", "12", "14", "51"): return Decimal("1.00")  # infectocontagioase A/urgente/TBC/neoplazii-SIDA/izolare
+    if cod in ("05", "06", "07", "12", "14", "51"): return Decimal("1.00")  # infectocontagioase A/urgente/carantina/TBC/neoplazii-SIDA/izolare
     if cod in ("08", "09"): return Decimal("0.85")  # maternitate / ingrijire copil
-    return Decimal("0.75")  # 07 carantina, 13 cardiovasculare, 15 risc maternal, rest
+    return Decimal("0.75")  # 13 cardiovasculare, 15 risc maternal, rest
 
 
 def calcul_cm_cod10(baza_lunara, venit_realizat):
