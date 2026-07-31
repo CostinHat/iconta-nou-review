@@ -4573,3 +4573,19 @@ Masurare (fara reparatii) inainte de plan: cele 80 "cote fara temei" = 79 cote T
 common.COTE, period-aware, golden test_d394) -> 0 de cercetat, ~20 granite de reparat, restul etaloane/
 fixtures/parametri (ACCEPTATE). Baseline-ul 80 supraevalua riscul: o singura valoare imprastiata, nu 80 de
 decizii nesustinute.
+
+## 31.07.2026 — d300 vs d394 pe reverse charge: divergenta de clasificare e CERINTA, nu bug  (core/d300.py, core/d394.py, test_d300_d394_paritate.py)
+
+CONSTATARE (verificat la sursa: structura D300 + structD394 pct.217): taxarea inversa PRIMITA fara
+linii (tva=0) e clasificata DIFERIT de cele doua declaratii - si e corect asa, structuri diferite:
+- D300 (decont): NU auto-proceseaza reverse charge din facturi (d300.pull nici nu citeste
+  taxare_inversa). Randurile rd.12 (achizitii cu taxare inversa) se introduc MANUAL de contabil,
+  care stie cota bunului. Calea auto pune o achizitie primita cu tva=0 neclasificabila in "alte".
+- D394 (informativ): auto-clasifica reverse charge ca tip C (d394.tip_operatiune), la cota
+  STANDARD a perioadei cand lipsesc liniile - semnalata explicit ca PRESUPUNERE in avertismente
+  (pct.217: tip C nu accepta cota 0, cere cota bunului; fara linii nu e pe document).
+Deci NU se aliniaza fortat: ar cere ca d300 sa auto-faca reverse charge (feature) si tot ar avea
+nevoie de cota bunului (absenta pe factura fara linii). Reparatia reala e la DATE (factura de
+reverse charge SA aiba linii cu cota bunului) - atunci ambele clasifica corect. Gardul de paritate
+acopera clasificarea pe date COMPLETE (cu linii); cazul reverse-charge-fara-linii e limita
+documentata, nu bug. Pe sume ambele dau 0 (tva=0), deci nu afecteaza cifrele, doar incadrarea.

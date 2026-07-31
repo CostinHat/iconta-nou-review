@@ -104,3 +104,31 @@ def test_d300_si_d394_ambele_valide_duk_pe_aceeasi_luna(conn_par):
     tot3 = sum(_colectata_d300(r3).values())
     tot9 = sum(_colectata_d394(r9).values())
     assert tot3 == tot9, "TVA colectata totala nereconciliata: d300=%s d394=%s" % (tot3, tot9)
+
+
+# cota taxabila -> randul de TVA colectata din d300
+_ROW = {21: "R9_2", 11: "R10_2", 9: "R11_2"}
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d300_d394_aceeasi_clasificare_cote_taxabile(conn_par):
+    """Clasificare, nu doar sume: setul de cote TAXABILE (>0) coincide intre d300 si d394 pe
+    facturi COMPLETE (cu linii).
+
+    LIMITA DOCUMENTATA (nu bug, cerinta ANAF): taxarea inversa PRIMITA fara linii (tva=0) diverge
+    PRIN SPEC. d300 NU proceseaza reverse charge din facturi - randurile rd.12 se introduc MANUAL
+    de contabil (care stie cota bunului); calea auto pune achizitia neclasificabila in "alte".
+    d394 o auto-clasifica tip C la cota standard a perioadei (semnalata ca PRESUPUNERE in
+    avertismente, d394.pull). Cele doua declaratii au structuri diferite pentru aceeasi operatiune;
+    alinierea ar cere ca d300 sa auto-proceseze reverse charge - feature, si ar avea nevoie de cota
+    bunului (absenta pe o factura fara linii). Deci gardul acopera clasificarea pe date COMPLETE,
+    NU cazul reverse-charge-fara-linii."""
+    _seed(conn_par)
+    p3, f3 = d300.pull(conn_par, SCHEMA_T, 2026, 6)
+    r3 = d300.calcul_d300(p3, 2026, 6, f3)
+    p9, f9 = d394.pull(conn_par, SCHEMA_T, 2026, 6)
+    r9 = d394.calcul_d394(p9, 2026, 6, f9)
+    cote_d300 = {c for c, row in _ROW.items() if r3.R.get(row)}
+    cote_d394 = set(r9.rezumat2)
+    assert cote_d300 == cote_d394, (
+        "CLASIFICARE divergenta d300=%s d394=%s" % (sorted(cote_d300), sorted(cote_d394)))
