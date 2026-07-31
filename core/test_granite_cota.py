@@ -103,3 +103,49 @@ def test_produs_scutit_cota_0_ramane_0_nu_devine_21(conn_schema):
     r = produse_api.cauta_dupa_denumire(conn_schema, "Serviciu scutit ABC")
     assert r is not None
     assert r["cota_tva"] == 0, "cota scutit 0 transformata gresit in %s" % r["cota_tva"]
+
+
+# ── TEMA E: proba pana la declaratie — D300 cu factura SCUTITA (cota 0) prin granita reparata ──
+from core import duk as _duk
+_D300_DUK = _duk.poate_valida("d300")
+
+
+@_pt.fixture
+def conn_schema_d300():
+    """Schema temporara cu firma_profil COMPLET (banca+iban) pentru D300. ROLLBACK garantat."""
+    _db.init_pool()
+    with _db.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA_T)
+                cur.execute(_tp.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), SCHEMA_T))
+                cur.execute("SET search_path TO %s, public" % SCHEMA_T)
+                cur.execute(
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
+                    "platitor_tva, tip_decont, declarant_nume, declarant_prenume, declarant_functie) "
+                    "VALUES (1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202','BCR',"
+                    "'RO49RNCB0000000000000001',true,'L','Pop','Ion','administrator') "
+                    "ON CONFLICT (id) DO UPDATE SET banca=EXCLUDED.banca, iban=EXCLUDED.iban")
+            yield conn
+        finally:
+            conn.rollback()
+
+
+@_pt.mark.skipif(not _db_ok() or not _D300_DUK, reason="DB sau validator DUK d300 indisponibil")
+def test_proba_d300_factura_scutita_prin_granita_reparata_duk_valid(conn_schema_d300):
+    """LECTIA D3 + proba pana la declaratie: o factura emisa prin granita REPARATA (emite_factura,
+    cu _potriveste_linii + creeaza_factura care acum cer cota explicit), cu o linie 21% SI o linie
+    SCUTITA (cota 0 - valoare valida, nu absenta transformata in 21), genereaza un D300 care trece
+    validatorul OFICIAL DUK. Dovada ca reparatia ajunge la o declaratie VALIDA, nu doar la teste
+    unitare verzi (lectia 29.07: fix verde in suita dar declaratie gresita la generare)."""
+    from core import facturi_api, d300
+    r = facturi_api.emite_factura(
+        conn_schema_d300,
+        [{"descriere": "Consultanta IT", "cantitate": 1, "pret_unitar": 1000, "cota_tva": 21},
+         {"descriere": "Servicii medicale scutite", "cantitate": 1, "pret_unitar": 500, "cota_tva": 0}],
+        data_emitere="2026-06-15", moneda="RON", platitor_tva=True)
+    assert r.get("factura_id"), "emitere esuata: %r" % r
+    xml, res = d300.genereaza(conn_schema_d300, SCHEMA_T, 2026, 6)
+    rez = _duk.valideaza(xml, "d300", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins D300 (factura cu linie scutita): %s" % rez
