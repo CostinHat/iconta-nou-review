@@ -26,6 +26,15 @@ zero. Invers ar însemna să verifici de două ori — sau, mai probabil, a doua
 Firul curent — de aici derivă URMATORUL PAS al agendei. Se ține la ZI (regula de
 redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
+- fir: Site în mentenanță (nginx, allowlist pe IP)
+- ultim: PASUL 2 — Inventarul A per-cluster + RISC (0ff5d92)
+- urmator: pune iconta.eu în mentenanță — pagină statică pentru toți, excepție pe IP-ul lui Costin (92.180.8.247); revenire cu O comandă (`mentenanta.sh off`). IN LUCRU
+- pasi:
+  1. pagină de mentenanță (DESIGN_SYSTEM, inline, sobră) + comutator `mentenanta.sh` + snippet-uri nginx on/off.
+  2. gard nginx LOOP-SAFE: `if ($show_maint) return 503` în locațiile-proxy; pagina servită din `@mentenanta` fără `if`.
+  3. aplicare (backup config, `nginx -t`, reload); verificare din exterior (non-Costin) + de pe IP-ul lui Costin.
+- NOTA: firul temeiuri (PASUL 2b, garda per-funcție) e în lucru necomis local — reluat după mentenanță.
+
 - fir: Temeiuri citabile mecanic + reverificarea locurilor fără temei (Sesiunea A · transversal)
 - ultim: PASUL 5 — core/temeiuri.py: `gaseste(query)` + CLI `python -m core.temeiuri "<act|regulă>"`. Forme PARȚIALE (cauți actul: „OUG 89/2025" prinde și citările cu articol), ambele categorii, + funcția care conține linia (ast) — arată CE face codul acolo. Probat pe OUG 89/2025 (16 locuri).
 - urmator: PASUL 2b — locuri FĂRĂ temei în core/d*.py + core/salarizare.py (cotă/prag/rotunjire/limită/eligibilitate/structură aplicate fără citare): caut temeiul la sursă, citez textul, propun; validare; scriu — pe module, commit între ele. SAU normalizarea celor 113 citări normative (PASUL 3 rest). De ales. NEÎNCEPUT.
