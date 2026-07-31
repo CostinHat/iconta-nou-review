@@ -31,6 +31,7 @@ from __future__ import annotations
 
 from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
 from core.common import cere_coloane_cursor  # [garda coloane 27.07.2026]
+from core.common import cheie_manual
 _COLOANE_PROFIL = ("nume", "cui", "adresa", "caen")   # minimul citit de aici
 
 import re
@@ -289,12 +290,15 @@ class Rezultat:
     avertismente: list = field(default_factory=list)
 
 
-def calcul_d394(prof, an, luna, facturi, manual=None, serii_emise=None):
+def calcul_d394(prof, perioada, date, manual=None):
     """PUR. facturi: [{cui, nume, directie, taxare_inversa, cota, baza, tva, tip_N?}].
     manual: [{tip, tip_partener, cota, cuiP, denP, nrFact, baza, tva}] pentru
     operatiuni pe care evidenta nu le poate deduce (bonuri, borderouri, art.331 pe cod).
     """
-    serii_emise = serii_emise or {}
+    an, luna = perioada.an, perioada.luna
+    facturi = date.get("facturi") or []
+    serii_emise = date.get("serii") or {}
+    ops = (manual or {}).get("operatiuni") or []
     intracom = 0
     op1 = {}
     categorii = {}     # cheie op1 -> {categorii art.331} pentru op11
@@ -337,7 +341,7 @@ def calcul_d394(prof, an, luna, facturi, manual=None, serii_emise=None):
         _adauga(tip, tp, cota, cui, f.get("nume"), 1, f.get("baza"), f.get("tva"),
                 f.get("categorie_331"))
 
-    for op in (manual or []):
+    for op in ops:
         if op.get("tip") not in TIPURI:
             continue
         _adauga(op["tip"], int(op.get("tip_partener") or P_TVA_RO), op.get("cota") or 0,
@@ -644,12 +648,13 @@ def valideaza(res):
     return erori
 
 
-def pull(conn, schema, an, luna):
+def pull(conn, schema, perioada):
     """Facturile lunii, cu cota din linii. O factura cu doua cote da doua intrari:
-    op1 e unic pe (cuiP, tip, cota) — pct. 218."""
+    op1 e unic pe (cuiP, tip, cota) — pct. 218. Intoarce (prof, {facturi, serii})."""
     import psycopg2.extras as _E
-    inceput = "%04d-%02d-01" % (an, luna)
-    sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
+    _inc, _sf = perioada.interval()
+    inceput = _inc.isoformat()
+    sfarsit = _sf.isoformat()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT * FROM firma_profil WHERE id = 1")
         cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
@@ -711,16 +716,17 @@ def pull(conn, schema, an, luna):
             facturi.append(dict(comun, cota=cota, baza=baza,
                                 tva=(baza * Decimal(cota) / Decimal(100)
                                      if bool(r["ti"]) and r["directie"] == "primita" else tva)))
-    return prof, facturi
+    return prof, {"facturi": facturi, "serii": serii_emise(conn, schema, perioada)}
 
 
-def serii_emise(conn, schema, an, luna):
+def serii_emise(conn, schema, perioada):
     """Plajele de facturi EMISE in luna: {serie: (nr_min, nr_max)}.
     R130/R131: nrFacturi > 0 <=> exista serieFacturi tip 2; tip 2 cere tip 1.
     Numarul se extrage din partea numerica a lui facturi.numar."""
     import re as _re
-    inceput = "%04d-%02d-01" % (an, luna)
-    sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
+    _inc, _sf = perioada.interval()
+    inceput = _inc.isoformat()
+    sfarsit = _sf.isoformat()
     out = {}
     with conn.cursor() as cur:
         cur.execute("""SELECT COALESCE(NULLIF(serie, ''), '-') AS s, numar
@@ -750,15 +756,15 @@ def erori_generare(prof):
     return erori
 
 
-def genereaza(conn, schema, an, luna, manual=None):
-    if not (1 <= luna <= 12):
-        raise ValueError("Luna invalidă: %r" % luna)
-    prof, facturi = pull(conn, schema, an, luna)
+def genereaza(conn, schema, perioada, manual=None):
+    manual = cheie_manual(manual, "operatiuni")
+    if perioada.luna is None or not (1 <= perioada.luna <= 12):
+        raise ValueError("D394 lunar: luna invalidă: %r" % perioada.luna)
+    prof, date = pull(conn, schema, perioada)
     _er = erori_generare(prof)
     if _er:
         raise ValueError("D394 nu se poate genera: " + " ".join(_er))
-    res = calcul_d394(prof, an, luna, facturi, manual,
-                      serii_emise=serii_emise(conn, schema, an, luna))
+    res = calcul_d394(prof, perioada, date, manual)
     for e in valideaza(res):
         res.avertismente.insert(0, e)
     res.modul, res.reguli = MODUL, REGULI

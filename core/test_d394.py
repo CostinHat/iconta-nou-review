@@ -13,6 +13,17 @@ from core.d394 import (
     calcul_d394, build_xml, clasifica_partener, tip_operatiune, rez1_tipuri,
     jud_siruta, codpr_din_categorie, cui_ro, cota_standard,
 )
+from core.common import Perioada as _Per394
+_calcul_d394_real = calcul_d394
+
+
+def calcul_d394(prof, an, luna, facturi, manual=None, serii_emise=None):
+    """Shim de test: mapeaza apelurile vechi (an,luna,facturi[,manual,serii]) pe contractul nou
+    calcul_d394(prof, perioada, date, manual). Adaptor VIZIBIL de test - modulul are contractul curat."""
+    return _calcul_d394_real(prof, _Per394(an, luna=luna),
+                             {"facturi": facturi, "serii": serii_emise or {}},
+                             {"operatiuni": manual} if manual is not None else None)
+
 
 PROF = {"cui": "26766053", "caen": "6920", "nume": "TEST SRL", "adresa": "Str. 1",
         "telefon": "0722000000", "judet": "B", "declarant_functie": "ADMIN"}

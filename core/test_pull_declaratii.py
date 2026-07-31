@@ -108,7 +108,7 @@ def test_d300_pull_nu_ia_facturi_din_alta_luna(schema):
 def test_d394_pull_vede_factura(schema):
     from core import d394
     _factura(schema)
-    rez = d394.pull(schema, SCHEMA_T, 2026, 6)
+    rez = d394.pull(schema, SCHEMA_T, Perioada(2026, luna=6))
     assert rez is not None
     text = repr(rez)
     assert "14399840" in text or "CLIENT SRL" in text, "d394.pull nu vede factura reala"
