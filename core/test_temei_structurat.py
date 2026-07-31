@@ -46,3 +46,34 @@ def test_cota_data_out_None_nu_expira(monkeypatch):
     t = Temei("Legea", 227, 2015, data_in="2017-01-01", data_out=None)
     monkeypatch.setitem(COTE, "_proba_fara_out", [(date(2017, 1, 1), 9, t)])
     assert cota("_proba_fara_out", date(2099, 1, 1))[0] == 9
+
+
+# ── ETAPA 2: temeiuri STRUCTURATE populate pe clusterele verificate ──
+def test_clustere_verificate_au_temei_structurat():
+    """salariu minim, tichete, TVA, facilitati - temei = Temei (nu string liber), cu actul
+    structurat, grep-abil la o schimbare de lege."""
+    from datetime import date as _d
+    cazuri = [("salariu_minim", _d(2026, 7, 1), "HG", 146),
+              ("tichet_masa_plafon", _d(2026, 6, 1), "Legea", 201),
+              ("tva_standard", _d(2026, 1, 1), "Legea", 141),
+              ("facilitate_salariu_minim", _d(2026, 7, 1), "OUG", 89)]
+    for nume, ld, tip, nr in cazuri:
+        _, t = cota(nume, ld)
+        assert isinstance(t, Temei), "%s: temei nestructurat: %r" % (nume, t)
+        assert t.tip == tip and t.nr == nr, "%s: act gresit %s/%s" % (nume, t.tip, t.nr)
+
+
+def test_salariu_minim_data_out_estimat():
+    """HG 146/2026 nu spune explicit pana cand -> data_out = sfarsit perioada rezonabila (anual),
+    marcat ESTIMAT (regula data_out)."""
+    from datetime import date as _d
+    _, t = cota("salariu_minim", _d(2026, 7, 1))
+    assert t.data_out == _d(2027, 7, 1) and t.estimat is True
+
+
+def test_tva_standard_fara_data_out_nu_expira():
+    """TVA se schimba prin lege, nu periodic -> data_out=None, nu expira niciodata."""
+    from datetime import date as _d
+    _, t = cota("tva_standard", _d(2026, 1, 1))
+    assert t.data_out is None
+    assert cota("tva_standard", _d(2035, 1, 1))[0] > 0

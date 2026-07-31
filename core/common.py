@@ -258,51 +258,50 @@ def _ca_data(x):
 # fiecare valoare: (valabil_din, valoare, temei)
 COTE = {
     "tva_standard": [
-        (date(2025, 8, 1), Decimal("0.21"), "Legea 141/2025"),
-        (date(2017, 1, 1), Decimal("0.19"), "Legea 227/2015"),
+        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, data_in="2025-08-01", data_out=None)),
+        (date(2017, 1, 1), Decimal("0.19"), Temei("Legea", 227, 2015, data_in="2017-01-01", data_out="2025-07-31")),  # abrogat de Legea 141/2025 la 01.08.2025
     ],
     "plafon_mijloc_fix": [
-        (date(2026, 1, 1), Decimal("5000"), "OUG 8/2026"),
-        (date(2015, 1, 1), Decimal("2500"), "Legea 227/2015"),
+        (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, data_in="2026-01-01", data_out="2028-01-01", estimat=True)),
+        (date(2015, 1, 1), Decimal("2500"), Temei("Legea", 227, 2015, data_in="2015-01-01", data_out="2025-12-31")),
     ],
     "plafon_sold_casa": [
-        (date(2015, 5, 9), Decimal("50000"), "Legea 70/2015"),
+        (date(2015, 5, 9), Decimal("50000"), Temei("Legea", 70, 2015, data_in="2015-05-09", data_out=None)),
     ],
     "plafon_avans_decontare": [
-        (date(2023, 12, 15), Decimal("5000"), "OUG 115/2023"),
+        (date(2023, 12, 15), Decimal("5000"), Temei("OUG", 115, 2023, data_in="2023-12-15", data_out=None)),
     ],
-    # — salarizare 2026 —
+    # — salarizare 2026 (cluster concedii medicale + salarizare) —
     "cas": [
-        (date(2018, 1, 1), Decimal("0.25"), "Cod fiscal art. 138"),
+        (date(2018, 1, 1), Decimal("0.25"), Temei("CF", art="138", data_in="2018-01-01", data_out=None)),
     ],
     "cass": [
-        (date(2018, 1, 1), Decimal("0.10"), "Cod fiscal art. 156"),
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="156", data_in="2018-01-01", data_out=None)),
     ],
     "impozit_venit": [
-        (date(2018, 1, 1), Decimal("0.10"), "Cod fiscal art. 78"),
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", data_in="2018-01-01", data_out=None)),
     ],
     "cam": [
-        (date(2018, 1, 1), Decimal("0.0225"), "Cod fiscal art. 220^1"),
+        (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", data_out=None)),
     ],
     "salariu_minim": [
-        (date(2026, 7, 1), Decimal("4325"), "HG 146/2026"),
-        # 4050 ramane in vigoare si in 2026 H1 (nicio majorare la 1 ian 2026); cota() intoarce
-        # valoarea la la_data, deci aceasta intrare acopera 2025 SI 2026 pana la 01.07.2026.
-        (date(2025, 1, 1), Decimal("4050"), "HG 1506/2024"),  # abroga HG 598/2024=3700 de la 1 ian 2025
+        (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", data_out="2027-07-01", estimat=True)),
+        # HG 146/2026 art.2 abroga HG 1506/2024 de la 01.07.2026; 4050 valabil 2025 + 2026 H1.
+        (date(2025, 1, 1), Decimal("4050"), Temei("HG", 1506, 2024, data_in="2025-01-01", data_out="2026-06-30")),  # abroga HG 598/2024=3700
     ],
     "facilitate_salariu_minim": [
-        (date(2026, 7, 1), Decimal("200"), "OUG 89/2025 art.III + Ordin 605/2026"),
-        (date(2025, 1, 1), Decimal("300"), "OUG 115/2023"),
+        # OUG 89/2025 art.III (+ Ordin 605/2026 pt aplicare); data_out estimat anual.
+        (date(2026, 7, 1), Decimal("200"), Temei("OUG", 89, 2025, art="III", data_in="2026-07-01", data_out="2027-07-01", estimat=True)),
+        (date(2025, 1, 1), Decimal("300"), Temei("OUG", 115, 2023, data_in="2025-01-01", data_out="2026-06-30")),
     ],
     "plafon_facilitate_salariu_minim": [
-        (date(2026, 7, 1), Decimal("4600"), "OUG 89/2025 art.III lit.b (venit brut total, S2 2026)"),
-        (date(2026, 1, 1), Decimal("4300"), "OUG 89/2025 art.III lit.b (venit brut total, S1 2026)"),
+        (date(2026, 7, 1), Decimal("4600"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-07-01", data_out="2027-07-01", estimat=True)),  # venit brut total, S2 2026
+        (date(2026, 1, 1), Decimal("4300"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-01-01", data_out="2026-06-30")),  # S1 2026
     ],
-    # [F133] valoarea maxima legala a unui tichet de masa / zi lucrata. Legea 201/2025
-    # (MO 1106/28.11.2025): 45 lei pt S1 2026 + iul-sep 2026 (reindexare dupa octombrie).
-    # Tichetele de masa: CASS 10% + impozit 10% (Legea 296/2023), fara CAS/CAM.
+    # [F133] tichet de masa / zi lucrata. Legea 201/2025 (MO 1106/28.11.2025): 45 lei S1 2026 +
+    # iul-sep 2026 (reindexare IPC dupa octombrie). CASS 10% + impozit 10% (Legea 296/2023), fara CAS/CAM.
     "tichet_masa_plafon": [
-        (date(2026, 1, 1), Decimal("45"), "Legea 201/2025 (MO 1106/2025)"),
+        (date(2026, 1, 1), Decimal("45"), Temei("Legea", 201, 2025, data_in="2026-01-01", data_out="2026-09-30", estimat=True)),
     ],
 }
 
