@@ -151,11 +151,25 @@ că intrarea a fost înghițită**.
 
 ### 5. Izolare tenanți
 **Eșec:** `search_path` nesetat; constrângere nescopată la `current_schema()`; job de
-fundal pe tenantul greșit.
-**Stare: LIPSĂ (mecanism corect, gard absent).**
-- Mecanismul: `db.get_conn(schema)` cu `SET LOCAL` (PgBouncer-safe).
-- LIPSĂ: gard care interzice conexiuni brute în afara helperului.
-- LIPSĂ: test cu doi tenanți cu date identice, citire încrucișată → zero rânduri.
+fundal pe tenantul greșit; **IDOR** (id tenant din URL neverificat contra userului).
+**Stare: ACOPERIT (mecanism + probă dinamică + gard structural).**
+- Mecanismul: `db.get_conn(schema)` cu `SET LOCAL`; `auth_api.schema_tenant(uid, tenant_id)` →
+  `None` fără acces → 404. Model API-key: `_api_schema` scopat pe `accounting_firm_id`.
+- ACOPERIT (probă DINAMICĂ, 31.07): `core/test_izolare_incrucisata.py` — doi tenanți sub cabinete
+  diferite, acces încrucișat real prin HTTP (5 rute) → 404, zero date; mutație `schema_tenant`
+  bypass → leak → testul pică. + măsurat: `from core.db import` = 0 module (proba e completă).
+- ACOPERIT (gard STRUCTURAL, 31.07): `verificator_conformitate.py` — orice rută cu `{tenant_id}`
+  în path care deschide `get_conn` TREBUIE să rezolve accesul (schema_tenant SAU resolver pe
+  accounting_firm_id/user_tenants). CODEBASE-WIDE (`@<var>.<verb>` în tot `.py`, nu doar main.py
+  @app) + META-GARD pentru APIRouter nemontat. Baseline 0. RED dovedit (gol în alt fișier; router
+  nemontat).
+- LIMITĂ DECLARATĂ a criteriului: gardul acoperă `{tenant_id}` în **PATH**. Rute care iau
+  `tenant_id` din **BODY/query** (POST `/coada`, POST `/declaratii/{tip}`) NU sunt acoperite de
+  criteriul structural — azi rezolvă accesul (`/coada`→`_schema_sau_404`, declaratii→schema_tenant,
+  verificat manual 31.07), dar gardul nu le impune. Resolveri pe 2 niveluri de indirectare:
+  neacoperiți (măsurat: 0 azi).
+- LIMITĂ (conexiuni brute): 1 conexiune brută în afara helperului (`sinteza_zilnica.py`, citește
+  doar `public.*`) — nepăzită mecanic.
 
 ### 6. Acces
 **Eșec:** rută fără dependență de rol; IDOR (id din URL neverificat contra tenantului).
