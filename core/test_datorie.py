@@ -250,3 +250,9 @@ def test_datorie_factura_pdf_proba_pe_profil_real():
 def test_datorie_d300_reverse_charge_manual_reconfirmat_mo():
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "d300 reverse charge doar manual reconfirmat la sursa oficiala" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026 (clasa noua - unealta care se inseala singura): verificator_conformitate.py a produs 13 fals-pozitive prin propriul bug (regex-ul de rute rata 'async def' -> a marcat 13 rute ca fara schema_tenant cand ele il aveau). Instrumentul care MASOARA conformitatea nu e el insusi masurat: niciun test nu verifica ca analizatorul verificatorului clasifica corect (rute/resolveri/goluri). Un gard cu fals-pozitive se dezactiveaza si moare (GARZI regula 3); un gard cu fals-NEGATIVE tace pe un leak real. DE FACUT: teste pe logica de analiza a verificatorului (fixturi de cod cu rute known-good / known-bad -> asertie ca gardul le clasifica corect). Se inchide cand analizatorul verificatorului are teste si e consemnat in DECIZII.md.")
+def test_datorie_verificatorul_nu_e_el_insusi_testat():
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "analizatorul verificatorului are teste pe clasificare" in dz.lower()
