@@ -240,3 +240,45 @@ def test_fiecare_fisier_test_are_cel_putin_un_test():
             goale.append(str(f.relative_to(_RAD)))
     assert not goale, ("fisiere test_*.py cu 0 functii 'def test_' (redenumeste-le fara prefixul test_ "
                        "- sunt scripturi, nu suita): %s" % goale)
+
+
+def _data_ddmm(cell):
+    """(luna, zi) din prima data DD.MM a unei celule Verificat. None daca nu are bifa-data."""
+    m = re.search(r"\d{1,2}\.\d{1,2}", cell or "")
+    if not m:
+        return None
+    zi, luna = m.group(0).split(".")[:2]
+    return (int(luna), int(zi))
+
+
+def test_bifa_bumpuita_are_motiv():
+    """O bifa mutata INAINTE (data crescuta fata de prima ei aparitie in istoricul comis al TESTE.md)
+    TREBUIE sa poarte motivul mutarii ('bump: ...') in coloana Verificat. Altfel garda anti-stale
+    devine ornament: functia de test se schimba -> garda pica -> cineva bumpeaza data -> verde, fara
+    reverificare la sursa (reset semnalat -> bump -> verde). Ancora canonica, imutabila in istoric:
+    facilitate a fost mutata 29.07->31.07 la FIX3 (net-ul derivat s-a mutat in
+    test_minim_4325_are_facilitate_sem2). Ruleaza pe starea COMISA a istoricului (git log/show)."""
+    cur = agenda.inventar_verificat_raw((_RAD / "TESTE.md").read_text(encoding="utf-8"))
+    hist = subprocess.run(["git", "-C", str(_RAD), "log", "--format=%H", "--", "TESTE.md"],
+                          capture_output=True, text=True).stdout.split()
+    earliest = {}   # cluster -> cea mai veche (luna, zi) bifa vazuta in istoric
+    for h in hist:
+        txt = subprocess.run(["git", "-C", str(_RAD), "show", "%s:TESTE.md" % h],
+                             capture_output=True, text=True).stdout
+        for cl, cell in agenda.inventar_verificat_raw(txt).items():
+            d = _data_ddmm(cell)
+            if d and (cl not in earliest or d < earliest[cl]):
+                earliest[cl] = d
+    # anti-vacuu (GARZI cat.9): daca parserul/istoricul se rup, earliest se goleste si testul ar
+    # trece degeaba. Ancoram pe bump-ul real cunoscut: facilitate a pornit la 29.07.
+    assert earliest.get("facilitate salariu minim") == (7, 29), \
+        "istoricul TESTE.md nu mai arata bifa 29.07 initiala la facilitate - parser/istoric rupt, garda ar trece vacuu"
+    lipsa = []
+    for cl, cell in cur.items():
+        d = _data_ddmm(cell)
+        e = earliest.get(cl)
+        if d and e and d > e and not re.search(r"bump:\s*\S", cell, re.IGNORECASE):
+            lipsa.append("%s: bifa mutata %02d.%02d->%02d.%02d fara 'bump: <motiv>'"
+                         % (cl, e[1], e[0], d[1], d[0]))
+    assert not lipsa, ("bifa mutata inainte fara motiv inregistrat (garda anti-stale devine ornament):\n"
+                       + "\n".join(lipsa))

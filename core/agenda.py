@@ -51,6 +51,17 @@ def _randuri_tabel(text, titlu):
     return randuri
 
 
+def inventar_verificat_raw(text):
+    """{cluster: celula 'Verificat la sursă' bruta} din Inventarul A al unui text TESTE.md
+    (orice versiune, inclusiv din `git show`). Bruta = cu tot ce urmeaza dupa data √ (motivul
+    de bump). Sursa unica de parsare a coloanei bifei; folosita si de garda de bump din test_agenda."""
+    out = {}
+    for cel in _randuri_tabel(text, "## Inventarul de acoperit în A"):
+        if len(cel) > 3 and cel[0] and not cel[0].lower().startswith("cluster"):
+            out[cel[0]] = cel[3]
+    return out
+
+
 def stare_sesiune_a():
     """{rows, fiscal:(verif,total), structura:(verif,total)} - per CLUSTER (30.07), cu risc.
     Rand: {cluster, modul, fisiere, verificat, risc, temeiuri}."""
