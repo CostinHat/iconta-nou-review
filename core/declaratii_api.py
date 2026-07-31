@@ -19,6 +19,7 @@ CALCUL+DB stau în module (au pull+genereaza). Aici doar: validare cerere (pură
 from __future__ import annotations
 
 from core import (d100, d101, d112, d205, d300, d301, d390, d394, d406, d710)
+from core.common import Perioada
 
 REGULI = "2026.1"
 MODUL = "declaratii_api"
@@ -47,7 +48,7 @@ def _d205(conn, schema, b):
     return d205.genereaza(conn, schema, b["an"])
 
 def _d300(conn, schema, b):
-    return d300.genereaza(conn, schema, b["an"], b["luna"], b.get("manual"))
+    return d300.genereaza(conn, schema, Perioada(b["an"], luna=b["luna"]), b.get("manual"))
 
 def _d301(conn, schema, b):
     return d301.genereaza(conn, schema, b["an"], b["luna"])

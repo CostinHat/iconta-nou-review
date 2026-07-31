@@ -7,6 +7,7 @@ lantul obligatoriu R27->R28->R32->R34->R37->R40->R42 pe care validatorul il
 verifica formula cu formula (structura_D300_v12.0.0_10022026.pdf).
 """
 from decimal import Decimal
+from core.common import Perioada
 from core.d300 import calcul_d300
 
 
@@ -21,7 +22,7 @@ def test_lantul_R27_R42_se_calculeaza_complet():
         {"directie": "emisa", "total": 12100, "tva": 2100},
         {"directie": "primita", "total": 1210, "tva": 210},
     ]
-    res = calcul_d300(_prof(), 2026, 6, facturi)
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
     assert res.R["R17_2"] == 2100          # total colectata
     assert res.R["R27_2"] == 210           # total deductibila (lipsea complet)
     assert res.R["R28_2"] == 210           # subtotal dedusa
@@ -36,7 +37,7 @@ def test_lantul_R27_R42_se_calculeaza_complet():
 def test_formula_R27_respecta_structura_oficiala():
     """R27_2 = R18_2+R19_2+R20_2+R21_2+R22_2+R23_2+R24_2+R25_2+R43_2+R44_2+R74_2+R75_2"""
     facturi = [{"directie": "primita", "total": 1210, "tva": 210}]  # -> R22_2=210
-    res = calcul_d300(_prof(), 2026, 6, facturi)
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
     assert res.R["R27_2"] == res.R["R22_2"]
 
 
@@ -45,7 +46,7 @@ def test_achizitie_mai_mare_decat_livrarea_da_sold_negativ():
         {"directie": "emisa", "total": 1210, "tva": 210},
         {"directie": "primita", "total": 12100, "tva": 2100},
     ]
-    res = calcul_d300(_prof(), 2026, 6, facturi)
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
     assert res.R["R33_2"] == 1890          # suma negativa in perioada
     assert res.R["R40_2"] == 1890          # suma negativa cumulata
     assert res.R["R42_2"] == 1890          # sold negativ la sfarsit
@@ -54,6 +55,15 @@ def test_achizitie_mai_mare_decat_livrarea_da_sold_negativ():
 
 
 def test_fara_operatiuni_nu_scrie_randuri_goale():
-    res = calcul_d300(_prof(), 2026, 6, [])
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), [])
     assert "R27_2" not in res.R
     assert "R32_2" not in res.R
+
+
+def test_d300_manual_cheie_necunoscuta_ridica():
+    """Contract A1: manual d300 accepta doar chei Rxx_y; o cheie straina (typo) RIDICA, nu se
+    ignora tacut (clasa 'or 21')."""
+    import pytest
+    with pytest.raises(ValueError) as e:
+        calcul_d300(_prof(), Perioada(2026, luna=6), [], {"R9_1": 100, "totalGresit": 5})
+    assert "necunoscut" in str(e.value).lower() and "totalGresit" in str(e.value)

@@ -10,7 +10,7 @@ Distinctie cheie: cota 0 (scutit/neplatitor) e VALOARE VALIDA, nu absenta.
 """
 import pytest
 
-from core.common import cota_ceruta
+from core.common import cota_ceruta, Perioada
 
 
 # ── TEMA A: helper de granita cota_ceruta(corp) ──────────────────────────────
@@ -146,7 +146,7 @@ def test_proba_d300_factura_scutita_prin_granita_reparata_duk_valid(conn_schema_
          {"descriere": "Servicii medicale scutite", "cantitate": 1, "pret_unitar": 500, "cota_tva": 0}],
         data_emitere="2026-06-15", moneda="RON", platitor_tva=True)
     assert r.get("factura_id"), "emitere esuata: %r" % r
-    xml, res = d300.genereaza(conn_schema_d300, SCHEMA_T, 2026, 6)
+    xml, res = d300.genereaza(conn_schema_d300, SCHEMA_T, Perioada(2026, luna=6))
     rez = _duk.valideaza(xml, "d300", an=2026, luna=6)
     assert rez["stare"] == "valid", "DUK a respins D300 (factura cu linie scutita): %s" % rez
 

@@ -31,6 +31,8 @@ SEAMANA datele intai.
 import pytest
 
 from core import db, tenant_provisioning as tp
+import inspect
+from core.common import Perioada
 
 SCHEMA_T = "ztest_pull"
 
@@ -90,7 +92,7 @@ def _factura(conn, **kw):
 def test_d300_pull_vede_factura_emisa(schema):
     from core import d300
     _factura(schema, total=1210, tva=210)
-    prof, facturi = d300.pull(schema, SCHEMA_T, 2026, 6)
+    prof, facturi = d300.pull(schema, SCHEMA_T, Perioada(2026, luna=6))
     assert prof and prof.get("cui") == "14399840", "profilul firmei nu e citit"
     assert len(facturi) == 1, "factura reala nu ajunge in pull (coloane gresite?)"
     assert float(facturi[0]["tva"]) == 210.0
@@ -99,7 +101,7 @@ def test_d300_pull_vede_factura_emisa(schema):
 def test_d300_pull_nu_ia_facturi_din_alta_luna(schema):
     from core import d300
     _factura(schema, data="2026-05-15")
-    _, facturi = d300.pull(schema, SCHEMA_T, 2026, 6)
+    _, facturi = d300.pull(schema, SCHEMA_T, Perioada(2026, luna=6))
     assert facturi == [], "fereastra de luna nu filtreaza"
 
 
@@ -191,7 +193,10 @@ def test_pull_crapa_zgomotos_cand_coloana_lipseste(schema, modul, tabela, coloan
         cur.execute("ALTER TABLE %s.%s RENAME COLUMN %s TO %s_x"
                     % (SCHEMA_T, tabela, coloana, coloana))
     with pytest.raises(Exception) as e:
-        m.pull(schema, SCHEMA_T, 2026, 6)
+        if "perioada" in inspect.signature(m.pull).parameters:
+            m.pull(schema, SCHEMA_T, Perioada(2026, luna=6))
+        else:
+            m.pull(schema, SCHEMA_T, 2026, 6)
     mesaj = str(e.value).lower()
     assert coloana in mesaj or "does not exist" in mesaj or "exista" in mesaj, \
         "eroarea nu spune ce lipseste: %s" % str(e.value)[:150]
@@ -203,7 +208,7 @@ def test_pull_nu_inghite_tabela_lipsa(schema):
     with schema.cursor() as cur:
         cur.execute("ALTER TABLE %s.facturi RENAME TO facturi_x" % SCHEMA_T)
     with pytest.raises(Exception):
-        d300.pull(schema, SCHEMA_T, 2026, 6)
+        d300.pull(schema, SCHEMA_T, Perioada(2026, luna=6))
 
 
 def test_schema_temporara_chiar_dispare():

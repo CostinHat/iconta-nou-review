@@ -8,6 +8,7 @@ gard PRINDE daca cineva schimba derivarea intr-un singur generator - atunci ar d
 ar primi doua declaratii inconsistente. (A2 din brief - eliminarea deducerii inverse din d300 -
 ar fi gresita: d394 o face la fel; s-ar rupe paritatea, nu s-ar repara.)"""
 import pytest
+from core.common import Perioada
 from core import db as _db, tenant_provisioning as _tp, d300, d394, duk as _duk
 
 SCHEMA_T = "ztest_d3d9_par"
@@ -78,8 +79,8 @@ def _colectata_d394(r9):
 def test_d300_d394_aceeasi_tva_colectata_pe_cota(conn_par):
     """TVA colectata pe cota trebuie sa coincida intre d300 si d394 (aceeasi sursa = liniile)."""
     _seed(conn_par)
-    p3, f3 = d300.pull(conn_par, SCHEMA_T, 2026, 6)
-    r3 = d300.calcul_d300(p3, 2026, 6, f3)
+    p3, f3 = d300.pull(conn_par, SCHEMA_T, Perioada(2026, luna=6))
+    r3 = d300.calcul_d300(p3, Perioada(2026, luna=6), f3)
     p9, f9 = d394.pull(conn_par, SCHEMA_T, 2026, 6)
     r9 = d394.calcul_d394(p9, 2026, 6, f9)
     c3, c9 = _colectata_d300(r3), _colectata_d394(r9)
@@ -93,12 +94,12 @@ def test_d300_d394_aceeasi_tva_colectata_pe_cota(conn_par):
 def test_d300_si_d394_ambele_valide_duk_pe_aceeasi_luna(conn_par):
     """A4: ambele declaratii pe aceeasi luna trec DUK, totalul colectat reconciliat intre ele."""
     _seed_clean(conn_par)
-    x3, _ = d300.genereaza(conn_par, SCHEMA_T, 2026, 6)
+    x3, _ = d300.genereaza(conn_par, SCHEMA_T, Perioada(2026, luna=6))
     x9, _ = d394.genereaza(conn_par, SCHEMA_T, 2026, 6)
     assert _duk.valideaza(x3, "d300", an=2026, luna=6)["stare"] == "valid"
     assert _duk.valideaza(x9, "d394", an=2026, luna=6)["stare"] == "valid"
-    p3, f3 = d300.pull(conn_par, SCHEMA_T, 2026, 6)
-    r3 = d300.calcul_d300(p3, 2026, 6, f3)
+    p3, f3 = d300.pull(conn_par, SCHEMA_T, Perioada(2026, luna=6))
+    r3 = d300.calcul_d300(p3, Perioada(2026, luna=6), f3)
     p9, f9 = d394.pull(conn_par, SCHEMA_T, 2026, 6)
     r9 = d394.calcul_d394(p9, 2026, 6, f9)
     tot3 = sum(_colectata_d300(r3).values())
@@ -124,8 +125,8 @@ def test_d300_d394_aceeasi_clasificare_cote_taxabile(conn_par):
     bunului (absenta pe o factura fara linii). Deci gardul acopera clasificarea pe date COMPLETE,
     NU cazul reverse-charge-fara-linii."""
     _seed(conn_par)
-    p3, f3 = d300.pull(conn_par, SCHEMA_T, 2026, 6)
-    r3 = d300.calcul_d300(p3, 2026, 6, f3)
+    p3, f3 = d300.pull(conn_par, SCHEMA_T, Perioada(2026, luna=6))
+    r3 = d300.calcul_d300(p3, Perioada(2026, luna=6), f3)
     p9, f9 = d394.pull(conn_par, SCHEMA_T, 2026, 6)
     r9 = d394.calcul_d394(p9, 2026, 6, f9)
     cote_d300 = {c for c, row in _ROW.items() if r3.R.get(row)}

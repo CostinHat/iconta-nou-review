@@ -117,13 +117,17 @@ def _segmente(f):
     return [(ci, baza)]
 
 
-def calcul_d300(prof, an, luna, facturi, manual=None):
+def calcul_d300(prof, perioada, facturi, manual=None):
     """
     Calcul PUR al decontului după structura ANAF v12.
     manual: dict opțional {rând: valoare} pentru operațiuni speciale introduse
             de contabil (ex. {"R5_1": 1000, "R5_2": 210} pt achiziții intracom).
     """
     manual = manual or {}
+    _bad = [k for k in manual if not str(k).startswith("R")]
+    if _bad:
+        raise ValueError("D300: chei 'manual' necunoscute (asteptate Rxx_y): %s" % sorted(_bad))
+    an, luna = perioada.an, perioada.luna
     Z = lambda: [Decimal(0), Decimal(0)]
     # colectată pe cote (livrări taxabile)
     col = {21: Z(), 11: Z(), 9: Z()}
@@ -373,10 +377,11 @@ def build_xml(res):
             + ' '.join(A) + '/>')
 
 
-def pull(conn, schema, an, luna):
+def pull(conn, schema, perioada):
     import psycopg2.extras as _E
-    inceput = "%04d-%02d-01" % (an, luna)
-    sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
+    _inc, _sf = perioada.interval()
+    inceput = _inc.isoformat()
+    sfarsit = _sf.isoformat()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT nume, cui, adresa, oras, judet, caen, banca, iban, tip_decont, pro_rata, "
                     "declarant_nume, declarant_prenume, declarant_functie "
@@ -397,13 +402,13 @@ def pull(conn, schema, an, luna):
     return prof, list(fmap.values())
 
 
-def genereaza(conn, schema, an, luna, manual=None):
-    if luna < 1 or luna > 12:
-        raise ValueError("Luna invalidă: %r" % luna)
-    prof, facturi = pull(conn, schema, an, luna)
+def genereaza(conn, schema, perioada, manual=None):
+    if perioada.luna is None or not (1 <= perioada.luna <= 12):
+        raise ValueError("D300 lunar: luna invalidă: %r" % perioada.luna)
+    prof, facturi = pull(conn, schema, perioada)
     # POARTA (27.07.2026): profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF.
     erori = erori_generare(prof)
     if erori:
         raise ValueError("D300 nu se poate genera: " + " ".join(erori))
-    res = calcul_d300(prof, an, luna, facturi, manual)
+    res = calcul_d300(prof, perioada, facturi, manual)
     return build_xml(res), res
