@@ -752,7 +752,7 @@ class LinieIn(BaseModel):
     descriere: str
     cantitate: float
     pret_unitar: float
-    cota_tva: Optional[float] = None   # None -> potrivire automata / eroare la lipsa (nu default 21)
+    cota_tva: Optional[float] = None   # None -> potrivire automata / eroare la lipsa (fara valoare implicita)
     um: str = "buc"
 
 class FacturaIn(BaseModel):

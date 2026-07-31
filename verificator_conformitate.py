@@ -546,19 +546,40 @@ if os.path.isdir(_GHID_MD):
             if re.search(r"<svg|<path", _gl, re.I):
                 rap["ghid_zona"].append((_gf, _gi, "icoane", "SVG inline - foloseste ICOANE canonic (cap.13): " + _st))
 
-# --- GARD TVA LITERAL (ratchet): cotele TVA se iau din common.cota("tva_standard") period-aware.
-# O cota literala (0.21/0.19/0.11 sau 21/19/11 pe linie cu "cota") devine gresita la urmatoarea
-# schimbare (ca 19->21 la 01.08.2025). Ratchet: numarul de restante poate doar SCADEA.
-#   - count <= TVA_BASELINE  -> AVERTISMENT (NU intra in TOTAL, nu blocheaza commit-ul);
-#   - count >  TVA_BASELINE  -> BLOCHEAZA (intra in rap/TOTAL): s-a introdus o cota noua.
-# Cand se repara restante, se coboara TVA_BASELINE. La 0, orice cota literala blocheaza.
-TVA_BASELINE = 80   # masurat 31.07.2026; ratchet - poate doar sa scada
+# --- GARD GRI COTA (verde / ACCEPTAT / gri / rosu): fiecare cota literala e VIZIBILA, nu tacuta.
+# Inlocuieste ratchet-ul pe numar brut (opac) cu un REGISTRU clasificat (31.07.2026):
+#   VERDE    = cota din common.cota("tva_standard") period-aware (nu apare ca literal aici).
+#   ACCEPTAT = etalon de test (golden/fixture; regula ETALON, DECIZII 31.07) SAU parametru de
+#              generator pur prin design (def foo(cota_tva=21)). Temei cunoscut, NU e datorie.
+#   GRI      = literal de productie ne-atasat la sursa, dar cu TEMEI IDENTIFICABIL. Datorie
+#              VIZIBILA si localizata (fisier:linie:valoare:semantica:temei). Ratchet doar pe GRI.
+#   ROSU     = literal fara temei identificabil (temei=???) -> flag RISC, BLOCHEAZA mereu.
+# Acceptatele nu se numara (nu sunt datorie - altfel ratchet-ul le urmareste la infinit pentru nimic).
+GRI_BASELINE = 2   # masurat 31.07.2026 dupa reparatia granitelor API (main.py: agregare pe rata)
 _re_tva_dec = re.compile(r"(?<![\w.])0\.(?:21|19|11)(?![\w])")
 _re_tva_int = re.compile(r"(?<![\w.])(?:21|19|11)(?![\w.%])")
 _TVA_EXCLUSE = {"common.py", "verificator_conformitate.py", "cote_tva.py",
                 "d406.py", "d300.py", "d301.py", "d390.py", "d394.py", "amef_import.py",
                 "export_winmentor.py"}
-_tva_hits = []
+# valoare -> (semantica, temei): sursa unica a citarii. Valoare care NU e aici -> temei=??? -> ROSU.
+_TVA_TEMEI = {
+    "21": ("cota standard 21%", "Legea 141/2025 art.291(1) CF, de la 01.08.2025"),
+    "0.21": ("cota standard 21%", "Legea 141/2025 art.291(1) CF, de la 01.08.2025"),
+    "11": ("cota redusa 11%", "Legea 141/2025 art.291(2) CF, de la 01.08.2025"),
+    "0.11": ("cota redusa 11%", "Legea 141/2025 art.291(2) CF"),
+    "19": ("cota standard istorica 19%", "Legea 227/2015, pana la 31.07.2025"),
+    "0.19": ("cota standard istorica 19%", "Legea 227/2015"),
+}
+_re_param_cota = re.compile(r'''cota\w*\s*=\s*21\b|\.get\(\s*["']cota["']\s*,\s*21\s*\)''')
+def _clasa_cota(_fis, _lin):
+    if "alin" in _lin.lower():          # referinta legala in docstring ("alin. 11") - nu e o cota
+        return None
+    if "test" in _fis:
+        return "ACCEPTAT"               # etalon golden/fixture (regula ETALON)
+    if _re_param_cota.search(_lin):
+        return "ACCEPTAT"               # parametru de generator pur, prin design
+    return "GRI"                        # literal de productie ne-atasat, cu temei cunoscut
+_gri_reg = {"ACCEPTAT": [], "GRI": [], "ROSU": []}
 for _r2, _d2, _f2 in os.walk(BAZA_PY):
     if "venv" in _r2 or "/." in _r2 or "_arhiva" in _r2 or "/static" in _r2 or "/duk" in _r2:
         continue
@@ -567,21 +588,42 @@ for _r2, _d2, _f2 in os.walk(BAZA_PY):
     for _f in _f2:
         if not _f.endswith(".py") or _f in _TVA_EXCLUSE:
             continue
+        _rel = os.path.relpath(os.path.join(_r2, _f), BAZA_PY)
         for _i, _ln in enumerate(open(os.path.join(_r2, _f), encoding="utf-8", errors="replace"), 1):
             _st = _ln.strip()
             if _st.startswith("#"):
                 continue
-            if _re_tva_dec.search(_ln) or (_re_tva_int.search(_ln) and "cota" in _ln.lower()):
-                _tva_hits.append((os.path.relpath(os.path.join(_r2, _f), BAZA_PY), _i, _st[:60]))
-_tva_n = len(_tva_hits)
-if _tva_n > TVA_BASELINE:
-    rap["tva_cota_literala"] = [("REGRESIE", _tva_n, "base=%d" % TVA_BASELINE,
-        "cota TVA literala noua (%d > baseline %d) - foloseste common.cota('tva_standard')" % (_tva_n, TVA_BASELINE))]
-print("\n### GARD TVA (avertisment, ratchet):")
-print("  cote TVA literale in cod+teste (in afara sursei unice): %d (baseline %d)%s" % (
-    _tva_n, TVA_BASELINE, "  <== BLOCHEAZA" if _tva_n > TVA_BASELINE else ""))
-if _tva_n < TVA_BASELINE:
-    print("  -> restante reparate: coboara TVA_BASELINE la %d in verificator." % _tva_n)
+            _md = _re_tva_dec.search(_ln)
+            _mi = _re_tva_int.search(_ln) if "cota" in _ln.lower() else None
+            if not (_md or _mi):
+                continue
+            _val = _md.group(0) if _md else _mi.group(0)
+            _clasa = _clasa_cota(_rel, _st)
+            if _clasa is None:
+                continue
+            _sem, _temei = _TVA_TEMEI.get(_val, ("necunoscut", "???"))
+            if _temei == "???":
+                _clasa = "ROSU"          # fara temei identificabil -> RISC
+            _gri_reg[_clasa].append((_rel, _i, _val, _sem, _temei))
+_n_gri = len(_gri_reg["GRI"]); _n_rosu = len(_gri_reg["ROSU"])
+if _n_gri > GRI_BASELINE or _n_rosu:
+    rap["cota_gri_rosu"] = []
+    if _n_gri > GRI_BASELINE:
+        rap["cota_gri_rosu"].append(("REGRESIE-GRI", _n_gri, "base=%d" % GRI_BASELINE,
+            "cota GRI noua (%d > %d) - ataseaza temeiul sau ia din common.cota" % (_n_gri, GRI_BASELINE)))
+    for _h in _gri_reg["ROSU"]:
+        rap["cota_gri_rosu"].append(("ROSU-RISC", _h[1], _h[0],
+            "cota %s fara temei identificabil (=???) - RISC, cerceteaza la sursa" % _h[2]))
+print("\n### REGISTRU GRI COTA (verde/acceptat/gri/rosu):")
+print("  ACCEPTAT %d (golden/fixture + parametri generator, temei cunoscut - NU datorie) | "
+      "GRI %d (baseline %d) | ROSU %d%s" % (len(_gri_reg["ACCEPTAT"]), _n_gri, GRI_BASELINE,
+      _n_rosu, "  <== BLOCHEAZA" if (_n_gri > GRI_BASELINE or _n_rosu) else ""))
+for _h in _gri_reg["GRI"]:
+    print("  GRI   %s:%d  %-5s %-28s %s" % (_h[0], _h[1], _h[2], _h[3], _h[4]))
+for _h in _gri_reg["ROSU"]:
+    print("  ROSU  %s:%d  %-5s %-28s temei=??? RISC" % (_h[0], _h[1], _h[2], _h[3]))
+if _n_gri < GRI_BASELINE:
+    print("  -> grii reparate: coboara GRI_BASELINE la %d in verificator." % _n_gri)
 
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
