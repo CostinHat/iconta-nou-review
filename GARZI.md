@@ -120,6 +120,19 @@ că intrarea a fost înghițită**.
   care întreabă dacă actul s-a schimbat. Nu se începe acum — clusterele nebifate sunt risc
   prezent. (Poziția cerută pt. DE_FACUT.md, care nu mai există; trăiește aici, în registrul
   gardurilor.)
+- ACOPERIT (31.07.2026): temei STRUCTURAT (`common.Temei`: act/nr/an/art/alin/lit/data_in/
+  data_out/url) pe toate cotele din `common.COTE` + garda de EXPIRARE pe `data_out`. `cota()`
+  RIDICĂ după `data_out` (nu întoarce tăcut valoarea veche) — mecanismul PRINCIPAL de derivă, nu
+  un proxy: nu există API legislativ RO fiabil (dovedit repetat). Gard ratchet în verificator:
+  orice cotă nouă cu temei string (nestructurat) blochează. Inventar A generat parțial din COTE,
+  cu overlay persistent pentru judecățile umane (`genereaza_inventar_a.py` + `INVENTAR_A_OVERLAY.tsv`).
+- LIMITĂ REALĂ (rămâne descoperit, 31.07.2026): o schimbare de lege **între `data_in` și
+  `data_out`** NU e detectabilă. `data_out` semnalează doar când TRECE valabilitatea DECLARATĂ,
+  nu când actul se modifică dedesubt mai devreme decât s-a estimat. Sistemul nu detectează
+  schimbarea legii — refuză doar să răspundă cu o valoare expirată; eroarea apare la CALCUL, nu la
+  depunere. `estimat=True` marchează `data_out`-urile ghicite (sfârșit de perioadă rezonabilă:
+  an fiscal/semestru), unde fereastra nedetectabilă e mai largă. Închiderea ar cere un feed
+  legislativ mecanic care nu există — degradează la revizuire manuală periodică ghidată de registru.
 - DESCHIS: rotunjirea din D390 e bancară (`round()`), în timp ce D112 documentează că ANAF
   cere aritmetică. Schimbare fiscală — se verifică la sursă. Vezi DE_FACUT.
 
