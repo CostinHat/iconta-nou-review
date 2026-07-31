@@ -36,6 +36,7 @@ Cazul dominant (contabilul a declarat gresit suma datorata si o corecteaza) e ac
 from __future__ import annotations
 
 from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+from core.common import cheie_manual
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 from core.d100 import COD_BUGETAR, _nr_evid, _scadenta_zile
@@ -92,9 +93,12 @@ def _scadenta_d710(cod, an, luna):
     return _scadenta_zile(an, luna)
 
 
-def calcul_d710(prof, an, luna, obligatii):
+def calcul_d710(prof, perioada, date, manual=None):
     """`luna` = 3/6/9/12 (trimestrial, ca D100). `obligatii` = lista de dict-uri
     {cod_oblig, suma_dat_i, suma_dat_c, cod_bugetar?, cota?, suma_ded_i?, suma_ded_c?}."""
+    an = perioada.an
+    luna = perioada.luna if perioada.luna is not None else (perioada.trim * 3 if perioada.trim else None)
+    obligatii = (manual or {}).get("obligatii") or []
     if luna not in (3, 6, 9, 12):
         raise ValueError("D710 (corectie D100 trimestrial): luna trebuie 3/6/9/12 (primit %r)." % luna)
     obl = []
@@ -169,12 +173,9 @@ def build_xml(res):
     return "\n".join(H)
 
 
-def genereaza(conn, schema, an, trim, obligatii):
-    """Genereaza D710 pt corectarea D100 pe trimestrul `trim` (1-4). `obligatii` =
-    lista de corectii {cod_oblig, suma_dat_i, suma_dat_c, cota?, ...}, aduse de apelant
-    (contabilul stie ce a declarat gresit vs corect - nu se recalculeaza aici)."""
+def pull(conn, schema, perioada):
+    """D710: profilul din DB. Obligatiile vin de la contabil (manual), NU din baza."""
     import psycopg2.extras as _E
-    luna = trim * 3
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT nume, cui, adresa, oras, judet, "
                     "declarant_nume, declarant_prenume, declarant_functie "
@@ -183,9 +184,14 @@ def genereaza(conn, schema, an, trim, obligatii):
         if prof.get("oras"):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
+    return prof, {}
+
+
+def genereaza(conn, schema, perioada, manual=None):
+    manual = cheie_manual(manual, "obligatii")
+    prof, _date = pull(conn, schema, perioada)
     erori = erori_generare(prof)
     if erori:
-        raise ValueError(" ".join(erori))
-    res = calcul_d710(prof, an, luna, obligatii)
-    xml = build_xml(res)
-    return xml, res
+        raise ValueError("D710 nu se poate genera: " + " ".join(erori))
+    res = calcul_d710(prof, perioada, _date, manual)
+    return build_xml(res), res

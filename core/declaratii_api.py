@@ -65,7 +65,7 @@ def _d406(conn, schema, b):
 def _d710(conn, schema, b):
     # D710 = rectificativa a D100 (corectie obligatii). `obligatii` = corectiile aduse
     # de contabil (ce a declarat gresit vs corect), nu se recalculeaza automat.
-    return d710.genereaza(conn, schema, b["an"], b["trim"], b["obligatii"])
+    return d710.genereaza(conn, schema, Perioada(b["an"], trim=b["trim"]), {"obligatii": b["obligatii"]})
 
 
 # tip -> (periodicitate, adaptor). Adăugarea unei declarații = o linie aici.

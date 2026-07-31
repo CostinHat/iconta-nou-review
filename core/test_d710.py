@@ -10,7 +10,14 @@ rectificarea sumei DATORATE (suma_plata = suma_dat); deducerile/reducerile (mode
 sunt LIMITA documentata, la caz real.
 """
 import pytest
-from core.d710 import calcul_d710, build_xml, NS, _scadenta_d710
+from core.d710 import calcul_d710 as _calcul_d710_real, build_xml, NS, _scadenta_d710
+from core.common import Perioada as _Per710
+
+
+def calcul_d710(prof, an, luna, obligatii):
+    """Shim de test vizibil: apel vechi (an,luna,obligatii) -> contract calcul_d710(prof, perioada,
+    date, manual). Modulul are contractul curat."""
+    return _calcul_d710_real(prof, _Per710(an, luna=luna), {}, {"obligatii": obligatii})
 from core.d100 import COD_BUGETAR
 import core.duk as duk
 
