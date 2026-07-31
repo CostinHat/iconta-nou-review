@@ -15,10 +15,50 @@ Reguli de dependență (graf aciclic, fără interferențe între module):
 from __future__ import annotations
 import os
 from collections import defaultdict
+from dataclasses import dataclass
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 
 VERSIUNE_COMMON = "2026.1"
+
+
+@dataclass(frozen=True)
+class Perioada:
+    """Obiect valoare pentru perioada unei declaratii (contract uniform A1, 31.07.2026).
+
+    Inlocuieste params divergenti (an/trim/luna). Fiecare declaratie citeste ce-i trebuie:
+    lunare -> luna; trimestriale (d100) -> trim; anuale (d101/d205) -> nici luna nici trim.
+    pull() foloseste interval() pentru fereastra de date [inceput, sfarsit)."""
+    an: int
+    luna: int | None = None
+    trim: int | None = None
+
+    def interval(self):
+        """(inceput, sfarsit) - fereastra semi-deschisa [inceput, sfarsit) pentru pull."""
+        if self.luna is not None:
+            inc = date(self.an, self.luna, 1)
+            sf = date(self.an + 1, 1, 1) if self.luna == 12 else date(self.an, self.luna + 1, 1)
+        elif self.trim is not None:
+            m0 = (self.trim - 1) * 3 + 1
+            inc = date(self.an, m0, 1)
+            sf = date(self.an + 1, 1, 1) if self.trim == 4 else date(self.an, m0 + 3, 1)
+        else:
+            inc, sf = date(self.an, 1, 1), date(self.an + 1, 1, 1)
+        return inc, sf
+
+
+def cheie_manual(manual, *permise):
+    """Valideaza cheile unui dict `manual` contra listei PERMISE si intoarce dict-ul (sau {}).
+
+    O cheie NECUNOSCUTA ridica eroare - nu se ignora tacut. Un typo ({"kota":"1"} in loc de
+    {"cota":"1"}) altfel s-ar scurge in implicit si ar produce o cifra plauzibila si gresita -
+    aceeasi clasa cu "or 21" / "NULL = absenta". Un dict deschis e groapa pentru greseli de tastare."""
+    m = manual or {}
+    necunoscute = [k for k in m if k not in permise]
+    if necunoscute:
+        raise ValueError("chei 'manual' necunoscute: %s (permise: %s)" % (
+            sorted(necunoscute), sorted(permise)))
+    return m
 
 
 def cfg(cheie, default="", cast=str):
