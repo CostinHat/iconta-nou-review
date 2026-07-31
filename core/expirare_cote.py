@@ -22,6 +22,7 @@ ETICHETE = {
     "facilitate_salariu_minim": "Facilitatea la salariul minim (partea neimpozabilă)",
     "plafon_facilitate_salariu_minim": "Plafonul facilității la salariul minim",
     "plafon_mijloc_fix": "Plafonul de încadrare ca mijloc fix",
+    "tichet_masa_plafon": "Valoarea maximă a tichetului de masă",
 }
 
 # Generatoarele care CER valoarea prin cota() strict -> vor REFUZA sa genereze dupa expirare
@@ -31,6 +32,7 @@ CONSUMATORI = {
     "salariu_minim": "D112 și D212",
     "facilitate_salariu_minim": "D112 și D212",
     "plafon_facilitate_salariu_minim": "D112 și D212",
+    "tichet_masa_plafon": "D112 (salarizare)",
 }
 
 

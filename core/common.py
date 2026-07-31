@@ -255,6 +255,8 @@ EXPIRA_DUPA_LUNI = {
     "facilitate_salariu_minim": 12,           # OUG anuala
     "plafon_facilitate_salariu_minim": 12,    # OUG anuala
     "plafon_mijloc_fix": 24,                  # se schimba rar, dar se schimba
+    "tichet_masa_plafon": 9,                  # reindexare semestriala IPC; 45 lei (intrare
+                                              # 2026-01-01) valabil pana in sep 2026 -> 9 luni
 }
 
 

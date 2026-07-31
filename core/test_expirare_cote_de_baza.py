@@ -45,6 +45,18 @@ def test_strict_false_da_valoarea_veche():
     assert int(v) == 4325
 
 
+def test_tichet_masa_expira_din_octombrie_2026():
+    """Valoarea maxima a tichetului de masa (45 lei, Legea 201/2025) e valabila doar S1 2026 +
+    iul-sep 2026; se reindexeaza semestrial (IPC) din oct. 2026 (HG de reindexare inca neintrat in
+    registru). Spre deosebire de salariu_minim, NU trebuie sa se intoarca tacit 45 dupa expirare ->
+    cota() strict RIDICA, ca sa nu ajunga o valoare stale intr-o baza CASS/impozit din D112."""
+    v, _ = cota("tichet_masa_plafon", date(2026, 9, 1))
+    assert int(v) == 45, "45 trebuie valabil in sep 2026"
+    with pytest.raises(ValueError) as e:
+        cota("tichet_masa_plafon", date(2026, 10, 15))
+    assert "actualiz" in str(e.value).lower(), "mesajul de expirare nu spune ce trebuie facut"
+
+
 def test_cotele_fara_expirare_merg_oricand():
     """TVA se schimba prin lege, nu periodic - n-are termen."""
     v, _ = cota("tva_standard", date(2030, 1, 1))
