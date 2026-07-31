@@ -18,7 +18,16 @@ from core.common import COTE, EXPIRA_DUPA_LUNI, cota, cote_care_expira
 
 def test_valoarea_curenta_se_intoarce_normal():
     v, t = cota("salariu_minim", date(2026, 6, 1))
-    assert int(v) == 4050 and "HG" in t   # HG 1510/2024, in vigoare 01.01.2026
+    assert int(v) == 4050 and "HG" in t   # HG 1506/2024, 4050 ramane in vigoare si in 2026 H1
+
+
+def test_salariu_minim_2025_este_4050_hg_1506():
+    """Salariul minim 2025 = 4050 lei de la 1 ian 2025 (HG 1506/2024, MO 1185/28.11.2024, abroga
+    HG 598/2024=3700). Bug inchis 31.07.2026: tabelul avea 2025=3700 (valoarea VECHE, 2024 H2) ->
+    calcul salariu 2025 gresit. Sursa: legislatie.just.ro Public/DetaliiDocument/291450."""
+    v, t = cota("salariu_minim", date(2025, 3, 1))
+    assert int(v) == 4050, "salariu minim 2025 gresit: %s (asteptat 4050, HG 1506/2024)" % v
+    assert "1506" in t, "temeiul salariului minim 2025 nu citeaza HG 1506/2024: %r" % t
 
 
 def test_valoarea_expirata_ridica():

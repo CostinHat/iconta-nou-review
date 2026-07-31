@@ -193,10 +193,3 @@ def test_datorie_cota_cea_mai_mica_valoare_din_luna():
     # Se inchide cand regula 'cea mai mica valoare in luna' e consemnata in DECIZII.md (marker stabil).
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "salariu minim cea mai mica valoare din luna tratat" in dz.lower()
-
-
-@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 31.07.2026: common.py salariu_minim are 2025=3700 (HG 1006/2024), dar sursa (legislatie.just.ro HOTARARE 1506 27/11/2024, ANAF, portalcodulfiscal) confirma 4050 lei de la 1 ian 2025 prin HG 1506/2024 (abroga HG 598/2024=3700). Entry-ul 4050 e mis-datat la 2026-01-01 cu HG 1510 (corect: HG 1506, de la 2025-01-01). d212_engine.py:5 are dreptate. cota() intoarce 3700 pentru 2025 -> calcul salariu 2025 gresit. NU se atinge tabelul (logica fiscala) fara validarea arhitectului. Se inchide cand corectia tabelului e validata si consemnata in DECIZII.md.")
-def test_datorie_salariu_minim_2025_gresit_in_common():
-    # Se inchide cand corectia salariului minim 2025 (4050, HG 1506/2024) e consemnata in DECIZII.md.
-    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
-    assert "salariu minim 2025 corectat 4050 hg 1506" in dz.lower()

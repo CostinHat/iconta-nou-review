@@ -221,8 +221,9 @@ COTE = {
     ],
     "salariu_minim": [
         (date(2026, 7, 1), Decimal("4325"), "HG 146/2026"),
-        (date(2026, 1, 1), Decimal("4050"), "HG 1510/2024"),
-        (date(2025, 1, 1), Decimal("3700"), "HG 1006/2024"),
+        # 4050 ramane in vigoare si in 2026 H1 (nicio majorare la 1 ian 2026); cota() intoarce
+        # valoarea la la_data, deci aceasta intrare acopera 2025 SI 2026 pana la 01.07.2026.
+        (date(2025, 1, 1), Decimal("4050"), "HG 1506/2024"),  # abroga HG 598/2024=3700 de la 1 ian 2025
     ],
     "facilitate_salariu_minim": [
         (date(2026, 7, 1), Decimal("200"), "OUG 89/2025 art.III + Ordin 605/2026"),

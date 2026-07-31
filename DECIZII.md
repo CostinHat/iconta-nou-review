@@ -4224,3 +4224,32 @@ un gard.
 
 Aplicare: gardul (core/test_temeiuri.py, PASUL 4) cere forma canonica DOAR pe liniile cu marker
 de regula; codurile R bare (randuri) raman neatinse. Norma de format traieste in CLAUDE.md §3.1.
+
+## 31.07.2026 — Salariu minim 2025 corectat: 4050 lei (HG 1506/2024), nu 3700
+
+Verificat la sursa: legislatie.just.ro (HOTARARE 1506 din 27/11/2024, Public/DetaliiDocument/291450,
+MO 1185/28.11.2024), coroborat ANAF si portalcodulfiscal. Salariul de baza minim brut pe tara garantat
+in plata = 4050 lei de la 1 ianuarie 2025; HG 1506/2024 ABROGA HG 598/2024 (care stabilise 3700 lei in
+2024 H2) de la 1 ian 2025.
+
+BUG: core/common.py COTE["salariu_minim"] avea (2025-01-01, 3700, "HG 1006/2024") - valoarea VECHE
+(2024 H2) pusa pe 2025, cu act gresit; iar 4050 era mis-datat la 2026-01-01 cu "HG 1510/2024".
+cota("salariu_minim", <data 2025>) intorcea 3700 -> orice calcul de salariu pe 2025 iesea gresit, in
+tacere (salariul minim e reper pentru suprataxare CF art.146/168 si pentru baze). d212_engine.py avea
+deja dreptate (4050, HG 1506/2024, verificat la sursa 11.07.2026).
+
+CORECTIE: tabelul devine doua intrari - (2026-07-01, 4325, HG 146/2026) si (2025-01-01, 4050,
+HG 1506/2024). Intrarea fantoma 2026-01-01 e ELIMINATA: pe 1 ian 2026 salariul minim NU s-a schimbat
+(a ramas 4050); cota() intoarce valoarea in vigoare la la_data, deci intrarea 2025-01-01 acopera atat
+2025 cat si 2026 H1, pana la majorarea din 01.07.2026.
+
+ALTERNATIVA RESPINSA: a pastra o intrare la 2026-01-01 cu temei corectat. Respinsa - ar fi fictiva
+(nicio majorare la acea data), iar tabelul codeaza SCHIMBARI de valoare prin act, nu ancore anuale.
+
+LIMITA: 2024 si anterior NU sunt in tabel (nici nu erau corect) - aplicatia opereaza pe 2025-2026;
+3700 (2024 H2, HG 598/2024) si valorile mai vechi nu se folosesc nicaieri (grep confirmat).
+
+Norma traieste unde se aplica si se verifica mecanic: core/common.py (tabelul + temeiul pe linie) si
+core/test_expirare_cote_de_baza.py::test_salariu_minim_2025_este_4050_hg_1506 (golden pe 4050 + HG 1506).
+Datoria xfail test_datorie_salariu_minim_2025_gresit_in_common e INCHISA si stearsa din test_datorie.py.
+Marker: salariu minim 2025 corectat 4050 hg 1506.
