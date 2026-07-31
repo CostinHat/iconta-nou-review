@@ -4355,3 +4355,36 @@ impartire ARBITRARA a scutirilor (pierzi CASS+impozit dar pastrezi CAS scutit), 
 
 LIMITA DECLARATA: (a) nu exista text ANAF explicit pe tratamentul excesului; (b) DUK nu accepta CAS pe
 exces decat prin baza salariala (S731/S74, dovedit 31.07). Caz RAR (>25.950 lei/an vacanta la sm 4325).
+
+## 31.07.2026 — Concedii medicale: verificare la sursa primara (runda 2) + rationament unificare
+
+Etapa SURSA, FARA fix. Rezultate:
+
+CAS PE INDEMNIZATIA CM: se retine 25%, pe indemnizatia INTEGRALA (NEplafonata la 12 sm). Temei: Cod
+fiscal art. 144 ("baza lunara de calcul al contributiei de asigurari sociale ... este suma reprezentand
+indemnizatia de asigurari sociale de sanatate ... iar contributia de asigurari sociale se suporta la
+nivelul cotei prevazute la art. 138 lit. a) [25%] si se retine din indemnizatia") + art. 139 alin.(1)
+lit. o) (indemnizatia CM e in castigul brut CAS) + OUG 3/2018 (a inlocuit vechea baza de 35% cu
+indemnizatia insasi). PROVENIENTA: textul VERBATIM al art. 144 NU s-a obtinut de la sursa PRIMARA
+(legislatie.just.ro/MO randeaza doar cuprinsul documentului consolidat urias; portalcodulfiscal 403;
+ANAF doar Titlul I). Substanta e puternic coroborata (documente oficiale ANAF pe concedii medicale +
+reproducere Wolters Kluwer verbatim + fiscalitatea.ro), dar litera primara ramane de reconfirmat pe
+MO/just.ro. Deci comentariul din taxe_cm ("CAS NU se retine niciodata") e foarte probabil GRESIT, dar
+NU se aplica fix pe baza secundara - se reconfirma primara intai.
+
+CASS PE CM: doar codurile 01/07/10 (OUG 34/2024 art.155(1)(i)/157(1)(v), 12.04.2024) - CONFIRMAT.
+CARANTINA (cod 07): 100%, NU 75% (art. 20 alin.(3) OUG 158/2005, majorat permanent prin Legea 136/2020).
+Codul are 75% - divergenta reala.
+PLAFON BAZA: 12 salarii minime/luna (art. 10 alin.(1)).
+DEDUCERE PE INDEMNIZATIE: NEconfirmat prin text explicit (practica/interpretare art.78) -> GRI, nu bifa.
+
+RATIONAMENT PENTRU ETAPA URMATOARE (de executat separat, dupa reconfirmarea primara a art.144):
+CM1 (CAS)/CM2 (CASS pe cod)/CM4 (plafon 12 sm) NU sunt trei bug-uri independente - sunt un SIMPTOM: doua
+surse de adevar pe acelasi calcul. Contributiile pe indemnizatia CM se calculeaza in DOUA locuri care
+deviaza: (1) salarizare.taxe_cm (CAS=0, CASS cod-filtrat) - apelat la salvarea CM, STOCAT in
+concedii_medicale, alimenteaza fluturasul/statul de plata; (2) d112 ramura CM (CAS=25% pe total_base,
+CASS uniform pe tot cm_base) - alimenteaza DECLARATIA, ignora stocatul. Similar pe baza: calcul_cm (fara
+plafon) vs _cm_media6 (cu plafon 12 sm). Fixul NU e schimbarea unei cote - e UNIFICAREA intr-o singura
+functie apelata de fluturas SI de D112; altfel deviaza din nou dupa prima corectie. Cotele (carantina
+75->100, CAS 0->25) se decid dupa reconfirmarea art.144 la primara; unificarea se face oricum. Datorie
+mecanica: test_datorie_concedii_medicale_doua_surse.

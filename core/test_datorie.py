@@ -217,3 +217,19 @@ def test_datorie_citate_literale_tichete_portal():
     # legislatie.just.ro (nu doar noulcodfiscal) si consemnate in DECIZII.md (marker stabil).
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "citate literale tichete reconfirmate verbatim pe portal" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 31.07.2026: contributiile pe indemnizatia de concediu medical se calculeaza in DOUA locuri care DEVIAZA (doua surse de adevar): salarizare.taxe_cm (CAS=0, CASS doar 01/07/10) - stocat la salvare, alimenteaza fluturasul; d112 ramura CM (CAS=25% pe bazac+cm_base, CASS uniform pe tot) - alimenteaza D112. Divergente confirmate la sursa: CM1 CAS pe CM = 25% se retine (CF art.144 + 139(1)o + OUG 3/2018; primara just.ro/MO NEobtinuta - de reconfirmat verbatim); CM2 CASS doar 01/07/10 (OUG 34/2024) dar d112 aplica uniform; CM3 carantina cod 07 = 100% (art.20(3), Legea 136/2020) dar codul are 75%; CM4 plafon 12 sm (art.10(1)) prezent in _cm_media6 dar nu in calcul_cm. Fixul = UNIFICARE intr-o functie canonica apelata de fluturas SI D112 (nu schimbarea unei cote izolat), cu cotele decise dupa reconfirmarea primara a art.144, DUK-valid. Se inchide cand e unificat si consemnat in DECIZII.md.")
+def test_datorie_concedii_medicale_doua_surse():
+    # Se inchide cand contributiile pe indemnizatia CM sunt calculate de o singura functie canonica
+    # (fluturas + D112), cu cotele reconfirmate, DUK-valid, consemnat in DECIZII.md (marker stabil).
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "cm contributii unificate cota reconfirmata validat duk" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: teste care ASERTEAZA valoarea GRESITA apara bugul si impiedica repararea (a treia aparitie a clasei azi): test_cm_cas_mereu_zero (aserta cas=0 pe CM, contrazis de art.144); precedente - FIX5 (tabelul avea 3700 la 2025, aparat pana la corectie) si gard cat.9 gdpr (test_gdpr_functional, fisier necolectat care parea acoperire). Un test scris pe presupunere nu verifica nimic. DE FACUT: trecere SISTEMATICA peste toate testele care asertaza constante fiscale (cote/procente/valori), sa se verifice ca fiecare are TEMEIUL citat pe linie (act+articol). Se inchide cand trecerea e facuta si consemnata in DECIZII.md.")
+def test_datorie_teste_care_apara_buguri():
+    # Se inchide cand trecerea sistematica peste testele care asertaza constante fiscale (fiecare cu temei
+    # citat) e facuta si consemnata in DECIZII.md (marker stabil, case-insensitive).
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "teste cu constante fiscale trecute sistematic cu temei citat" in dz.lower()
