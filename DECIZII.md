@@ -4388,3 +4388,32 @@ plafon) vs _cm_media6 (cu plafon 12 sm). Fixul NU e schimbarea unei cote - e UNI
 functie apelata de fluturas SI de D112; altfel deviaza din nou dupa prima corectie. Cotele (carantina
 75->100, CAS 0->25) se decid dupa reconfirmarea art.144 la primara; unificarea se face oricum. Datorie
 mecanica: test_datorie_concedii_medicale_doua_surse.
+
+## 31.07.2026 — CORECTIE TEMEI CAS pe CM + verdict CAS uniform pe coduri (deblocheaza unificarea)
+
+Corecteaza intrarea "Concedii medicale: verificare la sursa primara (runda 2)", care atribuia CAS-ul
+pe indemnizatia de CM articolului 144. GRESIT (a prins-o Costin: art.144 trimite la art.1 alin.(2)/
+23(2)/32 OUG 158 - ALTE categorii, nu salariatul activ).
+
+TEMEI CORECT: CAS 25% pe indemnizatia de CM a SALARIATULUI IN ACTIVITATE (art.1 alin.(1) lit.A OUG
+158) = Cod fiscal art. 139 alin.(1) lit. o) (include indemnizatia in castigul brut) + art. 140 (baza
+CAS = suma castigurilor brute). art. 142 NU o excepteaza (text integral verificat). art. 144 = traseul
+paralel pentru alte categorii. Concluzia (CAS se retine) neschimbata; doar ARTICOLUL s-a corectat.
+Reversarea "CAS=0 corect" s-a INFIRMAT.
+
+VERDICT CAS PE COD (verificarea care bloca unificarea): CAS 25% se aplica UNIFORM pe TOATE codurile de
+CM, INCLUSIV maternitate (08) si ingrijire copil (09). NU exista regula pe cod ca la CASS. Temei:
+(a) art.139(1)(o) e GENERIC ("indemnizatiile de asigurari sociale de sanatate", nu doar incapacitate
+temporara); (b) art.142 nu excepteaza niciun cod; (c) GHID ANAF concedii medicale (static.anaf.ro,
+text citabil) transeaza explicit - Sectiunea A (boala) si Sectiunea B (maternitate/copil) datoreaza
+AMANDOUA CAS via art.139(1)(o); pe lista "Nu se datoreaza" de la Sectiunea B apar CASS/somaj/etc DAR
+NU CAS. Prin contrast, accidentele de munca (Legea 346/2002) au CAS EXPRES exceptat in ghid.
+
+CONSECINTA PENTRU COD: d112 (CAS 25% uniform pe bazac+cm_base) e CORECT pe CAS. taxe_cm (cas=0) e
+GRESIT. d112 ramane GRESIT pe CASS (aplica uniform, trebuie doar 01/07/10). Unificarea NU mai e blocata
+de o regula CAS-pe-cod necunoscuta: functia canonica = CAS 25% UNIFORM + CASS doar 01/07/10 + plafon
+12 sm. Ghidul ANAF e acum sursa PRIMARA citabila -> CM1 iese din "gri total"; ramane de reconfirmat
+doar litera art.139(1)(o) pe just.ro (tier-1), reprodusa fidel de noulcodfiscal/Wolters Kluwer.
+
+DE CE SE CONSEMNEAZA: un temei gresit intr-un registru se propaga - exact ca HG 1006/2024 atribuit
+gresit lui 3700. Cine citeste "art.144" construieste pe categoria gresita.
