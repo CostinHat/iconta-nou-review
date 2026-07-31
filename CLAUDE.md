@@ -35,6 +35,25 @@ Trei surse obligatorii, în funcție de context:
 **Niciodată nu se ghicesc valori — nici coduri fiscale, nici CUI/CNP de test,
 nici formate XML, nici nume de coloane de bază de date.**
 
+## CICLUL DE NECONFORMITATE (31.07.2026 — guverneaza tot restul)
+
+Ne tinem de plan PANA cand intalnim o neconformitate. Atunci ne oprim si parcurgem, IN ORDINE,
+cei patru pasi — nu se sare niciunul, nu se amana:
+
+1. **OPRIRE.** Firul curent se suspenda. NU se noteaza neconformitatea ca datorie pentru mai
+   tarziu — se trateaza acum.
+2. **GENERALIZARE.** Se identifica CLASA, nu instanta. Se cauta TOATE aparitiile in tot codebase-ul
+   INAINTE de a repara vreuna. "Bug la linia X" e formulare gresita; "clasa de bug X, N aparitii"
+   e cea corecta.
+3. **CORECTARE.** Peste toata aplicatia, nu doar unde a fost gasita.
+4. **GARD.** Mecanism care face reaparitia IMPOSIBILA, nu improbabila (hook, ratchet, gard
+   structural, test permanent). Fara acest pas, corectia se erodeaza. Abia dupa gard se revine la plan.
+
+DE CE: disciplina singura cedeaza. Dovezi 31.07: poarta "pytest && git commit" ocolita prin subset;
+markerii TEMEI fara gard; "or 0" supravietuind fiindca se cautase doar "or 21". Ce a TINUT au fost
+MECANISMELE: hook pre-commit, ratchet, gard structural. Consecinta acceptata: ritmul scade — fiecare
+neconformitate devine campanie. E pretul corect (cerut explicit de Costin).
+
 ## Metoda de investigare pentru bug-uri de validare fiscală (D1xx/D3xx/D4xx)
 
 Lecția cea mai costisitoare din sesiunea de 16.07.2026 (peste 10 ore pe patru
