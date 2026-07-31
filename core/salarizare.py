@@ -366,23 +366,24 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
 
 # Coduri indemnizatie pt care NU se retine CASS (verif. la sursa: art.17(2) OUG 34/2024,
 # aplicabil dupa 12.04.2024). CASS se retine DOAR pt 01 (boala obisnuita), 07 (carantina),
-# 10 (reducere program). CAS NU se retine niciodata pe indemnizatia CM. Impozit 10% mereu.
+# 10 (reducere program). CAS 25% se retine UNIFORM pe indemnizatia CM (CF art.139(1)(o)+140). Impozit 10% mereu.
 _CM_COD_CU_CASS = ("01", "07", "10")
 
 
 def taxe_cm(brut, cod="01", la_data=None):
     """Retineri pe indemnizatia de concediu medical (OUG 158/2005 + Cod fiscal).
-    - CAS = 0 (indemnizatia CM nu e baza CAS)
+    - CAS 25% UNIFORM pe toate codurile (CF art.139(1)(o)+140; se aplica si maternitate/copil - ghid ANAF)
     - CASS 10% DOAR pentru codurile 01/07/10; scutit pentru rest (08 maternitate,
       15/16/17, 09 ingrijire copil, 05/06/51/91/92/12/13/14 etc.)
     - impozit 10% pe (brut - cass), fara deducere personala pe indemnizatie
     Intoarce {cas, cass, impozit, net}."""
     from core import common as _c
     b = _dec(brut)
+    cota_cas, _ = _c.cota("cas", la_data)
     cota_cass, _ = _c.cota("cass", la_data)
     cota_imp, _ = _c.cota("impozit_venit", la_data)
-    cas = Decimal(0)
+    cas = (b * cota_cas).quantize(Decimal("1"))   # CAS 25% UNIFORM pe toate codurile (CF art.139(1)(o)+140)
     cass = (b * cota_cass).quantize(Decimal("1")) if str(cod).zfill(2) in _CM_COD_CU_CASS else Decimal(0)
-    impozit = ((b - cass) * cota_imp).quantize(Decimal("1"))
+    impozit = ((b - cas - cass) * cota_imp).quantize(Decimal("1"))
     net = b - cas - cass - impozit
     return {"cas": _q(cas), "cass": _q(cass), "impozit": _q(impozit), "net": _q(net)}

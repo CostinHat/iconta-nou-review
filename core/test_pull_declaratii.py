@@ -247,3 +247,39 @@ def test_d112_facilitate_prorata_la_mentinere_partiala(schema):
     _, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
     assert len(sal) == 1
     assert round(float(sal[0]["facilitate"]), 2) == round(300 * 10 / 21, 2), sal[0].get("facilitate")  # 142.86 = 300 x 10/21 (zile la minim 1-15 iun)
+
+
+def test_cm_arbori_paraleli_acelasi_rezultat(schema):
+    # [UNIFICARE CM] Cele DOUA lanturi trebuie sa dea ACELASI tratament pe indemnizatia de CM:
+    #   - lantul FLUTURAS: salarizare.taxe_cm(indemnizatie, cod) - CAS 25% uniform, CASS doar 01/07/10;
+    #   - lantul DECLARATIE: d112 (care acum APELEAZA taxe_cm) - baza CAS (B4_7) include indemnizatia,
+    #     baza CASS (B4_5) o include DOAR daca taxe_cm zice ca se datoreaza CASS.
+    # Proba pe cod 08 (maternitate, CASS-scutit): taxe_cm cass=0 <=> d112 exclude indemnizatia din B4_5.
+    # Inainte de unificare d112 aplica CASS uniform -> testul pica (divergenta reala).
+    from core import d112
+    from core.salarizare import taxe_cm
+    import re
+    from datetime import date
+    CM_ANG, CM_FNUASS = 1000, 3000        # indemnizatie 4000 (cm_base)
+    cm_base = CM_ANG + CM_FNUASS
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id, nume, prenume, cnp, data_angajare, salariu_brut, ore_zi, "
+                    "part_time) OVERRIDING SYSTEM VALUE VALUES "
+                    "(1,'CM','B','1900101410011','2026-01-01',6000,8,false)")
+        cur.execute("INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, baza, "
+                    "media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, brut_ang, "
+                    "brut_fnuass, cass, impozit, cas, net) VALUES "
+                    "(1,2026,6,'08',10,%s,0,0,85,false,10,5,5,%s,%s,0,0,0,0)",
+                    (cm_base, CM_ANG, CM_FNUASS))
+    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    m = re.search(r'<asiguratB4[^>]*B4_5="(\d+)"[^>]*B4_7="(\d+)"', xml)
+    assert m, "randul B4 nu s-a gasit in XML"
+    b4_5 = int(m.group(1))   # baza CASS
+    b4_7 = int(m.group(2))   # baza CAS
+    # lantul fluturas: cod 08 e scutit de CASS
+    flut = taxe_cm(cm_base, "08", la_data=date(2026, 6, 1))
+    assert flut["cass"] == 0, "fluturas: cod 08 trebuie scutit de CASS"
+    # lantul declaratie trebuie sa fie DE ACORD: indemnizatia (cod 08) e in baza CAS dar NU in baza CASS
+    assert b4_7 - b4_5 == cm_base, (
+        "d112 nu exclude indemnizatia cod-08 din baza CASS: B4_7=%d B4_5=%d, diferenta trebuie cm_base=%d "
+        "(divergenta fluturas/declaratie)" % (b4_7, b4_5, cm_base))

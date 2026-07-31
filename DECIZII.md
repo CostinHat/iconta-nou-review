@@ -4417,3 +4417,29 @@ doar litera art.139(1)(o) pe just.ro (tier-1), reprodusa fidel de noulcodfiscal/
 
 DE CE SE CONSEMNEAZA: un temei gresit intr-un registru se propaga - exact ca HG 1006/2024 atribuit
 gresit lui 3700. Cine citeste "art.144" construieste pe categoria gresita.
+
+## 31.07.2026 — UNIFICARE contributii CM intr-o functie canonica (livrat)
+
+Inchide datoria "concedii medicale: doua surse de adevar". Pana acum contributiile pe indemnizatia de
+CM se calculau in DOUA locuri care deviau: salarizare.taxe_cm (fluturas, cas=0 GRESIT) vs d112 ramura
+CM (recalcul, cas=25% pe total, CASS uniform). Divergenta putea da cifre diferite pe fluturas vs D112,
+fara semnal - prima instanta CONCRETA a categoriei GARZI "Integritate cod - arbori paraleli".
+
+UNIFICAT: salarizare.taxe_cm e acum FUNCTIA CANONICA - CAS 25% UNIFORM pe toate codurile (CF
+art.139(1)(o)+140), CASS doar 01/07/10 (OUG 34/2024), impozit 10% pe (brut-cas-cass). d112 ramura CM
+o APELEAZA per certificat (nu mai recalculeaza cu formula proprie). Ambele lanturi consuma aceeasi
+functie.
+
+PROBA:
+- test arbori paraleli (core/test_pull_declaratii.py::test_cm_arbori_paraleli_acelasi_rezultat):
+  pe cod 08 (CASS-scutit), d112 exclude indemnizatia din baza CASS (B4_7-B4_5=cm_base) <=> taxe_cm
+  cass=0. Trece VERDE dupa unificare.
+- MUTATIE pe functia canonica (_CM_COD_CU_CASS + '08'): AMBELE teste cad impreuna
+  (test_cm_arbori_paraleli SI test_cass_doar_pe_01_07_10) - unificarea a tinut.
+- PROBA DUK: D112 cu CM cod 01 -> stare VALID (B4_5=10000 B4_6=1000 B4_7=10000 B4_8=2500). Schimbarea
+  B4 CASS nu rupe cazul functional.
+
+LIMITA (datorie separata, test_datorie_cm_dfield_coduri_speciale): codurile CM speciale (08 maternitate,
+06 urgente) au gap-uri PRE-EXISTENTE in d112 pe D-field/C2 (C2_32/34/36 maternitate; D_11 urgente),
+independente de contributii - un D112 cu cod 08/06 e respins de DUK pe acele campuri, nu pe B4. De
+tratat separat (se inchide cand acele coduri trec validatorul; vezi test_datorie_cm_dfield_coduri_speciale).

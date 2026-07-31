@@ -104,6 +104,9 @@ def _d112_genereaza(prof, salariati, an, luna):
     """D112: structura + angajator (impozit + CAS/CASS/CAM + C1) + asigurat grup B
     (contributii) + E1 (agregat impozit) + E3 (impozit). Returneaza (xml_str, avertismente)."""
     import re
+    from core import salarizare as _sz
+    from datetime import date as _d112date
+    ref = _d112date(an, luna, 1)
     av = []
     nzl = _nzl(an, luna)
     perioada = "%02d.%04d" % (luna, an)
@@ -157,6 +160,7 @@ def _d112_genereaza(prof, salariati, an, luna):
         _dl = []
         brute = brut
         b4base = bazac
+        cass_base_cm = bazac   # [UNIFICARE CM] baza CASS (salariu + CM doar 01/07/10); default = salariu
         if cms and zile_cm > 0:
             zile = nzl - zile_cm
             if zile < 0:
@@ -168,8 +172,23 @@ def _d112_genereaza(prof, salariati, an, luna):
             sza = sum(int(x.get("zile_ang") or 0) for x in cms)
             szf = sum(int(x.get("zile_fnuass") or 0) for x in cms)
             total_base = bazac + cm_base
-            cas = _d112int(total_base * 0.25)
-            cass = _d112int(total_base * 0.10)
+            # [UNIFICARE CM 31.07.2026] contributiile pe indemnizatia CM prin functia canonica
+            # salarizare.taxe_cm, apelata PER CERTIFICAT (cod): CAS 25% UNIFORM (CF art.139(1)(o)+140),
+            # CASS doar 01/07/10 (OUG 34/2024). Salariul (bazac) isi pastreaza 25%/10%. Fluturasul (la
+            # salvare) si D112 (aici) consuma ACEEASI functie - divergenta celor doua lanturi dispare.
+            cm_cas = 0
+            cm_cass = 0
+            cm_cass_base = 0
+            for _x in cms:
+                _xb = _d112int(_x.get("brut_ang")) + _d112int(_x.get("brut_fnuass"))
+                _xt = _sz.taxe_cm(_xb, _x.get("cod") or "01", la_data=ref)
+                cm_cas += _d112int(_xt["cas"])
+                cm_cass += _d112int(_xt["cass"])
+                if _d112int(_xt["cass"]) > 0:
+                    cm_cass_base += _xb
+            cas = _d112int(bazac * 0.25) + cm_cas
+            cass = _d112int(bazac * 0.10) + cm_cass
+            cass_base_cm = bazac + cm_cass_base
             ded = float(s.get("deducere") or 0)
             bimp = total_base - cas - cass - ded
             if bimp < 0:
@@ -213,7 +232,7 @@ def _d112_genereaza(prof, salariati, an, luna):
         # baza CASS include nominalul; baza CAS (b4base) NU se atinge (tichetele n-au CAS).
         cass += cass_tichete
         imp += impozit_tichete
-        baza_cass = b4base + tichete_nom
+        baza_cass = cass_base_cm + tichete_nom   # [UNIFICARE CM] baza CASS exclude CM ne-eligibil (08/09 etc.)
         ore_lucr = zile * ore
         casa_sn = _d112_casa(s.get("judet_casa") or prof.get("judet"))
         dataang = _d112_data(s.get("data_angajare"))

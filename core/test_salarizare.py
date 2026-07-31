@@ -77,8 +77,11 @@ def test_cass_doar_pe_01_07_10():
         assert taxe_cm(1000, cod=cod, la_data=SEM2)["cass"] == Decimal("0.00")
 
 
-def test_cm_cas_mereu_zero():
-    assert taxe_cm(1000, cod="01", la_data=SEM2)["cas"] == Decimal("0.00")
+def test_cm_cas_25pct_uniform():
+    # CAS 25% se retine pe indemnizatia CM, UNIFORM pe toate codurile (CF art.139(1)(o)+140;
+    # verificat 31.07: ghid ANAF - si maternitate/copil). Corectat de la cas=0 (era gresit).
+    for cod in ("01", "07", "08", "09", "10"):
+        assert taxe_cm(1000, cod=cod, la_data=SEM2)["cas"] == Decimal("250.00"), cod
 
 
 def test_cm_prima_zi_diminuata_boala():
