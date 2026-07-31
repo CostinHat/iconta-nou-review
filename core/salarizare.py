@@ -65,9 +65,9 @@ def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0,
     copii = DEDUCERE_COPIL_SCOALA * _dec(copii_scoala)
 
     total = ded_baza + tineri + copii
-    # rotunjire la 10 lei in SUS, in favoarea contribuabilului (art.77 Cod fiscal)
-    if total > 0:
-        total = (Decimal(int((total + Decimal("9.9999")) / 10))) * 10
+    # Suma deducerii NU se rotunjeste. Art.77 in vigoare nu prevede rotunjirea SUMEI; alin.(8) e
+    # despre PERIOADA (deducere pe fiecare luna), nu despre valoare. Rotunjirea la 10 lei a fost
+    # confirmata ABSENTA pe pliant ANAF + redarea textului codificat (runda 2 verificare la sursa).
     return {"baza": _q(ded_baza), "tineri": _q(tineri),
             "copii": _q(copii), "total": _q(total)}
 

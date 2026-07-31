@@ -18,9 +18,9 @@ def test_brut_6000_fara_dependenti_sem2():
     assert r["facilitate"] == Decimal("0.00")
     assert r["cas"] == Decimal("1500.00")
     assert r["cass"] == Decimal("600.00")
-    assert r["deducere"]["total"] == Decimal("160.00")
-    assert r["impozit"] == Decimal("374.00")
-    assert r["net"] == Decimal("3526.00")
+    assert r["deducere"]["total"] == Decimal("151.38")  # FIX3: fara rotunjire (0.035*4325)
+    assert r["impozit"] == Decimal("374.86")            # FIX3: 10% pe baza cu ded nerotunjita
+    assert r["net"] == Decimal("3525.14")
     assert r["cam"] == Decimal("135.00")
     assert r["cost_angajator"] == Decimal("6135.00")
 
@@ -30,7 +30,7 @@ def test_minim_4325_are_facilitate_sem2():
     assert r["facilitate"] == Decimal("200.00")
     assert r["cas"] == Decimal("1031.25")
     assert r["cass"] == Decimal("412.50")
-    assert r["net"] == Decimal("2700.13")
+    assert r["net"] == Decimal("2699.63")               # FIX3: ded de baza 865 (nerotunjit), nu 870
 
 
 def test_peste_plafon_deducere_zero():
@@ -59,7 +59,7 @@ def test_minim_difera_pe_semestru():
 
 
 def test_deducere_degresiva_pe_trepte():
-    assert deducere_personala(6000, la_data=SEM2)["total"] == Decimal("160.00")
+    assert deducere_personala(6000, la_data=SEM2)["total"] == Decimal("151.38")  # FIX3: fara rotunjire la 10 lei (0.035*4325=151.375)
 
 
 def test_deducere_copil_scoala():
