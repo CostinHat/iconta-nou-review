@@ -4588,4 +4588,4 @@ Deci NU se aliniaza fortat: ar cere ca d300 sa auto-faca reverse charge (feature
 nevoie de cota bunului (absenta pe factura fara linii). Reparatia reala e la DATE (factura de
 reverse charge SA aiba linii cu cota bunului) - atunci ambele clasifica corect. Gardul de paritate
 acopera clasificarea pe date COMPLETE (cu linii); cazul reverse-charge-fara-linii e limita
-documentata, nu bug. Pe sume ambele dau 0 (tva=0), deci nu afecteaza cifrele, doar incadrarea.
+documentata, nu bug. Pe sume ambele dau 0 (tva=0), deci nu afecteaza cifrele, doar incadrarea. VERDICT GRI (provizoriu, NU verde): sta pe DEDUCTIE din cod (d300.pull nu citeste taxare_inversa) + practica, NEreconfirmat pe text MO. Datorie deschisa (test_datorie_d300_reverse_charge_manual_reconfirmat_mo): de reconfirmat la sursa primara (structura oficiala D300/OPANAF) ca reverse charge se trateaza DOAR manual (rd.12).

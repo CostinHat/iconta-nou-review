@@ -244,3 +244,9 @@ def test_datorie_d394_scutit_catre_cui_proba_duk():
 def test_datorie_factura_pdf_proba_pe_profil_real():
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "factura_pdf probat pe profil real complet" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026 (GRI, nu verde): verdictul 'divergenta d300/d394 pe reverse charge = cerinta ANAF, nu bug' (runda 2 B) sta pe DEDUCTIE din cod (d300.pull nu citeste taxare_inversa) + practica, NU pe text MO. De reconfirmat la SURSA PRIMARA (structura oficiala D300 / OPANAF) ca reverse charge se trateaza DOAR manual (rd.12) si ca D394 tip C la cota bunului e cerinta, nu optiune de implementare. Pana atunci verdictul ramane GRI. Se inchide cand e reconfirmat pe sursa oficiala si consemnat in DECIZII.md.")
+def test_datorie_d300_reverse_charge_manual_reconfirmat_mo():
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "d300 reverse charge doar manual reconfirmat la sursa oficiala" in dz.lower()
