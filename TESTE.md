@@ -127,10 +127,10 @@ Estimare de structură — se rafinează la citirea fiecărui modul.
 
 | Cluster | Modul | Teste | Verificat la sursă | Risc | Temeiuri | Funcție(test) |
 |---|---|---|---|---|---|---|
-| facilitate salariu minim | salarizare | test_salarizare.py | √ 29.07 | FISCAL | OUG 156/2024 art.LXVI; OUG 89/2025 art.III; HG 146/2026 | test_minim_4325_are_facilitate_sem2 test_facilitatea_ramane_conditionata_de_norma_intreaga test_facilitate_pe_minim_cu_cm_ramane_intreaga test_facilitate_prorata_luna_angajare |
+| facilitate salariu minim | salarizare | test_salarizare.py | √ 31.07 | FISCAL | OUG 156/2024 art.LXVI; OUG 89/2025 art.III; HG 146/2026 | test_minim_4325_are_facilitate_sem2 test_facilitatea_ramane_conditionata_de_norma_intreaga test_facilitate_pe_minim_cu_cm_ramane_intreaga test_facilitate_prorata_luna_angajare |
 | suprataxare part-time | salarizare | test_salarizare.py | √ 29.07 | FISCAL | CF art.146 alin.(5^6)-(5^7); art.168 alin.(6^1) | test_part_time_2000_suprataxa_pe_angajator test_part_time_exceptat_fara_suprataxa test_norma_intreaga_sub_minim_este_suprataxata test_part_time_sub_minim_ramane_suprataxat test_exceptatul_nu_e_suprataxat_indiferent_de_norma test_peste_minim_nu_se_suprataxeaza test_suprataxa_baza_pe_minimul_diminuat_ambele_semestre |
 | proratare angajare/incetare | salarizare | test_salarizare.py | √ 29.07 | FISCAL | OUG 156/2024 art.LXVI alin.(4); OMF 1855/2022 pct.2 | test_suprataxa_prag_prorata_luna_angajare test_facilitate_prorata_luna_angajare test_suprataxa_si_facilitate_prorata_la_incetare |
-| deducere personala | salarizare | test_salarizare.py |  | FISCAL |  |  |
+| deducere personala | salarizare | test_salarizare.py | √ 31.07 | FISCAL | Cod fiscal art.77 alin.(4)/(10)(a); pliant ANAF AJFP Vrancea (deducere personala) | test_deducere_degresiva_pe_trepte test_deducere_copil_scoala test_deducere_zero_fara_functie_baza test_deducere_4plus_persoane_45pct test_tanar_sub26_brut_mic_primeste_deducere test_deducere_la_data_obligatoriu |
 | tichete masa/vacanta | salarizare | test_salarizare.py |  | FISCAL |  |  |
 | concedii medicale | salarizare | test_salarizare.py |  | FISCAL |  |  |
 | nomenclator cod_oblig<->cod_bugetar | d100 | test_d100.py |  | STRUCTURA |  |  |
