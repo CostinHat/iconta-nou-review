@@ -28,6 +28,10 @@ def adauga_nir(conn, schema, nir):
     """nir: {numar, data, furnizor?, cui?, factura_ref?, linii: [...]}.
     Calculează prin motor, persistă NIR + linii, creează notele ciorne."""
     try:
+        for _l in nir["linii"]:
+            if _l.get("cota_tva") is None:
+                raise ValueError("linie NIR fara cota TVA (%r): declara cota explicit - o linie "
+                                 "fara cota e intrare incompleta" % (_l.get("denumire") or "",))
         rez = _m.nir_gv(nir["linii"], transport=nir.get("transport", 0),
                         taxe=nir.get("taxe", 0),
                         cont_transport=nir.get("cont_transport") or "401",
@@ -53,7 +57,7 @@ def adauga_nir(conn, schema, nir):
                             VALUES (%s,%s,%s,%s,%s,%s)""",
                         (nid, l["denumire"], Decimal(str(l["cantitate"])),
                          Decimal(str(l["pret_achizitie"])), Decimal(str(l["pret_vanzare"])),
-                         Decimal(str(l.get("cota_tva", 21)))))
+                         Decimal(str(l["cota_tva"]))))
     conn.commit()
     return {"id": nid, "inregistrari": ids,
             "cost_total": str(rez["cost_total"]), "cost_baza_total": str(rez["cost_baza_total"]),

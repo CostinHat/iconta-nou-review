@@ -43,7 +43,10 @@ def cauta_dupa_denumire(conn, denumire):
         return None
     out = dict(r)
     out["pret_unitar"] = float(out["pret_unitar"] or 0)
-    out["cota_tva"] = float(out["cota_tva"] or 21)
+    if out["cota_tva"] is None:
+        # produs incomplet in nomenclator: NU se ghiceste 21 (baza nula). 0 (scutit) NU e None.
+        raise ValueError("produs fara cota TVA in nomenclator: %r" % out.get("denumire"))
+    out["cota_tva"] = float(out["cota_tva"])
     return out
 
 

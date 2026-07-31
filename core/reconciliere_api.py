@@ -173,11 +173,14 @@ def conteaza(conn, schema, linie_id, alocari=None):
             cur.execute(f"SELECT COALESCE(tva_la_incasare, false) AS b FROM {schema}.firma_profil WHERE id = 1")
             if (cur.fetchone() or {}).get("b"):
                 from core import tva_incasare as _tv
-                cur.execute(f"""SELECT f.directie, COALESCE((SELECT cota_tva FROM {schema}.factura_linii
-                                        WHERE factura_id = f.id LIMIT 1), 21) AS cota
+                cur.execute(f"""SELECT f.directie, (SELECT cota_tva FROM {schema}.factura_linii
+                                        WHERE factura_id = f.id LIMIT 1) AS cota
                                 FROM {schema}.facturi f WHERE f.id = %s""", (a["factura_id"],))
                 _f = cur.fetchone()
                 if _f:
+                    if _f["cota"] is None:
+                        raise ValueError("factura fara cota TVA pe linii - TVA la incasare nu se "
+                                         "poate calcula (declara cota pe factura)")
                     _tva = _tv.tva_din_incasare(a["suma"], _f["cota"])
                     if _tva > 0:
                         _deb, _cred = ("4428", "4427") if _f["directie"] == "emisa" else ("4426", "4428")

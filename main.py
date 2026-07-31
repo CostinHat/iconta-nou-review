@@ -6289,7 +6289,10 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
             baza = Decimal(str(fl["baza"] or 0))
             if baza <= 0:
                 baza = Decimal(str(f.get("total_lei") or f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
-            cota = Decimal(str(fl["cota"])) / 100 if fl["cota"] is not None else Decimal("0.21")
+            if fl["cota"] is None:
+                raise HTTPException(422, "factura fara cota TVA pe linii - nu se poate genera "
+                                         "nota (declara cota pe factura)")
+            cota = Decimal(str(fl["cota"])) / 100
             if f["directie"] == "emisa":
                 cur.execute(f"SELECT COALESCE(cont_venit_implicit,'707') AS cv FROM {schema}.firma_profil WHERE id=1")
                 _cv = cur.fetchone()["cv"]  # [cont_venit_firma_v1] 707 marfa / 704 servicii, setabil pe firma

@@ -87,3 +87,19 @@ def test_emitere_linie_fara_cota_cu_ai_picat_blocheaza(conn_schema, monkeypatch)
             platitor_tva=True)
     m = str(e.value).lower()
     assert "cot" in m and ("nedetermin" in m or "explicit" in m), "mesaj neclar: %s" % e.value
+
+
+# ── TEMA C: cota 0 (scutit) e valoare VALIDA, nu absenta (bug produse_api:46) ──
+@_pt.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_produs_scutit_cota_0_ramane_0_nu_devine_21(conn_schema):
+    """Un produs cu cota 0 (scutit/neplatitor) citit din nomenclator trebuie sa intoarca 0,
+    NU 21. `float(out[cota_tva] or 21)` transforma 0 in 21 (or pe 0 = fals). Distinge None
+    (incomplet) de 0 (scutit). (azi: 0 -> 21)."""
+    from core import produse_api
+    with conn_schema.cursor() as cur:
+        cur.execute("INSERT INTO produse (denumire, um, pret_unitar, cota_tva, sursa, confirmat) "
+                    "VALUES (%s,%s,%s,%s,%s,%s)",
+                    ("Serviciu scutit ABC", "buc", 100, 0, "manual", True))
+    r = produse_api.cauta_dupa_denumire(conn_schema, "Serviciu scutit ABC")
+    assert r is not None
+    assert r["cota_tva"] == 0, "cota scutit 0 transformata gresit in %s" % r["cota_tva"]
