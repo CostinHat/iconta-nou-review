@@ -743,6 +743,50 @@ except Exception as _eiz:
     print("")
     print("### GARD IZOLARE TENANTI: NEVERIFICAT (%s)" % _eiz)
 
+# --- GARD CONTRACT GENERATOARE dXXX (A1, 31.07.2026): fiecare modul core/dNNN.py cu `def genereaza`
+# TREBUIE sa expuna contractul uniform - pull(), erori_generare(), calcul_dNNN(), build_xml(),
+# genereaza(conn, schema, perioada, ...). Pasul 4 din CICLUL DE NECONFORMITATE: fara gard, al zecelea
+# generator nu respecta contractul. Ratchet: NECONFORM poate doar SCADEA (baseline 9 la start; coboara
+# pe masura ce se converteste fiecare modul; la 0, orice modul neconform BLOCHEAZA).
+CONTRACT_BASELINE = 10
+try:
+    _dgen = []
+    for _f in sorted(os.listdir(os.path.join(BAZA_PY, "core"))):
+        _mm = re.match(r"^(d\d+)\.py$", _f)
+        if not _mm:
+            continue
+        _src = open(os.path.join(BAZA_PY, "core", _f), encoding="utf-8").read()
+        if not re.search(r"\ndef genereaza\(conn, schema", _src):
+            continue
+        _nm = _mm.group(1)
+        _lips = []
+        if not re.search(r"\ndef pull\(", _src):
+            _lips.append("pull")
+        if not re.search(r"\ndef erori_generare\(", _src):
+            _lips.append("erori_generare")
+        if not re.search(r"\ndef calcul_%s\(" % _nm, _src):
+            _lips.append("calcul_%s" % _nm)
+        if not re.search(r"\ndef build_xml\(", _src):
+            _lips.append("build_xml")
+        if not re.search(r"\ndef genereaza\(conn, schema, perioada", _src):
+            _lips.append("genereaza(perioada)")
+        if _lips:
+            _dgen.append((_nm, _lips))
+    _n_neconf = len(_dgen)
+    if _n_neconf > CONTRACT_BASELINE:
+        rap["contract_dXXX"] = [("NECONFORM", 0, _nm, "lipsesc din contract: " + ", ".join(_lp)) for _nm, _lp in _dgen]
+    print("")
+    print("### GARD CONTRACT GENERATOARE dXXX (uniform):")
+    print("  module neconforme: %d (baseline %d)%s" % (
+        _n_neconf, CONTRACT_BASELINE, "  <== BLOCHEAZA" if _n_neconf > CONTRACT_BASELINE else ""))
+    for _nm, _lp in _dgen:
+        print("  NECONFORM %-6s lipsesc: %s" % (_nm, ", ".join(_lp)))
+    if _n_neconf < CONTRACT_BASELINE:
+        print("  -> module convertite: coboara CONTRACT_BASELINE la %d in verificator." % _n_neconf)
+except Exception as _ectr:
+    print("")
+    print("### GARD CONTRACT GENERATOARE: NEVERIFICAT (%s)" % _ectr)
+
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)
