@@ -227,7 +227,7 @@ def test_datorie_teste_care_apara_buguri():
     assert "teste cu constante fiscale trecute sistematic cu temei citat" in dz.lower()
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: D112 nu genereaza corect campurile D-field/angajatorC2 pentru codurile CM SPECIALE - cod 08 (maternitate/sarcina-lauzie) lipsesc agregatele C2_32/34/36; cod 06 (urgente) lipseste D_11 (nomenclator urgente) si regula max 5 zile. Prins de proba DUK la unificarea CM (31.07): un D112 cu CM cod 08 sau 06 e RESPINS de validator pe D-field/C2, INDEPENDENT de contributii (B4). Cod 01 e valid (proba DUK: B4_5=10000/B4_6=1000/B4_7=10000/B4_8=2500). De completat D-field per cod special + agregatele C2 maternitate. Se inchide cand D112 cu cod 08 si 06 trece DUK, consemnat in DECIZII.md.")
+@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: D112 nu genereaza corect campurile D-field pentru toate codurile CM SPECIALE. REPARAT: cod 08 (maternitate) - agregate C2 pe Rd.3 (C2_31/32/34/36) + split 100% FNUASS, DUK VALID. RAMAS: (a) cod 06 (urgente) cere D_11 (cod urgenta, nomenclator HG 423/2020, C(3)) - concedii_medicale nu are campul, cere camp de date nou + UI; (b) sub-randuri C2 infectocontagioase (cod 05, Rd.1.1-1.4 cu conditii D_12/data) nedefalcate, emise 0 (corect cat timp nu exista cod 05 in luna). Se inchide cand cod 06 + sub-randurile 05 trec DUK, consemnat in DECIZII.md.")
 def test_datorie_cm_dfield_coduri_speciale():
     # Se inchide cand D112 cu CM cod 08 (maternitate) si 06 (urgente) trece DUKIntegrator, consemnat in DECIZII.md.
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")

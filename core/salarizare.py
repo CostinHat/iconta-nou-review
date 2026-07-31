@@ -352,7 +352,8 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     # split angajator/FNUASS (Norme OUG 158/2005): angajatorul suporta zilele 2-6 ale
     # concediului = primele 5 zile lucratoare din cele PLATITE (prima zi diminuata e
     # neplatita, nu reduce plafonul de 5 al angajatorului); FNUASS suporta din ziua 7.
-    zile_ang = min(zile_platite, 5)
+    # [D112 D-field] codurile 100% FNUASS nu au portie de angajator (D_20=0); restul: primele 5 zile angajator
+    zile_ang = 0 if str(cod).zfill(2) in _CM_COD_FNUASS_INTEGRAL else min(zile_platite, 5)
     zile_fnuass = zile_platite - zile_ang
     brut_ang = (mz * pct * zile_ang).quantize(Decimal("1"))
     brut_fnuass = brut - brut_ang
@@ -367,6 +368,10 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
 # Coduri indemnizatie pt care NU se retine CASS (verif. la sursa: art.17(2) OUG 34/2024,
 # aplicabil dupa 12.04.2024). CASS se retine DOAR pt 01 (boala obisnuita), 07 (carantina),
 # 10 (reducere program). CAS 25% se retine UNIFORM pe indemnizatia CM (CF art.139(1)(o)+140). Impozit 10% mereu.
+# Coduri 100% FNUASS (D112 spec, linia 5664: daca D_9 in (08,09,91,92,10,15,17) atunci D_20=0):
+# angajatorul NU suporta primele 5 zile - toata indemnizatia din FNUASS. Maternitate/ingrijire/
+# risc maternal/reducere program.
+_CM_COD_FNUASS_INTEGRAL = ("08", "09", "10", "15", "17", "91", "92")
 _CM_COD_CU_CASS = ("01", "07", "10")
 
 

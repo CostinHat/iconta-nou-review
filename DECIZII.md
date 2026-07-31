@@ -4443,3 +4443,27 @@ LIMITA (datorie separata, test_datorie_cm_dfield_coduri_speciale): codurile CM s
 06 urgente) au gap-uri PRE-EXISTENTE in d112 pe D-field/C2 (C2_32/34/36 maternitate; D_11 urgente),
 independente de contributii - un D112 cu cod 08/06 e respins de DUK pe acele campuri, nu pe B4. De
 tratat separat (se inchide cand acele coduri trec validatorul; vezi test_datorie_cm_dfield_coduri_speciale).
+
+## 31.07.2026 — D112 maternitate (cod 08): agregate C2 pe Rd.3 + split 100% FNUASS (blocaj rezolvat)
+
+Blocaj REAL: orice firma cu o angajata in concediu de maternitate NU putea depune D112 - DUK respingea
+(C2_32 lipsa; C2_11 calculat 0; D_20 trebuie 0). Cauza: d112 punea TOATE codurile CM in randul Rd.1
+(C2_11-16), iar calcul_cm dadea maternitatii portie de angajator (primele 5 zile).
+
+Verificat la SURSA OFICIALA (anaf_surse/d112_struct_anaf.txt, NU dedus din eroare):
+- angajatorC2 e pe RANDURI per categorie: Rd.1 (C2_11-16) = D_9 in (01,02,03,04,05,06,12,13,14,16,51);
+  Rd.3 (C2_31/32/34/36) = D_9=08 sarcina/lauzie (DOAR FNUASS, fara C2_33/35); Rd.4 = 09/91/92;
+  Rd.4.1 = 17; Rd.5 = 15; Rd.2 = 10/11. C2_T6=Σ(C2_16+26+36+46+56).
+- D-field (spec linia 5664): daca D_9 in (08,09,91,92,10,15,17) atunci D_20=0 (100% FNUASS).
+
+REPARAT: calcul_cm - codurile 100% FNUASS au zile_ang=0/brut_ang=0. d112._d112_genereaza - C2 se
+agrega PE RAND per cod (rutare), emitand atributele unui rand doar cand acel rand are date.
+
+PROBA DUK: cod 08 -> VALID (C2_31=1/C2_32=10/C2_34=10/C2_36=4000; C2_11-16=0); cod 01 -> VALID
+(regresie). MUTATIE: spart rutarea Rd.3 -> DUK respinge iar (A50 C2_31 lipsa, A51 C2_32 lipsa).
+
+RAMAS (datorie, test_datorie_cm_dfield_coduri_speciale): (a) cod 06 (urgente medico-chirurgicale) cere
+D_11 (cod urgenta din nomenclatorul HG 423/2020, C(3)) - concedii_medicale NU are campul; cere camp de
+date nou + UI de introducere + emisie. OPRIT (nu se inventeaza formatul unui camp de declaratie).
+(b) sub-randurile C2 infectocontagioase (Rd.1.1-1.4, cod 05 cu conditii D_12/data) nu sunt inca
+defalcate - emise implicit 0 (corect cat timp nu exista cod 05 in luna).

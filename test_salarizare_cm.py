@@ -63,3 +63,11 @@ def test_nc28_exceptii_diminuare():
     for c in ('01','06','07','09'):
         assert s.calcul_cm(27000,129,10,cod=c,zile_episod=10,la_data=d)['diminuare']==1, c
     assert s.calcul_cm(27000,129,10,cod='01',zile_episod=10,la_data=d,spitalizare=True)['diminuare']==0
+
+
+def test_maternitate_cod08_100pct_fnuass():
+    from datetime import date
+    r = s.calcul_cm(30000, 126, 10, cod="08", la_data=date(2026, 6, 1))
+    assert r["zile_ang"] == 0 and r["brut_ang"] == Decimal("0.00"), "maternitate 100% FNUASS (D_20=0, spec D112)"
+    r01 = s.calcul_cm(30000, 126, 10, cod="01", la_data=date(2026, 6, 1))
+    assert r01["zile_ang"] == 5, "cod 01 nu e integral FNUASS - primele 5 zile angajator"

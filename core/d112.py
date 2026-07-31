@@ -130,7 +130,7 @@ def _d112_genereaza(prof, salariati, an, luna):
         av.append("CAEN firma lipsa/invalid - D112 cere CAEN valid in Profil firma.")
     sum_imp = sum_cas = sum_cass = sum_bazac = 0
     cas_ang_dif = cass_ang_dif = 0  # d112_b4p_v2
-    c2_count = c2_d16 = c2_d14 = c2_d15 = c2_d20 = c2_d21 = 0  # d112_cm_v1
+    _c2_cazuri = []  # [D112 C2 pe rand] (cod, d16, d14=za, d15=zf, d20, d21) per certificat
     c1_12 = 0
     AS = []
     idx = 0
@@ -186,6 +186,9 @@ def _d112_genereaza(prof, salariati, an, luna):
                 cm_cass += _d112int(_xt["cass"])
                 if _d112int(_xt["cass"]) > 0:
                     cm_cass_base += _xb
+                _cza = int(_x.get("zile_ang") or 0); _czf = int(_x.get("zile_fnuass") or 0)
+                _c2_cazuri.append((str(_x.get("cod") or "01").zfill(2), _cza + _czf, _cza, _czf,
+                                   _d112int(_x.get("brut_ang")), _d112int(_x.get("brut_fnuass"))))
             cas = _d112int(bazac * 0.25) + cm_cas
             cass = _d112int(bazac * 0.10) + cm_cass
             cass_base_cm = bazac + cm_cass_base
@@ -219,12 +222,6 @@ def _d112_genereaza(prof, salariati, an, luna):
                            'D_14="%d" D_15="%d" D_16="%d" D_17="%d" D_18="%d" D_19="%.2f" D_20="%d" D_21="%d" D_23="%s"/>'
                            % (_opt, (x.get("cod") or "01"), int(x.get("loc_prescriere") or 1),
                               za, zf, d16, d17, d18, d19, d20, d21, _d112esc(x.get("diagnostic") or "999")))
-            c2_count += len(cms)
-            c2_d16 += b3z
-            c2_d14 += sza
-            c2_d15 += szf
-            c2_d20 += cm_ang
-            c2_d21 += cm_fnuass
             c1_12 += cm_base
         else:
             zile = nzl
@@ -314,10 +311,28 @@ def _d112_genereaza(prof, salariati, an, luna):
     H.append('    <angajatorB B_cnp="%d" B_sanatate="%d" B_pensie="%d" B_brutSalarii="%d" B_sal="%d"/>'
              % (n, n, n, sum_bazac, n))
     H.append('    <angajatorC1 C1_11="%d" C1_12="%d" C1_T1="%d" C1_T2="%d" C1_T="0"/>' % (sum_bazac, c1_12, sum_bazac, c1_12))
-    if c2_count > 0:
-        H.append('    <angajatorC2 C2_11="%d" C2_12="%d" C2_13="%d" C2_14="%d" C2_15="%d" C2_16="%d" '
-                 'C2_T6="%d" C2_10="%d" C2_140="%d"/>'
-                 % (c2_count, c2_d16, c2_d14, c2_d15, c2_d20, c2_d21, c2_d21, c2_d21, c2_d21))
+    _C2_RD1 = ("01", "02", "03", "04", "05", "06", "12", "13", "14", "16", "51")
+    def _c2row(coduri):
+        _f = [c for c in _c2_cazuri if c[0] in coduri]
+        return (len(_f), sum(c[1] for c in _f), sum(c[2] for c in _f), sum(c[3] for c in _f),
+                sum(c[4] for c in _f), sum(c[5] for c in _f))  # count, d16, d14, d15, d20, d21
+    if _c2_cazuri:
+        _r1 = _c2row(_C2_RD1); _r2 = _c2row(("10", "11")); _r3 = _c2row(("08",))
+        _r4 = _c2row(("09", "91", "92")); _r41 = _c2row(("17",)); _r5 = _c2row(("15",))
+        _c2a = ['C2_11="%d" C2_12="%d" C2_13="%d" C2_14="%d" C2_15="%d" C2_16="%d"' % _r1[:6]]
+        if _r2[0]:
+            _c2a.append('C2_21="%d" C2_22="%d" C2_23="%d" C2_24="%d" C2_25="%d" C2_26="%d"' % _r2[:6])
+        if _r3[0]:  # Rd.3 sarcina/lauzie: doar FNUASS (fara angajator)
+            _c2a.append('C2_31="%d" C2_32="%d" C2_34="%d" C2_36="%d"' % (_r3[0], _r3[1], _r3[3], _r3[5]))
+        if _r4[0]:  # Rd.4 ingrijire copil
+            _c2a.append('C2_41="%d" C2_42="%d" C2_44="%d" C2_46="%d"' % (_r4[0], _r4[1], _r4[3], _r4[5]))
+        if _r41[0]:  # Rd.4.1 ingrijire pacient oncologic (cod 17)
+            _c2a.append('C2_41a="%d" C2_42a="%d" C2_44a="%d" C2_46a="%d"' % (_r41[0], _r41[1], _r41[3], _r41[5]))
+        if _r5[0]:  # Rd.5 risc maternal
+            _c2a.append('C2_51="%d" C2_52="%d" C2_54="%d" C2_56="%d"' % (_r5[0], _r5[1], _r5[3], _r5[5]))
+        _c2t6 = _r1[5] + _r2[5] + _r3[5] + _r4[5] + _r41[5] + _r5[5]  # C2_16+26+36+46+56 (sume FNUASS)
+        _c2a.append('C2_T6="%d" C2_10="%d" C2_140="%d"' % (_c2t6, _c2t6, _c2t6))
+        H.append('    <angajatorC2 %s/>' % " ".join(_c2a))
     H.append('    <angajatorC4 C4_baza="%d" C4_ct="%d"/>' % (sum_bazac, cam_total))
     H.append('  </angajator>')
     H.extend(AS)

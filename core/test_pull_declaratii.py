@@ -283,3 +283,24 @@ def test_cm_arbori_paraleli_acelasi_rezultat(schema):
     assert b4_7 - b4_5 == cm_base, (
         "d112 nu exclude indemnizatia cod-08 din baza CASS: B4_7=%d B4_5=%d, diferenta trebuie cm_base=%d "
         "(divergenta fluturas/declaratie)" % (b4_7, b4_5, cm_base))
+
+
+def test_d112_maternitate_cod08_c2_rd3(schema):
+    # [D112 D-field] CM cod 08 (maternitate) -> agregatele C2 pe Rd.3 (C2_31/32/34/36), NU pe Rd.1;
+    # maternitatea e 100% FNUASS (D_20=0). Inainte d112 punea 08 in Rd.1 -> DUK respingea (C2_32 lipsa).
+    from core import d112
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id, nume, prenume, cnp, data_angajare, salariu_brut, ore_zi, "
+                    "part_time) OVERRIDING SYSTEM VALUE VALUES "
+                    "(1,'MAT','A','2900101410011','2026-01-01',6000,8,false)")
+        cur.execute("INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, baza, "
+                    "media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, brut_ang, "
+                    "brut_fnuass, cass, impozit, cas, net) VALUES "
+                    "(1,2026,6,'08',10,4000,6000,400,85,false,10,0,10,0,4000,0,300,1000,2700)")
+    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    import re
+    m = re.search(r'<angajatorC2[^>]*/>', xml)
+    assert m, "angajatorC2 negasit"
+    c2 = m.group(0)
+    assert 'C2_31="1"' in c2 and 'C2_32="10"' in c2 and 'C2_36="4000"' in c2, "maternitatea nu e pe Rd.3: " + c2
+    assert 'C2_11="0"' in c2 and 'C2_16="0"' in c2, "maternitatea nu e exclusa din Rd.1: " + c2
