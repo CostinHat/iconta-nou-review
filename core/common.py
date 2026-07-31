@@ -204,6 +204,54 @@ def cota_ceruta(corp):
     return c
 
 
+class Temei(str):
+    """Temei fiscal STRUCTURAT si citabil mecanic (CLAUDE.md §3.1).
+
+    Subclasa de `str`: se comporta ca string-ul de citare canonic peste tot unde codul vechi
+    asteapta un string (afisare, JSON, operatorul `in`, concatenare), dar poarta si campurile
+    structurate — tip/nr/an/art/alin/lit/data_in/data_out/url/estimat. Doua roluri:
+      - GREP la o schimbare de lege: gasesti TOATE locurile care citeaza un act.
+      - garda de EXPIRARE (data_out): cota() RIDICA dupa data_out, nu intoarce tacit valoarea
+        veche. Nu exista API legislativ RO fiabil -> data_out e mecanismul PRINCIPAL de deriva,
+        nu un proxy. estimat=True cand actul nu spune explicit pana cand (sfarsit de perioada
+        rezonabila: an fiscal/semestru).
+    """
+    def __new__(cls, tip=None, nr=None, an=None, art=None, alin=None, lit=None,
+                data_in=None, data_out=None, url=None, estimat=False, text=None):
+        s = text if text is not None else _citare_temei(tip, nr, an, art, alin, lit)
+        o = super().__new__(cls, s)
+        o.tip, o.nr, o.an = tip, nr, an
+        o.art, o.alin, o.lit = art, alin, lit
+        o.data_in = _ca_data(data_in)
+        o.data_out = _ca_data(data_out)
+        o.url = url
+        o.estimat = bool(estimat)
+        return o
+
+
+def _citare_temei(tip, nr, an, art, alin, lit):
+    """Formatul canonic §3.1: <TIP> <nr>/<an> [art.<art>] [alin.(<alin>)] [lit.<lit>].
+    CF/CPF sunt coduri (fara nr/an) -> se trece direct la art."""
+    p = []
+    if tip:
+        p.append(str(tip))
+    if nr and an:
+        p.append("%s/%s" % (nr, an))
+    if art:
+        p.append("art.%s" % art)
+    if alin:
+        p.append("alin.(%s)" % alin)
+    if lit:
+        p.append("lit.%s" % lit)
+    return " ".join(p)
+
+
+def _ca_data(x):
+    if x is None or isinstance(x, date):
+        return x
+    return date.fromisoformat(str(x))
+
+
 # ============================================================
 #  COTE / PLAFOANE CU VALABILITATE — codul știe nu doar CÂT, ci DIN CÂND
 # ============================================================
@@ -293,10 +341,9 @@ def cota(nume, la_data=None, strict=True):
     intrari = sorted(COTE[nume], key=lambda r: r[0], reverse=True)
     for din, valoare, temei in intrari:
         if la_data >= din:
-            luni = EXPIRA_DUPA_LUNI.get(nume)
-            if strict and luni and din == intrari[0][0]:
-                limita = _adauga_luni(din, luni)
-                if la_data > limita:
+            if strict and din == intrari[0][0]:
+                limita = _expira_la(nume, din, temei)
+                if limita is not None and la_data > limita:
                     raise ValueError(
                         f"{nume}: ultima valoare cunoscută este din {din.isoformat()} "
                         f"({temei}), valabilă până la {limita.isoformat()}. "
@@ -322,6 +369,18 @@ def _adauga_luni(d, luni):
     return date(an, luna, 1)
 
 
+def _expira_la(nume, din, temei):
+    """Data la care expira valoarea (dupa care cota() RIDICA in strict): data_out din Temei
+    (PRIMARA — nu depinde de sursa externa), altfel proxy EXPIRA_DUPA_LUNI, altfel None."""
+    _out = getattr(temei, "data_out", None)
+    if _out is not None:
+        return _out
+    luni = EXPIRA_DUPA_LUNI.get(nume)
+    if luni:
+        return _adauga_luni(din, luni)
+    return None
+
+
 def cote_care_expira(in_zile=60, la_data=None):
     """Valorile a caror valabilitate se termina in urmatoarele `in_zile`.
 
@@ -330,12 +389,19 @@ def cote_care_expira(in_zile=60, la_data=None):
     decat o stire de presa dupa.
     """
     la_data = la_data or date.today()
+    nume_set = set(EXPIRA_DUPA_LUNI)
+    for _n in COTE:
+        _t = sorted(COTE[_n], key=lambda r: r[0], reverse=True)[0][2]
+        if getattr(_t, "data_out", None) is not None:
+            nume_set.add(_n)
     rez = []
-    for nume, luni in EXPIRA_DUPA_LUNI.items():
+    for nume in nume_set:
         if nume not in COTE:
             continue
         din, valoare, temei = sorted(COTE[nume], key=lambda r: r[0], reverse=True)[0]
-        limita = _adauga_luni(din, luni)
+        limita = _expira_la(nume, din, temei)
+        if limita is None:
+            continue
         zile = (limita - la_data).days
         if zile <= in_zile:
             rez.append({"nume": nume, "valoare": valoare, "temei": temei,
