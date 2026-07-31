@@ -24,6 +24,7 @@ from pydantic import BaseModel
 from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_migrare_api
 from core.pdf_util import bani, data_ro
 from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO; [verdict] nivel->culoare + escaladare pastila
+from core import common as _common
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
@@ -6321,7 +6322,7 @@ def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
         try:
-            r = _m.vanzare_marja(corp["pret_vanzare"], corp["pret_cumparare"], corp.get("cota", 21))
+            r = _m.vanzare_marja(corp["pret_vanzare"], corp["pret_cumparare"], _common.cota_ceruta(corp))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         with conn.cursor() as cur:
@@ -6361,10 +6362,9 @@ def vanzare_marja_turism(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
             regim = _m.determina_regim(corp["calitate_client"], corp.get("locuri", ["RO"]),
                                        corp.get("optiune_normal", False),
                                        corp.get("intermediar", False))
-            cota = corp.get("cota", 21)
             if regim == "special":
                 r = _m.marja_turism_special(corp["incasat"], corp["cost_ue"],
-                                            corp.get("cost_non_ue", 0), cota)
+                                            corp.get("cost_non_ue", 0), _common.cota_ceruta(corp))
                 linii = [("4111", "704", Decimal(str(corp["cost_ue"])) + Decimal(str(corp.get("cost_non_ue", 0))))]
                 if r["marja_neta"] > 0:
                     linii.append(("4111", "704", r["marja_neta"]))
@@ -6381,7 +6381,7 @@ def vanzare_marja_turism(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
                 rasp = {"regim": regim, "total_baza": str(r["total_baza"]),
                         "total_tva": str(r["total_tva"]), "total_factura": str(r["total_factura"])}
             else:
-                r = _m.comision_intermediar(corp["comision"], cota, corp.get("tva_inclus", False))
+                r = _m.comision_intermediar(corp["comision"], _common.cota_ceruta(corp), corp.get("tva_inclus", False))
                 linii = [("4111", "704", r["baza"])]
                 if r["tva"] > 0:
                     linii.append(("4111", "4427", r["tva"]))
@@ -7014,7 +7014,7 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...), ctx=Depends
             if not cont:
                 raise ValueError("cont_destinatie obligatoriu")
             val = Decimal(str(corp["valoare"]))
-            tva = _ti.tva_beneficiar(val, corp.get("cota", 21))
+            tva = _ti.tva_beneficiar(val, _common.cota_ceruta(corp))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         descr = (corp.get("descriere") or "Achizitie") + " - " + mentiune
@@ -7060,7 +7060,7 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
             raise HTTPException(404, "tenant inexistent sau fara acces")
         try:
             val = Decimal(str(corp["valoare"]))
-            tva = _ic.tva_taxare_inversa(val, corp.get("cota", 21))
+            tva = _ic.tva_taxare_inversa(val, _common.cota_ceruta(corp))
             cont = str(corp["cont_destinatie"]).strip()
             if not cont:
                 raise ValueError("cont_destinatie obligatoriu")
@@ -7145,7 +7145,7 @@ def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
             r = _ie.calcul_import(corp["valoare_vamala"],
                                   corp.get("procent_taxa_vamala", 0),
                                   corp.get("accize", 0), corp.get("accesorii", 0),
-                                  corp.get("cota", 21),
+                                  _common.cota_ceruta(corp),
                                   bool(corp.get("certificat_amanare")), platitor)
             cont = str(corp["cont_destinatie"]).strip()
             if not cont:
@@ -7262,7 +7262,7 @@ def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         if sens not in ("incasare", "plata"):
             raise HTTPException(422, "sens invalid (incasare/plata)")
         try:
-            tva = _ti.tva_din_incasare(corp["suma_incasata"], corp.get("cota", 21))
+            tva = _ti.tva_din_incasare(corp["suma_incasata"], _common.cota_ceruta(corp))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         debit, credit = ("4428", "4427") if sens == "incasare" else ("4426", "4428")
@@ -7377,7 +7377,6 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
         tip = corp.get("tip")
-        cota = corp.get("cota", 21)
         try:
             if tip == "primire":
                 r = _ls.nota_primire_financiar(corp["valoare_capital"],
@@ -7386,13 +7385,13 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
                 d0 = "Primire bun leasing financiar (2133=167 + D8051 dobanda)"
             elif tip == "rata":
                 r = _ls.nota_rata_financiar(corp["capital"], corp.get("dobanda", 0),
-                                            corp.get("comision", 0), cota)
+                                            corp.get("comision", 0), _common.cota_ceruta(corp))
                 d0 = "Rata leasing financiar (167/666/628=404 + C8051)"
             elif tip == "reziduala":
-                r = _ls.nota_reziduala(corp["valoare_reziduala"], cota)
+                r = _ls.nota_reziduala(corp["valoare_reziduala"], _common.cota_ceruta(corp))
                 d0 = "Valoare reziduala leasing (167=404, inchide 167)"
             elif tip == "operational":
-                r = _ls.nota_rata_operational(corp["chirie"], cota,
+                r = _ls.nota_rata_operational(corp["chirie"], _common.cota_ceruta(corp),
                                               str(corp.get("cont_cheltuiala") or "612"))
                 d0 = "Rata leasing operational (612=401)"
             else:
@@ -7474,9 +7473,9 @@ def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
         op = corp.get("operatie")
-        cota = corp.get("cota", 21)
         dest = corp.get("destinatie", "stocuri")
         try:
+            cota = _common.cota_ceruta(corp)
             if op == "avans_platit":
                 r = _av.nota_avans_platit(corp["suma"], cota, dest)
                 d0 = f"Factura avans furnizor ({r['cont_avans']}+4426=401)"
@@ -7541,7 +7540,7 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
                 raise ValueError
-            tva = (val * Decimal(str(corp.get("cota", 21))) / 100).quantize(Decimal("0.01"))
+            tva = (val * Decimal(str(_common.cota_ceruta(corp))) / 100).quantize(Decimal("0.01"))
         except (ValueError, KeyError):
             raise HTTPException(422, "valoare invalida")
         with conn.cursor() as cur:
@@ -7695,7 +7694,7 @@ def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
                 d0 = f"Productie in curs ({corp.get('moment','constatare')}) 331/711"
             elif op == "vanzare":
                 r = _pr.nota_vanzare(corp["pret_vanzare"], corp["cost_standard_iesit"],
-                                     corp.get("cota", 21), corp.get("coef_348"))
+                                     _common.cota_ceruta(corp), corp.get("coef_348"))
                 d0 = "Vanzare produse finite 4111=701+4427, descarcare 711=345"
             else:
                 raise ValueError("operatie: obtinere|pic|vanzare")
@@ -7735,7 +7734,7 @@ def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
                     raise ValueError(f"valoarea depaseste pragul MF de "
                                      f"{bani(_oi.prag_mf(ref), 'lei')} (OUG 8/2026) - "
                                      "inregistreaza ca mijloc fix")
-                r = _oi.nota_achizitie(corp["valoare"], corp.get("cota", 21))
+                r = _oi.nota_achizitie(corp["valoare"], _common.cota_ceruta(corp))
                 d0 = "Achizitie obiect de inventar 303+4426=401"
             elif op == "dare_folosinta":
                 r = _oi.nota_dare_folosinta(corp["valoare"])
@@ -7907,7 +7906,6 @@ def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
         fel = corp.get("fel")
-        cota = corp.get("cota", 21)
         note = []  # [(descriere, linii)]
         info = {}
         try:
@@ -7916,16 +7914,16 @@ def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
                 note.append((f"Comodat 8038 ({corp.get('moment','primire')}) - art. 2146 CC",
                              r["linii"]))
             elif fel == "chirie_platita":
-                r = _cc.nota_chirie_platita(corp["chirie"], cota,
+                r = _cc.nota_chirie_platita(corp["chirie"], _common.cota_ceruta(corp),
                                             corp.get("proprietar", "pj"))
                 info = {"nota": r.get("nota", "")}
                 note.append((f"Chirie platita ({corp.get('proprietar','pj')})", r["linii"]))
             elif fel == "chirie_incasata":
-                r = _cc.nota_chirie_incasata(corp["chirie"], cota)
+                r = _cc.nota_chirie_incasata(corp["chirie"], _common.cota_ceruta(corp))
                 note.append(("Chirie incasata 4111=706", r["linii"]))
             elif fel == "refacturare":
                 r = _cc.nota_refacturare(corp["total_factura"],
-                                         corp["parte_refacturata"], cota)
+                                         corp["parte_refacturata"], _common.cota_ceruta(corp))
                 info = {"tva_refacturat": str(r["tva_refacturat"])}
                 if r["primire"]:
                     note.append(("Factura utilitati: parte proprie + de refacturat (art. 271)",
@@ -8069,7 +8067,7 @@ def nota_sgr(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
             elif op == "autofactura":
                 r = _sg.nota_autofactura_returo(corp.get("garantii_returnate", 0),
                                                 corp.get("tarif_gestionare", 0),
-                                                corp.get("cota", 21))
+                                                _common.cota_ceruta(corp))
                 d0 = "SGR: autofactura RetuRO (garantii fara TVA + tarif gestionare cu TVA)"
             elif op == "virare":
                 r = _sg.nota_virare_garantii(corp["suma"], corp.get("catre", "furnizor"))
@@ -8105,7 +8103,7 @@ def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere
             raise HTTPException(404, "tenant inexistent sau fara acces")
         try:
             r = _pe.calcul(corp["valoare_intrari"], corp["procent_limita"],
-                           corp["pierdere_constatata"], corp.get("cota", 21),
+                           corp["pierdere_constatata"], _common.cota_ceruta(corp),
                            str(corp.get("cont_stoc") or "371"),
                            bool(corp.get("degradare_dovedita_distrusa")))
         except (ValueError, KeyError) as e:
@@ -8192,7 +8190,7 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                                    bool(corp.get("imputabil")),
                                    corp.get("valoare_imputare"),
                                    corp.get("vinovat", "salariat"),
-                                   corp.get("cota", 21),
+                                   _common.cota_ceruta(corp),
                                    bool(corp.get("asigurat_sau_distrus")))
                 d0 = "Minus la inventar" + (" imputabil" if corp.get("imputabil") else
                                             " neimputabil")
@@ -8263,7 +8261,7 @@ def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
                                            corp["amortizare_cumulata"],
                                            str(corp.get("cont_imobilizare") or "2131"),
                                            str(corp.get("cont_amortizare") or "2813"),
-                                           corp.get("cota", 21))
+                                           _common.cota_ceruta(corp))
                 d0 = "Lichidare: valorificare activ (7583 + descarcare)"
             elif op == "partaj":
                 r = _li.partaj(corp["capital_social"], corp.get("rezerve", 0),

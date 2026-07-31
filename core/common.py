@@ -187,6 +187,23 @@ def ok():
     return {"ok": True}
 
 
+def cota_ceruta(corp):
+    """Cota TVA dintr-un corp de cerere API, OBLIGATORIE — regula bazei nule.
+
+    Absenta (cheie lipsa / None) = intrare INCOMPLETA -> ValueError; NU se ghiceste o cota
+    implicita, nici macar cota standard (un default cu common.cota() ar fi tot o valoare
+    inventata, doar actualizata). Apelantul (endpoint) prinde ValueError -> HTTP 422.
+
+    0 (scutit / neplatitor TVA) e VALOARE VALIDA, nu absenta: se distinge None de 0 si se
+    intoarce 0 ca atare.
+    """
+    c = corp.get("cota")
+    if c is None:
+        raise ValueError("cotă TVA obligatorie: operațiunea trebuie să declare explicit cota "
+                         "(o operațiune fără cotă e intrare incompletă, nu cotă standard)")
+    return c
+
+
 # ============================================================
 #  COTE / PLAFOANE CU VALABILITATE — codul știe nu doar CÂT, ci DIN CÂND
 # ============================================================
