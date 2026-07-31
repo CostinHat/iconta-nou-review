@@ -4269,3 +4269,34 @@ ADDENDUM 31.07.2026 (verificare la sursa ceruta de arhitect, runda 4):
   "2025/03 -> 3700" ca reparatie - GRESIT pe ambele. Valoarea reala 2025 = 4050 (HG 1506/2024).
   Aceea a fost sursa credintei gresite care a bagat 3700 in tabel. d112 citeste din registru,
   deci urmeaza automat corectia: 2025/03 -> 4050 acum.
+
+## 31.07.2026 — Numar tichete de masa: divergenta fata de sursa (zile efectiv lucrate), datorie deschisa
+
+Verificat la sursa (runda 2 tichete): HG 1045/2018 (norme la Legea 165/2018) art.10 alin.(3):
+"Salariatii beneficiaza lunar de un numar de tichete de masa cel mult egal cu numarul de zile
+lucrate, iar acest numar nu poate depasi numarul de zile lucratoare din luna...". Zile care NU dau
+tichet: concediul de odihna, delegatia/detasarea cu indemnizatie, invoirea, absenta (motivata sau
+nu), concediul medical, sarbatorile legale.
+
+DIVERGENTA: codul foloseste tichet_zile = zile_lucratoare_luna - concediu_medical (stat_plata_api.py,
+d112.py). Scade doar CM (sarbatorile sunt deja excluse din zile_lucratoare), dar NU scade concediul
+de odihna, delegatia, absentele -> ACORDA tichete pe acele zile -> nominal supra-declarat -> baza
+CASS+impozit gresita in D112 (in plus, in favoarea salariatului).
+
+RAFINEAZA limita declarata la 20.07.2026 (F133 step 3, opt.A): acolo limita mentiona doar
+"absentele nemotivate nu reduc tichetele"; sursa arata ca si CONCEDIUL DE ODIHNA (frecvent) si
+delegatia sunt excluse - deci divergenta e mai larga decat s-a declarat atunci.
+
+DE CE NU E O LINIE: datele brute exista in pontaj (F135, stari concediu_odihna/absent_*/delegatie),
+dar (a) modelul de prezenta nu distinge "pontaj neintrodus" de "tot prezent" (ambele = 0 randuri,
+pontaj.py:6-7) -> nu se poate baza tacit tichetele pe el; (b) F135 (17.07) + opt.A (20.07) l-au
+decuplat DELIBERAT de payroll. Fixul cere una din: (i) a face pontajul autoritativ pentru tichete
+(reversare F135 + o notiune de "luna de pontaj inchisa" care sa rezolve ambiguitatea prezentei),
+sau (ii) tracking documentat separat al zilelor de CO/delegatie/absenta care reduc tichet_zile,
+la fel cum CM reduce azi. Ambele = feature pe stat_plata + d112 + re-validare DUK, plus o decizie
+de scop (Costin) de a rasturna/rafina F135. Pana atunci: DATORIE xfail
+(test_datorie_tichete_masa_zile_efectiv_lucrate), vizibila in agenda la fiecare sesiune.
+
+ALTERNATIVA RESPINSA acum: a improviza scaderea din pontaj fara a rezolva ambiguitatea "neintrodus
+vs tot prezent" -> ar zero-iza tichetele oricui n-are pontaj introdus -> regresie mai rea decat
+supra-acordarea. Nu se aplica fara decizia de scop.
