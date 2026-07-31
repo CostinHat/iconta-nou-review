@@ -579,7 +579,7 @@ def _clasa_cota(_fis, _lin):
     if _re_param_cota.search(_lin):
         return "ACCEPTAT"               # parametru de generator pur, prin design
     return "GRI"                        # literal de productie ne-atasat, cu temei cunoscut
-_gri_reg = {"ACCEPTAT": [], "GRI": [], "ROSU": []}
+_gri_reg = {"ACCEPTAT": [], "GRI": [], "ROSU": [], "EXCLUS": []}
 for _r2, _d2, _f2 in os.walk(BAZA_PY):
     if "venv" in _r2 or "/." in _r2 or "_arhiva" in _r2 or "/static" in _r2 or "/duk" in _r2:
         continue
@@ -600,6 +600,7 @@ for _r2, _d2, _f2 in os.walk(BAZA_PY):
             _val = _md.group(0) if _md else _mi.group(0)
             _clasa = _clasa_cota(_rel, _st)
             if _clasa is None:
+                _gri_reg["EXCLUS"].append((_rel, _i, _val, "referinta legala (alin.), nu cota"))
                 continue
             _sem, _temei = _TVA_TEMEI.get(_val, ("necunoscut", "???"))
             if _temei == "???":
@@ -615,13 +616,19 @@ if _n_gri > GRI_BASELINE or _n_rosu:
         rap["cota_gri_rosu"].append(("ROSU-RISC", _h[1], _h[0],
             "cota %s fara temei identificabil (=???) - RISC, cerceteaza la sursa" % _h[2]))
 print("\n### REGISTRU GRI COTA (verde/acceptat/gri/rosu):")
-print("  ACCEPTAT %d (golden/fixture + parametri generator, temei cunoscut - NU datorie) | "
-      "GRI %d (baseline %d) | ROSU %d%s" % (len(_gri_reg["ACCEPTAT"]), _n_gri, GRI_BASELINE,
-      _n_rosu, "  <== BLOCHEAZA" if (_n_gri > GRI_BASELINE or _n_rosu) else ""))
+_n_acc = len(_gri_reg["ACCEPTAT"]); _n_excl = len(_gri_reg["EXCLUS"])
+_n_tot = _n_acc + _n_gri + _n_rosu + _n_excl
+print("  TOTAL scanat %d = ACCEPTAT %d + GRI %d + ROSU %d + EXCLUS %d%s" % (
+      _n_tot, _n_acc, _n_gri, _n_rosu, _n_excl,
+      "  <== BLOCHEAZA" if (_n_gri > GRI_BASELINE or _n_rosu) else ""))
+print("  ACCEPTAT = etalon golden/fixture + parametri generator (temei cunoscut, NU datorie) | "
+      "GRI baseline %d | EXCLUS = referinta legala alin. in docstring (nu e cota)" % GRI_BASELINE)
 for _h in _gri_reg["GRI"]:
-    print("  GRI   %s:%d  %-5s %-28s %s" % (_h[0], _h[1], _h[2], _h[3], _h[4]))
+    print("  GRI    %s:%d  %-5s %-28s %s" % (_h[0], _h[1], _h[2], _h[3], _h[4]))
 for _h in _gri_reg["ROSU"]:
-    print("  ROSU  %s:%d  %-5s %-28s temei=??? RISC" % (_h[0], _h[1], _h[2], _h[3]))
+    print("  ROSU   %s:%d  %-5s %-28s temei=??? RISC" % (_h[0], _h[1], _h[2], _h[3]))
+for _h in _gri_reg["EXCLUS"]:
+    print("  EXCLUS %s:%d  %-5s %s" % (_h[0], _h[1], _h[2], _h[3]))
 if _n_gri < GRI_BASELINE:
     print("  -> grii reparate: coboara GRI_BASELINE la %d in verificator." % _n_gri)
 
