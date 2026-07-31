@@ -170,7 +170,11 @@ def genereaza_pdf(profil, factura):
     for l in linii:
         cant = Decimal(str(l.get("cantitate") or 0))
         pret = Decimal(str(l.get("pret_unitar") or 0))
-        cota = Decimal(str(l.get("cota_tva") or 0))
+        _ct = l.get("cota_tva")
+        if _ct is None:
+            raise ValueError("linie fara cota TVA (%r): nu se poate afisa in PDF - 0 (scutit) e "
+                             "valoare valida, absenta nu se ghiceste" % (l.get("descriere") or "",))
+        cota = Decimal(str(_ct))
         baza = cant * pret
         tva = baza * cota / 100
         peCota.setdefault(cota, [Decimal(0), Decimal(0)])

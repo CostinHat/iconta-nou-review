@@ -73,7 +73,11 @@ def xml_factura(firma, factura, linii):
     for i, l in enumerate(linii, start=1):
         cant = Decimal(str(l.get("cantitate") or 0))
         pret = Decimal(str(l.get("pret_unitar") or 0))
-        cota = Decimal(str(l.get("cota_tva") or 0))
+        _ct = l.get("cota_tva")
+        if _ct is None:
+            raise ValueError("linie fara cota TVA (%r): nu se poate exporta (SAGA) - 0 (scutit) e "
+                             "valoare valida, absenta nu se ghiceste" % (l.get("descriere") or "",))
+        cota = Decimal(str(_ct))
         valoare = _q(cant * pret)                 # valoare neta a liniei
         tva = _q(valoare * cota / Decimal(100))   # TVA aritmetic (ROUND_HALF_UP)
         total_val += valoare
