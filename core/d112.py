@@ -479,6 +479,19 @@ def pull(conn, schema, an, luna):
     return prof, salariati
 
 
+def erori_generare(prof):
+    """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
+    erori = []
+    if not str(prof.get("cui") or "").strip():
+        erori.append("LIPSA CUI firma.")
+    if not str(prof.get("nume") or "").strip():
+        erori.append("LIPSA denumire firma.")
+    return erori
+
+
 def genereaza(conn, schema, an, luna):
     prof, salariati = pull(conn, schema, an, luna)
+    _er = erori_generare(prof)
+    if _er:
+        raise ValueError("D112 nu se poate genera: " + " ".join(_er))
     return _d112_genereaza(prof, salariati, an, luna)

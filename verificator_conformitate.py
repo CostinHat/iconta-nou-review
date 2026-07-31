@@ -787,6 +787,36 @@ except Exception as _ectr:
     print("")
     print("### GARD CONTRACT GENERATOARE: NEVERIFICAT (%s)" % _ectr)
 
+# --- GARD POARTA BAZEI NULE (A, 31.07.2026): fiecare generator de declaratie (criteriu COMPORTAMENTAL
+# `def genereaza(conn, schema`, NU nume dNNN - altfel bilant/S1003/S1005 era ratat) TREBUIE sa expuna
+# erori_generare(). Fara ea, o declaratie depusa la ANAF poate iesi pe profil incomplet fara semnal.
+# PRAG (nu ratchet): baseline 0 - nu exista motiv sa lipseasca vreodata. Separat de contract (siguranta
+# != uniformitate).
+BAZANULA_BASELINE = 0
+try:
+    _bn_lipsa = []
+    _bn_n = 0
+    for _f in sorted(os.listdir(os.path.join(BAZA_PY, "core"))):
+        if not _f.endswith(".py") or _f.startswith("test_") or _f == "declaratii_api.py":
+            continue
+        _src = open(os.path.join(BAZA_PY, "core", _f), encoding="utf-8").read()
+        if not re.search(r"\ndef genereaza\(conn, schema", _src):
+            continue
+        _bn_n += 1
+        if not re.search(r"\ndef erori_generare\(", _src):
+            _bn_lipsa.append(_f)
+    if len(_bn_lipsa) > BAZANULA_BASELINE:
+        rap["baza_nula_poarta"] = [("FARA-POARTA", 0, _f, "generator fara erori_generare - poate iesi pe profil incomplet") for _f in _bn_lipsa]
+    print("")
+    print("### GARD POARTA BAZEI NULE (generatoare de declaratii):")
+    print("  generatoare fara erori_generare: %d din %d (baseline %d)%s" % (
+        len(_bn_lipsa), _bn_n, BAZANULA_BASELINE, "  <== BLOCHEAZA" if len(_bn_lipsa) > BAZANULA_BASELINE else ""))
+    for _f in _bn_lipsa:
+        print("  FARA POARTA: %s" % _f)
+except Exception as _ebn:
+    print("")
+    print("### GARD POARTA BAZEI NULE: NEVERIFICAT (%s)" % _ebn)
+
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)

@@ -740,10 +740,23 @@ def serii_emise(conn, schema, an, luna):
     return out
 
 
+def erori_generare(prof):
+    """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
+    erori = []
+    if not str(prof.get("cui") or "").strip():
+        erori.append("LIPSA CUI firma.")
+    if not str(prof.get("nume") or "").strip():
+        erori.append("LIPSA denumire firma.")
+    return erori
+
+
 def genereaza(conn, schema, an, luna, manual=None):
     if not (1 <= luna <= 12):
         raise ValueError("Luna invalidă: %r" % luna)
     prof, facturi = pull(conn, schema, an, luna)
+    _er = erori_generare(prof)
+    if _er:
+        raise ValueError("D394 nu se poate genera: " + " ".join(_er))
     res = calcul_d394(prof, an, luna, facturi, manual,
                       serii_emise=serii_emise(conn, schema, an, luna))
     for e in valideaza(res):

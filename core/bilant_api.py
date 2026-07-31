@@ -54,6 +54,16 @@ _JUD = {"bucuresti": 40, "alba": 1, "arad": 2, "arges": 3, "bacau": 4, "bihor": 
         "salaj": 31, "sibiu": 32, "suceava": 33, "teleorman": 34, "timis": 35, "tulcea": 36,
         "vaslui": 37, "valcea": 38, "vrancea": 39}
 
+def erori_generare(prof):
+    """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
+    erori = []
+    if not str(prof.get("cui_numeric") or "").strip():
+        erori.append("LIPSA CUI firma.")
+    if not str(prof.get("nume") or "").strip():
+        erori.append("LIPSA denumire firma.")
+    return erori
+
+
 def genereaza(conn, schema, an):
     import re
     av = []
@@ -82,6 +92,9 @@ def genereaza(conn, schema, an):
     av.append("F20 an precedent necompletat (istoric indisponibil) - de completat manual daca e cazul.")
     if f10c.get(15) != f10c.get(49):
         av.append(f"Verificare: F(rd15)={f10c.get(15)} != J(rd49)={f10c.get(49)} - datorii>1an/provizioane/ven.avans pot explica diferenta.")
+    _er = erori_generare(prof)
+    if _er:
+        raise ValueError("Bilant nu se poate genera: " + " ".join(_er))
     return _b.xml_s1005(prof, an, f10p, f10c, f20p, f20c), av
 
 
@@ -109,4 +122,7 @@ def genereaza_s1003(conn, schema, an):
     f10p = _b.f10_din_balanta(s_ini)
     f20c = _b.f20_complet_din_rulaje(rl)
     av.append("F20 an precedent necompletat - de completat manual daca e cazul.")
+    _er = erori_generare(prof)
+    if _er:
+        raise ValueError("Bilant nu se poate genera: " + " ".join(_er))
     return _b.xml_s1003(prof, an, f10p, f10c, {}, f20c), av

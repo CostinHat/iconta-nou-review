@@ -325,6 +325,16 @@ def d390_are_operatiuni(conn, schema, an, luna, azi=None):
     return False
 
 
+def erori_generare(prof):
+    """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
+    erori = []
+    if not str(prof.get("cui") or "").strip():
+        erori.append("LIPSA CUI firma.")
+    if not str(prof.get("nume") or "").strip():
+        erori.append("LIPSA denumire firma.")
+    return erori
+
+
 def calculeaza(conn, schema, an, luna, manual=None, reclasificari=None):
     """Calculul D390, FARA poarta fiscala. Intoarce doar `res`.
 
@@ -340,6 +350,9 @@ def calculeaza(conn, schema, an, luna, manual=None, reclasificari=None):
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
     prof, facturi = pull(conn, schema, an, luna)
+    _er = erori_generare(prof)
+    if _er:
+        raise ValueError("D390 nu se poate genera: " + " ".join(_er))
     # [F125] dacă nu s-au dat explicit (ex. în teste), se iau din evidența persistată — ca toate
     # căile (wizard, pachet, control încrucișat) să vadă ACELEAȘI clasificări.
     if manual is None:

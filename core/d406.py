@@ -1161,10 +1161,23 @@ def pull(conn, schema, an, luna):
     return prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati
 
 
+def erori_generare(prof):
+    """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
+    erori = []
+    if not str(prof.get("cui") or "").strip():
+        erori.append("LIPSA CUI firma.")
+    if not str(prof.get("nume") or "").strip():
+        erori.append("LIPSA denumire firma.")
+    return erori
+
+
 def genereaza(conn, schema, an, luna):
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
     prof, conturi, clienti, furnizori, note, fv, fc, plati = pull(conn, schema, an, luna)
+    _er = erori_generare(prof)
+    if _er:
+        raise ValueError("D406 nu se poate genera: " + " ".join(_er))
     res = construieste(prof, an, luna, conturi, clienti, furnizori, note=note,
                        facturi_vanzare=fv, facturi_cumparare=fc, plati=plati)
     return build_xml(res), res
