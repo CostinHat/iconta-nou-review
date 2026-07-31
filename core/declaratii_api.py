@@ -46,7 +46,7 @@ def _d112(conn, schema, b):
     return d112.genereaza(conn, schema, b["an"], b["luna"])
 
 def _d205(conn, schema, b):
-    return d205.genereaza(conn, schema, b["an"])
+    return d205.genereaza(conn, schema, Perioada(b["an"]))
 
 def _d300(conn, schema, b):
     return d300.genereaza(conn, schema, Perioada(b["an"], luna=b["luna"]), b.get("manual"))

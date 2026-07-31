@@ -29,8 +29,8 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 > **Stare:** site în mentenanță (46507b5) — allowlist pe IP-ul lui Costin; revenire cu `mentenanta.sh off`.
 
 - fir: Contract uniform A1 - conversia generatoarelor ramase la contractul {pull, erori_generare, calcul_dNNN, build_xml, genereaza(conn,schema,perioada,...)} (Sesiunea A - arhitectura). Baseline verificator CONTRACT 6, coboara cu 1 la fiecare modul convertit.
-- ultim: modul 6/10 d101 la contract (pull+genereaza(perioada); adaptor _d101; baseline 5->4). Convertite: d300,d301,d394,d710,d100,d101. DESCOPERIRE: D101 build_xml RESPINS de DUK (P1 sectiune necunoscuta + cod_bug=5503XXXXXX placeholder) - pre-existent, consemnat test_datorie_d101_build_xml_respins_de_duk.
-- urmator: C3 - d205 (modul 7/10). BLOCAT: decizie Costin - campanie structura D101 acum (nu poate fi depusa) sau continua C3?
+- ultim: modul 7/10 d205 la contract (pull+genereaza(perioada); adaptor _d205; manual strict cheie_manual; DUK d205 valid; baseline 4->3). Convertite: d300,d301,d394,d710,d100,d101,d205. C (d100/d101/d205) GATA. DE DECIS (Costin): D101 build_xml respins de DUK (nu poate fi depusa) - campanie separata structura D101? Consemnat test_datorie_d101_build_xml_respins_de_duk.
+- urmator: D1 - d112 (modul 8/10). RISC STRUCTURAL real: calcul si XML inline in genereaza, fara calcul_d112/build_xml separate. La regresie: OPRIRE + arata. NEINCEPUT.
 - pasi:
   C1. [d100] pull(conn,schema,perioada)->(prof,venituri); genereaza(conn,schema,perioada,manual=None): cota din manual (cheie_manual(manual,"cota")), an=perioada.an, luna=perioada.trim*3, guard trim 1-4; adaptor _d100 -> Perioada(an,trim=), manual={"cota":..}. RED contract + mutatie + proba efemera. Baseline 6->5.
   C2. [d101] pull(conn,schema,perioada)->(prof,r{venituri,cheltuieli}); genereaza(perioada,manual); adaptor _d101 -> Perioada(an). Baseline 5->4.
@@ -40,7 +40,7 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
   d390-LA-URMA. 3 pull-uri impletite cu override + 2 consumatori -> 1 pull public + reclasificari->manual. Baseline 1->0.
   A2. except goale (7 codebase: d406=3 + tenant_provisioning/observare/gdpr_sterge/cron): tratat+documentat ori eliminat, niciunul gol; gard.
   A3. mutant zero sistematic: fiecare din 11 generatoare cu sursa->[] => suita PICA (test permanent, garzi cat.9).
-  STARE = BLOCAT: descoperire D101/DUK cere decizie (C3 d205 pregatit)
+  STARE = IN LUCRU (D1 d112 - extragere structurala, risc real)
 
 - fir: Granite API — cota TVA lipsa = intrare incompleta -> eroare, nu default 21 (Sesiunea A · TVA, sub-fir temeiuri)
 - ultim: masurare livrata — 80 cote "fara temei" = 79 TVA reale (1 fals-poz), 3 valori (21/11/19), cluster TVA verificat, 0 de cercetat / ~20 granite de reparat, rest ACCEPTATE (etaloane/fixtures/parametri). Directie confirmata Costin: default ELIMINAT, nu inlocuit; nedeterminat != 21; scutit 0 pastrat.

@@ -31,7 +31,7 @@ e cazul standard; statR/cifS raman goale pentru rezidenti.
 """
 from __future__ import annotations
 
-from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+from core.common import text_anaf as _t, cheie_manual  # limita 75 car. ANAF (27.07.2026)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -163,12 +163,11 @@ def build_xml(res):
     return "\n".join(H)
 
 
-def genereaza(conn, schema, an, manual=None):
-    """Genereaza D205 pentru anul `an`. `manual` (dict cu cheia 'beneficiari')
-    suprascrie lista calculata automat din dividendele distribuite asociatilor
-    (cota din tabelul `asociati`, suma din notele VALIDATE pe contul 457)."""
+def pull(conn, schema, perioada):
+    """Profil + asociatii cu cota>0 + total dividende distribuite (cont debit 457, note VALIDATE)
+    in fereastra anului [inceput, sfarsit) din perioada.interval()."""
     import psycopg2.extras as _E
-    manual = manual or {}
+    _inc, _sf = perioada.interval()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT nume, cui, adresa, oras, judet, "
                     "declarant_nume, declarant_prenume, declarant_functie "
@@ -177,6 +176,23 @@ def genereaza(conn, schema, an, manual=None):
         if prof.get("oras"):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
+        cur.execute("SELECT nume, cnp, cota FROM asociati WHERE cota > 0")
+        asoc = cur.fetchall()
+        cur.execute(
+            "SELECT COALESCE(SUM(l.suma),0) AS total FROM inregistrari_linii l "
+            "JOIN inregistrari i ON i.id = l.inregistrare_id "
+            "WHERE i.status='validata' AND l.cont_debit LIKE '457%%' "
+            "AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
+        total_div = _i((cur.fetchone() or {"total": 0})["total"])
+    return prof, asoc, total_div
+
+
+def genereaza(conn, schema, perioada, manual=None):
+    """D205 anual (contract uniform A1). `manual` cu cheia 'beneficiari' suprascrie lista calculata
+    automat din dividendele distribuite asociatilor (cota din tabelul `asociati`, suma din notele
+    VALIDATE pe contul 457, impozit 10%). Foloseste perioada.an."""
+    manual = cheie_manual(manual, "beneficiari")
+    prof, asoc, total_div = pull(conn, schema, perioada)
 
     erori = erori_generare(prof)
     if erori:
@@ -184,18 +200,6 @@ def genereaza(conn, schema, an, manual=None):
 
     beneficiari = manual.get("beneficiari")
     if beneficiari is None:
-        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-            inceput = "%04d-01-01" % an
-            sfarsit = "%04d-01-01" % (an + 1)
-            cur.execute("SELECT nume, cnp, cota FROM asociati WHERE cota > 0")
-            asoc = cur.fetchall()
-            cur.execute(
-                "SELECT COALESCE(SUM(l.suma),0) AS total FROM inregistrari_linii l "
-                "JOIN inregistrari i ON i.id = l.inregistrare_id "
-                "WHERE i.status='validata' AND l.cont_debit LIKE '457%%' "
-                "AND i.data >= %s AND i.data < %s", (inceput, sfarsit))
-            r = cur.fetchone() or {"total": 0}
-        total_div = _i(r["total"])
         beneficiari = []
         if total_div > 0 and asoc:
             for a in asoc:
@@ -207,6 +211,6 @@ def genereaza(conn, schema, an, manual=None):
                                         "imp": impozit, "castig": parte, "pierdere": 0,
                                         "tip_plata": "2"})
 
-    res = calcul_d205(prof, an, beneficiari)
+    res = calcul_d205(prof, perioada.an, beneficiari)
     xml = build_xml(res)
     return xml, res
