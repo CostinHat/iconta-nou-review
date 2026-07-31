@@ -29,11 +29,11 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 > **Stare:** site în mentenanță (46507b5) — allowlist pe IP-ul lui Costin; revenire cu `mentenanta.sh off`.
 
 - fir: Temeiuri citabile mecanic + reverificarea locurilor fără temei (Sesiunea A · transversal)
-- ultim: PASUL 2b — garda anti-stale per CLUSTER, la nivel de FUNCȚIE: coloană `Funcție(test)` în Inventar A; garda compară AST-ul (fără docstring) al funcțiilor de test între commitul √ și HEAD; reset per funcție; co-locație documentată + semnalată în mesaj; mutație în ambele sensuri. Comis acum.
-- urmator: PASUL 2b — clusterul DEDUCERE PERSONALĂ (salarizare, primul fără temei): caut la sursă temeiul pentru scara degresivă (-0,5%/treaptă de 50 lei), 20%/+5%/+15%/100 lei/prag 2000, rotunjirea la 10 lei în sus (CF art.77 + norme); citez textul; validare; apoi scriu. NEÎNCEPUT.
+- ultim: clusterul DEDUCERE PERSONALĂ verificat la sursă (runde 1-3: pliant ANAF + redare text codificat art.77) și reparat FIX1-4: 4+ persoane 40%→45% (tabel), scos pragul inferior tineri, scoasă rotunjirea la 10 lei (temei inexistent), la_data obligatoriu. √ 31.07 în Inventar A (+ facilitate bump co-locație). Fiecare fix: roșu→verde→mutație, commit separat.
+- urmator: (a) VALIDAREA corecției `salariu_minim` 2025 în common.py — sursa confirmă 4050 de la 1 ian 2025 (HG 1506/2024), codul are 3700; e logică fiscală, aștept validarea (datorie xfail deschisă). (b) următorul cluster fără temei: tichete masă/vacanță. NEÎNCEPUT.
 - pasi:
   · [GATA] §3.1 format · inventar (60 clustere, 4 √) · core/temeiuri.py (CLI) · gard validator-regulă · garda anti-stale per funcție.
-  · [ÎN CURS] 2b — locuri fără temei, pe CLUSTER, cu validarea ta: deducere personală → tichete → concedii medicale → apoi celelalte 10 module.
+  · [ÎN CURS] 2b — locuri fără temei, pe CLUSTER, cu validarea ta: deducere personală [√ 31.07] → tichete → concedii medicale → apoi celelalte 10 module.
   · [RĂMAS] cele 113 citări normative (decizia #1) · datoriile xfail deschise.
 
 - fir (în așteptare): Modelarea contractului în timp (Sesiunea A · salarizare)

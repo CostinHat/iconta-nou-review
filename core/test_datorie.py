@@ -179,3 +179,24 @@ def test_datorie_deducere_45pct_4plus_neconfirmat_la_mo():
     # strict=True: cand devine adevarat, xpass -> pica -> semnaleaza sa scoti xfail-ul.
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "deducere 45% 4+ verificat in monitorul oficial" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: Cod fiscal art.77 alin.(12)-(13) - deducerea de 100 lei/copil la mai multi angajatori se acorda UNUI SINGUR parinte, pe baza de declaratie. Codul (deducere_personala) primeste copii_scoala si aplica 100 lei/copil neconditionat, fara sa trateze care parinte o ia sau dubla acordare la angajatori diferiti. De implementat cand exista fluxul de declaratie parinte. Se inchide cand e consemnat in DECIZII.md.")
+def test_datorie_deducere_copil_parinte_multi_angajatori():
+    # Se inchide cand tratarea alin.(12)-(13) e consemnata in DECIZII.md (marker stabil, case-insensitive).
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "deducere copil parinte unic multi angajatori tratat" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: pliant ANAF - daca in aceeasi luna se folosesc mai multe valori ale salariului minim, se ia in calcul CEA MAI MICA. cota() intoarce valoarea in vigoare la la_data, nu implementeaza explicit 'cea mai mica din luna'. Nu musca in iulie 2026 (o singura valoare, 4325 de la 1 iul). De tratat daca o modificare de salariu minim pica la mijloc de luna. Se inchide cand e consemnat in DECIZII.md.")
+def test_datorie_cota_cea_mai_mica_valoare_din_luna():
+    # Se inchide cand regula 'cea mai mica valoare in luna' e consemnata in DECIZII.md (marker stabil).
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "salariu minim cea mai mica valoare din luna tratat" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 31.07.2026: common.py salariu_minim are 2025=3700 (HG 1006/2024), dar sursa (legislatie.just.ro HOTARARE 1506 27/11/2024, ANAF, portalcodulfiscal) confirma 4050 lei de la 1 ian 2025 prin HG 1506/2024 (abroga HG 598/2024=3700). Entry-ul 4050 e mis-datat la 2026-01-01 cu HG 1510 (corect: HG 1506, de la 2025-01-01). d212_engine.py:5 are dreptate. cota() intoarce 3700 pentru 2025 -> calcul salariu 2025 gresit. NU se atinge tabelul (logica fiscala) fara validarea arhitectului. Se inchide cand corectia tabelului e validata si consemnata in DECIZII.md.")
+def test_datorie_salariu_minim_2025_gresit_in_common():
+    # Se inchide cand corectia salariului minim 2025 (4050, HG 1506/2024) e consemnata in DECIZII.md.
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "salariu minim 2025 corectat 4050 hg 1506" in dz.lower()
