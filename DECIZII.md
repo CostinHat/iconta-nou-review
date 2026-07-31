@@ -4467,3 +4467,73 @@ D_11 (cod urgenta din nomenclatorul HG 423/2020, C(3)) - concedii_medicale NU ar
 date nou + UI de introducere + emisie. OPRIT (nu se inventeaza formatul unui camp de declaratie).
 (b) sub-randurile C2 infectocontagioase (Rd.1.1-1.4, cod 05 cu conditii D_12/data) nu sunt inca
 defalcate - emise implicit 0 (corect cat timp nu exista cod 05 in luna).
+
+## 31.07.2026 — PROPUNERE (nevalidata): temei fiscal structurat + garda de deriva + TIPAR RATCHET
+
+PROPUNERE de arhitectura, NU decizie. Nicio implementare inainte de validarea lui Costin. Raspunde la
+cele 6 puncte cerute.
+
+### TIPAR REUTILIZABIL: gardul RATCHET (datorie mare, fara blocaj total)
+Pentru o datorie MARE (multe restante) nu poti nici bloca tot (n-ai mai comite nimic) nici ignora
+(creste la loc). Gard RATCHET: un BASELINE = numarul curent masurat, + regula pe doua stari:
+  - count <= BASELINE -> AVERTISMENT (raporteaza cifra, NU intra in TOTAL/nu blocheaza);
+  - count >  BASELINE -> BLOCHEAZA (intra in TOTAL) - s-a introdus o restanta noua.
+Baseline COBOARA pe masura ce se repara (nu urca niciodata); la 0, orice violare blocheaza. Distinctia
+de stari = daca intra in TOTAL (blocant) sau se printeaza separat (avertisment). Livrat pe cotele TVA
+(b756af1). SE APLICA IDENTIC celor 82 de teste fara temei si oricarei datorii masurabile mari.
+
+### 1. Formatul temeiului structurat
+Reutilizeaza formatul canonic din CLAUDE.md §3.1 (deja definit: <TIP> <nr>/<an> [art.] [alin.()] [lit.]),
+extins in registrul de cote (common.COTE) de la string liber la tuplu structurat:
+  (tip, nr, an, art, alin, lit, data_in, data_out, url)
+citibil mecanic (grep pe act la o schimbare de lege gaseste TOATE locurile). 3 exemple concrete:
+  - salariu minim 4325:  ("HG", 146, 2026, None, None, None, "2026-07-01", None, "just.ro/.../DetaliiDocument/<id>")
+  - deducere 45% (4+ pers): ("CF", None, None, "77", "4", None, "2018-01-01", None, "just.ro/.../171282")
+  - carantina 100%:       ("OUG", 158, 2005, "20", "3", None, "2020-05-30", None, "just.ro/.../66305")
+                          (+ ("Legea", 136, 2020, ...) actul care a majorat de la 75%)
+data_out=None = inca in vigoare. La expirare, EXPIRA_DUPA_LUNI (deja existent) ridica.
+
+### 2. Adnotarea formulelor care NU sunt cote (o singura propunere)
+Scara degresiva, plafon 12 sm, proratare, split zi 5-6 NU sunt o cota, sunt ALGORITMI. Propunere:
+NU se structureaza formula (ar fi cod dublat in date), ci se adnoteaza FUNCTIA cu temeiul la nivel de
+functie - un marker citabil in docstring: TEMEI: <act §3.1>. Verificatorul cere ca orice functie care
+implementeaza o regula fiscala sa aiba markerul TEMEI. Argument: formula traieste in cod (se verifica
+prin teste golden pe exemplul oficial); temeiul spune DE UNDE vine regula, la nivelul unde se aplica -
+nu se atomizeaza in cote false.
+
+### 3. Generarea Inventarului A din cod (TESTE.md -> raport)
+Fiecare test care verifica o constanta fiscala poarta o adnotare de temei (decorator @temei sau comentariu
+structurat). Un generator scaneaza testele + adnotarile si produce coloanele Cluster/Modul/Teste/Temeiuri/
+Functie ca RAPORT (ca ISTORIC, regenerat).
+CE NU ARE CORESPONDENT IN COD (s-ar PIERDE tacit la auto-generare - de pastrat intr-un strat separat):
+  - coloana RISC (FISCAL/STRUCTURA) = judecata umana, nu derivabila din cod;
+  - bifa "Verificat la sursa DD.MM" = un ACT de verificare umana (+ motivul de bump);
+  - marcajele PARTIAL / deschis / gri / co-locatie.
+Deci Inventarul se genereaza PARTIAL (structura cluster->temei->functie); judecatile umane (risc, bifa,
+partial) raman intr-un overlay persistent (nu se pierd). Fara asta, auto-generarea ar sterge tocmai
+informatia care nu e in cod.
+
+### 4. Ce verifica verificatorul dupa adoptare (RATCHET)
+Verifica: orice test care asertaza o constanta fiscala are adnotare de temei structurata. Tranzitie prin
+RATCHET (tiparul TVA, refolosit): baseline = 82 (fara temei azi); test nou fara temei -> blocheaza; pe
+masura ce se adauga temei, baseline coboara; la 0, fiecare test fiscal are temei obligatoriu. Zero
+blocaj imediat, crestere imposibila.
+
+### 5. Garda de deriva legislativa (GARZI cat.3) - LIMITA CARE SCHIMBA VALOAREA
+Cu act+nr+an+data structurate, un job AR PUTEA intreba: "actul X s-a modificat dupa data D?" - DACA
+exista o sursa interogabila mecanic. RASPUNS ONEST: NU exista un API/feed public fiabil pentru
+legislatia romaneasca. legislatie.just.ro randeaza dinamic, fara API (dovedit repetat in aceasta
+sesiune: portalul serveste doar CUPRINSUL pentru Codul fiscal consolidat - art.144/78/139 n-au putut fi
+extrase); Monitorul Oficial n-are feed structurat. Consecinta: garda de deriva NU se poate automatiza din
+sursa autoritativa. Se degradeaza la: (a) REVIZUIRE MANUALA periodica ghidata de registru (registrul iti
+spune CE acte sa verifici) - valoare reala; (b) scraping fragil - nu se poate baza pe el. Deci valoarea
+temeiului structurat sta in: (i) grep-abilitate la o schimbare de lege CUNOSCUTA (gasesti locurile
+afectate) + (ii) garda de EXPIRARE (EXPIRA_DUPA_LUNI, deja existenta) care semnaleaza cand o valoare a
+trecut de valabilitatea declarata - un PROXY de deriva fara a interoga sursa. Garda "auto-detecteaza
+schimbarea legii" NU e fezabila fara API legislativ. Asta reduce ambitia propunerii - onest.
+
+### 6. Costul
+~82 teste (a) au nevoie de temei (clasificat 31.07) + ~80 cote TVA literale in cod (ratchet). Adoptare
+INCREMENTALA prin ratchet, NU in bloc: 82 comentarii puse mecanic = cosmetica, nu garda (avertismentul
+lui Costin). Se face pe CLUSTERE, fiecare cu verificare reala la sursa, in ordinea riscului. Gardul
+(instalat deja pt TVA) impiedica cresterea intre etape. Cost per cluster mic; total distribuit pe sesiuni.
