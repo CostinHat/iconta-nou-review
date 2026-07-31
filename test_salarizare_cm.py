@@ -10,7 +10,7 @@ def test_cod01_progresiv():
     assert s.procent_cm("01", 20) == Decimal("0.75")
 
 def test_coduri_100():
-    for c in ("05", "06", "12", "14", "51"):
+    for c in ("05", "06", "07", "12", "14", "51"):   # 07 carantina 100% (art.20(3), Legea 136/2020)
         assert s.procent_cm(c, 10) == Decimal("1.00"), c
 
 def test_coduri_85():
@@ -18,7 +18,7 @@ def test_coduri_85():
     assert s.procent_cm("09", 10) == Decimal("0.85")
 
 def test_coduri_75():
-    for c in ("07", "13", "15"):
+    for c in ("13", "15"):   # 07 mutat la 100% (carantina); raman cardiovasculare/risc maternal
         assert s.procent_cm(c, 10) == Decimal("0.75"), c
 
 def test_accident_param():
