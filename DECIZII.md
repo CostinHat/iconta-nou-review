@@ -4537,3 +4537,39 @@ schimbarea legii" NU e fezabila fara API legislativ. Asta reduce ambitia propune
 INCREMENTALA prin ratchet, NU in bloc: 82 comentarii puse mecanic = cosmetica, nu garda (avertismentul
 lui Costin). Se face pe CLUSTERE, fiecare cu verificare reala la sursa, in ordinea riscului. Gardul
 (instalat deja pt TVA) impiedica cresterea intre etape. Cost per cluster mic; total distribuit pe sesiuni.
+
+## 31.07.2026 — Regula ETALON: valoarea-martor a unui test nu se derivă din sursa pe care testul o verifică  (generala, toate clusterele)
+
+DECIZIE: o valoare-etalon (golden) dintr-un test se scrie ca LITERAL, niciodata derivata din functia/registrul
+pe care testul il verifica. Un test care asertaza `cota_standard(2025,8) == 21` are nevoie de `21` scris de
+mana ca martor independent; inlocuit cu `cota_standard(...)` sau `common.cota("tva_standard", ...)` devine
+tautologic (compara sursa cu ea insasi, dovedeste nimic). Consecinta masurata 31.07: din cele 80 de cote TVA
+"fara temei", ~30 sunt exact astfel de etaloane legitime — NU se ataseaza la common.cota, s-ar transforma 30
+de teste reale in 30 care nu verifica nimic. Regula e generala, nu doar TVA: se aplica oricarui golden fiscal.
+Corolar pentru ratchet: etaloanele + fixture-urile + parametrii de generator (prin design) se marcheaza
+ACCEPTATE, nu datorie — altfel gardul le urmareste la infinit pentru nimic.
+
+## 31.07.2026 — Granite API: cota TVA lipsa = intrare incompleta -> EROARE, nu default ghicit  (main.py + facturi_api + produse_api + stocuri_api + reconciliere_api)
+
+DECIZIE (corectie de directie, Costin): la granita, un default de cota (`corp.get("cota", 21)`,
+`l.get("cota_tva", 21)`) NU se inlocuieste cu `common.cota()`, se ELIMINA. O factura/linie fara cota e o
+intrare INCOMPLETA, nu o factura cu cota standard — regula bazei nule: se ridica eroare, nu se ghiceste nici
+macar corect. Un default cu common.cota() ar fi tot o valoare inventata, doar actualizata. Unde eliminarea
+rupe apelanti, se repara apelantii (sa trimita cota explicit), nu se pune default inapoi.
+
+Trei distinctii care fixeaza scopul:
+1. Auto-match care REUSESTE (nomenclator/AI intoarce 11/21 cu sursa+incredere) = propunere transparenta,
+   corectabila — se PASTREAZA. Auto-match care ESUEAZA (AI indisponibil/nedeterminat) = intrare incompleta:
+   `potriveste_cota` intoarce NEDETERMINAT (fara cota), NU 21 marcat "fallback". Marcajul protejeaza doar
+   daca cineva il citeste; daca factura se emite oricum, 21 ajunge in decont exact ca inainte. Deci linia
+   ramane fara cota -> emiterea e BLOCATA cu mesaj clar.
+2. Cota 0 (scutit/neplatitor) e VALOARE VALIDA, nu absenta. `float(out["cota_tva"] or 21)` transforma 0 in
+   21 (bug activ produse_api:46) — se distinge None (incomplet -> eroare) de 0 (scutit -> se pastreaza).
+3. Parametrii de cota din note-generatoarele pure (`def nir_gv(..., cota_tva_implicita=21)`, avansuri,
+   leasing etc.) raman prin design; granita (apelantul din main.py/*_api) e cea care cere cota explicit.
+
+Masurare (fara reparatii) inainte de plan: cele 80 "cote fara temei" = 79 cote TVA reale (1 fals-pozitiv:
+"alin. 11" docstring), 3 valori distincte (21/11/19), toate clusterul TVA VERIFICAT (Legea 141/2025 in
+common.COTE, period-aware, golden test_d394) -> 0 de cercetat, ~20 granite de reparat, restul etaloane/
+fixtures/parametri (ACCEPTATE). Baseline-ul 80 supraevalua riscul: o singura valoare imprastiata, nu 80 de
+decizii nesustinute.
