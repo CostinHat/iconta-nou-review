@@ -91,3 +91,22 @@ def test_plafon_diurna_dispecer_versionat():
     assert dc._VARIANTE_PLAFON_DIURNA[0][1] is dc._plafon_diurna_2018
     with pytest.raises(ValueError):
         dc.plafon_diurna(*args, la_data=date(2000, 1, 1))
+
+
+# ---- PAS 3 modul 3: sponsorizari.plafon_credit + credit_sponsorizare ----
+def test_plafon_credit_dispecer_versionat():
+    from core import sponsorizari as sp
+    args = (1000000, 50000)  # cifra_afaceri, impozit_profit
+    assert sp.plafon_credit(*args, la_data=date(2026, 6, 1)) == sp._plafon_credit_2018(*args)
+    assert sp._VARIANTE_PLAFON_CREDIT[0][1] is sp._plafon_credit_2018
+    with pytest.raises(ValueError):
+        sp.plafon_credit(*args, la_data=date(2000, 1, 1))
+
+
+def test_credit_sponsorizare_dispecer_versionat():
+    from core import sponsorizari as sp
+    args = (1000000, 50000, 5000)  # cifra_afaceri, impozit_profit, sponsorizari_efectuate
+    assert sp.credit_sponsorizare(*args, la_data=date(2026, 6, 1)) == sp._credit_sponsorizare_2018(*args)
+    assert sp._VARIANTE_CREDIT_SPONSORIZARE[0][1] is sp._credit_sponsorizare_2018
+    with pytest.raises(ValueError):
+        sp.credit_sponsorizare(*args, la_data=date(2000, 1, 1))
