@@ -4513,7 +4513,7 @@ Deci Inventarul se genereaza PARTIAL (structura cluster->temei->functie); judeca
 partial) raman intr-un overlay persistent (nu se pierd). Fara asta, auto-generarea ar sterge tocmai
 informatia care nu e in cod.
 
-### 4. Ce verifica verificatorul dupa adoptare (RATCHET)
+### 4. Ce verifica verificatorul dupa adoptare (RATCHET)  [TIMING SUPERSEDAT 01.08 - ratchet->prag; vezi corectia 01.08]
 Verifica: orice test care asertaza o constanta fiscala are adnotare de temei structurata. Tranzitie prin
 RATCHET (tiparul TVA, refolosit): baseline = 82 (fara temei azi); test nou fara temei -> blocheaza; pe
 masura ce se adauga temei, baseline coboara; la 0, fiecare test fiscal are temei obligatoriu. Zero
@@ -4532,7 +4532,7 @@ afectate) + (ii) garda de EXPIRARE (EXPIRA_DUPA_LUNI, deja existenta) care semna
 trecut de valabilitatea declarata - un PROXY de deriva fara a interoga sursa. Garda "auto-detecteaza
 schimbarea legii" NU e fezabila fara API legislativ. Asta reduce ambitia propunerii - onest.
 
-### 6. Costul
+### 6. Costul  [TIMING SUPERSEDAT 01.08 - nu per-cluster, ci ACUM; vezi corectia 01.08]
 ~82 teste (a) au nevoie de temei (clasificat 31.07) + ~80 cote TVA literale in cod (ratchet). Adoptare
 INCREMENTALA prin ratchet, NU in bloc: 82 comentarii puse mecanic = cosmetica, nu garda (avertismentul
 lui Costin). Se face pe CLUSTERE, fiecare cu verificare reala la sursa, in ordinea riscului. Gardul
@@ -4673,3 +4673,28 @@ LIMITA declarata: aplicatia deriva doar P1/P2/P4/P5 din contabilitate (split pe 
 ajustarile fiscale detaliate (P11 amortizare, P17-P20 neimpozabile, P23-P33 nedeductibile, P42 credit,
 P43 sponsorizare etc.) vin din `manual` (le introduce contabilul) sau raman 0. Pentru o firma fara
 ajustari, impozitul = 16% pe (venituri-cheltuieli). Cazurile cu ajustari cer intrarile respective.
+
+## 01.08.2026 — CORECTIE DE REGULA (Costin): temeiul se completeaza ACUM, nu per-cluster (ciclul > ratchet)
+
+Conflict prins de Costin intre doua reguli scrise pe 31.07:
+- ### 4/### 6 de mai sus (campania temei): temeiurile lipsa "se completeaza pe CLUSTERE, in ordinea
+  riscului, distribuit pe sesiuni" - amanare pe termen nedefinit prin ratchet.
+- CICLUL DE NECONFORMITATE (CLAUDE.md): corectare peste TOATA aplicatia ACUM, apoi gard.
+Ciclul e regula SUPERIOARA. ### 4 si ### 6 sunt SUPERSEDATE de aceasta intrare in partea de TIMING.
+
+REGULA CORECTA: temeiul se completeaza ACUM pentru TOATE datele existente. Ce nu se poate verifica la
+sursa ramane GRI DECLARAT (localizat, cu motiv), NU absent tacut. Gardul trece din RATCHET (baseline
+care coboara la infinit = amanare institutionalizata) in PRAG (fix la 0; orice regresie blocheaza)
+imediat ce baseline-ul ajunge la 0. Un ratchet care ramane >0 la infinit e amanarea cu alta forma.
+
+CE RAMANE VALID din ### 1-6: formatul structurat (### 1), regula etalon/ACCEPTATE (nu se atomizeaza
+etaloanele), clasificarea GRI/ROSU/ACCEPTAT, limita reala a garzii de deriva (### 5, nu exista API
+legislativ - data_out e proxy-ul). Se schimba DOAR cadenta: nu "pe masura ce ajungem la cluster", ci ACUM.
+
+MASURAT 01.08 inainte de completare: COTE 12/12 cu temei structurat (TEMEI_BASELINE deja 0); GRI=2
+(main.py:4045/4046, bucketing OCR bon pe cota 11/21, cluster TVA verificat - categoria a, atasabile);
+7 valori curente cu data_out=None (tva_standard, cas, cass, impozit_venit, cam, plafon_sold_casa,
+plafon_avans_decontare) - protejate aparent, garda de expirare TACE la infinit. Restul = etaloane/
+fixtures/parametri (ACCEPTATE, nu datorie). Categoria (b) - cluster neverificat: ZERO. Deci se poate
+completa tot ACUM, fara amanare. Etapele urmatoare (commit-uri separate): (2) data_out pe cele 7;
+(3) atasarea celor 2 GRI + gard GRI din RATCHET in PRAG.
