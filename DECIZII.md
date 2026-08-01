@@ -4904,3 +4904,42 @@ ramane - dar campania se DUCE PANA LA CAPAT intr-o comanda, nu se toaca in confi
 APLICABIL RETROACTIV LA ACEASTA SESIUNE: sweep DUK -> reconstructie, C -> D, model de temei etapa1 -> 2 -> 3,
 pct.7 masurare -> (ar fi trebuit) implementare - toate au fost fragmentate in comenzi separate cand puteau fi
 o singura comanda cu ramificatii. Exact tiparul pe care regula il interzice.
+
+### CORECTIE 01.08.2026 (Costin) - componenta comenzii + verificare inainte de executie
+
+Regula de mai sus era scrisa dar INERTA: lipsea definitia componentei unei comenzi conforme si obligatia
+de a o verifica INAINTE de executie. Fara ele, exceptia "oprire legitima" a fost folosita pentru a valida
+fragmentarea (vezi Partea D). Se completeaza cu:
+
+PARTEA A - DIN CE SE COMPUNE O COMANDA CONFORMA
+O comanda acopera o CAMPANIE INTREAGA si contine OBLIGATORIU:
+  1. SCOPUL - ce se rezolva si de ce (motivul, nu doar sarcina).
+  2. TOTI PASII, de la masurare pana la gard, in ordine. Nu o etapa din mai multe.
+  3. RAMIFICATIILE scrise inauntru - "daca masurarea arata X, faci Y; daca arata Z, opreste-te si spune".
+     Deciziile previzibile se iau in AVANS, nu se amana pentru tura urmatoare.
+  4. CONDITIILE DE OPRIRE - ce anume justifica intreruperea (neconformitate neanticipata sau decizie de
+     produs), explicit.
+  5. PROBA CERUTA - rosu inainte, mutatie dupa, ce output brut se asteapta.
+  6. PORTILE - pytest, verificator, git status, git log.
+
+PARTEA B - VERIFICAREA COMPONENTEI, INAINTE DE EXECUTIE
+Inainte de a executa orice comanda, Code verifica daca are componenta de la Partea A. Daca NU e conforma,
+NU EXECUTA - raspunde ce lipseste si cere comanda completa. Semne de comanda neconforma, vizibile in text:
+  - anunta o etapa ulterioara ("dupa ce raportezi, iti dau urmatoarea etapa", "apoi continuam cu");
+  - cere o masurare care nu schimba nicio decizie (test: daca raspunsul e "campania se face oricum,
+    indiferent ce arata cifra", masurarea nu justifica o comanda separata);
+  - taie in bucati o campanie deja aprobata in conversatie;
+  - lipsesc ramificatiile, deci executantul va trebui sa intrebe la primul caz neprevazut.
+Verificarea NU e optionala si nu se ocoleste prin justificare. Exceptia "oprire legitima" se aplica DOAR
+cand rezultatul poate produce DECIZII DIFERITE, nu doar cifre diferite.
+
+PARTEA C - RESPONSABILITATE DUBLA
+Arhitectul raspunde de compunerea comenzii conforme. Executantul raspunde de REFUZUL celei neconforme.
+Niciunul nu e scuzat de celalalt.
+
+PARTEA D - DOVADA (01.08.2026)
+Comanda "masoara cate din cele 11 functii sunt in salarizare.py si cate in alte module; dupa ce raportezi,
+iti dau urmatoarea etapa" a fost executata fara obiectie si justificata de executant ca "masurare pura,
+oprire legitima". Cifra 6-vs-7 nu schimba nimic - campania era deja aprobata. Exceptia a fost folosita
+pentru a VALIDA fragmentarea. Regula era scrisa dar inerta: lipsea definitia componentei si obligatia de
+verificare inainte de executie (reparate de Partile A-B).
