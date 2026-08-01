@@ -129,3 +129,12 @@ def test_calcul_zilier_dispecer_versionat():
     assert cs._VARIANTE_CALCUL_ZILIER[0][1] is cs._calcul_zilier_2018
     with pytest.raises(ValueError):
         cs.calcul_zilier(200, la_data=date(2000, 1, 1))
+
+
+# ---- PAS 3 modul 6: tva_marja.vanzare_marja ----
+def test_vanzare_marja_dispecer_versionat():
+    from core import tva_marja as tm
+    assert tm.vanzare_marja(1000, 600, la_data=date(2026, 6, 1)) == tm._vanzare_marja_2018(1000, 600)
+    assert tm._VARIANTE_VANZARE_MARJA[0][1] is tm._vanzare_marja_2018
+    with pytest.raises(ValueError):
+        tm.vanzare_marja(1000, 600, la_data=date(2000, 1, 1))
