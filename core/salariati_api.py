@@ -331,7 +331,7 @@ def salveaza_concediu(conn, salariat_id, date):
             raise ValueError("La codul 10 completeaza venitul brut realizat in noua situatie.")
         mz = (_D(str(ven6)) / _D(zile6)).quantize(_D("0.01"))
         baza_per = (mz * _D(zile_cm)).quantize(_D("0.01"))
-        brut10 = _s.calcul_cm_cod10(baza_per, vr)
+        brut10 = _s.calcul_cm_cod10(baza_per, vr, la_data=la_data)
         calc = {"brut": brut10, "media_zilnica": mz, "procent": _D("0.25"), "diminuare": False,
                 "zile_platite": zile_cm, "zile_ang": 0, "zile_fnuass": zile_cm,
                 "brut_ang": _D("0"), "brut_fnuass": brut10}
