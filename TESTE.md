@@ -28,6 +28,15 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 > **Stare:** site în mentenanță (46507b5) — allowlist pe IP-ul lui Costin; revenire cu `mentenanta.sh off`.
 
+- fir: d101 reconstructie + Conditia 2 audit semantic + ciclul clasa cale-fisier (GREENLIGHT Costin 01.08, ordine impusa: audit INAINTE de reconstructie)
+- ultim: d406 reparat (cale plan_oficial -> anaf_surse), b845763.
+- urmator: T1 ciclul clasa cale-fisier -> T2 audit semantic 8 valide -> T3 reconstructie d101. IN LUCRU (T1).
+- pasi:
+  T1. [ciclul neconformitate pe bug d406 cale] grep clasa "cale relativa la radacina": 2 instante (d406 reparat, plata_salarii CORECT - sepa_surse/ exista). Gard: test care asorteaza ca fisierele de date deschise prin cale construita EXISTA (nu set gol tacut). Commit.
+  T2. [Conditia 2 - audit semantic, INAINTE de reconstructie] pentru fiecare din cele 8 valide DUK: numele campurilor emise de build_xml corespund structurii oficiale (anaf_surse/ sau spec)? Daca vreuna are numerotare proprie = aceeasi clasa ca d101 -> raportez ORDINEA COMPLETA, nu una cate una. Commit constatari + datorie DUK-semantica.
+  T3. [reconstructie d101] rescrie calcul_d101 pe P oficiale (P7=P3+P6, P10=P7+P8-P9, P41=P411+P412, totalPlata_A=S(P1..P53)) + build_xml P ca ATRIBUTE + scadenta LL+3 (an>2025) + R17/R38/R41/R42/R48 + grup. Numerotarea inventata DISPARE (fara adaptor). Proba Conditia 1: tabel P-emis/P-oficial/formula/sursa + golden calculat de mana din exemplul OPANAF. Commit.
+  STARE = IN LUCRU (T1 ciclul clasa cale)
+
 - fir: SWEEP DUK toate declaratiile (redirectionare Costin 31.07: inainte de reconstructii, mapez cate sunt sparte pe validatorul CURENT)
 - ultim: sweep rulat pe schema efemera + profil complet + date minime adecvate (salariat/factura UE/dividende). Rezultat initial: 7 VALID + 2 sparte (d101, d406). d406 REZOLVAT 01.08 (bug de CALE, o linie): plan_oficial cauta d406_nomenclatoare_anaf.properties in radacina, dar fisierul e in anaf_surse/ -> set gol -> filtrarea pe norma (adaugata 15.07 tocmai pt 731 ONG) nu rula -> conturi ONG scapau in SAF-T comercial -> DUK respingea. Fix cale -> plan_oficial(A)=635, 731 exclus, d406 DUK VALID. RAMANE 1/9 SPART: d101 (reconstructie). Claim 16.07 infirmat.
 - urmator: gard smoke-sweep DUK livrat (8 valide asertate incl d406 reparat + d101 xfail). d406 REPARAT (fix cale). RAMANE 1 reconstructie: d101 - cere greenlight temei OPANAF 206/2025. Posibil edge d394 (luna doar UE -> R112.3) de confirmat separat. BLOCAT: cere decizie d101.
