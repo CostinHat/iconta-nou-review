@@ -4866,3 +4866,41 @@ uniformizarea contractului (1 functie/pas). Ordin de marime: ~18 locuri + 6 cons
 distribuit pe cateva sesiuni; partea riscanta (istoric) e mica.
 
 NEDECIS - se livreaza cifra, nu implementarea (cerut explicit).
+
+## 01.08.2026 — REGULA COMENZII CUPRINZATOARE: o comanda = o campanie intreaga, nu o etapa
+
+DE CE (cerut de Costin dupa incalcari repetate in aceasta sesiune): Costin nu tasteaza comenzile, le da
+prin copy-paste. Fiecare tur de conversatie ii costa timp. Fragmentarea unei campanii deja decise in
+etape date pe rand transforma o decizie luata in N runde de asteptare - pierdere directa de timp al lui.
+
+REGULA: o comanda contine TOTI pasii pana la capatul campaniei - de la masurare pana la gard - cu
+ramificatiile scrise INAUNTRU: "daca masurarea arata X, faci Y; daca arata Z, opreste-te si spune".
+
+INTERZIS:
+- masurarea data separat de implementare CAND rezultatul masurarii nu schimba decizia (masori si implementezi
+  in aceeasi comanda; masurarea separata are sens doar cand cifra chiar decide alt drum);
+- etape date pe rand cand pot merge impreuna;
+- "livreaza X, apoi iti dau Y" cand Y era deja decis.
+
+SINGURA OPRIRE LEGITIMA: o neconformitate care NU putea fi anticipata - cod care se dovedeste altfel decat
+parea (ex. d390, unde cele 3 pull-uri erau impletite cu semantica de override), sau o decizie de PRODUS
+care cere Costin. Aia nu e fragmentare, e ciclul de neconformitate (CLAUDE.md).
+
+NU e oprire legitima: "am terminat etapa 1, astept confirmarea pentru etapa 2" cand etapa 2 era deja decisa
+in aceeasi comanda.
+
+SE APLICA la ambele roluri: arhitectul (Claude) care COMPUNE comenzile - le scrie cuprinzatoare, cu
+ramificatii, nu pe felii; executantul (Claude Code) care NU se opreste intre pasii unei campanii aprobate.
+
+RAPORT: la capatul campaniei, nu la capatul fiecarei etape. Etapele raman commit-uri separate (trasabilitate),
+dar rularea nu se intrerupe pentru confirmare intre ele.
+
+RELATIA CU ALTE REGULI: intareste si EXTINDE "Metoda 4 comenzi per tema" (CLAUDE.md, 27.07: max 2 citiri ->
+1 implementare -> 1 verificare+commit) - de la nivelul COMENZII la nivelul CAMPANIEI. Cele doua nu se bat:
+in interiorul unei campanii, fiecare TEMA respecta cele 4 comenzi; campania le inlantuie fara asteptare.
+Consecinta acceptata din CICLUL DE NECONFORMITATE (ritmul scade, fiecare neconformitate devine campanie)
+ramane - dar campania se DUCE PANA LA CAPAT intr-o comanda, nu se toaca in confirmari.
+
+APLICABIL RETROACTIV LA ACEASTA SESIUNE: sweep DUK -> reconstructie, C -> D, model de temei etapa1 -> 2 -> 3,
+pct.7 masurare -> (ar fi trebuit) implementare - toate au fost fragmentate in comenzi separate cand puteau fi
+o singura comanda cu ramificatii. Exact tiparul pe care regula il interzice.
