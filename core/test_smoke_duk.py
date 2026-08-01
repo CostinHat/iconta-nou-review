@@ -119,11 +119,6 @@ def test_smoke_d394(conn_smoke):
 
 
 @pytest.mark.skipif(not _DBOK or not _duk.poate_valida("d101"), reason="DB/DUK d101")
-@pytest.mark.xfail(strict=True, reason=(
-    "DATORIE FISCALA 01.08.2026: D101 respins de DUK - build_xml emite P ca ELEMENTE (corect: "
-    "atribute pe declaratie101) SI calcul_d101 foloseste o numerotare P INVENTATA, nu formularul "
-    "oficial OPANAF 206/2025 (P41=impozit, lant de formule ~53 campuri). Reconstructie necesara. "
-    "Vezi test_datorie_d101_build_xml_respins_de_duk si sweep DUK 01.08."))
 def test_smoke_d101(conn_smoke):
     xml, _ = d101.genereaza(conn_smoke, _SCHEMA, Perioada(2026))
     _valid(xml, "d101", an=2026)

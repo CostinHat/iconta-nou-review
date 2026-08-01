@@ -47,6 +47,7 @@ from __future__ import annotations
 from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
+import re
 
 NS = "mfp:anaf:dgti:d101:declaratie:v10"
 
@@ -68,40 +69,139 @@ class RezultatD101:
     prof: dict = field(default_factory=dict)
     P: dict = field(default_factory=dict)
     total_plata_a: int = 0
+    cod_obligatie: str = "103"
+    d_grup: int = 0
 
 
-def calcul_d101(prof, an, venituri_totale=0, cheltuieli_totale=0,
-                 venituri_neimpozabile=0, cheltuieli_nedeductibile=0,
-                 elemente_similare_venituri=0, elemente_similare_cheltuieli=0,
-                 deduceri_fiscale=0, pierdere_recuperata=0,
-                 impozit_trimestrial_d100=0, reduceri_credite=0,
-                 cota=COTA_STANDARD):
-    p1 = _i(venituri_totale)
-    p2 = _i(cheltuieli_totale)
-    p3 = p1 - p2
-    p4 = _i(elemente_similare_venituri)
-    p5 = _i(elemente_similare_cheltuieli)
-    p6 = _i(deduceri_fiscale)
-    p7 = _i(venituri_neimpozabile)
-    p8 = _i(cheltuieli_nedeductibile)
-    p9 = max(p3 + p4 - p5 + p8 - p6 - p7, 0)
-    p10 = min(_i(pierdere_recuperata), p9)
-    baza = max(p9 - p10, 0)
-    p11 = _i(Decimal(baza) * Decimal(str(cota)) / Decimal(100))
-    p12 = _i(reduceri_credite)
-    p13 = _i(impozit_trimestrial_d100)
-    v1 = (p11 - p12) - p13
-    p15 = v1 if v1 > 0 else 0
-    p16 = -v1 if v1 < 0 else 0
+# Campurile P de INTRARE: baza contabila (P1,P2,P4,P5 - din pull) + ajustari fiscale (restul,
+# introduse de contabil prin `manual`, default 0). Campurile derivate NU sunt intrari - se
+# CALCULEAZA din formulele oficiale (OPANAF 206/2025). Un typo intr-o cheie manual e respins.
+_P_INTRARI = {
+    "P1", "P2", "P4", "P5",
+    "P8", "P081", "P082", "P083", "P084", "P9", "P91",
+    "P11", "P111", "P112", "P113", "P12", "P121", "P122", "P13", "P14", "P141", "P15", "P151",
+    "P17", "P171", "P172", "P173", "P18", "P19", "P20",
+    "P23", "P24", "P25", "P26", "P27", "P28", "P29", "P30", "P31", "P32", "P33",
+    "P36", "P37", "P38", "P39", "P39a",
+    "P412", "P421", "P4221", "P4222", "P423", "P4231", "P431", "P432", "P43a",
+    "P44", "P45", "P46", "P47", "P49", "P50", "P51",
+}
+# Randurile PRINCIPALE P1..P53 (numar intreg) - checksum totalPlata_A le insumeaza pe TOATE,
+# NU si sub-randurile 'din care' (P081, P411, P421...) sau cele cu litera (P38a, P39a, P40a, P43a).
+# OPANAF 206/2025 poz.20: "totalPlata_A = suma(P1 la P53) (nu se insumeaza rd. de sub rd. 'din care')".
+_P_MAIN = ["P%d" % n for n in range(1, 54)]
+
+
+def _scadenta(an):
+    """Scadenta platii (luna, an) - OPANAF 206/2025, DUK regula R17 pe Data_S=31.12.an:
+    an in [2022,2025] -> LL+6; an>2025 (raportare 2026+) -> LL+3. Aplicatia genereaza 2026+."""
+    ll = 12 + (6 if 2022 <= an <= 2025 else 3)
+    scad_an = an + 1
+    if ll > 12:
+        ll -= 12
+    return ll, scad_an
+
+
+def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"):
+    """Reconstruit 01.08.2026 pe FORMULARUL OFICIAL (OPANAF 206/2025, D101_A600 v10,
+    anaf_surse/d101_struct_anaf.txt). `intrari` = dict cu campurile P de intrare (P1,P2,P4,P5 din
+    contabilitate + ajustari fiscale din manual). Numerotarea inventata anterioara (p11=impozit) a
+    DISPARUT: fiecare P corespunde randului oficial. Campurile derivate se calculeaza din formule."""
+    I = dict(intrari or {})
+    necunoscute = [k for k in I if k not in _P_INTRARI]
+    if necunoscute:
+        raise ValueError("D101 intrari necunoscute: %s (permise: %s)" % (sorted(necunoscute), sorted(_P_INTRARI)))
+    cota = Decimal(str(cota if cota is not None else COTA_STANDARD))
+    g = lambda k: _i(I.get(k, 0))
 
     P = {}
-    for k, v in (("P1", p1), ("P2", p2), ("P3", p3), ("P4", p4), ("P5", p5),
-                 ("P6", p6), ("P7", p7), ("P8", p8), ("P9", p9), ("P10", p10),
-                 ("P11", p11), ("P12", p12), ("P13", p13),
-                 ("P15", p15), ("P16", p16)):
-        if v:
-            P[k] = v
-    return RezultatD101(an=an, prof=prof, P=P, total_plata_a=p15)
+    # --- Venituri/cheltuieli, rezultat brut (rd.1-10) ---
+    P["P1"] = g("P1")                                   # Venituri din exploatare
+    P["P2"] = g("P2")                                   # Cheltuieli de exploatare
+    P["P3"] = P["P1"] - P["P2"]                         # P3=P1-P2 (rezultat exploatare)
+    P["P4"] = g("P4")                                   # Venituri financiare
+    P["P5"] = g("P5")                                   # Cheltuieli financiare
+    P["P6"] = P["P4"] - P["P5"]                         # P6=P4-P5 (rezultat financiar)
+    P["P7"] = P["P3"] + P["P6"]                         # P7=P3+P6 (rezultat brut)  [R38]
+    P["P8"] = g("P8")                                   # Elemente similare veniturilor
+    P["P9"] = g("P9")                                   # Elemente similare cheltuielilor
+    P["P10"] = P["P7"] + P["P8"] - P["P9"]              # P10=P7+P8-P9
+    # --- Deduceri (rd.11-16) ---
+    for k in ("P11", "P12", "P13", "P14", "P15"):
+        P[k] = g(k)
+    P["P16"] = P["P11"] + P["P12"] + P["P13"] + P["P14"] + P["P15"]     # P16 total deduceri
+    # --- Venituri neimpozabile (rd.17-21) ---
+    for k in ("P17", "P18", "P19", "P20"):
+        P[k] = g(k)
+    P["P21"] = P["P17"] + P["P18"] + P["P19"] + P["P20"]                # P21
+    P["P22"] = P["P10"] - P["P16"] - P["P21"]          # P22 profit/pierdere
+    # --- Cheltuieli nedeductibile (rd.23-34) ---
+    P["P34"] = 0
+    for n in range(23, 34):
+        P["P%d" % n] = g("P%d" % n)
+        P["P34"] += P["P%d" % n]                        # P34 = P23+..+P33
+    P["P35"] = P["P22"] + P["P34"]                     # P35
+    for k in ("P36", "P37", "P38"):
+        P[k] = g(k)
+    P["P38a"] = P["P35"] + P["P36"] + P["P37"] - P["P38"]               # P38a
+    P["P39"] = g("P39")
+    P["P39a"] = g("P39a")
+    # --- Profit impozabil (rd.40) ---
+    if P["P38a"] >= 0 and P["P39a"] >= 0 and (P["P38a"] - P["P39a"]) > 0:
+        P["P40"] = P["P38a"] - P["P39a"]
+    else:
+        P["P40"] = 0
+    P["P40a"] = -P["P38a"] if P["P38a"] < 0 else 0
+    # --- Impozit pe profit (rd.41) ---
+    P["P411"] = _i(Decimal(P["P40"]) * cota / 100)     # 16% pe profitul impozabil
+    P["P412"] = g("P412")                               # 5% baruri de noapte etc.
+    if d_grup:
+        P["P412"] = 0
+    P["P41"] = P["P411"] + P["P412"]                   # P41=P411+P412  [R41]
+    # --- Credit fiscal, sponsorizare, reduceri (rd.42-45) ---
+    P["P421"] = g("P421")
+    P["P4221"] = g("P4221"); P["P4222"] = g("P4222")
+    P["P422"] = g("P422") if False else (P["P4221"] + P["P4222"])
+    P["P4231"] = g("P4231")
+    P["P423"] = g("P423") if g("P423") else P["P4231"]
+    P["P42"] = P["P421"] + P["P422"] + P["P423"]       # P42=P421+P422+P423
+    P["P431"] = g("P431"); P["P432"] = g("P432"); P["P43a"] = g("P43a")
+    P["P43"] = P["P431"] + P["P432"]                   # P43=P431+P432
+    P["P44"] = g("P44"); P["P45"] = g("P45")
+    P["P46"] = g("P46"); P["P47"] = g("P47")
+    # --- Impozit datorat (rd.48) ---
+    v481 = P["P41"] - P["P42"] - P["P43"] - P["P44"] - P["P45"]         # P481 var
+    v482 = P["P47"] - P["P421"] - P["P431"] - P["P43a"]                 # P482 var
+    if P["P46"] == 0 and P["P47"] == 0:
+        P["P481"] = max(v481, 0); P["P482"] = 0
+    elif P["P46"] >= P["P47"]:
+        P["P481"] = max(v481, 0); P["P482"] = 0
+    else:
+        P["P481"] = 0; P["P482"] = max(v482, 0)
+    P["P48"] = P["P481"] + P["P482"]                   # P48=P481+P482
+    if d_grup:
+        P["P48"] = P["P481"] = P["P482"] = 0
+    # --- Diferente (rd.49-53) ---
+    P["P49"] = g("P49"); P["P50"] = g("P50"); P["P51"] = g("P51")
+    if d_grup:
+        P["P50"] = P["P51"] = 0
+    dif = (P["P48"] + P["P51"]) - (P["P49"] + P["P50"])
+    P["P52"] = dif if dif >= 0 else 0                  # diferenta de plata
+    P["P53"] = -dif if dif < 0 else 0                  # diferenta de recuperat
+    if d_grup:
+        P["P52"] = P["P53"] = 0
+    # sub-randuri optionale informative (emise doar daca furnizate)
+    for k in ("P081", "P082", "P083", "P084", "P91", "P111", "P112", "P113",
+              "P121", "P122", "P141", "P151", "P171", "P172", "P173", "P4221", "P4222", "P4231"):
+        if g(k):
+            P[k] = g(k)
+
+    # totalPlata_A = suma randurilor PRINCIPALE P1..P53 (checksum de structura, nu impozit datorat)
+    total = sum(P.get(k, 0) for k in _P_MAIN)
+    # emitem doar campurile NENULE (validatorul nu cere randuri = 0 explicit)
+    Pnz = {k: v for k, v in P.items() if v}
+    return RezultatD101(an=an, prof=prof, P=Pnz, total_plata_a=total,
+                        cod_obligatie=str(cod_obligatie), d_grup=int(d_grup))
 
 
 def erori_generare(prof):
@@ -118,73 +218,63 @@ def erori_generare(prof):
 
 
 def _nr_evid(cui, an, luna, cod_oblig="103"):
-    """23 caractere - acelasi format oficial ANAF confirmat azi la D100
-    (structura_D100-D710): poz.1-2 fix '10', poz.3-5 cod_oblig, poz.6-7 fix '01',
-    poz.8-11 LLAA (sfarsit perioada), poz.12-17 ZZLLAA (scadenta: 25.03.an+1
-    pentru impozitul anual), poz.18 '0', poz.19 '0', poz.20-21 '00',
-    poz.22-23 cifra de control = ultimele 2 cifre din suma primelor 21 pozitii."""
-    scad_an = an + 1
+    """23 caractere, format oficial ANAF: poz.1-2 '10', poz.3-5 cod_oblig, poz.6-7 '01',
+    poz.8-11 LLAA (sfarsit perioada = 12.AA), poz.12-17 ZZLLAA (scadenta din _scadenta),
+    poz.18 '0', poz.19 '0', poz.20-21 '00', poz.22-23 = ultimele 2 cifre din suma primelor 21."""
+    scad_luna, scad_an = _scadenta(an)
     p1_21 = ("10" + str(cod_oblig).rjust(3, "0")[-3:] + "01" +
              "%02d%02d" % (12, an % 100) +
-             "%02d%02d%02d" % (25, 3, scad_an % 100) + "0" + "0" + "00")
+             "%02d%02d%02d" % (25, scad_luna, scad_an % 100) + "0" + "0" + "00")
     assert len(p1_21) == 21
     suma = sum(int(c) for c in p1_21)
     return p1_21 + "%02d" % (suma % 100)
 
 
 def build_xml(res):
+    """P-urile se emit ca ATRIBUTE pe <declaratie101> (nu elemente-copil: validatorul respinge
+    'sectiune necunoscuta P1'). OPANAF 206/2025: toate campurile (d_rec..P53) sunt atribute ale
+    elementului unic <declaratie101>, care se inchide self-fara-copii."""
     prof = res.prof
+    an = res.an
+    cif_num = "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit())
+    scad_luna, scad_an = _scadenta(an)
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
-    # d_recN si d_grup: "valoarea 0 nu se incadreaza in intervalul cerut" -
-    # dovedit direct pe validator (constant pool: "d_rec=2 daca d_recN=1",
-    # "d_grup=1 trebuie..."). Valorile lor valide sunt DOAR 1 sau lipsa (null),
-    # niciodata "0" scris explicit - omise complet aici.
-    # cod_obligatie: obligatoriu, lipsea complet - "103" = impozit pe profit
-    # PJ romane (confirmat azi la D100, acelasi nomenclator).
-    hdr = ('<declaratie101 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
-           'xmlns="%s" xsi:schemaLocation="%s D101.xsd" '
-           'an="%d" luna="12" an_i="%d" luna_i="1" cod_obligatie="103" '
-           'd_rec="0" d_reg="0" d_reglem="0" d_anulare="0" '
-           'd_succ="0" d_prof="0" d_alte="0" '
-           'Data_I="01.01.%d" Data_S="31.12.%d" '
-           'nume_declar=%s prenume_declar=%s functie_declar=%s '
-           'cif="%s" denumire=%s adresa=%s'
-           % (NS, NS, res.an, res.an, res.an, res.an,
-              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
-              _esc(_t(prof.get("declarant_prenume") or "-")),
-              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
-              "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()),
-              _esc(_t(prof.get("nume"))), _esc(_t(prof.get("adresa")))))
-    tel = (prof.get("telefon") or "").strip()
-    if tel:
-        hdr += ' telefon=%s' % _esc(tel)
+    a = []
+    a.append('an="%d" luna="12" an_i="%d" luna_i="1" cod_obligatie="%s"' % (an, an, res.cod_obligatie))
+    a.append('d_rec="0" d_reg="0" d_reglem="0" d_anulare="0" d_succ="0" d_prof="0" d_alte="0"')
+    if res.d_grup:
+        a.append('d_grup="1"')
+    a.append('Data_I="01.01.%d" Data_S="31.12.%d"' % (an, an))
+    a.append('cod_bug="5503XXXXXX" nr_evid="%s" scadenta="25%02d%02d"' % (
+        _nr_evid(cif_num, an, 12, res.cod_obligatie), scad_luna, scad_an % 100))
+    a.append('totalPlata_A="%d"' % res.total_plata_a)
+    a.append('nume_declar=%s prenume_declar=%s functie_declar=%s' % (
+        _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
+        _esc(_t(prof.get("declarant_prenume") or "-")),
+        _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR"))))
+    a.append('cif="%s" denumire=%s adresa=%s' % (
+        cif_num, _esc(_t(prof.get("nume"))), _esc(_t(prof.get("adresa")))))
     caen = (prof.get("caen") or "").strip()
     if caen:
-        hdr += ' caen=%s' % _esc(caen)
-    cif_num = "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit())
-    hdr += ' nr_evid="%s"' % _nr_evid(cif_num, res.an, 12)
-    # denumire (nu "den"), scadenta si cod_bug lipseau complet.
-    # Scadenta = format ZZLLAA (6 cifre COMPACTE, nu cu puncte - "25.03.2026"
-    # a fost respins ca "sir mai lung de 6 caractere"). Formula EXACTA din
-    # DUK regula R17 a validatorului: "daca an Data_S in [2022,2025] atunci
-    # LL=LL+6" (LL=12 din Data_S=31.12.an -> 12+6=18 -> 6, anul+1).
-    scad_luna = 12 + 6
-    scad_an = res.an
-    if scad_luna > 12:
-        scad_luna -= 12
-        scad_an += 1
-    hdr += ' scadenta="25%02d%02d" cod_bug="5503XXXXXX"' % (scad_luna, scad_an % 100)
-    hdr += ' totalPlata_A="%d">' % res.total_plata_a
-    H.append(hdr)
-    for k, v in sorted(res.P.items(), key=lambda kv: int(kv[0][1:])):
-        H.append('  <%s>%d</%s>' % (k, v, k))
-    H.append("</declaratie101>")
+        a.append('caen=%s' % _esc(caen))
+    tel = (prof.get("telefon") or "").strip()
+    if tel:
+        a.append('telefon=%s' % _esc(tel))
+    # campurile P (nenule) ca atribute, in ordinea oficiala a randurilor
+    def _ordine(k):
+        m = re.match(r"P(\d+)([a-z]?)(\d*)", k)
+        return (int(m.group(1)), m.group(2), int(m.group(3) or 0)) if m else (999, "", 0)
+    for k in sorted(res.P.keys(), key=_ordine):
+        a.append('%s="%d"' % (k, res.P[k]))
+    H.append('<declaratie101 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+             'xmlns="%s" xsi:schemaLocation="%s D101.xsd" %s/>' % (NS, NS, " ".join(a)))
     return "\n".join(H)
 
 
 def pull(conn, schema, perioada):
-    """Citeste profilul firmei si totalurile anuale: venituri (cont 7x) si cheltuieli (cont 6x)
-    din note VALIDATE, in fereastra anului [inceput, sfarsit) din perioada.interval()."""
+    """Profil + venituri/cheltuieli SPLIT pe exploatare (P1/P2) si financiar (P4/P5), din note
+    VALIDATE, pe fereastra anului. Clasa 76 = venituri financiare, 66 = cheltuieli financiare;
+    restul 7x/6x = exploatare (planul de conturi RO). Fara split, D101 ar pune tot in exploatare."""
     import psycopg2.extras as _E
     _inc, _sf = perioada.interval()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -196,28 +286,33 @@ def pull(conn, schema, perioada):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
         cur.execute(
-            "SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' THEN l.suma "
-            "ELSE 0 END),0) AS venituri, "
-            "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' THEN l.suma "
-            "ELSE 0 END),0) AS cheltuieli "
+            "SELECT "
+            "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_fin, "
+            "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' AND l.cont_credit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_expl, "
+            "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_fin, "
+            "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_expl "
             "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
             "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s",
             (_inc.isoformat(), _sf.isoformat()))
-        r = cur.fetchone() or {"venituri": 0, "cheltuieli": 0}
+        r = cur.fetchone() or {}
     return prof, r
 
 
 def genereaza(conn, schema, perioada, manual=None):
-    """D101 anual (contract uniform A1). Foloseste perioada.an. `manual` = suprascrieri optionale
-    ale campurilor de calcul (venituri_totale, cheltuieli_totale etc.); o cheie necunoscuta e
-    respinsa de calcul_d101 (TypeError), nu ignorata tacut."""
+    """D101 anual (contract uniform A1 + reconstructie oficiala 01.08.2026 pe OPANAF 206/2025).
+    Foloseste perioada.an. `manual` = ajustari fiscale (chei P8..P51 din formular) + cota/d_grup/
+    cod_obligatie; o cheie P necunoscuta e respinsa de calcul_d101 (typo != implicit tacut)."""
     manual = dict(manual or {})
+    cota = manual.pop("cota", None)
+    d_grup = int(manual.pop("d_grup", 0) or 0)
+    cod_obligatie = str(manual.pop("cod_obligatie", "103"))
     prof, r = pull(conn, schema, perioada)
     erori = erori_generare(prof)
     if erori:
         raise ValueError(" ".join(erori))
-    args = dict(venituri_totale=r["venituri"], cheltuieli_totale=r["cheltuieli"])
-    args.update(manual)
-    res = calcul_d101(prof, perioada.an, **args)
+    intrari = {"P1": r.get("ven_expl", 0), "P2": r.get("chelt_expl", 0),
+               "P4": r.get("ven_fin", 0), "P5": r.get("chelt_fin", 0)}
+    intrari.update(manual)   # ajustarile fiscale ale contabilului completeaza/suprascriu baza
+    res = calcul_d101(prof, perioada.an, intrari, cota=cota, d_grup=d_grup, cod_obligatie=cod_obligatie)
     xml = build_xml(res)
     return xml, res

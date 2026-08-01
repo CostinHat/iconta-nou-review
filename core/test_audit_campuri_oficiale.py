@@ -18,7 +18,7 @@ import pytest
 
 from core.common import Perioada
 from core import db as _db, tenant_provisioning as _tp
-from core import d100, d112, d205, d300, d301, d390, d394
+from core import d100, d101, d112, d205, d300, d301, d390, d394
 
 _SCHEMA = "ztest_audit_campuri"
 _BOILERPLATE = {"encoding", "version", "xmlns", "xsi", "schemaLocation"}
@@ -27,6 +27,7 @@ _BOILERPLATE = {"encoding", "version", "xmlns", "xsi", "schemaLocation"}
 _ALLOWLIST = {
     "d301": {"temei"},                          # D301Validator: _temei (regula d_rec)
     "d394": {"tvaDedAI11", "tvaDedAI21"},        # D394Validator v5: tvaDedAI* (TVA dedus achizitii intracom.)
+    "d101": {"prenume_declar", "functie_declar"},  # in doc poz.22/23 dar despartite pe randuri in extractia PDF
 }
 
 
@@ -40,6 +41,7 @@ def _db_ok():
 
 
 _GEN = {
+    "d101": lambda c: d101.genereaza(c, _SCHEMA, Perioada(2026)),
     "d100": lambda c: d100.genereaza(c, _SCHEMA, Perioada(2026, trim=2), {"cota": "16"}),
     "d112": lambda c: d112.genereaza(c, _SCHEMA, 2026, 6),
     "d205": lambda c: d205.genereaza(c, _SCHEMA, Perioada(2026)),

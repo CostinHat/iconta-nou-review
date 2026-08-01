@@ -4622,3 +4622,54 @@ semantic gresita (cazul intern al d101: p11 pus in campul oficial P11) NU e prin
 asta e nevoie de golden tests pe cifre calculate de mana (Conditia 1, aplicata la reconstructia d101).
 Deci "campuri oficiale" e conditie NECESARA, nu suficienta. d406 emite campuri oficiale dar are limita
 cunoscuta separata (linii sintetice, DECIZII 27.07) - alt tip de incompletitudine, nu nume de campuri.
+
+## 01.08.2026 — Reconstructia D101 pe formularul oficial (GREENLIGHT Costin, temei OPANAF 206/2025)
+
+Context: D101 era respins de DUK (P ca elemente) SI avea numerotare P INVENTATA in calcul_d101
+(p11=impozit, p9=baza) - nu corespundea formularului oficial. Greenlight Costin cu 2 conditii:
+(1) proba nu e "DUK valid" (trecea si cu numerotare inventata) ci corespondenta camp/formula + golden
+calculat de mana; (2) audit semantic al celorlalte 8 INAINTE (facut, DECIZII 01.08 - d101 e singura).
+
+Temei APROBAT: OPANAF 206/2025, D101_A600 v10, anaf_surse/d101_struct_anaf.txt. Numerotarea inventata
+a DISPARUT complet (fara adaptor). P-urile sunt acum ATRIBUTE pe <declaratie101> (nu elemente).
+
+TABEL CORESPONDENTA (Conditia 1) - fiecare P emis, nume oficial, formula, sursa (rd. in doc):
+  P1  Venituri din exploatare        intrare pull (cont 70-75)     rd.34
+  P2  Cheltuieli de exploatare       intrare pull (cont 60-65)     rd.35
+  P3  Rezultat din exploatare        P1-P2                         rd.36
+  P4  Venituri financiare            intrare pull (cont 76)        rd.37
+  P5  Cheltuieli financiare          intrare pull (cont 66)        rd.38
+  P6  Rezultat financiar             P4-P5                         rd.39
+  P7  Rezultat brut                  P3+P6                         rd.40 (DUK R38)
+  P8/P9 Elemente similare ven/chelt  intrare manual                rd.41/45
+  P10 Rezultat dupa elem. similare   P7+P8-P9                      rd.47
+  P16 Total deduceri                 P11+P12+P13+P14+P15           rd.60
+  P21 Total venituri neimpozabile    P17+P18+P19+P20               rd.68
+  P22 Profit/pierdere                P10-P16-P21                   rd.69
+  P34 Total cheltuieli nedeductibile P23+...+P33                   rd.82
+  P35 Profit impozabil pre-ajustari  P22+P34                       rd.83
+  P38a Profit/pierdere pre-reportare P35+P36+P37-P38               rd.86a
+  P40 Profit impozabil               P38a-P39a (daca >0, altfel 0) rd.88
+  P411 Impozit 16%                   16% x P40                     rd.90
+  P41 Total impozit pe profit        P411+P412                     rd.89 (DUK R41)
+  P42 Total credit fiscal            P421+P422+P423                rd.92
+  P43 Sponsorizare (in limita)       P431+P432                     rd.99
+  P48 Impozit anual datorat          P481+P482; P481=P41-P42-P43-P44-P45  rd.105/106
+  P52 Diferenta de plata             (P48+P51)-(P49+P50) daca >=0   rd.110
+  P53 Diferenta de recuperat         (P49+P50)-(P48+P51) daca >=0   rd.111
+  totalPlata_A  Suma de control      suma(P1..P53), fara sub-randuri 'din care'  rd.20
+  Grup (d_grup=1): P412/P48/P50/P51/P52/P53 = 0 (rd.89-111).
+  Scadenta (DUK R17): an Data_S>2025 -> LL+3 (250327); an in [2022,2025] -> LL+6 (250626).
+
+GOLDEN calculat de mana (test_d101.test_golden_lant_formule_oficiale): venituri exploatare 100000,
+cheltuieli 60000, fara ajustari -> P3=P7=P10=P22=P35=P38a=P40=40000, P411=P41=P48=P52=6400,
+totalPlata_A=419200. Proba pe DUK: valid.
+
+DE CE golden si nu doar DUK (lectia platita): mutatie P411 = 16%->cota/50 (impozit dublat, 12800) ->
+DUK VALID (nu verifica rata!) dar golden-ul PICA. "Trece DUK" e conditie necesara, nu suficienta -
+exact clasa care a ascuns numerotarea inventata luni de zile. Vezi si test_audit_campuri_oficiale.
+
+LIMITA declarata: aplicatia deriva doar P1/P2/P4/P5 din contabilitate (split pe clasa de cont);
+ajustarile fiscale detaliate (P11 amortizare, P17-P20 neimpozabile, P23-P33 nedeductibile, P42 credit,
+P43 sponsorizare etc.) vin din `manual` (le introduce contabilul) sau raman 0. Pentru o firma fara
+ajustari, impozitul = 16% pe (venituri-cheltuieli). Cazurile cu ajustari cer intrarile respective.

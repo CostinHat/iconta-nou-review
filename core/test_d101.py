@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
-"""Teste gardian pentru D101 - REFACUT A DOUA OARA 16.07.2026.
+"""Teste gardian D101 - RECONSTRUIT 01.08.2026 pe formularul OFICIAL (OPANAF 206/2025, D101_A600 v10,
+anaf_surse/d101_struct_anaf.txt).
 
-Prima refacere fusese GRESITA IN EXECUTIE: structura veche (P1-P53) era de fapt
-cea CORECTA (confirmata ulterior direct din D101Validator.jar, clasa
-Identificare), dar fusese inlocuita cu P1-P16 inventat din cap, crezand gresit
-ca modulul vechi genera dupa formularul de grup fiscal (D101G). A doua refacere
-foloseste doar atributele confirmate in constant pool-ul validatorului instalat.
+Reconstructia a inlaturat numerotarea P INVENTATA (versiunea anterioara: p11=impozit, p9=baza -
+nu corespundea formularului) si a mutat P-urile din ELEMENTE-copil in ATRIBUTE pe <declaratie101>
+(validatorul respingea 'sectiune necunoscuta P1'). Fiecare P corespunde acum randului oficial; lantul
+de formule (P3=P1-P2, P7=P3+P6, P10=P7+P8-P9, P22=P10-P16-P21, P40, P41=P411+P412, totalPlata_A=
+suma(P1..P53)) e cel din doc. Proba nu mai e doar 'trece DUK' (trecea si cu numerotare inventata) -
+golden calculat de mana + corespondenta camp/formula in DECIZII 01.08.
 """
 import pytest
-from core.d101 import calcul_d101, build_xml, erori_generare, _nr_evid, NS
+from core.d101 import calcul_d101, build_xml, erori_generare, _nr_evid, _scadenta, NS
 
 
 def _prof():
@@ -20,96 +22,100 @@ def test_namespace_e_v10():
     assert NS == "mfp:anaf:dgti:d101:declaratie:v10"
 
 
-def test_calcul_simplu_profit():
-    res = calcul_d101(_prof(), 2025, venituri_totale=20000, cheltuieli_totale=12000)
-    assert res.P["P1"] == 20000
-    assert res.P["P3"] == 8000
-    assert res.P["P9"] == 8000
-    assert res.P["P11"] == 1280
-    assert res.total_plata_a == 1280
+# ── GOLDEN: caz numeric calculat de MANA din formulele oficiale (Conditia 1 Costin) ──
+def test_golden_lant_formule_oficiale():
+    """Venituri exploatare 100000, cheltuieli exploatare 60000, fara ajustari fiscale.
+    Lant OFICIAL (OPANAF 206/2025), calculat de mana:
+      P3 = P1-P2 = 40000 ; P6 = P4-P5 = 0 ; P7 = P3+P6 = 40000 (rd.40, R38)
+      P10 = P7+P8-P9 = 40000 ; P22 = P10-P16-P21 = 40000 (rd.69)
+      P35 = P22+P34 = 40000 ; P38a = P35+P36+P37-P38 = 40000 (rd.86a)
+      P40 = P38a-P39a = 40000 (rd.88) ; P411 = 16% x P40 = 6400 (rd.90)
+      P41 = P411+P412 = 6400 (rd.89, R41) ; P48 = P481 = P41-P42-P43-P44-P45 = 6400 (rd.105/106)
+      P52 = (P48+P51)-(P49+P50) = 6400 (rd.110)
+      totalPlata_A = suma(P1..P53) = 100000+60000+40000+40000+40000+40000+40000+40000+6400+6400+6400 = 419200 (rd.20)"""
+    res = calcul_d101(_prof(), 2026, {"P1": 100000, "P2": 60000})
+    asteptat = {"P1": 100000, "P2": 60000, "P3": 40000, "P7": 40000, "P10": 40000,
+                "P22": 40000, "P35": 40000, "P38a": 40000, "P40": 40000,
+                "P411": 6400, "P41": 6400, "P481": 6400, "P48": 6400, "P52": 6400}
+    for k, v in asteptat.items():
+        assert res.P.get(k) == v, "%s: astept %d, obtinut %s" % (k, v, res.P.get(k))
+    assert res.total_plata_a == 419200, "checksum P1..P53"
+    # impozitul e in P41 (oficial), NU in P11 (numerotarea inventata a disparut)
+    assert res.P.get("P11", 0) == 0
 
 
 def test_pierdere_nu_genereaza_impozit():
-    res = calcul_d101(_prof(), 2025, venituri_totale=5000, cheltuieli_totale=9000)
-    assert res.P.get("P9", 0) == 0
-    assert "P11" not in res.P
+    """Cheltuieli > venituri -> P38a<0 -> P40=0 -> fara impozit (P41 absent)."""
+    res = calcul_d101(_prof(), 2026, {"P1": 5000, "P2": 9000})
+    assert res.P["P3"] == -4000 and res.P["P22"] == -4000
+    assert res.P.get("P40", 0) == 0
+    assert "P41" not in res.P and "P411" not in res.P
+
+
+def test_venituri_financiare_separate_de_exploatare():
+    """P1/P2 = exploatare, P4/P5 = financiar; P7 = (P1-P2)+(P4-P5)."""
+    res = calcul_d101(_prof(), 2026, {"P1": 100000, "P2": 60000, "P4": 5000, "P5": 2000})
+    assert res.P["P3"] == 40000 and res.P["P6"] == 3000 and res.P["P7"] == 43000
+
+
+def test_cheie_intrare_necunoscuta_ridica():
+    """Un typo intr-o cheie P (ex. Pxx) e RESPINS, nu se scurge in implicit tacut."""
+    with pytest.raises(ValueError):
+        calcul_d101(_prof(), 2026, {"P1": 1000, "Pxx": 5})
+
+
+def test_impozit_e_in_P41_ca_atribut_nu_element():
+    """Regresie clasa d101: P-urile sunt ATRIBUTE pe <declaratie101>, nu elemente <P41>."""
+    xml = build_xml(calcul_d101(_prof(), 2026, {"P1": 100000, "P2": 60000}))
+    assert 'P41="6400"' in xml
+    assert "<P41>" not in xml and "<P1>" not in xml
 
 
 def test_flagurile_valide_apar_pe_radacina():
-    """d_recN si d_grup NU accepta "0" (validator: "valoarea 0 nu se
-    incadreaza in intervalul cerut" - valorile lor valide sunt doar 1 sau
-    lipsa). Restul flagurilor accepta "0" explicit."""
-    res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
+    res = calcul_d101(_prof(), 2026, {"P1": 1000, "P2": 500})
     xml = build_xml(res)
-    for flag in ("d_rec", "d_reg", "d_reglem", "d_anulare",
-                 "d_succ", "d_prof", "d_alte"):
+    for flag in ("d_rec", "d_reg", "d_reglem", "d_anulare", "d_succ", "d_prof", "d_alte"):
         assert '%s="0"' % flag in xml, "lipseste %s" % flag
-    assert "d_recN=" not in xml
-    assert "d_grup=" not in xml
+    assert "d_recN=" not in xml and "d_grup=" not in xml
 
 
-def test_cod_obligatie_e_prezent():
-    """Regresie: lipsea complet - 'atributul trebuie sa existe'.
-    103 = impozit pe profit PJ romane (nomenclator D100/D101)."""
-    res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
-    xml = build_xml(res)
+def test_cod_obligatie_si_denumire():
+    xml = build_xml(calcul_d101(_prof(), 2026, {"P1": 1000, "P2": 500}))
     assert 'cod_obligatie="103"' in xml
+    assert 'denumire=' in xml and ' den=' not in xml
 
 
-def test_denumire_nu_den():
-    """Regresie: 'den' e atribut necunoscut la D101 (spre deosebire de alte
-    declaratii) - numele corect e 'denumire'."""
-    res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
-    xml = build_xml(res)
-    assert 'denumire=' in xml
-    assert ' den=' not in xml
+def test_scadenta_LL_plus_3_pentru_an_peste_2025():
+    """R17: an Data_S>2025 -> scadenta LL+3 (250327 pt 2026); an in [2022,2025] -> LL+6 (250626)."""
+    assert _scadenta(2026) == (3, 2027) and _scadenta(2025) == (6, 2026)
+    assert 'scadenta="250327"' in build_xml(calcul_d101(_prof(), 2026, {"P1": 1000, "P2": 500}))
+    assert 'scadenta="250626"' in build_xml(calcul_d101(_prof(), 2025, {"P1": 1000, "P2": 500}))
 
 
-def test_scadenta_format_zzllaa_compact():
-    """Regresie: 'scadenta="25.03.2026"' respins ('sir mai lung de 6
-    caractere'). Formatul e ZZLLAA compact, 6 cifre. Formula reala
-    (DUK regula R17): pentru Data_S in [2022,2025], LL=luna+6 (nu +3)."""
-    res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
-    xml = build_xml(res)
-    assert 'scadenta="250626"' in xml
-    assert '.' not in [c for c in xml.split('scadenta="')[1].split('"')[0]]
-
-
-def test_cod_bug_e_prezent():
-    res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
-    xml = build_xml(res)
+def test_cod_bug_data_i_data_s():
+    xml = build_xml(calcul_d101(_prof(), 2026, {"P1": 1000, "P2": 500}))
     assert 'cod_bug="5503XXXXXX"' in xml
-
-
-def test_data_i_si_data_s():
-    res = calcul_d101(_prof(), 2025, venituri_totale=1000, cheltuieli_totale=500)
-    xml = build_xml(res)
-    assert 'Data_I="01.01.2025"' in xml
-    assert 'Data_S="31.12.2025"' in xml
+    assert 'Data_I="01.01.2026"' in xml and 'Data_S="31.12.2026"' in xml
 
 
 def test_nr_evid_are_23_caractere_si_cifra_control():
-    n = _nr_evid("14399840", 2025, 12)
+    n = _nr_evid("14399840", 2026, 12)
     assert len(n) == 23 and n.isdigit()
     suma = sum(int(c) for c in n[:21])
     assert n[21:23] == "%02d" % (suma % 100)
 
 
 def test_lipsa_caen_e_prinsa_la_generare():
-    prof = dict(_prof())
-    del prof["caen"]
+    prof = dict(_prof()); del prof["caen"]
     assert any("CAEN" in e for e in erori_generare(prof))
 
 
-# ── CONTRACT UNIFORM A1 (modul 6/10, C2, 31.07.2026) ──
-# genereaza(conn, schema, perioada, manual) prin pull() -> calcul_d101 -> build_xml.
-# N/A temei fiscal (schimbare de tooling: uniformizare contract, comportament identic).
-# NOTA: proba DUK-valid NU e aici - D101 build_xml e RESPINS de DUK (P1 sectiune necunoscuta +
-# cod_bug placeholder), pre-existent refactorului. Consemnat: test_datorie_d101_build_xml_respins_de_duk.
+# ── PROBA PANA LA DECLARATIE: contract uniform + reconstructie -> DUK VALID (pe date reale) ──
 from core.common import Perioada
-from core import db as _db, tenant_provisioning as _tp, d101 as _d101
+from core import db as _db, tenant_provisioning as _tp, duk as _duk, d101 as _d101
 
-_SCHEMA_D101 = "ztest_d101_contract"
+_SCHEMA_D101 = "ztest_d101_recon"
+_D101_DUK = _duk.poate_valida("d101")
 
 
 def _db_ok():
@@ -123,8 +129,8 @@ def _db_ok():
 
 @pytest.fixture
 def conn_schema_profit():
-    """Schema temporara, firma_profil completa (caen obligatoriu D101) + note validate:
-    venit 100000 (cont 707) si cheltuiala 60000 (cont 607) in 2026. ROLLBACK garantat."""
+    """Schema temporara, firma completa (caen) + note validate: venit exploatare 100000 (cont 707)
+    si cheltuiala exploatare 60000 (cont 607) in 2026. ROLLBACK garantat."""
     _db.init_pool()
     with _db.get_conn() as conn:
         try:
@@ -138,8 +144,8 @@ def conn_schema_profit():
                     "regim_fiscal, platitor_tva, tip_decont, declarant_nume, declarant_prenume, declarant_functie) "
                     "VALUES (1,'PROBA SRL','14399840','Str. Test 1','Bucuresti','B','6202','real',true,'L','Pop','Ion','administrator') "
                     "ON CONFLICT (id) DO UPDATE SET caen=EXCLUDED.caen")
-                cur.execute("INSERT INTO inregistrari (data, status, sursa) "
-                            "VALUES ('2026-06-15','validata','test') RETURNING id")
+                cur.execute("INSERT INTO inregistrari (data, status, sursa, descriere) "
+                            "VALUES ('2026-06-15','validata','test','Vanzare') RETURNING id")
                 iid = cur.fetchone()[0]
                 cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
                             "VALUES (%s,'4111','707',100000)", (iid,))
@@ -151,12 +157,18 @@ def conn_schema_profit():
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_d101_contract_pull_genereaza_perioada(conn_schema_profit):
-    """C2 contract uniform: genereaza(conn, schema, Perioada(an), manual) prin pull().
-    Venit 100000 - cheltuieli 60000 = profit 40000; impozit 16%% = 6400 (P11=P15)."""
+def test_d101_reconstructie_pull_genereaza(conn_schema_profit):
+    """pull split exploatare/financiar -> calcul_d101 oficial -> P41=impozit (nu P11)."""
     xml, res = _d101.genereaza(conn_schema_profit, _SCHEMA_D101, Perioada(2026))
     assert res.an == 2026
-    assert res.P.get("P1") == 100000 and res.P.get("P2") == 60000, "venituri/cheltuieli din pull"
-    assert res.P.get("P3") == 40000, "profit contabil"
-    assert res.P.get("P11") == 6400 and res.total_plata_a == 6400, (
-        "impozit 16%% pe 40000 = 6400; got P11=%s total=%s" % (res.P.get("P11"), res.total_plata_a))
+    assert res.P["P1"] == 100000 and res.P["P2"] == 60000 and res.P["P3"] == 40000
+    assert res.P["P40"] == 40000 and res.P["P41"] == 6400 and res.P["P52"] == 6400
+    assert res.total_plata_a == 419200
+
+
+@pytest.mark.skipif(not _db_ok() or not _D101_DUK, reason="DB sau DUK d101 indisponibil")
+def test_d101_reconstructie_proba_duk_valid(conn_schema_profit):
+    """Proba pana la declaratie: D101 reconstruit trece validatorul OFICIAL DUK (era: respins pe P1)."""
+    xml, res = _d101.genereaza(conn_schema_profit, _SCHEMA_D101, Perioada(2026))
+    rez = _duk.valideaza(xml, "d101", an=2026)
+    assert rez["stare"] == "valid", "DUK a respins D101 reconstruit: %s" % rez
