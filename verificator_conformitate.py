@@ -733,6 +733,77 @@ except Exception as _etf:
     print("### GARD MARKERI TEMEI PE FUNCTII: NEVERIFICAT (%s)" % _etf)
 
 
+# --- GARD VERSIONARE FORMULE (PAS 4, 01.08.2026): fiecare functie care APLICA o regula fiscala (scara,
+# prorata, plafonare, split, procent pe conditie - NU doar citeste o cota) trebuie sa fie un DISPECER pe
+# la_data: corpul cheama alege_varianta(_VARIANTE_*, ...). Cotele erau deja period-aware (cota); formulele
+# devin period-aware asa - o schimbare de regula se adauga ca varianta datata, nu 'if data'. Fara gard,
+# urmatoarea functie de regula scrisa e iar single-body si o adeverinta/rectificativa pe o luna TRECUTA o
+# recalculeaza cu regula de AZI (bugul campaniei). Ratchet adus la PRAG 0 in aceeasi campanie (toate cele 13
+# convertite 01.08). PRAG 0: orice functie din lista fara dispecer BLOCHEAZA. LIMITA DECLARATA: lista
+# INTRETINUTA MANUAL (ca _TEMEI_FUNCTII - proxy sintactic "e regula fiscala?" minte); o functie de regula
+# noua se ADAUGA aici + primeste dispecer. Nu prinde o functie de regula NEtrecuta pe lista (acelasi
+# compromis constient ca la markeri).
+VERSIONARE_BASELINE = 0
+_VERSIONARE_FUNCTII = [
+    ("core/salarizare.py", "deducere_personala"),
+    ("core/salarizare.py", "calcul_salariu"),
+    ("core/salarizare.py", "procent_cm"),
+    ("core/salarizare.py", "taxe_cm"),
+    ("core/salarizare.py", "calcul_cm"),
+    ("core/salarizare.py", "calcul_cm_cod10"),
+    ("core/deconturi.py", "plafon_diurna"),
+    ("core/sponsorizari.py", "plafon_credit"),
+    ("core/sponsorizari.py", "credit_sponsorizare"),
+    ("core/motor.py", "rezerva_legala"),
+    ("core/contracte_speciale.py", "calcul_zilier"),
+    ("core/tva_marja.py", "vanzare_marja"),
+    ("core/tva_marja_turism.py", "marja_turism_special"),
+]
+try:
+    import ast as _ast_vf
+    _vf_fara, _vf_lipsa = [], []
+    for _rel, _fn in _VERSIONARE_FUNCTII:
+        _cale = os.path.join(BAZA_PY, _rel)
+        if not os.path.exists(_cale):
+            _vf_lipsa.append((_rel, _fn)); continue
+        _tree = _ast_vf.parse(open(_cale, encoding="utf-8").read())
+        _gasit = False
+        for _n in _ast_vf.walk(_tree):
+            if isinstance(_n, _ast_vf.FunctionDef) and _n.name == _fn:
+                _gasit = True
+                _are = False
+                for _cc in _ast_vf.walk(_n):
+                    if isinstance(_cc, _ast_vf.Call):
+                        _cf = _cc.func
+                        if ((getattr(_cf, "attr", None) == "alege_varianta" or getattr(_cf, "id", None) == "alege_varianta")
+                                and _cc.args and isinstance(_cc.args[0], _ast_vf.Name)
+                                and _cc.args[0].id.startswith("_VARIANTE")):
+                            _are = True
+                            break
+                if not _are:
+                    _vf_fara.append((_rel, _fn))
+                break
+        if not _gasit:
+            _vf_lipsa.append((_rel, _fn))
+    _vf_viol = len(_vf_fara) + len(_vf_lipsa)
+    if _vf_viol > VERSIONARE_BASELINE:
+        rap["versionare_formule"] = (
+            [("FARA-DISPECER", 0, "%s::%s" % (r, f), "functie de regula fara dispecer alege_varianta(_VARIANTE_*, la_data)") for r, f in _vf_fara] +
+            [("FUNCTIE-LIPSA", 0, "%s::%s" % (r, f), "functie din _VERSIONARE_FUNCTII negasita - actualizeaza lista") for r, f in _vf_lipsa])
+    print("")
+    print("### GARD VERSIONARE FORMULE (dispecer pe la_data, PRAG %d):" % VERSIONARE_BASELINE)
+    print("  functii de regula: %d | fara dispecer: %d | negasite: %d%s" % (
+        len(_VERSIONARE_FUNCTII), len(_vf_fara), len(_vf_lipsa),
+        "  <== BLOCHEAZA" if _vf_viol > VERSIONARE_BASELINE else ""))
+    for _r, _f in _vf_fara:
+        print("  FARA DISPECER: %s::%s" % (_r, _f))
+    for _r, _f in _vf_lipsa:
+        print("  NEGASITA: %s::%s" % (_r, _f))
+except Exception as _evf:
+    print("")
+    print("### GARD VERSIONARE FORMULE: NEVERIFICAT (%s)" % _evf)
+
+
 # --- GARD IZOLARE TENANTI (structural, CODEBASE-WIDE): orice ruta cu {tenant_id} in path care
 # deschide get_conn TREBUIE sa rezolve accesul - prin auth_api.schema_tenant SAU printr-un RESOLVER
 # (functie al carei corp cheama schema_tenant SAU scopeaza public.tenants pe accounting_firm_id/
