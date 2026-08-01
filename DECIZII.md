@@ -4698,3 +4698,35 @@ plafon_avans_decontare) - protejate aparent, garda de expirare TACE la infinit. 
 fixtures/parametri (ACCEPTATE, nu datorie). Categoria (b) - cluster neverificat: ZERO. Deci se poate
 completa tot ACUM, fara amanare. Etapele urmatoare (commit-uri separate): (2) data_out pe cele 7;
 (3) atasarea celor 2 GRI + gard GRI din RATCHET in PRAG.
+
+## 01.08.2026 — Gard markeri TEMEI pe functii: criteriu structural EVALUAT si RESPINS, lista explicita
+
+Costin a cerut un gard pe markerii TEMEI de functie, cu CRITERIU INVERSAT enumerabil (nu "e functie
+fiscala?" - semantic, ci "produce/consuma o valoare fiscala fara temei?" - structural): o functie intra
+sub gard daca (a) contine literal de rata fiscala Decimal("0.NN"), (b) cheama cota() + transforma
+rezultatul, sau (c) e apelata de un generator si intoarce o suma. Cu instructiunea: EVALUEAZA inainte de
+a implementa; daca acopera lista reala cu putine fals-poz -> implementeaza; daca rateaza mai mult de
+cateva -> OPRESTE si treci la lista explicita.
+
+EVALUARE (masurat mecanic, AST pe core/*.py, criteriu a=Decimal 0.NN | b=cota()):
+- 57 functii prinse; acoperire lista reala 5/7 (deducere_personala, calcul_salariu, procent_cm, taxe_cm,
+  calcul_cm_cod10 PRINSE; calcul_cm si plafon_diurna RATATE - fals-negative).
+- ~18 FALS-POZITIVE: helper-e de rotunjire/formatare (_q, _q2, _q4, bani, _bani, _dec, _cant folosesc
+  Decimal("0.01")) + cititori subtiri de cota (d394.cota_standard, d301.cote_perioada, facturi.calcul_tva).
+VERDICT: proxy-ul sintactic minte in ambele sensuri (exact avertismentul lui Costin) - Decimal("0.NN") nu
+distinge rata fiscala (0.55, 0.25) de constanta de rotunjire (0.01, 0.5); "cheama cota()" nu distinge
+transformarea de citirea subtire. Criteriul NU e curat.
+
+DECIZIE: NU se implementeaza criteriul structural. Solutia (pre-autorizata de Costin) = LISTA EXPLICITA
+intretinuta manual a functiilor care APLICA o regula fiscala cu logica proprie; gardul cere marker DOAR pe
+ele. Lista initiala = clusterul salariu/CM (lista reala): salarizare.{deducere_personala, calcul_salariu,
+procent_cm, taxe_cm, calcul_cm, calcul_cm_cod10}. Markerii completati ACUM pe toate 6 (3 aveau deja; +3:
+calcul_salariu, calcul_cm, calcul_cm_cod10). Gard in verificator: PRAG 0 (orice functie din lista fara
+marker BLOCHEAZA). Mutatie: marker scos -> TOTAL 1, BLOCHEAZA.
+
+LIMITA DECLARATA (onesta, mai putin eleganta): gardul NU auto-detecteaza. O functie fiscala noua se ADAUGA
+in _TEMEI_FUNCTII + primeste marker - dar asta NU e "cand vine clusterul" (amanarea interzisa): lista reala
+CUNOSCUTA e completa ACUM. Functii fiscale din ALTE clustere neincluse inca (plafon_diurna/deconturi,
+sponsorizari.plafon_credit, motor.rezerva_legala, tva_incasare, tva_marja) nu sunt in lista reala pe care
+Costin a enumerat-o; se adauga cand sunt CONFIRMATE la sursa (identificare, nu amanare - nu exista proxy
+automat care sa le enumere corect, dovedit mai sus).

@@ -98,6 +98,10 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
       cere pentru contract "cu norma intreaga SAU cu timp partial".
     - venit_brut_total: venit brut lunar contractual (default = brut), pt plafon facilitate
     - exceptat_suprataxare: elev/student <26, pensionar, multi-contract cu declarație
+
+    TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
+    suprataxare), OUG 89/2025 art.III (facilitate salariu minim); cotele CAS/CASS/impozit/CAM din
+    common.COTE (CF art.138/156/78/220^1).
     """
     b = _dec(brut)
     sm, temei_sm = c.cota("salariu_minim", la_data)
@@ -320,7 +324,8 @@ def procent_cm(cod, zile_episod, procent_accident=100):
 def calcul_cm_cod10(baza_lunara, venit_realizat):
     """Cod 10 - reducere timp munca cu 1/4 (art. 19 OUG 158/2005):
     indemnizatia = baza de calcul - venitul realizat in noua situatie,
-    plafonata la 25% din baza de calcul."""
+    plafonata la 25% din baza de calcul.
+    TEMEI: OUG 158/2005 art.19 (reducere timp munca cod 10; plafon 25% din baza de calcul)."""
     b, v = _dec(baza_lunara), _dec(venit_realizat)
     if b <= 0 or v < 0:
         raise ValueError("baza/venit invalide")
@@ -336,6 +341,9 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     - diminuare 1 zi: certificate 01.02.2026-31.12.2027, O DATA per episod,
       NU la spitalizare, accidente 02/03/04, izolare 51, maternitate 08, oncologic 17, risc maternal 15, PNS 12/13/14
     - rotunjire la leu (norme CNAS)
+    TEMEI: OUG 158/2005 (indemnizatie CM: Ci = Mzbci x procent x zile); Ordinul 506/1030/2026
+    (MOF 507/2026, diminuare 1 zi certificate 2026-2027); Norme OUG 158/2005 (angajatorul suporta
+    zilele 2-6 = primele 5 zile platite, FNUASS din ziua 7).
     """
     from datetime import date as _dt
     ref = la_data or _dt.today()

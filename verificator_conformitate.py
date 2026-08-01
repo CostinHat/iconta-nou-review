@@ -656,6 +656,57 @@ except Exception as _etemei:
     print("")
     print("### GARD TEMEI STRUCTURAT: NEVERIFICAT (import COTE esuat: %s)" % _etemei)
 
+# --- GARD MARKERI TEMEI PE FUNCTII (lista EXPLICITA, 01.08.2026): criteriul STRUCTURAL (functie cu
+# literal Decimal("0.NN") SAU care cheama cota()) MINTE in ambele sensuri - masurat: 57 functii prinse,
+# ~18 fals-pozitive (helper-e de rotunjire _q/bani/_dec cu Decimal("0.01")) + 2 fals-negative din lista
+# reala (calcul_cm, plafon_diurna). Un proxy sintactic nu separa regula fiscala de rotunjire (avertismentul
+# lui Costin). Solutia ONESTA = lista INTRETINUTA MANUAL a functiilor care APLICA o regula fiscala cu
+# logica proprie (scara degresiva, prorata, plafonare, contributii); gardul cere marker "TEMEI:" in
+# docstring DOAR pe ele. PRAG 0: orice functie din lista fara marker BLOCHEAZA. LIMITA DECLARATA: nu se
+# auto-detecteaza - o functie fiscala noua se ADAUGA aici + primeste marker (nu "cand vine clusterul").
+_TEMEI_FUNCTII = [
+    ("core/salarizare.py", "deducere_personala"),
+    ("core/salarizare.py", "calcul_salariu"),
+    ("core/salarizare.py", "procent_cm"),
+    ("core/salarizare.py", "taxe_cm"),
+    ("core/salarizare.py", "calcul_cm"),
+    ("core/salarizare.py", "calcul_cm_cod10"),
+]
+try:
+    import ast as _ast_tf
+    _tf_fara, _tf_lipsa = [], []
+    for _rel, _fn in _TEMEI_FUNCTII:
+        _cale = os.path.join(BAZA_PY, _rel)
+        if not os.path.exists(_cale):
+            _tf_lipsa.append((_rel, _fn)); continue
+        _tree = _ast_tf.parse(open(_cale, encoding="utf-8").read())
+        _gasit = False
+        for _n in _ast_tf.walk(_tree):
+            if isinstance(_n, _ast_tf.FunctionDef) and _n.name == _fn:
+                _gasit = True
+                if "TEMEI:" not in (_ast_tf.get_docstring(_n) or ""):
+                    _tf_fara.append((_rel, _fn))
+                break
+        if not _gasit:
+            _tf_lipsa.append((_rel, _fn))
+    if _tf_fara or _tf_lipsa:
+        rap["temei_functii"] = (
+            [("FARA-MARKER", 0, "%s::%s" % (r, f), "functie fiscala din lista fara marker TEMEI: in docstring") for r, f in _tf_fara] +
+            [("FUNCTIE-LIPSA", 0, "%s::%s" % (r, f), "functie din _TEMEI_FUNCTII negasita - actualizeaza lista") for r, f in _tf_lipsa])
+    print("")
+    print("### GARD MARKERI TEMEI PE FUNCTII (lista explicita, PRAG 0):")
+    print("  functii sub gard: %d | fara marker: %d | negasite: %d%s" % (
+        len(_TEMEI_FUNCTII), len(_tf_fara), len(_tf_lipsa),
+        "  <== BLOCHEAZA" if (_tf_fara or _tf_lipsa) else ""))
+    for _r, _f in _tf_fara:
+        print("  FARA MARKER: %s::%s" % (_r, _f))
+    for _r, _f in _tf_lipsa:
+        print("  NEGASITA: %s::%s" % (_r, _f))
+except Exception as _etf:
+    print("")
+    print("### GARD MARKERI TEMEI PE FUNCTII: NEVERIFICAT (%s)" % _etf)
+
+
 # --- GARD IZOLARE TENANTI (structural, CODEBASE-WIDE): orice ruta cu {tenant_id} in path care
 # deschide get_conn TREBUIE sa rezolve accesul - prin auth_api.schema_tenant SAU printr-un RESOLVER
 # (functie al carei corp cheama schema_tenant SAU scopeaza public.tenants pe accounting_firm_id/
