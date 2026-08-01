@@ -10,13 +10,15 @@ Contabil: avans spre decontare 542 = 5311/5121; decont: 625 = 542
 5311 = 542; diurna impozabila trece prin stat (641)."""
 from decimal import Decimal, ROUND_HALF_UP
 
+from core import common as c
+
 B = Decimal("0.01")
 DIURNA_INTERNA_BUGETAR = Decimal("23")  # HG 714/2018 (Ordinul 1235/2023)
 
 def _d(x):
     return Decimal(str(x or 0)).quantize(B, rounding=ROUND_HALF_UP)
 
-def plafon_diurna(diurna_acordata_pe_zi, zile, salariu_baza, zile_lucratoare_luna,
+def _plafon_diurna_2018(diurna_acordata_pe_zi, zile, salariu_baza, zile_lucratoare_luna,
                   diurna_bugetara=None, curs=1):
     """Returneaza {plafon_zi, neimpozabil, impozabil}. diurna_bugetara: 23 lei
     intern (implicit) sau valoarea HG 518/1995 pt. tara (in valuta, cu curs)."""
@@ -33,6 +35,25 @@ def plafon_diurna(diurna_acordata_pe_zi, zile, salariu_baza, zile_lucratoare_lun
     return {"plafon_zi": plafon_zi, "limita_2_5x": p1, "limita_3_salarii": p2,
             "total_acordat": total, "neimpozabil": neimp,
             "impozabil": total - neimp}
+
+
+_VARIANTE_PLAFON_DIURNA = [
+    ("2018-01-01", _plafon_diurna_2018,
+     c.Temei("CF", art="76", alin="4^1", data_in="2018-01-01", nivel_sursa="REDARE",
+             de_cine="Code/Costin", verificat_la="2026-07-31",
+             lant_acte="HG 714/2018 (diurna interna bugetara 23 lei); HG 518/1995 (extern)")),
+]
+
+
+def plafon_diurna(diurna_acordata_pe_zi, zile, salariu_baza, zile_lucratoare_luna,
+                  diurna_bugetara=None, curs=1, la_data=None):
+    """Plafon neimpozabil diurna, DISPECER pe la_data.
+    TEMEI: CF art.76(2) lit.k + alin.(4^1) (plafon = min 2.5x diurna bugetara; 3x salariu/zile lucratoare);
+    HG 714/2018 (intern 23 lei); HG 518/1995 (extern). nivel_sursa: REDARE. Versionata in timp: o schimbare
+    de plafon/regula -> varianta datata noua, nu 'if data' in corp."""
+    from datetime import date as _dt
+    fn, _ = c.alege_varianta(_VARIANTE_PLAFON_DIURNA, la_data or _dt.today())
+    return fn(diurna_acordata_pe_zi, zile, salariu_baza, zile_lucratoare_luna, diurna_bugetara, curs)
 
 def nota_avans(suma, sursa="casa"):
     """Avans spre decontare: 542 = 5311/5121."""

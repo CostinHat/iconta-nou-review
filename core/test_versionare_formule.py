@@ -81,3 +81,13 @@ def test_calcul_salariu_dispecer_versionat():
     assert sz._VARIANTE_CALCUL_SALARIU[0][1] is sz._calcul_salariu_2018
     with pytest.raises(ValueError):
         sz.calcul_salariu(4000, la_data=date(2000, 1, 1))
+
+
+# ---- PAS 3 modul 2: deconturi.plafon_diurna ----
+def test_plafon_diurna_dispecer_versionat():
+    from core import deconturi as dc
+    args = (30, 5, 4000, 21)  # diurna_pe_zi, zile, salariu_baza, zile_lucratoare_luna
+    assert dc.plafon_diurna(*args, la_data=date(2026, 6, 1)) == dc._plafon_diurna_2018(*args)
+    assert dc._VARIANTE_PLAFON_DIURNA[0][1] is dc._plafon_diurna_2018
+    with pytest.raises(ValueError):
+        dc.plafon_diurna(*args, la_data=date(2000, 1, 1))
