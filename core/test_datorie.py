@@ -43,6 +43,19 @@ def _db_ok():
 #  DATORIE FISCALA
 # ============================================================
 
+@pytest.mark.xfail(strict=True, reason=(
+    "DATORIE 01.08.2026 (Model de temei): TOATE cele 12 COTE + 6 functii cu marker au nivel_sursa=REDARE. "
+    "Niciun temei nu e confirmat la MO cu text_citat verbatim. Registrul intreg sta pe surse SECUNDARE - "
+    "upgrade la MO pe masura ce se capteaza verbatim de la legislatie.just.ro. Cand primul temei devine "
+    "MO+text, testul TRECE (xpass strict) si anunta ca upgrade-ul a inceput."))
+def test_datorie_temeiuri_toate_redare_niciun_mo_verbatim():
+    """Cand macar UN Temei din COTE e MO cu text_citat verbatim, datoria incepe sa se stinga."""
+    from core.common import COTE
+    mo_cu_text = [(n, str(d)) for n, intr in COTE.items() for d, v, t in intr
+                  if getattr(t, "nivel_sursa", None) == "MO" and getattr(t, "text_citat", None)]
+    assert mo_cu_text, "niciun temei MO cu verbatim inca - registrul sta pe REDARE"
+
+
 
 # ============================================================
 #  DATORIE TEHNICA

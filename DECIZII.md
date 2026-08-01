@@ -4804,3 +4804,65 @@ Costin, 7 puncte. NICIO implementare in aceasta tura - doar registru. Ce se atin
   cote_neconfirmate (fost expirare_cote, reformulat: "n-a mai fost confirmata de N luni", fara expira/REFUZA).
   Clasa "expira pe valori curente" cautata: doar expirare_cote (reparat); UIT/token OAuth expira real (nu clasa).
   RAMAS: ETAPA 2 (text_citat/nivel_sursa/lant_acte) + ETAPA 3 (graf dependente). Pct.7 nedecis.
+
+## 01.08.2026 — MASURARE pct.7 (formule versionate in timp) - CIFRA, zero implementare
+
+Cerut de Costin: cate functii ar fi afectate, ce se intampla azi la o schimbare de regula, ce petice
+ad-hoc exista deja, ce consumatori retroactivi s-ar rupe, estimare de efort. NU se propune implementarea.
+
+CRITERIU: functie care APLICA o regula (scara, prorata, plafonare, split, procent pe conditie), nu doar
+citeste o cota (calcul_tva/cota_standard/cote_perioada/_sal_minim = cititori subtiri, EXCLUSI).
+
+FUNCTII DE REGULA FISCALA (13), cu tip regula + corp:
+  salarizare.deducere_personala   scara degresiva 20-45% + step + prag tineri   SINGLE BODY
+  salarizare.calcul_salariu       prorata + plafonare + suprataxare + split zi5-6 + facilitate  SINGLE BODY
+  salarizare.procent_cm           procent pe cod/zile (55/65/75 progresiv)       SINGLE BODY
+  salarizare.taxe_cm              CAS uniform / CASS pe cod / impozit            SINGLE BODY
+  salarizare.calcul_cm            formula + split angajator/FNUASS + diminuare   **DATE-BRANCH** (if 2026-02-01<=ref<=2027-12-31)
+  salarizare.calcul_cm_cod10      plafonare 25% din baza                         SINGLE BODY
+  deconturi.plafon_diurna         plafonare diurna (2.5x, HG 518/1995)           SINGLE BODY
+  sponsorizari.plafon_credit      min(0.75%CA; 20% impozit)                      SINGLE BODY
+  sponsorizari.credit_sponsorizare credit fiscal + conditii micro/profit         SINGLE BODY
+  motor.rezerva_legala            5% profit, cumulat <= 20% capital              SINGLE BODY
+  contracte_speciale.calcul_zilier taxe zilier                                   SINGLE BODY
+  tva_marja.vanzare_marja         TVA pe marja                                   SINGLE BODY
+  tva_marja_turism.marja_turism_special marja + scutire proportionala non-UE     SINGLE BODY
+
+PETICE AD-HOC "if pe data" DEJA EXISTENTE (6) - dovada ca problema a fost intampinata si peticita:
+  salarizare.calcul_cm:357        diminuare 1 zi doar pt certificate 2026-02..2027-12 (regula pe interval)
+  d101._scadenta:98               scadenta LL+6 (an 2022-2025) / LL+3 (>2025) - regula de structura pe an
+  d710:143                        d_recN="1" incepand cu perioada 12.2025 - regula de structura pe perioada
+  decontari_asociati.cota_dividend:21  16% (>=2026) / 10% (vechi) - RATA (ar trebui in COTE period-aware)
+  lichidare:24                    impozit 16% (>=2026) / 10% - RATA (ar trebui in COTE)
+  tva_incasare.plafon_la:31       plafon TVA incasare, schimbare la 2027-01-01 - PRAG pe data
+
+CIFRA: 13 functii de regula fiscala; 12 SINGLE BODY (pierd trecutul la o schimbare de regula), 1 deja
+date-branched. + 5 reguli/rate/praguri deja peticite ad-hoc cu if-pe-data (2 rate ar trebui de fapt in
+COTE period-aware, nu formule). TOTAL locuri care ar cere versionare in timp: ~18.
+
+CE SE INTAMPLA AZI la o schimbare de regula (single body): se recalculeaza o perioada TRECUTA cu regula
+de AZI -> gresit pentru trecut. Nu exista cale de a calcula corect o perioada anterioara; alternativa =
+acumulezi if-pe-data (ca la calcul_cm/d101/d710), care se inmulteste si devine ilizibil.
+
+CONSUMATORI RETROACTIVI care s-ar rupe (primesc o perioada trecuta si RECALCULEAZA):
+  adeverinta.py:50        calcul_salariu(..., la_data=date(an,luna,1)) - adeverinta de venit pt luna TRECUTA
+  stat_plata_api.py:60,145 calcul_salariu(..., la_data=ref) - stat de plata regenerat pt o perioada
+  d112.py:443             calcul_salariu(...) - D112 (rectificativa = luna trecuta)
+  salarii_contare.py:55   calcul_salariu(...) - note lunare re-postate
+  salariati_api.py:339 + main.py:6667  calcul_cm(...) - concediu medical
+Toate paseaza deja la_data -> COTELE (ratele) ies period-correct; dar CORPUL formulei e single-body ->
+foloseste logica de azi pentru trecut. Aici e ruptura (ex: adeverinta 2025 cu scara deducerii din 2026).
+
+ESTIMARE EFORT (varianta dispecer pe la_data, tiparul cota() pe cod):
+- 12 functii single-body -> variante datate + dispecer. Unde regula NU s-a schimbat istoric (majoritatea):
+  dispecer cu O SINGURA versiune = refactor structural MECANIC, fara cercetare istorica (~low/functie x 12).
+- 6 petice ad-hoc -> consolidare if-pe-data in dispecer (cunosc deja punctele de schimbare).
+- 2 rate (cota_dividend, lichidare) -> mutate in COTE period-aware, NU dispecer de formula (mai simplu).
+- ~6 consumatori -> deja paseaza la_data, dar trebuie sa respecte VERSIUNEA de formula la acea data.
+- 1 gard (functie de regula versionata) - ca gardul de markeri.
+COST DOMINANT: cercetarea istorica a regulii DOAR unde s-a schimbat (limitat - cele 6 petice au puncte
+cunoscute; restul sunt stabile -> 1 versiune, mecanic). Estimare: campanie MEDIE, comparabila cu
+uniformizarea contractului (1 functie/pas). Ordin de marime: ~18 locuri + 6 consumatori + 1 gard,
+distribuit pe cateva sesiuni; partea riscanta (istoric) e mica.
+
+NEDECIS - se livreaza cifra, nu implementarea (cerut explicit).
