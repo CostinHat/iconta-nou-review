@@ -4589,3 +4589,36 @@ nevoie de cota bunului (absenta pe factura fara linii). Reparatia reala e la DAT
 reverse charge SA aiba linii cu cota bunului) - atunci ambele clasifica corect. Gardul de paritate
 acopera clasificarea pe date COMPLETE (cu linii); cazul reverse-charge-fara-linii e limita
 documentata, nu bug. Pe sume ambele dau 0 (tva=0), deci nu afecteaza cifrele, doar incadrarea. VERDICT GRI (provizoriu, NU verde): sta pe DEDUCTIE din cod (d300.pull nu citeste taxare_inversa) + practica, NEreconfirmat pe text MO. Datorie deschisa (test_datorie_d300_reverse_charge_manual_reconfirmat_mo): de reconfirmat la sursa primara (structura oficiala D300/OPANAF) ca reverse charge se trateaza DOAR manual (rd.12).
+
+## 01.08.2026 — Audit semantic al declaratiilor (Conditia 2 Costin): "trece DUK" != "campuri corecte"
+
+Context: D101 s-a dovedit respins de DUK (P ca elemente) SI cu numerotare P inventata in calcul_d101
+(p11=impozit, nu formularul oficial OPANAF 206/2025). Lectia: DUK valideaza STRUCTURA (nume de campuri
+cunoscute + reguli de formula), NU semantica -> orice validare istorica "trece DUK" e SUSPECTA pana la
+verificarea numelor de campuri contra structurii oficiale (anaf_surse/). Aceasta e datoria ceruta de
+Costin de inregistrat.
+
+Cerinta Costin INAINTE de reconstructia d101: verifica daca vreo alta declaratie "valida" are aceeasi
+clasa (numerotare proprie). Daca da, reconstructia d101 nu e singura -> vreau ordinea completa.
+
+METODA: pentru fiecare din cele 8 valide DUK (d100,d112,d205,d300,d301,d390,d394,d406) - generat pe
+schema efemera cu date minime, extras numele atributelor emise de build_xml, cautate in
+anaf_surse/<tip>_struct_anaf.txt (structura oficiala).
+
+REZULTAT: TOATE cele 8 emit doar campuri OFICIALE, inclusiv randurile numerotate (d300 R-uri, d112 96
+atribute B1/B4/E1/E3, d394 sectiuni). Trei atribute lipseau din struct.txt (versiune veche) dar sunt
+CONFIRMATE in constant pool-ul validatorului (unzip+strings pe jar): d301 temei (D301Validator, regula
+d_rec), d394 tvaDedAI11/tvaDedAI21 (D394Validator v5, TVA dedus achizitii intracomunitare). Restul
+negasite = boilerplate XML (encoding/xmlns/xsi/version/schemaLocation).
+
+CONCLUZIE: d101 e SINGURA declaratie cu numerotare proprie -> ordinea de reconstructie = DOAR d101.
+
+GARD (verificabil mecanic, nu nota): core/test_audit_campuri_oficiale.py - fiecare atribut emis trebuie
+sa fie oficial (struct.txt) / boilerplate / allowlist confirmat-in-validator; un atribut inventat viitor
+PICA. Mutatie dovedita: INVENTATxyz injectat in d300.build_xml -> testul PICA.
+
+LIMITA declarata: gardul verifica NUMELE campurilor, nu VALORILE. Un camp cu nume oficial dar valoare
+semantic gresita (cazul intern al d101: p11 pus in campul oficial P11) NU e prins de acest gard - pentru
+asta e nevoie de golden tests pe cifre calculate de mana (Conditia 1, aplicata la reconstructia d101).
+Deci "campuri oficiale" e conditie NECESARA, nu suficienta. d406 emite campuri oficiale dar are limita
+cunoscuta separata (linii sintetice, DECIZII 27.07) - alt tip de incompletitudine, nu nume de campuri.
