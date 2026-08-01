@@ -120,3 +120,12 @@ def test_rezerva_legala_dispecer_versionat():
     assert mo._VARIANTE_REZERVA_LEGALA[0][1] is mo._rezerva_legala_2018
     with pytest.raises(ValueError):
         mo.rezerva_legala(*args, la_data=date(2000, 1, 1))
+
+
+# ---- PAS 3 modul 5: contracte_speciale.calcul_zilier ----
+def test_calcul_zilier_dispecer_versionat():
+    from core import contracte_speciale as cs
+    assert cs.calcul_zilier(200, la_data=date(2026, 6, 1)) == cs._calcul_zilier_2018(200)
+    assert cs._VARIANTE_CALCUL_ZILIER[0][1] is cs._calcul_zilier_2018
+    with pytest.raises(ValueError):
+        cs.calcul_zilier(200, la_data=date(2000, 1, 1))

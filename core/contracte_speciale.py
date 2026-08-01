@@ -11,6 +11,8 @@ venituri asimilate salariilor).
   nota: 621 = 421 (colaboratori) + retineri + plata."""
 from decimal import Decimal, ROUND_HALF_UP
 
+from core import common as c
+
 B = Decimal("0.01")
 
 def _d(x):
@@ -19,7 +21,7 @@ def _d(x):
 def _p(baza, pct):
     return (_d(baza) * Decimal(str(pct)) / 100).quantize(B, rounding=ROUND_HALF_UP)
 
-def calcul_zilier(brut):
+def _calcul_zilier_2018(brut):
     b = _d(brut)
     if b <= 0:
         raise ValueError("brut invalid")
@@ -27,6 +29,22 @@ def calcul_zilier(brut):
     impozit = _p(b - cas, 10)
     return {"brut": b, "cas": cas, "cass": Decimal("0.00"),
             "impozit": impozit, "net": b - cas - impozit}
+
+
+_VARIANTE_CALCUL_ZILIER = [
+    ("2018-01-01", _calcul_zilier_2018,
+     c.Temei("Legea", 52, 2011, art="9^1", data_in="2018-01-01", nivel_sursa="REDARE",
+             de_cine="Code/Costin", verificat_la="2026-07-31")),
+]
+
+
+def calcul_zilier(brut, la_data=None):
+    """Taxe zilier (impozit 10% + CAS 25%, fara CASS/CAM), DISPECER pe la_data.
+    TEMEI: Legea 52/2011 art.9^1 (zilieri: impozit 10% + CAS 25%, fara CASS/CAM); impozit pe (brut-CAS).
+    nivel_sursa: REDARE. Versionata in timp: o schimbare de regim -> varianta datata noua, nu 'if data'."""
+    from datetime import date as _dt
+    fn, _ = c.alege_varianta(_VARIANTE_CALCUL_ZILIER, la_data or _dt.today())
+    return fn(brut)
 
 def calcul_mandat(brut):
     """Cenzor / administrator cu contract de mandat remunerat."""
