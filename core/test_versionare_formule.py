@@ -33,3 +33,12 @@ def test_deducere_personala_dispecer_pastreaza_comportament():
     d = date(2026, 7, 1)
     assert sz.deducere_personala(3000, persoane=2, la_data=d) == sz._deducere_personala_2018(3000, persoane=2, la_data=d)
     assert len(sz._VARIANTE_DEDUCERE) == 1 and sz._VARIANTE_DEDUCERE[0][1] is sz._deducere_personala_2018
+
+
+def test_calcul_cm_diminuare_versionata_pe_fereastra():
+    """PAS 2c: diminuarea de 1 zi (Ordinul 506/1030/2026) e versionata pe fereastra 01.02.2026-31.12.2027.
+    In fereastra -> diminuare 1; inainte (2025) sau dupa expirare (2028) -> 0. Fara 'if pe data' in corp."""
+    from core.salarizare import calcul_cm
+    assert calcul_cm(30000, 120, 10, cod="01", la_data=date(2026, 6, 1))["diminuare"] == 1
+    assert calcul_cm(30000, 120, 10, cod="01", la_data=date(2025, 6, 1))["diminuare"] == 0
+    assert calcul_cm(30000, 120, 10, cod="01", la_data=date(2028, 6, 1))["diminuare"] == 0

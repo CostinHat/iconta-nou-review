@@ -353,10 +353,10 @@ def calcul_cm_cod10(baza_lunara, venit_realizat):
         raise ValueError("baza/venit invalide")
     return _q(min(max(b - v, Decimal("0")), b * Decimal("0.25")))
 
-def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
-              cod="01", zile_episod=None, prima_zi_din_episod=True,
-              spitalizare=False, la_data=None, exceptat_prima_zi=False,
-              procent_accident=100):
+def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
+                    cod="01", zile_episod=None, prima_zi_din_episod=True,
+                    spitalizare=False, la_data=None, exceptat_prima_zi=False,
+                    procent_accident=100, *, diminuare_activa):
     """
     Ci = Mzbci x procent x (NZLCM - diminuare)
     - Mzbci = suma venituri 6 luni / total zile lucratoare 6 luni
@@ -367,8 +367,6 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     (MOF 507/2026, diminuare 1 zi certificate 2026-2027); Norme OUG 158/2005 (angajatorul suporta
     zilele 2-6 = primele 5 zile platite, FNUASS din ziua 7). nivel_sursa: REDARE (OUG 158/2005 + Ordinul 506/1030/2026 MOF 507/2026).
     """
-    from datetime import date as _dt
-    ref = la_data or _dt.today()
     mz = _dec(venituri_6_luni) / _dec(zile_lucratoare_6_luni or 1)
     ze = zile_episod if zile_episod is not None else zile_lucratoare_cm
     pct = procent_cm(cod, ze, procent_accident)
@@ -376,7 +374,7 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     # Exceptii diminuare 1 zi verif. la sursa MOF 507/19.06.2026 (Ordinul 506/1030/2026):
     # accidente 02/03/04, izolare 51, maternitate 08, oncologic 17, risc maternal 15, PNS 12/13/14.
     # NU exceptate: urgente 06, carantina 07, boala obisnuita 01, ingrijire copil 09.
-    if (_dt(2026, 2, 1) <= ref <= _dt(2027, 12, 31)
+    if (diminuare_activa
             and prima_zi_din_episod and not spitalizare and not exceptat_prima_zi
             and str(cod).zfill(2) not in ("02", "03", "04", "08", "12", "13", "14", "15", "17", "51")):
         diminuare = 1
@@ -396,6 +394,44 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
         "zile_ang": zile_ang, "zile_fnuass": zile_fnuass,
         "brut": _q(brut), "brut_ang": _q(brut_ang), "brut_fnuass": _q(brut_fnuass),
     }
+
+
+def _calcul_cm_2018(*a, **k):
+    return _calcul_cm_core(*a, diminuare_activa=False, **k)
+
+
+def _calcul_cm_2026(*a, **k):
+    return _calcul_cm_core(*a, diminuare_activa=True, **k)
+
+
+def _calcul_cm_2028(*a, **k):
+    return _calcul_cm_core(*a, diminuare_activa=False, **k)
+
+
+# Diminuarea de 1 zi (Ordinul 506/1030/2026) e o regula pe FEREASTRA 01.02.2026-31.12.2027. Peticul
+# "if 2026-02 <= ref <= 2027-12" convertit in 3 variante datate (tiparul cota() pe cod): fara diminuare
+# pana la 02.2026, cu diminuare in fereastra, fara diminuare de la 2028 (regula expira) - frontierele de
+# varianta sunt exact punctele de schimbare. Nimic hardcodat pe data in corp.
+_VARIANTE_CALCUL_CM = [
+    ("2018-01-01", _calcul_cm_2018, c.Temei("OUG", 158, 2005, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
+    ("2026-02-01", _calcul_cm_2026, c.Temei("OUG", 158, 2005, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31", lant_acte="Ordinul 506/1030/2026 (MOF 507/2026) introduce diminuarea de 1 zi, 01.02.2026-31.12.2027")),
+    ("2028-01-01", _calcul_cm_2028, c.Temei("OUG", 158, 2005, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
+]
+
+
+def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
+              cod="01", zile_episod=None, prima_zi_din_episod=True,
+              spitalizare=False, la_data=None, exceptat_prima_zi=False,
+              procent_accident=100):
+    """Indemnizatia de concediu medical, DISPECER pe la_data - alege varianta valabila la data
+    certificatului (diminuarea de 1 zi doar in fereastra 01.02.2026-31.12.2027).
+    TEMEI: OUG 158/2005 (indemnizatie CM: Ci = Mzbci x procent x zile); Ordinul 506/1030/2026 (MOF
+    507/2026, diminuare 1 zi 2026-2027); Norme OUG 158/2005 (angajator zilele 2-6 = primele 5 platite,
+    FNUASS din ziua 7). nivel_sursa: REDARE (OUG 158/2005 + Ordinul 506/1030/2026 MOF 507/2026)."""
+    from datetime import date as _dt
+    fn, _ = c.alege_varianta(_VARIANTE_CALCUL_CM, la_data or _dt.today())
+    return fn(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm, cod, zile_episod,
+              prima_zi_din_episod, spitalizare, la_data, exceptat_prima_zi, procent_accident)
 
 
 # Coduri indemnizatie pt care NU se retine CASS (verif. la sursa: art.17(2) OUG 34/2024,
