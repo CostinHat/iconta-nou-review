@@ -29,14 +29,14 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 > **Stare:** site în mentenanță (46507b5) — allowlist pe IP-ul lui Costin; revenire cu `mentenanta.sh off`.
 
 - fir: SWEEP DUK toate declaratiile (redirectionare Costin 31.07: inainte de reconstructii, mapez cate sunt sparte pe validatorul CURENT)
-- ultim: sweep rulat pe schema efemera + profil complet + date minime adecvate (salariat/factura UE/dividende). Rezultat: 7 VALID (d100,d112,d205,d300,d301,d390,d394), 2 SPARTE: d101 (model P inventat, reconstructie) + d406 (DUK: AccountID cont [731] nu e in planul de conturi din chart - o inregistrare refera un cont absent din cei 169 generati; de investigat: chart incomplet vs booking gresit). Claim 16.07 "toate 9 valide" INFIRMAT: 2/9 sparte azi.
-- urmator: gard smoke-sweep DUK LIVRAT (core/test_smoke_duk.py: 7 valide asertate + d101/d406 xfail strict). RAMANE DECIZIE COSTIN: ordinea reconstructiilor (d101 intai? d406? ambele?). Posibil edge d394: luna doar cu operatiuni UE -> R112.3 serieFacturi la op_efectuate=0 (de confirmat). BLOCAT: cere decizie ordine.
+- ultim: sweep rulat pe schema efemera + profil complet + date minime adecvate (salariat/factura UE/dividende). Rezultat initial: 7 VALID + 2 sparte (d101, d406). d406 REZOLVAT 01.08 (bug de CALE, o linie): plan_oficial cauta d406_nomenclatoare_anaf.properties in radacina, dar fisierul e in anaf_surse/ -> set gol -> filtrarea pe norma (adaugata 15.07 tocmai pt 731 ONG) nu rula -> conturi ONG scapau in SAF-T comercial -> DUK respingea. Fix cale -> plan_oficial(A)=635, 731 exclus, d406 DUK VALID. RAMANE 1/9 SPART: d101 (reconstructie). Claim 16.07 infirmat.
+- urmator: gard smoke-sweep DUK livrat (8 valide asertate incl d406 reparat + d101 xfail). d406 REPARAT (fix cale). RAMANE 1 reconstructie: d101 - cere greenlight temei OPANAF 206/2025. Posibil edge d394 (luna doar UE -> R112.3) de confirmat separat. BLOCAT: cere decizie d101.
 - pasi:
   1. [GATA] sweep no-data + sweep cu date (salariat/factura UE) -> 7 valid / 2 sparte.
   2. reconstructie d101 (temei OPANAF 206/2025 validat) - cand Costin da drumul.
-  3. investigare d406 cont 731 (SAF-T) - separat.
+  3. [GATA 01.08] d406 reparat (fix cale plan_oficial -> anaf_surse/); gard test_d406.test_plan_oficial_citeste_nomenclatorul.
   4. [GATA 01.08] gard smoke-sweep DUK permanent: core/test_smoke_duk.py.
-  STARE = BLOCAT: sweep + gard gata, cere decizie ordine reconstructii (d101/d406)
+  STARE = BLOCAT: sweep+gard+d406 reparat; ramane d101 (reconstructie) - cere greenlight temei
 
 
 - fir: D101 respins de DUK - reparare structura (Sesiunea A fiscal, REDIRECTIONARE Costin 31.07: prioritar peste D/d390). D101 in forma actuala NU poate fi depusa.

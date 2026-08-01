@@ -169,7 +169,7 @@ def plan_oficial(norma):
     cheie = PLAN_NOMENCLATOR.get((norma or TAB_IMPLICIT).upper())
     if not cheie:
         return set()
-    cale = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
+    cale = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "anaf_surse",
                          "d406_nomenclatoare_anaf.properties")
     if not _os.path.exists(cale):
         return set()

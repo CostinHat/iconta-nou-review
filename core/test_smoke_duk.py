@@ -52,12 +52,12 @@ def conn_smoke():
                             "VALUES ('1900101410011','POPESCU','ION','2024-01-01',5000,8,'B')")
                 cur.execute("INSERT INTO asociati (nume,cnp,cota) VALUES ('ASOCIAT UNU','1900101410011',100)")
                 # nota venituri (704) + cheltuieli (607) in T2 -> d100 T2, d101 anual
-                cur.execute("INSERT INTO inregistrari (data,status,sursa) VALUES ('2026-05-15','validata','t') RETURNING id")
+                cur.execute("INSERT INTO inregistrari (data,status,sursa,descriere) VALUES ('2026-05-15','validata','t','Vanzare marfa') RETURNING id")
                 i1 = cur.fetchone()[0]
                 cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) VALUES (%s,'4111','704',100000)", (i1,))
                 cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) VALUES (%s,'607','401',60000)", (i1,))
                 # nota dividende (457) -> d205
-                cur.execute("INSERT INTO inregistrari (data,status,sursa) VALUES ('2026-03-10','validata','t') RETURNING id")
+                cur.execute("INSERT INTO inregistrari (data,status,sursa,descriere) VALUES ('2026-03-10','validata','t','Distribuire dividende') RETURNING id")
                 i2 = cur.fetchone()[0]
                 cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) VALUES (%s,'457','5121',50000)", (i2,))
                 # factura UE emisa iunie -> d390; domestica iunie -> d300/d394/d406
@@ -130,10 +130,6 @@ def test_smoke_d101(conn_smoke):
 
 
 @pytest.mark.skipif(not _DBOK or not _duk.poate_valida("d406"), reason="DB/DUK d406")
-@pytest.mark.xfail(strict=True, reason=(
-    "DATORIE FISCALA 01.08.2026: D406/SAF-T respins de DUK - AccountID: contul [731] referit "
-    "intr-o inregistrare nu se gaseste in planul de conturi (chart-ul GeneralLedgerAccounts, 169 "
-    "conturi). De investigat: chart incomplet vs booking pe cont neinclus. Descoperit la sweep DUK 01.08."))
 def test_smoke_d406(conn_smoke):
     xml, _ = d406.genereaza(conn_smoke, _SCHEMA, 2026, 6)
     _valid(xml, "d406", an=2026, luna=6)
