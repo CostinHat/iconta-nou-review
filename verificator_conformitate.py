@@ -555,7 +555,7 @@ if os.path.isdir(_GHID_MD):
 #              VIZIBILA si localizata (fisier:linie:valoare:semantica:temei). Ratchet doar pe GRI.
 #   ROSU     = literal fara temei identificabil (temei=???) -> flag RISC, BLOCHEAZA mereu.
 # Acceptatele nu se numara (nu sunt datorie - altfel ratchet-ul le urmareste la infinit pentru nimic).
-GRI_BASELINE = 2   # masurat 31.07.2026 dupa reparatia granitelor API (main.py: agregare pe rata)
+GRI_BASELINE = 0   # PRAG (nu ratchet) de la 01.08.2026: cele 2 GRI (main.py bucketing OCR) atasate la common.cota. Regula 01.08 (ciclul>ratchet): la 0, orice GRI nou BLOCHEAZA.
 _re_tva_dec = re.compile(r"(?<![\w.])0\.(?:21|19|11)(?![\w])")
 _re_tva_int = re.compile(r"(?<![\w.])(?:21|19|11)(?![\w.%])")
 _TVA_EXCLUSE = {"common.py", "verificator_conformitate.py", "cote_tva.py",

@@ -4042,8 +4042,11 @@ async def portal_bon(fisiere: list[UploadFile] = File(...), tenant_id: Optional[
         avertismente.append("Documentul pare incomplet sau greu lizibil \u00een poz\u0103. Fotografiaz\u0103-l \u00eentreg, cu lumin\u0103 bun\u0103 \u0219i totalul vizibil.")  # bon_flux_e3b_v1
     total = float(date.get("total") or 0)  # avertismentul aritmetic se arata doar contabilului (bon_flux_e3b_v1)
     tva_lista = date.get("tva") or []
-    tva_11 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == 11), 2)
-    tva_21 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == 21), 2)
+    # cotele TVA period-aware din common.COTE (Legea 141/2025), nu literali cuplati la anul curent
+    _r_std = int(_common.cota("tva_standard", strict=False)[0] * 100)
+    _r_red = int(_common.cota("tva_redusa", strict=False)[0] * 100)
+    tva_11 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == _r_red), 2)
+    tva_21 = round(sum(float(x.get("valoare") or 0) for x in tva_lista if x.get("cota") == _r_std), 2)
     schema = t["schema_name"]
     with db.get_conn() as conn:  # verif_doc_pozate_v1: drafturi abandonate >24h se curata (rand + poze)
         with conn.cursor() as cur:

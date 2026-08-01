@@ -304,6 +304,9 @@ COTE = {
         (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, data_in="2025-08-01", data_out="2026-12-31", estimat=True)),
         (date(2017, 1, 1), Decimal("0.19"), Temei("Legea", 227, 2015, data_in="2017-01-01", data_out="2025-07-31")),  # abrogat de Legea 141/2025 la 01.08.2025
     ],
+    "tva_redusa": [
+        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", data_out="2026-12-31", estimat=True)),
+    ],
     "plafon_mijloc_fix": [
         (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, data_in="2026-01-01", data_out="2028-01-01", estimat=True)),
         (date(2015, 1, 1), Decimal("2500"), Temei("Legea", 227, 2015, data_in="2015-01-01", data_out="2025-12-31")),

@@ -90,7 +90,7 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 - fir: Temeiuri citabile mecanic + reverificarea locurilor fără temei (Sesiunea A · transversal)
 - ultim: runda 4 comisă — (B) gardă bump-motiv: o bifă din Inventar A mutată înainte cere motivul scris în coloană, altfel garda anti-stale devine ornament (105ef50); (C/FIX5) salariu minim 2025 corectat 4050 → HG 1506/2024 (era 3700 = valoarea 2024 H2, act greșit), datorie xfail închisă și consemnată în DECIZII.md (cf31ddb); (A) confirmat că plafonul deducerii e DERIVAT (salarizare.py: sm+2000), zero literal 6050/6325 → niciun bug activ (semestrul 2: sm=4325 → prag=6325 automat). Fiecare fix: roșu→verde→mutație, commit separat.
-- urmator: CORECTIE REGULA Costin 01.08 - temeiul se completeaza ACUM, nu per-cluster (ciclul>ratchet). Etape: (1)[GATA] corectie DECIZII; (2) data_out pe cele 7 valori cu data_out=None; (3) atasare 2 GRI (main.py OCR bucket) + gard GRI RATCHET->PRAG. Baseline temei structurat deja 0. NU se trece la alte clustere pana GRI=0.
+- urmator: CORECTIE REGULA temei 01.08 GATA (3 etape). (1) corectie DECIZII (ab0f359); (2) data_out ESTIMAT pe 7 valori + gard nicio-cota-fara-data_out (4c23994); (3) 2 GRI atasate (tva_redusa in COTE + main.py period-aware) + GRI_BASELINE 2->0 PRAG. Temei structurat=0, GRI=0. Ambele garzi in PRAG. RAMAS FLAGAT: markeri TEMEI functie (doar 4, fara gard - propunerea DECIZII ###2 neconstruita) - separat.
 - pasi:
   · [GATA] §3.1 format · inventar (60 clustere, 4 √) · core/temeiuri.py (CLI) · gard validator-regulă · garda anti-stale per funcție.
   · [ÎN CURS] 2b — locuri fără temei, pe CLUSTER, cu validarea ta: deducere personală [√ 31.07] → tichete → concedii medicale → apoi celelalte 10 module.
