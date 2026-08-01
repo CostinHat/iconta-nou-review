@@ -525,7 +525,7 @@ Fișierul de așteptări se scrie **înainte**, din temeiurile verificate în se
    adevărat ca principiu și fals ca diagnostic: 0 din 5000 de valori pierdeau precizie.
 6. **Un test nu se scrie fără temei verificat.** Vezi sesiunea A.
 
-## PREDARE §6 (01.08.2026) — Campania versionare formule pe la_data: pas 0-2 GATA, pas 3-5 ramase
+## PREDARE §6 (01.08.2026) — Campania versionare formule pe la_data: CAMPANIE COMPLETA (pas 0-5)
 
 OPRIRE §6 (limita de context, NU fragmentare-pentru-confirmare): pas 3-5 sunt DECISE in comanda aprobata,
 nu se re-decid. Se continua fara sa se intrebe nimic. Predare la granita de commit (26fe9ca), tot ce e
@@ -577,3 +577,23 @@ PAS 5 - CONSUMATORI (proba pe cifra, cerinta finala): verifica adeverinta:50, d1
   Ramificatie Costin: daca vreun consumator NU paseaza la_data -> repara-l (e chiar bugul campaniei).
 
 La final: Raport §2 etapa 5 pentru TOATA campania (pas 0-5).
+
+---
+CAMPANIE COMPLETA (01.08.2026) — pas 3-5 livrate:
+- PAS 3 (7 commit-uri, un modul fiecare): cele 11 functii de regula ramase -> dispecer pe la_data.
+  salarizare 783cca4 (procent_cm/taxe_cm/calcul_cm_cod10/calcul_salariu; procent_cm primeste la_data din
+  _calcul_cm_core; calcul_salariu = dispecer subtire; graf_temei test actualizat variant-aware). deconturi
+  4fa6ffd (plafon_diurna). sponsorizari 0f423e5 (plafon_credit + credit_sponsorizare, paseaza la_data intern).
+  motor 3822edd (rezerva_legala). contracte_speciale 3c3611c (calcul_zilier). tva_marja 126e9b9 (vanzare_marja).
+  tva_marja_turism 1606d61 (marja_turism_special). RAMIFICATIE rezolvata: vanzare_marja NU e simplu cititor de
+  cota (aplica regula regimului marjei) -> RAMANE in lista (11, nu 10). Fiecare: rosu->verde->mutatie.
+- PAS 4 (8c0ea86): GARD verificator - fiecare din cele 13 functii de regula (_VERSIONARE_FUNCTII) trebuie sa
+  fie dispecer pe la_data (AST: corpul cheama alege_varianta(_VARIANTE_*, ...)). Ratchet la PRAG 0 in aceeasi
+  campanie (toate 13 convertite). Mutatie: rezerva_legala single-body -> TOTAL 1 BLOCHEAZA.
+- PAS 5 (ee8a717): consumatorii. adeverinta:50, d112:443, stat_plata_api:60/145, salarii_contare:55 paseaza
+  DEJA la_data. Reparat salariati_api:334 (calcul_cm_cod10 nu pasa la_data). Proba schema efemera: adeverinta
+  2026-06 (era 2025: sm 4050+facilitate 300) net 2574.75 vs 2026-08 (sm 4325+facilitate 0) net 2455.75.
+- GOL PRE-EXISTENT descoperit (NU al campaniei; cota, nu formula): calcul_salariu pre-2026 RIDICA fiindca
+  plafon_facilitate_salariu_minim (COTE) incepe 2026-01-01 - nicio valoare 2025. Adeverinta pentru o luna
+  2025 crapa. DE DECIS (Costin): backfill plafon 2025 la sursa SAU ramane limita declarata (app n-are date
+  reale pre-2026). NU s-a inventat o valoare.
