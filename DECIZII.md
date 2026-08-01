@@ -4106,7 +4106,7 @@ prin act normativ nou (HG anuala la salariul minim, OUG la facilitati), lipsa un
 pentru anul urmator NU inseamna ca cea veche ramane - inseamna ca nimeni n-a actualizat
 registrul. Prima interpretare produce declaratii gresite IN TACERE.
 
-REPARAT: `EXPIRA_DUPA_LUNI` marcheaza valorile cu termen; `cota()` RIDICA daca data ceruta
+[SUPERSEDAT 01.08 - blocaj la calcul DOAR pt data_out real (derivat din succesor); EXPIRA pe luni -> alerta interna de vechime; vezi Modelul de temei] REPARAT: `EXPIRA_DUPA_LUNI` marcheaza valorile cu termen; `cota()` RIDICA daca data ceruta
 depaseste valabilitatea ultimei intrari, cu mesaj care spune din cand e valoarea, pana cand
 era valabila, si ce trebuie facut. `strict=False` pentru rapoarte istorice, EXPLICIT.
 Adaugat `cote_care_expira(in_zile)` - baza jobului lunar de avertizare.
@@ -4491,7 +4491,7 @@ citibil mecanic (grep pe act la o schimbare de lege gaseste TOATE locurile). 3 e
   - deducere 45% (4+ pers): ("CF", None, None, "77", "4", None, "2018-01-01", None, "just.ro/.../171282")
   - carantina 100%:       ("OUG", 158, 2005, "20", "3", None, "2020-05-30", None, "just.ro/.../66305")
                           (+ ("Legea", 136, 2020, ...) actul care a majorat de la 75%)
-data_out=None = inca in vigoare. La expirare, EXPIRA_DUPA_LUNI (deja existent) ridica.
+data_out=None = inca in vigoare. La expirare, EXPIRA_DUPA_LUNI (deja existent) ridica.  [EXPIRARE SUPERSEDATA 01.08 - data_out=None ramane corect; semnalul devine VECHIMEA CONFIRMARII, nu EXPIRA_DUPA_LUNI; vezi "MODELUL DE TEMEI" 01.08 pct.1/2]
 
 ### 2. Adnotarea formulelor care NU sunt cote (o singura propunere)
 Scara degresiva, plafon 12 sm, proratare, split zi 5-6 NU sunt o cota, sunt ALGORITMI. Propunere:
@@ -4519,7 +4519,7 @@ RATCHET (tiparul TVA, refolosit): baseline = 82 (fara temei azi); test nou fara 
 masura ce se adauga temei, baseline coboara; la 0, fiecare test fiscal are temei obligatoriu. Zero
 blocaj imediat, crestere imposibila.
 
-### 5. Garda de deriva legislativa (GARZI cat.3) - LIMITA CARE SCHIMBA VALOAREA
+### 5. Garda de deriva legislativa (GARZI cat.3) - LIMITA CARE SCHIMBA VALOAREA  [MECANISM SUPERSEDAT 01.08 - proxy EXPIRA inlocuit de vechimea confirmarii; limita "fara API legislativ" RAMANE; vezi Modelul de temei pct.2/3]
 Cu act+nr+an+data structurate, un job AR PUTEA intreba: "actul X s-a modificat dupa data D?" - DACA
 exista o sursa interogabila mecanic. RASPUNS ONEST: NU exista un API/feed public fiabil pentru
 legislatia romaneasca. legislatie.just.ro randeaza dinamic, fara API (dovedit repetat in aceasta
@@ -4730,3 +4730,74 @@ CUNOSCUTA e completa ACUM. Functii fiscale din ALTE clustere neincluse inca (pla
 sponsorizari.plafon_credit, motor.rezerva_legala, tva_incasare, tva_marja) nu sunt in lista reala pe care
 Costin a enumerat-o; se adauga cand sunt CONFIRMATE la sursa (identificare, nu amanare - nu exista proxy
 automat care sa le enumere corect, dovedit mai sus).
+
+## 01.08.2026 — MODELUL DE TEMEI: corectii si extinderi (DECIZIE luata, nu propunere; IMPLEMENTARE in ture urmatoare)
+
+Costin, 7 puncte. NICIO implementare in aceasta tura - doar registru. Ce se atinge in cod urmeaza separat.
+
+1. **data_out NU se estimeaza (corectie la 31.07/01.08).** O lege spune de CAND intra in vigoare, nu PANA
+   cand. data_out nu exista in actul care instituie valoarea - se DERIVA din actul URMATOR: ziua dinaintea
+   intrarii in vigoare a succesorului. Valoare CURENTA = data_out None (in vigoare pana apare succesorul;
+   termen inventat = falsificare). Valoare ISTORICA = data_out exact, derivat AUTOMAT cand se adauga
+   succesorul, nu scris de mana. Cele 7 valori marcate data_out="2026-12-31" estimat=True (Etapa 2, 01.08)
+   se CORECTEAZA: data_out -> None; semnalul se muta pe vechimea confirmarii (pct.2). Idem estimat de la
+   salariu_minim/facilitate/plafon_facilitate/tichet.
+
+2. **VECHIMEA CONFIRMARII inlocuieste expirarea inventata.** Fiecare temei poarta verificat_la + de_cine.
+   Semnalul util nu e "valoarea a expirat" (fals - legea n-a spus asta), ci "n-a mai fost confirmata de N
+   luni" -> ALERTA INTERNA catre dezvoltator, NU in interfata contabilului (contabilul plateste tocmai ca
+   sa nu urmareasca legislatia). Blocaj la calcul ramane DOAR pentru data_out REAL (derivat din succesor),
+   unde valoarea chiar nu mai e valabila. EXPIRA_DUPA_LUNI + cota() RIDICA pe luni (29.07) = expirare
+   inventata -> inlocuita.
+
+3. **GRAF DE DEPENDENTE, EXTRAS DIN COD.** Scop: cand o lege modifica ceva, lista locurilor de actualizat.
+   Doua cazuri: (a) modificare DIRECTA (art.77 alin.4) -> cauta articolul in registru; (b) modificare PRIN
+   EFECT - se schimba salariul minim, nimic nu citeaza HG-ul nou, dar sm intra in deducere/facilitate/
+   plafon 12sm/suprataxare part-time/prag tineri -> intrebarea e "cine FOLOSESTE valoarea". Mecanism:
+   analizor care gaseste apelurile cota("x") in corpul fiecarei functii fiscale + inchidere tranzitiva.
+   Interogare pe graf, NU lista manuala (o lista de mana devine stale la prima refactorizare - tiparul
+   pentru care s-a despartit ISTORIC.md si s-a sters DE_FACUT.md). Dependenta sta pe FUNCTIE, nu pe intrarea
+   COTE. Suplimentare manuala doar unde extractia nu vede, cu gard ca declaratul nu contrazice codul.
+   Limita: o valoare hardcodata care ocoleste cota() nu apare in graf -> gardul de literale fiscale (azi 0)
+   e CONDITIA ca graful sa fie complet. Cazul (c) - lege care creeaza obligatie NOUA (IMCA, e-Transport) -
+   NU e acoperit de niciun mecanism (nimic nu poate cita un act inexistent): e produs, nu intretinere. Limita.
+
+4. **TEMEIUL PASTREAZA TEXTUL CITAT, nu doar adresa.** "art.77 alin.(4)" e pointer; fraza e continutul. La
+   reverificare, comparatie directa: textul din registru vs textul de azi. E si PROBA ca verificarea s-a
+   facut, nu ca cineva a scris o referinta plauzibila.
+
+5. **NIVELUL SURSEI, dimensiune a temeiului:** MO/legislatie.just.ro (autoritativ) - redare secundara
+   (noulcodfiscal/lege5) - interpretare oficiala (pliant/ghid ANAF) - practica. Motiv: 45% pentru 4+ persoane
+   sta pe sursa SECUNDARA si registrul nu spune asta. Un temei verificat la MO si unul dedus dintr-un pliant
+   arata identic azi. Gri-ul trebuie sa incapa in STRUCTURA, nu intr-un comentariu.
+
+6. **LANTUL DE ACTE.** Temeiul retine si actul modificator/abrogat. Ex: 4050 are temei HG 1506/2024, dar
+   informatia care conteaza e ca HG 1506 ABROGA HG 598/2024 si ca art.2 a fost abrogat la 1 iulie 2026 - de
+   acolo se stie ca 4050 a fost in vigoare CONTINUU. (Se practica deja ad-hoc in comentarii COTE; se
+   formalizeaza in structura temeiului.)
+
+7. **ZONA I (plan de arhitectura, NEATINSA): FORMULELE NU SUNT VERSIONATE IN TIMP.** Cotele sunt period-aware
+   (cota("x", la_data)); formulele nu - deducere_personala() are un singur corp. Daca se schimba scara
+   degresiva, ori pierzi trecutul (rectificative/adeverinte/revizuiri calculate gresit), ori acumulezi
+   "if data < X". Directie propusa, NEDECISA: fiecare functie fiscala cu variante datate + dispecer pe
+   la_data (tiparul cota() pe cod). De masurat intai cate functii ar fi afectate.
+
+### CONTRADICTII cu ce e deja scris (cerut de Costin - "ca la punctul 4/6 de ieri")
+- **Pct.1 CONTRAZICE:** (i) Etapa 2 (01.08, commit 4c23994) care a SETAT data_out="2026-12-31" estimat=True
+  pe 7 valori - se REVERSEAZA (data_out -> None). (ii) Intrarile estimat de la salariu_minim/facilitate/
+  plafon_facilitate/tichet (31.07) - estimat "eroare devreme > cifra moarta" e inlocuit. (iii) GARDUL
+  test_nicio_cota_curenta_nu_ramane_fara_data_out (Etapa 2) - cere ca valorile CURENTE sa AIBA data_out;
+  pct.1 spune invers (curent = None) -> gardul se INVERSEAZA la implementare (cere verificat_la, nu data_out).
+  (iv) comentariul COTE "data_out ESTIMAT ... re-verificare anuala".
+- **Pct.2 CONTRAZICE:** decizia 29.07 (EXPIRA_DUPA_LUNI + cota() RIDICA pe luni ca blocaj la calcul) si
+  ### 5 din campania temei ("(ii) garda de EXPIRARE ... PROXY de deriva"). Blocaj la calcul ramane DOAR pt
+  data_out real; expirarea pe luni devine alerta INTERNA de vechime a confirmarii.
+- **Pct.3 TENSIUNE (nu contradictie) cu _TEMEI_FUNCTII (commit cd67271, lista MANUALA):** pct.3 prefera
+  extractia. Nuanta care le impaca: "e functie fiscala?" (nevoia de MARKER) e semantic -> manual (masurat:
+  proxy sintactic minte); "cine foloseste cota('x')" (GRAFUL de dependente) e sintactic -> extractabil.
+  Artefacte diferite, complementare: marker-lista ramane manuala, graful se extrage separat.
+- Pct.4/5/6 = EXTINDERI, nu contradictii (pct.6 formalizeaza practica ad-hoc HG 1506 abroga HG 598 deja in
+  COTE). Pct.7 = directie noua deschisa, nedecisa - nu contrazice nimic.
+- NOTA de stare: pana la implementare, CODUL reflecta modelul VECHI (data_out estimat + EXPIRA_DUPA_LUNI +
+  gardul data_out). Decizia de mai sus il supersedeaza; implementarea (data_out->None, verificat_la, graf,
+  camp text/nivel_sursa/lant, gardul inversat) e in ture urmatoare.
