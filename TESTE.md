@@ -476,3 +476,56 @@ Fișierul de așteptări se scrie **înainte**, din temeiurile verificate în se
 5. **Nu se repară pe suspiciune.** Se măsoară întâi. Pe 27.07, „float pe bani e greșit" era
    adevărat ca principiu și fals ca diagnostic: 0 din 5000 de valori pierdeau precizie.
 6. **Un test nu se scrie fără temei verificat.** Vezi sesiunea A.
+
+## PREDARE §6 (01.08.2026) — Campania versionare formule pe la_data: pas 0-2 GATA, pas 3-5 ramase
+
+OPRIRE §6 (limita de context, NU fragmentare-pentru-confirmare): pas 3-5 sunt DECISE in comanda aprobata,
+nu se re-decid. Se continua fara sa se intrebe nimic. Predare la granita de commit (26fe9ca), tot ce e
+comis e functional (suita 1195 verde, verificator 0).
+
+GATA (5 commit-uri):
+- PAS 0 (19faad6): cota_dividend + lichidare -> COTE["impozit_dividend"]. FLAG: 10% pre-2026 neverificat la
+  sursa (posibil 8% 2023-2025), REDARE, de reconfirmat la MO.
+- PAS 1 (3ee3ad7): TIPARUL. common.alege_varianta(variante, la_data) = cota() pe COD. deducere_personala ->
+  _deducere_personala_2018 (varianta) + _VARIANTE_DEDUCERE (registru cu temei) + dispecer public.
+  graf_temei EXTINS sa lege dispecerul de variantele din _VARIANTE_* (module-var -> functii).
+- PAS 2a (ff8fd84): plafon_la (valoare) -> COTE["plafon_tva_incasare"].
+- PAS 2b (35b4732): d101._scadenta + d710 d_recN (structura) -> variante datate.
+- PAS 2c (26fe9ca): calcul_cm (fereastra diminuare) -> _calcul_cm_core(diminuare_activa) + 3 variante.
+
+TIPARUL de aplicat (mecanic) la PAS 3 - functii STABILE (o singura versiune azi):
+  Pentru fiecare functie F(args, la_data):
+    1. redenumeste corpul: def F -> def _F_2018 (sau anul in vigoare al regulii).
+    2. registru: _VARIANTE_F = [("<data_in>", _F_2018, c.Temei(<act>, ..., nivel_sursa="REDARE",
+       de_cine="Code/Costin", verificat_la="2026-07-31"))].
+    3. dispecer public F: docstring cu markerul TEMEI (daca F e in _TEMEI_FUNCTII), apoi
+       fn,_ = c.alege_varianta(_VARIANTE_F, la_data or date.today()); return fn(args...).
+    Import in modul daca lipseste: from core.common import alege_varianta as _av, Temei as _Tm (sau c.*);
+    from datetime import date. Foloseste STRING pt data_in ("2018-01-01") - _ca_data o converteste.
+  Roșu->verde->mutatie->commit, un MODUL per commit.
+
+PAS 3 - lista (11 functii, cu modul; toate SINGLE BODY azi):
+  salarizare.py: procent_cm, taxe_cm, calcul_cm_cod10, calcul_salariu  (calcul_salariu e mare: dispecer
+     subtire care forwardeaza; NU duplica corpul - redenumeste in _calcul_salariu_2018).
+  deconturi.py: plafon_diurna
+  sponsorizari.py: plafon_credit, credit_sponsorizare
+  motor.py: rezerva_legala
+  contracte_speciale.py: calcul_zilier
+  tva_marja.py: vanzare_marja  -> RAMIFICATIE: verifica intai daca doar CITESTE cota (base x cota) fara
+     regula proprie; daca da, RECLASIFICA (nu e functie de regula), scoate-o din lista, spune, lista scade la 10.
+  tva_marja_turism.py: marja_turism_special (prorata scutire non-UE = regula, ramane)
+  ATENTIE (ramificatie Costin): daca vreo functie se dovedeste ca ARE puncte de schimbare (nu stabila),
+  trateaz-o ca la pas 2 (variante datate reale, nu 1 versiune).
+
+PAS 4 - GARD (ratchet -> PRAG 0 in aceeasi campanie): in verificator, pt fiecare functie din _TEMEI_FUNCTII
+  (+ eventual lista extinsa a celor 11+), verifica AST ca are un dispecer pe la_data (corpul cheama
+  alege_varianta pe un registru _VARIANTE_*). Baseline = cate NU au inca; coboara la 0 cand toate convertite;
+  la 0, PRAG (orice regula fiscala noua fara dispecer BLOCHEAZA). Nota: procent_cm nu ia la_data direct (ia
+  cod/zile) - decide daca intra in gard sau are exceptie declarata (apelat de calcul_cm care e versionat).
+
+PAS 5 - CONSUMATORI (proba pe cifra, cerinta finala): verifica adeverinta:50, d112.py:443 (rectificativa),
+  stat_plata_api.py:60/145, salarii_contare.py:55 - toate paseaza la_data pana la capat.
+  PROBA CERUTA: genereaza o adeverinta pentru o luna din 2025 si arata ca foloseste regulile 2025 (nu 2026).
+  Ramificatie Costin: daca vreun consumator NU paseaza la_data -> repara-l (e chiar bugul campaniei).
+
+La final: Raport §2 etapa 5 pentru TOATA campania (pas 0-5).
