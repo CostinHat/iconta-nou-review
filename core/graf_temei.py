@@ -54,9 +54,14 @@ def _apeleaza(node, cunoscute):
 
 
 def construieste_graf(radacina=None):
-    """{functie: {fisier, cote (chei COTE directe), apeleaza (functii)}} pt toate functiile din core/*.py."""
+    """{functie: {fisier, cote (chei COTE directe), apeleaza (functii)}} pt toate functiile din core/*.py.
+
+    Trateaza TIPARUL DE VERSIONARE (dispecer pe la_data + registru _VARIANTE_*): un dispecer care apeleaza
+    varianta INDIRECT (fn = alege_varianta(_VARIANTE_X, ...); fn(...)) e legat de variantele din registru,
+    ca inchiderea tranzitiva sa nu se rupa (dispecerul depinde de ce depind variantele lui)."""
     rad = pathlib.Path(radacina) if radacina else _RAD
     functii = {}
+    trees = {}
     for f in sorted(rad.glob("core/*.py")):
         if f.name.startswith("test_"):
             continue
@@ -64,14 +69,28 @@ def construieste_graf(radacina=None):
             tree = ast.parse(f.read_text(encoding="utf-8", errors="replace"))
         except SyntaxError:
             continue
+        trees[f.name] = tree
         for node in ast.walk(tree):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 functii[node.name] = (f.name, node)
     cunoscute = set(functii)
+    # registre de variante la nivel de modul: (fisier, nume_var) -> {functii referite in valoare}
+    modvar = {}
+    for fname, tree in trees.items():
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assign):
+                refs = {n.id for n in ast.walk(node.value) if isinstance(n, ast.Name) and n.id in cunoscute}
+                if refs:
+                    for tgt in node.targets:
+                        if isinstance(tgt, ast.Name):
+                            modvar[(fname, tgt.id)] = refs
     graf = {}
     for nume, (fisier, node) in functii.items():
-        graf[nume] = {"fisier": fisier, "cote": _cote_directe(node),
-                      "apeleaza": _apeleaza(node, cunoscute) - {nume}}
+        apel = _apeleaza(node, cunoscute)
+        for n in ast.walk(node):   # dispecer -> variante, prin registrul _VARIANTE_* referit in corp
+            if isinstance(n, ast.Name) and (fisier, n.id) in modvar:
+                apel |= modvar[(fisier, n.id)]
+        graf[nume] = {"fisier": fisier, "cote": _cote_directe(node), "apeleaza": apel - {nume}}
     return graf
 
 

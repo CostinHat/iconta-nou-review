@@ -12,7 +12,8 @@ def test_depinde_de_salariu_minim_acopera_clusterul():
     suprataxare part-time) - AMBELE direct. Cele 4 sub-concepte NU sunt functii separate: traiesc IN
     aceste doua functii, deci graful le vede PRIN ele. Extractie completa la nivel de functie."""
     dep = depinde_de("salariu_minim")
-    assert dep.get("deducere_personala") == "direct", "deducerea (scara + prag tineri) nu apare"
+    assert "deducere_personala" in dep, "deducerea (dispecer) nu apare"  # prin varianta _deducere_personala_2018
+    assert dep.get("_deducere_personala_2018") == "direct", "varianta deducerii nu apare direct"
     assert dep.get("calcul_salariu") == "direct", "calcul_salariu (facilitate/plafon12sm/suprataxare) nu apare"
 
 
@@ -25,7 +26,7 @@ def test_calcul_salariu_contine_sub_conceptele():
     assert "salariu_minim" in cote_cs               # suprataxare part-time, plafon 12 sm
     assert "facilitate_salariu_minim" in cote_cs    # facilitate
     assert "plafon_facilitate_salariu_minim" in cote_cs
-    assert "salariu_minim" in g["deducere_personala"]["cote"]   # prag tineri (sm+2000)
+    assert "salariu_minim" in g["_deducere_personala_2018"]["cote"]   # prag tineri (in varianta datata)
 
 
 def test_inchidere_tranzitiva_prinde_consumatorii():

@@ -418,6 +418,19 @@ def cota(nume, la_data=None, strict=True):
     raise ValueError(f"nicio valoare pentru {nume!r} la data {la_data}")
 
 
+def alege_varianta(variante, la_data=None):
+    """Alege varianta de FORMULA valabila la la_data - tiparul cota() dar pe COD. variante = [(data_in,
+    functie, temei), ...]; intoarce (functie, temei) pentru cea mai recenta cu data_in <= la_data.
+    Cotele sunt period-aware prin cota(); formulele (scara, prorata, plafonare, split) devin period-aware
+    prin acest dispecer - o schimbare de regula se adauga ca varianta datata, NU ca 'if data' (trecutul
+    ramane calculabil: adeverinte/rectificative pe o luna trecuta folosesc regula de ATUNCI). Ridica pe gol."""
+    la_data = la_data or date.today()
+    for din, fn, temei in sorted(variante, key=lambda r: _ca_data(r[0]), reverse=True):
+        if la_data >= _ca_data(din):
+            return fn, temei
+    raise ValueError("nicio varianta de formula valabila la %s" % la_data)
+
+
 def _adauga_luni(d, luni):
     """Data + N luni, cu ultima zi a lunii daca ziua nu exista (31 ian + 1 luna = 28/29 feb)."""
     an = d.year + (d.month - 1 + luni) // 12
