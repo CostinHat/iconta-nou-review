@@ -297,8 +297,11 @@ def _ca_data(x):
 # ============================================================
 # fiecare valoare: (valabil_din, valoare, temei)
 COTE = {
+    # data_out ESTIMAT (estimat=True) pe valorile fara TERMEN legal explicit: re-verificare anuala
+    # (2026-12-31), ca garda de EXPIRARE sa NU taca la infinit. Regula 01.08 (ciclul>ratchet):
+    # eroare devreme la anul urmator > cifra moarta folosita tacit. La confirmare pt 2027, muta data_out.
     "tva_standard": [
-        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, data_in="2025-08-01", data_out=None)),
+        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, data_in="2025-08-01", data_out="2026-12-31", estimat=True)),
         (date(2017, 1, 1), Decimal("0.19"), Temei("Legea", 227, 2015, data_in="2017-01-01", data_out="2025-07-31")),  # abrogat de Legea 141/2025 la 01.08.2025
     ],
     "plafon_mijloc_fix": [
@@ -306,23 +309,23 @@ COTE = {
         (date(2015, 1, 1), Decimal("2500"), Temei("Legea", 227, 2015, data_in="2015-01-01", data_out="2025-12-31")),
     ],
     "plafon_sold_casa": [
-        (date(2015, 5, 9), Decimal("50000"), Temei("Legea", 70, 2015, data_in="2015-05-09", data_out=None)),
+        (date(2015, 5, 9), Decimal("50000"), Temei("Legea", 70, 2015, data_in="2015-05-09", data_out="2026-12-31", estimat=True)),
     ],
     "plafon_avans_decontare": [
-        (date(2023, 12, 15), Decimal("5000"), Temei("OUG", 115, 2023, data_in="2023-12-15", data_out=None)),
+        (date(2023, 12, 15), Decimal("5000"), Temei("OUG", 115, 2023, data_in="2023-12-15", data_out="2026-12-31", estimat=True)),
     ],
     # — salarizare 2026 (cluster concedii medicale + salarizare) —
     "cas": [
-        (date(2018, 1, 1), Decimal("0.25"), Temei("CF", art="138", data_in="2018-01-01", data_out=None)),
+        (date(2018, 1, 1), Decimal("0.25"), Temei("CF", art="138", data_in="2018-01-01", data_out="2026-12-31", estimat=True)),
     ],
     "cass": [
-        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="156", data_in="2018-01-01", data_out=None)),
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="156", data_in="2018-01-01", data_out="2026-12-31", estimat=True)),
     ],
     "impozit_venit": [
-        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", data_in="2018-01-01", data_out=None)),
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", data_in="2018-01-01", data_out="2026-12-31", estimat=True)),
     ],
     "cam": [
-        (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", data_out=None)),
+        (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", data_out="2026-12-31", estimat=True)),
     ],
     "salariu_minim": [
         (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", data_out="2026-12-31", estimat=True, url="https://legislatie.just.ro/Public/DetaliiDocumentAfis/308231")),  # cadenta 1 ian/1 iul: data_out scurt (semestrial) DELIBERAT, ESTIMAT - eroare devreme > cifra moarta (ca 3700)

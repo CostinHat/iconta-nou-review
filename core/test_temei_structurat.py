@@ -71,12 +71,15 @@ def test_salariu_minim_data_out_estimat():
     assert t.data_out == _d(2026, 12, 31) and t.estimat is True
 
 
-def test_tva_standard_fara_data_out_nu_expira():
-    """TVA se schimba prin lege, nu periodic -> data_out=None, nu expira niciodata."""
+def test_tva_standard_are_data_out_estimat_si_expira():
+    """Regula 01.08 (ciclul>ratchet): nicio cota nu ramane fara termen. TVA n-are termen LEGAL, deci
+    primeste data_out ESTIMAT (re-verificare anuala); cota() RIDICA dupa el - garda nu tace la infinit."""
+    import pytest
     from datetime import date as _d
     _, t = cota("tva_standard", _d(2026, 1, 1))
-    assert t.data_out is None
-    assert cota("tva_standard", _d(2035, 1, 1))[0] > 0
+    assert t.data_out is not None and t.estimat
+    with pytest.raises(ValueError):
+        cota("tva_standard", _d(2035, 1, 1))
 
 
 def test_salariu_minim_expira_la_1_ianuarie_2027():

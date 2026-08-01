@@ -57,10 +57,13 @@ def test_tichet_masa_expira_din_octombrie_2026():
     assert "actualiz" in str(e.value).lower(), "mesajul de expirare nu spune ce trebuie facut"
 
 
-def test_cotele_fara_expirare_merg_oricand():
-    """TVA se schimba prin lege, nu periodic - n-are termen."""
-    v, _ = cota("tva_standard", date(2030, 1, 1))
-    assert v > 0
+def test_nicio_cota_curenta_nu_ramane_fara_data_out():
+    """GARD (regula 01.08, ciclul>ratchet): fiecare VALOARE CURENTA din COTE are data_out (explicit sau
+    ESTIMAT). O valoare fara data_out pare protejata dar nu e - garda de EXPIRARE tace la infinit pe ea."""
+    from core.common import COTE
+    fara = [nume for nume, intrari in COTE.items()
+            if sorted(intrari, key=lambda t: t[0], reverse=True)[0][2].data_out is None]
+    assert not fara, "valori curente fara data_out (garda tace la infinit): %s" % fara
 
 
 def test_fiecare_valoare_cu_expirare_exista_in_registru():

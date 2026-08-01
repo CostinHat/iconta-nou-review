@@ -14,7 +14,8 @@ def test_structura_derivata_din_cote():
     assert m["salariu_minim"]["data_out"].startswith("2026-12-31")
     assert "ESTIMAT" in m["salariu_minim"]["data_out"]
     assert "tva_standard" in m and "Legea 141/2025" in m["tva_standard"]["temei"]
-    assert m["tva_standard"]["data_out"].startswith("—")   # TVA nu expira
+    assert m["tva_standard"]["data_out"].startswith("2026-12-31")   # ESTIMAT, re-verificare anuala (regula 01.08)
+    assert "ESTIMAT" in m["tva_standard"]["data_out"]
 
 
 def test_overlay_judecati_umane_pastrat_la_regenerare():
