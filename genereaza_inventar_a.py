@@ -3,7 +3,7 @@
 """Generator PARTIAL al Inventarului A — partea STRUCTURATA (derivabila din cod).
 
 SURSA structurata: common.COTE (Temei structurat) -> cluster / valoare / temei / data_in /
-data_out / estimat. Se regenereaza din cod (ca ISTORIC, genereaza_grupe_functii).
+data_out (derivat) / verificat_la. Se regenereaza din cod (ca ISTORIC, genereaza_grupe_functii).
 
 OVERLAY (judecati umane, PERSISTENTE, NEDERIVABILE din cod): INVENTAR_A_OVERLAY.tsv -> Risc
 (FISCAL/STRUCTURA), Verificat la sursa (√ DD.MM / PARTIAL), nota. Regenerarea NU pierde overlay-ul
@@ -28,8 +28,6 @@ def structura():
     for nume, intrari in COTE.items():
         din, val, t = sorted(intrari, key=lambda r: r[0], reverse=True)[0]
         data_out = t.data_out.isoformat() if getattr(t, "data_out", None) else "—"
-        if getattr(t, "estimat", False):
-            data_out += " (ESTIMAT)"
         rows.append({"cluster": nume, "valoare": str(val), "temei": str(t),
                      "data_in": din.isoformat(), "data_out": data_out})
     return rows

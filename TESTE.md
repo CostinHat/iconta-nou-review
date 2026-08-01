@@ -103,6 +103,11 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 ---
 
+## Implementarea modelului de temei (01.08)
+- ETAPA 1 [GATA]: data_out=None pe curente + derivare din succesor + verificat_la/de_cine + EXPIRA_DUPA_LUNI scos + cota() ridica doar pe gol real + gard inversat + raport cote_neconfirmate (expirare_cote reformulat). Alerta email aliniata (fara expira/REFUZA pe curente).
+- ETAPA 2 [NEINCEPUT]: text_citat + nivel_sursa + lant_acte pe cele 12 COTE + 6 functii; gard nivel_sursa obligatoriu.
+- ETAPA 3 [NEINCEPUT]: graf dependente cota() cu inchidere tranzitiva; interogare "ce depinde de salariu_minim".
+
 # SESIUNEA A — alinierea la legislație
 
 ## Problema

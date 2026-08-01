@@ -15,13 +15,13 @@ from core.common import Temei, cota, COTE
 
 def test_temei_se_comporta_ca_string_citare_canonica():
     t = Temei("HG", 146, 2026, data_in="2026-07-01", data_out="2027-07-01",
-              url="https://legislatie.just.ro/x", estimat=True)
+              url="https://legislatie.just.ro/x", verificat_la="2026-07-31", de_cine="Code")
     assert str(t) == "HG 146/2026"
     assert "HG 146/2026" in ("temei: " + t)     # concatenare (compat calleri vechi)
     assert t in "citat: HG 146/2026 aici"        # operatorul `in` pe string
     assert t.data_in == date(2026, 7, 1)
     assert t.data_out == date(2027, 7, 1)
-    assert t.estimat is True and t.url.endswith("/x")
+    assert t.url.endswith("/x") and t.verificat_la == date(2026, 7, 31)
 
 
 def test_temei_coduri_fara_nr_an():
@@ -63,35 +63,31 @@ def test_clustere_verificate_au_temei_structurat():
         assert t.tip == tip and t.nr == nr, "%s: act gresit %s/%s" % (nume, t.tip, t.nr)
 
 
-def test_salariu_minim_data_out_estimat():
-    """HG 146/2026 nu spune explicit pana cand -> data_out = sfarsit perioada rezonabila (anual),
-    marcat ESTIMAT (regula data_out)."""
+def test_salariu_minim_curent_None_istoric_derivat():
+    """Modelul de temei 01.08: valoarea CURENTA (4325) are data_out=None (in vigoare); istoricul (4050)
+    are data_out DERIVAT = ziua dinaintea succesorului (2026-06-30). Nimic estimat, nimic scris de mana."""
     from datetime import date as _d
-    _, t = cota("salariu_minim", _d(2026, 7, 1))
-    assert t.data_out == _d(2026, 12, 31) and t.estimat is True
+    _, t_cur = cota("salariu_minim", _d(2026, 7, 1))
+    assert t_cur.data_out is None
+    _, t_ist = cota("salariu_minim", _d(2025, 3, 1))
+    assert t_ist.data_out == _d(2026, 6, 30)
 
 
-def test_tva_standard_are_data_out_estimat_si_expira():
-    """Regula 01.08 (ciclul>ratchet): nicio cota nu ramane fara termen. TVA n-are termen LEGAL, deci
-    primeste data_out ESTIMAT (re-verificare anuala); cota() RIDICA dupa el - garda nu tace la infinit."""
-    import pytest
+def test_tva_standard_curent_nu_expira():
+    """Corectie 01.08: valoarea CURENTA (data_out=None) NU expira. cota(2035) intoarce valoarea curenta,
+    nu ridica - o lege spune de CAND intra, nu pana cand. (Era: data_out estimat + RIDICA.)"""
     from datetime import date as _d
-    _, t = cota("tva_standard", _d(2026, 1, 1))
-    assert t.data_out is not None and t.estimat
-    with pytest.raises(ValueError):
-        cota("tva_standard", _d(2035, 1, 1))
+    v, t = cota("tva_standard", _d(2035, 1, 1))
+    assert int(v * 100) == 21 and t.data_out is None
 
 
-def test_salariu_minim_expira_la_1_ianuarie_2027():
-    """Salariul minim are cadenta ISTORICA semestriala/anuala (4050 de la 1 ian 2025, 4325 de la
-    1 iul 2026). Daca majorarea vine la 1 ian 2027, un proxy de 12 luni (data_out 2027-07-01) ar
-    tacea 6 luni si ar calcula cu o valoare moarta - exact ce s-a intamplat cu 3700. data_out
-    scurt deliberat (2026-12-31): mai bine eroare devreme decat cifra gresita tacut."""
+def test_salariu_minim_curent_nu_expira_intoarce_valoarea():
+    """Corectie 01.08: valoarea curenta a salariului minim (4325, data_out=None) nu expira; cota(2027)
+    intoarce 4325 (nu ridica). Riscul rezidual (valoare stale pentru 2027) se acopera prin raportul de
+    VECHIME A CONFIRMARII, nu prin blocaj la calcul pe un termen inventat."""
     from datetime import date as _d
-    assert cota("salariu_minim", _d(2026, 12, 1))[0] == 4325     # inca in S2 2026: ok
-    with pytest.raises(ValueError) as e:
-        cota("salariu_minim", _d(2027, 1, 15))                   # 2027: RIDICA, nu intoarce 4325
-    assert "2026-12-31" in str(e.value)
+    assert int(cota("salariu_minim", _d(2026, 12, 1))[0]) == 4325
+    assert int(cota("salariu_minim", _d(2027, 1, 15))[0]) == 4325
 
 
 def test_url_completat_doar_din_sursa_deschisa():

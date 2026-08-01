@@ -4798,6 +4798,9 @@ Costin, 7 puncte. NICIO implementare in aceasta tura - doar registru. Ce se atin
   Artefacte diferite, complementare: marker-lista ramane manuala, graful se extrage separat.
 - Pct.4/5/6 = EXTINDERI, nu contradictii (pct.6 formalizeaza practica ad-hoc HG 1506 abroga HG 598 deja in
   COTE). Pct.7 = directie noua deschisa, nedecisa - nu contrazice nimic.
-- NOTA de stare: pana la implementare, CODUL reflecta modelul VECHI (data_out estimat + EXPIRA_DUPA_LUNI +
-  gardul data_out). Decizia de mai sus il supersedeaza; implementarea (data_out->None, verificat_la, graf,
-  camp text/nivel_sursa/lant, gardul inversat) e in ture urmatoare.
+- STARE IMPLEMENTARE: ETAPA 1 FACUTA (pct.1+2): estimat SCOS din model; cele 7 data_out=None; data_out se
+  DERIVA din succesor (_deriva_data_out); EXPIRA_DUPA_LUNI SCOS; cota() ridica doar pe data_out real (gol);
+  verificat_la/de_cine adaugate; gard data_out INVERSAT (curent=None, istoric=derivat); raport intern
+  cote_neconfirmate (fost expirare_cote, reformulat: "n-a mai fost confirmata de N luni", fara expira/REFUZA).
+  Clasa "expira pe valori curente" cautata: doar expirare_cote (reparat); UIT/token OAuth expira real (nu clasa).
+  RAMAS: ETAPA 2 (text_citat/nivel_sursa/lant_acte) + ETAPA 3 (graf dependente). Pct.7 nedecis.

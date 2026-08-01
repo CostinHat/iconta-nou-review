@@ -1,53 +1,47 @@
 # -*- coding: utf-8 -*-
-"""Teste job lunar de avertizare expirare valori fiscale (core/expirare_cote.py).
+"""Teste RAPORT INTERN de vechime a confirmarii (core/expirare_cote.py, Modelul de temei 01.08 pct.2).
 
-Poarta: lista goala -> tacut, iese 0; lista nevida -> alerta o data, cu nume+temei+data expirarii
-si CE se strica; garda de acoperire prinde o valoare cu expirare ramasa fara eticheta (mutatie)."""
+Fost job de expirare (EXPIRA_DUPA_LUNI scos): acum semnaleaza valorile care n-au mai fost CONFIRMATE
+la sursa de peste N luni. Poarta: toate confirmate recent -> tacut, 0; unele vechi -> o alerta
+grupata, cu nume+temei+vechime+ce sa faci; garda de acoperire prinde o cheie COTE fara eticheta."""
 from datetime import date
 
 from core import expirare_cote as ec
-from core.common import EXPIRA_DUPA_LUNI, cota
 
 
-def test_lista_goala_nu_alerteaza_iese_zero():
+def test_toate_confirmate_recent_nu_alerteaza_iese_zero():
     apeluri = []
-    r = ec.ruleaza(prag_zile=1, la_data=date(2020, 1, 1),
+    r = ec.ruleaza(prag_luni=6, la_data=date(2026, 8, 1),
                    alerteaza=lambda *a: apeluri.append(a) or True)
-    assert r["expira"] == 0 and r["alerte_trimise"] == 0
-    assert apeluri == []   # in 2020 nimic nu expira in urmatoarea zi -> nu se alerteaza
+    assert r["neconfirmate"] == 0 and r["alerte_trimise"] == 0
+    assert apeluri == []   # toate verificat_la=2026-07-31, la 2026-08-01 => sub 6 luni => nimic
 
 
-def test_lista_nevida_o_singura_alerta_cu_toate_valorile():
+def test_neconfirmate_o_singura_alerta_cu_toate_valorile():
     apeluri = []
     def _mock(cheie, subiect, mesaj):
         apeluri.append((cheie, subiect, mesaj))
         return True
-    r = ec.ruleaza(prag_zile=400, la_data=date(2026, 7, 29), alerteaza=_mock)
-    assert r["expira"] >= 3
-    assert r["alerte_trimise"] == 1 and len(apeluri) == 1   # O SINGURA alerta pe rulare, nu per valoare
+    r = ec.ruleaza(prag_luni=6, la_data=date(2028, 1, 1), alerteaza=_mock)   # >6 luni de la 2026-07-31
+    assert r["neconfirmate"] >= 3
+    assert r["alerte_trimise"] == 1 and len(apeluri) == 1   # O SINGURA alerta pe rulare
     cheie, subiect, mesaj = apeluri[0]
-    assert "valori fiscale expiră" in subiect and str(r["expira"]) in subiect and "400" in subiect
-    # corpul grupeaza TOATE valorile in acelasi email
-    assert "Salariul minim" in mesaj
-    assert "Facilitatea la salariul minim" in mesaj
-    assert "Plafonul facilității la salariul minim" in mesaj
-    # detaliile pe salariu_minim: temei (din sursa), data expirarii, ce se strica
-    _, temei = cota("salariu_minim", date(2026, 7, 1))
-    assert temei in mesaj and "2026-12-31" in mesaj   # data_out scurt (cadenta semestriala salariu minim)
-    assert "Monitorul Oficial" in mesaj and "actualiz" in mesaj.lower() and "REFUZA" in mesaj
-    assert cheie.startswith("expirare_cote:")   # o singura cheie de throttling pe rulare
+    assert "n-au mai fost confirmate" in subiect and str(r["neconfirmate"]) in subiect and "6" in subiect
+    assert "Salariul minim brut" in mesaj and "Cota standard TVA" in mesaj
+    assert "2026-07-31" in mesaj   # verificat_la
+    assert "Monitorul Oficial" in mesaj and "actualiz" in mesaj.lower()
+    assert cheie.startswith("confirmare_cote:")   # o singura cheie de throttling pe rulare
 
 
-def test_acoperire_completa_fiecare_valoare_cu_expirare_are_eticheta():
+def test_acoperire_completa_fiecare_cheie_cota_are_eticheta():
     fara, straine = ec.acoperire_lipsa()
     assert fara == [] and straine == [], (
-        "valori cu expirare fara eticheta: %s; etichete fara valoare: %s" % (fara, straine))
+        "chei COTE fara eticheta: %s; etichete fara cheie COTE: %s" % (fara, straine))
 
 
-def test_mutatie_scoate_din_expira_garda_de_acoperire_pica(monkeypatch):
-    # scoate o intrare din EXPIRA_DUPA_LUNI (ramane in ETICHETE) -> garda prinde eticheta straina.
-    # Dovada ca garda chiar prinde drift; altfel ar da o falsa acoperire.
-    cheie = next(iter(EXPIRA_DUPA_LUNI))
-    monkeypatch.delitem(EXPIRA_DUPA_LUNI, cheie)
+def test_mutatie_scoate_eticheta_garda_de_acoperire_pica(monkeypatch):
+    # scoate o eticheta (cheia COTE ramane) -> garda prinde cheia fara eticheta. Dovada ca prinde drift.
+    cheie = "cas"
+    monkeypatch.delitem(ec.ETICHETE, cheie)
     fara, straine = ec.acoperire_lipsa()
-    assert cheie in straine, "garda de acoperire nu prinde eticheta ramasa fara valoare cu expirare"
+    assert cheie in fara, "garda de acoperire nu prinde cheia COTE ramasa fara eticheta"

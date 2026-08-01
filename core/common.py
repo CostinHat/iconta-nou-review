@@ -245,27 +245,29 @@ def cota_ceruta(corp):
 
 
 class Temei(str):
-    """Temei fiscal STRUCTURAT si citabil mecanic (CLAUDE.md §3.1).
+    """Temei fiscal STRUCTURAT si citabil mecanic (CLAUDE.md 3.1).
 
-    Subclasa de `str`: se comporta ca string-ul de citare canonic peste tot unde codul vechi
-    asteapta un string (afisare, JSON, operatorul `in`, concatenare), dar poarta si campurile
-    structurate — tip/nr/an/art/alin/lit/data_in/data_out/url/estimat. Doua roluri:
+    Subclasa de str: se comporta ca string-ul de citare canonic (afisare, JSON, `in`, concatenare),
+    dar poarta campurile structurate - tip/nr/an/art/alin/lit/data_in/data_out/url + verificat_la/de_cine.
+    Roluri:
       - GREP la o schimbare de lege: gasesti TOATE locurile care citeaza un act.
-      - garda de EXPIRARE (data_out): cota() RIDICA dupa data_out, nu intoarce tacit valoarea
-        veche. Nu exista API legislativ RO fiabil -> data_out e mecanismul PRINCIPAL de deriva,
-        nu un proxy. estimat=True cand actul nu spune explicit pana cand (sfarsit de perioada
-        rezonabila: an fiscal/semestru).
+      - data_out NU se scrie de mana - se DERIVA din succesor (_deriva_data_out): predecesorul primeste
+        data_out = ziua dinaintea lui data_in a succesorului; valoarea CURENTA are data_out None (in
+        vigoare). O lege spune de CAND intra, nu pana cand (Modelul de temei 01.08, pct.1).
+      - verificat_la/de_cine: cand si de cine a fost confirmata valoarea la sursa. Semnalul de deriva e
+        VECHIMEA CONFIRMARII (raport intern cote_neconfirmate), NU o expirare inventata (pct.2).
     """
     def __new__(cls, tip=None, nr=None, an=None, art=None, alin=None, lit=None,
-                data_in=None, data_out=None, url=None, estimat=False, text=None):
+                data_in=None, data_out=None, url=None, verificat_la=None, de_cine=None, text=None):
         s = text if text is not None else _citare_temei(tip, nr, an, art, alin, lit)
         o = super().__new__(cls, s)
         o.tip, o.nr, o.an = tip, nr, an
         o.art, o.alin, o.lit = art, alin, lit
         o.data_in = _ca_data(data_in)
-        o.data_out = _ca_data(data_out)
+        o.data_out = _ca_data(data_out)   # de regula None; DERIVAT din succesor (_deriva_data_out)
         o.url = url
-        o.estimat = bool(estimat)
+        o.verificat_la = _ca_data(verificat_la)
+        o.de_cine = de_cine
         return o
 
 
@@ -297,57 +299,52 @@ def _ca_data(x):
 # ============================================================
 # fiecare valoare: (valabil_din, valoare, temei)
 COTE = {
-    # data_out ESTIMAT (estimat=True) pe valorile fara TERMEN legal explicit: re-verificare anuala
-    # (2026-12-31), ca garda de EXPIRARE sa NU taca la infinit. Regula 01.08 (ciclul>ratchet):
-    # eroare devreme la anul urmator > cifra moarta folosita tacit. La confirmare pt 2027, muta data_out.
+    # data_out NU se scrie aici - se DERIVA din succesor (_deriva_data_out): valoarea CURENTA (cea mai
+    # recenta) ramane in vigoare (data_out None), predecesorul primeste ziua dinaintea succesorului.
+    # verificat_la/de_cine = cand/de cine confirmata la sursa (semnal de deriva = vechimea confirmarii).
     "tva_standard": [
-        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, data_in="2025-08-01", data_out="2026-12-31", estimat=True)),
-        (date(2017, 1, 1), Decimal("0.19"), Temei("Legea", 227, 2015, data_in="2017-01-01", data_out="2025-07-31")),  # abrogat de Legea 141/2025 la 01.08.2025
+        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, art="291", alin="1", data_in="2025-08-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2017, 1, 1), Decimal("0.19"), Temei("Legea", 227, 2015, data_in="2017-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
     "tva_redusa": [
-        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", data_out="2026-12-31", estimat=True)),
+        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
     "plafon_mijloc_fix": [
-        (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, data_in="2026-01-01", data_out="2028-01-01", estimat=True)),
-        (date(2015, 1, 1), Decimal("2500"), Temei("Legea", 227, 2015, data_in="2015-01-01", data_out="2025-12-31")),
+        (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2015, 1, 1), Decimal("2500"), Temei("Legea", 227, 2015, data_in="2015-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
     "plafon_sold_casa": [
-        (date(2015, 5, 9), Decimal("50000"), Temei("Legea", 70, 2015, data_in="2015-05-09", data_out="2026-12-31", estimat=True)),
+        (date(2015, 5, 9), Decimal("50000"), Temei("Legea", 70, 2015, data_in="2015-05-09", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
     "plafon_avans_decontare": [
-        (date(2023, 12, 15), Decimal("5000"), Temei("OUG", 115, 2023, data_in="2023-12-15", data_out="2026-12-31", estimat=True)),
+        (date(2023, 12, 15), Decimal("5000"), Temei("OUG", 115, 2023, data_in="2023-12-15", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
-    # — salarizare 2026 (cluster concedii medicale + salarizare) —
     "cas": [
-        (date(2018, 1, 1), Decimal("0.25"), Temei("CF", art="138", data_in="2018-01-01", data_out="2026-12-31", estimat=True)),
+        (date(2018, 1, 1), Decimal("0.25"), Temei("CF", art="138", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
     "cass": [
-        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="156", data_in="2018-01-01", data_out="2026-12-31", estimat=True)),
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="156", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
     "impozit_venit": [
-        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", data_in="2018-01-01", data_out="2026-12-31", estimat=True)),
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
     "cam": [
-        (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", data_out="2026-12-31", estimat=True)),
+        (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
     "salariu_minim": [
-        (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", data_out="2026-12-31", estimat=True, url="https://legislatie.just.ro/Public/DetaliiDocumentAfis/308231")),  # cadenta 1 ian/1 iul: data_out scurt (semestrial) DELIBERAT, ESTIMAT - eroare devreme > cifra moarta (ca 3700)
-        # HG 146/2026 art.2 abroga HG 1506/2024 de la 01.07.2026; 4050 valabil 2025 + 2026 H1.
-        (date(2025, 1, 1), Decimal("4050"), Temei("HG", 1506, 2024, data_in="2025-01-01", data_out="2026-06-30", url="https://legislatie.just.ro/Public/DetaliiDocument/291450")),  # abroga HG 598/2024=3700
+        (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", url="https://legislatie.just.ro/Public/DetaliiDocumentAfis/308231", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2025, 1, 1), Decimal("4050"), Temei("HG", 1506, 2024, data_in="2025-01-01", url="https://legislatie.just.ro/Public/DetaliiDocument/291450", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
     "facilitate_salariu_minim": [
-        # OUG 89/2025 art.III (+ Ordin 605/2026 pt aplicare); data_out estimat anual.
-        (date(2026, 7, 1), Decimal("200"), Temei("OUG", 89, 2025, art="III", data_in="2026-07-01", data_out="2026-12-31", estimat=True)),
-        (date(2025, 1, 1), Decimal("300"), Temei("OUG", 115, 2023, data_in="2025-01-01", data_out="2026-06-30")),
+        (date(2026, 7, 1), Decimal("200"), Temei("OUG", 89, 2025, art="III", data_in="2026-07-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2025, 1, 1), Decimal("300"), Temei("OUG", 115, 2023, data_in="2025-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
     "plafon_facilitate_salariu_minim": [
-        (date(2026, 7, 1), Decimal("4600"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-07-01", data_out="2026-12-31", estimat=True)),  # venit brut total, S2 2026
-        (date(2026, 1, 1), Decimal("4300"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-01-01", data_out="2026-06-30")),  # S1 2026
+        (date(2026, 7, 1), Decimal("4600"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-07-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2026, 1, 1), Decimal("4300"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
-    # [F133] tichet de masa / zi lucrata. Legea 201/2025 (MO 1106/28.11.2025): 45 lei S1 2026 +
-    # iul-sep 2026 (reindexare IPC dupa octombrie). CASS 10% + impozit 10% (Legea 296/2023), fara CAS/CAM.
     "tichet_masa_plafon": [
-        (date(2026, 1, 1), Decimal("45"), Temei("Legea", 201, 2025, data_in="2026-01-01", data_out="2026-09-30", estimat=True)),
+        (date(2026, 1, 1), Decimal("45"), Temei("Legea", 201, 2025, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
     ],
 }
 
@@ -360,43 +357,47 @@ COTE = {
 # 29.07.2026: cota() intorcea tacit ultima valoare cunoscuta pentru orice data viitoare.
 # In ianuarie 2027, D112 ar fi folosit salariul minim din iulie 2026 fara niciun semnal.
 # {nume: luni_de_valabilitate_de_la_ultima_intrare}
-EXPIRA_DUPA_LUNI = {
-    "salariu_minim": 12,                      # HG anuala, uneori si la mijloc de an
-    "facilitate_salariu_minim": 12,           # OUG anuala
-    "plafon_facilitate_salariu_minim": 12,    # OUG anuala
-    "plafon_mijloc_fix": 24,                  # se schimba rar, dar se schimba
-    "tichet_masa_plafon": 9,                  # reindexare semestriala IPC; 45 lei (intrare
-                                              # 2026-01-01) valabil pana in sep 2026 -> 9 luni
-}
+from datetime import timedelta as _timedelta
+
+
+def _deriva_data_out(cote=None):
+    """data_out se DERIVA din succesor (Modelul de temei 01.08, pct.1): predecesorul (dupa data_in)
+    primeste data_out = ziua dinaintea lui data_in a succesorului; valoarea CURENTA ramane None (in
+    vigoare). Rulat o data la incarcarea modulului - data_out nu se scrie de mana, e fapt derivat."""
+    _c = cote if cote is not None else COTE
+    for _nume, _intrari in _c.items():
+        _sortate = sorted(_intrari, key=lambda r: r[0])   # crescator dupa data_in
+        for _idx in range(len(_sortate) - 1):
+            _succ_din = _sortate[_idx + 1][0]
+            _sortate[_idx][2].data_out = _succ_din - _timedelta(days=1)
+        _sortate[-1][2].data_out = None   # valoarea curenta e in vigoare
+
+
+_deriva_data_out()
 
 
 def cota(nume, la_data=None, strict=True):
-    """Intoarce (valoare, temei) valabila la data data (implicit azi).
+    """Intoarce (valoare, temei) valabila la data ceruta (implicit azi).
 
-    Permite semnalarea greselilor de PERIOADA, nu doar de moment.
-
-    EXPIRARE (29.07.2026): pentru valorile din EXPIRA_DUPA_LUNI, daca data ceruta depaseste
-    termenul de valabilitate al ultimei intrari, se RIDICA. Motivul: o cifra plauzibila si
-    gresita intr-o declaratie depusa la ANAF e mai rea decat o eroare la generare. Cine chiar
-    vrea valoarea veche (rapoarte istorice, comparatii) cheama cu strict=False.
-    """
+    RIDICA (strict) DOAR cand valoarea selectata are un data_out REAL (derivat din succesor) si data
+    ceruta e dupa el - adica un GOL intre valori sau o valoare istorica ceruta in afara valabilitatii.
+    Valoarea CURENTA are data_out None -> NU expira niciodata prin cota() (o lege spune de cand, nu pana
+    cand - Modelul de temei 01.08). Semnalul ca o valoare curenta n-a mai fost confirmata de mult e
+    VECHIMEA CONFIRMARII (cote_neconfirmate), raport INTERN, nu blocaj la calcul. strict=False intoarce
+    valoarea oricum (rapoarte istorice)."""
     if nume not in COTE:
         raise ValueError(f"cotă necunoscută: {nume!r}")
     la_data = la_data or date.today()
     intrari = sorted(COTE[nume], key=lambda r: r[0], reverse=True)
     for din, valoare, temei in intrari:
         if la_data >= din:
-            if strict and din == intrari[0][0]:
-                limita = _expira_la(nume, din, temei)
-                if limita is not None and la_data > limita:
-                    raise ValueError(
-                        f"{nume}: ultima valoare cunoscută este din {din.isoformat()} "
-                        f"({temei}), valabilă până la {limita.isoformat()}. "
-                        f"S-a cerut pentru {la_data.isoformat()}. "
-                        f"Verifică dacă a apărut un act normativ nou și actualizează COTE "
-                        f"în core/common.py. Nu se folosește valoarea veche: ar produce o "
-                        f"cifră plauzibilă și greșită într-o declarație depusă la ANAF."
-                    )
+            _out = getattr(temei, "data_out", None)
+            if strict and _out is not None and la_data > _out:
+                raise ValueError(
+                    f"{nume}: valoarea din {din.isoformat()} ({temei}) a fost valabila pana la "
+                    f"{_out.isoformat()} (succesorul a intrat in vigoare dupa). S-a cerut pentru "
+                    f"{la_data.isoformat()} - gol in registru. Adauga valoarea valabila in COTE."
+                )
             return valoare, temei
     raise ValueError(f"nicio valoare pentru {nume!r} la data {la_data}")
 
@@ -414,44 +415,24 @@ def _adauga_luni(d, luni):
     return date(an, luna, 1)
 
 
-def _expira_la(nume, din, temei):
-    """Data la care expira valoarea (dupa care cota() RIDICA in strict): data_out din Temei
-    (PRIMARA — nu depinde de sursa externa), altfel proxy EXPIRA_DUPA_LUNI, altfel None."""
-    _out = getattr(temei, "data_out", None)
-    if _out is not None:
-        return _out
-    luni = EXPIRA_DUPA_LUNI.get(nume)
-    if luni:
-        return _adauga_luni(din, luni)
-    return None
-
-
-def cote_care_expira(in_zile=60, la_data=None):
-    """Valorile a caror valabilitate se termina in urmatoarele `in_zile`.
-
-    Folosit de jobul lunar de avertizare: schimbarile fiscale nu sunt aleatorii (salariul
-    minim se schimba in decembrie sau iulie), deci un termen anuntat inainte e mai util
-    decat o stire de presa dupa.
-    """
+def cote_neconfirmate(luni=6, la_data=None):
+    """RAPORT INTERN (Modelul de temei 01.08, pct.2): valorile CURENTE care n-au mai fost confirmate la
+    sursa de peste `luni` luni (verificat_la vechi sau lipsa). NU e in interfata contabilului - e alerta
+    catre dezvoltator. Inlocuieste expirarea inventata (EXPIRA_DUPA_LUNI, scoasa): legea n-a spus ca
+    valoarea expira, dar confirmarea imbatraneste - dezvoltatorul verifica periodic MO. Fereastra intre
+    publicarea in MO si actualizarea in aplicatie NU se poate inchide automat (nu exista API legislativ RO)."""
     la_data = la_data or date.today()
-    nume_set = set(EXPIRA_DUPA_LUNI)
-    for _n in COTE:
-        _t = sorted(COTE[_n], key=lambda r: r[0], reverse=True)[0][2]
-        if getattr(_t, "data_out", None) is not None:
-            nume_set.add(_n)
+    prag = _adauga_luni(la_data, -luni)
     rez = []
-    for nume in nume_set:
-        if nume not in COTE:
-            continue
+    for nume in COTE:
         din, valoare, temei = sorted(COTE[nume], key=lambda r: r[0], reverse=True)[0]
-        limita = _expira_la(nume, din, temei)
-        if limita is None:
-            continue
-        zile = (limita - la_data).days
-        if zile <= in_zile:
+        vl = getattr(temei, "verificat_la", None)
+        if vl is None or vl <= prag:
             rez.append({"nume": nume, "valoare": valoare, "temei": temei,
-                        "din": din, "expira": limita, "zile": zile})
-    return sorted(rez, key=lambda r: r["zile"])
+                        "din": din, "verificat_la": vl,
+                        "luni_de_la_confirmare": None if vl is None else
+                        (la_data.year - vl.year) * 12 + (la_data.month - vl.month)})
+    return sorted(rez, key=lambda r: (r["verificat_la"] or date.min))
 
 
 # ============================================================
