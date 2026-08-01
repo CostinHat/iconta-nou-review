@@ -138,3 +138,13 @@ def test_vanzare_marja_dispecer_versionat():
     assert tm._VARIANTE_VANZARE_MARJA[0][1] is tm._vanzare_marja_2018
     with pytest.raises(ValueError):
         tm.vanzare_marja(1000, 600, la_data=date(2000, 1, 1))
+
+
+# ---- PAS 3 modul 7: tva_marja_turism.marja_turism_special ----
+def test_marja_turism_special_dispecer_versionat():
+    from core import tva_marja_turism as tt
+    a = (10000, 6000, 1000)  # incasat, cost_ue, cost_non_ue
+    assert tt.marja_turism_special(*a, la_data=date(2026, 6, 1)) == tt._marja_turism_special_2018(*a)
+    assert tt._VARIANTE_MARJA_TURISM[0][1] is tt._marja_turism_special_2018
+    with pytest.raises(ValueError):
+        tt.marja_turism_special(*a, la_data=date(2000, 1, 1))

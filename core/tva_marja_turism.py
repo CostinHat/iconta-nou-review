@@ -8,6 +8,8 @@
 - intermediar (alin. 9 + art. 286 al. 4 lit. e): baza = comisionul, TVA normal."""
 from decimal import Decimal, ROUND_HALF_UP
 
+from core import common as _cmn
+
 B = Decimal("0.01")
 
 def _d(x):
@@ -26,7 +28,7 @@ def determina_regim(calitate_client, locuri, optiune_normal=False, intermediar=F
         return "normal"
     return "special"
 
-def marja_turism_special(incasat, cost_ue, cost_non_ue=0, cota=21):
+def _marja_turism_special_2018(incasat, cost_ue, cost_non_ue=0, cota=21):
     """Marja = incasat - (cost_ue + cost_non_ue). Partea aferenta non-UE scutita
     proportional cu costurile (alin. 5). TVA suta marita pe marja taxabila."""
     inc, cue, cnon, c = _d(incasat), _d(cost_ue), _d(cost_non_ue), _d(cota)
@@ -46,6 +48,23 @@ def marja_turism_special(incasat, cost_ue, cost_non_ue=0, cota=21):
     return {"marja_bruta": marja.quantize(B), "marja_scutita": marja_scutita,
             "marja_taxabila": marja_taxabila.quantize(B), "tva": tva,
             "marja_neta": (marja - tva).quantize(B), "nota": None}
+
+
+_VARIANTE_MARJA_TURISM = [
+    ("2018-01-01", _marja_turism_special_2018,
+     _cmn.Temei("CF", art="311", data_in="2018-01-01", nivel_sursa="REDARE",
+                de_cine="Code/Costin", verificat_la="2026-07-31")),
+]
+
+
+def marja_turism_special(incasat, cost_ue, cost_non_ue=0, cota=21, la_data=None):
+    """Regim special agentii de turism (marja + scutire proportionala non-UE), DISPECER pe la_data.
+    Cota vine ca parametru (period-aware la apelant); dispecerul versioneaza FORMULA (suta marita + split
+    UE/non-UE alin.5). TEMEI: CF art.311 (regim special agentii turism; alin.5 scutire non-UE; alin.2-4
+    suta marita). nivel_sursa: REDARE. Versionata in timp: o schimbare a regulii -> varianta datata noua."""
+    from datetime import date as _dt
+    fn, _ = _cmn.alege_varianta(_VARIANTE_MARJA_TURISM, la_data or _dt.today())
+    return fn(incasat, cost_ue, cost_non_ue, cota)
 
 def marja_turism_normal(componente):
     """componente: [{descriere?, baza, cota}] - baza include marja alocata (alin. 11).
