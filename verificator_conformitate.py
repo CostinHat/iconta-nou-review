@@ -656,6 +656,31 @@ except Exception as _etemei:
     print("")
     print("### GARD TEMEI STRUCTURAT: NEVERIFICAT (import COTE esuat: %s)" % _etemei)
 
+# --- GARD NIVEL_SURSA (ETAPA 2 Model de temei, 01.08): fiecare Temei din COTE poarta nivel_sursa
+# (MO/REDARE/INTERPRETARE_OFICIALA/PRACTICA) - gri-ul (verificat la MO vs dedus din pliant) incape in
+# STRUCTURA, nu intr-un comentariu. text_citat (verbatim) obligatoriu DOAR la nivel_sursa=MO (proba).
+# PRAG 0: orice Temei fara nivel_sursa valid, sau MO fara text_citat, BLOCHEAZA.
+try:
+    from core.common import COTE as _CO, Temei as _Tm
+    _ns_lipsa, _mo_fara_text = [], []
+    for _nm, _intr in _CO.items():
+        for _din, _v, _t in _intr:
+            _ns = getattr(_t, "nivel_sursa", None)
+            if _ns not in _Tm.NIVELE_SURSA:
+                _ns_lipsa.append("%s@%s" % (_nm, _din))
+            elif _ns == "MO" and not getattr(_t, "text_citat", None):
+                _mo_fara_text.append("%s@%s" % (_nm, _din))
+    if _ns_lipsa or _mo_fara_text:
+        rap["nivel_sursa"] = ([("FARA-NIVEL", 0, x, "Temei COTE fara nivel_sursa valid") for x in _ns_lipsa] +
+                              [("MO-FARA-TEXT", 0, x, "nivel_sursa=MO fara text_citat (proba verbatim)") for x in _mo_fara_text])
+    print("")
+    print("### GARD NIVEL_SURSA (COTE, PRAG 0):")
+    print("  temeiuri fara nivel_sursa: %d | MO fara text_citat: %d%s" % (
+        len(_ns_lipsa), len(_mo_fara_text), "  <== BLOCHEAZA" if (_ns_lipsa or _mo_fara_text) else ""))
+except Exception as _ens:
+    print("")
+    print("### GARD NIVEL_SURSA: NEVERIFICAT (%s)" % _ens)
+
 # --- GARD MARKERI TEMEI PE FUNCTII (lista EXPLICITA, 01.08.2026): criteriul STRUCTURAL (functie cu
 # literal Decimal("0.NN") SAU care cheama cota()) MINTE in ambele sensuri - masurat: 57 functii prinse,
 # ~18 fals-pozitive (helper-e de rotunjire _q/bani/_dec cu Decimal("0.01")) + 2 fals-negative din lista
@@ -684,7 +709,8 @@ try:
         for _n in _ast_tf.walk(_tree):
             if isinstance(_n, _ast_tf.FunctionDef) and _n.name == _fn:
                 _gasit = True
-                if "TEMEI:" not in (_ast_tf.get_docstring(_n) or ""):
+                _doc_tf = _ast_tf.get_docstring(_n) or ""
+                if "TEMEI:" not in _doc_tf or "nivel_sursa" not in _doc_tf:
                     _tf_fara.append((_rel, _fn))
                 break
         if not _gasit:

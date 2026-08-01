@@ -100,3 +100,19 @@ def test_url_completat_doar_din_sursa_deschisa():
     assert t1506.url and "291450" in t1506.url
     _, ttva = cota("tva_standard", _d(2026, 1, 1))
     assert ttva.url is None   # neverificat -> None, nu inventat
+
+
+def test_temei_are_nivel_sursa_text_citat_lant_acte():
+    """ETAPA 2 Model de temei: campuri noi pe Temei. nivel_sursa valid; text_citat obligatoriu doar la MO."""
+    t = Temei("Legea", 141, 2025, art="291", nivel_sursa="REDARE", lant_acte="X abroga Y")
+    assert t.nivel_sursa == "REDARE" and t.text_citat is None and t.lant_acte == "X abroga Y"
+    assert "MO" in Temei.NIVELE_SURSA and "REDARE" in Temei.NIVELE_SURSA
+
+
+def test_cote_au_toate_nivel_sursa():
+    """Fiecare Temei din COTE poarta nivel_sursa (gri-ul in structura, nu in comentariu)."""
+    for nume, intrari in COTE.items():
+        for din, val, t in intrari:
+            assert getattr(t, "nivel_sursa", None) in Temei.NIVELE_SURSA, "%s@%s fara nivel_sursa" % (nume, din)
+            if t.nivel_sursa == "MO":
+                assert t.text_citat, "%s@%s: MO fara text_citat verbatim" % (nume, din)

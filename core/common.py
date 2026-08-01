@@ -257,8 +257,11 @@ class Temei(str):
       - verificat_la/de_cine: cand si de cine a fost confirmata valoarea la sursa. Semnalul de deriva e
         VECHIMEA CONFIRMARII (raport intern cote_neconfirmate), NU o expirare inventata (pct.2).
     """
+    NIVELE_SURSA = ("MO", "REDARE", "INTERPRETARE_OFICIALA", "PRACTICA")
+
     def __new__(cls, tip=None, nr=None, an=None, art=None, alin=None, lit=None,
-                data_in=None, data_out=None, url=None, verificat_la=None, de_cine=None, text=None):
+                data_in=None, data_out=None, url=None, verificat_la=None, de_cine=None,
+                nivel_sursa=None, text_citat=None, lant_acte=None, text=None):
         s = text if text is not None else _citare_temei(tip, nr, an, art, alin, lit)
         o = super().__new__(cls, s)
         o.tip, o.nr, o.an = tip, nr, an
@@ -268,6 +271,12 @@ class Temei(str):
         o.url = url
         o.verificat_la = _ca_data(verificat_la)
         o.de_cine = de_cine
+        # nivel_sursa: MO (autoritativ) / REDARE (secundar) / INTERPRETARE_OFICIALA (pliant/ghid) /
+        # PRACTICA. text_citat = fraza verbatim (proba verificarii; obligatorie doar la MO).
+        # lant_acte = actul modificator/abrogat (ex: HG 146/2026 abroga HG 1506/2024).
+        o.nivel_sursa = nivel_sursa
+        o.text_citat = text_citat
+        o.lant_acte = lant_acte
         return o
 
 
@@ -303,48 +312,48 @@ COTE = {
     # recenta) ramane in vigoare (data_out None), predecesorul primeste ziua dinaintea succesorului.
     # verificat_la/de_cine = cand/de cine confirmata la sursa (semnal de deriva = vechimea confirmarii).
     "tva_standard": [
-        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, art="291", alin="1", data_in="2025-08-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
-        (date(2017, 1, 1), Decimal("0.19"), Temei("Legea", 227, 2015, data_in="2017-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, art="291", alin="1", data_in="2025-08-01", verificat_la="2026-07-31", de_cine="Code/Costin", lant_acte="Legea 141/2025 modifica art.291 CF; cota 19% (Legea 227/2015) abrogata la 31.07.2025", nivel_sursa="REDARE")),
+        (date(2017, 1, 1), Decimal("0.19"), Temei("Legea", 227, 2015, data_in="2017-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "tva_redusa": [
-        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "plafon_mijloc_fix": [
-        (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
-        (date(2015, 1, 1), Decimal("2500"), Temei("Legea", 227, 2015, data_in="2015-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2015, 1, 1), Decimal("2500"), Temei("Legea", 227, 2015, data_in="2015-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "plafon_sold_casa": [
-        (date(2015, 5, 9), Decimal("50000"), Temei("Legea", 70, 2015, data_in="2015-05-09", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2015, 5, 9), Decimal("50000"), Temei("Legea", 70, 2015, data_in="2015-05-09", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "plafon_avans_decontare": [
-        (date(2023, 12, 15), Decimal("5000"), Temei("OUG", 115, 2023, data_in="2023-12-15", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2023, 12, 15), Decimal("5000"), Temei("OUG", 115, 2023, data_in="2023-12-15", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "cas": [
-        (date(2018, 1, 1), Decimal("0.25"), Temei("CF", art="138", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2018, 1, 1), Decimal("0.25"), Temei("CF", art="138", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "cass": [
-        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="156", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="156", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "impozit_venit": [
-        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "cam": [
-        (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "salariu_minim": [
-        (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", url="https://legislatie.just.ro/Public/DetaliiDocumentAfis/308231", verificat_la="2026-07-31", de_cine="Code/Costin")),
-        (date(2025, 1, 1), Decimal("4050"), Temei("HG", 1506, 2024, data_in="2025-01-01", url="https://legislatie.just.ro/Public/DetaliiDocument/291450", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", url="https://legislatie.just.ro/Public/DetaliiDocumentAfis/308231", verificat_la="2026-07-31", de_cine="Code/Costin", lant_acte="HG 146/2026 art.2 abroga HG 1506/2024 de la 01.07.2026", nivel_sursa="REDARE")),
+        (date(2025, 1, 1), Decimal("4050"), Temei("HG", 1506, 2024, data_in="2025-01-01", url="https://legislatie.just.ro/Public/DetaliiDocument/291450", verificat_la="2026-07-31", de_cine="Code/Costin", lant_acte="HG 1506/2024 abroga HG 598/2024 (=3700)", nivel_sursa="REDARE")),
     ],
     "facilitate_salariu_minim": [
-        (date(2026, 7, 1), Decimal("200"), Temei("OUG", 89, 2025, art="III", data_in="2026-07-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
-        (date(2025, 1, 1), Decimal("300"), Temei("OUG", 115, 2023, data_in="2025-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2026, 7, 1), Decimal("200"), Temei("OUG", 89, 2025, art="III", data_in="2026-07-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2025, 1, 1), Decimal("300"), Temei("OUG", 115, 2023, data_in="2025-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "plafon_facilitate_salariu_minim": [
-        (date(2026, 7, 1), Decimal("4600"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-07-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
-        (date(2026, 1, 1), Decimal("4300"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2026, 7, 1), Decimal("4600"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-07-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2026, 1, 1), Decimal("4300"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "tichet_masa_plafon": [
-        (date(2026, 1, 1), Decimal("45"), Temei("Legea", 201, 2025, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin")),
+        (date(2026, 1, 1), Decimal("45"), Temei("Legea", 201, 2025, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
 }
 
