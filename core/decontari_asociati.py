@@ -13,12 +13,13 @@ from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 
 B = Decimal("0.01")
-COTA_2026 = Decimal("16")
-COTA_VECHE = Decimal("10")
+
 
 def cota_dividend(la_data=None):
-    ref = la_data or date.today()
-    return COTA_2026 if ref >= date(2026, 1, 1) else COTA_VECHE
+    """Cota impozit pe dividende (PROCENT), period-aware din common.COTE. Peticul 'if ref>=2026 else 10'
+    (16/10) mutat in registru (PAS 0 versionare, regula 0a: eliminare, nu petic). Vezi common.COTE."""
+    from core import common as _c
+    return _c.cota("impozit_dividend", la_data)[0] * 100
 
 def _d(x):
     return Decimal(str(x or 0)).quantize(B, rounding=ROUND_HALF_UP)

@@ -318,6 +318,13 @@ COTE = {
     "tva_redusa": [
         (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
+    # impozit pe dividende / castig din lichidare (regim dividende). 16% de la 01.01.2026 (Legea 141/2025).
+    # NEVERIFICAT LA SURSA pentru pre-2026: codul folosea 10 pentru orice data pre-2026 (petic "else 10");
+    # istoricul real poate diferi (posibil 8% 2023-2025). data_in 10% = 2024-01-01, REDARE, de reconfirmat la MO.
+    "impozit_dividend": [
+        (date(2026, 1, 1), Decimal("0.16"), Temei("Legea", 141, 2025, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 141/2025 majoreaza impozitul pe dividende de la 10% la 16% de la 01.01.2026")),
+        (date(2024, 1, 1), Decimal("0.10"), Temei("CF", art="97", data_in="2024-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+    ],
     "plafon_mijloc_fix": [
         (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
         (date(2015, 1, 1), Decimal("2500"), Temei("Legea", 227, 2015, data_in="2015-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),

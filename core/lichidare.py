@@ -20,8 +20,10 @@ def _d(x):
     return Decimal(str(x or 0)).quantize(B, rounding=ROUND_HALF_UP)
 
 def _cota_dividend(la_data=None):
-    ref = la_data or date.today()
-    return Decimal("16") if ref >= date(2026, 1, 1) else Decimal("10")
+    """Cota impozit pe castigul din lichidare = regim dividende (PROCENT), period-aware din common.COTE.
+    Peticul 16/10 mutat in registru (PAS 0 versionare)."""
+    from core import common as _c
+    return _c.cota("impozit_dividend", la_data)[0] * 100
 
 def nota_vanzare_activ(pret, valoare_bruta, amortizare_cumulata,
                        cont_imobilizare="2131", cont_amortizare="2813", cota_tva=21):

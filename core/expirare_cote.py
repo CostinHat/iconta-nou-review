@@ -22,6 +22,7 @@ from core.common import COTE, cote_neconfirmate
 ETICHETE = {
     "tva_standard": "Cota standard TVA",
     "tva_redusa": "Cota redusa TVA",
+    "impozit_dividend": "Cota impozit pe dividende (regim dividende + lichidare)",
     "plafon_mijloc_fix": "Plafonul de incadrare ca mijloc fix",
     "plafon_sold_casa": "Plafonul soldului de casa",
     "plafon_avans_decontare": "Plafonul avansului de decontare",
