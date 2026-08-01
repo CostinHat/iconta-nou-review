@@ -44,7 +44,8 @@ Structura reala <declaratie101>:
 """
 from __future__ import annotations
 
-from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+from core.common import text_anaf as _t, alege_varianta as _av, Temei as _Tm  # +versionare
+from datetime import date as _date_v
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import re
@@ -92,14 +93,35 @@ _P_INTRARI = {
 _P_MAIN = ["P%d" % n for n in range(1, 54)]
 
 
-def _scadenta(an):
-    """Scadenta platii (luna, an) - OPANAF 206/2025, DUK regula R17 pe Data_S=31.12.an:
-    an in [2022,2025] -> LL+6; an>2025 (raportare 2026+) -> LL+3. Aplicatia genereaza 2026+."""
-    ll = 12 + (6 if 2022 <= an <= 2025 else 3)
-    scad_an = an + 1
+def _scadenta_2022(an):
+    """DUK regula R17: an Data_S in [2022,2025] -> LL+6 (scadenta luna 6 din an+1)."""
+    ll, scad_an = 12 + 6, an + 1
     if ll > 12:
         ll -= 12
     return ll, scad_an
+
+
+def _scadenta_2026(an):
+    """DUK regula R17: an Data_S > 2025 (raportare 2026+) -> LL+3 (scadenta luna 3 din an+1)."""
+    ll, scad_an = 12 + 3, an + 1
+    if ll > 12:
+        ll -= 12
+    return ll, scad_an
+
+
+# Scadenta e o regula de STRUCTURA versionata pe an (tiparul cota() pe cod, PAS 2): LL+6 pt 2022-2025,
+# LL+3 de la 2026. Peticul "if 2022<=an<=2025" convertit in variante datate; punctul de schimbare (2026) e
+# frontiera de varianta. Pre-2022 nu se genereaza (aplicatia face 2026+) -> alege_varianta ridica, corect.
+_VARIANTE_SCADENTA = [
+    ("2022-01-01", _scadenta_2022, _Tm("OPANAF", 206, 2025, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
+    ("2026-01-01", _scadenta_2026, _Tm("OPANAF", 206, 2025, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
+]
+
+
+def _scadenta(an):
+    """Scadenta platii (luna, an), DISPECER pe an - varianta de regula valabila pentru anul declaratiei."""
+    fn, _ = _av(_VARIANTE_SCADENTA, _date_v(an, 1, 1))
+    return fn(an)
 
 
 def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"):

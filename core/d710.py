@@ -36,7 +36,23 @@ Cazul dominant (contabilul a declarat gresit suma datorata si o corecteaza) e ac
 from __future__ import annotations
 
 from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
-from core.common import cheie_manual
+from core.common import cheie_manual, alege_varianta as _av, Temei as _Tm
+from datetime import date as _date_v
+
+
+# d_recN e o regula de STRUCTURA versionata pe perioada (PAS 2): atributul se pune de la perioada de
+# raportare 12.2025 (regula validator "d_recN diferit de null incepand cu 12.2025"), altfel se omite.
+# Peticul "if an*100+luna >= 202512" convertit in variante datate.
+_VARIANTE_D_RECN = [
+    ("2000-01-01", lambda: "", _Tm(text="d_recN absent inainte de perioada 12.2025", nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
+    ("2025-12-01", lambda: ' d_recN="1"', _Tm(text="DUK: d_recN de la perioada de raportare 12.2025", nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
+]
+
+
+def _d_recN(an, luna):
+    """Atributul d_recN (rectificativa), DISPECER pe perioada."""
+    fn, _ = _av(_VARIANTE_D_RECN, _date_v(an, luna, 1))
+    return fn()
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 from core.d100 import COD_BUGETAR, _nr_evid, _scadenta_zile
@@ -140,7 +156,7 @@ def build_xml(res):
     # d_recN: atribut introdus de la perioada de raportare 12.2025 (regula validator
     # "d_recN diferit de null incepand cu perioada 12.2025"). Pentru perioade anterioare
     # NU se pune (validatorul il respinge). Se completeaza "1" (declaratie rectificativa).
-    d_recn = ' d_recN="1"' if (res.an * 100 + res.luna) >= 202512 else ''
+    d_recn = _d_recN(res.an, res.luna)
     hdr = ('<declaratie710 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
            'xmlns="%s" xsi:schemaLocation="%s D710.xsd" '
            'luna="%d" an="%d" d_anulare="0" d_succ="0" d_dizolv="0" '
