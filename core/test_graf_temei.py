@@ -14,15 +14,18 @@ def test_depinde_de_salariu_minim_acopera_clusterul():
     dep = depinde_de("salariu_minim")
     assert "deducere_personala" in dep, "deducerea (dispecer) nu apare"  # prin varianta _deducere_personala_2018
     assert dep.get("_deducere_personala_2018") == "direct", "varianta deducerii nu apare direct"
-    assert dep.get("calcul_salariu") == "direct", "calcul_salariu (facilitate/plafon12sm/suprataxare) nu apare"
+    # calcul_salariu e acum dispecer versionat (PAS 3): logica (cota salariu_minim) traieste in varianta
+    # datata _calcul_salariu_2018 -> dispecerul depinde TRANZITIV (prin varianta), varianta DIRECT.
+    assert "calcul_salariu" in dep, "calcul_salariu (dispecer) nu apare"
+    assert dep.get("_calcul_salariu_2018") == "direct", "varianta calcul_salariu (facilitate/plafon12sm/suprataxare) nu apare direct"
 
 
 def test_calcul_salariu_contine_sub_conceptele():
-    """DOVADA ca cele 4 sub-concepte sunt in calcul_salariu/deducere_personala (nu functii separate,
-    deci graful le acopera prin functia-gazda): calcul_salariu cere DIRECT salariu_minim + facilitate +
-    plafonul facilitatii; deducere_personala cere salariu_minim (pragul tinerilor iese din el)."""
+    """DOVADA ca cele 4 sub-concepte sunt in variantele datate _calcul_salariu_2018/_deducere_personala_2018
+    (nu functii separate, deci graful le acopera prin functia-gazda): _calcul_salariu_2018 cere DIRECT
+    salariu_minim + facilitate + plafonul facilitatii; _deducere_personala_2018 cere salariu_minim."""
     g = construieste_graf()
-    cote_cs = g["calcul_salariu"]["cote"]
+    cote_cs = g["_calcul_salariu_2018"]["cote"]
     assert "salariu_minim" in cote_cs               # suprataxare part-time, plafon 12 sm
     assert "facilitate_salariu_minim" in cote_cs    # facilitate
     assert "plafon_facilitate_salariu_minim" in cote_cs

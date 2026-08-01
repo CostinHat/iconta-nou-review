@@ -42,3 +42,42 @@ def test_calcul_cm_diminuare_versionata_pe_fereastra():
     assert calcul_cm(30000, 120, 10, cod="01", la_data=date(2026, 6, 1))["diminuare"] == 1
     assert calcul_cm(30000, 120, 10, cod="01", la_data=date(2025, 6, 1))["diminuare"] == 0
     assert calcul_cm(30000, 120, 10, cod="01", la_data=date(2028, 6, 1))["diminuare"] == 0
+
+
+# ============================================================
+#  PAS 3 - salarizare.py (procent_cm, taxe_cm, calcul_cm_cod10, calcul_salariu)
+#  Fiecare: dispecerul pastreaza comportamentul variantei datate + e period-aware
+#  (data inainte de prima varianta ridica - formula NU mai ignora la_data).
+# ============================================================
+def test_procent_cm_dispecer_versionat():
+    from core import salarizare as sz
+    assert sz.procent_cm("01", 10, la_data=date(2026, 6, 1)) == sz._procent_cm_2018("01", 10)
+    assert sz._VARIANTE_PROCENT_CM[0][1] is sz._procent_cm_2018
+    with pytest.raises(ValueError):
+        sz.procent_cm("01", 10, la_data=date(2000, 1, 1))
+
+
+def test_calcul_cm_cod10_dispecer_versionat():
+    from core import salarizare as sz
+    assert sz.calcul_cm_cod10(3000, 1000, la_data=date(2026, 6, 1)) == sz._calcul_cm_cod10_2018(3000, 1000)
+    assert sz._VARIANTE_CALCUL_CM_COD10[0][1] is sz._calcul_cm_cod10_2018
+    with pytest.raises(ValueError):
+        sz.calcul_cm_cod10(3000, 1000, la_data=date(2000, 1, 1))
+
+
+def test_taxe_cm_dispecer_versionat():
+    from core import salarizare as sz
+    d = date(2026, 6, 1)
+    assert sz.taxe_cm(2000, cod="01", la_data=d) == sz._taxe_cm_2018(2000, cod="01", la_data=d)
+    assert sz._VARIANTE_TAXE_CM[0][1] is sz._taxe_cm_2018
+    with pytest.raises(ValueError):
+        sz.taxe_cm(2000, cod="01", la_data=date(2000, 1, 1))
+
+
+def test_calcul_salariu_dispecer_versionat():
+    from core import salarizare as sz
+    d = date(2026, 6, 1)
+    assert sz.calcul_salariu(4000, persoane=1, la_data=d) == sz._calcul_salariu_2018(4000, persoane=1, la_data=d)
+    assert sz._VARIANTE_CALCUL_SALARIU[0][1] is sz._calcul_salariu_2018
+    with pytest.raises(ValueError):
+        sz.calcul_salariu(4000, la_data=date(2000, 1, 1))

@@ -106,7 +106,7 @@ def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0, functie_b
 # ============================================================
 #  CALCUL SALARIU BRUT → NET
 # ============================================================
-def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
+def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
                    functie_baza=True, la_data=None,
                    norma_intreaga=True, venit_brut_total=None,
                    exceptat_suprataxare=False,
@@ -282,6 +282,39 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
     }
 
 
+# Formula brut->net (prorata + plafonare facilitate + suprataxare + split zi5-6 + tichete) e stabila azi;
+# cotele CAS/CASS/impozit/CAM + salariul minim + facilitatea vin period-aware din COTE. O schimbare de
+# ALGORITM (nu de cota) -> varianta datata noua, iar o adeverinta/rectificativa pe o luna trecuta o
+# recalculeaza cu regula de ATUNCI (bugul campaniei). Azi o singura varianta: comportament neschimbat.
+_VARIANTE_CALCUL_SALARIU = [
+    ("2018-01-01", _calcul_salariu_2018,
+     c.Temei("CF", art="78", data_in="2018-01-01", nivel_sursa="REDARE",
+             de_cine="Code/Costin", verificat_la="2026-07-31",
+             lant_acte="CF art.77 (deducere), art.146 alin.(5^6)/(5^7) (suprataxare), OUG 89/2025 art.III (facilitate)")),
+]
+
+
+def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
+                   functie_baza=True, la_data=None,
+                   norma_intreaga=True, venit_brut_total=None,
+                   exceptat_suprataxare=False,
+                   tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
+                   facilitate_prorata=None):
+    """Calcul salariu brut->net, DISPECER pe la_data (varianta de formula valabila la luna venitului).
+    Dispecer subtire care forwardeaza toti parametrii catre varianta datata; NU duplica corpul.
+    TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
+    suprataxare), OUG 89/2025 art.III (facilitate salariu minim); cotele CAS/CASS/impozit/CAM din
+    common.COTE (CF art.138/156/78/220^1). nivel_sursa: REDARE. Versionata in timp: o schimbare de
+    ALGORITM -> varianta datata noua, nu 'if data' - trecutul (adeverinte/rectificative) ramane corect."""
+    from datetime import date as _dt
+    fn, _ = c.alege_varianta(_VARIANTE_CALCUL_SALARIU, la_data or _dt.today())
+    return fn(brut, persoane=persoane, sub_26=sub_26, copii_scoala=copii_scoala,
+              functie_baza=functie_baza, la_data=la_data, norma_intreaga=norma_intreaga,
+              venit_brut_total=venit_brut_total, exceptat_suprataxare=exceptat_suprataxare,
+              tichet_valoare=tichet_valoare, tichet_zile=tichet_zile, tichet_vacanta=tichet_vacanta,
+              data_angajare=data_angajare, data_incetare=data_incetare, facilitate_prorata=facilitate_prorata)
+
+
 # ============================================================
 #  MONOGRAFIE SALARII — note cu urmă
 # ============================================================
@@ -322,7 +355,7 @@ def monografie_plata(net, cont_trezorerie="5121"):
 #  + Ordinul 506/1030/2026 (diminuare 1 zi PER EPISOD, nu per certificat)
 #  Verificat la sursa: legislatie.just.ro, MOF 507/19.06.2026
 # ============================================================
-def procent_cm(cod, zile_episod, procent_accident=100):
+def _procent_cm_2018(cod, zile_episod, procent_accident=100):
     """Procent indemnizatie dupa cod (nomenclator Legea 125/2006, art. 17-31 OUG 158/2005).
     01=55/65/75 progresiv (Legea 141/2025); 02/03/04=80 sau 100 (FAAMBP, param);
     05/06/07/12/14/51=100 (07 carantina: art.20(3) OUG 158/2005, 100% permanent prin Legea 136/2020); 13/15=75; 08/09=85. Cod 10 (reducere timp munca) NU are
@@ -343,7 +376,28 @@ def procent_cm(cod, zile_episod, procent_accident=100):
     return Decimal("0.75")  # 13 cardiovasculare, 15 risc maternal, rest
 
 
-def calcul_cm_cod10(baza_lunara, venit_realizat):
+# Progresivul 55/65/75 (cod 01) e forma Legea 141/2025; scala pre-141 nu e verificata la sursa -> daca
+# difera, se adauga o varianta datata cu data_in = intrarea in vigoare a formei vechi (tiparul nu duplica
+# logica, o dateaza). Azi o singura varianta: comportament identic pt orice data >= 2018 (fara regresie).
+_VARIANTE_PROCENT_CM = [
+    ("2018-01-01", _procent_cm_2018,
+     c.Temei("OUG", 158, 2005, art="17", data_in="2018-01-01", nivel_sursa="REDARE",
+             de_cine="Code/Costin", verificat_la="2026-07-31",
+             lant_acte="Legea 141/2025 (forma progresiva 55/65/75 cod 01); Legea 136/2020 (carantina 07=100%)")),
+]
+
+
+def procent_cm(cod, zile_episod, procent_accident=100, la_data=None):
+    """Procent indemnizatie CM, DISPECER pe la_data (varianta de formula valabila la data certificatului).
+    TEMEI: OUG 158/2005 art.17(1) (progresiv 55/65/75, forma Legea 141/2025); art.20(3)+Legea 136/2020
+    (carantina 07=100%); art.25(1) (maternitate 08=85%); art.30(1) (ingrijire copil 09=85%). nivel_sursa:
+    REDARE. Versionata in timp: o schimbare de scara -> varianta datata noua, nu 'if data' in corp."""
+    from datetime import date as _dt
+    fn, _ = c.alege_varianta(_VARIANTE_PROCENT_CM, la_data or _dt.today())
+    return fn(cod, zile_episod, procent_accident)
+
+
+def _calcul_cm_cod10_2018(baza_lunara, venit_realizat):
     """Cod 10 - reducere timp munca cu 1/4 (art. 19 OUG 158/2005):
     indemnizatia = baza de calcul - venitul realizat in noua situatie,
     plafonata la 25% din baza de calcul.
@@ -352,6 +406,22 @@ def calcul_cm_cod10(baza_lunara, venit_realizat):
     if b <= 0 or v < 0:
         raise ValueError("baza/venit invalide")
     return _q(min(max(b - v, Decimal("0")), b * Decimal("0.25")))
+
+
+_VARIANTE_CALCUL_CM_COD10 = [
+    ("2018-01-01", _calcul_cm_cod10_2018,
+     c.Temei("OUG", 158, 2005, art="19", data_in="2018-01-01", nivel_sursa="REDARE",
+             de_cine="Code/Costin", verificat_la="2026-07-31")),
+]
+
+
+def calcul_cm_cod10(baza_lunara, venit_realizat, la_data=None):
+    """Cod 10 (reducere timp munca), DISPECER pe la_data.
+    TEMEI: OUG 158/2005 art.19 (reducere timp munca cod 10; plafon 25% din baza de calcul). nivel_sursa:
+    REDARE. Versionata in timp: o schimbare de plafon -> varianta datata noua, nu 'if data' in corp."""
+    from datetime import date as _dt
+    fn, _ = c.alege_varianta(_VARIANTE_CALCUL_CM_COD10, la_data or _dt.today())
+    return fn(baza_lunara, venit_realizat)
 
 def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
                     cod="01", zile_episod=None, prima_zi_din_episod=True,
@@ -369,7 +439,7 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     """
     mz = _dec(venituri_6_luni) / _dec(zile_lucratoare_6_luni or 1)
     ze = zile_episod if zile_episod is not None else zile_lucratoare_cm
-    pct = procent_cm(cod, ze, procent_accident)
+    pct = procent_cm(cod, ze, procent_accident, la_data=la_data)
     diminuare = 0
     # Exceptii diminuare 1 zi verif. la sursa MOF 507/19.06.2026 (Ordinul 506/1030/2026):
     # accidente 02/03/04, izolare 51, maternitate 08, oncologic 17, risc maternal 15, PNS 12/13/14.
@@ -444,7 +514,7 @@ _CM_COD_FNUASS_INTEGRAL = ("08", "09", "10", "15", "17", "91", "92")
 _CM_COD_CU_CASS = ("01", "07", "10")
 
 
-def taxe_cm(brut, cod="01", la_data=None):
+def _taxe_cm_2018(brut, cod="01", la_data=None):
     """Retineri pe indemnizatia de concediu medical (OUG 158/2005 + Cod fiscal).
     - CAS 25% UNIFORM pe toate codurile (CF art.139(1)(o)+140; se aplica si maternitate/copil - ghid ANAF)
     - CASS 10% DOAR pentru codurile 01/07/10; scutit pentru rest (08 maternitate,
@@ -462,3 +532,21 @@ def taxe_cm(brut, cod="01", la_data=None):
     impozit = ((b - cas - cass) * cota_imp).quantize(Decimal("1"))
     net = b - cas - cass - impozit
     return {"cas": _q(cas), "cass": _q(cass), "impozit": _q(impozit), "net": _q(net)}
+
+
+_VARIANTE_TAXE_CM = [
+    ("2018-01-01", _taxe_cm_2018,
+     c.Temei("CF", art="139", alin="1", lit="o", data_in="2018-01-01", nivel_sursa="INTERPRETARE_OFICIALA",
+             de_cine="Code/Costin", verificat_la="2026-07-31",
+             lant_acte="OUG 34/2024 art.17(2) (CASS doar cod 01/07/10, dupa 12.04.2024)")),
+]
+
+
+def taxe_cm(brut, cod="01", la_data=None):
+    """Retineri pe indemnizatia de concediu medical, DISPECER pe la_data.
+    TEMEI: CF art.139(1)(o)+140 (CAS 25% pe indemnizatie); art.155(1) lit.i (CASS 10% cod 01/07/10);
+    art.78 (impozit 10%). nivel_sursa: INTERPRETARE_OFICIALA (CAS 25% pe maternitate/copil = ghid ANAF,
+    nu litera actului). Versionata in timp: o schimbare de regula -> varianta datata noua, nu 'if data'."""
+    from datetime import date as _dt
+    fn, _ = c.alege_varianta(_VARIANTE_TAXE_CM, la_data or _dt.today())
+    return fn(brut, cod, la_data)
