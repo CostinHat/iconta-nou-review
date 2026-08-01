@@ -258,6 +258,54 @@ Estimare de structură — se rafinează la citirea fiecărui modul.
 
 Numărul nu e ținta. Ținta: fiecare cluster FISCAL să aibă cifra afirmată cu temei citat la sursă.
 
+## Estimare de efort pe clusterele nebifate (ESTIMARE, 01.08.2026 — NU angajament)
+
+Cerută de două ori, neapărută în raport. Estimare din COD + inventar, clusterele **NU** sunt verificate
+aici — doar clasate pe efort. Calibrare din cele 7 atinse: **MARE** (o zi sau mai mult — multe reguli,
+surse contradictorii, ca *deducere personală* √31.07) · **MEDIU** (câteva ore — mai multe valori/coduri,
+ca *tichete* / *concedii medicale* PARTIAL 31.07) · **MIC** (sub o oră — puține valori, sursă clară:
+nomenclatoare, checksum-uri, trunchieri, rotunjiri).
+
+Nebifate: **55** din 62 (7 atinse: 5 √ + 2 PARTIAL). Repartiție efort × risc:
+
+| Efort | FISCAL | STRUCTURA | Total | Interval/buc | Sub-total |
+|---|---|---|---|---|---|
+| MARE  | 6  | 0  | **6**  | 1–1,5 zile | 6–9 zile |
+| MEDIU | 12 | 4  | **16** | 2–4 h       | ~4–8 zile |
+| MIC   | 8  | 25 | **33** | 0,3–1 h     | ~1,5–4 zile |
+| **Total** | **26** | **29** | **55** | | **≈ 12–21 zile** |
+
+Centru realist: **~15 zile-om** de lucru focalizat (RED→verde→mutație→sursă per cluster), reductibil vezi caveat.
+
+**MARE (6, toate FISCAL):** cota profit 16%+IMCA (d101) · amortizare (d101) · exigibilitate/TVA la încasare
+(d300) · pro-rata deducere (d300) · ajustări (d300) · SourceDocuments facturi reale (d406).
+
+**MEDIU (16):** *FISCAL(12)* tichete culturale · tichete creșă · baze contribuții CAS/CASS/imp/CAM (d112) ·
+concedii medicale asiguratB3/D (d112) · sect_II tip_venit (d205) · cote TVA→rânduri (d300) · taxare inversă
+(d300) · tipuri operațiune 1-5 (d301) · tipuri operațiune IC L/A/P/S (d390) · reclasificări manuale (d390) ·
+exigibilitate/prag (d390) · taxare inversă (d394). *STRUCTURA(4)* tipuri operațiune pct.215 (d394) · rezumat1
+câmpuri complete (d394) · plan conturi pe normă (d406) · structură XSD Header/MasterFiles/GLE (d406).
+
+**MIC (33):** *FISCAL(8)* rotunjire A91b (d112) · rotunjire (d205) · rotunjire aritmetică (d300) · rollup
+S4.1→S4 (d301) · bază=val×curs (d301) · cotă TVA (d301) · rotunjire aritmetică (d390) · cote acceptate (d394).
+*STRUCTURA(25)* d100 ×4 (nomenclator cod_oblig↔bugetar, cotă micro 121, checksum R11b, scadențe/nr_evidența) ·
+d101 ×2 (structură P1-P53, R17 Data_S) · d112 ×2 (limită text 75, nomenclator cod_oblig) · d205 ×2 (checksum
+totalPlata_A, trunchiere den/adresă) · d300 (rânduri/checksum) · d301 (checksum R28) · d390 (nomenclator țări
+HR→CR) · d394 ×3 (tip_partener, nomenclator codPR art.331, totalPlata_A R17) · d406 ×4 (UoM UN/ECE,
+MovementType, BaseRate, registration_number) · d710 ×5 (structură decl710, nomenclator COD_BUGETAR, checksum
+R11b, R15 termen, scadențe).
+
+**Caveat — reduce totalul (nu reflectat în cifra brută):**
+- **structura P1-P53 (d101) + R17 Data_S** sunt de facto ACOPERITE de reconstrucția d101 din 01.08 (golden
+  lanț formule + DUK valid, DECIZII 01.08); rămâne doar bump de inventar, nu muncă. −2 MIC efectiv.
+- Clusterele de **cotă TVA** (d300 cote→rânduri, d301 cotă TVA, d394 cote acceptate) se sprijină pe clusterul
+  TVA DEJA verificat (Legea 141/2025 în common.COTE, period-aware, golden test_d394) — efort real spre capătul
+  de jos al intervalului.
+- **d112 baze/concedii** se sprijină pe salarizare deja verificată (taxe_cm canonic, apelat și de d112).
+Cu discount-urile, banda efectivă coboară spre **~10–16 zile**.
+
+
+
 ---
 
 # SESIUNEA B — testarea pe flux
