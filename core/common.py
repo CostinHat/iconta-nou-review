@@ -325,6 +325,13 @@ COTE = {
         (date(2026, 1, 1), Decimal("0.16"), Temei("Legea", 141, 2025, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 141/2025 majoreaza impozitul pe dividende de la 10% la 16% de la 01.01.2026")),
         (date(2024, 1, 1), Decimal("0.10"), Temei("CF", art="97", data_in="2024-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
+    # plafon TVA la incasare (fost petic 3-tier plafon_la). OUG 8/2026: 5M de la 03.2026, 5.5M de la 2027.
+    # 4.5M anterior - act de reconfirmat (REDARE), data_in aproximata (pre-2026 raporteaza gol daca ceri <2023).
+    "plafon_tva_incasare": [
+        (date(2027, 1, 1), Decimal("5500000"), Temei("OUG", 8, 2026, data_in="2027-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2026, 3, 1), Decimal("5000000"), Temei("OUG", 8, 2026, data_in="2026-03-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2023, 1, 1), Decimal("4500000"), Temei(text="plafon TVA la incasare pre-OUG 8/2026 (act de reconfirmat)", data_in="2023-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+    ],
     "plafon_mijloc_fix": [
         (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
         (date(2015, 1, 1), Decimal("2500"), Temei("Legea", 227, 2015, data_in="2015-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),

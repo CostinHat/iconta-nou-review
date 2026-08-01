@@ -26,10 +26,8 @@ def tva_exigibil_alocari(alocari):
     return {"linii": linii, "total": total.quantize(Decimal("0.01"))}
 
 def plafon_la(data_iso):
-    """Plafonul TVA la incasare valabil la o data (verificat OUG 8/2026)."""
-    d = str(data_iso)[:10]
-    if d >= "2027-01-01":
-        return Decimal("5500000")
-    if d >= "2026-03-01":
-        return Decimal("5000000")
-    return Decimal("4500000")
+    """Plafonul TVA la incasare valabil la o data, period-aware din common.COTE (fost petic 3-tier).
+    OUG 8/2026: 5M de la 03.2026, 5.5M de la 2027; 4.5M anterior (PAS 2, valoare -> registru)."""
+    from core import common as _c
+    from datetime import date as _d
+    return _c.cota("plafon_tva_incasare", _d.fromisoformat(str(data_iso)[:10]))[0]
