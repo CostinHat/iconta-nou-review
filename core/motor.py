@@ -73,7 +73,7 @@ def inchidere_luna(note):
 # ============================================================
 #  REZERVĂ LEGALĂ (31.12) — 5% din profit, plafon 20% capital
 # ============================================================
-def rezerva_legala(profit, capital_social, rezerva_existenta=0):
+def _rezerva_legala_2018(profit, capital_social, rezerva_existenta=0):
     """129 = 1061 cu 5% din profit, dar cumulat ≤ 20% din capitalul social."""
     p = _dec(profit)
     if p <= 0:
@@ -86,6 +86,23 @@ def rezerva_legala(profit, capital_social, rezerva_existenta=0):
     return {"suma": _q(suma),
             "nota": _nota("129", "1061", suma,
                           temei="OMFP 1802/2014 pct. 421; Legea 31/1990 art. 183")}
+
+
+_VARIANTE_REZERVA_LEGALA = [
+    ("2018-01-01", _rezerva_legala_2018,
+     c.Temei("Legea", 31, 1990, art="183", data_in="2018-01-01", nivel_sursa="REDARE",
+             de_cine="Code/Costin", verificat_la="2026-07-31", lant_acte="OMFP 1802/2014 pct.421")),
+]
+
+
+def rezerva_legala(profit, capital_social, rezerva_existenta=0, la_data=None):
+    """Rezerva legala (5% profit, cumulat <= 20% capital), DISPECER pe la_data.
+    TEMEI: Legea 31/1990 art.183 (rezerva legala 5% profit / plafon 20% capital social); OMFP 1802/2014
+    pct.421 (nota 129=1061). nivel_sursa: REDARE. Versionata in timp: o schimbare de procent/plafon ->
+    varianta datata noua, nu 'if data' in corp."""
+    from datetime import date as _dt
+    fn, _ = c.alege_varianta(_VARIANTE_REZERVA_LEGALA, la_data or _dt.today())
+    return fn(profit, capital_social, rezerva_existenta)
 
 
 # ============================================================

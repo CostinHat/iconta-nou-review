@@ -110,3 +110,13 @@ def test_credit_sponsorizare_dispecer_versionat():
     assert sp._VARIANTE_CREDIT_SPONSORIZARE[0][1] is sp._credit_sponsorizare_2018
     with pytest.raises(ValueError):
         sp.credit_sponsorizare(*args, la_data=date(2000, 1, 1))
+
+
+# ---- PAS 3 modul 4: motor.rezerva_legala ----
+def test_rezerva_legala_dispecer_versionat():
+    from core import motor as mo
+    args = (100000, 50000)  # profit, capital_social
+    assert mo.rezerva_legala(*args, la_data=date(2026, 6, 1)) == mo._rezerva_legala_2018(*args)
+    assert mo._VARIANTE_REZERVA_LEGALA[0][1] is mo._rezerva_legala_2018
+    with pytest.raises(ValueError):
+        mo.rezerva_legala(*args, la_data=date(2000, 1, 1))
