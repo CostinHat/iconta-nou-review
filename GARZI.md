@@ -28,7 +28,7 @@ Punctul 2 nu e formal. Pe 27.07 o gardă a „picat pe mutant" în timp ce crăp
 
 | Loc | Ce acoperă | Când rulează |
 |---|---|---|
-| suita pytest (1256 teste, 131 fișiere) | logică, schemă, semnături, contracte | la dev, înainte de commit |
+| suita pytest (1270 teste, 132 fișiere) | logică, schemă, semnături, contracte | la dev, înainte de commit |
 | `verificator_conformitate.py` | Design System, frontend (28 gardieni) | la dev, TOTAL 0 obligatoriu |
 | `core/verificatoare.py` | echilibru notă/balanță, TVA pe cotă, trezorerie | în aplicație, pe date reale |
 | `core/control_incrucisat.py` | D112/D300/D390 vs evidență, cotă TVA | în aplicație, semafor |
@@ -167,6 +167,12 @@ că intrarea a fost înghițită**.
   implementata (`_VARIANTE_PROCENT_CM` are o singura varianta = forma L141/2025, aplicata inclusiv episoadelor
   cu certificat initial anterior lunii august 2025). Procentele vechi nu-s verificate la sursa -> blocaj motivat,
   `xfail test_datorie_cm_art_xi_regim_initial`.
+- ACOPERIT (02.08.2026): **tichete culturale** (Legea 165/2018 cap.V). GARD `test_bilete_valoare_declara_
+  toate_tratamentele` (BILETE_VALOARE_TRATAMENT): fiecare bilet de valoare declara EXPLICIT cele 4 tratamente
+  (impozit/CAS/CASS/CAM) + sursa plafonului; **MUTATIE**: adaugi un tip nou fara declaratie -> pica. + GARD
+  plafon semestrial `plafon_cultural()`: fereastra GRI (oct.2025-mar.2026) BLOCATA motivat in beneficii_api.seteaza
+  (test_cultural_seteaza_gri_blocat), NU se calculeaza tacit cu 240/470. Divergenta esentiala vs etalon:
+  culturalul NU are CASS (art.157(2)) - test_cultural_diferit_de_masa_pe_cass.
 - DESCHIS: rotunjirea din D390 e bancară (`round()`), în timp ce D112 documentează că ANAF
   cere aritmetică. Schimbare fiscală — se verifică la sursă. Vezi DE_FACUT.
 
@@ -245,7 +251,7 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
 **Eșec:** teste verzi care nu testează nimic (fake-uri pe codul auditat, teste stale,
 fișiere necolectate).
 **Stare: PARȚIAL.**
-- ACOPERIT de fapt: 1256 teste colectate; fake-uri (`monkeypatch`/`MagicMock`) doar pe
+- ACOPERIT de fapt: 1270 teste colectate; fake-uri (`monkeypatch`/`MagicMock`) doar pe
   integrări externe (SPV, e-Factura, e-Transport, JWT). **Zero fake pe generatoarele de
   declarații.**
 - LIPSĂ: **mutantul zero sistematic** — forțezi fiecare generator să întoarcă `[]` și suita

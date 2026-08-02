@@ -5091,3 +5091,44 @@ CE: art.17(1) lit.b = "intre 8 si 14 zile" (65%), lit.c = "peste 15 zile" (75%);
 **(g) Deriva legislativa pe procentele CM = GATE inaintea constructiei de functionalitate noua.** Inainte de a construi feature nou pe salarizare, procentele CM (art.17, forma in vigoare) se confrunta cu sursa (RAPORT verificare). Motivul: o functionalitate noua asezata peste procente derivate ar propaga eroarea. La aceasta campanie gate-ul a trecut (procentele 55/65/75 confirmate, cod aliniat).
 
 DATORIE NOUA deschisa (art.XI L141/2025): selectia de regim dupa data certificatului INITIAL al episodului (forma veche pentru episoade cu certificat initial < 01.08.2025) NU e implementata — `_VARIANTE_PROCENT_CM` are o singura varianta (forma L141/2025). Procentele pre-141 nu-s verificate la sursa (nu-s in anaf_surse/) -> BLOCAJ MOTIVAT, nu se inventeaza. Urmarita de xfail strict test_datorie_cm_art_xi_regim_initial (se inchide cand forma pre-141 e obtinuta verbatim la MO + varianta datata adaugata + teste pe ambele parti ale lui 01.08.2025). SOLD DATORII: intrare 20; CM4 inchisa (-1); art.XI desurfatata (+1, gap latent care exista deja in cod, acum urmarit) => sold la iesire 20. Nu 19: onestitatea peste cifra (art.XI e un bug real de procent pe CM pre-2025, nu se ascunde).
+
+## 02.08.2026 — Tichete culturale: functionalitate noua LIVRATA (Legea 165/2018 cap.V)
+
+Feature nou end-to-end (prioritate confirmata Costin, dupa CM4). Temeiuri toate VERDE la sursa
+(anaf_surse/RAPORT_verificare_temeiuri.md). Increments testate A-F (commit-uri separate).
+
+**(e) Tichetele culturale = FUNCTIONALITATE NOUA, nu cluster de verificat.** In inventar figura ca pozitia 1
+in secventa (placeholder fara cod). Nu e cod existent de aliniat la lege (Sesiunea A) - e feature construit de
+la zero cu temeiuri verificate la sursa din start. Iese din secventa ca "implementat cu temei", nu ca "aliniat".
+
+**(h) Regula etalonului: se urmeaza STRUCTURA, nu tratamentul fiscal.** Etalon = tichete masa/vacanta pe
+STRUCTURA (beneficii_lunare one-off, calcul_salariu, stat, d112, UI din firme.js). DAR tratamentul fiscal e cel
+al CULTURALULUI, care DIFERA de masa/vacanta pe CASS: culturalul NU intra in CASS (CF art.157(2) excepteaza
+NUMAI masa+vacanta, verdict 11); masa/vacanta AU CASS. Gardul BILETE_VALOARE_TRATAMENT (test_bilete_valoare_
+declara_toate_tratamentele) impiedica copierea tacita a tratamentului de la un bilet la altul.
+
+TRATAMENT FISCAL (verdicte, verbatim in anaf_surse/): impozit 10% pe valoarea nominala INTEGRALA (CF art.76(3)h,
+verdict 13); CAS NU (art.142 lit.r, verdict 10); CASS NU (art.157(2), verdict 11); CAM NU (art.220^4(2), verdict
+12); nu intra in plafonul 33% (verdict 14); angajator: cheltuiala sociala deductibila 5% (art.25(3)b pct.3).
+VALOARE NOMINALA: 10 lei sau multiplu de 10, max 50 (art.22(2), verdict 15). PLAFON: lunar/eveniment indexat
+semestrial prin ordine MF/MC - `common.plafon_cultural()`: 220/450 (apr-sep 2025, ord.361/2680/2025) si 250/490
+(apr-sep 2026, ord.369/2624/2026), CONFIRMATE primar; fereastra oct.2025-mar.2026 (S2 2025 = 240/470) e GRI
+(ordinul de mijloc stub pe just.ro) -> BLOCATA motivat (nu se calculeaza tacit), GARD in beneficii_api.seteaza.
+
+IMPLEMENTARE: DB beneficii_lunare (tip 'cultural', eveniment ''=lunar/'ocazional'; template + migrare idempotenta);
+calcul_salariu (param tichet_cultural, impozit only); wiring stat_plata_api + d112 (impozit declarat, NU in baza
+CASS); UI firme.js (buton + cultural lunar/ocazional); teste unit + DB + GARD.
+
+**D112 - camp identificat, emisie la nivel ETALON.** Campul oficial = E3_74 "8.3.1.3 Contravaloarea tichetelor
+culturale" (d112_struct_anaf.txt:6318), parte din suma E3_60 (avantaje 8.3). Generatorul d112 NU emite sectiunea
+8.3 (avantaje detaliate: E3_10 masa / E3_75 vacanta / E3_74 cultural) pentru NICIUN bilet - le raporteaza prin
+baza CASS (masa/vacanta) si impozit. Culturalul se raporteaza IDENTIC cu etalonul: prin IMPOZIT (nu in baza CASS,
+neavand CASS). LIMITA CUNOSCUTA (generator-wide, NU specifica culturalului): sectiunea 8.3 avantaje (E3_10/74/75)
+nu e emisa - candidat de campanie separata; masa/vacanta au aceeasi limita si sunt bifate.
+
+INCHIDERE CLUSTER: "tichete culturale | salarizare" bifat √ 02.08 (implementat + temeiuri VERDE + teste + D112 la
+nivel etalon). Secventa 62 -> 61. Marker: tichete culturale livrat functionalitate noua cu temei verificat.
+
+DATORIE NOUA (candidat, NU al acestei campanii): emisia sectiunii 8.3 avantaje in D112 (E3_10/72/73/74/75) pentru
+TOATE biletele de valoare - generator-wide, informativ. Neurmarita ca xfail aici (nu blocheaza declaratia; DUK
+valideaza fara ea).
