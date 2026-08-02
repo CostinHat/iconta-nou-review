@@ -111,7 +111,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
                    norma_intreaga=True, venit_brut_total=None,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
-                   facilitate_prorata=None):
+                   facilitate_prorata=None, tichet_vacanta_exces=0):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -190,7 +190,14 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
             norma_intreaga and functie_baza and vbt == sm and vbt <= plafon_fac
         ) else Decimal(0)
         facilitate = facilitate * _prorata
-    baza_contrib = b - facilitate
+    # [D3 02.08.2026] excesul de tichete de vacanta peste plafonul anual (6 sal.minime) = venit
+    # SALARIAL integral (CAS+CASS+impozit), in BAZA de contributii - NU linie separata de tichet
+    # (31.07: DUK respinge CAS pe exces ca linie separata via B4_7; baza recalc din salariu S731/S74).
+    # Cele 3 scutiri sunt conditionate de aceeasi formula 'acordate potrivit legii' (OUG 8/2009 art.1)
+    # -> peste plafon cad toate trei (varianta i, DECIZII 31.07). Plafonul (cumulat anual) se verifica
+    # de apelant -> aici primim doar portiunea de EXCES a lunii.
+    exces_vac = _dec(tichet_vacanta_exces) if _dec(tichet_vacanta_exces) > 0 else Decimal(0)
+    baza_contrib = b - facilitate + exces_vac
 
     cas = baza_contrib * cota_cas
     cass = baza_contrib * cota_cass
@@ -274,7 +281,8 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
         "cass_suprataxa": _q(cass_suprataxa),
         # [F133] tichete (0 daca nu primeste / fara pontaj). cass/impozit = pe masa + vacanta
         "tichete_nominal": _q(tichete_nominal),    # tichete de MASA (valoare x zile)
-        "tichete_vacanta": _q(tichete_vac),        # tichete de VACANTA (suma one-off) - Faza 2a
+        "tichete_vacanta": _q(tichete_vac),        # tichete de VACANTA in plafon (one-off) - Faza 2a
+        "tichete_vacanta_exces": _q(exces_vac),    # [D3] exces peste 6 sm -> venit salarial in baza
         "cass_tichete": _q(cass_tichete),          # CASS pe masa + vacanta (inclus in baza CASS D112)
         "impozit_tichete": _q(impozit_tichete),    # impozit pe masa + vacanta (inclus in "impozit")
         # angajatorul suporta valoarea nominala a biletelor (le cumpara) - cost real
@@ -299,7 +307,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    norma_intreaga=True, venit_brut_total=None,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
-                   facilitate_prorata=None):
+                   facilitate_prorata=None, tichet_vacanta_exces=0):
     """Calcul salariu brut->net, DISPECER pe la_data (varianta de formula valabila la luna venitului).
     Dispecer subtire care forwardeaza toti parametrii catre varianta datata; NU duplica corpul.
     TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
@@ -312,7 +320,8 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
               functie_baza=functie_baza, la_data=la_data, norma_intreaga=norma_intreaga,
               venit_brut_total=venit_brut_total, exceptat_suprataxare=exceptat_suprataxare,
               tichet_valoare=tichet_valoare, tichet_zile=tichet_zile, tichet_vacanta=tichet_vacanta,
-              data_angajare=data_angajare, data_incetare=data_incetare, facilitate_prorata=facilitate_prorata)
+              data_angajare=data_angajare, data_incetare=data_incetare, facilitate_prorata=facilitate_prorata,
+              tichet_vacanta_exces=tichet_vacanta_exces)
 
 
 # ============================================================

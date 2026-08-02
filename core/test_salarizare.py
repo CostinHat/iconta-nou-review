@@ -239,3 +239,17 @@ def test_carantina_cod07_este_100pct():
     # prin Legea 136/2020), NU 75%. Confirmat la sursa (concedii medicale runda 2-3).
     assert procent_cm("07", 10) == Decimal("1.00")
     assert procent_cm("07", 3) == Decimal("1.00")   # nu progresiv - mereu 100%
+
+
+def test_exces_vacanta_intra_in_baza_salariala():
+    """[D3 02.08] Excesul de tichete de vacanta peste plafonul anual (6 sm) = venit SALARIAL in baza:
+    CAS+CASS+impozit, NU doar CASS+impozit ca tichetul in plafon (DECIZII 31.07 varianta i)."""
+    from datetime import date as _d
+    dd = _d(2026, 8, 1)
+    base = calcul_salariu(5000, la_data=dd)
+    exc = calcul_salariu(5000, la_data=dd, tichet_vacanta_exces=4000)
+    assert float(exc["cas"]) - float(base["cas"]) == 1000.0     # 4000 x 25% CAS - CF art.138
+    assert float(exc["cass"]) - float(base["cass"]) == 400.0    # 4000 x 10% CASS - CF art.156
+    assert float(exc["tichete_vacanta_exces"]) == 4000.0
+    inpl = calcul_salariu(5000, la_data=dd, tichet_vacanta=4000)
+    assert float(inpl["cas"]) == float(base["cas"]), "tichetul IN plafon NU are CAS (doar CASS+impozit)"
