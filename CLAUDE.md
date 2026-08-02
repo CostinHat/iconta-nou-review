@@ -396,6 +396,19 @@ informatia (cifra care conteaza langa o nota tehnica; ce n-a fost verificat uneo
 proza). Pe cifre se face aritmetica de validare (COLLECTED = passed + skipped + xfailed, comparat cu runda
 anterioara); pe deciziile cerute se stie ce blocheaza. Amandoua merita randuri proprii.
 
+CAND SE APLICA (incadrarea o stabileste executorul la finalul executiei, pe ce s-a intamplat efectiv, nu pe ce
+se astepta la inceput):
+
+- Raport COMPLET (titlu + sectiunile 1-10): inchidere de cluster; campanie multi-pas; orice modificare de logica
+  fiscala; orice modificare care schimba iesirea catre ANAF.
+- Raport SCURT (titlu + sectiunile 1, 2, 5): modificare de registru sau procedura fara efect pe cod executabil;
+  interventie de infrastructura; campanie de un singur pas fara neconformitate gasita.
+- Fara raport: niciodata. Orice comanda executata produce cel putin raport scurt.
+- Incadrarea se declara in titlu, dupa numarul de pasi: "| COMPLET" sau "| SCURT". Daca incadrarea e ambigua,
+  se alege COMPLET.
+- Incadrarea pe ce s-a intamplat efectiv, nu pe ce se astepta: o campanie pornita ca SCURT care descopera o
+  neconformitate devine COMPLET.
+
 TITLU (obligatoriu, prima linie a raportului, inaintea sectiunii 1):
 RAPORT <NUME_CAMPANIE> | <data> | <HEAD_intrare> -> <HEAD_iesire> | <n> pasi
 Fara titlu, raportul e incomplet.
