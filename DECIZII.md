@@ -5044,3 +5044,25 @@ recunoasterii ITM = neobtinut la MO → nivel_sursa GRI (REDARE, sursa secundara
 de calcul CM in d112 (cautat in tot codul, nu doar instanta).
 
 Marker: cm d112 cod 06 urgenta d_11 validat duk.
+
+## 02.08.2026 — PAS 7 (inchidere procedura): trei decizii de sesiune consemnate
+
+Trei decizii luate in sesiunea 02.08 care traiau doar in chat, scrise la INCHIDEREA campaniei (nu la sfarsitul zilei, cf. ARHITECT.md pct.5). Secventa de clustere NU se schimba (ramane 62): niciun cluster nu s-a inchis la acest pas — CM4 si D_11 sunt datorii pe clustere DEJA inchise (concedii medicale, PAS 6), iar tichete culturale ramane neverificat in secventa (fara test/temei). Verificat inainte de a scrie: secventa persistata la 62, toate clusterele √ deja scoase din lista.
+
+**(a) CM4 — plafonul de 12 salarii minime pe baza de calcul CM SE IMPLEMENTEAZA, nu ramane datorie permanenta.**
+DECIZIE: media zilnica de calcul (Mzbci) se capata la (12*sm)/nzl in `_calcul_cm_core` (OUG 158/2005 art.10) — plafonul se aplica, nu se lasa datorie la nesfarsit. CONDITIE: verbatim OUG 158/2005 **art.10 alin.(2)** la nivel Monitorul Oficial. Fara verbatim: BLOCAJ MOTIVAT, nu implementare din memorie.
+REZULTAT EFECTIV PAS 1 (consemnat aici, cerut de comanda): verbatim art.10(2) NEOBTINUT la MO — `anaf_surse/` nu contine OUG 158/2005 (doar `d112_struct_anaf.txt`, care da structura campurilor D112, nu textul art.10(2)). Deci: NEIMPLEMENTAT la acest pas, ramane BLOCAJ MOTIVAT. Datoria ramane deschisa: xfail strict `test_datorie_cm_plafon_12sm` (reason cu marker). Se inchide cand plafonul e aplicat + probat (media capata pe un caz peste plafon) + consemnat cu marker aici.
+ALTERNATIVA RESPINSA: implementarea plafonului din derivare/memorie fara textul art.10(2) — respinsa (proxy sintactic minte in ambele sensuri; plafonul e VERDICT-critical pe indemnizatie).
+LIMITA: art.10 alin.(1) (12 sm/luna) e confirmat (vezi intrarea 30.07 concedii medicale); alin.(2), care defineste APLICAREA pe baza de calcul zilnica, e cel neobtinut.
+
+**(b) Etichetele HG 423/2020 pentru campul D_11 — NU se implementeaza (dropdown cu denumiri).**
+DECIZIE: campul D_11 (cod urgenta medico-chirurgicala) ramane input NUMERIC validat 1..177, conform structurii oficiale D112 — NU se adauga dropdown cu denumirile celor ~177 etichete. Mecanica implementarii numerice e scrisa o singura data la intrarea 02.08 „CONCEDII MEDICALE: cod 06 D_11 (urgenta) implementat" (mai sus in acest registru) — NU se rescrie aici (sursa unica).
+MOTIV: numericul 1..177 e conform (`anaf_surse/d112_struct_anaf.txt`: C(3), obligatoriu daca D_9=06); dropdown-ul cu denumiri ar cere INVENTAREA etichetelor, iar nomenclatorul HG 423/2020 NU e in `anaf_surse/` (doar headerul).
+STATUT: DATORIE DESCHISA pana la obtinerea nomenclatorului oficial. A NU se trata ca lipsa (campul functioneaza si e DUK-valid) si a NU se „repara" prin inventarea etichetelor.
+ALTERNATIVA RESPINSA: dropdown cu etichete compuse din memorie/internet — respins (nu se inventeaza continutul unui nomenclator oficial).
+
+**(c) Push pe main — decizie exclusiva a lui Costin.**
+DECIZIE: executorul COMITE LOCAL si se opreste; NU impinge pe main din proprie initiativa, INDIFERENT de formularea comenzii. Push-ul il decide Costin, separat.
+INLOCUIESTE partea de push automat din decizia 30.07 („bucla pe pasi cu commit+push la fiecare pas", intrarea „PROCEDURA DE LUCRU"): commit-ul per pas ramane, push-ul automat se ABROGA. (In CLAUDE.md nu exista norma activa de push per pas — deci fara drift de actualizat acolo.)
+MOTIV: main e partajat cu Costin; publicarea e decizie de produs, nu de executie (ARHITECT.md pct.4). Un push din initiativa executorului scoate din mainile lui Costin momentul publicarii.
+LIMITA: nu schimba igiena locala — `git pull --rebase` inainte de commit ramane.

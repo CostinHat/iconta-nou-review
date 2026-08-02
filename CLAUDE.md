@@ -220,6 +220,8 @@ UI intră simultan în `DESIGN_SYSTEM.md` ȘI în `verificator_conformitate.py`
 - `~/iconta_nou/DECIZII.md` — DE CE am făcut așa. Registru de decizii cu temei,
   alternative respinse și limite. Se ADAUGĂ cronologic, nu se editează istoria.
   Nu e normativ — norma trăiește unde se aplică și se verifică mecanic
+- `~/iconta_nou/ARHITECT.md` — reguli de conduită pentru arhitect (Claude în
+  chat). Se citește la începutul fiecărei sesiuni; se predă prin copy-paste cu starea.
 - `~/iconta_nou/LANSARE.md` — backlog
 - `~/iconta_nou/FUNCTIONALITATI.csv` — registrul canonic al funcționalităților.
   Nicio funcționalitate nu trăiește în afara listei. Stări: LIVE / PLANIFICAT /
