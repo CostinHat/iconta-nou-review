@@ -57,6 +57,18 @@ def _functie_schimbata(relpath, func, data_verif):
     return (ao != an), None
 
 
+def _fisier_functie(relpaths, func):
+    """Fisierul (dintre cele ale clusterului) care CONTINE functia `func` la HEAD. Garda urmareste TOATE
+    testele clusterului, indiferent de fisier (02.08.2026: testele D2/D3 stau in fisiere separate de cel
+    primar - bifa nu cadea daca erau modificate). None daca in niciunul (-> fisierul primar, absenta semnalata)."""
+    for rp in relpaths:
+        new = subprocess.run(["git", "-C", str(_RAD), "show", "HEAD:%s" % rp],
+                             capture_output=True, text=True).stdout
+        if _ast_functie(new, func) not in (None, "<ABSENT>"):
+            return rp
+    return None
+
+
 def test_fiecare_modul_A_are_fisier_de_test():
     a = agenda.stare_sesiune_a()
     assert a is not None, "Inventarul sesiunii A lipseste din TESTE.md"
@@ -89,9 +101,10 @@ def test_verificarile_A_nu_sunt_in_urma_codului():
             continue
         zi, luna = rand["verificat"].split(".")[:2]
         dv = datetime.date(azi.year, int(luna), int(zi))
-        relpath = "core/" + rand["fisiere"][0]
+        relpaths = ["core/" + f for f in rand["fisiere"]]
         for fn in rand["functie"]:
-            folos[(relpath, fn)].append((rand["cluster"], dv))
+            rp = _fisier_functie(relpaths, fn) or relpaths[0]   # fisierul CARE CONTINE functia, nu doar primul
+            folos[(rp, fn)].append((rand["cluster"], dv))
     stale = []
     for (relpath, fn), cl in sorted(folos.items()):
         dv = min(d for _, d in cl)   # cea mai veche data (conservator)
@@ -386,3 +399,14 @@ def test_secventa_persistata_e_actuala():
     per = [(cl, mod) for _, cl, mod in agenda.secventa_persistata()]
     assert per == calc, ("persistata difera de calculata (graf schimbat?) - regenereaza. len calc=%d per=%d"
                          % (len(calc), len(per)))
+
+
+def test_fisier_functie_ruteaza_la_fisierul_care_contine_functia():
+    """PAS 0 (02.08): garda urmareste TOATE testele clusterului, nu doar fisierul primar. _fisier_functie
+    gaseste functia in fisierul corect (testele D2 in test_tichete_pontaj, D3 in test_exces_vacanta_d112),
+    nu o ignora tacit (absent in fisierul primar -> AST '<ABSENT>' in ambele versiuni -> fals 'neschimbat')."""
+    rps = ["core/test_salarizare.py", "core/test_tichete_pontaj.py", "core/test_exces_vacanta_d112.py"]
+    assert _fisier_functie(rps, "test_tichete_scad_cu_zilele_de_co") == "core/test_tichete_pontaj.py"
+    assert _fisier_functie(rps, "test_d112_cu_exces_vacanta_valid_duk") == "core/test_exces_vacanta_d112.py"
+    assert _fisier_functie(rps, "test_exces_vacanta_intra_in_baza_salariala") == "core/test_salarizare.py"
+    assert _fisier_functie(rps, "test_functie_inexistenta_xyz") is None
