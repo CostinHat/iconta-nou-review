@@ -319,6 +319,7 @@ clustere.
 | regim marja second-hand | tva_marja | test_versionare_formule.py |  | FISCAL | CF art.312 (norme pct.86) | (fara test de VALOARE - doar dispecer versionare; golden de scris) |
 | regim marja turism | tva_marja_turism | test_versionare_formule.py |  | FISCAL | CF art.311 | (fara test de VALOARE - doar dispecer versionare; golden de scris) |
 | impozit dividend | decontari_asociati | test_impozit_dividend.py |  | FISCAL | CF art.97; Legea 141/2025 | test_cota_dividend_si_lichidare_sursa_din_cote |
+| contributii PFA (praguri CAS/CASS pe sm) | d212 | test_d212_reper.py |  | FISCAL | CF art.148-149 (CAS), art.154/170 (CASS), art.68-69 (venit net); Legea 141/2025 (plafon CASS 72 sm) | test_d212_reper_din_cota_nu_literal test_d212_apare_in_graful_salariu_minim (reper vizibil; golden VALORI CAS/CASS de scris) |
 
 Numărul nu e ținta. Ținta: fiecare cluster FISCAL să aibă cifra afirmată cu temei citat la sursă.
 

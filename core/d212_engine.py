@@ -9,6 +9,9 @@ Se instantiaza cu salariul minim corect pentru anul de venit declarat.
 """
 
 from dataclasses import dataclass
+from datetime import date
+
+from core import common as _common
 
 
 @dataclass(frozen=True)
@@ -24,14 +27,25 @@ class PlafoaneD212:
     impozit_cota: float = 0.10
 
 
-# Venituri 2025 (declarate in D212 depusa in 2026) - sursa: HG 1506/2024, Cod fiscal
-PLAFOANE_VENIT_2025 = PlafoaneD212(salariu_minim=4050)
+def _sm_reper(an):
+    """Salariul minim REPER pentru anul de venit `an`: valoarea la 1 IANUARIE, FIX pe tot anul
+    (instructiunile formular 212), din registrul de cote - NU literal. Majorarea din iulie (ex. 4325 din
+    01.07.2026, HG 146/2026) NU atinge reperul. Face dependenta D212->salariu_minim VIZIBILA in graf (V2)."""
+    sm, _ = _common.cota("salariu_minim", date(an, 1, 1))
+    return int(sm)
 
-# Venituri 2026 (declarate in D212 depusa in 2027) - Legea 141/2025 urca plafonul CASS la 72 sm.
-# VERIFICAT LA SURSA 11.07.2026: reperul plafoanelor D212 = salariul minim la 1 ian 2026 = 4050 lei,
-# FIX pe tot anul (instructiunile formular 212), indiferent de majorarea la 4325 din 01.07 (HG 146/2026).
-# Majorarea salariului minim NU atinge plafoanele D212. Plafon CASS 60->72 sm confirmat pt venituri 2026.
-PLAFOANE_VENIT_2026 = PlafoaneD212(salariu_minim=4050, cass_prag_max_sm=72)
+
+def plafoane_an(an):
+    """PlafoaneD212 pentru anul de venit `an`, cu salariul minim reper din cota() (nu hardcodat). Legea
+    141/2025 urca plafonul CASS de la 60 la 72 sm pentru venituri 2026+."""
+    return PlafoaneD212(salariu_minim=_sm_reper(an), cass_prag_max_sm=72 if an >= 2026 else 60)
+
+
+# Venituri 2025 (declarate in D212 depusa in 2026) - reper sm din cota() (HG 1506/2024 = 4050).
+PLAFOANE_VENIT_2025 = plafoane_an(2025)
+# Venituri 2026 (declarate 2027) - Legea 141/2025 urca CASS la 72 sm. VERIFICAT LA SURSA 11.07.2026:
+# reperul = salariul minim la 1 ian 2026 = 4050 (fix pe an, majorarea 4325 din iulie NU-l atinge).
+PLAFOANE_VENIT_2026 = plafoane_an(2026)
 
 
 def calculeaza_cas(venit_net: float, plafoane: PlafoaneD212, optiune_cas: bool = False) -> dict:
