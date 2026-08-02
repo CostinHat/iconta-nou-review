@@ -5287,3 +5287,30 @@ golden D112 + DUK neschimbate (nu ating .5). Proba: test_partime_minim_rotunjest
 
 INCHIDERE CLUSTER: "rotunjire aritmetica (A91b) | d112" √ 03.08 (contributii aritmetice verificate + reparatie
 minim part-time). Fara xfail nou (reparat, nu amanat). Secventa 57 -> 56.
+
+
+## 03.08.2026 — Cluster sect_II tip_venit (impozit retinut) | d205: VERIFICAT + REPARATIE (impozit dividende period-aware)
+
+Clusterul urmator din lant dupa rotunjire A91b|d112. Sesiunea A. Sursa: anaf_surse/d205_struct_anaf.txt, acum
+IDENTIFICATA ca OPANAF 102/2025 (comentariile "VERSIUNE NECUNOSCUTA" din d205.py inlocuite cu OPANAF 102/2025).
+
+VERIFICAT CORECT (structura sect_II + tip_venit): tip_venit="08" = "1.a) venituri din dividende", tip_plata=2, cu
+divid_D/divid_P + baza1/imp1 (la 08, spre deosebire de 25/29 unde baza1/imp1 sunt interzise - R44/R45). sect_II se
+inchide inainte de <benef> (elemente FRATI). totalPlata_A = nrben+Tcastig+Tpierd+T_VB+T_GAR+Tbaza+Timp (nu doar
+Timp). Toate confirmate la sursa (d205_struct_anaf.txt). Acoperit de test_dividende_valid,
+test_totalPlata_A_e_suma_tuturor_campurilor_sect_II + proba DUK valida.
+
+REPARATIE (proba pe date reale, NU pe suspiciune): impozitul retinut pe dividende in calea AUTO era HARDCODAT
+10% (`Decimal("10")/Decimal(100)`), gresit pentru 2026. CF art.97 (verbatim, /tmp/cf.txt): "impozitul pe dividende
+se stabileste prin aplicarea unei cote de impozit de 16% asupra dividendului brut" de la 01.01.2026 (Legea 141/2025,
+MO 699/25.07.2025). COTE avea deja `impozit_dividend` = 16% (2026) / 10% (2024). FIX: rata rutata prin
+cota("impozit_dividend", date(perioada.an, 12, 31)) - period-aware. Proba DB REALA (test_d205_contract_pull_
+genereaza_perioada): 50000 dividende platite in 2026 -> impozit 8000 (16%), nu 5000 (10%); total_plata_a=8000.
+Testul incapsula valoarea GRESITA (5000) - aliniat la lege cu temei. Proba pana la declaratie: test_d205_contract_
+proba_duk_valid (D205 cu 16% trece DUKIntegrator). Gard anti-hardcode: test_d205_rata_dividend_din_cota_nu_hardcodat.
+
+Impact: fara fix, o firma care distribuie dividende in 2026 ar declara in D205 impozit retinut la 10% in loc de
+16% - sub-declarare directa a impozitului retinut la sursa.
+
+INCHIDERE CLUSTER: "sect_II tip_venit (impozit retinut) | d205" √ 03.08 (structura verificata OPANAF 102/2025 +
+reparatie rata dividende period-aware). Fara xfail nou. Secventa 56 -> 55.

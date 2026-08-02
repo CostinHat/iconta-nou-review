@@ -2,7 +2,7 @@
 """core/d205.py — D205 (Declaratie informativa privind impozitul retinut la sursa
 si castigurile/pierderile realizate, pe beneficiari de venit).
 
-REFACUT DE LA ZERO 16.07.2026, din ANAF structura D205 VERSIUNE NECUNOSCUTA
+REFACUT DE LA ZERO 16.07.2026, din ANAF structura D205 (OPANAF 102/2025)
 (structura_D205_2025_120226.pdf, modif. 12.02.2026), citita INTEGRAL (461 linii,
 dupa o prima incercare care citise doar primele ~180 si a ratat atributele reale
 ale sect_II/benef - gasite mai departe in document).
@@ -19,7 +19,7 @@ Structura reala:
     </sect_II>
   </declaratie205>
 
-Reguli de calcul (din ANAF structura D205 VERSIUNE NECUNOSCUTA):
+Reguli de calcul (din ANAF structura D205 (OPANAF 102/2025)):
   Tcastig = SUMA(castig1) pt. beneficiarii cu tip_venit1=25
   Tpierd  = SUMA(pierdere1) pt. beneficiarii cu tip_venit1=25
   Tbaza   = SUMA(baza1) pt. toti beneficiarii sectiunii
@@ -117,7 +117,7 @@ def build_xml(res):
     Tbaza = sum(b.baza1 for b in res.beneficiari)
     Timp = sum(b.imp1 for b in res.beneficiari)
     # totalPlata_A = suma(nrben)+suma(Tcastig)+suma(Tpierd)+suma(T_VB)+
-    # suma(T_GAR)+suma(Tbaza)+suma(Timp) - formula EXACTA din ANAF structura D205 VERSIUNE NECUNOSCUTA
+    # suma(T_GAR)+suma(Tbaza)+suma(Timp) - formula EXACTA din ANAF structura D205 (OPANAF 102/2025)
     # (nu doar Timp, cum pusesem prima data - DUK regula R15 respinsese exact asta:
     # cerea 11001, primea 1000).
     total_control = nrben + Tcastig + Tpierd + T_VB + T_GAR + Tbaza + Timp
@@ -135,14 +135,14 @@ def build_xml(res):
               "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()),
               _esc(_t(prof.get("nume"))), _esc(_t(prof.get("adresa"))), total_control))
     H.append(hdr)
-    # sect_II se INCHIDE (linia 26 din ANAF structura D205 VERSIUNE NECUNOSCUTA) INAINTE de <benef>
+    # sect_II se INCHIDE (linia 26 din ANAF structura D205 (OPANAF 102/2025)) INAINTE de <benef>
     # (linia 27) - sunt elemente FRATI, ambele copii ai radacinii, nu benef in
     # interiorul lui sect_II. Gresit prima data: pusesem benef in interiorul lui
     # sect_II. "sectiunea benef este gresit pozitionata" - eroarea validatorului
     # spunea exact asta.
     # tip_venit "08" = dividende (categ 1.a), NU "25" (alta categorie, unde
     # baza1/imp1 sunt interzise - R44/R45 respinsesera exact asta). Confirmat
-    # din ANAF structura D205 VERSIUNE NECUNOSCUTA: "08 1.a) venituri din dividende".
+    # din ANAF structura D205 (OPANAF 102/2025): "08 1.a) venituri din dividende".
     H.append('  <sect_II tip_venit="08" nrben="%d" Tcastig="%d" Tpierd="%d" '
              'T_VB="%d" T_GAR="%d" Tbaza="%d" Timp="%d"/>'
              % (nrben, Tcastig, Tpierd, T_VB, T_GAR, Tbaza, Timp))
@@ -190,7 +190,10 @@ def pull(conn, schema, perioada):
 def genereaza(conn, schema, perioada, manual=None):
     """D205 anual (contract uniform A1). `manual` cu cheia 'beneficiari' suprascrie lista calculata
     automat din dividendele distribuite asociatilor (cota din tabelul `asociati`, suma din notele
-    VALIDATE pe contul 457, impozit 10%). Foloseste perioada.an."""
+    VALIDATE pe contul 457, impozit pe dividende PERIOD-AWARE - cota("impozit_dividend"):
+    10% pana in 2025, 16% de la 01.01.2026 (Legea 141/2025, CF art.97). Foloseste perioada.an."""
+    from core.common import cota as _cota205
+    from datetime import date as _date205
     manual = cheie_manual(manual, "beneficiari")
     prof, asoc, total_div = pull(conn, schema, perioada)
 
@@ -205,7 +208,11 @@ def genereaza(conn, schema, perioada, manual=None):
             for a in asoc:
                 parte = _i(Decimal(total_div) * Decimal(str(a["cota"])) / Decimal(100))
                 if parte > 0:
-                    impozit = _i(Decimal(parte) * Decimal("10") / Decimal(100))
+                    # impozit pe dividende PERIOD-AWARE: cota 10% pana in 2025, 16% de la
+                    # 01.01.2026 (Legea 141/2025, CF art.97 - "cota de impozit de 16% asupra
+                    # dividendului brut"). Data = anul declaratiei (dividende platite in an).
+                    _cota_div = _cota205("impozit_dividend", _date205(perioada.an, 12, 31))[0]
+                    impozit = _i(Decimal(parte) * _cota_div)
                     beneficiari.append({"categ": "1.a", "nume": a["nume"],
                                         "cif": a.get("cnp") or "", "baza": parte,
                                         "imp": impozit, "castig": parte, "pierdere": 0,

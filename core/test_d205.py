@@ -127,14 +127,16 @@ def conn_schema_div():
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_d205_contract_pull_genereaza_perioada(conn_schema_div):
     """C3 contract uniform: genereaza(conn, schema, Perioada(an), manual) prin pull().
-    Dividende 50000, asociat 100%% -> parte 50000, impozit 10%% = 5000 (total_plata_a)."""
+    Dividende 50000 platite in 2026, asociat 100%% -> parte 50000, impozit pe dividende 16%% = 8000
+    (Legea 141/2025, CF art.97: "cota de impozit de 16%% asupra dividendului brut" de la 01.01.2026;
+    era 10%% pana in 2025). total_plata_a = 8000. Rata rutata prin cota("impozit_dividend"), period-aware."""
     xml, res = _d205.genereaza(conn_schema_div, _SCHEMA_D205, Perioada(2026))
     assert res.an == 2026
     assert len(res.beneficiari) == 1, "un beneficiar (asociatul cu cota>0)"
     b = res.beneficiari[0]
-    assert b.baza1 == 50000 and b.imp1 == 5000, (
-        "50000 dividende, impozit 10%% = 5000; got baza=%s imp=%s" % (b.baza1, b.imp1))
-    assert res.total_plata_a == 5000
+    assert b.baza1 == 50000 and b.imp1 == 8000, (
+        "50000 dividende platite 2026, impozit 16%% (Legea 141/2025) = 8000; got baza=%s imp=%s" % (b.baza1, b.imp1))
+    assert res.total_plata_a == 8000
 
 
 @pytest.mark.skipif(not _db_ok() or not _D205_DUK, reason="DB sau DUK d205 indisponibil")
@@ -143,3 +145,30 @@ def test_d205_contract_proba_duk_valid(conn_schema_div):
     xml, res = _d205.genereaza(conn_schema_div, _SCHEMA_D205, Perioada(2026))
     rez = _duk.valideaza(xml, "d205", an=2026)
     assert rez["stare"] == "valid", "DUK a respins D205: %s" % rez
+
+
+# ============================================================
+#  Impozit pe dividende PERIOD-AWARE in D205 (cluster sect_II tip_venit / impozit retinut).
+#  Rata NU mai e hardcodata 10% - vine din cota("impozit_dividend"): 10% pana in 2025,
+#  16% de la 01.01.2026 (Legea 141/2025, CF art.97: "cota de impozit de 16% asupra
+#  dividendului brut platit unei persoane fizice/juridice romane").
+# ============================================================
+def test_impozit_dividend_period_aware_cf_art97():
+    from decimal import Decimal
+    from datetime import date
+    from core.common import cota
+    # 2026: 16% (Legea 141/2025). 2025: 10%. Proba de valoare pe 50000 dividende:
+    assert cota("impozit_dividend", date(2026, 12, 31))[0] == Decimal("0.16")   # CF art.97 / Legea 141/2025
+    assert cota("impozit_dividend", date(2025, 12, 31))[0] == Decimal("0.10")   # regim pana in 2025
+    assert Decimal(50000) * cota("impozit_dividend", date(2026, 12, 31))[0] == Decimal("8000")
+    assert Decimal(50000) * cota("impozit_dividend", date(2025, 12, 31))[0] == Decimal("5000")
+
+
+def test_d205_rata_dividend_din_cota_nu_hardcodat():
+    # GARD anti-regresie: genereaza NU mai calculeaza impozitul cu 10% literal - foloseste
+    # cota("impozit_dividend"). Daca cineva rescrie Decimal("10")/Decimal(100), pica aici.
+    import inspect
+    from core import d205
+    src = inspect.getsource(d205.genereaza)
+    assert 'Decimal("10") / Decimal(100)' not in src, "rata dividend hardcodata reintrodusa"
+    assert 'cota("impozit_dividend"' in src or '_cota205("impozit_dividend"' in src

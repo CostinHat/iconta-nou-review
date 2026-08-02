@@ -247,65 +247,64 @@ CONSECINTE:
 
 Ordine DETERMINISTA a celor 64 clustere nebifate+neblocate, sortare topologica pe graf_clustere + departajare
 (a) FISCAL>STRUCTURA (b) deblocari desc (c) ordinea inventarului. Rescrisa 02.08: tichete masa/vacanta BIFAT ->
-iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. cota profit 16% + IMCA (cota verificata + IMCA implementat art.18^1) INCHIS 02.08 -> 60->59. amortizare|d101 (tratament art.28 aliniat; datorie MF metode) INCHIS 03.08 -> 59->58. baze contributii|d112 (cotele CAS/CASS/imp/CAM rutate period-aware prin COTE, value-preserving, aliniere Sesiunea A) INCHIS 03.08 -> 58->57. rotunjire aritmetica (A91b)|d112 (contributii aritmetice verificate; REPARAT minimul part-time care rotunjea bancar in B4_*P declarat) INCHIS 03.08 -> 57->56. Identitate = cluster | modul (nume duplicate intre module).
+iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. cota profit 16% + IMCA (cota verificata + IMCA implementat art.18^1) INCHIS 02.08 -> 60->59. amortizare|d101 (tratament art.28 aliniat; datorie MF metode) INCHIS 03.08 -> 59->58. baze contributii|d112 (cotele CAS/CASS/imp/CAM rutate period-aware prin COTE, value-preserving, aliniere Sesiunea A) INCHIS 03.08 -> 58->57. rotunjire aritmetica (A91b)|d112 (contributii aritmetice verificate; REPARAT minimul part-time care rotunjea bancar in B4_*P declarat) INCHIS 03.08 -> 57->56. sect_II tip_venit|d205 (structura OPANAF 102/2025 verificata; REPARAT impozit dividende hardcodat 10% -> period-aware 16%/2026 Legea 141/2025) INCHIS 03.08 -> 56->55. Identitate = cluster | modul (nume duplicate intre module).
 
 **REGULA DE ORDONARE.** Clusterul A vine dupa B daca o functie din A foloseste o valoare care APARTINE lui B (dependenta din graf_clustere). Sortare topologica pe aceste dependente. Departajare cand mai multe sunt libere simultan, in ordinea: (a) intra intr-o declaratie DEPUSA la ANAF - proxy Risc=FISCAL, aproximatie DECLARATA, nu echivalenta; (b) cate clustere deblocheaza; (c) ordinea din inventar. Secventa se PERSISTA, nu se recalculeaza la fiecare rulare - altfel pozitia 7 de azi nu e pozitia 7 de maine. Se rescrie DOAR cand se schimba graful sau se adauga clustere, cu motivul consemnat (vezi randul 'Rescrisa 02.08' de mai sus).
-1. sect_II tip_venit (impozit retinut) | d205
-2. rotunjire | d205
-3. cote TVA -> randuri | d300
-4. exigibilitate / TVA la incasare | d300
-5. taxare inversa | d300
-6. pro-rata deducere | d300
-7. rotunjire aritmetica | d300
-8. ajustari | d300
-9. tipuri operatiune 1-5 | d301
-10. rollup S4.1->S4 | d301
-11. baza = val x curs | d301
-12. cota TVA | d301
-13. tipuri operatiune IC (L/A/P/S) | d390
-14. rotunjire aritmetica (A91b) | d390
-15. reclasificari manuale | d390
-16. exigibilitate / prag | d390
-17. cote acceptate | d394
-18. taxare inversa | d394
-19. SourceDocuments (facturi reale, PARTIAL) | d406
-20. plafon diurna neimpozabila | deconturi
-21. credit sponsorizare / D177 | sponsorizari
-22. rezerva legala | motor
-23. zilieri (impozit+CAS) | contracte_speciale
-24. regim marja second-hand | tva_marja
-25. regim marja turism | tva_marja_turism
-26. impozit dividend | decontari_asociati
-27. contributii PFA (praguri CAS/CASS pe sm) | d212
-28. nomenclator cod_oblig<->cod_bugetar | d100
-29. cota micro 121 (flag) | d100
-30. checksum totalPlata_A (R11b) | d100
-31. scadente/nr_evidenta | d100
-32. structura P1-P53 | d101
-33. R17 Data_S / termen | d101
-34. limita text 75 | d112
-35. nomenclator cod_oblig | d112
-36. checksum totalPlata_A | d205
-37. trunchiere den/adresa | d205
-38. randuri / checksum | d300
-39. checksum totalPlata_A (R28) | d301
-40. nomenclator tari (HR->CR) | d390
-41. tipuri operatiune (pct.215) | d394
-42. tip_partener | d394
-43. rezumat1 campuri complete | d394
-44. nomenclator codPR (art.331) | d394
-45. totalPlata_A (R17) | d394
-46. plan conturi pe norma | d406
-47. UoM UN/ECE | d406
-48. MovementType nomenclator | d406
-49. BaseRate (encoding pro-rata) | d406
-50. registration_number (00+CUI) | d406
-51. structura XSD (Header/MasterFiles/GLE) | d406
-52. structura declaratie710 | d710
-53. nomenclator COD_BUGETAR | d710
-54. checksum R11b | d710
-55. R15 termen definitivare | d710
-56. scadente | d710
+1. rotunjire | d205
+2. cote TVA -> randuri | d300
+3. exigibilitate / TVA la incasare | d300
+4. taxare inversa | d300
+5. pro-rata deducere | d300
+6. rotunjire aritmetica | d300
+7. ajustari | d300
+8. tipuri operatiune 1-5 | d301
+9. rollup S4.1->S4 | d301
+10. baza = val x curs | d301
+11. cota TVA | d301
+12. tipuri operatiune IC (L/A/P/S) | d390
+13. rotunjire aritmetica (A91b) | d390
+14. reclasificari manuale | d390
+15. exigibilitate / prag | d390
+16. cote acceptate | d394
+17. taxare inversa | d394
+18. SourceDocuments (facturi reale, PARTIAL) | d406
+19. plafon diurna neimpozabila | deconturi
+20. credit sponsorizare / D177 | sponsorizari
+21. rezerva legala | motor
+22. zilieri (impozit+CAS) | contracte_speciale
+23. regim marja second-hand | tva_marja
+24. regim marja turism | tva_marja_turism
+25. impozit dividend | decontari_asociati
+26. contributii PFA (praguri CAS/CASS pe sm) | d212
+27. nomenclator cod_oblig<->cod_bugetar | d100
+28. cota micro 121 (flag) | d100
+29. checksum totalPlata_A (R11b) | d100
+30. scadente/nr_evidenta | d100
+31. structura P1-P53 | d101
+32. R17 Data_S / termen | d101
+33. limita text 75 | d112
+34. nomenclator cod_oblig | d112
+35. checksum totalPlata_A | d205
+36. trunchiere den/adresa | d205
+37. randuri / checksum | d300
+38. checksum totalPlata_A (R28) | d301
+39. nomenclator tari (HR->CR) | d390
+40. tipuri operatiune (pct.215) | d394
+41. tip_partener | d394
+42. rezumat1 campuri complete | d394
+43. nomenclator codPR (art.331) | d394
+44. totalPlata_A (R17) | d394
+45. plan conturi pe norma | d406
+46. UoM UN/ECE | d406
+47. MovementType nomenclator | d406
+48. BaseRate (encoding pro-rata) | d406
+49. registration_number (00+CUI) | d406
+50. structura XSD (Header/MasterFiles/GLE) | d406
+51. structura declaratie710 | d710
+52. nomenclator COD_BUGETAR | d710
+53. checksum R11b | d710
+54. R15 termen definitivare | d710
+55. scadente | d710
 ## Inventarul de acoperit în A
 
 Per CLUSTER de reguli, nu per fișier (30.07.2026) — un √ pe fișier ascundea că doar o parte din
@@ -358,7 +357,7 @@ clustere.
 | rotunjire aritmetica (A91b) | d112 | test_d112.py | √ 03.08 (rotunjirea contributiilor = ARITMETICA/half-up, nu bancara - ANAF structura D112 'Contributiile se rotunjesc aritmetic', DUK regula A91b CAM 112->113. _d112int (ROUND_HALF_UP) pe toate contributiile. REPARAT: minimul part-time (prag_zile, cas_min_pt, cass_min_pt) folosea round() BANCAR - _d112int ulterior era no-op pe valoarea deja intreaga, deci bancarul ajungea in B4_*P declarat; prag_zile=1226 -> CAS 306 in loc de 307. Rutat prin _d112int, proba pe valori reale) | FISCAL | ANAF structura D112 0126_030226 (rotunjire aritmetica); DUK regula A91b | test_rotunjire_aritmetica_nu_bancara test_partime_minim_rotunjeste_aritmetic_nu_bancar test_partime_minim_foloseste_d112int_nu_round_bancar test_toate_generatoarele_rotunjesc_aritmetic |
 | limita text 75 | d112 | test_d112.py |  | STRUCTURA |  |  |
 | nomenclator cod_oblig | d112 | test_d112.py |  | STRUCTURA |  |  |
-| sect_II tip_venit (impozit retinut) | d205 | test_d205.py |  | FISCAL |  |  |
+| sect_II tip_venit (impozit retinut) | d205 | test_d205.py | √ 03.08 (structura sect_II + tip_venit verificate la sursa anaf_surse/d205_struct_anaf.txt = OPANAF 102/2025: tip_venit=08 '1.a venituri din dividende' cu tip_plata=2 + divid_D/divid_P + baza1/imp1; sect_II frate cu benef; totalPlata_A = suma tuturor campurilor. REPARAT impozit retinut pe dividende: era hardcodat 10%, acum PERIOD-AWARE prin cota('impozit_dividend') - 16% de la 01.01.2026 CF art.97/Legea 141/2025 (era 10% pana in 2025). Proba DB reala: 50000 div 2026 -> 8000, nu 5000; proba DUK valida) | FISCAL | OPANAF 102/2025 (structura D205); CF art.97 + Legea 141/2025 (impozit dividende 16% de la 2026) | test_d205_contract_pull_genereaza_perioada test_impozit_dividend_period_aware_cf_art97 test_d205_rata_dividend_din_cota_nu_hardcodat test_d205_contract_proba_duk_valid |
 | checksum totalPlata_A | d205 | test_d205.py |  | STRUCTURA |  |  |
 | trunchiere den/adresa | d205 | test_d205.py |  | STRUCTURA |  |  |
 | rotunjire | d205 | test_d205.py |  | FISCAL |  |  |
