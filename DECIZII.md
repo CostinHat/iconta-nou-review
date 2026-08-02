@@ -4990,3 +4990,18 @@ sta pe venitul brut CONTRACTUAL (vbt), iar excesul e one-off, nu contractual -> 
 
 PROBA: D112 cu exces 5700 (grant 30000 - plafon 24300) -> DUK VALID; regresie D112 fara exces -> tot VALID
 (core/test_exces_vacanta_d112.py). "cas peste plafon vacanta declarat in d112 validat duk" - marker de inchidere.
+
+## 02.08.2026 — Perioada confirmata (cap.23): doua datorii de PRODUS (rol + escape manual)
+
+DATORIE (rol): confirmarea pontajului cere rolul admin_firma. In practica salarizarea o pregateste asistentul
+SENIOR, deci blocajul risca sa fie ocolit prin partajarea contului admin_firma. RBAC nu distinge azi senior/junior
+la nivel de operatiune (poate_valida). De REEVALUAT cand RBAC distinge poate_valida la nivel de operatiune - atunci
+confirmarea se leaga de dreptul granular, nu de rolul larg.
+
+DATORIE (escape manual): NU se adauga un camp "numar manual de tichete cu justificare" ca alternativa la
+confirmarea pontajului. Motiv: odata ce exista, devine calea IMPLICITA (se completeaza manual in loc sa se confirme
+pontajul), iar controlul legal (zile efectiv lucrate, HG 1045/2018 art.10(3)) devine decorativ. Se adauga DOAR daca
+pilotul arata cazuri reale in care confirmarea pontajului e imposibila. Pana atunci, escape-ul primar = confirmarea.
+
+NOTA reversibilitate: fluxul de rectificativa EXISTA (coada_api nr_depunere, d710) -> blocarea editarii pontajului
+dupa depunerea D112 trimite la un flux real, NU e blocaj final. (Nu e limita GARZI.)
