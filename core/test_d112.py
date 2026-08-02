@@ -168,3 +168,36 @@ def test_d112_cas_cass_valori_neschimbate_dupa_rutare():
     # generarea reala nu arunca dupa rutare (brut 6000, full-time)
     xml, _ = _d112_genereaza(_prof(), _sal(6000), 2026, 6)
     assert xml and "<asigurat" in xml
+
+
+# ============================================================
+#  A91b pt minimul PART-TIME: sumele fiscale (baza + CAS/CASS pe prag) se rotunjesc
+#  ARITMETIC (half-up), nu bancar. Descoperit la clusterul rotunjire aritmetica (A91b) | d112:
+#  prag_zile/cas_min_pt/cass_min_pt foloseau round() Python (bancar/half-to-even), iar _d112int
+#  ulterior era NO-OP (valoarea era deja intreaga) -> divergenta ajungea in B4_*P declarat.
+#  Regula: ANAF structura D112 "Contributiile se rotunjesc aritmetic" (validator DUK regula A91b).
+# ============================================================
+def test_partime_minim_rotunjeste_aritmetic_nu_bancar():
+    from core.d112 import _d112int
+    # PROBA pe valori reale de prag: bancar (round) da o suma GRESITA la granita .5, aritmetic o corecteaza.
+    # prag_zile=1226: CAS = 1226 x 0.25 = 306.5 -> bancar 306 (impar->par), ANAF cere 307.
+    assert round(1226 * 0.25) == 306        # comportamentul BANCAR (gresit pt ANAF)
+    assert _d112int(1226 * 0.25) == 307     # aritmetic (half-up) = valoarea CERUTA
+    # prag_zile=1225: CASS = 1225 x 0.10 = 122.5 -> bancar 122, ANAF cere 123.
+    assert round(1225 * 0.10) == 122        # BANCAR (gresit)
+    assert _d112int(1225 * 0.10) == 123     # aritmetic = corect
+
+
+def test_partime_minim_foloseste_d112int_nu_round_bancar():
+    # GARD anti-regresie pe SURSA functiei pull: minimul part-time (prag_zile, cas_min_pt,
+    # cass_min_pt) NU mai foloseste round() bancar - trebuie _d112int (half-up). Daca cineva
+    # rescrie cu round(), pica aici si trimite la A91b.
+    import inspect
+    from core import d112
+    src = inspect.getsource(d112.pull)
+    assert "prag_zile = round(" not in src
+    assert 's["cas_min_pt"] = round(' not in src
+    assert 's["cass_min_pt"] = round(' not in src
+    assert "prag_zile = _d112int(" in src
+    assert 's["cas_min_pt"] = _d112int(' in src
+    assert 's["cass_min_pt"] = _d112int(' in src

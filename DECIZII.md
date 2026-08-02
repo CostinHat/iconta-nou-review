@@ -5263,3 +5263,27 @@ fereastra de data, si d112 o preia automat - nu mai exista literal ascuns care s
 
 INCHIDERE CLUSTER: "baze contributii (CAS/CASS/imp/CAM) | d112" √ 03.08 (aliniere Sesiunea A, fara datorie,
 fara xfail nou). Secventa 58 -> 57.
+
+
+## 03.08.2026 — Cluster rotunjire aritmetica (A91b) | d112: VERIFICAT + REPARATIE (minim part-time rotunjea bancar)
+
+Clusterul urmator din lant dupa baze contributii|d112. Sesiunea A = aliniere cod la lege. Temei: ANAF structura
+D112 0126_030226 "Contributiile se rotunjesc aritmetic"; validator DUK regula A91b (CAM calculat 112, cerut 113).
+`round()` din Python e BANCARA (half-to-even), nu aritmetica.
+
+VERIFICAT CORECT: contributiile principale (CAS/CASS/impozit/CAM, media CM d17) trec prin `_d112int` =
+numar_fiscal(...).quantize(ROUND_HALF_UP) = aritmetic. Acoperit de test_rotunjire_aritmetica_nu_bancara (112.5->113),
+test_toate_generatoarele_rotunjesc_aritmetic (gard cross-generator pe int(round(...))), test_d112_pastreaza_
+rotunjirea_aritmetica.
+
+REPARATIE (proba pe date reale, NU pe suspiciune): minimul PART-TIME (art.146(5^6)/168(6^1) CF - supra-taxare sub
+salariul minim) calcula `prag_zile`, `cas_min_pt`, `cass_min_pt` cu `round()` BANCAR. `_d112int` aplicat ulterior
+(liniile b4_5p/6p/8p) era NO-OP: valoarea era deja intreaga din round(), deci rotunjirea BANCARA ajungea neatinsa
+in campurile B4_5P/B4_6P/B4_8P DECLARATE. Divergenta dovedita pe prag real: prag_zile=1226 -> CAS = 1226x0.25 =
+306.5 -> bancar 306 (par), ANAF cere 307; prag_zile=1225 -> CASS = 122.5 -> bancar 122, cerut 123. FIX: cele trei
+sume trec acum prin `_d112int` (half-up) direct, ca restul D112. Value-changing DOAR la granita .5 (rar dar real);
+golden D112 + DUK neschimbate (nu ating .5). Proba: test_partime_minim_rotunjeste_aritmetic_nu_bancar (306->307,
+122->123) + gard pe sursa test_partime_minim_foloseste_d112int_nu_round_bancar.
+
+INCHIDERE CLUSTER: "rotunjire aritmetica (A91b) | d112" √ 03.08 (contributii aritmetice verificate + reparatie
+minim part-time). Fara xfail nou (reparat, nu amanat). Secventa 57 -> 56.

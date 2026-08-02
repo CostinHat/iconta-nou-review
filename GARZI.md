@@ -28,7 +28,7 @@ Punctul 2 nu e formal. Pe 27.07 o gardă a „picat pe mutant" în timp ce crăp
 
 | Loc | Ce acoperă | Când rulează |
 |---|---|---|
-| suita pytest (1290 teste, 133 fișiere) | logică, schemă, semnături, contracte | la dev, înainte de commit |
+| suita pytest (1292 teste, 133 fișiere) | logică, schemă, semnături, contracte | la dev, înainte de commit |
 | `verificator_conformitate.py` | Design System, frontend (28 gardieni) | la dev, TOTAL 0 obligatoriu |
 | `core/verificatoare.py` | echilibru notă/balanță, TVA pe cotă, trezorerie | în aplicație, pe date reale |
 | `core/control_incrucisat.py` | D112/D300/D390 vs evidență, cotă TVA | în aplicație, semafor |
@@ -194,6 +194,11 @@ că intrarea a fost înghițită**.
   singur loc (fereastra de data), nu ramane literal ascuns in urma legii. Value-preserving (golden D112 + DUK
   neschimbate). GARD anti-hardcode prin inspectia sursei functiilor (test_d112_ruteaza_cotele_prin_cote_nu_literale)
   + test de valoare cu temei verbatim (test_cotele_contributii_din_cote_cu_temei).
+- ACOPERIT (03.08.2026): **rotunjirea minimului PART-TIME in D112** (A91b). prag_zile/cas_min_pt/cass_min_pt
+  foloseau round() BANCAR (half-to-even), iar _d112int ulterior era no-op pe valoarea deja intreaga -> bancarul
+  ajungea in B4_*P declarat (prag_zile=1226 -> CAS 306 in loc de 307). Rutate prin _d112int (half-up). GARD: proba
+  pe valori reale (test_partime_minim_rotunjeste_aritmetic_nu_bancar) + inspectia sursei pull
+  (test_partime_minim_foloseste_d112int_nu_round_bancar). Regula A91b: ANAF cere rotunjire aritmetica pe contributii.
 - DESCHIS: rotunjirea din D390 e bancară (`round()`), în timp ce D112 documentează că ANAF
   cere aritmetică. Schimbare fiscală — se verifică la sursă. Vezi DE_FACUT.
 
@@ -272,7 +277,7 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
 **Eșec:** teste verzi care nu testează nimic (fake-uri pe codul auditat, teste stale,
 fișiere necolectate).
 **Stare: PARȚIAL.**
-- ACOPERIT de fapt: 1290 teste colectate; fake-uri (`monkeypatch`/`MagicMock`) doar pe
+- ACOPERIT de fapt: 1292 teste colectate; fake-uri (`monkeypatch`/`MagicMock`) doar pe
   integrări externe (SPV, e-Factura, e-Transport, JWT). **Zero fake pe generatoarele de
   declarații.**
 - LIPSĂ: **mutantul zero sistematic** — forțezi fiecare generator să întoarcă `[]` și suita

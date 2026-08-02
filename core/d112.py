@@ -495,12 +495,12 @@ def pull(conn, schema, an, luna):
         zile_lucr = max(nzl - int(s.get("zile_cm") or 0), 0)
         baza = _sal_luna  # [tranzitie] date-aware, nu salariati.salariu_brut
         scutit = bool(s.get("scutit_pt"))
-        prag_zile = round(prag_pt * zile_lucr / nzl) if nzl else 0
+        prag_zile = _d112int(prag_pt * zile_lucr / nzl) if nzl else 0  # A91b: aritmetic, nu bancar
         if not scutit and 0 < baza < prag_zile:
             s["pt_aplica"] = True
             s["baza_minim_pt"] = prag_zile
-            s["cas_min_pt"] = round(prag_zile * float(_cm.cota("cas", ref)[0]))
-            s["cass_min_pt"] = round(prag_zile * float(_cm.cota("cass", ref)[0]))
+            s["cas_min_pt"] = _d112int(prag_zile * float(_cm.cota("cas", ref)[0]))   # A91b aritmetic
+            s["cass_min_pt"] = _d112int(prag_zile * float(_cm.cota("cass", ref)[0]))  # A91b aritmetic
         else:
             s["pt_aplica"] = False
     _cs_sal.close()
