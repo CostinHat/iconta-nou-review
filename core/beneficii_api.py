@@ -13,7 +13,7 @@ Tratament fiscal (verificat la sursa 2026):
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 
-TIPURI = ("vacanta", "cadou")
+TIPURI = ("vacanta", "cadou", "cultural")
 # [F133 Faza 2b1] evenimentele cadou. Cele 4 LEGALE (<=300 lei = neimpozabil); 'altul' = nelegal
 # (taxabil integral). Peste plafon sau nelegal -> taxabil (Faza 2b2; in 2b1 doar SEMNAL).
 EVENIMENTE_CADOU = ("paste", "craciun", "8martie", "1iunie", "altul")
@@ -30,14 +30,34 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment=""):
     if tip == "cadou":
         if eveniment not in EVENIMENTE_CADOU:
             return {"eroare": "evenimentul cadoului e obligatoriu (paste/craciun/8martie/1iunie/altul)"}
+    elif tip == "cultural":
+        # [TICHETE CULTURALE] Legea 165/2018 art.21(1): lunar (eveniment gol) SAU ocazional (pe eveniment).
+        if eveniment not in ("", "ocazional"):
+            return {"eroare": "tichetul cultural e lunar (eveniment gol) sau ocazional (eveniment='ocazional')"}
     else:
-        eveniment = ""  # non-cadou nu are eveniment
+        eveniment = ""  # non-cadou/non-cultural nu are eveniment
     try:
         v = Decimal(str(valoare or 0))
     except Exception:
         return {"eroare": "valoare invalida"}
     if v < 0:
         return {"eroare": "valoarea nu poate fi negativa"}
+    if tip == "cultural" and v > 0:
+        # [GARD] plafon semestrial indexat (verdict 16). Fereastra GRI (oct.2025-mar.2026) sau semestru
+        # fara ordin confirmat -> BLOCAT motivat, NU se calculeaza tacit cu 240/470. + valoare nominala
+        # multiplu de 10, max = plafon lunar/eveniment (Legea 165/2018 art.22(2), verdict 15).
+        import datetime as _dtc
+        from core import common as _cm
+        _ocaz = (eveniment == "ocazional")
+        try:
+            _plaf, _sursa = _cm.plafon_cultural(_dtc.date(int(an), int(luna), 1), ocazional=_ocaz)
+        except _cm.PlafonCulturalIndisponibil as _e:
+            return {"eroare": str(_e)}
+        if v % 10 != 0:
+            return {"eroare": "valoarea tichetului cultural = multiplu de 10 lei (Legea 165/2018 art.22(2))"}
+        if v > _plaf:
+            return {"eroare": "valoarea %s depaseste plafonul %s/%s pentru %s-%s (%s)"
+                    % (v, _plaf, ("eveniment" if _ocaz else "luna"), an, luna, _sursa)}
     with conn.cursor() as cur:
         cur.execute(f"SELECT 1 FROM {schema}.salariati WHERE id = %s", (salariat_id,))
         if not cur.fetchone():

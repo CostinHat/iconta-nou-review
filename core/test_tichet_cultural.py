@@ -59,3 +59,36 @@ def test_cultural_diferit_de_masa_pe_cass():
     # masa: cass pe 200 = 20; cultural: cass pe 200 = 0
     assert masa["cass_tichete"] == Decimal("20.00")
     assert cult["cass_tichete"] == Decimal("0.00")
+
+
+# ---- beneficii_api.seteaza cultural: GARD-uri (validare INAINTE de conn -> unit, fara DB) ----
+def test_cultural_seteaza_gri_blocat():
+    # oct 2025 - mar 2026 = GRI -> BLOCAT motivat, nu 240/470 tacit (GARD OBLIGATORIU).
+    from core import beneficii_api
+    r = beneficii_api.seteaza(None, "s", 1, 2025, 12, "cultural", 100)
+    assert "eroare" in r and "PERIOADA_BLOCATA" in r["eroare"] and "GRI" in r["eroare"]
+
+
+def test_cultural_seteaza_multiplu_de_10():
+    from core import beneficii_api
+    r = beneficii_api.seteaza(None, "s", 1, 2026, 5, "cultural", 155)  # 155 nu e multiplu de 10
+    assert "eroare" in r and "multiplu" in r["eroare"]
+
+
+def test_cultural_seteaza_peste_plafon():
+    from core import beneficii_api
+    r = beneficii_api.seteaza(None, "s", 1, 2026, 5, "cultural", 300)  # >250 (plafon lunar apr-sep 2026)
+    assert "eroare" in r and "plafon" in r["eroare"]
+
+
+def test_cultural_seteaza_eveniment_invalid():
+    from core import beneficii_api
+    r = beneficii_api.seteaza(None, "s", 1, 2026, 5, "cultural", 100, eveniment="paste")
+    assert "eroare" in r and "ocazional" in r["eroare"]
+
+
+def test_cultural_seteaza_ocazional_peste_plafon_eveniment():
+    from core import beneficii_api
+    # ocazional apr-sep 2026: plafon eveniment 490; 500 depaseste
+    r = beneficii_api.seteaza(None, "s", 1, 2026, 5, "cultural", 500, eveniment="ocazional")
+    assert "eroare" in r and "plafon" in r["eroare"]
