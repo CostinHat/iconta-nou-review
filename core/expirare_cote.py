@@ -20,6 +20,8 @@ from core.common import COTE, cote_neconfirmate
 # Eticheta umana pentru fiecare cheie din COTE. Acoperirea (ETICHETE == chei COTE) e pazita de test:
 # o valoare noua fara eticheta ar produce un mesaj sarac; o eticheta ramasa fara cheie = drift.
 ETICHETE = {
+    "impozit_micro": "Cota impozit micro (1%)",
+    "impozit_profit": "Cota impozit pe profit (16%)",
     "tva_standard": "Cota standard TVA",
     "tva_redusa": "Cota redusa TVA",
     "impozit_dividend": "Cota impozit pe dividende (regim dividende + lichidare)",

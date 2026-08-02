@@ -29,6 +29,8 @@ REGULI EXTRASE DIN VALIDATOR (constant pool, D100Validator.jar v9):
 """
 from __future__ import annotations
 
+from datetime import date
+from core import common as _common
 from core.common import text_anaf as _t, cheie_manual  # limita 75 car. ANAF (27.07.2026)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
@@ -61,6 +63,17 @@ def _esc(v):
 
 def _i(x):
     return int(Decimal(str(x)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+
+
+def _rata_impozit_default(regim, an, luna):
+    """Rata default (micro 1% / profit 16%) din registrul de cote - nume UNIC ca graful sa vada dependenta
+    (genereaza se ciocneste pe nume cu alte module -> ar fi invizibila). Contabilul o poate da explicit
+    prin manual; asta e doar fallback-ul. TEMEI: CF art.51 (micro), art.17 (profit). nivel_sursa: REDARE."""
+    d = date(an, luna, 1)
+    # chei LITERALE (nu variabila) ca graful sa vada ambele dependente
+    if regim == "micro":
+        return _common.cota("impozit_micro", d)[0] * 100
+    return _common.cota("impozit_profit", d)[0] * 100
 
 
 def _nr_evid(cod_oblig, luna, an, zi_scadenta, luna_scadenta, an_scadenta, tip_oblig="1"):
@@ -237,12 +250,13 @@ def genereaza(conn, schema, perioada, manual=None):
     obligatii = []
     regim = (prof.get("regim_fiscal") or "").lower()
     if regim == "micro":
-        c = Decimal(str(cota)) if cota is not None else Decimal("1")
+        # rata default din registru (impozit_micro=1%), NU literal; contabilul o poate da explicit prin manual
+        c = Decimal(str(cota)) if cota is not None else _rata_impozit_default("micro", an, luna)
         suma = _i(Decimal(str(venituri)) * c / Decimal(100))
         if suma > 0:
             obligatii.append({"cod_oblig": "121", "suma_dat": suma, "cota": "1"})
     elif regim == "profit":
-        c = Decimal(str(cota)) if cota is not None else Decimal("16")
+        c = Decimal(str(cota)) if cota is not None else _rata_impozit_default("profit", an, luna)
         suma = _i(Decimal(str(venituri)) * c / Decimal(100))
         if suma > 0:
             obligatii.append({"cod_oblig": "103", "suma_dat": suma})

@@ -342,6 +342,14 @@ COTE = {
     "plafon_avans_decontare": [
         (date(2023, 12, 15), Decimal("5000"), Temei("OUG", 115, 2023, data_in="2023-12-15", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
+    # impozit micro (1% standard) / profit (16%) - rata DEFAULT (contabilul o poate da explicit prin manual).
+    # Mutate din literalele hardcodate din d100 (dependenta ascunsa V2) -> vizibile in graf.
+    "impozit_micro": [
+        (date(2023, 1, 1), Decimal("0.01"), Temei("CF", art="51", alin="1", data_in="2023-01-01", verificat_la="2026-08-02", de_cine="Code/Costin", nivel_sursa="REDARE")),
+    ],
+    "impozit_profit": [
+        (date(2018, 1, 1), Decimal("0.16"), Temei("CF", art="17", data_in="2018-01-01", verificat_la="2026-08-02", de_cine="Code/Costin", nivel_sursa="REDARE")),
+    ],
     "cas": [
         (date(2018, 1, 1), Decimal("0.25"), Temei("CF", art="138", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
