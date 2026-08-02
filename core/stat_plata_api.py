@@ -33,6 +33,7 @@ def stat_plata(conn, schema, an, luna):
         cm = {r[0]: {"zile": int(r[1]), "net": float(r[2]), "brut": float(r[3])} for r in cur.fetchall()}
     # [F133 Faza 2a] tichete de vacanta acordate in luna (one-off, din beneficii_lunare)
     vac_luna = _ben.lista_luna(conn, schema, an, luna, "vacanta")
+    cult_luna = _ben.lista_luna(conn, schema, an, luna, "cultural")  # [tichete culturale]
     plafon_vac_an = 6 * float(_common.cota("salariu_minim", ref)[0])  # 6 salarii minime/an
     # [F133 Faza 2b1] tichete cadou acordate in luna: NEIMPOZABIL (nu atinge calcul_salariu/D112).
     # total/salariat (SUM evenimente) + flag taxabil (>300 sau eveniment nelegal -> semnal, tratare la 2b2).
@@ -63,6 +64,7 @@ def stat_plata(conn, schema, an, luna):
         else:
             brut_lucrat = float(brut or 0)
         vac = vac_luna.get(sid, 0)  # [F133 Faza 2a] tichete vacanta acordate in luna
+        cult = cult_luna.get(sid, 0)  # [tichete culturale] acordate in luna (lunar + ocazional)
         # [D3 02.08] exces vacanta peste plafonul anual (6 sm) -> venit salarial in brut (cumulat an)
         _cum_c3 = float(_ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) or 0)
         _cum_a3 = float(_ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna - 1) or 0) if luna > 1 else 0.0
@@ -75,7 +77,8 @@ def stat_plata(conn, schema, an, luna):
                                          facilitate_prorata=_fac_prorata,
                                          tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
                                          tichet_vacanta=max(float(vac or 0) - _exces_v3, 0.0),
-                                         tichet_vacanta_exces=_exces_v3)
+                                         tichet_vacanta_exces=_exces_v3,
+                                         tichet_cultural=float(cult or 0))
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
         vac_an = _ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) if vac else 0
         cadou = cadou_luna.get(sid, 0)  # [F133 Faza 2b1] total cadou (neimpozabil in 2b1)
@@ -152,6 +155,7 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     tichet_zile = max(zile_luna - cm_zile, 0)  # [F133] aceleasi zile ca proratarea salariului
     brut_lucrat = float(brut or 0) * max(zile_luna - cm_zile, 0) / zile_luna if zc else float(brut or 0)
     vac = _ben.lista_luna(conn, schema, an, luna, "vacanta").get(salariat_id, 0)  # [F133 Faza 2a]
+    cult = _ben.lista_luna(conn, schema, an, luna, "cultural").get(salariat_id, 0)  # [tichete culturale]
     cadou = _ben.lista_luna(conn, schema, an, luna, "cadou").get(salariat_id, 0)  # [F133 Faza 2b1] neimpozabil
     calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
                                      norma_intreaga=not part_time,
@@ -160,7 +164,8 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
                                      data_incetare=data_inc,
                                      facilitate_prorata=_fac_prorata,
                                      tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
-                                     tichet_vacanta=float(vac or 0))
+                                     tichet_vacanta=float(vac or 0),
+                                     tichet_cultural=float(cult or 0))
 
     with conn.cursor() as _cur:
         _cur.execute(f"SELECT culoare_factura, font_factura FROM {schema}.firma_profil WHERE id = 1")
