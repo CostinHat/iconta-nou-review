@@ -309,3 +309,23 @@ def test_d112_maternitate_cod08_c2_rd3(schema):
     c2 = m.group(0)
     assert 'C2_31="1"' in c2 and 'C2_32="10"' in c2 and 'C2_36="4000"' in c2, "maternitatea nu e pe Rd.3: " + c2
     assert 'C2_11="0"' in c2 and 'C2_16="0"' in c2, "maternitatea nu e exclusa din Rd.1: " + c2
+
+
+def test_d112_urgenta_cod06_emite_d11(schema):
+    # [D112 D-field] CM cod 06 (urgenta medico-chirurgicala) cere D_11 (cod urgenta, HG 423/2020, C(3),
+    # obligatoriu daca D_9=06). Inainte D_11 nu se emitea -> DUK: "Nu s-a completat codul de urgenta".
+    from core import d112
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id, nume, prenume, cnp, data_angajare, salariu_brut, ore_zi, "
+                    "part_time) OVERRIDING SYSTEM VALUE VALUES "
+                    "(1,'URG','C','1900101410011','2026-01-01',6000,8,false)")
+        cur.execute("INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, baza, "
+                    "media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, brut_ang, "
+                    "brut_fnuass, cass, impozit, cas, net, cod_urgenta) VALUES "
+                    "(1,2026,6,'06',10,4000,6000,400,100,false,10,5,5,2000,2000,0,300,1000,2700,123)")
+    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    import re
+    m = re.search(r'<asiguratD[^>]*D_9="06"[^>]*/>', xml)
+    assert m, "asiguratD cod 06 negasit in XML"
+    d = m.group(0)
+    assert 'D_11="123"' in d, "D_11 (cod urgenta) nu e emis la cod 06: " + d

@@ -220,6 +220,8 @@ def _d112_genereaza(prof, salariati, an, luna):
                                ("D_5", x.get("da") or ""), ("D_6", x.get("di") or ""), ("D_7", x.get("ds") or "")):
                     if _v:
                         _opt += ' %s="%s"' % (_a, _v)
+                if str(x.get("cod") or "01").zfill(2) == "06" and x.get("cod_urgenta"):
+                    _opt += ' D_11="%d"' % int(x.get("cod_urgenta"))  # [D_11] cod urgenta HG 423/2020, oblig. la cod 06 (D112 C(3), mutex D_12)
                 _dl.append('    <asiguratD%s D_9="%s" D_10="%d" '
                            'D_14="%d" D_15="%d" D_16="%d" D_17="%d" D_18="%d" D_19="%.2f" D_20="%d" D_21="%d" D_23="%s"/>'
                            % (_opt, (x.get("cod") or "01"), int(x.get("loc_prescriere") or 1),
@@ -382,6 +384,7 @@ def pull(conn, schema, an, luna):
             "di": _d112_data(str(c.get("data_inceput") or "")),
             "ds": _d112_data(str(c.get("data_sfarsit") or "")),
             "cod": c.get("cod") or "01",
+            "cod_urgenta": c.get("cod_urgenta"),
             "loc_prescriere": c.get("loc_prescriere") or 1,
             "zile_ang": c.get("zile_ang") or 0,
             "zile_fnuass": c.get("zile_fnuass") or 0,

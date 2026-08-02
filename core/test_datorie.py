@@ -240,11 +240,11 @@ def test_datorie_teste_care_apara_buguri():
     assert "teste cu constante fiscale trecute sistematic cu temei citat" in dz.lower()
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: D112 nu genereaza corect campurile D-field pentru toate codurile CM SPECIALE. REPARAT: cod 08 (maternitate) - agregate C2 pe Rd.3 (C2_31/32/34/36) + split 100% FNUASS, DUK VALID. RAMAS: (a) cod 06 (urgente) cere D_11 (cod urgenta, nomenclator HG 423/2020, C(3)) - concedii_medicale nu are campul, cere camp de date nou + UI; (b) sub-randuri C2 infectocontagioase (cod 05, Rd.1.1-1.4 cu conditii D_12/data) nedefalcate, emise 0 (corect cat timp nu exista cod 05 in luna). Se inchide cand cod 06 + sub-randurile 05 trec DUK, consemnat in DECIZII.md.")
-def test_datorie_cm_dfield_coduri_speciale():
-    # Se inchide cand D112 cu CM cod 08 (maternitate) si 06 (urgente) trece DUKIntegrator, consemnat in DECIZII.md.
+@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026 (ingustata 02.08): sub-randurile C2 infectocontagioase (cod 05, Rd.1.1-1.4 cu conditii D_12/data) nedefalcate, emise 0 (corect cat timp nu exista cod 05 in luna). INCHISE separat 02.08: cod 08 (maternitate, Rd.3 DUK VALID) si cod 06 (urgente, D_11 + DUK VALID - test_d112_cod06_urgenta_valid_duk). RAMAS DOAR cod 05: se inchide cand un cert cod 05 in luna e defalcat pe sub-randuri si trece DUK, consemnat in DECIZII.md.")
+def test_datorie_cm05_subrows_infectocontagioase():
+    # Se inchide cand un certificat cod 05 in luna e defalcat pe sub-randurile Rd.1.1-1.4 si trece DUK.
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
-    assert "cm d112 coduri speciale d-field validate duk" in dz.lower()
+    assert "cm05 sub-randuri infectocontagioase defalcate duk" in dz.lower()
 
 
 @pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: D394 exclude linia scutita (cota 0) catre partener cu CUI (structD394 pct.217: cota 0 permisa doar pentru LS/AS/ASI/N/V) - o linie scutita pe o factura tip L catre partener RO cu CUI e IGNORATA cu avertisment, nu inclusa. Proba DUK pe factura MULTI-COTA cu exact acest caz (21+11+scutit catre CUI -> DUK valid + incadrare corecta a scutitului) NEFACUTA - probele D394 (test_d300_d394_paritate) folosesc date care evita cazul (A4 = date consistente fara scutit-catre-CUI). Se inchide cand proba e facuta si consemnata in DECIZII.md.")

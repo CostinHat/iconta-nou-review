@@ -82,6 +82,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp"><span class="camp-eticheta">Num\u0103r</span><input type="text" id="cm-numar" class="camp-input" placeholder="ex. 1234567"></label>
           <label class="camp" style="grid-column:span 2"><span class="camp-eticheta">Cod indemniza\u021bie</span><select id="cm-cod" class="camp-input">${optCod}</select></label>
           <label class="camp" id="cm-venit-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">Venit brut realizat \u00een perioada CM, dup\u0103 reducerea timpului (lei)</span><input type="number" id="cm-venit" class="camp-input" min="0" step="0.01"></label>
+          <label class="camp" id="cm-urgenta-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">Cod urgen\u021b\u0103 medico-chirurgical\u0103<span class="oblig">*</span></span><input type="number" id="cm-urgenta" class="camp-input" min="1" max="177" placeholder="1\u2013177"><span class="camp-ajutor">Cod din nomenclatorul urgen\u021belor medico-chirurgicale (HG 423/2020). D112 \u00eel cere obligatoriu la codul 06.</span></label>
           <label class="camp"><span class="camp-eticheta">Data acord\u0103rii</span><input type="date" id="cm-acord" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Data \u00eenceput<span class="oblig">*</span></span><input type="date" id="cm-inceput" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Data sf\u00e2r\u0219it <span class="oblig">*</span></span><input type="date" id="cm-sfarsit" class="camp-input"></label>
@@ -103,6 +104,8 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     const selCod = zona.querySelector("#cm-cod");
     const venitZona = zona.querySelector("#cm-venit-zona");
     selCod.addEventListener("change", () => { venitZona.style.display = selCod.value === "10" ? "" : "none"; });  // [cod10] camp conditionat
+    const urgentaZona = zona.querySelector("#cm-urgenta-zona");
+    selCod.addEventListener("change", () => { urgentaZona.style.display = selCod.value === "06" ? "" : "none"; });  // [cod06] D_11 camp conditionat
 
 
     zona.querySelector("#cm-renunta").addEventListener("click", () => { zona.innerHTML = ""; });
@@ -138,12 +141,16 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       if (!zile || zile < 1) { rez.innerHTML = `<span class="msg-eroare">Zilele lucr\u0103toare CM trebuie s\u0103 fie cel pu\u021bin 1.</span>`; return; }
       if (!ven6 || ven6 <= 0) { rez.innerHTML = `<span class="msg-eroare">Completeaz\u0103 veniturile brute pe 6 luni (baza de calcul).</span>`; return; }
       if (!zile6 || zile6 < 1) { rez.innerHTML = `<span class="msg-eroare">Completeaz\u0103 zilele lucr\u0103toare din cele 6 luni.</span>`; return; }
+      const codSel = zona.querySelector("#cm-cod").value;
+      const urg = parseInt(zona.querySelector("#cm-urgenta").value, 10);
+      if (codSel === "06" && (!urg || urg < 1 || urg > 177)) { rez.innerHTML = `<span class="msg-eroare">La codul 06 (urgen\u021b\u0103 medico-chirurgical\u0103) completeaz\u0103 codul de urgen\u021b\u0103 (1\u2013177, HG 423/2020).</span>`; return; }
 
       const inc = new Date(inceput);
       const payload = {
         serie: zona.querySelector("#cm-serie").value,
         numar: zona.querySelector("#cm-numar").value,
         cod: zona.querySelector("#cm-cod").value,
+        cod_urgenta: zona.querySelector("#cm-urgenta").value || null,
         venit_realizat: zona.querySelector("#cm-venit").value || null,
         data_acordare: zona.querySelector("#cm-acord").value || null,
         data_inceput: inceput,

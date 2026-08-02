@@ -5015,3 +5015,32 @@ absente/invoire din pontaj. Reversarea decuplarii 20.07 pe partea de calcul (sta
 BLOCHEAZA (blocaj motivat); dupa confirmare (admin_firma), autoritativ. Reversibilitate: de-confirmare automata la
 editare, blocare dupa depunere D112 (-> rectificativa). UI pe ecranul pontaj (semafor gri/verde + caseta-info +
 buton-verde). Gard verificator (GARD PERIOADA CONFIRMATA). Marker: tichete masa zile efectiv lucrate din pontaj implementat.
+
+
+## 02.08.2026 — CONCEDII MEDICALE: cod 06 D_11 (urgenta) implementat; cod 02 GRI; taxe_cm↔d112 fara divergenta
+
+**Cod 06 (urgenta medico-chirurgicala) — campul D_11 implementat.** Structura oficiala D112
+(anaf_surse/d112_struct_anaf.txt:5504-5525): D_11 = "Cod urgenta medico-chirurgicala", C(3), OBLIGATORIU daca
+D_9=06 ("Daca D_9=06 si D_11 is null → Nu s-a completat codul de urgenta medico-chirurgicala"), <=177 daca
+data_acordare>29.05.2020 (altfel <=175), mutex cu D_12 (cod 05 infectocontagios). Nomenclatorul HG 423/2020
+(cele ~177 etichete de urgenta) NU e in sursa (doar headerul la :7990) — NU s-au inventat etichete; campul e un
+**input numeric validat 1..177**, nu un dropdown cu denumiri. Implementat: coloana `cod_urgenta` pe
+concedii_medicale (tenant_template.sql + core/migrare_cod_urgenta_cm.py, idempotent); validare API
+(salariati_api.salveaza_concediu: la cod 06 D_11 obligatoriu 1..maxu); emisie d112 (asiguratD D_11 cand cod=06);
+UI conditionat pe ecranul de concedii (flux_concediu.js: camp .camp-input + .camp-ajutor citand HG 423/2020 +
+validare .msg-eroare — DS cap.4/cap.6, zero pattern nou). **Proba DUK VALID** (raw): cod 01 valid, cod 06
+(D_11=123) valid, cod 08 valid — test_d112_cod06_urgenta_valid_duk (gated DUK), test_d112_urgenta_cod06_emite_d11
+(emisie, RED->GREEN->mutatie). Lectie DUK: cod 06 ambulatoriu (loc_prescriere=1) <=5 zile (regula S96.2); serie+numar
+(D_1/D_2) obligatorii — prima proba a picat pe date de test invalide, nu pe D_11.
+
+**Cod 02 (accident de traseu) — GRI, fara reparatie de formula.** Codul trateaza cod 02 ca accident FAAMBP
+(procent_accident/100 = 80/100), corect: accidentul de traseu recunoscut de ITM E accident de munca (Legea
+346/2002). Scenariul "75% boala obisnuita" = cazul in care accidentul NU e recunoscut → operatorul recodifica la
+01, NU e o ramura de formula pe cod 02. Deci fara divergenta de reparat. Verbatim OUG 158/2005 art.17-18 + regula
+recunoasterii ITM = neobtinut la MO → nivel_sursa GRI (REDARE, sursa secundara).
+
+**taxe_cm ↔ d112 — fara divergenta.** d112.py:186 apeleaza functia canonica salarizare.taxe_cm PER CERTIFICAT
+(cod): CAS 25% uniform, CASS 10% doar 01/07/10. Unificarea din 31.07 confirmata la sursa; nicio a doua instanta
+de calcul CM in d112 (cautat in tot codul, nu doar instanta).
+
+Marker: cm d112 cod 06 urgenta d_11 validat duk.
