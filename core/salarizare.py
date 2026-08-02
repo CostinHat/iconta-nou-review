@@ -111,7 +111,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
                    norma_intreaga=True, venit_brut_total=None,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
-                   facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0):
+                   facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -229,12 +229,15 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # (art.157(2) excepteaza NUMAI masa+vacanta -> culturalul NU intra in CASS, verdict 11), FARA CAS
     # (art.142 lit.r, verdict 10), FARA CAM (art.220^4(2), verdict 12). NU intra in plafonul 33% (verdict 14).
     tichete_cult = _dec(tichet_cultural) if _dec(tichet_cultural) > 0 else Decimal(0)
+    # [TICHETE DE CRESA] Legea 165/2018 art.19. Acelasi tratament ca CULTURAL: impozit 10% pe nominal
+    # INTEGRAL, FARA CAS/CASS/CAM (art.142 lit.r / 157(2) / 220^4(2)).
+    tichete_cresa = _dec(tichet_cresa) if _dec(tichet_cresa) > 0 else Decimal(0)
     bilete_taxabile = tichete_nominal + tichete_vac
     cass_tichete = bilete_taxabile * cota_cass
     baza_imp_tichete = bilete_taxabile - cass_tichete
     if baza_imp_tichete < 0:
         baza_imp_tichete = Decimal(0)
-    baza_imp_tichete += tichete_cult  # cultural: fara cass de dedus -> valoarea nominala intra INTEGRAL
+    baza_imp_tichete += tichete_cult + tichete_cresa  # cultural + cresa: fara cass de dedus -> nominal INTEGRAL
     impozit_tichete = baza_imp_tichete * cota_imp
 
     # impozitul returnat = TOTAL (salariu + tichete), ca sa fie corect pt net/monografie/D112
@@ -295,8 +298,9 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
         "cass_tichete": _q(cass_tichete),          # CASS pe masa + vacanta (inclus in baza CASS D112)
         "impozit_tichete": _q(impozit_tichete),    # impozit pe masa + vacanta + cultural (inclus in "impozit")
         "tichete_cultural": _q(tichete_cult),      # [cultural] valoare nominala; impozit 10%, FARA CASS
+        "tichete_cresa": _q(tichete_cresa),        # [cresa] valoare nominala; impozit 10%, FARA CASS
         # angajatorul suporta valoarea nominala a biletelor (le cumpara) - cost real
-        "cost_angajator": _q(b + cam + cas_suprataxa + cass_suprataxa + tichete_nominal + tichete_vac + tichete_cult),
+        "cost_angajator": _q(b + cam + cas_suprataxa + cass_suprataxa + tichete_nominal + tichete_vac + tichete_cult + tichete_cresa),
     }
 
 
@@ -317,7 +321,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    norma_intreaga=True, venit_brut_total=None,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
-                   facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0):
+                   facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0):
     """Calcul salariu brut->net, DISPECER pe la_data (varianta de formula valabila la luna venitului).
     Dispecer subtire care forwardeaza toti parametrii catre varianta datata; NU duplica corpul.
     TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
@@ -331,7 +335,8 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
               venit_brut_total=venit_brut_total, exceptat_suprataxare=exceptat_suprataxare,
               tichet_valoare=tichet_valoare, tichet_zile=tichet_zile, tichet_vacanta=tichet_vacanta,
               data_angajare=data_angajare, data_incetare=data_incetare, facilitate_prorata=facilitate_prorata,
-              tichet_vacanta_exces=tichet_vacanta_exces, tichet_cultural=tichet_cultural)
+              tichet_vacanta_exces=tichet_vacanta_exces, tichet_cultural=tichet_cultural,
+              tichet_cresa=tichet_cresa)
 
 
 # ============================================================
@@ -610,6 +615,9 @@ BILETE_VALOARE_TRATAMENT = {
                  "cass": "peste plafon", "cam": "peste plafon",
                  "plafon_sursa": "300 lei/eveniment (CF art.76(4) lit.a)",
                  "temei": "CF art.76(4) lit.a / 142 lit.b"},
+    "cresa":    {"impozit": "10% pe valoarea nominala INTEGRALA", "cas": False, "cass": False, "cam": False,
+                 "plafon_sursa": "450/luna/copil (L165 art.19(1)); indexare GRI verdict 17 - neaplicata",
+                 "temei": "CF art.76(3)h / 142 lit.r / 157(2) / 220^4(2); L165/2018 art.19"},
     "cultural": {"impozit": "10% pe valoarea nominala INTEGRALA", "cas": False, "cass": False, "cam": False,
                  "plafon_sursa": "plafon_cultural() - semestrial indexat prin ordine MF/MC (Legea 165/2018 art.22)",
                  "temei": "CF art.76(3)h(v13)/142 lit.r(v10)/157(2)(v11)/220^4(2)(v12); art.25(3)b pct.3 (deductibil 5% angajator)"},

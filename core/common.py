@@ -481,6 +481,23 @@ def plafon_cultural(la_data, ocazional=False):
         "Cine decide: Costin.")
 
 
+# ============================================================
+#  TICHETE DE CRESA — Legea 165/2018 art.19. Baza legala: 450 lei/luna/COPIL (art.19(1)); valoare nominala
+#  10/multiplu/max 100 (art.19(2)). Tratament fiscal = ca tichetul cultural (impozit 10%, FARA CAS/CASS/CAM:
+#  cresa e in CF art.142 lit.r + exceptata din CASS art.157(2) care lasa doar masa+vacanta). Valoarea se
+#  INDEXEAZA semestrial prin ordine MF/MMSS - NEconfirmate la sursa primara (verdict 17 GRI: ordinul 368/179/
+#  2026 = 740 lei doar din surse secundare, mmuncii HTTP 503) -> se aplica BAZA confirmata 450/copil,
+#  grant-urile care depind de indexarea neconfirmata (>450/copil) sunt blocate (GARD).
+# ============================================================
+def plafon_cresa(la_data, nr_copii=1):
+    """Plafonul maxim lunar al tichetelor de cresa: (Decimal, sursa). = 450 * nr_copii (L165 art.19(1),
+    baza confirmata). Indexarea (ex. 740 din 2026) e GRI (verdict 17) -> NEaplicata; cap conservator la baza."""
+    n = int(nr_copii) if nr_copii else 1
+    if n < 1:
+        n = 1
+    return Decimal("450") * n, "Legea 165/2018 art.19(1) - baza 450/luna/copil (indexare GRI verdict 17, neaplicata)"
+
+
 def cota(nume, la_data=None, strict=True):
     """Intoarce (valoare, temei) valabila la data ceruta (implicit azi).
 
