@@ -137,7 +137,7 @@ def _d112_genereaza(prof, salariati, an, luna):
     idx = 0
     for s in salariati:
         idx += 1
-        brut = _d112int(s.get("brut"))
+        brut = _d112int(s.get("brut")) + _d112int(s.get("exces_vacanta", 0))  # [D3] excesul de vacanta in brutul declarat (S731)
         facil = _d112int(s.get("facilitate"))
         bazac = brut - facil
         if bazac < 0:
@@ -442,6 +442,12 @@ def pull(conn, schema, an, luna):
         # [D2 02.08] tichete pe zile EFECTIV lucrate (HG 1045/2018 art.10(3)): nzl - CM - CO/deleg/absente/invoire (pontaj)
         _fara_t = _pontaj.zile_fara_tichet(conn, schema, s["id"], an, luna) if float(s.get("tichet_masa_valoare") or 0) > 0 else 0
         tichet_zile = max(nzl - zile_cm_s - _fara_t, 0)
+        # [D3 02.08] exces tichete vacanta peste plafonul ANUAL (6 sm) -> venit salarial in brut (cumulat an)
+        _vac_l = float(s.get("tichet_vacanta") or 0)
+        _plaf_van = 6.0 * float(sm)
+        _cum_c = float(_ben.total_an(conn, schema, s["id"], an, "vacanta", pana_luna=luna) or 0)
+        _cum_a = float(_ben.total_an(conn, schema, s["id"], an, "vacanta", pana_luna=luna - 1) or 0) if luna > 1 else 0.0
+        _exces_van = _ben.exces_vacanta_luna(_cum_c, _cum_a, _plaf_van)
         r = _sz.calcul_salariu(brut_lucrat,
                                persoane=s.get("persoane_intretinere") or 0,
                                la_data=ref,
@@ -452,11 +458,13 @@ def pull(conn, schema, an, luna):
                                facilitate_prorata=_fac_prorata,
                                tichet_valoare=float(s.get("tichet_masa_valoare") or 0),
                                tichet_zile=tichet_zile,
-                               tichet_vacanta=float(s.get("tichet_vacanta") or 0))
+                               tichet_vacanta=max(_vac_l - _exces_van, 0.0),
+                               tichet_vacanta_exces=_exces_van)
         s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
         s["facilitate"] = r.get("facilitate", 0)
         s["cas"] = r.get("cas", 0)
         s["cass"] = r.get("cass", 0)
+        s["exces_vacanta"] = _exces_van   # [D3] intra in brutul declarat (B4 base)
         s["impozit"] = r.get("impozit", 0)          # TOTAL (salariu + tichete)
         s["deducere"] = (r.get("deducere") or {}).get("total", 0)
         s["cass_tichete"] = r.get("cass_tichete", 0)        # [F133] CASS pe tichete

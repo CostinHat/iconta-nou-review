@@ -4970,3 +4970,23 @@ CLUSTER tichete masa/vacanta - cele trei deschideri (31.07):
   odata cu grupul co-locat. DE IMPLEMENTAT: excesul = beneficiu salarial integral (CAS+CASS+impozit) in BAZA
   salariala. Proba DUK obligatorie (31.07: DUK a respins CAS pe exces ca linie separata via B4_7 - baza recalc
   din salariu S731/S74) -> excesul intra in baza_contrib, nu ca linie de tichet. Vezi urmatorul commit.
+
+
+## 02.08.2026 — D3 INCHIS: CAS peste plafon vacanta declarat in D112 validat DUK (exces in brutul declarat)
+
+Decizie Costin: excesul de tichete de vacanta peste plafonul ANUAL (6 sal.minime, OUG 8/2009 art.1) intra in
+VENITUL BRUT DECLARAT (S731/build_xml d112), nu doar in baza de contributii. Motiv: DUK are dreptate - regula
+S74 recalculeaza B4 din brutul declarat; excesul e avantaj salarial (CF art.138/156), deci face parte din brut
+prin natura lui. Cablarea 31.07 punea excesul in baza fara sa-l puna in brut -> INCOERENT, respins de DUK.
+
+IMPLEMENTAT: calcul_salariu.b_imp = brut + exces (gross impozabil); atinge deducere/CAM/contributii/brut declarat;
+NET-ul ramane pe CASH (excesul e voucher, nu numerar). d112: excesul intra in brut (bazac = brut+exces-facil),
+cumulat ANUAL (beneficii_api.exces_vacanta_luna). Plafonul e anual, pe cumulat.
+
+SCHIMBARI DERIVATE (corectie, nu regresie - aratate): brut 5000 + exces 4000 -> brut declarat 9000; deducere
+personala 800.13 -> 0.00 (excesul urca brutul peste plafonul sm+2000); CAS 1250 -> 2250, CASS 500 -> 900, CAM
+112.50 -> 202.50; net cash 3005 -> 1265. FACILITATEA la salariul minim NESCHIMBATA (200 -> 200): eligibilitatea
+sta pe venitul brut CONTRACTUAL (vbt), iar excesul e one-off, nu contractual -> nu intra in vbt.
+
+PROBA: D112 cu exces 5700 (grant 30000 - plafon 24300) -> DUK VALID; regresie D112 fara exces -> tot VALID
+(core/test_exces_vacanta_d112.py). "cas peste plafon vacanta declarat in d112 validat duk" - marker de inchidere.

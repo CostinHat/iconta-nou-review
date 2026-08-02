@@ -197,12 +197,16 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # -> peste plafon cad toate trei (varianta i, DECIZII 31.07). Plafonul (cumulat anual) se verifica
     # de apelant -> aici primim doar portiunea de EXCES a lunii.
     exces_vac = _dec(tichet_vacanta_exces) if _dec(tichet_vacanta_exces) > 0 else Decimal(0)
-    baza_contrib = b - facilitate + exces_vac
+    # [D3 02.08] excesul intra in VENITUL BRUT impozabil (b_imp), declarat in D112 (S731) - regula DUK
+    # S74 recalc B4 din brutul declarat. Atinge tot ce deriva din brut: deducere, CAM, contributii,
+    # suprataxare. NET-ul ramane pe CASH (b), excesul e avantaj in natura (tichet), nu numerar.
+    b_imp = b + exces_vac
+    baza_contrib = b_imp - facilitate
 
     cas = baza_contrib * cota_cas
     cass = baza_contrib * cota_cass
 
-    ded = deducere_personala(b, persoane, sub_26, copii_scoala, functie_baza, la_data=la_data)
+    ded = deducere_personala(b_imp, persoane, sub_26, copii_scoala, functie_baza, la_data=la_data)
 
     baza_imp = baza_contrib - cas - cass - _dec(ded["total"])
     if baza_imp < 0:
@@ -232,7 +236,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     impozit = baza_imp * cota_imp + impozit_tichete
     net = b - cas - cass - cass_tichete - impozit
 
-    cam = b * cota_cam
+    cam = b_imp * cota_cam
 
     # SUPRATAXARE SUB SALARIUL MINIM (art. 146 alin. (5^6) si art. 168 alin. (6^1)
     # Cod fiscal). Verificat la sursa 15.07.2026 (mfinante.gov.ro, text oficial):
@@ -268,7 +272,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
         cass_suprataxa = diferenta * cota_cass
 
     return {
-        "brut": _q(b),
+        "brut": _q(b_imp),   # [D3] gross impozabil (cu exces vacanta) - declarat in D112
         "facilitate": _q(facilitate),
         "cas": _q(cas),
         "cass": _q(cass),

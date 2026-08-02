@@ -218,7 +218,6 @@ def test_datorie_tichete_masa_zile_efectiv_lucrate():
     assert "tichete masa zile efectiv lucrate din pontaj implementat" in dz.lower()
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 31.07.2026: excesul voucherelor de vacanta peste plafonul anual (6 sal.minime, OUG 8/2009 art.1) = avantaj salarial INTEGRAL (CAS+CASS+impozit, in baza salariala). Decizie de scop (Costin, DECIZII 31.07): cele 3 scutiri (CF art.76(3)h, 142 lit.r, 157(2)) sunt conditionate de aceeasi formula 'acordate potrivit legii' - nu exista citire care sa piarda doua si sa pastreze a treia. Codul azi taxeaza CASS+impozit dar NU CAS = INCOERENT, nu conservator. DE IMPLEMENTAT la clusterul D112 (nu acum): excesul intra in baza salariala, deci misca deducerea personala (art.77, degresiva) - se face cu tot lantul sub ochi. DUK accepta CAS pe exces DOAR prin baza salariala (S731/S74). Se inchide cand e implementat la D112, DUK-valid, consemnat in DECIZII.md.")
 def test_datorie_cas_peste_plafon_vacanta():
     # Se inchide cand CAS pe excesul de vacanta e declarat corect in D112 si validat pe DUK, consemnat
     # in DECIZII.md (marker stabil, case-insensitive).

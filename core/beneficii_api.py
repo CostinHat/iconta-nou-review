@@ -88,3 +88,10 @@ def total_an(conn, schema, salariat_id, an, tip, pana_luna=12):
                         WHERE salariat_id=%s AND an=%s AND tip=%s AND luna<=%s""",
                     (salariat_id, an, tip, pana_luna))
         return float(cur.fetchone()[0])
+
+
+def exces_vacanta_luna(cumul_curent, cumul_anterior, plafon_an):
+    """[D3] Portiunea din tichetele de vacanta ale LUNII care depaseste plafonul ANUAL (6 sal.minime),
+    incremental (OUG 8/2009 art.1 - plafon ANUAL, pe cumulat). cumul_curent = total vacanta pana la luna
+    curenta INCLUSIV; cumul_anterior = pana la luna trecuta."""
+    return max(0.0, float(cumul_curent) - float(plafon_an)) - max(0.0, float(cumul_anterior) - float(plafon_an))

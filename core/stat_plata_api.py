@@ -59,6 +59,10 @@ def stat_plata(conn, schema, an, luna):
         else:
             brut_lucrat = float(brut or 0)
         vac = vac_luna.get(sid, 0)  # [F133 Faza 2a] tichete vacanta acordate in luna
+        # [D3 02.08] exces vacanta peste plafonul anual (6 sm) -> venit salarial in brut (cumulat an)
+        _cum_c3 = float(_ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) or 0)
+        _cum_a3 = float(_ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna - 1) or 0) if luna > 1 else 0.0
+        _exces_v3 = _ben.exces_vacanta_luna(_cum_c3, _cum_a3, plafon_vac_an)
         calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
                                          norma_intreaga=not part_time,
                                          venit_brut_total=float(brut or 0),
@@ -66,7 +70,8 @@ def stat_plata(conn, schema, an, luna):
                                          data_incetare=data_inc,
                                          facilitate_prorata=_fac_prorata,
                                          tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
-                                         tichet_vacanta=float(vac or 0))
+                                         tichet_vacanta=max(float(vac or 0) - _exces_v3, 0.0),
+                                         tichet_vacanta_exces=_exces_v3)
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
         vac_an = _ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) if vac else 0
         cadou = cadou_luna.get(sid, 0)  # [F133 Faza 2b1] total cadou (neimpozabil in 2b1)
