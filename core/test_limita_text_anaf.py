@@ -173,8 +173,10 @@ def test_rotunjirea_e_identica_intre_generatoare():
     from core.d390 import _int as a
     from core.d300 import _int as b
     from core.d112 import _d112int as c
+    from core.d205 import _i as d   # D205 rotunjeste sumele (baza/imp/dividende) tot ARITMETIC (A91b)
     for v in (112.5, 0.5, 2.5, 1000.5, 112.4, 112.6):
-        assert a(v) == b(v) == c(v), "rotunjiri divergente pe %s: %s/%s/%s" % (v, a(v), b(v), c(v))
+        assert a(v) == b(v) == c(v) == d(v), (
+            "rotunjiri divergente pe %s: %s/%s/%s/%s" % (v, a(v), b(v), c(v), d(v)))
 
 
 # ============================================================

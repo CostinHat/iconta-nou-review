@@ -5314,3 +5314,21 @@ Impact: fara fix, o firma care distribuie dividende in 2026 ar declara in D205 i
 
 INCHIDERE CLUSTER: "sect_II tip_venit (impozit retinut) | d205" √ 03.08 (structura verificata OPANAF 102/2025 +
 reparatie rata dividende period-aware). Fara xfail nou. Secventa 56 -> 55.
+
+
+## 03.08.2026 — Cluster rotunjire | d205: VERIFICAT (aritmetic, deja corect) + gardat
+
+Clusterul urmator din lant dupa sect_II tip_venit|d205. Sesiunea A. Temei: aceeasi regula ANAF ca la D112 -
+sumele fiscale se rotunjesc ARITMETIC (half-up), nu bancar (validator A91b: "Contributiile se rotunjesc aritmetic").
+
+VERIFICAT CORECT: toate sumele D205 (baza1, imp1, castig1, pierdere1, total_div, parte, impozit) trec prin `_i` =
+`int(Decimal(str(x)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))` = aritmetic. NU exista niciun `round()` bancar
+in d205.py. Corect prin constructie.
+
+GAP DE ACOPERIRE (inchis, fara schimbare de comportament): `_i` din d205 NU era in gardul de identitate
+cross-generator (test_rotunjirea_e_identica_intre_generatoare acoperea doar d390/d300/d112) si nu avea proba
+d205-specifica. Adaugat: `_i` in gardul de identitate (a==b==c==d pe 112.5/0.5/2.5/...) + test_d205_rotunjeste_
+aritmetic_nu_bancar (_i(2.5)=3, _i(0.5)=1 - aritmetic, bancarul ar da 2/0). Daca cineva schimba _i pe bancar, pica.
+
+INCHIDERE CLUSTER: "rotunjire | d205" √ 03.08 (rotunjire aritmetica verificata + gardata). Fara xfail nou, fara
+schimbare de valoare. Secventa 55 -> 54.

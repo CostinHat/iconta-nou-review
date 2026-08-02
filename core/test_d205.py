@@ -172,3 +172,17 @@ def test_d205_rata_dividend_din_cota_nu_hardcodat():
     src = inspect.getsource(d205.genereaza)
     assert 'Decimal("10") / Decimal(100)' not in src, "rata dividend hardcodata reintrodusa"
     assert 'cota("impozit_dividend"' in src or '_cota205("impozit_dividend"' in src
+
+
+# ============================================================
+#  Rotunjire D205 (cluster rotunjire | d205): sumele fiscale (baza, impozit, dividende) se
+#  rotunjesc ARITMETIC (half-up), nu bancar - aceeasi regula ANAF ca la D112 (validator A91b:
+#  "Contributiile se rotunjesc aritmetic"). _i = Decimal.quantize(ROUND_HALF_UP).
+# ============================================================
+def test_d205_rotunjeste_aritmetic_nu_bancar():
+    from core.d205 import _i
+    assert _i(112.5) == 113   # aritmetic; bancar (half-to-even) ar da 112
+    assert _i(2.5) == 3       # bancar ar da 2 (par)
+    assert _i(0.5) == 1       # bancar ar da 0
+    assert _i(112.4) == 112
+    assert _i(112.6) == 113
