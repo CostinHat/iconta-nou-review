@@ -2,7 +2,7 @@
 """D3 (02.08.2026): excesul de tichete de vacanta peste plafonul anual (6 sm) = venit salarial in BRUTUL
 DECLARAT (S731) - regula DUK S74 recalc B4 din brut. Proba obligatorie: D112 cu exces trece DUKIntegrator."""
 import pytest
-from core import db as _db, tenant_provisioning as _tp, duk as _duk, beneficii_api as _ben, d112
+from core import db as _db, tenant_provisioning as _tp, duk as _duk, beneficii_api as _ben, d112, perioada as _per
 
 
 def _db_ok():
@@ -34,6 +34,7 @@ def conn():
                 cur.execute("INSERT INTO salariati (cnp,nume,prenume,data_angajare,salariu_brut,ore_zi,judet_casa,tichet_masa_valoare) "
                             "VALUES ('1900101410011','POPESCU','ION','2024-01-01',5000,8,'B',40) RETURNING id")
                 sid = cur.fetchone()[0]
+            _per.confirma(c, SCHEMA, 2026, 6, "pontaj", user_id=1)  # cap.23: pontaj confirmat
             yield c, sid
         finally:
             c.rollback()

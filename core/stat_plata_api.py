@@ -6,6 +6,7 @@ from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 from core.pdf_fonturi import init_fonturi, font
 from core import pontaj as _pontaj
+from core import perioada as _per
 from core import salarizare
 from core import scadente as _scad
 from core import beneficii_api as _ben
@@ -52,6 +53,9 @@ def stat_plata(conn, schema, an, luna):
         cm_zile = c_cm["zile"] if (c_cm and c_cm["zile"] > 0) else 0
         # [D2 02.08] tichete de masa pe zile EFECTIV lucrate (HG 1045/2018 art.10(3)): zile lucratoare
         # - CM (evidenta) - CO/delegatie/absente/invoire (pontaj). Reversarea decuplarii 20.07 (DECIZII 02.08).
+        # [D2/cap.23] tichetele cer pontaj CONFIRMAT (nu se ghiceste zile efectiv lucrate dintr-o luna necompletata)
+        if float(tichet_val or 0) > 0 and not _per.e_confirmat(conn, schema, an, luna, "pontaj")["confirmat"]:
+            raise _per.PerioadaNeconfirmata("Tichetele de masa", an, luna, "pontaj", "HG 1045/2018 art.10(3)")
         _fara_tichet = _pontaj.zile_fara_tichet(conn, schema, sid, an, luna) if float(tichet_val or 0) > 0 else 0
         tichet_zile = max(zile_luna - cm_zile - _fara_tichet, 0)
         if cm_zile > 0:

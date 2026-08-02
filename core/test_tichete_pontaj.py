@@ -3,7 +3,7 @@
 Zilele de CO/delegatie/absente/invoire din pontaj NU dau drept la tichet. Reversarea decuplarii 20.07."""
 import pytest
 from core import db as _db, tenant_provisioning as _tp
-from core import salariati_api as sa, stat_plata_api as sp, pontaj as pj
+from core import salariati_api as sa, stat_plata_api as sp, pontaj as pj, perioada as per
 
 SCHEMA = "ztest_tichete_pontaj"
 
@@ -39,6 +39,7 @@ def _sid(conn):
                               data_angajare="2025-01-01", salariu_brut=5000, tip_norma="intreaga")["salariat_id"]
     with conn.cursor() as cur:
         cur.execute("UPDATE salariati SET tichet_masa_valoare = 40 WHERE id = %s", (sid,))
+    per.confirma(conn, SCHEMA, 2026, 8, "pontaj", user_id=1)  # cap.23: fara confirmare, tichetele blocheaza
     return sid
 
 
@@ -61,3 +62,16 @@ def test_tichete_scad_cu_zilele_de_co(conn):
     cu = {f["id"]: f for f in sp.stat_plata(conn, SCHEMA, 2026, 8)}[sid]
     assert fara["tichete_zile"] - cu["tichete_zile"] == 5, \
         "CO nu reduce tichetele: fara=%s cu=%s" % (fara["tichete_zile"], cu["tichete_zile"])
+
+
+def test_tichete_blocheaza_daca_pontaj_neconfirmat(conn):
+    """cap.23: fara confirmarea pontajului, calculul tichetelor blocheaza cu blocaj motivat."""
+    sid = sa.creeaza_salariat(conn, nume="POP", prenume="I", cnp="1900101410011",
+                              data_angajare="2025-01-01", salariu_brut=5000, tip_norma="intreaga")["salariat_id"]
+    with conn.cursor() as cur:
+        cur.execute("UPDATE salariati SET tichet_masa_valoare = 40 WHERE id = %s", (sid,))
+    with pytest.raises(per.PerioadaNeconfirmata):
+        sp.stat_plata(conn, SCHEMA, 2026, 8)
+    per.confirma(conn, SCHEMA, 2026, 8, "pontaj", user_id=1)
+    st = {f["id"]: f for f in sp.stat_plata(conn, SCHEMA, 2026, 8)}[sid]   # dupa confirmare, merge
+    assert st["tichete_zile"] > 0
