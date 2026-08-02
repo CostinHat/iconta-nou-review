@@ -2264,6 +2264,17 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.pontaj (
     CONSTRAINT pontaj_pkey PRIMARY KEY (salariat_id, zi)
 );
 
+-- [cap.23 DS] Perioada confirmata: starea CONFIRMAT/NECONFIRMAT per (an,luna,domeniu) conditioneaza calculele din aval
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.perioada_confirmata (
+    an integer NOT NULL,
+    luna integer NOT NULL,
+    domeniu varchar(20) NOT NULL,
+    confirmat_de integer,
+    confirmat_la timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT perioada_confirmata_pkey PRIMARY KEY (an, luna, domeniu),
+    CONSTRAINT perioada_confirmata_luna_ck CHECK (luna BETWEEN 1 AND 12)
+);
+
 --
 -- e-Factura trimiteri (F126/F160, pasul 2) — mirror al core/migrare_efactura_trimiteri.py
 --
