@@ -2896,7 +2896,7 @@ def cor_cauta(q: str = "", ctx=Depends(cere_context)):
 @app.put("/tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar")
 def salariat_beneficiu_lunar(tenant_id: int, salariat_id: int, corp: dict = Body(...),
                              ctx=Depends(cere_rol("admin_firma", "angajat"))):
-    """[F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou) - upsert; 0 = sterge."""
+    """[F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou/cultural) - upsert; 0 = sterge."""
     from core import beneficii_api as _ben
     an, luna = corp.get("an"), corp.get("luna")
     if not isinstance(an, int) or not isinstance(luna, int) or luna < 1 or luna > 12:

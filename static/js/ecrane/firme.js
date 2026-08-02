@@ -745,7 +745,7 @@ async function ecranSalariati(corp, nav, t) {
         <div class="pf-frand" style="flex-wrap:wrap">
           <div class="pf-frand-text" style="flex:1 1 100%">
             <div class="pf-frand-nume">${esc(s.nume)}</div>
-            <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
+            <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${s.tichete_cultural ? ` · <span style="color:var(--teal)">cultural ${bani(s.tichete_cultural)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;width:100%">
           <button class="buton-primar" data-flut="${s.id}">Flutura\u0219</button>
@@ -755,6 +755,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-pontaj="${s.id}" data-nume="${esc(s.nume)}">Pontaj</button>
           <button class="buton-secundar" data-vac="${s.id}" data-val="${s.tichete_vacanta || 0}" data-nume="${esc(s.nume)}">+ vacanță</button>
           <button class="buton-secundar" data-cadou="${s.id}" data-nume="${esc(s.nume)}">+ cadou</button>
+          <button class="buton-secundar" data-cult="${s.id}" data-nume="${esc(s.nume)}">+ cultural</button>
           <button class="buton-secundar" data-iban="${s.id}" data-val="${esc(s.iban || "")}" data-nume="${esc(s.nume)}">IBAN ${s.iban ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-cor="${s.id}" data-val="${esc(s.cor || "")}" data-nume="${esc(s.nume)}">COR ${s.cor ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-incet="${s.id}" data-val="${esc(s.data_incetare || "")}" data-nume="${esc(s.nume)}">${s.data_incetare ? "Plecat " + s.data_incetare : "Încetare"}</button>
@@ -773,6 +774,7 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-reges-zona"></div>
       <div id="sp-vac-zona"></div>
       <div id="sp-cadou-zona"></div>
+      <div id="sp-cultural-zona"></div>
       <div id="sp-iban-zona"></div>
       <div id="sp-cor-zona"></div>
       <div id="sp-incet-zona"></div>
@@ -892,6 +894,30 @@ async function ecranSalariati(corp, nav, t) {
           await api.put(`/tenants/${t.id}/salariati/${sid}/beneficiu-lunar`, { an, luna, tip: "cadou", eveniment, valoare });
           zonaCadou.innerHTML = ""; deseneaza();
         } catch (e) { arataMesaj(corp.querySelector("#cadou-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+      });
+    }));
+    // [tichete culturale] Legea 165/2018 cap.V: lunar sau ocazional; plafon semestrial indexat (fereastra
+    // GRI oct.2025-mar.2026 blocata de backend cu mesaj). Valoare nominala multiplu de 10 (art.22).
+    const zonaCult = corp.querySelector("#sp-cultural-zona");
+    corp.querySelectorAll("[data-cult]").forEach((b) => b.addEventListener("click", () => {
+      const sid = b.dataset.cult;
+      zonaCult.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
+        <span class="camp-eticheta">Tichete culturale · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
+        <select id="cult-tip" class="camp-input" style="width:180px"><option value="">lunar</option><option value="ocazional">ocazional (eveniment)</option></select>
+        <input type="number" step="10" min="0" id="cult-input" class="camp-input" placeholder="valoare (multiplu de 10)" style="width:190px">
+        <button class="buton-primar" id="cult-save">Salvează</button>
+        <button class="buton-secundar" id="cult-cancel">Renunță</button></div>
+        <div class="camp-eticheta" style="color:var(--gri)">Valoare nominală multiplu de 10 lei (Legea 165/2018 art.22); plafon lunar/eveniment indexat semestrial. Lunile din fereastra neconfirmată la sursă (oct.2025–mar.2026) sunt blocate.</div>
+        <div id="cult-msg"></div>`;
+      corp.querySelector("#cult-input").focus();
+      corp.querySelector("#cult-cancel").addEventListener("click", () => { zonaCult.innerHTML = ""; });
+      corp.querySelector("#cult-save").addEventListener("click", async () => {
+        const valoare = parseFloat(corp.querySelector("#cult-input").value) || 0;
+        const eveniment = corp.querySelector("#cult-tip").value;
+        try {
+          await api.put(`/tenants/${t.id}/salariati/${sid}/beneficiu-lunar`, { an, luna, tip: "cultural", eveniment, valoare });
+          zonaCult.innerHTML = ""; deseneaza();
+        } catch (e) { arataMesaj(corp.querySelector("#cult-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
       });
     }));
     // [F134] IBAN salariat: cont beneficiar pt fisierul de plata pe card (editabil pe rand)

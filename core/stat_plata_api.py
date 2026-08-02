@@ -97,6 +97,7 @@ def stat_plata(conn, schema, an, luna):
             "tichete_vacanta": float(calc.get("tichete_vacanta", 0)),
             "vacanta_peste_plafon": bool(vac and vac_an > plafon_vac_an),
             "cadou": float(cadou or 0),  # [F133 Faza 2b1] neimpozabil, primit pe card
+            "tichete_cultural": float(calc.get("tichete_cultural", 0)),  # [tichete culturale] impozit only, pe card
             "cadou_taxabil": bool(cadou_taxabil),  # semnal: >300 sau eveniment nelegal (2b2)
             "iban": (iban or "").strip(),  # [F134] cont beneficiar pt plata pe card ('' = lipsa -> semnal)
             "cor": (cor or "").strip(),  # [F137] cod ocupatie COR ('' = lipsa -> semnal, necesar REGES)
@@ -107,8 +108,8 @@ def stat_plata(conn, schema, an, luna):
             # valoarea totala a tichetelor si totalul disponibil (cash net + tichete pe card separat).
             "impozit_salariu": float(calc["impozit"]) - float(calc.get("impozit_tichete", 0)),
             "retinut_tichete": float(calc.get("cass_tichete", 0)) + float(calc.get("impozit_tichete", 0)),
-            "valoare_tichete": float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0),
-            "total_disponibil": float(calc["net"]) + float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0),
+            "valoare_tichete": float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0) + float(calc.get("tichete_cultural", 0)),
+            "total_disponibil": float(calc["net"]) + float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0) + float(calc.get("tichete_cultural", 0)),
             "cost": float(calc["cost_angajator"]),
             "cm_zile": cm_zile,
             "cm_brut": c_cm["brut"] if c_cm else 0,
