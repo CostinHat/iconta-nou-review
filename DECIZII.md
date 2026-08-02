@@ -5132,3 +5132,36 @@ nivel etalon). Secventa 62 -> 61. Marker: tichete culturale livrat functionalita
 DATORIE NOUA (candidat, NU al acestei campanii): emisia sectiunii 8.3 avantaje in D112 (E3_10/72/73/74/75) pentru
 TOATE biletele de valoare - generator-wide, informativ. Neurmarita ca xfail aici (nu blocheaza declaratia; DUK
 valideaza fara ea).
+
+## 02.08.2026 — Tichete de cresa: functionalitate noua LIVRATA (Legea 165/2018 art.19)
+
+Feature nou end-to-end (lant nesupravegheat, clusterul urmator dupa tichete culturale). Tratament fiscal
+IDENTIC cu tichetul cultural (impozit 10%, FARA CAS/CASS/CAM). Increments testate 1-3.
+
+TRATAMENT FISCAL (VERDE, anaf_surse/RAPORT_verificare_temeiuri.md): impozit 10% pe valoarea nominala INTEGRALA
+(CF art.76(3)h, verdict 13); CAS NU (art.142 lit.r enumera "tichetelor de cresa", verdict 10); **CASS NU**
+(art.157(2) excepteaza NUMAI masa+vacanta, verdict 11 - DIVERGENTA vs etalon, ca la cultural); CAM NU (art.220^4
+(2), verdict 12). Valoare nominala: 10 lei sau multiplu de 10, max 100 (L165 art.19(2)).
+
+**PLAFON: 450 lei/luna/COPIL (L165 art.19(1)), BAZA legala confirmata la primar.** Valoarea se indexeaza
+semestrial prin ordine MF/MMSS - NEconfirmate la sursa primara (verdict 17 GRI: ordinul 368/179/2026 = 740 lei
+apare doar in surse secundare; mmuncii.gov.ro HTTP 503 persistent). REGULA DE LANT (§2.3 pct.3): GRI = blocheaza
+si merge mai departe. `common.plafon_cresa(la_data, nr_copii)` = 450*nr_copii (baza); grant-urile care depind de
+indexarea neconfirmata (>450/copil) sunt BLOCATE cu mesaj (GARD in beneficii_api.seteaza). Cap conservator: nu se
+aplica 740 tacit. Cand un ordin de indexare e confirmat la MO, se adauga o fereastra (ca la cultural).
+
+IMPLEMENTARE: DB beneficii_lunare (tip 'cresa'; template + migrare idempotenta migrare_tichet_cresa.py);
+calcul_salariu (param tichet_cresa, impozit only, acelasi tratament ca cultural); wiring stat_plata_api + d112
+(impozit declarat, NU in baza CASS); UI firme.js (buton + cresa, nr copii + valoare); nr_copii pt validare
+(nepersistat, default 1). Registru BILETE_VALOARE_TRATAMENT[cresa]. Teste unit + DB + GARD.
+
+D112: camp oficial E3_72 "8.3.1.1 Contravaloarea tichetelor de cresa" (d112_struct_anaf.txt:6306), parte din E3_60.
+Ca la cultural: generatorul NU emite sectiunea 8.3 avantaje pentru NICIUN bilet -> cresa se declara la nivel etalon
+prin IMPOZIT (nu in baza CASS). Limita generator-wide (8.3 neemisa), nu specifica.
+
+INCHIDERE CLUSTER: "tichete cresa | salarizare" bifat √ 02.08 (implementat + temeiuri VERDE + teste + D112 etalon;
+plafon = baza 450 confirmata, indexarea GRI blocata cf. regula de lant). Secventa 61 -> 60.
+
+BLOCAJ CONSEMNAT (nu xfail, cf. §2.3 pct.3 - GRI merge mai departe): valoarea indexata a plafonului de cresa
+(>450/copil, ex. 740 din 2026) - neconfirmata la primar. Se deblocheaza cand un ordin MF/MMSS e obtinut la MO si
+adaugat in plafon_cresa (fereastra datata). Pana atunci, cap conservator la baza 450/copil.
