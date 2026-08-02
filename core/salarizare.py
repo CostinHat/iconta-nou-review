@@ -491,6 +491,7 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     brut_ang = (mz * pct * zile_ang).quantize(Decimal("1"))
     brut_fnuass = brut - brut_ang
     return {
+        "baza": _q(venituri_6_luni),
         "media_zilnica": _q(mz), "procent": _q(pct * 100),
         "zile_platite": zile_platite, "diminuare": diminuare,
         "zile_ang": zile_ang, "zile_fnuass": zile_fnuass,

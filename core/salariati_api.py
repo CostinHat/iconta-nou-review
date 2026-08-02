@@ -307,6 +307,19 @@ def salveaza_concediu(conn, salariat_id, date):
     zile_cm = int(date.get("zile_cm") or 0)
     ven6 = date.get("venituri_6_luni") or 0
     zile6 = int(date.get("zile_6_luni") or 1)
+    # CM4 [optional] venituri_lunare = [[venit, zile, luna_iso], ...] -> plafon 12sm per-luna in calcul_cm.
+    # Backward-compat: fara defalcare, comportament vechi (ven6/zile6 pe suma, fara plafon).
+    _vlun_raw = date.get("venituri_lunare")
+    venituri_lunare = None
+    if _vlun_raw:
+        import datetime as _dtl
+        venituri_lunare = []
+        for _e in _vlun_raw:
+            _v, _z, _l = _e[0], _e[1], _e[2]
+            _ld = _l if hasattr(_l, "year") else _dtl.date.fromisoformat(str(_l)[:10])
+            venituri_lunare.append((_v, int(_z), _ld))
+        ven6 = sum((_dec_pos(_e[0]) for _e in venituri_lunare), _dec_pos(0))
+        zile6 = sum(int(_e[1]) for _e in venituri_lunare)
     spitalizare = bool(date.get("spitalizare"))
     pacc = int(date.get("procent_accident") or 100)
     cod_urgenta = date.get("cod_urgenta")
@@ -352,7 +365,7 @@ def salveaza_concediu(conn, salariat_id, date):
                 "brut_ang": _D("0"), "brut_fnuass": brut10}
     else:
         calc = _s.calcul_cm(ven6, zile6, zile_cm, cod=cod, spitalizare=spitalizare,
-                            la_data=la_data, procent_accident=pacc)
+                            la_data=la_data, procent_accident=pacc, venituri_lunare=venituri_lunare)
     taxe = _s.taxe_cm(calc["brut"], cod=cod, la_data=la_data)
 
     with conn.cursor() as cur:
@@ -364,7 +377,7 @@ def salveaza_concediu(conn, salariat_id, date):
             "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
             "RETURNING id",
             (salariat_id, date.get("an"), date.get("luna"), cod, zile_cm, calc["brut"],
-             ven6, calc["media_zilnica"], calc["procent"], bool(calc["diminuare"]),
+             calc.get("baza", ven6), calc["media_zilnica"], calc["procent"], bool(calc["diminuare"]),
              calc["zile_platite"], calc["zile_ang"], calc["zile_fnuass"],
              calc["brut_ang"], calc["brut_fnuass"], taxe["cass"], taxe["impozit"],
              taxe["cas"], taxe["net"], date.get("serie"), date.get("numar"),
