@@ -3900,7 +3900,7 @@ def tenant_pontaj_set(tenant_id: int, salariat_id: int, date: PontajIn, ctx=Depe
     from core import pontaj as _p
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
-        r = _p.seteaza(conn, schema, salariat_id, date.zi, date.stare)
+        r = _p.seteaza(conn, schema, salariat_id, date.zi, date.stare, tenant_id=tenant_id)
     if not r.get("ok"):
         raise HTTPException(422, r.get("mesaj", "eroare"))
     return r

@@ -53,19 +53,35 @@ def grila(conn, schema, salariat_id, an, luna):
     return grila_pura(an, luna, data_ang, exceptii)
 
 
-def seteaza(conn, schema, salariat_id, zi, stare):
+def seteaza(conn, schema, salariat_id, zi, stare, tenant_id=None):
     """Set/clear o zi. stare='prezent' (sau gol) -> sterge randul (prezenta = implicit).
-    Altfel trebuie sa fie in STARI. Intoarce {ok, mesaj?}."""
+    Altfel trebuie sa fie in STARI. Intoarce {ok, mesaj?}.
+
+    Reversibilitate (DESIGN_SYSTEM cap.23): o modificare DE-CONFIRMA automat luna (pontaj) - calculele din
+    aval re-blocheaza pana la re-confirmare. DUPA depunerea D112 pe luna (tenant_id dat), editarea se
+    BLOCHEAZA (fapt declarat la ANAF) -> corectie prin rectificativa."""
+    from datetime import date as _date
+    from core import perioada as _per
+    if stare not in STARI and stare and stare != "prezent":
+        return {"ok": False, "mesaj": "stare invalida: %s" % stare}
+    d = zi if isinstance(zi, _date) else _date.fromisoformat(str(zi)[:10])
+    an, luna = d.year, d.month
+    if tenant_id is not None:
+        with conn.cursor() as cur:
+            cur.execute("SELECT 1 FROM public.declaratii_depuse WHERE tenant_id = %s AND an = %s AND luna = %s "
+                        "AND tip = 'd112' LIMIT 1", (tenant_id, an, luna))
+            if cur.fetchone():
+                return {"ok": False, "mesaj": "Pontajul lunii %02d.%04d nu se poate modifica: D112 e deja depusa "
+                        "la ANAF. Corecteaza prin rectificativa (nu prin editare libera)." % (luna, an)}
     if not stare or stare == "prezent":
         with conn.cursor() as cur:
             cur.execute("DELETE FROM pontaj WHERE salariat_id = %s AND zi = %s", (salariat_id, zi))
-        return {"ok": True}
-    if stare not in STARI:
-        return {"ok": False, "mesaj": "stare invalida: %s" % stare}
-    with conn.cursor() as cur:
-        cur.execute("INSERT INTO pontaj (salariat_id, zi, stare) VALUES (%s, %s, %s) "
-                    "ON CONFLICT (salariat_id, zi) DO UPDATE SET stare = EXCLUDED.stare",
-                    (salariat_id, zi, stare))
+    else:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO pontaj (salariat_id, zi, stare) VALUES (%s, %s, %s) "
+                        "ON CONFLICT (salariat_id, zi) DO UPDATE SET stare = EXCLUDED.stare",
+                        (salariat_id, zi, stare))
+    _per.deconfirma(conn, schema, an, luna, "pontaj")   # modificarea invalideaza confirmarea
     return {"ok": True}
 
 
