@@ -347,6 +347,18 @@ exista, nimic nu-i verifica cifra contra legii. De scris la reverificarea cluste
 - DE VALOARE, acum acoperite de orfanele adaugate: test_operatiuni_speciale(4 -> sponsorizari),
   test_cota_dividend (-> decontari_asociati).
 
+### PAS 6 (02.08.2026) — au temei cele 7 orfane adaugate la V1?
+
+Verificat mecanic (marker TEMEI in docstring + Temeiuri in inventar):
+- AU marker TEMEI (6): deconturi.plafon_diurna, sponsorizari.plafon_credit+credit_sponsorizare, motor.rezerva_legala,
+  contracte_speciale.calcul_zilier, tva_marja.vanzare_marja, tva_marja_turism.marja_turism_special.
+- decontari_asociati.cota_dividend: FARA marker de functie - dar e CITITOR SUBTIRE (intoarce cota(impozit_dividend)),
+  temeiul traieste in COTE (CF art.97 / Legea 141/2025) + Temeiuri in inventar. Nu e regula de formula -> nu cere marker.
+CONCLUZIE: toate 7 clusterele orfane AU temei; niciunul fara. NU se bifeaza inca: 5 au DOAR test de dispecer
+(versionare), fara golden de VALOARE la sursa (plafon_diurna, rezerva_legala, calcul_zilier, vanzare_marja,
+marja_turism_special) -> in secventa de verificat. sponsorizari + decontari au teste de valoare (test_operatiuni_speciale
+/ test_impozit_dividend), dar nebifate pana la reverificare la sursa cu golden calculat de mana.
+
 LIMITA declarata (bilant_api): detectia vede doar reguli cu marker TEMEI sau cota(). O regula cu rate hardcodat
 fara marker e invizibila - se inchide cu gardul GRI de literale la 0 (GARZI cat.3, LIPSA). De construit separat.
 
