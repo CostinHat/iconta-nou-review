@@ -368,7 +368,7 @@ def monografie_plata(net, cont_trezorerie="5121"):
 #  + Ordinul 506/1030/2026 (diminuare 1 zi PER EPISOD, nu per certificat)
 #  Verificat la sursa: legislatie.just.ro, MOF 507/19.06.2026
 # ============================================================
-def _procent_cm_2018(cod, zile_episod, procent_accident=100):
+def _procent_cm_l141_2025(cod, zile_episod, procent_accident=100):
     """Procent indemnizatie dupa cod (nomenclator Legea 125/2006, art. 17-31 OUG 158/2005).
     01=55/65/75 progresiv (Legea 141/2025); 02/03/04=80 sau 100 (FAAMBP, param);
     05/06/07/12/14/51=100 (07 carantina: art.20(3) OUG 158/2005, 100% permanent prin Legea 136/2020); 13/15=75; 08/09=85. Cod 10 (reducere timp munca) NU are
@@ -376,9 +376,15 @@ def _procent_cm_2018(cod, zile_episod, procent_accident=100):
     TEMEI: OUG 158/2005 art.17(1) (progresiv 55/65/75, forma Legea 141/2025); art.20(3) + Legea 136/2020 (carantina 07=100%); art.25(1) (maternitate 08=85%); art.30(1) (ingrijire copil 09=85%). nivel_sursa: REDARE (OUG 158/2005 citita, verbatim necapturat)."""
     cod = str(cod or "01").zfill(2)
     if cod == "01":
-        if zile_episod <= 7: return Decimal("0.55")
-        if zile_episod <= 14: return Decimal("0.65")
-        return Decimal("0.75")
+        # OUG 158/2005 art.17(1) forma Legea 141/2025 (verbatim: anaf_surse/oug_158_2005_consolidat.html):
+        # a) pana la 7 zile = 55%; b) intre 8 si 14 zile = 65%; c) "peste 15 zile" = 75%.
+        if zile_episod <= 7: return Decimal("0.55")    # lit.a
+        if zile_episod <= 14: return Decimal("0.65")   # lit.b
+        # GOL DE REDACTARE: lit.b se opreste la 14, lit.c zice "peste 15" -> ziua 15 nu e acoperita
+        # explicit de text. DECIZIE arhitect 02.08.2026: ziua 15 = 75% (favorabil asiguratului). Vezi
+        # DECIZII.md (ziua 15) + GARZI.md. Gard: test_cm_ziua15_este_75pct.
+        if zile_episod >= 15: return Decimal("0.75")   # lit.c + ziua 15 (decizie 02.08)
+        return Decimal("0.75")                          # plasa (zile_episod >= 1)
     if cod == "10":
         raise ValueError("cod 10 (reducere timp munca): formula speciala art. 19 - "
                          "foloseste calcul_cm_cod10")
@@ -393,7 +399,7 @@ def _procent_cm_2018(cod, zile_episod, procent_accident=100):
 # difera, se adauga o varianta datata cu data_in = intrarea in vigoare a formei vechi (tiparul nu duplica
 # logica, o dateaza). Azi o singura varianta: comportament identic pt orice data >= 2018 (fara regresie).
 _VARIANTE_PROCENT_CM = [
-    ("2018-01-01", _procent_cm_2018,
+    ("2018-01-01", _procent_cm_l141_2025,
      c.Temei("OUG", 158, 2005, art="17", data_in="2018-01-01", nivel_sursa="REDARE",
              de_cine="Code/Costin", verificat_la="2026-07-31",
              lant_acte="Legea 141/2025 (forma progresiva 55/65/75 cod 01); Legea 136/2020 (carantina 07=100%)")),
@@ -439,7 +445,7 @@ def calcul_cm_cod10(baza_lunara, venit_realizat, la_data=None):
 def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
                     cod="01", zile_episod=None, prima_zi_din_episod=True,
                     spitalizare=False, la_data=None, exceptat_prima_zi=False,
-                    procent_accident=100, *, diminuare_activa):
+                    procent_accident=100, venituri_lunare=None, *, diminuare_activa):
     """
     Ci = Mzbci x procent x (NZLCM - diminuare)
     - Mzbci = suma venituri 6 luni / total zile lucratoare 6 luni
@@ -450,6 +456,19 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     (MOF 507/2026, diminuare 1 zi certificate 2026-2027); Norme OUG 158/2005 (angajatorul suporta
     zilele 2-6 = primele 5 zile platite, FNUASS din ziua 7). nivel_sursa: REDARE (OUG 158/2005 + Ordinul 506/1030/2026 MOF 507/2026).
     """
+    # CM4 - PLAFON 12 salarii minime (OUG 158/2005 art.10 alin.(1), verdict 1 VERDE; OMS 15/2018
+    # ART.61 + Exemplul nr.5, verdict 4 VERDE): fiecare venit LUNAR se capeaza la 12 x salariul minim
+    # IN LUNA respectiva INAINTE de mediere. Regula "sm in luna" = BLOCAJ MOTIVAT (claim 5 GRI: norma
+    # foloseste "an", nu "luna") -> GARZI.md. venituri_lunare = [(venit, zile, data_luna), ...];
+    # cand lipseste, comportament vechi (fara plafon, apelanti pe suma).
+    if venituri_lunare is not None:
+        _suma = Decimal("0"); _zile = 0
+        for _venit, _zl, _luna in venituri_lunare:
+            _sm, _ = c.cota("salariu_minim", _luna)
+            _suma += min(_dec(_venit), Decimal("12") * _dec(_sm))
+            _zile += int(_zl)
+        venituri_6_luni = _suma
+        zile_lucratoare_6_luni = _zile
     mz = _dec(venituri_6_luni) / _dec(zile_lucratoare_6_luni or 1)
     ze = zile_episod if zile_episod is not None else zile_lucratoare_cm
     pct = procent_cm(cod, ze, procent_accident, la_data=la_data)
@@ -505,7 +524,7 @@ _VARIANTE_CALCUL_CM = [
 def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
               cod="01", zile_episod=None, prima_zi_din_episod=True,
               spitalizare=False, la_data=None, exceptat_prima_zi=False,
-              procent_accident=100):
+              procent_accident=100, venituri_lunare=None):
     """Indemnizatia de concediu medical, DISPECER pe la_data - alege varianta valabila la data
     certificatului (diminuarea de 1 zi doar in fereastra 01.02.2026-31.12.2027).
     TEMEI: OUG 158/2005 (indemnizatie CM: Ci = Mzbci x procent x zile); Ordinul 506/1030/2026 (MOF
@@ -514,7 +533,8 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     from datetime import date as _dt
     fn, _ = c.alege_varianta(_VARIANTE_CALCUL_CM, la_data or _dt.today())
     return fn(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm, cod, zile_episod,
-              prima_zi_din_episod, spitalizare, la_data, exceptat_prima_zi, procent_accident)
+              prima_zi_din_episod, spitalizare, la_data, exceptat_prima_zi, procent_accident,
+              venituri_lunare=venituri_lunare)
 
 
 # Coduri indemnizatie pt care NU se retine CASS (verif. la sursa: art.17(2) OUG 34/2024,

@@ -253,3 +253,66 @@ def test_exces_vacanta_intra_in_baza_salariala():
     assert float(exc["tichete_vacanta_exces"]) == 4000.0
     inpl = calcul_salariu(5000, la_data=dd, tichet_vacanta=4000)
     assert float(inpl["cas"]) == float(base["cas"]), "tichetul IN plafon NU are CAS (doar CASS+impozit)"
+
+
+# ============================================================
+#  ZIUA 15 (gol de redactare art.17(1); decizie arhitect 02.08.2026 = 75%)
+# ============================================================
+def test_cm_ziua15_este_75pct():
+    # OUG 158/2005 art.17(1): lit.b "intre 8 si 14 zile"=65%, lit.c "peste 15 zile"=75%.
+    # Ziua 15 = gol de redactare. DECIZIE 02.08.2026: ziua 15 = 75% (favorabil asiguratului).
+    # Gard: pica daca cineva o muta tacit la 65%.
+    from core.salarizare import procent_cm
+    assert procent_cm("01", 14, la_data=SEM2) == Decimal("0.65")
+    assert procent_cm("01", 15, la_data=SEM2) == Decimal("0.75")
+    assert procent_cm("01", 16, la_data=SEM2) == Decimal("0.75")
+
+
+# ============================================================
+#  CM4 — plafon 12 salarii minime LUNAR pe fiecare din cele 6 venituri, INAINTE de mediere.
+#  OUG 158/2005 art.10 alin.(1) (verdict 1) + OMS 15/2018 ART.61 + Exemplul nr.5 (verdict 4).
+#  sm 4050 (2025 / 2026 H1) -> plafon 48600 ; sm 4325 (2026 H2) -> plafon 51900.
+# ============================================================
+_LUNI_H1 = [date(2026, m, 1) for m in (1, 2, 3, 4, 5, 6)]  # toate sm 4050
+
+
+def _vl(venituri, luni, zile=21):
+    return [(Decimal(str(v)), zile, l) for v, l in zip(venituri, luni)]
+
+
+def test_cm_plafon_toate_sub_nu_se_activeaza():
+    vl = _vl([4000] * 6, _LUNI_H1)  # 6 * 4000 = 24000, niciunul peste 48600
+    r = calcul_cm(venituri_6_luni=0, zile_lucratoare_6_luni=1, zile_lucratoare_cm=10,
+                  cod="01", la_data=SEM1, venituri_lunare=vl)
+    assert r["media_zilnica"] == Decimal("190.48")  # 24000 / 126
+
+
+def test_cm_plafon_o_luna_peste():
+    vl = _vl([4000, 4000, 4000, 4000, 4000, 60000], _LUNI_H1)  # luna 6 capata la 48600
+    r = calcul_cm(venituri_6_luni=0, zile_lucratoare_6_luni=1, zile_lucratoare_cm=10,
+                  cod="01", la_data=SEM1, venituri_lunare=vl)
+    assert r["media_zilnica"] == Decimal("544.44")  # (5*4000 + 48600) / 126 = 68600/126
+
+
+def test_cm_plafon_toate_peste():
+    vl = _vl([60000] * 6, _LUNI_H1)  # fiecare capat la 48600
+    r = calcul_cm(venituri_6_luni=0, zile_lucratoare_6_luni=1, zile_lucratoare_cm=10,
+                  cod="01", la_data=SEM1, venituri_lunare=vl)
+    assert r["media_zilnica"] == Decimal("2314.29")  # 6*48600 / 126 = 291600/126
+
+
+def test_cm_plafon_traverseaza_schimbarea_sm():
+    # Apr-Sep 2026: Apr/Mai/Iun sm 4050 -> plafon 48600 ; Iul/Aug/Sep sm 4325 -> plafon 51900.
+    luni = [date(2026, m, 1) for m in (4, 5, 6, 7, 8, 9)]
+    vl = _vl([60000] * 6, luni)
+    r = calcul_cm(venituri_6_luni=0, zile_lucratoare_6_luni=1, zile_lucratoare_cm=10,
+                  cod="01", la_data=date(2026, 10, 1), venituri_lunare=vl)
+    assert r["media_zilnica"] == Decimal("2392.86")  # (3*48600 + 3*51900)/126 = 301500/126
+
+
+def test_cm_plafon_luni_asimilate_stagiului():
+    # art.10 alin.(4): luni asimilate iau salariul minim (4050) -> sub plafon 48600, neatinse.
+    vl = _vl([4050, 4050, 4000, 4000, 4000, 4000], _LUNI_H1)
+    r = calcul_cm(venituri_6_luni=0, zile_lucratoare_6_luni=1, zile_lucratoare_cm=10,
+                  cod="01", la_data=SEM1, venituri_lunare=vl)
+    assert r["media_zilnica"] == Decimal("191.27")  # (2*4050 + 4*4000)/126 = 24100/126
