@@ -597,3 +597,9 @@ CAMPANIE COMPLETA (01.08.2026) — pas 3-5 livrate:
   plafon_facilitate_salariu_minim (COTE) incepe 2026-01-01 - nicio valoare 2025. Adeverinta pentru o luna
   2025 crapa. DE DECIS (Costin): backfill plafon 2025 la sursa SAU ramane limita declarata (app n-are date
   reale pre-2026). NU s-a inventat o valoare.
+  REZOLVAT (01.08.2026, blocaj motivat): NU backfill - LIMITA DECLARATA. cota() ridica PerioadaIndisponibila
+  (tag PERIOADA_BLOCATA -> UI 423, nu 500) cu cele 4 elemente. Gard verificator GARD BLOCAJ MOTIVAT PRAG 0.
+  Cote late-start care rup un calcul: plafon_facilitate_salariu_minim + tichet_masa_plafon (ambele 2026-01-01,
+  calcul_salariu). Restul cotelor de regula: cas/cass/impozit/cam (2018), salariu_minim/facilitate (2025-01-01
+  =podea) - nu rup in [2025, azi]. Nota (nu regula): tva_redusa (2025-08-01) rupe calcul_tva pt facturi
+  pre-08.2025 (cititor subtire, acelasi mecanism central). Commit-uri 1d37d3a + 1de6ac9. Backfill 2025 = de decis Costin.
