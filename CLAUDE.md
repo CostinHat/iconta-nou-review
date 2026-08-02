@@ -388,6 +388,38 @@ scoaterea unei coloane cere reparate cinci locuri care o citesc, pasul cuprinde 
 
 Salvarea pe server la fiecare pas face ca spatiul in care lucreaza Code sa devina detaliu.
 
+## 2.2 STRUCTURA RAPORTULUI (02.08.2026, ceruta de Costin)
+
+Orice raport de executie respecta aceasta structura, IN ORDINEA DATA. Inlocuieste formatul liber. Cele cinci
+elemente din 2/etapa 5 (a-e) RAMAN valabile ca SUBSTANTA - se prezinta asa. Motivul: formatul liber amesteca
+informatia (cifra care conteaza langa o nota tehnica; ce n-a fost verificat uneori la (d), alteori topit in
+proza). Pe cifre se face aritmetica de validare (COLLECTED = passed + skipped + xfailed, comparat cu runda
+anterioara); pe deciziile cerute se stie ce blocheaza. Amandoua merita randuri proprii.
+
+1. VERDICT - o linie: LIVRAT / LIVRAT PARTIAL / OPRIT, si motivul in maximum o propozitie.
+
+2. CIFRE - brut, fiecare pe rand propriu, nimic altceva pe randurile astea:
+   COLLECTED: N
+   passed / skipped / xfailed: N / N / N
+   verificator TOTAL: N
+   HEAD: hash
+   ahead: da/nu
+   Cifra COLLECTED se CONFIRMA EXPLICIT (rulata), nu se deduce din passed.
+
+3. PROBA - per pas: ce s-a testat, output ROSU inainte, output VERDE dupa, MUTATIA si ce a produs. Output BRUT,
+   nu rezumat. Fara probe, pasul nu e livrat. (= substanta 2/etapa 5 a+b.)
+
+4. TEMEI - act, articol, alineat, nivel sursa (MO / REDARE / INTERPRETARE_OFICIALA / PRACTICA). "N/A - tooling"
+   unde nu se aplica. (= substanta 2/etapa 5 c.)
+
+5. CE NU AM VERIFICAT - lista EXPLICITA, fiecare limita pe rand propriu, NU topita in proza. Include si ce s-a
+   presupus fara sa se citeasca sursa. (= substanta 2/etapa 5 d.)
+
+6. DECIZII CERUTE - NUMEROTAT: ce asteapta raspunsul lui Costin si ce blocheaza fiecare. Se scrie "niciuna" daca
+   nu e cazul - sectiunea NU se omite.
+
+7. IN AFARA PLANULUI - ce s-a atins si nu era cerut in comanda. (= substanta 2/etapa 5 e.)
+
 ## 2.1 De unde vin pasii
 
 Pasii unui fir traiesc in TESTE.md, la "In lucru acum". NU in conversatie.
