@@ -13,7 +13,7 @@ Tratament fiscal (verificat la sursa 2026):
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 
-TIPURI = ("vacanta", "cadou", "cultural")
+TIPURI = ("vacanta", "cadou", "cultural", "cresa")
 # [F133 Faza 2b1] evenimentele cadou. Cele 4 LEGALE (<=300 lei = neimpozabil); 'altul' = nelegal
 # (taxabil integral). Peste plafon sau nelegal -> taxabil (Faza 2b2; in 2b1 doar SEMNAL).
 EVENIMENTE_CADOU = ("paste", "craciun", "8martie", "1iunie", "altul")
@@ -21,7 +21,7 @@ EVENIMENTE_LEGALE = ("paste", "craciun", "8martie", "1iunie")
 PLAFON_CADOU = 300  # lei / persoana / eveniment (neimpozabil)
 
 
-def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment=""):
+def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_copii=1):
     """Upsert un beneficiu one-off (salariat/an/luna/tip/eveniment). valoare 0 -> sterge randul.
     eveniment: obligatoriu pt cadou (unul din EVENIMENTE_CADOU); gol pt vacanta."""
     if tip not in TIPURI:
@@ -34,6 +34,8 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment=""):
         # [TICHETE CULTURALE] Legea 165/2018 art.21(1): lunar (eveniment gol) SAU ocazional (pe eveniment).
         if eveniment not in ("", "ocazional"):
             return {"eroare": "tichetul cultural e lunar (eveniment gol) sau ocazional (eveniment='ocazional')"}
+    elif tip == "cresa":
+        eveniment = ""  # cresa e lunara (pe copil); fara eveniment
     else:
         eveniment = ""  # non-cadou/non-cultural nu are eveniment
     try:
@@ -42,6 +44,22 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment=""):
         return {"eroare": "valoare invalida"}
     if v < 0:
         return {"eroare": "valoarea nu poate fi negativa"}
+    if tip == "cresa" and v > 0:
+        # [GARD] plafon 450/luna/copil (L165 art.19(1) baza confirmata; indexare GRI verdict 17 neaplicata)
+        # + valoare nominala multiplu de 10 (art.19(2)). nr_copii pt validare (default 1; nepersistat).
+        from core import common as _cm2
+        try:
+            _nr = int(nr_copii) if nr_copii else 1
+        except (TypeError, ValueError):
+            _nr = 1
+        if _nr < 1:
+            _nr = 1
+        _plafc, _sursac = _cm2.plafon_cresa(None, nr_copii=_nr)
+        if v % 10 != 0:
+            return {"eroare": "valoarea tichetului de cresa = multiplu de 10 lei (Legea 165/2018 art.19(2))"}
+        if v > _plafc:
+            return {"eroare": "valoarea %s depaseste plafonul %s lei/luna pentru %d copil(i) (%s). Indexarea peste "
+                    "baza (ex. 740) e neconfirmata la sursa primara (GRI) - blocata." % (v, _plafc, _nr, _sursac)}
     if tip == "cultural" and v > 0:
         # [GARD] plafon semestrial indexat (verdict 16). Fereastra GRI (oct.2025-mar.2026) sau semestru
         # fara ordin confirmat -> BLOCAT motivat, NU se calculeaza tacit cu 240/470. + valoare nominala

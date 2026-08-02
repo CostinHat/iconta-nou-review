@@ -34,6 +34,7 @@ def stat_plata(conn, schema, an, luna):
     # [F133 Faza 2a] tichete de vacanta acordate in luna (one-off, din beneficii_lunare)
     vac_luna = _ben.lista_luna(conn, schema, an, luna, "vacanta")
     cult_luna = _ben.lista_luna(conn, schema, an, luna, "cultural")  # [tichete culturale]
+    cresa_luna = _ben.lista_luna(conn, schema, an, luna, "cresa")  # [tichete de cresa]
     plafon_vac_an = 6 * float(_common.cota("salariu_minim", ref)[0])  # 6 salarii minime/an
     # [F133 Faza 2b1] tichete cadou acordate in luna: NEIMPOZABIL (nu atinge calcul_salariu/D112).
     # total/salariat (SUM evenimente) + flag taxabil (>300 sau eveniment nelegal -> semnal, tratare la 2b2).
@@ -65,6 +66,7 @@ def stat_plata(conn, schema, an, luna):
             brut_lucrat = float(brut or 0)
         vac = vac_luna.get(sid, 0)  # [F133 Faza 2a] tichete vacanta acordate in luna
         cult = cult_luna.get(sid, 0)  # [tichete culturale] acordate in luna (lunar + ocazional)
+        cresa = cresa_luna.get(sid, 0)  # [tichete de cresa] acordate in luna
         # [D3 02.08] exces vacanta peste plafonul anual (6 sm) -> venit salarial in brut (cumulat an)
         _cum_c3 = float(_ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) or 0)
         _cum_a3 = float(_ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna - 1) or 0) if luna > 1 else 0.0
@@ -78,7 +80,8 @@ def stat_plata(conn, schema, an, luna):
                                          tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
                                          tichet_vacanta=max(float(vac or 0) - _exces_v3, 0.0),
                                          tichet_vacanta_exces=_exces_v3,
-                                         tichet_cultural=float(cult or 0))
+                                         tichet_cultural=float(cult or 0),
+                                         tichet_cresa=float(cresa or 0))
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
         vac_an = _ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) if vac else 0
         cadou = cadou_luna.get(sid, 0)  # [F133 Faza 2b1] total cadou (neimpozabil in 2b1)
@@ -98,6 +101,7 @@ def stat_plata(conn, schema, an, luna):
             "vacanta_peste_plafon": bool(vac and vac_an > plafon_vac_an),
             "cadou": float(cadou or 0),  # [F133 Faza 2b1] neimpozabil, primit pe card
             "tichete_cultural": float(calc.get("tichete_cultural", 0)),  # [tichete culturale] impozit only, pe card
+            "tichete_cresa": float(calc.get("tichete_cresa", 0)),  # [tichete de cresa] impozit only, pe card
             "cadou_taxabil": bool(cadou_taxabil),  # semnal: >300 sau eveniment nelegal (2b2)
             "iban": (iban or "").strip(),  # [F134] cont beneficiar pt plata pe card ('' = lipsa -> semnal)
             "cor": (cor or "").strip(),  # [F137] cod ocupatie COR ('' = lipsa -> semnal, necesar REGES)
@@ -108,8 +112,8 @@ def stat_plata(conn, schema, an, luna):
             # valoarea totala a tichetelor si totalul disponibil (cash net + tichete pe card separat).
             "impozit_salariu": float(calc["impozit"]) - float(calc.get("impozit_tichete", 0)),
             "retinut_tichete": float(calc.get("cass_tichete", 0)) + float(calc.get("impozit_tichete", 0)),
-            "valoare_tichete": float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0) + float(calc.get("tichete_cultural", 0)),
-            "total_disponibil": float(calc["net"]) + float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0) + float(calc.get("tichete_cultural", 0)),
+            "valoare_tichete": float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0) + float(calc.get("tichete_cultural", 0)) + float(calc.get("tichete_cresa", 0)),
+            "total_disponibil": float(calc["net"]) + float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0) + float(calc.get("tichete_cultural", 0)) + float(calc.get("tichete_cresa", 0)),
             "cost": float(calc["cost_angajator"]),
             "cm_zile": cm_zile,
             "cm_brut": c_cm["brut"] if c_cm else 0,
@@ -157,6 +161,7 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     brut_lucrat = float(brut or 0) * max(zile_luna - cm_zile, 0) / zile_luna if zc else float(brut or 0)
     vac = _ben.lista_luna(conn, schema, an, luna, "vacanta").get(salariat_id, 0)  # [F133 Faza 2a]
     cult = _ben.lista_luna(conn, schema, an, luna, "cultural").get(salariat_id, 0)  # [tichete culturale]
+    cresa = _ben.lista_luna(conn, schema, an, luna, "cresa").get(salariat_id, 0)  # [tichete de cresa]
     cadou = _ben.lista_luna(conn, schema, an, luna, "cadou").get(salariat_id, 0)  # [F133 Faza 2b1] neimpozabil
     calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
                                      norma_intreaga=not part_time,
@@ -166,7 +171,8 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
                                      facilitate_prorata=_fac_prorata,
                                      tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
                                      tichet_vacanta=float(vac or 0),
-                                     tichet_cultural=float(cult or 0))
+                                     tichet_cultural=float(cult or 0),
+                                     tichet_cresa=float(cresa or 0))
 
     with conn.cursor() as _cur:
         _cur.execute(f"SELECT culoare_factura, font_factura FROM {schema}.firma_profil WHERE id = 1")

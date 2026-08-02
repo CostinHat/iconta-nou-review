@@ -2904,7 +2904,7 @@ def salariat_beneficiu_lunar(tenant_id: int, salariat_id: int, corp: dict = Body
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         r = _ben.seteaza(conn, schema, salariat_id, an, luna, corp.get("tip"), corp.get("valoare"),
-                         eveniment=corp.get("eveniment", ""))
+                         eveniment=corp.get("eveniment", ""), nr_copii=corp.get("nr_copii", 1))
         if r is None:
             raise HTTPException(404, "salariat inexistent")
         if r.get("eroare"):

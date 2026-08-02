@@ -377,6 +377,7 @@ def pull(conn, schema, an, luna):
     # [F133 Faza 2a] tichete de vacanta acordate in luna (one-off, din beneficii_lunare)
     vac_luna = _ben.lista_luna(conn, schema, an, luna, "vacanta")
     cult_luna = _ben.lista_luna(conn, schema, an, luna, "cultural")  # [tichete culturale]
+    cresa_luna = _ben.lista_luna(conn, schema, an, luna, "cresa")  # [tichete de cresa]
     pe_sal = {}
     for c in cms:
         pe_sal.setdefault(c["salariat_id"], []).append({
@@ -413,6 +414,7 @@ def pull(conn, schema, an, luna):
             "tichet_masa_valoare": s.get("tichet_masa_valoare") or 0,  # [F133]
             "tichet_vacanta": vac_luna.get(s["id"], 0),  # [F133 Faza 2a]
             "tichet_cultural": cult_luna.get(s["id"], 0),  # [tichete culturale] impozit only, NU in baza CASS
+            "tichet_cresa": cresa_luna.get(s["id"], 0),  # [tichete de cresa] impozit only, NU in baza CASS
             "cm": cm,
             "zile_cm": sum(x["zile_ang"] + x["zile_fnuass"] for x in cm),
             # calcul din core.salarizare (facilitate/deducere/contributii pe brut)
@@ -469,7 +471,8 @@ def pull(conn, schema, an, luna):
                                tichet_zile=tichet_zile,
                                tichet_vacanta=max(_vac_l - _exces_van, 0.0),
                                tichet_vacanta_exces=_exces_van,
-                               tichet_cultural=float(s.get("tichet_cultural") or 0))
+                               tichet_cultural=float(s.get("tichet_cultural") or 0),
+                               tichet_cresa=float(s.get("tichet_cresa") or 0))
         s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
         s["facilitate"] = r.get("facilitate", 0)
         s["cas"] = r.get("cas", 0)
