@@ -4943,3 +4943,30 @@ iti dau urmatoarea etapa" a fost executata fara obiectie si justificata de execu
 oprire legitima". Cifra 6-vs-7 nu schimba nimic - campania era deja aprobata. Exceptia a fost folosita
 pentru a VALIDA fragmentarea. Regula era scrisa dar inerta: lipsea definitia componentei si obligatia de
 verificare inainte de executie (reparate de Partile A-B).
+
+## 02.08.2026 — Familia salarizare = GRUP CO-LOCAT; departajare FISCAL ca proxy; tichete D2/D3/#3
+
+DECIZIE 1 (Costin) - CICLUL facilitate<->deducere: familia salarizare (facilitate, deducere personala,
+suprataxare part-time, proratare, + calcul_salariu) se trateaza ca GRUP CO-LOCAT, verificat IMPREUNA, bifa
+pe GRUP nu pe membri individuali. Motiv: garda anti-stale le co-loca deja (test_facilitate_prorata_luna_angajare);
+ciclul e REAL (deducerea foloseste salariul minim prin facilitate; facilitatea foloseste pragul deducerii) - nu
+se rupe artificial o legatura care exista in lege. NU se schimba bifele existente.
+
+DECIZIE 2 (Costin) - DEPARTAJAREA secventei: Risc=FISCAL ca proxy pentru "intra intr-o declaratie ANAF" e
+APROXIMATIE DECLARATA, nu echivalenta: un cluster FISCAL care produce doar afisare interna nu intra intr-o
+declaratie. Acceptabil (departajarea conteaza putin la adancime 2), consemnat ca aproximatie.
+
+CLUSTER tichete masa/vacanta - cele trei deschideri (31.07):
+- D2 (nr tichete pe zile EFECTIV lucrate, HG 1045/2018 art.10 alin.3): datele CO/delegatie/absente EXISTA in
+  pontaj (F135) DAR modelul "fara rand = prezent" (pontaj.py:31) + decuplarea deliberata 17.07/20.07 fac ca
+  alimentarea tichet_zile din pontaj sa functioneze DOAR daca firma completeaza pontajul. Firma care are CO dar
+  nu-l inregistreaza -> supra-acordare tacuta. DECIZIE DE PRODUS (pontaj autoritativ pentru payroll, reversarea
+  decuplarii 20.07), NU cod. RAMANE xfail (test_datorie_tichete_masa_zile_efectiv_lucrate). Nu s-a improvizat.
+- #3 (baza CASS pe tichete, art.78): FONDUL confirmat prin DERIVARE (art.157 face CASS obligatorie din 2024 ->
+  art.78 deduce contributiile obligatorii din baza impozitului). Litera verbatim (art.78 alin.2 lit.a) NEconfirmabila
+  pe legislatie.just.ro (portal dinamic, fara API - documentat in test_datorie_citate_literale_tichete_portal).
+  VERDICT GRI DECLARAT: fond corect prin derivare, verbatim de reconfirmat pe PDF MO. NU verde.
+- D3 (CAS pe excesul de vacanta peste 6 sm): deferrarea (atingea baza salariala = clusterul deducere) a DISPARUT
+  odata cu grupul co-locat. DE IMPLEMENTAT: excesul = beneficiu salarial integral (CAS+CASS+impozit) in BAZA
+  salariala. Proba DUK obligatorie (31.07: DUK a respins CAS pe exces ca linie separata via B4_7 - baza recalc
+  din salariu S731/S74) -> excesul intra in baza_contrib, nu ca linie de tichet. Vezi urmatorul commit.
