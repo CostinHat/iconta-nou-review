@@ -109,6 +109,11 @@ def _d112_genereaza(prof, salariati, an, luna):
     from core import salarizare as _sz
     from datetime import date as _d112date
     ref = _d112date(an, luna, 1)
+    # [baze contributii] cotele salariale PERIOD-AWARE din COTE (nu literale): CAS CF art.138, CASS art.156,
+    # impozit art.78, CAM art.220^3. Valori 25/10/10/2.25% verificate la sursa (anaf_surse/cod_fiscal).
+    from core.common import cota as _cota112
+    _cota_cas = float(_cota112("cas", ref)[0]); _cota_cass = float(_cota112("cass", ref)[0])
+    _cota_imp = float(_cota112("impozit_venit", ref)[0]); _cota_cam = float(_cota112("cam", ref)[0])
     av = []
     nzl = _nzl(an, luna)
     perioada = "%02d.%04d" % (luna, an)
@@ -191,14 +196,14 @@ def _d112_genereaza(prof, salariati, an, luna):
                 _cza = int(_x.get("zile_ang") or 0); _czf = int(_x.get("zile_fnuass") or 0)
                 _c2_cazuri.append((str(_x.get("cod") or "01").zfill(2), _cza + _czf, _cza, _czf,
                                    _d112int(_x.get("brut_ang")), _d112int(_x.get("brut_fnuass"))))
-            cas = _d112int(bazac * 0.25) + cm_cas
-            cass = _d112int(bazac * 0.10) + cm_cass
+            cas = _d112int(bazac * _cota_cas) + cm_cas
+            cass = _d112int(bazac * _cota_cass) + cm_cass
             cass_base_cm = bazac + cm_cass_base
             ded = float(s.get("deducere") or 0)
             bimp = total_base - cas - cass - ded
             if bimp < 0:
                 bimp = 0
-            imp = _d112int(bimp * 0.10)
+            imp = _d112int(bimp * _cota_imp)
             brute = brut + cm_base
             b4base = total_base
             _b3.append('    <asiguratB3 B3_1="%d" B3_6="%d" B3_7="%d" B3_11="0" B3_12="%d" B3_13="%d"/>' % (b3z, b3z, cm_base, cm_ang, cm_fnuass))
@@ -285,7 +290,7 @@ def _d112_genereaza(prof, salariati, an, luna):
     # round() Python (bancar) se aplica ICI, INAINTE ca _d112int() sa poata
     # rotunji aritmetic - 112.5 devenea deja 112 prin round() inainte sa ajunga
     # la _d112int. Eliminat round() exterior, _d112int face rotunjirea corecta.
-    cam_total = _d112int(sum_bazac * 0.0225)
+    cam_total = _d112int(sum_bazac * _cota_cam)
     A = []
     def add_oblig(cod, cb, val):
         if val > 0:
@@ -494,8 +499,8 @@ def pull(conn, schema, an, luna):
         if not scutit and 0 < baza < prag_zile:
             s["pt_aplica"] = True
             s["baza_minim_pt"] = prag_zile
-            s["cas_min_pt"] = round(prag_zile * 0.25)
-            s["cass_min_pt"] = round(prag_zile * 0.10)
+            s["cas_min_pt"] = round(prag_zile * float(_cm.cota("cas", ref)[0]))
+            s["cass_min_pt"] = round(prag_zile * float(_cm.cota("cass", ref)[0]))
         else:
             s["pt_aplica"] = False
     _cs_sal.close()

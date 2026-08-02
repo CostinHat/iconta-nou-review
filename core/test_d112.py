@@ -113,3 +113,58 @@ def test_peste_minim_asigexc_zero():
     assert 'asigExc="0"' in xml     # art. 146 alin.(5^6) CF - venit >= salariul minim: suprataxarea nu se aplica (asigExc=0)
     assert 'asigExc="1"' not in xml and 'asigExc="2"' not in xml   # nici exceptat, nici suprataxat
     assert 'motivExc' not in xml    # asigExc=0 -> fara motivExc
+
+
+# ============================================================
+#  Baze contributii D112 - cotele salariale PERIOD-AWARE din COTE (nu literale).
+#  Verificat verbatim la sursa (anaf_surse/cod_fiscal_227_2015_consolidat.html):
+#    CAS 25%  - CF art.138 lit.a (contributia de asigurari sociale, cota generala)
+#    CASS 10% - CF art.156 (contributia de asigurari sociale de sanatate)
+#    impozit  10% - CF art.78 alin.(2) (cota de impozit pe venitul din salarii)
+#    CAM 2.25% - CF art.220^3 alin.(1) (contributia asiguratorie pentru munca)
+# ============================================================
+def test_cotele_contributii_din_cote_cu_temei():
+    from decimal import Decimal
+    from datetime import date
+    from core.common import cota
+    ref = date(2026, 8, 1)
+    assert cota("cas", ref)[0] == Decimal("0.25")            # CF art.138 lit.a
+    assert cota("cass", ref)[0] == Decimal("0.10")           # CF art.156
+    assert cota("impozit_venit", ref)[0] == Decimal("0.10")  # CF art.78 alin.(2)
+    assert cota("cam", ref)[0] == Decimal("0.0225")          # CF art.220^3 alin.(1)
+    # fiecare cota vine cu temei documentat in COTE (nu literal fara sursa)
+    for nume in ("cas", "cass", "impozit_venit", "cam"):
+        temei = cota(nume, ref)[1]
+        assert temei and str(temei).strip(), nume
+
+
+def test_d112_ruteaza_cotele_prin_cote_nu_literale():
+    # GARD anti-hardcode: _d112_genereaza si pull NU mai contin literalele 0.25/0.10/0.0225
+    # pentru cotele de contributii - trebuie sa citeasca din cota(). Daca cineva rescrie
+    # literalul, testul pica si trimite inapoi la COTE (sursa unica period-aware).
+    import inspect, re
+    from core import d112
+    src = inspect.getsource(d112._d112_genereaza)
+    assert "bazac * 0.25" not in src   # CAS: routat prin _cota_cas
+    assert "bazac * 0.10" not in src   # CASS: routat prin _cota_cass
+    assert "bimp * 0.10" not in src    # impozit: routat prin _cota_imp
+    assert "sum_bazac * 0.0225" not in src  # CAM: routat prin _cota_cam
+    assert "_cota_cas" in src and "_cota_cass" in src and "_cota_imp" in src and "_cota_cam" in src
+    psrc = inspect.getsource(d112.pull)
+    assert "prag_zile * 0.25" not in psrc and "prag_zile * 0.10" not in psrc
+    assert 'cota("cas"' in psrc and 'cota("cass"' in psrc
+
+
+def test_d112_cas_cass_valori_neschimbate_dupa_rutare():
+    # Proba pe date reale: rutarea prin cota() e VALUE-PRESERVING (cota == literalul vechi).
+    # Generarea D112 pt un brut real trebuie sa ramana identica cu cota din COTE (golden D112
+    # o pinneaza integral); aici verificam invariantul aritmetic al rutarii: cota() = literalul.
+    from decimal import Decimal
+    from datetime import date
+    from core.common import cota
+    ref = date(2026, 6, 1)
+    assert float(cota("cas", ref)[0]) == 0.25 and float(cota("cass", ref)[0]) == 0.10
+    assert float(cota("cam", ref)[0]) == 0.0225 and float(cota("impozit_venit", ref)[0]) == 0.10
+    # generarea reala nu arunca dupa rutare (brut 6000, full-time)
+    xml, _ = _d112_genereaza(_prof(), _sal(6000), 2026, 6)
+    assert xml and "<asigurat" in xml

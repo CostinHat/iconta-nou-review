@@ -5234,3 +5234,32 @@ amortizare|d101 (care e despre tratamentul in d101, aliniat).
 
 INCHIDERE CLUSTER: "amortizare | d101" √ 03.08 (tratamentul amortizarii in d101 aliniat la art.28: deducere
 fiscala P11 + addback contabil P28 + prag 5000). Secventa 59 -> 58.
+
+
+## 03.08.2026 — Cluster baze contributii (CAS/CASS/imp/CAM) | d112: ALINIAT (cotele rutate period-aware)
+
+Clusterul urmator din lant dupa amortizare|d101. Sesiunea A = aliniere cod existent la lege. VERDICT: cotele
+salariale erau CORECTE ca valoare, dar HARDCODATE ca literale in d112.py (0.25 / 0.10 / 0.0225) - contrazice
+principiul COTE (sursa unica period-aware prin cota(nume, la_data), ca la GARZI cat.3). Rutate acum prin cota().
+
+TEMEIURI verificate VERBATIM la sursa (anaf_surse/cod_fiscal_227_2015_consolidat.html):
+- **CAS 25%** - CF art.138 lit.a: "Cotele de contributii de asigurari sociale sunt urmatoarele: a) 25% datorata
+  de catre persoanele fizice care au calitatea de angajati...".
+- **CASS 10%** - CF art.156: "Cota de contributie de asigurari sociale de sanatate este de 10%".
+- **impozit pe venit 10%** - CF art.78 alin.(2): aplicarea "cotei de 10% asupra bazei de calcul".
+- **CAM 2,25%** - CF art.220^3 alin.(1): "Cota contributiei asiguratorii pentru munca este de 2,25%".
+Toate 4 exista deja in COTE (core/common.py: cas / cass / impozit_venit / cam) cu temei, aliniate la aceste valori.
+
+RUTARE (core/d112.py): in `_d112_genereaza` cotele se citesc o data dupa `ref` (data lunii) - `_cota_cas/_cass/
+_imp/_cam = float(cota("...", ref)[0])` - si inlocuiesc literalele la CAS (bazac*_cota_cas), CASS (bazac*_cota_cass),
+impozit (bimp*_cota_imp), CAM (sum_bazac*_cota_cam). In `pull`, pragurile minime part-time (cas_min_pt/cass_min_pt)
+rutate prin `_cm.cota("cas"/"cass", ref)`. VALUE-PRESERVING: cota() intoarce exact vechile literale la orice data
+din 2025-2026 -> golden D112 + proba DUK NESCHIMBATE (suita verde, 1267 passed). GARD anti-hardcode: teste care
+inspecteaza sursa functiilor si pica daca literalul 0.25/0.10/0.0225 reapare (test_d112_ruteaza_cotele_prin_cote_
+nu_literale) + test de valoare cu temei (test_cotele_contributii_din_cote_cu_temei).
+
+Beneficiu period-aware: daca o cota se schimba pe viitor (ex. OUG), se modifica intr-un singur loc (COTE) cu
+fereastra de data, si d112 o preia automat - nu mai exista literal ascuns care sa ramana in urma legii.
+
+INCHIDERE CLUSTER: "baze contributii (CAS/CASS/imp/CAM) | d112" √ 03.08 (aliniere Sesiunea A, fara datorie,
+fara xfail nou). Secventa 58 -> 57.

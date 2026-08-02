@@ -28,7 +28,7 @@ Punctul 2 nu e formal. Pe 27.07 o gardă a „picat pe mutant" în timp ce crăp
 
 | Loc | Ce acoperă | Când rulează |
 |---|---|---|
-| suita pytest (1286 teste, 133 fișiere) | logică, schemă, semnături, contracte | la dev, înainte de commit |
+| suita pytest (1290 teste, 133 fișiere) | logică, schemă, semnături, contracte | la dev, înainte de commit |
 | `verificator_conformitate.py` | Design System, frontend (28 gardieni) | la dev, TOTAL 0 obligatoriu |
 | `core/verificatoare.py` | echilibru notă/balanță, TVA pe cotă, trezorerie | în aplicație, pe date reale |
 | `core/control_incrucisat.py` | D112/D300/D390 vs evidență, cotă TVA | în aplicație, semafor |
@@ -188,6 +188,12 @@ că intrarea a fost înghițită**.
   (subsistem MF, nu d101): modulul MF calculeaza doar amortizare LINIARA; degresiva/accelerata (art.28 alin.5)
   mapate dar necalculate -> xfail test_datorie_mf_metode_amortizare (impact pe amortizarea contabila/D406, nu pe
   d101 care ia amortizarea fiscala ca input).
+- ACOPERIT (03.08.2026): **cotele de contributii salariale in D112** (CAS 25% CF art.138, CASS 10% art.156,
+  impozit 10% art.78, CAM 2.25% art.220^3) rutate PERIOD-AWARE prin cota() din COTE - eliminate literalele
+  hardcodate (0.25/0.10/0.0225) din core/d112.py. Ca la restul COTE: o cota schimbata de lege se modifica intr-un
+  singur loc (fereastra de data), nu ramane literal ascuns in urma legii. Value-preserving (golden D112 + DUK
+  neschimbate). GARD anti-hardcode prin inspectia sursei functiilor (test_d112_ruteaza_cotele_prin_cote_nu_literale)
+  + test de valoare cu temei verbatim (test_cotele_contributii_din_cote_cu_temei).
 - DESCHIS: rotunjirea din D390 e bancară (`round()`), în timp ce D112 documentează că ANAF
   cere aritmetică. Schimbare fiscală — se verifică la sursă. Vezi DE_FACUT.
 
@@ -266,7 +272,7 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
 **Eșec:** teste verzi care nu testează nimic (fake-uri pe codul auditat, teste stale,
 fișiere necolectate).
 **Stare: PARȚIAL.**
-- ACOPERIT de fapt: 1286 teste colectate; fake-uri (`monkeypatch`/`MagicMock`) doar pe
+- ACOPERIT de fapt: 1290 teste colectate; fake-uri (`monkeypatch`/`MagicMock`) doar pe
   integrări externe (SPV, e-Factura, e-Transport, JWT). **Zero fake pe generatoarele de
   declarații.**
 - LIPSĂ: **mutantul zero sistematic** — forțezi fiecare generator să întoarcă `[]` și suita

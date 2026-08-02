@@ -247,67 +247,66 @@ CONSECINTE:
 
 Ordine DETERMINISTA a celor 64 clustere nebifate+neblocate, sortare topologica pe graf_clustere + departajare
 (a) FISCAL>STRUCTURA (b) deblocari desc (c) ordinea inventarului. Rescrisa 02.08: tichete masa/vacanta BIFAT ->
-iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. cota profit 16% + IMCA (cota verificata + IMCA implementat art.18^1) INCHIS 02.08 -> 60->59. amortizare|d101 (tratament art.28 aliniat; datorie MF metode) INCHIS 03.08 -> 59->58. Identitate = cluster | modul (nume duplicate intre module).
+iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. cota profit 16% + IMCA (cota verificata + IMCA implementat art.18^1) INCHIS 02.08 -> 60->59. amortizare|d101 (tratament art.28 aliniat; datorie MF metode) INCHIS 03.08 -> 59->58. baze contributii|d112 (cotele CAS/CASS/imp/CAM rutate period-aware prin COTE, value-preserving, aliniere Sesiunea A) INCHIS 03.08 -> 58->57. Identitate = cluster | modul (nume duplicate intre module).
 
 **REGULA DE ORDONARE.** Clusterul A vine dupa B daca o functie din A foloseste o valoare care APARTINE lui B (dependenta din graf_clustere). Sortare topologica pe aceste dependente. Departajare cand mai multe sunt libere simultan, in ordinea: (a) intra intr-o declaratie DEPUSA la ANAF - proxy Risc=FISCAL, aproximatie DECLARATA, nu echivalenta; (b) cate clustere deblocheaza; (c) ordinea din inventar. Secventa se PERSISTA, nu se recalculeaza la fiecare rulare - altfel pozitia 7 de azi nu e pozitia 7 de maine. Se rescrie DOAR cand se schimba graful sau se adauga clustere, cu motivul consemnat (vezi randul 'Rescrisa 02.08' de mai sus).
-1. baze contributii (CAS/CASS/imp/CAM) | d112
-2. rotunjire aritmetica (A91b) | d112
-3. sect_II tip_venit (impozit retinut) | d205
-4. rotunjire | d205
-5. cote TVA -> randuri | d300
-6. exigibilitate / TVA la incasare | d300
-7. taxare inversa | d300
-8. pro-rata deducere | d300
-9. rotunjire aritmetica | d300
-10. ajustari | d300
-11. tipuri operatiune 1-5 | d301
-12. rollup S4.1->S4 | d301
-13. baza = val x curs | d301
-14. cota TVA | d301
-15. tipuri operatiune IC (L/A/P/S) | d390
-16. rotunjire aritmetica (A91b) | d390
-17. reclasificari manuale | d390
-18. exigibilitate / prag | d390
-19. cote acceptate | d394
-20. taxare inversa | d394
-21. SourceDocuments (facturi reale, PARTIAL) | d406
-22. plafon diurna neimpozabila | deconturi
-23. credit sponsorizare / D177 | sponsorizari
-24. rezerva legala | motor
-25. zilieri (impozit+CAS) | contracte_speciale
-26. regim marja second-hand | tva_marja
-27. regim marja turism | tva_marja_turism
-28. impozit dividend | decontari_asociati
-29. contributii PFA (praguri CAS/CASS pe sm) | d212
-30. nomenclator cod_oblig<->cod_bugetar | d100
-31. cota micro 121 (flag) | d100
-32. checksum totalPlata_A (R11b) | d100
-33. scadente/nr_evidenta | d100
-34. structura P1-P53 | d101
-35. R17 Data_S / termen | d101
-36. limita text 75 | d112
-37. nomenclator cod_oblig | d112
-38. checksum totalPlata_A | d205
-39. trunchiere den/adresa | d205
-40. randuri / checksum | d300
-41. checksum totalPlata_A (R28) | d301
-42. nomenclator tari (HR->CR) | d390
-43. tipuri operatiune (pct.215) | d394
-44. tip_partener | d394
-45. rezumat1 campuri complete | d394
-46. nomenclator codPR (art.331) | d394
-47. totalPlata_A (R17) | d394
-48. plan conturi pe norma | d406
-49. UoM UN/ECE | d406
-50. MovementType nomenclator | d406
-51. BaseRate (encoding pro-rata) | d406
-52. registration_number (00+CUI) | d406
-53. structura XSD (Header/MasterFiles/GLE) | d406
-54. structura declaratie710 | d710
-55. nomenclator COD_BUGETAR | d710
-56. checksum R11b | d710
-57. R15 termen definitivare | d710
-58. scadente | d710
+1. rotunjire aritmetica (A91b) | d112
+2. sect_II tip_venit (impozit retinut) | d205
+3. rotunjire | d205
+4. cote TVA -> randuri | d300
+5. exigibilitate / TVA la incasare | d300
+6. taxare inversa | d300
+7. pro-rata deducere | d300
+8. rotunjire aritmetica | d300
+9. ajustari | d300
+10. tipuri operatiune 1-5 | d301
+11. rollup S4.1->S4 | d301
+12. baza = val x curs | d301
+13. cota TVA | d301
+14. tipuri operatiune IC (L/A/P/S) | d390
+15. rotunjire aritmetica (A91b) | d390
+16. reclasificari manuale | d390
+17. exigibilitate / prag | d390
+18. cote acceptate | d394
+19. taxare inversa | d394
+20. SourceDocuments (facturi reale, PARTIAL) | d406
+21. plafon diurna neimpozabila | deconturi
+22. credit sponsorizare / D177 | sponsorizari
+23. rezerva legala | motor
+24. zilieri (impozit+CAS) | contracte_speciale
+25. regim marja second-hand | tva_marja
+26. regim marja turism | tva_marja_turism
+27. impozit dividend | decontari_asociati
+28. contributii PFA (praguri CAS/CASS pe sm) | d212
+29. nomenclator cod_oblig<->cod_bugetar | d100
+30. cota micro 121 (flag) | d100
+31. checksum totalPlata_A (R11b) | d100
+32. scadente/nr_evidenta | d100
+33. structura P1-P53 | d101
+34. R17 Data_S / termen | d101
+35. limita text 75 | d112
+36. nomenclator cod_oblig | d112
+37. checksum totalPlata_A | d205
+38. trunchiere den/adresa | d205
+39. randuri / checksum | d300
+40. checksum totalPlata_A (R28) | d301
+41. nomenclator tari (HR->CR) | d390
+42. tipuri operatiune (pct.215) | d394
+43. tip_partener | d394
+44. rezumat1 campuri complete | d394
+45. nomenclator codPR (art.331) | d394
+46. totalPlata_A (R17) | d394
+47. plan conturi pe norma | d406
+48. UoM UN/ECE | d406
+49. MovementType nomenclator | d406
+50. BaseRate (encoding pro-rata) | d406
+51. registration_number (00+CUI) | d406
+52. structura XSD (Header/MasterFiles/GLE) | d406
+53. structura declaratie710 | d710
+54. nomenclator COD_BUGETAR | d710
+55. checksum R11b | d710
+56. R15 termen definitivare | d710
+57. scadente | d710
 ## Inventarul de acoperit în A
 
 Per CLUSTER de reguli, nu per fișier (30.07.2026) — un √ pe fișier ascundea că doar o parte din
@@ -354,7 +353,7 @@ clustere.
 | cota profit 16% + IMCA | d101 | test_d101.py | √ 03.08 (cota 16% verificata CF art.17 + COTE impozit_profit, test cu temei; IMCA CF art.18^1 IMPLEMENTAT: formula 1%x(VT-Vs-I-A) negativ->0 + prag 50mil euro + wiring P47/comparatie P48 + PROBA DUK. Gap minor: cota din COTA_STANDARD literal, nu cota() - rutare follow-up) | FISCAL | CF art.17 (cota 16%); CF art.18^1 (IMCA); OUG 8/2026 | test_golden_lant_formule_oficiale test_cota_profit_16pct_din_cota_cu_temei test_imca_formula_1pct test_datoreaza_imca_prag_50mil_euro test_imca_wiring_p47_si_comparatie_p48 test_imca_d101_duk_valid |
 | R17 Data_S / termen | d101 | test_d101.py |  | STRUCTURA |  |  |
 | amortizare | d101 | test_d101.py | √ 03.08 (tratamentul amortizarii in d101 aliniat CF art.28: amortizare FISCALA P11 dedusa in P16, amortizare CONTABILA P28 adaugata inapoi in P34; prag MF amortizabil 5000 lei art.28 alin.2b/OUG8-2026. Golden cu temei. DATORIE separata MF/D406: degresiva/accelerata necalculate - xfail test_datorie_mf_metode_amortizare, impact pe contabil/SAF-T nu pe d101) | FISCAL | CF art.28 (amortizarea fiscala); OUG 8/2026 (prag 5000) | test_amortizare_ajustare_fiscala_art28 test_mf_prag_amortizabil_5000_art28 |
-| baze contributii (CAS/CASS/imp/CAM) | d112 | test_d112.py |  | FISCAL |  |  |
+| baze contributii (CAS/CASS/imp/CAM) | d112 | test_d112.py | √ 03.08 (cotele salariale rutate PERIOD-AWARE prin cota() din COTE, nu literale: CAS 25% CF art.138 lit.a, CASS 10% CF art.156, impozit 10% CF art.78 alin.2, CAM 2.25% CF art.220^3 alin.1 - toate verificate VERBATIM la sursa. Value-preserving: golden D112 + DUK neschimbate. Gard anti-hardcode pe sursa functiilor) | FISCAL | CF art.138 (CAS 25%); CF art.156 (CASS 10%); CF art.78 (impozit 10%); CF art.220^3 (CAM 2.25%) | test_cotele_contributii_din_cote_cu_temei test_d112_ruteaza_cotele_prin_cote_nu_literale test_d112_cas_cass_valori_neschimbate_dupa_rutare |
 | concedii medicale (asiguratB3/D) | d112 | test_exces_vacanta_d112.py test_pull_declaratii.py | √ 02.08 — D-field per cod: D_9/D_10/D_11(cod 06 urgenta, HG 423/2020, C(3) obligatoriu daca D_9=06)/D_23; cod 08 maternitate Rd.3 (C2_31/32/34/36) 100% FNUASS; taxe CM prin taxe_cm canonic. DUK VALID: cod 01/06/08 (raw, 02.08). DATORIE declarata (test_datorie): cod 05 sub-randuri infectocontagioase Rd.1.1-1.4 nedefalcate (emise 0, corect cat timp nu exista cod 05 in luna) | FISCAL | OUG 158/2005; structura D112 (D_11 cf HG 423/2020) | test_d112_cod06_urgenta_valid_duk test_d112_maternitate_cod08_c2_rd3 test_d112_urgenta_cod06_emite_d11 |
 | suprataxare prag | d112 | test_d112.py | √ 02.08 (bump: V3 salariu_minim 2025 corectat 3700->4050 HG 1506/2024 FIX5 dupa √ 29.07; praguri COTA-DERIVATE nu literal - salarizare.py:129 sm=cota, d112 _sal_minim=cota; recalculat sm 2025/2026H1=4050 2026H2=4325 identic cu codul: (4050-300-2000)*25%=437.50, (4325-200-2000)*25%=531.25) | FISCAL | CF art.146 alin.(5^6) | test_sub_minim_nescutit_emite_asigexc2_fara_motivexc test_peste_minim_asigexc_zero |
 | rotunjire aritmetica (A91b) | d112 | test_d112.py |  | FISCAL |  |  |
