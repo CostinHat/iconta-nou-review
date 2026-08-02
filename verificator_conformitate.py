@@ -804,6 +804,57 @@ except Exception as _evf:
     print("### GARD VERSIONARE FORMULE: NEVERIFICAT (%s)" % _evf)
 
 
+# --- GARD BLOCAJ MOTIVAT PE COTE DE REGULA (PAS 3, 01.08.2026): orice cota citita de o functie de regula
+# fiscala, cu data_in mai TARZIE decat common.DATA_START_SISTEM (podeaua datelor de calcul salarial), trebuie
+# sa produca un blocaj MOTIVAT (common.PerioadaIndisponibila, tag PERIOADA_BLOCATA -> handler main.py -> 423)
+# cand e ceruta pentru o perioada din [podea, data_in), NU o exceptie bruta (500/traceback in UI). Fara asta,
+# o adeverinta/rectificativa pentru o luna in care functia are ALTFEL date (ex. 2025: salariu_minim exista,
+# plafon_facilitate nu) crapa cu traceback la contabil. Mecanismul e CENTRAL (cota() ridica PerioadaIndisponibila
+# pentru orice pre-data) -> gardul PROBEAZA runtime ca fiecare cota de regula late-start produce chiar blocajul
+# motivat. PRAG 0: orice cota de regula late-start care ridica ALTCEVA (exceptie bruta) BLOCHEAZA. Ratchet daca
+# apar restante. Cotele care rup un calcul FRECVENT (nu doar retroactiv) - vezi nota tva_redusa in DECIZII/GARZI.
+BLOCAJ_MOTIVAT_BASELINE = 0
+try:
+    from core import common as _cm_bm, graf_temei as _gt_bm
+    _graf_bm = _gt_bm.construieste_graf()
+    _cote_regula = set()
+    for _rel, _fn in _VERSIONARE_FUNCTII:          # cotele citite de cele 13 reguli (direct + prin variante)
+        for _cand in (_fn, "_%s_2018" % _fn, "_%s_core" % _fn):
+            if _cand in _graf_bm:
+                _cote_regula |= _graf_bm[_cand]["cote"]
+    _bm_restante, _bm_late = [], []
+    for _k in sorted(_cote_regula):
+        if _k not in _cm_bm.COTE:
+            continue
+        _start = min(_r[0] for _r in _cm_bm.COTE[_k])
+        if _start <= _cm_bm.DATA_START_SISTEM:
+            continue                                # acoperita de la podea in jos - nu rupe in range-ul suportat
+        _bm_late.append((_k, _start))
+        try:
+            _cm_bm.cota(_k, _cm_bm.DATA_START_SISTEM)   # < _start -> TREBUIE sa ridice blocaj motivat
+            _bm_restante.append((_k, "NU RIDICA"))
+        except _cm_bm.PerioadaIndisponibila:
+            pass                                    # corect: blocaj motivat
+        except Exception as _ex_bm:
+            _bm_restante.append((_k, "exceptie bruta: %s" % type(_ex_bm).__name__))
+    if len(_bm_restante) > BLOCAJ_MOTIVAT_BASELINE:
+        rap["blocaj_motivat"] = [("EXCEPTIE-BRUTA", 0, "%s (%s)" % (_k, _m),
+            "cota de regula late-start fara blocaj motivat - crapa cu traceback in UI") for _k, _m in _bm_restante]
+    print("")
+    print("### GARD BLOCAJ MOTIVAT PE COTE DE REGULA (PRAG %d):" % BLOCAJ_MOTIVAT_BASELINE)
+    print("  cote de regula late-start (data_in > %s): %d | fara blocaj motivat: %d%s" % (
+        _cm_bm.DATA_START_SISTEM.isoformat(), len(_bm_late), len(_bm_restante),
+        "  <== BLOCHEAZA" if len(_bm_restante) > BLOCAJ_MOTIVAT_BASELINE else ""))
+    for _k, _st in _bm_late:
+        print("  LATE-START: %-34s start=%s  (blocaj motivat pt [%s, %s))" % (
+            _k, _st.isoformat(), _cm_bm.DATA_START_SISTEM.isoformat(), _st.isoformat()))
+    for _k, _m in _bm_restante:
+        print("  RESTANTA: %s (%s)" % (_k, _m))
+except Exception as _ebm:
+    print("")
+    print("### GARD BLOCAJ MOTIVAT PE COTE DE REGULA: NEVERIFICAT (%s)" % _ebm)
+
+
 # --- GARD IZOLARE TENANTI (structural, CODEBASE-WIDE): orice ruta cu {tenant_id} in path care
 # deschide get_conn TREBUIE sa rezolve accesul - prin auth_api.schema_tenant SAU printr-un RESOLVER
 # (functie al carei corp cheama schema_tenant SAU scopeaza public.tenants pe accounting_firm_id/
