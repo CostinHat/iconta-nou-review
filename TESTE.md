@@ -182,6 +182,44 @@ Pentru fiecare test:
 
 Rezultatul sesiunii A: o suită care afirmă legea, nu implementarea.
 
+## PREDARE PART II (02.08.2026) — mecanismul de localizare act -> clustere (PART I livrat, PART II ramas)
+
+PART I LIVRAT (condiile, in ordine): V1 inventar complet + criteriu (43b2f5c), V2 graful vede doar prin cota()
+(609cc6b), V3 resetarea propagata pe graf + ratchet stale (a8889b8). Fundament pe care se sprijina PART II:
+- core/temeiuri.py: gaseste(act) -> locurile din core/*.py care CITEAZA actul (substring, forme partiale).
+- core/agenda.py: cote_cluster(rand) -> cotele de care depinde un cluster (test->sursa->graf). stare_sesiune_a()
+  -> randurile inventarului (cluster, modul, Temeiuri, Functie(test)).
+- core/graf_temei.py: depinde_de(cota) -> functiile care depind de o cota (direct/tranzitiv).
+- common.COTE: fiecare valoare cu Temei (act/nr/an/art + lant_acte).
+
+PART II - de construit (core/localizare.py + test cu probele):
+1. INDEX act -> clustere, din temeiuri atasate:
+   - cote_lovite(act) = cheile COTE al caror Temei (str + lant_acte) contine actul.
+   - clustere_direct(act) = randuri din inventar a caror coloana Temeiuri contine actul.
+   - functii(act) = temeiuri.gaseste(act) (markeri TEMEI + obiecte Temei in cod).
+   - clustere_indirect(act) = randuri cu cote_cluster(rand) ∩ cote_lovite(act) != {}, MINUS clustere_direct
+     (lovite prin VALOARE din graf - marcate DISTINCT de cele lovite direct prin citare).
+   - declaratii(act) = modulele clusterelor lovite (d100..d710, salarizare, + orfanele V1).
+2. INTEROGARE(act) -> {clustere_direct, clustere_indirect, cote, functii, teste=Functie(test) ale clusterelor
+   lovite, declaratii}.
+
+PROBE (de rulat, output brut):
+- Legea 141/2025 -> TVA (tva_standard/tva_redusa citeaza) SI concedii (Temeiuri: 'Legea 141/2025 si 136/2020';
+  modifica art.17 OUG 158/2005). Daca lista e INCOMPLETA -> granita intre clustere e trasata gresit: repara
+  GRANITA, nu interogarea (ramificatie: tichete culturale/cresa vs masa/vacanta - Legea 165/2018 le da pe toate 4).
+- OUG 158/2005 si art.77 CF -> verificat MANUAL ca listele sunt complete.
+- salariu_minim (COTA, nu act) -> reverse-graf: deducere, facilitate, plafon 12 sm, suprataxare part-time, prag
+  tineri, tichete vacanta. RISC CUNOSCUT (V2): 'tichete vacanta' (plafon 6 sm, beneficii_api) poate sa NU apara
+  daca plafonul e hardcodat, nu cota() - atunci graful nu vede dependenta -> spune care si de ce (blind spot V2).
+
+RAMIFICATII PART II: (a) act cu lista incompleta -> repara GRANITA de cluster; (b) daca repararea granitei ar
+CADEA vreo bifa -> OPRESTE, raporteaza (nu reseta singur - vezi si cele 3 stale de la V3); (c) daca lista testelor
+fara cluster trece de ~20, gard pe ratchet.
+
+DE DECIS COSTIN (din V3, deschis): 3 bife 29.07 (suprataxare part-time, proratare, suprataxare prag) sunt STALE -
+stau pe salariu_minim 2025 corectat 3700->4050 dupa √. De reverificat la sursa. Ratchet baseline=3 in test_agenda
+le tine vizibile fara sa le reseteze; la reverificare, coboara baseline-ul.
+
 ## Inventarul de acoperit în A
 
 Per CLUSTER de reguli, nu per fișier (30.07.2026) — un √ pe fișier ascundea că doar o parte din
