@@ -247,6 +247,12 @@ def test_datorie_cm05_subrows_infectocontagioase():
     assert "cm05 sub-randuri infectocontagioase defalcate duk" in dz.lower()
 
 
+@pytest.mark.xfail(strict=True, reason="DATORIE 02.08.2026: plafonul de 12 salarii minime brute pe baza de calcul CM (OUG 158/2005 art.10 alin.(2)) NU e aplicat in _calcul_cm_core - media zilnica (Mzbci) nu e capata la (12*sm)/nzl, deci un salariat cu venituri mari primeste indemnizatie peste plafonul legal. Verbatim art.10(2) neobtinut la MO (REDARE). Se inchide cand plafonul e aplicat in calcul_cm + probat (media capata pe un caz peste plafon) si consemnat cu marker in DECIZII.md.")
+def test_datorie_cm_plafon_12sm():
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "cm plafon 12 salarii minime aplicat in calcul_cm" in dz.lower()
+
+
 @pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: D394 exclude linia scutita (cota 0) catre partener cu CUI (structD394 pct.217: cota 0 permisa doar pentru LS/AS/ASI/N/V) - o linie scutita pe o factura tip L catre partener RO cu CUI e IGNORATA cu avertisment, nu inclusa. Proba DUK pe factura MULTI-COTA cu exact acest caz (21+11+scutit catre CUI -> DUK valid + incadrare corecta a scutitului) NEFACUTA - probele D394 (test_d300_d394_paritate) folosesc date care evita cazul (A4 = date consistente fara scutit-catre-CUI). Se inchide cand proba e facuta si consemnata in DECIZII.md.")
 def test_datorie_d394_scutit_catre_cui_proba_duk():
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
