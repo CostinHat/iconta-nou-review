@@ -399,6 +399,33 @@ def _deriva_data_out(cote=None):
 _deriva_data_out()
 
 
+# Cea mai devreme perioada pentru care sistemul are date de calcul salarial: salariu_minim si
+# facilitate_salariu_minim au fost populate incepand cu 2025-01-01 (pentru adeverinte/rectificative 2025).
+# O cota de REGULA cu data_in DUPA aceasta podea (ex. plafon_facilitate/tichet incep 2026-01-01) rupe un
+# calcul pentru o perioada [podea, data_in) in care functia are ALTFEL date -> blocaj MOTIVAT, nu exceptie bruta.
+DATA_START_SISTEM = date(2025, 1, 1)
+
+
+class PerioadaIndisponibila(ValueError):
+    """Blocaj MOTIVAT (nu exceptie bruta): o cota ceruta de un calcul nu e definita pentru perioada ceruta
+    (data ceruta e inainte de prima valoare cunoscuta a cotei). NU e defect de sistem - e LIMITA DECLARATA:
+    valoarea nu a fost verificata la sursa pentru perioade anterioare (o lege spune de CAND intra, nu se
+    inventeaza retroactiv - Modelul de temei 01.08). Mesajul poarta cele 4 elemente (ce s-a oprit / de ce /
+    ce se poate face / cine decide) + tag-ul PERIOADA_BLOCATA, ca handler-ul global (main.py) sa-l arate
+    utilizatorului ca mesaj (423), nu ca traceback (500). Subclasa de ValueError -> `except ValueError`
+    existent ramane valabil."""
+    def __init__(self, nume, la_data, prima_data):
+        self.nume = nume
+        self.la_data = _ca_data(la_data)
+        self.prima_data = _ca_data(prima_data)
+        det = ("%s nu poate fi calculata: valoarea '%s' nu e definita inainte de %s (nu a fost verificata "
+               "la sursa pentru perioade anterioare - nu se inventeaza retroactiv). Calculul e disponibil de "
+               "la %s; pentru perioade anterioare valoarea se completeaza in COTE la sursa (decizie de "
+               "dezvoltator)." % (self.la_data.isoformat(), nume, self.prima_data.isoformat(),
+                                  self.prima_data.isoformat()))
+        super().__init__("PERIOADA_BLOCATA: " + det)
+
+
 def cota(nume, la_data=None, strict=True):
     """Intoarce (valoare, temei) valabila la data ceruta (implicit azi).
 
@@ -422,7 +449,9 @@ def cota(nume, la_data=None, strict=True):
                     f"{la_data.isoformat()} - gol in registru. Adauga valoarea valabila in COTE."
                 )
             return valoare, temei
-    raise ValueError(f"nicio valoare pentru {nume!r} la data {la_data}")
+    # la_data e inainte de PRIMA valoare cunoscuta (intrari sortate descrescator -> ultima = cea mai veche).
+    # NU exceptie bruta: blocaj MOTIVAT (valoarea nu e verificata la sursa pentru perioade anterioare).
+    raise PerioadaIndisponibila(nume, la_data, intrari[-1][0])
 
 
 def alege_varianta(variante, la_data=None):
