@@ -5,6 +5,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 from core.pdf_fonturi import init_fonturi, font
+from core import pontaj as _pontaj
 from core import salarizare
 from core import scadente as _scad
 from core import beneficii_api as _ben
@@ -49,9 +50,10 @@ def stat_plata(conn, schema, an, luna):
         # zile lucratoare FARA sarbatori (OUG 158/2005 art.10) - numitorul proratarii CM
         zile_luna = _scad.zile_lucratoare_luna(an, luna)
         cm_zile = c_cm["zile"] if (c_cm and c_cm["zile"] > 0) else 0
-        # [F133] tichete de masa: zile efectiv lucrate = ACELEASI zile ca proratarea salariului
-        # (zile lucratoare - concediu medical). NU din pontaj (F135 = informativ, DECIZII 20.07 opt.A).
-        tichet_zile = max(zile_luna - cm_zile, 0)
+        # [D2 02.08] tichete de masa pe zile EFECTIV lucrate (HG 1045/2018 art.10(3)): zile lucratoare
+        # - CM (evidenta) - CO/delegatie/absente/invoire (pontaj). Reversarea decuplarii 20.07 (DECIZII 02.08).
+        _fara_tichet = _pontaj.zile_fara_tichet(conn, schema, sid, an, luna) if float(tichet_val or 0) > 0 else 0
+        tichet_zile = max(zile_luna - cm_zile - _fara_tichet, 0)
         if cm_zile > 0:
             brut_lucrat = float(brut or 0) * max(zile_luna - cm_zile, 0) / zile_luna
         else:

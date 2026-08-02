@@ -67,3 +67,20 @@ def seteaza(conn, schema, salariat_id, zi, stare):
                     "ON CONFLICT (salariat_id, zi) DO UPDATE SET stare = EXCLUDED.stare",
                     (salariat_id, zi, stare))
     return {"ok": True}
+
+
+# HG 1045/2018 art.10 alin.(3): tichetul de masa se acorda pe zile EFECTIV lucrate. Zilele de concediu de
+# odihna, delegatie/detasare, absente (motivate/nemotivate) si invoire NU dau drept la tichet. Concediul
+# MEDICAL se scade separat (din evidenta CM, nu se dubleaza aici).
+_STARI_FARA_TICHET = ("concediu_odihna", "delegatie", "absent_motivat", "absent_nemotivat", "invoire")
+
+
+def zile_fara_tichet(conn, schema, salariat_id, an, luna):
+    """Zilele LUCRATOARE din pontaj cu o stare care NU da drept la tichet de masa (CO/delegatie/absente/
+    invoire), pentru corectia numarului de tichete (D2, HG 1045/2018 art.10(3)). CM exclus (scazut separat).
+    Firma FARA pontaj -> 0 (comportament neschimbat, fara blocaj - blocajul-daca-necompletat cere un semnal
+    de confirmare a lunii, vezi DECIZII 02.08). None-safe."""
+    g = grila(conn, schema, salariat_id, an, luna)
+    if g is None:
+        return 0
+    return sum(g["rezumat"].get(st, 0) for st in _STARI_FARA_TICHET)

@@ -6,6 +6,7 @@ pull() citeste salariati + concedii_medicale din schema tenantului."""
 from core.common import text_anaf as _t, cere_coloane_cursor  # limita 75 car. ANAF + garda coloane (27.07.2026)
 import re
 from core import scadente as _scad
+from core import pontaj as _pontaj
 from core import beneficii_api as _ben
 from core.pdf_util import bani
 
@@ -438,8 +439,9 @@ def pull(conn, schema, an, luna):
         brut_int = _sal_luna
         zile_cm_s = int(s.get("zile_cm") or 0)
         brut_lucrat = (brut_int * max(nzl - zile_cm_s, 0) / nzl) if (nzl and zile_cm_s) else brut_int
-        # [F133] tichete de masa: aceleasi zile ca proratarea salariului (nzl - cm), NU din pontaj
-        tichet_zile = max(nzl - zile_cm_s, 0)
+        # [D2 02.08] tichete pe zile EFECTIV lucrate (HG 1045/2018 art.10(3)): nzl - CM - CO/deleg/absente/invoire (pontaj)
+        _fara_t = _pontaj.zile_fara_tichet(conn, schema, s["id"], an, luna) if float(s.get("tichet_masa_valoare") or 0) > 0 else 0
+        tichet_zile = max(nzl - zile_cm_s - _fara_t, 0)
         r = _sz.calcul_salariu(brut_lucrat,
                                persoane=s.get("persoane_intretinere") or 0,
                                la_data=ref,
