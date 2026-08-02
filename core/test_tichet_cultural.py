@@ -92,3 +92,59 @@ def test_cultural_seteaza_ocazional_peste_plafon_eveniment():
     # ocazional apr-sep 2026: plafon eveniment 490; 500 depaseste
     r = beneficii_api.seteaza(None, "s", 1, 2026, 5, "cultural", 500, eveniment="ocazional")
     assert "eroare" in r and "plafon" in r["eroare"]
+
+
+# ============================================================
+#  Integrare DB (schema efemera din template) — constrangere cultural + seteaza + GRI pe DB.
+# ============================================================
+from core import db as _db, tenant_provisioning as _tp, beneficii_api as _ben
+
+_SCHEMA_C = "ztest_cultural"
+
+
+def _db_ok():
+    try:
+        _db.init_pool()
+        with _db.get_conn():
+            return True
+    except Exception:
+        return False
+
+
+_DBOK = _db_ok()
+
+
+@pytest.fixture
+def conn_cult():
+    _db.init_pool()
+    with _db.get_conn() as c:
+        try:
+            with c.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA_C)
+                cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA_C))
+                cur.execute("SET search_path TO %s, public" % _SCHEMA_C)
+                cur.execute("INSERT INTO salariati (cnp,nume,prenume,data_angajare,salariu_brut,ore_zi,judet_casa) "
+                            "VALUES ('1900101410011','POPESCU','ION','2024-01-01',5000,8,'B') RETURNING id")
+                sid = cur.fetchone()[0]
+            yield c, sid
+        finally:
+            c.rollback()
+
+
+@pytest.mark.skipif(not _DBOK, reason="DB indisponibil")
+def test_cultural_db_roundtrip(conn_cult):
+    c, sid = conn_cult
+    # lunar apr-sep 2026 (plafon 250) -> ok
+    assert _ben.seteaza(c, _SCHEMA_C, sid, 2026, 5, "cultural", 200).get("ok")
+    assert float(_ben.lista_luna(c, _SCHEMA_C, 2026, 5, "cultural").get(sid, 0)) == 200.0
+    # + ocazional (plafon eveniment 490) -> se cumuleaza pe salariat/luna
+    assert _ben.seteaza(c, _SCHEMA_C, sid, 2026, 5, "cultural", 400, eveniment="ocazional").get("ok")
+    assert float(_ben.lista_luna(c, _SCHEMA_C, 2026, 5, "cultural").get(sid, 0)) == 600.0
+
+
+@pytest.mark.skipif(not _DBOK, reason="DB indisponibil")
+def test_cultural_db_gri_blocat_inainte_de_insert(conn_cult):
+    c, sid = conn_cult
+    r = _ben.seteaza(c, _SCHEMA_C, sid, 2025, 12, "cultural", 100)  # GRI -> blocat, nu ajunge la INSERT
+    assert "eroare" in r and "GRI" in r["eroare"]
+    assert _ben.lista_luna(c, _SCHEMA_C, 2025, 12, "cultural") == {}  # nimic inserat
