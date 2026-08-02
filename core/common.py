@@ -434,6 +434,53 @@ class PerioadaIndisponibila(ValueError):
         super().__init__("PERIOADA_BLOCATA: " + det)
 
 
+# ============================================================
+#  TICHETE CULTURALE — plafoane semestriale indexate (Legea 165/2018 art.22, indexat prin ordine MF/MC).
+#  Temeiuri VERDE: anaf_surse/RAPORT_verificare_temeiuri.md (verdict 15 valoare nominala; verdict 16 ferestre).
+#  Ferestrele CONFIRMATE la sursa primara; fereastra oct.2025-mar.2026 (S2 2025) = GRI (ordinul de mijloc
+#  1.574/3.246/2025 e stub pe just.ro) -> BLOCAJ MOTIVAT, NU 240/470 tacit (GARD OBLIGATORIU).
+# ============================================================
+class PlafonCulturalIndisponibil(ValueError):
+    """Blocaj MOTIVAT: plafonul tichetelor culturale nu e confirmat la sursa primara pentru luna ceruta
+    (fereastra GRI sau semestru fara ordin de indexare descarcat). Mesaj cu 4 elemente + tag
+    PERIOADA_BLOCATA (handler global main.py -> 423, nu traceback 500). Subclasa de ValueError."""
+    def __init__(self, la_data, motiv):
+        self.la_data = _ca_data(la_data)
+        super().__init__("PERIOADA_BLOCATA: Tichete culturale - plafon indisponibil pentru %s: %s"
+                         % (self.la_data.isoformat(), motiv))
+
+
+# (start, end_inclusiv, lunar, eveniment, sursa) - valori CONFIRMATE la sursa primara (anaf_surse/).
+_FERESTRE_CULTURAL = [
+    (date(2025, 4, 1), date(2025, 9, 30), Decimal("220"), Decimal("450"),
+     "Ordin MF/MC 361/2.680/2025, MO 244/20.03.2025 (anaf_surse/ordin_361_2680_2025.html)"),
+    (date(2026, 4, 1), date(2026, 9, 30), Decimal("250"), Decimal("490"),
+     "Ordin MF/MC 369/2.624/2026, MO 258/01.04.2026 (anaf_surse/ordin_369_2624_2026.html)"),
+]
+# Fereastra GRI (verdict 16): 2025-10-01 .. 2026-03-31 (semestrul II 2025). Ordinul 1.574/3.246/2025 e stub
+# pe just.ro; valoarea 240/470 doar din surse secundare, NEconfirmata la MO -> se BLOCHEAZA, nu se aplica tacit.
+_CULTURAL_GRI = (date(2025, 10, 1), date(2026, 3, 31))
+
+
+def plafon_cultural(la_data, ocazional=False):
+    """Plafonul maxim al unui tichet cultural pentru luna la_data: (Decimal, sursa).
+    ocazional=False -> plafon LUNAR ; True -> plafon pe EVENIMENT. Ridica PlafonCulturalIndisponibil
+    (blocaj motivat) pentru ferestre neconfirmate la sursa (GRI sau semestru fara ordin descarcat)."""
+    d = _ca_data(la_data)
+    for start, end, lunar, eveniment, sursa in _FERESTRE_CULTURAL:
+        if start <= d <= end:
+            return (eveniment if ocazional else lunar), sursa
+    if _CULTURAL_GRI[0] <= d <= _CULTURAL_GRI[1]:
+        raise PlafonCulturalIndisponibil(d,
+            "fereastra oct.2025-mar.2026 (semestrul II 2025) e GRI - ordinul MF/MC 1.574/3.246/2025 e stub pe "
+            "just.ro, valoarea (240/470) doar din surse secundare, NEconfirmata la MO. Ce se poate face: obtine "
+            "textul operativ al ordinului la MO si adauga fereastra in _FERESTRE_CULTURAL. Cine decide: Costin.")
+    raise PlafonCulturalIndisponibil(d,
+        "niciun ordin de indexare confirmat la sursa pentru semestrul acestei luni. Ce se poate face: descarca "
+        "ordinul MF/MC de indexare a tichetelor culturale pentru semestrul respectiv la MO si adauga fereastra. "
+        "Cine decide: Costin.")
+
+
 def cota(nume, la_data=None, strict=True):
     """Intoarce (valoare, temei) valabila la data ceruta (implicit azi).
 
