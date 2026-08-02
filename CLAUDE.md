@@ -396,6 +396,10 @@ informatia (cifra care conteaza langa o nota tehnica; ce n-a fost verificat uneo
 proza). Pe cifre se face aritmetica de validare (COLLECTED = passed + skipped + xfailed, comparat cu runda
 anterioara); pe deciziile cerute se stie ce blocheaza. Amandoua merita randuri proprii.
 
+TITLU (obligatoriu, prima linie a raportului, inaintea sectiunii 1):
+RAPORT <NUME_CAMPANIE> | <data> | <HEAD_intrare> -> <HEAD_iesire> | <n> pasi
+Fara titlu, raportul e incomplet.
+
 1. VERDICT - o linie: LIVRAT / LIVRAT PARTIAL / OPRIT, si motivul in maximum o propozitie.
 
 2. CIFRE - brut, fiecare pe rand propriu, nimic altceva pe randurile astea:
@@ -404,6 +408,8 @@ anterioara); pe deciziile cerute se stie ce blocheaza. Amandoua merita randuri p
    verificator TOTAL: N
    HEAD: hash
    ahead: da/nu
+   HEAD intrare -> HEAD iesire: hash_intrare -> hash_iesire, cu lista commiturilor pe pas.
+   SOLD DATORII: xfail deschise la intrare N / inchise in campanie N / deschise nou N / sold la iesire N. Cifra, nu proza.
    Cifra COLLECTED se CONFIRMA EXPLICIT (rulata), nu se deduce din passed.
 
 3. PROBA - per pas: ce s-a testat, output ROSU inainte, output VERDE dupa, MUTATIA si ce a produs. Output BRUT,
@@ -419,6 +425,18 @@ anterioara); pe deciziile cerute se stie ce blocheaza. Amandoua merita randuri p
    nu e cazul - sectiunea NU se omite.
 
 7. IN AFARA PLANULUI - ce s-a atins si nu era cerut in comanda. (= substanta 2/etapa 5 e.)
+
+8. GENERALIZARE PE CLASA - pentru fiecare neconformitate corectata: unde s-a cautat acelasi tipar in restul
+   aplicatiei (comanda de cautare, verbatim), ce s-a gasit, ce s-a corectat. Locurile verificate SI curate se
+   enumera explicit - "cautat in X, Y, Z; tiparul nu apare" e informatie, absenta ei e gol. Daca o neconformitate
+   nu a fost generalizata, se scrie de ce.
+
+9. GARDURI ADAUGATE - tabel: gard | fisier:linie | ce face imposibil | mutatia care il probeaza (comanda + iesire
+   rosie). Un gard fara mutatie probata nu se trece aici - se trece la sectiunea 5 ca neverificat.
+
+10. EFECT PE PRODUS - ce se schimba vizibil pentru contabil sau in iesirea catre ANAF: ecran, camp, cifra pe
+    fluturas, linie in declaratie, comportament nou. Format: "inainte -> dupa". Daca nu se schimba nimic vizibil
+    (campanie pur interna), se scrie "niciun efect vizibil" - explicit, nu prin omisiune.
 
 ## 2.1 De unde vin pasii
 
