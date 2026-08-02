@@ -8,6 +8,7 @@ DE_FACUT.md). Pazit de core/test_agenda.py: docul care ramane in urma codului pi
 
   python -m core.agenda        # raport complet (cu starea tehnica: pytest/verificator/site)
 """
+import ast
 import re
 import subprocess
 import datetime
@@ -207,6 +208,69 @@ def stare_tehnica():
     except Exception:
         pass
     return ps, vs, ss
+
+
+def _cote_transitive(nume, graf, _vazut=None):
+    """Cotele (chei COTE) de care depinde `nume` DIRECT sau prin apeluri (inchidere pe graf)."""
+    if _vazut is None:
+        _vazut = set()
+    if nume in _vazut or nume not in graf:
+        return set()
+    _vazut.add(nume)
+    c = set(graf[nume]["cote"])
+    for ap in graf[nume]["apeleaza"]:
+        c |= _cote_transitive(ap, graf, _vazut)
+    return c
+
+
+def _functii_apelate_de_test(relpath, func, cunoscute, radacina=None):
+    """Numele functiilor-sursa (din `cunoscute`) apelate de functia de test `func` din `relpath`."""
+    rad = pathlib.Path(radacina) if radacina else _RAD
+    try:
+        tree = ast.parse((rad / relpath).read_text(encoding="utf-8"))
+    except (OSError, SyntaxError):
+        return set()
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == func:
+            return {(getattr(c.func, "attr", None) or getattr(c.func, "id", None))
+                    for c in ast.walk(node) if isinstance(c, ast.Call)} & cunoscute
+    return set()
+
+
+def cote_cluster(rand, radacina=None):
+    """Cotele (chei COTE) de care depinde un CLUSTER: functiile lui de test -> functiile-sursa apelate ->
+    inchiderea pe graf -> cote. Baza resetarii propagate (V3): daca o cota de aici s-a schimbat in COTE dupa
+    data √, verificarea clusterului e stale. LIMITA (V2): vede doar dependentele rutate prin cota() - un
+    literal hardcodat ramane invizibil (se inchide cu gardul GRI). set() daca nu se poate deriva."""
+    from core import graf_temei as _gt
+    graf = _gt.construieste_graf(radacina)
+    if not rand.get("fisiere") or not rand.get("functie"):
+        return set()
+    relpath = "core/" + rand["fisiere"][0]
+    cunoscute = set(graf)
+    cote = set()
+    for fn in rand["functie"]:
+        for sf in _functii_apelate_de_test(relpath, fn, cunoscute, radacina):
+            cote |= _cote_transitive(sf, graf)
+    return cote
+
+
+def cota_valori(src, nume):
+    """[(data_in, valoare) dump] pentru COTE[nume] dintr-un text common.py, IGNORAND temeiul (metadata:
+    verificat_la/nivel_sursa/url - reformatarea lor NU e o schimbare de baza). '<ABSENT>' daca lipseste,
+    None daca src nu se parseaza. Analog _ast_functie (fara docstring), dar pentru o intrare COTE."""
+    try:
+        tree = ast.parse(src)
+    except SyntaxError:
+        return None
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign) and any(getattr(t, "id", None) == "COTE" for t in node.targets) \
+           and isinstance(node.value, ast.Dict):
+            for k, v in zip(node.value.keys, node.value.values):
+                if isinstance(k, ast.Constant) and k.value == nume and isinstance(v, ast.List):
+                    return [ast.dump(el.elts[0]) + "|" + ast.dump(el.elts[1])
+                            for el in v.elts if isinstance(el, ast.Tuple) and len(el.elts) >= 2]
+    return "<ABSENT>"
 
 
 def raport(tehnic=True):

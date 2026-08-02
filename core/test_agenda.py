@@ -282,3 +282,78 @@ def test_bifa_bumpuita_are_motiv():
                          % (cl, e[1], e[0], d[1], d[0]))
     assert not lipsa, ("bifa mutata inainte fara motiv inregistrat (garda anti-stale devine ornament):\n"
                        + "\n".join(lipsa))
+
+
+# ============================================================
+#  V3 (02.08.2026) — RESETAREA PROPAGATA pe dependentele din graf
+#  Garda anti-stale de FUNCTIE vede doar codul testelor; ASTA vede COTELE de care depinde clusterul.
+#  Inchide esecul de temut: o bifa care sta pe o baza (cota) schimbata dupa √, fara ca nimic sa semnaleze.
+# ============================================================
+def _cota_schimbata(nume, data_verif):
+    """Intrarea COTE[nume] (DOAR valori, fara temei) s-a schimbat in core/common.py intre commitul de la
+    data_verif si HEAD? Analog _functie_schimbata, dar pentru o cota."""
+    relpath = "core/common.py"
+    iso = data_verif.isoformat()
+    oc = subprocess.run(["git", "-C", str(_RAD), "log", "--until=%s 23:59:59" % iso, "-1", "--format=%H",
+                         "--", relpath], capture_output=True, text=True).stdout.strip()
+    if not oc:
+        return False
+    old = subprocess.run(["git", "-C", str(_RAD), "show", "%s:%s" % (oc, relpath)], capture_output=True, text=True).stdout
+    new = subprocess.run(["git", "-C", str(_RAD), "show", "HEAD:%s" % relpath], capture_output=True, text=True).stdout
+    vo, vn = agenda.cota_valori(old, nume), agenda.cota_valori(new, nume)
+    if vo is None or vn is None:
+        return True
+    return vo != vn
+
+
+def test_cota_valori_distinge_schimbarea_de_baza():
+    """cota_valori vede o schimbare de VALOARE/data, dar IGNORA metadata temeiului (verificat_la, nivel_sursa)
+    - analog garzii de functie care ignora docstring-ul. Fara asta, restructurarea temeiului ar reseta FALS."""
+    vechi = ('from datetime import date\n'
+             'COTE = {"salariu_minim": [(date(2025,1,1), 3700, Temei("HG",1006,2024,verificat_la="2026-07-29"))],'
+             ' "cas": [(date(2018,1,1), 0.25, None)]}\n')
+    valoare = vechi.replace("3700", "4050")
+    doar_meta = vechi.replace('verificat_la="2026-07-29"', 'verificat_la="2026-07-31", nivel_sursa="REDARE"')
+    alta_cota = vechi.replace("0.25", "0.30")
+    assert agenda.cota_valori(vechi, "salariu_minim") != agenda.cota_valori(valoare, "salariu_minim"), \
+        "schimbarea VALORII nu se vede -> baza schimbata trece tacut"
+    assert agenda.cota_valori(vechi, "salariu_minim") == agenda.cota_valori(doar_meta, "salariu_minim"), \
+        "reformatarea temeiului reseteaza FALS (ar trebui ignorata, ca docstring-ul)"
+    assert agenda.cota_valori(vechi, "salariu_minim") == agenda.cota_valori(alta_cota, "salariu_minim"), \
+        "schimbarea ALTEI cote reseteaza gresit clusterul"
+    assert agenda.cota_valori("COTE = {}", "salariu_minim") == "<ABSENT>"
+
+
+def test_cote_cluster_leaga_deducere_de_salariu_minim():
+    """Maparea cluster -> cote (via test -> sursa -> graf): clusterul deducere depinde de salariu_minim."""
+    a = agenda.stare_sesiune_a()
+    ded = next((r for r in a["rows"] if r["cluster"] == "deducere personala"), None)
+    assert ded and "salariu_minim" in agenda.cote_cluster(ded), \
+        "graful nu leaga clusterul deducere de salariu_minim (V3 s-ar rupe)"
+
+
+# RATCHET V3: bife care stau pe o cota schimbata dupa √. Baseline = restantele masurate 02.08.2026:
+# 3 bife din 29.07 (suprataxare part-time, proratare angajare/incetare, suprataxare prag) stau pe
+# salariu_minim a carui VALOARE 2025 a fost corectata 3700->4050 (FIX5, cf31ddb) DUPA verificarea lor.
+# Sunt STALE real - de REVERIFICAT la sursa (decizie Costin; nu reset automat - ramificatie: nu resetez singur).
+# Baseline coboara pe masura ce se reverifica; la 0 devine PRAG (orice bifa pe baza schimbata BLOCHEAZA).
+STALE_BAZA_BASELINE = 3
+
+
+def test_bifele_nu_stau_pe_o_baza_schimbata():
+    """V3 - resetarea propagata pe dependentele din graf. Ratchet la baseline; o bifa NOUA pe o cota schimbata
+    dupa √ ridica numarul peste baseline -> BLOCHEAZA (esecul de temut prevenit)."""
+    azi = datetime.date.today()
+    a = agenda.stare_sesiune_a()
+    stale = []
+    for rand in a["rows"]:
+        if not rand["verificat"] or "." not in rand["verificat"]:
+            continue
+        zi, luna = rand["verificat"].split(".")[:2]
+        dv = datetime.date(azi.year, int(luna), int(zi))
+        for cota in sorted(agenda.cote_cluster(rand)):
+            if _cota_schimbata(cota, dv):
+                stale.append("'%s' (√ %s) sta pe '%s' schimbata in COTE dupa √ -> reverifica la sursa"
+                             % (rand["cluster"], rand["verificat"], cota))
+    assert len(stale) <= STALE_BAZA_BASELINE, \
+        "BAZA SCHIMBATA SUB O BIFA (peste baseline %d):\n%s" % (STALE_BAZA_BASELINE, "\n".join(stale))
