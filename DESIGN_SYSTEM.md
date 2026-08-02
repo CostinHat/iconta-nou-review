@@ -311,7 +311,50 @@ Zona `/ghid` intră sub verificator, cu regulile aplicabile oricărei interfețe
 
 Nu se adaugă pe lista albă a claselor publice.
 
+## 23. Perioadă confirmată — starea care condiționează calculele din aval (v2.30)
+
+**Tipar general**, nu doar pentru pontaj: o **perioadă** `(an, luna, domeniu)` are o stare **CONFIRMAT / NECONFIRMAT**.
+Cât timp e NECONFIRMAT, datele ei sunt **informative**, iar orice calcul din aval care depinde de ele **se
+blochează** cu blocaj motivat. Confirmarea o face un om, la închiderea perioadei; abia atunci datele devin
+**autoritative**. Nevoia apare când absența unei intrări e ambiguă (ex. pontaj: prezent = fără rând nu distinge
+o lună completă de una necompletată). Revine la **închiderea lunii contabile** și la **confirmarea inventarului**
+— se folosește ACEEAȘI regulă, nu una paralelă per modul.
+
+- **Starea**: stocată per `(an, luna, domeniu)` în schema tenantului, cu `confirmat_de` (id user) + `confirmat_la`
+  (timestamp) — ca urma de la ciclul declarațiilor (creat_de/aprobat_de/depus_de). Domeniul e un șir stabil
+  (`pontaj`, `contabil`, `inventar`).
+- **Cine confirmă**: rolul **`admin_firma`** (RBAC). NU se inventează un rol nou.
+- **Controlul** (reutilizează primitivele, ZERO pattern vizual nou): buton **`.buton-verde`** Confirmă [domeniul]
+  lunii (cap.1) → **`confirmaCaseta`** (cap.5) cu întrebarea + consecința (Devine autoritativ pentru calculele
+  din aval). NU `.caseta-poarta` (aceea e pentru două alegeri care merg amândouă înainte).
+- **Afișarea stării**: **semafor** (cap.8) — **gri** `var(--gri-semafor)` = NECONFIRMAT, **verde** `var(--verde)` =
+  CONFIRMAT. Lângă semafor, **`.caseta-info`** (cap.5): neconfirmat → nota că perioada e informativă și calculele
+  din aval se blochează; confirmat → Confirmat de [nume] la [dată]. NU roșu (nu e atenționare/distructiv).
+- **Calculul blocat**: blocaj MOTIVAT cu cele 4 elemente, afișat prin **`.stare-goala`** (cap.6: gol + cauză +
+  ieșire). Backend: excepție cu tag care ajunge la utilizator (ca `PERIOADA_BLOCATA` → 423), nu traceback. Textul:
+  ce s-a oprit (calculul X pentru luna) · de ce (perioada neconfirmată + temeiul) · ce se poate face (butonul de
+  confirmare) · cine decide (admin_firma, la închidere).
+- **Reversibilitate**:
+  - ÎNAINTE de depunerea unei declarații pe lună: modificarea datelor perioadei **de-confirmă AUTOMAT** (revine
+    NECONFIRMAT, calculele din aval re-blochează până la re-confirmare).
+  - DUPĂ depunere: modificarea datelor perioadei se **BLOCHEAZĂ** (o declarație depusă e fapt la ANAF; editarea
+    liberă ar face sistemul să arate alte cifre decât cele depuse, fără semnal). Ieșirea e fluxul de
+    **rectificativă** (coada_api / d710). Dacă acel flux nu suportă re-depunerea pe lună, blocajul e FINAL până se
+    construiește — limită declarată în GARZI, nu improvizație.
+
+**Gardă mecanică** (verificator): orice calcul dependent de o perioadă verifică confirmarea, iar controlul de
+confirmare folosește primitivele canonice. Dacă nu se poate defini curat pe criteriu structural, LISTĂ EXPLICITĂ
+întreținută manual (ca markerii TEMEI), cu limita declarată.
+
 ## Changelog
+**v2.30 (02.08.2026)** — cap.23 nou: **Perioadă confirmată** — tipar general (starea CONFIRMAT/NECONFIRMAT a
+unei perioade `(an, luna, domeniu)` condiționează calculele din aval). Motivat de pontaj (F135): payroll-ul trebuie
+să știe dacă luna e autoritativă (HG 1045/2018 art.10(3) — tichete pe zile efectiv lucrate), iar prezent = fără rând
+nu distinge lună completă de necompletată. Reutilizează primitive existente (buton-verde cap.1, confirmaCaseta cap.5,
+semafor gri/verde cap.8, caseta-info cap.5, stare-goală cap.6) — zero pattern nou. Confirmă `admin_firma`.
+Reversibilitate: de-confirmare automată înainte de depunere; blocare edit după depunere (→ rectificativă). Gardă în
+verificator. Revine la închiderea lunii contabile + confirmarea inventarului.
+
 **v2.29 (26.07.2026)** — cap.22 nou: **Pagini publice de ghid** (`/ghid/{slug}`), INAUNTRUL sistemului de design (nu scutite ca landing-ul). Ruta publica citeste `ghid/{slug}.md`, randeaza markdown -> shell care leaga `stil.css` si foloseste clase+tokeni (fara `<style>` inline, invers fata de /public/termeni); slug inexistent -> 404 curat. 5 componente noi din tokeni: `.ghid-temei` / `.ghid-exemplu` / `.ghid-semafor` / `.ghid-comparatie` / `.ghid-procedura`; semaforul grafic refoloseste `--verde`/`--galben`/`--rosu-semafor` si ordinea din cap.8 (doar marime/rol diferit, zero culori noi). Marcaj in markdown prin containere `:::nume ... :::`. Verificator extins cu regula **GHID_ZONA** (scaneaza `ghid/*.md`: hex/style/font-size/border-radius/SVG inline interzise); clasele de ghid NU sunt pe lista alba. FUNCTIONALITATI.csv: coloana noua `ghid_slug` (goala = fara pagina). Pagina de proba `proba-ghid` (umplutura, se sterge la prima pagina reala).
 **v2.28 (26.07.2026)** — cap.21 nou: marca **„iConta.eu" peste tot** în material public (MARKETING.md cap. BRAND). Gardă **BRAND_EU** în verificator: scanează frontend (`js/mjs/html`) + literalele de email din backend (`main.py`, `notificari_scadenta`, `observare`), semnalează `iConta` neurmat de `.eu`; al doilea assert `iConta.eu.eu`=0. Excepții documentate (listă albă cu motiv): „Admin iConta" (nume panou), `<SoftwareCompanyName>`/`<SoftwareID>` SAF-T (fiscal), comentarii/docstring, `iconta_nou`/`iconta-nou`/`iconta_v2`. Normalizate 21 literale backend rămase (welcome/magic-link/portal/asistent/recomandare + alerte interne + titlu API).
 **v2.27 (24.07.2026)** — cap.10 extins a treia formă: `ESC_LOCAL` prinde și **strip inline** de caractere HTML (`.replace(/[<>&]/g, …)`) — sanitizare ad-hoc, data-lossy (scoate `&` din nume), a doua sursă de sanitizare. Convertite 6 apariții → `esc` canonic (tipare.js ×2, capacitate.js ×1, cabinet.js ×3; recomanda.js reparat separat). Regex robust la reordonarea clasei (prinde orice clasă ce conține `<>&`).
