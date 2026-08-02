@@ -210,7 +210,6 @@ def test_datorie_cota_cea_mai_mica_valoare_din_luna():
     assert "salariu minim cea mai mica valoare din luna tratat" in dz.lower()
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE FISCALA 31.07.2026: tichetele de masa se acorda DOAR pe zile EFECTIV LUCRATE (HG 1045/2018 art.10 alin.(3): numar 'cel mult egal cu numarul de zile lucrate'). Zilele de concediu de odihna, delegatie/detasare cu indemnizatie, invoire, absenta NU dau dreptul la tichet. Codul foloseste tichet_zile = zile_lucratoare - concediu_medical (stat_plata_api.py, d112.py) -> ACORDA tichete pe zilele de concediu de odihna si absente -> nominal supra-declarat -> baza CASS/impozit gresita in D112. Datele brute exista in pontaj (F135: concediu_odihna/absent_*/delegatie) DAR (a) modelul de prezenta nu distinge 'pontaj neintrodus' de 'tot prezent' (ambele 0 randuri); (b) deciziile 17.07 (F135 informativ) + 20.07 (opt.A) l-au decuplat deliberat de payroll, iar limita 20.07 acoperea doar absentele nemotivate, NU concediul de odihna. Fixul = alimentarea tichet_zile din pontaj SAU tracking documentat al CO/absentelor (ca la CM) - feature multi-sit + reversarea/rafinarea F135, NU o linie. Se inchide cand e implementat si consemnat in DECIZII.md.")
 def test_datorie_tichete_masa_zile_efectiv_lucrate():
     # Se inchide cand numarul de tichete = zile efectiv lucrate (CO/delegare/absente scad) e implementat
     # si consemnat in DECIZII.md (marker stabil, case-insensitive).

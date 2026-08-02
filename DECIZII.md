@@ -5005,3 +5005,13 @@ pilotul arata cazuri reale in care confirmarea pontajului e imposibila. Pana atu
 
 NOTA reversibilitate: fluxul de rectificativa EXISTA (coada_api nr_depunere, d710) -> blocarea editarii pontajului
 dupa depunerea D112 trimite la un flux real, NU e blocaj final. (Nu e limita GARZI.)
+
+
+## 02.08.2026 — D2 INCHIS: tichete masa zile efectiv lucrate din pontaj implementat (cap.23 perioada confirmata)
+
+Numarul de tichete de masa = zile EFECTIV lucrate (HG 1045/2018 art.10(3)): zile lucratoare - CM - CO/delegatie/
+absente/invoire din pontaj. Reversarea decuplarii 20.07 pe partea de calcul (stat_plata + d112). Ambiguitatea
+"prezent = fara rand" rezolvata prin CONFIRMAREA perioadei (cap.23): fara pontaj CONFIRMAT, calculul tichetelor
+BLOCHEAZA (blocaj motivat); dupa confirmare (admin_firma), autoritativ. Reversibilitate: de-confirmare automata la
+editare, blocare dupa depunere D112 (-> rectificativa). UI pe ecranul pontaj (semafor gri/verde + caseta-info +
+buton-verde). Gard verificator (GARD PERIOADA CONFIRMATA). Marker: tichete masa zile efectiv lucrate din pontaj implementat.

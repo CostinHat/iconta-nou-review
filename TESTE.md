@@ -245,76 +245,74 @@ CONSECINTE:
 
 ## Secventa de verificare (persistata 02.08.2026 - NU se recalculeaza la fiecare rulare)
 
-Ordine DETERMINISTA a celor 65 clustere nebifate+neblocate, sortare topologica pe graf_clustere +
-departajare (a) FISCAL>STRUCTURA (b) deblocari desc (c) ordinea inventarului. Graful e plat (63 radacini,
-adancime 2) -> ordinea conteaza putin. Se rescrie DOAR cand se schimba graful/clusterele (cu motiv).
-Identitate = cluster | modul (nume duplicate intre module). Ciclul facilitate<->deducere e intre BIFATE.
+Ordine DETERMINISTA a celor 64 clustere nebifate+neblocate, sortare topologica pe graf_clustere + departajare
+(a) FISCAL>STRUCTURA (b) deblocari desc (c) ordinea inventarului. Rescrisa 02.08: tichete masa/vacanta BIFAT ->
+iesit din secventa (65->64). Identitate = cluster | modul (nume duplicate intre module).
 
-1. tichete masa/vacanta | salarizare
-2. concedii medicale | salarizare
-3. tichete culturale | salarizare
-4. tichete cresa | salarizare
-5. cota profit 16% + IMCA | d101
-6. amortizare | d101
-7. baze contributii (CAS/CASS/imp/CAM) | d112
-8. concedii medicale (asiguratB3/D) | d112
-9. rotunjire aritmetica (A91b) | d112
-10. sect_II tip_venit (impozit retinut) | d205
-11. rotunjire | d205
-12. cote TVA -> randuri | d300
-13. exigibilitate / TVA la incasare | d300
-14. taxare inversa | d300
-15. pro-rata deducere | d300
-16. rotunjire aritmetica | d300
-17. ajustari | d300
-18. tipuri operatiune 1-5 | d301
-19. rollup S4.1->S4 | d301
-20. baza = val x curs | d301
-21. cota TVA | d301
-22. tipuri operatiune IC (L/A/P/S) | d390
-23. rotunjire aritmetica (A91b) | d390
-24. reclasificari manuale | d390
-25. exigibilitate / prag | d390
-26. cote acceptate | d394
-27. taxare inversa | d394
-28. SourceDocuments (facturi reale, PARTIAL) | d406
-29. plafon diurna neimpozabila | deconturi
-30. credit sponsorizare / D177 | sponsorizari
-31. rezerva legala | motor
-32. zilieri (impozit+CAS) | contracte_speciale
-33. regim marja second-hand | tva_marja
-34. regim marja turism | tva_marja_turism
-35. impozit dividend | decontari_asociati
-36. contributii PFA (praguri CAS/CASS pe sm) | d212
-37. nomenclator cod_oblig<->cod_bugetar | d100
-38. cota micro 121 (flag) | d100
-39. checksum totalPlata_A (R11b) | d100
-40. scadente/nr_evidenta | d100
-41. structura P1-P53 | d101
-42. R17 Data_S / termen | d101
-43. limita text 75 | d112
-44. nomenclator cod_oblig | d112
-45. checksum totalPlata_A | d205
-46. trunchiere den/adresa | d205
-47. randuri / checksum | d300
-48. checksum totalPlata_A (R28) | d301
-49. nomenclator tari (HR->CR) | d390
-50. tipuri operatiune (pct.215) | d394
-51. tip_partener | d394
-52. rezumat1 campuri complete | d394
-53. nomenclator codPR (art.331) | d394
-54. totalPlata_A (R17) | d394
-55. plan conturi pe norma | d406
-56. UoM UN/ECE | d406
-57. MovementType nomenclator | d406
-58. BaseRate (encoding pro-rata) | d406
-59. registration_number (00+CUI) | d406
-60. structura XSD (Header/MasterFiles/GLE) | d406
-61. structura declaratie710 | d710
-62. nomenclator COD_BUGETAR | d710
-63. checksum R11b | d710
-64. R15 termen definitivare | d710
-65. scadente | d710
+1. concedii medicale | salarizare
+2. tichete culturale | salarizare
+3. tichete cresa | salarizare
+4. cota profit 16% + IMCA | d101
+5. amortizare | d101
+6. baze contributii (CAS/CASS/imp/CAM) | d112
+7. concedii medicale (asiguratB3/D) | d112
+8. rotunjire aritmetica (A91b) | d112
+9. sect_II tip_venit (impozit retinut) | d205
+10. rotunjire | d205
+11. cote TVA -> randuri | d300
+12. exigibilitate / TVA la incasare | d300
+13. taxare inversa | d300
+14. pro-rata deducere | d300
+15. rotunjire aritmetica | d300
+16. ajustari | d300
+17. tipuri operatiune 1-5 | d301
+18. rollup S4.1->S4 | d301
+19. baza = val x curs | d301
+20. cota TVA | d301
+21. tipuri operatiune IC (L/A/P/S) | d390
+22. rotunjire aritmetica (A91b) | d390
+23. reclasificari manuale | d390
+24. exigibilitate / prag | d390
+25. cote acceptate | d394
+26. taxare inversa | d394
+27. SourceDocuments (facturi reale, PARTIAL) | d406
+28. plafon diurna neimpozabila | deconturi
+29. credit sponsorizare / D177 | sponsorizari
+30. rezerva legala | motor
+31. zilieri (impozit+CAS) | contracte_speciale
+32. regim marja second-hand | tva_marja
+33. regim marja turism | tva_marja_turism
+34. impozit dividend | decontari_asociati
+35. contributii PFA (praguri CAS/CASS pe sm) | d212
+36. nomenclator cod_oblig<->cod_bugetar | d100
+37. cota micro 121 (flag) | d100
+38. checksum totalPlata_A (R11b) | d100
+39. scadente/nr_evidenta | d100
+40. structura P1-P53 | d101
+41. R17 Data_S / termen | d101
+42. limita text 75 | d112
+43. nomenclator cod_oblig | d112
+44. checksum totalPlata_A | d205
+45. trunchiere den/adresa | d205
+46. randuri / checksum | d300
+47. checksum totalPlata_A (R28) | d301
+48. nomenclator tari (HR->CR) | d390
+49. tipuri operatiune (pct.215) | d394
+50. tip_partener | d394
+51. rezumat1 campuri complete | d394
+52. nomenclator codPR (art.331) | d394
+53. totalPlata_A (R17) | d394
+54. plan conturi pe norma | d406
+55. UoM UN/ECE | d406
+56. MovementType nomenclator | d406
+57. BaseRate (encoding pro-rata) | d406
+58. registration_number (00+CUI) | d406
+59. structura XSD (Header/MasterFiles/GLE) | d406
+60. structura declaratie710 | d710
+61. nomenclator COD_BUGETAR | d710
+62. checksum R11b | d710
+63. R15 termen definitivare | d710
+64. scadente | d710
 
 ## Inventarul de acoperit în A
 
@@ -350,7 +348,7 @@ clustere.
 | suprataxare part-time | salarizare | test_salarizare.py | √ 02.08 (bump: V3 salariu_minim 2025 corectat 3700->4050 HG 1506/2024 FIX5 dupa √ 29.07; praguri COTA-DERIVATE nu literal - salarizare.py:129 sm=cota, d112 _sal_minim=cota; recalculat sm 2025/2026H1=4050 2026H2=4325 identic cu codul: (4050-300-2000)*25%=437.50, (4325-200-2000)*25%=531.25) | FISCAL | CF art.146 alin.(5^6)-(5^7); art.168 alin.(6^1) | test_part_time_2000_suprataxa_pe_angajator test_part_time_exceptat_fara_suprataxa test_norma_intreaga_sub_minim_este_suprataxata test_part_time_sub_minim_ramane_suprataxat test_exceptatul_nu_e_suprataxat_indiferent_de_norma test_peste_minim_nu_se_suprataxeaza test_suprataxa_baza_pe_minimul_diminuat_ambele_semestre |
 | proratare angajare/incetare | salarizare | test_salarizare.py | √ 02.08 (bump: V3 salariu_minim 2025 corectat 3700->4050 HG 1506/2024 FIX5 dupa √ 29.07; praguri COTA-DERIVATE nu literal - salarizare.py:129 sm=cota, d112 _sal_minim=cota; recalculat sm 2025/2026H1=4050 2026H2=4325 identic cu codul: (4050-300-2000)*25%=437.50, (4325-200-2000)*25%=531.25) | FISCAL | OUG 156/2024 art.LXVI alin.(4); OMF 1855/2022 pct.2 | test_suprataxa_prag_prorata_luna_angajare test_facilitate_prorata_luna_angajare test_suprataxa_si_facilitate_prorata_la_incetare |
 | deducere personala | salarizare | test_salarizare.py | √ 31.07 | FISCAL | Cod fiscal art.77 alin.(4)/(10)(a); pliant ANAF AJFP Vrancea (deducere personala) | test_deducere_degresiva_pe_trepte test_deducere_copil_scoala test_deducere_zero_fara_functie_baza test_deducere_4plus_persoane_45pct test_tanar_sub26_brut_mic_primeste_deducere test_deducere_la_data_obligatoriu |
-| tichete masa/vacanta | salarizare | test_salarizare.py | PARTIAL 31.07 — fond verificat (45/Legea 201/2025, imp10+CASS10 fara CAS, plafon 6sm, cadou 300); D2 nr tichete = DECIZIE DE PRODUS (pontaj autoritativ, xfail ramane); #3 baza CASS = GRI (fond prin derivare art.157->78, verbatim neconfirmabil portal); D2 nr tichete: CALCUL LIVRAT (fe99cc2). Partea de BLOCAJ (pontaj_confirmat + UI) = OPRITA la DESIGN SYSTEM: nu exista regula scrisa pentru acest tip de control (confirmare de PERIOADA care conditioneaza salarizarea din aval - starea luna-confirmata + UX blocaj-pana-la-confirmare). Pattern-urile existente (buton-verde/confirmaCaseta/caseta-poarta) acopera actiuni de confirmare, NU o confirmare-de-perioada-cu-gate. De stabilit cu Costin intai (CLAUDE.md: nu se inventeaza pattern generic). Backend-ul de blocaj fara UI ar bloca tot fara scapare - neimplementat speculativ. D3 exces vacanta = INCHIS (9a82748): excesul in BRUTUL declarat (b_imp=brut+exces), D112 valid DUK (test_exces_vacanta_d112); atinge deducere(800->0)/CAM/CAS/CASS, net cash scade, facilitatea neschimbata (vbt contractual); datorie inchisa. Cluster STA co-locat cu grupul salarizare. | FISCAL | Legea 201/2025; HG 1045/2018 art.10(3); CF art.76(3)h/78/142(r)/157(2); OUG 8/2009 art.1; L296/2023 |  |
+| tichete masa/vacanta | salarizare | test_salarizare.py | √ 02.08 (bump: D2 nr tichete = zile efectiv lucrate din pontaj CONFIRMAT cap.23 - fe99cc2/5a5b63c/f83da8a/61c0260; D3 exces vacanta in brut declarat DUK-valid 9a82748; fond 31.07 valoare45/cote/plafon6sm/cadou; #3 baza CASS ramane GRI - verbatim art.78 neconfirmabil, fond prin derivare art.157->78. Teste D2 in test_tichete_pontaj, D3 in test_exces_vacanta_d112) | FISCAL | Legea 201/2025; HG 1045/2018 art.10(3); CF art.76(3)h/78/142(r)/157(2); OUG 8/2009 art.1; L296/2023 | test_exces_vacanta_intra_in_baza_salariala test_cass_doar_pe_01_07_10 |
 | concedii medicale | salarizare | test_salarizare.py | PARTIAL 31.07 — verificat+aplicat: procente pe cod (carantina 07=100%), split 1-5, plafon 12 sm, CAS 25% uniform + CASS 01/07/10 UNIFICATE intr-o functie canonica (taxe_cm, apelata si de d112; arbori-paraleli verde+mutatie; DUK cod01 valid); deschis: CM4 plafon in calcul_cm, D-field coduri speciale (08/06 gap DUK pre-existent); gri: deducere, tier-1 just.ro art.139(1)o | FISCAL | OUG 158/2005 art.10/12/17/20; Legea 141/2025 si 136/2020; CF art.139(1)o+140 (CAS salariat activ; art.144=alte categorii)/142/155(1)i; OUG 34/2024 |  |
 | tichete culturale | salarizare | test_salarizare.py |  | FISCAL |  |  |
 | tichete cresa | salarizare | test_salarizare.py |  | FISCAL |  |  |
