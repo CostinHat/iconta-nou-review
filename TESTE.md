@@ -247,69 +247,68 @@ CONSECINTE:
 
 Ordine DETERMINISTA a celor 64 clustere nebifate+neblocate, sortare topologica pe graf_clustere + departajare
 (a) FISCAL>STRUCTURA (b) deblocari desc (c) ordinea inventarului. Rescrisa 02.08: tichete masa/vacanta BIFAT ->
-iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. Identitate = cluster | modul (nume duplicate intre module).
+iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. cota profit 16% + IMCA (cota verificata + IMCA implementat art.18^1) INCHIS 02.08 -> 60->59. Identitate = cluster | modul (nume duplicate intre module).
 
 **REGULA DE ORDONARE.** Clusterul A vine dupa B daca o functie din A foloseste o valoare care APARTINE lui B (dependenta din graf_clustere). Sortare topologica pe aceste dependente. Departajare cand mai multe sunt libere simultan, in ordinea: (a) intra intr-o declaratie DEPUSA la ANAF - proxy Risc=FISCAL, aproximatie DECLARATA, nu echivalenta; (b) cate clustere deblocheaza; (c) ordinea din inventar. Secventa se PERSISTA, nu se recalculeaza la fiecare rulare - altfel pozitia 7 de azi nu e pozitia 7 de maine. Se rescrie DOAR cand se schimba graful sau se adauga clustere, cu motivul consemnat (vezi randul 'Rescrisa 02.08' de mai sus).
-1. cota profit 16% + IMCA | d101
-2. amortizare | d101
-3. baze contributii (CAS/CASS/imp/CAM) | d112
-4. rotunjire aritmetica (A91b) | d112
-5. sect_II tip_venit (impozit retinut) | d205
-6. rotunjire | d205
-7. cote TVA -> randuri | d300
-8. exigibilitate / TVA la incasare | d300
-9. taxare inversa | d300
-10. pro-rata deducere | d300
-11. rotunjire aritmetica | d300
-12. ajustari | d300
-13. tipuri operatiune 1-5 | d301
-14. rollup S4.1->S4 | d301
-15. baza = val x curs | d301
-16. cota TVA | d301
-17. tipuri operatiune IC (L/A/P/S) | d390
-18. rotunjire aritmetica (A91b) | d390
-19. reclasificari manuale | d390
-20. exigibilitate / prag | d390
-21. cote acceptate | d394
-22. taxare inversa | d394
-23. SourceDocuments (facturi reale, PARTIAL) | d406
-24. plafon diurna neimpozabila | deconturi
-25. credit sponsorizare / D177 | sponsorizari
-26. rezerva legala | motor
-27. zilieri (impozit+CAS) | contracte_speciale
-28. regim marja second-hand | tva_marja
-29. regim marja turism | tva_marja_turism
-30. impozit dividend | decontari_asociati
-31. contributii PFA (praguri CAS/CASS pe sm) | d212
-32. nomenclator cod_oblig<->cod_bugetar | d100
-33. cota micro 121 (flag) | d100
-34. checksum totalPlata_A (R11b) | d100
-35. scadente/nr_evidenta | d100
-36. structura P1-P53 | d101
-37. R17 Data_S / termen | d101
-38. limita text 75 | d112
-39. nomenclator cod_oblig | d112
-40. checksum totalPlata_A | d205
-41. trunchiere den/adresa | d205
-42. randuri / checksum | d300
-43. checksum totalPlata_A (R28) | d301
-44. nomenclator tari (HR->CR) | d390
-45. tipuri operatiune (pct.215) | d394
-46. tip_partener | d394
-47. rezumat1 campuri complete | d394
-48. nomenclator codPR (art.331) | d394
-49. totalPlata_A (R17) | d394
-50. plan conturi pe norma | d406
-51. UoM UN/ECE | d406
-52. MovementType nomenclator | d406
-53. BaseRate (encoding pro-rata) | d406
-54. registration_number (00+CUI) | d406
-55. structura XSD (Header/MasterFiles/GLE) | d406
-56. structura declaratie710 | d710
-57. nomenclator COD_BUGETAR | d710
-58. checksum R11b | d710
-59. R15 termen definitivare | d710
-60. scadente | d710
+1. amortizare | d101
+2. baze contributii (CAS/CASS/imp/CAM) | d112
+3. rotunjire aritmetica (A91b) | d112
+4. sect_II tip_venit (impozit retinut) | d205
+5. rotunjire | d205
+6. cote TVA -> randuri | d300
+7. exigibilitate / TVA la incasare | d300
+8. taxare inversa | d300
+9. pro-rata deducere | d300
+10. rotunjire aritmetica | d300
+11. ajustari | d300
+12. tipuri operatiune 1-5 | d301
+13. rollup S4.1->S4 | d301
+14. baza = val x curs | d301
+15. cota TVA | d301
+16. tipuri operatiune IC (L/A/P/S) | d390
+17. rotunjire aritmetica (A91b) | d390
+18. reclasificari manuale | d390
+19. exigibilitate / prag | d390
+20. cote acceptate | d394
+21. taxare inversa | d394
+22. SourceDocuments (facturi reale, PARTIAL) | d406
+23. plafon diurna neimpozabila | deconturi
+24. credit sponsorizare / D177 | sponsorizari
+25. rezerva legala | motor
+26. zilieri (impozit+CAS) | contracte_speciale
+27. regim marja second-hand | tva_marja
+28. regim marja turism | tva_marja_turism
+29. impozit dividend | decontari_asociati
+30. contributii PFA (praguri CAS/CASS pe sm) | d212
+31. nomenclator cod_oblig<->cod_bugetar | d100
+32. cota micro 121 (flag) | d100
+33. checksum totalPlata_A (R11b) | d100
+34. scadente/nr_evidenta | d100
+35. structura P1-P53 | d101
+36. R17 Data_S / termen | d101
+37. limita text 75 | d112
+38. nomenclator cod_oblig | d112
+39. checksum totalPlata_A | d205
+40. trunchiere den/adresa | d205
+41. randuri / checksum | d300
+42. checksum totalPlata_A (R28) | d301
+43. nomenclator tari (HR->CR) | d390
+44. tipuri operatiune (pct.215) | d394
+45. tip_partener | d394
+46. rezumat1 campuri complete | d394
+47. nomenclator codPR (art.331) | d394
+48. totalPlata_A (R17) | d394
+49. plan conturi pe norma | d406
+50. UoM UN/ECE | d406
+51. MovementType nomenclator | d406
+52. BaseRate (encoding pro-rata) | d406
+53. registration_number (00+CUI) | d406
+54. structura XSD (Header/MasterFiles/GLE) | d406
+55. structura declaratie710 | d710
+56. nomenclator COD_BUGETAR | d710
+57. checksum R11b | d710
+58. R15 termen definitivare | d710
+59. scadente | d710
 ## Inventarul de acoperit în A
 
 Per CLUSTER de reguli, nu per fișier (30.07.2026) — un √ pe fișier ascundea că doar o parte din
@@ -353,7 +352,7 @@ clustere.
 | checksum totalPlata_A (R11b) | d100 | test_d100.py |  | STRUCTURA |  |  |
 | scadente/nr_evidenta | d100 | test_d100.py |  | STRUCTURA |  |  |
 | structura P1-P53 | d101 | test_d101.py |  | STRUCTURA |  |  |
-| cota profit 16% + IMCA | d101 | test_d101.py |  | FISCAL |  |  |
+| cota profit 16% + IMCA | d101 | test_d101.py | √ 03.08 (cota 16% verificata CF art.17 + COTE impozit_profit, test cu temei; IMCA CF art.18^1 IMPLEMENTAT: formula 1%x(VT-Vs-I-A) negativ->0 + prag 50mil euro + wiring P47/comparatie P48 + PROBA DUK. Gap minor: cota din COTA_STANDARD literal, nu cota() - rutare follow-up) | FISCAL | CF art.17 (cota 16%); CF art.18^1 (IMCA); OUG 8/2026 | test_golden_lant_formule_oficiale test_cota_profit_16pct_din_cota_cu_temei test_imca_formula_1pct test_datoreaza_imca_prag_50mil_euro test_imca_wiring_p47_si_comparatie_p48 test_imca_d101_duk_valid |
 | R17 Data_S / termen | d101 | test_d101.py |  | STRUCTURA |  |  |
 | amortizare | d101 | test_d101.py |  | FISCAL |  |  |
 | baze contributii (CAS/CASS/imp/CAM) | d112 | test_d112.py |  | FISCAL |  |  |

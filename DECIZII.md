@@ -5189,3 +5189,24 @@ CLUSTER: NU se inchide (IMCA, in numele clusterului, e neimplementat). Cota 16% 
 substantial care schimba ce declara firmele > 50 mil euro in D101 - se implementeaza dedicat, NU pe jumatate
 (corectitudine fiscala pe declaratii reale). Secventa ramane 60. OPRIRE LANT cu predare: IMCA e blocajul care cere
 o campanie dedicata.
+
+## 02.08.2026 — IMCA implementat (CF art.18^1): cluster cota profit + IMCA INCHIS
+
+Continuarea clusterului cota profit + IMCA (decizie Costin: implementez IMCA acum). Structura D101 (P46/P47/P48,
+comparatia alin.5) exista deja; lipsea CALCULUL IMCA (P47) + eligibilitatea - acum implementate si verificate
+verbatim la sursa (anaf_surse/cod_fiscal_227_2015_consolidat.html, art.18^1).
+
+IMPLEMENTARE (core/d101.py): `impozit_minim_cifra_afaceri(vt, vs, i, a)` = 1% x (VT-Vs-I-A), negativ -> 0
+(art.18^1 alin.3-4); `datoreaza_imca(vt, vs, curs)` = cifra de afaceri (VT-Vs) > 50.000.000 euro (alin.1). Wiring
+in calcul_d101 (param `imca={vt,vs,i,a,curs}`): cand eligibil, P47 = IMCA computat; sub prag, P47=0. Comparatia
+existenta (P46 vs P47 -> P48=P481 profit / P482 IMCA) neschimbata. I si A (investitii/amortizare, alin.3) sunt
+determinate de contabil si primite ca intrari. Teste: test_imca_formula_1pct, test_datoreaza_imca_prag_50mil_euro,
+test_imca_wiring_p47_si_comparatie_p48, test_imca_sub_prag_p47_zero. **PROBA DUK: test_imca_d101_duk_valid** -
+d101 cu IMCA (P47=2.720.000, P48=P482) trece DUKIntegrator (structura P47/P48 neschimbata).
+
+Marker inchidere datorie: **d101 imca impozit minim cifra de afaceri implementat si probat duk**. xfail
+test_datorie_d101_imca ELIMINAT. SOLD DATORII 21 -> 20.
+
+Cota 16% (CF art.17) verificata + IMCA implementat + probat DUK -> CLUSTER "cota profit 16% + IMCA | d101"
+INCHIS √ 02.08. Secventa 60 -> 59. GAP MINOR ramas (nu blocheaza, nu e datorie): d101 foloseste literalul
+COTA_STANDARD=16 in loc de cota("impozit_profit") period-aware - valoarea corecta, rutarea prin COTE = follow-up.

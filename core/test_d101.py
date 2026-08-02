@@ -222,3 +222,14 @@ def test_imca_sub_prag_p47_zero():
     res = calcul_d101(_prof(), 2026, {"P1": 100000, "P2": 60000, "P46": 1_000_000},
                       imca={"vt": 200_000_000, "vs": 20_000_000, "i": 0, "a": 0, "curs": 5})
     assert res.P.get("P47", 0) == 0
+
+
+@pytest.mark.skipif(not _duk.poate_valida("d101"), reason="DUK d101 indisponibil")
+def test_imca_d101_duk_valid():
+    # D101 cu IMCA (P47 computat = 2.720.000; P48 = P482 = nivelul IMCA) trece DUKIntegrator.
+    res = calcul_d101(_prof(), 2026, {"P1": 100000, "P2": 60000, "P46": 1_000_000},
+                      imca={"vt": 300_000_000, "vs": 20_000_000, "i": 5_000_000, "a": 3_000_000, "curs": 5})
+    assert res.P["P47"] == 2_720_000 and res.P["P48"] == 2_720_000
+    xml = build_xml(res)
+    r = _duk.valideaza(xml, "d101", an=2026)
+    assert r["stare"] == "valid", "d101+IMCA respins de DUK: %s" % (str(r.get("erori") or ""))[:200]
