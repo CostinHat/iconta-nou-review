@@ -148,3 +148,26 @@ def test_cultural_db_gri_blocat_inainte_de_insert(conn_cult):
     r = _ben.seteaza(c, _SCHEMA_C, sid, 2025, 12, "cultural", 100)  # GRI -> blocat, nu ajunge la INSERT
     assert "eroare" in r and "GRI" in r["eroare"]
     assert _ben.lista_luna(c, _SCHEMA_C, 2025, 12, "cultural") == {}  # nimic inserat
+
+
+# ============================================================
+#  GARD: fiecare bilet de valoare declara EXPLICIT cele 4 tratamente + sursa plafonului.
+# ============================================================
+def test_bilete_valoare_declara_toate_tratamentele():
+    from core import salarizare, beneficii_api
+    reg = salarizare.BILETE_VALOARE_TRATAMENT
+    tipuri = set(beneficii_api.TIPURI) | {"masa"}   # one-off (vacanta/cadou/cultural) + masa (config salariat)
+    for tip in tipuri:
+        assert tip in reg, "bilet de valoare fara tratament fiscal declarat: %r (declara-l in BILETE_VALOARE_TRATAMENT)" % tip
+        e = reg[tip]
+        for k in ("impozit", "cas", "cass", "cam", "plafon_sursa", "temei"):
+            assert k in e, "%s: tratamentul %r nedeclarat" % (tip, k)
+
+
+def test_cultural_nu_are_cass_in_registru():
+    # Divergenta esentiala vs etalon: culturalul NU are CASS (art.157(2)); masa/vacanta AU.
+    from core import salarizare
+    reg = salarizare.BILETE_VALOARE_TRATAMENT
+    assert reg["cultural"]["cass"] is False
+    assert reg["masa"]["cass"] == "10%"
+    assert reg["vacanta"]["cass"] == "10%"

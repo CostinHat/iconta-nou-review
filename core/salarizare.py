@@ -590,3 +590,27 @@ def taxe_cm(brut, cod="01", la_data=None):
     from datetime import date as _dt
     fn, _ = c.alege_varianta(_VARIANTE_TAXE_CM, la_data or _dt.today())
     return fn(brut, cod, la_data)
+
+
+# ============================================================
+#  REGISTRU TRATAMENT FISCAL — bilete de valoare (Legea 165/2018 + CF). GARD (test_bilete_valoare_declara_
+#  toate_tratamentele): fiecare bilet de valoare acordabil (beneficii_api.TIPURI + "masa") declara EXPLICIT
+#  cele 4 tratamente (impozit/CAS/CASS/CAM) + sursa plafonului semestrial/anual. Adaugarea unui bilet nou
+#  fara declaratie -> testul pica. Impiedica "copierea tacita" a tratamentului de la alt bilet (ex. CASS de
+#  la masa la cultural, care ar fi GRESIT - art.157(2) excepteaza NUMAI masa+vacanta).
+# ============================================================
+BILETE_VALOARE_TRATAMENT = {
+    "masa":     {"impozit": "10% pe (nominal - cass)", "cas": False, "cass": "10%", "cam": False,
+                 "plafon_sursa": "tichet_masa_plafon (COTE; Legea 201/2025)",
+                 "temei": "CF art.76(3)h / 142 lit.r / 157(2)"},
+    "vacanta":  {"impozit": "10% pe (nominal - cass)", "cas": False, "cass": "10%", "cam": False,
+                 "plafon_sursa": "nivel maxim 6 sm/an (OUG 8/2009 art.1); excesul = venit salarial",
+                 "temei": "CF art.76(3)h / 142 lit.r / 157(2)"},
+    "cadou":    {"impozit": "neimpozabil <=300/eveniment legal; peste = salarial", "cas": "peste plafon",
+                 "cass": "peste plafon", "cam": "peste plafon",
+                 "plafon_sursa": "300 lei/eveniment (CF art.76(4) lit.a)",
+                 "temei": "CF art.76(4) lit.a / 142 lit.b"},
+    "cultural": {"impozit": "10% pe valoarea nominala INTEGRALA", "cas": False, "cass": False, "cam": False,
+                 "plafon_sursa": "plafon_cultural() - semestrial indexat prin ordine MF/MC (Legea 165/2018 art.22)",
+                 "temei": "CF art.76(3)h(v13)/142 lit.r(v10)/157(2)(v11)/220^4(2)(v12); art.25(3)b pct.3 (deductibil 5% angajator)"},
+}
