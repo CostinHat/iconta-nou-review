@@ -639,6 +639,11 @@ async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
       const opts = STARI.map(([v, l]) => `<option value="${v}"${z.stare === v ? " selected" : ""}>${l}</option>`).join("");
       return `<label class="camp"><span class="camp-eticheta">${String(z.zi_nr).padStart(2, "0")} ${ZI_SAPT[zid]}</span><select class="camp-input pj-sel" data-zi="${z.zi}">${opts}</select></label>`;
     }).join("");
+    const pc = g.perioada_confirmata || {};
+    const dataConf = pc.confirmat_la ? dataRo(String(pc.confirmat_la).slice(0, 10)) : "";
+    const stareBloc = pc.confirmat
+      ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--verde)">\u25cf</span> Pontaj confirmat${dataConf ? " la " + dataConf : ""} \u2014 autoritativ pentru salarizare (tichete pe zile efectiv lucrate).</span></div>`
+      : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Pontaj neconfirmat \u2014 informativ; calculele din aval (tichete, statul de plat\u0103) se blocheaz\u0103 p\u00e2n\u0103 la confirmare.</span></div><p style="margin-top:8px"><button class="buton-verde" id="pj-confirma">Confirm\u0103 pontajul lunii</button></p>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Pontaj</h2>
       <p class="pf-intro">${esc(nume || "")} · luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
@@ -650,11 +655,19 @@ async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
         <span class="cf-pastila">${(rez.concediu_odihna || 0) + (rez.concediu_medical || 0)} concediu</span>
         <span class="cf-pastila">${rez.invoire || 0} învoire · ${rez.delegatie || 0} delegație</span>
       </div>
+      ${stareBloc}
       <p class="pf-intro">Doar zilele lucrătoare (weekendul și sărbătorile legale nu se pontează). Prezent = implicit; evidență informativă, nu schimbă statul de plată.</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;max-width:900px">${randuri || '<div class="stare-goala">Nicio zi lucrătoare în perioada de activitate.</div>'}</div>
       <div id="pj-msg" style="margin-top:10px"></div>`;
     corp.querySelector("#pj-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#pj-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    const btnConf = corp.querySelector("#pj-confirma");
+    if (btnConf) btnConf.addEventListener("click", () => confirmaCaseta(btnConf,
+      "Confirmi pontajul lunii? Devine autoritativ pentru salarizare \u2014 tichetele se calculeaz\u0103 pe zilele efectiv lucrate. O modificare ulterioar\u0103 \u00eel de-confirm\u0103.",
+      async () => {
+        try { await api.post(`/tenants/${t.id}/pontaj/confirma`, { an, luna }); deseneaza(); }
+        catch (e) { arataMesaj(corp.querySelector("#pj-msg"), e.mesaj || "Eroare.", "eroare"); }
+      }));
     corp.querySelectorAll(".pj-sel").forEach((sel) => sel.addEventListener("change", async () => {
       try { await api.put(`/tenants/${t.id}/salariati/${sid}/pontaj`, { zi: sel.dataset.zi, stare: sel.value }); deseneaza(); }
       catch (e) { arataMesaj(corp.querySelector("#pj-msg"), e.mesaj || "Eroare.", "eroare"); }
