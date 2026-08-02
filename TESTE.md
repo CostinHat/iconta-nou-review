@@ -220,6 +220,29 @@ DE DECIS COSTIN (din V3, deschis): 3 bife 29.07 (suprataxare part-time, proratar
 stau pe salariu_minim 2025 corectat 3700->4050 dupa √. De reverificat la sursa. Ratchet baseline=3 in test_agenda
 le tine vizibile fara sa le reseteze; la reverificare, coboara baseline-ul.
 
+## PAS 1 (02.08.2026) — forma grafului de dependente intre clustere (masurat inainte de secventa)
+
+Edge A->B (A dupa B) = o functie a lui A (testele lui -> functii-sursa -> inchidere pe graf_temei) atinge o
+functie DETINUTA de B, fara co-locatie (functie partajata = fatete, nu dependenta). Cifre:
+- TOTAL clustere: 70. RADACINI (zero dependente): 63. Cu functii mapate (via teste): 8.
+- ADANCIME MAX a lanturilor: 2 (facilitate -> deducere). Muchii: 7, TOATE in familia salarizare.
+- CICLURI: 1 -> `facilitate salariu minim <-> deducere personala` (co-locatie in calcul_salariu: calculul net
+  foloseste deducerea; deducerea si facilitatea traiesc in aceeasi functie). NU il tai singur (decizie Costin).
+- COMPONENTE cu >1 nod: 1 (7 clustere: facilitate, deducere, suprataxare part-time, proratare, suprataxare prag,
+  contributii PFA, impozit dividend). Restul 63 = izolate.
+
+Muchii reale: facilitate->deducere; suprataxare part-time->{deducere,facilitate}; proratare->{deducere,facilitate};
+deducere->facilitate; suprataxare prag->facilitate; impozit dividend->facilitate; contributii PFA->facilitate.
+
+CONSECINTE:
+- Ordinea CONTEAZA PUTIN: adancime 2, 63/70 radacini -> campania e aproape LINIARA (departajare, nu lant lung).
+- Ciclul e INTRE CLUSTERE BIFATE (facilitate+deducere = √) -> NU blocheaza secventa celor NEBIFATE. Cele 2 nebifate
+  din componenta (contributii PFA, impozit dividend) depind doar de facilitate (bifat) -> LIBERE. Deci toate
+  clusterele nebifate sunt libere: secventa = departajare determinista, nu sortare pe lant.
+- Cele 63 izolate: structura/declaratii care depind doar de cote de BAZA (deja verificate cu temei), nu de alte
+  clustere. Dependentele ascunse cunoscute (d100/d212) au fost rutate prin cota() (campania anterioara) -> graful
+  le vede acum. Nu s-au gasit alte clustere invizibile grafului la aceasta masurare.
+
 ## Inventarul de acoperit în A
 
 Per CLUSTER de reguli, nu per fișier (30.07.2026) — un √ pe fișier ascundea că doar o parte din
