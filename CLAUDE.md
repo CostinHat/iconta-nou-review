@@ -467,6 +467,27 @@ Se opreste si cere decizie DOAR daca:
 Push-ul ramane decizie EXCLUSIVA a lui Costin (decizia c, DECIZII.md). Executorul commite LOCAL si continua
 cu clusterul urmator, FARA sa astepte push.
 
+### REGIM DE LUCRU IN LANT NESUPRAVEGHEAT (02.08.2026, ceruta de Costin)
+
+1. **SOLD CUMULAT.** Fiecare raport de campanie din lant se deschide cu:
+   `SOLD LANT: <n> clustere inchise / <n> blocaje deschise / <n> xfail noi / HEAD start -> HEAD curent`.
+   Lantul nu ascunde datoria acumulata.
+
+2. **OPRIRE PENTRU DECIZIE DE PRODUS:** se opreste cand alegerea schimba CE AJUNGE LA CONTABIL sau CE SE
+   PUBLICA. Structura, nume, forma testului = autonom, fara intrebare.
+
+3. **NU SE OPRESTE** pentru: push (comite local si continua); migrare pe tenanti reali (o lasa in sarcina
+   deployment-ului si o consemneaza); fereastra GRI sau orice verdict GRI (blocheaza si merge mai departe).
+
+4. **OPRIRE OBLIGATORIE SI DEFINITIVA A LANTULUI** daca: pytest iese cu exit-code nenul, verificator TOTAL > 0,
+   sau `git status --porcelain` nu e gol la finalul unei campanii. NU incerca sa repari ca sa continui -
+   opreste-te cu tree-ul in starea in care e si scrie ce s-a intamplat.
+
+5. **LIMITA DE LANT:** maximum 6 clustere pe rulare. Dupa al saselea, opreste-te cu predare scrisa, indiferent
+   cat context a ramas.
+
+6. **PREDARE LA OPRIRE:** HEAD, sold lant, ce cluster urmeaza, ce blocaje s-au deschis si de ce.
+
 ## 2.1 De unde vin pasii
 
 Pasii unui fir traiesc in TESTE.md, la "In lucru acum". NU in conversatie.
