@@ -191,6 +191,25 @@ LEGEA la data aceea (garda anti-stale pică `√`-ul dacă codul se schimbă sub
 la ANAF; **STRUCTURA** = mapare/nomenclator/checksum/XML, greșeala e VIZIBILĂ (validatorul respinge).
 Estimare de structură — se rafinează la citirea fiecărui modul.
 
+### Criteriul de apartenenta la cluster (V1, 01.08.2026)
+
+Un CLUSTER = o regula fiscala/structurala distincta (sau un grup strans cuplat) care produce o valoare
+intr-o declaratie sau un modul de calcul, sprijinita pe un set coerent de temeiuri, verificata de un set de
+functii de test (coloana Functie(test)). Granita e REGULA, nu fisierul: un fisier de test acopera mai multe
+clustere.
+
+- CO-LOCATIE: o regula partajata intre doua clustere apare in Functie(test) al AMBELOR (ex. proratarea se
+  aplica SI facilitatii SI suprataxarii). Garda anti-stale reseteaza clusterele co-locate IMPREUNA (mesajul
+  le numeste). Nu se duplica regula intr-un cluster nou.
+- ORFAN: o regula fiscala in cod (functie cu marker TEMEI SAU care citeste o cota SAU un rate literal) fara
+  NICIUN rand in inventar. Un orfan nu e verificat de nimeni si nu va fi -> se ADAUGA ca rand. Detectia e
+  MARGINITA de markeri+graf: o regula cu rate hardcodat, fara marker si fara cota, e INVIZIBILA (cazul
+  bilant_api) - se inchide doar cu gardul GRI de literale la 0 (GARZI cat.3, LIPSA).
+- TEST DE MECANISM vs DE VALOARE: un test care verifica MASINARIA (graf de dependente, temei structurat,
+  dispecer de versionare, cota() period-aware, generarea inventarului, blocaj motivat) NU asertaza o valoare
+  fiscala a unui cluster - nu apartine niciunui cluster, prin design. Doar testele care asertaza o CIFRA/
+  structura ceruta de lege intra in Functie(test).
+
 | Cluster | Modul | Teste | Verificat la sursă | Risc | Temeiuri | Funcție(test) |
 |---|---|---|---|---|---|---|
 | facilitate salariu minim | salarizare | test_salarizare.py | √ 31.07 (bump: FIX3 a mutat net-ul asertat in test_minim_4325_are_facilitate_sem2; facilitatea reconfirmata la sursa OUG 89/2025 art.III + HG 146/2026, neschimbata) | FISCAL | OUG 156/2024 art.LXVI; OUG 89/2025 art.III; HG 146/2026 | test_minim_4325_are_facilitate_sem2 test_facilitatea_ramane_conditionata_de_norma_intreaga test_facilitate_pe_minim_cu_cm_ramane_intreaga test_facilitate_prorata_luna_angajare |
@@ -255,8 +274,42 @@ Estimare de structură — se rafinează la citirea fiecărui modul.
 | checksum R11b | d710 | test_d710.py |  | STRUCTURA |  |  |
 | R15 termen definitivare | d710 | test_d710.py |  | STRUCTURA |  |  |
 | scadente | d710 | test_d710.py |  | STRUCTURA |  |  |
+| plafon diurna neimpozabila | deconturi | test_versionare_formule.py |  | FISCAL | CF art.76(2) lit.k + alin.(4^1); HG 714/2018; HG 518/1995 | (fara test de VALOARE - doar dispecer versionare; golden de scris) |
+| credit sponsorizare / D177 | sponsorizari | test_operatiuni_speciale.py |  | FISCAL | CF art.25(4) lit.i; OUG 115/2023; Ordin ANAF 3562/2024 | test_plafon_dublu_min_ca_impozit test_credit_sub_plafon_lasa_redirectionabil test_micro_fara_credit test_beneficiar_neinscris_fara_credit |
+| rezerva legala | motor | test_versionare_formule.py |  | FISCAL | Legea 31/1990 art.183; OMFP 1802/2014 pct.421 | (fara test de VALOARE - doar dispecer versionare; golden de scris) |
+| zilieri (impozit+CAS) | contracte_speciale | test_versionare_formule.py |  | FISCAL | Legea 52/2011 art.9^1; CF art.76(2) lit.g/i | (fara test de VALOARE - doar dispecer versionare; golden de scris) |
+| regim marja second-hand | tva_marja | test_versionare_formule.py |  | FISCAL | CF art.312 (norme pct.86) | (fara test de VALOARE - doar dispecer versionare; golden de scris) |
+| regim marja turism | tva_marja_turism | test_versionare_formule.py |  | FISCAL | CF art.311 | (fara test de VALOARE - doar dispecer versionare; golden de scris) |
+| impozit dividend | decontari_asociati | test_impozit_dividend.py |  | FISCAL | CF art.97; Legea 141/2025 | test_cota_dividend_si_lichidare_sursa_din_cote |
 
 Numărul nu e ținta. Ținta: fiecare cluster FISCAL să aibă cifra afirmată cu temei citat la sursă.
+
+### V1 (01.08.2026) — inventar completat: reguli si teste care erau fara cluster
+
+INAINTE: 62 clustere. DUPA: 69 (+7 orfane adaugate mai sus). Cifra corecta > cifra stabila.
+
+(A) REGULI FISCALE ORFANE (marker TEMEI, modul absent din inventar) - ADAUGATE ca randuri: deconturi.plafon_diurna,
+sponsorizari.plafon_credit+credit_sponsorizare, motor.rezerva_legala, contracte_speciale.calcul_zilier,
+tva_marja.vanzare_marja, tva_marja_turism.marja_turism_special, decontari_asociati.cota_dividend. Toate produceau
+o valoare fiscala fara sa apara in inventar. GOL: 5 au DOAR test de dispecer (versionare), niciun golden de
+VALOARE la sursa (plafon_diurna, rezerva_legala, calcul_zilier, vanzare_marja, marja_turism_special) - regula
+exista, nimic nu-i verifica cifra contra legii. De scris la reverificarea clusterului.
+
+(B) TESTE care asertaza o valoare fiscala, absente din Functie(test) - clasificate (scan pe core/test_*.py):
+- MECANISM (legitim fara cluster, verifica masinaria): test_graf_temei(4), test_temei_structurat(7),
+  test_versionare_formule(13), test_expirare_cote_de_baza(5), test_inventar_a(3), test_perioada_indisponibila(3),
+  test_impozit_dividend period-aware, test_tva_incasare plafon_pe_data.
+- DE VALOARE, apartin unui cluster EXISTENT dar NELISTATE (test_salarizare, ~10): deducere
+  (test_peste_plafon_deducere_zero, test_minim_difera_pe_semestru, test_brut_6000_fara_dependenti_sem2),
+  concedii (test_cass_doar_pe_01_07_10, test_cm_cas_25pct_uniform, test_cm_prima_zi_diminuata_boala ...).
+  NU le-am adaugat la clusterele BIFATE (√ deducere/concedii): garda anti-stale le-ar compara cu commitul √ si,
+  daca vreuna s-a schimbat dupa, √-ul ar CADEA. HELD - de adaugat la reverificarea clusterului, cu proba ca nu
+  cad √-urile (ramificatie: nu resetez singur).
+- DE VALOARE, acum acoperite de orfanele adaugate: test_operatiuni_speciale(4 -> sponsorizari),
+  test_cota_dividend (-> decontari_asociati).
+
+LIMITA declarata (bilant_api): detectia vede doar reguli cu marker TEMEI sau cota(). O regula cu rate hardcodat
+fara marker e invizibila - se inchide cu gardul GRI de literale la 0 (GARZI cat.3, LIPSA). De construit separat.
 
 ## Estimare de efort pe clusterele nebifate (ESTIMARE, 01.08.2026 — NU angajament)
 
