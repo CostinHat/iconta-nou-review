@@ -453,6 +453,20 @@ Fara titlu, raportul e incomplet.
     fluturas, linie in declaratie, comportament nou. Format: "inainte -> dupa". Daca nu se schimba nimic vizibil
     (campanie pur interna), se scrie "niciun efect vizibil" - explicit, nu prin omisiune.
 
+## 2.3 CONTINUITATE INTRE CLUSTERE (02.08.2026, ceruta de Costin)
+
+Dupa raportul unui cluster inchis, executorul NU se opreste sa intrebe ce urmeaza. Ruleaza
+`core.agenda.urmator_cluster()` si porneste campania pentru clusterul indicat, IN ACEEASI TURA.
+
+Se opreste si cere decizie DOAR daca:
+- clusterul urmator e BLOCAT si TOATE cele de dupa el sunt blocate;
+- campania cere o DECIZIE DE PRODUS (scop, push, migrare pe date reale);
+- a aparut o NECONFORMITATE care cere oprire conform ciclului (vezi CICLUL DE NECONFORMITATE);
+- CONTEXTUL se apropie de epuizare - atunci se opreste la GRANITA CURATA DE COMMIT, cu predare scrisa.
+
+Push-ul ramane decizie EXCLUSIVA a lui Costin (decizia c, DECIZII.md). Executorul commite LOCAL si continua
+cu clusterul urmator, FARA sa astepte push.
+
 ## 2.1 De unde vin pasii
 
 Pasii unui fir traiesc in TESTE.md, la "In lucru acum". NU in conversatie.
