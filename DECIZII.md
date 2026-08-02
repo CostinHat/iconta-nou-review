@@ -5210,3 +5210,27 @@ test_datorie_d101_imca ELIMINAT. SOLD DATORII 21 -> 20.
 Cota 16% (CF art.17) verificata + IMCA implementat + probat DUK -> CLUSTER "cota profit 16% + IMCA | d101"
 INCHIS √ 02.08. Secventa 60 -> 59. GAP MINOR ramas (nu blocheaza, nu e datorie): d101 foloseste literalul
 COTA_STANDARD=16 in loc de cota("impozit_profit") period-aware - valoarea corecta, rutarea prin COTE = follow-up.
+
+## 03.08.2026 — Cluster amortizare | d101: VERIFICAT (ajustarea fiscala art.28), cu datorie MF pe metode
+
+Clusterul urmator din lant dupa cota profit + IMCA. Sesiunea A = aliniere cod existent la lege. Verificat la
+sursa (anaf_surse/cod_fiscal_227_2015_consolidat.html, art.28 Amortizarea fiscala).
+
+**d101 trateaza CORECT amortizarea (art.28) - VERIFICAT.** d101 ia amortizarea ca INPUT (P-fields): P11
+"Amortizare fiscala" (deducere, in P16 total deduceri -> reduce profitul impozabil); P28 "Cheltuieli cu
+amortizarea contabila" (in rollup-ul P34 -> se ADAUGA inapoi la baza). Ajustarea fiscal-contabil (art.28 alin.1:
+recuperarea costului MF prin deducerea amortizarii fiscale) e implementata corect. Golden cu temei:
+test_amortizare_ajustare_fiscala_art28 (venituri 100000, cheltuieli 60000 incl. 10000 amort contabila, amort
+fiscala 12000 -> impozabil 38000, impozit 6080). Pragul MF amortizabil: PLAFON_MF_2026=5000 lei
+(mijloace_fixe_import_api.py) = CF art.28 alin.(2) lit.b (5.000 lei, actualizat OUG 8/2026) - test_mf_prag_
+amortizabil_5000_art28.
+
+**DATORIE (subsistem MF, NU d101): metode degresiva/accelerata necalculate.** Modulul MF calculeaza DOAR liniara
+(rata = amortizabil/dnf); metoda activului (degresiva/accelerata, CF art.28 alin.5) e mapata dar ignorata in
+calcul. Impact limitat: d101 ia amortizarea fiscala ca input (contabilul o calculeaza extern), deci d101 nu e
+gresit; gapul e pe amortizarea contabila/SAF-T (D406) pt active cu metoda ne-liniara. xfail strict
+test_datorie_mf_metode_amortizare. SOLD DATORII 20 -> 21. Apartine unui cluster MF/D406 viitor, NU clusterului
+amortizare|d101 (care e despre tratamentul in d101, aliniat).
+
+INCHIDERE CLUSTER: "amortizare | d101" √ 03.08 (tratamentul amortizarii in d101 aliniat la art.28: deducere
+fiscala P11 + addback contabil P28 + prag 5000). Secventa 59 -> 58.

@@ -233,3 +233,22 @@ def test_imca_d101_duk_valid():
     xml = build_xml(res)
     r = _duk.valideaza(xml, "d101", an=2026)
     assert r["stare"] == "valid", "d101+IMCA respins de DUK: %s" % (str(r.get("erori") or ""))[:200]
+
+
+# ---- Amortizare fiscala (CF art.28): ajustarea fiscal-contabil in d101 ----
+def test_amortizare_ajustare_fiscala_art28():
+    # CF art.28 (amortizarea fiscala): amortizarea CONTABILA (P28) se ADAUGA inapoi (P34), amortizarea
+    # FISCALA (P11) se DEDUCE (P16). Golden: venituri 100000, cheltuieli 60000 (include 10000 amort
+    # contabila), amort fiscala 12000 -> impozabil = 40000 - 12000 + 10000 = 38000; impozit = 16% = 6080.
+    res = calcul_d101(_prof(), 2026, {"P1": 100000, "P2": 60000, "P28": 10000, "P11": 12000})
+    assert res.P["P16"] == 12000   # amortizarea fiscala dedusa (art.28 alin.1)
+    assert res.P["P34"] == 10000   # amortizarea contabila adaugata inapoi
+    assert res.P["P22"] == 28000
+    assert res.P["P35"] == 38000
+    assert res.P["P411"] == 6080   # 16% x 38000
+
+
+def test_mf_prag_amortizabil_5000_art28():
+    # CF art.28 alin.(2) lit.b: mijloc fix amortizabil are valoare fiscala >= 5.000 lei (plafon OUG 8/2026).
+    from core.mijloace_fixe_import_api import PLAFON_MF_2026
+    assert PLAFON_MF_2026 == 5000.0

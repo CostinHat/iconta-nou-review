@@ -259,6 +259,12 @@ def test_datorie_cm_art_xi_regim_initial():
     assert "cm art xi regim dupa certificat initial verificat la sursa" in dz.lower()
 
 
+@pytest.mark.xfail(strict=True, reason="DATORIE 03.08.2026 (subsistem mijloace fixe, descoperit la clusterul amortizare|d101): modulul MF (core/d406_active.py, core/mijloace_fixe_import_api.py) calculeaza amortizarea DOAR LINIARA (rata = amortizabil/dnf); metoda din activ (degresiva/accelerata) e MAPATA dupa cod dar IGNORATA in calcul. CF art.28 alin.(5) permite si amortizarea degresiva si accelerata/superaccelerata (optiune contribuabil, alin.5 lit.b + alin.8^1). Impact LIMITAT: d101 ia amortizarea FISCALA ca input (P11) - contabilul o calculeaza extern cu metoda corecta; deci d101 nu e gresit. Gapul e in subsistemul MF/D406 (amortizarea contabila/SAF-T pt active cu metoda ne-liniara). Se inchide cand modulul MF calculeaza degresiva + accelerata dupa metoda activului, cu teste golden pe fiecare metoda, consemnat in DECIZII.md.")
+def test_datorie_mf_metode_amortizare():
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "mf amortizare degresiva si accelerata calculate dupa metoda activului" in dz.lower()
+
+
 # [INCHISA 02.08.2026] IMCA implementat in d101 (art.18^1) + probat DUK - vezi DECIZII.md.
 def test_datorie_d101_imca():
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
