@@ -745,7 +745,7 @@ async function ecranSalariati(corp, nav, t) {
         <div class="pf-frand" style="flex-wrap:wrap">
           <div class="pf-frand-text" style="flex:1 1 100%">
             <div class="pf-frand-nume">${esc(s.nume)}</div>
-            <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${s.tichete_cultural ? ` · <span style="color:var(--teal)">cultural ${bani(s.tichete_cultural)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
+            <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${s.tichete_cultural ? ` · <span style="color:var(--teal)">cultural ${bani(s.tichete_cultural)}</span>` : ""}${s.tichete_cresa ? ` · <span style="color:var(--teal)">creșă ${bani(s.tichete_cresa)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;width:100%">
           <button class="buton-primar" data-flut="${s.id}">Flutura\u0219</button>
@@ -756,6 +756,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-vac="${s.id}" data-val="${s.tichete_vacanta || 0}" data-nume="${esc(s.nume)}">+ vacanță</button>
           <button class="buton-secundar" data-cadou="${s.id}" data-nume="${esc(s.nume)}">+ cadou</button>
           <button class="buton-secundar" data-cult="${s.id}" data-nume="${esc(s.nume)}">+ cultural</button>
+          <button class="buton-secundar" data-cresa="${s.id}" data-nume="${esc(s.nume)}">+ creșă</button>
           <button class="buton-secundar" data-iban="${s.id}" data-val="${esc(s.iban || "")}" data-nume="${esc(s.nume)}">IBAN ${s.iban ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-cor="${s.id}" data-val="${esc(s.cor || "")}" data-nume="${esc(s.nume)}">COR ${s.cor ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-incet="${s.id}" data-val="${esc(s.data_incetare || "")}" data-nume="${esc(s.nume)}">${s.data_incetare ? "Plecat " + s.data_incetare : "Încetare"}</button>
@@ -775,6 +776,7 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-vac-zona"></div>
       <div id="sp-cadou-zona"></div>
       <div id="sp-cultural-zona"></div>
+      <div id="sp-cresa-zona"></div>
       <div id="sp-iban-zona"></div>
       <div id="sp-cor-zona"></div>
       <div id="sp-incet-zona"></div>
@@ -894,6 +896,29 @@ async function ecranSalariati(corp, nav, t) {
           await api.put(`/tenants/${t.id}/salariati/${sid}/beneficiu-lunar`, { an, luna, tip: "cadou", eveniment, valoare });
           zonaCadou.innerHTML = ""; deseneaza();
         } catch (e) { arataMesaj(corp.querySelector("#cadou-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+      });
+    }));
+    // [tichete de cresa] Legea 165/2018 art.19: lunar, per copil; plafon 450/copil (indexare GRI blocata backend).
+    const zonaCresa = corp.querySelector("#sp-cresa-zona");
+    corp.querySelectorAll("[data-cresa]").forEach((b) => b.addEventListener("click", () => {
+      const sid = b.dataset.cresa;
+      zonaCresa.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
+        <span class="camp-eticheta">Tichete de creșă · ${esc(b.dataset.nume)} · ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}:</span>
+        <input type="number" min="1" step="1" id="cresa-copii" class="camp-input" placeholder="1" style="width:120px" title="nr. copii la creșă (implicit 1)">
+        <input type="number" step="10" min="0" id="cresa-input" class="camp-input" placeholder="valoare (multiplu de 10)" style="width:190px">
+        <button class="buton-primar" id="cresa-save">Salvează</button>
+        <button class="buton-secundar" id="cresa-cancel">Renunță</button></div>
+        <div class="camp-eticheta" style="color:var(--gri)">450 lei/lună/copil (Legea 165/2018 art.19); valoare multiplu de 10. Indexarea peste bază (ex. 740) e neconfirmată la sursă (GRI) — blocată.</div>
+        <div id="cresa-msg"></div>`;
+      corp.querySelector("#cresa-input").focus();
+      corp.querySelector("#cresa-cancel").addEventListener("click", () => { zonaCresa.innerHTML = ""; });
+      corp.querySelector("#cresa-save").addEventListener("click", async () => {
+        const valoare = parseFloat(corp.querySelector("#cresa-input").value) || 0;
+        const nr_copii = parseInt(corp.querySelector("#cresa-copii").value, 10) || 1;
+        try {
+          await api.put(`/tenants/${t.id}/salariati/${sid}/beneficiu-lunar`, { an, luna, tip: "cresa", valoare, nr_copii });
+          zonaCresa.innerHTML = ""; deseneaza();
+        } catch (e) { arataMesaj(corp.querySelector("#cresa-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
       });
     }));
     // [tichete culturale] Legea 165/2018 cap.V: lunar sau ocazional; plafon semestrial indexat (fereastra
