@@ -249,6 +249,8 @@ Ordine DETERMINISTA a celor 64 clustere nebifate+neblocate, sortare topologica p
 (a) FISCAL>STRUCTURA (b) deblocari desc (c) ordinea inventarului. Rescrisa 02.08: tichete masa/vacanta BIFAT ->
 iesit din secventa (65->64). Identitate = cluster | modul (nume duplicate intre module).
 
+**REGULA DE ORDONARE.** Clusterul A vine dupa B daca o functie din A foloseste o valoare care APARTINE lui B (dependenta din graf_clustere). Sortare topologica pe aceste dependente. Departajare cand mai multe sunt libere simultan, in ordinea: (a) intra intr-o declaratie DEPUSA la ANAF - proxy Risc=FISCAL, aproximatie DECLARATA, nu echivalenta; (b) cate clustere deblocheaza; (c) ordinea din inventar. Secventa se PERSISTA, nu se recalculeaza la fiecare rulare - altfel pozitia 7 de azi nu e pozitia 7 de maine. Se rescrie DOAR cand se schimba graful sau se adauga clustere, cu motivul consemnat (vezi randul 'Rescrisa 02.08' de mai sus).
+
 1. concedii medicale | salarizare
 2. tichete culturale | salarizare
 3. tichete cresa | salarizare
@@ -484,6 +486,8 @@ cale manuala; d212 sursa-verificat) - sunt goluri de VIZIBILITATE, nu buguri act
 (campanie separata) + reroute; d212 e si orfan de inventar (de adaugat ca rand la fel ca V1).
 
 ## Estimare de efort pe clusterele nebifate (ESTIMARE, 01.08.2026 — NU angajament)
+
+**Estimarea NU e criteriu de prioritizare.** Departajarea in secventa se face pe RISC (intra intr-o declaratie depusa la ANAF), nu pe efort - un cluster MIC si riscant se face inaintea unuia MARE si izolat. Estimarea serveste doar la a sti ORIZONTUL campaniei, nu ordinea. (Regula de ordonare: la sectiunea Secventa de verificare.)
 
 Cerută de două ori, neapărută în raport. Estimare din COD + inventar, clusterele **NU** sunt verificate
 aici — doar clasate pe efort. Calibrare din cele 7 atinse: **MARE** (o zi sau mai mult — multe reguli,
