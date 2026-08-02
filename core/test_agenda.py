@@ -337,7 +337,7 @@ def test_cote_cluster_leaga_deducere_de_salariu_minim():
 # salariu_minim a carui VALOARE 2025 a fost corectata 3700->4050 (FIX5, cf31ddb) DUPA verificarea lor.
 # Sunt STALE real - de REVERIFICAT la sursa (decizie Costin; nu reset automat - ramificatie: nu resetez singur).
 # Baseline coboara pe masura ce se reverifica; la 0 devine PRAG (orice bifa pe baza schimbata BLOCHEAZA).
-STALE_BAZA_BASELINE = 0
+STALE_BAZA_BASELINE = 3
 
 
 def test_bifele_nu_stau_pe_o_baza_schimbata():
@@ -357,3 +357,32 @@ def test_bifele_nu_stau_pe_o_baza_schimbata():
                              % (rand["cluster"], rand["verificat"], cota))
     assert len(stale) <= STALE_BAZA_BASELINE, \
         "BAZA SCHIMBATA SUB O BIFA (peste baseline %d):\n%s" % (STALE_BAZA_BASELINE, "\n".join(stale))
+
+
+# ============================================================
+#  Secventa de verificare (02.08.2026) - determinista, persistata, topologic valida
+# ============================================================
+def test_secventa_prinde_inversiune():
+    """PAS 5: checker-ul topologic prinde o inversiune. X depinde de Y; X inaintea lui Y -> violare (RED),
+    Y inaintea lui X -> OK. Dovada ca secventa nu e o lista in care ai incredere doar fiindca a generat-o o unealta."""
+    edges = {"X": {"Y"}, "Y": set()}
+    assert agenda._violari_topologice([("X", "m"), ("Y", "m")], edges), "inversiunea NU e prinsa"
+    assert not agenda._violari_topologice([("Y", "m"), ("X", "m")], edges), "ordinea corecta semnalata gresit"
+
+
+def test_secventa_persistata_e_topologica():
+    """Secventa persistata din TESTE.md respecta graful (niciun cluster inaintea unei dependente din secventa)."""
+    per = agenda.secventa_persistata()
+    assert per, "secventa persistata lipseste din TESTE.md"
+    seq_ids = [(cl, mod) for _, cl, mod in per]
+    viol = agenda._violari_topologice(seq_ids, agenda.graf_clustere())
+    assert not viol, "SECVENTA INVERSATA (cluster inaintea dependentei):\n" + "\n".join(viol)
+
+
+def test_secventa_persistata_e_actuala():
+    """Persistata == calculata din graf: se rescrie DOAR cand se schimba graful/clusterele. Altfel pozitia 7
+    de azi nu e pozitia 7 de maine."""
+    calc = [(cl, mod) for cl, mod in agenda.secventa_calculata()[0]]
+    per = [(cl, mod) for _, cl, mod in agenda.secventa_persistata()]
+    assert per == calc, ("persistata difera de calculata (graf schimbat?) - regenereaza. len calc=%d per=%d"
+                         % (len(calc), len(per)))

@@ -243,6 +243,79 @@ CONSECINTE:
   clustere. Dependentele ascunse cunoscute (d100/d212) au fost rutate prin cota() (campania anterioara) -> graful
   le vede acum. Nu s-au gasit alte clustere invizibile grafului la aceasta masurare.
 
+## Secventa de verificare (persistata 02.08.2026 - NU se recalculeaza la fiecare rulare)
+
+Ordine DETERMINISTA a celor 65 clustere nebifate+neblocate, sortare topologica pe graf_clustere +
+departajare (a) FISCAL>STRUCTURA (b) deblocari desc (c) ordinea inventarului. Graful e plat (63 radacini,
+adancime 2) -> ordinea conteaza putin. Se rescrie DOAR cand se schimba graful/clusterele (cu motiv).
+Identitate = cluster | modul (nume duplicate intre module). Ciclul facilitate<->deducere e intre BIFATE.
+
+1. tichete masa/vacanta | salarizare
+2. concedii medicale | salarizare
+3. tichete culturale | salarizare
+4. tichete cresa | salarizare
+5. cota profit 16% + IMCA | d101
+6. amortizare | d101
+7. baze contributii (CAS/CASS/imp/CAM) | d112
+8. concedii medicale (asiguratB3/D) | d112
+9. rotunjire aritmetica (A91b) | d112
+10. sect_II tip_venit (impozit retinut) | d205
+11. rotunjire | d205
+12. cote TVA -> randuri | d300
+13. exigibilitate / TVA la incasare | d300
+14. taxare inversa | d300
+15. pro-rata deducere | d300
+16. rotunjire aritmetica | d300
+17. ajustari | d300
+18. tipuri operatiune 1-5 | d301
+19. rollup S4.1->S4 | d301
+20. baza = val x curs | d301
+21. cota TVA | d301
+22. tipuri operatiune IC (L/A/P/S) | d390
+23. rotunjire aritmetica (A91b) | d390
+24. reclasificari manuale | d390
+25. exigibilitate / prag | d390
+26. cote acceptate | d394
+27. taxare inversa | d394
+28. SourceDocuments (facturi reale, PARTIAL) | d406
+29. plafon diurna neimpozabila | deconturi
+30. credit sponsorizare / D177 | sponsorizari
+31. rezerva legala | motor
+32. zilieri (impozit+CAS) | contracte_speciale
+33. regim marja second-hand | tva_marja
+34. regim marja turism | tva_marja_turism
+35. impozit dividend | decontari_asociati
+36. contributii PFA (praguri CAS/CASS pe sm) | d212
+37. nomenclator cod_oblig<->cod_bugetar | d100
+38. cota micro 121 (flag) | d100
+39. checksum totalPlata_A (R11b) | d100
+40. scadente/nr_evidenta | d100
+41. structura P1-P53 | d101
+42. R17 Data_S / termen | d101
+43. limita text 75 | d112
+44. nomenclator cod_oblig | d112
+45. checksum totalPlata_A | d205
+46. trunchiere den/adresa | d205
+47. randuri / checksum | d300
+48. checksum totalPlata_A (R28) | d301
+49. nomenclator tari (HR->CR) | d390
+50. tipuri operatiune (pct.215) | d394
+51. tip_partener | d394
+52. rezumat1 campuri complete | d394
+53. nomenclator codPR (art.331) | d394
+54. totalPlata_A (R17) | d394
+55. plan conturi pe norma | d406
+56. UoM UN/ECE | d406
+57. MovementType nomenclator | d406
+58. BaseRate (encoding pro-rata) | d406
+59. registration_number (00+CUI) | d406
+60. structura XSD (Header/MasterFiles/GLE) | d406
+61. structura declaratie710 | d710
+62. nomenclator COD_BUGETAR | d710
+63. checksum R11b | d710
+64. R15 termen definitivare | d710
+65. scadente | d710
+
 ## Inventarul de acoperit în A
 
 Per CLUSTER de reguli, nu per fișier (30.07.2026) — un √ pe fișier ascundea că doar o parte din

@@ -79,7 +79,7 @@ def stare_sesiune_a():
             data = m.group(0) if m else "?"
         rows.append({"cluster": cel[0], "modul": cel[1],
                      "fisiere": re.findall(r"test_\w+\.py", cel[2]),
-                     "verificat": data, "risc": cel[4].strip().upper(),
+                     "verificat": data, "verificat_raw": cel[3], "risc": cel[4].strip().upper(),
                      "temeiuri": cel[5] if len(cel) > 5 else "",
                      "functie": re.findall(r"test_\w+", cel[6]) if len(cel) > 6 else []})
     fisc = [x for x in rows if x["risc"].startswith("FISC")]
@@ -273,6 +273,137 @@ def cota_valori(src, nume):
     return "<ABSENT>"
 
 
+def graf_clustere():
+    """{cluster: set(clustere de care depinde)}. Edge A->B: o functie a lui A (testele -> functii-sursa ->
+    inchidere pe graf_temei) atinge o functie DETINUTA de B (verificata de testele lui B), fara ca A s-o
+    detina (functie partajata = CO-LOCATIE, nu dependenta). Cele mai multe clustere = radacini (structura/
+    declaratii ce depind doar de cote de baza). LIMITA (V2): vede doar prin cota()/apeluri; un literal ascuns
+    ramane invizibil."""
+    from core import graf_temei as _gt
+    graf = _gt.construieste_graf()
+    cunoscute = set(graf)
+    rows = stare_sesiune_a()["rows"]
+    cf = {}
+    for r in rows:
+        s = set()
+        if r.get("fisiere") and r.get("functie"):
+            rel = "core/" + r["fisiere"][0]
+            for tf in r["functie"]:
+                s |= _functii_apelate_de_test(rel, tf, cunoscute)
+        cf[r["cluster"]] = s
+
+    def _clo(fns):
+        seen, st = set(), list(fns)
+        while st:
+            f = st.pop()
+            if f in seen or f not in graf:
+                continue
+            seen.add(f)
+            st += list(graf[f]["apeleaza"])
+        return seen
+
+    owner = {}
+    for cl, fns in cf.items():
+        for f in fns:
+            owner.setdefault(f, set()).add(cl)
+    edges = {}
+    for r in rows:
+        A = r["cluster"]
+        own = cf[A]
+        d = set()
+        for f in _clo(own):
+            if f in own:
+                continue
+            for B in owner.get(f, ()):
+                if B != A:
+                    d.add(B)
+        edges[A] = d
+    return edges
+
+
+def _e_blocat(rand):
+    """Un cluster e BLOCAT (imposibil de verificat acum: sursa indisponibila, structura neverificata) daca
+    poarta marcajul 'BLOCAT:' in coloana Verificat la sursa. Scos din secventa pana se deblocheaza."""
+    return "BLOCAT:" in (rand.get("verificat_raw") or "") or "BLOCAT" in str(rand.get("verificat") or "")
+
+
+def secventa_calculata():
+    """Secventa DETERMINISTA de verificare a clusterelor NEBIFATE si NEBLOCATE (1..N), sortare topologica pe
+    graf_clustere (un cluster vine dupa dependentele lui) cu departajare FIXA cand mai multe sunt libere:
+    (a) FISCAL inainte de STRUCTURA (eroarea ajunge INVIZIBIL la ANAF); (b) cate clustere deblocheaza (desc);
+    (c) ordinea din inventar. Intoarce (secventa, neordonabile) - neordonabile = prinse intr-un ciclu (se
+    raporteaza, NU se ordoneaza fortat)."""
+    edges = graf_clustere()                            # muchii pe NUME (doar familia salarizare are muchii)
+    rows = stare_sesiune_a()["rows"]
+    # IDENTITATE = (cluster, modul): nume de cluster se repeta intre module (taxare inversa d300/d394,
+    # rotunjire aritmetica d112/d300/d390) - cheia pe nume le-ar colapsa si ar pierde din secventa.
+    def _id(r):
+        return (r["cluster"], r["modul"])
+    by = {_id(r): r for r in rows}
+    inv = {_id(r): i for i, r in enumerate(rows)}
+    deb = {}
+    for A, deps in edges.items():
+        for B in deps:
+            deb[B] = deb.get(B, 0) + 1                  # deblocari pe NUME (destul: doar salarizare are)
+    done = {r["cluster"] for r in rows if r["verificat"]}   # dependentele satisfacute, pe NUME
+    ramase = [_id(r) for r in rows if not r["verificat"] and not _e_blocat(r)]
+    seq = []
+    while ramase:
+        liber = [k for k in ramase if edges.get(k[0], set()) <= done]
+        if not liber:
+            break                                       # ce ramane e prins intr-un ciclu
+        liber.sort(key=lambda k: (0 if by[k]["risc"].startswith("FISC") else 1, -deb.get(k[0], 0), inv[k]))
+        pick = liber[0]
+        seq.append(pick)                                # (cluster, modul)
+        done.add(pick[0])
+        ramase.remove(pick)
+    return seq, ramase
+
+
+def secventa_persistata():
+    """Secventa scrisa in TESTE.md (## Secventa de verificare) - [(pozitie, cluster)]. Sursa unica intre
+    sesiuni: pozitia 7 de azi = pozitia 7 de maine. [] daca sectiunea lipseste."""
+    txt = _text(_TESTE) or ""
+    m = re.search(r"## Secven\w+ de verificare[^\n]*\n(.*?)(?=\n## |\Z)", txt, re.DOTALL)
+    if not m:
+        return []
+    out = []
+    for ln in m.group(1).splitlines():
+        mm = re.match(r"\s*(\d+)\.\s+(.+?)\s*\|\s*(\S.*?)\s*$", ln)
+        if mm:
+            out.append((int(mm.group(1)), mm.group(2).strip(), mm.group(3).strip()))
+    return out
+
+
+def _violari_topologice(seq_ids, edges):
+    """Violari intr-o secventa: un cluster apare INAINTEA unei dependente care e si ea in secventa.
+    seq_ids = [(cluster, modul)]; edges = {nume_cluster: set(nume_dependente)}. [] = ordine valida."""
+    poz = {}
+    for i, (cl, _mod) in enumerate(seq_ids):
+        poz.setdefault(cl, i)                          # prima pozitie a numelui
+    viol = []
+    for i, (cl, _mod) in enumerate(seq_ids):
+        for dep in edges.get(cl, set()):
+            if dep in poz and poz[dep] > i:
+                viol.append("%s (poz %d) inaintea dependentei %s (poz %d)" % (cl, i + 1, dep, poz[dep] + 1))
+    return viol
+
+
+def urmator_cluster():
+    """(urmator, ramase, blocate): primul cluster din secventa persistata inca NEBIFAT, cate au ramas de
+    verificat, cate sunt BLOCATE. Se recalculeaza dupa fiecare cluster inchis (bifat -> iese din numar)."""
+    rows = stare_sesiune_a()["rows"]
+    bifat = {(r["cluster"], r["modul"]) for r in rows if r["verificat"]}
+    blocate = sum(1 for r in rows if _e_blocat(r))
+    urm, ramase = None, 0
+    for _p, cl, mod in secventa_persistata():
+        if (cl, mod) not in bifat:
+            ramase += 1
+            if urm is None:
+                urm = (cl, mod)
+    return urm, ramase, blocate
+
+
 def raport(tehnic=True):
     L = ["═══ AGENDA iConta ═══  (%s)" % datetime.date.today().isoformat(), ""]
     L.append("UNDE SUNTEM")
@@ -288,7 +419,15 @@ def raport(tehnic=True):
     L.append("  Sesiunea B (testare pe flux):         %s" %
              ("%s (%s), etape %d/%d" % (b["faza"], b["stare"], b["etape_facute"], b["etape_total"]) if b else "necunoscut"))
     L.append("  Ultimul commit: %s" % ultim_commit())
-    L += ["", "URMATORUL PAS", "  %s" % urmatorul_pas(), "", "DESCHIS ACUM (datoria mecanica)"]
+    L += ["", "URMATORUL PAS", "  %s" % urmatorul_pas()]
+    try:
+        _urm, _ram, _bl = urmator_cluster()
+        if _urm:
+            L.append("  URMATORUL CLUSTER (din secventa): %s | %s  (raman %d nebifate, %d blocate)"
+                     % (_urm[0], _urm[1], _ram, _bl))
+    except Exception:
+        pass
+    L += ["", "DESCHIS ACUM (datoria mecanica)"]
     d = datorii_deschise()
     if d is None:
         L.append("  necunoscut (test_datorie.py necitibil)")
