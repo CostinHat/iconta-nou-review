@@ -5165,3 +5165,27 @@ plafon = baza 450 confirmata, indexarea GRI blocata cf. regula de lant). Secvent
 BLOCAJ CONSEMNAT (nu xfail, cf. §2.3 pct.3 - GRI merge mai departe): valoarea indexata a plafonului de cresa
 (>450/copil, ex. 740 din 2026) - neconfirmata la primar. Se deblocheaza cand un ordin MF/MMSS e obtinut la MO si
 adaugat in plafon_cresa (fereastra datata). Pana atunci, cap conservator la baza 450/copil.
+
+## 02.08.2026 — Cluster cota profit 16% + IMCA (d101): cota VERIFICATA, IMCA = datorie noua
+
+Clusterul urmator din agenda dupa tichete cresa (lant nesupravegheat). Sesiunea A = aliniere cod existent la lege.
+
+**Cota impozit pe profit 16% - VERIFICATA la sursa.** CF art.17 (verbatim anaf_surse/cod_fiscal_227_2015_consolidat.html):
+"Cota de impozit pe profit care se aplica asupra profitului impozabil este de 16%" (stabila din 2005). Valoarea e in
+common.COTE (impozit_profit, CF art.17, verificat 02.08). d101 o aplica P411 = 16% x P40. Test cu temei:
+test_cota_profit_16pct_din_cota_cu_temei. GAP MINOR (nu blocheaza): d101 foloseste literalul COTA_STANDARD=16
+(default + override manual din `manual`), NU cota("impozit_profit") period-aware - valoarea e corecta si stabila,
+dar rutarea prin COTE (disciplina "fara cote literale") ramane de facut (follow-up, low-risk).
+
+**IMCA (impozit minim pe cifra de afaceri, CF art.18^1) - NEIMPLEMENTAT = DATORIE NOUA.** graf_temei.py il
+recunoaste ca obligatie NOUA neacoperita. Verificat la sursa (art.18^1): contribuabili (altii decat art.15) cu
+cifra de afaceri > 50 mil. euro anul precedent, care determina impozit pe profit mai mic decat IMCA, platesc la
+nivelul IMCA. IMCA = 1% x (VT - Vs - I - A): VT=venituri totale; Vs=venituri scazute (neimpozabile art.23/24 +
+costuri stocuri/servicii in curs + productie imobilizari); I=investitii; A=amortizare. Comparatie max(impozit
+profit, IMCA); reguli de grup (alin.8, cifra insumata) si trimestriale (alin.6); modificat de OUG 8/2026 (din anul
+fiscal 2026). xfail strict test_datorie_d101_imca. SOLD DATORII 20 -> 21.
+
+CLUSTER: NU se inchide (IMCA, in numele clusterului, e neimplementat). Cota 16% verificata (progres); IMCA = feature
+substantial care schimba ce declara firmele > 50 mil euro in D101 - se implementeaza dedicat, NU pe jumatate
+(corectitudine fiscala pe declaratii reale). Secventa ramane 60. OPRIRE LANT cu predare: IMCA e blocajul care cere
+o campanie dedicata.

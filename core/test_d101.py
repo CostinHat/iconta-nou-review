@@ -172,3 +172,14 @@ def test_d101_reconstructie_proba_duk_valid(conn_schema_profit):
     xml, res = _d101.genereaza(conn_schema_profit, _SCHEMA_D101, Perioada(2026))
     rez = _duk.valideaza(xml, "d101", an=2026)
     assert rez["stare"] == "valid", "DUK a respins D101 reconstruit: %s" % rez
+
+
+# ---- Cota impozit pe profit = 16% (verificare la sursa, aliniere la lege) ----
+def test_cota_profit_16pct_din_cota_cu_temei():
+    # CF art.17 (verbatim anaf_surse/cod_fiscal_227_2015_consolidat.html): "Cota de impozit pe profit
+    # care se aplica asupra profitului impozabil este de 16%". Valoarea traieste in common.COTE
+    # (impozit_profit, CF art.17); d101 o foloseste ca P411 = 16% x P40.
+    from decimal import Decimal as _D
+    from core import common as _c
+    assert _c.cota("impozit_profit")[0] == _D("0.16")   # CF art.17 (16%, stabil din 2005)
+    # golden d101: P411 = 16% x P40 (vezi test_calcul_d101_complet, P40=40000 -> P411=6400)

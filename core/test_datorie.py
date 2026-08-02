@@ -259,6 +259,12 @@ def test_datorie_cm_art_xi_regim_initial():
     assert "cm art xi regim dupa certificat initial verificat la sursa" in dz.lower()
 
 
+@pytest.mark.xfail(strict=True, reason="DATORIE 02.08.2026 (cluster cota profit + IMCA): impozitul minim pe cifra de afaceri (IMCA, CF art.18^1) NU e implementat in d101 - graf_temei.py il recunoaste ca obligatie NOUA neacoperita. Verificat la sursa (anaf_surse/cod_fiscal_227_2015_consolidat.html, art.18^1): contribuabili cu cifra de afaceri > 50 mil. euro anul precedent, care determina impozit pe profit mai mic decat IMCA, platesc la nivelul IMCA. IMCA = 1% x (VT - Vs - I - A) (alin.3); comparatie max(impozit profit, IMCA); reguli de grup (alin.8) si trimestriale (alin.6); modificat de OUG 8/2026 (aplicabil din anul fiscal 2026). Cota profit 16% (CF art.17) e verificata si corecta - IMCA e partea neimplementata a clusterului. Se inchide cand IMCA e implementat in d101 (eligibilitate 50 mil euro + formula VT-Vs-I-A + comparatie + campuri D101 + proba DUK) si consemnat cu marker in DECIZII.md.")
+def test_datorie_d101_imca():
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "d101 imca impozit minim cifra de afaceri implementat si probat duk" in dz.lower()
+
+
 @pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: D394 exclude linia scutita (cota 0) catre partener cu CUI (structD394 pct.217: cota 0 permisa doar pentru LS/AS/ASI/N/V) - o linie scutita pe o factura tip L catre partener RO cu CUI e IGNORATA cu avertisment, nu inclusa. Proba DUK pe factura MULTI-COTA cu exact acest caz (21+11+scutit catre CUI -> DUK valid + incadrare corecta a scutitului) NEFACUTA - probele D394 (test_d300_d394_paritate) folosesc date care evita cazul (A4 = date consistente fara scutit-catre-CUI). Se inchide cand proba e facuta si consemnata in DECIZII.md.")
 def test_datorie_d394_scutit_catre_cui_proba_duk():
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
