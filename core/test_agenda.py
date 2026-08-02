@@ -337,7 +337,7 @@ def test_cote_cluster_leaga_deducere_de_salariu_minim():
 # salariu_minim a carui VALOARE 2025 a fost corectata 3700->4050 (FIX5, cf31ddb) DUPA verificarea lor.
 # Sunt STALE real - de REVERIFICAT la sursa (decizie Costin; nu reset automat - ramificatie: nu resetez singur).
 # Baseline coboara pe masura ce se reverifica; la 0 devine PRAG (orice bifa pe baza schimbata BLOCHEAZA).
-STALE_BAZA_BASELINE = 3
+STALE_BAZA_BASELINE = 0
 
 
 def test_bifele_nu_stau_pe_o_baza_schimbata():
