@@ -311,6 +311,33 @@ exista, nimic nu-i verifica cifra contra legii. De scris la reverificarea cluste
 LIMITA declarata (bilant_api): detectia vede doar reguli cu marker TEMEI sau cota(). O regula cu rate hardcodat
 fara marker e invizibila - se inchide cu gardul GRI de literale la 0 (GARZI cat.3, LIPSA). De construit separat.
 
+### V2 (01.08.2026) — graful vede tot? NU. Vede doar dependentele rutate prin cota()
+
+Graful (`graf_temei`) leaga functie -> cota DOAR prin apeluri `cota("x")` in corp. Numarul de clustere cu
+ZERO dependente in graf e MARE: cele 29 structurale (nomenclator/checksum/XML) - fundamental zero; iar dintre
+cele 40 fiscale, majoritatea iau rata ca INPUT contabil (`manual`) sau o hardcodeaza -> tot zero in graf.
+Dependenta e vizibila azi doar in familia salarizare (calcul_salariu/deducere/taxe_cm cheama cota). Deci
+"graful vede tot" e FALS: e complet doar unde se foloseste cota().
+
+3 clustere verificate MANUAL (citit codul):
+1. checksum totalPlata_A (d100, STRUCTURA) - suma campurilor de obligatie, nicio valoare fiscala.
+   VERDICT: FUNDAMENTAL (zero dependenta reala).
+2. cota micro 121 (d100) - rata vine ca input (`manual`); DEFAULT hardcodat `Decimal("1")` (micro) /
+   `Decimal("16")` (profit), ocoleste cota() (d100.py:239-247). VERDICT: DEPENDENTA ASCUNSA - cotele
+   micro 1%/3% + profit 16% nu-s in COTE, graful e orb. Vizibil prin: mutare in COTE + cota(), sau gardul GRI.
+3. d212_engine (PFA/D212 - modul ORFAN, absent din inventar, dar LIVE prin rip_api/control_fiscal_api) -
+   hardcodeaza `PlafoaneD212(salariu_minim=4050)` ca reper anual (d212_engine.py:28-34). Toate pragurile
+   CAS/CASS (12/24/60/72 sm) = multipli de acest 4050 literal. VERDICT: DEPENDENTA ASCUNSA pe salariu_minim -
+   graful nu vede D212 depinzand de salariul minim. Valoarea e SURSA-VERIFICATA (11.07: reperul D212 = sm la
+   1 ian, FIX pe an, deliberat neschimbat de majorarea 4325) - corecta azi, dar LINK-ul e invizibil.
+   Vizibil prin: `cota("salariu_minim", date(an,1,1))` in loc de literalul 4050 (pastreaza semantica "fix pe an").
+
+DEPENDENTE NEVAZUTE enumerate: (a) micro/profit rate default (d100); (b) d212 salariu_minim reper (+ toate
+pragurile sm). CE LE FACE VIZIBILE: rutarea literalului prin cota()/COTE (specific) + gardul GRI de literale
+fiscale la 0 (general, GARZI cat.3 LIPSA - inca de construit). Niciuna nu produce azi o cifra GRESITA (default pe
+cale manuala; d212 sursa-verificat) - sunt goluri de VIZIBILITATE, nu buguri active. REPARATIE = gardul GRI
+(campanie separata) + reroute; d212 e si orfan de inventar (de adaugat ca rand la fel ca V1).
+
 ## Estimare de efort pe clusterele nebifate (ESTIMARE, 01.08.2026 — NU angajament)
 
 Cerută de două ori, neapărută în raport. Estimare din COD + inventar, clusterele **NU** sunt verificate
