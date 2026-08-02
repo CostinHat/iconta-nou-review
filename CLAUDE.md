@@ -487,6 +487,11 @@ cu clusterul urmator, FARA sa astepte push.
    cat context a ramas.
 
 6. **PREDARE LA OPRIRE:** HEAD, sold lant, ce cluster urmeaza, ce blocaje s-au deschis si de ce.
+   Predarea la oprire pentru EPUIZARE DE CONTEXT trebuie sa fie suficienta pentru o sesiune NOUA, cu
+   context GOL, care nu a citit nimic din lantul anterior. Contine: HEAD; sold lant; clusterul urmator din
+   agenda (`core.agenda.urmator_cluster()`); blocajele deschise CU MOTIVUL fiecaruia; ce registre au fost
+   atinse. Se SCRIE PE DISC (fisier de predare), nu doar in chat. Dupa ce ai scris predarea, OPRESTE-TE -
+   nu incerca sa continui pe context compactat.
 
 ## 2.1 De unde vin pasii
 
