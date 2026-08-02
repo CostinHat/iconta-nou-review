@@ -54,6 +54,33 @@ NS = "mfp:anaf:dgti:d101:declaratie:v10"
 
 COTA_STANDARD = Decimal("16")
 
+# ============================================================
+#  IMCA - impozit minim pe cifra de afaceri (CF art.18^1). Verificat VERBATIM la sursa:
+#  anaf_surse/cod_fiscal_227_2015_consolidat.html, art.18^1. VT/Vs/I/A sunt determinate de contabil
+#  si primite ca intrari (I=investitii, A=amortizarea acestora). d101 avea deja comparatia P46/P47/P48
+#  (alin.5); aici se ADAUGA CALCULUL IMCA (P47) + eligibilitatea, care lipseau (graf_temei: obligatie noua).
+# ============================================================
+PRAG_IMCA_EUR = Decimal("50000000")   # art.18^1 alin.(1): cifra de afaceri > 50.000.000 euro
+
+
+def datoreaza_imca(vt, vs, curs_eur):
+    """True daca firma datoreaza IMCA: cifra de afaceri a anului precedent (= VT - Vs, art.18^1 alin.(1))
+    depaseste 50.000.000 euro, la cursul de la inchiderea exercitiului financiar. TEMEI: CF art.18^1 alin.(1)."""
+    c = Decimal(str(curs_eur))
+    if c <= 0:
+        raise ValueError("curs_eur invalid (trebuie > 0)")
+    cifra_afaceri_lei = Decimal(str(vt)) - Decimal(str(vs))
+    return (cifra_afaceri_lei / c) > PRAG_IMCA_EUR
+
+
+def impozit_minim_cifra_afaceri(vt, vs, i, a):
+    """IMCA = 1% x (VT - Vs - I - A); daca formula da valoare negativa -> 0 (art.18^1 alin.(3)-(4)).
+    VT=venituri totale; Vs=venituri care se scad (alin.3); I=investitii; A=amortizarea acestora.
+    TEMEI: CF art.18^1 alin.(3)-(4). VERDE (verbatim anaf_surse/)."""
+    baza = Decimal(str(vt)) - Decimal(str(vs)) - Decimal(str(i)) - Decimal(str(a))
+    imca = Decimal("0.01") * baza
+    return _i(imca) if imca > 0 else 0
+
 
 def _esc(v):
     from xml.sax.saxutils import quoteattr
@@ -124,7 +151,7 @@ def _scadenta(an):
     return fn(an)
 
 
-def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"):
+def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103", imca=None):
     """Reconstruit 01.08.2026 pe FORMULARUL OFICIAL (OPANAF 206/2025, D101_A600 v10,
     anaf_surse/d101_struct_anaf.txt). `intrari` = dict cu campurile P de intrare (P1,P2,P4,P5 din
     contabilitate + ajustari fiscale din manual). Numerotarea inventata anterioara (p11=impozit) a
@@ -191,6 +218,14 @@ def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"
     P["P43"] = P["P431"] + P["P432"]                   # P43=P431+P432
     P["P44"] = g("P44"); P["P45"] = g("P45")
     P["P46"] = g("P46"); P["P47"] = g("P47")
+    # [IMCA art.18^1] daca se dau componentele (imca={vt,vs,i,a,curs}), P47 se COMPUTA din formula
+    # 1% x (VT-Vs-I-A) cand firma e sub prag (>50 mil euro); altfel P47=0. Fara componente -> P47 ramane input.
+    if imca is not None:
+        if datoreaza_imca(imca.get("vt", 0), imca.get("vs", 0), imca.get("curs", 0)):
+            P["P47"] = impozit_minim_cifra_afaceri(imca.get("vt", 0), imca.get("vs", 0),
+                                                   imca.get("i", 0), imca.get("a", 0))
+        else:
+            P["P47"] = 0
     # --- Impozit datorat (rd.48) ---
     v481 = P["P41"] - P["P42"] - P["P43"] - P["P44"] - P["P45"]         # P481 var
     v482 = P["P47"] - P["P421"] - P["P431"] - P["P43a"]                 # P482 var

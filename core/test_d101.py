@@ -183,3 +183,42 @@ def test_cota_profit_16pct_din_cota_cu_temei():
     from core import common as _c
     assert _c.cota("impozit_profit")[0] == _D("0.16")   # CF art.17 (16%, stabil din 2005)
     # golden d101: P411 = 16% x P40 (vezi test_calcul_d101_complet, P40=40000 -> P411=6400)
+
+
+# ============================================================
+#  IMCA - impozit minim pe cifra de afaceri (CF art.18^1). Verificat verbatim anaf_surse/.
+# ============================================================
+def test_imca_formula_1pct_din_vt_vs_i_a():
+    from core.d101 import impozit_minim_cifra_afaceri as imca
+    # art.18^1 alin.(3): IMCA = 1% x (VT - Vs - I - A)
+    assert imca(100_000_000, 20_000_000, 5_000_000, 3_000_000) == 720_000   # 1% x 72.000.000
+    assert imca(300_000_000, 20_000_000, 5_000_000, 3_000_000) == 2_720_000  # 1% x 272.000.000
+    # art.18^1 alin.(4): valoare negativa -> impozit minim zero
+    assert imca(10_000_000, 8_000_000, 3_000_000, 1_000_000) == 0            # 1% x (-2.000.000) -> 0
+
+
+def test_datoreaza_imca_prag_50mil_euro():
+    from core.d101 import datoreaza_imca
+    # art.18^1 alin.(1): cifra de afaceri (= VT - Vs) > 50.000.000 euro, la curs
+    assert datoreaza_imca(300_000_000, 20_000_000, 5) is True    # (280M)/5 = 56M euro > 50M
+    assert datoreaza_imca(200_000_000, 20_000_000, 5) is False   # (180M)/5 = 36M euro < 50M
+
+
+def test_imca_wiring_p47_si_comparatie_p48():
+    from core.d101 import calcul_d101
+    # firma cu impozit pe profit (comparatie) MIC si IMCA MARE -> P48 = P482 (nivelul IMCA).
+    # imca: VT=300M, Vs=20M, I=5M, A=3M, curs=5 -> eligibil (56M euro); IMCA = 1% x 272M = 2.720.000.
+    res = calcul_d101(_prof(), 2026, {"P1": 100000, "P2": 60000, "P46": 1_000_000},
+                      imca={"vt": 300_000_000, "vs": 20_000_000, "i": 5_000_000, "a": 3_000_000, "curs": 5})
+    assert res.P["P47"] == 2_720_000                 # P47 computat din formula
+    # P46 (1.000.000) < P47 (2.720.000) -> se plateste la nivelul IMCA (P482)
+    assert res.P["P482"] == 2_720_000
+    assert res.P["P48"] == 2_720_000
+
+
+def test_imca_sub_prag_p47_zero():
+    from core.d101 import calcul_d101
+    # firma sub pragul de 50M euro -> nu datoreaza IMCA -> P47=0, se plateste impozitul pe profit normal.
+    res = calcul_d101(_prof(), 2026, {"P1": 100000, "P2": 60000, "P46": 1_000_000},
+                      imca={"vt": 200_000_000, "vs": 20_000_000, "i": 0, "a": 0, "curs": 5})
+    assert res.P.get("P47", 0) == 0
