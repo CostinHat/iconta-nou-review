@@ -855,6 +855,53 @@ except Exception as _ebm:
     print("### GARD BLOCAJ MOTIVAT PE COTE DE REGULA: NEVERIFICAT (%s)" % _ebm)
 
 
+# --- GARD PERIOADA CONFIRMATA (cap.23 DS, 02.08.2026): un calcul care depinde de o PERIOADA confirmabila
+# (azi: pontaj, prin tichete) trebuie sa verifice confirmarea (perioada.e_confirmat) si sa blocheze motivat
+# (PerioadaNeconfirmata) cand nu e confirmata - altfel "prezent = fara rand" trece tacut o luna necompletata.
+# Criteriul structural ("ce calcul depinde de perioada?") e semantic -> LISTA EXPLICITA intretinuta manual (ca
+# _TEMEI_FUNCTII). PRAG 0: o functie din lista fara verificarea confirmarii BLOCHEAZA. LIMITA: o functie noua
+# dependenta de perioada se ADAUGA aici (nu se auto-detecteaza). Controlul UI foloseste primitivele canonice
+# (buton-verde/confirmaCaseta/semafor) - pazit de regulile vizuale existente (HEX_SEMAFOR, BUTOANE).
+_PERIOADA_FUNCTII = [
+    ("core/stat_plata_api.py", "stat_plata"),
+    ("core/d112.py", "pull"),
+]
+try:
+    import ast as _ast_pf
+    _pf_fara, _pf_lipsa = [], []
+    for _rel, _fn in _PERIOADA_FUNCTII:
+        _cale = os.path.join(BAZA_PY, _rel)
+        if not os.path.exists(_cale):
+            _pf_lipsa.append((_rel, _fn)); continue
+        _tree = _ast_pf.parse(open(_cale, encoding="utf-8").read())
+        _gasit = _are = False
+        for _n in _ast_pf.walk(_tree):
+            if isinstance(_n, _ast_pf.FunctionDef) and _n.name == _fn:
+                _gasit = True
+                _refs = {(getattr(_x, "attr", None) or getattr(_x, "id", None)) for _x in _ast_pf.walk(_n)}
+                if "e_confirmat" in _refs and "PerioadaNeconfirmata" in _refs:
+                    _are = True
+                break
+        if not _gasit:
+            _pf_lipsa.append((_rel, _fn))
+        elif not _are:
+            _pf_fara.append((_rel, _fn))
+    if _pf_fara or _pf_lipsa:
+        rap["perioada_confirmata"] = (
+            [("FARA-VERIFICARE", 0, "%s::%s" % (r, f), "calcul dependent de perioada fara e_confirmat+PerioadaNeconfirmata") for r, f in _pf_fara] +
+            [("FUNCTIE-LIPSA", 0, "%s::%s" % (r, f), "functie din _PERIOADA_FUNCTII negasita - actualizeaza lista") for r, f in _pf_lipsa])
+    print("")
+    print("### GARD PERIOADA CONFIRMATA (lista explicita, PRAG 0):")
+    print("  calcule dependente de perioada: %d | fara verificarea confirmarii: %d | negasite: %d%s" % (
+        len(_PERIOADA_FUNCTII), len(_pf_fara), len(_pf_lipsa),
+        "  <== BLOCHEAZA" if (_pf_fara or _pf_lipsa) else ""))
+    for _r, _f in _pf_fara:
+        print("  FARA VERIFICARE: %s::%s" % (_r, _f))
+except Exception as _epf:
+    print("")
+    print("### GARD PERIOADA CONFIRMATA: NEVERIFICAT (%s)" % _epf)
+
+
 # --- GARD IZOLARE TENANTI (structural, CODEBASE-WIDE): orice ruta cu {tenant_id} in path care
 # deschide get_conn TREBUIE sa rezolve accesul - prin auth_api.schema_tenant SAU printr-un RESOLVER
 # (functie al carei corp cheama schema_tenant SAU scopeaza public.tenants pe accounting_firm_id/

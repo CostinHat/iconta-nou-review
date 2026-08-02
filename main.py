@@ -3883,9 +3883,12 @@ def tenant_adeverinta(tenant_id: int, salariat_id: int, date: AdeverintaIn, ctx=
 def tenant_pontaj_get(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=Depends(cere_context)):
     """F135: grila lunara de pontaj (informativ) - zile lucratoare, exceptii, rezumat."""
     from core import pontaj as _p
+    from core import perioada as _per
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         g = _p.grila(conn, schema, salariat_id, an, luna)
+        if g is not None:
+            g["perioada_confirmata"] = _per.e_confirmat(conn, schema, an, luna, "pontaj")  # [cap.23]
     if g is None:
         raise HTTPException(404, "salariat inexistent")
     return g
@@ -3904,6 +3907,23 @@ def tenant_pontaj_set(tenant_id: int, salariat_id: int, date: PontajIn, ctx=Depe
     if not r.get("ok"):
         raise HTTPException(422, r.get("mesaj", "eroare"))
     return r
+
+
+class ConfirmaPontajIn(BaseModel):
+    an: int
+    luna: int
+
+
+@app.post("/tenants/{tenant_id}/pontaj/confirma")
+def tenant_pontaj_confirma(tenant_id: int, date: ConfirmaPontajIn, ctx=Depends(cere_rol("admin_firma"))):
+    """[cap.23] Confirma pontajul lunii -> devine AUTORITATIV pentru salarizare (tichete pe zile efectiv
+    lucrate). Rol admin_firma. Idempotent (re-confirmarea reimprospateaza)."""
+    from core import perioada as _per
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        _per.confirma(conn, schema, date.an, date.luna, "pontaj", ctx.get("uid"))
+        st = _per.e_confirmat(conn, schema, date.an, date.luna, "pontaj")
+    return {"ok": True, "perioada_confirmata": st}
 
 # cf_verificari_v1: verificari contabile reutilizabile (echilibru + trezorerie)
 def _verifica_documente_pozate(schema):  # verif_doc_pozate_v1
