@@ -130,7 +130,7 @@ def _d112_genereaza(prof, salariati, an, luna):
     # [:74] local inlocuit cu _t (common.text_anaf) - aceeasi regula, un singur loc.
     nume_d = _t(prof.get("declarant_nume") or den_f or "ADMINISTRATOR")
     pren_d = _t(prof.get("declarant_prenume") or "-")
-    func_d = _t(prof.get("declarant_functie") or "ADMINISTRATOR")
+    func_d = _t(prof.get("declarant_functie") or "ADMINISTRATOR", 50)   # structura D112: functie_declar C(50), nu 75
     if not cui_f:
         av.append("CUI firma lipsa - completeaza Profil firma.")
     if caen_f == "0000":
@@ -268,7 +268,7 @@ def _d112_genereaza(prof, salariati, an, luna):
         _mx = (' motivExc="%d"' % _d112int(s.get("motiv_exceptare"))) if asigexc == 1 else ""  # d112_motivexc_v1
         a.append('  <asigurat idAsig="%d" cnpAsig="%s" numeAsig="%s" prenAsig="%s" dataAng="%s" '
                  'casaSn="%s" asigCI="1" asigSO="1" asigExc="%d"%s Timp_E3="%d">'
-                 % (idx, _d112esc(s.get("cnp")), _d112esc(s.get("nume")), _d112esc(s.get("prenume")),
+                 % (idx, _d112esc(s.get("cnp")), _d112esc(_t(s.get("nume"))), _d112esc(_t(s.get("prenume"))),   # C(75): trunchiaza, nu doar escape
                     _d112esc(dataang), casa_sn, asigexc, _mx, imp))
         a.append('    <asiguratB1 B1_1="1" B1_2="0" B1_3="N" B1_4="%d" B1_5="%d" B1_6="%d" '
                  'B1_10="%d" B1_15="%d" B1_sal1="%d" B1_sal2="%d"/>'

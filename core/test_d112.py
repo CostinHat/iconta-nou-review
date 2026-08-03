@@ -201,3 +201,22 @@ def test_partime_minim_foloseste_d112int_nu_round_bancar():
     assert "prag_zile = _d112int(" in src
     assert 's["cas_min_pt"] = _d112int(' in src
     assert 's["cass_min_pt"] = _d112int(' in src
+
+
+
+def test_limita_75_asigurat_si_functie_declar_50():
+    """GARD (neconformitate 03.08.2026, cluster limita text 75 | d112): campurile text D112 respecta
+    limita din structura ANAF (structura_D112_0126_030226) SI acolo unde nu e 75:
+      - numeAsig/prenAsig (nume/prenume salariat, C(75)) erau doar escapate, NEtrunchiate -> un nume
+        > 75 caractere era respins de ANAF ("sir mai lung de 75 caractere");
+      - functie_declar are C(50), nu C(75) -> se trunchia gresit la 74 in loc de 50."""
+    import re
+    prof = _prof(); prof["declarant_functie"] = "D" * 60          # > 50
+    sal = _sal(); sal[0]["nume"] = "N" * 90; sal[0]["prenume"] = "P" * 80   # > 75
+    xml, _av = _d112_genereaza(prof, sal, 2026, 6)
+    mf = re.search(r'functie_declar="([^"]*)"', xml)
+    assert mf and len(mf.group(1)) <= 50, "functie_declar = %d car (structura C50)" % (len(mf.group(1)) if mf else -1)
+    for attr in ("numeAsig", "prenAsig"):
+        m = re.search(r'%s="([^"]*)"' % attr, xml)
+        assert m, "%s lipseste din XML" % attr
+        assert len(m.group(1)) <= 74, "%s = %d car (structura C75, marja 74)" % (attr, len(m.group(1)))

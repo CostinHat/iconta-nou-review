@@ -6159,3 +6159,16 @@ Tabel final termen depunere D101 per an fiscal: 2021-2025 -> 25 iunie (OUG 153/2
 25 martie (baza art.42 azi), 25 iunie cand validatorul adopta OUG 8/2026. Cod: _scadenta_2022 (LL+6 iunie) +
 _scadenta_2026 (LL+3 martie), gard de comportament test_scadenta_LL_plus_3_pentru_an_peste_2025 (valori DUK-valide
 SI legal corecte pe 2022-2025). Cluster INCHIS.
+
+
+## 03.08.2026 — Cluster "limita text 75" (d112) — 2 neconformitati de trunchiere reparate.
+
+Verificarea limitei de text 75 in D112 a gasit DOUA campuri gresite fata de structura ANAF (D112 0126_030226):
+(A) numeAsig/prenAsig (nume/prenume salariat, structura C(75)) erau doar ESCAPATE, nu si trunchiate (d112.py:271) -
+un salariat cu nume >75 caractere producea exact eroarea "sir mai lung de 75 caractere" pe care fix-ul din 29.07 o
+elimina in rest; necuprins nici in cod nici in test (fixtura firma_nume_lung n-are salariati). (B) functie_declar
+are C(50), nu C(75) - se trunchia la 74 (default text_anaf) in loc de 50 (d112.py:133); o functie de 51-74 caractere
+trecea de cod SI de gardul vechi (prag 75) dar depasea limita ANAF de 50. Reparat: numeAsig/prenAsig -> _d112esc(_t(
+...)) (trunchiate la 74); functie_declar -> _t(..., 50). Restul (nume_declar/prenume_declar C75, den) erau deja
+corecte. Gard nou test_limita_75_asigurat_si_functie_declar_50 (salariat nume 90->74, functie 60->50). Nota: den
+ramane trunchiat la 74 desi structura permite 200 - alegere conservatoare (validatorul respinge empiric la 75), nu bug.
