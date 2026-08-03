@@ -162,3 +162,22 @@ def test_d100_contract_proba_duk_valid(conn_schema_micro):
     xml, res = _d100.genereaza(conn_schema_micro, _SCHEMA_D100, Perioada(2026, trim=2), {"cota": "1"})
     rez = _duk.valideaza(xml, "d100", an=2026, luna=6)
     assert rez["stare"] == "valid", "DUK a respins D100: %s" % rez
+
+
+
+def test_cota_micro_121_gard_bidirectional():
+    """Struct D100 poz.17a: cod_oblig 121 (micro) CERE cota="1"; orice alt cod_oblig NU are cota
+    (altfel validator ERR). Gard bidirectional in build_xml - face imposibil un XML respins."""
+    from core.d100 import calcul_d100, build_xml
+    import pytest as _pt
+    # 121 fara cota -> respins la generare (nu XML tacit invalid)
+    res = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "121", "suma_dat": 1000}])
+    with _pt.raises(ValueError):
+        build_xml(res)
+    # cota pe cod non-micro (103) -> respins
+    res2 = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "103", "suma_dat": 1000, "cota": "1"}])
+    with _pt.raises(ValueError):
+        build_xml(res2)
+    # 121 + cota "1" -> corect, cota=1 in XML
+    res3 = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "121", "suma_dat": 1000, "cota": "1"}])
+    assert 'cota="1"' in build_xml(res3)

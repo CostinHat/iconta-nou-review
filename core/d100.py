@@ -205,10 +205,15 @@ def build_xml(res):
                  % (o.cod_oblig, o.scadenta, o.suma_dat, o.suma_dat, o.nr_evid))
         if o.cod_bugetar:
             linie += ' cod_bugetar=%s' % _esc(o.cod_bugetar)
-        # cota: OBLIGATORIU si numai pt. cod_oblig 121 (micro) - cerinta validatorului
-        # ("cota se completeaza daca si numai daca cod_oblig=121"; "cota trebuie = 1").
-        if o.cota:
+        # cota: OBLIGATORIU si NUMAI pt. cod_oblig 121 (micro), valoare "1" (struct D100 poz.17a:
+        # "daca cod_oblig=121 atunci cota=1 altfel cota=null"; ERR cota micro invalida). Gard bidirectional
+        # - face imposibil un XML respins de validator (121 fara cota / cota pe alt cod).
+        if str(o.cod_oblig) == "121":
+            if str(o.cota) != "1":
+                raise ValueError("D100: cod_oblig 121 (micro) CERE cota=1 (are %r) - validator ERR cota micro." % (o.cota,))
             linie += ' cota=%s' % _esc(o.cota)
+        elif o.cota:
+            raise ValueError("D100: cota se completeaza NUMAI pentru cod_oblig 121 (micro); cod_oblig %r are cota=%r." % (o.cod_oblig, o.cota))
         linie += "/>"
         H.append(linie)
     H.append("</declaratie100>")

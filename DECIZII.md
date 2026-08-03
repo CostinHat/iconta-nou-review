@@ -6038,3 +6038,14 @@ nu omite tacit atributul obligatoriu (care ar fi produs un XML respins de ANAF f
 
 GENERALIZARE: 20470101 aparea DOAR in d100.COD_BUGETAR + testele d100/d710 (sursa unica). d112 foloseste corect
 5503XXXXXX (+ 20470300XX pentru CAM, cont diferit legitim). Clasa complet acoperita.
+
+
+## 03.08.2026 — Cluster "cota micro 121 (flag)" (d100) — VERIFICAT conform + gard bidirectional.
+
+Generatorul e CONFORM struct D100 poz.17a: micro (cod_oblig 121) emite cota="1", profit (103) fara cota (regula
+"daca cod_oblig=121 atunci cota=1 altfel cota=null"). Rata impozitului micro pentru SUMA e period-aware din registru
+(impozit_micro=1%), separata de flag-ul de STRUCTURA cota="1" (checksum ANAF, mereu 1 pt 121).
+
+Adaugat GARD bidirectional in build_xml: cod_oblig 121 fara cota="1" -> ValueError; cota pe orice alt cod_oblig ->
+ValueError. Face imposibil un XML respins de validator (ERR cota micro), inclusiv pe apel direct/manual (generatorul
+prin genereaza producea deja corect). Clasa "atribut conditionat de structura - aplicat sau eroare, nu emis gresit tacit".
