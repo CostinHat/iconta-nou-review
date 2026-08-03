@@ -6185,3 +6185,27 @@ distinctul 20470300XX al CAM (480), diferit de 5503XXXXXX al restului. FARA neco
 cod_bugetar (o inversare a lui ar fi trecut nedetectata). Gard nou test_cod_oblig_pereche_cu_cod_bugetar_corect
 paza perechea. (458/459 apar doar la suprataxare part-time - netestate dedicat, dar codurile+bugetarul lor sunt
 corecte in cod.)
+
+
+## 03.08.2026 — Cluster "checksum totalPlata_A" (d205) — VERIFICAT valoarea emisa CONFORMA + aliniere sursa unica (clasa d100).
+
+Verificare la sursa: totalPlata_A din D205 = suma(nrben)+suma(Tcastig)+suma(Tpierd)+suma(T_VB)+suma(T_GAR)+
+suma(Tbaza)+suma(Timp), formula EXACTA din ANAF struct D205 (OPANAF 102/2025, l.80-85). Valoarea EMISA in XML era
+deja corecta (DUK-valid, proba test_d205_contract_proba_duk_valid). La dividende (tip_venit 08) Tcastig/Tpierd/
+T_VB/T_GAR=0, deci checksum = nrben+Tbaza+Timp.
+
+CAPCANA LATENTA (identica cu d100 R11b): res.total_plata_a tinea DOAR total_imp (=Timp), NU checksum-ul emis, iar
+build_xml recalcula checksum-ul INDEPENDENT (nu din res). Campul e numit dupa atributul XML (totalPlata_A), deci prin
+conventie ar trebui sa TINA valoarea emisa - ca la toate celelalte declaratii (d100/d101/d300/d390/d710 emit
+res.total_plata_a). Commit-ul d100 R11b (f26be10) enumerase explicit declaratiile aliniate; d205 LIPSEA din lista -
+era ultimul outlier ramas din aceeasi clasa. Un cross-check care ar folosi res.total_plata_a al d205 ca checksum ar fi
+primit Timp (8000), nu 58001 - gresit, exact bug-ul pe care d100 il inchisese.
+
+FIX (red->green, PUR INTERN - valoarea EMISA neschimbata, nimic nou pe produs): calcul_d205 calculeaza checksum-ul si
+il tine in res.total_plata_a; build_xml il EMITE din res (o singura sursa). Testul care asertase res.total_plata_a==8000
+(=Timp, semantica veche gresita) actualizat sa astepte checksum-ul (58001); taxa 8000 ramane verificata via b.imp1.
+Gard nou test_total_plata_a_res_egal_checksum_emis: res == header emis == suma componentelor sect_II parsate din XML.
+
+GENERALIZARE: cu d205 inchis, invariantul res.total_plata_a == totalPlata_A emis e acum UNIVERSAL pe toate generatoarele
+cu checksum totalPlata_A. Consecinta pentru orice generator viitor: campul-oglinda al unui atribut XML TINE valoarea
+emisa, nu o valoare partiala convenabila; build_xml EMITE din res, nu recalculeaza independent (recalculul = capcana).

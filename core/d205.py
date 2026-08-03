@@ -85,7 +85,15 @@ def calcul_d205(prof, an, beneficiari):
             castig1=castig, pierdere1=pierdere,
             tip_plata=str(b.get("tip_plata", "2"))))
         total_imp += imp
-    return RezultatD205(an=an, prof=prof, beneficiari=benef, total_plata_a=total_imp)
+    # totalPlata_A = checksum ANAF (OPANAF 102/2025): nrben+Tcastig+Tpierd+T_VB+T_GAR+Tbaza+Timp.
+    # La dividende (tip_venit 08) Tcastig/Tpierd/T_VB/T_GAR=0 (niciun tip_venit1=25), deci
+    # checksum = nrben+Tbaza+Timp. SURSA UNICA (aliniat la d100 R11b): calcul_d205 il calculeaza,
+    # build_xml il EMITE din res.total_plata_a - res.total_plata_a == totalPlata_A emis, mereu.
+    _nrben = len(benef)
+    _Tbaza = sum(b.baza1 for b in benef)
+    _Timp = sum(b.imp1 for b in benef)
+    _checksum = _nrben + _Tbaza + _Timp
+    return RezultatD205(an=an, prof=prof, beneficiari=benef, total_plata_a=_checksum)
 
 
 def erori_generare(prof):
@@ -120,7 +128,10 @@ def build_xml(res):
     # suma(T_GAR)+suma(Tbaza)+suma(Timp) - formula EXACTA din ANAF structura D205 (OPANAF 102/2025)
     # (nu doar Timp, cum pusesem prima data - DUK regula R15 respinsese exact asta:
     # cerea 11001, primea 1000).
-    total_control = nrben + Tcastig + Tpierd + T_VB + T_GAR + Tbaza + Timp
+    # SURSA UNICA: checksum-ul e calculat in calcul_d205 si tinut in res.total_plata_a;
+    # aici il EMITEM din res (nu-l recalculam independent - capcana latenta d100). Gardul
+    # golden test_total_plata_a_res_egal_checksum_emis leaga res == header == nrben+Tbaza+Timp.
+    total_control = res.total_plata_a
 
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
     hdr = ('<declaratie205 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '

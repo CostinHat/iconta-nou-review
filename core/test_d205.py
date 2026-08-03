@@ -53,6 +53,25 @@ def test_totalPlata_A_e_suma_tuturor_campurilor_sect_II():
     assert 'totalPlata_A="11001"' in xml
 
 
+def test_total_plata_a_res_egal_checksum_emis():
+    """Gard clasa-d100 (capcana latenta): res.total_plata_a (sursa unica) trebuie sa fie
+    checksum-ul EMIS in XML == nrben+Tcastig+Tpierd+T_VB+T_GAR+Tbaza+Timp (formula ANAF
+    D205, OPANAF 102/2025). Inainte de aliniere res tinea DOAR Timp - un cross-check pe
+    res.total_plata_a al d205 ar fi primit Timp, nu checksum-ul (exact bug-ul d100 R11b)."""
+    res = calcul_d205(_prof(), 2025, [
+        {"categ": "1.a", "nume": "X", "cif": "1850101450013",
+         "baza": 50000, "imp": 8000, "castig": 50000}])
+    xml = build_xml(res)
+    # nrben(1)+Tcastig(0)+Tpierd(0)+T_VB(0)+T_GAR(0)+Tbaza(50000)+Timp(8000) = 58001
+    assert res.total_plata_a == 58001
+    # header totalPlata_A emis == res.total_plata_a (sursa unica)
+    assert ('totalPlata_A="%d"' % res.total_plata_a) in xml
+    # si == suma componentelor sect_II parsate din XML (leaga header de continut, nu doar de res)
+    import re as _re
+    sec = dict(_re.findall(r'(nrben|Tcastig|Tpierd|T_VB|T_GAR|Tbaza|Timp)="(-?\d+)"', xml))
+    assert sum(int(sec[k]) for k in ('nrben','Tcastig','Tpierd','T_VB','T_GAR','Tbaza','Timp')) == res.total_plata_a
+
+
 def test_id_inreg_e_secvential():
     res = calcul_d205(_prof(), 2025, [
         {"categ": "1.a", "nume": "A", "cif": "1850101450013", "baza": 100, "imp": 10, "castig": 100},
@@ -129,14 +148,17 @@ def test_d205_contract_pull_genereaza_perioada(conn_schema_div):
     """C3 contract uniform: genereaza(conn, schema, Perioada(an), manual) prin pull().
     Dividende 50000 platite in 2026, asociat 100%% -> parte 50000, impozit pe dividende 16%% = 8000
     (Legea 141/2025, CF art.97: "cota de impozit de 16%% asupra dividendului brut" de la 01.01.2026;
-    era 10%% pana in 2025). total_plata_a = 8000. Rata rutata prin cota("impozit_dividend"), period-aware."""
+    era 10%% pana in 2025). impozit b.imp1 = 8000; res.total_plata_a = checksum = 58001. Rata rutata
+    prin cota("impozit_dividend"), period-aware."""
     xml, res = _d205.genereaza(conn_schema_div, _SCHEMA_D205, Perioada(2026))
     assert res.an == 2026
     assert len(res.beneficiari) == 1, "un beneficiar (asociatul cu cota>0)"
     b = res.beneficiari[0]
     assert b.baza1 == 50000 and b.imp1 == 8000, (
         "50000 dividende platite 2026, impozit 16%% (Legea 141/2025) = 8000; got baza=%s imp=%s" % (b.baza1, b.imp1))
-    assert res.total_plata_a == 8000
+    # res.total_plata_a e CHECKSUM-ul (nrben+Tbaza+Timp = 1+50000+8000), nu Timp singur -
+    # aliniat la totalPlata_A emis (sursa unica, clasa d100). Taxa (8000) e verificata via b.imp1.
+    assert res.total_plata_a == 58001
 
 
 @pytest.mark.skipif(not _db_ok() or not _D205_DUK, reason="DB sau DUK d205 indisponibil")
