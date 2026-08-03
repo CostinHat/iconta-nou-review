@@ -44,7 +44,7 @@ Structura reala <declaratie101>:
 """
 from __future__ import annotations
 
-from core.common import text_anaf as _t, alege_varianta as _av, Temei as _Tm  # +versionare
+from core.common import text_anaf as _t, alege_varianta as _av, Temei as _Tm, LIMITE_TEXT_ANAF as _LIM  # +versionare +limite text
 from datetime import date as _date_v
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
@@ -329,17 +329,17 @@ def build_xml(res):
         _nr_evid(cif_num, an, 12, res.cod_obligatie), scad_luna, scad_an % 100))
     a.append('totalPlata_A="%d"' % res.total_plata_a)
     a.append('nume_declar=%s prenume_declar=%s functie_declar=%s' % (
-        _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
-        _esc(_t(prof.get("declarant_prenume") or "-")),
-        _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR"))))
+        _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d101"]["nume_declar"])),
+        _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d101"]["prenume_declar"])),
+        _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d101"]["functie_declar"]))))
     a.append('cif="%s" denumire=%s adresa=%s' % (
-        cif_num, _esc(_t(prof.get("nume"))), _esc(_t(prof.get("adresa")))))
+        cif_num, _esc(_t(prof.get("nume"), _LIM["d101"]["denumire"])), _esc(_t(prof.get("adresa"), _LIM["d101"]["adresa"]))))
     caen = (prof.get("caen") or "").strip()
     if caen:
         a.append('caen=%s' % _esc(caen))
     tel = (prof.get("telefon") or "").strip()
     if tel:
-        a.append('telefon=%s' % _esc(tel))
+        a.append('telefon=%s' % _esc(_t(tel, _LIM["d101"]["telefon"])))
     # campurile P (nenule) ca atribute, in ordinea oficiala a randurilor
     def _ordine(k):
         m = re.match(r"P(\d+)([a-z]?)(\d*)", k)

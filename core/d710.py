@@ -35,7 +35,7 @@ Cazul dominant (contabilul a declarat gresit suma datorata si o corecteaza) e ac
 """
 from __future__ import annotations
 
-from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 from core.common import cheie_manual, alege_varianta as _av, Temei as _Tm
 from datetime import date as _date_v
 
@@ -164,10 +164,10 @@ def build_xml(res):
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
            'cui=%s den=%s adresa=%s'
            % (NS, NS, res.luna, res.an, d_recn,
-              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
-              _esc(_t(prof.get("declarant_prenume") or "-")),
-              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
-              _esc(prof.get("cui")), _esc(_t(prof.get("nume"))), _esc(_t(prof.get("adresa")))))
+              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d710"]["nume_declar"])),
+              _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d710"]["prenume_declar"])),
+              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d710"]["functie_declar"])),
+              _esc(prof.get("cui")), _esc(_t(prof.get("nume"), _LIM["d710"]["den"])), _esc(_t(prof.get("adresa"), _LIM["d710"]["adresa"]))))
     tel = (prof.get("telefon") or "").strip()
     if tel:
         hdr += ' telefon=%s' % _esc(tel)

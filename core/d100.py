@@ -31,7 +31,7 @@ from __future__ import annotations
 
 from datetime import date
 from core import common as _common
-from core.common import text_anaf as _t, cheie_manual  # limita 75 car. ANAF (27.07.2026)
+from core.common import text_anaf as _t, cheie_manual, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp din structura (03.08.2026)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import datetime as _dt
@@ -185,13 +185,13 @@ def build_xml(res):
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
            'cui=%s den=%s adresa=%s'
            % (NS, NS, res.luna, res.an,
-              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
-              _esc(_t(prof.get("declarant_prenume") or "-")),
-              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
-              _esc(prof.get("cui")), _esc(_t(prof.get("nume"))), _esc(_t(prof.get("adresa")))))
+              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d100"]["nume_declar"])),
+              _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d100"]["prenume_declar"])),
+              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d100"]["functie_declar"])),
+              _esc(prof.get("cui")), _esc(_t(prof.get("nume"), _LIM["d100"]["den"])), _esc(_t(prof.get("adresa"), _LIM["d100"]["adresa"]))))
     tel = (prof.get("telefon") or "").strip()
     if tel:
-        hdr += ' telefon=%s' % _esc(tel)
+        hdr += ' telefon=%s' % _esc(_t(tel, _LIM["d100"]["telefon"]))
     # totalPlata_A = suma de control DUK R11b, calculata in calcul_d100 (res.total_plata_a =
     # 2 x sum(suma_dat) la obligatia simpla) si EMISA de aici - o singura sursa, ca la d101/d390/d710.
     hdr += ' totalPlata_A="%d">' % res.total_plata_a

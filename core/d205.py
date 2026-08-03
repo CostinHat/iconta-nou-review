@@ -31,7 +31,7 @@ e cazul standard; statR/cifS raman goale pentru rezidenti.
 """
 from __future__ import annotations
 
-from core.common import text_anaf as _t, cheie_manual  # limita 75 car. ANAF (27.07.2026)
+from core.common import text_anaf as _t, cheie_manual, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -140,11 +140,11 @@ def build_xml(res):
            'nume_declar=%s prenume_declar=%s functie_declar=%s '
            'cui="%s" den=%s adresa=%s totalPlata_A="%d">'
            % (NS, NS, res.an,
-              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
-              _esc(_t(prof.get("declarant_prenume") or "-")),
-              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", 50)),  # C(50) ANAF (DUK: 51 respins)
+              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d205"]["nume_declar"])),
+              _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d205"]["prenume_declar"])),
+              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d205"]["functie_declar"])),  # C(50) ANAF (DUK: 51 respins)
               "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()),
-              _esc(_t(prof.get("nume"), 200)), _esc(_t(prof.get("adresa"), 1000)), total_control))  # den C(200)/adresa C(1000) ANAF (DUK: 201/1001 respinse; default 75 = OVER-trunchiere)
+              _esc(_t(prof.get("nume"), _LIM["d205"]["den"])), _esc(_t(prof.get("adresa"), _LIM["d205"]["adresa"])), total_control))  # den C(200)/adresa C(1000) ANAF (DUK 201/1001 respinse)
     H.append(hdr)
     # sect_II se INCHIDE (linia 26 din ANAF structura D205 (OPANAF 102/2025)) INAINTE de <benef>
     # (linia 27) - sunt elemente FRATI, ambele copii ai radacinii, nu benef in
@@ -167,7 +167,7 @@ def build_xml(res):
         H.append('  <benef id_inreg="%d" den1=%s tip_venit1="08" '
                  'Rezid="1" cifR="%s" tip_plata="%s" '
                  'divid_D="%d" divid_P="%d" baza1="%d" imp1="%d"/>'
-                 % (idx, _esc(_t(b.nume1, 100)),  # den1 C(100) ANAF (DUK: 101 respins; era netrunchiat)
+                 % (idx, _esc(_t(b.nume1, _LIM["d205"]["den1"])),  # den1 C(100) ANAF (DUK: 101 respins)
                     "".join(ch for ch in b.cif if ch.isdigit()),
                     b.tip_plata, b.castig1, b.pierdere1, b.baza1, b.imp1))
     H.append("</declaratie205>")

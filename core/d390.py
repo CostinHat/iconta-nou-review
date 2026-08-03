@@ -25,7 +25,7 @@ Serviciile (P/S) și triangulația (T/R) = clasificare manuală de contabil (pri
 totalPlata_A = nrOPI + bazaL + bazaT + bazaA + bazaP + bazaS + bazaR (formula oficială).
 """
 
-from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 import re
 import datetime
 from core import common as c
@@ -249,14 +249,14 @@ def build_xml(res):
            'luna="%d" an="%d" d_rec="0" nume_declar="%s" prenume_declar="%s" '
            'functie_declar="%s" cui="%s" den="%s" adresa="%s"'
            % (NS, NS, res.luna, res.an,
-              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
-              _esc(_t(prof.get("declarant_prenume") or "-")),
-              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
-              _esc(cui), _esc(_t(den)), _esc(_t(adr))))
+              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d390"]["nume_declar"])),
+              _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d390"]["prenume_declar"])),
+              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d390"]["functie_declar"])),
+              _esc(cui), _esc(_t(den, _LIM["d390"]["den"])), _esc(_t(adr, _LIM["d390"]["adresa"]))))
     if tel:
         hdr += ' telefon="%s"' % _esc(tel)
     if mail:
-        hdr += ' mail="%s"' % _esc(mail)
+        hdr += ' mail="%s"' % _esc(_t(mail, _LIM["d390"]["mail"]))
     # CORECTAT 16.07.2026, dupa verificare la sursa oficiala (static.anaf.ro,
     # structura_D390_2020_180320.pdf, OPANAF 705/2020): <rezumat> EXISTA, e element
     # separat, 1 aparitie obligatorie. Fix-ul de 15.07.2026 il scosese ("REZUMATUL E
@@ -274,7 +274,7 @@ def build_xml(res):
     # operațiuni ordonate (tip, tara, cod)
     for (tip, tara, cod, den) in sorted(res.ops.keys(), key=lambda k: (k[0], k[1], k[2])):
         H.append('  <operatie tip="%s" tara="%s" codO="%s" denO="%s" baza="%d"/>'
-                 % (tip, _tara_xml(tara), _esc(cod), _esc(den), res.ops[(tip, tara, cod, den)]))
+                 % (tip, _tara_xml(tara), _esc(cod), _esc(_t(den, _LIM["d390"]["denO"])), res.ops[(tip, tara, cod, den)]))
     H.append("</declaratie390>")
     return "\n".join(H)
 

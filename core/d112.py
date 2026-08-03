@@ -3,7 +3,7 @@
 Include CM: asiguratB3 + asiguratD + angajatorC2 (OUG 158/2005).
 pull() citeste salariati + concedii_medicale din schema tenantului."""
 
-from core.common import text_anaf as _t, cere_coloane_cursor  # limita 75 car. ANAF + garda coloane (27.07.2026)
+from core.common import text_anaf as _t, cere_coloane_cursor, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 import re
 from core import scadente as _scad
 from core import pontaj as _pontaj
@@ -128,9 +128,9 @@ def _d112_genereaza(prof, salariati, an, luna):
     # Trunchiem defensiv la 74 (sub limita), pentru orice firma cu denumire lunga -
     # solutia corecta ramane completarea declarant_nume in profil (ecranul Date firma).
     # [:74] local inlocuit cu _t (common.text_anaf) - aceeasi regula, un singur loc.
-    nume_d = _t(prof.get("declarant_nume") or den_f or "ADMINISTRATOR")
-    pren_d = _t(prof.get("declarant_prenume") or "-")
-    func_d = _t(prof.get("declarant_functie") or "ADMINISTRATOR", 50)   # structura D112: functie_declar C(50), nu 75
+    nume_d = _t(prof.get("declarant_nume") or den_f or "ADMINISTRATOR", _LIM["d112"]["nume_declar"])
+    pren_d = _t(prof.get("declarant_prenume") or "-", _LIM["d112"]["prenume_declar"])
+    func_d = _t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d112"]["functie_declar"])   # structura D112: functie_declar C(50)
     if not cui_f:
         av.append("CUI firma lipsa - completeaza Profil firma.")
     if caen_f == "0000":
@@ -268,7 +268,7 @@ def _d112_genereaza(prof, salariati, an, luna):
         _mx = (' motivExc="%d"' % _d112int(s.get("motiv_exceptare"))) if asigexc == 1 else ""  # d112_motivexc_v1
         a.append('  <asigurat idAsig="%d" cnpAsig="%s" numeAsig="%s" prenAsig="%s" dataAng="%s" '
                  'casaSn="%s" asigCI="1" asigSO="1" asigExc="%d"%s Timp_E3="%d">'
-                 % (idx, _d112esc(s.get("cnp")), _d112esc(_t(s.get("nume"))), _d112esc(_t(s.get("prenume"))),   # C(75): trunchiaza, nu doar escape
+                 % (idx, _d112esc(s.get("cnp")), _d112esc(_t(s.get("nume"), _LIM["d112"]["numeAsig"])), _d112esc(_t(s.get("prenume"), _LIM["d112"]["prenAsig"])),   # C(75)
                     _d112esc(dataang), casa_sn, asigexc, _mx, imp))
         a.append('    <asiguratB1 B1_1="1" B1_2="0" B1_3="N" B1_4="%d" B1_5="%d" B1_6="%d" '
                  'B1_10="%d" B1_15="%d" B1_sal1="%d" B1_sal2="%d"/>'
@@ -308,7 +308,7 @@ def _d112_genereaza(prof, salariati, an, luna):
              'nume_declar="%s" prenume_declar="%s" functie_declar="%s">'
              % (_D112_NS, luna, an, _d112esc(nume_d), _d112esc(pren_d), _d112esc(func_d)))
     H.append('  <angajator cif="%s" caen="%s" den="%s" casaAng="%s" datCAM="1" bifa_CAM="0" '
-             'totalPlata_A="%d">' % (cui_f, caen_f, _d112esc(_t(den_f)), casa_ang, total_plata))
+             'totalPlata_A="%d">' % (cui_f, caen_f, _d112esc(_t(den_f, _LIM["d112"]["den"])), casa_ang, total_plata))
     # angajatorA ("sectiunea Creante" in mesajul validatorului; tag-ul real e
     # "angajatorA"). ANAF structura D112 0126_030226 (structura_D112_0126_030226.pdf,
     # confirmat prin lista completa de elemente <angajatorX>) o pozitioneaza

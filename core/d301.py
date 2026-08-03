@@ -18,7 +18,7 @@ baza = round(val_valuta × curs_valutar, 0). totalPlata_A = INT(Σbaze + Σtva).
 Separare strictă: calcul pur / validare / XML / DB / orchestrare.
 """
 
-from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 import re
 from core import common as c
 from core.pdf_util import bani
@@ -200,14 +200,14 @@ def build_xml(res):
              'nr_evid="%s" baza1="%d" tva1="%d" baza2="%d" tva2="%d" baza3="%d" tva3="%d" '
              'baza4="%d" tva4="%d" baza5="%d" tva5="%d" totalPlata_A="%d" '
              'nume_declarant="%s" prenume_declarant="%s" functia_declarant="%s">'
-             % (NS, res.luna, res.an, res.mij_transp, _esc(cif), _esc(_t(den)), _esc(_t(adr)),
-                _esc(_clean_bc(prof.get("banca"))), _esc(_clean_bc(prof.get("iban") or prof.get("cont"))),
+             % (NS, res.luna, res.an, res.mij_transp, _esc(cif), _esc(_t(den, _LIM["d301"]["denumire"])), _esc(_t(adr, _LIM["d301"]["adresa"])),
+                _esc(_t(_clean_bc(prof.get("banca")), _LIM["d301"]["banca"])), _esc(_t(_clean_bc(prof.get("iban") or prof.get("cont")), _LIM["d301"]["cont"])),
                 nr_evidenta(res.an, res.luna, res.mij_transp),
                 t[1][0], t[1][1], t[2][0], t[2][1], t[3][0], t[3][1],
                 t[4][0], t[4][1], t[5][0], t[5][1], res.total_plata_a,
-                _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
-                _esc(_t(prof.get("declarant_prenume") or "-")),
-                _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR"))))
+                _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d301"]["nume_declarant"])),
+                _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d301"]["prenume_declarant"])),
+                _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d301"]["functia_declarant"]))))
     for op in res.operatiuni:
         # OPANAF 592/2016: serviciile (tip 5 = S4.1) se preiau DIN S4 -> apar ca operatiune de
         # sectiune 4 SI ca detaliu 4.1. DUK cere baza4=suma(sectiuni tip 4) (R24/R25) si o

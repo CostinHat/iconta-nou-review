@@ -75,13 +75,16 @@ def firma_nume_lung():
             conn.rollback()
 
 
-def test_functia_trunchiaza_si_normalizeaza():
-    from core.common import text_anaf, LIMITA_TEXT_ANAF
-    assert LIMITA_TEXT_ANAF < LIMITA, "limita interna trebuie sa fie SUB pragul ANAF"
-    lung = "A" * 200
-    assert len(text_anaf(lung)) == LIMITA_TEXT_ANAF
-    assert text_anaf("  doua   spatii  ") == "doua spatii", "spatiile multiple se normalizeaza"
-    assert text_anaf(None) == "" and text_anaf("") == ""
+def test_text_anaf_trunchiaza_la_limita_data_si_normalizeaza():
+    """text_anaf trunchiaza la limita DATA (per-camp, din LIMITE_TEXT_ANAF), normalizeaza spatiile,
+    si CERE limita explicit (nu mai exista prag global 74 - fiecare camp are C(n) propriu)."""
+    from core.common import text_anaf
+    assert text_anaf("A" * 200, 50) == "A" * 50, "trunchiaza exact la limita data"
+    assert text_anaf("A" * 30, 50) == "A" * 30, "sub limita: neschimbat"
+    assert text_anaf("  doua   spatii  ", 50) == "doua spatii", "spatiile multiple se normalizeaza"
+    assert text_anaf(None, 50) == "" and text_anaf("", 50) == ""
+    with pytest.raises(TypeError):
+        text_anaf("x")   # limita OBLIGATORIE - o limita ne-oficiala (lipsa) e imposibila
 
 
 def test_niciun_generator_nu_mai_trunchiaza_local():
@@ -98,16 +101,21 @@ def test_niciun_generator_nu_mai_trunchiaza_local():
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 @pytest.mark.parametrize("tip,body", CERERI)
-def test_atributele_respecta_limita_anaf(tip, body, firma_nume_lung):
-    """Firma efemera cu denumire >75 car. (cazul care a produs defectul) - decuplat de tenant_001."""
+def test_atributele_respecta_limita_per_camp(tip, body, firma_nume_lung):
+    """Firma efemera cu denumire >75 car. Fiecare atribut text trebuie sa respecte limita LUI oficiala
+    din LIMITE_TEXT_ANAF (nu un prag global 75) - denumirea de 129 car. curge acum pana la C(200),
+    nu mai e OVER-trunchiata la 74. Un atribut peste limita lui = neconformitate."""
+    from core.common import LIMITE_TEXT_ANAF
     conn, schema = firma_nume_lung
     try:
         xml, _ = declaratii_api.genereaza(conn, schema, tip, dict(body))
     except ValueError:
         pytest.skip("%s nu se datoreaza / profil incomplet pe firma efemera" % tip)
     xml = xml.decode("utf-8") if isinstance(xml, bytes) else xml
-    lungi = [(a, len(v)) for a, v in re.findall(r'(\w+)="([^"]*)"', xml) if len(v) > LIMITA]
-    assert not lungi, "atribute peste %d caractere (ANAF le respinge): %s" % (LIMITA, lungi)
+    lim = LIMITE_TEXT_ANAF.get(tip, {})
+    prea_lungi = [(a, len(v), lim[a]) for a, v in re.findall(r'(\w+)="([^"]*)"', xml)
+                  if a in lim and len(v) > lim[a]]
+    assert not prea_lungi, "atribute peste limita lor oficiala C(n): %s" % prea_lungi
 
 
 # ============================================================
@@ -215,3 +223,132 @@ def test_generatoarele_cu_select_stea_au_garda():
         if "SELECT *" in s and "cere_coloane_cursor" not in s:
             vinovati.append(nume)
     assert not vinovati, "SELECT * fara garda de coloane in: %s" % vinovati
+
+
+
+# ============================================================
+#  AUDIT LIMITA TEXT (03.08.2026): limitele de text vin DIN structura oficiala, confirmate DUK.
+#  LIMITE_TEXT_ANAF (core/common.py) = sursa unica; text_anaf CERE limita explicit.
+# ============================================================
+def _duk_probe_builders():
+    """{tip: () -> xml_de_baza_valid} pentru probele DUK boundary (fara DB - calcul + build_xml)."""
+    from core.common import Perioada as _Per
+    def d100():
+        from core.d100 import calcul_d100, build_xml
+        import core.test_d100 as t
+        return build_xml(calcul_d100(t._prof(), 2026, 6, [{"cod_oblig": "121", "suma_dat": 1000, "cota": "1"}]))
+    def d101():
+        from core.d101 import calcul_d101, build_xml
+        import core.test_d101 as t
+        return build_xml(calcul_d101(t._prof(), 2026, {"P1": 100000, "P2": 60000}))
+    def d112():
+        from core.d112 import _d112_genereaza
+        import core.test_d112 as t
+        return _d112_genereaza(t._prof(), t._sal(), 2026, 6)[0]
+    def d205():
+        from core.d205 import calcul_d205, build_xml
+        return build_xml(calcul_d205({"cui": "14399840", "nume": "X", "adresa": "Y",
+            "declarant_nume": "P", "declarant_prenume": "I", "declarant_functie": "A"}, 2025,
+            [{"categ": "1.a", "nume": "N", "cif": "1850101450013", "baza": 50000, "imp": 8000, "castig": 50000}]))
+    def d300():
+        from core.d300 import calcul_d300, build_xml
+        import core.test_d300 as t
+        return build_xml(calcul_d300(t._prof(), _Per(2026, luna=6),
+            [{"directie": "emisa", "total": 1210, "tva": 210}, {"directie": "primita", "total": 1210, "tva": 210}]))
+    def d301():
+        from core.d301 import calcul_d301, build_xml
+        import core.test_d301_rollup as t
+        return build_xml(calcul_d301(dict(t.PROF, cui="RO14399840"), _Per(2026, luna=6), [t._op(5, 1000, 4.9770, 1045)]))
+    def d390():
+        from core.d390 import calcul_d390, build_xml
+        import core.test_d390 as t
+        return build_xml(calcul_d390(t._prof(), 2026, 6,
+            [{"cui": "IT00905811006", "nume": "AUCHAN ITALIA SPA", "directie": "emisa", "total": 5000, "tva": 0}]))
+    def d394():
+        from core.d394 import build_xml
+        import core.test_d394 as t
+        return build_xml(t.calcul_d394(dict(t.PROF, declarant_nume="P", declarant_prenume="I", declarant_functie="A"),
+            2026, 6, [t._f("RO14399840", "primita", 21, 5000, 1050, nume="PARTENER")]))
+    def d710():
+        from core.d710 import build_xml
+        import core.test_d710 as t
+        return build_xml(t.calcul_d710(t._prof(), 2025, 3, t._obl()))
+    return {"d100": d100, "d101": d101, "d112": d112, "d205": d205,
+            "d300": d300, "d301": d301, "d390": d390, "d394": d394, "d710": d710}
+
+
+def test_limitele_de_text_vin_din_registry():
+    """GARD DE CLASA: orice apel text_anaf/_t dintr-un generator trebuie sa primeasca limita din
+    LIMITE_TEXT_ANAF (_LIM["tip"]["camp"]) - NICIODATA un literal sau nimic. O limita de text care nu
+    vine din structura oficiala devine astfel IMPOSIBILA (testul o respinge)."""
+    import ast, pathlib
+    from core.common import LIMITE_TEXT_ANAF
+    rad = pathlib.Path(__file__).resolve().parent
+    vinovati = []
+    for tip in LIMITE_TEXT_ANAF:
+        f = rad / (tip + ".py")
+        if not f.exists():
+            continue
+        tree = ast.parse(f.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "_t":
+                if len(node.args) < 2:
+                    vinovati.append("%s:%d _t fara limita" % (tip, node.lineno)); continue
+                lim = node.args[1]
+                ok = (isinstance(lim, ast.Subscript) and isinstance(lim.value, ast.Subscript)
+                      and isinstance(lim.value.value, ast.Name)
+                      and lim.value.value.id in ("_LIM", "LIMITE_TEXT_ANAF"))
+                if not ok:
+                    vinovati.append("%s:%d limita literala/ne-oficiala" % (tip, node.lineno))
+    assert not vinovati, "limite de text care NU vin din LIMITE_TEXT_ANAF: %s" % vinovati
+
+
+def test_generatoarele_trunchiaza_la_limita_per_camp():
+    """Fara DB: cu inputuri text peste limita, fiecare generator trunchiaza FIECARE atribut EXACT la
+    limita lui din registry (nu la un prag global). Prinde over-trunchierea (limita prea mica) SI
+    absenta trunchierii (atribut mai lung decat C(n))."""
+    import re as _re
+    from core.common import LIMITE_TEXT_ANAF
+    builders = _duk_probe_builders()
+    # doar campurile prezente ca atribute in XML-ul de baza sunt verificabile aici
+    for tip, build in builders.items():
+        xml = build()
+        lim = LIMITE_TEXT_ANAF[tip]
+        emise = dict((a, len(v)) for a, v in _re.findall(r'(\w+)="([^"]*)"', xml))
+        for camp, L in lim.items():
+            if camp in emise:
+                assert emise[camp] <= L, "%s/%s = %d car > limita C(%d)" % (tip, camp, emise[camp], L)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DUK indisponibil (proba boundary)")
+def test_limite_text_confirmate_pe_duk_boundary():
+    """PROBA DUK boundary-cu-boundary pe campurile MATERIALE (den/denumire = 200, functie = 50):
+    o valoare de lungime C(n) e ACCEPTATA de DUK, iar C(n)+1 e RESPINSA. Confirma ca limita din
+    registry e chiar limita reala impusa de validatorul oficial ANAF, nu o presupunere."""
+    import re as _re
+    from core import duk
+    from core.common import LIMITE_TEXT_ANAF
+    builders = _duk_probe_builders()
+    MATERIALE = {"den", "denumire", "functie_declar", "functia_declarant"}
+    def sub(xml, attr, val):
+        return _re.sub(r'(\b%s=")[^"]*(")' % _re.escape(attr), lambda m: m.group(1) + val + m.group(2), xml, count=1)
+    verificate = 0
+    for tip, build in builders.items():
+        if not duk.poate_valida(tip):
+            continue
+        xml = build()
+        an = 2025 if tip in ("d205", "d710") else 2026
+        luna = 3 if tip == "d710" else (None if tip in ("d101", "d205") else 6)
+        if duk.valideaza(xml, tip, an=an, luna=luna).get("stare") != "valid":
+            continue   # baza nu e valida in acest mediu, sarim
+        lim = LIMITE_TEXT_ANAF[tip]
+        for camp in MATERIALE & set(lim):
+            if not _re.search(r'\b%s="' % camp, xml):
+                continue
+            cn = lim[camp]
+            ok = duk.valideaza(sub(xml, camp, "A" * cn), tip, an=an, luna=luna).get("stare")
+            over = duk.valideaza(sub(xml, camp, "A" * (cn + 1)), tip, an=an, luna=luna).get("stare")
+            assert ok == "valid", "%s/%s: len C(%d) ar trebui valid, got %s" % (tip, camp, cn, ok)
+            assert over != "valid", "%s/%s: len C(%d)+1 ar trebui respins de DUK, got %s" % (tip, camp, cn, over)
+            verificate += 1
+    assert verificate >= 6, "prea putine campuri probate pe DUK (%d) - mediul DUK pare incomplet" % verificate

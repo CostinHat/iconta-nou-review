@@ -22,7 +22,7 @@ Operațiunile speciale (intracomunitar, taxare inversă, regularizări, scutiri)
 se pun prin dict-ul `manual` (rânduri introduse de contabil), nu derivate din facturi.
 """
 
-from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 import re
 from dataclasses import dataclass, field
 from datetime import date
@@ -397,14 +397,14 @@ def build_xml(res):
     A = [
         'luna="%d"' % res.luna, 'an="%d"' % res.an,
         'depusReprezentant="0"', 'bifa_interne="0"', 'temei="0"',
-        'nume_declar="%s"' % _esc(_t(prof.get("declarant_nume") or den or "ADMINISTRATOR")),
-        'prenume_declar="%s"' % _esc(_t(prof.get("declarant_prenume") or "-")),
-        'functie_declar="%s"' % _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
+        'nume_declar="%s"' % _esc(_t(prof.get("declarant_nume") or den or "ADMINISTRATOR", _LIM["d300"]["nume_declar"])),
+        'prenume_declar="%s"' % _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d300"]["prenume_declar"])),
+        'functie_declar="%s"' % _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d300"]["functie_declar"])),
         'cui="%s"' % _esc(cui),
-        'den="%s"' % _esc(_t(den)),
-        'adresa="%s"' % _esc(_t(adr)),
-        'banca="%s"' % _esc(_clean_bc(prof.get("banca"))),
-        'cont="%s"' % _esc(_clean_bc(prof.get("iban") or prof.get("cont"))),
+        'den="%s"' % _esc(_t(den, _LIM["d300"]["den"])),
+        'adresa="%s"' % _esc(_t(adr, _LIM["d300"]["adresa"])),
+        'banca="%s"' % _esc(_t(_clean_bc(prof.get("banca")), _LIM["d300"]["banca"])),
+        'cont="%s"' % _esc(_t(_clean_bc(prof.get("iban") or prof.get("cont")), _LIM["d300"]["cont"])),
         'caen="%s"' % _esc(_digits(prof.get("caen")) or "0"),
         'tip_decont="%s"' % tip,
         'pro_rata="%s"' % ("%.2f" % (float(prof.get("pro_rata")) if str(prof.get("pro_rata") or "").strip() else 100.0)),

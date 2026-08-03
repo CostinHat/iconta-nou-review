@@ -29,7 +29,7 @@ STRUCTURA (ordinea conteaza):
 """
 from __future__ import annotations
 
-from core.common import text_anaf as _t  # limita 75 car. ANAF (27.07.2026)
+from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 from core.common import cere_coloane_cursor  # [garda coloane 27.07.2026]
 from core.common import cheie_manual
 _COLOANE_PROFIL = ("nume", "cui", "adresa", "caen")   # minimul citit de aici
@@ -563,11 +563,11 @@ def build_xml(res):
              'tip_intocmit="0" den_intocmit="%s" cif_intocmit="%s" calitate_intocmit="%s" '
              'optiune="0" totalPlata_A="%d">'
              % (NS, res.luna, res.an, tip_d394(res.luna), sistem_tva, res.op_efectuate,
-                _esc(cui), _esc(prof.get("caen") or ""), _esc(_t(prof.get("nume") or "")),
-                _esc(_t(adr)), _esc(prof.get("telefon") or ""),
-                _esc(cui), _esc(_t(rep_den)), _esc(_t(rep_fct)), _esc(_t(adr)),
-                _esc(_t(prof.get("nume") or "")), _esc(cui),
-                _esc(prof.get("declarant_functie") or "ADMINISTRATOR"),
+                _esc(cui), _esc(prof.get("caen") or ""), _esc(_t(prof.get("nume") or "", _LIM["d394"]["den"])),
+                _esc(_t(adr, _LIM["d394"]["adresa"])), _esc(prof.get("telefon") or ""),
+                _esc(cui), _esc(_t(rep_den, _LIM["d394"]["denR"])), _esc(_t(rep_fct, _LIM["d394"]["functie_reprez"])), _esc(_t(adr, _LIM["d394"]["adresaR"])),
+                _esc(_t(prof.get("nume") or "", _LIM["d394"]["den_intocmit"])), _esc(cui),
+                _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d394"]["calitate_intocmit"])),
                 res.total_plata_a))
     # <informatii> INAINTE de <rezumat1> (atentionare ANAF in structD394)
     ordine_inf = ["nrCui1", "nrCui2", "nrCui3", "nrCui4", "nr_BF_i1", "incasari_i1",
@@ -615,7 +615,7 @@ def build_xml(res):
         # R222.3: tip_partener = 2, cuiP necompletat, taraP = 'RO' -> judP obligatoriu.
         at = (' cuiP="%s"' % _esc(cuiP) if cuiP
               else ' taraP="RO" judP="%s"' % (jud_siruta(prof.get("judet")) or "40"))
-        at += ' denP="%s" nrFact="%d" baza="%d"' % (_esc(denP), nr, baza)
+        at += ' denP="%s" nrFact="%d" baza="%d"' % (_esc(_t(denP, _LIM["d394"]["denP"])), nr, baza)
         if tip in OP1_CU_TVA:
             at += ' tva="%d"' % tva
         o11 = res.op11.get(k)

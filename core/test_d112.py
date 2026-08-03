@@ -219,7 +219,7 @@ def test_limita_75_asigurat_si_functie_declar_50():
     for attr in ("numeAsig", "prenAsig"):
         m = re.search(r'%s="([^"]*)"' % attr, xml)
         assert m, "%s lipseste din XML" % attr
-        assert len(m.group(1)) <= 74, "%s = %d car (structura C75, marja 74)" % (attr, len(m.group(1)))
+        assert len(m.group(1)) == 75, "%s = %d car (structura C75, trunchiat la limita din registry)" % (attr, len(m.group(1)))
 
 
 

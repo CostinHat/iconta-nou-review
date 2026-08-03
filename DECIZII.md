@@ -6274,3 +6274,48 @@ res.total_plata_a + proba DUK cu toate tipurile. Lipsea DOAR legatura EXPLICITA 
 res.total_plata_a == totalPlata_A parsat din XML == suma pe toate tipurile. Adaugata (test_checksum_r28_res_egal_
 emis_egal_suma_toate_tipurile): prinde atat divergenta res-vs-emis (clasa d100) cat si un tip scapat din suma.
 Fara fix de cod - d301 era deja conform si aliniat.
+
+
+## 03.08.2026 — AUDIT "limita text" pe TOATE declaratiile (datorie deschisa in rularea 3, ceruta de Costin).
+
+CONTEXT: clusterele d205 (trunchiere den/adresa) si d300 (obs. randuri/checksum) au aratat ca limita
+GLOBALA de text 74 ("ANAF respinge orice text >75", text_anaf 27.07) e o premisa FALSA. Audit dedicat pe
+toate declaratiile: pentru fiecare camp text, limita reala din structura oficiala ANAF (anaf_surse/dNNN_struct*),
+PROBATA pe validatorul DUK boundary-cu-boundary.
+
+METODA: 9 investigatii read-only (cate una per declaratie) au mapat campurile text -> C(n) din structura ->
+limita din cod. Apoi proba DUK: pentru fiecare camp, o valoare de lungime C(n) e ACCEPTATA iar C(n)+1 e RESPINSA.
+REZULTAT: DUK impune EXACT C(n) din structura, pe toate declaratiile - premisa "75 universal" INFIRMATA definitiv.
+
+LIMITE CONFIRMATE DUK (sursa unica core.common.LIMITE_TEXT_ANAF): den/denumire/denR/denP/denO = 200;
+adresa/adresaR = 1000; functie_declar/functia_declarant = 50; functie_reprez = 100; nume/prenume_declar(ant),
+numeAsig/prenAsig, den_intocmit, calitate_intocmit = 75; den1 (d205 beneficiar) = 100; banca/cont = 50;
+telefon = 15; mail = 200. (nr_doc d301: DUK respinge si la C(20) - NU e limita de lungime simpla, are alte reguli
+de format; EXCLUS din registru, lasat neatins. d406 = SAF-T, tipuri proprii din XSD - tratat separat.)
+
+TREI CLASE DE DEFECT gasite si reparate (red->green pe test_limita_text_anaf.py):
+1. OVER-trunchiere (pierdere de date): den/adresa/nume/prenume taiate la 74 desi ANAF accepta 200/1000/75.
+   Denumiri de firma si adrese reale (>74 car.) erau taiate tacit. Reparat: fiecare curge pana la C(n) real.
+2. UNDER-trunchiere (RESPINGERE ANAF): functie_declar/functia_declarant taiate la 74 desi C(50) - o functie de
+   51-74 car. era emisa si ANAF o RESPINGEA. Reparat: trunchiere la 50.
+3. FARA-limita (RESPINGERE ANAF): denO/denP (denumiri partener), mail, banca, cont, telefon, calitate_intocmit
+   emise NETRUNCHIATE - o valoare peste C(n) era respinsa. Reparat: _t cu limita din registru.
+
+FIX STRUCTURAL: (a) LIMITE_TEXT_ANAF = registru unic {declaratie: {camp: C(n)}}, sursa oficiala + DUK-confirmat;
+(b) common.text_anaf CERE limita explicit (scos default-ul global 74 - un apel fara limita e TypeError, deci o
+limita ne-oficiala e imposibila la runtime); (c) toate generatoarele (d100/d101/d112/d205/d300/d301/d390/d394/d710)
+paseaza limita din registru. NOTA: d710 NU era in lista ceruta, dar foloseste text_anaf - scoaterea default-ului
+l-ar fi rupt; adaugat si probat (identic d100).
+
+GARD DE CLASA (ceruta explicit: "o limita care nu vine din structura devine imposibila"): test_limitele_de_text_
+vin_din_registry - scaneaza AST fiecare generator si RESPINGE orice apel _t care nu primeste limita din
+LIMITE_TEXT_ANAF (_LIM[...][...]); un literal sau un apel fara limita pica testul. Plus test_generatoarele_
+trunchiaza_la_limita_per_camp (plafonare per-camp, fara DB) si test_limite_text_confirmate_pe_duk_boundary
+(proba DUK boundary pe campurile materiale - regresie pe validatorul real). Testul vechi blanket-75
+(test_atributele_respecta_limita_anaf) rescris pe limite per-camp.
+
+GENERALIZARE / LECTIE: o afirmatie "empirica" pusa intr-un comentariu de cod ("ANAF respinge >75") fara proba
+persistenta poate fi FALSA si se propaga ca dogma. Limita fiecarui camp text = din structura FORMULARULUI, probata
+pe DUK, tinuta intr-un registru unic; codul nu are voie sa inventeze limite. (Extinde lectia R17: validatorul e
+autoritatea; aici validatorul a CONFIRMAT structura, iar comentariul-dogma era gresit.) Datoria "limita text 75"
+din predarea rularii 2 e ACHITATA pentru declaratiile pe atribute; d406 (SAF-T) ramane de facut (commit separat).
