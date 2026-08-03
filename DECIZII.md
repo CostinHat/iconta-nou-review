@@ -6087,3 +6087,47 @@ din checksum. FARA neconformitate, FARA fix.
 Deja gardat de test_golden_lant_formule_oficiale (lantul complet, golden 419200) + test_d101_reconstructie_proba_
 duk_valid. §9: reaparitia imposibila prin golden. (xfail-ul mf_metode_amortizare din test_datorie NU afecteaza d101 -
 amortizarea fiscala intra ca input P11, calculata extern.)
+
+
+## 03.08.2026 — Cluster "R17 Data_S / termen" (d101) — BLOCAT pe DECIZIE DE PRODUS: scadenta D101 lege-vs-validator INVERSATE.
+
+NECONFORMITATE DESCOPERITA + CONFLICT NEREZOLVABIL AUTONOM. Scadenta platii D101 (declaratia anuala de impozit pe
+profit) e o regula period-aware. Legea si validatorul OFICIAL ANAF o citesc EXACT INVERS:
+
+| An fiscal (Data_S) | LEGEA (CF art.42(1), verificat la sursa) | Validatorul OFICIAL DUKIntegrator (R17, testat) |
+|---|---|---|
+| 2022-2025 | 25 MARTIE an+1 (Legea 227/2015 text originar) | 25 IUNIE an+1 (R17: LL+6) |
+| 2026+ | 25 IUNIE an+1 (OUG 8/2026 art.6 pct.12) | 25 MARTIE an+1 (R17.1: LL+3) |
+
+EVIDENTA:
+- CF art.42(1) text CURENT (consolidat, /tmp/cf.txt linia 845): "...pana la data de 25 IUNIE inclusiv a anului urmator",
+  modificat de OUG 8/2026 art.6 pct.12 (MO nr.147 din 25 februarie 2026), aplicabil INCEPAND CU declaratia aferenta
+  anului fiscal 2026 (OUG 8/2026 art.45 alin.21^4 + art.10 alin.2). Text pre-OUG (an fiscal <=2025) = "25 martie"
+  (cercetare interna, Legea 227/2015 originar).
+- Validatorul DUKIntegrator INSTALAT (jar oficial ANAF): eroare R17 pentru Data_S 2023/2024/2025 cere LL+6 (iunie),
+  respinge martie; eroare R17.1 pentru Data_S 2026 cere LL+3 (martie), respinge iunie. Testat direct pe cei 4 ani.
+- Codul (inainte de acest cluster) urmeaza VALIDATORUL (iunie 2022-2025, martie 2026+) - reconstruit ca declaratiile
+  sa treaca DUKIntegrator. Probele DUK (test_d101_reconstructie_proba_duk_valid, test_imca_d101_duk_valid) trec DOAR
+  cu valorile validatorului.
+
+DE CE E DECIZIE DE PRODUS (nu fix mecanic): daca schimb codul la valorile LEGII, TOATE declaratiile D101 sunt RESPINSE
+de validatorul oficial ANAF -> utilizatorii nu le pot depune. Daca pastrez valorile validatorului, ele contrazic textul
+CF verificat. §3 spune TEXTUL CASTIGA, dar aici "textul" (legea) si "unealta oficiala" (DUKIntegrator) sunt in conflict
+direct, iar tool-ul exista tocmai ca sa produca fisiere ACCEPTATE de ANAF.
+
+RISC ASIMETRIC (de aceea nu-l inchid tacit): pentru 2022-2025, daca legea (martie) e corecta, valoarea validatorului
+(iunie) declara o scadenta cu ~3 luni mai TARZIU -> risc de intarziere/amenda. Pentru 2026, validatorul (martie) e mai
+DEVREME decat legea (iunie) -> depunere anticipata, fara amenda. Deci pericolul real e pe ramura 2022-2025.
+
+INCERTITUDINE FACTUALA de rezolvat: termenul 2022-2025 - cercetarea interna spune 25 martie (Legea 227/2015 originar,
+neschimbat pana la OUG 8/2026), dar jar-ul oficial ANAF cere 25 iunie pentru acei ani. Contradictie care cere verificare
+autoritara (posibil o modificare intermediara martie->iunie ratata de cercetare, SAU jar-ul are regula veche/bugata).
+
+STARE: cod REVERTIT la valorile validatorului (poarta verde, declaratiile raman acceptate de DUK). Neconformitatea fata
+de lege e prinsa ca DATORIE xfail-strict (test_datorie_d101_scadenta_lege_vs_validator). NU am marcat clusterul in
+Inventar A - ramane deschis pana la decizia lui Costin.
+
+DECIZIA CERUTA (Costin):
+  (a) La scadenta D101, cand legea si validatorul difera, tool-ul urmeaza LEGEA (accepta respingerea DUK pana ANAF
+      updateaza jar-ul) sau VALIDATORUL (output acceptat azi, revizuit cand jar-ul se updateaza)?
+  (b) Verificarea autoritara a termenului 2022-2025 (martie vs iunie), avand in vedere riscul de intarziere.

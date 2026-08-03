@@ -120,6 +120,11 @@ _P_INTRARI = {
 _P_MAIN = ["P%d" % n for n in range(1, 54)]
 
 
+# CONFLICT lege-vs-validator-oficial (DATORIE 03.08.2026, gard test_datorie_d101_scadenta_lege_vs_validator):
+# valorile de mai jos urmeaza validatorul OFICIAL DUKIntegrator (R17: 2022-2025->LL+6 iunie; R17.1: 2026+->LL+3
+# martie), ca declaratia sa fie ACCEPTATA de ANAF. CF art.42(1) citeste INVERS: an fiscal <=2025 -> 25 MARTIE
+# (Legea 227/2015 originar); 2026+ -> 25 IUNIE (OUG 8/2026 art.6 pct.12, MO 147/25.02.2026, de la declaratia pt
+# fiscal 2026 - art.45 alin.21^4). Care autoritate castiga la output = decizie de produs (Costin). Vezi DECIZII.md.
 def _scadenta_2022(an):
     """DUK regula R17: an Data_S in [2022,2025] -> LL+6 (scadenta luna 6 din an+1)."""
     ll, scad_an = 12 + 6, an + 1
