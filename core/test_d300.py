@@ -336,3 +336,16 @@ def test_pro_rata_d300_proba_duk_valid():
     res = calcul_d300(_prof(pro_rata=80), Perioada(2026, luna=6), facturi)
     rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
     assert rez["stare"] == "valid", "DUK a respins pro-rata D300: %s" % rez.get("erori")
+
+
+# ============================================================
+#  Rotunjire aritmetica | d300 (DUK regula A91b: sumele fiscale se rotunjesc half-up, nu bancar).
+#  _int = numar_fiscal(...).quantize(ROUND_HALF_UP). Deja in gardul de identitate cross-generator.
+# ============================================================
+def test_d300_rotunjeste_aritmetic_nu_bancar():
+    from core.d300 import _int
+    assert _int(112.5) == 113   # aritmetic; bancar (half-to-even) ar da 112
+    assert _int(2.5) == 3       # bancar ar da 2 (par)
+    assert _int(0.5) == 1       # bancar ar da 0
+    assert _int(112.4) == 112
+    assert _int(112.6) == 113

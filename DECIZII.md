@@ -5477,3 +5477,14 @@ neprobata. Adaugat test_pro_rata_ajustare_deductibila_art300 (valori + temei) + 
 (gard) + test_pro_rata_d300_proba_duk_valid.
 
 INCHIDERE CLUSTER: "pro-rata deducere | d300" √ 03.08. Fara datorie, fara schimbare de valoare. Secventa 51 -> 50.
+
+
+## 03.08.2026 — Cluster rotunjire aritmetica | d300: VERIFICAT (aritmetic) + proba d300-specifica
+
+Lant #2. Sesiunea A. Regula A91b (ANAF: sumele fiscale se rotunjesc aritmetic/half-up, nu bancar). D300 folosea
+deja `_int = numar_fiscal(...).quantize(ROUND_HALF_UP)` pe toate sumele si era DEJA in gardul de identitate
+cross-generator (test_rotunjirea_e_identica_intre_generatoare: a==b==c==d cu d390/d112/d205). Adaugat proba
+d300-specifica test_d300_rotunjeste_aritmetic_nu_bancar (_int(2.5)=3, _int(0.5)=1 - bancarul ar da 2/0). Fara
+schimbare de comportament - inchidere gap de acoperire.
+
+INCHIDERE CLUSTER: "rotunjire aritmetica | d300" √ 03.08. Secventa 50 -> 49.
