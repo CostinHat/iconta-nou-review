@@ -5621,3 +5621,20 @@ DECIZIE DE PRODUS CERUTA (§2.3 pct.2, NEREZOLVATA): pentru a permite corect cot
 COTE trebuie sa reprezinte DOUA cote reduse coexistente (9% SI 5%) - modelul actual (o cheie = serie temporala cu
 o valoare la un moment) nu le tine simultan. Optiuni: doua chei (tva_redusa_9 / tva_redusa_5) sau valoare-lista.
 Schimba CE optiuni vede contabilul -> decizia lui Costin. Pana atunci: pre-08.2025 fara redusa (omitere fail-loud).
+
+
+## 03.08.2026 — Cluster "tipuri operatiune IC (L/A/P/S)" (D390) INCHIS prin VERIFICARE. Temei OPANAF 705/2020.
+
+Maparea tip operatiune -> simbol D390 CORECTA si COMPLETA. TIPURI=(L,T,A,P,S,R) (d390.py:50) = exact nomenclatorul
+oficial (anaf_surse/d390_struct_anaf.txt, OPANAF 705/2020 v3): L livrari IC bunuri, T triunghiulare, A achizitii IC
+bunuri, P prestari IC servicii, S achizitii IC servicii, R livrari regim special agricultori. Regula codO obligatoriu
+L/T/P/R (d390.py:206), formula totalPlata_A (:177), gard anti-drop manual (:159 raise) - toate conforme/prezente.
+FARA fix necesar. Adaugat gard-pin: TIPURI == lista oficiala (drift de sursa -> rosu; mutant probat in-process).
+
+Observatii tangentiale (NEreparate, in afara acestui cluster):
+- Reclasificare (d390.py:151-152): tip invalid din tabela d390_reclasificare -> fallback tacit la L/A default (NU
+  drop - operatiunea ramane declarata si numarata; misclasificare posibila, nu disparitie). Acoperit de
+  test_reclasificare_ignora_tip_invalid; valorile vin din dropdown UI. Risc practic mic; de decis daca se
+  uniformizeaza cu calea manuala (raise pe tip invalid).
+- Nomenclator tari (d390.py:45): include XI (Irlanda de Nord, VIES post-Brexit) care NU apare in Nomenclator Tari
+  2020 (listeaza doar GB). Tine de clusterul "nomenclator tari (HR->CR) | d390" (inca deschis in agenda), nu de acesta.

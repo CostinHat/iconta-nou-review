@@ -105,3 +105,15 @@ def test_d390_manual_tip_necunoscut_ridica_nu_dispare():
     with pytest.raises(ValueError) as e:
         calcul_d390(_prof(), 2026, 6, [], [{"tip": "ZZZ", "tara": "DE", "cod": "X", "den": "y", "baza": 100}])
     assert "tip necunoscut" in str(e.value)
+
+
+
+def test_tipuri_operatiune_sunt_exact_nomenclatorul_oficial_opanaf_705_2020():
+    """Pin anti-drift: cele 6 simboluri de tip operatiune D390 = nomenclatorul OFICIAL
+    (OPANAF 705/2020, anaf_surse/d390_struct_anaf.txt, restrictia campului <operatie> tip:
+    tip in (L,T,A,P,S,R)). Semnificatii: L=livrari IC bunuri, T=livrari triunghiulare,
+    A=achizitii IC bunuri, P=prestari IC servicii, S=achizitii IC servicii, R=livrari IC
+    regim special agricultori. Daca cineva adauga/scoate/schimba un simbol, testul cade si
+    cere reverificarea la sursa - nomenclatorul spre ANAF nu se schimba tacit."""
+    from core import d390
+    assert d390.TIPURI == ("L", "T", "A", "P", "S", "R"), d390.TIPURI
