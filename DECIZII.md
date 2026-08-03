@@ -5861,3 +5861,53 @@ B4. GAZE NATURALE D394 codPR = 36 (ANAF structD394_15092025.pdf + structD394_100
     anaf_surse/d394_codpr_gaze_naturale.txt (sha256 711ff5aa...).
 
 SOLD dupa sectiunea B: 24 xfail -> 21 (inchise gaze, diurna, micro; cote reduse era refinare fara xfail).
+
+
+## 03.08.2026 — CAMPANIE ACHITARE DATORII, sectiunile A + C: blocaje motivate + status.
+
+Context-ul executorului critic incarcat dupa 12 clustere + sectiunea B; implementarile mari se scriu ca BLOCAJE
+MOTIVATE (regula lui Costin: nu pe jumatate), cu groundwork-ul strans, pentru o sesiune cu context propriu.
+
+### A1. Rezerva legala - deductibilitate fiscala art.26(1)a in d101 — BLOCAJ MOTIVAT (nevoie context propriu)
+- CE: campul oficial e P13 "Rezerva legala deductibila" (d101_struct_anaf.txt:503, P13>=0), acum INPUT MANUAL in
+  d101._P_INTRARI. De facut auto-computat.
+- TEMEI VERIFICAT: CF art.26 alin.(1) lit.a (verbatim): "5% aplicate asupra profitului contabil, la care se
+  adauga cheltuielile cu impozitul pe profit, pana ce atinge a cincea parte (20%) din capitalul social subscris
+  si varsat". Deci P13 = min(5% x (profit_contabil + cheltuiala_impozit); 20% x capital_1012 - rezerva_1061), >=0.
+- CE LIPSESTE (de ce e blocaj): d101.pull NU trage capital (cont 1012 subscris/varsat), rezerva existenta (1061),
+  cheltuiala cu impozitul (691). Trebuie extins pull cu aceste 3 surse din balanta/inregistrari_linii. Plus proba
+  pe schema efemera cu conturile populate + DUK. E o campanie proprie (data model + circular impozit<->rezerva).
+- GROUNDWORK: formula clara, campul P13 identificat, sursele de date identificate. De implementat: pull+=1012/1061/
+  691; calcul P13 auto cand nefurnizat; gard (omiterea deducerii cand conditiile sunt indeplinite -> imposibila);
+  proba DUK. Fara ea firma supra-declara impozit pe profit.
+
+### A2. D390 "ziua 15" - schema data_faptului_generator — BLOCAJ MOTIVAT (schimbare de schema pe date reale)
+- CE: art.284 - exigibilitate intarziata (ziua 15 a lunii urmatoare faptului generator cand factura intarzie).
+- CE LIPSESTE: camp nou data_faptului_generator in tabela facturi + migrare idempotenta pe TOTI tenantii + template.
+  Costin cere: rulare pe schema efemera intai, arata, apoi tenanti; daca migrarea pica pe vreun tenant OPRESTE.
+  Aceasta e o operatiune de deployment cu risc pe date reale - context propriu obligatoriu.
+- GROUNDWORK: incadrarea actuala pe data_emitere e conforma in cazul normal (gard temporal exista, cluster
+  exigibilitate|d390 inchis). Backward-compat: camp optional, gol -> comportament actual neschimbat.
+
+### A3. D177 formular redirectionare — BLOCAJ MOTIVAT (structura oficiala neverificata + scop nou end-to-end)
+- CE: formular de redirectionare a impozitului pe profit/micro nefolosit pt sponsorizare (Ordin ANAF 3562/2024).
+- CE LIPSESTE: structura oficiala D177 (XSD/instructiuni) NU e in anaf_surse/. Costin cere: stabileste intai
+  structura din anaf_surse/, daca lipseste desc-o de la ANAF si salveaz-o; fara structura oficiala NU inventa
+  campuri. Apoi model+calcul+generare+UI+teste+DUK. Scop nou complet - context propriu.
+- GROUNDWORK: motorul de credit (sponsorizari.py) calculeaza deja scalarul redirectionabil_d177 = plafon - credit.
+  De construit formularul in jurul lui. Prima actiune: WebFetch structura D177 de la static.anaf.ro.
+
+### C. DATORII MAI VECHI (GARZI)
+- C1. Tichete cresa plafon indexat 740 (Ordinul 368/2026): RESEARCH la MO - de facut ca sectiunea B (metoda web
+  a functionat: legislatie.just.ro/static.anaf.ro). Sursa primara daduse 503 anterior; reincearca. BLOCAJ:
+  research nefacut in aceasta rulare (context), dar metoda e dovedita.
+- C2. Fereastra culturale oct.2025-mar.2026 (240/470, Ordin 1574/3246/2025): idem C1, research la MO. BLOCAJ.
+- C3. Metode amortizare neliniare MF/D406 (xfail test_datorie_mf_metode_amortizare): subsistem mijloace fixe,
+  functionalitate de construit (degresiva/accelerata). RAMANE DESCHIS (xfail), scop propriu.
+- C4. D112 sectiunea 8.3 avantaje pt TOATE biletele de valoare (E3_10/72/73/74/75): limita generator-wide.
+  Implementare in generatorul D112 - scop propriu. BLOCAJ MOTIVAT.
+- C5. Migrare tichete culturale pe tenanti reali (core.migrare_tichet_cultural): deployment pe date reale,
+  aceleasi precautii ca A2 (efemera intai, apoi tenanti, oprire la esec). BLOCAJ MOTIVAT.
+- C6. Tara XI (Irlanda de Nord post-Brexit): VERIFICAT-CORECT. XI e DEJA in d390.TARI_UE (d390.py:45) cu comentariu
+    "post-Brexit, VIES". VIES foloseste XI pentru bunuri NI (Protocolul Irlanda/NI); nomenclatorul ANAF 2020 (doar
+    GB) e cel invechit, codul e corect (inaintea nomenclatorului). Nu e datorie - observatie inchisa.
