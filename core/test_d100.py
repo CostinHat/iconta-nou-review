@@ -181,3 +181,14 @@ def test_cota_micro_121_gard_bidirectional():
     # 121 + cota "1" -> corect, cota=1 in XML
     res3 = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "121", "suma_dat": 1000, "cota": "1"}])
     assert 'cota="1"' in build_xml(res3)
+
+
+
+def test_totalplata_a_checksum_r11b_din_res():
+    """totalPlata_A (suma de control DUK R11b) = sum(suma_dat + suma_plata) = 2 x sum(suma_dat) la
+    obligatia simpla, si e EMISA din res.total_plata_a (o singura sursa, ca la celelalte declaratii).
+    Consistenta: valoarea din res == valoarea din XML."""
+    res = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "103", "suma_dat": 2400}])
+    assert res.total_plata_a == 4800   # 2 x 2400 (suma_dat + suma_plata)
+    xp = build_xml(res)
+    assert 'totalPlata_A="4800"' in xp   # emis din res.total_plata_a

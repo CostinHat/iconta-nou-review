@@ -146,7 +146,10 @@ def calcul_d100(prof, an, luna, obligatii):
             nr_evid=_nr_evid(cod, luna, an, zi_s, luna_s, an_s),
             cota=str(o.get("cota") or "")))
         total += suma
-    return RezultatD100(an=an, luna=luna, prof=prof, obligatii=obl, total_plata_a=total)
+    # total_plata_a = SUMA DE CONTROL (DUK R11b): sum(suma_dat + suma_ded + suma_plata + suma_rest) pe
+    # obligatii. La obligatia simpla suma_ded=suma_rest=0 si suma_plata=suma_dat -> 2 x sum(suma_dat).
+    # Stocat pe rezultat (ca la d101/d300/d390/d710) si EMIS de build_xml din res - o singura sursa.
+    return RezultatD100(an=an, luna=luna, prof=prof, obligatii=obl, total_plata_a=total * 2)
 
 
 def _scadenta_zile(an, luna):
@@ -189,12 +192,9 @@ def build_xml(res):
     tel = (prof.get("telefon") or "").strip()
     if tel:
         hdr += ' telefon=%s' % _esc(tel)
-    # totalPlata_A = SUMA(suma_dat + suma_ded + suma_plata + suma_rest) pe toate
-    # obligatiile, nu doar suma_dat - dovedit prin DUK regula R11b pe validator.
-    # suma_ded/suma_rest raman 0 (necompletate) la o obligatie simpla, deci
-    # totalul e suma_dat + suma_plata = 2 x suma_dat cand suma_plata = suma_dat.
-    total_control = sum(o.suma_dat * 2 for o in res.obligatii)
-    hdr += ' totalPlata_A="%d">' % total_control
+    # totalPlata_A = suma de control DUK R11b, calculata in calcul_d100 (res.total_plata_a =
+    # 2 x sum(suma_dat) la obligatia simpla) si EMISA de aici - o singura sursa, ca la d101/d390/d710.
+    hdr += ' totalPlata_A="%d">' % res.total_plata_a
     H.append(hdr)
     for o in res.obligatii:
         # cui/luna/tip_oblig: NU apartin sectiunii <obligatie> - dovedit de trei

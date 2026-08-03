@@ -6049,3 +6049,13 @@ Generatorul e CONFORM struct D100 poz.17a: micro (cod_oblig 121) emite cota="1",
 Adaugat GARD bidirectional in build_xml: cod_oblig 121 fara cota="1" -> ValueError; cota pe orice alt cod_oblig ->
 ValueError. Face imposibil un XML respins de validator (ERR cota micro), inclusiv pe apel direct/manual (generatorul
 prin genereaza producea deja corect). Clasa "atribut conditionat de structura - aplicat sau eroare, nu emis gresit tacit".
+
+
+## 03.08.2026 — Cluster "checksum totalPlata_A (R11b)" (d100) — VERIFICAT + aliniere la sursa unica.
+
+Valoarea EMISA in XML (totalPlata_A = 2x sum(suma_dat), DUK R11b) era CORECTA. DAR o divergenta: calcul_d100 punea
+res.total_plata_a = sum(suma_dat) (1x), iar build_xml recalcula 2x sum INDEPENDENT (nu folosea res). Toate celelalte
+declaratii (d101/d300/d390/d710/d394) EMIT res.total_plata_a - d100 era exceptia (capcana latenta: cine ar folosi
+res.total_plata_a al d100 ca checksum - ex. un cross-check ca la d390.py:233 - ar primi 1x, gresit). FIX: res.
+total_plata_a = checksum (2x sum, calculat in calcul_d100) + build_xml il EMITE (o singura sursa, aliniat la
+convenția tuturor declaratiilor). Gard: res.total_plata_a == valoarea din XML == 2x sum(suma_dat).
