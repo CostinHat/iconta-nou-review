@@ -329,3 +329,26 @@ def test_d112_urgenta_cod06_emite_d11(schema):
     assert m, "asiguratD cod 06 negasit in XML"
     d = m.group(0)
     assert 'D_11="123"' in d, "D_11 (cod urgenta) nu e emis la cod 06: " + d
+
+
+
+def test_d390_pull_incadreaza_pe_data_emitere_exigibilitate(schema):
+    """D390 incadreaza o operatiune IC in luna dupa DATA EMITERII facturii = exigibilitatea
+    intracomunitara (CF art.283 livrari / art.284 achizitii: exigibilitatea intervine la data
+    emiterii facturii; CF art.325 alin.(1)/(4): declaratia se face pentru luna in care ia nastere
+    exigibilitatea). pull() filtreaza data_emitere in [luna-01, (luna+1)-01). Gard temporal (golul
+    de acoperire semnalat la clusterul exigibilitate/prag): testele calcul ocoleau pull, deci
+    incadrarea pe luna nu era testata. Mutant: o fereastra gresita sau alt camp de data ar aduce
+    si factura din mai/iulie -> testul cade."""
+    from core import d390
+    _factura(schema, numar="E1", data="2026-06-30", directie="emisa",
+             cui="IT00905811006", nume="IT PARTNER", total=5000, tva=0)   # in fereastra iunie
+    _factura(schema, numar="E2", data="2026-07-01", directie="emisa",
+             cui="IT00905811006", nume="IT PARTNER", total=9999, tva=0)   # iulie -> exclus
+    _factura(schema, numar="E3", data="2026-05-31", directie="emisa",
+             cui="IT00905811006", nume="IT PARTNER", total=8888, tva=0)   # mai -> exclus
+    _, facturi = d390.pull(schema, SCHEMA_T, 2026, 6)
+    totaluri = sorted(f["total"] for f in facturi)
+    assert totaluri == [5000], (
+        "D390 iunie trebuie sa contina DOAR factura cu data_emitere in iunie "
+        "(exigibilitate art.283/284), nu mai/iulie: %r" % (totaluri,))

@@ -5683,3 +5683,25 @@ circular). Helper _reclasificare_tip valideaza direciția (ca write-side) si RID
 cai de citire (calcul + preview). Pe date valide: 0 schimbare (scrierea garanteaza validitatea, deci raise-ul nu se
 declanseaza pe fluxul UI). GENERALIZARE: acum toate cele 3 cai (scriere, citire-calcul, citire-preview) + liniile
 manuale trateaza identic un tip invalid = eroare vizibila. Clasa "input contabil invalid -> fail-loud" completa pe D390.
+
+
+## 03.08.2026 — Cluster "exigibilitate / prag" (D390) INCHIS prin VERIFICARE. Temei CF art.283/284/325.
+
+INCADRARE TEMPORALA: D390 incadreaza operatiunea pe data_emitere a facturii (pull d390.py, fereastra
+[M-01,(M+1)-01)). CF art.283 (livrari IC) / art.284 (achizitii IC): exigibilitatea intracom intervine la DATA
+EMITERII facturii; CF art.325 alin.(1)/(4): declaratia se face pentru luna in care ia nastere exigibilitatea. In
+cazul normal (factura emisa prompt) data_emitere = exigibilitate -> CONFORM. Adaugat gard temporal pe fereastra pull
+(golul de acoperire: testele calcul ocoleau pull).
+
+PRAG: fara prag valoric (CF art.325 alin.(4): se depune doar pt lunile cu exigibilitate - criteriu de EXISTENTA a
+operatiunii, nu de valoare, spre deosebire de Intrastat). d390_are_operatiuni + genereaza refuza pe zero cu temei
+citat (art.325 + OPANAF 705/2020 pct.1.2) = CONFORM. Codul nu are logica de prag.
+
+EDGE-CASE consemnat (NEreparat, DECIZIE DE SCHEMA/PRODUS deschisa): art.284/283 mai au o regula alternativa -
+exigibilitatea intervine "in a 15-a zi a lunii urmatoare celei in care a intervenit faptul generator, DACA nu s-a
+emis factura pana atunci". Cand factura intarzie (ex. fapt generator august, factura 20 oct), legal exigibilitatea
+= 15 sept -> D390 septembrie, dar codul incadreaza pe oct (data_emitere). NU e implementabil azi: tabela facturi nu
+stocheaza data faptului generator (data livrarii/receptiei bunurilor). Cauza = limitare de SCHEMA, nu bug de logica
+in d390.py. Impact practic mic (facturile intracom se emit prompt, sub ziua 15); supapa existenta = linii manuale
+(d390_manual forteaza luna). FIX-ul cere intai un camp data_faptului_generator in facturi (+ ce introduce
+contabilul la receptie) = decizia lui Costin. Consemnat, lantul continua (inchiderea acestui cluster nu-l cere).
