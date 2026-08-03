@@ -5957,3 +5957,19 @@ impozit pe brut-CAS). Verificat la sursa (/tmp/cf.txt: OUG 26/2019 pct.1/2, in v
 OBSERVATIE (nu neconformitate de calcul): plafonul de zile (max 90/an la acelasi beneficiar; 120 agricultura)
 e doar in docstring, NEaplicat - motorul calculeaza pe brutul dat, nu semnaleaza depasirea. De implementat in
 fluxul de introducere daca se cere semnalarea.
+
+
+## 03.08.2026 — Cluster "regim marja second-hand" (tva_marja) — VERIFICAT conform + gard golden.
+
+Motorul (tva_marja.py) calculeaza TVA pe marja = marja x cota/(100+cota) - suta MARITA (TVA inclus in marja, se
+extrage), conform CF art.312 alin.(4) (baza = marja profitului EXCLUSIV valoarea taxei aferente). Nota: regula NU e
+la art.313 (acela = aurul de investitii); codul citeaza corect art.312. Marja negativa/zero -> TVA 0. CONFORM.
+Lipsea test numeric -> gard golden adaugat (marja 400 cota 21 -> 69,42; negativa -> 0; cota 19 -> 63,87).
+
+OBSERVATII (integrare in main.py endpoint /vanzare-marja, NU formula):
+1. Cota NU e validata period-aware: common.cota_ceruta doar respinge cota lipsa, nu face cross-check cu
+   common.cota("tva_standard", data). Un client care trimite o cota gresita pentru perioada e acceptat tacit.
+   De adaugat un cross-check la endpoint (avertisment/eroare la nepotrivire).
+2. la_data NU se paseaza la motor (main.py:6351 apeleaza vanzare_marja fara la_data) -> versionarea FORMULEI se
+   face pe data de azi, nu pe data tranzactiei. Inofensiv acum (o singura varianta din 2018), dar o tranzactie
+   datata < 2018 ar folosi formula curenta in loc sa ridice. Fix: vanzare_marja(..., la_data=corp["data"]).

@@ -140,6 +140,21 @@ def test_calcul_zilier_dispecer_versionat():
 
 
 # ---- PAS 3 modul 6: tva_marja.vanzare_marja ----
+def test_tva_marja_formula_suta_marita_art312():
+    """TVA pe marja second-hand = marja x cota/(100+cota) - suta MARITA (TVA INCLUS in marja, se
+    extrage), conform CF art.312 alin.(4): baza = marja profitului EXCLUSIV valoarea taxei aferente.
+    NU cota/100. Marja negativa/zero -> TVA 0 (se reporteaza, nu se restituie)."""
+    from core.tva_marja import vanzare_marja
+    from decimal import Decimal as _D
+    r = vanzare_marja(1000, 600, cota=21, la_data=date(2026, 6, 1))    # marja 400
+    assert r["tva"] == _D("69.42"), r            # 400*21/121 (NU 84 = 400*0.21)
+    assert r["marja_neta"] == _D("330.58"), r
+    rn = vanzare_marja(600, 1000, cota=21, la_data=date(2026, 6, 1))   # marja negativa
+    assert rn["tva"] == _D("0.00"), rn
+    r19 = vanzare_marja(1000, 600, cota=19, la_data=date(2026, 6, 1))  # cota epoca 19%
+    assert r19["tva"] == _D("63.87"), r19
+
+
 def test_vanzare_marja_dispecer_versionat():
     from core import tva_marja as tm
     assert tm.vanzare_marja(1000, 600, la_data=date(2026, 6, 1)) == tm._vanzare_marja_2018(1000, 600)
