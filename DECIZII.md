@@ -5522,3 +5522,20 @@ NU se preiau in S4) + test_toate_tipurile_1_5_proba_duk_valid (decont cu toate c
 confirma maparea end-to-end).
 
 INCHIDERE CLUSTER: "tipuri operatiune 1-5 | d301" √ 03.08. Fara datorie. Secventa 48 -> 47.
+
+
+## 03.08.2026 — Cluster rollup S4.1->S4 | d301: VERIFICAT COMPLET (deja acoperit)
+
+Lant #2, cluster #6 final. Sesiunea A. Temei: OPANAF 592/2016, instructiunile formularului 301: "In sectiunea 4.1
+se preiau DIN sectiunea 4 achizitiile de servicii intracomunitare pentru care beneficiarul e obligat la plata TVA
+cf. art.307 alin.(2)". Deci S4.1 (tip 5) e SUBSET al S4 - fiecare operatiune tip 5 se preia SI in totalul S4.
+
+VERIFICAT CORECT (deja acoperit integral de test_d301_rollup.py - fisier dedicat acestei regresii): S4 contine
+S4.1 (test_tip5_se_preia_in_sectiunea_4); S4 = S4.2 (tip 4) + S4.1 (tip 5) (test_tip5_plus_tip4_cumuleaza); TVA
+DATORAT nu se dubleaza - serviciul o singura data prin rollup, iar totalPlata_A e CHECKSUM (baza1..5+tva1..5) care
+include 4.1 prin definitie, impus de DUK (test_tva_datorat_o_singura_data_desi_checksum_include_4_1); fara tip 5 nu
+se inventeaza rollup (test_fara_tip5_sectiunea_4_ramane_pe_tip4). Proba DUK end-to-end cu toate cele 5 tipuri
+(test_toate_tipurile_1_5_proba_duk_valid) - validatorul IMPUNE rollup-ul (respinge "4.1 fara 4").
+
+INCHIDERE CLUSTER: "rollup S4.1->S4 | d301" √ 03.08. Fara datorie, fara cod nou (acoperire preexistenta +
+proba DUK adaugata la clusterul tipuri). Secventa 47 -> 46.
