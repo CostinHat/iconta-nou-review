@@ -5715,3 +5715,19 @@ criteriile de oprire RAMASE: (a) urmatorul blocat si toate cele de dupa blocate;
 migrare pe date reale, schimbare de schema); (c) neconformitate care cere oprire (CICLUL); (d) poarta rosie/tree
 murdar (pct.4); (e) context efectiv epuizat (pct.6, predare scrisa). Oprirea "ca sa decida Costin ordinea" NU e
 criteriu - ordinea o da agenda. Modificare pur ADITIVA la istoric (pct.5 pastreaza data introducerii + eliminarii).
+
+
+## 03.08.2026 — Cluster "cote acceptate" (D394) INCHIS prin VERIFICARE. Temei OPANAF 2194/2025 + structura D394.
+
+D394 e CONFORM si e chiar MODELUL-TINTA la care a fost adus d301: cota_standard (d394.py:258) period-aware din
+common.cota (documenteaza evitarea bugului int(0.21)=0); cotele operatiunilor validate contra unui set FIX
+d394.COTE=(0,5,9,11,19,20,21,24) ce oglindeste validatorul ANAF v5 (OPANAF 2194/2025: 21/11 de la 01.08.2025) peste
+structura 2020 (0,5,9,19,20,24); agregarea pe cota REALA a fiecarei operatiuni (rectificativele pe luni vechi se
+grupeaza corect sub 19/9/5). NICIUN literal de cota hardcodat (bugul d301 nu se regaseste). FARA fix.
+
+Setul fix (nu period-aware) e CORECT aici: validatorul ANAF proceseaza cu acelasi set indiferent de perioada
+(inclusiv rectificative), deci d394.COTE e superset istoric+curent, nu se restrange pe luna.
+
+Garduri adaugate: (a) pin d394.COTE == setul v5 (anti-drift); (b) CROSS-MODUL: orice cota tva_* din common.COTE
+subseteaza d394.COTE - o cota noua adaugata candva in common care nu e in d394.COTE ar fi ignorata tacit de D394.
+Leaga sursa unica de cote (common) de setul acceptat de D394.

@@ -362,3 +362,27 @@ def test_d394_manual_tip_necunoscut_ridica_nu_dispare():
         calcul_d394(PROF, 2026, 6, [], [{"tip": "ZZZ", "tip_partener": 1, "cota": 21,
                                        "cuiP": "RO123", "denP": "X", "nrFact": 1, "baza": 100, "tva": 21}])
     assert "tip necunoscut" in str(e.value)
+
+
+
+def test_d394_cote_acceptate_sunt_setul_validatorului_v5():
+    """Pin anti-drift: setul de cote acceptate de D394 = superset fix ce oglindeste validatorul
+    ANAF v5 (OPANAF 2194/2025: TVA 21%% si 11%% de la 01.08.2025) peste structura 2020
+    (0,5,9,19,20,24). O schimbare a setului cade aici si cere reverificare la validator."""
+    assert COTE == (0, 5, 9, 11, 19, 20, 21, 24), COTE
+
+
+def test_d394_cote_acopera_toate_cotele_tva_din_common():
+    """Gard CROSS-MODUL anti-drop: orice cota de TVA din registrul central common.COTE (chei
+    tva_*), la orice moment din valabilitate, TREBUIE sa fie in d394.COTE. Altfel o operatiune la
+    o cota valida (ex. o cota redusa noua adaugata candva in common) ar fi IGNORATA tacit de D394
+    ('Cota TVA nedeclarabila'). Leaga sursa unica de cote (common) de setul acceptat de D394."""
+    from core import common
+    ceruta = set()
+    for cheie, serie in common.COTE.items():
+        if not cheie.startswith("tva_"):
+            continue
+        for _din, val, _t in serie:
+            ceruta.add(int(Decimal(str(val)) * 100))
+    lipsa = ceruta - set(COTE)
+    assert not lipsa, "cote TVA din common.COTE neacceptate de d394.COTE: %s" % sorted(lipsa)
