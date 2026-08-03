@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
-# PREDARE LANT — 04.08.2026 (rularea 6)
+# PREDARE LANT — 04.08.2026 (rularea 7)
 
 Sesiune noua, context gol. Comanda de pornire: "Citeste PREDARE_LANT.md si continua lantul."
 Raspunde in ROMANA. Server: `ssh iconta`, `~/iconta_nou` (branch main). Rulezi pytest/DUK/verificator/commit PE SERVER.
@@ -9,18 +9,25 @@ NU heredoc inline in `ssh "... <<'EOF' ..."` cu ghilimele Python `"` inauntru - 
 Pentru commit cu ghilimele simple in mesaj, foloseste `git commit -F fisier_mesaj`.
 
 ## Ritual de pornire (§5)
-1. `git log --oneline -1` -> HEAD asteptat: **4fe547d** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
-2. `venv/bin/python -m pytest -q` -> asteptat ~1343 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
+1. `git log --oneline -1` -> HEAD asteptat: **e5d9e08** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
+2. `venv/bin/python -m pytest -q` -> asteptat ~1345 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
    verificator_conformitate.py` -> TOTAL 0 candidate.
 3. `venv/bin/python3 -c "from core import agenda; print(agenda.urmator_cluster())"`
-   -> **(('rezumat1 campuri complete', 'd394'), 13, 1)** = urmatorul cluster, 13 ramase, 1 blocat (preexistent).
+   -> **(('nomenclator codPR (art.331)', 'd394'), 12, 1)** = urmatorul cluster, 12 ramase, 1 blocat (preexistent).
 
-## Urmatorul cluster: rezumat1 campuri complete | d394
-D394. Verifica ca setul de campuri emise in <rezumat1> (facturiL/bazaL/tvaL/... pe tip_partener x cota) e COMPLET
-si corect fata de structura CURENTA. ATENTIE: sursa curenta pentru D394 = anaf_surse/opanaf_77_2022.txt (OPANAF
-77/2022) + validatorul J8, NU d394_struct_anaf.txt (marcat INVECHIT - e din 2020/J4). Vezi core/d394.py
-(REZ1_FARA_TVA, rez1_tipuri, calcul rezumat1) + test_d394.py (exista teste pe setul rezumat1). Tipar: VERIFICARE cu
-proba DUK. LECTIE: probeaza pe DUK / textul din MO, NU pdf-ul de structura vechi (a produs bug-ul ASI).
+## !!! DECIZIE CERUTA COSTIN (bug ACTIV) inainte de a continua: operatiuni N neinreg | d394
+Clusterul rezumat1 a gasit o NECONFORMITATE ACTIVA: achizitiile de la parteneri NEINREGISTRATI (fara CUI) produc
+AUTOMAT operatiuni N (tip_partener=2) pe care validatorul J8 le RESPINGE - codul nu emite tip_document (pct.228),
+tip_N (pct.229 bunuri/servicii), document_N (pct.60). Tenant cu achizitii de la neinregistrati -> D394 respins de
+ANAF. DECIZIE (vezi DECIZII 04.08): (a) implementeaza N auto (tip_document=1/document_N=1 + tip_N din factura) +
+datorie manual borderouri; (b) EXCLUDE N cu avertisment vizibil (protectie imediata - NU produce tacit declaratie
+respinsa); (c) blocheaza. INPUT: ce approach + de unde vine tip_N (bunuri/servicii)? Gard anti-regresie exista.
+
+## Urmatorul cluster (dupa decizia N, sau daca Costin zice continua): nomenclator codPR (art.331) | d394
+D394. Verifica nomenclatorul codPR (op11, art.331 taxare inversa) - codurile de produs pt taxare inversa vs sursa
+oficiala. NOTA: exista DEJA o datorie pe acest cluster (lit.l gaze naturale - codPR gaze neconfirmat la sursa, vezi
+Inventar A "taxare inversa|d394"). Sursa curenta = OPANAF 77/2022 (anaf_surse/opanaf_77_2022) + validator J8, NU
+pdf-ul 2020. Tipar VERIFICARE cu proba DUK. LECTIE: probeaza pe DUK/MO, nu pdf vechi.
 
 ## Ce am facut in rularea asta (MULT: audit mare + 6 clustere; HEAD 93b01a6 -> c185188)
 ### A. AUDIT "limita text" pe TOATE cele 9 declaratii cerute de Costin + d710 (2 commituri: 7be77a3 + 1687dec)
