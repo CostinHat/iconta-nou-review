@@ -61,3 +61,34 @@ def test_fara_tip5_sectiunea_4_ramane_pe_tip4():
     res = d301.calcul_d301(PROF, Perioada(2026, luna=6), [_op(4, 1000, 5.0, 1050)])
     assert res.totaluri[4] == (5000, 1050)
     assert res.totaluri[5] == (0, 0)
+
+
+# ============================================================
+#  Tipuri operatiune 1-5 | d301 (OPANAF 592/2016). Maparea tip->sectiune, verificata la sursa
+#  (anaf_surse/d301_struct_anaf.txt): 1=S1 achizitii intracom bunuri; 2=S2 mijloace transport noi;
+#  3=S3 produse accizabile; 4=S4 servicii (total); 5=S4.1 servicii art.150 (subset din S4).
+# ============================================================
+import pytest
+from core import duk as _duk301
+
+
+def test_tipuri_1_2_3_pe_sectiuni_proprii():
+    res = d301.calcul_d301(PROF, Perioada(2026, luna=6),
+                           [_op(1, 1000, 5.0, 1050), _op(2, 2000, 5.0, 2100), _op(3, 500, 5.0, 525)])
+    assert res.totaluri[1] == (5000, 1050)    # S1 achizitii intracom bunuri
+    assert res.totaluri[2] == (10000, 2100)   # S2 mijloace de transport noi
+    assert res.totaluri[3] == (2500, 525)     # S3 produse accizabile
+    assert res.mij_transp == 1                # tip 2 -> bifa mijloc de transport (art.324)
+    # tipurile 1-3 NU se preiau in S4 (doar tip 5 e subset al S4):
+    assert res.totaluri[4] == (0, 0)
+
+
+@pytest.mark.skipif(not _duk301.poate_valida("d301"), reason="DUK d301 indisponibil")
+def test_toate_tipurile_1_5_proba_duk_valid():
+    # Proba pana la declaratie: un decont cu toate cele 5 tipuri trece DUKIntegrator (inclusiv
+    # rollup-ul S4.1->S4 si checksum-ul totalPlata_A). Confirma maparea tip->sectiune.
+    ops = [_op(1, 1000, 5.0, 1050), _op(2, 2000, 5.0, 2100), _op(3, 500, 5.0, 525),
+           _op(4, 800, 5.0, 840), _op(5, 300, 5.0, 315)]
+    res = d301.calcul_d301(dict(PROF, cui="14399840"), Perioada(2026, luna=6), ops)
+    rez = _duk301.valideaza(d301.build_xml(res), "d301", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins D301 cu toate tipurile: %s" % rez.get("erori")

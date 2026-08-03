@@ -5505,3 +5505,20 @@ NU se puteau declara in D300. FIX: adaugate R29_/R30_/R35_/R36_ in allow-list. R
 R36 inspectie 100 -> R37 cumulat = R34 + 100; DUK valid (test_ajustari_d300_proba_duk_valid) + gard anti-drop.
 
 INCHIDERE CLUSTER: "ajustari | d300" √ 03.08. Fara datorie. Secventa 49 -> 48.
+
+
+## 03.08.2026 — Cluster tipuri operatiune 1-5 | d301: VERIFICAT (mapare corecta) + gap de acoperire inchis
+
+Lant #2, cluster #6 (limita rularii). Sesiunea A. D301 = decont special de TVA. Temei: OPANAF 592/2016. Maparea
+tip->sectiune verificata la sursa (anaf_surse/d301_struct_anaf.txt): tip 1 = Sectiunea 1 (achizitii intracom de
+bunuri, altele decat mijloace transport noi/accize); tip 2 = Sectiunea 2 (mijloace de transport noi, seteaza bifa
+mij_transp); tip 3 = Sectiunea 3 (produse accizabile); tip 4 = Sectiunea 4 (servicii, total); tip 5 = Sectiunea
+4.1 (servicii intracom art.150 pt care beneficiarul e obligat la plata TVA) - SUBSET al S4 (se preia si in S4).
+
+VERIFICAT CORECT: rollup-ul S4.1->S4 (partea subtila, impusa de DUK) era deja testat (test_tip5_se_preia_in_
+sectiunea_4 etc.). Gap de acoperire inchis (fara schimbare de comportament): tipurile 1/2/3 nu aveau gard
+individual. Adaugat test_tipuri_1_2_3_pe_sectiuni_proprii (fiecare pe sectiunea proprie, tip 2 -> mij_transp, si
+NU se preiau in S4) + test_toate_tipurile_1_5_proba_duk_valid (decont cu toate cele 5 tipuri trece DUKIntegrator -
+confirma maparea end-to-end).
+
+INCHIDERE CLUSTER: "tipuri operatiune 1-5 | d301" √ 03.08. Fara datorie. Secventa 48 -> 47.
