@@ -5705,3 +5705,13 @@ stocheaza data faptului generator (data livrarii/receptiei bunurilor). Cauza = l
 in d390.py. Impact practic mic (facturile intracom se emit prompt, sub ziua 15); supapa existenta = linii manuale
 (d390_manual forteaza luna). FIX-ul cere intai un camp data_faptului_generator in facturi (+ ce introduce
 contabilul la receptie) = decizia lui Costin. Consemnat, lantul continua (inchiderea acestui cluster nu-l cere).
+
+
+## 03.08.2026 — CLAUDE.md §2.3 pct.5: limita de 6 clustere/rulare ELIMINATA (decizia lui Costin).
+
+Limita de 6 clustere/rulare (introdusa 02.08 ca prudenta la prima rulare nesupravegheata) se elimina - nu mai e
+justificata dupa 15 clustere inchise cu poarta verde si zero regresii. Executorul continua lantul pana la unul din
+criteriile de oprire RAMASE: (a) urmatorul blocat si toate cele de dupa blocate; (b) decizie de produs (scop, push,
+migrare pe date reale, schimbare de schema); (c) neconformitate care cere oprire (CICLUL); (d) poarta rosie/tree
+murdar (pct.4); (e) context efectiv epuizat (pct.6, predare scrisa). Oprirea "ca sa decida Costin ordinea" NU e
+criteriu - ordinea o da agenda. Modificare pur ADITIVA la istoric (pct.5 pastreaza data introducerii + eliminarii).

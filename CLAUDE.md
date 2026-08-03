@@ -483,8 +483,16 @@ cu clusterul urmator, FARA sa astepte push.
    sau `git status --porcelain` nu e gol la finalul unei campanii. NU incerca sa repari ca sa continui -
    opreste-te cu tree-ul in starea in care e si scrie ce s-a intamplat.
 
-5. **LIMITA DE LANT:** maximum 6 clustere pe rulare. Dupa al saselea, opreste-te cu predare scrisa, indiferent
-   cat context a ramas.
+5. **LANT FARA LIMITA DE CLUSTERE** (limita introdusa 02.08.2026, ELIMINATA 03.08.2026). Limita de 6 clustere
+   /rulare a fost introdusa 02.08 ca prudenta la PRIMA rulare nesupravegheata; se ELIMINA 03.08, dupa 15 clustere
+   inchise cu poarta verde si zero regresii - nu mai e justificata. Executorul continua lantul cluster dupa
+   cluster, in aceeasi tura, pana la UNUL din criteriile de oprire ramase:
+   - clusterul urmator e BLOCAT si TOATE cele de dupa el sunt blocate;
+   - campania cere o DECIZIE DE PRODUS (scop, push, migrare pe date reale, schimbare de schema) - vezi pct.2;
+   - a aparut o NECONFORMITATE care cere oprire conform ciclului (CICLUL DE NECONFORMITATE);
+   - POARTA ROSIE sau TREE MURDAR (pct.4 - oprire definitiva, cu WIP salvat pct.9);
+   - CONTEXTUL se apropie EFECTIV de epuizare (pct.6 - oprire la granita curata de commit, cu predare scrisa).
+   Oprirea "ca sa decida Costin ordinea" NU e criteriu: ordinea o da agenda (core.agenda.urmator_cluster()).
 
 6. **PREDARE LA OPRIRE:** HEAD, sold lant, ce cluster urmeaza, ce blocaje s-au deschis si de ce.
    Predarea la oprire pentru EPUIZARE DE CONTEXT trebuie sa fie suficienta pentru o sesiune NOUA, cu
