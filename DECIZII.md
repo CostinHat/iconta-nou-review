@@ -6072,3 +6072,18 @@ oct; Q4 -> 25 ian an urmator). Lipsea test pe scadenta -> gard golden adaugat.
 OBSERVATIE: struct-ul are si alte reguli de scadenta (25/12, 28-29/07, 25 a lunii a 2-a) pentru ALTE obligatii
 (accize etc.) pe care d100 NU le genereaza - regula standard "25 luna urmatoare" e cea aplicabila micro/profit.
 (Definitivarea impozitului pe profit Q4 = D101, nu D100 - scadenta 25 martie an urmator, tratata acolo.)
+
+
+## 03.08.2026 — Cluster "structura P1-P53" (d101) — VERIFICAT CONFORM SI COMPLET.
+
+Structura P1-P53 din calcul_d101 e completa si corecta fata de OPANAF 206/2025 (D101_A600 v10). Toate formulele
+derivate coincid rand-cu-rand cu structura oficiala: P3=P1-P2, P6=P4-P5, P7=P3+P6, P10=P7+P8-P9, P16=SP11..P15,
+P21=SP17..P20, P22=P10-P16-P21, P34=SP23..P33, P35=P22+P34, P38a=P35+P36+P37-P38, P40 (profit impozabil cu
+conditii), P41=P411+P412, P48 (dispecerat P46/P47), P52/P53, totalPlata_A=sum(P1..P53) fara sub-randuri 'din care'.
+P13 rezerva legala (adaugat la A1) corect (baza P7+691, plafon 20% capital). d_grup tratat pe toate randurile
+relevante. Toate 53 randurile principale tratate (calculate sau intrare); sub-randurile 'din care' excluse corect
+din checksum. FARA neconformitate, FARA fix.
+
+Deja gardat de test_golden_lant_formule_oficiale (lantul complet, golden 419200) + test_d101_reconstructie_proba_
+duk_valid. §9: reaparitia imposibila prin golden. (xfail-ul mf_metode_amortizare din test_datorie NU afecteaza d101 -
+amortizarea fiscala intra ca input P11, calculata extern.)

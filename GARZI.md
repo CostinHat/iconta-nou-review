@@ -612,3 +612,14 @@ Temei: struct D100 poz.15 (scadenta=25 a lunii urmatoare perioadei) + nr_evident
 | gard | fisier | ce face imposibil | mutatia care il probeaza |
 |---|---|---|---|
 | scadenta 25 luna urmatoare + nr_evid 23 poz | core/test_d100.py (test_scadenta_25_luna_urmatoare_perioadei, test_nr_evid_cifra_de_control) | scadenta/nr_evid gresit | _scadenta_zile(2026,6)=(25,7,2026); XML scadenta="25.07.2026"; nr_evid 23 poz + checksum poz.22-23 |
+
+
+## 03.08.2026 — Structura P1-P53 D101 verificata (cluster "structura P1-P53")
+
+Temei: OPANAF 206/2025 (D101_A600 v10, d101_struct_anaf.txt). Toate formulele derivate P3-P53 conforme rand-cu-rand.
+
+| gard (EXISTENT) | fisier | ce face imposibil | mutatia |
+|---|---|---|---|
+| golden lant formule oficiale | core/test_d101.py (test_golden_lant_formule_oficiale) | schimbarea oricarei formule P1-P53 (P3=P1-P2 ... totalPlata_A=sum P1..P53) | golden 419200 pe lantul complet; orice formula gresita cade + proba DUK |
+
+Nu s-a adaugat gard nou: structura era deja acoperita complet de golden + proba DUK (reconstructie 01.08). §9: reaparitia imposibila prin golden-ul pe lantul de formule.
