@@ -166,6 +166,50 @@ def test_rez1_AS_si_V_doar_la_partener_1_cota_0():
     assert "AS" not in rez1_tipuri(P_NEINREG, 0)
 
 
+def test_rezumat1_campuri_complete_tp1_tp3_valide_pe_validator():
+    """VERIFICARE (cluster rezumat1 campuri complete): pentru partenerii INREGISTRATI (RO tip 1) si STRAINI
+    (UE tip 3 / non-UE tip 4), setul de campuri rezumat1 emis (facturi/baza pe fiecare tip cerut, tva doar
+    pt A/L/C/AI, 0-umplut) e COMPLET si ACCEPTAT de validatorul CURENT (J8). Probat pe DUK."""
+    from core import duk
+    if not duk.poate_valida("d394"):
+        import pytest
+        pytest.skip("DUK d394 indisponibil")
+    facturi = [_f("RO14399840", "emisa", 21, 1000, 210),      # L tp1 cota21
+               _f("RO14399840", "primita", 21, 2000, 420),    # A tp1 cota21
+               _f("DE811569869", "emisa", 0, 4000, 0)]        # L tp3
+    res = calcul_d394(PROF, 2026, 6, facturi, serii_emise={"A": (1, 3)})
+    rez = duk.valideaza(build_xml(res), "d394", an=2026, luna=6)
+    assert rez["stare"] == "valid", "rezumat1 tp1/tp3 respins de J8: %s" % rez.get("erori")
+
+
+def test_rezumat1_tp2_neinreg_N_respins_de_validator_DATORIE():
+    """DATORIE / NECONFORMITATE ACTIVA (04.08.2026): operatiunile N (achizitii de la parteneri NEINREGISTRATI,
+    tip_partener=2) sunt produse AUTOMAT din orice factura de achizitie fara CUI (tip_operatiune(primita,neinreg)
+    =N), DAR validatorul CURENT (J8) le RESPINGE: codul nu emite atributele tehnice cerute - op1.tip_document
+    (pct.228, obligatoriu pt tp2+N: 1=facturi..5=alte), op1.tip_N (pct.229: 1=bunuri/2=servicii), rezumat1.
+    document_N (pct.60, = tip_document, obligatoriu pt tp2+cota0); iar rezumat1 emite facturiLS/bazaLS pe care
+    R41.2/R42.2 le interzic cand document_N<>1. Acest gard CONSEMNEAZA respingerea (anti-regresie); cand se
+    implementeaza suportul N, se aprinde (xpass) si te anunta.
+    DECIZIE DE PRODUS (Costin): sourcing-ul tip_N (bunuri vs servicii din factura) e continut declarat - nu se
+    poate default fara sa declare gresit; suportul manual (borderouri/file carnet/contracte, tip_document 2-5)
+    cere extinderea contractului. Optiuni: (a) implementeaza N auto (tip_document=1 facturi, document_N=1, tip_N
+    din factura) + datorie pt tip_document 2-5 manual; (b) exclude N din declaratie cu avertisment vizibil (D394
+    submitabil pt restul, contabilul trateaza N separat) - NU produce tacit o declaratie respinsa; (c) blocheaza.
+    Vezi DECIZII 04.08."""
+    from core import duk
+    if not duk.poate_valida("d394"):
+        import pytest
+        pytest.skip("DUK d394 indisponibil")
+    facturi = [_f("RO14399840", "emisa", 21, 1000, 210),
+               _f("", "primita", 0, 500, 0)]   # achizitie de la neinregistrat -> N
+    res = calcul_d394(PROF, 2026, 6, facturi, serii_emise={"A": (1, 1)})
+    rez = duk.valideaza(build_xml(res), "d394", an=2026, luna=6)
+    er = str(rez.get("erori"))
+    assert rez["stare"] != "valid" and ("document_N" in er or "tip_document" in er), (
+        "Validatorul ACCEPTA acum N fara document_N/tip_document - suportul N pare implementat, reevalueaza "
+        "DATORIA. stare=%s erori=%s" % (rez.get("stare"), er[:200]))
+
+
 def test_rez1_LS_la_orice_partener_cu_cota_0():
     """R41.1: daca cota = 0 atunci facturiLS trebuie sa existe."""
     assert "LS" in rez1_tipuri(P_TVA_RO, 0)

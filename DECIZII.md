@@ -6468,3 +6468,37 @@ eroare vizibila, nu drop tacit. Aceasta e alegerea CORECTA: a reclasifica un CUI
 GRESIT un partener inregistrat ca neinregistrat (o greseala de continut), pe cand tip 1 + respingere DUK forteaza
 corectarea CUI-ului. Ramura UE/non-UE se sprijina pe _TARI_UE, deja verificat pe validator in clusterul nomenclator
 tari (HR->CR). Fara fix - conform. Gard consolidat: test_tip_partener_clasificare_pct216.
+
+
+## 04.08.2026 — Cluster "rezumat1 campuri complete" (d394) — VERIFICAT cazurile comune + NECONFORMITATE ACTIVA (operatiuni N neinreg).
+
+VERIFICARE (sursa curenta = validatorul RULAT J8, nu pdf-ul 2020 invechit): pentru partenerii INREGISTRATI (RO,
+tip_partener=1) si STRAINI (UE tip 3 / non-UE tip 4), setul de campuri emis in <rezumat1> e COMPLET si corect.
+Codul emite, 0-umplut, campurile cerute de rez1_tipuri(tip_partener, cota): facturi+baza pe fiecare tip cerut,
+tva DOAR pentru A/L/C/AI (R232.2: taxare inversa are TVA la beneficiar, LS/AS sunt regim special). Probat pe DUK
+(J8): o declaratie L(tp1)+A(tp1)+L(tp3) e VALIDA. rez1_tipuri e deja unit-testat pe reguli (R38/R41/R49/R53/R56/R591).
+
+NECONFORMITATE ACTIVA (probata DUK): operatiunile N (achizitii de la parteneri NEINREGISTRATI, tip_partener=2)
+sunt produse AUTOMAT - orice factura de achizitie FARA CUI de furnizor da tip_operatiune(primita, neinreg)=N, iar
+pull() include achizitiile fara CUI (cui=""). DAR validatorul CURENT (J8) RESPINGE o astfel de declaratie:
+codul NU emite atributele tehnice cerute de structura pentru tip 2 / N:
+ - op1.tip_document (pct.228, N(1): 1=facturi/2=borderouri/3=file carnet/4=contracte/5=alte) - OBLIGATORIU pt tp2+N;
+ - op1.tip_N (pct.229, 1=bunuri/2=servicii) - OBLIGATORIU pt tip in (V,C,N) + tip_partener in (1,2);
+ - rezumat1.document_N (pct.60, = op1.tip_document) - <>null pt tp2+cota0;
+iar rezumat1 emite facturiLS/bazaLS pe care R41.2/R42.2 le INTERZIC cand document_N<>1. Deci un tenant cu achizitii
+de la furnizori neinregistrati produce un D394 RESPINS de ANAF - BUG ACTIV, nu latent (spre deosebire de ASI).
+
+DE CE NU AM CORECTAT unilateral (DECIZIE DE PRODUS + continut declarat): pentru calea AUTO (N dintr-o factura),
+tip_document=1 (facturi) si document_N=1 sunt clare, DAR tip_N (bunuri vs servicii) e CONTINUT DECLARAT - a-l
+default gresit declara servicii ca bunuri (sau invers). Suportul pentru tip_document 2-5 (borderouri/file carnet/
+contracte/alte) cere EXTINDEREA contractului (facturi/manual nu au campul). Optiuni (Costin):
+ (a) implementeaza N auto: tip_document=1, document_N=1, tip_N derivat din natura facturii (bunuri/servicii) +
+     datorie pentru tip_document 2-5 manual;
+ (b) EXCLUDE N din declaratie cu AVERTISMENT VIZIBIL (D394 ramane submitabil pentru restul; contabilul trateaza
+     achizitiile de la neinregistrati separat) - cheia: sa NU produca tacit o declaratie respinsa de ANAF;
+ (c) blocheaza generarea cand exista N.
+Recomandare: (b) ca protectie imediata (fail-visible) + (a) ca implementare completa. Gard anti-regresie +
+datorie: test_rezumat1_tp2_neinreg_N_respins_de_validator_DATORIE (cand J8 accepta N, se aprinde si anunta).
+
+INPUT CERUT (Costin): pentru achizitiile de la parteneri neinregistrati (tip 2 / N) - implementam suportul auto
+(a) sau excludem cu avertisment (b) pana la o implementare completa? Si de unde vine tip_N (bunuri/servicii)?

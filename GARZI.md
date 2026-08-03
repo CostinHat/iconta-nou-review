@@ -596,6 +596,18 @@ Temei: struct D100 poz.17a - "daca cod_oblig=121 atunci cota=1 altfel cota=null"
 | cota micro 121 bidirectional | core/d100.py build_xml (test_cota_micro_121_gard_bidirectional) | XML respins de validator: 121 fara cota="1" SAU cota pe alt cod_oblig | 121 fara cota -> ValueError; 103 cu cota -> ValueError; 121+cota=1 -> cota="1" in XML |
 
 
+## 04.08.2026 — Gard rezumat1 campuri + datorie N (cluster "rezumat1 campuri complete")
+
+Temei: rezumat1 D394 cere campurile COMPLETE (0-umplut) pe (tip_partener, cota), setul din validatorul RULAT
+(J8). Pentru parteneri inregistrati/straini = verificat J8-valid. NECONFORMITATE ACTIVA: operatiunile N
+(neinreg, auto din achizitii fara CUI) respinse de J8 (lipsa tip_document/tip_N/document_N).
+
+| gard | fisier | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| rezumat1 tp1/tp3 complet + J8-valid | core/test_d394.py (test_rezumat1_campuri_complete_tp1_tp3_valide_pe_validator) | un camp rezumat1 lipsa/in plus pt parteneri inreg/straini | L(tp1)+A(tp1)+L(tp3) -> DUK valid |
+| N neinreg respins de J8 = consemnat (datorie) | core/test_d394.py (test_rezumat1_tp2_neinreg_N_respins_de_validator_DATORIE) | ca bug-ul N sa dispara tacit | achizitie fara CUI -> N -> DUK respinge (document_N/tip_document); daca J8 accepta, pica |
+
+
 ## 04.08.2026 — Gard clasificare tip_partener D394 (cluster "tip_partener")
 
 Temei: pct.216 (OPANAF 77/2022) - 4 categorii tip_partener. cui_ro e normalizare; validitatea cuiP e
