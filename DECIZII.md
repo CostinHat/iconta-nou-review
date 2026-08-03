@@ -5911,3 +5911,35 @@ MOTIVATE (regula lui Costin: nu pe jumatate), cu groundwork-ul strans, pentru o 
 - C6. Tara XI (Irlanda de Nord post-Brexit): VERIFICAT-CORECT. XI e DEJA in d390.TARI_UE (d390.py:45) cu comentariu
     "post-Brexit, VIES". VIES foloseste XI pentru bunuri NI (Protocolul Irlanda/NI); nomenclatorul ANAF 2020 (doar
     GB) e cel invechit, codul e corect (inaintea nomenclatorului). Nu e datorie - observatie inchisa.
+
+
+## 03.08.2026 — CAMPANIE A1 IMPLEMENTATA: rezerva legala deductibila (CF art.26(1)a) in d101.
+
+Superseda blocajul A1 de mai sus - implementat si probat in aceasta rulare (commit 57777e5).
+
+TEMEI (verbatim, verificat): CF art.26 alin.(1) lit.a: "5%% aplicate asupra profitului contabil, la care se
+adauga cheltuielile cu impozitul pe profit, pana ce atinge a cincea parte (20%%) din capitalul social subscris
+si varsat".
+
+(1) DEPENDENTA CIRCULARA impozit<->rezerva REZOLVATA prin design: baza = profit contabil BRUT = P7 + cheltuiala
+CONTABILA cu impozitul (cont 691, deja inregistrata in balanta), NU impozitul calculat de D101 -> cifra contabila
+fixa, fara bucla. (d101 pune 69x in P2, deci P7 e post-691; se adauga 691 inapoi = profit pre-impozit.)
+
+(2) SURSARE (d101.pull extins cu 3 interogari): capital 1012 (subscris/varsat) = sold cumulat pana la SFARSITUL
+perioadei; rezerva 1061 EXISTENTA = sold cumulat pana la INCEPUTUL anului (anii anteriori); 691 = cheltuiala cu
+impozitul pe anul curent. (Bug de escaping SQL prins in dezvoltare: triple-apostrof in loc de apostrof simplu.)
+
+CALCUL (calcul_d101, camp oficial P13 "Rezerva legala deductibila", d101_struct_anaf.txt:503): auto cand P13 nu e
+dat manual -> P13 = max(0, min(5%% x baza; 20%% x capital - rezerva existenta)); intra in P16 (deduceri) -> reduce
+profitul impozabil P22 -> mai putin impozit. Override manual respectat.
+
+GARD (§9): core/test_d101.py::test_rezerva_legala_deductibila_auto_art26_1_a (17500 / plafon musca 5000 / pierdere
+0 / override manual 9000) + PROBA PE DATE REALE core/test_pull_declaratii.py::test_d101_rezerva_legala_din_conturi
+_reale (conturi 1012/707/607/691 reale in schema efemera -> P13=17500). Omiterea deducerii cand conditiile sunt
+indeplinite devine IMPOSIBILA (auto by default).
+
+DUK: validatorul D101 nu e instalat in pachetul DUKIntegrator (duk.poate_valida D101 = False) -> proba DUK = GRI,
+consemnata (§2.3 pct.3); proba pe date reale acopera sursarea + calculul end-to-end.
+
+EFECT PE PRODUS: firma cu profit + capital care nu introducea manual P13 NU mai supra-declara impozitul pe profit
+- deducerea rezervei legale se aplica automat din contabilitate.
