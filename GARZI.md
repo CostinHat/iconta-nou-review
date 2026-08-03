@@ -503,3 +503,14 @@ Temei: CF art.76 alin.(2) lit.k + alin.(4^1) - min(2,5x diurna bugetara; 3 salar
 | datorie period-awareness istorica | core/test_datorie.py (xfail strict) | uitarea ca varianta e unica (valorile de azi aplicate retroactiv) | >=2 variante -> xfail trece -> strict pica |
 
 Calculul CURENT (2023+) conform art.76 alin.(4^1). Istoric (pre-2023) blocat pe valorile HG diurna (nu-s in surse repo).
+
+
+## 03.08.2026 — Credit sponsorizare: profit conform + datorie micro period-aware (cluster "credit sponsorizare / D177")
+
+Temei: CF art.25 alin.(4) lit.i (profit: min 0,75% CA / 20% impozit + registru); fostul art.56 alin.1^5 (micro, abrogat OUG 115/2023).
+
+| gard | fisier | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| datorie micro period-aware | core/test_datorie.py (test_datorie_credit_sponsorizare_micro_period_aware, xfail strict) | uitarea ca micro=0 e aplicat retroactiv (2019-2023 avea credit) | credit micro @2022 > 0 -> xfail trece -> strict pica |
+
+Profitul e gardat de test_operatiuni_speciale.py (4 teste existente). Micro fix blocat pe textul istoric art.56 alin.1^5 (abrogat, nu-i in consolidat).

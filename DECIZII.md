@@ -5796,3 +5796,23 @@ INPUT CERUT COSTIN: HG 714/2018 (+ succesoare) cu diurna interna bugetara istori
 sa se splitze _VARIANTE_PLAFON_DIURNA in >=2 variante datate (2018 fara cap + valoarea epocii; 2023 cu 23 + cap).
 EXTERN: si un nomenclator HG 518/1995 pe tari (inexistent) pentru automatizarea diurnei externe. Pana atunci:
 deconturi pe perioada curenta = corecte; cele pe 2018-2022 folosesc regula de azi (datorie tracked).
+
+
+## 03.08.2026 — Cluster "credit sponsorizare / D177" (sponsorizari) — profit CONFORM + 3 observatii.
+
+PROFIT CONFORM: creditul de sponsorizare = min(0,75% CA; 20% impozit pe profit) + conditia registru entitati
+(art.25 alin.4^1) = conform CF art.25 alin.(4) lit.i (verificat la sursa). Reportul pe 7 ani corect ELIMINAT (nu
+mai exista din 2022; sumele legacy 2015-2021 utilizabile pana in 2028 - codul afirma corect). Gardat de
+test_operatiuni_speciale.py (4 teste). FARA fix pe profit.
+
+NECONFORMITATE / DECIZII deschise:
+1. MICRO NU e period-aware (DATORIE xfail strict): _credit_sponsorizare_2018 intoarce 0 pentru micro la ORICE
+   data, desi 2019-2023 micro avea creditul (20% impozit micro, redirectabil). Aplica retroactiv eliminarea din
+   2024 (OUG 115/2023) - contrazice propriul docstring ("eliminarea micro -> varianta datata, trecutul ramane
+   calculabil"). Fix BLOCAT: rata+start micro nu-s in consolidat (fostul art.56 alin.1^5 = "Abrogat"; §3 nu se
+   inventeaza). Necesita textul istoric (OUG/lege introducere micro sponsorship).
+2. D177 (redirectionare) = FORMULAR ABSENT = DECIZIE DE PRODUS. Se calculeaza doar scalarul redirectionabil_d177
+   = plafon - credit; NU exista generator de formular/XML D177 conform Ordin ANAF 3562/2024, nici termen de
+   depunere. Construirea formularului D177 = scop nou, cere decizia lui Costin.
+3. Endpoint main.py:7853 apeleaza credit_sponsorizare FARA la_data (foloseste regula de azi indiferent de anul
+   fiscal al sponsorizarii); d101.py nu apeleaza deloc motorul. Wiring de period-awareness - observatie.

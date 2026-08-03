@@ -338,3 +338,22 @@ def test_datorie_plafon_diurna_period_aware_istoric():
     epocii. Pana la HG-urile diurna la sursa, ramane datorie (calculul CURENT e conform - test_deconturi)."""
     from core.deconturi import _VARIANTE_PLAFON_DIURNA
     assert len(_VARIANTE_PLAFON_DIURNA) >= 2
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "DATORIE 03.08.2026: creditul de sponsorizare pt MICROINTREPRINDERI nu e period-aware. "
+    "_credit_sponsorizare_2018 (core/sponsorizari.py) intoarce credit=0 pentru tip_impozit='micro' la "
+    "ORICE data >=2018, desi micro AVEA creditul (20% din impozitul micro, redirectabil D177) pana in "
+    "anul fiscal 2023 (fostul CF art.56 alin.1^5, ABROGAT de OUG 115/2023 de la 2024; cf.txt L1531/1571). "
+    "Codul aplica retroactiv eliminarea din 2024 - contrazice propriul docstring ('eliminarea micro -> "
+    "varianta datata noua, trecutul ramane calculabil'). Fix BLOCAT: rata (20%) si data de START a "
+    "creditului micro NU sunt in codul fiscal CONSOLIDAT (alin.1^5 apare doar 'Abrogat'); §3 nu se "
+    "inventeaza. Necesita textul istoric al art.56 alin.1^5 (OUG/lege de introducere). La completare: "
+    "varianta micro datata (2019/2020-2023: min(sponsorizare, 20% impozit micro)) + varianta eliminare 2024."))
+def test_datorie_credit_sponsorizare_micro_period_aware():
+    """Credit sponsorizare micro corect period-aware: non-zero pana in 2023 (20% impozit micro), zero din
+    2024. Pana la textul istoric al art.56 alin.1^5 la sursa, ramane datorie (profitul e conform)."""
+    from core.sponsorizari import credit_sponsorizare
+    from datetime import date
+    r = credit_sponsorizare(100000, 1000, 500, tip_impozit="micro", la_data=date(2022, 6, 1))
+    assert r["credit"] > 0
