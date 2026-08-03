@@ -28,7 +28,7 @@ Punctul 2 nu e formal. Pe 27.07 o gardă a „picat pe mutant" în timp ce crăp
 
 | Loc | Ce acoperă | Când rulează |
 |---|---|---|
-| suita pytest (1300 teste, 133 fișiere) | logică, schemă, semnături, contracte | la dev, înainte de commit |
+| suita pytest (1306 teste, 133 fișiere) | logică, schemă, semnături, contracte | la dev, înainte de commit |
 | `verificator_conformitate.py` | Design System, frontend (28 gardieni) | la dev, TOTAL 0 obligatoriu |
 | `core/verificatoare.py` | echilibru notă/balanță, TVA pe cotă, trezorerie | în aplicație, pe date reale |
 | `core/control_incrucisat.py` | D112/D300/D390 vs evidență, cotă TVA | în aplicație, semafor |
@@ -213,6 +213,11 @@ că intrarea a fost înghițită**.
   R23 (Rd.25); 9% era la R76 (taxare inversa, pierdut din totalul R27) -> scos din auto + avertisment manual
   (validatorul instalat respinge si R75 din v12). GARD: proba DUK (test_cote_tva_d300_proba_duk_valid) + gard pe
   valori (test_cote_tva_maparea_pe_randuri_d300). DATORIE: 9% deductibil auto (xfail test_datorie_d300_9pct_deductibil_auto).
+- ACOPERIT (03.08.2026): **TVA la incasare in D300** (CF art.282/297, OUG 8/2026). Firma pe sistem -> D300
+  calculeaza exigibilitatea din DECONTARI (incasari 4111 / plati 401 validate in perioada), suta marita,
+  proportional pe plati partiale; taxare inversa exclusa; deducerea amanata la plata. GARD: proba DB reala (factura
+  emisa luna 5, incasata luna 6 -> exigibila luna 6) + proba DUK (test_tva_incasare_d300_proba_duk_valid) + gard
+  taxare inversa (F3) + gard firma-fara-flag neschimbata. Fara cap 90 zile (eliminat de OUG 8/2026).
 - DESCHIS: rotunjirea din D390 e bancară (`round()`), în timp ce D112 documentează că ANAF
   cere aritmetică. Schimbare fiscală — se verifică la sursă. Vezi DE_FACUT.
 
@@ -291,7 +296,7 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
 **Eșec:** teste verzi care nu testează nimic (fake-uri pe codul auditat, teste stale,
 fișiere necolectate).
 **Stare: PARȚIAL.**
-- ACOPERIT de fapt: 1300 teste colectate; fake-uri (`monkeypatch`/`MagicMock`) doar pe
+- ACOPERIT de fapt: 1306 teste colectate; fake-uri (`monkeypatch`/`MagicMock`) doar pe
   integrări externe (SPV, e-Factura, e-Transport, JWT). **Zero fake pe generatoarele de
   declarații.**
 - LIPSĂ: **mutantul zero sistematic** — forțezi fiecare generator să întoarcă `[]` și suita

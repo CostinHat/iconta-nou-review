@@ -5389,3 +5389,43 @@ dedicata, cu greenlight Costin pe temei + domeniu.
 
 Oprire rulare: limita de 6 clustere/rulare atinsa (§2.3 pct.5) + acest gap cere decizie de produs. Predare pe disc
 (PREDARE_LANT.md).
+
+
+## 03.08.2026 — Cluster exigibilitate / TVA la incasare | d300: IMPLEMENTAT (feature, greenlight Costin)
+
+Lant nou, cluster #6, cu decizie de produs Costin: ambele laturi (colectata+deductibila), proportional pe plati
+partiale. Temei verificat VERBATIM la sursa (/tmp/cf.txt, cod_fiscal_227_2015_consolidat):
+- **art.282 alin.(3)** (modificat de OUG 8/2026, in vigoare 01.03.2026): pentru firmele care aplica sistemul TVA
+  la incasare, exigibilitatea TVA COLECTATE intervine la data INCASARII contravalorii integrale sau PARTIALE.
+  Plafon 5.000.000 lei (2026) / 5.500.000 (2027). **NB: OUG 8/2026 a ELIMINAT capul de 90 de zile** din vechea
+  reglementare - textul actual e pur pe incasare, fara termen limita. (Datoria initiala presupunea gresit un cap
+  de 90 zile - corectat la verificarea sursei; nu s-a implementat cap.)
+- **art.282 alin.(8)**: fiecare incasare include TVA (suta marita): TVA = suma x cota/(100+cota).
+- **art.297 alin.(2)-(3)**: dreptul de deducere a TVA se AMANA pana la PLATA furnizorului (pentru firma pe sistem,
+  respectiv pentru cumparaturi de la un furnizor pe sistem). Exceptii: achizitii intracom, importuri, taxare
+  inversa (art.307/331) - regim general.
+- **art.282 alin.(6)**: operatiunile sub reguli generale (taxare inversa etc.) NU intra in sistem.
+
+IMPLEMENTARE (core/d300.py):
+- `calcul_d300`: pentru `prof.tva_la_incasare`, exigibilitatea se calculeaza din `decontari=[{suma,cota}]` prin
+  suta marita (`tva_incasare.tva_din_incasare`), proportional cu suma decontata; altfel comportament neschimbat
+  (exigibilitate la faptul generator/emitere).
+- `pull` + `_pull_incasare`: pentru firma pe sistem, se citesc DECONTARILE (incasari cont 4111 pt emise / plati
+  cont 401 pt primite) din notele contabile VALIDATE cu `factura_id`, cu `i.data` in perioada - NU emiterea si NU
+  `platita_la` (care prinde doar platile online). Suma decontata pe factura se aloca pe cotele facturii proportional
+  (`_aloca_pe_cote`) - corecteaza limita multi-cota a postarilor din reconciliere (care foloseau prima cota).
+- Excludere taxare inversa (`AND COALESCE(f.taxare_inversa,false)=false`) - art.282(6)/297(3).
+
+PROBA: pe date reale (DB) - factura emisa in luna 5 dar INCASATA luna 6 e exigibila in luna 6, nu 5; latura
+colectata (R9 21%) + deductibila (R23 11%); taxare inversa exclusa (gard F3); proportional pe incasare partiala
+(test_tva_la_incasare_partial_proportional); PROBA DUK valida (test_tva_incasare_d300_proba_duk_valid).
+
+LIMITE CUNOSCUTE (documentate, in afara scopului acestui cluster): (a) cazul art.297(2) - firma NEpe-sistem care
+cumpara de la un furnizor pe sistem isi amana deducerea - nu se poate trata in D300 fara statusul furnizorului
+(nu-l avem); ramane pe seama contabilului via manual. (b) verificarea plafonului/eligibilitatii (art.282 alin.3^1/4)
+nu se face in D300 - se bazeaza pe flagul `tva_la_incasare` setat la inregistrare.
+
+Marker inchidere datorie: **d300 aplica exigibilitatea tva la incasare pentru firme pe regim**. xfail
+test_datorie_d300_exigibilitate_tva_la_incasare ELIMINAT. SOLD DATORII 23 -> 22.
+
+INCHIDERE CLUSTER: "exigibilitate / TVA la incasare | d300" √ 03.08. Secventa 53 -> 52.

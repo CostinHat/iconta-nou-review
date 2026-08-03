@@ -127,3 +127,143 @@ def test_cote_tva_d300_proba_duk_valid():
     res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
     rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
     assert rez["stare"] == "valid", "DUK a respins D300: %s" % rez.get("erori")
+
+
+# ============================================================
+#  Cluster exigibilitate / TVA la incasare | d300 (art.282 alin.3+8 CF, OUG 8/2026).
+#  Firma pe sistem: exigibilitate la INCASARE/PLATA, proportional, suta marita.
+#  Calcul PUR (fara DB): facturile poarta `decontari=[{suma, cota}]` (sumele decontate in perioada).
+# ============================================================
+def test_tva_la_incasare_exigibilitate_pe_decontari_suta_marita():
+    prof = dict(_prof(), tva_la_incasare=True)
+    facturi = [
+        {"directie": "emisa", "decontari": [{"suma": 1210, "cota": 21}]},   # incasat integral 21%
+        {"directie": "emisa", "decontari": [{"suma": 605, "cota": 21}]},    # incasat partial 21%
+        {"directie": "primita", "decontari": [{"suma": 555, "cota": 11}]},  # platit 11%
+    ]
+    res = calcul_d300(prof, Perioada(2026, luna=6), facturi)
+    # colectata 21% (Rd.9): suta marita 1210->210 (baza 1000) + 605->105 (baza 500) = baza 1500, TVA 315
+    assert (res.R["R9_1"], res.R["R9_2"]) == (1500, 315)
+    # deductibila 11% (Rd.25/R23): 555 -> TVA 55, baza 500
+    assert (res.R["R23_1"], res.R["R23_2"]) == (500, 55)
+
+
+def test_tva_la_incasare_partial_proportional():
+    # art.282 alin.3: exigibilitate la incasarea PARTIALA. Factura 1210@21% incasata doar 605
+    # -> exigibil DOAR jumatate (TVA 105, baza 500), nu 210 pe toata factura.
+    prof = dict(_prof(), tva_la_incasare=True)
+    res = calcul_d300(prof, Perioada(2026, luna=6),
+                      [{"directie": "emisa", "decontari": [{"suma": 605, "cota": 21}]}])
+    assert (res.R["R9_1"], res.R["R9_2"]) == (500, 105)
+
+
+def test_tva_la_incasare_neincasat_nu_e_exigibil():
+    # factura emisa dar NEINCASATA in perioada (fara decontari) -> nimic exigibil (rand gol).
+    prof = dict(_prof(), tva_la_incasare=True)
+    res = calcul_d300(prof, Perioada(2026, luna=6),
+                      [{"directie": "emisa", "decontari": []}])
+    assert res.R.get("R9_1", 0) == 0 and res.R.get("R9_2", 0) == 0
+
+
+def test_firma_fara_tva_incasare_ramane_pe_emitere():
+    # GARD anti-regresie: firma normala (fara flag) -> exigibilitate la faptul generator (emitere),
+    # `decontari` sunt IGNORATE, comportamentul vechi neschimbat.
+    res = calcul_d300(_prof(), Perioada(2026, luna=6),
+                      [{"directie": "emisa", "total": 1210, "tva": 210,
+                        "decontari": [{"suma": 99999, "cota": 21}]}])
+    assert (res.R["R9_1"], res.R["R9_2"]) == (1000, 210)   # din emitere, decontari ignorate
+
+
+# ============================================================
+#  TVA la incasare - proba pe DB reala (pull + exigibilitate din decontari) + proba DUK.
+# ============================================================
+from core import db as _db300, tenant_provisioning as _tp300, d300 as _d300mod
+_SCHEMA_TVAI = "test_d300_tvai"
+
+
+def _db300_ok():
+    try:
+        _db300.init_pool()
+        with _db300.get_conn():
+            return True
+    except Exception:
+        return False
+
+
+@pytest.fixture
+def conn_tvai():
+    """Firma pe TVA la incasare. F1 emisa 1210@21% in luna 5, INCASATA (5121=4111) in luna 6.
+    F2 primita 555@11% in luna 5, PLATITA (401=5121) in luna 6. ROLLBACK garantat."""
+    _db300.init_pool()
+    with _db300.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA_TVAI)
+                cur.execute(_tp300.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA_TVAI))
+                cur.execute("SET search_path TO %s, public" % _SCHEMA_TVAI)
+                cur.execute(
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
+                    "regim_fiscal, platitor_tva, tip_decont, tva_la_incasare, declarant_nume, declarant_prenume, declarant_functie) "
+                    "VALUES (1,'TVAI SRL','14399840','Str Test 1','Bucuresti','B','4711','BCR','RO49AAAA1B31007593840000',"
+                    "'real',true,'L',true,'Pop','Ion','administrator') "
+                    "ON CONFLICT (id) DO UPDATE SET tva_la_incasare=true")
+                # F1 emisa (luna 5), incasata luna 6
+                cur.execute("INSERT INTO facturi (numar, data_emitere, total, tva, directie) "
+                            "VALUES ('F1','2026-05-20',1210,210,'emisa') RETURNING id")
+                f1 = cur.fetchone()[0]
+                cur.execute("INSERT INTO factura_linii (factura_id, descriere, cantitate, pret_unitar, cota_tva) "
+                            "VALUES (%s,'marfa',1,1000,21)", (f1,))
+                cur.execute("INSERT INTO inregistrari (data, factura_id, status, sursa) "
+                            "VALUES ('2026-06-10',%s,'validata','test') RETURNING id", (f1,))
+                n1 = cur.fetchone()[0]
+                cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
+                            "VALUES (%s,'5121','4111',1210)", (n1,))
+                # F2 primita (luna 5), platita luna 6
+                cur.execute("INSERT INTO facturi (numar, data_emitere, total, tva, directie) "
+                            "VALUES ('F2','2026-05-22',555,55,'primita') RETURNING id")
+                f2 = cur.fetchone()[0]
+                cur.execute("INSERT INTO factura_linii (factura_id, descriere, cantitate, pret_unitar, cota_tva) "
+                            "VALUES (%s,'servicii',1,500,11)", (f2,))
+                cur.execute("INSERT INTO inregistrari (data, factura_id, status, sursa) "
+                            "VALUES ('2026-06-12',%s,'validata','test') RETURNING id", (f2,))
+                n2 = cur.fetchone()[0]
+                cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
+                            "VALUES (%s,'401','5121',555)", (n2,))
+                # F3 taxare inversa emisa (regim general art.282(6)) incasata 5000 in luna 6 -> EXCLUSA din
+                # cash-basis. Daca ar intra, R9_1 ar deveni ~5132 si asertiile de mai jos ar pica (gard).
+                cur.execute("INSERT INTO facturi (numar, data_emitere, total, tva, directie, taxare_inversa) "
+                            "VALUES ('F3','2026-05-25',5000,0,'emisa',true) RETURNING id")
+                f3 = cur.fetchone()[0]
+                cur.execute("INSERT INTO factura_linii (factura_id, descriere, cantitate, pret_unitar, cota_tva) "
+                            "VALUES (%s,'fier vechi',1,5000,21)", (f3,))
+                cur.execute("INSERT INTO inregistrari (data, factura_id, status, sursa) "
+                            "VALUES ('2026-06-15',%s,'validata','test') RETURNING id", (f3,))
+                n3 = cur.fetchone()[0]
+                cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
+                            "VALUES (%s,'5121','4111',5000)", (n3,))
+            yield conn
+        finally:
+            conn.rollback()
+
+
+@pytest.mark.skipif(not _db300_ok(), reason="DB indisponibil")
+def test_tva_incasare_exigibil_la_decontare_nu_la_emitere(conn_tvai):
+    # luna 6 (decontare): exigibil. F1 incasat -> R9 21%; F2 platit -> R23 11%.
+    prof, facturi = _d300mod.pull(conn_tvai, _SCHEMA_TVAI, Perioada(2026, luna=6))
+    assert prof["tva_la_incasare"] is True
+    res = calcul_d300(prof, Perioada(2026, luna=6), facturi)
+    assert (res.R["R9_1"], res.R["R9_2"]) == (1000, 210)    # colectata 21% la incasare
+    assert (res.R["R23_1"], res.R["R23_2"]) == (500, 55)    # deductibila 11% la plata
+    # luna 5 (emitere, dar NEDECONTAT inca): nimic exigibil
+    prof5, fac5 = _d300mod.pull(conn_tvai, _SCHEMA_TVAI, Perioada(2026, luna=5))
+    res5 = calcul_d300(prof5, Perioada(2026, luna=5), fac5)
+    assert res5.R.get("R9_1", 0) == 0 and res5.R.get("R23_1", 0) == 0
+
+
+@pytest.mark.skipif(not _db300_ok() or not _D300_DUK, reason="DB/DUK d300")
+def test_tva_incasare_d300_proba_duk_valid(conn_tvai):
+    prof, facturi = _d300mod.pull(conn_tvai, _SCHEMA_TVAI, Perioada(2026, luna=6))
+    res = calcul_d300(prof, Perioada(2026, luna=6), facturi)
+    rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins D300 TVA la incasare: %s" % rez.get("erori")

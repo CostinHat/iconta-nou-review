@@ -135,10 +135,29 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     ded = {21: Z(), 11: Z(), 9: Z()}
     alte_l = alte_a = 0
 
+    # TVA la incasare (art.282 alin.3 CF, OUG 8/2026): pentru firmele care aplica sistemul,
+    # exigibilitatea intervine la INCASARE (colectata) / PLATA (deductibila), proportional cu
+    # suma decontata (art.282 alin.8: suta marita - fiecare decontare include TVA). Sursa
+    # decontarilor = notele contabile legate de factura (nu emiterea) - vezi pull(). Fara acest
+    # regim: exigibilitate la faptul generator (emitere), comportament neschimbat.
+    tvai = bool(prof.get("tva_la_incasare"))
     for f in facturi:
         emisa = (f.get("directie") == "emisa")
-        for (ci, baza) in _segmente(f):
-            tva = baza * Decimal(ci) / Decimal(100) if ci else Decimal(0)
+        if tvai:
+            from core import tva_incasare as _tvi
+            segmente = []
+            for d in (f.get("decontari") or []):
+                cd = d.get("cota")
+                ci = None if cd is None else int(round(float(cd)))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
+                gross = Decimal(str(d.get("suma") or 0))
+                if gross <= 0:
+                    continue
+                tva = _tvi.tva_din_incasare(gross, ci) if ci else Decimal(0)
+                segmente.append((ci, gross - tva, tva))   # (cota, baza exigibila, tva exigibil)
+        else:
+            segmente = [(ci, baza, (baza * Decimal(ci) / Decimal(100) if ci else Decimal(0)))
+                        for (ci, baza) in _segmente(f)]
+        for (ci, baza, tva) in segmente:
             if emisa:
                 if ci in col:
                     col[ci][0] += baza; col[ci][1] += tva
@@ -384,6 +403,64 @@ def build_xml(res):
             + ' '.join(A) + '/>')
 
 
+def _aloca_pe_cote(gross, linii, total_tva):
+    """Imparte suma DECONTATA (gross, incl. TVA) pe cotele facturii, proportional cu ponderea
+    gross a fiecarei cote (baza_cota x (100+cota)/100). Corecteaza limita multi-cota a postarilor
+    din reconciliere (care foloseau prima cota). Fallback fara linii: o cota din total/tva."""
+    if linii:
+        g = {}
+        for (cant, pret, cota) in linii:
+            if cota is None:
+                continue
+            ci = int(round(float(cota)))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
+            baza = Decimal(str(cant)) * Decimal(str(pret))
+            g[ci] = g.get(ci, Decimal(0)) + baza * (100 + ci) / 100
+        tg = sum(g.values(), Decimal(0))
+        if tg > 0:
+            return [{"suma": gross * gc / tg, "cota": ci} for ci, gc in g.items()]
+    total, tva = (total_tva or (0, 0))
+    base = Decimal(str(total or 0)) - Decimal(str(tva or 0))
+    ci = int(round(float(tva) / float(base) * 100)) if (base and tva) else None  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
+    return [{"suma": gross, "cota": ci}] if ci else []
+
+
+def _pull_incasare(cur, inceput, sfarsit):
+    """Facturi cu DECONTARE (incasare cont 4111 / plata cont 401) VALIDATA in perioada. Pentru
+    fiecare, suma decontata alocata pe cote -> `decontari`. Exigibilitatea D300 se calculeaza din
+    aceste decontari (art.282 alin.3 CF), nu din emitere."""
+    cur.execute(
+        "SELECT i.factura_id AS fid, f.directie AS directie, SUM(l.suma) AS settled "
+        "FROM inregistrari i "
+        "JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
+        "JOIN facturi f ON f.id = i.factura_id "
+        "WHERE i.status = 'validata' AND i.factura_id IS NOT NULL "
+        "AND COALESCE(f.taxare_inversa, false) = false "  # art.282(6)/297(3): taxare inversa = regim general, nu la incasare
+        "AND i.data >= %s AND i.data < %s "
+        "AND ((f.directie = 'emisa' AND l.cont_credit = '4111') "
+        "  OR (f.directie = 'primita' AND l.cont_debit = '401')) "
+        "GROUP BY i.factura_id, f.directie", (inceput, sfarsit))
+    settle = cur.fetchall()
+    if not settle:
+        return []
+    fids = [r["fid"] for r in settle]
+    cur.execute("SELECT f.id AS fid, f.total, f.tva, l.cantitate, l.pret_unitar, l.cota_tva "
+                "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
+                "WHERE f.id = ANY(%s)", (fids,))
+    linii, totaluri = {}, {}
+    for r in cur.fetchall():
+        totaluri[r["fid"]] = (r["total"], r["tva"])
+        if r["cantitate"] is not None and r["cota_tva"] is not None:
+            linii.setdefault(r["fid"], []).append((r["cantitate"], r["pret_unitar"], r["cota_tva"]))
+    out = []
+    for r in settle:
+        gross = Decimal(str(r["settled"] or 0))
+        if gross <= 0:
+            continue
+        dec = _aloca_pe_cote(gross, linii.get(r["fid"]), totaluri.get(r["fid"]))
+        out.append({"directie": r["directie"], "decontari": dec})
+    return out
+
+
 def pull(conn, schema, perioada):
     import psycopg2.extras as _E
     _inc, _sf = perioada.interval()
@@ -391,9 +468,14 @@ def pull(conn, schema, perioada):
     sfarsit = _sf.isoformat()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT nume, cui, adresa, oras, judet, caen, banca, iban, tip_decont, pro_rata, "
+                    "COALESCE(tva_la_incasare, false) AS tva_la_incasare, "
                     "declarant_nume, declarant_prenume, declarant_functie "
                     "FROM firma_profil WHERE id = 1")
         prof = cur.fetchone() or {}
+        if prof.get("tva_la_incasare"):
+            # TVA la incasare: exigibilitate pe DECONTARI (incasari/plati validate in perioada),
+            # nu pe emitere. Vezi _pull_incasare.
+            return prof, _pull_incasare(cur, inceput, sfarsit)
         cur.execute("SELECT f.id, f.directie, f.total, f.tva, l.cantitate, l.pret_unitar, l.cota_tva "
                     "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
                     "WHERE f.data_emitere >= %s AND f.data_emitere < %s ORDER BY f.id",
