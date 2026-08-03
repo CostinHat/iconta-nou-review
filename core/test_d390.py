@@ -117,3 +117,18 @@ def test_tipuri_operatiune_sunt_exact_nomenclatorul_oficial_opanaf_705_2020():
     cere reverificarea la sursa - nomenclatorul spre ANAF nu se schimba tacit."""
     from core import d390
     assert d390.TIPURI == ("L", "T", "A", "P", "S", "R"), d390.TIPURI
+
+
+
+def test_d390_rotunjeste_aritmetic_nu_bancar_A91b():
+    """Sumele fiscale D390 se rotunjesc ARITMETIC (ROUND_HALF_UP), nu bancar. Referinta:
+    DUK regula A91b (ANAF cere half-up; Python round() e half-to-even). Proba pe valorile unde
+    difera - .5 urca MEREU, nu la parul cel mai apropiat. d390 e deja si in gardul de identitate
+    cross-generator (test_rotunjirea_e_identica_intre_generatoare) si in scanul anti-round() bancar
+    (test_toate_generatoarele_rotunjesc_aritmetic); asta fixeaza VALOAREA aritmetica, nu doar
+    egalitatea intre generatoare (daca toate ar fi bancare, identitatea ar trece fals)."""
+    from core.d390 import _int
+    assert _int(0.5) == 1      # bancar (round) ar da 0
+    assert _int(2.5) == 3      # bancar ar da 2
+    assert _int(112.5) == 113  # cazul canonic A91b (CAM 112 -> 113)
+    assert _int(1.4) == 1 and _int(1.6) == 2

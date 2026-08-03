@@ -5658,3 +5658,12 @@ nota istorica de introducere nu e pastrata, iar fostul alin.(3) apare doar ca "A
 TEMEI). Pt perioade < 2017 cota() REFUZA (PerioadaIndisponibila, fail-loud) - nu se presupune. Textul verbatim al
 fostului alin.(3) la 5% de reconfirmat cand apare o sursa istorica. Ce e SIGUR: articolele (alin.2=9%, alin.3=5%)
 si sfarsitul (31.07.2025, comasare Legea 141/2025).
+
+
+## 03.08.2026 — Cluster "rotunjire aritmetica (A91b)" (D390) INCHIS prin VERIFICARE. Referinta DUK regula A91b.
+
+d390._int (d390.py:59) foloseste ROUND_HALF_UP (schimbat de la round() bancar pe 27.07.2026). ANAF cere rotunjire
+ARITMETICA (half-up), nu bancara - validator DUK regula A91b (referinta de structura, NU temei normativ, §3.1).
+Deja gardat DUBLU: identitate cross-generator (d390._int == d300 == d112 == d205) + scan anti-round() bancar pe
+toate generatoarele. Adaugat proba d390-specifica pe VALOARE (paritate cu d300/d112/d205): _int(0.5)=1, _int(2.5)=3,
+_int(112.5)=113 (mutant bancar: 0/2/112). FARA fix necesar.
