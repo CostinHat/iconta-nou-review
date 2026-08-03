@@ -6235,3 +6235,26 @@ GENERALIZARE: text_anaf are o limita DEFAULT (75) potrivita doar pentru campuril
 (mai mare SAU mai mica) trebuie sa paseze limita EXPLICIT. Un camp emis fara _t deloc (den1) e la fel de periculos ca
 unul over-trunchiat. Consecinta: la fiecare generator, limita fiecarui atribut text = din structura ANAF a ACELUI
 formular, verificata pe DUK - nu se presupune 75 uniform (lectia extinde clusterul d112 "limita text 75").
+
+
+## 03.08.2026 — Cluster "randuri / checksum" (d300) — VERIFICAT CONFORM + gard golden (checksum + excludere 14.1/14.2).
+
+Verificare la sursa + proba DUK: totalPlata_A din D300 = suma(camp 27..124), cu campurile 62 (rd 14.1) si 63
+(rd 14.2) ELIMINATE din suma de control (struct D300). In cod rd 14.1/14.2 = R67/R68. Codul face
+res.total_plata_a = sum(res.R.values()) si build_xml emite res.total_plata_a - sursa unica, ca celelalte
+declaratii (aliniat cu clasa d100). R67/R68 nu-s in nicio allow-list manuala (gardul-clasa "randuri neacceptate"
+le ridica ValueError), deci nu pot intra niciodata in sum(res.R): excluderea 62/63 e respectata PRIN CONSTRUCTIE,
+nu prin scadere explicita. Probat: total_plata_a == sum(res.R) == 7810 == DUK valid; R67_1/R68_1 manual -> ValueError.
+
+Toate randurile emise (R1_* .. R65_*, R17/R27/R28/R32/R34/R37/R40/R41/R42 computate) cad in campurile 27..124;
+niciun rand sub 27 (header/identificare) sau eliminat (62/63) nu intra in suma. Cele 6 clustere d300 anterioare
+verificasera maparea rand-cu-rand (cote->randuri, achizitii, ajustari, exigibilitate, pro-rata, taxare inversa)
+si DUK-proba pe fiecare valida deja checksum-ul; lipsea DOAR gardul explicit pe formula checksum + pin-ul de
+excludere 14.1/14.2. Adaugate acum (fara fix de cod - d300 era deja conform).
+
+OBSERVATIE (datorie deschisa, in AFARA scopului randuri/checksum): adresa si den din D300 se emit prin
+text_anaf cu limita DEFAULT (~75). Probat pe DUK: adresa de 152 car. e ACCEPTATA -> 75 e OVER-trunchiere latenta
+(pierdere de date), exact clasa reparata la d205 (cluster "trunchiere den/adresa"). Docstring-ul lui text_anaf
+(27.07) sustine ca D300 respingea empiric >75 - afirmatie acum INFIRMATA de proba DUK (ca la D205). RECOMANDARE:
+un cluster/audit dedicat "limita text" pe TOATE declaratiile din lista 27.07 (D300/D301/D390/D394/D112) - limitele
+reale sunt cele din structura fiecarui formular, verificate pe DUK, NU 75 uniform. Nereparata aici: scop = checksum.

@@ -130,6 +130,38 @@ def test_cote_tva_d300_proba_duk_valid():
 
 
 # ============================================================
+#  Cluster randuri / checksum | d300: totalPlata_A = suma(camp 27..124) EXCEPT 62(14.1)/63(14.2).
+#  Struct D300 (structura_D300 OPANAF): checksum = suma tuturor randurilor R emise (fiecare rand R*_*
+#  = un camp 27..124); campurile 62/63 (rd 14.1=R67, 14.2=R68) au fost ELIMINATE din suma de control.
+# ============================================================
+@pytest.mark.skipif(not _D300_DUK, reason="DUK d300 indisponibil")
+def test_checksum_totalplata_a_egal_suma_randuri_emise_duk_valid():
+    """totalPlata_A emis == sum(res.R) (sursa unica, ca celelalte declaratii) SI e checksum-ul pe care
+    DUK il impune (ERR suma de control eronata daca difera). Decont fix: emisa 1210/210(21%) + 1110/110(11%)
+    + primita 1210/210(21%) -> golden 7810."""
+    facturi = [
+        {"directie": "emisa", "total": 1210, "tva": 210},
+        {"directie": "emisa", "total": 1110, "tva": 110},
+        {"directie": "primita", "total": 1210, "tva": 210},
+    ]
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
+    assert res.total_plata_a == sum(res.R.values()), "totalPlata_A trebuie sa fie suma randurilor emise"
+    assert res.total_plata_a == 7810, "golden checksum; got %d" % res.total_plata_a
+    rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins checksum-ul D300: %s" % rez.get("erori")
+
+
+def test_randuri_14_1_14_2_eliminate_nu_intra_in_checksum():
+    """Campurile 62(14.1=R67) si 63(14.2=R68) au fost ELIMINATE din suma de control (struct D300).
+    Nu-s in nicio allow-list manuala -> gardul-clasa le RESPINGE, deci nu pot intra niciodata in
+    sum(res.R) = totalPlata_A. Fara acest pin, adaugarea lor tacita in allow-list ar strica checksum-ul."""
+    facturi = [{"directie": "emisa", "total": 1210, "tva": 210}]
+    for rd in ("R67_1", "R68_1"):
+        with pytest.raises(ValueError, match="neacceptate"):
+            calcul_d300(_prof(), Perioada(2026, luna=6), facturi, manual={rd: 500})
+
+
+# ============================================================
 #  Cluster exigibilitate / TVA la incasare | d300 (art.282 alin.3+8 CF, OUG 8/2026).
 #  Firma pe sistem: exigibilitate la INCASARE/PLATA, proportional, suta marita.
 #  Calcul PUR (fara DB): facturile poarta `decontari=[{suma, cota}]` (sumele decontate in perioada).
