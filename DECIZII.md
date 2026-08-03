@@ -5068,6 +5068,13 @@ INLOCUIESTE partea de push automat din decizia 30.07 („bucla pe pasi cu commit
 MOTIV: main e partajat cu Costin; publicarea e decizie de produs, nu de executie (ARHITECT.md pct.4). Un push din initiativa executorului scoate din mainile lui Costin momentul publicarii.
 LIMITA: nu schimba igiena locala — `git pull --rebase` inainte de commit ramane.
 
+SIGURANTA (adaugat 03.08.2026, cerut de Costin) — OBLIGATIE a executorului, nu optiune: la finalul FIECAREI rulari,
+dupa poarta verde si tree curat, executorul face push pe ramura de SIGURANTA `backup/lant-<data>`. Ramura de
+siguranta NU e main, NU publica nimic, NU se merge-uieste - e doar a doua copie a muncii, in afara serverului.
+Push-ul de siguranta NU cere aprobare (spre deosebire de push-ul pe main): absenta lui e o DEFECTIUNE, nu o alegere.
+Un raport care nu declara `BACKUP: <ramura> — <n> commituri` e INCOMPLET. Regula push-main de mai sus ramane
+NESCHIMBATA: main tot decizia exclusiva a lui Costin.
+
 
 ## 02.08.2026 — CM4 plafon implementat; ziua 15; decizii de sesiune (d, f, g, i)
 

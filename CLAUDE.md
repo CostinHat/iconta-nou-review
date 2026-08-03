@@ -499,6 +499,12 @@ cu clusterul urmator, FARA sa astepte push.
    Un cluster fara sectiunea 9 completata NU se declara inchis: daca nu s-a adaugat niciun gard, sectiunea 9
    spune explicit de ce reaparitia e deja imposibila.
 
+8. **SIGURANTA.** Inainte de a raporta o rulare incheiata, executorul verifica faptul ca munca exista in DOUA
+   locuri: pe server (commit local) SI pe remote (ramura de siguranta `backup/lant-<data>`). Push-ul de siguranta
+   (nu pe main) se face dupa poarta verde si tree curat si NU cere aprobare - absenta lui e o defectiune. Daca
+   munca exista intr-un singur loc, executorul o spune EXPLICIT in raport, la PRIMA linie, nu la final. Raportul se
+   incheie cu `BACKUP: <ramura> — <n> commituri`.
+
 ## 2.1 De unde vin pasii
 
 Pasii unui fir traiesc in TESTE.md, la "In lucru acum". NU in conversatie.
