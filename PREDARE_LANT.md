@@ -75,7 +75,7 @@ PROBEAZA pe validatorul DUK, nu se ia pe incredere din comentariu. (Extinde R17:
   derogari temporare (OUG) care nu-s in textul consolidat.
 
 ## Datorii deschise (in DECIZII.md, campania "achitare datorii")
-ACHITATA rularea 3-4: limita text (toate declaratiile). NOUA (rularea 5, INPUT CERUT COSTIN): ASI in D394 - TIPURI are ASI dar D394Validator instalat il respinge ('nu se afla in lista'); decizie: scoate ASI din TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA (tool urmeaza validatorul) vs remapare AI/AS vs confirma versiune D394 la OPANAF; unde merg achizitiile scutite intracom daca ASI iese? (vezi DECIZII 03.08, gard test_asi_respins). Ramase: d406 DUK xfail (cont referit absent) - cand se
+ACHITATA rularea 3-4: limita text (toate declaratiile). NOUA (rularea 5, INVESTIGATA - asteapta greenlight Costin): ASI in D394. STABILIT: jar-ul instalat = versiunea CURENTA ANAF (J8.0.2, byte-identic), pdf-ul din anaf_surse e din 2020 (J4, OPANAF 3281/2020) - INVECHIT. ASI a fost SCOS in versiune post-2020 (nu-i in Parameters v3..v7 ale validatorului; 8 tipuri: A,L,C,V,AI,LS,AS,N). Deci codul urmeaza pdf-ul vechi. DE FACUT dupa greenlight Costin: scoate ASI din TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA (aliniere validator, clar corect) + confirma maparea fost-ASI->AS (evidenta 2020: AS/ASI erau pereche normal-vs-TVA-incasare; ASI eliminat) la OPANAF 77/2022. Vezi DECIZII 03.08. Ramase: d406 DUK xfail (cont referit absent) - cand se
 repara, se poate adauga proba boundary d406. nr_doc d301 (reguli de format DUK, nu lungime). Preexistente: A2
 (D390 ziua 15), A3 (D177 form), C1/C2 (tichete cresa/culturale MO), C3 (amortizare MF neliniara xfail), C4 (D112
 avantaje 8.3), C5 (migrare tichete). D101 scadenta lege-vs-validator (decizie produs Costin).

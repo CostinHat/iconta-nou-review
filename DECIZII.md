@@ -6395,3 +6395,22 @@ Alegerea cere Costin + confirmarea versiunii oficiale D394. Am consemnat cu gard
 
 INPUT CERUT (Costin): pentru versiunea curenta a validatorului D394, ASI e un tip valid sau scos? Daca scos, pe ce
 tip merg achizitiile scutite intracomunitare? (Acelasi tipar ca datoria codPR gaze naturale lit.l din acelasi modul.)
+
+
+## 03.08.2026 — ASI (d394): REZOLVARE INVESTIGATIE (jar vs pdf) — pdf-ul e invechit, jar-ul e curent.
+
+La cererea lui Costin (verifica versiunea jar vs data pdf inainte de decizie), am stabilit:
+
+1. **Jar-ul instalat = versiunea CURENTA ANAF, byte-identic.** D394Validator.jar instalat (md5 1ce55b54e2c4ec969ce7a827a12af986, 697332 B) e IDENTIC cu cel descarcat acum de la ANAF (update5/D394_31/D394Validator.jar). Versiunea curenta din D394IstoriaVersiunilor: **J8.0.2 (17-Sep-2025)**. Jar-ul NU e invechit.
+
+2. **Pdf-ul din anaf_surse e din 2020.** structD394_02092020.pdf = versiunea **J4.0.0 (02-Sep-2020, OPANAF 3281/2020)**. Intre timp: J6.0.0 (OPANAF 77/2022), J7.0.0 (feb 2025 caen), J8.0.0/8.0.2 (sep 2025). Pdf-ul e invechit cu ~5 ani / 4 versiuni majore.
+
+3. **ASI a fost SCOS din D394.** In toate seturile de parametri ale validatorului instalat (Parameters_v3..v7) "ASI" apare de 0 ori; validatorul are 8 tipuri: A, L, C, V, AI, LS, AS, N. Proba DUK (pe jar-ul curent) confirma: ASI respins, restul 8 acceptate. Deci codul (TIPURI cu 9 tipuri) urmeaza pdf-ul 2020, invechit.
+
+4. **Semantica 2020 (din pdf J4):** AS = "achizitii regim special catre pers care aplica sistemul NORMAL de TVA"; ASI = "achizitii regim special catre pers care aplica sistemul de TVA LA INCASARE". AS si ASI erau o PERECHE, diferentiate de sistemul de TVA al partenerului. In J8 a ramas doar AS.
+
+CONCLUZIE per arborele de decizie al lui Costin: jar CURENT + respinge ASI => **pdf-ul e invechit**. ASI trebuie SCOS din TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA (aliniere la validatorul curent, ca la D101 - tool-ul urmeaza validatorul).
+
+MAPARE (unde merg operatiunile fost-ASI): NU am putut confirma dintr-un document de structura ANAF CURENT - structurile pdf postate public sunt versiuni vechi (structura_D394.pdf si _v200.pdf sunt din 2013, 4 tipuri; structD394_02092020 e J4). Specificatia curenta (J8) e incorporata DOAR in jar, care nu documenteaza in text unde merg fost-ASI. Evidenta 2020 (AS/ASI = pereche normal-vs-incasare, ASI eliminat) INDICA PUTERNIC ca achizitiile regim special se consolideaza sub AS (distinctia dupa sistemul de TVA al partenerului a fost abandonata), dar NU e confirmat de un text oficial curent. NU am schimbat TIPURI (instructiune Costin: raporteaza intai; nu ghici remaparea).
+
+RAMANE PENTRU COSTIN: (a) greenlight pentru scoaterea ASI din TIPURI (aliniere validator - clar corecta); (b) confirmarea ca fost-ASI -> AS (achizitii regim special, indiferent de sistemul de TVA al partenerului) - sau o alta destinatie, de confirmat la sursa OPANAF 77/2022. Gardul test_asi_respins_de_validatorul_instalat_DATORIE ramane pana la rezolvare.
