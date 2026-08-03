@@ -90,7 +90,7 @@ def test_cota_doar_la_cod_121():
 
 def test_cod_bugetar_din_nomenclator():
     o = calcul_d710(_prof(), 2025, 3, _obl(cod="121")).obligatii[0]
-    assert o.cod_bugetar == COD_BUGETAR["121"] == "20470101"
+    assert o.cod_bugetar == COD_BUGETAR["121"] == "5503XXXXXX"
 
 
 def test_nr_evid_23_caractere_poz_3_5_cod_oblig():

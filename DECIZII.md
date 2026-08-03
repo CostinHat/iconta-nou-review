@@ -6023,3 +6023,18 @@ Corectat in d212_engine.py:4/40/46 + test_d212.py:11/53 + coloana temeiuri Inven
 OBSERVATIE (nu bug de calcul): calea 2026 (PLAFOANE_VENIT_2026, 72 sm) e codata+testata dar DORMANTA in productie -
 rip_api.py:145 blocheaza an != 2025 (corect/conservator pt sezonul curent: venituri 2025 depuse in 2026). Garda
 trebuie ridicata la an=2026 la deschiderea depunerii din 2027.
+
+
+## 03.08.2026 — Cluster "nomenclator cod_oblig<->cod_bugetar" (d100) — FIX cont bugetar obsolet + gard anti-drop.
+
+D100 mapa cod_oblig 121 (micro) si 103 (profit) la contul bugetar 20470101 - OBSOLET, inlocuit oficial cu 5503 din
+26.07.2018 (d100_struct_anaf.txt:562: "Se va inlocui peste tot contul bugetar 20470101 cu 5503"), + fara X-padare la
+C(10). COROBORARE INTERNA decisiva: d101 (acelasi cod_oblig 103) si d112 emit deja "5503XXXXXX" - d100 isi contrazicea
+fratii pentru exact aceeasi obligatie. FIX: COD_BUGETAR 121/103 -> "5503XXXXXX" (padat C(10), forma d101/d112). Sursa
+UNICA (d710 importa acelasi COD_BUGETAR din d100 - fixul propaga). Testele care cimentau 20470101 (d100/d710) actualizate.
+
+GARD anti-drop (clasa "drop tacit"): un cod_oblig fara cont bugetar (necunoscut in nomenclator) ridica acum ValueError,
+nu omite tacit atributul obligatoriu (care ar fi produs un XML respins de ANAF fara niciun avertisment).
+
+GENERALIZARE: 20470101 aparea DOAR in d100.COD_BUGETAR + testele d100/d710 (sursa unica). d112 foloseste corect
+5503XXXXXX (+ 20470300XX pentru CAM, cont diferit legitim). Clasa complet acoperita.

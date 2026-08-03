@@ -49,10 +49,11 @@ COD_BUGETAR = {
     # cod_oblig e CODUL din nomenclator (N(3)), NU pozitia din tabel. Impozit micro =
     # poz.5 in tabel, dar cod_oblig REAL = 121 (dovedit: d100_struct_anaf.txt "5. 121
     # (poz.5)" + validator "valoarea '5' nu se afla in lista"). cod bugetar = cont unic
-    # 20470101 (art.47/56 L227/2015), acelasi cont unic ca impozitul pe profit.
-    "121": "20470101",     # poz.5 Nomenclator: impozit pe veniturile microintreprinderilor
-    "103": "20470101",     # poz.2 Nomenclator: impozit pe profit/plati anticipate PJ romane
-                            # (altele decat institutii de credit) - cont unic
+    # 5503 X-padat la 10 caractere (ANAF C(10)), cont unic ca impozitul pe profit; contul 20470101
+    # a fost inlocuit oficial cu 5503 din 26.07.2018 (d100_struct_anaf.txt:562); d101/d112 emit deja "5503XXXXXX".
+    "121": "5503XXXXXX",     # poz.5 Nomenclator: impozit pe veniturile microintreprinderilor (cont unic 5503)
+    "103": "5503XXXXXX",     # poz.2 Nomenclator: impozit pe profit/plati anticipate PJ romane
+                             # (altele decat institutii de credit) - cont unic 5503
 }
 
 
@@ -135,6 +136,9 @@ def calcul_d100(prof, an, luna, obligatii):
             continue
         cod = str(o["cod_oblig"])
         cod_bug = o.get("cod_bugetar") or COD_BUGETAR.get(cod, "")
+        if not cod_bug:
+            raise ValueError("D100: cod_oblig %r fara cont bugetar (nu e in nomenclatorul COD_BUGETAR); "
+                             "atributul cod_bugetar e OBLIGATORIU (ANAF C(10)), nu se omite tacit." % cod)
         zi_s, luna_s, an_s = _scadenta_zile(an, luna)
         scad_str = o.get("scadenta") or ("%02d.%02d.%04d" % (zi_s, luna_s, an_s))
         obl.append(Obligatie(

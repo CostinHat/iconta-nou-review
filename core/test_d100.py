@@ -44,10 +44,10 @@ def test_nr_evid_cifra_de_control():
 
 def test_calcul_micro():
     # cod_oblig micro = 121 (codul din nomenclator), NU pozitia "5" (respinsa de
-    # validator: "valoarea '5' nu se afla in lista"). cont unic 20470101.
+    # validator: "valoarea '5' nu se afla in lista"). cont unic 5503 (X-padat C(10)).
     res = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "121", "suma_dat": 1000, "cota": "1"}])
     assert res.obligatii[0].cod_oblig == "121"
-    assert res.obligatii[0].cod_bugetar == COD_BUGETAR["121"] == "20470101"
+    assert res.obligatii[0].cod_bugetar == COD_BUGETAR["121"] == "5503XXXXXX"
 
 
 def test_micro_are_cota_1_pe_obligatie():
@@ -64,7 +64,7 @@ def test_micro_are_cota_1_pe_obligatie():
 def test_calcul_profit():
     res = calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "103", "suma_dat": 2400}])
     assert res.obligatii[0].cod_oblig == "103"
-    assert res.obligatii[0].cod_bugetar == "20470101"
+    assert res.obligatii[0].cod_bugetar == "5503XXXXXX"
 
 
 def test_obligatie_cu_suma_zero_nu_intra():
