@@ -78,10 +78,23 @@ def test_reclasificare_muta_tipul_fara_dubla_numarare():
     assert res.nr_opi == 1
 
 
-def test_reclasificare_ignora_tip_invalid():
-    """Un tip care nu e in nomenclator -> revine la default (nu strica calculul)."""
-    res = calcul_d390(_prof(), 2026, 6, _FACT_IC, reclasificari={("emisa", "IT", "00905811006"): "Z"})
-    assert res.rezumat["L"] == 5000
+def test_reclasificare_tip_invalid_ridica_nu_revine_tacit():
+    """Un tip care nu e legal (aici 'Z', nici in nomenclator) NU revine tacit la default -
+    ar fi MISCLASIFICARE tacuta. Ridica eroare vizibila, ACELASI principiu ca la liniile manuale
+    (tip introdus de contabil, invalid -> eroare, nu disparitie/schimbare tacuta)."""
+    with pytest.raises(ValueError) as e:
+        calcul_d390(_prof(), 2026, 6, _FACT_IC, reclasificari={("emisa", "IT", "00905811006"): "Z"})
+    m = str(e.value)
+    assert "reclasificare" in m.lower() and "Z" in m, m
+
+
+def test_reclasificare_directie_gresita_ridica():
+    """'A' (achizitie) e in nomenclator DAR ilegal pe o operatiune EMISA (livrare): achizitia nu
+    poate deveni livrare si invers (DECIZII 21.07). Read-side valideaza direciția ca write-side
+    (salveaza_reclasificare), nu accepta tacit un tip valid-dar-nepotrivit-directiei."""
+    with pytest.raises(ValueError) as e:
+        calcul_d390(_prof(), 2026, 6, _FACT_IC, reclasificari={("emisa", "IT", "00905811006"): "A"})
+    assert "direc" in str(e.value).lower(), str(e.value)
 
 
 def test_linie_manuala_se_adauga():

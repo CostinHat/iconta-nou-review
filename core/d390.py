@@ -49,6 +49,27 @@ _TARA_XML = {"HR": "CR"}
 
 TIPURI = ("L", "T", "A", "P", "S", "R")
 
+# Tipurile legale per DIRECTIE (OPANAF 705/2020: L/T/P/R = latura de livrare/prestare; A/S = latura de
+# achizitie). Sursa UNICA a regulii de tranzitie - importata si de d390_clasificare_api (write-side).
+TIPURI_DIRECTIE = {"emisa": ("L", "T", "P", "R"), "primita": ("A", "S")}
+
+
+def _reclasificare_tip(directie, tara, cod, recl, tip_def):
+    """Tipul reclasificat al unei operatiuni auto, VALIDAT contra directiei - la fel ca la scriere
+    (salveaza_reclasificare). Un override care nu e legal pentru directie (achizitia nu poate deveni
+    livrare si invers, DECIZII 21.07) RIDICA eroare vizibila, NU revine tacit la default: o revenire
+    tacuta ar fi misclasificare (intentia contabilului - ex. P - inlocuita tacut cu L). Acelasi
+    principiu ca gardul liniilor manuale (tip introdus de contabil, invalid -> eroare, nu disparitie
+    /schimbare tacuta). Pe date valide (scrierea valideaza deja) nu se schimba nimic."""
+    tip = recl.get((directie, tara, cod), tip_def)
+    if tip != tip_def and tip not in TIPURI_DIRECTIE.get(directie, ()):
+        raise ValueError(
+            "D390: reclasificare cu tip %r nepermis pentru directia %s (permise: %s). Un tip din "
+            "d390_reclasificare nelegal pentru directie trebuie sa produca eroare vizibila, nu sa "
+            "revina tacit la %r (misclasificare)."
+            % (tip, directie, "/".join(TIPURI_DIRECTIE.get(directie, ())), tip_def))
+    return tip
+
 
 def _esc(v):
     s = "" if v is None else str(v)
@@ -131,7 +152,7 @@ def operatiuni_auto(facturi, reclasificari=None):
         tip_def = "L" if directie == "emisa" else "A"
         out.append({"directie": directie, "tara": tara, "cod": cod, "den": den,
                     "baza": _int(b), "tip_default": tip_def,
-                    "tip_curent": recl.get((directie, tara, cod), tip_def)})
+                    "tip_curent": _reclasificare_tip(directie, tara, cod, recl, tip_def)})
     return sorted(out, key=lambda x: (x["directie"], x["tara"], x["cod"]))
 
 
@@ -147,9 +168,8 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
     ic, skip_nocui, skip_dom = _facturi_ic(facturi)
     for o in ic:
         tip_def = "L" if o["directie"] == "emisa" else "A"       # implicit: bunuri
-        tip = recl.get((o["directie"], o["tara"], o["cod"]), tip_def)  # override contabil
-        if tip not in TIPURI:
-            tip = tip_def
+        # override contabil, VALIDAT contra directiei (ca la scriere); invalid -> eroare, nu fallback tacit
+        tip = _reclasificare_tip(o["directie"], o["tara"], o["cod"], recl, tip_def)
         k = (tip, o["tara"], o["cod"], o["den"])
         ops[k] = ops.get(k, Decimal("0")) + o["baza"]
 

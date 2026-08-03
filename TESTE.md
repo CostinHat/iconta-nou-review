@@ -28,12 +28,12 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 > **Stare:** site în mentenanță (46507b5) — allowlist pe IP-ul lui Costin; revenire cu `mentenanta.sh off`.
 
-- fir: d390 cluster "rotunjire aritmetica (A91b)" — verificare ROUND_HALF_UP + proba d390-specifica pe valoare (lant)
-- ultim: decizie produs cote 9%/5% implementata (5d1edda).
-- urmator: cluster inchis prin verificare + proba. Ruleaza urmator_cluster(). GATA.
+- fir: d390 cluster "reclasificari manuale" — read-side valideaza reclasificarea ca write-side (fail-loud pe tip/directie invalida) (lant)
+- ultim: rotunjire aritmetica A91b|d390 verificat + proba (ef011cb).
+- urmator: cluster inchis (R1 comis). Ruleaza urmator_cluster(). GATA.
 - pasi:
-  N1. [verificare + proba] d390._int (d390.py:59) foloseste ROUND_HALF_UP (schimbat de la round() bancar 27.07, temei DUK regula A91b). Deja in 2 garduri: identitate cross-generator (test_rotunjirea_e_identica_intre_generatoare importa d390._int) + scan anti-round() bancar (test_toate_generatoarele_rotunjesc_aritmetic). FARA fix. Adaug proba d390-specifica pe VALOARE (paritate cu d300/d112/d205): _int(0.5)=1, _int(2.5)=3, _int(112.5)=113. Mutant: round() bancar ar da 0/2/112. Commit.
-  STARE = GATA (N1 verificat + proba comisa)
+  R1. [fix asimetrie reclasificare] Calea de SCRIERE (salveaza_reclasificare) valideaza tip+DIRECTIE (emisa:L/T/P/R, primita:A/S). Calea de CITIRE (calcul_d390:149 + operatiuni_auto) face fallback TACIT la default doar pe tip not in TIPURI -> misclasificare tacuta daca un override invalid ocoleste API (migrare/DB direct), si nu verifica direciția. Contrazice principiul gardului manual (tip contabil invalid -> eroare vizibila). Fix: TIPURI_DIRECTIE mutat in d390.py (sursa unica, fara import circular); helper _reclasificare_tip valideaza direciția si RIDICA (ca write-side + manual). Temei: DECIZII 21.07 "achizitia nu poate deveni livrare si invers" + OPANAF 705/2020 (semantica L/A). Nicio schimbare pe date valide. Test rosu: reclasificare "Z" si "A"-pe-emisa ridica. Commit.
+  STARE = GATA (R1 comis)
 
 - fir: SWEEP DUK toate declaratiile (redirectionare Costin 31.07: inainte de reconstructii, mapez cate sunt sparte pe validatorul CURENT)
 - ultim: sweep rulat pe schema efemera + profil complet + date minime adecvate (salariat/factura UE/dividende). Rezultat initial: 7 VALID + 2 sparte (d101, d406). d406 REZOLVAT 01.08 (bug de CALE, o linie): plan_oficial cauta d406_nomenclatoare_anaf.properties in radacina, dar fisierul e in anaf_surse/ -> set gol -> filtrarea pe norma (adaugata 15.07 tocmai pt 731 ONG) nu rula -> conturi ONG scapau in SAF-T comercial -> DUK respingea. Fix cale -> plan_oficial(A)=635, 731 exclus, d406 DUK VALID. RAMANE 1/9 SPART: d101 (reconstructie). Claim 16.07 infirmat.
@@ -244,51 +244,50 @@ CONSECINTE:
 
 Ordine DETERMINISTA a celor 64 clustere nebifate+neblocate, sortare topologica pe graf_clustere + departajare
 (a) FISCAL>STRUCTURA (b) deblocari desc (c) ordinea inventarului. Rescrisa 02.08: tichete masa/vacanta BIFAT ->
-iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. cota profit 16% + IMCA (cota verificata + IMCA implementat art.18^1) INCHIS 02.08 -> 60->59. amortizare|d101 (tratament art.28 aliniat; datorie MF metode) INCHIS 03.08 -> 59->58. baze contributii|d112 (cotele CAS/CASS/imp/CAM rutate period-aware prin COTE, value-preserving, aliniere Sesiunea A) INCHIS 03.08 -> 58->57. rotunjire aritmetica (A91b)|d112 (contributii aritmetice verificate; REPARAT minimul part-time care rotunjea bancar in B4_*P declarat) INCHIS 03.08 -> 57->56. sect_II tip_venit|d205 (structura OPANAF 102/2025 verificata; REPARAT impozit dividende hardcodat 10% -> period-aware 16%/2026 Legea 141/2025) INCHIS 03.08 -> 56->55. rotunjire|d205 (sumele fiscale rotunjesc aritmetic - verificat, deja corect prin _i ROUND_HALF_UP; gardat cross-generator + proba) INCHIS 03.08 -> 55->54. cote TVA->randuri|d300 (livrari 21/11/9 corecte; REPARAT achizitii deductibile 11% R74->R23 si 9% R76->manual, proba DUK; datorie 9% auto) INCHIS 03.08 -> 54->53. exigibilitate/TVA la incasare|d300 (IMPLEMENTAT art.282/297 OUG 8/2026: exigibilitate din decontari, suta marita, proportional, proba DUK) INCHIS 03.08 -> 53->52. taxare inversa|d300 (rd.12 reparat - R12_ lipsea din allow-list; GRI reverse-charge reconfirmat la sursa art.331+structuri) INCHIS 03.08 -> 52->51. pro-rata deducere|d300 (verificat corect art.300 - R31 ajustare Rd.33, net R28xpro_rata; gap de acoperire inchis + proba DUK) INCHIS 03.08 -> 51->50. rotunjire aritmetica|d300 (verificat aritmetic ROUND_HALF_UP, deja in gardul de identitate; proba d300-specifica) INCHIS 03.08 -> 50->49. ajustari|d300 (REPARAT R29/R30/R35/R36 aruncate din allow-list - ajustari/regularizari nedeclarate; proba DUK) INCHIS 03.08 -> 49->48. tipuri operatiune 1-5|d301 (verificat maparea tip->sectiune OPANAF 592/2016; gard tipuri 1/2/3 + proba DUK toate 5) INCHIS 03.08 -> 48->47. rollup S4.1->S4|d301 (verificat COMPLET - S4.1 subset din S4 OPANAF 592/2016, TVA nedublat, checksum, proba DUK; test_d301_rollup.py dedicat) INCHIS 03.08 -> 47->46. baza=val x curs|d301 (verificat CF art.290 alin.(2): baza=elemente_valuta x curs BNR/BCE la exigibilitate, rotunjire ROUND_HALF_UP corecta; REPARAT fabricare tacita curs=1 pe valuta - gard calc_baza pe None/<=0 + scos or 1 din generator+reader + scos DEFAULT 1 din schema; proba 1000x4.977=4977 / EUR fara curs->ValueError / RON=1->1234) INCHIS 03.08 -> 46->45. cota TVA|d301 (standard period-aware corect; REPARAT cota redusa literal 11 -> period-aware din common.cota, omisa pt perioade < 08.2025 unde reducerile erau 9%/5%; 2026 neschimbat [21,11,0]; decizie de produs deschisa: modelare 9%/5% coexistente) INCHIS 03.08 -> 45->44. tipuri operatiune IC (L/A/P/S)|d390 (VERIFICAT - mapare tip->simbol = nomenclator OPANAF 705/2020 L/T/A/P/S/R; codO/totalPlata_A/anti-drop conforme; gard-pin TIPURI==oficial adaugat) INCHIS 03.08 -> 44->43. rotunjire aritmetica (A91b)|d390 (VERIFICAT - _int ROUND_HALF_UP, gardat dublu identitate+scan; proba d390 pe valoare adaugata) INCHIS 03.08 -> 43->42. Identitate = cluster | modul (nume duplicate intre module).
+iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. cota profit 16% + IMCA (cota verificata + IMCA implementat art.18^1) INCHIS 02.08 -> 60->59. amortizare|d101 (tratament art.28 aliniat; datorie MF metode) INCHIS 03.08 -> 59->58. baze contributii|d112 (cotele CAS/CASS/imp/CAM rutate period-aware prin COTE, value-preserving, aliniere Sesiunea A) INCHIS 03.08 -> 58->57. rotunjire aritmetica (A91b)|d112 (contributii aritmetice verificate; REPARAT minimul part-time care rotunjea bancar in B4_*P declarat) INCHIS 03.08 -> 57->56. sect_II tip_venit|d205 (structura OPANAF 102/2025 verificata; REPARAT impozit dividende hardcodat 10% -> period-aware 16%/2026 Legea 141/2025) INCHIS 03.08 -> 56->55. rotunjire|d205 (sumele fiscale rotunjesc aritmetic - verificat, deja corect prin _i ROUND_HALF_UP; gardat cross-generator + proba) INCHIS 03.08 -> 55->54. cote TVA->randuri|d300 (livrari 21/11/9 corecte; REPARAT achizitii deductibile 11% R74->R23 si 9% R76->manual, proba DUK; datorie 9% auto) INCHIS 03.08 -> 54->53. exigibilitate/TVA la incasare|d300 (IMPLEMENTAT art.282/297 OUG 8/2026: exigibilitate din decontari, suta marita, proportional, proba DUK) INCHIS 03.08 -> 53->52. taxare inversa|d300 (rd.12 reparat - R12_ lipsea din allow-list; GRI reverse-charge reconfirmat la sursa art.331+structuri) INCHIS 03.08 -> 52->51. pro-rata deducere|d300 (verificat corect art.300 - R31 ajustare Rd.33, net R28xpro_rata; gap de acoperire inchis + proba DUK) INCHIS 03.08 -> 51->50. rotunjire aritmetica|d300 (verificat aritmetic ROUND_HALF_UP, deja in gardul de identitate; proba d300-specifica) INCHIS 03.08 -> 50->49. ajustari|d300 (REPARAT R29/R30/R35/R36 aruncate din allow-list - ajustari/regularizari nedeclarate; proba DUK) INCHIS 03.08 -> 49->48. tipuri operatiune 1-5|d301 (verificat maparea tip->sectiune OPANAF 592/2016; gard tipuri 1/2/3 + proba DUK toate 5) INCHIS 03.08 -> 48->47. rollup S4.1->S4|d301 (verificat COMPLET - S4.1 subset din S4 OPANAF 592/2016, TVA nedublat, checksum, proba DUK; test_d301_rollup.py dedicat) INCHIS 03.08 -> 47->46. baza=val x curs|d301 (verificat CF art.290 alin.(2): baza=elemente_valuta x curs BNR/BCE la exigibilitate, rotunjire ROUND_HALF_UP corecta; REPARAT fabricare tacita curs=1 pe valuta - gard calc_baza pe None/<=0 + scos or 1 din generator+reader + scos DEFAULT 1 din schema; proba 1000x4.977=4977 / EUR fara curs->ValueError / RON=1->1234) INCHIS 03.08 -> 46->45. cota TVA|d301 (standard period-aware corect; REPARAT cota redusa literal 11 -> period-aware din common.cota, omisa pt perioade < 08.2025 unde reducerile erau 9%/5%; 2026 neschimbat [21,11,0]; decizie de produs deschisa: modelare 9%/5% coexistente) INCHIS 03.08 -> 45->44. tipuri operatiune IC (L/A/P/S)|d390 (VERIFICAT - mapare tip->simbol = nomenclator OPANAF 705/2020 L/T/A/P/S/R; codO/totalPlata_A/anti-drop conforme; gard-pin TIPURI==oficial adaugat) INCHIS 03.08 -> 44->43. rotunjire aritmetica (A91b)|d390 (VERIFICAT - _int ROUND_HALF_UP, gardat dublu identitate+scan; proba d390 pe valoare adaugata) INCHIS 03.08 -> 43->42. reclasificari manuale|d390 (FIX asimetrie: read-side facea fallback tacit la default pe reclasificare invalida; acum valideaza direciția ca write-side si ridica, TIPURI_DIRECTIE sursa unica in d390.py) INCHIS 03.08 -> 42->41. Identitate = cluster | modul (nume duplicate intre module).
 
 **REGULA DE ORDONARE.** Clusterul A vine dupa B daca o functie din A foloseste o valoare care APARTINE lui B (dependenta din graf_clustere). Sortare topologica pe aceste dependente. Departajare cand mai multe sunt libere simultan, in ordinea: (a) intra intr-o declaratie DEPUSA la ANAF - proxy Risc=FISCAL, aproximatie DECLARATA, nu echivalenta; (b) cate clustere deblocheaza; (c) ordinea din inventar. Secventa se PERSISTA, nu se recalculeaza la fiecare rulare - altfel pozitia 7 de azi nu e pozitia 7 de maine. Se rescrie DOAR cand se schimba graful sau se adauga clustere, cu motivul consemnat (vezi randul 'Rescrisa 02.08' de mai sus).
-1. reclasificari manuale | d390
-2. exigibilitate / prag | d390
-3. cote acceptate | d394
-4. taxare inversa | d394
-5. SourceDocuments (facturi reale, PARTIAL) | d406
-6. plafon diurna neimpozabila | deconturi
-7. credit sponsorizare / D177 | sponsorizari
-8. rezerva legala | motor
-9. zilieri (impozit+CAS) | contracte_speciale
-10. regim marja second-hand | tva_marja
-11. regim marja turism | tva_marja_turism
-12. impozit dividend | decontari_asociati
-13. contributii PFA (praguri CAS/CASS pe sm) | d212
-14. nomenclator cod_oblig<->cod_bugetar | d100
-15. cota micro 121 (flag) | d100
-16. checksum totalPlata_A (R11b) | d100
-17. scadente/nr_evidenta | d100
-18. structura P1-P53 | d101
-19. R17 Data_S / termen | d101
-20. limita text 75 | d112
-21. nomenclator cod_oblig | d112
-22. checksum totalPlata_A | d205
-23. trunchiere den/adresa | d205
-24. randuri / checksum | d300
-25. checksum totalPlata_A (R28) | d301
-26. nomenclator tari (HR->CR) | d390
-27. tipuri operatiune (pct.215) | d394
-28. tip_partener | d394
-29. rezumat1 campuri complete | d394
-30. nomenclator codPR (art.331) | d394
-31. totalPlata_A (R17) | d394
-32. plan conturi pe norma | d406
-33. UoM UN/ECE | d406
-34. MovementType nomenclator | d406
-35. BaseRate (encoding pro-rata) | d406
-36. registration_number (00+CUI) | d406
-37. structura XSD (Header/MasterFiles/GLE) | d406
-38. structura declaratie710 | d710
-39. nomenclator COD_BUGETAR | d710
-40. checksum R11b | d710
-41. R15 termen definitivare | d710
-42. scadente | d710
+1. exigibilitate / prag | d390
+2. cote acceptate | d394
+3. taxare inversa | d394
+4. SourceDocuments (facturi reale, PARTIAL) | d406
+5. plafon diurna neimpozabila | deconturi
+6. credit sponsorizare / D177 | sponsorizari
+7. rezerva legala | motor
+8. zilieri (impozit+CAS) | contracte_speciale
+9. regim marja second-hand | tva_marja
+10. regim marja turism | tva_marja_turism
+11. impozit dividend | decontari_asociati
+12. contributii PFA (praguri CAS/CASS pe sm) | d212
+13. nomenclator cod_oblig<->cod_bugetar | d100
+14. cota micro 121 (flag) | d100
+15. checksum totalPlata_A (R11b) | d100
+16. scadente/nr_evidenta | d100
+17. structura P1-P53 | d101
+18. R17 Data_S / termen | d101
+19. limita text 75 | d112
+20. nomenclator cod_oblig | d112
+21. checksum totalPlata_A | d205
+22. trunchiere den/adresa | d205
+23. randuri / checksum | d300
+24. checksum totalPlata_A (R28) | d301
+25. nomenclator tari (HR->CR) | d390
+26. tipuri operatiune (pct.215) | d394
+27. tip_partener | d394
+28. rezumat1 campuri complete | d394
+29. nomenclator codPR (art.331) | d394
+30. totalPlata_A (R17) | d394
+31. plan conturi pe norma | d406
+32. UoM UN/ECE | d406
+33. MovementType nomenclator | d406
+34. BaseRate (encoding pro-rata) | d406
+35. registration_number (00+CUI) | d406
+36. structura XSD (Header/MasterFiles/GLE) | d406
+37. structura declaratie710 | d710
+38. nomenclator COD_BUGETAR | d710
+39. checksum R11b | d710
+40. R15 termen definitivare | d710
+41. scadente | d710
 ## Inventarul de acoperit în A
 
 Per CLUSTER de reguli, nu per fișier (30.07.2026) — un √ pe fișier ascundea că doar o parte din
@@ -360,7 +359,7 @@ clustere.
 | tipuri operatiune IC (L/A/P/S) | d390 | test_d390.py | √ 03.08 (VERIFICARE - fara fix necesar. TIPURI=(L,T,A,P,S,R) d390.py:50 = EXACT nomenclatorul OPANAF 705/2020 (anaf_surse/d390_struct_anaf.txt): L livrari IC bunuri, T triunghiulare, A achizitii IC bunuri, P prestari IC servicii, S achizitii IC servicii, R livrari IC regim special agricultori. codO obligatoriu L/T/P/R (:206), totalPlata_A (:177), gard anti-drop manual (:159 raise) - conforme. GARD-PIN nou: TIPURI==lista oficiala, mutant probat. Obs tangentiale: reclasificare fallback tacit L/A pe tip invalid din DB (misclasif, nu drop); XI tara post-Brexit tine de clusterul nomenclator tari) | FISCAL | OPANAF 705/2020 (nomenclator tip operatiune D390) | test_tipuri_operatiune_sunt_exact_nomenclatorul_oficial_opanaf_705_2020 test_d390_manual_tip_necunoscut_ridica_nu_dispare test_reclasificare_ignora_tip_invalid |
 | nomenclator tari (HR->CR) | d390 | test_d390.py |  | STRUCTURA |  |  |
 | rotunjire aritmetica (A91b) | d390 | test_d390.py | √ 03.08 (VERIFICARE - fara fix. d390._int (d390.py:59) = ROUND_HALF_UP (schimbat de la round() bancar 27.07). ANAF cere half-up nu bancar (DUK regula A91b - referinta validator, nu act normativ §3.1). Deja gardat dublu: identitate cross-generator (test_rotunjirea_e_identica_intre_generatoare importa d390._int) + scan anti-round() bancar (test_toate_generatoarele_rotunjesc_aritmetic). Adaugat proba d390 pe valoare: _int(0.5)=1/2.5=3/112.5=113 (mutant bancar 0/2/112)) | FISCAL | DUK regula A91b (rotunjire aritmetica ANAF - referinta validator) | test_d390_rotunjeste_aritmetic_nu_bancar_A91b test_rotunjirea_e_identica_intre_generatoare test_toate_generatoarele_rotunjesc_aritmetic |
-| reclasificari manuale | d390 | test_d390.py |  | FISCAL |  |  |
+| reclasificari manuale | d390 | test_d390.py | √ 03.08 (FIX asimetrie read-side. Scrierea (salveaza_reclasificare) valida tip+DIRECTIE (emisa:L/T/P/R, primita:A/S); citirea (calcul_d390+operatiuni_auto) facea fallback TACIT la default pe tip invalid, fara verif directie -> misclasificare tacuta daca un override ocolea API (migrare/DB). Contrazicea gardul liniilor manuale (:159). Fix: TIPURI_DIRECTIE mutat in d390.py (sursa unica, import in API fara ciclu) + helper _reclasificare_tip valideaza direciția si RIDICA in ambele cai citire. Pe date valide 0 schimbare. Proba: recl "Z"/"A-pe-emisa" -> ValueError) | FISCAL | DECIZII 21.07 (tranzitie directie: achizitia nu devine livrare) + OPANAF 705/2020 (semantica L/A/P/S/T/R) | test_reclasificare_tip_invalid_ridica_nu_revine_tacit test_reclasificare_directie_gresita_ridica test_reclasificare_muta_tipul_fara_dubla_numarare |
 | exigibilitate / prag | d390 | test_d390.py |  | FISCAL |  |  |
 | tipuri operatiune (pct.215) | d394 | test_d394.py |  | STRUCTURA |  |  |
 | tip_partener | d394 | test_d394.py |  | STRUCTURA |  |  |

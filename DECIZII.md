@@ -5667,3 +5667,19 @@ ARITMETICA (half-up), nu bancara - validator DUK regula A91b (referinta de struc
 Deja gardat DUBLU: identitate cross-generator (d390._int == d300 == d112 == d205) + scan anti-round() bancar pe
 toate generatoarele. Adaugat proba d390-specifica pe VALOARE (paritate cu d300/d112/d205): _int(0.5)=1, _int(2.5)=3,
 _int(112.5)=113 (mutant bancar: 0/2/112). FARA fix necesar.
+
+
+## 03.08.2026 — Cluster "reclasificari manuale" (D390) INCHIS. Temei DECIZII 21.07 + OPANAF 705/2020.
+
+ASIMETRIE reparata: calea de SCRIERE (salveaza_reclasificare) valida tip+DIRECTIE (emisa:L/T/P/R, primita:A/S),
+dar calea de CITIRE (calcul_d390 + operatiuni_auto) facea fallback TACIT la default doar pe tip not in TIPURI, fara
+verificare de directie. Un override invalid care ocolea API-ul (migrare / DB direct / o a doua cale de scriere) ->
+misclasificare tacuta (intentia contabilului, ex. P, inlocuita tacut cu L default), declaratie gresita la ANAF.
+Contrazicea principiul propriu al gardului liniilor manuale (tip contabil invalid -> eroare vizibila, nu disparitie
+/schimbare tacuta).
+
+FIX: TIPURI_DIRECTIE mutat in d390.py (sursa unica; importat de d390_clasificare_api - elimina si riscul de import
+circular). Helper _reclasificare_tip valideaza direciția (ca write-side) si RIDICA pe override nelegal, in AMBELE
+cai de citire (calcul + preview). Pe date valide: 0 schimbare (scrierea garanteaza validitatea, deci raise-ul nu se
+declanseaza pe fluxul UI). GENERALIZARE: acum toate cele 3 cai (scriere, citire-calcul, citire-preview) + liniile
+manuale trateaza identic un tip invalid = eroare vizibila. Clasa "input contabil invalid -> fail-loud" completa pe D390.

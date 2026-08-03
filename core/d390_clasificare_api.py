@@ -11,10 +11,9 @@ Validează tranzițiile la sursă (nu se poate face o achiziție să fie livrare
 (codO) e obligatoriu pentru L/T/P/R (ca în d390.valideaza), opțional pentru S/A.
 """
 from decimal import Decimal
-from core.d390 import TARI_UE, TIPURI, operatiuni_auto, pull, pull_manual, pull_reclasificari
+from core.d390 import TARI_UE, TIPURI, TIPURI_DIRECTIE, operatiuni_auto, pull, pull_manual, pull_reclasificari
 
-# tipurile legale per direcție (emisă = livrări; primită = achiziții)
-TIPURI_DIRECTIE = {"emisa": ("L", "T", "P", "R"), "primita": ("A", "S")}
+# TIPURI_DIRECTIE: sursa unica in core.d390 (regula de tranzitie, importata mai sus)
 _CU_COD_OBLIG = ("L", "T", "P", "R")  # codO obligatoriu (ca d390.valideaza)
 
 
