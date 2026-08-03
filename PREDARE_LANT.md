@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
-# PREDARE LANT — 03.08.2026 (rularea 5)
+# PREDARE LANT — 04.08.2026 (rularea 6)
 
 Sesiune noua, context gol. Comanda de pornire: "Citeste PREDARE_LANT.md si continua lantul."
 Raspunde in ROMANA. Server: `ssh iconta`, `~/iconta_nou` (branch main). Rulezi pytest/DUK/verificator/commit PE SERVER.
@@ -9,17 +9,18 @@ NU heredoc inline in `ssh "... <<'EOF' ..."` cu ghilimele Python `"` inauntru - 
 Pentru commit cu ghilimele simple in mesaj, foloseste `git commit -F fisier_mesaj`.
 
 ## Ritual de pornire (§5)
-1. `git log --oneline -1` -> HEAD asteptat: **bb6e0c4** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
-2. `venv/bin/python -m pytest -q` -> asteptat ~1342 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
+1. `git log --oneline -1` -> HEAD asteptat: **4fe547d** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
+2. `venv/bin/python -m pytest -q` -> asteptat ~1343 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
    verificator_conformitate.py` -> TOTAL 0 candidate.
 3. `venv/bin/python3 -c "from core import agenda; print(agenda.urmator_cluster())"`
-   -> **(('tip_partener', 'd394'), 15, 1)** = urmatorul cluster, 15 ramase, 1 blocat (preexistent).
+   -> **(('rezumat1 campuri complete', 'd394'), 13, 1)** = urmatorul cluster, 13 ramase, 1 blocat (preexistent).
 
-## Urmatorul cluster: tip_partener | d394
-D394. Verifica clasificarea tip_partener (1=RO cu TVA, 2=neinregistrat, 3=UE, 4=non-UE) - regulile pct.216 din
-structura + compatibilitatea cu tip-ul operatiunii. Vezi core/d394.py (clasifica_partener, ~pct.216) + test_d394.py
-(exista deja teste de clasificare: test_partener_ro_valid_e_tip_1 etc.). Tipar probabil VERIFICARE cu proba DUK
-(reguli R218.x pe cuiP/tip_partener). LECTIE: probeaza pe DUK, nu te increde in comentarii.
+## Urmatorul cluster: rezumat1 campuri complete | d394
+D394. Verifica ca setul de campuri emise in <rezumat1> (facturiL/bazaL/tvaL/... pe tip_partener x cota) e COMPLET
+si corect fata de structura CURENTA. ATENTIE: sursa curenta pentru D394 = anaf_surse/opanaf_77_2022.txt (OPANAF
+77/2022) + validatorul J8, NU d394_struct_anaf.txt (marcat INVECHIT - e din 2020/J4). Vezi core/d394.py
+(REZ1_FARA_TVA, rez1_tipuri, calcul rezumat1) + test_d394.py (exista teste pe setul rezumat1). Tipar: VERIFICARE cu
+proba DUK. LECTIE: probeaza pe DUK / textul din MO, NU pdf-ul de structura vechi (a produs bug-ul ASI).
 
 ## Ce am facut in rularea asta (MULT: audit mare + 6 clustere; HEAD 93b01a6 -> c185188)
 ### A. AUDIT "limita text" pe TOATE cele 9 declaratii cerute de Costin + d710 (2 commituri: 7be77a3 + 1687dec)
@@ -75,7 +76,7 @@ PROBEAZA pe validatorul DUK, nu se ia pe incredere din comentariu. (Extinde R17:
   derogari temporare (OUG) care nu-s in textul consolidat.
 
 ## Datorii deschise (in DECIZII.md, campania "achitare datorii")
-ACHITATA rularea 3-4: limita text (toate declaratiile). NOUA (rularea 5, INVESTIGATA - asteapta greenlight Costin): ASI in D394. STABILIT: jar-ul instalat = versiunea CURENTA ANAF (J8.0.2, byte-identic), pdf-ul din anaf_surse e din 2020 (J4, OPANAF 3281/2020) - INVECHIT. ASI a fost SCOS in versiune post-2020 (nu-i in Parameters v3..v7 ale validatorului; 8 tipuri: A,L,C,V,AI,LS,AS,N). Deci codul urmeaza pdf-ul vechi. DE FACUT dupa greenlight Costin: scoate ASI din TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA (aliniere validator, clar corect) + confirma maparea fost-ASI->AS (evidenta 2020: AS/ASI erau pereche normal-vs-TVA-incasare; ASI eliminat) la OPANAF 77/2022. Vezi DECIZII 03.08. Ramase: d406 DUK xfail (cont referit absent) - cand se
+ACHITATA rularea 3-4: limita text (toate declaratiile). ACHITATA rularea 6: ASI in D394 - REZOLVAT cu greenlight Costin. ASI scos din TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA (8 tipuri A,L,C,V,AI,LS,AS,N, aliniat validatorul J8). OPANAF 77/2022 (MO 95/2022, salvat anaf_surse/opanaf_77_2022.* cu sha256) CONFIRMA fost-ASI->AS. Fara date ASI de migrat (op1.tip nepersistat). Gard devenit INVERS (test_asi_ramane_scos_gard_invers). NOUA DATORIE (follow-up non-blocanta, rularea 6): d301_struct (2013) si d390_struct (2020) sunt surse INVECHITE in anaf_surse/ - reimprospateaza-le de la ANAF si re-verifica listele de tipuri/nomenclatoare pe validatorul curent, ca la d394 (codul lor e deja validator-verificat, non-urgent). d394_struct marcat INVECHIT (sursa curenta = opanaf_77_2022). LECTIE: un pdf de structura vechi in anaf_surse/ e o mina - marcheaza-l INVECHIT, sursa de tipuri/nomenclatoare = validatorul INSTALAT + ordinul din MO. Vezi DECIZII 03-04.08. Ramase: d406 DUK xfail (cont referit absent) - cand se
 repara, se poate adauga proba boundary d406. nr_doc d301 (reguli de format DUK, nu lungime). Preexistente: A2
 (D390 ziua 15), A3 (D177 form), C1/C2 (tichete cresa/culturale MO), C3 (amortizare MF neliniara xfail), C4 (D112
 avantaje 8.3), C5 (migrare tichete). D101 scadenta lege-vs-validator (decizie produs Costin).
