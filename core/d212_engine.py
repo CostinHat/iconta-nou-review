@@ -1,7 +1,7 @@
 """
 Motor calcul D212 - PFA/II/IF sistem real (partida simpla), conform:
 - Cod fiscal art. 148-149 (CAS), art. 154/170 (CASS), art. 68-69 (venit net)
-- Legea 141/2025 (plafon CASS 72 sm - aplicabil DOAR veniturilor 2026, D212 depusa 2027)
+- Legea 239/2025 art.XII pct.19 (plafon CASS 72 sm - aplicabil DOAR veniturilor 2026, D212 depusa 2027)
 - HG 1506/2024: salariu minim brut 2025 = 4050 lei (reper pt. D212 depusa in 2026)
 
 ATENTIE: plafoanele difera pe an fiscal al VENITULUI, nu pe anul depunerii.
@@ -37,13 +37,13 @@ def _sm_reper(an):
 
 def plafoane_an(an):
     """PlafoaneD212 pentru anul de venit `an`, cu salariul minim reper din cota() (nu hardcodat). Legea
-    141/2025 urca plafonul CASS de la 60 la 72 sm pentru venituri 2026+."""
+    239/2025 (art.XII pct.19) urca plafonul CASS de la 60 la 72 sm pentru venituri 2026+."""
     return PlafoaneD212(salariu_minim=_sm_reper(an), cass_prag_max_sm=72 if an >= 2026 else 60)
 
 
 # Venituri 2025 (declarate in D212 depusa in 2026) - reper sm din cota() (HG 1506/2024 = 4050).
 PLAFOANE_VENIT_2025 = plafoane_an(2025)
-# Venituri 2026 (declarate 2027) - Legea 141/2025 urca CASS la 72 sm. VERIFICAT LA SURSA 11.07.2026:
+# Venituri 2026 (declarate 2027) - Legea 239/2025 art.XII pct.19 (MO 1160/15.12.2025) urca CASS la 72 sm. VERIFICAT LA SURSA 03.08.2026:
 # reperul = salariul minim la 1 ian 2026 = 4050 (fix pe an, majorarea 4325 din iulie NU-l atinge).
 PLAFOANE_VENIT_2026 = plafoane_an(2026)
 

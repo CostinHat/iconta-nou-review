@@ -6005,3 +6005,21 @@ FIX: 3 intrari VERIFICATE la sursa (anaf_surse/impozit_dividende_istoric_cote.tx
 TESTELE care cimentau 10% (test_impozit_dividend.py, test_d205.py) - clasa "teste care apara buguri", motivul
 ne-auto-detectarii - actualizate la valorile reale. Restul (conturi 457/446/5121, mecanica notelor, D205 pe 16%
 2026, lichidare) conform.
+
+
+## 03.08.2026 — Cluster "contributii PFA (praguri CAS/CASS pe sm)" (d212) — VERIFICAT conform + fix citare temei.
+
+Calculul contributiilor PFA in D212 (d212_engine.py) e CONFORM: CAS 25%% pe praguri 12/24 sm (CF art.148: <12 sm
+optional baza 12; [12,24) baza 12; >=24 baza 24), CASS 10%% model LINIAR pe venitul net efectiv intre 6 sm si
+plafon 60/72 sm (CF art.170 alin.1 - treptele 6/12/24 din alin.2-3 sunt DOAR pt venituri pasive lit.c-h, nu PFA),
+impozit 10%% pe (net - CAS - CASS). sm period-aware din common.cota (reper 1 ian). Plafon 60->72 sm comuta pe an.
+Cablat in productie (rip_api.fisa_d212 -> main.py endpoint /rip/d212). Gardat de test_d212.py (valori) + reper.
+
+FIX de TEMEI (§3.1 - citare mecanica): plafonul CASS 72 sm pentru venituri 2026 era atribuit gresit "Legea 141/2025"
+(aceea modifica TVA/accize, MO 699/25.07.2025). Sursa corecta (CF art.170 alin.1) = Legea 239/2025 art.XII pct.19
+(MO 1160/15.12.2025), aplicabila veniturilor 2026. Valoarea (72 sm) e corecta si confirmata; gresit era doar actul.
+Corectat in d212_engine.py:4/40/46 + test_d212.py:11/53 + coloana temeiuri Inventar A.
+
+OBSERVATIE (nu bug de calcul): calea 2026 (PLAFOANE_VENIT_2026, 72 sm) e codata+testata dar DORMANTA in productie -
+rip_api.py:145 blocheaza an != 2025 (corect/conservator pt sezonul curent: venituri 2025 depuse in 2026). Garda
+trebuie ridicata la an=2026 la deschiderea depunerii din 2027.

@@ -8,7 +8,7 @@ rulau sub pytest, nu erau in plasa de regresie. Aduse aici ca teste reale.
 Sursa praguri (obiectiva, lege): Cod fiscal art.148-149 (CAS), 154/170 (CASS), 68-69
 (venit net). salariu_minim reper 2025/2026 = 4050 lei (HG 1506/2024; fix pe an,
 instructiuni formular 212). CAS 25% in trepte 12/24 sm; CASS 10% liniar 6..60 sm
-(72 sm pentru venituri 2026, Legea 141/2025); impozit 10%.
+(72 sm pentru venituri 2026, Legea 239/2025 art.XII pct.19); impozit 10%.
 """
 from core.d212_engine import (
     calculeaza_cas, calculeaza_cass, calculeaza_d212,
@@ -50,7 +50,7 @@ def test_cass_peste_60sm_plafonat_2025():
     assert r["baza"] == 243000 and r["cass"] == 24300.0
 
 def test_cass_plafon_2026_urcat_la_72sm():
-    # Legea 141/2025: plafon CASS 72 sm pt venituri 2026 (72*4050=291600)
+    # Legea 239/2025 art.XII pct.19: plafon CASS 72 sm pt venituri 2026 (72*4050=291600)
     r = calculeaza_cass(300000, PLAFOANE_VENIT_2026)
     assert r["baza"] == 291600 and r["cass"] == 29160.0
 
