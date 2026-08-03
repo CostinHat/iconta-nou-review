@@ -6502,3 +6502,23 @@ datorie: test_rezumat1_tp2_neinreg_N_respins_de_validator_DATORIE (cand J8 accep
 
 INPUT CERUT (Costin): pentru achizitiile de la parteneri neinregistrati (tip 2 / N) - implementam suportul auto
 (a) sau excludem cu avertisment (b) pana la o implementare completa? Si de unde vine tip_N (bunuri/servicii)?
+
+
+## 04.08.2026 — Operatiuni N (d394): EXECUTAT approach (b) - excludere cu avertisment vizibil (decizie Costin).
+
+Costin a ales approach (b) (nu a/c): tip_N e continut declarat, nu derivabil - un default gresit ar produce o
+declaratie ACCEPTATA dar FALSA (mai rau decat una respinsa); (c) blocarea e disproportionata (un tenant cu o
+singura achizitie de la neinregistrat n-ar mai putea depune deloc).
+
+IMPLEMENTAT in calcul_d394: operatiunile N (auto din facturi fara CUI SI manuale) se EXCLUD din op1/rezumat1, cu
+un AVERTISMENT VIZIBIL (in res.avertismente -> UI + fluxul de generare, nu doar log) care NUMESTE furnizorii si
+sumele excluse ("ATENTIE: N operatiune(i) N EXCLUSE ... Furnizori/sume: <nume> (baza <x> lei); ..."). Restul
+declaratiei ramane VALID pe validatorul curent (probat DUK). Nu tacit, nu declaratie falsa, nu blocare totala.
+
+Garduri: test_operatiuni_N_excluse_cu_avertisment_vizibil (N absent din XML + avertisment numeste furnizor+suma +
+D394 valid); test_N_ar_fi_respins_de_validator_daca_emis_GARD_INVERS (anti-regresie: injecteaza op1 N -> J8 il
+respinge; ramane pana la implementarea completa, cand pica si anunta).
+
+DATORIE (in GARZI 04.08) pt implementarea COMPLETA (approach a, campanie proprie dupa decizia UI): op1.tip_N
+(camp nou contabil, UI bunuri/servicii), op1.tip_document (auto=1 facturi; 2-5 = extindere contract), rezumat1.
+document_N. Cand se implementeaza, se scoate excluderea si se aprinde gardul invers.

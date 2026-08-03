@@ -596,6 +596,22 @@ Temei: struct D100 poz.17a - "daca cod_oblig=121 atunci cota=1 altfel cota=null"
 | cota micro 121 bidirectional | core/d100.py build_xml (test_cota_micro_121_gard_bidirectional) | XML respins de validator: 121 fara cota="1" SAU cota pe alt cod_oblig | 121 fara cota -> ValueError; 103 cu cota -> ValueError; 121+cota=1 -> cota="1" in XML |
 
 
+## 04.08.2026 — DATORIE: suport COMPLET operatiuni N (D394) - ce lipseste (decizie Costin, approach a viitor)
+
+STARE CURENTA (approach b, livrat 04.08): operatiunile N (achizitii de la parteneri NEINREGISTRATI, tip_partener=2)
+se EXCLUD din D394 cu avertisment vizibil (numeste furnizor+suma in res.avertismente). D394 ramane valid pentru rest.
+
+CE LIPSESTE pentru implementarea COMPLETA (a) - campanie proprie, dupa ce se decide UI-ul:
+- **op1.tip_N** (pct.229: 1=bunuri / 2=servicii) - OBLIGATORIU pt tip N. E CONTINUT DECLARAT, nu derivabil din
+  factura fara ambiguitate -> CAMP NOU de introdus de CONTABIL, cu UI (pe factura/operatiunea de la neinregistrat).
+- **op1.tip_document** (pct.228: 1=facturi / 2=borderouri / 3=file carnet comercializare / 4=contracte / 5=alte) -
+  pt calea AUTO (factura) e 1=facturi; pt 2-5 = EXTINDERE DE CONTRACT (facturi/manual nu au campul, cere sursa noua).
+- **rezumat1.document_N** (pct.60, = op1.tip_document) - se emite din tip_document; conditioneaza facturiLS (R41.2:
+  facturiLS doar cand document_N=1).
+Cand se implementeaza, se SCOATE excluderea din calcul_d394 si se APRINDE gardul test_N_ar_fi_respins_de_validator_
+daca_emis_GARD_INVERS (care va pica -> semnal ca N e acum emis). Vezi DECIZII 04.08.
+
+
 ## 04.08.2026 — Gard rezumat1 campuri + datorie N (cluster "rezumat1 campuri complete")
 
 Temei: rezumat1 D394 cere campurile COMPLETE (0-umplut) pe (tip_partener, cota), setul din validatorul RULAT

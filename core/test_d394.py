@@ -182,32 +182,48 @@ def test_rezumat1_campuri_complete_tp1_tp3_valide_pe_validator():
     assert rez["stare"] == "valid", "rezumat1 tp1/tp3 respins de J8: %s" % rez.get("erori")
 
 
-def test_rezumat1_tp2_neinreg_N_respins_de_validator_DATORIE():
-    """DATORIE / NECONFORMITATE ACTIVA (04.08.2026): operatiunile N (achizitii de la parteneri NEINREGISTRATI,
-    tip_partener=2) sunt produse AUTOMAT din orice factura de achizitie fara CUI (tip_operatiune(primita,neinreg)
-    =N), DAR validatorul CURENT (J8) le RESPINGE: codul nu emite atributele tehnice cerute - op1.tip_document
-    (pct.228, obligatoriu pt tp2+N: 1=facturi..5=alte), op1.tip_N (pct.229: 1=bunuri/2=servicii), rezumat1.
-    document_N (pct.60, = tip_document, obligatoriu pt tp2+cota0); iar rezumat1 emite facturiLS/bazaLS pe care
-    R41.2/R42.2 le interzic cand document_N<>1. Acest gard CONSEMNEAZA respingerea (anti-regresie); cand se
-    implementeaza suportul N, se aprinde (xpass) si te anunta.
-    DECIZIE DE PRODUS (Costin): sourcing-ul tip_N (bunuri vs servicii din factura) e continut declarat - nu se
-    poate default fara sa declare gresit; suportul manual (borderouri/file carnet/contracte, tip_document 2-5)
-    cere extinderea contractului. Optiuni: (a) implementeaza N auto (tip_document=1 facturi, document_N=1, tip_N
-    din factura) + datorie pt tip_document 2-5 manual; (b) exclude N din declaratie cu avertisment vizibil (D394
-    submitabil pt restul, contabilul trateaza N separat) - NU produce tacit o declaratie respinsa; (c) blocheaza.
-    Vezi DECIZII 04.08."""
+def test_operatiuni_N_excluse_cu_avertisment_vizibil():
+    """DECIZIE Costin 04.08 (approach b): operatiunile N (achizitii de la parteneri NEINREGISTRATI, produse auto
+    din facturi fara CUI) se EXCLUD din D394 - NU tacit: cu AVERTISMENT VIZIBIL care NUMESTE furnizorul si suma
+    (in res.avertismente -> UI + fluxul de generare). Restul declaratiei RAMANE valid (submitabil). Motiv: tip_N
+    (bunuri/servicii) e continut declarat, un default gresit ar produce o declaratie ACCEPTATA dar FALSA."""
+    facturi = [_f("RO14399840", "emisa", 21, 1000, 210),
+               _f("", "primita", 0, 500, 0, nume="FURNIZOR NEINREG SRL")]  # -> N, exclus
+    res = calcul_d394(PROF, 2026, 6, facturi, serii_emise={"A": (1, 1)})
+    # N nu apare in declaratie
+    assert not any(k[0] == "N" for k in res.op1), "N trebuie EXCLUS din op1"
+    assert 'tip="N"' not in build_xml(res), "N nu trebuie sa apara in XML"
+    # avertisment VIZIBIL care numeste furnizorul si suma
+    av = " ".join(res.avertismente)
+    assert "EXCLUSE" in av and "FURNIZOR NEINREG SRL" in av and "500" in av, (
+        "avertismentul trebuie sa numeasca furnizorul si suma excluse; got: %s" % res.avertismente)
+    # restul declaratiei e valid pe validatorul curent
+    from core import duk
+    if duk.poate_valida("d394"):
+        rez = duk.valideaza(build_xml(res), "d394", an=2026, luna=6)
+        assert rez["stare"] == "valid", "restul D394 (fara N) trebuie sa fie valid: %s" % rez.get("erori")
+
+
+def test_N_ar_fi_respins_de_validator_daca_emis_GARD_INVERS():
+    """GARD ANTI-REGRESIE (ramane pana la implementarea completa a suportului N - decizie Costin 04.08).
+    Motivul pentru care N se EXCLUDE (nu se emite) e ca validatorul CURENT (J8) il RESPINGE: op1.tip_document
+    (pct.228) / rezumat1.document_N (pct.60) lipsesc. Injectam manual un op1 N intr-o declaratie valida si
+    confirmam ca J8 il respinge. Cand se implementeaza suportul N complet (tip_document/tip_N/document_N) SAU
+    validatorul ajunge sa accepte N fara ele, acest test PICA si te anunta sa reevaluezi excluderea."""
     from core import duk
     if not duk.poate_valida("d394"):
         import pytest
         pytest.skip("DUK d394 indisponibil")
-    facturi = [_f("RO14399840", "emisa", 21, 1000, 210),
-               _f("", "primita", 0, 500, 0)]   # achizitie de la neinregistrat -> N
-    res = calcul_d394(PROF, 2026, 6, facturi, serii_emise={"A": (1, 1)})
-    rez = duk.valideaza(build_xml(res), "d394", an=2026, luna=6)
+    facturi = [_f("RO14399840", "emisa", 21, 1000, 210)]
+    xml = build_xml(calcul_d394(PROF, 2026, 6, facturi, serii_emise={"A": (1, 1)}))
+    # injecteaza un op1 N (achizitie de la neinregistrat) fara atributele tehnice cerute
+    op_n = '  <op1 tip="N" tip_partener="2" cota="0" cuiP="" denP="X" nrFact="1" baza="500" tva="0"/>\n'
+    xml_n = xml.replace("</declaratie394>", op_n + "</declaratie394>")
+    rez = duk.valideaza(xml_n, "d394", an=2026, luna=6)
     er = str(rez.get("erori"))
-    assert rez["stare"] != "valid" and ("document_N" in er or "tip_document" in er), (
-        "Validatorul ACCEPTA acum N fara document_N/tip_document - suportul N pare implementat, reevalueaza "
-        "DATORIA. stare=%s erori=%s" % (rez.get("stare"), er[:200]))
+    assert rez["stare"] != "valid" and ("tip_document" in er or "document_N" in er or "N" in er), (
+        "Validatorul ACCEPTA acum un op1 N fara tip_document/document_N - suportul N pare (partial) valid; "
+        "reevalueaza EXCLUDEREA N (poate poate fi emis). stare=%s erori=%s" % (rez.get("stare"), er[:200]))
 
 
 def test_rez1_LS_la_orice_partener_cu_cota_0():

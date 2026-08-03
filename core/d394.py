@@ -311,6 +311,7 @@ def calcul_d394(prof, perioada, date, manual=None):
     categorii = {}     # cheie op1 -> {categorii art.331} pentru op11
     avert = []
     nefacturabile = 0
+    excluse_N = []   # (nume, cui, baza) operatiuni N excluse - decizie Costin 04.08 (approach b)
 
     def _adauga(tip, tp, cota, cuiP, denP, nrFact, baza, tva, cat=None):
         k = (tip, tp, int(cota), cuiP or "", (denP or "")[:200])
@@ -332,6 +333,15 @@ def calcul_d394(prof, perioada, date, manual=None):
             intracom += 1
             continue
         tip = tip_operatiune(f.get("directie"), f.get("taxare_inversa"), tp)
+        if tip == "N":
+            # Operatiunile N (achizitii de la parteneri NEINREGISTRATI, tip_partener=2) NU pot fi inca
+            # declarate VALID: validatorul ANAF (J8) cere op1.tip_document (pct.228), op1.tip_N (pct.229
+            # bunuri/servicii) si rezumat1.document_N (pct.60), pe care tool-ul nu le are inca (tip_N =
+            # CONTINUT declarat, cere UI). Le EXCLUDEM cu AVERTISMENT VIZIBIL (decizie Costin 04.08,
+            # approach b) - NU tacit: numim furnizorul si suma, ca sa nu producem o declaratie ACCEPTATA
+            # dar falsa (default gresit) nici una respinsa tacit. Vezi DECIZII/GARZI 04.08.
+            excluse_N.append((f.get("nume"), f.get("cui"), f.get("baza")))
+            continue
         cota = int(f.get("cota") or 0)
         if cota not in COTE:
             avert.append("Cotă TVA %s nedeclarabilă (acceptate: %s) — factură ignorată."
@@ -354,9 +364,21 @@ def calcul_d394(prof, perioada, date, manual=None):
             raise ValueError("D394: operatiune manuala cu tip necunoscut %r (acceptate: %s). Un tip introdus "
                              "de contabil care nu e in lista trebuie sa produca eroare vizibila, nu sa dispara "
                              "tacut din declaratie." % (op.get("tip"), ", ".join(map(str, TIPURI))))
+        if op.get("tip") == "N":
+            # Acelasi motiv ca la calea auto: N nu se poate declara valid inca -> exclus cu avertisment.
+            excluse_N.append((op.get("denP"), op.get("cuiP"), op.get("baza")))
+            continue
         _adauga(op["tip"], int(op.get("tip_partener") or P_TVA_RO), op.get("cota") or 0,
                 op.get("cuiP"), op.get("denP"), op.get("nrFact") or 1,
                 op.get("baza"), op.get("tva"))
+
+    if excluse_N:
+        lista = "; ".join("%s (baza %s lei)" % (n or (c or "fara CUI"), _int(b)) for n, c, b in excluse_N)
+        avert.append(
+            "ATENTIE: %d operatiune(i) N (achizitii de la parteneri NEINREGISTRATI) EXCLUSE din D394 - "
+            "validatorul ANAF nu le accepta inca (lipseste tip_N bunuri/servicii + tip_document). Furnizori/"
+            "sume excluse: %s. Declara-le SEPARAT manual; restul declaratiei RAMANE valid. (Suport N in curs - "
+            "vezi DECIZII/GARZI 04.08.)" % (len(excluse_N), lista))
 
     # rezumat1: unic pe (tip_partener, cota), CALCULAT din op1 (pct. 38-40).
     # ATENTIE: setul de atribute e ASIMETRIC si e cel din validatorul v5, nu unul
