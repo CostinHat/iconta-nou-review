@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
-# PREDARE LANT — 03.08.2026 (rularea 4)
+# PREDARE LANT — 03.08.2026 (rularea 5)
 
 Sesiune noua, context gol. Comanda de pornire: "Citeste PREDARE_LANT.md si continua lantul."
 Raspunde in ROMANA. Server: `ssh iconta`, `~/iconta_nou` (branch main). Rulezi pytest/DUK/verificator/commit PE SERVER.
@@ -9,17 +9,17 @@ NU heredoc inline in `ssh "... <<'EOF' ..."` cu ghilimele Python `"` inauntru - 
 Pentru commit cu ghilimele simple in mesaj, foloseste `git commit -F fisier_mesaj`.
 
 ## Ritual de pornire (§5)
-1. `git log --oneline -1` -> HEAD asteptat: **c185188** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
-2. `venv/bin/python -m pytest -q` -> asteptat ~1340 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
+1. `git log --oneline -1` -> HEAD asteptat: **bb6e0c4** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
+2. `venv/bin/python -m pytest -q` -> asteptat ~1342 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
    verificator_conformitate.py` -> TOTAL 0 candidate.
 3. `venv/bin/python3 -c "from core import agenda; print(agenda.urmator_cluster())"`
-   -> **(('tipuri operatiune (pct.215)', 'd394'), 16, 1)** = urmatorul cluster, 16 ramase, 1 blocat (preexistent).
+   -> **(('tip_partener', 'd394'), 15, 1)** = urmatorul cluster, 15 ramase, 1 blocat (preexistent).
 
-## Urmatorul cluster: tipuri operatiune (pct.215) | d394
-D394 = declaratia informativa livrari/achizitii nationale. Verifica maparea "tipuri operatiune" (pct.215 din
-structura/instructiuni) - tipurile de operatiune emise vs nomenclatorul oficial. Vezi core/d394.py + anaf_surse/
-d394_struct_anaf.txt. Tipar: VERIFICARE cu proba DUK (poate_valida('d394')=True); daca difera, red->green.
-LECTIE PROASPATA (vezi mai jos): NU te increde in comentarii care declara o regula "corecta" - probeaz-o pe DUK.
+## Urmatorul cluster: tip_partener | d394
+D394. Verifica clasificarea tip_partener (1=RO cu TVA, 2=neinregistrat, 3=UE, 4=non-UE) - regulile pct.216 din
+structura + compatibilitatea cu tip-ul operatiunii. Vezi core/d394.py (clasifica_partener, ~pct.216) + test_d394.py
+(exista deja teste de clasificare: test_partener_ro_valid_e_tip_1 etc.). Tipar probabil VERIFICARE cu proba DUK
+(reguli R218.x pe cuiP/tip_partener). LECTIE: probeaza pe DUK, nu te increde in comentarii.
 
 ## Ce am facut in rularea asta (MULT: audit mare + 6 clustere; HEAD 93b01a6 -> c185188)
 ### A. AUDIT "limita text" pe TOATE cele 9 declaratii cerute de Costin + d710 (2 commituri: 7be77a3 + 1687dec)
@@ -50,6 +50,10 @@ orice text >75") era FALSA - INFIRMATA de proba DUK boundary-cu-boundary pe fiec
 - **nomenclator tari (HR->CR) | d390** (c185188): NECONFORMITATE - maparea HR->CR era GRESITA. Proba DUK: tara=CR
   RESPINSA ("nu se afla in lista"), tara=HR VALID. _TARA_XML golit, Croatia emite HR. Restul TARI_UE conform
   (GB/XI DUK-valide pt 2026). Un partener croat real facea D390 respins - bug latent.
+- **tipuri operatiune (pct.215) | d394** (bb6e0c4): VERIFICAT (TIPURI = exact structura, pin adaugat) + DATORIE ASI.
+  Probat izolat pe DUK: validatorul accepta 8 tipuri (L/V/A/C/N/LS/AS/AI) dar RESPINGE **ASI** ("nu se afla in
+  lista") - struct pdf are ASI, jar-ul NU (discrepanta pdf-vs-jar). Corectare BLOCATA pe decizie produs (scoate ASI
+  vs remapare vs versiune validator - schimba ce declara contabilul). Gard anti-regresie adaugat. VEZI datoria jos.
 - (guvernanta §2.3 c1a679c: PREDAREA trimite la reguli - vezi prima linie a acestui fisier.)
 
 ## LECTIE MARE a rularii (de tinut minte): COMENTARIUL NU E O PROBA
@@ -71,7 +75,7 @@ PROBEAZA pe validatorul DUK, nu se ia pe incredere din comentariu. (Extinde R17:
   derogari temporare (OUG) care nu-s in textul consolidat.
 
 ## Datorii deschise (in DECIZII.md, campania "achitare datorii")
-ACHITATA in rularea asta: limita text (toate declaratiile). Ramase: d406 DUK xfail (cont referit absent) - cand se
+ACHITATA rularea 3-4: limita text (toate declaratiile). NOUA (rularea 5, INPUT CERUT COSTIN): ASI in D394 - TIPURI are ASI dar D394Validator instalat il respinge ('nu se afla in lista'); decizie: scoate ASI din TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA (tool urmeaza validatorul) vs remapare AI/AS vs confirma versiune D394 la OPANAF; unde merg achizitiile scutite intracom daca ASI iese? (vezi DECIZII 03.08, gard test_asi_respins). Ramase: d406 DUK xfail (cont referit absent) - cand se
 repara, se poate adauga proba boundary d406. nr_doc d301 (reguli de format DUK, nu lungime). Preexistente: A2
 (D390 ziua 15), A3 (D177 form), C1/C2 (tichete cresa/culturale MO), C3 (amortizare MF neliniara xfail), C4 (D112
 avantaje 8.3), C5 (migrare tichete). D101 scadenta lege-vs-validator (decizie produs Costin).
