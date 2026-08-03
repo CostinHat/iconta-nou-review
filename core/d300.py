@@ -181,11 +181,15 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     setr("R11_1", col[9][0]);  setr("R11_2", col[9][1])     # 9% tranzitoriu
 
     # rânduri manuale (intracomunitar, taxare inversă, regularizări, scutiri colectate)
+    # [GARD CLASA] _aplicate = cheile manual chiar aplicate. Orice cheie manual care nu ajunge in _aplicate
+    # produce eroare vizibila la final (vezi mai jos) - un rand introdus de contabil NU dispare tacit din
+    # decont. Asta face allow-list-urile incomplete SA STRIGE, nu sa inghita (bug R12/R29/R30/R35/R36/R38/R39/R43/R44).
+    _aplicate = set()
     for k, v in manual.items():
         if k.startswith(("R1_", "R2_", "R3_", "R4_", "R5_", "R6_", "R7_", "R8_",
                          "R12_",  # taxare inversa colectata (rd.12, auto-taxare beneficiar art.331) - se declara manual
                          "R13_", "R14_", "R15_", "R16_", "R64_", "R65_")):
-            setr(k, v)
+            setr(k, v); _aplicate.add(k)
 
     # R17 = TOTAL TAXĂ COLECTATĂ (formula oficială: sumă rd.1-18 cu excepții)
     # col.1 (bază) și col.2 (TVA) — pentru firma simplă: R9_1+R10_1+R11_1, R9_2+R10_2+R11_2
@@ -210,8 +214,19 @@ def calcul_d300(prof, perioada, facturi, manual=None):
         if k.startswith(("R18_", "R19_", "R20_", "R21_", "R23_", "R25_", "R26_",
                          "R29_", "R30_",  # ajustari/regularizari deductibila: R29 restituiri cumparatori straini, R30 regularizari taxa dedusa (feed R32)
                          "R35_", "R36_",  # regularizari rezultat: R35 sold reportat neachitat, R36 diferente inspectie fiscala (feed R37)
+                         "R38_", "R39_",  # rezultat: R38 sold negativ reportat (fara rambursare), R39 diferente negative inspectie (feed R40)
+                         "R43_", "R44_",  # ajustari deductibila incluse in totalul R27
                          "R72_", "R73_", "R75_")):
-            setr(k, v)
+            setr(k, v); _aplicate.add(k)
+
+    # [GARD CLASA] orice rand manual care nu s-a aplicat = EROARE VIZIBILA, nu drop tacit (cerinta Costin 03.08).
+    _necunoscute = [k for k in manual if k not in _aplicate]
+    if _necunoscute:
+        raise ValueError(
+            "D300: randuri 'manual' neacceptate: %s. Un rand introdus de contabil care nu e in lista de "
+            "randuri de intrare valide trebuie sa produca eroare vizibila, NU sa dispara tacut din decont "
+            "(cauze: typo in numele randului; sau rand COMPUTAT care nu se seteaza manual - ex. R17/R27/R28/"
+            "R32/R33/R34/R37/R40/R41/R42). Daca e un rand de intrare legitim, adauga-l in allow-list." % sorted(_necunoscute))
 
     # R27 = TOTAL TAXA DEDUCTIBILA (col.1 baza, col.2 TVA). Formula oficiala
     # (structura_D300_v12.0.0_10022026.pdf, randul 101-102):

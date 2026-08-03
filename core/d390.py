@@ -157,7 +157,10 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
     for op in (manual or []):
         tip = op.get("tip")
         if tip not in TIPURI:
-            continue
+            # [GARD CLASA] operatiune manuala a contabilului cu tip gresit -> eroare vizibila, nu drop tacit.
+            raise ValueError("D390: operatiune manuala cu tip necunoscut %r (acceptate: %s). Un tip introdus "
+                             "de contabil care nu e in lista trebuie sa produca eroare vizibila, nu sa dispara "
+                             "tacut din declaratie." % (tip, ", ".join(map(str, TIPURI))))
         tara = (op.get("tara") or "").upper()
         cod = (op.get("cod") or "")[:12]
         den = (op.get("den") or "")[:200]

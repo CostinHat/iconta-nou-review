@@ -98,3 +98,10 @@ def test_operatiuni_auto_arata_tipul_curent():
     assert len(ops) == 1
     assert ops[0]["tip_default"] == "L" and ops[0]["tip_curent"] == "P"
     assert ops[0]["baza"] == 5000
+
+
+def test_d390_manual_tip_necunoscut_ridica_nu_dispare():
+    # [GARD CLASA] operatiune manuala a contabilului cu tip gresit -> eroare vizibila, nu skip tacit.
+    with pytest.raises(ValueError) as e:
+        calcul_d390(_prof(), 2026, 6, [], [{"tip": "ZZZ", "tara": "DE", "cod": "X", "den": "y", "baza": 100}])
+    assert "tip necunoscut" in str(e.value)

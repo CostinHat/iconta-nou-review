@@ -5539,3 +5539,36 @@ se inventeaza rollup (test_fara_tip5_sectiunea_4_ramane_pe_tip4). Proba DUK end-
 
 INCHIDERE CLUSTER: "rollup S4.1->S4 | d301" √ 03.08. Fara datorie, fara cod nou (acoperire preexistenta +
 proba DUK adaugata la clusterul tipuri). Secventa 47 -> 46.
+
+
+## 03.08.2026 — GARD PE CLASA: allow-list manual incompleta -> eroare vizibila, nu drop tacit (cerut de Costin)
+
+La clusterele 1 (taxare inversa, R12) si 4 (ajustari, R29/R30/R35/R36) din lantul #2 s-au reparat doar
+INSTANTELE, nu clasa. Costin (03.08): un rand introdus de contabil care nu e in lista trebuie sa produca eroare
+VIZIBILA, nu sa dispara. Corectat acum pe clasa.
+
+RADACINA: generatoarele cu 'manual' filtrau cheile printr-un allow-list prefix (startswith) si ARUNCAU TACUT ce nu
+se potrivea. `_bad` prindea doar cheile ne-R; o cheie R care nu era in lista disparea fara urma. Asa s-au strecurat
+R12, apoi R29/R30/R35/R36, si (descoperit acum, tot aruncate tacit) R38/R39 (sold negativ reportat / diferente
+negative inspectie, feed R40) + R43/R44 (ajustari deductibila in rollup-ul R27).
+
+INVENTAR (cate randuri accepta fiecare generator vs. mecanismul de esec):
+- **d300**: allow-list R-key pe prefixe. Colectata 15 prefixe (R1-R8, R12-R16, R64, R65), deductibila/rezultat 18
+  prefixe (R18-R21, R23, R25-R26, R29-R30, R35-R36, R38-R39, R43-R44, R72-R73, R75). Structura oficiala = 119
+  campuri R distincte (multe COMPUTATE: R17/R27/R28/R32/R33/R34/R37/R40/R41/R42 - nu se seteaza manual). Inainte:
+  R-key neacoperit = drop tacit. ACUM: gard aplicate-sau-eroare (orice cheie manual neaplicata -> ValueError).
+- **d301**: `if manual: raise` - respinge TOT manual explicit. Sigur (0 acceptate, eroare vizibila).
+- **d112**, **d406**: fara parametru 'manual'. Nu exista mecanismul.
+- **d390**: manual = lista de operatiuni; `if tip not in TIPURI: continue` -> skip TACIT. ACUM: raise.
+- **d394**: manual = lista de operatiuni; cota gresita deja AVERTIZA (factura ignorata), dar tip gresit era skip
+  TACIT (`continue`). ACUM: raise.
+
+FIX: (a) d300 - allow-list completat cu R38/R39/R43/R44 + GARD CLASA: se urmareste multimea cheilor chiar aplicate;
+orice cheie manual neaplicata -> ValueError explicit (typo sau rand computat). Self-maintaining: urmatoarea
+allow-list incompleta STRIGA la prima folosire, nu inghite. (b) d390/d394 - tip necunoscut -> ValueError, nu
+continue. GARDURI: test_d300_manual_rand_necunoscut_ridica_nu_dispare, test_d390_manual_tip_necunoscut_ridica_nu_
+dispare, test_d394_manual_tip_necunoscut_ridica_nu_dispare (R99/tip ZZZ -> eroare vizibila).
+
+Efect pe produs: un contabil care tasteaza gresit un rand/tip in D300/D390/D394 primeste eroare clara, nu o
+declaratie tacit incompleta (sub-declarare invizibila). CLAUDE.md §2.3 pct.7 (RAPORTUL IN LANT) adaugat: sectiunea
+9 (garduri) e obligatorie la inchidere - un cluster fara gard nu se declara inchis.

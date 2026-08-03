@@ -343,7 +343,10 @@ def calcul_d394(prof, perioada, date, manual=None):
 
     for op in ops:
         if op.get("tip") not in TIPURI:
-            continue
+            # [GARD CLASA] operatiune manuala a contabilului cu tip gresit -> eroare vizibila, nu drop tacit.
+            raise ValueError("D394: operatiune manuala cu tip necunoscut %r (acceptate: %s). Un tip introdus "
+                             "de contabil care nu e in lista trebuie sa produca eroare vizibila, nu sa dispara "
+                             "tacut din declaratie." % (op.get("tip"), ", ".join(map(str, TIPURI))))
         _adauga(op["tip"], int(op.get("tip_partener") or P_TVA_RO), op.get("cota") or 0,
                 op.get("cuiP"), op.get("denP"), op.get("nrFact") or 1,
                 op.get("baza"), op.get("tva"))

@@ -390,3 +390,12 @@ def test_ajustari_d300_proba_duk_valid():
     res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi, {"R30_1": 500, "R30_2": 50, "R36_2": 100})
     rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
     assert rez["stare"] == "valid", "DUK a respins ajustari D300: %s" % rez.get("erori")
+
+
+def test_d300_manual_rand_necunoscut_ridica_nu_dispare():
+    # [GARD CLASA] un rand manual care nu e in allow-list produce EROARE VIZIBILA, nu drop tacit.
+    # Radacina bug-urilor R12 / R29-R30-R35-R36 / R38-R39-R43-R44: allow-list incompleta inghitea randuri.
+    import pytest as _pt
+    with _pt.raises(ValueError) as e:
+        calcul_d300(_prof(), Perioada(2026, luna=6), [], {"R99_1": 100})
+    assert "neacceptate" in str(e.value) and "R99_1" in str(e.value)

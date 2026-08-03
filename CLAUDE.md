@@ -493,6 +493,12 @@ cu clusterul urmator, FARA sa astepte push.
    atinse. Se SCRIE PE DISC (fisier de predare), nu doar in chat. Dupa ce ai scris predarea, OPRESTE-TE -
    nu incerca sa continui pe context compactat.
 
+7. **RAPORTUL IN LANT.** Fiecare cluster inchis primeste raportul lui conform §2.2, sectiunile 1-10, inclusiv
+   8 (generalizare pe clasa), 9 (garduri adaugate) si 10 (efect pe produs). Sinteza pe rulare NU inlocuieste
+   rapoartele per cluster - se adauga peste ele.
+   Un cluster fara sectiunea 9 completata NU se declara inchis: daca nu s-a adaugat niciun gard, sectiunea 9
+   spune explicit de ce reaparitia e deja imposibila.
+
 ## 2.1 De unde vin pasii
 
 Pasii unui fir traiesc in TESTE.md, la "In lucru acum". NU in conversatie.

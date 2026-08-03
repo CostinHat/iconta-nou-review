@@ -353,3 +353,12 @@ def test_cui_ro_normalizeaza():
     assert cui_ro("RO 14399840") == "14399840"
     assert cui_ro("14399840") == "14399840"
     assert cui_ro("") is None
+
+
+def test_d394_manual_tip_necunoscut_ridica_nu_dispare():
+    # [GARD CLASA] operatiune manuala a contabilului cu tip gresit -> eroare vizibila, nu skip tacit.
+    import pytest as _pt
+    with _pt.raises(ValueError) as e:
+        calcul_d394(PROF, 2026, 6, [], [{"tip": "ZZZ", "tip_partener": 1, "cota": 21,
+                                       "cuiP": "RO123", "denP": "X", "nrFact": 1, "baza": 100, "tva": 21}])
+    assert "tip necunoscut" in str(e.value)
