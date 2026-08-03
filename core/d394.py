@@ -97,6 +97,7 @@ CODPR = {
     "telefoane": "29",
     "circuite_integrate": "30",   # microprocesoare
     "console_tablete": "31",
+    "gaze_naturale": "36",
 }
 # Subcodurile NC valide pentru cereale/plante tehnice (Ghid pag. 26).
 CODPR_CEREALE = frozenset(("1001", "1002", "1003", "1004", "1005", "1201", "1205",

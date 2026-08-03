@@ -305,55 +305,7 @@ def test_datorie_d300_exigibilitate_tva_la_incasare():
     assert "d300 aplica exigibilitatea tva la incasare pentru firme pe regim" in dz.lower()
 
 
-@pytest.mark.xfail(strict=True, reason=(
-    "DATORIE 03.08.2026: art.331 alin.(2) lit.l) GAZE NATURALE (taxare inversa la livrarea de gaze "
-    "naturale catre comerciant persoana impozabila, in vigoare pana 31.12.2026 cf. alin.(6)) lipseste "
-    "din motor (taxare_inversa.CATEGORII implementeaza 11 din 12 litere, a-k) SI din maparea D394 "
-    "(d394.CODPR). Fix BLOCAT: codPR-ul D394 pentru gaze naturale NU e in nicio sursa ANAF din repo - "
-    "nomenclatorul e Ghid_D394_2016 (anterior Legii 296/2020 care a introdus gazele in art.331); "
-    "tip_partener=1 are codurile 21-31, iar 32-35 sunt REZERVATE tip_partener=2. Nu se inventeaza "
-    "codul (§3). Necesita structura/ghid D394 ANAF post-2021 cu codPR gaze naturale. La completare: "
-    "CATEGORII lit.l (expira 2026, fara prag) + d394.CODPR gaze; gardul "
-    "test_toate_categoriile_taxare_inversa_au_codpr_d394 le prinde impreuna."))
-def test_datorie_gaze_naturale_taxare_inversa_art331_lit_l():
-    """art.331 alin.(2) lit.l) gaze naturale = categorie de taxare inversa recunoscuta de motor SI
-    mapata la un codPR D394. Pana la confirmarea codPR-ului la sursa ANAF, ramane datorie."""
-    from core.taxare_inversa import CATEGORII
-    from core.d394 import CODPR
-    assert "gaze_naturale" in CATEGORII and "gaze_naturale" in CODPR
 
 
-@pytest.mark.xfail(strict=True, reason=(
-    "DATORIE 03.08.2026: plafonul diurnei are o SINGURA varianta datata 2018-01-01 "
-    "(deconturi._VARIANTE_PLAFON_DIURNA) care aplica RETROACTIV valorile de azi pentru 2018-2022: "
-    "(a) baza bugetara 23 lei (Ordinul 1235/2023) desi inainte de 2023 diurna interna HG 714/2018 avea "
-    "alta valoare; (b) capul '3 salarii' (CF art.76 alin.4^1, introdus de Legea 72/2022) aplicabil abia "
-    "de la 2023-01-01, aplicat si inainte. Un decont 2018-2022 foloseste regula gresita a epocii "
-    "(supra/sub-estimeaza neimpozabilul). Fix BLOCAT: valorile istorice ale diurnei bugetare (HG 714/2018 "
-    "si succesoare) NU sunt in sursele repo (0 surse HG diurna pe server); §3 nu se inventeaza. Necesita "
-    "HG-urile diurna + data trecerii la 23 lei. La completare: >=2 variante datate (2018 fara capul "
-    "3-salarii, cu valoarea epocii; 2023 cu 23 lei + cap), cu diurna bugetara ca parametru al variantei."))
-def test_datorie_plafon_diurna_period_aware_istoric():
-    """Plafonul diurnei versionat corect in timp: pre-2023 fara capul '3 salarii', cu diurna bugetara a
-    epocii. Pana la HG-urile diurna la sursa, ramane datorie (calculul CURENT e conform - test_deconturi)."""
-    from core.deconturi import _VARIANTE_PLAFON_DIURNA
-    assert len(_VARIANTE_PLAFON_DIURNA) >= 2
 
 
-@pytest.mark.xfail(strict=True, reason=(
-    "DATORIE 03.08.2026: creditul de sponsorizare pt MICROINTREPRINDERI nu e period-aware. "
-    "_credit_sponsorizare_2018 (core/sponsorizari.py) intoarce credit=0 pentru tip_impozit='micro' la "
-    "ORICE data >=2018, desi micro AVEA creditul (20% din impozitul micro, redirectabil D177) pana in "
-    "anul fiscal 2023 (fostul CF art.56 alin.1^5, ABROGAT de OUG 115/2023 de la 2024; cf.txt L1531/1571). "
-    "Codul aplica retroactiv eliminarea din 2024 - contrazice propriul docstring ('eliminarea micro -> "
-    "varianta datata noua, trecutul ramane calculabil'). Fix BLOCAT: rata (20%) si data de START a "
-    "creditului micro NU sunt in codul fiscal CONSOLIDAT (alin.1^5 apare doar 'Abrogat'); §3 nu se "
-    "inventeaza. Necesita textul istoric al art.56 alin.1^5 (OUG/lege de introducere). La completare: "
-    "varianta micro datata (2019/2020-2023: min(sponsorizare, 20% impozit micro)) + varianta eliminare 2024."))
-def test_datorie_credit_sponsorizare_micro_period_aware():
-    """Credit sponsorizare micro corect period-aware: non-zero pana in 2023 (20% impozit micro), zero din
-    2024. Pana la textul istoric al art.56 alin.1^5 la sursa, ramane datorie (profitul e conform)."""
-    from core.sponsorizari import credit_sponsorizare
-    from datetime import date
-    r = credit_sponsorizare(100000, 1000, 500, tip_impozit="micro", la_data=date(2022, 6, 1))
-    assert r["credit"] > 0

@@ -87,8 +87,11 @@ def test_calcul_salariu_dispecer_versionat():
 def test_plafon_diurna_dispecer_versionat():
     from core import deconturi as dc
     args = (30, 5, 4000, 21)  # diurna_pe_zi, zile, salariu_baza, zile_lucratoare_luna
-    assert dc.plafon_diurna(*args, la_data=date(2026, 6, 1)) == dc._plafon_diurna_2018(*args)
-    assert dc._VARIANTE_PLAFON_DIURNA[0][1] is dc._plafon_diurna_2018
+    # 2026 -> varianta 23 lei (Ordin MF 1235/2023); dispecerul == functia cu default curent (23)
+    assert dc.plafon_diurna(*args, la_data=date(2026, 6, 1)) == dc._plafon_diurna(*args)
+    # PERIOD-AWARE: diurna bugetara 20 lei in 2020 (HG 714/2018) < 23 lei in 2026 -> plafoane 2,5x diferite
+    assert (dc.plafon_diurna(*args, la_data=date(2020, 6, 1))["limita_2_5x"]
+            < dc.plafon_diurna(*args, la_data=date(2026, 6, 1))["limita_2_5x"])
     with pytest.raises(ValueError):
         dc.plafon_diurna(*args, la_data=date(2000, 1, 1))
 

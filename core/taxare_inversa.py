@@ -27,6 +27,7 @@ CATEGORII = {
     "telefoane":          {"lit": "i", "expira": EXPIRA_2026, "prag": PRAG_ELECTRONICE},
     "circuite_integrate": {"lit": "j", "expira": EXPIRA_2026, "prag": PRAG_ELECTRONICE},
     "console_tablete":    {"lit": "k", "expira": EXPIRA_2026, "prag": PRAG_ELECTRONICE},
+    "gaze_naturale":      {"lit": "l", "expira": EXPIRA_2026, "prag": None},
 }
 
 def se_aplica(categorie, valoare_fara_tva, furnizor_tva, beneficiar_tva, la_data=None):

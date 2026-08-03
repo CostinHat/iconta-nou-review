@@ -1,0 +1,29 @@
+D394 - cod codPR pentru GAZE NATURALE in taxare inversa (CF art.331 alin.(2) lit.l)
+====================================================================================
+
+CONCLUZIE: codPR (Nomenclator cod produse pt tip_partener = 1) pentru Gaze naturale = 36
+
+Sursa oficiala ANAF (structura fisier XML D394):
+  Document: structD394_15092025.pdf (data 15.09.2025) - versiunea curenta
+  URL: https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structD394_15092025.pdf
+  Aparut deja in: structD394_10052022.pdf (data 10.05.2022)
+  URL: https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structD394_10052022.pdf
+  Listate la: https://static.anaf.ro/static/10/Anaf/Declaratii_R/394.html
+
+Extras textual (Nomenclator cod produse pt tip_partener = 1), din structD394_15092025.pdf:
+  21  Cereale si plante tehnice
+  22  Deseuri feroase si neferoase
+  23  Masa lemnoasa
+  24  Certificate de emisii de gaze cu efect de sera
+  25  Energie electrica
+  26  Certificate verzi
+  27  Constructii terenuri
+  28  Aur de investitii
+  29  Telefoane mobile
+  30  Microprocesoare
+  31  Console de jocuri, tablete PC si laptopuri
+  36  Gaze naturale
+
+Observatie: codul NU este 32-35 (acele valori raman in zona tip_partener=2 / cereale NC).
+Gazele naturale au primit codul 36, adaugat dupa Legea 296/2020 (art.331 alin.(2) lit.l),
+prin OPANAF 77/2022 (M.Of. 95 din 31.01.2022), aplicabil operatiunilor de la 01.04.2022.

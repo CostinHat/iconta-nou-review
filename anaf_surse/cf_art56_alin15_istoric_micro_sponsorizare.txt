@@ -1,0 +1,91 @@
+==============================================================================
+TEMEI FISCAL ISTORIC - Cod fiscal (Legea 227/2015), art. 56
+CREDIT DE SPONSORIZARE pentru MICROINTREPRINDERI (deducere din impozitul micro)
+ABROGAT de OUG 115/2023, ultimul an fiscal 2023
+==============================================================================
+
+CORECTIE IMPORTANTA DE NUMEROTARE:
+Regula de fond "20% din impozitul micro" NU este la alin.(1^5), ci la
+art. 56 alin.(1^1). Alin.(1^5) este prevederea CONEXA care extinde deducerea
+si la sponsorizarile catre institutiile/autoritatile publice.
+Ambele (impreuna cu (1^3)-(1^10), (2^1), (2^2)) au fost abrogate de OUG 115/2023.
+
+------------------------------------------------------------------------------
+1. TEXT VERBATIM - forma in vigoare pana la 31.12.2023
+   (sursa: material informativ ANAF/DGRFP Brasov "Modificari aduse Codului
+    fiscal de OUG nr.115/2023", care citeaza textul abrogat)
+------------------------------------------------------------------------------
+
+art. 56 alin. (1^1) [REGULA DE FOND - cota 20%]:
+"Microintreprinderile care efectueaza sponsorizari, potrivit prevederilor
+Legii nr. 32/1994, cu modificarile si completarile ulterioare, pentru
+sustinerea entitatilor nonprofit si a unitatilor de cult, care la data
+incheierii contractului sunt inscrise in Registrul entitatilor/unitatilor de
+cult pentru care se acorda deduceri fiscale potrivit art. 25 alin. (4^1),
+precum si microintreprinderile care acorda burse elevilor scolarizati in
+invatamantul profesional-dual in conformitate cu prevederile art. 25 alin. (4)
+lit. c) din Legea nr. 1/2011, cu modificarile si completarile ulterioare, scad
+sumele aferente din impozitul pe veniturile microintreprinderilor pana la
+nivelul valorii reprezentand 20% din impozitul pe veniturile
+microintreprinderilor datorat pentru trimestrul in care au inregistrat
+cheltuielile respective."
+
+art. 56 alin. (1^5) [EXTINDERE la institutii publice - alineatul din cerere]:
+"Prevederile alin. (1^1) - (1^4) se aplica si pentru sponsorizarile efectuate,
+potrivit prevederilor Legii nr. 32/1994, cu modificarile si completarile
+ulterioare, catre institutiile si autoritatile publice, inclusiv organele de
+specialitate ale administratiei publice. In acest caz, deducerea sumelor
+reprezentand sponsorizari din impozitul pe veniturile microintreprinderilor,
+in limita prevazuta la alin. (1^1), se efectueaza in baza contractului de
+sponsorizare, fara a exista obligatia inscrierii entitatilor beneficiare
+respective in Registrul entitatilor/unitatilor de cult pentru care se acorda
+deduceri fiscale prevazut la art. 25 alin. (4^1)."
+
+art. 56 alin. (2^1) [REDIRECTIONARE - mecanismul de report/redirectionare]:
+"In cazul in care valoarea stabilita potrivit alin. (1^1), diminuata cu sumele
+reportate, dupa caz, nu a fost utilizata integral, contribuabilii pot dispune
+redirectionarea impozitului pe veniturile microintreprinderilor, in limita
+diferentei astfel calculate pentru intregul an fiscal, pentru activitati de
+sponsorizare, respectiv pentru acordarea de burse, in termen de 6 luni de la
+data depunerii declaratiei de impozit aferente trimestrului IV, prin depunerea
+unui/unor formular/formulare de redirectionare. [...]"
+
+Nota mecanism report 28 trimestre: reportarea pe 28 de trimestre consecutive
+apare la art. 56 alin. (1^7) pentru costul caselor de marcat; pentru
+sponsorizari/burse, sumele ramase de reportat se scad pana la epuizare fara a
+depasi anul 2028 (norma tranzitorie OUG 115/2023).
+
+------------------------------------------------------------------------------
+2. DATA DE INCEPUT (introducere)
+------------------------------------------------------------------------------
+- Regula de fond (deducere sponsorizari din impozitul micro, cota 20%):
+  INTRODUSA prin OUG nr. 25/2018 (art. 56 alin. (1^1)-(1^4)),
+  publicata in M.Of. nr. 291 din 30.03.2018, APLICABILA DE LA 01.04.2018.
+- Forma consolidata "20% + Registrul entitatilor" a fost data prin
+  Legea nr. 30/2019 (aproba OUG 25/2018), M.Of. nr. 44 din 17.01.2019,
+  forma ANAF invocata ca "in vigoare cu 1 aprilie 2019".
+- Bursele pentru invatamant profesional-dual: adaugate ulterior la alin.(1^1).
+- Alin. (1^5) (extindere la institutii/autoritati publice):
+  INTRODUS prin OUG nr. 48/2020, M.Of. nr. 319 din 16.04.2020 (in vigoare 16.04.2020).
+
+------------------------------------------------------------------------------
+3. DATA DE SFARSIT (abrogare)
+------------------------------------------------------------------------------
+ABROGAT prin OUG nr. 115/2023 privind unele masuri fiscal-bugetare,
+M.Of. nr. 1139 din 15.12.2023.
+Text abrogator: "La articolul 56, alineatele (1^1), (1^3)-(1^10), (2^1) si
+(2^2) se abroga." (art. 56 pct. 43 din OUG 115/2023).
+ULTIMUL AN FISCAL de aplicare: 2023 (art. 56 alin. (2^5) nou introdus:
+"Ultimul an fiscal in care sumele reprezentand sponsorizari/burse [...] se scad
+din impozitul pe veniturile microintreprinderilor este anul fiscal 2023.").
+
+==============================================================================
+SURSE:
+- Material informativ ANAF/DGRFP Brasov "Modificari aduse Codului fiscal de
+  OUG nr.115/2023" (19.12.2023) - citeaza verbatim art.56 pre-abrogare.
+- ANAF/DGRFP Brasov "Sponsorizari efectuate de microintreprinderi" (sept.2019).
+- Legea nr. 30/2019 (M.Of. 44/17.01.2019) - text integral ANAF.
+- noulcodfiscal.ro - art. 56 (forma consolidata cu note de modificare).
+- OUG 25/2018 (M.Of. 291/30.03.2018); OUG 48/2020 (M.Of. 319/16.04.2020);
+  OUG 115/2023 (M.Of. 1139/15.12.2023).
+==============================================================================

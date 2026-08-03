@@ -50,10 +50,27 @@ def _credit_sponsorizare_2018(cifra_afaceri, impozit_profit, sponsorizari_efectu
                         tip_impozit="profit", beneficiar_in_registru=True, la_data=None):
     """Creditul fiscal utilizabil + suma redirectionabila prin D177."""
     if tip_impozit == "micro":
-        return {"credit": Decimal("0.00"), "redirectionabil_d177": Decimal("0.00"),
-                "plafon": Decimal("0.00"),
-                "nota": "microintreprinderi: facilitate eliminata (OUG 115/2023) - "
-                        "sponsorizarea ramane cheltuiala fara credit fiscal"}
+        # Micro-sponsorizare: credit = 20%% din impozitul micro (CF fostul art.56 alin.1^1),
+        # VALABIL 01.04.2019 (Legea 30/2019, forma 20%%+Registru; introdus OUG 25/2018) - 31.12.2023
+        # (ABROGAT OUG 115/2023, ultimul an fiscal 2023). Verificat la sursa 03.08.2026:
+        # anaf_surse/cf_art56_alin15_istoric_micro_sponsorizare.txt. Redirectionabil in 6 luni.
+        from datetime import date as _dt
+        _ref = la_data or _dt.today()
+        if _ref < _dt(2019, 4, 1) or _ref > _dt(2023, 12, 31):
+            return {"credit": Decimal("0.00"), "redirectionabil_d177": Decimal("0.00"),
+                    "plafon": Decimal("0.00"),
+                    "nota": "micro: credit de sponsorizare valabil DOAR 01.04.2019-31.12.2023 "
+                            "(art.56 alin.1^1, abrogat OUG 115/2023) - in rest doar cheltuiala"}
+        plafon_m = _d(_d(impozit_profit) * Decimal("0.20"))
+        if not beneficiar_in_registru:
+            return {"credit": Decimal("0.00"), "redirectionabil_d177": Decimal("0.00"), "plafon": plafon_m,
+                    "nota": "micro: beneficiar NEINSCRIS in Registrul entitatilor la data contractului "
+                            "(art.25 alin.4^1) - fara credit fiscal"}
+        sp_m = _d(sponsorizari_efectuate)
+        credit_m = min(sp_m, plafon_m)
+        return {"credit": credit_m, "redirectionabil_d177": plafon_m - credit_m, "plafon": plafon_m,
+                "nota": "micro: credit 20%% din impozitul micro (art.56 alin.1^1), rest redirectionabil "
+                        "6 luni; valabil 2019-2023"}
     if not beneficiar_in_registru:
         return {"credit": Decimal("0.00"), "redirectionabil_d177": Decimal("0.00"),
                 "plafon": plafon_credit(cifra_afaceri, impozit_profit, la_data=la_data)["plafon"],

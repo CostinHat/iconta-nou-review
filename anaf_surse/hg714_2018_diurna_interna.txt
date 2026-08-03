@@ -1,0 +1,32 @@
+TEMEI FISCAL ISTORIC - DIURNA INTERNA (delegare/detasare in tara)
+Sursa cercetare web: legislatie.just.ro (doc 205001), ANAF HG_714_2018.pdf, lege5.ro anexa HG 714/2018, ORDIN 1235/2023 (MO 261/29.03.2023)
+
+=== HG 714/2018 ===
+Titlu: privind drepturile si obligatiile personalului autoritatilor si institutiilor
+publice pe perioada delegarii si detasarii in alta localitate, precum si in cazul
+deplasarii in interesul serviciului.
+Data: 13 septembrie 2018. Publicat in Monitorul Oficial nr. 1050/2018.
+
+VALOAREA DIURNEI INTERNE la intrarea in vigoare (2018) = 20 LEI/ZI
+- Indemnizatie de delegare/detasare (diurna) = 20 lei/zi, indiferent de functie
+  si de autoritatea/institutia publica (art. 1 alin.(2) lit. a si art. 4 alin.(1)).
+- Delegare in localitate la 5-50 km: indemnizatie 20 lei/zi.
+- Delegare peste 50 km, fara intoarcere in aceeasi zi: indemnizatie 20 lei/zi
+  + alocatie de cazare 230 lei/zi.
+(Predecesorul HG 1860/2006 avea diurna 17 lei; HG 714/2018 a stabilit 20 lei.)
+
+=== MAJORAREA LA 23 LEI ===
+Act: ORDIN nr. 1235 din 28 martie 2023 (Ministrul Finantelor).
+Publicat: Monitorul Oficial nr. 261 din 29 martie 2023 (just.ro doc 266379).
+INTRARE IN VIGOARE / APLICARE: 1 APRILIE 2023.
+- Diurna interna majorata de la 20 lei la 23 LEI/ZI.
+- Alocatia de cazare majorata de la 230 lei la 265 lei/zi.
+
+=> Codul citeaza "Ordinul 1235/2023" pentru 23 lei: CORECT ca act, dar valoarea
+   23 lei se aplica DOAR de la 01.04.2023. Aplicarea retroactiva a lui 23 lei la
+   perioade dinainte de 01.04.2023 (ex. 2018) e GRESITA.
+
+CRONOLOGIE DIURNA BUGETARA INTERNA (pentru plafon neimpozabil = 2,5 x diurna):
+- pana la HG 714/2018 (HG 1860/2006):  17 lei/zi  (plafon 2,5x = 42,5 lei)
+- HG 714/2018, din 2018:               20 lei/zi  (plafon 2,5x = 50 lei)
+- Ordin 1235/2023, din 01.04.2023:     23 lei/zi  (plafon 2,5x = 57,5 lei)

@@ -11,22 +11,26 @@ Contabil: avans spre decontare 542 = 5311/5121; decont: 625 = 542
 from decimal import Decimal, ROUND_HALF_UP
 
 from core import common as c
+import functools
 
 B = Decimal("0.01")
-DIURNA_INTERNA_BUGETAR = Decimal("23")  # HG 714/2018 (Ordinul 1235/2023)
+# Diurna interna bugetara (baza plafonului 2,5x), PERIOD-AWARE (verificat la sursa 03.08.2026,
+# anaf_surse/hg714_2018_diurna_interna.txt): 20 lei HG 714/2018 (MO 1050/2018, din 2018) -> 23 lei
+# Ordin MF 1235/2023 (MO 261/29.03.2023, din 01.04.2023). Aplicarea lui 23 retroactiv la 2018 era bug.
+DIURNA_INTERNA_BUGETAR = Decimal("23")  # valoarea CURENTA (din 01.04.2023)
 
 def _d(x):
     return Decimal(str(x or 0)).quantize(B, rounding=ROUND_HALF_UP)
 
-def _plafon_diurna_2018(diurna_acordata_pe_zi, zile, salariu_baza, zile_lucratoare_luna,
-                  diurna_bugetara=None, curs=1):
+def _plafon_diurna(diurna_acordata_pe_zi, zile, salariu_baza, zile_lucratoare_luna,
+                  diurna_bugetara=None, curs=1, _bug_default=DIURNA_INTERNA_BUGETAR):
     """Returneaza {plafon_zi, neimpozabil, impozabil}. diurna_bugetara: 23 lei
     intern (implicit) sau valoarea HG 518/1995 pt. tara (in valuta, cu curs)."""
     da, sb = _d(diurna_acordata_pe_zi), _d(salariu_baza)
     z, zl = int(zile), int(zile_lucratoare_luna)
     if da <= 0 or z <= 0 or sb <= 0 or zl <= 0:
         raise ValueError("valori invalide")
-    bug = _d(diurna_bugetara if diurna_bugetara is not None else DIURNA_INTERNA_BUGETAR)
+    bug = _d(diurna_bugetara if diurna_bugetara is not None else _bug_default)
     p1 = (bug * Decimal("2.5") * Decimal(str(curs))).quantize(B, rounding=ROUND_HALF_UP)
     p2 = (sb * 3 / zl).quantize(B, rounding=ROUND_HALF_UP)
     plafon_zi = min(p1, p2)
@@ -37,11 +41,17 @@ def _plafon_diurna_2018(diurna_acordata_pe_zi, zile, salariu_baza, zile_lucratoa
             "impozabil": total - neimp}
 
 
+# PERIOD-AWARE pe data deconturi: diurna interna bugetara 20 lei (HG 714/2018) pana la 31.03.2023,
+# 23 lei (Ordin MF 1235/2023) de la 01.04.2023. Externul se da explicit (diurna_bugetara valuta + curs).
 _VARIANTE_PLAFON_DIURNA = [
-    ("2018-01-01", _plafon_diurna_2018,
-     c.Temei("CF", art="76", alin="4^1", data_in="2018-01-01", nivel_sursa="REDARE",
-             de_cine="Code/Costin", verificat_la="2026-07-31",
-             lant_acte="HG 714/2018 (diurna interna bugetara 23 lei); HG 518/1995 (extern)")),
+    ("2023-04-01", functools.partial(_plafon_diurna, _bug_default=Decimal("23")),
+     c.Temei("OMF", 1235, 2023, art="76", alin="4^1", data_in="2023-04-01", nivel_sursa="REDARE",
+             de_cine="Code+cercetare", verificat_la="2026-08-03",
+             lant_acte="Ordin MF 1235/2023 (MO 261/29.03.2023): diurna interna bugetara 23 lei de la 01.04.2023; plafon 2,5x=57,5 lei; CF art.76 alin.(2) lit.k")),
+    ("2018-01-01", functools.partial(_plafon_diurna, _bug_default=Decimal("20")),
+     c.Temei("HG", 714, 2018, art="76", alin="4^1", data_in="2018-01-01", nivel_sursa="REDARE",
+             de_cine="Code+cercetare", verificat_la="2026-08-03",
+             lant_acte="HG 714/2018 (MO 1050/2018): diurna interna bugetara 20 lei; plafon 2,5x=50 lei; extern HG 518/1995 pe tari")),
 ]
 
 

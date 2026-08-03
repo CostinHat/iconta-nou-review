@@ -1,0 +1,39 @@
+TEMEI FISCAL ISTORIC - DIURNA EXTERNA (personal roman trimis in strainatate)
+Sursa cercetare web: legislatie.just.ro (doc 125770 forma consolidata / 7037 forma initiala),
+lege5.ro anexa HG 518/1995, mae.ro / mmuncii.gov.ro PDF.
+
+=== HG 518/1995 ===
+Titlu: privind unele drepturi si obligatii ale personalului roman trimis in
+strainatate pentru indeplinirea unor misiuni cu caracter temporar.
+Data: 10 iulie 1995. Forma consolidata (actualizata) contine anexa cu cuantumuri pe tari.
+
+STRUCTURA ANEXEI (coloane):
+  Nr. crt. | Tara | Valuta | Diurna Categoria I | Diurna Categoria II | Plafon cazare A | Plafon cazare B
+- Categoria I  = coeficient 1,00 (restul personalului).
+- Categoria II = coeficient superior (personal de conducere/demnitari) - plafon cazare B are coef. 2,00.
+- Diurna se acorda pe zi, in valuta, la nivelul prevazut pentru fiecare tara.
+
+VALORI CURENTE (forma consolidata, in EURO pentru majoritatea statelor europene):
+  Germania        euro   35 (cat. I)
+  Franta          euro   35 (cat. I)
+  Italia          euro   35 (cat. I)
+  Austria         euro   35 (cat. I)
+  Spania          euro   35 (cat. I)
+  Belgia          euro   35 (cat. I)
+  Marea Britanie  euro   35 (cat. I)   [in forma initiala era £]
+  S.U.A.          USD    ~53 (cat. I)
+(Nota: majoritatea statelor UE au fost armonizate la 35 euro/zi diurna cat. I;
+ diurna cat. II este superioara. Statele non-euro pastreaza valuta proprie / USD.)
+
+VALORI IN FORMA INITIALA 1995 (pre-euro, istoric - valute nationale):
+  Germania  marca germana  62 (I) / 100 (II)   cazare A 90 / B 180
+  Franta    franc francez  206 / 330           cazare A 350 / B 700
+  Italia    lira italiana  65.000 / 104.000    cazare A 100.000 / B 200.000
+  S.U.A.    $              41 / 66             cazare A 70 / B 140
+  Anglia    £              22 / 35             cazare A 50 / B 100
+  Austria   Sch.A          412 / 660           cazare A 500 / B 1.000
+  Spania    peseta         4.300 / 6.900       cazare A 7.500 / B 15.000
+  Belgia    franc belgian  1.250 / 2.000       cazare A 2.500 / B 5.000
+
+=> Diurna externa NU este o valoare unica: e un NOMENCLATOR pe tari, in valuta.
+   Pentru plafonul neimpozabil se ia diurna pe tara de destinatie (2,5 x diurna tarii).

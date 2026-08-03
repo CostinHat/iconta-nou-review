@@ -5834,3 +5834,30 @@ NECONFORMITATE / DECIZIE DE PRODUS deschisa:
 2. motor.py rezerva_legala e cod MORT: apelat doar din test tautologic, niciun apelant de productie (inchidere_an/
    bilant/d101 nu-l cheama). De conectat cand se implementeaza fluxul.
 3. Minor: motor.py:82 foloseste capital_social generic; art.26(1)a cere "subscris si varsat".
+
+
+## 03.08.2026 — CAMPANIE ACHITARE DATORII, sectiunea B: temeiuri istorice CONFIRMATE la sursa, datorii INCHISE.
+
+Cercetare web (legislatie.just.ro / MO / static.anaf.ro), surse salvate in anaf_surse/ cu sha256:
+
+B1. COTE REDUSE 9%/5% - data reala 01.01.2016 (Legea 227/2015, MO 688/2015), NU 2017 (ancora era gresita cu un
+    an). Corectata in common.COTE tva_redusa_9/_5 la 2016-01-01; caveat "de reconfirmat" SCOS. Nota: apa/ingrasaminte
+    (art.291 g/h) adaugate de Legea 175/2018 din 01.01.2019; locuinte 5% continuitate din vechiul cod (OUG 200/2008).
+    Sursa: anaf_surse/cf_art291_2016_forma_initiala.txt (sha256 d065557f...).
+
+B2. DIURNA interna bugetara: 20 lei HG 714/2018 (MO 1050/2018, din 2018) -> 23 lei Ordin MF 1235/2023 (MO 261/2023,
+    din 01.04.2023). deconturi._VARIANTE_PLAFON_DIURNA acum 2 variante datate (20/23) period-aware; plafon 2,5x =
+    50 lei pre-2023.04, 57,5 dupa. DATORIE + xfail INCHISE. Extern HG 518/1995 = nomenclator pe tari (salvat).
+    Surse: anaf_surse/hg714_2018_diurna_interna.txt (ff589128...), hg518_1995_diurna_externa.txt (bc48ff12...).
+
+B3. MICRO-SPONSORIZARE: regula la art.56 alin.(1^1) (nu 1^5): credit = 20% impozit micro, VALABIL 01.04.2019
+    (Legea 30/2019; introdus OUG 25/2018) - 31.12.2023 (abrogat OUG 115/2023). sponsorizari.py branch micro acum
+    period-aware (2019-2023: min(sponsorizare, 20% impozit micro); rest 0). DATORIE + xfail INCHISE.
+    Sursa: anaf_surse/cf_art56_alin15_istoric_micro_sponsorizare.txt (sha256 918054ae...).
+
+B4. GAZE NATURALE D394 codPR = 36 (ANAF structD394_15092025.pdf + structD394_10052022.pdf; OPANAF 77/2022 de la
+    01.04.2022, urmare Legea 296/2020). CATEGORII lit.l (taxare_inversa.py) + CODPR "36" (d394.py) COMPLETE;
+    gaze reverse-charge se poate acum depune in D394. DATORIE + xfail INCHISE. Sursa:
+    anaf_surse/d394_codpr_gaze_naturale.txt (sha256 711ff5aa...).
+
+SOLD dupa sectiunea B: 24 xfail -> 21 (inchise gaze, diurna, micro; cote reduse era refinare fara xfail).
