@@ -267,3 +267,40 @@ def test_tva_incasare_d300_proba_duk_valid(conn_tvai):
     res = calcul_d300(prof, Perioada(2026, luna=6), facturi)
     rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
     assert rez["stare"] == "valid", "DUK a respins D300 TVA la incasare: %s" % rez.get("erori")
+
+
+# ============================================================
+#  Taxare inversa | d300 (CF art.331: beneficiarul e obligat la plata TVA - auto-taxare).
+#  Beneficiarul declara MANUAL rd.12 (colectata, self-charge) + rd.27/R25 (deductibila) = net zero.
+#  BUG reparat: R12_ lipsea din allow-list-ul manual -> reverse charge era SILENTIOS ignorat
+#  (contabilul introducea rd.12 dar D300 il arunca -> auto-taxare nedeclarata).
+# ============================================================
+def _rc_manual():
+    return {"R12_1": 1000, "R12_2": 210, "R12_1_1": 1000, "R12_1_2": 210,   # rd.12 colectata 21%
+            "R25_1": 1000, "R25_2": 210, "R25_1_1": 1000, "R25_1_2": 210}   # rd.27 deductibila 21% (= rd.12)
+
+
+def test_taxare_inversa_rd12_se_declara_manual():
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), [], _rc_manual())
+    # rd.12 (auto-taxare colectata) NU mai e aruncat:
+    assert (res.R["R12_1"], res.R["R12_2"]) == (1000, 210)
+    # intra in totalul colectat R17:
+    assert res.R["R17_1"] >= 1000 and res.R["R17_2"] >= 210
+    # latura deductibila (rd.27/R25) = rd.12 -> net zero pe deducere integrala:
+    assert (res.R["R25_1"], res.R["R25_2"]) == (1000, 210)
+
+
+def test_taxare_inversa_r12_fara_fix_ar_fi_dropped():
+    # GARD anti-regresie: daca R12_ dispare din allow-list, rd.12 devine None si testul de mai sus pica.
+    # Aici verificam direct ca un R12 manual ajunge in rezultat (nu tacut ignorat ca inainte de fix).
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), [], {"R12_1": 500, "R12_2": 105})
+    assert res.R.get("R12_1") == 500, "rd.12 (taxare inversa) e ignorat - R12_ lipseste din allow-list"
+
+
+@pytest.mark.skipif(not _D300_DUK, reason="DUK d300 indisponibil")
+def test_taxare_inversa_d300_proba_duk_valid():
+    # Proba pana la declaratie: decont echilibrat (rd.12 = rd.27) trece DUKIntegrator. Validatorul cere
+    # R25_x == R12_x (rd.27<->rd.12, regulile V_19/V_21) - deci validarea confirma perechea colectata/deductibila.
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), [], _rc_manual())
+    rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins reverse charge D300: %s" % rez.get("erori")

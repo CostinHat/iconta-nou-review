@@ -247,61 +247,60 @@ CONSECINTE:
 
 Ordine DETERMINISTA a celor 64 clustere nebifate+neblocate, sortare topologica pe graf_clustere + departajare
 (a) FISCAL>STRUCTURA (b) deblocari desc (c) ordinea inventarului. Rescrisa 02.08: tichete masa/vacanta BIFAT ->
-iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. cota profit 16% + IMCA (cota verificata + IMCA implementat art.18^1) INCHIS 02.08 -> 60->59. amortizare|d101 (tratament art.28 aliniat; datorie MF metode) INCHIS 03.08 -> 59->58. baze contributii|d112 (cotele CAS/CASS/imp/CAM rutate period-aware prin COTE, value-preserving, aliniere Sesiunea A) INCHIS 03.08 -> 58->57. rotunjire aritmetica (A91b)|d112 (contributii aritmetice verificate; REPARAT minimul part-time care rotunjea bancar in B4_*P declarat) INCHIS 03.08 -> 57->56. sect_II tip_venit|d205 (structura OPANAF 102/2025 verificata; REPARAT impozit dividende hardcodat 10% -> period-aware 16%/2026 Legea 141/2025) INCHIS 03.08 -> 56->55. rotunjire|d205 (sumele fiscale rotunjesc aritmetic - verificat, deja corect prin _i ROUND_HALF_UP; gardat cross-generator + proba) INCHIS 03.08 -> 55->54. cote TVA->randuri|d300 (livrari 21/11/9 corecte; REPARAT achizitii deductibile 11% R74->R23 si 9% R76->manual, proba DUK; datorie 9% auto) INCHIS 03.08 -> 54->53. exigibilitate/TVA la incasare|d300 (IMPLEMENTAT art.282/297 OUG 8/2026: exigibilitate din decontari, suta marita, proportional, proba DUK) INCHIS 03.08 -> 53->52. Identitate = cluster | modul (nume duplicate intre module).
+iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. cota profit 16% + IMCA (cota verificata + IMCA implementat art.18^1) INCHIS 02.08 -> 60->59. amortizare|d101 (tratament art.28 aliniat; datorie MF metode) INCHIS 03.08 -> 59->58. baze contributii|d112 (cotele CAS/CASS/imp/CAM rutate period-aware prin COTE, value-preserving, aliniere Sesiunea A) INCHIS 03.08 -> 58->57. rotunjire aritmetica (A91b)|d112 (contributii aritmetice verificate; REPARAT minimul part-time care rotunjea bancar in B4_*P declarat) INCHIS 03.08 -> 57->56. sect_II tip_venit|d205 (structura OPANAF 102/2025 verificata; REPARAT impozit dividende hardcodat 10% -> period-aware 16%/2026 Legea 141/2025) INCHIS 03.08 -> 56->55. rotunjire|d205 (sumele fiscale rotunjesc aritmetic - verificat, deja corect prin _i ROUND_HALF_UP; gardat cross-generator + proba) INCHIS 03.08 -> 55->54. cote TVA->randuri|d300 (livrari 21/11/9 corecte; REPARAT achizitii deductibile 11% R74->R23 si 9% R76->manual, proba DUK; datorie 9% auto) INCHIS 03.08 -> 54->53. exigibilitate/TVA la incasare|d300 (IMPLEMENTAT art.282/297 OUG 8/2026: exigibilitate din decontari, suta marita, proportional, proba DUK) INCHIS 03.08 -> 53->52. taxare inversa|d300 (rd.12 reparat - R12_ lipsea din allow-list; GRI reverse-charge reconfirmat la sursa art.331+structuri) INCHIS 03.08 -> 52->51. Identitate = cluster | modul (nume duplicate intre module).
 
 **REGULA DE ORDONARE.** Clusterul A vine dupa B daca o functie din A foloseste o valoare care APARTINE lui B (dependenta din graf_clustere). Sortare topologica pe aceste dependente. Departajare cand mai multe sunt libere simultan, in ordinea: (a) intra intr-o declaratie DEPUSA la ANAF - proxy Risc=FISCAL, aproximatie DECLARATA, nu echivalenta; (b) cate clustere deblocheaza; (c) ordinea din inventar. Secventa se PERSISTA, nu se recalculeaza la fiecare rulare - altfel pozitia 7 de azi nu e pozitia 7 de maine. Se rescrie DOAR cand se schimba graful sau se adauga clustere, cu motivul consemnat (vezi randul 'Rescrisa 02.08' de mai sus).
-1. taxare inversa | d300
-2. pro-rata deducere | d300
-3. rotunjire aritmetica | d300
-4. ajustari | d300
-5. tipuri operatiune 1-5 | d301
-6. rollup S4.1->S4 | d301
-7. baza = val x curs | d301
-8. cota TVA | d301
-9. tipuri operatiune IC (L/A/P/S) | d390
-10. rotunjire aritmetica (A91b) | d390
-11. reclasificari manuale | d390
-12. exigibilitate / prag | d390
-13. cote acceptate | d394
-14. taxare inversa | d394
-15. SourceDocuments (facturi reale, PARTIAL) | d406
-16. plafon diurna neimpozabila | deconturi
-17. credit sponsorizare / D177 | sponsorizari
-18. rezerva legala | motor
-19. zilieri (impozit+CAS) | contracte_speciale
-20. regim marja second-hand | tva_marja
-21. regim marja turism | tva_marja_turism
-22. impozit dividend | decontari_asociati
-23. contributii PFA (praguri CAS/CASS pe sm) | d212
-24. nomenclator cod_oblig<->cod_bugetar | d100
-25. cota micro 121 (flag) | d100
-26. checksum totalPlata_A (R11b) | d100
-27. scadente/nr_evidenta | d100
-28. structura P1-P53 | d101
-29. R17 Data_S / termen | d101
-30. limita text 75 | d112
-31. nomenclator cod_oblig | d112
-32. checksum totalPlata_A | d205
-33. trunchiere den/adresa | d205
-34. randuri / checksum | d300
-35. checksum totalPlata_A (R28) | d301
-36. nomenclator tari (HR->CR) | d390
-37. tipuri operatiune (pct.215) | d394
-38. tip_partener | d394
-39. rezumat1 campuri complete | d394
-40. nomenclator codPR (art.331) | d394
-41. totalPlata_A (R17) | d394
-42. plan conturi pe norma | d406
-43. UoM UN/ECE | d406
-44. MovementType nomenclator | d406
-45. BaseRate (encoding pro-rata) | d406
-46. registration_number (00+CUI) | d406
-47. structura XSD (Header/MasterFiles/GLE) | d406
-48. structura declaratie710 | d710
-49. nomenclator COD_BUGETAR | d710
-50. checksum R11b | d710
-51. R15 termen definitivare | d710
-52. scadente | d710
+1. pro-rata deducere | d300
+2. rotunjire aritmetica | d300
+3. ajustari | d300
+4. tipuri operatiune 1-5 | d301
+5. rollup S4.1->S4 | d301
+6. baza = val x curs | d301
+7. cota TVA | d301
+8. tipuri operatiune IC (L/A/P/S) | d390
+9. rotunjire aritmetica (A91b) | d390
+10. reclasificari manuale | d390
+11. exigibilitate / prag | d390
+12. cote acceptate | d394
+13. taxare inversa | d394
+14. SourceDocuments (facturi reale, PARTIAL) | d406
+15. plafon diurna neimpozabila | deconturi
+16. credit sponsorizare / D177 | sponsorizari
+17. rezerva legala | motor
+18. zilieri (impozit+CAS) | contracte_speciale
+19. regim marja second-hand | tva_marja
+20. regim marja turism | tva_marja_turism
+21. impozit dividend | decontari_asociati
+22. contributii PFA (praguri CAS/CASS pe sm) | d212
+23. nomenclator cod_oblig<->cod_bugetar | d100
+24. cota micro 121 (flag) | d100
+25. checksum totalPlata_A (R11b) | d100
+26. scadente/nr_evidenta | d100
+27. structura P1-P53 | d101
+28. R17 Data_S / termen | d101
+29. limita text 75 | d112
+30. nomenclator cod_oblig | d112
+31. checksum totalPlata_A | d205
+32. trunchiere den/adresa | d205
+33. randuri / checksum | d300
+34. checksum totalPlata_A (R28) | d301
+35. nomenclator tari (HR->CR) | d390
+36. tipuri operatiune (pct.215) | d394
+37. tip_partener | d394
+38. rezumat1 campuri complete | d394
+39. nomenclator codPR (art.331) | d394
+40. totalPlata_A (R17) | d394
+41. plan conturi pe norma | d406
+42. UoM UN/ECE | d406
+43. MovementType nomenclator | d406
+44. BaseRate (encoding pro-rata) | d406
+45. registration_number (00+CUI) | d406
+46. structura XSD (Header/MasterFiles/GLE) | d406
+47. structura declaratie710 | d710
+48. nomenclator COD_BUGETAR | d710
+49. checksum R11b | d710
+50. R15 termen definitivare | d710
+51. scadente | d710
 ## Inventarul de acoperit în A
 
 Per CLUSTER de reguli, nu per fișier (30.07.2026) — un √ pe fișier ascundea că doar o parte din
@@ -360,7 +359,7 @@ clustere.
 | rotunjire | d205 | test_d205.py | √ 03.08 (sumele fiscale D205 - baza1/imp1/dividende/parte - se rotunjesc ARITMETIC prin _i = Decimal.quantize(ROUND_HALF_UP), aceeasi regula ANAF ca la D112 (validator A91b). Deja corect prin constructie; GARDAT acum: _i adaugat in gardul cross-generator de identitate + proba d205-specifica _i(2.5)=3/_i(0.5)=1 aritmetic nu bancar. Fara schimbare de comportament) | FISCAL | ANAF structura D205 (OPANAF 102/2025) + regula A91b (rotunjire aritmetica) | test_d205_rotunjeste_aritmetic_nu_bancar test_rotunjirea_e_identica_intre_generatoare |
 | cote TVA -> randuri | d300 | test_d300.py | √ 03.08 (maparea cotelor pe randuri verificata la sursa structura_D300_v12.0.0 + proba DUK: LIVRARI 21->Rd.9, 11->Rd.10, 9(art.III L141/2025)->Rd.11 - corecte. REPARAT ACHIZITII DEDUCTIBILE: 11% era la R74 (=Rd.24.1 cota 19% legacy, marja 18-20% - respins DUK) -> mutat la R23 (Rd.25, DUK valid); 9% era la R76 (=taxare inversa Rd.27.4, respins DUK + pierdut din R27) -> scos din auto, semnalat pentru declarare MANUALA (validatorul instalat respinge si R75 din v12). DATORIE: 9% deductibil auto - xfail test_datorie_d300_9pct_deductibil_auto) | FISCAL | structura_D300_v12.0.0 (marja randuri) + Legea 141/2025 (cote 21/11/9) | test_cote_tva_maparea_pe_randuri_d300 test_9pct_deductibil_nu_emite_rand_invalid_si_avertizeaza test_cote_tva_d300_proba_duk_valid |
 | exigibilitate / TVA la incasare | d300 | test_d300.py (+test_tva_incasare.py) | √ 03.08 (IMPLEMENTAT: firma pe sistem -> D300 calculeaza exigibilitatea din DECONTARI - incasari cont 4111 / plati cont 401 validate in perioada, suta marita art.282(8), proportional pe plati partiale art.282(3); deducere amanata la plata art.297(2-3); taxare inversa exclusa art.282(6). Sursa = note contabile legate de factura, nu emiterea/platita_la. Fara cap 90 zile - eliminat de OUG 8/2026. Proba DB reala + DUK) | FISCAL | CF art.282 + art.297 (OUG 8/2026); plafon 5M COTE | test_tva_la_incasare_exigibilitate_pe_decontari_suta_marita test_tva_la_incasare_partial_proportional test_tva_incasare_exigibil_la_decontare_nu_la_emitere test_tva_incasare_d300_proba_duk_valid |
-| taxare inversa | d300 | test_d300.py |  | FISCAL |  |  |
+| taxare inversa | d300 | test_d300.py | √ 03.08 (CF art.331: beneficiarul auto-taxeaza; se declara MANUAL in rd.12 colectata + rd.27/R25 deductibila = net zero. REPARAT: R12_ lipsea din allow-list-ul manual -> rd.12 era silentios ignorat (sub-declarare); adaugat. Proba DUK pe decont echilibrat rd.12=rd.27 + gard anti-drop. GRI reverse-charge D300/D394 inchis - reconfirmat la sursa art.331 + structuri D300 Rd.12 / D394 tip bun) | FISCAL | CF art.331; structura D300 Rd.12; structura D394 (bun/defalcare) | test_taxare_inversa_rd12_se_declara_manual test_taxare_inversa_r12_fara_fix_ar_fi_dropped test_taxare_inversa_d300_proba_duk_valid |
 | pro-rata deducere | d300 | test_d300.py |  | FISCAL |  |  |
 | randuri / checksum | d300 | test_d300.py |  | STRUCTURA |  |  |
 | rotunjire aritmetica | d300 | test_d300.py |  | FISCAL |  |  |

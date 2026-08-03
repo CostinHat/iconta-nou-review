@@ -183,6 +183,7 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     # rânduri manuale (intracomunitar, taxare inversă, regularizări, scutiri colectate)
     for k, v in manual.items():
         if k.startswith(("R1_", "R2_", "R3_", "R4_", "R5_", "R6_", "R7_", "R8_",
+                         "R12_",  # taxare inversa colectata (rd.12, auto-taxare beneficiar art.331) - se declara manual
                          "R13_", "R14_", "R15_", "R16_", "R64_", "R65_")):
             setr(k, v)
 

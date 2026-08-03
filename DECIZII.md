@@ -5429,3 +5429,33 @@ Marker inchidere datorie: **d300 aplica exigibilitatea tva la incasare pentru fi
 test_datorie_d300_exigibilitate_tva_la_incasare ELIMINAT. SOLD DATORII 23 -> 22.
 
 INCHIDERE CLUSTER: "exigibilitate / TVA la incasare | d300" √ 03.08. Secventa 53 -> 52.
+
+
+## 03.08.2026 — Cluster taxare inversa | d300: REPARAT (rd.12 nu se declara) + GRI reverse charge INCHIS
+
+Lant #2. Sesiunea A. Temei reconfirmat VERBATIM la SURSA PRIMARA:
+- **CF art.331 alin.(1)** (/tmp/cf.txt): "in cazul operatiunilor taxabile, persoana obligata la plata taxei este
+  BENEFICIARUL" pentru operatiunile de la alin.(2) (deseuri, masa lemnoasa, cereale, constructii, aur, telefoane
+  etc.); conditia: furnizor SI beneficiar inregistrati TVA (art.316). => auto-taxare: beneficiarul declara.
+- **Structura D300 (anaf_surse/d300_struct_anaf.txt), Rd.12**: "Achizitii... pentru care beneficiarul este obligat
+  la plata TVA (taxare inversa)", cu sub-randuri 12.1/12.2/12.3 pe cote 21/11/9 (ERR: R12_1 >= R12_1_1+R12_2_1+
+  R12_3_1). Declarata MANUAL (contabilul), nu derivata din facturi - design consemnat in docstring-ul d300.py.
+
+REPARATIE (bug real, proba pe date reale): mecanismul manual pt rd.12 era RUPT. Allow-list-ul din calcul_d300 pt
+randurile colectate NU includea prefixul `R12_` -> orice cheie manual R12_* (R12_1, R12_2, sub-randuri) era
+SILENTIOS ignorata (dovada: calcul_d300 cu manual R12_1=1000 -> R12_1 None). Contabilul care introducea taxarea
+inversa in rd.12 o avea aruncata -> auto-taxarea colectata NEDECLARATA (sub-declarare TVA). FIX: adaugat `R12_` in
+allow-list. Latura deductibila (rd.27/R25) era deja settabila. PROBA: decont echilibrat rd.12=rd.27 (R25_x==R12_x,
+regulile validator V_19/V_21) trece DUKIntegrator (test_taxare_inversa_d300_proba_duk_valid) + gard anti-drop
+(test_taxare_inversa_r12_fara_fix_ar_fi_dropped) + R12 intra in R17 colectata.
+
+GRI INCHIS (reverse charge divergenta D300/D394 = cerinta ANAF, nu bug): verdictul statea pe deductie din cod, nu
+pe text oficial. Reconfirmat acum la SURSA OFICIALA ambele laturi: (a) D300 - CF art.331 + structura Rd.12 (manual);
+(b) D394 - structura d394_struct_anaf.txt campurile 64 `bun` (Nomenclator N1, obligatoriu pt taxare inversa) +
+68-70 nrLivV/bazaLivV/tvaLivV "defalcate pe tip bun pt taxare inversa" cu reguli ERR. Deci reverse-charge se declara
+in D300 manual (rd.12) SI in D394 defalcat pe tipul bunului - cerinte structurale ANAF, nu optiuni de implementare;
+divergenta e reala si ceruta. **d300 reverse charge doar manual reconfirmat la sursa oficiala.** xfail
+test_datorie_d300_reverse_charge_manual_reconfirmat_mo ELIMINAT. SOLD DATORII 22 -> 21.
+
+INCHIDERE CLUSTER: "taxare inversa | d300" √ 03.08 (rd.12 reparat + reverse charge reconfirmat la sursa + DUK).
+Secventa 52 -> 51.
