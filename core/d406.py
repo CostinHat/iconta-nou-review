@@ -11,14 +11,15 @@ Structura AuditFile (OECD SAF-T 2.0 adaptat RO):
   GeneralLedgerEntries    — Journal → Transaction → TransactionLine (note contabile)
   SourceDocuments         — SalesInvoices, PurchaseInvoices, Payments, MovementOfGoods
 
-⚠️ STADIU (27.07.2026): Header + MasterFiles + GeneralLedgerEntries complet din XSD; trece validarea
-   STRUCTURALA a DUKIntegrator. SourceDocuments NU e depunabil: SalesInvoices/PurchaseInvoices se emit,
-   dar cu O SINGURA linie sintetica per factura (cont 707/371, cantitate 1, pret = net total) — NU
-   liniile reale pe produs (factura_linii nu e atins); Payments = gol. Fisierul TRECE DUK structural,
-   dar e INCOMPLET fata de ce cere ANAF (facturi la nivel de InvoiceLine). NU se depune pana la
-   reparare: linii reale FACUTA 27.07 (cantitate/UM/pret/descriere/cota din
-   factura_linii). Payments ramane gol - zero date de plati in model. Vezi DECIZII 27.07.
-   Validare finală: DUKIntegrator_AnLunaUI.jar (-v D406 fisier.xml $ $ an=AAAA luna=LL).
+⚠️ STADIU (actualizat 03.08.2026): Header + MasterFiles + GeneralLedgerEntries complet din XSD.
+   SourceDocuments: SalesInvoices/PurchaseInvoices se emit cu LINII REALE pe produs din factura_linii
+   (cantitate/UM/pret/descriere/cota), reconciliate OBLIGATORIU cu antetul; DUK-validate structural
+   (reparat 27.07). TaxCode livrari PERIOD-AWARE pe data facturii (03.08: coduri pre/post 01.08.2025,
+   Legea 141/2025). Payments = gol (zero date de plati in model - datorie blocata pe DATE, se reia la
+   prima plata reala; codul de emitere e scris). MovementOfGoods gol (self-closed); AssetTransactions
+   absent (XSD minOccurs=0, optional). De rafinat (observatii DECIZII 03.08, necesita input/date):
+   TaxCode achizitii pe deductibilitate reala (acum grosier 300501); adresa partener din nomenclator
+   (acum placeholder). Validare finala: DUKIntegrator_AnLunaUI.jar (-v D406 fisier.xml $ $ an=AAAA luna=LL).
 
 CORECȚII față de prima schiță (confirmate din XSD):
   - namespace = mfp:anaf:dgti:d406:declaratie:v1
@@ -357,6 +358,18 @@ COTE_TVA_STANDARD = [
 TAXCODE_LIVRARI = {21: "310344", 11: "310351", 9: "310357", 5: "310311", 0: "310312"}
 # cotele de dinainte de 01.08.2025 (perioade raportate retroactiv)
 TAXCODE_LIVRARI_PRE_2025_08 = {19: "310309", 9: "310310", 5: "310311", 0: "310312"}
+# granita codurilor TaxCode livrari (Legea 141/2025). Sub ea = codurile epocii, peste = cele noi.
+_TAXCODE_141_DIN = date(2025, 8, 1)
+
+
+def _taxcode_livrari(cota, data_factura):
+    """TaxCode SAF-T pentru livrari, PERIOD-AWARE pe data facturii. ANAF a schimbat codurile cu
+    01.08.2025 (Legea 141/2025): factura dinainte foloseste codurile epocii (19/9/5), una de dupa
+    cele noi (21/11/9/5). Fara asta, o raportare retroactiva emite coduri gresite (ex. 19% negasit
+    in tabela noua -> default 310312 taxare inversa). Data lipsa -> tabela curenta (post)."""
+    tabela = (TAXCODE_LIVRARI_PRE_2025_08 if (data_factura and data_factura < _TAXCODE_141_DIN)
+              else TAXCODE_LIVRARI)
+    return tabela.get(int(cota), "310312")
 
 
 def construieste(prof, an, luna, conturi, clienti, furnizori, note=None,
@@ -1110,7 +1123,7 @@ def pull(conn, schema, an, luna):
                     tva_l = (val * cota_l / 100).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
                     # TaxCode PE LINIE, dupa cota liniei si sensul operatiunii.
                     if este_v:
-                        tcod_l = TAXCODE_LIVRARI.get(int(cota_l), "310312")
+                        tcod_l = _taxcode_livrari(cota_l, r["data_emitere"])
                     else:
                         tcod_l = "300101" if (r["ti"] or cota_l == 0) else "300501"
                     um_cod, _um_stiut = uom_unece(lr["um"])
@@ -1135,7 +1148,7 @@ def pull(conn, schema, an, luna):
                     # nu mimare de detaliu real).
                     cota = (tva / net * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP) if net else Decimal(0)
                     if este_v:
-                        tcod_l = TAXCODE_LIVRARI.get(int(cota), "310312")
+                        tcod_l = _taxcode_livrari(cota, r["data_emitere"])
                     else:
                         tcod_l = "300101" if (r["ti"] or cota == 0) else "300501"
                     linii = [LinieFactura(nr=1, cont=cont_l,

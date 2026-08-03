@@ -5752,3 +5752,28 @@ CICLUL DE NECONFORMITATE parcurs:
 DECIZIE / INPUT CERUT LUI COSTIN: pentru a completa fixul e nevoie de codPR-ul D394 pentru gaze naturale dintr-o
 structura/ghid D394 ANAF post-2021 (post Legea 296/2020). Pana atunci: gaze reverse-charge NU se poate depune in
 D394 (motorul refuza, fail-loud). Datorie tracked, lantul continua (11/12 conform, gardat).
+
+
+## 03.08.2026 — Cluster "SourceDocuments (facturi reale, PARTIAL)" (D406) — FIX period-awareness + observatii.
+
+Partea solida (reparata 27.07): SalesInvoices/PurchaseInvoices cu LINII REALE pe produs din factura_linii,
+reconciliate obligatoriu cu antetul, DUK-validate structural.
+
+FIX (03.08): TaxCode livrari PERIOD-AWARE. TAXCODE_LIVRARI_PRE_2025_08 (coduri 19/9/5 pre-01.08.2025) era DEFINIT
+dar NEFOLOSIT; pull() folosea mereu TAXCODE_LIVRARI (post) indiferent de data facturii -> o rectificativa pe luna
+< 08.2025 emitea coduri gresite (19% negasit -> default 310312 taxare inversa; 9% pre confundat cu 9% post = alt
+cod). Helper _taxcode_livrari(cota, data) selecteaza tabela pe data_emitere; folosit la AMBELE situri livrari
+(per-linie + fallback fara linii). Gard test_taxcode_livrari_period_aware. Docstring STADIU actualizat (era stale -
+descria linia sintetica veche, deja reparata 27.07).
+
+OBSERVATII documentate (NEfacute, pentru clustere/decizii viitoare):
+- Payments = gol: cod de emitere complet, dar ZERO date de plati in model (chitante/casa_operatiuni goale in toti
+  tenantii). Datorie legitima BLOCATA PE DATE (DECIZII 27.07); se reia la prima plata reala + populare pull().
+- TaxCode ACHIZITII grosier: pull() emite mereu 300501 pt achizitie cota>0 (300101 doar taxare inversa/cota 0),
+  fara sa diferentieze deductibilitate 100%/50%/nedeductibil (schema are coduri distincte). Necesita modelul de
+  deductibilitate per factura + codurile exacte din schema -> investigatie separata (posibila datorie).
+- BillingAddress placeholder: _factura_xml hardcodeaza City gol / Country=RO; adresa partenerului nu e trasa din
+  nomenclatorul clienti/furnizori. Trece XSD (permisiv) dar e date fictive.
+- AssetTransactions: absent, XSD minOccurs=0 (optional) - nu e datorie.
+- Lipsa test GOLDEN pe _factura_xml/_source_documents (reparatia 27.07 n-are gard de regresie pe continutul XML) -
+  de adaugat un golden pe fluxul complet construieste->build_xml.

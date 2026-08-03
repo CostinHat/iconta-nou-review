@@ -482,3 +482,12 @@ Temei: CF art.331 alin.(2) lit.a-l (12 categorii de taxare inversa) + structura 
 | datorie gaze naturale (lit.l) | core/test_datorie.py (test_datorie_gaze_naturale_taxare_inversa_art331_lit_l, xfail strict) | uitarea golului lit.l gaze naturale | gaze in CATEGORII+CODPR -> xfail trece -> strict pica -> semnaleaza inchiderea |
 
 NECONFORMITATE (11/12 litere art.331): lit.l gaze naturale lipseste din motor + D394. CORECTARE blocata: codPR-ul D394 gaze NU e in sursele repo (Ghid 2016, anterior Legii 296/2020; 21-31 tip1, 32-35 rezervate tip2). Nu se inventeaza (§3). Gardul anti-regresie forteaza fixul complet cand apare codPR.
+
+
+## 03.08.2026 — Gard TaxCode livrari period-aware D406 (cluster "SourceDocuments")
+
+Temei: Legea 141/2025 (coduri TaxCode SAF-T livrari noi de la 01.08.2025) + structura D406/SAF-T (corespondent rand D300).
+
+| gard | fisier | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| _taxcode_livrari period-aware pe data facturii | core/test_d406.py (test_taxcode_livrari_period_aware) | emiterea codurilor TaxCode post-2025-08 pe o factura dinainte (raportare retroactiva cu coduri gresite) | 19%@2025-06=310309 (inainte: 310312 taxare inversa gresit); 9% pre=310310 != post=310357 |
