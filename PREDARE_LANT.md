@@ -1,3 +1,5 @@
+Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
+
 # PREDARE LANT — 03.08.2026
 
 Sesiune noua, context gol. Comanda de pornire: "Citeste PREDARE_LANT.md si continua lantul."
