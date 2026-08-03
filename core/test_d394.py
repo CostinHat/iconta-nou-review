@@ -84,28 +84,22 @@ def _oib_d394(base10="1234567890"):
     return base10 + str((11 - x) % 10)
 
 
-def test_tipuri_operatiune_pin_la_structura_oficiala():
-    """Gard pct.215: TIPURI (cod) = EXACT setul de tipuri op1 din structura oficiala D394
-    (formulele 'op1(tip)=X' din anaf_surse/d394_struct_anaf.txt). Un tip adaugat/scos tacit din cod
-    diverge de structura si pica aici."""
-    import re, pathlib
-    struct = pathlib.Path(__file__).resolve().parent.parent / "anaf_surse" / "d394_struct_anaf.txt"
-    din_struct = set(re.findall(r"op1\(tip\)\s*=\s*([A-Z]+)", struct.read_text(encoding="utf-8")))
-    assert set(TIPURI) == din_struct, "TIPURI cod %s != structura pdf %s" % (sorted(TIPURI), sorted(din_struct))
+def test_TIPURI_e_setul_validatorului_curent():
+    """Pin pct.215: TIPURI = cele 8 tipuri op1 acceptate de D394Validator INSTALAT (J8, versiunea CURENTA
+    ANAF), aliniate la OPANAF 77/2022 (anaf_surse/opanaf_77_2022). Sursa NU mai e pdf-ul structD394_02092020
+    (2020/J4, invechit, care avea 9 tipuri incl. ASI). ASI a fost ELIMINAT post-2020 (03.08.2026, greenlight
+    Costin - tool-ul urmeaza validatorul). Un tip adaugat/scos tacit din cod pica aici."""
+    assert set(TIPURI) == {"A", "L", "C", "V", "AI", "LS", "AS", "N"}, "TIPURI = %s" % sorted(TIPURI)
+    assert "ASI" not in TIPURI and "ASI" not in TIP_COTA_ZERO and "ASI" not in REZ1_FARA_TVA
 
 
-def test_asi_respins_de_validatorul_instalat_DATORIE():
-    """DATORIE / DECIZIE COSTIN (neconformitate 03.08.2026): tipul ASI e in TIPURI (vine din structura
-    pdf D394 - formula op1(tip)=ASI) DAR D394Validator.jar INSTALAT il RESPINGE ca enum necunoscut
-    ('eroare atribut: tip: valoarea ASI nu se afla in lista'), la fel ca un tip inventat. Discrepanta
-    pdf-vs-jar. Probat izolat: pe o baza D394 identica, doar ASI (si un tip bogus) dau eroarea de enum;
-    L/V/A/C/N/LS/AS/AI sunt acceptate ca enum. Un contabil care introduce manual tip=ASI produce un D394
-    RESPINS de ANAF.
-    DECIZIE DESCHISA (Costin): (a) scoate ASI din TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA (tool-ul urmeaza
-    validatorul, ca la D101 scadenta) - fail-fast pt contabil; (b) remapare ASI -> AI/AS; (c) validatorul
-    e o versiune veche si ASI e valid intr-alta - de confirmat la sursa OPANAF. NU s-a atins TIPURI
-    (schimba ce poate declara contabilul = decizie de produs, §2.3). Acest gard CONSEMNEAZA respingerea:
-    daca validatorul ajunge sa accepte ASI (versiune noua), asertiunea pica si te anunta sa reevaluezi."""
+def test_asi_ramane_scos_gard_invers():
+    """GARD INVERS (fost datorie, REZOLVAT 03.08.2026 cu greenlight Costin). ASI a fost SCOS din TIPURI ca
+    aliniere la D394Validator INSTALAT (care il respinge - 'tip: valoarea ASI nu se afla in lista') si la
+    OPANAF 77/2022 (AS = achizitii regim special, fara sub-varianta dupa sistemul de TVA al partenerului;
+    fost-ASI -> AS). Verifica INVERS: daca o versiune noua de validator ajunge sa ACCEPTE din nou ASI, testul
+    PICA si te anunta sa reevaluezi (poate ASI a fost reintrodus in structura). Fara date ASI de migrat:
+    op1.tip NU e persistat in DB (derivat din facturi - niciodata ASI - sau dat manual la generare)."""
     from core import duk
     if not duk.poate_valida("d394"):
         import pytest
@@ -117,8 +111,8 @@ def test_asi_respins_de_validatorul_instalat_DATORIE():
     rez = duk.valideaza(xml_asi, "d394", an=2026, luna=6)
     er = str(rez.get("erori"))
     assert "ASI" in er and "nu se afla in lista" in er, (
-        "Validatorul instalat NU mai respinge ASI ca enum - reevalueaza DECIZIA (poate ASI a devenit "
-        "valid intr-o versiune noua). erori=%s" % er[:200])
+        "Validatorul instalat ACCEPTA acum ASI (nu mai da eroare de enum) - ASI pare REINTRODUS intr-o "
+        "versiune noua de D394; reevalueaza scoaterea lui din TIPURI. erori=%s" % er[:200])
 
 
 
@@ -175,8 +169,9 @@ def test_tipurile_fara_tva_nu_primesc_tva_in_rezumat1():
 
 
 # ---------- cota (pct. 217) ----------
-def test_cota_zero_permisa_doar_pentru_LS_AS_ASI_N_V():
-    assert set(TIP_COTA_ZERO) == {"LS", "AS", "ASI", "N", "V"}
+def test_cota_zero_permisa_doar_pentru_LS_AS_N_V():
+    # ASI eliminat 03.08.2026 (aliniere validator J8 / OPANAF 77/2022) - vezi TIPURI.
+    assert set(TIP_COTA_ZERO) == {"LS", "AS", "N", "V"}
 
 
 def test_achizitie_taxare_inversa_cu_cota_zero_e_semnalata_nu_declarata():

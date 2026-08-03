@@ -42,8 +42,14 @@ MODUL = "d394"
 REGULI = "2026.1"
 NS = "mfp:anaf:dgti:d394:declaratie:v5"
 
-# op1.tip — lista din ANAF structura D394 VERSIUNE NECUNOSCUTA (pct. 215). NOUA tipuri.
-TIPURI = ("A", "L", "C", "V", "AI", "LS", "AS", "ASI", "N")
+# op1.tip — cele 8 tipuri acceptate de D394Validator INSTALAT (J8, versiunea CURENTA ANAF), aliniate la
+# OPANAF 77/2022 (anaf_surse/opanaf_77_2022). ASI ("achizitii regim special catre pers care aplica sistemul
+# de TVA la incasare" in pdf-ul 2020/J4) a fost ELIMINAT in versiune post-2020: validatorul il respinge
+# ("tip: valoarea ASI nu se afla in lista"). OPANAF 77/2022 defineste AS = "achizitii regim special de la
+# persoane care aplica regimul special (agentii turism, second-hand, arta, colectie, antichitati)" - fara
+# sub-distinctia dupa sistemul de TVA al partenerului, deci fost-ASI se consolideaza in AS. (03.08.2026,
+# greenlight Costin - tool-ul urmeaza validatorul, ca la D101.)
+TIPURI = ("A", "L", "C", "V", "AI", "LS", "AS", "N")
 
 # tip_partener (pct. 216/36)
 P_TVA_RO = 1      # persoana impozabila inregistrata in scopuri de TVA in Romania
@@ -55,7 +61,7 @@ P_NONUE = 4       # nestabilita in RO, in afara UE
 # (OPANAF 2194/2025, TVA 21% si 11% de la 01.08.2025). Validatorul castiga.
 COTE = (0, 5, 9, 11, 19, 20, 21, 24)
 # cota=0 permisa DOAR pentru aceste tipuri (pct. 217)
-TIP_COTA_ZERO = ("LS", "AS", "ASI", "N", "V")
+TIP_COTA_ZERO = ("LS", "AS", "N", "V")
 
 # Campurile pe care le accepta <rezumat1> in v5 - lista EXACTA din validator
 # (strings pe Rezumat1.class). Nu se deduc din numele tipului: setul e asimetric.
@@ -74,7 +80,7 @@ TIP_COTA_ZERO = ("LS", "AS", "ASI", "N", "V")
 #    rulare): la taxare inversa TVA e la beneficiar, iar LS/AS sunt regim special.
 #  - validatorul RULAT -> campurile construite dinamic ("facturi"+tip), care nu apar
 #    ca siruri in constant pool: facturi* exista pentru toate tipurile.
-REZ1_FARA_TVA = frozenset(("V", "LS", "AS", "ASI", "N"))
+REZ1_FARA_TVA = frozenset(("V", "LS", "AS", "N"))
 # R232.2 (validator): "daca tip nu este in lista (A, L, C, AI) atunci tva nu trebuie
 # sa fie completat" - la taxare inversa TVA-ul e la beneficiar, la neinregistrati nu exista.
 OP1_CU_TVA = frozenset(("A", "L", "C", "AI"))
@@ -332,7 +338,7 @@ def calcul_d394(prof, perioada, date, manual=None):
                          % (cota, ", ".join(str(c) for c in COTE)))
             nefacturabile += 1
             continue
-        # pct. 217: cota=0 permisa doar pentru LS/AS/ASI/N/V
+        # pct. 217: cota=0 permisa doar pentru LS/AS/N/V (ASI eliminat - vezi TIPURI)
         if cota == 0 and tip not in TIP_COTA_ZERO:
             avert.append("Operațiune tip %s cu cotă 0 (partener %s) — ANAF acceptă cota 0 "
                          "doar pentru %s. Verifică factura." % (tip, cui or "fără CUI",
@@ -704,7 +710,7 @@ def pull(conn, schema, perioada):
             # raportul tva/baza. ATENTIE la TAXARE INVERSA PRIMITA (tip C): documentul
             # are TVA = 0 (beneficiarul aplica 4426=4427, art. 331 + norme pct.109), dar
             # ANAF cere COTA BUNULUI: structD394 pct.217 - "valoarea 0 este permisa daca
-            # si numai daca tip in (LS, AS, ASI, N, V)". C nu e in lista.
+            # si numai daca tip in (LS, AS, N, V)". C nu e in lista. (ASI eliminat - vezi TIPURI)
             # Fara asta, orice achizitie cu taxare inversa cadea din declaratie.
             total, tva = _d(r["total"]), _d(r["tva"])
             baza = total - tva

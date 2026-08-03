@@ -6414,3 +6414,40 @@ CONCLUZIE per arborele de decizie al lui Costin: jar CURENT + respinge ASI => **
 MAPARE (unde merg operatiunile fost-ASI): NU am putut confirma dintr-un document de structura ANAF CURENT - structurile pdf postate public sunt versiuni vechi (structura_D394.pdf si _v200.pdf sunt din 2013, 4 tipuri; structD394_02092020 e J4). Specificatia curenta (J8) e incorporata DOAR in jar, care nu documenteaza in text unde merg fost-ASI. Evidenta 2020 (AS/ASI = pereche normal-vs-incasare, ASI eliminat) INDICA PUTERNIC ca achizitiile regim special se consolideaza sub AS (distinctia dupa sistemul de TVA al partenerului a fost abandonata), dar NU e confirmat de un text oficial curent. NU am schimbat TIPURI (instructiune Costin: raporteaza intai; nu ghici remaparea).
 
 RAMANE PENTRU COSTIN: (a) greenlight pentru scoaterea ASI din TIPURI (aliniere validator - clar corecta); (b) confirmarea ca fost-ASI -> AS (achizitii regim special, indiferent de sistemul de TVA al partenerului) - sau o alta destinatie, de confirmat la sursa OPANAF 77/2022. Gardul test_asi_respins_de_validatorul_instalat_DATORIE ramane pana la rezolvare.
+
+
+## 03.08.2026 — ASI (d394) REZOLVAT cu greenlight Costin: scos din cod + OPANAF 77/2022 confirmat + audit surse.
+
+GREENLIGHT PUNCT 1 (scoatere ASI). ASI scos din TIPURI (acum 8 tipuri: A,L,C,V,AI,LS,AS,N), TIP_COTA_ZERO
+(LS,AS,N,V), REZ1_FARA_TVA (V,LS,AS,N) + comentariile pct.217. Aliniere la D394Validator instalat (J8, care il
+respinge), acelasi tipar ca la D101. Gardul fost-datorie test_asi_respins... transformat in GARD INVERS
+(test_asi_ramane_scos_gard_invers): daca o versiune noua de validator ajunge sa ACCEPTE din nou ASI, testul PICA
+si anunta. Pin-ul TIPURI mutat de pe pdf-ul 2020 invechit pe setul validatorului curent (test_TIPURI_e_setul_
+validatorului_curent).
+
+PUNCT 2 CONFIRMAT LA SURSA (Monitorul Oficial, nu pdf-uri invechite). Descarcat OPANAF 77/2022 (MO nr.95/
+31.01.2022), salvat anaf_surse/opanaf_77_2022.pdf + .txt cu sha256 (86524aa921c226fafb417c4d494b112aebbc3e6dc6b91
+ca228486b4b1bb3b22c). Textul CONFIRMA: 8 tipuri, ASI absent; AS = "achizitii regim special de la persoane care
+aplica regimul special pentru agentiile de turism, bunurile second-hand, opere de arta, obiecte de colectie si
+antichitati". Distinctia 2020 dupa sistemul de TVA al partenerului (AS=normal / ASI=la incasare) a fost ELIMINATA
+=> fost-ASI -> AS. Remaparea NU mai e datorie, e confirmata.
+
+DATE EXISTENTE (cerinta Costin: sa nu dispara tacit): op1.tip D394 NU e persistat in DB - nu exista tabela
+d394_operatiuni; tipurile automate sunt DERIVATE din facturi (tip_operatiune produce doar L/N/C/V/A, niciodata
+ASI), iar operatiunile manuale sunt pasate la generare (cheie_manual), nestocate. Nicio coloana din schema
+(tenant_template.sql) nu tine op1.tip; nicio tabela de declaratii XML salvate. DECI NU EXISTA DATE ASI de migrat
+la niciun tenant. Protectie forward: [GARD CLASA] din calcul_d394 respinge orice tip manual necunoscut (deci
+inclusiv ASI) cu eroare vizibila - fail-fast, nu drop tacit.
+
+PUNCT 3 - inlocuire pdf invechit + audit surse. d394_struct_anaf.txt (2020/J4) marcat prominent INVECHIT in antet,
+cu trimitere la opanaf_77_2022 ca sursa curenta pentru tipuri. AUDIT anaf_surse/ dupa alte surse vechi cu acelasi
+risc: **d301_struct_anaf.txt = 2013 (D301_A1.0.0)** si **d390_struct_anaf.txt = 2020 (OPANAF 705/2020, v3; validator
+curent J4.1.2)** sunt si ele VECHI. Diferenta fata de d394: codul d301 (checksum R28, rollup) si d390 (nomenclator
+tari HR->CR, tipuri IC) a fost deja VALIDATOR-VERIFICAT in clusterele din aceasta campanie, deci nu au produs bug
+activ din structura veche. Restul (d100/d101/d112/d205/d300) au surse 2025/2026, curente. DATORIE NOUA (follow-up,
+non-blocanta): reimprospateaza structurile d301 si d390 de la ANAF si re-verifica listele lor de tipuri/nomenclatoare
+pe validatorul curent, ca la d394 - inainte ca vreo regula ne-verificata din structura veche sa fie folosita ca temei.
+
+LECTIE: o structura pdf invechita in anaf_surse/ e o mina - a produs bug-ul ASI. Regula: sursa de tipuri/nomenclatoare
+= validatorul INSTALAT (verifica-i versiunea vs versiunea curenta ANAF) + ordinul din Monitorul Oficial, NU un pdf de
+structura vechi. Marcheaza pdf-urile vechi INVECHIT ca sa nu fie folosite orb.

@@ -1,3 +1,12 @@
+# !!! INVECHIT (03.08.2026) - acest fisier e extras din structD394_02092020.pdf = D394 versiunea 2020 (J4.0.0,
+# OPANAF 3281/2020). Validatorul INSTALAT e J8.0.2 (2025, byte-identic cu ANAF). DIFERENTA CONFIRMATA: lista
+# op1.tip din acest pdf are 9 tipuri incl. ASI ('achizitii regim special catre pers cu TVA la incasare'), dar
+# in versiunea CURENTA ASI e ELIMINAT (validatorul il respinge). SURSA CURENTA pentru tipuri = anaf_surse/
+# opanaf_77_2022.txt (OPANAF 77/2022, MO 95/31.01.2022): 8 tipuri A,L,C,V,AI,LS,AS,N; AS = 'achizitii regim
+# special de la persoane care aplica regimul special (turism/second-hand/arta/colectie/antichitati)', fost-ASI
+# consolidat in AS. Restul definitiilor de campuri din acest pdf raman utile, DAR verifica orice regula pe
+# validatorul instalat inainte de a te baza pe ele. Vezi DECIZII.md 03.08.
+#
 # STRUCTURA OFICIALA D394 - sursa de adevar pentru core/d394.py.
 # Descarcat 15.07.2026 de la ANAF:
 #   https://static.anaf.ro/static/10/Anaf/Declaratii_R/AplicatiiDec/structD394_02092020.pdf
