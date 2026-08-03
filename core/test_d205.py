@@ -53,6 +53,30 @@ def test_totalPlata_A_e_suma_tuturor_campurilor_sect_II():
     assert 'totalPlata_A="11001"' in xml
 
 
+def test_trunchiere_den_adresa_functie_den1_la_limitele_anaf():
+    """NECONFORMITATE (probata DUK): campurile text D205 se trunchiau la 75 (default text_anaf),
+    dar structura ANAF (OPANAF 102/2025) + validatorul DUK dau: den C(200), adresa C(1000),
+    functie_declar C(50), den1(beneficiar) C(100). den/adresa erau OVER-trunchiate (pierdere de
+    date, ANAF le accepta pana la 200/1000); functie_declar 51-75 si den1 >100 emiteau si ANAF
+    le RESPINGEA. Probe DUK: den 200 valid/201 erori; adresa 1000 valid/1001 erori; functie 50
+    valid/51 erori; den1 100 valid/101 erori."""
+    import re as _re
+    res = calcul_d205({"cui": "14399840", "nume": "D" * 250, "adresa": "A" * 1500,
+                       "declarant_nume": "POPESCU", "declarant_prenume": "ION",
+                       "declarant_functie": "F" * 80}, 2025, [
+        {"categ": "1.a", "nume": "N" * 150, "cif": "1850101450013",
+         "baza": 50000, "imp": 8000, "castig": 50000}])
+    xml = build_xml(res)
+    den = _re.search(r'[ ]den="([^"]*)"', xml).group(1)
+    adresa = _re.search(r' adresa="([^"]*)"', xml).group(1)
+    functie = _re.search(r'functie_declar="([^"]*)"', xml).group(1)
+    den1 = _re.search(r'den1="([^"]*)"', xml).group(1)
+    assert len(den) == 200, "den trebuie trunchiat la 200 (era 75); got %d" % len(den)
+    assert len(adresa) == 1000, "adresa trebuie trunchiata la 1000 (era 75); got %d" % len(adresa)
+    assert len(functie) == 50, "functie_declar trebuie trunchiat la 50 (era 75); got %d" % len(functie)
+    assert len(den1) == 100, "den1 beneficiar trebuie trunchiat la 100 (era netrunchiat); got %d" % len(den1)
+
+
 def test_total_plata_a_res_egal_checksum_emis():
     """Gard clasa-d100 (capcana latenta): res.total_plata_a (sursa unica) trebuie sa fie
     checksum-ul EMIS in XML == nrben+Tcastig+Tpierd+T_VB+T_GAR+Tbaza+Timp (formula ANAF
@@ -167,6 +191,22 @@ def test_d205_contract_proba_duk_valid(conn_schema_div):
     xml, res = _d205.genereaza(conn_schema_div, _SCHEMA_D205, Perioada(2026))
     rez = _duk.valideaza(xml, "d205", an=2026)
     assert rez["stare"] == "valid", "DUK a respins D205: %s" % rez
+
+
+@pytest.mark.skipif(not _D205_DUK, reason="DUK d205 indisponibil")
+def test_trunchiere_lunga_ramane_duk_valida():
+    """Proba DUK: cu den/adresa/functie_declar/den1 PESTE limite, build_xml le trunchiaza la
+    200/1000/50/100 si XML-ul RAMANE valid. Inainte: den/adresa over-trunchiate la 75 (pierdere
+    de date - ANAF accepta pana la 200/1000), functie 51-75 si den1 >100 emiteau si DUK respingea.
+    Limite probate direct pe validator: den 200/201, adresa 1000/1001, functie 50/51, den1 100/101."""
+    res = calcul_d205({"cui": "14399840", "nume": "D" * 250, "adresa": "A" * 1500,
+                       "declarant_nume": "POPESCU", "declarant_prenume": "ION",
+                       "declarant_functie": "F" * 80}, 2025, [
+        {"categ": "1.a", "nume": "N" * 150, "cif": "1850101450013",
+         "baza": 50000, "imp": 8000, "castig": 50000}])
+    xml = build_xml(res)
+    rez = _duk.valideaza(xml, "d205", an=2025)
+    assert rez["stare"] == "valid", "DUK a respins D205 trunchiat: %s" % rez
 
 
 # ============================================================

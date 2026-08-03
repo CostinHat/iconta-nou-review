@@ -6209,3 +6209,29 @@ Gard nou test_total_plata_a_res_egal_checksum_emis: res == header emis == suma c
 GENERALIZARE: cu d205 inchis, invariantul res.total_plata_a == totalPlata_A emis e acum UNIVERSAL pe toate generatoarele
 cu checksum totalPlata_A. Consecinta pentru orice generator viitor: campul-oglinda al unui atribut XML TINE valoarea
 emisa, nu o valoare partiala convenabila; build_xml EMITE din res, nu recalculeaza independent (recalculul = capcana).
+
+
+## 03.08.2026 — Cluster "trunchiere den/adresa" (d205) — NECONFORMITATE reparata (over-trunchiere + respingere), probata DUK.
+
+Verificare la sursa + proba pe validator: campurile text din D205 se emiteau prin text_anaf cu limita DEFAULT
+(74/75 car.), dar structura ANAF (OPANAF 102/2025) da limite mult mai mari, confirmate boundary-cu-boundary pe
+DUKIntegrator: den C(200) (200 valid / 201 erori), adresa C(1000) (1000 valid / 1001 erori), functie_declar C(50)
+(50 valid / 51 erori), den1 beneficiar C(100) (100 valid / 101 erori).
+
+Doua tipuri de defect: (1) den si adresa erau OVER-trunchiate la ~75 = PIERDERE DE DATE - numele firmei peste 75
+car. si adresa peste 75 (adresele reale depasesc frecvent 75) taiate silentios, desi ANAF le accepta pana la 200/1000.
+Cheia: docstring-ul lui text_anaf (27.07) enumera declaratiile cu respingere empirica >75 (D300/D301/D390/D394/D112)
+- D205 NU e in lista, deci blanket-75 nu era probat pentru D205; structura lui (200/1000) castiga (regula TEXTUL
+CASTIGA, coroborata cu proba DUK, ca la lectia R17). (2) functie_declar (emis cu default 75) si den1 (emis NETRUNCHIAT)
+puteau DEPASI 50/100 -> ANAF le RESPINGEA. Deci pe acelasi camp "text" coexistau over-trunchiere (den/adresa) si
+under-/non-trunchiere (functie/den1).
+
+FIX (red->green): limite explicite in build_xml - _t(nume,200), _t(adresa,1000), _t(declarant_functie,50),
+_t(b.nume1,100). Proba DUK pe inputuri lungi (den250/adresa1500/functie80/den1-150) -> toate trunchiate la limita
+-> XML valid. Garduri: test_trunchiere_den_adresa_functie_den1_la_limitele_anaf (lungimi exacte) +
+test_trunchiere_lunga_ramane_duk_valida (proba DUK).
+
+GENERALIZARE: text_anaf are o limita DEFAULT (75) potrivita doar pentru campurile C(75); orice camp cu alta limita
+(mai mare SAU mai mica) trebuie sa paseze limita EXPLICIT. Un camp emis fara _t deloc (den1) e la fel de periculos ca
+unul over-trunchiat. Consecinta: la fiecare generator, limita fiecarui atribut text = din structura ANAF a ACELUI
+formular, verificata pe DUK - nu se presupune 75 uniform (lectia extinde clusterul d112 "limita text 75").

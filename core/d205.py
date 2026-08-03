@@ -142,9 +142,9 @@ def build_xml(res):
            % (NS, NS, res.an,
               _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR")),
               _esc(_t(prof.get("declarant_prenume") or "-")),
-              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR")),
+              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", 50)),  # C(50) ANAF (DUK: 51 respins)
               "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()),
-              _esc(_t(prof.get("nume"))), _esc(_t(prof.get("adresa"))), total_control))
+              _esc(_t(prof.get("nume"), 200)), _esc(_t(prof.get("adresa"), 1000)), total_control))  # den C(200)/adresa C(1000) ANAF (DUK: 201/1001 respinse; default 75 = OVER-trunchiere)
     H.append(hdr)
     # sect_II se INCHIDE (linia 26 din ANAF structura D205 (OPANAF 102/2025)) INAINTE de <benef>
     # (linia 27) - sunt elemente FRATI, ambele copii ai radacinii, nu benef in
@@ -167,7 +167,7 @@ def build_xml(res):
         H.append('  <benef id_inreg="%d" den1=%s tip_venit1="08" '
                  'Rezid="1" cifR="%s" tip_plata="%s" '
                  'divid_D="%d" divid_P="%d" baza1="%d" imp1="%d"/>'
-                 % (idx, _esc(b.nume1),
+                 % (idx, _esc(_t(b.nume1, 100)),  # den1 C(100) ANAF (DUK: 101 respins; era netrunchiat)
                     "".join(ch for ch in b.cif if ch.isdigit()),
                     b.tip_plata, b.castig1, b.pierdere1, b.baza1, b.imp1))
     H.append("</declaratie205>")
