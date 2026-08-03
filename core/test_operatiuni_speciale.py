@@ -63,3 +63,18 @@ def test_provizion_afiliata_nedeductibil():
 def test_provizion_garantata_nedeductibil():
     pct, _ = pr.deductibilitate_creanta(300, True, False)
     assert pct == 0
+
+
+
+def test_rezerva_legala_5pct_plafon_20pct_capital():
+    """Rezerva legala CONTABILA (Legea 31/1990 art.183, OMFP 1802/2014 pct.421): 5%% din profit,
+    plafonata cumulat la 20%% din capital social minus rezerva deja existenta. NOTA: deductibilitatea
+    FISCALA (CF art.26 alin.(1) lit.a, cu add-back-ul cheltuielii cu impozitul pe profit) NU e
+    implementata nicaieri - decizie de produs (DECIZII 03.08)."""
+    from core.motor import rezerva_legala
+    from datetime import date
+    la = date(2026, 1, 1)
+    assert rezerva_legala(100000, 200000, 0, la_data=la)["suma"] == Decimal("5000.00")    # 5%% din profit
+    assert rezerva_legala(100000, 200000, 40000, la_data=la)["suma"] == Decimal("0.00")   # plafon 20%% atins
+    assert rezerva_legala(100000, 200000, 37000, la_data=la)["suma"] == Decimal("3000.00")# plafon musca (spatiu 3000)
+    assert rezerva_legala(-500, 200000, 0, la_data=la)["suma"] == Decimal("0.00")         # profit negativ

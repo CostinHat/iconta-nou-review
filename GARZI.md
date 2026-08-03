@@ -514,3 +514,14 @@ Temei: CF art.25 alin.(4) lit.i (profit: min 0,75% CA / 20% impozit + registru);
 | datorie micro period-aware | core/test_datorie.py (test_datorie_credit_sponsorizare_micro_period_aware, xfail strict) | uitarea ca micro=0 e aplicat retroactiv (2019-2023 avea credit) | credit micro @2022 > 0 -> xfail trece -> strict pica |
 
 Profitul e gardat de test_operatiuni_speciale.py (4 teste existente). Micro fix blocat pe textul istoric art.56 alin.1^5 (abrogat, nu-i in consolidat).
+
+
+## 03.08.2026 — Gard formula rezerva legala contabila (cluster "rezerva legala")
+
+Temei: Legea 31/1990 art.183 + OMFP 1802/2014 pct.421 (rezerva 5% profit, plafon 20% capital).
+
+| gard | fisier | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| golden pe formula rezervei contabile | core/test_operatiuni_speciale.py (test_rezerva_legala_5pct_plafon_20pct_capital) | schimbarea tacita a formulei (5%/plafon 20% cumulat) | 5%*100000=5000; plafon musca la 3000; atins->0; profit neg->0 |
+
+Formula contabila corecta + period-aware. Deductibilitatea FISCALA art.26(1)a (add-back cheltuiala impozit) = decizie de produs (DECIZII).

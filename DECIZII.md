@@ -5816,3 +5816,21 @@ NECONFORMITATE / DECIZII deschise:
    depunere. Construirea formularului D177 = scop nou, cere decizia lui Costin.
 3. Endpoint main.py:7853 apeleaza credit_sponsorizare FARA la_data (foloseste regula de azi indiferent de anul
    fiscal al sponsorizarii); d101.py nu apeleaza deloc motorul. Wiring de period-awareness - observatie.
+
+
+## 03.08.2026 — Cluster "rezerva legala" (motor) — formula contabila CONFORMA + deductibilitate fiscala = decizie produs.
+
+Formula rezervei legale CONTABILE (motor.py _rezerva_legala_2018): 5% din profit, plafon cumulat 20% capital minus
+rezerva existenta, oprire la plafon = CORECTA structural (Legea 31/1990 art.183, OMFP 1802/2014 pct.421), period-aware
+prin dispecer. Lipsea test NUMERIC (doar tautologic in test_versionare_formule) - adaugat gard golden pe valoare.
+
+NECONFORMITATE / DECIZIE DE PRODUS deschisa:
+1. Deductibilitatea FISCALA a rezervei legale (CF art.26 alin.(1) lit.a) LIPSESTE complet din sistem. Baza legala =
+   "profitul contabil, LA CARE SE ADAUGA cheltuielile cu impozitul pe profit, pana ce atinge a cincea parte (20%) din
+   capitalul social subscris si varsat". Add-back-ul cheltuielii cu impozitul NU exista nicaieri; d101 P6 "Deduceri
+   fiscale" e input MANUAL din formular, necalculat. Implementarea (calcul deducere + legare in d101 P6) SCHIMBA
+   declaratia de impozit pe profit -> DECIZIE DE PRODUS (§2.3 pct.2), cere decizia lui Costin. Regula E disponibila
+   (art.26(1)a verbatim), deci nu e blocata pe temei - e o functionalitate de construit + conectat.
+2. motor.py rezerva_legala e cod MORT: apelat doar din test tautologic, niciun apelant de productie (inchidere_an/
+   bilant/d101 nu-l cheama). De conectat cand se implementeaza fluxul.
+3. Minor: motor.py:82 foloseste capital_social generic; art.26(1)a cere "subscris si varsat".
