@@ -5364,3 +5364,28 @@ un rand acceptat de validatorul instalat. Se inchide cand validatorul DUK instal
 
 INCHIDERE CLUSTER: "cote TVA -> randuri | d300" √ 03.08 (livrari verificate + reparatie achizitii deductibile
 11%/9%). Secventa 54 -> 53.
+
+
+## 03.08.2026 — Cluster exigibilitate / TVA la incasare | d300: GAP VERIFICAT (feature, decizie de produs) — NEINCHIS
+
+Clusterul urmator dupa cote TVA->randuri|d300. La verificare (Sesiunea A) am gasit un GAP de fond, nu o aliniere:
+**D300 ignora complet regimul TVA la incasare** (CF art.282, sistemul TVA la incasare).
+
+CONSTATARE (verificata in cod): `d300.pull` selecteaza facturile cu `WHERE f.data_emitere >= inceput AND < sfarsit`
+si SELECT-ul de profil nu citeste `tva_la_incasare`. Deci D300 declara TVA pe toate facturile EMISE in perioada,
+indiferent de incasare. Pentru o firma in sistemul TVA la incasare, art.282 cere: exigibilitatea TVA colectate la
+data INCASARII (cap 90 zile de la emitere), iar TVA deductibila la data PLATII achizitiei. => exigibilitate gresita
+pentru aceste firme (declara prea devreme colectata, prea devreme/tarziu deductibila).
+
+FEZABILITATE: datele exista in schema — `firma_profil.tva_la_incasare` (bool) + `facturi.platita_la` (timestamp) +
+`data_scadenta`. Deci se poate implementa fara plumbing nou major.
+
+DE CE NEINCHIS: e o FUNCTIONALITATE care schimba substantial sumele declarate (nu o corectie de rotunjire/mapare),
+cu reguli de temei de verificat verbatim la sursa (art.282 alin.3-6, capul de 90 zile, tratamentul deductibilei).
+Per §2.3 pct.2 = decizie de produs (domeniu: doar firmele pe regim; abordare: filtrare la pull dupa platita_la vs.
+rand de exigibilitate). Nu se face pe jumatate la finalul unei rulari. Datorie deschisa: xfail
+test_datorie_d300_exigibilitate_tva_la_incasare (SOLD +1). Clusterul RAMANE in secventa (nebifat) pentru o campanie
+dedicata, cu greenlight Costin pe temei + domeniu.
+
+Oprire rulare: limita de 6 clustere/rulare atinsa (§2.3 pct.5) + acest gap cere decizie de produs. Predare pe disc
+(PREDARE_LANT.md).

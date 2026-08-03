@@ -28,7 +28,7 @@ Punctul 2 nu e formal. Pe 27.07 o gardă a „picat pe mutant" în timp ce crăp
 
 | Loc | Ce acoperă | Când rulează |
 |---|---|---|
-| suita pytest (1299 teste, 133 fișiere) | logică, schemă, semnături, contracte | la dev, înainte de commit |
+| suita pytest (1300 teste, 133 fișiere) | logică, schemă, semnături, contracte | la dev, înainte de commit |
 | `verificator_conformitate.py` | Design System, frontend (28 gardieni) | la dev, TOTAL 0 obligatoriu |
 | `core/verificatoare.py` | echilibru notă/balanță, TVA pe cotă, trezorerie | în aplicație, pe date reale |
 | `core/control_incrucisat.py` | D112/D300/D390 vs evidență, cotă TVA | în aplicație, semafor |
@@ -291,7 +291,7 @@ balanță ≠ sumă înregistrări; backup nerestaurabil.
 **Eșec:** teste verzi care nu testează nimic (fake-uri pe codul auditat, teste stale,
 fișiere necolectate).
 **Stare: PARȚIAL.**
-- ACOPERIT de fapt: 1299 teste colectate; fake-uri (`monkeypatch`/`MagicMock`) doar pe
+- ACOPERIT de fapt: 1300 teste colectate; fake-uri (`monkeypatch`/`MagicMock`) doar pe
   integrări externe (SPV, e-Factura, e-Transport, JWT). **Zero fake pe generatoarele de
   declarații.**
 - LIPSĂ: **mutantul zero sistematic** — forțezi fiecare generator să întoarcă `[]` și suita

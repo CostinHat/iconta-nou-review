@@ -299,3 +299,9 @@ def test_datorie_verificatorul_nu_e_el_insusi_testat():
 def test_datorie_d300_9pct_deductibil_auto():
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "d300 achizitii deductibile 9% emise automat pe rand duk valid" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 03.08.2026 (cluster exigibilitate / TVA la incasare | d300): D300 IGNORA regimul TVA la incasare (CF art.282, sistemul TVA la incasare). d300.pull filtreaza facturile DOAR dupa data_emitere si nici nu citeste firma_profil.tva_la_incasare; pentru o firma in acest sistem, exigibilitatea TVA COLECTATE intervine la INCASARE (nu la emitere), plafonata la 90 de zile de la emitere (art.282 alin.3-6), iar TVA DEDUCTIBILA se amana pana la plata achizitiei. Rezultat: D300 declara TVA pe toate facturile emise/primite in perioada, indiferent de plata -> exigibilitate gresita pentru firmele pe TVA la incasare. Datele exista (fezabil): firma_profil.tva_la_incasare (bool) + facturi.platita_la (timestamp). E FEATURE care schimba substantial sumele declarate, nu o aliniere de test -> decizie de produs (domeniu + abordare). Se inchide cand D300 aplica exigibilitatea pe incasare pentru firmele pe acest regim (colectata la platita_la cu cap 90 zile, deductibila la plata achizitiei), cu proba pe date reale + DUK, consemnat in DECIZII.md.")
+def test_datorie_d300_exigibilitate_tva_la_incasare():
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "d300 aplica exigibilitatea tva la incasare pentru firme pe regim" in dz.lower()
