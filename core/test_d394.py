@@ -55,6 +55,26 @@ def test_partener_non_ue_e_tip_4():
     assert clasifica_partener("CH123456")[0] == P_NONUE
 
 
+def test_tip_partener_clasificare_pct216():
+    """VERIFICARE pct.216 (sursa curenta OPANAF 77/2022): clasificarea acopera cele 4 categorii oficiale.
+    1 = persoana impozabila inregistrata in RO (prefix RO / numeric); 2 = neinregistrata (fara CUI sau CUI
+    ne-numeric); 3 = stabilita in alt stat membru UE (prefix stat membru din _TARI_UE); 4 = nestabilita in UE.
+    NOTA de design (conform): validitatea checksum-ului CUI-ului RO NU se verifica la clasificare (cui_ro e
+    doar NORMALIZARE) - un CUI RO invalid da tip 1, iar D394Validator il respinge (R218.2: cuiP invalid),
+    FAIL-FAST, nu tacit; a-l reclasifica la tip 2 ar declara GRESIT un partener inregistrat ca neinregistrat.
+    Ramura UE/non-UE se sprijina pe _TARI_UE (verificat DUK in clusterul nomenclator tari HR->CR)."""
+    assert clasifica_partener("RO14399840")[0] == P_TVA_RO          # 1 - inregistrat RO
+    assert clasifica_partener("14399840")[0] == P_TVA_RO            # 1 - numeric fara prefix = RO
+    assert clasifica_partener("")[0] == P_NEINREG                   # 2 - fara CUI
+    assert clasifica_partener(None)[0] == P_NEINREG                 # 2 - None
+    assert clasifica_partener("ROABC")[0] == P_NEINREG             # 2 - RO ne-numeric -> neinregistrat
+    assert clasifica_partener("DE811569869")[0] == P_UE            # 3 - UE (Germania)
+    assert clasifica_partener("HR12345678901")[0] == P_UE          # 3 - UE (Croatia, prefix HR)
+    assert clasifica_partener("CH123456")[0] == P_NONUE            # 4 - non-UE (Elvetia)
+    # cele 4 valori sunt distincte (nomenclatorul oficial de tip_partener)
+    assert len({P_TVA_RO, P_NEINREG, P_UE, P_NONUE}) == 4
+
+
 # ---------- tipul operatiunii (pct. 215) ----------
 def test_tip_respecta_compatibilitatea_cu_partenerul():
     """tip_partener=1 -> tip<>N ; =2 -> tip in (L,LS,N) ; in (3,4) -> tip in (L,LS,C)"""

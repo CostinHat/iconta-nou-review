@@ -6451,3 +6451,20 @@ pe validatorul curent, ca la d394 - inainte ca vreo regula ne-verificata din str
 LECTIE: o structura pdf invechita in anaf_surse/ e o mina - a produs bug-ul ASI. Regula: sursa de tipuri/nomenclatoare
 = validatorul INSTALAT (verifica-i versiunea vs versiunea curenta ANAF) + ordinul din Monitorul Oficial, NU un pdf de
 structura vechi. Marcheaza pdf-urile vechi INVECHIT ca sa nu fie folosite orb.
+
+
+## 04.08.2026 — Cluster "tip_partener" (d394) — VERIFICAT CONFORM (fara fix).
+
+clasifica_partener(cui) mapeaza cele 4 categorii oficiale de tip_partener (pct.216, sursa curenta OPANAF 77/2022):
+1 = persoana impozabila inregistrata in scopuri de TVA in RO (prefix RO sau sir numeric); 2 = neinregistrata
+(fara CUI sau CUI ne-numeric); 3 = stabilita in alt stat membru UE (prefix de stat membru din _TARI_UE); 4 =
+nestabilita in UE (alt prefix alfabetic). Probat: 5 cazuri de clasificare corecte (inclusiv HR->3 dupa fixul de
+nomenclator din clusterul HR->CR) + proba DUK (validatorul accepta tip_partener UE/non-UE).
+
+NUANTA DE DESIGN (conform, nu bug): cui_ro e o functie de NORMALIZARE (scoate prefixul RO si separatorii), NU de
+validare - nu verifica checksum-ul CUI-ului RO. Deci un CUI RO invalid (ex. RO99999999) da tip_partener=1, iar
+D394Validator il respinge la depunere (regula R218.2: "daca tip_partener=1 atunci cuiP valid") - fail-fast, cu
+eroare vizibila, nu drop tacit. Aceasta e alegerea CORECTA: a reclasifica un CUI RO invalid la tip 2 ar declara
+GRESIT un partener inregistrat ca neinregistrat (o greseala de continut), pe cand tip 1 + respingere DUK forteaza
+corectarea CUI-ului. Ramura UE/non-UE se sprijina pe _TARI_UE, deja verificat pe validator in clusterul nomenclator
+tari (HR->CR). Fara fix - conform. Gard consolidat: test_tip_partener_clasificare_pct216.
