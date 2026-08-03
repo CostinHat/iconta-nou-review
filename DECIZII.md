@@ -6258,3 +6258,19 @@ text_anaf cu limita DEFAULT (~75). Probat pe DUK: adresa de 152 car. e ACCEPTATA
 (27.07) sustine ca D300 respingea empiric >75 - afirmatie acum INFIRMATA de proba DUK (ca la D205). RECOMANDARE:
 un cluster/audit dedicat "limita text" pe TOATE declaratiile din lista 27.07 (D300/D301/D390/D394/D112) - limitele
 reale sunt cele din structura fiecarui formular, verificate pe DUK, NU 75 uniform. Nereparata aici: scop = checksum.
+
+
+## 03.08.2026 — Cluster "checksum totalPlata_A (R28)" (d301) — VERIFICAT CONFORM + gard de legatura (fara fix).
+
+Verificare la sursa + proba DUK: totalPlata_A din D301 = INT(baza1+..+baza5 + tva1+..+tva5), suma de control
+definita EXPLICIT de structura (poz.28) si impusa de DUKIntegrator regula R28 (respinge orice alt total - dovedit
+numeric in clusterul rollup: total pe sectiunile 1-4 = 6022, R28 cere 12044). res.total_plata_a = sum(tot[t][0]+
+tot[t][1] pe toate 5 tipurile) si build_xml emite res.total_plata_a - sursa unica, ca celelalte declaratii
+(aliniat clasa d100). Checksum-ul include sectiunea 4.1 PRIN DEFINITIE (serviciul in baza4 SI baza5), fara dubla
+impozitare pentru ca TVA-ul DATORAT ramane tva4 (o singura data).
+
+Clusterul rollup (inchis anterior) verificase deja maparea tip->sectiune si gardase golden 12044 pe XML si pe
+res.total_plata_a + proba DUK cu toate tipurile. Lipsea DOAR legatura EXPLICITA intr-un singur assert:
+res.total_plata_a == totalPlata_A parsat din XML == suma pe toate tipurile. Adaugata (test_checksum_r28_res_egal_
+emis_egal_suma_toate_tipurile): prinde atat divergenta res-vs-emis (clasa d100) cat si un tip scapat din suma.
+Fara fix de cod - d301 era deja conform si aliniat.

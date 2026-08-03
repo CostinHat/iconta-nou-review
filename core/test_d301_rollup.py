@@ -49,6 +49,20 @@ def test_tva_datorat_o_singura_data_desi_checksum_include_4_1():
     assert res.total_plata_a == 12044               # checksum ANAF = baza4+baza5+tva4+tva5
 
 
+def test_checksum_r28_res_egal_emis_egal_suma_toate_tipurile():
+    """Cluster checksum totalPlata_A (R28): res.total_plata_a (sursa unica) == totalPlata_A EMIS in
+    XML == INT(sum baza1..5 + tva1..5) pe TOATE tipurile (struct d301 poz.28, impus de DUK R28).
+    Leaga res de valoarea emisa (invariant clasa-d100, build_xml emite res, nu recalculeaza) si de
+    suma pe toate tipurile - un tip scapat din suma ar rupe checksum-ul, aici prins."""
+    import re
+    res = d301.calcul_d301(PROF, Perioada(2026, luna=6), [_op(5, 1000, 4.9770, 1045)])
+    xml = d301.build_xml(res)
+    emis = int(re.search(r'totalPlata_A="(\d+)"', xml).group(1))
+    suma_toate = sum(res.totaluri[t][0] + res.totaluri[t][1] for t in d301.TIPURI_OP)
+    assert res.total_plata_a == emis == suma_toate == 12044, (
+        "res=%s emis=%s suma=%s" % (res.total_plata_a, emis, suma_toate))
+
+
 def test_tip5_plus_tip4_cumuleaza_in_sectiunea_4():
     # S4 = S4.2 (tip 4) + S4.1 (tip 5)
     res = d301.calcul_d301(PROF, Perioada(2026, luna=6), [_op(4, 2000, 5.0, 2100), _op(5, 1000, 5.0, 1050)])
