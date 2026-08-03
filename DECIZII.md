@@ -6347,3 +6347,25 @@ posibila pe d406: validarea DUK a d406 e xfail(strict) PREEXISTENT ("cont referi
 enforced de validarea XSD SAF-T); regresia e pazita de gardul de clasa AST + plafonarea la runtime prin text_anaf.
 Cand se repara xfail-ul d406 DUK, se poate adauga si proba boundary. Datoria "limita text" e ACHITATA pe toate cele
 9 declaratii cerute.
+
+
+## 03.08.2026 — Cluster "nomenclator tari (HR->CR)" (d390) — NECONFORMITATE reparata (Croatia HR, nu CR), probata DUK.
+
+Verificare la sursa + proba DUK boundary: nomenclatorul de tari din D390 foloseste, pentru fiecare stat UE,
+prefixul de TVA (identic cu codul ISO). Codul avea o remapare _TARA_XML = {"HR": "CR"} cu un comentariu care o
+declara corecta ("prefixul de TVA HR (Croatia) se scrie CR in nomenclatorul ANAF"). FALS: proba pe DUKIntegrator
+(cu OIB croat VALID, ca sa nu intervina eroarea de codO) arata ca tara="CR" e RESPINSA ("eroare atribut: tara:
+valoarea 'CR' nu se afla in lista") iar tara="HR" e ACCEPTATA (valid). Deci orice partener croat real producea un
+D390 respins de ANAF - neconformitate latenta (niciun test nu folosea un partener croat).
+
+FIX (red->green): _TARA_XML golit ({}); _tara_xml(t) intoarce codul ca atare, deci Croatia se emite HR. Comentariul
+corectat. Garduri: test_croatia_emite_HR_nu_CR (tara="HR", nu "CR") + test_croatia_HR_trece_duk (proba DUK).
+
+RESTUL NOMENCLATORULUI verificat (cluster = "nomenclator tari", nu doar HR): setul TARI_UE contine toate cele 26
+state UE non-RO (RO = self, exclus) + GB + XI. GB (UK post-Brexit) si XI (Irlanda de Nord) sunt DUK-VALIDE pentru
+2026 - validatorul le accepta, deci NU-s bug (R17: validatorul e autoritatea; nu se scot pe presupunerea Brexit
+daca DUK le accepta). EL = Grecia (prefix TVA corect). Singura remapare gresita era HR->CR, eliminata.
+
+LECTIE (a treia oara in aceasta campanie, dupa text_anaf-75 si R17): un comentariu care declara o regula "corecta"
+NU e o proba. HR->CR suna plauzibil (unele tari au prefix TVA != ISO, ex. EL vs GR) dar era inventat; DUK a aratat
+imediat ca HR e corect. Orice remapare de cod (tara, cod bugetar, tip) se verifica pe validator, nu pe comentariu.

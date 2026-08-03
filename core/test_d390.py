@@ -145,3 +145,36 @@ def test_d390_rotunjeste_aritmetic_nu_bancar_A91b():
     assert _int(2.5) == 3      # bancar ar da 2
     assert _int(112.5) == 113  # cazul canonic A91b (CAM 112 -> 113)
     assert _int(1.4) == 1 and _int(1.6) == 2
+
+
+def _oib_valid(base10="1234567890"):
+    """OIB croat valid (ISO 7064 MOD 11,10) - pt. un partener HR care trece verificarea codO."""
+    x = 10
+    for ch in base10:
+        x = (x + int(ch)) % 10
+        if x == 0:
+            x = 10
+        x = (x * 2) % 11
+    return base10 + str((11 - x) % 10)
+
+
+def test_croatia_emite_HR_nu_CR():
+    """NECONFORMITATE (probata DUK boundary): Croatia se emite cu tara="HR" (prefixul TVA = codul ISO),
+    NU "CR". Maparea HR->CR (crezuta corecta) era GRESITA: DUK respinge "CR" ('nu se afla in lista' -
+    nomenclatorul de tari ANAF nu are CR) si accepta "HR". Un partener croat real facea D390 respins."""
+    facturi = [{"cui": "HR" + _oib_valid(), "nume": "ZAGREB DOO", "directie": "emisa", "total": 5000, "tva": 0}]
+    xml = build_xml(calcul_d390(_prof(), 2026, 6, facturi))
+    assert 'tara="HR"' in xml, "Croatia trebuie emisa HR"
+    assert 'tara="CR"' not in xml, "CR nu e in nomenclatorul ANAF (respins de DUK)"
+
+
+def test_croatia_HR_trece_duk():
+    """Proba pana la validator: D390 cu partener croat (tara=HR) trece DUKIntegrator."""
+    from core import duk
+    if not duk.poate_valida("d390"):
+        import pytest
+        pytest.skip("DUK d390 indisponibil")
+    facturi = [{"cui": "HR" + _oib_valid(), "nume": "ZAGREB DOO", "directie": "emisa", "total": 5000, "tva": 0}]
+    xml = build_xml(calcul_d390(_prof(), 2026, 6, facturi))
+    rez = duk.valideaza(xml, "d390", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins D390 cu Croatia: %s" % rez.get("erori")

@@ -38,14 +38,17 @@ _NEDIGIT = re.compile(r"\D")
 # CUI UE: prefix 2 litere + cod
 _CUI_UE = re.compile(r"^([A-Z]{2})([0-9A-Z]+)$")
 
-# Nomenclator oficial țări (cod TVA -> cod ANAF în XML). Atenție: Croația HR -> CR în XML.
+# Nomenclator oficial țări (cod TVA = cod ISO în XML). Croația = HR (NU CR - vezi mai jos).
 TARI_UE = {
     "AT", "BE", "BG", "CZ", "CY", "HR", "DK", "EE", "DE", "EL", "FI", "FR",
     "IE", "IT", "LV", "LU", "LT", "MT", "GB", "NL", "PL", "PT", "SI", "SK",
     "ES", "SE", "HU", "XI",  # XI = Irlanda de Nord (post-Brexit, VIES)
 }
-# prefixul de TVA HR (Croația) se scrie CR în nomenclatorul ANAF
-_TARA_XML = {"HR": "CR"}
+# Codurile de țară în XML = prefixul de TVA (identic cu ISO). NU există remapare: maparea HR->CR
+# (crezută corectă până la 03.08.2026) era GREȘITĂ - probă DUK: tara="CR" e respinsă ("nu se află în
+# lista"), tara="HR" e acceptată. Nomenclatorul ANAF D390 folosește HR pentru Croația. Gard:
+# test_croatia_emite_HR_nu_CR + test_croatia_HR_trece_duk.
+_TARA_XML = {}
 
 TIPURI = ("L", "T", "A", "P", "S", "R")
 
