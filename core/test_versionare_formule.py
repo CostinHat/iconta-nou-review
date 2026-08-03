@@ -164,6 +164,22 @@ def test_vanzare_marja_dispecer_versionat():
 
 
 # ---- PAS 3 modul 7: tva_marja_turism.marja_turism_special ----
+def test_marja_turism_formula_suta_marita_si_scutire_non_ue_art311():
+    """TVA pe marja de turism (CF art.311): suta MARITA marja x cota/(100+cota) pe partea TAXABILA;
+    scutire PROPORTIONALA alin.(5) pentru partea serviciilor prestate in afara UE. Marja negativa -> 0."""
+    from core.tva_marja_turism import marja_turism_special
+    from decimal import Decimal as _D
+    # tot UE: marja 400, cota 21 -> TVA 400*21/121 = 69,42 (ca art.312), fara scutire
+    r = marja_turism_special(1000, 600, 0, cota=21, la_data=date(2026, 6, 1))
+    assert r["tva"] == _D("69.42") and r["marja_scutita"] == _D("0.00"), r
+    # 50%% non-UE: cost 300 UE + 300 non-UE, marja 400 -> scutita 200, taxabila 200 -> TVA 200*21/121 = 34,71
+    rn = marja_turism_special(1000, 300, 300, cota=21, la_data=date(2026, 6, 1))
+    assert rn["marja_scutita"] == _D("200.00") and rn["tva"] == _D("34.71"), rn
+    # marja negativa -> TVA 0
+    rneg = marja_turism_special(500, 600, 0, cota=21, la_data=date(2026, 6, 1))
+    assert rneg["tva"] == _D("0.00"), rneg
+
+
 def test_marja_turism_special_dispecer_versionat():
     from core import tva_marja_turism as tt
     a = (10000, 6000, 1000)  # incasat, cost_ue, cost_non_ue

@@ -5973,3 +5973,17 @@ OBSERVATII (integrare in main.py endpoint /vanzare-marja, NU formula):
 2. la_data NU se paseaza la motor (main.py:6351 apeleaza vanzare_marja fara la_data) -> versionarea FORMULEI se
    face pe data de azi, nu pe data tranzactiei. Inofensiv acum (o singura varianta din 2018), dar o tranzactie
    datata < 2018 ar folosi formula curenta in loc sa ridice. Fix: vanzare_marja(..., la_data=corp["data"]).
+
+
+## 03.08.2026 — Cluster "regim marja turism" (tva_marja_turism) — VERIFICAT conform + gard golden.
+
+Motorul (tva_marja_turism.py) calculeaza TVA pe marja de turism = marja_taxabila x cota/(100+cota) - suta MARITA,
+conform CF art.311 alin.(4); scutirea PROPORTIONALA pentru partea serviciilor prestate in afara UE (alin.5) e
+tratata (coef = cost_non_ue / cost_total). Marja negativa/zero -> TVA 0. Cota period-aware (parametru). Consistent
+cu art.312 second-hand (deja verificat). CONFORM. Lipsea test numeric -> gard golden adaugat.
+
+OBSERVATII (nu bug de formula):
+1. Motorul NU e integrat in datorie.py (niciun apelant de productie; testat izolat). Daca turismul trebuie sa
+   apara in datoria efectiva, lipseste wiring-ul.
+2. Cota vine ca parametru cu default 21; la integrare, cota sa fie luata din common.cota(..., la_data), nu din
+   default (un apelant care foloseste 21 pt o data < 01.08.2025 ar aplica gresit 21 in loc de 19).
