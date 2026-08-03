@@ -28,14 +28,13 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 > **Stare:** site în mentenanță (46507b5) — allowlist pe IP-ul lui Costin; revenire cu `mentenanta.sh off`.
 
-- fir: d301 cluster "baza = val x curs" — verificare CF art.290 alin.(2) + gard anti-fabricare curs (lant, urmator_cluster 03.08)
-- ultim: d101 reconstruit pe OPANAF 206/2025 + audit campuri oficiale (b845763); PREDARE_LANT cc30f3b.
-- urmator: cluster inchis; ruleaza urmator_cluster() pt urmatorul din lant. GATA.
+- fir: d301 cluster "cota TVA" — verificare CF art.291 + gard period-aware pe cota redusa (lant, urmator_cluster 03.08)
+- ultim: cluster "baza = val x curs" inchis (3644426): gard anti-fabricare curs, 46->45.
+- urmator: cluster inchis (K1 comis, K2 = decizie de produs semnalata). Ruleaza urmator_cluster(). GATA.
 - pasi:
-  C1. [gard anti-fabricare curs] calc_baza(val, curs) ridica ValueError pe curs None/<=0 — CF art.290 alin.(2): cursul e cel BNR/BCE valabil la exigibilitate, niciodata 0/absent; pt RON e 1 (dat ca data). Scoate fabricarea "or 1" din d301.py:100,105 (generator XML) si d301_operatiuni_api.py lista:66,71 (reader grila). Test rosu: EUR fara curs -> ValueError (inainte: baza=val_valuta tacut, declaratie subevaluata la ANAF). adauga() deja valideaza curs>0 (poarta intrare OK). Commit.
-  C2. [generalizare clasa "fabricare tacita curs=1"] grep "or 1"/curs-default in toate generatoarele+API; enumera locurile curate (d301 e singurul cu valuta/curs; d112/d406 fara manual). Locurile atinse: d301.py, d301_operatiuni_api.py.
-  C3. [gard schema] tenant_template.sql: curs numeric DEFAULT 1 -> curs numeric. DB nu mai fabrica 1 la insert-fara-curs; tenant nou = fail-loud prin calc_baza. Migrare tenanti reali = sarcina deployment (§2.3 pct.3), consemnata.
-  STARE = GATA (C1+C2+C3 comise)
+  K1. [cota redusa period-aware] cote_perioada (d301_operatiuni_api.py:42) ofera standard period-aware (corect) DAR redusa hardcodata literal 11 -> gresit pt perioade < 01.08.2025 (atunci 9%/5%; Legea 141/2025 le-a comasat in 11% de la 01.08.2025). Fix: redusa din _c.cota("tva_redusa", data); daca PerioadaIndisponibila -> OMITE optiunea (nu ofera 11% fals). 2026 neschimbat (21/11/0). Test rosu: cote_perioada(2025,6) NU contine 11 (inainte: il continea). Commit.
+  K2. [decizie de produs] modelarea celor DOUA cote reduse istorice coexistente (9% SI 5% pre-08.2025) cere remodelare COTE (o cheie = o serie cu o valoare/moment; nu reprezinta doua cote simultane). NU se face autonom - se semnaleaza lui Costin (§2.3 pct.2). Pana atunci: pre-08.2025 fara optiune redusa (fail-loud > 11% fals).
+  STARE = GATA (K1 comis; K2 decizie de produs semnalata)
 
 - fir: SWEEP DUK toate declaratiile (redirectionare Costin 31.07: inainte de reconstructii, mapez cate sunt sparte pe validatorul CURENT)
 - ultim: sweep rulat pe schema efemera + profil complet + date minime adecvate (salariat/factura UE/dividende). Rezultat initial: 7 VALID + 2 sparte (d101, d406). d406 REZOLVAT 01.08 (bug de CALE, o linie): plan_oficial cauta d406_nomenclatoare_anaf.properties in radacina, dar fisierul e in anaf_surse/ -> set gol -> filtrarea pe norma (adaugata 15.07 tocmai pt 731 ONG) nu rula -> conturi ONG scapau in SAF-T comercial -> DUK respingea. Fix cale -> plan_oficial(A)=635, 731 exclus, d406 DUK VALID. RAMANE 1/9 SPART: d101 (reconstructie). Claim 16.07 infirmat.
@@ -246,54 +245,53 @@ CONSECINTE:
 
 Ordine DETERMINISTA a celor 64 clustere nebifate+neblocate, sortare topologica pe graf_clustere + departajare
 (a) FISCAL>STRUCTURA (b) deblocari desc (c) ordinea inventarului. Rescrisa 02.08: tichete masa/vacanta BIFAT ->
-iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. cota profit 16% + IMCA (cota verificata + IMCA implementat art.18^1) INCHIS 02.08 -> 60->59. amortizare|d101 (tratament art.28 aliniat; datorie MF metode) INCHIS 03.08 -> 59->58. baze contributii|d112 (cotele CAS/CASS/imp/CAM rutate period-aware prin COTE, value-preserving, aliniere Sesiunea A) INCHIS 03.08 -> 58->57. rotunjire aritmetica (A91b)|d112 (contributii aritmetice verificate; REPARAT minimul part-time care rotunjea bancar in B4_*P declarat) INCHIS 03.08 -> 57->56. sect_II tip_venit|d205 (structura OPANAF 102/2025 verificata; REPARAT impozit dividende hardcodat 10% -> period-aware 16%/2026 Legea 141/2025) INCHIS 03.08 -> 56->55. rotunjire|d205 (sumele fiscale rotunjesc aritmetic - verificat, deja corect prin _i ROUND_HALF_UP; gardat cross-generator + proba) INCHIS 03.08 -> 55->54. cote TVA->randuri|d300 (livrari 21/11/9 corecte; REPARAT achizitii deductibile 11% R74->R23 si 9% R76->manual, proba DUK; datorie 9% auto) INCHIS 03.08 -> 54->53. exigibilitate/TVA la incasare|d300 (IMPLEMENTAT art.282/297 OUG 8/2026: exigibilitate din decontari, suta marita, proportional, proba DUK) INCHIS 03.08 -> 53->52. taxare inversa|d300 (rd.12 reparat - R12_ lipsea din allow-list; GRI reverse-charge reconfirmat la sursa art.331+structuri) INCHIS 03.08 -> 52->51. pro-rata deducere|d300 (verificat corect art.300 - R31 ajustare Rd.33, net R28xpro_rata; gap de acoperire inchis + proba DUK) INCHIS 03.08 -> 51->50. rotunjire aritmetica|d300 (verificat aritmetic ROUND_HALF_UP, deja in gardul de identitate; proba d300-specifica) INCHIS 03.08 -> 50->49. ajustari|d300 (REPARAT R29/R30/R35/R36 aruncate din allow-list - ajustari/regularizari nedeclarate; proba DUK) INCHIS 03.08 -> 49->48. tipuri operatiune 1-5|d301 (verificat maparea tip->sectiune OPANAF 592/2016; gard tipuri 1/2/3 + proba DUK toate 5) INCHIS 03.08 -> 48->47. rollup S4.1->S4|d301 (verificat COMPLET - S4.1 subset din S4 OPANAF 592/2016, TVA nedublat, checksum, proba DUK; test_d301_rollup.py dedicat) INCHIS 03.08 -> 47->46. baza=val x curs|d301 (verificat CF art.290 alin.(2): baza=elemente_valuta x curs BNR/BCE la exigibilitate, rotunjire ROUND_HALF_UP corecta; REPARAT fabricare tacita curs=1 pe valuta - gard calc_baza pe None/<=0 + scos or 1 din generator+reader + scos DEFAULT 1 din schema; proba 1000x4.977=4977 / EUR fara curs->ValueError / RON=1->1234) INCHIS 03.08 -> 46->45. Identitate = cluster | modul (nume duplicate intre module).
+iesit din secventa (65->64); concedii medicale (salarizare+d112) INCHISE 02.08 -> 64->62; tichete culturale (functionalitate noua livrata) INCHIS 02.08 -> 62->61. tichete cresa (functionalitate noua livrata) INCHIS 02.08 -> 61->60. cota profit 16% + IMCA (cota verificata + IMCA implementat art.18^1) INCHIS 02.08 -> 60->59. amortizare|d101 (tratament art.28 aliniat; datorie MF metode) INCHIS 03.08 -> 59->58. baze contributii|d112 (cotele CAS/CASS/imp/CAM rutate period-aware prin COTE, value-preserving, aliniere Sesiunea A) INCHIS 03.08 -> 58->57. rotunjire aritmetica (A91b)|d112 (contributii aritmetice verificate; REPARAT minimul part-time care rotunjea bancar in B4_*P declarat) INCHIS 03.08 -> 57->56. sect_II tip_venit|d205 (structura OPANAF 102/2025 verificata; REPARAT impozit dividende hardcodat 10% -> period-aware 16%/2026 Legea 141/2025) INCHIS 03.08 -> 56->55. rotunjire|d205 (sumele fiscale rotunjesc aritmetic - verificat, deja corect prin _i ROUND_HALF_UP; gardat cross-generator + proba) INCHIS 03.08 -> 55->54. cote TVA->randuri|d300 (livrari 21/11/9 corecte; REPARAT achizitii deductibile 11% R74->R23 si 9% R76->manual, proba DUK; datorie 9% auto) INCHIS 03.08 -> 54->53. exigibilitate/TVA la incasare|d300 (IMPLEMENTAT art.282/297 OUG 8/2026: exigibilitate din decontari, suta marita, proportional, proba DUK) INCHIS 03.08 -> 53->52. taxare inversa|d300 (rd.12 reparat - R12_ lipsea din allow-list; GRI reverse-charge reconfirmat la sursa art.331+structuri) INCHIS 03.08 -> 52->51. pro-rata deducere|d300 (verificat corect art.300 - R31 ajustare Rd.33, net R28xpro_rata; gap de acoperire inchis + proba DUK) INCHIS 03.08 -> 51->50. rotunjire aritmetica|d300 (verificat aritmetic ROUND_HALF_UP, deja in gardul de identitate; proba d300-specifica) INCHIS 03.08 -> 50->49. ajustari|d300 (REPARAT R29/R30/R35/R36 aruncate din allow-list - ajustari/regularizari nedeclarate; proba DUK) INCHIS 03.08 -> 49->48. tipuri operatiune 1-5|d301 (verificat maparea tip->sectiune OPANAF 592/2016; gard tipuri 1/2/3 + proba DUK toate 5) INCHIS 03.08 -> 48->47. rollup S4.1->S4|d301 (verificat COMPLET - S4.1 subset din S4 OPANAF 592/2016, TVA nedublat, checksum, proba DUK; test_d301_rollup.py dedicat) INCHIS 03.08 -> 47->46. baza=val x curs|d301 (verificat CF art.290 alin.(2): baza=elemente_valuta x curs BNR/BCE la exigibilitate, rotunjire ROUND_HALF_UP corecta; REPARAT fabricare tacita curs=1 pe valuta - gard calc_baza pe None/<=0 + scos or 1 din generator+reader + scos DEFAULT 1 din schema; proba 1000x4.977=4977 / EUR fara curs->ValueError / RON=1->1234) INCHIS 03.08 -> 46->45. cota TVA|d301 (standard period-aware corect; REPARAT cota redusa literal 11 -> period-aware din common.cota, omisa pt perioade < 08.2025 unde reducerile erau 9%/5%; 2026 neschimbat [21,11,0]; decizie de produs deschisa: modelare 9%/5% coexistente) INCHIS 03.08 -> 45->44. Identitate = cluster | modul (nume duplicate intre module).
 
 **REGULA DE ORDONARE.** Clusterul A vine dupa B daca o functie din A foloseste o valoare care APARTINE lui B (dependenta din graf_clustere). Sortare topologica pe aceste dependente. Departajare cand mai multe sunt libere simultan, in ordinea: (a) intra intr-o declaratie DEPUSA la ANAF - proxy Risc=FISCAL, aproximatie DECLARATA, nu echivalenta; (b) cate clustere deblocheaza; (c) ordinea din inventar. Secventa se PERSISTA, nu se recalculeaza la fiecare rulare - altfel pozitia 7 de azi nu e pozitia 7 de maine. Se rescrie DOAR cand se schimba graful sau se adauga clustere, cu motivul consemnat (vezi randul 'Rescrisa 02.08' de mai sus).
-1. cota TVA | d301
-2. tipuri operatiune IC (L/A/P/S) | d390
-3. rotunjire aritmetica (A91b) | d390
-4. reclasificari manuale | d390
-5. exigibilitate / prag | d390
-6. cote acceptate | d394
-7. taxare inversa | d394
-8. SourceDocuments (facturi reale, PARTIAL) | d406
-9. plafon diurna neimpozabila | deconturi
-10. credit sponsorizare / D177 | sponsorizari
-11. rezerva legala | motor
-12. zilieri (impozit+CAS) | contracte_speciale
-13. regim marja second-hand | tva_marja
-14. regim marja turism | tva_marja_turism
-15. impozit dividend | decontari_asociati
-16. contributii PFA (praguri CAS/CASS pe sm) | d212
-17. nomenclator cod_oblig<->cod_bugetar | d100
-18. cota micro 121 (flag) | d100
-19. checksum totalPlata_A (R11b) | d100
-20. scadente/nr_evidenta | d100
-21. structura P1-P53 | d101
-22. R17 Data_S / termen | d101
-23. limita text 75 | d112
-24. nomenclator cod_oblig | d112
-25. checksum totalPlata_A | d205
-26. trunchiere den/adresa | d205
-27. randuri / checksum | d300
-28. checksum totalPlata_A (R28) | d301
-29. nomenclator tari (HR->CR) | d390
-30. tipuri operatiune (pct.215) | d394
-31. tip_partener | d394
-32. rezumat1 campuri complete | d394
-33. nomenclator codPR (art.331) | d394
-34. totalPlata_A (R17) | d394
-35. plan conturi pe norma | d406
-36. UoM UN/ECE | d406
-37. MovementType nomenclator | d406
-38. BaseRate (encoding pro-rata) | d406
-39. registration_number (00+CUI) | d406
-40. structura XSD (Header/MasterFiles/GLE) | d406
-41. structura declaratie710 | d710
-42. nomenclator COD_BUGETAR | d710
-43. checksum R11b | d710
-44. R15 termen definitivare | d710
-45. scadente | d710
+1. tipuri operatiune IC (L/A/P/S) | d390
+2. rotunjire aritmetica (A91b) | d390
+3. reclasificari manuale | d390
+4. exigibilitate / prag | d390
+5. cote acceptate | d394
+6. taxare inversa | d394
+7. SourceDocuments (facturi reale, PARTIAL) | d406
+8. plafon diurna neimpozabila | deconturi
+9. credit sponsorizare / D177 | sponsorizari
+10. rezerva legala | motor
+11. zilieri (impozit+CAS) | contracte_speciale
+12. regim marja second-hand | tva_marja
+13. regim marja turism | tva_marja_turism
+14. impozit dividend | decontari_asociati
+15. contributii PFA (praguri CAS/CASS pe sm) | d212
+16. nomenclator cod_oblig<->cod_bugetar | d100
+17. cota micro 121 (flag) | d100
+18. checksum totalPlata_A (R11b) | d100
+19. scadente/nr_evidenta | d100
+20. structura P1-P53 | d101
+21. R17 Data_S / termen | d101
+22. limita text 75 | d112
+23. nomenclator cod_oblig | d112
+24. checksum totalPlata_A | d205
+25. trunchiere den/adresa | d205
+26. randuri / checksum | d300
+27. checksum totalPlata_A (R28) | d301
+28. nomenclator tari (HR->CR) | d390
+29. tipuri operatiune (pct.215) | d394
+30. tip_partener | d394
+31. rezumat1 campuri complete | d394
+32. nomenclator codPR (art.331) | d394
+33. totalPlata_A (R17) | d394
+34. plan conturi pe norma | d406
+35. UoM UN/ECE | d406
+36. MovementType nomenclator | d406
+37. BaseRate (encoding pro-rata) | d406
+38. registration_number (00+CUI) | d406
+39. structura XSD (Header/MasterFiles/GLE) | d406
+40. structura declaratie710 | d710
+41. nomenclator COD_BUGETAR | d710
+42. checksum R11b | d710
+43. R15 termen definitivare | d710
+44. scadente | d710
 ## Inventarul de acoperit în A
 
 Per CLUSTER de reguli, nu per fișier (30.07.2026) — un √ pe fișier ascundea că doar o parte din
@@ -361,7 +359,7 @@ clustere.
 | rollup S4.1->S4 | d301 | test_d301_rollup.py | √ 03.08 (OPANAF 592/2016: in Sectiunea 4.1 se preiau DIN Sectiunea 4 serviciile intracom art.150 - S4.1 e SUBSET al S4, deci fiecare op tip 5 se preia si in S4. Verificat COMPLET de test_d301_rollup.py: S4 contine S4.1, S4=S4.2+S4.1, TVA datorat o singura data (nu se dubleaza), checksum totalPlata_A include 4.1 prin definitie, fara tip5 nu se inventeaza rollup. Proba DUK cu toate tipurile - validatorul impune rollup-ul) | FISCAL | OPANAF 592/2016 (instructiuni formular 301, S4.1 preluat din S4) | test_tip5_se_preia_in_sectiunea_4 test_tip5_plus_tip4_cumuleaza_in_sectiunea_4 test_tva_datorat_o_singura_data_desi_checksum_include_4_1 test_toate_tipurile_1_5_proba_duk_valid |
 | checksum totalPlata_A (R28) | d301 | test_d301_rollup.py |  | STRUCTURA |  |  |
 | baza = val x curs | d301 | test_d301_rollup.py (+test_d301_curs.py) | √ 03.08 (CF art.290 alin.(2): baza in valuta = elemente_valuta x curs BNR/BCE valabil la exigibilitate; rotunjire ROUND_HALF_UP la leu intreg = struct ANAF baza integer. Formula+rotunjire CORECTE. REPARAT clasa "valoare gresita tacuta": generatorul (d301.py) + reader-ul grilei (d301_operatiuni_api.lista) faceau calc_baza(..., curs or 1) -> curs absent/0 pe EUR (moneda default) devenea tacit 1 -> baza subevaluata la ANAF fara eroare. calc_baza ridica acum pe curs None/<=0 (chokepoint); scos or 1 din generator+reader; scos DEFAULT 1 din schema (tenant nou fail-loud). Proba: 1000x4.9770=4977, EUR fara curs->ValueError, RON=1->1234. Poarta adauga() valida deja curs>0) | FISCAL | CF art.290 alin.(2) (curs de schimb pt baza in valuta) + OPANAF 592/2016 (structura D301) | test_calc_baza_refuza_curs_absent_sau_nul test_generator_d301_refuza_curs_lipsa_pe_valuta test_lista_api_refuza_curs_nul_nu_fabrica_1 test_calc_baza_corect_pe_curs_valid |
-| cota TVA | d301 | test_d301_rollup.py |  | FISCAL |  |  |
+| cota TVA | d301 | test_d301_rollup.py (+test_d301_cota.py) | √ 03.08 (CF art.291: standard alin.(1) 21%% de la 01.08.2025 / 19%% inainte = period-aware CORECT prin common.cota; redusa alin.(2) 11%% de la 01.08.2025; alin.(8) cota achizitiei intracom = cota livrarii interne, deci redusa se aplica in D301. REPARAT: cota redusa era literal 11 indiferent de perioada -> gresita pt luni < 08.2025 (atunci 9%%/5%%, comasate de Legea 141/2025). Fix: redusa din common.cota(tva_redusa), OMISA cand neconfigurata (nu se ofera 11%% fals; adauga o respinge -> nu se persista tva eronat). Proba: 2026 [21,11,0] neschimbat, 2025-06 [19,0]. DECIZIE DE PRODUS deschisa: 9%%/5%% istorice coexistente cer remodelare COTE) | FISCAL | CF art.291 alin.(1)(2)(8) + Legea 141/2025 (comasare cote reduse) | test_cote_2026_standard_21_redusa_11_scutit_0 test_cote_redusa_period_aware_nu_ofera_11_pe_perioada_veche test_adauga_respinge_cota_11_pe_perioada_veche |
 | tipuri operatiune IC (L/A/P/S) | d390 | test_d390.py |  | FISCAL |  |  |
 | nomenclator tari (HR->CR) | d390 | test_d390.py |  | STRUCTURA |  |  |
 | rotunjire aritmetica (A91b) | d390 | test_d390.py |  | FISCAL |  |  |

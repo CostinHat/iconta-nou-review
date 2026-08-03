@@ -40,14 +40,25 @@ def _r0(x):
 
 
 def cote_perioada(an, luna):
-    """Cotele TVA valabile in perioada, PERIOD-AWARE. Standard din common.cota (nu literal)."""
-    std, _temei = _c.cota("tva_standard", date(int(an), int(luna), 1))
-    std_p = int(std * 100)
-    return [
-        {"val": std_p, "eticheta": "%d%% (standard)" % std_p},
-        {"val": 11, "eticheta": "11% (redusă)"},
-        {"val": 0, "eticheta": "0% / scutit"},
-    ]
+    """Cotele TVA valabile in perioada, PERIOD-AWARE — standard SI redusa din common.cota,
+    nu literal. CF art.291: standard alin.(1), redusa alin.(2); alin.(8) leaga cota achizitiei
+    intracomunitare de cota livrarii interne a aceluiasi bun, deci redusa se aplica si in D301.
+    Redusa era hardcodata 11 -> gresita pentru perioade dinainte de 01.08.2025 (atunci reducerile
+    erau 9% si 5%; Legea 141/2025 le-a comasat in 11% de la 01.08.2025). Daca redusa nu e
+    configurata pentru perioada, se OMITE optiunea — nu se ofera un 11% fals (care ar persista un
+    tva eronat, fals-verde). Cele doua cote reduse istorice coexistente (9%/5%) cer remodelare
+    COTE = decizie de produs, nerezolvata aici."""
+    la = date(int(an), int(luna), 1)
+    std, _temei = _c.cota("tva_standard", la)
+    optiuni = [{"val": int(std * 100), "eticheta": "%d%% (standard)" % int(std * 100)}]
+    try:
+        red, _tr = _c.cota("tva_redusa", la)
+        red_p = int(red * 100)
+        optiuni.append({"val": red_p, "eticheta": "%d%% (redusă)" % red_p})
+    except _c.PerioadaIndisponibila:
+        pass  # redusa neconfigurata pentru perioada -> nu se ofera un 11% fals
+    optiuni.append({"val": 0, "eticheta": "0% / scutit"})
+    return optiuni
 
 
 def _tva_din(val_valuta, curs, cota):

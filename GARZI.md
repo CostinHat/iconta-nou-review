@@ -384,3 +384,15 @@ bancii de decontare, valabil la exigibilitate. Un curs real e > 0; pentru RON e 
 DEFAULT pe tenant EXISTENT (nemigrata). Pe tenantii deja creati, coloana pastreaza DEFAULT 1
 pana la migrare (sarcina deployment, §2.3 pct.3). Poarta de intrare adauga() cere oricum
 curs>0 explicit, deci calea UI nu atinge acest rest.
+
+
+## 03.08.2026 — Gard period-aware pe cota redusa TVA (D301, cluster "cota TVA")
+
+Temei: CF art.291 alin.(2) — redusa 11% de la 01.08.2025 (Legea 141/2025 a comasat 9%/5% in 11%).
+
+| gard | fisier:linie | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| cota redusa period-aware (nu literal) | core/d301_operatiuni_api.py:cote_perioada | oferirea unui 11% redusa pe o perioada < 01.08.2025 (cand reducerile erau 9%/5%) -> tva eronat persistat (fals-verde) | cote_perioada(2025,6) NU contine 11 (inainte: il continea); adauga(2025-06, cota=11) respinge (inainte: persista tva=55). test_d301_cota.py |
+
+Limita: perioadele < 01.08.2025 raman FARA optiune de cota redusa (9%/5% coexistente nemodelate in COTE).
+Fail-loud (omitere) preferat unui 11% fals. Modelarea corecta = decizie de produs deschisa (DECIZII 03.08).

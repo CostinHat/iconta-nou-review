@@ -5602,3 +5602,22 @@ val_valuta/curs de schimb). Clasa complet acoperita.
 MIGRARE (nefacuta, decizie deployment §2.3 pct.3): tenantii EXISTENTI pastreaza "curs numeric DEFAULT 1" pana la
 un ALTER COLUMN ... DROP DEFAULT la deploy. Pe ei, un insert care ocoleste adauga() si omite cursul inca ar primi
 1 din DB (calc_baza nu poate distinge de RON=1). Consemnat.
+
+
+## 03.08.2026 — Cluster "cota TVA" (D301) INCHIS. Temei CF art.291 + Legea 141/2025.
+
+Cota STANDARD in D301 = period-aware corect (common.cota tva_standard: 21% de la 01.08.2025, 19% inainte).
+NECONFORMITATE reparata: cota REDUSA era literal 11 in cote_perioada, indiferent de perioada. Pt o luna D301
+< 01.08.2025 (rectificativa) oferea "11% redusa" gresit - atunci reducerile erau 9%/5% (Legea 141/2025 le-a
+comasat in 11% de la 01.08.2025; art.291 alin.2 rescris, alin.3 abrogat). art.291 alin.(8) confirma ca redusa
+se aplica in D301 (cota achizitiei intracom = cota livrarii interne a aceluiasi bun). Harm: adauga persista un
+tva eronat (fals-verde) - dovedit: adauga(2025-06, cota=11) -> tva=55 stocat inainte de fix.
+
+FIX: cota redusa din common.cota("tva_redusa", data); cand neconfigurata pt perioada (PerioadaIndisponibila) ->
+optiunea se OMITE (nu 11% fals). adauga valideaza cota contra listei cote_perioada, deci un 11% pe luna veche e
+respins la sursa. 2026 neschimbat [21,11,0]; 2025-06 -> [19,0].
+
+DECIZIE DE PRODUS CERUTA (§2.3 pct.2, NEREZOLVATA): pentru a permite corect cota redusa pe perioade < 01.08.2025,
+COTE trebuie sa reprezinte DOUA cote reduse coexistente (9% SI 5%) - modelul actual (o cheie = serie temporala cu
+o valoare la un moment) nu le tine simultan. Optiuni: doua chei (tva_redusa_9 / tva_redusa_5) sau valoare-lista.
+Schimba CE optiuni vede contabilul -> decizia lui Costin. Pana atunci: pre-08.2025 fara redusa (omitere fail-loud).
