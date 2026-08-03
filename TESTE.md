@@ -28,12 +28,12 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 > **Stare:** site în mentenanță (46507b5) — allowlist pe IP-ul lui Costin; revenire cu `mentenanta.sh off`.
 
-- fir: d406 cluster "SourceDocuments" — FIX period-awareness TaxCode livrari (TAXCODE_LIVRARI_PRE nefolosit) + gard; datorii documentate (lant)
-- ultim: taxare inversa|d394 11/12 + datorie gaze (47bf4e3).
-- urmator: cluster inchis (S1: fix period-aware + observatii). Ruleaza urmator_cluster(). GATA.
+- fir: deconturi cluster "plafon diurna neimpozabila" — calcul curent CONFORM (gard) + datorie period-awareness istorica (surse HG lipsa) (lant)
+- ultim: SourceDocuments|d406 fix period-aware taxcode (a3a6abc).
+- urmator: cluster inchis (D1: gard curent + datorie istorica). Ruleaza urmator_cluster(). GATA.
 - pasi:
-  S1. [FIX period-awareness] TAXCODE_LIVRARI_PRE_2025_08 (coduri 19/9/5 pre-01.08.2025) e DEFINIT dar NEFOLOSIT; pull() foloseste mereu TAXCODE_LIVRARI (post) indiferent de data facturii -> rectificativa pe luna < 08.2025 emite coduri gresite (19% -> negasit -> default 310312 taxare inversa). Fix: helper _taxcode_livrari(cota, data) period-aware pe data_emitere, folosit la ambele situri livrari (per-linie + fallback fara linii). Gard: test pe valori (21@2026=310344, 19@2025-06=310309, 9 pre!=post). Update docstring stale (Payments/linii). OBSERVATII documentate (nefacute): TaxCode achizitii grosier (mereu 300501 indiferent de deductibilitate), BillingAddress placeholder, Payments gol (datorie blocata pe date - zero plati), lipsa test golden pe _factura_xml. Commit.
-  STARE = GATA (S1 comis)
+  D1. [verificare + datorie] Calculul plafonului diurnei (deconturi.py min(2.5x bugetar; 3 salarii/zile lucratoare)*zile) e CONFORM art.76 alin.(4^1) pentru perioada curenta (2023+) - subagent a verificat textul. NECONFORMITATE period-awareness istorica: _VARIANTE_PLAFON_DIURNA are o SINGURA varianta (2018-01-01) care aplica retroactiv valorile de azi (23 lei + capul 3-salarii) pt 2018-2022, desi capul 3-salarii a intrat 2023 (Legea 72/2022) si baza era alta pre-2023 (HG 714/2018). Fix BLOCAT: valorile istorice HG diurna NU-s in sursele repo (verificat: 0 surse HG 714/518 pe server); §3 nu se inventeaza. GARD pozitiv: golden pe plafonul curent (2026: 23*2.5=57.5; min cu 3sal; neimp/impozabil). DATORIE xfail(strict): >=2 variante datate. Flag Costin (HG diurna istoric). Commit.
+  STARE = GATA (D1 comis)
 
 - fir: SWEEP DUK toate declaratiile (redirectionare Costin 31.07: inainte de reconstructii, mapez cate sunt sparte pe validatorul CURENT)
 - ultim: sweep rulat pe schema efemera + profil complet + date minime adecvate (salariat/factura UE/dividende). Rezultat initial: 7 VALID + 2 sparte (d101, d406). d406 REZOLVAT 01.08 (bug de CALE, o linie): plan_oficial cauta d406_nomenclatoare_anaf.properties in radacina, dar fisierul e in anaf_surse/ -> set gol -> filtrarea pe norma (adaugata 15.07 tocmai pt 731 ONG) nu rula -> conturi ONG scapau in SAF-T comercial -> DUK respingea. Fix cale -> plan_oficial(A)=635, 731 exclus, d406 DUK VALID. RAMANE 1/9 SPART: d101 (reconstructie). Claim 16.07 infirmat.

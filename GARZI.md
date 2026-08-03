@@ -491,3 +491,15 @@ Temei: Legea 141/2025 (coduri TaxCode SAF-T livrari noi de la 01.08.2025) + stru
 | gard | fisier | ce face imposibil | mutatia care il probeaza |
 |---|---|---|---|
 | _taxcode_livrari period-aware pe data facturii | core/test_d406.py (test_taxcode_livrari_period_aware) | emiterea codurilor TaxCode post-2025-08 pe o factura dinainte (raportare retroactiva cu coduri gresite) | 19%@2025-06=310309 (inainte: 310312 taxare inversa gresit); 9% pre=310310 != post=310357 |
+
+
+## 03.08.2026 — Gard plafon diurna curent + datorie period-awareness istorica (cluster "plafon diurna")
+
+Temei: CF art.76 alin.(2) lit.k + alin.(4^1) - min(2,5x diurna bugetara; 3 salarii/zile lucratoare) x zile.
+
+| gard | fisier | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| golden pe plafonul curent (2023+) | core/test_deconturi.py | schimbarea tacita a formulei/valorii curente | 23*2,5=57,50; capul 3-salarii musca pe salariu mic; neimp/impozabil pe cifre |
+| datorie period-awareness istorica | core/test_datorie.py (xfail strict) | uitarea ca varianta e unica (valorile de azi aplicate retroactiv) | >=2 variante -> xfail trece -> strict pica |
+
+Calculul CURENT (2023+) conform art.76 alin.(4^1). Istoric (pre-2023) blocat pe valorile HG diurna (nu-s in surse repo).

@@ -5777,3 +5777,22 @@ OBSERVATII documentate (NEfacute, pentru clustere/decizii viitoare):
 - AssetTransactions: absent, XSD minOccurs=0 (optional) - nu e datorie.
 - Lipsa test GOLDEN pe _factura_xml/_source_documents (reparatia 27.07 n-are gard de regresie pe continutul XML) -
   de adaugat un golden pe fluxul complet construieste->build_xml.
+
+
+## 03.08.2026 — Cluster "plafon diurna neimpozabila" (deconturi) — calcul curent CONFORM + datorie istorica.
+
+Motorul deconturi.py calculeaza plafonul neimpozabil = min(2,5 x diurna bugetara; 3 salarii/zile lucratoare) x
+zile deplasare, excedentul = venit salarial (D112). Formula = CONFORM CF art.76 alin.(4^1) (text verificat la
+sursa de subagent) pentru perioada CURENTA (2023+). Adaugat gard golden (core/test_deconturi.py) - lipsea (era
+doar test de dispecer versionare in test_versionare_formule.py).
+
+NECONFORMITATE period-awareness istorica (datorie xfail strict): _VARIANTE_PLAFON_DIURNA are o SINGURA varianta
+(2018-01-01) care aplica retroactiv valorile de azi (23 lei + capul 3-salarii) pentru 2018-2022. Capul "3 salarii"
+a intrat 2023-01-01 (Legea 72/2022, art.76 alin.4^1); baza bugetara era alta pre-2023 (HG 714/2018 - codul insusi
+citeaza inconsistent "HG 714/2018 (Ordinul 1235/2023)" pe valoarea 23). Fix BLOCAT: valorile istorice HG diurna NU
+sunt in sursele repo (0 surse HG 714/518 pe server); §3 nu se inventeaza.
+
+INPUT CERUT COSTIN: HG 714/2018 (+ succesoare) cu diurna interna bugetara istorica + data trecerii la 23 lei, ca
+sa se splitze _VARIANTE_PLAFON_DIURNA in >=2 variante datate (2018 fara cap + valoarea epocii; 2023 cu 23 + cap).
+EXTERN: si un nomenclator HG 518/1995 pe tari (inexistent) pentru automatizarea diurnei externe. Pana atunci:
+deconturi pe perioada curenta = corecte; cele pe 2018-2022 folosesc regula de azi (datorie tracked).

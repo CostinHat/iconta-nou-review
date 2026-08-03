@@ -321,3 +321,20 @@ def test_datorie_gaze_naturale_taxare_inversa_art331_lit_l():
     from core.taxare_inversa import CATEGORII
     from core.d394 import CODPR
     assert "gaze_naturale" in CATEGORII and "gaze_naturale" in CODPR
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "DATORIE 03.08.2026: plafonul diurnei are o SINGURA varianta datata 2018-01-01 "
+    "(deconturi._VARIANTE_PLAFON_DIURNA) care aplica RETROACTIV valorile de azi pentru 2018-2022: "
+    "(a) baza bugetara 23 lei (Ordinul 1235/2023) desi inainte de 2023 diurna interna HG 714/2018 avea "
+    "alta valoare; (b) capul '3 salarii' (CF art.76 alin.4^1, introdus de Legea 72/2022) aplicabil abia "
+    "de la 2023-01-01, aplicat si inainte. Un decont 2018-2022 foloseste regula gresita a epocii "
+    "(supra/sub-estimeaza neimpozabilul). Fix BLOCAT: valorile istorice ale diurnei bugetare (HG 714/2018 "
+    "si succesoare) NU sunt in sursele repo (0 surse HG diurna pe server); §3 nu se inventeaza. Necesita "
+    "HG-urile diurna + data trecerii la 23 lei. La completare: >=2 variante datate (2018 fara capul "
+    "3-salarii, cu valoarea epocii; 2023 cu 23 lei + cap), cu diurna bugetara ca parametru al variantei."))
+def test_datorie_plafon_diurna_period_aware_istoric():
+    """Plafonul diurnei versionat corect in timp: pre-2023 fara capul '3 salarii', cu diurna bugetara a
+    epocii. Pana la HG-urile diurna la sursa, ramane datorie (calculul CURENT e conform - test_deconturi)."""
+    from core.deconturi import _VARIANTE_PLAFON_DIURNA
+    assert len(_VARIANTE_PLAFON_DIURNA) >= 2
