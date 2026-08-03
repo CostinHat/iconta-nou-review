@@ -5987,3 +5987,21 @@ OBSERVATII (nu bug de formula):
    apara in datoria efectiva, lipseste wiring-ul.
 2. Cota vine ca parametru cu default 21; la integrare, cota sa fie luata din common.cota(..., la_data), nu din
    default (un apelant care foloseste 21 pt o data < 01.08.2025 ar aplica gresit 21 in loc de 19).
+
+
+## 03.08.2026 — Cluster "impozit dividend" (decontari_asociati) — FIX cote istorice (verificate la sursa).
+
+Mecanismul e period-aware corect (common.cota("impozit_dividend", data), peticul if-data eliminat). DAR datele din
+COTE erau GRESITE: singura intrare pre-2026 era 10% (petic mutat 1:1 din vechiul "else 10"). 10% NU a fost NICIODATA
+cota pe dividende - e cota impozitului pe VENIT (CF art.78). Consecinta: orice D205 / nota dividend pentru 2023/2024/
+2025 producea 10% in loc de 8% (supra-impozitare cu 2 puncte; 50000 -> 5000 in loc de 4000); iar 2023 si 2016-2022
+dadeau PerioadaIndisponibila (data_in gresit 2024; era de 5% lipsa).
+
+FIX: 3 intrari VERIFICATE la sursa (anaf_surse/impozit_dividende_istoric_cote.txt, sha256 d4dcab78...):
+- 5% (01.01.2016-31.12.2022): Legea 227/2015 + OUG 50/2015 (MO 817/2015).
+- 8% (01.01.2023-31.12.2025): OG 16/2022 (MO 716/2022), aprobata prin Legea 370/2022.
+- 16% (de la 01.01.2026): Legea 141/2025. Cota se aplica dupa data DISTRIBUIRII.
+
+TESTELE care cimentau 10% (test_impozit_dividend.py, test_d205.py) - clasa "teste care apara buguri", motivul
+ne-auto-detectarii - actualizate la valorile reale. Restul (conturi 457/446/5121, mecanica notelor, D205 pe 16%
+2026, lichidare) conform.

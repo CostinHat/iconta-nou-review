@@ -1,0 +1,30 @@
+IMPOZIT PE DIVIDENDE - ISTORICUL COTEI (CF art.97 alin.(7) persoane fizice; art.43 persoane juridice - aceeasi cota)
+Verificat la sursa: 2026-08-03 (Code/cercetare web + /tmp/cf.txt consolidat)
+
+COTE PE PERIOADE (retinere la sursa, impozit final):
+- 16%  : pana la 31.12.2015 (Cod fiscal vechi, Legea 571/2003)
+- 5%   : 01.01.2016 - 31.12.2022
+         Temei: Legea 227/2015 art.97 alin.(7), accelerat la 2016 prin OUG 50/2015
+         (MO 817/03.11.2015), aprobata prin Legea 358/2015. Textul initial 227/2015
+         prevedea 5% de la 01.01.2017; OUG 50/2015 a coborat data la 01.01.2016
+         ("cota de 5% se aplica veniturilor din dividende distribuite incepand cu 1 ianuarie 2016").
+- 8%   : 01.01.2023 - 31.12.2025
+         Temei: OG 16/2022 (MO 716/15.07.2022), pct. care modifica art.97 alin.(7),
+         aprobata cu modificari prin Legea 370/2022. "cota de 8% ... dividende distribuite
+         incepand cu 1 ianuarie 2023".
+- 16%  : de la 01.01.2026
+         Temei: Legea 141/2025. cf.txt consolidat art.97 alin.(7): "Veniturile sub forma
+         de dividende ... se impoziteaza cu o cota de 16% din suma acestora, impozitul fiind final."
+         Norma tranzitorie (cf.txt): "...din Legea nr. 227/2015 ... se aplica veniturilor din
+         dividende distribuite incepand cu data de 1 ianuarie 2026".
+
+REGULA DE APLICARE: cota se determina dupa DATA DISTRIBUIRII dividendului, nu dupa anul profitului.
+
+NOTA: valoarea 10% folosita in cod (common.COTE['impozit_dividend'], data_in 2024-01-01) NU corespunde
+niciunei perioade - 10% este cota impozitului pe venit (CF art.78), nu pe dividende. EROARE.
+
+Surse web:
+- https://www.pwc.ro/ro/tax-legal/alerts/cele-mai-recente-msuri-fiscale-adoptate-de-guvern--og-nr--16-202.html (5%->8% de la 01.01.2023, OG 16/2022)
+- https://www.fiscalitatea.ro/ce-cota-de-impozitare-se-aplica-pentru-dividendele-repartizate-pana-pe-31122022-22019/ (5% pana 31.12.2022)
+- https://legislatie.just.ro/Public/DetaliiDocument/174583 (OUG 50/2015)
+- lege5.ro impozitul-pe-dividende (art.43 alin.6: 5% de la 01.01.2017 in forma initiala, coborat la 2016 de OUG 50/2015)

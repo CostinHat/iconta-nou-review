@@ -333,12 +333,14 @@ COTE = {
         (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="3", data_in="2025-08-01", verificat_la="2026-08-03", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 141/2025 pct.43 abroga cota redusa de 5% (CF art.291 alin.3); operatiunile trec la 11% de la 01.08.2025")),
         (date(2016, 1, 1), Decimal("0.05"), Temei("Legea", 227, 2015, art="291", alin="3", data_in="2016-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", text_citat="cota redusa de 5% CF art.291 alin.(3) (locuinte sociale sub 600.000 lei lit.c pct.3, carti, acces evenimente culturale/sportive)", lant_acte="cota 5% ca alin.(3) art.291 in vigoare de la 01.01.2016 (Legea 227/2015; verificat 03.08.2026 - anaf_surse/cf_art291_2016_forma_initiala.txt): carti/manuale (a), acces cultural (b), locuinte sociale (c). Locuinte la 5% au continuitate din vechiul cod (OUG 200/2008). Abrogata de Legea 141/2025 de la 01.08.2025")),
     ],
-    # impozit pe dividende / castig din lichidare (regim dividende). 16% de la 01.01.2026 (Legea 141/2025).
-    # NEVERIFICAT LA SURSA pentru pre-2026: codul folosea 10 pentru orice data pre-2026 (petic "else 10");
-    # istoricul real poate diferi (posibil 8% 2023-2025). data_in 10% = 2024-01-01, REDARE, de reconfirmat la MO.
+    # impozit pe dividende / castig din lichidare (regim dividende), CF art.97 alin.(7). Cote istorice VERIFICATE
+    # la sursa 03.08.2026 (anaf_surse/impozit_dividende_istoric_cote.txt): 5% (2016-2022), 8% (2023-2025, OG 16/2022),
+    # 16% (de la 01.01.2026, Legea 141/2025). Se aplica dupa data DISTRIBUIRII. (Fostul petic "10%" era GRESIT -
+    # 10% e cota impozitului pe VENIT art.78, nu pe dividende.)
     "impozit_dividend": [
-        (date(2026, 1, 1), Decimal("0.16"), Temei("Legea", 141, 2025, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 141/2025 majoreaza impozitul pe dividende de la 10% la 16% de la 01.01.2026")),
-        (date(2024, 1, 1), Decimal("0.10"), Temei("CF", art="97", data_in="2024-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2026, 1, 1), Decimal("0.16"), Temei("Legea", 141, 2025, art="97", alin="7", data_in="2026-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", lant_acte="Legea 141/2025 majoreaza impozitul pe dividende de la 8% la 16%, dividende distribuite de la 01.01.2026")),
+        (date(2023, 1, 1), Decimal("0.08"), Temei("OG", 16, 2022, art="97", alin="7", data_in="2023-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", lant_acte="OG 16/2022 (MO 716/15.07.2022) majoreaza cota de la 5% la 8%, dividende distribuite de la 01.01.2023; aprobata prin Legea 370/2022")),
+        (date(2016, 1, 1), Decimal("0.05"), Temei("Legea", 227, 2015, art="97", alin="7", data_in="2016-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", lant_acte="cota 5% pt dividende distribuite de la 01.01.2016 (OUG 50/2015 MO 817/2015 accelereaza data din Legea 227/2015; aprobata prin Legea 358/2015)")),
     ],
     # plafon TVA la incasare (fost petic 3-tier plafon_la). OUG 8/2026: 5M de la 03.2026, 5.5M de la 2027.
     # 4.5M anterior - act de reconfirmat (REDARE), data_in aproximata (pre-2026 raporteaza gol daca ceri <2023).

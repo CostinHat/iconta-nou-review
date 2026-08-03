@@ -157,11 +157,11 @@ def test_impozit_dividend_period_aware_cf_art97():
     from decimal import Decimal
     from datetime import date
     from core.common import cota
-    # 2026: 16% (Legea 141/2025). 2025: 10%. Proba de valoare pe 50000 dividende:
+    # 2026: 16% (Legea 141/2025). 2025: 8% (OG 16/2022). Proba de valoare pe 50000 dividende:
     assert cota("impozit_dividend", date(2026, 12, 31))[0] == Decimal("0.16")   # CF art.97 / Legea 141/2025
-    assert cota("impozit_dividend", date(2025, 12, 31))[0] == Decimal("0.10")   # regim pana in 2025
+    assert cota("impozit_dividend", date(2025, 12, 31))[0] == Decimal("0.08")   # OG 16/2022 (2023-2025)
     assert Decimal(50000) * cota("impozit_dividend", date(2026, 12, 31))[0] == Decimal("8000")
-    assert Decimal(50000) * cota("impozit_dividend", date(2025, 12, 31))[0] == Decimal("5000")
+    assert Decimal(50000) * cota("impozit_dividend", date(2025, 12, 31))[0] == Decimal("4000")
 
 
 def test_d205_rata_dividend_din_cota_nu_hardcodat():
