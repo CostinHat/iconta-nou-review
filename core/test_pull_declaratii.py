@@ -352,3 +352,26 @@ def test_d390_pull_incadreaza_pe_data_emitere_exigibilitate(schema):
     assert totaluri == [5000], (
         "D390 iunie trebuie sa contina DOAR factura cu data_emitere in iunie "
         "(exigibilitate art.283/284), nu mai/iulie: %r" % (totaluri,))
+
+
+
+def test_d101_rezerva_legala_din_conturi_reale(schema):
+    """PROBA pe date reale (A1): d101.pull sursa capital (1012), rezerva existenta (1061) si cheltuiala
+    cu impozitul (691) din inregistrari_linii; calcul_d101 computa P13 = rezerva legala deductibila
+    (CF art.26 alin.(1) lit.a). Fara sursare/calcul, deducerea nu se aplica si firma SUPRA-DECLARA
+    impozitul pe profit. Aici: capital subscris/varsat 200000, profit brut 350000 (300000 + 50000
+    cheltuiala impozit adaugata inapoi), fara rezerva anterioara -> P13 = min(5%*350000=17500;
+    20%*200000-0=40000) = 17500. Gard SOURCING (pull citeste conturile reale)."""
+    from core import d101
+    from core.common import Perioada
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO inregistrari (data, status) VALUES ('2026-06-30','validata') RETURNING id")
+        iid = cur.fetchone()[0]
+        for cd, cc, suma in [("5121", "1012", 200000),   # capital subscris varsat
+                             ("4111", "707", 1000000),    # venituri din exploatare
+                             ("607", "401", 650000),      # cheltuieli de exploatare
+                             ("691", "4411", 50000)]:      # cheltuiala cu impozitul pe profit
+            cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) "
+                        "VALUES (%s,%s,%s,%s)", (iid, cd, cc, suma))
+    xml, res = d101.genereaza(schema, SCHEMA_T, Perioada(2026))
+    assert res.P.get("P13") == 17500, ("P13 asteptat 17500, primit %r" % res.P.get("P13"))

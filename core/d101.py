@@ -151,7 +151,7 @@ def _scadenta(an):
     return fn(an)
 
 
-def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103", imca=None):
+def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103", imca=None, rezerva=None):
     """Reconstruit 01.08.2026 pe FORMULARUL OFICIAL (OPANAF 206/2025, D101_A600 v10,
     anaf_surse/d101_struct_anaf.txt). `intrari` = dict cu campurile P de intrare (P1,P2,P4,P5 din
     contabilitate + ajustari fiscale din manual). Numerotarea inventata anterioara (p11=impozit) a
@@ -175,6 +175,18 @@ def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"
     P["P8"] = g("P8")                                   # Elemente similare veniturilor
     P["P9"] = g("P9")                                   # Elemente similare cheltuielilor
     P["P10"] = P["P7"] + P["P8"] - P["P9"]              # P10=P7+P8-P9
+    # P13 Rezerva legala deductibila (CF art.26 alin.(1) lit.a), AUTO din contabilitate cand nu e dat
+    # manual. Baza = profitul contabil BRUT = P7 + cheltuiala CONTABILA cu impozitul (cont 691, se
+    # adauga inapoi - cifra contabila, NU impozitul calculat de D101 -> fara circularitate). Deductibil =
+    # min(5%% x baza; 20%% x capital subscris/varsat (1012) - rezerva existenta (1061)), >= 0. Fara ea,
+    # firma supra-declara impozitul pe profit (deducerea nu se aplica desi conditiile sunt indeplinite).
+    if "P13" not in I and rezerva:
+        _baza_rez = P["P7"] + _i(rezerva.get("chelt_impozit", 0))
+        if _baza_rez > 0:
+            _cota_rez = _i(Decimal(str(_baza_rez)) * Decimal("0.05"))
+            _plafon_rez = (_i(Decimal(str(rezerva.get("capital", 0) or 0)) * Decimal("0.20"))
+                           - _i(rezerva.get("rezerva_existenta", 0)))
+            I["P13"] = max(0, min(_cota_rez, _plafon_rez))
     # --- Deduceri (rd.11-16) ---
     for k in ("P11", "P12", "P13", "P14", "P15"):
         P[k] = g(k)
@@ -352,6 +364,27 @@ def pull(conn, schema, perioada):
             "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s",
             (_inc.isoformat(), _sf.isoformat()))
         r = cur.fetchone() or {}
+        # Balante pentru rezerva legala deductibila (CF art.26 alin.(1) lit.a):
+        #  capital 1012 (subscris/varsat) = sold cumulat pana la SFARSITUL perioadei (credit-debit);
+        #  rezerva 1061 EXISTENTA = sold cumulat pana la INCEPUTUL anului (din anii anteriori);
+        #  691 = cheltuiala cu impozitul pe profit pe anul curent (baza rezervei = profit contabil + 691).
+        cur.execute(
+            "SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '1012%%' THEN l.suma ELSE 0 END),0) "
+            "     - COALESCE(SUM(CASE WHEN l.cont_debit  LIKE '1012%%' THEN l.suma ELSE 0 END),0) AS capital "
+            "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
+            "WHERE i.status = 'validata' AND i.data < %s", (_sf.isoformat(),))
+        r["capital"] = (cur.fetchone() or {}).get("capital", 0)
+        cur.execute(
+            "SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '1061%%' THEN l.suma ELSE 0 END),0) "
+            "     - COALESCE(SUM(CASE WHEN l.cont_debit  LIKE '1061%%' THEN l.suma ELSE 0 END),0) AS rez "
+            "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
+            "WHERE i.status = 'validata' AND i.data < %s", (_inc.isoformat(),))
+        r["rezerva_existenta"] = (cur.fetchone() or {}).get("rez", 0)
+        cur.execute(
+            "SELECT COALESCE(SUM(CASE WHEN l.cont_debit LIKE '691%%' THEN l.suma ELSE 0 END),0) AS imp "
+            "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
+            "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
+        r["chelt_impozit"] = (cur.fetchone() or {}).get("imp", 0)
     return prof, r
 
 
@@ -370,6 +403,9 @@ def genereaza(conn, schema, perioada, manual=None):
     intrari = {"P1": r.get("ven_expl", 0), "P2": r.get("chelt_expl", 0),
                "P4": r.get("ven_fin", 0), "P5": r.get("chelt_fin", 0)}
     intrari.update(manual)   # ajustarile fiscale ale contabilului completeaza/suprascriu baza
-    res = calcul_d101(prof, perioada.an, intrari, cota=cota, d_grup=d_grup, cod_obligatie=cod_obligatie)
+    res = calcul_d101(prof, perioada.an, intrari, cota=cota, d_grup=d_grup, cod_obligatie=cod_obligatie,
+                      rezerva={"capital": r.get("capital", 0),
+                               "rezerva_existenta": r.get("rezerva_existenta", 0),
+                               "chelt_impozit": r.get("chelt_impozit", 0)})
     xml = build_xml(res)
     return xml, res

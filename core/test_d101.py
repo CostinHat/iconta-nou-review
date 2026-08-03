@@ -252,3 +252,28 @@ def test_mf_prag_amortizabil_5000_art28():
     # CF art.28 alin.(2) lit.b: mijloc fix amortizabil are valoare fiscala >= 5.000 lei (plafon OUG 8/2026).
     from core.mijloace_fixe_import_api import PLAFON_MF_2026
     assert PLAFON_MF_2026 == 5000.0
+
+
+
+def test_rezerva_legala_deductibila_auto_art26_1_a():
+    """CF art.26 alin.(1) lit.a: rezerva legala deductibila (P13) se COMPUTA AUTOMAT din contabilitate
+    cand nu e data manual - omiterea ei (firma ar supra-declara impozitul pe profit) devine IMPOSIBILA.
+    Baza = profitul contabil brut = P7 + cheltuiala cu impozitul (691, se adauga inapoi - fara bucla cu
+    impozitul D101). Deductibil = min(5%% x baza; 20%% x capital subscris/varsat 1012 - rezerva 1061), >=0."""
+    from core.d101 import calcul_d101
+    prof = {"cui": "14399840", "nume": "T SRL"}
+    ir = {"P1": 1000000, "P2": 700000}   # P7 = 300000 (P2 include 691)
+    # baza = 300000 + 50000 = 350000; 5%% = 17500; capital 200000 -> plafon 20%% = 40000 -> P13 = 17500
+    res = calcul_d101(prof, 2026, dict(ir), rezerva={"capital": 200000, "rezerva_existenta": 0, "chelt_impozit": 50000})
+    assert res.P["P13"] == 17500, res.P.get("P13")
+    # OMITEREA IMPOSIBILA: conditii indeplinite, P13 NU dat manual -> se computa (> 0), nu ramane 0
+    assert res.P["P13"] > 0
+    # plafonul de 20%% musca: rezerva existenta 35000 -> plafon 40000-35000 = 5000 < 17500 -> P13 = 5000
+    res2 = calcul_d101(prof, 2026, dict(ir), rezerva={"capital": 200000, "rezerva_existenta": 35000, "chelt_impozit": 50000})
+    assert res2.P["P13"] == 5000, res2.P.get("P13")
+    # pierdere contabila (baza <= 0) -> nicio rezerva
+    resl = calcul_d101(prof, 2026, {"P1": 700000, "P2": 1000000}, rezerva={"capital": 200000, "rezerva_existenta": 0, "chelt_impozit": 0})
+    assert resl.P.get("P13", 0) == 0
+    # override MANUAL respectat (contabilul poate forta P13)
+    resm = calcul_d101(prof, 2026, dict(ir, P13=9000), rezerva={"capital": 200000, "rezerva_existenta": 0, "chelt_impozit": 50000})
+    assert resm.P["P13"] == 9000, resm.P.get("P13")
