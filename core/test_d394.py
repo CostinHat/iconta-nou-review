@@ -386,3 +386,16 @@ def test_d394_cote_acopera_toate_cotele_tva_din_common():
             ceruta.add(int(Decimal(str(val)) * 100))
     lipsa = ceruta - set(COTE)
     assert not lipsa, "cote TVA din common.COTE neacceptate de d394.COTE: %s" % sorted(lipsa)
+
+
+
+def test_toate_categoriile_taxare_inversa_au_codpr_d394():
+    """Gard CROSS-MODUL anti-regresie: orice categorie de taxare inversa recunoscuta de MOTOR
+    (taxare_inversa.CATEGORII) TREBUIE sa aiba un codPR in maparea D394 (d394.CODPR). Altfel o
+    factura in acea categorie e recunoscuta de motor dar CADE din sectiunea op11 obligatorie a D394
+    (declaratie structural incompleta, validator R233.5). Cine adauga o categorie in motor fara
+    codul D394 pica aici - forteaza fixul complet (motor + codPR impreuna), nu pe jumatate."""
+    from core.taxare_inversa import CATEGORII
+    from core.d394 import CODPR
+    fara_cod = sorted(set(CATEGORII) - set(CODPR))
+    assert not fara_cod, "categorii taxare inversa fara codPR D394: %s" % fara_cod

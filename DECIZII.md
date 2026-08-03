@@ -5731,3 +5731,24 @@ Setul fix (nu period-aware) e CORECT aici: validatorul ANAF proceseaza cu acelas
 Garduri adaugate: (a) pin d394.COTE == setul v5 (anti-drift); (b) CROSS-MODUL: orice cota tva_* din common.COTE
 subseteaza d394.COTE - o cota noua adaugata candva in common care nu e in d394.COTE ar fi ignorata tacit de D394.
 Leaga sursa unica de cote (common) de setul acceptat de D394.
+
+
+## 03.08.2026 — Cluster "taxare inversa" (D394): NECONFORMITATE gasita (lit.l gaze), CORECTARE blocata pe codPR.
+
+CICLUL DE NECONFORMITATE parcurs:
+- OPRIRE: firul "cote/taxare" suspendat, tratata acum.
+- GENERALIZARE: clasa = enumerarea celor 12 categorii art.331 alin.(2) lit.a-l. Codul implementeaza 11 (a-k).
+  LIT.L GAZE NATURALE (livrarea de gaze naturale catre comerciant persoana impozabila, art.331 alin.2 lit.l, in
+  vigoare pana 31.12.2026 cf. alin.6) lipseste din DOUA situri: taxare_inversa.CATEGORII (motor) + d394.CODPR
+  (mapare D394). Header-ul taxare_inversa.py mentioneaza chiar "lit.c-f, i-l" -> omisiune dovedita, nu excludere.
+  Restul enumerarilor (rip_api/casa_api/cote_tva) = categorii nelegate de art.331.
+- CORECTARE: BLOCATA. Partea legala e verificata (art.331 lit.l + expira 31.12.2026 alin.6), DAR codPR-ul D394
+  pentru gaze naturale NU e in nicio sursa ANAF din repo: nomenclatorul e Ghid_D394_2016 (anterior Legii 296/2020
+  care a introdus gazele); tip_partener=1 = codurile 21-31, 32-35 REZERVATE tip_partener=2. §3: nu se inventeaza.
+  Adaugarea doar in CATEGORII (fara codPR) ar REGRESA: factura recunoscuta dar dropata din op11 obligatoriu.
+- GARD: (a) anti-regresie cross-modul - orice categorie din CATEGORII trebuie sa aiba codPR (previne fixul pe
+  jumatate); (b) datorie xfail(strict) gaze naturale in test_datorie.py.
+
+DECIZIE / INPUT CERUT LUI COSTIN: pentru a completa fixul e nevoie de codPR-ul D394 pentru gaze naturale dintr-o
+structura/ghid D394 ANAF post-2021 (post Legea 296/2020). Pana atunci: gaze reverse-charge NU se poate depune in
+D394 (motorul refuza, fail-loud). Datorie tracked, lantul continua (11/12 conform, gardat).

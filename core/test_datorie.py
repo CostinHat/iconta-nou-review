@@ -303,3 +303,21 @@ def test_datorie_d300_9pct_deductibil_auto():
 def test_datorie_d300_exigibilitate_tva_la_incasare():
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "d300 aplica exigibilitatea tva la incasare pentru firme pe regim" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "DATORIE 03.08.2026: art.331 alin.(2) lit.l) GAZE NATURALE (taxare inversa la livrarea de gaze "
+    "naturale catre comerciant persoana impozabila, in vigoare pana 31.12.2026 cf. alin.(6)) lipseste "
+    "din motor (taxare_inversa.CATEGORII implementeaza 11 din 12 litere, a-k) SI din maparea D394 "
+    "(d394.CODPR). Fix BLOCAT: codPR-ul D394 pentru gaze naturale NU e in nicio sursa ANAF din repo - "
+    "nomenclatorul e Ghid_D394_2016 (anterior Legii 296/2020 care a introdus gazele in art.331); "
+    "tip_partener=1 are codurile 21-31, iar 32-35 sunt REZERVATE tip_partener=2. Nu se inventeaza "
+    "codul (§3). Necesita structura/ghid D394 ANAF post-2021 cu codPR gaze naturale. La completare: "
+    "CATEGORII lit.l (expira 2026, fara prag) + d394.CODPR gaze; gardul "
+    "test_toate_categoriile_taxare_inversa_au_codpr_d394 le prinde impreuna."))
+def test_datorie_gaze_naturale_taxare_inversa_art331_lit_l():
+    """art.331 alin.(2) lit.l) gaze naturale = categorie de taxare inversa recunoscuta de motor SI
+    mapata la un codPR D394. Pana la confirmarea codPR-ului la sursa ANAF, ramane datorie."""
+    from core.taxare_inversa import CATEGORII
+    from core.d394 import CODPR
+    assert "gaze_naturale" in CATEGORII and "gaze_naturale" in CODPR
