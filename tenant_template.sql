@@ -2190,7 +2190,7 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.d390_manual (
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.d301_operatiuni (
     id SERIAL PRIMARY KEY, an integer, luna integer, tip integer DEFAULT 1,
     nr_doc text, data_doc text, val_valuta numeric DEFAULT 0,
-    tip_valuta text DEFAULT 'EUR', curs numeric DEFAULT 1, tva numeric DEFAULT 0,
+    tip_valuta text DEFAULT 'EUR', curs numeric, tva numeric DEFAULT 0,
     creat timestamp DEFAULT now()
 );
 

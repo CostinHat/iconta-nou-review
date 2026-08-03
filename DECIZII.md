@@ -5579,3 +5579,26 @@ dispare, test_d394_manual_tip_necunoscut_ridica_nu_dispare (R99/tip ZZZ -> eroar
 Efect pe produs: un contabil care tasteaza gresit un rand/tip in D300/D390/D394 primeste eroare clara, nu o
 declaratie tacit incompleta (sub-declarare invizibila). CLAUDE.md §2.3 pct.7 (RAPORTUL IN LANT) adaugat: sectiunea
 9 (garduri) e obligatorie la inchidere - un cluster fara gard nu se declara inchis.
+
+## 03.08.2026 — Cluster "baza = val x curs" (D301) INCHIS. Temei CF art.290 alin.(2).
+
+Verificare formula bazei D301: baza = round(val_valuta x curs, 0). Formula si rotunjirea (ROUND_HALF_UP
+la leu intreg, ca structura ANAF cu baza integer) = CORECTE fata de art.290 alin.(2). Cursul e alegerea
+contabilului (§8) — codul il primeste ca input, corect.
+
+NECONFORMITATE gasita si reparata (clasa "valoare gresita tacuta", frate cu drop-ul tacit din D300/D390/D394):
+generatorul (d301.py) si reader-ul grilei (d301_operatiuni_api.lista) faceau . Un
+curs absent/0 pe o operatiune in EUR (moneda default) devenea TACIT curs=1 -> baza = valoarea in valuta,
+subevaluata, trimisa la ANAF fara eroare. In plus schema avea "curs numeric DEFAULT 1" (fabricare la nivel DB).
+
+FIX (gard pe clasa): (a) calc_baza ridica ValueError pe curs None/<=0 — chokepoint prin care trec toate cele 3
+call-uri (generator, lista, adauga via _tva_din). (b) scos "or 1"/"or 0" din generator si reader. (c) scos
+DEFAULT 1 de pe coloana curs in tenant_template (tenant nou = fail-loud). Poarta de intrare adauga() valida deja
+curs>0 — neatinsa.
+
+GENERALIZARE: d301 e SINGURUL generator cu valuta/curs (grep: d100/d101/d112/d300/d390/d394/d406 fara
+val_valuta/curs de schimb). Clasa complet acoperita.
+
+MIGRARE (nefacuta, decizie deployment §2.3 pct.3): tenantii EXISTENTI pastreaza "curs numeric DEFAULT 1" pana la
+un ALTER COLUMN ... DROP DEFAULT la deploy. Pe ei, un insert care ocoleste adauga() si omite cursul inca ar primi
+1 din DB (calc_baza nu poate distinge de RON=1). Consemnat.

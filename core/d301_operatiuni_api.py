@@ -63,12 +63,12 @@ def lista(conn, schema, an, luna):
                     f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
         ops = []
         for r in cur.fetchall():
-            baza = calc_baza(r["val_valuta"] or 0, r["curs"] or 1)
+            baza = calc_baza(r["val_valuta"] or 0, r["curs"])
             ops.append({"id": r["id"], "tip": r["tip"],
                         "eticheta": TIPURI_ETICHETE.get(r["tip"], "Tip %s" % r["tip"]),
                         "nr_doc": r["nr_doc"] or "", "data_doc": r["data_doc"] or "",
                         "val_valuta": float(r["val_valuta"] or 0), "tip_valuta": r["tip_valuta"] or "",
-                        "curs": float(r["curs"] or 0), "baza": baza, "tva": _r0(r["tva"] or 0)})
+                        "curs": float(r["curs"]), "baza": baza, "tva": _r0(r["tva"] or 0)})
     return {
         "operatiuni": ops,
         "tipuri": [{"val": t, "eticheta": TIPURI_ETICHETE[t]} for t in TIPURI_OP],

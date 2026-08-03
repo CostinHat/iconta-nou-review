@@ -23,7 +23,7 @@ import re
 from core import common as c
 from core.pdf_util import bani
 from dataclasses import dataclass, field
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 
 NS = "mfp:anaf:dgti:d301:declaratie:v1"
 REGULI = "2026.1"
@@ -48,8 +48,20 @@ def _r0(x):
 
 
 def calc_baza(val_valuta, curs):
-    """baza = round(val_valuta × curs, 0) — formula oficială."""
-    return _r0(Decimal(str(val_valuta)) * Decimal(str(curs)))
+    """baza = round(val_valuta × curs, 0) — CF art.290 alin.(2): cursul e cel BNR/BCE ori
+    al băncii de decontare, valabil la exigibilitate. Curs absent sau <= 0 NU se fabrică:
+    un curs=1 pe valută ar subevalua TĂCUT baza declarată la ANAF. Pentru RON cursul e 1,
+    dat explicit ca dată; pentru valută trebuie completat de contabil (§8)."""
+    try:
+        c = Decimal(str(curs)) if curs not in (None, "") else Decimal(0)
+    except InvalidOperation:
+        c = Decimal(0)
+    if c <= 0:
+        raise ValueError(
+            "D301: curs de schimb absent sau invalid (%r). CF art.290 alin.(2) cere cursul "
+            "BNR/BCE valabil la exigibilitate — pentru RON e 1, pentru valută trebuie completat."
+            % (curs,))
+    return _r0(Decimal(str(val_valuta)) * c)
 
 
 def nr_evidenta(an, luna, mij_transp=0):
@@ -97,12 +109,12 @@ def calcul_d301(prof, perioada, operatiuni_raw):
     mij = 0
     for r in operatiuni_raw:
         tip = int(r.get("tip") or 1)
-        baza = calc_baza(r.get("val_valuta") or 0, r.get("curs") or 1)
+        baza = calc_baza(r.get("val_valuta") or 0, r.get("curs"))
         tva = _r0(r.get("tva") or 0)
         op = Operatiune(tip=tip, nr_doc=r.get("nr_doc") or "", data_doc=r.get("data_doc") or "",
                         val_valuta=float(r.get("val_valuta") or 0),
                         tip_valuta=(r.get("tip_valuta") or "EUR").upper(),
-                        curs=float(r.get("curs") or 1), baza=baza, tva=tva)
+                        curs=float(r.get("curs")), baza=baza, tva=tva)
         ops.append(op)
         if tip in tot:
             tot[tip][0] += baza; tot[tip][1] += tva

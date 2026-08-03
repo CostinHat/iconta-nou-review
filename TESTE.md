@@ -28,15 +28,14 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 > **Stare:** site în mentenanță (46507b5) — allowlist pe IP-ul lui Costin; revenire cu `mentenanta.sh off`.
 
-- fir: d101 reconstructie + Conditia 2 audit semantic + ciclul clasa cale-fisier (GREENLIGHT Costin 01.08, ordine impusa: audit INAINTE de reconstructie)
-- ultim: d406 reparat (cale plan_oficial -> anaf_surse), b845763.
-- urmator: T1 ciclul clasa cale-fisier -> T2 audit semantic 8 valide -> T3 reconstructie d101. IN LUCRU (T1).
+- fir: d301 cluster "baza = val x curs" — verificare CF art.290 alin.(2) + gard anti-fabricare curs (lant, urmator_cluster 03.08)
+- ultim: d101 reconstruit pe OPANAF 206/2025 + audit campuri oficiale (b845763); PREDARE_LANT cc30f3b.
+- urmator: cluster inchis; ruleaza urmator_cluster() pt urmatorul din lant. GATA.
 - pasi:
-  T1. [ciclul neconformitate pe bug d406 cale] grep clasa "cale relativa la radacina": 2 instante (d406 reparat, plata_salarii CORECT - sepa_surse/ exista). Gard: test care asorteaza ca fisierele de date deschise prin cale construita EXISTA (nu set gol tacut). Commit.
-  T2. [GATA 01.08] Audit semantic: toate 8 emit doar campuri OFICIALE (struct.txt + 3 confirmate in validator: d301 temei, d394 tvaDedAI11/21). d101 = SINGURA cu numerotare proprie -> ordine = doar d101. Gard core/test_audit_campuri_oficiale.py + DECIZII 01.08.
-  T3. [reconstructie d101] rescrie calcul_d101 pe P oficiale (P7=P3+P6, P10=P7+P8-P9, P41=P411+P412, totalPlata_A=S(P1..P53)) + build_xml P ca ATRIBUTE + scadenta LL+3 (an>2025) + R17/R38/R41/R42/R48 + grup. Numerotarea inventata DISPARE (fara adaptor). Proba Conditia 1: tabel P-emis/P-oficial/formula/sursa + golden calculat de mana din exemplul OPANAF. Commit.
-  T3. [GATA 01.08] d101 RECONSTRUIT pe OPANAF 206/2025 - calcul_d101 pe P oficiale (P41=impozit) + build_xml P ca ATRIBUTE + scadenta LL+3 + numerotarea inventata DISPARUTA. Golden calculat de mana + DUK valid. Datoria d101 inchisa, smoke d101 -> asertiune, d101 in gardul audit. Sweep DUK acum 9/9 valide.
-  STARE = GATA (T1+T2+T3 comise)
+  C1. [gard anti-fabricare curs] calc_baza(val, curs) ridica ValueError pe curs None/<=0 — CF art.290 alin.(2): cursul e cel BNR/BCE valabil la exigibilitate, niciodata 0/absent; pt RON e 1 (dat ca data). Scoate fabricarea "or 1" din d301.py:100,105 (generator XML) si d301_operatiuni_api.py lista:66,71 (reader grila). Test rosu: EUR fara curs -> ValueError (inainte: baza=val_valuta tacut, declaratie subevaluata la ANAF). adauga() deja valideaza curs>0 (poarta intrare OK). Commit.
+  C2. [generalizare clasa "fabricare tacita curs=1"] grep "or 1"/curs-default in toate generatoarele+API; enumera locurile curate (d301 e singurul cu valuta/curs; d112/d406 fara manual). Locurile atinse: d301.py, d301_operatiuni_api.py.
+  C3. [gard schema] tenant_template.sql: curs numeric DEFAULT 1 -> curs numeric. DB nu mai fabrica 1 la insert-fara-curs; tenant nou = fail-loud prin calc_baza. Migrare tenanti reali = sarcina deployment (§2.3 pct.3), consemnata.
+  STARE = GATA (C1+C2+C3 comise)
 
 - fir: SWEEP DUK toate declaratiile (redirectionare Costin 31.07: inainte de reconstructii, mapez cate sunt sparte pe validatorul CURENT)
 - ultim: sweep rulat pe schema efemera + profil complet + date minime adecvate (salariat/factura UE/dividende). Rezultat initial: 7 VALID + 2 sparte (d101, d406). d406 REZOLVAT 01.08 (bug de CALE, o linie): plan_oficial cauta d406_nomenclatoare_anaf.properties in radacina, dar fisierul e in anaf_surse/ -> set gol -> filtrarea pe norma (adaugata 15.07 tocmai pt 731 ONG) nu rula -> conturi ONG scapau in SAF-T comercial -> DUK respingea. Fix cale -> plan_oficial(A)=635, 731 exclus, d406 DUK VALID. RAMANE 1/9 SPART: d101 (reconstructie). Claim 16.07 infirmat.

@@ -367,3 +367,20 @@ A cincea, din aceeași zi, la altă gardă:
 - „ACOPERIT DE FAPT, gard absent" e o stare distinctă și onestă: azi e curat, mâine nu se știe.
 - Limita declarată a fiecărui gard se scrie explicit. Un gard fără limită scrisă e citit ca
   acoperire totală.
+
+
+## 03.08.2026 — Gard anti-fabricare a cursului de schimb (D301, cluster "baza = val x curs")
+
+**Temei:** CF art.290 alin.(2) — cursul aplicat operatiunii in valuta e cel BNR/BCE ori al
+bancii de decontare, valabil la exigibilitate. Un curs real e > 0; pentru RON e 1 (dat ca dată).
+
+| gard | fisier:linie | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| calc_baza refuza curs None/<=0 | core/d301.py (calc_baza) | fabricarea tacita curs=1 pe valuta (baza subevaluata la ANAF, fara eroare) | calc_baza(1000, None) -> ValueError; generator EUR fara curs -> ValueError (INAINTE: baza=1000 tacut). test_d301_curs.py |
+| reader grilei fara fabricare | core/d301_operatiuni_api.py:lista | afisarea unei baze fabricate (curs=1) pe o linie cu curs NULL | fake cursor cu curs=None -> lista ridica. test_d301_curs.py |
+| schema fara DEFAULT 1 pe curs | tenant_template.sql (d301_operatiuni) | DB sa fabrice 1 la insert-fara-curs (tenant nou) | insert fara curs -> NULL -> calc_baza ridica la generare |
+
+**Limita gardului:** calc_baza nu distinge curs=1 REAL (RON valid) de un curs=1 fabricat de un
+DEFAULT pe tenant EXISTENT (nemigrata). Pe tenantii deja creati, coloana pastreaza DEFAULT 1
+pana la migrare (sarcina deployment, §2.3 pct.3). Poarta de intrare adauga() cere oricum
+curs>0 explicit, deci calea UI nu atinge acest rest.
