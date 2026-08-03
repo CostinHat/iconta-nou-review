@@ -6369,3 +6369,29 @@ daca DUK le accepta). EL = Grecia (prefix TVA corect). Singura remapare gresita 
 LECTIE (a treia oara in aceasta campanie, dupa text_anaf-75 si R17): un comentariu care declara o regula "corecta"
 NU e o proba. HR->CR suna plauzibil (unele tari au prefix TVA != ISO, ex. EL vs GR) dar era inventat; DUK a aratat
 imediat ca HR e corect. Orice remapare de cod (tara, cod bugetar, tip) se verifica pe validator, nu pe comentariu.
+
+
+## 03.08.2026 — Cluster "tipuri operatiune (pct.215)" (d394) — VERIFICAT + DATORIE ASI (decizie de produs deschisa).
+
+Verificare: TIPURI = (A, L, C, V, AI, LS, AS, ASI, N) coincide EXACT cu setul de tipuri op1 din structura oficiala
+D394 (formulele "op1(tip)=X" din anaf_surse/d394_struct_anaf.txt) - pin adaugat (test_tipuri_operatiune_pin_la_
+structura_oficiala). Derivarea tip_operatiune(directie, taxare_inversa, tip_partener) (pct.215) e deja testata
+(test_tip_respecta_compatibilitatea_cu_partenerul); produce doar L/N/C/V/A (celelalte 4 - AI/LS/AS/ASI - sunt manual).
+
+NECONFORMITATE (probata DUK, lectia "comentariul nu e proba"): pe o baza D394 identica, substituind DOAR valoarea
+atributului tip din <op1>, validatorul instalat accepta ca enum 8 tipuri (L/V/A/C/N/LS/AS/AI) dar RESPINGE **ASI**
+("eroare atribut: tip: valoarea 'ASI' nu se afla in lista") - identic cu un tip inventat (control "XX"). Deci
+structura pdf D394 are ASI (formula op1(tip)=ASI + facturiASI) DAR D394Validator.jar INSTALAT nu-l are in enum:
+discrepanta pdf-vs-jar. Un contabil care introduce manual o operatiune tip=ASI produce un D394 RESPINS de ANAF.
+ASI e tesut si in TIP_COTA_ZERO, REZ1_FARA_TVA, si logica rezumat (pct.217).
+
+DE CE NU AM CORECTAT (decizie de produs, §2.3 pct.2): scoaterea ASI din TIPURI schimba CE POATE DECLARA
+CONTABILUL (setul de tipuri de operatiune). Sunt 3 rezolvari plauzibile, fiecare cu implicatii: (a) scoate ASI
+din TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA (tool-ul urmeaza VALIDATORUL, ca la D101 scadenta - fail-fast pt contabil
+via gardul-clasa "tip necunoscut"); (b) remapeaza operatiunile "achizitii scutite intracomunitare" pe AI sau AS;
+(c) validatorul instalat e o versiune veche si ASI e valid intr-o versiune noua OPANAF - de confirmat la sursa.
+Alegerea cere Costin + confirmarea versiunii oficiale D394. Am consemnat cu gard anti-regresie
+(test_asi_respins_de_validatorul_instalat_DATORIE): daca validatorul ajunge sa accepte ASI, testul pica si anunta.
+
+INPUT CERUT (Costin): pentru versiunea curenta a validatorului D394, ASI e un tip valid sau scos? Daca scos, pe ce
+tip merg achizitiile scutite intracomunitare? (Acelasi tipar ca datoria codPR gaze naturale lit.l din acelasi modul.)

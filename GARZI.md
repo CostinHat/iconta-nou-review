@@ -596,6 +596,17 @@ Temei: struct D100 poz.17a - "daca cod_oblig=121 atunci cota=1 altfel cota=null"
 | cota micro 121 bidirectional | core/d100.py build_xml (test_cota_micro_121_gard_bidirectional) | XML respins de validator: 121 fara cota="1" SAU cota pe alt cod_oblig | 121 fara cota -> ValueError; 103 cu cota -> ValueError; 121+cota=1 -> cota="1" in XML |
 
 
+## 03.08.2026 — Gard tipuri operatiune D394 + datorie ASI (cluster "tipuri operatiune (pct.215)")
+
+Temei: TIPURI op1 D394 = setul din structura oficiala (formulele op1(tip)=X). Discrepanta: ASI e in structura
+pdf dar D394Validator instalat il respinge ca enum (probat izolat). Corectare blocata pe decizie de produs.
+
+| gard | fisier | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| TIPURI = exact setul din structura oficiala | core/test_d394.py (test_tipuri_operatiune_pin_la_structura_oficiala) | un tip adaugat/scos tacit din cod, divergent de structura | orice modificare a TIPURI care nu-i in formulele op1(tip)=X pica |
+| ASI respins de validator = consemnat (datorie) | core/test_d394.py (test_asi_respins_de_validatorul_instalat_DATORIE) | ca discrepanta pdf-vs-jar sa dispara tacit | substituie tip=ASI pe baza valida -> DUK "nu se afla in lista"; daca validatorul accepta ASI, pica si cere reevaluare |
+
+
 ## 03.08.2026 — Gard nomenclator tari Croatia HR (cluster "nomenclator tari (HR->CR)")
 
 Temei: nomenclatorul de tari D390 (ANAF) foloseste prefixul de TVA (= cod ISO) pt fiecare tara; Croatia = HR.

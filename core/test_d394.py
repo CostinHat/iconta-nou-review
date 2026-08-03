@@ -74,6 +74,54 @@ def test_toate_tipurile_generate_sunt_in_lista_oficiala():
                 assert tip_operatiune(d, ti, tp) in TIPURI
 
 
+def _oib_d394(base10="1234567890"):
+    x = 10
+    for ch in base10:
+        x = (x + int(ch)) % 10
+        if x == 0:
+            x = 10
+        x = (x * 2) % 11
+    return base10 + str((11 - x) % 10)
+
+
+def test_tipuri_operatiune_pin_la_structura_oficiala():
+    """Gard pct.215: TIPURI (cod) = EXACT setul de tipuri op1 din structura oficiala D394
+    (formulele 'op1(tip)=X' din anaf_surse/d394_struct_anaf.txt). Un tip adaugat/scos tacit din cod
+    diverge de structura si pica aici."""
+    import re, pathlib
+    struct = pathlib.Path(__file__).resolve().parent.parent / "anaf_surse" / "d394_struct_anaf.txt"
+    din_struct = set(re.findall(r"op1\(tip\)\s*=\s*([A-Z]+)", struct.read_text(encoding="utf-8")))
+    assert set(TIPURI) == din_struct, "TIPURI cod %s != structura pdf %s" % (sorted(TIPURI), sorted(din_struct))
+
+
+def test_asi_respins_de_validatorul_instalat_DATORIE():
+    """DATORIE / DECIZIE COSTIN (neconformitate 03.08.2026): tipul ASI e in TIPURI (vine din structura
+    pdf D394 - formula op1(tip)=ASI) DAR D394Validator.jar INSTALAT il RESPINGE ca enum necunoscut
+    ('eroare atribut: tip: valoarea ASI nu se afla in lista'), la fel ca un tip inventat. Discrepanta
+    pdf-vs-jar. Probat izolat: pe o baza D394 identica, doar ASI (si un tip bogus) dau eroarea de enum;
+    L/V/A/C/N/LS/AS/AI sunt acceptate ca enum. Un contabil care introduce manual tip=ASI produce un D394
+    RESPINS de ANAF.
+    DECIZIE DESCHISA (Costin): (a) scoate ASI din TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA (tool-ul urmeaza
+    validatorul, ca la D101 scadenta) - fail-fast pt contabil; (b) remapare ASI -> AI/AS; (c) validatorul
+    e o versiune veche si ASI e valid intr-alta - de confirmat la sursa OPANAF. NU s-a atins TIPURI
+    (schimba ce poate declara contabilul = decizie de produs, §2.3). Acest gard CONSEMNEAZA respingerea:
+    daca validatorul ajunge sa accepte ASI (versiune noua), asertiunea pica si te anunta sa reevaluezi."""
+    from core import duk
+    if not duk.poate_valida("d394"):
+        import pytest
+        pytest.skip("DUK d394 indisponibil")
+    import re
+    facturi = [_f("RO14399840", "emisa", 21, 1000, 210)]
+    xml = build_xml(calcul_d394(PROF, 2026, 6, facturi))
+    xml_asi = re.sub(r'(<op1 tip=")[^"]*(")', lambda m: m.group(1) + "ASI" + m.group(2), xml, count=1)
+    rez = duk.valideaza(xml_asi, "d394", an=2026, luna=6)
+    er = str(rez.get("erori"))
+    assert "ASI" in er and "nu se afla in lista" in er, (
+        "Validatorul instalat NU mai respinge ASI ca enum - reevalueaza DECIZIA (poate ASI a devenit "
+        "valid intr-o versiune noua). erori=%s" % er[:200])
+
+
+
 # ---------- rezumat1: setul de campuri (R38/R41/R49/R53/R56/R591) ----------
 def test_rez1_cota_zero_nu_are_L():
     """R38.2: daca cota = 0 atunci facturiL nu trebuie sa existe."""
