@@ -22,6 +22,21 @@ def _p(baza, pct):
     return (_d(baza) * Decimal(str(pct)) / 100).quantize(B, rounding=ROUND_HALF_UP)
 
 def _calcul_zilier_2018(brut):
+    """2018-01-01 .. 2019-04-30: DOAR impozit 10%% pe brut integral. Zilierii NU datorau CAS
+    (exceptati explicit prin CF art.142 lit.t) si NU datoreaza CASS (nu-s in art.157). CAS pe zilieri
+    a fost introdus abia de OUG 26/2019 (CF art.139(1) lit.s), in vigoare 01.05.2019."""
+    b = _d(brut)
+    if b <= 0:
+        raise ValueError("brut invalid")
+    impozit = _p(b, 10)
+    return {"brut": b, "cas": Decimal("0.00"), "cass": Decimal("0.00"),
+            "impozit": impozit, "net": b - impozit}
+
+
+def _calcul_zilier_2019(brut):
+    """De la 01.05.2019 (OUG 26/2019): impozit 10%% pe (brut - CAS) + CAS 25%%, fara CASS/CAM. Zilierii
+    intra in baza CAS (CF art.139(1) lit.s + Legea 52/2011 art.9^1); exceptarea art.142 lit.t abrogata,
+    ambele de OUG 26/2019 la 01.05.2019."""
     b = _d(brut)
     if b <= 0:
         raise ValueError("brut invalid")
@@ -31,10 +46,17 @@ def _calcul_zilier_2018(brut):
             "impozit": impozit, "net": b - cas - impozit}
 
 
+# PERIOD-AWARE (verificat la sursa 03.08.2026, /tmp/cf.txt): CAS pe zilieri exista doar de la 01.05.2019
+# (OUG 26/2019). Pana atunci = doar impozit 10%%. Aplicarea CAS retroactiv la 2018 era neconformitate.
 _VARIANTE_CALCUL_ZILIER = [
+    ("2019-05-01", _calcul_zilier_2019,
+     c.Temei("OUG", 26, 2019, art="139", alin="1", lit="s", data_in="2019-05-01", nivel_sursa="REDARE",
+             de_cine="Code+cercetare", verificat_la="2026-08-03",
+             lant_acte="OUG 26/2019 (in vigoare 01.05.2019): zilieri in baza CAS (CF art.139(1) lit.s + Legea 52/2011 art.9^1); impozit 10% pe brut-CAS, fara CASS/CAM")),
     ("2018-01-01", _calcul_zilier_2018,
-     c.Temei("Legea", 52, 2011, art="9^1", data_in="2018-01-01", nivel_sursa="REDARE",
-             de_cine="Code/Costin", verificat_la="2026-07-31")),
+     c.Temei("Legea", 227, 2015, art="76", alin="2", lit="r", data_in="2018-01-01", nivel_sursa="REDARE",
+             de_cine="Code+cercetare", verificat_la="2026-08-03",
+             lant_acte="pana la 01.05.2019: zilier = doar impozit 10% (venit asimilat salariilor CF art.76(2) lit.r); exceptat de CAS prin CF art.142 lit.t (abrogat de OUG 26/2019)")),
 ]
 
 

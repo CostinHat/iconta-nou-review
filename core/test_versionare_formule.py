@@ -128,8 +128,13 @@ def test_rezerva_legala_dispecer_versionat():
 # ---- PAS 3 modul 5: contracte_speciale.calcul_zilier ----
 def test_calcul_zilier_dispecer_versionat():
     from core import contracte_speciale as cs
-    assert cs.calcul_zilier(200, la_data=date(2026, 6, 1)) == cs._calcul_zilier_2018(200)
-    assert cs._VARIANTE_CALCUL_ZILIER[0][1] is cs._calcul_zilier_2018
+    # 2026 -> varianta cu CAS (de la 01.05.2019)
+    assert cs.calcul_zilier(200, la_data=date(2026, 6, 1)) == cs._calcul_zilier_2019(200)
+    # PERIOD-AWARE: pana la 01.05.2019 zilierii NU datorau CAS (doar impozit 10% pe brut)
+    r18 = cs.calcul_zilier(100, la_data=date(2018, 6, 1))
+    assert r18["cas"] == 0 and r18["impozit"] == 10 and r18["net"] == 90, r18
+    r19 = cs.calcul_zilier(100, la_data=date(2019, 6, 1))
+    assert r19["cas"] == 25, r19
     with pytest.raises(ValueError):
         cs.calcul_zilier(200, la_data=date(2000, 1, 1))
 

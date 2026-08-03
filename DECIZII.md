@@ -5943,3 +5943,17 @@ consemnata (§2.3 pct.3); proba pe date reale acopera sursarea + calculul end-to
 
 EFECT PE PRODUS: firma cu profit + capital care nu introducea manual P13 NU mai supra-declara impozitul pe profit
 - deducerea rezervei legale se aplica automat din contabilitate.
+
+
+## 03.08.2026 — Cluster "zilieri (impozit+CAS)" (contracte_speciale) — FIX period-awareness CAS.
+
+Impozit 10%% (CF art.76(2) lit.r - venit asimilat salariilor) + CASS 0 (zilierii nu-s in art.157) = CONFORME.
+NECONFORMITATE reparata: codul aplica CAS 25%% zilierilor din 2018-01-01, dar CAS pe zilieri exista LEGAL doar de
+la 01.05.2019 (OUG 26/2019: adauga CF art.139(1) lit.s + Legea 52/2011 art.9^1; abroga exceptarea art.142 lit.t).
+Pentru 2018-01-01..2019-04-30 codul retinea CAS 25 nedatorat + subevalua impozitul (7,5 vs 10) + net subevaluat
+(67,5 vs 90 la brut 100). FIX: 2 variante datate - 2018-01-01 (doar impozit 10%% pe brut) + 2019-05-01 (CAS 25%% +
+impozit pe brut-CAS). Verificat la sursa (/tmp/cf.txt: OUG 26/2019 pct.1/2, in vigoare 01.05.2019).
+
+OBSERVATIE (nu neconformitate de calcul): plafonul de zile (max 90/an la acelasi beneficiar; 120 agricultura)
+e doar in docstring, NEaplicat - motorul calculeaza pe brutul dat, nu semnaleaza depasirea. De implementat in
+fluxul de introducere daca se cere semnalarea.
