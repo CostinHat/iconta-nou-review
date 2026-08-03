@@ -6319,3 +6319,31 @@ persistenta poate fi FALSA si se propaga ca dogma. Limita fiecarui camp text = d
 pe DUK, tinuta intr-un registru unic; codul nu are voie sa inventeze limite. (Extinde lectia R17: validatorul e
 autoritatea; aici validatorul a CONFIRMAT structura, iar comentariul-dogma era gresit.) Datoria "limita text 75"
 din predarea rularii 2 e ACHITATA pentru declaratiile pe atribute; d406 (SAF-T) ramane de facut (commit separat).
+
+
+## 03.08.2026 — AUDIT "limita text" (partea 2): d406 (SAF-T / e-Factura).
+
+d406 nu foloseste atribute XML, ci ELEMENTE SAF-T; limitele nu vin dintr-un struct .txt ci din SCHEMA XSD
+oficiala (anaf_surse/d406_schema_anaf.xlsx, foaia SimpleTypes): SAFshorttextType=18, SAFmiddle1textType=35,
+SAFmiddle2textType=70, SAFlongtextType=256. Acestea sunt "structura oficiala" pentru SAF-T (echivalentul C(n)),
+impuse de validarea XSD.
+
+STARE GASITA: doar 3 campuri din Header (Company/Name 256, StreetName 70, Contact/LastName 70) erau trunchiate
+(prin c.text_anaf cu LITERAL). Toate celelalte campuri text erau emise NETRUNCHIATE prin _esc(): Customer/Supplier
+Name (70), City (35, Header + parteneri), toate Description-urile (256 - Account/TaxCode/GL/Invoice/Payment/
+PaymentLine), PostalCode (18), PaymentMethod (18). Risc: un nume/oras de partener mai lung decat tipul XSD era
+respins de validarea SAF-T (exact clasa reparata pe celelalte declaratii).
+
+FIX: d406 adaugat in LIMITE_TEXT_ANAF (chei pe tipul de camp: CompanyName 256, StreetName 70, City 35, PostalCode
+18, ContactLastName 70, PartnerName 70, AccountDescription 256, Description 256, PaymentMethod 18). Toate emisiile
+text trec acum prin text_anaf cu limita din registru (17 locuri). NOTA de implementare: in d406 aliasul modulului
+`c` e SHADOWED de variabile de bucla (c=cont/customer) in MasterFiles, deci nu se putea folosi `c.text_anaf` in
+bucle; s-a importat `text_anaf as _t` (uniform cu celelalte generatoare).
+
+GARD: gardul de clasa test_limitele_de_text_vin_din_registry a fost extins sa prinda SI apeluri `.text_anaf`
+(Attribute), nu doar `_t` (Name), si acopera acum si d406 (e in LIMITE_TEXT_ANAF). PROBA DUK boundary NU a fost
+posibila pe d406: validarea DUK a d406 e xfail(strict) PREEXISTENT ("cont referit absent din chart" - test_smoke_duk)
+- nu exista o baza SAF-T DUK-valida de mutat boundary-cu-boundary. Sursa limitelor = tipurile XSD oficiale (autoritare,
+enforced de validarea XSD SAF-T); regresia e pazita de gardul de clasa AST + plafonarea la runtime prin text_anaf.
+Cand se repara xfail-ul d406 DUK, se poate adauga si proba boundary. Datoria "limita text" e ACHITATA pe toate cele
+9 declaratii cerute.

@@ -684,6 +684,10 @@ LIMITE_TEXT_ANAF = {
     "d390": {"den": 200, "adresa": 1000, "functie_declar": 50, "nume_declar": 75, "prenume_declar": 75, "mail": 200, "denO": 200},
     "d394": {"den": 200, "adresa": 1000, "denR": 200, "functie_reprez": 100, "adresaR": 1000, "den_intocmit": 75, "calitate_intocmit": 75, "denP": 200},
     "d710": {"den": 200, "adresa": 1000, "functie_declar": 50, "nume_declar": 75, "prenume_declar": 75},
+    # d406 = SAF-T: limitele sunt tipurile din XSD (d406_schema_anaf.xlsx, foaia SimpleTypes):
+    # SAFshorttextType=18, SAFmiddle1textType=35, SAFmiddle2textType=70, SAFlongtextType=256.
+    "d406": {"CompanyName": 256, "StreetName": 70, "City": 35, "PostalCode": 18, "ContactLastName": 70,
+             "PartnerName": 70, "AccountDescription": 256, "Description": 256, "PaymentMethod": 18},
 }
 
 

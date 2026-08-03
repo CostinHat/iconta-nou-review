@@ -291,7 +291,11 @@ def test_limitele_de_text_vin_din_registry():
             continue
         tree = ast.parse(f.read_text(encoding="utf-8"))
         for node in ast.walk(tree):
-            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "_t":
+            if not isinstance(node, ast.Call):
+                continue
+            _is_t = ((isinstance(node.func, ast.Name) and node.func.id == "_t")
+                     or (isinstance(node.func, ast.Attribute) and node.func.attr == "text_anaf"))
+            if _is_t:
                 if len(node.args) < 2:
                     vinovati.append("%s:%d _t fara limita" % (tip, node.lineno)); continue
                 lim = node.args[1]

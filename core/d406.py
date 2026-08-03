@@ -38,6 +38,7 @@ Separare strictă: construcție pură / validare / XML / DB / orchestrare.
 """
 import re
 from core import common as c
+from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text SAF-T din XSD (03.08.2026)
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from decimal import Decimal, ROUND_HALF_UP
@@ -438,17 +439,17 @@ def _header(res):
     H.append('    <SoftwareVersion>1.0</SoftwareVersion>')
     H.append('    <Company>')
     H.append('      <RegistrationNumber>%s</RegistrationNumber>' % _esc(cui))
-    H.append('      <Name>%s</Name>' % _esc(c.text_anaf(prof.get("nume") or "", 256)))
+    H.append('      <Name>%s</Name>' % _esc(_t(prof.get("nume") or "", _LIM["d406"]["CompanyName"])))
     H.append('      <Address>')
-    H.append('        <StreetName>%s</StreetName>' % _esc(c.text_anaf(prof.get("adresa") or "-", 70)))
-    H.append('        <City>%s</City>' % _esc(prof.get("oras") or "-"))
-    H.append('        <PostalCode>%s</PostalCode>' % _esc(prof.get("cod_postal") or "000000"))
+    H.append('        <StreetName>%s</StreetName>' % _esc(_t(prof.get("adresa") or "-", _LIM["d406"]["StreetName"])))
+    H.append('        <City>%s</City>' % _esc(_t(prof.get("oras") or "-", _LIM["d406"]["City"])))
+    H.append('        <PostalCode>%s</PostalCode>' % _esc(_t(prof.get("cod_postal") or "000000", _LIM["d406"]["PostalCode"])))
     H.append('        <Country>RO</Country>')
     H.append('      </Address>')
     H.append('      <Contact>')
     H.append('        <ContactPerson>')
     H.append('          <FirstName>-</FirstName>')
-    H.append('          <LastName>%s</LastName>' % _esc(c.text_anaf(prof.get("nume") or "-", 70)))
+    H.append('          <LastName>%s</LastName>' % _esc(_t(prof.get("nume") or "-", _LIM["d406"]["ContactLastName"])))
     H.append('        </ContactPerson>')
     H.append('        <Telephone>-</Telephone>')
     H.append('      </Contact>')
@@ -489,7 +490,7 @@ def _masterfiles(res):
         account_id = c.cont_standard if ("." in c.id and c.cont_standard) else c.id
         M.append('      <Account>')
         M.append('        <AccountID>%s</AccountID>' % _esc(account_id))
-        M.append('        <AccountDescription>%s</AccountDescription>' % _esc(c.descriere))
+        M.append('        <AccountDescription>%s</AccountDescription>' % _esc(_t(c.descriere, _LIM["d406"]["AccountDescription"])))
         M.append('        <StandardAccountID>%s</StandardAccountID>' % _esc(c.cont_standard or c.id))
         M.append('        <AccountType>%s</AccountType>' % _esc(c.tip))
         # choice: debit XOR credit (nu ambele)
@@ -519,9 +520,9 @@ def _masterfiles(res):
         # data la sursa (_registration_number() in pull()) - RegistrationNumber si
         # CustomerID trebuie sa fie IDENTICE intre ele si cu ce refera TransactionLine.
         M.append('          <RegistrationNumber>%s</RegistrationNumber>' % _esc(c.id))
-        M.append('          <Name>%s</Name>' % _esc(c.nume))
+        M.append('          <Name>%s</Name>' % _esc(_t(c.nume, _LIM["d406"]["PartnerName"])))
         M.append('          <Address>')
-        M.append('            <City>%s</City>' % _esc(c.oras or "-"))
+        M.append('            <City>%s</City>' % _esc(_t(c.oras or "-", _LIM["d406"]["City"])))
         M.append('            <Country>%s</Country>' % _esc(c.tara or "RO"))
         M.append('          </Address>')
         M.append('        </CompanyStructure>')
@@ -539,9 +540,9 @@ def _masterfiles(res):
         # Acelasi format ca la Customer: prefix RO obligatoriu pt. CUI romanesc.
         # Acelasi principiu ca la Customer: f.id e deja formatul S.C.1 corect.
         M.append('          <RegistrationNumber>%s</RegistrationNumber>' % _esc(f.id))
-        M.append('          <Name>%s</Name>' % _esc(f.nume))
+        M.append('          <Name>%s</Name>' % _esc(_t(f.nume, _LIM["d406"]["PartnerName"])))
         M.append('          <Address>')
-        M.append('            <City>%s</City>' % _esc(f.oras or "-"))
+        M.append('            <City>%s</City>' % _esc(_t(f.oras or "-", _LIM["d406"]["City"])))
         M.append('            <Country>%s</Country>' % _esc(f.tara or "RO"))
         M.append('          </Address>')
         M.append('        </CompanyStructure>')
@@ -559,7 +560,7 @@ def _masterfiles(res):
     for ct in res.cote_tva:
         M.append('        <TaxCodeDetails>')
         M.append('          <TaxCode>%s</TaxCode>' % _esc(ct.cod))
-        M.append('          <Description>%s</Description>' % _esc(ct.descriere))
+        M.append('          <Description>%s</Description>' % _esc(_t(ct.descriere, _LIM["d406"]["Description"])))
         M.append('          <TaxPercentage>%s</TaxPercentage>' % _dec(ct.procent))
         M.append('          <BaseRate>1</BaseRate>')
         M.append('          <Country>RO</Country>')
@@ -687,7 +688,7 @@ def _gl_entries(res):
         G.append('        <Period>%d</Period>' % res.luna)
         G.append('        <PeriodYear>%d</PeriodYear>' % res.an)
         G.append('        <TransactionDate>%s</TransactionDate>' % _d(n.data))
-        G.append('        <Description>%s</Description>' % _esc(n.descriere))
+        G.append('        <Description>%s</Description>' % _esc(_t(n.descriere, _LIM["d406"]["Description"])))
         G.append('        <SystemEntryDate>%s</SystemEntryDate>' % _d(n.data))
         G.append('        <GLPostingDate>%s</GLPostingDate>' % _d(n.data))
         # CustomerID/SupplierID la nivel Transaction: OBLIGATORII in XSD (minOccurs=1,
@@ -788,7 +789,7 @@ def _factura_xml(f, este_vanzare, indent):
         X.append('%s    <InvoiceUOM>%s</InvoiceUOM>' % (sp, _esc(l.um)))
         X.append('%s    <UnitPrice>%s</UnitPrice>' % (sp, _dec(l.pret_unitar)))
         X.append('%s    <TaxPointDate>%s</TaxPointDate>' % (sp, _d(f.data)))
-        X.append('%s    <Description>%s</Description>' % (sp, _esc(l.descriere)))
+        X.append('%s    <Description>%s</Description>' % (sp, _esc(_t(l.descriere, _LIM["d406"]["Description"]))))
         X.append('%s    <InvoiceLineAmount>' % sp)
         X.append('%s      <Amount>%s</Amount>' % (sp, _dec(l.valoare)))
         X.append('%s      <CurrencyCode>RON</CurrencyCode>' % sp)
@@ -882,8 +883,8 @@ def _source_documents(res):
             S.append('        <PaymentRefNo>%s</PaymentRefNo>' % _esc(p.ref))
             S.append('        <TransactionID>%s</TransactionID>' % _esc(p.ref))
             S.append('        <TransactionDate>%s</TransactionDate>' % _d(p.data))
-            S.append('        <PaymentMethod>%s</PaymentMethod>' % _esc(p.metoda))
-            S.append('        <Description>%s</Description>' % _esc(p.descriere or "Plata"))
+            S.append('        <PaymentMethod>%s</PaymentMethod>' % _esc(_t(p.metoda, _LIM["d406"]["PaymentMethod"])))
+            S.append('        <Description>%s</Description>' % _esc(_t(p.descriere or "Plata", _LIM["d406"]["Description"])))
             for l in p.linii:
                 # CustomerID/SupplierID pe PaymentLine: aceeasi regula ca la GL
                 # (AMBELE obligatorii, niciodata ambele "0") - cod propriu pe partea
@@ -896,7 +897,7 @@ def _source_documents(res):
                 S.append('          <AccountID>%s</AccountID>' % _esc(l.cont))
                 S.append('          <CustomerID>%s</CustomerID>' % _esc(pl_cust))
                 S.append('          <SupplierID>%s</SupplierID>' % _esc(pl_supp))
-                S.append('          <Description>%s</Description>' % _esc(l.descriere))
+                S.append('          <Description>%s</Description>' % _esc(_t(l.descriere, _LIM["d406"]["Description"])))
                 S.append('          <DebitCreditIndicator>%s</DebitCreditIndicator>' % _esc(l.sens))
                 S.append('          <PaymentLineAmount>')
                 S.append('            <Amount>%s</Amount>' % _dec(l.suma))
