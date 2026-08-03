@@ -349,3 +349,44 @@ def test_d300_rotunjeste_aritmetic_nu_bancar():
     assert _int(0.5) == 1       # bancar ar da 0
     assert _int(112.4) == 112
     assert _int(112.6) == 113
+
+
+# ============================================================
+#  Ajustari | d300 (CF art.304 regularizari + art.305 ajustari bunuri de capital). Randurile de
+#  ajustare/regularizare se declara MANUAL si intra in totaluri. BUG reparat: R29/R30/R35/R36
+#  lipseau din allow-list-ul manual -> ajustarile erau SILENTIOS aruncate (nedeclarate).
+#    R29 = TVA restituita cumparatori straini (Rd.31) ; R30 = Regularizari taxa dedusa (Rd.32) -> R32
+#    R35 = sold reportat neachitat ; R36 = Diferente TVA de plata (inspectie, Rd.38) -> R37 cumulat
+# ============================================================
+def test_ajustari_regularizari_deductibila_se_declara():
+    facturi = [{"directie": "primita", "total": 1210, "tva": 210}]   # R28 dedusa = 210
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi,
+                      {"R29_1": 100, "R29_2": 21, "R30_1": 500, "R30_2": 50})
+    assert res.R["R29_2"] == 21    # restituiri cumparatori straini declarate
+    assert res.R["R30_2"] == 50    # regularizari taxa dedusa declarate
+    assert res.R["R32_2"] == 281   # total dedusa = 210 (R28) + 21 (R29) + 50 (R30)
+
+
+def test_regularizari_rezultat_r36_intra_in_cumulat():
+    # R36 (diferente de TVA de plata din inspectie) intra in R37 (TVA de plata cumulat).
+    facturi = [{"directie": "emisa", "total": 6050, "tva": 1050},
+               {"directie": "primita", "total": 1210, "tva": 210}]
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi, {"R36_2": 100})
+    assert res.R["R36_2"] == 100
+    assert res.R["R37_2"] == res.R["R34_2"] + 100   # cumulat = plata perioada + diferenta inspectie
+
+
+def test_ajustari_r30_fara_fix_ar_fi_dropped():
+    # GARD anti-regresie: daca R30_ dispare din allow-list, regularizarea devine None (silentios ignorata).
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), [], {"R30_2": 99, "R35_2": 30})
+    assert res.R.get("R30_2") == 99, "regularizari (R30) ignorate - R30_ lipseste din allow-list"
+    assert res.R.get("R35_2") == 30, "sold reportat (R35) ignorat - R35_ lipseste din allow-list"
+
+
+@pytest.mark.skipif(not _D300_DUK, reason="DUK d300 indisponibil")
+def test_ajustari_d300_proba_duk_valid():
+    facturi = [{"directie": "emisa", "total": 6050, "tva": 1050},
+               {"directie": "primita", "total": 1210, "tva": 210}]
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi, {"R30_1": 500, "R30_2": 50, "R36_2": 100})
+    rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins ajustari D300: %s" % rez.get("erori")

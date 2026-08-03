@@ -208,6 +208,8 @@ def calcul_d300(prof, perioada, facturi, manual=None):
 
     for k, v in manual.items():
         if k.startswith(("R18_", "R19_", "R20_", "R21_", "R23_", "R25_", "R26_",
+                         "R29_", "R30_",  # ajustari/regularizari deductibila: R29 restituiri cumparatori straini, R30 regularizari taxa dedusa (feed R32)
+                         "R35_", "R36_",  # regularizari rezultat: R35 sold reportat neachitat, R36 diferente inspectie fiscala (feed R37)
                          "R72_", "R73_", "R75_")):
             setr(k, v)
 

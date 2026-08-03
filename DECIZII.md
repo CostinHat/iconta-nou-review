@@ -5488,3 +5488,20 @@ d300-specifica test_d300_rotunjeste_aritmetic_nu_bancar (_int(2.5)=3, _int(0.5)=
 schimbare de comportament - inchidere gap de acoperire.
 
 INCHIDERE CLUSTER: "rotunjire aritmetica | d300" √ 03.08. Secventa 50 -> 49.
+
+
+## 03.08.2026 — Cluster ajustari | d300: REPARAT (ajustari/regularizari aruncate din allow-list)
+
+Lant #2. Sesiunea A. Temei: CF art.304 (regularizarea taxei) + art.305 (ajustarea taxei deductibile pt bunuri de
+capital). Structura D300: R29=Rd.31 "TVA efectiv restituita cumparatorilor straini", R30=Rd.32 "Regularizari taxa
+dedusa", R35=sold reportat neachitat, R36=Rd.38 "Diferente de TVA de plata" (inspectie).
+
+REPARATIE (bug real, aceeasi clasa ca R12 taxare inversa): allow-list-ul manual pt randurile deductibile NU
+includea R29_/R30_ (feed R32 total dedusa) si nici R35_/R36_ (feed R37 TVA cumulat) -> orice ajustare/regularizare
+introdusa de contabil era SILENTIOS aruncata (dovada: calcul_d300 cu manual R30_2=200 -> R30_2 None). Rezultat:
+regularizarile de taxa dedusa, restituirile catre cumparatori straini, soldul reportat si diferentele de inspectie
+NU se puteau declara in D300. FIX: adaugate R29_/R30_/R35_/R36_ in allow-list. Randurile COMPUTATE (R32/R33/R34/R37
+= totaluri/rezultat) raman corect neschimbate de manual. PROBA: R30 regularizare 50 -> R32 dedusa 210->260/281;
+R36 inspectie 100 -> R37 cumulat = R34 + 100; DUK valid (test_ajustari_d300_proba_duk_valid) + gard anti-drop.
+
+INCHIDERE CLUSTER: "ajustari | d300" √ 03.08. Fara datorie. Secventa 49 -> 48.
