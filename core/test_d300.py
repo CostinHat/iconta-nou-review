@@ -304,3 +304,35 @@ def test_taxare_inversa_d300_proba_duk_valid():
     res = calcul_d300(_prof(), Perioada(2026, luna=6), [], _rc_manual())
     rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
     assert rez["stare"] == "valid", "DUK a respins reverse charge D300: %s" % rez.get("erori")
+
+
+# ============================================================
+#  Pro-rata deducere | d300 (CF art.300: persoana cu regim mixt - deducere pro-rata cand nu poate
+#  tine evidente separate). D300: R31_2 = "Ajustari conform pro-rata" (Rd.33 structura v12) =
+#  -(taxa dedusa x fractia nedeductibila); total dedus R32 = R28 x pro_rata/100. NU scalare directa.
+# ============================================================
+def test_pro_rata_ajustare_deductibila_art300():
+    facturi = [{"directie": "primita", "total": 1210, "tva": 210}]   # achizitie 21%
+    res = calcul_d300(_prof(pro_rata=80), Perioada(2026, luna=6), facturi)
+    assert res.R["R22_2"] == 210      # deductibila bruta (rd.24)
+    assert res.R["R28_2"] == 210      # subtotal dedusa inainte de ajustare (rd.30)
+    assert res.R["R31_2"] == -42      # ajustare pro-rata (rd.33): -210 x (100-80)/100
+    assert res.R["R32_2"] == 168      # total dedusa: 210 x 80%
+
+
+def test_pro_rata_100_fara_ajustare():
+    # GARD: pro_rata=100 (uzual) -> nicio ajustare (R31 absent), deducere integrala.
+    facturi = [{"directie": "primita", "total": 1210, "tva": 210}]
+    res = calcul_d300(_prof(100), Perioada(2026, luna=6), facturi)
+    assert "R31_2" not in res.R
+    assert res.R["R32_2"] == 210
+
+
+@pytest.mark.skipif(not _D300_DUK, reason="DUK d300 indisponibil")
+def test_pro_rata_d300_proba_duk_valid():
+    # Proba pana la declaratie: decont cu pro-rata 80% (achizitie + livrare) trece DUKIntegrator.
+    facturi = [{"directie": "primita", "total": 1210, "tva": 210},
+               {"directie": "emisa", "total": 2420, "tva": 420}]
+    res = calcul_d300(_prof(pro_rata=80), Perioada(2026, luna=6), facturi)
+    rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins pro-rata D300: %s" % rez.get("erori")

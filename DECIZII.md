@@ -5459,3 +5459,21 @@ test_datorie_d300_reverse_charge_manual_reconfirmat_mo ELIMINAT. SOLD DATORII 22
 
 INCHIDERE CLUSTER: "taxare inversa | d300" √ 03.08 (rd.12 reparat + reverse charge reconfirmat la sursa + DUK).
 Secventa 52 -> 51.
+
+
+## 03.08.2026 — Cluster pro-rata deducere | d300: VERIFICAT (corect) + gap de acoperire inchis
+
+Lant #2. Sesiunea A. Temei la sursa: CF art.300 (Deducerea taxei pentru persoana impozabila cu REGIM MIXT -
+deducere pe baza de pro rata cand nu poate tine evidente separate). Structura D300 v12: field 19 `pro_rata` in
+[0,100]; R31_2 = Rd.33 = "Ajustari conform pro-rata".
+
+VERIFICAT CORECT: d300 aplica pro-rata ca AJUSTARE (R31_2), nu ca scalare directa a deductibilei (modulul vechi o
+scala direct - gresit). R28_2 (subtotal dedusa) ramane integral; R31_2 = -(R28_2 x (100-pro_rata)/100) scade
+fractia nedeductibila; R32_2 (total dedusa) = R28+R29+R30+R31 = R28 x pro_rata/100. La pro_rata=100 (uzual)
+ajustarea e 0. Proba: pro_rata=80%, achizitie 210 TVA -> R28=210, R31=-42, R32=168 (=210x80%); DUK valid.
+
+GAP DE ACOPERIRE inchis (fara schimbare de comportament): nu exista test cu pro_rata<100 - ajustarea R31 era
+neprobata. Adaugat test_pro_rata_ajustare_deductibila_art300 (valori + temei) + test_pro_rata_100_fara_ajustare
+(gard) + test_pro_rata_d300_proba_duk_valid.
+
+INCHIDERE CLUSTER: "pro-rata deducere | d300" √ 03.08. Fara datorie, fara schimbare de valoare. Secventa 51 -> 50.
