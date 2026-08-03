@@ -325,7 +325,7 @@ In 27-30.07.2026 s-au pierdut ore repetat din trei cauze de procedura:
 - propune ce trebuie schimbat, cu temeiul atasat
 - dupa validare: implementeaza, scrie testele cu temeiul citat PE LINIE langa assert, verifica
   prin mutatie, ruleaza proba functionala
-- comite si impinge pe server
+- comite LOCAL pe server (push pe main = decizia lui Costin, decizia c; push de siguranta pe `backup/lant-<data>` la finalul rularii, §2.3 pct.8 - NU push-per-pas)
 - raporteaza
 
 Cine executa trebuie sa stie DE CE, altfel aplica orb.
@@ -355,7 +355,7 @@ scoaterea unei coloane cere reparate cinci locuri care o citesc, pasul cuprinde 
 1. Code cauta temeiul in legislatie, citeaza textul, propune schimbarea
 2. Arhitectul valideaza temeiul - sau arata unde nu se tine
 3. Code implementeaza: cod, teste cu temeiul pe linie, mutatie, proba functionala
-4. Code comite si impinge pe server. UN PAS NESALVAT PE SERVER NU S-A INTAMPLAT
+4. Code comite LOCAL pe server. UN PAS NECOMIS PE SERVER NU S-A INTAMPLAT. Push pe main = decizia lui Costin (decizia c); push de siguranta pe `backup/lant-<data>` la FINALUL rularii, nu per pas (§2.3 pct.8). Sursa unica - fara norma paralela de push-per-pas.
 5. Code raporteaza. Raportul contine OBLIGATORIU cinci elemente:
 
    a) PROBA FUNCTIONALA, CU OUTPUT BRUT
@@ -504,6 +504,13 @@ cu clusterul urmator, FARA sa astepte push.
    (nu pe main) se face dupa poarta verde si tree curat si NU cere aprobare - absenta lui e o defectiune. Daca
    munca exista intr-un singur loc, executorul o spune EXPLICIT in raport, la PRIMA linie, nu la final. Raportul se
    incheie cu `BACKUP: <ramura> — <n> commituri`.
+
+9. **WIP LA OPRIRE PE ROSU** (inchide gapul pct.4 <-> pct.8). La oprirea obligatorie pe tree murdar sau poarta
+   rosie (pct.4), INAINTE de a scrie raportul, executorul pune munca la adapost FARA sa o repare: `git stash create`
+   + push pe `refs/heads/wip/<data>-<ora>`, sau commit pe o ramura `wip/` separata. Tree-ul de lucru RAMANE in
+   starea in care e - nu se curata, nu se repara, nu se comite pe main/backup. Scop: starea defecta e cea mai
+   valoroasa pentru diagnostic SI cea mai expusa la pierdere (pct.8 cere commit+tree curat, deci n-ar acoperi-o).
+   Raportul declara `WIP SALVAT: <ramura>` sau motivul exact pentru care nu s-a putut.
 
 ## 2.1 De unde vin pasii
 
