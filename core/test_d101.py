@@ -86,7 +86,10 @@ def test_cod_obligatie_si_denumire():
 
 
 def test_scadenta_LL_plus_3_pentru_an_peste_2025():
-    """R17: an Data_S>2025 -> scadenta LL+3 (250327 pt 2026); an in [2022,2025] -> LL+6 (250626)."""
+    """Scadenta D101 (regula datata, temeiuri confirmate 03.08.2026): an Data_S 2022-2025 -> 25 iunie/LL+6
+    (OUG 153/2020 art.I alin.(13) lit.a), derogare art.41-42 CF, aplicabil 2021-2025 - LEGAL CORECT si DUK-valid);
+    an Data_S 2026+ -> 25 martie/LL+3 (art.42(1) CF baza dupa incheierea schemei = ce cere jar-ul DUK). OUG
+    8/2026 muta 2026 la iunie cand validatorul se actualizeaza (proba DUK pe an=2026 va semnala). Vezi DECIZII."""
     assert _scadenta(2026) == (3, 2027) and _scadenta(2025) == (6, 2026)
     assert 'scadenta="250327"' in build_xml(calcul_d101(_prof(), 2026, {"P1": 1000, "P2": 500}))
     assert 'scadenta="250626"' in build_xml(calcul_d101(_prof(), 2025, {"P1": 1000, "P2": 500}))

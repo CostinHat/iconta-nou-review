@@ -120,13 +120,20 @@ _P_INTRARI = {
 _P_MAIN = ["P%d" % n for n in range(1, 54)]
 
 
-# CONFLICT lege-vs-validator-oficial (DATORIE 03.08.2026, gard test_datorie_d101_scadenta_lege_vs_validator):
-# valorile de mai jos urmeaza validatorul OFICIAL DUKIntegrator (R17: 2022-2025->LL+6 iunie; R17.1: 2026+->LL+3
-# martie), ca declaratia sa fie ACCEPTATA de ANAF. CF art.42(1) citeste INVERS: an fiscal <=2025 -> 25 MARTIE
-# (Legea 227/2015 originar); 2026+ -> 25 IUNIE (OUG 8/2026 art.6 pct.12, MO 147/25.02.2026, de la declaratia pt
-# fiscal 2026 - art.45 alin.21^4). Care autoritate castiga la output = decizie de produs (Costin). Vezi DECIZII.md.
+# Scadenta platii D101 = regula de STRUCTURA versionata pe an (tiparul cota() pe cod, PAS 2). Valorile urmeaza
+# validatorul OFICIAL DUKIntegrator (R17) SI sunt legal corecte pe 2022-2025 - temeiul real (verificat 03.08.2026):
+#   2022-2025 -> 25 iunie (LL+6): OUG 153/2020 art.I alin.(13) lit.a) "prin derogare de la art.41 si 42 din Codul
+#     fiscal, termenul pentru depunerea declaratiei anuale privind impozitul pe profit... este pana la data de 25
+#     iunie inclusiv a anului urmator", aplicabil pentru anii fiscali 2021-2025 (art.VI). MO 817/04.09.2020.
+#   2026+ -> 25 martie (LL+3): art.42(1) CF baza (Legea 227/2015), dupa incheierea schemei OUG 153/2020. E si ce
+#     cere jar-ul DUK instalat azi. NOTA (decizie Costin 03.08.2026): OUG 8/2026 art.6 pct.12 (MO 147/25 feb 2026)
+#     muta termenul de baza la 25 iunie PERMANENT de la anul fiscal 2026; jar-ul instalat inca cere martie, iar
+#     D101 pt fiscal 2026 se depune in 2027 - ANAF actualizeaza validatorul pana atunci (nu e conflict de fond).
+#     Cand jar-ul trece la iunie, probele DUK pe an=2026 (test_imca_d101_duk_valid) vor pica -> semnal sa treci
+#     _scadenta_2026 la LL+6. Vezi DECIZII.md 03.08.2026.
 def _scadenta_2022(an):
-    """DUK regula R17: an Data_S in [2022,2025] -> LL+6 (scadenta luna 6 din an+1)."""
+    """an Data_S 2021-2025 -> 25 IUNIE (LL+6): OUG 153/2020 art.I alin.(13) lit.a), derogare de la art.41-42 CF,
+    aplicabil 2021-2025 (art.VI). Legal corect SI DUK-valid. Confirmat 03.08.2026 la sursa (MO 817/04.09.2020)."""
     ll, scad_an = 12 + 6, an + 1
     if ll > 12:
         ll -= 12
@@ -134,19 +141,18 @@ def _scadenta_2022(an):
 
 
 def _scadenta_2026(an):
-    """DUK regula R17: an Data_S > 2025 (raportare 2026+) -> LL+3 (scadenta luna 3 din an+1)."""
+    """an Data_S >= 2026 -> 25 MARTIE (LL+3): art.42(1) CF baza (Legea 227/2015), schema OUG 153/2020 incheiata =
+    ce cere validatorul DUK instalat. OUG 8/2026 art.6 pct.12 muta baza la 25 iunie de la fiscal 2026 cand jar-ul
+    se actualizeaza (D101 fiscal 2026 depusa in 2027) - vezi nota de deasupra + DECIZII.md 03.08.2026."""
     ll, scad_an = 12 + 3, an + 1
     if ll > 12:
         ll -= 12
     return ll, scad_an
 
 
-# Scadenta e o regula de STRUCTURA versionata pe an (tiparul cota() pe cod, PAS 2): LL+6 pt 2022-2025,
-# LL+3 de la 2026. Peticul "if 2022<=an<=2025" convertit in variante datate; punctul de schimbare (2026) e
-# frontiera de varianta. Pre-2022 nu se genereaza (aplicatia face 2026+) -> alege_varianta ridica, corect.
 _VARIANTE_SCADENTA = [
-    ("2022-01-01", _scadenta_2022, _Tm("OPANAF", 206, 2025, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
-    ("2026-01-01", _scadenta_2026, _Tm("OPANAF", 206, 2025, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
+    ("2022-01-01", _scadenta_2022, _Tm("OUG", 153, 2020, art="I", alin="13", lit="a", nivel_sursa="MO", de_cine="Costin", verificat_la="2026-08-03")),
+    ("2026-01-01", _scadenta_2026, _Tm("Legea", 227, 2015, art="42", alin="1", nivel_sursa="MO", de_cine="Costin", verificat_la="2026-08-03")),
 ]
 
 

@@ -6131,3 +6131,31 @@ DECIZIA CERUTA (Costin):
   (a) La scadenta D101, cand legea si validatorul difera, tool-ul urmeaza LEGEA (accepta respingerea DUK pana ANAF
       updateaza jar-ul) sau VALIDATORUL (output acceptat azi, revizuit cand jar-ul se updateaza)?
   (b) Verificarea autoritara a termenului 2022-2025 (martie vs iunie), avand in vedere riscul de intarziere.
+
+
+## 03.08.2026 — REZOLVARE cluster "R17 Data_S / termen" (d101): decizie Costin + temei 2022-2025 gasit (OUG 153/2020).
+
+Decizie Costin (a): tool-ul urmeaza VALIDATORUL DUKIntegrator pe AMBELE ramuri - functia lui e sa produca declaratii
+ACCEPTATE de ANAF. Neconformitatea aparenta fata de lege ramanea documentata; s-a dovedit ca nici nu exista (vezi b).
+=> d101 scadenta: politica lege-vs-validator decisa.
+
+(b) Termenul 2022-2025 verificat AUTORITAR la sursa: NU era conflict lege-vs-validator, ci un act ratat de prima
+cercetare (exact ipoteza lui Costin). Mecanismul care a produs 25 iunie pentru anii fiscali 2021-2025 = OUG 153/2020
+art.I alin.(13) lit.a): "prin derogare de la prevederile art.41 si 42 din Codul fiscal, termenul pentru depunerea
+declaratiei anuale privind impozitul pe profit si plata impozitului... este pana la data de 25 iunie inclusiv a
+anului urmator", aplicabil pentru perioada 2021-2025 (art.VI). Publicat in MO nr.817 din 04.09.2020. Deci valoarea
+validatorului (iunie pt 2022-2025) e si LEGAL CORECTA - nu exista risc de intarziere. Datoria xfail INCHISA (stearsa
+din test_datorie); temeiul in cod corectat de la "OPANAF 206/2025 REDARE" (vag) la OUG 153/2020 art.I alin.(13) lit.a
+(2022-2025) si Legea 227/2015 art.42(1) (2026 baza). Sursa: anaf_surse/d101_scadenta_conflict_lege_validator.md.
+
+Ramura 2026 (NU se reinvestigheaza - cerut de Costin): art.42(1) baza = 25 martie dupa incheierea schemei OUG
+153/2020 = exact ce cere jar-ul DUK azi. OUG 8/2026 art.6 pct.12 (MO nr.147 din 25 februarie 2026) muta termenul de
+baza la 25 iunie PERMANENT de la anul fiscal 2026; DAR declaratia pt fiscal 2026 se depune in 2027, iar ANAF
+actualizeaza DUKIntegrator pana atunci - deci NU e conflict de fond, e doar un jar inca neactualizat. Cand jar-ul
+trece la iunie pe 2026, probele DUK pe an=2026 (test_imca_d101_duk_valid, test_d101_reconstructie_proba_duk_valid)
+pica automat -> semnal clar sa treci _scadenta_2026 de la LL+3 la LL+6. Nu necesita actiune acum.
+
+Tabel final termen depunere D101 per an fiscal: 2021-2025 -> 25 iunie (OUG 153/2020 art.I alin.13 lit.a); 2026 ->
+25 martie (baza art.42 azi), 25 iunie cand validatorul adopta OUG 8/2026. Cod: _scadenta_2022 (LL+6 iunie) +
+_scadenta_2026 (LL+3 martie), gard de comportament test_scadenta_LL_plus_3_pentru_an_peste_2025 (valori DUK-valide
+SI legal corecte pe 2022-2025). Cluster INCHIS.

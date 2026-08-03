@@ -305,8 +305,3 @@ def test_datorie_d300_exigibilitate_tva_la_incasare():
     assert "d300 aplica exigibilitatea tva la incasare pentru firme pe regim" in dz.lower()
 
 
-
-@pytest.mark.xfail(strict=True, reason="DATORIE 03.08.2026 (cluster R17 Data_S/termen | d101): CONFLICT lege-vs-validator-oficial pe scadenta platii D101. CF art.42(1): an fiscal <=2025 -> 25 MARTIE (Legea 227/2015 originar), 2026+ -> 25 IUNIE (OUG 8/2026 art.6 pct.12, MO nr.147 din 25 februarie 2026, aplicabil de la declaratia aferenta anului fiscal 2026 - art.45 alin.21^4). Validatorul OFICIAL DUKIntegrator INSTALAT enforceaza EXACT INVERS (R17: an Data_S 2022-2025 -> LL+6=iunie; R17.1: an Data_S 2026+ -> LL+3=martie) si RESPINGE valorile legii (testat pe 2023/2024/2025/2026). Codul urmeaza validatorul, ca declaratiile sa fie acceptate de ANAF. RISC ASIMETRIC: daca legea (martie <=2025) e corecta, valoarea validatorului (iunie) ar pune contribuabilul in intarziere ~3 luni; pentru 2026 e invers (validatorul da martie=mai devreme decat iunie legal, deci depunere anticipata=fara amenda). DECIZIE DE PRODUS (Costin): (a) tool-ul urmeaza legea sau validatorul cand difera pe scadenta? (b) verificarea autoritara a termenului 2022-2025 (cercetare interna: 25 martie; jar ANAF: 25 iunie - contradictie). Se inchide cand decizia e consemnata in DECIZII.md.")
-def test_datorie_d101_scadenta_lege_vs_validator():
-    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
-    assert "d101 scadenta: politica lege-vs-validator decisa" in dz.lower()
