@@ -6172,3 +6172,16 @@ trecea de cod SI de gardul vechi (prag 75) dar depasea limita ANAF de 50. Repara
 ...)) (trunchiate la 74); functie_declar -> _t(..., 50). Restul (nume_declar/prenume_declar C75, den) erau deja
 corecte. Gard nou test_limita_75_asigurat_si_functie_declar_50 (salariat nume 90->74, functie 60->50). Nota: den
 ramane trunchiat la 74 desi structura permite 200 - alegere conservatoare (validatorul respinge empiric la 75), nu bug.
+
+
+## 03.08.2026 — Cluster "nomenclator cod_oblig" (d112) — VERIFICAT CONFORM + gard pe cod_bugetar.
+
+Maparea cod_oblig <-> cod_bugetar din D112 e integral conforma cu nomenclatorul oficial ANAF (structura D112,
+Nomenclator 3). Toate 6 codurile emise de add_oblig coincid: 602 (impozit salarii, 5503XXXXXX), 412 (CAS asigurat,
+5503XXXXXX), 432 (CASS asigurat, 5503XXXXXX), 480 (CAM, 20470300XX), 458 (CAS suportat angajator art.146(5^9),
+5503XXXXXX), 459 (CASS suportat angajator art.168(6^1), 5503XXXXXX). Codurile bugetare toate corecte, inclusiv
+distinctul 20470300XX al CAM (480), diferit de 5503XXXXXX al restului. FARA neconformitate. Testul vechi
+(test_codurile_de_obligatie_corecte) verifica doar prezenta codOblig 602/412/432/480 ca substring - lipsea gardul pe
+cod_bugetar (o inversare a lui ar fi trecut nedetectata). Gard nou test_cod_oblig_pereche_cu_cod_bugetar_corect
+paza perechea. (458/459 apar doar la suprataxare part-time - netestate dedicat, dar codurile+bugetarul lor sunt
+corecte in cod.)

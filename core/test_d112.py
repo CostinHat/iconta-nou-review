@@ -220,3 +220,19 @@ def test_limita_75_asigurat_si_functie_declar_50():
         m = re.search(r'%s="([^"]*)"' % attr, xml)
         assert m, "%s lipseste din XML" % attr
         assert len(m.group(1)) <= 74, "%s = %d car (structura C75, marja 74)" % (attr, len(m.group(1)))
+
+
+
+def test_cod_oblig_pereche_cu_cod_bugetar_corect():
+    """GARD (verificare nomenclator 03.08.2026, cluster nomenclator cod_oblig | d112): fiecare cod_oblig
+    D112 poarta codul bugetar CORECT din nomenclatorul oficial ANAF (structura D112, Nomenclator 3 -
+    Obligatii de plata la BS si BASFS). Esential: 480 (CAM) are cod bugetar 20470300XX, DIFERIT de
+    5503XXXXXX al celorlalte (602 impozit salarii, 412 CAS, 432 CASS). Testul vechi verifica doar
+    codOblig ca substring -> o inversare a codului bugetar (ex. 480 cu 5503XXXXXX) trecea nedetectata."""
+    import re
+    xml, _av = _d112_genereaza(_prof(), _sal(), 2026, 6)
+    perechi = dict(re.findall(r'<angajatorA A_codOblig="(\d+)" A_codBugetar="([^"]+)"', xml))
+    assert perechi.get("602") == "5503XXXXXX", "602 (impozit) cod bugetar gresit: %r" % perechi.get("602")
+    assert perechi.get("412") == "5503XXXXXX", "412 (CAS) cod bugetar gresit: %r" % perechi.get("412")
+    assert perechi.get("432") == "5503XXXXXX", "432 (CASS) cod bugetar gresit: %r" % perechi.get("432")
+    assert perechi.get("480") == "20470300XX", "480 (CAM) trebuie 20470300XX, nu %r" % perechi.get("480")
