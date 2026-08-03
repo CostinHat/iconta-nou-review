@@ -46,3 +46,32 @@ def test_adauga_respinge_cota_11_pe_perioada_veche():
                    {"tip":1,"tip_valuta":"EUR","val_valuta":"100","curs":"4.97",
                     "cota":11,"nr_doc":"F1","data_doc":"10.06.2025"})
     assert "eroare" in r and "cota" in r["eroare"].lower(), r
+
+
+# --- DECIZIE PRODUS (Costin 03.08): cote reduse istorice 9%/5% ca doua chei cu temei propriu ---
+from datetime import date as _date
+from decimal import Decimal as _D
+from core.common import cota as _cota, PerioadaIndisponibila as _PI
+import pytest as _pytest
+
+
+def test_cote_perioada_veche_ofera_9_si_5_coexistente():
+    # Pre-01.08.2025 existau DOUA cote reduse coexistente: 9% (CF art.291 alin.2) si 5% (alin.3).
+    vals = [c["val"] for c in api.cote_perioada(2020, 3)]
+    assert 19 in vals and 9 in vals and 5 in vals and 0 in vals, vals
+    assert 11 not in vals, vals
+
+
+def test_cota_reduse_istorice_9_si_5_din_registru_comasate_in_11():
+    # 9%/5% valabile in era 19%; comasate in 11% de la 01.08.2025 (Legea 141/2025).
+    assert _cota("tva_redusa_9", _date(2020, 3, 1))[0] == _D("0.09")
+    assert _cota("tva_redusa_5", _date(2020, 3, 1))[0] == _D("0.05")
+    assert _cota("tva_redusa_9", _date(2026, 1, 1))[0] == _D("0.11")   # comasat
+    assert _cota("tva_redusa_5", _date(2026, 1, 1))[0] == _D("0.11")   # comasat
+
+
+def test_cota_reduse_istorice_indisponibile_inainte_de_ancora_2017():
+    # Inainte de ancora (2017-01-01, era standard 19%) nu avem valoare verificata -> refuz, nu presupunere.
+    for cheie in ("tva_redusa_9", "tva_redusa_5"):
+        with _pytest.raises(_PI):
+            _cota(cheie, _date(2015, 6, 1))

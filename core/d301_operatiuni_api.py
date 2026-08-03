@@ -51,12 +51,19 @@ def cote_perioada(an, luna):
     la = date(int(an), int(luna), 1)
     std, _temei = _c.cota("tva_standard", la)
     optiuni = [{"val": int(std * 100), "eticheta": "%d%% (standard)" % int(std * 100)}]
-    try:
-        red, _tr = _c.cota("tva_redusa", la)
+    # Cotele reduse VALABILE la data, din registru (period-aware). Post 01.08.2025: una singura
+    # comasata (tva_redusa=11%). Pre: 9% (art.291 alin.2) SI 5% (art.291 alin.3) coexistente. Se
+    # interogheaza toate cheile reduse si se deduplica pe valoare (dupa comasare toate dau 11%).
+    vazute = set()
+    for cheie in ("tva_redusa", "tva_redusa_9", "tva_redusa_5"):
+        try:
+            red, _tr = _c.cota(cheie, la)
+        except (_c.PerioadaIndisponibila, ValueError):
+            continue  # cota neconfigurata / in afara valabilitatii pt perioada -> nu se ofera fals
         red_p = int(red * 100)
-        optiuni.append({"val": red_p, "eticheta": "%d%% (redusă)" % red_p})
-    except _c.PerioadaIndisponibila:
-        pass  # redusa neconfigurata pentru perioada -> nu se ofera un 11% fals
+        if red_p not in vazute:
+            vazute.add(red_p)
+            optiuni.append({"val": red_p, "eticheta": "%d%% (redusă)" % red_p})
     optiuni.append({"val": 0, "eticheta": "0% / scutit"})
     return optiuni
 

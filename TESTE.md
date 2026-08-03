@@ -28,12 +28,12 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 > **Stare:** site în mentenanță (46507b5) — allowlist pe IP-ul lui Costin; revenire cu `mentenanta.sh off`.
 
-- fir: d390 cluster "tipuri operatiune IC (L/A/P/S)" — verificare nomenclator simboluri vs OPANAF 705/2020 + gard-pin anti-drift (lant, urmator_cluster 03.08)
-- ultim: cluster "cota TVA" inchis (e253371): cota redusa period-aware.
-- urmator: cluster inchis prin verificare (gard-pin adaugat). Ruleaza urmator_cluster(). GATA.
+- fir: DECIZIE PRODUS aprobata de Costin — cote reduse TVA istorice 9%/5% ca DOUA chei separate cu temei propriu (urmare cluster "cota TVA")
+- ultim: d390 tipuri operatiune verificat + gard-pin (4faf7ae); PREDARE 3267a02.
+- urmator: decizie produs rezolvata (P1 comis). Ruleaza urmator_cluster() pt lant. GATA.
 - pasi:
-  M1. [verificare + gard-pin] TIPURI=(L,T,A,P,S,R) d390.py:50 = EXACT nomenclatorul OPANAF 705/2020 (anaf_surse/d390_struct_anaf.txt): L livrari IC bunuri, T triunghiulare, A achizitii IC bunuri, P prestari IC servicii, S achizitii IC servicii, R livrari regim special agricultori. Regula codO L/T/P/R obligatoriu (d390.py:206), formula totalPlata_A (:177), gard anti-drop manual (:159 raise) - toate conforme/prezente. FARA fix. Gard-pin nou: test TIPURI == lista oficiala (drift la nomenclator -> rosu, cere reverificare la sursa). Mutant probat in-process. Commit.
-  STARE = GATA (M1 verificat + gard-pin comis)
+  P1. [cote reduse istorice] COTE (common.py): tva_redusa_9 = [(2025-08-01, 0.11 comasare Legea 141/2025 pct.42), (2017-01-01, 0.09 CF art.291 alin.2)]; tva_redusa_5 = [(2025-08-01, 0.11 comasare), (2017-01-01, 0.05 CF art.291 alin.3)]. TEMEI operatiuni verificat (alin.2=9%, alin.3=5%); SFARSIT verificat (31.07.2025 comasat). START 2017-01-01 = ANCORA (era 19%), NEDOCUMENTAT in sursa consolidata -> caveat "de reconfirmat la MO" (§3 INTERPRETARE CU TEMEI). Intrarea terminala 0.11 = cota() nu mai intoarce 9/5 fals dupa comasare. cote_perioada (d301_operatiuni_api.py): itereaza tva_redusa/_9/_5, dedup pe valoare. Etichete in expirare_cote.py (gard acoperire). Test rosu: cote_perioada(2020,3) contine 9 si 5. 2026 neschimbat [21,11,0]. Commit.
+  STARE = GATA (P1 comis - decizie produs implementata)
 
 - fir: SWEEP DUK toate declaratiile (redirectionare Costin 31.07: inainte de reconstructii, mapez cate sunt sparte pe validatorul CURENT)
 - ultim: sweep rulat pe schema efemera + profil complet + date minime adecvate (salariat/factura UE/dividende). Rezultat initial: 7 VALID + 2 sparte (d101, d406). d406 REZOLVAT 01.08 (bug de CALE, o linie): plan_oficial cauta d406_nomenclatoare_anaf.properties in radacina, dar fisierul e in anaf_surse/ -> set gol -> filtrarea pe norma (adaugata 15.07 tocmai pt 731 ONG) nu rula -> conturi ONG scapau in SAF-T comercial -> DUK respingea. Fix cale -> plan_oficial(A)=635, 731 exclus, d406 DUK VALID. RAMANE 1/9 SPART: d101 (reconstructie). Claim 16.07 infirmat.

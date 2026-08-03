@@ -5638,3 +5638,23 @@ Observatii tangentiale (NEreparate, in afara acestui cluster):
   uniformizeaza cu calea manuala (raise pe tip invalid).
 - Nomenclator tari (d390.py:45): include XI (Irlanda de Nord, VIES post-Brexit) care NU apare in Nomenclator Tari
   2020 (listeaza doar GB). Tine de clusterul "nomenclator tari (HR->CR) | d390" (inca deschis in agenda), nu de acesta.
+
+
+## 03.08.2026 — DECIZIE PRODUS REZOLVATA: cote reduse TVA istorice 9%/5% (urmare cluster "cota TVA").
+
+Costin a decis: DOUA CHEI SEPARATE tva_redusa_9 si tva_redusa_5, fiecare cu temeiul ei la sursa (articolele care
+definesc ce operatiuni intra in fiecare cota). IMPLEMENTAT in COTE (common.py):
+- tva_redusa_9 = 0.09, CF art.291 alin.(2) lit.a-n (medicamente, alimente, apa/canalizare, irigatii, ingrasaminte/
+  pesticide, carti/manuale/ziare, acces cultural, lemn de foc, energie termica, locuinte sociale, cazare, restaurant/catering).
+- tva_redusa_5 = 0.05, CF art.291 alin.(3) (locuinte sociale sub 600.000 lei lit.c pct.3, carti, acces evenimente culturale/sportive).
+- Ambele comasate in 11% de la 01.08.2025 (intrare terminala 0.11: Legea 141/2025 pct.42 pt 9%, pct.43 abroga 5%).
+  Intrarea terminala impiedica cota() sa intoarca 9/5 ca "in vigoare azi" (altfel ultima intrare = data_out None).
+cote_perioada (d301) interogheaza tva_redusa/_9/_5 si DEDUP pe valoare: 2026 -> [21,11,0] (neschimbat);
+pre-08.2025 -> [19,9,5,0]. Etichete adaugate in expirare_cote.py (gard acoperire ETICHETE==chei COTE).
+
+LIMITA DE TEMEI (§3, onest): datele de INCEPUT ale cotelor 9%/5% NU sunt in codul fiscal consolidat (/tmp/cf.txt;
+nota istorica de introducere nu e pastrata, iar fostul alin.(3) apare doar ca "Abrogat"). Ancorate la 2017-01-01
+(inceputul erei standard 19%), nivel_sursa REDARE, cu caveat "de reconfirmat la MO" in temei (INTERPRETARE CU
+TEMEI). Pt perioade < 2017 cota() REFUZA (PerioadaIndisponibila, fail-loud) - nu se presupune. Textul verbatim al
+fostului alin.(3) la 5% de reconfirmat cand apare o sursa istorica. Ce e SIGUR: articolele (alin.2=9%, alin.3=5%)
+si sfarsitul (31.07.2025, comasare Legea 141/2025).

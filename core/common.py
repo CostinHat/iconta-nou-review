@@ -318,6 +318,21 @@ COTE = {
     "tva_redusa": [
         (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
+    # Cotele reduse ISTORICE 9% si 5%, coexistente pana la 31.07.2025, comasate in 11% de Legea 141/2025
+    # (decizia lui Costin 03.08: doua chei separate, fiecare cu temeiul ei). Intrarea de la 01.08.2025 (0.11)
+    # e COMASAREA: fara ea, cota() ar intoarce 9/5 ca "in vigoare azi" (data_out None pe ultima intrare) - fals.
+    # TEMEI operatiuni: verificat (art.291 alin.2 = 9%, alin.3 = 5%). SFARSIT: verificat (Legea 141/2025 pct.42/43,
+    # efect 01.08.2025). DATA DE INCEPUT: NEDOCUMENTATA in codul fiscal consolidat (nota istorica de introducere nu
+    # e pastrata); ancorata la 2017-01-01 = inceputul erei standard 19% (in toata acea era reducerile erau 9%/5%).
+    # INTERPRETARE CU TEMEI (§3): de reconfirmat la MO pentru perioade < 2017; pana atunci cota() refuza (fail-loud).
+    "tva_redusa_9": [
+        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-08-03", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 141/2025 pct.42 comaseaza cota redusa de 9% (CF art.291 alin.2) in 11% de la 01.08.2025")),
+        (date(2017, 1, 1), Decimal("0.09"), Temei("Legea", 227, 2015, art="291", alin="2", data_in="2017-01-01", verificat_la="2026-08-03", de_cine="Code/Costin", nivel_sursa="REDARE", text_citat="cota redusa de 9% pt operatiunile CF art.291 alin.(2) lit.a-n (medicamente, alimente, apa/canalizare, irigatii, ingrasaminte/pesticide, carti/manuale/ziare, acces cultural, lemn de foc, energie termica, locuinte sociale, cazare, restaurant/catering)", lant_acte="data de INCEPUT a cotei de 9% NU e in codul fiscal consolidat; ancora=era standard 19% (2017-01-01); de reconfirmat la MO pt perioade anterioare")),
+    ],
+    "tva_redusa_5": [
+        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="3", data_in="2025-08-01", verificat_la="2026-08-03", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 141/2025 pct.43 abroga cota redusa de 5% (CF art.291 alin.3); operatiunile trec la 11% de la 01.08.2025")),
+        (date(2017, 1, 1), Decimal("0.05"), Temei("Legea", 227, 2015, art="291", alin="3", data_in="2017-01-01", verificat_la="2026-08-03", de_cine="Code/Costin", nivel_sursa="REDARE", text_citat="cota redusa de 5% CF art.291 alin.(3) (locuinte sociale sub 600.000 lei lit.c pct.3, carti, acces evenimente culturale/sportive)", lant_acte="textul verbatim al fostului alin.(3) si data de INCEPUT NU sunt in codul consolidat (apare doar 'Abrogat'); ancora=2017-01-01; de reconfirmat la MO")),
+    ],
     # impozit pe dividende / castig din lichidare (regim dividende). 16% de la 01.01.2026 (Legea 141/2025).
     # NEVERIFICAT LA SURSA pentru pre-2026: codul folosea 10 pentru orice data pre-2026 (petic "else 10");
     # istoricul real poate diferi (posibil 8% 2023-2025). data_in 10% = 2024-01-01, REDARE, de reconfirmat la MO.

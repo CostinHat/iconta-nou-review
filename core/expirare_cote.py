@@ -24,6 +24,8 @@ ETICHETE = {
     "impozit_profit": "Cota impozit pe profit (16%)",
     "tva_standard": "Cota standard TVA",
     "tva_redusa": "Cota redusa TVA",
+    "tva_redusa_9": "Cota redusa TVA 9% (istoric, comasata in 11% de la 01.08.2025)",
+    "tva_redusa_5": "Cota redusa TVA 5% (istoric, comasata in 11% de la 01.08.2025)",
     "impozit_dividend": "Cota impozit pe dividende (regim dividende + lichidare)",
     "plafon_tva_incasare": "Plafonul TVA la incasare",
     "plafon_mijloc_fix": "Plafonul de incadrare ca mijloc fix",
