@@ -192,3 +192,15 @@ def test_totalplata_a_checksum_r11b_din_res():
     assert res.total_plata_a == 4800   # 2 x 2400 (suma_dat + suma_plata)
     xp = build_xml(res)
     assert 'totalPlata_A="4800"' in xp   # emis din res.total_plata_a
+
+
+
+def test_scadenta_25_luna_urmatoare_perioadei():
+    """Scadenta platii D100 = 25 a lunii URMATOARE perioadei de raportare (struct D100 poz.15:
+    "scadenta=25 a lunii urmatoare perioadei"), format ZZ.LL.AAAA. Trecerea de an: luna 12 -> ian an+1."""
+    from core.d100 import _scadenta_zile
+    assert _scadenta_zile(2026, 6) == (25, 7, 2026)      # trim 2 (luna 6) -> 25 iul
+    assert _scadenta_zile(2026, 9) == (25, 10, 2026)     # trim 3 -> 25 oct
+    assert _scadenta_zile(2026, 12) == (25, 1, 2027)     # trim 4 -> 25 ian an urmator
+    xp = build_xml(calcul_d100(_prof(), 2026, 6, [{"cod_oblig": "103", "suma_dat": 2400}]))
+    assert 'scadenta="25.07.2026"' in xp                 # format ZZ.LL.AAAA in XML

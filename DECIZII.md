@@ -6059,3 +6059,16 @@ declaratii (d101/d300/d390/d710/d394) EMIT res.total_plata_a - d100 era exceptia
 res.total_plata_a al d100 ca checksum - ex. un cross-check ca la d390.py:233 - ar primi 1x, gresit). FIX: res.
 total_plata_a = checksum (2x sum, calculat in calcul_d100) + build_xml il EMITE (o singura sursa, aliniat la
 convenția tuturor declaratiilor). Gard: res.total_plata_a == valoarea din XML == 2x sum(suma_dat).
+
+
+## 03.08.2026 — Cluster "scadente/nr_evidenta" (d100) — VERIFICAT conform + gard scadenta.
+
+nr_evidenta: CONFORM struct D100 - 23 pozitii, format oficial (10 + cod_oblig + 01 + LLAA + ZZLLAA + 0+0+00 +
+suma_control), poz.18="0" (dupa fix R16 pe validator). Gardat de 3 teste (23 caractere, prefix 10+cod_oblig+01,
+suma de control poz.22-23). scadenta: _scadenta_zile = 25 a lunii URMATOARE perioadei (struct poz.15), format
+ZZ.LL.AAAA. Conform pentru obligatiile generate de d100 (121 micro + 103 profit trimestrial: Q1-Q3 -> 25 apr/jul/
+oct; Q4 -> 25 ian an urmator). Lipsea test pe scadenta -> gard golden adaugat.
+
+OBSERVATIE: struct-ul are si alte reguli de scadenta (25/12, 28-29/07, 25 a lunii a 2-a) pentru ALTE obligatii
+(accize etc.) pe care d100 NU le genereaza - regula standard "25 luna urmatoare" e cea aplicabila micro/profit.
+(Definitivarea impozitului pe profit Q4 = D101, nu D100 - scadenta 25 martie an urmator, tratata acolo.)
