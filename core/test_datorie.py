@@ -293,3 +293,9 @@ def test_datorie_d300_reverse_charge_manual_reconfirmat_mo():
 def test_datorie_verificatorul_nu_e_el_insusi_testat():
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "analizatorul verificatorului are teste pe clasificare" in dz.lower()
+
+
+@pytest.mark.xfail(strict=True, reason="DATORIE 03.08.2026 (cluster cote TVA->randuri | d300): achizitiile deductibile cu cota 9% (art.III Legea 141/2025) NU se pot declara AUTOMAT in D300 - structura v12.0.0 le pune la Rd.25.1 (R75), dar validatorul DUKIntegrator INSTALAT respinge R75 ('nu trebuie sa exista aici'); R76 e taxare inversa (Rd.27.4, legat de R72 prin R96.2/R96.3). Reparat in cluster: 11% deductibil mutat de la R74 (=19% legacy, marja 18-20%) la R23 (Rd.25, DUK valid); 9% deductibil scos din auto si semnalat pentru declarare MANUALA (altfel TVA de plata supraevaluata). Vechiul cod emitea R76 la 9% -> respins de DUK + pierdut din totalul R27. RAMAS: cand validatorul DUK instalat accepta R75 (sau se identifica randul deductibil 9% corect la sursa), 9% deductibil trece pe auto cu proba DUK. Se inchide cand 9% deductibil se emite automat pe un rand DUK-valid, cu proba, consemnat in DECIZII.md.")
+def test_datorie_d300_9pct_deductibil_auto():
+    dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
+    assert "d300 achizitii deductibile 9% emise automat pe rand duk valid" in dz.lower()

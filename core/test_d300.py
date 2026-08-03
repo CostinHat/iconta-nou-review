@@ -67,3 +67,63 @@ def test_d300_manual_cheie_necunoscuta_ridica():
     with pytest.raises(ValueError) as e:
         calcul_d300(_prof(), Perioada(2026, luna=6), [], {"R9_1": 100, "totalGresit": 5})
     assert "necunoscut" in str(e.value).lower() and "totalGresit" in str(e.value)
+
+import pytest
+from core import duk as _duk300
+from core.d300 import build_xml
+_D300_DUK = _duk300.poate_valida("d300")
+
+
+# ============================================================
+#  Cluster cote TVA -> randuri | d300. Maparea cotelor pe randurile D300 (structura
+#  v12.0.0, confirmata prin marja validatorului DUK). Bug reparat: achizitii deductibile
+#  11% erau puse la R74 (=Rd.24.1, cota 19% legacy, marja 18-20%) si 9% la R76 (=taxare
+#  inversa Rd.27.4). Corect: 11%->R23 (Rd.25), 21%->R22 (Rd.24).
+# ============================================================
+def test_cote_tva_maparea_pe_randuri_d300():
+    facturi = [
+        {"directie": "emisa", "total": 1210, "tva": 210},    # 21%
+        {"directie": "emisa", "total": 1110, "tva": 110},    # 11%
+        {"directie": "emisa", "total": 1090, "tva": 90},     # 9%
+        {"directie": "primita", "total": 1210, "tva": 210},  # 21% deductibil
+        {"directie": "primita", "total": 1110, "tva": 110},  # 11% deductibil
+    ]
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
+    # LIVRARI (colectata): 21->Rd.9, 11->Rd.10, 9->Rd.11
+    assert (res.R["R9_1"], res.R["R9_2"]) == (1000, 210)
+    assert (res.R["R10_1"], res.R["R10_2"]) == (1000, 110)
+    assert (res.R["R11_1"], res.R["R11_2"]) == (1000, 90)
+    # ACHIZITII DEDUCTIBILE: 21->Rd.24(R22), 11->Rd.25(R23)
+    assert (res.R["R22_1"], res.R["R22_2"]) == (1000, 210)
+    assert (res.R["R23_1"], res.R["R23_2"]) == (1000, 110)   # 11% -> R23, NU R74
+    # GARD anti-regresie: 11% NU merge la R74 (=19% legacy) si nici la R76 (=taxare inversa)
+    assert res.R.get("R74_1", 0) == 0 and res.R.get("R74_2", 0) == 0
+    assert res.R.get("R76_1", 0) == 0
+
+
+def test_9pct_deductibil_nu_emite_rand_invalid_si_avertizeaza():
+    # 9% deductibil: R75 (v12) / R76 respinse de validatorul DUK instalat -> NU se emit
+    # (un atribut invalid ar respinge intreaga declaratie); se semnaleaza pentru declarare manuala.
+    facturi = [{"directie": "primita", "total": 1090, "tva": 90}]  # 9% deductibil
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
+    assert res.R.get("R75_1", 0) == 0 and res.R.get("R76_1", 0) == 0
+    assert any("9%" in a and "MANUAL" in a for a in res.avertismente)
+
+
+@pytest.mark.skipif(not _D300_DUK, reason="DUK d300 indisponibil")
+def test_cote_tva_d300_proba_duk_valid():
+    # Proba pana la declaratie: D300 cu livrari 21/11/9 + achizitii 21/11 trece DUKIntegrator.
+    # Marja validatorului (R9_2 in 20-22%R9_1, R10_2 in 10-12%, R11_2 in 8-10%, R22=21%, R23=11%)
+    # respinge orice swap cota<->rand - validarea confirma maparea. Un 9% deductibil in R76 (vechiul
+    # cod) ERA respins de DUK - de aceea reparatia trece proba aici.
+    facturi = [
+        {"directie": "emisa", "total": 1210, "tva": 210},
+        {"directie": "emisa", "total": 1110, "tva": 110},
+        {"directie": "emisa", "total": 1090, "tva": 90},
+        {"directie": "primita", "total": 1210, "tva": 210},
+        {"directie": "primita", "total": 1110, "tva": 110},
+        {"directie": "primita", "total": 1090, "tva": 90},   # 9% deductibil -> manual (avertisment), nu emis
+    ]
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
+    rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
+    assert rez["stare"] == "valid", "DUK a respins D300: %s" % rez.get("erori")

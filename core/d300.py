@@ -36,9 +36,9 @@ _NEDIGIT = re.compile(r"\D")
 _TIP_COD = {"L": "301", "T": "302", "S": "303", "A": "304"}
 
 # cotele tratate automat din facturi (col bază, col tva) -> rândul de livrare/achiziție
-# livrări: 21->R9, 11->R10, 9->R11 ; achiziții deductibile: 21->R22, 11->R24_1(R74), 9->R24_4
+# livrări: 21->R9, 11->R10, 9->R11 ; achiziții deductibile: 21->R22(Rd.24), 11->R23(Rd.25), 9->R75(Rd.25.1)
 _LIVRARE_RAND = {21: "R9", 11: "R10", 9: "R11"}
-_ACHIZ_RAND = {21: "R22", 11: "R74", 9: "R76"}   # R74=24.1(11%), R76=24.4(9%) deductibilă
+_ACHIZ_RAND = {21: "R22", 11: "R23"}   # R22=Rd.24(21%), R23=Rd.25(11%). 9% deductibil: fara rand DUK-valid (vezi mai jos)
 
 
 def _esc(v):
@@ -180,9 +180,11 @@ def calcul_d300(prof, perioada, facturi, manual=None):
         R["R17_1"], R["R17_2"] = r17_1, r17_2
 
     # --- DEDUCTIBILĂ: achiziții 21/11/9 ---
-    setr("R22_1", ded[21][0]); setr("R22_2", ded[21][1])    # 21%
-    setr("R74_1", ded[11][0]); setr("R74_2", ded[11][1])    # 11% (rd.24.1)
-    setr("R76_1", ded[9][0]);  setr("R76_2", ded[9][1])     # 9% (rd.24.4)
+    setr("R22_1", ded[21][0]); setr("R22_2", ded[21][1])    # 21% -> Rd.24 (DUK valid)
+    setr("R23_1", ded[11][0]); setr("R23_2", ded[11][1])    # 11% -> Rd.25 (DUK valid; era gresit R74=19% legacy)
+    # 9% deductibil: structura v12 il pune la Rd.25.1 (R75), dar validatorul DUK INSTALAT il RESPINGE
+    # ("R75_1 nu trebuie sa exista aici"); R76 e taxare inversa (Rd.27.4, legat de R72). Nu emitem un
+    # atribut care invalideaza intreaga declaratie - il semnalam pentru declarare manuala (avertisment mai jos).
 
     for k, v in manual.items():
         if k.startswith(("R18_", "R19_", "R20_", "R21_", "R23_", "R25_", "R26_",
@@ -277,6 +279,11 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     if alte_a:
         res.avertismente.append("%d linii achiziție cu cotă în afara 21/11/9 — neincluse." % alte_a)
     _f = lambda x: format(int(x), ",").replace(",", ".")
+    if ded[9][0]:
+        res.avertismente.append(
+            "Achiziții deductibile 9%% (bază %s lei, TVA %s lei) — NEINCLUSE automat: rândul deductibil 9%% "
+            "(Rd.25.1/R75 din structura v12) e RESPINS de validatorul DUK instalat. Declară-le MANUAL la rândul "
+            "deductibil corect, altfel TVA de plată e supraevaluată." % (_f(ded[9][0]), _f(ded[9][1])))
     rez = ("de plată " + _f(de_plata)) if de_plata else (("de recuperat " + _f(de_recuperat)) if de_recuperat else "0")
     res.avertismente.append("Rezultat TVA %s lei." % rez)
     return res

@@ -5332,3 +5332,35 @@ aritmetic_nu_bancar (_i(2.5)=3, _i(0.5)=1 - aritmetic, bancarul ar da 2/0). Daca
 
 INCHIDERE CLUSTER: "rotunjire | d205" √ 03.08 (rotunjire aritmetica verificata + gardata). Fara xfail nou, fara
 schimbare de valoare. Secventa 55 -> 54.
+
+
+## 03.08.2026 — Cluster cote TVA -> randuri | d300: VERIFICAT (livrari) + REPARATIE MARE (achizitii deductibile 11%/9%)
+
+Clusterul urmator din lant dupa rotunjire|d205. Sesiunea A. Sursa: anaf_surse/d300_struct_anaf.txt
+(structura_D300_v12.0.0_10022026), maparea confirmata prin MARJA validatorului DUK (arbitrul: un swap cota<->rand
+pica marja) + proba DUK reala.
+
+VERIFICAT CORECT - LIVRARI (colectata): 21% -> Rd.9 (R9, marja 20-22%), 11% -> Rd.10 (R10, marja 10-12%),
+9% art.III Legea 141/2025 -> Rd.11 (R11, marja 8-10%). Toate acceptate de DUK.
+
+REPARATIE (proba pana la declaratie - DUK respingea vechea mapare) - ACHIZITII DEDUCTIBILE:
+- **11% era pus la R74** (`_ACHIZ_RAND`/setr). R74 = Rd.24.1 = cota **19%** (legacy), marja 18-20% (regula
+  R84.1) - DUK respingea ("R74 nu se incadreaza in 19%"). CORECT: 11% -> **R23** (Rd.25, marja 10-12%). Reparat,
+  DUK valid.
+- **9% era pus la R76**. R76 = Rd.27.4 = **taxare inversa** (legat de R72 prin R96.2/R96.3: R72_1==R76_1); nu e
+  achizitie deductibila normala. In plus R76 NU e in formula totalului R27 -> 9% deductibil se PIERDEA din totalul
+  taxei deductibile (TVA de plata supraevaluata) SI declaratia era respinsa de DUK. Structura v12 pune 9% deductibil
+  la Rd.25.1 (R75), dar validatorul DUK INSTALAT respinge si R75 ("nu trebuie sa exista aici") - discrepanta intre
+  documentul v12 si validatorul instalat. SOLUTIE onesta: 9% deductibil scos din auto (nu emitem un atribut care
+  invalideaza declaratia) + AVERTISMENT explicit de declarare manuala (altfel TVA de plata supraevaluata).
+
+PROBA: test_cote_tva_maparea_pe_randuri_d300 (R9/R10/R11 + R22/R23, gard 11% NU la R74) + test_cote_tva_d300_
+proba_duk_valid (D300 21/11/9 livrari + 21/11 achizitii trece DUKIntegrator - vechea mapare pica) + test_9pct_
+deductibil_nu_emite_rand_invalid_si_avertizeaza. `_ACHIZ_RAND` corectat la {21:R22, 11:R23}.
+
+DATORIE DESCHISA (xfail test_datorie_d300_9pct_deductibil_auto, SOLD +1): declararea automata a 9% deductibil pe
+un rand acceptat de validatorul instalat. Se inchide cand validatorul DUK instalat accepta randul deductibil 9%
+(sau se identifica randul corect la sursa) si 9% trece pe auto cu proba DUK.
+
+INCHIDERE CLUSTER: "cote TVA -> randuri | d300" √ 03.08 (livrari verificate + reparatie achizitii deductibile
+11%/9%). Secventa 54 -> 53.
