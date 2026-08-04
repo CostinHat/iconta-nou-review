@@ -926,4 +926,4 @@ fisierele clusterului la ambele commituri (nu doar fisier[0]) — stergere = sch
 scos 5 bife ascunse de acelasi punct orb: `plafon diurna` (datoria period-awareness istorica REZOLVATA in 6675f19,
 nereflectata in bifa -> bump) + 4 citari gresite / coloane `fisiere` incomplete (testele cross-generator de rotunjire
 traiesc in `test_limita_text_anaf.py` nelistat; IMCA nume trunchiat; reclasificare citata gresit). Toate reparate;
-regresia e gardata de `test_functie_schimbata_cauta_toate_fisierele_punct_orb_04_08`.
+regresia e gardata de `test_functie_schimbata_cauta_toate_fisierele_punct_orb_04_08`. Integritatea coloanei `fisiere` (un test citat sa traiasca intr-un fisier listat) e gardata acum separat de `test_fisiere_coloana_completa` (+ mutatie), care prinde golul la CREAREA clusterului - acolo unde `test_verificarile_A` e oarba (lucreaza doar pe clustere bifate). Driftul DUS-INTORS (capete egale, mijloc diferit) NU e gardat per-commit (ar reciti istoricul) - e o rulare PERIODICA: `python3 -m core.agenda_drift`, declansata de o bifa >3 luni sau o repornire de campanie (vezi GARZI cat.9).

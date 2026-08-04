@@ -459,3 +459,62 @@ def test_functie_schimbata_cauta_toate_fisierele_punct_orb_04_08():
     sch2, nota2 = _functie_schimbata(["core/test_deconturi.py", "core/test_d101.py"],
                                      "test_functie_inexistenta_nicaieri_zzz", azi)
     assert sch2 and nota2 and "citare moarta" in nota2, (sch2, nota2)
+
+
+def _index_teste_pe_disc():
+    """{nume_test: set(basename fisier)} din toate core/test_*.py de pe disc (starea care se comite)."""
+    import ast as _ast
+    idx = {}
+    for f in sorted((_RAD / "core").glob("test_*.py")):
+        try:
+            tree = _ast.parse(f.read_text(encoding="utf-8"))
+        except (OSError, SyntaxError):
+            continue
+        for node in _ast.walk(tree):
+            if isinstance(node, (_ast.FunctionDef, _ast.AsyncFunctionDef)) and node.name.startswith("test_"):
+                idx.setdefault(node.name, set()).add(f.name)
+    return idx
+
+
+def _fisiere_incomplete(rows, idx):
+    """[mesaj] pentru fiecare test citat in `functie` care NU traieste intr-un fisier din `fisiere`
+    (sau nu exista nicaieri). Extras ca functie pentru a fi mutation-testabil separat."""
+    rele = []
+    for rand in rows:
+        if not rand.get("functie") or not rand.get("fisiere"):
+            continue
+        listed = set(rand["fisiere"])
+        for fn in rand["functie"]:
+            homes = idx.get(fn, set())
+            if not homes:
+                rele.append("[%s|%s] %s: INEXISTENT (nedefinit in niciun core/test_*.py)"
+                            % (rand["cluster"], rand["modul"], fn))
+            elif not (homes & listed):
+                rele.append("[%s|%s] %s: definit in %s dar fisiere=%s (garda oarba - adauga fisierul)"
+                            % (rand["cluster"], rand["modul"], fn, sorted(homes), sorted(listed)))
+    return rele
+
+
+def test_fisiere_coloana_completa():
+    """Fiecare test citat in coloana `functie` a unui cluster Inventar A traieste intr-un fisier LISTAT in
+    `fisiere`. Un test intr-un fisier nelistat = test_verificarile_A e oarba pe el (il vede <ABSENT> in
+    fisierele clusterului). In plus, test_verificarile_A SARE peste clusterele NEbifate - deci un gol de
+    `fisiere` la un cluster nou scapa pana la bifare. Acest gard il prinde la CREAREA clusterului.
+    Lectie 04.08: 5 bife aveau testul in afara coloanei (rotunjire in test_limita_text_anaf.py etc.)."""
+    a = agenda.stare_sesiune_a()
+    assert a is not None
+    rele = _fisiere_incomplete(a["rows"], _index_teste_pe_disc())
+    assert not rele, ("FISIERE INCOMPLETE (test citat traieste in afara coloanei `fisiere`):\n"
+                      + "\n".join(rele) + "\n-> adauga fisierul unde traieste testul in coloana `fisiere`.")
+
+
+def test_fisiere_coloana_completa_prinde_gol():
+    """MUTATIE: _fisiere_incomplete semnaleaza un test citat intr-un fisier NElistat SI o citare inexistenta;
+    trece cand testul e in fisierul listat. Fara asta, gardul ar putea deveni tacut (fals-verde)."""
+    idx = {"test_x": {"test_corect.py"}}
+    ok = [{"cluster": "c", "modul": "m", "functie": ["test_x"], "fisiere": ["test_corect.py"]}]
+    gol = [{"cluster": "c", "modul": "m", "functie": ["test_x"], "fisiere": ["test_gresit.py"]}]
+    inexist = [{"cluster": "c", "modul": "m", "functie": ["test_y"], "fisiere": ["test_corect.py"]}]
+    assert _fisiere_incomplete(ok, idx) == []
+    assert _fisiere_incomplete(gol, idx), "test in fisier nelistat NU a fost semnalat"
+    assert _fisiere_incomplete(inexist, idx), "citare inexistenta NU a fost semnalata"
