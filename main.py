@@ -7031,8 +7031,10 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...), ctx=Depends
             cur.execute(f"SELECT COALESCE(platitor_tva, true) FROM {schema}.firma_profil LIMIT 1")
             rand = cur.fetchone()
             beneficiar_tva = bool(rand[0]) if rand else True
+        from core import facturi_api as _fa
         try:
-            ok, mentiune = _ti.se_aplica(corp["categorie"], corp["valoare"],
+            categorie = str(corp["categorie"])
+            ok, mentiune = _ti.se_aplica(categorie, corp["valoare"],
                                          corp.get("furnizor_platitor_tva", True),
                                          beneficiar_tva,
                                          _date.fromisoformat(corp["data"]))
@@ -7040,21 +7042,39 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...), ctx=Depends
             if not cont:
                 raise ValueError("cont_destinatie obligatoriu")
             val = Decimal(str(corp["valoare"]))
-            tva = _ti.tva_beneficiar(val, _common.cota_ceruta(corp))
+            cota = _common.cota_ceruta(corp)
+            tva = _ti.tva_beneficiar(val, cota)
+            furnizor_cui = str(corp.get("furnizor_cui") or "").strip().upper().replace(" ", "")
+            if not furnizor_cui:
+                raise ValueError("CUI furnizor obligatoriu (taxare inversa e intre platitori RO - furnizor cu CUI)")
+            numar = str(corp.get("numar") or "").strip()
+            if not numar:
+                raise ValueError("numar factura furnizor obligatoriu")
+            furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         descr = (corp.get("descriere") or "Achizitie") + " - " + mentiune
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
+            cur.execute(f"SET LOCAL search_path TO {schema}")   # creeaza_factura foloseste INSERT necalificat
+            # 1) rand FACTURA (directie=primita, furnizor RO cu CUI, categorie_331 -> codPR, taxare_inversa=True)
+            #    = sursa citita de D394 (op1 tip C + op11 codPR). Linie cota reala -> baza/tva reverse-charge.
+            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
+                                       linii=[{"descriere": descr[:200], "cantitate": 1,
+                                               "pret_unitar": str(val), "cota_tva": cota}],
+                                       tert_nume=furnizor_nume or None, tert_cui=furnizor_cui,
+                                       categorie_331=categorie, taxare_inversa=True, status="importata")
+            fid = fres["factura_id"]
+            # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge 4426=4427, NU cea standard
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
+                            VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], fid, descr[:200]))
             iid = cur.fetchone()[0]
             for d, c, s in [(cont, "401", val), ("4426", "4427", tva)]:
                 cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                                 (inregistrare_id, cont_debit, cont_credit, suma)
                                 VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
         conn.commit()
-    return {"inregistrare_id": iid, "valoare": str(val), "tva": str(tva),
+    return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva),
             "mentiune": mentiune}
 
 
@@ -7084,27 +7104,46 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
+        from core import facturi_api as _fa
         try:
             val = Decimal(str(corp["valoare"]))
             tva = _ic.tva_taxare_inversa(val, _common.cota_ceruta(corp))
             cont = str(corp["cont_destinatie"]).strip()
             if not cont:
                 raise ValueError("cont_destinatie obligatoriu")
+            cod_tva_furnizor = str(corp.get("cod_tva_furnizor") or "").strip().upper().replace(" ", "")
+            if not cod_tva_furnizor:
+                raise ValueError("cod TVA furnizor UE obligatoriu (fara el achizitia NU ajunge in D390)")
+            numar = str(corp.get("numar") or "").strip()
+            if not numar:
+                raise ValueError("numar factura furnizor obligatoriu")
+            furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
+            data_fg = corp.get("data_faptului_generator") or None
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         tip = "servicii IC primite (art. 278(2))" if corp.get("tip") == "servicii"               else "achizitie intracomunitara bunuri (art. 268)"
         descr = (corp.get("descriere") or "AIC") + f" - {tip}, taxare inversa 4426=4427"
         with conn.cursor() as cur:
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], descr[:200]))
+            cur.execute(f"SET LOCAL search_path TO {schema}")   # creeaza_factura foloseste INSERT necalificat
+            # 1) rand FACTURA (directie=primita, furnizor UE) = sursa citita de D390. Factura UE fara TVA RON
+            #    (taxare inversa la beneficiar) -> linie cota 0 -> total=val, tva=0 -> baza D390 = val.
+            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
+                                       linii=[{"descriere": descr[:200], "cantitate": 1,
+                                               "pret_unitar": str(val), "cota_tva": 0}],
+                                       tert_nume=furnizor_nume or None, tert_cui=cod_tva_furnizor,
+                                       data_faptului_generator=data_fg, status="importata")
+            fid = fres["factura_id"]
+            # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge, NU cea standard
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
+                            VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], fid, descr[:200]))
             iid = cur.fetchone()[0]
             for d, c, s in [(cont, "401", val), ("4426", "4427", tva)]:
                 cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
                                 (inregistrare_id, cont_debit, cont_credit, suma)
                                 VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
         conn.commit()
-    return {"inregistrare_id": iid, "valoare": str(val), "tva": str(tva)}
+    return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva)}
 
 
 @app.post("/tenants/{tenant_id}/vanzare-ic")
