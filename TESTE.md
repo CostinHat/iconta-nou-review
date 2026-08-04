@@ -326,7 +326,7 @@ clustere.
 | cote acceptate | d394 | test_d394.py | √ 03.08 (VERIFICARE - conform, d394 e modelul-tinta al lui d301. cota_standard (d394.py:258) period-aware din common.cota (evita int(0.21)=0); cotele operatiunilor validate contra set fix d394.COTE=(0,5,9,11,19,20,21,24) = validator ANAF v5 OPANAF 2194/2025 (21/11 de la 01.08.2025) peste structura 2020; agregare pe cota reala (rectificative vechi -> 19/9/5). Fara literal hardcodat. Garduri: pin set v5 + CROSS-MODUL common.COTE tva_* subseteaza d394.COTE (cota noua in common neacoperita -> cade)) | FISCAL | OPANAF 2194/2025 (validator v5 cote) + structura D394 (cota in 0,5,9,11,19,20,21,24) | test_d394_cote_acceptate_sunt_setul_validatorului_v5 test_d394_cote_acopera_toate_cotele_tva_din_common test_cota_standard_vine_din_sursa_unica |
 | rezumat1 campuri complete | d394 | test_d394.py | √ 04.08 (VERIFICAT cazurile comune + 1 NECONFORMITATE ACTIVA. Pentru parteneri INREGISTRATI (RO tip1) si STRAINI (UE tip3/non-UE tip4) setul de campuri rezumat1 (facturi/baza pe fiecare tip cerut de rez1_tipuri, tva doar A/L/C/AI, 0-umplut) e COMPLET si J8-VALID - probat DUK (test_rezumat1_campuri_complete_tp1_tp3_valide_pe_validator). NECONFORMITATE: operatiunile N (tip_partener=2, neinreg) sunt produse AUTOMAT din orice factura de achizitie fara CUI, DAR J8 le RESPINGE - codul nu emite op1.tip_document (pct.228) / op1.tip_N (pct.229) / rezumat1.document_N (pct.60), iar facturiLS e interzis cand document_N<>1 (R41.2). Bug ACTIV (tenanti cu achizitii de la neinregistrati -> D394 respins). CORECTARE = decizie de produs (sourcing tip_N bunuri/servicii; suport document_N 2-5 manual) - vezi DECIZII 04.08. REZOLVAT 04.08 approach (b) Costin: operatiunile N se EXCLUD cu avertisment vizibil care numeste furnizorii+sumele (res.avertismente->UI); restul D394 ramane valid. Gard anti-regresie pastrat (test_N_ar_fi_respins_de_validator_daca_emis_GARD_INVERS). Datorie GARZI: tip_document 2-5 + tip_N UI = implementarea completa (a), campanie proprie) | STRUCTURA | structura D394 (pct.60 document_N, 228 tip_document, 229 tip_N) + reguli validator J8 (R38/R41/R42/R49/R53/R56/R60/R228); probat DUK boundary | test_rezumat1_campuri_complete_tp1_tp3_valide_pe_validator test_operatiuni_N_excluse_cu_avertisment_vizibil test_N_ar_fi_respins_de_validator_daca_emis_GARD_INVERS |
 | nomenclator codPR (art.331) | d394 | test_d394.py | √ 04.08 (VERIFICAT CONFORM pe validatorul CURENT. Nomenclatorul d394.CODPR (categorii art.331 -> cod op11: deseuri 22, masa_lemnoasa 23, certificate_emisii 24, energie 25, certificate_verzi 26, cladiri 27, aur 28, telefoane 29, circuite 30, console 31, GAZE_NATURALE 36) + subcodurile NC cereale (1001..121291) sunt TOATE acceptate de D394Validator J8 - probat DUK cod-cu-cod. Comentariul citeaza Ghid_D394_2016 (INVECHIT), dar codurile-s validator-confirmate (ca ASI: sursa veche, cod verificat pe validator). IMPORTANT: gaze_naturale codPR 36 - fostul blocaj al datoriei lit.l (art.331 alin.2 lit.l, Legea 296/2020) - e acum CONFIRMAT valid pe J8; lit.l a fost rezolvat in commit 6675f19 (campanie datorii B: gaze in motor taxare_inversa.CATEGORII lit.l + CODPR 36, xfail inchis). Gard nou: test_codpr_valide_pe_validatorul_curent. OBS: bifa 'taxare inversa|d394' e STALE - inca zice gaze lipseste+datorie xfail (nu mai exista); follow-up cleanup) | STRUCTURA | d394.CODPR (art.331 alin.2 lit.a-l -> cod op11) + subcod NC cereale; sursa comentata Ghid_D394_2016 INVECHITA - AUTORITATE = validatorul J8 (probat cod-cu-cod) | test_codpr_valide_pe_validatorul_curent test_codpr_din_nomenclatorul_oficial test_toate_categoriile_taxare_inversa_au_codpr_d394 test_cereale_codPR_e_subcodul_NC_iar_detaliu_bun_e_categoria |
-| taxare inversa | d394 | test_d394.py (+test_datorie.py) | √ 03.08 (11/12 CONFORM + 1 DATORIE. art.331 alin.(2) are 12 litere a-l; codul implementeaza 11 (a-k) corect (motor taxare_inversa.CATEGORII + mapare d394.CODPR 21-31). NECONFORMITATE: lit.l GAZE NATURALE lipseste din ambele. CORECTARE blocata - codPR D394 gaze nu e in sursele repo (Ghid 2016, anterior Legii 296/2020; 32-35 rezervate tip2). §3 nu se inventeaza. GARD anti-regresie: CATEGORII subseteaza CODPR (fixul pe jumatate pica). DATORIE xfail(strict) gaze in test_datorie. Input cerut: codPR gaze post-2021) | FISCAL | CF art.331 alin.(2) lit.a-l (12 categorii) + alin.(6) expirare + structura D394 op11 (codPR) | test_toate_categoriile_taxare_inversa_au_codpr_d394 test_datorie_gaze_naturale_taxare_inversa_art331_lit_l |
+| taxare inversa | d394 | test_d394.py | √ 04.08 (bump: 03.08->04.08 - datoria gaze naturale (lit.l) INCHISA. 12/12 CONFORM acum: gaze in motor taxare_inversa.CATEGORII (lit.l) + d394.CODPR 36, probat DUK cod-cu-cod (commit 6675f19). Fostul xfail(strict) test_datorie_gaze_naturale_... SCOS la inchidere - bifa il mai cita (citare moarta), curatat aici. Descoperit scriind capitolul de metoda despre clustere. Vezi bifa 'nomenclator codPR (art.331)|d394' care detine proba DUK a gazelor) | FISCAL | CF art.331 alin.(2) lit.a-l (12 categorii) + alin.(6) expirare + structura D394 op11 (codPR) | test_toate_categoriile_taxare_inversa_au_codpr_d394 |
 | totalPlata_A (R17) | d394 | test_d394.py | √ 04.08 (VERIFICAT CONFORM + gard sursa-unica/DUK. totalPlata_A D394 = Suma(informatii.nrCui1..4) + Suma(rezumat2.baza[L+A+AI]) - formula R17 din validator (comentariul d394.py:18 nota ca formula VECHE era inventata; asta e cea corecta). res.total_plata_a (calculat in calcul_d394) == valoarea EMISA in XML - sursa unica (build_xml emite res, clasa d100). Probat pe validatorul CURENT J8: valoarea corecta (3002) e VALIDA; o valoare gresita (+999) e RESPINSA cu regula R17 (totalPlata_A trebuie egal cu Suma...). Testul vechi test_total_plata_a_dupa_formula_oficiala era tautologic (recalcula formula); gard nou leaga res==emis + probeaza R17 pe validator) | STRUCTURA | R17 validator D394 (totalPlata_A = Suma nrCui1..4 + Suma rezumat2.baza[L+A+AI]); probat pe validatorul curent (valoare corecta valida / gresita respinsa R17) | test_totalPlata_A_R17_sursa_unica_si_probat_pe_validator test_total_plata_a_dupa_formula_oficiala test_nrCui1_e_distinct_pe_cui test_nrCui2_e_numar_de_inregistrari_nu_distinct |
 | plan conturi pe norma | d406 | test_d406.py | √ 04.08 (VERIFICAT + REPARAT drop tacit. Planul de conturi emis in SAF-T (MasterFiles/GeneralLedgerAccounts) e FILTRAT pe nomenclatorul OFICIAL al normei firmei (baza_contabila -> plan_oficial din anaf_surse/d406_nomenclatoare_anaf.properties): conturile care nu apartin normei se EXCLUD (ANAF le respinge 'contul trebuie sa se gaseasca in planul de conturi'). AccountID = sintetic (401.05->401). NECONFORMITATE (drop tacit): conturile excluse (strain) erau colectate dar NICIODATA surfaced - pull nici nu le returna. REPARAT: pull returneaza strain, genereaza SEMNALEAZA in avertisment (insert la pozitia 0) numind conturile excluse + norma - ca la N in d394 (decizie Costin: exclus dar VIZIBIL, nu tacit). Fisiere corectate (erau test_limita_text_anaf, sunt test_d406). Garduri: DB strain + plan_oficial) | STRUCTURA | SAF-T MasterFiles/Account: plan filtrat pe nomenclatorul normei (d406_nomenclatoare_anaf.properties); AccountID sintetic (validator: numar intreg); conturi ne-norma respinse de ANAF | test_conturi_straine_de_norma_sunt_semnalate_nu_excluse_tacit test_plan_oficial_citeste_nomenclatorul_norma_A |
 | UoM UN/ECE | d406 | test_d406.py | √ 04.08 (VERIFICAT CONFORM pe validatorul SAF-T. UOM_UNECE mapeaza unitatile RO in coduri UN/ECE Recommendation 20 (nu unitatile romanesti). Codurile-tinta (H87 bucata, KGM, GRM, TNE, LTR, MLT, MTR, CMT, KMT, MTK mp, MTQ mc, HUR, DAY, MON, ANN, SET, PR, KWH, MWH) sunt validator-confirmate: probate pe validatorul oficial 15.07.2026 (BUC respins 'nu se afla in lista') SI verificate acum prin EXTRACTIE din D406Validator.jar (/opt/duk/saft/...) - codurile distinctive H87/KGM/.../MWH prezente, BUC=0 (absent). Default H87 (bucata) + semnalare la necunoscut (uom_unece intoarce (cod, False) - mai bine implicit DECLARAT decat XML respins). XSD saft.xsd: UnitOfMeasure=SAFcodeType (cod generic, nu enumerare - lista e in validator). Fisiere corectate (test_limita_text -> test_d406). Gard nou: test_uom_unece_mapare_coduri_valide) | STRUCTURA | UN/ECE Recommendation 20 (nomenclator UoM SAF-T); XSD saft.xsd UnitOfMeasure=SAFcodeType; codurile validator-confirmate (proba 15.07.2026 + extractie D406Validator.jar) | test_uom_unece_mapare_coduri_valide |
@@ -764,3 +764,162 @@ CAMPANIE COMPLETA (01.08.2026) — pas 3-5 livrate:
   calcul_salariu). Restul cotelor de regula: cas/cass/impozit/cam (2018), salariu_minim/facilitate (2025-01-01
   =podea) - nu rup in [2025, azi]. Nota (nu regula): tva_redusa (2025-08-01) rupe calcul_tva pt facturi
   pre-08.2025 (cititor subtire, acelasi mecanism central). Commit-uri 1d37d3a + 1de6ac9. Backfill 2025 = de decis Costin.
+
+
+## Clustere — metoda (referință permanentă, 04.08.2026)
+
+Capitol de METODĂ, nu jurnal. Se ACTUALIZEAZĂ când se adaugă/modifică un cluster, nu se rescrie. Regula sursei
+unice: ce există deja în Inventarul A (nume, modul, √, funcții) și în GARZI.md (limita fiecărei bife) se REFERĂ
+de aici, nu se copiază. Aici stă doar ce NU e deja scris: definiția operațională, criteriul de apartenență, și
+clasificarea pe expunere la extindere.
+
+### 1. Ce e un cluster (definiție operațională)
+
+Un cluster = **un RÂND din tabelul „## Inventarul de acoperit în A"** din acest fișier. Identitatea lui e perechea
+**(nume, modul)** — nu doar numele: același nume se repetă între module (ex. `taxare inversa` la d300 ȘI d394;
+`rotunjire aritmetica` la d112/d300/d390), iar cheia pe nume le-ar colapsa (dovadă: `core/agenda.py::secventa_calculata`,
+funcția `_id(r) = (cluster, modul)`). Un rând poartă: nume | modul | fișiere de test | „Verificat la sursă" (bifa √ +
+data + eventualul `bump:`) | risc (FISCAL/STRUCTURA) | temeiuri | funcțiile de test care îl probează.
+
+Un cluster e o **unitate de verificare la sursă**: o felie de comportament fiscal a unui modul, verificată contra
+sursei oficiale (act normativ + validatorul DUK instalat), bifată cu data verificării, și păzită de funcții de test
+nominalizate. Bifa √ nu spune „codul e testat" — spune „la data D, felia asta a fost confruntată cu sursa".
+
+### 2. Criteriul de apartenență: IMPLICIT (judecată la momentul verificării), nu explicit
+
+**Nu există regulă în cod care să ia o funcționalitate nouă și s-o clasifice într-un cluster.** `agenda.py` doar
+PARSEAZĂ tabelul scris de mână (`stare_sesiune_a()` → `_randuri_tabel(text, "## Inventarul de acoperit în A")`).
+Apartenența unei bucăți de cod la un cluster e o **decizie umană**, luată când se scrie rândul în Inventar A. Nu e
+derivabilă mecanic dintr-un fișier/funcție/temei.
+
+Ce ESTE derivat mecanic (dar NU e apartenență — e ordine și reset):
+- **`graf_clustere()`** — muchiile de DEPENDENȚĂ între clustere EXISTENTE: prin analiză statică (test → funcții-sursă
+  apelate → închidere pe `graf_temei`), un cluster A depinde de B dacă o funcție a lui A atinge o funcție DEȚINUTĂ de
+  B. Servește doar sortarea topologică din `secventa_calculata()` (o dependență se verifică înaintea celui ce depinde
+  de ea). LIMITA declarată în cod: vede doar prin `cota()`/apeluri; un literal ascuns rămâne invizibil. În practică
+  DOAR familia `salarizare` are muchii; restul sunt rădăcini.
+- **`cote_cluster()`** — ce chei din `COTE` (cote/plafoane) atinge un cluster, pentru RESETUL propagat: dacă o cotă de
+  care depinde clusterul s-a schimbat în `common.py` după data √, bifa e stale (garda V3 din `test_agenda`).
+- **`secventa_calculata()` / `urmator_cluster()`** — ordinea deterministă a clusterelor NEbifate și NEblocate
+  (departajare: FISCAL înaintea STRUCTURA, apoi câte deblochează, apoi ordinea din inventar). Sursa listei =
+  `secventa_persistata()` (scrisă în „## Secvența de verificare"); un cluster BLOCAT (`_e_blocat`, marcaj `BLOCAT:` în
+  coloana bifă) iese din secvență până se deblochează.
+
+Concluzie pentru sesiuni viitoare: **când apare o funcționalitate nouă, TU decizi cărui cluster aparține (sau că e
+cluster nou) — nu există clasificator automat.** Regula practică folosită până acum: gruparea pe (felie de comportament
+fiscal × modul de declarație), la nivelul la care sursa se verifică o dată (un act/o structură/un set din validator).
+
+### 3. Inventarul clusterelor tratate
+
+Sursa canonică a listei complete (nume | modul | √ data | funcții) e **tabelul „## Inventarul de acoperit în A"** de
+mai sus; limita fiecărei bife (ce NU a acoperit) e în **GARZI.md**, la intrarea gardului corespunzător („Limita
+declarată"). Nu se recopiază aici (sursă unică). Ce adaugă acest capitol e clasificarea pe TIP DE CRITERIU al bifei —
+fiindcă tipul criteriului determină dacă bifa devine incompletă la extindere (secțiunea 4):
+
+- **A. Pin pe SET (enum/nomenclator/cote):** bifa asertă `SET == {enumerare înghețată}` sau `valoare = lookup(perioadă)`.
+  Extensibil: legea poate adăuga un membru/o fereastră. → secțiunea 4.
+- **B. Golden pe FORMULĂ:** bifa fixează o formulă cu cifre calculate de mână (ex. `rezerva legala` 5%/plafon 20%;
+  `TVA marja` cota/(100+cota); `checksum totalPlata_A` = sum(componente); lanțul P1-P53 D101). Stabilă: nu crește cu
+  instanțe noi — se strică doar dacă se schimbă FORMULA (derivă legislativă generală, nu extindere de set).
+- **C. Structură/prezență:** bifa verifică forma XML/XSD sau prezența unei chei (ex. `structura XSD d406`;
+  `cere_coloane`; anti-drop pe allow-list). Se strică la schimbare de structură oficială.
+- **D. Fereastră period-aware:** bifa fixează o valoare pe o fereastră de date (plafoane, cote istorice). Hibrid A/B:
+  formulă stabilă, dar SETUL de ferestre crește cu fiecare ordin nou. → secțiunea 4.
+
+### 4. CLUSTERE EXPUSE LA EXTINDERE (partea cea mai utilă)
+
+Bifele de tip **A (pin pe set)** și **D (fereastră)** devin **incomplete în tăcere** când apare o instanță nouă: pin-ul
+rămâne VERDE contra setului vechi (codul nu s-a schimbat, deci nici garda anti-stale nu se aprinde), dar setul din
+lume a crescut. Enumerate explicit (fiecare cu limita în GARZI — se referă, nu se copiază):
+
+| cluster | modul | setul care poate crește | intrare GARZI (limita) |
+|---|---|---|---|
+| tipuri operatiune (pct.215) | d394 | TIPURI op1 (A,L,C,V,AI,LS,AS,N) | „Gard tipuri operatiune D394 + datorie ASI" |
+| tipuri operatiune IC | d390 | (L,T,A,P,S,R) OPANAF 705/2020 | „Gard-pin nomenclator tipuri operatiune D390" |
+| cote acceptate | d394 | (0,5,9,11,19,20,21,24) validator v5 | „Garduri cote acceptate D394" |
+| taxare inversa / codPR (art.331) | d394 | CATEGORII→CODPR (12 litere art.331) | „Gard anti-regresie taxare inversa", „Gard nomenclator codPR" |
+| CODPR_N / categorie_331 | d394 | nomenclator lit.D (21-23/32-35) | „Gard rezumat1 campuri + datorie N" |
+| tip_partener (pct.216) | d394 | 4 categorii + _TARI_UE | „Gard clasificare tip_partener D394" |
+| nomenclator tari | d390 | prefixe TVA țări (HR...) | „Gard nomenclator tari Croatia HR" |
+| nomenclator cod_oblig↔cod_bugetar | d100/d112/d710 | coduri obligații BS/BASFS | „Gard cod_oblig <-> cod_bugetar", „Fix cont bugetar D100" |
+| UoM UN/ECE | d406 | UOM_UNECE (coduri Rec.20) | „Gard UoM UN/ECE D406" |
+| MovementType | d406 | 19 coduri nomenclator stocuri | (Inventar A d406; GARZI d406) |
+| SourceDocuments/TaxCode | d406 | coduri TaxCode livrări period-aware | „Gard TaxCode livrari period-aware D406" |
+| randuri / checksum (allow-list) | d300 (+d390/d394) | rânduri manuale acceptate (R12/R29...) | „Gard checksum + excludere 14.1/14.2 D300", „Gard de CLASA allow-list manual" |
+| limita text per-câmp | toate | LIMITE_TEXT_ANAF (C(n) per câmp) | „Gard de CLASA limita text per-camp" |
+| cote period-aware (COTE) | common/toate | fiecare cotă + fereastra ei | GARZI cat.3 „derivă legislativă" (gaura structurală) |
+| impozit dividend istoric | d205/decontari | 5%/8%/16% pe perioade | „Fix cote istorice impozit dividend" |
+| plafoane (cultural/creșă/diurnă/CM/masă) | salarizare/deconturi | ferestre pe ordine MF/MMSS | „tichete culturale/cresa", „plafon diurna", CM plafon |
+
+**Regula de citit tabelul:** oriunde codul are un `== (tuple)`, un `in SET`, un `dict[categorie]`, sau un `lookup(perioadă)`
+peste un nomenclator/cotă ANAF, bifa e expusă. Un pin ținut la zi PRIN CONSTRUCȚIE nu ajunge — el prinde driftul
+codului (cineva editează setul fără reverificare), NU creșterea lumii (ANAF adaugă un membru și nimeni nu atinge codul).
+
+### 5. Confruntare cu FUNCTIONALITATI.csv
+
+Stări în CSV (04.08): 172 LIVE · 3 PARTIAL · 3 PLANIFICAT · 6 AMANAT · 7 RESPINS · 10 ELIMINAT. Funcționalitățile
+NEabordate încă (relevante întrebării „cad sub criteriul unui cluster închis?"):
+
+- **PARTIAL: F035/F036/F037 (D406 SAF-T lunar/active/stocuri)** — CAD sub clustere d406 deja ÎNCHISE (SourceDocuments,
+  UoM, MovementType, plan conturi, TaxCode, registration_number, structura XSD). PARTIAL fiindcă validarea DUK
+  SEMANTICĂ e xfail (doar structura e verificată). Extinderea D406 (mai multe secțiuni SAF-T) va atinge aceste bife →
+  fiecare secțiune nouă cere reverificarea pin-urilor d406 corespunzătoare.
+- **PLANIFICAT: F123 (provider plată), F130 (Open Banking PSD2), F148 (arhivare cloud)** — sunt INTEGRĂRI/infrastructură,
+  NU declarații fiscale. NU cad sub niciun cluster fiscal (modelul de clustere acoperă generarea de declarații). Nu
+  amenință nicio bifă.
+
+Concluzie #5: printre funcționalitățile CSV neabordate, NICIUNA nu răstoarnă o bifă fiscală închisă (D406 e deja
+clusterizat; restul sunt integrări în afara modelului). **Riscul real de „bifă incompletă la implementare" NU vine din
+CSV** — vine din instanțele LAW-DRIVEN ale seturilor de la secțiunea 4 (o cotă TVA nouă, un tip de operațiune nou, un
+tichet nou, o categorie taxare-inversă nouă), care nu sunt „funcționalități" în CSV, ci apar când se schimbă legea.
+
+### 6. Ce se întâmplă când o instanță nouă satisface criteriul unui cluster închis: BUMP
+
+Procedura (dovedită de precedente): (1) se extinde pin-ul/garda ca să includă instanța nouă + PROBĂ la sursă (DUK sau
+MO); (2) bifa √ se **bumpează** la data reverificării, cu `bump: <motiv>` OBLIGATORIU în coloana Verificat
+(garda `test_agenda::test_bifa_bumpuita_are_motiv` respinge o bifă mutată înainte fără motiv — altfel bump-ul devine
+ornament); (3) dacă funcția de test s-a schimbat substanțial, garda anti-stale `test_verificarile_A` cere ca √ să fie
+≥ data commitului de schimbare (re-ancorare). Un cluster BLOCAT se REDESCHIDE (scoate marcajul `BLOCAT:`) când sursa
+devine disponibilă.
+
+**Tiparul bump-urilor** (cele 8 din Inventar A, `grep -in "bump:" TESTE.md`) — trei cauze distincte:
+- **(R1) o dependență s-a schimbat sub bifă** — o cotă (`salariu_minim` 3700→4050, HG 1506/2024, FIX5) sau o funcție-sursă
+  partajată (FIX3: net-ul asertat mutat în alt test). 5 bife: `facilitate salariu minim`, `suprataxare part-time`,
+  `proratare angajare/incetare` (salarizare), `suprataxare prag` (d112) — toate reset-ate de corecția `salariu_minim`;
+  exact ce urmărește `cote_cluster()`/graful.
+- **(R2) blocaj ridicat / acoperire extinsă** — PARTIAL→închis, sub-cluster adăugat: `concedii medicale` (PARTIAL 31.07 →
+  02.08), `tichete masa/vacanta` (sub-clustere D2/D3 adăugate).
+- **(R3) o instanță dintr-un SET extensibil, re-verificată la sursă** — `tipuri operatiune (pct.215)|d394` (03.08→04.08:
+  ASI scos din cod la greenlight Costin, pin mutat pe validatorul J8, datorie→gard invers) și `tichete culturale`
+  (02.08→04.08: fereastra oct2025-mar2026 confirmată la MO 240/470). ← EXACT cazul secțiunii 4.
+
+Tipar: bump-urile se grupează pe (R1) schimbări de dependență partajată (mai ales `salariu_minim`, propagat mecanic) și
+(R3) reverificarea unui set extensibil (declanșată de o DECIZIE umană, nu de un detector). ASI a stat pin-VERDE deși era
+greșit în pdf; discrepanța a fost prinsă de un gard-datorie (probă DUK izolată), dar rezolvarea a cerut greenlight Costin.
+
+### 7. Ce mecanism LIPSEȘTE pentru detectare automată
+
+**Nu există niciun mecanism care să detecteze automat că un SET EXTERN (nomenclator/cotă ANAF) a crescut un membru pe
+care pin-ul nu-l are.** Ambele garde existente operează pe starea CODULUI, nu a LUMII:
+- pin-ul (`SET == {...}`) prinde editarea setului în cod fără reverificare, NU adăugarea unui membru în lume (setul stă
+  neatins → pin verde);
+- garda anti-stale `test_agenda` prinde schimbarea CODULUI funcției de test după data √, NU schimbarea legii sub un cod
+  care stă (e UNIDIRECȚIONALĂ — vezi GARZI cat.3 „derivă legislativă", gaura structurală deschisă 31.07).
+
+E aceeași gaură ca la derivă legislativă: **nu există feed legislativ/nomenclator RO citibil mecanic** (dovedit repetat:
+WebFetch eșuează pe PDF-uri ANAF, MO se citește manual). Un detector automat ar cere, per set expus (secțiunea 4): o
+sursă externă a nomenclatorului oficial curent + o comparație periodică `SET_cod ⊆ SET_oficial` care semnalează membrii
+noi. Fără el, se DEGRADEAZĂ la **revizuire manuală periodică ghidată de registru**: pin-urile marchează UNDE să te uiți
+(cele 16 din secțiunea 4), data √ marchează CÂND s-a verificat ultima dată, iar `bump:` lasă urma reverificării.
+Substitutul parțial care există deja: `data_out` pe cote (refuză o valoare expirată — dar semnalează doar la CALCUL,
+nu la depunere, și nu vede schimbarea din interiorul ferestrei).
+
+**A doua gaură, în garda anti-stale însăși (nu doar în lume):** garda `test_agenda::test_verificarile_A` prinde
+schimbarea CODULUI unei funcții citate, DAR are un punct orb — un test ȘTERS, încă citat în coloana `functie` a unui
+cluster cu MAI MULTE fișiere, scapă. `_fisier_functie` caută funcția în fișierele clusterului la HEAD; dacă nu o
+găsește în niciunul (test șters), cade pe `fișier[0]`, iar `_functie_schimbata` compară `<ABSENT>` (la commitul √) cu
+`<ABSENT>` (la HEAD) în acel fișier unde funcția n-a existat niciodată → egal → NEstale. Dovadă empirică (04.08): bifa
+`taxare inversa|d394` a citat `test_datorie_gaze_naturale_taxare_inversa_art331_lit_l` mult după ce testul fusese scos
+(datoria gaze închisă în 6675f19), iar suita a rămas VERDE — garda n-a semnalat. Ce ar închide gaura: `_fisier_functie`
+să RIDICE (nu să cadă tăcut pe fișier[0]) când o funcție citată nu există în niciun fișier al clusterului — o citare
+moartă e ea însăși o formă de bifă stale (cluster care „acoperă" un test dispărut).
