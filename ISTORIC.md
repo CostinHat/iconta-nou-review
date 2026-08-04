@@ -2962,3 +2962,82 @@ sunt acoperite** de această rulare. „946 verzi" = logica pură + DB (prod, cu
 - **ce-verifici-cand-preiei-o-firma-de-la-alt-contabil** (F183). Art. 10 alin. (4) din Legea 82/1991, citat exact; balanța = art. 22 + OMFP 1802/2014. Punctul forte scris ca atare: motorul raportează ce NU verifică (asociați/mijloace fixe/salariați/vector) — gri vizibil.
 
 **Verificator TOTAL 0 și suita 946/946 după fiecare pas.**
+
+
+## 04.08.2026 — Campania „implementarile ramase": 5/7 livrate, 2 blocaje motivate, inchidere
+
+**Sapte puncte de implementare, fara oprire pana la epuizare. Rezultat: 5 livrate, 2 blocaje motivate.** Regula
+campaniei: dump de siguranta inainte de orice migrare pe tenanti reali; schema efemera intai; stop DOAR pe poarta
+rosie / arbore murdar / migrare tenant esuata / decizie de produs nederivabila din structura oficiala.
+
+**1. Migrare tichete culturale (C5) — LIVRAT.** CHECK-urile tabelei `beneficii_lunare` extinse (tip accepta
+'cultural', eveniment accepta 'ocazional', Legea 165/2018 cap.V). Migrat pe **tenant_001** (singurul tenant real,
+`migrare_tichet_cultural.verifica`=True) + mirror in `tenant_template.sql` pentru tenanti noi. Contabilul poate acorda
+acum tichete culturale — inainte constrangerea DB le respingea la insert.
+
+**2. Sectiunea 8.3 avantaje D112 (C4) — LIVRAT.** Bilete de valoare (masa/cresa/cadou/cultural/vacanta) agregate in
+**E3_60 cu suma >= componentele** (E3_10/72/73/74/75), fara sa atinga E3_8/E1_1 (regula S111). D112 declara corect
+avantajele — inainte lipseau sau erau sub-declarate.
+
+**3. Suport N in D394 (approach a conditionat) — LIVRAT PARTIAL.** Operatiunile N (achizitii de la parteneri
+NEINREGISTRATI) se **emit VALID** cand au `categorie_331` din nomenclatorul lit.D — tip_document=1, document_N=1,
+op11 codPR, detaliu nrN/valN — **PROBAT pe validatorul DUK J8** (`test_N_cu_categorie_litD_e_declarat_si_valid_pe_duk`).
+DESCOPERIRE pe parcurs care a schimbat abordarea: campul **`op1.tip_N` presupus in groundwork NU EXISTA in validatorul
+v5** (tiparul „ASI" — structura pdf spune un lucru, jar-ul instalat il respinge). Reframat pe tip_document + op11.codPR.
+Fara `categorie_331` (azi nu exista UI care s-o seteze) N ramane exclus cu avertisment vizibil (furnizor+suma numite),
+D394 valid pentru rest. **Reviziune Costin** a prins 3 defecte reale, toate reparate: nomenclatorul N gresit (folosea
+lit.C 21-36 in loc de lit.D 21-23/32-35 — ar fi emis coduri respinse), asertiunea gardului invers slaba („N" matcha
+orice), si clasificarea. Deblocajul complet ramane **UI categorie_331** (datorie).
+
+**4. D390 „ziua 15" art.284 (A2) — LIVRAT.** Camp **OPTIONAL** `data_faptului_generator` (nullable): incadrarea in
+perioada trece de pe data emiterii pe **exigibilitate = MIN(data_emitere, ziua 15 a lunii urmatoare faptului
+generator)**. O factura IC intarziata intra in perioada corecta; NULL = comportament vechi (backward-compat probat).
+Migrat pe tenant_001 + template. **Verificare la sursa a cazului INVERS** (factura de avans, emisa INAINTE de faptul
+generator): CF art.284 alin.(1) + art.282 alin.(2) lit.b — avansurile la exigibilitate imediata sunt DOMESTICE, nu IC;
+pentru IC formula MIN e corecta in ambele sensuri. Proba explicita adaugata in test (avans 28.07/fapt 05.08 ->
+exigibilitate iulie). Deblocaj: **UI de completare a campului** (datorie).
+
+**5. D177 (A3) — BLOCAJ MOTIVAT.** Predarea presupunea structura inobtenabila — infirmat: obtinuta (OPANAF 3562/2024,
+extractibila cu pdftotext pe server, salvata in `anaf_surse/` cu sha256). DAR D177 e o **cerere-formular PDF, nu o
+declaratie XML validata de jar DUK** — nu are autoritatea R17 pe care sta toata arhitectura. Mecanismul (PDF-form vs
+XML) + scope = decizie de produs. Blocaj cu cele 4 elemente, trecut mai departe.
+
+**6. Amortizare MF neliniara (C3) — BLOCAJ MOTIVAT.** Temeiuri culese complet (CF art.28 alin.5-8: liniara/degresiva
+coef 1,5/2,0/2,5/accelerata 50% an 1). Subsistem cu **reguli anuale** (switch degresiv->liniar, proratare an 1 partial,
+eligibilitate pe clasa de mijloc fix) — scop propriu, cluster MF/D406. Nu pe jumatate (o amortizare gresita = deducere
+fiscala eronata). `xfail` ramane ancora.
+
+**7. Plafoane cresa (C1) + culturale (C2) — C2 LIVRAT, C1 documentat.** Re-research la Monitorul Oficial.
+- **C2 cultural: CONFIRMAT LA PRIMAR + DEBLOCAT.** Obtinut textul operativ al Ordinului MF/MC 1.574/3.246/2025
+  (240 lei/luna, 470 lei/eveniment, MO 900/01.10.2025, acopera oct.2025-mar.2026 — fosta „fereastra GRI verdict 16").
+  Fereastra adaugata in `_FERESTRE_CULTURAL`, `_CULTURAL_GRI=None`. Progresie coerenta 220/450 -> **240/470** -> 250/490.
+  Contabilul primeste acum plafonul automat — inainte era blocat cu eroare motivata.
+- **C1 cresa: CONFIRMAT LA EMITENT, dar NEAPLICAT.** Indexarea 740 (S1 2026, Ordin MF/MMSS 368/179/2026, MO
+  249/31.03.2026) confirmata la mmuncii.gov.ro + MO-referinta din surse multiple, DAR textul operativ al ordinului nu
+  s-a obtinut (primar strict), `plafon_cresa` n-are mecanism de ferestre datate, iar valorile intermediare (710) nu-s
+  cercetate -> cap conservator 450, nota upgrade-uita cu confirmarea + data incercarii.
+
+**Igiena pe drum: scurgere de tempdir-uri in core/duk.py.** Fiecare validare facea `tempfile.mkdtemp()` si NU curata
+niciodata — **23332 directoare `/tmp/duk_*` acumulate**. Reparat cu `try/finally: shutil.rmtree(...)` (continutul citit
+INAINTE de stergere, cele 3 stari valid/erori/gri pastrate). Verificat: numarul de `/tmp/duk_*` ramane constant dupa o
+rulare pytest DUK-grea.
+
+**Inchidere onesta.** RAPORT FINAL scris in PREDARE_IMPLEMENTARI.md (implementat vs blocaj, efect pe produs, stare
+migrari, sold datorii, si EXPLICIT **ce mai lipseste ca produsul sa iasa din mentenanta**: deriva legislativa
+nedetectata = gaura STRUCTURALA — nu exista feed legislativ RO mecanic, degradeaza la revizuire manuala ghidata de
+registru; restul — UI in urma motorului, flag real de platitor TVA, garduri de CONTINUT nu doar structura, operational
+— sunt lucrari finite). Datoriile noi ale campaniei scrise in **GARZI.md** (locul canonic): clasifica_partener infera
+platitorul TVA din forma CUI nu din flag real, UI categorie_331, UI data_faptului_generator, D177 canal. Corectate ca
+STALE in GARZI (onestitate): intrarea N (approach-b -> approach-a conditionat; un rand de tabel cita un test inexistent
+-> inlocuit cu testele reale). **Sold xfail NESCHIMBAT de campanie** (28 in test_datorie.py la baseline = 28 acum) —
+zero regresii verzi-false; datoriile noi sunt garduri DATORIE live / blocaje / goluri de UI, nu xfail.
+
+**Gardul anti-stale test_agenda a muscat corect la inchidere.** Redenumirea testului cultural
+(`test_plafon_cultural_fereastra_gri_blocheaza` -> `..._oct2025_mar2026_confirmat_240_470`) a intrat in HEAD la
+commit-ul pct.7; garda (care citeste git HEAD) a cerut la commit-ul urmator **re-ancorarea bifei Inventar A** (√ 02.08
+-> 04.08, reverificat la sursa) + un **`bump: <motiv>`** documentat (al doilea gard, ca bumpul de data sa nu devina
+ornament). Ambele satisfacute — nu ocolite.
+
+**Poarta verde dupa fiecare punct.** Suita completa **1371 passed**, verificator **TOTAL 0**, la fiecare commit.
+Push de siguranta pe `backup/lant-20260803` dupa fiecare pas (commit final d9eb392). **Niciun push pe main** — decizia
+lui Costin.
