@@ -170,13 +170,18 @@ că intrarea a fost înghițită**.
 - ACOPERIT (02.08.2026): **tichete culturale** (Legea 165/2018 cap.V). GARD `test_bilete_valoare_declara_
   toate_tratamentele` (BILETE_VALOARE_TRATAMENT): fiecare bilet de valoare declara EXPLICIT cele 4 tratamente
   (impozit/CAS/CASS/CAM) + sursa plafonului; **MUTATIE**: adaugi un tip nou fara declaratie -> pica. + GARD
-  plafon semestrial `plafon_cultural()`: fereastra GRI (oct.2025-mar.2026) BLOCATA motivat in beneficii_api.seteaza
-  (test_cultural_seteaza_gri_blocat), NU se calculeaza tacit cu 240/470. Divergenta esentiala vs etalon:
+  plafon semestrial `plafon_cultural()`: fereastra oct.2025-mar.2026 CONFIRMATA la PRIMAR (04.08.2026, Ordin
+  MF/MC 1.574/3.246/2025, MO 900/01.10.2025 - 240 lei/luna, 470 lei/eveniment; era GRI verdict 16 pana la reconfirmare)
+  in _FERESTRE_CULTURAL (_CULTURAL_GRI=None), test_plafon_cultural_oct2025_mar2026_confirmat_240_470 +
+  test_cultural_db_oct2025_confirmat_insereaza. Progresie 220/450 -> 240/470 -> 250/490. Divergenta esentiala vs etalon:
   culturalul NU are CASS (art.157(2)) - test_cultural_diferit_de_masa_pe_cass.
 - ACOPERIT (02.08.2026): **tichete de cresa** (Legea 165/2018 art.19). Tratament = ca CULTURAL (impozit
   10%, FARA CAS/CASS/CAM), in registru BILETE_VALOARE_TRATAMENT (gardul 4 tratamente il acopera). GARD plafon
-  `plafon_cresa()` = 450/copil (baza art.19(1) confirmata); grant peste baza (indexare 740 GRI verdict 17, mmuncii
-  503) BLOCAT motivat in beneficii_api.seteaza (test_cresa_seteaza_peste_plafon_*), NU se aplica 740 tacit.
+  `plafon_cresa()` = 450/copil (baza art.19(1) confirmata); indexarea 740 (S1 2026, Ordin MF/MMSS 368/179/2026,
+  MO 249/31.03.2026) e CONFIRMATA la EMITENT (mmuncii.gov.ro) + MO-referinta (04.08.2026), dar NEAPLICATA: textul
+  operativ al ordinului neobtinut + plafon_cresa n-are mecanism de ferestre datate (ca plafon_cultural) + valorile
+  intermediare (710) necercetate. Cap conservator 450, BLOCAT motivat in beneficii_api.seteaza
+  (test_cresa_seteaza_peste_plafon_*), NU se aplica 740 tacit (era GRI verdict 17).
   Divergenta CASS vs etalon (cresa fara CASS, art.157(2)) prinsa de registru + test_cresa_in_registru_fara_cass.
 - ACOPERIT (02.08.2026): **IMCA - impozit minim pe cifra de afaceri** (CF art.18^1) in d101. Formula
   1% x (VT-Vs-I-A) (negativ -> 0) + prag 50 mil euro + wiring P47 + comparatie P48. GARD prin teste de VALOARE
@@ -598,10 +603,15 @@ Temei: struct D100 poz.17a - "daca cod_oblig=121 atunci cota=1 altfel cota=null"
 
 ## 04.08.2026 — DATORIE: suport COMPLET operatiuni N (D394) - ce lipseste (decizie Costin, approach a viitor)
 
-STARE CURENTA (approach b, livrat 04.08): operatiunile N (achizitii de la parteneri NEINREGISTRATI, tip_partener=2)
-se EXCLUD din D394 cu avertisment vizibil (numeste furnizor+suma in res.avertismente). D394 ramane valid pentru rest.
+STARE CURENTA (approach a CONDITIONAT, livrat 04.08 dupa reviziune): operatiunile N (achizitii de la parteneri
+NEINREGISTRATI, tip_partener=2) se EMIT VALID cand au `categorie_331` din nomenclatorul lit.D (tip_document=1 facturi,
+document_N=1, op11 codPR, detaliu nrN/valN) - PROBAT DUK (test_N_cu_categorie_litD_e_declarat_si_valid_pe_duk). FARA
+categorie_331 (azi nu exista UI care s-o seteze) N ramane EXCLUS cu avertisment vizibil (furnizor+suma), D394 valid
+pentru rest. Categorie ne-lit.D -> exclusa, nu emite cod invalid (test_N_categorie_ne_litD_e_exclusa).
 
-CE LIPSESTE pentru implementarea COMPLETA (a) - campanie proprie, dupa ce se decide UI-ul:
+CE MAI LIPSESTE (dupa livrarea approach-a conditionat) - campanie proprie, dupa ce se decide UI-ul:
+- **UI categorie_331** - fara ecran care sa seteze categoria art.331 pe operatiunea de la neinregistrat, N ramane
+  exclus in calea auto. Deblocajul principal. (Datorie in sectiunea „04.08 Datorii deschise ale campaniei".)
 - **op1.tip_N** (pct.229: 1=bunuri / 2=servicii) - OBLIGATORIU pt tip N. E CONTINUT DECLARAT, nu derivabil din
   factura fara ambiguitate -> CAMP NOU de introdus de CONTABIL, cu UI (pe factura/operatiunea de la neinregistrat).
 - **op1.tip_document** (pct.228: 1=facturi / 2=borderouri / 3=file carnet comercializare / 4=contracte / 5=alte) -
@@ -657,13 +667,14 @@ sunt validator-confirmate, inclusiv gaze_naturale 36 (fostul blocaj lit.l, rezol
 ## 04.08.2026 — Gard rezumat1 campuri + datorie N (cluster "rezumat1 campuri complete")
 
 Temei: rezumat1 D394 cere campurile COMPLETE (0-umplut) pe (tip_partener, cota), setul din validatorul RULAT
-(J8). Pentru parteneri inregistrati/straini = verificat J8-valid. NECONFORMITATE ACTIVA: operatiunile N
-(neinreg, auto din achizitii fara CUI) respinse de J8 (lipsa tip_document/tip_N/document_N).
+(J8). Pentru parteneri inregistrati/straini = verificat J8-valid. N (neinreg): cu categorie_331 lit.D emite
+document_N/tip_document/codPR si e J8-VALID (approach a conditionat, 04.08); fara categorie_331 = exclus (UI lipsa).
 
 | gard | fisier | ce face imposibil | mutatia care il probeaza |
 |---|---|---|---|
 | rezumat1 tp1/tp3 complet + J8-valid | core/test_d394.py (test_rezumat1_campuri_complete_tp1_tp3_valide_pe_validator) | un camp rezumat1 lipsa/in plus pt parteneri inreg/straini | L(tp1)+A(tp1)+L(tp3) -> DUK valid |
-| N neinreg respins de J8 = consemnat (datorie) | core/test_d394.py (test_rezumat1_tp2_neinreg_N_respins_de_validator_DATORIE) | ca bug-ul N sa dispara tacit | achizitie fara CUI -> N -> DUK respinge (document_N/tip_document); daca J8 accepta, pica |
+| N cu categorie lit.D = J8-valid (emis) | core/test_d394.py (test_N_cu_categorie_litD_e_declarat_si_valid_pe_duk) | ca emisia N valida sa regreseze tacit | achizitie neinreg + categorie lit.D -> N emis (document_N/tip_document/codPR) -> DUK valid |
+| N emis fara campurile cerute ar fi respins (gard invers) | core/test_d394.py (test_N_ar_fi_respins_de_validator_daca_emis_GARD_INVERS) | ca un N incomplet sa para acceptat | N emis fara document_N/tip_document -> DUK respinge (R228/R60) |
 
 
 ## 04.08.2026 — Gard clasificare tip_partener D394 (cluster "tip_partener")
@@ -806,3 +817,26 @@ Temei: structura ANAF D112, Nomenclator 3 (Obligatii de plata BS/BASFS). Coduril
 | gard | fisier | ce face imposibil | mutatia care il probeaza |
 |---|---|---|---|
 | perechea cod_oblig/cod_bugetar | core/test_d112.py (test_cod_oblig_pereche_cu_cod_bugetar_corect) | inversarea codului bugetar (ex. 480 CAM cu 5503XXXXXX in loc de 20470300XX) | 480 -> 20470300XX; 602/412/432 -> 5503XXXXXX |
+
+
+## 04.08.2026 — Datorii deschise de campania „implementarile ramase" (registrul canonic)
+
+Campania a livrat 5/7 puncte si a lasat urmatoarele deschise. Cele deja in registru se REFERENTIAZA, nu se
+duplica (regula sursei unice). NOI in GARZI:
+
+| datorie | unde | de ce e deschisa | ce o inchide |
+|---|---|---|---|
+| clasifica_partener infera platitor TVA din FORMA CUI, nu din flag real | core/d394.py:260 (clasifica_partener) | un PJ neplatitor de TVA (CUI valid dar nu inregistrat in scop TVA) nu e distins de o persoana fizica: fara CUI/CUI-invalid -> P_NEINREG (tip 2) -> pe achizitie devine N (exclus + avertisment); CUI numeric valid -> P_TVA_RO (tip 1) desi nu-i platitor. Heuristica pe forma, nu pe realitate | flag `platitor_tva` pe partener in DB (verificare VIES/ANAF), clasificare pe flag nu pe forma. Decizie de produs Costin |
+| categorie_331 (taxare inversa / N op11) fara UI | core/d394.py (codpr_N_din_categorie, CODPR) - camp citit, negenerabil din factura | codPR-ul op11 (art.331) si tip N cer CATEGORIA declarata de contabil (cereale/deseuri/masa lemnoasa/gaze...); azi nu exista ecran care s-o seteze -> operatiunile raman neclasificate | ecran pe factura/operatiune care seteaza categorie_331 din nomenclatorul art.331 |
+| data_faptului_generator (D390 ziua 15) fara UI | tenant_template.sql + tenant_001 (coloana migrata) | coloana OPTIONALA exista si pull() o foloseste (exigibilitate = MIN(data_emitere, ziua 15)), dar niciun ecran n-o completeaza -> ramane NULL -> comportament = data_emitere (backward-compat, corect, dar functia nefolosibila pana la UI) | camp pe factura IC de completat cand faptul generator difera de data emiterii |
+| D177 canal de emitere (formular, nu declaratie XML) | anaf_surse/OPANAF_3562_2024_D177.* (structura salvata) | D177 e o CERERE-formular PDF, nu un XML validat de jar DUK -> nu are autoritatea R17 pe care sta arhitectura; mecanismul (PDF-form vs XML) + scope = decizie de produs | Costin decide canalul (PDF-form dedicat) si daca D177 intra in scope |
+
+Deja in registru (REFERINTA, nu duplic):
+- **tip_document 2-5 + tip_N + document_N (suport N complet D394)** -> sectiunea „04.08 DATORIE: suport COMPLET
+  operatiuni N (D394)". Approach b livrat (N exclus+avertisment); approach a = campanie proprie.
+- **amortizare MF neliniara (degresiva/accelerata art.28 alin.5-8)** -> Categoria 3, `xfail
+  test_datorie_mf_metode_amortizare`. Subsistem MF, impact pe amortizarea contabila/D406, nu pe d101.
+
+SOLD xfail: NESCHIMBAT de campanie (28 markeri in test_datorie.py la baseline 3dbb175 = 28 acum; ~21 xfail runtime).
+Datoriile noi de mai sus NU sunt xfail - sunt garduri DATORIE live (N respins de J8 = consemnat), blocaje motivate
+in DECIZII, sau goluri de UI documentate. Campania nu a introdus regresii verzi-false.

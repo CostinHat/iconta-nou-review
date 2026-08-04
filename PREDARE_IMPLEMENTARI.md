@@ -99,3 +99,60 @@ si `common.plafon_cultural` au deja structura de ferestre datate - adaugi o intr
   NU heredoc inline in `ssh '...'` cu `$`/`!`/ghilimele - se ciocnesc. Commit cu ghilimele: `git commit -F fisier`.
 - DUK: `from core import duk; duk.valideaza(xml, "d394", an=..., luna=...)` -> {stare: valid/erori/gri, erori}.
   d394 foloseste J8 (validatorul instalat curent). Pattern probe: monkeypatch/ construieste res + build_xml + valideaza.
+
+
+---
+
+# RAPORT FINAL — campania „implementarile ramase" (04.08.2026)
+
+## 1. Implementat vs blocaj (motiv intr-o linie)
+
+| # | Punct | Stare | Motiv (o linie) |
+|---|---|---|---|
+| 1 | C5 migrare tichete culturale | **IMPLEMENTAT** | CHECK-uri beneficii_lunare extinse (tip 'cultural', eveniment 'ocazional'); migrat tenant_001 |
+| 2 | C4 sectiunea 8.3 avantaje D112 | **IMPLEMENTAT** | E3_10/72/73/74/75 -> E3_60 (suma >= componentele), fara sa atinga E3_8/E1_1 |
+| 3 | Suport N D394 | **IMPLEMENTAT PARTIAL** (approach a conditionat) | N emis VALID (DUK-probat) cu categorie_331 lit.D; fara categorie = exclus+avertisment. Deblocaj = UI categorie_331 |
+| 4 | D390 ziua 15 art.284 | **IMPLEMENTAT** | camp OPTIONAL data_faptului_generator; exigibilitate = MIN(data_emitere, ziua 15); migrat tenant_001. Deblocaj = UI de completare |
+| 5 | D177 | **BLOCAJ MOTIVAT** | e cerere-formular PDF, nu declaratie XML validata de jar DUK -> nu are autoritatea R17; canal = decizie produs |
+| 6 | Amortizare MF neliniara | **BLOCAJ MOTIVAT** | subsistem cu reguli anuale (switch degresiv->liniar, proratare, eligibilitate pe clasa); impact D406, nu d101 |
+| 7 | C1 cresa / C2 culturale | **C2 IMPLEMENTAT, C1 BLOCAJ** | C2: cultural 240/470 confirmat la primar + deblocat. C1: cresa 740 confirmat la emitent, dar text ordin neobtinut + mecanism ferestre lipsa |
+
+**Bilant: 5/7 livrate (1,2,3-partial,4,7-C2), 2 blocaje motivate + 1 sub-blocaj (C1).**
+
+## 2. EFECT PE PRODUS (ce poate face contabilul azi si nu putea inainte)
+
+1. **Acorda tichete culturale** (lunar + pe eveniment ocazional) — baza le accepta acum; inainte CHECK-ul beneficii_lunare le respingea la insert.
+2. **D112 declara corect avantajele sect.8.3** — masa/cresa/cadou/cultural/vacanta agregate in E3_60 cu suma >= componentele; inainte lipseau sau erau sub-declarate.
+3. **D394 cu achizitii de la neinregistrati (N) categorizate art.331 iese VALIDA** — inainte orice operatiune N o facea neconforma/respinsa de J8. Fara categorie: exclus + numit in avertisment (nu tacut).
+4. **D390 incadreaza facturile IC pe exigibilitate** (MIN data_emitere / ziua 15 luna+1 fapt generator) — o factura intarziata intra in perioada corecta cand campul e completat; NULL = comportament vechi (data_emitere), backward-compat probat in ambele sensuri (intarziat SI avans).
+5. **Plafon cultural oct.2025-mar.2026 calculat automat 240/470** — inainte era blocat GRI (contabilul primea eroare motivata, nu putea seta).
+
+## 3. Stare migrari pe tenanti
+
+- **Aplicate pe tenant_001** (singurul tenant real): C5 (`migrare_tichet_cultural.verifica`=True, pe beneficii_lunare) + `data_faptului_generator` (coloana prezenta pe facturi).
+- **In tenant_template.sql** (sursa unica pt tenanti NOI): ambele. NU exista schema live `tenant_template` in DB — provisionarea ruleaza fisierul .sql, auditat F165 (audit_schema.py, drift template->tenant = HARD).
+- **Nimic ramas „doar in fisier"** care ar trebui aplicat pe tenant_001. Fara tenant partial.
+
+## 4. Sold datorii
+
+- **xfail: NESCHIMBAT.** 28 markeri in test_datorie.py la baseline 3dbb175 (inainte de campanie) = 28 acum (~21 xfail runtime). Campania **nu a introdus xfail nou si nici regresii verzi-false**.
+- **Datorii NOI create de campanie** — toate scrise acum in GARZI.md (locul canonic; sectiunea „04.08 Datorii deschise ale campaniei" + Categoria 3):
+  - `clasifica_partener` infera platitor TVA din FORMA CUI, nu din flag real -> risc de misclasificare N (PJ neplatitor TVA vs persoana fizica).
+  - **UI categorie_331** lipsa -> N in calea auto ramane exclus (deblocajul principal al pct.3).
+  - **UI data_faptului_generator** lipsa -> D390 ziua-15 nefolosibil pana la ecran (coloana e OPTIONALA, NULL = corect).
+  - **D177 canal** de emitere (formular PDF vs XML) — decizie produs.
+- **Referinta (deja in GARZI, nu duplicat):** tip_document 2-5 + tip_N (N complet); amortizare MF neliniara (Categoria 3, xfail existent).
+- **Corectate ca stale in GARZI** (onestitate): fereastra cultural (GRI -> confirmat 240/470), cresa (740 GRI verdict 17 -> confirmat la emitent/neaplicat), intrarea N (approach-b -> approach-a conditionat; rand de tabel cu test inexistent inlocuit cu testele reale).
+
+## 5. Ce mai lipseste ca produsul sa IASA DIN MENTENANTA (intrebarea principala)
+
+Onest: **nu poate iesi complet**, din cauza unei singure gauri structurale — dar restul sunt lucrari finite.
+
+1. **Deriva legislativa nedetectata (gaura structurala #1).** `cota()` refuza valori dupa `data_out`, dar o schimbare de lege **intre data_in si data_out** e invizibila. Nu exista feed legislativ RO mecanic fiabil (dovedit repetat in campanie: WebFetch esueaza, MO se citeste manual). -> degradeaza la **revizuire manuala periodica ghidata de GARZI/temeiuri structurate**, nu la automatizare. Asta tine produsul in mentenanta prin natura domeniului.
+2. **UI in urma motorului.** Mai multe functii livrate sunt „oarbe" fara ecran: categorie_331, data_faptului_generator, tip_N. Motorul stie sa le foloseasca; contabilul nu le poate seta. **Lucrare finita** (ecrane), nu structurala.
+3. **Flag real de platitor TVA pe partener** (VIES/ANAF) — inchide misclasificarea N din `clasifica_partener` (azi pe forma CUI). Finita.
+4. **Garduri de CONTINUT, nu doar structura.** DUK valideaza structura, nu semantica (GARZI cat.4). Lipsesc: totaluri reconciliate pe a DOUA cale de calcul, snapshot de regresie pe fixturi inghetate, mutantul-zero sistematic (azi ad-hoc). O declaratie structural-valida dar semantic-gresita inca poate trece.
+5. **Subsisteme blocate pe decizie de produs:** amortizare MF neliniara (campanie proprie), D177 (canal). Pana nu-s decise, raman gauri cunoscute.
+6. **Operational:** proba de restaurare backup automata periodica (azi one-shot manual), verificare nocturna Sigma debit = Sigma credit per tenant/perioada, deadman EXTERN pentru heartbeat (azi verificatorul ruleaza pe acelasi server).
+
+**Concluzie:** punctele 2-4 si 6 sunt lucrari finite care ar muta produsul de la „reactiv" spre „proactiv gardat". Punctul 1 (deriva legislativa) ramane structural si se gestioneaza prin disciplina de revizuire ghidata de registru — nu prin cod.
