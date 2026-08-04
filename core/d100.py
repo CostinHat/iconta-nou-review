@@ -140,7 +140,17 @@ def calcul_d100(prof, an, luna, obligatii):
             raise ValueError("D100: cod_oblig %r fara cont bugetar (nu e in nomenclatorul COD_BUGETAR); "
                              "atributul cod_bugetar e OBLIGATORIU (ANAF C(10)), nu se omite tacit." % cod)
         zi_s, luna_s, an_s = _scadenta_zile(an, luna)
-        scad_str = o.get("scadenta") or ("%02d.%02d.%04d" % (zi_s, luna_s, an_s))
+        # scadenta manuala (override): nr_evid EMBEDA scadenta (poz.12-17), verificata de DUK regula R16
+        # fata de atributul scadenta - deci nr_evid TREBUIE derivat din ACEEASI data, nu din cea calculata
+        # (acelasi footgun ca la d710, generalizat pe clasa d100/d710 la 04.08.2026).
+        scad_manual = o.get("scadenta")
+        if scad_manual:
+            parti = str(scad_manual).strip().split(".")
+            if (len(parti) != 3 or not all(x.isdigit() for x in parti)
+                    or len(parti[0]) != 2 or len(parti[1]) != 2 or len(parti[2]) != 4):
+                raise ValueError("D100: scadenta manuala %r nu e in formatul ZZ.LL.AAAA." % scad_manual)
+            zi_s, luna_s, an_s = int(parti[0]), int(parti[1]), int(parti[2])
+        scad_str = "%02d.%02d.%04d" % (zi_s, luna_s, an_s)
         obl.append(Obligatie(
             cod_oblig=cod, suma_dat=suma, cod_bugetar=cod_bug, scadenta=scad_str,
             nr_evid=_nr_evid(cod, luna, an, zi_s, luna_s, an_s),

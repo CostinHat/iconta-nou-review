@@ -125,7 +125,18 @@ def calcul_d710(prof, perioada, date, manual=None):
         if di <= 0 and dc <= 0:
             continue
         zi_s, luna_s, an_s = _scadenta_d710(cod, an, luna)
-        scad = o.get("scadenta") or ("%02d.%02d.%04d" % (zi_s, luna_s, an_s))
+        # scadenta manuala (override): nr_evid EMBEDA scadenta (poz.12-17) si DUK regula R16 o verifica fata
+        # de atributul scadenta - deci nr_evid TREBUIE derivat din ACEEASI data, nu din cea calculata. Fara
+        # asta, o scadenta alternativa valida (ex. cod 103 trim4 accepta 25.12 SAU 25.01) primea nr_evid pe
+        # data calculata -> respins de DUK regula R16 (dovedit 04.08.2026).
+        scad_manual = o.get("scadenta")
+        if scad_manual:
+            parti = str(scad_manual).strip().split(".")
+            if (len(parti) != 3 or not all(x.isdigit() for x in parti)
+                    or len(parti[0]) != 2 or len(parti[1]) != 2 or len(parti[2]) != 4):
+                raise ValueError("D710: scadenta manuala %r nu e in formatul ZZ.LL.AAAA." % scad_manual)
+            zi_s, luna_s, an_s = int(parti[0]), int(parti[1]), int(parti[2])
+        scad = "%02d.%02d.%04d" % (zi_s, luna_s, an_s)
         # Gard anti-drop (ca la d100): cod_bugetar per cod_oblig din nomenclatorul COD_BUGETAR (sursa
         # unica d100). Un cod fara cont bugetar (nemapat SI fara valoare manuala) ar emite un XML fara
         # atributul cod_bugetar -> respins de validator (R14a "cod bugetar trebuie sa fie = X"). Ridicam

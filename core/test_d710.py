@@ -234,3 +234,72 @@ def test_checksum_r11b_multi_obligatie_si_duk():
         xbad = re.sub(r'totalPlata_A="\d+"', 'totalPlata_A="9999"', xml)
         bad = duk.valideaza(xbad, "d710")
         assert bad["stare"] != "valid" and "R11b" in bad["erori"], "totalPlata_A gresit ar trebui respins R11b"
+
+
+def test_r15_termen_definitivare_micro_trim4_duk():
+    """Cluster R15 termen definitivare | d710. Cod 121 (micro), trimestrul 4 (luna 12): scadenta = 25.06
+    an urmator = termenul de DEFINITIVARE, NU 25.01. Confirmat pe DUK 04.08.2026 (DUK regula R15): pentru
+    cod_oblig=121 luna=12, o scadenta gresita e respinsa cu EROARE 'R15: scadenta (X) ar fi trebuit sa fie
+    25.06.2026' (valoare UNICA, eroare - nu avertisment). Celelalte trimestre 121: 25 a lunii urmatoare.
+    (Contrast cod 103 profit trim4: 25.01 sau 25.12, doar avertisment.)"""
+    from core.d710 import _scadenta_d710, calcul_d710 as _c, build_xml
+    from core.common import Perioada
+    import core.duk as duk
+
+    # unit: cod 121 trim4 -> 25.06 an+1 (stabil pe an); alt trimestru -> 25 luna urmatoare
+    assert _scadenta_d710("121", 2025, 12) == (25, 6, 2026)
+    assert _scadenta_d710("121", 2026, 12) == (25, 6, 2027)
+    assert _scadenta_d710("121", 2025, 3) == (25, 4, 2025)
+
+    # DUK-backed: scadenta calculata (25.06.2026) valida; una gresita -> R15 cu 25.06.2026 revelat (dinti)
+    if duk.poate_valida("d710"):
+        prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti"}
+        def mk(scad=None):
+            o = {"cod_oblig": "121", "suma_dat_i": 100, "suma_dat_c": 150, "cota": "1"}
+            if scad:
+                o["scadenta"] = scad
+            return build_xml(_c(prof, Perioada(2025, luna=12), {}, {"obligatii": [o]}))
+        assert duk.valideaza(mk(), "d710")["stare"] == "valid", "scadenta definitivare calculata ar trebui valida"
+        bad = duk.valideaza(mk("25.01.2026"), "d710")
+        assert bad["stare"] != "valid" and "R15" in bad["erori"] and "25.06.2026" in bad["erori"], \
+            "R15 ar trebui sa ceara 25.06.2026 pt cod 121 trim4"
+
+
+def test_scadente_nr_evid_urmeaza_scadenta_emisa():
+    """Cluster scadente | d710. Scadenta calculata: 25 a lunii urmatoare (standard) + exceptia micro trim4
+    (cod 121 luna 12 -> 25.06 an urmator, cluster R15). Confirmat pe DUK 04.08.2026 (DUK regula R15): cod 121
+    toate trimestrele (25.04/25.07/25.10 + 25.06 trim4, EROARE strict), cod 103 (25.01 sau 25.12 trim4,
+    avertisment). NECONFORMITATE reparata (footgun pe override): nr_evid EMBEDA scadenta (poz.12-17) si
+    DUK regula R16 o verifica fata de atributul scadenta. Codul folosea scadenta CALCULATA pentru nr_evid chiar
+    cand atributul scadenta era override manual -> mismatch. Dovedit pe DUK 04.08: cod 103 trim4 cu scadenta
+    alternativa VALIDA (25.12.2025, acceptata de R15) primea nr_evid pe 25.01 -> respins DUK regula R16
+    'nr_evid - scadenta platii eronata'. REPARAT: nr_evid derivat din ACEEASI data ca scadenta emisa."""
+    import pytest
+    from core.d710 import _scadenta_d710, calcul_d710 as _c, build_xml
+    from core.common import Perioada
+    import core.duk as duk
+
+    # unit: standard = 25 a lunii urmatoare
+    assert _scadenta_d710("103", 2025, 3) == (25, 4, 2025)
+    assert _scadenta_d710("103", 2025, 12) == (25, 1, 2026)
+
+    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti"}
+
+    # nr_evid URMEAZA scadenta emisa: cu override, poz.12-17 (index 11:17) = ZZLLAA al scadentei override
+    o = {"cod_oblig": "103", "suma_dat_i": 500, "suma_dat_c": 400, "scadenta": "25.12.2025"}
+    ob = _c(prof, Perioada(2025, luna=12), {}, {"obligatii": [o]}).obligatii[0]
+    assert ob.scadenta == "25.12.2025"
+    assert ob.nr_evid[11:17] == "251225", "nr_evid nu urmeaza scadenta override: %s (poz12-17=%s)" % (ob.nr_evid, ob.nr_evid[11:17])
+
+    # fara override, nr_evid urmeaza scadenta calculata
+    ob2 = _c(prof, Perioada(2025, luna=12), {}, {"obligatii": [{"cod_oblig": "103", "suma_dat_i": 500, "suma_dat_c": 400}]}).obligatii[0]
+    assert ob2.scadenta == "25.01.2026" and ob2.nr_evid[11:17] == "250126"
+
+    # scadenta override in format gresit -> ValueError (nu XML tacit stricat)
+    with pytest.raises(ValueError):
+        _c(prof, Perioada(2025, luna=12), {}, {"obligatii": [{"cod_oblig": "103", "suma_dat_i": 500, "suma_dat_c": 400, "scadenta": "2025-12-25"}]})
+
+    # DUK-backed: scadenta alternativa valida (25.12.2025) NU mai da R16 (nr_evid consistent)
+    if duk.poate_valida("d710"):
+        r = duk.valideaza(build_xml(_c(prof, Perioada(2025, luna=12), {}, {"obligatii": [o]})), "d710")
+        assert "R16" not in r["erori"], "nr_evid inca inconsistent cu scadenta override (R16): %s" % r["erori"]

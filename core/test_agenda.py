@@ -384,8 +384,14 @@ def test_secventa_prinde_inversiune():
 
 
 def test_secventa_persistata_e_topologica():
-    """Secventa persistata din TESTE.md respecta graful (niciun cluster inaintea unei dependente din secventa)."""
+    """Secventa persistata din TESTE.md respecta graful (niciun cluster inaintea unei dependente din secventa).
+    STARE TERMINALA (04.08.2026): cand TOATE clusterele nebifate-neblocate au fost verificate, secventa e GOALA
+    - stare valida de campanie completa, NU sectiune stearsa. Garda de stergere ramane: daca mai sunt clustere
+    de verificat (calc ne-gol) dar secventa persistata e goala, tot pica."""
     per = agenda.secventa_persistata()
+    calc, _neord = agenda.secventa_calculata()
+    if not calc and not per:
+        return  # campanie completa: nimic de ordonat, secventa goala e corecta
     assert per, "secventa persistata lipseste din TESTE.md"
     seq_ids = [(cl, mod) for _, cl, mod in per]
     viol = agenda._violari_topologice(seq_ids, agenda.graf_clustere())
