@@ -223,3 +223,84 @@ def test_registration_number_partener_si_firma_proprie():
     assert rn({"cui": "12345678", "platitor_tva": False}) == "12345678"       # neplatitor: fara RO
     assert rn({"cui": "12345678"}) == "RO12345678"    # implicit platitor (majoritatea D406)
     assert rn({"cui": ""}) == ""
+
+
+def _res_d406_complet():
+    """Un D406 cu TOATE sub-sectiunile SourceDocuments populate (vanzari+cumparari+plati+note),
+    profil minim izolat. CUI-uri reale, deja acceptate de validator (ALTEX 4221306)."""
+    from decimal import Decimal
+    from datetime import date
+    from core import d406 as m
+    prof = {"cui": "14399840", "nume": "FIRMA TEST SRL", "adresa": "Str. Test 1", "oras": "Bucuresti",
+            "cod_postal": "010101", "baza_contabila": "A", "platitor_tva": True}
+    CID = "004221306"
+    conturi = [m.Cont(id="4111", descriere="Clienti", cont_standard="4111", tip="Activ"),
+               m.Cont(id="707", descriere="Venituri marfuri", cont_standard="707", tip="Pasiv"),
+               m.Cont(id="4427", descriere="TVA colectata", cont_standard="4427", tip="Pasiv"),
+               m.Cont(id="401", descriere="Furnizori", cont_standard="401", tip="Pasiv"),
+               m.Cont(id="371", descriere="Marfuri", cont_standard="371", tip="Activ"),
+               m.Cont(id="4426", descriere="TVA deductibila", cont_standard="4426", tip="Activ"),
+               m.Cont(id="5121", descriere="Banca", cont_standard="5121", tip="Activ")]
+    client = [m.Partener(id=CID, nume="ALTEX ROMANIA SRL", cui="RO4221306", oras="Bucuresti")]
+    nota = m.Nota(id="1", data=date(2026, 6, 10), descriere="Contare factura 1", linii=[
+        m.LinieNota(record_id="1", cont="4111", descriere="", debit=Decimal("1210"), credit=Decimal("0"), cont_partener_id=CID),
+        m.LinieNota(record_id="2", cont="707", descriere="", debit=Decimal("0"), credit=Decimal("1000"), cont_partener_id=CID),
+        m.LinieNota(record_id="3", cont="4427", descriere="", debit=Decimal("0"), credit=Decimal("210"), cont_partener_id=CID)])
+    fv = m.Factura(nr="1", data=date(2026, 6, 10), partener_id=CID, partener_nume="ALTEX ROMANIA SRL",
+                   tip="380", cont="4111", linii=[m.LinieFactura(nr=1, cont="707", descriere="Marfa",
+                   cantitate=Decimal("1"), pret_unitar=Decimal("1000"), valoare=Decimal("1000"), sens="C",
+                   tva_cod="310344", tva_procent=Decimal("21"), tva_suma=Decimal("210"))])
+    fc = m.Factura(nr="F100", data=date(2026, 6, 12), partener_id=CID, partener_nume="ALTEX ROMANIA SRL",
+                   tip="380", cont="401", linii=[m.LinieFactura(nr=1, cont="371", descriere="Marfa cump",
+                   cantitate=Decimal("1"), pret_unitar=Decimal("500"), valoare=Decimal("500"), sens="D",
+                   tva_cod="301344", tva_procent=Decimal("21"), tva_suma=Decimal("105"))])
+    pl = m.Plata(ref="P1", data=date(2026, 6, 13), metoda="01", partener_id=CID, descriere="Plata",
+                 linii=[m.LiniePlata(nr=1, cont="5121", descriere="incasare", suma=Decimal("1210"), sens="D", doc_sursa="")])
+    return m.construieste(prof, 2026, 6, conturi, client, [], note=[nota],
+                          facturi_vanzare=[fv], facturi_cumparare=[fc], plati=[pl])
+
+
+def _valideaza_xsd(xml):
+    """Valideaza XML-ul D406 contra schemei SAF-T oficiale (saft.xsd), aliniind namespace-ul
+    d406->d406t (schema are targetNamespace d406t; structura SAF-T e identica). (ok, [mesaje])."""
+    from lxml import etree
+    xml_t = xml.replace("mfp:anaf:dgti:d406:declaratie:v1", "mfp:anaf:dgti:d406t:declaratie:v1")
+    doc = etree.fromstring(xml_t.encode("utf-8"))
+    sch = etree.XMLSchema(etree.parse("/opt/duk/saft/saft.xsd"))
+    ok = sch.validate(doc)
+    return ok, [e.message for e in sch.error_log]
+
+
+def test_structura_xsd_conforma_saft():
+    """Cluster structura XSD (Header/MasterFiles/GLE) | d406: XML-ul D406 e VALIDAT MECANIC contra
+    schemei oficiale SAF-T (/opt/duk/saft/saft.xsd). Schema are targetNamespace 'd406t' (varianta pe
+    cerere) dar STRUCTURA SAF-T (AuditFile/Header/MasterFiles/GeneralLedgerEntries/SourceDocuments,
+    tipuri, ordine, obligatorii) e identica cu d406 lunar - se aliniaza namespace-ul pt validare.
+
+    (1) Cu TOATE sub-sectiunile populate -> XSD-valid ZERO erori: intreaga structura SAF-T conforma.
+    (2) Raportarea lunara OMITE sub-sectiunile de liste goale (DUK-confirmat 16.07.2026: emise vide ->
+        respinse 'elementul ... minimum 1 ori'). Fata de schema d406t asta produce EXACT O diferenta
+        (PurchaseInvoices absent inainte de MovementOfGoods) - comportament lunar corect, nu eroare de
+        structura. Gardul CONFIRMA ca asta e SINGURA abatere (nici una in plus).
+
+    Validarea XSD e complementara validarii DUK (d406 DUK = xfail preexistent 'cont referit absent',
+    validare SEMANTICA - aici verificam STRUCTURA)."""
+    import os
+    import pytest as _pt
+    if not os.path.exists("/opt/duk/saft/saft.xsd"):
+        _pt.skip("saft.xsd indisponibil (server-only)")
+    from core import d406
+
+    # (1) toate sub-sectiunile populate -> zero erori structurale
+    res_full = _res_d406_complet()
+    ok, erori = _valideaza_xsd(d406.build_xml(res_full))
+    assert ok, "D406 complet NU e XSD-valid:\n" + "\n".join(erori[:20])
+
+    # (2) lunar cu doar vanzari -> exact O abatere: PurchaseInvoices omis (comportament lunar corect)
+    res_luna = _res_d406_complet()
+    res_luna.facturi_cumparare = []
+    res_luna.plati = []
+    ok2, erori2 = _valideaza_xsd(d406.build_xml(res_luna))
+    assert not ok2, "asteptam abaterea lunara (PurchaseInvoices omis), dar XML-ul a validat integral"
+    assert len(erori2) == 1, "asteptam EXACT o abatere lunara, sunt %d:\n%s" % (len(erori2), "\n".join(erori2))
+    assert "PurchaseInvoices" in erori2[0], "abaterea nu e omisiunea PurchaseInvoices: %s" % erori2[0]
