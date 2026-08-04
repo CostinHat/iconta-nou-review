@@ -7050,3 +7050,21 @@ test_N_categorie_ne_litD_e_exclusa.
 DATORIE RAMASA (deblocaj complet): UI categorie_331 (deblocajul principal - fara ecran N in calea auto ramane exclus),
 tip_document 2-5 (borderouri/carnet/contracte/alte = extindere de contract, facturi/manual n-au campul). Consemnate
 in GARZI.md ("04.08 Datorii deschise ale campaniei" + "DATORIE suport COMPLET operatiuni N").
+
+
+## 04.08.2026 - D177: DECIZIE COSTIN - RAMANE IN AFARA SCOPE-ULUI, AMANAT EXPLICIT (supersedeaza blocajul motivat de la pct.5).
+
+Intrarea de la punctul 5 ("structura OBTINUTA + BLOCAJ MOTIVAT pe mecanism") astepta decizia lui Costin pe canal/scope.
+DECIZIE (Costin, 04.08.2026): **D177 ramane IN AFARA SCOPE-ULUI, amanat EXPLICIT** (nu "de facut candva").
+
+Temei al deciziei: D177 e o **cerere-formular PDF, nu o declaratie XML** - nu are validator DUK instalat. Toata
+arhitectura de declaratii se sprijina pe validator ca AUTORITATE (R17): fiecare piesa fiscala e probata mecanic contra
+jar-ului. D177 ar fi **prima piesa construita pe interpretarea unui PDF, fara proba mecanica** - exact tiparul care a
+generat defecte reale in aceasta campanie si inainte: ASI (D394, structura pdf vs jar), HRK (D301), nomenclatorul N
+gresit (lit.C vs lit.D). A construi un generator D177 pe citirea unui PDF ar reintroduce clasa de eroare pe care
+validatorul o inchide. In plus: D177 e cerere **ANUALA**, nu obligatie lunara - beneficiu mic fata de risc.
+
+Proba/artefact: structura OPANAF 3562/2024 ramane in anaf_surse/ (nu se pierde munca de descarcare). Alternativa
+respinsa: a construi acum pe interpretare de PDF (respinsa - fara ancora de validare mecanica). Limita: decizia se
+redeschide DOAR cu o decizie noua Costin, si numai daca (a) apare un canal de validare mecanica pt D177, SAU (b) se
+accepta explicit constructia pe interpretare de PDF asumand riscul. Consemnat: GARZI 04.08, FUNCTIONALITATI.csv F206.

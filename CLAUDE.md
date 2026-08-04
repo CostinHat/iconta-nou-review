@@ -216,9 +216,9 @@ UI intră simultan în `DESIGN_SYSTEM.md` ȘI în `verificator_conformitate.py`
 - `~/iconta_nou/DESIGN_SYSTEM.md` — reguli UI, v2.10+
 - `~/iconta_nou/verificator_conformitate.py` — gardian mecanic pentru DS
 - `~/iconta_nou/ISTORIC.md` — CE s-a făcut, când, ce commit (include fostul
-  ICONTA_STATUS.md). Actualizat DOAR la finalul zilei, nu după fiecare task
+  ICONTA_STATUS.md). APPEND-ONLY după FIECARE execuție (vezi 2.2.1); regula veche „doar la finalul zilei” ELIMINATĂ 04.08.2026. O execuție ulterioară care răstoarnă una din aceeași zi o SUPERSEDEAZĂ explicit, nu o rescrie
 - `~/iconta_nou/DECIZII.md` — DE CE am făcut așa. Registru de decizii cu temei,
-  alternative respinse și limite. Se ADAUGĂ cronologic, nu se editează istoria.
+  alternative respinse și limite. Se ADAUGĂ cronologic (append-only), nu se editează istoria; o decizie răsturnată primește o intrare de PIVOT care o supersedează EXPLICIT.
   Nu e normativ — norma trăiește unde se aplică și se verifică mecanic
 - `~/iconta_nou/ARHITECT.md` — reguli de conduită pentru arhitect (Claude în
   chat). Se citește la începutul fiecărei sesiuni; se predă prin copy-paste cu starea.
@@ -452,6 +452,31 @@ Fara titlu, raportul e incomplet.
 10. EFECT PE PRODUS - ce se schimba vizibil pentru contabil sau in iesirea catre ANAF: ecran, camp, cifra pe
     fluturas, linie in declaratie, comportament nou. Format: "inainte -> dupa". Daca nu se schimba nimic vizibil
     (campanie pur interna), se scrie "niciun efect vizibil" - explicit, nu prin omisiune.
+
+11. CE AM ACTUALIZAT - ULTIMUL PUNCT, OBLIGATORIU. Cele patru registre (GARZI.md, DECIZII.md, TESTE.md, ISTORIC.md),
+    fiecare cu ce s-a scris in el la aceasta executie, SAU "nimic de actualizat in X, pentru ca <motiv>" - explicit,
+    niciodata prin omisiune. Un registru neatins fara motiv scris = raport incomplet.
+
+## 2.2.1 ACTUALIZAREA REGISTRELOR DUPA FIECARE EXECUTIE (04.08.2026, ceruta de Costin)
+
+DUPA FIECARE EXECUTIE (punct / cluster / task livrat), FARA sa ceara cineva, se actualizeaza TOT ce s-a schimbat:
+
+- **GARZI.md** - datorii noi, riscuri noi, sub-blocaje descoperite. O datorie descoperita si NEconsemnata in ACEEASI
+  rulare = INCALCARE (nu "o scriu data viitoare").
+- **DECIZII.md** - decizia + temeiul + proba, APPEND-ONLY. O decizie anterioara rasturnata NU se editeaza: se scrie
+  o intrare de PIVOT care o supersedeaza EXPLICIT (numeste intrarea veche, spune ce era intermediar si ce e final).
+- **TESTE.md** - bifa punctului/clusterului (Inventar A) + gardurile noi + proba. (Garduri anti-stale test_agenda:
+  bifa DUPA ce codul intra in git HEAD; redenumirea unui test citat cere re-ancorarea bifei + "bump: <motiv>".)
+- **ISTORIC.md** - intrarea narativa a executiei. ACUM APPEND-ONLY, ca DECIZII (regula veche "doar la finalul zilei,
+  cand cere Costin" ELIMINATA 04.08.2026). O executie ulterioara care rastoarna una din aceeasi zi o SUPERSEDEAZA
+  explicit - nu se sterge, nu se rescrie (ex. 04.08: approach-b -> approach-a conditionat; nomenclator N gresit -> reparat).
+
+Raportul 2.2 se incheie OBLIGATORIU cu sectiunea 11 "CE AM ACTUALIZAT": cele patru fisiere, fiecare cu ce s-a scris,
+SAU "nimic de actualizat in X, pentru ca ...". Niciodata tacut.
+
+REGULA SURSEI UNICE peste toate: informatia sta intr-un singur loc CANONIC (datoria in GARZI, decizia in DECIZII,
+bifa/gardul in TESTE, naratiunea in ISTORIC, functionalitatea in FUNCTIONALITATI.csv), celelalte TRIMIT acolo, nu
+duplica textul.
 
 ## 2.3 CONTINUITATE INTRE CLUSTERE (02.08.2026, ceruta de Costin)
 
