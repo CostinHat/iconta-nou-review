@@ -6899,3 +6899,27 @@ pana la UI se seteaza in DB. Fara el, comportamentul e cel actual (data_emitere)
 EFECT PE PRODUS: o factura IC emisa cu intarziere, dar cu faptul generator completat, e declarata in D390 pe luna
 CORECTA a exigibilitatii (art.284), nu pe luna emiterii. Fara faptul completat: comportament neschimbat. tenant_001
 n-are facturi IC cu acest caz azi.
+
+
+## 04.08.2026 — Punctul 4 (A2) - verificare la sursa a cazului INVERS (facturare anticipata), ceruta de Costin.
+
+Costin a cerut verificarea cazului complementar: factura emisa INAINTE de faptul generator (avans/facturare
+anticipata, ex. emitere 28.07, fapt 05.08). Formula implementata: exigibilitate = MIN(data_emitere, ziua 15 a
+lunii urmatoare faptului).
+
+VERIFICAT LA SURSA (CF art.284 alin.(2) integral, anaf_surse/cod_fiscal_227_2015_consolidat.html):
+"exigibilitatea taxei intervine LA DATA EMITERII FACTURII ... ORI in cea de-a 15-a zi a lunii urmatoare celei in
+care a intervenit faptul generator, DACA NU A FOST EMISA NICIO FACTURA/autofactura pana la data respectiva."
+
+CONCLUZIE: MIN e CORECT (nu neconformitate). Regula: cand EXISTA factura (orice rand din tabela facturi e o
+factura emisa), exigibilitate = data emiterii; ziua-15 e DOAR fallback cand nu s-a emis nicio factura pana atunci.
+Deci: data_emitere <= ziua15 -> exigibilitate = data_emitere; data_emitere > ziua15 (factura tarzie) -> fallback
+ziua15. Adica EXACT MIN(data_emitere, ziua15), dat fiind ca factura exista mereu.
+- Caz TARZIU (emitere 20.08, fapt iunie): factura lipseste la 15.07 -> exigibilitate 15.07 -> IULIE. MIN=15.07. OK.
+- Caz INVERS (emitere 28.07, fapt 05.08): factura exista (28.07 < 15.09) -> exigibilitate = 28.07 -> IULIE.
+  MIN(28.07, 15.09)=28.07. OK. Probat empiric (IULIE=[1500], AUGUST=[]).
+AVANSURI: art.282 alin.(2) lit.b (avansul declanseaza exigibilitate) e pentru livrari/prestari DOMESTICE; achizitiile
+IC sunt guvernate de art.284 SEPARAT, care NU are regula de avans -> nu se aplica la IC. Deci factura anticipata IC
+da exigibilitate la data emiterii, fara tratament de avans.
+
+Proba explicita adaugata in core/test_d390_ziua15.py (factura D, facturare anticipata -> exigibilitate = data emiterii).

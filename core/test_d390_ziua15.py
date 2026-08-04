@@ -52,6 +52,11 @@ def test_migrare_si_exigibilitate_ziua15():
                 cur.execute("INSERT INTO %s.facturi (id,tert_cui,tert_nume,data_emitere,data_faptului_generator,total,tva,directie) VALUES (2,'DE811569869','X','2026-08-20','2026-06-10',2000,0,'emisa')" % SCH)
                 # C (control backward-compat): emisa aug, FARA fapt -> AUGUST
                 cur.execute("INSERT INTO %s.facturi (id,tert_cui,tert_nume,data_emitere,total,tva,directie) VALUES (3,'DE811569869','X','2026-08-20',3000,0,'emisa')" % SCH)
+                # D (CAZUL INVERS - facturare anticipata): emisa 28.07 INAINTE de faptul generator 05.08.
+                # CF art.284 alin.(2): exigibilitatea INTERVINE LA DATA EMITERII FACTURII; ziua-15 e DOAR
+                # fallback cand NU s-a emis nicio factura. Factura exista (28.07) -> exigibilitate = 28.07 = IULIE
+                # (NU luna faptului, august). Avansurile art.282(2)(b) sunt DOMESTICE - nu se aplica la IC (art.284).
+                cur.execute("INSERT INTO %s.facturi (id,tert_cui,tert_nume,data_emitere,data_faptului_generator,total,tva,directie) VALUES (4,'DE811569869','X','2026-07-28','2026-08-05',1500,0,'emisa')" % SCH)
             conn.commit()
 
         def totaluri(an, luna):
@@ -61,9 +66,10 @@ def test_migrare_si_exigibilitate_ziua15():
                 _p, fact = d390.pull(conn, SCH, an, luna)
             return sorted(int(round(float(f["total"]))) for f in fact)
 
-        # IULIE: A (fara fapt) + B (mutata pe exigibilitate 15.07)
-        assert totaluri(2026, 7) == [1000, 2000], totaluri(2026, 7)
-        # AUGUST: doar C (backward-compat, fara fapt); B s-a mutat in iulie
+        # IULIE: A (fara fapt, emitere iulie) + B (factura TARZIE, mutata pe exigibilitate 15.07) +
+        #        D (facturare ANTICIPATA 28.07 inainte de fapt 05.08 -> exigibilitate = data emiterii = 28.07)
+        assert totaluri(2026, 7) == [1000, 1500, 2000], totaluri(2026, 7)
+        # AUGUST: doar C (backward-compat, fara fapt); B s-a mutat in iulie; D e in iulie (nu pe luna faptului)
         assert totaluri(2026, 8) == [3000], totaluri(2026, 8)
     finally:
         with db.get_conn() as conn:
