@@ -23,6 +23,7 @@ TREI STARI, ca la verificatoarele incrucisate:
 import os
 import subprocess
 import tempfile
+import shutil
 
 MODUL = "duk"
 REGULI = "2026.1"
@@ -89,38 +90,39 @@ def _valideaza_saft(xml, tip, an=None, luna=None, timeout=300):
     xp = os.path.join(td, "d.xml")
     lp = os.path.join(td, "r.txt")
     pp = os.path.join(td, "o.pdf")
-    try:
-        with open(xp, "w", encoding="utf-8") as fh:
-            fh.write(xml)
-        # Apelul e cel din doc/Instructiuni.txt al pachetului SAF-T (sursa oficiala):
-        #   java -Xms250m -Xmx4g -jar DUKIntegrator_AnLunaUI.jar -v D406 d406.xml $ $
-        #        an=2025 luna=8
-        # "$" = valoare implicita pentru parametrii optionali. Memoria marita e ceruta
-        # explicit de ANAF: fisierele SAF-T sunt mari.
-        _sp.run([JAVA_SAFT, "-Djava.awt.headless=true", "-Xms250m", "-Xmx4g",
-                 "-jar", JAR_SAFT, "-v", "D406", xp, lp, "$",
-                 "an=%d" % an, "luna=%d" % luna],
-                cwd=DIST_SAFT, capture_output=True, text=True, timeout=timeout)
-    except Exception as e:
-        return _gri("D406", "Validatorul SAF-T nu a putut fi rulat: %s." % e)
-    temei = "DUKIntegrator_AnLunaUI -v D406 (validator SAF-T, pachet oficial ANAF)."
-    rez = ""
-    for f in (lp, xp + ".err.txt"):
-        if os.path.exists(f):
-            with open(f, encoding="utf-8", errors="replace") as fh:
-                rez = (rez + "\n" + fh.read()).strip()
-    if rez.lower() in ("ok", "ok."):
+    try:  # try/finally: continutul (r.txt/.err.txt/PDF) se citeste INAINTE de rmtree; tempdir-ul se curata mereu
+        try:
+            with open(xp, "w", encoding="utf-8") as fh:
+                fh.write(xml)
+            # Apelul e cel din doc/Instructiuni.txt al pachetului SAF-T (sursa oficiala):
+            #   java -Xms250m -Xmx4g -jar DUKIntegrator_AnLunaUI.jar -v D406 d406.xml $ $ an=2025 luna=8
+            # "$" = valoare implicita pentru parametrii optionali. Memoria marita e ceruta de ANAF (SAF-T mari).
+            _sp.run([JAVA_SAFT, "-Djava.awt.headless=true", "-Xms250m", "-Xmx4g",
+                     "-jar", JAR_SAFT, "-v", "D406", xp, lp, "$",
+                     "an=%d" % an, "luna=%d" % luna],
+                    cwd=DIST_SAFT, capture_output=True, text=True, timeout=timeout)
+        except Exception as e:
+            return _gri("D406", "Validatorul SAF-T nu a putut fi rulat: %s." % e)
+        temei = "DUKIntegrator_AnLunaUI -v D406 (validator SAF-T, pachet oficial ANAF)."
         rez = ""
-    if not rez:
-        # Fara fisier de rezultat NU declaram "valid": exact asa aparea D406 verde pe
-        # orice gunoi. Cerem o dovada pozitiva - fisier de rezultat sau PDF.
-        if os.path.exists(lp) or (os.path.exists(pp) and os.path.getsize(pp) > 0):
-            return {"stare": "valid", "erori": "", "cheie": "D406", "temei": temei,
-                    "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
-        return _gri("D406", "Validatorul SAF-T nu a produs nici rezultat, nici erori - "
-                            "nu putem confirma ca declaratia e valida.")
-    return {"stare": "erori", "erori": rez, "cheie": "D406", "temei": temei,
-            "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
+        for f in (lp, xp + ".err.txt"):
+            if os.path.exists(f):
+                with open(f, encoding="utf-8", errors="replace") as fh:
+                    rez = (rez + "\n" + fh.read()).strip()
+        if rez.lower() in ("ok", "ok."):
+            rez = ""
+        if not rez:
+            # Fara fisier de rezultat NU declaram "valid": exact asa aparea D406 verde pe orice gunoi.
+            # Cerem o dovada pozitiva - fisier de rezultat sau PDF (citite AICI, inainte de finally/rmtree).
+            if os.path.exists(lp) or (os.path.exists(pp) and os.path.getsize(pp) > 0):
+                return {"stare": "valid", "erori": "", "cheie": "D406", "temei": temei,
+                        "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
+            return _gri("D406", "Validatorul SAF-T nu a produs nici rezultat, nici erori - "
+                                "nu putem confirma ca declaratia e valida.")
+        return {"stare": "erori", "erori": rez, "cheie": "D406", "temei": temei,
+                "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
+    finally:
+        shutil.rmtree(td, ignore_errors=True)
 
 
 def valideaza(xml, tip, dist=DIST, timeout=180, an=None, luna=None):
@@ -137,26 +139,28 @@ def valideaza(xml, tip, dist=DIST, timeout=180, an=None, luna=None):
     td = tempfile.mkdtemp(prefix="duk_%s_" % tip)
     xp = os.path.join(td, "d.xml")
     lp = os.path.join(td, "r.txt")
-    try:
-        with open(xp, "w", encoding="utf-8") as fh:
-            fh.write(xml)
-        subprocess.run(["java", "-Djava.awt.headless=true", "-jar",
-                        os.path.join(dist, "DUKIntegrator.jar"), "-v", cheie, xp, lp],
-                       cwd=td, capture_output=True, text=True, timeout=timeout)
-    except Exception as e:
-        return _gri(cheie, "Validatorul nu a putut fi rulat: %s." % e)
-    rez = ""
-    for f in (lp, xp + ".err.txt"):
-        if os.path.exists(f):
-            with open(f, encoding="utf-8", errors="replace") as fh:
-                rez = (rez + "\n" + fh.read()).strip()
-    # Validatorul scrie literalmente "ok" in fisierul de rezultat cand nu gaseste erori
-    # (dovedit 15.07.2026 pe D394). Fara asta, o declaratie VALIDA era raportata ca
-    # avand eroarea "ok" - fals negativ care ar fi trimis contabilul sa caute o
-    # problema inexistenta. Fisier gol = idem valid (unele validatoare nu-l scriu).
-    if rez.lower() in ("", "ok", "ok."):
+    try:  # try/finally: continutul (r.txt/.err.txt) se citeste INAINTE de rmtree; tempdir-ul se curata mereu
+        try:
+            with open(xp, "w", encoding="utf-8") as fh:
+                fh.write(xml)
+            subprocess.run(["java", "-Djava.awt.headless=true", "-jar",
+                            os.path.join(dist, "DUKIntegrator.jar"), "-v", cheie, xp, lp],
+                           cwd=td, capture_output=True, text=True, timeout=timeout)
+        except Exception as e:
+            return _gri(cheie, "Validatorul nu a putut fi rulat: %s." % e)
         rez = ""
-    temei = "DUKIntegrator -v %s (pachet oficial ANAF)." % cheie
-    stare = "erori" if rez else "valid"
-    return {"stare": stare, "erori": rez, "cheie": cheie, "temei": temei,
-            "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
+        for f in (lp, xp + ".err.txt"):
+            if os.path.exists(f):
+                with open(f, encoding="utf-8", errors="replace") as fh:
+                    rez = (rez + "\n" + fh.read()).strip()
+        # Validatorul scrie literalmente "ok" in fisierul de rezultat cand nu gaseste erori (dovedit
+        # 15.07.2026 pe D394). Fara asta, o declaratie VALIDA era raportata cu eroarea "ok" - fals negativ.
+        # Fisier gol = idem valid (unele validatoare nu-l scriu). Citit AICI, inainte de finally/rmtree.
+        if rez.lower() in ("", "ok", "ok."):
+            rez = ""
+        temei = "DUKIntegrator -v %s (pachet oficial ANAF)." % cheie
+        stare = "erori" if rez else "valid"
+        return {"stare": stare, "erori": rez, "cheie": cheie, "temei": temei,
+                "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
+    finally:
+        shutil.rmtree(td, ignore_errors=True)
