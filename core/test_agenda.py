@@ -39,21 +39,44 @@ def _ast_functie(src, nume):
     return "<ABSENT>"
 
 
-def _functie_schimbata(relpath, func, data_verif):
-    """(schimbat: bool, nota_fallback: str|None). Compara AST-ul functiei `func` (fara docstring) intre
-    commitul de la data_verif (ultimul <= data) si HEAD. Fallback VIZIBIL daca o versiune nu se parseaza."""
+def _ast_functie_multi(relpaths, commit, func):
+    """AST-ul functiei `func` cautat in TOATE fisierele clusterului la `commit`. Intoarce AST-ul din primul
+    fisier care o contine; '<ABSENT>' daca nu-i in niciunul (toate parsate); None daca vreun fisier nu se
+    parseaza si functia nu-i gasita in celelalte. Inchide punctul orb: un test mutat/sters e vazut oriunde
+    ar sta in cluster, nu doar in fisier[0]."""
+    parse_fail = False
+    for rp in relpaths:
+        src = subprocess.run(["git", "-C", str(_RAD), "show", "%s:%s" % (commit, rp)],
+                             capture_output=True, text=True).stdout
+        a = _ast_functie(src, func)
+        if a is None:
+            parse_fail = True
+        elif a != "<ABSENT>":
+            return a
+    return None if parse_fail else "<ABSENT>"
+
+
+def _functie_schimbata(relpaths, func, data_verif):
+    """(schimbat: bool, nota: str|None). Compara AST-ul functiei `func` (fara docstring) intre commitul de la
+    data_verif (ultimul <= data care atinge ORICARE fisier al clusterului) si HEAD, cautand functia in TOATE
+    fisierele clusterului la ambele commituri. Astfel: un test STERS (prezent la √, absent la HEAD) = schimbat;
+    un test MUTAT intre fisierele clusterului, neschimbat = NU stale (fara fals-pozitiv); o CITARE MOARTA (absent
+    la √ si la HEAD) = schimbat + nota. Inainte (pana 04.08) compara doar fisier[0] -> un test sters dintr-un
+    fisier ne-primar scapa (<ABSENT> vs <ABSENT>) - punctul orb care a tinut bifa taxare-inversa|d394 stale o zi."""
+    if isinstance(relpaths, str):
+        relpaths = [relpaths]
+    relpaths = list(relpaths)
     iso = data_verif.isoformat()
     oc = subprocess.run(["git", "-C", str(_RAD), "log", "--until=%s 23:59:59" % iso, "-1", "--format=%H",
-                         "--", relpath], capture_output=True, text=True).stdout.strip()
+                         "--"] + relpaths, capture_output=True, text=True).stdout.strip()
     if not oc:
         return True, None
-    old = subprocess.run(["git", "-C", str(_RAD), "show", "%s:%s" % (oc, relpath)],
-                         capture_output=True, text=True).stdout
-    new = subprocess.run(["git", "-C", str(_RAD), "show", "HEAD:%s" % relpath],
-                         capture_output=True, text=True).stdout
-    ao, an = _ast_functie(old, func), _ast_functie(new, func)
+    ao = _ast_functie_multi(relpaths, oc, func)
+    an = _ast_functie_multi(relpaths, "HEAD", func)
     if ao is None or an is None:
-        return True, "versiunea nu se parseaza; fallback pe fisier pentru %s::%s" % (relpath, func)
+        return True, "versiunea nu se parseaza; fallback pe fisier pentru %s" % func
+    if ao == "<ABSENT>" and an == "<ABSENT>":
+        return True, "test citat inexistent (absent la √ SI la HEAD in fisierele clusterului) - citare moarta"
     return (ao != an), None
 
 
@@ -93,7 +116,9 @@ def test_verificarile_A_nu_sunt_in_urma_codului():
     a = agenda.stare_sesiune_a()
     assert a is not None
     azi = datetime.date.today()
-    folos = collections.defaultdict(list)   # (relpath, functie) -> [(cluster, data_verif)]
+    # cheia pe FUNCTIE (nu pe (fisier,functie)): un test STERS n-are fisier la HEAD, dar tot trebuie vazut.
+    # relpaths = reuniunea TUTUROR fisierelor clusterelor care citeaza functia (co-locatie + cautare multi-fisier).
+    folos = collections.defaultdict(lambda: {"relpaths": set(), "dates": [], "clusters": []})
     for rand in a["rows"]:
         if not rand["verificat"] or "." not in rand["verificat"]:
             continue
@@ -103,19 +128,21 @@ def test_verificarile_A_nu_sunt_in_urma_codului():
         dv = datetime.date(azi.year, int(luna), int(zi))
         relpaths = ["core/" + f for f in rand["fisiere"]]
         for fn in rand["functie"]:
-            rp = _fisier_functie(relpaths, fn) or relpaths[0]   # fisierul CARE CONTINE functia, nu doar primul
-            folos[(rp, fn)].append((rand["cluster"], dv))
+            e = folos[fn]
+            e["relpaths"].update(relpaths)
+            e["dates"].append(dv)
+            e["clusters"].append(rand["cluster"])
     stale = []
-    for (relpath, fn), cl in sorted(folos.items()):
-        dv = min(d for _, d in cl)   # cea mai veche data (conservator)
-        schimbat, nota = _functie_schimbata(relpath, fn, dv)
-        nume = [c for c, _ in cl]
+    for fn, e in sorted(folos.items()):
+        dv = min(e["dates"])   # cea mai veche data (conservator)
+        schimbat, nota = _functie_schimbata(sorted(e["relpaths"]), fn, dv)
+        nume = sorted(set(e["clusters"]))
         if nota:
-            stale.append("%s::%s: %s (clustere: %s)" % (relpath, fn, nota, ", ".join(nume)))
+            stale.append("%s: %s (clustere: %s)" % (fn, nota, ", ".join(nume)))
         elif schimbat:
             co = "  [CO-LOCATIE - clustere resetate impreuna]" if len(nume) > 1 else ""
-            stale.append("functia de test %s::%s s-a schimbat substantial -> reverifica la sursa: %s%s"
-                         % (relpath, fn, ", ".join(nume), co))
+            stale.append("functia de test %s s-a schimbat substantial -> reverifica la sursa: %s%s"
+                         % (fn, ", ".join(nume), co))
     assert not stale, "AGENDA STALE (functie de test in urma docului):\n" + "\n".join(stale)
 
 
@@ -416,3 +443,19 @@ def test_fisier_functie_ruteaza_la_fisierul_care_contine_functia():
     assert _fisier_functie(rps, "test_d112_cu_exces_vacanta_valid_duk") == "core/test_exces_vacanta_d112.py"
     assert _fisier_functie(rps, "test_exces_vacanta_intra_in_baza_salariala") == "core/test_salarizare.py"
     assert _fisier_functie(rps, "test_functie_inexistenta_xyz") is None
+
+
+def test_functie_schimbata_cauta_toate_fisierele_punct_orb_04_08():
+    """PUNCT ORB reparat 04.08: _functie_schimbata cauta functia citata in TOATE fisierele clusterului la
+    ambele commituri, nu doar fisier[0]. Inainte, un test sters/mutat dintr-un fisier ne-primar dadea
+    <ABSENT> vs <ABSENT> = fals-NEstale (a tinut bifa taxare-inversa|d394 stale o zi + a ascuns inca 5 bife).
+    MUTATIE: o citare moarta (functie inexistenta in TOATE fisierele) TREBUIE semnalata, nu inghitita."""
+    azi = datetime.date.today()
+    # functie reala care traieste in fisierul NE-primar al listei -> gasita, nu "citare moarta"
+    _sch, nota = _functie_schimbata(["core/test_deconturi.py", "core/test_versionare_formule.py"],
+                                    "test_plafon_diurna_dispecer_versionat", azi)
+    assert nota is None, "functie reala in fisier[1] tratata gresit ca citare moarta: %s" % nota
+    # citare moarta: functie inexistenta in TOATE fisierele -> schimbat + nota (inainte scapa tacit pe fisier[0])
+    sch2, nota2 = _functie_schimbata(["core/test_deconturi.py", "core/test_d101.py"],
+                                     "test_functie_inexistenta_nicaieri_zzz", azi)
+    assert sch2 and nota2 and "citare moarta" in nota2, (sch2, nota2)

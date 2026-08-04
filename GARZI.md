@@ -323,12 +323,12 @@ fișiere necolectate).
 - LIPSĂ: **mutantul zero sistematic** — forțezi fiecare generator să întoarcă `[]` și suita
   trebuie să devină roșie. Se aplică azi ad-hoc, la reparații.
 - ACOPERIT (31.07): gard că fiecare `test_*.py` (exclus venv) are ≥1 funcție `def test_` — `core/test_agenda.py::test_fiecare_fisier_test_are_cel_putin_un_test`, cu mutație. Un `test_*.py` cu 0 teste e script deghizat în suită (pytest nu-l colectează, dar numele sugerează acoperire). Prins pe `test_gdpr_functional` → redenumit `gdpr_functional.py`.
-- LIPSĂ (punct orb al garzii anti-stale, 04.08): un test ȘTERS dar inca citat in coloana `functie` a unui
+- ACOPERIT (punct orb al garzii anti-stale, gasit + REPARAT 04.08): un test ȘTERS dar inca citat in coloana `functie` a unui
   cluster cu MAI MULTE fisiere SCAPA `test_agenda::test_verificarile_A`. `_fisier_functie` cade pe fisier[0] cand
   functia nu-i in niciun fisier -> compara `<ABSENT>` vs `<ABSENT>` -> NEstale. Dovada empirica: bifa
   `taxare inversa|d394` a citat `test_datorie_gaze_naturale_...` mult dupa ce testul fusese scos (6675f19), suita
-  a ramas verde. Reparat citarea moarta (bump 04.08), gaura mecanismului RAMANE. Detaliul metodic + fixul propus
-  (`_fisier_functie` sa RIDICE la functie inexistenta): TESTE.md cap. „Clustere — metoda” sectiunea 7.
+  a ramas verde. REPARAT 04.08: `_functie_schimbata` cauta functia in TOATE fisierele clusterului la ambele commituri (stergere=schimbat, mutare-neschimbata=NU stale, absent la ambele=citare moarta semnalata); regresie gardata de test_functie_schimbata_cauta_toate_fisierele_punct_orb_04_08. Rularea pe tot inventarul a mai scos 5 bife ascunse de acelasi punct orb (plafon diurna=datorie period-awareness rezolvata nereflectata + 4 citari/fisiere gresite), toate reparate. Detaliu
+  metodic: TESTE.md cap. „Clustere — metoda” sectiunea 7.
 
 ### 10. Joburi de fundal
 **Eșec:** job care crapă nesupravegheat; job mort care arată identic cu unul care n-a avut
