@@ -6663,3 +6663,29 @@ FACUT:
 - comentariu de ancorare pe validator langa TARI_UE/TIPURI in d390.py.
 - gard nou test_nomenclatoare_d390_ancorate_pe_validator_nu_pe_pdf_2020 (TARI_UE + TIPURI == set-validator,
   EL nu GR, HR nu CR) + test_d390_snapshot_validator_confirmat_pe_duk (proba DUK vie: GB recunoscut, CR respins).
+
+
+## 04.08.2026 — Reimprospatare surse (generalizare): GARD DE CLASA "nomenclatoarele ancorate pe validator".
+
+Dupa d301 si d390, generalizare pe TOATE sursele din anaf_surse/ (pasul 6).
+
+ENUMERARE surse de STRUCTURA pre-2024 folosite ca temei activ (an antet / INVECHIT / citate in cod):
+- d301_struct (2013) - INVECHIT, citat d301.py. d390_struct (2020) - INVECHIT. d394_struct (2020) - INVECHIT,
+  citat d394.py (ASI, 03.08). Toate cele pre-2024 CITATE sunt deja INVECHIT.
+- d406_nomenclatoare.properties (~2011) - citat d406.py (plan_oficial); verificat pe norma 04.08.
+  d406_schema.xlsx (2026) - curent. d100_struct (2026), d101_struct (2024) - curente.
+  d112/d205/d300_struct - NEcitate prin stem (dormante).
+
+GARD DE CLASA ales: "fiecare pin de nomenclator e ANCORAT PE VALIDATOR, nu pe document"
+(core/test_nomenclatoare_ancorate.py), NU un prag de vechime de N ani. MOTIV (cerut: alege forma mai puternica
+si spune de ce): vechimea NU e riscul - un nomenclator din 2013 poate fi curent (D301 tipuri 1-5), unul din 2025
+poate fi depasit maine. Riscul real e DIVERGENTA fata de validatorul instalat, exact ce au ascuns ASI (pdf D394
+2020: 9 tipuri incl. ASI; validatorul J8 il respinsese) si HRK (pdf D301 2013: 19 valute; validatorul D301_9
+accepta 20). Un prag de N ani ar rata AMBELE - nu erau despre varsta, ci despre ce accepta validatorul azi.
+
+Gardul DESCOPERA (AST) constantele de forma nomenclator (set/tuple/frozenset de coduri scurte alfanumerice
+majuscule) in generatoare si CERE ca fiecare sa fie in registrul ANCORE, cu un test care atinge validatorul
+(proba DUK) sau specificatia oficiala masinala (schema_anaf, unde DUK e xfail - d406). 9 nomenclatoare
+descoperite si ancorate (d301.VALUTE; d390.TARI_UE/TIPURI; d394.TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA/OP1_CU_TVA/
+_TARI_UE; d406._UE_NON_RO). Un nomenclator nou fara ancora pica gardul (RED probat) - forteaza proba pe
+validatorul instalat, nu copierea unui pdf.
