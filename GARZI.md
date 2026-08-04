@@ -612,6 +612,16 @@ Cand se implementeaza, se SCOATE excluderea din calcul_d394 si se APRINDE gardul
 daca_emis_GARD_INVERS (care va pica -> semnal ca N e acum emis). Vezi DECIZII 04.08.
 
 
+## 04.08.2026 — Gard totalPlata_A R17 D394 (cluster "totalPlata_A (R17)")
+
+Temei: R17 validator D394 - totalPlata_A = Suma(informatii.nrCui1..4) + Suma(rezumat2.baza[L+A+AI]).
+res.total_plata_a calculat in calcul_d394, emis din res in build_xml (sursa unica, clasa d100).
+
+| gard | fisier | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| totalPlata_A: res==emis + R17-valid pe validator | core/test_d394.py (test_totalPlata_A_R17_sursa_unica_si_probat_pe_validator) | divergenta res-vs-emis SAU o formula care nu trece R17 | res==emis==3002 DUK-valid; totalPlata_A+999 -> R17 respins |
+
+
 ## 04.08.2026 — Gard nomenclator codPR pe validator (cluster "nomenclator codPR (art.331)")
 
 Temei: d394.CODPR (categorii art.331 -> cod op11 + subcod NC cereale). Sursa citata in cod = Ghid_D394_2016

@@ -6548,3 +6548,22 @@ OBSERVATIE (doc-staleness, follow-up): bifa "taxare inversa | d394" din Inventar
 LIPSA + "DATORIE xfail(strict) gaze in test_datorie" si refera test_datorie_gaze_naturale_taxare_inversa_art331_lit_l
 care NU mai exista (rezolvat in 6675f19). De actualizat separat (gardul anti-stale o tolereaza prin fallback pe fisier).
 Gard nou pentru clusterul curent: test_codpr_valide_pe_validatorul_curent (pineaza CODPR pe validator, nu pe Ghid 2016).
+
+
+## 04.08.2026 — Cluster "totalPlata_A (R17)" (d394) — VERIFICAT CONFORM + gard sursa-unica/DUK (fara fix).
+
+totalPlata_A din D394 = Suma(informatii.nrCui1..4) + Suma(rezumat2.baza[L+A+AI]) - suma de control impusa de
+regula R17 a validatorului. Formula e cea CORECTA (comentariul d394.py:18 noteaza ca o formula VECHE, inventata,
+fusese reparata). res.total_plata_a se calculeaza in calcul_d394 si build_xml il EMITE din res - SURSA UNICA,
+aliniat la conventia tuturor declaratiilor cu checksum (clasa d100/d205/d300/d301).
+
+VERIFICARE pe AUTORITATEA CURENTA (validatorul J8): probat direct - valoarea corecta (3002 pe un decont RO emisa+
+primita) e R17-VALIDA; o valoare GRESITA (+999) e RESPINSA cu mesajul R17 ("atributul totalPlata_A trebuie sa fie
+egal cu Suma(nrCui) + Suma(baza)"). Deci formula codului = exact ce impune R17, iar checksum-ul e pazit de validator.
+Testul existent test_total_plata_a_dupa_formula_oficiala era TAUTOLOGIC (recalcula aceeasi formula in test); gardul
+nou test_totalPlata_A_R17_sursa_unica_si_probat_pe_validator leaga res==emis (invariant clasa-d100) SI probeaza R17
+pe validator (nu doar reasserteaza formula). Fara fix de cod - conform.
+
+NOTA: cu acest cluster, TOATE clusterele d394 din secventa sunt inchise (tip_partener, rezumat1, nomenclator codPR,
+totalPlata_A + cele anterioare). Urmeaza d406 (SAF-T) si d710. Datorii d394 ramase: suport complet N (approach a,
+campanie proprie - GARZI 04.08).

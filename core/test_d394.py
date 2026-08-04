@@ -309,6 +309,28 @@ def test_tvaDedAI_obligatoriu_dar_tvaDed_doar_la_tva_la_incasare():
 
 
 # ---------- totalPlata_A (pct. 17 / R17) ----------
+def test_totalPlata_A_R17_sursa_unica_si_probat_pe_validator():
+    """VERIFICARE R17 (cluster totalPlata_A): res.total_plata_a (calculat in calcul_d394) == valoarea EMISA
+    in XML (SURSA UNICA - build_xml emite res, clasa d100). Probat pe validatorul CURENT J8: valoarea corecta
+    e VALIDA, o valoare gresita e RESPINSA cu DUK regula R17 (totalPlata_A trebuie sa fie egal cu Suma...). Formula
+    codului = R17-ul validatorului, nu una inventata (comentariul d394.py:18 despre formula veche inventata)."""
+    import re
+    from core import duk
+    if not duk.poate_valida("d394"):
+        import pytest
+        pytest.skip("DUK d394 indisponibil")
+    facturi = [_f("RO14399840", "emisa", 21, 1000, 210), _f("RO4221306", "primita", 21, 2000, 420)]
+    res = calcul_d394(PROF, 2026, 6, facturi, serii_emise={"A": (1, 1)})
+    xml = build_xml(res)
+    emis = int(re.search(r'totalPlata_A="(\d+)"', xml).group(1))
+    assert emis == res.total_plata_a, "totalPlata_A emis (%d) != res (%d) - sursa unica rupta" % (emis, res.total_plata_a)
+    assert duk.valideaza(xml, "d394", an=2026, luna=6)["stare"] == "valid", "valoarea corecta trebuie sa fie R17-valida"
+    xml_bad = re.sub(r'totalPlata_A="\d+"', 'totalPlata_A="%d"' % (emis + 999), xml, count=1)
+    rez = duk.valideaza(xml_bad, "d394", an=2026, luna=6)
+    er = str(rez.get("erori"))
+    assert rez["stare"] != "valid" and "R17" in er, "R17 nu mai impune totalPlata_A (checksum ne-pazit): %s" % er[:150]
+
+
 def test_total_plata_a_dupa_formula_oficiala():
     """R17: totalPlata_A = Suma(nrCui<i>) + Suma(rezumat2.baza[L+A+AI])."""
     r = calcul_d394(PROF, 2026, 6, [
