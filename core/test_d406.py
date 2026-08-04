@@ -186,3 +186,40 @@ def test_baserate_encoding_pro_rata_fractie():
     # fiecare valoare emisa respecta SAFBaseRate
     for v in emise:
         assert _safbaserate_valid(v), "BaseRate emis invalid: %r" % v
+
+
+def test_registration_number_partener_si_firma_proprie():
+    """Cluster registration_number (00+CUI) | d406. Doua reguli oficiale distincte (d406_schema_anaf.xlsx,
+    foaia '5. Structures'):
+
+    PARTENER (S.C.1 Customer/Supplier CompanyStructure) - cod unic = tip(2 cifre) + cod, cu exemplele
+    EXACTE din schema:
+      00 + CUI          operator RO, FARA prefixul fiscal "RO" (ex. 004221306)
+      01 + tara + VAT   operator UE (non-RO), verificat VIES - ex. 01EL123456789 sau 01HU12345678
+      02 + tara + VAT   operator non-UE - ex. 02TK123005284
+    ATENTIE Grecia: prefixul VAT/VIES e "EL", NU ISO "GR" - schema exemplifica LITERAL "01EL123456789".
+    Bug reparat: _UE_NON_RO avea "GR" (nu "EL") -> un partener grec "EL..." cadea pe 02 (non-UE) = partener
+    UE raportat gresit ca non-UE. Acum EL e recunoscut UE si un "GR" din surse ISO se normalizeaza la EL.
+
+    FIRMA PROPRIE (Header/Company, 5.5 S.CMH.1 CompanyHeaderStructure): rezident platitor TVA -> VAT CU
+    prefixul RO; neplatitor -> CUI fara prefix. (Regula diferita de partener, unde "00" NU ia RO.)"""
+    from core.d406 import _partener_registration_number as prn, registration_number as rn
+
+    # --- PARTENER: exemplele oficiale exacte ---
+    assert prn("RO4221306") == "004221306"          # RO platitor: 00 + CUI, prefixul RO scos
+    assert prn("4221306") == "004221306"            # bare numeric RO -> 00
+    assert prn("EL123456789") == "01EL123456789"    # Grecia VIES: EL, UE (exemplul oficial)
+    assert prn("GR123456789") == "01EL123456789"    # ISO "GR" din surse -> normalizat la EL (ANAF cere EL)
+    assert prn("HU12345678") == "01HU12345678"      # UE: 01 + tara + VAT (exemplul oficial)
+    assert prn("DE811234567") == "01DE811234567"    # UE: Germania
+    assert prn("TK123005284") == "02TK123005284"    # non-UE: 02 + tara + VAT (exemplul oficial Turcia)
+    assert prn("") is None and prn(None) is None     # fara cod -> None
+    # "00" nu accepta substringul RO (regula 1.1 validare sintactica)
+    assert "RO" not in prn("RO4221306")[2:]
+
+    # --- FIRMA PROPRIE ---
+    assert rn({"cui": "RO12345678", "platitor_tva": True}) == "RO12345678"    # platitor: cu RO
+    assert rn({"cui": "12345678", "platitor_tva": True}) == "RO12345678"      # platitor: RO adaugat
+    assert rn({"cui": "12345678", "platitor_tva": False}) == "12345678"       # neplatitor: fara RO
+    assert rn({"cui": "12345678"}) == "RO12345678"    # implicit platitor (majoritatea D406)
+    assert rn({"cui": ""}) == ""

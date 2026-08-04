@@ -137,8 +137,13 @@ def uom_unece(um):
     return (c, True) if c else (UOM_IMPLICIT, False)
 
 
-_UE_NON_RO = {"AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","GR",
+# Prefixe VAT/VIES ale statelor UE (fara RO), asa cum apar pe codul partenerului de pe factura.
+# ATENTIE Grecia: prefixul VAT/VIES e "EL", NU ISO "GR" - schema ANAF (5. Structures) exemplifica
+# LITERAL "01EL123456789". Setul tine deci "EL", nu "GR".
+_UE_NON_RO = {"AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","EL",
               "HU","IE","IT","LV","LT","LU","MT","NL","PL","PT","SK","SI","ES","SE"}
+# Un cod ISO 3166 venit din surse (Grecia "GR") -> prefixul VAT cerut de ANAF ("EL").
+_ISO_TO_VAT = {"GR": "EL"}
 
 
 def _partener_registration_number(cui_brut):
@@ -155,6 +160,7 @@ def _partener_registration_number(cui_brut):
     """
     c = (cui_brut or "").strip().upper()
     tara = c[:2] if len(c) >= 2 and c[:2].isalpha() else ""
+    tara = _ISO_TO_VAT.get(tara, tara)          # Grecia ISO "GR" -> prefix VAT "EL" (cerut de ANAF)
     rest = _NEDIGIT.sub("", c[2:] if tara else c)
     if not rest:
         return None
