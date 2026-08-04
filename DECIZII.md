@@ -6753,3 +6753,40 @@ Zero esecuri. Toti tenantii reali (1) migrati. 50 teste tichete/salarizare verzi
 EFECT PE PRODUS: contabilul poate inregistra tichete culturale (tip='cultural', eveniment='ocazional')
 pe tenant_001 - inainte respinse de constrangerea DB. Template-ul era deja actualizat (tenanti noi ok);
 acum si tenantul existent.
+
+
+## 04.08.2026 — C4 IMPLEMENTAT: sectiunea 8.3 avantaje D112 (bilete de valoare, E3_10/72/74/75 + E3_60).
+
+Campania "implementarile ramase", punctul 2. Generatorul D112 nu emitea sectiunea 8.3 (avantaje detaliate)
+pentru NICIUN bilet de valoare - limita generator-wide. Implementat.
+
+STRUCTURA OFICIALA (d112_struct_anaf.txt:6293-6332): E3_60 "8.3 Avantaje" = suma; E3_60 >= E3_10 + E3_72 +
+E3_73 + E3_74 + E3_75 + E3_57 + E3_58 + E3_44. Mapare: E3_10 masa (8.3.1), E3_72 cresa (8.3.1.1), E3_73 cadou
+(8.3.1.2), E3_74 cultural (8.3.1.3), E3_75 vacanta (8.3.1.4).
+
+DECIZIE TEHNICA (probata DUK 04.08.2026, 3 scenarii): sectiunea se emite fara a atinge E3_8 (venit) sau E1_1.
+- (a) fara 8.3 -> VALID (baseline).
+- (b) E3_60 + componente, E3_8 NESCHIMBAT -> VALID. [ALES]
+- (c) E3_8 += nominal bilete -> RESPINS "DUK regula S111: E1_1(3000)=Suma(E3_8)(3200)" (ar cere cascada E1_1/E3_9,
+  restatement de venit riscant pe un generator valid in productie).
+Constrangerea oficiala e ">=" (E3_8 >= ...+E3_60); E3_8 (venit, mii lei) >= E3_60 (bilete, sute) prin constructie.
+Deci sectiunea 8.3 se adauga INFORMATIV, fara restatement de venit. Emisa DOAR cand exista avantaje (salariatii
+fara bilete raman byte-neschimbati).
+
+IMPLEMENTARE: pull() ataseaza nominalele per tip pe salariat (e83_masa/vacanta/cultural/cresa, din calcul_salariu,
+separate de tichete_nominal=baza CASS); _d112_genereaza emite E3_60 + componentele in asiguratE3. Gard nou
+core/test_d112_avantaje.py (defalcare corecta + omitere cand 0 + proba DUK). Zero regresie (salariati fara bilete
+neschimbati; proba: D112 fara bilete inca valid, fara E3_60).
+
+SUB-BLOCAJ MOTIVAT (cadou E3_73, 4 elemente):
+1. CE: E3_73 (cadou, 8.3.1.2) NU e emis.
+2. DE CE: tichetul cadou NU e in pipeline-ul de impozit al D112 - calcul_salariu (core/salarizare.py) nu proceseaza
+   tip='cadou' (nu are param tichet_cadou, nu-l impoziteaza); pull() d112 nu-l trage. Cadoul are reguli proprii
+   (plafon neimpozabil 300 lei/ocazie, art.76(4)a CF) neimplementate in salariu.
+3. CE TREBUIE: cablarea cadou in calcul_salariu (param + tratament fiscal 300 lei plafon) + pull d112 + registru
+   BILETE_VALOARE_TRATAMENT[cadou]; apoi E3_73 se adauga banal ca celelalte 4.
+4. URMATOR: campanie proprie "tichete cadou end-to-end" (ca la cultural/cresa), dupa care E3_73 e o linie.
+
+EFECT PE PRODUS: D112 declara acum defalcat avantajele in bilete (masa/vacanta/cultural/cresa) in sectiunea 8.3 -
+inainte le raporta doar agregat prin impozit/baza CASS. tenant_001 n-are bilete azi (beneficii_lunare gol), deci
+efect imediat zero; se activeaza cand se acorda bilete.

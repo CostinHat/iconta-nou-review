@@ -281,9 +281,24 @@ def _d112_genereaza(prof, salariati, an, luna):
         a.extend(_dl)
         a.append('    <asiguratE1 E1_1="%d" E1_2="%d" E1_3="0" E1_4="0" E1_5="0" E1_6="%d" E1_7="%d" '
                  'E1_41="0" E1_42="0" E1_421="0" E1_422="0"/>' % (brute, b4base, imp, imp))
+        # [8.3 avantaje] bilete de valoare defalcate pe tip: E3_10 masa / E3_75 vacanta / E3_74 cultural /
+        # E3_72 cresa; E3_60 = suma (structura D112: E3_60 >= E3_10+E3_72+E3_73+E3_74+E3_75+...). INFORMATIV -
+        # NU se atinge E3_8/E1_1 (ar rupe DUK regula S111: E1_1 = Suma(E3_8)); E3_8 (venit, mii) >= E3_60 (bilete,
+        # sute) prin constructie. Emise DOAR cand exista avantaje (salariatii fara bilete raman neschimbati).
+        # Probat DUK 04.08.2026. Cadou (E3_73) neinclus - cadou nu e in pipeline-ul de impozit D112 (calcul_salariu).
+        _m = _d112int(s.get("e83_masa", 0)); _vc = _d112int(s.get("e83_vacanta", 0))
+        _cu = _d112int(s.get("e83_cultural", 0)); _cr = _d112int(s.get("e83_cresa", 0))
+        _e83_total = _m + _vc + _cu + _cr
+        _e83 = ""
+        if _e83_total > 0:
+            _e83 = ' E3_60="%d"' % _e83_total
+            if _m:  _e83 += ' E3_10="%d"' % _m
+            if _cr: _e83 += ' E3_72="%d"' % _cr
+            if _cu: _e83 += ' E3_74="%d"' % _cu
+            if _vc: _e83 += ' E3_75="%d"' % _vc
         a.append('    <asiguratE3 E3_1="B" E3_2="1" E3_3="1" E3_4="A" E3_5="%s" E3_6="%s" E3_8="%d" '
-                 'E3_9="%d" E3_14="%d" E3_15="%d" E3_16="0" E3_19="0" E3_21="0"/>'
-                 % (perioada, perioada, brute, b4base, imp, imp))
+                 'E3_9="%d" E3_14="%d" E3_15="%d" E3_16="0" E3_19="0" E3_21="0"%s/>'
+                 % (perioada, perioada, brute, b4base, imp, imp, _e83))
         a.append('  </asigurat>')
         AS.append("\n".join(a))
     n = len(salariati)
@@ -489,6 +504,13 @@ def pull(conn, schema, an, luna):
         s["impozit_tichete"] = r.get("impozit_tichete", 0)  # impozit pe tichete
         # [F133] baza CASS D112 = valoarea TOTALA a biletelor (masa + vacanta)
         s["tichete_nominal"] = r.get("tichete_nominal", 0) + r.get("tichete_vacanta", 0)
+        # [8.3 avantaje] nominalele PER TIP pt sectiunea 8.3 D112 (E3_10 masa / E3_75 vacanta /
+        # E3_74 cultural / E3_72 cresa). Separate de tichete_nominal (baza CASS, masa+vacanta) - aici
+        # e defalcarea informativa. Cadou (E3_73) nu apare: nu e in pipeline-ul de impozit al calcul_salariu.
+        s["e83_masa"] = r.get("tichete_nominal", 0)
+        s["e83_vacanta"] = r.get("tichete_vacanta", 0)
+        s["e83_cultural"] = r.get("tichete_cultural", 0)
+        s["e83_cresa"] = r.get("tichete_cresa", 0)
         # part-time supra-taxare (art. 146(5^6)/168(6^1) CF, structura D112 v7):
         # part_time = ROUND(prag_pt * zile_lucrate / NZL); daca 0 < baza < part_time
         # -> B4_*P la prag, diferenta pe angajator. Exceptati: scutit+motiv 1-5.
