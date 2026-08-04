@@ -113,8 +113,15 @@ MISCARI_STOC = {
 }
 MOVEMENT_IMPLICIT = "10"
 
-# BaseRate = pro-rata TVA: standard 1 (intreaga suma), NU 100 - documentatia SAF-T: "Procentele
-# de pro-rata utilizate pentru codul de taxa. Standard este de 1 (intreaga suma)".
+# BaseRate (MF.TT.11) = pro-rata de DEDUCERE per cod de taxa, encodata ca FRACTIE in [0.0000, 1.0000]
+# unde 1.0000 = 100.00% (tip SAFBaseRate = decimal totalDigits 5, fractionDigits 4). ATENTIE, foaia
+# "2. MasterFiles" e intern CONTRADICTORIE: proza spune "Standard is 100 (whole amount) / 60 if 60%"
+# (text OECD-legacy pe procente), DAR restrictia OBLIGATORIE din aceeasi celula e "[0,0000 - 1,0000]
+# (unde 1,0000 = 100,00%)". Restrictia CASTIGA: o valoare 100 sau 60 ar viola [0-1] -> D406 respins.
+# Intreaga suma deductibila = 1 (=1.0000), NU 100. Livrarile (singurele coduri emise azi) n-au pro-rata
+# de deducere -> 1. Un cod achizitie ded. 50% ar cere 0.5 (datorie: cote_tva emite doar livrari azi).
+# NU schimba in 100 (comentariul vechi cita GRESIT doc-ul ca "standard 1" - concluzia corecta, dar din
+# restrictie, nu din proza). Pazit de test_baserate_encoding_pro_rata_fractie.
 BASE_RATE = 1
 
 
@@ -579,7 +586,7 @@ def _masterfiles(res):
         M.append('          <TaxCode>%s</TaxCode>' % _esc(ct.cod))
         M.append('          <Description>%s</Description>' % _esc(_t(ct.descriere, _LIM["d406"]["Description"])))
         M.append('          <TaxPercentage>%s</TaxPercentage>' % _dec(ct.procent))
-        M.append('          <BaseRate>1</BaseRate>')
+        M.append('          <BaseRate>%s</BaseRate>' % BASE_RATE)
         M.append('          <Country>RO</Country>')
         M.append('        </TaxCodeDetails>')
     M.append('      </TaxTableEntry>')

@@ -142,3 +142,47 @@ def test_movementtype_nomenclator_oficial():
     # nota 4 a foii: cod alfanumeric de maxim 9 caractere
     for cod in MISCARI_STOC:
         assert re.fullmatch(r"[A-Za-z0-9]{1,9}", cod), "cod MovementType ne-conform nota 4: %r" % cod
+
+
+def test_baserate_encoding_pro_rata_fractie():
+    """Cluster BaseRate (encoding pro-rata): BaseRate din TaxCodeDetails (MF.TT.11) e o FRACTIE in
+    [0.0000, 1.0000] unde 1.0000 = 100.00%, NU un procent 0-100. Documentul ANAF (d406_schema_anaf.xlsx,
+    foaia '2. MasterFiles', MF.TT.11) e INTERN CONTRADICTORIU: proza spune 'Standard is 100 (whole amount)
+    / 60 if 60%' (text OECD-legacy pe procente) DAR restrictia OBLIGATORIE din aceeasi celula e
+    'Restrictie: [0,0000 - 1,0000] (unde 1,0000 = 100,00%)' iar tipul e SAFBaseRate = decimal(totalDigits
+    5, fractionDigits 4). Restrictia CASTIGA: 100 sau 60 ar viola [0-1] -> D406 respins. Deci BASE_RATE=1
+    (=1.0000=100%) e CORECT pentru codurile LIVRARI standard (integral; livrarile n-au pro-rata de
+    deducere - deducerea e la achizitii). LECTIE (a 3-a in campanie): comentariul vechi cita GRESIT doc-ul
+    ('standard 1'); concluzia (1) era corecta dar din RESTRICTIE, nu din proza care spune 100. Un fix la
+    100 ar sparge declaratia."""
+    import re
+    from decimal import Decimal
+    from core import d406
+    from core.d406 import BASE_RATE
+
+    def _safbaserate_valid(v):
+        """True daca v respecta restrictia ANAF [0,0000-1,0000] SI tipul SAFBaseRate = decimal(5,4)."""
+        d = Decimal(str(v))
+        if not (Decimal("0.0000") <= d <= Decimal("1.0000")):     # restrictia ANAF [0,1]
+            return False
+        _s, digits, exp = d.normalize().as_tuple()                # tipul XSD: totalDigits<=5, fractionDigits<=4
+        return max(0, -exp) <= 4 and len(digits) <= 5
+
+    # 1) encoding: intreaga suma deductibila = 1 (=1.0000=100%), in restrictia oficiala
+    assert Decimal(str(BASE_RATE)) == Decimal("1")
+    assert _safbaserate_valid(BASE_RATE), "BASE_RATE iese din SAFBaseRate/restrictia [0,1]"
+    # 2) DINTII gardului: valorile-capcana din proza (procente) sunt RESPINSE de restrictie
+    assert not _safbaserate_valid(100), "100 (procent) trebuie respins de restrictia [0,1]"
+    assert not _safbaserate_valid(60), "60 (procent) trebuie respins de restrictia [0,1]"
+    # exemple valide de pro-rata partiala, ca fractie (nu procent): 0.5 = 50%, 0.6 = 60%
+    assert _safbaserate_valid(Decimal("0.5")) and _safbaserate_valid(Decimal("0.6"))
+    # 3) SURSA UNICA: valoarea EMISA in XML == BASE_RATE pentru fiecare cod de taxa (nu literal divergent)
+    res = d406.Rezultat(an=2026, luna=3, prof={}, conturi=[], clienti=[], furnizori=[],
+                        cote_tva=d406.COTE_TVA_STANDARD)
+    xml = "\n".join(d406._masterfiles(res))
+    emise = re.findall(r"<BaseRate>([^<]*)</BaseRate>", xml)
+    assert emise, "niciun BaseRate emis in MasterFiles"
+    assert set(emise) == {str(BASE_RATE)}, "BaseRate emis divergent de BASE_RATE: %r" % sorted(set(emise))
+    # fiecare valoare emisa respecta SAFBaseRate
+    for v in emise:
+        assert _safbaserate_valid(v), "BaseRate emis invalid: %r" % v
