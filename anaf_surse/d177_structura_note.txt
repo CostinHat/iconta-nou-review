@@ -1,0 +1,26 @@
+# STRUCTURA D177 "Cerere privind redirectionarea impozitului pe profit" (OPANAF 3562/2024, 05.07.2024)
+# Sursa PRIMARA: OPANAF_3562_2024_D177.pdf (extractibil pdftotext -> OPANAF_3562_2024_D177.txt), sha256 in .sha256.
+# Lista de campuri: din instructiunile de completare (OPANAF procedura + lege5.ro instructiuni, SECUNDAR).
+# NOTA: D177 e FORMULAR PDF (cerere, format electronic via SPV), NU declaratie XML cu validator DUK.
+#       OPANAF 3562/2024 aproba "modelul, continutul si instructiunile" formularului - NU o schema XML.
+#       Nu exista D177Validator / .xsd / intrare in CHEIE_DUK. Vezi blocajul in DECIZII 04.08.
+
+CAMPURI (formular 177):
+Sectiunea I - Date identificare contribuabil: cod de identificare fiscala (CIF); denumire; adresa completa
+  (strada, numar, bloc, scara, etaj, apartament, judet/sector, localitate, cod postal).
+Sectiunea II - Redirectionarea impozitului pe profit:
+  - anul fiscal; perioada (dupa caz);
+  - suma maxima care poate fi redirectionata (= MIN(0.75% cifra afaceri, 20% impozit pe profit) - motorul
+    calculeaza deja `redirectionabil_d177` in core/sponsorizari.py);
+  - suma redirectionata anterior in acelasi an; suma ramasa de redirectionat.
+  Subsectiunea 1 - sponsorizare persoane juridice fara scop lucrativ / unitati de cult: denumire beneficiar,
+    CIF, IBAN, adresa, nr./data contract, suma de redirectionat. (beneficiarul trebuie inscris in Registrul
+    entitatilor/unitatilor de cult - conditie art.25(4^1) CF.)
+  Subsectiunea 2 - sponsorizare alti beneficiari (Legea 32/1994): aceleasi campuri.
+  Subsectiunea 3 - acte de mecenat (persoane fizice): nume si prenume, CNP, adresa, IBAN, nr./data contract, suma.
+  Subsectiunea 4 - UNICEF si alte organizatii internationale: denumire, CIF, IBAN, suma.
+Sectiunea III - Date imputernicit (optional): CIF, denumire/nume prenume, adresa domiciliu fiscal.
+Optiune - Acord informare entitate beneficiara (checkbox): comunica beneficiarului denumirea+CIF contribuabil si suma.
+
+TEMEI: CF art.25 alin.(4) lit.i + alin.(4^1) (redirectionare), Legea 32/1994 (sponsorizare), OPANAF 3562/2024.
+Termen: pana la termenul de depunere a declaratiei anuale de impozit pe profit (D101).

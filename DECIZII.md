@@ -6923,3 +6923,34 @@ IC sunt guvernate de art.284 SEPARAT, care NU are regula de avans -> nu se aplic
 da exigibilitate la data emiterii, fara tratament de avans.
 
 Proba explicita adaugata in core/test_d390_ziua15.py (factura D, facturare anticipata -> exigibilitate = data emiterii).
+
+
+## 04.08.2026 — Punctul 5 (A3 D177): structura OBTINUTA + salvata, dar BLOCAJ MOTIVAT pe mecanism (formular PDF).
+
+Campania "implementarile ramase", punctul 5. Predarea presupunea ca structura D177 lipseste si trebuie descarcata.
+DESCARCATA si SALVATA in anaf_surse/ (contrar presupunerii): OPANAF_3562_2024_D177.pdf (306903 bytes, HTTP 200,
+sha256 salvat) + OPANAF_3562_2024_D177.txt (extractibil cu pdftotext - NU e scanat, WebFetch esuase dar pdftotext
+merge) + d177_structura_note.txt (lista de campuri). Deci "sursa oficiala lipseste" NU mai e adevarat.
+
+STRUCTURA (campuri, din OPANAF + instructiuni): identificare contribuabil (CIF/denumire/adresa); an fiscal; suma
+maxima redirectionabila (= MIN(0.75% cifra afaceri, 20% impozit profit) - motorul o calculeaza deja,
+core/sponsorizari.py redirectionabil_d177); 4 subsectiuni de beneficiari (persoane juridice fara scop lucrativ/cult;
+alti beneficiari L32/1994; mecenat persoane fizice; UNICEF/org internationale) cu denumire/CIF/IBAN/adresa/contract/
+suma; imputernicit optional; acord informare beneficiar. Vezi anaf_surse/d177_structura_note.txt.
+
+BLOCAJ MOTIVAT (4 elemente) - pe MECANISM, nu pe structura:
+1. CE: generarea formularului D177 nu e implementata (motorul calculeaza doar SUMA redirectionabila).
+2. DE CE: D177 e FORMULAR PDF ("Cerere", format electronic via SPV), NU declaratie XML cu validator. OPANAF 3562/2024
+   aproba "modelul, continutul si instructiunile" formularului - NU o schema XML. Nu exista D177Validator, .xsd, sau
+   intrare in CHEIE_DUK. Codebase-ul genereaza declaratii XML validate DUK (d100/d394/...); D177 NU se incadreaza:
+   fara schema XML si fara validator, un D177 generat NU se poate proba (nimic de validat) - contravine metodei
+   R17 (validatorul e autoritatea) folosite peste tot. Producerea PDF-ului cere infrastructura de completare
+   smart-PDF (template oficial + XFA), ABSENTA din codebase.
+3. CE TREBUIE: DECIZIE DE PRODUS pe materializare (schimba ce ajunge la contabil, NU rezulta din structura):
+   (a) model de date structurat (continutul cererii) pt completare/verificare manuala; sau (b) generare PDF cu
+   template-ul oficial + infrastructura noua; sau (c) asteptare pana ANAF publica o schema XML pt D177. Plus:
+   confirmarea ca D177 se depune ca PDF (nu XML) - probabil da, dat fiind ca e "cerere".
+4. URMATOR: campanie proprie "D177 formular" dupa decizia de produs pe mecanism. Structura + temeiurile sunt gata
+   in anaf_surse/ (groundwork facut). Trec la punctul 6.
+
+Sursa: static.anaf.ro/static/10/Anaf/legislatie/OPANAF_3562_2024.pdf; lege5.ro instructiuni formular 177 (secundar).

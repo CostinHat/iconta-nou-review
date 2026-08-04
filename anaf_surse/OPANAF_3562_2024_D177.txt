@@ -1,0 +1,503 @@
+                                            ORDIN din 5 iulie 2024
+    pentru aprobarea Procedurii privind redirecţionarea impozitului pe profit, potrivit legii, pentru
+    efectuarea de sponsorizări şi/sau acte de mecenat, precum şi a modelului şi conţinutului unor
+                                              formulare
+
+
+Având în vedere prevederile art. 25 alin. (4) lit. i) şi ţ), ale art. 42 alin. (4) din Legea nr. 227/2015 privind
+Codul fiscal, cu modificările şi completările ulterioare, precum şi avizul conform al Ministerului
+Finanţelor comunicat prin Adresa nr. 741.101 din 26.06.2024,în temeiul prevederilor art. 342 alin. (1) din
+Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi completările ulterioare, ale art.
+5 alin. (4) din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare, ale art.
+LV din Ordonanţa de urgenţă a Guvernului nr. 115/2023 privind unele măsuri fiscal-bugetare în
+domeniul cheltuielilor publice, pentru consolidare fiscală, combaterea evaziunii fiscale, pentru
+modificarea şi completarea unor acte normative, precum şi pentru prorogarea unor termene, cu
+modificările şi completările ulterioare, şi ale art. 11 alin. (3) din Hotărârea Guvernului nr. 520/2013
+privind organizarea şi funcţionarea Agenţiei Naţionale de Administrare Fiscală, cu modificările şi
+completările ulterioare,
+preşedintele Agenţiei Naţionale de Administrare Fiscală emite următorul ordin:
+Articolul 1
+Se aprobă Procedura privind redirecţionarea impozitului pe profit, potrivit legii, pentru efectuarea de
+sponsorizări şi/sau acte de mecenat, prevăzută în anexa nr. 1.
+Articolul 2
+(1)Se aprobă modelul, conţinutul şi instrucţiunile de completare a formularului 177 „Cerere privind
+redirecţionarea impozitului pe profit“, prevăzute în anexa nr. 2.
+(2)Se aprobă modelul şi conţinutul formularului „Notificare privind erorile identificate în cererea de
+redirecţionare“, prevăzute în anexa nr. 3.
+(3)Se aprobă modelul şi conţinutul formularului „Notificare privind modul de soluţionare a cererii de
+redirecţionare a impozitului pe profit“, prevăzute în anexa nr. 4.
+(4)Se aprobă modelul şi conţinutul formularului „Notificare privind comunicarea datelor de identificare a
+contribuabililor şi a sumelor redirecţionate de aceştia din impozitul pe profit“, prevăzute în anexa nr. 5.
+(5)Se aprobă modelul şi conţinutul formularului „Notificare privind contul bancar al entităţii
+beneficiare“, prevăzute în anexa nr. 6.
+Articolul 3
+Caracteristicile de editare, modul de difuzare, utilizare şi păstrare a formularelor prevăzute la art. 2 sunt
+prezentate în anexa nr. 7.
+Articolul 4
+Anexele nr. 1-7 fac parte integrantă din prezentul ordin.
+Articolul 5
+Prevederile prezentului ordin se aplică începând cu redirecţionarea impozitului pe profit datorat pentru
+anul fiscal 2024/anul fiscal modificat care începe în anul 2024.
+Articolul 6
+Direcţia generală proceduri pentru administrarea veniturilor, Direcţia generală de reglementare a
+colectării creanţelor bugetare, Direcţia generală de administrare a marilor contribuabili, direcţiile
+generale regionale ale finanţelor publice, precum şi, după caz, direcţiile de specialitate din cadrul
+Agenţiei Naţionale de Administrare Fiscală vor duce la îndeplinire prevederile prezentului ordin.
+Articolul 7
+Prezentul ordin se publică în Monitorul Oficial al României, Partea I.
+
+
+Preşedintele Agenţiei Naţionale de Administrare Fiscală,
+Nicoleta-Mioara Cîrciumaru
+Bucureşti, 28 iunie 2024.
+3.562.
+Anexa nr. 1
+PROCEDURĂ din 28 iunie 2024
+privind redirecţionarea impozitului pe profit, potrivit legii, pentru efectuarea de sponsorizări şi/sau acte
+de mecenat, precum şi a modelului şi conţinutului unor formulare
+Notă
+Aprobată prin ORDINUL nr. 3.562 din 28 iunie 2024, publicat în Monitorul Oficial al României, Partea I,
+nr. 643 din 5 iulie 2024.
+Capitolul I
+Dispoziţii generale
+1. Plătitorii de impozit pe profit pot dispune redirecţionarea unor sume din impozitul datorat, potrivit
+legii, până la termenele legale de depunere a declaraţiei anuale de impozit pe profit.
+2.
+(1)Valoarea impozitului pe profit sau a diferenţei de impozit pe profit care poate fi redirecţionată se
+calculează prin scăderea din valoarea minimă stabilită, potrivit art. 25 alin. (4) lit. i) din Legea nr.
+227/2015 privind Codul fiscal, cu modificările şi completările ulterioare, a sumelor reprezentând
+sponsorizare şi/sau mecenat, acordate entităţilor beneficiare în anul pentru care s-a depus declaraţia
+anuală de impozit pe profit, conform art. 25 alin. (4) lit. i) şi ţ), şi a sumelor reportate, astfel cum au fost
+înscrise în formularul 101 „Declaraţie privind impozitul pe profit“ a anului respectiv.În situaţia în care se
+datorează impozit pe profit la nivelul impozitului minim pe cifra de afaceri, nu se aplică prevederile art.
+42 alin. (4) din Legea nr. 227/2015, cu modificările şi completările ulterioare, respectiv contribuabilii nu
+pot dispune redirecţionarea impozitului pe profit stabilit la nivelul impozitului minim pe cifra de afaceri.
+(2)Pentru stabilirea limitei impozitului pe profit prevăzute la art. 25 alin. (4) lit. i) pct. 2 din Legea nr.
+227/2015, cu modificările şi completările ulterioare, se va avea în vedere şi scăderea din acesta a
+sumelor aferente creditului fiscal şi a impozitului pe profit scutit/redus, în conformitate cu prevederile
+Ordinului preşedintelui Agenţiei Naţionale de Administrare Fiscală nr. 3.386/2016 pentru aprobarea
+modelului şi conţinutului formularelor 101 „Declaraţie privind impozitul pe profit“ şi 120 „Decont privind
+accizele“, cu modificările şi completările ulterioare.
+3.
+(1)Obligaţia plăţii sumei redirecţionate din impozitul pe profit revine organului fiscal competent.
+(2) Redirecţionarea impozitului pe profit pentru sponsorizarea persoanelor juridice fără scop lucrativ,
+inclusiv a unităţilor de cult, poate fi efectuată doar dacă beneficiarul sponsorizării este înscris în
+Registrul entităţilor/unităţilor de cult pentru care se acordă deduceri fiscale.
+(3) În cazul redirecţionării impozitului pe profit către Fondul Naţiunilor Unite pentru Copii - UNICEF şi
+către alte organizaţii internaţionale care îşi desfăşoară activitatea potrivit prevederilor unor acorduri
+speciale la care România este parte, nu există obligaţia înscrierii entităţii beneficiare respective în
+Registrul entităţilor/unităţilor de cult pentru care se acordă deduceri fiscale.
+4. În sensul prezentei proceduri, entitatea beneficiară poate fi persoană juridică fără scop lucrativ,
+unitate de cult, Fondul Naţiunilor Unite pentru Copii - UNICEF, orice organizaţie internaţională care îşi
+desfăşoară activitatea potrivit prevederilor unor acorduri speciale la care România este parte, alţi
+beneficiari prevăzuţi de Legea nr. 32/1994 privind sponsorizarea, cu modificările şi completările
+ulterioare, şi de Legea bibliotecilor nr. 334/2002, republicată, cu modificările şi completările ulterioare.
+5. Prezenta procedură se aplică de către compartimentul cu atribuţii în gestiunea registrului
+contribuabililor şi declaraţiilor fiscale din cadrul organului fiscal central competent, denumit în
+continuare compartiment de specialitate.
+6. Termenul de soluţionare a cererilor privind redirecţionarea impozitului pe profit este de 45 de zile de
+la data depunerii, potrivit art. 77 din Legea nr. 207/2015 privind Codul de procedură fiscală, cu
+modificările şi completările ulterioare, dar nu mai târziu de 45 de zile de la data expirării termenului
+legal de exercitare a opţiunii de redirecţionare.
+Capitolul II
+Depunerea cererilor privind redirecţionarea impozitului pe profit
+7.
+(1)Contribuabilii îşi exercită opţiunea de redirecţionare a impozitului pe profit prin completarea şi
+depunerea formularului 177 „Cerere privind redirecţionarea impozitului pe profit“.
+(2)Opţiunea de redirecţionare poate fi exercitată pentru una sau mai multe entităţi, în limita sumei
+stabilite potrivit pct. 2.
+(3)Formularul 177 se depune cu respectarea prevederilor art. 79 alin. (1^1) din Legea nr. 207/2015, cu
+modificările şi completările ulterioare.
+(4) În cazul contribuabililor membri ai unui grup fiscal, redirecţionarea poate fi dispusă numai de
+persoana juridică responsabilă.
+(5) Cererile care se corectează la iniţiativa contribuabililor nu se pot depune mai târziu de 45 de zile de la
+termenul legal de exercitare a opţiunii de redirecţionare.
+8. Cererile depuse după termenul prevăzut de lege şi cererile care se corectează la iniţiativa
+contribuabililor depuse după termenul prevăzut la pct. 7 alin. (5) nu vor fi prelucrate de către
+compartimentul de specialitate.
+Capitolul III
+Soluţionarea cererilor privind redirecţionarea impozitului pe profit
+9. Compartimentul de specialitate realizează următoarele operaţiuni în vederea soluţionării formularelor
+177 „Cerere privind redirecţionarea impozitului pe profit“:
+a)primeşte şi înregistrează cererile;
+b)organizează evidenţa cererilor;
+c)procesează cererile;
+d)verifică stingerea obligaţiilor privind impozitul pe profit pentru contribuabilii care au depus cereri de
+redirecţionare;
+e)notifică contribuabilii ale căror cereri conţin erori;
+f)transmite borderoul către unitatea de trezorerie în vederea virării sumelor către entităţile beneficiare;
+g)în baza acordului scris al contribuabilului, exprimat în prealabil, comunică entităţii beneficiare
+informaţiile privind denumirea şi codul de identificare fiscală ale contribuabilului care a dispus
+redirecţionarea impozitului pe profit, precum şi suma redirecţionată de acesta;
+h)notifică contribuabilii privind modul de soluţionare a cererii de redirecţionare a impozitului pe profit;
+i)notifică contribuabilii privind contul bancar al entităţii beneficiare.
+10.
+(1)Compartimentul de specialitate organizează o evidenţă, în format electronic, a cererilor primite.
+(2) Evidenţa cererilor conţine următoarele elemente:
+a)codul de identificare fiscală a contribuabilului;
+b)denumirea contribuabilului;
+c)domiciliul fiscal al contribuabilului;
+d)numărul de înregistrare a cererii, la organul fiscal;
+e)datele de identificare ale fiecărei entităţi beneficiare înscrise în cerere;
+f)suma solicitată a fi redirecţionată către fiecare entitate beneficiară;
+g)existenţa acordului contribuabilului care a dispus redirecţionarea impozitului pe profit pe baza căruia
+organul fiscal comunică entităţii beneficiare informaţiile privind denumirea şi codul de identificare
+fiscală ale contribuabilului, precum şi suma redirecţionată de acesta;
+h)numărul şi data notificării privind erorile identificate în cererea de redirecţionare şi ale notificării
+privind contul bancar al entităţii beneficiare;
+i)data comunicării notificării privind erorile identificate în cererea de redirecţionare şi a notificării privind
+contul bancar al entităţii beneficiare;
+j)termenul de răspuns la notificarea privind erorile identificate în cererea de redirecţionare şi la
+notificarea privind contul bancar al entităţii beneficiare;
+k)data verificării stingerii obligaţiilor de plată privind impozitul pe profit, precum şi menţiuni privind
+stingerea acestora (obligaţiile sunt stinse/obligaţiile nu sunt stinse);
+l)modul de soluţionare a cererilor privind redirecţionarea impozitului pe profit:
+– suma din impozitul pe profit a fost redirecţionată: se completează numărul şi data borderoului
+transmis unităţii de trezorerie în vederea virării sumei către entitatea beneficiară;
+– suma din impozitul pe profit nu a fost redirecţionată: se completează motivul pentru care suma din
+impozitul pe profit nu a fost redirecţionată (nu au fost corectate informaţiile din cerere, în termenul
+prevăzut de notificare, entitatea beneficiară nu figurează în Registrul entităţilor/unităţilor de cult pentru
+care se acordă deduceri fiscale, obligaţiile privind impozitul pe profit nu au fost stinse în termen de 45
+de zile de la scadenţă sau contribuabilul datorează impozit pe profit la nivelul impozitului minim pe cifra
+de afaceri).
+(3)Compartimentul de specialitate înregistrează în evidenţă datele prevăzute la alin. (2) lit. a)-g), în
+termen de o zi lucrătoare de la primirea cererilor.
+(4)În vederea completării informaţiilor de la alin. (2) lit. e), compartimentul de specialitate înregistrează
+următoarele date privind entitatea beneficiară înscrisă în cerere:
+a)denumirea entităţii beneficiare;
+b)codul de identificare fiscală;
+c)contul bancar.
+(5)În vederea completării informaţiilor de la alin. (2) lit. f), compartimentul de specialitate înregistrează
+în evidenţă, pentru fiecare entitate beneficiară, suma din impozitul pe profit pentru care a fost solicitată
+redirecţionarea.
+11. În situaţia în care contribuabilii solicită redirecţionarea impozitului pe profit prin depunerea mai
+multor formulare 177 „Cerere privind redirecţionarea impozitului pe profit“, solicitările vor fi analizate în
+ordinea cronologică a înregistrării acestora la organul fiscal.
+12.
+(1)În vederea soluţionării cererii, compartimentul de specialitate verifică în evidenţele fiscale
+informaţiile cuprinse în cerere.
+(2) În situaţia contribuabililor care datorează impozit pe profit la nivelul impozitului minim pe cifra de
+afaceri, cererea se respinge.
+(3) Dacă în urma verificării informaţiilor se constată erori în cererea depusă, compartimentul de
+specialitate transmite contribuabilului Notificarea privind erorile identificate în cererea de
+redirecţionare, în care detaliază erorile identificate şi solicită contribuabililor remedierea acestora.
+(4)Notificarea se completează conform modelului prevăzut în anexa nr. 3 la ordin şi se comunică prin
+intermediul serviciului Spaţiul Privat Virtual.
+(5) Corectarea informaţiilor din cerere se realizează prin depunerea unei cereri 177 rectificative, care va
+cuprinde informaţiile corectate solicitate în notificare, precum şi toate informaţiile corecte înscrise în
+cererea iniţială.
+(6) Dacă, în termenul prevăzut în notificare, contribuabilul nu corectează informaţiile eronate,
+identificate în notificare, cererea se respinge.
+(7) Contribuabilul poate depune, în cadrul termenului legal de depunere, un nou formular 177 „Cerere
+privind redirecţionarea impozitului pe profit“.
+13.
+(1)Zilnic, pentru contribuabilii care au depus cereri de redirecţionare corecte, compartimentul de
+specialitate verifică stingerea obligaţiilor fiscale reprezentând impozitul pe profit aferent anului fiscal
+pentru care se solicită redirecţionarea.
+(2)Compartimentul de specialitate înscrie în evidenţa cererilor, la fiecare contribuabil, la pct. 10 alin. (2)
+lit. k) data verificării stingerii obligaţiilor fiscale de la alin. (1), precum şi menţiuni privind stingerea
+acestora (obligaţiile sunt stinse/obligaţiile nu sunt stinse).
+(3)În cazul în care, după expirarea unui termen de 45 de zile de la scadenţă, compartimentul de
+specialitate constată că obligaţiile fiscale de la alin. (1) nu sunt stinse, cererea se respinge.
+14.
+(1)Compartimentul de specialitate întocmeşte lista privind redirecţionarea impozitului pe profit, care
+cuprinde contribuabilii care au depus cereri corecte şi care nu înregistrează obligaţii de plată
+reprezentând impozit pe profit, entităţile beneficiare şi suma solicitată.
+(2) Compartimentul de specialitate verifică dacă entităţile beneficiare care au obligaţia înregistrării în
+Registrul entităţilor/unităţilor de cult pentru care se acordă deduceri fiscale figurează în acest registru.
+(3)Din lista de la alin. (1) sunt eliminate entităţile nonprofit/unităţile de cult care nu figurează în registru.
+(4)Pe baza listei de la alin. (3), compartimentul de specialitate editează, cu ajutorul aplicaţiei
+informatice, câte un borderou, care cuprinde următoarele informaţii:
+a)numărul/data borderoului;
+b)informaţii privind contribuabilul:
+(i) codul de identificare fiscală;
+(ii) denumirea;
+c)informaţii privind entitatea beneficiară:
+(i) denumirea entităţii beneficiare;
+(ii) codul de identificare fiscală al entităţii beneficiare;
+(iii) simbol cont bancar (IBAN);
+(iv) suma redirecţionată
+15. Borderoul se aprobă de către conducătorul unităţii fiscale, cu menţiunea „Bun de plată“, şi se
+transmite unităţii de trezorerie.
+16.
+(1)În situaţia în care unitatea de trezorerie comunică organului fiscal că nu poate efectua viramentul
+sumelor întrucât contul bancar înscris în cerere figurează ca fiind închis, compartimentul de specialitate
+întocmeşte şi transmite contribuabilului Notificarea privind contul bancar al entităţii beneficiare
+prevăzută în anexa nr. 6.
+(2) Transmiterea informaţiei privind contul bancar se realizează prin depunerea unei cereri 177
+rectificative, care va cuprinde informaţiile solicitate în notificare, precum şi toate informaţiile corecte
+înscrise în cererea iniţială.
+(3)Dacă, în termenul prevăzut în notificare, contribuabilul nu comunică informaţia solicitată prin
+notificarea de la alin. (1), cererea se respinge.
+(4) Contribuabilul poate depune, în cadrul termenului legal de depunere, un nou formular 177 „Cerere
+privind redirecţionarea impozitului pe profit“.
+(5)Dispoziţiile pct. 13-15 se aplică în mod corespunzător.
+17. Informaţiile privind modalitatea de soluţionare a cererii se înscriu în evidenţă la pct. 10 alin. (2) lit. l).
+18. Compartimentul de specialitate comunică contribuabilului, prin intermediul serviciului Spaţiul Privat
+Virtual, o notificare privind modul de soluţionare a cererii privind redirecţionarea impozitului pe profit
+conform modelului prevăzut în anexa nr. 4.
+19.
+(1)În cazul contribuabililor care şi-au exprimat acordul, potrivit legii, compartimentul de specialitate
+centralizează, pe codul de identificare fiscală a entităţii beneficiare, informaţiile privind datele de
+identificare a contribuabililor care au dispus redirecţionarea sumelor către respectiva entitate, precum şi
+sumele redirecţionate de aceştia, conform borderoului transmis unităţii de trezorerie.
+(2)Lunar, până la data de 10 a fiecărei luni, compartimentul de specialitate comunică entităţii
+beneficiare, prin intermediul serviciului Spaţiul Privat Virtual, o notificare cu informaţiile prevăzute la
+alin. (1) conform modelului prevăzut în anexa nr. 5.
+-----
+Anexa nr. 2*)
+*) Formularul este reprodus în facsimil.
+INSTRUCŢIUNI
+privind completarea formularului 177 „Cerere privind redirecţionarea impozitului pe profit“
+I. Depunerea formularului
+1. Formularul se completează şi se depune de către contribuabilii care, potrivit legii, dispun redirecţionarea impozitului pe profit, pentru efectuarea
+de sponsorizări şi/sau acte de mecenat, precum şi pentru acordarea unor sume Fondului Naţiunilor Unite pentru Copii - UNICEF sau altor organizaţii
+internaţionale care îşi desfăşoară activitatea potrivit prevederilor unor acorduri speciale la care România este parte.
+2. Cererea se depune prin mijloace electronice de transmitere la distanţă, în conformitate cu prevederile art. 79 alin. (1^1) din Legea nr. 207/2015
+privind Codul de procedură fiscală, cu modificările şi completările ulterioare.
+3. Termen de depunere
+Redirecţionarea impozitului pe profit se poate face până la termenele de depunere a declaraţiei anuale de impozit pe profit, potrivit legii.
+În cazul contribuabililor membri ai unui grup fiscal, Cererea privind redirecţionarea impozitului pe profit se depune de către persoana juridică
+responsabilă a grupului.
+4. Rectificarea cererii de redirecţionare
+4.1. În cazul în care contribuabilul corectează formularul depus, cererea rectificativă se întocmeşte pe acelaşi model de formular, înscriind „X“ în
+spaţiul special prevăzut în acest scop. În acest caz, se completează elementele de identificare a cererii care se rectifică, respectiv data şi numărul de
+înregistrare.
+4.2. Căsuţa „Cerere rectificativă“ se bifează în situaţia în care formularul depus se corectează la iniţiativa contribuabilului.
+Cererea rectificativă nu se poate depune mai târziu de 45 de zile de la termenul legal de exercitare a opţiunii de redirecţionare.
+4.3. Căsuţa „Cerere rectificativă ca urmare a unei notificări“ se bifează în situaţia în care formularul depus se corectează ca urmare a primirii de către
+contribuabil a unei notificări privind erorile identificate în cererea de redirecţionare şi/sau a unei notificări privind contul bancar al entităţii
+beneficiare.
+Cererea se poate rectifica în termen de 15 zile de la primirea notificării.
+5. Organul fiscal competent
+Formularul se depune la organul fiscal competent pentru administrarea creanţelor fiscale datorate de către contribuabil/plătitor.
+În cazul contribuabililor membri ai unui grup fiscal în domeniul impozitului pe profit, formularul se depune la organul fiscal competent pentru
+administrarea creanţelor fiscale datorate de către persoana juridică responsabilă a grupului.
+II. Completarea formularului
+6. În rubrica „Anul“ se înscrie anul pentru care se completează formularul, cu cifre arabe cu 4 caractere (de exemplu: 2024).
+7. Rubrica „Perioada“ se completează în situaţiile în care raportarea se efectuează pentru alte perioade decât anul calendaristic, ca de exemplu:
+– perioada reprezentând anul fiscal modificat, în cazul contribuabililor care intră sub incidenţa prevederilor art. 16 alin. (5), (5^1) şi (5^2) din Legea
+nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare;
+– perioada cuprinsă între prima zi a anului fiscal următor celui în care a fost deschisă procedura lichidării şi data închiderii procedurii de lichidare, în
+cazul contribuabililor care intră sub incidenţa prevederilor art. 16 alin. (6) din Legea nr. 227/2015, cu modificările şi completările ulterioare.
+Secţiunea I „Date de identificare a contribuabilului“
+8. În rubrica „Cod de identificare fiscală“ se completează codul de identificare fiscală atribuit contribuabilului care dispune redirecţionarea
+impozitului pe profit, conform legii. ATENŢIE!
+În cazul contribuabililor membri ai unui grup fiscal, redirecţionarea poate fi dispusă numai de persoana juridică responsabilă.
+9. În rubrica „Denumire“ se înscrie denumirea contribuabilului care dispune redirecţionarea impozitului pe profit, conform legii.
+10. Rubricile privind adresa se completează cu datele privind adresa domiciliului fiscal al contribuabilului.
+Secţiunea II „Redirecţionarea impozitului pe profit“
+11. Contribuabilii care dispun redirecţionarea impozitului pe profit completează în acelaşi formular câte o secţiune privind destinaţia sumei.
+Secţiunile sunt generate cu ajutorul programului de asistenţă, pentru fiecare beneficiar.
+12. Contribuabilii înscriu suma maximă care poate fi redirecţionată, potrivit legii, precum şi, după caz, suma redirecţionată prin formularele 177
+„Cerere privind redirecţionarea impozitului pe profit“ depuse anterior în acelaşi an fiscal şi suma rămasă de redirecţionat, în căsuţele
+corespunzătoare din formular.
+13. Subsecţiunea 1 „Sponsorizare către entităţi persoane juridice fără scop lucrativ, inclusiv unităţi de cult“
+13.1. În rubrica „Denumire“ se înscrie denumirea entităţii persoană juridică fără scop lucrativ/unităţii de cult beneficiare.
+13.2. În rubrica „Cod de identificare fiscală“ se completează codul de identificare fiscală a entităţii persoană juridică fără scop lucrativ/unităţii de cult
+beneficiare.
+13.3. În rubrica „Cont bancar (IBAN)“ se completează codul IBAN al contului bancar al entităţii persoană juridică fără scop lucrativ/unităţii de cult
+beneficiare.
+13.4. În rubricile privind adresa se completează cu datele privind adresa beneficiarului.
+13.5. În rubrica „Contract nr./data“ se înscriu numărul şi data contractului privind acordarea sponsorizării.
+13.6. În rubrica „Sumă de redirecţionat (lei)“ se înscrie suma pentru care se solicită redirecţionarea.
+14. Subsecţiunea 2 „Sponsorizare către beneficiari, alţii decât cei de la pct. 1, potrivit legii“Rubricile se completează similar celor de la subsecţiunea 1
+(pct. 13).
+15. Subsecţiunea 3 „Acte de mecenat“
+15.1. Subsecţiunea se completează de către contribuabilii care dispun redirecţionarea impozitului pe profit pentru efectuarea de acte de mecenat.
+15.2. În rubricile „Nume“ şi „Prenume“ se înscriu numele şi prenumele beneficiarului.
+15.3. În rubrica „Cod numeric personal“ se înscrie codul numeric personal al beneficiarului.
+15.4. În rubricile privind adresa se completează cu datele privind adresa beneficiarului.
+15.5. În rubrica „Cont bancar (IBAN)“ se completează codul IBAN al contului bancar al beneficiarului.
+15.6. În rubrica „Contract nr./data“ se înscriu numărul şi data contractului privind acordarea actului de mecenat.
+15.7. În rubrica „Suma de redirecţionat (lei)“ se înscrie suma pentru care se solicită redirecţionarea.
+16. Subsecţiunea 4 „Fondul Naţiunilor Unite pentru Copii (UNICEF) şi alte organizaţii internaţionale care îşi desfăşoară activitatea potrivit prevederilor
+unor acorduri speciale la care România este parte“
+16.1. În rubrica „Denumire“ se înscrie denumirea Fondul Naţiunilor Unite pentru Copii (UNICEF) sau, după caz, a organizaţiei internaţionale care îşi
+desfăşoară activitatea potrivit prevederilor unor acorduri speciale la care România este parte.
+16.2. În rubrica „Cod de identificare fiscală“ se completează codul de identificare fiscală a Fondului Naţiunilor Unite pentru Copii (UNICEF) sau, după
+caz, a organizaţiei internaţionale care îşi desfăşoară activitatea potrivit prevederilor unor acorduri speciale la care România este parte.
+16.3. În rubrica „Cont bancar (IBAN)“ se completează codul IBAN al contului bancar al Fondului Naţiunilor Unite pentru Copii (UNICEF) sau, după caz,
+al organizaţiei internaţionale care îşi desfăşoară activitatea potrivit prevederilor unor acorduri speciale la care România este parte.
+16.4. În rubrica „Suma de redirecţionat (lei)“ se înscrie suma pentru care se solicită redirecţionarea.
+17. Secţiunea III „Date de identificare a împuternicitului“
+17.1. Se completează numai în cazul în care depunerea cererii privind redirecţionarea impozitului pe profit se realizează prin împuternicit, desemnat
+potrivit Legii nr. 207/2015, cu modificările şi completările ulterioare.
+17.2. În rubrica „Cod de identificare fiscală“ se înscrie codul de identificare fiscală al împuternicitului.
+17.3. În rubrica „Denumire/Nume, prenume“ se înscriu, după caz, numele şi prenumele împuternicitului sau denumirea acestuia.
+17.4. Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal al împuternicitului.
+18. În situaţia în care contribuabilul este de acord ca entitatea beneficiară să fie informată de organul fiscal cu privire la sumele redirecţionate,
+denumirea şi codul de identificare ale contribuabilului care a redirecţionat aceste sume, se bifează căsuţa corespunzătoare din formular şi se
+completează în tabel denumirea/numele, prenumele, precum şi codul de identificare fiscală ale entităţii beneficiare.
+Anexa nr. 3
+
+Sigla*)
+Agenţia Naţională de Administrare Fiscală
+Direcţia Generală de Administrare a Marilor Contribuabili
+Direcţia Generală Regională a Finanţelor Publice .........................
+Unitatea fiscală ....................................................................................
+Serviciul/Biroul/Compartimentul .................................................
+Nr. de înregistrare ...........................
+Data ................................................
+Către**) …………………………………………........
+CIF .........................................................................
+Str. ……..…………......…...... nr. …., bl. ....., sc. ….,
+et. ……, ap. …., judeţul/sectorul ………………..….,
+localitatea ..................., codul poştal …………..…..
+NOTIFICARE
+privind erorile identificate în cererea de redirecţionare
+Stimată(e) doamnă/domn,
+Ca urmare a Cererii privind redirecţionarea impozitului pe profit, înregistrată cu nr. ................. din data de ………………, vă comunicăm că, în urma
+verificării în evidenţele fiscale a informaţiilor cuprinse în cerere, au fost identificate următoarele erori:
+................................................................................................................................................................................................
+Pentru corectarea erorilor identificate veţi depune, în termen de 15 zile de la primirea prezentei, o cerere rectificativă privind redirecţionarea
+impozitului pe profit.
+Dacă, în termenul prevăzut mai sus, nu corectaţi informaţiile eronate, comunicate prin prezenta notificare, cererea se respinge.
+Pentru  informaţii        suplimentare                în        legătură     cu    această     notificare,     persoana              care     poate      fi   contactată   este
+doamna/domnul ..............................................., la sediul nostru sau la numărul de telefon ........................., între orele …..-….. .
+Numele şi prenumele .....................
+Conducătorul unităţii fiscale,
+...................................................
+*) Se va folosi sigla organului fiscal emitent.
+**) Se va înscrie denumirea contribuabilului.
+Document care conţine date cu caracter personal protejate de prevederile Regulamentului (UE) 2016/679
+Anexa nr. 4
+
+Sigla*)
+Agenţia Naţională de Administrare Fiscală
+Direcţia Generală de Administrare a Marilor Contribuabili
+Direcţia Generală Regională a Finanţelor Publice .........................
+Unitatea fiscală ....................................................................................
+Serviciul/Biroul/Compartimentul .................................................
+Nr. de înregistrare ...........................
+Data ................................................
+Către**) ………………………………………….
+CIF ..................................................................
+Str. ……..……………...... nr. …., bl. ....., sc. ….,
+et. ……, ap. …., judeţul/sectorul ………………..….,
+localitatea ..................., codul poştal …………..…….
+NOTIFICARE
+privind modul de soluţionare a cererii de redirecţionare a impozitului pe profit
+Stimată(e) doamnă/domn,
+Ca urmare a Cererii privind redirecţionarea impozitului pe profit înregistrată cu nr. .................. din data de ………………, prin care aţi solicitat
+redirecţionarea unei sume din impozitul pe profit datorat pentru anul ............ către entitatea ................................, vă comunicăm că:
+[ ] Borderoul privind suma redirecţionată a fost transmis unităţii de trezorerie, în vederea efectuării viramentului către entitatea beneficiară.
+[ ] Suma din impozitul pe profit nu a fost redirecţionată, din următoarele motive:
+[ ] nu au fost corectate informaţiile din cerere, în termenul prevăzut în Notificarea nr. .......... din data de ............;
+[ ] entitatea beneficiară nu figurează în Registrul entităţilor/unităţilor de cult pentru care se acordă deduceri fiscale;
+[ ] obligaţiile privind impozitul pe profit nu au fost stinse în termen de 45 de zile de la scadenţă;
+[ ] nu se poate dispune redirecţionarea impozitului pe profit stabilit la nivelul impozitului minim pe cifra de afaceri.
+Pentru informaţii suplimentare în legătură cu această notificare, persoana care poate fi                                                              contactată   este   doamna/
+domnul ..............................................., la sediul nostru sau la numărul de telefon ........................., între orele …..-….. .
+Numele şi prenumele .....................
+Conducătorul unităţii fiscale,
+......................................................
+*) Se va folosi sigla organului fiscal emitent.
+**) Se va înscrie denumirea contribuabilului.
+Document care conţine date cu caracter personal protejate de prevederile Regulamentului (UE) 2016/679
+Anexa nr. 5
+
+Sigla*)
+Agenţia Naţională de Administrare Fiscală
+Direcţia Generală de Administrare a Marilor Contribuabili
+Direcţia Generală Regională a Finanţelor Publice .........................
+Unitatea fiscală ....................................................................................
+Serviciul/Biroul/Compartimentul .................................................
+Nr. de înregistrare ...........................
+Data ................................................
+Către**) ………………………………………….
+CIF ..................................................................
+Str. ……..……………...... nr. …., bl. ....., sc. ….,
+et. ……, ap. …., judeţul/sectorul ………………..….,
+localitatea ..................., codul poştal …………..…….
+NOTIFICARE
+privind comunicarea datelor de identificare a contribuabililor
+şi a sumelor redirecţionate de aceştia din impozitul pe profit
+Stimată(e) doamnă/domn,
+Potrivit dispoziţiilor art. LV din Ordonanţa de urgenţă a Guvernului nr. 115/2023, cu modificările şi completările ulterioare, vă comunicăm, alăturat,
+datele de identificare a contribuabililor şi sumele redirecţionate de aceştia din impozitul datorat pentru anul ............... .
+                                                                                                                                     Suma redirecţionată
+Nr. crt. Denumirea Codul de identificare fiscală Data transmiterii borderoului la unitatea de trezorerie
+                                                                                                                                     (lei)
+0             1                  2                            3                                                                      4
+
+Pentru informaţii suplimentare în legătură cu această notificare, persoana care poate fi contactată                                                                  este   doamna/
+domnul .............................................................., la sediul nostru sau la numărul de telefon ........................., între orele …..-….. .
+Numele şi prenumele .....................
+Conducătorul unităţii fiscale,
+......................................................
+*) Se va folosi sigla organului fiscal emitent.
+**) Se va înscrie denumirea entităţii beneficiare.
+Document care conţine date cu caracter personal protejate de prevederile Regulamentului (UE) 2016/679
+Anexa nr. 6
+
+Sigla*)
+Agenţia Naţională de Administrare Fiscală
+Direcţia Generală de Administrare a Marilor Contribuabili
+Direcţia Generală Regională a Finanţelor Publice .........................
+Unitatea fiscală ....................................................................................
+Serviciul/Biroul/Compartimentul .................................................
+Nr. de înregistrare ...........................
+Data ................................................
+Către**) ………………………………………….
+CIF ..................................................................
+Str. ……..……………...... nr. …., bl. ....., sc. ….,
+et. ……, ap. …., judeţul/sectorul ………………..….,
+localitatea ..................., codul poştal …………..…….
+NOTIFICARE
+privind contul bancar al entităţii beneficiare
+Stimată(e) doamnă/domn,
+Ca urmare a Cererii privind redirecţionarea impozitului pe profit înregistrată cu nr. ................. din data de ………………, prin care aţi solicitat
+redirecţionarea unei sume din impozitul pe profit datorat pentru anul ......... către entitatea ..................................., vă comunicăm că unitatea de
+trezorerie ne-a comunicat că nu poate efectua viramentul sumelor întrucât contul bancar înscris în cerere figurează ca fiind închis.
+Pentru efectuarea viramentului sumelor redirecţionate din impozitul pe profit, vă rugăm să ne comunicaţi contul bancar al entităţii beneficiare, prin
+depunerea unei cereri rectificative, în termen de 15 zile de la primirea prezentei.
+Dacă, în termenul prevăzut mai sus, nu transmiteţi informaţiile solicitate prin prezenta notificare, cererea se respinge.
+Pentru informaţii suplimentare în legătură cu această notificare, persoana care poate fi contactată                                                                 este   doamna/
+domnul ........................................................., la sediul nostru sau la numărul de telefon ............................., între orele …..-….. .
+Numele şi prenumele .....................
+Conducătorul unităţii fiscale,
+......................................................
+*) Se va folosi sigla organului fiscal emitent.
+**) Se va înscrie denumirea contribuabilului.
+Document care conţine date cu caracter personal protejate de prevederile Regulamentului (UE) 2016/679
+Anexa nr. 7
+CARACTERISTICI
+de editare, modul de difuzare, utilizare şi păstrare a formularelor
+1. Denumire: „Cerere privind redirecţionarea impozitului pe profit“ (formular 177)
+1.1. Caracteristici de editare: se utilizează echipament informatic pentru completare şi editare. Formularul se completează şi se editează cu ajutorul
+programului de asistenţă, asigurat gratuit de către Agenţia Naţională de Administrare Fiscală.
+1.2. Se utilizează la solicitarea redirecţionării impozitului pe profit.
+1.3. Se completează şi se depune de către contribuabilii care dispun redirecţionarea impozitului pe profit către entităţile beneficiare, conform legii.
+1.4. Circulă în format electronic la organul fiscal competent.
+1.5. Se arhivează la organul fiscal competent.
+2. Denumire: „Notificare privind erorile identificate în cererea de redirecţionare“
+2.1. Caracteristici de editare: se utilizează echipament informatic pentru completare şi editare.
+2.2. Se utilizează în scopul înştiinţării contribuabililor cu privire la erorile identificate în cererea de redirecţionare (formularul 177).
+2.3. Se întocmeşte în două exemplare de către organul fiscal central competent.
+2.4. Circulă: - un exemplar la organul fiscal central competent;
+– un exemplar la contribuabil.
+2.5. Se arhivează la dosarul fiscal al contribuabilului.
+3. Denumire: „Notificare privind modul de soluţionare a cererii de redirecţionare a impozitului pe profit“
+3.1. Caracteristici de editare: se utilizează echipament informatic pentru completare şi editare.
+3.2. Se utilizează în scopul înştiinţării contribuabililor cu privire la modul de soluţionare a cererii de redirecţionare a impozitului pe profit.
+3.3. Se întocmeşte în două exemplare de către organul fiscal central competent.
+3.4. Circulă: - un exemplar la organul fiscal central competent;
+– un exemplar la contribuabil.
+3.5. Se arhivează la dosarul fiscal al contribuabilului.
+4. Denumire: „Notificare privind comunicarea datelor de identificare a contribuabililor şi a sumelor redirecţionate de aceştia din impozitul pe profit“
+4.1. Caracteristici de editare: se utilizează echipament informatic pentru completare şi editare.
+4.2. Se utilizează în scopul înştiinţării entităţilor beneficiare cu privire la datele de identificare a contribuabililor şi a sumelor redirecţionate de aceştia
+din impozitul pe profit.
+4.3. Se întocmeşte în două exemplare de către organul fiscal central competent.
+4.4. Circulă: - un exemplar la organul fiscal central competent;
+– un exemplar la entitate.
+4.5. Se arhivează la dosarul fiscal al contribuabilului.
+5. Denumire: „Notificare privind contul bancar al entităţii beneficiare“
+5.1. Caracteristici de editare: se utilizează echipament informatic pentru completare şi editare.
+5.2. Se utilizează în scopul înştiinţării contribuabililor cu privire la închiderea contului bancar al entităţii beneficiare.
+5.3. Se întocmeşte în două exemplare de către organul fiscal central competent.
+5.4. Circulă: - un exemplar la organul fiscal central competent;
+– un exemplar la contribuabil.
+5.5. Se arhivează la dosarul fiscal al contribuabilului.
+
