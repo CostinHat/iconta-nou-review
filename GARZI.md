@@ -899,5 +899,21 @@ straturi COMPLEMENTARE (factura = sursa; inregistrarea = derivata; legate prin `
 
 FIX DECIS (DECIZII 04.08): operatiunea de achizitie emite intai un rand `facturi` (tert, directie=primita,
 categorie_331 la taxare inversa, data_faptului_generator la IC), apoi contabilizeaza cu `factura_id` legat.
-Gard anti-regresie planificat: o operatiune de achizitie care creeaza inregistrare FARA factura_id pica mecanic
-(clasa, nu instanta). Pana la fix: NECONFORMITATE ACTIVA deschisa.
+Gard anti-regresie de CLASA: `test_nicio_achizitie_creeaza_inregistrare_orfana_de_factura` (scan AST pe main.py) -
+orice handler `achizitie_*` care insereaza `inregistrari` sursa='facturi' fara `factura_id` pica.
+
+REZOLVAT 04.08 (backend + UI operatiuni_ecran.js, probe DUK end-to-end in core/test_achizitii_factura.py):
+- achizitie_ic -> factura primita (furnizor UE) + factura_id -> D390 DUK-valid.
+- achizitie_taxare_inversa -> factura + factura_id + categorie_331->codPR -> D394 op11 DUK-valid.
+- achizitie_necorporala -> factura + factura_id (MF/amortizare NEATINSA - imobilizarea ramane separata; efect
+  D406/amortizare consemnat) -> D394 tip A DUK-valid.
+- achizitie_neinregistrat (N, tip nou) -> factura tert fara CUI (tip_partener 2) + factura_id + categorie_331 lit.D
+  optionala -> D394 op N DUK-valid (fara categorie: N exclus cu avertisment, nu se ghiceste).
+
+EXCEPTIE NUMITA (NU tacita - gardul o listeaza in EXCEPTATE cu motivul): **achizitie_agricultor** ramane orfan de
+factura si NECONFORMITATE DESCHISA. Motiv verificat la sursa (CF art.315^1): agricultorul forfetar NU colecteaza TVA
+si NU e inregistrat in scop TVA (alin.4); compensatia 8% e deductibila de cumparator ca TVA (alin.17) - dar
+tratamentul in D394 al achizitiei de la agricultorul forfetar (tip_partener? intra in baza? sub ce forma?) NU e
+confirmabil la sursa (niciun ghidaj in d394_struct_anaf.txt / instructiuni). Un rand facturi construit gresit ar
+produce o linie D394 eronata - mai rau decat orfan. D300 e deja acoperit (4426 din inregistrari). Se deblocheaza cu
+temeiul D394 confirmat la sursa. Vezi DECIZII 04.08.

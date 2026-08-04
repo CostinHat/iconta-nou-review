@@ -7146,6 +7146,56 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
     return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val), "tva": str(tva)}
 
 
+@app.post("/tenants/{tenant_id}/achizitie-neinregistrat")
+def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2).
+    corp: {data, furnizor_nume (obligatoriu), valoare, cont_cheltuiala, numar?, categorie? (CODPR_N lit.D),
+    descriere?}. Fara CUI furnizor -> tip N. categorie OPTIONALA: FARA ea N ramane EXCLUS din D394 cu avertisment
+    (nu se ghiceste - continut declarat). PF nu factureaza TVA -> linie cota 0. Nota: cont_cheltuiala = 401."""
+    from decimal import Decimal
+    from core import facturi_api as _fa
+    from core import d394 as _d394
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fara acces")
+        try:
+            furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
+            if not furnizor_nume:
+                raise ValueError("nume furnizor obligatoriu (persoana fizica - apare in denP si in avertisment)")
+            val = Decimal(str(corp["valoare"]))
+            if val <= 0:
+                raise ValueError("valoare invalida")
+            cont = str(corp.get("cont_cheltuiala") or "").strip()
+            if not cont:
+                raise ValueError("cont_cheltuiala obligatoriu")
+            numar = str(corp.get("numar") or "").strip() or ("BORDEROU-" + str(corp["data"]))
+            categorie = str(corp.get("categorie") or "").strip() or None
+            if categorie and not _d394.codpr_N_din_categorie(categorie):
+                raise ValueError("categorie N invalida (nomenclator lit.D CODPR_N): %s" % categorie)
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e))
+        descr = (corp.get("descriere") or "Achizitie de la neinregistrat") + " - " + furnizor_nume
+        with conn.cursor() as cur:
+            cur.execute(f"SET LOCAL search_path TO {schema}")
+            # tert_cui GOL -> clasifica_partener -> tip_partener 2 (N); PF nu factureaza TVA -> linie cota 0
+            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
+                                       linii=[{"descriere": descr[:200], "cantitate": 1,
+                                               "pret_unitar": str(val), "cota_tva": 0}],
+                                       tert_nume=furnizor_nume, tert_cui="", categorie_331=categorie,
+                                       status="importata")
+            fid = fres["factura_id"]
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
+                            VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], fid, descr[:200]))
+            iid = cur.fetchone()[0]
+            cur.execute(f"""INSERT INTO {schema}.inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma)
+                            VALUES (%s,%s,'401',%s)""", (iid, cont, val))
+        conn.commit()
+    return {"inregistrare_id": iid, "factura_id": fid, "valoare": str(val),
+            "categorie": categorie, "in_d394": bool(categorie)}
+
+
 @app.post("/tenants/{tenant_id}/vanzare-ic")
 def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """LIC bunuri (art. 294(2)a) sau prestare servicii IC (art. 278(2)).
@@ -7601,13 +7651,22 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
         elif not dnf:
             raise HTTPException(422, f"dnf_luni obligatoriu pentru {tip} "
                                      "(durata contractului/de utilizare, art. 28(9))")
+        from core import facturi_api as _fa
         try:
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
-                raise ValueError
-            tva = (val * Decimal(str(_common.cota_ceruta(corp))) / 100).quantize(Decimal("0.01"))
-        except (ValueError, KeyError):
-            raise HTTPException(422, "valoare invalida")
+                raise ValueError("valoare invalida")
+            cota = _common.cota_ceruta(corp)
+            tva = (val * Decimal(str(cota)) / 100).quantize(Decimal("0.01"))
+            furnizor_cui = str(corp.get("furnizor_cui") or "").strip().upper().replace(" ", "")
+            if not furnizor_cui:
+                raise ValueError("CUI furnizor obligatoriu (achizitia necorporala e factura de la furnizor)")
+            numar = str(corp.get("numar") or "").strip()
+            if not numar:
+                raise ValueError("numar factura furnizor obligatoriu")
+            furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
+        except (ValueError, KeyError) as e:
+            raise HTTPException(422, str(e) or "valoare invalida")
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
                             (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
@@ -7617,9 +7676,17 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
                          corp["denumire"][:200], cont_imo, cont_am, val,
                          int(dnf), corp["data"]))
             mfid = cur.fetchone()[0]
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
-                            VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
-                        (corp["data"], f"Achizitie necorporala {tip}: {corp['denumire']}"
+            cur.execute(f"SET LOCAL search_path TO {schema}")   # creeaza_factura foloseste INSERT necalificat
+            # rand FACTURA (achizitie normala de la furnizor RO cu CUI) -> D394 tip A. MF (mijloace_fixe) ramane
+            # separat: factura = documentul de achizitie; imobilizarea = activul amortizabil (amortizare/D406).
+            fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
+                                       linii=[{"descriere": corp["denumire"][:200], "cantitate": 1,
+                                               "pret_unitar": str(val), "cota_tva": cota}],
+                                       tert_nume=furnizor_nume or None, tert_cui=furnizor_cui, status="importata")
+            fid = fres["factura_id"]
+            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
+                            VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
+                        (corp["data"], fid, f"Achizitie necorporala {tip}: {corp['denumire']}"
                                        f" (amortizare {dnf} luni, art. 28(9) CF)"[:200]))
             iid = cur.fetchone()[0]
             for dd, cc, ss in [(cont_imo, "404", val), ("4426", "404", tva)]:
@@ -7627,7 +7694,7 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
                                 (inregistrare_id, cont_debit, cont_credit, suma)
                                 VALUES (%s,%s,%s,%s)""", (iid, dd, cc, ss))
         conn.commit()
-    return {"inregistrare_id": iid, "mijloc_fix_id": mfid, "dnf_luni": int(dnf),
+    return {"inregistrare_id": iid, "factura_id": fid, "mijloc_fix_id": mfid, "dnf_luni": int(dnf),
             "conturi": [cont_imo, cont_am]}
 
 

@@ -113,3 +113,101 @@ def test_achizitie_taxare_inversa_emite_factura_ajunge_in_d394_duk_valid(monkeyp
             with conn.cursor() as cur:
                 cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCH)
             conn.commit()
+
+
+@pytest.mark.skipif(not _DB, reason="DB indisponibil")
+def test_achizitie_neinregistrat_N_ajunge_in_d394_duk_valid(monkeypatch):
+    import main
+    from core import db, d394, duk
+    from core.common import Perioada
+    db.init_pool()
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                _scratch(cur)
+            conn.commit()
+        monkeypatch.setattr(main.auth_api, "schema_tenant", lambda conn, uid, tid: _SCH)
+        r = main.achizitie_neinregistrat(1, {"data": "2026-06-18", "furnizor_nume": "ION POPESCU",
+                                             "valoare": 2000, "cont_cheltuiala": "301", "categorie": "deseuri",
+                                             "numar": "BON-1"}, {"uid": 1})
+        assert r.get("factura_id") and r.get("in_d394") is True, r
+        with db.get_conn() as conn, conn.cursor() as cur:
+            cur.execute("SET search_path TO %s" % _SCH)
+            cur.execute("SELECT directie, COALESCE(tert_cui,''), tert_nume, categorie_331 FROM facturi WHERE id=%s",
+                        (r["factura_id"],))
+            assert cur.fetchone() == ("primita", "", "ION POPESCU", "deseuri")
+            cur.execute("SELECT factura_id FROM inregistrari WHERE id=%s", (r["inregistrare_id"],))
+            assert cur.fetchone()[0] == r["factura_id"], "inregistrare ORFANA"
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SET search_path TO %s" % _SCH)
+            xml, res = d394.genereaza(conn, _SCH, Perioada(2026, luna=6))
+        assert 'tip="N"' in xml, "operatiunea N NU e in D394 (desi are categorie): %s" % xml[:400]
+        if duk.poate_valida("d394"):
+            verdict = duk.valideaza(xml, "d394", an=2026, luna=6)
+            assert verdict["stare"] == "valid", "DUK a respins D394 cu N: %s" % verdict.get("erori")
+    finally:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCH)
+            conn.commit()
+
+
+@pytest.mark.skipif(not _DB, reason="DB indisponibil")
+def test_achizitie_necorporala_emite_factura_in_d394_si_mijloc_fix(monkeypatch):
+    import main
+    from core import db, d394, duk
+    from core.common import Perioada
+    db.init_pool()
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                _scratch(cur)
+            conn.commit()
+        monkeypatch.setattr(main.auth_api, "schema_tenant", lambda conn, uid, tid: _SCH)
+        r = main.achizitie_necorporala(1, {"data": "2026-06-10", "denumire": "Licenta X", "valoare": 5000,
+                                           "tip": "software", "cota": 21, "furnizor_cui": "RO14399840",
+                                           "furnizor_nume": "SOFT SRL", "numar": "F-SOFT-1"}, {"uid": 1})
+        assert r.get("factura_id") and r.get("mijloc_fix_id"), r  # factura SI mijloc fix (efect MF/amortizare)
+        with db.get_conn() as conn, conn.cursor() as cur:
+            cur.execute("SET search_path TO %s" % _SCH)
+            cur.execute("SELECT directie, tert_cui FROM facturi WHERE id=%s", (r["factura_id"],))
+            assert cur.fetchone() == ("primita", "RO14399840")
+            cur.execute("SELECT factura_id FROM inregistrari WHERE id=%s", (r["inregistrare_id"],))
+            assert cur.fetchone()[0] == r["factura_id"], "inregistrare ORFANA"
+            cur.execute("SELECT count(*) FROM mijloace_fixe WHERE id=%s", (r["mijloc_fix_id"],))
+            assert cur.fetchone()[0] == 1, "mijlocul fix (amortizare) nu s-a creat"
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SET search_path TO %s" % _SCH)
+            xml, res = d394.genereaza(conn, _SCH, Perioada(2026, luna=6))
+        if duk.poate_valida("d394"):
+            verdict = duk.valideaza(xml, "d394", an=2026, luna=6)
+            assert verdict["stare"] == "valid", "DUK a respins D394 necorporala: %s" % verdict.get("erori")
+    finally:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCH)
+            conn.commit()
+
+
+def test_nicio_achizitie_creeaza_inregistrare_orfana_de_factura():
+    """CLASA (nu instanta): orice handler achizitie_* din main.py care INSEREAZA in `inregistrari` (jurnal
+    invoice-backed, sursa='facturi') TREBUIE sa lege factura_id - altfel operatiunea e invizibila pentru
+    D390/D394 (NECONFORMITATE 04.08). Scan AST pe sursa. EXCEPTIE NUMITA (motiv scris in GARZI + DECIZII 04.08):
+    achizitie_agricultor - regim special art.315^1, tratamentul D394 al achizitiei de la agricultor forfetar
+    NEconfirmabil la sursa. Orice ALT handler achizitie_* orfan pica; o exceptie noua cere motiv in registru."""
+    import ast, re
+    EXCEPTATE = {"achizitie_agricultor"}
+    src = open("main.py", encoding="utf-8").read()
+    tree = ast.parse(src)
+    rele = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FunctionDef) and node.name.startswith("achizitie_"):
+            seg = ast.get_source_segment(src, node) or ""
+            for mm in re.finditer(r"INSERT INTO\s+\S*inregistrari\s*\(([^)]*)\)", seg):
+                if "factura_id" not in mm.group(1) and node.name not in EXCEPTATE:
+                    rele.append("%s: INSERT inregistrari fara factura_id (orfan, invizibil D390/D394)" % node.name)
+    assert not rele, "achizitie orfana de factura (invizibila declaratiei):\n" + "\n".join(rele)
+    # anti-vacuu: exceptarea e reala (agricultor chiar e orfan azi) - altfel exceptia e moarta/inutila
+    assert "def achizitie_agricultor" in src

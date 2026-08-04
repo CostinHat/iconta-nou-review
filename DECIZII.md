@@ -7093,3 +7093,26 @@ ALTERNATIVE RESPINSE:
 
 LOCALIZAREA UI a campurilor: `operatiuni_ecran.js` (unde se introduc operatiunile), DUPA ce backend-ul emite corect
 randul `facturi`. Vezi GARZI „NECONFORMITATE ACTIVA" 04.08 pentru clasa de defect si gardul anti-regresie planificat.
+
+
+## 04.08.2026 — achizitie_agricultor EXCEPTAT NUMIT din fix-ul "achizitie emite factura" (tratament D394 neconfirmabil la sursa).
+
+Context: fix-ul NECONFORMITATII ACTIVE (operatiune achizitie -> rand facturi + factura_id) s-a extins la toate
+handlerele achizitie_* (decizie Costin: optiunea A, gard de clasa onest). La verificarea la sursa a specificului
+(cerinta Costin: "nu le trata ca pe clone"), achizitie_agricultor s-a dovedit un caz pe care NU-l pot confirma.
+
+DECIZIE: achizitie_agricultor NU emite (inca) rand facturi; ramane NECONFORMITATE DESCHISA in GARZI, iar gardul de
+clasa il EXCEPTEAZA NUMIT (set EXCEPTATE, cu motiv), NU tacit.
+
+TEMEI (CF art.315^1, verificat in core/tva_agricultori.py + surse): agricultorul in regim special forfetar NU
+colecteaza TVA si NU e inregistrat in scop TVA (alin.4); cumparatorul deduce compensatia forfetara 8% ca TVA
+(alin.17) doar daca agricultorul e in Registru. DAR: cum se declara aceasta achizitie in D394 (tip_partener al
+agricultorului forfetar? intra compensatia in baza D394? sub ce cod?) NU e confirmabil la sursa - niciun ghidaj in
+d394_struct_anaf.txt sau instructiunile D394; regim special, distinct de achizitia obisnuita si de N. A construi un
+rand facturi pe presupunere ar produce o linie D394 gresita (mai rau decat orfan - §3 nu se inventeaza).
+
+ALTERNATIVA RESPINSA: a-l trata ca pe celelalte 3 (clona) - respinsa, fiindca regimul e special si tratamentul D394
+neconfirmat. D300 e deja acoperit prin 4426 din inregistrari (compensatia deductibila apare in TVA deductibila).
+
+DEBLOCARE: cand se confirma la sursa (instructiuni D394 / ghid ANAF pe agricultori forfetari) cum intra achizitia in
+D394. Consemnat: GARZI "NECONFORMITATE ACTIVA" 04.08 (sectiunea achizitie->jurnal).

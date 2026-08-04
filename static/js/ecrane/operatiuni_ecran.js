@@ -54,6 +54,10 @@ const REGISTRU = [
     C("valoare", "Valoare (fără TVA)", "numar"),
     C("tip", "Tip", "select", { optiuni: [["software","Software (36 luni)"],["licenta","Licență"],["brevet","Brevet"]] }),
     C("dnf_luni", "Durată contract (luni)", "numar", { cond: { camp: "tip", val: "licenta" }, optional: true }),
+    C("furnizor_nume", "Furnizor", "text"),
+    C("furnizor_cui", "CUI furnizor", "text"),
+    C("numar", "Nr. factură furnizor", "text"),
+    C("cota", "Cota TVA %", "numar", { sugestie: "21" }),
   ] },  /* [0a_rute_v1] */
   { cat: "Imobilizări și capital", cheie: "reevaluare", titlu: "Reevaluare imobilizări (105)", ruta: "reevaluare-imobilizare", campuri: [
     C("data", "Data", "data"),
@@ -114,11 +118,22 @@ const REGISTRU = [
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "TVA regimuri speciale", cheie: "taxare_inversa", titlu: "Taxare inversă internă (art. 331)", ruta: "achizitie-taxare-inversa", campuri: [
     C("data", "Data", "data"),
-    C("categorie", "Categorie", "select", { optiuni: [["cereale","Cereale"],["deseuri","Deseuri"],["cladiri","Cladiri/terenuri"],["energie","Energie"],["altele","Altele art. 331"]] }),
+    C("furnizor_nume", "Furnizor", "text"),
+    C("furnizor_cui", "CUI furnizor (RO, plătitor TVA)", "text"),
+    C("numar", "Nr. factură furnizor", "text"),
+    C("categorie", "Categorie art. 331", "select", { optiuni: [["deseuri","Deșeuri"],["masa_lemnoasa","Masă lemnoasă"],["cereale","Cereale"],["certificate_emisii","Certificate emisii"],["energie_electrica","Energie electrică"],["certificate_verzi","Certificate verzi"],["cladiri_terenuri","Clădiri/terenuri"],["aur_investitii","Aur de investiții"],["telefoane","Telefoane"],["circuite_integrate","Circuite integrate"],["console_tablete","Console/tablete"],["gaze_naturale","Gaze naturale"]] }),
     C("valoare", "Valoare (fara TVA)"),
     C("cont_destinatie", "Cont destinatie", "text", { sugestie: "371" }),
     C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
     C("furnizor_platitor_tva", "Furnizor platitor TVA", "select", { optiuni: [["true","Da"],["false","Nu"]] }),
+    C("descriere", "Descriere", "text", { optional: true }) ] },
+  { cat: "TVA regimuri speciale", cheie: "neinregistrat", titlu: "Achiziție de la neînregistrat (persoană fizică) — D394 op. N", ruta: "achizitie-neinregistrat", campuri: [
+    C("data", "Data", "data"),
+    C("furnizor_nume", "Furnizor (persoană fizică)", "text"),
+    C("valoare", "Valoare"),
+    C("cont_cheltuiala", "Cont cheltuială/stoc", "text", { sugestie: "301" }),
+    C("numar", "Nr. document (borderou)", "text", { optional: true }),
+    C("categorie", "Categorie bun (art. 331 lit. D)", "select", { optional: true, optiuni: [["cereale","Cereale"],["deseuri","Deșeuri"],["masa_lemnoasa","Masă lemnoasă"],["terenuri","Terenuri"],["constructii","Construcții"],["alte_bunuri","Alte bunuri"],["alte_servicii","Alte servicii"]], ajutor: "Fără categorie, operațiunea N rămâne EXCLUSĂ din D394 cu avertisment (nu se ghicește)." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "TVA regimuri speciale", cheie: "agricultor", titlu: "Achiziție de la agricultor (compensare 8%)", ruta: "achizitie-agricultor", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare (fara taxa)"),
@@ -151,9 +166,13 @@ const REGISTRU = [
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Extern", cheie: "achizitie_ic", titlu: "Achiziție intracomunitară", ruta: "achizitie-ic", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare (RON)"),
+    C("cod_tva_furnizor", "Cod TVA furnizor UE (ex. DE123456789)", "text"),
+    C("numar", "Nr. factură furnizor", "text"),
+    C("furnizor_nume", "Furnizor", "text", { optional: true }),
     C("cont_destinatie", "Cont destinatie", "text", { sugestie: "371" }),
     C("tip", "Tip", "select", { optiuni: [["bunuri","Bunuri"],["servicii","Servicii"]] }),
     C("cota", "Cota TVA %", "numar", { optional: true, sugestie: "21" }),
+    C("data_faptului_generator", "Data faptului generator (dacă diferă)", "data", { optional: true, ajutor: "Opțional. Gol = încadrare pe data facturii. Completat = exigibilitate MIN(dată factură, ziua 15 luna următoare) — art. 284." }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
   { cat: "Extern", cheie: "vanzare_ic", titlu: "Livrare/prestare intracomunitară (VIES live)", ruta: "vanzare-ic", campuri: [
     C("data", "Data", "data"), C("valoare", "Valoare"),
@@ -281,15 +300,16 @@ export async function ecranOperatiuni(corp, nav, t) {
       const cond = c.cond ? ` data-cond-camp="${c.cond.camp}" data-cond-val="${c.cond.val}"` : "";
       let input;
       if (c.tip === "select") {
-        input = `<select id="op-${c.nume}" class="camp-input">${(c.optional ? '<option value="">-</option>' : "") + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
+        input = `<select id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">${(c.optional ? '<option value="">-</option>' : "") + c.optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select>`;
       } else if (c.tip === "data") {
-        input = `<input type="date" id="op-${c.nume}" class="camp-input">`;
+        input = `<input type="date" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}">`;
       } else if (c.tip === "numar") {
-        input = `<input type="number" step="0.01" id="op-${c.nume}" class="camp-input" placeholder="${c.sugestie || ""}">`;
+        input = `<input type="number" step="0.01" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" placeholder="${c.sugestie || ""}">`;
       } else {
-        input = `<input type="text" id="op-${c.nume}" class="camp-input" placeholder="${c.sugestie || ""}">`;
+        input = `<input type="text" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" placeholder="${c.sugestie || ""}">`;
       }
-      return `<div class="camp"${cond}><label class="camp-eticheta" for="op-${c.nume}">${esc(c.eticheta)}${c.optional ? "" : " *"}</label>${input}</div>`;
+      const ajutor = c.ajutor ? `<span class="camp-ajutor">${esc(c.ajutor)}</span>` : "";
+      return `<div class="camp"${cond}><label class="camp-eticheta" for="op-${c.nume}">${esc(c.eticheta)}${c.optional ? "" : " *"}</label>${input}${ajutor}</div>`;
     };
     corp.innerHTML = `
       <h2 class="pf-titlu">${esc(opCurenta.titlu)}</h2>

@@ -3041,3 +3041,28 @@ ornament). Ambele satisfacute — nu ocolite.
 **Poarta verde dupa fiecare punct.** Suita completa **1371 passed**, verificator **TOTAL 0**, la fiecare commit.
 Push de siguranta pe `backup/lant-20260803` dupa fiecare pas (commit final d9eb392). **Niciun push pe main** — decizia
 lui Costin.
+
+
+## 04.08.2026 — Achizitiile emit rand `facturi`: neconformitatea "operatiune scrisa doar in jurnal" inchisa (D390/D394)
+
+NECONFORMITATE ACTIVA inchisa: operatiunile de achizitie din operatiuni_ecran.js scriau DOAR in jurnal
+(`inregistrari`, fara `factura_id` si fara rand `facturi`), deci erau INVIZIBILE pentru D390 (VIES) si D394 - desi
+D100/D101/D205 le vedeau. Efect fiscal real: o achizitie IC introdusa azi nu ajungea in D390 (declaratie lunara
+obligatorie). Fereastra de noroc: tenant_001 avea 0 date, nimeni lovit.
+
+Decizie de localizare (Costin): DIRECTIA BACKEND - operatiunea emite intai rand `facturi`, apoi contabilizeaza cu
+`factura_id` legat. NU ecran nou, NU camp in primitaDetaliu (validarea e-Facturii SPV, unde cif_emitent e NOT NULL ->
+furnizor fara CUI structural imposibil, probat la sursa). `creeaza_factura` refolosit (extins cu categorie_331/
+data_faptului_generator/taxare_inversa); nota reverse-charge specializata a fiecarui handler PASTRATA (NU refolosit
+`factura_contabilizeaza` care da nota standard - cai de contabilizare divergente).
+
+LIVRAT + PROBAT DUK end-to-end (handler real -> facturi + factura_id -> declaratie -> DUK valid):
+- achizitie_ic -> D390; achizitie_taxare_inversa -> D394 op11 (categorie->codPR); achizitie_necorporala -> D394 tip A
+  (imobilizarea/amortizarea ramane separata); achizitie_neinregistrat (TIP NOU, cazul N) -> D394 op N.
+- UI in operatiuni_ecran.js: campuri de furnizor (nume/CUI/cod_tva UE/numar), categorii aliniate la cheile CODPR
+  (art.331) si CODPR_N (lit.D), data_faptului_generator la IC, nota de consecinta la N (fara categorie = exclus).
+- GARD de CLASA: orice achizitie_* care lasa inregistrare orfana de factura_id pica (scan AST).
+
+EXCEPTIE NUMITA (nu tacita): achizitie_agricultor (regim special art.315^1) ramane deschis - tratamentul D394 al
+achizitiei de la agricultorul forfetar nu e confirmabil la sursa; exceptat cu motiv scris in gard + GARZI + DECIZII.
+Poarta verde, probe DUK reale pe fiecare din cele 4 cazuri.
