@@ -612,6 +612,17 @@ Cand se implementeaza, se SCOATE excluderea din calcul_d394 si se APRINDE gardul
 daca_emis_GARD_INVERS (care va pica -> semnal ca N e acum emis). Vezi DECIZII 04.08.
 
 
+## 04.08.2026 — Gard plan conturi pe norma D406 - conturi excluse VIZIBILE (cluster "plan conturi pe norma")
+
+Temei: SAF-T (D406) - planul de conturi se filtreaza pe nomenclatorul OFICIAL al normei firmei (plan_oficial);
+conturile ne-norma se exclud (ANAF le respinge). Reparat drop tacit: conturile excluse se SEMNALEAZA acum in
+avertisment (numite), ca operatiunile N in d394 - nu dispar tacit (decizie Costin 04.08).
+
+| gard | fisier | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| conturi straine de norma = SEMNALATE, nu excluse tacit | core/test_d406.py (test_conturi_straine_de_norma_sunt_semnalate_nu_excluse_tacit) | un cont cu sold exclus din SAF-T fara ca contabilul sa stie | firma A cu cont 731 (ONG) -> exclus + numit in avertisment |
+
+
 ## 04.08.2026 — Gard totalPlata_A R17 D394 (cluster "totalPlata_A (R17)")
 
 Temei: R17 validator D394 - totalPlata_A = Suma(informatii.nrCui1..4) + Suma(rezumat2.baza[L+A+AI]).

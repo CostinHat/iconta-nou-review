@@ -6567,3 +6567,26 @@ pe validator (nu doar reasserteaza formula). Fara fix de cod - conform.
 NOTA: cu acest cluster, TOATE clusterele d394 din secventa sunt inchise (tip_partener, rezumat1, nomenclator codPR,
 totalPlata_A + cele anterioare). Urmeaza d406 (SAF-T) si d710. Datorii d394 ramase: suport complet N (approach a,
 campanie proprie - GARZI 04.08).
+
+
+## 04.08.2026 — Cluster "plan conturi pe norma" (d406) — VERIFICAT + REPARAT drop tacit al conturilor excluse.
+
+D406 (SAF-T) emite planul de conturi in MasterFiles/GeneralLedgerAccounts. pull() citeste plan_conturi si il
+FILTREAZA pe nomenclatorul OFICIAL al normei contabile a firmei: oficial = plan_oficial(baza_contabila), din
+anaf_surse/d406_nomenclatoare_anaf.properties (cheia normei: plan_conturi_bal_soc_com pt 'A', plan_conturi_ONG pt
+ONG, etc.). Conturile din planul firmei care NU sunt in nomenclatorul normei se EXCLUD - ANAF le respinge ("ID-ul
+contului [731] trebuie sa se gaseasca in planul de conturi"; bug istoric: 731-738 venituri ONG erau in planul
+default al tuturor firmelor). AccountID emis = sintetic (401.05 -> 401; validatorul cere numar intreg). Filtrarea e
+CORECTA (pe nomenclatorul oficial, nu pe o lista scrisa de noi) - test_plan_oficial_citeste_nomenclatorul_norma_A
+confirma ca nomenclatorul e citit (>100 conturi pt 'A').
+
+NECONFORMITATE (drop TACIT): conturile excluse erau colectate in `strain` DAR pull() nici nu le returna (return cu
+8 elemente, fara strain) - deci se pierdeau complet. Un cont cu SOLD care nu apartine normei disparea din SAF-T
+FARA ca contabilul sa stie (acelasi tipar ca operatiunile N in d394). REPARAT: pull returneaza strain (9 elemente);
+genereaza il despacheteaza si, daca e nevid, INSEREAZA la pozitia 0 in res.avertismente un mesaj care NUMESTE
+conturile excluse + norma ("ATENTIE: N cont(uri) EXCLUS(e) din D406 - nu apartin normei ... : 731, ..."). Aliniat
+cu decizia Costin 04.08 (approach b la N): exclus dar VIZIBIL, nu tacit. Gard DB: test_conturi_straine_de_norma_
+sunt_semnalate_nu_excluse_tacit (firma 'A' cu cont 731 -> exclus + numit).
+
+Corectat si o eroare de inventar: randul avea fisiere=test_limita_text_anaf.py (gresit); testele plan-conturi sunt
+in test_d406.py - corectat.

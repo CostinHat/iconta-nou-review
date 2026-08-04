@@ -1172,7 +1172,7 @@ def pull(conn, schema, an, luna):
             # produca SalesInvoices/PurchaseInvoices goale intr-un XML valid structural.
             # Clasa de bug din 16.07. Orice garda pusa deasupra ar fi fost inghitita aici.
             raise RuntimeError("D406: citirea facturilor a esuat - %s" % e) from e
-    return prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati
+    return prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati, strain
 
 
 def erori_generare(prof):
@@ -1188,10 +1188,19 @@ def erori_generare(prof):
 def genereaza(conn, schema, an, luna):
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
-    prof, conturi, clienti, furnizori, note, fv, fc, plati = pull(conn, schema, an, luna)
+    prof, conturi, clienti, furnizori, note, fv, fc, plati, strain = pull(conn, schema, an, luna)
     _er = erori_generare(prof)
     if _er:
         raise ValueError("D406 nu se poate genera: " + " ".join(_er))
     res = construieste(prof, an, luna, conturi, clienti, furnizori, note=note,
                        facturi_vanzare=fv, facturi_cumparare=fc, plati=plati)
+    if strain:
+        # Conturile din planul firmei care NU sunt in nomenclatorul normei declarate se EXCLUD (ANAF le
+        # respinge: "ID-ul contului trebuie sa se gaseasca in planul de conturi"). NU tacit - le NUMIM in
+        # avertisment, ca sa nu dispara un cont cu sold fara ca contabilul sa stie (aceeasi regula ca la N
+        # in d394 - decizie Costin 04.08: exclus, dar vizibil). Verifica norma firmei / planul de conturi.
+        lista = ", ".join(strain[:30]) + (" ... (+%d)" % (len(strain) - 30) if len(strain) > 30 else "")
+        res.avertismente.insert(0, "ATENTIE: %d cont(uri) EXCLUS(e) din D406 - nu apartin normei contabile "
+                                   "declarate (%s), ANAF le-ar respinge: %s. Verifica planul de conturi / baza "
+                                   "contabila a firmei." % (len(strain), prof.get("baza_contabila") or "A", lista))
     return build_xml(res), res
