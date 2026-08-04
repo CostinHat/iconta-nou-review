@@ -7,10 +7,10 @@ Campania "reimprospatarea surselor invechite" (04.08.2026), metoda jar-vs-pdf ca
 def test_valute_ancorate_pe_validator_nu_pe_pdf_2013():
     """VALUTE (nomenclatorul tip_valuta D301) ancorat pe VALIDATORUL instalat, nu pe pdf-ul din 2013.
     Setul acceptat de validator, enumerat prin proba DUK boundary 04.08.2026 (fiecare cod ISO trecut prin
-    DUKIntegrator): 20 de valute. Codul are 19 (= exact pdf-ul 2013), toate validator-acceptate. TIPARUL ASI
+    DUKIntegrator): 20 de valute. Codul are 20 (HRK adaugat 04.08 cu greenlight Costin: cele 19 din pdf-ul 2013 + HRK). TIPARUL ASI
     (cod care urmeaza un document mort, cu valori RESPINSE de validator) NU apare: VALUTE ⊆ setul validatorului.
-    Diferenta = HRK (kuna croata, adaugata de ANAF post-2013), validator-acceptata dar absenta din cod =
-    acoperire lipsa, DECIZIE DE PRODUS (schimba nomenclatorul de valute pe care il poate declara contabilul)."""
+    HRK (kuna croata, adaugata de ANAF post-2013) a fost adaugat in cod 04.08 (greenlight Costin) -
+    acum VALUTE == setul validatorului (fara gap)."""
     from core.d301 import VALUTE
     # Setul EXACT acceptat de validatorul D301 instalat, enumerat prin proba DUK 04.08.2026 (NU din pdf-ul 2013).
     VALIDATOR_D301 = {"AUD", "BGN", "CAD", "CHF", "CZK", "DKK", "EGP", "EUR", "GBP", "HRK", "HUF", "JPY", "MDL",
@@ -18,10 +18,11 @@ def test_valute_ancorate_pe_validator_nu_pe_pdf_2013():
     # anti-ASI: nicio valuta din cod nu e respinsa de validator (niciun cod mort care urmeaza pdf-ul 2013)
     moarte = VALUTE - VALIDATOR_D301
     assert not moarte, "VALUTE contine coduri RESPINSE de validator (tipar ASI - cod dupa document mort): %s" % sorted(moarte)
-    # relatia curenta: codul = validatorul MINUS HRK (decizie de produs deschisa). Daca delta se schimba,
-    # se reprobeaza DUK si se re-inregistreaza setul.
-    assert VALIDATOR_D301 - VALUTE == {"HRK"}, \
-        "delta cod-vs-validator s-a schimbat - reprobeaza DUK boundary: %s" % sorted(VALIDATOR_D301 - VALUTE)
+    # VALUTE == setul validatorului (HRK adaugat 04.08.2026 cu greenlight Costin): niciun gap de acoperire.
+    # Daca delta reapare (validatorul isi schimba lista), se reprobeaza DUK boundary si se re-inregistreaza setul.
+    assert VALUTE == VALIDATOR_D301, \
+        "cod != setul validatorului - reprobeaza DUK boundary: lipsa %s / in plus %s" % (
+            sorted(VALIDATOR_D301 - VALUTE), sorted(VALUTE - VALIDATOR_D301))
 
 
 def test_valute_snapshot_validator_confirmat_pe_duk():

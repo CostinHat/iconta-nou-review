@@ -1,6 +1,8 @@
 """
 Modul D390 — Declarație recapitulativă VIES privind livrările/achizițiile/
-prestările intracomunitare (ANAF v3, OPANAF 705/11.03.2020).
+prestările intracomunitare (ANAF v3, OPANAF 705/11.03.2020, MO 217/17.03.2020).
+Statut temei verificat la MO 04.08.2026: OPANAF 705/2020 IN VIGOARE - nu s-a gasit abrogare sau ordin
+de inlocuire (2021-2026); nomenclatoarele TARI_UE/TIPURI confirmate separat pe validatorul instalat D390_11.
 
 REFĂCUT DE LA ZERO după ANAF structura D390 2020_180320 (structura_D390_2020_180320).
 

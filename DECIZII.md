@@ -6689,3 +6689,49 @@ majuscule) in generatoare si CERE ca fiecare sa fie in registrul ANCORE, cu un t
 descoperite si ancorate (d301.VALUTE; d390.TARI_UE/TIPURI; d394.TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA/OP1_CU_TVA/
 _TARI_UE; d406._UE_NON_RO). Un nomenclator nou fara ancora pica gardul (RED probat) - forteaza proba pe
 validatorul instalat, nu copierea unui pdf.
+
+
+## 04.08.2026 — HRK in D301 (VALUTE): EXECUTAT cu greenlight Costin (aliniere la validator).
+
+Decizia deschisa in intrarea "Reimprospatare surse invechite: d301" a fost aprobata de Costin: DA pentru HRK.
+Motiv (Costin): codul era mai STRICT decat validatorul -> respingere FALSA a unei declaratii valide. HRK apare
+doar la rectificari/achizitii istorice pre-2023 (Croatia -> EUR 01.01.2023), dar cand apare, contabilul e blocat
+fara temei. Adaugarea nu creeaza risc: validatorul o accepta.
+
+EXECUTAT: "HRK" adaugat in core.d301.VALUTE (acum 20 valute = EXACT setul validatorului D301_9). Reprobat pe DUK
+04.08.2026: un D301 cu tip_valuta=HRK trece poarta codului (erori_generare nu-l mai respinge) SI e DUK-valid
+(stare "valid", tip_valuta nerespins). Gardul test_valute_ancorate_pe_validator_nu_pe_pdf_2013 actualizat: delta
+cod-vs-validator e acum VID (VALUTE == VALIDATOR_D301), fara cod mort si fara gap de acoperire.
+
+
+## 04.08.2026 — Verificare temei la MO: OPANAF 705/2020 (d390) si 592/2016 (d301) - tiparul "temei neverificat".
+
+Costin (04.08): temeiurile OPANAF 705/2020 (d390) si 592/2016 (d301) erau PRESUPUSE in vigoare, nerecitite la MO -
+exact tiparul de temei neverificat. Validatorul confirma valorile, dar actul citat trebuie confirmat la sursa.
+
+VERIFICAT (cautari MO / Portal Legislativ / ANAF, 04.08.2026):
+
+- OPANAF 592/2016 (D301, decont special TVA): IN VIGOARE, neabrogat. MODIFICAT/COMPLETAT prin OPANAF 779/2024
+  (MO 374/22.04.2024): a introdus checkbox-ul "Declaratie rectificativa ca urmare a unei notificari de conformare"
+  la formularele 301, 101, 101 Grup si 710, plus regula ca la rectificare TOATE sectiunile se completeaza cu date
+  valide la momentul declararii. NU a atins nomenclatorul de valute (tip_valuta) sau tipurile de operatiune 1-5
+  (confirmate separat pe validatorul instalat D301_9). Temei d301.py actualizat: "592/2016 modificat prin 779/2024".
+
+- OPANAF 705/2020 (D390, recapitulativa VIES): IN VIGOARE (MO 217/17.03.2020). Nu s-a gasit act de abrogare sau
+  ordin de inlocuire in 2021-2026 (cautari MO/Portal Legislativ + lege5/portaluri il arata ca act curent; alte
+  forme au primit ordine noi - D205/D207 OPANAF 102/2025, D212 OPANAF 7015/2024 - dar NU D390). Temei d390.py
+  actualizat cu data verificarii.
+
+LIMITA verificarii (ce nu am putut confirma definitiv): PDF-ul oficial 779/2024 pe static.anaf.ro e scanat
+(imagine), neextractibil ca text; pagina Portal Legislativ pt 705/2020 nu afiseaza istoricul de amendamente in
+excerpt. Confirmarea se sprijina pe surse secundare (Universul Juridic, noulcodfiscal, lege5, contabilul.manager)
++ pe faptul ca validatorul INSTALAT (D301_9, D390_11 din versiuni.xml oficial 15.07.2026) reflecta regulile
+curente si codul se potriveste cu el. Absenta unui ordin de inlocuire pt 705/2020 = "negasit", nu "inexistent".
+
+DATORIE (non-blocanta, follow-up): OPANAF 779/2024 a adaugat la D301 (si D101/D710) checkbox-ul de rectificare
+din notificare de conformare. Codul NU emite acest flag. E OPTIONAL - un D301 fara el e DUK-valid (dovedit:
+D301 cu HRK trece "valid" 04.08), deci nu blocheaza depunerea; se adauga la primul caz real de rectificare din
+notificare de conformare. Vezi si d_recN la d710 (tipar similar de flag de rectificare versionat).
+
+Surse: legislatie.just.ro/Public/DetaliiDocument/281972 (OPANAF 779/2024); universuljuridic.ro (rezumat 779/2024);
+legislatie.just.ro/Public/DetaliiDocument/223871 (OPANAF 705/2020); noulcodfiscal.ro/.../ordin-opanaf-779-2024.

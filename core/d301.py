@@ -1,5 +1,8 @@
 """
-Modul D301 — Decont special de TVA (ANAF v1, OPANAF 592/2016). Structura pdf din 2013 e INVECHITA;
+Modul D301 — Decont special de TVA (ANAF v1, OPANAF 592/2016, modificat prin OPANAF 779/2024,
+MO 374/22.04.2024). Statut temei verificat la MO 04.08.2026: 592/2016 IN VIGOARE, neabrogat; 779/2024
+a adaugat un checkbox de rectificare (declaratie rectificativa din notificare de conformare) - NU a atins
+nomenclatoarele VALUTE/TIPURI_OP (confirmate separat pe validatorul instalat). Structura pdf din 2013 e INVECHITA;
 nomenclatoarele (tip_valuta) sunt ancorate pe VALIDATORUL instalat D301_9 (proba DUK 04.08.2026), nu pe pdf.
 
 REFĂCUT DE LA ZERO după ANAF structura D301 20130327 (structura_D301_20130327).
@@ -33,12 +36,13 @@ TIPURI_OP = (1, 2, 3, 4, 5)
 # Nomenclatorul tip_valuta ANCORAT PE VALIDATORUL INSTALAT (D301_9), nu pe pdf-ul de structura din 2013
 # (d301_struct_anaf.txt, marcat INVECHIT). Setul acceptat de validator a fost enumerat prin proba DUK boundary
 # 04.08.2026 (fiecare cod ISO trecut prin DUKIntegrator): validatorul accepta 20 de valute. VALUTE de mai jos
-# are 19 - EXACT lista pdf-ului 2013 - toate validator-acceptate (niciun cod mort, tiparul ASI NU apare aici).
-# DIFERENTA: HRK (kuna croata, adaugata de ANAF post-2013) e validator-acceptata dar absenta aici = acoperire
-# lipsa; adaugarea ei schimba ce poate declara contabilul (nomenclator de valute) = DECIZIE DE PRODUS (DECIZII
-# 04.08). Pazit de test_valute_ancorate_pe_validator_nu_pe_pdf_2013 (cod ⊆ validator, delta = {HRK}).
+# are 20 - cele 19 din pdf-ul 2013 + HRK (kuna croata, adaugata de ANAF post-2013, validator-acceptata).
+# HRK a fost adaugat 04.08.2026 cu greenlight Costin: codul respingea HRK desi validatorul o accepta (cod mai
+# STRICT decat validatorul -> respingere falsa la achizitii istorice/rectificari din Croatia pre-2023). Acum
+# VALUTE == setul validatorului (D301_9), confirmat prin proba DUK. Pazit de
+# test_valute_ancorate_pe_validator_nu_pe_pdf_2013 (VALUTE == validator, fara cod mort, fara gap).
 VALUTE = {"EUR", "USD", "AUD", "CAD", "CHF", "CZK", "DKK", "EGP", "GBP", "HUF",
-          "JPY", "MDL", "NOK", "PLN", "RON", "SEK", "TRY", "XDR", "BGN"}
+          "JPY", "MDL", "NOK", "PLN", "RON", "SEK", "TRY", "XDR", "BGN", "HRK"}
 
 
 def _esc(v):
