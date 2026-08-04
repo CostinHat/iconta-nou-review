@@ -91,13 +91,30 @@ UOM_IMPLICIT = "H87"
 # HeaderComment: obligatoriu, maximum 2 caractere (dovedit pe validatorul oficial).
 HEADER_COMMENT = "L"   # depunere lunara
 
-# MovementType: nomenclatorul ANAF de miscari de stoc (d406_schema_anaf.xlsx, foaia
-# "Nomenclator stocuri"): 10=Achizitie, 20=Productie, 30=Vanzare. Trimiteam "1", care
-# nu exista in lista. BaseRate = pro-rata TVA: standard 1 (intreaga suma), NU 100 -
-# documentatia SAF-T: "Procentele de pro-rata utilizate pentru codul de taxa. Standard
-# este de 1 (intreaga suma)".
-MISCARI_STOC = {"10": "Achizitie", "20": "Productie", "30": "Vanzare"}
+# MovementType / StockMovementType: nomenclatorul OFICIAL ANAF de miscari de produse in stocuri
+# (anaf_surse/d406_schema_anaf.xlsx, foaia "Nomenclator stocuri" - 19 coduri). Completeaza campul
+# MovementType (MasterFiles/2.8 MovementTypeTable) si "Movement subtype" (SourceDocuments/
+# StockMovement), AMBELE obligatorii DOAR in raportarea de STOCURI (ceruta separat, nu lunar; lunar
+# sectiunile se emit GOALE - <MovementTypeTable/>, <MovementOfGoods/>). Nota 5 a foii: o valoare din
+# AFARA listei -> eroare FATALA, D406 respins (trimiteam candva "1", care nu exista). Coduri dormante
+# pana se cableaza raportarea de stocuri, dar nomenclatorul COMPLET e pazit
+# (test_movementtype_nomenclator_oficial) ca sa fie corect din prima cand se activeaza.
+MISCARI_STOC = {
+    "10": "Achizitie", "20": "Productie", "30": "Vanzare",
+    "40": "Retur produse vandute", "50": "Retur produse achizitionate",
+    "60": "Reduceri comerciale primite", "70": "Consum", "80": "Transfer intern",
+    "90": "Cheltuieli ulterioare incluse in valoarea de intrare",
+    "100": "Diferente de pret pozitive", "101": "Diferente de pret negative",
+    "110": "Plus de inventar", "120": "Minus de inventar",
+    "130": "Ajustari pentru deprecierea stocurilor",
+    "140": "Reluari de ajustari pentru deprecierea stocurilor",
+    "150": "Bunuri acordate cu titlu gratuit", "160": "Bunuri degradate",
+    "170": "Bunuri expirate", "180": "Alte tranzactii",
+}
 MOVEMENT_IMPLICIT = "10"
+
+# BaseRate = pro-rata TVA: standard 1 (intreaga suma), NU 100 - documentatia SAF-T: "Procentele
+# de pro-rata utilizate pentru codul de taxa. Standard este de 1 (intreaga suma)".
 BASE_RATE = 1
 
 
@@ -588,7 +605,7 @@ def _masterfiles(res):
     # Validatorul confirma in ambele sensuri (15.07.2026): fara tabela -> "ar fi trebuit
     # sa apara de minimum 1 ori"; cu o intrare -> "MovementType a depasit numarul maxim
     # de aparitii (0)". Deci tabela da, continut nu - continutul apare doar la
-    # raportarea de STOCURI, ceruta separat. Codurile: MISCARI_STOC (10/20/30).
+    # raportarea de STOCURI, ceruta separat. Codurile: MISCARI_STOC (nomenclatorul oficial, 19 coduri).
     M.append('    <MovementTypeTable/>')
     M.append('    <Products>')
     M.append('      <Product>')

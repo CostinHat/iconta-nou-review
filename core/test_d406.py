@@ -102,3 +102,43 @@ def test_uom_unece_mapare_coduri_valide():
     # toate valorile sunt coduri UN/ECE (2-3 caractere alfanumerice majuscule)
     for cod in set(UOM_UNECE.values()):
         assert re.fullmatch(r"[A-Z0-9]{2,3}", cod), "cod UoM ne-UNECE in UOM_UNECE: %r" % cod
+
+
+def test_movementtype_nomenclator_oficial():
+    """Cluster MovementType nomenclator: MISCARI_STOC = nomenclatorul OFICIAL ANAF de miscari de
+    produse in stocuri (anaf_surse/d406_schema_anaf.xlsx, foaia 'Nomenclator stocuri', 19 coduri).
+    Codurile completeaza campul MovementType (MasterFiles/2.8 MovementTypeTable) si 'Movement subtype'
+    (SourceDocuments/StockMovement) - AMBELE OBLIGATORII in raportarea de stocuri. Nota 5 a foii: o
+    valoare din AFARA listei -> eroare FATALA, D406 respins. De aceea gardul cere setul COMPLET, nu un
+    subset: un nomenclator incomplet ar face o miscare reala nereprezentabila (ex. 40 'Retur produse
+    vandute') sau ar impinge-o pe un default gresit. Dormant azi (sectiunile de stocuri se emit goale
+    lunar - <MovementTypeTable/>, <MovementOfGoods/>), dar pazit ca sa fie corect din prima cand se
+    cableaza raportarea de stocuri. Sursa = foaia oficiala, nu comentariul (LECTIE: comentariul nu e
+    proba)."""
+    import re
+    from core.d406 import MISCARI_STOC, MOVEMENT_IMPLICIT
+    # Nomenclatorul oficial, inghetat din foaia ANAF "Nomenclator stocuri" (Cod_miscari_stoc -> RO).
+    OFICIAL = {
+        "10": "Achizitie", "20": "Productie", "30": "Vanzare",
+        "40": "Retur produse vandute", "50": "Retur produse achizitionate",
+        "60": "Reduceri comerciale primite", "70": "Consum", "80": "Transfer intern",
+        "90": "Cheltuieli ulterioare incluse in valoarea de intrare",
+        "100": "Diferente de pret pozitive", "101": "Diferente de pret negative",
+        "110": "Plus de inventar", "120": "Minus de inventar",
+        "130": "Ajustari pentru deprecierea stocurilor",
+        "140": "Reluari de ajustari pentru deprecierea stocurilor",
+        "150": "Bunuri acordate cu titlu gratuit", "160": "Bunuri degradate",
+        "170": "Bunuri expirate", "180": "Alte tranzactii",
+    }
+    # setul de coduri = exact cele 19 oficiale (nici lipsa -> miscare nereprezentabila, nici in plus
+    # -> valoare respinsa fatal de validator, nota 5)
+    assert set(MISCARI_STOC) == set(OFICIAL), (
+        "MISCARI_STOC difera de nomenclatorul oficial: lipsa %r / in plus %r" % (
+            sorted(set(OFICIAL) - set(MISCARI_STOC)), sorted(set(MISCARI_STOC) - set(OFICIAL))))
+    # etichetele RO coincid (eticheta informativa in rapoartele ANAF, dar sursa unica = foaia oficiala)
+    assert MISCARI_STOC == OFICIAL
+    # default-ul e un cod VALID din lista (nota 5: un default din afara listei = D406 respins)
+    assert MOVEMENT_IMPLICIT in MISCARI_STOC
+    # nota 4 a foii: cod alfanumeric de maxim 9 caractere
+    for cod in MISCARI_STOC:
+        assert re.fullmatch(r"[A-Za-z0-9]{1,9}", cod), "cod MovementType ne-conform nota 4: %r" % cod
