@@ -6735,3 +6735,21 @@ notificare de conformare. Vezi si d_recN la d710 (tipar similar de flag de recti
 
 Surse: legislatie.just.ro/Public/DetaliiDocument/281972 (OPANAF 779/2024); universuljuridic.ro (rezumat 779/2024);
 legislatie.just.ro/Public/DetaliiDocument/223871 (OPANAF 705/2020); noulcodfiscal.ro/.../ordin-opanaf-779-2024.
+
+
+## 04.08.2026 — C5 EXECUTAT: migrare tichete culturale pe tenanti reali.
+
+Campania "implementarile ramase", punctul 1. Dump de siguranta luat inainte
+(backup_pre_migrari_20260804_1312.sql.gz, 322 CREATE TABLE, valid).
+
+core.migrare_tichet_cultural aplicat pe tenantii reali. Un singur tenant real in productie: tenant_001.
+- EFEMERA intai (schema scratch efemer_migr_cultural cu constrangerile vechi): inainte cultural RESPINS
+  (CheckViolation); dupa aplicare cultural+ocazional ACCEPTATE, valoare invalida tot respinsa; a doua
+  aplicare identica (idempotent); schema stearsa.
+- TENANT_001: cultural in CK False -> True; eveniment CK include acum 'ocazional'; a doua aplicare
+  idempotenta (fara eroare). verifica()=True.
+Zero esecuri. Toti tenantii reali (1) migrati. 50 teste tichete/salarizare verzi dupa migrare.
+
+EFECT PE PRODUS: contabilul poate inregistra tichete culturale (tip='cultural', eveniment='ocazional')
+pe tenant_001 - inainte respinse de constrangerea DB. Template-ul era deja actualizat (tenanti noi ok);
+acum si tenantul existent.
