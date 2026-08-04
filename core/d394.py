@@ -150,6 +150,27 @@ def jud_siruta(judet):
     return JUDETE_SIRUTA.get(nume.get(j, ""))
 
 
+# Nomenclatorul pentru operatiuni N (lit. D, OPANAF 77/2022 pct.10): "natura bunurilor/serviciilor
+# achizitionate de la persoane fizice - tip N - cereale si plante tehnice, deseuri, masa lemnoasa, terenuri,
+# constructii, ALTE bunuri si servicii". DIFERIT de art.331 (lit. C): validatorul v5 accepta pt tip_partener=2
+# DOAR codPR in 21-23 sau 32-35 (DUK regula R64.3, probat DUK 04.08.2026; 27/36 respinse). 34/35 = catch-all
+# "alte bunuri" / "alte servicii" - fac declarabila orice achizitie N de la persoana fizica.
+CODPR_N = {
+    "cereale": "21",         # centralizator - cere subcod NC pe factura (ca la art.331)
+    "deseuri": "22",
+    "masa_lemnoasa": "23",
+    "terenuri": "32",
+    "constructii": "33",
+    "alte_bunuri": "34",
+    "alte_servicii": "35",
+}
+
+
+def codpr_N_din_categorie(categorie):
+    """codPR pentru o operatiune N (lit.D) din categoria bunurilor/serviciilor. None daca necunoscuta."""
+    return CODPR_N.get((categorie or "").strip().lower())
+
+
 def codpr_din_categorie(categorie):
     """Codul D394 pentru categoria art.331 de pe factura. Pentru cereale se accepta
     direct subcodul NC (10 05, 1201...); codul 21 nu e valid la nivel de op11."""
@@ -341,7 +362,7 @@ def calcul_d394(prof, perioada, date, manual=None):
             # persoana fizica (achizitie fara CUI) R233.6 CERE op11 cu codPR (categoria art.331 a bunurilor) +
             # detaliu(nrN/valN). codPR = CONTINUT DECLARAT, dar reutilizeaza categoria art.331 EXISTENTA pe factura.
             # Fara categorie -> N nu poate fi declarat valid -> ramane EXCLUS cu avertisment (contabilul o adauga).
-            if codpr_din_categorie(f.get("categorie_331")):
+            if codpr_N_din_categorie(f.get("categorie_331")):
                 _adauga("N", P_NEINREG, 0, cui, f.get("nume"), 1, f.get("baza"), 0, f.get("categorie_331"))
             else:
                 excluse_N.append((f.get("nume"), f.get("cui"), f.get("baza")))
@@ -371,7 +392,7 @@ def calcul_d394(prof, perioada, date, manual=None):
         if op.get("tip") == "N":
             # [approach a] N inclus cu tip_document=1 + document_N + op11(codPR) DOAR daca are categorie art.331
             # (R233.6 persoana fizica). Fara categorie -> exclus cu avertisment (vezi calea auto).
-            if codpr_din_categorie(op.get("categorie_331")):
+            if codpr_N_din_categorie(op.get("categorie_331")):
                 _adauga("N", P_NEINREG, 0, op.get("cuiP"), op.get("denP"), op.get("nrFact") or 1,
                         op.get("baza"), 0, op.get("categorie_331"))
             else:
@@ -503,7 +524,7 @@ def calcul_d394(prof, perioada, date, manual=None):
         cats = categorii.get(k) or set()
         cod = None
         for c in cats:
-            cod = codpr_din_categorie(c)
+            cod = codpr_N_din_categorie(c) if tip == "N" else codpr_din_categorie(c)
             if cod:
                 break
         if not cod:

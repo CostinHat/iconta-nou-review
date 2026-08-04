@@ -6834,3 +6834,36 @@ n-au campul) - sub-blocaj.
 EFECT PE PRODUS: o achizitie de la un furnizor neinregistrat (persoana fizica) cu categoria art.331 completata se
 DECLARA acum in D394 (inainte: exclusa, contabilul o depunea separat manual). Fara categorie: exclusa cu avertisment
 explicit. tenant_001 n-are astfel de facturi azi.
+
+
+## 04.08.2026 — Punctul 3 (N) - CORECTII dupa reviziune Costin: nomenclator lit.D + gap clasifica_partener.
+
+Reviziunea a gasit doua probleme reale in prima livrare a suportului N. Corectate:
+
+1. NOMENCLATOR N GRESIT (reparat). Prima implementare reutiliza codpr_din_categorie (art.331 = lit.C, coduri
+   21-36). DAR N (achizitii de la persoane fizice) are nomenclator PROPRIU: lit.D (OPANAF 77/2022 pct.10):
+   "cereale si plante tehnice, deseuri, masa lemnoasa, terenuri, constructii, ALTE bunuri si servicii". Validatorul
+   v5 (DUK regula R64.3, probat 04.08): pt tip_partener=2 codPR trebuie in 21-23 SAU 32-35. Codurile art.331
+   ne-N (ex. gaze=36, cladiri=27) sunt RESPINSE. Vechea impl ar fi emis codPR=36 pt o achizitie N de gaze de la
+   persoana fizica -> D394 RESPINS. REPARAT: nomenclator propriu CODPR_N = {cereale:21, deseuri:22, masa_lemnoasa:23,
+   terenuri:32, constructii:33, alte_bunuri:34, alte_servicii:35}; codpr_N_din_categorie; N inclus DOAR cu categorie
+   lit.D valida (altfel exclus, fara cod invalid). 34/35 = catch-all "alte bunuri/servicii" - fac declarabila ORICE
+   achizitie N. AICI traieste distinctia bunuri-vs-servicii (in "alte"), NU ca un tip_N global (care nu exista in v5).
+   Probat DUK: deseuri/alte_bunuri/alte_servicii/masa_lemnoasa/terenuri -> valid; gaze(36) -> exclus. Garduri noi:
+   test_N_cu_categorie_litD_e_declarat_si_valid_pe_duk, test_N_categorie_ne_litD_e_exclusa_nu_emite_cod_invalid.
+
+2. GARD INVERS cu aserthie SLABA (intarit). test_N_ar_fi_respins...GARD_INVERS avea "N" in er (litera N prinde
+   orice text de eroare). Intarit: cere regula SPECIFICA (tip_document/document_N/R228/R60) - un op1 N gol e respins
+   fiindca lipseste tip_document (R228), nu din orice motiv.
+
+3. DATORIE (din reviziune, NEreparata - concern separat pct.216): clasifica_partener trateaza ORICE CUI numeric ca
+   tip 1 (INREGISTRAT in scopuri de TVA). O PERSOANA JURIDICA NEINREGISTRATA (are CUI dar NU e platitor de TVA) e
+   clasificata GRESIT tip 1 -> operatiunile ei nu ajung la N (tip 2). clasifica_partener foloseste doar prezenta
+   CUI-ului, nu statutul de platitor TVA. CE TREBUIE: statut platitor_tva PER PARTENER (nu exista pe tabela clienti;
+   firma_profil.platitor_tva e al firmei proprii). core.anaf_api il poate lua din ANAF (scpTVA), dar clasifica_partener
+   nu-l consulta. Fix = stocare platitor_tva pe partener (lookup ANAF / snapshot, ca F180 pe firma) + clasifica_partener
+   sa-l foloseasca. Impact: azi, N acopera DOAR achizitiile FARA CUI (persoane fizice) - cazul dominant; PJ neinregistrata
+   cu CUI e o nisa. URMATOR: campanie proprie "statut TVA per partener" (pct.216 complet), dupa care N prinde si PJ neinreg.
+
+EFECT: N declarabil corect pentru toate categoriile lit.D (inclusiv "alte bunuri/servicii" = achizitii generale de la
+persoane fizice), cu codurile CORECTE (nu mai emite coduri art.331 ne-N respinse de ANAF).

@@ -221,7 +221,9 @@ def test_N_ar_fi_respins_de_validator_daca_emis_GARD_INVERS():
     xml_n = xml.replace("</declaratie394>", op_n + "</declaratie394>")
     rez = duk.valideaza(xml_n, "d394", an=2026, luna=6)
     er = str(rez.get("erori"))
-    assert rez["stare"] != "valid" and ("tip_document" in er or "document_N" in er or "N" in er), (
+    # Aserthie SPECIFICA (nu "N" in er, care prinde orice text): un op1 N GOL e respins EXACT fiindca lipseste
+    # tip_document (R228) / document_N (R60.1). Daca validatorul nu mai da aceste reguli -> N s-a schimbat.
+    assert rez["stare"] != "valid" and ("tip_document" in er or "document_N" in er or "R228" in er or "R60" in er), (
         "Validatorul ACCEPTA acum un op1 N fara tip_document/document_N - suportul N pare (partial) valid; "
         "reevalueaza EXCLUDEREA N (poate poate fi emis). stare=%s erori=%s" % (rez.get("stare"), er[:200]))
 
@@ -563,26 +565,43 @@ def test_toate_categoriile_taxare_inversa_au_codpr_d394():
 
 
 # ── Suport N approach (a) — 04.08.2026: N declarabil cu categoria art.331 (op11) ──
-def test_N_cu_categorie_art331_e_declarat_si_valid_pe_duk():
-    """approach (a): o operatiune N (achizitie de la persoana fizica neinregistrata) cu CATEGORIE art.331 se
-    DECLARA in D394 - op1 tip_document=1 + rezumat1 document_N=1 + op11 codPR + detaliu nrN/valN. Probat pe
-    validatorul INSTALAT (J8/v5). DESCOPERIRE (proba jar v5): op1.tip_N (bunuri/servicii) din pdf-ul de structura
+def test_N_cu_categorie_litD_e_declarat_si_valid_pe_duk():
+    """approach (a): o operatiune N (achizitie de la persoana fizica) cu CATEGORIE din nomenclatorul lit.D
+    (OPANAF 77/2022 pct.10) se DECLARA - op1 tip_document=1 + rezumat1 document_N=1 + op11 codPR + detaliu
+    nrN/valN. Probat pe validatorul INSTALAT (J8/v5). DESCOPERIRE (proba jar v5): op1.tip_N (bunuri/servicii)
     NU exista in v5 ('tip_N atribut necunoscut') - premisa approach b era pe un camp inexistent (tiparul ASI).
-    Continutul declarat real e op11.codPR (categoria bunurilor), care reutilizeaza categorie_331 EXISTENTA."""
+    Nomenclatorul N e PROPRIU (CODPR_N: 21-23, 32-35; DUK regula R64.3 - DIFERIT de art.331 lit.C); 34/35 = 'alte
+    bunuri/servicii' (catch-all care face declarabila orice achizitie N). Probat DUK 04.08.2026."""
     from decimal import Decimal
+    from core.d394 import CODPR_N
+    # cateva categorii lit.D: deseuri(22), alte_bunuri(34), alte_servicii(35)
+    for cat, cod in [("deseuri", "22"), ("alte_bunuri", "34"), ("alte_servicii", "35"), ("terenuri", "32")]:
+        assert CODPR_N[cat] == cod
+        facturi = [_f("RO14399840", "emisa", 21, 1000, 210),
+                   _f("", "primita", 0, 500, 0, nume="ION POPESCU", cat=cat)]
+        res = calcul_d394(PROF, 2026, 6, facturi, serii_emise={"A": (1, 1)})
+        xml = build_xml(res)
+        assert any(k[0] == "N" for k in res.op1), "N cu categorie %s trebuie INCLUS" % cat
+        assert 'tip="N"' in xml and 'tip_document="1"' in xml and 'document_N="1"' in xml
+        assert ('codPR="%s"' % cod) in xml and 'nrN=' in xml and 'valN=' in xml
+        from core import duk
+        if duk.poate_valida("d394"):
+            r = duk.valideaza(xml, "d394", an=2026, luna=6)
+            assert r["stare"] == "valid", "N cu categorie %s respins de J8: %s" % (cat, r.get("erori"))
+
+
+def test_N_categorie_ne_litD_e_exclusa_nu_emite_cod_invalid():
+    """N accepta DOAR categoriile lit.D (CODPR_N: 21-23, 32-35). O categorie art.331 care NU e valida pt N
+    (ex. gaze_naturale=36, respinsa de R64.3) NU se emite cu cod invalid -> operatiunea ramane EXCLUSA cu
+    avertisment. (Fara asta, N ar emite codPR=36 -> D394 respins.)"""
     facturi = [_f("RO14399840", "emisa", 21, 1000, 210),
-               _f("", "primita", 0, 500, 0, nume="ION POPESCU", cat="deseuri")]  # N cu categorie
+               _f("", "primita", 0, 500, 0, nume="FURNIZOR PF", cat="gaze_naturale")]  # 36 - ne-N
     res = calcul_d394(PROF, 2026, 6, facturi, serii_emise={"A": (1, 1)})
-    xml = build_xml(res)
-    assert any(k[0] == "N" for k in res.op1), "N cu categorie trebuie INCLUS in op1"
-    assert 'tip="N"' in xml and 'tip_document="1"' in xml
-    assert 'document_N="1"' in xml
-    assert 'codPR="22"' in xml           # deseuri -> 22
-    assert 'nrN=' in xml and 'valN=' in xml  # detaliu N
+    assert not any(k[0] == "N" for k in res.op1), "N cu categorie ne-lit.D trebuie EXCLUS (nu cod invalid)"
+    assert "codPR=\"36\"" not in build_xml(res)
     from core import duk
     if duk.poate_valida("d394"):
-        r = duk.valideaza(xml, "d394", an=2026, luna=6)
-        assert r["stare"] == "valid", "N cu categorie respins de J8: %s" % r.get("erori")
+        assert duk.valideaza(build_xml(res), "d394", an=2026, luna=6)["stare"] == "valid"
 
 
 def test_N_fara_categorie_ramane_exclus_cu_avertisment():
