@@ -257,9 +257,14 @@ def cui_ro(v):
     return cif or None
 
 
-def clasifica_partener(cui_brut):
-    """(tip_partener, cui_normalizat) — pct. 216.
-    Fara CUI -> 2 (neinregistrat). Prefix de stat membru -> 3. Alt prefix -> 4."""
+def clasifica_partener(cui_brut, platitor_tva=None):
+    """(tip_partener, cui_normalizat) — pct. 216. `platitor_tva` = statutul TVA INGHETAT pe factura (fapt
+    contabil), consultat pentru RO cu CUI valid: True -> tip 1 (inregistrat); False -> tip 2 (NEinregistrat in
+    scop TVA, chiar cu CUI valid: PJ neplatitor / PF) -> pe achizitie devine N. NULL = necunoscut (factura
+    legacy, inainte de camp) -> EURISTICA de forma (un CUI valid e PRESUPUS platitor). Limita legacy + trigger
+    de backfill via perioade_TVA: GARZI. Corectitudine ISTORICA: flag-ul inghetat da statutul de ATUNCI (acelasi
+    CUI, 2 facturi -> 2 raspunsuri).
+    Fara CUI -> 2. Prefix de stat membru -> 3 (flag N/A - ANAF RO nu are firme UE). Alt prefix -> 4."""
     raw = (cui_brut or "").strip().upper().replace(" ", "")
     if not raw:
         return P_NEINREG, None
@@ -267,7 +272,11 @@ def clasifica_partener(cui_brut):
     if prefix.isalpha() and prefix != "RO":
         return (P_UE if prefix in _TARI_UE else P_NONUE), raw
     cif = cui_ro(raw)
-    return (P_TVA_RO, cif) if cif else (P_NEINREG, None)
+    if not cif:
+        return P_NEINREG, None
+    if platitor_tva is False:          # RO cu CUI valid DAR neinregistrat in scop TVA -> tip 2 (achizitie N)
+        return P_NEINREG, None
+    return P_TVA_RO, cif                # True sau NULL (fallback euristica: CUI valid presupus platitor)
 
 
 def tip_operatiune(directie, taxare_inversa, tip_partener):
@@ -344,7 +353,7 @@ def calcul_d394(prof, perioada, date, manual=None):
         c[2] += _d(tva)
 
     for f in facturi:
-        tp, cui = clasifica_partener(f.get("cui"))
+        tp, cui = clasifica_partener(f.get("cui"), f.get("platitor_tva"))
         # ACHIZITIILE INTRACOMUNITARE NU INTRA IN D394 - se declara in D390 (VIES).
         # Ghid ANAF: "Nu se inscriu achizitiile intracomunitare de bunuri si servicii
         # pentru care exista obligativitatea inscrierii in declaratia 390."
@@ -736,7 +745,7 @@ def pull(conn, schema, perioada):
         # proformele nu se raporteaza (nu sunt facturi fiscale).
         cur.execute("""
             SELECT f.id, f.directie, f.total, f.tva, f.taxare_inversa AS ti,
-                   f.categorie_331, f.tert_nume, f.tert_cui,
+                   f.categorie_331, f.tert_nume, f.tert_cui, f.tert_platitor_tva,
                    c.nume AS c_nume, c.cui AS c_cui,
                    COALESCE(json_agg(json_build_object(
                        'cota', l.cota_tva,
@@ -757,7 +766,8 @@ def pull(conn, schema, perioada):
         cui = ((r["c_cui"] if emisa else None) or r["tert_cui"] or r["c_cui"] or "")
         nume = ((r["c_nume"] if emisa else None) or r["tert_nume"] or r["c_nume"] or "")
         comun = {"cui": cui, "nume": nume, "directie": r["directie"],
-                 "taxare_inversa": bool(r["ti"]), "categorie_331": r["categorie_331"]}
+                 "taxare_inversa": bool(r["ti"]), "categorie_331": r["categorie_331"],
+                 "platitor_tva": r["tert_platitor_tva"]}
         pe_cota = {}
         for l in (r["linii"] or []):
             if l.get("cota") is None or l.get("baza") is None:

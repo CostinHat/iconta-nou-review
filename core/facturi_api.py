@@ -48,7 +48,8 @@ from core import curs_bnr
 def creeaza_factura(conn, numar, data_emitere, directie, linii,
                     client_id=None, tert_nume=None, tert_cui=None, tert_adresa=None,
                     data_scadenta=None, moneda="RON", status="emisa",
-                    categorie_331=None, data_faptului_generator=None, taxare_inversa=False):
+                    categorie_331=None, data_faptului_generator=None, taxare_inversa=False,
+                    tert_platitor_tva=None):
     """
     Inserează factura + liniile, într-o tranzacție. total/tva calculate din linii.
     Întoarce {ok, factura_id, total, tva}.
@@ -67,11 +68,12 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
         cur.execute(
             "INSERT INTO facturi (client_id, numar, data_emitere, data_scadenta, "
             "total, tva, status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
-            "categorie_331, data_faptului_generator, taxare_inversa) "
-            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+            "categorie_331, data_faptului_generator, taxare_inversa, tert_platitor_tva) "
+            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
             (client_id, numar, data_emitere, data_scadenta, t["total"], t["tva"],
              status, moneda, directie, tert_nume, tert_cui, tert_adresa,
-             categorie_331 or None, data_faptului_generator or None, bool(taxare_inversa)))
+             categorie_331 or None, data_faptului_generator or None, bool(taxare_inversa),
+             tert_platitor_tva))
         factura_id = cur.fetchone()[0]
         for l in linii:
             cur.execute(

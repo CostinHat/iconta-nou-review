@@ -7116,3 +7116,28 @@ neconfirmat. D300 e deja acoperit prin 4426 din inregistrari (compensatia deduct
 
 DEBLOCARE: cand se confirma la sursa (instructiuni D394 / ghid ANAF pe agricultori forfetari) cum intra achizitia in
 D394. Consemnat: GARZI "NECONFORMITATE ACTIVA" 04.08 (sectiunea achizitie->jurnal).
+
+
+## 05.08.2026 — clasifica_partener: statut platitor TVA INGHETAT-LA-CREARE pe factura (nu cache mutabil, nu forma CUI).
+
+DECIZIE (Costin): statutul de platitor TVA al tertului se INGHEATA pe factura la creare (`facturi.tert_platitor_tva`),
+ca FAPT CONTABIL imutabil ca oricare de pe factura. clasifica_partener il consulta in loc de euristica pe forma CUI.
+
+TEMEI: statutul e ISTORIC (o firma poate fi platitoare azi si nu era acum 3 luni). O factura veche trebuie clasificata
+dupa statutul de ATUNCI. Inghet-la-creare da asta GRATIS: flag-ul stocat = statutul de la data facturii. ANAF ofera
+istoricul (PlatitorTvaRest/v9 inregistrare_scop_Tva.perioade_TVA[] cu data_inceput/sfarsit_ScpTVA), deci corectitudinea
+istorica e realizabila.
+
+ALTERNATIVA RESPINSA: cache per-CUI cu statutul curent, clasificat la pull. RESPINSA (argument Costin): ar face
+clasificarea dependenta de o stare externa MUTABILA - aceeasi factura clasificata diferit la doua rulari. Contabilitatea
+ingheata faptele; un fapt pe factura nu se schimba retroactiv fiindca ANAF-ul de azi arata altceva.
+
+LIMITA SCRISA (nu ascunsa): (1) facturi LEGACY fara flag -> euristica de forma; backfill via perioade_TVA doar cand
+un tenant are facturi legacy reale (trigger scris in GARZI 05.08; pe tenant_001 gol nu se scrie cod pe presupuneri).
+(2) decalaj snapshot ANAF (corectie retroactiva neactualizata). (3) ANAF-jos la creare -> flag NULL -> euristica (nu
+blocheaza emiterea). Din caveat: _tva_inceput_activ arunca perioadele inchise desi ANAF le trimite - REPARAT: anaf_api
+pastreaza perioade_TVA[] intreg (tva_perioade), exact ce cere backfill-ul; nu se arunca ce ANAF ofera.
+
+DEBLOCHEAZA corectitudinea N (N depinde de tip_partener): un PJ neplatitor cu CUI valid -> flag False -> tip 2 -> N
+(inainte: tip 1). Probat in ambele sensuri + istoric (acelasi CUI, doua facturi, doua clasificari). F004 refolosit
+(nu cale noua). Consemnat GARZI 05.08.

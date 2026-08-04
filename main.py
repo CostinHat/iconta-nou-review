@@ -7058,11 +7058,15 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...), ctx=Depends
             cur.execute(f"SET LOCAL search_path TO {schema}")   # creeaza_factura foloseste INSERT necalificat
             # 1) rand FACTURA (directie=primita, furnizor RO cu CUI, categorie_331 -> codPR, taxare_inversa=True)
             #    = sursa citita de D394 (op1 tip C + op11 codPR). Linie cota reala -> baza/tva reverse-charge.
+            from core import anaf_api as _anaf
+            _furn_pl = str(corp.get("furnizor_platitor_tva", True)).strip().lower() not in ("false", "nu", "0")
+            _tert_pl = _anaf.platitor_tva_freeze(furnizor_cui, fallback=_furn_pl)   # INGHETAT la creare (fapt)
             fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
                                        linii=[{"descriere": descr[:200], "cantitate": 1,
                                                "pret_unitar": str(val), "cota_tva": cota}],
                                        tert_nume=furnizor_nume or None, tert_cui=furnizor_cui,
-                                       categorie_331=categorie, taxare_inversa=True, status="importata")
+                                       categorie_331=categorie, taxare_inversa=True, status="importata",
+                                       tert_platitor_tva=_tert_pl)
             fid = fres["factura_id"]
             # 2) contabilizare LEGATA (factura_id) - nota specializata reverse-charge 4426=4427, NU cea standard
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
@@ -7183,7 +7187,7 @@ def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...), ctx=Depends(
                                        linii=[{"descriere": descr[:200], "cantitate": 1,
                                                "pret_unitar": str(val), "cota_tva": 0}],
                                        tert_nume=furnizor_nume, tert_cui="", categorie_331=categorie,
-                                       status="importata")
+                                       status="importata", tert_platitor_tva=False)
             fid = fres["factura_id"]
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
                             VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
@@ -7679,10 +7683,13 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
             cur.execute(f"SET LOCAL search_path TO {schema}")   # creeaza_factura foloseste INSERT necalificat
             # rand FACTURA (achizitie normala de la furnizor RO cu CUI) -> D394 tip A. MF (mijloace_fixe) ramane
             # separat: factura = documentul de achizitie; imobilizarea = activul amortizabil (amortizare/D406).
+            from core import anaf_api as _anaf
+            _tert_pl = _anaf.platitor_tva_freeze(furnizor_cui, fallback=True)   # TVA deductibila -> furnizor platitor
             fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
                                        linii=[{"descriere": corp["denumire"][:200], "cantitate": 1,
                                                "pret_unitar": str(val), "cota_tva": cota}],
-                                       tert_nume=furnizor_nume or None, tert_cui=furnizor_cui, status="importata")
+                                       tert_nume=furnizor_nume or None, tert_cui=furnizor_cui, status="importata",
+                                       tert_platitor_tva=_tert_pl)
             fid = fres["factura_id"]
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
                             VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",

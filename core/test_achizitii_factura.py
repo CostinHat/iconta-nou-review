@@ -211,3 +211,101 @@ def test_nicio_achizitie_creeaza_inregistrare_orfana_de_factura():
     assert not rele, "achizitie orfana de factura (invizibila declaratiei):\n" + "\n".join(rele)
     # anti-vacuu: exceptarea e reala (agricultor chiar e orfan azi) - altfel exceptia e moarta/inutila
     assert "def achizitie_agricultor" in src
+
+
+# ============ B: clasifica_partener pe flag real (INGHETAT), nu pe forma CUI ============
+
+@pytest.fixture(autouse=True)
+def _stub_anaf(monkeypatch):
+    """Handlerele ingheata tert_platitor_tva best-effort din ANAF F004; in teste stub-uim valideaza_cui sa
+    RIDICE -> freeze cade pe fallback (declaratia/semantica), FARA HTTP live la ANAF (determinist, nu depinde de retea)."""
+    import main
+    monkeypatch.setattr(main.anaf_api if hasattr(main, "anaf_api") else __import__("core.anaf_api", fromlist=["x"]),
+                        "valideaza_cui", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("ANAF stub")))
+
+
+def test_clasifica_partener_consulta_flag_nu_forma():
+    from core.d394 import clasifica_partener, P_TVA_RO, P_NEINREG, P_UE
+    CUI = "RO14399840"   # RO CUI VALID (forma OK)
+    # PJ NEplatitor cu CUI valid -> tip 2 (N pe achizitie). AZI (fara flag/None) ar fi fost tip 1.
+    assert clasifica_partener(CUI, False)[0] == P_NEINREG
+    # platitor cu CUI valid -> tip 1
+    assert clasifica_partener(CUI, True)[0] == P_TVA_RO
+    # legacy (None) -> euristica de forma: CUI valid presupus platitor -> tip 1 (comportament de dinainte)
+    assert clasifica_partener(CUI, None)[0] == P_TVA_RO
+    # UE: flag N/A, clasificat pe prefix indiferent de flag
+    assert clasifica_partener("DE811569869", False)[0] == P_UE
+
+
+@pytest.mark.skipif(not _DB, reason="DB indisponibil")
+def test_flag_inghetat_da_raspunsuri_diferite_pe_facturi_ale_aceluiasi_cui(monkeypatch):
+    """ISTORIC: furnizor RO inregistrat 2020-2023 apoi radiat. Factura 2022 (flag inghetat True) -> tip 1;
+    factura 2025 (flag inghetat False) -> tip 2 -> N. ACELASI CUI, doua facturi, doua clasificari - din flag,
+    nu din forma. Freeze-la-creare = fapt imutabil pe factura."""
+    import main
+    from core import db, d394, facturi_api
+    from core.common import Perioada
+    CUI = "RO14399840"
+    db.init_pool()
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                _scratch(cur)
+            conn.commit()
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SET search_path TO %s" % _SCH)
+            L = [{"descriere": "marfa", "cantitate": 1, "pret_unitar": "1000", "cota_tva": 0}]
+            facturi_api.creeaza_factura(conn, numar="F2022", data_emitere="2022-06-10", directie="primita",
+                                        linii=L, tert_nume="FURNIZOR SRL", tert_cui=CUI,
+                                        categorie_331="deseuri", tert_platitor_tva=True, status="importata")
+            facturi_api.creeaza_factura(conn, numar="F2025", data_emitere="2025-06-10", directie="primita",
+                                        linii=L, tert_nume="FURNIZOR SRL", tert_cui=CUI,
+                                        categorie_331="deseuri", tert_platitor_tva=False, status="importata")
+            conn.commit()
+        # 2022: acelasi CUI, flag True -> tip 1 (P_TVA_RO); 2025: flag False -> tip 2 (P_NEINREG)
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SET search_path TO %s" % _SCH)
+            _p22, f22 = d394.pull(conn, _SCH, Perioada(2022, luna=6))
+            _p25, f25 = d394.pull(conn, _SCH, Perioada(2025, luna=6))
+        l22, l25 = f22["facturi"], f25["facturi"]
+        assert l22 and d394.clasifica_partener(l22[0]["cui"], l22[0]["platitor_tva"])[0] == d394.P_TVA_RO, l22
+        assert l25 and d394.clasifica_partener(l25[0]["cui"], l25[0]["platitor_tva"])[0] == d394.P_NEINREG, l25
+    finally:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCH)
+            conn.commit()
+
+
+@pytest.mark.skipif(not _DB, reason="DB indisponibil")
+def test_handlerele_ingheata_flagul_la_creare(monkeypatch):
+    """Handlerele ingheata tert_platitor_tva pe factura la creare (ANAF stub -> fallback): N->False (PF),
+    taxare inversa->True (furnizor platitor declarat)."""
+    import main
+    from core import db
+    db.init_pool()
+    try:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                _scratch(cur)
+            conn.commit()
+        monkeypatch.setattr(main.auth_api, "schema_tenant", lambda conn, uid, tid: _SCH)
+        rn = main.achizitie_neinregistrat(1, {"data": "2026-06-18", "furnizor_nume": "ION", "valoare": 2000,
+                                             "cont_cheltuiala": "301", "categorie": "deseuri"}, {"uid": 1})
+        rt = main.achizitie_taxare_inversa(1, {"data": "2026-06-15", "categorie": "deseuri", "valoare": 5000,
+                                              "cont_destinatie": "371", "cota": 21, "furnizor_platitor_tva": True,
+                                              "furnizor_cui": "RO14399840", "furnizor_nume": "FRZ", "numar": "F1"},
+                                           {"uid": 1})
+        with db.get_conn() as conn, conn.cursor() as cur:
+            cur.execute("SET search_path TO %s" % _SCH)
+            cur.execute("SELECT tert_platitor_tva FROM facturi WHERE id=%s", (rn["factura_id"],))
+            assert cur.fetchone()[0] is False, "N nu a inghetat False"
+            cur.execute("SELECT tert_platitor_tva FROM facturi WHERE id=%s", (rt["factura_id"],))
+            assert cur.fetchone()[0] is True, "taxare inversa nu a inghetat True (fallback din declaratie)"
+    finally:
+        with db.get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCH)
+            conn.commit()

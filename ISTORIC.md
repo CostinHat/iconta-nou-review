@@ -3066,3 +3066,22 @@ LIVRAT + PROBAT DUK end-to-end (handler real -> facturi + factura_id -> declarat
 EXCEPTIE NUMITA (nu tacita): achizitie_agricultor (regim special art.315^1) ramane deschis - tratamentul D394 al
 achizitiei de la agricultorul forfetar nu e confirmabil la sursa; exceptat cu motiv scris in gard + GARZI + DECIZII.
 Poarta verde, probe DUK reale pe fiecare din cele 4 cazuri.
+
+
+## 05.08.2026 — clasifica_partener pe statut TVA REAL inghetat pe factura (nu forma CUI)
+
+Datoria GARZI #45 (clasifica_partener infera platitorul TVA din FORMA CUI-ului, nu din realitate) inchisa. Un PJ
+neplatitor de TVA cu CUI valid era clasificat tip_partener=1 (platitor) -> linie D394 falsa; acum, cu statutul real,
+devine tip 2 -> achizitie N. Decizie de localizare (Costin): INGHET-LA-CREARE - statutul se stocheaza pe factura
+(`facturi.tert_platitor_tva`) ca fapt contabil imutabil; clasifica_partener il consulta. Cache-ul per-CUI respins
+(ar face clasificarea dependenta de o stare externa mutabila - aceeasi factura, doua raspunsuri la doua rulari).
+
+Corectitudine ISTORICA gratis: flag-ul inghetat pe fiecare factura da statutul de ATUNCI. Furnizor inregistrat
+2020-2023 apoi radiat: factura 2022 -> tip 1, factura 2025 -> tip 2. Probat explicit (acelasi CUI, doua facturi, doua
+clasificari), plus PJ neplatitor->N si platitor->tip1. Handlerele achizitie ingheata flag-ul la creare (F004 refolosit,
+best-effort, fallback pe semantica; nu blocheaza emiterea pe ANAF-jos). ANAF ofera istoricul (perioade_TVA[]); reparat
+_tva_inceput_activ care arunca perioadele inchise - acum pastrate intregi (tva_perioade), exact ce cere backfill-ul.
+
+Limita legacy scrisa NUMIT in GARZI cu trigger: facturi vechi fara flag -> euristica de forma; backfill via perioade_TVA
+devine necesar cand un tenant are facturi legacy reale (pe tenant_001 gol nu se scrie cod pe presupuneri). Poarta verde,
+probe DUK neatinse (clasificarea e amonte de generare). Migrare aplicata pe tenant_001 + template.

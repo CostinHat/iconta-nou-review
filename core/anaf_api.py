@@ -79,6 +79,30 @@ def _tva_inceput_activ(tva):
     return None
 
 
+def _tva_perioade(tva):
+    """TOATE perioadele de inregistrare in scop TVA de la ANAF (nu doar cea activa) - INTREG, ca sa NU se
+    arunce istoricul: [{inceput, sfarsit}] ('sfarsit' gol = perioada activa). ANAF le trimite in
+    perioade_TVA[]; sunt exact ce cere backfill-ul clasificarii istorice (data facturii in perioada)."""
+    out = []
+    for p in (tva.get("perioade_TVA") or tva.get("perioadeTVA") or []):
+        out.append({"inceput": (p.get("data_inceput_ScpTVA") or "").strip() or None,
+                    "sfarsit": (p.get("data_sfarsit_ScpTVA") or "").strip() or None})
+    return out
+
+
+def platitor_tva_freeze(cui, fallback=None):
+    """Statutul de platitor TVA al unui CUI, INGHETAT din ANAF F004 (best-effort) - pentru stocare pe factura
+    (fapt contabil imutabil). ANAF indisponibil / CUI negasit -> `fallback` (declaratia contabilului / semantica
+    operatiunii). NU ridica: nu blocheaza emiterea facturii pe ANAF-jos."""
+    try:
+        r = valideaza_cui([cui])
+        if r and r[0].get("gasit"):
+            return bool(r[0].get("platitor_tva"))
+    except Exception:  # noqa: BLE001
+        pass
+    return fallback
+
+
 def valideaza_cui(lista_cui, data_interogare=None):
     """Întoarce [{cui, denumire, platitor_tva, tva_data_inceput, stare, inactiv, gasit}], ordine păstrată."""
     azi = data_interogare or date.today().isoformat()
@@ -115,6 +139,7 @@ def valideaza_cui(lista_cui, data_interogare=None):
                 "denumire": (dg.get("denumire") or "").strip(),
                 "platitor_tva": bool(tva.get("scpTVA")),
                 "tva_data_inceput": _tva_inceput_activ(tva),   # data începerii înregistrării TVA active (fapt ANAF)
+                "tva_perioade": _tva_perioade(tva),   # TOATE perioadele (istoric intreg, pt backfill)
                 "tva_la_incasare": bool(rtvai.get("statusTvaIncasare")),   # F188: RTVAI.statusTvaIncasare
                 "stare": (dg.get("stare_inregistrare") or dg.get("stareinregistrare") or "").strip(),
                 "inactiv": bool(inactiv.get("statusInactivi")),

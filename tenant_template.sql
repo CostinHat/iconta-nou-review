@@ -372,6 +372,7 @@ CREATE TABLE TENANT_PLACEHOLDER.facturi (
     numar character varying(50) NOT NULL,
     data_emitere date NOT NULL,
     data_faptului_generator date,  -- [A2 art.284 D390] OPTIONAL: exigibilitate IC = MIN(data_emitere, ziua 15 a lunii urmatoare faptului); NULL -> incadrare pe data_emitere (comportament anterior)
+    tert_platitor_tva boolean,  -- [B clasifica_partener] statutul TVA al tertului INGHETAT la factura (fapt); True->tip1, False->tip2/N, NULL->euristica de forma (legacy)
     data_scadenta date,
     total numeric(12,2) DEFAULT 0 NOT NULL,
     tva numeric(12,2) DEFAULT 0 NOT NULL,

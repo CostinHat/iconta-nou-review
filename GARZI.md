@@ -845,7 +845,7 @@ duplica (regula sursei unice). NOI in GARZI:
 
 | datorie | unde | de ce e deschisa | ce o inchide |
 |---|---|---|---|
-| clasifica_partener infera platitor TVA din FORMA CUI, nu din flag real | core/d394.py:260 (clasifica_partener) | un PJ neplatitor de TVA (CUI valid dar nu inregistrat in scop TVA) nu e distins de o persoana fizica: fara CUI/CUI-invalid -> P_NEINREG (tip 2) -> pe achizitie devine N (exclus + avertisment); CUI numeric valid -> P_TVA_RO (tip 1) desi nu-i platitor. Heuristica pe forma, nu pe realitate | flag `platitor_tva` pe partener in DB (verificare VIES/ANAF), clasificare pe flag nu pe forma. Decizie de produs Costin |
+| clasifica_partener infera platitor TVA din FORMA CUI, nu din flag real | core/d394.py:260 (clasifica_partener) | un PJ neplatitor de TVA (CUI valid dar nu inregistrat in scop TVA) nu e distins de o persoana fizica: fara CUI/CUI-invalid -> P_NEINREG (tip 2) -> pe achizitie devine N (exclus + avertisment); CUI numeric valid -> P_TVA_RO (tip 1) desi nu-i platitor. Heuristica pe forma, nu pe realitate | **REZOLVAT 05.08 (decizie Costin: inghet-la-creare)**: clasifica_partener(cui, platitor_tva) consulta `facturi.tert_platitor_tva` (fapt INGHETAT la creare, imutabil); True->tip1, False->tip2/N, NULL->euristica de forma (legacy). Vezi sectiunea + DECIZII 05.08. LIMITA legacy scrisa mai jos |
 | categorie_331 (taxare inversa / N op11) fara UI | core/d394.py (codpr_N_din_categorie, CODPR) - camp citit, negenerabil din factura | codPR-ul op11 (art.331) si tip N cer CATEGORIA declarata de contabil (cereale/deseuri/masa lemnoasa/gaze...); azi nu exista ecran care s-o seteze -> operatiunile raman neclasificate | SIMPTOM al neconformitatii 04.08 de mai jos (operatiune achizitie scrisa DOAR in jurnal): achizitie_taxare_inversa nu creeaza rand `facturi` -> categorie_331 n-are purtator. Fix = BACKEND (operatiunea emite factura), NU ecran. Vezi sectiunea NECONFORMITATE ACTIVA 04.08 + DECIZII 04.08 |
 | data_faptului_generator (D390 ziua 15) fara UI | tenant_template.sql + tenant_001 (coloana migrata) | coloana OPTIONALA exista si pull() o foloseste (exigibilitate = MIN(data_emitere, ziua 15)), dar niciun ecran n-o completeaza -> ramane NULL -> comportament = data_emitere (backward-compat, corect, dar functia nefolosibila pana la UI) | SIMPTOM: achizitie_ic scrie DOAR in jurnal, fara rand `facturi` -> data_faptului_generator n-are purtator SI D390 rateaza operatiunea. Fix = BACKEND. Vezi NECONFORMITATE ACTIVA 04.08 |
 | D177 canal de emitere (formular, nu declaratie XML) | anaf_surse/OPANAF_3562_2024_D177.* (structura salvata) | D177 e o CERERE-formular PDF, nu un XML validat de jar DUK -> nu are autoritatea R17 pe care sta arhitectura; mecanismul (PDF-form vs XML) + scope = decizie de produs | **DECIS 04.08 (Costin): AMANAT EXPLICIT** (vezi sectiunea D177 mai jos + DECIZII 04.08 + FUNCTIONALITATI.csv F206). Se redeschide doar cu decizie noua Costin |
@@ -918,3 +918,27 @@ tratamentul in D394 al achizitiei de la agricultorul forfetar (tip_partener? int
 confirmabil la sursa (niciun ghidaj in d394_struct_anaf.txt / instructiuni). Un rand facturi construit gresit ar
 produce o linie D394 eronata - mai rau decat orfan. D300 e deja acoperit (4426 din inregistrari). Se deblocheaza cu
 temeiul D394 confirmat la sursa. Vezi DECIZII 04.08.
+
+
+## 05.08.2026 — clasifica_partener pe flag INGHETAT (nu forma CUI) — REZOLVAT + limita legacy NUMITA
+
+REZOLVAT (decizie Costin, inghet-la-creare): `clasifica_partener(cui, platitor_tva)` (core/d394.py) consulta acum
+statutul TVA REAL al tertului, INGHETAT pe factura (`facturi.tert_platitor_tva`, migrare_tert_platitor_tva) ca fapt
+contabil imutabil - nu mai infera din FORMA CUI-ului. RO cu CUI valid: True->tip 1 (inregistrat); False->tip 2
+(neinregistrat scop TVA, chiar cu CUI: PJ neplatitor/PF) -> pe achizitie N; NULL (legacy)->euristica de forma.
+Corectitudine ISTORICA gratis: acelasi CUI, doua facturi cu flag diferit -> doua clasificari (2022 True->tip1,
+2025 False->tip2). Handlerele achizitie ingheata flag-ul la creare (best-effort ANAF F004, fallback semantica:
+N->False, taxare inversa->declaratia furnizor_platitor_tva, necorporala->True). anaf_api: pastreaza acum perioade_TVA[]
+INTREG (nu doar perioada activa) - datele necesare backfill-ului. Probe: test_clasifica_partener_consulta_flag_nu_forma
++ test_flag_inghetat_da_raspunsuri_diferite_pe_facturi_ale_aceluiasi_cui + test_handlerele_ingheata_flagul_la_creare.
+
+LIMITA LEGACY (DATORIE NUMITA, cu trigger de declansare - nu cod mort acum): facturile create INAINTE de camp
+(tert_platitor_tva NULL) sunt clasificate pe EURISTICA de forma (un CUI valid presupus platitor). Pe tenant_001 (0
+facturi) backlog inexistent -> backfill-ul ar fi cod nefolosit pe presupuneri despre date care nu exista, deci NU se
+scrie acum. DECLANSATOR EXPLICIT: cand un tenant are facturi legacy fara tert_platitor_tva, backfill via
+anaf_api.valideaza_cui(...).tva_perioade[] (data facturii ∈ [inceput, sfarsit] perioada inregistrata) devine NECESAR
+INAINTE de generarea D394 pe perioade vechi. Datele exista (perioade_TVA pastrat intreg); doar aplicarea lipseste.
+
+ALTA LIMITA (acceptata): decalaj snapshot ANAF (corectie retroactiva a inregistrarii nu actualizeaza flag-ul inghetat
+- flag = ce se stia la data facturii, ca orice fapt contabil); ANAF-jos la creare -> flag NULL -> euristica (nu se
+blocheaza emiterea facturii).
