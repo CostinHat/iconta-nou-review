@@ -6790,3 +6790,47 @@ SUB-BLOCAJ MOTIVAT (cadou E3_73, 4 elemente):
 EFECT PE PRODUS: D112 declara acum defalcat avantajele in bilete (masa/vacanta/cultural/cresa) in sectiunea 8.3 -
 inainte le raporta doar agregat prin impozit/baza CASS. tenant_001 n-are bilete azi (beneficii_lunare gol), deci
 efect imediat zero; se activeaza cand se acorda bilete.
+
+
+## 04.08.2026 — Punctul 3 (approach a) EXECUTAT: suport N in D394 - dar tip_N NU EXISTA in validator (tipar ASI).
+
+Campania "implementarile ramase", punctul 3. Cerinta: implementeaza approach (a) pentru operatiunile N
+(achizitii de la parteneri NEINREGISTRATI). Groundwork-ul (DECIZII/GARZI 04.08) presupunea ca N cere op1.tip_N
+(pct.229, bunuri/servicii) = CONTINUT DECLARAT ce cere camp nou + UI.
+
+DESCOPERIRE MAJORA (proba jar v5 + DUK, metoda ca la ASI/HRK): **op1.tip_N NU EXISTA in validatorul INSTALAT v5.**
+Extractia atributelor din D394Validator.jar (v5/Op1.class) da lista COMPLETA: tip, tip_partener, cota, cuiP, denP,
+nrFact, baza, tva, tip_document, taraP/judP + adresa. NICIUN tip_N. Proba DUK directa: un op1 cu tip_N -> "tip_N:
+atribut necunoscut in namespace v5". Deci premisa approach b (tip_N = continut declarat, cere UI bunuri/servicii)
+se baza pe un camp din pdf-ul de structura care NU e in validatorul instalat - EXACT tiparul ASI (pdf vs jar).
+
+CE CERE DE FAPT v5 pentru N (probat DUK, iterativ pana la "valid"):
+- op1: tip_document="1" (facturi) - R220/pct.228, OBLIGATORIU pt tip_partener=2 + N.
+- rezumat1 (tp=2, cota=0): document_N="1" + bazaN/facturiN (R60.1/R59/R62); document_N conditioneaza facturiLS (R41.2).
+- op11 cu codPR + detaliu (nrN/valN): R233.6 - pentru PERSOANA FIZICA (achizitie fara CUI = persoana fizica),
+  op11 e OBLIGATORIU. codPR = categoria art.331 a bunurilor (R233.3/R233.4). Detaliu.class v5: campurile N = nrN/valN.
+
+CONTINUTUL DECLARAT REAL = op11.codPR (CATEGORIA bunurilor art.331), NU tip_N. Si acesta REUTILIZEAZA campul
+`categorie_331` care EXISTA DEJA pe factura (DB + pull d394 il trece deja). Deci:
+- N cu categorie art.331 -> DECLARAT VALID (op1.tip_document + rezumat1.document_N + op11.codPR + detaliu nrN/valN).
+  Probat DUK "valid" pe validatorul instalat (J8/v5).
+- N FARA categorie -> ramane EXCLUS cu avertisment care numeste furnizorul+suma si CERE adaugarea categoriei
+  (default = NIMIC, contabilul alege explicit - NU se ghiceste). Restul declaratiei ramane valid.
+
+IMPLEMENTAT (core/d394.py): scoasa excluderea neconditionata; N inclus cand codpr_din_categorie(categorie_331)
+exista (auto + manual); rezumat1.document_N=1; op11 extins pt N (tp=2, tip=N); detaliu extins (nrN/valN);
+emisie op1.tip_document="1" pt N; avertisment actualizat. Garduri noi: test_N_cu_categorie_art331_e_declarat_si_
+valid_pe_duk + test_N_fara_categorie_ramane_exclus_cu_avertisment. Gardul invers (test_N_ar_fi_respins_...) RAMANE
+valid: un op1 N GOL (fara tip_document/document_N) e tot respins -> confirma ca atributele emise sunt necesare.
+
+RAMAS (sub-piesa separabila, front-end): UI-ul pentru categorie_331. Campul EXISTA in DB + generator + pull, DAR
+NU e expus in UI (grep categorie_331 in *.js = 0 rezultate). Locul: static/js/ecrane/facturi_ecran.js, functia
+primitaDetaliu (validarea unei facturi de achizitie, ~linia 107) - un select "categorie art.331" (nomenclatorul
+CODPR: cereale/deseuri/masa lemnoasa/...) pe facturile de achizitie FARA CUI furnizor, + endpoint de salvare pe
+facturi.categorie_331 (modelul: campul pr-cont "Cont cheltuiala" din aceeasi functie are deja salvare). Pana la UI,
+categorie_331 se poate seta doar in DB. tip_document 2-5 (borderouri/contracte) = extindere separata (facturi/manual
+n-au campul) - sub-blocaj.
+
+EFECT PE PRODUS: o achizitie de la un furnizor neinregistrat (persoana fizica) cu categoria art.331 completata se
+DECLARA acum in D394 (inainte: exclusa, contabilul o depunea separat manual). Fara categorie: exclusa cu avertisment
+explicit. tenant_001 n-are astfel de facturi azi.

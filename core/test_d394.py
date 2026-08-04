@@ -560,3 +560,41 @@ def test_toate_categoriile_taxare_inversa_au_codpr_d394():
     from core.d394 import CODPR
     fara_cod = sorted(set(CATEGORII) - set(CODPR))
     assert not fara_cod, "categorii taxare inversa fara codPR D394: %s" % fara_cod
+
+
+# ── Suport N approach (a) — 04.08.2026: N declarabil cu categoria art.331 (op11) ──
+def test_N_cu_categorie_art331_e_declarat_si_valid_pe_duk():
+    """approach (a): o operatiune N (achizitie de la persoana fizica neinregistrata) cu CATEGORIE art.331 se
+    DECLARA in D394 - op1 tip_document=1 + rezumat1 document_N=1 + op11 codPR + detaliu nrN/valN. Probat pe
+    validatorul INSTALAT (J8/v5). DESCOPERIRE (proba jar v5): op1.tip_N (bunuri/servicii) din pdf-ul de structura
+    NU exista in v5 ('tip_N atribut necunoscut') - premisa approach b era pe un camp inexistent (tiparul ASI).
+    Continutul declarat real e op11.codPR (categoria bunurilor), care reutilizeaza categorie_331 EXISTENTA."""
+    from decimal import Decimal
+    facturi = [_f("RO14399840", "emisa", 21, 1000, 210),
+               _f("", "primita", 0, 500, 0, nume="ION POPESCU", cat="deseuri")]  # N cu categorie
+    res = calcul_d394(PROF, 2026, 6, facturi, serii_emise={"A": (1, 1)})
+    xml = build_xml(res)
+    assert any(k[0] == "N" for k in res.op1), "N cu categorie trebuie INCLUS in op1"
+    assert 'tip="N"' in xml and 'tip_document="1"' in xml
+    assert 'document_N="1"' in xml
+    assert 'codPR="22"' in xml           # deseuri -> 22
+    assert 'nrN=' in xml and 'valN=' in xml  # detaliu N
+    from core import duk
+    if duk.poate_valida("d394"):
+        r = duk.valideaza(xml, "d394", an=2026, luna=6)
+        assert r["stare"] == "valid", "N cu categorie respins de J8: %s" % r.get("erori")
+
+
+def test_N_fara_categorie_ramane_exclus_cu_avertisment():
+    """approach (a): N FARA categorie art.331 nu poate fi declarat valid (R233.6 cere op11.codPR pt persoana
+    fizica) -> ramane EXCLUS cu avertisment care numeste furnizorul+suma si cere adaugarea categoriei. Restul
+    declaratiei ramane valid (submitabil)."""
+    facturi = [_f("RO14399840", "emisa", 21, 1000, 210),
+               _f("", "primita", 0, 500, 0, nume="FURNIZOR PF")]  # N fara categorie
+    res = calcul_d394(PROF, 2026, 6, facturi, serii_emise={"A": (1, 1)})
+    assert not any(k[0] == "N" for k in res.op1), "N fara categorie trebuie EXCLUS"
+    av = " ".join(res.avertismente)
+    assert "EXCLUSE" in av and "FURNIZOR PF" in av and "500" in av and "categoria art.331" in av
+    from core import duk
+    if duk.poate_valida("d394"):
+        assert duk.valideaza(build_xml(res), "d394", an=2026, luna=6)["stare"] == "valid"

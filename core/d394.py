@@ -334,13 +334,17 @@ def calcul_d394(prof, perioada, date, manual=None):
             continue
         tip = tip_operatiune(f.get("directie"), f.get("taxare_inversa"), tp)
         if tip == "N":
-            # Operatiunile N (achizitii de la parteneri NEINREGISTRATI, tip_partener=2) NU pot fi inca
-            # declarate VALID: validatorul ANAF (J8) cere op1.tip_document (pct.228), op1.tip_N (pct.229
-            # bunuri/servicii) si rezumat1.document_N (pct.60), pe care tool-ul nu le are inca (tip_N =
-            # CONTINUT declarat, cere UI). Le EXCLUDEM cu AVERTISMENT VIZIBIL (decizie Costin 04.08,
-            # approach b) - NU tacit: numim furnizorul si suma, ca sa nu producem o declaratie ACCEPTATA
-            # dar falsa (default gresit) nici una respinsa tacit. Vezi DECIZII/GARZI 04.08.
-            excluse_N.append((f.get("nume"), f.get("cui"), f.get("baza")))
+            # [approach a, 04.08.2026] N (achizitii de la parteneri NEINREGISTRATI, tip_partener=2). DESCOPERIRE
+            # (proba jar v5 + DUK): validatorul INSTALAT v5 NU are atributul op1.tip_N (bunuri/servicii) - "tip_N
+            # atribut necunoscut". Premisa approach b (tip_N = continut declarat) se baza pe un camp din pdf-ul de
+            # structura INEXISTENT in v5 (tiparul ASI). N SE EMITE (tip_document=1, document_N=1), DAR pentru
+            # persoana fizica (achizitie fara CUI) R233.6 CERE op11 cu codPR (categoria art.331 a bunurilor) +
+            # detaliu(nrN/valN). codPR = CONTINUT DECLARAT, dar reutilizeaza categoria art.331 EXISTENTA pe factura.
+            # Fara categorie -> N nu poate fi declarat valid -> ramane EXCLUS cu avertisment (contabilul o adauga).
+            if codpr_din_categorie(f.get("categorie_331")):
+                _adauga("N", P_NEINREG, 0, cui, f.get("nume"), 1, f.get("baza"), 0, f.get("categorie_331"))
+            else:
+                excluse_N.append((f.get("nume"), f.get("cui"), f.get("baza")))
             continue
         cota = int(f.get("cota") or 0)
         if cota not in COTE:
@@ -365,8 +369,13 @@ def calcul_d394(prof, perioada, date, manual=None):
                              "de contabil care nu e in lista trebuie sa produca eroare vizibila, nu sa dispara "
                              "tacut din declaratie." % (op.get("tip"), ", ".join(map(str, TIPURI))))
         if op.get("tip") == "N":
-            # Acelasi motiv ca la calea auto: N nu se poate declara valid inca -> exclus cu avertisment.
-            excluse_N.append((op.get("denP"), op.get("cuiP"), op.get("baza")))
+            # [approach a] N inclus cu tip_document=1 + document_N + op11(codPR) DOAR daca are categorie art.331
+            # (R233.6 persoana fizica). Fara categorie -> exclus cu avertisment (vezi calea auto).
+            if codpr_din_categorie(op.get("categorie_331")):
+                _adauga("N", P_NEINREG, 0, op.get("cuiP"), op.get("denP"), op.get("nrFact") or 1,
+                        op.get("baza"), 0, op.get("categorie_331"))
+            else:
+                excluse_N.append((op.get("denP"), op.get("cuiP"), op.get("baza")))
             continue
         _adauga(op["tip"], int(op.get("tip_partener") or P_TVA_RO), op.get("cota") or 0,
                 op.get("cuiP"), op.get("denP"), op.get("nrFact") or 1,
@@ -375,10 +384,10 @@ def calcul_d394(prof, perioada, date, manual=None):
     if excluse_N:
         lista = "; ".join("%s (baza %s lei)" % (n or (c or "fara CUI"), _int(b)) for n, c, b in excluse_N)
         avert.append(
-            "ATENTIE: %d operatiune(i) N (achizitii de la parteneri NEINREGISTRATI) EXCLUSE din D394 - "
-            "validatorul ANAF nu le accepta inca (lipseste tip_N bunuri/servicii + tip_document). Furnizori/"
-            "sume excluse: %s. Declara-le SEPARAT manual; restul declaratiei RAMANE valid. (Suport N in curs - "
-            "vezi DECIZII/GARZI 04.08.)" % (len(excluse_N), lista))
+            "ATENTIE: %d operatiune(i) N (achizitii de la parteneri NEINREGISTRATI, persoane fizice) EXCLUSE "
+            "din D394 fiindca le LIPSESTE categoria art.331 a bunurilor (op11.codPR e OBLIGATORIU la persoana "
+            "fizica, conform R233.6). Adauga categoria produsului pe factura ca sa fie declarate. Furnizori/sume: "
+            "%s. Restul declaratiei RAMANE valid." % (len(excluse_N), lista))
 
     # rezumat1: unic pe (tip_partener, cota), CALCULAT din op1 (pct. 38-40).
     # ATENTIE: setul de atribute e ASIMETRIC si e cel din validatorul v5, nu unul
@@ -393,6 +402,8 @@ def calcul_d394(prof, perioada, date, manual=None):
         r["facturi" + tip] = r.get("facturi" + tip, 0) + nr
         if tip not in REZ1_FARA_TVA:
             r["tva" + tip] = r.get("tva" + tip, Decimal(0)) + tva
+        if tip == "N":
+            r["document_N"] = 1   # pct.60 = tip_document (facturi=1); conditioneaza facturiLS (R41.2)
 
     # Setul de campuri e EXACT: ce lipseste da eroare, ce e in plus la fel.
     for (tp, cota), r in rez1.items():
@@ -403,6 +414,8 @@ def calcul_d394(prof, perioada, date, manual=None):
             if tip not in REZ1_FARA_TVA:
                 r.setdefault("tva" + tip, Decimal(0))
         for k in list(r):
+            if k == "document_N":
+                continue   # document_N nu e un camp per-tip (nu se sterge la curatarea seturilor)
             tip = k.replace("facturi", "").replace("baza", "").replace("tva", "")
             if tip and tip not in ceruta:
                 del r[k]
@@ -484,7 +497,8 @@ def calcul_d394(prof, perioada, date, manual=None):
     op11 = {}
     for k, (nr, baza, tva) in op1.items():
         tip, tp, cota, cuiP, denP = k
-        if not (tp == P_TVA_RO and tip in ("V", "C")):
+        # op11: R233.5 (tp=1, tip V/C) SI R233.3/R233.6 (tp=2, tip N: pt persoane fizice op11 e OBLIGATORIU).
+        if not ((tp == P_TVA_RO and tip in ("V", "C")) or (tp == P_NEINREG and tip == "N")):
             continue
         cats = categorii.get(k) or set()
         cod = None
@@ -501,7 +515,7 @@ def calcul_d394(prof, perioada, date, manual=None):
         # La cereale codul de categorie e 21, iar codPR trebuie sa fie subcodul NC.
         bun = "21" if cod in CODPR_CEREALE else cod
         op11[k] = {"codPR": cod, "bun": bun, "nrFactPR": nr, "bazaPR": _int(baza),
-                   "tvaPR": (None if tip == "V" else _int(tva))}
+                   "tvaPR": (None if tip in ("V", "N") else _int(tva))}
 
     # <detaliu> — R35: "Nu exista sectiune Detaliu pentru (tip_partener, cota,
     # document_N, codPR)". Centralizeaza op11 pe (tip_partener, cota, bun):
@@ -517,10 +531,14 @@ def calcul_d394(prof, perioada, date, manual=None):
         bun = o.get("bun") or o["codPR"]
         d = detaliu.setdefault((tp, cota, bun),
                                {"nrLivV": 0, "bazaLivV": 0, "nrAchizC": 0,
-                                "bazaAchizC": 0, "tvaAchizC": 0})
+                                "bazaAchizC": 0, "tvaAchizC": 0, "nrN": 0, "valN": 0})
         if tip == "V":
             d["nrLivV"] += o["nrFactPR"]
             d["bazaLivV"] += o["bazaPR"]
+        elif tip == "N":
+            # Detaliu pt N (achizitii de la persoane fizice, tip_partener=2): nrN + valN (v5 Detaliu.class).
+            d["nrN"] += o["nrFactPR"]
+            d["valN"] += o["bazaPR"]
         else:
             d["nrAchizC"] += o["nrFactPR"]
             d["bazaAchizC"] += o["bazaPR"]
@@ -646,6 +664,8 @@ def build_xml(res):
         at += ' denP="%s" nrFact="%d" baza="%d"' % (_esc(_t(denP, _LIM["d394"]["denP"])), nr, baza)
         if tip in OP1_CU_TVA:
             at += ' tva="%d"' % tva
+        if tip == "N":
+            at += ' tip_document="1"'   # pct.228 (v5): OBLIGATORIU pt tip_partener=2 + N; calea auto = facturi=1
         o11 = res.op11.get(k)
         if not o11:
             A.append('  <op1 tip="%s" tip_partener="%d" cota="%d"%s/>' % (tip, tp, cota, at))
