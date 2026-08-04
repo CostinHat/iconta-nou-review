@@ -46,7 +46,7 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
   STARE = BLOCAT: sweep+gard+d406 reparat; ramane d101 (reconstructie) - cere greenlight temei
 
 
-- fir: D101 respins de DUK - reparare structura (Sesiunea A fiscal, REDIRECTIONARE Costin 31.07: prioritar peste D/d390). D101 in forma actuala NU poate fi depusa.
+- fir: REZOLVAT 03.08.2026 - D101 RECONSTRUIT si DUK-VALID. Clusterul structura-P1-P53|d101 bifat 03.08 (test_d101_reconstructie_proba_duk_valid + test_imca_d101_duk_valid TREC azi). Blocul de mai jos e ISTORIC (starea pre-reconstructie 31.07: D101 respins de DUK, nu poate fi depusa) - pastrat ca traseu, NU mai e valabil. test_datorie_d101_build_xml_respins_de_duk a fost SCOS la reconstructie.
 - ultim: descoperit la C2 - DUK respinge 'sectiune necunoscuta (P1)' (P-values ca elemente <P1>) + cod_bug=5503XXXXXX placeholder literal. Consemnat test_datorie_d101_build_xml_respins_de_duk.
 - urmator: INVESTIGARE (metoda D1xx CLAUDE.md): extrag structura reala din D101Validator.jar (ultima versiune, constant pool), gasesc forma corecta P/cod_bug, construiesc XML minim valid pe DUK (o corectie/runda), PROPUN cu temei -> Costin valideaza -> implementez. IN LUCRU.
 - pasi:
@@ -73,7 +73,7 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
   d390-LA-URMA. 3 pull-uri impletite cu override + 2 consumatori -> 1 pull public + reclasificari->manual. Baseline 1->0.
   A2. except goale (7 codebase: d406=3 + tenant_provisioning/observare/gdpr_sterge/cron): tratat+documentat ori eliminat, niciunul gol; gard.
   A3. mutant zero sistematic: fiecare din 11 generatoare cu sursa->[] => suita PICA (test permanent, garzi cat.9).
-  STARE = IN LUCRU (D1 d112 - extragere structurala, risc real)
+  STARE = REFACTOR OPTIONAL, NEINCEPUT (D1 d112: extragere structurala calcul_d112/build_xml din genereaza = ARHITECTURA/contract uniform, NU blocaj fiscal - d112 e verificat + DUK-valid in clusterele bifate. Se ia doar daca se reia conversia la contractul uniform; nu blocheaza nimic fiscal.)
 
 - fir: Granite API — cota TVA lipsa = intrare incompleta -> eroare, nu default 21 (Sesiunea A · TVA, sub-fir temeiuri)
 - ultim: masurare livrata — 80 cote "fara temei" = 79 TVA reale (1 fals-poz), 3 valori (21/11/19), cluster TVA verificat, 0 de cercetat / ~20 granite de reparat, rest ACCEPTATE (etaloane/fixtures/parametri). Directie confirmata Costin: default ELIMINAT, nu inlocuit; nedeterminat != 21; scutit 0 pastrat.

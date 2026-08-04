@@ -239,8 +239,9 @@ că intrarea a fost înghițită**.
   urmareste cheile manual aplicate si ridica ValueError pentru orice cheie neaplicata; d390/d394 ridica pe tip
   necunoscut (nu mai fac `continue` tacit). d301 respinge tot manual; d112/d406 nu au manual. Teste:
   test_{d300,d390,d394}_manual_*_necunoscut_ridica. Un rand introdus de contabil care nu e in lista STRIGA acum.
-- DESCHIS: rotunjirea din D390 e bancară (`round()`), în timp ce D112 documentează că ANAF
-  cere aritmetică. Schimbare fiscală — se verifică la sursă. Vezi DE_FACUT.
+- REZOLVAT (03.08.2026): rotunjirea D390 e ARITMETICA (`_int` = ROUND_HALF_UP, schimbata de la `round()` bancar
+  pe 27.07), gardata de `test_d390_rotunjeste_aritmetic_nu_bancar_A91b` + scanul anti-`round()` bancar pe toate
+  `d*.py`. [Intrarea initiala DESCHIS-rotunjire-bancara a fost INFIRMATA - pastrata ca traseu.]
 
 ### 4. Ieșire către autorități
 **Eșec:** XML structural valid, semantic gol sau fals.
@@ -502,7 +503,7 @@ Temei: CF art.331 alin.(2) lit.a-l (12 categorii de taxare inversa) + structura 
 | gard | fisier | ce face imposibil | mutatia care il probeaza |
 |---|---|---|---|
 | orice categorie taxare inversa are codPR D394 | core/test_d394.py (test_toate_categoriile_taxare_inversa_au_codpr_d394) | adaugarea unei categorii in motor (taxare_inversa.CATEGORII) fara cod D394 -> factura recunoscuta dar dropata din op11 (D394 structural incomplet) | set(CATEGORII)-set(CODPR) != {} -> cade |
-| datorie gaze naturale (lit.l) | core/test_datorie.py (test_datorie_gaze_naturale_taxare_inversa_art331_lit_l, xfail strict) | uitarea golului lit.l gaze naturale | gaze in CATEGORII+CODPR -> xfail trece -> strict pica -> semnaleaza inchiderea |
+| ~~datorie gaze naturale (lit.l)~~ INCHIS 04.08 (commit 6675f19) | gaze in motor taxare_inversa.CATEGORII (lit.l) + d394.CODPR 36, probat DUK cod-cu-cod; xfail test_datorie_gaze_naturale_... SCOS la inchidere. Gard curent: test_codpr_valide_pe_validatorul_curent | (rezolvat) | (rezolvat) |
 
 NECONFORMITATE (11/12 litere art.331): lit.l gaze naturale lipseste din motor + D394. CORECTARE blocata: codPR-ul D394 gaze NU e in sursele repo (Ghid 2016, anterior Legii 296/2020; 21-31 tip1, 32-35 rezervate tip2). Nu se inventeaza (§3). Gardul anti-regresie forteaza fixul complet cand apare codPR.
 
@@ -523,9 +524,9 @@ Temei: CF art.76 alin.(2) lit.k + alin.(4^1) - min(2,5x diurna bugetara; 3 salar
 | gard | fisier | ce face imposibil | mutatia care il probeaza |
 |---|---|---|---|
 | golden pe plafonul curent (2023+) | core/test_deconturi.py | schimbarea tacita a formulei/valorii curente | 23*2,5=57,50; capul 3-salarii musca pe salariu mic; neimp/impozabil pe cifre |
-| datorie period-awareness istorica | core/test_datorie.py (xfail strict) | uitarea ca varianta e unica (valorile de azi aplicate retroactiv) | >=2 variante -> xfail trece -> strict pica |
+| ~~datorie period-awareness istorica~~ INCHIS 04.08 (commit 6675f19) | valorile HG istorice confirmate la sursa (HG 714/2018 + HG 518/1995 salvate in anaf_surse/, Ordin MF 1235/2023); diurna period-aware in deconturi.py, gard test_plafon_diurna_dispecer_versionat | (rezolvat) | (rezolvat) |
 
-Calculul CURENT (2023+) conform art.76 alin.(4^1). Istoric (pre-2023) blocat pe valorile HG diurna (nu-s in surse repo).
+Calculul CURENT (2023+) conform art.76 alin.(4^1). Istoric (pre-2023) DEBLOCAT 04.08 (6675f19): valorile HG diurna confirmate la sursa (HG 714/2018, HG 518/1995).
 
 
 ## 03.08.2026 — Credit sponsorizare: profit conform + datorie micro period-aware (cluster "credit sponsorizare / D177")
@@ -534,9 +535,9 @@ Temei: CF art.25 alin.(4) lit.i (profit: min 0,75% CA / 20% impozit + registru);
 
 | gard | fisier | ce face imposibil | mutatia care il probeaza |
 |---|---|---|---|
-| datorie micro period-aware | core/test_datorie.py (test_datorie_credit_sponsorizare_micro_period_aware, xfail strict) | uitarea ca micro=0 e aplicat retroactiv (2019-2023 avea credit) | credit micro @2022 > 0 -> xfail trece -> strict pica |
+| ~~datorie micro period-aware~~ INCHIS 04.08 (commit 6675f19) | textul istoric art.56 alin.1^5 confirmat la sursa; xfail test_datorie_credit_sponsorizare_micro_period_aware SCOS la inchidere | (rezolvat) | (rezolvat) |
 
-Profitul e gardat de test_operatiuni_speciale.py (4 teste existente). Micro fix blocat pe textul istoric art.56 alin.1^5 (abrogat, nu-i in consolidat).
+Profitul e gardat de test_operatiuni_speciale.py (4 teste existente). Micro DEBLOCAT 04.08 (6675f19): textul istoric art.56 alin.1^5 confirmat la sursa.
 
 
 ## 03.08.2026 — Gard formula rezerva legala contabila (cluster "rezerva legala")
@@ -712,8 +713,8 @@ pdf dar D394Validator instalat il respinge ca enum (probat izolat). Corectare bl
 
 | gard | fisier | ce face imposibil | mutatia care il probeaza |
 |---|---|---|---|
-| TIPURI = exact setul din structura oficiala | core/test_d394.py (test_tipuri_operatiune_pin_la_structura_oficiala) | un tip adaugat/scos tacit din cod, divergent de structura | orice modificare a TIPURI care nu-i in formulele op1(tip)=X pica |
-| ASI respins de validator = consemnat (datorie) | core/test_d394.py (test_asi_respins_de_validatorul_instalat_DATORIE) | ca discrepanta pdf-vs-jar sa dispara tacit | substituie tip=ASI pe baza valida -> DUK "nu se afla in lista"; daca validatorul accepta ASI, pica si cere reevaluare |
+| TIPURI = exact setul din structura oficiala | core/test_d394.py (test_TIPURI_e_setul_validatorului_curent) [redenumit] | un tip adaugat/scos tacit din cod, divergent de validator | orice modificare a TIPURI care nu-i setul validatorului pica |
+| ~~ASI respins = datorie~~ REZOLVAT 03.08 (greenlight Costin: ASI SCOS din cod, aliniere validator J8; OPANAF 77/2022 fost-ASI->AS) | gard devenit INVERS: test_asi_ramane_scos_gard_invers (daca validatorul re-accepta ASI, pica si cere reevaluare) | ASI nu mai e in TIPURI | (rezolvat) |
 
 
 ## 03.08.2026 — Gard nomenclator tari Croatia HR (cluster "nomenclator tari (HR->CR)")
