@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
-# PREDARE LANT — 04.08.2026 (rularea 9)
+# PREDARE LANT — 04.08.2026 (rularea 10)
 
 Sesiune noua, context gol. Comanda de pornire: "Citeste PREDARE_LANT.md si continua lantul."
 Raspunde in ROMANA. Server: `ssh iconta`, `~/iconta_nou` (branch main). Rulezi pytest/DUK/verificator/commit PE SERVER.
@@ -9,19 +9,25 @@ NU heredoc inline in `ssh "... <<'EOF' ..."` cu ghilimele Python `"` inauntru - 
 Pentru commit cu ghilimele simple in mesaj, foloseste `git commit -F fisier_mesaj`.
 
 ## Ritual de pornire (§5)
-1. `git log --oneline -1` -> HEAD asteptat: **07f2a0b** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
-2. `venv/bin/python -m pytest -q` -> asteptat ~1348 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
+1. `git log --oneline -1` -> HEAD asteptat: **6d84e93** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
+2. `venv/bin/python -m pytest -q` -> asteptat ~1349 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
    verificator_conformitate.py` -> TOTAL 0 candidate.
 3. `venv/bin/python3 -c "from core import agenda; print(agenda.urmator_cluster())"`
-   -> **(('plan conturi pe norma', 'd406'), 11, 1)** = urmatorul cluster, 11 ramase, 1 blocat (preexistent).
+   -> **(('UoM UN/ECE', 'd406'), 10, 1)** = urmatorul cluster, 10 ramase, 1 blocat (preexistent).
 
-## Urmatorul cluster: plan conturi pe norma | d406  (INTRAM IN d406 - SAF-T)
-TOATE clusterele d394 sunt INCHISE. Urmeaza d406 (SAF-T / e-Factura). "plan conturi pe norma" = verifica planul de
-conturi emis in SAF-T (MasterFiles/GeneralLedgerAccounts) fata de norma contabila / nomenclatorul oficial. Vezi
-core/d406.py (build_xml, sectiunea Account) + test_d406.py. ATENTIE d406: validarea DUK d406 e xfail preexistent
-("cont referit absent din chart" - test_smoke_duk); jar-ul SAF-T e ALTUL (DUKIntegrator_AnLunaUI.jar, /opt/duk/
-saft/...). Sursa oficiala d406 = XSD SimpleTypes (d406_schema_anaf.xlsx). Tipar VERIFICARE; probeaza pe validatorul/
-XSD SAF-T unde se poate. LECTIE: sursa = schema/validatorul curent, nu presupuneri.
+## Urmatorul cluster: UoM UN/ECE | d406
+D406 (SAF-T). "UoM UN/ECE" = verifica unitatile de masura emise (UnitOfMeasure) fata de nomenclatorul oficial
+UN/ECE Recommendation 20 (codurile de unitati SAF-T). Vezi core/d406.py (Product/InvoiceLine UoM) + test_d406.py +
+anaf_surse/d406_nomenclatoare_anaf.properties / d406_schema. Tipar VERIFICARE (mapare UoM interna -> cod UN/ECE).
+ATENTIE d406: DUK d406 e xfail preexistent ("cont referit absent" - test_smoke_duk), jar SAF-T separat (/opt/duk/
+saft/, DUKIntegrator_AnLunaUI.jar); sursa oficiala = XSD SimpleTypes / nomenclatoarele. LECTIE: sursa = schema/
+validatorul curent + Costin "nu lasa nimic sa dispara tacit" (vezi plan conturi: conturile excluse acum semnalate).
+
+## INCHIS rularea 10: plan conturi pe norma | d406
+Verificat: planul SAF-T filtrat pe nomenclatorul oficial al normei (plan_oficial); conturi ne-norma excluse (ANAF
+le respinge), AccountID sintetic. REPARAT drop TACIT: conturile excluse (strain) nu erau surfaced (pull nici nu le
+returna); acum pull le returneaza si genereaza le SEMNALEAZA in avertisment (numite) - ca N in d394 (Costin: exclus
+dar VIZIBIL). Gard DB nou. Corectat inventar (fisiere test_limita_text -> test_d406).
 
 ## REZOLVAT rularea 8 (decizie Costin executata): operatiuni N neinreg | d394 - approach (b)
 Bug-ul activ N (achizitii de la neinregistrati -> D394 respins) e REZOLVAT cu approach (b) ales de Costin:
