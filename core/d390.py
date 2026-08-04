@@ -50,6 +50,9 @@ TARI_UE = {
 # test_croatia_emite_HR_nu_CR + test_croatia_HR_trece_duk.
 _TARA_XML = {}
 
+# TIPURI + TARI_UE: nomenclatoare confirmate pe VALIDATORUL instalat D390_11 (proba DUK boundary
+# 04.08.2026), nu doar pe pdf-ul de structura 2020 (INVECHIT). Fiecare tip valid / fiecare tara aplica
+# algoritmul R24.1; niciun cod mort, niciun gap. Pazit de test_nomenclatoare_d390_ancorate_pe_validator_nu_pe_pdf_2020.
 TIPURI = ("L", "T", "A", "P", "S", "R")
 
 # Tipurile legale per DIRECTIE (OPANAF 705/2020: L/T/P/R = latura de livrare/prestare; A/S = latura de

@@ -6640,3 +6640,26 @@ DECIZIE DE PRODUS DESCHISA (Costin): se adauga HRK in VALUTE (aliniere la valida
 istorice/rectificari in kuna croata)? Recomandare Code: DA - aliniaza codul la validatorul ANAF (autoritatea, R17),
 inlatura o respingere falsa; HRK e valuta legacy (fara operatiuni noi), risc minim. Se adauga cu 1 linie + reprobare
 DUK + actualizarea delta din gard. Blocat pana la greenlight fiindca schimba nomenclatorul de valute declarabil (§5).
+
+
+## 04.08.2026 — Reimprospatare surse invechite: d390 (TARI_UE + TIPURI) — VERIFICAT CONFORM pe validator (fara fix).
+
+CAMPANIE "reimprospatarea surselor invechite" (metoda jar-vs-pdf). Auditul anaf_surse/ a gasit
+d390_struct_anaf.txt = derivarea de structura 2020 (OPANAF 705/11.03.2020), invechita.
+
+CONFRUNTARE pe validatorul INSTALAT D390_11 (proba DUK boundary 04.08.2026):
+- TARI_UE (cod, 28 tari): fiecare tara recunoscuta de validator (regula R24.1 'algoritmul specific X').
+  Niciun cod mort (tiparul ASI NU apare). GB (post-Brexit) si XI recunoscute pentru 2026 (reconfirmat pe jar-ul
+  instalat, nu pe comentariul vechi). Grecia = EL (GR respins), Croatia = HR (CR respins - reconfirmare a fixului
+  HR->CR din 03.08). Candidati exteriori testati (GR, CR, microstate MC/SM/AD/LI/VA, Crown IM/JE/GG) - TOTI
+  respinsi 'nu se afla in lista' -> FARA gap de acoperire.
+- TIPURI (cod, 6): L/T/P/R (emisa) + A/S (primita) toate VALID pe validator; fake (Z/X/ASI) respinse.
+
+REZULTAT: d390 NU diverge de validatorul curent - spre deosebire de d301 (unde validatorul avea HRK in plus).
+Nicio reparatie, nicio decizie de produs.
+
+FACUT:
+- pdf 2020 marcat INVECHIT in antet (nomenclatoare -> validator; OPANAF 705/2020 ramane temeiul LEGAL citat).
+- comentariu de ancorare pe validator langa TARI_UE/TIPURI in d390.py.
+- gard nou test_nomenclatoare_d390_ancorate_pe_validator_nu_pe_pdf_2020 (TARI_UE + TIPURI == set-validator,
+  EL nu GR, HR nu CR) + test_d390_snapshot_validator_confirmat_pe_duk (proba DUK vie: GB recunoscut, CR respins).

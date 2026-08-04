@@ -178,3 +178,47 @@ def test_croatia_HR_trece_duk():
     xml = build_xml(calcul_d390(_prof(), 2026, 6, facturi))
     rez = duk.valideaza(xml, "d390", an=2026, luna=6)
     assert rez["stare"] == "valid", "DUK a respins D390 cu Croatia: %s" % rez.get("erori")
+
+
+# ── Reimprospatare surse invechite (04.08.2026): TARI_UE + TIPURI ancorate pe validatorul instalat ──
+def test_nomenclatoare_d390_ancorate_pe_validator_nu_pe_pdf_2020():
+    """TARI_UE si TIPURI ancorate pe VALIDATORUL INSTALAT (D390_11), nu pe pdf-ul de structura din 2020
+    (INVECHIT). Ambele seturi confirmate prin proba DUK boundary 04.08.2026 pe D390Validator.jar:
+    - TARI_UE (28) = EXACT setul de tari recunoscut de validator: fiecare aplica algoritmul specific tarii (DUK regula R24.1,
+      mesajul 'algoritmul specific X'); niciun cod mort (tiparul ASI NU apare). GB (post-Brexit) si XI recunoscute
+      pentru 2026. Grecia = EL (GR respins 'nu se afla in lista'), Croatia = HR (CR respins). Niciun candidat
+      exterior acceptat (GR/CR + microstate MC/SM/AD/LI/VA + Crown IM/JE/GG toate respinse) -> fara gap.
+    - TIPURI (6) = EXACT tipurile acceptate: L/T/P/R (emisa) + A/S (primita) toate VALID; fake (Z/X/ASI) respinse.
+    Spre deosebire de d301 (unde validatorul avea HRK in plus), d390 NU diverge de validatorul curent."""
+    from core.d390 import TARI_UE, TIPURI
+    # Seturile confirmate pe validatorul INSTALAT prin proba DUK 04.08.2026 (NU din pdf-ul 2020).
+    VALIDATOR_TARI = {"AT", "BE", "BG", "CZ", "CY", "HR", "DK", "EE", "DE", "EL", "FI", "FR", "IE", "IT", "LV",
+                      "LU", "LT", "MT", "GB", "NL", "PL", "PT", "SI", "SK", "ES", "SE", "HU", "XI"}
+    VALIDATOR_TIPURI = {"L", "T", "A", "P", "S", "R"}
+    assert set(TARI_UE) == VALIDATOR_TARI, "TARI_UE difera de setul validatorului (reprobeaza DUK): lipsa %s / in plus %s" % (
+        sorted(VALIDATOR_TARI - set(TARI_UE)), sorted(set(TARI_UE) - VALIDATOR_TARI))
+    assert set(TIPURI) == VALIDATOR_TIPURI, "TIPURI difera de setul validatorului: %s" % sorted(set(TIPURI) ^ VALIDATOR_TIPURI)
+    # invarianti-cheie (VIES / nomenclator ANAF): Grecia EL nu GR; Croatia HR nu CR
+    assert "EL" in TARI_UE and "GR" not in TARI_UE
+    assert "HR" in TARI_UE and "CR" not in TARI_UE
+
+
+def test_d390_snapshot_validator_confirmat_pe_duk():
+    """Dinti pe snapshot: proba DUK vie confirma ca setul validatorului reflecta jar-ul instalat -
+    GB recunoscut (algoritm R24.1 'GB'), o tara exterioara (CR) respinsa 'nu se afla in lista'. Gated."""
+    import pytest
+    from core import duk
+    if not duk.poate_valida("d390"):
+        pytest.skip("DUK d390 indisponibil")
+    from core import d390
+    prof = {"cui": "14399840", "nume": "DANTE INTERNATIONAL SA", "adresa": "Bd. Timisoara 26Z", "telefon": "0212345678"}
+    orig = set(d390.TARI_UE)
+    def erori_pt(tara):
+        d390.TARI_UE = orig | {tara}
+        try:
+            fac = [{"cui": tara + "123456789", "nume": "X SRL", "directie": "emisa", "total": 1000, "tva": 0}]
+            return duk.valideaza(d390.build_xml(d390.calcul_d390(prof, 2026, 6, fac)), "d390", an=2026, luna=6)["erori"]
+        finally:
+            d390.TARI_UE = orig
+    assert "algoritmul specific 'GB'" in erori_pt("GB"), "validatorul ar trebui sa recunoasca GB (R24.1)"
+    assert "nu se afla in lista" in erori_pt("CR"), "validatorul ar trebui sa respinga CR"

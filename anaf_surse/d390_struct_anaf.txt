@@ -1,3 +1,13 @@
+# !!! INVECHIT (04.08.2026) - acest fisier e derivarea de STRUCTURA D390 din 18.03.2020
+# (structura_D390_2020_180320, OPANAF 705/11.03.2020). Validatorul INSTALAT e D390_11 (2026, versiuni.xml
+# oficial ANAF 15.07.2026). NOMENCLATOARELE (TARI_UE, TIPURI) nu se mai iau de aici: sursa curenta =
+# validatorul instalat, confirmat prin proba DUK boundary 04.08.2026 (metoda ca la d301/UoM). REZULTAT: codul
+# NU diverge de validatorul curent - TARI_UE (28 tari, incl. GB/XI, EL pt Grecia, HR pt Croatia) si TIPURI
+# (L/T/A/P/S/R) sunt EXACT seturile acceptate de D390_11 (fiecare tara aplica algoritmul R24.1; niciun candidat
+# exterior acceptat - GR/CR/microstate/Crown respinse; fake-urile de tip respinse). Fara cod mort (ASI), fara
+# gap de acoperire. Pazit de test_nomenclatoare_d390_ancorate_pe_validator_nu_pe_pdf_2020. NOTA: OPANAF 705/2020
+# ramane temeiul LEGAL (norma in vigoare, citata in cod); doar aceasta derivare de STRUCTURA e inlocuita de validator.
+# ------------------------------------------------------------------------------------------------------------------
  
 1
  
