@@ -6867,3 +6867,35 @@ Reviziunea a gasit doua probleme reale in prima livrare a suportului N. Corectat
 
 EFECT: N declarabil corect pentru toate categoriile lit.D (inclusiv "alte bunuri/servicii" = achizitii generale de la
 persoane fizice), cu codurile CORECTE (nu mai emite coduri art.331 ne-N respinse de ANAF).
+
+
+## 04.08.2026 — Punctul 4 (A2) EXECUTAT: D390 "ziua 15" art.284 - camp optional data_faptului_generator.
+
+Campania "implementarile ramase", punctul 4. Dump de siguranta inainte (backup_pre_d390_ziua15_20260804_1519.sql.gz,
+322 CREATE TABLE). Precautii C5: efemera intai, tenant real dupa, idempotent, oprire la esec.
+
+TEMEI (CF art.284): exigibilitatea operatiunilor intracomunitare intervine la data emiterii facturii, DAR nu mai
+tarziu de a 15-a zi a lunii urmatoare celei in care a avut loc faptul generator. D390 se depune pe EXIGIBILITATE,
+nu pe data emiterii. Edge-case-ul "ziua 15" era consemnat ca datorie la clusterul "exigibilitate / prag | d390"
+(03.08); acum implementat.
+
+IMPLEMENTARE:
+- Camp NOU data_faptului_generator (date, NULL) pe facturi. Migrare idempotenta core.migrare_d390_faptul_generator
+  (ADD COLUMN IF NOT EXISTS) + mirror in tenant_template.sql (sursa unica). Aplicat pe tenant_001 (singurul tenant
+  real): coloana False -> True, idempotent. Efemera intai (schema scratch): migrare + probe, apoi drop. Zero esecuri.
+- d390.pull() incadreaza pe EXIGIBILITATE = MIN(data_emitere, ziua 15 a lunii urmatoare faptului), calculata in SQL
+  (CASE/LEAST). Camp NULL -> exigibilitate = data_emitere = COMPORTAMENT ANTERIOR (backward-compat).
+
+CAMP OPTIONAL - backward-compat PROBAT explicit (test round-trip pe schema scratch):
+- factura FARA fapt (data_emitere iulie) -> IULIE; factura control fara fapt (aug) -> AUGUST: NESCHIMBAT.
+- factura emisa TARZIU (20 aug) cu fapt in iunie -> deadline 15 iulie -> exigibilitate 15 iulie -> se MUTA in IULIE
+  (din august). Regula ziua-15 aplicata doar cand faptul e completat.
+Gard nou core/test_d390_ziua15.py (test_migrare_si_exigibilitate_ziua15, gated DB): migrare idempotenta +
+backward-compat + mutarea pe exigibilitate.
+
+RAMAS (front-end, sub-piesa): UI pentru data_faptului_generator pe factura (optional). Campul e in DB/generator;
+pana la UI se seteaza in DB. Fara el, comportamentul e cel actual (data_emitere) - nu blocheaza nimic.
+
+EFECT PE PRODUS: o factura IC emisa cu intarziere, dar cu faptul generator completat, e declarata in D390 pe luna
+CORECTA a exigibilitatii (art.284), nu pe luna emiterii. Fara faptul completat: comportament neschimbat. tenant_001
+n-are facturi IC cu acest caz azi.

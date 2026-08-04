@@ -296,10 +296,19 @@ def pull(conn, schema, an, luna):
                     "declarant_nume, declarant_prenume, declarant_functie "
                     "FROM firma_profil WHERE id = 1")
         prof = cur.fetchone() or {}
+        # [A2 art.284 "ziua 15"] Incadrarea in perioada se face pe EXIGIBILITATE, nu pe data_emitere bruta.
+        # CF art.284: exigibilitatea operatiunilor IC intervine la data emiterii facturii, DAR nu mai tarziu de
+        # a 15-a zi a lunii urmatoare celei in care a avut loc faptul generator. Deci exigibilitate =
+        # MIN(data_emitere, ziua 15 a lunii urmatoare faptului). Camp data_faptului_generator OPTIONAL: cand e
+        # NULL -> exigibilitate = data_emitere = comportamentul ANTERIOR (backward-compat). O factura emisa TARZIU
+        # (dupa ziua 15) cu fapt intr-o luna anterioara se muta pe luna exigibilitatii (mai devreme).
+        _exig = ("CASE WHEN f.data_faptului_generator IS NULL THEN f.data_emitere "
+                 "ELSE LEAST(f.data_emitere, (date_trunc('month', f.data_faptului_generator) "
+                 "+ interval '1 month' + interval '14 days')::date) END")
         cur.execute("SELECT f.id, f.tert_nume, f.tert_cui, c.nume AS c_nume, c.cui AS c_cui, "
                     "f.directie, f.total, f.tva "
                     "FROM facturi f LEFT JOIN clienti c ON c.id = f.client_id "
-                    "WHERE f.data_emitere >= %s AND f.data_emitere < %s ORDER BY f.id",
+                    "WHERE " + _exig + " >= %s AND " + _exig + " < %s ORDER BY f.id",
                     (inceput, sfarsit))
         rows = cur.fetchall()
     # CUI-ul: intai clientul din nomenclator (c.cui), altfel tert_cui de pe factura.
