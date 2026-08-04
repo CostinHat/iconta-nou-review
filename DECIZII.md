@@ -6590,3 +6590,22 @@ sunt_semnalate_nu_excluse_tacit (firma 'A' cu cont 731 -> exclus + numit).
 
 Corectat si o eroare de inventar: randul avea fisiere=test_limita_text_anaf.py (gresit); testele plan-conturi sunt
 in test_d406.py - corectat.
+
+
+## 04.08.2026 — Cluster "UoM UN/ECE" (d406) — VERIFICAT CONFORM pe validatorul SAF-T (fara fix).
+
+d406 emite UnitOfMeasure ca cod UN/ECE Recommendation 20 (nomenclatorul international de unitati), NU unitatile
+romanesti. UOM_UNECE mapeaza unitatea interna (buc/kg/mp/...) in codul UN/ECE (H87/KGM/MTK/...); default UOM_IMPLICIT
+= H87 (bucata); uom_unece() intoarce (cod, gasit?) - la necunoscut (H87, False), semnaland apelantului ca s-a folosit
+implicitul (mai bine o unitate DECLARATA decat un XML respins).
+
+VERIFICARE pe AUTORITATEA CURENTA: (1) XSD saft.xsd defineste UnitOfMeasure = SAFcodeType (cod generic cu lungime,
+NU enumerare - deci lista valida e in VALIDATOR, nu in XSD); (2) codurile-tinta din UOM_UNECE sunt validator-
+confirmate - comentariul din cod noteaza proba 15.07.2026 (BUC respins "valoarea nu se afla in lista"), iar acum am
+CONFIRMAT independent prin EXTRACTIE din D406Validator.jar (/opt/duk/saft/val/...): codurile distinctive H87, KGM,
+GRM, TNE, LTR, MLT, MTR, CMT, KMT, MTK, MTQ, HUR, KWH, MWH sunt TOATE prezente ca string in jar; BUC = 0 aparitii
+(absent, confirmand bug-ul istoric "BUC hardcodat -> respins"). Codurile scurte DAY/MON/ANN/SET/PR sunt coduri UN/ECE
+Rec.20 standard (verificarea prin grep e neconcludenta pe ele din cauza substring-urilor, dar sunt nomenclator-standard).
+
+Fara fix - conform. Gard nou test_uom_unece_mapare_coduri_valide (mapare + default H87 + semnal la necunoscut +
+absenta BUC + format cod UN/ECE). Corectat inventarul (fisiere test_limita_text -> test_d406, ca la plan conturi).

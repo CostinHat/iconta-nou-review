@@ -81,3 +81,24 @@ def test_conturi_straine_de_norma_sunt_semnalate_nu_excluse_tacit():
                 "avertismente: %s" % res.avertismente)
         finally:
             conn.rollback()
+
+
+def test_uom_unece_mapare_coduri_valide():
+    """Cluster UoM UN/ECE: UOM_UNECE mapeaza unitatile RO in coduri UN/ECE Recommendation 20. Codurile-tinta
+    sunt validator-confirmate (15.07.2026: 'BUC' respins 'nu se afla in lista'; H87/KGM/GRM/TNE/LTR/MLT/MTR/CMT/
+    KMT/MTK/MTQ/HUR/KWH/MWH prezente in D406Validator.jar - verificat prin extractie). Verifica maparea + default
+    H87 + semnalarea la necunoscut (mai bine o unitate implicita DECLARATA decat un XML respins)."""
+    import re
+    from core.d406 import uom_unece, UOM_UNECE, UOM_IMPLICIT
+    assert UOM_IMPLICIT == "H87"
+    assert uom_unece("buc") == ("H87", True)
+    assert uom_unece("kg") == ("KGM", True)
+    assert uom_unece("mp") == ("MTK", True) and uom_unece("mc") == ("MTQ", True)
+    assert uom_unece("H87") == ("H87", True)              # deja cod UN/ECE -> pass-through
+    assert uom_unece("unitate_necunoscuta") == ("H87", False)   # default + SEMNAL (False)
+    assert uom_unece("") == ("H87", False) and uom_unece(None) == ("H87", False)
+    # niciun cod-tinta nu e o unitate romaneasca respinsa de validator (ex. BUC)
+    assert "BUC" not in set(UOM_UNECE.values())
+    # toate valorile sunt coduri UN/ECE (2-3 caractere alfanumerice majuscule)
+    for cod in set(UOM_UNECE.values()):
+        assert re.fullmatch(r"[A-Z0-9]{2,3}", cod), "cod UoM ne-UNECE in UOM_UNECE: %r" % cod
