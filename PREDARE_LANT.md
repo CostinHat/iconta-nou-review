@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
-# PREDARE LANT — 04.08.2026 (rularea 7)
+# PREDARE LANT — 04.08.2026 (rularea 8)
 
 Sesiune noua, context gol. Comanda de pornire: "Citeste PREDARE_LANT.md si continua lantul."
 Raspunde in ROMANA. Server: `ssh iconta`, `~/iconta_nou` (branch main). Rulezi pytest/DUK/verificator/commit PE SERVER.
@@ -9,25 +9,26 @@ NU heredoc inline in `ssh "... <<'EOF' ..."` cu ghilimele Python `"` inauntru - 
 Pentru commit cu ghilimele simple in mesaj, foloseste `git commit -F fisier_mesaj`.
 
 ## Ritual de pornire (§5)
-1. `git log --oneline -1` -> HEAD asteptat: **e5d9e08** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
-2. `venv/bin/python -m pytest -q` -> asteptat ~1345 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
+1. `git log --oneline -1` -> HEAD asteptat: **9d29f9e** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
+2. `venv/bin/python -m pytest -q` -> asteptat ~1347 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
    verificator_conformitate.py` -> TOTAL 0 candidate.
 3. `venv/bin/python3 -c "from core import agenda; print(agenda.urmator_cluster())"`
-   -> **(('nomenclator codPR (art.331)', 'd394'), 12, 1)** = urmatorul cluster, 12 ramase, 1 blocat (preexistent).
+   -> **(('totalPlata_A (R17)', 'd394'), 12, 1)** = urmatorul cluster, 12 ramase, 1 blocat (preexistent).
 
-## !!! DECIZIE CERUTA COSTIN (bug ACTIV) inainte de a continua: operatiuni N neinreg | d394
-Clusterul rezumat1 a gasit o NECONFORMITATE ACTIVA: achizitiile de la parteneri NEINREGISTRATI (fara CUI) produc
-AUTOMAT operatiuni N (tip_partener=2) pe care validatorul J8 le RESPINGE - codul nu emite tip_document (pct.228),
-tip_N (pct.229 bunuri/servicii), document_N (pct.60). Tenant cu achizitii de la neinregistrati -> D394 respins de
-ANAF. DECIZIE (vezi DECIZII 04.08): (a) implementeaza N auto (tip_document=1/document_N=1 + tip_N din factura) +
-datorie manual borderouri; (b) EXCLUDE N cu avertisment vizibil (protectie imediata - NU produce tacit declaratie
-respinsa); (c) blocheaza. INPUT: ce approach + de unde vine tip_N (bunuri/servicii)? Gard anti-regresie exista.
+## Urmatorul cluster: totalPlata_A (R17) | d394
+D394. Verifica checksum-ul totalPlata_A (regula R17 din validator) - suma de control emisa vs cea impusa de J8.
+Tipar probabil VERIFICARE + gard golden pe checksum (ca la d100/d205/d300/d301 R11b/R28). Sursa curenta = validator
+J8, NU pdf-ul 2020 (marcat INVECHIT). Vezi core/d394.py (total_plata_a / build_xml) + test_d394.py. Probeaza pe DUK.
 
-## Urmatorul cluster (dupa decizia N, sau daca Costin zice continua): nomenclator codPR (art.331) | d394
-D394. Verifica nomenclatorul codPR (op11, art.331 taxare inversa) - codurile de produs pt taxare inversa vs sursa
-oficiala. NOTA: exista DEJA o datorie pe acest cluster (lit.l gaze naturale - codPR gaze neconfirmat la sursa, vezi
-Inventar A "taxare inversa|d394"). Sursa curenta = OPANAF 77/2022 (anaf_surse/opanaf_77_2022) + validator J8, NU
-pdf-ul 2020. Tipar VERIFICARE cu proba DUK. LECTIE: probeaza pe DUK/MO, nu pdf vechi.
+## REZOLVAT rularea 8 (decizie Costin executata): operatiuni N neinreg | d394 - approach (b)
+Bug-ul activ N (achizitii de la neinregistrati -> D394 respins) e REZOLVAT cu approach (b) ales de Costin:
+operatiunile N se EXCLUD din D394 cu AVERTISMENT VIZIBIL (numeste furnizorul+suma, in res.avertismente -> payload
+coada -> UI+flux, nu doar log); restul declaratiei ramane valid. Gard anti-regresie pastrat. DATORIE (in GARZI 04.08)
+pt implementarea completa (a): tip_N (camp nou contabil, UI bunuri/servicii) + tip_document 2-5 (extindere contract)
++ document_N = CAMPANIE PROPRIE dupa ce se decide UI-ul pt tip_N. Vezi DECIZII 04.08.
+
+Clustere d394 inchise rularea 6-8: tip_partener (conform pct.216), rezumat1 (conform tp1/tp3 + N=approach b),
+nomenclator codPR (conform pe validator - toate codurile incl gaze 36; lit.l gaze deja rezolvat in 6675f19).
 
 ## Ce am facut in rularea asta (MULT: audit mare + 6 clustere; HEAD 93b01a6 -> c185188)
 ### A. AUDIT "limita text" pe TOATE cele 9 declaratii cerute de Costin + d710 (2 commituri: 7be77a3 + 1687dec)
