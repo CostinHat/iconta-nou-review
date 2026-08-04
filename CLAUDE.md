@@ -693,6 +693,22 @@ RITUALUL DE INCEPUT al fiecarei sesiuni, prima actiune, inainte de orice altceva
 Trebuie sa iasa /home/costin/iconta_nou, iconta-prod, si arbore git valid. Daca nu - OPRIRE
 IMEDIATA, cu raport. Nu se lucreaza pe alta copie.
 
+La PORNIREA unei CAMPANII (nu la fiecare sesiune), pe langa ritualul de mai sus, se ruleaza detectorul de drift
+dus-intors al bifelor - DACA se aplica un declansator din GARZI cat.9 (campanie care atinge clustere deja bifate,
+sau o bifa mai veche de pragul de acolo). Declansatorii, pragul si motivarea traiesc in GARZI cat.9 - nu se copiaza aici.
+
+  ./venv/bin/python -m core.agenda_drift
+
+Motivul pentru care e legat de pornirea campaniei, nu de un cron: un cron produce output pe care nu-l citeste nimeni
+(sau devine zgomot in mail dupa a treia luna), si daca gaseste drift nu e nimeni cu context sa decida. La pornirea
+campaniei exista si contextul, si decidentul.
+
+- NEDECLANSAT (niciun cluster bifat atins, nicio bifa peste prag): se scrie EXPLICIT in raport
+  "agenda_drift: nedeclansat, pentru ca ..." - ca la sectiunea 11 (CE AM ACTUALIZAT), niciodata tacut.
+- CURAT: o linie in raport ("agenda_drift: curat, N functii verificate"), campania continua.
+- DRIFT GASIT: NU se porneste campania peste el. Se raporteaza INTAI; decizia (reverificarea la sursa a bifelor
+  afectate) e a lui Costin. O bifa cu drift dus-intors poate insemna ca verificarea la sursa (√) nu mai tine.
+
 ## 6. Oprirea obligatorie
 
 Sesiunea SE OPRESTE si raporteaza daca:
