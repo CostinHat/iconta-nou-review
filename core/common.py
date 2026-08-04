@@ -471,12 +471,18 @@ class PlafonCulturalIndisponibil(ValueError):
 _FERESTRE_CULTURAL = [
     (date(2025, 4, 1), date(2025, 9, 30), Decimal("220"), Decimal("450"),
      "Ordin MF/MC 361/2.680/2025, MO 244/20.03.2025 (anaf_surse/ordin_361_2680_2025.html)"),
+    # CONFIRMATA la PRIMAR 04.08.2026 (fosta GRI verdict 16): textul operativ al Ordinului MF/MC 1.574/3.246/2025
+    # (anaf_surse/ordin_1574_3246_2025_cultural.pdf, sha256): "Pentru semestrul II al anului 2025 ... maximum 240
+    # lei/luna, respectiv maximum 470 lei/eveniment ... se aplica si pentru primele 2 luni ale semestrului I 2026"
+    # (feb-mar 2026). Publicat MO nr. 900 din 01.10.2025. Acopera oct.2025 - mar.2026.
+    (date(2025, 10, 1), date(2026, 3, 31), Decimal("240"), Decimal("470"),
+     "Ordin MF/MC 1.574/3.246/2025, MO 900/01.10.2025 (anaf_surse/ordin_1574_3246_2025_cultural.pdf)"),
     (date(2026, 4, 1), date(2026, 9, 30), Decimal("250"), Decimal("490"),
      "Ordin MF/MC 369/2.624/2026, MO 258/01.04.2026 (anaf_surse/ordin_369_2624_2026.html)"),
 ]
-# Fereastra GRI (verdict 16): 2025-10-01 .. 2026-03-31 (semestrul II 2025). Ordinul 1.574/3.246/2025 e stub
-# pe just.ro; valoarea 240/470 doar din surse secundare, NEconfirmata la MO -> se BLOCHEAZA, nu se aplica tacit.
-_CULTURAL_GRI = (date(2025, 10, 1), date(2026, 3, 31))
+# Fereastra oct.2025-mar.2026 a fost CONFIRMATA la primar 04.08.2026 (mai sus) - nu mai e GRI. Nicio fereastra GRI
+# ramasa; perioadele neacoperite de un ordin descarcat raman blocate prin fallback-ul generic din plafon_cultural.
+_CULTURAL_GRI = None
 
 
 def plafon_cultural(la_data, ocazional=False):
@@ -487,11 +493,8 @@ def plafon_cultural(la_data, ocazional=False):
     for start, end, lunar, eveniment, sursa in _FERESTRE_CULTURAL:
         if start <= d <= end:
             return (eveniment if ocazional else lunar), sursa
-    if _CULTURAL_GRI[0] <= d <= _CULTURAL_GRI[1]:
-        raise PlafonCulturalIndisponibil(d,
-            "fereastra oct.2025-mar.2026 (semestrul II 2025) e GRI - ordinul MF/MC 1.574/3.246/2025 e stub pe "
-            "just.ro, valoarea (240/470) doar din surse secundare, NEconfirmata la MO. Ce se poate face: obtine "
-            "textul operativ al ordinului la MO si adauga fereastra in _FERESTRE_CULTURAL. Cine decide: Costin.")
+    if _CULTURAL_GRI is not None and _CULTURAL_GRI[0] <= d <= _CULTURAL_GRI[1]:
+        raise PlafonCulturalIndisponibil(d, "fereastra GRI (semestru fara ordin confirmat).")
     raise PlafonCulturalIndisponibil(d,
         "niciun ordin de indexare confirmat la sursa pentru semestrul acestei luni. Ce se poate face: descarca "
         "ordinul MF/MC de indexare a tichetelor culturale pentru semestrul respectiv la MO si adauga fereastra. "
@@ -507,8 +510,13 @@ def plafon_cultural(la_data, ocazional=False):
 #  grant-urile care depind de indexarea neconfirmata (>450/copil) sunt blocate (GARD).
 # ============================================================
 def plafon_cresa(la_data, nr_copii=1):
-    """Plafonul maxim lunar al tichetelor de cresa: (Decimal, sursa). = 450 * nr_copii (L165 art.19(1),
-    baza confirmata). Indexarea (ex. 740 din 2026) e GRI (verdict 17) -> NEaplicata; cap conservator la baza."""
+    """Plafonul maxim lunar al tichetelor de cresa: (Decimal, sursa). = 450 * nr_copii (L165 art.19(1), baza
+    confirmata). Indexarea (740 lei S1 2026, Ordin MF/MMSS 368/179/2026, MO 249/31.03.2026) e CONFIRMATA la EMITENT
+    (mmuncii.gov.ro) si prin MO-referinta din surse multiple (04.08.2026), DAR: textul operativ al ordinului NU s-a
+    obtinut (primar strict), functia nu are inca mecanism de ferestre datate (ca plafon_cultural), iar valorile
+    intermediare (ex. 710) nu-s cercetate -> indexarea RAMANE NEaplicata (cap conservator la baza 450). Se
+    deblocheaza cand: (a) se obtine textul ordinului 368/179/2026 la MO + (b) se adauga un mecanism de ferestre
+    _FERESTRE_CRESA cu istoricul complet. Vezi DECIZII 04.08."""
     n = int(nr_copii) if nr_copii else 1
     if n < 1:
         n = 1

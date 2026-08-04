@@ -16,13 +16,12 @@ def test_plafon_cultural_ferestre_confirmate():
     assert common.plafon_cultural(date(2026, 8, 1), ocazional=True)[0] == Decimal("490")  # eveniment
 
 
-def test_plafon_cultural_fereastra_gri_blocheaza():
-    # oct 2025 - mar 2026 = GRI (ordin mijloc stub) -> BLOCAJ, nu 240/470 tacit.
+def test_plafon_cultural_oct2025_mar2026_confirmat_240_470():
+    # oct 2025 - mar 2026 (fosta GRI) = CONFIRMATA la primar (Ordin MF/MC 1.574/3.246/2025, MO 900/01.10.2025):
+    # 240 lei/luna, 470 lei/eveniment. Acopera si feb-mar 2026 (primele 2 luni ale S1 2026).
     for m in (date(2025, 10, 1), date(2025, 12, 1), date(2026, 3, 1)):
-        with pytest.raises(common.PlafonCulturalIndisponibil) as ei:
-            common.plafon_cultural(m)
-        assert "PERIOADA_BLOCATA:" in str(ei.value)
-        assert "GRI" in str(ei.value)
+        assert common.plafon_cultural(m)[0] == Decimal("240")                 # lunar
+        assert common.plafon_cultural(m, ocazional=True)[0] == Decimal("470")  # eveniment
 
 
 def test_plafon_cultural_semestru_fara_ordin_blocheaza():
@@ -62,11 +61,11 @@ def test_cultural_diferit_de_masa_pe_cass():
 
 
 # ---- beneficii_api.seteaza cultural: GARD-uri (validare INAINTE de conn -> unit, fara DB) ----
-def test_cultural_seteaza_gri_blocat():
-    # oct 2025 - mar 2026 = GRI -> BLOCAT motivat, nu 240/470 tacit (GARD OBLIGATORIU).
-    from core import beneficii_api
-    r = beneficii_api.seteaza(None, "s", 1, 2025, 12, "cultural", 100)
-    assert "eroare" in r and "PERIOADA_BLOCATA" in r["eroare"] and "GRI" in r["eroare"]
+def test_cultural_plafon_oct2025_disponibil_nu_ridica():
+    # oct 2025 - mar 2026 e acum CONFIRMATA (240/470) -> plafon_cultural NU mai ridica PlafonCulturalIndisponibil.
+    for m in (date(2025, 10, 1), date(2025, 12, 1), date(2026, 3, 1)):
+        common.plafon_cultural(m)          # nu ridica
+        common.plafon_cultural(m, ocazional=True)
 
 
 def test_cultural_seteaza_multiplu_de_10():
@@ -143,11 +142,12 @@ def test_cultural_db_roundtrip(conn_cult):
 
 
 @pytest.mark.skipif(not _DBOK, reason="DB indisponibil")
-def test_cultural_db_gri_blocat_inainte_de_insert(conn_cult):
+def test_cultural_db_oct2025_confirmat_insereaza(conn_cult):
     c, sid = conn_cult
-    r = _ben.seteaza(c, _SCHEMA_C, sid, 2025, 12, "cultural", 100)  # GRI -> blocat, nu ajunge la INSERT
-    assert "eroare" in r and "GRI" in r["eroare"]
-    assert _ben.lista_luna(c, _SCHEMA_C, 2025, 12, "cultural") == {}  # nimic inserat
+    # oct.2025-mar.2026 confirmata (240/470) -> seteaza 100 (<= 240) REUSESTE si insereaza (nu mai e GRI-blocat).
+    r = _ben.seteaza(c, _SCHEMA_C, sid, 2025, 12, "cultural", 100)
+    assert r.get("ok"), r
+    assert float(_ben.lista_luna(c, _SCHEMA_C, 2025, 12, "cultural").get(sid, 0)) == 100.0
 
 
 # ============================================================

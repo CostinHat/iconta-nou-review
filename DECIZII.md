@@ -6954,3 +6954,65 @@ BLOCAJ MOTIVAT (4 elemente) - pe MECANISM, nu pe structura:
    in anaf_surse/ (groundwork facut). Trec la punctul 6.
 
 Sursa: static.anaf.ro/static/10/Anaf/legislatie/OPANAF_3562_2024.pdf; lege5.ro instructiuni formular 177 (secundar).
+
+
+## 04.08.2026 — Punctul 6 (C3 amortizare MF neliniara): temeiuri culese, BLOCAJ MOTIVAT (subsistem).
+
+Campania "implementarile ramase", punctul 6. Modulul MF (core/d406_active.py calc_asset) calculeaza DOAR
+amortizare liniara (rata = amortizabil/dnf_luni), desi metoda (liniara/degresiva/accelerata) e STOCATA per
+activ (mijloace_fixe_import_api._normalizeaza_metoda) si emisa in D406 (DepreciationMethod) - dar IGNORATA la
+calculul sumelor. xfail test_datorie_mf_metode_amortizare.
+
+TEMEIURI LA SURSA (CF art.28, anaf_surse/cod_fiscal_227_2015_consolidat.html - culese acum):
+- alin.(5) eligibilitate pe clasa: a) constructii -> DOAR liniara; b) echipamente tehnologice/masini/unelte/
+  instalatii/computere -> liniara, degresiva SAU accelerata; c) orice alt MF -> liniara sau degresiva.
+- alin.(6) LINIARA: amortizare = valoare / durata (constant). [IMPLEMENTAT]
+- alin.(7) DEGRESIVA: cota liniara x coeficient, pe valoarea ramasa: 1,5 (durata 2-5 ani); 2,0 (6-10 ani);
+  2,5 (>10 ani). [norme HG 1/2016: switch la liniara cand cota degresiva anuala < ramas/ani-ramasi]
+- alin.(8) ACCELERATA: an 1 <= 50% din valoarea de intrare; anii urmatori = valoare ramasa / durata normala ramasa.
+- alin.(8^1): exceptie pt active de cercetare-dezvoltare (art.20) - accelerata extinsa.
+
+BLOCAJ MOTIVAT (4 elemente):
+1. CE: metodele degresiva + accelerata nu sunt calculate (doar liniara); calc_asset ignora mf.metoda pt sume.
+2. DE CE: SUBSISTEM cu reguli ANUALE subtile, nu o formula punctuala: (a) schema pe ani (degresiva/accelerata dau
+   sume DIFERITE per an, nu constante ca liniara); (b) degresiva cere SWITCH la liniara (norme HG 1/2016) cand cota
+   degresiva < ramas/ani-ramasi; (c) accelerata: 50% an 1 apoi ramas/durata-ramasa; (d) PRORATAREA primului an
+   PARTIAL (PIF la mijloc de an) interactioneaza cu schema anuala; (e) eligibilitate pe clasa de activ (constructii
+   doar liniara - un gard care respinge degresiva/accelerata pe constructii). calc_asset azi e pe LUNI (liniar);
+   metodele sunt pe ANI -> reproiectare a modelului de amortizare + D406 AssetTransactions. Cere teste golden pe
+   fiecare metoda + interactiunea cu proratarea. Groundwork-ul (DECIZII 31.07) il marcheaza "cluster MF/D406 viitor,
+   scop propriu".
+3. CE TREBUIE: campanie proprie "amortizare MF metode" cu: functie de schema anuala per metoda (degresiva cu switch,
+   accelerata), integrare in calc_asset (schema anuala -> valoarea pt anul cerut, cu proratare an 1), gard pe clasa
+   (constructii doar liniara), teste golden per metoda + emisie D406 corecta. Temeiurile sunt gata (CF art.28 alin.5-8).
+4. URMATOR: dupa aceasta campanie proprie. NU se rezolva pe jumatate (o metoda incompleta ar da amortizare fiscala
+   GRESITA = cifra intr-o declaratie, mai rau decat absenta). xfail RAMANE deschis. Trec la punctul 7.
+
+Fara implementare pe jumatate: o amortizare degresiva/accelerata gresita ar produce o deducere fiscala eronata in
+D101 (impozit pe profit) - cifra invizibila care ajunge la ANAF. Se face intreg, cu teste, sau deloc.
+
+
+## 04.08.2026 — Punctul 7 (C1 cresa + C2 culturale): re-research MO. C2 CONFIRMAT+DEBLOCAT; C1 confirmat la emitent, neaplicat.
+
+Campania "implementarile ramase", punctul 7. Reincercare la MO a ordinelor de indexare (metoda §3 decizia d:
+sursa oficiala + salvare cu sha256; secundarul nu inlocuieste primarul).
+
+C2 (culturale, fereastra oct.2025-mar.2026 = fosta GRI verdict 16): CONFIRMAT LA PRIMAR + DEBLOCAT.
+Obtinut TEXTUL OPERATIV al Ordinului MF/MC 1.574/3.246/2025 (anaf_surse/ordin_1574_3246_2025_cultural.pdf, sha256):
+"Pentru semestrul II al anului 2025 ... maximum 240 lei/luna, respectiv maximum 470 lei/eveniment ... se aplica si
+pentru primele 2 luni ale semestrului I 2026" (feb-mar 2026). Publicat MO nr. 900/01.10.2025. Fereastra oct.2025-
+mar.2026 (240/470) ADAUGATA in _FERESTRE_CULTURAL; _CULTURAL_GRI = None (nu mai e GRI). Teste actualizate din
+"blocheaza GRI" in "confirmat 240/470" (plafon + DB insert). Progresie coerenta: 220/450 -> 240/470 -> 250/490.
+
+C1 (cresa, indexare 740): CONFIRMAT LA EMITENT + MO-referinta, dar NEAPLICAT (nu se deblocheaza acum).
+Ordin MF/MMSS 368/179/2026, MO Partea I nr. 249/31.03.2026, valoare 740 lei S1 2026 (din aprilie 2026, + aug-sep
+2026), valoarea calculata 739,76 rotunjita. CONFIRMAT de EMITENT (pagina oficiala mmuncii.gov.ro pt acest ordin) +
+MO-referinta din surse multiple independente (juridice.ro, avocatnet, universuljuridic, crowe). DAR: (a) TEXTUL
+operativ al ordinului NU s-a obtinut (primar strict - pagina ministerului nu expune PDF-ul extractibil, URL-urile
+ghicite 404); (b) plafon_cresa e FIX (450), nu are mecanism de ferestre datate ca plafon_cultural; (c) valorile
+intermediare (ex. 710 - semestrul anterior) nu-s cercetate. -> indexarea RAMANE neaplicata (cap conservator 450),
+nota din plafon_cresa upgrade-uita cu confirmarea + data incercarii. Se deblocheaza cand: (a) textul ordinului
+368/179/2026 obtinut la MO + (b) mecanism _FERESTRE_CRESA cu istoricul complet. DATA INCERCARII: 04.08.2026.
+
+Surse: mmuncii.gov.ro (ordin cresa S1 2026); upromania.ro Ordinul-3246-2025 (text cultural, salvat); juridice.ro,
+avocatnet.ro, universuljuridic.ro (referinte MO).
