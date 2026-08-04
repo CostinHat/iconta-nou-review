@@ -6522,3 +6522,29 @@ respinge; ramane pana la implementarea completa, cand pica si anunta).
 DATORIE (in GARZI 04.08) pt implementarea COMPLETA (approach a, campanie proprie dupa decizia UI): op1.tip_N
 (camp nou contabil, UI bunuri/servicii), op1.tip_document (auto=1 facturi; 2-5 = extindere contract), rezumat1.
 document_N. Cand se implementeaza, se scoate excluderea si se aprinde gardul invers.
+
+
+## 04.08.2026 — Cluster "nomenclator codPR (art.331)" (d394) — VERIFICAT CONFORM pe validator + lit.l gaze deja rezolvat.
+
+Nomenclatorul d394.CODPR mapeaza categoriile de taxare inversa (art.331 alin.2) in codurile op11: deseuri 22,
+masa_lemnoasa 23, certificate_emisii 24, energie 25, certificate_verzi 26, cladiri_terenuri 27, aur 28, telefoane
+29, circuite_integrate 30, console_tablete 31, gaze_naturale 36; iar cerealele folosesc subcodul NC (1001..121291,
+codul 21 e centralizator - la op11 se pune subcodul). Comentariul citeaza Ghid_D394_2016.pdf (sursa INVECHITA, 2016).
+
+VERIFICARE pe AUTORITATEA CURENTA (validatorul J8, nu ghidul 2016 - lectia ASI): probat DUK cod-cu-cod (taxare
+inversa C cu fiecare categorie) - TOATE codurile CODPR (22-31, 36) + TOATE subcodurile cereale (1001, 1002, 1003,
+1004, 1005, 1201, 1205, 120400, 120600, 121291, 10086000) sunt ACCEPTATE de validator. Nomenclatorul e conform.
+Sursa comentata e veche, dar codurile-s validator-confirmate (acelasi tipar ca ASI/limita-text: nu te bazezi pe
+pdf-ul vechi, probezi pe validator).
+
+GAZE_NATURALE codPR 36 - fostul BLOCAJ al datoriei lit.l (art.331 alin.2 lit.l, gaze catre comerciant persoana
+impozabila, introdusa de Legea 296/2020) - e acum CONFIRMAT valid pe J8. Datoria lit.l a fost REZOLVATA in commit
+6675f19 ("CAMPANIE datorii B"): gaze_naturale adaugat in motor taxare_inversa.CATEGORII (lit:"l") + d394.CODPR
+(36), iar xfail-ul test_datorie_gaze_naturale_taxare_inversa_art331_lit_l inchis (nu mai exista). Aceasta verificare
+CONFIRMA independent, pe validatorul curent, ca 36 e codPR-ul corect - inchide definitiv intrebarea "codPR gaze
+neconfirmat la sursa".
+
+OBSERVATIE (doc-staleness, follow-up): bifa "taxare inversa | d394" din Inventar A e STALE - inca descrie gaze ca
+LIPSA + "DATORIE xfail(strict) gaze in test_datorie" si refera test_datorie_gaze_naturale_taxare_inversa_art331_lit_l
+care NU mai exista (rezolvat in 6675f19). De actualizat separat (gardul anti-stale o tolereaza prin fallback pe fisier).
+Gard nou pentru clusterul curent: test_codpr_valide_pe_validatorul_curent (pineaza CODPR pe validator, nu pe Ghid 2016).

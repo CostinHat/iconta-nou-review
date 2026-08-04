@@ -612,6 +612,17 @@ Cand se implementeaza, se SCOATE excluderea din calcul_d394 si se APRINDE gardul
 daca_emis_GARD_INVERS (care va pica -> semnal ca N e acum emis). Vezi DECIZII 04.08.
 
 
+## 04.08.2026 — Gard nomenclator codPR pe validator (cluster "nomenclator codPR (art.331)")
+
+Temei: d394.CODPR (categorii art.331 -> cod op11 + subcod NC cereale). Sursa citata in cod = Ghid_D394_2016
+(INVECHIT); AUTORITATEA = validatorul J8 instalat (codPR eronat -> "codPR eronat in dictionar"). Toate codurile
+sunt validator-confirmate, inclusiv gaze_naturale 36 (fostul blocaj lit.l, rezolvat 6675f19).
+
+| gard | fisier | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| codPR din CODPR = acceptate de validatorul curent | core/test_d394.py (test_codpr_valide_pe_validatorul_curent) | un codPR care nu mai e in nomenclatorul validatorului (invechit din Ghid 2016) | deseuri(22)/gaze(36)/cereale(1001) taxare inversa -> DUK valid |
+
+
 ## 04.08.2026 — Gard rezumat1 campuri + datorie N (cluster "rezumat1 campuri complete")
 
 Temei: rezumat1 D394 cere campurile COMPLETE (0-umplut) pe (tip_partener, cota), setul din validatorul RULAT

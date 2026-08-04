@@ -512,6 +512,22 @@ def test_d394_cote_acopera_toate_cotele_tva_din_common():
 
 
 
+def test_codpr_valide_pe_validatorul_curent():
+    """VERIFICARE nomenclator codPR (art.331): codurile din d394.CODPR sunt ACCEPTATE de validatorul CURENT
+    (J8), NU doar de Ghid_D394_2016 (sursa citata in cod, INVECHITA). Probat DUK pe reprezentative: deseuri(22),
+    gaze_naturale(36) - fostul blocaj al datoriei lit.l, acum CONFIRMAT pe validator; cereale subcod NC 1001.
+    Sursa autoritara pentru nomenclator = validatorul RULAT, nu ghidul 2016 (lectia ASI/limita-text)."""
+    from core import duk
+    if not duk.poate_valida("d394"):
+        import pytest
+        pytest.skip("DUK d394 indisponibil")
+    for cat in ("deseuri", "gaze_naturale", "1001"):
+        res = calcul_d394(PROF, 2026, 6, [_f("RO14399840", "primita", 21, 5000, 1050, ti=True, cat=cat)],
+                          serii_emise={"A": (1, 1)})
+        rez = duk.valideaza(build_xml(res), "d394", an=2026, luna=6)
+        assert rez["stare"] == "valid", "codPR pentru %s respins de J8: %s" % (cat, rez.get("erori"))
+
+
 def test_toate_categoriile_taxare_inversa_au_codpr_d394():
     """Gard CROSS-MODUL anti-regresie: orice categorie de taxare inversa recunoscuta de MOTOR
     (taxare_inversa.CATEGORII) TREBUIE sa aiba un codPR in maparea D394 (d394.CODPR). Altfel o
