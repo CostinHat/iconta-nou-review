@@ -845,8 +845,8 @@ duplica (regula sursei unice). NOI in GARZI:
 | datorie | unde | de ce e deschisa | ce o inchide |
 |---|---|---|---|
 | clasifica_partener infera platitor TVA din FORMA CUI, nu din flag real | core/d394.py:260 (clasifica_partener) | un PJ neplatitor de TVA (CUI valid dar nu inregistrat in scop TVA) nu e distins de o persoana fizica: fara CUI/CUI-invalid -> P_NEINREG (tip 2) -> pe achizitie devine N (exclus + avertisment); CUI numeric valid -> P_TVA_RO (tip 1) desi nu-i platitor. Heuristica pe forma, nu pe realitate | flag `platitor_tva` pe partener in DB (verificare VIES/ANAF), clasificare pe flag nu pe forma. Decizie de produs Costin |
-| categorie_331 (taxare inversa / N op11) fara UI | core/d394.py (codpr_N_din_categorie, CODPR) - camp citit, negenerabil din factura | codPR-ul op11 (art.331) si tip N cer CATEGORIA declarata de contabil (cereale/deseuri/masa lemnoasa/gaze...); azi nu exista ecran care s-o seteze -> operatiunile raman neclasificate | ecran pe factura/operatiune care seteaza categorie_331 din nomenclatorul art.331 |
-| data_faptului_generator (D390 ziua 15) fara UI | tenant_template.sql + tenant_001 (coloana migrata) | coloana OPTIONALA exista si pull() o foloseste (exigibilitate = MIN(data_emitere, ziua 15)), dar niciun ecran n-o completeaza -> ramane NULL -> comportament = data_emitere (backward-compat, corect, dar functia nefolosibila pana la UI) | camp pe factura IC de completat cand faptul generator difera de data emiterii |
+| categorie_331 (taxare inversa / N op11) fara UI | core/d394.py (codpr_N_din_categorie, CODPR) - camp citit, negenerabil din factura | codPR-ul op11 (art.331) si tip N cer CATEGORIA declarata de contabil (cereale/deseuri/masa lemnoasa/gaze...); azi nu exista ecran care s-o seteze -> operatiunile raman neclasificate | SIMPTOM al neconformitatii 04.08 de mai jos (operatiune achizitie scrisa DOAR in jurnal): achizitie_taxare_inversa nu creeaza rand `facturi` -> categorie_331 n-are purtator. Fix = BACKEND (operatiunea emite factura), NU ecran. Vezi sectiunea NECONFORMITATE ACTIVA 04.08 + DECIZII 04.08 |
+| data_faptului_generator (D390 ziua 15) fara UI | tenant_template.sql + tenant_001 (coloana migrata) | coloana OPTIONALA exista si pull() o foloseste (exigibilitate = MIN(data_emitere, ziua 15)), dar niciun ecran n-o completeaza -> ramane NULL -> comportament = data_emitere (backward-compat, corect, dar functia nefolosibila pana la UI) | SIMPTOM: achizitie_ic scrie DOAR in jurnal, fara rand `facturi` -> data_faptului_generator n-are purtator SI D390 rateaza operatiunea. Fix = BACKEND. Vezi NECONFORMITATE ACTIVA 04.08 |
 | D177 canal de emitere (formular, nu declaratie XML) | anaf_surse/OPANAF_3562_2024_D177.* (structura salvata) | D177 e o CERERE-formular PDF, nu un XML validat de jar DUK -> nu are autoritatea R17 pe care sta arhitectura; mecanismul (PDF-form vs XML) + scope = decizie de produs | **DECIS 04.08 (Costin): AMANAT EXPLICIT** (vezi sectiunea D177 mai jos + DECIZII 04.08 + FUNCTIONALITATI.csv F206). Se redeschide doar cu decizie noua Costin |
 
 Deja in registru (REFERINTA, nu duplic):
@@ -876,3 +876,28 @@ Structura OPANAF 3562/2024 ramane salvata in anaf_surse/ (OPANAF_3562_2024_D177.
 d177_structura_note.txt), ca sa nu se re-descarce la o eventuala redeschidere. Se redeschide DOAR cu o decizie noua a
 lui Costin (si numai daca apare un mecanism de validare mecanica sau se accepta explicit constructia pe interpretare
 de PDF). Consemnat: DECIZII 04.08, FUNCTIONALITATI.csv F206 (Stare AMANAT).
+
+
+## 04.08.2026 — NECONFORMITATE ACTIVA: operatiune de achizitie scrisa DOAR in jurnal (fara rand facturi) -> absenta din D390/D394
+
+Reincadrare (CAUZA, nu simptom): fostele datorii „UI categorie_331" / „UI data_faptului_generator" descriau
+simptomul (lipsa unui camp in ecran). Cauza reala, dupa harta facturi<->inregistrari (investigatie 04.08, DECIZII
+04.08): `achizitie_ic` (main.py:7077) si `achizitie_taxare_inversa` (main.py:7019) inregistreaza operatiunea DOAR in
+stratul-jurnal (`inregistrari` + `inregistrari_linii`, nota 401/4426=4427), FARA `factura_id` si FARA rand in `facturi`.
+
+EFECT FISCAL NUMIT: `facturi` e sursa citita de D390 (VIES) si D394; `inregistrari` de D100/D101/D205. Deci o
+**achizitie intracomunitara introdusa prin operatiuni_ecran.js NU ajunge in D390** (declaratie VIES LUNARA OBLIGATORIE),
+desi D100/D101/D205 o vad. Aceeasi operatiune: prezenta intr-o declaratie, absenta din alta. Analog, o achizitie cu
+taxare inversa (art.331) nu ajunge in D394 op11.
+
+FEREASTRA DE NOROC: tenant_001 are 0 facturi si 0 inregistrari - nicio operatiune n-a fost inca lovita in productie.
+Defectul e LATENT, nu declansat. De reparat INAINTE sa existe date reale.
+
+CLASA (NU „arbori paraleli" cat.8): nu e a doua implementare a aceluiasi generator. `facturi`/`inregistrari` sunt
+straturi COMPLEMENTARE (factura = sursa; inregistrarea = derivata; legate prin `factura_id`). Clasa reala =
+„scriere pe un singur strat" - operatiunea omite stratul-factura pe care il citesc generatoarele TVA/VIES.
+
+FIX DECIS (DECIZII 04.08): operatiunea de achizitie emite intai un rand `facturi` (tert, directie=primita,
+categorie_331 la taxare inversa, data_faptului_generator la IC), apoi contabilizeaza cu `factura_id` legat.
+Gard anti-regresie planificat: o operatiune de achizitie care creeaza inregistrare FARA factura_id pica mecanic
+(clasa, nu instanta). Pana la fix: NECONFORMITATE ACTIVA deschisa.

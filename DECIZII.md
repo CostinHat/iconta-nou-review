@@ -7068,3 +7068,28 @@ Proba/artefact: structura OPANAF 3562/2024 ramane in anaf_surse/ (nu se pierde m
 respinsa: a construi acum pe interpretare de PDF (respinsa - fara ancora de validare mecanica). Limita: decizia se
 redeschide DOAR cu o decizie noua Costin, si numai daca (a) apare un canal de validare mecanica pt D177, SAU (b) se
 accepta explicit constructia pe interpretare de PDF asumand riscul. Consemnat: GARZI 04.08, FUNCTIONALITATI.csv F206.
+
+
+## 04.08.2026 — Localizare fix „achizitie fara rand facturi": DIRECTIA BACKEND (operatiunea emite factura), nu UI.
+
+DECIZIE (Costin, 04.08): operatiunile de achizitie (`achizitie_ic` main.py:7077, `achizitie_taxare_inversa`
+main.py:7019) emit INTAI un rand in `facturi` (tert, directie=primita, categorie_331 la taxare inversa,
+data_faptului_generator la IC), apoi contabilizeaza in jurnal cu `factura_id` legat. NU ecran nou, NU camp in
+primitaDetaliu.
+
+TEMEI: harta facturi<->inregistrari (investigatie 04.08). Straturi complementare CORECTE: factura = sursa citita de
+D390/D394; inregistrarea = derivata, citita de D100/D101/D205; legate prin `factura_id`. Defectul NU e arhitectura,
+ci ca `achizitie_ic`/`achizitie_taxare_inversa` scriu DOAR in jurnal -> inregistrari orfane -> absente din D390/D394
+(GARZI „NECONFORMITATE ACTIVA" 04.08). Efect fiscal numit: o achizitie IC introdusa azi NU ajunge in D390 (VIES lunar
+obligatoriu), desi D100/D101/D205 o vad.
+
+ALTERNATIVE RESPINSE:
+- (a) Camp categorie_331 in `primitaDetaliu` (validarea e-Facturii SPV). RESPINS: `efactura_primite.cif_emitent` e
+  TEXT NOT NULL (furnizor mereu cu CUI) -> „furnizor fara CUI" structural imposibil acolo -> UI mort; iar IC nu vine ca
+  e-Factura SPV (RO_CIUS e domestic). Probat la sursa (schema + 0 date reale). A fost premisa comenzii initiale,
+  infirmata la verificare.
+- (b) Ecran nou de editare factura de achizitie. RESPINS: achizitiile se introduc DEJA in `operatiuni_ecran.js`; un
+  ecran nou = a doua cale de intrare, redundanta (tiparul „arbori paraleli"). Se repara calea existenta.
+
+LOCALIZAREA UI a campurilor: `operatiuni_ecran.js` (unde se introduc operatiunile), DUPA ce backend-ul emite corect
+randul `facturi`. Vezi GARZI „NECONFORMITATE ACTIVA" 04.08 pentru clasa de defect si gardul anti-regresie planificat.
