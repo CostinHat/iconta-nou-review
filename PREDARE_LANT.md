@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
-# PREDARE LANT — 04.08.2026 (rularea 8)
+# PREDARE LANT — 04.08.2026 (rularea 9)
 
 Sesiune noua, context gol. Comanda de pornire: "Citeste PREDARE_LANT.md si continua lantul."
 Raspunde in ROMANA. Server: `ssh iconta`, `~/iconta_nou` (branch main). Rulezi pytest/DUK/verificator/commit PE SERVER.
@@ -9,16 +9,19 @@ NU heredoc inline in `ssh "... <<'EOF' ..."` cu ghilimele Python `"` inauntru - 
 Pentru commit cu ghilimele simple in mesaj, foloseste `git commit -F fisier_mesaj`.
 
 ## Ritual de pornire (§5)
-1. `git log --oneline -1` -> HEAD asteptat: **9d29f9e** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
-2. `venv/bin/python -m pytest -q` -> asteptat ~1347 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
+1. `git log --oneline -1` -> HEAD asteptat: **07f2a0b** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
+2. `venv/bin/python -m pytest -q` -> asteptat ~1348 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
    verificator_conformitate.py` -> TOTAL 0 candidate.
 3. `venv/bin/python3 -c "from core import agenda; print(agenda.urmator_cluster())"`
-   -> **(('totalPlata_A (R17)', 'd394'), 12, 1)** = urmatorul cluster, 12 ramase, 1 blocat (preexistent).
+   -> **(('plan conturi pe norma', 'd406'), 11, 1)** = urmatorul cluster, 11 ramase, 1 blocat (preexistent).
 
-## Urmatorul cluster: totalPlata_A (R17) | d394
-D394. Verifica checksum-ul totalPlata_A (regula R17 din validator) - suma de control emisa vs cea impusa de J8.
-Tipar probabil VERIFICARE + gard golden pe checksum (ca la d100/d205/d300/d301 R11b/R28). Sursa curenta = validator
-J8, NU pdf-ul 2020 (marcat INVECHIT). Vezi core/d394.py (total_plata_a / build_xml) + test_d394.py. Probeaza pe DUK.
+## Urmatorul cluster: plan conturi pe norma | d406  (INTRAM IN d406 - SAF-T)
+TOATE clusterele d394 sunt INCHISE. Urmeaza d406 (SAF-T / e-Factura). "plan conturi pe norma" = verifica planul de
+conturi emis in SAF-T (MasterFiles/GeneralLedgerAccounts) fata de norma contabila / nomenclatorul oficial. Vezi
+core/d406.py (build_xml, sectiunea Account) + test_d406.py. ATENTIE d406: validarea DUK d406 e xfail preexistent
+("cont referit absent din chart" - test_smoke_duk); jar-ul SAF-T e ALTUL (DUKIntegrator_AnLunaUI.jar, /opt/duk/
+saft/...). Sursa oficiala d406 = XSD SimpleTypes (d406_schema_anaf.xlsx). Tipar VERIFICARE; probeaza pe validatorul/
+XSD SAF-T unde se poate. LECTIE: sursa = schema/validatorul curent, nu presupuneri.
 
 ## REZOLVAT rularea 8 (decizie Costin executata): operatiuni N neinreg | d394 - approach (b)
 Bug-ul activ N (achizitii de la neinregistrati -> D394 respins) e REZOLVAT cu approach (b) ales de Costin:
@@ -27,8 +30,7 @@ coada -> UI+flux, nu doar log); restul declaratiei ramane valid. Gard anti-regre
 pt implementarea completa (a): tip_N (camp nou contabil, UI bunuri/servicii) + tip_document 2-5 (extindere contract)
 + document_N = CAMPANIE PROPRIE dupa ce se decide UI-ul pt tip_N. Vezi DECIZII 04.08.
 
-Clustere d394 inchise rularea 6-8: tip_partener (conform pct.216), rezumat1 (conform tp1/tp3 + N=approach b),
-nomenclator codPR (conform pe validator - toate codurile incl gaze 36; lit.l gaze deja rezolvat in 6675f19).
+Clustere d394 inchise rularea 6-9 (TOATE d394 din secventa GATA): tip_partener (pct.216), rezumat1 (tp1/tp3 conform + N=approach b excludere cu avertisment), nomenclator codPR (validator-confirmat, gaze 36; lit.l rezolvat 6675f19), totalPlata_A R17 (sursa unica + R17 pe validator). Datorie d394 ramasa: suport COMPLET N (approach a) = campanie proprie dupa UI tip_N (GARZI 04.08).
 
 ## Ce am facut in rularea asta (MULT: audit mare + 6 clustere; HEAD 93b01a6 -> c185188)
 ### A. AUDIT "limita text" pe TOATE cele 9 declaratii cerute de Costin + d710 (2 commituri: 7be77a3 + 1687dec)
