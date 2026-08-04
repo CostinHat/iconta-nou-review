@@ -132,3 +132,35 @@ def test_duk_respinge_gunoi():
     """Un validator care nu poate spune NU nu e validator."""
     gunoi = '<?xml version="1.0"?><aiurea xmlns="mfp:anaf:dgti:inventat:v99" x="1"/>'
     assert duk.valideaza(gunoi, "d710")["stare"] != "valid"
+
+
+def test_structura_cota_bidirectional_gard():
+    """Cluster structura declaratie710: atributul `cota` pe <obligatie> respecta regula STRUCTURALA a
+    validatorului D710 - OBLIGATORIU si NUMAI pentru cod_oblig 121 (micro). Dovedit pe DUK (04.08.2026):
+    cod 121 FARA cota -> respins 'R17: cota (lipsa) - Cota impozitare eronata'; cota pe cod != 121 ->
+    respins 'R17: cota nu se completeaza'. Valoarea = rata micro (1 sau 3 acceptate de DUK, 16 respinsa
+    'nu se incadreaza in intervalul cerut') - period-aware, o range-checkuieste validatorul; aici pazim
+    regula STRUCTURALA (prezenta/absenta), invizibila pana la DUK. Gard bidirectional ca la d100 - d710 il
+    lipsea, putea genera XML respins in ambele directii."""
+    import pytest
+    from core.d710 import calcul_d710 as _c, build_xml
+    from core.common import Perioada
+    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti"}
+    def mk(obl, luna=3):
+        return build_xml(_c(prof, Perioada(2025, luna=luna), {}, {"obligatii": obl}))
+
+    # 121 CU cota -> emisa
+    x = mk([{"cod_oblig": "121", "suma_dat_i": 100, "suma_dat_c": 150, "cota": "1"}])
+    assert 'cota="1"' in x
+    # 121 rata 3 (micro 3%) -> emisa (nu hardcodam "1")
+    x3 = mk([{"cod_oblig": "121", "suma_dat_i": 100, "suma_dat_c": 150, "cota": "3"}])
+    assert 'cota="3"' in x3
+    # 121 FARA cota -> ValueError (nu XML respins de DUK)
+    with pytest.raises(ValueError):
+        mk([{"cod_oblig": "121", "suma_dat_i": 100, "suma_dat_c": 150}])
+    # cod != 121 CU cota -> ValueError
+    with pytest.raises(ValueError):
+        mk([{"cod_oblig": "103", "suma_dat_i": 500, "suma_dat_c": 400, "cota": "1"}], luna=6)
+    # cod != 121 FARA cota -> OK, fara atribut cota
+    xp = mk([{"cod_oblig": "103", "suma_dat_i": 500, "suma_dat_c": 400}], luna=6)
+    assert "cota=" not in [l for l in xp.split("\n") if "<obligatie" in l][0]

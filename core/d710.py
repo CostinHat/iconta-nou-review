@@ -181,8 +181,17 @@ def build_xml(res):
                     o.suma_dat_i, o.suma_dat_c, o.suma_plata_i, o.suma_plata_c))
         if o.cod_bugetar:
             linie += ' cod_bugetar=%s' % _esc(o.cod_bugetar)
-        if o.cota:
+        # cota: OBLIGATORIU si NUMAI pentru cod_oblig 121 (micro). Gard bidirectional (ca la d100) -
+        # face imposibil un XML respins de validator. Dovedit pe DUK (04.08.2026): cod 121 FARA cota ->
+        # "R17: cota (lipsa) - Cota impozitare eronata"; cota pe cod != 121 -> "cota nu se completeaza".
+        # Valoarea e RATA micro (period-aware: DUK accepta 1 si 3, respinge 16 "in afara intervalului");
+        # range-check-ul valorii ramane la validator, aici pazim regula STRUCTURALA (prezenta/absenta).
+        if str(o.cod_oblig) == "121":
+            if not str(o.cota).strip():
+                raise ValueError("D710: cod_oblig 121 (micro) CERE cota (rata micro) - validator R17 'cota lipsa'.")
             linie += ' cota=%s' % _esc(o.cota)
+        elif o.cota:
+            raise ValueError("D710: cota se completeaza NUMAI pentru cod_oblig 121 (micro); cod_oblig %r are cota=%r." % (o.cod_oblig, o.cota))
         linie += "/>"
         H.append(linie)
     H.append("</declaratie710>")
