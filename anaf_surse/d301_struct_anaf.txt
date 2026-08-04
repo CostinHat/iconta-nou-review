@@ -1,3 +1,13 @@
+# !!! INVECHIT (04.08.2026) - acest fisier e structura D301 din 28.01.2013 (UniversalCode D301_A1.0.0).
+# Validatorul INSTALAT e D301_9 (2026, din versiuni.xml oficial ANAF 15.07.2026). NOMENCLATOARELE nu se mai
+# iau de aici: sursa curenta = validatorul instalat, enumerat prin proba DUK boundary (metoda ca la UoM/d406).
+# DIFERENTA CONFIRMATA (proba DUK 04.08.2026): lista tip_valuta din acest pdf are 19 valute; VALIDATORUL accepta
+# 20 - in plus HRK (kuna croata, adaugata de ANAF post-2013, dupa data acestui pdf). Codul (core/d301.py VALUTE)
+# urma acest pdf (19 valute, toate inca validator-acceptate - niciun cod mort); ancorat acum pe validator, pazit
+# de test_valute_ancorate_pe_validator_nu_pe_pdf_2013. Adaugarea HRK = DECIZIE DE PRODUS (schimba nomenclatorul de
+# valute declarabil de contabil) - vezi DECIZII 04.08. TIPURI_OP (1-5) = validator-confirmate separat (cluster
+# tipuri operatiune 1-5 | d301, 03.08.2026).
+# ---------------------------------------------------------------------------------------------------------------
  
 1 
 Structura fişier XML pentru declaratia 301 

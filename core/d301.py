@@ -1,5 +1,6 @@
 """
-Modul D301 — Decont special de TVA (ANAF v1, OPANAF 592/2016, structură din 2013).
+Modul D301 — Decont special de TVA (ANAF v1, OPANAF 592/2016). Structura pdf din 2013 e INVECHITA;
+nomenclatoarele (tip_valuta) sunt ancorate pe VALIDATORUL instalat D301_9 (proba DUK 04.08.2026), nu pe pdf.
 
 REFĂCUT DE LA ZERO după ANAF structura D301 20130327 (structura_D301_20130327).
 
@@ -29,6 +30,13 @@ NS = "mfp:anaf:dgti:d301:declaratie:v1"
 REGULI = "2026.1"
 _NEDIGIT = re.compile(r"\D")
 TIPURI_OP = (1, 2, 3, 4, 5)
+# Nomenclatorul tip_valuta ANCORAT PE VALIDATORUL INSTALAT (D301_9), nu pe pdf-ul de structura din 2013
+# (d301_struct_anaf.txt, marcat INVECHIT). Setul acceptat de validator a fost enumerat prin proba DUK boundary
+# 04.08.2026 (fiecare cod ISO trecut prin DUKIntegrator): validatorul accepta 20 de valute. VALUTE de mai jos
+# are 19 - EXACT lista pdf-ului 2013 - toate validator-acceptate (niciun cod mort, tiparul ASI NU apare aici).
+# DIFERENTA: HRK (kuna croata, adaugata de ANAF post-2013) e validator-acceptata dar absenta aici = acoperire
+# lipsa; adaugarea ei schimba ce poate declara contabilul (nomenclator de valute) = DECIZIE DE PRODUS (DECIZII
+# 04.08). Pazit de test_valute_ancorate_pe_validator_nu_pe_pdf_2013 (cod ⊆ validator, delta = {HRK}).
 VALUTE = {"EUR", "USD", "AUD", "CAD", "CHF", "CZK", "DKK", "EGP", "GBP", "HUF",
           "JPY", "MDL", "NOK", "PLN", "RON", "SEK", "TRY", "XDR", "BGN"}
 

@@ -6609,3 +6609,34 @@ Rec.20 standard (verificarea prin grep e neconcludenta pe ele din cauza substrin
 
 Fara fix - conform. Gard nou test_uom_unece_mapare_coduri_valide (mapare + default H87 + semnal la necunoscut +
 absenta BUC + format cod UN/ECE). Corectat inventarul (fisiere test_limita_text -> test_d406, ca la plan conturi).
+
+
+## 04.08.2026 — Reimprospatare surse invechite: d301 (tip_valuta) — VERIFICAT pe validator + DECIZIE HRK deschisa.
+
+CAMPANIE "reimprospatarea surselor invechite" (metoda jar-vs-pdf ca la D394/ASI). Auditul anaf_surse/ a gasit
+d301_struct_anaf.txt = structura 2013 (D301_A1.0.0, 28.01.2013), invechita.
+
+CONFRUNTARE 3 coloane (tip_valuta), sursa = proba DUK boundary pe D301Validator.jar instalat (D301_9):
+- VALIDATOR (probat DUK 04.08, fiecare cod ISO trecut prin DUKIntegrator): 20 valute =
+  AUD BGN CAD CHF CZK DKK EGP EUR GBP HRK HUF JPY MDL NOK PLN RON SEK TRY USD XDR.
+- COD (core/d301.py VALUTE): 19 valute (= EXACT pdf-ul 2013, fara HRK).
+- PDF 2013: 19 valute (identic cu codul).
+
+Rezultat:
+- TIPARUL ASI (cod care urmeaza un document mort, cu valori RESPINSE de validator): NU apare. Toate 19 din VALUTE
+  sunt validator-acceptate. Niciun cod mort de scos.
+- ACOPERIRE LIPSA: HRK (kuna croata) - validatorul o ACCEPTA, codul o RESPINGE (erori_generare "Valuta neacceptata").
+  Adaugata de ANAF post-2013 (Croatia in UE din iul.2013; HRK folosit pana la trecerea la EUR 01.01.2023).
+  Efect: un D301 cu operatiune in HRK (achizitie istorica / rectificare din Croatia pre-2023) e blocat de codul
+  nostru desi ANAF il accepta - cod mai STRICT decat validatorul.
+
+ACTIUNI FACUTE (neutre, nu schimba ce declara contabilul):
+- pdf-ul 2013 marcat INVECHIT in antet; docstring d301.py noteaza ancorarea pe validator, nu pe pdf.
+- comentariul VALUTE mutat de pe pdf pe validatorul instalat (D301_9, proba DUK 04.08).
+- gard nou test_valute_ancorate_pe_validator_nu_pe_pdf_2013: VALUTE ⊆ set-validator (anti-ASI, imposibil cod mort)
+  + delta = {HRK} pinuit; test_valute_snapshot_validator_confirmat_pe_duk (proba DUK vie: HRK acceptat, ZZZ respins).
+
+DECIZIE DE PRODUS DESCHISA (Costin): se adauga HRK in VALUTE (aliniere la validator, permite declararea operatiunilor
+istorice/rectificari in kuna croata)? Recomandare Code: DA - aliniaza codul la validatorul ANAF (autoritatea, R17),
+inlatura o respingere falsa; HRK e valuta legacy (fara operatiuni noi), risc minim. Se adauga cu 1 linie + reprobare
+DUK + actualizarea delta din gard. Blocat pana la greenlight fiindca schimba nomenclatorul de valute declarabil (§5).
