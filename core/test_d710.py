@@ -164,3 +164,73 @@ def test_structura_cota_bidirectional_gard():
     # cod != 121 FARA cota -> OK, fara atribut cota
     xp = mk([{"cod_oblig": "103", "suma_dat_i": 500, "suma_dat_c": 400}], luna=6)
     assert "cota=" not in [l for l in xp.split("\n") if "<obligatie" in l][0]
+
+
+def test_cod_bugetar_nomenclator_duk_si_antidrop():
+    """Cluster nomenclator COD_BUGETAR | d710. cod_bugetar per cod_oblig, SURSA UNICA d100.COD_BUGETAR
+    (cluster d100 verificat 03.08). Codurile dominante 121/103 -> 5503XXXXXX. Confirmat pe DUK 04.08.2026
+    (DUK regula R14a): validatorul D710 accepta 5503XXXXXX pentru 121 SI 103; mesajul la valoare gresita releva
+    inca vechiul cont 20470101 (validator tolerant/invechit in text) DAR 5503XXXXXX (forma curenta, cont unic
+    5503 din 26.07.2018) e VALID - codul emite forma curenta. Gard anti-drop (ca la d100): un cod_oblig fara
+    cod_bugetar (nu-i in nomenclator, fara valoare manuala) -> ValueError, nu XML tacit incomplet respins de
+    DUK. DATORIE: coduri D710 valide dar nemapate (130/131/132) sunt in afara LIMITEI motorului (cer data_I /
+    modele suma diferite)."""
+    import pytest
+    from core.d710 import calcul_d710 as _c, build_xml
+    from core.d100 import COD_BUGETAR
+    from core.common import Perioada
+    import core.duk as duk
+    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti"}
+
+    # sursa unica + valorile dominante
+    assert COD_BUGETAR["121"] == COD_BUGETAR["103"] == "5503XXXXXX"
+
+    # anti-drop: cod nemapat FARA cod_bugetar manual -> ValueError (nu XML tacit incomplet)
+    with pytest.raises(ValueError):
+        _c(prof, Perioada(2025, luna=3), {}, {"obligatii": [{"cod_oblig": "999", "suma_dat_i": 100, "suma_dat_c": 150}]})
+    # cod nemapat CU cod_bugetar manual -> NU ridica (permite extinderi controlate)
+    r = _c(prof, Perioada(2025, luna=3), {}, {"obligatii": [{"cod_oblig": "999", "suma_dat_i": 100, "suma_dat_c": 150, "cod_bugetar": "5503XXXXXX"}]})
+    assert r.obligatii[0].cod_bugetar == "5503XXXXXX"
+
+    # DUK-backed (gated): nomenclatorul e acceptat, un cod_bugetar gresit e respins (R14a) - dinti
+    if duk.poate_valida("d710"):
+        for cod, cota, luna in [("121", "1", 3), ("103", "", 6)]:
+            o = {"cod_oblig": cod, "suma_dat_i": 100, "suma_dat_c": 150}
+            if cota:
+                o["cota"] = cota
+            good = duk.valideaza(build_xml(_c(prof, Perioada(2025, luna=luna), {}, {"obligatii": [o]})), "d710")
+            assert good["stare"] == "valid", "DUK: nomenclator %s respins: %s" % (cod, good["erori"])
+            o_bad = dict(o, cod_bugetar="9999999999")
+            bad = duk.valideaza(build_xml(_c(prof, Perioada(2025, luna=luna), {}, {"obligatii": [o_bad]})), "d710")
+            assert bad["stare"] != "valid" and "R14a" in bad["erori"], "cod_bugetar gresit ar trebui respins R14a"
+
+
+def test_checksum_r11b_multi_obligatie_si_duk():
+    """Cluster checksum R11b | d710. totalPlata_A = suma de control ceruta de validator (DUK regula R11b):
+    SUMA pe TOATE obligatiile a (suma_dat_I + suma_plata_I + suma_dat_C + suma_plata_C). Cum suma_plata =
+    suma_dat pe fiecare latura (rectificare a sumei datorate), rezulta 2*(dat_I + dat_C) pe obligatie.
+    Confirmat pe DUK 04.08.2026: multi-obligatie 121(100->150)+103(200->300) -> totalPlata_A=1500 VALID;
+    o valoare gresita -> respins 'R11b: Suma de control totalPlata_A(X) = ... calculata cf. regulii(1500)'.
+    Sursa unica: build_xml emite res.total_plata_a direct (clasa d100/d394)."""
+    from core.d710 import calcul_d710 as _c, build_xml
+    from core.common import Perioada
+    import core.duk as duk
+    import re
+    prof = {"cui": "456789123", "nume": "TEST SRL", "adresa": "Str Test 1 Bucuresti"}
+    obl = [{"cod_oblig": "121", "suma_dat_i": 100, "suma_dat_c": 150, "cota": "1"},
+           {"cod_oblig": "103", "suma_dat_i": 200, "suma_dat_c": 300}]
+    res = _c(prof, Perioada(2025, luna=6), {}, {"obligatii": obl})
+
+    # checksum peste TOATE obligatiile: 2*(100+150) + 2*(200+300) = 500 + 1000 = 1500
+    assert res.total_plata_a == 1500
+    xml = build_xml(res)
+    # sursa unica: valoarea emisa == res.total_plata_a
+    emis = int(re.search(r'totalPlata_A="(\d+)"', xml).group(1))
+    assert emis == res.total_plata_a == 1500
+
+    # DUK-backed (gated): corect valid, gresit respins R11b (dinti)
+    if duk.poate_valida("d710"):
+        assert duk.valideaza(xml, "d710")["stare"] == "valid", "R11b corect ar trebui valid"
+        xbad = re.sub(r'totalPlata_A="\d+"', 'totalPlata_A="9999"', xml)
+        bad = duk.valideaza(xbad, "d710")
+        assert bad["stare"] != "valid" and "R11b" in bad["erori"], "totalPlata_A gresit ar trebui respins R11b"

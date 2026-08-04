@@ -126,9 +126,18 @@ def calcul_d710(prof, perioada, date, manual=None):
             continue
         zi_s, luna_s, an_s = _scadenta_d710(cod, an, luna)
         scad = o.get("scadenta") or ("%02d.%02d.%04d" % (zi_s, luna_s, an_s))
+        # Gard anti-drop (ca la d100): cod_bugetar per cod_oblig din nomenclatorul COD_BUGETAR (sursa
+        # unica d100). Un cod fara cont bugetar (nemapat SI fara valoare manuala) ar emite un XML fara
+        # atributul cod_bugetar -> respins de validator (R14a "cod bugetar trebuie sa fie = X"). Ridicam
+        # in loc sa emitem tacit incomplet: eroarea e clara in aplicatie, nu un mesaj criptic de la DUK.
+        cod_bug = o.get("cod_bugetar") or COD_BUGETAR.get(cod, "")
+        if not cod_bug:
+            raise ValueError("D710: cod_oblig %r fara cont bugetar (nu e in nomenclatorul COD_BUGETAR, sursa "
+                             "unica din d100). Codurile suportate (121/103) sunt mapate; alt cod cere "
+                             "cod_bugetar explicit sau extinderea nomenclatorului." % cod)
         r = ObligatieRect(
             cod_oblig=cod, suma_dat_i=di, suma_dat_c=dc,
-            cod_bugetar=o.get("cod_bugetar") or COD_BUGETAR.get(cod, ""),
+            cod_bugetar=cod_bug,
             scadenta=scad, nr_evid=_nr_evid(cod, luna, an, zi_s, luna_s, an_s),
             cota=str(o.get("cota") or ""))
         obl.append(r)
