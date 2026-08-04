@@ -612,14 +612,14 @@ pentru rest. Categorie ne-lit.D -> exclusa, nu emite cod invalid (test_N_categor
 CE MAI LIPSESTE (dupa livrarea approach-a conditionat) - campanie proprie, dupa ce se decide UI-ul:
 - **UI categorie_331** - fara ecran care sa seteze categoria art.331 pe operatiunea de la neinregistrat, N ramane
   exclus in calea auto. Deblocajul principal. (Datorie in sectiunea „04.08 Datorii deschise ale campaniei".)
-- **op1.tip_N** (pct.229: 1=bunuri / 2=servicii) - OBLIGATORIU pt tip N. E CONTINUT DECLARAT, nu derivabil din
-  factura fara ambiguitate -> CAMP NOU de introdus de CONTABIL, cu UI (pe factura/operatiunea de la neinregistrat).
-- **op1.tip_document** (pct.228: 1=facturi / 2=borderouri / 3=file carnet comercializare / 4=contracte / 5=alte) -
-  pt calea AUTO (factura) e 1=facturi; pt 2-5 = EXTINDERE DE CONTRACT (facturi/manual nu au campul, cere sursa noua).
-- **rezumat1.document_N** (pct.60, = op1.tip_document) - se emite din tip_document; conditioneaza facturiLS (R41.2:
-  facturiLS doar cand document_N=1).
-Cand se implementeaza, se SCOATE excluderea din calcul_d394 si se APRINDE gardul test_N_ar_fi_respins_de_validator_
-daca_emis_GARD_INVERS (care va pica -> semnal ca N e acum emis). Vezi DECIZII 04.08.
+- **op1.tip_N** (pct.229) - DESCOPERIT ca **NU EXISTA in validatorul v5** (tiparul ASI: injectat -> J8 "tip_N
+  atribut necunoscut"; extras din v5/Op1.class = absent). NU e un camp de emis/introdus, iese din scope (fostul
+  "camp nou de contabil" era o presupunere din pdf, infirmata la sursa).
+- **op1.tip_document 2-5** (pct.228: 2=borderouri / 3=file carnet / 4=contracte / 5=alte) - calea AUTO emite deja
+  1=facturi (livrat); 2-5 = EXTINDERE DE CONTRACT (facturi/manual n-au campul, cere sursa noua). Ramas.
+LIVRAT deja (nu mai e "lipsa"): tip_document=1 + rezumat1.document_N=1 pentru facturi + op11.codPR din categorie_331.
+Excluderea din calcul_d394 e acum CONDITIONATA (doar cand lipseste categorie_331), iar gardul invers
+test_N_ar_fi_respins_de_validator_daca_emis_GARD_INVERS e ACTIV (pazeste un N emis incomplet). Vezi DECIZII 04.08.
 
 
 ## 04.08.2026 — Gard UoM UN/ECE D406 (cluster "UoM UN/ECE")
@@ -832,8 +832,9 @@ duplica (regula sursei unice). NOI in GARZI:
 | D177 canal de emitere (formular, nu declaratie XML) | anaf_surse/OPANAF_3562_2024_D177.* (structura salvata) | D177 e o CERERE-formular PDF, nu un XML validat de jar DUK -> nu are autoritatea R17 pe care sta arhitectura; mecanismul (PDF-form vs XML) + scope = decizie de produs | Costin decide canalul (PDF-form dedicat) si daca D177 intra in scope |
 
 Deja in registru (REFERINTA, nu duplic):
-- **tip_document 2-5 + tip_N + document_N (suport N complet D394)** -> sectiunea „04.08 DATORIE: suport COMPLET
-  operatiuni N (D394)". Approach b livrat (N exclus+avertisment); approach a = campanie proprie.
+- **tip_document 2-5 (suport N complet D394)** -> sectiunea „04.08 DATORIE: suport COMPLET operatiuni N (D394)".
+  Approach a CONDITIONAT livrat (N emis valid cu categorie_331, DUK-probat); ramas doar tip_document 2-5 + UI
+  categorie_331. (tip_N a iesit din scope - nu exista in v5.)
 - **amortizare MF neliniara (degresiva/accelerata art.28 alin.5-8)** -> Categoria 3, `xfail
   test_datorie_mf_metode_amortizare`. Subsistem MF, impact pe amortizarea contabila/D406, nu pe d101.
 

@@ -7016,3 +7016,37 @@ nota din plafon_cresa upgrade-uita cu confirmarea + data incercarii. Se debloche
 
 Surse: mmuncii.gov.ro (ordin cresa S1 2026); upromania.ro Ordinul-3246-2025 (text cultural, salvat); juridice.ro,
 avocatnet.ro, universuljuridic.ro (referinte MO).
+
+
+## 04.08.2026 — Operatiuni N (d394): PIVOT dupa proba DUK - approach (a) CONDITIONAT livrat (SUPERSEDA cele 2 intrari N de mai sus).
+
+Aceasta intrare ACTUALIZEAZA cele doua intrari N anterioare de azi ("NECONFORMITATE ACTIVA ... Optiuni Costin" +
+"EXECUTAT approach (b)"). Ele descriau starea INTERMEDIARA; groundwork-ul pe approach (a) a schimbat imaginea.
+
+DESCOPERIRE (proba DUK, groundwork approach a): **campul `op1.tip_N` NU EXISTA in validatorul v5.** Intrarea
+anterioara il dadea "OBLIGATORIU pt tip in (V,C,N)" pe baza structurii pdf - dar la injectarea lui, D394Validator
+instalat (J8) raspunde "tip_N atribut necunoscut". Extras atributele reale din v5/Op1.class: NU contine tip_N
+(tiparul ASI - structura pdf spune un camp pe care jar-ul instalat il respinge). Consecinta: intrebarea "de unde vine
+tip_N (bunuri/servicii)?" din intrarea anterioara DISPARE - nu exista camp de completat.
+
+PIVOT: fara tip_N, dilema "continut declarat nederivabil" cade, deci approach (a) devine VIABIL - N se emite cu
+`tip_document=1` (facturi) + `document_N=1` + `op11.codPR` (din `categorie_331`, nomenclatorul lit.D) + detaliu
+nrN/valN. **PROBAT DUK J8: o operatiune N cu categorie lit.D e ACCEPTATA** (test_N_cu_categorie_litD_e_declarat_si_
+valid_pe_duk).
+
+STARE LIVRATA (approach a CONDITIONAT): N se EMITE VALID cand are `categorie_331` din lit.D; FARA categorie (azi nu
+exista UI care s-o seteze) ramane EXCLUS cu avertisment vizibil (fostul approach b devine fallback-ul pentru cazul
+fara categorie). Categorie ne-lit.D -> exclusa, nu emite cod invalid.
+
+REVIZIUNE COSTIN (3 defecte reale reparate, commit 21b4f48): (1) nomenclatorul N folosea lit.C (21-36, ex. gaze=36
+respins R64.3) in loc de lit.D (21-23/32-35 incl. "alte bunuri/servicii") -> CODPR_N dedicat; (2) asertiunea gardului
+invers slaba ("N" matcha orice) -> intarita pe R228/R60/document_N/tip_document; (3) clasificarea.
+
+Garduri (inlocuiesc test_rezumat1_tp2_neinreg_N_respins_de_validator_DATORIE, redenumit/scos la implementare):
+test_N_cu_categorie_litD_e_declarat_si_valid_pe_duk (emisie valida), test_N_ar_fi_respins_de_validator_daca_emis_
+GARD_INVERS (N incomplet -> J8 respinge), test_N_fara_categorie_ramane_exclus_cu_avertisment,
+test_N_categorie_ne_litD_e_exclusa.
+
+DATORIE RAMASA (deblocaj complet): UI categorie_331 (deblocajul principal - fara ecran N in calea auto ramane exclus),
+tip_document 2-5 (borderouri/carnet/contracte/alte = extindere de contract, facturi/manual n-au campul). Consemnate
+in GARZI.md ("04.08 Datorii deschise ale campaniei" + "DATORIE suport COMPLET operatiuni N").
