@@ -3,7 +3,9 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba)
 # PREDARE — Campania EXTINDEREA ACOPERIRII (05.08.2026)
 
 ## Stare la predare
-- HEAD = origin/main = origin/backup/lant-20260805 = **133811e**. Tree curat. Suita 1422 passed, verificator 0.
+- HEAD = origin/main = origin/backup/lant-20260805 = **ef9ba55** (sau commitul acestei predari, dupa push). Tree curat. Suita 1422 passed, verificator 0.
+- NOU: GARZI.md are sectiunea **INVENTAR DESCHISE NON-CAMPANIE** (index canonic al tuturor deschiselor din afara celor 4 puncte;
+  A actabil azi / B blocat extern / C decizie luata / D cere decizie produs). La revenire NU se recolecteaza - se citeste de acolo.
 - Livrate in aceasta sesiune (peste 1a=4ad6f72): 1b TICHETE DE MASA (63b0865, CAS reconciliat/CASS afara),
   1c-PT PART-TIME suprataxare (133811e, CAS+CASS pe baza ridicata la max(brut, sm-facilitate)). Acoperire est ~40-55%.
 - Ritual de pornire: agenda_drift curat, agenda arata campania GARDUL DE CONTINUT inchisa (6/6).
@@ -33,15 +35,44 @@ limita de acoperire DECLARATA. Orice valoare fiscala se verifica la sursa (commo
 - **1c PART-TIME - LIVRAT (133811e).** suprataxare CF art.146 alin.(5^6): D112 emite CAS/CASS pe baza ridicata
   la max(brut, sm-facilitate). Sub prag -> cas_min_pt/cass_min_pt (dif pe angajator B4_8D/B4_6D); peste prag -> pe brut.
   calea 2 recalculeaza prag=sm-facilitate INDEPENDENT (registru), full month fara CM -> fara proratare/pontaj. Confrunta EMISUL.
-- **1c CM - NEINCEPUT, URMATORUL. Sub-caz MARE (motivul opririi acestei sesiuni - buget de context).**
-  Analiza deja stransa: taxe_cm (salarizare.py:590) - CAS 25% UNIFORM pe indemnizatie (CF art.139(1)(o)+140),
-  CASS 10% DOAR cod 01/07/10 (art.155(1)i / OUG 34/2024), impozit 10%. Emisul unui angajat cu CM = CAS_salariu +
-  CM_cas (d112.py:198-210: cas = _d112int(bazac x cota_cas) + cm_cas; cass = ... + cm_cass; PER CERTIFICAT prin taxe_cm).
-  Baza indemnizatiei (brut_ang/brut_fnuass) vine din concedii_medicale (media pe 6 luni, _cm_media6) -> daca cale 2 o
-  citeste din tabela si aplica cotele, e NON-TAUTOLOGIC pe aplicarea cotei dar baza e INPUT PARTAJAT (§8). De verificat
-  la sursa OUG 158/2005 CE anume calculeaza generatorul (baza) vs ce e in tabela. Fixtura: rand concedii_medicale cu
-  cod/zile_ang/zile_fnuass/brut_ang/brut_fnuass/baza. Reconciliere: confrunta g[cas] = salariu_cas + cm_cas. In
-  d112_reconciliere azi angajatii cu CM sunt SARITI (cm_ids, l.166) - de relaxat pentru cod 01/07/10 simple.
+- **1c CM - NEINCEPUT, URMATORUL. Sub-caz MARE - RETETA COMPLETA (scopat la sursa 05.08, gata de cod).**
+  Motivul opririi acestei sesiuni: buget de context + risc de DIVERGENTA FALSA din rotunjire (vezi mai jos), nu
+  dificultate necunoscuta. Toata analiza de mai jos e verificata la sursa; sesiunea noua porneste direct pe cod.
+
+  COTELE (taxe_cm, salarizare.py:562-597, verificat): CAS 25% UNIFORM pe TOATE codurile (CF art.139(1)(o)+140);
+  CASS 10% DOAR cod in {01,07,10} (_CM_COD_CU_CASS, art.155(1)i / OUG 34/2024 art.17(2)); impozit 10%. NU importa/apela
+  taxe_cm din cale2 (numele e in lista interzisa a test_non_tautologie) - aplica cotele DIRECT din common.cota.
+
+  EMISUL unui angajat cu CM (d112.py, ramura `if cms and zile_cm>0`, ~l.190-210):
+    cm_cas  = SUMA per certificat de _d112int((brut_ang+brut_fnuass) x cota_cas)    # 25% pe fiecare cert
+    cm_cass = SUMA per certificat de _d112int((brut_ang+brut_fnuass) x cota_cass)   # DOAR cod in {01,07,10}
+    cas = _d112int(bazac x cota_cas) + cm_cas ;  cass = _d112int(bazac x cota_cass) + cm_cass
+  unde bazac = baza SALARIALA pe zile LUCRATE (nu pe brut intreg): brut_lucrat = brut x (nzl - zile_cm)/nzl,
+  bazac = brut_lucrat - facilitate (facilitate 0 daca peste minim). zile_cm = SUMA(zile_ang+zile_fnuass) pe certificate.
+
+  CE TREBUIE IN CALE2 (core/d112_reconciliere.py):
+    - relaxeaza skip-ul cm_ids (azi l.~166 sare orice angajat cu CM) DOAR pentru cazul simplu: angajat peste minim,
+      full-time, ne-scutit, fara tichete/alte beneficii, CM cod in {01,07,10} (ca sa fie si CASS reconciliabil).
+    - capabilitate NOUA: nzl = zile lucratoare holiday-aware. Importa `core.scadente` (NU e in lista interzisa;
+      interzise sunt doar salarizare/d112/salariu_istoric) - foloseste zile_lucratoare_luna(an,luna). Verifica pe AST
+      ca lantul tranzitiv al scadente NU atinge salarizare/d112 (altfel gaseste alt drum).
+    - citeste certificatele: SELECT cod, zile_ang, zile_fnuass, brut_ang, brut_fnuass FROM concedii_medicale
+      WHERE salariat_id, an, luna (SQL propriu). exp_cas = _d112int(bazac x cota_cas) + SUMA _d112int((ba+bf) x cota_cas);
+      la fel cass (doar cod cu CASS). Confrunta g[cas]/g[cass].
+
+  CAVEAT CRITIC (de ce e MARE): rotunjirea. Generatorul aduna _d112int PER CERTIFICAT apoi sumeaza, si _d112int(bazac x cota)
+  SEPARAT. Cale2 TREBUIE sa replice EXACT aceeasi ordine: round(salariu) + SUMA(round(cert_i)), NU round(salariu + total_cm).
+  Un round(Σ) in loc de Σ(round) -> DIVERGENTA FALSA de 1-2 lei -> hard-block gresit. Testeaza cu 2 certificate ca sa
+  prinzi ordinea. La fel, brut_lucrat proratat: verifica ca formula (nzl-zile_cm)/nzl coincide cu d112.pull:468 (brut_lucrat).
+
+  LIMITA declarata: baza indemnizatiei (brut_ang/brut_fnuass) = INPUT PARTAJAT (§8) - ambele cai o citesc din
+  concedii_medicale, o baza gresita acolo nu se prinde. media6 (_cm_media6) e doar pentru afisarea D17/D18, NU pentru
+  contributii - cale2 nu are nevoie de ea. Coduri fara CASS (08/09/05 etc.) + defalcarea C2 = xfail-uri separate
+  (test_datorie_cm05_subrows, test_datorie_cm_art_xi) - NU le atinge 1c-CM simplu. Verifica OUG 158/2005 la sursa DOAR
+  daca extinzi dincolo de aplicarea cotei (procente/plafoane de indemnizatie) - pentru reconcilierea cotei nu e nevoie.
+
+  FIXTURA: rand concedii_medicale (salariat_id, an, luna, cod='01', zile_ang, zile_fnuass, brut_ang, brut_fnuass) pe un
+  salariat peste minim. Proba: g[cas] = round(bazac x 25%) + round((ba+bf) x 25%); mutatie pe brut_ang -> pica.
 
 ### PUNCTUL 2 - D101 profitul IMPOZABIL (ajustari fiscale). Anual, miza mare.
 Azi calea 2 (core/d101_reconciliere.py) acopera doar profitul CONTABIL (P1/P2/P4/P5 din clasele 7/6). Ajustarile
