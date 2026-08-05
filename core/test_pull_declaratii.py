@@ -294,6 +294,45 @@ def test_cm_arbori_paraleli_acelasi_rezultat(schema):
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def _seed_cod09(schema, cnp_ingrijit):
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'ING','A','2900101410011','2025-01-01',9000,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',9000)")
+        cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
+                    "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere,"
+                    "cnp_ingrijit) OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'09',5,0,5,0,3000,9000,600,'AB','1',"
+                    "'2026-06-01','2026-06-01','2026-06-05',1,%s)", (cnp_ingrijit,))
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_cod09_fara_cnp_copil_blocheaza_emisia(schema):
+    """[D_8, regula DUK S97 + regula bazei nule] cod 09/91/92 cer CNP-ul copilului (D_8). Un certificat FARA CNP
+    (sau cu CNP invalid) BLOCHEAZA generarea cu mesaj explicit - NU se emite D112 invalid la ANAF."""
+    from core import d112
+    _seed_cod09(schema, None)
+    with pytest.raises(ValueError) as ei:
+        d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    assert "D_8" in str(ei.value) and "cod 09" in str(ei.value), str(ei.value)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_cod09_cu_cnp_copil_emite_d8_si_e_duk_valid(schema):
+    """[D_8] cod 09 cu CNP copil VALID -> emite D_8="<cnp>" + declaratia e DUK VALIDA. Acesta e lantul care
+    inainte NU era probat DUK (cod 09 pica pe S97 lipsa D_8 -> se folosea cod 08 ca inlocuitor). CNP 5200515400016
+    e valid (cifra de control). Gard anti-regresie pe lantul de ingrijire copil."""
+    from core import d112, duk as _duk
+    import re
+    _seed_cod09(schema, "5200515400016")
+    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    d = re.search(r'<asiguratD[^>]*D_9="09"[^>]*/>', xml)
+    assert d, "randul asiguratD cod 09 lipseste"
+    assert 'D_8="5200515400016"' in d.group(0), "D_8 (CNP copil) neemis: " + d.group(0)
+    if _duk.poate_valida("d112"):
+        r = _duk.valideaza(xml, "d112", an=2026, luna=6)
+        assert r["stare"] == "valid", "cod 09 cu D_8 trebuie DUK-valid: " + (r.get("erori") or "")[:200]
+
+
 def test_d112_impozit_multi_certificat_partitie_per_cert(schema):
     """[impozit CM multi-cert] Luna cu MAI MULTE certificate mixte: cod 01 (impozabil) + cod 09 (neimpozabil) +
     zile lucrate. Scazamintele cm_cas_imp/cm_cass_imp se acumuleaza PER-CERTIFICAT in bucla (d112.py: for _x in cms:
@@ -316,9 +355,9 @@ def test_d112_impozit_multi_certificat_partitie_per_cert(schema):
                     " OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'01',4,4,0,2000,0,12600,600,'A','1','2026-06-01',"
                     "'2026-06-01','2026-06-04',1)")
         cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
-                    "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere)"
+                    "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere,cnp_ingrijit)"
                     " OVERRIDING SYSTEM VALUE VALUES (2,1,2026,6,'09',3,0,3,0,1500,12600,500,'A','2','2026-06-10',"
-                    "'2026-06-10','2026-06-12',1)")
+                    "'2026-06-10','2026-06-12',1,'5200515400016')")   # cod 09 cere CNP copil (D_8) - vezi test_d112_cod09_*
     with schema.cursor() as cur:
         _seed(cur)
     def _imp():

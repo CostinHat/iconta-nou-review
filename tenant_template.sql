@@ -275,6 +275,7 @@ CREATE TABLE TENANT_PLACEHOLDER.concedii_medicale (
     loc_prescriere integer DEFAULT 1,
     diagnostic text,
     cod_urgenta integer,
+    cnp_ingrijit text,
     creat_la timestamp with time zone DEFAULT now() NOT NULL
 );
 

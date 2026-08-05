@@ -83,6 +83,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp" style="grid-column:span 2"><span class="camp-eticheta">Cod indemniza\u021bie</span><select id="cm-cod" class="camp-input">${optCod}</select></label>
           <label class="camp" id="cm-venit-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">Venit brut realizat \u00een perioada CM, dup\u0103 reducerea timpului (lei)</span><input type="number" id="cm-venit" class="camp-input" min="0" step="0.01"></label>
           <label class="camp" id="cm-urgenta-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">Cod urgen\u021b\u0103 medico-chirurgical\u0103<span class="oblig">*</span></span><input type="number" id="cm-urgenta" class="camp-input" min="1" max="177" placeholder="1\u2013177"><span class="camp-ajutor">Cod din nomenclatorul urgen\u021belor medico-chirurgicale (HG 423/2020). D112 \u00eel cere obligatoriu la codul 06.</span></label>
+          <label class="camp" id="cm-cnp-zona" style="grid-column:span 2;display:none"><span class="camp-eticheta">CNP-ul persoanei \u00eengrijite<span class="oblig">*</span></span><input type="text" id="cm-cnp-ingrijit" class="camp-input" maxlength="13" inputmode="numeric" placeholder="13 cifre"><span class="camp-ajutor">CNP-ul copilului (cod 09/91/92) sau al pacientului cu afec\u021biuni oncologice (cod 17) pentru care s-a eliberat certificatul. D112 \u00eel cere obligatoriu (regula DUK S97).</span></label>
           <label class="camp"><span class="camp-eticheta">Data acord\u0103rii</span><input type="date" id="cm-acord" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Data \u00eenceput<span class="oblig">*</span></span><input type="date" id="cm-inceput" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Data sf\u00e2r\u0219it <span class="oblig">*</span></span><input type="date" id="cm-sfarsit" class="camp-input"></label>
@@ -106,6 +107,8 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     selCod.addEventListener("change", () => { venitZona.style.display = selCod.value === "10" ? "" : "none"; });  // [cod10] camp conditionat
     const urgentaZona = zona.querySelector("#cm-urgenta-zona");
     selCod.addEventListener("change", () => { urgentaZona.style.display = selCod.value === "06" ? "" : "none"; });  // [cod06] D_11 camp conditionat
+    const cnpZona = zona.querySelector("#cm-cnp-zona");
+    selCod.addEventListener("change", () => { cnpZona.style.display = ["09","91","92","17"].includes(selCod.value) ? "" : "none"; });  // [D_8/D_8a] CNP persoana ingrijita, camp conditionat
 
 
     zona.querySelector("#cm-renunta").addEventListener("click", () => { zona.innerHTML = ""; });
@@ -144,6 +147,8 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       const codSel = zona.querySelector("#cm-cod").value;
       const urg = parseInt(zona.querySelector("#cm-urgenta").value, 10);
       if (codSel === "06" && (!urg || urg < 1 || urg > 177)) { rez.innerHTML = `<span class="msg-eroare">La codul 06 (urgen\u021b\u0103 medico-chirurgical\u0103) completeaz\u0103 codul de urgen\u021b\u0103 (1\u2013177, HG 423/2020).</span>`; return; }
+      const cnpI = (zona.querySelector("#cm-cnp-ingrijit").value || "").trim();
+      if (["09","91","92","17"].includes(codSel) && !/^\d{13}$/.test(cnpI)) { rez.innerHTML = `<span class="msg-eroare">La codurile de \u00eengrijire copil (09/91/92) sau pacient oncologic (17) completeaz\u0103 CNP-ul persoanei \u00eengrijite (13 cifre) \u2014 D112 \u00eel cere obligatoriu.</span>`; return; }
 
       const inc = new Date(inceput);
       const payload = {
@@ -151,6 +156,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         numar: zona.querySelector("#cm-numar").value,
         cod: zona.querySelector("#cm-cod").value,
         cod_urgenta: zona.querySelector("#cm-urgenta").value || null,
+        cnp_ingrijit: (zona.querySelector("#cm-cnp-ingrijit").value || "").trim() || null,
         venit_realizat: zona.querySelector("#cm-venit").value || null,
         data_acordare: zona.querySelector("#cm-acord").value || null,
         data_inceput: inceput,

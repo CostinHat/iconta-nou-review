@@ -3333,3 +3333,12 @@ test_poarta_artefact_blocheaza_total_corupt). d406 = exceptie lossy motivata (fa
 dubla disponibila dar necablata - fixturi cu GL dezechilibrat; emisia corecta pe input echilibrat). 2b nu pica pe
 artefact (total intern-consistent; 2b = per-rand formula, prins de DUK/cale2). Promisiunea "un total gresit nu ajunge
 la ANAF" = adevarata pt totalul celor 6, cu limita d406 + per-rand scrisa. Consemnat GARZI tura 10.
+
+
+## 05.08.2026 (tura 11) - LIVRAT CNP persoana ingrijita (D_8/D_8a) pt cod 09/91/92 (copil) + 17 (pacient oncologic)
+Feature complet: schema (cnp_ingrijit + migrare rulata 1/1 tenant) + validare CNP (valideaza_cnp, cifra control) la
+salvare+emisie + emisie D_8/D_8a (regula DUK S97 citita la sursa: 17 cere D_8a separat, nu D_8) + UI camp conditionat
+(Design System cap.2/6) + block hard pe CNP lipsa (regula bazei nule, nu emite D112 invalid). Proba E2E: cod 09 cu CNP
+valid -> D_8 + DUK VALID (lant neprobat DUK inainte, se folosea 08); fara CNP -> BLOCAT. Garduri anti-regresie. DATORIE
+GDPR semnalata (part 6): CNP tert minor = prelucrare fara temei/ROPA documentat (F199-F205 = drepturi persoana vizata,
+nu registru prelucrari art.30) - gol real, de decis de Costin, nu improvizat. Consemnat GARZI tura 11.

@@ -337,6 +337,16 @@ def salveaza_concediu(conn, salariat_id, date):
         if cod_urgenta is None or not (1 <= cod_urgenta <= _maxu):
             raise ValueError("La codul 06 (urgenta medico-chirurgicala) completeaza codul de urgenta "
                              "(1..%d, nomenclator HG 423/2020) - D112 il cere obligatoriu (campul D_11)." % _maxu)
+    # [D_8/D_8a, regula DUK S97] cod 09/91/92 cer CNP copil, cod 17 cere CNP pacient oncologic. Validare
+    # cifra de control (valideaza_cnp) - un CNP invalid NU intra (part 2). Restul codurilor: cnp_ingrijit=None.
+    cnp_ingrijit = str(date.get("cnp_ingrijit") or "").strip() or None
+    if cod in ("09", "91", "92", "17"):
+        from core.salariati_import_api import valideaza_cnp as _vcnp
+        _okc, _motc = _vcnp(cnp_ingrijit or "")
+        if not _okc:
+            _cmp = "CNP-ul pacientului cu afectiuni oncologice" if cod == "17" else "CNP-ul copilului"
+            raise ValueError("La codul %s completeaza %s (persoana pentru care s-a eliberat certificatul) - "
+                             "D112 il cere obligatoriu, regula DUK S97: %s." % (cod, _cmp, _motc))
     import datetime as _dtmod
     _di = date.get("data_inceput") or None
     if isinstance(_di, str) and _di:
@@ -373,8 +383,8 @@ def salveaza_concediu(conn, salariat_id, date):
             "INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, "
             "baza, media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, "
             "brut_ang, brut_fnuass, cass, impozit, cas, net, serie, numar, data_acordare, "
-            "data_inceput, data_sfarsit, loc_prescriere, diagnostic, cod_urgenta) "
-            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+            "data_inceput, data_sfarsit, loc_prescriere, diagnostic, cod_urgenta, cnp_ingrijit) "
+            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
             "RETURNING id",
             (salariat_id, date.get("an"), date.get("luna"), cod, zile_cm, calc["brut"],
              calc.get("baza", ven6), calc["media_zilnica"], calc["procent"], bool(calc["diminuare"]),
@@ -382,7 +392,7 @@ def salveaza_concediu(conn, salariat_id, date):
              calc["brut_ang"], calc["brut_fnuass"], taxe["cass"], taxe["impozit"],
              taxe["cas"], taxe["net"], date.get("serie"), date.get("numar"),
              date.get("data_acordare"), date.get("data_inceput"), date.get("data_sfarsit"),
-             int(date.get("loc_prescriere") or 1), date.get("diagnostic"), cod_urgenta))
+             int(date.get("loc_prescriere") or 1), date.get("diagnostic"), cod_urgenta, cnp_ingrijit))
         cm_id = cur.fetchone()[0]
     return {"ok": True, "id": cm_id, "calcul": {**calc, **taxe}}
 

@@ -253,6 +253,22 @@ def _d112_genereaza(prof, salariati, an, luna):
                         _opt += ' %s="%s"' % (_a, _v)
                 if str(x.get("cod") or "01").zfill(2) == "06" and x.get("cod_urgenta"):
                     _opt += ' D_11="%d"' % int(x.get("cod_urgenta"))  # [D_11] cod urgenta HG 423/2020, oblig. la cod 06 (D112 C(3), mutex D_12)
+                # [D_8/D_8a, regula DUK S97] cod 09/91/92 cer CNP copil (D_8), cod 17 cere CNP pacient oncologic
+                # (D_8a) - N(13), verificare CNP. Lipsa/invalid -> HARD-BLOCK (regula bazei nule): nu se emite
+                # D112 invalid, se semnaleaza. Certificatele existente fara CNP opresc generarea explicit.
+                _cod_c = str(x.get("cod") or "01").zfill(2)
+                if _cod_c in ("09", "91", "92", "17"):
+                    from core.salariati_import_api import valideaza_cnp as _vcnp
+                    _cnp_i = str(x.get("cnp_ingrijit") or "").strip()
+                    _ok_c, _mot_c = _vcnp(_cnp_i)
+                    if not _ok_c:
+                        _camp = "D_8a (CNP pacient oncologic)" if _cod_c == "17" else "D_8 (CNP copil)"
+                        raise ValueError(
+                            "D112: certificatul de concediu medical cod %s (salariat CNP %s) cere %s conform "
+                            "regulii DUK S97, dar CNP-ul persoanei ingrijite lipseste sau e invalid (%s). "
+                            "Completeaza-l in certificat (ecran Concedii medicale) - nu se emite D112 invalid."
+                            % (_cod_c, s.get("cnp"), _camp, _mot_c))
+                    _opt += (' D_8a="%s"' if _cod_c == "17" else ' D_8="%s"') % _cnp_i
                 _dl.append('    <asiguratD%s D_9="%s" D_10="%d" '
                            'D_14="%d" D_15="%d" D_16="%d" D_17="%d" D_18="%d" D_19="%.2f" D_20="%d" D_21="%d" D_23="%s"/>'
                            % (_opt, (x.get("cod") or "01"), int(x.get("loc_prescriere") or 1),
@@ -442,6 +458,7 @@ def pull(conn, schema, an, luna):
             "ds": _d112_data(str(c.get("data_sfarsit") or "")),
             "cod": c.get("cod") or "01",
             "cod_urgenta": c.get("cod_urgenta"),
+            "cnp_ingrijit": c.get("cnp_ingrijit"),   # [D_8/D_8a] CNP persoana ingrijita (copil 09/91/92 / pacient oncologic 17)
             "loc_prescriere": c.get("loc_prescriere") or 1,
             "zile_ang": c.get("zile_ang") or 0,
             "zile_fnuass": c.get("zile_fnuass") or 0,

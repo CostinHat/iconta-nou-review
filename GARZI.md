@@ -1395,3 +1395,30 @@ pentru TOTALUL DE PLATA al celor 6 declaratii cablate - verificat contra artefac
 LIMITA REALA scrisa: (a) d406 - totalul de plata SAF-T nu are forma canonica lossless -> se verifica partida dubla, dar
 necablat pana la curatarea fixturilor; (b) la nivel de RAND, o valoare gresita din formula (2b) e prinsa de DUK/cale2,
 nu de aceasta poarta; (c) poarta verifica TOTALUL + (d112) coerenta lui cu obligatiile, nu fiecare camp emis in parte.
+
+
+## 05.08.2026 (tura 11) - LIVRAT: CNP persoana ingrijita (D_8/D_8a) pt ingrijire copil (09/91/92) + pacient oncologic (17)
+
+Inchide gap-ul din tura 9 (cod 09/91/92 DUK-invalid, lipsea D_8 - la probe se folosea cod 08 ca inlocuitor).
+Regula DUK S97 CITITA la sursa (struct D112 l.5446-5464): D_8 = CNP/CIS copil N(13), obligatoriu pt D_9 in (09,91,92);
+D_8a = CNP/CIS pacient oncologic N(13), obligatoriu pt D_9=17 (camp SEPARAT, nu D_8 - verificat, nu presupus).
+
+1. SCHEMA: coloana cnp_ingrijit text in concedii_medicale. tenant_template.sql (tenanti noi) + core/migrare_cnp_ingrijit.py
+   (idempotent ADD COLUMN IF NOT EXISTS, iterat pe information_schema WHERE schema_name ~ tenant_[0-9]+). RULAT: 1/1 scheme OK.
+2. VALIDARE: valideaza_cnp (salariati_import_api - format+data+judet+cifra control 279146358279) la salvare
+   (salariati_api.salveaza_concediu) SI la emisie -> un CNP invalid NU intra.
+3. EMISIE: d112 emite D_8="<cnp>" pt 09/91/92, D_8a pt 17 (bucla _opt).
+4. UI: camp conditionat #cm-cnp-ingrijit (flux_concediu.js), afisat pe cod 09/91/92/17 (precedent cod_urgenta pe 06).
+   Design System cap.2 (structura camp) + cap.6 (oblig asterisc + camp-ajutor + msg-eroare). INSERT + payload backend.
+5. BLOCK (regula bazei nule): certificat cod 09/91/92/17 fara CNP valid -> genereaza ridica ValueError explicit,
+   NU emite D112 invalid la ANAF. Certificatele existente fara CNP opresc generarea cu mesaj (completeaza in ecran).
+7. PROBA E2E: cod 09 cu CNP valid 5200515400016 -> D_8 emis + DUK VALID (lantul neprobat DUK inainte); fara CNP -> BLOCAT.
+   Garduri: test_d112_cod09_fara_cnp_copil_blocheaza_emisia, test_d112_cod09_cu_cnp_copil_emite_d8_si_e_duk_valid.
+
+DATORIE GDPR (part 6 - SEMNALATA, nu improvizata; raportata separat lui Costin): CNP-ul unui MINOR NEANGAJAT (copil)
+sau al unui PACIENT tert = prelucrare de date personale ale unui TERT, sensibile (minor). Verificat in cod: F199-F205 =
+DREPTURILE persoanei vizate (export/stergere/retentie/alerta cabinet), NU un registru al prelucrarilor (ROPA GDPR art.30
+- LIPSESTE cu totul). Nicio baza de prelucrare documentata pentru CNP de tert minor/membru familie (mentiunile de "copil"
+sunt fiscale, nu GDPR). GOL DE CONFORMITATE REAL. Feature-ul e livrat (D112 il cere fiscal - altfel cod 09 nedepozabil),
+DAR temeiul de prelucrare (art.6/9), informarea persoanei vizate terte (art.14) si ROPA raman de DECIS de Costin - nu
+se improvizeaza politica in cod.
