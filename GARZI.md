@@ -1121,9 +1121,14 @@ La revenire se re-ruleaza DOAR `python -m core.agenda` pentru xfail-uri; restul 
 - **F144 GV fara profit/produs (cost pe articol inexistent)** — CSV F144. LIMITARE ACCEPTATA, documentata (DECIS 05.08, Costin). Redeschide DOAR cu decizie noua de a construi cost pe articol in GV.
 
 ### D. CERE DECIZIE DE PRODUS (Costin) inainte de a fi actabil (NU blocaj extern, NU inca decis)
-GOL — cele 3 initiale au fost DECISE 05.08 (vezi DECIZII 05.08 "3 decizii de produs pe inventar"):
-state_plata -> A (persistare cu hash); felia TVA-21% -> A (restul teste_care_apara_buguri ramane in A cu declansator);
-F144 GV -> C (limitare acceptata). Cand apare o noua deschidere blocata pe decizie de produs, se adauga aici.
+- **Prag inregistrare TVA 395.000 lei NEENFORCED** — CF art.310 via OG 22/2025 art.I pct.11 (MO 806/29.08.2025).
+  `platitor_tva` e camp DECLARAT (core/vector_fiscal_api.py:78-91), nu calculat din cifra de afaceri; aplicatia NU
+  semnaleaza depasirea pragului de scutire (nici notificare, nici blocaj). Confruntat cu codul 05.08 (pre-C-2): niciun
+  literal 395000/300000 in cod, art.310 neimplementat. DECIZIE DE PRODUS (Costin): daca/cum se enforceaza (alerta la
+  depasire vs. ramane responsabilitatea contabilului). NU se repara acum. Descoperit la confruntarea celor 4 corectii C-1.
+- [istoric] cele 3 deschideri D initiale au fost DECISE 05.08 (vezi DECIZII 05.08 "3 decizii de produs pe inventar"):
+  state_plata -> A (persistare cu hash); felia TVA-21% -> A (restul teste_care_apara_buguri ramane in A cu declansator);
+  F144 GV -> C (limitare acceptata). Cand apare o noua deschidere blocata pe decizie de produs, se adauga aici.
 
 
 ## 05.08.2026 - DESCOPERIRE (campanie EXTINDEREA ACOPERIRII, sub-caz 1c-CM): poarta cale2 OARBA pe CM + divergenta fluturas/declaratie pe baza salariala CM

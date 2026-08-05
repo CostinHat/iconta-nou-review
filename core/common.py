@@ -343,11 +343,11 @@ COTE = {
         (date(2016, 1, 1), Decimal("0.05"), Temei("Legea", 227, 2015, art="97", alin="7", data_in="2016-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", lant_acte="cota 5% pt dividende distribuite de la 01.01.2016 (OUG 50/2015 MO 817/2015 accelereaza data din Legea 227/2015; aprobata prin Legea 358/2015)")),
     ],
     # plafon TVA la incasare (fost petic 3-tier plafon_la). OUG 8/2026: 5M de la 03.2026, 5.5M de la 2027.
-    # 4.5M anterior - act de reconfirmat (REDARE), data_in aproximata (pre-2026 raporteaza gol daca ceri <2023).
+    # 4.5M = Legea 296/2020 (majorare 2,25M->4,5M de la 01.01.2021), ramas pana la OUG 8/2026.
     "plafon_tva_incasare": [
         (date(2027, 1, 1), Decimal("5500000"), Temei("OUG", 8, 2026, data_in="2027-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
         (date(2026, 3, 1), Decimal("5000000"), Temei("OUG", 8, 2026, data_in="2026-03-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
-        (date(2023, 1, 1), Decimal("4500000"), Temei(text="plafon TVA la incasare pre-OUG 8/2026 (act de reconfirmat)", data_in="2023-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2021, 1, 1), Decimal("4500000"), Temei("Legea", 296, 2020, data_in="2021-01-01", verificat_la="2026-08-05", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 296/2020 (MO 1269/21.12.2020) majoreaza plafonul TVA la incasare 2.250.000->4.500.000 de la 01.01.2021; ramas 4,5M pana la OUG 8/2026 (5M de la 01.03.2026). Confirmat secundar - CF consolidat a inlocuit tier-ul la OUG 8/2026")),
     ],
     "plafon_mijloc_fix": [
         (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
@@ -362,7 +362,7 @@ COTE = {
     # impozit micro (1% standard) / profit (16%) - rata DEFAULT (contabilul o poate da explicit prin manual).
     # Mutate din literalele hardcodate din d100 (dependenta ascunsa V2) -> vizibile in graf.
     "impozit_micro": [
-        (date(2023, 1, 1), Decimal("0.01"), Temei("CF", art="51", alin="1", data_in="2023-01-01", verificat_la="2026-08-02", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2023, 1, 1), Decimal("0.01"), Temei("CF", art="51", alin="1", data_in="2023-01-01", verificat_la="2026-08-05", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="cota micro 1% (CF art.51 alin.1). OUG 89/2025 (MO 1203/24.12.2025) art.I pct.4 pastreaza 1% ca forma UNICA de la 01.01.2026 + pct.5 abroga alin.(1^1)=cota 3%; pe 2026 nu mai exista split 1%/3% si nici pragul 60.000 EUR. Confirmat la sursa 05.08.2026 (validat Costin)")),
     ],
     "impozit_profit": [
         (date(2018, 1, 1), Decimal("0.16"), Temei("CF", art="17", data_in="2018-01-01", verificat_la="2026-08-02", de_cine="Code/Costin", nivel_sursa="REDARE")),
