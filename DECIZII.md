@@ -7375,3 +7375,30 @@ Raportul §2.2 sect.11 confirma de acum HEAD=origin/main=backup pe acelasi commi
 CONSECINTA ACCEPTATA: un push gresit ajunge direct pe main. Mitigat de poarta verde obligatorie + fast-forward-only +
 pull --rebase pe divergenta. ALTERNATIVA RESPINSA: a pastra aprobarea manuala - respinsa de Costin (incetineste fara
 sa adauge siguranta peste poarta mecanica).
+
+
+## 05.08.2026 — EXTINDEREA ACOPERIRII Punctul 1 sub-caz 1a: D112 facilitate la minim (toata luna, full-time)
+
+Campanie noua (extinderea acoperirii, 4 puncte). Punctul 1 = cazurile complexe D112, luate in ordinea prevalentei.
+Sub-caz 1a: facilitatea la salariul minim, TOATA luna, full-time, salariu STABIL (fara schimbare in luna).
+
+TEMEI (verificat la sursa INAINTE de cod, common.cota): 2026 S1 sm=4050 facilitate=300 plafon=4300; S2 sm=4325
+facilitate=200 plafon=4600; cas=25% cass=10%. Comanda: python -c cota(salariu_minim/facilitate_salariu_minim/...).
+Formula generatorului (salarizare.py:60,79-82): facilitate = facilitate_val x facilitate_prorata; baza_contrib =
+b_imp - facilitate; cas=baza_contrib x cota_cas, cass=baza_contrib x cota_cass. Pentru minim STABIL toata luna,
+facilitate_prorata=1.0 -> facilitate=facilitate_val -> baza=sm-facilitate. calea 2 aplica formula INDEPENDENT cu
+valorile din registrul de lege (nu din calcul_salariu).
+
+Detectare independenta a "stabil la minim toata luna": brut(luna_sf)==sm SI nicio intrare salariu_istoric cu
+valabil_din IN luna (SQL propriu _stabil_la_minim). Schimbare in luna -> facilitate PRORATATA -> ramane sarit
+(sub-caz ulterior, NEACOPERIT numit).
+
+ROTUNJIRE (corectie): generatorul tine cas la 2 zecimale (937.50); D112 il EMITE ca intreg prin _d112int
+(ROUND_HALF_UP -> 938). calea 2 confrunta valoarea EMISA: got = _q(g[cas]) rotunjit la intreg, nu int() trunchiere
+(bug prins la 937.50->937). Non-tautologic: rotunjirea e spec ANAF, agregarea ramane independenta.
+
+ACOPERIRE: ~20-35% -> ~30-45% estimat (nemasurat). Suprapunerea minim x tichete ramane la sub-cazul 1b.
+
+PROBA: salariat la 4050 toata luna -> generator cas 937.50 (emis 938), calea 2 baza=3750 cas=938, reconciliat;
+mutatie cas=999 -> "salariat 3 cas: generator=999 vs cale2=938" ridica. Facilitate proratata (schimbare 2026-06-16)
+-> sarit. Non-tautologie tranzitiva neschimbata (doar common.cota adaugat). Suita 1418 passed (+1), verificator 0.

@@ -123,8 +123,11 @@ def test_reconciliere_curata_si_genereaza_trece(conn_recon):
     assert (int(g[2]["cas"]), int(g[2]["cass"])) == (2000, 800)   # 8000 x 25% / 10%
     rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
     assert rap["divergente"] == [], "alarma falsa: %s" % rap["divergente"]
-    assert set(rap["reconciliati"]) == {1, 2}, rap["reconciliati"]
-    assert 3 in rap["sarite"], "salariatul la minim (facilitate) trebuia SARIT: %s" % rap["sarite"]
+    # sub-caz 1a: salariatul 3 (la minim 4050, toata luna, full-time) e acum RECONCILIAT cu facilitate, nu sarit
+    assert set(rap["reconciliati"]) == {1, 2, 3}, rap["reconciliati"]
+    # generatorul tine cas la 2 zecimale (937.50); D112 il EMITE ca 938 (_d112int, half-up); calea 2 confrunta
+    # valoarea EMISA (rotunjita). baza=4050-300=3750, cas=3750x25%=937.50->938, cass=375
+    assert (float(g[3]["cas"]), float(g[3]["cass"])) == (937.5, 375.0), (g[3]["cas"], g[3]["cass"])
     assert "<angajator" in xml
 
 
@@ -158,18 +161,34 @@ def test_mutatie_cass_gresit_pica(conn_recon):
 #  ACOPERIRE: cazul NESIMPLU (facilitate la minim) e SARIT, nu comparat -> fara alarma falsa.
 # ============================================================
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_caz_nesimplu_facilitate_e_sarit_nu_alarma(conn_recon):
-    """Salariatul 3 (la minim, cu facilitate) are cas care NU e brut x 25%. Daca ar fi comparat,
-    ar da divergenta falsa. Trebuie SARIT (NEACOPERIT), nu confruntat."""
+def test_facilitate_la_minim_reconciliata_si_mutatie_pica(conn_recon):
+    """SUB-CAZ 1a: salariatul 3 (la minim 4050, toata luna, full-time) e RECONCILIAT cu facilitate
+    (baza = sm - fac). Un cas gresit pe el PICA acum (inainte era sarit)."""
     _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
-    # ii dam salariatului 3 un cas aberant: NU trebuie sa alarmeze (e sarit din start)
+    g = {s["id"]: s for s in sal}
+    assert (float(g[3]["cas"]), float(g[3]["cass"])) == (937.5, 375.0)   # generator 2 zec; emis 938 (half-up)
+    rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert 3 in rap["reconciliati"] and rap["divergente"] == []
     for s in sal:
         if s["id"] == 3:
-            s["cas"] = 123456
+            s["cas"] = 999   # <- mutatie: cas gresit pe facilitate
+    with pytest.raises(ReconciliereD112) as ei:
+        verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert "salariat 3 cas: generator=999 vs cale2=938" in str(ei.value), str(ei.value)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_facilitate_proratata_ramane_sarita(conn_recon):
+    """Facilitatea PRORATATA (schimbare de salariu IN luna) ramane NEACOPERITA (sub-caz ulterior) -
+    salariatul cade in sarite, nu se confrunta cu formula full-facilitate."""
+    with conn_recon.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (6,'PRORATA','F','1900101410016','2025-01-01',4050,8,false)")
+        # schimbare de salariu IN luna 6 (valabil_din 2026-06-16) -> facilitate proratata
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (6,'2025-01-01',4050),(6,'2026-06-16',4050)")
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
     rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
-    assert 3 in rap["sarite"] and 3 not in rap["reconciliati"]
-    assert all(d["salariat"] != 3 for d in rap["divergente"]), rap["divergente"]
-    assert all(s["salariat"] != 3 for s in rap["suspecte"]), rap["suspecte"]  # facilitate = legitim, NU suspect
+    assert 6 in rap["sarite"] and 6 not in rap["reconciliati"], rap
 
 
 # ============================================================

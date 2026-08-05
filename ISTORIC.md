@@ -3221,3 +3221,13 @@ D101(profit contabil), D205(dividende). Tiparul uniform pe toate: recalcul indep
 non-tautologie probata pe AST (la D112 si pe lantul tranzitiv), mutatie obligatorie, hard-block la divergenta care
 numeste ambele valori, limita de acoperire DECLARATA per declaratie. Directia (a) - golden full-decl din exemplu ANAF
 - ramane BLOCATA la sursa (nu exista exemple completate). Suita 1417 passed (+8 fata de 1409), verificator 0, commit 93e4a2c.
+
+
+## 05.08.2026 — EXTINDEREA ACOPERIRII, Punctul 1 sub-caz 1a: D112 facilitate la minim (toata luna, full-time)
+
+Campanie noua. Primul sub-caz al Punctului 1 (D112 cazuri complexe). Facilitatea la salariul minim, angajat full-time,
+toata luna, salariu stabil -> ACUM reconciliata: baza_contrib = sm - facilitate (verificat la sursa: 2026 S1 fac=300,
+S2 fac=200), CAS+CASS. Detectare independenta a stabilitatii (salariu_istoric fara schimbare in luna). Facilitatea
+proratata (schimbare in luna) ramane sarita numit (sub-caz ulterior). Corectie rotunjire: comparatie pe valoarea
+EMISA la intreg (_d112int half-up), nu trunchiere. Acoperire estimata ~20-35% -> ~30-45% (nemasurat). Suita 1418
+passed (+1), verificator 0.

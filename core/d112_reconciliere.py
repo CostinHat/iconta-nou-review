@@ -20,7 +20,8 @@ CE RECONCILIAZA — DOAR CAZUL SIMPLU (scris ca atare, NU "D112 acoperit"):
   Un angajat care incalca ORICARE conditie -> NEACOPERIT (sarit, nu alarma falsa).
 
 CE RAMANE IN AFARA (LIMITA DECLARATA, GARZI cat.4 - gardul NU acopera):
-  - FACILITATI (constructii/IT/agricol, salariu minim), SCUTIRI, PLAFOANE, PART-TIME suprataxare;
+  - FACILITATE la minim PRORATATA (schimbare de salariu in luna sau luna partiala) - facilitatea la minim
+    TOATA luna, full-time E ACOPERITA de la 05.08 (sub-caz 1a). SCUTIRI, PLAFOANE, PART-TIME suprataxare;
   - CONCEDII MEDICALE (CM): baze si procente proprii (OUG 158/2005);
   - IMPOZIT (necesita deducerea personala degresiva art.77 - calcul complex, exclus din acest gard);
   - CAM (contributia asiguratorie de munca, agregat de angajator);
@@ -62,7 +63,10 @@ def _cote(la_data):
     cas, _ = _c.cota("cas", la_data)
     cass, _ = _c.cota("cass", la_data)
     sm, _ = _c.cota("salariu_minim", la_data)
-    return Decimal(str(cas)), Decimal(str(cass)), Decimal(str(sm))
+    fac, _ = _c.cota("facilitate_salariu_minim", la_data)
+    plaf, _ = _c.cota("plafon_facilitate_salariu_minim", la_data)
+    return (Decimal(str(cas)), Decimal(str(cass)), Decimal(str(sm)),
+            Decimal(str(fac)), Decimal(str(plaf)))
 
 
 def _brut_la(cur, schema, sid, data):
@@ -76,6 +80,14 @@ def _brut_la(cur, schema, sid, data):
     cur.execute("SELECT salariu_brut FROM %s.salariati WHERE id=%%s" % schema, (sid,))
     r = cur.fetchone()
     return Decimal(str(r["salariu_brut"])) if (r and r["salariu_brut"] is not None) else None
+
+
+def _stabil_la_minim(cur, schema, sid, luna_inc, luna_sf):
+    """True daca salariul NU s-a schimbat IN cursul lunii (nicio intrare salariu_istoric cu valabil_din
+    strict dupa prima zi si pana la ultima). Fara schimbare + la minim -> facilitate_prorata = 1.0."""
+    cur.execute("SELECT COUNT(*) AS n FROM %s.salariu_istoric WHERE salariat_id=%%s "
+                "AND valabil_din > %%s AND valabil_din <= %%s" % schema, (sid, luna_inc, luna_sf))
+    return int((cur.fetchone() or {"n": 0})["n"] or 0) == 0
 
 
 def reconciliaza(conn, schema, an, luna, salariati_generator):
@@ -93,7 +105,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
     la_data = _date(an, luna, 1)
     luna_inc = _date(an, luna, 1)
     luna_sf = _date(an, luna, _cal.monthrange(an, luna)[1])
-    cota_cas, cota_cass, sm = _cote(la_data)
+    cota_cas, cota_cass, sm, fac_val, plafon_fac = _cote(la_data)
     gen = {s.get("id"): s for s in (salariati_generator or [])}
     divergente, suspecte, reconciliati, sarite = [], [], [], []
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -134,7 +146,22 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
             if (da and da > luna_inc) or (di and di < luna_sf):
                 sarite.append(sid); continue   # luna nu e intreaga -> proratare -> afara
             if brut == sm:
-                sarite.append(sid); continue   # facilitate (se declanseaza la brut == minim) -> afara
+                # SUB-CAZ 1a (extindere acoperire 05.08): FACILITATE la salariul minim, TOATA luna, full-time.
+                # Deja filtrat mai sus: full-month, fara CM/tichete/part-time/scutire. Cerem in plus salariu STABIL
+                # la minim toata luna (fara schimbare in luna) -> zile_la_minim = zile_lucratoare ->
+                # facilitate_prorata = 1.0 -> facilitate = facilitate_val (OUG 89/2025 art.III, verificat la sursa).
+                # baza_contrib = sm - facilitate, aplicat la CAS SI CASS (ca in salarizare.py:79-82).
+                if not _stabil_la_minim(cur, schema, sid, luna_inc, luna_sf):
+                    sarite.append(sid); continue   # schimbare in luna -> facilitate proratata (sub-caz ulterior) NEACOPERIT
+                baza = (sm - fac_val) if sm <= plafon_fac else sm   # vbt > plafon -> facilitate 0
+                exp = {"cas": _q(baza * cota_cas), "cass": _q(baza * cota_cass)}
+                reconciliati.append(sid)
+                for camp in ("cas", "cass"):
+                    got = _q(g.get(camp) or 0)  # rotunjire la intreg ca _d112int (valoarea EMISA la ANAF), nu trunchiere
+                    if got != exp[camp]:
+                        divergente.append({"salariat": sid, "camp": camp,
+                                           "generator": got, "cale2": exp[camp], "diferenta": got - exp[camp]})
+                continue
             # --- SKIP-SUSPECT: sub minimul legal pentru angajat full-time luna intreaga ---
             if brut < sm:
                 suspecte.append({"salariat": sid, "motiv": "brut %s SUB salariul minim %s pentru angajat "
@@ -145,7 +172,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
             exp = {"cas": _q(brut * cota_cas), "cass": _q(brut * cota_cass)}
             reconciliati.append(sid)
             for camp in ("cas", "cass"):
-                got = int(g.get(camp) or 0)
+                got = _q(g.get(camp) or 0)  # rotunjire la intreg ca _d112int (valoarea EMISA la ANAF), nu trunchiere
                 if got != exp[camp]:
                     divergente.append({"salariat": sid, "camp": camp,
                                        "generator": got, "cale2": exp[camp], "diferenta": got - exp[camp]})

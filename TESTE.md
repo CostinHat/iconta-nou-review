@@ -22,6 +22,14 @@ zero. Invers ar însemna să verifici de două ori — sau, mai probabil, a doua
 ---
 
 ## În lucru acum
+- fir: EXTINDEREA ACOPERIRII (campanie noua 05.08) - 4 puncte: 1.D112 cazuri complexe, 2.D101 impozabil, 3.amortizare MF neliniara, 4.tip_document 2-5 D394
+- ultim: Punctul 1 sub-caz 1a LIVRAT - facilitate la minim toata luna full-time reconciliata (acoperire ~20-35%->~30-45% est).
+- urmator: Punctul 1 sub-caz 1b - TICHETE (masa/vacanta). IN LUCRU.
+- pasi:
+  P1a. [GATA] facilitate la minim stabila toata luna: baza=sm-fac, CAS+CASS; _stabil_la_minim SQL propriu; rotunjire la intreg ca _d112int. Prorata ramane sarita.
+  P1b. TICHETE: CAS neafectat de tichete (cas=brut x cota); CASS = baza x cota + cass_tichete (nominal tichete x cota_cass). NEINCEPUT.
+  STARE = IN LUCRU
+
 
 Firul curent — de aici derivă URMATORUL PAS al agendei. Se ține la ZI (regula de
 redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).

@@ -312,6 +312,10 @@ că intrarea a fost înghițită**.
       non-tautologia e probata pe lantul TRANZITIV, nu doar pe importurile directe.
     - **ACOPERIRE ESTIMATA (nu 'D112 are a doua cale'):** la o structura TIPICA de cabinet RO, gardul
       reconciliaza probabil o MINORITATE a salariatilor — estimat ~20-35% reconciliati / ~65-80% sariti.
+      **EXTINDERE 05.08 (Punctul 1, sub-caz 1a):** facilitatea la minim TOATA luna, full-time, stabila (fara
+      schimbare de salariu in luna) e ACUM reconciliata (baza=sm-facilitate, CAS+CASS). Acoperire estimata
+      urcata la ~30-45% (estimare, nemasurata; suprapunerea minim x TICHETE ramane la sub-cazul urmator 1b).
+      Facilitatea PRORATATA (schimbare in luna) ramane sarita NUMIT.
       Excluderile dominante: salariu MINIM (facilitate; pondere mare la IMM-uri RO) + TICHETE de masa
       (beneficiu larg raspandit) — se suprapun si domina, plus CM/part-time. ESTIMARE PE STRUCTURA, NU
       MASURATA (tenantii de test sunt goi/sintetici; nu exista payroll real). De reverificat cu cifra
