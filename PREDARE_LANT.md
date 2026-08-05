@@ -2,6 +2,56 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba)
 
 # PREDARE — Campania EXTINDEREA ACOPERIRII (05.08.2026)
 
+## ★ PREDARE FINALA 05.08.2026 (inchidere sesiune) — CITESTE ASTA INTAI (restul de mai jos = istoric tura cu tura)
+
+**STARE:** HEAD = origin/main = origin/backup/lant-20260805 = **a979715**. Tree curat. Suita **1445 passed / 2 skipped /
+21 xfailed** (COLLECTED 1468). verificator TOTAL **0**. Ritual de pornire (prima actiune): `pwd; hostname; git log -1`;
+`python -m core.agenda`; `python -m core.agenda_drift`. Push sub poarta verde pe backup SI main, fara aprobare (§2.3 pct.8).
+
+**CE S-A INTAMPLAT:** sesiunea a pornit pe 1c-CM (concedii medicale). Verificarea rotunjirii la sursa a scos ca premisa
+retetei era gresita + o NECONFORMITATE FISCALA ACTIVA -> deviere justificata pe descoperiri, apoi pe cererile lui Costin.
+Livrate (fiecare cu proba RED/GREEN/DUK + gard + poarta verde + push):
+1. **D112 CM baza salariala CAS/CASS/CAM = castig REALIZAT** (proratat pe zile lucrate), nu brut intreg (ced5e23).
+   CF art.139(1) "realizat". Supra-declarare ~952 lei/angajat-luna eliminata.
+2. **Poarta cale2 D112 pe valorile EMISE** (post-generare), nu pre-emisie (27adccf). Doar D112 avea blind-spot-ul.
+3. **Impozit CM neimpozabil** (08/09/15/17/91/92, CF art.62 lit.c) exclus din baza impozitului, SIMETRIC (+CAS/CASS
+   aferent), in taxe_cm + d112.bimp (0abb9cc). Coduri 14/18 = impozabile (DECIZII.md).
+4. **Poarta pe ARTEFACT** (res==parse(emis)) pe 6/7 declaratii (cb752e8): totalPlata_A parsat din XML == res.
+   d406 = exceptie lossy. 2b (rotunjire) NU e prins de asta (per-rand, treaba DUK).
+5. **Feature CNP persoana ingrijita** D_8 (09/91/92) / D_8a (17): schema+migrare (1/1 tenant) + validare cifra control +
+   emisie + UI (Design System) + block pe CNP lipsa + E2E cod 09 DUK VALID (d878762).
+6. **Campania C (5 clase oarbe)** (94fe7d0..a979715): C5 (AST anti-except + mutant-zero), C2 (fluturas<->D112 via
+   artefact contabil + D101 preexistent; D100/D205 tautologii numite), C3 (snapshot+hash regenerare-diff + orfani;
+   Sigma debit=Sigma credit tautologic pe schema), C4 (coada REDARE + procedura scrisa), C1 (limita scrisa). Stare
+   completa: TESTE.md capitolul "Metode de verificare" sectiunea 7.
+
+**RAMAN (follow-up scopat; nimic blocat definitiv, toate actionabile):**
+- **1c-CM reconciliere propriu-zisa** - deblocata de poarta pe valori emise (pct.2 de sus), NEimplementata. cale2 poate
+  acum recalcula independent CAS/CASS emise pt CM si le confrunta; CM ramane sarit (cm_ids) in reconciliaza pana atunci.
+- **2b rotunjire** - B4_8 = Sigma(round componenta) vs oficial ROUND(B4_7*25%); pe granita 1-2 lei, DUK-invalid. Aliniere
+  single-round in emisie = DECIZIE DE PRODUS (schimba iesirea ANAF). GARZI 05.08 tura 4.
+- **C1 migrare enforce** - facturi cheie unica naturala (dupa DEDUP) + money columns SET NOT NULL (dupa audit NULL);
+  riscant pe date existente -> pas dedup/backfill INTAI. TESTE sectiunea 7.
+- **C3 wiring** - job nocturn echilibru_perioada_db per tenant + tabel snapshot pt amprenta la depunere.
+- **C5 mutant-zero** - extins la d100/d101/d300/d394/d406 (marker de continut per generator).
+- **d406 poarta pe artefact** - partida dubla necablata (fixturi de test cu GL dezechilibrat de curatat); DUK accepta GL
+  dezechilibrat = constatare.
+- **P2/P3/P4 din campania ORIGINALA** (NEATINSE - sesiunea a deviat pe CM): P2 D101 impozabil (ajustari computed vs §8
+  manual), P3 amortizare MF neliniara (xfail test_datorie_mf_metode_amortizare), P4 D394 tip_document 2-5. Detalii in
+  sectiunile PUNCTUL 2/3/4 din predarea originala mai jos.
+
+**DECIZII CERUTE (produs, Costin):**
+1. **GDPR CNP tert minor** - cnp_ingrijit = prelucrare date tert minor sensibile. F199-F205 = drepturi persoana vizata,
+   NU ROPA (art.30, LIPSESTE). Nicio baza documentata. Cere temei art.6/9 + informare art.14 + ROPA. Feature livrat (D112
+   il cere fiscal); POLITICA GDPR ramane de decis. GARZI tura 11.
+2. **2b rotunjire** (single-round) - schimba iesirea ANAF cu 1-2 lei pe granita.
+
+**REGISTRE la zi:** GARZI (garduri + INVENTAR + turele 3-15), DECIZII (14/18), TESTE (Inventar A + capitolul metode
+sectiunile 6-7), ISTORIC (turele 3-15). SURSA UNICA respectata.
+
+---
+
+
 
 ## PREDARE 05.08.2026 (tura 12) - Campania C in curs: C5 partial livrat, C1/C2/C3/C4 + C5-mutant-zero raman
 
