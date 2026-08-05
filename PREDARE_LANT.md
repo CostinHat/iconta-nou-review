@@ -1,106 +1,70 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
-# PREDARE LANT — 04.08.2026 (rularea 11)
+# PREDARE — Campania EXTINDEREA ACOPERIRII (05.08.2026)
 
-Sesiune noua, context gol. Comanda de pornire: "Citeste PREDARE_LANT.md si continua lantul."
-Raspunde in ROMANA. Server: `ssh iconta`, `~/iconta_nou` (branch main). Rulezi pytest/DUK/verificator/commit PE SERVER.
-NOTA quoting: pentru editari de fisiere pe server foloseste `cat fisier_local | ssh iconta "python3 -"` (pipe),
-NU heredoc inline in `ssh "... <<'EOF' ..."` cu ghilimele Python `"` inauntru - se ciocnesc cu ghilimelele ssh.
-Pentru commit cu ghilimele simple in mesaj, foloseste `git commit -F fisier_mesaj`.
+## Stare la predare
+- HEAD = origin/main = backup/lant-20260805 = **4ad6f72**. Tree curat. Suita 1418 passed, verificator 0.
+- Ritual de pornire: agenda_drift curat, agenda arata campania GARDUL DE CONTINUT inchisa (6/6).
+- REGULA NOUA de push (decizia c rasturnata 05.08, CLAUDE.md §2.3 pct.8): dupa fiecare executie, sub POARTA VERDE
+  (pytest COLLECTED + verificator 0 + tree curat), push pe backup SI main FARA aprobare. Raportul §2.2 sect.11
+  confirma HEAD=origin/main=backup pe acelasi commit.
 
-## Ritual de pornire (§5)
-1. `git log --oneline -1` -> HEAD asteptat: **234460b** (sau mai nou). `git status --porcelain` -> TREE_CURAT.
-2. `venv/bin/python -m pytest -q` -> asteptat ~1350 passed, 2 skipped, 21 xfailed. Verificator: `venv/bin/python3
-   verificator_conformitate.py` -> TOTAL 0 candidate.
-3. `venv/bin/python3 -c "from core import agenda; print(agenda.urmator_cluster())"`
-   -> **(('MovementType nomenclator', 'd406'), 9, 1)** = urmatorul cluster, 9 ramase, 1 blocat (preexistent).
+## Campania: 4 puncte, in ordinea data de Costin (NU se schimba fara sa-i spui de ce)
+Tiparul uniform (ca la cele 6 garduri de continut): recalcul INDEPENDENT (SQL+formula proprii), non-tautologie
+probata pe AST (+ lant TRANZITIV la D112), mutatie obligatorie, HARD-BLOCK la divergenta care numeste ambele valori,
+limita de acoperire DECLARATA. Orice valoare fiscala se verifica la sursa (common.cota / act) INAINTE de cod, cu comanda aratata.
 
-## Urmatorul cluster: MovementType nomenclator | d406
-D406 (SAF-T). "MovementType" = nomenclatorul ANAF de miscari de stoc. Codul are DEJA MISCARI_STOC = {10:Achizitie,
-20:Productie, 30:Vanzare}, MOVEMENT_IMPLICIT="10" (d406.py ~91-96), documentat validator-confirmat (trimitea "1"
-care nu exista). Tipar probabil VERIFICARE + gard (ca UoM: confirma codurile pe validator/jar + default + semnal).
-NOTA: clusterul URMATOR (BaseRate) e in acelasi comentariu: BASE_RATE=1 (pro-rata standard = 1 intreaga suma, NU
-100). Sursa d406 = XSD saft.xsd (/opt/duk/saft/saft.xsd) + D406Validator.jar (/opt/duk/saft/val/...) - se pot EXTRAGE
-codurile din jar (ca la UoM: grep pe coduri distinctive). DUK d406 = xfail preexistent (baza SAF-T nu-i valida).
+### PUNCTUL 1 - D112 cazuri complexe (facilitati/CM/part-time/tichete). Se iau pe rand, ordinea prevalentei; dupa fiecare, cat a crescut acoperirea.
+- **1a FACILITATE la minim, toata luna, full-time - LIVRAT (4ad6f72).** baza_contrib=sm-facilitate (S1 fac=300,
+  S2 fac=200, verificat common.cota), CAS+CASS. Detectare stabilitate `_stabil_la_minim` (fara schimbare salariu in luna).
+  Facilitatea PRORATATA (schimbare in luna) ramane sarita numit. Acoperire ~20-35% -> ~30-45% (est, nemasurat).
+  ROTUNJIRE: generatorul tine cas la 2 zec (937.50); D112 EMITE intreg via _d112int (half-up->938); calea 2 confrunta
+  valoarea EMISA: `got=_q(g[cas])`, nu int() trunchiere. (core/d112_reconciliere.py)
+- **1b TICHETE - URMATORUL, NEINCEPUT.** Analiza facuta: tichetele de masa NU ating baza CAS (salarizare.py: b_imp=b+exces_vac,
+  tichetele nu sunt in `b`) -> CAS = baza_contrib x cota_cas E RECONCILIABIL pentru angajatii cu tichete de masa.
+  CASS insa creste cu cass_tichete (=nominal tichete x cota_cass) -> CASS pentru ei ramane de acoperit separat.
+  Deci 1b poate reconcilia CAS pentru angajatii cu tichete de masa (fara alte beneficii), CASS ramane numit-afara.
+  CAVEAT: tichetele cer pontaj CONFIRMAT (d112.pull ridica PerioadaNeconfirmata daca tichet_masa_valoare>0 si pontaj
+  neconfirmat) -> fixtura de test trebuie sa confirme pontajul (mecanismul core.perioada.e_confirmat / tabela de
+  confirmari - de gasit numele corect, NU e perioade_confirmate). Tichetele de VACANTA au excesul peste plafon anual
+  (6 sm) care INTRA in baza (b_imp) -> pe alea CAS se schimba; acopera intai doar tichet de MASA (exces_vacanta=0).
+- **1c CM + PART-TIME - NEINCEPUT.** CM: baze/procente proprii OUG 158/2005 (complex). Part-time: suprataxare
+  CF art.146 alin.(5^6) - baza pt CAS/CASS ridicata la prag (part_time in structura D112). Fiecare = sub-caz separat.
 
-## INCHIS rularea 11: UoM UN/ECE | d406
-Verificat CONFORM: UOM_UNECE = coduri UN/ECE Rec.20 (nu unitati RO), validator-confirmate (proba 15.07 BUC respins +
-extractie D406Validator.jar: H87/KGM/.../MWH prezente, BUC absent); default H87 + semnalare la necunoscut; XSD =
-SAFcodeType (lista in validator, nu enumerare). Gard nou. Metoda utila d406: extractie coduri din jar + XSD.
+### PUNCTUL 2 - D101 profitul IMPOZABIL (ajustari fiscale). Anual, miza mare.
+Azi calea 2 (core/d101_reconciliere.py) acopera doar profitul CONTABIL (P1/P2/P4/P5 din clasele 7/6). Ajustarile
+(P6 deduceri, P7, P8 nedeductibile, P10 pierderi reportate) sunt in d101 INTRARI MANUALE ale contabilului (default 0,
+d101.py:104-106 + genereaza) -> §8, calea 2 NU le poate recalcula din nimic (nu exista sursa in date). VERIFICA la
+sursa (CF art.25 cheltuieli deductibile/nedeductibile, art.26 provizioane/rezerve) CE ajustari CALCULEAZA generatorul
+din date (nu manual) - DOAR alea intra in calea 2. Ex. deja calculat de generator: rezerva legala deductibila
+(d101.pull ia capital/rezerva_existenta/chelt_impozit din 1012/1061/691 - vezi d101.pull) -> P al rezervei se poate
+reconcilia independent din aceleasi conturi. Daca restul ajustarilor raman manuale, SCRIE ca profitul impozabil
+ramane pe golden+§8 si calea 2 acopera doar ajustarile COMPUTATE (rezerva legala etc.), nu "D101 impozabil acoperit".
 
-## INCHIS rularea 10: plan conturi pe norma | d406
-Verificat: planul SAF-T filtrat pe nomenclatorul oficial al normei (plan_oficial); conturi ne-norma excluse (ANAF
-le respinge), AccountID sintetic. REPARAT drop TACIT: conturile excluse (strain) nu erau surfaced (pull nici nu le
-returna); acum pull le returneaza si genereaza le SEMNALEAZA in avertisment (numite) - ca N in d394 (Costin: exclus
-dar VIZIBIL). Gard DB nou. Corectat inventar (fisiere test_limita_text -> test_d406).
+### PUNCTUL 3 - amortizare MF neliniara (degresiva+accelerata). Subsistem propriu.
+Temeiuri deja culese: CF art.28 alin.5-8 (eligibilitate pe clasa, coeficienti degresiv 1.5/2/2.5 dupa durata,
+accelerata 50% an 1). xfail deja deschis: **test_datorie_mf_metode_amortizare** (ancora). Atinge MF (core/mijloace_fixe
+sau d406_active.py) + D101 (amortizare fiscala P11) + D406 AssetTransactions. REGULI ANUALE (schema pe ani,
+switch-to-liniar la degresiva cand rata liniara pe durata ramasa depaseste degresiva, prorata an partial). O amortizare
+gresita = deducere fiscala eronata in D101 -> nu pe jumatate. Daca prea mare pt un punct: SUB-BLOCAJ motivat (4 elemente
+CE/DE CE/CE TREBUIE/URMATOR) si mergi mai departe. VERIFICA art.28 la sursa inainte de cod.
 
-## REZOLVAT rularea 8 (decizie Costin executata): operatiuni N neinreg | d394 - approach (b)
-Bug-ul activ N (achizitii de la neinregistrati -> D394 respins) e REZOLVAT cu approach (b) ales de Costin:
-operatiunile N se EXCLUD din D394 cu AVERTISMENT VIZIBIL (numeste furnizorul+suma, in res.avertismente -> payload
-coada -> UI+flux, nu doar log); restul declaratiei ramane valid. Gard anti-regresie pastrat. DATORIE (in GARZI 04.08)
-pt implementarea completa (a): tip_N (camp nou contabil, UI bunuri/servicii) + tip_document 2-5 (extindere contract)
-+ document_N = CAMPANIE PROPRIE dupa ce se decide UI-ul pt tip_N. Vezi DECIZII 04.08.
+### PUNCTUL 4 - tip_document 2-5 in D394 (borderouri/file carnet/contracte/alte). Ultimul - extindere de contract.
+Azi calea auto D394 emite mereu tip_document=1 (facturi), CORECT pt ce se introduce azi. Devine necesar DOAR cand
+exista o cale care creeaza operatiuni pe borderou/contract. VERIFICA daca exista o asemenea cale (grep pe
+tip_document / borderou / operatiuni manuale d394). Daca NU exista -> spune-o si trateaz-o ca EXTINDERE AMANATA cu
+trigger scris in GARZI (ex. "cand apare UI de operatiuni pe borderou"), NU ca datorie deschisa.
 
-Clustere d394 inchise rularea 6-9 (TOATE d394 din secventa GATA): tip_partener (pct.216), rezumat1 (tp1/tp3 conform + N=approach b excludere cu avertisment), nomenclator codPR (validator-confirmat, gaze 36; lit.l rezolvat 6675f19), totalPlata_A R17 (sursa unica + R17 pe validator). Datorie d394 ramasa: suport COMPLET N (approach a) = campanie proprie dupa UI tip_N (GARZI 04.08).
+### NU e in campanie
+Agricultorul forfetar - blocat pe absenta ghidajului ANAF, nu se poate debloca prin munca, ramane exceptie numita.
 
-## Ce am facut in rularea asta (MULT: audit mare + 6 clustere; HEAD 93b01a6 -> c185188)
-### A. AUDIT "limita text" pe TOATE cele 9 declaratii cerute de Costin + d710 (2 commituri: 7be77a3 + 1687dec)
-Datoria "limita text 75" din predarea rularii 3 e ACHITATA. Premisa veche (comentariul text_anaf: "ANAF respinge
-orice text >75") era FALSA - INFIRMATA de proba DUK boundary-cu-boundary pe fiecare camp. Rezultat:
-- **core.common.LIMITE_TEXT_ANAF** = SURSA UNICA a limitelor de text {declaratie: {camp: C(n)}}, din structura
-  oficiala, confirmate DUK (den/denR/denP/denO 200, adresa/adresaR 1000, functie_declar 50, functie_reprez 100,
-  nume/prenume/numeAsig/prenAsig/den_intocmit/calitate_intocmit 75, den1 100, banca/cont 50, telefon 15, mail 200;
-  d406 SAF-T: tipuri XSD 18/35/70/256).
-- **common.text_anaf CERE acum limita explicit** (scos default-ul global 74 - un apel fara limita = TypeError).
-  Toate generatoarele (d100/d101/d112/d205/d300/d301/d390/d394/d710/d406) paseaza limita din registru.
-- 3 clase de defect reparate: OVER-trunchiere (den/adresa/nume taiate la 74 = pierdere date); UNDER-trunchiere
-  (functie_declar 74>50 => ANAF RESPINGEA); FARA-limita (denO/denP/mail/banca/cont/telefon/Customer-Supplier Name
-  SAF-T netrunchiate => respingere daca depaseau).
-- **GARD DE CLASA** (cerut de Costin): `test_limitele_de_text_vin_din_registry` (core/test_limita_text_anaf.py) -
-  scaneaza AST fiecare generator, RESPINGE orice apel text_anaf/_t care nu ia limita din LIMITE_TEXT_ANAF. O limita
-  ne-oficiala (literal / lipsa) e imposibila. Plus test_generatoarele_trunchiaza_la_limita_per_camp +
-  test_limite_text_confirmate_pe_duk_boundary (proba DUK). Testul blanket-75 rescris pe limite per-camp.
-- Ramase: nr_doc d301 EXCLUS din registru (DUK respinge si la C(20) - nu-i limita de lungime, are alte reguli).
-  d406 DUK boundary N-A putut fi probat (d406 DUK = xfail preexistent "cont referit absent din chart"); limitele
-  d406 vin din XSD SimpleTypes (oficial), pazite de gardul de clasa + validarea XSD SAF-T.
+## Reguli de oprire (Costin)
+Oprire DOAR pentru: poarta rosie, tree murdar, esec migrare pe tenant real, sau alegere care schimba ce declara
+contabilul si NU rezulta din structura oficiala. Prea mare pt un punct -> sub-blocaj motivat, mergi mai departe.
+Raport §2.2 per punct/sub-caz. RAPORT FINAL la sfarsit: acoperire per declaratie inainte/dupa, cifre unde exista,
+"nemasurat" unde nu.
 
-### B. Clustere din lant inchise (verzi, bifate in Inventar A)
-- **checksum totalPlata_A | d205** (3a1f69c): aliniere sursa unica (ultimul outlier clasa-d100).
-- **trunchiere den/adresa | d205** (bbf1967): neconformitate DUK (den200/adresa1000/functie50/den1-100).
-- **randuri / checksum | d300** (8192249): verificat + excludere 14.1/14.2.
-- **checksum totalPlata_A (R28) | d301** (93b01a6): verificat + gard legatura.
-- **nomenclator tari (HR->CR) | d390** (c185188): NECONFORMITATE - maparea HR->CR era GRESITA. Proba DUK: tara=CR
-  RESPINSA ("nu se afla in lista"), tara=HR VALID. _TARA_XML golit, Croatia emite HR. Restul TARI_UE conform
-  (GB/XI DUK-valide pt 2026). Un partener croat real facea D390 respins - bug latent.
-- **tipuri operatiune (pct.215) | d394** (bb6e0c4): VERIFICAT (TIPURI = exact structura, pin adaugat) + DATORIE ASI.
-  Probat izolat pe DUK: validatorul accepta 8 tipuri (L/V/A/C/N/LS/AS/AI) dar RESPINGE **ASI** ("nu se afla in
-  lista") - struct pdf are ASI, jar-ul NU (discrepanta pdf-vs-jar). Corectare BLOCATA pe decizie produs (scoate ASI
-  vs remapare vs versiune validator - schimba ce declara contabilul). Gard anti-regresie adaugat. VEZI datoria jos.
-- (guvernanta §2.3 c1a679c: PREDAREA trimite la reguli - vezi prima linie a acestui fisier.)
-
-## LECTIE MARE a rularii (de tinut minte): COMENTARIUL NU E O PROBA
-De DOUA ori in aceasta rulare un comentariu de cod care declara o regula "corecta si verificata" era GRESIT, si
-DUK a aratat imediat adevarul: (1) text_anaf "ANAF respinge >75" - fals, fiecare camp are C(n) propriu; (2) d390
-"HR se scrie CR in nomenclator" - fals, e HR. Regula: orice remapare/limita (tara, cod bugetar, tip, lungime) se
-PROBEAZA pe validatorul DUK, nu se ia pe incredere din comentariu. (Extinde R17: validatorul e autoritatea.)
-
-## Reguli permanente (rezumat - detaliile in CLAUDE.md §2.2/§2.3)
-- NU push pe main (decizia c). Push de siguranta la finalul rularii: `git push -f origin HEAD:backup/lant-20260803`.
-  Ultimul la c185188.
-- Nu opri lantul la granite curate. Continua pana la un criteriu §2.3 (blocat / decizie produs / neconformitate care
-  cere oprire / poarta rosie sau tree murdar / context epuizat). Oprirea rularii asta = CONTEXT (pct.6), la c185188.
-- Fiecare cluster: red->green sau verificare, gard §9, DECIZII/GARZI/TESTE actualizate, Inventar A bifat √, secventa
-  regenerata (renumerotare DOAR pe blocul secventei - atentie sa nu atingi alte liste numerotate din TESTE.md),
-  consistenta secventa==calculata (test_agenda), commit LOCAL.
-- Gard anti-stale test_agenda: bifa Inventar A in ACELASI commit doar daca fisierul de test EXISTA deja in git.
-- §3: TEXTUL/STRUCTURA castiga fata de intelegere, DAR probeaza pe DUK (vezi lectia de mai sus + R17). Atentie la
-  derogari temporare (OUG) care nu-s in textul consolidat.
-
-## Datorii deschise (in DECIZII.md, campania "achitare datorii")
-ACHITATA rularea 3-4: limita text (toate declaratiile). ACHITATA rularea 6: ASI in D394 - REZOLVAT cu greenlight Costin. ASI scos din TIPURI/TIP_COTA_ZERO/REZ1_FARA_TVA (8 tipuri A,L,C,V,AI,LS,AS,N, aliniat validatorul J8). OPANAF 77/2022 (MO 95/2022, salvat anaf_surse/opanaf_77_2022.* cu sha256) CONFIRMA fost-ASI->AS. Fara date ASI de migrat (op1.tip nepersistat). Gard devenit INVERS (test_asi_ramane_scos_gard_invers). NOUA DATORIE (follow-up non-blocanta, rularea 6): d301_struct (2013) si d390_struct (2020) sunt surse INVECHITE in anaf_surse/ - reimprospateaza-le de la ANAF si re-verifica listele de tipuri/nomenclatoare pe validatorul curent, ca la d394 (codul lor e deja validator-verificat, non-urgent). d394_struct marcat INVECHIT (sursa curenta = opanaf_77_2022). LECTIE: un pdf de structura vechi in anaf_surse/ e o mina - marcheaza-l INVECHIT, sursa de tipuri/nomenclatoare = validatorul INSTALAT + ordinul din MO. Vezi DECIZII 03-04.08. Ramase: d406 DUK xfail (cont referit absent) - cand se
-repara, se poate adauga proba boundary d406. nr_doc d301 (reguli de format DUK, nu lungime). Preexistente: A2
-(D390 ziua 15), A3 (D177 form), C1/C2 (tichete cresa/culturale MO), C3 (amortizare MF neliniara xfail), C4 (D112
-avantaje 8.3), C5 (migrare tichete). D101 scadenta lege-vs-validator (decizie produs Costin).
-
-## Xfail-uri (21) = registrul de datorie (test_datorie.py) + d101/d406 smoke DUK (test_smoke_duk). Nu le "repara"
-fara sa citesti motivul.
+## De ce m-am oprit aici
+Granita curata de commit (1a livrat+pins). Restul campaniei (1b/1c + P2/P3/P4, mai ales amortizarea neliniara)
+e mai mult decat un context; §2.3 pct.6 - oprire la granita curata cu predare, nu start de sub-caz riscand tree murdar.
+Registrele (GARZI/DECIZII/TESTE/ISTORIC) sunt la zi pentru 1a. Firul in TESTE.md "In lucru acum" arata urmatorul = 1b.
