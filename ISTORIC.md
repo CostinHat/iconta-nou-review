@@ -3159,3 +3159,25 @@ achizitii / semn inversat -> reconcilierea PICA numind ambele valori, ex. "cota 
 cale2=800"); proba functionala pe schema efemera (genereaza cu poarta -> divergente []). Gard:
 core/test_d394_reconciliere.py (6). Suita 1397 passed (+6), verificator 0, commit local 6f19ebe. Ramas in campanie:
 D112 -> D406 -> D101/D205.
+
+
+## 05.08.2026 — GARDUL DE CONTINUT pas 3/6: a doua cale D112, DOAR cazul simplu — commit 06dc9df
+
+Pas 3, cel mai EXPUS la tautologie: totalurile D112 vin din salarizare.calcul_salariu. core/d112_reconciliere.py
+recalculeaza INDEPENDENT CAS/CASS per angajat = brut x cota (cotele din common.cota = registrul de lege), DOAR pentru
+CAZUL SIMPLU: brut STRICT peste salariul minim (facilitatea se declanseaza exact la brut==minim, verificat la sursa in
+salarizare.py), fara CM, norma intreaga, ne-scutit, fara tichete, luna intreaga. Poarta HARD-BLOCK in d112.genereaza
+(care paseaza salariati cu cas/cass ca DATE de verificat; calea 2 nu cheama pull/calcul_salariu).
+
+Scris ONEST ca "cazul simplu acoperit", NU "D112 acoperit". IN AFARA (extindere = pas separat): facilitati/scutiri/
+plafoane/part-time, concedii medicale, IMPOZIT (cere deducerea degresiva art.77), CAM, tichete - un angajat cu oricare
+e SARIT (NEACOPERIT), nu comparat.
+
+Cerintele lui Costin pe D112 (cel mai expus): (1) non-tautologie probata pe lantul de import TRANZITIV - inchiderea
+importurilor core.* din d112_reconciliere NU contine salarizare/d112/salariu_istoric; calea 2 isi trage singura brutul
+(SQL propriu). (2) ce intra / ce ramane afara - scris explicit mai sus, nu "acoperit" generic.
+
+Probat: non-tautologie tranzitiva; mutatie (cas/cass gresit -> "salariat 1 cas: generator=9999 vs cale2=1500");
+caz nesimplu (facilitate la minim) SARIT fara alarma falsa; proba functionala pe schema efemera (2 simpli reconciliati,
+cel la minim sarit). Gard: core/test_d112_reconciliere.py (5). Suita 1402 passed (+5), verificator 0, commit local 06dc9df.
+Ramas in campanie: D406 -> D101/D205.
