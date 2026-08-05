@@ -1515,3 +1515,25 @@ Vezi TESTE.md capitolul metode sectiunea 7 (stare finala pe toate 5). Sumar cu c
 - C4: test_datorie xfail reactualizat (19 COTE, functii in upgrade) + procedura scrisa (TESTE sectiunea 6).
 - C1: LIMITA scrisa (nu gard fals). Goluri reale: facturi fara cheie unica naturala (import dublat posibil); money
   columns DEFAULT 0 nu NOT NULL. Migrarea enforce = riscanta pe date murdare existente -> follow-up dedup/backfill scopat.
+
+## 06.08.2026 — Divergență CUNOSCUTĂ validator-vs-lege: baza minimă part-time (DUK scade facilitatea)
+
+DECIZIE COSTIN (06.08): urmăm LEGEA, nu validatorul DUK. Documentat aici cu temeiul scris.
+
+**Regula de lege (verbatim):** CF (Legea 227/2015) **art.146 alin.(5^6)** [CAS] — „Contribuția de asigurări sociale
+datorată ... în baza unui contract individual de muncă cu normă întreagă sau cu timp parțial ... nu poate fi mai mică
+decât nivelul contribuției ... calculate prin aplicarea cotei prevăzute la art. 138 lit. a) asupra **salariului de bază
+minim brut pe țară în vigoare în luna** pentru care se datorează ..., corespunzător numărului zilelor lucrătoare din lună
+în care contractul a fost activ." (modif. 01.01.2025, OUG 156/2024 art.LXIV pct.14). Simetric pentru CASS (art.157).
+Facilitatea de 300/200 lei (OUG 156/2024 **art.LXVI alin.(1)**) se acordă DOAR salariaților „încadrați cu **NORMĂ
+ÎNTREAGĂ**" → nu diminuează floor-ul part-time.
+
+**Ce face codul (corect pe lege, fix 06.08):** `d112.py prag_pt = sm` și `d112_reconciliere.py prag = sm` — floor part-time
+= salariul minim INTEGRAL. Gard `test_d112_part_time_baza_minima_salariul_minim_integral` (B4_5P=4050 iunie, mutație pică).
+
+**Divergența DUK:** DUKIntegrator dă **ATENȚIONARE** (nu eroare) regula SP1B4_1: „B4_5P(4050) diferit de suma calculată
+3750" — validatorul **scade facilitatea** (3750 = 4050−300) din floor-ul part-time, contrar art.146(5^6). Atenționarea
+NU blochează depunerea (ANAF acceptă declarația). NU aliniem codul la validator (ar sub-declara CAS/CASS part-time,
+contra legii). Ca la D101-scadență (validator DUK invers față de CF art.42): codul urmează legea; divergența e cunoscută
+și scrisă. Declanșator de reevaluare: DUK actualizează SP1B4_1 la art.146(5^6), SAU ANAF confirmă interpretarea sm−fac
+(caz în care ar deveni decizie de produs deschisă).
