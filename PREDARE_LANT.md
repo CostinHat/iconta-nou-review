@@ -2,6 +2,44 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba)
 
 # PREDARE — Campania EXTINDEREA ACOPERIRII (05.08.2026)
 
+## PREDARE 05.08.2026 (tura 6) — dupa A+B; urmeaza C (5 clase oarbe)
+
+STARE: HEAD = origin/main = origin/backup/lant-20260805 = **27adccf**. Tree curat. 1424 passed / 2 skipped / 21 xfailed,
+verificator 0.
+
+INCHIS in aceasta sesiune (tura 3-6), peste starea de campanie:
+- 1c-CM NU s-a implementat ca reconciliere; in schimb verificarea lui a scos DOUA neconformitati, reparate:
+- **A (ced5e23): D112 CM baza salariala pe brut INTREG -> proratat pe zile lucrate** (CF art.139(1) "castig REALIZAT",
+  structura D112 B4_7=B2_5+B3_7). Neconformitate fiscala activa (supra-declarare ~952 lei/angajat-luna CAS + CASS + CAM).
+  Gard test_d112_cm_baza_salariala_realizata_nu_brut_intreg; DUK valid. (GARZI 05.08 tura 4/5.)
+- **B (27adccf): poarta cale2 D112 re-arhitectata pe valorile EMISE** (post-generare XML), nu pre-emisie. DOAR D112
+  afectat (restul 6 = res==emis). Gard test_d112_poarta_reconciliaza_valorile_emise_nu_pre_emisia. (GARZI 05.08 tura 6.)
+- **2b DESCHIS (datorie):** rotunjire Sigma(round) vs round(total) [structura: B4_8=ROUND(B4_7*25%)]. Pe fixturi
+  non-granita coincid; pe granita B4_8 emis poate diferi de DUK cu 1-2 lei. GARZI 05.08 tura 4.
+- **1c-CM DEBLOCAT** de B (poarta vede acum emisul): reconcilierea CM propriu-zisa se poate implementa; ramane sarit
+  (cm_ids) pana atunci.
+
+URMEAZA: **C — cele 5 clase de eroare fara nicio metoda de verificare.** Spec COMPLET (metoda concreta, cost, tautologie,
+ordine efect x cost, perechile C2) e in **TESTE.md capitolul "Metode de verificare — clasele oarbe"**. Ordinea argumentata
+(de implementat, fiecare cu: metoda concreta ce-compara-cu-ce + non-tautologie probata pe AST ca la reconciliere + mutatie
+obligatorie + limita scrisa din start; daca o clasa nu se poate acoperi non-tautologic -> numita, nu fortata):
+  1. C5 mutant-zero + gard anti-`except: return 0/pass` pe caile de bani (cost mic, demasca restul, zero tautologie).
+     ATENTIE scop: tinteste DOAR functiile de bani (calcul_*/build_xml/pull), altfel fals-pozitive pe except-urile
+     legitime (tabele optionale etc.).
+  2. C2 reconciliere INTRE documente pe perechile cu cai INDEPENDENTE - fluturas(stat_plata)<->D112 INTAI (are deja
+     divergenta dovedita azi; B a livrat precondictia = valorile emise). Apoi Sum(D112 lunar)<->D205; balanta<->D101
+     deja partial. NU pe D100<->D112 (pass-through=tautologie pura pana se fac independente).
+  3. C3 snapshot+hash la depunere + regenerare-diff + job nocturn Sdebit=Scredit (snapshot state_plata deja DECIS, GARZI A).
+  4. C1a invarianti DB pe intrare (NOT NULL bani + cheie unica). 5. C1b intrare<->document sursa. 6. C4 a doua lectura/DUK.
+Perechile C2 verificate in cod (TESTE.md): fluturas<->D112 NECONTROLAT (azi divergenta), D100<->D112 NECONTROLAT
+(pass-through), D205<->D112 NECONTROLAT, balanta<->D101 PARTIAL, SAF-T<->balanta NECONTROLAT, D300<->jurnale PARTIAL.
+
+DE CE M-AM OPRIT AICI (§2.3 pct.6): buget de context dupa A+B (doua fix-uri fiscale cu proba completa). C e o suita de
+5 clase, fiecare un modul+gard+mutatie - mai mult decat un context. Oprire la granita curata de commit (27adccf), nu
+start de C riscand stare partiala. Registrele (GARZI/DECIZII n/a/TESTE/ISTORIC) la zi prin tura 6.
+
+---
+
 ## Stare la predare
 - HEAD = origin/main = origin/backup/lant-20260805 = **ef9ba55** (sau commitul acestei predari, dupa push). Tree curat. Suita 1422 passed, verificator 0.
 - NOU: GARZI.md are sectiunea **INVENTAR DESCHISE NON-CAMPANIE** (index canonic al tuturor deschiselor din afara celor 4 puncte;
