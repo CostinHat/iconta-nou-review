@@ -20,9 +20,10 @@ def stat_plata(conn, schema, an, luna):
             SELECT id, nume, prenume, salariu_brut, persoane_intretinere, part_time, ore_zi,
                    tichet_masa_valoare, iban, cor, data_angajare, data_incetare
             FROM {schema}.salariati
-            WHERE data_incetare IS NULL OR data_incetare >= %s
+            WHERE (data_incetare IS NULL OR data_incetare >= %s)
+              AND (data_angajare IS NULL OR data_angajare < (%s::date + INTERVAL '1 month'))
             ORDER BY nume, prenume
-        """, (date(an, luna, 1),))
+        """, (date(an, luna, 1), date(an, luna, 1)))
         randuri = cur.fetchall()
     # CM-uri pe luna
     with conn.cursor() as cur:

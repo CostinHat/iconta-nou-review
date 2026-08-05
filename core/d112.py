@@ -431,8 +431,12 @@ def pull(conn, schema, an, luna):
         cur.execute(f"SELECT * FROM {schema}.firma_profil WHERE id = 1")
         prof = dict(cur.fetchone() or {})
         from datetime import date as _dsal
-        cur.execute(f"SELECT * FROM {schema}.salariati WHERE (data_incetare IS NULL OR data_incetare >= %s) ORDER BY id",
-                    (_dsal(an, luna, 1),))
+        # [fix data-angajare 06.08.2026] salariat activ IN luna = angajat pana la sfarsitul lunii SI
+        # neincetat inainte de inceputul ei. Fara gardul pe data_angajare, D112 pe o luna anterioara angajarii
+        # includea salariatul -> DUK S7 (dataAng > data raportare). Aceeasi clasa ca migrarea date-aware pe jumatate.
+        cur.execute(f"SELECT * FROM {schema}.salariati WHERE (data_incetare IS NULL OR data_incetare >= %s) "
+                    f"AND (data_angajare IS NULL OR data_angajare < (%s::date + INTERVAL '1 month')) ORDER BY id",
+                    (_dsal(an, luna, 1), _dsal(an, luna, 1)))
         sal = [dict(r) for r in cur.fetchall()]
         # GARDA COLOANE (27.07.2026): SELECT * nu crapa cand o coloana dispare din schema -
         # randul iese fara cheia aceea, s.get() da None, iar None e absenta legitima ->
@@ -498,7 +502,11 @@ def pull(conn, schema, an, luna):
     ref = _dt(an, luna, 1)
     sm, _t1 = _cm.cota("salariu_minim", ref)
     fac, _t2 = _cm.cota("facilitate_salariu_minim", ref)
-    prag_pt = float(sm) - float(fac)  # baza minima part-time (structura D112: sm-facilitate)
+    # [fix part-time-floor 06.08.2026] baza minima part-time (CAS art.146(5^6) / CASS art.157) = salariul
+    # de baza minim brut INTEGRAL in vigoare in luna, corespunzator zilelor lucratoare active - NU diminuat
+    # cu facilitatea de 300/200 lei: aceasta (OUG 156/2024 art.LXVI) se aplica DOAR salariatilor cu NORMA
+    # INTREAGA, deci nu atinge floor-ul part-time. (Inainte: sm-fac -> baza part-time sub-declarata cu facilitatea.)
+    prag_pt = float(sm)
     nzl = _nzl(an, luna)  # zile lucratoare fara sarbatori (OUG 158 art.10)
     # ALINIERE la stat_plata_api:36-38 (15.07.2026). pull() chema calcul_salariu(brut,
     # la_data) GOL: fara persoane / norma_intreaga / venit_brut_total, si pe brutul

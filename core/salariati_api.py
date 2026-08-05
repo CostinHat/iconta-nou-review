@@ -136,7 +136,7 @@ def lista_salariati(conn, activ=None):
     import psycopg2.extras as _E
     cond, val = "", []
     if activ is True:
-        cond = " WHERE data_incetare IS NULL OR data_incetare >= CURRENT_DATE"
+        cond = " WHERE (data_incetare IS NULL OR data_incetare >= CURRENT_DATE) AND (data_angajare IS NULL OR data_angajare <= CURRENT_DATE)"
     elif activ is False:
         cond = " WHERE data_incetare < CURRENT_DATE"
     from core import salariu_istoric as _si

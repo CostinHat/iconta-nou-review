@@ -611,3 +611,41 @@ def test_d112_brut_si_baza_pe_salariul_lunii_nu_contractual_curent(schema):
     assert abs(b8 - round(b7 * 0.25)) <= 1, (
         "B4_7=%d dar B4_8=%d: baza si contributia CAS pe salarii sunt pe snapshot-uri DIFERITE de salariu "
         "(brut/baza stale vs contributie date-aware) - regula DUK S74d incalcata" % (b7, b8))
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_part_time_baza_minima_salariul_minim_integral(schema):
+    """[fix part-time-floor 06.08.2026] baza minima part-time (CAS art.146 alin.(5^6) / CASS art.157) = salariul
+    de baza minim brut INTEGRAL in vigoare in luna, NU sm-facilitate. Facilitatea de 300/200 lei se aplica DOAR
+    salariatilor cu NORMA INTREAGA (OUG 156/2024 art.LXVI), deci nu diminueaza floor-ul part-time. Salariat
+    part-time sub prag, luna intreaga, iunie 2026 (salariu minim 4050): baza minima emisa (B4_5P) = 4050, NU 3750
+    (=4050-300). MUTATIE: prag_pt = sm - fac in d112.pull -> B4_5P=3750 -> pica. NOTA: DUK da atentionare pe
+    4050 (validatorul scade facilitatea = 3750) - divergenta lege<->validator, urmarim legea (decizie Costin)."""
+    import re
+    from core import d112
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'PT','A','1900101410011','2026-01-01',2000,4,true)")
+    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    m = re.search(r'<asiguratB4\b([^>]*)/>', xml)
+    at = dict(re.findall(r'(\w+)="([^"]*)"', m.group(1)))
+    b5p = int(at.get("B4_5P", 0))
+    assert b5p == 4050, (
+        "B4_5P=%d: baza minima part-time trebuie sa fie salariul minim INTEGRAL (4050), nu sm-facilitate (3750) - "
+        "facilitatea e doar norma intreaga (art.LXVI)" % b5p)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_exclude_salariat_neangajat_inca_in_luna(schema):
+    """[fix data-angajare 06.08.2026] CLASA: selectia salariatilor activi PE PERIOADA trebuie sa filtreze si
+    data_angajare, nu doar data_incetare. D112 pe o luna ANTERIOARA angajarii NU trebuie sa includa salariatul
+    (altfel DUK S7: dataAng > data raportare). MUTATIE: scoaterea gardului data_angajare din pull -> salariatul
+    apare in ianuarie -> pica."""
+    from core import d112
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'NOU','A','1900101410011','2026-03-15',5000,8,false)")
+    _p, sal_ian = d112.pull(schema, SCHEMA_T, 2026, 1)   # inainte de angajare (15.03)
+    assert len(sal_ian) == 0, "salariat angajat 15.03 NU trebuie inclus in D112 pe ianuarie (era %d)" % len(sal_ian)
+    _p, sal_mar = d112.pull(schema, SCHEMA_T, 2026, 3)   # luna angajarii
+    assert len(sal_mar) == 1, "salariat angajat 15.03 trebuie inclus in D112 pe martie (era %d)" % len(sal_mar)

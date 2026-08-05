@@ -172,11 +172,14 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
             if este_pt:
                 if are_tichete_masa:
                     sarite.append(sid); continue   # part-time + tichete = combo ulterior, NEACOPERIT (numit)
-                # Nivelul minim (structura D112: sm - facilitate). Full month + fara CM (filtrate mai sus) ->
+                # Nivelul minim = salariul minim INTEGRAL (part-time n-are facilitate). Full month + fara CM ->
                 # zile_lucr = nzl -> prag_zile = prag_pt EXACT, fara proratare/pontaj (d112.py:517-520).
                 # Emisul per angajat pe baza RIDICATA: cas_min_pt/cass_min_pt daca s-a aplicat pragul
                 # (0<brut<prag), altfel cas/cass (brut>=prag; part-time n-are facilitate). = max(brut,prag) x cota.
-                prag = sm - fac_val
+                # [fix part-time-floor 06.08.2026] floor = salariul minim INTEGRAL (art.146(5^6) CAS /
+                # art.157 CASS): part-time NU are facilitate (aceasta e doar norma intreaga - OUG 156/2024
+                # art.LXVI). Inainte: sm-fac -> baza part-time sub-declarata. Aliniat cu d112.pull prag_pt.
+                prag = sm
                 baza_pt = brut if brut >= prag else prag
                 exp = {"cas": _q(baza_pt * cota_cas), "cass": _q(baza_pt * cota_cass)}
                 pt_ap = bool(g.get("pt_aplica"))
