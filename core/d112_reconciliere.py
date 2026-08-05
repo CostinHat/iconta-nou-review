@@ -28,9 +28,17 @@ CE RECONCILIAZA PARTIAL — SUB-CAZ 1b (05.08.2026), TICHETE DE MASA (scris ca a
   != brut x cota_cass; a o recalcula ar cere re-derivarea tichetelor (nominal x zile-pontaj x cota_cass) =
   tautologie cu salarizarea + dependenta de pontaj. Combo facilitate(la minim)+tichete = sub-caz ulterior, sarit.
 
+CE RECONCILIAZA - SUB-CAZ 1c-PT (05.08.2026), PART-TIME suprataxare art.146 alin.(5^6):
+  Angajat PART-TIME, luna intreaga, ne-scutit (scutit_contrib_minim=scutit_pt), fara CM, fara alte beneficii,
+  fara tichete: CAS SI CASS EMISE se reconciliaza pe baza RIDICATA la nivelul minim. Emisul per angajat =
+  cas_min_pt/cass_min_pt (cand 0<brut<prag -> B4_*P, diferenta pe angajator) sau cas/cass (brut>=prag, part-time
+  n-are facilitate) = max(brut, sm-facilitate) x cota. calea 2 recalculeaza prag = sm - facilitate INDEPENDENT
+  (registru); full month + fara CM -> fara proratare/pontaj (d112.py:517-520). Part-time + tichete = combo ulterior, sarit.
+
 CE RAMANE IN AFARA (LIMITA DECLARATA, GARZI cat.4 - gardul NU acopera):
   - FACILITATE la minim PRORATATA (schimbare de salariu in luna sau luna partiala) - facilitatea la minim
-    TOATA luna, full-time E ACOPERITA de la 05.08 (sub-caz 1a). SCUTIRI, PLAFOANE, PART-TIME suprataxare;
+    TOATA luna, full-time E ACOPERITA de la 05.08 (sub-caz 1a). PART-TIME suprataxare E ACOPERITA de la 05.08
+    (sub-caz 1c-PT, baza ridicata la max(brut, sm-facilitate)). SCUTIRI, PLAFOANE;
   - CONCEDII MEDICALE (CM): baze si procente proprii (OUG 158/2005);
   - IMPOZIT (necesita deducerea personala degresiva art.77 - calcul complex, exclus din acest gard);
   - CAM (contributia asiguratorie de munca, agregat de angajator);
@@ -147,8 +155,9 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                                  "salariati.salariu_brut ambele goale) - generatorul emite contributii pe 0"})
                 continue
             # --- SKIP-LEGITIM: complexitate fiscala (in afara scopului gardului, tacut) ---
-            if r["part_time"] or r["scutit_contrib_minim"]:
-                sarite.append(sid); continue
+            if r["scutit_contrib_minim"]:
+                sarite.append(sid); continue   # scutit_pt = alias scutit_contrib_minim (d112.py:431) -> exceptat suprataxare
+            este_pt = bool(r["part_time"])   # [1c] part-time -> suprataxare art.146(5^6), tratat mai jos
             # [1b 05.08] tichetele de MASA NU ating baza CAS (salarizare.py: baza_contrib=brut; d112.py:239
             # face cass += cass_tichete DOAR pe CASS) -> CAS ramane reconciliabil, CASS numit-afara. Flag, nu skip.
             # Skip-ul ben_ids de mai jos ramane -> garanteaza fara vacanta/cultural/cresa (beneficii_lunare) ->
@@ -159,6 +168,26 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
             da, di = r["data_angajare"], r["data_incetare"]
             if (da and da > luna_inc) or (di and di < luna_sf):
                 sarite.append(sid); continue   # luna nu e intreaga -> proratare -> afara
+            # --- SUB-CAZ 1c-PT (05.08): PART-TIME suprataxare art.146 alin.(5^6) ---
+            if este_pt:
+                if are_tichete_masa:
+                    sarite.append(sid); continue   # part-time + tichete = combo ulterior, NEACOPERIT (numit)
+                # Nivelul minim (structura D112: sm - facilitate). Full month + fara CM (filtrate mai sus) ->
+                # zile_lucr = nzl -> prag_zile = prag_pt EXACT, fara proratare/pontaj (d112.py:517-520).
+                # Emisul per angajat pe baza RIDICATA: cas_min_pt/cass_min_pt daca s-a aplicat pragul
+                # (0<brut<prag), altfel cas/cass (brut>=prag; part-time n-are facilitate). = max(brut,prag) x cota.
+                prag = sm - fac_val
+                baza_pt = brut if brut >= prag else prag
+                exp = {"cas": _q(baza_pt * cota_cas), "cass": _q(baza_pt * cota_cass)}
+                pt_ap = bool(g.get("pt_aplica"))
+                emis = {"cas": _q((g.get("cas_min_pt") if pt_ap else g.get("cas")) or 0),
+                        "cass": _q((g.get("cass_min_pt") if pt_ap else g.get("cass")) or 0)}
+                reconciliati.append(sid)   # CAS+CASS emise pe baza ridicata - reconciliere COMPLETA
+                for camp in ("cas", "cass"):
+                    if emis[camp] != exp[camp]:
+                        divergente.append({"salariat": sid, "camp": camp,
+                                           "generator": emis[camp], "cale2": exp[camp], "diferenta": emis[camp] - exp[camp]})
+                continue
             if brut == sm:
                 if are_tichete_masa:
                     sarite.append(sid); continue   # [1b] combo facilitate+tichete la minim = sub-caz ulterior, NEACOPERIT (numit)

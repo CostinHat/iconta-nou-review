@@ -3243,3 +3243,15 @@ a fost respinsa (amesteca "valoarea EMISA" cu o intermediara -> acoperire falsa)
 Verificat la sursa inainte de cod (salarizare.py 203-236, d112.py 239) + empiric (cass_tichete=84 nenul). Cheie noua
 in return: reconciliati_cas_doar. Proba RED->VERDE (git checkout pe codul vechi -> ambele teste noi pica). Acoperire
 estimata ~30-45% -> ~35-50% (nemasurat). Suita 1420 passed (+2), verificator 0.
+
+
+## 05.08.2026 - EXTINDEREA ACOPERIRII, Punctul 1 sub-caz 1c-PT: D112 part-time suprataxare (CAS+CASS pe baza ridicata)
+
+A treia extindere D112 din campanie (dupa 1a facilitate, 1b tichete). Angajatii PART-TIME (luna intreaga, ne-scutiti,
+fara CM/tichete) sunt acum reconciliati COMPLET pe baza RIDICATA la nivelul minim (art.146 alin.5^6, verificat la sursa
+15.07 + 29.07). D112 emite contributia pe max(brut, sm-facilitate): sub prag prin cas_min_pt/cass_min_pt (diferenta pe
+angajator B4_8D/B4_6D), peste prag pe brut. calea 2 recalculeaza pragul independent (sm-facilitate din registru) si
+confrunta valoarea EMISA - non-tautologic. full month + fara CM garanteaza prag_zile=prag exact (fara proratare/pontaj).
+Part-time + tichete = combo ulterior, sarit. Verificat empiric (brut2025 -> cas_min_pt=938; brut8000 -> cas=2000).
+Proba RED->VERDE (git checkout -> part-time inca sarit). Acoperire estimata ~35-50% -> ~40-55% (nemasurat). Ramas la
+Punctul 1: concediile medicale (1c-CM). Suita 1422 passed (+2), verificator 0.

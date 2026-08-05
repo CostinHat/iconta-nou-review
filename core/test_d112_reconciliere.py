@@ -286,3 +286,53 @@ def test_tichete_masa_la_minim_ramane_sarit(conn_recon):
     rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
     assert 8 in rap["sarite"], rap
     assert 8 not in rap["reconciliati"] and 8 not in rap["reconciliati_cas_doar"], rap
+
+
+# ============================================================
+#  SUB-CAZ 1c-PT (05.08.2026): PART-TIME suprataxare art.146(5^6) -> CAS+CASS pe baza ridicata la min.
+# ============================================================
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_part_time_sub_prag_reconciliat_pe_baza_ridicata(conn_recon):
+    """Part-time cu brut SUB nivelul minim (sm-facilitate): D112 emite CAS/CASS pe baza RIDICATA la prag
+    (cas_min_pt/cass_min_pt; diferenta fata de retinut = pe angajator, B4_8D/B4_6D). calea 2 reconciliaza
+    EMISUL vs max(brut, sm-facilitate) x cota. MUTATIE pe cas_min_pt PICA."""
+    with conn_recon.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (10,'PTSUB','I','1900101410020','2025-01-01',2025,4,true)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (10,'2025-01-01',2025)")
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    g = {s["id"]: s for s in sal}
+    assert g[10]["pt_aplica"] is True, g[10]
+    assert (int(g[10]["cas_min_pt"]), int(g[10]["cass_min_pt"])) == (938, 375), g[10]  # 3750 x 25% / 10% (half-up)
+    rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert rap["divergente"] == [], "alarma falsa: %s" % rap["divergente"]
+    assert 10 in rap["reconciliati"] and 10 not in rap["sarite"], rap
+    for s in sal:
+        if s["id"] == 10:
+            s["cas_min_pt"] = 9999   # <- mutatie: baza minima part-time gresita pe CAS
+    with pytest.raises(ReconciliereD112) as ei:
+        verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert "salariat 10 cas" in str(ei.value) and "generator=9999" in str(ei.value) and "cale2=938" in str(ei.value), str(ei.value)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_part_time_peste_prag_reconciliat_pe_brut(conn_recon):
+    """Part-time cu brut PESTE nivelul minim: fara suprataxare (pt_aplica False), CAS/CASS pe brut (part-time
+    n-are facilitate). max(brut, prag)=brut -> reconciliat pe brut x cota. MUTATIE pe cas PICA."""
+    with conn_recon.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (11,'PTPESTE','J','1900101410021','2025-01-01',8000,4,true)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (11,'2025-01-01',8000)")
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    g = {s["id"]: s for s in sal}
+    assert g[11]["pt_aplica"] is False, g[11]
+    assert (int(g[11]["cas"]), int(g[11]["cass"])) == (2000, 800), g[11]   # 8000 x 25% / 10%
+    rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert rap["divergente"] == [], "alarma falsa: %s" % rap["divergente"]
+    assert 11 in rap["reconciliati"] and 11 not in rap["sarite"], rap
+    for s in sal:
+        if s["id"] == 11:
+            s["cas"] = 9999
+    with pytest.raises(ReconciliereD112) as ei:
+        verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert "salariat 11 cas" in str(ei.value) and "cale2=2000" in str(ei.value), str(ei.value)

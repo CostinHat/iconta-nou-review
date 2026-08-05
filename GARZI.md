@@ -305,7 +305,7 @@ că intrarea a fost înghițită**.
     calcul_salariu/salarizare/d112/salariu_istoric nici indirect) + mutatie (cas/cass gresit -> pica,
     numind angajatul si ambele valori) + caz nesimplu SARIT fara alarma falsa.
     - **CE RAMANE IN AFARA (gardul NU acopera, extindere = pas separat):** FACILITATI (constructii/IT/
-      agricol, salariu minim), SCUTIRI, PLAFOANE, PART-TIME suprataxare, CONCEDII MEDICALE, IMPOZIT
+      agricol, salariu minim), SCUTIRI, PLAFOANE, CONCEDII MEDICALE, IMPOZIT
       (necesita deducerea personala degresiva art.77), CAM. TICHETE: masa -> CAS reconciliat (sub-caz 1b), CASS
       afara; vacanta/cultural/cresa integral afara. Un angajat cu oricare (in afara masei pe CAS) -> NEACOPERIT
       (sarit, nu alarma falsa). Impozit/CAM raman pe DUK structural + golden-ele existente.
@@ -322,6 +322,11 @@ că intrarea a fost înghițită**.
       CASS-ul EMIS = salarial (brut x cota_cass) + cass_tichete (d112.py:239); a-l recalcula = tautologie cu motorul
       de tichete + dependenta de pontaj. Combo minim+tichete ramane sarit. Acoperire estimata ~30-45% -> ~35-50%
       (estimare, nemasurata; pe tichete reconciliaza DOAR CAS, nu si CASS).
+      **EXTINDERE 05.08 (sub-caz 1c-PT):** angajatii PART-TIME (luna intreaga, ne-scutiti, fara CM/tichete) sunt ACUM
+      reconciliati COMPLET (CAS+CASS) pe baza RIDICATA la nivelul minim (art.146 alin.5^6): emisul per angajat =
+      cas_min_pt/cass_min_pt (0<brut<prag, diferenta pe angajator B4_8D/B4_6D) sau cas/cass (brut>=prag) =
+      max(brut, sm-facilitate) x cota. prag recalculat INDEPENDENT (sm-facilitate din registru); full month fara CM ->
+      fara proratare/pontaj. Acoperire estimata ~35-50% -> ~40-55% (nemasurat). Ramas la 1c: CONCEDIILE MEDICALE.
       Excluderile dominante: salariu MINIM (facilitate; pondere mare la IMM-uri RO) + TICHETE de masa
       (beneficiu larg raspandit) — se suprapun si domina, plus CM/part-time. ESTIMARE PE STRUCTURA, NU
       MASURATA (tenantii de test sunt goi/sintetici; nu exista payroll real). De reverificat cu cifra

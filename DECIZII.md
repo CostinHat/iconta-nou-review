@@ -7439,3 +7439,36 @@ cass_tichete>0 -> reconciliat_cas_doar; mutatie cas=9999 -> "salariat 7 cas: gen
 mutatie cass=1 -> NU ridica (limita CASS-afara reala, nu omisiune tacuta). test_tichete_masa_la_minim_ramane_sarit:
 combo minim+tichete -> sarit. RED probat: pe codul vechi (git checkout) ambele pica (tichete sarite / cheie inexistenta).
 Suita 1420 passed (+2), verificator 0.
+
+
+## 05.08.2026 - EXTINDEREA ACOPERIRII Punctul 1 sub-caz 1c-PT: D112 part-time suprataxare (CAS+CASS pe baza ridicata)
+
+Sub-caz 1c partea PART-TIME (partea CM ramane separata). Angajat part-time, luna intreaga, ne-scutit
+(scutit_contrib_minim=scutit_pt, d112.py:431), fara CM, fara alte beneficii, fara tichete.
+
+TEMEI (verificat la sursa INAINTE de cod): CF art.146 alin.(5^6) + art.168 alin.(6^1) - contributia nu poate fi mai
+mica decat cea pe salariul minim brut, la contract cu norma intreaga SAU timp partial (conditia legala e VENITUL sub
+minim, nu norma - corectie 15.07). Pragul = sm - facilitate (structura D112: prag_pt, d112.py:449). Proratare pe zile
+lucrate (OMF 1855/2022 pct.2, nivel DEJA diminuat - interpretare B, DECIZII 29.07). full month + fara CM ->
+zile_lucr=nzl -> prag_zile = prag_pt EXACT (d112.py:517-520), fara dependenta de pontaj.
+
+SEMANTICA EMISIE (d112.py:249-266, 515-525): daca 0<brut<prag_zile -> pt_aplica: B4_8P=cas_min_pt=round(prag x cota_cas),
+B4_6P=cass_min_pt, diferenta fata de retinut (B4_8D/B4_6D) pe angajator. Emisul per angajat pe contributie = cas_min_pt
+(retinut + diferenta angajator). Peste prag (brut>=prag) -> pt_aplica False, cas/cass pe brut (part-time n-are facilitate,
+norma_intreaga=False). Deci EMIS = max(brut, sm-facilitate) x cota, uniform.
+
+DECIZIE: calea 2 reconciliaza COMPLET (CAS+CASS) part-time: exp = _q(max(brut, sm-fac_val) x cota); confrunta emisul
+(g[cas_min_pt]/g[cass_min_pt] daca pt_aplica, altfel g[cas]/g[cass]) - valoarea EMISA la ANAF pe baza ridicata. prag
+recalculat INDEPENDENT (sm-facilitate din common.cota), nu citit din g[baza_minim_pt] -> non-tautologic. Part-time +
+tichete = combo ulterior, sarit. Empiric: brut2025 -> pt_aplica, cas_min_pt=938 (3750x25%), cass_min_pt=375; brut8000 ->
+pt_aplica False, cas=2000.
+
+IMPLEMENTARE (core/d112_reconciliere.py): skip part_time -> flag este_pt (skip scutit_contrib_minim ramane);
+ramura part-time INAINTE de brut==sm (dupa filtrele cm/ben/luna); part-time -> reconciliati (complet). Non-tautologie
+tranzitiva neschimbata (niciun import nou).
+
+ACOPERIRE: ~35-50% -> ~40-55% estimat (nemasurat). Ramas la Punctul 1: CONCEDIILE MEDICALE (1c-CM), sub-caz mai mare.
+
+PROBA: 10->12 teste. part_time sub prag reconciliat + mutatie cas_min_pt=9999 -> "salariat 10 cas: generator=9999 vs
+cale2=938"; part_time peste prag reconciliat pe brut + mutatie cas -> "cale2=2000". RED probat (git checkout: part-time
+inca sarit -> reconciliati=[1,2,3]). Suita 1422 passed (+2), verificator 0.

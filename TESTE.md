@@ -23,13 +23,20 @@ zero. Invers ar însemna să verifici de două ori — sau, mai probabil, a doua
 
 ## În lucru acum
 - fir: EXTINDEREA ACOPERIRII (campanie noua 05.08) - 4 puncte: 1.D112 cazuri complexe, 2.D101 impozabil, 3.amortizare MF neliniara, 4.tip_document 2-5 D394
-- ultim: Punctul 1 sub-caz 1b LIVRAT - TICHETE DE MASA peste minim: CAS reconciliat (CASS numit-afara). Acoperire ~30-45%->~35-50% est.
-- urmator: Punctul 1 sub-caz 1c - CM + PART-TIME (fiecare sub-caz separat). NEINCEPUT.
+- ultim: Punctul 1 sub-caz 1c-PT LIVRAT - PART-TIME suprataxare: CAS+CASS reconciliate pe baza ridicata. Acoperire ~35-50%->~40-55% est.
+- urmator: Punctul 1 sub-caz 1c-CM (concedii medicale OUG 158/2005). NEINCEPUT - sub-caz separat, mai mare.
 - pasi:
   P1a. [GATA] facilitate la minim stabila toata luna: baza=sm-fac, CAS+CASS; _stabil_la_minim SQL propriu; rotunjire la intreg ca _d112int. Prorata ramane sarita.
   P1b. [GATA] TICHETE DE MASA (angajat peste minim, luna intreaga, fara CM/part-time/scutire/alte beneficii). CAS reconciliat, CASS numit-afara.
        Proba: 6000+tichet40, pontaj confirmat -> cas=1500/cass=600(salarial)/cass_tichete=84; reconciliat_cas_doar; mutatie cas PICA; mutatie cass NU pica.
        RED probat pe codul vechi (tichete inca sarite / cheia reconciliati_cas_doar inexistenta). test_d112_reconciliere.py 8->10.
+  P1c-PT. [GATA] PART-TIME suprataxare (art.146 alin.5^6). Emis = max(brut, sm-fac) x cota; sub prag -> cas_min_pt/cass_min_pt. Proba: id10 brut2025->cas_min_pt938/cass375 reconciliat; id11 brut8000->cas2000; mutatie pica. RED probat. test 10->12.
+    c1. core/d112_reconciliere.py: skip part_time (l.139) -> flag este_pt (pastreaza skip scutit_contrib_minim = si scutit_pt).
+    c2. Dupa filtrele cm/ben/luna-intreaga, ramura part-time INAINTE de brut==sm: prag=sm-fac_val (full month, fara CM -> fara proratare);
+        baza_pt=max(brut, prag); emis = cas_min_pt/cass_min_pt daca pt_aplica altfel cas/cass; confrunta emis vs _q(baza_pt x cota).
+    c3. part-time + tichete = combo ulterior -> sarit. Reconciliaza CAS+CASS complet (emis pe baza ridicata).
+    c4. test: part-time SUB prag (brut 2025 -> emis cas_min_pt=938/cass_min_pt=375) reconciliat; part-time PESTE prag (brut 8000 -> cas=2000) reconciliat; mutatie pica.
+  P1c-CM. CONCEDII MEDICALE (OUG 158/2005): baze/procente proprii (CAS 25% uniform, CASS doar 01/07/10). NEINCEPUT - sub-caz separat, mai mare.
     b1. core/d112_reconciliere.py: skip-ul neconditionat pe tichet_masa_valoare (l.141-142) -> flag are_tichete_masa.
         Skip ben_ids RAMANE (garanteaza fara vacanta/cultural/cresa in beneficii_lunare -> exces_vac=0 -> DOAR tichete de masa).
     b2. branch caz-simplu (brut>sm) + are_tichete_masa: confrunta DOAR cas (=_q(brut x cota_cas)); sid -> reconciliati_cas_doar.
