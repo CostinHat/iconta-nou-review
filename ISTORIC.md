@@ -3365,3 +3365,11 @@ prinde - GL dezechilibrat), gard+mutatie+AST. C2 rest onest: balanta<->D101 deja
 probat); D100<->D112 pass-through tautologie (sarita); Sum(D112)<->D205 formatter aceeasi sursa, tautologic pe valori
 (numita). C4 scris in TESTE.md sectiunea 6 (procedura per cluster, nu executat). Raman C1 (invarianti DB, risc migrare),
 C3 job+snapshot, C5 mutant-zero - buget context. Consemnat GARZI/PREDARE tura 14.
+
+
+## 05.08.2026 (tura 15) - INCHIDERE Campania C
+C5 (AST anti-except + mutant-zero), C2 (fluturas<->D112 via artefact contabil + D101 preexistent; D100/D205 tautologii
+numite), C3 (snapshot+hash regenerare-diff + orfani; Sigma debit=Sigma credit corectat ca tautologic pe schema NOT NULL),
+C4 (coada REDARE reverificata + procedura scrisa) - LIVRATE cu limite numite. C1 (invarianti DB intrare) = LIMITA scrisa:
+goluri reale (facturi fara cheie unica; money DEFAULT 0) dar migrarea enforce riscanta pe date existente -> follow-up
+scopat, nu fortat la buget epuizat. Fara gard fals nicaieri. Consemnat TESTE sectiunea 7 + GARZI tura 15.

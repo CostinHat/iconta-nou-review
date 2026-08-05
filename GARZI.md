@@ -1496,3 +1496,17 @@ lectura / DUK inainte de √ definitiv pe REDARE/INTERPRETARE), NU executat (cer
 RAMAN: C1 (invarianti DB intrare: NOT NULL bani + cheie unica + intrare<->document-sursa) - migrare pe coloane
 existente = risc pe date NULL curente + touch pe multe tabele; scopat separat, neatins acum (buget). C3 job nocturn +
 snapshot+hash. C5 mutant-zero. Predare in PREDARE_LANT.md.
+
+
+## 05.08.2026 (tura 15) - INCHIDERE Campania C: C5+C2+C3+C4 livrate (cu limite numite); C1 = limita scrisa
+
+Vezi TESTE.md capitolul metode sectiunea 7 (stare finala pe toate 5). Sumar cu cod:
+- C5: test_gard_masca_zero.py (AST anti-except) + test_mutant_zero.py (d112/d205). LIVRAT.
+- C2: test_control_incrucisat.py (fluturas<->D112 via artefact contabil, mutatie) + balanta<->D101 preexistent.
+  D100<->D112 + Sum(D112)<->D205 = TAUTOLOGII numite (nu gard fals).
+- C3: amprenta_declaratie.py + test (snapshot+hash regenerare-diff, mutatie editare retroactiva) + echilibru_perioada.
+  orfani. CORECTIE onesta: Sigma debit=Sigma credit e TAUTOLOGIC pe schema (inregistrari_linii cont_debit+cont_credit
+  NOT NULL -> fiecare linie echilibrata) - functia ramane ca monitor, dar NU poate pica azi = limita.
+- C4: test_datorie xfail reactualizat (19 COTE, functii in upgrade) + procedura scrisa (TESTE sectiunea 6).
+- C1: LIMITA scrisa (nu gard fals). Goluri reale: facturi fara cheie unica naturala (import dublat posibil); money
+  columns DEFAULT 0 nu NOT NULL. Migrarea enforce = riscanta pe date murdare existente -> follow-up dedup/backfill scopat.

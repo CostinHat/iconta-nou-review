@@ -1136,3 +1136,48 @@ divergența CM); celelalte 5 rămân pre-emisie. Promisiunea „un total greșit
 împotriva bug-urilor de layer-emisie pt niciuna (2b = res≠emis prin construcție). Fix complet C2: reconciliază valoarea
 PARSATĂ din XML (assert res==parse(emis)), nemfăcut.
 
+
+
+### 7. Campania C - STARE FINALA pe cele 5 clase oarbe (05.08.2026, inchidere)
+
+Fiecare unitate cu cod: modul + gard AST/proba + MUTATIE. Unde a doua cale NU exista (tautologie/schema o impune),
+se scrie ca LIMITA, nu gard fals.
+
+- **C5 (mascare / zero tacut)** - LIVRAT:
+  - gard AST anti-except-masca (test_gard_masca_zero.py): niciun `except: pass/return-zero-gol` in modulele de bani;
+    mutatie sintetica dovedeste ca prinde; None/False excluse (parsere/validatori).
+  - mutant-zero (test_mutant_zero.py): un generator care INGHITE datele (gol cand ele exista) e prins de markerul de
+    continut - d112 (<asigurat + mutatie pull-gol), d205 (ridica pe zero beneficiari). LIMITA: extinderea la
+    d100/d101/d300/d394/d406 cu acelasi tipar ramasa (un generator nou isi adauga markerul).
+
+- **C2 (intre documente)** - LIVRAT partial, TAUTOLOGII numite:
+  - fluturas<->D112: a doua cale = ARTEFACT contabil (D112-XML emis vs ledger rulaje), control_incrucisat.compara_d112
+    extins+gardat+mutatie (test_control_incrucisat.py). Direct fluturas-vs-D112 = TAUTOLOGIE (ambele=calcul_salariu).
+  - balanta<->D101: DEJA COMPLET (d101_reconciliere, recalcul independent din balanta clase 7/6 + mutatie-probat).
+  - D100<->D112: PASS-THROUGH pur (calcul_d100 formateaza obligatii dat) = tautologie, sarita numita.
+  - Sum(D112)<->D205: D205 formatter, aceeasi sursa salariala = tautologie pe valori; doar agregarea anuala ar fi
+    independenta (fixtura cross-an) - numita, nefacuta.
+
+- **C3 (integritate in timp)** - LIVRAT partial:
+  - snapshot+hash regenerare-diff (amprenta_declaratie.py + test): amprenta deterministica; editare retroactiva ->
+    amprenta difera -> hard-block. A doua cale reala (prezent vs sinele trecut).
+  - orfani (echilibru_perioada.orfani): referinta rupta inregistrare_id -> prins.
+  - Sigma debit = Sigma credit per perioada: TAUTOLOGIC pe schema curenta - inregistrari_linii are cont_debit SI
+    cont_credit NOT NULL -> fiecare linie e echilibrata prin constructie, Sigma-le mereu egale. Functia exista ca
+    monitor (defense-in-depth daca schema relaxeaza NOT NULL) dar NU poate pica azi = LIMITA scrisa.
+  - LIMITA: jobul nocturn (echilibru_perioada_db per tenant) + persistarea amprentei la depunere (tabel) = wiring
+    produs ramas (state_plata snapshot deja DECIS).
+
+- **C4 (interpretarea sursei)** - SCRIS (sectiunea 6), nu executat: procedura per cluster (a doua lectura/DUK inainte
+  de √ definitiv pe REDARE/INTERPRETARE). Coada reverificata: 19 chei COTE toate REDARE; upgrade-ul FUNCTIILOR a
+  inceput (d101 scadenta MO). xfail temeiuri_toate_redare actualizat sa reflecte coada reala.
+
+- **C1 (integritatea intrarii)** - LIMITA (nu gard fals, nu migrare riscanta la buget epuizat):
+  - Goluri REALE gasite: (a) facturi NU are cheie unica pe cheia naturala (numar+directie+tert) -> import dublat
+    posibil (doar salariati are UNIQUE(cnp)); (b) coloanele de bani sunt `numeric DEFAULT 0`, nu NOT NULL (exceptie
+    inregistrari_linii.suma NOT NULL - ledgerul e protejat).
+  - DE CE nu s-a facut acum: migrarea enforce (ADD UNIQUE / SET NOT NULL) pe date EXISTENTE multi-tenant e RISCANTA -
+    pica pe duplicate/NULL-uri curente; cere intai un pas de DEDUP/BACKFILL scopat. A o forta la buget epuizat ar
+    lasa tree murdar sau ar strica date. Follow-up scopat (dedup facturi -> UNIQUE; audit NULL -> SET NOT NULL).
+  - intrare<->document-sursa: reconcilierea BANCARA exista (reconciliere.py: extras<->facturi); Σ(linii)==total
+    document nescris explicit ca gard - felie separata unde sursa e digitala.
