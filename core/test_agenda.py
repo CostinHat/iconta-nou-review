@@ -518,3 +518,67 @@ def test_fisiere_coloana_completa_prinde_gol():
     assert _fisiere_incomplete(ok, idx) == []
     assert _fisiere_incomplete(gol, idx), "test in fisier nelistat NU a fost semnalat"
     assert _fisiere_incomplete(inexist, idx), "citare inexistenta NU a fost semnalata"
+
+
+# ============================================================
+#  Gard C (05.08.2026) — registrul nu citeaza teste MOARTE
+#  Clasa care a muscat de 2 ori (04-05.08): bifa taxare-inversa|d394 prin punctul orb al garzii anti-stale,
+#  apoi intrari stale gasite manual la sweep. O citare a unui test inexistent induce concluzii false (era sa
+#  para ca D101 nu poate fi depus). Gard mecanic la commit.
+# ============================================================
+_MARCAJ_ISTORIC = re.compile(r"\[citare-istorica:\s*\S")   # cere MOTIV nevid dupa ':' (marcaj gol = abuz, gard tacit)
+
+
+def _teste_colectabile():
+    """Numele COLECTATE de pytest: def test_ in core/test_*.py + numele fisierelor test_*.py (citari de fisier)."""
+    import ast as _ast
+    cun = set()
+    for f in sorted((_RAD / "core").glob("test_*.py")):
+        cun.add(f.stem)
+        try:
+            tree = _ast.parse(f.read_text(encoding="utf-8"))
+        except (OSError, SyntaxError):
+            continue
+        for n in _ast.walk(tree):
+            if isinstance(n, (_ast.FunctionDef, _ast.AsyncFunctionDef)) and n.name.startswith("test_"):
+                cun.add(n.name)
+    return cun
+
+
+def _citari_teste_moarte(text, cunoscute):
+    """[(linie, nume)] pentru fiecare test_<nume> citat care NU e COLECTAT (niciun nume colectat nu incepe cu el
+    -> acopera exact / prefix-abreviere / familie) SI linia nu poarta marcajul istoric CU MOTIV. Extras pt mutatie."""
+    out = []
+    for i, linie in enumerate(text.splitlines(), 1):
+        if _MARCAJ_ISTORIC.search(linie):
+            continue
+        for nume in sorted(set(re.findall(r"\btest_[a-zA-Z0-9_]+", linie))):
+            if not any(c.startswith(nume) for c in cunoscute):
+                out.append((i, nume))
+    return out
+
+
+def test_registrul_nu_citeaza_teste_moarte():
+    """Fiecare test_<nume> citat in GARZI.md / TESTE.md e COLECTAT de pytest (def test_ intr-un core/test_*.py),
+    EXCEPTAND citarile istorice legitime marcate pe aceeasi linie cu `[citare-istorica: <motiv>]`. Motivul e
+    OBLIGATORIU: un marcaj gol ar face gardul tacit (exact ce prevenim); se verifica MECANIC ca motivul EXISTA,
+    NU ca e corect. Ruleaza pe starea de pe disc (ce se comite)."""
+    cun = _teste_colectabile()
+    rele = []
+    for doc in ("GARZI.md", "TESTE.md"):
+        for i, nume in _citari_teste_moarte((_RAD / doc).read_text(encoding="utf-8"), cun):
+            rele.append("%s:%d citeaza test necolectat %s (daca e istoric - test scos/redenumit - marcheaza "
+                        "linia cu [citare-istorica: <de ce>])" % (doc, i, nume))
+    assert not rele, "REGISTRU cu citari de teste moarte (GARZI/TESTE):\n" + "\n".join(rele)
+
+
+def test_registrul_nu_citeaza_teste_moarte_prinde_citare_moarta():
+    """MUTATIE: o citare necolectata pica; trec exact / abreviere / fisier si citarea istorica marcata CU MOTIV;
+    un marcaj GOL (fara motiv) NU exempteaza (anti-abuz - altfel gardul ar deveni tacit)."""
+    CUN = {"test_real_lung_x", "test_fisier"}
+    assert _citari_teste_moarte("vezi test_real_lung_x", CUN) == []                 # exact
+    assert _citari_teste_moarte("vezi test_real_lung", CUN) == []                   # abreviere (prefix)
+    assert _citari_teste_moarte("in test_fisier.py", CUN) == []                     # fisier
+    assert _citari_teste_moarte("vezi test_mort_definitiv_zzz", CUN)                # necolectat -> semnalat
+    assert _citari_teste_moarte("test_mort_definitiv_zzz scos [citare-istorica: scos in abc123]", CUN) == []  # marcat cu motiv
+    assert _citari_teste_moarte("test_mort_definitiv_zzz [citare-istorica]", CUN)   # marcaj GOL -> NU exempteaza (abuz)

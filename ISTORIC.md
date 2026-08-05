@@ -3085,3 +3085,25 @@ _tva_inceput_activ care arunca perioadele inchise - acum pastrate intregi (tva_p
 Limita legacy scrisa NUMIT in GARZI cu trigger: facturi vechi fara flag -> euristica de forma; backfill via perioade_TVA
 devine necesar cand un tenant are facturi legacy reale (pe tenant_001 gol nu se scrie cod pe presupuneri). Poarta verde,
 probe DUK neatinse (clasificarea e amonte de generare). Migrare aplicata pe tenant_001 + template.
+
+
+## 05.08.2026 — Igiena registrului: curatenie stale (A) + gard mecanic anti-citari-moarte (C)
+
+Clasa "registrul minte" a muscat de DOUA ori (04-05.08): (1) bifa taxare-inversa|d394 a ramas stale o zi prin
+punctul orb al garzii anti-stale; (2) sweep-uri manuale au gasit intrari GARZI/TESTE care spuneau "deschis" despre
+lucruri INCHISE - una (firul D101 "nu poate fi depus") era gata sa duca la concluzia FALSA ca D101 e spart, cand de
+fapt e DUK-valid din 03.08. A treia oara nu mai e ghinion.
+
+CURATENIE (A): 5 intrari GARZI inchise CU REFERINTA (nu sterse): rotunjire D390, gaze lit.l, plafon diurna, credit
+micro, ASI - toate rezolvate 03-04.08 dar ramase marcate deschise. + 2 fire TESTE corectate (D101 reconstruit,
+DUK-valid; d112 = refactor optional, nu blocaj fiscal). Sweep-ul mecanic pe numele de test citate a gasit a 5-a
+stale (micro, inchisa in 6675f19) peste cele 4 din inventarul manual.
+
+GARD (C): test_registrul_nu_citeaza_teste_moarte - fiecare test_<nume> citat in GARZI/TESTE e COLECTAT de pytest
+(match pe exact / prefix-abreviere / familie), EXCEPTAND citarile istorice marcate pe linie cu
+[citare-istorica: <motiv>]. Marcajul cere MOTIV nevid, verificat mecanic ca EXISTA (nu ca e corect) - un marcaj gol
+ar face gardul tacit, exact tiparul unui gard cu exceptii nemotivate. Mutatie obligatorie: citare moarta pica,
+marcaj-gol NU exempteaza. Cele 11 citari istorice legitime (teste scoase 6675f19 / redenumite) marcate cu motiv.
+
+Starea zilei: agenda epuizata (70/70 clustere bifate), registrul nu mai minte + gardat mecanic. Urmatoarea campanie
+(deschisa separat, neinceputa): gard de CONTINUT (golden pe exemplul oficial ANAF + a doua cale pe totaluri).
