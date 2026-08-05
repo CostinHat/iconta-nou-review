@@ -230,5 +230,9 @@ def genereaza(conn, schema, perioada, manual=None):
                                         "tip_plata": "2"})
 
     res = calcul_d205(prof, perioada.an, beneficiari)
+    # POARTA A DOUA CALE (gard continut, 05.08.2026, pas 6/6): recalcul INDEPENDENT al bazei/
+    # impozitului pe dividende din 457 (NU cross-check cu D100 = same-source trap).
+    from core.d205_reconciliere import verifica_reconciliere as _vr205
+    _vr205(conn, schema, perioada, res, manual)
     xml = build_xml(res)
     return xml, res

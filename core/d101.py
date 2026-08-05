@@ -418,5 +418,9 @@ def genereaza(conn, schema, perioada, manual=None):
                       rezerva={"capital": r.get("capital", 0),
                                "rezerva_existenta": r.get("rezerva_existenta", 0),
                                "chelt_impozit": r.get("chelt_impozit", 0)})
+    # POARTA A DOUA CALE (gard continut, 05.08.2026, pas 5/6): recalcul INDEPENDENT al bazei
+    # CONTABILE (P1/P2/P4/P5 din balanta). NU verifica impozabilul (ajustari manuale + golden).
+    from core.d101_reconciliere import verifica_reconciliere as _vr101
+    _vr101(conn, schema, perioada, res, manual)
     xml = build_xml(res)
     return xml, res

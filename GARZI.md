@@ -334,7 +334,20 @@ că intrarea a fost înghițită**.
       partial, mai sus). Sdebit=Scredit e in mare parte STRUCTURAL (fiecare inregistrari_linii =
       debit+credit egale); valoarea reala = legarea per-cont la rulaj (prinde drop/dubla/mapare la EMISIE).
       Input partajat gresit (aceeasi linie gresita citita de ambele cai) = §8.
-  - **RAMAS LIPSA**: aceeasi a doua cale pe D101/D205 (ultimele din ordinea confirmata).
+  - **D101: PROFIT CONTABIL ACOPERIT (05.08.2026, pas 5/6)** — scris ca atare, NU "D101 acoperit".
+    `core/d101_reconciliere.py` recalculeaza INDEPENDENT P1/P2/P4/P5 (venituri/cheltuieli exploatare+financiar,
+    clasele 7/6) din inregistrari_linii si le confrunta cu res.P. NU verifica profitul IMPOZABIL P9: ajustarile
+    fiscale (P6/P7/P8...) sunt intrari MANUALE ale contabilului (§8) iar P9 = formula pazita de golden. Poarta
+    HARD-BLOCK. Gard: test_d101_reconciliere.py. LIMITA: doar contabilul; impozabilul ramane pe golden + §8.
+  - **D205: dividende ACOPERIT (05.08.2026, pas 6/6).** `core/d205_reconciliere.py` recalculeaza INDEPENDENT
+    baza+impozitul per beneficiar (Σ cont 457 x cota asociat x cota impozit din registrul de lege) si le
+    confrunta cu res.beneficiari. NU cross-check cu D100 (D100 deriva impozitul din ACEEASI distributie 457 =
+    same-source trap, ca paritatea D300/D394) - probat pe AST ca e cale proprie. Poarta HARD-BLOCK. Gard:
+    test_d205_reconciliere.py. LIMITA: beneficiari manuali (§8).
+  - **CAMPANIA GARDUL DE CONTINUT — COMPLETA (6/6, 05.08.2026):** D300, D394, D112(caz simplu), D406(GL),
+    D101(contabil), D205. Categoria "Iesire catre autoritati" trece de la "DUK valideaza doar structura" la
+    "totalurile de pe suprafetele acoperite sunt reconciliate pe a doua cale, hard-block la divergenta".
+    ACOPERIRE PARTIALA per declaratie, DECLARATA (vezi fiecare intrare) - NU acoperire totala.
 - LIPSĂ: snapshot de regresie pe fixturi înghețate.
 - **DUK validează STRUCTURA, nu conținutul.** Nu e gard de conținut și nu se tratează ca atare.
 

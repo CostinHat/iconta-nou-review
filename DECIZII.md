@@ -7322,3 +7322,27 @@ echilibrata prin constructie) -> ar fi un gard care trece mereu. De aceea legare
 PROBA: 3 note echilibrate (4111/707 1000, 5121/4111 600, 371/401 400) -> genereaza cu poarta OK, divergente [].
 Mutatie 'GL gol' -> ridica numind fiecare cont; 'suma alterata' -> "cont 4111 debit: saft=... vs cale2=1000";
 'dezechilibru' -> "DEZECHILIBRU dubla partida". Suita 1409 passed (+5), verificator 0.
+
+
+## 05.08.2026 — GARD CONTINUT D101 (profit CONTABIL) + D205 (dividende, recalcul propriu) - campania COMPLETA 6/6
+
+D101 (pas 5/6): calea 2 recalculeaza INDEPENDENT P1/P2/P4/P5 (venituri/cheltuieli, clasele 7/6) din inregistrari_linii
+si le confrunta cu res.P. Acopera PROFITUL CONTABIL, nu pe cel IMPOZABIL - scris ca atare. TEMEI (verificat la sursa,
+d101.py:104-106 + genereaza): doar P1/P2/P4/P5 vin din contabilitate (pull); ajustarile fiscale (P6/P7/P8...) sunt
+INTRARI MANUALE ale contabilului (default 0) = §8, iar profitul impozabil P9 e formula pazita de golden
+(test_golden_lant_formule_oficiale). Cerinta Costin: "daca ajustarile raman afara, calea 2 verifica doar profitul
+contabil - scrie asta". Asa e scris. Non-tautologie AST (nu foloseste calcul_d101/pull; SQL propriu).
+
+D205 (pas 6/6): calea 2 recalculeaza INDEPENDENT baza+impozitul per beneficiar (Σ cont 457 x cota asociat x cota
+impozit dividende din common.cota) si le confrunta cu res.beneficiari. NU cross-check D205<->D100 (cerinta Costin:
+"verifica pe AST ca nu e capcana paritatii"): D100 declara ACELASI impozit pe dividende, derivat din ACEEASI
+distributie (cont 457) -> same-source trap, exact ca paritatea D300/D394 tautologica. Deci recalcul propriu (SQL
+propriu + formula proprie), probat non-tautologic pe AST. ALTERNATIVA RESPINSA: cross-check cu D100 (motivul de mai sus).
+
+CAMPANIA COMPLETA (6/6): D300, D394, D112(caz simplu), D406(GL), D101(contabil), D205. Tiparul uniform: recalcul
+independent (SQL+formula proprii, non-tautologie probata pe AST), mutatie obligatorie, hard-block la divergenta care
+numeste ambele valori, limita de acoperire DECLARATA per declaratie. Golden full-decl (directia a) ramane blocata la
+sursa (nu exista exemple ANAF completate).
+
+PROBA: D101 res.P P1=1000 vs mutatie 9999 -> ridica; D205 imp 1600 (16% pe 10000) vs mutatie 1 -> ridica; beneficiar
+pierdut -> ridica. Suita 1417 passed (+8), verificator 0.
