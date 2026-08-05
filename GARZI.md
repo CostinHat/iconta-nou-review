@@ -1052,3 +1052,70 @@ INAINTE de generarea D394 pe perioade vechi. Datele exista (perioade_TVA pastrat
 ALTA LIMITA (acceptata): decalaj snapshot ANAF (corectie retroactiva a inregistrarii nu actualizeaza flag-ul inghetat
 - flag = ce se stia la data facturii, ca orice fapt contabil); ANAF-jos la creare -> flag NULL -> euristica (nu se
 blocheaza emiterea facturii).
+
+## INVENTAR DESCHISE NON-CAMPANIE (index canonic, 05.08.2026) — SURSA UNICA; se ACTUALIZEAZA, nu se recolecteaza
+
+Recoltat din 4 surse (cele 21 xfail din core/test_datorie.py, categoriile 1-11 de mai sus, FUNCTIONALITATI.csv,
+`python -m core.agenda`) la commit ea0a9f0. Fiecare linie TRIMITE la locul canonic (cat.N de mai sus / xfail nume /
+CSV Fxxx / sectiune datata) — NU copiaza textul. La inchiderea unui element se scoate de aici + intra in ISTORIC.
+EXCLUS explicit: campania EXTINDEREA ACOPERIRII (P1 D112 complex facilitate/tichete/CM/part-time, P2 D101 impozabil,
+P3 amortizare MF neliniara, P4 D394 tip_document 2-5) — traieste in TESTE.md fir + PREDARE_LANT.md, nu aici.
+La revenire se re-ruleaza DOAR `python -m core.agenda` pentru xfail-uri; restul se citeste de aici.
+
+### A. ACTABIL AZI (depinde DOAR de munca)
+- **Gard NOT NULL pe bani + cheie unica import + idempotenta** — cat.1 (LIPSA). Efect: intrare inghitita -> 0 tacut.
+- **audit_cod_schema.py pe server + SELECT* la d394/bilant_api/rip_api/stocuri_cv_api/reconciliere_api** — cat.2 (LIPSA). Prototip exista LOCAL (27.07), de dus pe server + extins. Efect: query pe coloana inexistenta.
+- **Gard care interzice cote literale in cod (`*0.19`) + golden pe cifre calculate manual din exemplu** — cat.3 (LIPSA).
+- **Snapshot de regresie pe fixturi inghetate (iesire ANAF)** — cat.4 (LIPSA). DUK valideaza structura, nu continutul.
+- **Test acces incrucisat (obiect alt tenant -> 404) + gating admin inconsecvent** — cat.6 (LIPSA + DE_FACUT poz.7). Efect: IDOR / rol inconsecvent.
+- **Job nocturn Sdebit=Scredit per perioada/tenant + orfani + reluare automata a probei de restaurare** — cat.7 (LIPSA).
+- **Gard care prinde aparitia unei a doua copii a unui generator** — cat.8 (LIPSA).
+- **Mutant zero sistematic (fiecare generator fortat sa intoarca [] -> suita rosie)** — cat.9 (LIPSA azi ad-hoc).
+- **Izolare tenant pe BODY/query (POST /coada, POST /declaratii/{tip}) + 1 conexiune bruta in sinteza_zilnica.py** — cat.5 (LIMITA).
+- **D406 SAF-T lunar NEDEPUNABIL: SourceDocuments emite 1 linie sintetica/factura (nu liniile reale) + Payments gol** — CSV F035 (+F037 Stocuri, aceeasi familie). Efect MARE: familia D406 lunara nu se poate depune pana la reparare.
+- **xfail d710 trunchiere in garda** — test_datorie:139. De adaugat in CERERI cand se stie profilul care il datoreaza.
+- **xfail gard_structura_absent** — test_datorie:184. Cere o forma de marcare care distinge citarea de proza.
+- **xfail cota_cea_mai_mica_valoare_din_luna** — test_datorie:206. Nu musca acum (o valoare/luna). Implementare + DECIZII.
+- **xfail verificatorul_nu_e_el_insusi_testat** — test_datorie:291. Fixturi cod known-good/known-bad pe analizatorul verificatorului.
+- **xfail factura_pdf_proba_pe_profil_real** — test_datorie:280. Proba bytes valizi pe profil firma/factura complet.
+- **xfail d394_scutit_catre_cui_proba_duk** — test_datorie:274 (D394, NU tip_document). Proba DUK pe factura multi-cota.
+- **xfail deducere_copil_parinte_multi_angajatori** — test_datorie:199. Cere fluxul de declaratie parinte (unic parinte / anti-dubla), apoi cod.
+- **Backfill legacy clasifica_partener** — sectiunea 05.08 (l.~1045). Datele exista; DECLANSATOR: primul tenant cu facturi legacy fara tert_platitor_tva, inainte de D394 pe perioade vechi.
+- **F103 alerte legislative: data PROGRAMATA a afisarii + flux monitor->propunere anunt in admin** — CSV F103.
+- **F163 frictiune permisiuni (admin default nu poate depune) pe control incrucisat D390 vs D300** — CSV F163 / DE_FACUT.
+- **xfail staleness_sesiune_b_content** — test_datorie:162. Nimic de facut DIRECT: se inchide singur cand apar testele N3 (Faza 1, azi neinceputa 0/11). Gated intern pe Faza 1, nu extern.
+
+### B. BLOCAT EXTERN (nu se deblocheaza prin efort — consemnat cu DECLANSATOR)
+- **Deriva legislativa (cota corecta azi, lege schimbata maine)** — cat.3 LIMITA REALA (l.~129). Declansator: feed legislativ mecanic (inexistent) SAU revizuire manuala periodica. NU se incepe acum.
+- **Deadman extern pe joburi (server jos = nici verificatorul nu ruleaza)** — cat.10 LIMITA (l.~467). Declansator: monitor extern.
+- **xfail temeiuri_toate_redare (12 COTE + 6 functii pe nivel_sursa=REDARE, niciun MO verbatim)** — test_datorie:46. Declansator: captare verbatim de la legislatie.just.ro (doc consolidat prea mare pt fetch azi).
+- **xfail reguli_validator_verificate_la_sursa (8 coduri DUK/eFactura re-verificate)** — test_datorie:169. Declansator: documentatia de validator.
+- **xfail d300_d394_randuri_vs_reguli_verificate (R17/R28/R32 dedus din context)** — test_datorie:177. Declansator: structura oficiala D300/D394.
+- **xfail d300_9pct_deductibil_auto (DUK INSTALAT respinge R75)** — test_datorie:297. Efect: 9% deductibil doar MANUAL (altfel TVA supraevaluata). Declansator: validator DUK accepta R75 sau randul corect la sursa.
+- **xfail d205_trunchiere_neexercitata** — test_datorie:127. Declansator: firma reala cu dividende.
+- **xfail d390_trunchiere_neexercitata** — test_datorie:133. Declansator: firma reala cu achizitii intracomunitare.
+- **xfail deducere_45pct_4plus_neconfirmat_la_mo (art.77 alin.4)** — test_datorie:191. Declansator: tabelul alin.4 verbatim in MO.
+- **Calcul salarial pre-2026 indisponibil (plafon facilitate/tichete 2025 neverificate)** — sectiunea l.~143. Declansator: backfill valori 2025 la sursa (candidat OUG 115/2023), NU prin estimare.
+- **Plafon cresa 740 neaplicat (cap conservator 450)** — l.~183. Declansator: textul operativ al ordinului + mecanism ferestre datate pe plafon_cresa.
+- **achizitie_agricultor orfan de factura (NECONFORMITATE DESCHISA)** — l.~1026. Declansator: temeiul D394 al achizitiei de la agricultorul forfetar la sursa (CF art.315^1). = "agricultorul forfetar", exceptia numita a campaniei.
+- **F121 e-Transport: round-trip live upload/UIT** — CSV F121. Declansator: CIF real cu drept e-Transport.
+- **F178 e-Factura cron poll: round-trip incarcat->ok** — CSV F178. Declansator: CIF cu drept (ca F176).
+- **xfail citate_literale_tichete_portal (art.25(3) b/c + art.78(2)a verbatim)** — test_datorie:227. Declansator: PDF MO verbatim. [Nota: reconcilierea tichetelor = 1b LIVRAT; asta e doar citarea la sursa, ramasa.]
+
+### C. DECIZIE LUATA (amanat/respins/eliminat — NU se reia fara decizie noua)
+- **D177 (cerere-formular PDF, fara validator)** — l.~975 / CSV F206. AMANAT EXPLICIT 04.08 (Costin). Redeschide DOAR cu decizie noua + mecanism de validare mecanica.
+- **F127 transmitere declaratii direct la ANAF** — CSV F127. AMANAT 17.07 (nu exista API depunere; ramane DUK + upload SPV). De confirmat cu spv.webservice@mfinante.ro inainte de RESPINS definitiv.
+- **F128 monitorizare mesaje SPV (SPVWS2)** — CSV F128. AMANAT 17.07, blocant structural mTLS cu certificat calificat local. Redeschide DACA ANAF adauga OAuth la SPVWS2.
+- **F175 D307** — CSV F175. AMANAT 18.07 (exceptie rara, la caz real).
+- **F193 D207 nerezidenti** — CSV F193. AMANAT 20.07 (nisa, la caz real).
+- **F132 import borderouri curieri/procesatori card** — CSV F132. AMANAT 20.07 (la primul client e-commerce cu fisier real).
+- **F138 transfer intre gestiuni Tier 3 (CMP separat per depozit)** — CSV F138. AMANAT (la testare).
+- **F123 provider real de plata (Netopia/Stripe)** — CSV F123. PLANIFICAT (azi mock).
+- **F130 Open Banking PSD2** — CSV F130. PLANIFICAT.
+- **F148 arhivare cloud extern (Drive/OneDrive)** — CSV F148. PLANIFICAT.
+- **F195 D094** — RESPINS 20.07 (inglobat in D700). **F185 cont gratuit** — ELIMINAT 26.07.
+
+### D. CERE DECIZIE DE PRODUS (Costin) inainte de a fi actabil (NU blocaj extern, NU inca decis)
+- **state_plata: persistare la emitere (cu hash, ca declaratiile depuse) VS scoaterea tabelei** — test_datorie:145. Efect: un stat emis in ianuarie, reafisat in iulie, poate iesi ALTFEL (cota/sm/cod schimbate). Cere decizia lui Costin inainte de cod.
+- **teste_care_apara_buguri: 85 teste asertaza constante fiscale FARA temei (~15 module cu TVA 21% hardcodat)** — test_datorie:235. NU e reparabil intr-un tur; plan SISTEMATIC separat, decis de Costin.
+- **F144 GV (gestiune valorica) fara profit/produs — cost pe articol inexistent** — CSV F144. Decizie deschisa (17.07 inchisa doar pt CV).
