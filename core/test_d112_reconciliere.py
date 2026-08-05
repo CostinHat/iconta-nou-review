@@ -18,6 +18,7 @@ import pytest
 from core import d112 as _d112
 from core import d112_reconciliere as _rec
 from core.d112_reconciliere import reconciliaza, verifica_reconciliere, ReconciliereD112
+from core import perioada as _per
 
 
 # ============================================================
@@ -224,3 +225,64 @@ def test_skip_suspect_brut_sub_minim_e_semnalat(conn_recon):
     with pytest.raises(ReconciliereD112) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
     assert "SUB salariul minim" in str(ei.value)
+
+
+# ============================================================
+#  SUB-CAZ 1b (05.08.2026): TICHETE DE MASA peste minim -> CAS reconciliat, CASS numit-afara.
+# ============================================================
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_tichete_masa_cas_reconciliat_cass_ramane_afara(conn_recon):
+    """Angajat PESTE minim cu tichete de masa: pull EMITE cass = brut x cota_cass + cass_tichete
+    (d112.py:239). Calea 2 reconciliaza DOAR CAS (tichetele nu ating baza CAS); CASS ramane numit-afara.
+    PROBA: (a) pe date corecte CAS reconciliat, fara alarma falsa; (b) MUTATIE pe cas PICA; (c) MUTATIE
+    pe cass NU pica (limita CASS-afara e reala, nu o omisiune tacuta)."""
+    with conn_recon.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time,tichet_masa_valoare) "
+                    "OVERRIDING SYSTEM VALUE VALUES (7,'TICHETE','G','1900101410017','2025-01-01',6000,8,false,40)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (7,'2025-01-01',6000)")
+    # tichetele de masa cer pontaj CONFIRMAT (d112.py:472, HG 1045/2018 art.10(3)) - altfel pull ridica PerioadaNeconfirmata
+    _per.confirma(conn_recon, _SCHEMA, 2026, 6, "pontaj", 1)
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    g = {s["id"]: s for s in sal}
+    assert int(g[7]["cas"]) == 1500, g[7]["cas"]                         # 6000 x 25% - neatins de tichete (EMIS = reconciliabil)
+    # s["cass"] pastreaza DOAR CASS salarial (600); cass_tichete e camp SEPARAT. CASS-ul EMIS la ANAF = cass + cass_tichete
+    # (d112.py:239 face cass += cass_tichete la build). Reconcilierea lasa CASS afara: nu poate recalcula cass_tichete
+    # fara motorul de tichete (nominal x zile-pontaj x cota_cass) = tautologie + dependenta de pontaj.
+    assert float(g[7]["cass"]) == 600.0, g[7]["cass"]                    # CASS salarial = 6000 x 10% (component, NU emisul; nu se confrunta)
+    assert float(g[7]["cass_tichete"]) > 0, ("cass_tichete=0 -> limita CASS-afara ar fi vacua: %s" % g[7]["cass_tichete"])
+    # (a) date corecte: 7 e reconciliat pe CAS DOAR, fara divergenta; nu e in reconciliati (complet) nici sarit
+    rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert rap["divergente"] == [], "alarma falsa: %s" % rap["divergente"]
+    assert 7 in rap["reconciliati_cas_doar"], rap
+    assert 7 not in rap["reconciliati"] and 7 not in rap["sarite"], rap
+    # (b) MUTATIE pe cas -> hard-block care numeste salariatul si ambele valori
+    for s in sal:
+        if s["id"] == 7:
+            s["cas"] = 9999
+    with pytest.raises(ReconciliereD112) as ei:
+        verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert "salariat 7 cas" in str(ei.value) and "generator=9999" in str(ei.value) and "cale2=1500" in str(ei.value), str(ei.value)
+    # (c) MUTATIE pe cass -> NU pica (CASS numit-afara pentru tichete): limita declarata, nu omisiune tacuta
+    _prof, sal2 = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    for s in sal2:
+        if s["id"] == 7:
+            s["cass"] = 1   # valoare absurda pe CASS
+    rap2 = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal2)
+    assert all(d["salariat"] != 7 for d in rap2["divergente"]), (
+        "CASS pe tichete NU trebuie confruntata (limita 1b) - dar a produs divergenta: %s" % rap2["divergente"])
+    verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal2)   # nu ridica
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_tichete_masa_la_minim_ramane_sarit(conn_recon):
+    """Combo facilitate(la minim)+tichete = sub-caz ulterior: angajatul la minim CU tichete de masa
+    ramane SARIT (nu se confrunta nici pe CAS), pana la un sub-caz care il acopera explicit."""
+    with conn_recon.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time,tichet_masa_valoare) "
+                    "OVERRIDING SYSTEM VALUE VALUES (8,'MINTICH','H','1900101410018','2025-01-01',4050,8,false,40)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (8,'2025-01-01',4050)")
+    _per.confirma(conn_recon, _SCHEMA, 2026, 6, "pontaj", 1)
+    _prof, sal = _d112.pull(conn_recon, _SCHEMA, 2026, 6)
+    rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert 8 in rap["sarite"], rap
+    assert 8 not in rap["reconciliati"] and 8 not in rap["reconciliati_cas_doar"], rap

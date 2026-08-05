@@ -23,11 +23,21 @@ zero. Invers ar însemna să verifici de două ori — sau, mai probabil, a doua
 
 ## În lucru acum
 - fir: EXTINDEREA ACOPERIRII (campanie noua 05.08) - 4 puncte: 1.D112 cazuri complexe, 2.D101 impozabil, 3.amortizare MF neliniara, 4.tip_document 2-5 D394
-- ultim: Punctul 1 sub-caz 1a LIVRAT - facilitate la minim toata luna full-time reconciliata (acoperire ~20-35%->~30-45% est).
-- urmator: Punctul 1 sub-caz 1b - TICHETE (masa/vacanta). IN LUCRU.
+- ultim: Punctul 1 sub-caz 1b LIVRAT - TICHETE DE MASA peste minim: CAS reconciliat (CASS numit-afara). Acoperire ~30-45%->~35-50% est.
+- urmator: Punctul 1 sub-caz 1c - CM + PART-TIME (fiecare sub-caz separat). NEINCEPUT.
 - pasi:
   P1a. [GATA] facilitate la minim stabila toata luna: baza=sm-fac, CAS+CASS; _stabil_la_minim SQL propriu; rotunjire la intreg ca _d112int. Prorata ramane sarita.
-  P1b. TICHETE: CAS neafectat de tichete (cas=brut x cota); CASS = baza x cota + cass_tichete (nominal tichete x cota_cass). NEINCEPUT.
+  P1b. [GATA] TICHETE DE MASA (angajat peste minim, luna intreaga, fara CM/part-time/scutire/alte beneficii). CAS reconciliat, CASS numit-afara.
+       Proba: 6000+tichet40, pontaj confirmat -> cas=1500/cass=600(salarial)/cass_tichete=84; reconciliat_cas_doar; mutatie cas PICA; mutatie cass NU pica.
+       RED probat pe codul vechi (tichete inca sarite / cheia reconciliati_cas_doar inexistenta). test_d112_reconciliere.py 8->10.
+    b1. core/d112_reconciliere.py: skip-ul neconditionat pe tichet_masa_valoare (l.141-142) -> flag are_tichete_masa.
+        Skip ben_ids RAMANE (garanteaza fara vacanta/cultural/cresa in beneficii_lunare -> exces_vac=0 -> DOAR tichete de masa).
+    b2. branch caz-simplu (brut>sm) + are_tichete_masa: confrunta DOAR cas (=_q(brut x cota_cas)); sid -> reconciliati_cas_doar.
+        CASS numit-AFARA: d112.py:239 cass += cass_tichete -> baza CASS emisa (brut x cota_cass + cass_tichete) != brut x cota_cass.
+    b3. branch facilitate (brut==sm) + are_tichete_masa: SARIT (combo facilitate+tichete = sub-caz ulterior, numit).
+    b4. return: cheie noua reconciliati_cas_doar; docstring/header: 1b acopera CAS, CASS numit-afara. Non-tautologie AST neatinsa (fara importuri noi).
+    b5. test: salariat tichete>minim + pontaj confirmat (perioada.confirma "pontaj"); pull emite cass>brut x cota_cass (cass_tichete>0);
+        reconciliaza pass pe CAS; mutatie cas -> PICA; mutatie cass -> NU pica (proba ca limita CASS-afara e reala).
   STARE = IN LUCRU
 
 

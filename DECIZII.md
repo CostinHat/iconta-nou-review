@@ -7402,3 +7402,40 @@ ACOPERIRE: ~20-35% -> ~30-45% estimat (nemasurat). Suprapunerea minim x tichete 
 PROBA: salariat la 4050 toata luna -> generator cas 937.50 (emis 938), calea 2 baza=3750 cas=938, reconciliat;
 mutatie cas=999 -> "salariat 3 cas: generator=999 vs cale2=938" ridica. Facilitate proratata (schimbare 2026-06-16)
 -> sarit. Non-tautologie tranzitiva neschimbata (doar common.cota adaugat). Suita 1418 passed (+1), verificator 0.
+
+
+## 05.08.2026 - EXTINDEREA ACOPERIRII Punctul 1 sub-caz 1b: D112 tichete de masa (CAS reconciliat, CASS numit-afara)
+
+Sub-caz 1b: angajat PESTE salariul minim, luna intreaga, full-time, ne-scutit, fara CM, fara alte beneficii
+(vacanta/cultural/cresa in beneficii_lunare -> deja sarit prin ben_ids), DAR cu tichet_masa_valoare > 0.
+
+TEMEI / SEMANTICA (verificat la sursa INAINTE de cod, salarizare.py + d112.py):
+  - salarizare.py:203-208: baza_contrib = b_imp - facilitate, b_imp = b + exces_vac. Tichetele de MASA nu intra in
+    b_imp (doar EXCESUL de tichete de vacanta peste 6 sm intra). Deci cas = baza_contrib x cota_cas si CASS SALARIAL
+    (cass = baza_contrib x cota_cass) NU sunt atinse de tichetele de masa.
+  - salarizare.py:215-236: tichete de MASA = CASS 10% + impozit 10% pe nominal, FARA CAS, FARA CAM. cass_tichete
+    = (tichete_nominal + tichete_vac) x cota_cass, camp SEPARAT.
+  - d112.py:239 (build): cass += cass_tichete. Deci CASS-ul EMIS per angajat = s["cass"] (salarial) + s["cass_tichete"].
+    pull() pastreaza cele doua SEPARAT (s["cass"]=salarial=brut x cota_cass, s["cass_tichete"]=increment tichete).
+  Verificat empiric: salariat 6000+tichet40, pontaj confirmat -> cas=1500, cass=600, cass_tichete=84, tichete_nominal=840.
+
+DECIZIE: calea 2 reconciliaza DOAR CAS = brut x cota_cas pentru angajatii cu tichete de masa (EMIS = reconciliabil,
+tichetele nu-l ating). CASS ramane NUMIT-AFARA: CASS-ul EMIS = brut x cota_cass + cass_tichete; a-l recalcula ar cere
+re-derivarea cass_tichete (nominal x zile-pontaj x cota_cass) = TAUTOLOGIE cu motorul de tichete + dependenta de
+pontaj. Confruntarea componentei salariale (s["cass"]) ar amesteca contractul "confrunta valoarea EMISA" (1a) cu o
+componenta intermediara -> RESPINSA ca risc de acoperire falsa (mai bine CASS explicit afara decat un numar partial
+prezentat ca "cass reconciliat"). Combo facilitate(la minim)+tichete = sub-caz ulterior, SARIT (ramura brut==sm).
+
+IMPLEMENTARE (core/d112_reconciliere.py): skip-ul neconditionat pe tichet_masa_valoare -> flag are_tichete_masa;
+skip ben_ids RAMANE (garanteaza fara vacanta/cultural/cresa -> exces_vac=0 -> DOAR tichete de masa); ramura caz-simplu
+confrunta doar "cas" si adauga sid in cheia NOUA reconciliati_cas_doar. Non-tautologie tranzitiva NESCHIMBATA (niciun
+import nou; test_non_tautologie ramane verde).
+
+ACOPERIRE: ~30-45% -> ~35-50% estimat (nemasurat; tichetele de masa = beneficiu larg raspandit, dar reconciliaza DOAR
+CAS pe ei). De reverificat cu cifra reala cand exista payroll.
+
+PROBA: 8->10 teste in test_d112_reconciliere.py. test_tichete_masa_cas_reconciliat_cass_ramane_afara: cas=1500 &
+cass_tichete>0 -> reconciliat_cas_doar; mutatie cas=9999 -> "salariat 7 cas: generator=9999 vs cale2=1500" ridica;
+mutatie cass=1 -> NU ridica (limita CASS-afara reala, nu omisiune tacuta). test_tichete_masa_la_minim_ramane_sarit:
+combo minim+tichete -> sarit. RED probat: pe codul vechi (git checkout) ambele pica (tichete sarite / cheie inexistenta).
+Suita 1420 passed (+2), verificator 0.

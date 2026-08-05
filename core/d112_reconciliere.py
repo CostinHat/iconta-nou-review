@@ -15,9 +15,18 @@ CE RECONCILIAZA — DOAR CAZUL SIMPLU (scris ca atare, NU "D112 acoperit"):
     - fara concediu medical in luna (CM schimba baza/procentele);
     - norma intreaga (part-time -> suprataxare);
     - ne-scutit (scutit_contrib_minim);
-    - fara tichete (masa/vacanta/cultural/cresa - schimba baza CASS/impozit);
+    - fara tichete cu CASS de reconciliat (tichetele de MASA au cale PARTIALA proprie - CAS doar,
+      vezi sub-caz 1b mai jos; vacanta/cultural/cresa din beneficii_lunare raman integral afara);
     - angajat LUNA INTREAGA (fara proratare de angajare/incetare la mijloc de luna).
   Un angajat care incalca ORICARE conditie -> NEACOPERIT (sarit, nu alarma falsa).
+
+CE RECONCILIAZA PARTIAL — SUB-CAZ 1b (05.08.2026), TICHETE DE MASA (scris ca atare, NU "tichete acoperite"):
+  Angajat PESTE minim, luna intreaga, full-time, ne-scutit, fara CM, fara alte beneficii (vacanta/cultural/
+  cresa in beneficii_lunare -> sarit prin ben_ids), DAR cu tichet_masa_valoare > 0: se reconciliaza DOAR
+  CAS = brut x cota_cas. Tichetele de masa nu ating baza CAS (salarizare.py: baza_contrib=brut). CASS ramane
+  NUMIT-AFARA: d112.py:239 face cass += cass_tichete, deci baza CASS EMISA = brut x cota_cass + cass_tichete
+  != brut x cota_cass; a o recalcula ar cere re-derivarea tichetelor (nominal x zile-pontaj x cota_cass) =
+  tautologie cu salarizarea + dependenta de pontaj. Combo facilitate(la minim)+tichete = sub-caz ulterior, sarit.
 
 CE RAMANE IN AFARA (LIMITA DECLARATA, GARZI cat.4 - gardul NU acopera):
   - FACILITATE la minim PRORATATA (schimbare de salariu in luna sau luna partiala) - facilitatea la minim
@@ -25,7 +34,8 @@ CE RAMANE IN AFARA (LIMITA DECLARATA, GARZI cat.4 - gardul NU acopera):
   - CONCEDII MEDICALE (CM): baze si procente proprii (OUG 158/2005);
   - IMPOZIT (necesita deducerea personala degresiva art.77 - calcul complex, exclus din acest gard);
   - CAM (contributia asiguratorie de munca, agregat de angajator);
-  - TICHETE (baza CASS/impozit modificata).
+  - TICHETE: CASS pe tichete (masa: CAS reconciliat 1b, CASS afara; vacanta/cultural/cresa integral afara);
+    IMPOZITUL pe tichete si excesul de vacanta (atinge si CAS) - integral afara.
   Impozitul si CAM raman pe seama gardului structural DUK + golden-ele existente; aici NU se
   reconciliaza pe a doua cale. Extindere = pas separat.
 
@@ -96,7 +106,8 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
       divergente   - CAS/CASS ale cazului simplu care nu se leaga (bug de contributie);
       suspecte     - angajat EMIS de generator cu DATE CORUPTE (brut lipsa / sub minimul legal):
                      skip-SUSPECT, semnalat (nu tacut) - "null base = eroare pana la proba contrarie";
-      reconciliati - ids confruntati (cazul simplu);
+      reconciliati - ids confruntati COMPLET (CAS+CASS: cazul simplu + facilitatea la minim 1a);
+      reconciliati_cas_doar - ids confruntati DOAR pe CAS (sub-caz 1b, tichete de masa; CASS numit-afara);
       sarite       - skip-LEGITIM din complexitate fiscala (facilitate/CM/part-time/scutire/tichete/
                      luna partiala / generatorul nu l-a emis) - tacut, e in afara scopului gardului.
     Distinctia sarit-legitim vs sarit-suspect (cerinta Costin 05.08): un angajat NU trebuie sa cada
@@ -107,7 +118,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
     luna_sf = _date(an, luna, _cal.monthrange(an, luna)[1])
     cota_cas, cota_cass, sm, fac_val, plafon_fac = _cote(la_data)
     gen = {s.get("id"): s for s in (salariati_generator or [])}
-    divergente, suspecte, reconciliati, sarite = [], [], [], []
+    divergente, suspecte, reconciliati, reconciliati_cas_doar, sarite = [], [], [], [], []
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT id, salariu_brut, part_time, scutit_contrib_minim, tichet_masa_valoare, "
                     "data_angajare, data_incetare FROM %s.salariati "
@@ -138,14 +149,19 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
             # --- SKIP-LEGITIM: complexitate fiscala (in afara scopului gardului, tacut) ---
             if r["part_time"] or r["scutit_contrib_minim"]:
                 sarite.append(sid); continue
-            if float(r["tichet_masa_valoare"] or 0) > 0:
-                sarite.append(sid); continue
+            # [1b 05.08] tichetele de MASA NU ating baza CAS (salarizare.py: baza_contrib=brut; d112.py:239
+            # face cass += cass_tichete DOAR pe CASS) -> CAS ramane reconciliabil, CASS numit-afara. Flag, nu skip.
+            # Skip-ul ben_ids de mai jos ramane -> garanteaza fara vacanta/cultural/cresa (beneficii_lunare) ->
+            # exces_vac=0 -> DOAR tichete de masa (altfel exces vacanta ar atinge si baza CAS).
+            are_tichete_masa = float(r["tichet_masa_valoare"] or 0) > 0
             if sid in cm_ids or sid in ben_ids:
                 sarite.append(sid); continue
             da, di = r["data_angajare"], r["data_incetare"]
             if (da and da > luna_inc) or (di and di < luna_sf):
                 sarite.append(sid); continue   # luna nu e intreaga -> proratare -> afara
             if brut == sm:
+                if are_tichete_masa:
+                    sarite.append(sid); continue   # [1b] combo facilitate+tichete la minim = sub-caz ulterior, NEACOPERIT (numit)
                 # SUB-CAZ 1a (extindere acoperire 05.08): FACILITATE la salariul minim, TOATA luna, full-time.
                 # Deja filtrat mai sus: full-month, fara CM/tichete/part-time/scutire. Cerem in plus salariu STABIL
                 # la minim toata luna (fara schimbare in luna) -> zile_la_minim = zile_lucratoare ->
@@ -168,6 +184,15 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                                  "full-time luna intreaga (sub pragul legal) - date probabil corupte"
                                  % (_q(brut), _q(sm))})
                 continue
+            # --- SUB-CAZ 1b (05.08): angajat PESTE MINIM cu TICHETE DE MASA -> CAS reconciliabil, CASS numit-afara ---
+            if are_tichete_masa:
+                exp_cas = _q(brut * cota_cas)   # tichetele de masa NU ating baza CAS (salarizare.py)
+                reconciliati_cas_doar.append(sid)
+                got = _q(g.get("cas") or 0)     # valoarea EMISA la ANAF (half-up ca _d112int), nu trunchiere
+                if got != exp_cas:
+                    divergente.append({"salariat": sid, "camp": "cas",
+                                       "generator": got, "cale2": exp_cas, "diferenta": got - exp_cas})
+                continue   # CASS emisa = brut x cota_cass + cass_tichete (d112.py:239) - NU se confrunta (limita declarata)
             # --- CAZ SIMPLU: recalcul independent (baza contributie = brut, facilitate 0) ---
             exp = {"cas": _q(brut * cota_cas), "cass": _q(brut * cota_cass)}
             reconciliati.append(sid)
@@ -177,7 +202,8 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                     divergente.append({"salariat": sid, "camp": camp,
                                        "generator": got, "cale2": exp[camp], "diferenta": got - exp[camp]})
     return {"divergente": divergente, "suspecte": suspecte,
-            "reconciliati": reconciliati, "sarite": sarite}
+            "reconciliati": reconciliati, "reconciliati_cas_doar": reconciliati_cas_doar,
+            "sarite": sarite}
 
 
 def verifica_reconciliere(conn, schema, an, luna, salariati_generator):

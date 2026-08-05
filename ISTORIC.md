@@ -3231,3 +3231,15 @@ S2 fac=200), CAS+CASS. Detectare independenta a stabilitatii (salariu_istoric fa
 proratata (schimbare in luna) ramane sarita numit (sub-caz ulterior). Corectie rotunjire: comparatie pe valoarea
 EMISA la intreg (_d112int half-up), nu trunchiere. Acoperire estimata ~20-35% -> ~30-45% (nemasurat). Suita 1418
 passed (+1), verificator 0.
+
+
+## 05.08.2026 - EXTINDEREA ACOPERIRII, Punctul 1 sub-caz 1b: D112 tichete de masa (CAS reconciliat, CASS afara)
+
+Al doilea sub-caz al Punctului 1. Angajatii PESTE salariul minim cu TICHETE DE MASA (fara alte beneficii) sunt acum
+reconciliati pe CAS de a doua cale: tichetele de masa nu ating baza CAS (salarizare.py: baza_contrib=brut; CASS pe
+tichete e camp separat cass_tichete). CASS ramane NUMIT-AFARA fiindca CASS-ul EMIS la ANAF = salarial + cass_tichete
+(d112.py:239) si recalcularea lui ar duplica motorul de tichete + ar cere pontajul. Confruntarea componentei salariale
+a fost respinsa (amesteca "valoarea EMISA" cu o intermediara -> acoperire falsa). Combo minim+tichete ramane sarit.
+Verificat la sursa inainte de cod (salarizare.py 203-236, d112.py 239) + empiric (cass_tichete=84 nenul). Cheie noua
+in return: reconciliati_cas_doar. Proba RED->VERDE (git checkout pe codul vechi -> ambele teste noi pica). Acoperire
+estimata ~30-45% -> ~35-50% (nemasurat). Suita 1420 passed (+2), verificator 0.

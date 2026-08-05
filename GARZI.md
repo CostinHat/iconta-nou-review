@@ -306,7 +306,8 @@ că intrarea a fost înghițită**.
     numind angajatul si ambele valori) + caz nesimplu SARIT fara alarma falsa.
     - **CE RAMANE IN AFARA (gardul NU acopera, extindere = pas separat):** FACILITATI (constructii/IT/
       agricol, salariu minim), SCUTIRI, PLAFOANE, PART-TIME suprataxare, CONCEDII MEDICALE, IMPOZIT
-      (necesita deducerea personala degresiva art.77), CAM, TICHETE. Un angajat cu oricare -> NEACOPERIT
+      (necesita deducerea personala degresiva art.77), CAM. TICHETE: masa -> CAS reconciliat (sub-caz 1b), CASS
+      afara; vacanta/cultural/cresa integral afara. Un angajat cu oricare (in afara masei pe CAS) -> NEACOPERIT
       (sarit, nu alarma falsa). Impozit/CAM raman pe DUK structural + golden-ele existente.
     - D112 e cel mai EXPUS la tautologie din campanie (totalurile vin din calcul_salariu); de aceea
       non-tautologia e probata pe lantul TRANZITIV, nu doar pe importurile directe.
@@ -316,6 +317,11 @@ că intrarea a fost înghițită**.
       schimbare de salariu in luna) e ACUM reconciliata (baza=sm-facilitate, CAS+CASS). Acoperire estimata
       urcata la ~30-45% (estimare, nemasurata; suprapunerea minim x TICHETE ramane la sub-cazul urmator 1b).
       Facilitatea PRORATATA (schimbare in luna) ramane sarita NUMIT.
+      **EXTINDERE 05.08 (sub-caz 1b):** angajatii PESTE minim cu TICHETE DE MASA (fara alte beneficii) sunt ACUM
+      reconciliati pe CAS (tichetele de masa nu ating baza CAS - salarizare.py:203-236). CASS ramane NUMIT-AFARA:
+      CASS-ul EMIS = salarial (brut x cota_cass) + cass_tichete (d112.py:239); a-l recalcula = tautologie cu motorul
+      de tichete + dependenta de pontaj. Combo minim+tichete ramane sarit. Acoperire estimata ~30-45% -> ~35-50%
+      (estimare, nemasurata; pe tichete reconciliaza DOAR CAS, nu si CASS).
       Excluderile dominante: salariu MINIM (facilitate; pondere mare la IMM-uri RO) + TICHETE de masa
       (beneficiu larg raspandit) — se suprapun si domina, plus CM/part-time. ESTIMARE PE STRUCTURA, NU
       MASURATA (tenantii de test sunt goi/sintetici; nu exista payroll real). De reverificat cu cifra
