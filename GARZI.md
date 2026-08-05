@@ -1422,3 +1422,21 @@ DREPTURILE persoanei vizate (export/stergere/retentie/alerta cabinet), NU un reg
 sunt fiscale, nu GDPR). GOL DE CONFORMITATE REAL. Feature-ul e livrat (D112 il cere fiscal - altfel cod 09 nedepozabil),
 DAR temeiul de prelucrare (art.6/9), informarea persoanei vizate terte (art.14) si ROPA raman de DECIS de Costin - nu
 se improvizeaza politica in cod.
+
+
+## 05.08.2026 (tura 12) - Campania C, clasa C5 (mascarea erorii / zero tacut): gard AST anti-except-masca LIVRAT
+
+C5 din capitolul "Metode de verificare - clasele oarbe" (TESTE.md). Gard: core/test_gard_masca_zero.py - analiza AST
+peste modulele de BANI (d100/d101/d112/d205/d300/d301/d390/d394/d406/d710/salarizare/verificatoare/reconciliere_emis +
+cele 6 *_reconciliere) interzice un handler de exceptie al carui corp e DOAR `pass` sau `return <zero/gol numeric>`
+(0/0.0/""/[]/{}) - tiparul cat.0 (`except: return 0` din _d112int, MASCA SCOASA 27.07). NON-TAUTOLOGIE: proba
+STRUCTURALA (AST), nu recalcul. MUTATIE (dovada ca musca): snippet `except: return 0`/`pass`/`return []` = PRINS;
+`except` care ridica / returneaza valoare reala / asigneaza = NU prins (fara fals-pozitiv). 0 violari in productie.
+
+SCOPARE (decisa la livrare): `return None` si `return False` EXCLUSE - salarizare._pd (parser de data, None="nu-i
+data") si validatorii (bool) sunt legitimi; masca periculoasa e ZERO/GOL numeric tacut (trece checkurile aritmetice),
+nu None (ar da TypeError downstream, mai zgomotos). LIMITA: prinde DOAR tiparul sintactic except->pass/return-zero in
+modulele listate; o masca prin `x=0` in corp NU e prinsa (alt tipar); un modul de bani nou trebuie adaugat in _MODULE_BANI.
+
+RAMAN din C5: mutant-zero sistematic (fortarea fiecarui generator sa intoarca [] -> suita/verificator rosu) - jumatatea
+diagnostica, neinceputa (buget context).

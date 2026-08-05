@@ -2,6 +2,34 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba)
 
 # PREDARE — Campania EXTINDEREA ACOPERIRII (05.08.2026)
 
+
+## PREDARE 05.08.2026 (tura 12) - Campania C in curs: C5 partial livrat, C1/C2/C3/C4 + C5-mutant-zero raman
+
+STARE: HEAD dupa acest commit. Poarta verde. Spec-ul celor 5 clase = TESTE.md capitolul "Metode de verificare -
+clasele oarbe" (metoda concreta + cost + tautologie + ordine efect x cost per clasa).
+
+LIVRAT in campania C:
+- C5 (mascare/zero) PARTIAL: gard AST anti-except-masca (core/test_gard_masca_zero.py) - vezi GARZI tura 12.
+
+RAMAN (in ordinea argumentata efect x cost din TESTE.md), fiecare cu: modul + gard AST non-tautologie + MUTATIE:
+- C5 rest: mutant-zero sistematic (generator fortat -> [] => suita/verificator rosu). Diagnostic; verifica ce NU
+  prinde nimic cand un generator intoarce gol (poarta pe artefact NU-l prinde: res gol == emis gol).
+- C2 (intre documente) - CEA MAI VALOROASA (Costin), precondictia LIVRATA (poarta pe artefact + valorile emise):
+  perechile cu cai INDEPENDENTE - fluturas(stat_plata)<->D112 INTAI (divergenta dovedita azi la baza CM); apoi
+  Sum(D112 lunar)<->D205; balanta<->D101 deja partial (d101_reconciliere din clase 6/7); D100<->D112 = pass-through
+  (tautologie pura, NU merita pana se fac independente). NOTA existenta: control_incrucisat.py deja face D112/D300 vs
+  contabilitate (citind XML-ul emis) - de EXTINS / gardat, nu de re-inventat.
+- C3 (in timp): snapshot+hash la depunere + regenerare-diff + job nocturn Sdebit=Scredit per perioada/tenant + orfani.
+  state_plata snapshot deja DECIS (GARZI INVENTAR A).
+- C1a (intrare): invarianti DB (NOT NULL pe coloane de bani + cheie naturala unica anti-import-dublat).
+- C1b (intrare<->document sursa): Sum(linii importate)==total document; doar unde sursa e digitala (extras bancar).
+- C4 (interpretare sursa): a doua lectura oarba / extindere DUK; continuu per cluster, nu proiect separat.
+
+DE CE M-AM OPRIT (§2.3 pct.6): buget de context epuizat dupa o sesiune foarte lunga (A/B baza CM + poarta valori emise
++ impozit CM neimpozabil + poarta pe artefact 6/7 + feature CNP D_8/D_8a + C5 anti-except). Oprire la granita curata de
+commit, nu start de C2 (modul+fixtura per pereche) riscand stare partiala. Registrele la zi.
+
+
 ## PREDARE 05.08.2026 (tura 6) — dupa A+B; urmeaza C (5 clase oarbe)
 
 STARE: HEAD = origin/main = origin/backup/lant-20260805 = **27adccf**. Tree curat. 1424 passed / 2 skipped / 21 xfailed,

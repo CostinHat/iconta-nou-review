@@ -3342,3 +3342,10 @@ salvare+emisie + emisie D_8/D_8a (regula DUK S97 citita la sursa: 17 cere D_8a s
 valid -> D_8 + DUK VALID (lant neprobat DUK inainte, se folosea 08); fara CNP -> BLOCAT. Garduri anti-regresie. DATORIE
 GDPR semnalata (part 6): CNP tert minor = prelucrare fara temei/ROPA documentat (F199-F205 = drepturi persoana vizata,
 nu registru prelucrari art.30) - gol real, de decis de Costin, nu improvizat. Consemnat GARZI tura 11.
+
+
+## 05.08.2026 (tura 12) - Campania C: C5 gard anti-except-masca livrat; restul predat (buget context)
+C5 (mascare/zero): gard AST core/test_gard_masca_zero.py - interzice except:pass/return-zero-gol in modulele de bani;
+mutatie dovedeste ca musca; 0 violari productie; None/False excluse (parsere/validatori legitimi). Restul campaniei C
+(C5-mutant-zero, C2 intre documente, C3 in timp, C1 intrare, C4 interpretare) predat in PREDARE_LANT.md tura 12 cu
+ordinea efect x cost. Oprire §2.3 pct.6 (buget context) la granita curata. Consemnat GARZI/PREDARE tura 12.
