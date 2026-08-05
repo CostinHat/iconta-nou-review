@@ -3107,3 +3107,31 @@ marcaj-gol NU exempteaza. Cele 11 citari istorice legitime (teste scoase 6675f19
 
 Starea zilei: agenda epuizata (70/70 clustere bifate), registrul nu mai minte + gardat mecanic. Urmatoarea campanie
 (deschisa separat, neinceputa): gard de CONTINUT (golden pe exemplul oficial ANAF + a doua cale pe totaluri).
+
+
+## 05.08.2026 — GARDUL DE CONTINUT pas 1/6: a doua cale D300 (reconciliere pe totaluri) — commit 3096812
+
+Campanie noua. Problema: DUK valideaza STRUCTURA, nu semantica — o declaratie cu total GRESIT dar structural valid
+trece azi. Directia (a) propusa initial ("golden pe exemplul oficial ANAF", consemnata ca intentie in intrarea de
+04.08) s-a dovedit BLOCATA LA SURSA: inventar exhaustiv anaf_surse/ + tot repo-ul (grep/find, exclus venv) ->
+NICIUN fisier e o declaratie ANAF completata cu cifre (structura+instructiuni, nu declaratii-model). SUPERSEDEAZA
+partea "golden" din intentia de 04.08: ramane doar directia (b), a doua cale. Golden pe valori unitare = deja test_dXXX.
+
+LIVRAT: core/d300_reconciliere.py — recalcul INDEPENDENT al totalurilor D300 dintr-un pull SQL propriu al liniilor
+brute (independent de d300.pull) + agregare proprie pe cote (independenta de calcul_d300/_segmente/_int),
+Sigma(baza)xcota, rotunjire aritmetica. Confrunta randurile automate ale generatorului (colectat R9/R10/R11 21/11/9,
+deductibil R22/R23 21/11) cu res.R. Poarta in d300.genereaza inainte de return: divergenta = eroare vizibila
+(ReconciliereD300) care numeste AMBELE valori, NU repara tacit nici o cale (cerinta Costin).
+
+Probat: (1) NON-TAUTOLOGIE pe AST — modulul caii 2 nu importa/foloseste functiile de agregare/rotunjire ale
+generatorului; (2) MUTATIE — factura pierduta / cota in bucketul gresit / semn inversat -> reconcilierea PICA numind
+ambele valori (dovada bruta: "R9_2: generator=0 vs cale2=210"); (3) proba functionala pe schema efemera (genereaza
+cu poarta -> divergente []). Gard: core/test_d300_reconciliere.py (7 teste).
+
+Neconformitate prinsa de propriile garzi in timpul livrarii (ambele reparate la cauza, nu ocolite): (a)
+test_toate_generatoarele_rotunjesc_aritmetic a prins doua round() pe cota fara marcaj -> adaugat "# ROTUNJIRE PE
+COTA" (cotele sunt procent intreg, bancar==aritmetic); (b) verificatorul GRI COTA a prins literalul 21 in modulul nou
+-> d300_reconciliere.py adaugat la _TVA_EXCLUSE (familia generatorului D300, ca d300/d301/d390/d394/d406).
+
+Porti: suita 1391 passed (+7), 2 skipped, 21 xfailed; verificator TOTAL 0; commit local 3096812. Ordine campanie ramasa:
+D394(vs D300) -> D112 -> D406 -> D101/D205. Limita declarata (6 puncte) in GARZI cat.4 de la DESCHIDERE.
