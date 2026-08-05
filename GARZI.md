@@ -322,7 +322,19 @@ că intrarea a fost înghițită**.
       brut SUB minimul legal (full-time luna intreaga) = skip-SUSPECT -> HARD-BLOCK semnalat ('null base =
       eroare pana la proba contrarie'). Skip-legitim (facilitate/CM/part-time/scutire/tichete/luna partiala)
       ramane tacut. Probat: brut NULL / brut 3000<minim -> ridica; facilitate la minim -> tacut.
-  - **RAMAS LIPSA**: aceeasi a doua cale pe D406 -> D101/D205 (ordinea confirmata).
+  - **D406/SAF-T: GeneralLedgerEntries ACOPERIT (05.08.2026, pas 4/6).** `core/d406_reconciliere.py`
+    construieste o BALANTA DE RULAJE per cont INDEPENDENTA din inregistrari_linii (SQL propriu) si o
+    leaga de totalurile per-cont din SAF-T-ul emis (res.note) + invariant Sdebit=Scredit. Poarta
+    HARD-BLOCK in d406.genereaza. Gard: `test_d406_reconciliere.py` (5): non-tautologie AST + mutatie
+    (suma alterata / GeneralLedgerEntries GOL = bug-ul istoric 16.07 / dezechilibru dubla partida).
+    Prinde exact clasa bug-ului istoric (GL ramanea gol tacit printr-un except:pass) - calea 2 gaseste
+    notele in DB si STRIGA.
+    - LIMITA: acopera GeneralLedgerEntries (dubla partida a notelor). NU acopera SalesInvoices/
+      PurchaseInvoices/Payments/Assets/MovementOfGoods (reconcilierea linii-antet facturi exista deja
+      partial, mai sus). Sdebit=Scredit e in mare parte STRUCTURAL (fiecare inregistrari_linii =
+      debit+credit egale); valoarea reala = legarea per-cont la rulaj (prinde drop/dubla/mapare la EMISIE).
+      Input partajat gresit (aceeasi linie gresita citita de ambele cai) = §8.
+  - **RAMAS LIPSA**: aceeasi a doua cale pe D101/D205 (ultimele din ordinea confirmata).
 - LIPSĂ: snapshot de regresie pe fixturi înghețate.
 - **DUK validează STRUCTURA, nu conținutul.** Nu e gard de conținut și nu se tratează ca atare.
 

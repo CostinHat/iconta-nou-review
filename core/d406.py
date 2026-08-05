@@ -1233,4 +1233,9 @@ def genereaza(conn, schema, an, luna):
         res.avertismente.insert(0, "ATENTIE: %d cont(uri) EXCLUS(e) din D406 - nu apartin normei contabile "
                                    "declarate (%s), ANAF le-ar respinge: %s. Verifica planul de conturi / baza "
                                    "contabila a firmei." % (len(strain), prof.get("baza_contabila") or "A", lista))
+    # POARTA A DOUA CALE (gard de continut, 05.08.2026, pas 4/6): balanta de rulaje per cont
+    # INDEPENDENTA din inregistrari_linii, legata de SAF-T emis + invariant Sdebit=Scredit.
+    # Divergenta = HARD-BLOCK. Vezi core/d406_reconciliere.py.
+    from core.d406_reconciliere import verifica_reconciliere
+    verifica_reconciliere(conn, schema, an, luna, res)
     return build_xml(res), res

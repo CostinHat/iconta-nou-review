@@ -7291,3 +7291,34 @@ Dupa livrarea D112 (cazul simplu), Costin a cerut doua rigori inainte de D406:
 
 PROBA: brut NULL -> "brut LIPSA...SUSPECTE" ridica; brut 3000 (<minim 4050) full-time -> "SUB salariul minim" ridica;
 facilitate la minim (4050) -> sarit-legitim, tacut. Teste: test_skip_suspect_brut_lipsa/sub_minim. Suita verde.
+
+
+## 05.08.2026 — GARD CONTINUT D406/SAF-T (pas 4/6): balanta de rulaje independenta + Sdebit=Scredit
+
+DECIZIA: gardul de continut D406 reconciliaza GeneralLedgerEntries - construieste o balanta de RULAJE per cont
+INDEPENDENTA din inregistrari_linii (SQL propriu) si o leaga de totalurile per-cont din SAF-T-ul emis, plus
+invariantul dublei partide Sdebit=Scredit. Cerinta Costin: "Sdebit=Scredit + legare la balanta".
+
+TEMEI/STRUCTURA (verificat la sursa): fiecare inregistrari_linii = (cont_debit, cont_credit, suma) -> in SAF-T
+devine DOUA TransactionLine (debit pe cont_debit, credit pe cont_credit). Deci Sdebit=Scredit e in mare parte
+STRUCTURAL (garantat de model). Valoarea reala a gardului = legarea PER CONT la rulajul independent: prinde emisia
+care pierde/dubleaza o nota sau o linie, sau o mapeaza pe contul gresit. Exact clasa bug-ului ISTORIC (16.07):
+<GeneralLedgerEntries> ramanea GOL pentru orice firma printr-un except:pass tacit - calea 2 ar fi gasit notele in
+DB si ar fi strigat (probat: res.note=[] -> ridica, numind fiecare cont saft=0 vs cale2=rulaj).
+
+"Legare la balanta": nu exista o balanta de verificare stocata (solduri_api tine balanta de DESCHIDERE, import xlsx,
+nu rulaje). Deci calea 2 CONSTRUIESTE balanta de rulaje a lunii din inregistrari_linii - aia e balanta la care se
+leaga SAF-T-ul. Sursa comuna (inregistrari_linii), agregare INDEPENDENTA -> non-tautologic pe agregare/emisie.
+
+NON-TAUTOLOGIE probata pe AST: d406_reconciliere nu importa/foloseste d406.pull/construieste/_generalledger.
+res.note se citeste ca DATE de verificat (ce a emis generatorul), calea 2 isi trage singura liniile.
+
+LIMITA DECLARATA (GARZI cat.4): acopera GeneralLedgerEntries; NU SalesInvoices/PurchaseInvoices/Payments/Assets/
+MovementOfGoods (reconcilierea linii-antet facturi exista deja partial). Input partajat gresit = §8.
+
+ALTERNATIVA RESPINSA: a verifica DOAR Sdebit=Scredit global. Respinsa: e structural garantat (fiecare linie e
+echilibrata prin constructie) -> ar fi un gard care trece mereu. De aceea legarea per-cont la rulaj e miezul.
+
+PROBA: 3 note echilibrate (4111/707 1000, 5121/4111 600, 371/401 400) -> genereaza cu poarta OK, divergente [].
+Mutatie 'GL gol' -> ridica numind fiecare cont; 'suma alterata' -> "cont 4111 debit: saft=... vs cale2=1000";
+'dezechilibru' -> "DEZECHILIBRU dubla partida". Suita 1409 passed (+5), verificator 0.
