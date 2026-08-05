@@ -1467,3 +1467,32 @@ control_incrucisat.compara_d112 face deja aceasta confruntare (F162) - EXTINS + 
 RAMAN (perechile C2, ordinea efect x cost - PREDARE): Sum(D112 lunar impozit)<->D205 (anual/persoana); balanta<->D101
 (deja partial via d101_reconciliere din clase 6/7); D100<->D112 = pass-through (tautologie pura, NU merita). Apoi C3
 (timp), C1 (intrare), C4 (interpretare). Neincepute - buget context.
+
+
+## 05.08.2026 (tura 14) - Campania C: C3 (Sigma debit=Sigma credit perioada) livrat + C2-rest (tautologii) + C4 scris
+
+C3 (integritate in TIMP) - felia Sigma debit=Sigma credit: core/echilibru_perioada.py (pur + reader DB). A DOUA CALE
+pentru ce DUK NU verifica (DUK accepta GL dezechilibrat - tura 10). echilibru_perioada(linii)=Sigma pe cont_debit ==
+Sigma pe cont_credit; orfani(linii,ids)=referinte rupte. Garduri: test_echilibru_perioada.py - verde pe partida dubla,
+MUTATIE (linie cu credit lipsa -> dezechilibru prins), orfani, AST non-tautologie (invariant contabil, nu recalcul
+generator). LIMITA: nu e snapshot+hash (regenerare-diff declaratie depusa) - felie C3 separata (state_plata snapshot
+DECIS in GARZI INVENTAR A); jobul nocturn care ruleaza echilibru_perioada_db per perioada/tenant = wiring ramas.
+
+C2 (intre documente) - perechile ramase, VERDICT ONEST (nu construiesc gard fals - cerinta Costin):
+- balanta<->D101: DEJA COMPLET (d101_reconciliere: _baza_contabila_independenta recalculeaza venituri/cheltuieli din
+  balanta clase 7/6 INDEPENDENT + test_mutatie_venituri_gresite_pica mutatie-probat + AST non-tautologie). Partea
+  computabila gardata; ajustarile fiscale P6-P9 = §8 manual, nereconciliabile. Nimic de extins.
+- D100<->D112: PASS-THROUGH pur (calcul_d100(prof,an,luna,obligatii) formateaza obligatii dat, nu importa d112, nu
+  recalculeaza). Daca apelantul paseaza totalurile D112 -> D100==D112 prin constructie = TAUTOLOGIE. NU se construieste
+  gard (ar fi fals). Sarita, numita.
+- Sum(D112 lunar)<->D205: D205 e FORMATTER (calcul_d205(prof,an,beneficiari), beneficiari.imp = INPUT, aceeasi sursa
+  salariala ca D112). Tautologic pe VALORI; singura dimensiune independenta = agregarea anuala (Sigma lunar vs anual) -
+  ingusta + cere fixtura cross-an (12 luni D112 + D205). NU se construieste gard full (ar fi fals pe valori); daca se
+  vrea gardul de AGREGARE (luna scapata/dublata), e felie separata scopata. Numita.
+
+C4 (interpretarea sursei): SCRIS in TESTE.md (capitolul metode, sectiunea 6) - regula de procedura per cluster (a doua
+lectura / DUK inainte de √ definitiv pe REDARE/INTERPRETARE), NU executat (cerinta Costin: nu campanie separata).
+
+RAMAN: C1 (invarianti DB intrare: NOT NULL bani + cheie unica + intrare<->document-sursa) - migrare pe coloane
+existente = risc pe date NULL curente + touch pe multe tabele; scopat separat, neatins acum (buget). C3 job nocturn +
+snapshot+hash. C5 mutant-zero. Predare in PREDARE_LANT.md.

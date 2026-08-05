@@ -3357,3 +3357,11 @@ Restanta: migrarea cnp_ingrijit verificata pe tiparul real (tenant_001 singurul 
 calcul_salariu) - a doua cale reala = artefact D112 emis (XML) vs ledger (rulaje), via control_incrucisat.compara_d112
 (era netestat -> divergenta CM de azi trecea). Extins+gardat: verde/mutatie(rosu pe CAS supra-declarat)/AST non-taut.
 Raman perechile D205/D101 + clasele C3/C1/C4 - buget context. Consemnat GARZI tura 13.
+
+
+## 05.08.2026 (tura 14) - Campania C: C3 echilibru perioada livrat; C2-rest tautologii; C4 scris in TESTE
+C3 Sigma debit=Sigma credit pe perioada + orfani (core/echilibru_perioada.py, pur+reader; a doua cale pt ce DUK nu
+prinde - GL dezechilibrat), gard+mutatie+AST. C2 rest onest: balanta<->D101 deja complet (d101_reconciliere mutatie-
+probat); D100<->D112 pass-through tautologie (sarita); Sum(D112)<->D205 formatter aceeasi sursa, tautologic pe valori
+(numita). C4 scris in TESTE.md sectiunea 6 (procedura per cluster, nu executat). Raman C1 (invarianti DB, risc migrare),
+C3 job+snapshot, C5 mutant-zero - buget context. Consemnat GARZI/PREDARE tura 14.

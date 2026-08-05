@@ -12,7 +12,7 @@ LIVRAT in campania C:
 - C5 (mascare/zero) PARTIAL: gard AST anti-except-masca (core/test_gard_masca_zero.py) - vezi GARZI tura 12.
 - C2 (intre documente) perechea FLUTURAS<->D112 LIVRAT: tautologia identificata (ambele=calcul_salariu),
   a doua cale = artefact D112-XML vs ledger (control_incrucisat.compara_d112 extins+gardat+mutatie) - GARZI tura 13.
-  RAMAN perechile: Sum(D112)<->D205, balanta<->D101 (partial). + migrare cnp_ingrijit inchisa (gard).
+  C2-rest (tura 14): balanta<->D101 DEJA COMPLET (d101_reconciliere mutatie-probat); D100<->D112 + Sum(D112)<->D205 = TAUTOLOGII numite (sarite). C3 echilibru perioada LIVRAT (tura 14). C4 scris in TESTE. RAMAN: C1 intrare, C3 job+snapshot, C5 mutant-zero. + migrare cnp_ingrijit inchisa (gard).
 
 RAMAN (in ordinea argumentata efect x cost din TESTE.md), fiecare cu: modul + gard AST non-tautologie + MUTATIE:
 - C5 rest: mutant-zero sistematic (generator fortat -> [] => suita/verificator rosu). Diagnostic; verifica ce NU

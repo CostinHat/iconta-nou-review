@@ -1102,6 +1102,27 @@ comună. Ex.: `Σ(D112.B4_8 lunar pe an) == D205.impozit per persoană`; `D100.C
 Argument de ordine: întâi ce DEMASCĂ restul (C5), apoi ce prinde bani reali cu tautologie evitabilă (C2), apoi TIMPUL
 (C3), apoi INTRAREA (C1) — o intrare greșită e prinsă parțial reactiv aval, dar o eroare mascată (C5) ascunde TOT.
 
+### 6. C4 (interpretarea sursei) - cum se aplica, CONTINUU per cluster (nu campanie separata)
+
+C4 din clasele oarbe: citirea legii in pasul A poate fi ea insasi gresita, iar metoda 1 (cod-vs-lege) o CIMENTEAZA
+intr-un golden (cazul trait: D101 R17 scadenta - un act ratat de prima cercetare, √ pe interpretare gresita).
+NU e o campanie cu un modul propriu - e o REGULA DE PROCEDURA aplicata la FIECARE cluster/verificare la sursa:
+
+- **A doua lectura sau validatorul.** O bifa √ pe interpretare (nivel_sursa REDARE/INTERPRETARE_OFICIALA, nu MO
+  verbatim) NU se declara definitiva pana cand interpretarea e confruntata cu o A DOUA cale independenta de citire:
+  (a) validatorul DUK, unde intruchipeaza regula ANAF (asa s-a rezolvat D101 R17 - DUK a transat contra primei lecturi);
+  (b) o a doua lectura oarba a actului (al doilea cititor nu vede interpretarea din A); (c) un exemplu numeric oficial.
+- **Marcajul nivel_sursa e semnalul.** Fiecare Temei poarta nivel_sursa (MO / REDARE / INTERPRETARE_OFICIALA /
+  PRACTICA). Clusterele pe REDARE/INTERPRETARE (nu MO verbatim) sunt candidatii C4 - lista lor traieste in
+  test_datorie (xfail temeiuri_toate_redare: 12 COTE + 6 functii pe REDARE fara MO verbatim) + in bifele √ cu
+  nivel_sursa != MO. Aia e coada de C4: fiecare, cand se atinge, primeste a doua cale de lectura la sursa.
+- **Ce NU e C4:** o formula deja pazita de golden + DUK (a doua cale exista) e acoperita; C4 vizeaza DOAR feliile
+  unde interpretarea sta pe o singura citire umana, necontrolata.
+
+Operational: la orice reverificare de cluster, daca bifa e pe REDARE/INTERPRETARE si nu exista DUK/golden numeric care
+sa intruchipeze regula independent, se ADAUGA a doua cale (DUK sau a doua lectura) INAINTE de a declara √ definitiv.
+Non-tautologie: a doua cale trebuie sa fie o SURSA DIFERITA de prima lectura (DUK/MO verbatim/al doilea om), nu aceeasi.
+
 Notă de legătură: descoperirea (Finding 2 CM) e prima instanță C2; Decizia 2 (poarta cale2 pe valori EMISE) e
 precondiția tehnică a clasei C2 — LIVRATA pt D112 (05.08 tura 6, GARZI): poarta reconciliaza acum ce PLEACA la ANAF, nu
 pre-emisia. Restul 5 declaratii = res==emis (poarta lor vede deja emisul). Ramane de construit reconcilierea CM (1c-CM)
