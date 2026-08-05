@@ -3314,3 +3314,12 @@ toate portile-s PRE-EMISIE. Corectat afirmatia mea din tura 6 ("doar d112 afecta
 poarta d112 post-calcul-emisie; restul reconciliaza res inainte de build_xml. Task 1 (impozit pe indemnizatia CM
 neimpozabila 08/09/15/onco, art.62 lit.c) = neconformitate activa, caz numeric cod 08 = 294 lei impozit gresit, TINUT
 pt OK Costin. Task 2: citare CAM corectata la art.220^5 (exclusia CM din CAM) in d112.py. Consemnat GARZI tura 7.
+
+
+## 05.08.2026 (tura 8) - REPARAT impozit pe indemnizatia CM neimpozabila (Task 1, CF art.62 lit.c)
+Cele 3 conditii Costin: (1) mapare la sursa {08,09,15,17,91,92} din structura D112 C2-rows (Rd.3/4/4.1/5); cod 10 exclus
+(taxabil). (2) simetrie: exclus si CAS/CASS pe indemnizatia neimpozabila din baza impozit (altfel sub-declarare). (3)
+proba pe luna MIXTA (brut 12600, 6 zile cod 08, brut_lucrat 9000, ded=0): RED 885 -> GREEN 585 (distinct de naiv 485),
+DUK valid, gard. Deducerea verificata (pe brut_lucrat = realizat, CF art.77 alin.4, neschimbata). Fix in 2 locuri:
+taxe_cm (fluturas) + d112.bimp (declaratie), consistent. Efect: impozit retinut SCADE pe maternitate/ingrijire copil/
+risc maternal/oncologic. Consemnat GARZI 05.08 tura 8.

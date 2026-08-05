@@ -557,6 +557,13 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
 # risc maternal/reducere program.
 _CM_COD_FNUASS_INTEGRAL = ("08", "09", "10", "15", "17", "91", "92")
 _CM_COD_CU_CASS = ("01", "07", "10")
+# Coduri de indemnizatie NEIMPOZABILE (CF art.62 lit.c, in vigoare 2022+): indemnizatiile pentru risc
+# maternal, maternitate, cresterea/ingrijirea copilului si ingrijirea pacientului cu afectiuni oncologice.
+# Mapare cod->categorie = structura D112 C2-rows (anaf_surse/d112_struct_anaf.txt): Rd.3 "Sarcina"=08 (l.1712);
+# Rd.4 ingrijire copil=09/91/92 (l.5452 "D_9=09,91,92"); Rd.4.1 oncologic=17 (l.5464 "D_9=17"); Rd.5 risc
+# maternal=15 (l.5695 "D_9=15,D_23=RM"). Cod 10 (reducere timp munca) e FNUASS-integral DAR IMPOZABIL
+# (inlocuitor de salariu, NU e in art.62 lit.c) -> EXCLUS din set. nivel_sursa: MO (CF art.62) + REDARE (D112 struct).
+_CM_COD_NEIMPOZABIL = ("08", "09", "15", "17", "91", "92")
 
 
 def _taxe_cm_2018(brut, cod="01", la_data=None):
@@ -574,7 +581,9 @@ def _taxe_cm_2018(brut, cod="01", la_data=None):
     cota_imp, _ = _c.cota("impozit_venit", la_data)
     cas = (b * cota_cas).quantize(Decimal("1"))   # CAS 25% UNIFORM pe toate codurile (CF art.139(1)(o)+140)
     cass = (b * cota_cass).quantize(Decimal("1")) if str(cod).zfill(2) in _CM_COD_CU_CASS else Decimal(0)
-    impozit = ((b - cas - cass) * cota_imp).quantize(Decimal("1"))
+    # [CF art.62 lit.c] indemnizatiile de maternitate/ingrijire copil/risc maternal/oncologic = NEIMPOZABILE
+    impozit = (Decimal(0) if str(cod).zfill(2) in _CM_COD_NEIMPOZABIL
+               else ((b - cas - cass) * cota_imp).quantize(Decimal("1")))
     net = b - cas - cass - impozit
     return {"cas": _q(cas), "cass": _q(cass), "impozit": _q(impozit), "net": _q(net)}
 

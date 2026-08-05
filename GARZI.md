@@ -1303,7 +1303,7 @@ celelalte 5 stau INAINTE de build_xml. D112 era cel mai GRAV (emisia recalcula c
 FIX COMPLET (deschis, nu facut): fiecare poarta sa reconcilieze valoarea PARSATA DIN XML (assert res == parse(emis)
 dupa build_xml), sau sa ruleze pe artefact. Program mai mare - clasa C2 propriu-zisa. Numit, neinceput.
 
-TASK 1 (IMPOZIT CM) - NECONFORMITATE ACTIVA, TINUTA (Costin: nu repara fara sa arat): baza impozitului (bimp =
+TASK 1 (IMPOZIT CM) - REPARAT 05.08 tura 8 (set neimpozabil {08,09,15,17,91,92}, simetric, fluturas+d112, gard mixt, DUK valid; vezi GARZI tura 8). [ISTORIC constatare:] baza impozitului (bimp =
 total_base - cas - cass - ded, total_base=bazac+cm_base) include indemnizatia CM INTEGRAL, pt TOATE codurile, FARA
 discriminare. Codurile 08 maternitate / 09 ingrijire copil / 15 risc maternal / oncologice sunt NEIMPOZABILE (CF
 art.62 lit.c, verificat verbatim la sursa). Caz numeric (cod 08, brut 6000, indemnizatie 5000, luna intreaga): impozit
@@ -1313,3 +1313,33 @@ neimpozabile din bimp, ca la CASS. CASS deja discrimineaza (01/07/10); impozitul
 TASK 2 (CITARE CAM) - corectat in d112.py: exclusia indemnizatiei CM din baza CAM (sum_bazac fara cm_base) are temei
 CF art.220^5 (Exceptii specifice CAM: nu se datoreaza pe prestatiile suportate din FNUASS), NU art.220^3 (=cota 2.25%).
 Valoarea nu se schimba; citare adaugata la cam_total.
+
+
+## 05.08.2026 (tura 8) - REPARAT Task 1: impozit pe indemnizatia CM neimpozabila (CF art.62 lit.c) - simetric
+
+Neconformitate fiscala activa (over-taxare), reparata cu cele 3 conditii Costin.
+
+COND.1 - MAPARE la sursa (structura D112 C2-rows, ANAF/DUK + CF art.62 lit.c): set NEIMPOZABIL = {08,09,15,17,91,92}.
+  08 maternitate (Rd.3 "Sarcina", struct l.1712); 09/91/92 ingrijire copil (Rd.4, l.5452 "D_9=09,91,92");
+  17 oncologic (Rd.4.1, l.5464 "D_9=17"); 15 risc maternal (Rd.5, l.5695 "D_9=15,D_23=RM"). Cod 10 (reducere timp
+  munca) = FNUASS-integral DAR impozabil (inlocuitor salariu, nu-i in art.62 lit.c) -> EXCLUS. "Cresterea copilului"
+  = indemnizatie CIC separata, nu cod CM -> N/A. Constanta salarizare._CM_COD_NEIMPOZABIL.
+
+COND.2 - SIMETRIE scazaminte: baza impozit = salariu realizat + CM IMPOZABILA; se scad DOAR CAS/CASS pe partea
+  IMPOZABILA (cm_cas_imp/cm_cass_imp = doar coduri taxabile). Altfel CAS 25%% pe indemnizatia neimpozabila ar cobori
+  bimp cu 25%%*cm_base = SUB-declarare. cas/cass EMISE (B4_8/B4_6) raman pe TOATE codurile (CAS art.139(1)(o) uniform);
+  DOAR baza impozit exclude.
+
+COND.3 - proba pe LUNA MIXTA (nu luna intreaga de CM, care se clampeaza la 0 si ascunde bug-ul de simetrie): brut
+  12600, 6 zile cod 08 -> brut_lucrat 9000 (ded=0, brut>plafon). RED cod vechi: impozit emis 885 (impoziteaza
+  maternitatea). GREEN: 585 (= _d112int((9000-2250-900)*10%%)). DISTINCT de naiv 485 (care ar lasa CAS pe maternitate).
+  DUK VALID. Gard: test_pull_declaratii.test_d112_impozit_exclude_indemnizatia_cm_neimpozabila_luna_mixta.
+  DEDUCERE (verificat, neschimbat): calcul_salariu o calculeaza pe brut_lucrat (salariul REALIZAT, b_imp), NU pe CM
+  si NU pe contractual - consistent cu baza impozit (CF art.77 alin.4 = venit brut realizat). Fara ambiguitate.
+
+FIX IN DOUA LOCURI (consistenta arbori paraleli): taxe_cm (salarizare.py:576) impozit=0 pe coduri neimpozabile ->
+lantul FLUTURAS + concedii_medicale.impozit salvat (salariati_api:369); d112.bimp (declaratie). Ambele = acelasi set.
+
+EFECT PE PRODUS: pentru angajatii cu concediu de maternitate/ingrijire copil/risc maternal/oncologic, impozitul
+retinut SCADE (indemnizatia nu se mai impoziteaza) - atat pe fluturas cat si in D112. CAS/CASS raman neschimbate.
+Depunerile/statele anterioare care impozitau aceste indemnizatii erau gresite (retineau impozit in plus de la salariat).

@@ -292,6 +292,48 @@ def test_cm_arbori_paraleli_acelasi_rezultat(schema):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_impozit_exclude_indemnizatia_cm_neimpozabila_luna_mixta(schema):
+    """[impozit CM, CF art.62 lit.c] Indemnizatiile de maternitate(08)/ingrijire copil(09/91/92)/risc maternal(15)/
+    oncologic(17) sunt NEIMPOZABILE. Baza impozitului le exclude, SI exclude CAS/CASS aferent lor (SIMETRIE - altfel
+    CAS 25% pe indemnizatia neimpozabila ar cobori bimp = sub-declarare impozit). CAS/CASS EMISE raman pe toate codurile.
+    CAZ MIXT (nu luna intreaga de CM, care s-ar clampa la 0 si ar ascunde bug-ul de simetrie): brut 12600, iunie 2026
+    (nzl=21), 6 zile cod 08 maternitate -> brut_lucrat=9000 (>plafon deducere -> ded=0). Indemnizatie 4000.
+    CORECT (simetric): bimp = 9000 - _d112int(9000*25%)=2250 - _d112int(9000*10%)=900 - 0 = 5850 -> impozit 585.
+    Distinct de: BUGGY (impoziteaza si maternitatea) = 885; NAIV (scoate baza CM dar lasa CAS pe ea) = 485.
+    Probat RED pe cod vechi: impozit emis 885 (vs 585). MUTATIE: readu cm_base neimpozabil in baza -> pica.
+    """
+    import re
+    from core import d112
+    from core.salarizare import taxe_cm
+    from datetime import date
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'MIXT','A','2900101410011','2025-01-01',12600,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',12600)")
+        cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
+                    "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'08',6,0,6,0,4000,12600,600,'AB','1','2026-06-01',"
+                    "'2026-06-01','2026-06-06',1)")
+    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    b4 = re.search(r"<asiguratB4[^>]*/>", xml).group(0)
+    e1 = re.search(r"<asiguratE1[^>]*/>", xml).group(0)
+    def g(seg, a): return int(re.search(a + r'="(\d+)"', seg).group(1))
+    # CAS/CASS EMISE = pe TOATE codurile (neschimbate de fix): CAS 25% pe salariu(9000)+indemnizatie(4000)
+    assert g(b4, "B4_8") == 3250, "B4_8 CAS emis (pe toate codurile) = 3250: " + b4
+    assert g(b4, "B4_6") == 900, "B4_6 CASS emis (cod 08 exclus CASS) = 900: " + b4
+    assert g(b4, "B4_7") == 13000, "B4_7 baza CAS (include indemnizatia) = 13000: " + b4
+    # IMPOZIT = pe baza IMPOZABILA (exclude maternitatea SI CAS/CASS aferent) = 585, NU 885 (buggy) sau 485 (naiv)
+    assert g(e1, "E1_6") == 585, "impozit trebuie 585 (simetric), nu 885 (buggy)/485 (naiv): " + e1
+    # lantul FLUTURAS (taxe_cm) trebuie CONSISTENT: impozit 0 pe maternitate; CAS ramane (art.139(1)(o))
+    flut = taxe_cm(4000, "08", la_data=date(2026, 6, 1))
+    assert int(flut["impozit"]) == 0, "taxe_cm cod 08 (maternitate) impozit trebuie 0 (CF art.62 lit.c): %s" % flut
+    assert int(flut["cas"]) == 1000, "taxe_cm cod 08 CAS ramane 25%% (art.139(1)(o)): %s" % flut
+    # cod 01 (boala) RAMANE impozabil - fix-ul nu afecteaza codurile taxabile
+    flut01 = taxe_cm(4000, "01", la_data=date(2026, 6, 1))
+    assert int(flut01["impozit"]) > 0, "taxe_cm cod 01 (boala) trebuie sa ramana impozabil: %s" % flut01
+
+
 def test_d112_poarta_reconciliaza_valorile_emise_nu_pre_emisia(schema):
     """[B, 05.08.2026] Poarta cale2 primeste valorile EMISE (post _d112_genereaza), nu pre-emisia din pull.
     Blind-spot inainte: verifica_reconciliere rula pe salariati DIN pull (contributii intermediare), iar layerul

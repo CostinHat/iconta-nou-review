@@ -197,13 +197,22 @@ def _d112_genereaza(prof, salariati, an, luna):
             cm_cas = 0
             cm_cass = 0
             cm_cass_base = 0
+            cm_base_imp = 0   # [impozit CF art.62 lit.c] baza CM IMPOZABILA (exclude 08/09/15/17/91/92 - salarizare._CM_COD_NEIMPOZABIL)
+            cm_cas_imp = 0    # [impozit] CAS pe CM impozabila (simetrie scazaminte - vezi bimp)
+            cm_cass_imp = 0   # [impozit] CASS pe CM impozabila
             for _x in cms:
+                _cod = str(_x.get("cod") or "01").zfill(2)
                 _xb = _d112int(_x.get("brut_ang")) + _d112int(_x.get("brut_fnuass"))
-                _xt = _sz.taxe_cm(_xb, _x.get("cod") or "01", la_data=ref)
-                cm_cas += _d112int(_xt["cas"])
-                cm_cass += _d112int(_xt["cass"])
-                if _d112int(_xt["cass"]) > 0:
+                _xt = _sz.taxe_cm(_xb, _cod, la_data=ref)
+                _xcas = _d112int(_xt["cas"]); _xcass = _d112int(_xt["cass"])
+                cm_cas += _xcas
+                cm_cass += _xcass
+                if _xcass > 0:
                     cm_cass_base += _xb
+                if _cod not in _sz._CM_COD_NEIMPOZABIL:   # indemnizatie IMPOZABILA -> intra in baza impozit + scazamintele ei
+                    cm_base_imp += _xb
+                    cm_cas_imp += _xcas
+                    cm_cass_imp += _xcass
                 _cza = int(_x.get("zile_ang") or 0); _czf = int(_x.get("zile_fnuass") or 0)
                 _c2_cazuri.append((str(_x.get("cod") or "01").zfill(2), _cza + _czf, _cza, _czf,
                                    _d112int(_x.get("brut_ang")), _d112int(_x.get("brut_fnuass"))))
@@ -211,7 +220,13 @@ def _d112_genereaza(prof, salariati, an, luna):
             cass = _d112int(bazac * _cota_cass) + cm_cass
             cass_base_cm = bazac + cm_cass_base
             ded = float(s.get("deducere") or 0)
-            bimp = total_base - cas - cass - ded
+            # [impozit CM, CF art.62 lit.c] indemnizatiile de maternitate(08)/ingrijire copil(09/91/92)/risc maternal(15)/
+            # oncologic(17) sunt NEIMPOZABILE. Baza impozit = salariu REALIZAT + CM IMPOZABILA; se scad DOAR CAS/CASS pe
+            # partea IMPOZABILA (SIMETRIE - altfel CAS 25% pe indemnizatia neimpozabila ar cobori bimp = sub-declarare).
+            # cas/cass EMISE (B4_8/B4_6) raman pe TOATE codurile (CAS art.139(1)(o) uniform); doar baza impozit exclude.
+            _cas_imp = _d112int(bazac * _cota_cas) + cm_cas_imp
+            _cass_imp = _d112int(bazac * _cota_cass) + cm_cass_imp
+            bimp = (bazac + cm_base_imp) - _cas_imp - _cass_imp - ded
             if bimp < 0:
                 bimp = 0
             imp = _d112int(bimp * _cota_imp)
