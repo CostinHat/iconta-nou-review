@@ -7346,3 +7346,32 @@ sursa (nu exista exemple ANAF completate).
 
 PROBA: D101 res.P P1=1000 vs mutatie 9999 -> ridica; D205 imp 1600 (16% pe 10000) vs mutatie 1 -> ridica; beneficiar
 pierdut -> ridica. Suita 1417 passed (+8), verificator 0.
+
+
+## 05.08.2026 — PIVOT decizia (c): push pe main NU mai cere aprobarea lui Costin
+
+SUPERSEDEAZA EXPLICIT decizia (c) anterioara ("push pe main = decizia EXCLUSIVA a lui Costin"). Costin a rasturnat-o
+05.08.2026.
+
+REGULA FINALA (permanenta): DUPA FIECARE EXECUTIE, fara sa ceara cineva, se face TOT:
+  - registrele (GARZI/DECIZII/TESTE/ISTORIC) - §2.2.1, neschimbata;
+  - commit local;
+  - push pe backup/lant-<data> - ca inainte;
+  - push pe main - NOU, fara aprobare.
+
+CONDITIE ABSOLUTA: push pe main DOAR sub POARTA VERDE - pytest cu COLLECTED confirmat (rulat, nu dedus) + verificator
+TOTAL 0 + tree curat (git status --porcelain gol). Poarta ROSIE sau TREE MURDAR -> NU se impinge pe main, se
+raporteaza si se OPRESTE (WIP salvat). FARA EXCEPTII, fara "repar dupa push". Pe main fast-forward; daca origin/main
+a avansat sub tine, pull --rebase INAINTE (memoria main partajat), nu se forteaza niciodata.
+
+TEMEI: intermediarul (push = decizia lui Costin) era o prudenta la inceputul lucrului nesupravegheat; dupa campania
+de garduri (poarta pytest+verificator la fiecare commit, hard-block la neconformitate) mecanismul de poarta e
+suficient de strans incat push-ul automat sub poarta verde nu adauga risc. Costin decide LANSAREA (piata), nu fiecare push.
+
+UNDE TRAIESTE NORMA: CLAUDE.md (§2.1 rol Code, §2 bucla pas 4, §2.3 pct.3/pct.8, criteriile de oprire) - editate in
+ACELASI commit; formularea veche "push pe main = decizia lui Costin" ELIMINATA (nu coexista doua reguli contradictorii).
+Raportul §2.2 sect.11 confirma de acum HEAD=origin/main=backup pe acelasi commit.
+
+CONSECINTA ACCEPTATA: un push gresit ajunge direct pe main. Mitigat de poarta verde obligatorie + fast-forward-only +
+pull --rebase pe divergenta. ALTERNATIVA RESPINSA: a pastra aprobarea manuala - respinsa de Costin (incetineste fara
+sa adauge siguranta peste poarta mecanica).

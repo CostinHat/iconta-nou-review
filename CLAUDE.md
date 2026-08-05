@@ -325,7 +325,7 @@ In 27-30.07.2026 s-au pierdut ore repetat din trei cauze de procedura:
 - propune ce trebuie schimbat, cu temeiul atasat
 - dupa validare: implementeaza, scrie testele cu temeiul citat PE LINIE langa assert, verifica
   prin mutatie, ruleaza proba functionala
-- comite LOCAL pe server (push pe main = decizia lui Costin, decizia c; push de siguranta pe `backup/lant-<data>` la finalul rularii, §2.3 pct.8 - NU push-per-pas)
+- comite LOCAL pe server, apoi la FINALUL rularii impinge pe `backup/lant-<data>` SI pe `main` (decizia c RASTURNATA 05.08.2026: push pe main NU mai cere aprobarea lui Costin; CONDITIE ABSOLUTA = poarta verde, vezi §2.3 pct.8). NU push-per-pas
 - raporteaza
 
 Cine executa trebuie sa stie DE CE, altfel aplica orb.
@@ -355,7 +355,7 @@ scoaterea unei coloane cere reparate cinci locuri care o citesc, pasul cuprinde 
 1. Code cauta temeiul in legislatie, citeaza textul, propune schimbarea
 2. Arhitectul valideaza temeiul - sau arata unde nu se tine
 3. Code implementeaza: cod, teste cu temeiul pe linie, mutatie, proba functionala
-4. Code comite LOCAL pe server. UN PAS NECOMIS PE SERVER NU S-A INTAMPLAT. Push pe main = decizia lui Costin (decizia c); push de siguranta pe `backup/lant-<data>` la FINALUL rularii, nu per pas (§2.3 pct.8). Sursa unica - fara norma paralela de push-per-pas.
+4. Code comite LOCAL pe server. UN PAS NECOMIS PE SERVER NU S-A INTAMPLAT. La FINALUL rularii (nu per pas) impinge pe `backup/lant-<data>` SI pe `main` - decizia c (05.08.2026): push pe main NU mai cere aprobare, DAR numai sub poarta verde (§2.3 pct.8). Sursa unica - fara norma paralela de push-per-pas.
 5. Code raporteaza. Raportul contine OBLIGATORIU cinci elemente:
 
    a) PROBA FUNCTIONALA, CU OUTPUT BRUT
@@ -456,6 +456,9 @@ Fara titlu, raportul e incomplet.
 11. CE AM ACTUALIZAT - ULTIMUL PUNCT, OBLIGATORIU. Cele patru registre (GARZI.md, DECIZII.md, TESTE.md, ISTORIC.md),
     fiecare cu ce s-a scris in el la aceasta executie, SAU "nimic de actualizat in X, pentru ca <motiv>" - explicit,
     niciodata prin omisiune. Un registru neatins fara motiv scris = raport incomplet.
+    PLUS (decizia c, 05.08.2026): se confirma EXPLICIT ca HEAD local, origin/main si backup sunt pe ACELASI commit,
+    numind commit-ul (ex. "HEAD = origin/main = backup/lant-<data> = <hash>"). Daca NU sunt pe acelasi commit, se
+    spune DE CE (poarta rosie -> nepins pe main; tree murdar; origin/main avansat sub tine; etc.).
 
 ## 2.2.1 ACTUALIZAREA REGISTRELOR DUPA FIECARE EXECUTIE (04.08.2026, ceruta de Costin)
 
@@ -485,12 +488,12 @@ Dupa raportul unui cluster inchis, executorul NU se opreste sa intrebe ce urmeaz
 
 Se opreste si cere decizie DOAR daca:
 - clusterul urmator e BLOCAT si TOATE cele de dupa el sunt blocate;
-- campania cere o DECIZIE DE PRODUS (scop, push, migrare pe date reale);
+- campania cere o DECIZIE DE PRODUS (scop, migrare pe date reale);
 - a aparut o NECONFORMITATE care cere oprire conform ciclului (vezi CICLUL DE NECONFORMITATE);
 - CONTEXTUL se apropie de epuizare - atunci se opreste la GRANITA CURATA DE COMMIT, cu predare scrisa.
 
-Push-ul ramane decizie EXCLUSIVA a lui Costin (decizia c, DECIZII.md). Executorul commite LOCAL si continua
-cu clusterul urmator, FARA sa astepte push.
+Push-ul pe main NU mai cere aprobarea lui Costin (decizia c RASTURNATA 05.08.2026; conditia de poarta verde in §2.3 pct.8).
+Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; impinge pe backup SI pe main la FINALUL rularii.
 
 ### REGIM DE LUCRU IN LANT NESUPRAVEGHEAT (02.08.2026, ceruta de Costin)
 
@@ -501,7 +504,7 @@ cu clusterul urmator, FARA sa astepte push.
 2. **OPRIRE PENTRU DECIZIE DE PRODUS:** se opreste cand alegerea schimba CE AJUNGE LA CONTABIL sau CE SE
    PUBLICA. Structura, nume, forma testului = autonom, fara intrebare.
 
-3. **NU SE OPRESTE** pentru: push (comite local si continua); migrare pe tenanti reali (o lasa in sarcina
+3. **NU SE OPRESTE** pentru: push (comite local si continua; impinge pe backup SI main la finalul rularii, sub poarta verde - §2.3 pct.8, decizia c 05.08); migrare pe tenanti reali (o lasa in sarcina
    deployment-ului si o consemneaza); fereastra GRI sau orice verdict GRI (blocheaza si merge mai departe).
 
 4. **OPRIRE OBLIGATORIE SI DEFINITIVA A LANTULUI** daca: pytest iese cu exit-code nenul, verificator TOTAL > 0,
@@ -513,7 +516,7 @@ cu clusterul urmator, FARA sa astepte push.
    inchise cu poarta verde si zero regresii - nu mai e justificata. Executorul continua lantul cluster dupa
    cluster, in aceeasi tura, pana la UNUL din criteriile de oprire ramase:
    - clusterul urmator e BLOCAT si TOATE cele de dupa el sunt blocate;
-   - campania cere o DECIZIE DE PRODUS (scop, push, migrare pe date reale, schimbare de schema) - vezi pct.2;
+   - campania cere o DECIZIE DE PRODUS (scop, migrare pe date reale, schimbare de schema) - vezi pct.2;
    - a aparut o NECONFORMITATE care cere oprire conform ciclului (CICLUL DE NECONFORMITATE);
    - POARTA ROSIE sau TREE MURDAR (pct.4 - oprire definitiva, cu WIP salvat pct.9);
    - CONTEXTUL se apropie EFECTIV de epuizare (pct.6 - oprire la granita curata de commit, cu predare scrisa).
@@ -532,11 +535,17 @@ cu clusterul urmator, FARA sa astepte push.
    Un cluster fara sectiunea 9 completata NU se declara inchis: daca nu s-a adaugat niciun gard, sectiunea 9
    spune explicit de ce reaparitia e deja imposibila.
 
-8. **SIGURANTA.** Inainte de a raporta o rulare incheiata, executorul verifica faptul ca munca exista in DOUA
-   locuri: pe server (commit local) SI pe remote (ramura de siguranta `backup/lant-<data>`). Push-ul de siguranta
-   (nu pe main) se face dupa poarta verde si tree curat si NU cere aprobare - absenta lui e o defectiune. Daca
-   munca exista intr-un singur loc, executorul o spune EXPLICIT in raport, la PRIMA linie, nu la final. Raportul se
-   incheie cu `BACKUP: <ramura> — <n> commituri`.
+8. **SIGURANTA + PUSH PE MAIN (decizia c RASTURNATA 05.08.2026).** Inainte de a raporta o rulare incheiata,
+   executorul verifica faptul ca munca exista in TREI locuri: pe server (commit local), pe remote pe ramura de
+   siguranta `backup/lant-<data>`, SI pe `origin/main`. Push-ul pe backup SI pe main NU cere aprobare - absenta lui
+   e o defectiune.
+   CONDITIE ABSOLUTA pentru push pe main: POARTA VERDE - pytest cu COLLECTED confirmat (rulat, nu dedus) + verificator
+   TOTAL 0 + `git status --porcelain` gol. Poarta ROSIE sau TREE MURDAR -> NU se impinge pe main; se raporteaza si se
+   OPRESTE (WIP salvat pct.9). FARA EXCEPTII, fara "repar dupa push". Pe main se impinge cu fast-forward; daca
+   origin/main a avansat sub tine (commit al lui Costin), `pull --rebase` INAINTE (vezi memoria main partajat), nu se
+   forteaza NICIODATA.
+   Daca munca exista intr-un singur loc, executorul o spune EXPLICIT in raport, la PRIMA linie, nu la final. Raportul
+   se incheie cu `BACKUP: <ramura> — <n> commituri` si confirma HEAD = origin/main = backup pe acelasi commit (§2.2 sect.11).
 
 9. **WIP LA OPRIRE PE ROSU** (inchide gapul pct.4 <-> pct.8). La oprirea obligatorie pe tree murdar sau poarta
    rosie (pct.4), INAINTE de a scrie raportul, executorul pune munca la adapost FARA sa o repare: `git stash create`
