@@ -586,4 +586,6 @@ def genereaza(conn, schema, an, luna):
     rezultat = _d112_genereaza(prof, salariati, an, luna)
     from core.d112_reconciliere import verifica_reconciliere
     verifica_reconciliere(conn, schema, an, luna, salariati)
+    from core.reconciliere_emis import verifica_d112 as _vd112
+    _vd112(rezultat[0])   # poarta pe ARTEFACT: totalPlata_A == suma A_datorat emise (self-consistency lossless)
     return rezultat

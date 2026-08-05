@@ -1363,3 +1363,35 @@ GAP NOU (datorie, separat de impozit): cod 09/91 (ingrijire copil) = DUK-INVALID
 pt care s-a eliberat certificatul), dar emisia NU emite D_8 si concedii_medicale n-are coloana CNP copil. Efect: o
 declaratie D112 cu concediu de ingrijire copil (09/91) e respinsa de DUK. Declansator: adaugare coloana cnp_copil +
 emisie D_8. NEatins acum (in afara scopului impozit). [Nu confunda cu 09 in setul neimpozabil - aia e corecta.]
+
+
+## 05.08.2026 (tura 10) - POARTA PE ARTEFACT (res == parse(emis)) pe 6/7 declaratii - SUPERSEDEAZA formularea din tura 6/7
+
+Livrat: core/reconciliere_emis.py - fiecare generator, DUPA build_xml, reconciliaza valoarea PARSATA din XML-ul livrat
+cu res. HARD-BLOCK (ReconciliereEmis) pe divergenta, ca gardurile de continut. Inchide blind-spot-ul "pre-emisie"
+dovedit mecanic la tura 7 (mutatia pe totalPlata_A din artefact trecea).
+
+CABLATE (6): d100/d101/d205/d300/d394 -> totalPlata_A parsat == res.total_plata_a (int, lossless). d112 (fara res)
+-> totalPlata_A == SUMA A_datorat parsata din <angajatorA> (self-consistency lossless: totalul == suma obligatiilor).
+PROBA MECANICA (aceeasi mutatie ca sweep-ul, dupa build_xml): d100/d101/d205/d300/d394/d112 = BLOCAT (toate 6 pica
+acum). Gard permanent: test_smoke_duk.test_poarta_artefact_blocheaza_total_corupt.
+
+D406 = EXCEPTIA (necablat, motivat, nu improvizat): SAF-T n-are total canonic pe res, iar sumele-s text 2-zec rotunjit
+HALF_UP (_dec) -> assert strict res==parse pe valoarea bruta PIERDE informatie (lossy). Invariantul lossless disponibil
+(verifica_d406: partida dubla TotalDebit==TotalCredit) EXISTA si prinde imbalanta (probat), dar NU e cablat: fixturile
+de test au GL neechilibrat pe luna selectata (date artificiale - ex. smoke: TotalDebit 0.00 vs TotalCredit 15000) ->
+cablarea le-ar rupe. Emisia d406 pe input ECHILIBRAT e corecta (probat 15000==15000). CONSTATARE conexa: DUK accepta
+GL neechilibrat (nu verifica Sigma debit=Sigma credit) - datorie separata (cablare d406 dupa curatare fixturi).
+
+2b (rotunjire Sigma(round) vs ROUND) - RASPUNS ONEST: poarta pe artefact NU pica pe rotunjire la nivel de TOTAL pentru
+niciuna. Motiv: totalul e intern-consistent (res.total_plata_a e STOCAT ca valoarea emisa / totalPlata_A == suma
+randurilor emise) -> nu exista divergenta res-vs-emis la total. 2b e o divergenta PER-RAND intre formula generatorului
+(Sigma round) si formula OFICIALA (ROUND(baza x cota)) - o prinde DUK (formula ANAF) / cale2 (recalcul independent),
+NU res==parse(emis) (unde res SI emis folosesc aceeasi formula a generatorului). Poarta pe artefact acopera o CLASA
+DIFERITA (fidelitatea build_xml + tampering), nu formula. 0 declaratii pica pe rotunjire - corect, nu prin toleranta.
+
+REFORMULAREA PROMISIUNII (cat.4 "Iesire catre autoritati"): "un total gresit nu ajunge la ANAF" e ACUM ADEVARATA
+pentru TOTALUL DE PLATA al celor 6 declaratii cablate - verificat contra artefactului livrat, hard-block pe divergenta.
+LIMITA REALA scrisa: (a) d406 - totalul de plata SAF-T nu are forma canonica lossless -> se verifica partida dubla, dar
+necablat pana la curatarea fixturilor; (b) la nivel de RAND, o valoare gresita din formula (2b) e prinsa de DUK/cale2,
+nu de aceasta poarta; (c) poarta verifica TOTALUL + (d112) coerenta lui cu obligatiile, nu fiecare camp emis in parte.

@@ -523,4 +523,7 @@ def genereaza(conn, schema, perioada, manual=None):
     # valori; NU repara tacit. Vezi core/d300_reconciliere.py + GARZI cat.4 (limita declarata).
     from core.d300_reconciliere import verifica_reconciliere
     verifica_reconciliere(conn, perioada, res, manual)
-    return build_xml(res), res
+    _xml = build_xml(res)
+    from core.reconciliere_emis import verifica_total_plata_a as _vte
+    _vte("d300", _xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res
+    return _xml, res

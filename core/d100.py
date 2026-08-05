@@ -282,4 +282,6 @@ def genereaza(conn, schema, perioada, manual=None):
 
     res = calcul_d100(prof, an, luna, obligatii)
     xml = build_xml(res)
+    from core.reconciliere_emis import verifica_total_plata_a as _vte
+    _vte("d100", xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res
     return xml, res

@@ -423,4 +423,6 @@ def genereaza(conn, schema, perioada, manual=None):
     from core.d101_reconciliere import verifica_reconciliere as _vr101
     _vr101(conn, schema, perioada, res, manual)
     xml = build_xml(res)
+    from core.reconciliere_emis import verifica_total_plata_a as _vte
+    _vte("d101", xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res
     return xml, res

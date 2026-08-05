@@ -128,3 +128,38 @@ def test_smoke_d101(conn_smoke):
 def test_smoke_d406(conn_smoke):
     xml, _ = d406.genereaza(conn_smoke, _SCHEMA, 2026, 6)
     _valid(xml, "d406", an=2026, luna=6)
+
+
+@pytest.mark.skipif(not _DBOK, reason="DB indisponibil")
+def test_poarta_artefact_blocheaza_total_corupt(conn_smoke):
+    """[poarta pe ARTEFACT, 05.08.2026] Cele 6 declaratii cablate (d100/d101/d205/d300/d394/d112) reconciliaza
+    valoarea PARSATA din XML-ul livrat cu res (totalPlata_A==res.total_plata_a; d112: totalPlata_A==suma A_datorat).
+    O mutatie pe totalul EMIS (dupa build_xml) = HARD-BLOCK ReconciliereEmis. Inainte poarta reconcilia res PRE-emisie
+    -> mutatia pe artefact trecea (sweep 05.08 tura 7). d406 = exceptia lossy declarata (necablata, vezi reconciliere_emis)."""
+    import re
+    from core.reconciliere_emis import ReconciliereEmis
+    def _cor(xml):
+        m = re.search(r'totalPlata_A="(\d+)"', xml)
+        assert m, "totalPlata_A absent - fixtura nu emite total"
+        return xml.replace(m.group(0), 'totalPlata_A="%d"' % (int(m.group(1)) * 2 + 1), 1)
+    def _wrap(fn):
+        def w(*a, **k):
+            r = fn(*a, **k)
+            return (_cor(r[0]),) + tuple(r[1:]) if isinstance(r, tuple) else _cor(r)
+        return w
+    cases = [
+        (d100, "build_xml", lambda: d100.genereaza(conn_smoke, _SCHEMA, Perioada(2026, trim=2), {"cota": "16"})),
+        (d101, "build_xml", lambda: d101.genereaza(conn_smoke, _SCHEMA, Perioada(2026))),
+        (d205, "build_xml", lambda: d205.genereaza(conn_smoke, _SCHEMA, Perioada(2026))),
+        (d300, "build_xml", lambda: d300.genereaza(conn_smoke, _SCHEMA, Perioada(2026, luna=6))),
+        (d394, "build_xml", lambda: d394.genereaza(conn_smoke, _SCHEMA, Perioada(2026, luna=6))),
+        (d112, "_d112_genereaza", lambda: d112.genereaza(conn_smoke, _SCHEMA, 2026, 6)),
+    ]
+    for mod, attr, gen in cases:
+        orig = getattr(mod, attr)
+        setattr(mod, attr, _wrap(orig))
+        try:
+            with pytest.raises(ReconciliereEmis):
+                gen()
+        finally:
+            setattr(mod, attr, orig)

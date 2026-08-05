@@ -856,4 +856,7 @@ def genereaza(conn, schema, perioada, manual=None):
     for e in valideaza(res):
         res.avertismente.insert(0, e)
     res.modul, res.reguli = MODUL, REGULI
-    return build_xml(res), res
+    _xml = build_xml(res)
+    from core.reconciliere_emis import verifica_total_plata_a as _vte
+    _vte("d394", _xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res
+    return _xml, res

@@ -3323,3 +3323,13 @@ proba pe luna MIXTA (brut 12600, 6 zile cod 08, brut_lucrat 9000, ded=0): RED 88
 DUK valid, gard. Deducerea verificata (pe brut_lucrat = realizat, CF art.77 alin.4, neschimbata). Fix in 2 locuri:
 taxe_cm (fluturas) + d112.bimp (declaratie), consistent. Efect: impozit retinut SCADE pe maternitate/ingrijire copil/
 risc maternal/oncologic. Consemnat GARZI 05.08 tura 8.
+
+
+## 05.08.2026 (tura 10) - poarta pe artefact (res==parse(emis)) pe 6/7 declaratii
+core/reconciliere_emis.py: fiecare generator reconciliaza DUPA build_xml valoarea parsata din XML-ul livrat cu res,
+hard-block pe divergenta. Inchide blind-spot-ul pre-emisie (tura 7). 6 cablate (d100/d101/d205/d300/d394 pe
+totalPlata_A==res; d112 pe totalPlata_A==suma A_datorat); mutatia pe totalul emis pica acum la toate 6 (gard
+test_poarta_artefact_blocheaza_total_corupt). d406 = exceptie lossy motivata (fara total canonic, sume 2-zec; partida
+dubla disponibila dar necablata - fixturi cu GL dezechilibrat; emisia corecta pe input echilibrat). 2b nu pica pe
+artefact (total intern-consistent; 2b = per-rand formula, prins de DUK/cale2). Promisiunea "un total gresit nu ajunge
+la ANAF" = adevarata pt totalul celor 6, cu limita d406 + per-rand scrisa. Consemnat GARZI tura 10.
