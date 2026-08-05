@@ -296,7 +296,21 @@ că intrarea a fost înghițită**.
       trebuie extins (consemnat aici, nu doar in cod).
     - LIMITA (ca la D300): tipurile cota-0 fara TVA (V/N/LS/AS) = prezenta/clasificare (DUK structural),
       nu sume; input partajat gresit = §8; cota factura-fara-linii dedusa identic.
-  - **RAMAS LIPSA**: aceeasi a doua cale pe D112 -> D406 -> D101/D205 (ordinea confirmata).
+  - **D112: CAZUL SIMPLU ACOPERIT (05.08.2026, pas 3/6)** — scris ca atare, NU "D112 acoperit".
+    `core/d112_reconciliere.py` recalculeaza INDEPENDENT CAS/CASS PER ANGAJAT = brut x cota (din brut, cu
+    cotele din common.cota = registrul de lege), DOAR pentru angajatii fara nicio structura care schimba
+    formula: brut STRICT peste salariul minim (facilitatea se declanseaza EXACT la brut==minim), fara CM,
+    norma intreaga, ne-scutit, fara tichete, luna intreaga. Poarta HARD-BLOCK in d112.genereaza. Gard:
+    `test_d112_reconciliere.py` (5): non-tautologie pe lantul de import TRANZITIV (nu ajunge la
+    calcul_salariu/salarizare/d112/salariu_istoric nici indirect) + mutatie (cas/cass gresit -> pica,
+    numind angajatul si ambele valori) + caz nesimplu SARIT fara alarma falsa.
+    - **CE RAMANE IN AFARA (gardul NU acopera, extindere = pas separat):** FACILITATI (constructii/IT/
+      agricol, salariu minim), SCUTIRI, PLAFOANE, PART-TIME suprataxare, CONCEDII MEDICALE, IMPOZIT
+      (necesita deducerea personala degresiva art.77), CAM, TICHETE. Un angajat cu oricare -> NEACOPERIT
+      (sarit, nu alarma falsa). Impozit/CAM raman pe DUK structural + golden-ele existente.
+    - D112 e cel mai EXPUS la tautologie din campanie (totalurile vin din calcul_salariu); de aceea
+      non-tautologia e probata pe lantul TRANZITIV, nu doar pe importurile directe.
+  - **RAMAS LIPSA**: aceeasi a doua cale pe D406 -> D101/D205 (ordinea confirmata).
 - LIPSĂ: snapshot de regresie pe fixturi înghețate.
 - **DUK validează STRUCTURA, nu conținutul.** Nu e gard de conținut și nu se tratează ca atare.
 

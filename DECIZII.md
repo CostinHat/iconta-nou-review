@@ -7228,3 +7228,40 @@ sterge; gardul de CONTINUT genuin e d394_reconciliere.
 
 PROBA: schema efemera, F1 emisa 1000@21% + F2 emisa 500@11% + F3 primita 800@21% RO -> rezumat2 corect, divergente
 []. Mutatie 'achizitie pierduta' -> "cota 21%% bazaA: generator=0 vs cale2=800". Suita 1397 passed (+6), verificator 0.
+
+
+## 05.08.2026 — GARD CONTINUT D112 (pas 3/6): DOAR cazul simplu (CAS/CASS din brut), restul declarat afara
+
+DECIZIA: gardul de continut D112 reconciliaza DOAR CAZUL SIMPLU - CAS/CASS per angajat = brut x cota, pentru
+angajatii fara nicio structura care schimba formula. Se scrie explicit "cazul simplu acoperit", NU "D112 acoperit".
+
+CE INTRA: CAS (25%) + CASS (10%) pe angajatii cu brut STRICT peste salariul minim (facilitatea OUG 89/2025 se
+declanseaza EXACT la brut==salariu minim; peste minim -> facilitate 0 -> baza contributie = brut), fara concediu
+medical, norma intreaga, ne-scutiti, fara tichete, angajati luna intreaga.
+
+CE RAMANE IN AFARA (raspuns explicit la cerinta Costin - "daca facilitatile raman afara, scris ca atare"):
+FACILITATI (constructii/IT/agricol, salariu minim), SCUTIRI, PLAFOANE, PART-TIME suprataxare, CONCEDII MEDICALE
+(baze/procente proprii OUG 158/2005), IMPOZIT (cere deducerea personala degresiva art.77 - calcul complex, exclus),
+CAM (agregat angajator), TICHETE (schimba baza CASS/impozit). Un angajat cu oricare -> NEACOPERIT (sarit, nu alarma
+falsa - probat: salariatul la minim cu cas aberant NU alarmeaza).
+
+TEMEI acoperirii: facilitatea din salarizare.calcul_salariu (linia `facilitate = facilitate_val if vbt == sm ...`)
+se aplica DOAR la brut == salariu minim. Deci brut > minim => facilitate 0 => baza_contrib = brut => cas = brut x
+cota_cas exact. Verificat la sursa in salarizare.py, nu presupus.
+
+NON-TAUTOLOGIE (cerinta Costin 1 - D112 e cel mai expus): probata pe lantul de import TRANZITIV, nu doar direct.
+Testul construieste inchiderea tranzitiva a importurilor core.* pornind din d112_reconciliere si asertaza ca NU
+contine core.salarizare / core.d112 / core.salariu_istoric. Calea 2 isi trage singura brutul (SQL propriu, mirror
+pe salariu_la) si cotele din common.cota (registrul de lege period-aware, NU un intermediar al generatorului).
+
+POARTA in d112.genereaza (care are salariati cu cas/cass calculate) paseaza acele valori caii 2 ca DATE de
+verificat; calea 2 NU cheama pull/calcul_salariu. Hard-block la divergenta (tipar 05.08), numind angajatul si
+ambele valori.
+
+ALTERNATIVA RESPINSA: a extinde gardul pe impozit/CAM/facilitati acum. Respinsa: impozitul cere deducerea degresiva
+(re-implementare mare = risc propriu si suprafata de tautologie), facilitatile/CM cer replicarea logicii din
+calcul_salariu. Un gard care acopera doar cazul simplu, ONEST declarat, e mai bun decat unul care pretinde ca
+acopera tot dar refoloseste agregarea generatorului. Extindere = pas separat, cu decizie.
+
+PROBA: 2 salariati simpli (brut 6000/8000) -> cas 1500/2000, cass 600/800, reconciliati; salariat la minim (4050)
+SARIT. Mutatie 'cas gresit' -> "salariat 1 cas: generator=9999 vs cale2=1500". Suita 1402 passed (+5), verificator 0.

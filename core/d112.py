@@ -544,4 +544,9 @@ def genereaza(conn, schema, an, luna):
     _er = erori_generare(prof)
     if _er:
         raise ValueError("D112 nu se poate genera: " + " ".join(_er))
+    # POARTA A DOUA CALE (gard de continut, 05.08.2026, pas 3/6): reconciliere INDEPENDENTA a
+    # contributiilor CAS/CASS in CAZUL SIMPLU (brut x cota), din brut, fara calcul_salariu.
+    # Divergenta = HARD-BLOCK care numeste ambele valori. Vezi core/d112_reconciliere.py.
+    from core.d112_reconciliere import verifica_reconciliere
+    verifica_reconciliere(conn, schema, an, luna, salariati)
     return _d112_genereaza(prof, salariati, an, luna)
