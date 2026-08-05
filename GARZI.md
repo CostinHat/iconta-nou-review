@@ -1089,7 +1089,7 @@ La revenire se re-ruleaza DOAR `python -m core.agenda` pentru xfail-uri; restul 
 - **teste_care_apara_buguri: restul ~70 teste (dupa felia TVA-21%)** — test_datorie:235. Constante fiscale asertate fara temei, non-TVA-21%. DECLANSATOR: plan sistematic separat (dupa felia TVA-21%), sau urmatoarea schimbare de cota pe un modul afectat.
 
 ### B. BLOCAT EXTERN (nu se deblocheaza prin efort — consemnat cu DECLANSATOR)
-- **NECONFORMITATE FISCALA ACTIVA: baza salariala CAS/CASS/CAM pe brut INTREG in emisia D112 CM (corect=proratat, CF art.139(1) verificat la sursa 05.08 tura 4) + rotunjire Sigma(round) vs round(total) (2b) + poarta cale2 oarba pe CM** - sectiuni GARZI 05.08 tura 3 (DESCOPERIRE) + tura 4 (VERIFICARE SURSA). Supra-declarare ~952 lei/angajat-luna la ANAF. DECIZIE CERUTA: scop fix minim vs complet. Apoi re-arhitectura poarta (Decizia 2).
+- **[REPARAT baza 05.08 tura 5] Emisia D112 CM: baza salariala proratata (era brut intreg = supra-declarare ~952 lei/angajat-luna) - FIX d112_cm_baza_realizata_v1, gard + DUK valid. RAMAN DESCHISE: (2b) rotunjire Sigma(round) vs round(total) B4_8=ROUND(B4_7*25%), datorie separata; (Decizia 2) poarta cale2 pe valori EMISE, generala pe declaratii.** - sectiuni GARZI 05.08 tura 3/4/5.
 - **Deriva legislativa (cota corecta azi, lege schimbata maine)** — cat.3 LIMITA REALA (l.~129). Declansator: feed legislativ mecanic (inexistent) SAU revizuire manuala periodica. NU se incepe acum.
 - **Deadman extern pe joburi (server jos = nici verificatorul nu ruleaza)** — cat.10 LIMITA (l.~467). Declansator: monitor extern.
 - **xfail temeiuri_toate_redare (12 COTE + 6 functii pe nivel_sursa=REDARE, niciun MO verbatim)** — test_datorie:46. Declansator: captare verbatim de la legislatie.just.ro (doc consolidat prea mare pt fetch azi).
@@ -1216,3 +1216,29 @@ DOMENIUL FIX-ULUI (crescut peste intrebarea initiala; scop cerut Costin inainte 
 DECIZIE CERUTA Costin (peste Decizia 1 deja transata): scop fix = MINIM (doar baza, 2b ramane datorie separata) sau
 COMPLET (baza+rotunjire, conform DUK)? Pana la raspuns NU se muta emisia (iesire ANAF). Decizia 2 (re-arhitectura
 poarta pe valori emise) ramane dupa fix, ca gard independent care confirma noua formula.
+
+
+## 05.08.2026 (tura 5) - REPARAT Finding 2 (baza salariala CM pe brut intreg): proratare pe zile lucrate
+
+Decizia 1 INCHISA (Costin). Sursa CLARA, nicio regula speciala pentru luna cu CM:
+  - CF art.139(1): "castigul brut REALIZAT din salarii".
+  - structura D112: B4_7=B2_5+B3_7 (baza salariala + baza indemnizatiei, aditive); B1_sal1="Salariul de baza lunar
+    brut" = camp SEPARAT informativ (nu baza contributiei); B2_5 e componenta de "venit realizat" (C1_11).
+  - OUG 158/2005: doar baza indemnizatiei (media 6 luni); nimic pe baza salariala; "zile lucrate"/"contributii" absente.
+
+FIX (d112.py ramura CM ~l.171, [d112_cm_baza_realizata_v1]): bazac = _d112int(brut_lucrat)+exces-facil (baza REALIZATA
+pe zile lucrate), nu brutul contractual. Corecteaza coerent B2_5/B4_7/B4_8/B4_5/B4_6/B4_14 + CAM. brut (contractual)
+ramane in B1_sal1/B4_3.
+
+PROBA: RED pe cod vechi (B2_5=8400 -> test pica); GREEN dupa fix (29 teste d112 + arbori_paraleli); DUK VALID pe
+fixtura CM completa (B4_7=10400 B4_8=2600 vs vechi 12400/3100); smoke DUK + exces_vacanta + avantaje + salarizare_cm
+verzi (23). Gard anti-regresie: test_pull_declaratii.test_d112_cm_baza_salariala_realizata_nu_brut_intreg.
+
+EFECT PE PRODUS (ce se schimba la contabil): pentru orice angajat cu concediu medical, CAS/CASS/CAM declarate la ANAF
+in D112 SCAD - baza salariala = salariul pe zilele LUCRATE, nu contractual (~952 lei CAS mai putin/angajat-luna in
+fixtura 8400 @ 5 zile CM). Fluturasul si D112 acum COINCID pe baza salariala. Salariul contractual ramane in B1_sal1.
+D112 REGENERATE pentru luni cu CM vor da valori mai mici (corecte); depunerile anterioare pe brut intreg erau
+supra-declarate (potential de corectat retroactiv - decizie contabila per firma).
+
+RAMANE DESCHIS: (a) Finding 2b - rotunjire Sigma(round) vs round(total) [B4_8=ROUND(B4_7*25%)], datorie separata,
+neatinsa aici (pe fixturi non-granita coincid). (b) Poarta cale2 pe valori EMISE = Decizia 2 (punctul B), urmeaza.

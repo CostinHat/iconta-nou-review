@@ -290,6 +290,44 @@ def test_cm_arbori_paraleli_acelasi_rezultat(schema):
         "(divergenta fluturas/declaratie)" % (b4_7, b4_5, cm_base))
 
 
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_cm_baza_salariala_realizata_nu_brut_intreg(schema):
+    """[d112_cm_baza_realizata_v1] NECONFORMITATE FISCALA reparata 05.08.2026: in luna cu concediu medical,
+    baza CAS/CASS/CAM (B2_5/B4_7/B4_5/B4_14) = castigul brut REALIZAT pe zile LUCRATE (CF art.139(1) "castigul
+    brut REALIZAT din salarii"; structura D112 B4_7=B2_5+B3_7 aditiv - baza salariala realizata + baza
+    indemnizatiei CM), NU brutul contractual. Brutul contractual ramane doar in B1_sal1/B4_3 (informativ).
+    Inainte de fix, emisia pe brut INTREG supra-declara CAS/CASS/CAM la ANAF si diverga de fluturas (calcul_salariu
+    pe brut_lucrat). MUTATIE (probata): reasignarea bazac in ramura CM readusa la brutul intreg -> B4_8=3100 -> pica.
+    Fixtura: brut 8400, iunie 2026 (nzl=21 zile lucratoare), 5 zile CM cod 01 (brut_ang=4000, cm_base=4000).
+    brut_lucrat=8400*16/21=6400 EXACT (fara granita de rotunjire). Astepta: baza realizata 6400, nu 8400.
+    """
+    import re
+    from core import d112
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'CM','R','1900101410011','2025-01-01',8400,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',8400)")
+        cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile_ang,zile_fnuass,brut_ang,brut_fnuass) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'01',5,0,4000,0)")
+    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    b1 = re.search(r"<asiguratB1[^>]*/>", xml).group(0)
+    b2 = re.search(r"<asiguratB2[^>]*/>", xml).group(0)
+    b4 = re.search(r"<asiguratB4[^>]*/>", xml).group(0)
+    def g(seg, attr):
+        return int(re.search(attr + r'="(\d+)"', seg).group(1))
+    # baza salariala CAS = REALIZAT (brut_lucrat 6400), nu contractual 8400
+    assert g(b2, "B2_5") == 6400, "B2_5 (baza CAS salariala) trebuie 6400 realizat, nu 8400 contractual: " + b2
+    # B4_7 (baza CAS) = B2_5 realizat 6400 + B3_7 (cm_base 4000) = 10400 (nu 12400)
+    assert g(b4, "B4_7") == 10400, "B4_7 = baza realizata 6400 + cm 4000 = 10400: " + b4
+    # B4_8 (CAS) = round(10400*25%) = 2600 (nu 3100 pe brut intreg)
+    assert g(b4, "B4_8") == 2600, "B4_8 CAS pe baza realizata = 2600, nu 3100 (over-declarare): " + b4
+    # CASS: B4_5 = 6400+4000 = 10400 ; B4_6 = round(10400*10%) = 1040 (nu 1240)
+    assert g(b4, "B4_5") == 10400, "B4_5 baza CASS realizata = 10400: " + b4
+    assert g(b4, "B4_6") == 1040, "B4_6 CASS pe baza realizata = 1040, nu 1240: " + b4
+    # brutul CONTRACTUAL ramane in B1_sal1 (8400) - NU se prorateaza
+    assert g(b1, "B1_sal1") == 8400, "B1_sal1 = salariul contractual 8400 (informativ, neproratat): " + b1
+
+
 def test_d112_maternitate_cod08_c2_rd3(schema):
     # [D112 D-field] CM cod 08 (maternitate) -> agregatele C2 pe Rd.3 (C2_31/32/34/36), NU pe Rd.1;
     # maternitatea e 100% FNUASS (D_20=0). Inainte d112 punea 08 in Rd.1 -> DUK respingea (C2_32 lipsa).

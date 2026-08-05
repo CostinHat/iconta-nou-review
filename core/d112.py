@@ -169,6 +169,17 @@ def _d112_genereaza(prof, salariati, an, luna):
         b4base = bazac
         cass_base_cm = bazac   # [UNIFICARE CM] baza CASS (salariu + CM doar 01/07/10); default = salariu
         if cms and zile_cm > 0:
+            # [d112_cm_baza_realizata_v1, 05.08.2026] CF art.139(1): baza CAS/CASS = castigul brut REALIZAT din
+            # salarii; in luna cu concediu medical salariul realizat = zile LUCRATE (brut_lucrat), NU brutul
+            # contractual (care ramane informativ in B1_sal1/B4_3). Structura D112: B4_7=B2_5+B3_7 (baza salariala
+            # REALIZATA + baza indemnizatiei CM, aditive; B4_8=ROUND(B4_7*25%)). Fara asta B2_5/B4_7/B4_5/B4_14
+            # emiteau brutul INTREG = supra-declarare CAS/CASS/CAM la ANAF + divergenta fata de fluturas
+            # (calcul_salariu pe brut_lucrat). Gard: test_pull_declaratii.
+            # test_d112_cm_baza_salariala_realizata_nu_brut_intreg. (Rotunjirea Sigma(round) vs round(total) = 2b,
+            # datorie separata in GARZI 05.08 - neatinsa aici.)
+            bazac = _d112int(s.get("brut_lucrat", s.get("brut"))) + _d112int(s.get("exces_vacanta", 0)) - facil
+            if bazac < 0:
+                bazac = 0
             zile = nzl - zile_cm
             if zile < 0:
                 zile = 0

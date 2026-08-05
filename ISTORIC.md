@@ -3282,3 +3282,12 @@ DUK-invalid pe granita (masurat 4323 vs 4324). NU s-a reparat: fix-ul a crescut 
 CAS/CASS/CAM + 2b), schimba iesirea ANAF -> raportat domeniul (minim vs complet) si cerut scop Costin inainte de
 mutatie (regula lui pt schimbari >1 pas + iesire ANAF). Consemnat GARZI (sectiune 05.08 tura 4) - Finding 2 ridicat de
 la "candidat" la CONFIRMAT ACTIV. Decizia 2 (re-arhitectura poarta) ramane dupa fix. Niciun cod atins; registre-only.
+
+
+## 05.08.2026 (tura 5) - REPARAT baza salariala CM pe brut intreg (Finding 2): proratare pe zile lucrate
+Decizia 1 inchisa la sursa (CF art.139(1) "realizat" + structura D112 B4_7=B2_5+B3_7, B1_sal1 contractual separat;
+OUG 158 nu pune nimic pe baza salariala; nicio regula speciala CM). Fix in d112.py ramura CM (d112_cm_baza_realizata_v1):
+bazac pe brut_lucrat (realizat), nu contractual. Corecteaza B2_5/B4_7/B4_8/B4_5/B4_6/B4_14/CAM; brut contractual ramane
+in B1_sal1. Probat RED (B2_5=8400 vechi) -> GREEN (29 d112) -> DUK VALID (B4_8 2600 vs 3100). Gard anti-regresie in
+test_pull_declaratii. Efect: CAS/CASS/CAM la ANAF SCAD pe angajatii cu CM (fluturas si D112 coincid acum). Ramane 2b
+(rotunjire) + poarta cale2 pe valori emise (punctul B). Consemnat GARZI 05.08 tura 5.
