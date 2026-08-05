@@ -3194,3 +3194,16 @@ Doua completari cerute de Costin dupa livrarea D112, inainte de D406:
    skip tacut. Distinctia se face curat pe calea simpla (care foloseste brutul contractual, fara pontaj/cote
    per-angajat -> singurul vector de corupere e brutul). Teste: test_skip_suspect_brut_lipsa/sub_minim.
 Suita 1404 passed (+2), verificator 0.
+
+
+## 05.08.2026 — GARDUL DE CONTINUT pas 4/6: a doua cale D406/SAF-T (balanta de rulaje independenta) — commit 661d6ae
+
+Pas 4. core/d406_reconciliere.py construieste o balanta de RULAJE per cont INDEPENDENTA din inregistrari_linii
+(SQL propriu) si o leaga de totalurile per-cont din SAF-T-ul emis + invariant Sdebit=Scredit. Poarta HARD-BLOCK
+in d406.genereaza. Sdebit=Scredit e in mare parte structural (fiecare inregistrari_linii = debit+credit egale);
+valoarea reala = legarea per-cont la rulaj, care prinde emisia ce pierde/dubleaza/mapeaza gresit. Exact clasa
+bug-ului ISTORIC 16.07 (GeneralLedgerEntries ramanea gol tacit) - probat cu res.note=[] -> ridica numind fiecare cont.
+
+Non-tautologie pe AST (nu foloseste d406.pull/construieste). LIMITA: acopera GeneralLedgerEntries, NU
+SalesInvoices/PurchaseInvoices/Payments/Assets. Mutatie: suma alterata / GL gol / dezechilibru -> pica.
+Gard: test_d406_reconciliere.py (5). Suita 1409 passed (+5), verificator 0, commit local 661d6ae. Ramas: D101/D205.
