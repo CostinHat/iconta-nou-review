@@ -649,3 +649,61 @@ def test_d112_exclude_salariat_neangajat_inca_in_luna(schema):
     assert len(sal_ian) == 0, "salariat angajat 15.03 NU trebuie inclus in D112 pe ianuarie (era %d)" % len(sal_ian)
     _p, sal_mar = d112.pull(schema, SCHEMA_T, 2026, 3)   # luna angajarii
     assert len(sal_mar) == 1, "salariat angajat 15.03 trebuie inclus in D112 pe martie (era %d)" % len(sal_mar)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_cod15_D23_RM(schema):
+    """[cod15 risc maternal] asiguratD D_23 trebuie "RM" pt cod 15 (OUG 96/2003 + OUG 158/2005; regula DUK:
+    daca D_9=15 atunci D_23=RM). MUTATIE: D_23=diagnostic -> pica."""
+    import re
+    from core import d112
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'RM','A','1900101410011','2025-01-01',6000,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',6000)")
+        cur.execute("INSERT INTO concedii_medicale (salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
+                    "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere) "
+                    "VALUES (1,2026,6,'15',10,0,10,0,3000,6000,300,'AB','1','2026-06-01','2026-06-01','2026-06-10',1)")
+    xml, _ = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    m = re.search(r'<asiguratD[^>]*D_9="15"[^>]*/>', xml)
+    assert m and 'D_23="RM"' in m.group(0), "cod 15 trebuie D_23=RM: %s" % (m.group(0) if m else "randul lipseste")
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_cod07_carantina_in_C2_prevenire(schema):
+    """[cod07 carantina] apartine categoriei "prevenirea imbolnavirilor" (OUG 158/2005 art.20(3)): intra in
+    agregatul Rd.2 (C2_24/C2_26) SI in sub-randul propriu C2_211-216. MUTATIE: scoaterea lui 07 din _r2 ->
+    C2_2x nu contin carantina -> pica (era complet absenta din angajatorC2)."""
+    import re
+    from core import d112
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'CAR','A','1900101410011','2025-01-01',5000,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',5000)")
+        cur.execute("INSERT INTO concedii_medicale (salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
+                    "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere) "
+                    "VALUES (1,2026,6,'07',8,0,8,0,1600,5000,200,'AB','1','2026-06-01','2026-06-01','2026-06-08',1)")
+    xml, _ = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    m = re.search(r'<angajatorC2[^>]*/>', xml)
+    assert m, "angajatorC2 lipseste"
+    c2 = dict(re.findall(r'(\w+)="([^"]*)"', m.group(0)))
+    assert int(c2.get("C2_24", 0)) == 8 and int(c2.get("C2_26", 0)) == 1600, "carantina lipseste din agregatul Rd.2: %s" % m.group(0)[:200]
+    assert "C2_211" in c2, "sub-randul carantina C2_211-216 lipseste"
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_cod10_D13_aviz(schema):
+    """[cod10 reducere 1/4 program] asiguratD cere D_13 = nr aviz medic expert (OUG 158/2005 art.19; regula
+    DUK S102: daca D_9=10 atunci D_13 completat). MUTATIE: fara emisia D_13 pt cod 10 -> pica."""
+    import re
+    from core import d112
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'RED','A','1900101410011','2025-01-01',5500,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',5500)")
+        cur.execute("INSERT INTO concedii_medicale (salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
+                    "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere,cod_urgenta) "
+                    "VALUES (1,2026,6,'10',20,0,20,0,3600,5500,262,'AB','1','2026-06-01','2026-06-01','2026-06-20',1,55501)")
+    xml, _ = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    m = re.search(r'<asiguratD[^>]*D_9="10"[^>]*/>', xml)
+    assert m and 'D_13="55501"' in m.group(0), "cod 10 trebuie D_13 (nr aviz): %s" % (m.group(0) if m else "randul lipseste")

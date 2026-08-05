@@ -253,6 +253,8 @@ def _d112_genereaza(prof, salariati, an, luna):
                         _opt += ' %s="%s"' % (_a, _v)
                 if str(x.get("cod") or "01").zfill(2) == "06" and x.get("cod_urgenta"):
                     _opt += ' D_11="%d"' % int(x.get("cod_urgenta"))  # [D_11] cod urgenta HG 423/2020, oblig. la cod 06 (D112 C(3), mutex D_12)
+                if str(x.get("cod") or "01").zfill(2) == "10" and x.get("cod_urgenta"):
+                    _opt += ' D_13="%d"' % int(x.get("cod_urgenta"))  # [cod10] nr aviz medic expert (art.19 OUG 158/2005, regula DUK S102); reutilizeaza cod_urgenta
                 # [D_8/D_8a, regula DUK S97] cod 09/91/92 cer CNP copil (D_8), cod 17 cere CNP pacient oncologic
                 # (D_8a) - N(13), verificare CNP. Lipsa/invalid -> HARD-BLOCK (regula bazei nule): nu se emite
                 # D112 invalid, se semnaleaza. Certificatele existente fara CNP opresc generarea explicit.
@@ -272,7 +274,8 @@ def _d112_genereaza(prof, salariati, an, luna):
                 _dl.append('    <asiguratD%s D_9="%s" D_10="%d" '
                            'D_14="%d" D_15="%d" D_16="%d" D_17="%d" D_18="%d" D_19="%.2f" D_20="%d" D_21="%d" D_23="%s"/>'
                            % (_opt, (x.get("cod") or "01"), int(x.get("loc_prescriere") or 1),
-                              za, zf, d16, d17, d18, d19, d20, d21, _d112esc(x.get("diagnostic") or "999")))
+                              za, zf, d16, d17, d18, d19, d20, d21,
+                              _d112esc("RM" if _cod_c == "15" else (x.get("diagnostic") or "999"))))  # [cod15] D_23="RM" (risc maternal)
             c1_12 += cm_base
         else:
             zile = nzl
@@ -392,8 +395,9 @@ def _d112_genereaza(prof, salariati, an, luna):
         return (len(_f), sum(c[1] for c in _f), sum(c[2] for c in _f), sum(c[3] for c in _f),
                 sum(c[4] for c in _f), sum(c[5] for c in _f))  # count, d16, d14, d15, d20, d21
     if _c2_cazuri:
-        _r1 = _c2row(_C2_RD1); _r2 = _c2row(("10", "11")); _r3 = _c2row(("08",))
+        _r1 = _c2row(_C2_RD1); _r2 = _c2row(("07", "10", "11")); _r3 = _c2row(("08",))  # [cod07] carantina in agregatul Rd.2 (prevenire) + sub-rand propriu C2_211-216 mai jos
         _r4 = _c2row(("09", "91", "92")); _r41 = _c2row(("17",)); _r5 = _c2row(("15",))
+        _r07 = _c2row(("07",))  # [cod07] carantina - rand C2 propriu (prevenire imbolnavire, FNUASS)
         _c2a = ['C2_11="%d" C2_12="%d" C2_13="%d" C2_14="%d" C2_15="%d" C2_16="%d"' % _r1[:6]]
         if _r2[0]:
             _c2a.append('C2_21="%d" C2_22="%d" C2_23="%d" C2_24="%d" C2_25="%d" C2_26="%d"' % _r2[:6])
@@ -405,7 +409,9 @@ def _d112_genereaza(prof, salariati, an, luna):
             _c2a.append('C2_41a="%d" C2_42a="%d" C2_44a="%d" C2_46a="%d"' % (_r41[0], _r41[1], _r41[3], _r41[5]))
         if _r5[0]:  # Rd.5 risc maternal
             _c2a.append('C2_51="%d" C2_52="%d" C2_54="%d" C2_56="%d"' % (_r5[0], _r5[1], _r5[3], _r5[5]))
-        _c2t6 = _r1[5] + _r2[5] + _r3[5] + _r4[5] + _r41[5] + _r5[5]  # C2_16+26+36+46+56 (sume FNUASS)
+        if _r07[0]:  # carantina (cod 07): rand propriu C2_211-216
+            _c2a.append('C2_211="%d" C2_212="%d" C2_214="%d" C2_216="%d"' % (_r07[0], _r07[1], _r07[3], _r07[5]))
+        _c2t6 = _r1[5] + _r2[5] + _r3[5] + _r4[5] + _r41[5] + _r5[5]  # carantina e deja in _r2[5]=C2_26 (nu se dubleaza)
         _c2a.append('C2_T6="%d" C2_10="%d" C2_140="%d"' % (_c2t6, _c2t6, _c2t6))
         H.append('    <angajatorC2 %s/>' % " ".join(_c2a))
     H.append('    <angajatorC4 C4_baza="%d" C4_ct="%d"/>' % (sum_bazac, cam_total))
