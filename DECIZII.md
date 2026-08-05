@@ -7265,3 +7265,29 @@ acopera tot dar refoloseste agregarea generatorului. Extindere = pas separat, cu
 
 PROBA: 2 salariati simpli (brut 6000/8000) -> cas 1500/2000, cass 600/800, reconciliati; salariat la minim (4050)
 SARIT. Mutatie 'cas gresit' -> "salariat 1 cas: generator=9999 vs cale2=1500". Suita 1402 passed (+5), verificator 0.
+
+
+## 05.08.2026 — D112 gard, doua completari cerute la review (acoperire cifrata + skip-suspect)
+
+Dupa livrarea D112 (cazul simplu), Costin a cerut doua rigori inainte de D406:
+
+1. ACOPERIRE CIFRATA, nu doar lista in/out. Estimare pe structura TIPICA de cabinet RO (NU masurata - tenantii
+   de test sunt goi): gardul reconciliaza probabil o MINORITATE, ~20-35% din salariati; ~65-80% sar. Excluderile
+   dominante: salariu MINIM (facilitate - pondere mare la IMM-uri RO) + TICHETE de masa (beneficiu larg raspandit),
+   suprapuse, plus CM/part-time. Baza estimarii: structura pietei muncii RO (prevalenta salariului minim la IMM +
+   uz larg al tichetelor tax-advantaged), nu cifre de productie. Scris in GARZI ca 'acoperire estimata', ca sa nu
+   para 'D112 are a doua cale' in general - acopera cazul simplu al celei mai grele declaratii lunare, nu majoritatea.
+   De reverificat cu cifra reala cand exista payroll.
+
+2. SKIP-SUSPECT vs SKIP-LEGITIM. Distinctia se poate face CURAT: skip-legitim = complexitate fiscala reala
+   (facilitate/CM/part-time/scutire/tichete/luna partiala) -> tacut, in afara scopului. skip-SUSPECT = angajat EMIS
+   de generator cu date corupte: brut LIPSA (istoric+salariati.salariu_brut ambele goale -> generatorul calculeaza
+   pe float(None or 0)=0 si emite contributii ZERO tacut - exact clasa pentru care s-a construit garda cere_coloane)
+   SAU brut SUB minimul legal pentru full-time luna intreaga. Acestea devin HARD-BLOCK semnalat ('null base = eroare
+   pana la proba contrarie'), nu skip tacut. Restul (pontaj aberant / cota necunoscuta) NU ating calea simpla: calea
+   simpla foloseste brutul CONTRACTUAL (nu pontajul) si nu are cote per-angajat (ratele vin din lege) - deci nu exista
+   alt vector de corupere pe calea simpla in afara brutului. Consemnat ca limita: coruperea pe caile NESIMPLE
+   (facilitate/CM) ramane neacoperita fiindca acele cazuri sunt oricum sarite.
+
+PROBA: brut NULL -> "brut LIPSA...SUSPECTE" ridica; brut 3000 (<minim 4050) full-time -> "SUB salariul minim" ridica;
+facilitate la minim (4050) -> sarit-legitim, tacut. Teste: test_skip_suspect_brut_lipsa/sub_minim. Suita verde.

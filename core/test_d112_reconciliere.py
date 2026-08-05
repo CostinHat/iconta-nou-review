@@ -169,3 +169,39 @@ def test_caz_nesimplu_facilitate_e_sarit_nu_alarma(conn_recon):
     rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
     assert 3 in rap["sarite"] and 3 not in rap["reconciliati"]
     assert all(d["salariat"] != 3 for d in rap["divergente"]), rap["divergente"]
+    assert all(s["salariat"] != 3 for s in rap["suspecte"]), rap["suspecte"]  # facilitate = legitim, NU suspect
+
+
+# ============================================================
+#  SKIP-SUSPECT (date corupte) vs SKIP-LEGITIM (complexitate): gardul VORBESTE pe date stricate.
+# ============================================================
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_skip_suspect_brut_lipsa_e_semnalat_nu_tacut(conn_recon):
+    """Angajat EMIS dar cu brut LIPSA (fara istoric, salariu_brut NULL) -> generatorul emite pe 0.
+    NU trebuie sarit tacut: e skip-SUSPECT, semnalat (null base = eroare pana la proba contrarie)."""
+    with conn_recon.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (4,'FARABRUT','D','1900101410014','2025-01-01',NULL,8,false)")
+    sal = [{"id": 4, "cas": 0, "cass": 0}]   # generatorul l-a emis pe 0
+    rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert any(s["salariat"] == 4 for s in rap["suspecte"]), rap
+    assert 4 not in rap["sarite"] and 4 not in rap["reconciliati"]
+    with pytest.raises(ReconciliereD112) as ei:
+        verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert "brut LIPSA" in str(ei.value) and "SUSPECTE" in str(ei.value)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_skip_suspect_brut_sub_minim_e_semnalat(conn_recon):
+    """Angajat full-time luna intreaga cu brut SUB minimul legal -> date probabil corupte -> semnalat."""
+    with conn_recon.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (5,'SUBMINIM','E','1900101410015','2025-01-01',3000,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (5,'2025-01-01',3000)")
+    sal = [{"id": 5, "cas": 750, "cass": 300}]   # 3000 x 25/10 - dar brutul e sub minim
+    rap = reconciliaza(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert any(s["salariat"] == 5 for s in rap["suspecte"]), rap
+    assert 5 not in rap["reconciliati"] and 5 not in rap["sarite"]
+    with pytest.raises(ReconciliereD112) as ei:
+        verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
+    assert "SUB salariul minim" in str(ei.value)

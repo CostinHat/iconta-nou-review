@@ -310,6 +310,18 @@ că intrarea a fost înghițită**.
       (sarit, nu alarma falsa). Impozit/CAM raman pe DUK structural + golden-ele existente.
     - D112 e cel mai EXPUS la tautologie din campanie (totalurile vin din calcul_salariu); de aceea
       non-tautologia e probata pe lantul TRANZITIV, nu doar pe importurile directe.
+    - **ACOPERIRE ESTIMATA (nu 'D112 are a doua cale'):** la o structura TIPICA de cabinet RO, gardul
+      reconciliaza probabil o MINORITATE a salariatilor — estimat ~20-35% reconciliati / ~65-80% sariti.
+      Excluderile dominante: salariu MINIM (facilitate; pondere mare la IMM-uri RO) + TICHETE de masa
+      (beneficiu larg raspandit) — se suprapun si domina, plus CM/part-time. ESTIMARE PE STRUCTURA, NU
+      MASURATA (tenantii de test sunt goi/sintetici; nu exista payroll real). De reverificat cu cifra
+      reala cand exista date. Consecinta: gardul acopera cazul simplu al celei mai grele declaratii lunare,
+      nu majoritatea ei — util, dar declarat ca acoperire partiala.
+    - **SKIP-SUSPECT vs SKIP-LEGITIM (cerinta Costin):** un angajat EMIS cu DATE CORUPTE nu mai cade tacit
+      in 'afara'. brut LIPSA (istoric+salariati.salariu_brut ambele goale -> generatorul emite pe 0) si
+      brut SUB minimul legal (full-time luna intreaga) = skip-SUSPECT -> HARD-BLOCK semnalat ('null base =
+      eroare pana la proba contrarie'). Skip-legitim (facilitate/CM/part-time/scutire/tichete/luna partiala)
+      ramane tacut. Probat: brut NULL / brut 3000<minim -> ridica; facilitate la minim -> tacut.
   - **RAMAS LIPSA**: aceeasi a doua cale pe D406 -> D101/D205 (ordinea confirmata).
 - LIPSĂ: snapshot de regresie pe fixturi înghețate.
 - **DUK validează STRUCTURA, nu conținutul.** Nu e gard de conținut și nu se tratează ca atare.

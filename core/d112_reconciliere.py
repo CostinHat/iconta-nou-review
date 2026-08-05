@@ -46,7 +46,8 @@ from decimal import Decimal, ROUND_HALF_UP
 
 
 class ReconciliereD112(ValueError):
-    """Cele doua cai nu se reconciliaza pe contributiile cazului simplu. Poarta ambele valori."""
+    """Cele doua cai nu se reconciliaza pe contributiile cazului simplu, SAU un angajat emis are
+    date corupte (brut lipsa / sub minimul legal). Poarta angajatul si ambele valori."""
 
 
 def _q(x):
@@ -79,14 +80,22 @@ def _brut_la(cur, schema, sid, data):
 
 def reconciliaza(conn, schema, an, luna, salariati_generator):
     """Recalcul independent al CAS/CASS pe cazul simplu, confruntat cu valorile generatorului.
-    NU ridica. {"divergente":[...], "reconciliati":[ids], "sarite":[ids]}."""
+    NU ridica. Intoarce:
+      divergente   - CAS/CASS ale cazului simplu care nu se leaga (bug de contributie);
+      suspecte     - angajat EMIS de generator cu DATE CORUPTE (brut lipsa / sub minimul legal):
+                     skip-SUSPECT, semnalat (nu tacut) - "null base = eroare pana la proba contrarie";
+      reconciliati - ids confruntati (cazul simplu);
+      sarite       - skip-LEGITIM din complexitate fiscala (facilitate/CM/part-time/scutire/tichete/
+                     luna partiala / generatorul nu l-a emis) - tacut, e in afara scopului gardului.
+    Distinctia sarit-legitim vs sarit-suspect (cerinta Costin 05.08): un angajat NU trebuie sa cada
+    tacut in 'afara' fiindca datele lui sunt stricate - acolo gardul TREBUIE sa vorbeasca."""
     import psycopg2.extras as _E
     la_data = _date(an, luna, 1)
     luna_inc = _date(an, luna, 1)
     luna_sf = _date(an, luna, _cal.monthrange(an, luna)[1])
     cota_cas, cota_cass, sm = _cote(la_data)
     gen = {s.get("id"): s for s in (salariati_generator or [])}
-    divergente, reconciliati, sarite = [], [], []
+    divergente, suspecte, reconciliati, sarite = [], [], [], []
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT id, salariu_brut, part_time, scutit_contrib_minim, tichet_masa_valoare, "
                     "data_angajare, data_incetare FROM %s.salariati "
@@ -105,7 +114,16 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
 
         for r in rows:
             sid = r["id"]
-            # --- detectare CAZ SIMPLU (orice incalcare -> NEACOPERIT) ---
+            g = gen.get(sid)
+            if g is None:
+                sarite.append(sid); continue   # generatorul nu l-a emis (ex. incetat) - skip LEGITIM
+            brut = _brut_la(cur, schema, sid, luna_sf)
+            # --- SKIP-SUSPECT: date corupte pe un angajat EMIS (semnalat, nu tacut) ---
+            if brut is None:
+                suspecte.append({"salariat": sid, "motiv": "brut LIPSA (salariu_istoric si "
+                                 "salariati.salariu_brut ambele goale) - generatorul emite contributii pe 0"})
+                continue
+            # --- SKIP-LEGITIM: complexitate fiscala (in afara scopului gardului, tacut) ---
             if r["part_time"] or r["scutit_contrib_minim"]:
                 sarite.append(sid); continue
             if float(r["tichet_masa_valoare"] or 0) > 0:
@@ -115,13 +133,15 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
             da, di = r["data_angajare"], r["data_incetare"]
             if (da and da > luna_inc) or (di and di < luna_sf):
                 sarite.append(sid); continue   # luna nu e intreaga -> proratare -> afara
-            brut = _brut_la(cur, schema, sid, luna_sf)
-            if brut is None or brut <= sm:
-                sarite.append(sid); continue   # brut == sm -> facilitate; sub minim -> afara
-            g = gen.get(sid)
-            if g is None:
-                sarite.append(sid); continue   # generatorul nu l-a emis (ex. incetat) - nu confruntam
-            # --- recalcul independent (baza contributie = brut, facilitate 0 la caz simplu) ---
+            if brut == sm:
+                sarite.append(sid); continue   # facilitate (se declanseaza la brut == minim) -> afara
+            # --- SKIP-SUSPECT: sub minimul legal pentru angajat full-time luna intreaga ---
+            if brut < sm:
+                suspecte.append({"salariat": sid, "motiv": "brut %s SUB salariul minim %s pentru angajat "
+                                 "full-time luna intreaga (sub pragul legal) - date probabil corupte"
+                                 % (_q(brut), _q(sm))})
+                continue
+            # --- CAZ SIMPLU: recalcul independent (baza contributie = brut, facilitate 0) ---
             exp = {"cas": _q(brut * cota_cas), "cass": _q(brut * cota_cass)}
             reconciliati.append(sid)
             for camp in ("cas", "cass"):
@@ -129,20 +149,26 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                 if got != exp[camp]:
                     divergente.append({"salariat": sid, "camp": camp,
                                        "generator": got, "cale2": exp[camp], "diferenta": got - exp[camp]})
-    return {"divergente": divergente, "reconciliati": reconciliati, "sarite": sarite}
+    return {"divergente": divergente, "suspecte": suspecte,
+            "reconciliati": reconciliati, "sarite": sarite}
 
 
 def verifica_reconciliere(conn, schema, an, luna, salariati_generator):
-    """POARTA (hard-block): ridica ReconciliereD112 daca CAS/CASS ale cazului simplu diverg.
+    """POARTA (hard-block): ridica ReconciliereD112 daca (a) CAS/CASS ale cazului simplu diverg, SAU
+    (b) un angajat emis are DATE CORUPTE (brut lipsa / sub minim) - skip-suspect, semnalat nu tacut.
     Numeste angajatul si AMBELE valori. NU repara tacit (tipar DECIZII 05.08)."""
     rap = reconciliaza(conn, schema, an, luna, salariati_generator)
+    parti = []
     if rap["divergente"]:
-        linii = "; ".join(
+        parti.append("DIVERGENTE (caz simplu): " + "; ".join(
             "salariat %s %s: generator=%d vs cale2=%d (dif %d)" %
             (d["salariat"], d["camp"], d["generator"], d["cale2"], d["diferenta"])
-            for d in rap["divergente"])
+            for d in rap["divergente"]))
+    if rap["suspecte"]:
+        parti.append("SUSPECTE (date corupte, nu caz fiscal legitim): " + "; ".join(
+            "salariat %s: %s" % (s["salariat"], s["motiv"]) for s in rap["suspecte"]))
+    if parti:
         raise ReconciliereD112(
-            "D112 A DOUA CALE (caz simplu): CAS/CASS ale generatorului NU se reconciliaza cu "
-            "recalculul independent din brut x cota. Divergente: %s. Declaratia NU se genereaza "
-            "- gardul nu alege singur cine are dreptate; verifica agregarea si datele." % linii)
+            "D112 A DOUA CALE: %s. Declaratia NU se genereaza - gardul nu alege singur cine are "
+            "dreptate si nu tace pe date corupte; verifica agregarea si datele." % " | ".join(parti))
     return rap

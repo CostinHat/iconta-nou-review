@@ -3181,3 +3181,16 @@ Probat: non-tautologie tranzitiva; mutatie (cas/cass gresit -> "salariat 1 cas: 
 caz nesimplu (facilitate la minim) SARIT fara alarma falsa; proba functionala pe schema efemera (2 simpli reconciliati,
 cel la minim sarit). Gard: core/test_d112_reconciliere.py (5). Suita 1402 passed (+5), verificator 0, commit local 06dc9df.
 Ramas in campanie: D406 -> D101/D205.
+
+
+## 05.08.2026 — D112 gard: rafinare la review (acoperire cifrata + skip-suspect vs skip-legitim)
+
+Doua completari cerute de Costin dupa livrarea D112, inainte de D406:
+1. ACOPERIRE CIFRATA in GARZI: estimare ~20-35% reconciliati / ~65-80% sariti la cabinet TIPIC (dominant:
+   salariu minim + tichete masa). ESTIMARE PE STRUCTURA, nu masurata (tenanti goi). Scris ca 'acoperire estimata'
+   ca sa nu para 'D112 are a doua cale' - gardul acopera cazul simplu al celei mai grele declaratii, nu majoritatea.
+2. SKIP-SUSPECT vs SKIP-LEGITIM: un angajat EMIS cu brut LIPSA (generatorul emite pe 0 tacut) sau brut SUB minimul
+   legal (full-time luna intreaga) devine HARD-BLOCK semnalat ('null base = eroare pana la proba contrarie'), NU
+   skip tacut. Distinctia se face curat pe calea simpla (care foloseste brutul contractual, fara pontaj/cote
+   per-angajat -> singurul vector de corupere e brutul). Teste: test_skip_suspect_brut_lipsa/sub_minim.
+Suita 1404 passed (+2), verificator 0.
