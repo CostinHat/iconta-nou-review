@@ -3135,3 +3135,27 @@ COTA" (cotele sunt procent intreg, bancar==aritmetic); (b) verificatorul GRI COT
 
 Porti: suita 1391 passed (+7), 2 skipped, 21 xfailed; verificator TOTAL 0; commit local 3096812. Ordine campanie ramasa:
 D394(vs D300) -> D112 -> D406 -> D101/D205. Limita declarata (6 puncte) in GARZI cat.4 de la DESCHIDERE.
+
+
+## 05.08.2026 — GARDUL DE CONTINUT pas 2/6: a doua cale D394 (recalcul rezumat2) — commit 6f19ebe
+
+Pas 2 din campanie, acelasi tipar ca D300. core/d394_reconciliere.py recalculeaza INDEPENDENT totalurile
+rezumat2 pe cota (colectat bazaL/tvaL + achizitii bazaA/tvaA, C pliat pe A) dintr-un pull SQL propriu al
+liniilor brute + clasificare proprie (emisa->L, primita RO->A, taxare inversa RO->C, intracom exclus,
+cota-0/N/V excluse). Poarta HARD-BLOCK in d394.genereaza.
+
+DECIZIE DE PROIECTARE (abatere de la formularea initiala "reconciliere incrucisata D394<->D300", cu temei -
+vezi DECIZII 05.08): NU s-a facut cross-recon, din doua motive gasite la sursa: (1) gardul existent
+test_d300_d394_paritate e TAUTOLOGIC prin propria recunoastere ("sursa e comuna (liniile)") - prinde doar
+driftul intre generatoare; (2) D300 colectat >= D394 livrari pe cota (D300 = TVA totala, D394 = subset) ->
+nu e egalitate. Deci recalcul propriu, singura cale non-tautologica aici. Paritatea ramane ca detector de drift.
+
+ACOPERIRE (raspuns la cerinta lui Costin): tot traficul REAL D394 e acoperit - taxare-inversa si N sunt AUTO
+din facturi (nu prin manual=). manual['operatiuni'] nu are UI/tabela azi -> reziduu nealimentat, nu majoritate,
+deci NU siguranta falsa. Conditie scrisa in GARZI: o UI de operatiuni manuale ar reactiva gaura.
+
+Probat: non-tautologie pe AST (nu foloseste calcul_d394/pull/_int); mutatie (livrare pierduta / livrare la
+achizitii / semn inversat -> reconcilierea PICA numind ambele valori, ex. "cota 21% bazaA: generator=0 vs
+cale2=800"); proba functionala pe schema efemera (genereaza cu poarta -> divergente []). Gard:
+core/test_d394_reconciliere.py (6). Suita 1397 passed (+6), verificator 0, commit local 6f19ebe. Ramas in campanie:
+D112 -> D406 -> D101/D205.
