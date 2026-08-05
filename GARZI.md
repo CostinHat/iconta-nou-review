@@ -1089,6 +1089,7 @@ La revenire se re-ruleaza DOAR `python -m core.agenda` pentru xfail-uri; restul 
 - **teste_care_apara_buguri: restul ~70 teste (dupa felia TVA-21%)** — test_datorie:235. Constante fiscale asertate fara temei, non-TVA-21%. DECLANSATOR: plan sistematic separat (dupa felia TVA-21%), sau urmatoarea schimbare de cota pe un modul afectat.
 
 ### B. BLOCAT EXTERN (nu se deblocheaza prin efort — consemnat cu DECLANSATOR)
+- **Divergenta fluturas/declaratie pe baza salariala CM (D112) + poarta cale2 oarba pe CM** - sectiune GARZI 05.08 "DESCOPERIRE 1c-CM". Candidat over-declarare CAS/CASS la ANAF pe angajatii cu CM peste minim. DECIZIE PRODUS: baza proratat vs brut intreg + re-arhitectura poarta. Blocheaza sub-cazul 1c-CM.
 - **Deriva legislativa (cota corecta azi, lege schimbata maine)** — cat.3 LIMITA REALA (l.~129). Declansator: feed legislativ mecanic (inexistent) SAU revizuire manuala periodica. NU se incepe acum.
 - **Deadman extern pe joburi (server jos = nici verificatorul nu ruleaza)** — cat.10 LIMITA (l.~467). Declansator: monitor extern.
 - **xfail temeiuri_toate_redare (12 COTE + 6 functii pe nivel_sursa=REDARE, niciun MO verbatim)** — test_datorie:46. Declansator: captare verbatim de la legislatie.just.ro (doc consolidat prea mare pt fetch azi).
@@ -1123,3 +1124,49 @@ La revenire se re-ruleaza DOAR `python -m core.agenda` pentru xfail-uri; restul 
 GOL — cele 3 initiale au fost DECISE 05.08 (vezi DECIZII 05.08 "3 decizii de produs pe inventar"):
 state_plata -> A (persistare cu hash); felia TVA-21% -> A (restul teste_care_apara_buguri ramane in A cu declansator);
 F144 GV -> C (limitare acceptata). Cand apare o noua deschidere blocata pe decizie de produs, se adauga aici.
+
+
+## 05.08.2026 - DESCOPERIRE (campanie EXTINDEREA ACOPERIRII, sub-caz 1c-CM): poarta cale2 OARBA pe CM + divergenta fluturas/declaratie pe baza salariala CM
+
+Sub-cazul 1c-CM (reconciliere contributii concedii medicale) s-a OPRIT INAINTE de cod. Reteta din PREDARE_LANT.md
+presupunea ca g[cas]/g[cass] vazute de cale2 contin valoarea EMISA la ANAF. FALS - verificat empiric pe generatorul
+REAL (sonda efemera rollback: 1 salariat brut 8000 peste minim, 2 certificate cod 01, iunie 2026, nzl=21, 10 zile CM).
+Ambele descoperiri de mai jos sunt masurate, nu presupuse.
+
+FINDING 1 - poarta cale2 e OARBA pe componenta CM.
+  verifica_reconciliere(conn,schema,an,luna,salariati) (d112.py:551) primeste iesirea pull. Pentru un angajat cu CM,
+  pull seteaza (d112.py:498-499) s["cas"]=calcul_salariu(brut_lucrat)["cas"] = DOAR salariul pe brut_lucrat PRORATAT,
+  FARA cm_cas. Masurat: g[cas]=1047.62, g[cass]=419.05 (brut_lucrat=8000x11/21=4190.48).
+  Valoarea EMISA la ANAF se calculeaza abia in _d112_genereaza (d112.py:199-200), DUPA poarta: B4_8(cas)=4323 =
+  _d112int(bazac x 0.25) + cm_cas = 2000 + 2323; B4_6(cass)=1729 = 800 + 929. Nu ajunge NICIODATA la cale2.
+  => a reconcilia g[cas] valideaza un numar care NU se depune la ANAF (1047.62 vs 4323 emis) - falsa incredere,
+  exact riscul semnalat de Costin ("mai rau decat lipsa gardului"). CM NU e reconciliabil prin interfata curenta.
+  GENERALIZARE (blind-spot al portii): poarta valideaza valorile PRE-emisie (salariati din pull). Pt cazurile simple
+  emit = _d112int(s["cas"]) deci coincid; pt CM emit RECALCULEAZA din bazac+certificate deci NU coincid. Poarta nu
+  poate prinde niciun bug al layerului de EMISIE care recalculeaza (nu doar CM).
+
+FINDING 2 - candidat BUG de generator (miza mare, DECIZIE DE PRODUS): baza salariala CAS/CASS in CM difera intre cele
+doua lanturi ale generatorului.
+  fluturas/pull: salariul se PRORATEAZA pe zile lucrate (brut_lucrat=4190.48 -> cas salariala 1047.62). d112.py:469,482,498.
+  declaratie/emit: salariul se ia pe brut INTREG (bazac=_d112int(s["brut"])=8000 -> cas salariala 2000). d112.py:146-148,199;
+  s["brut"]=salariu_brut CONTRACTUAL (l.424), NErescris niciodata cu brut_lucrat (desi brut_lucrat E in dict, l.496).
+  => acelasi angajat: CAS salariala 1047.62 pe fluturas, 2000 in D112 la ANAF (dif ~952 lei/angajat-luna). Incalca
+  invariantul propriu al codului ("arbori paraleli acelasi rezultat" - test_cm_arbori_paraleli_acelasi_rezultat, care
+  insa verifica DOAR tratamentul indemnizatiei cod-08, nu baza salariala; niciun golden nu blocheaza baza salariala CM).
+  Daca emisul pe brut intreg e gresit -> SUPRA-declarare CAS/CASS la ANAF pe TOTI angajatii cu CM peste minim.
+  Care baza e corecta legal (proratat pe zile lucrate vs brut intreg) = decizie de produs + verificare OUG 158/2005 +
+  CF art.139/140 la sursa. NU se repara unilateral (schimba iesirea la ANAF, §2.3 pct.2). Xfail-ancora NEscrisa inca:
+  cere valoarea CORECTA, indecisa pana la decizie.
+
+ROTUNJIRE (rezolvata la sursa, pt cand se reia): cm_cas per-certificat = ROUND_HALF_EVEN - taxe_cm (salarizare.py:576)
+face (b*cota).quantize(Decimal("1")) FARA rounding=, deci context default BANCAR; wrapper-ul _d112int(_xt["cas"])
+(d112.py:192) e no-op (valoare deja intreaga). Partea salariala = ROUND_HALF_UP (_d112int). Doua moduri diferite in
+ACEEASI suma. Masurat: cm_cas half-even=2323 vs half-up=2324 (certificate 4650/4645). O implementare cu un singur mod
+ar diverge fals de 1-2 lei pe _xb=2(mod4). = capcana pe care Costin a cerut-o rezolvata inainte de cod: rezolvata.
+
+DECIZIE CERUTA (Costin), NUMEROTAT:
+  1. Baza salariala CAS/CASS in CM la ANAF = PRORATAT pe zile lucrate (ca fluturasul) sau BRUT INTREG (ca emisul azi)?
+     Blocheaza Finding 2 (posibil over-declarare) SI orice reconciliere CM corecta.
+  2. Se re-arhitecteaza poarta cale2 sa primeasca valorile EMISE (post-_d112_genereaza), nu pre-emisie, ca sa poata
+     reconcilia CM si sa acopere blind-spot-ul general al layerului de emisie? Blocheaza Finding 1.
+  Pana la 1+2, 1c-CM ramane BLOCAT; urmatorul sub-caz actionabil FARA decizie = Punctul 2 (D101 ajustari computed).

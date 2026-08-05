@@ -35,7 +35,13 @@ limita de acoperire DECLARATA. Orice valoare fiscala se verifica la sursa (commo
 - **1c PART-TIME - LIVRAT (133811e).** suprataxare CF art.146 alin.(5^6): D112 emite CAS/CASS pe baza ridicata
   la max(brut, sm-facilitate). Sub prag -> cas_min_pt/cass_min_pt (dif pe angajator B4_8D/B4_6D); peste prag -> pe brut.
   calea 2 recalculeaza prag=sm-facilitate INDEPENDENT (registru), full month fara CM -> fara proratare/pontaj. Confrunta EMISUL.
-- **1c CM - NEINCEPUT, URMATORUL. Sub-caz MARE - RETETA COMPLETA (scopat la sursa 05.08, gata de cod).**
+- **1c CM - BLOCAT pe DECIZIE DE PRODUS (tura 3, 05.08). PREMISA RETETEI DE MAI JOS E GRESITA - vezi GARZI 05.08 "DESCOPERIRE 1c-CM".**
+    Verificat empiric pe generator: poarta cale2 primeste valorile PRE-emisie din pull (salary-only pe brut_lucrat
+    proratat, g[cas]=1047.62), NU valoarea EMISA la ANAF (B4_8=4323=salary pe brut intreg + cm_cas). g[cas] NU e emisul
+    -> a-l reconcilia = falsa incredere. In plus candidat bug: baza salariala CM difera intre fluturas (proratat) si
+    declaratie (brut intreg). Decizie ceruta: (1) baza proratat vs brut intreg; (2) re-arhitectura poarta pe valori emise.
+    URMATORUL actionabil fara decizie = Punctul 2. Reteta istorica de mai jos: cotele si rotunjirea (half-even per-cert) raman corecte.
+- **[ISTORIC RETETA - premisa g[cas]=emis GRESITA] 1c CM - Sub-caz MARE (scopat 05.08).**
   Motivul opririi acestei sesiuni: buget de context + risc de DIVERGENTA FALSA din rotunjire (vezi mai jos), nu
   dificultate necunoscuta. Toata analiza de mai jos e verificata la sursa; sesiunea noua porneste direct pe cod.
 

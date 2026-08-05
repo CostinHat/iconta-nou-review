@@ -24,7 +24,7 @@ zero. Invers ar însemna să verifici de două ori — sau, mai probabil, a doua
 ## În lucru acum
 - fir: EXTINDEREA ACOPERIRII (campanie noua 05.08) - 4 puncte: 1.D112 cazuri complexe, 2.D101 impozabil, 3.amortizare MF neliniara, 4.tip_document 2-5 D394
 - ultim: Punctul 1 sub-caz 1c-PT LIVRAT - PART-TIME suprataxare: CAS+CASS reconciliate pe baza ridicata. Acoperire ~35-50%->~40-55% est.
-- urmator: Punctul 1 sub-caz 1c-CM (concedii medicale OUG 158/2005). NEINCEPUT - sub-caz separat, mai mare.
+- urmator: Punctul 1 sub-caz 1c-CM BLOCAT: decizie de produs (poarta cale2 OARBA pe CM + candidat bug baza salariala CM). Vezi GARZI 05.08 "DESCOPERIRE 1c-CM". Urmatorul actionabil FARA decizie = Punctul 2 (D101 ajustari computed).
 - pasi:
   P1a. [GATA] facilitate la minim stabila toata luna: baza=sm-fac, CAS+CASS; _stabil_la_minim SQL propriu; rotunjire la intreg ca _d112int. Prorata ramane sarita.
   P1b. [GATA] TICHETE DE MASA (angajat peste minim, luna intreaga, fara CM/part-time/scutire/alte beneficii). CAS reconciliat, CASS numit-afara.
@@ -45,7 +45,7 @@ zero. Invers ar însemna să verifici de două ori — sau, mai probabil, a doua
     b4. return: cheie noua reconciliati_cas_doar; docstring/header: 1b acopera CAS, CASS numit-afara. Non-tautologie AST neatinsa (fara importuri noi).
     b5. test: salariat tichete>minim + pontaj confirmat (perioada.confirma "pontaj"); pull emite cass>brut x cota_cass (cass_tichete>0);
         reconciliaza pass pe CAS; mutatie cas -> PICA; mutatie cass -> NU pica (proba ca limita CASS-afara e reala).
-  STARE = IN LUCRU
+  STARE = BLOCAT: decizie de produs pe 1c-CM (vezi GARZI 05.08 DESCOPERIRE 1c-CM). Punctul 2 (D101) e urmatorul actionabil.
 
 
 Firul curent — de aici derivă URMATORUL PAS al agendei. Se ține la ZI (regula de

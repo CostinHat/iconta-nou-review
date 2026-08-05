@@ -3255,3 +3255,17 @@ confrunta valoarea EMISA - non-tautologic. full month + fara CM garanteaza prag_
 Part-time + tichete = combo ulterior, sarit. Verificat empiric (brut2025 -> cas_min_pt=938; brut8000 -> cas=2000).
 Proba RED->VERDE (git checkout -> part-time inca sarit). Acoperire estimata ~35-50% -> ~40-55% (nemasurat). Ramas la
 Punctul 1: concediile medicale (1c-CM). Suita 1422 passed (+2), verificator 0.
+
+
+## 05.08.2026 (tura 3) - 1c-CM OPRIT inainte de cod: poarta oarba pe CM + candidat bug baza salariala CM
+Sesiune noua din PREDARE_LANT.md. Ritual de pornire integral: HEAD=origin/main=backup/lant-20260805=073679d, tree
+curat, agenda_drift CURAT (niciun drift dus-intors). Pornit pe 1c-CM. Inainte de cod, scopat rotunjirea pe generatorul
+REAL (cerinta Costin) -> descoperit ca premisa retetei nu tine: poarta verifica_reconciliere primeste valorile
+PRE-emisie din pull (salary-only pe brut_lucrat proratat, g[cas]=1047.62), pe cand valoarea EMISA la ANAF
+(B4_8=4323=salary pe brut intreg 2000 + cm_cas 2323) se calculeaza dupa poarta si nu ajunge la cale2 (Finding 1). In
+plus, partea salariala diverge intre fluturas (proratat 1047.62) si declaratie (brut intreg 2000) = candidat bug de
+generator, posibil over-declarare CAS la ANAF pe angajatii cu CM (Finding 2). Ambele masurate empiric (sonde efemere
+rollback, /tmp, tree neatins). Rotunjirea cm per-cert = half-even (taxe_cm quantize fara rounding=), salariul = half-up;
+rezolvata. Niciun cod fiscal atins. Consemnat in GARZI (sectiune 05.08 DESCOPERIRE 1c-CM) + INVENTAR B. 1c-CM BLOCAT pe
+decizie de produs (baza salariala CM + re-arhitectura poarta). OPRIRE §2.3 pct.2 (decizie de produs / candidat
+neconformitate in iesirea ANAF). Registre la zi. Nemasurat: acoperirea nu a crescut (niciun sub-caz livrat).
