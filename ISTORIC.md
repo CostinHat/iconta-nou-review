@@ -3207,3 +3207,17 @@ bug-ului ISTORIC 16.07 (GeneralLedgerEntries ramanea gol tacit) - probat cu res.
 Non-tautologie pe AST (nu foloseste d406.pull/construieste). LIMITA: acopera GeneralLedgerEntries, NU
 SalesInvoices/PurchaseInvoices/Payments/Assets. Mutatie: suma alterata / GL gol / dezechilibru -> pica.
 Gard: test_d406_reconciliere.py (5). Suita 1409 passed (+5), verificator 0, commit local 661d6ae. Ramas: D101/D205.
+
+
+## 05.08.2026 — GARDUL DE CONTINUT pasii 5+6/6: D101 (profit contabil) + D205 (dividende) — CAMPANIE COMPLETA, commit 93e4a2c
+
+D101: core/d101_reconciliere.py recalculeaza INDEPENDENT P1/P2/P4/P5 (venituri/cheltuieli clasele 7/6) din
+inregistrari_linii, confruntat cu res.P. Acopera PROFITUL CONTABIL, NU impozabilul (ajustarile P6/P7/P8 = intrari
+manuale §8, P9 = golden). D205: recalcul INDEPENDENT baza+impozit per beneficiar din Σ457 x cota asociat x cota lege;
+NU cross-check cu D100 (same-source trap, ca paritatea D300/D394 - probat pe AST). Ambele hard-block + mutatie.
+
+CAMPANIA GARDUL DE CONTINUT — COMPLETA (6/6): D300, D394, D112(caz simplu), D406(GeneralLedgerEntries),
+D101(profit contabil), D205(dividende). Tiparul uniform pe toate: recalcul independent (SQL+formula proprii),
+non-tautologie probata pe AST (la D112 si pe lantul tranzitiv), mutatie obligatorie, hard-block la divergenta care
+numeste ambele valori, limita de acoperire DECLARATA per declaratie. Directia (a) - golden full-decl din exemplu ANAF
+- ramane BLOCATA la sursa (nu exista exemple completate). Suita 1417 passed (+8 fata de 1409), verificator 0, commit 93e4a2c.

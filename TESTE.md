@@ -30,7 +30,7 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
 
 - fir: GARDUL DE CONTINUT — a doua cale D300 (campanie noua 05.08.2026; golden full-decl BLOCAT la sursa, vezi mai jos)
 - ultim: ritual pornire + agenda_drift curat; inventar anaf_surse CONFIRMA: niciun exemplu ANAF completat cu cifre (ebb834a).
-- urmator: [GATA 05.08] D300+D394+D112+D406 a-doua-cale LIVRATE (D406=661d6ae: balanta rulaje per cont din inregistrari_linii + Sdebit=Scredit, acopera GeneralLedgerEntries). Urmatorul din campanie: D101/D205 (ultimele). NEINCEPUT.
+- urmator: [GATA 05.08] CAMPANIA GARDUL DE CONTINUT COMPLETA 6/6 (D300 3096812, D394 6f19ebe, D112 06dc9df+69f83f3, D406 661d6ae, D101+D205 93e4a2c). Fiecare: recalcul independent + non-tautologie AST + mutatie + hard-block + limita declarata. Directia (a) golden full-decl ramane blocata la sursa. Firul e INCHIS.
 - CONTEXT CAMPANIE: DUK valideaza STRUCTURA, nu semantica. Directia (a) "golden din exemplu oficial ANAF" e BLOCATA LA SURSA — anaf_surse/ NU contine nicio declaratie completata cu cifre (verificat 05.08, grep/find pe tot repo-ul); ANAF publica structura+instructiuni, nu declaratii-model. Gardul de continut real = directia (b): A DOUA CALE de reconciliere pe totaluri. Ordine confirmata Costin: D300 -> D394(vs D300) -> D112 -> D406 -> D101/D205.
 - pasi:
   C1. [core/d300_reconciliere.py NOU] Calea 2: pull SQL PROPRIU al liniilor brute (independent de d300.pull), agregare proprie pe cote (independenta de calcul_d300/_segmente), Sigma(baza)xcota, rotunjire aritmetica ROUND_HALF_UP. Confrunta cu randurile AUTOMATE ale generatorului (R9/R10/R11 colectat, R22/R23 deductibil). Divergenta = EROARE VIZIBILA care numeste ambele valori; NU repara tacit. Sare randurile atinse manual + tva_la_incasare (NEACOPERIT, nu alarma falsa). Wire in d300.genereaza (poarta inainte de return). NON-TAUTOLOGIE probata static (test) + MUTATIE (factura pierduta / cota in bucket gresit / semn inversat -> reconcilierea pica). Proba functionala pe schema efemera, ROLLBACK. Limita in GARZI cat.4 la DESCHIDERE.
@@ -41,6 +41,9 @@ redirecționare: ce se lucrează intră aici ÎNAINTE de a începe).
   STARE = GATA (C3 comis 06dc9df; suita 1402 passed +5, verificator 0; cazul simplu, restul declarat afara)
   C4. [core/d406_reconciliere.py NOU] D406/SAF-T: balanta de rulaje per cont INDEPENDENTA din inregistrari_linii, legata de SAF-T emis (res.note) + invariant Sdebit=Scredit. Poarta HARD-BLOCK. Prinde GL gol (bug istoric)/drop/mapare gresita. Acopera GeneralLedgerEntries, NU facturi/plati/active. Non-tautologie AST + mutatie. Comis 661d6ae.
   STARE = GATA (C4 comis 661d6ae; suita 1409 passed +5, verificator 0)
+  C5. [core/d101_reconciliere.py NOU] D101 PROFIT CONTABIL: recalcul independent P1/P2/P4/P5 (venituri/cheltuieli clasele 7/6) din inregistrari_linii vs res.P. NU impozabilul (ajustari manuale §8 + golden). Poarta HARD-BLOCK. Non-tautologie AST + mutatie. Comis 93e4a2c.
+  C6. [core/d205_reconciliere.py NOU] D205 DIVIDENDE: recalcul independent baza+impozit per beneficiar (Σ457 x cota asociat x cota lege) vs res.beneficiari. NU cross-check D100 (same-source trap, probat AST). Poarta HARD-BLOCK. Mutatie. Comis 93e4a2c.
+  STARE = GATA (C5+C6 comise 93e4a2c; CAMPANIE COMPLETA 6/6; suita 1417 passed, verificator 0)
 
 - fir: motor cluster "rezerva legala" — formula contabila CONFORMA (gard) + deductibilitate fiscala art.26(1)a = decizie produs (lant)
 - ultim: credit sponsorizare|sponsorizari profit conform + datorie micro (5d1f5e8).
