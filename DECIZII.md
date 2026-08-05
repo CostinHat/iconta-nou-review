@@ -7498,3 +7498,26 @@ nu pe munca sau pe extern. Costin a decis toate trei:
    luata). Se redeschide DOAR cu o decizie noua de a construi cost pe articol in GV.
 
 Efect pe inventar: grupa D (3 elemente) -> 0. state_plata + felia TVA-21% -> A. F144 -> C.
+
+
+## 05.08.2026 — Coduri CM 14 si 18 IMPOZABILE (nu intra in scutirea CF art.62 lit.c)
+
+CF art.62 lit.c scuteste de impozit indemnizatiile pentru: risc maternal, maternitate, cresterea/ingrijirea
+copilului, ingrijirea pacientului cu afectiuni oncologice. Setul de coduri neimpozabile = {08,09,15,17,91,92}
+(salarizare._CM_COD_NEIMPOZABIL, mapat la structura D112 C2-rows - vezi GARZI 05.08 tura 8). Doua coduri INVECINATE
+raman IMPOZABILE, cu distinctia:
+
+- **Cod 14 = neoplazii / SIDA ale ASIGURATULUI insusi** (boala proprie -> incapacitate proprie, ca boala obisnuita).
+  Verificat la sursa: OUG 158/2005 art.9 (indemnizatie 100% pt "neoplaziilor, SIDA" ale asiguratului); salarizare.py:404
+  ("neoplazii-SIDA"), :464 ("PNS 12/13/14"). NU e "ingrijirea pacientului cu afectiuni oncologice" din art.62 lit.c -
+  aceea e INGRIJITORUL (cod 17, in set). Distinctia pacient(14)/ingrijitor(17) e reala si transanta -> 14 IMPOZABIL.
+
+- **Cod 18 = carantina / izolare a copilului** (nu "copil BOLNAV"). art.62 lit.c scuteste "ingrijirea copilului BOLNAV"
+  (cod 09/91/92), nu izolarea/carantina unui copil sanatos-dar-expus. LIMITA: nomenclatorul numeric al codului 18 NU e
+  in anaf_surse (D_9 vine din Legea 125/2006, necapturata verbatim local); clasificarea "carantina/izolare copil" e
+  data de Costin + logica art.62 (nu e "copil bolnav"). Daca apare temeiul care il scuteste (alt alineat art.62 sau
+  redefinire nomenclator), se REDESCHIDE decizia. Pana atunci: 18 IMPOZABIL.
+
+Alt temei de scutire cautat: art.62 (celelalte litere) NU acopera nici boala proprie oncologica, nici carantina
+copilului -> niciunul nu se scuteste. GARD: test_cm_coduri_14_18_raman_impozabile_decizie_05_08 (pineaza setul; muta 14/18
+sau schimba setul fara re-decizie -> pica). Redeschiderea cere modificarea ACESTEI intrari + a gardului.

@@ -293,6 +293,60 @@ def test_cm_arbori_paraleli_acelasi_rezultat(schema):
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_impozit_multi_certificat_partitie_per_cert(schema):
+    """[impozit CM multi-cert] Luna cu MAI MULTE certificate mixte: cod 01 (impozabil) + cod 09 (neimpozabil) +
+    zile lucrate. Scazamintele cm_cas_imp/cm_cass_imp se acumuleaza PER-CERTIFICAT in bucla (d112.py: for _x in cms:
+    if _cod not in _sz._CM_COD_NEIMPOZABIL: cm_cas_imp += _xcas) -> partitia impozabil/neimpozabil SUPRAVIETUIESTE
+    insumarii (nu se calculeaza pe total). brut 12600, 4 zile cod 01 (brut_ang 2000) + 3 zile cod 09 (brut_fnuass 1500)
+    -> brut_lucrat 8400, ded 0.
+    CORECT: impozit 676 (baza = 8400 salariu + 2000 cod01; se scad salariu+cod01 CAS/CASS; cod 09 EXCLUS complet).
+    RED (mutatie built-in: golirea setului -> cod 09 impozitat): 789. Diferenta 113 = 10%*(1500-375) = fix partea cod09.
+    NOTA: cod 09/91 e DUK-invalid separat (lipseste D_8 CNP copil, gap preexistent - vezi GARZI 05.08); proba DUK pe
+    multi-cert = cod 01+08 (identic 676, DUK valid, /tmp/probe_m08).
+    """
+    import re
+    from core import d112, salarizare as _sz
+    def _seed(cur):
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'M','A','2900101410011','2025-01-01',12600,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',12600)")
+        cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
+                    "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere)"
+                    " OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'01',4,4,0,2000,0,12600,600,'A','1','2026-06-01',"
+                    "'2026-06-01','2026-06-04',1)")
+        cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
+                    "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere)"
+                    " OVERRIDING SYSTEM VALUE VALUES (2,1,2026,6,'09',3,0,3,0,1500,12600,500,'A','2','2026-06-10',"
+                    "'2026-06-10','2026-06-12',1)")
+    with schema.cursor() as cur:
+        _seed(cur)
+    def _imp():
+        xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+        return int(re.search(r'E1_6="(\d+)"', re.search(r"<asiguratE1[^>]*/>", xml).group(0)).group(1))
+    assert _imp() == 676, "impozit multi-cert (cod01 impozabil + cod09 neimpozabil) trebuie 676"
+    # RED built-in: golirea setului neimpozabil -> cod 09 devine impozabil -> 789 (dovada partitie PER-CERT, nu pe total)
+    _orig = _sz._CM_COD_NEIMPOZABIL
+    _sz._CM_COD_NEIMPOZABIL = ()
+    try:
+        assert _imp() == 789, "mutatie (nimic exclus): cod 09 impozitat -> 789 (dovada ca 09 e exclus per-certificat)"
+    finally:
+        _sz._CM_COD_NEIMPOZABIL = _orig
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_cm_coduri_14_18_raman_impozabile_decizie_05_08():
+    """[DECIZIE 05.08.2026, vezi DECIZII.md] Codurile 14 (neoplazii/SIDA ale ASIGURATULUI - boala proprie, NU
+    'ingrijirea pacientului oncologic' din art.62 lit.c care e cod 17=ingrijitorul) si 18 (carantina/izolare copil,
+    NU 'copil bolnav') sunt IMPOZABILE - nu intra in CF art.62 lit.c. Setul neimpozabil e PINUIT: daca cineva muta 14
+    sau 18 (sau schimba setul) fara sa modifice DECIZII.md, testul pica -> forteaza re-decizia."""
+    from core.salarizare import _CM_COD_NEIMPOZABIL
+    assert "14" not in _CM_COD_NEIMPOZABIL, "cod 14 (neoplazii/SIDA proprii) mutat in neimpozabil - re-decizie in DECIZII.md"
+    assert "18" not in _CM_COD_NEIMPOZABIL, "cod 18 (carantina/izolare copil) mutat in neimpozabil - re-decizie in DECIZII.md"
+    assert set(_CM_COD_NEIMPOZABIL) == {"08", "09", "15", "17", "91", "92"}, (
+        "setul _CM_COD_NEIMPOZABIL s-a schimbat fata de decizia 05.08 (art.62 lit.c) - actualizeaza DECIZII.md + acest gard")
+
+
 def test_d112_impozit_exclude_indemnizatia_cm_neimpozabila_luna_mixta(schema):
     """[impozit CM, CF art.62 lit.c] Indemnizatiile de maternitate(08)/ingrijire copil(09/91/92)/risc maternal(15)/
     oncologic(17) sunt NEIMPOZABILE. Baza impozitului le exclude, SI exclude CAS/CASS aferent lor (SIMETRIE - altfel

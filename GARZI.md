@@ -1343,3 +1343,23 @@ lantul FLUTURAS + concedii_medicale.impozit salvat (salariati_api:369); d112.bim
 EFECT PE PRODUS: pentru angajatii cu concediu de maternitate/ingrijire copil/risc maternal/oncologic, impozitul
 retinut SCADE (indemnizatia nu se mai impoziteaza) - atat pe fluturas cat si in D112. CAS/CASS raman neschimbate.
 Depunerile/statele anterioare care impozitau aceste indemnizatii erau gresite (retineau impozit in plus de la salariat).
+
+
+## 05.08.2026 (tura 9) - agregare multi-cert (per-cert) + coduri 14/18 impozabile (decizie) + gap D_8 cod 09/91
+
+TASK 1 (simetrie multi-cert): scazamintele impozitului (cm_cas_imp/cm_cass_imp) se acumuleaza PER-CERTIFICAT in bucla
+(d112.py:212), NU pe total -> partitia impozabil/neimpozabil supravietuieste insumarii. Probat: luna cu cod 01
+(impozabil) + cod 09 (neimpozabil) -> impozit 676; mutatie (golirea setului) -> 789 (dif 113 = partea cod 09). DUK-proba
+pe cod 01+08 (identic 676, valid). Gard: test_d112_impozit_multi_certificat_partitie_per_cert (mutatie built-in).
+
+TASK 2 (coduri 14/18): IMPOZABILE, consemnat DECIZII.md 05.08. 14 = neoplazii/SIDA proprii (OUG 158 art.9), NU
+ingrijitorul oncologic (cod 17); 18 = carantina/izolare copil, NU copil bolnav (cod 09). Gard pin:
+test_cm_coduri_14_18_raman_impozabile_decizie_05_08 (muta 14/18 sau schimba setul -> pica).
+
+TASK 3 (sursa unica): _CM_COD_NEIMPOZABIL definit O SINGURA data (salarizare.py:566); citit de taxe_cm (l.585, acelasi
+modul) SI de d112.bimp (l.212 via _sz._CM_COD_NEIMPOZABIL). Fara constanta duplicata. Verificat.
+
+GAP NOU (datorie, separat de impozit): cod 09/91 (ingrijire copil) = DUK-INVALID - regula DUK S97 cere D_8 (CNP copilul
+pt care s-a eliberat certificatul), dar emisia NU emite D_8 si concedii_medicale n-are coloana CNP copil. Efect: o
+declaratie D112 cu concediu de ingrijire copil (09/91) e respinsa de DUK. Declansator: adaugare coloana cnp_copil +
+emisie D_8. NEatins acum (in afara scopului impozit). [Nu confunda cu 09 in setul neimpozabil - aia e corecta.]
