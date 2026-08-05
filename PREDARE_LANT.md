@@ -10,6 +10,9 @@ clasele oarbe" (metoda concreta + cost + tautologie + ordine efect x cost per cl
 
 LIVRAT in campania C:
 - C5 (mascare/zero) PARTIAL: gard AST anti-except-masca (core/test_gard_masca_zero.py) - vezi GARZI tura 12.
+- C2 (intre documente) perechea FLUTURAS<->D112 LIVRAT: tautologia identificata (ambele=calcul_salariu),
+  a doua cale = artefact D112-XML vs ledger (control_incrucisat.compara_d112 extins+gardat+mutatie) - GARZI tura 13.
+  RAMAN perechile: Sum(D112)<->D205, balanta<->D101 (partial). + migrare cnp_ingrijit inchisa (gard).
 
 RAMAN (in ordinea argumentata efect x cost din TESTE.md), fiecare cu: modul + gard AST non-tautologie + MUTATIE:
 - C5 rest: mutant-zero sistematic (generator fortat -> [] => suita/verificator rosu). Diagnostic; verifica ce NU

@@ -589,3 +589,55 @@ def test_verifica_tva_neplatitor_e_absent_nu_verde():
         assert "neplătitoare de TVA" in v["limita"]
     finally:
         conn.rollback(); _db.pool().putconn(conn)
+
+
+# ============================================================
+#  C2 (intre documente): fluturas <-> D112, prin ARTEFACTUL contabil.
+#  Fluturasul (stat_plata_api) si D112 IMPART salarizare.calcul_salariu -> un compare DIRECT pe formula e TAUTOLOGIE
+#  (ambele documente citesc aceeasi functie). A DOUA CALE REALA e artefactul contabil: ce s-a BOOKAT in ledger
+#  (rulaje credit 4315/4316/436/444) vs ce DECLARA D112 in XML-ul emis (angajatorA A_datorat). control_incrucisat.
+#  compara_d112 confrunta cele doua ARTEFACTE. Era NETESTAT -> divergenta CM de azi (D112 pe brut intreg vs ledger pe
+#  brut_lucrat) trecea semaforul. Gardat aici cu mutatie.
+# ============================================================
+from core.control_incrucisat import compara_d112
+
+
+def test_compara_d112_verde_cand_declaratia_coincide_cu_ledgerul():
+    tot = {"602": 800, "412": 1500, "432": 600, "480": 135}   # D112 declarat (din XML)
+    rul = {"444": {"credit": 800}, "4315": {"credit": 1500}, "4316": {"credit": 600}, "436": {"credit": 135}}
+    rez = compara_d112(tot, rul, nr_salariati=1)
+    assert all(c["stare"] == "verde" for c in rez), rez
+
+
+def test_compara_d112_prinde_divergenta_declaratie_vs_ledger_MUTATIE():
+    """MUTATIE: D112 declara CAS 2000 (supra-declarat pe brut intreg - exact tiparul bug-ului CM de azi) dar ledger-ul
+    are 1500 (bookat pe brut_lucrat) -> compara_d112 da ROSU pe CAS, restul raman verzi. Dovada ca a doua cale
+    (artefact D112 vs artefact contabil) prinde divergenta pe care fluturas-vs-D112 direct (tautologic) n-ar prinde-o."""
+    tot = {"602": 800, "412": 1500, "432": 600, "480": 135}
+    rul = {"444": {"credit": 800}, "4315": {"credit": 1500}, "4316": {"credit": 600}, "436": {"credit": 135}}
+    tot_bug = dict(tot); tot_bug["412"] = 2000
+    rez = compara_d112(tot_bug, rul, nr_salariati=1)
+    cas = [c for c in rez if c["eticheta"] == "CAS"][0]
+    assert cas["stare"] == "rosu", cas
+    assert cas["diferenta"] == 500, cas["diferenta"]
+    assert all(c["stare"] == "verde" for c in rez if c["eticheta"] != "CAS"), rez
+
+
+def test_c2_d112_confrunta_artefacte_nu_recalculeaza_NON_TAUTOLOGIE():
+    """[non-tautologie C2] Perechea nu e proba daca ambele parti recalculeaza cu aceeasi functie. compara_d112 +
+    totaluri_d112_din_xml confrunta ARTEFACTUL D112 (parse din XML-ul EMIS) cu rulajele din ledger - NU apeleaza
+    calcul_salariu/taxe_cm/calcul_cm/pull. Verificat pe AST. Asa, chiar daca upstream fluturas+D112 impart
+    calcul_salariu, confruntarea se face pe doua ARTEFACTE independente (declaratia emisa vs registrul contabil)."""
+    import ast, inspect
+    from core import control_incrucisat as _ci
+    interzis = {"calcul_salariu", "taxe_cm", "calcul_cm", "pull"}
+    for fn in (_ci.compara_d112, _ci.totaluri_d112_din_xml):
+        src = inspect.getsource(fn)
+        t = ast.parse(src)
+        nume = {n.id for n in ast.walk(t) if isinstance(n, ast.Name)}
+        attrs = {n.attr for n in ast.walk(t) if isinstance(n, ast.Attribute)}
+        gasit = (nume | attrs) & interzis
+        assert not gasit, ("%s recalculeaza contributii %s - ar fi tautologie, nu confruntare de artefacte"
+                           % (fn.__name__, gasit))
+    # cele doua surse SUNT diferite: D112 din regex pe XML (artefact emis), ledger din dict (rulaje din registru)
+    assert "finditer" in inspect.getsource(_ci.totaluri_d112_din_xml), "totalurile D112 trebuie parsate din XML-ul EMIS"

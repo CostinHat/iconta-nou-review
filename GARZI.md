@@ -1440,3 +1440,30 @@ modulele listate; o masca prin `x=0` in corp NU e prinsa (alt tipar); un modul d
 
 RAMAN din C5: mutant-zero sistematic (fortarea fiecarui generator sa intoarca [] -> suita/verificator rosu) - jumatatea
 diagnostica, neinceputa (buget context).
+
+
+## 05.08.2026 (tura 13) - Restanta migrare cnp_ingrijit + Campania C clasa C2 (fluturas<->D112) LIVRAT
+
+RESTANTA (comanda anterioara, neraportata complet): migrarea cnp_ingrijit pe TOATE schemele. Verificat tiparul REAL:
+singurul tenant real e tenant_001 (^tenant_[0-9]+$ match doar el; restul schemelor non-sistem = ztest_* reziduuri de
+test, NU tenanti). Migrare idempotenta re-rulata: 1/1 scheme OK, coloana confirmata pe tenant_001. GARD:
+core/test_migrare_cnp_ingrijit.py::test_toti_tenantii_au_cnp_ingrijit (pica daca o schema de tenant n-are coloana).
+
+C2 (intre documente) - perechea FLUTURAS <-> D112:
+TAUTOLOGIE identificata explicit (cerinta Costin): fluturasul (stat_plata_api:74,166) SI D112 (pull) citesc ACEEASI
+functie salarizare.calcul_salariu -> un compare DIRECT fluturas-vs-D112 pe formula NU e proba, e tautologie. A DOUA
+CALE REALA = ARTEFACTUL contabil: ce s-a BOOKAT in ledger (rulaje credit 4315/4316/436/444, din inregistrari_linii)
+vs ce DECLARA D112 in XML-ul EMIS (angajatorA A_datorat, parse). Cele doua ARTEFACTE pot diverge (bug de orchestrare/
+booking/editare manuala) chiar daca upstream impart calcul_salariu - exact bug-ul CM de azi (D112 pe brut intreg 2000
+vs ledger pe brut_lucrat 1048).
+
+control_incrucisat.compara_d112 face deja aceasta confruntare (F162) - EXTINS + GARDAT, nu re-inventat. Era NETESTAT
+(test_control_incrucisat testa doar compara_tva/D300) -> de-asta divergenta CM n-a fost prinsa de semafor. Garduri noi:
+- test_compara_d112_verde_cand_declaratia_coincide_cu_ledgerul;
+- test_compara_d112_prinde_divergenta_declaratie_vs_ledger_MUTATIE (D112 CAS 2000 vs ledger 1500 -> ROSU, dif 500);
+- test_c2_d112_confrunta_artefacte_nu_recalculeaza_NON_TAUTOLOGIE (AST: compara_d112 + totaluri_d112_din_xml NU apeleaza
+  calcul_salariu/taxe_cm/pull -> confruntare de artefacte, nu recalcul; totaluri din regex pe XML-ul emis).
+
+RAMAN (perechile C2, ordinea efect x cost - PREDARE): Sum(D112 lunar impozit)<->D205 (anual/persoana); balanta<->D101
+(deja partial via d101_reconciliere din clase 6/7); D100<->D112 = pass-through (tautologie pura, NU merita). Apoi C3
+(timp), C1 (intrare), C4 (interpretare). Neincepute - buget context.

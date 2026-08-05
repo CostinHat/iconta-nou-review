@@ -3349,3 +3349,11 @@ C5 (mascare/zero): gard AST core/test_gard_masca_zero.py - interzice except:pass
 mutatie dovedeste ca musca; 0 violari productie; None/False excluse (parsere/validatori legitimi). Restul campaniei C
 (C5-mutant-zero, C2 intre documente, C3 in timp, C1 intrare, C4 interpretare) predat in PREDARE_LANT.md tura 12 cu
 ordinea efect x cost. Oprire §2.3 pct.6 (buget context) la granita curata. Consemnat GARZI/PREDARE tura 12.
+
+
+## 05.08.2026 (tura 13) - restanta migrare cnp_ingrijit (gard) + C2 fluturas<->D112 (via artefact contabil)
+Restanta: migrarea cnp_ingrijit verificata pe tiparul real (tenant_001 singurul tenant; ztest_* = reziduuri test);
+1/1 scheme OK; gard test_toti_tenantii_au_cnp_ingrijit. C2: perechea fluturas<->D112 e tautologica direct (ambele =
+calcul_salariu) - a doua cale reala = artefact D112 emis (XML) vs ledger (rulaje), via control_incrucisat.compara_d112
+(era netestat -> divergenta CM de azi trecea). Extins+gardat: verde/mutatie(rosu pe CAS supra-declarat)/AST non-taut.
+Raman perechile D205/D101 + clasele C3/C1/C4 - buget context. Consemnat GARZI tura 13.
