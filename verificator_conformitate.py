@@ -559,7 +559,7 @@ GRI_BASELINE = 0   # PRAG (nu ratchet) de la 01.08.2026: cele 2 GRI (main.py buc
 _re_tva_dec = re.compile(r"(?<![\w.])0\.(?:21|19|11)(?![\w])")
 _re_tva_int = re.compile(r"(?<![\w.])(?:21|19|11)(?![\w.%])")
 _TVA_EXCLUSE = {"common.py", "verificator_conformitate.py", "cote_tva.py",
-                "d406.py", "d300.py", "d301.py", "d390.py", "d394.py", "amef_import.py",
+                "d406.py", "d300.py", "d300_reconciliere.py", "d301.py", "d390.py", "d394.py", "amef_import.py",
                 "export_winmentor.py"}
 # valoare -> (semantica, temei): sursa unica a citarii. Valoare care NU e aici -> temei=??? -> ROSU.
 _TVA_TEMEI = {

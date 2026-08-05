@@ -252,7 +252,33 @@ că intrarea a fost înghițită**.
   validatorul SAF-T. Fără el, validarea D406 a fost gri permanent luni de zile.
 - ACOPERIT: reconcilierea linii-antet la D406 (divergență între două surse ale aceleiași
   facturi = eroare).
-- LIPSĂ: totalurile din XML reconciliate pe **a doua cale de calcul**, independentă.
+- **ÎN LIVRARE — CAMPANIA GARDUL DE CONTINUT (05.08.2026): a doua cale de reconciliere pe totaluri.**
+  Deschisa dupa ce inventarul anaf_surse a confirmat ca directia (a) — golden din exemplu oficial ANAF —
+  e BLOCATA LA SURSA: nu exista nicio declaratie ANAF completata cu cifre (structura+instructiuni, nu
+  declaratii-model). Deci gardul de continut = recalcul INDEPENDENT al totalurilor, confruntat cu
+  generatorul; divergenta = eroare vizibila care numeste ambele valori (NU repara tacit). Ordine
+  confirmata: D300 -> D394(vs D300) -> D112 -> D406 -> D101/D205.
+  - **D300: ACOPERIT (05.08.2026).** `core/d300_reconciliere.py` — pull SQL propriu al liniilor brute
+    (independent de `d300.pull`) + agregare proprie pe cote (independenta de `calcul_d300`/`_segmente`),
+    Sigma(baza)xcota, rotunjire aritmetica; confrunta R9/R10/R11 (colectat 21/11/9) si R22/R23
+    (deductibil 21/11) cu `res.R`. Poarta in `d300.genereaza` inainte de return. Gard:
+    `test_d300_reconciliere.py` — NON-TAUTOLOGIE probata static (calea 2 nu importa/cheama agregarea
+    generatorului) + MUTATIE (factura pierduta / cota in bucket gresit / semn inversat -> reconcilierea pica).
+  - **LIMITA DECLARATA a gardului D300** (scrisa la DESCHIDERE, ca sa nu para ca acopera mai mult):
+    1. Doar randurile AUTOMATE din facturi (colectat 21/11/9, deductibil 21/11). Randurile MANUALE
+       (intracom, taxare inversa, ajustari) + orice rand atins prin `manual=` -> NEACOPERIT (sarit,
+       nu alarma falsa).
+    2. NU acopera pro_rata si lantul R33->R42 (aritmetica determinista pe care DUK o verifica
+       formula cu formula) — doar bazele+TVA pe cote, acolo intra riscul de agregare.
+    3. `tva_la_incasare`: exigibilitate pe decontari, nu pe emitere -> NEACOPERIT explicit (nu produce
+       divergenta falsa; se raporteaza ca nereconciliat).
+    4. Eroare de INTRARE partajata (ambele cai citesc aceeasi linie gresita a contabilului) NU se
+       prinde — raspunderea contabilului (CLAUDE.md §8).
+    5. Cota unei facturi FARA linii e dedusa (total/tva) identic de ambele cai -> o clasificare
+       gresita acolo nu se prinde.
+    6. Deriva legislativa (cota corecta azi, lege schimbata maine) — alt gard (deschis, nerezolvabil
+       mecanic), nu acesta.
+  - **RAMAS LIPSA**: aceeasi a doua cale pe D394(vs D300)/D112/D406/D101/D205 (ordinea de mai sus).
 - LIPSĂ: snapshot de regresie pe fixturi înghețate.
 - **DUK validează STRUCTURA, nu conținutul.** Nu e gard de conținut și nu se tratează ca atare.
 

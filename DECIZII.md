@@ -7141,3 +7141,38 @@ pastreaza perioade_TVA[] intreg (tva_perioade), exact ce cere backfill-ul; nu se
 DEBLOCHEAZA corectitudinea N (N depinde de tip_partener): un PJ neplatitor cu CUI valid -> flag False -> tip 2 -> N
 (inainte: tip 1). Probat in ambele sensuri + istoric (acelasi CUI, doua facturi, doua clasificari). F004 refolosit
 (nu cale noua). Consemnat GARZI 05.08.
+
+## 05.08.2026 — GARDUL DE CONTINUT: directia (a) golden BLOCATA la sursa; A DOUA CALE e mecanismul real. D300 primul.
+
+DECIZIA: campania de gard de continut (DUK valideaza STRUCTURA, nu semantica — un total GRESIT dar structural
+valid trece azi) se face pe DIRECTIA (b) A DOUA CALE de reconciliere pe totaluri, NU pe (a) golden derivat din
+exemplu oficial ANAF.
+
+TEMEI/PROBA: inventar exhaustiv `anaf_surse/` + tot repo-ul (grep/find, exclus venv, 05.08) -> NICIUN fisier e o
+declaratie ANAF completata cu cifre. Tot ce exista: structura XML / nomenclator / istoric versiuni / act normativ /
+tabele de plafoane. ANAF publica structura+instructiuni, nu declaratii-model completate. Deci golden pe TOTAL de
+declaratie din exemplu oficial = NESURSABIL. Golden pe VALORI unitare (deducere art.77, cote, plafoane) ramane
+posibil unde legea da exemplu de calcul — dar aia e aproape exact ce fac deja `test_dXXX` (unit pe formula), nu
+acopera totalurile.
+
+PIVOT (supersedeaza EXPLICIT): intentia consemnata in ISTORIC 04.08 — "gard de CONTINUT (golden pe exemplul oficial
+ANAF + a doua cale pe totaluri)" — se reduce la A DOUA CALE. Ramura "golden pe exemplul oficial ANAF" e INCHISA ca
+blocata la sursa (nu exista sursa), scris ca atare in TESTE (fir) + GARZI cat.4.
+
+ALTERNATIVA RESPINSA: golden derivat din PROPRIUL nostru calcul. Respinsa explicit de Costin: un golden scris din
+calculul modulului APARA bug-ul (testul afirma ce face codul, nu ce cere legea) — a patra aparitie a clasei
+"teste care aserteaza valoarea gresita" (test_datorie_teste_care_apara_buguri).
+
+TIPAR PENTRU TOATE CELE 6 DECLARATII (cerut de Costin, stabilit pe D300):
+  1. NON-TAUTOLOGIA se PROBEAZA, nu se declara: calea 2 nu are voie sa atinga functia de agregare a
+     generatorului (probat mecanic pe AST — modulul caii 2 nu importa/foloseste calcul_d300/_segmente/_int/pull).
+  2. MUTATIE obligatorie: factura pierduta din agregare / cota in bucketul gresit / semn inversat -> reconcilierea PICA.
+  3. La DIVERGENTA: gardul NU repara tacit nici una din cai. Eroare vizibila care numeste diferenta si AMBELE valori.
+     Un gard care alege singur cine are dreptate e mai rau decat niciunul.
+
+ORDINE (efect fiscal x cost, confirmata Costin): D300 -> D394(reconciliat vs D300) -> D112 -> D406 -> D101/D205.
+
+D300 LIVRAT (05.08): core/d300_reconciliere.py (pull SQL propriu + agregare proprie pe cote, confruntata cu randurile
+automate R9/R10/R11 colectat + R22/R23 deductibil), poarta in d300.genereaza. LIMITA DECLARATA (6 puncte) in GARZI
+cat.4 la DESCHIDEREA campaniei (nu la final): manual/pro_rata/R33-R42 neacoperite, tva_la_incasare NEACOPERIT,
+input partajat gresit = §8, cota fara-linii dedusa identic, deriva legislativa = alt gard.

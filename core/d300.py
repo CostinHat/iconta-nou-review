@@ -518,4 +518,9 @@ def genereaza(conn, schema, perioada, manual=None):
     if erori:
         raise ValueError("D300 nu se poate genera: " + " ".join(erori))
     res = calcul_d300(prof, perioada, facturi, manual)
+    # POARTA A DOUA CALE (gard de continut, 05.08.2026): reconciliere pe totaluri dintr-un
+    # recalcul INDEPENDENT al liniilor brute. Divergenta = eroare vizibila care numeste ambele
+    # valori; NU repara tacit. Vezi core/d300_reconciliere.py + GARZI cat.4 (limita declarata).
+    from core.d300_reconciliere import verifica_reconciliere
+    verifica_reconciliere(conn, perioada, res, manual)
     return build_xml(res), res
