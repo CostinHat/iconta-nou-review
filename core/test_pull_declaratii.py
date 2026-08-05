@@ -578,3 +578,36 @@ def test_d101_rezerva_legala_din_conturi_reale(schema):
                         "VALUES (%s,%s,%s,%s)", (iid, cd, cc, suma))
     xml, res = d101.genereaza(schema, SCHEMA_T, Perioada(2026))
     assert res.P.get("P13") == 17500, ("P13 asteptat 17500, primit %r" % res.P.get("P13"))
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_brut_si_baza_pe_salariul_lunii_nu_contractual_curent(schema):
+    """[fix salariu-la-data 06.08.2026] CLASA (nu doar cazul E1): brutul si baza DECLARATE in D112 =
+    salariul LUNII (date-aware, din salariu_istoric), NU salariati.salariu_brut (contractual CURENT).
+    Un salariat cu majorare in cursul anului (minim 4050 -> 5000 la 01.07) trebuie sa emita, pentru o luna
+    DE DINAINTE de majorare, brutul MIC, cu baza CONSISTENTA cu contributia (regula DUK S74d:
+    B4_8 = ROUND(B4_7 * 0.25)). Bug-ul (migrare 29.07 pe jumatate): d112.pull lasa s['brut'] pe
+    salariati.salariu_brut (stale) pentru brut/baza, iar contributiile foloseau salariul date-aware ->
+    B4_7 pe 5000 dar B4_8 pe 4050 -> divergenta interna -> respins de DUK. Prinde clasa la nivel de
+    INVARIANT (baza <-> contributie), nu pe cifrele unei instante. MUTATIE: revino la s['brut']=stale in
+    d112.pull -> ambele asserturi pica."""
+    import re
+    from core import d112
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'MAJ','A','1900101410011','2026-01-01',5000,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) "
+                    "VALUES (1,'2026-01-01',4050),(1,'2026-07-01',5000)")
+    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 2)   # FEBRUARIE, inainte de majorarea de la 01.07
+    m = re.search(r'<asiguratB4\b([^>]*)/>', xml)
+    assert m, "randul asiguratB4 nu s-a gasit in XML"
+    at = dict(re.findall(r'(\w+)="([^"]*)"', m.group(1)))
+    b3, b7, b8 = int(at["B4_3"]), int(at["B4_7"]), int(at["B4_8"])
+    # 1) brutul DECLARAT = salariul LUNII (4050), NU contractualul curent (5000)
+    assert b3 == 4050, (
+        "B4_3=%d: brutul declarat trebuie sa fie salariul LUNII (4050), nu contractualul curent (5000) - "
+        "consumator de salariu care citeste valoarea curenta acolo unde regula e 'la data lunii'" % b3)
+    # 2) INVARIANT DE CLASA: baza CAS (B4_7) consistenta cu contributia CAS (B4_8 = ROUND(B4_7*25%%), DUK S74d)
+    assert abs(b8 - round(b7 * 0.25)) <= 1, (
+        "B4_7=%d dar B4_8=%d: baza si contributia CAS pe salarii sunt pe snapshot-uri DIFERITE de salariu "
+        "(brut/baza stale vs contributie date-aware) - regula DUK S74d incalcata" % (b7, b8))

@@ -546,6 +546,11 @@ def pull(conn, schema, an, luna):
                                tichet_cultural=float(s.get("tichet_cultural") or 0),
                                tichet_cresa=float(s.get("tichet_cresa") or 0))
         s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
+        # [fix salariu-la-data 06.08.2026] brutul DECLARAT (B4_3/B1_sal1) si baza non-CM = salariul LUNII
+        # (date-aware _sal_luna=brut_int), NU salariati.salariu_brut (contractual CURENT, stale). Migrarea 29.07
+        # mutase doar CONTRIBUTIILE pe date-aware; brutul/baza ramasesera stale -> B4_7 vs B4_8 divergente
+        # (DUK S74d) pt orice salariat cu schimbare de salariu in an. Consumat de d112.build + salarii_contare.
+        s["brut"] = brut_int
         s["facilitate"] = r.get("facilitate", 0)
         s["cas"] = r.get("cas", 0)
         s["cass"] = r.get("cass", 0)
