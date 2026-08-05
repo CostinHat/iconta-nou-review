@@ -1269,3 +1269,18 @@ LIMITA: poarta reconciliaza inca DOAR cazurile deja acoperite (simplu/facilitate
 (cm_ids) pana la implementarea reconcilierii CM (1c-CM, acum deblocata de aceasta re-arhitectura). Celelalte 5
 declaratii NU au fost modificate (res==emis deja); daca vreuna capata in viitor un layer de emisie care recalculeaza,
 tiparul e acelasi (poarta pe emis).
+
+
+## 05.08.2026 (tura 6b) - CORECTIE analiza C2 + COROBORARE A prin control_incrucisat.py (gasit la sweep Costin)
+
+Sweep-ul de verificare (Costin) a scos `core/control_incrucisat.py` (F162) - un mecanism C2 pe care analiza mea de
+metode il RATASE. Compara declaratia vs EVIDENTA CONTABILA citind totalurile din XML-ul EMIS (nu reagregare):
+D112 (compara_d112): CAS 412+458 vs 4315, CASS 432+459 vs 4316, CAM 480 vs 436, impozit 602 vs 444 (limita: brut 421
+NEVERIFICAT pe CM). D300 (compara_tva): R17_2 vs 4427, R27_2 vs 4426. Deci perechile D112<->contabilitate si
+D300<->contabilitate SUNT partial controlate (semafor runtime, nu test blocant; test_control_incrucisat NU exercita CM).
+
+COROBORARE A (independenta de citirea legii): salarii_contare.py bookeaza contributiile pe brut_lucrat PRORATAT (l.56)
++ recalcul CM. Inainte de fix, D112 pe brut intreg diverga de 4315/4316/436 -> compara_d112 ar fi dat ROSU pe lunile cu
+CM (semnal existent, neexercitat). Dupa fix, D112 se aliniaza cu evidenta contabila. Fix-ul A confirmat de sursa
+independenta. TESTE.md capitol metode corectat (sectiune CORECTIE 05.08 tura 6). Datorie descoperita: test_control_
+incrucisat sa exercite o luna cu CM (ar fi prins A) - candidat gard C2, deblocat.

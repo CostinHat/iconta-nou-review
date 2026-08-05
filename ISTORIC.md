@@ -3299,3 +3299,10 @@ afectat (d100/d101/d205/d300/d394/d406 = sursa unica res==emis, poarta lor vede 
 scrie B4_8/B4_6 emise inapoi in salariati; genereaza cheama emisia INTAI apoi poarta. Mutatiile existente pica la fel
 (32 teste); gard nou dovedeste acoperirea layerului de emisie (write-back == B4_8 + mutatie pe emis prinsa). CM ramane
 sarit pana la 1c-CM (acum deblocat). Consemnat GARZI 05.08 tura 6.
+
+
+## 05.08.2026 (tura 6b) - corectie C2 + coroborare A (control_incrucisat, gasit la sweep-ul Costin)
+Sweep-ul lui Costin a scos control_incrucisat.py = mecanism C2 ratat de analiza mea (D112/D300 vs contabilitate,
+citind XML-ul emis). Corectat capitolul de metode din TESTE.md. Coroborare A: salarii_contare bookeaza pe brut_lucrat
+proratat -> inainte de fix D112 diverga de contabilitate (compara_d112 rosu pe CM, neexercitat in teste), dupa fix se
+aliniaza. Datorie noua: test_control_incrucisat sa exercite CM (ar fi prins A). Consemnat GARZI 05.08 tura 6b.

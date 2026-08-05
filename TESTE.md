@@ -1059,6 +1059,21 @@ Perechile (verificat în cod care există și care NU-s controlate):
 | D300 ↔ jurnale/balanță TVA | TVA colectată/deductibilă | verificatoare.py `decont TVA` = coerență internă parțială | **PARȚIAL** |
 | D300 ↔ D394 | livrări/achiziții pe partener | control încrucișat menționat (GARZI F163) dar nu ca gard | **NECONTROLAT ca gard** |
 
+**CORECȚIE 05.08 tura 6 (onestitate — analiza C2 inițială a ratat `core/control_incrucisat.py`):** acest modul
+ESTE deja o metodă C2, pe principiul „reconciliază emisul" (citește totalurile DECLARATE din XML-ul GENERAT, nu o
+reagregare). Compară declarația vs EVIDENȚA CONTABILĂ (a treia sursă, cale independentă):
+- **D112 ↔ contabilitate** (`compara_d112`): CAS cod 412+458 ↔ rulaj 4315; CASS 432+459 ↔ 4316; CAM 480 ↔ 436;
+  impozit 602 ↔ 444. Limită AUTO-declarată: brut (421) NEVERIFICAT pe luni cu CM. → pereche `D112 ↔ contabilitate`
+  = **CONTROLAT PARȚIAL** (semafor runtime F162, TREI stări verde/roșu/GRI; NU test blocant; `test_control_incrucisat`
+  NU exercită CM → de aici bug-ul A a scăpat suitei).
+- **D300 ↔ contabilitate** (`compara_tva`): D300 R17_2 ↔ 4427, R27_2 ↔ 4426. → rândul D300↔jurnale de mai sus =
+  PARȚIAL prin control_incrucisat (nu doar verificatoare.py).
+COROBORARE A: `salarii_contare.py` bookează contribuțiile pe `brut_lucrat` (proratat, l.56) și recalculează CM
+independent → ÎNAINTE de fix-ul A, D112 (brut întreg) diverga de 4315/4316/436, deci `compara_d112` ar fi dat ROȘU
+pe lunile cu CM; DUPĂ fix, D112 se aliniază cu evidența. Fix-ul A e confirmat de o sursă independentă (contabilitatea
+firmei), nu doar de citirea legii. Corecție pe pereche: `fluturaș ↔ D112` DIRECT rămâne necontrolat, dar contabilitatea
+e un al treilea punct comun — dacă și fluturașul și D112 se leagă de 4315, se leagă și între ele (design mai robust).
+
 Metoda C2: modul care ia ACELAȘI fapt din două generatoare și compară valoarea EMISĂ (nu intermediarul), pe cheia
 comună. Ex.: `Σ(D112.B4_8 lunar pe an) == D205.impozit per persoană`; `D100.CAS_dat == Σ(D112.B4_8)`;
 `stat_plata.cas == D112.B4_8 pe salariat`.
