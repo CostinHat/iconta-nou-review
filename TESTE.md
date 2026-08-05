@@ -1106,3 +1106,12 @@ Notă de legătură: descoperirea (Finding 2 CM) e prima instanță C2; Decizia 
 precondiția tehnică a clasei C2 — LIVRATA pt D112 (05.08 tura 6, GARZI): poarta reconciliaza acum ce PLEACA la ANAF, nu
 pre-emisia. Restul 5 declaratii = res==emis (poarta lor vede deja emisul). Ramane de construit reconcilierea CM (1c-CM)
 si perechile cross-document (C2 propriu-zis).
+
+**CORECȚIE 05.08 tura 7 (proba mecanică — B era supra-afirmat):** afirmația „Decizia 2 LIVRATA pt D112, restul res==emis
+(poarta lor vede deja emisul)" e MECANIC FALSĂ. Mutație pe `totalPlata_A` în artefactul emis (după build_xml) pt d100/
+d101/d205/d300/d394/d406 → genereaza TRECE la toate 6: **toate porțile reconciliază `res` ÎNAINTE de build_xml și NU
+re-validează artefactul**. B a mutat DOAR poarta d112 după calculul de emisie (prinde bug-uri de calcul-emisie, ex.
+divergența CM); celelalte 5 rămân pre-emisie. Promisiunea „un total greșit nu ajunge la ANAF" nu e enforced mecanic
+împotriva bug-urilor de layer-emisie pt niciuna (2b = res≠emis prin construcție). Fix complet C2: reconciliază valoarea
+PARSATĂ din XML (assert res==parse(emis)), nemfăcut.
+

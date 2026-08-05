@@ -110,7 +110,7 @@ def _d112_genereaza(prof, salariati, an, luna):
     from datetime import date as _d112date
     ref = _d112date(an, luna, 1)
     # [baze contributii] cotele salariale PERIOD-AWARE din COTE (nu literale): CAS CF art.138, CASS art.156,
-    # impozit art.78, CAM art.220^3. Valori 25/10/10/2.25% verificate la sursa (anaf_surse/cod_fiscal).
+    # impozit art.78, CAM art.220^3 (cota 2.25%). Valori 25/10/10/2.25% verificate la sursa (anaf_surse/cod_fiscal).
     from core.common import cota as _cota112
     _cota_cas = float(_cota112("cas", ref)[0]); _cota_cass = float(_cota112("cass", ref)[0])
     _cota_imp = float(_cota112("impozit_venit", ref)[0]); _cota_cam = float(_cota112("cam", ref)[0])
@@ -322,6 +322,9 @@ def _d112_genereaza(prof, salariati, an, luna):
     # round() Python (bancar) se aplica ICI, INAINTE ca _d112int() sa poata
     # rotunji aritmetic - 112.5 devenea deja 112 prin round() inainte sa ajunga
     # la _d112int. Eliminat round() exterior, _d112int face rotunjirea corecta.
+    # [CAM baza, citare corectata 05.08.2026] sum_bazac = DOAR salariul REALIZAT (bazac), EXCLUDE indemnizatia
+    # CM (cm_base): CAM nu se datoreaza pe prestatiile suportate din FNUASS - CF art.220^5 (Exceptii specifice
+    # contributiei asiguratorii pentru munca), NU art.220^3 (=cota 2.25%). Valoarea nu se schimba, doar temeiul.
     cam_total = _d112int(sum_bazac * _cota_cam)
     A = []
     def add_oblig(cod, cb, val):

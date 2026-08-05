@@ -1284,3 +1284,32 @@ COROBORARE A (independenta de citirea legii): salarii_contare.py bookeaza contri
 CM (semnal existent, neexercitat). Dupa fix, D112 se aliniaza cu evidenta contabila. Fix-ul A confirmat de sursa
 independenta. TESTE.md capitol metode corectat (sectiune CORECTIE 05.08 tura 6). Datorie descoperita: test_control_
 incrucisat sa exercite o luna cu CM (ar fi prins A) - candidat gard C2, deblocat.
+
+
+## 05.08.2026 (tura 7) - CORECTIE B (proba mecanica Costin) + Task 1 impozit CM (tinut) + Task 2 citare CAM 220^5
+
+PROBA MECANICA (Task 3, nu citire de cod): mutatie pe totalPlata_A in artefactul XML DUPA build_xml, pt toate 6.
+REZULTAT: d100/d101/d205/d300/d394 totalPlata_A dublat in artefact -> genereaza TRECE (poarta NU blocheaza); d406 la fel.
+TOATE 6 = PRE-EMISIE.
+
+CORECTIE la afirmatia mea din tura 6 (B): am scris "DOAR D112 afectat, restul res==emis deci poarta vede emisul".
+MECANIC FALS. Toate 6 porti reconciliaza `res` INAINTE de build_xml si NU re-valideaza artefactul emis. Promisiunea
+"un total gresit nu ajunge la ANAF" NU e enforced mecanic pt niciuna impotriva unui bug de LAYER EMISIE. Nuanta reala:
+poarta asigura ca res e corect (recalcul independent); daca build_xml serializeaza FIDEL (res==emis), totalul e corect
+- dar poarta NU verifica fidelitatea lui build_xml. 2b (rotunjire in emisie) = res != emis prin constructie -> oarba.
+Ce a facut B REAL: a mutat poarta d112 DUPA calculul de emisie (prinde bug-uri de calcul-emisie, ex. divergenta CM);
+celelalte 5 stau INAINTE de build_xml. D112 era cel mai GRAV (emisia recalcula cu alta logica), nu "singurul afectat".
+
+FIX COMPLET (deschis, nu facut): fiecare poarta sa reconcilieze valoarea PARSATA DIN XML (assert res == parse(emis)
+dupa build_xml), sau sa ruleze pe artefact. Program mai mare - clasa C2 propriu-zisa. Numit, neinceput.
+
+TASK 1 (IMPOZIT CM) - NECONFORMITATE ACTIVA, TINUTA (Costin: nu repara fara sa arat): baza impozitului (bimp =
+total_base - cas - cass - ded, total_base=bazac+cm_base) include indemnizatia CM INTEGRAL, pt TOATE codurile, FARA
+discriminare. Codurile 08 maternitate / 09 ingrijire copil / 15 risc maternal / oncologice sunt NEIMPOZABILE (CF
+art.62 lit.c, verificat verbatim la sursa). Caz numeric (cod 08, brut 6000, indemnizatie 5000, luna intreaga): impozit
+EMIS = 294 lei pe o indemnizatie neimpozabila (corect 0). Fix propus (asteapta OK Costin): exclude cm_base al codurilor
+neimpozabile din bimp, ca la CASS. CASS deja discrimineaza (01/07/10); impozitul NU.
+
+TASK 2 (CITARE CAM) - corectat in d112.py: exclusia indemnizatiei CM din baza CAM (sum_bazac fara cm_base) are temei
+CF art.220^5 (Exceptii specifice CAM: nu se datoreaza pe prestatiile suportate din FNUASS), NU art.220^3 (=cota 2.25%).
+Valoarea nu se schimba; citare adaugata la cam_total.

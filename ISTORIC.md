@@ -3306,3 +3306,11 @@ Sweep-ul lui Costin a scos control_incrucisat.py = mecanism C2 ratat de analiza 
 citind XML-ul emis). Corectat capitolul de metode din TESTE.md. Coroborare A: salarii_contare bookeaza pe brut_lucrat
 proratat -> inainte de fix D112 diverga de contabilitate (compara_d112 rosu pe CM, neexercitat in teste), dupa fix se
 aliniaza. Datorie noua: test_control_incrucisat sa exercite CM (ar fi prins A). Consemnat GARZI 05.08 tura 6b.
+
+
+## 05.08.2026 (tura 7) - corectie B (proba mecanica) + task1 impozit CM tinut + task2 citare CAM
+Proba mecanica (mutatie pe totalPlata_A in artefact, dupa build_xml): toate 6 (d100/d101/d205/d300/d394/d406) TREC ->
+toate portile-s PRE-EMISIE. Corectat afirmatia mea din tura 6 ("doar d112 afectat") = mecanic falsa. B a mutat doar
+poarta d112 post-calcul-emisie; restul reconciliaza res inainte de build_xml. Task 1 (impozit pe indemnizatia CM
+neimpozabila 08/09/15/onco, art.62 lit.c) = neconformitate activa, caz numeric cod 08 = 294 lei impozit gresit, TINUT
+pt OK Costin. Task 2: citare CAM corectata la art.220^5 (exclusia CM din CAM) in d112.py. Consemnat GARZI tura 7.
