@@ -1083,7 +1083,10 @@ La revenire se re-ruleaza DOAR `python -m core.agenda` pentru xfail-uri; restul 
 - **Backfill legacy clasifica_partener** — sectiunea 05.08 (l.~1045). Datele exista; DECLANSATOR: primul tenant cu facturi legacy fara tert_platitor_tva, inainte de D394 pe perioade vechi.
 - **F103 alerte legislative: data PROGRAMATA a afisarii + flux monitor->propunere anunt in admin** — CSV F103.
 - **F163 frictiune permisiuni (admin default nu poate depune) pe control incrucisat D390 vs D300** — CSV F163 / DE_FACUT.
+- **state_plata: persistare la emitere cu hash** — test_datorie:145. DECIS 05.08 (Costin, vezi DECIZII): statul se ingheata la emitere (snapshot+hash), reafisarea citeste snapshotul. Efect: un stat dat salariatului nu se mai schimba la reafisare dupa o schimbare de cota.
+- **Sweep TVA 21% hardcodat in ~15 module -> cota din registru** — test_datorie:235 (felia INTAI din teste_care_apara_buguri). DECIS 05.08. Efect: la schimbarea cotei TVA, modulele nu mai declara 21% obsolet. [Restul ~70 teste fara temei = mai jos, cu declansator.]
 - **xfail staleness_sesiune_b_content** — test_datorie:162. Nimic de facut DIRECT: se inchide singur cand apar testele N3 (Faza 1, azi neinceputa 0/11). Gated intern pe Faza 1, nu extern.
+- **teste_care_apara_buguri: restul ~70 teste (dupa felia TVA-21%)** — test_datorie:235. Constante fiscale asertate fara temei, non-TVA-21%. DECLANSATOR: plan sistematic separat (dupa felia TVA-21%), sau urmatoarea schimbare de cota pe un modul afectat.
 
 ### B. BLOCAT EXTERN (nu se deblocheaza prin efort — consemnat cu DECLANSATOR)
 - **Deriva legislativa (cota corecta azi, lege schimbata maine)** — cat.3 LIMITA REALA (l.~129). Declansator: feed legislativ mecanic (inexistent) SAU revizuire manuala periodica. NU se incepe acum.
@@ -1114,8 +1117,9 @@ La revenire se re-ruleaza DOAR `python -m core.agenda` pentru xfail-uri; restul 
 - **F130 Open Banking PSD2** — CSV F130. PLANIFICAT.
 - **F148 arhivare cloud extern (Drive/OneDrive)** — CSV F148. PLANIFICAT.
 - **F195 D094** — RESPINS 20.07 (inglobat in D700). **F185 cont gratuit** — ELIMINAT 26.07.
+- **F144 GV fara profit/produs (cost pe articol inexistent)** — CSV F144. LIMITARE ACCEPTATA, documentata (DECIS 05.08, Costin). Redeschide DOAR cu decizie noua de a construi cost pe articol in GV.
 
 ### D. CERE DECIZIE DE PRODUS (Costin) inainte de a fi actabil (NU blocaj extern, NU inca decis)
-- **state_plata: persistare la emitere (cu hash, ca declaratiile depuse) VS scoaterea tabelei** — test_datorie:145. Efect: un stat emis in ianuarie, reafisat in iulie, poate iesi ALTFEL (cota/sm/cod schimbate). Cere decizia lui Costin inainte de cod.
-- **teste_care_apara_buguri: 85 teste asertaza constante fiscale FARA temei (~15 module cu TVA 21% hardcodat)** — test_datorie:235. NU e reparabil intr-un tur; plan SISTEMATIC separat, decis de Costin.
-- **F144 GV (gestiune valorica) fara profit/produs — cost pe articol inexistent** — CSV F144. Decizie deschisa (17.07 inchisa doar pt CV).
+GOL — cele 3 initiale au fost DECISE 05.08 (vezi DECIZII 05.08 "3 decizii de produs pe inventar"):
+state_plata -> A (persistare cu hash); felia TVA-21% -> A (restul teste_care_apara_buguri ramane in A cu declansator);
+F144 GV -> C (limitare acceptata). Cand apare o noua deschidere blocata pe decizie de produs, se adauga aici.

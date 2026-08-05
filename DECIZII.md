@@ -7472,3 +7472,29 @@ ACOPERIRE: ~35-50% -> ~40-55% estimat (nemasurat). Ramas la Punctul 1: CONCEDIIL
 PROBA: 10->12 teste. part_time sub prag reconciliat + mutatie cas_min_pt=9999 -> "salariat 10 cas: generator=9999 vs
 cale2=938"; part_time peste prag reconciliat pe brut + mutatie cas -> "cale2=2000". RED probat (git checkout: part-time
 inca sarit -> reconciliati=[1,2,3]). Suita 1422 passed (+2), verificator 0.
+
+
+## 05.08.2026 - 3 decizii de produs pe inventarul deschiselor non-campanie (Costin)
+
+Grupa D a inventarului (GARZI sectiunea INVENTAR DESCHISE NON-CAMPANIE) = elemente blocate pe o decizie de produs,
+nu pe munca sau pe extern. Costin a decis toate trei:
+
+1. **state_plata** (test_datorie:145) - DECIS: **PERSISTARE LA EMITERE CU HASH**. Statul de plata se ingheata la
+   emitere (snapshot calculat + hash, ca declaratiile depuse); reafisarea CITESTE snapshotul, nu recalculeaza.
+   Motiv: integritate - un stat dat salariatului in ianuarie trebuie sa arate IDENTIC reafisat in iulie, chiar daca
+   s-a schimbat cota/salariul minim/codul intre timp. Azi tabela exista dar nimic nu scrie in ea -> recalcul la
+   fiecare afisare. Muta din D (cere decizie) in A (actabil azi). Implementare: la emitere salveaza snapshot+hash;
+   afisarea citeste snapshotul; recalcul doar INAINTE de emitere.
+
+2. **teste_care_apara_buguri** (test_datorie:235) - DECIS: **FELIA TVA-21% INTAI**. Sweep DOAR pe cele ~15 module cu
+   cota TVA 21% hardcodata -> cota din registru (common.cota, period-aware; cota() ridica la expirare). Motiv: 21% e
+   cota care CHIAR se va schimba -> expunerea concreta; un test care aserteaza 21% literal apara bugul la schimbarea
+   cotei. Restul (~70 teste care aserteaza constante fiscale fara temei) RAMANE in inventar A cu declansator, plan
+   separat. Felia TVA-21% muta in A (actabil), restul ramane consemnat.
+
+3. **F144 GV profit/produs** (CSV F144) - DECIS: **LIMITARE ACCEPTATA, DOCUMENTATA**. Gestiunea valorica (GV) ramane
+   fara profit pe produs, fiindca costul pe articol nu exista in GV. NU e bug de corectitudine - e scop de
+   functionalitate (feature neconstruit). Se documenteaza explicit ca limitare intentionata. Muta din D in C (decizie
+   luata). Se redeschide DOAR cu o decizie noua de a construi cost pe articol in GV.
+
+Efect pe inventar: grupa D (3 elemente) -> 0. state_plata + felia TVA-21% -> A. F144 -> C.
