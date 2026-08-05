@@ -291,6 +291,36 @@ def test_cm_arbori_paraleli_acelasi_rezultat(schema):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d112_poarta_reconciliaza_valorile_emise_nu_pre_emisia(schema):
+    """[B, 05.08.2026] Poarta cale2 primeste valorile EMISE (post _d112_genereaza), nu pre-emisia din pull.
+    Blind-spot inainte: verifica_reconciliere rula pe salariati DIN pull (contributii intermediare), iar layerul
+    de EMISIE recalcula - un bug de emisie nu ajungea la poarta desi ajungea la ANAF. Acum _d112_genereaza scrie
+    contributiile EMISE (B4_8/B4_6) inapoi in salariat, iar poarta ruleaza DUPA emisie.
+    PROBA: (1) dupa emisie salariatul poarta valorile EMISE (== B4_8/B4_6 din XML); (2) un emis GRESIT (mutatie pe
+    valoarea EMISA, nu pe pull) e prins de poarta - dovada ca poarta acopera acum layerul de emisie."""
+    import re, pytest
+    from core import d112
+    from core.d112_reconciliere import verifica_reconciliere, ReconciliereD112
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'S','A','1900101410011','2025-01-01',6000,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',6000)")
+    prof, sal = d112.pull(schema, SCHEMA_T, 2026, 6)
+    rez = d112._d112_genereaza(prof, sal, 2026, 6)   # scrie contributiile EMISE inapoi in sal
+    xml = rez[0] if isinstance(rez, tuple) else rez
+    b4 = re.search(r"<asiguratB4[^>]*/>", xml).group(0)
+    b4_8 = int(re.search(r'B4_8="(\d+)"', b4).group(1))
+    b4_6 = int(re.search(r'B4_6="(\d+)"', b4).group(1))
+    # (1) write-back: salariatul poarta ACUM valorile EMISE (6000*25%=1500 / 10%=600)
+    assert int(sal[0]["cas"]) == b4_8 == 1500, (sal[0].get("cas"), b4_8)
+    assert int(sal[0]["cass"]) == b4_6 == 600, (sal[0].get("cass"), b4_6)
+    # (2) un emis GRESIT (bug de layer emisie, simulat pe valoarea EMISA) e prins de poarta
+    sal[0]["cas"] = b4_8 + 500
+    with pytest.raises(ReconciliereD112):
+        verifica_reconciliere(schema, SCHEMA_T, 2026, 6, sal)
+
+
 def test_d112_cm_baza_salariala_realizata_nu_brut_intreg(schema):
     """[d112_cm_baza_realizata_v1] NECONFORMITATE FISCALA reparata 05.08.2026: in luna cu concediu medical,
     baza CAS/CASS/CAM (B2_5/B4_7/B4_5/B4_14) = castigul brut REALIZAT pe zile LUCRATE (CF art.139(1) "castigul

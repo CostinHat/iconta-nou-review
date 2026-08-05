@@ -250,6 +250,12 @@ def _d112_genereaza(prof, salariati, an, luna):
         cass += cass_tichete
         imp += impozit_tichete
         baza_cass = cass_base_cm + tichete_nom   # [UNIFICARE CM] baza CASS exclude CM ne-eligibil (08/09 etc.)
+        # [B poarta pe valori EMISE, 05.08.2026] scrie contributiile EMISE (B4_8=cas / B4_6=cass, dupa tichete)
+        # inapoi in salariat, ca verifica_reconciliere (chemat DUPA _d112_genereaza) sa reconcilieze ce PLEACA la
+        # ANAF, nu pre-emisia din pull. Cazul simplu: emis==_d112int(pull s[cas]) -> mutatiile existente pica la fel.
+        # CM: emisul (salariu realizat + cm_cas) devine vizibil portii (inainte vedea salariul-only pre-emisie).
+        s["cas"] = cas
+        s["cass"] = cass
         ore_lucr = zile * ore
         casa_sn = _d112_casa(s.get("judet_casa") or prof.get("judet"))
         dataang = _d112_data(s.get("data_angajare"))
@@ -555,9 +561,11 @@ def genereaza(conn, schema, an, luna):
     _er = erori_generare(prof)
     if _er:
         raise ValueError("D112 nu se poate genera: " + " ".join(_er))
-    # POARTA A DOUA CALE (gard de continut, 05.08.2026, pas 3/6): reconciliere INDEPENDENTA a
-    # contributiilor CAS/CASS in CAZUL SIMPLU (brut x cota), din brut, fara calcul_salariu.
-    # Divergenta = HARD-BLOCK care numeste ambele valori. Vezi core/d112_reconciliere.py.
+    # POARTA A DOUA CALE pe valorile EMISE (B, 05.08.2026): generam XML INTAI (_d112_genereaza scrie
+    # contributiile emise B4_8/B4_6 inapoi in salariati), apoi reconciliem ce PLEACA la ANAF. Inainte poarta
+    # vedea PRE-emisia din pull (blind-spot pe layerul de emisie - descoperit pe CM). Divergenta = HARD-BLOCK
+    # care numeste ambele valori. Vezi core/d112_reconciliere.py.
+    rezultat = _d112_genereaza(prof, salariati, an, luna)
     from core.d112_reconciliere import verifica_reconciliere
     verifica_reconciliere(conn, schema, an, luna, salariati)
-    return _d112_genereaza(prof, salariati, an, luna)
+    return rezultat

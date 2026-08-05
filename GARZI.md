@@ -1089,7 +1089,7 @@ La revenire se re-ruleaza DOAR `python -m core.agenda` pentru xfail-uri; restul 
 - **teste_care_apara_buguri: restul ~70 teste (dupa felia TVA-21%)** — test_datorie:235. Constante fiscale asertate fara temei, non-TVA-21%. DECLANSATOR: plan sistematic separat (dupa felia TVA-21%), sau urmatoarea schimbare de cota pe un modul afectat.
 
 ### B. BLOCAT EXTERN (nu se deblocheaza prin efort — consemnat cu DECLANSATOR)
-- **[REPARAT baza 05.08 tura 5] Emisia D112 CM: baza salariala proratata (era brut intreg = supra-declarare ~952 lei/angajat-luna) - FIX d112_cm_baza_realizata_v1, gard + DUK valid. RAMAN DESCHISE: (2b) rotunjire Sigma(round) vs round(total) B4_8=ROUND(B4_7*25%), datorie separata; (Decizia 2) poarta cale2 pe valori EMISE, generala pe declaratii.** - sectiuni GARZI 05.08 tura 3/4/5.
+- **[REPARAT tura 5+6] Emisia D112 CM: (baza) proratata pe zile lucrate - d112_cm_baza_realizata_v1, DUK valid; (poarta) cale2 D112 pe valorile EMISE post-generare - doar D112 afectat (restul res==emis). RAMAN DESCHISE: (2b) rotunjire Sigma(round) vs round(total) B4_8=ROUND(B4_7*25%); (1c-CM) reconcilierea CM propriu-zisa, acum DEBLOCATA de poarta pe emis.** - sectiuni GARZI 05.08 tura 3/4/5/6.
 - **Deriva legislativa (cota corecta azi, lege schimbata maine)** — cat.3 LIMITA REALA (l.~129). Declansator: feed legislativ mecanic (inexistent) SAU revizuire manuala periodica. NU se incepe acum.
 - **Deadman extern pe joburi (server jos = nici verificatorul nu ruleaza)** — cat.10 LIMITA (l.~467). Declansator: monitor extern.
 - **xfail temeiuri_toate_redare (12 COTE + 6 functii pe nivel_sursa=REDARE, niciun MO verbatim)** — test_datorie:46. Declansator: captare verbatim de la legislatie.just.ro (doc consolidat prea mare pt fetch azi).
@@ -1242,3 +1242,30 @@ supra-declarate (potential de corectat retroactiv - decizie contabila per firma)
 
 RAMANE DESCHIS: (a) Finding 2b - rotunjire Sigma(round) vs round(total) [B4_8=ROUND(B4_7*25%)], datorie separata,
 neatinsa aici (pe fixturi non-granita coincid). (b) Poarta cale2 pe valori EMISE = Decizia 2 (punctul B), urmeaza.
+
+
+## 05.08.2026 (tura 6) - B: poarta cale2 D112 re-arhitectata pe valorile EMISE (post-generare XML), nu pre-emisie
+
+Decizia 2 (Costin). Gardurile de continut promiteau "un total gresit nu ajunge la ANAF" dar verificau ce INTRA in
+generator (pull), nu ce PLEACA (XML emis). Descoperit pe CM (emisia recalcula, poarta vedea salariul-only pre-emisie).
+
+SCOP (verificat in cod - AFECTEAZA DOAR D112, nu toate 6): d100/d101/d205/d300/d394/d406 folosesc tiparul "sursa
+unica" - poarta primeste `res` (obiectul rezultat), iar build_xml(res) emite `res` VERBATIM (res==emis, ex. comentariile
+"res.total_plata_a == totalPlata_A emis"). Deci poarta lor vede deja valori echivalente cu emisia. D112 e OUTLIER: nu
+are `res`; verifica_reconciliere primea `salariati` din pull, iar _d112_genereaza RECALCULA (ramura CM) -> blind-spot
+real doar la D112.
+
+FIX (d112.py): (1) _d112_genereaza scrie contributiile EMISE (B4_8=cas / B4_6=cass, dupa tichete) inapoi in fiecare
+salariat; (2) genereaza cheama _d112_genereaza INTAI, apoi verifica_reconciliere -> poarta reconciliaza ce PLEACA la
+ANAF. Cazul simplu: emis==_d112int(pull) -> comportament identic, mutatiile existente pica la fel. CM: valoarea emisa
+reala devine vizibila portii (deblocheaza reconcilierea CM = 1c-CM, ramas de implementat separat).
+
+PROBA: mutatiile existente re-rulate = pica la fel (32 teste reconciliere+pull); smoke DUK d112 verde; gard NOU
+test_pull_declaratii.test_d112_poarta_reconciliaza_valorile_emise_nu_pre_emisia: (a) dupa emisie salariatul poarta
+valorile EMISE (== B4_8/B4_6 din XML, 1500/600); (b) un emis GRESIT (mutatie pe valoarea EMISA, nu pe pull) e prins de
+poarta - dovada ca poarta acopera acum layerul de emisie (inainte era oarba la el).
+
+LIMITA: poarta reconciliaza inca DOAR cazurile deja acoperite (simplu/facilitate/part-time/tichete); CM ramane SARIT
+(cm_ids) pana la implementarea reconcilierii CM (1c-CM, acum deblocata de aceasta re-arhitectura). Celelalte 5
+declaratii NU au fost modificate (res==emis deja); daca vreuna capata in viitor un layer de emisie care recalculeaza,
+tiparul e acelasi (poarta pe emis).

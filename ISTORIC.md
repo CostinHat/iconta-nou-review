@@ -3291,3 +3291,11 @@ bazac pe brut_lucrat (realizat), nu contractual. Corecteaza B2_5/B4_7/B4_8/B4_5/
 in B1_sal1. Probat RED (B2_5=8400 vechi) -> GREEN (29 d112) -> DUK VALID (B4_8 2600 vs 3100). Gard anti-regresie in
 test_pull_declaratii. Efect: CAS/CASS/CAM la ANAF SCAD pe angajatii cu CM (fluturas si D112 coincid acum). Ramane 2b
 (rotunjire) + poarta cale2 pe valori emise (punctul B). Consemnat GARZI 05.08 tura 5.
+
+
+## 05.08.2026 (tura 6) - B: poarta cale2 D112 pe valori EMISE (Decizia 2)
+Re-arhitectat poarta D112 sa reconcilieze ce PLEACA la ANAF, nu pre-emisia din pull. Scop verificat in cod: DOAR D112
+afectat (d100/d101/d205/d300/d394/d406 = sursa unica res==emis, poarta lor vede deja emisul). Fix: _d112_genereaza
+scrie B4_8/B4_6 emise inapoi in salariati; genereaza cheama emisia INTAI apoi poarta. Mutatiile existente pica la fel
+(32 teste); gard nou dovedeste acoperirea layerului de emisie (write-back == B4_8 + mutatie pe emis prinsa). CM ramane
+sarit pana la 1c-CM (acum deblocat). Consemnat GARZI 05.08 tura 6.

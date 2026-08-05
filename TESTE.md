@@ -1087,5 +1087,7 @@ comună. Ex.: `Σ(D112.B4_8 lunar pe an) == D205.impozit per persoană`; `D100.C
 Argument de ordine: întâi ce DEMASCĂ restul (C5), apoi ce prinde bani reali cu tautologie evitabilă (C2), apoi TIMPUL
 (C3), apoi INTRAREA (C1) — o intrare greșită e prinsă parțial reactiv aval, dar o eroare mascată (C5) ascunde TOT.
 
-Notă de legătură: descoperirea de azi (Finding 2 CM) e prima instanță C2; Decizia 2 (re-arhitectura poarta cale2 pe
-valori EMISE) e precondiția tehnică a întregii clase C2 — deci se construiește o dată, servește toate perechile.
+Notă de legătură: descoperirea (Finding 2 CM) e prima instanță C2; Decizia 2 (poarta cale2 pe valori EMISE) e
+precondiția tehnică a clasei C2 — LIVRATA pt D112 (05.08 tura 6, GARZI): poarta reconciliaza acum ce PLEACA la ANAF, nu
+pre-emisia. Restul 5 declaratii = res==emis (poarta lor vede deja emisul). Ramane de construit reconcilierea CM (1c-CM)
+si perechile cross-document (C2 propriu-zis).
