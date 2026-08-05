@@ -2,6 +2,69 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba)
 
 # PREDARE — Campania EXTINDEREA ACOPERIRII (05.08.2026)
 
+## ★★ PREDARE CAMPANIA DE TESTARE 05.08.2026 — CITESTE ASTA INTAI (predarea ★ de mai jos = sesiunea de cod, istoric)
+
+**UNDE S-A AJUNS:**
+- **PASUL 1 (stergerea datelor de test) INCHIS.** DB de la zero: 0 scheme tenant, 0 randuri tenants/accounting_firms.
+  Cont unic id=1 (costin.hateganu@gmail.com) promovat **superadmin** cu accounting_firm_id=NULL (acces platforma,
+  observational). Backup: /home/costin/backups_db/iconta_pre_curatare_20260805_204420.dump. App HTTP 200, provisionare
+  din template functionala (46 tabele), funnel inregistrare cabinet DESCHIS. Gardul test_toti_tenantii_au_cnp_ingrijit
+  trecut la SKIP pe mediu gol - **trebuie sa REDEVINA activ dupa popularea firmelor (C-3), verifica**.
+- **C-1 (matricea obligatiilor) LIVRAT + VALIDAT** de Costin cu 3 completari (regimuri speciale TVA art.311-315;
+  e-Factura/e-Transport; D392 abrogat + D207 in vigoare). Salvat: **date_test/C1_matrice_obligatii.md**.
+
+**CELE 8 CONFIRMARI RAMASE (la sursa, INAINTE de C-2 - firmele se deriva din matrice, NU se presupun):**
+1. Cota micro 1% vs 3%: prag 60.000 EUR + lista activitatilor la 3% -> CF art.51 (forma 2026, anaf_surse/cod_fiscal).
+2. Lista CAEN excluse de la micro 2026 (consultanta/management >20% etc.) -> CF art.47 + OUG modificatoare.
+3. Data intrarii pragului TVA 395.000 lei + stabilitate pe 2026 -> Legea 141/2025 + norma.
+4. Data tranzitiei TVA la incasare 4.5M->5M ianuarie 2026 -> CF art.282 + Legea 141/2025.
+5. Salariul minim brut 2026 -> HG salariu minim (MO).
+6. Calendarul SAF-T firme mici (01.01.2025 + amanari) -> OPANAF 1783/2021 + acte amanare.
+7. D392 re-verificat ca nu a fost reintrodus (confirmat abrogat aici) -> legislatie.
+8. Periodicitatea D112 trimestrial - care micro/mici pot opta -> CF Titlu V + OPANAF.
+=> C-2 se incepe ABIA DUPA ce cele 8 sunt confirmate la sursa.
+
+**PROCEDURA PE CATEGORII (obligatorie): o SINGURA categorie, apoi STOP; Costin valideaza/modifica; abia atunci se
+salveaza ca set valid; urmatoarea categorie abia dupa confirmarea celei anterioare. NU anticipa, NU doua odata, NU
+incepe urmatoarea in timp ce astepti.**
+- **C-1 MATRICEA** (din legislatie, NU din cod) — LIVRAT+VALIDAT.
+- **C-2 FIRMELE** — setul minim care acopera toate celulele matricei validate. Numarul IESE din matrice, nu se fixeaza
+  dinainte. CUI-uri fictive: cifra de control OK DAR sa NU apartina firmelor reale (verifica inainte de a le fixa -
+  altfel ANAF v9 intoarce date terte). Idem CNP-uri (salariati/copii/pacienti): fictive, valide ca structura,
+  neapartinand persoanelor reale. Daca nu poti garanta pt un identificator, SPUNE - nu-l inventa.
+- **C-3 CABINETELE/ASISTENTII/CLIENTII** — cine administreaza firmele, roluri+drepturi distincte: patron cabinet,
+  asistent cu poate_valida, asistent fara, asistent cu firme atribuite partial, client de portal. Fiecare rol = cont cu
+  email+parola CUNOSCUTE (pt verificarea vizuala de la etapa 2). Gardul test_toti_tenantii_au_cnp_ingrijit revine activ.
+- **C-4 DATE CORECTE** — documentele care produc EFECTIV randurile cerute de declaratiile fiecarei firme (nu generice:
+  daca D394 are rand achizitii de la neplatitori -> factura de la neplatitor; D300 taxare inversa -> operatiune de
+  taxare inversa). Valori la LIMITA: praguri CA, plafon CM, salariu minim, luni partiale (angajare la mijloc, CM peste
+  luni), operatiuni cu semn contrar (storno, retur, ajustare TVA).
+- **C-5 DATE DEFECTE** — acoperire ABSOLUT COMPLETA, fara exceptie: toate ridicarile de exceptie backend, toate
+  returnarile de eroare din rute, toate validarile de formular UI, TOATE campurile obligatorii cu asterisc pe toate
+  ecranele (sweep-ul 24.07 neterminat - se reia integral), toate starile de blocare (rol insuficient, perioada inchisa,
+  date lipsa). Inventar prin SCANARE SISTEMATICA a codului, nu din memorie. Fiecare caz: mesajul explicativ care trebuie
+  sa apara (Design System cap.6: explicit, cu lux de amanunte, CE e gresit + CE trebuie facut; niciodata telegrafic,
+  niciodata "a aparut o eroare"; nicio oprire fara mesaj). Cale neacoperibila -> declarata explicit cu motivul (omiterea
+  tacuta = esec). Cea mai mare categorie - daca nu incape intr-o livrare, se imparte pe module si se anunta in cate
+  bucati vine INAINTE de prima.
+
+**REGULILE R1-R4 (se aplica TUTUROR categoriilor):**
+- **R1 VOLUM REALIST**, nu simbolic. Zeci-sute documente/an per firma activa (exerseaza paginare/reconciliere/perf).
+  Volumul per firma se PROPUNE si se justifica; Costin il valideaza.
+- **R2 REPRODUCTIBILITATE.** Datele = fisiere VERSIONATE in git, din care popularea se reface identic dupa stergere. NU
+  inserturi ad-hoc. Al doilea rulaj comparabil cu primul.
+- **R3 COERENTA INTRE FIRME.** Firma A factura catre firma B (ambele in set) -> sume/CUI/date IDENTICE. Altfel controlul
+  incrucisat si D394 produc divergente din DATE, nu din cod.
+- **R4 CALEA DE INTRARE.** Fiecare tip de document: marcheaza cum intra - prin ECRAN (se testeaza calea) sau prin SEED
+  (nu). Fiecare cale distincta (e-Factura, upload manual, OCR bon, import banca, tastare directa) exersata prin ecran
+  cel putin o data; volumul poate intra prin seed.
+
+**PERIOADA acoperita:** an fiscal 2026 complet + ianuarie 2027 (anuale + tranzitia de an). Legislatia = cea in vigoare
+pe fiecare perioada (parametrii 2026 difera de 2025 - Legea 141/2025, OUG 156/2024). NU presupune cote constante pe an.
+
+---
+
+
 ## ★ PREDARE FINALA 05.08.2026 (inchidere sesiune) — CITESTE ASTA INTAI (restul de mai jos = istoric tura cu tura)
 
 **STARE:** HEAD = origin/main = origin/backup/lant-20260805 = **a979715**. Tree curat. Suita **1445 passed / 2 skipped /
