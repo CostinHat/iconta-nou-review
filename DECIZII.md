@@ -7176,3 +7176,55 @@ D300 LIVRAT (05.08): core/d300_reconciliere.py (pull SQL propriu + agregare prop
 automate R9/R10/R11 colectat + R22/R23 deductibil), poarta in d300.genereaza. LIMITA DECLARATA (6 puncte) in GARZI
 cat.4 la DESCHIDEREA campaniei (nu la final): manual/pro_rata/R33-R42 neacoperite, tva_la_incasare NEACOPERIT,
 input partajat gresit = §8, cota fara-linii dedusa identic, deriva legislativa = alt gard.
+
+
+## 05.08.2026 — TIPAR gard de continut: HARD-BLOCK la divergenta (toate cele 6 declaratii, nu per-decl)
+
+DECIZIA (tipar, nu caz): la orice gard de a-doua-cale din campania GARDUL DE CONTINUT, divergenta intre cele
+doua cai OPRESTE generarea (ridica exceptie), NU emite un avertisment. Se aplica identic la D300 (livrat), D394,
+D112, D406, D101, D205 - nu se re-decide per declaratie.
+
+TEMEI: warn-only e un avertisment pe care cineva il citeste sau nu, iar cifra pleaca oricum la ANAF. Un total
+gresit dar structural-valid e exact ce DUK NU prinde - daca nici gardul de continut nu-l opreste, nu exista nicaieri
+o oprire. Scopul gardului e ca cifra gresita sa NU ajunga la autoritate, nu sa fie insotita de o nota. (cerinta
+Costin 05.08, confirmata dupa livrarea D300.)
+
+ALTERNATIVA RESPINSA: warn-only (genereaza + avertisment). Respinsa: muta raspunderea pe cititorul avertismentului
+si nu opreste iesirea gresita.
+
+CONSECINTA ACCEPTATA: un fals-pozitiv al gardului (bug in calea 2) blocheaza o declaratie legitima. Pretul e corect:
+calea 2 se probeaza mecanic (non-tautologie pe AST + mutatie) inainte de a fi poarta, exact ca sa nu blocheze fals.
+
+
+## 05.08.2026 — GARD CONTINUT D394 (pas 2/6): recalcul propriu al rezumat2, NU reconciliere incrucisata vs D300
+
+DECIZIA: gardul de continut D394 = recalcul INDEPENDENT al totalurilor rezumat2 (bazaL/tvaL/bazaA/tvaA pe cota)
+din liniile brute (acelasi tipar ca D300), NU reconciliere incrucisata D394<->D300.
+
+TEMEI (doua descoperiri la sursa, 05.08):
+1. Reconcilierea incrucisata propusa in plan ar fi fost TAUTOLOGICA sau nesound:
+   - gardul existent `test_d300_d394_paritate` confrunta calcul_d300 vs calcul_d394 dar AMBELE citesc aceleasi
+     factura_linii si deduc cota identic - propriul lui docstring o spune: "sursa e comuna (liniile)". E aceeasi
+     cale de doua ori; prinde doar DRIFTUL intre generatoare, nu un bug comun de agregare. (Exact riscul semnalat
+     de Costin la pornire: "daca ambele citesc aceeasi agregare din acelasi loc, nu-i incrucisata".)
+   - chiar corectata, confruntarea nu e EGALITATE: D300 colectat >= D394 livrari L pe cota (D300 = TVA totala,
+     D394 = subsetul raportabil B2B/reportabil). Reziduul structural o face inegalitate -> divergenta falsa.
+   Deci recalculul propriu (self-contained, ca la D300) e singura cale cu adevarat non-tautologica AICI.
+
+2. ACOPERIRE (raspuns explicit la cerinta Costin - "cat din trafic ramane neacoperit; daca e majoritatea, gardul
+   e siguranta falsa si se regandeste"): tot traficul REAL D394 e acoperit. Verificat in cod: taxare-inversa (tip
+   C/V) si N (persoane fizice) sunt tratate AUTO din tabela facturi (tip_operatiune pe taxare_inversa + clasificare
+   partener), NU prin manual=. manual['operatiuni'] (bonuri/borderouri/AI/AS/LS) NU are UI sau tabela care sa-l
+   alimenteze azi (vine doar din body-ul cererii b['manual'], niciun ecran nu-l scrie) -> in practica gol. Gaura
+   LIMITA-1 e deci un REZIDUU nealimentat, NU majoritatea. NU e siguranta falsa. CONDITIE scrisa (GARZI): daca
+   apare o UI de operatiuni manuale, gaura devine reala si gardul trebuie EXTINS, nu doar documentat.
+
+NON-TAUTOLOGIE probata pe AST: d394_reconciliere nu importa/foloseste calcul_d394/d394.pull/_int. Cale proprie:
+SQL propriu + clasificare proprie + agregare proprie. Hard-block la divergenta (tipar 05.08), numind ambele valori.
+
+ALTERNATIVA RESPINSA: reconciliere incrucisata D394<->D300 pe egalitate. Respinsa (motivele 1+2 de mai sus).
+NOTA: `test_d300_d394_paritate` RAMANE ca detector de DRIFT intre generatoare (util, onest documentat), nu se
+sterge; gardul de CONTINUT genuin e d394_reconciliere.
+
+PROBA: schema efemera, F1 emisa 1000@21% + F2 emisa 500@11% + F3 primita 800@21% RO -> rezumat2 corect, divergente
+[]. Mutatie 'achizitie pierduta' -> "cota 21%% bazaA: generator=0 vs cale2=800". Suita 1397 passed (+6), verificator 0.

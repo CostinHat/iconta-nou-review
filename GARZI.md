@@ -278,7 +278,25 @@ că intrarea a fost înghițită**.
        gresita acolo nu se prinde.
     6. Deriva legislativa (cota corecta azi, lege schimbata maine) — alt gard (deschis, nerezolvabil
        mecanic), nu acesta.
-  - **RAMAS LIPSA**: aceeasi a doua cale pe D394(vs D300)/D112/D406/D101/D205 (ordinea de mai sus).
+  - **D394: ACOPERIT (05.08.2026, pas 2/6).** `core/d394_reconciliere.py` — recalcul INDEPENDENT al
+    totalurilor rezumat2 pe cota (colectat bazaL/tvaL + achizitii bazaA/tvaA, C pliat pe A) dintr-un pull
+    SQL propriu al liniilor brute + clasificare proprie (emisa->L, primita RO->A, taxare inversa RO->C,
+    intracom EXCLUS, cota-0/N/V excluse). Poarta HARD-BLOCK in d394.genereaza. Gard:
+    `test_d394_reconciliere.py` (6): non-tautologie pe AST + mutatie (livrare pierduta / livrare clasificata
+    la achizitii / semn inversat -> reconcilierea pica, numind ambele valori).
+    - NU s-a folosit reconcilierea incrucisata D394<->D300, din doua motive gasite la sursa: (1) gardul
+      existent `test_d300_d394_paritate` e TAUTOLOGIC — confrunta calcul_d300 vs calcul_d394 dar ambele
+      citesc aceleasi factura_linii (propriul docstring: 'sursa e comuna'); prinde doar DRIFTUL intre
+      generatoare, ramane util ca atare, NU e gard de continut. (2) D300 colectat >= D394 livrari L pe
+      cota (D300 e TVA totala, D394 subsetul raportabil) -> nu e egalitate, ar da divergenta falsa.
+    - **ACOPERIRE (cerinta Costin): tot traficul real D394 e acoperit.** taxare-inversa (C/V) si N (persoane
+      fizice) sunt AUTO din facturi (NU prin manual=), deci reconstruibile de calea 2. manual['operatiuni']
+      (bonuri/borderouri/AI/AS/LS) = NEACOPERIT, dar NU are UI/tabela care sa-l alimenteze azi (doar body-ul
+      cererii) -> reziduu, nu majoritate. Daca apare o UI de operatiuni manuale, gaura devine reala si gardul
+      trebuie extins (consemnat aici, nu doar in cod).
+    - LIMITA (ca la D300): tipurile cota-0 fara TVA (V/N/LS/AS) = prezenta/clasificare (DUK structural),
+      nu sume; input partajat gresit = §8; cota factura-fara-linii dedusa identic.
+  - **RAMAS LIPSA**: aceeasi a doua cale pe D112 -> D406 -> D101/D205 (ordinea confirmata).
 - LIPSĂ: snapshot de regresie pe fixturi înghețate.
 - **DUK validează STRUCTURA, nu conținutul.** Nu e gard de conținut și nu se tratează ca atare.
 

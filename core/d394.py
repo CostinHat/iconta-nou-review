@@ -848,6 +848,11 @@ def genereaza(conn, schema, perioada, manual=None):
     if _er:
         raise ValueError("D394 nu se poate genera: " + " ".join(_er))
     res = calcul_d394(prof, perioada, date, manual)
+    # POARTA A DOUA CALE (gard de continut, 05.08.2026, pas 2/6): reconciliere pe totalurile
+    # rezumat2 dintr-un recalcul INDEPENDENT al liniilor brute. Divergenta = HARD-BLOCK care
+    # numeste ambele valori; NU repara tacit (tipar DECIZII 05.08). Vezi core/d394_reconciliere.py.
+    from core.d394_reconciliere import verifica_reconciliere
+    verifica_reconciliere(conn, perioada, res, manual)
     for e in valideaza(res):
         res.avertismente.insert(0, e)
     res.modul, res.reguli = MODUL, REGULI
