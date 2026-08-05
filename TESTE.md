@@ -969,3 +969,123 @@ scos 5 bife ascunse de acelasi punct orb: `plafon diurna` (datoria period-awaren
 nereflectata in bifa -> bump) + 4 citari gresite / coloane `fisiere` incomplete (testele cross-generator de rotunjire
 traiesc in `test_limita_text_anaf.py` nelistat; IMCA nume trunchiat; reclasificare citata gresit). Toate reparate;
 regresia e gardata de `test_functie_schimbata_cauta_toate_fisierele_punct_orb_04_08`. Integritatea coloanei `fisiere` (un test citat sa traiasca intr-un fisier listat) e gardata acum separat de `test_fisiere_coloana_completa` (+ mutatie), care prinde golul la CREAREA clusterului - acolo unde `test_verificarile_A` e oarba (lucreaza doar pe clustere bifate). Driftul DUS-INTORS (capete egale, mijloc diferit) NU e gardat per-commit (ar reciti istoricul) - e o rulare PERIODICA: `python3 -m core.agenda_drift`, declansata de o bifa >3 luni sau o repornire de campanie (vezi GARZI cat.9).
+
+
+---
+
+## Metode de verificare — clasele oarbe (referință permanentă, 05.08.2026)
+
+Capitol de METODĂ (frate cu „Clustere — metoda"). Întrebare (Costin, 05.08): din TOATE limitele scrise (clustere +
+GARZI cat.0-11 + xfail-uri, nu doar campania de conținut), ce CLASE de eroare nu le atinge nicio metodă, ce metodă
+concretă le-ar prinde, cost/valoare/tautologie, și dacă „același fapt calculat diferit în două documente" e clasă
+proprie. Sursa unică: limitele per-clasă trăiesc în GARZI cat.0-11; aici stă doar maparea metodă→clasă și golurile.
+
+### 0. Cele 4 metode existente și AXA fiecăreia
+
+| # | metodă | compară ce cu ce | axă | ratează STRUCTURAL |
+|---|--------|------------------|-----|--------------------|
+| 1 | Cod vs lege (cluster A→B) | constantă/regulă/formulă din cod ↔ text act oficial | logică statică, un modul | dacă calea e atinsă; date runtime; consistență între documente; citirea greșită a legii în A |
+| 2 | Validator DUK | XML emis ↔ structura + aritmetica intra-câmp ANAF | structura unui document | valoare validă-dar-greșită care trece checkurile; consistență între documente; vs realitate |
+| 3 | Reconciliere cale2 | valoarea generată ↔ recalcul independent din date PRIMARE, intra-document | valoare, un document | intrare partajată greșită (§8); ce nu recalculează; layerul de EMISIE (descoperit azi) |
+| 4 | Garduri de registru | bifă/documentație ↔ starea reală (git HEAD, drift dus-întors) | meta-documentație | orice despre corectitudinea calculului |
+
+Toate patru operează pe UN document/modul și DOWNSTREAM de intrarea primară. Niciuna n-are: (a) axă între documente,
+(b) axă în timp, (c) confruntare cu un adevăr EXTERN firmei.
+
+### 1. CLASELE fără nicio metodă (clase, nu instanțe)
+
+- **C1. Integritatea INTRĂRII** (GARZI cat.1, LIPSĂ). Data primară e greșită înainte de orice calcul: câmp→NULL→0,
+  import dublat, „1.234,56"→0 (virgulă), cotă inexistentă la dată. Toate 4 metodele sunt downstream; reconciliere
+  citește ACEEAȘI intrare (tautologie §8). Nimeni nu confruntă intrarea cu un adevăr extern (document-sursă, extras).
+- **C2. Consistența ÎNTRE DOCUMENTE** (clasă nouă, Q4). Același fapt, două documente ale firmei, căi de calcul
+  diferite → divergență. Reconciliere e INTRA-document. Descoperit azi accidental (baza salarială CM: fluturaș
+  1047.62 vs D112 emis 2000). Detaliu §4.
+- **C3. Integritatea în TIMP** (GARZI cat.7, LIPSĂ). Valoarea era corectă la depunere dar DERIVĂ: editare retroactivă
+  în lună închisă, declarație depusă regenerată cu alt rezultat, balanță ≠ Σînregistrări, backdating. Nicio metodă
+  n-are axă temporală — toate sunt point-in-time.
+- **C4. Eroarea de INTERPRETARE a sursei** (meta pe metoda 1). Citirea legii în pasul A e ea însăși greșită; metoda 1
+  o CIMENTEAZĂ într-un golden (cazul real D101 R17 scadență — act ratat de prima cercetare, √ pe interpretare
+  greșită). O prinde DOAR DUK (întruchipează interpretarea ANAF) sau o a doua citire independentă — unde există.
+- **C5. Mascarea erorii / zero tăcut** (GARZI cat.0, rădăcină transversală). `except: return 0` / câmp gol produce 0
+  care trece downstream (0 = „absență legitimă"). Mutant-zero ar prinde generatoarele, dar e LIPSĂ și nu acoperă
+  căile non-generator (readere, API, contare).
+
+(În afara scopului fiscal, tot fără metodă între cele 4: izolare tenant cat.5, acces/IDOR cat.6 — domeniu security,
+garduri LIPSĂ proprii.)
+
+### 2. Metodă concretă per clasă + tautologie
+
+- **C1 → (a) invarianți DB pe intrare:** NOT NULL pe fiecare coloană de bani + cheie naturală unică (anti-dublare
+  import) + parser care RIDICĂ pe „virgulă→0" (nu tace). **(b) reconciliere intrare↔document-sursă:** Σ(linii
+  importate) == totalul de pe documentul fizic (extras bancar deja parsat, factură PDF). Tautologie: NU — (a) sunt
+  axiome, nu recalcul; (b) sursa NU e intrarea (adevăr extern). Cost: (a) MIC; (b) MARE (parsing surse).
+- **C2 → reconciliere ÎNTRE documente** (vezi §4). Tautologie: PARȚIALĂ — scapă doar pe perechi cu căi INDEPENDENTE.
+- **C3 → snapshot+hash la depunere apoi REGENERARE și diff** (prezent ↔ sinele trecut al aceleiași căi) + job nocturn
+  Σdebit=Σcredit per perioadă/tenant + orfani. Tautologie: NU — axa e timpul, nu calea. Cost: MEDIU (snapshot+hash =
+  deja DECIS pt state_plata, GARZI INVENTAR A).
+- **C4 → confruntare cu DUK unde are regulă + a doua citire OARBĂ a sursei** (al doilea cititor nu vede interpretarea
+  din A). Tautologie: reconciliere NU ajută (aceeași interpretare); DUK/a-doua-lectură scapă. Cost: DUK = marginal
+  MIC (rulat pe fixturi); a doua lectură umană = scump, unde DUK n-are regulă (xfail temeiuri_toate_redare).
+- **C5 → mutant zero sistematic** (fiecare generator forțat →[] ⇒ suita roșie) + **gard AST anti-`except: return 0/pass`**
+  pe căile de bani. Tautologie: NU — probă de sensibilitate, nu recalcul. Cost: MIC-MEDIU.
+
+### 3. Cost × valoare (sinteză)
+
+| clasă | metodă | prinde | cost construcție | tautologie §8 |
+|-------|--------|--------|------------------|---------------|
+| C5 | mutant-zero + gard anti-except | cauza rădăcină (maschează restul) | MIC-MEDIU | nu |
+| C2 | reconciliere între documente | bani reali divergenți la ANAF | MEDIU | parțială (evitabilă pe perechi bune) |
+| C3 | snapshot+hash + job balanță | derivă temporală, „regenerat altfel" | MEDIU (parțial decis) | nu |
+| C1a | invarianți DB | intrare coruptă (NULL/dublu/virgulă) | MIC | nu |
+| C1b | reconciliere intrare↔sursă | intrare ≠ document fizic | MARE | nu |
+| C4 | DUK + a doua lectură | interpretare greșită cimentată | MIC (DUK) / MARE (uman) | nu |
+
+### 4. Q4 — „același fapt, două documente" ca CLASĂ PROPRIE (C2) + unde apare (verificat în cod)
+
+DA, clasă proprie, distinctă de reconciliere (care e generator-vs-recalcul INTRA-un-document). Mecanism: două
+documente ale firmei declară/afișează ACELAȘI fapt, calculat pe căi de cod SEPARATE, fără punte de confruntare.
+Descoperirea de azi (baza salarială CM: fluturaș proratat 4190→1047.62 vs D112 emis brut întreg 8000→2000) e prima
+instanță, ieșită ACCIDENTAL fiindcă reconciliere cale2 a pus alături pull (fluturaș) și emisia.
+
+Perechile (verificat în cod care există și care NU-s controlate):
+
+| pereche | fapt partajat | control existent (verificat în cod) | verdict |
+|---------|---------------|-------------------------------------|---------|
+| fluturaș (stat_plata) ↔ D112 | CAS/CASS/impozit per salariat | test_cm_arbori_paraleli DOAR tratament indemnizație cod-08; baza salarială NEcontrolată | **NECONTROLAT** (azi: divergență activă) |
+| D100 ↔ D112 | total CAS/CASS/impozit/CAM lunar | `calcul_d100(prof,an,luna,obligatii)` primește `obligatii` ca INPUT; nu importă d112, nu recalculează | **NECONTROLAT** (sursă comună=tautologie SAU manual=nesincronizat) |
+| D205 ↔ D112 | impozit reținut per persoană (anual↔lunar) | niciun cross-check găsit | **NECONTROLAT** |
+| balanță ↔ D101 | profit contabil (clase 6/7) | d101_reconciliere RECALCULEAZĂ profitul din 6/7 (=balanță) | **CONTROLAT parțial** (profit computat; ajustările §8 nu) |
+| SAF-T D406 ↔ balanță | Σ înregistrări GL ↔ solduri balanță | d406_reconciliere e intra-doc; niciun tie GL↔balanță găsit | **NECONTROLAT** |
+| D300 ↔ jurnale/balanță TVA | TVA colectată/deductibilă | verificatoare.py `decont TVA` = coerență internă parțială | **PARȚIAL** |
+| D300 ↔ D394 | livrări/achiziții pe partener | control încrucișat menționat (GARZI F163) dar nu ca gard | **NECONTROLAT ca gard** |
+
+Metoda C2: modul care ia ACELAȘI fapt din două generatoare și compară valoarea EMISĂ (nu intermediarul), pe cheia
+comună. Ex.: `Σ(D112.B4_8 lunar pe an) == D205.impozit per persoană`; `D100.CAS_dat == Σ(D112.B4_8)`;
+`stat_plata.cas == D112.B4_8 pe salariat`.
+- **Tautologie parțială, decisivă pentru unde merită:** dacă ambele documente derivă din ACEEAȘI funcție de calcul
+  (ex. D100 primește exact totalul D112 ca input), e tautologie PURĂ — coincid mereu, nu prind nimic. Metoda are
+  valoare DOAR pe perechi cu CĂI DE CALCUL INDEPENDENTE (fluturaș↔D112, balanță↔D101), care e exact unde trăiesc
+  bug-urile. Deci: aplic-o pe perechi cu căi independente; pe perechile pass-through (D100↔D112) întâi trebuie făcute
+  independente, altfel gardul e ornament.
+- **Precondiție critică:** compară valorile EMISE ale ambelor documente (nu intermediarele) — exact lecția de azi
+  (poarta cale2 valida pre-emisia și rata emisia). Fără asta, metoda repetă orbirea de azi.
+
+### 5. Ordinea propusă (efect × cost)
+
+1. **C5 (mutant-zero + gard anti-except)** — cost MIC, efect MARE transversal, zero tautologie. Demască clasa care
+   ascunde toate celelalte (un 0 tăcut face orice altă verificare să pară verde). Primul.
+2. **C2 (reconciliere între documente, pe perechile cu căi INDEPENDENTE)** — întâi fluturaș↔D112 (are deja divergență
+   activă dovedită azi), apoi Σ D112↔D205; balanță↔D101 e deja parțial acoperit. Cost MEDIU, bani reali la ANAF,
+   tautologie evitabilă prin alegerea perechilor. Precondiție: valorile EMISE (Decizia 2 de azi = pilonul ei).
+3. **C3 (snapshot+hash + job balanță nocturn)** — cost MEDIU (parțial DECIS pt state_plata), prinde „depus apoi
+   regenerat altfel" și deriva retroactivă.
+4. **C1a (invarianți DB pe intrare)** — cost MIC dar necesită migrare pe toți tenanții (risc), iar o parte din efect
+   e prinsă reactiv de C2/reconciliere; de aceea al patrulea, nu primul.
+5. **C1b (reconciliere intrare↔document-sursă)** — cost MARE (parsing surse), doar unde sursa e digitală; ultima.
+6. **C4 (a doua lectură / extindere DUK)** — nu e proiect separat: se face continuu, per cluster nou.
+
+Argument de ordine: întâi ce DEMASCĂ restul (C5), apoi ce prinde bani reali cu tautologie evitabilă (C2), apoi TIMPUL
+(C3), apoi INTRAREA (C1) — o intrare greșită e prinsă parțial reactiv aval, dar o eroare mascată (C5) ascunde TOT.
+
+Notă de legătură: descoperirea de azi (Finding 2 CM) e prima instanță C2; Decizia 2 (re-arhitectura poarta cale2 pe
+valori EMISE) e precondiția tehnică a întregii clase C2 — deci se construiește o dată, servește toate perechile.

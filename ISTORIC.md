@@ -3269,3 +3269,16 @@ rollback, /tmp, tree neatins). Rotunjirea cm per-cert = half-even (taxe_cm quant
 rezolvata. Niciun cod fiscal atins. Consemnat in GARZI (sectiune 05.08 DESCOPERIRE 1c-CM) + INVENTAR B. 1c-CM BLOCAT pe
 decizie de produs (baza salariala CM + re-arhitectura poarta). OPRIRE §2.3 pct.2 (decizie de produs / candidat
 neconformitate in iesirea ANAF). Registre la zi. Nemasurat: acoperirea nu a crescut (niciun sub-caz livrat).
+
+
+## 05.08.2026 (tura 4) - Decizia 1 (Costin): verificare la sursa a bazei CAS/CASS in CM -> proratat; Finding 2 CONFIRMAT activ + 2b nou
+Costin: nu aleg intre variante, verific la sursa. Extras CF art.139(1) din cod_fiscal_227_2015_consolidat.html:
+baza CAS = "castigul brut REALIZAT din salarii" -> in luna cu CM = zile LUCRATE (proratat), indemnizatia CM e item
+separat art.139(1)(o) cu baza proprie. Coroborat cu structura oficiala D112 (d112_struct_anaf.txt): B4_7=B2_5+B3_7
+(aditiv), B4_8=ROUND(B4_7*25%). Concluzie: emisia D112 pe brut intreg = neconformitate fiscala CONFIRMATA (Finding 2),
+supra-declarare ~952 lei/angajat-luna CAS + CASS + CAM pe angajatii cu CM. La verificare a iesit si Finding 2b:
+generatorul face Sigma(round) pe componente, structura cere round(total) -> B4_8 poate diferi de ROUND(B4_7*25%),
+DUK-invalid pe granita (masurat 4323 vs 4324). NU s-a reparat: fix-ul a crescut peste intrebarea bazei (atinge
+CAS/CASS/CAM + 2b), schimba iesirea ANAF -> raportat domeniul (minim vs complet) si cerut scop Costin inainte de
+mutatie (regula lui pt schimbari >1 pas + iesire ANAF). Consemnat GARZI (sectiune 05.08 tura 4) - Finding 2 ridicat de
+la "candidat" la CONFIRMAT ACTIV. Decizia 2 (re-arhitectura poarta) ramane dupa fix. Niciun cod atins; registre-only.

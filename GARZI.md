@@ -1089,7 +1089,7 @@ La revenire se re-ruleaza DOAR `python -m core.agenda` pentru xfail-uri; restul 
 - **teste_care_apara_buguri: restul ~70 teste (dupa felia TVA-21%)** — test_datorie:235. Constante fiscale asertate fara temei, non-TVA-21%. DECLANSATOR: plan sistematic separat (dupa felia TVA-21%), sau urmatoarea schimbare de cota pe un modul afectat.
 
 ### B. BLOCAT EXTERN (nu se deblocheaza prin efort — consemnat cu DECLANSATOR)
-- **Divergenta fluturas/declaratie pe baza salariala CM (D112) + poarta cale2 oarba pe CM** - sectiune GARZI 05.08 "DESCOPERIRE 1c-CM". Candidat over-declarare CAS/CASS la ANAF pe angajatii cu CM peste minim. DECIZIE PRODUS: baza proratat vs brut intreg + re-arhitectura poarta. Blocheaza sub-cazul 1c-CM.
+- **NECONFORMITATE FISCALA ACTIVA: baza salariala CAS/CASS/CAM pe brut INTREG in emisia D112 CM (corect=proratat, CF art.139(1) verificat la sursa 05.08 tura 4) + rotunjire Sigma(round) vs round(total) (2b) + poarta cale2 oarba pe CM** - sectiuni GARZI 05.08 tura 3 (DESCOPERIRE) + tura 4 (VERIFICARE SURSA). Supra-declarare ~952 lei/angajat-luna la ANAF. DECIZIE CERUTA: scop fix minim vs complet. Apoi re-arhitectura poarta (Decizia 2).
 - **Deriva legislativa (cota corecta azi, lege schimbata maine)** — cat.3 LIMITA REALA (l.~129). Declansator: feed legislativ mecanic (inexistent) SAU revizuire manuala periodica. NU se incepe acum.
 - **Deadman extern pe joburi (server jos = nici verificatorul nu ruleaza)** — cat.10 LIMITA (l.~467). Declansator: monitor extern.
 - **xfail temeiuri_toate_redare (12 COTE + 6 functii pe nivel_sursa=REDARE, niciun MO verbatim)** — test_datorie:46. Declansator: captare verbatim de la legislatie.just.ro (doc consolidat prea mare pt fetch azi).
@@ -1170,3 +1170,49 @@ DECIZIE CERUTA (Costin), NUMEROTAT:
   2. Se re-arhitecteaza poarta cale2 sa primeasca valorile EMISE (post-_d112_genereaza), nu pre-emisie, ca sa poata
      reconcilia CM si sa acopere blind-spot-ul general al layerului de emisie? Blocheaza Finding 1.
   Pana la 1+2, 1c-CM ramane BLOCAT; urmatorul sub-caz actionabil FARA decizie = Punctul 2 (D101 ajustari computed).
+
+
+## 05.08.2026 (tura 4) - VERIFICARE LA SURSA 1c-CM (Costin, Decizia 1): Finding 2 CONFIRMAT ca NECONFORMITATE FISCALA ACTIVA + a doua neconformitate pe acelasi rand (rotunjire)
+
+Costin a cerut verificarea la sursa a bazei CAS/CASS in luna cu CM (brut intreg vs proratat). Sursa e CLARA -> baza
+proratata (castig REALIZAT); emisia D112 pe brut intreg = neconformitate CONFIRMATA. NU s-a reparat inca: domeniul
+fix-ului a crescut peste intrebarea initiala (vezi mai jos), iesire ANAF -> scop cerut Costin inainte de mutatie.
+
+SURSA (comenzi + citat):
+  CF art.139(1) - cod_fiscal_227_2015_consolidat.html (extras prin strip HTML): "Baza lunara de calcul al
+  contributiei de asigurari sociale, in cazul persoanelor fizice care realizeaza venituri din salarii..., o
+  reprezinta castigul brut REALIZAT din salarii..." -> "realizat" = efectiv castigat; in luna cu CM salariul realizat
+  = doar zilele LUCRATE (zilele de CM = indemnizatie, item separat art.139(1) lit.(o), cu baza proprie).
+  Structura oficiala D112 (anaf_surse/d112_struct_anaf.txt, DUK-enforced):
+    l.4519: B4_7 (Baza CAS) = B2_5 + B2_6 + B2_7 + B3_7   [baza SALARIALA + baza indemnizatiei CM, ADITIVE, SEPARATE]
+    l.4486: B4_5 (Baza CASS) = (B2_5+B2_6+B2_7) + (B3_7 - CMscutit), CMscutit=Sum(D_20+D_21) pt cod NOT in (01,07,10)
+    l.4534: B4_8 (CAS) = ROUND (B4_7 * 25%)   ;   l.4507: B4_6 (CASS) = ROUND (B4_5 * Cisan%=10%)
+    l.120/124: cadrul e pe ZILE ("baza de calcul CAS ... pt zile lucrate + zile CM"; B2_5P=((sm-fac)/NZL*(zile
+      lucrate+zile CM))) - confirma proratarea pe zile, nu brut contractual.
+  Coroborare interna: lantul FLUTURAS al generatorului deja prorateaza (calcul_salariu(brut_lucrat), d112.py:482,498)
+  -> fluturasul e legal corect; DOAR emisia D112 e gresita. Daca B2_5 ar fi brut intreg iar B3_7 baza CM, s-ar
+  declara CAS pe (salariu integral + indemnizatie) = mai mult decat s-a realizat -> contrazice "realizat" + dubla baza.
+
+FINDING 2 (baza) - CONFIRMAT, neconformitate fiscala ACTIVA (nu observatie):
+  emisia D112 pune baza salariala CAS/CASS/CAM pe brut INTREG (bazac=_d112int(s["brut"])-facil, d112.py:146-148,199-200,
+  si B2_5/B4_7/B4_14 din emit l.279-280), desi legea cere REALIZAT (proratat pe zile lucrate). Masurat: 8000 vs 4190.48.
+  Efect: SUPRA-declarare CAS ~952 lei/angajat-luna + CASS + CAM, pe TOTI angajatii cu CM peste minim; divergenta
+  fluturas(1047.62)/declaratie(2000). Bani declarati in plus la ANAF.
+
+FINDING 2b (rotunjire) - a doua neconformitate pe acelasi rand, descoperita la verificare:
+  structura cere B4_8=ROUND(B4_7*25%) / B4_6=ROUND(B4_5*10%) = O SINGURA rotunjire pe baza TOTALA. Generatorul face
+  cas=_d112int(bazac*cota) + Sum_cert _d112int(taxe_cm) = Sigma(round) pe componente. Difera de round(Sigma) cu ±1-2
+  lei pe cazuri de granita -> B4_8 emis poate diferi de ROUND(B4_7*25%) -> DUK "B4_8 difera de suma calculata".
+  Masurat pe fixtura brut intreg: emis B4_8=4323 vs ROUND(17295*25%)=4324 (DUK-invalid pe acest caz).
+
+DOMENIUL FIX-ULUI (crescut peste intrebarea initiala; scop cerut Costin inainte de mutatie, iesire ANAF):
+  - MINIM (Decizia 1 pur): in ramura CM, bazac = _d112int(s["brut_lucrat"]) - facil (proratat). Atinge B2_5, B4_7,
+    B4_8, B4_14(CAM), CAM total -> CAS+CASS+CAM se corecteaza coerent. NU rezolva 2b (ramane Sigma(round)).
+  - COMPLET (conform structurii oficiale + DUK): rescrie contributiile CM la formula oficiala - B4_7=baza_realizata+
+    cm_base; B4_8=_d112int(B4_7*cota_cas); B4_5=baza_realizata+(cm_base-cm_scutit); B4_6=_d112int(B4_5*cota_cass).
+    Rezolva 2 SI 2b. ~15 linii in ramura CM (d112.py:186-201). Schimba iesirea ANAF pe CAS/CASS pt toti CM.
+  Ambele cer proba RED (mutatie) + golden pe cifre din formula oficiala + suita + verificator + (ideal) DUK.
+
+DECIZIE CERUTA Costin (peste Decizia 1 deja transata): scop fix = MINIM (doar baza, 2b ramane datorie separata) sau
+COMPLET (baza+rotunjire, conform DUK)? Pana la raspuns NU se muta emisia (iesire ANAF). Decizia 2 (re-arhitectura
+poarta pe valori emise) ramane dupa fix, ca gard independent care confirma noua formula.
