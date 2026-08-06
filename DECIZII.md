@@ -7568,3 +7568,35 @@ auto-deducere (altfel dublează manualul beneficiarului). GARDĂ ANTI-DUBLĂ-NUM
 (R13_1) → EROARE vizibilă, nu însumare tăcută. `d300.pull` citește `taxare_inversa`; `d300_reconciliere` aliniat
 (exclude taxare inversă din cale2, ca `calcul_d300`). Seed T-6 S1: factura primită păstrează cota 21 (pt D394 tip C);
 D300 beneficiar se completează manual la generare — codul nou nu mai auto-deduce, deci fără dublă numărare.
+
+
+## 06.08.2026 (tura 2) — C-4 Tranșa 2 predare: item (e) T-5 forfetar livrat + clasificarea restului
+**Livrat (bug C-4 real).** T-5 achiziție de la agricultor forfetar (S3→P1, art.315^1): `calcul_d300`
+derivă TVA din COTĂ și ignoră antetul facturii → compensația forfetară 8% (antet `tva`=2000, cotă linie 0)
+cădea tăcut în `alte_a` cu un avertisment GENERIC ("cotă în afara 21/11/9") care nu numea suma; cumpărătorul
+P1 putea pierde deducerea (art.315^1 al.17) → TVA de plată supraevaluată. FIX (commit d1a2e4d): TVA orfan
+din antet (antet − rânduri pe cotă) la achiziții primite, semnalat CANTITATIV — după precedentul avertismentului
+9% deductibil. NU se auto-deduce (lipsă flag "în Registrul agricultorilor" = decizie de produs, "nu se forțează"
+per C4_date.md) și NU se schimbă XML → rămâne DUK-valid. Gard `test_d300_forfait_agricol.py` (RED probat pe cod
+vechi + bidirecțional: sub-raportare/supra-corecție + DUK). Suită 1465 passed, verificator 0.
+
+**Clasificare la sursă a restului predării (proba contrarie stabilită per item — nu bug C-4 reachable):**
+- **(b) D390 P1 achiziție IC = coverage-seed.** Codul e deja corect: `d390.pull` cade `c.cui → tert_cui` (bug
+  reparat 16.07.2026, cu comentariu în sursă); o factură primită cu `tert_cui` prefix UE → tip A. Lipsește doar
+  seed-ul (niciun partener UE în seed). Blast-radius pe seed-ul partajat (schimbă D300/D394 P1) → coverage pe
+  schemă efemeră, nu pe seed.
+- **(c) D301 N1 = coverage-seed.** `d301.pull` citește tabelul `d301_operatiuni` (NU facturi; `d301.py:239`),
+  gol în seed; generatorul e deja DUK-valid (clustere închise). Pragul L10 (10.000 EUR, obligația de depunere
+  art.317) NEENFORCED = decizie de produs (aceeași clasă ca L3/395k).
+- **(d) D300 pe marjă S1/S2 = DECIZIE DE PRODUS.** `tva_marja`/`tva_marja_turism` sunt STANDALONE, neimportate
+  în `core/d300.py`; endpoint-urile `main.py` postează doar ciorne în `inregistrari`. Nicio operațiune pe marjă
+  nu ajunge în D300 (observație deja declarată: "neintegrat în datorie.py = observație"). Integrarea cere model
+  nou (flag/tabel pentru operațiunea pe marjă) → greenlight Costin.
+- **(f) Limite TVA L1/L2/L3/L4/L10/L12 = clasă mixtă.** L4 (plafon TVA la încasare) e ENFORCED period-aware
+  (`common.py:393`, `COTE["plafon_tva_incasare"]`) și deja testat. L1 (micro→profit 100k), L2 (lunar/trim 100k),
+  L3 (scutire 395k), L10 (10k IC) sunt NEENFORCED — regim/perioadă/statut plătitor se fixează MANUAL în seed
+  (GARZI:1555, C2_firme "limite declarate") = C-5/decizie de produs → prag±1 NU e C-4 (CONFIRMĂ lecția tranșei 1).
+  L12 (storno/retur/ajustare) e structural (rânduri negative), fără caz ±1.
+
+**Oprire §2.3 pct.6** (buget context) la graniță curată. Actionabil rămas FĂRĂ decizie de produs = coverage-seed
+(b)+(c) pe schemă efemeră; blocat pe decizie = (d) marjă + (f) L1/L2/L3/L10 (enforcement praguri).
