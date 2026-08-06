@@ -1808,3 +1808,40 @@ date reale (1 din 13 firme) + DUK unde atinge o declarație + gard mecanic anti-
 - **Bloc 0 livrat = D1a** (skip vizibil salariati: `sarite_cnp` era calculat și aruncat la navigare → `confirmaCaseta`
   blocant). Idempotența import: EXISTĂ deja pe toate 9 modulele (cat.1 stale). D1c (cheie unică DB) deferat: scopul
   (idempotență) deja atins prin SELECT-dedup; unique index ar cere audit al tuturor căilor de creare.
+
+## 06.08.2026 (tura 5) — ÎNCHIDEREA campaniei de reparație: bilanț pe blocuri
+
+Metoda: fiecare „deficiență" din inventar verificată pe cod/date REALE înainte de reparație (nu din inventar).
+Descoperire de fond: **inventarul e substanțial STALE / mai matur decât părea** — majoritatea itemilor rămași
+sunt deja rezolvați, decizii de produs, sau build-new, NU comportament rupt viu.
+
+**LIVRAT (deficiențe vii, reparate + gard + probă):**
+- **D1a** — skip vizibil la import salariați (`sarite_cnp` era calculat și aruncat → `confirmaCaseta`). Probat.
+- **A6** — D394 nu mai aruncă linia scutită către RO CUI (L→LS). **Probă DUK** pe multi-cotă 21+11+scutit = valid.
+  DATORIE 31.07 ÎNCHISĂ (marker DECIZII).
+- **B3** — proprietarul cabinetului nu mai e blocat să depună (creat cu poate_pregati/valida/depune=false →
+  acum true la creare + backfill 1 owner existent). Probat pe date reale (id=1968).
+
+**STALE — nu erau deficiențe vii (inventar depășit):**
+- **A1** D406 SourceDocuments „1 linie sintetică" = REZOLVAT 27.07; 14/14 facturi reale au `factura_linii`,
+  fallback nedeclanșat.
+- **D1b** NOT NULL bani = RETRAS (base-null e enforce SEMANTIC, nu de schemă; NOT NULL ștergea stări-semnal).
+- **D1c** cheie unică DB import = deferat (idempotență deja atinsă prin SELECT-dedup pe toate 9 modulele).
+
+**FLAGGED — cer DECIZIA ta (nu strecurate în campanie):**
+- **A5** — amortizare degresivă/accelerată. Metoda e parsată/stocată/emisă în SAF-T dar calcul e MEREU liniar
+  (`d406_active.py:38-39`). Reparația cere: (1) decizie de modelare fiscală (coeficienți degresivi 1.5/2.0/2.5 pe
+  benzi DNF + punctul de comutare la liniar; „primul an" accelerat = 12 luni vs an calendaristic; toate pe modelul
+  de acumulare LUNARĂ existent); (2) NU există golden ANAF (anaf_surse gol) și DUK validează DOAR structura, nu
+  cifra → proba campaniei („regenerare + DUK") NU poate stabili corectitudinea numerică. Impact LIMITAT (d101 ia
+  amortizarea fiscală ca input P11 → doar afișarea D406 Assets e afectată). xfail rămâne deschis.
+- **D3** — persistare state_plata la emitere. **Build-new:** tabelul există dar NU există niciun eveniment de
+  „emitere/finalizare ștat" în cod (singura referință = un `count(*)` de gardă la ștergere salariat). Persistarea
+  cere construirea unui eveniment de emitere + decizia PE CE HOOK (depunere D112? acțiune nouă?). xfail deschis.
+
+**DEFERATE — gărzi preventive pentru defecte INEXISTENTE (nu „repară ce e rupt"):**
+- **D2** gard arbori paraleli (nicio a doua copie cunoscută), **D5** verificator self-test (lipsă acoperire, nu bug
+  viu), **D7** snapshot regresie pe ieșirea ANAF (preventiv). Toate = acoperire, nu deficiență de comportament.
+
+**PLAN_B.md rescris** (contabilul = utilizator de test, F1–F8 din matricea de obligații legale, E1–E12 cu E12 =
+comportament la încărcare). E1–E12 NU executate — doar documentul.
