@@ -7624,3 +7624,17 @@ peste prag cu P47 → generează. Gard `test_d101_imca_ca_precedent.py` (RED + A
 rămâne doar inacuratețea antetului Data_I (01.01 în loc de 01.07) — impact fiscal minim, corectare = decizie produs.
 
 **C-4 COMPLET (3 tranșe):** T1 salarizare (închisă), T2 coerență+TVA (închisă), T3 anuale+tranziție (închisă azi).
+
+## 06.08.2026 — A6: D394 linie scutită către CUI — proba DUK FĂCUTĂ (închide DATORIE 31.07)
+
+O livrare (tip L) cu cotă 0 către un partener RO cu CUI era IGNORATĂ cu avertisment (dropată din op1), deși
+rezumat1 R41.1 cere „cota 0 → facturiLS indiferent de partener" iar R38.2 interzice facturiL la cota 0. FIX
+(`core/d394.py`): se reclasifică L→LS (livrare scutită) în loc de drop tăcut. Temei: pct.215 interzice N la
+tip_partener=1; V=taxare inversă (deja rutată); AS e pentru achiziții — deci LS e SINGURA încadrare validă a
+unei livrări cota-0 către RO CUI. Reconcilierea a-doua-cale (`d394_reconciliere`) acoperă doar cota>0 → neafectată.
+
+Marker stabil: **d394 linie scutita catre cui proba duk facuta**.
+
+PROBĂ: factură MULTI-COTĂ exact cazul din datorie — 21% (bază 1000) + 11% (bază 500) + scutit cota 0 (bază 300)
+către RO14399840 → DUK `stare=valid`; linia scutită încadrată LS (prezentă în `res.op1`, `tip="LS"` în XML), NU
+mai apare avertisment de ignorare. Test: `core/test_d394.py::test_d394_scutit_livrare_ro_cui_inclus_ca_LS_nu_dropat`.

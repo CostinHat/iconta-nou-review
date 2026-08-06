@@ -386,11 +386,19 @@ def calcul_d394(prof, perioada, date, manual=None):
             continue
         # pct. 217: cota=0 permisa doar pentru LS/AS/N/V (ASI eliminat - vezi TIPURI)
         if cota == 0 and tip not in TIP_COTA_ZERO:
-            avert.append("Operațiune tip %s cu cotă 0 (partener %s) — ANAF acceptă cota 0 "
-                         "doar pentru %s. Verifică factura." % (tip, cui or "fără CUI",
-                                                                "/".join(TIP_COTA_ZERO)))
-            nefacturabile += 1
-            continue
+            # [A6 06.08.2026] o LIVRARE (L) cu cota 0 catre partener RO cu CUI e o livrare SCUTITA (LS),
+            # nu o operatiune de aruncat: pct.215 interzice N la tip_partener=1, V=taxare inversa (deja
+            # rutata), iar rezumat1 R41.1 cere "cota 0 -> facturiLS indiferent de partener". Reclasificam
+            # L->LS in loc s-o pierdem tacut. Reconcilierea (d394_reconciliere) acopera doar cota>0 ->
+            # neafectata. Alte tipuri (A/C) cu cota 0 raman semnalate vizibil.
+            if tip == "L":
+                tip = "LS"
+            else:
+                avert.append("Operațiune tip %s cu cotă 0 (partener %s) — ANAF acceptă cota 0 "
+                             "doar pentru %s. Verifică factura." % (tip, cui or "fără CUI",
+                                                                    "/".join(TIP_COTA_ZERO)))
+                nefacturabile += 1
+                continue
         _adauga(tip, tp, cota, cui, f.get("nume"), 1, f.get("baza"), f.get("tva"),
                 f.get("categorie_331"))
 

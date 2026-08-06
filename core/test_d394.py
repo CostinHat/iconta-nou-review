@@ -618,3 +618,25 @@ def test_N_fara_categorie_ramane_exclus_cu_avertisment():
     from core import duk
     if duk.poate_valida("d394"):
         assert duk.valideaza(build_xml(res), "d394", an=2026, luna=6)["stare"] == "valid"
+
+
+def test_d394_scutit_livrare_ro_cui_inclus_ca_LS_nu_dropat():
+    """A6 (06.08.2026): factura MULTI-COTA emisa catre RO CUI cu o linie scutita (cota 0) -> linia NU se
+    pierde, e inclusa ca LS (R41.1: cota 0 -> facturiLS indiferent de partener). Proba DUK pe cazul exact
+    21+11+scutit catre CUI. Inchide DATORIA test_datorie_d394_scutit_catre_cui_proba_duk."""
+    facturi = [_f("RO14399840", "emisa", 21, 1000, 210),   # L cota 21
+               _f("RO14399840", "emisa", 11, 500, 55),      # L cota 11
+               _f("RO14399840", "emisa", 0, 300, 0)]        # scutit (cota 0) -> LS, nu drop
+    res = calcul_d394(PROF, 2026, 6, facturi, serii_emise={"A": (1, 3)})
+    # linia scutita e inclusa ca LS in op1, NU aruncata in nefacturabile
+    assert any(k[0] == "LS" for k in res.op1), "linia cota 0 catre RO CUI trebuie inclusa ca LS: %s" % list(res.op1)
+    # nu mai apare avertismentul de drop pentru aceasta linie
+    assert not any("Verific\u0103 factura" in a for a in res.avertismente), \
+        "linia scutita nu mai trebuie semnalata ca ignorata: %s" % res.avertismente
+    xml = build_xml(res)
+    assert 'tip="LS"' in xml, "LS trebuie sa apara in XML"
+    # DUK valid pe cazul exact 21+11+scutit catre CUI (proba obligatorie)
+    from core import duk
+    assert duk.poate_valida("d394"), "DUK d394 indisponibil - proba obligatorie nu poate rula"
+    rez = duk.valideaza(xml, "d394", an=2026, luna=6)
+    assert rez["stare"] == "valid", "D394 multi-cota cu scutit->LS trebuie valid pe DUK: %s" % rez.get("erori")
