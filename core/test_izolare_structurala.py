@@ -2,21 +2,23 @@
 """core/test_izolare_structurala.py — GARD STRUCTURAL de izolare (C-5 P1, clasele 5+6).
 
 Izolarea (tenant + cross-cabinet) NU are mesaj conform cap.6: comportamentul CORECT e 404 TĂCUT
-(un mesaj care ar explica "de ce" = scurgere de informatie). Deci aici NU se cataloghează un mesaj,
-se PROBEAZĂ că izolarea ȚINE, pentru toate cele patru principii de acces, pe TOATE rutele {tenant_id}.
+(un mesaj care ar explica "de ce" = scurgere de informatie). Deci NU se cataloghează un mesaj,
+se PROBEAZĂ că izolarea ȚINE, pentru toate cele patru principii de acces, pe TOATE rutele {tenant_id}
+și pe TOATE metodele (GET + POST/PUT/DELETE — scrierea cross-tenant e mai gravă decât citirea).
 
-Chokepoint unic: auth_api.schema_tenant(conn, user_id, tenant_id) -> None daca userul n-are acces:
-  - superadmin: DOAR tenanti fara cabinet (accounting_firm_id IS NULL);
+Chokepoint unic: auth_api.schema_tenant(conn, user_id, tenant_id) -> None dacă userul n-are acces:
+  - superadmin: DOAR tenanti fără cabinet (accounting_firm_id IS NULL);
   - admin_firma: DOAR firmele cabinetului lui;
   - angajat/client: DOAR prin user_tenants.
-Ruta care rezolva tenantul fara acest chokepoint = scurgere.
+Ruta care rezolvă tenantul fără acest chokepoint = scurgere.
 
-GARD STRUCTURAL: enumeram rutele GET {tenant_id} DIN main.app.routes (nu listă hardcodată) și
-probăm cross-acces pentru fiecare principiu -> niciodată 2xx, niciodată sentinela tenantului interzis.
-O RUTĂ NOUĂ {tenant_id} fără filtrare pe tenant intră automat în probă și PICĂ testul.
+GARD STRUCTURAL: enumeram DINAMIC (rută,metodă) cu {tenant_id} DIN main.app.routes (nu listă
+hardcodată) și probăm cross-acces pentru fiecare principiu -> niciodată 2xx, niciodată sentinela
+tenantului interzis. O RUTĂ NOUĂ {tenant_id} fără filtrare pe tenant intră automat și PICĂ testul.
 
-Scenarii (decizie Costin C-5): (1) cabinet B cere resurse cabinet A; (2) asistent cu firme parțial
-atribuite cere firmă neatribuită; (3) client de portal cere altă firmă; (4) superadmin cere tenant.
+Siguranța probelor de SCRIERE: conn.commit e neutralizat (nicio persistare în public) + SAVEPOINT
+per request (rollback la savepoint după fiecare cerere -> anulează orice scriere ȘI recuperează dintr-o
+tranzacție abortată). Fără poluare, fără cascadă de aborturi.
 """
 import contextlib
 import re
@@ -25,6 +27,24 @@ import pytest
 from core import db as _db, tenant_provisioning as _tp, auth_api
 
 SCH_A, SCH_B, SCH_C = "ztest_izs_a", "ztest_izs_b", "ztest_izs_c"
+_METODE = ("GET", "POST", "PUT", "DELETE")
+
+
+class _ConnProxy:
+    """Proxy peste conn: commit/rollback = no-op (izolarea o face SAVEPOINT-ul din _fake).
+    psycopg2 connection.commit e read-only -> nu poate fi monkeypatch-uit direct."""
+    def __init__(self, real):
+        object.__setattr__(self, "_real", real)
+    def __getattr__(self, n):
+        return getattr(self._real, n)
+    def commit(self):
+        pass
+    def rollback(self):
+        pass
+    def __enter__(self):
+        return self
+    def __exit__(self, *a):
+        return False
 
 
 def _db_ok():
@@ -75,26 +95,34 @@ def env(monkeypatch):
             cur.execute("INSERT INTO public.accounting_firms (nume) VALUES ('ZTEST NEXUS') RETURNING id")
             firmB = cur.fetchone()[0]
             adminA = _user(cur, "izs_admin_a@invalid", "admin_firma", firmA)
-            adminB = _user(cur, "izs_admin_b@invalid", "admin_firma", firmB)
-            asistentA = _user(cur, "izs_asist_a@invalid", "angajat", firmA)   # cabinet A, atribuit doar tA
-            clientA = _user(cur, "izs_client_a@invalid", "client", firmA)     # client, portal, doar tA
-            superad = _user(cur, "izs_super@invalid", "superadmin", None)     # fara cabinet
+            _user(cur, "izs_admin_b@invalid", "admin_firma", firmB)
+            asistentA = _user(cur, "izs_asist_a@invalid", "angajat", firmA)
+            clientA = _user(cur, "izs_client_a@invalid", "client", firmA)
+            superad = _user(cur, "izs_super@invalid", "superadmin", None)
             fidA, sidA = _seed_schema(cur, SCH_A, "TENANT A SRL", "A-100", "SALARIAT A")
             fidB, sidB = _seed_schema(cur, SCH_B, "TENANT B SRL", "B-200", "SALARIAT B")
-            fidC, sidC = _seed_schema(cur, SCH_C, "TENANT C SRL", "C-300", "SALARIAT C")
+            _seed_schema(cur, SCH_C, "TENANT C SRL", "C-300", "SALARIAT C")
             cur.execute("SET search_path TO public")
             tA = _tenant_row(cur, SCH_A, "TENANT A", firmA)
             tB = _tenant_row(cur, SCH_B, "TENANT B", firmB)
             tC = _tenant_row(cur, SCH_C, "TENANT C", firmA)   # cabinet A, dar NEATRIBUIT asistentului/clientului
-            # atribuiri partiale: asistentA si clientA vad DOAR tA (nu tC, nu tB)
             cur.execute("INSERT INTO public.user_tenants (user_id,tenant_id) VALUES (%s,%s)", (asistentA, tA))
             cur.execute("INSERT INTO public.user_tenants (user_id,tenant_id) VALUES (%s,%s)", (clientA, tA))
 
+        # niciun request nu persistă (anti-poluare public); scrierile se anulează la savepoint
         @contextlib.contextmanager
         def _fake(schema=None):
             with conn.cursor() as c:
                 c.execute('SET search_path TO "%s", public' % schema if schema else "SET search_path TO public")
-            yield conn
+                c.execute("SAVEPOINT probe_sp")
+            try:
+                yield _ConnProxy(conn)
+            finally:
+                with conn.cursor() as c:
+                    try:
+                        c.execute("ROLLBACK TO SAVEPOINT probe_sp"); c.execute("RELEASE SAVEPOINT probe_sp")
+                    except Exception:
+                        pass
         monkeypatch.setattr(_db, "get_conn", _fake)
 
         def tok(uid, rol, firm):
@@ -120,15 +148,17 @@ def _client():
     return TestClient(main.app)
 
 
-def _rute_get_tenant():
-    """TOATE rutele GET cu {tenant_id} din app (nu hardcodat) -> gardul prinde rute noi."""
+def _rute_tenant(metode=_METODE):
+    """TOATE perechile (rută, metodă) cu {tenant_id} din app (nu hardcodat) -> prinde rute noi."""
     import main
     out = set()
     for r in main.app.routes:
         p = getattr(r, "path", "")
-        m = getattr(r, "methods", set()) or set()
-        if "{tenant_id}" in p and "GET" in m:
-            out.add(p)
+        ms = getattr(r, "methods", set()) or set()
+        if "{tenant_id}" in p:
+            for m in ms:
+                if m in metode:
+                    out.add((p, m))
     return sorted(out)
 
 
@@ -139,43 +169,29 @@ def _fill(path, tid, ctx):
     return re.sub(r"{(\w+)}", repl, path)
 
 
-# [FINDING C-5 P1, semnalat pt decizia Costin] Rute {tenant_id} care raspund 2xx cross-tenant DAR
-# NU scurg date de tenant: intorc o constanta GLOBALA, iar tenant_id e DECORATIV (nu trec prin
-# schema_tenant, doar cere_cabinet). Inconsistenta structurala (nu breach de date): fix posibil =
-# adauga schema_tenant SAU muta in afara namespace-ului /tenants/. NU se repara aici (catalog intai,
-# rescriere = campanie separata). Orice rută 2xx cross-tenant care NU e aici -> gardul PICĂ.
-_EXCEPTAT_GLOBAL_NON_TENANT = {
-    "/tenants/{tenant_id}/contracte/marcaje",   # intoarce _ct.MARCAJE (nomenclator static de marcaje contract)
-}
-
-
 def _probe_refuz(cl, token, tid_interzis, sentinele, ctx=None):
-    """Pe TOATE rutele GET {tenant_id}: acces la tid_interzis -> niciodată 2xx (excepțiile globale
-    documentate: nu 2xx-strict, dar OBLIGATORIU fără sentinela tenantului). Sentinela = date scurse."""
+    """Pe TOATE (rută,metodă) {tenant_id}: acces la tid_interzis -> niciodată 2xx, niciodată sentinela.
+    POST/PUT trimit corp gol; izolarea corectă refuză (403/404) ÎNAINTE de orice scriere."""
     ctx = ctx or {}
     H = {"Authorization": "Bearer " + token}
-    rute = _rute_get_tenant()
-    assert len(rute) >= 50, "gard gol? doar %d rute {tenant_id} enumerate" % len(rute)
-    # excepțiile trebuie să existe încă în rute (altfel sunt stale -> de curățat)
-    assert _EXCEPTAT_GLOBAL_NON_TENANT <= set(rute), (
-        "excepții globale stale (nu mai sunt rute): %s" % (_EXCEPTAT_GLOBAL_NON_TENANT - set(rute)))
+    perechi = _rute_tenant()
+    assert len(perechi) >= 150, "gard gol? doar %d (rută,metodă) {tenant_id}" % len(perechi)
     scapari = []
-    for p in rute:
+    for (p, m) in perechi:
         url = _fill(p, tid_interzis, ctx)
+        body = {} if m in ("POST", "PUT") else None
         try:
-            r = cl.get(url, headers=H)
+            r = cl.request(m, url, headers=H, json=body)
         except Exception as e:
-            scapari.append("%s -> EXCEPTIE %s" % (url, type(e).__name__)); continue
-        exceptat = p in _EXCEPTAT_GLOBAL_NON_TENANT
-        if (200 <= r.status_code < 300) and not exceptat:
-            scapari.append("%s -> %d (rută {tenant_id} nouă fără filtrare pe tenant?)" % (url, r.status_code))
+            scapari.append("%s %s -> EXCEPTIE %s" % (m, url, type(e).__name__)); continue
+        if 200 <= r.status_code < 300:
+            scapari.append("%s %s -> %d (2xx cross-tenant: rută nefiltrată pe tenant!)" % (m, url, r.status_code))
             continue
-        # chiar și excepția globală nu are voie să întoarcă DATE de tenant
         for s in sentinele:
             if s in r.text:
-                scapari.append("%s -> sentinela %r in raspuns (SCURGERE DE DATE)" % (url, s))
-    assert not scapari, "IZOLARE (%d din %d rute): %s" % (len(scapari), len(rute), scapari[:12])
-    return len(rute)
+                scapari.append("%s %s -> sentinela %r (SCURGERE DE DATE)" % (m, url, s))
+    assert not scapari, "IZOLARE (%d din %d rute×metodă): %s" % (len(scapari), len(perechi), scapari[:15])
+    return len(perechi)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -187,17 +203,17 @@ def test_control_pozitiv_adminA_isi_vede_tenantul(env):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
-def test_izolare_cross_cabinet_adminB_nu_vede_A_si_invers(env):
-    """(1) admin_firma dintr-un cabinet NU vede tenantul altui cabinet, pe nicio rută GET {tenant_id}."""
+def test_izolare_cross_cabinet_admin(env):
+    """(1) admin_firma dintr-un cabinet NU vede/scrie tenantul altui cabinet, pe nicio rută {tenant_id}."""
     cl = _client()
     n = _probe_refuz(cl, env["tok_adminA"], env["tB"], ["TENANT B", "B-200", "SALARIAT B"],
                      ctx={"factura_id": env["fidB"], "salariat_id": env["sidB"]})
-    assert n >= 50
+    assert n >= 150
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_izolare_asistent_firma_neatribuita(env):
-    """(2) asistent (angajat) atribuit DOAR tA nu vede tC (același cabinet, neatribuit) și nici tB."""
+    """(2) asistent (angajat) atribuit DOAR tA nu vede/scrie tC (același cabinet, neatribuit) și nici tB."""
     cl = _client()
     _probe_refuz(cl, env["tok_asistentA"], env["tC"], ["TENANT C", "C-300", "SALARIAT C"])
     _probe_refuz(cl, env["tok_asistentA"], env["tB"], ["TENANT B", "B-200", "SALARIAT B"])
@@ -205,14 +221,14 @@ def test_izolare_asistent_firma_neatribuita(env):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_izolare_client_portal_alta_firma(env):
-    """(3) client de portal atribuit tA nu vede altă firmă (tB)."""
+    """(3) client de portal atribuit tA nu vede/scrie altă firmă (tB)."""
     cl = _client()
     _probe_refuz(cl, env["tok_clientA"], env["tB"], ["TENANT B", "B-200", "SALARIAT B"])
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_izolare_superadmin_nu_vede_tenant_cu_cabinet(env):
-    """(4) superadmin (id GDPR) vede DOAR conturi fără cabinet -> nu vede tA (are cabinet)."""
+    """(4) superadmin (GDPR) vede DOAR conturi fără cabinet -> nu vede/scrie tA (are cabinet)."""
     cl = _client()
     _probe_refuz(cl, env["tok_super"], env["tA"], ["TENANT A", "A-100", "SALARIAT A"],
                  ctx={"factura_id": env["fidA"], "salariat_id": env["sidA"]})
@@ -220,5 +236,5 @@ def test_izolare_superadmin_nu_vede_tenant_cu_cabinet(env):
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_gard_enumera_rute_netrivial(env):
-    """Meta-gard: setul de rute {tenant_id} enumerate e netrivial (altfel probele trec pe gol)."""
-    assert len(_rute_get_tenant()) >= 50
+    """Meta-gard: setul (rută,metodă) {tenant_id} enumerat e netrivial (altfel probele trec pe gol)."""
+    assert len(_rute_tenant()) >= 150

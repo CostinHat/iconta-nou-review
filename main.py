@@ -5469,8 +5469,11 @@ def registratura_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
 
 
 # --- generare contracte din sabloane (F147: mail-merge) ---
-@app.get("/tenants/{tenant_id}/contracte/marcaje")
-def contracte_marcaje(tenant_id: int, ctx=Depends(cere_cabinet)):
+@app.get("/contracte/marcaje")
+def contracte_marcaje(ctx=Depends(cere_cabinet)):
+    # nomenclator GLOBAL de marcaje de contract (nu per-tenant) - mutat din
+    # /tenants/{tenant_id}/ (C-5 P1, decizie Costin): tenant_id era decorativ, ruta
+    # nu atinge schema tenantului; sub /tenants/ pretindea izolare pe care n-o avea.
     from core import contracte_api as _ct
     return {"marcaje": _ct.MARCAJE}
 

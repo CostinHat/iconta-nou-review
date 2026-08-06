@@ -2764,7 +2764,7 @@ async function ecranContracte(corp, nav, t) {
   async function randeazaEditor(sablon) {
     nav.setInapoi(randeazaPrincipal);
     let marcaje = {};
-    try { marcaje = (await api.get(`/tenants/${t.id}/contracte/marcaje`)).marcaje || {}; } catch (e) {}
+    try { marcaje = (await api.get(`/contracte/marcaje`)).marcaje || {}; } catch (e) {}
     const chips = Object.entries(marcaje).map(([k, v]) =>
       `<code style="padding:2px 6px;margin:0 4px 4px 0;display:inline-block" title="${esc(v)}">{{${k}}}</code>`).join("");
     corp.innerHTML = `

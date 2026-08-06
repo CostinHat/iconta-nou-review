@@ -1725,3 +1725,18 @@ aici; extinderea probei la metodele mutante (cu rollback) = pas viitor dacă Cos
 **RĂMAS P1 (catalog, nu gard) — predare:** clasele 1-4 de blocare (rol insuficient, perioadă închisă, date lipsă
 `erori_generare`, patru ochi) = catalog cap.6 (trigger → mesajul care TREBUIE → ce apare acum → unde), cu bug-uri
 de tăcere-la-eșec semnalate distinct. NEÎNCEPUT (buget context). Apoi P6 (cens `.oblig`) → P2 → P3 → P4 → P5 → P7.
+
+
+## 06.08.2026 (tura 4) — C-5 P1: marcaje MUTAT (finding rezolvat) + gard izolare extins la scriere
+Urmare decizie Costin pe finding-ul din 412d5df:
+- **`/tenants/{tenant_id}/contracte/marcaje` → MUTAT la `/contracte/marcaje`** (`main.py`). E nomenclator GLOBAL
+  (`contracte_api.MARCAJE`), nu per-tenant; `tenant_id` era decorativ. NU s-a adăugat `schema_tenant` ca
+  defense-in-depth (ar lăsa o rută care pretinde izolare fără s-o aibă = model de copiat). Caller frontend actualizat
+  (`static/js/ecrane/firme.js:2767` → `/contracte/marcaje`). Excepția documentată a fost SCOASĂ din gard — nu mai are
+  ce excepta (ruta nu mai e sub `{tenant_id}`).
+- **Gard `test_izolare_structurala.py` EXTINS la POST/PUT/DELETE `{tenant_id}`** (azi 243 perechi rută×metodă:
+  ~83 GET + 127 POST + 16 PUT + 16 DELETE). Scrierea cross-tenant e mai gravă decât citirea → probată la fel:
+  niciodată 2xx, niciodată sentinela tenantului interzis, pentru toate 4 principii. Siguranță: proxy pe conn cu
+  commit/rollback = no-op + SAVEPOINT per request (rollback la savepoint) → nicio persistare în public, nicio cascadă
+  de abort. Rezultat: izolarea ȚINE pe TOATE metodele (0 scurgeri pe scriere). O rută nouă `{tenant_id}` (orice metodă)
+  nefiltrată → gardul PICĂ.
