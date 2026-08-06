@@ -264,3 +264,45 @@ Surfacing global: `main.py:103-111` prinde orice mesaj cu `PERIOADA_BLOCATA` →
 - **Stopurile fiscale de generator (d100/d301/d390/d205/common cotă) = majoritar EXPLICITE/EXEMPLARE** (gol+temei+ieșire) — cel mai bun strat din C-5 până acum. Model: PerioadaIndisponibila, EDateIncomplete, D390-pe-zero, common:589.
 - **Puncte slabe (goluri de conformitate):** (a) `CursIndisponibil` pierde ieșirea la suprafața `facturi_api`; (b) `ReconciliereEmis:51` telegrafic; (c) `d710/d100` micro-cotă fără „unde completezi"; (d) stratul de lookup entitate (`sablon inexistent`, `MESAJ_INEXISTENT` cod-only) telegrafic.
 - **BUG tăcere-la-eșec: B17** (d406 unitate necunoscută → H87 tăcut). + fallback țară minor. Fix = campanie separată.
+
+---
+
+# P3 — Raise-uri backend `core/` (reguli fiscale / validare), fără cele din P1/P2
+
+Scope: `raise ValueError` + excepții custom care sunt garduri FISCALE / de VALIDARE / de BUSINESS, user-facing.
+Exclus (deja cataloage): profil `LIPSĂ` (P1), date lipsă/indisponibile (P2), invarianți interni/asserts. Formă:
+trigger → ce TREBUIE → ce apare acum → unde. **Nimic rescris.** ~140 raise-uri în scop, în ~40 module, 13 clustere.
+
+## Clustere (temă → verdict cap.6; exemple verbatim + loc)
+| # | Temă (module) | Verdict | Exemple verbatim + loc |
+|---|---|---|---|
+| C1 | Stocuri: cost/CMV/adaos/stoc negativ (stocuri, stocuri_cv, d406_stocuri) | **MIXT** | expl: „pret de vanzare sub costul de achizitie … la {den}" (stocuri.py:81), „CMV negativ: K>1, verifica soldurile" (:134), „iesire {c} peste stocul {cant}" (stocuri_cv.py:46); **telegrafic:** „transport/taxe negative" (:50), „adaos negativ" (:85), „rc_707 negativ" (:126) |
+| C2 | TVA marjă + marjă turism | **SPLIT** | expl+lege: „regim normal interzis: calator persoana fizica (art. 311 al. 10 lit. a)" (tva_marja_turism.py:25); **telegrafic:** „preturi invalide" (tva_marja.py:15), „sume/componenta/comision invalid" |
+| C3 | Taxare inversă | **EXPLICIT** | „taxarea inversa pt lit.{lit}) a expirat la {expira} - regim normal" (:43), „sub pragul de {prag}/factura … regim normal cu TVA" (:45), „categorie necunoscuta ({CATEGORII})" (:38) |
+| C4 | Intracomunitar / VIES | **EXPLICIT** (exemplar) | „cod TVA client INVALID in VIES - scutirea art.294(2)a nu se justifica" (:57), „fara dovada transportului … scutirea nu se aplica" (:60) |
+| C5 | Import/export vamal | **EXPLICIT** | „fara declaratia vamala de export (DVE) scutirea art.294(1)a nu se justifica - factureaza cu TVA pana la obtinerea dovezii" (import_export.py:53) |
+| C6 | Familia „cotă TVA obligatorie" (facturi/stocuri/produse/reconciliere/common) | **EXPLICIT (model)** | „cotă TVA obligatorie: operațiunea trebuie să declare explicit cota (… nu cotă standard)" (common.py:288), „linie fara cota TVA (%r): declara cota explicit" (facturi_api.py:61), „se storneaza doar facturi emise" (facturi_api.py:306) — 7+ situri |
+| C7 | Reconciliere „A DOUA CALE" hard-block (d101/d205/d300/d394/d406/d112_reconciliere) | **EXPLICIT (cele mai bune exemplare)** | „D101 A DOUA CALE … NU se leaga de recalculul independent. Divergente: {gen=X vs cale2=Y (dif Z)}. Declaratia NU se genereaza - gardul nu alege singur … verifica agregarea si notele." (d101_reconciliere.py:83); D112 în plus „nu tace pe date corupte" (:256) |
+| C8 | Garduri enum/fiscal generatoare (d100/d710/d390/d394/d205…) | **EXPLICIT** | „cod_oblig 121 (micro) CERE cota … validator R17 'cota lipsa'" (d710.py:211), „operatiune manuala cu tip necunoscut %r (acceptate: %s)" (d394.py:400/d390.py:189), „D<xxx> nu se poate genera: <erori>" (envelope) |
+| C9 | Provizioane/ajustări | **MIXT/telegrafic** | partial-enum: „actiune: constituire\|reluare" (:43), „cont ajustare stocuri = grupa 39x" (:66); telegrafic: „suma invalida" (:38/49/64) |
+| C10 | Credite/leasing/avansuri/deconturi/decontări-asociați/comodat | **TELEGRAFIC-greu** | partial-enum: „tip: lung\|scurt", „fel: primita\|acordata", „destinatie: {CONT_AVANS}"; expl: „valori invalide (partea refacturata <= total)" (comodat_chirii.py:70); **majoritar „suma invalida"/„valori invalide" bare** |
+| C11 | Producție/zilieri/inventariere/subvenții/sponsorizări/ONG | **TELEGRAFIC+enum** | expl: „valori invalide (subventia nu poate depasi valoarea)" (subventii.py:45); partial: „fel: zilier\|cenzor\|mandat" (contracte_speciale.py:99); telegrafic: „cost standard invalid", „baza 345 invalida", „brut invalid" |
+| C12 | Amortizare/mijloace fixe/reevaluare/obiecte inventar (d406_active, reevaluare, obiecte_inventar) | **TELEGRAFIC (cel mai slab, cu C10)** | „MF {cod}: valoare/dnf invalide" (d406_active.py:36 — numește activul, nu fixul), „valori invalide"/„valoare invalida" (reevaluare/obiecte). Nu există `amortizare.py` dedicat; regula liniară e în d406_active, gard terse |
+| C13 | common.py nucleu fiscal | **EXPLICIT** | „tip_decont necunoscut in vectorul fiscal: %r" (:69), „{nume}: valoarea din {din} … gol in registru. Adauga valoarea valabila in COTE." (:589); telegrafic: „cotă necunoscută: %r" (:582) |
+
+## Proporție cap.6 (≈140 raise-uri)
+- **Explicit ~55%** (C3-C8, C13, marja-turism fiscal): spun CE + CE FACI, adesea cu articol de lege + regimul-alternativ. Reconcilierea (C7) și familia cotă-TVA (C6) = cele mai bune exemplare din tot C-5.
+- **Partial/enum ~20%:** `actiune:…|…` / `fel:…` / `destinatie:…` / `moment:…` — listează valorile valide (remediu implicit), dar nu numesc CE e greșit în proză. Borderline cap.6.
+- **Telegrafic ~25%:** `suma invalida` / `valori invalide` / `valoare invalida` / `brut invalid` / `preturi invalide` — concentrate în C10 (credite/leasing/avansuri/deconturi), C11 (producție/contracte), C12 (reevaluare/obiecte/amortizare) + sign-check-urile stocuri. Încalcă cap.6 (doar CE, fără CE-FACI), DAR păzesc intrări numerice programatice, nu decizii fiscale → blast-radius mic. **Ce TREBUIE:** + valoarea/constrângerea încălcată (ex. „suma trebuie > 0").
+
+## TĂCERE-LA-EȘEC (audit distinct) — ZERO în căile fiscale
+**Niciun bug de tăcere-la-eșec în P3.** Invers: codul a SCOS deliberat fiecare `except: pass`/`except: return 0`
+peste agregarea fiscală și a documentat scoaterea („MASCA SCOASA 27.07"): numere.py:65, d112.py:95,
+d406.py:1065/1110/1201 (azi `raise RuntimeError("D406: … a esuat - %s")`), d406_reconciliere.py:11, observare.py:223,
+cron.py:25. Singurul `except: pass` viu în scop = `gdpr_sterge.py:59` (`except OSError` la ștergere best-effort de
+fișiere la radiere cabinet) — **nu e regulă fiscală, nu e bug**. Niciun generator nu întoarce None pe încălcare de
+regulă fără mesaj (agregă în `erori` și ridică „D<xxx> nu se poate genera: …").
+
+## Rezumat P3
+- ~140 raise-uri fiscale/validare, 13 clustere. **~55% explicit** (reconciliere + cotă-TVA = model), ~20% enum-partial, ~25% telegrafic (input-guards numerice în credite/leasing/producție/amortizare).
+- Goluri de conformitate = cele ~25% telegrafice (adaugă constrângerea încălcată). **Zero tăcere-la-eșec** în căile fiscale (măștile scoase, vânate, documentate).
