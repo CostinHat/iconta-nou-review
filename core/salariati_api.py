@@ -355,6 +355,9 @@ def salveaza_concediu(conn, salariat_id, date):
     else:
         la_data = _di
 
+    # [G9] Data de sfarsit e OBLIGATORIE (asterisc UI real): un CM fara sfarsit = perioada corupta in D112.
+    if not (date.get("data_sfarsit") or None):
+        raise ValueError("Data de sfarsit a concediului medical e obligatorie (perioada CM = inceput->sfarsit; intra in D112).")
     # Validare: baza de calcul trebuie sa fie reala (altfel brut 0 dar net pozitiv = imposibil)
     if _dec_pos(ven6) <= 0:
         raise ValueError("Veniturile brute pe 6 luni lipsesc sau sunt 0 - completeaza baza de calcul din statele de plata.")

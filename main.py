@@ -2621,6 +2621,8 @@ def fr_sterge(tenant_id: int, sid: int, ctx=Depends(cere_context)):
 def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
     linii = [l.model_dump() for l in date.linii]
+    if not (date.tert_nume or "").strip():
+        raise HTTPException(422, "Denumirea beneficiarului e obligatorie pe factură. Completeaz-o înainte de emitere.")
     with db.get_conn(schema) as conn:
         are_stoc = any(l.get("articol_id") for l in linii)
         # poarta doar la FACTURA (nu proforma/aviz), la firma CV cu linie de stoc

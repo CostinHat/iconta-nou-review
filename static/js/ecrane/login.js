@@ -378,7 +378,7 @@ export function ecranLogin(radacina) {
         <div class="login-subtagline">Înregistrează cabinetul tău</div>
       </div>
       <label class="camp">
-        <span class="camp-eticheta">CUI<span class="oblig">*</span></span>
+        <span class="camp-eticheta">CUI</span>
         <div style="display:flex; gap:8px;">
           <input type="text" class="camp-input" id="reg-cui" autofocus style="flex:1">
           <button type="button" class="buton-primar acces-verifica-btn" id="reg-cui-verifica">Verifică la ANAF</button>

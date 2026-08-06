@@ -89,6 +89,7 @@ def campuri_required_lipsa(corp):
         _poz(b.get("cantitate"), f"b{i}-cantitate", f"Bun {n}: Cantitate")
         _poz(b.get("greutate_neta"), f"b{i}-greutate_neta", f"Bun {n}: Greutate netă")
         _poz(b.get("greutate_bruta"), f"b{i}-greutate_bruta", f"Bun {n}: Greutate brută")
+        _poz(b.get("valoare_fara_tva"), f"b{i}-valoare_fara_tva", f"Bun {n}: Valoare fără TVA")
     p = corp.get("partener") or {}
     _sir(p.get("cod_tara"), "p-cod_tara", "Partener: Cod țară")
     _sir(p.get("denumire"), "p-denumire", "Partener: Denumire")

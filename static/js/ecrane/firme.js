@@ -551,7 +551,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ${camp("data_incetare", "Data încetării (gol = activ)", "data")}
       ${camp("tip_norma", "Tip norm\u0103", "select", { optiuni: [["intreaga","\u00centreag\u0103"],["partiala","Par\u021bial\u0103"]] })}
       ${camp("ore_zi", "Ore/zi (norm\u0103 par\u021bial\u0103)", "numar", { pas: "0.5" })}
-      ${camp("salariu_brut", "Salariu brut", "numar", { obligatoriu: true })}
+      ${camp("salariu_brut", "Salariu brut", "numar")}
       ${camp("persoane_intretinere", "Persoane \u00een \u00eentre\u021binere", "numar", { pas: "1" })}
       ${camp("judet_casa", "Jude\u021b CAS/CASS", "text")}
       ${campCorLookup("sn")}
