@@ -212,3 +212,55 @@ submit `.msg-eroare` lângă câmp. Acum: majoritatea validează generic-sus sau
 - **Deviații marker canonic:** operatiuni/etransport/firme-salariat (`" *"` literal) + login (casetă generică).
 - **`camp-ajutor` și `.msg-eroare` per-câmp = rare** → gol cap.6 sistemic (context + eroare-lângă-câmp).
 - **Tăcere-la-eșec: B7-B16** (distinct de goluri) + info-leak operatiuni:381. Fix = campanie separată, decizia Costin.
+
+---
+
+# P2 — Date lipsă / incomplete (catalog EXTINS, dincolo de `erori_generare` profil + `PerioadaNeconfirmata`)
+
+Formă: trigger → ce TREBUIE (cap.6: gol + cauză/temei + ieșire) → ce apare acum (verbatim) → unde. Nimic rescris.
+Surfacing global: `main.py:103-111` prinde orice mesaj cu `PERIOADA_BLOCATA` → **423**; restul per-rută (422/409/404) sau `{eroare}`/`{ok:false,cod}` inline.
+
+## Cluster A — Excepții custom de date lipsă/indisponibile (4 clase + 1)
+| Excepție | Trigger | Ce apare ACUM (verbatim + loc) | Unde | Verdict cap.6 |
+|---|---|---|---|---|
+| `CursIndisponibil` (curs_bnr.py:37) | curs BNR absent la data facturii | `"Cursul BNR pentru <moneda> la data <data> nu e disponibil momentan."` (curs_bnr.py:172) | facturi_api.py:272 prinde → `{ok:false,cod:CURS_INDISPONIBIL, mesaj:"Cursul BNR nu e disponibil momentan."}` | **PARȚIAL** — spune CE (curs absent), dar **pierde ieșirea** („reîncearcă/introdu manual") pe suprafața facturi_api; TREBUIE: + ce faci |
+| `PerioadaIndisponibila` (common.py:480) | valoare (COTE) necerută la sursă înainte de o dată | `"<data> nu poate fi calculata: valoarea '<nume>' nu e definita inainte de <prima_data> ... se completeaza in COTE la sursa (decizie de dezvoltator)."` (common.py:597) | main.py:103 → 423 | **EXEMPLAR** (gol+cauză+ieșire+cine decide) |
+| `PlafonCulturalIndisponibil` (common.py:506) | plafon tichete culturale în fereastră GRI (semestru fără ordin) | `"PERIOADA_BLOCATA: Tichete culturale - plafon indisponibil pentru <data>: <motiv>"` (common.py:543) | beneficii_api.py:72 → `{eroare}` inline | **EXPLICIT** (ce + motiv) |
+| `EDateIncomplete` (efactura_send.py:108) | firmă București fără sector în adresă la trimitere e-factura | `"Localitate incompleta (<et>): firma e in Bucuresti dar lipseste sectorul (SECTOR1..6) ... Completeaza sectorul inainte de trimitere."` (efactura_send.py:124) | main.py:6719 → 422 | **EXEMPLAR** (ce lipsește + ce faci) |
+| `ReconciliereEmis` (reconciliere_emis.py:24) | totalPlata_A absent din XML emis | `:38` „...totalPlata_A absent din XML EMIS - artefactul nu contine totalul de plata" / `:51` „d112: totalPlata_A absent din XML EMIS" | poartă pe artefact | `:38` explicit; **`:51` TELEGRAFIC** (bare, fără ieșire) |
+
+## Cluster B — Nomenclator lipsă / cod nemapat (generatoare) — majoritar EXPLICIT
+| Trigger | Ce apare ACUM (verbatim + loc) | Verdict |
+|---|---|---|
+| D100 cod_oblig fără cont bugetar | `"D100: cod_oblig %r fara cont bugetar (... COD_BUGETAR); atributul cod_bugetar e OBLIGATORIU (ANAF C(10)), nu se omite tacit."` (d100.py:140) | EXPLICIT (ce+temei+de ce nu tacit) |
+| D301 curs absent/invalid | `"D301: curs de schimb absent sau invalid (%r). CF art.290 alin.(2) ... pentru RON e 1, pentru valută trebuie completat."` (d301.py:72) | EXEMPLAR |
+| Cotă TVA lipsă pe operațiune API | `"cotă TVA obligatorie: operațiunea trebuie să declare explicit cota (... nu cotă standard)"` (common.py:288) | EXPLICIT |
+| Cotă gol în registru (period-aware) | `"<nume>: valoarea din <din> (<temei>) a fost valabila pana la <out> ... gol in registru. Adauga valoarea valabila in COTE."` (common.py:589) | EXEMPLAR (gol+cauză+ieșire) |
+| D710/D100 micro fără cotă (R17) | d710.py:211 / d100.py:223 „...121 (micro) CERE cota... validator R17/ERR" | EXPLICIT-TERSE (fără „unde completezi") |
+
+## Cluster C — Goluri pe zero / date goale (nu se depune pe zero)
+| Trigger | Ce apare ACUM (verbatim + loc) | Verdict |
+|---|---|---|
+| D390 pe zero operațiuni IC | `"D390 nu se depune pe zero: luna ... nu are nicio operatiune intracomunitara. ... Daca ar fi trebuit sa existe, verifica daca facturile UE sunt introduse si daca partenerii au cod de TVA valid."` (d390.py:425) | **EXEMPLAR** (gol+temei+ieșire) |
+| D205 fără beneficiar de venit | `"D205 fara niciun beneficiar de venit - nu se genereaza ..."` (d205.py:113) | EXPLICIT-TERSE (mai puțină ieșire ca d390) |
+| D406 GeneralLedger gol | NU e stop — emite `<GeneralLedgerEntries/>` „pe zero", valid (d406.py:685-700) | CONFORM-prin-design (contra-exemplu: gol ≠ stop la d406) |
+| D406 factură fără linii | NU e stop — linie sintetică cu descriere „detaliul lipsește" (d406.py:1172-1178) | CONFORM-prin-design (semnal-în-XML) |
+
+## Cluster D — Rateuri de lookup entitate (adiacent date-lipsă, greutate mică)
+- `facturi_recurente.py:48/57` → `{eroare:"sablon inexistent"}` — **TELEGRAFIC**.
+- `raportari_api.py:103` → `{ok:false,cod:"MESAJ_INEXISTENT"}` — **doar cod, fără mesaj** (telegrafic la API).
+- `mijloace_fixe_import_api.py:161` → `{motiv:"cod_lipsa",mesaj:"%s: fara cod de inventar"}` — explicit-terse per rând.
+- (main.py: 216 hits `lipsă|inexistent|...` = majoritar guarde 404 tenant/entitate = **izolare/lookup, în afara scopului P2** — cataloage la P4/P5, nu aici.)
+
+## TĂCERE-LA-EȘEC în P2 (BUG distinct)
+| # | Loc | Ce se întâmplă | Gravitate |
+|---|---|---|---|
+| **B17** | `d406.py:1160` (apel `uom_unece`) | `um_cod, _um_stiut = uom_unece(um)` — flag-ul `_um_stiut` (semnalare „unitate necunoscută") e ARUNCAT (underscore). O UM necunoscută devine **tăcut** `H87`, fără niciun mesaj (gol+cauză promise în docstring, moarte). | **BUG LIVE** (fallback tăcut pe date incomplete) |
+| — | `d406.py:154-170` `_partener_registration_number` | țară non-ISO → număr best-effort fără semnal (nu-i stop) | minor (fallback tăcut) |
+| — | `d301_operatiuni_api.py:61` `except (PerioadaIndisponibila,ValueError): continue` | omite o opțiune de cotă invalidă pt perioadă („nu se oferă fals") | **legitim, NU bug** (semnalat ca să nu fie re-flag) |
+| — | (istoric remediat) `d406.py:1061/1103/1204/...` | fostul `except: pass` care golea GL tăcut (MASCA SCOASA 27.07) → azi `RuntimeError("D406: ... a esuat - %s")` | remediat (clasă vânată, acum zgomotos) |
+
+## Rezumat P2
+- **Stopurile fiscale de generator (d100/d301/d390/d205/common cotă) = majoritar EXPLICITE/EXEMPLARE** (gol+temei+ieșire) — cel mai bun strat din C-5 până acum. Model: PerioadaIndisponibila, EDateIncomplete, D390-pe-zero, common:589.
+- **Puncte slabe (goluri de conformitate):** (a) `CursIndisponibil` pierde ieșirea la suprafața `facturi_api`; (b) `ReconciliereEmis:51` telegrafic; (c) `d710/d100` micro-cotă fără „unde completezi"; (d) stratul de lookup entitate (`sablon inexistent`, `MESAJ_INEXISTENT` cod-only) telegrafic.
+- **BUG tăcere-la-eșec: B17** (d406 unitate necunoscută → H87 tăcut). + fallback țară minor. Fix = campanie separată.
