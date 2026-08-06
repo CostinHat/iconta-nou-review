@@ -1,5 +1,63 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
+## ★★ PREDARE — C-4 TRANȘA 2 (coerență + TVA) — 06.08.2026 — CITEȘTE ASTA ÎNTÂI
+
+**STARE:** HEAD = origin/main = backup/lant-20260805 = **559bce3**. Tree curat. Poartă verde (verificator TOTAL 0).
+Ritual pornire: `ssh iconta 'cd ~/iconta_nou && pwd; hostname; git log -1'`; apoi `python -m core.agenda` / `agenda_drift`.
+
+**TRANȘA 1 (salarizare S4) ÎNCHISĂ** cu DUK verde complet (12 luni × 12 salariați FĂRĂ EROARE). 6 neconformități
+fiscale găsite de seed-ul S4, TOATE reparate cu gard + RED/GREEN + vânătoare de clasă:
+1. brut/bază declarate pe salariul contractual stale (01c075a) · 2. bază minimă part-time = sm−facilitate → sm integral
+(2786954) · 3. filtrare salariați fără data_angajare, 4 situri (2786954) · 4. cod 15 D_23="RM" · 5. cod 07 carantină
+absentă din angajatorC2 · 6. cod 10 D_13 aviz (toate 4661fa5). GARZI: divergență part-time lege-vs-DUK (7982dfd).
+Seed reproductibil: `date_test/seed/transa1_salarizare_s4.py` (559bce3).
+
+**CE URMEAZĂ — TRANȘA 2 (coerență + TVA):**
+- Cele 6–7 tranzacții R3 (**T-1…T-7**, `date_test/C4_date.md` secțiunea C) cu **sume EXACTE identice pe ambele laturi**
+  (emitent + primitor: CUI/sumă/dată identice → D394 vânzări↔cumpărări + control_incrucisat se verifică din date).
+  T-7 (P1→S4) deja are S4 din tranșa 1. TVA 21% (cotă 2026).
+- Documentele care produc rândurile **D300/D394/D390/D301** pentru **M1/M2/P1/P2/N1/S1/S2/S3** (S3 = agricultor forfetar,
+  interacțiune D394 „achiziție de la agricultor" = exceptia numită; N1 = D301 achiziție IC de neplătitor).
+- Cele **14 valori la limită** din catalogul C-4 secțiunea B care țin de TVA (L1 prag micro 100k, L2 perioadă TVA, L3
+  prag scutire 395k, L4 TVA la încasare 4,5M→5M la 01.03, L10 achiziție IC 10k, L12 semne contrare storno/retur/ajustare),
+  fiecare cu **3 cazuri (exact/−1/+1)** — DAR (lecție tranșa 1): cazul **prag−1 e uneori DATE DEFECTE (C-5)**, nu C-4
+  (app-ul blochează, ex. salariu sub minim). Verifică per prag dacă −1 e date corecte sau input defect.
+
+**METODOLOGIA (identică cu tranșa 1):** orice divergență = **bug până la proba contrarie** → **vânătoare de clasă**
+(TOȚI consumatorii, nu doar situl unde a apărut — bug-urile #1 și #3 aveau 2–4 situri) → **temei la sursă** (verbatim,
+din `anaf_surse/`) → **gard + mutație + RED/GREEN** → **DUK**. NU raporta între bug-uri; UN SINGUR raport la închiderea
+tranșei, cu §2.2 pe fiecare neconformitate.
+
+**INFRASTRUCTURĂ (dovedită în tranșa 1):**
+- Provizionare: `core.tenant_provisioning.provision_tenant(conn, nume, cui, firm_id, user_id, tpl)`;
+  `tpl=open("tenant_template.sql").read()`; cabinet+admin via `core.auth_api.inregistreaza_cabinet`. Setează
+  `firma_profil.caen` după provizionare (D394 îl cere).
+- Conexiune: `core.db.get_conn(schema="tenant_NNN")` (setează search_path). Încarcă `~/.iconta/db.env` în os.environ ÎNTÂI
+  (vezi `_incarca_db_env` din seed-ul tranșei 1).
+- Generare declarații — **atenție la semnătură** (verifică `inspect.signature`): `d300.pull(conn, schema, Perioada(an,luna))`
+  și d394/d390/d301 folosesc **Perioada** (din `core.common`); `d112.genereaza(conn, schema, an, luna)` folosește an/luna.
+  Toate întorc `(xml, avertismente)`. Rute HTTP: `POST /declaratii/{tip}` și `/declaratii/{tip}/valideaza` → `declaratii_api.genereaza`.
+- DUK: `core.duk.valideaza(xml, tip, an=, luna=) -> {"stare": "valid"|"erori"|"gri"}`. **Atenție:** „atenționare" (A:) ≠
+  „eroare" (E:); atenționările NU blochează depunerea, dar `stare` devine „erori". Clasifică pe liniile `E:` vs `A:`
+  (pattern `/tmp/clasific.py` din tranșa 1). „gri" = nevalidat (java/validator lipsă), NU verde.
+- CUI-uri fictive (verificate ANAF v9 05.08, lot 95–96M) în `date_test/C2_firme.md`; **re-verifică la seed**. Firme:
+  M1=95138914, M2=RO95141537, P1=RO95275466, P2=RO95363126, N1=95451848, S1=RO95687300, S2=RO95775518, S3=95873249,
+  NR1=RO95904434, T1=96385785, T2=RO96516171, S4=RO96653616. Cabinet Prisma=RO96756476 (tenant_001 existent).
+- Poartă verde: commit pe server rulează pre-commit hook (suita ~4min + verificator). **Rulează commit-ul în background**
+  (background=true). Push `origin main` + `origin HEAD:backup/lant-20260805` fără aprobare (§2.3 pct.8).
+- **Scripturi cu paranteze/ghilimele → fișier local + pipe** (`cat local | ssh iconta 'cat > /tmp/x.py && python3 /tmp/x.py'`);
+  heredoc-urile prin ssh double-quote se STRICĂ. Editează codul pe server cu patch-uri python (io.read + .replace + io.write).
+
+**LECȚII (tranșa 1):** (a) regula 3 cazuri — prag−1 poate fi C-5, nu C-4. (b) DUK poate fi în urma legii (part-time) →
+urmează legea + GARZI (ca D101-scadență). (c) DB live are tenant_001 (S4); gărzile care scanează tenanți (cnp_ingrijit)
+sunt ACTIVE acum — nu le sparge. (d) TVA cota 21% e period-aware (`common.cota("tva_standard", data)`); NU hardcoda.
+
+**DE CE M-AM OPRIT:** §2.3 pct.6 (buget de context epuizat) la granită curată (tranșa 1 închisă, tree curat, 559bce3),
+cu această predare. Registrele la zi. Tranșa 2 începe de la seed-ul de firme + tranzacțiile R3.
+
+---
+
+
 # PREDARE — Campania EXTINDEREA ACOPERIRII (05.08.2026)
 
 ## ★★ PREDARE CAMPANIA DE TESTARE 05.08.2026 — CITESTE ASTA INTAI (predarea ★ de mai jos = sesiunea de cod, istoric)
