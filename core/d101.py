@@ -407,6 +407,18 @@ def genereaza(conn, schema, perioada, manual=None):
     cota = manual.pop("cota", None)
     d_grup = int(manual.pop("d_grup", 0) or 0)
     cod_obligatie = str(manual.pop("cod_obligatie", "103"))
+    # [IMCA art.18^1] ca_an_precedent_eur = intrare de ELIGIBILITATE (o injecteaza declaratii_api._d101),
+    # NU un rand P. Se SCOATE din `manual` -> altfel calcul_d101 o respinge ca "intrare necunoscuta" si
+    # generarea CADE (ValueError). Sub prag (<=50 mil euro) IMCA NU se aplica (cazul comun - firmele reale +
+    # setul C-4). Peste prag IMCA e datorata, dar VT/Vs/I/A nu se deriva din balanta pe calea DB -> P47
+    # (=1%% x (VT-Vs-I-A)) trebuie furnizat explicit; il CEREM, NU il omitem tacit (ar subevalua impozitul
+    # unei firme mari). TEMEI: CF art.18^1 alin.(1).
+    ca_prec = manual.pop("ca_an_precedent_eur", None)
+    if ca_prec not in (None, "") and Decimal(str(ca_prec)) > PRAG_IMCA_EUR and "P47" not in manual:
+        raise ValueError(
+            "D101 IMCA (art.18^1 alin.1): cifra de afaceri an precedent %s EUR > 50.000.000 -> IMCA "
+            "datorata, dar P47 (=1%% x (VT-Vs-I-A)) nu e furnizat. Declara P47 in date_extra (VT/Vs/I/A "
+            "nu se deriva automat din balanta) sau foloseste calcul_d101(imca=...)." % ca_prec)
     prof, r = pull(conn, schema, perioada)
     erori = erori_generare(prof)
     if erori:
