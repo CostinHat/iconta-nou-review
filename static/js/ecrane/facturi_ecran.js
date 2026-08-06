@@ -138,7 +138,7 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
     }, { textOk: "Validează" });
   });
   corp.querySelector("#pr-respinge").addEventListener("click", () => {
-    zona.innerHTML = `<label class="camp"><span class="camp-eticheta">Motiv respingere</span><input class="camp-input" id="pr-motiv" aria-label="Motiv respingere"></label>
+    zona.innerHTML = `<label class="camp"><span class="camp-eticheta">Motiv respingere<span class="oblig">*</span></span><input class="camp-input" id="pr-motiv" aria-label="Motiv respingere"></label>
       <button class="buton-secundar" id="pr-respinge-ok" style="margin-top:8px">Respinge factura</button>`;
     corp.querySelector("#pr-respinge-ok").addEventListener("click", async () => {
       const motiv = corp.querySelector("#pr-motiv").value.trim();
@@ -584,8 +584,8 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     const rest = Math.max(0, Math.round((totalDeIncasat - incasat) * 100) / 100);
     zonaChit.insertAdjacentHTML("afterbegin", `
       <div id="fd-chit-form" style="display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin:8px 0">
-        <label class="camp"><span class="camp-eticheta">Data \u00eencas\u0103rii</span><input class="camp-input" type="date" id="fd-chit-data" value="${new Date().toISOString().slice(0, 10)}"></label>
-        <label class="camp"><span class="camp-eticheta">Suma \u00eencasat\u0103 (lei)</span><input class="camp-input" type="number" step="0.01" id="fd-chit-suma" value="${rest || totalDeIncasat}"></label>
+        <label class="camp"><span class="camp-eticheta">Data \u00eencas\u0103rii<span class="oblig">*</span></span><input class="camp-input" type="date" id="fd-chit-data" value="${new Date().toISOString().slice(0, 10)}"></label>
+        <label class="camp"><span class="camp-eticheta">Suma \u00eencasat\u0103 (lei)<span class="oblig">*</span></span><input class="camp-input" type="number" step="0.01" id="fd-chit-suma" value="${rest || totalDeIncasat}"></label>
         <button class="buton-primar" id="fd-chit-ok">Emite</button>
         <button class="btn-link" id="fd-chit-nu">Renun\u021b\u0103</button>
         <span class="msg-eroare" id="fd-chit-msg"></span>

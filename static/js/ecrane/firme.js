@@ -531,7 +531,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     const optional = !(extra && extra.obligatoriu);
     if (tip === "select") {
       const optiuni = (extra.optiuni || []).map(([v, l]) => `<option value="${v}">${l}</option>`).join("");
-      return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : " *"}</label><select id="sn-${id}" class="camp-input">${optiuni}</select></div>`;
+      return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : '<span class="oblig">*</span>'}</label><select id="sn-${id}" class="camp-input">${optiuni}</select></div>`;
     }
     if (tip === "checkbox") {
       return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}</label><input type="checkbox" id="sn-${id}"></div>`;
@@ -539,7 +539,7 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     const inputTip = tip === "numar" ? "number" : (tip === "data" ? "date" : "text");
     const pas = (extra && extra.pas) || "0.01";
     const restrictii = tip === "numar" ? ` step="${pas}" min="0"` : "";
-    return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : " *"}</label><input type="${inputTip}"${restrictii} id="sn-${id}" class="camp-input"></div>`;
+    return `<div class="camp"><label class="camp-eticheta" for="sn-${id}">${eticheta}${optional ? "" : '<span class="oblig">*</span>'}</label><input type="${inputTip}"${restrictii} id="sn-${id}" class="camp-input"></div>`;
   };
   corp.innerHTML = `
     <h2 class="pf-titlu">Salariat nou</h2>

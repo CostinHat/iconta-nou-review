@@ -88,7 +88,7 @@ function formularAdauga(corp, tenantId, reincarca) {
   zona.innerHTML = `
     <div class="pr-form">
       <div class="pr-form-rand">
-        <label class="camp-eticheta" for="pr-den">Denumire produs sau serviciu</label>
+        <label class="camp-eticheta" for="pr-den">Denumire produs sau serviciu<span class="oblig">*</span></label>
         <input class="pr-input pr-den" id="pr-den" placeholder="ex: p\u00e2ine alb\u0103, consultan\u021b\u0103" autocomplete="off">
       </div>
       <div class="pr-cota-preview" id="pr-cota-preview"></div>

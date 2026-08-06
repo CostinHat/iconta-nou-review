@@ -35,7 +35,7 @@ export async function randeazaAsistenti(corp, nav) {
     <div id="asi-banner"></div>
     <button class="buton-primar" id="asi-adauga" style="margin:6px 0 14px">Adaug\u0103 asistent</button>
     <div id="asi-adauga-form" hidden style="margin-bottom:14px">
-      <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Email asistent</label>
+      <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Email asistent<span class="oblig">*</span></label>
         <input class="camp-input" id="asi-email" type="email" placeholder="asistent@cabinet.ro" autocomplete="off"></div>
       <div class="camp" style="margin-bottom:10px"><label class="camp-eticheta">Nume (op\u021bional)</label>
         <input class="camp-input" id="asi-nume" autocomplete="off"></div>

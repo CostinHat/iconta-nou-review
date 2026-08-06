@@ -64,10 +64,13 @@ export async function ecranEtransport(corp, nav, t) {
   let bunuri = [{}];
   const ziAzi = new Date().toISOString().slice(0, 10);
 
+  const _et = (e) => e.endsWith(" *")
+    ? `<span class="camp-eticheta">${e.slice(0, -2)}<span class="oblig">*</span></span>`
+    : `<span class="camp-eticheta">${e}</span>`;
   const inp = (id, eticheta, tip = "text", val = "", extra = "") =>
-    `<label class="camp">${"<span class=\"camp-eticheta\">" + eticheta + "</span>"}<input type="${tip}" id="${id}" class="camp-input" value="${esc(val)}" ${extra}></label>`;
+    `<label class="camp">${_et(eticheta)}<input type="${tip}" id="${id}" class="camp-input" value="${esc(val)}" ${extra}></label>`;
   const sel = (id, eticheta, optiuni) =>
-    `<label class="camp">${"<span class=\"camp-eticheta\">" + eticheta + "</span>"}<select id="${id}" class="camp-input">${optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select></label>`;
+    `<label class="camp">${_et(eticheta)}<select id="${id}" class="camp-input">${optiuni.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("")}</select></label>`;
 
   const blocLoc = (p, titlu) => `
     <div class="pf-frand-nume" style="margin:12px 0 6px">${titlu}</div>

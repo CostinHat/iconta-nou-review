@@ -406,7 +406,7 @@ export function ecranLogin(radacina) {
         <input type="password" class="camp-input" id="reg-parola2" autocomplete="off">
       </label>
       <div class="login-eroare" id="reg-eroare" hidden></div>
-      <label class="set-bifa" style="margin:4px 0 12px"><input type="checkbox" id="reg-termeni"> <span>Am citit și accept <a href="/public/termeni" target="_blank" rel="noopener">Termenii și condițiile</a></span></label>
+      <label class="set-bifa" style="margin:4px 0 12px"><input type="checkbox" id="reg-termeni"> <span>Am citit și accept <a href="/public/termeni" target="_blank" rel="noopener">Termenii și condițiile</a><span class="oblig">*</span></span></label>
       <button class="buton-primar" id="reg-buton">Creează cont</button>
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);

@@ -309,7 +309,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         input = `<input type="text" id="op-${c.nume}" class="camp-input" aria-label="${esc(c.eticheta)}" placeholder="${c.sugestie || ""}">`;
       }
       const ajutor = c.ajutor ? `<span class="camp-ajutor">${esc(c.ajutor)}</span>` : "";
-      return `<div class="camp"${cond}><label class="camp-eticheta" for="op-${c.nume}">${esc(c.eticheta)}${c.optional ? "" : " *"}</label>${input}${ajutor}</div>`;
+      return `<div class="camp"${cond}><label class="camp-eticheta" for="op-${c.nume}">${esc(c.eticheta)}${c.optional ? "" : '<span class="oblig">*</span>'}</label>${input}${ajutor}</div>`;
     };
     corp.innerHTML = `
       <h2 class="pf-titlu">${esc(opCurenta.titlu)}</h2>
