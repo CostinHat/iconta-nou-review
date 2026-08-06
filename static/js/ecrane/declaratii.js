@@ -60,8 +60,9 @@ async function incarcaTipuri(tenantId) {
     S.tipuri = d.tipuri || [];
     S.periodicitate = d.periodicitate || {};
     S.neaplicabile = d.neaplicabile || {};
+    S.tipuriEsuat = false;
   } catch {
-    S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {};
+    S.tipuri = []; S.periodicitate = {}; S.neaplicabile = {}; S.tipuriEsuat = true;
   }
 }
 
@@ -76,7 +77,8 @@ function pas1(corp, nav) {
   // forma (D101/D406 la un PFA) apar DEZACTIVATE cu temeiul scurt (nu ascunse tacit; temei complet in title).
   function optiuniTip() {
     if (!S.tenant_id) return `<option value="">— alege firma întâi —</option>`;
-    if (!S.tipuri.length) return `<option value="">— nu am putut încărca tipurile —</option>`;
+    if (S.tipuriEsuat) return `<option value="">— nu am putut încărca tipurile — reîncarcă firma —</option>`;
+    if (!S.tipuri.length) return `<option value="">— nicio declarație aplicabilă —</option>`;
     return `<option value="">— alege tipul —</option>` + S.tipuri.map((tp) => {
       const et = `${tp.toUpperCase()} · ${S.periodicitate[tp] || ""}`;
       const neap = S.neaplicabile[tp];
@@ -254,7 +256,7 @@ async function randeazaClasificareD390(corp, nav) {
   if (!zona) return;
   let d;
   try { d = await api.get(`/tenants/${S.tenant_id}/d390-clasificare?an=${S.an}&luna=${S.luna}`); }
-  catch { zona.innerHTML = ""; return; }
+  catch (e) { zona.innerHTML = `<div class="stare-goala">Nu am putut încărca clasificarea intracomunitară${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</div>`; return; }
   const auto = d.auto || [], manual = d.manual || [];
   const optSel = (dir, cur) => (_D390_TIP_DIR[dir] || []).map(([v, l]) => `<option value="${v}" ${v === cur ? "selected" : ""}>${l}</option>`).join("");
   zona.innerHTML = `<details class="dec-xml" open><summary>Clasificare intracomunitară (servicii / triangulație)</summary>
@@ -310,7 +312,7 @@ async function randeazaOperatiuniD301(corp, nav) {
   if (!zona) return;
   let d;
   try { d = await api.get(`/tenants/${S.tenant_id}/d301-operatiuni?an=${S.an}&luna=${S.luna}`); }
-  catch { zona.innerHTML = ""; return; }
+  catch (e) { zona.innerHTML = `<div class="stare-goala">Nu am putut încărca operațiunile D301${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</div>`; return; }
   const ops = d.operatiuni || [], tipuri = d.tipuri || [], valute = d.valute || [], cote = d.cote || [];
   const grila = ops.length
     ? ops.map((o) => `<div class="dec-man-rand">

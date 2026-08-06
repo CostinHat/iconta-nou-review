@@ -215,7 +215,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         a.href = url; a.download = `export_saga_${an}_${String(luna).padStart(2, "0")}.zip`; a.click();
         URL.revokeObjectURL(url);
         arataMesaj(zona, "Arhivă SAGA descărcată (un XML per factură). În SAGA: Diverse → Import date din fișiere generate.", "ok");
-      } catch (e) { arataMesaj(zona, (e && e.message) || "eroare", "eroare"); }
+      } catch (e) { arataMesaj(zona, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }
     });
     corp.querySelector("#fac-winmentor-luna")?.addEventListener("click", async () => {  // [export_winmentor_v1] F187
       const zona = corp.querySelector("#fac-saga-zona");
@@ -230,7 +230,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         a.href = url; a.download = `export_winmentor_${an}_${String(luna).padStart(2, "0")}.zip`; a.click();
         URL.revokeObjectURL(url);
         arataMesaj(zona, "Arhivă WinMentor descărcată (Facturi.txt + Articole.txt). În WinMentor: MENTOR → INTERNE → Import date din alte aplicații → Facturi ieșire.", "ok");
-      } catch (e) { arataMesaj(zona, (e && e.message) || "eroare", "eroare"); }
+      } catch (e) { arataMesaj(zona, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }
       finally { btn.disabled = false; btn.textContent = _t; }
     });
     corp.querySelectorAll(".fac-cont").forEach((b) => b.addEventListener("click", async (ev) => {
@@ -491,7 +491,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       a.href = url; a.download = m ? m[1] : "factura_saga.xml"; a.click();
       URL.revokeObjectURL(url);
       arataMesaj(zona, "XML SAGA descărcat. În SAGA: Diverse → Import date din fișiere generate.", "ok");
-    } catch (e) { arataMesaj(zona, (e && e.message) || "eroare", "eroare"); }
+    } catch (e) { arataMesaj(zona, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }
   });
 
   const bSpv = corp.querySelector("#fd-spv");  // [efactura_send_v1] F160/F126 — trimitere e-Factura in SPV

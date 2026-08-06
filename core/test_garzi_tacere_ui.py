@@ -104,3 +104,34 @@ def test_b17_d406_um_necunoscuta_numita():
     assert uom_unece("KGM")[1] is True and uom_unece("")[1] is False
     src = _read("core/d406.py")
     assert "um_necunoscute" in src, "B17: flag-ul UM necunoscute nu e consumat (fallback H87 tacut)"
+
+
+# ============================================================
+#  B1-B3: catch gol care goleste panoul / seteaza gol tacut (esec indistinct de gol real)
+# ============================================================
+def test_b2_b3_declaratii_fara_panou_gol_tacut():
+    """B2/B3: randeazaClasificareD390/D301 faceau `catch { zona.innerHTML=''; return; }` -> panou golit
+    tacut la esec (arata ca gol real). Fix: stare-goala cap.6 cu cauza + reincarca."""
+    _skip_daca_lipsa()
+    src = _read("static/js/ecrane/declaratii.js")
+    assert 'catch { zona.innerHTML = ""; return; }' not in src, "B2/B3: inca goleste panoul tacut la esec"
+
+
+def test_b1_declaratii_distinge_eroare_de_gol():
+    """B1: incarcaTipuri seta tipuri=[] tacut la esec -> confundat cu 'nicio declaratie'. Fix: flag
+    S.tipuriEsuat distinge eroarea de golul real."""
+    _skip_daca_lipsa()
+    assert "S.tipuriEsuat" in _read("static/js/ecrane/declaratii.js"), "B1: nu distinge eroare de gol"
+
+
+# ============================================================
+#  B9: e.message inghite {mesaj} (api.js arunca {cod,mesaj}) -> mesaje specifice pierdute
+# ============================================================
+def test_b9_e_mesaj_inainte_de_e_message():
+    """B9: handlere citeau `e.message` (undefined cand api.js arunca {cod,mesaj}) -> erorile specifice se
+    pierdeau. Fix (clasa): `e.mesaj || e.message` peste tot. Guard: niciun `(e && e.message)` fara mesaj."""
+    _skip_daca_lipsa()
+    for f in ("migrare.js", "facturi_ecran.js"):
+        src = _read("static/js/ecrane/%s" % f)
+        assert "(e && e.message)" not in src, "B9: %s inca citeste e.message fara e.mesaj" % f
+    assert "e.mesaj || e.message" in _read("static/js/ecrane/firme.js"), "B9: firme.js nu a fost aliniat"

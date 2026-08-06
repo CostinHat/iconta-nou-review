@@ -461,7 +461,7 @@ async function formularVectorFirma(corp, nav, f) {
       await api.post(`/tenants/${f.tenant_id}/vector`, payload);
       nav.deschide("Vector fiscal", (cc, nn) => wizardVector(cc, nn));
     } catch (e) {
-      er.textContent = (e && e.message) || "Nu am putut salva. \u00cencearc\u0103 din nou.";
+      er.textContent = (e && (e.mesaj || e.message)) || "Nu am putut salva. \u00cencearc\u0103 din nou.";
     }
   });
 }

@@ -1896,7 +1896,7 @@ async function ecranRaportZ(corp, nav, t) {
         const r = await resp.json();
         if (!resp.ok) throw new Error(r.detail || "eroare");
         zona.innerHTML = `<p class="pf-intro">Importat: Z din ${dataRo(r.data)}, total ${bani(r.total)} (numerar ${bani(r.numerar)}, card ${bani(r.card_altele)}), TVA ${r.tva_total}. Nota <b>ciorna</b> #${r.inregistrare_id} - verifica cu Z-ul tiparit.</p>`;
-      } catch (e) { arataMesaj(zona, e.message || "eroare", "eroare"); }
+      } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }
       ev.target.value = "";
     });
     corp.querySelector("#z-salveaza").addEventListener("click", async () => {
@@ -2481,7 +2481,7 @@ async function ecranBalanta(corp, nav, t) {
         a.href = url; a.download = `balanta_${an}_${String(luna).padStart(2, "0")}.pdf`; a.click();
         URL.revokeObjectURL(url);
         zona.innerHTML = `<p class="pf-intro">Balanta descarcata.</p>`;
-      } catch (e) { arataMesaj(zona, e.message || "eroare", "eroare"); }
+      } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }
     });
   };
   deseneaza();
@@ -2830,7 +2830,7 @@ async function ecranContracte(corp, nav, t) {
         const a = document.createElement("a");
         a.href = url; a.download = `contract_${sablon.nume.replace(/[^a-z0-9]+/gi, "_")}.pdf`; a.click();
         URL.revokeObjectURL(url);
-      } catch (e) { msg.textContent = e.message || "eroare"; }
+      } catch (e) { msg.textContent = e.mesaj || e.message || "eroare"; }
     });
   }
 
