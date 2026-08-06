@@ -1693,3 +1693,35 @@ IMCA e accesibil doar prin P47 manual / `calcul_d101(imca=)`; niciun firmă C-4 
   Nicio derivă de an. Ciclul de decembrie iese pe fereastra corectă.
 - **D205 = dividende (nu salarii):** corect — salariile se declară în D112; D205 = venituri nesalariale reținute
   la sursă (dividende, tip_venit 08). Nu e gol.
+
+
+## 06.08.2026 (tura 4) — C-5 P1 (stări de blocare): GARD STRUCTURAL de izolare + FINDING contracte/marcaje
+C-5 = catalog de goluri de conformitate cap.6 (NU rescriere de mesaje — campanie separată, decizia Costin).
+EXCEPȚIE izolare (clasele 5+6): 404 tăcut = comportament CORECT (un mesaj = scurgere de info) → se PROBEAZĂ
+că izolarea ȚINE, nu se cataloghează mesaj.
+
+**LIVRAT — gard structural `core/test_izolare_structurala.py` (8 teste cu cel existent):**
+Enumeră DINAMIC toate rutele GET `{tenant_id}` din `main.app.routes` (84 azi) și probează cross-acces
+pentru toate cele 4 principii → niciodată 2xx, niciodată sentinela tenantului interzis:
+- (1) admin_firma cabinet A cere tenant cabinet B → refuzat pe toate rutele;
+- (2) asistent (angajat) atribuit doar tA cere tC (același cabinet, neatribuit) ȘI tB → refuzat;
+- (3) client de portal (tA) cere tB → refuzat;
+- (4) superadmin cere tenant CU cabinet (tA) → refuzat (superadmin vede doar conturi fără cabinet, GDPR).
+Chokepoint: `auth_api.schema_tenant`. Control pozitiv (adminA își vede tA=200) previne fals-verde pe 404 uniform.
+Meta-gard: setul de rute enumerat e netrivial (≥50) + excepțiile documentate sunt subset al rutelor (anti-stale).
+**O RUTĂ NOUĂ `{tenant_id}` care întoarce 2xx cross-tenant fără să fie în lista de excepții → gardul PICĂ.**
+(RED probat: înainte de lista de excepții, gardul pica exact pe ruta de mai jos.)
+
+**FINDING (semnalat pt decizia Costin — NU reparat aici):** `GET /tenants/{tenant_id}/contracte/marcaje`
+(`main.py:5472`) întoarce 200 cross-tenant pentru orice user de cabinet. NU e breach de date: întoarce constanta
+GLOBALĂ `contracte_api.MARCAJE` (nomenclator static de marcaje de contract), iar `tenant_id` e DECORATIV — ruta
+depinde doar de `cere_cabinet`, NU trece prin `schema_tenant`. Inconsistență structurală (nu scurgere): singura
+rută `{tenant_id}` GET care ocolește chokepoint-ul. **Decizie Costin:** fix = adaugă `schema_tenant` (defense in
+depth) SAU mută ruta în afara namespace-ului `/tenants/` (e nomenclator global). Documentată explicit ca excepție
+în gard (`_EXCEPTAT_GLOBAL_NON_TENANT`) ca să nu treacă tăcut și ca o rută nouă similară să nu se strecoare.
+Rutele scrise (POST/PUT/DELETE `{tenant_id}`: 127/16/16) folosesc același chokepoint — probate read-only (GET)
+aici; extinderea probei la metodele mutante (cu rollback) = pas viitor dacă Costin cere.
+
+**RĂMAS P1 (catalog, nu gard) — predare:** clasele 1-4 de blocare (rol insuficient, perioadă închisă, date lipsă
+`erori_generare`, patru ochi) = catalog cap.6 (trigger → mesajul care TREBUIE → ce apare acum → unde), cu bug-uri
+de tăcere-la-eșec semnalate distinct. NEÎNCEPUT (buget context). Apoi P6 (cens `.oblig`) → P2 → P3 → P4 → P5 → P7.
