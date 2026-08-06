@@ -26,6 +26,8 @@ from core.pdf_util import bani, data_ro
 from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO; [verdict] nivel->culoare + escaladare pastila
 from core import common as _common
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
+from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXISTA,
+                         EMAIL_NICIUNUL_VALID, CUI_FIRMA_LIPSA, PERIOADA_INCHISA)
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
 TENANT_TEMPLATE_PATH = os.environ.get(
@@ -655,7 +657,7 @@ def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("
     else:
         cab = ctx.get("firm")
     if not cab:
-        raise HTTPException(400, "fara cabinet asociat")
+        raise HTTPException(400, FARA_CABINET)
     with db.get_conn() as conn:
         _zip = _ge.export_cabinet(conn, cab)
         try:  # [F199] jurnalizare export (cine/cand, FARA continut)
@@ -676,7 +678,7 @@ def gdpr_cerere_stergere(date: CerereStergereIn, ctx=Depends(cere_rol("admin_fir
     from core import gdpr_cerere as _gc
     cab = ctx.get("firm")
     if not cab:
-        raise HTTPException(400, "fara cabinet asociat")
+        raise HTTPException(400, FARA_CABINET)
     with db.get_conn() as conn:
         try:
             r = _gc.depune_cerere(conn, cab, ctx.get("uid"), date.confirmare_nume, date.motiv)
@@ -690,7 +692,7 @@ def gdpr_cerere_stergere(date: CerereStergereIn, ctx=Depends(cere_rol("admin_fir
 def capacitate_panou(ctx=Depends(cere_rol("admin_firma"))):
     cab = ctx.get("firm")
     if not cab:
-        raise HTTPException(400, "fara cabinet asociat")
+        raise HTTPException(400, FARA_CABINET)
     with db.get_conn() as conn:
         return capacitate_api.capacitate(conn, cab)
 
@@ -698,7 +700,7 @@ def capacitate_panou(ctx=Depends(cere_rol("admin_firma"))):
 def tipare_panou(ctx=Depends(cere_rol("admin_firma"))):
     cab = ctx.get("firm")
     if not cab:
-        raise HTTPException(400, "fara cabinet asociat")
+        raise HTTPException(400, FARA_CABINET)
     with db.get_conn() as conn:
         return tipare_api.tipare(conn, cab)
 
@@ -707,7 +709,7 @@ def tipare_panou(ctx=Depends(cere_rol("admin_firma"))):
 def tipare_ai_panou(ctx=Depends(cere_rol("admin_firma"))):
     cab = ctx.get("firm")
     if not cab:
-        raise HTTPException(400, "fara cabinet asociat")
+        raise HTTPException(400, FARA_CABINET)
     with db.get_conn() as conn:
         return tipare_api.analiza_ai(conn, cab)
 
@@ -1025,7 +1027,7 @@ def register(date: RegisterIn):
     if not _nucleu.parola_ok(date.parola):  # [parola_min_v1] aceeasi cerinta ca activare/reset/schimbare
         raise HTTPException(400, _nucleu.PAROLA_MESAJ)
     if not _EMAIL_RE.match((date.email or "").strip()):  # [email_valid_v1] email obligatoriu + format valid
-        raise HTTPException(400, "Introdu o adresă de email validă.")
+        raise HTTPException(400, EMAIL_INVALID)
     with db.get_conn() as conn:
         r = auth_api.inregistreaza_cabinet(
             conn, date.email, date.parola, date.nume_cabinet,
@@ -1193,7 +1195,7 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
                          ctx=Depends(cere_rol("admin_firma"))):
     email = (date.email or "").strip().lower()
     if "@" not in email:
-        raise HTTPException(400, "email invalid")
+        raise HTTPException(400, EMAIL_INVALID)
     import secrets
     parola_temp = secrets.token_urlsafe(9)
     with db.get_conn() as conn:
@@ -1204,7 +1206,7 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
             cur.execute("SELECT id, rol, activ FROM public.users WHERE lower(email)=%s", (email,))
             _ex = cur.fetchone()
             if _ex and (_ex["rol"] != "client" or _ex["activ"]):
-                raise HTTPException(400, "exista deja un cont cu acest email")
+                raise HTTPException(400, EMAIL_EXISTA)
             if _ex:  # client_mesaj_v1: reinvitare client dezactivat
                 uid = _ex["id"]
                 cur.execute("UPDATE public.users SET activ=true, nume=%s WHERE id=%s",
@@ -2554,7 +2556,7 @@ def factura_email(tenant_id: int, factura_id: int, date: EmailFacturaIn, ctx=Dep
     schema = _schema_sau_404(ctx, tenant_id)
     email = (date.email or "").strip()
     if "@" not in email or "." not in email:
-        raise HTTPException(422, "adresă de email invalidă")
+        raise HTTPException(422, EMAIL_INVALID)
     with db.get_conn(schema) as conn:
         f = facturi_api.detalii_factura(conn, factura_id)
         if not f:
@@ -3325,7 +3327,7 @@ def portal_schimba_email(date: SchimbaEmailIn, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, date.tenant_id)
     email_nou = date.email.strip().lower()
     if "@" not in email_nou:
-        raise HTTPException(400, "email invalid")
+        raise HTTPException(400, EMAIL_INVALID)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute("SELECT principal_client_id FROM public.tenants WHERE id=%s", (t["id"],))
@@ -3334,7 +3336,7 @@ def portal_schimba_email(date: SchimbaEmailIn, ctx=Depends(cere_client)):
                 raise HTTPException(403, "doar patronul poate schimba emailul principal")
             cur.execute("SELECT id FROM public.users WHERE lower(email)=%s AND id<>%s", (email_nou, ctx["uid"]))
             if cur.fetchone():
-                raise HTTPException(400, "email deja folosit")
+                raise HTTPException(400, EMAIL_EXISTA)
             cur.execute("UPDATE public.users SET email=%s WHERE id=%s", (email_nou, ctx["uid"]))
     return {"ok": True}
 @app.post("/portal/acces-cont/acces")
@@ -3342,7 +3344,7 @@ def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, date.tenant_id)
     email = date.email.strip().lower()
     if "@" not in email:
-        raise HTTPException(400, "email invalid")
+        raise HTTPException(400, EMAIL_INVALID)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute("SELECT principal_client_id FROM public.tenants WHERE id=%s", (t["id"],))
@@ -3354,7 +3356,7 @@ def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
             cur.execute("SELECT id, rol, activ FROM public.users WHERE lower(email)=%s", (email,))
             ex = cur.fetchone()
             if ex and (ex["rol"] != "client" or ex["activ"]):
-                raise HTTPException(400, "exista deja un cont cu acest email")
+                raise HTTPException(400, EMAIL_EXISTA)
             import secrets as _sec2
             if ex:
                 uid = ex["id"]
@@ -3533,7 +3535,7 @@ def _cere_perioada_deschisa(conn, schema, nota_id):
         cur.execute(f"SELECT data FROM {schema}.inregistrari WHERE id=%s", (nota_id,))
         r = cur.fetchone()
     if r and _perioada_blocata(conn, schema, r[0]):
-        raise HTTPException(423, "perioada este blocată (luna închisă)")
+        raise HTTPException(423, PERIOADA_INCHISA)
 
 @app.get("/tenants/{tenant_id}/perioade-blocate")
 def perioade_blocate_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
@@ -4595,7 +4597,7 @@ def portal_declaratii(tenant_id: Optional[int] = None, ctx=Depends(cere_client))
 # ICRD_RECOMANDA_UNIFICAT_V1
 def _trimite_recomandari(emails, html, subiect):
     if not emails:
-        raise HTTPException(400, "Niciun email valid.")
+        raise HTTPException(400, EMAIL_NICIUNUL_VALID)
     if len(emails) > 20:
         raise HTTPException(400, "Maxim 20 de emailuri odata.")
     import core.observare as _obs
@@ -4798,7 +4800,7 @@ def asistenti_detalii(uid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = _asist.detalii_actor(conn, cabinet_id, uid)
         if not r.get("ok"):
-            raise HTTPException(status_code=404, detail=r.get("cod"))
+            raise HTTPException(status_code=404, detail=mesaj_din_cod(r.get("cod")))
         return r
 
 
@@ -4814,12 +4816,12 @@ def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_rol("admin_firma"))):
     import secrets as _sec
     email = date.email.strip().lower()
     if "@" not in email:
-        raise HTTPException(422, "email invalid")
+        raise HTTPException(422, EMAIL_INVALID)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute("SELECT id, activ FROM public.users WHERE email=%s", (email,))
             if cur.fetchone():
-                raise HTTPException(422, "email deja folosit")
+                raise HTTPException(422, EMAIL_EXISTA)
             cur.execute("""INSERT INTO public.users (email, password_hash, nume, rol, accounting_firm_id, activ, poate_valida)
                            VALUES (%s, %s, %s, 'angajat', %s, true, %s) RETURNING id""",
                         (email, _nucleu.hash_parola(_sec.token_urlsafe(16)),
@@ -4850,7 +4852,7 @@ def asistenti_permisiuni(uid: int, date: dict = Body(...), ctx=Depends(cere_cabi
             date.get("poate_depune", False),
         )
         if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=r.get("cod"))
+            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
         return r
 
 
@@ -4860,7 +4862,7 @@ def asistenti_atribuie(uid: int, tid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = _asist.atribuie_firma(conn, cabinet_id, uid, tid)
         if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=r.get("cod"))
+            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
         return r
 
 
@@ -4870,7 +4872,7 @@ def asistenti_elimina(uid: int, tid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = _asist.elimina_firma(conn, cabinet_id, uid, tid)
         if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=r.get("cod"))
+            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
         return r
 
 
@@ -4880,7 +4882,7 @@ def asistenti_dezactiveaza(uid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = _asist.dezactiveaza(conn, cabinet_id, uid, ctx["uid"])
         if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=r.get("cod"))
+            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
         return r
 
 
@@ -4890,7 +4892,7 @@ def asistenti_reactiveaza(uid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = _asist.reactiveaza(conn, cabinet_id, uid)
         if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=r.get("cod"))
+            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
         return r
 
 
@@ -4902,7 +4904,7 @@ def asistenti_finalizeaza_firme(uid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = _asist.aplica_regula_zero_firme(conn, cabinet_id, uid)
         if not r.get("ok"):
-            raise HTTPException(status_code=400, detail=r.get("cod"))
+            raise HTTPException(status_code=400, detail=mesaj_din_cod(r.get("cod")))
         return r
 
 
@@ -4946,7 +4948,7 @@ def asistenti_calitate(uid: int, de: Optional[str] = None,
     with db.get_conn() as conn:
         r = _asist.calitate(conn, cabinet_id, uid, de=de, pana=pana)
         if not r.get("ok"):
-            raise HTTPException(404, r.get("cod", "eroare"))
+            raise HTTPException(404, mesaj_din_cod(r.get("cod")))
         return r
 
 
@@ -4956,7 +4958,7 @@ def asistenti_activitate(uid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = _asist.activitate(conn, cabinet_id, uid)
         if not r.get("ok"):
-            raise HTTPException(status_code=404, detail=r.get("cod"))
+            raise HTTPException(status_code=404, detail=mesaj_din_cod(r.get("cod")))
         return r
 
 
@@ -4968,7 +4970,7 @@ def eu_calitate(de: Optional[str] = None, pana: Optional[str] = None,
     with db.get_conn() as conn:
         r = _asist.calitate(conn, ctx["firm"], ctx["uid"], de=de, pana=pana)
         if not r.get("ok"):
-            raise HTTPException(404, r.get("cod", "eroare"))
+            raise HTTPException(404, mesaj_din_cod(r.get("cod")))
         return r
 
 
@@ -5057,7 +5059,7 @@ def eu_profil(date: ProfilIn, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = auth_api.actualizeaza_profil(conn, ctx["uid"], nume=date.nume, prenume=date.prenume)
     if not r.get("ok"):
-        raise HTTPException(422, r.get("cod", "eroare"))
+        raise HTTPException(422, mesaj_din_cod(r.get("cod")))
     return r
 
 
@@ -5072,7 +5074,7 @@ def eu_cabinet_get(ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = auth_api.get_cabinet(conn, ctx["firm"])
     if not r.get("ok"):
-        raise HTTPException(404, r.get("cod", "eroare"))
+        raise HTTPException(404, mesaj_din_cod(r.get("cod")))
     return r
 
 
@@ -5083,7 +5085,7 @@ def eu_cabinet_set(date: CabinetIn, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = auth_api.actualizeaza_cabinet(conn, ctx["firm"], nume=date.nume, cui=date.cui)
     if not r.get("ok"):
-        raise HTTPException(422, r.get("cod", "eroare"))
+        raise HTTPException(422, mesaj_din_cod(r.get("cod")))
     return r
 
 
@@ -5157,7 +5159,7 @@ def raportari_creeaza(date: RaportareNouaIn, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = _rap.creeaza_raportare(conn, ctx["uid"], ctx.get("firm"), date.subiect, date.text)
     if not r.get("ok"):
-        raise HTTPException(400, r.get("cod", "eroare"))
+        raise HTTPException(400, mesaj_din_cod(r.get("cod")))
     # [triaj_ai] AI raspunde la intrebarile de folosire sau escaladeaza (pentru_admin); nu blocheaza crearea
     import threading
     from core import raportari_ai as _rai
@@ -5190,7 +5192,7 @@ def raportari_fir(rid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         r = _rap.firul_complet(conn, rid)
         if not r.get("ok"):
-            raise HTTPException(404, r.get("cod", "eroare"))
+            raise HTTPException(404, mesaj_din_cod(r.get("cod")))
         # acces: autorul firului sau superadmin
         if ctx["rol"] != "superadmin" and r["raportare"]["autor_id"] != ctx["uid"]:
             raise HTTPException(403, "Nu ai acces la aceasta raportare.")
@@ -5210,7 +5212,7 @@ def raportari_mesaj(rid: int, date: MesajIn, ctx=Depends(cere_cabinet)):
                 raise HTTPException(403, "Nu ai acces.")
         r = _rap.adauga_mesaj(conn, rid, ctx["uid"], rol_autor, date.text)
     if not r.get("ok"):
-        raise HTTPException(400, r.get("cod", "eroare"))
+        raise HTTPException(400, mesaj_din_cod(r.get("cod")))
     return r
 
 
@@ -5234,7 +5236,7 @@ def raportari_stare(rid: int, date: StareIn, ctx=Depends(cere_rol("superadmin"))
         r = _rap.seteaza_stare(conn, rid, date.stare)
         conn.commit()
     if not r.get("ok"):
-        raise HTTPException(400, r.get("cod", "eroare"))
+        raise HTTPException(400, mesaj_din_cod(r.get("cod")))
     return r
 
 @app.post("/raportari/{rid}/pentru-admin")
@@ -5244,7 +5246,7 @@ def raportari_pentru_admin(rid: int, date: PentruAdminIn, ctx=Depends(cere_cabin
     with db.get_conn() as conn:
         r = _rap.seteaza_pentru_admin(conn, rid, date.valoare)
     if not r.get("ok"):
-        raise HTTPException(404, r.get("cod", "eroare"))
+        raise HTTPException(404, mesaj_din_cod(r.get("cod")))
     return r
 
 
@@ -5276,7 +5278,7 @@ async def raportari_imagine(mid: int, fisier: UploadFile = File(...), ctx=Depend
         cale_web = "/static/raportari/" + nume
         r = _rap.adauga_atasament(conn, mid, cale_web, fisier.filename)
     if not r.get("ok"):
-        raise HTTPException(400, r.get("cod", "eroare"))
+        raise HTTPException(400, mesaj_din_cod(r.get("cod")))
     return {"ok": True, "cale": cale_web}
 # === /ASISTENTI_API ROUTES ===
 
@@ -6193,7 +6195,7 @@ def etransport_xml(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
             r = cur.fetchone() or {}
     cui = re.sub(r"\D", "", r.get("cui") or "")
     if not cui:
-        raise HTTPException(422, "CUI firma lipsa in Profil firma")
+        raise HTTPException(422, CUI_FIRMA_LIPSA)
     lipsa = _e.campuri_required_lipsa(corp)
     if lipsa:
         raise HTTPException(422, {"cod": "CAMPURI_LIPSA",
@@ -6223,7 +6225,7 @@ def etransport_trimite(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
             r0 = cur.fetchone()
     cui = _re2.sub(r"\D", "", (r0[0] if r0 else "") or "")
     if not cui:
-        raise HTTPException(422, "CUI firma lipsa in Profil firma")
+        raise HTTPException(422, CUI_FIRMA_LIPSA)
     lipsa = _egen.campuri_required_lipsa(corp)
     if lipsa:
         raise HTTPException(422, {"cod": "CAMPURI_LIPSA",
@@ -6788,7 +6790,7 @@ async def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
             cur.execute(f"SELECT cui FROM {schema}.firma_profil LIMIT 1")
             rand = cur.fetchone()
             if not rand or not rand[0]:
-                raise HTTPException(422, "CUI firma lipsa in firma_profil")
+                raise HTTPException(422, CUI_FIRMA_LIPSA)
             cui_firma = rand[0]
             for up in fisiere:
                 continut = await up.read()
