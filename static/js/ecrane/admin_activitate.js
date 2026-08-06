@@ -114,7 +114,10 @@ async function deschideTimeline(corp, cabinet) {
   try {
     const r = await api.get(`/admin/activitate/cabinet/${cabinet.id}`);
     activitate = (r && r.activitate) || [];
-  } catch {}
+  } catch (e) {
+    zona.innerHTML = `<div class="stare-goala">Nu am putut încărca istoricul cabinetului. Reîncearcă.</div>`;
+    return;
+  }
   if (!activitate.length) {
     zona.innerHTML = `<div class="stare-goala">Niciun eveniment înregistrat încă. Apar aici pe măsură ce cabinetele lucrează.</div>`;
     return;

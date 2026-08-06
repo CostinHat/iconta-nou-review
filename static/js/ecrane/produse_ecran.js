@@ -140,7 +140,7 @@ function formularAdauga(corp, tenantId, reincarca) {
   zona.querySelector("#pr-anuleaza").addEventListener("click", () => { zona.innerHTML = ""; });
   zona.querySelector("#pr-salveaza").addEventListener("click", async () => {
     const denumire = inputDen.value.trim();
-    if (!denumire) { inputDen.focus(); return; }
+    if (!denumire) { arataMesaj(preview, "Completează denumirea produsului sau serviciului.", "eroare"); inputDen.focus(); return; }
     const payload = {
       denumire,
       um: zona.querySelector("#pr-um").value.trim() || "buc",

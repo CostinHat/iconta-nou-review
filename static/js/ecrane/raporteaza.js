@@ -180,7 +180,7 @@ export async function randeazaRaporteaza(corp, nav) {
         // redeschide firul
         const elNou = lista.querySelector(`.rap-fir[data-id="${f.id}"] .rap-fir-corp`);
         if (elNou) elNou.style.display = "block";
-      } catch { btn.disabled = false; }
+      } catch { btn.disabled = false; btn.insertAdjacentHTML("afterend", '<span class="msg-eroare"> Nu am putut trimite răspunsul. Reîncearcă.</span>'); }
     });
   }
 

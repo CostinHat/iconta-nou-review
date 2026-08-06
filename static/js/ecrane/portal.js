@@ -327,6 +327,7 @@ async function randeazaSolicitari(corp, nav) {
     <div class="sol-trimite">
       <textarea id="sol-input" placeholder="Scrie un mesaj..." rows="3"></textarea>
       <button class="buton-primar" id="sol-trimite-btn">Trimite</button>
+      <div class="msg-eroare" id="sol-msg"></div>
     </div>
   `;
   const fir = corp.querySelector("#sol-fir");
@@ -335,7 +336,7 @@ async function randeazaSolicitari(corp, nav) {
   if (btn) btn.addEventListener("click", async () => {
     const inp = corp.querySelector("#sol-input");
     const txt = ((inp && inp.value) || "").trim();
-    if (!txt) return;
+    if (!txt) { arataMesaj(corp.querySelector("#sol-msg"), "Scrie solicitarea înainte de a o trimite.", "eroare"); return; }
     btn.disabled = true; btn.textContent = "Se trimite...";
     try {
       await api.post("/portal/solicitari", { mesaj: txt });

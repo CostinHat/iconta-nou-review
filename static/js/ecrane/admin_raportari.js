@@ -194,7 +194,7 @@ async function deschideSesizare(corp, nav, id) {
   if (bInc) bInc.addEventListener("click", async () => {
     bInc.disabled = true;
     try { await api.post(`/raportari/${id}/stare`, { stare: "inchisa" }); await incarcaLista(corp, nav); fir.innerHTML = `<div class="rap-gol">Sesizare \u00eenchis\u0103.</div>`; }
-    catch { bInc.disabled = false; }
+    catch { bInc.disabled = false; bInc.insertAdjacentHTML("afterend", '<span class="msg-eroare"> Nu am putut închide sesizarea. Reîncearcă.</span>'); }
   });
 }
 

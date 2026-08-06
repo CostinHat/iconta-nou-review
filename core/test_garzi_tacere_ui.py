@@ -135,3 +135,37 @@ def test_b9_e_mesaj_inainte_de_e_message():
         src = _read("static/js/ecrane/%s" % f)
         assert "(e && e.message)" not in src, "B9: %s inca citeste e.message fara e.mesaj" % f
     assert "e.mesaj || e.message" in _read("static/js/ecrane/firme.js"), "B9: firme.js nu a fost aliniat"
+
+
+# ============================================================
+#  Lot 3 (item 8): B4-B6, B10-B13, B15-B16 - restul silentelor
+# ============================================================
+def test_b4_b5_main_notif_nu_inghitit():
+    """B4/B5: notificarea pregatitorului dupa aproba/respinge era inghitita (except: pass). Fix: logata
+    (observabil), nu tacut. (Actiunea primara reuseste; esecul notificarii se logheaza.)"""
+    assert "notificare pregatitor esuata" in _read("main.py"), "B4/B5: notificarea inca inghitita tacut"
+
+
+def test_b6_b12_load_esec_stare_de_eroare():
+    """B6/B13 (admin_activitate) + B12 (control): `catch {}` la load -> panou golit / verdict fals-curat,
+    indistinct de gol/curat real. Fix: stare-goala de eroare + return."""
+    _skip_daca_lipsa()
+    assert "Nu am putut încărca istoricul cabinetului" in _read("static/js/ecrane/admin_activitate.js"), "B6/B13 nereparat"
+    assert "Nu am putut încărca controlul fiscal" in _read("static/js/ecrane/control.js"), "B12 nereparat"
+
+
+def test_b10_b11_input_gol_cu_mesaj():
+    """B10 (produse denumire) + B11 (portal solicitare): input obligatoriu gol -> no-op/focus tacit.
+    Fix: mesaj cap.6 la submit gol."""
+    _skip_daca_lipsa()
+    assert "Completează denumirea produsului" in _read("static/js/ecrane/produse_ecran.js"), "B10 nereparat"
+    p = _read("static/js/ecrane/portal.js")
+    assert 'id="sol-msg"' in p and "Scrie solicitarea" in p, "B11 nereparat"
+
+
+def test_b15_b16_actiune_esec_cu_mesaj():
+    """B15 (admin_raportari inchide) + B16 (raporteaza raspuns-in-fir): `catch { btn.disabled=false }`
+    reactiva butonul fara mesaj. Fix: mesaj inline la esec."""
+    _skip_daca_lipsa()
+    assert "Nu am putut închide sesizarea" in _read("static/js/ecrane/admin_raportari.js"), "B15 nereparat"
+    assert "Nu am putut trimite răspunsul" in _read("static/js/ecrane/raporteaza.js"), "B16 nereparat"

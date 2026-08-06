@@ -3044,8 +3044,8 @@ def coada_aproba(coada_id: int, ctx=Depends(cere_rol("admin_firma", "angajat")))
     try:
         with db.get_conn() as conn:
             _notif_pregatitor(conn, coada_id, "aprobata")
-    except Exception:
-        pass
+    except Exception as _e:
+        import logging; logging.getLogger("iconta").warning("notificare pregatitor esuata (aprobare, coada %s): %s", coada_id, _e)
     return r
 
 
@@ -3064,8 +3064,8 @@ def coada_respinge(coada_id: int, date: RespingeIn,
     try:
         with db.get_conn() as conn:
             _notif_pregatitor(conn, coada_id, "respinsa", motiv=date.motiv)
-    except Exception:
-        pass
+    except Exception as _e:
+        import logging; logging.getLogger("iconta").warning("notificare pregatitor esuata (respingere, coada %s): %s", coada_id, _e)
     return r
 
 
