@@ -3373,3 +3373,14 @@ numite), C3 (snapshot+hash regenerare-diff + orfani; Sigma debit=Sigma credit co
 C4 (coada REDARE reverificata + procedura scrisa) - LIVRATE cu limite numite. C1 (invarianti DB intrare) = LIMITA scrisa:
 goluri reale (facturi fara cheie unica; money DEFAULT 0) dar migrarea enforce riscanta pe date existente -> follow-up
 scopat, nu fortat la buget epuizat. Fara gard fals nicaieri. Consemnat TESTE sectiunea 7 + GARZI tura 15.
+
+
+## 06.08.2026 (tura 16) — C-4 TRANȘA 2 (coerență + TVA), Cluster 1: SEED FIRME + T-1…T-7
+Provizionate idempotent cele 11 firme din C-2 (M1..T2) sub Cabinet Prisma (firm_id 1968) →
+tenant_002..tenant_012; S4=tenant_001 (tranșa 1) reutilizat pt T-7. firma_profil setat per C-2 sect.B
+(regim_fiscal/platitor_tva/tip_decont/operatiuni_ic/caen). Materializate tranzacțiile de coerență R3
+T-1…T-7 la ambele capete (emisa la emitent + primita la primitor) cu numar/serie/dată/total/tva IDENTICE.
+PROBĂ coerență din date: 7/7 documente identice pe ambele laturi, tert_cui=contrapartida (0 divergențe).
+ANAF v9 re-verificat 06.08 (decizia 5 Costin): 0/11 CUI reale (toate gasit=False). Seed reproductibil R2:
+date_test/seed/transa2_coerenta_tva.py (idempotent). Fără logică fiscală atinsă (fixture) → fără gard nou.
+Urmează Cluster 2: generare + DUK D300/D394 pe perechile coerente (P1/M2/P2) — divergență=bug.

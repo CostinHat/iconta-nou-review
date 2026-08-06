@@ -7521,3 +7521,15 @@ raman IMPOZABILE, cu distinctia:
 Alt temei de scutire cautat: art.62 (celelalte litere) NU acopera nici boala proprie oncologica, nici carantina
 copilului -> niciunul nu se scuteste. GARD: test_cm_coduri_14_18_raman_impozabile_decizie_05_08 (pineaza setul; muta 14/18
 sau schimba setul fara re-decizie -> pica). Redeschiderea cere modificarea ACESTEI intrari + a gardului.
+
+
+## 06.08.2026 — C-4 Tranșa 2, Cluster 1: seed firme + alocare tenant + reverificare CUI
+- **Decizia 5 Costin (reverificare ANAF v9 la seed) — ÎNDEPLINITĂ.** Cele 11 CUI fictive (M1..T2, lot 95–96M)
+  re-interogate ANAF webservice v9 (`core.anaf_api.valideaza_cui`, endpoint PlatitorTvaRest/v9/tva) la 2026-08-06:
+  toate 11 `gasit=False` (0 firme reale) → NU s-a folosit rezerva (96756476/96939899). Proba în ISTORIC tura 16.
+- **Alocare tenant (stabilă, R2):** M1=tenant_002, M2=tenant_003, P1=tenant_004, P2=tenant_005, N1=tenant_006,
+  S1=tenant_007, S2=tenant_008, S3=tenant_009, NR1=tenant_010, T1=tenant_011, T2=tenant_012 (S4=tenant_001 tranșa 1),
+  toate sub Cabinet Prisma firm_id 1968. Numerele ies din ordinea provizionării în seed (idempotentă pe CUI+firmă).
+- **regim_fiscal S3 = 'micro' (placeholder).** S3 e agricultor forfetar (art.315^1), regim nemodelat ca valoare
+  distinctă în firma_profil.regim_fiscal (câmp text liber micro/profit); S3 e neplătitor TVA și nu depune D101/D300,
+  deci valoarea nu afectează livrabilele tranșei 2. De reconfirmat dacă tranșa 3 (D100/D406 S3) cere altă valoare.

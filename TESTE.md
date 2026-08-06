@@ -22,6 +22,18 @@ zero. Invers ar însemna să verifici de două ori — sau, mai probabil, a doua
 ---
 
 ## În lucru acum
+- fir: C-4 TRANȘA 2 (coerență + TVA) [ACTIV 06.08.2026 — predare ★★; supersedează firele de mai jos] — seed 11 firme + T-1…T-7 coerente + documente D300/D394/D390/D301 pt M1/M2/P1/P2/N1/S1/S2/S3 + limite TVA L1/L2/L3/L4/L10/L12 ×3 cazuri. Metodologie identică tranșei 1: divergență = bug până la proba contrarie → vânătoare de clasă → temei la sursă → gard + RED/GREEN → DUK.
+- ultim: Cluster 1 GATA — seed transa2_coerenta_tva.py: 11 firme provizionate (tenant_002..012) sub Cabinet Prisma + T-1…T-7 coerente (emisa+primita); PROBĂ coerență 7/7 din date (numar/serie/dată/total/tva identice, tert_cui=contrapartida); ANAF v9 reverif 06.08 → 0/11 CUI reale (decizia 5 Costin).
+- urmator: Cluster 2 — generare + DUK D300/D394 pe perechile coerente (P1 lunar / M2,P2 trim); orice divergență=bug (vânătoare clasă + gard + RED/GREEN). IN LUCRU.
+- pasi:
+  T2-1. [GATA] [seed firme] date_test/seed/transa2_coerenta_tva.py: provizionare idempotentă M1,M2,P1,P2,N1,S1,S2,S3,NR1,T1,T2 sub Cabinet Prisma (fid 1968; S4=tenant_001 există deja). firma_profil per C-4 sect.D: platitor_tva, tip_decont (L/T), regim_fiscal (micro/profit), operatiuni_ic, tva_la_incasare, caen. CUI-uri C-2 (re-verificate ANAF la seed).
+  T2-2. [GATA] [coerență T-1…T-7] clienti/furnizori nomenclator + facturi: la emitent directie='emisa', la primitor directie='primita', cu numar/serie, data_emitere, total, tva, tert_cui IDENTICE pe ambele laturi; factura_linii cota_tva=21. Cazuri speciale: T-6 taxare_inversa (art.331); T-3 furnizor neplătitor (tert_platitor_tva=False, tva=0); T-5 forfetar 8%. T-7 (P1→S4) folosește tenant_001.
+  T2-3. [GATA] [probă coerență] → 7/7 identice, 0 divergențe (script coerenta_check) pt fiecare T-k: latura emisa(emitent) == latura primita(primitor) pe CUI/sumă/dată — raport per pereche (D394 vânzări↔cumpărări se reconciliază din date, nu prin check cross-firmă în app).
+  T2-4. [generare + DUK] D300/D394 M2/P1/P2; D390 P1; D301 N1 (d301_operatiuni). Orice divergență = bug → cluster propriu (vânătoare clasă + gard + RED/GREEN + DUK).
+  T2-5. [limite TVA] L1/L2/L3/L4/L10/L12 ×3 cazuri (exact/−1/+1), cu lecția tranșei 1: prag−1 poate fi C-5 (date defecte), nu C-4 — verifică per prag.
+  STARE = IN LUCRU (Cluster 1 GATA, comis; Cluster 2: generare+DUK D300/D394).
+
+--- FIRELE DE MAI JOS = istoric campanii anterioare; superseate de firul C-4 activ (EXTINDEREA 05.08 punct 1 → tranșa 1 închisă; punctele 2-4 EXTINDEREA = tranșa 3 anuale). Păstrate ca traseu. ---
 - fir: EXTINDEREA ACOPERIRII (campanie noua 05.08) - 4 puncte: 1.D112 cazuri complexe, 2.D101 impozabil, 3.amortizare MF neliniara, 4.tip_document 2-5 D394
 - ultim: Punctul 1 sub-caz 1c-PT LIVRAT - PART-TIME suprataxare: CAS+CASS reconciliate pe baza ridicata. Acoperire ~35-50%->~40-55% est.
 - urmator: Punctul 1 sub-caz 1c-CM BLOCAT: decizie de produs (poarta cale2 OARBA pe CM + candidat bug baza salariala CM). Vezi GARZI 05.08 "DESCOPERIRE 1c-CM". Urmatorul actionabil FARA decizie = Punctul 2 (D101 ajustari computed).

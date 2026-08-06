@@ -1537,3 +1537,19 @@ NU blochează depunerea (ANAF acceptă declarația). NU aliniem codul la validat
 contra legii). Ca la D101-scadență (validator DUK invers față de CF art.42): codul urmează legea; divergența e cunoscută
 și scrisă. Declanșator de reevaluare: DUK actualizează SP1B4_1 la art.146(5^6), SAU ANAF confirmă interpretarea sm−fac
 (caz în care ar deveni decizie de produs deschisă).
+
+
+## 06.08.2026 — C-4 Tranșa 2 Cluster 1 (seed firme + coerență): LIMITE DECLARATE
+Seed date_test/seed/transa2_coerenta_tva.py a materializat firmele + T-1…T-7. NEACOPERIT încă (nu erori,
+reziduu de tranșă — se ridică în clusterele următoare ale tranșei 2/3):
+- **Documente per-firmă TVA încă neseed-uite:** achiziția IC a lui P1/N1 de la furnizor UE extern (D390/D301);
+  operațiunile pe marjă S1 (art.311)/S2 (art.312); rândurile d301_operatiuni pt N1 (D301 NU citește facturi,
+  citește tabelul d301_operatiuni — vezi harta model date). Doar backbone-ul de coerență R3 e seed-uit acum.
+- **T-5 (S3→P1) = exceptia numită „achiziție de la agricultor forfetar":** stocată ca factură primită la P1 cu
+  tva=2000 (forfait 8%), cota_linie=0, tert_platitor_tva=False. D394 orfan (S3 neplătitor nu depune) — se tratează
+  ca atare, NU se forțează coerență A↔B pe latura S3.
+- **T-6 (P2→S1) taxare inversă:** stocată cu taxare_inversa=True, categorie_331='constructii', tva=0 pe factură;
+  S1 autolichidează la generare (de verificat că D300 S1 produce rândul de taxare inversă — cluster următor).
+- **Salariile firmelor simple (M1/M2/P1/P2/S1/S2/NR1/T1/T2)** NU sunt seed-uite (tranșa 2 = TVA; D112 simplu =
+  tranșa 1 declarată dar neseed-uită pt aceste firme). Fără salariați → D112 gol pt ele acum.
+- **Pragul TVA 395k (L3) neenforced** (deja în GARZI secțiunea D): statutul platitor_tva fixat manual în seed.
