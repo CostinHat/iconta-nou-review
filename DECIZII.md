@@ -7600,3 +7600,27 @@ vechi + bidirecțional: sub-raportare/supra-corecție + DUK). Suită 1465 passed
 
 **Oprire §2.3 pct.6** (buget context) la graniță curată. Actionabil rămas FĂRĂ decizie de produs = coverage-seed
 (b)+(c) pe schemă efemeră; blocat pe decizie = (d) marjă + (f) L1/L2/L3/L10 (enforcement praguri).
+
+
+## 06.08.2026 (tura 3) — C-4 Tranșa 3 ÎNCHISĂ (anuale + tranziția de an) — ultima tranșă C-4
+**Livrat (bug reachable reparat):** D101 crăpa (`ValueError`) la orice apel prin API cu `ca_an_precedent_eur`
+(injectat de `declaratii_api._d101`, respins de `calcul_d101`). Fix: `genereaza` scoate cheia și porează
+eligibilitatea IMCA (CF art.18^1 alin.1): sub 50 mil euro → nu se aplică; peste prag fără P47 → eroare clară;
+peste prag cu P47 → generează. Gard `test_d101_imca_ca_precedent.py` (RED + API-path + DUK + mutație). Detaliu GARZI.
+
+**Decizii de produs DESCHISE (reziduu C-4, nu blochează — greenlight Costin pt o campanie ulterioară):**
+1. **Perioadă fiscală parțială / regim dual pe an (T1 înființare mid-an, T2 micro→profit mid-an):** motoarele
+   D101/bilanț presupun Jan1–Dec31 fix; nu există câmp `data_infiintare`, nici împărțire de an, nici comutare de
+   regim. „D101 pro-rata din trimestrul de tranziție" (T2) și „bilanț parțial" (T1) = model nou. Împerecheat cu
+   enforcement-ul pragului CA (golul de praguri, tura 2 — L1 micro→profit).
+2. **D207 nerezidenți (NR1, art.231):** neimplementat integral (fără generator/api/test). Declarație nouă.
+3. **IMCA pe calea DB:** VT/Vs/I/A nu se derivă din balanță; după fix, IMCA e accesibil doar prin P47 manual /
+   `calcul_d101(imca=)`. Wiring-ul complet (pull IMCA) = decizie de produs (niciun firmă C-4 nu-l atinge, <50 mil).
+
+**Verificat conform (fără bug):** D392 NU se depune (intenționat, C4_date.md:108); decembrie/granița de an corectă
+(D300/D112/D394/D406 12/2026 pe fereastra corectă); D205 = dividende (salariile în D112).
+
+**Notă T1 bilanț:** sumele ies corecte (fereastra Jan–Dec prinde doar iul–dec, nimic înainte de înființare);
+rămâne doar inacuratețea antetului Data_I (01.01 în loc de 01.07) — impact fiscal minim, corectare = decizie produs.
+
+**C-4 COMPLET (3 tranșe):** T1 salarizare (închisă), T2 coerență+TVA (închisă), T3 anuale+tranziție (închisă azi).

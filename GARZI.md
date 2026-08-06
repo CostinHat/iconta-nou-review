@@ -1652,3 +1652,44 @@ OUG 8/2026) — ACESTA **e enforced period-aware** (`common.py:393`, `COTE["plaf
 (dispatcher exigibilitate `d300.py:138`); cazurile lui prag±1 sunt legitime C-4.
 **Decizie deschisă (produs):** dacă vreun prag din L1/L2/L3/L10 trebuie enforce-uit în aplicație (derivare automată
 a statutului din CA/volume) = campanie separată, greenlight Costin.
+
+
+## 06.08.2026 (tura 3) — C-4 Tranșa 3 (anuale + tranziția de an): FIX D101 + goluri declarate + verificări
+Tranșa 3 (ultima din C-4). Metodă: divergență = bug până la proba contrarie → temei la sursă → gard + mutație.
+
+**REPARAT (bug reachable) — D101 `ca_an_precedent_eur` crăpa generarea (gate IMCA art.18^1):**
+`declaratii_api._d101` injectează `ca_an_precedent_eur` în `manual`, dar `d101.genereaza` scotea doar
+cota/d_grup/cod_obligatie → cheia ajungea în `intrari` și `calcul_d101` o respingea ca „intrare necunoscută" →
+ORICE apel D101 prin API cu CA an precedent = `ValueError`. Fix: `genereaza` scoate cheia și porează
+eligibilitatea IMCA la sursă (sub 50 mil euro → nu se aplică, cazul comun; peste prag fără P47 → eroare clară,
+nu crash criptic / nici omitere tacită). Gard `test_d101_imca_ca_precedent.py` (RED + API-path + DUK + mutație).
+
+**GOL DECLARAT (decizie de produs) — perioada fiscală parțială / regim dual pe an (T1, T2):**
+NU există suport de motor. Probă la sursă: `common.py:46` (ramura anuală a `interval()` = `date(an,1,1)..date(an+1,1,1)`
+fix), `d101.build_xml` hardcodează `Data_I="01.01"` / `Data_S="31.12"`, `bilant_api` fereastră fixă Jan1–Dec31,
+`luna=12` în antet. `regim_fiscal` = un singur câmp text; NU există câmp `data_infiintare`, nici logică de
+împărțire a anului, nici de comutare micro→profit (grep `trecere/tranzitie/an_partial/perioada scurta/depasire prag`
+= 0 în codul de declarații; singurele `[tranzitie]` = punte de refactor salarizare, nu regim fiscal).
+- **T2 (micro→profit la depășirea pragului 100.000 EUR, art.52):** „D101 pro-rata din trimestrul de tranziție"
+  cerut de scenariu NU are mecanism — generatorul presupune un singur regim pe tot anul. = decizie de produs
+  (model nou: perioadă fiscală parțială + regim dual pe an; enforcement prag CA — vezi golul de praguri, tura 2).
+- **T1 (înființare ~01.07.2026, an fiscal parțial):** e MICRO → fără D101. „Bilanț parțial (L13)" cerut nu are
+  suport; bilanțul acoperă totuși Jan–Dec, dar cum nu există tranzacții înainte de înființare, SUMELE ies corecte
+  (fereastra prinde doar iul–dec); rămâne INACURATEȚEA antetului (Data_I 01.01 în loc de 01.07). Impact fiscal
+  minim (valori corecte); corectarea antetului la data înființării = decizie de produs (cere câmp `data_infiintare`).
+
+**GOL DECLARAT (nu e implementat) — D207 nerezidenți (NR1, art.231):**
+NU există `core/d207.py`, nici rută API, nici test; `declaratii_api` NU importă d207. Singurele `D207` din cod =
+string în lista de tipuri IMPORTABILE istoric (`istoric_declaratii_import_api.py:133`), nu generare. Obligația
+principală a lui NR1 (impozit reținut la sursă nerezidenți, scadență ultima zi feb) NU are cale de cod. = decizie
+de produs (declarație nouă întreagă). IMCA pe calea DB rămâne parțial (VT/Vs/I/A nederivate din balanță — după fix,
+IMCA e accesibil doar prin P47 manual / `calcul_d101(imca=)`; niciun firmă C-4 nu-l atinge, <50 mil euro).
+
+**VERIFICAT CONFORM (proba contrarie la sursă — fără bug):**
+- **D392 NU se depune** — intenționat, confirmat `C4_date.md:108` („suspendat până 31.12.2026, C-1"). Niciun cod
+  nu-l emite; toate hit-urile `392` = conturi contabile / paragrafe OMFP. NU e bug de absență.
+- **Decembrie / granița de an (D300/D112/D394/D406 luna 12/2026 în ian.2027):** matematica de dată e corectă —
+  `common.py:40` (`luna==12 → date(an+1,1,1)`), `d406.py:237` ramura `luna==12`, `d300` nr_evidenta rulează anul.
+  Nicio derivă de an. Ciclul de decembrie iese pe fereastra corectă.
+- **D205 = dividende (nu salarii):** corect — salariile se declară în D112; D205 = venituri nesalariale reținute
+  la sursă (dividende, tip_venit 08). Nu e gol.
