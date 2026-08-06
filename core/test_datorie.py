@@ -95,8 +95,11 @@ def test_datoria_nu_imbatraneste_nelimitat():
         data = datetime.date(int(d[2]), int(d[1]), int(d[0]))
         if (_AZI - data).days > 90:
             vechi.append(data.isoformat())
-    assert not vechi, ("datorie mai veche de 90 de zile: %s -> repar-o sau RESPINGE-O "
-                       "explicit in DECIZII.md" % sorted(vechi))
+    assert not vechi, (
+        "datorie mai veche de 90 de zile: %s -> repar-o sau RESPINGE-O explicit in DECIZII.md. "
+        "(Daca data e A UNUI ACT NORMATIV, nu vechimea datoriei, scrie-o cu luna in litere - "
+        "ex. '1 august 2025' - ca garda sa n-o citeasca; vezi conventia in TESTE.md.)"
+        % sorted(vechi))
 import re as _re, io as _io
 
 
