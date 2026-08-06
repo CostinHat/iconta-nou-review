@@ -69,3 +69,18 @@ def test_g5_input_guards_cu_constrangere():
             if lit in s:
                 bare.append("%s: %s" % (f.split("/")[-1], lit))
     assert not bare, "G5: input-guard telegrafic ramas: %s" % bare
+
+
+def test_g12b_niciun_cod_brut_in_httpexception():
+    """G12b (regulă durabilă, baseline=0 pe starea reparată după G1): niciun HTTPException din main.py
+    nu surfacează un cod de business brut. ORICE `.get("cod")` dintr-un HTTPException trebuie să treacă
+    prin `mesaj_din_cod`. Prinde reapariția clasei la commit (nu doar cele 2 tipare din G1)."""
+    import re
+    src = _read("main.py")
+    rele = []
+    # doar cod-ul folosit DIRECT ca detail (nu in conditionalul de status, nu deja tradus prin mesaje.get)
+    for m in re.finditer(r'detail=\w+\.get\("cod"\)|HTTPException\(\d+,\s*\w+\.get\("cod"\)', src):
+        frag = m.group(0)
+        if "mesaj_din_cod" not in frag:
+            rele.append(frag[:64])
+    assert not rele, "G12b: cod brut in HTTPException (fara mesaj_din_cod): %s" % rele
