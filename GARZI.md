@@ -1553,3 +1553,26 @@ reziduu de tranșă — se ridică în clusterele următoare ale tranșei 2/3):
 - **Salariile firmelor simple (M1/M2/P1/P2/S1/S2/NR1/T1/T2)** NU sunt seed-uite (tranșa 2 = TVA; D112 simplu =
   tranșa 1 declarată dar neseed-uită pt aceste firme). Fără salariați → D112 gol pt ele acum.
 - **Pragul TVA 395k (L3) neenforced** (deja în GARZI secțiunea D): statutul platitor_tva fixat manual în seed.
+
+
+## 06.08.2026 — C-4 Tranșa 2 Cluster 2: BUG CONFIRMAT — perioada fiscală TVA trimestrială neimplementată (D300/D394)
+DATORIE (impact fiscal, iese la ANAF). Plătitorii de TVA cu perioadă TRIMESTRIALĂ (M2/P2 din set; CF art.322)
+primesc D300/D394 DUK-VALIDE dar FISCAL GREȘITE:
+- **d394.tip_d394(luna) returnează hardcodat "L"** (core/d394.py:307), ignoră tip_decont. Docstring-ul recunoaște:
+  „T/S/A rămân de completat când există vector fiscal". Vectorul (firma_profil.tip_decont) EXISTĂ acum (setat de seed)
+  → D394 M2/P2 emite tip_D394="L" în loc de "T". Etichetă de perioadă greșită pe o declarație altfel DUK-validă.
+- **Fereastra de date = O SINGURĂ LUNĂ și pentru trimestriali:** d300.pull/d394.pull folosesc perioada.interval() cu
+  `luna` → [luna, luna+1). PROBĂ DECISIVĂ: P2 (trim) are T-2 în APRILIE (net 80000 / TVA 16800). D300 P2 generat cum
+  face app-ul (luna=6 = sfârșit Q2, SINGURA permisă de d300.valideaza:365 pt T) → DUK=VALID dar R22_1=R22_2=0:
+  OMITE COMPLET aprilie. (luna=4 vede T-2 corect: R22_1=80000/R22_2=16800, dar d300.valideaza o RESPINGE — „tip_decont=T
+  cere luna∈{2,3,5,6,8,9,11,12}" — + DUK erori.) interval() SUPORTĂ deja trim: Perioada(trim=2)→[apr,iul); doar
+  caller-ul pasează luna, nu trim.
+- **declaratii_api.py:78-81** rutează d300/d394/d390 ca „lunar" MEREU (harta PERIOADE nu are cale trimestrială pt ele;
+  doar d100/d710 sunt trimestriale acolo).
+IMPACT REAL: orice contribuabil trimestrial (nu doar setul de test) depune deconturi TVA care sub-raportează 2 din 3
+luni ale trimestrului → declarație eronată la ANAF, dar care trece DUK (fals-verde). TEMEI: CF art.322 (perioada
+fiscală = trimestrul calendaristic pt CA an ant. < 100.000 EUR fără achiziții IC; un singur decont per perioadă,
+acoperă toate lunile perioadei); OPANAF D394 (aceeași frecvență ca decontul).
+NEREPARAT în această tură — buget de context + decizie de design pe forma API-ului de perioadă (vezi DECIZII 06.08 +
+TESTE fir C-4 tranșa 2, pașii de fix). Firmele LUNARE (P1) NU sunt afectate: D300/D394 P1 toate DUK-valide, coerență
+corectă pe lunile 2-6 (verificat această tură).

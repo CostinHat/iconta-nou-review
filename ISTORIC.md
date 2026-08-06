@@ -3384,3 +3384,17 @@ PROBĂ coerență din date: 7/7 documente identice pe ambele laturi, tert_cui=co
 ANAF v9 re-verificat 06.08 (decizia 5 Costin): 0/11 CUI reale (toate gasit=False). Seed reproductibil R2:
 date_test/seed/transa2_coerenta_tva.py (idempotent). Fără logică fiscală atinsă (fixture) → fără gard nou.
 Urmează Cluster 2: generare + DUK D300/D394 pe perechile coerente (P1/M2/P2) — divergență=bug.
+
+
+## 06.08.2026 (tura 16, continuare) — C-4 TRANȘA 2, Cluster 2: generare + DUK; BUG trimestrial confirmat
+Seed extins cu firma_profil COMPLET (adresă/oraș/județ/bancă/IBAN/telefon/email/declarant) — prerechizit pentru
+generarea D300/D394 (poarta D300 27.07 cere bancă+IBAN). Re-rulat idempotent pe cele 11 firme.
+- **Cluster 2a (verificare, FĂRĂ bug):** P1 (plătitor TVA LUNAR) — D300 + D394 generate pentru lunile 2–6 2026, TOATE
+  DUK-VALIDE (E=0, A=0). Coerența R3 curge corect prin generatoare: D394 martie = vânzări T-1(M2 50000/10500) +
+  T-7(S4 60000/12600), bazaL=110000/tvaL=23100. Calea lunară e curată.
+- **Cluster 2b (BUG CONFIRMAT, nereparat):** perioada TVA TRIMESTRIALĂ neimplementată în D300/D394 (M2/P2). Probă
+  decisivă P2 Q2: D300 luna=6 (cum face app-ul) = DUK-valid dar OMITE T-2 din aprilie (R22=0); luna=4 vede T-2 dar e
+  respinsă de validare. d394.tip_d394 hardcodat "L" (ignoră tip_decont). Temei CF art.322. Detaliu în GARZI 06.08;
+  design de reparat în DECIZII 06.08 (recomandare: opțiunea B).
+OPRIRE lanț §2.3 pct.6 (buget context) + decizie de design pe API perioadă (DECIZII 06.08) la graniță curată.
+Livrat verde: seed profil complet + verificarea P1 lunar. HEAD urcă la commitul Cluster 2. Registre la zi.

@@ -91,10 +91,18 @@ def ensure_tenant(conn, fid, uid, tpl, nume, cui, caen, regim, platitor, tip_dec
             res = tp.provision_tenant(conn, nume, cui, fid, uid, tpl)
             schema, nou = res["schema_name"], True
     with conn.cursor() as c:
+        # profil complet: declarațiile TVA (D300/D394/D390) cer identificare + bancă/IBAN
+        # (poarta D300 27.07 cere banca+IBAN) + declarant. Valori de test valide structural.
         c.execute(
             'UPDATE "%s".firma_profil SET nume=%%s, cui=%%s, caen=%%s, regim_fiscal=%%s, '
-            'platitor_tva=%%s, tip_decont=%%s, operatiuni_ic=%%s WHERE id=1' % schema,
-            (nume, cui, caen, regim, platitor, tip_decont, ic))
+            'platitor_tva=%%s, tip_decont=%%s, operatiuni_ic=%%s, '
+            'adresa=%%s, oras=%%s, judet=%%s, cod_postal=%%s, banca=%%s, iban=%%s, '
+            'telefon=%%s, email=%%s, declarant_nume=%%s, declarant_prenume=%%s, declarant_functie=%%s '
+            'WHERE id=1' % schema,
+            (nume, cui, caen, regim, platitor, tip_decont, ic,
+             "Str. Testului nr. 1", "Bucuresti", "București", "010101",
+             "Banca Test", "RO49AAAA1B31007593840000", "0210000001", "firma@test.ro",
+             "Dobrescu", "Elena", "ADMINISTRATOR"))
     return schema, nou
 
 

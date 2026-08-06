@@ -7533,3 +7533,18 @@ sau schimba setul fara re-decizie -> pica). Redeschiderea cere modificarea ACEST
 - **regim_fiscal S3 = 'micro' (placeholder).** S3 e agricultor forfetar (art.315^1), regim nemodelat ca valoare
   distinctă în firma_profil.regim_fiscal (câmp text liber micro/profit); S3 e neplătitor TVA și nu depune D101/D300,
   deci valoarea nu afectează livrabilele tranșei 2. De reconfirmat dacă tranșa 3 (D100/D406 S3) cere altă valoare.
+
+
+## 06.08.2026 — C-4 Tranșa 2: perioada fiscală TVA trimestrială (D300/D394/D390) — CONSTATARE + design recomandat
+Constatare (probă în GARZI 06.08 + ISTORIC tura 16): D300/D394 nu agregă trimestrul pentru plătitorii trimestriali;
+produc declarații DUK-valide dar sub-raportate (P2 Q2 omite aprilie T-2). d394.tip_d394 hardcodat "L". Reparația e
+clară pe temei (CF art.322) DAR atinge forma API-ului de perioadă → design de confirmat cu Costin înainte de refactor:
+- **Opțiunea A:** caller-ul (declaratii_api/UI) pasează trim=Q pentru firmele trimestriale; genereaza calculează
+  eticheta luna=sfârșit-trimestru (3/6/9/12) pentru XML. Curat conceptual, dar UI trebuie să știe perioada firmei
+  (există în firma_profil.tip_decont → derivabil).
+- **Opțiunea B (RECOMANDATĂ de executor):** genereaza citește tip_decont din profil și, dacă T/S/A, remapează
+  luna-ancoră → fereastra corectă intern, DECUPLÂND „luna-etichetă din XML" (3/6/9/12) de „fereastra de date"
+  (trimestrul). Minim invaziv pe caller (declaratii_api/UI rămân neatinse), localizat în d300/d394/d390.
+Ripple de gestionat la reparație (oricare opțiune): d300.valideaza (regula luna∈{2,3,5,6,8,9,11,12} pentru T — de
+reconciliat cu noul model), nr_evidenta/scadenta (folosesc luna), D390 (aceeași clasă). Fiecare cu gard + RED/GREEN +
+DUK. NEDECIS — recomandarea B stă până confirmă Costin; nu blochează alt lucru (firmele lunare merg).
