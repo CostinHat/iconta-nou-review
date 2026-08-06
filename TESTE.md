@@ -1193,3 +1193,17 @@ se scrie ca LIMITA, nu gard fals.
     lasa tree murdar sau ar strica date. Follow-up scopat (dedup facturi -> UNIQUE; audit NULL -> SET NOT NULL).
   - intrare<->document-sursa: reconcilierea BANCARA exista (reconciliere.py: extras<->facturi); Σ(linii)==total
     document nescris explicit ca gard - felie separata unde sursa e digitala.
+
+## 06.08.2026 (tura 5) — RECONCILIERE registre (campania de reparatie)
+
+- Firul "urmator" cu 4 follow-up-uri (rescriere mesaje / fix B1-B17 / markeri .oblig / eroare-langa-camp)
+  era STALE: toate facute in sesiunile G1-G10 anterioare.
+- Campanie tura 5: LIVRAT D1a (skip vizibil import salariati), A6 (D394 L->LS + proba DUK, DATORIE 31.07
+  INCHISA), B3 (owner cabinet deblocat la depunere). STALE (nu erau vii): A1 (D406 rezolvat 27.07),
+  D1b (NOT NULL retras - base-null e semantic), D1c (idempotenta deja exista pe 9 module).
+- FLAGGED cer decizie Costin: A5 (amortizare degresiva/accelerata - modelare fiscala + fara golden),
+  D3 (state_plata - build-new, niciun eveniment de emitere). xfail-uri raman deschise (21->20: A6 inchis).
+- DEFERATE (garzi preventive pt defecte inexistente): D2, D5, D7.
+- PLAN_B.md rescris (contabil = test user, F1-F8 matrice legala, E1-E12).
+- PRODUS separat in GARZI ("PRODUS - de abordat la final"): marja, regim dual, D207, praguri,
+  rezerva legala, coada DUK, D406-Payments, 50%-deductibil (d406.py:122), IMCA-DB, GDPR ROPA, tot §F.
