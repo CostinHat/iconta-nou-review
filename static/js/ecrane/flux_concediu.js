@@ -1,7 +1,7 @@
 // [cm_flux_v1] Concediu medical — introducere certificat + calcul + lista.
 // Design System: cap.2 (form la buton), cap.4 (casete date), cap.1 (butoane), cap.5 (confirmaCaseta), cap.6 (mesaj succes).
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
-import { api, esc, confirmaCaseta, dataRo, bani, pct } from "../api.js";
+import { api, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp } from "../api.js";
 
 const CM_CODURI = [
   ["01", "01 — Boală obișnuită (55/65/75%)"],
@@ -135,23 +135,27 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     zona.querySelector("#cm-calc").addEventListener("click", async () => {
       const rez = zona.querySelector("#cm-rezultat");
       rez.innerHTML = "";
+      curataEroriCamp(zona);
       const inceput = zona.querySelector("#cm-inceput").value;
+      const sfarsit = zona.querySelector("#cm-sfarsit").value;
       const zile = parseInt(zona.querySelector("#cm-zile").value, 10);
       const ven6 = parseFloat(zona.querySelector("#cm-ven6").value);
       const zile6 = parseInt(zona.querySelector("#cm-zile6").value, 10);
-      // validari preventive cu mesaj (Design System cap.6)
-      if (!inceput) { rez.innerHTML = `<span class="msg-eroare">Completeaz\u0103 data de \u00eenceput a concediului.</span>`; return; }
-      const sfarsit = zona.querySelector("#cm-sfarsit").value;
-      if (!sfarsit) { rez.innerHTML = `<span class="msg-eroare">Completeaza data de sfarsit a concediului (marcata obligatorie) inainte de a calcula.</span>`; return; }
-      if (sfarsit < inceput) { rez.innerHTML = `<span class="msg-eroare">Data de sfarsit nu poate fi inaintea datei de inceput; corecteaza intervalul concediului.</span>`; return; }
-      if (!zile || zile < 1) { rez.innerHTML = `<span class="msg-eroare">Zilele lucr\u0103toare CM trebuie s\u0103 fie cel pu\u021bin 1.</span>`; return; }
-      if (!ven6 || ven6 <= 0) { rez.innerHTML = `<span class="msg-eroare">Completeaz\u0103 veniturile brute pe 6 luni (baza de calcul).</span>`; return; }
-      if (!zile6 || zile6 < 1) { rez.innerHTML = `<span class="msg-eroare">Completeaz\u0103 zilele lucr\u0103toare din cele 6 luni.</span>`; return; }
       const codSel = zona.querySelector("#cm-cod").value;
       const urg = parseInt(zona.querySelector("#cm-urgenta").value, 10);
-      if (codSel === "06" && (!urg || urg < 1 || urg > 177)) { rez.innerHTML = `<span class="msg-eroare">La codul 06 (urgen\u021b\u0103 medico-chirurgical\u0103) completeaz\u0103 codul de urgen\u021b\u0103 (1\u2013177, HG 423/2020).</span>`; return; }
       const cnpI = (zona.querySelector("#cm-cnp-ingrijit").value || "").trim();
-      if (["09","91","92","17"].includes(codSel) && !/^\d{13}$/.test(cnpI)) { rez.innerHTML = `<span class="msg-eroare">La codurile de \u00eengrijire copil (09/91/92) sau pacient oncologic (17) completeaz\u0103 CNP-ul persoanei \u00eengrijite (13 cifre) \u2014 D112 \u00eel cere obligatoriu.</span>`; return; }
+      // [G10 Faza 1] validari preventive COLECTATE (tiparul erori_generare), plasate langa fiecare camp - fara fail-fast
+      const eC = [];
+      if (!inceput) eC.push(["cm-inceput", "Completează data de început a concediului."]);
+      if (!sfarsit) eC.push(["cm-sfarsit", "Completează data de sfârșit a concediului."]);
+      else if (inceput && sfarsit < inceput) eC.push(["cm-sfarsit", "Data de sfârșit nu poate fi înaintea datei de început."]);
+      if (!zile || zile < 1) eC.push(["cm-zile", "Zilele lucrătoare CM trebuie să fie cel puțin 1."]);
+      if (!ven6 || ven6 <= 0) eC.push(["cm-ven6", "Completează veniturile brute pe 6 luni (baza de calcul)."]);
+      if (!zile6 || zile6 < 1) eC.push(["cm-zile6", "Completează zilele lucrătoare din cele 6 luni."]);
+      if (codSel === "06" && (!urg || urg < 1 || urg > 177)) eC.push(["cm-urgenta", "La codul 06 completează codul de urgență (1–177, HG 423/2020)."]);
+      if (["09","91","92","17"].includes(codSel) && !/^\d{13}$/.test(cnpI)) eC.push(["cm-cnp-ingrijit", "La codurile de îngrijire copil (09/91/92) sau pacient oncologic (17) completează CNP-ul persoanei îngrijite (13 cifre) — D112 îl cere obligatoriu."]);
+      if (codSel === "10" && !((zona.querySelector("#cm-venit").value || "").trim())) eC.push(["cm-venit", "La codul 10 completează venitul brut realizat în perioada CM."]);
+      if (eC.length) { eC.forEach(([c, t]) => eroareCamp(zona, c, t)); return; }
 
       const inc = new Date(inceput);
       const payload = {

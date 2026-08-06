@@ -107,6 +107,26 @@ export function arataMesaj(el, txt, tip = "info") {
   el.classList.add("msg-" + tip);
 }
 
+// [G10 cap.6 v2.30] eroare de camp: <span class="msg-eroare" data-camp> imediat dupa inputul #idCamp.
+// Intoarce false daca #idCamp nu exista -> apelantul cade la B (zona generica). Fallback OBLIGATORIU.
+export function eroareCamp(root, idCamp, txt) {
+  const inp = (root || document).querySelector("#" + idCamp);
+  if (!inp) return false;
+  let sp = inp.parentElement && inp.parentElement.querySelector('.msg-eroare[data-camp="' + idCamp + '"]');
+  if (!sp) {
+    sp = document.createElement("span");
+    sp.className = "msg-eroare";
+    sp.setAttribute("data-camp", idCamp);
+    inp.insertAdjacentElement("afterend", sp);
+  }
+  sp.textContent = txt;
+  return true;
+}
+
+export function curataEroriCamp(root) {
+  (root || document).querySelectorAll(".msg-eroare[data-camp]").forEach((e) => e.remove());
+}
+
 // [STANDARD_ATENTIONARE] confirmare in caseta standard, inlocuieste confirm() nativ.
 // Foloseste: confirmaCaseta(elementZona, "Mesaj...", () => { actiunea });
 // Injecteaza caseta + butoane sub/inaintea zonei date; Renunta o inchide.
