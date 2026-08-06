@@ -7657,3 +7657,20 @@ D112 tenant_001 2026-07 **BYTE-IDENTIC** cu/fără fix (sha256 `ea0520b0c8b2eb0c
 Nicio lună reală n-are încă două valori (schimbările de salariu minim sunt la granița de lună: 4050 ian-2025,
 4325 iul-2026), deci regula nu bite azi — dar e implementată corect pentru când va fi. Test:
 `core/test_12_salariu_minim_luna.py`.
+
+## 06.08.2026 — #10: deducere art.77(4) "4 si peste" = 45% confirmat la MO (inchide xfail)
+
+Sursele secundare se contraziceau (45% vs 40%). Sursa MO LOCALA anaf_surse/cod_fiscal_227_2015_consolidat.html
+contine tabelul art.77(4) VERBATIM: "Persoane aflate in intretinere ... 4 si peste ... 1 salariu minim ->
+45,00%" (scara 20/25/30/35/45). Codul (salarizare.py _deducere_personala_2018) foloseste 45% -> COINCID.
+nivel_sursa ridicat REDARE->MO+verbatim pe temeiul scarii. Codul NU s-a schimbat (valoarea era corecta).
+Marker: **deducere 45% 4+ verificat in monitorul oficial**.
+
+## 06.08.2026 — #11: deducere 100 lei/copil necablata + gard defensiv
+
+Marker: **deducere 100 lei/copil - functionalitate necablata, gard defensiv pus, cablarea completa in §PRODUS
+cu temei art.77(10)b/(12)/(13)**. copii_scoala nu e coloana pe salariati; apelantii reali (d112/stat_plata)
+trec 0 -> deducerea de 100 lei/copil NU se acorda azi (cod mort). Gard defensiv (salarizare.py
+_deducere_personala_2018): ridica daca copii_scoala>0 fara flag declaratie_copii, citand art.77(12)-(13) ->
+la cablare esueaza vizibil, nu acorda dublu. Cablarea completa (input copii scolarizati + declaratie parinte
++ UI) = build-new, in §PRODUS. Proba: D112 byte-identic cu/fara gard (copii_scoala=0 pe date reale).

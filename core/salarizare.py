@@ -41,7 +41,7 @@ def _nota(debit, credit, suma, temei=None):
 #  DEDUCERE PERSONALĂ (art. 77)
 # ============================================================
 def _deducere_personala_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
-                             functie_baza=True, *, la_data):
+                             functie_baza=True, declaratie_copii=False, *, la_data):
     """Întoarce {baza, tineri, copii, total} — sume scăzute din baza impozitului.
 
     la_data e OBLIGATORIU (keyword-only): deducerea depinde de salariul minim din LUNA de
@@ -71,6 +71,16 @@ def _deducere_personala_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # — suplimentar tineri <26 (doar limita superioara: brut <= sm+2000, art.77 alin.10 lit.a) —
     tineri = PCT_TINERI * sm if (sub_26 and b <= plafon) else Decimal(0)
     # — suplimentar copii la școală (indiferent de venit) —
+    # [#11 gard defensiv] art.77 alin.(12)-(13): deducerea de 100 lei/copil NU se acorda tacit - cere
+    # declaratia parintelui (inscriere in invatamant + declaratie pe proprie raspundere; la mai multi
+    # angajatori, ca nu beneficiaza la altul). FEATURE NECABLAT azi (copii_scoala nu e input real,
+    # apelantii trec 0); cablarea completa = build-new (§PRODUS). Fara flag -> esec VIZIBIL, nu dublu.
+    if _dec(copii_scoala) > 0 and not declaratie_copii:
+        raise ValueError(
+            "Deducerea de 100 lei/copil (CF art.77 alin.(10) lit.b) se acorda DOAR pe baza declaratiei "
+            "prevazute de art.77 alin.(12)-(13): document de inscriere in invatamant + declaratia pe "
+            "propria raspundere a parintelui (la mai multi angajatori: si ca nu beneficiaza la altul). "
+            "Lipseste flag-ul declaratie_copii - nu se acorda tacit. Cablarea input-ului = build-new (§PRODUS).")
     copii = DEDUCERE_COPIL_SCOALA * _dec(copii_scoala)
 
     total = ded_baza + tineri + copii
@@ -86,12 +96,14 @@ def _deducere_personala_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
 # noua cu data_in, iar deducerea pe o luna trecuta ramane calculata cu regula de atunci.
 _VARIANTE_DEDUCERE = [
     ("2018-01-01", _deducere_personala_2018,
-     c.Temei("CF", art="77", alin="4", data_in="2018-01-01", nivel_sursa="REDARE",
-             de_cine="Code/Costin", verificat_la="2026-07-31")),
+     c.Temei("CF", art="77", alin="4", data_in="2018-01-01", nivel_sursa="MO",
+             de_cine="Code/Costin", verificat_la="2026-08-06",
+             url="anaf_surse/cod_fiscal_227_2015_consolidat.html",
+             text_citat="tabel art.77(4): 4 si peste persoane = 45,00% la 1 salariu minim (scara 20/25/30/35/45)")),
 ]
 
 
-def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0, functie_baza=True, *, la_data):
+def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0, functie_baza=True, declaratie_copii=False, *, la_data):
     """Deducerea personala, DISPECER pe la_data (varianta de formula valabila la data venitului).
     TEMEI: CF art.77 alin.(4) (scara degresiva 20/25/30/35/45%, prag salariu minim+2000) + alin.(10) lit.a
     (deducere 100 lei/copil scolarizat). nivel_sursa: REDARE (scara 45% pt 4+ din redare secundara
@@ -100,7 +112,7 @@ def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0, functie_b
         raise ValueError("deducere_personala: la_data (luna de salarizare) e obligatoriu; "
                          "nu se ghiceste luna curenta - salariul minim depinde de luna venitului")
     fn, _ = c.alege_varianta(_VARIANTE_DEDUCERE, la_data)
-    return fn(brut, persoane, sub_26, copii_scoala, functie_baza, la_data=la_data)
+    return fn(brut, persoane, sub_26, copii_scoala, functie_baza, la_data=la_data, declaratie_copii=declaratie_copii)
 
 
 # ============================================================
@@ -411,8 +423,10 @@ def _procent_cm_l141_2025(cod, zile_episod, procent_accident=100):
 # logica, o dateaza). Azi o singura varianta: comportament identic pt orice data >= 2018 (fara regresie).
 _VARIANTE_PROCENT_CM = [
     ("2018-01-01", _procent_cm_l141_2025,
-     c.Temei("OUG", 158, 2005, art="17", data_in="2018-01-01", nivel_sursa="REDARE",
-             de_cine="Code/Costin", verificat_la="2026-07-31",
+     c.Temei("OUG", 158, 2005, art="17", data_in="2018-01-01", nivel_sursa="MO",
+             de_cine="Code/Costin", verificat_la="2026-08-06",
+             url="anaf_surse/oug_158_2005_consolidat.html",
+             text_citat="art.17(1) post-141: 55% pana la 7 zile, 65% 8-14 zile, 75% peste 15 zile; (1^1) cardiovascular 75%",
              lant_acte="Legea 141/2025 (forma progresiva 55/65/75 cod 01); Legea 136/2020 (carantina 07=100%)")),
 ]
 

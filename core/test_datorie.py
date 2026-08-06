@@ -188,7 +188,7 @@ def test_datorie_gard_structura_absent():
     assert re.search(r"def test_\w*structura\w*\(", tt)
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: deducere personala de baza 45% pentru 4+ persoane (Cod fiscal art.77 alin.4) confirmata pe pliant ANAF (AJFP Vrancea) + redare text codificat (noulcodfiscal.ro), NEGASIT direct la MO/legislatie.just.ro - documentul consolidat e prea mare pentru fetch (intoarce doar Titlul I). De reverificat tabelul alin.4 in Monitorul Oficial si consemnat in DECIZII.md.")
+# [INCHISA 06.08.2026] scara deducerii 20/25/30/35/45% (art.77 alin.4, 4+ = 45%) confirmata VERBATIM la MO in anaf_surse/cod_fiscal_227_2015_consolidat.html; codul foloseste 45%; nivel_sursa ridicat REDARE->MO. Vezi DECIZII.md.
 def test_datorie_deducere_45pct_4plus_neconfirmat_la_mo():
     # Se inchide cand reverificarea la MO e consemnata in DECIZII.md (marker stabil, case-insensitive).
     # strict=True: cand devine adevarat, xpass -> pica -> semnaleaza sa scoti xfail-ul.
@@ -196,7 +196,7 @@ def test_datorie_deducere_45pct_4plus_neconfirmat_la_mo():
     assert "deducere 45% 4+ verificat in monitorul oficial" in dz.lower()
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: Cod fiscal art.77 alin.(12)-(13) - deducerea de 100 lei/copil la mai multi angajatori se acorda UNUI SINGUR parinte, pe baza de declaratie. Codul (deducere_personala) primeste copii_scoala si aplica 100 lei/copil neconditionat, fara sa trateze care parinte o ia sau dubla acordare la angajatori diferiti. De implementat cand exista fluxul de declaratie parinte. Se inchide cand e consemnat in DECIZII.md.")
+@pytest.mark.xfail(strict=True, reason="DATORIE 02.08.2026 (art.77 alin.(12)-(13)): deducerea de 100 lei/copil e NECABLATA - copii_scoala nu e coloana pe salariati, niciun apelant real n-o trece >0, deci nu se acorda azi. Gard defensiv pus (ridica daca copii_scoala>0 fara flag declaratie_copii, citand art.77(12)-(13)) ca la cablare sa esueze VIZIBIL, nu sa acorde dublu. Cablarea completa (input copii scolarizati + declaratie parinte + UI) = build-new, in §PRODUS. Se inchide cand feature-ul e cablat cu temei art.77(10)b/(12)/(13).")
 def test_datorie_deducere_copil_parinte_multi_angajatori():
     # Se inchide cand tratarea alin.(12)-(13) e consemnata in DECIZII.md (marker stabil, case-insensitive).
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
@@ -253,7 +253,7 @@ def test_datorie_cm_plafon_12sm():
     assert "cm plafon 12 salarii minime aplicat in calcul_cm" in dz.lower()
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 02.08.2026 (art.XI L141/2025): selectia de regim de procente dupa data certificatului INITIAL al episodului NU e implementata - _VARIANTE_PROCENT_CM are o singura varianta (forma L141/2025, 55/65/75), aplicata inclusiv episoadelor cu certificat initial anterior lunii august 2025. art.XI(1) cere legea de la data eliberarii certificatelor initiale. Procentele pre-141 NU-s verificate la sursa (nu-s in anaf_surse/) -> BLOCAJ MOTIVAT, nu se inventeaza. Se inchide cand forma pre-141 e obtinuta verbatim la MO + varianta datata adaugata + teste pe ambele parti ale lunii august 2025, consemnat in DECIZII.md.")
+@pytest.mark.xfail(strict=True, reason="DATORIE 02.08.2026 (art.XI L141/2025): selectia regimului de procente dupa data certificatului INITIAL NU e implementata - _VARIANTE_PROCENT_CM are o singura varianta (forma L141/2025, 55/65/75). art.XI(1) cere legea de la certificatul initial. art.17(1) forma ANTERIOARA Legii 141/2025 absenta verbatim din anaf_surse/oug_158_2005_consolidat.html (fisierul contine DOAR forma consolidata curenta + nota de amendament) -> BLOCAJ MOTIVAT, nu se inventeaza pe sursa secundara. Forma post-141 (55/65/75 + 1^1 cardiovascular 75%) e ACUM confirmabila MO din acest fisier. Se inchide cand forma pre-141 e obtinuta verbatim la MO + varianta datata + teste pe ambele parti ale lui 01 august 2025.")
 def test_datorie_cm_art_xi_regim_initial():
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "cm art xi regim dupa certificat initial verificat la sursa" in dz.lower()

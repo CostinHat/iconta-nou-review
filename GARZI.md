@@ -1845,3 +1845,10 @@ sunt deja rezolvați, decizii de produs, sau build-new, NU comportament rupt viu
 
 **PLAN_B.md rescris** (contabilul = utilizator de test, F1–F8 din matricea de obligații legale, E1–E12 cu E12 =
 comportament la încărcare). E1–E12 NU executate — doar documentul.
+
+### PRODUS (tura 6) — cablare deducere 100 lei/copil (art.77 alin.(10) lit.b + (12)-(13))
+Deducerea de 100 lei/copil scolarizat NU e cablata: lipsesc (a) input-ul copii_scolarizati (coloana pe
+salariati + UI), (b) flag-ul declaratiei parintelui (art.77(12)-(13): document inscriere + declaratie pe
+proprie raspundere; la mai multi angajatori, ca nu beneficiaza la altul). Azi = gard defensiv pe functia
+pura (ridica la copii_scoala>0 fara flag). Cablarea completa = build-new. Blocant: cand un cabinet are
+salariati cu copii scolarizati care cer deducerea.

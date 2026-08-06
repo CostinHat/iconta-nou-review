@@ -63,7 +63,7 @@ def test_deducere_degresiva_pe_trepte():
 
 
 def test_deducere_copil_scoala():
-    assert deducere_personala(6000, copii_scoala=2, la_data=SEM2)["copii"] == Decimal("200.00")
+    assert deducere_personala(6000, copii_scoala=2, declaratie_copii=True, la_data=SEM2)["copii"] == Decimal("200.00")
 
 
 def test_deducere_zero_fara_functie_baza():

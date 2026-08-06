@@ -1207,3 +1207,13 @@ se scrie ca LIMITA, nu gard fals.
 - PLAN_B.md rescris (contabil = test user, F1-F8 matrice legala, E1-E12).
 - PRODUS separat in GARZI ("PRODUS - de abordat la final"): marja, regim dual, D207, praguri,
   rezerva legala, coada DUK, D406-Payments, 50%-deductibil (d406.py:122), IMCA-DB, GDPR ROPA, tot §F.
+
+## 06.08.2026 (tura 6) — METODOLOGIE: verifica anaf_surse/ INAINTE de a declara "blocat pe sursa"
+Premisa "sursa nu e disponibila" trebuie VERIFICATA in anaf_surse/ inainte de a fi scrisa intr-un xfail.
+Doua xfail-uri purtau note despre absenta unei surse care era, partial sau total, prezenta local:
+- #10 (art.77(4) 45%): nota zicea "sursele oficiale blocheaza accesul" - FALS, cod_fiscal_227_2015_consolidat.html
+  e in anaf_surse/ si confirma 45% verbatim -> INCHIS.
+- #16 (OUG 158 art.17 pre-141): nota zicea "nu-s in anaf_surse/" - PARTIAL fals; oug_158_2005_consolidat.html
+  EXISTA, doar forma PRE-141 lipseste verbatim (fisierul are doar forma consolidata curenta) -> ramane blocat,
+  nota corectata.
+Regula: inainte de a marca "blocat pe sursa" -> grep in anaf_surse/, apoi declara EXACT ce lipseste.
