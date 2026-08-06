@@ -49,7 +49,7 @@ TRANZACTII = [
     ("T3", "M1",  "P1", "2026-02-20",  8000,     0,  0, False, None,          False, "furnizor NEPLATITOR -> P1 fara drept deducere"),
     ("T4", "NR1", "P1", "2026-05-05", 30000,  6300, 21, False, None,          True,  "servicii IT intern"),
     ("T5", "S3",  "P1", "2026-06-12", 25000,  2000,  0, False, None,          False, "agricultor forfetar 8% (art.315^1); D394 achizitie de la agricultor"),
-    ("T6", "P2",  "S1", "2026-07-08", 40000,     0, 21, True,  "constructii", True,  "taxare inversa (art.331); S1 autolichideaza"),
+    ("T6", "P2",  "S1", "2026-07-08", 40000,     0, 21, True,  "cladiri_terenuri", True,  "taxare inversa art.331 lit.g (livrare cladire/teren); S1 autolichideaza. NB: constructii-LUCRARI nu mai e taxare inversa (abrogat); cladiri_terenuri (lit.g) e categoria valida -> codPR 27 in D394"),
     ("T7", "P1",  "S4", "2026-03-20", 60000, 12600, 21, False, None,          True,  "materii prime/utilaje; S4 cumparator TVA deductibila"),
 ]
 SERIE = "COER"

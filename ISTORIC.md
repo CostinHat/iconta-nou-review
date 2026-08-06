@@ -3407,3 +3407,10 @@ perioada_tva_tip (vector fiscal, eroare la lipsă) + fereastra_tva (decuplează 
 P2 Q2 include acum T-2 aprilie (R22_2 0→16800), DUK-valid; tip_D394 'L'→'T'; P1 lunar 10/10 fără regresie. Gard
 test_d300_d394_trimestrial.py + mutație probată. 23 fixturi reparate (tip_decont explicit). Corectat și seed T-6:
 taxare inversă → emisă cotă 0 / primită cota bunului (autolichidare). Rămas: T-6 op11/codPR (R233.5) = item separat.
+
+
+## 06.08.2026 (tura 16, T-6) — taxare inversă art.331: categorie corectată; bug D300 furnizor descoperit
+Seed T-6 categorie_331 'constructii'→'cladiri_terenuri' (art.331 lit.g). D394 P2 Q3 + S1 iulie DUK-VALIDE (erau
+R233.5); D300 cumpărător S1 corect (R27+R22=8400 autolichidare). Descoperit bug: D300 FURNIZOR (P2 Q3) gol — livrarea
+40000 cu taxare inversă nu ajunge în R13 (d300.pull nu citește taxare_inversa). Consemnat GARZI 06.08 ca datorie nouă.
+Condiția 4 a fix-ului trimestrial acum complet îndeplinită (P2 toate trimestrele + S1 DUK-valide pe D394+D300).

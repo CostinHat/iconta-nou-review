@@ -1588,3 +1588,16 @@ PROBĂ: P2 Q2 (luna=6) include acum T-2 din aprilie (R22_1=80000/R22_2=16800, er
 10/10 DUK-valid (fără regresie). GARD: core/test_d300_d394_trimestrial.py + mutație probată (T→lună = testul picat).
 LIMITĂ RĂMASĂ (nu din acest fix): T-6 taxare inversă art.331 — D394 cere secțiunea op11/codPR; categorie_331='constructii'
 nu mapează la un codPR valid → P2 Q3 D394 + S1 iulie D394 = DUK erori (R233.5). Item separat „T-6 taxare inversă".
+
+
+## 06.08.2026 — T-6 taxare inversă: categorie corectată + BUG NOU (D300 furnizor pierde livrarea)
+Seed T-6 corectat: categorie_331 'constructii' → 'cladiri_terenuri' (art.331 lit.g, livrare clădire/teren între
+plătitori = taxare inversă VALIDĂ; construcții-LUCRĂRI nu mai e taxare inversă, abrogat). Efect: D394 P2 Q3 + S1 iulie
+acum DUK-VALIDE (op11/codPR 27 construit; R233.5 rezolvat). D300 CUMPĂRĂTOR (S1) corect: autolichidare R27(colectat)=8400
++ R22(deductibil)=8400, net zero.
+**DATORIE NOUĂ (impact fiscal): D300 al FURNIZORULUI pierde livrarea cu taxare inversă.** P2 Q3 D300 = COMPLET GOL
+(0 rânduri), deși livrarea de 40000 art.331 lit.g ar trebui raportată în R13 („Livrări de bunuri/servicii pentru care
+se aplică taxarea inversă"). DUK-valid (fals-verde, ca bug-ul trimestrial). Cauză probabilă: d300.pull NU selectează
+f.taxare_inversa (SELECT-ul are doar directie/total/tva/linii) → calcul_d300 nu poate ruta livrarea emisă cu taxare
+inversă (cota 0) în R13; latura cumpărător merge prin altă cale (cota bunului pe primită). TEMEI: OPANAF struct D300
+R13 (art.331). NEREPARAT — item separat „D300 furnizor taxare inversă". Firmele fără taxare inversă emisă neafectate.
