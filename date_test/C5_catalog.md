@@ -1,0 +1,122 @@
+# C-5 — Catalog de goluri de conformitate cap.6 (stări de blocare + date defecte)
+
+**Natura livrării:** catalog, NU rescriere. Fiecare caz: TRIGGER → mesajul care TREBUIE (conform cap.6:
+ce e greșit + ce trebuie făcut; stare-goală = gol + cauză/temei + ieșire) → CE APARE ACUM (verbatim) →
+UNDE (strat + ecran). Mesajele NU se rescriu aici — rescrierea e campanie separată, cu decizia Costin.
+**Tăcerea-la-eșec (acțiune eșuată fără NICIUN mesaj) = BUG, semnalat distinct**, nu gol de conformitate.
+
+Etalon: `DESIGN_SYSTEM.md:89` cap.6. Surfacing frontend: `api.js` aruncă `{cod, mesaj}` (mesaj = detail||mesaj),
+ecranele randează `e.mesaj` (inline sau `arataMesaj(...,"eroare")`).
+
+Piese: **P1** (blocări, clasele 1-4 mai jos; clasele 5-6 izolare = gard, `test_izolare_structurala.py`) → P6 → P2 → P3 → P4 → P5 → P7.
+
+---
+
+## P1 — Clasa 1: Rol insuficient (403)
+
+Trigger comun: user autentificat al cărui `rol`/proprietate nu satisface cerința rutei (`Depends(cere_rol/cere_cabinet/
+cere_client)` sau check inline). Surfacing: `HTTPException(403, detail)` → `{detail}` → `e.mesaj` inline pe ecran.
+**Mesajul care TREBUIE (cap.6, general pt clasă):** numește rolul/permisiunea lipsă + CINE o poate acorda (patron /
+admin_firma) + acțiunea de ieșire ("cere dreptul X de la patron"). Actualul = zid, fără rol necesar, fără remediu.
+
+| # | Ce apare ACUM (verbatim) | file:line | Verdict cap.6 | Ce lipsește (TREBUIE adăugat) |
+|---|---|---|---|---|
+| 1 | `rol insuficient pentru această acțiune` | main.py:152 (`cere_rol`) | TELEGRAFIC | rolul necesar + cere-l de la patron |
+| 2 | `doar clienții accesează portalul` | main.py:160 | telegrafic | ieșirea (unde merge userul) |
+| 3 | `clienții folosesc portalul, nu rutele de cabinet` | main.py:167 | telegrafic+ | (are redirecție implicită) |
+| 4 | `Cabinetul este suspendat. Contactați furnizorul.` | main.py:176 | ~CONFORM | cauză + acțiune prezente |
+| 5 | `Previzualizare — doar vizualizare. Acțiunile sunt dezactivate în modul preview.` | main.py:235 | ~conform | cauză + remediu implicit |
+| 6 | `Doar Admin iConta.` | main.py:371,383,399,555,585,594,603,5183,5243 | TELEGRAFIC | ce e/cine e „Admin iConta" |
+| 7 | `Site in lucru. Vei primi un email cand devine functional.` | main.py:1009 | conform | cauză + ce urmează |
+| 8 | `nu ai permisiunea de a valida declarații` | main.py:3037,3057 | TELEGRAFIC | cere dreptul de validare de la patron |
+| 9 | `nu ai permisiunea de a depune declarații` | main.py:3077 | TELEGRAFIC | idem depunere |
+| 10 | `nu ai acces la acest tenant` | main.py:3113,3232,3263 | TELEGRAFIC | cine acordă accesul |
+| 11 | `doar patronul poate schimba emailul principal` | main.py:3334 | telegrafic | (numește rolul; fără remediu) |
+| 12 | `doar patronul poate adauga acces` | main.py:3351 | telegrafic | |
+| 13 | `doar patronul poate revoca acces` | main.py:3386 | telegrafic | |
+| 14 | `Doar administratorul cabinetului.` | main.py:4781 | telegrafic | |
+| 15 | `Doar patronul.` | main.py:5016,5024 | TELEGRAFIC | |
+| 16 | `Doar administratorul cabinetului poate edita datele cabinetului.` | main.py:5082 | telegrafic | |
+| 17 | `Nu ai acces la aceasta raportare.` | main.py:5196 | telegrafic | |
+| 18 | `Nu ai acces.` | main.py:5210,5267 | TELEGRAFIC (minim) | tot |
+
+**Verdict clasă:** guard-urile centrale (cere_rol #1, poate_valida #8, poate_depune #9, Doar Admin #6) sunt uniform
+TELEGRAFICE — numesc zidul, niciodată rolul necesar sau „cere dreptul de la patron/admin_firma". ~4/18 sunt aproape
+conforme (#3,4,5,7). Gol de conformitate, NU bug (produc mesaj).
+
+---
+
+## P1 — Clasa 2: Perioadă închisă (423)
+
+### 2a. HARD — luna contabilă închisă
+- **Trigger:** postare/editare notă a cărei lună e în `{schema}.perioade_blocate` (blocată de admin_firma).
+- **ACUM:** `perioada este blocată (luna închisă)` — main.py:3538 (`_cere_perioada_deschisa`, predicat `_perioada_blocata` main.py:3523), HTTP 423 → ecranul notei.
+- **Verdict:** TELEGRAFIC — dă cauza (luna închisă), NU ieșirea. **TREBUIE:** + cine poate redeschide (admin_firma) sau calea de rectificare.
+
+### 2b. SOFT — perioadă neconfirmată (blocaj motivat) — MODEL CONFORM
+- **Trigger:** calcul care depinde de o lună încă NECONFIRMATĂ → `PerioadaNeconfirmata(ValueError)` (core/perioada.py:11).
+- **ACUM (verbatim, core/perioada.py:15-20):** `"PERIOADA_BLOCATA: <Declaratie> nu se poate calcula pentru LL.AAAA:
+  pontajul lunii (...) nu e CONFIRMAT - datele sunt informative, nu autoritative (temei). Confirma <X>-ul lunii
+  (buton, rol admin_firma, la inchidere) sau corecteaza datele; pana atunci calculul e blocat."` Handler global
+  `_handler_perioada_blocata` (main.py:104-111) → 423 `{detail: "Perioada <detaliu>."}`.
+- **Verdict:** COMPLET CONFORM cap.6 — gol (calcul blocat) + cauză/temei (lună neconfirmată, date informative) +
+  ieșire (confirmă luna ca admin_firma / corectează). **Model de urmat** pentru restul clasei (contractul 3-părți
+  trăiește chiar în constructorul excepției).
+
+---
+
+## P1 — Clasa 3: Date lipsă (`erori_generare`, 11 generatoare) — CONFORM pe conținut
+
+- **Trigger:** generare declarație cu profil incomplet. `erori_generare(prof)` → liste `"LIPSĂ …"`; `genereaza()`
+  ridică `ValueError("<Dxxx> nu se poate genera: " + " ".join(erori))`.
+- **Traseu end-to-end (ex. D301):** d301.py:262 ridică → `declaratii_api.genereaza` propagă → rutele
+  `POST /coada` (main.py:3000), `/declaratii/{tip}/valideaza` (3237), `/declaratii/{tip}` (3270) fac
+  `except ValueError: raise HTTPException(422, str(e))` → declaratii.js pas2 (:183-192) randează `e.mesaj` verbatim
+  în `.dec-eroare` (specific, nu generic — comentat `[G2]`).
+- **Mesaje (distincte, `LIPSĂ <câmp> (obligatoriu la <D>)`):** d100:178-182, d101:290-296, d205:102-106, d710:165-169,
+  d300:380-388 (bancă/IBAN/CAEN), d301:173-179, d390:229-231, d394:723-731, d406:425-431.
+- **Verdict:** CONFORM pe conținut — fiecare LIPSĂ numește câmpul exact + declarația care-l cere; „ce trebuie făcut"
+  (completează în profil) e implicit clar; surfacing corect (specific). **TREBUIE (îmbunătățire, nu bug):** adaugă
+  „unde se completează" (ecranul date_firma) — cap.6 „câmp neajutabil → camp-ajutor".
+- **NECONFORMITATE DE CONSISTENȚĂ (nu bug funcțional):** `d112.py:607,609` și `bilant_api.py:61,63` emit `LIPSA`
+  (fără diacritice) în loc de `LIPSĂ` — cosmetic, dar rupe uniformitatea. Semnalat.
+
+---
+
+## P1 — Clasa 4: Patru ochi (403) — CONFORM
+
+- **Trigger:** aprobatorul == pregătitorul (`creat_de_id == aprobat_de_id`), cu patru-ochi activat de patron și fezabil.
+- **ACUM (verbatim, coada_api.py:186-187):** `nu poți aproba o declarație pe care ai pregătit-o tu însuți (control
+  intern: pregătirea și validarea se fac de persoane diferite)` → `{ok:False, cod:"PATRU_OCHI", mesaj}` → ruta
+  `POST /coada/{id}/aproba` (main.py:3038) mapează `cod=="PATRU_OCHI"` → 403 (main.py:3042) → validat.js:150 `#val-eroare`.
+- **Verdict:** COMPLET CONFORM — ce e greșit (nu-ți aprobi propria muncă) + temei (control intern) + ieșire implicită
+  (alt coleg aprobă). Fără gol.
+
+---
+
+## P1 — TĂCERE-LA-EȘEC (BUG-uri, distinct de golurile de conformitate)
+
+Acțiune eșuată care nu produce NICIUN mesaj (încalcă „Niciodată tăcere la o acțiune eșuată") = BUG, nu gol.
+**Semnalate pentru decizia Costin (fix = campanie separată, ca marcaje).**
+
+| # | Loc | Ce se întâmplă | De ce e bug |
+|---|---|---|---|
+| B1 | `declaratii.js:62-64` (`incarcaTipuri`) `catch { S.tipuri=[]; ... }` | Dacă `GET /declaratii/tipuri` pică, lista de declarații se randează GOALĂ, fără eroare | Fundătură tăcută: userul vede „nicio declarație", nu un eșec |
+| B2 | `declaratii.js:257` (`randeazaClasificareD390`) `catch { zona.innerHTML=""; return; }` | Panoul de clasificare D390 se golește tăcut la eșec de load | Fundătură tăcută |
+| B3 | `declaratii.js:313` (`randeazaOperatiuniD301`) `catch { zona.innerHTML=""; return; }` | Panoul operațiuni D301 se golește tăcut la eșec | Fundătură tăcută |
+| B4 | `main.py:3044-3047` (`aproba`) `try _notif_pregatitor(...) except: pass` | Aprobarea reușește, dar notificarea pregătitorului e înghițită la eșec | Pregătitorul nu află că a fost aprobat/blocat (minor) |
+| B5 | `main.py:3064-3067` (`respinge`) `try _notif_pregatitor(...,"respinsa") except: pass` | Respingerea reușește, dar notificarea e înghițită | Pregătitorul nu află că trebuie să corecteze (minor) |
+
+Verificate și CURATE (produc mesaj → conforme): validat.js:35 („Nu am putut încărca coada."), declaratii.js:49
+(„Nu am putut încărca firmele."), validat.js:150 (`e.mesaj`), reclasificări/manual add-del (arataMesaj eroare).
+`core/perioada.py` și `core/coada_api.py` NU au `except: pass` — toate căile de blocare întorc `{ok:False, mesaj}` explicit.
+
+---
+
+## Rezumat P1 (clasele 1-4)
+- **Clasa 1 (rol):** ~14/18 goluri telegrafice (lipsă rol-necesar + remediu); ~4 aproape conforme. Gol, nu bug.
+- **Clasa 2 (perioadă):** 2a hard = telegrafic (lipsă ieșire); 2b soft = MODEL conform (blocaj motivat 3-părți).
+- **Clasa 3 (date lipsă):** conform pe conținut; îmbunătățire = „unde se completează"; consistență: `LIPSA` fără
+  diacritice la d112/bilant.
+- **Clasa 4 (patru ochi):** conform.
+- **BUG-uri tăcere-la-eșec:** B1-B3 (fundături UI reale, declaratii.js), B4-B5 (notificări înghițite, minore).
