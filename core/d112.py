@@ -604,9 +604,9 @@ def erori_generare(prof):
     """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
     erori = []
     if not str(prof.get("cui") or "").strip():
-        erori.append("LIPSA CUI firma.")
+        erori.append("LIPSĂ CUI firmă.")
     if not str(prof.get("nume") or "").strip():
-        erori.append("LIPSA denumire firma.")
+        erori.append("LIPSĂ denumire firmă.")
     return erori
 
 
