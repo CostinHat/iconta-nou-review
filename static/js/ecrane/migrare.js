@@ -2,7 +2,7 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj } from "../api.js";
+import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 const STRATURI = [
@@ -854,7 +854,18 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     buton.disabled = true; buton.textContent = "Salvez…";
     try {
       const r = await api.post(`/tenants/${firma.tenant_id}/salariati-import`, { randuri });
-      nav.deschide("Salariați", (cc, nn) => wizardSalariati(cc, nn));
+      const nSar = r.sarite_cnp || 0;
+      const _mergiLaSalariati = () => nav.deschide("Salariați", (cc, nn) => wizardSalariati(cc, nn));
+      // [D1a] raporteaza VIZIBIL randurile sarite (CNP invalid) - confirmare blocanta, fara navigare
+      // tacuta peste pierderea de date (ON CONFLICT/skip tacut nu e suficient).
+      if (nSar > 0) {
+        buton.disabled = false; buton.textContent = "Salvează salariații";
+        confirmaCaseta(eroare,
+          `${r.importati || 0} salariați importați · ${nSar} săriți (CNP invalid). Verifică fișierul pentru rândurile respinse.`,
+          _mergiLaSalariati, { textOk: "Vezi salariații" });
+      } else {
+        _mergiLaSalariati();
+      }
     } catch (e) {
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
       buton.disabled = false; buton.textContent = "Salvează salariații";

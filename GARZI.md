@@ -1740,3 +1740,71 @@ Urmare decizie Costin pe finding-ul din 412d5df:
   commit/rollback = no-op + SAVEPOINT per request (rollback la savepoint) → nicio persistare în public, nicio cascadă
   de abort. Rezultat: izolarea ȚINE pe TOATE metodele (0 scurgeri pe scriere). O rută nouă `{tenant_id}` (orice metodă)
   nefiltrată → gardul PICĂ.
+
+
+## 06.08.2026 (tura 5) — SEPARARE PRODUS↔DEFICIENȚĂ (înainte de campania de reparație)
+
+Criteriu (dat de Costin): a construi ceva ce NU există (declarație nouă, model nou, regim neimplementat, câmp
+pentru funcționalitate viitoare) = **PRODUS**, NU deficiență. A repara ceva ce EXISTĂ și funcționează greșit =
+deficiență (se repară în campanie). Ce funcționează CORECT azi dar e fragil/neacoperit NU e deficiență.
+
+### PRODUS — de abordat la final (NU se atinge în campania de reparație)
+
+Fiecare: ce e · de ce e produs (nu deficiență) · cea mai devreme poziție unde decizia Costin devine blocantă.
+
+1. **Marja în D300** (art.311/312) — cere MODEL NOU de operațiune pe marjă (flag/tabel); azi nu există structura.
+   Decizie: se integrează? Blocant: când onboardezi o firmă second-hand/turism/agenție. *(GARZI 06.08 tura 2 — deja gol de acoperire.)*
+2. **Regim dual / an parțial** (T1 înființare mid-an, T2 micro→profit) — cere câmp `data_infiintare` + logică de
+   împărțire a anului; azi tot lanțul presupune Ian–Dec. Funcționalitate nouă. Blocant: la onboarding firmă mid-an/tranziție.
+3. **D207 nerezidenți** (=F193) — DECLARAȚIE NOUĂ (art.231). Nu există. Blocant: la onboarding firmă cu plăți nerezidenți.
+4. **Enforcement praguri** L1/L2/L3/L10 — azi statutul se fixează MANUAL și e CORECT; auto-detecția depășirii
+   (derivare din CA/volume) = funcționalitate nouă. Blocant: niciodată tehnic — decizie oricând. *(GARZI 06.08 tura 2.)*
+5. **Rezervă legală deductibilitate** (art.26(1)a) — modelare nouă în D101. Nu există. Blocant: oricând (impact profit).
+6. **Coadă de validare cu erori DUK** (transparență-nu-blocaj) — mecanism nou. Nu există. Blocant: oricând.
+7. **D406 — secțiunea Payments** — nu există MODEL de date de plăți (`d406.py:18` „datorie blocată pe DATE").
+   Emiterea SourceDocuments reale (linia sintetică) E deficiență și SE repară; Payments = produs. Blocant: când o
+   firmă datorează D406 cu plăți de raportat.
+8. **50%-deductibil achiziții** (`d406.py:122`) — `cote_tva` emite azi DOAR livrări; un cod de achiziție cu
+   deductibilitate 50% ar cere modelarea categoriei achiziție-deductibilă (0.5), care NU există. Produs, nu deficiență.
+   *(Aici pun explicit 50%-deductibil, la cererea Costin.)* Blocant: când modelezi achizițiile deductibile parțial.
+9. **IMCA-DB wiring** — legarea impozitului minim la baza de date; structură nouă. Produs.
+10. **GDPR ROPA / CNP minor terț (D_8)** — temei prelucrare art.6/9 + informare art.14 + ROPA art.30. Decizie de
+    conformitate + structură nouă. Blocant: înainte de a procesa pe DATE REALE un CM cu CNP de terț/minor.
+11. **§F rămas** (deja „nu acum" decise): D177, F127/F128 (SPV mTLS), F175 (D307), F132/F138/F123/F130/F148, F161
+    (gratuit-vs-cabinet), F187 (Ciel), F144, agricultor forfetar orfan D394 (și blocat pe sursă), plafon creșă 740.
+
+### Blocate pe SURSĂ externă (deficiențe, dar nereparabile fără input extern — NU produs, NU în campanie acum)
+- **Backfill salarizare 2025** (plafoane/valori 2025 nu-s la sursă) · **CM regim pre-L141/2025** (procente inițiale
+  nu-s la sursă) · **9% deductibil auto** (blocat pe validatorul DUK R75) · **COTE la MO verbatim** (captare din
+  Monitorul Oficial — extern). Se reiau când sursa e disponibilă.
+
+### Coverage / test-seed (nici produs, nici deficiență de comportament — datorie documentată)
+- **Seed-coverage C-4 tranșa 2** (achiziție IC, marjă, `d301_operatiuni` neseed-uite în corpus) — deja probate pe
+  scheme efemere; rămâne datorie de seed în corpusul permanent, nu blochează nimic. *(La cererea Costin: aici e pus
+  seed-coverage C-4 tranșa 2.)* · **e-Transport XSD complet**, **cron heartbeat/deadman**, **feed legislativ** =
+  acoperire/extern.
+
+### DEFICIENȚE care SE REPARĂ în campanie (ordinea de execuție)
+D1 integritate import (idempotență + skip vizibil + NOT NULL bani) · A1 D406 SourceDocuments reale + cablare poartă
+artefact · A6 D394 linie scutită→CUI RO · A5 MF amortizare degresivă/accelerată · D2/D5/D3/D7 integritate ascunsă +
+verificator self-test + state_plata + snapshot regresie · B3 F163 fricțiune permisiuni depunere. Fiecare: probă pe
+date reale (1 din 13 firme) + DUK unde atinge o declarație + gard mecanic anti-reapariție de clasă.
+
+### CORECȚII tura 5 (findinguri din execuția campaniei — registre puse la zi)
+
+- **D1b (NOT NULL bani) RETRAS.** Aplicat inițial pe 12 scheme, apoi revenit (DROP NOT NULL) după ce
+  `test_d112_reconciliere.test_skip_suspect_brut_lipsa_e_semnalat_nu_tacut` a picat: `salariati.salariu_brut`
+  NULL e o STARE-SEMNAL designată („brut lipsă → suspect", enforce-uită de reconciliere). Concluzie de fond:
+  în acest codebase principiul „bază nulă = eroare" e enforce-uit SEMANTIC (detectează-și-semnalează în
+  reconciliere/generare), NU la nivel de schemă. NOT NULL de DDL șterge stări-semnal și intră în conflict cu
+  gardul semantic existent. Integritatea monetară rămâne la stratul de reconciliere. (Backup: `pre_d1_*.dump`.)
+- **A1 (D406 SourceDocuments „1 linie sintetică") = DEJA REZOLVAT (27.07.2026), inventar stale.** `d406.py:1150-1168`
+  emite `<InvoiceLine>` reale per linie din `factura_linii`, cu reconciliere antet↔linii obligatorie (`:1169-1178`);
+  linia sintetică „Factura fara detaliu de linii" e DOAR fallback pt facturi fără linii în DB. Probă pe date reale:
+  14/14 facturi (toate firmele) au `factura_linii` → fallback-ul NU se declanșează niciodată. Nu există deficiență A1 vie.
+- **Poarta pe artefact D406 (SourceDocuments) NErulată încă** = `reconciliere_emis.verifica_d406` verifică doar
+  partida dublă GL (TotalDebit==TotalCredit) și NU e cablată în `genereaza` (fixturi cu GL neechilibrat pe luna
+  selectată — datoria D4). Cablarea reală cere întâi curățarea fixturilor. Rămâne în D4 (Bloc 4), nu în Bloc 1.
+- **Bloc 0 livrat = D1a** (skip vizibil salariati: `sarite_cnp` era calculat și aruncat la navigare → `confirmaCaseta`
+  blocant). Idempotența import: EXISTĂ deja pe toate 9 modulele (cat.1 stale). D1c (cheie unică DB) deferat: scopul
+  (idempotență) deja atins prin SELECT-dedup; unique index ar cere audit al tuturor căilor de creare.
