@@ -168,6 +168,55 @@ def seed_coerenta(conn, fid, cuimap, numemap):
     return rap
 
 
+# ---- ACOPERIRE C-4 transa 2 (b): achizitie IC de la furnizor UE EXTERN (D390) ----
+# FARA coerenta A<->B (furnizorul e extern setului) - C4_date.md "IC fara coerenta A<->B".
+IC_EXTERN = [
+    # (firma, numar, data, cui_ue, nume_ue, net) ; CUI UE valid pe DUK (algoritm tara R24.1)
+    ("P1", "COER-ICB", "2026-05-08", "DE136695976", "BAUHAUS GMBH", 15000),
+]
+
+
+def seed_ic_extern(conn, fid, cuimap):
+    """Achizitii IC de bunuri de la furnizori UE externi (alimenteaza D390 tip A). Idempotent."""
+    rap = []
+    for (fk, numar, data, cui_ue, nume_ue, net) in IC_EXTERN:
+        schema = _schema_for(conn, fid, cuimap[fk])
+        assert schema, "schema lipsa pt %s" % fk
+        if _factura_exista(conn, schema, numar, "primita", data):
+            rap.append((fk, "IC<-%s" % cui_ue, net, "deja prezent")); continue
+        _insert_factura(conn, schema, numar=numar, serie=SERIE, data=data, directie="primita",
+                        tert_cui=cui_ue, tert_nume=nume_ue, net=net, tva=0, cota_linie=0,
+                        taxare_inversa=False, categ_331=None, tert_platitor=False)
+        rap.append((fk, "IC<-%s" % cui_ue, net, "inserata"))
+    return rap
+
+
+# ---- ACOPERIRE C-4 transa 2 (c): d301_operatiuni pt N1 (D301, decont special IC) ----
+D301_OPS = [
+    # (firma, an, luna, tip, nr_doc, data_doc ZZ.LL.AAAA, val_valuta, tip_valuta, curs, tva)
+    # N1 (neplatitor cu operatiuni IC) - achizitie IC bunuri peste pragul L10 (10.000 EUR), art.317.
+    ("N1", 2026, 6, 1, "INV-DE-77", "15.06.2026", 10500, "EUR", 4.9772, 10975),
+]
+
+
+def seed_d301(conn, fid, cuimap):
+    """Randuri d301_operatiuni (D301 citeste tabelul, NU facturi). Idempotent pe (an,luna,nr_doc)."""
+    rap = []
+    for (fk, an, luna, tip, nr_doc, data_doc, val, valuta, curs, tva) in D301_OPS:
+        schema = _schema_for(conn, fid, cuimap[fk])
+        assert schema, "schema lipsa pt %s" % fk
+        with conn.cursor() as c:
+            c.execute('SELECT id FROM "%s".d301_operatiuni WHERE an=%%s AND luna=%%s AND nr_doc=%%s'
+                      % schema, (an, luna, nr_doc))
+            if c.fetchone():
+                rap.append((fk, "d301 %s" % nr_doc, val, "deja prezent")); continue
+            c.execute('INSERT INTO "%s".d301_operatiuni (an,luna,tip,nr_doc,data_doc,val_valuta,tip_valuta,curs,tva) '
+                      'VALUES (%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s)' % schema,
+                      (an, luna, tip, nr_doc, data_doc, val, valuta, curs, tva))
+        rap.append((fk, "d301 %s" % nr_doc, val, "inserata"))
+    return rap
+
+
 def main():
     _incarca_db_env()
     db.init_pool()
@@ -186,6 +235,12 @@ def main():
             print("coerenta R3:")
             for (k, sens, total, act) in seed_coerenta(conn, fid, cuimap, numemap):
                 print("  %-3s %-9s total=%-8d %s" % (k, sens, total, act))
+            print("achizitii IC externe (D390):")
+            for (k, sens, total, act) in seed_ic_extern(conn, fid, cuimap):
+                print("  %-3s %-16s val=%-8d %s" % (k, sens, total, act))
+            print("d301_operatiuni (D301):")
+            for (k, sens, total, act) in seed_d301(conn, fid, cuimap):
+                print("  %-3s %-16s val=%-8d %s" % (k, sens, total, act))
         print("OK.")
 
 

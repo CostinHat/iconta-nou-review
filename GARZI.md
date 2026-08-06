@@ -1612,3 +1612,43 @@ beneficiar nu se mai auto-deduce (R22=0), cu manual rd.12+rd.27 DUK-valid; anti-
 GARD: 4 teste (3 unitare + 1 integrare DUK) + mutație probată; testele manuale rd.12 neatinse.
 LIMITĂ: firmele cu tva_la_incasare — livrarea cu taxare inversă a FURNIZORULUI nu ajunge în rd.13 (calea _pull_incasare
 exclude taxare_inversa, art.282(6)); edge rar (reverse-charge + TVA la încasare), declarat. P2/S1 nu sunt tva_la_incasare.
+
+
+## 06.08.2026 (tura 2) — C-4 Tranșa 2: GOL DE ACOPERIRE — regimurile pe marjă nu ajung în D300 (decizie Costin: NU se integrează acum)
+Decizie Costin (06.08 tura 2): regimurile pe marjă **NU se integrează în D300 în această campanie** — cer model
+nou de date = decizie de produs, în afara scopului campaniei de testare. Consemnat aici ca gol de acoperire declarat:
+- **art.311 (turism)** `core/tva_marja_turism.py` și **art.312 (second-hand/artă/colecție)** `core/tva_marja.py`
+  există ca motoare PURE, verificate + gardate golden (clustere închise 03.08), DAR sunt **STANDALONE**: nu-s
+  importate în `core/d300.py`. Singurii apelanți = endpoint-uri `main.py` (`/vanzare-marja` :6345, turism :6382,
+  aur :6440, agricultori :6479/:6511) care postează ciorne în `inregistrari` (4111/707/4427).
+- **Consecință fiscală:** o firmă pe marjă (S1 art.311 / S2 art.312 din set) ar depune azi un D300 **fără
+  operațiunile ei principale** — decontul auto se alimentează din `facturi` pe cotă, iar marja nu are nici tabel
+  de persistență, nici flag pe `facturi` → nu ajunge niciodată în D300. Nu e alarmă falsă (nu se raportează greșit),
+  e **lipsă tăcută** a bazei pe marjă din decont.
+- **Ce ar cere integrarea (decizie produs, NU acum):** model nou — flag/tabel pentru operațiunea pe marjă +
+  rutare în `calcul_d300` la rândurile de marjă (baza = marja, nu prețul integral) + reconciliere cale-2.
+- **Scop:** S1/S2 **RĂMÂN în set** pentru restul obligațiilor lor (D112, D100, D394, D406, D101, D205, bilanț).
+  Doar latura „D300 pe marjă" e scoasă din C-4 și marcată decizie de produs.
+
+
+## 06.08.2026 (tura 2) — C-4 Tranșa 2: GOL CONSOLIDAT — praguri fiscale declarate manual, neverificate de aplicație
+Consolidare (decizie Costin 06.08 tura 2): pragurile de mai jos NU sunt enforce-uite în aplicație — statutul care
+ar rezulta din ele (regim fiscal, perioadă TVA, calitate de plătitor, obligație de depunere) se fixează **MANUAL**
+în seed/profil. Prin urmare cazurile „prag−1 / prag+1" ale acestor praguri sunt **C-5 (date de test), NU C-4
+(comportament cod)** — nu există gard fiscal de exercitat. Aceeași familie cu pragul TVA 395k semnalat deja
+(GARZI 06.08 secțiunea C-4 Cluster 1). Lista completă a golului (un singur gol declarat):
+
+| Cod | Prag | Temei | Ce ar comuta | Stare |
+|---|---|---|---|---|
+| **L1** | 100.000 EUR CA (micro→profit) | CF art.47(1)(c)/52; OUG 8/2026 (era 250k în 2025) | `regim_fiscal` micro↔profit | neenforced — fixat manual în `firma_profil.regim_fiscal` |
+| **L2** | 100.000 EUR CA an ant. (lunar↔trimestrial) | CF art.322 | `tip_decont` L↔T | neenforced — fixat manual în `firma_profil.tip_decont` |
+| **L3** | 395.000 lei (scutire mică întreprindere) | CF art.310(1); OG 22/2025 | `platitor_tva` da↔nu | neenforced — fixat manual în `firma_profil.platitor_tva` |
+| **L10** | 10.000 EUR (achiziții IC — decont special) | CF art.317 | obligația de depunere D301 | neenforced — `d301.py` citește orice rând din `d301_operatiuni`, fără gardă de prag |
+
+**Consecință:** aplicația nu detectează depășirea/subdepășirea acestor praguri; contabilul setează statutul.
+Un caz prag±1 testat pe aceste praguri verifică *configurarea seed-ului*, nu codul → aparține C-5.
+**Excepție care RĂMÂNE în C-4: L4** (plafon TVA la încasare, 4.5M lei ian–feb → 5M de la 01.03.2026, CF art.282(3)/
+OUG 8/2026) — ACESTA **e enforced period-aware** (`common.py:393`, `COTE["plafon_tva_incasare"]`) și **deja testat**
+(dispatcher exigibilitate `d300.py:138`); cazurile lui prag±1 sunt legitime C-4.
+**Decizie deschisă (produs):** dacă vreun prag din L1/L2/L3/L10 trebuie enforce-uit în aplicație (derivare automată
+a statutului din CA/volume) = campanie separată, greenlight Costin.
