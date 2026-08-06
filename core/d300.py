@@ -142,6 +142,10 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     # regim: exigibilitate la faptul generator (emitere), comportament neschimbat.
     tvai = bool(prof.get("tva_la_incasare"))
     livrare_ti_base = Decimal(0)   # rd.13: baza livrarilor cu taxare inversa (furnizor art.331), fara TVA
+    # [C-4 T2] TVA din ANTETUL facturilor primite neacoperit de randurile pe cota (ex: compensatia
+    # forfetara agricultor art.315^1 al.17). NU se auto-deduce (nu se forteaza - lipsa flag Registrul
+    # agricultorilor), dar NU se pierde tacit -> se masoara si se semnaleaza cantitativ (avertisment jos).
+    orphan_ded = Decimal(0)
     for f in facturi:
         emisa = (f.get("directie") == "emisa")
         ti = bool(f.get("taxare_inversa"))
@@ -177,6 +181,13 @@ def calcul_d300(prof, perioada, facturi, manual=None):
                     ded[ci][0] += baza; ded[ci][1] += tva
                 else:
                     alte_a += 1
+        # [C-4 T2] TVA orfan: antetul facturii primite depaseste TVA-ul rezultat din cote (compensatie
+        # forfetara agricultor art.315^1 al.17). Se masoara aici, se semnaleaza jos; nu se deduce tacit.
+        if not emisa and not ti and not tvai:
+            _antet = Decimal(str(f.get("tva") or 0))
+            _linii_tva = sum((s[2] for s in segmente), Decimal(0))
+            if _antet - _linii_tva >= 1:
+                orphan_ded += (_antet - _linii_tva)
 
     R = {}
     def setr(name, val):
@@ -342,6 +353,12 @@ def calcul_d300(prof, perioada, facturi, manual=None):
             "Achiziții deductibile 9%% (bază %s lei, TVA %s lei) — NEINCLUSE automat: rândul deductibil 9%% "
             "(Rd.25.1/R75 din structura v12) e RESPINS de validatorul DUK instalat. Declară-le MANUAL la rândul "
             "deductibil corect, altfel TVA de plată e supraevaluată." % (_f(ded[9][0]), _f(ded[9][1])))
+    if orphan_ded >= 1:
+        res.avertismente.append(
+            "Achiziții cu TVA în antet neacoperit de rândurile pe cotă (%s lei) — ex. compensația "
+            "forfetară agricultor (art.315^1 al.17 CF): NU se auto-deduce (regim special, lipsă flag "
+            "Registrul agricultorilor), dar NU se pierde tacit. Declar-o MANUAL la rândul deductibil, "
+            "altfel TVA de plată e supraevaluată." % _f(orphan_ded))
     rez = ("de plată " + _f(de_plata)) if de_plata else (("de recuperat " + _f(de_recuperat)) if de_recuperat else "0")
     res.avertismente.append("Rezultat TVA %s lei." % rez)
     return res
