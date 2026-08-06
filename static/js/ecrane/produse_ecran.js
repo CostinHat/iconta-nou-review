@@ -15,9 +15,12 @@ export async function randeazaProduse(corp, nav, tenantId, opt = {}) {
     const r = await api.get(`/tenants/${tenantId}/produse`);
     lista = (r && r.produse) || [];
   } catch (e) {
-    /* [catch_tacut 27.07.2026] o salvare esuata parea reusita: formularul
-       se golea, omul credea ca s-a salvat. DS cap.6 - niciodata tacere. */
-    arataMesaj(zona, (e && e.mesaj) || "Nu am putut salva. Incearca din nou.", "eroare");
+    /* [B7 fix] load esuat: NU referi 'zona' (nedeclarata aici -> ReferenceError) si NU continua la
+       randarea listei goale (parea reusit). Stare-goala cap.6 (gol + cauza + iesire), apoi return. */
+    corp.innerHTML = `<div class="stare-goala">Nu am putut încărca produsele${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. <button class="buton-mic" id="pr-reincarca">Reîncearcă</button></div>`;
+    const _rb = corp.querySelector("#pr-reincarca");
+    if (_rb) _rb.addEventListener("click", () => randeazaProduse(corp, nav, tenantId, opt));
+    return;
   }
 
   corp.innerHTML = `

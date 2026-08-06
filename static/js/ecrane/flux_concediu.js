@@ -141,6 +141,9 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       const zile6 = parseInt(zona.querySelector("#cm-zile6").value, 10);
       // validari preventive cu mesaj (Design System cap.6)
       if (!inceput) { rez.innerHTML = `<span class="msg-eroare">Completeaz\u0103 data de \u00eenceput a concediului.</span>`; return; }
+      const sfarsit = zona.querySelector("#cm-sfarsit").value;
+      if (!sfarsit) { rez.innerHTML = `<span class="msg-eroare">Completeaza data de sfarsit a concediului (marcata obligatorie) inainte de a calcula.</span>`; return; }
+      if (sfarsit < inceput) { rez.innerHTML = `<span class="msg-eroare">Data de sfarsit nu poate fi inaintea datei de inceput; corecteaza intervalul concediului.</span>`; return; }
       if (!zile || zile < 1) { rez.innerHTML = `<span class="msg-eroare">Zilele lucr\u0103toare CM trebuie s\u0103 fie cel pu\u021bin 1.</span>`; return; }
       if (!ven6 || ven6 <= 0) { rez.innerHTML = `<span class="msg-eroare">Completeaz\u0103 veniturile brute pe 6 luni (baza de calcul).</span>`; return; }
       if (!zile6 || zile6 < 1) { rez.innerHTML = `<span class="msg-eroare">Completeaz\u0103 zilele lucr\u0103toare din cele 6 luni.</span>`; return; }

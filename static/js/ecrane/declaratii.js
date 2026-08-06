@@ -216,7 +216,7 @@ async function pas2(corp, nav) {
     ${blocANAF}
     ${avert.length ? `<div class="dec-avert">
         <div class="dec-avert-cap">Avertismente (${avert.length})</div>
-        <ul>${avert.map((a)=>`<li>${esc(typeof a==="string"?a:(a.mesaj||JSON.stringify(a)))}</li>`).join("")}</ul>
+        <ul>${avert.map((a)=>`<li>${esc(typeof a==="string"?a:(a.mesaj||"avertisment fără detalii"))}</li>`).join("")}</ul>
       </div>` : ""}
     <details class="dec-xml">
       <summary>Vezi XML-ul generat</summary>

@@ -379,7 +379,7 @@ export async function ecranOperatiuni(corp, nav, t) {
         const r = await api.post(`/tenants/${t.id}/${opCurenta.ruta}`, corpReq);
         zona.innerHTML = `<p class="pf-intro">Nota generata (ciorna)${r.inregistrare_id ? " #" + r.inregistrare_id : ""}. O validezi din Registru jurnal.</p>`;
       } catch (e) {
-        arataMesaj(zona, (e.mesaj || e.message || "eroare") + " \u00b7 trimis: " + JSON.stringify(corpReq), "eroare");
+        arataMesaj(zona, e.mesaj || e.message || "Nu am putut genera nota - verifica datele introduse si reincearca.", "eroare");
       }
     });
   };

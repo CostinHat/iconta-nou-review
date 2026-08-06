@@ -85,11 +85,14 @@ export async function randeazaRaporteaza(corp, nav) {
   });
 
   async function urcaPoze(mesajId, files) {
+    let esuate = 0;
     for (const f of files) {
       const fd = new FormData();
       fd.append("fisier", f);
-      try { await api.postForm(`/raportari/mesaj/${mesajId}/imagine`, fd); } catch {}
+      try { await api.postForm(`/raportari/mesaj/${mesajId}/imagine`, fd); }
+      catch { esuate++; }   /* [B14] nu inghiti: numara esecurile; apelantul semnaleaza pierderea */
     }
+    return esuate;
   }
 
   async function incarcaFire() {
@@ -190,11 +193,13 @@ export async function randeazaRaporteaza(corp, nav) {
     try {
       const r = await api.post("/raportari", { text });
       // urc pozele la primul mesaj al raportarii
+      let _pozeEsuate = 0;
       if (pozeNoi.length && r && r.mesaj_id) {
         arataMesaj(msg, "Se încarcă imaginile...", "info");
-        await urcaPoze(r.mesaj_id, pozeNoi.map((p) => p.file));
+        _pozeEsuate = await urcaPoze(r.mesaj_id, pozeNoi.map((p) => p.file));
       }
-      arataMesaj(msg, "Sesizare trimisă.", "ok");
+      if (_pozeEsuate) { arataMesaj(msg, "Sesizarea a fost trimisă, dar " + _pozeEsuate + " imagine(i) nu s-au încărcat. Deschide firul și reîncarcă-le.", "avert"); }
+      else arataMesaj(msg, "Sesizare trimisă.", "ok");
       corp.querySelector("#rap-text").value = "";
       pozeNoi.forEach((p) => URL.revokeObjectURL(p.url));
       pozeNoi = [];

@@ -843,7 +843,7 @@ async function ecranSalariati(corp, nav, t) {
         const msgs = (r && (r.mesaje || r.raspunsuri)) || [];
         zonaReges.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
           <div class="pf-frand-nume">R\u0103spunsuri REGES</div>
-          <div class="pf-frand-sub">${msgs.length ? msgs.map((m2) => `${m2.data ? dataRo(m2.data) : ""} \u00b7 ${m2.status || m2.tip || ""} \u00b7 ${m2.mesaj || m2.detalii || JSON.stringify(m2)}`).join("<br>") : "niciun răspuns nou"}</div></div>`;
+          <div class="pf-frand-sub">${msgs.length ? msgs.map((m2) => `${m2.data ? dataRo(m2.data) : ""} \u00b7 ${m2.status || m2.tip || ""} \u00b7 ${m2.mesaj || m2.detalii || "răspuns fără detalii"}`).join("<br>") : "niciun răspuns nou"}</div></div>`;
       } catch (e) { arataMesaj(zonaReges, e.mesaj || "eroare", "eroare"); }
     });
     corp.querySelectorAll("[data-cm]").forEach((b) => b.addEventListener("click", () => {

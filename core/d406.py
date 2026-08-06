@@ -1102,6 +1102,7 @@ def pull(conn, schema, an, luna):
             # MASCA SCOASA (27.07.2026) - vezi nota de la blocul facturi.
             raise RuntimeError("D406: citirea notelor a esuat - %s" % e) from e
         facturi_vanzare, facturi_cumparare, plati = [], [], []
+        um_necunoscute = set()  # [B17] UM necunoscute inlocuite cu H87 - se NUMESC in avertisment, nu tacit
         try:
             # COLOANE REALE facturi (dovedit 16.07.2026 prin \d tenant_002.facturi):
             # data_emitere (NU 'data'), tert_cui/tert_nume (NU partener_id/nume),
@@ -1158,6 +1159,8 @@ def pull(conn, schema, an, luna):
                     else:
                         tcod_l = "300101" if (r["ti"] or cota_l == 0) else "300501"
                     um_cod, _um_stiut = uom_unece(lr["um"])
+                    if not _um_stiut and lr.get("um"):
+                        um_necunoscute.add(str(lr["um"]).strip())
                     linii.append(LinieFactura(nr=idx, cont=cont_l,
                                               descriere=lr["descriere"] or "Produs/serviciu",
                                               cantitate=cant, um=um_cod, pret_unitar=pret,
@@ -1202,7 +1205,7 @@ def pull(conn, schema, an, luna):
             # produca SalesInvoices/PurchaseInvoices goale intr-un XML valid structural.
             # Clasa de bug din 16.07. Orice garda pusa deasupra ar fi fost inghitita aici.
             raise RuntimeError("D406: citirea facturilor a esuat - %s" % e) from e
-    return prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati, strain
+    return prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati, strain, um_necunoscute
 
 
 def erori_generare(prof):
@@ -1218,7 +1221,7 @@ def erori_generare(prof):
 def genereaza(conn, schema, an, luna):
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
-    prof, conturi, clienti, furnizori, note, fv, fc, plati, strain = pull(conn, schema, an, luna)
+    prof, conturi, clienti, furnizori, note, fv, fc, plati, strain, um_necunoscute = pull(conn, schema, an, luna)
     _er = erori_generare(prof)
     if _er:
         raise ValueError("D406 nu se poate genera: " + " ".join(_er))
@@ -1233,6 +1236,8 @@ def genereaza(conn, schema, an, luna):
         res.avertismente.insert(0, "ATENTIE: %d cont(uri) EXCLUS(e) din D406 - nu apartin normei contabile "
                                    "declarate (%s), ANAF le-ar respinge: %s. Verifica planul de conturi / baza "
                                    "contabila a firmei." % (len(strain), prof.get("baza_contabila") or "A", lista))
+    if um_necunoscute:
+        res.avertismente.insert(0, "ATENTIE: unitate(i) de masura necunoscuta(e) inlocuita(e) cu H87 (bucata) in D406: %s. NU tacit - o unitate gresita e eronata/respinsa la ANAF; mapeaza unitatile in nomenclatorul de unitati de masura." % ", ".join(sorted(um_necunoscute)))
     # POARTA A DOUA CALE (gard de continut, 05.08.2026, pas 4/6): balanta de rulaje per cont
     # INDEPENDENTA din inregistrari_linii, legata de SAF-T emis + invariant Sdebit=Scredit.
     # Divergenta = HARD-BLOCK. Vezi core/d406_reconciliere.py.
