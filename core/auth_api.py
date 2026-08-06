@@ -288,8 +288,12 @@ def inregistreaza_cabinet(conn, email, parola, nume_cabinet, nume=None, prenume=
         firm_id = cur.fetchone()["id"]
         h = nucleu.hash_parola(parola)
         cur.execute(
+            # [B3 06.08.2026] proprietarul cabinetului (radacina) primeste drepturile operationale la
+            # creare: nimeni deasupra nu i le poate acorda, iar un cabinet solo are nevoie de tot lantul
+            # pregatire->validare->depunere. Personalul suplimentar primeste drepturi separat (Asistenti).
             "INSERT INTO public.users (email, password_hash, nume, prenume, rol, "
-            "accounting_firm_id) VALUES (%s,%s,%s,%s,'admin_firma',%s) RETURNING id",
+            "accounting_firm_id, poate_pregati, poate_valida, poate_depune) "
+            "VALUES (%s,%s,%s,%s,'admin_firma',%s,true,true,true) RETURNING id",
             (email, h, nume, prenume, firm_id))
         user_id = cur.fetchone()["id"]
     return {"ok": True, "user_id": user_id, "firm_id": firm_id}
