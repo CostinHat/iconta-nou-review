@@ -7555,3 +7555,16 @@ Decizia de design de mai sus (06.08) — REZOLVATĂ cu opțiunea B, aprobată de
 fiscal (tip_decont), decuplată de eticheta luna din XML; declaratii_api/UI NEATINSE. tip_decont citit din vector
 (nu presupus); lipsă → eroare. Fixturile care generau D300/D394 fără tip_decont (test_d394.PROF, test_achizitii_factura)
 au primit tip_decont='L' explicit (23 teste, foloseau default-ul tăcut eliminat). Detaliu GARZI 06.08.
+
+
+## 06.08.2026 — D300 taxare inversă: AUTO furnizor (rd.13) / MANUAL beneficiar (decizie Costin)
+Fix aplicat pentru bug-ul „D300 furnizor pierde livrarea cu taxare inversă". Decizie Costin (opțiunea 1):
+- **Latura beneficiarului (rd.12 colectat + rd.27 deductibil, net zero) RĂMÂNE MANUALĂ** — e o decizie contabilă
+  (auto-taxare art.331), cu gardul existent `test_taxare_inversa_rd12_se_declara_manual` NEATINS.
+- **Latura furnizorului (rd.13) devine AUTO** — NU e o decizie contabilă, e un fapt deja în sistem (factură emisă cu
+  flag `taxare_inversa`). Omiterea ei din rd.13 era pierdere de informație, nu design → se derivă automat.
+Implementare: `calcul_d300` rutează emisă+taxare_inversa → rd.13 (bază fără TVA); primita+taxare_inversa EXCLUSĂ din
+auto-deducere (altfel dublează manualul beneficiarului). GARDĂ ANTI-DUBLĂ-NUMĂRARE: dacă rd.13 vine ȘI auto ȘI manual
+(R13_1) → EROARE vizibilă, nu însumare tăcută. `d300.pull` citește `taxare_inversa`; `d300_reconciliere` aliniat
+(exclude taxare inversă din cale2, ca `calcul_d300`). Seed T-6 S1: factura primită păstrează cota 21 (pt D394 tip C);
+D300 beneficiar se completează manual la generare — codul nou nu mai auto-deduce, deci fără dublă numărare.

@@ -339,6 +339,44 @@ def test_taxare_inversa_d300_proba_duk_valid():
 
 
 # ============================================================
+#  Taxare inversa FURNIZOR (rd.13) - AUTO-derivat din facturi emise cu taxare_inversa
+#  (decizie Costin 06.08.2026: latura furnizorului nu e decizie contabila, e fapt in sistem).
+#  Beneficiarul RAMANE manual (rd.12+rd.27) - vezi testele de mai sus, NEATINSE.
+# ============================================================
+def _fact_ti_emisa(baza=40000):
+    return {"directie": "emisa", "taxare_inversa": True, "linii": [(1, baza, 0)]}
+
+
+def test_taxare_inversa_furnizor_rd13_auto_baza_fara_tva():
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), [_fact_ti_emisa(40000)])
+    assert res.R.get("R13_1") == 40000, "livrarea cu taxare inversa trebuie in rd.13 (baza)"
+    assert res.R.get("R13_2", 0) == 0, "rd.13 e FARA TVA (furnizorul nu colecteaza)"
+    assert "R9_1" not in res.R, "livrarea taxare inversa NU merge in colectat normal (rd.9)"
+
+
+def test_taxare_inversa_beneficiar_NU_se_auto_deduce():
+    # primita cu taxare_inversa -> NU auto-deduce (beneficiarul declara manual rd.12+rd.27)
+    f = {"directie": "primita", "taxare_inversa": True, "linii": [(1, 40000, 21)]}
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), [f])
+    assert res.R.get("R22_1", 0) == 0, "achizitia cu taxare inversa NU se auto-deduce (ar dubla manualul)"
+
+
+def test_taxare_inversa_rd13_auto_PLUS_manual_dubla_numarare_EROARE():
+    # GARD anti-dubla-numarare (cerinta Costin): auto rd.13 + manual R13_1 -> EROARE, nu insumare tacita
+    with pytest.raises(ValueError) as ei:
+        calcul_d300(_prof(), Perioada(2026, luna=6), [_fact_ti_emisa(40000)], {"R13_1": 40000})
+    assert "dubla numarare" in str(ei.value)
+
+
+def test_taxare_inversa_rd13_MUTATIE_fara_flag_ar_fi_dropped():
+    # Fara flag-ul taxare_inversa pe factura, aceeasi livrare (cota 0) cade in 'alte' -> rd.13 gol.
+    # Proba ca rd.13 depinde de flag (nu de cota): daca rutarea ti dispare, testul de mai sus pica.
+    f = {"directie": "emisa", "taxare_inversa": False, "linii": [(1, 40000, 0)]}
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), [f])
+    assert res.R.get("R13_1", 0) == 0, "fara flag taxare_inversa, cota 0 NU produce rd.13"
+
+
+# ============================================================
 #  Pro-rata deducere | d300 (CF art.300: persoana cu regim mixt - deducere pro-rata cand nu poate
 #  tine evidente separate). D300: R31_2 = "Ajustari conform pro-rata" (Rd.33 structura v12) =
 #  -(taxa dedusa x fractia nedeductibila); total dedus R32 = R28 x pro_rata/100. NU scalare directa.

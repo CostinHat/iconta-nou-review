@@ -15,9 +15,10 @@ from datetime import date
 
 from core.common import Perioada, perioada_tva_tip, fereastra_tva
 from core import d300 as _d300, d394 as _d394
-from core import db as _db, tenant_provisioning as _tp
+from core import db as _db, tenant_provisioning as _tp, duk as _duk
 
 _SCHEMA = "test_trim_tva"
+_SCHEMA_TI = "test_ti_furnizor"
 
 
 def _db_ok():
@@ -114,3 +115,39 @@ def test_d394_tip_D394_urmeaza_vectorul(conn_trim):
     """D394 al firmei trimestriale: tip_D394='T' (nu hardcodat 'L')."""
     xml, _ = _d394.genereaza(conn_trim, _SCHEMA, Perioada(2026, luna=6))
     assert 'tip_D394="T"' in xml, "tip_D394 trebuie 'T' pt platitor trimestrial"
+
+
+# ---- integrare: taxare inversa FURNIZOR -> rd.13 auto -> DUK valid ----
+
+@pytest.fixture
+def conn_ti_furnizor():
+    _db.init_pool()
+    with _db.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA_TI)
+                cur.execute(_tp.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA_TI))
+                cur.execute("SET search_path TO %s, public" % _SCHEMA_TI)
+                cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,"
+                            "telefon,platitor_tva,tip_decont) VALUES (1,'FURNIZOR TI SRL','14399840','Str 1','Buc',"
+                            "'B','4120','BCR','RO49RNCB0000000000000001','0700000000',true,'lunar')")
+                # livrare cu taxare inversa (art.331 lit.g cladiri): emisa, cota 0, taxare_inversa
+                cur.execute("INSERT INTO facturi (numar,data_emitere,directie,tert_cui,tert_nume,"
+                            "total,tva,taxare_inversa,categorie_331) VALUES ('TI1','2026-06-10','emisa',"
+                            "'RO14399840','CUMPARATOR',40000,0,true,'cladiri_terenuri') RETURNING id")
+                fid = cur.fetchone()[0]
+                cur.execute("INSERT INTO factura_linii (factura_id,descriere,um,cantitate,pret_unitar,cota_tva) "
+                            "VALUES (%s,'cladire','buc',1,40000,0)", (fid,))
+            yield conn
+        finally:
+            conn.rollback()
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_d300_furnizor_taxare_inversa_rd13_DUK_valid(conn_ti_furnizor):
+    """Furnizorul cu livrare taxare inversa: rd.13 auto (40000, fara TVA) -> DUK valid."""
+    xml, res = _d300.genereaza(conn_ti_furnizor, _SCHEMA_TI, Perioada(2026, luna=6))
+    assert res.R.get("R13_1") == 40000
+    r = _duk.valideaza(xml, "d300", an=2026, luna=6)
+    assert r["stare"] == "valid", "DUK a respins rd.13 furnizor: %s" % r.get("erori")

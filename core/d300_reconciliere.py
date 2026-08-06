@@ -64,7 +64,9 @@ def _agrega_independent(conn, inceput, sfarsit):
     q = ("SELECT f.id AS fid, f.directie AS directie, f.total AS total, f.tva AS tva, "
          "l.cantitate AS cant, l.pret_unitar AS pret, l.cota_tva AS cota "
          "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
-         "WHERE f.data_emitere >= %s AND f.data_emitere < %s ORDER BY f.id")
+         "WHERE f.data_emitere >= %s AND f.data_emitere < %s "
+         "AND COALESCE(f.taxare_inversa, false) = false "  # [06.08.2026] taxare inversa -> rd.13 auto (nu col/ded), exclusa din cale2 ca in calcul_d300
+         "ORDER BY f.id")
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(q, (inceput.isoformat(), sfarsit.isoformat()))
         rows = cur.fetchall()

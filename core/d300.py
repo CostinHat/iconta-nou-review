@@ -141,8 +141,10 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     # decontarilor = notele contabile legate de factura (nu emiterea) - vezi pull(). Fara acest
     # regim: exigibilitate la faptul generator (emitere), comportament neschimbat.
     tvai = bool(prof.get("tva_la_incasare"))
+    livrare_ti_base = Decimal(0)   # rd.13: baza livrarilor cu taxare inversa (furnizor art.331), fara TVA
     for f in facturi:
         emisa = (f.get("directie") == "emisa")
+        ti = bool(f.get("taxare_inversa"))
         if tvai:
             from core import tva_incasare as _tvi
             segmente = []
@@ -158,6 +160,13 @@ def calcul_d300(prof, perioada, facturi, manual=None):
             segmente = [(ci, baza, (baza * Decimal(ci) / Decimal(100) if ci else Decimal(0)))
                         for (ci, baza) in _segmente(f)]
         for (ci, baza, tva) in segmente:
+            if ti:
+                # [decizie Costin 06.08.2026] Taxare inversa art.331: FURNIZORUL (emisa) raporteaza
+                # livrarea in rd.13 (baza, FARA TVA). BENEFICIARUL (primita) declara MANUAL rd.12 colectat
+                # + rd.27 deductibil (net zero) - NU se auto-deduce aici (altfel dubla numarare cu manualul).
+                if emisa:
+                    livrare_ti_base += baza
+                continue
             if emisa:
                 if ci in col:
                     col[ci][0] += baza; col[ci][1] += tva
@@ -190,6 +199,18 @@ def calcul_d300(prof, perioada, facturi, manual=None):
                          "R12_",  # taxare inversa colectata (rd.12, auto-taxare beneficiar art.331) - se declara manual
                          "R13_", "R14_", "R15_", "R16_", "R64_", "R65_")):
             setr(k, v); _aplicate.add(k)
+
+    # rd.13 = livrari cu taxare inversa (furnizor art.331): baza AUTO-derivata din facturi emise cu
+    # taxare_inversa, FARA TVA (intra in R17_1 baza, nu in R17_2). [decizie Costin 06.08.2026]
+    # Anti-dubla-numarare: daca vine SI manual R13_1 -> EROARE (nu insumare tacita).
+    _r13 = _int(livrare_ti_base)
+    if _r13:
+        if "R13_1" in manual:
+            raise ValueError(
+                "D300 rd.13 (livrari taxare inversa): derivat AUTOMAT din facturi emise cu flag "
+                "taxare_inversa (=%d) SI introdus manual (R13_1) - dubla numarare. Pastreaza o singura "
+                "sursa: elimina R13_1 din manual SAU scoate taxare_inversa de pe facturi." % _r13)
+        R["R13_1"] = _r13
 
     # R17 = TOTAL TAXĂ COLECTATĂ (formula oficială: sumă rd.1-18 cu excepții)
     # col.1 (bază) și col.2 (TVA) — pentru firma simplă: R9_1+R10_1+R11_1, R9_2+R10_2+R11_2
@@ -497,7 +518,9 @@ def pull(conn, schema, perioada):
             # TVA la incasare: exigibilitate pe DECONTARI (incasari/plati validate in perioada),
             # nu pe emitere. Vezi _pull_incasare.
             return prof, _pull_incasare(cur, inceput, sfarsit)
-        cur.execute("SELECT f.id, f.directie, f.total, f.tva, l.cantitate, l.pret_unitar, l.cota_tva "
+        cur.execute("SELECT f.id, f.directie, f.total, f.tva, "
+                    "COALESCE(f.taxare_inversa, false) AS taxare_inversa, "
+                    "l.cantitate, l.pret_unitar, l.cota_tva "
                     "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
                     "WHERE f.data_emitere >= %s AND f.data_emitere < %s ORDER BY f.id",
                     (inceput, sfarsit))
@@ -505,6 +528,7 @@ def pull(conn, schema, perioada):
     fmap = {}
     for r in rows:
         f = fmap.setdefault(r["id"], {"directie": r["directie"],
+                                      "taxare_inversa": r["taxare_inversa"],
                                       "total": r["total"] if r["total"] is not None else 0,
                                       "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
         if r["cantitate"] is not None and r["pret_unitar"] is not None:

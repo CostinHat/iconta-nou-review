@@ -3414,3 +3414,11 @@ Seed T-6 categorie_331 'constructii'→'cladiri_terenuri' (art.331 lit.g). D394 
 R233.5); D300 cumpărător S1 corect (R27+R22=8400 autolichidare). Descoperit bug: D300 FURNIZOR (P2 Q3) gol — livrarea
 40000 cu taxare inversă nu ajunge în R13 (d300.pull nu citește taxare_inversa). Consemnat GARZI 06.08 ca datorie nouă.
 Condiția 4 a fix-ului trimestrial acum complet îndeplinită (P2 toate trimestrele + S1 DUK-valide pe D394+D300).
+
+
+## 06.08.2026 (tura 16, D300 furnizor taxare inversă) — rd.13 auto-derivat (decizie Costin: auto furnizor/manual beneficiar)
+Vânătoare de clasă: d300.pull + calcul_d300 + d300_reconciliere (omiteau taxare_inversa) reparate; d394/d406/d394_recon
+corecte; d390 N/A; jurnal_api N/A. calcul_d300: emisă+taxare_inversa → rd.13 (bază fără TVA); primita+taxare_inversa
+exclusă din auto-deducere (beneficiar = manual). Gardă anti-dublă-numărare (auto+manual R13 → eroare). RED→GREEN+DUK:
+P2 Q3 R13_1=40000 DUK-valid; S1 manual rd.12+rd.27 DUK-valid; P1 fără regresie. 4 garduri + mutație probată; testele
+manuale rd.12 (Costin) neatinse. OPRIRE §2.3 pct.6 (buget) la graniță curată — restul tranșei 2 în predare.

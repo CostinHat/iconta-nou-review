@@ -1601,3 +1601,14 @@ se aplică taxarea inversă"). DUK-valid (fals-verde, ca bug-ul trimestrial). Ca
 f.taxare_inversa (SELECT-ul are doar directie/total/tva/linii) → calcul_d300 nu poate ruta livrarea emisă cu taxare
 inversă (cota 0) în R13; latura cumpărător merge prin altă cale (cota bunului pe primită). TEMEI: OPANAF struct D300
 R13 (art.331). NEREPARAT — item separat „D300 furnizor taxare inversă". Firmele fără taxare inversă emisă neafectate.
+
+
+## 06.08.2026 — REZOLVAT: D300 furnizor taxare inversă (datoria de mai sus, aceeași zi)
+Datoria „D300 furnizor pierde livrarea cu taxare inversă" REPARATĂ (decizie Costin: auto furnizor rd.13 / manual
+beneficiar — DECIZII 06.08). Vânătoare de clasă: reparate d300.pull (+taxare_inversa) + calcul_d300 (rutare rd.13) +
+d300_reconciliere (aliniere); confirmat corecte d394 (tip V/C), d406 (citește ti), d394_reconciliere; d390 (IC) N/A;
+jurnal_api nu produce rând de declarație. PROBĂ: P2 Q3 D300 R13_1=40000 (era gol), R13_2=0 (fără TVA), DUK-valid; S1
+beneficiar nu se mai auto-deduce (R22=0), cu manual rd.12+rd.27 DUK-valid; anti-dublare ridică EROARE; P1 fără regresie.
+GARD: 4 teste (3 unitare + 1 integrare DUK) + mutație probată; testele manuale rd.12 neatinse.
+LIMITĂ: firmele cu tva_la_incasare — livrarea cu taxare inversă a FURNIZORULUI nu ajunge în rd.13 (calea _pull_incasare
+exclude taxare_inversa, art.282(6)); edge rar (reverse-charge + TVA la încasare), declarat. P2/S1 nu sunt tva_la_incasare.
