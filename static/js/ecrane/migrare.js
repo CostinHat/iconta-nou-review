@@ -390,7 +390,7 @@ async function formularVectorFirma(corp, nav, f) {
     <p class="mig-form-cui">${esc(f.nume)} \u00b7 CUI ${esc(f.cui)}</p>
     <div class="vf-form">
       ${partidaSimpla ? "" : `<div class="vf-grup">
-        <div class="vf-eticheta">Regim fiscal</div>
+        <div class="vf-eticheta">Regim fiscal <span class="oblig">*</span></div>
         <div class="vf-optiuni" id="vf-regim">
           <button class="vf-opt ${regim==="micro"?"vf-on":""}" data-v="micro">Microintreprindere</button>
           <button class="vf-opt ${regim==="profit"?"vf-on":""}" data-v="profit">Impozit pe profit</button>
