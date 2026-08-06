@@ -135,7 +135,8 @@ def reconciliaza(conn, perioada, res, manual=None):
         return {"acoperit": False, "divergente": [], "sarite": [],
                 "motiv": "tva_la_incasare: exigibilitate pe decontari, nu pe emitere - "
                          "reconcilierea pe emitere nu se aplica (limita 3, GARZI cat.4)."}
-    inceput, sfarsit = perioada.interval()
+    from core import common as _c  # [fix trim 06.08.2026]
+    inceput, sfarsit = _c.fereastra_tva(perioada, _c.perioada_tva_tip(res.prof))  # fereastra pe perioada TVA (trimestrial -> tot trimestrul), ca generatorul
     col, ded = _agrega_independent(conn, inceput, sfarsit)
     divergente, sarite = _confrunta(res.R, col, ded, manual_keys)
     return {"acoperit": True, "motiv": None, "divergente": divergente, "sarite": sarite}

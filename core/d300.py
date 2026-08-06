@@ -481,15 +481,18 @@ def _pull_incasare(cur, inceput, sfarsit):
 
 def pull(conn, schema, perioada):
     import psycopg2.extras as _E
-    _inc, _sf = perioada.interval()
-    inceput = _inc.isoformat()
-    sfarsit = _sf.isoformat()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT nume, cui, adresa, oras, judet, caen, banca, iban, tip_decont, pro_rata, "
                     "COALESCE(tva_la_incasare, false) AS tva_la_incasare, "
                     "declarant_nume, declarant_prenume, declarant_functie "
                     "FROM firma_profil WHERE id = 1")
         prof = cur.fetchone() or {}
+        # [06.08.2026] Fereastra de date urmeaza PERIOADA FISCALA TVA (tip_decont din vectorul
+        # firmei), nu luna-ancora: un platitor trimestrial agrega TOT trimestrul. Eticheta XML
+        # (perioada.luna) ramane separata (build_xml). Fara default tacit: tip_decont lipsa -> eroare.
+        _inc, _sf = c.fereastra_tva(perioada, c.perioada_tva_tip(prof))
+        inceput = _inc.isoformat()
+        sfarsit = _sf.isoformat()
         if prof.get("tva_la_incasare"):
             # TVA la incasare: exigibilitate pe DECONTARI (incasari/plati validate in perioada),
             # nu pe emitere. Vezi _pull_incasare.

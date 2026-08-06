@@ -47,6 +47,52 @@ class Perioada:
         return inc, sf
 
 
+def perioada_tva_tip(prof):
+    """Tipul perioadei fiscale TVA (L/T/S/A) din VECTORUL FISCAL al firmei
+    (firma_profil.tip_decont). [06.08.2026, conditia Costin] FARA default tacit:
+    lipsa/necunoscut -> eroare (NU 'L'). Decontul TVA (D300/D394) urmeaza aceasta perioada."""
+    raw = str((prof or {}).get("tip_decont") or "").strip().lower()
+    if not raw:
+        raise ValueError(
+            "LIPSA tip_decont (perioada fiscala TVA) in vectorul firmei - obligatoriu pentru "
+            "decontul de TVA (D300/D394). Completeaza lunar/trimestrial in vectorul fiscal.")
+    if raw in ("l", "t", "s", "a"):
+        return raw.upper()
+    if "trim" in raw:
+        return "T"
+    if "sem" in raw:
+        return "S"
+    if raw.startswith("an"):
+        return "A"
+    if raw.startswith("lun") or raw == "l":
+        return "L"
+    raise ValueError("tip_decont necunoscut in vectorul fiscal: %r" % raw)
+
+
+def fereastra_tva(perioada, tip):
+    """(inceput, sfarsit) semi-deschis [inceput, sfarsit) pentru decontul TVA, functie de
+    PERIOADA FISCALA (tip=L/T/S/A). Decupleaza ETICHETA (perioada.luna, pusa in XML: 3/6/9/12
+    pentru trimestrial) de FEREASTRA DE DATE (trimestrul intreg). perioada.luna = ancora."""
+    an, luna = perioada.an, perioada.luna
+    if luna is None:
+        raise ValueError("fereastra_tva cere perioada.luna (ancora)")
+    if tip == "L":
+        sf = date(an + 1, 1, 1) if luna == 12 else date(an, luna + 1, 1)
+        return date(an, luna, 1), sf
+    if tip == "T":
+        q = (luna - 1) // 3 + 1
+        m0 = (q - 1) * 3 + 1
+        sf = date(an + 1, 1, 1) if q == 4 else date(an, m0 + 3, 1)
+        return date(an, m0, 1), sf
+    if tip == "S":
+        if luna <= 6:
+            return date(an, 1, 1), date(an, 7, 1)
+        return date(an, 7, 1), date(an + 1, 1, 1)
+    if tip == "A":
+        return date(an, 1, 1), date(an + 1, 1, 1)
+    raise ValueError("tip perioada TVA necunoscut: %r" % tip)
+
+
 def cheie_manual(manual, *permise):
     """Valideaza cheile unui dict `manual` contra listei PERMISE si intoarce dict-ul (sau {}).
 

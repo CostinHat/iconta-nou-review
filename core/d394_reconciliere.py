@@ -85,12 +85,12 @@ def _cota_standard(an, luna):
     return int((Decimal(str(v)) * Decimal(100)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
-def _agrega_independent(conn, perioada):
-    """Pull SQL PROPRIU al facturilor lunii + clasificare + agregare proprie.
-    Intoarce {cota: {'bazaL','tvaL','bazaA','tvaA'}} (intregi), doar cote > 0."""
+def _agrega_independent(conn, perioada, inceput, sfarsit):
+    """Pull SQL PROPRIU al facturilor PERIOADEI [inceput, sfarsit) + clasificare + agregare proprie.
+    Intoarce {cota: {'bazaL','tvaL','bazaA','tvaA'}} (intregi), doar cote > 0.
+    [06.08.2026] Fereastra primita din reconciliaza (aliniata la perioada fiscala TVA), nu pe luna."""
     import psycopg2.extras as _E
     an, luna = perioada.an, perioada.luna
-    inceput, sfarsit = perioada.interval()
     q = ("SELECT f.id AS fid, f.directie AS directie, f.total AS total, f.tva AS tva, "
          "f.taxare_inversa AS ti, f.tert_cui AS tert_cui, f.tert_platitor_tva AS tert_ptva, "
          "c.cui AS c_cui, "
@@ -181,7 +181,9 @@ def reconciliaza(conn, perioada, res, manual=None):
                 "motiv": "manual['operatiuni'] nevid (%d op) - operatiuni ne-deductibile din facturi "
                          "(bonuri/borderouri/AI/AS/LS); calea 2 reconstruieste doar din facturi "
                          "(limita 2, GARZI cat.4)." % len(ops)}
-    cale2 = _agrega_independent(conn, perioada)
+    from core import common as _c  # [fix trim 06.08.2026]
+    _inc, _sf = _c.fereastra_tva(perioada, _c.perioada_tva_tip(res.prof))
+    cale2 = _agrega_independent(conn, perioada, _inc, _sf)
     div = _confrunta(res.rezumat2, cale2)
     return {"acoperit": True, "motiv": None, "divergente": div}
 

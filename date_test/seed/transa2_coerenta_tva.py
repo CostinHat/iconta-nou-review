@@ -148,16 +148,20 @@ def seed_coerenta(conn, fid, cuimap, numemap):
         em_schema, pr_schema = _schema_for(conn, fid, em_cui), _schema_for(conn, fid, pr_cui)
         assert em_schema and pr_schema, "schema lipsa pt %s (%s->%s)" % (k, em, pr)
         actiuni = []
+        # TAXARE INVERSĂ (art.331): furnizorul EMITE fără TVA (cotă 0 pe linie — D394 tip V cere
+        # cotă 0, R217.2); cumpărătorul PRIMEȘTE cu cota BUNULUI (21) ca să autolichideze (4426=4427).
+        em_cota = 0 if ti else cota
+        pr_cota = cota          # pt ti, `cota` din tuplu = cota bunului (21) → autolichidare la primitor
         # latura EMITENT (vanzare / emisa)
         if not _factura_exista(conn, em_schema, numar, "emisa", data):
             _insert_factura(conn, em_schema, numar=numar, serie=SERIE, data=data, directie="emisa",
-                            tert_cui=pr_cui, tert_nume=pr_nume, net=net, tva=tva, cota_linie=cota,
+                            tert_cui=pr_cui, tert_nume=pr_nume, net=net, tva=tva, cota_linie=em_cota,
                             taxare_inversa=ti, categ_331=categ, tert_platitor=True)
             actiuni.append("emisa@%s" % em)
         # latura PRIMITOR (cumparare / primita)
         if not _factura_exista(conn, pr_schema, numar, "primita", data):
             _insert_factura(conn, pr_schema, numar=numar, serie=SERIE, data=data, directie="primita",
-                            tert_cui=em_cui, tert_nume=em_nume, net=net, tva=tva, cota_linie=cota,
+                            tert_cui=em_cui, tert_nume=em_nume, net=net, tva=tva, cota_linie=pr_cota,
                             taxare_inversa=ti, categ_331=categ, tert_platitor=em_plat)
             actiuni.append("primita@%s" % pr)
         rap.append((k, "%s->%s" % (em, pr), net + tva, ", ".join(actiuni) or "deja prezent"))

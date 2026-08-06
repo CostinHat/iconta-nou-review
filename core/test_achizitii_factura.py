@@ -26,9 +26,9 @@ def _scratch(cur):
     cur.execute(sql)   # template isi creeaza schema + tabelele, calificate cu _SCH
     cur.execute("SET search_path TO %s" % _SCH)
     cur.execute("""INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, email, telefon, caen,
-                   declarant_nume, declarant_prenume, declarant_functie, platitor_tva, operatiuni_ic)
+                   declarant_nume, declarant_prenume, declarant_functie, platitor_tva, operatiuni_ic, tip_decont)
                    VALUES (1,'TEST SRL','RO14399840','Str 1','Buc','B','e@x.ro','0722','4690',
-                           'P','I','ADMIN', true, true)""")
+                           'P','I','ADMIN', true, true, 'L')""")
 
 
 @pytest.mark.skipif(not _DB, reason="DB indisponibil")

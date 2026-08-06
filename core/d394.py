@@ -32,6 +32,7 @@ from __future__ import annotations
 from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
 from core.common import cere_coloane_cursor  # [garda coloane 27.07.2026]
 from core.common import cheie_manual
+from core.common import perioada_tva_tip as _ptv, fereastra_tva as _fer  # [fix trim 06.08.2026]
 _COLOANE_PROFIL = ("nume", "cui", "adresa", "caen")   # minimul citit de aici
 
 import re
@@ -304,10 +305,11 @@ def cota_standard(an, luna):
     return int((_d(v) * Decimal(100)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
-def tip_d394(luna):
-    """Perioada fiscala din decontul de TVA (pct. 4). Implicit lunar: iConta
-    genereaza pe luna. T/S/A raman de completat cand exista vector fiscal."""
-    return "L"
+def tip_d394(prof):
+    """Perioada fiscala din decontul de TVA (pct. 4) = VECTORUL FISCAL al firmei
+    (firma_profil.tip_decont): L/T/S/A. [06.08.2026] Citit din vector, NU presupus lunar;
+    lipsa -> eroare (perioada_tva_tip), fara default tacit 'L'."""
+    return _ptv(prof)
 
 
 @dataclass
@@ -638,7 +640,7 @@ def build_xml(res):
              'cifR="%s" denR="%s" functie_reprez="%s" adresaR="%s" '
              'tip_intocmit="0" den_intocmit="%s" cif_intocmit="%s" calitate_intocmit="%s" '
              'optiune="0" totalPlata_A="%d">'
-             % (NS, res.luna, res.an, tip_d394(res.luna), sistem_tva, res.op_efectuate,
+             % (NS, res.luna, res.an, tip_d394(res.prof), sistem_tva, res.op_efectuate,
                 _esc(cui), _esc(prof.get("caen") or ""), _esc(_t(prof.get("nume") or "", _LIM["d394"]["den"])),
                 _esc(_t(adr, _LIM["d394"]["adresa"])), _esc(prof.get("telefon") or ""),
                 _esc(cui), _esc(_t(rep_den, _LIM["d394"]["denR"])), _esc(_t(rep_fct, _LIM["d394"]["functie_reprez"])), _esc(_t(adr, _LIM["d394"]["adresaR"])),
@@ -734,13 +736,14 @@ def pull(conn, schema, perioada):
     """Facturile lunii, cu cota din linii. O factura cu doua cote da doua intrari:
     op1 e unic pe (cuiP, tip, cota) — pct. 218. Intoarce (prof, {facturi, serii})."""
     import psycopg2.extras as _E
-    _inc, _sf = perioada.interval()
-    inceput = _inc.isoformat()
-    sfarsit = _sf.isoformat()
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT * FROM firma_profil WHERE id = 1")
         cere_coloane_cursor(cur, _COLOANE_PROFIL, "firma_profil")   # [garda 27.07.2026]
         prof = dict(cur.fetchone() or {})
+        # [06.08.2026] fereastra pe PERIOADA FISCALA TVA (ca d300.pull); trimestrial -> tot trimestrul.
+        _inc, _sf = _fer(perioada, _ptv(prof))
+        inceput = _inc.isoformat()
+        sfarsit = _sf.isoformat()
         # partener: emise -> clienti (client_id); primite -> tert_* (furnizorul).
         # proformele nu se raporteaza (nu sunt facturi fiscale).
         cur.execute("""
@@ -799,17 +802,15 @@ def pull(conn, schema, perioada):
             facturi.append(dict(comun, cota=cota, baza=baza,
                                 tva=(baza * Decimal(cota) / Decimal(100)
                                      if bool(r["ti"]) and r["directie"] == "primita" else tva)))
-    return prof, {"facturi": facturi, "serii": serii_emise(conn, schema, perioada)}
+    return prof, {"facturi": facturi, "serii": serii_emise(conn, schema, inceput, sfarsit)}
 
 
-def serii_emise(conn, schema, perioada):
-    """Plajele de facturi EMISE in luna: {serie: (nr_min, nr_max)}.
+def serii_emise(conn, schema, inceput, sfarsit):
+    """Plajele de facturi EMISE in PERIOADA [inceput, sfarsit): {serie: (nr_min, nr_max)}.
     R130/R131: nrFacturi > 0 <=> exista serieFacturi tip 2; tip 2 cere tip 1.
-    Numarul se extrage din partea numerica a lui facturi.numar."""
+    Numarul se extrage din partea numerica a lui facturi.numar.
+    [06.08.2026] Fereastra primita din pull (aliniata la perioada fiscala TVA), nu recalculata pe luna."""
     import re as _re
-    _inc, _sf = perioada.interval()
-    inceput = _inc.isoformat()
-    sfarsit = _sf.isoformat()
     out = {}
     with conn.cursor() as cur:
         cur.execute("""SELECT COALESCE(NULLIF(serie, ''), '-') AS s, numar

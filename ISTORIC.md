@@ -3398,3 +3398,12 @@ generarea D300/D394 (poarta D300 27.07 cere bancă+IBAN). Re-rulat idempotent pe
   design de reparat în DECIZII 06.08 (recomandare: opțiunea B).
 OPRIRE lanț §2.3 pct.6 (buget context) + decizie de design pe API perioadă (DECIZII 06.08) la graniță curată.
 Livrat verde: seed profil complet + verificarea P1 lunar. HEAD urcă la commitul Cluster 2. Registre la zi.
+
+
+## 06.08.2026 (tura 16, Cluster 3) — FIX perioada fiscală TVA trimestrială D300/D394 (optiunea B)
+Vânătoare de clasă completă: D300+D394 (fereastra pe perioada TVA) + gărzile „a doua cale" d300_reconciliere/
+d394_reconciliere; D390 confirmat LUNAR (neatins), D100/D710 deja trim (neatins). Helperi noi în common:
+perioada_tva_tip (vector fiscal, eroare la lipsă) + fereastra_tva (decuplează eticheta de fereastră). RED→GREEN:
+P2 Q2 include acum T-2 aprilie (R22_2 0→16800), DUK-valid; tip_D394 'L'→'T'; P1 lunar 10/10 fără regresie. Gard
+test_d300_d394_trimestrial.py + mutație probată. 23 fixturi reparate (tip_decont explicit). Corectat și seed T-6:
+taxare inversă → emisă cotă 0 / primită cota bunului (autolichidare). Rămas: T-6 op11/codPR (R233.5) = item separat.

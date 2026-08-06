@@ -1576,3 +1576,15 @@ acoperă toate lunile perioadei); OPANAF D394 (aceeași frecvență ca decontul)
 NEREPARAT în această tură — buget de context + decizie de design pe forma API-ului de perioadă (vezi DECIZII 06.08 +
 TESTE fir C-4 tranșa 2, pașii de fix). Firmele LUNARE (P1) NU sunt afectate: D300/D394 P1 toate DUK-valide, coerență
 corectă pe lunile 2-6 (verificat această tură).
+
+
+## 06.08.2026 — REZOLVAT: perioada fiscală TVA trimestrială D300/D394 (datoria de mai sus, aceeași zi)
+Datoria „perioada TVA trimestrială neimplementată" REPARATĂ (optiunea B, DECIZII 06.08). common.perioada_tva_tip
+(citește vectorul fiscal firma_profil.tip_decont; EROARE la lipsă, fără default tacit 'L') + common.fereastra_tva
+(decuplează eticheta luna 3/6/9/12 de fereastra de date = trimestrul). Aplicat în d300.pull, d394.pull + serii_emise,
+d394.tip_d394(prof), și în GĂRZILE „a doua cale" d300_reconciliere/d394_reconciliere (aliniate la aceeași fereastră).
+Vânătoare de clasă: D390 rămâne LUNAR (vector_fiscal_api:13, lege recap IC) — neatins; D100/D710 deja trim — neatins.
+PROBĂ: P2 Q2 (luna=6) include acum T-2 din aprilie (R22_1=80000/R22_2=16800, era 0), DUK-valid; tip_D394='T'; P1 lunar
+10/10 DUK-valid (fără regresie). GARD: core/test_d300_d394_trimestrial.py + mutație probată (T→lună = testul picat).
+LIMITĂ RĂMASĂ (nu din acest fix): T-6 taxare inversă art.331 — D394 cere secțiunea op11/codPR; categorie_331='constructii'
+nu mapează la un codPR valid → P2 Q3 D394 + S1 iulie D394 = DUK erori (R233.5). Item separat „T-6 taxare inversă".

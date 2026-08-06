@@ -7548,3 +7548,10 @@ clară pe temei (CF art.322) DAR atinge forma API-ului de perioadă → design d
 Ripple de gestionat la reparație (oricare opțiune): d300.valideaza (regula luna∈{2,3,5,6,8,9,11,12} pentru T — de
 reconciliat cu noul model), nr_evidenta/scadenta (folosesc luna), D390 (aceeași clasă). Fiecare cu gard + RED/GREEN +
 DUK. NEDECIS — recomandarea B stă până confirmă Costin; nu blochează alt lucru (firmele lunare merg).
+
+
+## 06.08.2026 — Optiunea B IMPLEMENTATĂ (perioada fiscală TVA trimestrială D300/D394)
+Decizia de design de mai sus (06.08) — REZOLVATĂ cu opțiunea B, aprobată de Costin. Fereastra de date urmează vectorul
+fiscal (tip_decont), decuplată de eticheta luna din XML; declaratii_api/UI NEATINSE. tip_decont citit din vector
+(nu presupus); lipsă → eroare. Fixturile care generau D300/D394 fără tip_decont (test_d394.PROF, test_achizitii_factura)
+au primit tip_decont='L' explicit (23 teste, foloseau default-ul tăcut eliminat). Detaliu GARZI 06.08.
