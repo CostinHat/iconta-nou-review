@@ -54,7 +54,7 @@ def _deducere_personala_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
                          "nu se ghiceste luna curenta - salariul minim depinde de luna venitului")
     if not functie_baza:
         return {"baza": _q(0), "tineri": _q(0), "copii": _q(0), "total": _q(0)}
-    sm, _ = c.cota("salariu_minim", la_data)
+    sm, _ = c.salariu_minim_luna(la_data)  # [#12] art.77(3): cea mai mica valoare din luna
     b = _dec(brut)
     plafon = sm + PRAG_VENIT_DEDUCERE
 
@@ -126,7 +126,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     common.COTE (CF art.138/156/78/220^1). nivel_sursa: REDARE.
     """
     b = _dec(brut)
-    sm, temei_sm = c.cota("salariu_minim", la_data)
+    sm, temei_sm = c.salariu_minim_luna(la_data)  # [#12] art.77(3)
     cota_cas, _ = c.cota("cas", la_data)
     cota_cass, _ = c.cota("cass", la_data)
     cota_imp, _ = c.cota("impozit_venit", la_data)
@@ -475,7 +475,7 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     if venituri_lunare is not None:
         _suma = Decimal("0"); _zile = 0
         for _venit, _zl, _luna in venituri_lunare:
-            _sm, _ = c.cota("salariu_minim", _luna)
+            _sm, _ = c.salariu_minim_luna(_luna)  # [#12] art.77(3) pe fiecare luna
             _suma += min(_dec(_venit), Decimal("12") * _dec(_sm))
             _zile += int(_zl)
         venituri_6_luni = _suma

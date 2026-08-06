@@ -7638,3 +7638,22 @@ Marker stabil: **d394 linie scutita catre cui proba duk facuta**.
 PROBĂ: factură MULTI-COTĂ exact cazul din datorie — 21% (bază 1000) + 11% (bază 500) + scutit cota 0 (bază 300)
 către RO14399840 → DUK `stare=valid`; linia scutită încadrată LS (prezentă în `res.op1`, `tip="LS"` în XML), NU
 mai apare avertisment de ignorare. Test: `core/test_d394.py::test_d394_scutit_livrare_ro_cui_inclus_ca_LS_nu_dropat`.
+
+## 06.08.2026 — #12: salariul minim din lună = cea mai mică valoare (art.77 alin.3)
+
+CF art.77 alin.(3) teza finală, verificat VERBATIM în `anaf_surse/cod_fiscal_227_2015_consolidat.html`:
+„În situația în care, în cursul aceleiași luni, se utilizează mai multe valori ale salariului minim brut pe
+țară, se ia în calcul valoarea cea mai mică a salariului minim brut pe țară." Același principiu explicit la
+plafonul de 20% facilitate (art.76). NU e regulă din pliant — e text de lege la MO.
+
+`cota("salariu_minim", la_data)` întorcea valoarea LA DATA, nu minimul din lună. FIX:
+`common.salariu_minim_luna(la_data)` întoarce cea mai mică valoare activă în lună; rutate siturile de calcul
+lunar (salarizare: deducere art.77(3), facilitate art.76, plafon CM 12sm + d112 salariul minim lunar).
+
+Marker stabil: **salariu minim cea mai mica valoare din luna tratat**.
+
+PROBĂ: test unitar pe o lună cu DOUĂ valori (5000 de la 1, 5200 de la 15) → alege 5000. No-op pe date reale:
+D112 tenant_001 2026-07 **BYTE-IDENTIC** cu/fără fix (sha256 `ea0520b0c8b2eb0c`, len 12379) → zero regresie.
+Nicio lună reală n-are încă două valori (schimbările de salariu minim sunt la granița de lună: 4050 ian-2025,
+4325 iul-2026), deci regula nu bite azi — dar e implementată corect pentru când va fi. Test:
+`core/test_12_salariu_minim_luna.py`.

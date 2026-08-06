@@ -597,6 +597,25 @@ def cota(nume, la_data=None, strict=True):
     raise PerioadaIndisponibila(nume, la_data, intrari[-1][0])
 
 
+def salariu_minim_luna(la_data=None, strict=True):
+    """CF art.77 alin.(3) teza finala: cand in cursul ACELEIASI luni se utilizeaza mai multe valori ale
+    salariului minim brut pe tara, se ia in calcul valoarea CEA MAI MICA (acelasi principiu la plafonul de
+    20% facilitate). Intoarce (valoare, temei) = cea mai mica valoare a salariului minim ACTIVA in luna lui
+    la_data (implicit azi). O luna cu o singura valoare = identic cu cota(). Period-aware.
+    TEMEI verificat verbatim in anaf_surse/cod_fiscal_227_2015_consolidat.html (art.77 alin.3)."""
+    la_data = la_data or date.today()
+    prima = date(la_data.year, la_data.month, 1)
+    urm = _adauga_luni(prima, 1)
+    active = []
+    for din, val, temei in COTE["salariu_minim"]:
+        out = getattr(temei, "data_out", None)
+        if din < urm and (out is None or out >= prima):
+            active.append((val, temei))
+    if not active:
+        return cota("salariu_minim", prima, strict=strict)
+    return min(active, key=lambda vt: vt[0])
+
+
 def alege_varianta(variante, la_data=None):
     """Alege varianta de FORMULA valabila la la_data - tiparul cota() dar pe COD. variante = [(data_in,
     functie, temei), ...]; intoarce (functie, temei) pentru cea mai recenta cu data_in <= la_data.

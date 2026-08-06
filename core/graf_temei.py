@@ -34,10 +34,14 @@ def _cote_directe(node):
     for n in ast.walk(node):
         if isinstance(n, ast.Call):
             fn = n.func
-            if (getattr(fn, "attr", None) == "cota" or getattr(fn, "id", None) == "cota") and n.args:
+            nume = getattr(fn, "attr", None) or getattr(fn, "id", None)
+            if nume == "cota" and n.args:
                 a0 = n.args[0]
                 if isinstance(a0, ast.Constant) and isinstance(a0.value, str):
                     keys.add(a0.value)
+            elif nume == "salariu_minim_luna":
+                # [#12] accesor period-aware al salariului minim (art.77 alin.3) = dependenta DIRECTA
+                keys.add("salariu_minim")
     return keys
 
 

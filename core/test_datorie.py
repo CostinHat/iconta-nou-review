@@ -203,7 +203,7 @@ def test_datorie_deducere_copil_parinte_multi_angajatori():
     assert "deducere copil parinte unic multi angajatori tratat" in dz.lower()
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 31.07.2026: pliant ANAF - daca in aceeasi luna se folosesc mai multe valori ale salariului minim, se ia in calcul CEA MAI MICA. cota() intoarce valoarea in vigoare la la_data, nu implementeaza explicit 'cea mai mica din luna'. Nu musca in iulie 2026 (o singura valoare, 4325 de la 1 iul). De tratat daca o modificare de salariu minim pica la mijloc de luna. Se inchide cand e consemnat in DECIZII.md.")
+# [INCHISA 06.08.2026] salariu_minim_luna() aplica art.77(3) (cea mai mica valoare din luna), verificat verbatim la MO + proba no-op D112 (byte-identic) - vezi DECIZII.md.
 def test_datorie_cota_cea_mai_mica_valoare_din_luna():
     # Se inchide cand regula 'cea mai mica valoare in luna' e consemnata in DECIZII.md (marker stabil).
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")

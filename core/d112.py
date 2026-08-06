@@ -28,8 +28,8 @@ def _sal_minim(an, luna):
     Registrul RIDICA daca nu exista valoare pentru data ceruta - preferabil unei cifre
     plauzibile si gresite intr-o declaratie depusa la ANAF."""
     from datetime import date as _date
-    from core.common import cota
-    valoare, _temei = cota("salariu_minim", _date(an, luna, 1))
+    from core.common import salariu_minim_luna
+    valoare, _temei = salariu_minim_luna(_date(an, luna, 1))  # [#12] art.77(3): cea mai mica din luna
     return int(valoare)
 _D112_NS = "mfp:anaf:dgti:declaratie_unica:declaratie:v7"
 def _cm_media6(brut, data_ang, an, luna):  # cm_media6_v1
