@@ -29,7 +29,7 @@ def _plafon_diurna(diurna_acordata_pe_zi, zile, salariu_baza, zile_lucratoare_lu
     da, sb = _d(diurna_acordata_pe_zi), _d(salariu_baza)
     z, zl = int(zile), int(zile_lucratoare_luna)
     if da <= 0 or z <= 0 or sb <= 0 or zl <= 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     bug = _d(diurna_bugetara if diurna_bugetara is not None else _bug_default)
     p1 = (bug * Decimal("2.5") * Decimal(str(curs))).quantize(B, rounding=ROUND_HALF_UP)
     p2 = (sb * 3 / zl).quantize(B, rounding=ROUND_HALF_UP)
@@ -69,7 +69,7 @@ def nota_avans(suma, sursa="casa"):
     """Avans spre decontare: 542 = 5311/5121."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     return {"linii": [("542", "5311" if sursa == "casa" else "5121", s)]}
 
 def nota_decont(avans, diurna=0, transport=0, cazare=0, cota_tva=0, sursa="casa"):
@@ -78,7 +78,7 @@ def nota_decont(avans, diurna=0, transport=0, cazare=0, cota_tva=0, sursa="casa"
     av = _d(avans)
     d, t, c = _d(diurna), _d(transport), _d(cazare)
     if av < 0 or d < 0 or t < 0 or c < 0 or (d + t + c) <= 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     cont_banii = "5311" if sursa == "casa" else "5121"
     tva = (Decimal(str(cota_tva)) / 100 * (t + c)).quantize(B, rounding=ROUND_HALF_UP)
     total = d + t + c + tva

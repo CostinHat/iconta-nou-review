@@ -22,7 +22,7 @@ def _d(x):
 def nota_plus(valoare, cont_stoc="371"):
     v = _d(valoare)
     if v <= 0:
-        raise ValueError("valoare invalida")
+        raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     c = CORESPONDENT.get(str(cont_stoc))
     if not c:
         raise ValueError("cont stoc: " + "|".join(CORESPONDENT))
@@ -31,7 +31,7 @@ def nota_plus(valoare, cont_stoc="371"):
 def nota_plus_mf(valoare, cont_imobilizare="2131"):
     v = _d(valoare)
     if v <= 0:
-        raise ValueError("valoare invalida")
+        raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     return {"linii": [(str(cont_imobilizare), "4754", v)]}
 
 def nota_minus(valoare, cont_stoc="371", imputabil=False,
@@ -41,7 +41,7 @@ def nota_minus(valoare, cont_stoc="371", imputabil=False,
     inlocuire cu TVA; neimputabil neasigurat -> ajustare TVA pe cost."""
     v = _d(valoare)
     if v <= 0:
-        raise ValueError("valoare invalida")
+        raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     c = CORESPONDENT.get(str(cont_stoc))
     if not c:
         raise ValueError("cont stoc: " + "|".join(CORESPONDENT))
@@ -64,7 +64,7 @@ def nota_casare_mf(valoare_bruta, amortizare_cumulata,
     """Casare: 28xx + 6583 = 21x (proces-verbal comisie)."""
     vb, am = _d(valoare_bruta), _d(amortizare_cumulata)
     if vb <= 0 or am < 0 or am > vb:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     linii = []
     if am > 0:
         linii.append((str(cont_amortizare), str(cont_imobilizare), am))

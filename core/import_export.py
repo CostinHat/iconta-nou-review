@@ -18,7 +18,7 @@ def baza_tva_import(valoare_vamala, taxe_vamale=0, accize=0, accesorii=0):
     pana la primul loc de destinatie, daca nu-s deja in valoarea vamala."""
     vv, tv, ac, ca = _d(valoare_vamala), _d(taxe_vamale), _d(accize), _d(accesorii)
     if vv <= 0 or tv < 0 or ac < 0 or ca < 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     return (vv + tv + ac + ca).quantize(B, rounding=ROUND_HALF_UP)
 
 def calcul_import(valoare_vamala, procent_taxa_vamala=0, accize=0, accesorii=0,

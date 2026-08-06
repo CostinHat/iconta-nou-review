@@ -20,7 +20,7 @@ def nota_obtinere(cost_standard, cost_efectiv=None):
     """345=711 la standard + diferente pe 348."""
     cs = _d(cost_standard)
     if cs <= 0:
-        raise ValueError("cost standard invalid")
+        raise ValueError("Costul standard trebuie să fie un număr pozitiv.")
     linii = [("345", "711", cs)]
     dif = None
     if cost_efectiv is not None:
@@ -40,7 +40,7 @@ def nota_productie_in_curs(suma, moment="constatare"):
     """constatare (sfarsit luna): 331=711; reluare (inceput luna): 711=331."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if moment == "constatare":
         return {"linii": [("331", "711", s)]}
     if moment == "reluare":
@@ -60,7 +60,7 @@ def nota_vanzare(pret_vanzare, cost_standard_iesit, cota_tva=21, coef_348=None):
     """4111 = 701 + 4427; descarcare 711=345 standard + diferente aferente."""
     pv, cs = _d(pret_vanzare), _d(cost_standard_iesit)
     if pv <= 0 or cs <= 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     tva = (pv * Decimal(str(cota_tva)) / 100).quantize(B, rounding=ROUND_HALF_UP)
     linii = [("4111", "701", pv)]
     if tva > 0:

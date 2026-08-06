@@ -29,7 +29,7 @@ def e_obiect_inventar(valoare, la_data=None, durata_sub_1_an=False):
 def nota_achizitie(valoare, cota_tva=21):
     v = _d(valoare)
     if v <= 0:
-        raise ValueError("valoare invalida")
+        raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     tva = (v * Decimal(str(cota_tva)) / 100).quantize(B, rounding=ROUND_HALF_UP)
     linii = [("303", "401", v)]
     if tva > 0:
@@ -40,12 +40,12 @@ def nota_dare_folosinta(valoare):
     """603=303 + D8035 extracontabil (contrapartida tehnica 891)."""
     v = _d(valoare)
     if v <= 0:
-        raise ValueError("valoare invalida")
+        raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     return {"linii": [("603", "303", v), ("8035", "891", v)]}
 
 def nota_scoatere_uz(valoare):
     """C8035 la casare/scoatere din uz (proces-verbal)."""
     v = _d(valoare)
     if v <= 0:
-        raise ValueError("valoare invalida")
+        raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     return {"linii": [("891", "8035", v)]}

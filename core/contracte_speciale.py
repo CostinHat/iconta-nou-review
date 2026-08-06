@@ -27,7 +27,7 @@ def _calcul_zilier_2018(brut):
     a fost introdus abia de OUG 26/2019 (CF art.139(1) lit.s), in vigoare 01.05.2019."""
     b = _d(brut)
     if b <= 0:
-        raise ValueError("brut invalid")
+        raise ValueError("Salariul brut trebuie să fie un număr pozitiv.")
     impozit = _p(b, 10)
     return {"brut": b, "cas": Decimal("0.00"), "cass": Decimal("0.00"),
             "impozit": impozit, "net": b - impozit}
@@ -39,7 +39,7 @@ def _calcul_zilier_2019(brut):
     ambele de OUG 26/2019 la 01.05.2019."""
     b = _d(brut)
     if b <= 0:
-        raise ValueError("brut invalid")
+        raise ValueError("Salariul brut trebuie să fie un număr pozitiv.")
     cas = _p(b, 25)
     impozit = _p(b - cas, 10)
     return {"brut": b, "cas": cas, "cass": Decimal("0.00"),
@@ -72,7 +72,7 @@ def calcul_mandat(brut):
     """Cenzor / administrator cu contract de mandat remunerat."""
     b = _d(brut)
     if b <= 0:
-        raise ValueError("brut invalid")
+        raise ValueError("Salariul brut trebuie să fie un număr pozitiv.")
     cas = _p(b, 25)
     cass = _p(b, 10)
     impozit = _p(b - cas - cass, 10)
@@ -83,7 +83,7 @@ def remuneratie_minima_zilier(salariu_minim, ore=8, ore_luna=Decimal("165.33")):
     """Remuneratia zilnica minima = salariul minim orar x ore."""
     sm = _d(salariu_minim)
     if sm <= 0 or ore <= 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     orar = (sm / Decimal(str(ore_luna))).quantize(B, rounding=ROUND_HALF_UP)
     return {"orar_minim": orar, "zi_minima": (orar * ore).quantize(B)}
 

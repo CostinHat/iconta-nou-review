@@ -24,7 +24,7 @@ def nota_avans_platit(suma_fara_tva, cota=21, destinatie="stocuri"):
     """Factura de avans primita de la furnizor: 409x + 4426 = 401."""
     s = _d(suma_fara_tva)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if destinatie not in CONT_AVANS:
         raise ValueError("destinatie: " + "|".join(CONT_AVANS))
     tva = _tva(s, cota)
@@ -38,7 +38,7 @@ def nota_regularizare_avans_platit(suma_fara_tva, cota=21, destinatie="stocuri")
     Factura finala se inregistreaza separat, intreaga."""
     s = _d(suma_fara_tva)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if destinatie not in CONT_AVANS:
         raise ValueError("destinatie: " + "|".join(CONT_AVANS))
     tva = _tva(s, cota)
@@ -51,7 +51,7 @@ def nota_avans_incasat(suma_fara_tva, cota=21):
     """Factura de avans emisa catre client: 4111 = % (419 + 4427)."""
     s = _d(suma_fara_tva)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     tva = _tva(s, cota)
     linii = [("4111", "419", s)]
     if tva > 0:
@@ -62,7 +62,7 @@ def nota_regularizare_avans_incasat(suma_fara_tva, cota=21):
     """La factura finala: inversarea avansului (419 = 4111, 4427 = 4111)."""
     s = _d(suma_fara_tva)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     tva = _tva(s, cota)
     linii = [("419", "4111", s)]
     if tva > 0:

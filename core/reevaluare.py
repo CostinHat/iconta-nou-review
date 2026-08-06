@@ -21,7 +21,7 @@ def nota_reevaluare(valoare_bruta, amortizare_cumulata, valoare_justa,
     vb, am, vj = _d(valoare_bruta), _d(amortizare_cumulata), _d(valoare_justa)
     s105, p655 = _d(sold_105_activ), _d(pierdere_655_anterioara)
     if vb <= 0 or am < 0 or am > vb or vj < 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     vn = vb - am
     linii = []
     if am > 0:  # eliminarea amortizarii cumulate (metoda valorii nete)
@@ -51,5 +51,5 @@ def nota_realizare_surplus(suma):
     """Transfer surplus realizat: 105 = 1175 (la cedare sau pe masura amortizarii)."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     return {"linii": [("105", "1175", s)]}

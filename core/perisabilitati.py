@@ -21,7 +21,7 @@ def calcul(valoare_intrari, procent_limita, pierdere_constatata,
     """Returneaza limita, partea deductibila/nedeductibila, liniile notei."""
     vi, pl, pc = _d(valoare_intrari), Decimal(str(procent_limita)), _d(pierdere_constatata)
     if vi <= 0 or pl < 0 or pc <= 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     limita = (vi * pl / 100).quantize(B, rounding=ROUND_HALF_UP)
     deductibil = min(pc, limita)
     nedeductibil = pc - deductibil

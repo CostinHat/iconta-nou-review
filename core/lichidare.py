@@ -30,7 +30,7 @@ def nota_vanzare_activ(pret, valoare_bruta, amortizare_cumulata,
     """Vanzare in lichidare: 461=7583+4427 + descarcare 6583+28xx=21x."""
     p, vb, am = _d(pret), _d(valoare_bruta), _d(amortizare_cumulata)
     if p <= 0 or vb <= 0 or am < 0 or am > vb:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     tva = (p * Decimal(str(cota_tva)) / 100).quantize(B, rounding=ROUND_HALF_UP)
     linii = [("461", "7583", p)]
     if tva > 0:
@@ -46,7 +46,7 @@ def partaj(capital_social, rezerve=0, profituri=0, la_data=None):
     impozabil cu cota de dividend. Returneaza liniile + impozitul."""
     cs, rz, pf = _d(capital_social), _d(rezerve), _d(profituri)
     if cs < 0 or rz < 0 or pf < 0 or (cs + rz + pf) <= 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     cota = _cota_dividend(la_data)
     castig = rz + pf
     impozit = (castig * cota / 100).quantize(B, rounding=ROUND_HALF_UP)

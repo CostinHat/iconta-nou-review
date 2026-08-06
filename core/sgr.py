@@ -26,7 +26,7 @@ def _suma(nr_ambalaje=None, suma=None):
     else:
         raise ValueError("nr_ambalaje sau suma obligatoriu")
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     return s
 
 def nota_garantie_achizitie(nr_ambalaje=None, suma=None):
@@ -50,7 +50,7 @@ def nota_autofactura_returo(garantii_returnate, tarif_gestionare=0, cota_tva=21)
     g = _d(garantii_returnate)
     t = _d(tarif_gestionare)
     if g < 0 or t < 0 or (g + t) <= 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     linii = []
     if g > 0:
         linii.append(("5121", "461", g))
@@ -65,6 +65,6 @@ def nota_virare_garantii(suma, catre="furnizor"):
     """Virarea garantiilor incasate: 462.SGR = 401 (furnizor) / 5121 (plata directa)."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     cont = "401" if catre == "furnizor" else "5121"
     return {"linii": [("462", cont, s)]}

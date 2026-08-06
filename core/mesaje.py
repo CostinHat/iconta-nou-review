@@ -75,3 +75,15 @@ EMAIL_NICIUNUL_VALID = "Niciunul dintre emailuri nu e valid. Verifică lista de 
 CUI_FIRMA_LIPSA = "CUI-ul firmei lipsește din Profilul firmei. Completează-l înainte de a genera declarația."
 PERIOADA_INCHISA = ("Perioada e blocată (luna închisă). Cere-i administratorului cabinetului să o "
                     "redeschidă sau înregistrează în luna curentă.")
+
+
+# --- G3: garduri de rol/acces (403) — explicit: ce drept lipsește + cine îl acordă ---
+ROL_INSUFICIENT = "Nu ai rolul necesar pentru această acțiune. Cere-i administratorului cabinetului dreptul potrivit."
+DOAR_ADMIN_ICONTA = "Acțiune rezervată administratorului iConta (furnizorul aplicației)."
+DOAR_ADMIN_CABINET = "Acțiune rezervată administratorului cabinetului. Cere-i lui să o facă."
+DOAR_PATRON = "Acțiune rezervată patronului cabinetului. Cere-i lui să o facă."
+FARA_DREPT_VALIDARE = "Nu ai dreptul de a valida declarații. Cere-i administratorului cabinetului să ți-l acorde."
+FARA_DREPT_DEPUNERE = "Nu ai dreptul de a depune declarații. Cere-i administratorului cabinetului să ți-l acorde."
+FARA_ACCES_TENANT = "Nu ai acces la această firmă. Cere-i administratorului cabinetului să ți-o atribuie."
+FARA_ACCES_RAPORTARE = "Nu ai acces la această raportare."
+FARA_ACCES = "Nu ai acces la această resursă."

@@ -17,7 +17,7 @@ def nota_primire_financiar(valoare_capital, dobanda_totala, cont_imobilizare="21
     """Primire bun: 2133=167 capital total + D8051 dobanda totala (extracontabil)."""
     vc, dt = _d(valoare_capital), _d(dobanda_totala)
     if vc <= 0 or dt < 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     linii = [(cont_imobilizare, "167", vc)]
     if dt > 0:
         linii.append(("8051", "891", dt))  # debit extracontabil prin 891
@@ -30,7 +30,7 @@ def nota_rata_financiar(capital, dobanda=0, comision=0, cota_tva=21,
     finantatorilor RO. Concomitent C8051 cu dobanda facturata."""
     c, d, co = _d(capital), _d(dobanda), _d(comision)
     if c < 0 or d < 0 or co < 0 or (c + d + co) <= 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     baza = c + d + co
     tva = (baza * Decimal(str(cota_tva)) / 100).quantize(B, rounding=ROUND_HALF_UP)
     linii = []
@@ -49,7 +49,7 @@ def nota_reziduala(valoare_reziduala, cota_tva=21):
     """Valoarea reziduala la finalul contractului: 167=404 + TVA (inchide 167)."""
     vr = _d(valoare_reziduala)
     if vr <= 0:
-        raise ValueError("valoare invalida")
+        raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     tva = (vr * Decimal(str(cota_tva)) / 100).quantize(B, rounding=ROUND_HALF_UP)
     return {"linii": [("167", "404", vr), ("4426", "404", tva)], "tva": tva}
 
@@ -57,6 +57,6 @@ def nota_rata_operational(chirie, cota_tva=21, cont_cheltuiala="612"):
     """Leasing operational: rata = chirie 612=401 + 4426."""
     ch = _d(chirie)
     if ch <= 0:
-        raise ValueError("valoare invalida")
+        raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     tva = (ch * Decimal(str(cota_tva)) / 100).quantize(B, rounding=ROUND_HALF_UP)
     return {"linii": [(cont_cheltuiala, "401", ch), ("4426", "401", tva)], "tva": tva}

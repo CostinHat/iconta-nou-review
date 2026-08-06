@@ -27,7 +27,10 @@ from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO;
 from core import common as _common
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXISTA,
-                         EMAIL_NICIUNUL_VALID, CUI_FIRMA_LIPSA, PERIOADA_INCHISA)
+                         EMAIL_NICIUNUL_VALID, CUI_FIRMA_LIPSA, PERIOADA_INCHISA,
+                         ROL_INSUFICIENT, DOAR_ADMIN_ICONTA, DOAR_ADMIN_CABINET, DOAR_PATRON,
+                         FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE, FARA_ACCES_TENANT,
+                         FARA_ACCES_RAPORTARE, FARA_ACCES)
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
 TENANT_TEMPLATE_PATH = os.environ.get(
@@ -151,7 +154,7 @@ def cere_rol(*roluri):
     """Factory: dependență care cere ca rolul din context să fie printre 'roluri'."""
     def _verifica(ctx=Depends(cere_context)):
         if ctx["rol"] not in roluri and ctx["rol"] != "superadmin":
-            raise HTTPException(403, "rol insuficient pentru această acțiune")
+            raise HTTPException(403, ROL_INSUFICIENT)
         return ctx
     return _verifica
 
@@ -370,7 +373,7 @@ async def _bucla_alerte_sanatate():
 @app.post("/admin/sanatate/test-alerta")
 def admin_sanatate_test_alerta(ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
+        raise HTTPException(403, DOAR_ADMIN_ICONTA)
     email = _email_superadmin()
     if not email:
         raise HTTPException(500, "email superadmin negăsit")
@@ -382,7 +385,7 @@ def admin_sanatate_test_alerta(ctx=Depends(cere_cabinet)):
 @app.get("/admin/sanatate/istoric")
 def admin_sanatate_istoric(ore: int = 24, ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
+        raise HTTPException(403, DOAR_ADMIN_ICONTA)
     ore = min(max(ore, 1), 168)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
@@ -398,7 +401,7 @@ def admin_sanatate_istoric(ore: int = 24, ctx=Depends(cere_cabinet)):
 @app.get("/admin/sanatate")
 def admin_sanatate(ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
+        raise HTTPException(403, DOAR_ADMIN_ICONTA)
     import time as _time
     import shutil as _shutil
     import os as _os
@@ -554,7 +557,7 @@ def eu_anunt_confirma(aid: int, ctx=Depends(cere_cabinet)):
 @app.get("/admin/activitate/cabinete")
 def admin_activitate_cabinete(ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
+        raise HTTPException(403, DOAR_ADMIN_ICONTA)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute("""
@@ -584,7 +587,7 @@ def admin_activitate_cabinete(ctx=Depends(cere_cabinet)):
 @app.post("/admin/cabinete/{firm_id}/suspenda")
 def admin_cabinet_suspenda(firm_id: int, ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
+        raise HTTPException(403, DOAR_ADMIN_ICONTA)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("UPDATE public.accounting_firms SET activ=false WHERE id=%s", (firm_id,))
@@ -593,7 +596,7 @@ def admin_cabinet_suspenda(firm_id: int, ctx=Depends(cere_cabinet)):
 @app.post("/admin/cabinete/{firm_id}/reactiveaza")
 def admin_cabinet_reactiveaza(firm_id: int, ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
+        raise HTTPException(403, DOAR_ADMIN_ICONTA)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
             cur.execute("UPDATE public.accounting_firms SET activ=true WHERE id=%s", (firm_id,))
@@ -602,7 +605,7 @@ def admin_cabinet_reactiveaza(firm_id: int, ctx=Depends(cere_cabinet)):
 @app.get("/admin/activitate/cabinet/{firm_id}")
 def admin_activitate_cabinet(firm_id: int, limita: int = 200, ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
+        raise HTTPException(403, DOAR_ADMIN_ICONTA)
     limita = min(max(limita, 1), 2000)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
@@ -3036,7 +3039,7 @@ def coada_lista(stare: Optional[str] = None, ctx=Depends(cere_cabinet)):
 def coada_aproba(coada_id: int, ctx=Depends(cere_rol("admin_firma", "angajat"))):
     with db.get_conn() as conn:
         if not _are_permisiune(ctx, "poate_valida"):
-            raise HTTPException(status_code=403, detail="nu ai permisiunea de a valida declarații")
+            raise HTTPException(status_code=403, detail=FARA_DREPT_VALIDARE)
         r = coada_api.aproba(conn, coada_id, str(ctx["uid"]), aprobat_de_id=int(ctx["uid"]))
     if not r["ok"]:
         cod = r.get("cod")
@@ -3056,7 +3059,7 @@ def coada_respinge(coada_id: int, date: RespingeIn,
                    ctx=Depends(cere_rol("admin_firma", "angajat"))):
     with db.get_conn() as conn:
         if not _are_permisiune(ctx, "poate_valida"):
-            raise HTTPException(status_code=403, detail="nu ai permisiunea de a valida declarații")
+            raise HTTPException(status_code=403, detail=FARA_DREPT_VALIDARE)
         r = coada_api.respinge(conn, coada_id, str(ctx["uid"]), date.motiv, respins_de_id=int(ctx["uid"]))
     if not r["ok"]:  # [motiv_lipsa_400_v1] MOTIV_LIPSA e input invalid -> 400
         _cod = r.get("cod")
@@ -3076,7 +3079,7 @@ def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
                  ctx=Depends(cere_rol("admin_firma", "angajat"))):
     with db.get_conn() as conn:
         if not _are_permisiune(ctx, "poate_depune"):
-            raise HTTPException(status_code=403, detail="nu ai permisiunea de a depune declarații")
+            raise HTTPException(status_code=403, detail=FARA_DREPT_DEPUNERE)
         r = coada_api.marcheaza_depusa(conn, coada_id, date.spv_index, depus_de=str(ctx["uid"]), depus_de_id=int(ctx["uid"]))
     if not r["ok"]:
         raise HTTPException(409 if r.get("cod") == "STARE_GRESITA" else 404,
@@ -3112,7 +3115,7 @@ def _pachet_schema(ctx, tenant_id):
     with db.get_conn() as c:
         schema = auth_api.schema_tenant(c, ctx["uid"], tenant_id)
     if not schema:
-        raise HTTPException(403, "nu ai acces la acest tenant")
+        raise HTTPException(403, FARA_ACCES_TENANT)
     return schema
 
 @app.get("/pachete/{tenant_id}/rezumat")
@@ -3231,7 +3234,7 @@ def declaratie_valideaza(tip: str, date: DeclaratieIn,
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
-        raise HTTPException(403, "nu ai acces la acest tenant")
+        raise HTTPException(403, FARA_ACCES_TENANT)
     try:
         with db.get_conn(schema) as conn:
             xml, res = declaratii_api.genereaza(conn, schema, tip, body)
@@ -3262,7 +3265,7 @@ def declaratie_genereaza(tip: str, date: DeclaratieIn,
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
-        raise HTTPException(403, "nu ai acces la acest tenant")
+        raise HTTPException(403, FARA_ACCES_TENANT)
     # 2) pe schema tenantului (SET LOCAL search_path în get_conn, PgBouncer-safe):
     #    modulul rulează pe conexiunea deja poziționată, NU mai setează el search_path
     try:
@@ -4780,7 +4783,7 @@ import core.raportari_api as _rap  # [p33]
 def _cer_admin_cabinet(ctx):
     """Doar admin_firma (și superadmin) gestionează actorii. Întoarce id cabinet."""
     if ctx["rol"] not in ("admin_firma", "superadmin"):
-        raise HTTPException(status_code=403, detail="Doar administratorul cabinetului.")
+        raise HTTPException(status_code=403, detail=DOAR_ADMIN_CABINET)
     return ctx["firm"]
 
 
@@ -5015,7 +5018,7 @@ def eu_patru_ochi_stare(ctx=Depends(cere_cabinet)):
 @app.post("/eu/patru-ochi")
 def eu_patru_ochi(date: PatruOchiIn, ctx=Depends(cere_cabinet)):
     if ctx["rol"] not in ("admin_firma", "superadmin"):
-        raise HTTPException(403, "Doar patronul.")
+        raise HTTPException(403, DOAR_PATRON)
     with db.get_conn() as conn:
         return _asist.patru_ochi_seteaza(conn, ctx["firm"], date.activ)
 
@@ -5023,7 +5026,7 @@ def eu_patru_ochi(date: PatruOchiIn, ctx=Depends(cere_cabinet)):
 @app.post("/eu/educatie/patru-ochi/vazut")
 def eu_educatie_vazut(ctx=Depends(cere_cabinet)):
     if ctx["rol"] not in ("admin_firma", "superadmin"):
-        raise HTTPException(403, "Doar patronul.")
+        raise HTTPException(403, DOAR_PATRON)
     with db.get_conn() as conn:
         return _asist.educatie_marcheaza(conn, ctx["firm"])
 
@@ -5182,7 +5185,7 @@ def raportari_contor(ctx=Depends(cere_cabinet)):
 @app.get("/raportari/admin")
 def raportari_admin(ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
+        raise HTTPException(403, DOAR_ADMIN_ICONTA)
     with db.get_conn() as conn:
         return _rap.toate_raportarile(conn)
 
@@ -5195,7 +5198,7 @@ def raportari_fir(rid: int, ctx=Depends(cere_cabinet)):
             raise HTTPException(404, mesaj_din_cod(r.get("cod")))
         # acces: autorul firului sau superadmin
         if ctx["rol"] != "superadmin" and r["raportare"]["autor_id"] != ctx["uid"]:
-            raise HTTPException(403, "Nu ai acces la aceasta raportare.")
+            raise HTTPException(403, FARA_ACCES_RAPORTARE)
         return r
 
 
@@ -5209,7 +5212,7 @@ def raportari_mesaj(rid: int, date: MesajIn, ctx=Depends(cere_cabinet)):
             if not f.get("ok"):
                 raise HTTPException(404, "Inexistent.")
             if f["raportare"]["autor_id"] != ctx["uid"]:
-                raise HTTPException(403, "Nu ai acces.")
+                raise HTTPException(403, FARA_ACCES)
         r = _rap.adauga_mesaj(conn, rid, ctx["uid"], rol_autor, date.text)
     if not r.get("ok"):
         raise HTTPException(400, mesaj_din_cod(r.get("cod")))
@@ -5242,7 +5245,7 @@ def raportari_stare(rid: int, date: StareIn, ctx=Depends(cere_rol("superadmin"))
 @app.post("/raportari/{rid}/pentru-admin")
 def raportari_pentru_admin(rid: int, date: PentruAdminIn, ctx=Depends(cere_cabinet)):
     if ctx["rol"] != "superadmin":
-        raise HTTPException(403, "Doar Admin iConta.")
+        raise HTTPException(403, DOAR_ADMIN_ICONTA)
     with db.get_conn() as conn:
         r = _rap.seteaza_pentru_admin(conn, rid, date.valoare)
     if not r.get("ok"):
@@ -5266,7 +5269,7 @@ async def raportari_imagine(mid: int, fisier: UploadFile = File(...), ctx=Depend
             raise HTTPException(404, "Mesaj inexistent.")
         # acces: superadmin, sau autorul mesajului
         if ctx["rol"] != "superadmin" and info["mesaj_autor"] != ctx["uid"]:
-            raise HTTPException(403, "Nu ai acces.")
+            raise HTTPException(403, FARA_ACCES)
         ext = {"image/png": ".png", "image/jpeg": ".jpg", "image/jpg": ".jpg",
                "image/webp": ".webp"}.get(tip, ".png")
         nume = "r%d_m%d_%s%s" % (info["raportare_id"], mid, _uuid.uuid4().hex[:8], ext)

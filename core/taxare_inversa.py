@@ -49,5 +49,5 @@ def tva_beneficiar(valoare_fara_tva, cota=21):
     """TVA simultan colectata si deductibila la beneficiar: 4426 = 4427."""
     v = Decimal(str(valoare_fara_tva))
     if v <= 0:
-        raise ValueError("valoare invalida")
+        raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     return (v * Decimal(str(cota)) / 100).quantize(B, rounding=ROUND_HALF_UP)

@@ -12,7 +12,7 @@ def _vanzare_marja_2018(pret_vanzare, pret_cumparare, cota=21):
     pc = Decimal(str(pret_cumparare))
     c = Decimal(str(cota))
     if pv <= 0 or pc < 0:
-        raise ValueError("preturi invalide")
+        raise ValueError("Prețurile introduse sunt invalide (trebuie numere pozitive).")
     marja = pv - pc
     if marja <= 0:
         return {"marja_bruta": marja.quantize(Decimal("0.01")), "tva": Decimal("0.00"),

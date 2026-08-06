@@ -19,7 +19,7 @@ def diferenta(valoare_valuta, curs_initial, curs_final, tip):
     (665|765), sens (favorabila|nefavorabila)} sau diferenta=0."""
     v, c1, c2 = _d(valoare_valuta), _d(curs_initial), _d(curs_final)
     if v <= 0 or c1 <= 0 or c2 <= 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     if tip not in ("creanta", "disponibil", "datorie"):
         raise ValueError("tip: creanta|disponibil|datorie")
     dif = (v * (c2 - c1)).quantize(B, rounding=ROUND_HALF_UP)

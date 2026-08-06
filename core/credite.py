@@ -27,14 +27,14 @@ def _tip(tip):
 def nota_primire(suma, tip="lung", cont_banca="5121"):
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     return {"linii": [(cont_banca, _tip(tip)["credit"], s)]}
 
 def nota_dobanda_angajata(dobanda, tip="lung"):
     """Sfarsit de luna: 666 = 1682/5198 (dobanda datorata, neplatita inca)."""
     d = _d(dobanda)
     if d <= 0:
-        raise ValueError("dobanda invalida")
+        raise ValueError("Dobânda trebuie să fie un număr valid.")
     return {"linii": [("666", _tip(tip)["dobanda"], d)]}
 
 def nota_plata(rata=0, dobanda=0, comision=0, tip="lung", cont_banca="5121",
@@ -43,7 +43,7 @@ def nota_plata(rata=0, dobanda=0, comision=0, tip="lung", cont_banca="5121",
     (dobanda fusese deja pe 666); False -> 666=5121 direct."""
     r, d, co = _d(rata), _d(dobanda), _d(comision)
     if r < 0 or d < 0 or co < 0 or (r + d + co) <= 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     c = _tip(tip)
     linii = []
     if r > 0:
@@ -58,7 +58,7 @@ def nota_restanta(suma, tip="lung"):
     """Rata nerambursata la scadenta: 1621=1622 / 5191=5192."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     c = _tip(tip)
     return {"linii": [(c["credit"], c["restant"], s)]}
 
@@ -66,7 +66,7 @@ def nota_garantie(suma, fel="primita", actiune="inregistrare"):
     """Extracontabil: primita D8021 / acordata D8011; eliberare = credit."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if fel not in ("primita", "acordata"):
         raise ValueError("fel: primita|acordata")
     cont = "8021" if fel == "primita" else "8011"

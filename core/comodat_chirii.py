@@ -28,7 +28,7 @@ def nota_comodat(valoare, moment="primire"):
     """Extracontabil 8038 (bunuri primite in folosinta): D la primire, C la restituire."""
     v = _d(valoare)
     if v <= 0:
-        raise ValueError("valoare invalida")
+        raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     if moment == "primire":
         return {"linii": [("8038", "891", v)]}
     if moment == "restituire":

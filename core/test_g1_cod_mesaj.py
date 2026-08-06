@@ -40,3 +40,32 @@ def test_g2_g4_literale_consolidate():
     from core import mesaje
     assert "Contactează" in mesaje.FARA_CABINET and "administratorul" in mesaje.PERIOADA_INCHISA
     assert mesaje.CUI_FIRMA_LIPSA.startswith("CUI") and "Completează" in mesaje.CUI_FIRMA_LIPSA
+
+
+def test_g3_garduri_rol_explicite():
+    """G3: gardurile de rol/acces (403) telegrafice -> mesaje explicite cu dreptul lipsă + cine îl acordă."""
+    src = _read("main.py")
+    for lit in ('"rol insuficient pentru această acțiune"', '"Doar Admin iConta."',
+                '"nu ai acces la acest tenant"', '"Doar patronul."', '"Nu ai acces."',
+                'detail="nu ai permisiunea de a valida declarații"'):
+        assert lit not in src, "G3: gard rol telegrafic inca prezent: %s" % lit
+    from core import mesaje
+    for c in (mesaje.ROL_INSUFICIENT, mesaje.FARA_ACCES_TENANT, mesaje.FARA_DREPT_VALIDARE, mesaje.FARA_DREPT_DEPUNERE):
+        assert "cabinetului" in c, c
+
+
+def test_g5_input_guards_cu_constrangere():
+    """G5: input-guards telegrafice din core/ (`suma invalida`/`valori invalide`/etc.) au acum
+    constrângerea în mesaj (surfaced la user prin str(e) passthrough)."""
+    import glob
+    bare = []
+    for f in glob.glob("core/*.py"):
+        if f.split("/")[-1].startswith("test_"):
+            continue
+        s = _read(f)
+        for lit in ('raise ValueError("suma invalida")', 'raise ValueError("valori invalide")',
+                    'raise ValueError("valoare invalida")', 'raise ValueError("brut invalid")',
+                    'raise ValueError("sume invalide")', 'raise ValueError("preturi invalide")'):
+            if lit in s:
+                bare.append("%s: %s" % (f.split("/")[-1], lit))
+    assert not bare, "G5: input-guard telegrafic ramas: %s" % bare

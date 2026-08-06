@@ -20,7 +20,7 @@ def nota_subventie_exploatare(suma, moment="drept", cont_venit="741"):
     """drept: 445=741; incasare: 5121=445."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if moment == "drept":
         return {"linii": [("445", str(cont_venit), s)]}
     if moment == "incasare":
@@ -31,7 +31,7 @@ def nota_subventie_investitii(suma, moment="drept"):
     """drept: 445=4751; incasare: 5121=445."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if moment == "drept":
         return {"linii": [("445", "4751", s)]}
     if moment == "incasare":

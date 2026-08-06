@@ -33,7 +33,7 @@ def _marja_turism_special_2018(incasat, cost_ue, cost_non_ue=0, cota=21):
     proportional cu costurile (alin. 5). TVA suta marita pe marja taxabila."""
     inc, cue, cnon, c = _d(incasat), _d(cost_ue), _d(cost_non_ue), _d(cota)
     if inc <= 0 or cue < 0 or cnon < 0:
-        raise ValueError("sume invalide")
+        raise ValueError("Sumele introduse sunt invalide (trebuie numere pozitive).")
     cost_total = cue + cnon
     marja = inc - cost_total
     if marja <= 0:
@@ -75,7 +75,7 @@ def marja_turism_normal(componente):
     for comp in componente:
         baza, c = _d(comp["baza"]), _d(comp.get("cota", 21))
         if baza <= 0 or c < 0:
-            raise ValueError("componenta invalida")
+            raise ValueError("Componenta introdusă e invalidă. Verifică valorile.")
         tva = (baza * c / 100).quantize(B, rounding=ROUND_HALF_UP)
         out.append({"descriere": comp.get("descriere", ""), "baza": baza.quantize(B),
                     "cota": c, "tva": tva})
@@ -88,7 +88,7 @@ def comision_intermediar(comision, cota=21, tva_inclus=False):
     nu sunt venit (OMFP 1802 pct. 432)."""
     com, c = _d(comision), _d(cota)
     if com <= 0:
-        raise ValueError("comision invalid")
+        raise ValueError("Comisionul trebuie să fie un număr valid.")
     if tva_inclus:
         tva = (com * c / (100 + c)).quantize(B, rounding=ROUND_HALF_UP)
         baza = com - tva

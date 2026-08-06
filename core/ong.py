@@ -28,7 +28,7 @@ def nota_venit(suma, fel="cotizatie", sursa="casa"):
     """Incasare venit AFSP: 5311/5121 = 73x."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     cont = CONT_VENIT.get(fel)
     if not cont:
         raise ValueError("fel: " + "|".join(CONT_VENIT))
@@ -41,7 +41,7 @@ def scutire_economica(venituri_economice_an, venituri_neimpozabile_an, curs_eur)
     ve, vn = _d(venituri_economice_an), _d(venituri_neimpozabile_an)
     c = Decimal(str(curs_eur))
     if ve < 0 or vn < 0 or c <= 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     p1 = (PLAFON_EUR * c).quantize(B, rounding=ROUND_HALF_UP)
     p2 = (vn * Decimal("0.10")).quantize(B, rounding=ROUND_HALF_UP)
     plafon = min(p1, p2)

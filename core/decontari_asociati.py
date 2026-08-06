@@ -31,7 +31,7 @@ def nota_dividend(brut, la_data=None, interimar=False, cu_plata=True):
     """Repartizare + impozit + (optional) plata. Anual: 1171/457; interimar: 463/456."""
     b = _d(brut)
     if b <= 0:
-        raise ValueError("brut invalid")
+        raise ValueError("Salariul brut trebuie să fie un număr pozitiv.")
     cota = cota_dividend(la_data)
     imp = _imp(b, cota)
     net = b - imp
@@ -50,7 +50,7 @@ def nota_regularizare_interimar(total_interimar, dividend_anual_aprobat):
     daca interimar > anual, excesul se restituie: restituire 5121=456."""
     ti, da = _d(total_interimar), _d(dividend_anual_aprobat)
     if ti <= 0 or da < 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     linii = [("1171", "457", da)] if da > 0 else []
     compensat = min(ti, da)
     if compensat > 0:
@@ -67,7 +67,7 @@ def nota_imprumut_asociat(suma, operatie="primire", dobanda=0,
     impozit retinut 4551=446)."""
     s = _d(suma)
     if s < 0 or (s == 0 and not dobanda):
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if operatie == "primire":
         return {"linii": [("5121", "4551", s)]}
     if operatie == "restituire":

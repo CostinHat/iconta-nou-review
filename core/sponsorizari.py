@@ -24,7 +24,7 @@ def _plafon_credit_2018(cifra_afaceri, impozit_profit):
     """min(0,75% x CA; 20% x impozit)."""
     ca, ip = _d(cifra_afaceri), _d(impozit_profit)
     if ca < 0 or ip < 0:
-        raise ValueError("valori invalide")
+        raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     p1 = (ca * Decimal("0.0075")).quantize(B, rounding=ROUND_HALF_UP)
     p2 = (ip * Decimal("0.20")).quantize(B, rounding=ROUND_HALF_UP)
     return {"limita_ca": p1, "limita_impozit": p2, "plafon": min(p1, p2)}
@@ -108,7 +108,7 @@ def nota_sponsorizare(suma, mod="contract"):
     """6582 = 401 (contract, plata ulterioara) | 5121 (plata directa)."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     cont = {"contract": "401", "plata": "5121"}.get(mod)
     if not cont:
         raise ValueError("mod: contract|plata")

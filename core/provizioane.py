@@ -35,7 +35,7 @@ def nota_ajustare_creanta(suma, actiune="constituire"):
     """6814=491 / 491=7814."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if actiune == "constituire":
         return {"linii": [("6814", "491", s)]}
     if actiune == "reluare":
@@ -46,7 +46,7 @@ def nota_provizion(suma, tip="garantii", actiune="constituire"):
     """6812=151x / 151x=7812. Deductibil fiscal doar tip=garantii."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if tip not in PROVIZIOANE:
         raise ValueError("tip: " + "|".join(PROVIZIOANE))
     cont = PROVIZIOANE[tip]
@@ -61,7 +61,7 @@ def nota_ajustare_stoc(suma, cont_ajustare="397", actiune="constituire"):
     """6814=39x / 39x=7814 - nedeductibil fiscal (nu figureaza in art. 26)."""
     s = _d(suma)
     if s <= 0:
-        raise ValueError("suma invalida")
+        raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if not str(cont_ajustare).startswith("39"):
         raise ValueError("cont ajustare stocuri = grupa 39x")
     if actiune == "constituire":
