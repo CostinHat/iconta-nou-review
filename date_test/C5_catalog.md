@@ -306,3 +306,109 @@ regulă fără mesaj (agregă în `erori` și ridică „D<xxx> nu se poate gene
 ## Rezumat P3
 - ~140 raise-uri fiscale/validare, 13 clustere. **~55% explicit** (reconciliere + cotă-TVA = model), ~20% enum-partial, ~25% telegrafic (input-guards numerice în credite/leasing/producție/amortizare).
 - Goluri de conformitate = cele ~25% telegrafice (adaugă constrângerea încălcată). **Zero tăcere-la-eșec** în căile fiscale (măștile scoase, vânate, documentate).
+
+---
+
+# P4 — Rute `main.py` HTTPException 401/403/404/409/423 (auth/rol/izolare/conflict/blocaj), grupat pe ȘIR
+
+Grupat pe șir distinct (nu per-instanță). Formă: trigger → ce TREBUIE → ce apare acum → unde. Nimic rescris.
+
+## Bucket 1 — IZOLARE / refuz de acces 404 (terse INTENȚIONAT, NU gol de rescriere)
+Per decizia de produs (P1): un 404 terse aici e CORECT — un mesaj explicativ ar scurge dacă tenantul/firma există.
+| Șir verbatim | situri | Notă |
+|---|---|---|
+| `tenant inexistent sau fara acces` | **136** | refuzul canonic de izolare, pe aproape toate rutele `/tenants/{tenant_id}/*` |
+| `tenant inexistent sau fără acces` (diacritice) | 3 | duplicat de diacritice — singura curățenie latentă |
+| `firmă inexistentă sau fără acces` / `firma inexistenta` / `factura inexistenta sau nu e emisa` | 1+1+1 | izolare la nivel firmă / stare fuzionată |
+
+**Total ≈142 situri. NU se rescriu** (terse = design corect de securitate). Curățenie opțională: duplicatul `fara`/`fără`.
+
+## Bucket 1b — ENTITY-NOT-FOUND 404 („X inexistent") — self-evident, prioritate cap.6 MICĂ
+Rând negăsit după ce accesul e deja acordat. Un 404 pt entitate lipsă e auto-explicativ; terse = acceptabil.
+`salariat inexistent`×6, `articol inexistent`×6, `factura primita inexistenta`×3, `document inexistent`×3, `factură inexistentă`×3, … ≈**65 situri**. Verdict: telegrafic dar ACCEPTABIL. Notă cosmetică: inconsistență grea de diacritice (`inexistent`/`inexistentă`/`inexistenta`). NU e țintă de rescriere.
+
+## Bucket 2 — ROL / AUTH / CONFLICT / BLOCAJ (401/403/409/423) — GOLURI cap.6 REALE
+### Rol (403) — de rescris (telegrafice)
+| Șir verbatim | situri | Rute (reprezentativ) | Verdict |
+|---|---|---|---|
+| `Doar Admin iConta.` | **9** | /admin/sanatate*, /admin/activitate*, /admin/cabinete/{id}/suspenda… | telegrafic (numește rolul, fără remediu) |
+| `Doar administratorul cabinetului.` | 1 helper `_cer_admin_cabinet` → **~15 rute** /asistenti/* | telegrafic (fan-out mare) |
+| `rol insuficient pentru această acțiune` | 1 dep auth central (larg) | telegrafic — nu spune care rol |
+| `nu ai acces la acest tenant` | 3 | `_pachet_schema`, /declaratii/{tip}/valideaza, /declaratii/{tip} | telegrafic (403 izolare-adiacent: dezvăluie că tenantul există) |
+| `Nu ai acces.` | 2 | /raportari/{rid}/mesaj, .../imagine | **telegrafic (cel mai slab — zero context)** |
+| `Nu ai acces la aceasta raportare.` | 1 | /raportari/{rid} GET | telegrafic |
+| `Doar patronul.` | 2 | /eu/patru-ochi GET/POST | telegrafic |
+| `nu ai permisiunea de a valida/depune declarații` | 2+1 | /coada/{id}/aproba,respinge,depune | semi-explicit (numește acțiunea) |
+
+### Rol (403) — deja explicite (LEAVE)
+`Doar administratorul cabinetului poate edita datele cabinetului.`, `doar patronul poate schimba emailul principal / adauga / revoca acces`, `Parola actuala este gresita.`
+
+### Suspendat/gated (403) + Auth (401) — deja EXPLICITE (LEAVE)
+`Cabinetul este suspendat. Contactați furnizorul.`, `Site in lucru. Vei primi un email cand devine functional.`, `Sesiune încheiată (parola a fost schimbată). Autentifică-te din nou.`, `lipsă token (Authorization: Bearer ...)`. Telegrafice: `link invalid` (1, /public/magic-login), default `token invalid` (dep 144).
+
+### Conflict (409) — toate EXPLICITE (LEAVE)
+`raportul Z e deja importat (NUI+nr raport)`, `Factura are deja o trimitere activa in SPV (%s).`, `factura a fost respinsa; nu se poate valida`, `factura a fost deja validata`, `deja transformat in factura #{r[1]}`.
+
+### Blocaj perioadă (423) — EXPLICITE (LEAVE, model P1 2b)
+`perioada este blocată (luna închisă)` (/amortizare); `Perioada {detaliu}.` (handler global `_handler_perioada_blocata`, reach mare pe toate notele contabile).
+
+## Bucket 3 — Passthrough dinamic (statusuri în scop)
+| Formă | status | situri | Notă |
+|---|---|---|---|
+| `HTTPException(404, r.get("cod"))` | 404 | **5** | /asistenti/* (4801,4959…) — **cod mașină la user, telegrafic prin construcție (cel mai slab)** |
+| `HTTPException(409, r["mesaj"])` | 409 | 3 | clienti/salariati/concedii DELETE (dependențe) |
+| `HTTPException(401, r["mesaj"]/ctx.get("mesaj","token invalid"))` | 401 | 2 | /auth/login, dep central |
+| `HTTPException(4xx, r["mesaj"]/detail=r)` | 404/409 | ~5 | moștenește stratul de business |
+
+## Rezumat P4 — plan de rescriere
+- **NU atinge:** Bucket 1 (~142 izolare) = terse corect de securitate.
+- **Prioritate mică:** Bucket 1b (~65 entity-not-found) — terse acceptabil; opțional canonicalizare diacritice.
+- **Goluri de rescris (telegrafice):** `Nu ai acces.` (2), `Nu ai acces la aceasta raportare.` (1), `Doar Admin iConta.` (9), `Doar patronul.` (2), `Doar administratorul cabinetului.` (~15 via helper), `rol insuficient` (larg), `nu ai acces la acest tenant` (3), `link invalid`, + clasa `HTTPException(404, r.get("cod"))` (5).
+- **Pârghie maximă:** dep-ul auth central (140-179) + helper-ele `_cer_admin_cabinet` (4780) și `_pachet_schema` (3111) — un singur șir acolo se propagă la zeci de rute.
+- **Zero tăcere-la-eșec** (niciun `except HTTPException`; vezi P5).
+
+---
+
+# P5 — Rute `main.py` HTTPException 400/422 (validare/date), grupat pe ȘIR distinct
+
+208 situri 4xx-validare: 67 literal pozițional, 77 `str(e)`-class, 28 dict-passthrough, ~10 f-string/`%`.
+Grupat pe șir (nu 208 rânduri). Formă: trigger → ce TREBUIE → ce apare acum → unde. Nimic rescris.
+
+## A. Literale repetate (>1 sit) — ținte de rescriere „o dată → multe rute"
+| Șir verbatim | status | situri | rute | Verdict |
+|---|---|---|---|---|
+| `fara cabinet asociat` | 400 | **5** | gdpr/export-cabinet(658), gdpr/cerere-stergere(679), capacitate(693), tipare(701), tipare/ai(710) | telegrafic (fără remediu) |
+| `email invalid` | 400 | **3** | client-acces(1196), portal/acces-cont/email(3328), acces(3345) | telegrafic; se ciocnește cu 3 alte formulări email |
+| `CUI firma lipsa in Profil firma` | 422 | **2** | etransport-xml(6196), etransport/trimite(6226) | telegrafic; variantă vs „…in firma_profil" (1 sit) |
+| `exista deja un cont cu acest email` | 400 | **2** | client-acces(1207), acces(3357) | telegrafic; overlap „email deja folosit" (2) |
+
+## B. Singletoni literali (1 sit) — grupați pe status
+- **422 (~29 distincte):** majoritar telegrafice (`tip invalid`, `sens invalid (incasare/plata)`, `mesaj gol`, `motivul respingerii e obligatoriu`, `camp lipsa: %s`, `luna format YYYY-MM`, `CUI firma lipsa in firma_profil`, `email deja folosit`…). **Explicite (exemplare):** „Raspunde la poarta: pleaca marfa acum? (DA descarca gestiunea / NU doar fiscal)", „proforma/avizul nu se contabilizeaza (nu e document fiscal)", „nu am putut citi bonul; incearca o poza mai clara", „chei REGES neconfigurate - folosește reges-config".
+- **400 (~25 distincte):** majoritar telegrafice (`suma trebuie sa fie > 0`, `an/luna invalide`, `link de activare invalid sau expirat`, `documentul nu e chitanta`…). **Explicite:** „Trebuie sa accepti Termenii si conditiile pentru a crea contul.", „tenant_id obligatoriu — alege firma întâi", „Link invalid, expirat sau deja folosit. Cere alt link din sectiunea Am uitat parola.", „documentul e chitanță; folosește stingerea de factură, nu contarea pe cheltuială", „aveți mai multe firme; specificați tenant_id", „imagine prea mare (max 8MB)".
+- **f-string (7 situri):** `suma articolelor ({suma_linii}) != total ({b.total})` = **explicit** (arată ambele numere); restul prefix-fix + `{e}`.
+
+## C. Passthrough dinamic — cataloage ca CLASE (nu per-rută)
+| Clasă | Situri | Ce apare | Verdict |
+|---|---|---|---|
+| `HTTPException(4xx, str(e))` | **77** (422×63, 400×13, +1) | textul `ValueError`/`KeyError` din stratul core/fiscal (P2/P3) | **moștenește stratul** — adesea explicit (fiscal P2/P3), uneori telegrafic. **Fix la sursă, nu în main.py** |
+| `HTTPException(4xx, r["eroare"]/["mesaj"])` | **16** | mesaj din stratul de business | moștenește calitatea business |
+| `HTTPException(4xx, r.get("cod"))` | **12** | **un COD mașină ajunge la user** (asistenti/* 4853-4905) | **TELEGRAFIC prin construcție — cel mai slab** |
+| `"<prefix>: %s" % e` | 3 | prefix explicativ fix + variabilă | mai bun ca `str(e)` bare |
+
+## D. Top ținte de rescriere (fix o dată → fix multe)
+1. `fara cabinet asociat` (400 ×5) — cel mai mare count literal.
+2. **Familia email** (7 situri, 4 formulări) — consolidează la un singur șir explicit.
+3. **Familia cont-duplicat** (4 situri) — un mesaj canonic.
+4. `CUI firma lipsa …` (3 situri, 2 formulări) — unifică + remediu („completează în Profil firma").
+5. **`r.get("cod")` passthrough (12 situri)** — impact maxim: mapează cod→mesaj uman în loc să expună codul brut.
+6. `chei REGES neconfigurate` — păstrează varianta explicită, drop cea telegrafică.
+
+## E. Tăcere-la-eșec — ZERO în 400/422
+`grep 'except HTTPException' main.py` = **gol** — nicio rută nu prinde/înghite un HTTPException. Toate passthrough-urile
+`str(e)`/`r[...]` stau în `except (ValueError,KeyError)`/`if not r.get("ok")` care **re-ridică** 4xx. `pass`/`return None`
+din altă parte (91, 250, 1168, 2349, 2962, 8680…) = helpere best-effort (ANAF-down, DB-startup), **în afara căilor de validare**. Niciun bug P5.
+
+## Rezumat P5
+- ~90% telegrafic; **11 mesaje explicite** (exemplare cap.6). Cataloage pe șir → actionabil: 4 literale repetate + ~54 singletoni + 3 clase passthrough.
+- Ținta cu impact maxim = `r.get("cod")` (12 situri, cod brut la user) + familiile email/cont-duplicat/„fara cabinet asociat".
+- **Zero tăcere-la-eșec.**
