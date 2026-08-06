@@ -412,3 +412,64 @@ din altă parte (91, 250, 1168, 2349, 2962, 8680…) = helpere best-effort (ANAF
 - ~90% telegrafic; **11 mesaje explicite** (exemplare cap.6). Cataloage pe șir → actionabil: 4 literale repetate + ~54 singletoni + 3 clase passthrough.
 - Ținta cu impact maxim = `r.get("cod")` (12 situri, cod brut la user) + familiile email/cont-duplicat/„fara cabinet asociat".
 - **Zero tăcere-la-eșec.**
+
+---
+
+# P7 — Validări UI de formular + consolidarea „ce NU e static-enumerabil" (per ecran, cu motiv)
+
+## 1. Mecanismul de validare per ecran
+Legendă: **A** = `.msg-eroare` per câmp (cap.6-bun) · **B** = zonă unică generică `arataMesaj(...,"eroare")` · **C** = button-gating (disabled-until-valid) · **D** = silent (focus-only / doar backend) · **E** = mix.
+
+| Ecran | Mec | Dovadă |
+|---|---|---|
+| login | B | zonă/sub-form (`#login-eroare` 329, `#reg-eroare` 468) |
+| date_firma | B | agregă în `#df-msg` + focus (142-144) |
+| **emitere_ecran** | **E (singurul cu A real)** | `.msg-eroare` per câmp pt serie/platitor-TVA (76,79,95); emit generic + curs silent focus (413) |
+| facturi_ecran | E (mult backend) | generic; chit in-zonă (600); email silent focus (668) |
+| **produse_ecran** | **D (silent)** | denumire → `focus()` fără mesaj (140) |
+| asistenti | B | (59) |
+| portal | B | (181, 433) |
+| firme | E | add-firma **C** gating (82); salariat in-zonă (572); REGES `.msg-eroare` (1024) |
+| flux_concediu | B (zonă bogată) | toate în `rez` unic, mesaje pe nume de câmp dar nu lângă câmp (143-151) |
+| migrare | B | plan-conturi (1354); vector → backend 400 (457) |
+| **rip_ecran** | **D (backend)** | fără pre-check; erori → generic (115) |
+| etransport_ecran | E | agregat `lip[]` → generic (179,194) + time-gate C (168) |
+| validat | B/D | dialog `#dlg-eroare` (170-174) |
+| declaratii | E | Pas-1 gated C (128); sub-form generic |
+| operatiuni_ecran | B (registry-driven) | „Camp obligatoriu: "+eticheta → zonă unică (357-366) |
+| setari/admin/admin_raportari/pachete/recomanda/raporteaza/woo | B | zonă unică per secțiune |
+
+**Harta:** dominant **B** (zonă generică unică) pe ~15 ecrane. **Doar emitere_ecran face A per-câmp real** (și doar serie/platitor-TVA). **Silent/backend-only (D):** produse_ecran (focus), rip_ecran (backend), woo. **C** apare doar în mix-uri. → **Gol cap.6 sistemic: eroarea nu e lângă câmp, ci într-o zonă generică sus** (contra cap.6 „eroare lângă câmpul relevant").
+
+## 2. „NU e static-enumerabil" — consolidare completă (toate 34), cu motiv
+Motive: **(1)** câmp condiționat la runtime · **(2)** câmp/opțiuni din date server/nomenclator · **(3)** obligativitate în core/*.py necitit sau serviciu downstream · **(4)** registru config client-side · **(5)** DB NOT NULL/schema neinspectată · **(6)** ramură per-firmă/tip_firma runtime.
+
+| Ecran | Itemi non-enumerabili + motiv |
+|---|---|
+| login | **complet static** client (unicitate email / CUI = ANAF verify, nu întrebare de câmp obligatoriu) |
+| date_firma | regim_fiscal + tip_decont depind de platitor_tva și tip_firma partidă-simplă **(6)**; valori vector din profil server **(2)** |
+| emitere_ecran | em-nume enforce-uit în facturi_api **(3)**; auto-fill client + articole din `/produse/potriveste` **(2)**; cota-TVA pe `platitor_tva` **(6)** |
+| facturi_ecran | fr-nume în facturi_api **(3)**; cont sugerat + clienți din server **(2)**; bloc valută condiționat **(1)** |
+| produse_ecran | cotă auto din `/produse/potriveste` **(2)**; um/pret în produse_api **(3)** |
+| asistenti | permisiuni/firme/întrebări din liste server **(2)** |
+| portal | OCR bon server-side **(3)**; liste declarații/rapoarte server **(2)** |
+| firme | add-firma gating pe ANAF verify **(2)**; **REGES rg-adresa downstream REGES (3)**; sub-forme pe tip_firma **(6)**; salariat: doar nume client, restul în salariati_api **(3)**; nomenclatoare adeverință/reges **(2)** |
+| flux_concediu | **urg** cerut doar la cod `06`, **cnp** doar la `09/91/92/17` **(1)**; `concedii_medicale.data_sfarsit` + NOT-NULL **(5)**; liste/baze din server **(2)** |
+| migrare | vector tip_decont/operatiuni_ic → backend 400 **(3)**; badge-uri „obligatoriu" din starea migrării server, per-firmă **(2)/(6)**; importuri în *_import_api **(3)** |
+| rip_ecran | fără validare client — toate câmpurile enforce-uite în rip_api **(3)**; opțiuni metoda/categorie derivate din tip la runtime **(1)/(2)** |
+| etransport_ecran | listă câmpuri din `bunuri[]` la runtime **(1)**; time-gate re-verificat backend **(3)**; selecturi din nomenclator **(2)** |
+| validat | validabil/depunabil pe `perm.poate_valida/depune` server **(2)/(3)** |
+| declaratii | opțiuni `tip` per-firmă din server + `neaplicabile`/`periodicitate` **(2)+(6)**; **D390 manual-add + D301 op-panel condiționate pe `S.tip` (1)** + ruta D390 necitită **(3)** |
+| operatiuni_ecran | **cel mai mare:** **34 rute REGISTRU** (verificat, nu ~40) backend necitite **(3)**; obligativitate din registrul client `optional` **(4)**; câmpuri `cond:{camp,val}` la runtime **(1)**; nomenclatoare destinație/categorie **(2)** |
+| setari | SPV/competențe/api-keys/închidere server-driven **(2)**; doar regulile parolă (min-8/match) statice |
+| admin | destinatari din selecția Cabinete server **(2)** |
+| admin_raportari | payload-uri enforce-uite în raportari_api **(3)** |
+| pachete | firmă + „poveste" AI server **(2)/(3)** |
+| recomanda | **complet static** (1-20 emailuri) |
+| raporteaza | **complet static** (`text` cerut) |
+| woo_ecran | wc-url/ck/cs în woocommerce.py **(3)** |
+| semafor, preturi, termene, capacitate, control, activitate_cabinet, asistent, tipare, control_verdict, admin_activitate, admin_sanatate, cabinet | **read-only/action-only — fără câmpuri, N/A** (nimic de enumerat) |
+
+## Rezumat P7
+- **Mecanism:** ~15 ecrane pe zona-generică-B; **doar emitere_ecran are A per-câmp real** (parțial); D (silent/backend) = produse/rip/woo. **Gol cap.6 sistemic: eroarea nu-i lângă câmp.**
+- **Non-enumerabil declarat complet** (toate 34): 3 ecrane complet-statice (login/recomanda/raporteaza), ~12 read-only N/A, restul cu itemi (1)-(6) — cel mai mare `operatiuni_ecran` (34 rute REGISTRU **(4)+(3)+(1)**). Regula „cale neacoperibilă → declarată cu motivul" satisfăcută integral.
