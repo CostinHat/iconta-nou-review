@@ -1950,3 +1950,44 @@ OUG 89/2025 + tva_redusa_5 de decis), zero zgomot pe REDARE stabile. Ramas Corpu
 COTE MO 18->24, REDARE 15->9. D112 byte-identic. Garda 3 semnaleaza acum DOAR tva_redusa_5 (de decis).
 Verificat inainte de scriere: lit.b plafon_facilitate era corect. facilitate 300 @2025 ramas REDARE (OUG
 89/2025 nu-l surseaza pt 2025). REDARE ramase = doar istorice + tva_redusa_5.
+
+## 07.08.2026 — CANDIDAT (audit de reguli): CNP salariat la adaugare directa valideaza DOAR formatul, nu cifra de control
+**Stare: LIPSA (candidat, neconfirmat prin repro pe flux inca).** Adus de Costin din auditul de reguli 07.08.
+**Constatare:** `core/salariati_api.py:85-87` valideaza CNP-ul PROPRIU al salariatului la adaugarea directa doar
+cu `_CNP = re.compile(r"^\d{13}$")` (13 cifre, format) — NU verifica cifra de control. In contrast, calea de
+IMPORT foloseste `core/salariati_import_api.py:15 valideaza_cnp` (cheie de control 279146358279 + data + judet),
+si tot `valideaza_cnp` e chemat la `salariati_api.py:344-345` pentru `cnp_ingrijit` (CM cod 09/91/92/17). Deci
+acelasi camp (CNP) e validat cu cifra de control pe import + pe cnp_ingrijit, dar NU pe adaugarea directa a
+salariatului. Provizionarea blocheaza corect (de reconfirmat). Un CNP cu cifra de control gresita intra tacut si
+ajunge in D112 (identificatorul persoanei fizice) — declaratie potential respinsa la ANAF pe validare CNP.
+**Vanatoare de clasa (de facut la reparatie):** toti consumatorii care accepta CNP de intrare — adauga salariat
+(api + eventual asociati/administratori), nu doar salariatul. `valideaza_cnp` exista deja (import) => reparatia =
+refolosire, nu cod nou.
+**Ce l-ar prinde azi:** nimic — nicio garda nu compara cele doua cai de validare CNP. De ancorat in E1E12_GASITE.md
+ca INSTANTA daca il intalnesc la E2/E6 (adaugare salariat pe F2); altfel ramane candidat separat aici.
+
+## 07.08.2026 — CANDIDAT (clasa): "running == HEAD" — al treilea loc unde munca poate lipsi TACUT
+**Stare: LIPSA (candidat de clasa; azi reparat DOAR pe instanta prin restart).** Constatat la parcurgerea E1-E12.
+**Constatare:** serviciul `iconta-nou` (systemd, nginx -> :8010) a rulat cod din 01.08 timp de 6 zile / 45+
+commituri, TACUT. Publicat (git) != ruleaza. Post-commit (cablat 07.08) publica pe origin/main + backup dar NU
+repune serviciul si nu verifica procesul viu. Efect probat: D112 dadea 500 pe prod (Temei/nivel_sursa pe common.py
+stale in memorie) si firmele noi se provizionau cu schema driftata (lipsa perioada_confirmata + 10 coloane).
+**Mecanism ALES (Code, 07.08) — detector VIZIBIL periodic, NU auto-restart:**
+- Motiv: constrangerea lui Costin "sa nu repornesti serviciul in mijlocul unei operatii a unui contabil"
+  EXCLUDE varianta post-commit-repune-serviciul (post-commit se declanseaza la momente arbitrare). Detectorul nu
+  reporneste niciodata; un om reporneste la fereastra sigura; driftul devine ZGOMOTOS, nu tacut (exact ce a lipsit).
+- (1) `/versiune`: app-ul stampileaza la pornire `git rev-parse HEAD` (global in lifespan startup) si il expune.
+- (2) cron (core/cron.py) la N minute: compara running (`/versiune`) vs `git rev-parse HEAD` (disc) vs `origin/main`.
+  Divergenta -> ESEC VIZIBIL: sentinela `.git/RUNNING_STALE` (ca PUSH_*_ESUAT) + alerta Brevo + banner in log.
+  Niciodata tacut, niciodata auto-restart.
+- (3) inchiderea raportului (§2.2 sect.11) devine PATRU-way: HEAD = origin/main = backup = RUNNING; raportul nu e
+  "incheiat" cat timp procesul viu != HEAD. Inchide "al treilea loc" numit de Costin.
+**Ce l-ar prinde azi:** nimic. Suita ruleaza pe disc, nu pe procesul viu. De implementat ca urmatoarea campanie
+(cod + gard + RED/GREEN); restartul de azi = instanta.
+
+## 07.08.2026 — CANDIDAT: drift de schema PUBLIC fara gard (aceeasi clasa, alt strat)
+**Stare: LIPSA (candidat).** `test_toti_tenantii_conform_cu_template` verifica SCHEMELE DE TENANT vs
+tenant_template.sql (verde pe 12/12 pe prod => migrarile de schema tenant sunt la zi). NU exista gard echivalent
+pentru schema PUBLIC: o coloana/tabela noua adaugata pe public (ex. declaratii_coada, accounting_firms) intr-un
+commit HEAD nu ar fi prinsa de template-guard-ul de tenant. De adaugat un audit public analog (referinta = un
+public_template sau DDL-urile *_ddl.sql) daca se doreste inchiderea completa a clasei "migrari la zi pe prod".
