@@ -358,11 +358,11 @@ COTE = {
     # recenta) ramane in vigoare (data_out None), predecesorul primeste ziua dinaintea succesorului.
     # verificat_la/de_cine = cand/de cine confirmata la sursa (semnal de deriva = vechimea confirmarii).
     "tva_standard": [
-        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, art="291", alin="1", data_in="2025-08-01", verificat_la="2026-07-31", de_cine="Code/Costin", lant_acte="Legea 141/2025 modifica art.291 CF; cota 19% (Legea 227/2015) abrogata la 31.07.2025", nivel_sursa="REDARE")),
+        (date(2025, 8, 1), Decimal("0.21"), Temei("Legea", 141, 2025, art="291", alin="1", data_in="2025-08-01", verificat_la="2026-08-07", de_cine="Code/Costin", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.42 (modifica art.291 alin.1 CF): cota standard TVA 21%", lant_acte="Legea 141/2025 modifica art.291 CF; cota 19% (Legea 227/2015) abrogata la 31.07.2025", nivel_sursa="MO")),
         (date(2017, 1, 1), Decimal("0.19"), Temei("Legea", 227, 2015, data_in="2017-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "tva_redusa": [
-        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-08-07", de_cine="Code/Costin", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.42 (art.291 alin.2 CF): Cota redusa de 11% se aplica asupra bazei de impozitare", nivel_sursa="MO")),
     ],
     # Cotele reduse ISTORICE 9% si 5%, coexistente pana la 31.07.2025, comasate in 11% de Legea 141/2025
     # (decizia lui Costin 03.08: doua chei separate, fiecare cu temeiul ei). Intrarea de la 01.08.2025 (0.11)
@@ -373,18 +373,18 @@ COTE = {
     # INTERPRETARE CU TEMEI (§3): de reconfirmat la MO pentru perioade < 2017; pana atunci cota() refuza (fail-loud).
     "tva_redusa_9": [
         (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-08-03", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 141/2025 pct.42 comaseaza cota redusa de 9% (CF art.291 alin.2) in 11% de la 01.08.2025")),
-        (date(2016, 1, 1), Decimal("0.09"), Temei("Legea", 227, 2015, art="291", alin="2", data_in="2016-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", text_citat="cota redusa de 9% pt operatiunile CF art.291 alin.(2) lit.a-n (medicamente, alimente, apa/canalizare, irigatii, ingrasaminte/pesticide, carti/manuale/ziare, acces cultural, lemn de foc, energie termica, locuinte sociale, cazare, restaurant/catering)", lant_acte="cota 9% in vigoare de la 01.01.2016 (Legea 227/2015, MO 688/2015; verificat 03.08.2026 - anaf_surse/cf_art291_2016_forma_initiala.txt). Comasata in 11% de Legea 141/2025 de la 01.08.2025. Nota: apa/ingrasaminte (g/h) adaugate de Legea 175/2018 din 01.01.2019")),
+        (date(2016, 1, 1), Decimal("0.09"), Temei("Legea", 227, 2015, art="291", alin="2", data_in="2016-01-01", verificat_la="2026-08-07", de_cine="Code+cercetare", nivel_sursa="MO", url="anaf_surse/cf_art291_2016_forma_initiala.txt", text_citat="cota redusa de 9% pt operatiunile CF art.291 alin.(2) lit.a-n (medicamente, alimente, apa/canalizare, irigatii, ingrasaminte/pesticide, carti/manuale/ziare, acces cultural, lemn de foc, energie termica, locuinte sociale, cazare, restaurant/catering)", lant_acte="cota 9% in vigoare de la 01.01.2016 (Legea 227/2015, MO 688/2015; verificat 03.08.2026 - anaf_surse/cf_art291_2016_forma_initiala.txt). Comasata in 11% de Legea 141/2025 de la 01.08.2025. Nota: apa/ingrasaminte (g/h) adaugate de Legea 175/2018 din 01.01.2019")),
     ],
     "tva_redusa_5": [
         (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="3", data_in="2025-08-01", verificat_la="2026-08-03", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 141/2025 pct.43 abroga cota redusa de 5% (CF art.291 alin.3); operatiunile trec la 11% de la 01.08.2025")),
-        (date(2016, 1, 1), Decimal("0.05"), Temei("Legea", 227, 2015, art="291", alin="3", data_in="2016-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", text_citat="cota redusa de 5% CF art.291 alin.(3) (locuinte sociale sub 600.000 lei lit.c pct.3, carti, acces evenimente culturale/sportive)", lant_acte="cota 5% ca alin.(3) art.291 in vigoare de la 01.01.2016 (Legea 227/2015; verificat 03.08.2026 - anaf_surse/cf_art291_2016_forma_initiala.txt): carti/manuale (a), acces cultural (b), locuinte sociale (c). Locuinte la 5% au continuitate din vechiul cod (OUG 200/2008). Abrogata de Legea 141/2025 de la 01.08.2025")),
+        (date(2016, 1, 1), Decimal("0.05"), Temei("Legea", 227, 2015, art="291", alin="3", data_in="2016-01-01", verificat_la="2026-08-07", de_cine="Code+cercetare", nivel_sursa="MO", url="anaf_surse/cf_art291_2016_forma_initiala.txt", text_citat="cota redusa de 5% CF art.291 alin.(3) (locuinte sociale sub 600.000 lei lit.c pct.3, carti, acces evenimente culturale/sportive)", lant_acte="cota 5% ca alin.(3) art.291 in vigoare de la 01.01.2016 (Legea 227/2015; verificat 03.08.2026 - anaf_surse/cf_art291_2016_forma_initiala.txt): carti/manuale (a), acces cultural (b), locuinte sociale (c). Locuinte la 5% au continuitate din vechiul cod (OUG 200/2008). Abrogata de Legea 141/2025 de la 01.08.2025")),
     ],
     # impozit pe dividende / castig din lichidare (regim dividende), CF art.97 alin.(7). Cote istorice VERIFICATE
     # la sursa 03.08.2026 (anaf_surse/impozit_dividende_istoric_cote.txt): 5% (2016-2022), 8% (2023-2025, OG 16/2022),
     # 16% (de la 01.01.2026, Legea 141/2025). Se aplica dupa data DISTRIBUIRII. (Fostul petic "10%" era GRESIT -
     # 10% e cota impozitului pe VENIT art.78, nu pe dividende.)
     "impozit_dividend": [
-        (date(2026, 1, 1), Decimal("0.16"), Temei("Legea", 141, 2025, art="97", alin="7", data_in="2026-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", lant_acte="Legea 141/2025 majoreaza impozitul pe dividende de la 8% la 16%, dividende distribuite de la 01.01.2026")),
+        (date(2026, 1, 1), Decimal("0.16"), Temei("Legea", 141, 2025, art="97", alin="7", data_in="2026-01-01", verificat_la="2026-08-07", de_cine="Code+cercetare", nivel_sursa="MO", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.1 (art.43 alin.2 CF): impozit pe dividende cota 16% asupra dividendului brut", lant_acte="Legea 141/2025 majoreaza impozitul pe dividende de la 8% la 16%, dividende distribuite de la 01.01.2026")),
         (date(2023, 1, 1), Decimal("0.08"), Temei("OG", 16, 2022, art="97", alin="7", data_in="2023-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", lant_acte="OG 16/2022 (MO 716/15.07.2022) majoreaza cota de la 5% la 8%, dividende distribuite de la 01.01.2023; aprobata prin Legea 370/2022")),
         (date(2016, 1, 1), Decimal("0.05"), Temei("Legea", 227, 2015, art="97", alin="7", data_in="2016-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", lant_acte="cota 5% pt dividende distribuite de la 01.01.2016 (OUG 50/2015 MO 817/2015 accelereaza data din Legea 227/2015; aprobata prin Legea 358/2015)")),
     ],
@@ -408,26 +408,26 @@ COTE = {
     # impozit micro (1% standard) / profit (16%) - rata DEFAULT (contabilul o poate da explicit prin manual).
     # Mutate din literalele hardcodate din d100 (dependenta ascunsa V2) -> vizibile in graf.
     "impozit_micro": [
-        (date(2023, 1, 1), Decimal("0.01"), Temei("CF", art="51", alin="1", data_in="2023-01-01", verificat_la="2026-08-05", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="cota micro 1% (CF art.51 alin.1). OUG 89/2025 (MO 1203/24.12.2025) art.I pct.4 pastreaza 1% ca forma UNICA de la 01.01.2026 + pct.5 abroga alin.(1^1)=cota 3%; pe 2026 nu mai exista split 1%/3% si nici pragul 60.000 EUR. Confirmat la sursa 05.08.2026 (validat Costin)")),
+        (date(2023, 1, 1), Decimal("0.01"), Temei("CF", art="51", alin="1", data_in="2023-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.51 alin.(1): Cota de impozit pe veniturile microintreprinderilor este de 1%", lant_acte="cota micro 1% (CF art.51 alin.1). OUG 89/2025 (MO 1203/24.12.2025) art.I pct.4 pastreaza 1% ca forma UNICA de la 01.01.2026 + pct.5 abroga alin.(1^1)=cota 3%; pe 2026 nu mai exista split 1%/3% si nici pragul 60.000 EUR. Confirmat la sursa 05.08.2026 (validat Costin)")),
     ],
     "impozit_profit": [
-        (date(2018, 1, 1), Decimal("0.16"), Temei("CF", art="17", data_in="2018-01-01", verificat_la="2026-08-02", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2018, 1, 1), Decimal("0.16"), Temei("CF", art="17", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.17: Cota de impozit pe profit care se aplica asupra profitului impozabil este de 16%")),
     ],
     "cas": [
-        (date(2018, 1, 1), Decimal("0.25"), Temei("CF", art="138", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2018, 1, 1), Decimal("0.25"), Temei("CF", art="138", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.138 lit.a): 25% datorata de persoanele fizice care au calitatea de angajati")),
     ],
     "cass": [
-        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="156", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="156", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.156: Cota de contributie de asigurari sociale de sanatate este de 10%")),
     ],
     "impozit_venit": [
-        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.64 alin.(1): Cota de impozit este de 10% (aplicata la venituri din salarii, art.78)")),
     ],
     "cam": [
-        (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.220^3 alin.(1): Cota contributiei asiguratorii pentru munca este de 2,25%")),
     ],
     "salariu_minim": [
-        (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", url="https://legislatie.just.ro/Public/DetaliiDocumentAfis/308231", verificat_la="2026-07-31", de_cine="Code/Costin", lant_acte="HG 146/2026 art.2 abroga HG 1506/2024 de la 01.07.2026", nivel_sursa="REDARE")),
-        (date(2025, 1, 1), Decimal("4050"), Temei("HG", 1506, 2024, data_in="2025-01-01", url="https://legislatie.just.ro/Public/DetaliiDocument/291450", verificat_la="2026-07-31", de_cine="Code/Costin", lant_acte="HG 1506/2024 abroga HG 598/2024 (=3700)", nivel_sursa="REDARE")),
+        (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", url="anaf_surse/hg_146_2026_salariu_minim.html", verificat_la="2026-08-07", de_cine="Code/Costin", text_citat="Articolul 1: Incepand cu data de 1 iulie 2026 ... la suma de 4.325 lei lunar", lant_acte="HG 146/2026 art.2 abroga HG 1506/2024 de la 01.07.2026", nivel_sursa="MO")),
+        (date(2025, 1, 1), Decimal("4050"), Temei("HG", 1506, 2024, data_in="2025-01-01", url="anaf_surse/hg_1506_2024_salariu_minim.html", verificat_la="2026-08-07", de_cine="Code/Costin", text_citat="Articolul 1: Incepand cu data de 1 ianuarie 2025 ... la suma de 4.050 lei lunar", lant_acte="HG 1506/2024 abroga HG 598/2024 (=3700)", nivel_sursa="MO")),
     ],
     "facilitate_salariu_minim": [
         (date(2026, 7, 1), Decimal("200"), Temei("OUG", 89, 2025, art="III", data_in="2026-07-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),

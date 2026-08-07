@@ -7764,3 +7764,23 @@ Necesar ca 40,18 sa NU se propage TACIT peste OCTOMBRIE 2025 (gol de sursa) - o 
 DESCHIS: octombrie 2025 (o luna) - cere Ordinul MF pentru tichetul de masa semestrul II 2025 (negasit local;
 ordin_1574_3246_2025_cultural = tichete CULTURALE, nu de masa). Pana atunci calcul_salariu(octombrie 2025) ridica
 blocaj motivat ("gol in registru"), NU o valoare inventata. calcul_salariu(2025) merge peste tot except octombrie.
+
+## 07.08.2026 — Corpus (1): legarea temeiurilor COTE la fisiere locale + ridicare MO (13 valori)
+
+Verificate VERBATIM act cu act (in fisierele deja locale), apoi nivel_sursa REDARE->MO + url la fisier + text_citat:
+- cod_fiscal_227_2015_consolidat.html: cas 25% (art.138a), cass 10% (art.156), cam 2,25% (art.220^3 alin.1),
+  impozit_micro 1% (art.51 alin.1), impozit_profit 16% (art.17), impozit_venit 10% (art.64 alin.1).
+- legea_141_2025_consolidat.html: tva_standard 21% (Art.II pct.42), tva_redusa 11% (pct.42), impozit_dividend 16% (Art.II pct.1).
+- cf_art291_2016_forma_initiala.txt: tva_redusa_9 9% (art.291 alin.2), tva_redusa_5 5% (art.291 alin.3).
+- salariu_minim: url EXTERN (legislatie.just.ro, BLOCAT de pe server) CORECTAT -> fisier LOCAL: 4050 (HG 1506/2024
+  art.1), 4325 (HG 146/2026 art.1).
+Rezultat: COTE MO+local 4 -> 17. Zero acte aduse. D112 byte-identic (ea0520b0c8b2eb0c) - doar temeiuri, nicio valoare.
+
+RAMAN REDARE (16, raportate act cu act):
+- ACTE LIPSA local: facilitate_salariu_minim (OUG 115/2023, OUG 89/2025), plafon_facilitate @2026 (OUG 89/2025),
+  plafon_avans (OUG 115/2023), plafon_mijloc_fix 5000 (OUG 8/2026), plafon_tva_incasare (Legea 296/2020, OUG 8/2026),
+  plafon_sold_casa (Legea 70/2015), impozit_dividend 8% @2023 (OG 16/2022).
+- FORME ISTORICE neacoperite de fisierele locale: tva_standard 19% @2017 (forma 2016=20%, consolidat=21% - lipsa 2017),
+  plafon_mijloc_fix 2500 @2015, impozit_dividend 5% @2016 (doar fisier de NOTE, nu MO), comasarea tva_redusa_9/5->11%
+  @2025 (neconfirmat specific pct.42/43).
+Finding: cod_fiscal_227 e CONSOLIDAT LA ZI (post-141/OUG 89) -> NU contine formele istorice -> confirma nevoia gardei 2 (forma acopera perioada).

@@ -1936,3 +1936,8 @@ Adaugarea tichet_masa_plafon 2025 (peste plafon_facilitate) a atins ~7 clustere 
 graf. Toate = adaugari istorice verificate la sursa (2026 neatins, D112 byte-identic). Baseline 6->14.
 FOLLOW-UP curatenie: re-ancorarea celor ~7 clustere salarizare/tichete (√ 07.08 + bump) ar readuce baseline
 la 3 - de facut cand se re-verifica functional clusterele pe 2025 (dupa deblocarea octombrie).
+
+## 07.08.2026 — Corpus (1) LIVRAT: 13 temeiuri legate la fisiere locale (MO 4->17)
+Multe COTE aveau sursa deja in anaf_surse dar url nelegat/extern (salariu_minim -> just.ro blocat!). Legate +
+ridicate MO dupa verificare verbatim. Ramas Corpus (2): manifest INDEX + 3 garzi. Corpus (3): acte lipsa (lista
+scurta dupa (1)+(2)) - OUG 89/2025, OUG 8/2026, OG 16/2022, OUG 115/2023, Legea 296/2020, Legea 70/2015.

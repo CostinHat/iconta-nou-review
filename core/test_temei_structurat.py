@@ -91,15 +91,18 @@ def test_salariu_minim_curent_nu_expira_intoarce_valoarea():
 
 
 def test_url_completat_doar_din_sursa_deschisa():
-    """URL just.ro completat DOAR unde sursa a fost efectiv deschisa in sesiune (HG 146/2026,
-    HG 1506/2024). Restul raman None - nu se inventeaza (REGULA DE AUR)."""
+    """Corpus (1) 07.08: URL pointeaza la SURSA LOCALA din anaf_surse/ (nu link extern just.ro, blocat de pe
+    server). Completat DOAR unde fisierul local a fost deschis si verificat verbatim -> nivel_sursa MO;
+    restul raman REDARE cu url None (nu se inventeaza - REGULA DE AUR)."""
     from datetime import date as _d
     _, t46 = cota("salariu_minim", _d(2026, 7, 1))
-    assert t46.url and "308231" in t46.url and "just.ro" in t46.url
+    assert t46.url == "anaf_surse/hg_146_2026_salariu_minim.html" and t46.nivel_sursa == "MO"
     _, t1506 = cota("salariu_minim", _d(2025, 3, 1))
-    assert t1506.url and "291450" in t1506.url
-    _, ttva = cota("tva_standard", _d(2026, 1, 1))
-    assert ttva.url is None   # neverificat -> None, nu inventat
+    assert t1506.url == "anaf_surse/hg_1506_2024_salariu_minim.html" and t1506.nivel_sursa == "MO"
+    _, ttva = cota("tva_standard", _d(2026, 1, 1))   # =21% @2025-08, legat la Legea 141/2025 (local)
+    assert ttva.url == "anaf_surse/legea_141_2025_consolidat.html" and ttva.nivel_sursa == "MO"
+    _, ttva19 = cota("tva_standard", _d(2018, 1, 1))  # =19% @2017: forma 2017 lipsa local -> REDARE, url None
+    assert ttva19.url is None and ttva19.nivel_sursa == "REDARE"
 
 
 def test_temei_are_nivel_sursa_text_citat_lant_acte():
