@@ -421,13 +421,33 @@ def _procent_cm_l141_2025(cod, zile_episod, procent_accident=100):
 # Progresivul 55/65/75 (cod 01) e forma Legea 141/2025; scala pre-141 nu e verificata la sursa -> daca
 # difera, se adauga o varianta datata cu data_in = intrarea in vigoare a formei vechi (tiparul nu duplica
 # logica, o dateaza). Azi o singura varianta: comportament identic pt orice data >= 2018 (fara regresie).
+def _procent_cm_pre_141(cod, zile_episod, procent_accident=100):
+    """OUG 158/2005 art.17(1) forma ANTERIOARA Legii 141/2025 (valabila pana la 1 august 2025; selectata
+    dupa data certificatului INITIAL al episodului - art.XI L141/2025). Cod 01 = 75% UNIFORM (procent unic,
+    fara diferentiere pe durata; nu exista lit. a/b/c). alin.(2) si celelalte coduri NU au fost atinse de
+    L141/2025 -> identice cu forma post-141 (delegare). Verbatim (anaf_surse/oug_158_2005_pre_L141.html,
+    art.17(1)): "se determina prin aplicarea procentului de 75% asupra bazei de calcul stabilite conform art. 10"."""
+    if str(cod or "01").zfill(2) == "01":
+        return Decimal("0.75")
+    return _procent_cm_l141_2025(cod, zile_episod, procent_accident)
+
+
+# Doua forme DATATE ale art.17(1) (art.XI L141/2025: forma dupa data certificatului INITIAL al episodului):
+# pana la 1 august 2025 = 75% uniform (pre-141); de la 1 august 2025 = 55/65/75 progresiv (Legea 141/2025
+# art.IX, MOF 699 din 25 iulie 2025, in vigoare la 1 august 2025 conform art.X). Ambele verificate verbatim la MO.
 _VARIANTE_PROCENT_CM = [
-    ("2018-01-01", _procent_cm_l141_2025,
-     c.Temei("OUG", 158, 2005, art="17", data_in="2018-01-01", nivel_sursa="MO",
-             de_cine="Code/Costin", verificat_la="2026-08-06",
+    ("2018-01-01", _procent_cm_pre_141,
+     c.Temei("OUG", 158, 2005, art="17", alin="1", data_in="2018-01-01", nivel_sursa="MO",
+             de_cine="Code/Costin", verificat_la="2026-08-07",
+             url="anaf_surse/oug_158_2005_pre_L141.html",
+             text_citat="art.17(1) pre-141: aplicarea procentului de 75% asupra bazei de calcul stabilite conform art. 10 (procent unic, fara diferentiere pe durata); alin.(2) 100% tuberculoza/SIDA/neoplazii/infectocontagioase grupa A/urgente/arsuri",
+             lant_acte="Forma consolidata valabila la 7 martie 2025, ultima inainte de Legea 141/2025")),
+    ("2025-08-01", _procent_cm_l141_2025,
+     c.Temei("OUG", 158, 2005, art="17", alin="1", data_in="2025-08-01", nivel_sursa="MO",
+             de_cine="Code/Costin", verificat_la="2026-08-07",
              url="anaf_surse/oug_158_2005_consolidat.html",
              text_citat="art.17(1) post-141: 55% pana la 7 zile, 65% 8-14 zile, 75% peste 15 zile; (1^1) cardiovascular 75%",
-             lant_acte="Legea 141/2025 (forma progresiva 55/65/75 cod 01); Legea 136/2020 (carantina 07=100%)")),
+             lant_acte="Legea 141/2025 art.IX (MOF 699 din 25 iulie 2025) in vigoare la 1 august 2025 (art.X)")),
 ]
 
 

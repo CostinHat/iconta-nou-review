@@ -68,3 +68,24 @@ def test_gard_salveaza_paseaza_zile_episod():
     assert "prima_zi_din_episod=prima_zi" in src, "prima_zi_din_episod (diminuare/angajator o data) nu mai e pasat"
     # lock-ul perioadei confirmate cu instructiune (art.17(1) + lei)
     assert "art.17(1)" in src and "rectificativa" in src, "mesajul de refuz pe perioada confirmata nu mai e instructiune"
+
+
+def test_art_xi_granita_pre_post_141():
+    """art.XI L141/2025: forma art.17(1) dupa data certificatului INITIAL al episodului. Pana la
+    1 august 2025 = 75% uniform (pre-141); de la 1 august 2025 = 55/65/75 progresiv (post-141)."""
+    d1, d2 = date(2025, 7, 31), date(2025, 8, 1)
+    assert procent_cm("01", 5, la_data=d1) == Decimal("0.75"), "pre-141: 5 zile = 75% uniform"
+    assert procent_cm("01", 20, la_data=d1) == Decimal("0.75"), "pre-141: 20 zile = 75% uniform"
+    assert procent_cm("01", 5, la_data=d2) == Decimal("0.55"), "post-141: 5 zile = 55%"
+    assert procent_cm("01", 20, la_data=d2) == Decimal("0.75"), "post-141: 20 zile = 75%"
+    assert procent_cm("01", 5, la_data=d1) != procent_cm("01", 5, la_data=d2), "granita 31 iul / 1 aug 2025 schimba regimul"
+
+
+def test_coduri_speciale_neatinse_de_l141():
+    """L141/2025 a modificat DOAR art.17(1) cod 01. alin.(2) 100% (infectocontagioase grupa A=05,
+    carantina=07, TBC/neoplazii/SIDA=12) si maternitatea (08=85%) raman IDENTICE in ambele regimuri."""
+    for d in (date(2025, 7, 31), date(2025, 8, 1)):
+        assert procent_cm("05", 10, la_data=d) == Decimal("1.00")
+        assert procent_cm("07", 10, la_data=d) == Decimal("1.00")
+        assert procent_cm("12", 10, la_data=d) == Decimal("1.00")
+        assert procent_cm("08", 10, la_data=d) == Decimal("0.85")

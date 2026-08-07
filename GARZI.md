@@ -1860,3 +1860,9 @@ salariati cu copii scolarizati care cer deducerea.
 - RAMAS: art.XI (forma pre-141 75% uniform) plumbat dar inert - blocat pe sursa verbatim (xfail #16 deschis;
   sursa oug_158_2005_pre_L141.html NU e pe server). Sugestia auto de legare a certificatelor = follow-up (calea
   manuala e completa).
+
+## 07.08.2026 — #16 INCHIS: CM art.XI (forma pre-141) implementat
+Forma art.17(1) pre-141 (75% uniform) obtinuta verbatim la MO (oug_158_2005_pre_L141.html) + varianta
+datata in _VARIANTE_PROCENT_CM, selectata pe data certificatului INITIAL al episodului (art.XI). Ambele
+forme nivel_sursa=MO. Granita 1 august 2025. Probat (granita + coduri speciale 100%). D112 byte-identic.
+CM model de episod = COMPLET (durata + art.XI). Ramas: sugestia auto de legare (follow-up).

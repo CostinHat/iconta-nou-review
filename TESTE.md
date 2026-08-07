@@ -1245,3 +1245,7 @@ acolo (spelling-ul e incurajat pt consistenta, nu obligatoriu).
 core/test_cm_episod.py: procent pe zile_episod (nu pe certificat), diminuare+portie-angajator o data/episod,
 episod 20 zile=2850, plumbing art.XI, gard-sursa ca salveaza_concediu paseaza zile_episod. xfail #16 (forma
 pre-141) ramane deschis - sursa verbatim inca lipseste.
+
+## 07.08.2026 — #16 inchis + teste art.XI
+core/test_cm_episod.py: test_art_xi_granita_pre_post_141 (31 iulie=75% uniform / 1 august=55-65-75) +
+test_coduri_speciale_neatinse_de_l141 (alin.2 100% identic in ambele regimuri). xfail #16 -> INCHIS.

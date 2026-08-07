@@ -7701,3 +7701,23 @@ rand existent = propriul episod -> D112 BYTE-IDENTIC (sha ea0520b0c8b2eb0c) pe d
 D112 cu episod 20 zile @75% = valid (singura observatie = avertisment preexistent salariat 4, nelegat de CM).
 Gard: core/test_cm_episod.py. NEFACUT: sugestia AUTO de legare (heuristica salariat+cod+zile adiacente) - calea
 manuala (autoritara) e completa; sugestia = follow-up usor.
+
+## 07.08.2026 — #16 INCHIS: CM art.XI L141/2025 - forma pre-141 (75% uniform) la MO
+
+Forma art.17(1) OUG 158/2005 ANTERIOARA Legii 141/2025 obtinuta verbatim la MO
+(anaf_surse/oug_158_2005_pre_L141.html, forma consolidata valabila la 7 martie 2025, ultima inainte de L141):
+"se determina prin aplicarea procentului de 75% asupra bazei de calcul stabilite conform art. 10" - procent
+UNIC 75% pentru cod 01, fara diferentiere pe durata (fara lit. a/b/c). Verificat: contine 75% verbatim, ZERO
+aparitii de 55%/65%, alin.(2) 100% pentru tuberculoza/SIDA/neoplazii/infectocontagioase grupa A/urgente/arsuri.
+
+Implementat: _procent_cm_pre_141 (75% uniform cod 01; restul codurilor delegate la forma post-141, neatinse de
+L141/2025) + varianta datata in _VARIANTE_PROCENT_CM. Selectia formei: art.XI L141/2025 - dupa data
+certificatului INITIAL al episodului (data_episod_initial, deja plumbat in modelul de episod). Granita: art.IX
+L141/2025 (MOF 699 din 25 iulie 2025) in vigoare la 1 august 2025 (art.X).
+
+Marker: **cm art xi regim dupa certificat initial verificat la sursa**.
+
+PROBE: cert initial 31 iulie 2025 -> 75% uniform (5 si 20 zile); cert initial 1 august 2025 -> 55% (5 zile) /
+75% (20 zile); granita 31 iulie (0.75) vs 1 august (0.55); coduri speciale 100%/85% identice in ambele regimuri.
+No-op pe date reale: D112 byte-identic (ea0520b0c8b2eb0c), datele reale fiind 2026 = post-141. Ambele forme
+nivel_sursa=MO+verbatim. Gard: core/test_cm_episod.py (test_art_xi_granita_pre_post_141, test_coduri_speciale_neatinse_de_l141).

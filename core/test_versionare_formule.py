@@ -52,7 +52,8 @@ def test_calcul_cm_diminuare_versionata_pe_fereastra():
 def test_procent_cm_dispecer_versionat():
     from core import salarizare as sz
     assert sz.procent_cm("01", 10, la_data=date(2026, 6, 1)) == sz._procent_cm_l141_2025("01", 10)
-    assert sz._VARIANTE_PROCENT_CM[0][1] is sz._procent_cm_l141_2025
+    assert sz._VARIANTE_PROCENT_CM[0][1] is sz._procent_cm_pre_141  # prima varianta = forma pre-141 (75%% uniform, pana la 1 august 2025)
+    assert sz._VARIANTE_PROCENT_CM[-1][1] is sz._procent_cm_l141_2025  # ultima = post-141 (55/65/75, de la 1 august 2025)
     with pytest.raises(ValueError):
         sz.procent_cm("01", 10, la_data=date(2000, 1, 1))
 

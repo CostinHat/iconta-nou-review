@@ -256,7 +256,7 @@ def test_datorie_cm_plafon_12sm():
     assert "cm plafon 12 salarii minime aplicat in calcul_cm" in dz.lower()
 
 
-@pytest.mark.xfail(strict=True, reason="DATORIE 02.08.2026 (art.XI L141/2025): selectia regimului de procente dupa data certificatului INITIAL NU e implementata - _VARIANTE_PROCENT_CM are o singura varianta (forma L141/2025, 55/65/75). art.XI(1) cere legea de la certificatul initial. art.17(1) forma ANTERIOARA Legii 141/2025 absenta verbatim din anaf_surse/oug_158_2005_consolidat.html (fisierul contine DOAR forma consolidata curenta + nota de amendament) -> BLOCAJ MOTIVAT, nu se inventeaza pe sursa secundara. Forma post-141 (55/65/75 + 1^1 cardiovascular 75%) e ACUM confirmabila MO din acest fisier. Se inchide cand forma pre-141 e obtinuta verbatim la MO + varianta datata + teste pe ambele parti ale lui 01 august 2025.")
+# [INCHISA 07.08.2026] forma pre-141 a art.17(1) (75% uniform) obtinuta verbatim la MO (anaf_surse/oug_158_2005_pre_L141.html) + varianta datata in _VARIANTE_PROCENT_CM selectata pe data certificatului INITIAL (art.XI); probe pe granita 31 iulie / 1 august 2025 - vezi DECIZII.md.
 def test_datorie_cm_art_xi_regim_initial():
     dz = (pathlib.Path(__file__).resolve().parent.parent / "DECIZII.md").read_text(encoding="utf-8")
     assert "cm art xi regim dupa certificat initial verificat la sursa" in dz.lower()
