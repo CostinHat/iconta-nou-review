@@ -1866,3 +1866,46 @@ Forma art.17(1) pre-141 (75% uniform) obtinuta verbatim la MO (oug_158_2005_pre_
 datata in _VARIANTE_PROCENT_CM, selectata pe data certificatului INITIAL al episodului (art.XI). Ambele
 forme nivel_sursa=MO. Granita 1 august 2025. Probat (granita + coduri speciale 100%). D112 byte-identic.
 CM model de episod = COMPLET (durata + art.XI). Ramas: sugestia auto de legare (follow-up).
+
+## 07.08.2026 — RECONCILIERE cei 11 itemi neverificati (verificati pe cod, NU reparati)
+
+Cei 11 marcati PRODUS/blocat veneau din registru, nu din citire de cod. Verificati azi pe cod real:
+
+**FANTOME / premisa falsa / deja rezolvat (nimic de construit) — 4:**
+- **Rezerva legala art.26(1)a**: FANTOMA. Deja AUTO in d101.py:189-200 (P13, 5% x baza, plafon 20% capital) +
+  motor.py:76 _rezerva_legala_2018. Premisa "nemodelata in D101" FALSA. -> SCOS din PRODUS.
+- **D2 (a doua copie de generator)**: FANTOMA. Cautat efectiv: d406/d406_active/d406_stocuri = sectiuni
+  COMPLEMENTARE ale aceluiasi SAF-T; d*_reconciliere = reconcilieri; un generator per declaratie. NICIO copie
+  divergenta. Gardul n-are ce prinde. -> item inexistent.
+- **Coada erori DUK**: ACOPERIT. duk.valideaza (duk.py:128) intoarce {stare, erori, cheie, temei} cu 3 stari
+  (valid/erori/gri); coada_api.py (declaratii_coada) = flux four-eyes. Premisa "nu exista" FALSA. -> SCOS.
+- **IMCA-DB**: ACOPERIT. Implementat integral in d101.py:66-82 (xfail inchis 02.08 corect). Doar auto-derivarea
+  VT/Vs/I/A din balanta (firme >50M EUR, inexistente in tenanti) e amanata deliberat. Fantoma partiala.
+
+**REPARATIE (nu build-new) — 1:**
+- **B1 salarizare 2025**: PARTIAL. Premisa "valorile 2025 lipsesc" partial FALSA - salariu_minim 4050, facilitate
+  300, cas/cass/impozit/cam 2025 TOATE prezente in common.py. Lipseste UN rand: plafon_facilitate_salariu_minim
+  @2025 (prima intrare = 2026-01-01). Consecinta REALA testata: calcul_salariu(la_data=date(2025,3,1)) RIDICA
+  PerioadaIndisponibila -> orice adeverinta/rectificativa pe 2025 blocata. REPARATIE DE DATE (1 rand COTE dupa
+  verificare la sursa), NU build-new. Reincadrat din "blocat pe sursa" in "reparatie prioritara".
+
+**BUILD-NEW INGUST (structura PARTIAL exista - registrul le supraestima ca "de la zero") — 4:**
+- **Marja in D300**: motoare (tva_marja/turism/aur/agricultori) + rute FastAPI (main.py:6350+) EXISTA; ruta
+  posteaza nota contabila fara factura_id, iar d300.py:537 deriva doar din facturi -> puntea marja->D300 lipseste.
+- **D406 Payments**: emitterul XML (d406.py:902-948) + sursele DB (casa_operatiuni/chitante/state_plata) EXISTA;
+  pull() nu populeaza plati[] (d406.py:1104). Premisa "nu exista model/sursa" FALSA. Lipseste doar query-ul pull.
+- **50%-deductibil (d406.py:122)**: coduri de achizitie exista grosier (300501 hardcodat, d406.py:1158); lipseste
+  codul 320xxx + BaseRate 0.5 + sursa de deductibilitate per linie.
+- **Praguri**: detectie de depasire EXISTA (intrastat.analiza_flux, IMCA, casa numerar); lipseste doar pragul de
+  inregistrare TVA (art.310) si micro->profit (art.47). Premisa "nu detecteaza nimic" FALSA. Sablon reutilizabil.
+
+**BUILD-NEW INTEGRAL (structura chiar lipseste) — 3:**
+- **D207 nerezidenti**: zero cod (doar string in lista de import istoric). Confirmat absent.
+- **Regim dual / an partial**: fara data_infiintare (grep zero pe tot repo), fara logica an partial/tranzitie
+  micro->profit mid-an. Confirmat absent.
+- **GDPR ROPA / cnp_ingrijit**: cnp_ingrijit tratat fiscal complet (colectat/validat/emis D112) dar tratament GDPR
+  (temei art.6 + informare art.14 + ROPA) = ZERO. Build-new de conformitate.
+
+RATA FANTOME: azi 4 din 11 (rezerva legala, D2, coada DUK, IMCA) nu-s de construit. Cumulat pe inventar: ~16 din
+45 (~35%). Corectii: rezerva legala + coada DUK SCOASE din PRODUS; D2 sters ca item; B1 reincadrat reparatie
+prioritara; marja/Payments/50%-ded/praguri reincadrate build-new INGUST (nu de la zero).
