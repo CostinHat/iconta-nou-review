@@ -544,6 +544,14 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    OPRESTE (WIP salvat pct.9). FARA EXCEPTII, fara "repar dupa push". Pe main se impinge cu fast-forward; daca
    origin/main a avansat sub tine (commit al lui Costin), `pull --rebase` INAINTE (vezi memoria main partajat), nu se
    forteaza NICIODATA.
+   **MECANISM (gard, nu intentie) — `scripts/githooks/post-commit` (cablat 07.08.2026).** Publicarea pe
+   origin/main nu mai depinde de memoria executorului: dupa fiecare commit pe `main` (deci dupa ce pre-commit a
+   trecut poarta verde), post-commit face `fetch` + verifica fast-forward + `git push origin main`, NICIODATA
+   `--force`. Daca origin/main a avansat sub tine, se opreste si cere `pull --rebase` (nu forteaza); dupa rebase
+   urmatorul commit republica singur. Daca publicarea nu reuseste, ESUEAZA VIZIBIL: banner + sentinela
+   `.git/PUSH_MAIN_ESUAT`. Confirmarea din raport (HEAD = origin/main = backup) include ACUM "sentinela
+   `.git/PUSH_MAIN_ESUAT` absenta" - daca exista, munca NU e publicata si raportul NU e incheiat. NOTA: push-ul
+   pe backup (`push -f`) ramane MANUAL - absenta lui e tot o defectiune (acest pct.), inca necablata.
    Daca munca exista intr-un singur loc, executorul o spune EXPLICIT in raport, la PRIMA linie, nu la final. Raportul
    se incheie cu `BACKUP: <ramura> — <n> commituri` si confirma HEAD = origin/main = backup pe acelasi commit (§2.2 sect.11).
 

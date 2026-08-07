@@ -1,0 +1,56 @@
+#!/bin/sh
+# post-commit — CABLEAZA regula CLAUDE.md §2.3 pct.8: publicarea pe origin/main dupa fiecare commit.
+#
+# De ce aici: pre-commit impune DEJA poarta verde (pytest + verificator). Daca acest hook ruleaza,
+# inseamna ca poarta a trecut si commit-ul exista. Ce lipsea era GARDUL care publica - o regula a carei
+# absenta e definita ca defectiune (pct.8) dar care nu avea niciun mecanism. Acum publicarea nu mai
+# depinde de memoria executorului.
+#
+# Contract: publica DOAR main; fast-forward; NICIODATA --force. Daca nu se poate publica, ESUEAZA
+# VIZIBIL (banner + sentinela .git/PUSH_MAIN_ESUAT), niciodata tacut. Nu atinge poarta (deja trecuta).
+
+set -u
+BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || echo "")
+[ "$BRANCH" = "main" ] || exit 0   # alte ramuri raman manuale (backup e push -f separat)
+
+SENT=".git/PUSH_MAIN_ESUAT"
+rm -f "$SENT"
+
+banner() {
+    echo ""
+    echo "############################################################"
+    echo "## [post-commit] PUBLICARE pe origin/main NEFACUTA: $1"
+    echo "## Commit-ul e local (si pe backup daca l-ai impins), dar NU pe origin/main."
+    echo "## Rezolva ACUM: $2"
+    echo "## Sentinela $SENT scrisa - raportul NU e 'incheiat' cat timp exista."
+    echo "############################################################"
+    echo ""
+    printf '%s\n' "$1" > "$SENT"
+}
+
+# 1. adu starea remote (nu publicam in orb)
+if ! git fetch -q origin main 2>/dev/null; then
+    banner "fetch origin main a esuat (retea/auth)" "verifica reteaua/cheia SSH, apoi: git push origin main"
+    exit 0
+fi
+
+# 2. deja la zi?
+if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main 2>/dev/null)" ]; then
+    exit 0
+fi
+
+# 3. fast-forward posibil? origin/main trebuie sa fie ANCESTOR al HEAD
+if ! git merge-base --is-ancestor origin/main HEAD 2>/dev/null; then
+    banner "origin/main a avansat sub tine (commit al lui Costin) - NU e fast-forward" \
+           "git pull --rebase origin main (NU forta); dupa rebase, urmatorul commit republica singur"
+    exit 0
+fi
+
+# 4. publica - fast-forward, FARA --force niciodata
+if git push origin main > /tmp/push_main.log 2>&1; then
+    echo "[post-commit] publicat pe origin/main: $(git rev-parse --short HEAD)"
+else
+    banner "git push origin main a esuat: $(tail -1 /tmp/push_main.log)" \
+           "citeste /tmp/push_main.log, rezolva cauza, apoi: git push origin main"
+fi
+exit 0
