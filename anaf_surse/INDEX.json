@@ -1,0 +1,402 @@
+{
+  "_generat_de": "gen_index.py (Corpus 2)",
+  "_nota": "Regenereaza cu: venv/bin/python gen_index.py. tip_forma e declarat manual in TIP_FORMA.",
+  "fisiere": {
+    "OPANAF_3562_2024_D177.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "OPANAF_3562_2024_D177.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "OPANAF_3562_2024_D177.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "RAPORT_verificare_temeiuri.md": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_bilete_de_valoare.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_concedii_2025.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "anaf_limite_2025.pdf": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "tichet_masa_plafon",
+          "data_in": "2025-01-01",
+          "valoare": "40.04",
+          "nivel_sursa": "MO",
+          "temei": "Ordin 4679/2024 art."
+        },
+        {
+          "cota": "tichet_masa_plafon",
+          "data_in": "2025-04-01",
+          "valoare": "40.18",
+          "nivel_sursa": "MO",
+          "temei": "Ordin 484/2025 art."
+        }
+      ]
+    },
+    "anaf_mo_apr_2026.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "cf_art291_2016_forma_initiala.txt": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "tva_redusa_5",
+          "data_in": "2016-01-01",
+          "valoare": "0.05",
+          "nivel_sursa": "MO",
+          "temei": "Legea 227/2015 art.291"
+        },
+        {
+          "cota": "tva_redusa_9",
+          "data_in": "2016-01-01",
+          "valoare": "0.09",
+          "nivel_sursa": "MO",
+          "temei": "Legea 227/2015 art.291"
+        }
+      ]
+    },
+    "cf_art56_alin15_istoric_micro_sponsorizare.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "cod_fiscal_227_2015_consolidat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": [
+        {
+          "cota": "cam",
+          "data_in": "2018-01-01",
+          "valoare": "0.0225",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.220^1"
+        },
+        {
+          "cota": "cas",
+          "data_in": "2018-01-01",
+          "valoare": "0.25",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.138"
+        },
+        {
+          "cota": "cass",
+          "data_in": "2018-01-01",
+          "valoare": "0.10",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.156"
+        },
+        {
+          "cota": "impozit_micro",
+          "data_in": "2023-01-01",
+          "valoare": "0.01",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.51"
+        },
+        {
+          "cota": "impozit_profit",
+          "data_in": "2018-01-01",
+          "valoare": "0.16",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.17"
+        },
+        {
+          "cota": "impozit_venit",
+          "data_in": "2018-01-01",
+          "valoare": "0.10",
+          "nivel_sursa": "MO",
+          "temei": "CF / art.78"
+        }
+      ]
+    },
+    "d100_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d101_scadenta_conflict_lege_validator.md": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d101_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d112_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d177_structura_note.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d205_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d300_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d301_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d390_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d394_codpr_gaze_naturale.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d394_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d406_nomenclatoare_anaf.properties": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d406_schema_anaf.xlsx": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg518_1995_diurna_externa.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg714_2018_diurna_interna.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1045_2018_hotarare.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_1045_2018_norme_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_146_2026_salariu_minim.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "salariu_minim",
+          "data_in": "2026-07-01",
+          "valoare": "4325",
+          "nivel_sursa": "MO",
+          "temei": "HG 146/2026 art."
+        }
+      ]
+    },
+    "hg_1506_2024_salariu_minim.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "salariu_minim",
+          "data_in": "2025-01-01",
+          "valoare": "4050",
+          "nivel_sursa": "MO",
+          "temei": "HG 1506/2024 art."
+        }
+      ]
+    },
+    "impozit_dividende_istoric_cote.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_141_2025.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_141_2025_consolidat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": [
+        {
+          "cota": "impozit_dividend",
+          "data_in": "2026-01-01",
+          "valoare": "0.16",
+          "nivel_sursa": "MO",
+          "temei": "Legea 141/2025 art.97"
+        },
+        {
+          "cota": "tva_redusa",
+          "data_in": "2025-08-01",
+          "valoare": "0.11",
+          "nivel_sursa": "MO",
+          "temei": "Legea 141/2025 art.291"
+        },
+        {
+          "cota": "tva_redusa_9",
+          "data_in": "2025-08-01",
+          "valoare": "0.11",
+          "nivel_sursa": "MO",
+          "temei": "Legea 141/2025 art.291"
+        },
+        {
+          "cota": "tva_standard",
+          "data_in": "2025-08-01",
+          "valoare": "0.21",
+          "nivel_sursa": "MO",
+          "temei": "Legea 141/2025 art.291"
+        }
+      ]
+    },
+    "legea_165_2018_anaf.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_165_2018_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_165_2018_mf_2024.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_201_2025.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "tichet_masa_plafon",
+          "data_in": "2025-11-01",
+          "valoare": "45",
+          "nivel_sursa": "MO",
+          "temei": "Legea 201/2025 art.I"
+        }
+      ]
+    },
+    "oms_15_2018_modificare_2025.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oms_15_2018_norme.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_77_2022.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_77_2022.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "opanaf_77_2022.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1574_3246_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1574_3246_2025_cultural.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_1574_3246_2025_cultural.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_361_2680_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "ordin_369_2624_2026.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_156_2024.pdf": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_facilitate_salariu_minim",
+          "data_in": "2025-01-01",
+          "valoare": "4300",
+          "nivel_sursa": "MO",
+          "temei": "OUG 156/2024 art.LXVI"
+        }
+      ]
+    },
+    "oug_158_2005_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_158_2005_pre_L141.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "pdf_original": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "versiuni.xml": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    }
+  },
+  "citate_dar_lipsa_pe_disc": [],
+  "fisiere_fara_tip_forma_declarat": []
+}

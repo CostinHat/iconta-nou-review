@@ -7784,3 +7784,28 @@ RAMAN REDARE (16, raportate act cu act):
   plafon_mijloc_fix 2500 @2015, impozit_dividend 5% @2016 (doar fisier de NOTE, nu MO), comasarea tva_redusa_9/5->11%
   @2025 (neconfirmat specific pct.42/43).
 Finding: cod_fiscal_227 e CONSOLIDAT LA ZI (post-141/OUG 89) -> NU contine formele istorice -> confirma nevoia gardei 2 (forma acopera perioada).
+
+## 07.08.2026 — Corpus (2): manifest anaf_surse/INDEX.json + 3 garzi peste registrul de temeiuri
+
+Plus legat: tva_redusa_9 @2025 (11%, art.291 alin.2, Legea 141 pct.42) -> MO (aceeasi baza verbatim ca
+tva_redusa alin.2). tva_redusa_5 @2025 (alin.3 abrogat de pct.43) RAMANE REDARE: unde ajung fostele
+operatiuni de 5% dupa abrogare (11% vs standard) nu e confirmat verbatim -> de DECIS. COTE MO+local 17->19.
+
+MANIFEST anaf_surse/INDEX.json (regenerabil: anaf_surse/gen_index.py): harta fisier-sursa -> {tip_forma,
+cote acoperite}. tip_forma declarat manual: consolidat_la_zi (cod_fiscal_227, legea_141) vs forma_la_data
+(forme initiale / HG-uri / ordine / liste ANAF la o data fixa).
+
+CELE 3 GARZI (core/test_corpus_surse.py):
+- G1 test_temei_mo_are_sursa_locala: nivel_sursa=MO => url catre anaf_surse/ + fisier EXISTENT pe disc.
+- G2 test_forma_consolidata_nu_e_sursa_pentru_valoare_cu_succesor: o forma consolidat_la_zi nu poate fi
+  sursa pt o valoare care are un succesor mai nou (forma la zi n-o mai contine). Prinde exact riscul gasit:
+  cod_fiscal_227 e consolidat LA ZI -> nu contine formele istorice. Formele forma_la_data sunt exceptate.
+- G3 test_cote_volatile_fara_mo_set_fix: warning la generare (avertizeaza_cote_volatile_fara_mo) DOAR pt
+  valoarea CURENTA (data_in max) a unei cote, non-MO SI (volatila: >=2 intrari SAU recenta: +/-18 luni).
+  PRAG ALES: 18 luni. Motiv: taie complet zgomotul pe cele 29 REDARE stabile-vechi cu o singura intrare;
+  semnaleaza doar ce e viu si de sursat/decis. SET masurat la 2026-08-07 (5, fixat in test, nu ghicit):
+  facilitate_salariu_minim, plafon_facilitate_salariu_minim, plafon_mijloc_fix, plafon_tva_incasare
+  (toate 4 = OUG 8/2026 + OUG 89/2025, acte de adus) + tva_redusa_5 (comasare de decis).
+
+Bug prins la masurare: garda 3 lua initial intrari[-1] = cea mai VECHE (COTE e ordonat descrescator);
+corectat la max(intrari, key data_in) = valoarea curenta. Fara masurare ar fi semnalat exact valorile istorice.

@@ -372,7 +372,7 @@ COTE = {
     # e pastrata); ancorata la 2017-01-01 = inceputul erei standard 19% (in toata acea era reducerile erau 9%/5%).
     # INTERPRETARE CU TEMEI (§3): de reconfirmat la MO pentru perioade < 2017; pana atunci cota() refuza (fail-loud).
     "tva_redusa_9": [
-        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-08-03", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 141/2025 pct.42 comaseaza cota redusa de 9% (CF art.291 alin.2) in 11% de la 01.08.2025")),
+        (date(2025, 8, 1), Decimal("0.11"), Temei("Legea", 141, 2025, art="291", alin="2", data_in="2025-08-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.42 (art.291 alin.2 CF): cota redusa unica de 11% (comaseaza fostele operatiuni de 9%)", lant_acte="Legea 141/2025 pct.42 comaseaza cota redusa de 9% (CF art.291 alin.2) in 11% de la 01.08.2025")),
         (date(2016, 1, 1), Decimal("0.09"), Temei("Legea", 227, 2015, art="291", alin="2", data_in="2016-01-01", verificat_la="2026-08-07", de_cine="Code+cercetare", nivel_sursa="MO", url="anaf_surse/cf_art291_2016_forma_initiala.txt", text_citat="cota redusa de 9% pt operatiunile CF art.291 alin.(2) lit.a-n (medicamente, alimente, apa/canalizare, irigatii, ingrasaminte/pesticide, carti/manuale/ziare, acces cultural, lemn de foc, energie termica, locuinte sociale, cazare, restaurant/catering)", lant_acte="cota 9% in vigoare de la 01.01.2016 (Legea 227/2015, MO 688/2015; verificat 03.08.2026 - anaf_surse/cf_art291_2016_forma_initiala.txt). Comasata in 11% de Legea 141/2025 de la 01.08.2025. Nota: apa/ingrasaminte (g/h) adaugate de Legea 175/2018 din 01.01.2019")),
     ],
     "tva_redusa_5": [
@@ -574,6 +574,47 @@ def plafon_cresa(la_data, nr_copii=1):
     if n < 1:
         n = 1
     return Decimal("450") * n, "Legea 165/2018 art.19(1) - baza 450/luna/copil (indexare GRI verdict 17, neaplicata)"
+
+
+PRAG_VOLATIL_LUNI = 18  # Corpus (2) garda 3: fereastra +/- fata de azi in care o valoare curenta e "recenta"
+
+
+def _luni_distanta(d1, d2):
+    """Numar de luni intre doua date (valoare absoluta), aproximat pe an*12+luna. Robust la viitor/trecut."""
+    return abs((d2.year - d1.year) * 12 + (d2.month - d1.month))
+
+
+def cote_volatile_fara_mo(la_data=None):
+    """Corpus (2) garda 3 (semnal la generare, NU zgomot): cotele a caror VALOARE CURENTA (ultima intrare)
+    nu are nivel_sursa='MO' SI e volatila (cota are >=2 intrari datate) SAU recenta (data_in in +/-18 luni
+    fata de la_data). Valorile REDARE stabile-vechi cu o singura intrare NU apar -> semnalul e util doar
+    unde conteaza (act de sursat sau de decis). Intoarce lista sortata de nume de cota."""
+    if la_data is None:
+        la_data = date.today()
+    out = []
+    for nume, intrari in COTE.items():
+        if not intrari:
+            continue
+        d, _v, t = max(intrari, key=lambda iv: iv[0])  # valoarea CURENTA = data_in cea mai mare (COTE e ordonat descrescator, dar nu ne bazam pe ordine)
+        if getattr(t, "nivel_sursa", None) == "MO":
+            continue
+        volatila = len(intrari) >= 2
+        recenta = _luni_distanta(d, la_data) <= PRAG_VOLATIL_LUNI
+        if volatila or recenta:
+            out.append(nume)
+    return sorted(out)
+
+
+def avertizeaza_cote_volatile_fara_mo(la_data=None, logger=None):
+    """Hook apelabil la generarea unei declaratii: emite UN warning agregat cu cotele volatile fara sursa MO
+    (folosind cota curenta). Nu blocheaza generarea - doar semnaleaza ce e de sursat. Intoarce lista."""
+    import logging
+    lst = cote_volatile_fara_mo(la_data)
+    if lst:
+        (logger or logging.getLogger("iconta.corpus")).warning(
+            "Corpus: %d cote au valoarea curenta fara sursa MO (de sursat/decis): %s",
+            len(lst), ", ".join(lst))
+    return lst
 
 
 def cota(nume, la_data=None, strict=True):

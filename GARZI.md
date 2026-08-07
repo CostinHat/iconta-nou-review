@@ -1941,3 +1941,7 @@ la 3 - de facut cand se re-verifica functional clusterele pe 2025 (dupa deblocar
 Multe COTE aveau sursa deja in anaf_surse dar url nelegat/extern (salariu_minim -> just.ro blocat!). Legate +
 ridicate MO dupa verificare verbatim. Ramas Corpus (2): manifest INDEX + 3 garzi. Corpus (3): acte lipsa (lista
 scurta dupa (1)+(2)) - OUG 89/2025, OUG 8/2026, OG 16/2022, OUG 115/2023, Legea 296/2020, Legea 70/2015.
+
+## 07.08.2026 — Corpus (2) LIVRAT: manifest INDEX.json + 3 garzi (G1 sursa-locala, G2 forma-acopera, G3 volatil-fara-MO)
+COTE MO+local 17->19. Garda 3: prag 18 luni pe valoarea curenta non-MO -> set de 5 (4 plafoane OUG 8/2026 +
+OUG 89/2025 + tva_redusa_5 de decis), zero zgomot pe REDARE stabile. Ramas Corpus (3): lista scurta de acte lipsa.
