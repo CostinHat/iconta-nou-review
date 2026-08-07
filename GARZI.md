@@ -1945,3 +1945,8 @@ scurta dupa (1)+(2)) - OUG 89/2025, OUG 8/2026, OG 16/2022, OUG 115/2023, Legea 
 ## 07.08.2026 — Corpus (2) LIVRAT: manifest INDEX.json + 3 garzi (G1 sursa-locala, G2 forma-acopera, G3 volatil-fara-MO)
 COTE MO+local 17->19. Garda 3: prag 18 luni pe valoarea curenta non-MO -> set de 5 (4 plafoane OUG 8/2026 +
 OUG 89/2025 + tva_redusa_5 de decis), zero zgomot pe REDARE stabile. Ramas Corpus (3): lista scurta de acte lipsa.
+
+## 07.08.2026 — Corpus (3) LIVRAT: OUG 8/2026 + OUG 89/2025 legate verbatim (6 valori -> MO)
+COTE MO 18->24, REDARE 15->9. D112 byte-identic. Garda 3 semnaleaza acum DOAR tva_redusa_5 (de decis).
+Verificat inainte de scriere: lit.b plafon_facilitate era corect. facilitate 300 @2025 ramas REDARE (OUG
+89/2025 nu-l surseaza pt 2025). REDARE ramase = doar istorice + tva_redusa_5.

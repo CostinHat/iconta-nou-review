@@ -18,6 +18,8 @@ TIP_FORMA = {
     "anaf_limite_2025.pdf": "forma_la_data",   # tabel de limite ANAF pt 2025 (valori la date fixe)
     "legea_201_2025.html": "forma_la_data",    # act punctual (tichet 45 de la noiembrie 2025)
     "oug_156_2024.pdf": "forma_la_data",       # act punctual (plafon facilitate 4300 pt 2025)
+    "oug_8_2026.html": "forma_la_data",         # act punctual (plafon TVA incasare + mijloc fix 2026-2027)
+    "oug_89_2025.html": "forma_la_data",        # act punctual (facilitate salariu minim + plafon 2026)
 }
 
 SURSE = "anaf_surse"

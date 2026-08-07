@@ -73,15 +73,12 @@ def test_index_coerent_cu_cote():
 
 # ---------------------------------------------------------------- G3
 # Setul de referinta MASURAT la 2026-08-07 (nu ghicit). Sunt exact cotele a caror valoare curenta e non-MO
-# si volatila/recenta = acte de adus (OUG 8/2026, OUG 89/2025) sau de decis. Cele 29 REDARE stabile NU apar.
+# si volatila/recenta. Dupa aducerea OUG 8/2026 + OUG 89/2025 (07.08) ramane doar tva_redusa_5 (de decis).
 # Daca lista se schimba: ori ai adaugat o cota volatila fara sursa (leag-o la MO / adu actul), ori ai legat
 # una (scoate-o de aici). Gardul te forteaza sa fii constient - nu e zgomot pasiv.
 SET_VOLATIL_FARA_MO_20260807 = [
-    "facilitate_salariu_minim",         # 200 @2026-07 - OUG 89/2025 (act de adus)
-    "plafon_facilitate_salariu_minim",  # 4600 @2026-07 - OUG 89/2025 (act de adus)
-    "plafon_mijloc_fix",                # 5000 @2026 - OUG 8/2026 (act de adus)
-    "plafon_tva_incasare",              # 5.5M @2027 - OUG 8/2026 (act de adus)
-    "tva_redusa_5",                     # 11% @2025 - alin.3 abrogat (Legea 141 pct.43), trecerea la 11% de DECIS
+    # Dupa aducerea OUG 8/2026 + OUG 89/2025 (07.08), cele 4 plafoane au fost legate MO -> au iesit din set.
+    "tva_redusa_5",  # 11% @2025 - alin.3 abrogat (Legea 141 pct.43), unde ajung fostele operatiuni de 5% e de DECIS (nu act lipsa)
 ]
 
 

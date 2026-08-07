@@ -391,12 +391,12 @@ COTE = {
     # plafon TVA la incasare (fost petic 3-tier plafon_la). OUG 8/2026: 5M de la 03.2026, 5.5M de la 2027.
     # 4.5M = Legea 296/2020 (majorare 2,25M->4,5M de la 01.01.2021), ramas pana la OUG 8/2026.
     "plafon_tva_incasare": [
-        (date(2027, 1, 1), Decimal("5500000"), Temei("OUG", 8, 2026, data_in="2027-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
-        (date(2026, 3, 1), Decimal("5000000"), Temei("OUG", 8, 2026, data_in="2026-03-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2027, 1, 1), Decimal("5500000"), Temei("OUG", 8, 2026, art="282", alin="3", lit="b", data_in="2027-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_8_2026.html", text_citat="art.282 alin.(3) lit.b) CF: Plafonul pentru aplicarea sistemului TVA la incasare este de 5.500.000 lei, incepand cu data de 1 ianuarie 2027")),
+        (date(2026, 3, 1), Decimal("5000000"), Temei("OUG", 8, 2026, art="282", alin="3", lit="a", data_in="2026-03-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_8_2026.html", text_citat="art.282 alin.(3) lit.a) CF: Plafonul pentru aplicarea sistemului TVA la incasare este de 5.000.000 lei, in perioada 1 martie-31 decembrie 2026")),
         (date(2021, 1, 1), Decimal("4500000"), Temei("Legea", 296, 2020, data_in="2021-01-01", verificat_la="2026-08-05", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 296/2020 (MO 1269/21.12.2020) majoreaza plafonul TVA la incasare 2.250.000->4.500.000 de la 01.01.2021; ramas 4,5M pana la OUG 8/2026 (5M de la 01.03.2026). Confirmat secundar - CF consolidat a inlocuit tier-ul la OUG 8/2026")),
     ],
     "plafon_mijloc_fix": [
-        (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, art="28", alin="2", lit="b", data_in="2026-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_8_2026.html", text_citat="art.28 alin.(2) lit.b) CF: la data intrarii in patrimoniul contribuabilului are o valoare fiscala egala sau mai mare decat suma de 5.000 lei; aceasta limita se actualizeaza anual cu indicele de inflatie, prin HG")),
         (date(2015, 1, 1), Decimal("2500"), Temei("Legea", 227, 2015, data_in="2015-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "plafon_sold_casa": [
@@ -430,12 +430,12 @@ COTE = {
         (date(2025, 1, 1), Decimal("4050"), Temei("HG", 1506, 2024, data_in="2025-01-01", url="anaf_surse/hg_1506_2024_salariu_minim.html", verificat_la="2026-08-07", de_cine="Code/Costin", text_citat="Articolul 1: Incepand cu data de 1 ianuarie 2025 ... la suma de 4.050 lei lunar", lant_acte="HG 1506/2024 abroga HG 598/2024 (=3700)", nivel_sursa="MO")),
     ],
     "facilitate_salariu_minim": [
-        (date(2026, 7, 1), Decimal("200"), Temei("OUG", 89, 2025, art="III", data_in="2026-07-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2026, 7, 1), Decimal("200"), Temei("OUG", 89, 2025, art="III", data_in="2026-07-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_89_2025.html", text_citat="art.III alin.(1): pentru suma de 200 lei/luna din veniturile din salarii aferente perioadei 1 iulie-31 decembrie 2026 nu se datoreaza impozit pe venit si contributii sociale obligatorii")),
         (date(2025, 1, 1), Decimal("300"), Temei("OUG", 115, 2023, data_in="2025-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "plafon_facilitate_salariu_minim": [
-        (date(2026, 7, 1), Decimal("4600"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-07-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
-        (date(2026, 1, 1), Decimal("4300"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2026, 7, 1), Decimal("4600"), Temei("OUG", 89, 2025, art="III", alin="1", lit="b", data_in="2026-07-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_89_2025.html", text_citat="art.III alin.(1) lit.b): venitul brut din salarii (fara tichete masa/vouchere vacanta/indemnizatie hrana) nu depaseste nivelul de 4.600 lei inclusiv in perioada 1 iulie-31 decembrie 2026")),
+        (date(2026, 1, 1), Decimal("4300"), Temei("OUG", 89, 2025, art="III", alin="1", lit="b", data_in="2026-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_89_2025.html", text_citat="art.III alin.(1) lit.b): venitul brut din salarii (fara tichete masa/vouchere vacanta/indemnizatie hrana) nu depaseste nivelul de 4.300 lei inclusiv in perioada 1 ianuarie-30 iunie 2026")),
         (date(2025, 1, 1), Decimal("4300"), Temei("OUG", 156, 2024, art="LXVI", data_in="2025-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_156_2024.pdf", text_citat="art.LXVI alin.(1) lit.b: venitul brut (fara tichete masa/vouchere vacanta/indemnizatie hrana) nu depaseste 4.300 lei inclusiv; veniturile aferente lunilor ianuarie-decembrie 2025")),
     ],
     "tichet_masa_plafon": [

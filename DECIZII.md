@@ -7809,3 +7809,33 @@ CELE 3 GARZI (core/test_corpus_surse.py):
 
 Bug prins la masurare: garda 3 lua initial intrari[-1] = cea mai VECHE (COTE e ordonat descrescator);
 corectat la max(intrari, key data_in) = valoarea curenta. Fara masurare ar fi semnalat exact valorile istorice.
+
+## 07.08.2026 — Corpus (3): OUG 8/2026 + OUG 89/2025 aduse local, 6 valori legate verbatim -> MO
+
+OUG 8/2026 (anaf_surse/oug_8_2026.html) - confirmat verbatim, act cu act:
+- plafon_tva_incasare 5.000.000 (1 mar-31 dec 2026) + 5.500.000 (de la 1 ian 2027): art.282 alin.(3) lit.a/b CF.
+- plafon_mijloc_fix 5.000 (2026): art.28 alin.(2) lit.b CF.
+OUG 89/2025 (anaf_surse/oug_89_2025.html) - confirmat verbatim:
+- facilitate_salariu_minim 200 (iul-dec 2026): art.III alin.(1).
+- plafon_facilitate 4.300 (ian-iun 2026) + 4.600 (iul-dec 2026): art.III alin.(1) lit.b).
+  Verificat inainte de a atinge metadata: lit.b din COTE e CORECT (lit.a=salariul de baza egal cu minimul;
+  lit.b=venitul brut, fara tichete, <= plafon). Nu am corectat nimic - era deja corect.
+
+RAMANE REDARE (raportat, nefortat): facilitate_salariu_minim 300 @2025 - OUG 89/2025 mentioneaza 300 lei
+DOAR pt perioada 1 ian-30 iun 2026, NU pt 2025; sursa lui 2025 (OUG 115/2023) nu e adusa.
+
+NEASTEPTAT in cele doua acte:
+1. plafon_mijloc_fix 5.000 "se actualizeaza anual, in functie de indicele de inflatie, prin HG" (art.28 alin.2
+   lit.b) - deci valoarea poate creste anual prin HG viitoare, nu e fixa.
+2. TVA la incasare intra la 5M de la 1 MARTIE 2026 (nu 1 ian); art.9 OUG 8/2026 confirma ca ian-feb 2026 raman
+   la 4,5M (perioada de tranzitie). COTE avea deja data_in 2026-03-01 - corect.
+3. Ambele acte citeaza pragurile VECHI doar ca referinta de tranzitie (2.500 mijloc fix, 4,5M TVA) - NU le
+   surseaza; acele valori istorice raman REDARE (sursele lor primare nu-s aduse).
+
+Rezultat: COTE MO 18->24, REDARE 15->9. D112 byte-identic (ea0520b0c8b2eb0c) - doar temeiuri, nicio valoare.
+Garda 3 dupa: semnaleaza DOAR tva_redusa_5 (decizie de produs, nu act lipsa). Cele 4 plafoane au iesit din set.
+
+REDARE ramase (9): tva_standard 19% @2017, tva_redusa_5 11% @2025 (de decis), impozit_dividend 5% @2016 +
+8% @2023, plafon_tva_incasare 4,5M @2021 (Legea 296/2020), plafon_mijloc_fix 2.500 @2015 (Legea 227 forma
+initiala), plafon_sold_casa 50.000 (Legea 70/2015), plafon_avans 5.000 (OUG 115/2023), facilitate 300 @2025
+(OUG 115/2023). Toate istorice (recalculari retroactive) sau decizie - niciuna valoare curenta vie fara sursa.

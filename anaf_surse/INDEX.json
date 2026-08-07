@@ -195,6 +195,11 @@
       "tip_forma": null,
       "acopera": []
     },
+    "gen_index.py": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "hg518_1995_diurna_externa.txt": {
       "exista": true,
       "tip_forma": null,
@@ -385,6 +390,60 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "oug_89_2025.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "facilitate_salariu_minim",
+          "data_in": "2026-07-01",
+          "valoare": "200",
+          "nivel_sursa": "MO",
+          "temei": "OUG 89/2025 art.III"
+        },
+        {
+          "cota": "plafon_facilitate_salariu_minim",
+          "data_in": "2026-01-01",
+          "valoare": "4300",
+          "nivel_sursa": "MO",
+          "temei": "OUG 89/2025 art.III"
+        },
+        {
+          "cota": "plafon_facilitate_salariu_minim",
+          "data_in": "2026-07-01",
+          "valoare": "4600",
+          "nivel_sursa": "MO",
+          "temei": "OUG 89/2025 art.III"
+        }
+      ]
+    },
+    "oug_8_2026.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_mijloc_fix",
+          "data_in": "2026-01-01",
+          "valoare": "5000",
+          "nivel_sursa": "MO",
+          "temei": "OUG 8/2026 art.28"
+        },
+        {
+          "cota": "plafon_tva_incasare",
+          "data_in": "2026-03-01",
+          "valoare": "5000000",
+          "nivel_sursa": "MO",
+          "temei": "OUG 8/2026 art.282"
+        },
+        {
+          "cota": "plafon_tva_incasare",
+          "data_in": "2027-01-01",
+          "valoare": "5500000",
+          "nivel_sursa": "MO",
+          "temei": "OUG 8/2026 art.282"
+        }
+      ]
     },
     "pdf_original": {
       "exista": true,
