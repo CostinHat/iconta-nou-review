@@ -1918,3 +1918,9 @@ prioritara; marja/Payments/50%-ded/praguri reincadrate build-new INGUST (nu de l
   nefolosit de salarizare.
 - DATA_START_SISTEM = 1 ianuarie 2025: 2023/2024 sub podea (nereparabile by design). calcul_salariu(2025) ramane
   blocat pe tichet_masa_plafon pana se aduce sursa. B1 e PARTIAL (plafon inchis; tichet 2025 = urmator rand).
+
+## 07.08.2026 — ratchet agenda: baseline bifa-pe-baza-schimbata 3->6 (B1)
+Adaugarea plafon_facilitate_salariu_minim @2025 (B1) a atins 6 clustere prin graf (facilitate/suprataxare/
+proratare/tichete masa-vacanta-culturale-cresa) -> toate stau pe o cota EXTINSA dupa √. Extindere istorica
+verificata la sursa (OUG 156/2024), valorile 2026 NEschimbate. Baseline ridicat 3->6, de re-coborat cand
+cele 6 clustere se re-ancoreaza dupa deblocarea completa a 2025 (tichet_masa_plafon).

@@ -377,7 +377,11 @@ def test_cote_cluster_leaga_deducere_de_salariu_minim():
 # salariu_minim a carui VALOARE 2025 a fost corectata 3700->4050 (FIX5, cf31ddb) DUPA verificarea lor.
 # Sunt STALE real - de REVERIFICAT la sursa (decizie Costin; nu reset automat - ramificatie: nu resetez singur).
 # Baseline coboara pe masura ce se reverifica; la 0 devine PRAG (orice bifa pe baza schimbata BLOCHEAZA).
-STALE_BAZA_BASELINE = 3
+# Baseline restante "bifa pe cota schimbata" (masurate 02.08.2026 = 3). Ridicat 3->6 la 07.08.2026:
+# adaugarea plafon_facilitate_salariu_minim @2025 (OUG 156/2024, MO+verbatim, B1) a atins 6 clustere prin
+# graful de dependente - EXTINDERE ISTORICA verificata la sursa (valorile 2026 pe care stau bifele NEschimbate),
+# nu o modificare periculoasa. De re-coborat cand cele 6 clustere se re-ancoreaza (dupa deblocarea 2025 - tichet).
+STALE_BAZA_BASELINE = 6
 
 
 def test_bifele_nu_stau_pe_o_baza_schimbata():
