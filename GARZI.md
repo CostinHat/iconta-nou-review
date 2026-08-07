@@ -1991,3 +1991,26 @@ tenant_template.sql (verde pe 12/12 pe prod => migrarile de schema tenant sunt l
 pentru schema PUBLIC: o coloana/tabela noua adaugata pe public (ex. declaratii_coada, accounting_firms) intr-un
 commit HEAD nu ar fi prinsa de template-guard-ul de tenant. De adaugat un audit public analog (referinta = un
 public_template sau DDL-urile *_ddl.sql) daca se doreste inchiderea completa a clasei "migrari la zi pe prod".
+
+## 07.08.2026 — LIVRAT: gard CNP cifra de control pe calea DIRECTA (DEFECT-2 din parcurgerea E1-E12)
+**Stare: ACOPERIT.** Instanta = candidatul CNP de mai sus (adaugare directa salariat, doar format). Reparatie prin
+REFOLOSIRE: `valideaza_salariat` cheama acum `valideaza_cnp` (cheia 279146358279), la fel ca import + cnp_ingrijit.
+Acopera CREATE si EDIT (ambele trec prin `valideaza_salariat`: creeaza_salariat:161, actualizeaza_salariat:217).
+
+| gard | fisier:linie | ce face imposibil | mutatia care il probeaza |
+|---|---|---|---|
+| valideaza_salariat cere cifra de control | core/salariati_api.py:86 (cnp_control_v1) | CNP 13-cifre cu control gresit intra prin POST/PUT salariat -> ajunge in D112 -> respins DUK (cnpAsig) | git checkout (pre-fix) -> 5 teste rosii cu motivul corect; sha256 D112 tenant_001 IDENTIC pre/post (no-op) |
+| toate caile CNP refuza control + anti-cale-noua | core/test_cnp_control.py | o cale noua de INSERT CNP fara valideaza_cnp; regresie valideaza_salariat la format-only | test_nicio_cale_de_insert_CNP_fara_validare_de_control + test_valideaza_salariat_nu_regreseaza_la_format_only |
+
+**Vanatoare de clasa (CNP, completa):** cai de scriere CNP = salariat create/edit (REPARAT azi), cnp_ingrijit
+(concedii), import salariati, import asociati — ultimele trei foloseau deja valideaza_cnp. NU exista alta cale
+directa (adaugare asociat = doar import). Proba: CNP control-gresit refuzat pe TOATE (test_toate_caile_CNP).
+
+## 07.08.2026 — CANDIDAT (din vanatoarea de clasa CNP/CUI): control CUI neverificat pe mai multe cai
+**Stare: LIPSA (candidat; partial decizie de produs).** Control OFFLINE CUI verificat DOAR la: provizionare tenant
+(`cui_valid`) + import parteneri solduri (`valideaza_cui`). NEverificat offline: client create/edit (clienti_api),
+factura `tert_cui` (emite_factura / achizitie-*), CUI PROPRIU firma la EDITARE (firma_profil.salveaza_date; validat
+doar la provizionare). NUANTA: `tert_cui`/client pot fi parteneri STRAINI (CUI ne-romanesc, fara cifra de control
+romaneasca) => validarea offline nu se aplica universal; azi se bazeaza pe ANAF (existenta), best-effort. DAR CUI-ul
+PROPRIU al firmei e MEREU romanesc -> editarea lui AR TREBUI sa valideze controlul (azi nu). Recomandare: gard pe
+CUI propriu (firma_profil) + validare CONDITIONATA (cand pare romanesc: RO/toate cifre) pe client/tert_cui. Decizie Costin.

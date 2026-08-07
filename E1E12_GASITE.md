@@ -155,3 +155,22 @@ Parcurgerea HTTP + inspecția statică NU pot decide RANDAREA și temporalitatea
   (cui 97701002, pe :8011), cu salariați de test — inclusiv un salariat cu CNP control-greșit (dovada DEFECT-2).
 - Cabinet „Cabinet B Izolare SRL" (patronB@cabinetB.test) — creat pentru testul de izolare E11.
 - Aceste date sunt în DB live sub cabinete de test; de curățat separat dacă deranjează (nu s-a atins, per regulă).
+
+---
+
+## REMEDIERE DEFECT-2 (07.08.2026, aprobat de Costin) — REPARAT + GARD
+
+- **Fix (refolosire, nu cod nou):** `core/salariati_api.py:86` (`cnp_control_v1`) — `valideaza_salariat` cheama
+  `valideaza_cnp` (format + data + judet + CIFRA DE CONTROL, cheia 279146358279), la fel ca import + cnp_ingrijit.
+  Acopera CREATE (POST) si EDIT (PUT) intr-un singur loc (ambele trec prin `valideaza_salariat`).
+- **Vanatoare de clasa (completa, CNP+CUI):** vezi harta in GARZI.md 07.08. CNP: singura cale nevalidata era
+  salariat create/edit (reparata); restul (cnp_ingrijit, import, asociati) deja validau. CUI: control offline doar
+  la provizionare + import parteneri; NEvalidat pe client/tert_cui (partial justificat: parteneri straini) si pe
+  CUI PROPRIU firma la editare (candidat de reparat — GARZI 07.08).
+- **Proba:** RED/GREEN + mutatie (git checkout la pre-fix -> 5 teste rosii cu motivul corect; re-aplicat -> 8
+  passed). No-op pe date reale: sha256 D112 tenant_001 2026/1 IDENTIC pre/post (45e3b486…) — fix write-side,
+  generarea neatinsa.
+- **Gard:** `core/test_cnp_control.py` (8 teste): refuz control-gresit pe toate caile CNP + anti-cale-noua
+  (INSERT CNP fara valideaza_cnp pica) + anti-regresie la format-only.
+- **Nefacut intentionat (motiv):** bifa in TESTE.md a noului fisier de test = follow-up DUPA ce intra in HEAD
+  (garda anti-stale `test_agenda` citeste `git show HEAD:` -> o citare in acelasi commit ar fi "citare moarta").

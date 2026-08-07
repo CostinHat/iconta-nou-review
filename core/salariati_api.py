@@ -83,8 +83,15 @@ def valideaza_salariat(date):
     if not (date.get("nume") and str(date["nume"]).strip()):
         erori.append("nume obligatoriu")
     cnp = date.get("cnp")
-    if cnp and not _CNP.match(str(cnp)):
-        erori.append("CNP invalid: aștept 13 cifre")
+    if cnp:
+        # [cnp_control_v1] refolosim validarea COMPLETA (format + data + judet + CIFRA DE CONTROL)
+        # din salariati_import_api - aceeasi cheie 279146358279 ca la import si cnp_ingrijit.
+        # Inainte: doar _CNP (13 cifre) => un CNP cu cifra de control gresita intra tacut si strica
+        # D112 (respins de DUK: cnpAsig invalid). Vezi GARZI 07.08 + E1E12_GASITE DEFECT-2.
+        from core.salariati_import_api import valideaza_cnp as _vcnp
+        _ok_cnp, _motiv_cnp = _vcnp(str(cnp))
+        if not _ok_cnp:
+            erori.append("CNP invalid: %s" % _motiv_cnp)
     brut = date.get("salariu_brut")
     if brut is not None:
         try:
