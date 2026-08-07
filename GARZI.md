@@ -1930,3 +1930,9 @@ Tichet_masa_plafon 2025: 40,04 (ian-mar, Ord.4.679/2024), 40,18 (apr-sep, Ord.48
 Legea 201/2025) - toate verbatim la sursa. Extensie _deriva_data_out (respecta data_out explicit) + data_out
 30 sep pe 40,18 => octombrie 2025 e GOL motivat, NU 40,18 tacit. Corectie: 45 de la noiembrie 2025 (era gresit
 @2026). RAMAS: octombrie 2025 - cere Ordinul MF tichet-masa sem II 2025. calcul_salariu(2025) merge except octombrie.
+
+## 07.08.2026 — ratchet agenda 6->14 (B1 tichet 2025)
+Adaugarea tichet_masa_plafon 2025 (peste plafon_facilitate) a atins ~7 clustere x 2 cote = 14 stale prin
+graf. Toate = adaugari istorice verificate la sursa (2026 neatins, D112 byte-identic). Baseline 6->14.
+FOLLOW-UP curatenie: re-ancorarea celor ~7 clustere salarizare/tichete (√ 07.08 + bump) ar readuce baseline
+la 3 - de facut cand se re-verifica functional clusterele pe 2025 (dupa deblocarea octombrie).

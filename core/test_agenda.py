@@ -378,10 +378,10 @@ def test_cote_cluster_leaga_deducere_de_salariu_minim():
 # Sunt STALE real - de REVERIFICAT la sursa (decizie Costin; nu reset automat - ramificatie: nu resetez singur).
 # Baseline coboara pe masura ce se reverifica; la 0 devine PRAG (orice bifa pe baza schimbata BLOCHEAZA).
 # Baseline restante "bifa pe cota schimbata" (masurate 02.08.2026 = 3). Ridicat 3->6 la 07.08.2026:
-# adaugarea plafon_facilitate_salariu_minim @2025 (OUG 156/2024, MO+verbatim, B1) a atins 6 clustere prin
-# graful de dependente - EXTINDERE ISTORICA verificata la sursa (valorile 2026 pe care stau bifele NEschimbate),
+# adaugarea valorilor 2025 la sursa (B1: plafon_facilitate OUG 156/2024 + tichet_masa_plafon Ord.4679/484 +
+# Legea 201/2025) a atins ~7 clustere x 2 cote = 14 prin graf - EXTINDERE ISTORICA verificata la sursa (2026 NEschimbat,
 # nu o modificare periculoasa. De re-coborat cand cele 6 clustere se re-ancoreaza (dupa deblocarea 2025 - tichet).
-STALE_BAZA_BASELINE = 6
+STALE_BAZA_BASELINE = 14
 
 
 def test_bifele_nu_stau_pe_o_baza_schimbata():
