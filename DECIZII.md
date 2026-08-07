@@ -7742,3 +7742,25 @@ NU e in anaf_surse - doar cadrul general). tva_redusa @martie 2025 lipseste dar 
 Probe: plafon @2025-03 = (4300, OUG 156/2024 art.LXVI); no-op 2026 D112 byte-identic (ea0520b0c8b2eb0c);
 regresie salarizare 36 passed. Granita facilitatii (brut sub/peste 4300) NU se poate proba prin calcul_salariu
 pana nu intra si tichet_masa_plafon 2025.
+
+## 07.08.2026 — B1/tichet_masa_plafon 2025: 3 intervale + gol octombrie + corectie data_in 45
+
+Trei valori datate, verificate VERBATIM la sursa:
+- 40,04 lei @1 ianuarie 2025 (ian-mar 2025) - Ordinul MF 4.679/2024 (anaf_limite_2025.pdf). NU 956/2024 (sursa secundara gresita).
+- 40,18 lei @1 aprilie 2025 (apr-sep 2025) - Ordinul MF 484/2025 (anaf_limite_2025.pdf), data_out EXPLICIT 30
+  septembrie 2025 (sfarsit de acoperire; aug+sep incluse explicit in ordin). NU 484/280 (sursa secundara gresita).
+- 45 lei @1 noiembrie 2025 (nov 2025+) - Legea 201/2025 art.I pct.1 ("nu poate depasi suma de 45 lei") + art.II
+  alin.(1) ("se aplica incepand cu drepturile aferente lunii noiembrie 2025") - legea_201_2025.html verbatim.
+Marker: **tichet masa plafon 2025 verificat la sursa (ordin 4679/2024, ordin 484/2025, legea 201/2025)**.
+
+REPARATIE (nu efect colateral): randul de 45 lei era @2026-01-01 (GRESIT) - Legea 201/2025 se aplica de la
+NOIEMBRIE 2025. Noiembrie-decembrie 2025 erau tratate GRESIT (nu doar neacoperite). Corectat data_in @2026-01 ->
+@2025-11. 2026 ramane 45 (D112 byte-identic ea0520b0c8b2eb0c).
+
+EXTENSIE _deriva_data_out: respecta un data_out EXPLICIT oriunde e setat (nu-l suprascrie din succesor).
+Verificat: nicio valoare COTE existenta n-are data_out explicit -> comportament identic pt cele existente.
+Necesar ca 40,18 sa NU se propage TACIT peste OCTOMBRIE 2025 (gol de sursa) - o valoare fiscala fara temei.
+
+DESCHIS: octombrie 2025 (o luna) - cere Ordinul MF pentru tichetul de masa semestrul II 2025 (negasit local;
+ordin_1574_3246_2025_cultural = tichete CULTURALE, nu de masa). Pana atunci calcul_salariu(octombrie 2025) ridica
+blocaj motivat ("gol in registru"), NU o valoare inventata. calcul_salariu(2025) merge peste tot except octombrie.

@@ -1253,3 +1253,8 @@ test_coduri_speciale_neatinse_de_l141 (alin.2 100% identic in ambele regimuri). 
 ## 07.08.2026 — B1 partial: plafon 2025 adaugat, tichet 2025 ramas
 common.py plafon_facilitate_salariu_minim @2025=4300 (OUG 156/2024 art.LXVI, MO+verbatim). calcul_salariu(2025)
 inca ridica pe tichet_masa_plafon @2025 - urmatorul rand, cere sursa. B1 reincadrat din "un rand" in "clasa".
+
+## 07.08.2026 — B1 tichet 2025: gard nou + meta-teste mutate
+core/test_tichet_2025.py: valorile (40,04/40,18/45), golul octombrie motivat (nu 40,18 tacit), corectia 45 de la
+noiembrie. Cele 3 meta-teste perioada_indisponibila mutate de pe "2025 blocat" (acum reparat) pe sub-podea (2024,
+stabil) + golul octombrie 2025.

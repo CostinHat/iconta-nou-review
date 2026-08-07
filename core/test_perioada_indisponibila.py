@@ -13,22 +13,25 @@ from core import salariati_api as sa, adeverinta, salarizare as sz
 
 
 def test_cota_pre_data_ridica_blocaj_motivat():
-    """tichet_masa_plafon incepe la 2026-01-01; cerut pentru 2025 -> PerioadaIndisponibila (subclasa de
-    ValueError), cu tag PERIOADA_BLOCATA + prima_data corecta. (plafon_facilitate a fost completat @2025
-    - B1 - deci exemplul s-a mutat pe tichet_masa_plafon, inca nedefinit pe 2025.)"""
+    """O valoare ceruta INAINTE de prima ei aparitie -> PerioadaIndisponibila (subclasa de ValueError),
+    cu tag PERIOADA_BLOCATA + prima_data corecta. salariu_minim incepe la 2025-01-01 (DATA_START_SISTEM);
+    cerut pentru 2024 -> blocaj. (plafon_facilitate si tichet completate pe 2025 - B1 - exemplul e sub podea.)"""
     with pytest.raises(c.PerioadaIndisponibila) as ei:
-        c.cota("tichet_masa_plafon", date(2025, 6, 1))
-    assert ei.value.prima_data == date(2026, 1, 1)
+        c.cota("salariu_minim", date(2024, 6, 1))
+    assert ei.value.prima_data == date(2025, 1, 1)
     assert isinstance(ei.value, ValueError)              # `except ValueError` existent ramane valabil
     assert "PERIOADA_BLOCATA:" in str(ei.value)
 
 
 def test_calcul_salariu_pre_2026_blocaj_2026_ok():
-    """calcul_salariu propaga blocajul motivat pentru 2025 (plafon facilitatii nedefinit); pentru 2026 merge."""
-    with pytest.raises(c.PerioadaIndisponibila):
-        sz.calcul_salariu(4050, la_data=date(2025, 6, 1), norma_intreaga=True, venit_brut_total=4050)
+    """calcul_salariu propaga blocajul motivat pentru OCTOMBRIE 2025 (tichet_masa_plafon neverificat la
+    sursa - gol intre 40,18 sep si 45 nov, B1); pentru restul 2025 (ex. mai) si pentru 2026 merge."""
+    with pytest.raises(ValueError):
+        sz.calcul_salariu(4050, la_data=date(2025, 10, 1), norma_intreaga=True, venit_brut_total=4050)
     r = sz.calcul_salariu(4050, la_data=date(2026, 8, 1), norma_intreaga=True, venit_brut_total=4050)
     assert r["net"] > 0
+    r2 = sz.calcul_salariu(4050, la_data=date(2025, 5, 1), norma_intreaga=True, venit_brut_total=4050)
+    assert r2["net"] > 0
 
 
 def test_mesaj_blocaj_ajunge_la_user():
@@ -73,8 +76,8 @@ def test_adeverinta_2025_blocaj_2026_ok():
             sid = sa.creeaza_salariat(conn, nume="POP", prenume="I", cnp="1900101410011",
                                       data_angajare="2025-01-01", salariu_brut=4050,
                                       tip_norma="intreaga")["salariat_id"]
-            with pytest.raises(c.PerioadaIndisponibila):
-                adeverinta.date_auto(conn, SCHEMA_T, sid, 2025, 6)
+            with pytest.raises(ValueError):
+                adeverinta.date_auto(conn, SCHEMA_T, sid, 2025, 10)  # gol tichet octombrie 2025 (B1)
             d2026 = adeverinta.date_auto(conn, SCHEMA_T, sid, 2026, 8)
             assert d2026 is not None and d2026["net"] > 0
         finally:

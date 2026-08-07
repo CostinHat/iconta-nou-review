@@ -1924,3 +1924,9 @@ Adaugarea plafon_facilitate_salariu_minim @2025 (B1) a atins 6 clustere prin gra
 proratare/tichete masa-vacanta-culturale-cresa) -> toate stau pe o cota EXTINSA dupa √. Extindere istorica
 verificata la sursa (OUG 156/2024), valorile 2026 NEschimbate. Baseline ridicat 3->6, de re-coborat cand
 cele 6 clustere se re-ancoreaza dupa deblocarea completa a 2025 (tichet_masa_plafon).
+
+## 07.08.2026 — B1 tichet 2025 aproape inchis (o singura luna ramasa)
+Tichet_masa_plafon 2025: 40,04 (ian-mar, Ord.4.679/2024), 40,18 (apr-sep, Ord.484/2025), 45 (de la noiembrie,
+Legea 201/2025) - toate verbatim la sursa. Extensie _deriva_data_out (respecta data_out explicit) + data_out
+30 sep pe 40,18 => octombrie 2025 e GOL motivat, NU 40,18 tacit. Corectie: 45 de la noiembrie 2025 (era gresit
+@2026). RAMAS: octombrie 2025 - cere Ordinul MF tichet-masa sem II 2025. calcul_salariu(2025) merge except octombrie.

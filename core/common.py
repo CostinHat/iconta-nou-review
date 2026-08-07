@@ -439,7 +439,9 @@ COTE = {
         (date(2025, 1, 1), Decimal("4300"), Temei("OUG", 156, 2024, art="LXVI", data_in="2025-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_156_2024.pdf", text_citat="art.LXVI alin.(1) lit.b: venitul brut (fara tichete masa/vouchere vacanta/indemnizatie hrana) nu depaseste 4.300 lei inclusiv; veniturile aferente lunilor ianuarie-decembrie 2025")),
     ],
     "tichet_masa_plafon": [
-        (date(2026, 1, 1), Decimal("45"), Temei("Legea", 201, 2025, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2025, 11, 1), Decimal("45"), Temei("Legea", 201, 2025, art="I", data_in="2025-11-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/legea_201_2025.html", text_citat="art.I pct.1: valoarea nominala a unui tichet de masa nu poate depasi suma de 45 lei; art.II alin.(1): se aplica incepand cu drepturile aferente lunii noiembrie 2025")),
+        (date(2025, 4, 1), Decimal("40.18"), Temei("Ordin", "484", 2025, data_in="2025-04-01", data_out="2025-09-30", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/anaf_limite_2025.pdf", text_citat="Ordinul MF 484/2025: tichet masa 40,18 lei, semestrul I 2025 din aprilie + august si septembrie 2025; octombrie 2025 neacoperit -> gol motivat (data_out explicit 30 sep)")),
+        (date(2025, 1, 1), Decimal("40.04"), Temei("Ordin", "4679", 2024, data_in="2025-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/anaf_limite_2025.pdf", text_citat="Ordinul MF 4.679/2024: tichet masa 40,04 lei, semestrul II 2024 din octombrie + februarie si martie 2025")),
     ],
 }
 
@@ -464,8 +466,12 @@ def _deriva_data_out(cote=None):
         _sortate = sorted(_intrari, key=lambda r: r[0])   # crescator dupa data_in
         for _idx in range(len(_sortate) - 1):
             _succ_din = _sortate[_idx + 1][0]
-            _sortate[_idx][2].data_out = _succ_din - _timedelta(days=1)
-        _sortate[-1][2].data_out = None   # valoarea curenta e in vigoare
+            if _sortate[_idx][2].data_out is None:   # RESPECTA data_out EXPLICIT (sfarsit de
+                _sortate[_idx][2].data_out = _succ_din - _timedelta(days=1)  # acoperire fara succesor
+                # confirmat -> gol motivat); DERIVA doar cand lipseste. Verificat: nicio valoare
+                # existenta n-are data_out explicit -> comportament identic pt cele existente.
+        if _sortate[-1][2].data_out is None:
+            _sortate[-1][2].data_out = None   # valoarea curenta ramane in vigoare
 
 
 _deriva_data_out()
