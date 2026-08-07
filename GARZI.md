@@ -1852,3 +1852,11 @@ salariati + UI), (b) flag-ul declaratiei parintelui (art.77(12)-(13): document i
 proprie raspundere; la mai multi angajatori, ca nu beneficiaza la altul). Azi = gard defensiv pe functia
 pura (ridica la copii_scoala>0 fara flag). Cablarea completa = build-new. Blocant: cand un cabinet are
 salariati cu copii scolarizati care cer deducerea.
+
+## 07.08.2026 — CM model de episod LIVRAT (reparatie fiscala) + reziduuri
+- LIVRAT: procent pe zile_episod + diminuare/portie-angajator o data pe episod (OUG 158/2005 art.17(1)).
+  Recalcul retroactiv + lock perioada confirmata cu instructiune. Migrare + UI (continuare) + gard. Probat:
+  episod 20 zile -> 75% (2850 vs 2220 gresit = +630 lei), D112 byte-identic pe date reale, DUK valid pe episod.
+- RAMAS: art.XI (forma pre-141 75% uniform) plumbat dar inert - blocat pe sursa verbatim (xfail #16 deschis;
+  sursa oug_158_2005_pre_L141.html NU e pe server). Sugestia auto de legare a certificatelor = follow-up (calea
+  manuala e completa).

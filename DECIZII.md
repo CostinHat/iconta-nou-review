@@ -7674,3 +7674,30 @@ trec 0 -> deducerea de 100 lei/copil NU se acorda azi (cod mort). Gard defensiv 
 _deducere_personala_2018): ridica daca copii_scoala>0 fara flag declaratie_copii, citand art.77(12)-(13) ->
 la cablare esueaza vizibil, nu acorda dublu. Cablarea completa (input copii scolarizati + declaratie parinte
 + UI) = build-new, in §PRODUS. Proba: D112 byte-identic cu/fara gard (copii_scoala=0 pe date reale).
+
+## 07.08.2026 — CM: model de EPISOD (reparatie calcul fiscal, OUG 158/2005 art.17(1))
+
+Indemnizatia CM se calculeaza pe EPISOD (art.17(1): "raportat la fiecare episod de boala"), nu pe certificat
+izolat. Verificat verbatim la MO: anaf_surse/oug_158_2005_consolidat.html. TREI defecte din aceeasi lipsa, reparate:
+1. Procentul (55/65/75) pe zile_episod (suma certificatelor episodului), NU pe zilele certificatului curent.
+   Inainte: episod 7+13 zile = 55%+65% (660+1560=2220); acum = 75% pe tot (2850) -> +630 lei/episod sub-platiti
+   la baza 200 lei/zi.
+2. Diminuarea de 1 zi (Ordinul 506/1030/2026) O DATA pe episod (pe certificatul initial), nu pe fiecare certificat.
+3. Portia angajator (zilele 2-6, Norme OUG 158/2005) O DATA pe episod (pe initial); pe continuari zile_ang=0.
+   Al treilea defect - aceeasi lipsa de model; fara el, continuarile ar emite D_20 gresit.
+
+Legatura episodului: contabilul bifeaza "certificat de continuare" + seria/numarul certificatului INITIAL
+(transcriere de pe hartie, NU deductie). Recalcul RETROACTIV al certificatelor anterioare NECONFIRMATE. Un
+certificat de continuare care ar recalcula o perioada CONFIRMATA e REFUZAT cu INSTRUCTIUNE (firma + luna +
+cat creste in lei + "deschide perioada / depune D112 rectificativa") - decizie Costin 07.08 (respecta lock-ul
+perioadei). Design System cap.6 (mesaj de eroare = instructiune).
+
+art.XI L141/2025: PLUMBAT (data_episod_initial -> alege_varianta pe data certificatului INITIAL), dar INERT azi -
+forma pre-141 (75% uniform, art.17(1) anterior 1 august 2025) NU e in _VARIANTE_PROCENT_CM (blocat pe sursa
+verbatim, xfail #16 ramane DESCHIS). Granita 31 iulie 2025 vs 1 august 2025 nu se poate proba pana intra forma pre-141.
+
+Migrare core/migrare_cm_episod.py (12/12 scheme, backup pre_cm_episod_20260807_095848.dump). Backfill: fiecare
+rand existent = propriul episod -> D112 BYTE-IDENTIC (sha ea0520b0c8b2eb0c) pe date reale, ZERO re-calcul. DUK pe
+D112 cu episod 20 zile @75% = valid (singura observatie = avertisment preexistent salariat 4, nelegat de CM).
+Gard: core/test_cm_episod.py. NEFACUT: sugestia AUTO de legare (heuristica salariat+cod+zile adiacente) - calea
+manuala (autoritara) e completa; sugestia = follow-up usor.

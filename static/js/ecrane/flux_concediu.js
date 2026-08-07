@@ -89,6 +89,12 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp"><span class="camp-eticheta">Data sf\u00e2r\u0219it <span class="oblig">*</span></span><input type="date" id="cm-sfarsit" class="camp-input"></label>
           <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare CM<span class="oblig">*</span></span><input type="number" id="cm-zile" class="camp-input" min="0" placeholder="ex. 8"></label>
         </div>
+        <div class="pf-frand-nume" style="margin:14px 0 6px">Episod de boală</div>
+        <label class="set-bifa"><input type="checkbox" id="cm-continuare"> <span>Certificat de continuare (același episod de boală)</span></label>
+        <div id="cm-episod-zona" style="display:none;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px">
+          <label class="camp"><span class="camp-eticheta">Seria certificatului inițial<span class="oblig">*</span></span><input type="text" id="cm-serie-ini" class="camp-input" placeholder="ex. AB"><span class="camp-ajutor">Seria și numărul certificatului INIȚIAL al episodului (tipărite pe certificatul de continuare). Indemnizația se calculează pe durata întregului episod (OUG 158/2005 art.17(1)): adăugarea continuării poate ridica procentul certificatelor anterioare la 75%.</span></label>
+          <label class="camp"><span class="camp-eticheta">Numărul certificatului inițial<span class="oblig">*</span></span><input type="text" id="cm-numar-ini" class="camp-input" placeholder="ex. 1234567"></label>
+        </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Baza de calcul (ultimele 6 luni)</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
           <label class="camp"><span class="camp-eticheta">Venituri brute 6 luni<span class="oblig">*</span></span><input type="number" id="cm-ven6" class="camp-input" step="0.01" placeholder="suma total\u0103"><span class="camp-ajutor">Suma veniturilor brute din ultimele 6 luni lucrate (din statele de plat\u0103). Baza = aceast\u0103 sum\u0103 \u00eemp\u0103r\u021bit\u0103 la zilele lucr\u0103toare.</span></label>
@@ -109,6 +115,9 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     selCod.addEventListener("change", () => { urgentaZona.style.display = selCod.value === "06" ? "" : "none"; });  // [cod06] D_11 camp conditionat
     const cnpZona = zona.querySelector("#cm-cnp-zona");
     selCod.addEventListener("change", () => { cnpZona.style.display = ["09","91","92","17"].includes(selCod.value) ? "" : "none"; });  // [D_8/D_8a] CNP persoana ingrijita, camp conditionat
+    const chkCont = zona.querySelector("#cm-continuare");
+    const episodZona = zona.querySelector("#cm-episod-zona");
+    chkCont.addEventListener("change", () => { episodZona.style.display = chkCont.checked ? "grid" : "none"; });  // [CM-episod] campuri certificat initial, conditionat
 
 
     zona.querySelector("#cm-renunta").addEventListener("click", () => { zona.innerHTML = ""; });
@@ -155,6 +164,11 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       if (codSel === "06" && (!urg || urg < 1 || urg > 177)) eC.push(["cm-urgenta", "La codul 06 completează codul de urgență (1–177, HG 423/2020)."]);
       if (["09","91","92","17"].includes(codSel) && !/^\d{13}$/.test(cnpI)) eC.push(["cm-cnp-ingrijit", "La codurile de îngrijire copil (09/91/92) sau pacient oncologic (17) completează CNP-ul persoanei îngrijite (13 cifre) — D112 îl cere obligatoriu."]);
       if (codSel === "10" && !((zona.querySelector("#cm-venit").value || "").trim())) eC.push(["cm-venit", "La codul 10 completează venitul brut realizat în perioada CM."]);
+      // [CM-episod] la continuare, seria+numarul certificatului INITIAL sunt obligatorii (episodul se leaga pe ele)
+      if (zona.querySelector("#cm-continuare").checked) {
+        if (!(zona.querySelector("#cm-serie-ini").value || "").trim()) eC.push(["cm-serie-ini", "Completează seria certificatului inițial al episodului (de pe certificatul de continuare)."]);
+        if (!(zona.querySelector("#cm-numar-ini").value || "").trim()) eC.push(["cm-numar-ini", "Completează numărul certificatului inițial al episodului."]);
+      }
       if (eC.length) { eC.forEach(([c, t]) => eroareCamp(zona, c, t)); return; }
 
       const inc = new Date(inceput);
@@ -173,6 +187,9 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         zile_cm: zile,
         venituri_6_luni: ven6,
         zile_6_luni: zile6,
+        este_continuare: zona.querySelector("#cm-continuare").checked,
+        serie_initiala: (zona.querySelector("#cm-serie-ini").value || "").trim() || null,
+        numar_initial: (zona.querySelector("#cm-numar-ini").value || "").trim() || null,
         an: inc.getFullYear(),
         luna: inc.getMonth() + 1,
       };

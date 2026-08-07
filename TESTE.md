@@ -1240,3 +1240,8 @@ DOMENIU (verificat 06.08): ambiguitatea mecanica e DOAR aici - singura garda de 
 (nu vechime). Nicio alta garda nu citeste mecanic date de vechime din GARZI.md/DECIZII.md/markeri. DECIZII.md
 contine date de acte cu puncte (01.08.2025 x14 etc.) dar NICIO garda nu le age-check-uie -> fara confuzie
 acolo (spelling-ul e incurajat pt consistenta, nu obligatoriu).
+
+## 07.08.2026 — CM model de episod: gard nou
+core/test_cm_episod.py: procent pe zile_episod (nu pe certificat), diminuare+portie-angajator o data/episod,
+episod 20 zile=2850, plumbing art.XI, gard-sursa ca salveaza_concediu paseaza zile_episod. xfail #16 (forma
+pre-141) ramane deschis - sursa verbatim inca lipseste.

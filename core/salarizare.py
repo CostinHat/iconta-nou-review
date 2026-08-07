@@ -470,7 +470,8 @@ def calcul_cm_cod10(baza_lunara, venit_realizat, la_data=None):
 def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
                     cod="01", zile_episod=None, prima_zi_din_episod=True,
                     spitalizare=False, la_data=None, exceptat_prima_zi=False,
-                    procent_accident=100, venituri_lunare=None, *, diminuare_activa):
+                    procent_accident=100, venituri_lunare=None, data_episod_initial=None,
+                    *, diminuare_activa):
     """
     Ci = Mzbci x procent x (NZLCM - diminuare)
     - Mzbci = suma venituri 6 luni / total zile lucratoare 6 luni
@@ -496,7 +497,9 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
         zile_lucratoare_6_luni = _zile
     mz = _dec(venituri_6_luni) / _dec(zile_lucratoare_6_luni or 1)
     ze = zile_episod if zile_episod is not None else zile_lucratoare_cm
-    pct = procent_cm(cod, ze, procent_accident, la_data=la_data)
+    # [CM-episod] art.XI L141/2025: forma art.17(1) se alege dupa data certificatului INITIAL al
+    # episodului (data_episod_initial), nu dupa data certificatului curent.
+    pct = procent_cm(cod, ze, procent_accident, la_data=data_episod_initial or la_data)
     diminuare = 0
     # Exceptii diminuare 1 zi verif. la sursa MOF 507/19.06.2026 (Ordinul 506/1030/2026):
     # accidente 02/03/04, izolare 51, maternitate 08, oncologic 17, risc maternal 15, PNS 12/13/14.
@@ -511,7 +514,9 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     # concediului = primele 5 zile lucratoare din cele PLATITE (prima zi diminuata e
     # neplatita, nu reduce plafonul de 5 al angajatorului); FNUASS suporta din ziua 7.
     # [D112 D-field] codurile 100% FNUASS nu au portie de angajator (D_20=0); restul: primele 5 zile angajator
-    zile_ang = 0 if str(cod).zfill(2) in _CM_COD_FNUASS_INTEGRAL else min(zile_platite, 5)
+    # [CM-episod] Norme OUG 158/2005: angajatorul suporta zilele 2-6 ale EPISODULUI (nu ale fiecarui
+    # certificat) -> pe certificatele de CONTINUARE (not prima_zi_din_episod) portia angajator = 0.
+    zile_ang = 0 if (str(cod).zfill(2) in _CM_COD_FNUASS_INTEGRAL or not prima_zi_din_episod) else min(zile_platite, 5)
     zile_fnuass = zile_platite - zile_ang
     brut_ang = (mz * pct * zile_ang).quantize(Decimal("1"))
     brut_fnuass = brut - brut_ang
@@ -550,7 +555,7 @@ _VARIANTE_CALCUL_CM = [
 def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
               cod="01", zile_episod=None, prima_zi_din_episod=True,
               spitalizare=False, la_data=None, exceptat_prima_zi=False,
-              procent_accident=100, venituri_lunare=None):
+              procent_accident=100, venituri_lunare=None, data_episod_initial=None):
     """Indemnizatia de concediu medical, DISPECER pe la_data - alege varianta valabila la data
     certificatului (diminuarea de 1 zi doar in fereastra 01.02.2026-31.12.2027).
     TEMEI: OUG 158/2005 (indemnizatie CM: Ci = Mzbci x procent x zile); Ordinul 506/1030/2026 (MOF
@@ -560,7 +565,7 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     fn, _ = c.alege_varianta(_VARIANTE_CALCUL_CM, la_data or _dt.today())
     return fn(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm, cod, zile_episod,
               prima_zi_din_episod, spitalizare, la_data, exceptat_prima_zi, procent_accident,
-              venituri_lunare=venituri_lunare)
+              venituri_lunare=venituri_lunare, data_episod_initial=data_episod_initial)
 
 
 # Coduri indemnizatie pt care NU se retine CASS (verif. la sursa: art.17(2) OUG 34/2024,

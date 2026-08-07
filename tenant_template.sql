@@ -276,6 +276,12 @@ CREATE TABLE TENANT_PLACEHOLDER.concedii_medicale (
     diagnostic text,
     cod_urgenta integer,
     cnp_ingrijit text,
+    serie_initiala text,
+    numar_initial text,
+    este_continuare boolean DEFAULT false,
+    data_certificat_initial date,
+    venituri_6_luni numeric,
+    zile_6_luni integer,
     creat_la timestamp with time zone DEFAULT now() NOT NULL
 );
 
