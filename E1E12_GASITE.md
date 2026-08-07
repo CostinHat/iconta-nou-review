@@ -203,3 +203,62 @@ Recomandare (decizie Costin): marker `*` pe CNP + data_angajare + refuz backend 
 - E2/D1a: nr. de randuri sarite VIZIBIL la import.
 - E8/A5: metoda de amortizare AFISATA vs. cea calculata.
 - E12 (avansat): loading vizibil, latenta, date partiale, revenire din eroare de retea.
+
+---
+
+## TURA HEADLESS (2) 07.08 — DEFECT-3 (blocant) + verdict G10 pe flux_concediu
+
+### DEFECT-3 — [E6, BLOCANT, LIVE] „Stat de plată" pe luna CURENTA da 500 -> tot payroll-ul dispare, ascuns ca „Niciun salariat activ"
+
+**Clasa:** query necalificat pe schema + ruta fara search_path pe tenant; eroarea ascunsa de frontend.
+**Repro (LIVE, :8010):** `GET /tenants/4784/stat-plata?an=2026&luna=8` -> **HTTP 500** (luna 1 -> 200 cu 12 salariati).
+Root cause: `core/perioada.py:26 e_confirmat(conn, schema, an, luna, domeniu)` PRIMESTE `schema` dar NU-l
+foloseste — `SELECT ... FROM perioada_confirmata` e NECALIFICAT, se bazeaza pe search_path. Ruta
+`main.py:3708 tenant_stat_plata` cheama `stat_plata` pe `db.get_conn()` (FARA schema in search_path) ->
+`UndefinedTable: relation "perioada_confirmata" does not exist` -> 500. Trigger: `stat_plata:60` cheama
+`e_confirmat` DOAR cand un salariat are `tichet_val > 0` (tichete masa) -> luna 8 (S4 are tichete) crapa;
+luna 1 (fara tichete pe acel path) merge. In-process cu `get_conn("tenant_001")` (search_path setat) merge
+pe ambele -> de-aia unit-urile nu vad bug-ul.
+**Frontend ASCUNDE eroarea (a doua fata):** `static/js/ecrane/firme.js:739` face `try{ api.get(stat-plata) }catch{}`
+-> 500 inghitit -> `stat=[]` -> randeaza „**Niciun salariat activ încă.**". VIZUAL: contabilul deschide Stat de
+plata August pentru S4 (12 salariati reali) si vede „niciun salariat" — payroll-ul intregii firme dispare TACUT
+pe luna curenta. Exact tiparul PLAN_B: „la incarcare ecranul minte; gol confundabil cu eroare" (E11/E12) +
+mascarea erorii (GARZI cat.0).
+**Ar fi prins-o suita?** NU. `test_perioada`/`test_salarizare`/`test_tichete_pontaj` cheama e_confirmat/stat_plata
+cu conn avand search_path pe tenant (get_conn(schema)) -> nu ating query-ul necalificat. Calea rutei
+(get_conn() fara schema) + inghitirea din frontend `catch{}` sunt neacoperite. Aceeasi clasa ca DEFECT-1
+(comportament de ruta/integrare neverificat de unit-uri). `perioada_confirmata` e tabela NOUA (cap.23, 15472f0);
+integrarea in stat_plata nu a fost exersata pe calea reala a rutei.
+**Efect pe contabil:** Stat de plata pe luna curenta = gol fals pentru orice firma cu salariati cu tichete de masa.
+NEreparat (regula: nu repar). = defectul de clasa la care ma opresc din parcurgere.
+
+### G10 — verdict vizual pe cele 5 puncte (ce VAD efectiv, nu ce ar trebui), flux_concediu, cod 09
+
+Ajuns pe formularul „Certificat nou" (Concedii medicale) pe un salariat real (via luna 01/2026, ca sa ocolesc
+DEFECT-3). Dupa „Calculează și salvează" cu campuri goale:
+1. **Toate erorile deodata: DA.** La un singur Calc apar SIMULTAN toate erorile de camp (CNP-ingrijit, Data
+   inceput, Data sfarsit, Zile lucratoare CM, Venituri 6 luni, Zile 6 luni), fiecare sub campul ei. Nu una cate una.
+2. **Plasare sub camp: DA.** Fiecare mesaj rosu (bold) e direct SUB inputul lui. Sub CNP: mesaj rosu tranzitoriu
+   „...completează CNP-ul persoanei îngrijite (13 cifre) — D112 îl cere obligatoriu." + un hint gri PERMANENT
+   (regula DUK S97). Doua texte sub CNP -> usor redundant (ambele spun „D112 îl cere"), dar plasat corect.
+3. **Conditionale pe cod: DA.** Cod 09 -> campul „CNP-ul persoanei îngrijite" + eroarea lui apar. Cod 01 -> TOATA
+   zona CNP dispare (display:none). Campul si validarea lui sunt conditionate de cod (09/91/92/17).
+4. **Re-validare fara stivuire: DA.** Dupa 3x Calc, mesajele raman SINGLE per camp (5, nu 15) — se inlocuiesc, nu
+   se adauga. Fara duplicare vizuala.
+5. **Aranjare: curata.** Grid de campuri, eroare rosie + hint gri sub fiecare, sectiuni clare (Certificat nou /
+   Episod de boala / Baza de calcul). Singura observatie: redundanta eroare-rosie vs hint-gri sub CNP.
+
+**Campuri certificat de CONTINUARE (noi, intrate ieri): OK.** La bifarea „Certificat de continuare (același episod
+de boală)" apar corect „Seria certificatului inițial*" + „Numărul certificatului inițial*" (cu `*` + hint care
+citeaza OUG 158/2005 art.17(1) si nota ca adaugarea continuarii poate ridica procentul certificatelor anterioare
+la 75%). Reveal conditionat + randare corecte.
+
+**Observatie G10 (SUSPICIUNE, FE/BE mismatch pe campul-pilot):** validarea FRONTEND a lui `#cm-cnp-ingrijit` e
+DOAR format (`/^\d{13}$/`): am pus „6010101123458" (13 cifre, cifra de control GRESITA) si eroarea rosie a
+DISPARUT (frontend multumit). Backend-ul (salariati_api:344 valideaza_cnp) verifica controlul -> ar bloca la
+submit, dar mesajul inline G10 „langa camp" pentru control-gresit NU apare (vine doar din round-trip backend).
+Mesajul FE zice chiar „13 cifre", nu „cifra de control valida". Pentru exact campul pe care e pilotat G10,
+feedback-ul inline e mai slab decat backend-ul. (Nu e silent-wrong: backend blocheaza; e inconsecventa de UX.)
+
+### NEATINS in aceasta tura (oprit la DEFECT-3, blocant): poarta_gol pe declaratii op=0, A5 metoda afisata, skip
+import D1a, E12 avansat (loading/latenta/date partiale). Harness + selectori cunoscuti -> continuare ieftina.
