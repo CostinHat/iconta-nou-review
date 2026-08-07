@@ -734,12 +734,14 @@ async function ecranSalariati(corp, nav, t) {
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se calculeaz\u0103...</p>`;
-    let stat = [];
+    let stat = [], _eroareStat = false;  // [catch_vizibil_v1] 500 != "fara salariati"
     try {
       const r = await api.get(`/tenants/${t.id}/stat-plata?an=${an}&luna=${luna}`);
       stat = (r && r.stat) || [];
-    } catch {}
-    const randuri = !stat.length
+    } catch { _eroareStat = true; }
+    const randuri = _eroareStat
+      ? `<div class="stare-goala" style="color:var(--rosu)">Nu am putut încărca statul de plată (eroare de server). Reîncearcă — asta NU înseamnă că firma n-are salariați.</div>`
+      : !stat.length
       ? `<div class="stare-goala">Niciun salariat activ încă.</div>`
       : stat.map((s) => `
         <div class="pf-frand" style="flex-wrap:wrap">
@@ -1613,12 +1615,14 @@ async function ecranCasa(corp, nav, t) {
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
-    let reg = { operatiuni: [], sold_final: "0", avertismente: [] };
-    try { reg = await api.get(`/tenants/${t.id}/casa/registru?an=${an}&luna=${luna}`); } catch {}
+    let reg = { operatiuni: [], sold_final: "0", avertismente: [] }, _eroareCasa = false;  // [catch_vizibil_v1]
+    try { reg = await api.get(`/tenants/${t.id}/casa/registru?an=${an}&luna=${luna}`); } catch { _eroareCasa = true; }
     const ziAzi = new Date().toISOString().slice(0, 10);
     const avert = (reg.avertismente || []).map((a) =>
       `<div class="mig-gol" style="margin-bottom:6px">${esc(a.mesaj || a.cod || "")}${a.temei ? " \u00b7 " + esc(a.temei) : ""}</div>`).join("");
-    const randuri = !(reg.operatiuni || []).length
+    const randuri = _eroareCasa
+      ? `<div class="stare-goala" style="color:var(--rosu)">Nu am putut încărca registrul de casă (eroare de server). Reîncearcă — soldul afișat nu e valid.</div>`
+      : !(reg.operatiuni || []).length
       ? `<div class="stare-goala">Nicio opera\u021biune \u00een luna asta.</div>`
       : reg.operatiuni.map((o) => `
         <div class="pf-frand">
@@ -1942,11 +1946,11 @@ async function ecranJurnal(corp, nav, t) {
   let centre = [];  // [F143] centre active, pentru selectorul de pe linia de nota manuala
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
-    let note = [];
+    let note = [], _eroareJurnal = false;  // [catch_vizibil_v1] 500 != "nicio nota"
     try {
       const r = await api.get(`/tenants/${t.id}/jurnal?an=${an}&luna=${luna}`);
       note = (r && r.note) || [];
-    } catch {}
+    } catch { _eroareJurnal = true; }
     try {
       const rc = await api.get(`/tenants/${t.id}/centre-cost?doar_active=true`);
       centre = (rc && rc.centre) || [];
@@ -1990,7 +1994,9 @@ async function ecranJurnal(corp, nav, t) {
       </div>`;
     const notaNoua = { id: "nou", data: `${an}-${String(luna).padStart(2,"0")}-01`, descriere: "", linii: [{ debit: "", credit: "", suma: 0 }] };
     const randuri = (inEditare === "nou" ? editor(notaNoua) : "") +
-      (!note.length
+      (_eroareJurnal
+        ? `<div class="stare-goala" style="color:var(--rosu)">Nu am putut încărca jurnalul (eroare de server). Reîncearcă — NU înseamnă că nu s-a înregistrat nimic.</div>`
+        : !note.length
         ? (inEditare === "nou" ? "" : `<div class="stare-goala">Nicio not\u0103 \u00een luna asta.</div>`)
         : note.map(rand).join(""));
     const ciorne = note.filter((n) => n.status === "ciorna").length;

@@ -22,11 +22,13 @@ export async function ecranRip(corp, nav, t) {
 
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
-    let reg = { operatiuni: [], total_incasari: "0", total_plati: "0", sold: "0" };
-    try { reg = await api.get(`/tenants/${t.id}/rip/registru?an=${an}&luna=${luna}`); } catch {}
+    let reg = { operatiuni: [], total_incasari: "0", total_plati: "0", sold: "0" }, _eroareRip = false;  // [catch_vizibil_v1]
+    try { reg = await api.get(`/tenants/${t.id}/rip/registru?an=${an}&luna=${luna}`); } catch { _eroareRip = true; }
     const ziAzi = new Date().toISOString().slice(0, 10);
 
-    const randuri = !(reg.operatiuni || []).length
+    const randuri = _eroareRip
+      ? `<div class="stare-goala" style="color:var(--rosu)">Nu am putut încărca registrul (eroare de server). Reîncearcă — soldul afișat nu e valid.</div>`
+      : !(reg.operatiuni || []).length
       ? `<div class="stare-goala">Nicio opera\u021biune \u00een luna asta.</div>`
       : reg.operatiuni.map((o) => `
         <div class="pf-frand">

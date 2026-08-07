@@ -262,3 +262,45 @@ feedback-ul inline e mai slab decat backend-ul. (Nu e silent-wrong: backend bloc
 
 ### NEATINS in aceasta tura (oprit la DEFECT-3, blocant): poarta_gol pe declaratii op=0, A5 metoda afisata, skip
 import D1a, E12 avansat (loading/latenta/date partiale). Harness + selectori cunoscuti -> continuare ieftina.
+
+---
+
+## REMEDIERE DEFECT-3 (08.08.2026, aprobat de Costin) — REPARAT (backend clasa + frontend cele 4 grave) + GARD
+
+**Backend (DEFECT-3.1) — REPARAT + vanatoare de clasa:**
+- Root: `core/perioada.py` (e_confirmat/confirma/deconfirma) primeau `schema` dar foloseau `perioada_confirmata`
+  NECALIFICAT. Fix (`perioada_confirmata_v2_qualified`): helper `_tbl(schema)` -> `"schema".perioada_confirmata`
+  cand schema e dat; necalificat (search_path) cand e gol (salariati_api:410 paseaza "").
+- Clasa (rute care pasau `schema` unui helper tenant pe `db.get_conn()` FARA search_path): 5 rute reparate cu
+  `db.get_conn(schema)` (`search_path_tenant_v1`): stat-plata (3708, CONFIRMAT crapa), fluturas (3722), plata-
+  salarii preview+fisier (pain001, 3739/3757), documente/balanta (4327). RED/GREEN pe conn fara vs cu schema:
+  stat_plata fara-schema=UndefinedTable -> cu-schema=OK. fluturas/balanta nu au crapat pe datele S4 (helper
+  califica / data nu atinge query-ul) = latente-conformate. pain001 = Valueise business (S4 fara IBAN), nespecific.
+- Convenția era deja documentata (comentariul _schema_cabinet_sau_404): helper-ele folosesc nume necalificate ->
+  apelantul deschide `db.get_conn(schema)`. Cele 5 rute o incalcau.
+
+**Frontend (DEFECT-3.2, mai grav) — cele 4 cele mai grave REPARATE; restul mapate + ratchet:**
+- Harta completa (subagent, 08.08): **17 catch-uri periculoase** (inghit un 500 -> stare goala mincinoasa),
+  56 benigne. Cele mai grave = evidente financiare/legale care MINT: stat-plata (#1), casa/registru (#2),
+  RIP (#3), jurnal (#4). Apoi facturi emise/primite (#5/#6), NIR (#7), solicitari (#8), etransport (#9),
+  retete (#10), centre-cost (#11), contracte (#12), facturi-recurente (#13), concedii (#14), cabinet-azi (#15),
+  api-chei (#16), woo (#17).
+- REPARATE cele 4 grave (`catch_vizibil_v1`): flag de eroare in catch + ramura de EROARE VIZIBILA (rosu)
+  inaintea starii goale -> un 500 randeaza "Nu am putut incarca ... (eroare de server)", nu "Niciun salariat/
+  Nicio operatiune/Nicio nota". Restul 13 = RAMAN de reparat (acelasi tipar), oprite sa creasca de ratchet.
+
+**Gard (`core/test_catch_vizibil.py`, 4 teste, mutatie-probate):**
+- ratchet: nr. catch{} goale langa un api.* NU creste (BASELINE 54); o cale noua pica. Repararea din rest coboara baseline.
+- anti-regresie: cele 4 ecrane reparate pastreaza flag-ul + mesajul vizibil "Nu am putut incarca".
+- backend: perioada.py califica cu schema (fara `FROM perioada_confirmata` necalificat); cele 5 rute au `search_path_tenant_v1`.
+
+**Probe:**
+- LIVE :8010: `GET /tenants/4784/stat-plata?an=2026&luna=8` (luna curenta, S4) -> **200, 12 salariati** (era 500). Restart facut.
+- "Eroarea de backend ajunge VIZIBILA in UI": headless cu interceptare (`page.route stat-plata -> 500`) -> ecranul
+  arata rosu "Nu am putut incarca statul de plata...", NU "Niciun salariat activ". (Test comportamental headless;
+  in suita = gardul de sursa test_ecranele_reparate.)
+- No-op date reale: sha256 D112 tenant_001 2026/1 IDENTIC (45e3b486...) pre/post.
+- Mutatie: git checkout (pre-fix) -> toate 4 gardurile ROSII; restore -> verzi.
+
+**Ramas (recomandare):** cele 13 catch-uri periculoase din harta (facturi/NIR/solicitari/etransport/retete/centre/
+contracte/recurente/concedii/cabinet-azi/api-chei/woo) - acelasi fix, ratchet le tine sa nu creasca.

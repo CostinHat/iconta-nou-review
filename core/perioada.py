@@ -20,10 +20,18 @@ class PerioadaNeconfirmata(ValueError):
         super().__init__("PERIOADA_BLOCATA: " + det)
 
 
+def _tbl(schema):
+    """[perioada_confirmata_v2_qualified] Numele calificat al tabelei. Cand `schema` e dat, califica
+    {schema}.perioada_confirmata (robust pe orice conexiune, inclusiv fara search_path pe tenant - ruta
+    stat-plata folosea db.get_conn() fara schema -> UndefinedTable -> 500). schema gol/None -> necalificat
+    (search_path; apelanti ca salariati_api:410 care paseaza "")."""
+    return ('"%s".perioada_confirmata' % schema) if schema else "perioada_confirmata"
+
+
 def e_confirmat(conn, schema, an, luna, domeniu):
     """{confirmat: bool, confirmat_de, confirmat_la} pentru perioada (an, luna, domeniu)."""
     with conn.cursor() as cur:
-        cur.execute("SELECT confirmat_de, confirmat_la FROM perioada_confirmata "
+        cur.execute("SELECT confirmat_de, confirmat_la FROM " + _tbl(schema) + " "
                     "WHERE an = %s AND luna = %s AND domeniu = %s", (an, luna, domeniu))
         r = cur.fetchone()
     return {"confirmat": r is not None,
@@ -34,7 +42,7 @@ def e_confirmat(conn, schema, an, luna, domeniu):
 def confirma(conn, schema, an, luna, domeniu, user_id):
     """Marcheaza perioada CONFIRMATA (autoritativa). Idempotent (re-confirmarea reimprospateaza confirmat_la)."""
     with conn.cursor() as cur:
-        cur.execute("INSERT INTO perioada_confirmata (an, luna, domeniu, confirmat_de) VALUES (%s, %s, %s, %s) "
+        cur.execute("INSERT INTO " + _tbl(schema) + " (an, luna, domeniu, confirmat_de) VALUES (%s, %s, %s, %s) "
                     "ON CONFLICT (an, luna, domeniu) DO UPDATE SET confirmat_de = EXCLUDED.confirmat_de, "
                     "confirmat_la = now()", (an, luna, domeniu, user_id))
     return {"ok": True}
@@ -43,6 +51,6 @@ def confirma(conn, schema, an, luna, domeniu, user_id):
 def deconfirma(conn, schema, an, luna, domeniu):
     """Revine la NECONFIRMAT (o modificare a datelor inainte de depunere -> calculele din aval re-blocheaza)."""
     with conn.cursor() as cur:
-        cur.execute("DELETE FROM perioada_confirmata WHERE an = %s AND luna = %s AND domeniu = %s",
+        cur.execute("DELETE FROM " + _tbl(schema) + " WHERE an = %s AND luna = %s AND domeniu = %s",
                     (an, luna, domeniu))
     return {"ok": True}

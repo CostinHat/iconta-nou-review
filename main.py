@@ -3705,10 +3705,11 @@ async def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx
 @app.get("/tenants/{tenant_id}/stat-plata")
 def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from core import stat_plata_api as _sp
-    with db.get_conn() as conn:
+    with db.get_conn() as conn:  # [search_path_tenant_v1] schema pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
+    with db.get_conn(schema) as conn:  # helper-ele (pontaj/perioada) folosesc nume necalificate -> search_path pe tenant
         stat = _sp.stat_plata(conn, schema, an, luna)
         try:
             _snapshot_stat_plata(conn, schema, stat, an, luna)
@@ -3719,12 +3720,13 @@ def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
 def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from fastapi.responses import Response
     from core import stat_plata_api as _sp
-    with db.get_conn() as conn:
+    with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
         cur = conn.cursor(); cur.execute("SELECT nume FROM public.tenants WHERE id=%s", (tenant_id,))
         nf = (cur.fetchone() or [""])[0]
+    with db.get_conn(schema) as conn:  # fluturas_pdf foloseste nume necalificate -> search_path pe tenant
         pdf = _sp.fluturas_pdf(conn, schema, salariat_id, an, luna, nf)
     if pdf is None:
         raise HTTPException(404, "salariat inexistent")
@@ -3736,12 +3738,13 @@ def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=De
 def tenant_plata_salarii_preview(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """[F134] Sumar inainte de generarea fisierului SEPA: cate plati, total, cine e exclus (fara IBAN)."""
     from core import plata_salarii as _ps
-    with db.get_conn() as conn:
+    with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
         cur = conn.cursor(); cur.execute("SELECT nume FROM public.tenants WHERE id=%s", (tenant_id,))
         nf = (cur.fetchone() or [""])[0]
+    with db.get_conn(schema) as conn:  # genereaza_pain001 foloseste nume necalificate -> search_path pe tenant
         try:
             _xml, meta = _ps.genereaza_pain001(conn, schema, an, luna, nume_firma_fallback=nf)
         except ValueError as e:
@@ -3754,12 +3757,13 @@ def tenant_plata_salarii_fisier(tenant_id: int, an: int, luna: int, ctx=Depends(
     """[F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download)."""
     from fastapi.responses import Response
     from core import plata_salarii as _ps
-    with db.get_conn() as conn:
+    with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
         cur = conn.cursor(); cur.execute("SELECT nume FROM public.tenants WHERE id=%s", (tenant_id,))
         nf = (cur.fetchone() or [""])[0]
+    with db.get_conn(schema) as conn:  # genereaza_pain001 foloseste nume necalificate -> search_path pe tenant
         try:
             xml, meta = _ps.genereaza_pain001(conn, schema, an, luna, nume_firma_fallback=nf)
         except ValueError as e:
@@ -4324,11 +4328,12 @@ def portal_documente_luni(tenant_id: Optional[int] = None, ctx=Depends(cere_clie
 @app.get("/tenants/{tenant_id}/documente/balanta")
 def cabinet_documente_balanta(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from fastapi.responses import Response
-    with db.get_conn() as conn:
+    with db.get_conn() as conn:  # [search_path_tenant_v1] schema + detalii pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
         d = tenant_provisioning.detalii_tenant(conn, tenant_id)
+    with db.get_conn(schema) as conn:  # balanta_pdf foloseste nume necalificate -> search_path pe tenant
         pdf = documente_api.balanta_pdf(conn, schema, an, luna, (d or {}).get("nume") or "")
     return Response(content=pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'attachment; filename="balanta_{an}_{luna:02d}.pdf"'})
