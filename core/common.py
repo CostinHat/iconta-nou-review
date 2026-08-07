@@ -436,6 +436,7 @@ COTE = {
     "plafon_facilitate_salariu_minim": [
         (date(2026, 7, 1), Decimal("4600"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-07-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
         (date(2026, 1, 1), Decimal("4300"), Temei("OUG", 89, 2025, art="III", lit="b", data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2025, 1, 1), Decimal("4300"), Temei("OUG", 156, 2024, art="LXVI", data_in="2025-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_156_2024.pdf", text_citat="art.LXVI alin.(1) lit.b: venitul brut (fara tichete masa/vouchere vacanta/indemnizatie hrana) nu depaseste 4.300 lei inclusiv; veniturile aferente lunilor ianuarie-decembrie 2025")),
     ],
     "tichet_masa_plafon": [
         (date(2026, 1, 1), Decimal("45"), Temei("Legea", 201, 2025, data_in="2026-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),

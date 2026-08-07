@@ -1909,3 +1909,12 @@ Cei 11 marcati PRODUS/blocat veneau din registru, nu din citire de cod. Verifica
 RATA FANTOME: azi 4 din 11 (rezerva legala, D2, coada DUK, IMCA) nu-s de construit. Cumulat pe inventar: ~16 din
 45 (~35%). Corectii: rezerva legala + coada DUK SCOASE din PRODUS; D2 sters ca item; B1 reincadrat reparatie
 prioritara; marja/Payments/50%-ded/praguri reincadrate build-new INGUST (nu de la zero).
+
+## 07.08.2026 — B1 reincadrat: CLASA de valori datate lipsa pentru 2025 (nu un rand)
+- REPARAT + verificat: plafon_facilitate_salariu_minim @2025 = 4300 (OUG 156/2024 art.LXVI, anaf_surse verbatim).
+- RAMAS (blocheaza calcul_salariu 2025): tichet_masa_plafon @2025 - valoarea nominala maxima a tichetului de masa
+  in 2025 (indexata semestrial, Legea 165/2018 art.32). NU e in anaf_surse (doar cadrul). Cere sursa: ordinul/
+  comunicatul cu valoarea concreta sem I 2025 (si sem II 2025 daca difera). tva_redusa @martie 2025 lipsa dar
+  nefolosit de salarizare.
+- DATA_START_SISTEM = 1 ianuarie 2025: 2023/2024 sub podea (nereparabile by design). calcul_salariu(2025) ramane
+  blocat pe tichet_masa_plafon pana se aduce sursa. B1 e PARTIAL (plafon inchis; tichet 2025 = urmator rand).

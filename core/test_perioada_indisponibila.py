@@ -13,10 +13,11 @@ from core import salariati_api as sa, adeverinta, salarizare as sz
 
 
 def test_cota_pre_data_ridica_blocaj_motivat():
-    """plafon_facilitate_salariu_minim incepe la 2026-01-01; cerut pentru 2025 -> PerioadaIndisponibila
-    (subclasa de ValueError), cu tag PERIOADA_BLOCATA + prima_data corecta."""
+    """tichet_masa_plafon incepe la 2026-01-01; cerut pentru 2025 -> PerioadaIndisponibila (subclasa de
+    ValueError), cu tag PERIOADA_BLOCATA + prima_data corecta. (plafon_facilitate a fost completat @2025
+    - B1 - deci exemplul s-a mutat pe tichet_masa_plafon, inca nedefinit pe 2025.)"""
     with pytest.raises(c.PerioadaIndisponibila) as ei:
-        c.cota("plafon_facilitate_salariu_minim", date(2025, 6, 1))
+        c.cota("tichet_masa_plafon", date(2025, 6, 1))
     assert ei.value.prima_data == date(2026, 1, 1)
     assert isinstance(ei.value, ValueError)              # `except ValueError` existent ramane valabil
     assert "PERIOADA_BLOCATA:" in str(ei.value)

@@ -7721,3 +7721,24 @@ PROBE: cert initial 31 iulie 2025 -> 75% uniform (5 si 20 zile); cert initial 1 
 75% (20 zile); granita 31 iulie (0.75) vs 1 august (0.55); coduri speciale 100%/85% identice in ambele regimuri.
 No-op pe date reale: D112 byte-identic (ea0520b0c8b2eb0c), datele reale fiind 2026 = post-141. Ambele forme
 nivel_sursa=MO+verbatim. Gard: core/test_cm_episod.py (test_art_xi_granita_pre_post_141, test_coduri_speciale_neatinse_de_l141).
+
+## 07.08.2026 — B1: plafon_facilitate_salariu_minim 2025 = 4300 (OUG 156/2024 art.LXVI) + B1 = CLASA
+
+Lipsea plafon_facilitate_salariu_minim @2025 din common.py -> calcul_salariu pe orice luna din 2025 ridica
+PerioadaIndisponibila. Adaugat un rand DATAT: @1 ianuarie 2025 = 4300 lei.
+
+Sursa MO+verbatim (anaf_surse/oug_156_2024.pdf, OUG 156/2024 art. LXVI alin.(1) lit.b): "venitul brut realizat
+din salarii ... fara a include contravaloarea tichetelor de masa, voucherelor de vacanta, respectiv indemnizatia
+de hrana ... nu depaseste nivelul de 4.300 lei inclusiv"; "se aplica veniturilor aferente lunilor ianuarie -
+decembrie 2025 inclusiv". Confirmat: 4.300 (NU 4.000, care era iulie-decembrie 2024 prin OUG 115/2023 art.LXXIII).
+Marker: **plafon facilitate salariu minim 2025 verificat la sursa oug 156/2024**.
+
+FINDING (PASUL 4, generalizare): B1 NU e un singur rand - e o CLASA. DATA_START_SISTEM = 1 ianuarie 2025
+(2023/2024 = sub podea, nereparabile by design). Pentru 2025, dupa adaugarea plafonului, calcul_salariu MAI
+ridica pe **tichet_masa_plafon @2025** (definit doar de la 1 ianuarie 2026). Deci 2025 ramane BLOCAT pana se
+adauga si valoarea nominala maxima a tichetului de masa in 2025 (indexata semestrial, Legea 165/2018 art.32;
+NU e in anaf_surse - doar cadrul general). tva_redusa @martie 2025 lipseste dar NU e folosit de salarizare.
+
+Probe: plafon @2025-03 = (4300, OUG 156/2024 art.LXVI); no-op 2026 D112 byte-identic (ea0520b0c8b2eb0c);
+regresie salarizare 36 passed. Granita facilitatii (brut sub/peste 4300) NU se poate proba prin calcul_salariu
+pana nu intra si tichet_masa_plafon 2025.

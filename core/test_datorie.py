@@ -43,11 +43,7 @@ def _db_ok():
 #  DATORIE FISCALA
 # ============================================================
 
-@pytest.mark.xfail(strict=True, reason=(
-    "DATORIE 01.08.2026 (Model de temei; coada reverificata 05.08 tura 15): cele 19 chei COTE au TOATE nivel_sursa=REDARE (niciuna MO+text_citat verbatim). Upgrade-ul FUNCTIILOR a inceput deja - d101 scadenta (2 variante) e pe MO (d101.py:154-155). Coada REDARE ramasa = cele 19 COTE. "
-    "Niciun temei nu e confirmat la MO cu text_citat verbatim. Registrul intreg sta pe surse SECUNDARE - "
-    "upgrade la MO pe masura ce se capteaza verbatim de la legislatie.just.ro. Cand primul temei devine "
-    "MO+text, testul TRECE (xpass strict) si anunta ca upgrade-ul a inceput."))
+# [INCHISA 07.08.2026] upgrade la MO a INCEPUT: primul temei MO+text_citat verbatim in COTE = plafon_facilitate_salariu_minim @2025 (OUG 156/2024 art.LXVI). Coada REDARE ramasa se stinge pe masura ce se capteaza verbatim. Vezi DECIZII.md.
 def test_datorie_temeiuri_toate_redare_niciun_mo_verbatim():
     """Cand macar UN Temei din COTE e MO cu text_citat verbatim, datoria incepe sa se stinga."""
     from core.common import COTE

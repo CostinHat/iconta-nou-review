@@ -1249,3 +1249,7 @@ pre-141) ramane deschis - sursa verbatim inca lipseste.
 ## 07.08.2026 — #16 inchis + teste art.XI
 core/test_cm_episod.py: test_art_xi_granita_pre_post_141 (31 iulie=75% uniform / 1 august=55-65-75) +
 test_coduri_speciale_neatinse_de_l141 (alin.2 100% identic in ambele regimuri). xfail #16 -> INCHIS.
+
+## 07.08.2026 — B1 partial: plafon 2025 adaugat, tichet 2025 ramas
+common.py plafon_facilitate_salariu_minim @2025=4300 (OUG 156/2024 art.LXVI, MO+verbatim). calcul_salariu(2025)
+inca ridica pe tichet_masa_plafon @2025 - urmatorul rand, cere sursa. B1 reincadrat din "un rand" in "clasa".
