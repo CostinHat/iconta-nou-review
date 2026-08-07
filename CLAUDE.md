@@ -477,6 +477,13 @@ DUPA FIECARE EXECUTIE (punct / cluster / task livrat), FARA sa ceara cineva, se 
 Raportul 2.2 se incheie OBLIGATORIU cu sectiunea 11 "CE AM ACTUALIZAT": cele patru fisiere, fiecare cu ce s-a scris,
 SAU "nimic de actualizat in X, pentru ca ...". Niciodata tacut.
 
+LIMITA CUNOSCUTA (audit 07.08.2026): actualizarea celor patru registre NU are gard mecanic. Un gard care ar avertiza
+pe orice commit in `core/` fara atingerea unui registru ar produce zgomot pe reparatii mici - deci ramane JUDECATA,
+nu mecanism. La fel, formatul raportului (§2.2), CICLUL DE NECONFORMITATE si WIP-pe-rosu (pct.9) sunt reguli
+comportamentale, neguardabile mecanic in acest mediu. Contrast: publicarea pe origin/main + backup (pct.8) era la fel
+de neguardata, dar e STARE REMOTE verificabila -> a fost cablata (post-commit). Push-ul e mecanism; registrele raman
+disciplina, asumat.
+
 REGULA SURSEI UNICE peste toate: informatia sta intr-un singur loc CANONIC (datoria in GARZI, decizia in DECIZII,
 bifa/gardul in TESTE, naratiunea in ISTORIC, functionalitatea in FUNCTIONALITATI.csv), celelalte TRIMIT acolo, nu
 duplica textul.
@@ -544,14 +551,15 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    OPRESTE (WIP salvat pct.9). FARA EXCEPTII, fara "repar dupa push". Pe main se impinge cu fast-forward; daca
    origin/main a avansat sub tine (commit al lui Costin), `pull --rebase` INAINTE (vezi memoria main partajat), nu se
    forteaza NICIODATA.
-   **MECANISM (gard, nu intentie) — `scripts/githooks/post-commit` (cablat 07.08.2026).** Publicarea pe
-   origin/main nu mai depinde de memoria executorului: dupa fiecare commit pe `main` (deci dupa ce pre-commit a
-   trecut poarta verde), post-commit face `fetch` + verifica fast-forward + `git push origin main`, NICIODATA
-   `--force`. Daca origin/main a avansat sub tine, se opreste si cere `pull --rebase` (nu forteaza); dupa rebase
-   urmatorul commit republica singur. Daca publicarea nu reuseste, ESUEAZA VIZIBIL: banner + sentinela
-   `.git/PUSH_MAIN_ESUAT`. Confirmarea din raport (HEAD = origin/main = backup) include ACUM "sentinela
-   `.git/PUSH_MAIN_ESUAT` absenta" - daca exista, munca NU e publicata si raportul NU e incheiat. NOTA: push-ul
-   pe backup (`push -f`) ramane MANUAL - absenta lui e tot o defectiune (acest pct.), inca necablata.
+   **MECANISM (gard, nu intentie) — `scripts/githooks/post-commit` (cablat 07.08.2026, backup adaugat aceeasi zi).**
+   Publicarea in AMBELE locuri remote nu mai depinde de memoria executorului: dupa fiecare commit pe `main` (deci dupa
+   ce pre-commit a trecut poarta verde), post-commit face `fetch` + verifica fast-forward + `git push` pe `origin/main`
+   SI pe `backup/lant-<data>` (creeaza ramura zilei daca nu exista), NICIODATA `--force`. Daca o tinta a avansat sub
+   tine / nu e fast-forward, se opreste pe acea tinta si cere rezolvare manuala (`pull --rebase` pentru main, fara sa
+   forteze). Daca vreo publicare nu reuseste, ESUEAZA VIZIBIL: banner + sentinela (`.git/PUSH_MAIN_ESUAT`,
+   `.git/PUSH_BACKUP_ESUAT`). Confirmarea din raport inseamna ACUM three-way COMPLET: HEAD = origin/main = backup pe
+   acelasi commit SI ambele sentinele absente - daca vreuna exista, munca NU e integral publicata si raportul NU e
+   incheiat.
    Daca munca exista intr-un singur loc, executorul o spune EXPLICIT in raport, la PRIMA linie, nu la final. Raportul
    se incheie cu `BACKUP: <ramura> — <n> commituri` si confirma HEAD = origin/main = backup pe acelasi commit (§2.2 sect.11).
 

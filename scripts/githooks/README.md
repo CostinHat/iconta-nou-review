@@ -23,7 +23,7 @@ comanda tastezi nu e poarta - hook-ul ruleaza mereu tot.
 mult decat 32s. Daca devine o frana reala, se discuta - dar NU e optional din start.
 
 ## post-commit (cablat 07.08.2026)
-Publica automat pe origin/main dupa fiecare commit pe `main` (pre-commit a trecut deja poarta verde).
+Publica automat pe origin/main SI pe backup/lant-<data> dupa fiecare commit pe `main` (pre-commit a trecut deja poarta verde).
 Fast-forward, NICIODATA `--force`. Daca origin/main a avansat sub tine -> se opreste si cere `pull --rebase`.
-Esec de publicare -> banner + sentinela `.git/PUSH_MAIN_ESUAT` (vizibil, nu tacut). Cableaza CLAUDE.md §2.3 pct.8.
-Push-ul pe backup (`push -f origin HEAD:backup/lant-<data>`) ramane manual.
+Esec de publicare -> banner + sentinela (`.git/PUSH_MAIN_ESUAT`, `.git/PUSH_BACKUP_ESUAT`; vizibil, nu tacut).
+Backup: fast-forward, FARA --force, creeaza ramura zilei daca nu exista. Cableaza CLAUDE.md §2.3 pct.8.

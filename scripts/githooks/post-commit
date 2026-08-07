@@ -1,56 +1,72 @@
 #!/bin/sh
-# post-commit — CABLEAZA regula CLAUDE.md §2.3 pct.8: publicarea pe origin/main dupa fiecare commit.
+# post-commit — CABLEAZA regula CLAUDE.md §2.3 pct.8: publicarea in TREI locuri dupa fiecare commit pe main.
 #
-# De ce aici: pre-commit impune DEJA poarta verde (pytest + verificator). Daca acest hook ruleaza,
-# inseamna ca poarta a trecut si commit-ul exista. Ce lipsea era GARDUL care publica - o regula a carei
-# absenta e definita ca defectiune (pct.8) dar care nu avea niciun mecanism. Acum publicarea nu mai
-# depinde de memoria executorului.
+# pre-commit impune DEJA poarta verde (pytest + verificator). Daca acest hook ruleaza, poarta a trecut si
+# commit-ul exista. Ce lipsea era GARDUL care publica - o regula a carei absenta e definita ca defectiune
+# (pct.8) dar care nu avea niciun mecanism. Publicarea nu mai depinde de memoria executorului.
 #
-# Contract: publica DOAR main; fast-forward; NICIODATA --force. Daca nu se poate publica, ESUEAZA
-# VIZIBIL (banner + sentinela .git/PUSH_MAIN_ESUAT), niciodata tacut. Nu atinge poarta (deja trecuta).
+# Contract, IDENTIC pe ambele tinte (origin/main SI backup/lant-<data>): fast-forward; NICIODATA --force;
+# esec = banner + sentinela (.git/PUSH_MAIN_ESUAT, .git/PUSH_BACKUP_ESUAT), niciodata tacut. Nu atinge poarta.
 
 set -u
 BRANCH=$(git symbolic-ref --short HEAD 2>/dev/null || echo "")
-[ "$BRANCH" = "main" ] || exit 0   # alte ramuri raman manuale (backup e push -f separat)
+[ "$BRANCH" = "main" ] || exit 0   # alte ramuri de lucru raman in seama executorului
 
-SENT=".git/PUSH_MAIN_ESUAT"
-rm -f "$SENT"
+HEAD_SHA=$(git rev-parse HEAD)
 
-banner() {
+banner() {   # $1=tinta  $2=sentinela  $3=motiv  $4=remediu
     echo ""
     echo "############################################################"
-    echo "## [post-commit] PUBLICARE pe origin/main NEFACUTA: $1"
-    echo "## Commit-ul e local (si pe backup daca l-ai impins), dar NU pe origin/main."
-    echo "## Rezolva ACUM: $2"
-    echo "## Sentinela $SENT scrisa - raportul NU e 'incheiat' cat timp exista."
+    echo "## [post-commit] PUBLICARE pe $1 NEFACUTA: $3"
+    echo "## Commit-ul e local, dar NU pe $1."
+    echo "## Rezolva ACUM: $4"
+    echo "## Sentinela $2 scrisa - raportul NU e 'incheiat' cat timp exista."
     echo "############################################################"
     echo ""
-    printf '%s\n' "$1" > "$SENT"
+    printf '%s\n' "$3" > "$2"
 }
 
-# 1. adu starea remote (nu publicam in orb)
+# ---------- 1. origin/main (fast-forward, FARA --force) ----------
+S_MAIN=".git/PUSH_MAIN_ESUAT"; rm -f "$S_MAIN"
 if ! git fetch -q origin main 2>/dev/null; then
-    banner "fetch origin main a esuat (retea/auth)" "verifica reteaua/cheia SSH, apoi: git push origin main"
-    exit 0
-fi
-
-# 2. deja la zi?
-if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main 2>/dev/null)" ]; then
-    exit 0
-fi
-
-# 3. fast-forward posibil? origin/main trebuie sa fie ANCESTOR al HEAD
-if ! git merge-base --is-ancestor origin/main HEAD 2>/dev/null; then
-    banner "origin/main a avansat sub tine (commit al lui Costin) - NU e fast-forward" \
-           "git pull --rebase origin main (NU forta); dupa rebase, urmatorul commit republica singur"
-    exit 0
-fi
-
-# 4. publica - fast-forward, FARA --force niciodata
-if git push origin main > /tmp/push_main.log 2>&1; then
+    banner "origin/main" "$S_MAIN" "fetch a esuat (retea/auth)" \
+           "verifica reteaua/cheia SSH, apoi: git push origin main"
+elif [ "$HEAD_SHA" = "$(git rev-parse origin/main 2>/dev/null)" ]; then
+    :   # la zi
+elif ! git merge-base --is-ancestor origin/main HEAD 2>/dev/null; then
+    banner "origin/main" "$S_MAIN" "origin/main a avansat sub tine - NU e fast-forward" \
+           "git pull --rebase origin main (NU forta); urmatorul commit republica singur"
+elif git push origin main > /tmp/push_main.log 2>&1; then
     echo "[post-commit] publicat pe origin/main: $(git rev-parse --short HEAD)"
 else
-    banner "git push origin main a esuat: $(tail -1 /tmp/push_main.log)" \
+    banner "origin/main" "$S_MAIN" "git push a esuat: $(tail -1 /tmp/push_main.log)" \
            "citeste /tmp/push_main.log, rezolva cauza, apoi: git push origin main"
+fi
+
+# ---------- 2. backup/lant-<data> (fast-forward, FARA --force) ----------
+S_BK=".git/PUSH_BACKUP_ESUAT"; rm -f "$S_BK"
+BK="backup/lant-$(date +%Y-%m-%d)"
+git fetch -q origin "$BK" 2>/dev/null || true
+REMOTE_BK=$(git ls-remote origin "$BK" 2>/dev/null | cut -f1)
+if [ -z "$REMOTE_BK" ]; then
+    # ramura zilei nu exista inca -> o creeaza (fast-forward din nimic, fara force)
+    if git push origin "HEAD:refs/heads/$BK" > /tmp/push_backup.log 2>&1; then
+        echo "[post-commit] backup creat: $BK -> $(git rev-parse --short HEAD)"
+    else
+        banner "$BK" "$S_BK" "creare a esuat: $(tail -1 /tmp/push_backup.log)" \
+               "citeste /tmp/push_backup.log, apoi: git push origin HEAD:$BK"
+    fi
+elif [ "$HEAD_SHA" = "$REMOTE_BK" ]; then
+    :   # la zi
+elif git merge-base --is-ancestor "$REMOTE_BK" HEAD 2>/dev/null; then
+    if git push origin "HEAD:refs/heads/$BK" > /tmp/push_backup.log 2>&1; then
+        echo "[post-commit] backup publicat: $BK -> $(git rev-parse --short HEAD)"
+    else
+        banner "$BK" "$S_BK" "git push a esuat: $(tail -1 /tmp/push_backup.log)" \
+               "citeste /tmp/push_backup.log, apoi: git push origin HEAD:$BK"
+    fi
+else
+    banner "$BK" "$S_BK" "$BK a divergat (nu e fast-forward)" \
+           "verifica ramura; NU se forteaza din hook - muta backup-ul manual, constient"
 fi
 exit 0
