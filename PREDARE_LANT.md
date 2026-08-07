@@ -1,5 +1,91 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
+## ★★ PREDARE — 07.08.2026 — CITEȘTE ASTA ÎNTÂI (supersedează secțiunea C-4 de mai jos, care e istoric)
+
+**Ritual pornire:** `ssh iconta 'cd ~/iconta_nou && pwd; hostname; git log -1'`. Apoi citește CLAUDE.md §2.2/§2.3.
+
+**⚠ STARE — ATENȚIE: main NU e publicat.**
+- HEAD (local) = **`9b3e88f`**. Backup remote OK: `backup/lant-2026-08-07` = `9b3e88f` (identic).
+- **origin/main = `2fc777d` — în urmă cu 45 commituri.** HEAD ≠ origin/main. Munca există în 2 din 3 locuri
+  (server + backup), NU pe origin/main. Vezi „REGULA PUSH" mai jos ÎNAINTE de a împinge (Costin a cerut să NU
+  se împingă până nu decide).
+- Tree curat, poartă verde (verificator TOTAL 0, 1524 passed).
+
+**CE S-A LIVRAT (cele 45 de commituri `origin/main..HEAD`, tematic):**
+- **Corpus legislativ (azi 07.08)** — 575bd5e/68feed5/9b3e88f + B1 tichet/plafon (7e53ac7/ebae623):
+  temeiurile COTE legate la fișiere locale din `anaf_surse/`, ridicate REDARE→MO **verbatim, act cu act**.
+  COTE MO 4→24, REDARE 9. Manifest **`anaf_surse/INDEX.json`** (regenerabil: `anaf_surse/gen_index.py`) +
+  3 gărzi **`core/test_corpus_surse.py`**: G1 (MO ⟹ sursă locală existentă), G2 (formă `consolidat_la_zi` nu
+  poate sursa o valoare cu succesor — prinde CF consolidat la zi), G3 (`cote_volatile_fara_mo`, prag 18 luni,
+  warning la generare — semnalează DOAR valoarea curentă non-MO volatilă/recentă). OUG 8/2026 + OUG 89/2025
+  aduse local și legate (6 valori). **D112 byte-identic `ea0520b0c8b2eb0c`** pe tot (doar temeiuri, zero valori).
+- **Model episod CM (azi 07.08)** — da990a8/7785a55: indemnizația pe **EPISOD**, nu pe certificat (OUG 158/2005
+  art.17), migrare `core/migrare_cm_episod.py` (12/12 scheme, backup `pre_cm_episod_20260807`), recalcul
+  retroactiv, refuz pe perioadă confirmată, `data_episod_initial`. Gard `core/test_cm_episod.py`. art.XI
+  L141/2025 = forma pre-141 (75% uniform pe certificatul inițial). NEFĂCUT: sugestia AUTO de legare episoade
+  adiacente (decizie, nu defect).
+- **Ieri (06.08):** campanie reparație închisă + **PLAN_B rescris** (b02b837); blocuri B3 (proprietarul cabinetului
+  depune fără blocaj), A6 (D394 linia scutită L→LS), D1a (skip vizibil la import); C-5 conformitate cap.6
+  (G1–G12 markeri); **G10 Faza 0 coexistență + Faza 1 PILOT pe `flux_concediu`** (b1dcc0d).
+
+**E1–E12 (PLAN_B.md) — propunere DATĂ și APROBATĂ, dar NEEXECUTATĂ:**
+- Parcurgere cap-coadă a aplicației ca un contabil real (NU scanare de sursă). PLAN_B.md = documentul
+  (E1–E12 + firme F1–F8 + „cum se citește un eșec").
+- **Aprobat:** firma **F2** (micro + salariați + TVA trimestrial); parcurgere **E1→E11** o tură; **HTTP acum**
+  (FastAPI, `main.py`; pornești `uvicorn` + conduci ca client HTTP — NU există browser headless pe server);
+  **headless a doua tură** (instalezi playwright+chromium doar dacă rămâne suspiciune pur-vizuală / pentru E12).
+- **NEÎNCEPUT:** `E1E12_GASITE.md` **nu există încă** — se creează la prima parcurgere. **Nu repari pe loc**: doar
+  consemnezi (stări: DEFECT | SUSPICIUNE | INFIRMAT-OK | DESCHIS-cunoscut); reparațiile cu aprobarea lui Costin.
+- Defect = divergență pe FLUX REAL, cu repro (declarație datorată lipsă / declarație greșită tăcută & depozabilă /
+  blocaj tăcut sau prost plasat / izolare tenant spartă / te obligă să ghicești). NU zgomot: A5, F8-produs,
+  AUTO-legare CM (deschise cunoscute).
+
+**CE E DESCHIS și DE CE:**
+- **Octombrie 2025 `tichet_masa_plafon` = GOL MOTIVAT.** Lipsește Ordinul MF tichet sem.II 2025; `data_out`
+  explicit 30 sep pe Ordinul 484/2025 oprește propagarea tacită a lui 40,18. `cota(..., 2025-10-...)` ridică
+  „gol in registru". Se închide când vine ordinul.
+- **Acte P2 (istorice, pentru recalculări retroactive) — REDARE, surse neaduse:** OG 16/2022 (dividend 8%@2023),
+  Legea 296/2020 (plafon TVA 4,5M@2021), OUG 115/2023 (avans 5.000 + facilitate 300@2025), Legea 70/2015
+  (sold casă 50.000).
+- **Snapshot CF 2016/2017 — LIPSĂ.** `cod_fiscal_227_consolidat` e LA ZI → nu conține formele istorice, deci
+  tva_standard 19%@2017, plafon_mijloc_fix 2.500@2015, impozit_dividend 5%@2016 rămân REDARE. Nevoie de
+  snapshot-uri CF la 2016 și 2017 (nu consolidatul curent). Garda G2 blochează abuzul (formă la zi pe valoare veche).
+- **`tva_redusa_5` 11%@2025 = DECIZIE de produs (nu act lipsă).** Legea 141 pct.43 abrogă cota de 5% (art.291
+  alin.3); unde ajung fostele operațiuni (cărți, acces cultural, locuințe sociale) — 11% vs 21% — nu e confirmat
+  verbatim, diferă probabil pe operațiune. Legea 141 e locală; de citit pct.43 + lista operațiunilor și de decis.
+  E singura valoare pe care garda G3 o mai semnalează.
+- **A5 amortizare — DESCHIS.** `calc_asset` e liniar (pe luni) chiar dacă metoda zice degresiv/accelerat.
+  Campanie proprie „amortizare MF metode" amânată (nu se rezolvă pe jumătate — o metodă incompletă ar da deducere
+  fiscală eronată). E8/D406 se parcurge cu asta în minte.
+- **G10 verdict VIZUAL — DESCHIS.** G10 (mesaj lângă câmpul-cauză) e doar Faza 1, DOAR pe `flux_concediu` (câmp
+  `#cm-cnp-ingrijit`, coduri 09/91/92/17). Pe celelalte fluxuri NU e implementat. Că mesajul chiar *apare lângă
+  câmp* (nu doar există în DOM) e neverificabil fără browser → rămâne pentru tura headless / E11.
+
+**REGULA PUSH (constatare 07.08 — clasă de defect, nu doar pas uitat):**
+- Regula (CLAUDE.md §2.3 pct.8, decizia c răsturnată 05.08): munca în TREI locuri — server + backup + origin/main;
+  push pe main sub poartă verde, FĂRĂ aprobare, fast-forward; raportul confirmă HEAD = origin/main = backup.
+- **NU e cablată:** `core.hooksPath = scripts/githooks`; `pre-commit` rulează DOAR poarta verde (pytest +
+  verificator), NU împinge. Fără `post-commit`/`pre-push`. Push-ul pe main e pas MANUAL.
+- **Ce a ieșit din verificare:** s-a împins doar în backup; push-ul pe origin/main a fost sărit repetat (45
+  commituri), iar verificarea three-way de la finalul raportului (care l-ar fi prins) a fost și ea sărită.
+  Push-ul NU eșuează: `2fc777d` e ancestor curat, `behind=0` → `git push origin main` = fast-forward curat.
+- **De făcut (cu decizia lui Costin):** (a) `git push origin main` (fast-forward, NU forța) ca să aducă origin/main
+  la HEAD; dacă origin/main a avansat sub tine (commit al lui Costin) → `pull --rebase` ÎNTÂI. (b) Fix de clasă:
+  `post-commit`/wrapper care împinge pe main sub poartă verde, SAU gard care refuză raportul „încheiat" cât timp
+  HEAD ≠ origin/main. Costin a cerut să NU se împingă până nu decide.
+
+**INFRASTRUCTURĂ (neschimbată — secțiunea C-4 de mai jos rămâne validă pentru detalii de seed/generare):**
+- Poartă verde: commit pe server rulează pre-commit (suită ~4min + verificator); **rulează commit-ul în background**.
+  Backup: `git push -f origin HEAD:backup/lant-<data>` (remote-only). DB live: `set -a && . ~/.iconta/db.env &&
+  set +a`; `venv/bin/python`. tenant_001 există.
+- Scripturi cu paranteze/ghilimele → fișier local + scp (heredoc prin ssh double-quote se strică; backtick în
+  `ssh "..."` golește mesajul de commit — trimite prin stdin single-quoted). Editează cod pe server cu patch-uri
+  python (io.read + `.replace` cu count==1 + io.write).
+
+---
+
+
+
 ## ★★ PREDARE — C-4 TRANȘA 2 (coerență + TVA) — 06.08.2026 — CITEȘTE ASTA ÎNTÂI
 
 **STARE:** HEAD = origin/main = backup/lant-20260805 = **559bce3**. Tree curat. Poartă verde (verificator TOTAL 0).
