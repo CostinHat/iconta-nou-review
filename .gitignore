@@ -44,3 +44,10 @@ BRIEF_CODE_*.md
 *.pfx
 id_*
 *.sqlite
+
+# playwright + pyee: driver/node depaseste 100MB (limita GitHub) - harness headless reproductibil cu: pip install playwright && playwright install chromium
+venv/bin/playwright
+venv/lib/python3.12/site-packages/playwright/
+venv/lib/python3.12/site-packages/playwright-*.dist-info/
+venv/lib/python3.12/site-packages/pyee/
+venv/lib/python3.12/site-packages/pyee-*.dist-info/
