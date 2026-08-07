@@ -174,3 +174,32 @@ Parcurgerea HTTP + inspecția statică NU pot decide RANDAREA și temporalitatea
   (INSERT CNP fara valideaza_cnp pica) + anti-regresie la format-only.
 - **Nefacut intentionat (motiv):** bifa in TESTE.md a noului fisier de test = follow-up DUPA ce intra in HEAD
   (garda anti-stale `test_agenda` citeste `git show HEAD:` -> o citare in acelasi commit ar fi "citare moarta").
+
+---
+
+## TURA HEADLESS (07.08.2026, aprobat de Costin) — harness READY + primele constatari vizuale
+
+**Harness:** playwright + chromium (headless-shell) + deps de sistem (apt) instalate pe server. Drive headless
+al `:8010` (nginx SPA) merge end-to-end: landing -> modal acces -> login cabinet -> dashboard -> portofoliu firme
+-> meniu firma -> formulare. Screenshot-uri in /tmp/shots (vazute de Code).
+
+**E12 (baza) — OK:** ecranele parcurse RANDEAZA, fara ecran gol/mut: landing, modal login, dashboard
+("Salut, Elena", 12 firme active — confirma curatarea teardown), portofoliu (12 firme listate), meniu firma
+(Panificatie/S4), "Salariat nou". Nicio pagina goala confundabila cu "nu ai date" pe caile atinse.
+
+**E2 — SUSPICIUNE (marker obligatoriu vs. ce cere aval-ul):** pe formularul REAL "Salariat nou" (firma S4),
+DOAR **"Nume*"** e marcat cu `*`. **CNP** si **Data angajarii** NU au marker `*`, desi ambele sunt necesare in
+aval: CNP = cnpAsig OBLIGATORIU in D112 (fara el declaratia lunara de salarii e incompleta/respinsa de DUK);
+data_angajare = salariatii fara ea sunt FILTRATI la salarizare (constatare transa 1, 4 situri). In plus CNP e
+backend-OPTIONAL (cnp=None -> 200, vazut in walk-ul HTTP). => formularul semnaleaza CNP ca optional in timp ce
+D112 il cere -> cale TACUTA spre un D112 incomplet. Se leaga de zona DEFECT-2 (identitatea salariatului).
+Recomandare (decizie Costin): marker `*` pe CNP + data_angajare + refuz backend la salariat ACTIV fara CNP
+(sau macar avertisment vizibil ca D112 va fi incomplet). NU reparat (in afara scopului fix-ului CNP de azi).
+
+**NEATINS inca in tura headless (nav mai adanca; harness + selectori acum cunoscuti -> continuare ieftina):**
+- E11/G10: mesajul apare LANGA `#cm-cnp-ingrijit` pe `flux_concediu` (cod 09/91/92/17) — de deschis fisa CM.
+- E11: poarta_gol pe o declaratie op=0 (D100/D406/D300-Q gol) — ecranul declaratii al firmei.
+- E11: starea goala are cele 3 parti; blocaj global vizibil.
+- E2/D1a: nr. de randuri sarite VIZIBIL la import.
+- E8/A5: metoda de amortizare AFISATA vs. cea calculata.
+- E12 (avansat): loading vizibil, latenta, date partiale, revenire din eroare de retea.
