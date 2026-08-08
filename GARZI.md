@@ -2014,3 +2014,23 @@ doar la provizionare). NUANTA: `tert_cui`/client pot fi parteneri STRAINI (CUI n
 romaneasca) => validarea offline nu se aplica universal; azi se bazeaza pe ANAF (existenta), best-effort. DAR CUI-ul
 PROPRIU al firmei e MEREU romanesc -> editarea lui AR TREBUI sa valideze controlul (azi nu). Recomandare: gard pe
 CUI propriu (firma_profil) + validare CONDITIONATA (cand pare romanesc: RO/toate cifre) pe client/tert_cui. Decizie Costin.
+
+## 08.08.2026 — G10 Faza 2 batch 1 LIVRAT (date_firma + salariat) + contract backend {detail, erori_campuri}
+Rollout mecanism A (eroare langa camp, DS cap.6 v2.30). date_firma: validare client colecteaza TOATE erorile ->
+eroareCamp per camp (#df-{k}, #vf-tip_decont), nu un mesaj generic. salariat: valideaza_salariat intoarce acum
+(camp, mesaj); ruta trimite {mesaj, erori_campuri}; api.js poarta erori_campuri (_erisCampuri); frontend plaseaza
+fiecare langa #sn-{camp}. Gard nou core/test_g10_eroare_langa_camp.py cu lista G10-A (flux_concediu + date_firma +
+firme.js), extins la fiecare batch. Probe headless 5/5 pe ambele (9 erori date_firma toate deodata sub camp +
+conditionala TVA + fara stivuire; 2 erori backend salariat plasate langa CNP/salariu). Restart facut (backend cod).
+
+## 08.08.2026 — G10: e-Transport = ABATERE cunoscuta, tratat la BATCH 3 (restructurare, nu plasare)
+etransport_ecran.js NU intra in rollout-ul standard G10-A. Motiv: RANDURI DINAMICE ("bunuri" adaugate/sterse) iar
+campuriLipsaCorp intoarce ETICHETE ("Bun 1: Scop"), nu id-uri DOM; mecanismul A cere id stabil per camp. Ramane pe
+mecanismul B (mesaj colectat vizibil "Completeaza campurile obligatorii: ...") - conform "niciodata tacere la o
+actiune esuata", contabilul nu e blocat/mintit. Restructurarea = schimbare de FORMA pe un ecran functional ->
+batch 3 SEPARAT + ULTIMUL (o regresie sa se vada ca vine de la e-Transport, nu amestecata cu plasarea). Batch 3
+cere (decizia Costin): (a) id-uri stabile per camp-din-rand care supravietuiesc add/delete (randul 2 sters sa NU
+faca eroarea randului 3 sa arate spre alt camp); (b) campuriLipsaCorp -> id-uri, nu etichete (verifica intai cine
+o mai consuma); (c) probe headless: rand adaugat / sters din mijloc / doua randuri cu erori / re-validare dupa
+corectarea unuia; (d) no-op sha256 pe XML e-Transport. STOP daca id-urile stabile cer schimbarea modelului de date.
+Gardul test_g10_eroare_langa_camp tine e-Transport EXPLICIT in afara listei pana la batch 3.

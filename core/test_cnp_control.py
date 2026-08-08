@@ -21,13 +21,13 @@ def test_vectori_de_test_sunt_corecti():
 
 
 def test_valideaza_salariat_refuza_control_gresit():
-    er = valideaza_salariat({"nume": "X", "cnp": CNP_CTRL_GRESIT})
-    assert any("CNP invalid" in e for e in er), er
+    er = valideaza_salariat({"nume": "X", "cnp": CNP_CTRL_GRESIT})  # [G10] acum (camp, mesaj)
+    assert any("CNP invalid" in _m for (_c, _m) in er), er
 
 
 def test_valideaza_salariat_accepta_control_corect():
     er = valideaza_salariat({"nume": "X", "cnp": CNP_OK})
-    assert not any("CNP" in e for e in er), er
+    assert not any("CNP" in _m for (_c, _m) in er), er
 
 
 def test_creeaza_salariat_refuza_control_gresit_inainte_de_DB():
@@ -52,7 +52,7 @@ def test_toate_caile_CNP_refuza_control_gresit():
     er = verifica_randuri([{"nume": "A", "cnp": CNP_CTRL_GRESIT, "cota": 100, "tip": "fizica"}])
     assert any(x.get("motiv") == "cnp_invalid" for x in er), er
     # (d) salariat direct (creare/editare) -> prin valideaza_salariat
-    assert any("CNP invalid" in e for e in valideaza_salariat({"nume": "X", "cnp": CNP_CTRL_GRESIT}))
+    assert any("CNP invalid" in _m for (_c, _m) in valideaza_salariat({"nume": "X", "cnp": CNP_CTRL_GRESIT}))
 
 
 def test_nicio_cale_de_insert_CNP_fara_validare_de_control():

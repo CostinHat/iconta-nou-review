@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { fluxConcediu } from "./flux_concediu.js?v=8";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=7";
@@ -569,7 +569,8 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     const zona = corp.querySelector("#sn-mesaj");
     const nume = corp.querySelector("#sn-nume").value.trim();
     const brut = corp.querySelector("#sn-salariu_brut").value;
-    if (!nume) { arataMesaj(zona, "Numele este obligatoriu.", "avert"); return; }
+    curataEroriCamp(corp);  // [G10 cap.6 v2.30] eroare langa camp
+    if (!nume) { eroareCamp(corp, "sn-nume", "Numele este obligatoriu."); return; }
     const corpReq = {
       nume,
       prenume: corp.querySelector("#sn-prenume").value.trim() || null,
@@ -591,7 +592,12 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       if (dupaSalvare) dupaSalvare();
       formularSalariatNou(corp, nav, t, dupaSalvare);
       corp.querySelector("#sn-mesaj").innerHTML = `<p class="pf-intro" style="color:var(--verde)">Salariat salvat. Po\u021bi ad\u0103uga altul.</p>`;
-    } catch (e) { arataMesaj(zona, (e && e.mesaj) || "eroare la salvare", "eroare"); }
+    } catch (e) {
+      curataEroriCamp(corp);
+      const _ec = e && e.erori_campuri;  // [G10 rule2/4] erorile per-camp din contractul backend
+      if (_ec && _ec.length) _ec.forEach((x) => eroareCamp(corp, "sn-" + x.camp, x.mesaj));
+      else arataMesaj(zona, (e && e.mesaj) || "eroare la salvare", "eroare");  // B: erori fara camp
+    }
   });
 }
 

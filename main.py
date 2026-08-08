@@ -2867,7 +2867,8 @@ def salariat_creeaza(tenant_id: int, date: SalariatIn,
         with db.get_conn(schema) as conn:
             return salariati_api.creeaza_salariat(conn, **date.model_dump())
     except ValueError as e:
-        raise HTTPException(422, str(e))
+        _ec = getattr(e, "erori_campuri", None)  # [G10] contract {detail, erori_campuri}
+        raise HTTPException(422, detail={"mesaj": str(e), "erori_campuri": _ec} if _ec else str(e))
 
 
 @app.get("/tenants/{tenant_id}/salariati/{salariat_id}")
@@ -2888,7 +2889,8 @@ def salariat_actualizeaza(tenant_id: int, salariat_id: int, date: SalariatEdit,
         with db.get_conn(schema) as conn:
             return salariati_api.actualizeaza_salariat(conn, salariat_id, **date.model_dump())
     except ValueError as e:
-        raise HTTPException(422, str(e))
+        _ec = getattr(e, "erori_campuri", None)  # [G10] contract {detail, erori_campuri}
+        raise HTTPException(422, detail={"mesaj": str(e), "erori_campuri": _ec} if _ec else str(e))
 
 
 @app.get("/cor")

@@ -33,7 +33,17 @@ async function cere(metoda, cale, corp) {
 }
 // [login_401_v1] mesaj de eroare din raspuns, cu text prietenos pe statusuri fara corp
 // (429 rate limit nginx = HTML, fara detail). Zero esec tacit: mereu un motiv lizibil.
+// [G10 cap.6 v2.30 rule2/4] erorile per-camp din raspuns: detail.erori_campuri (lista {camp, mesaj}).
+function _erisCampuri(date) {
+  const d = date && date.detail;
+  if (d && typeof d === "object" && Array.isArray(d.erori_campuri)) return d.erori_campuri;
+  if (date && Array.isArray(date.erori_campuri)) return date.erori_campuri;
+  return null;
+}
+
 function _mesajEroare(status, date) {
+  const _d = date && date.detail;
+  if (_d && typeof _d === "object") return _d.mesaj || "eroare";  // [G10] detail structurat {mesaj, erori_campuri}
   if (date && (date.detail || date.mesaj)) return date.detail || date.mesaj;
   if (status === 429) return "prea multe încercări — așteaptă un minut și reîncearcă";
   if (status === 502 || status === 503 || status === 504) return "serverul e temporar indisponibil — reîncearcă în câteva momente";
@@ -62,7 +72,7 @@ async function _cere(metoda, cale, corp) {
   try { date = await r.json(); } catch { date = null; }
 
   if (!r.ok) {
-    throw { cod: r.status, mesaj: _mesajEroare(r.status, date) };
+    throw { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date) };
   }
   return date;
 }
@@ -87,7 +97,7 @@ async function _cereForm(cale, formData) {
   let date = null;
   try { date = await r.json(); } catch { date = null; }
   if (!r.ok) {
-    throw { cod: r.status, mesaj: _mesajEroare(r.status, date) };
+    throw { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date) };
   }
   return date;
 }

@@ -81,7 +81,7 @@ def valideaza_salariat(date):
     """Verifică datele unui salariat. Întoarce listă erori (gol = ok)."""
     erori = []
     if not (date.get("nume") and str(date["nume"]).strip()):
-        erori.append("nume obligatoriu")
+        erori.append(("nume", "Numele este obligatoriu."))
     cnp = date.get("cnp")
     if cnp:
         # [cnp_control_v1] refolosim validarea COMPLETA (format + data + judet + CIFRA DE CONTROL)
@@ -91,36 +91,36 @@ def valideaza_salariat(date):
         from core.salariati_import_api import valideaza_cnp as _vcnp
         _ok_cnp, _motiv_cnp = _vcnp(str(cnp))
         if not _ok_cnp:
-            erori.append("CNP invalid: %s" % _motiv_cnp)
+            erori.append(("cnp", "CNP invalid: %s" % _motiv_cnp))
     brut = date.get("salariu_brut")
     if brut is not None:
         try:
             if float(brut) < 0:
-                erori.append("salariu_brut nu poate fi negativ")
+                erori.append(("salariu_brut", "Salariul brut nu poate fi negativ."))
         except (TypeError, ValueError):
-            erori.append("salariu_brut invalid")
+            erori.append(("salariu_brut", "Salariul brut e invalid."))
     tn = date.get("tip_norma")
     if tn is not None and tn not in _NORME:
-        erori.append("tip_norma trebuie 'intreaga' sau 'partiala'")
+        erori.append(("tip_norma", "Tip normă: alege 'intreaga' sau 'partiala'."))
     # [F133] valoarea tichetului de masa: 0..plafon legal (nu poate depasi maximul legal/tichet)
     tmv = date.get("tichet_masa_valoare")
     if tmv is not None:
         try:
             v = float(tmv)
             if v < 0:
-                erori.append("tichet_masa_valoare nu poate fi negativ")
+                erori.append(("tichet_masa_valoare", "Tichetul de masă nu poate fi negativ."))
             else:
                 from core.common import cota
                 plafon = float(cota("tichet_masa_plafon")[0])
                 if v > plafon:
-                    erori.append(f"tichet_masa_valoare depaseste plafonul legal ({plafon:g} lei/tichet)")
+                    erori.append(("tichet_masa_valoare", f"Tichetul de masă depășește plafonul legal ({plafon:g} lei/tichet)."))
         except (TypeError, ValueError):
-            erori.append("tichet_masa_valoare invalid")
+            erori.append(("tichet_masa_valoare", "Tichetul de masă e invalid."))
     # [F134] IBAN optional; daca e completat trebuie sa fie IBAN romanesc valid (mod-97)
     iban = date.get("iban")
     if iban is not None and str(iban).strip():
         if not iban_valid(iban):
-            erori.append("IBAN invalid (astept IBAN romanesc: RO + 22 caractere, cifra de control corecta)")
+            erori.append(("iban", "IBAN invalid (aștept IBAN românesc: RO + 22 caractere, cifra de control corectă)."))
     # data_incetare (optional) >= data_angajare - contract activ o perioada coerenta (backstop: CHECK in DB)
     di, da = date.get("data_incetare"), date.get("data_angajare")
     if di is not None and str(di).strip() and da is not None and str(da).strip():
@@ -129,7 +129,7 @@ def valideaza_salariat(date):
             if _date.fromisoformat(str(di)[:10]) < _date.fromisoformat(str(da)[:10]):
                 erori.append("data incetarii nu poate fi inainte de data angajarii")
         except (ValueError, TypeError):
-            erori.append("data incetarii sau angajarii invalida")
+            erori.append(("data_incetare", "Data încetării sau a angajării e invalidă."))
     return erori
 
 
@@ -162,12 +162,20 @@ def lista_salariati(conn, activ=None):
 # ============================================================
 #  CREARE
 # ============================================================
+def _eroare_campuri(erori):
+    """[G10 rule2/4] ValueError care poarta si erorile per-camp (lista {camp, mesaj}) pentru
+    contractul backend {detail, erori_campuri}. camp = cheia semantica (frontend o prefixeaza cu forma)."""
+    e = ValueError("; ".join(m for _c, m in erori))
+    e.erori_campuri = [{"camp": c, "mesaj": m} for c, m in erori]
+    return e
+
+
 def creeaza_salariat(conn, **date):
     """Inserează un salariat (după validare). Întoarce {ok, salariat_id} sau ridică
     ValueError cu erorile."""
     erori = valideaza_salariat(date)
     if erori:
-        raise ValueError("; ".join(erori))
+        raise _eroare_campuri(erori)
     _verifica_cor(conn, date.get("cor"))  # [F137] codul COR (daca e dat) trebuie sa existe in nomenclator
     campuri_api = {k: date[k] for k in _CAMPURI_API if k in date and date[k] is not None}
     campuri_db = _api_spre_db(campuri_api)
@@ -225,9 +233,9 @@ def actualizeaza_salariat(conn, salariat_id, **date):
                                 "data_angajare": date.get("data_angajare"),
                                 "data_incetare": date.get("data_incetare"),
                                 "nume": campuri_api.get("nume", "x")})
-    erori = [e for e in erori if e != "nume obligatoriu"]
+    erori = [(c, m) for (c, m) in erori if c != "nume"]
     if erori:
-        raise ValueError("; ".join(erori))
+        raise _eroare_campuri(erori)
     with conn.cursor() as cur:
         if campuri_api:
             if "cor" in campuri_api:

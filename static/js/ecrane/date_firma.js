@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc } from "../api.js";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp } from "../api.js";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
@@ -137,23 +137,23 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     }
     date.cont_venit_implicit = corp.querySelector("#df-cont_venit").value;  // [F182] preferinta contabila la emitere
     // validare preventiva in ecran: nu trimitem ca sa aflam de la server (DS cap.6)
+    // [G10 cap.6 v2.30] validare preventiva CLIENT: colecteaza TOATE erorile de camp si le plaseaza fiecare
+    // LANGA campul ei (eroareCamp), nu un mesaj generic sus si nu fail-fast. B (arataMesaj) ramane pentru
+    // erorile de business/backend fara camp (catch-ul de mai jos).
+    curataEroriCamp(corp);
     const goale = CAMPURI.filter((c) => c.ob && !date[c.k]);
-    if (goale.length) {
-      arataMesaj(msg, "Completeaz\u0103: " + goale.map((c) => c.e).join(", ") + ".", "eroare");
-      corp.querySelector(`#df-${goale[0].k}`).focus();
-      return;
-    }
-    // vectorul: regim obligatoriu; periodicitatea e obligatorie DOAR la platitorii
-    // de TVA (regula din vector_fiscal_api.salveaza - o singura sursa de adevar)
+    goale.forEach((c) => eroareCamp(corp, "df-" + c.k, "Completează " + c.e + "."));
+    // vectorul: periodicitatea TVA e obligatorie DOAR la platitorii de TVA (vector_fiscal_api.salveaza - sursa unica)
     const vf = {
       regim_fiscal: corp.querySelector("#vf-regim_fiscal").value,
       platitor_tva: corp.querySelector("#vf-platitor_tva").value === "da",
       tip_decont: corp.querySelector("#vf-tip_decont").value || null,
       operatiuni_ic: corp.querySelector("#vf-operatiuni_ic").value === "da",
     };
-    if (vf.platitor_tva && !vf.tip_decont) {
-      arataMesaj(msg, "Completeaz\u0103 periodicitatea TVA \u2014 obligatorie la pl\u0103titorii de TVA (decide dac\u0103 D300 se depune lunar sau trimestrial).", "eroare");
-      corp.querySelector("#vf-tip_decont").focus();
+    const tvaLipsa = vf.platitor_tva && !vf.tip_decont;
+    if (tvaLipsa) eroareCamp(corp, "vf-tip_decont", "Periodicitatea TVA e obligatorie la plătitorii de TVA (decide dacă D300 se depune lunar sau trimestrial).");
+    if (goale.length || tvaLipsa) {
+      (corp.querySelector(`#df-${(goale[0] || {}).k}`) || corp.querySelector("#vf-tip_decont"))?.focus();
       return;
     }
     btn.disabled = true;
