@@ -3422,3 +3422,40 @@ corecte; d390 N/A; jurnal_api N/A. calcul_d300: emisă+taxare_inversa → rd.13 
 exclusă din auto-deducere (beneficiar = manual). Gardă anti-dublă-numărare (auto+manual R13 → eroare). RED→GREEN+DUK:
 P2 Q3 R13_1=40000 DUK-valid; S1 manual rd.12+rd.27 DUK-valid; P1 fără regresie. 4 garduri + mutație probată; testele
 manuale rd.12 (Costin) neatinse. OPRIRE §2.3 pct.6 (buget) la graniță curată — restul tranșei 2 în predare.
+
+
+## 07-08.08.2026 (sesiune nesupravegheata) — E1-E12 parcurs PRIMA DATA: 3 defecte BLOCANTE, toate LIVE, niciunul prins de suita
+
+Prima parcurgere cap-coada a aplicatiei ca un contabil real (PLAN_B E1-E12), firma F2, prin HTTP + inspectie
+statica + tura headless (chromium). Rezultatul de fond: **suita era verde (1500+ passed) in timp ce trei defecte
+blocante traiau in PRODUCTIE**. Toate trei invizibile suitei fiindca unit-urile ruleaza pe sursa de pe disc / cu
+search_path setat, NU pe procesul viu / calea reala a rutei. Registrul parcurgerii: E1E12_GASITE.md.
+
+- **DEFECT-1 (server stale):** productia (:8010, systemd, nginx) rula cod din **1 august** — 45+ commituri in urma
+  HEAD. D112 crapa 500 pe prod (Temei/nivel_sursa pe common.py stale in memoria procesului), iar firmele noi se
+  provizionau cu schema DRIFTATA (lipsa perioada_confirmata + 10 coloane CM/facturi). "**Publicat NU inseamna
+  ruleaza**": post-commit publica pe git (main+backup) dar nu reporneste serviciul. Reparat prin restart, PROBAT
+  live (d112 nu mai da 500; firma noua cu schema la zi). Ramas: gardul "running == HEAD" (campanie separata).
+- **DEFECT-2 (CNP):** adaugarea DIRECTA a salariatului valida doar formatul CNP (13 cifre), nu cifra de control —
+  desi importul si cnp_ingrijit o validau. CNP control-gresit intra tacut si D112 era respins de DUK (cnpAsig).
+  Reparat prin REFOLOSIREA lui valideaza_cnp (create+edit), gard + mutatie + no-op sha256, PROBAT live (422).
+- **DEFECT-3 (stat-plata 500 ascuns ca "niciun salariat"):** doua defecte intr-unul. Backend: perioada.e_confirmat
+  (+ 5 rute payroll/documente) atingeau tabele tenant FARA search_path calificat -> UndefinedTable -> 500 pe luna
+  curenta. Frontend, MAI GRAV: un `catch{}` gol transforma 500-ul intr-o stare goala mincinoasa — contabilul vedea
+  "Niciun salariat activ" pentru o firma cu 12 salariati reali. **Clasa "ecran care minte plauzibil" (17 catch-uri
+  mapate) e mai grava decat un esec vizibil**: un ecran care crapa te alarmeaza; unul care minte linistit te lasa
+  sa depui gresit. Reparate cele 4 cele mai grave (stat-plata/casa/RIP/jurnal, evidente financiare care mint) +
+  backend-clasa + gard RATCHET; PROBAT live (200) + headless (500 fortat -> UI arata eroare, nu stare goala).
+
+**G10 — poarta Fazei 2 s-a DESCHIS.** Verdictul vizual cerut pe pilotul flux_concediu (cod 09): toate **5 punctele
+OK** — toate erorile deodata, plasare sub camp, conditionale pe cod, re-validare fara stivuire, aranjare curata +
+campurile noi de certificat de continuare corecte. Verdictul vizual al lui Costin (poarta care bloca Faza 2 =
+tura headless de verificare vizuala) e dat.
+
+**Deschis si de ce:** (a) 13 catch-uri periculoase ramase din harta — acelasi fix mecanic, ratchet (baseline 54)
+le tine sa nu creasca; nereparate azi = buget/prioritate, nu blocaj. (b) Gard "running == HEAD" + drift schema
+public = campanie separata (mecanism ALES: detector vizibil periodic, nu auto-restart — DECIZII 08.08). (c)
+Candidati: CUI-propriu-firma la editare, marker E2 (CNP/data_angajare nemarcate desi cerute in aval), FE/BE
+cnp_ingrijit. (d) Neatins din headless: poarta_gol op=0, A5 metoda afisata, skip import D1a, E12 avansat.
+
+HEAD b369ba3 -> b660534 (6 commituri publicate). Tot livrat verde; three-way + running=HEAD confirmate la final.

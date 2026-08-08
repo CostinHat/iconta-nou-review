@@ -7839,3 +7839,39 @@ REDARE ramase (9): tva_standard 19% @2017, tva_redusa_5 11% @2025 (de decis), im
 8% @2023, plafon_tva_incasare 4,5M @2021 (Legea 296/2020), plafon_mijloc_fix 2.500 @2015 (Legea 227 forma
 initiala), plafon_sold_casa 50.000 (Legea 70/2015), plafon_avans 5.000 (OUG 115/2023), facilitate 300 @2025
 (OUG 115/2023). Toate istorice (recalculari retroactive) sau decizie - niciuna valoare curenta vie fara sursa.
+
+
+## 08.08.2026 — Restart prod dupa deploy + mecanism "running == HEAD" (detector vizibil, NU auto-restart)
+
+**Decizie (aprobata Costin):** dupa un fix de COD, serviciul se REPORNESTE (`sudo systemctl restart iconta-nou`)
+si efectul se PROBEAZA live, nu se presupune. Facut azi pentru DEFECT-1 (d112/schema) si DEFECT-3 (stat-plata).
+Temei: DEFECT-1 a aratat ca "publicat pe git" != "ruleaza in productie" — prod a rulat cod din 1 august, 45+
+commituri in urma, cu un blocaj (D112 500) invizibil oricui privea doar git-ul sau suita.
+
+**Mecanism de clasa "running == HEAD" — ALES: detector vizibil periodic, NU auto-restart in post-commit.**
+Temei: constrangerea lui Costin "sa nu repornesti serviciul in mijlocul unei operatii a unui contabil" EXCLUDE
+varianta post-commit-reporneste (post-commit se declanseaza la momente arbitrare). Detectorul nu reporneste
+niciodata; un OM reporneste la fereastra sigura; driftul devine ZGOMOTOS (banner + sentinela `.git/RUNNING_STALE`
++ alerta), nu tacut — exact ce a lipsit 6 zile. Include raport PATRU-way (HEAD = origin/main = backup = RUNNING;
+raportul nu e "incheiat" cat timp procesul viu != HEAD) + audit al migrarilor prod vs HEAD (schema PUBLIC, care nu
+are inca gard — template-guard-ul acopera doar schemele de tenant). Necablat inca — campanie separata. Candidatul
+de clasa e in GARZI 07.08.
+
+## 08.08.2026 — Fix DEFECT-3 pe AMBELE fete + ratchet pe catch-uri (in loc de fix-total)
+
+**Backend:** `perioada.py` (e_confirmat/confirma/deconfirma) primea `schema` dar folosea `perioada_confirmata`
+NECALIFICAT -> 500 pe o conexiune fara search_path pe tenant. Fix: `_tbl(schema)` califica cand schema e dat.
+Clasa: 5 rute payroll/documente (stat-plata/fluturas/pain001 x2/balanta) pasau `schema` unui helper tenant pe
+`db.get_conn()` gol -> conformate la `db.get_conn(schema)`. Convenția "helper-ele folosesc nume necalificate ->
+apelantul deschide get_conn(schema)" era DEJA documentata (comentariul _schema_cabinet_sau_404); cele 5 o incalcau.
+stat-plata = confirmat crapa (UndefinedTable, RED->GREEN); restul conformate (nu au crapat pe datele S4).
+
+**Frontend (decizia de fond):** un `catch{}` gol care inghite un fetch PRIMAR si randeaza o stare goala e mai
+GRAV decat un ecran care crapa — minte plauzibil, contabilul depune gresit fara sa stie ca serverul a esuat.
+Reparate cele 4 cele mai grave (evidente financiare/legale care mint: stat-plata, casa/registru, RIP, jurnal) cu
+ramura de EROARE VIZIBILA (rosu, "Nu am putut incarca... — asta NU inseamna fara date"), pastrand navigarea.
+
+**Ratchet (decizie de guvernare, NU fix-total):** harta = 17 catch-uri periculoase; nu se repara toate acum
+(ar fi un refactor de ~17 ecrane, buget). Gardul `test_catch_vizibil.py` pune un RATCHET (baseline 54 de
+catch-goale-langa-api): nicio CALE NOUA nu mai intra, iar repararea din rest COBOARA baseline in acelasi commit.
+Ratchet in loc de fix-total = opreste regresia clasei fara sa blocheze livrarea pe reparatia integrala.

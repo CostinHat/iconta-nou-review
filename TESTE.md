@@ -1258,3 +1258,20 @@ inca ridica pe tichet_masa_plafon @2025 - urmatorul rand, cere sursa. B1 reincad
 core/test_tichet_2025.py: valorile (40,04/40,18/45), golul octombrie motivat (nu 40,18 tacit), corectia 45 de la
 noiembrie. Cele 3 meta-teste perioada_indisponibila mutate de pe "2025 blocat" (acum reparat) pe sub-podea (2024,
 stabil) + golul octombrie 2025.
+
+
+## 08.08.2026 — DEFECT-2 CNP (cifra de control pe calea directa): gard nou
+core/test_cnp_control.py (8 teste): CNP cu cifra de control gresita refuzat pe TOATE caile de intrare (create +
+edit salariat prin valideaza_salariat->valideaza_cnp; import; asociati; cnp_ingrijit) + anti-cale-noua (orice
+modul care INSERT-eaza CNP fara a referi valideaza_cnp pica) + anti-regresie valideaza_salariat la format-only.
+Mutatie: git checkout pre-fix -> 5 rosii cu motivul corect. No-op: sha256 D112 tenant_001 identic (45e3b486).
+Fisierul e in git HEAD (commit 2ad7af4) inainte de aceasta bifa.
+
+## 08.08.2026 — DEFECT-3 (stat-plata 500 + catch care minte): gard nou
+core/test_catch_vizibil.py (4 teste): (A) RATCHET catch-gol-langa-api pe frontend, baseline 54 — o cale noua pica;
+repararea din restul hartii coboara baseline. (B) anti-regresie pe cele 4 ecrane reparate (flag de eroare + textul
+vizibil "Nu am putut incarca"). (C) backend perioada.py califica tabela cu schema (fara `FROM perioada_confirmata`
+necalificat). (D) cele 5 rute payroll/documente au marcajul search_path_tenant_v1 (get_conn(schema)). Mutatie:
+git checkout pre-fix -> toate 4 rosii; restore -> verzi. Proba comportamentala (headless, interceptare 500 -> UI
+arata eroare vizibila, NU stare goala) = evidenta manuala; in suita ramane gardul de sursa (B). Fisierul e in git
+HEAD (commit b660534) inainte de aceasta bifa.

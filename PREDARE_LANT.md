@@ -1,5 +1,56 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
+## ★★ PREDARE — 08.08.2026 — CITEȘTE ASTA ÎNTÂI (supersedează secțiunea 07.08 de mai jos, care e ISTORIC)
+
+**Ritual pornire:** `ssh iconta 'cd ~/iconta_nou && pwd; hostname; git log -1'`. Apoi CLAUDE.md §2.2/§2.3.
+
+**⚠ STARE — SĂNĂTOASĂ (contrast cu 07.08, unde main NU era publicat).**
+- HEAD = origin/main = **backup/lant-2026-08-08** = **`b660534`**. Tree curat, poartă verde (verificator TOTAL 0).
+- **Serviciul prod REPORNIT azi: running == HEAD** (MainPID nou, cod `b660534` live pe `:8010`). Cele 3 blocaje
+  de mai jos = REPARATE și PROBATE live.
+- 12 tenanți reali (001–012); toate datele de test din sesiune au fost curățate.
+
+**CE S-A LIVRAT (07–08.08, peste corpusul legislativ 07.08):**
+- **E1–E12 parcurs PRIMA DATĂ** (PLAN_B, firma F2, HTTP + tură headless chromium). 3 defecte blocante, toate LIVE,
+  niciunul prins de suită. Registru complet: **E1E12_GASITE.md**. Narativ: ISTORIC 07-08.08.
+- **DEFECT-1 REPARAT:** prod rula cod din 1 aug (45+ commituri în urmă) → D112 500 + provizionare driftată.
+  Restart + probat live. „Publicat ≠ rulează". RĂMAS: gard „running == HEAD" (mecanism ales, DECIZII/GARZI 08.08).
+- **DEFECT-2 REPARAT:** CNP cifra de control la adăugarea directă a salariatului (valideaza_salariat →
+  valideaza_cnp, create+edit). Gard `core/test_cnp_control.py`. Live 422.
+- **DEFECT-3 REPARAT (frontend parțial):** stat-plata 500 (backend: `perioada.py` calificat + 5 rute
+  `get_conn(schema)`) + `catch{}` care minte (frontend: 4/17 reparate). Gard `core/test_catch_vizibil.py` (ratchet).
+  Live 200 + headless.
+- **G10 verdict DAT** (toate 5 puncte OK) → Faza 2 (tura headless de verificare vizuală) DEBLOCATĂ.
+
+**CE E DESCHIS (prioritate pt sesiunea următoare):**
+1. **13 catch-uri periculoase rămase** (harta în E1E12_GASITE.md 08.08): facturi emise/primite, NIR, solicitări,
+   etransport, rețete, centre-cost, contracte, facturi-recurente, concedii, cabinet-azi, api-chei, woo. Același
+   fix (flag de eroare în catch + ramură vizibilă). RATCHET (baseline 54 în `test_catch_vizibil.py`) le ține să nu
+   crească; coboară baseline pe măsură ce repari.
+2. **Gard „running == HEAD" + drift schema PUBLIC** — campanie de clasă (mecanism ales: detector vizibil periodic,
+   NU auto-restart; DECIZII 08.08 + GARZI 07.08).
+3. **Candidați de reparat:** CUI-propriu-firmă la editare (firma_profil; GARZI 08.08 — validat doar la
+   provizionare); marker E2 (CNP/data_angajare nemarcate `*` deși cerute în aval); FE/BE `cnp_ingrijit` (frontend
+   validează doar formatul, backend controlul).
+4. **Neatins din headless** (harness gata, selectori cunoscuți): poarta_gol pe declarații op=0, A5 metoda de
+   amortizare afișată vs calculată, skip import D1a vizibil, E12 avansat (loading/latență/date parțiale).
+
+**INFRASTRUCTURĂ HEADLESS (nou 08.08):** playwright + chromium (headless-shell) + deps de sistem instalate;
+`.gitignore` pe playwright (driver/node 118MB > limita GitHub 100MB) — reproductibil cu
+`venv/bin/pip install playwright && venv/bin/playwright install chromium`. Drive: `:8010` (prod) SAU o instanță
+proaspătă pe alt port. Login cabinet Prisma (`patron@prisma-cont.test` / `Prisma!patron2026`). Selectori: landing
+`#pagina-acces-btn` → `#acces-intra` → `#lg-cabinet` → `#login-email`/`#login-parola`/`#login-buton`; firmă →
+„Firme existente" → nume firmă → „Salariați" (Stat de plată) → butonul „Concediu" pe rândul salariatului. CM/G10:
+`#cm-cod`, `#cm-cnp-ingrijit`, `#cm-continuare` → `#cm-serie-ini`/`#cm-numar-ini`, `#cm-calc`. Probă „eroare
+vizibilă": `page.route("**/stat-plata**", ...500)` → ecranul trebuie să arate „Nu am putut încărca", nu stare goală.
+
+**NB stat-plata (DEFECT-3):** „Stat de plată" cere firmă cu salariați ACTIVI cu istoric pe lună; S4/tenant_001 îi
+are (luna 01/2026 sigur). Nu adăuga un salariat doar ca test pentru a ajunge la ecranele interne — curăță-l după
+(create → test → delete), altfel poluezi gărzile care scanează tenanții.
+
+---
+
+
 ## ★★ PREDARE — 07.08.2026 — CITEȘTE ASTA ÎNTÂI (supersedează secțiunea C-4 de mai jos, care e istoric)
 
 **Ritual pornire:** `ssh iconta 'cd ~/iconta_nou && pwd; hostname; git log -1'`. Apoi citește CLAUDE.md §2.2/§2.3.
