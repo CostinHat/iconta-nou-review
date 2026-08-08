@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.29 · 26 iulie 2026 (editabil prin SSH)*
+*Document normativ · v2.31 · 08 august 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -353,7 +353,46 @@ o lună completă de una necompletată). Revine la **închiderea lunii contabile
 confirmare folosește primitivele canonice. Dacă nu se poate defini curat pe criteriu structural, LISTĂ EXPLICITĂ
 întreținută manual (ca markerii TEMEI), cu limita declarată.
 
+## 24. Rânduri dinamice în formulare
+
+Stratul de DEDESUBTUL cap.6: cap.6 guvernează PLASAREA erorii lângă câmp și presupune un id DOM stabil ca DAT.
+Acest capitol spune DE UNDE vine acel id și cum se comportă o listă de rânduri care crește și scade. Se aplică
+oricărui formular cu rânduri repetate adăugate de utilizator (linii de factură, bunuri e-Transport, ingrediente
+rețetă, linii de jurnal). NU rescrie cap.6 — îl referă.
+
+- **Re-randare integrală la orice mutație.** Adăugarea sau ștergerea unui rând RE-RANDEAZĂ întreaga listă din
+  modelul de date (`container.innerHTML = randuri.map(...)`), nu mută/inserează/șterge noduri DOM individual
+  (`appendChild`/`insertBefore`/`removeChild` de rând). Motiv: mutarea de noduri desincronizează indicii DOM de
+  poziția în model; re-randarea din model garantează că id-ul `#{prefix}{i}-camp` corespunde mereu rândului `i`.
+- **Id-ul de câmp derivă din poziția în listă, iar lista randată = lista validată.** Id-ul unui câmp-din-rând e
+  `{prefix}{i}-{camp}`, cu `i` = poziția în modelul de date. Lista trimisă la validare e ACEEAȘI cu cea randată:
+  frontendul NU filtrează rânduri înainte de validare. Un rând incomplet se VALIDEAZĂ și se RAPORTEAZĂ (eroare
+  lângă câmpul lipsă, cap.6), nu se aruncă tăcut. Filtrarea tăcută rupe corespondența id↔rând (rândul 2 filtrat
+  face eroarea rândului 3 să arate spre alt câmp) și ascunde un rând început — încalcă „niciodată tăcere la o
+  acțiune eșuată" (cap.6).
+- **Orice listă care poate crește trebuie să poată și scădea.** Un rând adăugabil e un rând ștergibil: adăugarea
+  fără ștergere e INTERZISĂ (un rând introdus greșit, fără cale de retragere, e o fundătură). Ștergere per rând
+  (buton `.buton-sters` pe rând) + re-randare din model (regula 1).
+- **Validarea per-câmp pe rânduri aparține BACKENDULUI.** Backendul e poarta autoritară și întoarce erorile
+  field-keyed per rând (`{camp, eticheta}` sau echivalent, cap.6 pct.2). Frontendul NU ține o A DOUA funcție de
+  câmpuri-lipsă care oglindește backendul — oglinda DRIFTEAZĂ (un câmp verificat într-un capăt și nu în celălalt;
+  dovedit: `valoare_fara_tva` verificat în backend, nu în frontendul e-Transport). Frontendul CONSUMĂ răspunsul de
+  eroare al backendului și plasează erorile conform cap.6 (mecanism A pe `camp`, fallback B). O gardă de prezență
+  client-side rămâne permisă DOAR ca UX preventiv nemirror, nu ca a doua listă de câmpuri-lipsă per rând.
+
+**Gardă mecanică** (verificator): din cele patru reguli, doar a patra e curat verificabilă mecanic FĂRĂ a aprinde
+ecrane în afara restructurării în curs.
+- **MIRROR_CAMPURI_LIPSA** (regula 4): interzice în `static/js/ecrane` o funcție/variabilă de câmpuri-lipsă care
+  oglindește validarea backend (nume `*campuri*lipsa*`). e-Transport + emitere = EXCEPȚIE declarată până la
+  batch 3 (ca `test_g10_eroare_langa_camp` / lista G10-A). LIMITĂ: prinde convenția de nume, nu o re-implementare
+  sub alt nume — restul rămâne disciplină de review.
+- Regulile 1-3 NU se cablează acum: un gard pe re-randare (1), pe filtrare-înainte-de-validare (2) sau pe
+  add-fără-delete (3) ar aprinde ecrane funcționale în afara batch 3 (`facturi_ecran.js`, `firme.js`
+  rețete/jurnal) care azi filtrează/mută noduri legitim până la restructurare. Se cablează prin ratchet, pe măsură
+  ce ecranele se conformează, nu dintr-odată.
+
 ## Changelog
+**v2.31 (08.08.2026)** — cap.24 nou: **Rânduri dinamice în formulare** — stratul de dedesubtul cap.6 (cap.6 presupune id DOM stabil ca dat; cap.24 spune de unde vine + cum se comportă o listă care crește/scade). Patru reguli: re-randare integrală la mutație (nu mutare de noduri DOM individual); id derivat din poziție + lista randată = lista validată (fără filtrare tăcută înainte de validare — un rând incomplet se raportează, nu se aruncă); orice listă care crește trebuie să scadă (add fără delete interzis); validarea per-câmp pe rânduri = backend, frontendul nu ține o a doua funcție de câmpuri-lipsă (oglinda drifteaza — dovedit `valoare_fara_tva` verificat doar în backend). Gardă **MIRROR_CAMPURI_LIPSA** în verificator (regula 4, singura curat-mecanică): interzice funcție `*campuri*lipsa*` în `static/js/ecrane`; e-Transport + emitere = excepție declarată până la batch 3 (ca lista G10-A). Regulile 1-3 rămân disciplină (un gard mecanic ar aprinde `facturi_ecran.js`/`firme.js`, ecrane în afara batch 3). NU atinge cap.6.
 **v2.30 (02.08.2026)** — cap.23 nou: **Perioadă confirmată** — tipar general (starea CONFIRMAT/NECONFIRMAT a
 unei perioade `(an, luna, domeniu)` condiționează calculele din aval). Motivat de pontaj (F135): payroll-ul trebuie
 să știe dacă luna e autoritativă (HG 1045/2018 art.10(3) — tichete pe zile efectiv lucrate), iar prezent = fără rând

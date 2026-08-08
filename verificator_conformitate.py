@@ -32,7 +32,7 @@ for f in sorted(os.listdir(BAZA)):
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
                         "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
-                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune", "verdict_paritate"]}
+                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune", "verdict_paritate", "mirror_campuri_lipsa"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -78,6 +78,13 @@ for nume, t in fisiere.items():
             rap["stare_goala"].append((nume, i, "clasa-moarta", lin.strip()[:66]))
         if re.search(r'class="stare-goala[^"]*">\s*(Niciun?|Nicio|Nimic)\s+\w+\.?\s*</', lin):
             rap["stare_goala"].append((nume, i, "fundatura", lin.strip()[:66]))
+        # MIRROR_CAMPURI_LIPSA (cap.24 pct.4): frontendul NU tine o a doua functie de campuri-lipsa care
+        # oglindeste validarea backend (oglinda drifteaza - dovedit valoare_fara_tva). Validarea per-camp pe
+        # randuri = backend; frontendul consuma raspunsul de eroare (cap.6). e-Transport + emitere = EXCEPTIE
+        # declarata pana la batch 3 (ca test_g10_eroare_langa_camp / lista G10-A).
+        if (nume not in ("etransport_ecran.js", "emitere_ecran.js")
+                and re.search(r"(function\s+|const\s+|let\s+|var\s+)[A-Za-z0-9_]*[Cc]ampuri[A-Za-z0-9_]*[Ll]ipsa", lin)):
+            rap["mirror_campuri_lipsa"].append((nume, i, "", lin.strip()[:66]))
         # CARD_INLINE (cap.2a): card deschis inline in corpul panoului in loc de nav.deschide.
         # Semnatura interzisa: randeazaMeniu*(continut,...) sau handler .cab-card care scrie in continut.
         if re.search(r'randeazaMeniu\w+\(\s*continut\b', lin):
