@@ -2034,3 +2034,16 @@ faca eroarea randului 3 sa arate spre alt camp); (b) campuriLipsaCorp -> id-uri,
 o mai consuma); (c) probe headless: rand adaugat / sters din mijloc / doua randuri cu erori / re-validare dupa
 corectarea unuia; (d) no-op sha256 pe XML e-Transport. STOP daca id-urile stabile cer schimbarea modelului de date.
 Gardul test_g10_eroare_langa_camp tine e-Transport EXPLICIT in afara listei pana la batch 3.
+
+
+## 08.08.2026 — DATORIE: proba vizuala G10 batch 2 (D301/D390) LIPSA — NU "probat"
+Contractul backend `{mesaj, erori_campuri}` e probat end-to-end (smoke HTTP: D301 -> 422 erori_campuri
+[curs, nrdoc, datadoc]; D390 -> [tara, cod]) SI mecanismul frontend (`eroareCamp` cu prefix `d301-`/`man-`) e
+IDENTIC cu batch 1 (probat vizual pe salariat/date_firma: sub-camp, span DUPA input, fara stivuire). DAR proba
+vizuala HEADLESS pe cele 5 criterii (toate erorile deodata / plasare sub camp / conditionale / re-validare fara
+stivuire / aranjare) LIPSESTE pentru D301 si D390. Cauza: nav-ul ecranului Declaratii e fragil in headless (card
+firma -> `#dec-tip` -> `#dec-continua` -> `pas2()`/DUK -> sectiune in `<details open>`; click pe "Declaratii" nu
+se stabilizeaza, `#dec-tip` nu apare in timp util). De INCHIS cu un nav headless mai robust: selectare `#dec-firma`
+intai + asteptare DUK (pas2 e lent), SAU deschidere directa a declaratiei d301/d390 pe o firma cu aplicabilitate
+(tenant_001/S4 nu are neaparat d301/d390 in luna testata). PANA ATUNCI: D301/D390 raman "cod corect + contract
+probat backend", NU "probat vizual". Nu se marcheaza bifa vizuala G10 pe ele fara aceasta proba.

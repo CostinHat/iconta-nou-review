@@ -1,5 +1,65 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
 
+## ★★ PREDARE — 08.08.2026 (seara) — G10 ROLLOUT + DESCHISE — CITEȘTE ASTA ÎNTÂI (supersedează 08.08 dimineața de mai jos)
+
+**Ritual pornire:** `ssh iconta 'cd ~/iconta_nou && pwd; hostname; git log -1'`. Apoi CLAUDE.md §2.2/§2.3.
+
+**STARE:** HEAD = origin/main = backup/lant-2026-08-08 (ultimul commit de COD = `40189cd`, plus commitul acestei
+predări deasupra — docs). Tree curat, poartă verde (verificator TOTAL 0), running == HEAD (frontend static +
+backend restartat la fiecare commit de cod). 12 tenanți reali.
+
+### G10 Faza 2 — ROLLOUT eroare-lângă-câmp (DESIGN_SYSTEM cap.6 v2.30, mecanism A via `eroareCamp`)
+
+- **Pilot:** `flux_concediu` — validat 5/5 (07-08.08).
+- **Batch 1 LIVRAT + publicat:** `date_firma` (client-collect, `#df-{k}`/`#vf-tip_decont`) + `salariat nou`
+  (`firme.js`, `#sn-{camp}`) cu **contractul backend** `{mesaj, erori_campuri}` (rule 2/4): `valideaza_salariat`
+  → (camp, mesaj); ruta trimite field-keyed; `api.js` `_erisCampuri` poartă `erori_campuri`; frontend plasează
+  lângă câmp. Probat headless 5/5 (vizual + DOM). Gard: `core/test_g10_eroare_langa_camp.py` (lista G10-A, extins/batch).
+- **Batch 2 LIVRAT + publicat:** `D301-manual` (`#d301-*`) + `D390-manual` (`#man-*`) în `declaratii.js`, cu
+  contractul (backend `adauga`/`manual_adauga` colectează field-keyed → `{eroare, erori_campuri}`; rutele trimit
+  detail structurat; frontend `eroareCamp` cu prefix `d301-`/`man-` + fallback B). Contract PROBAT backend
+  end-to-end. **DATORIE:** proba VIZUALĂ headless pe D301/D390 LIPSEȘTE (nav Declarații fragil) — vezi GARZI
+  „DATORIE: proba vizuala G10 batch 2". NU marcate ca probate vizual.
+- **Batch 3 (URMĂTORUL, cel greu — merită context curat):** `e-Transport` (`etransport_ecran.js`) + `emitere
+  factură` (`emitere_ecran.js`). AMBELE = aceeași problemă: erori PER-LINIE pe **linii/rânduri DINAMICE**
+  (etransport `bunuri`, emitere `linii`), iar funcția de câmpuri-lipsă (`campuriLipsaCorp`) întoarce ETICHETE,
+  nu id-uri. Cerințe EXACTE (decizia Costin): (a) **id-uri stabile per câmp-din-rând** care supraviețuiesc
+  adăugării ȘI ștergerii (rândul 2 șters să NU facă eroarea rândului 3 să arate spre alt câmp); (b)
+  `campuriLipsaCorp` → **id-uri, nu etichete** (verifică ÎNTÂI cine o mai consumă înainte s-o schimbi); (c) probe
+  headless pe: **rând adăugat / rând șters din mijloc / două rânduri cu erori simultan / re-validare după
+  corectarea unuia singur**; (d) **no-op sha256** pe XML (e-Transport) ȘI pe factura generată (emitere); (e)
+  **STOP dacă id-urile stabile cer schimbarea modelului de date** al rândurilor. Gardul G10-A: e-Transport +
+  emitere EXPLICIT în afara listei până la batch 3.
+- **G11 (câmp-ajutor per criteriu):** se evaluează DUPĂ batch 3 (gata de pornit / schimbat de rollout). Din
+  batch 1-2 nu a ieșit nimic care să-i schimbe premisa (`camp-ajutor` e ortogonal față de plasarea erorii).
+
+### DESCHISE (restul, neatins de G10)
+
+1. **Campania „running == HEAD" + drift schema PUBLIC** — mecanism ALES (detector vizibil periodic, NU
+   auto-restart; DECIZII/GARZI 08.08). Necablat. Include gard pentru drift de schemă public (template-guard-ul
+   acoperă doar tenanții).
+2. **Cele 13 catch-uri „ecran care minte" — ÎNCHISE** (08.08, 12 reparate + woo backend); ratchet la zero pe
+   periculoase (`test_catch_vizibil.py`). Rămas doar de raportat (nereparat): `login.js:295` `.then` fără `.catch`;
+   `navigator.js:329`/`sesiune.js:30` catch-and-log.
+3. **Neatins din tura headless (E1-E12):** poarta_gol pe declarații op=0, A5 metoda de amortizare afișată vs
+   calculată, skip import D1a vizibil, E12 avansat (loading/latență/date parțiale). Harness gata (playwright+chromium).
+4. **Candidați de reparat:** CUI-propriu-firmă la editare (`firma_profil`, GARZI 08.08 — validat doar la
+   provizionare); marker E2 (CNP/data_angajare nemarcate `*` deși cerute în aval).
+5. **Fiscale deschise (din predarea 07.08, încă valabile):** octombrie 2025 `tichet_masa_plafon` = gol motivat
+   (lipsă Ordin MF sem.II 2025); acte P2 istorice (OG 16/2022, Legea 296/2020, OUG 115/2023, Legea 70/2015) =
+   REDARE, surse neaduse; snapshot CF 2016/2017 LIPSĂ (tva_standard 19%@2017, plafon_mijloc_fix 2.500@2015,
+   impozit_dividend 5%@2016 rămân REDARE, garda G2 blochează abuzul); `tva_redusa_5` 11%@2025 = decizie de produs.
+
+### INFRASTRUCTURĂ (neschimbată)
+Poartă verde: commit pe server rulează pre-commit (suită + verificator ~4-5min) → rulează commit-ul în background;
+post-commit publică three-way (origin/main + backup) automat, ESUEAZĂ VIZIBIL (sentinele). Restart după fix de COD
+Python: `sudo systemctl restart iconta-nou` + PROBEAZĂ live. Frontend = static, servit `no-cache` (fresh fără restart,
+fără `?v=` bump). Headless: `venv/bin/pip install playwright && playwright install chromium`; login Prisma
+(patron@prisma-cont.test / Prisma!patron2026). Editează cod cu patch-uri python (io.read + `.replace` + io.write);
+scripturi cu ghilimele → fișier local + scp.
+
+---
+
 ## ★★ PREDARE — 08.08.2026 — CITEȘTE ASTA ÎNTÂI (supersedează secțiunea 07.08 de mai jos, care e ISTORIC)
 
 **Ritual pornire:** `ssh iconta 'cd ~/iconta_nou && pwd; hostname; git log -1'`. Apoi CLAUDE.md §2.2/§2.3.
