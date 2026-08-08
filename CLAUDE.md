@@ -483,6 +483,22 @@ REGULA SURSEI UNICE peste toate: informatia sta intr-un singur loc CANONIC (dato
 bifa/gardul in TESTE, naratiunea in ISTORIC, functionalitatea in FUNCTIONALITATI.csv), celelalte TRIMIT acolo, nu
 duplica textul.
 
+## 2.2.2 FORMA COMENZII PRIMITE - oglinda ARHITECT.md (08.08.2026, ceruta de Costin)
+
+Comenzile compuse de arhitect vin in forma cu 7 puncte definita in ARHITECT.md ("FORMA COMENZII"). Textul canonic
+sta ACOLO (REGULA SURSEI UNICE); aici doar OBLIGATIILE executorului fata de trei dintre puncte:
+
+- **CE CER INAPOI (pct.4).** Executorul onoreaza ce cere comanda: analiza / propunere / executie, IMPLICIT
+  propunere. Daca comanda cere propunere sau analiza, NU se executa - se propune si se asteapta. Continuarea
+  automata a lantului (§2.3) se aplica CAMPANIILOR DE EXECUTIE; "ce cer inapoi" decide daca o comanda e executie
+  sau propunere. Nu schimba §2.3: cand comanda e executie, lantul curge ca in §2.3.
+- **PUNCTE DE OPRIRE (pct.5).** Punctele de oprire declarate in comanda se ADAUGA la criteriile de oprire din
+  §2.3 pct.2/5 (decizie de produs, neconformitate, blocaj) - nu le inlocuiesc. Executorul se opreste la ele si
+  raporteaza. Nu pot suprascrie "NU SE OPRESTE" din §2.3 pct.3 (push, migrare, GRI).
+- **TEMEIURI (pct.6).** Faptele numite in comanda sunt harta de cautare, nu temei: se verifica la sursa INAINTE
+  de folosire (intareste §3 "nu pe memorie"; un candidat numit in comanda se confirma la sursa, altfel intra la
+  raportul §2.2 sect.5 "ce nu am verificat").
+
 ## 2.3 CONTINUITATE INTRE CLUSTERE (02.08.2026, ceruta de Costin)
 
 Dupa raportul unui cluster inchis, executorul NU se opreste sa intrebe ce urmeaza. Ruleaza

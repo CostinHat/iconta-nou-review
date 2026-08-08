@@ -7875,3 +7875,22 @@ ramura de EROARE VIZIBILA (rosu, "Nu am putut incarca... — asta NU inseamna fa
 (ar fi un refactor de ~17 ecrane, buget). Gardul `test_catch_vizibil.py` pune un RATCHET (baseline 54 de
 catch-goale-langa-api): nicio CALE NOUA nu mai intra, iar repararea din rest COBOARA baseline in acelasi commit.
 Ratchet in loc de fix-total = opreste regresia clasei fara sa blocheze livrarea pe reparatia integrala.
+
+
+## 08.08.2026 - PIVOT: eliminarea raportului SCURT; un singur format de raport (11 sectiuni)
+
+SUPERSEDEAZA: incadrarea COMPLET / SCURT introdusa in CLAUDE.md §2.2 pe 02.08.2026 (nu exista ca intrare DECIZII
+separata - a trait doar in regula §2.2). INTERMEDIAR (02.08 -> 08.08): raportul avea doua forme - COMPLET (titlu
++ sectiunile 1-10) pentru inchideri de cluster / logica fiscala, si SCURT (titlu + sectiunile 1, 2, 5) pentru
+modificari de registru / infrastructura / un singur pas. FINAL (08.08): UN SINGUR FORMAT. Orice executie produce
+titlu + TOATE sectiunile 1-11, in ordine. O sectiune care nu se aplica se scrie EXPLICIT "N/A - <motiv>",
+niciodata prin omisiune; nu exista submultime de sectiuni care se pot sari, nu exista "N/A colectiv".
+
+TEMEI (proces, nu fiscal): forma SCURT permitea sarirea sectiunilor 3, 4, 6-11 - exact sectiunile care tin
+executorul cinstit (proba, temei, decizii cerute, generalizare pe clasa, garduri, efect pe produs, registre
+actualizate). O campanie "de un singur pas" care sare proba si generalizarea ascunde tocmai unde se pierde
+disciplina. Costin: "nu exista raport SCURT. Raportul are 11 pozitii obligatorii, toate."
+
+PROBA: CLAUDE.md §2.2 - blocul "CAND SE APLICA ... COMPLET / SCURT" inlocuit cu "UN SINGUR FORMAT ..."; §2.3
+pct.7 "sectiunile 1-10" -> "TOATE sectiunile 1-11"; grep dupa "SCURT" / "sectiunile 1-10" / "sectiunile 1, 2, 5"
+in CLAUDE.md = NICIUNA (commit 543a367, 08.08.2026).

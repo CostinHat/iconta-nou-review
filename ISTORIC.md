@@ -3459,3 +3459,26 @@ Candidati: CUI-propriu-firma la editare, marker E2 (CNP/data_angajare nemarcate 
 cnp_ingrijit. (d) Neatins din headless: poarta_gol op=0, A5 metoda afisata, skip import D1a, E12 avansat.
 
 HEAD b369ba3 -> b660534 (6 commituri publicate). Tot livrat verde; three-way + running=HEAD confirmate la final.
+
+
+## 08.08.2026 - Forma comenzii devine regula scrisa + un singur format de raport
+
+Doua interventii de guvernare, fara cod fiscal.
+
+**Un singur format de raport (eliminat SCURT).** Raportul avea din 02.08 doua forme - COMPLET (1-10) si SCURT
+(1, 2, 5). Forma SCURT lasa executorul sa sara proba, temeiul, generalizarea pe clasa, gardurile si registrele
+pe "campanii de un singur pas" - exact sectiunile care il tin cinstit. Costin a taiat-o: 11 pozitii obligatorii,
+toate, la fiecare executie; sectiunea neaplicabila = "N/A - <motiv>" explicit, nu omisiune. CLAUDE.md §2.2
+rescris, §2.3 pct.7 aliniat (commit 543a367). Vezi DECIZII 08.08 (pivot).
+
+**Forma comenzii - schelet de 7 puncte in ARHITECT.md.** Pana acum comenzile spuneau CE sa faci, nu UNDE mergem;
+executorul deducea tinta si ghicea singur cand o abatere e legitima (asa au aparut rafinarile mid-turn pe G10:
+etransport si emitere mutate in batch 3 abia dupa ce s-a vazut ca sunt abateri). ARHITECT.md primeste sectiunea
+FORMA COMENZII cu 7 puncte: DIRECTIA (unde + de ce), SARCINA (ce, nu cum), CONSTRANGERI (doar cele blocante),
+CE CER INAPOI (analiza/propunere/executie, implicit propunere), PUNCTE DE OPRIRE, TEMEIURI (faptele din comanda
+= harta de cautare, se verifica la sursa), CHESTIONAR DE FORMA (fostele 6 intrebari, re-ancorate ca pct.7).
+Regula 2 ("o campanie = o comanda") a fost clarificata: o corectie de curs ceruta de un punct de oprire aprins la
+executie NU e completare-pentru-pas-uitat, e fluxul proiectat. CLAUDE.md primeste o oglinda scurta (§2.2.2) care
+obliga executorul la punctele 4, 5, 6, cu trimitere la ARHITECT.md (fara duplicare de text) si cu domeniul
+explicit: §2.3 continua lantul pe campanii de EXECUTIE, CE CER INAPOI decide daca comanda e executie sau
+propunere - fara sa schimbe §2.3.
