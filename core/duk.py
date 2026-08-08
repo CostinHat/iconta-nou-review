@@ -69,12 +69,29 @@ def poate_valida(tip, dist=DIST):
 
 
 def _gri(cheie, temei, limita="XML-ul a fost generat, dar NU validat la ANAF."):
-    return {"stare": "gri", "erori": "", "cheie": cheie, "temei": temei,
+    return {"stare": "gri", "erori": "", "severitate": None, "cheie": cheie, "temei": temei,
             "limita": limita, "modul": MODUL, "reguli": REGULI}
 
 
 LIMITA = ("Validare structura si reguli ANAF. NU verifica daca cifrele corespund "
           "evidentei contabile - pentru asta e controlul incrucisat.")
+
+
+def severitate(rez):
+    """Clasifica output-ul DUK pe SEVERITATE reala: 'eroare' (linie E:, blocheaza depunerea la ANAF) vs
+    'atentionare' (linie A:, NU blocheaza - dovedit live 08.08: 'A: asigurat...' vs 'E: angajator...') vs
+    None (fara output). DUK pune ORICE iesire in stare='erori', dar o atentionare (A:) nu e o eroare.
+    FAIL-SAFE: un output prezent dar neclasificat (sau care contine vreo linie E:) -> 'eroare'; niciodata nu
+    se retrograda un E: sau un format necunoscut la 'atentionare' (un fals-verde ar fi mai grav decat
+    supra-avertizarea)."""
+    if not rez or not rez.strip():
+        return None
+    linii = [l.strip() for l in rez.splitlines() if l.strip()]
+    if any(l.startswith("E:") for l in linii):
+        return "eroare"
+    if any(l.startswith("A:") for l in linii):
+        return "atentionare"
+    return "eroare"  # output prezent, format nerecunoscut -> tratat ca eroare (fail-safe)
 
 
 def _valideaza_saft(xml, tip, an=None, luna=None, timeout=300):
@@ -115,12 +132,12 @@ def _valideaza_saft(xml, tip, an=None, luna=None, timeout=300):
             # Fara fisier de rezultat NU declaram "valid": exact asa aparea D406 verde pe orice gunoi.
             # Cerem o dovada pozitiva - fisier de rezultat sau PDF (citite AICI, inainte de finally/rmtree).
             if os.path.exists(lp) or (os.path.exists(pp) and os.path.getsize(pp) > 0):
-                return {"stare": "valid", "erori": "", "cheie": "D406", "temei": temei,
+                return {"stare": "valid", "erori": "", "severitate": None, "cheie": "D406", "temei": temei,
                         "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
             return _gri("D406", "Validatorul SAF-T nu a produs nici rezultat, nici erori - "
                                 "nu putem confirma ca declaratia e valida.")
-        return {"stare": "erori", "erori": rez, "cheie": "D406", "temei": temei,
-                "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
+        return {"stare": "erori", "erori": rez, "severitate": severitate(rez), "cheie": "D406",
+                "temei": temei, "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
     finally:
         shutil.rmtree(td, ignore_errors=True)
 
@@ -160,7 +177,7 @@ def valideaza(xml, tip, dist=DIST, timeout=180, an=None, luna=None):
             rez = ""
         temei = "DUKIntegrator -v %s (pachet oficial ANAF)." % cheie
         stare = "erori" if rez else "valid"
-        return {"stare": stare, "erori": rez, "cheie": cheie, "temei": temei,
-                "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
+        return {"stare": stare, "erori": rez, "severitate": severitate(rez), "cheie": cheie,
+                "temei": temei, "limita": LIMITA, "modul": MODUL, "reguli": REGULI}
     finally:
         shutil.rmtree(td, ignore_errors=True)

@@ -198,13 +198,19 @@ async function pas2(corp, nav) {
   const xml = S.rezultat.xml_b64 ? _dinB64(S.rezultat.xml_b64) : (S.rezultat.xml || "");
   const stare = S.rezultat.stare || "gri";
   const erANAF = (S.rezultat.erori || "").trim();
+  const sev = S.rezultat.severitate;  // [A2] "eroare" (E:) vs "atentionare" (A:) - DUK pune ambele in stare="erori"
   const blocANAF = stare === "valid"
     ? `<div class="dec-ok">Validat la ANAF, fără erori.</div>`
     : (stare === "erori"
-        ? `<div class="dec-eroare">
-             <div class="dec-avert-cap">Validatorul ANAF a găsit erori</div>
-             <pre class="dec-xml-pre">${esc(erANAF)}</pre>
-           </div>`
+        ? (sev === "atentionare"
+            ? `<div class="dec-avert">
+                 <div class="dec-avert-cap">Validatorul ANAF a semnalat atenționări (nu blochează depunerea — verifică)</div>
+                 <pre class="dec-xml-pre">${esc(erANAF)}</pre>
+               </div>`
+            : `<div class="dec-eroare">
+                 <div class="dec-avert-cap">Validatorul ANAF a găsit erori</div>
+                 <pre class="dec-xml-pre">${esc(erANAF)}</pre>
+               </div>`)
         : `<div class="dec-avert">
              <div class="dec-avert-cap">Nu am putut valida la ANAF</div>
              <ul><li>${esc(S.rezultat.temei || "Validatorul nu a rulat.")}</li>

@@ -3558,3 +3558,12 @@ cele 4 garduri = commit separat (după ce fișierele de test intră în HEAD; ga
 ## 08.08.2026 (noapte) — Detector "running == HEAD" vizibil in app (superadmin)
 
 Comanda Costin: cableaza detectorul INAINTE de parcurgere, nu dupa (fara el orice parcurgere sta pe premisa neverificata). LIVRAT: core/versiune.py stampileaza la startup (lifespan) commitul cu care a pornit procesul viu (citit din git HEAD in memorie, NU din mtime-uri); stare_versiune pura -> {running, head, divergent}. Endpoint /admin/versiune (cere_rol superadmin -> 403 alte roluri). Frontend desktopAdmin: caseta-atentie (cap.6) DOAR la divergenta, DOAR superadmin, nimic cand e la zi; nu reporneste, nu repara. Gard test_running_head.py (divergenta/egalitate/necunoscut + RBAC 200/403/401; mutatie != -> == rosu). Deploy prin restart (sudo systemctl restart iconta-nou) - procesul viu re-stampileaza HEAD; commitul rulat citit la final din /admin/versiune (raport patru-way). Mecanismul 2/3 (cron+sentinela+Brevo, raport patru-way la inchidere, audit schema public) = scop separat.
+
+## 08.08.2026 (noapte) — Parcurgere+reparație: A2 (DUK severitate A:/E:) LIVRAT
+
+Tura 3 de parcurgere (după cele 2 care s-au oprit): doar parcurgere + reparație. Confirmat empiric prin serviciul viu
+(`/declaratii/{tip}/valideaza`, token admin_firma Prisma) formatul DUK: atenționare = linie `A:` („A: asigurat...
+atentionare regula..."), eroare = linie `E:` („E: angajator... eroare regula..."). A2 reparat la cauză: `duk.severitate()`
+(fail-safe) + câmp `severitate` în contract + `declaratii.js` afișează atenționările distinct de erori. Gard cu fixturi
+reale + mutație (E:->atentionare -> roșu). Consumator unic, fără gating pe submit -> relabeling sigur. NOTAT (nereparat,
+cere structură fiscală): d112 Ferma Agricultor respins de DUK (secțiunea Creante lipsă la cif<>cif AJPIS) - vezi GARZI.

@@ -2106,3 +2106,23 @@ REGISTRUL A FOST GREȘIT (corecție cerută de Costin, confirmată la sursă): i
 `facturi_ecran.js:1078` filtra înainte de POST `/facturi/emite` — FALS. 1078 e în `formSablon` → POST
 **/facturi-recurente** (emite = emitere_ecran.js, reparat deja la 3b). Descoperit prin grep pe fișier; formularea
 corectă e cea din batch-ul a771f25 + aici (TEMEIURI pct.6: faptele din comandă/registru = hartă de căutare, nu temei).
+
+## 08.08.2026 (noapte) — A2 REPARAT (DUK severitate) + finding NOTAT (d112 Creante cif<>AJPIS)
+
+**A2 ÎNCHIS (tura de parcurgere+reparație):** validatorul DUK punea ORICE ieșire în `stare="erori"`, deci o
+ATENȚIONARE (`A:`, care NU blochează depunerea) apărea sub „Validatorul ANAF a găsit erori" — severitate confundată.
+Cauza la sursă (`core/duk.py`): `stare = "erori" if rez else "valid"`, fără clasificare A:/E:. Fix: `duk.severitate()`
+clasifică FAIL-SAFE (linie `E:` -> "eroare"; doar `A:` -> "atentionare"; necunoscut/non-gol -> "eroare"; niciodată
+retrograda un E: sau un format nerecunoscut). Câmp nou `severitate` în toate return-urile `valideaza`/`_valideaza_saft`.
+Frontend `declaratii.js`: `severitate=="atentionare"` -> casetă `.dec-avert` „a semnalat atenționări (nu blochează)",
+altfel roșu ca înainte. Consumator UNIC (declaratii.js:205), FĂRĂ gating pe `stare=="erori"` (submit e pe rol `poate_depune`)
+-> relabeling pur, sigur. Gard `core/test_duk_severitate.py` cu FIXTURI REALE (capturate live prin serviciu):
+atenționare = „A: asigurat... B4_5P(4325)..." (Panificatie), eroare = „E: angajator... ACreante..." (Ferma Agricultor);
+mutație E:->atentionare -> roșu.
+
+**FINDING NOTAT (nereparat — cere structură fiscală, per constrângere „nu inventa"):** `d112` pentru **Ferma
+Agricultor Forfetar** (tenant 4844), aug 2026, e RESPINS de DUK: „E: angajator (1) eroare regula: ACreante:
+sectiunea Creante este obligatorie pt cif <> cif AJPIS". Generatorul (`core/d112.py`, secțiunea `angajatorA` =
+„Creante") nu emite secțiunea de creanțe când firma are creanță CM (indemnizații recuperate FNUASS) și `cif <> cif
+AJPIS`. Panificatie (cif == cif AJPIS) doar atenționare, deci e specific cazului cif<>AJPIS. Repararea cere structura
+exactă D112 Creanțe (structura_D112_0126_030226) confirmată la sursă ANAF — NU o inventez. Datorie deschisă.
