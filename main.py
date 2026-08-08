@@ -6134,7 +6134,11 @@ def retete_salveaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cab
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fara acces")
-        return _r.salveaza(conn, schema, corp)
+        r = _r.salveaza(conn, schema, corp)
+    if r.get("eroare"):
+        _ec = r.get("erori_campuri")  # [cap.24] contract {mesaj, erori_campuri} ca facturi-recurente/emitere
+        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
+    return r
 
 @app.delete("/tenants/{tenant_id}/retete/{reteta_id}")
 def retete_sterge(tenant_id: int, reteta_id: int, ctx=Depends(cere_cabinet)):

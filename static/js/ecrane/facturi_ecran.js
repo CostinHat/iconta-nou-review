@@ -3,7 +3,7 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani } from "../api.js";  /* esc_nc27 */
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp } from "../api.js";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js";
 import { randeazaEmitere } from "./emitere_ecran.js?v=6";
 
@@ -981,7 +981,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
 }
 
 // ---------- ADAUGA SABLON ----------  // fac_recurente_v1
-function formSablon(corp, nav, tenantId, opt) {
+export function formSablon(corp, nav, tenantId, opt) {
   const inapoiLista = () => nav.inapoiPas();  // faza_b_traseu_v1
   corp.innerHTML = `
     <h2 class="pf-titlu">\u0218ablon nou</h2>
@@ -1018,70 +1018,99 @@ function formSablon(corp, nav, tenantId, opt) {
 
   const zonaLinii = corp.querySelector("#fr-linii");
   const linii = [];
+  const _val = (x) => (x === "" || x == null) ? "" : esc(String(x));
+  const linieNoua = () => ({ descriere: "", cantitate: 1, pret_unitar: 0, cota_tva: null });
 
-  function adaugaLinie() {
-    const idx = linii.length;
-    linii.push({ descriere: "", cantitate: 1, pret_unitar: 0, cota_tva: null });
-    const rand = document.createElement("div");
-    rand.className = "em-linie";
-    rand.dataset.idx = idx;
-    rand.innerHTML = `
-      <input class="pr-input em-l-den" placeholder="Denumire (ex: abonament mentenan\u021b\u0103)" aria-label="Denumire articol" autocomplete="off">
-      <input class="pr-input em-l-cant" type="number" step="0.001" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
-      <input class="pr-input em-l-pret" type="number" step="0.01" placeholder="Pre\u021b" aria-label="Pre\u021b unitar" title="Pre\u021b unitar">
-      <span class="em-l-cota" title="Cota TVA">\u2014</span>
-      <button class="buton-sters em-l-sterge" title="\u0218terge">\u00d7</button>`;
-    zonaLinii.appendChild(rand);
+  // randeaza O linie DIN MODEL, id-uri pozitionale fr-l{i}-* (cap.24: id derivat din pozitie, ca backendul sa
+  // lege eroarea de camp). Buton de stergere pe fiecare rand (cap.24 regula 3).
+  function randLinie(i) {
+    const l = linii[i];
+    const cotaTxt = l.cota_tva == null ? "—" : (l.cota_tva === 0 ? "scutit" : `${l.cota_tva}%`);
+    return `<div class="em-linie" data-idx="${i}">
+      <input class="pr-input em-l-den" id="fr-l${i}-descriere" value="${_val(l.descriere)}" placeholder="Denumire (ex: abonament mentenanță)" aria-label="Denumire articol" autocomplete="off">
+      <input class="pr-input em-l-cant" id="fr-l${i}-cantitate" type="number" step="0.001" value="${_val(l.cantitate)}" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
+      <input class="pr-input em-l-pret" id="fr-l${i}-pret_unitar" type="number" step="0.01" value="${_val(l.pret_unitar)}" placeholder="Preț" aria-label="Preț unitar" title="Preț unitar">
+      <span class="em-l-cota" id="fr-l${i}-cota" title="Cota TVA">${cotaTxt}</span>
+      <button type="button" class="buton-sters em-l-sterge" data-idx="${i}" title="Șterge">×</button>
+    </div>`;
+  }
 
-    const den = rand.querySelector(".em-l-den");
-    const cant = rand.querySelector(".em-l-cant");
-    const pret = rand.querySelector(".em-l-pret");
-    const cotaEl = rand.querySelector(".em-l-cota");
+  function setCota(l, text) {
+    const p = linii.indexOf(l);
+    if (p < 0) return;
+    const el = zonaLinii.querySelector("#fr-l" + p + "-cota");
+    if (el) el.textContent = text;
+  }
 
+  // inputurile scriu in MODEL (fara re-randare la tastare -> fara pierdere de focus). Fetch-ul cotei capteaza
+  // OBIECTUL l (nu indexul) -> scrie corect chiar daca un splice a reindexat lista intre timp.
+  function legaLinie(i) {
+    const l = linii[i];
+    const den = zonaLinii.querySelector("#fr-l" + i + "-descriere");
+    const cant = zonaLinii.querySelector("#fr-l" + i + "-cantitate");
+    const pret = zonaLinii.querySelector("#fr-l" + i + "-pret_unitar");
+    const del = zonaLinii.querySelector('.em-l-sterge[data-idx="' + i + '"]');
     let timer = null;
     den.addEventListener("input", () => {
-      linii[idx].descriere = den.value.trim();
-      linii[idx].cota_tva = null;
+      l.descriere = den.value.trim();
+      l.cota_tva = null;
       clearTimeout(timer);
-      const d = den.value.trim();
-      if (d.length < 3) { cotaEl.textContent = "\u2014"; return; }
-      cotaEl.textContent = "\u2026";
+      const d = l.descriere;
+      if (d.length < 3) { setCota(l, "—"); return; }
+      setCota(l, "…");
       timer = setTimeout(async () => {
         try {
           const r = await api.post(`/tenants/${tenantId}/produse/potriveste`, { denumire: d });
-          if (r && r.ok) {
-            linii[idx].cota_tva = r.cota;
-            cotaEl.textContent = r.cota === 0 ? "scutit" : r.cota + "%";
-          } else {
-            cotaEl.textContent = "\u2014";
-          }
-        } catch { cotaEl.textContent = "\u2014"; }
+          if (r && r.ok) { l.cota_tva = r.cota; setCota(l, r.cota === 0 ? "scutit" : r.cota + "%"); }
+          else setCota(l, "—");
+        } catch { setCota(l, "—"); }
       }, 400);
     });
-    cant.addEventListener("input", () => { linii[idx].cantitate = Number(cant.value) || 0; });
-    pret.addEventListener("input", () => { linii[idx].pret_unitar = Number(pret.value) || 0; });
-    rand.querySelector(".em-l-sterge").addEventListener("click", () => {
-      linii.splice(idx, 1);
-      rand.remove();
-    });
+    cant.addEventListener("input", () => { l.cantitate = Number(cant.value) || 0; });
+    pret.addEventListener("input", () => { l.pret_unitar = Number(pret.value) || 0; });
+    del.addEventListener("click", () => { const p = linii.indexOf(l); if (p >= 0) linii.splice(p, 1); deseneazaLinii(); });
   }
-  adaugaLinie();
-  corp.querySelector("#fr-add-linie").addEventListener("click", adaugaLinie);
+
+  // re-randare INTEGRALA din model (cap.24 regula 1): nu se muta noduri individual; valorile tastate pe randurile
+  // ramase supravietuiesc (sunt in model). Se re-leaga listenerii cu indici proaspeti.
+  function deseneazaLinii() {
+    zonaLinii.innerHTML = linii.map((_, i) => randLinie(i)).join("");
+    linii.forEach((_, i) => legaLinie(i));
+  }
+
+  corp.querySelector("#fr-add-linie").addEventListener("click", () => { linii.push(linieNoua()); deseneazaLinii(); });
+  linii.push(linieNoua());  // prima linie
+  deseneazaLinii();
+
+  // plaseaza erorile field-keyed din 422 (backendul: erori_campuri [{camp: fr-l{i}-.., mesaj}]) LANGA campul lor
+  // (cap.6 mecanism A). Cele fara #camp in DOM -> zona generica (fallback B).
+  function plaseazaErori(zona, e) {
+    curataEroriCamp(corp);
+    const eris = (e && e.erori_campuri) || [];
+    const rest = [];
+    eris.forEach((x) => { if (!eroareCamp(corp, x.camp, x.mesaj)) rest.push(x.mesaj); });
+    if (rest.length) zona.innerHTML = `<span style="color:var(--rosu)">Completează: ${esc(rest.join("; "))}</span>`;
+    else if (!eris.length) zona.innerHTML = `<span style="color:var(--rosu)">${esc((e && (e.mesaj || e.message)) || "eroare")}</span>`;
+    else zona.innerHTML = "";
+  }
 
   corp.querySelector("#fr-salveaza").addEventListener("click", async () => {
     const zona = corp.querySelector("#fr-rezultat");
+    curataEroriCamp(corp);
+    // NU se filtreaza randuri (cap.24 regula 2): lista trimisa = lista randata. Un rand incomplet se valideaza
+    // pe backend si se raporteaza langa campul lui, nu dispare tacit.
     const corpCerere = {
       tert_cui: corp.querySelector("#fr-cui").value.trim() || null,
       tert_nume: corp.querySelector("#fr-nume").value.trim(),
       zi_emitere: Number(corp.querySelector("#fr-zi").value) || 1,
       moneda: corp.querySelector("#fr-moneda").value,
-      linii: linii.filter((l) => l.descriere && l.cantitate),
+      linii: linii.map((l) => ({ descriere: l.descriere, cantitate: l.cantitate, pret_unitar: l.pret_unitar, cota_tva: l.cota_tva })),
     };
     try {
       await api.post(`/tenants/${tenantId}/facturi-recurente`, corpCerere);
       inapoiLista();
     } catch (e) {
-      zona.innerHTML = `<span style="color:var(--rosu)">${e.mesaj || e.message || "eroare"}</span>`;
+      plaseazaErori(corp.querySelector("#fr-rezultat"), e);
     }
   });
 }

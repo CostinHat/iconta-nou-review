@@ -4,6 +4,7 @@ Regula: sablon activ, zi_emitere <= azi.day, ultima_emitere nu e in luna curenta
 import json
 import datetime
 from psycopg2.extras import RealDictCursor
+from core import facturi_api
 
 
 def lista(conn, schema):
@@ -29,6 +30,13 @@ def adauga(conn, schema, corp):
     zi = int(corp.get("zi_emitere") or 1)
     if not 1 <= zi <= 28:
         return {"eroare": "zi_emitere intre 1 si 28"}
+    # [cap.24 regula 2] validare per-linie AUTORITARA: un rand incomplet se raporteaza langa campul lui
+    # (fr-l{i}-..), nu il filtreaza tacit frontendul. Aceleasi criterii (denumire nevida + cantitate>0),
+    # din aceeasi functie ca emitere (fara oglinda care drifteaza, cap.24 regula 4).
+    lipsa = facturi_api.linii_campuri_lipsa(linii, prefix="fr-l")
+    if lipsa:
+        return {"eroare": "Completeaza liniile: " + "; ".join(x["eticheta"] for x in lipsa),
+                "erori_campuri": [{"camp": x["camp"], "mesaj": x["eticheta"]} for x in lipsa]}
     with conn.cursor() as cur:
         cur.execute(f"""INSERT INTO {schema}.facturi_recurente
             (client_id, tert_nume, tert_cui, linii, zi_emitere, moneda)

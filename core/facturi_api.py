@@ -25,21 +25,23 @@ class LiniiIncomplete(ValueError):
         super().__init__("Linii incomplete: " + "; ".join(x["eticheta"] for x in campuri))
 
 
-def linii_campuri_lipsa(linii):
+def linii_campuri_lipsa(linii, prefix="em-l"):
     """Campuri obligatorii per linie goale -> [{camp, eticheta}]. Obligatorii: denumire (nevida) + cantitate>0
-    (aceleasi criterii pe care frontendul le filtra tacit inainte). id camp = em-l{i}-{camp}, i = pozitia in lista."""
+    (aceleasi criterii pe care frontendul le filtra tacit inainte). id camp = {prefix}{i}-{camp}, i = pozitia in
+    lista. prefix parametrizat ca acelasi contract sa serveasca emitere (em-l) + facturi-recurente (fr-l)
+    FARA a duplica criteriile (o singura sursa de adevar, cap.24 regula 4)."""
     lipsa = []
     for i, l in enumerate(linii):
         n = i + 1
         d = l.get("descriere")
         if d is None or str(d).strip() == "":
-            lipsa.append({"camp": "em-l%d-descriere" % i, "eticheta": "Linia %d: denumire" % n})
+            lipsa.append({"camp": "%s%d-descriere" % (prefix, i), "eticheta": "Linia %d: denumire" % n})
         try:
             ok = float(l.get("cantitate") or 0) > 0
         except (TypeError, ValueError):
             ok = False
         if not ok:
-            lipsa.append({"camp": "em-l%d-cantitate" % i, "eticheta": "Linia %d: cantitate" % n})
+            lipsa.append({"camp": "%s%d-cantitate" % (prefix, i), "eticheta": "Linia %d: cantitate" % n})
     return lipsa
 
 

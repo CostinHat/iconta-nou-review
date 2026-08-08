@@ -3517,3 +3517,23 @@ COMPLET/SCURT). Fiecare tură G10 a primit comandă în 7 puncte și a răspuns 
 
 **Rămâne după G10:** datoria cap.24 regula 2 în afara G10 (facturi_ecran.js:1078, firme.js:1228) — GARZI 08.08.
 Decizia de scope batch 3 consemnată în DECIZII 08.08 (PIVOT: PREDARE supersedează GARZI; no-op pe ambele ieșiri).
+
+
+## 08.08.2026 (seara) — cap.24 regula 1+2 pe facturi-recurente + rețete (batch propriu) + STOP regula-2 guard
+
+Comandă Costin (execuție, 7 puncte): închide clasa "frontend filtrează rânduri înainte de validare -> rând
+incomplet dispare tăcut" pe ultimele 2 purtătoare din afara G10 (facturi_ecran.js + firme.js rețete), apoi cablează
+regula 2 în verificator. LIVRAT pe cele 2 ecrane NUMITE: model pozitional (`fr-l{i}-*` / `rt-l{i}-*`) + re-randare
+integrală (regula 1) + ștergere splice + buton/rând (regula 3) + FĂRĂ filtrare (regula 2); backend autoritar
+per-linie {camp,eticheta} (`facturi_api.linii_campuri_lipsa` parametrizat cu `prefix` = o singură sursă
+emitere+recurente, regula 4; `retete_api._ingrediente_campuri_lipsa`), rute 422 {mesaj, erori_campuri}, erori prin
+`eroareCamp` (cap.6 mecanism A). 2 garduri headless COMISE (5 scenarii DOM + no-op, chromium + backend real
+interceptat, mutație filtru->roșu->revert): `core/test_facturi_recurente_randuri_dinamice.py` +
+`core/test_retete_randuri_dinamice.py`. La sursă: 1078 filtra înainte de POST /facturi-recurente (NU /facturi/emite
+cum zicea datoria — emite reparat la 3b), verificat.
+
+OPRIT la stop-point 3: regula-2 guard, cablată fidel, aprinde 2 ecrane NENUMITE (firme.js:1582 NIR /stocuri/nir —
+purtător autentic al clasei; firme.js:1256 inventar /stocuri/inventar — filtrare inputuri de stoc goale, apartenență
+discutabilă). Guardul NU s-a cablat (l-aș face roșu pe poartă); decizie de scop cerută lui Costin (vezi GARZI 08.08).
+Cele 2 ecrane numite = commise verzi (poartă 1571 passed / verificator 0); guardul regula-2 + bifele Inventar A
+(fișiere de test noi) = follow-up după decizie / după ce fișierele intră în HEAD (gard anti-stale test_agenda).

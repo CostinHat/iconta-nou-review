@@ -1062,7 +1062,7 @@ async function ecranSalariati(corp, nav, t) {
 
 
 // [stocuri-cv] Fise de magazie (cantitativ-valoric)
-async function sectiuneaCV(corp, t, zonaM) {
+export async function sectiuneaCV(corp, t, zonaM) {
   const zona = corp.querySelector("#cv-zona");
   let arts = [];
   try { const r = await api.get(`/tenants/${t.id}/stocuri/articole`); arts = r.articole || []; } catch {}
@@ -1180,12 +1180,14 @@ async function sectiuneaCV(corp, t, zonaM) {
   const rtIng = zona.querySelector("#rt-ingrediente");
   let rtLinii = [];
   const rtDeseneazaIng = () => {
+    // cap.24: id-uri pozitionale rt-l{i}-* (backendul leaga eroarea de camp, cap.6); re-randare integrala din
+    // model (regula 1); buton de stergere pe fiecare rand (regula 3).
     rtIng.innerHTML = rtLinii.map((l, i) => `
-      <div style="display:flex;gap:6px;margin-top:6px;align-items:center">
-        <select class="camp-input rt-art" data-i="${i}">${arts.map((a) =>
-          `<option value="${a.id}" ${a.id == l.articol_id ? "selected" : ""}>${esc(a.denumire)} \u00b7 CMP ${a.cmp}</option>`).join("")}</select>
-        <input class="camp-input rt-cant" data-i="${i}" type="number" step="0.001" value="${l.cantitate || ""}" placeholder="cant./por\u021bie" aria-label="Cantitate pe por\u021bie" style="width:120px">
-        <button class="buton-sters rt-scoate" data-i="${i}">\u2212</button>
+      <div class="em-linie" data-idx="${i}">
+        <select class="camp-input rt-art" id="rt-l${i}-articol" data-i="${i}" aria-label="Articol ingredient">${arts.map((a) =>
+          `<option value="${a.id}" ${a.id == l.articol_id ? "selected" : ""}>${esc(a.denumire)} · CMP ${a.cmp}</option>`).join("")}</select>
+        <input class="camp-input rt-cant" id="rt-l${i}-cantitate" data-i="${i}" type="number" step="0.001" value="${l.cantitate || ""}" placeholder="cant./porție" aria-label="Cantitate pe porție" style="width:120px">
+        <button type="button" class="buton-sters rt-scoate" data-i="${i}" title="Șterge">−</button>
       </div>`).join("");
     rtIng.querySelectorAll(".rt-art").forEach((s) => s.addEventListener("change", (e) => { rtLinii[e.target.dataset.i].articol_id = parseInt(e.target.value); }));
     rtIng.querySelectorAll(".rt-cant").forEach((s) => s.addEventListener("input", (e) => { rtLinii[e.target.dataset.i].cantitate = parseFloat(e.target.value); }));
@@ -1224,13 +1226,21 @@ async function sectiuneaCV(corp, t, zonaM) {
   };
   zona.querySelector("#rt-plus").addEventListener("click", () => { rtLinii.push({ articol_id: arts[0] && arts[0].id, cantitate: "" }); rtDeseneazaIng(); });
   zona.querySelector("#rt-salveaza").addEventListener("click", async () => {
+    curataEroriCamp(zona);
     const den = zona.querySelector("#rt-den").value.trim();
-    const linii = rtLinii.filter((l) => l.articol_id && l.cantitate > 0);
-    if (!den || !linii.length) { arataMesaj(zonaM, "Completeaz\u0103 denumirea \u0219i cel pu\u021bin un ingredient.", "eroare"); return; }
+    // NU se filtreaza randuri (cap.24 regula 2): lista trimisa = lista randata. Backendul valideaza per-linie si
+    // raporteaza langa campul lipsa (rt-l{i}-..), nu se arunca tacit un ingredient inceput.
+    const linii = rtLinii.map((l) => ({ articol_id: l.articol_id, cantitate: l.cantitate }));
     try {
       await api.post(`/tenants/${t.id}/retete`, { denumire: den, pret_fara_tva: parseFloat(zona.querySelector("#rt-pret").value || 0), linii });
       zona.querySelector("#rt-den").value = ""; zona.querySelector("#rt-pret").value = ""; rtLinii = []; rtDeseneazaIng(); rtIncarca();
-    } catch (er) { arataMesaj(zonaM, er.mesaj || "Eroare la salvare.", "eroare"); }
+    } catch (er) {
+      curataEroriCamp(zona);
+      const eris = (er && er.erori_campuri) || [];
+      const rest = [];
+      eris.forEach((x) => { if (!eroareCamp(zona, x.camp, x.mesaj)) rest.push(x.mesaj); });
+      arataMesaj(zonaM, (rest.length ? rest.join("; ") : (er.mesaj || "Eroare la salvare.")), "eroare");
+    }
   });
   rtIncarca();
 

@@ -2075,9 +2075,24 @@ acum TOATE ecranele din static/js/ecrane -> 0. cap.24 (randuri dinamice) scris (
 + `core/test_emitere_randuri_dinamice.py` (5 scenarii DOM + no-op sha256 pe ieșirea reală fiecare;
 auto-provizionează chromium). Commituri: 908ab6b (cap.24), 119aea5 (3a), c0be1cf (gard 3a), a5c7808 (3b).
 
-RĂMÂNE DESCHIS (singurul rest al clasei "filtrare înainte de validare", ÎN AFARA G10) — VERIFICAT în această
-tură că e încă deschisă și formulată corect (fișiere neatinse azi, linii confirmate la sursă):
-- facturi_ecran.js:1078 — `linii: linii.filter((l) => l.descriere && l.cantitate)` înainte de POST /facturi/emite.
-- firme.js:1228 — `const linii = rtLinii.filter((l) => l.articol_id && l.cantitate > 0)` înainte de POST rețetă.
-Aceeași clasă reparată azi la e-Transport + emitere; batch propriu cu decizia Costin. NU se cablează gard mecanic
-pe regula 2 (ar aprinde aceste ecrane, în afara G10) — ratchet. Vezi și datoria de la 3a (secțiunea cap.24 batch 3a).
+ÎNCHIS 08.08 (batch propriu cap.24 regula 1+2): clasa "filtrare înainte de validare -> rând dispare tăcut"
+închisă pe cele DOUĂ ecrane numite — **facturi-recurente** (`formSablon`, facturi_ecran.js) + **rețete**
+(`sectiuneaCV`, firme.js): model pozitional (`fr-l{i}-*` / `rt-l{i}-*`) + re-randare integrală (regula 1) +
+ștergere splice + FĂRĂ filtrare (regula 2); backend autoritar per-linie {camp,eticheta}
+(`facturi_api.linii_campuri_lipsa(prefix="fr-l")` reutilizat = o singură sursă, regula 4;
+`retete_api._ingrediente_campuri_lipsa`), rute 422 {mesaj, erori_campuri}, erori prin `eroareCamp` (cap.6 mec. A).
+Garduri headless COMISE (5 scenarii DOM + no-op, mutație filtru->roșu): `core/test_facturi_recurente_randuri_dinamice.py`
++ `core/test_retete_randuri_dinamice.py`. CORECȚIE la formularea veche: `facturi_ecran.js:1078` filtra înainte de
+POST **/facturi-recurente** (nu /facturi/emite — emite era reparat la 3b), verificat la sursă.
+
+RĂMÂNE DESCHIS (STOP-POINT 3, comanda Costin 08.08) — **regula-2 guard NU s-a cablat**: cablată fidel, aprinde
+2 ecrane NENUMITE în comandă (verificat mecanic pe ecranele reparate — `linii` var/cheie construit prin `.filter(`):
+- **firme.js:1582 — NIR** (`citesteLinii().filter((l) => l.denumire)` înainte de POST `/stocuri/nir`): purtător
+  AUTENTIC al clasei (rânduri user via #sn-plus; rând fără denumire aruncat tăcut; + violează regula 1 prin
+  appendChild/remove). Un guard line-based (stilul verificatorului) îl prinde.
+- **firme.js:1256 — inventar** (`[...].filter((i) => i.value !== "")` înainte de POST `/stocuri/inventar`):
+  filtrează inputurile de stoc goale (multi-linie; îl prinde un guard multi-linie). Apartenența la clasă e
+  DISCUTABILĂ ("articol necontorizat" vs "rând început incomplet").
+DECIZIE DE PRODUS/SCOP CERUTĂ (Costin): (a) extinde "peste tot" la NIR + inventar (le repar în același tipar, apoi
+cablez guardul curat), SAU (b) cablez guardul cu baseline-ratchet documentat (contrazice "fără excepții"), SAU
+(c) NIR/inventar = batch(uri) separat(e), guardul rămâne amânat. Până la decizie guardul NU e cablat (poartă roșie).

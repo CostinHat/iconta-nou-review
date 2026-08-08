@@ -69,8 +69,36 @@ def lista(conn, schema):
     return _fara_decimal({"retete": ret})
 
 
+def _ingrediente_campuri_lipsa(linii):
+    """Ingrediente goale -> [{camp, eticheta}]. Obligatorii: articol ales + cantitate>0 (aceleasi criterii pe
+    care frontendul le filtra tacit inainte). id camp = rt-l{i}-{camp}, i = pozitia in lista (cap.24)."""
+    lipsa = []
+    for i, l in enumerate(linii):
+        n = i + 1
+        if not l.get("articol_id"):
+            lipsa.append({"camp": "rt-l%d-articol" % i, "eticheta": "Ingredient %d: articol" % n})
+        try:
+            ok = float(l.get("cantitate") or 0) > 0
+        except (TypeError, ValueError):
+            ok = False
+        if not ok:
+            lipsa.append({"camp": "rt-l%d-cantitate" % i, "eticheta": "Ingredient %d: cantitate" % n})
+    return lipsa
+
+
 def salveaza(conn, schema, corp):
-    """corp: {id?, denumire, pret_fara_tva, linii:[{articol_id, cantitate}]}. Upsert."""
+    """corp: {id?, denumire, pret_fara_tva, linii:[{articol_id, cantitate}]}. Upsert.
+    [cap.24 regula 2] validare per-linie AUTORITARA inainte de scriere: un ingredient inceput incomplet se
+    raporteaza langa campul lui (rt-l{i}-..), nu il filtreaza tacit frontendul."""
+    linii = corp.get("linii") or []
+    if not (corp.get("denumire") or "").strip():
+        return {"eroare": "Denumirea retetei e obligatorie."}
+    if not linii:
+        return {"eroare": "Adauga cel putin un ingredient."}
+    lipsa = _ingrediente_campuri_lipsa(linii)
+    if lipsa:
+        return {"eroare": "Completeaza ingredientele: " + "; ".join(x["eticheta"] for x in lipsa),
+                "erori_campuri": [{"camp": x["camp"], "mesaj": x["eticheta"]} for x in lipsa]}
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         if corp.get("id"):
             cur.execute(f"""UPDATE {schema}.retete SET denumire=%s, pret_fara_tva=%s
