@@ -398,18 +398,13 @@ informatia (cifra care conteaza langa o nota tehnica; ce n-a fost verificat uneo
 proza). Pe cifre se face aritmetica de validare (COLLECTED = passed + skipped + xfailed, comparat cu runda
 anterioara); pe deciziile cerute se stie ce blocheaza. Amandoua merita randuri proprii.
 
-CAND SE APLICA (incadrarea o stabileste executorul la finalul executiei, pe ce s-a intamplat efectiv, nu pe ce
-se astepta la inceput):
+UN SINGUR FORMAT (nu exista raport redus / SCURT; eliminat 08.08.2026, ceruta de Costin). Orice executie, FARA
+EXCEPTIE: titlu + TOATE sectiunile 1-11, IN ORDINEA DATA. Nu exista o submultime de sectiuni care se pot sari.
 
-- Raport COMPLET (titlu + sectiunile 1-10): inchidere de cluster; campanie multi-pas; orice modificare de logica
-  fiscala; orice modificare care schimba iesirea catre ANAF.
-- Raport SCURT (titlu + sectiunile 1, 2, 5): modificare de registru sau procedura fara efect pe cod executabil;
-  interventie de infrastructura; campanie de un singur pas fara neconformitate gasita.
-- Fara raport: niciodata. Orice comanda executata produce cel putin raport scurt.
-- Incadrarea se declara in titlu, dupa numarul de pasi: "| COMPLET" sau "| SCURT". Daca incadrarea e ambigua,
-  se alege COMPLET.
-- Incadrarea pe ce s-a intamplat efectiv, nu pe ce se astepta: o campanie pornita ca SCURT care descopera o
-  neconformitate devine COMPLET.
+- O sectiune care nu se aplica NU se omite: se scrie EXPLICIT "N/A - <motiv>" (la fel cum §11 cere deja pentru
+  registrele neatinse si §6 cere "niciuna"). Absenta unei sectiuni = raport incomplet.
+- Fara raport: niciodata. Orice comanda executata produce raportul de 11 sectiuni.
+- Titlul NU mai poarta incadrare (nu exista "| COMPLET" / "| SCURT"); se incheie la "| <n> pasi".
 
 TITLU (obligatoriu, prima linie a raportului, inaintea sectiunii 1):
 RAPORT <NUME_CAMPANIE> | <data> | <HEAD_intrare> -> <HEAD_iesire> | <n> pasi
@@ -536,7 +531,7 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    atinse. Se SCRIE PE DISC (fisier de predare), nu doar in chat. Dupa ce ai scris predarea, OPRESTE-TE -
    nu incerca sa continui pe context compactat. PREDAREA TRIMITE EXPLICIT LA REGULI: prima linie a oricarui PREDARE_LANT.md este "Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe." O sesiune noua care reia din predare citeste regulile INAINTE de primul cluster, nu dupa.
 
-7. **RAPORTUL IN LANT.** Fiecare cluster inchis primeste raportul lui conform §2.2, sectiunile 1-10, inclusiv
+7. **RAPORTUL IN LANT.** Fiecare cluster inchis primeste raportul lui conform §2.2, TOATE sectiunile 1-11, inclusiv
    8 (generalizare pe clasa), 9 (garduri adaugate) si 10 (efect pe produs). Sinteza pe rulare NU inlocuieste
    rapoartele per cluster - se adauga peste ele.
    Un cluster fara sectiunea 9 completata NU se declara inchis: daca nu s-a adaugat niciun gard, sectiunea 9
