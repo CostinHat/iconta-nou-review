@@ -362,9 +362,13 @@ def _d112_genereaza(prof, salariati, an, luna):
     cam_total = _d112int(sum_bazac * _cota_cam)
     A = []
     def add_oblig(cod, cb, val):
-        if val > 0:
-            A.append('    <angajatorA A_codOblig="%s" A_codBugetar="%s" A_datorat="%d" '
-                     'A_deductibil="0" A_scutit="0" A_plata="%d"/>' % (cod, cb, val, val))
+        # [d112 v1.03-072026] sectiunea angajatorA ("Creante") e OBLIGATORIE minim 1 (XSD d112_06082026.xsd:
+        # angajatorA minOccurs implicit=1, maxOccurs=29; structura_D112_0726_030826.pdf: "1-41 aparitii"). Se
+        # emite si la obligatii zero - garda `if val > 0` scoasa (altfel A ramane [] -> 0 angajatorA -> DUK:
+        # "ACreante: sectiunea Creante este obligatorie pt cif <> cif AJPIS"). Continut la zero confirmat empiric
+        # pe validatorul J27.0.1 (autoritatea).
+        A.append('    <angajatorA A_codOblig="%s" A_codBugetar="%s" A_datorat="%d" '
+                 'A_deductibil="0" A_scutit="0" A_plata="%d"/>' % (cod, cb, val, val))
     add_oblig("602", "5503XXXXXX", sum_imp)
     add_oblig("412", "5503XXXXXX", sum_cas)
     add_oblig("432", "5503XXXXXX", sum_cass)

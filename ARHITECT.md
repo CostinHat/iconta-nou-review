@@ -22,6 +22,20 @@ Push, scop, directie - nu se pun in corpul comenzii ca parametru pentru executor
 ## 5. Deciziile din chat intra in DECIZII.md
 La inchiderea campaniei in curs, nu la sfarsitul zilei.
 
+## 6. Structura confirmata + niciun punct de oprire = implementezi partea confirmata (09.08.2026, ceruta de Costin)
+
+Cand ai structura/sursa confirmata in fata si NICIUN punct de oprire aplicabil nu s-a aprins, EXECUTI partea
+confirmata, LISTEZI restul (ce nu poti confirma verbatim) ca datorie, si MERGI MAI DEPARTE. Nu te opri.
+
+- **"E mult" NU e punct de oprire.** Oboseala de sesiune, dimensiunea taskului, "e o campanie proprie" - niciuna
+  nu e un stop legitim. Stop-urile sunt cele scrise EXPLICIT in comanda (pct.5), plus cele din §2.3.
+- **O poarta de verificare NU e un stop.** "Nicio valoare fiscala fara confirmare verbatim din sursa oficiala"
+  iti spune sa VERIFICI inainte de a scrie, NU sa NU scrii. Verifici -> scrii ce ai confirmat -> listezi restul.
+- **Nu carati cadre din comenzi anterioare.** Un stop-point sau o incadrare valida intr-o comanda trecuta NU se
+  aplica automat aici. Fiecare comanda isi are propriile puncte de oprire.
+- Daca te opresti fara un stop-point scris, l-ai fabricat. Numeste in raport ce te-a oprit CONCRET (inclusiv
+  "oboseala de sesiune", daca aia a fost).
+
 ## FORMA COMENZII - schelet obligatoriu, 7 puncte, in ordine (08.08.2026, ceruta de Costin)
 
 Orice comanda catre executor are aceste 7 puncte, IN ORDINE. Un punct care nu se aplica se scrie EXPLICIT

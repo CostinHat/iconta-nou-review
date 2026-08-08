@@ -3567,3 +3567,12 @@ atentionare regula..."), eroare = linie `E:` („E: angajator... eroare regula..
 (fail-safe) + câmp `severitate` în contract + `declaratii.js` afișează atenționările distinct de erori. Gard cu fixturi
 reale + mutație (E:->atentionare -> roșu). Consumator unic, fără gating pe submit -> relabeling sigur. NOTAT (nereparat,
 cere structură fiscală): d112 Ferma Agricultor respins de DUK (secțiunea Creante lipsă la cif<>cif AJPIS) - vezi GARZI.
+
+## 09.08.2026 — angajatorA min-1 in d112.py (Creante la obligatii zero) — reparat
+
+Dupa doua ture care s-au oprit fara stop-point (oboseala de sesiune deghizata in prudenta): implementat partea
+CONFIRMATA. Scoasa garda `if val > 0` din add_oblig (d112.py) -> sectiunea angajatorA (Creante) se emite si la
+obligatii zero (XSD minOccurs=1 + structura "1-41 aparitii"). Continut la zero rezolvat EMPIRIC pe J27.0.1: 11/12
+firme au trecut de la eroare ACreante la VALID. Panificatie ramane cu atentionarea B4_5P (A1) + campurile noi
+07/2026 (D_14a etc.). Gard test_angajatorA_prezenta_si_la_obligatii_zero + mutatie. Cele 13 campuri v1.03-072026
+neconfirmate verbatim = datorie in GARZI (sursa e in corpus). Regula anti-oprire-fara-stop scrisa in ARHITECT.md pct.6.

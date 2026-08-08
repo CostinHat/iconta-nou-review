@@ -2126,3 +2126,32 @@ sectiunea Creante este obligatorie pt cif <> cif AJPIS". Generatorul (`core/d112
 „Creante") nu emite secțiunea de creanțe când firma are creanță CM (indemnizații recuperate FNUASS) și `cif <> cif
 AJPIS`. Panificatie (cif == cif AJPIS) doar atenționare, deci e specific cazului cif<>AJPIS. Repararea cere structura
 exactă D112 Creanțe (structura_D112_0126_030226) confirmată la sursă ANAF — NU o inventez. Datorie deschisă.
+
+## 09.08.2026 — angajatorA min-1 LIVRAT (Creante la obligatii zero) + datoria celor 13 campuri D112 v1.03-072026
+
+**LIVRAT:** garda `if val > 0` scoasa din `core/d112.py` add_oblig -> sectiunea `<angajatorA>` ("Creante") se emite
+si la obligatii ZERO. Temei VERBATIM: XSD oficial `anaf_surse/d112_06082026.xsd` (angajatorA minOccurs implicit=1,
+maxOccurs=29) + `structura_D112_0726_030826.pdf` ("1-41 aparitii"). Continut la zero CONFIRMAT EMPIRIC pe validatorul
+J27.0.1 (autoritatea): 11/12 firme au trecut de la EROARE "ACreante: sectiunea Creante obligatorie pt cif <> cif
+AJPIS" la VALID. Gard `core/test_d112.py::test_angajatorA_prezenta_si_la_obligatii_zero` + count 4->6 in
+test_angajatorA_apare_in_xml; mutatie (garda reintrodusa) -> rosu.
+
+**DATORIE FISCALA D112 v1.03-072026 (13 campuri, NEconfirmate verbatim = NEimplementate).** Adaugate de Ordinul
+605/95/928/2314/2026 (aplicabil 07/2026), semnalate de J27.0.1 pe Panificatie (asigurat 6, sectiunea D). Ce lipseste
+pentru fiecare = FORMULA/semantica exacta din `structura_D112_0726_030826.pdf` (in corpus) - de extras verbatim +
+implementat, apoi revalidat pe J27.0.1:
+- **D_14a** (asiguratD, IntPoz2, "14. Zile prestatii") — validatorul: "atributul trebuie sa existe"; regula S104a:
+  D_15 <= D_15a; ERR daca D_14a>5. LIPSA: formula de calcul a zilelor de prestatii (a).
+- **D_15a** (asiguratD, IntPoz2) — varianta "a" a D_15 (zile). LIPSA: definitia + formula.
+- **D_16a** (asiguratD, IntPoz2) — varianta "a" a D_16 (zile). LIPSA: definitia + formula.
+- **D_20a** (asiguratD, IntPoz15) — varianta "a" a D_20 (suma). LIPSA: formula de calcul.
+- **D_21a** (asiguratD, IntPoz15) — varianta "a" a D_21 (suma). LIPSA: formula de calcul.
+- **D_9a** (asiguratD) — camp nou concediu medical. LIPSA: semantica + cand e obligatoriu.
+- **D_9b** (asiguratD) — camp nou concediu medical. LIPSA: semantica + cand e obligatoriu.
+- **c2_155**, **c2_156** (angajatorC2) — campuri noi (J27.0.0). LIPSA: definitia + formula agregat.
+- **E2_156** (asiguratE2) — camp nou. LIPSA: definitia + formula.
+- **B3_7D** (asiguratB3) — camp nou. LIPSA: definitia + formula.
+- **C_10D** (asiguratC) — camp nou. LIPSA: definitia + formula.
+- **E3_97** (asiguratE3) — camp nou. LIPSA: definitia + formula.
+Toate 13 se aplica de la 01.07.2026 (structura, "In sectiunea D asigurat – modificari" + changelog J27.0.0). Sursa
+e in corpus (`anaf_surse/`), deci datoria e actabila - nu blocata extern.

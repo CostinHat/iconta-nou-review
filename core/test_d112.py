@@ -58,7 +58,20 @@ def test_angajatorA_apare_in_xml():
     build - XML-ul nu avea deloc sectiunea, indiferent de sume."""
     xml, av = _d112_genereaza(_prof(), _sal(), 2026, 6)
     assert "<angajatorA " in xml
-    assert xml.count("<angajatorA ") == 4  # impozit, CAS, CASS, CAM
+    assert xml.count("<angajatorA ") == 6  # v1.03-072026: toate 6 coduri (602/412/432/480/458/459) - garda if val>0 scoasa (angajatorA OBLIGATORIU minim 1, emis si la zero)
+
+
+def test_angajatorA_prezenta_si_la_obligatii_zero():
+    """GARD [d112 v1.03-072026]: sectiunea angajatorA ("Creante") e OBLIGATORIE minim 1 (XSD
+    anaf_surse/d112_06082026.xsd: angajatorA minOccurs implicit=1, maxOccurs=29; structura_D112_0726_030826.pdf:
+    "1-41 aparitii"). Se emite SI la obligatii ZERO (niciun salariat -> toate sumele 0), altfel DUK respinge cu
+    "ACreante: sectiunea Creante este obligatorie pt cif <> cif AJPIS". Confirmat empiric pe validatorul J27.0.1
+    (11/12 firme au trecut de la EROARE la VALID dupa scoaterea gardii `if val > 0` din d112.add_oblig).
+    Mutatie: re-adaugarea gardii -> la obligatii zero A ramane [] -> <angajatorA> dispare -> rosu."""
+    xml, av = _d112_genereaza(_prof(), [], 2026, 6)
+    assert "<angajatorA " in xml, ("sectiunea angajatorA (Creante) lipseste la obligatii zero -> DUK "
+                                   "'ACreante obligatorie'; garda `if val > 0` reintrodusa in d112.add_oblig?")
+    assert xml.count("<angajatorA ") == 6, "la obligatii zero se asteapta toate 6 codurile cu valori nule"
 
 
 def test_angajatorA_e_prima_in_angajator():
