@@ -7914,3 +7914,7 @@ artefactul pe care-l produce ecranul.
 PROBĂ: e-Transport sha256 XML = 480d4bf2… (frontend vechi == nou, set complet); emitere sha256 factură = 2197a759…
 (facturi_api vechi == nou, total=423.50 / tva=73.50). Ambele garduri headless hash-uiesc ieșirea reală, în poartă
 (test_etransport_randuri_dinamice.py / test_emitere_randuri_dinamice.py).
+
+## 08.08.2026 — Detector "running == HEAD" VIZIBIL IN APP (superadmin) LIVRAT (mecanism 1 din decizia iulie)
+
+Comanda Costin (executie): cablat DETECTORUL vizibil inainte de urmatoarea parcurgere (nu dupa), ca sa nu mai stea pe premisa neverificata (prod a rulat cod din 1 aug, 45 commituri in urma, 6 zile tacut). LIVRAT partea vizibila in app: commitul rulat se stampileaza in memorie la pornirea procesului (core/versiune.py, in lifespan) - fidel procesului viu, NU dedus din mtime-uri; `/admin/versiune` (superadmin-only) compara cu HEAD; banner `.caseta-atentie` in desktopAdmin DOAR la divergenta, DOAR superadmin. NU reporneste, NU repara (constrangerea din iulie respectata; post-commit neatins). Gard test_running_head.py + mutatie. Mecanismul (2) cron/sentinela/Brevo + (3) raport patru-way + auditul schema PUBLIC = scop separat, necablat aici (comanda a cerut semnalul vizibil in app).

@@ -3554,3 +3554,7 @@ guardul NU aprinde niciun ecran nenumit -> stop-point 3 nu s-a declanșat). Muta
 -> verificator FILTRARE=2/TOTAL=2 + garduri headless roșii -> revert. Corectată formularea datoriei în GARZI (1078 =
 formSablon -> /facturi-recurente, nu /facturi/emite; registrul fusese greșit, găsit la sursă). Bifele Inventar A pentru
 cele 4 garduri = commit separat (după ce fișierele de test intră în HEAD; gard anti-stale test_agenda citește HEAD).
+
+## 08.08.2026 (noapte) — Detector "running == HEAD" vizibil in app (superadmin)
+
+Comanda Costin: cableaza detectorul INAINTE de parcurgere, nu dupa (fara el orice parcurgere sta pe premisa neverificata). LIVRAT: core/versiune.py stampileaza la startup (lifespan) commitul cu care a pornit procesul viu (citit din git HEAD in memorie, NU din mtime-uri); stare_versiune pura -> {running, head, divergent}. Endpoint /admin/versiune (cere_rol superadmin -> 403 alte roluri). Frontend desktopAdmin: caseta-atentie (cap.6) DOAR la divergenta, DOAR superadmin, nimic cand e la zi; nu reporneste, nu repara. Gard test_running_head.py (divergenta/egalitate/necunoscut + RBAC 200/403/401; mutatie != -> == rosu). Deploy prin restart (sudo systemctl restart iconta-nou) - procesul viu re-stampileaza HEAD; commitul rulat citit la final din /admin/versiune (raport patru-way). Mecanismul 2/3 (cron+sentinela+Brevo, raport patru-way la inchidere, audit schema public) = scop separat.

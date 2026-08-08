@@ -85,6 +85,7 @@ def verifica_fus_orar(offset_local=None, pg_tz=None):
 async def lifespan(app):
     global _TENANT_TEMPLATE
     verifica_secrete_obligatorii()   # fail-fast INAINTE de orice: fara JWT_SECRET nu pornim
+    from core import versiune as _versiune_boot; _versiune_boot.stampileaza()  # running==HEAD: commitul de pornire (in memorie)
     db.init_pool()
     verifica_fus_orar()   # fail-fast: OS TZ + PG timezone = Europe/Bucharest (invarianta de provisionare)
     import asyncio as _asyncio_lifespan  # ICRD_LIFESPAN_ALERTE_V1
@@ -8787,3 +8788,13 @@ def public_sitemap():
 def public_robots():
     txt = "User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n" % _GHID_BAZA
     return Response(content=txt, media_type="text/plain; charset=utf-8")
+
+
+@app.get("/admin/versiune")
+def admin_versiune(ctx=Depends(cere_rol("superadmin"))):
+    """Detector "running == HEAD" (superadmin): commitul cu care a pornit procesul viu (stampilat in memorie la
+    startup) vs HEAD de pe disc citit acum. Semnaleaza divergenta; NU reporneste, NU repara (decizia iulie).
+    Vizibil in app DOAR pentru superadmin (cere_rol -> 403 pentru orice alt rol). Commitul rulat vine din
+    memoria procesului (stampila de la pornire), nu din mtime-uri de fisier."""
+    from core import versiune as _versiune
+    return _versiune.stare()

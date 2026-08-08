@@ -1985,6 +1985,9 @@ stale in memorie) si firmele noi se provizionau cu schema driftata (lipsa perioa
 **Ce l-ar prinde azi:** nimic. Suita ruleaza pe disc, nu pe procesul viu. De implementat ca urmatoarea campanie
 (cod + gard + RED/GREEN); restartul de azi = instanta.
 
+**LIVRAT 08.08 (partea VIZIBILA IN APP, comanda Costin) — mecanism (1):** `core/versiune.py` stampileaza in lifespan (memoria procesului) commitul de pornire = codul rulat (NU se deduce din mtime-uri); `stare_versiune` pura compara cu HEAD de pe disc. Endpoint `GET /admin/versiune` gated `cere_rol("superadmin")` (403 pt orice alt rol). Frontend: `desktopAdmin` (admin.js) afiseaza o `.caseta-atentie` (cap.6) DOAR la divergenta, DOAR pt superadmin, nimic cand e la zi; nu reporneste, nu repara. Gard `core/test_running_head.py` (divergenta->aprins, egalitate->stins, necunoscut->nu alarmeaza; RBAC superadmin 200 / alte roluri 403; mutatie != -> == => rosu).
+**RAMANE (mecanism 2+3, ALT scop, necablat aici):** cron periodic (core/cron.py) + sentinela `.git/RUNNING_STALE` + alerta Brevo (semnal in afara app-ului, cand nimeni nu e logat ca superadmin); raport PATRU-way la inchidere (HEAD=origin/main=backup=RUNNING) - vezi DECIZII; audit schema PUBLIC vs HEAD (candidatul urmator).
+
 ## 07.08.2026 — CANDIDAT: drift de schema PUBLIC fara gard (aceeasi clasa, alt strat)
 **Stare: LIPSA (candidat).** `test_toti_tenantii_conform_cu_template` verifica SCHEMELE DE TENANT vs
 tenant_template.sql (verde pe 12/12 pe prod => migrarile de schema tenant sunt la zi). NU exista gard echivalent

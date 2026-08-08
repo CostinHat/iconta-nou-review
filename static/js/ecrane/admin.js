@@ -53,6 +53,20 @@ export function desktopAdmin(continut, nav) {
     card.addEventListener("click", () => c.actiune(nav));
     grila.appendChild(card);
   });
+  // [running_head_v1] detector "running == HEAD" (DECIZII/GARZI iulie): superadmin vede un semnal DOAR daca
+  // procesul viu ruleaza alt commit decat HEAD. Nimic cand e la zi. Nu reporneste, doar semnaleaza (cap.6).
+  (async () => {
+    try {
+      const v = await api.get("/admin/versiune");
+      if (v && v.divergent) {
+        const box = document.createElement("div");
+        box.className = "caseta-atentie";
+        box.id = "running-stale";
+        box.innerHTML = `<div class="ca-mesaj">Rularea NU e la zi: serviciul ruleaza commitul <b>${esc((v.running || "").slice(0, 7))}</b>, dar HEAD e <b>${esc((v.head || "").slice(0, 7))}</b>. Codul publicat nu e cel care ruleaza. Reporneste serviciul la o fereastra sigura (nu in mijlocul unei operatii a unui contabil). Detectorul nu reporneste nimic si nu repara nimic.</div>`;
+        continut.insertBefore(box, continut.firstChild);
+      }
+    } catch {}
+  })();
 }
 
 
