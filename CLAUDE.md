@@ -545,7 +545,7 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    context GOL, care nu a citit nimic din lantul anterior. Contine: HEAD; sold lant; clusterul urmator din
    agenda (`core.agenda.urmator_cluster()`); blocajele deschise CU MOTIVUL fiecaruia; ce registre au fost
    atinse. Se SCRIE PE DISC (fisier de predare), nu doar in chat. Dupa ce ai scris predarea, OPRESTE-TE -
-   nu incerca sa continui pe context compactat. PREDAREA TRIMITE EXPLICIT LA REGULI: prima linie a oricarui PREDARE_LANT.md este "Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe." O sesiune noua care reia din predare citeste regulile INAINTE de primul cluster, nu dupa.
+   nu incerca sa continui pe context compactat. PREDAREA TRIMITE EXPLICIT LA REGULI: prima linie a oricarui PREDARE_LANT.md este "Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba), si ARHITECT.md "FORMA COMENZII" (forma comenzii primite - 7 puncte), inainte de a incepe." O sesiune noua care reia din predare citeste regulile INAINTE de primul cluster, nu dupa.
 
 7. **RAPORTUL IN LANT.** Fiecare cluster inchis primeste raportul lui conform §2.2, TOATE sectiunile 1-11, inclusiv
    8 (generalizare pe clasa), 9 (garduri adaugate) si 10 (efect pe produs). Sinteza pe rulare NU inlocuieste
