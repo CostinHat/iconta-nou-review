@@ -218,7 +218,7 @@ export async function ecranEtransport(corp, nav, t) {
     const zona = corp.querySelector("#et-trimiteri");
     if (!zona) return;
     let lista = [];
-    try { const r = await api.get(`/tenants/${t.id}/etransport/trimiteri`); lista = (r && r.trimiteri) || []; } catch {}
+    try { const r = await api.get(`/tenants/${t.id}/etransport/trimiteri`); lista = (r && r.trimiteri) || []; } catch { zona.innerHTML = `<p class="ecran-nota">Nu am putut încărca notificările e-Transport.</p>`; return; }
     if (!lista.length) { zona.innerHTML = `<div class="stare-goala stare-goala--inline">Nicio notificare trimisă încă. UIT-ul apare aici după transmitere.</div>`; return; }
     const cul = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu-semafor)", gri: "var(--gri-semafor)" };
     const etTimp = { verde: "în valabilitate", galben: "expiră curând", rosu: "EXPIRAT", gri: "—" };

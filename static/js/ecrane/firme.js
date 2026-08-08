@@ -381,7 +381,7 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
   try {
     const r = await api.get(`/tenants/${t.id}/solicitari`);
     lista = (r && r.solicitari) || [];
-  } catch {}
+  } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca mesajele.</p>`; return; }
   let firHtml = '<div class="stare-goala">Niciun mesaj încă.</div>';
   if (lista.length) {
     firHtml = lista.map((s) => {
@@ -1189,7 +1189,7 @@ async function sectiuneaCV(corp, t, zonaM) {
   };
   const rtIncarca = async () => {
     let rr = [];
-    try { const r = await api.get(`/tenants/${t.id}/retete`); rr = r.retete || []; } catch {}
+    try { const r = await api.get(`/tenants/${t.id}/retete`); rr = r.retete || []; } catch { rtLista.innerHTML = `<p class="ecran-nota">Nu am putut încărca rețetele.</p>`; return; }
     rtLista.innerHTML = !rr.length ? `<div class="stare-goala">Nicio re\u021bet\u0103 \u00eenc\u0103.</div>`
       : rr.map((r) => {
           const fc = r.food_cost || {};
@@ -1484,7 +1484,7 @@ async function ecranStocuri(corp, nav, t) {
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let nirs = [];
-    try { const r = await api.get(`/tenants/${t.id}/stocuri/nir?an=${an}&luna=${luna}`); nirs = r.nir || []; } catch {}
+    try { const r = await api.get(`/tenants/${t.id}/stocuri/nir?an=${an}&luna=${luna}`); nirs = r.nir || []; } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca NIR-urile.</p>`; return; }
     const randuri = !nirs.length
       ? `<div class="stare-goala">Niciun NIR \u00een luna asta.</div>`
       : nirs.map((n) => `
@@ -2098,7 +2098,7 @@ async function ecranCentreCost(corp, nav, t) {
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
     let centre = [];
-    try { const r = await api.get(`/tenants/${t.id}/centre-cost`); centre = (r && r.centre) || []; } catch {}
+    try { const r = await api.get(`/tenants/${t.id}/centre-cost`); centre = (r && r.centre) || []; } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca centrele de cost.</p>`; return; }
     const rand = (c) => `
       <div class="pf-frand">
         <div class="pf-frand-text">
@@ -2733,7 +2733,7 @@ async function ecranContracte(corp, nav, t) {
     nav.setInapoi(undefined);
     corp.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
     let sabloane = [];
-    try { sabloane = (await api.get(`/tenants/${t.id}/contracte/sabloane`)).sabloane || []; } catch (e) {}
+    try { sabloane = (await api.get(`/tenants/${t.id}/contracte/sabloane`)).sabloane || []; } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca șabloanele de contract.</p>`; return; }
     const rand = (s) => `
       <div class="pf-frand">
         <div class="pf-frand-text"><div class="pf-frand-nume">${esc(s.nume)}</div></div>

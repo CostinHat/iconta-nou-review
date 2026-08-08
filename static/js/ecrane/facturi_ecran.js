@@ -81,7 +81,7 @@ function meniuFacturi(corp, nav, tenantId, opt) {
 async function primiteSPV(corp, nav, tenantId, opt) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   let lista = [];
-  try { const r = await api.get(`/tenants/${tenantId}/facturi-primite`); lista = (r && r.primite) || []; } catch {}
+  try { const r = await api.get(`/tenants/${tenantId}/facturi-primite`); lista = (r && r.primite) || []; } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca facturile primite din SPV.</p>`; return; }
   if (!lista.length) {
     corp.innerHTML = `<h2 class="pf-titlu">Facturi primite din SPV</h2>
       <div class="stare-goala">Nicio factură primită de validat. Facturile de la furnizori apar aici automat din SPV; le validezi înainte să intre în cheltuieli.</div>`;
@@ -171,7 +171,7 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     try {
       const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=${afisate + 1}`);
       lista = (r && r.facturi) || [];
-    } catch {}
+    } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca facturile emise.</p>`; return; }
     const maiSunt = lista.length > afisate;
     if (maiSunt) lista = lista.slice(0, afisate);
     let corpuri = !lista.length
@@ -923,7 +923,7 @@ async function listaRecurente(corp, nav, tenantId, opt) {
   try {
     const r = await api.get(`/tenants/${tenantId}/facturi-recurente`);
     sabloane = (r && r.sabloane) || [];
-  } catch {}
+  } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca șabloanele de facturi recurente.</p>`; return; }
   randareRecurente(corp, nav, tenantId, opt, sabloane);
 }
 

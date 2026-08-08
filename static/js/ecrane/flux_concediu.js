@@ -34,7 +34,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     try {
       const r = await api.get(`/tenants/${t.id}/salariati/${sal.id}/concedii`);
       lista = (r && r.concedii) || [];
-    } catch {}
+    } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca concediile medicale.</p>`; return; }
 
     const randuriLista = !lista.length
       ? `<div class="stare-goala">Niciun concediu medical \u00eenregistrat.</div>`

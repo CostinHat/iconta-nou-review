@@ -76,9 +76,11 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
   let cen = { totaluri: {}, pe_asistent: [] };
   let jur = { evenimente: [] };
   let rap = { necitite: 0 };
-  try { cen = await api.get("/asistenti/echipa/centralizator" + sfx); } catch {}
-  try { jur = await api.get("/asistenti/echipa/jurnal" + sfx + "&limit=5"); } catch {}
+  let _eroareAzi = false;  // [catch_vizibil_v1] 500 pe datele panoului != "zi linistita cu zero"
+  try { cen = await api.get("/asistenti/echipa/centralizator" + sfx); } catch { _eroareAzi = true; }
+  try { jur = await api.get("/asistenti/echipa/jurnal" + sfx + "&limit=5"); } catch { _eroareAzi = true; }
   try { rap = await api.get("/raportari/contor"); } catch {}
+  if (_eroareAzi) { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca activitatea de azi (eroare de server).</p>`; return; }
 
   const t = cen.totaluri || {};
   const aziLung = dataRo(new Date(), "lung");

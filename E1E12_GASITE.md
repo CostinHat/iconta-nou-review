@@ -304,3 +304,51 @@ import D1a, E12 avansat (loading/latenta/date partiale). Harness + selectori cun
 
 **Ramas (recomandare):** cele 13 catch-uri periculoase din harta (facturi/NIR/solicitari/etransport/retete/centre/
 contracte/recurente/concedii/cabinet-azi/api-chei/woo) - acelasi fix, ratchet le tine sa nu creasca.
+
+---
+
+## INCHIDEREA CLASEI "ecran care minte" (08.08.2026, aprobat de Costin) — 12 reparate, woo lasat motivat
+
+**Regula DS (verificata inainte de a scrie UI, cerinta Costin):** DESIGN_SYSTEM cap.6 (v2.13) + liniile 92-93/105:
+GOL = `.stare-goala` (continut de ecran, 3 parti: gol+cauza+iesire); EROARE = mesaj de stare (`arataMesaj`
+"eroare"/rosu SAU `ecran-nota` la load-fail), "Niciodata tacere la o actiune esuata". Sunt DISTINCTE. Tiparul
+CANONIC din cod pentru load-fail (10+ ecrane): `catch { corp.innerHTML = <p class="ecran-nota">Nu am putut
+incarca X.</p>; return; }`.
+
+**Reparate (12, tiparul canonic ecran-nota):** facturi emise, facturi-primite(SPV), facturi-recurente, solicitari,
+NIR, centre-cost, contracte, etransport, concedii, api-chei (+ cabinet-azi via flag pe centralizator/jurnal,
+contorul ramane benign). Container: majoritatea `corp`; retete->rtLista, etransport/api-chei->zona.
+
+**Lasat MOTIVAT — woo (nu se repara frontend):** ruta `main.py:4501 wc_config_get` intoarce MEREU 200 -
+`except: return {"configurat": False, "url": None}` (inghite chiar erorile DB intr-un raspuns de succes). Deci
+catch-ul frontend woo NU vede niciodata un 500 de backend; se declanseaza doar la eroare de retea, unde
+"neconfigurat" e o imprecizie minora. Adevaratul defect e pe BACKEND (raportat mai jos, neremediat).
+
+**Nereparate ieri (4, flag + `.stare-goala` rosu) — DIFERENTA de STIL vs canonicul de azi (ecran-nota):** stat-plata,
+casa, RIP, jurnal folosesc `_eroare*` + o `.stare-goala` colorata rosu. Vizibile si distincte, dar mecanic difera
+de canonicul ecran-nota. Recomandare: unificare la ecran-nota (mica, nu s-a facut azi pt a nu atinge 4 ecrane care
+merg + trec gardul). Ambele stiluri satisfac "eroare distincta de gol".
+
+**Gard (test_catch_vizibil.py, 5 teste, mutatie-probat):** ratchet catch-gol-langa-api 54->41 (o cale noua pica) +
+`test_niciun_fetch_periculos_nu_e_inghitit_tacut` (lista de 16 fetch-uri periculoase, niciunul in catch{} gol =
+ZERO periculoase; woo exclus) + anti-regresie pe cele 4+12 + backend calificat + rute search_path.
+
+**Probe (500 fortat in headless, per ecran - NU doar unul):** 14/16 ecrane PROBATE (batch 1: stat-plata, casa,
+jurnal, etransport, solicitari, contracte, centre-cost; batch 2: facturi, facturi-primite, facturi-recurente, NIR,
+concedii, cabinet-azi, api-chei) -> toate afiseaza "Nu am putut incarca ...", NU stare goala. NEprobate headless:
+**rip** (regim "simpla"/PFA - nicio firma PFA in setul de test) si **retete** (sub-ecran, nav neatins) - identice
+ca tipar cu cele probate (rip = casa/jurnal; retete = canonicul), acoperite de gard + mutatie. No-op: sha256 D112
+IDENTIC (45e3b486). RESTART: NEnecesar acest tur - doar frontend static (servit din disc cu cache-control:no-cache
+-> browserul revalideaza, fisier schimbat -> continut nou; fixul e DEJA live) + un fisier de test; niciun cod Python.
+
+**Ratchet la zero pe periculoase: DA** (16/16 tratate: 12 reparate azi + 4 ieri; woo = backend, exclus si raportat).
+
+## Vanatoare de clasa "aceeasi clasa, alta sintaxa" (08.08, RAPORTAT, nereparat)
+- **woo BACKEND `main.py:4501`**: `except: return {"configurat": False}` = eroare mascata intr-un raspuns 200
+  succes-shaped. Garda existenta `scan_masca` (test_gard_masca_zero) prinde `return 0`/`return []` dar NU
+  `return {dict}` -> woo SCAPA. Aceeasi clasa (mascarea erorii, GARZI cat.0), alta forma. Candidat de reparat +
+  extins gardul scan_masca la dict-uri succes-shaped.
+- **login.js:295**: `api.get("/public/config").then(...)` FARA `.catch` -> respingere neprinsa la esec (config
+  public de login; severitate mica).
+- **navigator.js:329 / sesiune.js:30**: catch-and-log (clopot notificari / dispatch pub-sub) - degradeaza + loghaza,
+  borderline-legitim (dispatch-ul care nu vrea sa rupa ceilalti abonati). De consemnat, nu urgent.

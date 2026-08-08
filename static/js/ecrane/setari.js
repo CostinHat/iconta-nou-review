@@ -325,7 +325,7 @@ async function _incarcaChei(corp) {
   const zona = corp.querySelector("#set-chei-lista");
   if (!zona) return;
   let chei = [];
-  try { const r = await api.get("/cabinet/api-chei"); chei = (r && r.chei) || []; } catch {}
+  try { const r = await api.get("/cabinet/api-chei"); chei = (r && r.chei) || []; } catch { zona.innerHTML = `<p class="ecran-nota">Nu am putut încărca cheile API.</p>`; return; }
   if (!chei.length) { zona.innerHTML = `<div class="stare-goala">Nicio cheie generată încă.</div>`; return; }
   zona.innerHTML = chei.map((c) => `
     <div class="pf-frand">
