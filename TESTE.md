@@ -1275,3 +1275,17 @@ necalificat). (D) cele 5 rute payroll/documente au marcajul search_path_tenant_v
 git checkout pre-fix -> toate 4 rosii; restore -> verzi. Proba comportamentala (headless, interceptare 500 -> UI
 arata eroare vizibila, NU stare goala) = evidenta manuala; in suita ramane gardul de sursa (B). Fisierul e in git
 HEAD (commit b660534) inainte de aceasta bifa.
+
+
+## Gard headless e-Transport randuri dinamice (cap.24 batch 3a) — 08.08.2026
+
+`core/test_etransport_randuri_dinamice.py` re-ruleaza IN POARTA (chromium headless, modulul real montat +
+backendul real `core.etransport` interceptat) cele 5 scenarii DOM de la 3a + proba no-op sha256:
+rand adaugat / rand sters din mijloc (valori pastrate + reindexare) / doua randuri cu erori simultan (fiecare
+langa campul ei) / re-validare dupa corectarea unuia singur / rand incomplet in mijloc care NU mai dispare +
+lista nefiltrata cu XML identic corpului canonical complet. Reproductibil de pe repo curat FARA pasi manuali:
+fixture-ul auto-instaleaza pachetul playwright si browserul chromium daca lipsesc; daca tot nu poate rula ->
+`pytest.fail` (niciodata skip verde-fals). Infra (driver/browser >100MB) ramane gitignored, se provizioneaza automat.
+MUTATIE probata: reintroducerea filtrului in construiesteCorp -> 3 teste ROSII (doua erori / re-validare /
+rand incomplet mijloc); revenit la original -> verde. Vezi GARZI 08.08 + commit batch 3a.
+Nota anti-stale: bifa √ in inventarul sesiunii A vine intr-un commit SEPARAT (test_agenda cere fisierul in HEAD).
