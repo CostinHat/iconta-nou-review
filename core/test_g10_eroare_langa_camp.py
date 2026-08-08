@@ -16,11 +16,12 @@ _G10_A_FORME = [
     "firme.js",
     "declaratii.js",  # batch 2: D301-manual (#d301-*) + D390-manual (#man-*)
     "etransport_ecran.js",  # batch 3a: randuri dinamice, backend autoritar (422.campuri) + eroareCamp (cap.24)
+    "emitere_ecran.js",  # batch 3b: randuri dinamice, backend autoritar (facturi_api.linii_campuri_lipsa) + eroareCamp
 ]
 
-# EXPLICIT in afara listei pana la batch 3b (restructurare randuri dinamice, nu plasare). e-Transport a intrat
-# la batch 3a; emitere ramane pe B pana la 3b, ca regresia sa se vada de unde vine. Vezi GARZI / cap.24.
-_G10_A_EXCLUSE = ["emitere_ecran.js"]
+# Dupa batch 3b (emitere), G10 NU mai are exceptii: TOATE formularele multi-camp folosesc mecanismul A.
+# e-Transport a intrat la 3a, emitere la 3b. O exceptie noua cere un batch dedicat (vezi GARZI / cap.24).
+_G10_A_EXCLUSE = []
 
 
 def test_formularele_G10A_folosesc_eroareCamp():
@@ -40,8 +41,7 @@ def test_backend_contract_erori_campuri_wired():
         "ruta salariat nu mai trimite erori_campuri (contract G10)"
 
 
-def test_emitere_ramane_in_afara_pana_la_batch3b():
-    """emitere NU intra in lista G10-A pana la batch 3b (restructurare randuri dinamice). e-Transport a intrat
-    la batch 3a. Daca cineva muta emitere acum -> pica, ca regresia sa se vada de unde vine."""
-    for f in _G10_A_EXCLUSE:
-        assert f not in _G10_A_FORME, "%s trebuie tratat separat (batch 3b), nu in rollout-ul standard" % f
+def test_g10_fara_exceptii_dupa_batch3b():
+    """Dupa batch 3b (emitere), rollout-ul G10-A NU mai are exceptii: toate formularele multi-camp folosesc
+    mecanismul A (eroare langa camp). O exceptie noua fara batch dedicat -> pica aici."""
+    assert _G10_A_EXCLUSE == [], "G10 nu mai are exceptii dupa 3b; o exceptie noua cere batch dedicat"

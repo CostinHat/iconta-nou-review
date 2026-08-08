@@ -16,6 +16,33 @@ REGULI = "2026.1"
 MODUL = "facturi_api"
 
 
+class LiniiIncomplete(ValueError):
+    """[cap.24/cap.6] Linii de factura fara denumire sau cu cantitate<=0 -> erori PER-LINIE field-keyed
+    {camp, eticheta} (id-uri DOM em-l{i}-*, i = pozitia in lista PRIMITA). Backendul e autoritatea de validare
+    per-linie; frontendul NU tine oglinda. Ruta o converteste intr-un 422 care poarta lista `campuri`."""
+    def __init__(self, campuri):
+        self.campuri = campuri
+        super().__init__("Linii incomplete: " + "; ".join(x["eticheta"] for x in campuri))
+
+
+def linii_campuri_lipsa(linii):
+    """Campuri obligatorii per linie goale -> [{camp, eticheta}]. Obligatorii: denumire (nevida) + cantitate>0
+    (aceleasi criterii pe care frontendul le filtra tacit inainte). id camp = em-l{i}-{camp}, i = pozitia in lista."""
+    lipsa = []
+    for i, l in enumerate(linii):
+        n = i + 1
+        d = l.get("descriere")
+        if d is None or str(d).strip() == "":
+            lipsa.append({"camp": "em-l%d-descriere" % i, "eticheta": "Linia %d: denumire" % n})
+        try:
+            ok = float(l.get("cantitate") or 0) > 0
+        except (TypeError, ValueError):
+            ok = False
+        if not ok:
+            lipsa.append({"camp": "em-l%d-cantitate" % i, "eticheta": "Linia %d: cantitate" % n})
+    return lipsa
+
+
 def _q(x):
     """Rotunjește la 2 zecimale (ca numeric(12,2)), ROUND_HALF_UP."""
     return Decimal(str(x)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
@@ -220,6 +247,9 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
     import datetime
     if not linii:
         raise ValueError("factura trebuie sa aiba cel putin o linie")
+    _lipsa = linii_campuri_lipsa(linii)   # [cap.24 3b] validare per-linie field-keyed (autoritatea)
+    if _lipsa:
+        raise LiniiIncomplete(_lipsa)
     data_emitere = data_emitere or datetime.date.today().isoformat()
 
     linii = _potriveste_linii(conn, linii, platitor_tva=platitor_tva)

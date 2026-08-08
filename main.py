@@ -2637,6 +2637,10 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
                 tert_cui=date.tert_cui, tert_adresa=date.tert_adresa, data_emitere=date.data_emitere,
                 data_scadenta=date.data_scadenta, moneda=date.moneda,
                 platitor_tva=platitor, curs_manual=date.curs_manual, tip=date.tip)
+        except facturi_api.LiniiIncomplete as e:
+            raise HTTPException(422, {"cod": "LINII_INCOMPLETE",
+                "mesaj": "Completeaza liniile: " + "; ".join(x["eticheta"] for x in e.campuri),
+                "campuri": e.campuri})
         except ValueError as e:
             raise HTTPException(422, str(e))
         # descarcare gestiune DOAR la poarta = DA, in ACEEASI tranzactie (atomic: emit + descarcare)
