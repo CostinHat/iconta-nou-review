@@ -70,14 +70,15 @@ def test_ecranele_reparate_randeaza_eroare_vizibila():
     """Cele 4 (ieri, flag) + cele 12 (azi, ecran-nota) randeaza EROARE VIZIBILA, nu stare goala."""
     firme = open(os.path.join(_RAD, "static/js/ecrane/firme.js"), encoding="utf-8").read()
     rip = open(os.path.join(_RAD, "static/js/ecrane/rip_ecran.js"), encoding="utf-8").read()
-    for flag in ("_eroareStat", "_eroareCasa", "_eroareJurnal"):
-        assert flag in firme, "%s: fetch reparat (ieri) a regresat" % flag
-    assert "_eroareRip" in rip, "RIP a regresat"
-    # cele 12 de azi: mesajul canonic "Nu am putut incarca" per ecran-nota
-    assert firme.count("Nu am putut încărca") >= 5, "ecranele firme.js reparate azi nu mai randeaza eroarea"
-    for base in ("facturi_ecran.js", "etransport_ecran.js", "flux_concediu.js", "setari.js", "cabinet.js"):
-        s = open(os.path.join(_RAD, "static/js/ecrane", base), encoding="utf-8").read()
-        assert "Nu am putut încărca" in s, "%s nu mai randeaza eroarea de load" % base
+    # cele 4 unificate (08.08) la CANONICUL ecran-nota: mesajul canonic pe fiecare
+    for txt in ("statul de plată", "registrul de casă", "jurnalul"):
+        assert ("Nu am putut încărca " + txt) in firme, "firme.js: '%s' a regresat" % txt
+    assert "Nu am putut încărca registrul" in rip, "RIP a regresat"
+    # O SINGURA SURSA de stil (DS): stilul vechi (.stare-goala colorat rosu pt eroare) NU mai exista
+    assert 'stare-goala" style="color:var(--rosu)' not in firme and 'stare-goala" style="color:var(--rosu)' not in rip,         "stil de eroare vechi (.stare-goala rosu) - unifica la ecran-nota"
+    for base in ("facturi_ecran.js", "etransport_ecran.js", "flux_concediu.js", "setari.js", "cabinet.js", "woo_ecran.js"):
+        s2 = open(os.path.join(_RAD, "static/js/ecrane", base), encoding="utf-8").read()
+        assert "Nu am putut încărca" in s2, "%s nu mai randeaza eroarea de load" % base
 
 
 def test_backend_e_confirmat_calificat_pe_conn_fara_search_path():

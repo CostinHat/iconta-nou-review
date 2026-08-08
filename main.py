@@ -4501,12 +4501,11 @@ def wc_sinc(tenant_id: int, ctx=Depends(cere_context)):
 @app.get("/tenants/{tenant_id}/woocommerce/config")  # wc_config_get_v1
 def wc_config_get(tenant_id: int, ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
+    # [wc_config_no_mask] o eroare de DB NU se ambaleaza intr-un 200 "neconfigurat" (masca cat.0) - se propaga
+    # (500), iar frontend-ul arata eroare vizibila. "neconfigurat" ramane DOAR pentru lipsa reala de rand (r None).
     with db.get_conn() as conn, conn.cursor() as cur:
-        try:
-            cur.execute(f"SELECT wc_url, (wc_ck IS NOT NULL AND wc_cs IS NOT NULL) AS are_chei FROM {schema}.firma_profil LIMIT 1")
-            r = cur.fetchone()
-        except Exception:
-            return {"configurat": False, "url": None}
+        cur.execute(f"SELECT wc_url, (wc_ck IS NOT NULL AND wc_cs IS NOT NULL) AS are_chei FROM {schema}.firma_profil LIMIT 1")
+        r = cur.fetchone()
     if not r:
         return {"configurat": False, "url": None}
     return {"configurat": bool(r[0] and r[1]), "url": r[0]}

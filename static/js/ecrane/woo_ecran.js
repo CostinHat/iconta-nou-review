@@ -9,7 +9,7 @@ export async function ecranMagazin(corp, nav, tenantId) {
     nav.setInapoi(undefined);
     corp.innerHTML = '<p class="ecran-nota">Se încarcă...</p>';
     let cfg = { configurat: false, url: null };
-    try { cfg = await api.get(`/tenants/${tenantId}/woocommerce/config`); } catch (e) {}
+    try { cfg = await api.get(`/tenants/${tenantId}/woocommerce/config`); } catch (e) { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca starea magazinului online.</p>`; return; }
     corp.innerHTML = `
       <h2 class="pf-titlu">Magazin online</h2>
       <p class="pf-intro">Comenzile din WooCommerce devin facturi emise automat (zilnic la 07:30).</p>

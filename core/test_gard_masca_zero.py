@@ -18,6 +18,7 @@ mascheaza altfel (ex. `x = 0` in corp) NU e prins de acest gard (alt tipar). Lis
 """
 import ast
 import os
+import glob
 
 # Modulele de BANI: generatoare de declaratii + calcul fiscal + reconcilieri (calea 2 + artefact).
 _MODULE_BANI = (
@@ -47,6 +48,32 @@ def _e_zero_sau_gol(n):
     return False
 
 
+# [dict_masca_v2] semnal de eroare intr-un dict returnat pe except: cheie (eroare/ok:False/mesaj/...) SAU
+# valoare-stare vizibila (gri/rosu). Un dict FARA niciun semnal = MASCA (ambaleaza eroarea intr-un succes tacit,
+# ex. woo `{configurat:False}` care ascundea o eroare DB intr-un 200 - invizibil oricarei reparatii de frontend).
+_SEMNAL_CHEIE = {"eroare", "erori", "error", "mesaj", "motiv", "detail", "cod", "avert", "avertisment",
+                 "avertismente", "decizie", "disponibil"}
+_SEMNAL_VALOARE = {"gri", "rosu", "eroare", "error", "gray", "grey"}
+
+
+def _semnaleaza_eroare(d):
+    """True daca dict-ul EXPUNE esecul (nu e o masca): are o cheie de eroare, ok:False, sau o valoare-stare gri/rosu."""
+    for k, v in zip(d.keys, d.values):
+        key = k.value if isinstance(k, ast.Constant) else None
+        if key in ("ok", "success", "succes") and isinstance(v, ast.Constant) and v.value is False:
+            return True
+        if key in _SEMNAL_CHEIE:
+            return True
+        if isinstance(v, ast.Constant) and isinstance(v.value, str) and v.value in _SEMNAL_VALOARE:
+            return True
+    return False
+
+
+def _e_dict_masca(n):
+    """True daca nodul e un dict-literal NE-GOL care NU semnaleaza eroarea = masca succes-shaped."""
+    return isinstance(n, ast.Dict) and bool(n.keys) and not _semnaleaza_eroare(n)
+
+
 def scan_masca(src):
     """Intoarce [(lineno, snippet), ...] pt handlerele de exceptie al caror corp e DOAR pass/return-zero-gol."""
     hits = []
@@ -57,10 +84,12 @@ def scan_masca(src):
     for node in ast.walk(tree):
         if isinstance(node, ast.ExceptHandler) and len(node.body) == 1:
             b = node.body[0]
-            masca = isinstance(b, ast.Pass) or (isinstance(b, ast.Return) and _e_zero_sau_gol(b.value))
+            _dict_m = isinstance(b, ast.Return) and _e_dict_masca(b.value)
+            masca = isinstance(b, ast.Pass) or (isinstance(b, ast.Return) and _e_zero_sau_gol(b.value)) or _dict_m
             if masca:
-                kind = "pass" if isinstance(b, ast.Pass) else ("return %r" % (getattr(b.value, "value", None)
-                                                                              if isinstance(b.value, ast.Constant) else "gol"))
+                kind = ("pass" if isinstance(b, ast.Pass)
+                        else "return {dict succes-shaped}" if _dict_m
+                        else "return %r" % (getattr(b.value, "value", None) if isinstance(b.value, ast.Constant) else "gol"))
             if masca:
                 hits.append((node.lineno, kind))
     return hits
@@ -97,3 +126,32 @@ def test_gardul_prinde_masca_MUTATIE():
     assert not ok_ridica and not ok_val and not ok_asign, (
         "fals-pozitiv: gardul prinde un except LEGITIM (ridica / valoare reala / asignare): %s %s %s"
         % (ok_ridica, ok_val, ok_asign))
+
+
+def test_niciun_dict_masca_succes_shaped_pe_TOT_backendul():
+    """[dict_masca_v2] scan_masca prinde ACUM si `except -> return {dict succes-shaped}` (masca ambalata in succes).
+    Rulat pe TOT backend-ul (core/*.py + main.py), nu doar modulele de bani - formatul dict scapase de la inceput
+    (woo `{configurat:False}` ascundea o eroare DB intr-un 200). Exclus: dict care semnaleaza (eroare/ok:False/gri)."""
+    rad = os.path.dirname(os.path.dirname(__file__))
+    fisiere = sorted(glob.glob(os.path.join(rad, "core", "*.py"))) + [os.path.join(rad, "main.py")]
+    fisiere = [f for f in fisiere if not os.path.basename(os.path.basename(f)).startswith("test_")]
+    probleme = {}
+    for f in fisiere:
+        hits = [(ln, k) for (ln, k) in scan_masca(open(f, encoding="utf-8").read()) if "dict" in k]
+        if hits:
+            probleme[os.path.relpath(f, rad)] = hits
+    assert not probleme, ("except -> return {dict succes-shaped} pe backend (eroare ambalata in succes, invizibila "
+                          "la frontend) - lasa eroarea sa iasa (raise / non-200): %s" % probleme)
+
+
+def test_gardul_prinde_DICT_masca_MUTATIE():
+    """MUTATIE: `except: return {configurat: False}` (succes-shaped) e PRINS; un dict care SEMNALEAZA (gri / eroare
+    / ok:False) NU e prins (fara fals-pozitiv pe control_incrucisat & co.)."""
+    prins_dict = scan_masca('def f():\n try:\n  return q()\n except Exception:\n  return {"configurat": False, "url": None}\n')
+    assert prins_dict and "dict" in prins_dict[0][1], "gardul NU prinde `except: return {dict succes-shaped}` - inutil"
+    ok_gri = scan_masca('def f():\n try:\n  return q()\n except Exception:\n  return {"stare": "gri", "constatari": []}\n')
+    ok_eroare = scan_masca('def f():\n try:\n  return q()\n except Exception as e:\n  return {"eroare": str(e)}\n')
+    ok_okfalse = scan_masca('def f():\n try:\n  return q()\n except Exception:\n  return {"ok": False, "cod": "X"}\n')
+    assert not ok_gri and not ok_eroare and not ok_okfalse, (
+        "fals-pozitiv: gardul prinde un dict care EXPUNE eroarea (gri/eroare/ok:False): %s %s %s"
+        % (ok_gri, ok_eroare, ok_okfalse))

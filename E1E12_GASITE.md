@@ -352,3 +352,37 @@ IDENTIC (45e3b486). RESTART: NEnecesar acest tur - doar frontend static (servit 
   public de login; severitate mica).
 - **navigator.js:329 / sesiune.js:30**: catch-and-log (clopot notificari / dispatch pub-sub) - degradeaza + loghaza,
   borderline-legitim (dispatch-ul care nu vrea sa rupa ceilalti abonati). De consemnat, nu urgent.
+
+---
+
+## MASCA woo la SURSA + gard extins pe dict + unificare stil (08.08.2026, aprobat)
+
+**Harta (raportata INTAI, cerinta Costin) — scan_masca era orb la `except -> return {dict}`:** audit AST pe TOT
+backend-ul, 22 de `except -> return {dict ne-gol}`. Clasificare: **1 MASCA reala** (main.py:4509 woo
+`{configurat:False}` - dict succes-shaped, zero semnal) + 4 `stare:"gri"` (control_incrucisat 328/381/698 +
+main.py:3979 - LEGITIM, "gri"=stare vizibila "n-am putut verifica", cu exceptia in mesaj; convenția documentata) +
+17 dict care semnaleaza eroarea (eroare/ok:False/mesaj - LEGITIM). Concluzie onesta: garda era oarba la format,
+DAR woo e singura masca reala de acest fel pe backend.
+
+**woo REPARAT pe AMBELE fete:**
+- Backend main.py:4509 (`wc_config_no_mask`): scos `except: return {configurat:False}`; eroarea de DB se PROPAGA
+  (500), "neconfigurat" ramane DOAR pentru lipsa reala de rand (r None). Proba in-process: cursor care ridica ->
+  ruta RIDICA (non-200), nu mai returneaza succes.
+- Frontend woo_ecran.js: `catch -> ecran-nota "Nu am putut incarca starea magazinului online"` (acum ca backend-ul
+  trimite erori). Proba headless: /woocommerce/config -> 500 -> UI arata eroarea, NU "neconfigurat".
+
+**Gard EXTINS (core/test_gard_masca_zero.py, dict_masca_v2, mutatie-probat):** scan_masca prinde acum si
+`except -> return {dict succes-shaped}` (dict ne-gol FARA semnal cheie/valoare); `_semnaleaza_eroare` exclude
+dict-urile care EXPUN esecul (eroare/ok:False/mesaj SAU valoare gri/rosu). Test nou pe TOT backend-ul (nu doar
+_MODULE_BANI) -> 0 masti dupa woo. Mutatie: git checkout main.py (revine woo) -> gardul prinde main.py:4508.
+RECOMANDARE consemnata: pe termen lung, ridica scopul pass/return-0/[] de la _MODULE_BANI la tot backend-ul (azi
+ar exploda pe `except: pass` best-effort legitim - de facut cu o lista de exceptii).
+
+**Unificare stil (aprobat) — cele 4 de ieri -> ecran-nota canonic:** stat-plata, casa, jurnal, rip au trecut de la
+`.stare-goala` rosu + flag `_eroare*` la `catch -> ecran-nota "Nu am putut incarca X"; return` (identic cu cele 12).
+O SINGURA sursa de stil de eroare (DS). Gardul anti-regresie impune acum absenta stilului vechi (`.stare-goala`
+rosu). Proba: stat-plata/casa/jurnal re-probate headless (500 -> eroare vizibila) pe versiunea unificata.
+
+**Restart:** facut (woo backend = cod Python). Frontend (unificare + woo) = static, servit no-cache. No-op: N/A
+(nu s-a atins cod fiscal). Alta sintaxa a clasei (login.js then-fara-catch, navigator/sesiune catch-and-log) =
+raportate anterior, nereparate.
