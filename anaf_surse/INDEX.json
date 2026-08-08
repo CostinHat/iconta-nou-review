@@ -2,6 +2,11 @@
   "_generat_de": "gen_index.py (Corpus 2)",
   "_nota": "Regenereaza cu: venv/bin/python gen_index.py. tip_forma e declarat manual in TIP_FORMA.",
   "fisiere": {
+    "D112_XML_2026_0726_050826.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "OPANAF_3562_2024_D177.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -141,6 +146,11 @@
       "acopera": []
     },
     "d101_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d112_06082026.xsd": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -446,6 +456,11 @@
       ]
     },
     "pdf_original": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D112_0726_030826.pdf": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
