@@ -2063,3 +2063,21 @@ DATORIE (cap.24 regula 2 incalcata azi, IN AFARA batch 3 - de reparat la ecranel
 - firme.js:1228 - `rtLinii.filter((l) => l.articol_id && l.cantitate > 0)` inainte de POST reteta.
 Ambele filtreaza randuri inainte de validare -> un rand incomplet dispare tacit (aceeasi clasa reparata azi la
 e-Transport). NU se cableaza gard mecanic pe regula 2 (ar aprinde aceste ecrane, in afara batch 3): ratchet.
+
+
+## 08.08.2026 (seara) — G10 ROLLOUT ÎNCHIS (0 excepții) la a5c7808
+
+Batch 3b (emitere) livrat -> G10 Faza 2 (rollout eroare-lângă-câmp, mecanism A) COMPLET pe toate formularele
+multi-câmp: pilot flux_concediu, batch 1 (date_firma + salariat), batch 2 (D301/D390 manual), batch 3a
+(e-Transport), batch 3b (emitere). `_G10_A_EXCLUSE = []` (fără excepții); gardul MIRROR_CAMPURI_LIPSA scanează
+acum TOATE ecranele din static/js/ecrane -> 0. cap.24 (randuri dinamice) scris (DESIGN_SYSTEM v2.31) + cablat
+(regula 4 = MIRROR). Garduri headless COMISE care rulează în poartă: `core/test_etransport_randuri_dinamice.py`
++ `core/test_emitere_randuri_dinamice.py` (5 scenarii DOM + no-op sha256 pe ieșirea reală fiecare;
+auto-provizionează chromium). Commituri: 908ab6b (cap.24), 119aea5 (3a), c0be1cf (gard 3a), a5c7808 (3b).
+
+RĂMÂNE DESCHIS (singurul rest al clasei "filtrare înainte de validare", ÎN AFARA G10) — VERIFICAT în această
+tură că e încă deschisă și formulată corect (fișiere neatinse azi, linii confirmate la sursă):
+- facturi_ecran.js:1078 — `linii: linii.filter((l) => l.descriere && l.cantitate)` înainte de POST /facturi/emite.
+- firme.js:1228 — `const linii = rtLinii.filter((l) => l.articol_id && l.cantitate > 0)` înainte de POST rețetă.
+Aceeași clasă reparată azi la e-Transport + emitere; batch propriu cu decizia Costin. NU se cablează gard mecanic
+pe regula 2 (ar aprinde aceste ecrane, în afara G10) — ratchet. Vezi și datoria de la 3a (secțiunea cap.24 batch 3a).

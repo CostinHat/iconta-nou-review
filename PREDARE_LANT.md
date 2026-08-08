@@ -1,5 +1,57 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba), si ARHITECT.md "FORMA COMENZII" (forma comenzii primite - 7 puncte), inainte de a incepe.
 
+## ★★ PREDARE — 08.08.2026 (noapte) — G10 COMPLET — CITEȘTE ASTA ÎNTÂI (supersedează 08.08 seara de mai jos)
+
+**Ritual pornire:** `ssh iconta 'cd ~/iconta_nou && pwd; hostname; git log -1'`. Apoi CLAUDE.md §2.2/§2.3 și
+ARHITECT.md "FORMA COMENZII".
+
+**STARE:** HEAD = origin/main = backup/lant-2026-08-08 = **a5c7808**. Tree curat, poartă verde (**1559 passed** /
+2 skipped / 16 xfailed; verificator TOTAL 0). 12 tenanți reali.
+
+**GUVERNANȚĂ (frame nou azi):** ARHITECT.md **FORMA COMENZII** (comandă în 7 puncte: DIRECȚIA / SARCINA /
+CONSTRÂNGERI / CE CER ÎNAPOI / PUNCTE DE OPRIRE / TEMEIURI / CHESTIONAR) + CLAUDE.md §2.2 **un singur format de
+raport** (11 secțiuni, fără COMPLET/SCURT). Fiecare comandă vine în 7 puncte; fiecare execuție întoarce raport 1-11
++ chestionar.
+
+### G10 — ÎNCHIS (rollout eroare-lângă-câmp complet, 0 excepții)
+- **cap.24 DESIGN_SYSTEM** (Rânduri dinamice în formulare, v2.31) scris + gard **MIRROR_CAMPURI_LIPSA**. Batch **3a
+  e-Transport** + **3b emitere** restructurate: backendul e autoritatea de validare per-linie (`{camp, eticheta}`),
+  frontendul NU mai filtrează, ștergerea = splice + re-randare integrală din model (FĂRĂ identități persistente),
+  erorile 422 plasate prin `eroareCamp` (cap.6 mecanism A). Emitere: backendul a fost SCHIMBAT ca să producă
+  erorile (`facturi_api.LiniiIncomplete` + `linii_campuri_lipsa`); happy-path neatins (factura identică pt date
+  complete).
+- **Garduri headless COMISE, rulează în poartă:** `core/test_etransport_randuri_dinamice.py` +
+  `core/test_emitere_randuri_dinamice.py` — 5 scenarii DOM (add / șters mijloc cu valori păstrate / două erori /
+  re-validare / rând incomplet care nu dispare) + no-op sha256 pe ieșirea reală (XML / factura). Auto-provizionează
+  chromium; `pytest.fail` dacă nu poate rula (nu skip verde-fals).
+- `_G10_A_EXCLUSE = []`. Commituri: 908ab6b (cap.24), 119aea5 (3a), c0be1cf (gard 3a), a5c7808 (3b + √ inventar A).
+- **G11** (câmp-ajutor per criteriu): se poate evalua acum — G10 nu mai schimbă premisa.
+
+### DESCHISE după G10
+1. **DATORIE cap.24 regula 2, ÎN AFARA G10** (GARZI 08.08): `facturi_ecran.js:1078` + `firme.js:1228` filtrează
+   rânduri înainte de POST (rând incomplet dispare tăcut) — aceeași clasă, batch propriu cu decizia Costin. Fără
+   gard mecanic pe regula 2 (ar aprinde aceste ecrane).
+2. **Field-keying cota nedeterminată la emitere** (opțional, decizie de produs): o linie cu `cota_tva=None`
+   (denumire <3 caractere, auto-match nedeclanșat) cade la mecanismul B whole-form, nu field-keyed. Restul e
+   field-keyed (denumire/cantitate).
+3. **Restul deschiselor neatinse de G10** (din predarea 08.08 seara de mai jos, încă valabile): campania
+   „running == HEAD" + drift schema PUBLIC; catch-uri rămase de raportat; E1-E12 neatins headless; fiscale deschise
+   (tichet_masa oct.2025, snapshot CF 2016/2017, tva_redusa_5 11%@2025 = decizie de produs).
+
+### DECIZIE consemnată azi (DECIZII 08.08)
+PIVOT scope batch 3: PREDARE_LANT supersedează GARZI; no-op sha256 pe AMBELE ieșiri (XML e-Transport + factura
+emitere), nu doar pe XML — proba trebuie să atingă ieșirea reală a ecranului.
+
+### INFRASTRUCTURĂ (neschimbată)
+Poartă verde: commit pe server rulează suita întreagă (~5min) + verificator, în background; post-commit publică
+three-way (origin/main + backup) automat. Frontend static, servit no-cache. **Garduri headless:** chromium în venv
+(gitignored >100MB), auto-provizionat de fixture (`playwright install chromium` la nevoie); montare directă a
+modulului real + interceptare backend real (vezi cele 2 garduri). Login Prisma (patron@prisma-cont.test /
+Prisma!patron2026). Editare cod pe server cu patch-uri python (io.read + replace + io.write); scripturi cu ghilimele
+-> fișier local + scp.
+
+---
+
 ## ★★ PREDARE — 08.08.2026 (seara) — G10 ROLLOUT + DESCHISE — CITEȘTE ASTA ÎNTÂI (supersedează 08.08 dimineața de mai jos)
 
 **Ritual pornire:** `ssh iconta 'cd ~/iconta_nou && pwd; hostname; git log -1'`. Apoi CLAUDE.md §2.2/§2.3.

@@ -3482,3 +3482,38 @@ executie NU e completare-pentru-pas-uitat, e fluxul proiectat. CLAUDE.md primest
 obliga executorul la punctele 4, 5, 6, cu trimitere la ARHITECT.md (fara duplicare de text) si cu domeniul
 explicit: §2.3 continua lantul pe campanii de EXECUTIE, CE CER INAPOI decide daca comanda e executie sau
 propunere - fara sa schimbe §2.3.
+
+
+## 08.08.2026 (după-amiază → noapte) — G10 dus la capăt: cap.24 + batch 3a + gard headless + batch 3b (rollout ÎNCHIS)
+
+**Frame (deja consemnat mai sus, „Forma comenzii devine regula scrisa"):** ziua a rulat sub guvernanța nouă —
+ARHITECT.md FORMA COMENZII (comandă în 7 puncte) + CLAUDE.md §2.2 un singur format de raport (11 secțiuni, fără
+COMPLET/SCURT). Fiecare tură G10 a primit comandă în 7 puncte și a răspuns cu raport 1-11 + chestionar de formă.
+
+**Arcul G10 (HEAD 3f72c29 → a5c7808), tură cu tură:**
+- **2 ture de CITIRE (read-only)** — teren batch 3. Constatări: DESIGN_SYSTEM nu avea capitol pentru randuri
+  dinamice (cap.6 guvernează plasarea erorii dar presupune un id DOM stabil ca DAT); e-Transport era append-only,
+  `construiesteCorp` filtra rândurile fără cod_tarifar/denumire iar backendul re-deriva `b{i}` din poziția în
+  array-ul PRIMIT → un rând incomplet din mijloc dispărea tăcut și eroarea altui rând era deplasată; `campuriLipsaCorp`
+  exista DOAR în e-Transport (PREDARE îl atribuise greșit ambelor ecrane — premisa Costin, via grep, era corectă);
+  emitere backend NU producea nicio eroare per-linie (doar string-uri pe tot formularul); oglinda frontend
+  e-Transport drifta pe `valoare_fara_tva` (verificat în backend, nu în frontend).
+- **cap.24 „Rânduri dinamice în formulare"** scris în DESIGN_SYSTEM (v2.31, 908ab6b): 4 reguli — re-randare
+  integrală la mutație; id din poziție + listă randată = listă validată (fără filtru); orice listă care crește
+  trebuie să scadă; validare per-câmp = backend, frontendul nu ține oglindă. Gard mecanic MIRROR_CAMPURI_LIPSA
+  (regula 4, singura curat-mecanică fără a aprinde ecrane în afara batch 3); regulile 1-3 rămân disciplină/ratchet.
+- **Batch 3a e-Transport** (119aea5): `campuriLipsaCorp` eliminat (cu cei 2 consumatori), backendul
+  `campuri_required_lipsa` (neatins) devine singura autoritate, `construiesteCorp` fără filtru, model pozițional cu
+  valori + re-randare + buton ștergere/rând, `eroareCamp`; `api.js._erisCampuri` extins aditiv pentru forma
+  `{campuri:[{camp,eticheta}]}`.
+- **Gard headless e-Transport COMIS** (c0be1cf): cele 5 scenarii DOM + no-op sha256, chromium, rulează în poartă,
+  auto-provizionat; mutație probată (filtru reintrodus → roșu). A închis clasa vânată toată campania — „comportament
+  dovedit o dată și negardat se pierde la primul refactor".
+- **Batch 3b emitere** (a5c7808): backendul a fost SCHIMBAT ca să producă erori per-linie
+  (`facturi_api.LiniiIncomplete` + `linii_campuri_lipsa`, ridicate în `emite_factura` înainte de happy-path →
+  factura identică pt date complete, sha 2197a759 înainte==după); frontend fără filtru, ștergere splice +
+  re-randare (fără identități persistente, valorile în model); gard headless emitere comis; `_G10_A_EXCLUSE=[]` →
+  G10 fără excepții; √ bifă e-Transport în inventarul A.
+
+**Rămâne după G10:** datoria cap.24 regula 2 în afara G10 (facturi_ecran.js:1078, firme.js:1228) — GARZI 08.08.
+Decizia de scope batch 3 consemnată în DECIZII 08.08 (PIVOT: PREDARE supersedează GARZI; no-op pe ambele ieșiri).

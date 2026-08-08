@@ -7894,3 +7894,23 @@ disciplina. Costin: "nu exista raport SCURT. Raportul are 11 pozitii obligatorii
 PROBA: CLAUDE.md §2.2 - blocul "CAND SE APLICA ... COMPLET / SCURT" inlocuit cu "UN SINGUR FORMAT ..."; §2.3
 pct.7 "sectiunile 1-10" -> "TOATE sectiunile 1-11"; grep dupa "SCURT" / "sectiunile 1-10" / "sectiunile 1, 2, 5"
 in CLAUDE.md = NICIUNA (commit 543a367, 08.08.2026).
+
+
+## 08.08.2026 — PIVOT scope batch 3 (G10): PREDARE_LANT supersedează GARZI; no-op sha256 pe AMBELE ieșiri
+
+Constatare (turele de CITIRE batch 3, 08.08): cele două registre divergeau pe scope-ul batch 3, așa cum a fost
+găsit la sursă:
+- GARZI ("08.08 — G10: e-Transport = ABATERE cunoscuta, tratat la BATCH 3") numea DOAR e-Transport și cerea proba
+  no-op sha256 DOAR pe XML e-Transport.
+- PREDARE_LANT ("08.08 seara, G10 Faza 2") adăuga emitere ca al doilea ecran (3b) ȘI extindea no-op sha256 pe
+  factura generată, nu doar pe XML.
+
+PIVOT (supersedează EXPLICIT redarea din GARZI): PREDARE_LANT e mai nou și mai complet; batch 3 = e-Transport (3a)
++ emitere (3b), iar proba no-op sha256 acoperă IEȘIREA REALĂ a fiecărui ecran — XML pentru e-Transport, factura
+(linii + `totaluri_din_linii` PURE) pentru emitere. Motiv: o probă no-op care nu atinge ieșirea reală a ecranului
+NU dovedește că restructurarea n-a schimbat ce pleacă la ANAF / la contabil; trebuie să hash-uiască exact
+artefactul pe care-l produce ecranul.
+
+PROBĂ: e-Transport sha256 XML = 480d4bf2… (frontend vechi == nou, set complet); emitere sha256 factură = 2197a759…
+(facturi_api vechi == nou, total=423.50 / tva=73.50). Ambele garduri headless hash-uiesc ieșirea reală, în poartă
+(test_etransport_randuri_dinamice.py / test_emitere_randuri_dinamice.py).
