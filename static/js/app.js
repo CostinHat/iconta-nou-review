@@ -10,6 +10,20 @@ function _bannerEroareGlobala(detaliu) {
   document.body.appendChild(b);
   console.error("[eroare_globala]", detaliu);
 }
+// [dialog_nativ_v1] DS cap.5: alert()/prompt()/confirm() native INTERZISE. Mesaj de eroare la boot (magic-login),
+// cand niciun ecran nu e inca randat, printr-o caseta canonica (.caseta-atentie), nu alert nativ.
+function _bannerLoginEroare(txt) {
+  const vechi = document.getElementById("login-boot-eroare");
+  if (vechi) vechi.remove();
+  const b = document.createElement("div");
+  b.id = "login-boot-eroare";
+  b.className = "caseta-atentie";
+  b.style.cssText = "position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:99999;max-width:min(520px,92vw)";
+  b.innerHTML = `<div class="ca-mesaj">${txt}</div>`;
+  document.body.appendChild(b);
+  setTimeout(() => { if (b.parentNode) b.remove(); }, 12000);
+}
+
 window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.message));
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
@@ -105,11 +119,11 @@ function randeaza() {
       body: JSON.stringify({ token: _mag }) })
       .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
       .then(({ ok, d }) => {
-        if (!ok) { alert(d.detail || "Link expirat sau folosit."); randeaza(); return; }
+        if (!ok) { randeaza(); _bannerLoginEroare(d.detail || "Linkul de logare a expirat sau a fost deja folosit. Intra in cont cu emailul si parola, sau cere un link nou."); return; }
         sesiune.intra(d.token, d.user);
         location.reload();
       })
-      .catch(() => { alert("Eroare la logare."); randeaza(); });
+      .catch(() => { randeaza(); _bannerLoginEroare("Nu am putut finaliza logarea prin link (probabil o problema de retea). Reincearca, sau intra cu emailul si parola."); });
     return;
   }
   const _hp = new URLSearchParams(location.hash.slice(1));  /* [F-preview] #acces=<token>&u=<json user> */

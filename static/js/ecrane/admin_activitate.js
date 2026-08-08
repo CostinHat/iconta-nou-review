@@ -115,7 +115,7 @@ async function deschideTimeline(corp, cabinet) {
     const r = await api.get(`/admin/activitate/cabinet/${cabinet.id}`);
     activitate = (r && r.activitate) || [];
   } catch (e) {
-    zona.innerHTML = `<div class="stare-goala">Nu am putut încărca istoricul cabinetului. Reîncearcă.</div>`;
+    zona.innerHTML = `<div class="ecran-nota">Nu am putut încărca istoricul cabinetului. Reîncearcă.</div>`;
     return;
   }
   if (!activitate.length) {

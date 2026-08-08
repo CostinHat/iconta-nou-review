@@ -3576,3 +3576,13 @@ obligatii zero (XSD minOccurs=1 + structura "1-41 aparitii"). Continut la zero r
 firme au trecut de la eroare ACreante la VALID. Panificatie ramane cu atentionarea B4_5P (A1) + campurile noi
 07/2026 (D_14a etc.). Gard test_angajatorA_prezenta_si_la_obligatii_zero + mutatie. Cele 13 campuri v1.03-072026
 neconfirmate verbatim = datorie in GARZI (sursa e in corpus). Regula anti-oprire-fara-stop scrisa in ARHITECT.md pct.6.
+
+## 09.08.2026 — DS clasa "oprire tacuta/generica" (prioritate: stare falsa / mesaj generic)
+
+Parcurs frontendul pentru clasa "actiune care nu se duce la capat trebuie sa ajunga la user ca explicatie clara"
+(DS cap.5/6). Gasit 12, reparat 5, ramas 7. Reparat: `alert()` nativ x2 (app.js magic-login, DS cap.5 interzis) ->
+caseta canonica; 3 load-error prin clasa ad-hoc (mig-gol/stare-goala) -> ecran-nota. Gard mecanic
+test_dialog_nativ_frontend.py: zero dialoguri native in TOT frontendul (nu doar ecrane/, unde scana verificatorul)
++ ratchet mig-gol; mutatie -> rosu. Finding structural: verificatorul scaneaza doar static/js/ecrane/ -> app.js &
+co scapau. Ramas listat in GARZI: 3 mig-gol de continut, 3 catch->stare-goala declaration-adjacent, 1 catch gol
+benign (config beta). Fals-pozitive eliminate din inventar: firme.js:134 si navigator.js AU .catch.

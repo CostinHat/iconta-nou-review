@@ -327,7 +327,7 @@ function _asiRandeazaFereastra(d, c) {
     <div class="asi-cal-rand2">
       <span>Timp mediu pregatit\u2192aprobat: <b>${cal.zile_mediu != null ? cal.zile_mediu + " zile" : "\u2014"}</b></span>
       <span>Acoperire: <b>${(cal.tipuri || []).join(", ") || "\u2014"}</b></span>
-    </div>` : `<div class="mig-gol">Calitatea nu a putut fi incarcata.</div>`;
+    </div>` : `<p class="ecran-nota">Calitatea nu a putut fi incarcata.</p>`;
 
   let tipare = "";
   if (cal) {

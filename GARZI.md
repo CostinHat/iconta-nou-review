@@ -2155,3 +2155,36 @@ implementat, apoi revalidat pe J27.0.1:
 - **E3_97** (asiguratE3) — camp nou. LIPSA: definitia + formula.
 Toate 13 se aplica de la 01.07.2026 (structura, "In sectiunea D asigurat – modificari" + changelog J27.0.0). Sursa
 e in corpus (`anaf_surse/`), deci datoria e actabila - nu blocata extern.
+
+## 09.08.2026 — DS clasa "oprire tacuta/generica": dialog nativ INTERZIS peste tot + load-error la ecran-nota
+
+**GASIT 12, REPARAT 5, RAMAN 7.**
+
+**REPARAT (afiseaza acum mesaj canonic clar - ce/de ce/ce urmeaza):**
+- app.js:108/112 `alert()` nativ (magic-login) -> `.caseta-atentie`: "Linkul de logare a expirat sau a fost deja
+  folosit. Intra in cont cu emailul si parola, sau cere un link nou." / "Nu am putut finaliza logarea prin link
+  (probabil o problema de retea). Reincearca, sau intra cu emailul si parola." (DS cap.5: alert/prompt/confirm
+  native INTERZISE).
+- asistenti.js:330 `.mig-gol` -> `.ecran-nota`: "Calitatea nu a putut fi incarcata."
+- firme.js:481 `.mig-gol` -> `.ecran-nota`: "Nu am putut rula verificarile."
+- admin_activitate.js:117 catch->`.stare-goala` -> `.ecran-nota`: "Nu am putut incarca istoricul cabinetului. Reincearca."
+
+**GARD MECANIC:** `core/test_dialog_nativ_frontend.py` — (1) ZERO alert/prompt/confirm native in TOT frontendul
+(ecrane/ + static/js/*.js), mutatie alert nou -> rosu; (2) ratchet `.mig-gol` <= 3 (nu creste). Acopera si zona
+NEscanata de verificator.
+
+**FINDING STRUCTURAL:** verificator_conformitate.py (DIALOG_BROWSER + toate regulile DS) scaneaza DOAR
+`static/js/ecrane/*.js` (BAZA). `static/js/*.js` (app.js/navigator.js/sesiune.js/api.js) NU sunt scanate -> orice
+abatere DS de acolo scapa (asa a trecut `alert()` din app.js). Gardul nou acopera dialogurile in ambele zone;
+extinderea INTREGULUI verificator la static/js/*.js = workstream separat (risc de multe flag-uri noi, poarta).
+
+**RAMAN (listate, nereparate):**
+- firme.js:1640/1668/2021 `.mig-gol` — CONTINUT (r.mesaj rezultat descarcare / lista alerte / nota-avertisment
+  "Atentie: nota e legata de factura #.. — modificarea sumei schimba soldul facturii"), NU opriri de load;
+  clasa ad-hoc (cap.6), dar afiseaza text clar. Cat.3 (cosmetic). De migrat: 2021 la `.caseta-atentie`, 1640/1668
+  la afisare canonica. Coboara ratchet la reparare.
+- control.js:79, declaratii.js:265/327 catch->`.stare-goala` (mesaj clar "Nu am putut incarca <X>", dar clasa
+  stare-goala in loc de ecran-nota) — DECLARATION-ADJACENT (control fiscal / ecran declaratii). Neatinse aici
+  (constrangere "nu atinge generatoarele" interpretata conservator). De migrat la ecran-nota intr-un pas dedicat.
+- login.js:295 catch{} gol pe prefetch `/public/config` (poarta beta) — degradare GRATIOASA (campul de cod beta
+  nu apare daca fetch-ul pica); NU e o actiune a userului, nu e stare falsa actabila. Benign, listat.
