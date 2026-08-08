@@ -2047,3 +2047,19 @@ se stabilizeaza, `#dec-tip` nu apare in timp util). De INCHIS cu un nav headless
 intai + asteptare DUK (pas2 e lent), SAU deschidere directa a declaratiei d301/d390 pe o firma cu aplicabilitate
 (tenant_001/S4 nu are neaparat d301/d390 in luna testata). PANA ATUNCI: D301/D390 raman "cod corect + contract
 probat backend", NU "probat vizual". Nu se marcheaza bifa vizuala G10 pe ele fara aceasta proba.
+
+
+## 08.08.2026 — cap.24 batch 3a e-Transport LIVRAT + DATORIE regula 2 in afara batch 3
+
+e-Transport restructurat (cap.24): campuriLipsaCorp ELIMINAT (oglinda care drifta pe valoare_fara_tva);
+backendul (core/etransport.py:campuri_required_lipsa, 422.campuri = {camp,eticheta}) e singura autoritate;
+construiesteCorp NU mai filtreaza (lista trimisa = lista randata); model pozitional cu valori + re-randare
+integrala la add/delete + buton stergere/rand; erorile 422 plasate langa camp prin eroareCamp (api.js
+_erisCampuri normalizeaza campuri->{camp,mesaj}). e-Transport a intrat in lista G10-A (test_g10); emitere
+ramane exceptat pana la 3b. Gardul MIRROR_CAMPURI_LIPSA scaneaza acum si e-Transport (nu mai e exceptat).
+
+DATORIE (cap.24 regula 2 incalcata azi, IN AFARA batch 3 - de reparat la ecranele lor, batch propriu):
+- facturi_ecran.js:1078 - `linii.filter((l) => l.descriere && l.cantitate)` inainte de POST /facturi/emite.
+- firme.js:1228 - `rtLinii.filter((l) => l.articol_id && l.cantitate > 0)` inainte de POST reteta.
+Ambele filtreaza randuri inainte de validare -> un rand incomplet dispare tacit (aceeasi clasa reparata azi la
+e-Transport). NU se cableaza gard mecanic pe regula 2 (ar aprinde aceste ecrane, in afara batch 3): ratchet.

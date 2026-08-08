@@ -15,11 +15,12 @@ _G10_A_FORME = [
     "date_firma.js",
     "firme.js",
     "declaratii.js",  # batch 2: D301-manual (#d301-*) + D390-manual (#man-*)
+    "etransport_ecran.js",  # batch 3a: randuri dinamice, backend autoritar (422.campuri) + eroareCamp (cap.24)
 ]
 
-# EXPLICIT in afara listei pana la batch 3 (restructurare, nu plasare): randuri dinamice, campuriLipsaCorp
-# intoarce etichete, nu id-uri. Ramane pe B (mesaj colectat vizibil - "niciodata tacere"). Vezi GARZI.
-_G10_A_EXCLUSE = ["etransport_ecran.js"]
+# EXPLICIT in afara listei pana la batch 3b (restructurare randuri dinamice, nu plasare). e-Transport a intrat
+# la batch 3a; emitere ramane pe B pana la 3b, ca regresia sa se vada de unde vine. Vezi GARZI / cap.24.
+_G10_A_EXCLUSE = ["emitere_ecran.js"]
 
 
 def test_formularele_G10A_folosesc_eroareCamp():
@@ -39,8 +40,8 @@ def test_backend_contract_erori_campuri_wired():
         "ruta salariat nu mai trimite erori_campuri (contract G10)"
 
 
-def test_etransport_ramane_in_afara_pana_la_batch3():
-    """e-Transport NU intra in lista G10-A pana la batch 3 (restructurare). Daca cineva il muta acum -> pica,
-    ca sa nu se amestece restructurarea cu rollout-ul de plasare."""
+def test_emitere_ramane_in_afara_pana_la_batch3b():
+    """emitere NU intra in lista G10-A pana la batch 3b (restructurare randuri dinamice). e-Transport a intrat
+    la batch 3a. Daca cineva muta emitere acum -> pica, ca regresia sa se vada de unde vine."""
     for f in _G10_A_EXCLUSE:
-        assert f not in _G10_A_FORME, "%s trebuie tratat separat (batch 3), nu in rollout-ul standard" % f
+        assert f not in _G10_A_FORME, "%s trebuie tratat separat (batch 3b), nu in rollout-ul standard" % f

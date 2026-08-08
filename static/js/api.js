@@ -37,6 +37,8 @@ async function cere(metoda, cale, corp) {
 function _erisCampuri(date) {
   const d = date && date.detail;
   if (d && typeof d === "object" && Array.isArray(d.erori_campuri)) return d.erori_campuri;
+  // [cap.24] contract e-Transport: detail.campuri = [{camp, eticheta}] -> normalizat la {camp, mesaj}
+  if (d && typeof d === "object" && Array.isArray(d.campuri)) return d.campuri.map((x) => ({ camp: x.camp, mesaj: x.mesaj || x.eticheta }));
   if (date && Array.isArray(date.erori_campuri)) return date.erori_campuri;
   return null;
 }

@@ -82,7 +82,7 @@ for nume, t in fisiere.items():
         # oglindeste validarea backend (oglinda drifteaza - dovedit valoare_fara_tva). Validarea per-camp pe
         # randuri = backend; frontendul consuma raspunsul de eroare (cap.6). e-Transport + emitere = EXCEPTIE
         # declarata pana la batch 3 (ca test_g10_eroare_langa_camp / lista G10-A).
-        if (nume not in ("etransport_ecran.js", "emitere_ecran.js")
+        if (nume not in ("emitere_ecran.js",)
                 and re.search(r"(function\s+|const\s+|let\s+|var\s+)[A-Za-z0-9_]*[Cc]ampuri[A-Za-z0-9_]*[Ll]ipsa", lin)):
             rap["mirror_campuri_lipsa"].append((nume, i, "", lin.strip()[:66]))
         # CARD_INLINE (cap.2a): card deschis inline in corpul panoului in loc de nav.deschide.
