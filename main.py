@@ -3257,6 +3257,7 @@ def declaratie_valideaza(tip: str, date: DeclaratieIn,
     # 2026: "Validare fara erori"). Celelalte declaratii le ignora (optionale).
     rez = _duk.valideaza(xml, tip, an=body.get("an"), luna=body.get("luna"))  # java blocant
     return {"tip": tip, "stare": rez["stare"], "erori": rez["erori"],
+            "severitate": rez.get("severitate"),  # [A2] E:(eroare) vs A:(atentionare) - frontendul il citeste
             "temei": rez["temei"], "limita": rez["limita"],
             "avertismente": getattr(res, "avertismente", None),
             # [poarta_gol_v1 27.07.2026] cate operatiuni are declaratia; None = nu se poate

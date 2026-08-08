@@ -42,3 +42,18 @@ def test_valideaza_expune_severitate_in_contract():
     # orice rezultat al valideaza contine cheia 'severitate' (frontendul se bazeaza pe ea)
     r = duk.valideaza("<x/>", "d112")   # DUK poate fi gri in mediu de test -> severitate None, dar cheia exista
     assert "severitate" in r, "contractul valideaza trebuie sa expuna 'severitate'"
+
+
+def test_ruta_valideaza_forwardeaza_severitate():
+    """Regresie END-TO-END: ruta POST /declaratii/{tip}/valideaza (main.py) trebuie sa FORWARDEZE 'severitate'
+    din duk.valideaza catre raspuns - altfel declaratii.js nu-l primeste si A2 n-are efect in UI (fixul unitar
+    trece dar integrarea nu). Exact gapul scapat prima data (severitate=None live desi unit-testul era verde)."""
+    import ast
+    src = open(os.path.join(_RAD, "main.py"), encoding="utf-8").read()
+    tree = ast.parse(src)
+    fn = next((n for n in ast.walk(tree)
+               if isinstance(n, ast.FunctionDef) and n.name == "declaratie_valideaza"), None)
+    assert fn is not None, "ruta declaratie_valideaza nu a fost gasita in main.py"
+    body = ast.get_source_segment(src, fn)
+    assert "severitate" in body, ("ruta declaratie_valideaza NU forwardeaza 'severitate' -> frontendul primeste "
+                                  "undefined si atentionarile apar tot ca 'erori' (A2 fara efect)")
