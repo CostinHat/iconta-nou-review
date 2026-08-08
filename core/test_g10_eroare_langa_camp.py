@@ -14,6 +14,7 @@ _G10_A_FORME = [
     "flux_concediu.js",
     "date_firma.js",
     "firme.js",
+    "declaratii.js",  # batch 2: D301-manual (#d301-*) + D390-manual (#man-*)
 ]
 
 # EXPLICIT in afara listei pana la batch 3 (restructurare, nu plasare): randuri dinamice, campuriLipsaCorp

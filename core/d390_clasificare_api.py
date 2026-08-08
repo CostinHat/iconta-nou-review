@@ -56,19 +56,25 @@ def salveaza_reclasificare(conn, schema, an, luna, directie, tara, cod, tip):
 
 def manual_adauga(conn, schema, an, luna, tip, tara, cod, den, baza):
     """Adaugă o linie pur manuală (P/S/T/R). Validează tip/țară/cod/bază."""
+    # [G10 rule2/4] colecteaza TOATE erorile de camp (nu fail-fast), field-keyed.
     tip = (tip or "").strip().upper()
-    if tip not in ("P", "S", "T", "R"):
-        return {"eroare": "tip linie manuală trebuie P/S/T/R (servicii/triangulație/agricol)"}
     tara = (tara or "").strip().upper()
-    if tara not in TARI_UE:
-        return {"eroare": "țara %r nu e în nomenclatorul UE" % tara}
     cod = (cod or "").strip()
+    erori = []
+    if tip not in ("P", "S", "T", "R"):
+        erori.append(("tip", "Tip linie manuală trebuie P/S/T/R (servicii/triangulație/agricol)."))
+    if tara not in TARI_UE:
+        erori.append(("tara", "Țara %r nu e în nomenclatorul UE." % tara))
     if tip in _CU_COD_OBLIG and not cod:
-        return {"eroare": "codul partenerului (fără prefix țară) e obligatoriu pentru %s" % tip}
+        erori.append(("cod", "Codul partenerului (fără prefix țară) e obligatoriu pentru %s." % tip))
+    b = None
     try:
         b = Decimal(str(baza or 0))
     except Exception:
-        return {"eroare": "bază invalidă"}
+        erori.append(("baza", "Bază invalidă."))
+    if erori:
+        return {"eroare": "; ".join(m for _c, m in erori),
+                "erori_campuri": [{"camp": c, "mesaj": m} for c, m in erori]}
     den = (den or "")[:200]
     with conn.cursor() as cur:
         cur.execute(f"""INSERT INTO {schema}.d390_manual (an,luna,tip,tara,cod,den,baza)

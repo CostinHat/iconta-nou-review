@@ -6,7 +6,7 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo } from "../api.js";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp } from "../api.js";
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -295,8 +295,14 @@ async function randeazaClasificareD390(corp, nav) {
     const b = { an: S.an, luna: S.luna, tip: zona.querySelector("#man-tip").value,
       tara: zona.querySelector("#man-tara").value.trim().toUpperCase(), cod: zona.querySelector("#man-cod").value.trim(),
       den: zona.querySelector("#man-den").value.trim(), baza: parseFloat(zona.querySelector("#man-baza").value) || 0 };
+    curataEroriCamp(zona);  // [G10] eroare langa camp
     try { await api.post(`/tenants/${S.tenant_id}/d390-clasificare/manual`, b); randeazaClasificareD390(corp, nav); }
-    catch (e) { arataMesaj(zona.querySelector("#dec-clasif-msg"), (e && e.mesaj) || "Eroare la adăugare.", "eroare"); }
+    catch (e) {
+      curataEroriCamp(zona);
+      const _ec = (e && e.erori_campuri) || [], _b = [];
+      _ec.forEach((x) => { if (!eroareCamp(zona, "man-" + x.camp, x.mesaj)) _b.push(x.mesaj); });
+      if (!_ec.length || _b.length) arataMesaj(zona.querySelector("#dec-clasif-msg"), _b.length ? _b.join("; ") : ((e && e.mesaj) || "Eroare la adăugare."), "eroare");
+    }
   });
   zona.querySelector("#dec-regen").addEventListener("click", () => pas2(corp, nav));
 }
@@ -360,8 +366,14 @@ async function randeazaOperatiuniD301(corp, nav) {
       nr_doc: gv("#d301-nrdoc").value.trim(), data_doc: gv("#d301-datadoc").value.trim(),
       tip_valuta: gv("#d301-valuta").value, val_valuta: parseFloat(gv("#d301-val").value) || 0,
       curs: parseFloat(gv("#d301-curs").value) || 0, cota: parseInt(gv("#d301-cota").value) };
+    curataEroriCamp(zona);  // [G10] eroare langa camp
     try { await api.post(`/tenants/${S.tenant_id}/d301-operatiuni`, b); randeazaOperatiuniD301(corp, nav); }
-    catch (e) { arataMesaj(gv("#d301-msg"), (e && e.mesaj) || "Eroare la adăugare.", "eroare"); }
+    catch (e) {
+      curataEroriCamp(zona);
+      const _ec = (e && e.erori_campuri) || [], _b = [];
+      _ec.forEach((x) => { if (!eroareCamp(zona, "d301-" + x.camp, x.mesaj)) _b.push(x.mesaj); });  // fallback B daca #camp lipseste
+      if (!_ec.length || _b.length) arataMesaj(gv("#d301-msg"), _b.length ? _b.join("; ") : ((e && e.mesaj) || "Eroare la adăugare."), "eroare");
+    }
   });
   gv("#d301-regen").addEventListener("click", () => pas2(corp, nav));
 }

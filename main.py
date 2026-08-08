@@ -2594,7 +2594,8 @@ def fr_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_context))
     with db.get_conn() as conn:
         r = _fr.adauga(conn, schema, corp)
     if r.get("eroare"):
-        raise HTTPException(422, r["eroare"])
+        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
+        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
     return r
 
 @app.put("/tenants/{tenant_id}/facturi-recurente/{sid}")
@@ -3803,7 +3804,8 @@ def d390_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
         r = _cl.salveaza_reclasificare(conn, schema, corp.get("an"), corp.get("luna"),
                                        corp.get("directie"), corp.get("tara"), corp.get("cod"), corp.get("tip"))
     if r.get("eroare"):
-        raise HTTPException(422, r["eroare"])
+        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
+        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
     return r
 
 
@@ -3816,7 +3818,8 @@ def d390_manual_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
         r = _cl.manual_adauga(conn, schema, corp.get("an"), corp.get("luna"), corp.get("tip"),
                               corp.get("tara"), corp.get("cod"), corp.get("den"), corp.get("baza"))
     if r.get("eroare"):
-        raise HTTPException(422, r["eroare"])
+        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
+        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
     return r
 
 
@@ -3847,7 +3850,8 @@ def d301_operatiuni_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
     with db.get_conn(schema) as conn:
         r = _op.adauga(conn, schema, corp.get("an"), corp.get("luna"), corp)
     if r.get("eroare"):
-        raise HTTPException(422, r["eroare"])
+        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
+        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
     return r
 
 
@@ -4439,7 +4443,8 @@ def factura_link_plata(tenant_id: int, factura_id: int, ctx=Depends(cere_context
     with db.get_conn() as conn:
         r = _pl.genereaza_link(conn, schema, factura_id, baza)
     if r.get("eroare"):
-        raise HTTPException(422, r["eroare"])
+        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
+        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
     return r
 
 @app.get("/public/plata/{ref}")
@@ -4496,7 +4501,8 @@ def wc_sinc(tenant_id: int, ctx=Depends(cere_context)):
     with db.get_conn(schema) as conn:
         r = _wc.sincronizeaza(conn, schema)
     if r.get("eroare"):
-        raise HTTPException(422, r["eroare"])
+        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
+        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
     return r
 
 

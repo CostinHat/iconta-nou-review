@@ -97,41 +97,47 @@ def lista(conn, schema, an, luna):
 
 def adauga(conn, schema, an, luna, d):
     """Valideaza si insereaza o operatiune. Calculeaza+stocheaza tva; NU stocheaza baza."""
+    # [G10 rule2/4] colecteaza TOATE erorile de camp (nu fail-fast), field-keyed pt erori_campuri.
+    erori = []
     try:
         tip = int(d.get("tip"))
     except (TypeError, ValueError):
-        return {"eroare": "tip lipsă sau invalid"}
-    if tip not in TIPURI_OP:
-        return {"eroare": "tip %r invalid (permise 1..5)" % tip}
+        tip = None
+    if tip is None:
+        erori.append(("tip", "Tip lipsă sau invalid."))
+    elif tip not in TIPURI_OP:
+        erori.append(("tip", "Tip %r invalid (permise 1..5)." % tip))
     tip_valuta = (d.get("tip_valuta") or "").strip().upper()
     if tip_valuta not in VALUTE:
-        return {"eroare": "valuta %r neacceptată (nomenclator ANAF)" % tip_valuta}
+        erori.append(("valuta", "Valuta %r neacceptată (nomenclator ANAF)." % tip_valuta))
+    val_valuta = curs = cota = None
     try:
         val_valuta = Decimal(str(d.get("val_valuta")))
         curs = Decimal(str(d.get("curs")))
         cota = int(d.get("cota"))
     except (TypeError, ValueError, ArithmeticError):
-        return {"eroare": "valoare, curs sau cotă invalide"}
-    if val_valuta <= 0:
-        return {"eroare": "valoarea în valută trebuie să fie > 0"}
-    if curs <= 0:
-        return {"eroare": "cursul trebuie să fie > 0"}
-    if cota not in {x["val"] for x in cote_perioada(an, luna)}:
-        return {"eroare": "cota %r%% nepermisă pentru perioadă" % cota}
+        erori.append(("val", "Valoare, curs sau cotă invalide."))
+    if val_valuta is not None and val_valuta <= 0:
+        erori.append(("val", "Valoarea în valută trebuie să fie > 0."))
+    if curs is not None and curs <= 0:
+        erori.append(("curs", "Cursul trebuie să fie > 0."))
+    if cota is not None and cota not in {x["val"] for x in cote_perioada(an, luna)}:
+        erori.append(("cota", "Cota %r%% nepermisă pentru perioadă." % cota))
     nr_doc = (d.get("nr_doc") or "").strip()
     if not nr_doc:
-        return {"eroare": "numărul documentului e obligatoriu"}
-    # data_doc: obligatorie, format ANAF ZZ.LL.AAAA + dată calendaristică reală (structura poz.35).
-    # DUKIntegrator respinge orice altceva ("data calendaristica eronata"): o validăm la sursă,
-    # nu lăsăm formatul greșit să treacă și să producă un D301 respins.
+        erori.append(("nrdoc", "Numărul documentului e obligatoriu."))
     data_doc = (d.get("data_doc") or "").strip()
     if not _DATA_DOC.match(data_doc):
-        return {"eroare": "data documentului e obligatorie în format ZZ.LL.AAAA (ex. 15.06.2026)"}
-    try:
-        zz, ll, aaaa = (int(x) for x in data_doc.split("."))
-        date(aaaa, ll, zz)
-    except (ValueError, TypeError):
-        return {"eroare": "data documentului %r nu e o dată calendaristică validă" % data_doc}
+        erori.append(("datadoc", "Data documentului e obligatorie în format ZZ.LL.AAAA (ex. 15.06.2026)."))
+    else:
+        try:
+            zz, ll, aaaa = (int(x) for x in data_doc.split("."))
+            date(aaaa, ll, zz)
+        except (ValueError, TypeError):
+            erori.append(("datadoc", "Data documentului %r nu e o dată calendaristică validă." % data_doc))
+    if erori:
+        return {"eroare": "; ".join(m for _c, m in erori),
+                "erori_campuri": [{"camp": c, "mesaj": m} for c, m in erori]}
     baza, tva = _tva_din(val_valuta, curs, cota)
     with conn.cursor() as cur:
         cur.execute(f"""INSERT INTO {schema}.d301_operatiuni
