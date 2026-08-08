@@ -1,4 +1,4 @@
-Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba) inainte de a incepe.
+Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba), si ARHITECT.md "FORMA COMENZII" (forma comenzii primite - 7 puncte), inainte de a incepe.
 
 ## ★★ PREDARE — 08.08.2026 (seara) — G10 ROLLOUT + DESCHISE — CITEȘTE ASTA ÎNTÂI (supersedează 08.08 dimineața de mai jos)
 
