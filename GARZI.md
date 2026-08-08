@@ -2085,14 +2085,21 @@ Garduri headless COMISE (5 scenarii DOM + no-op, mutație filtru->roșu): `core/
 + `core/test_retete_randuri_dinamice.py`. CORECȚIE la formularea veche: `facturi_ecran.js:1078` filtra înainte de
 POST **/facturi-recurente** (nu /facturi/emite — emite era reparat la 3b), verificat la sursă.
 
-RĂMÂNE DESCHIS (STOP-POINT 3, comanda Costin 08.08) — **regula-2 guard NU s-a cablat**: cablată fidel, aprinde
-2 ecrane NENUMITE în comandă (verificat mecanic pe ecranele reparate — `linii` var/cheie construit prin `.filter(`):
-- **firme.js:1582 — NIR** (`citesteLinii().filter((l) => l.denumire)` înainte de POST `/stocuri/nir`): purtător
-  AUTENTIC al clasei (rânduri user via #sn-plus; rând fără denumire aruncat tăcut; + violează regula 1 prin
-  appendChild/remove). Un guard line-based (stilul verificatorului) îl prinde.
-- **firme.js:1256 — inventar** (`[...].filter((i) => i.value !== "")` înainte de POST `/stocuri/inventar`):
-  filtrează inputurile de stoc goale (multi-linie; îl prinde un guard multi-linie). Apartenența la clasă e
-  DISCUTABILĂ ("articol necontorizat" vs "rând început incomplet").
-DECIZIE DE PRODUS/SCOP CERUTĂ (Costin): (a) extinde "peste tot" la NIR + inventar (le repar în același tipar, apoi
-cablez guardul curat), SAU (b) cablez guardul cu baseline-ratchet documentat (contrazice "fără excepții"), SAU
-(c) NIR/inventar = batch(uri) separat(e), guardul rămâne amânat. Până la decizie guardul NU e cablat (poartă roșie).
+ÎNCHIS 08.08 (decizia Costin = (a); "un gard cu excepții nu e gard"): NIR + inventar REPARATE, apoi regula-2 guard
+CABLAT în verificator_conformitate.py FĂRĂ NICIO EXCEPȚIE (`FILTRARE_INAINTE_VALIDARE`, PRAG 0). Clasa e închisă
+"peste tot": toate cele 4 ecrane purtătoare conforme (emitere + e-Transport; facturi-recurente + rețete la a771f25;
+NIR + inventar azi) → guardul rulează 0.
+- **NIR** (`ecranStocuri`, firme.js): trecut la model pozitional `nir-l{i}-*` + re-randare integrală din model
+  (regula 1, în locul appendChild/remove) + ștergere splice + FĂRĂ filtrare (regula 2); backend
+  `stocuri_api._nir_campuri_lipsa` (denumire + cantitate + preț achiziție), ruta /stocuri/nir 422 {mesaj,
+  erori_campuri}, erori prin `eroareCamp`. Gard `core/test_nir_randuri_dinamice.py` (5 scenarii DOM + no-op).
+- **inventar** (`sectiuneaCV`, firme.js): listă FIXĂ (fără add/delete → regula 1 nu se aplică); fixul = doar
+  regula 2: se trimit TOATE articolele (`.map`, fără `.filter`), backendul e autoritatea (`stocuri_cv_api.inventar`
+  sare faptic gol = necontorizat, NU eroare; `camp` per articol pe valoare invalidă → `eroareCamp` la
+  `cvi-a{id}-faptic`). Gard `core/test_inventar_randuri_dinamice.py`. Mutație (ambele ecrane): filtru reintrodus →
+  verificator `FILTRARE_INAINTE_VALIDARE=2, TOTAL=2` + gardurile headless roșii.
+
+REGISTRUL A FOST GREȘIT (corecție cerută de Costin, confirmată la sursă): intrarea 3a de mai sus (l.~2062) spune
+`facturi_ecran.js:1078` filtra înainte de POST `/facturi/emite` — FALS. 1078 e în `formSablon` → POST
+**/facturi-recurente** (emite = emitere_ecran.js, reparat deja la 3b). Descoperit prin grep pe fișier; formularea
+corectă e cea din batch-ul a771f25 + aici (TEMEIURI pct.6: faptele din comandă/registru = hartă de căutare, nu temei).

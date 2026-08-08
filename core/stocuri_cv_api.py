@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Stocuri cantitativ-valorice — strat API. Motorul: core/stocuri_cv.py.
 Ieșirile la CMP generează notă ciornă (cont_cheltuiala = cont_stoc)."""
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from psycopg2.extras import RealDictCursor
 from core import stocuri_cv as _m
 
@@ -142,15 +142,22 @@ def inventar(conn, schema, corp):
     rez = []
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         for l in corp.get("linii", []):
+            fv = l.get("faptic")
+            if fv is None or (isinstance(fv, str) and fv.strip() == ""):
+                continue   # [cap.24] articol necontorizat (faptic gol) - nu se inregistreaza, NU e eroare
             cur.execute(f"SELECT * FROM {schema}.articole WHERE id=%s", (l["articol_id"],))
             a = cur.fetchone()
             if not a:
-                rez.append({"articol_id": l["articol_id"], "eroare": "articol inexistent"})
+                rez.append({"articol_id": l["articol_id"], "camp": "cvi-a%s-faptic" % l["articol_id"], "eroare": "articol inexistent"})
                 continue
             fisa = _m.fisa_magazie(_miscari(cur, schema, a["id"]))
             scriptic = fisa[-1]["sold_cantitate"] if fisa else Decimal("0")
             cmp = Decimal(str(fisa[-1]["cmp"])) if fisa and fisa[-1]["cmp"] else Decimal("0")
-            faptic = Decimal(str(l["faptic"]))
+            try:
+                faptic = Decimal(str(fv))
+            except (InvalidOperation, ValueError):
+                rez.append({"articol_id": a["id"], "denumire": a["denumire"], "camp": "cvi-a%s-faptic" % a["id"], "eroare": "valoare invalida (numar)"})
+                continue
             dif = faptic - scriptic
             if dif == 0:
                 rez.append({"articol_id": a["id"], "denumire": a["denumire"], "diferenta": "0"})
@@ -160,7 +167,7 @@ def inventar(conn, schema, corp):
                 debit, credit, tip = a["cont_stoc"], a["cont_cheltuiala"], "intrare"
             else:
                 if abs(dif) > scriptic:
-                    rez.append({"articol_id": a["id"], "eroare": "minus peste stocul scriptic"})
+                    rez.append({"articol_id": a["id"], "denumire": a["denumire"], "camp": "cvi-a%s-faptic" % a["id"], "eroare": "minus peste stocul scriptic"})
                     continue
                 debit, credit, tip = a["cont_cheltuiala"], a["cont_stoc"], "iesire"
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)

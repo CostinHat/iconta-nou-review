@@ -24,9 +24,33 @@ def _noteaza(cur, schema, data, descriere, note):
     return ids
 
 
+def _nir_campuri_lipsa(linii):
+    """Articole NIR incomplete -> [{camp, eticheta}]. Obligatorii: denumire nevida + cantitate>0 +
+    pret_achizitie>0 (aceleasi criterii pe care frontendul le filtra tacit inainte). id camp = nir-l{i}-{camp}."""
+    lipsa = []
+    for i, l in enumerate(linii):
+        n = i + 1
+        if not str(l.get("denumire") or "").strip():
+            lipsa.append({"camp": "nir-l%d-denumire" % i, "eticheta": "Articolul %d: denumire" % n})
+        for camp, et in (("cantitate", "cantitate"), ("pret_achizitie", "pret achizitie")):
+            try:
+                ok = float(l.get(camp) or 0) > 0
+            except (TypeError, ValueError):
+                ok = False
+            if not ok:
+                lipsa.append({"camp": "nir-l%d-%s" % (i, camp), "eticheta": "Articolul %d: %s" % (n, et)})
+    return lipsa
+
+
 def adauga_nir(conn, schema, nir):
     """nir: {numar, data, furnizor?, cui?, factura_ref?, linii: [...]}.
-    Calculează prin motor, persistă NIR + linii, creează notele ciorne."""
+    Calculează prin motor, persistă NIR + linii, creează notele ciorne.
+    [cap.24 regula 2] validare per-linie AUTORITARA: un articol incomplet se raporteaza langa campul lui
+    (nir-l{i}-..), nu il filtreaza tacit frontendul."""
+    lipsa = _nir_campuri_lipsa(nir.get("linii") or [])
+    if lipsa:
+        return {"eroare": "Completeaza articolele: " + "; ".join(x["eticheta"] for x in lipsa),
+                "erori_campuri": [{"camp": x["camp"], "mesaj": x["eticheta"]} for x in lipsa]}
     try:
         for _l in nir["linii"]:
             if _l.get("cota_tva") is None:

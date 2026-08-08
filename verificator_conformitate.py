@@ -32,7 +32,7 @@ for f in sorted(os.listdir(BAZA)):
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
                         "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
-                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune", "verdict_paritate", "mirror_campuri_lipsa"]}
+                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune", "verdict_paritate", "mirror_campuri_lipsa", "filtrare_inainte_validare"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
@@ -1073,6 +1073,17 @@ except Exception as _ebn:
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)
+# --- FILTRARE_INAINTE_VALIDARE (cap.24 regula 2, 08.08.2026): `linii` (variabila SAU cheie de payload)
+# construit printr-un `.filter(...)` = lista trimisa != lista randata -> un rand incomplet dispare tacit.
+# Backendul e poarta autoritara per-linie (cap.24 regula 4 / cap.6 mecanism A); frontendul NU filtreaza
+# randuri inainte de validare. Multi-linie (prinde si `const linii =\n  .filter(`). FARA EXCEPTII: cele 4
+# ecrane purtatoare (emitere + e-Transport 3a/3b; facturi-recurente + retete a771f25; NIR + inventar azi) conforme.
+_re_r2 = re.compile(r"(?:\blinii:\s*|\b(?:const|let|var)\s+linii\s*=\s*)[^;]{0,140}?\.filter\(", re.S)
+for _nume, _t in fisiere.items():
+    for _m in _re_r2.finditer(_t):
+        _ln = _t[:_m.start()].count("\n") + 1
+        rap["filtrare_inainte_validare"].append((_nume, _ln, "", " ".join(_t[_m.start():_m.start()+70].split())))
+
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
     for nume, i, extra, lin in lista:

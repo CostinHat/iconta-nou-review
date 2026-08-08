@@ -5881,7 +5881,8 @@ def stocuri_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
             raise HTTPException(404, "tenant inexistent sau fara acces")
         rez = _s.adauga_nir(conn, schema, corp)
     if rez.get("eroare"):
-        raise HTTPException(400, rez["eroare"])
+        _ec = rez.get("erori_campuri")  # [cap.24] contract {mesaj, erori_campuri} ca celelalte ecrane
+        raise HTTPException(422, detail={"mesaj": rez["eroare"], "erori_campuri": _ec} if _ec else rez["eroare"])
     return rez
 
 @app.post("/tenants/{tenant_id}/stocuri/descarcare")

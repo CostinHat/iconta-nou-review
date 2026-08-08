@@ -1250,21 +1250,28 @@ export async function sectiuneaCV(corp, t, zonaM) {
       <div class="pf-frand"><div class="pf-frand-text">
         <div class="pf-frand-nume">${esc(a.denumire)} \u00b7 scriptic ${a.stoc} ${esc(a.um)}</div>
       </div>
-      <input type="number" step="0.001" class="camp-input cvi-faptic" data-aid="${a.id}" placeholder="faptic" aria-label="Stoc faptic" style="width:110px"></div>`).join("")}
+      <input type="number" step="0.001" class="camp-input cvi-faptic" id="cvi-a${a.id}-faptic" data-aid="${a.id}" placeholder="faptic" aria-label="Stoc faptic" style="width:110px"></div>`).join("")}
       <p style="margin-top:8px"><button class="buton-primar" id="cvi-salveaza">Salveaz\u0103 inventarul (note ciorne)</button></p>`;
     z.querySelector("#cvi-salveaza").addEventListener("click", async () => {
+      curataEroriCamp(z);
+      // NU se filtreaza randuri (cap.24 regula 2): se trimit TOATE articolele; backendul e autoritatea (sare
+      // articolele necontorizate = faptic gol, NU e eroare; eroare per-linie doar la valoare invalida).
       const linii = [...z.querySelectorAll(".cvi-faptic")]
-        .filter((i) => i.value !== "")
-        .map((i) => ({ articol_id: parseInt(i.dataset.aid), faptic: parseFloat(i.value) }));
-      if (!linii.length) { arataMesaj(zonaM, "Completeaza stocul faptic la cel putin un articol.", "avert"); return; }
+        .map((i) => ({ articol_id: parseInt(i.dataset.aid), faptic: i.value.trim() === "" ? null : i.value.trim() }));
+      if (!linii.some((l) => l.faptic !== null)) { arataMesaj(zonaM, "Completeaza stocul faptic la cel putin un articol.", "avert"); return; }
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/inventar`,
           { data: val("#cv-data"), linii });
-        zonaM.innerHTML = `<p class="pf-intro">${(r.rezultate || []).map((x) =>
+        curataEroriCamp(z);
+        const rezultate = r.rezultate || [];
+        const cuEroare = rezultate.filter((x) => x.eroare && x.camp);
+        cuEroare.forEach((x) => eroareCamp(z, x.camp, x.eroare));
+        const rest = rezultate.filter((x) => !(x.eroare && x.camp));
+        zonaM.innerHTML = `<p class="pf-intro">${rest.map((x) =>
           x.eroare ? `${esc(x.denumire || x.articol_id)}: ${esc(x.eroare)}`
           : x.diferenta === "0" ? `${esc(x.denumire)}: fara diferenta`
-          : `${esc(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${x.diferenta} \u00b7 ${bani(x.valoare)} lei \u00b7 nota ${esc(x.nota)} (ciorna)`).join("<br>")}</p>`;
-        sectiuneaCV(corp, t, zonaM);
+          : `${esc(x.denumire)}: ${x.diferenta > 0 ? "plus" : "minus"} ${x.diferenta} · ${bani(x.valoare)} lei · nota ${esc(x.nota)} (ciorna)`).join("<br>")}</p>`;
+        if (!cuEroare.length) sectiuneaCV(corp, t, zonaM);   // refresh doar cand nu sunt erori de camp de aratat
       } catch (e) { arataMesaj(zonaM, e.mesaj || "eroare", "eroare"); }
     });
   });
@@ -1490,7 +1497,7 @@ async function ecranBilant(corp, nav, t) {
   }
 }
 
-async function ecranStocuri(corp, nav, t) {
+export async function ecranStocuri(corp, nav, t) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
   let liniiNir = [];
@@ -1508,15 +1515,22 @@ async function ecranStocuri(corp, nav, t) {
             <div class="pf-frand-sub">cost ${n.cost_total} \u00b7 adaos ${n.adaos_total} \u00b7 TVA neex. ${n.tva_neexigibila} \u00b7 raft ${bani(n.valoare_vanzare)} lei</div>
           </div>
         </div>`).join("");
-    const randLinie = (l, i) => `
-      <div style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap" data-i="${i}">
-        <input type="text" class="camp-input sn-den" placeholder="denumire" aria-label="Denumire" value="${esc(l.denumire || "")}" style="flex:2;min-width:160px">
-        <input type="number" step="0.001" class="camp-input sn-cant" placeholder="cant." aria-label="Cantitate" value="${l.cantitate || ""}" style="width:90px">
-        <input type="number" step="0.0001" class="camp-input sn-pa" placeholder="pre\u021b achizi\u021bie" aria-label="Pre\u021b achizi\u021bie" value="${l.pret_achizitie || ""}" style="width:120px">
-        <input type="number" step="0.0001" class="camp-input sn-pv" placeholder="pre\u021b raft (cu TVA)" aria-label="Pre\u021b raft cu TVA" value="${l.pret_vanzare || ""}" style="width:140px">
-        <select class="camp-input sn-tva" style="width:80px">${[21, 11].map((c) => `<option value="${c}"${(l.cota_tva || 21) == c ? " selected" : ""}>${c}%</option>`).join("")}</select>
-        <button class="buton-secundar sn-scoate">\u2212</button>
+    const linieNouaNir = () => ({ denumire: "", cantitate: "", pret_achizitie: "", pret_vanzare: "", cota_tva: 21 });
+    const _vn = (x) => (x === "" || x == null) ? "" : esc(String(x));
+    // randeaza O linie NIR DIN MODEL, id-uri pozitionale nir-l{i}-* (cap.24: id derivat din pozitie -> backendul
+    // leaga eroarea de camp, cap.6); buton de stergere pe fiecare rand (regula 3).
+    function randLinieNir(i) {
+      const l = liniiNir[i];
+      return `<div class="nir-linie" data-idx="${i}" style="display:flex;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+        <input type="text" class="camp-input" id="nir-l${i}-denumire" placeholder="denumire" aria-label="Denumire" value="${_vn(l.denumire)}" style="flex:2;min-width:160px">
+        <input type="number" step="0.001" class="camp-input" id="nir-l${i}-cantitate" placeholder="cant." aria-label="Cantitate" value="${_vn(l.cantitate)}" style="width:90px">
+        <input type="number" step="0.0001" class="camp-input" id="nir-l${i}-pret_achizitie" placeholder="preț achiziție" aria-label="Preț achiziție" value="${_vn(l.pret_achizitie)}" style="width:120px">
+        <input type="number" step="0.0001" class="camp-input" id="nir-l${i}-pret_vanzare" placeholder="preț raft (cu TVA)" aria-label="Preț raft cu TVA" value="${_vn(l.pret_vanzare)}" style="width:140px">
+        <select class="camp-input" id="nir-l${i}-cota_tva" style="width:80px">${[21, 11].map((c) => `<option value="${c}"${(l.cota_tva || 21) == c ? " selected" : ""}>${c}%</option>`).join("")}</select>
+        <button type="button" class="buton-sters nir-l-sterge" data-idx="${i}" title="Șterge">×</button>
       </div>`;
+    }
+    corp.innerHTML = 
     corp.innerHTML = `
       <h2 class="pf-titlu">Stocuri</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
@@ -1535,7 +1549,7 @@ async function ecranStocuri(corp, nav, t) {
           <input type="text" id="sn-cui" class="camp-input" placeholder="CUI" aria-label="CUI furnizor" style="width:120px">
         </div>
         <div class="camp-eticheta">Articole: denumire \u00b7 cantitate \u00b7 pre\u021b achizi\u021bie \u00b7 pre\u021b raft (cu TVA) \u00b7 cot\u0103 TVA</div>
-        <div id="sn-linii">${liniiNir.map(randLinie).join("")}</div>
+        <div id="sn-linii">${liniiNir.map((_, i) => randLinieNir(i)).join("")}</div>
         <div class="camp-eticheta">Cost accesoriu (landed cost) — se repartizează proporțional în costul de achiziție (OMFP 1802/2014). Contul de credit se confirmă de contabil.</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
           <input type="number" step="0.01" id="sn-transport" class="camp-input" placeholder="transport" aria-label="Transport" style="width:110px">
@@ -1559,28 +1573,39 @@ async function ecranStocuri(corp, nav, t) {
       });
     };
     _tg("#sn-toggle", "#sn-zona");
-    const citesteLinii = () => [...zonaL.children].map((r) => ({
-      denumire: r.querySelector(".sn-den").value.trim(),
-      cantitate: parseFloat(r.querySelector(".sn-cant").value) || 0,
-      pret_achizitie: parseFloat(r.querySelector(".sn-pa").value) || 0,
-      pret_vanzare: parseFloat(r.querySelector(".sn-pv").value) || 0,
-      cota_tva: parseFloat(r.querySelector(".sn-tva").value),
-    }));
-    const leaga = () => zonaL.querySelectorAll(".sn-scoate").forEach((b) =>
-      b.addEventListener("click", () => { b.parentElement.remove(); }));
-    leaga();
-    corp.querySelector("#s-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } liniiNir = citesteLinii(); deseneaza(); });
-    corp.querySelector("#s-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } liniiNir = citesteLinii(); deseneaza(); });
-    corp.querySelector("#sn-plus").addEventListener("click", () => {
-      const d = document.createElement("div");
-      d.outerHTML_tmp = null;
-      d.innerHTML = randLinie({}, zonaL.children.length);
-      zonaL.appendChild(d.firstElementChild);
-      leaga();
-    });
+    // model NIR: input-urile scriu in liniiNir (fara re-randare la tastare); add/delete re-randeaza integral
+    // #sn-linii din model (cap.24 regula 1); fara filtrare la trimitere (regula 2); erori per-linie de la backend
+    // langa camp (cap.6 mecanism A). Fetch-ul cotei nu exista aici (cota = select).
+    function legaLinieNir(i) {
+      const l = liniiNir[i];
+      const g = (suf) => zonaL.querySelector("#nir-l" + i + "-" + suf);
+      const den = g("denumire"), cant = g("cantitate"), pa = g("pret_achizitie"), pv = g("pret_vanzare"), tva = g("cota_tva");
+      const del = zonaL.querySelector('.nir-l-sterge[data-idx="' + i + '"]');
+      den.addEventListener("input", () => { l.denumire = den.value.trim(); });
+      cant.addEventListener("input", () => { l.cantitate = cant.value; });
+      pa.addEventListener("input", () => { l.pret_achizitie = pa.value; });
+      pv.addEventListener("input", () => { l.pret_vanzare = pv.value; });
+      tva.addEventListener("change", () => { l.cota_tva = parseFloat(tva.value); });
+      del.addEventListener("click", () => { const p = liniiNir.indexOf(l); if (p >= 0) liniiNir.splice(p, 1); deseneazaLiniiNir(); });
+    }
+    function deseneazaLiniiNir() {
+      zonaL.innerHTML = liniiNir.map((_, i) => randLinieNir(i)).join("");
+      liniiNir.forEach((_, i) => legaLinieNir(i));
+    }
+    liniiNir.forEach((_, i) => legaLinieNir(i));   // leaga randurile deja randate in corp.innerHTML
+    corp.querySelector("#s-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
+    corp.querySelector("#s-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    corp.querySelector("#sn-plus").addEventListener("click", () => { liniiNir.push(linieNouaNir()); deseneazaLiniiNir(); });
     corp.querySelector("#sn-salveaza").addEventListener("click", async () => {
-      const linii = citesteLinii().filter((l) => l.denumire);
-      if (!linii.length) { arataMesaj(zonaM, "Adaugă cel puțin un articol.", "avert"); return; }
+      const znir = corp.querySelector("#sn-zona");
+      curataEroriCamp(znir);
+      // NU se filtreaza randuri (cap.24 regula 2): lista trimisa = lista randata. Un articol incomplet se
+      // valideaza pe backend si se raporteaza langa campul lui, nu dispare tacit.
+      const linii = liniiNir.map((l) => ({
+        denumire: l.denumire, cantitate: parseFloat(l.cantitate) || 0,
+        pret_achizitie: parseFloat(l.pret_achizitie) || 0, pret_vanzare: parseFloat(l.pret_vanzare) || 0,
+        cota_tva: l.cota_tva || 21,
+      }));
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/nir`, {
           numar: corp.querySelector("#sn-numar").value.trim(),
@@ -1595,10 +1620,17 @@ async function ecranStocuri(corp, nav, t) {
         });
         liniiNir = [];
         const acc = (parseFloat(r.transport) || 0) + (parseFloat(r.taxe) || 0);
-        zonaM.innerHTML = `<p class="pf-intro">NIR salvat \u00b7 ${r.inregistrari.length} note ciorne (cost ${r.cost_total}${acc > 0 ? " din care accesoriu " + bani(acc) : ""}, adaos ${r.adaos_total}, TVA neex. ${r.tva_neexigibila}).</p>`;
+        zonaM.innerHTML = `<p class="pf-intro">NIR salvat · ${r.inregistrari.length} note ciorne (cost ${r.cost_total}${acc > 0 ? " din care accesoriu " + bani(acc) : ""}, adaos ${r.adaos_total}, TVA neex. ${r.tva_neexigibila}).</p>`;
         deseneaza();
-      } catch (e) { arataMesaj(zonaM, e.mesaj || "eroare", "eroare"); }
+      } catch (e) {
+        curataEroriCamp(corp.querySelector("#sn-zona"));
+        const eris = (e && e.erori_campuri) || [];
+        const rest = [];
+        eris.forEach((x) => { if (!eroareCamp(corp.querySelector("#sn-zona"), x.camp, x.mesaj)) rest.push(x.mesaj); });
+        arataMesaj(zonaM, (rest.length ? rest.join("; ") : (e.mesaj || "eroare")), "eroare");
+      }
     });
+
     corp.querySelector("#s-desc").addEventListener("click", () => {
       const bD = corp.querySelector("#s-desc");
       confirmaCaseta(bD.parentElement || bD, `Descarci gestiunea pe ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}? Se calculează din notele VALIDATE.`, async () => {  // audit_cab_lot2_v1

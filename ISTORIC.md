@@ -3537,3 +3537,20 @@ purtător autentic al clasei; firme.js:1256 inventar /stocuri/inventar — filtr
 discutabilă). Guardul NU s-a cablat (l-aș face roșu pe poartă); decizie de scop cerută lui Costin (vezi GARZI 08.08).
 Cele 2 ecrane numite = commise verzi (poartă 1571 passed / verificator 0); guardul regula-2 + bifele Inventar A
 (fișiere de test noi) = follow-up după decizie / după ce fișierele intră în HEAD (gard anti-stale test_agenda).
+
+
+## 08.08.2026 (seara, tarziu) — cap.24 regula 1+2 ÎNCHIS "peste tot": NIR + inventar reparate + gard regula-2 CABLAT
+
+Decizia Costin pe stop-point-ul de la a771f25 = (a): "un gard cu excepții nu e gard" (exact ce s-a eliminat din G10).
+Reparate ultimele 2 purtătoare ale clasei "filtrare înainte de validare -> rând dispare tăcut":
+- NIR (ecranStocuri, firme.js): model pozitional nir-l{i}-* + re-randare integrală din model (regula 1, înlocuiește
+  appendChild/remove) + ștergere splice + fără filtrare (regula 2); backend stocuri_api._nir_campuri_lipsa
+  (denumire+cantitate+preț), ruta /stocuri/nir 422 field-keyed; eroareCamp. Gard test_nir_randuri_dinamice.py.
+- inventar (sectiuneaCV, firme.js): listă fixă (fără add/delete → regula 1 N/A); fix = doar regula 2 — trimite TOATE
+  articolele, backendul stocuri_cv_api.inventar e autoritatea (sare faptic gol = necontorizat NU eroare; camp per
+  articol la valoare invalidă -> eroareCamp cvi-a{id}). Gard test_inventar_randuri_dinamice.py.
+Apoi regula 2 CABLATĂ în verificator (FILTRARE_INAINTE_VALIDARE) FĂRĂ EXCEPȚII -> rulează 0 (cele 4 ecrane conforme;
+guardul NU aprinde niciun ecran nenumit -> stop-point 3 nu s-a declanșat). Mutație: filtru reintrodus pe NIR+inventar
+-> verificator FILTRARE=2/TOTAL=2 + garduri headless roșii -> revert. Corectată formularea datoriei în GARZI (1078 =
+formSablon -> /facturi-recurente, nu /facturi/emite; registrul fusese greșit, găsit la sursă). Bifele Inventar A pentru
+cele 4 garduri = commit separat (după ce fișierele de test intră în HEAD; gard anti-stale test_agenda citește HEAD).
