@@ -8180,3 +8180,40 @@ DECIZIE: per "verbatim sau deloc" + stop point ("mecanismul chiar nu e reglement
 construiesc emisia/plafonarea E3_97 (curs+excedent neconfirmate). Ramane decizia lui Costin: (i) ce curs se
 foloseste (art.76(4) vs art.78(2)(a)); (ii) cum se trateaza excedentul (impozabil, unde); (iii) metoda de
 colectare (A: contabilul introduce partea neimpozabila lunara; B: app aplica plafonul). D_9a ramane livrat (tura 9).
+
+## 09.08.2026 (tura 11) — E3_97: curs+cumul CONFIRMATE verbatim (corectie tura 10); build oprit pe stop point #2 (subsistem 33%)
+
+Comanda Costin: cursul e reglementat in alt articol - confirma si construieste. CORECTIE la tura 10 (unde am
+spus "curs neatasat"): cursul ESTE reglementat, prin lantul verbatim art.78(2)(a) + OUG 8/2026 art.10(9).
+
+CONFIRMAT VERBATIM (act local):
+- CURS: CF art.78 alin.(2) lit.a) (introdus de OUG 8/2026 pct.34): "Pentru verificarea incadrarii in plafonul
+  anual, cursul de schimb utilizat pentru determinarea echivalentului in euro este cursul leu/euro comunicat de
+  Banca Nationala a Romaniei, in vigoare in ULTIMA ZI A LUNII pentru care se platesc drepturile salariale." Se
+  leaga de art.76(4^1) prin OUG 8/2026 art.10 alin.(9): "la verificarea incadrarii in limita echivalentului in lei
+  a 400 euro anual prevazuta la art. 6 pct. 26, 29, 32 si 36 ..." - pct.29 = art.76(4^1) lit.e (angajator) ->
+  aceeasi verificare anuala in euro guverneaza familia de plafoane art.76(4^1), inclusiv e^1 (pensii ocupationale).
+- CUMUL: anual, in EURO, per persoana; pentru ocupationale de la 01.03.2026 (OUG 8/2026 art.10 alin.(10)).
+  Verificarea = cumul in euro pe parcursul anului (fiecare luna convertita la cursul ultimei zile a lunii).
+- EXCEDENT: doar IMPLICIT (art.76(4^1) neimpozabil "in limita"; art.76(4^2) doar ordinea). ALEGEREA lui Costin
+  (constrangere): partea peste plafon = IMPOZABILA (venit din salarii). Declarat ca alegere, nu ca temei.
+- OUG 8/2026 NU are curs propriu (foloseste cel din art.78(2)(a)); are doar cumulul de tranzitie 2026 (art.10(9)/(10)).
+- App (pct.2): core/curs_bnr.py da deja cursul BNR (leu/euro, ultima zi) - REUTILIZABIL pt conversie. App NU are
+  niciun plafon art.76(4^1) si nici plafonul lunar de 33%.
+
+STOP POINT #2 APRINS (build oprit inainte de a construi): E3_97 e in art.76(4^1) -> neimpozabil DOAR in limita
+plafonului LUNAR de 33% (pe SUMA tuturor art.76(4^1) a-j) + plafonul EUR + ordinea (art.76(4^2), angajator).
+33% POATE MUSCA: exemplu, o contributie lumpy de 2.020 lei intr-o luna pe salariu minim (4.325) depaseste 33% =
+1.427 lei -> impozabil, chiar in cadrul plafonului anual EUR. Aplicatia NU tine niciun element art.76(4^1) si nici
+plafonul de 33% -> constructia CORECTA a E3_97 cere subsistemul, nu doar plafonul EUR. Ce presupune subsistemul:
+  (a) plafonul lunar de 33% din salariul de baza, pe SUMA elementelor art.76(4^1) (a-j);
+  (b) cele 10 elemente (a-j) ca intrari (app are 0; E3_97 ar fi primul);
+  (c) ordinea de includere in plafon (art.76(4^2), decisa de angajator);
+  (d) plafoanele EUR (e:400 facultative, e^1:400 ocupationale, f:400 sanatate, h:100 sport) cu cumul in euro;
+  (e) rutarea excedentului (peste 33% SAU peste plafonul EUR) in baza impozabila.
+METODA (decisa de Costin, scrisa aici): B - aplicatia aplica plafonul, contabilul introduce contributia BRUTA.
+
+DECIZIE CERUTA (scope, chestionar pct.6): (A) construiesc E3_97 ACUM cu plafonul EUR (400/an, curs art.78(2)(a),
+cumul euro) + plafonul de 33% aplicat pe E3_97 ca UNIC element art.76(4^1) urmarit (corect pt datele curente,
+extensibil), sau (B) construiesc subsistemul complet art.76(4^1) (a doua comanda). Nu am construit nimic in aceasta
+tura (stop point #2 "te opresti inainte de a-l construi").

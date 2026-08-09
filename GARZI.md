@@ -2413,3 +2413,12 @@ Cautat la sursa (CF art.76 alin.(4^1)/(4^2)/(4), art.78(2)(a), HG 1/2016 norme -
 Aplicatia nu trateaza niciun plafon EUR de salariu, nici plafonul 33% din (4^1) -> niciun analog. E3_97 EMISIE
 BLOCATA pe curs+excedent neconfirmate + metoda de colectare (decizie Costin). Datele existente NEatinse.
 Act nou in corpus: hg_1_2016_norme_cod_fiscal.html (normele metodologice CF; confirma ca NU acopera pensiile ocupationale).
+
+## 09.08.2026 (tura 11) — E3_97: curs+cumul reglementate verbatim (corectie tura 10); oprit pe subsistemul art.76(4^1)
+
+Curs CONFIRMAT: art.78(2)(a) (curs leu/euro BNR, ultima zi a lunii) + OUG 8/2026 art.10(9) (verificarea anuala in
+euro pt art.76(4^1) pct.29/e). Cumul: anual in euro, ocupationale de la 01.03.2026 (art.10(10)). Excedent: implicit
+-> impozabil (alegere Costin). curs_bnr.py reutilizabil pt conversie. STOP POINT #2: constructia CORECTA a E3_97
+cere subsistemul art.76(4^1) (plafon lunar 33% pe suma a-j + ordine art.76(4^2) + excedent), care lipseste complet
+din app; 33% poate musca la plata lumpy pe salariu mic. Neconstruit; decizie de scope (E3_97 izolat cu 33% pe sine
+vs subsistem complet). Metoda B fixata (app aplica plafonul, contabilul introduce brutul). Datele NEatinse.

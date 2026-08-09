@@ -3671,3 +3671,11 @@ anual de la 01.03.2026), HG 1/2016 norme (adus in corpus; nu acopera pensiile oc
 reglementat; curs NEATASAT (2 candidati); excedent doar implicit. App n-are analog de plafon EUR de salariu. Per
 verbatim-sau-deloc + stop point -> nu construiesc emisia E3_97; decizie Costin (curs + excedent + metoda colectare).
 D_9a ramane livrat.
+
+## 09.08.2026 (tura 11) — E3_97: curs+cumul confirmate verbatim; build oprit pe stop point #2 (subsistem 33%)
+Corectie tura 10: cursul E reglementat (art.78(2)(a): leu/euro BNR ultima zi a lunii; legat de art.76(4^1) prin
+OUG 8/2026 art.10(9)). Cumul anual in euro (ocupationale de la 01.03.2026, art.10(10)). Excedent implicit ->
+impozabil (alegere Costin). Dar E3_97 e in art.76(4^1) -> cere plafonul lunar de 33% (pe suma a-j) + ordinea, care
+lipsesc din app; 33% poate musca (lumpy/salariu mic). Per stop point #2 m-am oprit inainte de a construi si am
+aratat ce presupune subsistemul; decizie de scope (E3_97 izolat vs subsistem complet). Metoda B fixata. Exemplu
+bani: 3.600 lei/an contributie -> 2.020 neimpozabil (400 EUR x ~5.05) + 1.580 excedent impozabil (+158 impozit).
