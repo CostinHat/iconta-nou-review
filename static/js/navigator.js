@@ -9,6 +9,7 @@
 //   X dreapta-sus -> ÎNCHIDE fereastra (acasă). Traseul e memorat de navigator (nav.mergi).
 
 import { sesiune } from "./sesiune.js";
+import { esc } from "./api.js";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 
 // [p21_bara_lant] contextul barei 1 ca LANT, citit din sesiune.user() (sursa unica)
 function _functieAsistent(u) {
@@ -101,7 +102,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     if (u.rol === "angajat") {
       const bara3 = document.createElement("div");
       bara3.className = "bara3";
-      bara3.innerHTML = `<span class="bara3-gol">se incarca realizarile tale...</span>`;
+      bara3.innerHTML = `<span class="bara3-gol">se încarcă realizările tale…</span>`;
       ecran.appendChild(bara3);
       import("./api.js").then(({ api }) => api.get("/eu/calitate")).then((cal) => {
         if (!cal || !cal.ok) { bara3.innerHTML = ""; return; }
@@ -145,7 +146,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     for (let i = 0; i < stiva.length - 1; i++) drum.push({ text: stiva[i].titlu || "…", fereastra: i });
     (sus.pasi || []).forEach((p, i) => { if (p.titlu) drum.push({ text: p.titlu, pas: i }); });
     const drumHtml = drum.map((d, i) =>
-      `<button class="fir-veriga" data-fer="${d.fereastra ?? ''}" data-pas="${d.pas ?? ''}">${String(d.text).replace(/[<>&]/g, "")}</button>` +
+      `<button class="fir-veriga" data-fer="${d.fereastra ?? ''}" data-pas="${d.pas ?? ''}">${esc(String(d.text))}</button>` +
       (i < drum.length - 1 ? `<span class="fir-sep" aria-hidden="true">›</span>` : "")
     ).join("");  // fir_doar_parinti_v1: doar parintii; pasul curent = titlul din corp
     fer.innerHTML = `
@@ -314,7 +315,7 @@ function _clopotInit(bara, ecran) {  // [p60_clopot]
       items.forEach((n) => {
         const it = document.createElement("button");
         it.className = "clopot-item" + (n.citit ? "" : " clopot-necitit");
-        it.innerHTML = `<div class="clopot-text">${(n.text||"").replace(/[<>&]/g,"")}</div><div class="clopot-cand">${_clopotData(n.cand)}</div>`;
+        it.innerHTML = `<div class="clopot-text">${esc(n.text||"")}</div><div class="clopot-cand">${_clopotData(n.cand)}</div>`;
         it.addEventListener("click", async () => {
           panou.remove();
           if (n.link === "validat" && window._navGlobal) { try { window._navGlobal.acasa(); } catch {} }
@@ -366,8 +367,8 @@ async function _sumarLogin(ecran) {
     const detalii = (r.pe_tip || []).map((x) => _sumarTextTip(x.tip, x.n)).join(", ");
     const t = document.createElement("div");
     t.className = "sumar-toast";
-    t.innerHTML = `<div class="sumar-toast-cap">${nume ? "Buna, " + nume.replace(/[<>&]/g, "") + "!" : "Bine ai revenit!"}</div>` +
-      `<div class="sumar-toast-corp">${detalii.replace(/[<>&]/g, "")}</div>`;
+    t.innerHTML = `<div class="sumar-toast-cap">${nume ? "Buna, " + esc(nume) + "!" : "Bine ai revenit!"}</div>` +
+      `<div class="sumar-toast-corp">${esc(detalii)}</div>`;
     ecran.appendChild(t);
     requestAnimationFrame(() => t.classList.add("sumar-toast-vizibil"));
     const inchide = () => { t.classList.remove("sumar-toast-vizibil"); setTimeout(() => t.remove(), 300); };
@@ -405,7 +406,7 @@ async function _anunturiBanner(ecran) {
     el.innerHTML = `<div class="fereastra" style="max-width:520px">
       <div class="fereastra-corp">
         <h2 class="pf-titlu">Mesaj de la iConta.eu</h2>
-        <p class="anunt-text">${(a.mesaj || "").replace(/[<>&]/g, "")}</p>
+        <p class="anunt-text">${esc(a.mesaj || "")}</p>
         <button class="buton-primar anunt-ok">Am \u00een\u021beles</button>
       </div></div>`;
     el.querySelector(".anunt-ok").addEventListener("click", async () => {

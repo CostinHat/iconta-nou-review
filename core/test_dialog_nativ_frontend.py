@@ -51,8 +51,23 @@ def test_ratchet_mig_gol_nu_creste():
     pentru stari goale... datorie de migrat la arataMesaj") NU trebuie sa creasca. Load-error-urile au fost
     migrate la ecran-nota (asistenti Calitate / firme Verificari / admin_activitate istoric). Cele 3 ramase
     (firme.js: r.mesaj rezultat descarcare, lista alerte, nota-avertisment factura) = CONTINUT, nu opriri;
-    se migreaza separat. La reparare, coboara BASELINE. Mutatie: un mig-gol NOU -> rosu."""
-    BASELINE = 3   # 09.08.2026, dupa migrarea celor 3 load-error la ecran-nota
-    n = sum(open(f, encoding="utf-8").read().count("mig-gol") for f in _fisiere_js())
+    au fost migrate 09.08 la canonic (arataMesaj info / caseta-atentie) -> BASELINE 0. Mutatie: un mig-gol NOU -> rosu."""
+    BASELINE = 0   # 09.08.2026: cele 3 mig-gol firme.js migrate la canonic (arataMesaj / caseta-atentie)
+    # numaram DOAR utilizarea ca valoare de atribut class (deviatia reala: `class="mig-gol"`),
+    # nu mentiunile din comentarii care numesc clasa deprecata.
+    _rx_mig = re.compile("class=[\"'`][^\"'`]*mig-gol")
+    n = sum(len(_rx_mig.findall(open(f, encoding="utf-8").read())) for f in _fisiere_js())
     assert n <= BASELINE, ("mig-gol NOU (%d > %d): mesaj de stare prin clasa ad-hoc (DS cap.6). "
                            "Foloseste arataMesaj (stare tranzitorie) sau ecran-nota (eroare de load)." % (n, BASELINE))
+
+
+def test_verificator_acopera_tot_frontendul():
+    """GARD structural (09.08.2026): verificatorul de conformitate DS scaneaza TOT frontendul (static/js/*.js),
+    nu doar static/js/ecrane/. Pana la 09.08 scana doar ecrane/ -> app.js/navigator.js/sesiune.js/api.js
+    scapau TUTUROR regulilor DS (asa a trecut alert() din app.js + strip-html data-lossy din navigator.js).
+    Daca cineva revine la ecrane-only, zona neacoperita redevine oarba. Mutatie: scoate _DIRS_FRONTEND -> rosu."""
+    src = open(os.path.join(_RAD, "verificator_conformitate.py"), encoding="utf-8").read()
+    assert "_DIRS_FRONTEND" in src and 'os.path.expanduser("~/iconta_nou/static/js")' in src, \
+        "verificatorul nu mai scaneaza static/js/*.js (regresie la ecrane-only)"
+    assert src.count('nume != "api.js"') >= 4, \
+        "lipsesc exceptiile api.js (sursa canonica esc/ICOANE/culori) -> fals-pozitive care tenteaza dez-extinderea"

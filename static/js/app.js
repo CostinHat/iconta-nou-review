@@ -5,7 +5,7 @@ function _bannerEroareGlobala(detaliu) {
   if (document.getElementById("eroare-globala")) return;  // un singur banner o data
   const b = document.createElement("div");
   b.id = "eroare-globala";
-  b.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#fdf3f3;border-top:2px solid #d98c8c;color:#7a2020;padding:12px 20px;font-size:14px;font-family:'Segoe UI',system-ui,sans-serif;text-align:center;";
+  b.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#fdf3f3;border-top:2px solid #d98c8c;color:#7a2020;padding:12px 20px;font-size:var(--text-mic);font-family:'Segoe UI',system-ui,sans-serif;text-align:center;";
   b.textContent = "A ap\u0103rut o eroare nea\u0219teptat\u0103. Reinc\u0103rca\u021bi pagina (Ctrl+F5). Dac\u0103 problema persist\u0103, anun\u021ba\u021bi.";
   document.body.appendChild(b);
   console.error("[eroare_globala]", detaliu);
@@ -40,7 +40,7 @@ const radacina = document.getElementById("app");
 function ecranActivare(tok) {  /* activare_fe_v1 */
   radacina.innerHTML = `
     <div class="pagina-login" style="display:flex;align-items:center;justify-content:center;min-height:100dvh">
-      <div style="background:#fff;border-radius:12px;box-shadow:0 3px 12px rgba(20,30,45,0.14);padding:28px;width:min(420px,92vw)">
+      <div style="background:#fff;border-radius:var(--raza);box-shadow:0 3px 12px rgba(20,30,45,0.14);padding:28px;width:min(420px,92vw)">
         <h2 style="margin:0 0 6px">Activare cont</h2>
         <p class="ecran-nota" style="margin:0 0 16px">Seteaz\u0103-\u021bi parola pentru portalul iConta.eu.</p>
         <div class="camp" style="margin-bottom:12px">
@@ -74,7 +74,7 @@ function ecranActivare(tok) {  /* activare_fe_v1 */
 function ecranResetParola(tok) {  /* [reset_parola_v1] setare parola noua din linkul de resetare (oglinda ecranActivare) */
   radacina.innerHTML = `
     <div class="pagina-login" style="display:flex;align-items:center;justify-content:center;min-height:100dvh">
-      <div style="background:#fff;border-radius:12px;box-shadow:0 3px 12px rgba(20,30,45,0.14);padding:28px;width:min(420px,92vw)">
+      <div style="background:#fff;border-radius:var(--raza);box-shadow:0 3px 12px rgba(20,30,45,0.14);padding:28px;width:min(420px,92vw)">
         <h2 style="margin:0 0 6px">Parolă nouă</h2>
         <p class="ecran-nota" style="margin:0 0 16px">Setează o parolă nouă pentru contul tău iConta.eu.</p>
         <div class="camp" style="margin-bottom:12px">

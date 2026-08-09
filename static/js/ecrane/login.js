@@ -301,7 +301,7 @@ export function ecranLogin(radacina) {
         lbl.innerHTML = '<span class="camp-eticheta">Cod acces</span><input type="text" class="camp-input" id="login-cod" autocomplete="off" placeholder="doar \u00een perioada de testare">';
         er.parentNode.insertBefore(lbl, er);
       }
-    }).catch(() => {});
+    }).catch((e) => { console.warn("[beta_gate] /public/config indisponibil - campul de cod beta nu apare", e); });  // prefetch optional: nu e o actiune a userului; daca beta e activ, respingerea login-ului aduce mesajul real
 
     const email = modal.querySelector("#login-email");
     const parola = modal.querySelector("#login-parola");

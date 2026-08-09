@@ -262,7 +262,7 @@ async function randeazaClasificareD390(corp, nav) {
   if (!zona) return;
   let d;
   try { d = await api.get(`/tenants/${S.tenant_id}/d390-clasificare?an=${S.an}&luna=${S.luna}`); }
-  catch (e) { zona.innerHTML = `<div class="stare-goala">Nu am putut încărca clasificarea intracomunitară${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</div>`; return; }
+  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu am putut încărca clasificarea intracomunitară${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
   const auto = d.auto || [], manual = d.manual || [];
   const optSel = (dir, cur) => (_D390_TIP_DIR[dir] || []).map(([v, l]) => `<option value="${v}" ${v === cur ? "selected" : ""}>${l}</option>`).join("");
   zona.innerHTML = `<details class="dec-xml" open><summary>Clasificare intracomunitară (servicii / triangulație)</summary>
@@ -324,7 +324,7 @@ async function randeazaOperatiuniD301(corp, nav) {
   if (!zona) return;
   let d;
   try { d = await api.get(`/tenants/${S.tenant_id}/d301-operatiuni?an=${S.an}&luna=${S.luna}`); }
-  catch (e) { zona.innerHTML = `<div class="stare-goala">Nu am putut încărca operațiunile D301${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</div>`; return; }
+  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu am putut încărca operațiunile D301${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
   const ops = d.operatiuni || [], tipuri = d.tipuri || [], valute = d.valute || [], cote = d.cote || [];
   const grila = ops.length
     ? ops.map((o) => `<div class="dec-man-rand">

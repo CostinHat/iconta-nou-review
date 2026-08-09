@@ -3586,3 +3586,15 @@ test_dialog_nativ_frontend.py: zero dialoguri native in TOT frontendul (nu doar 
 + ratchet mig-gol; mutatie -> rosu. Finding structural: verificatorul scaneaza doar static/js/ecrane/ -> app.js &
 co scapau. Ramas listat in GARZI: 3 mig-gol de continut, 3 catch->stare-goala declaration-adjacent, 1 catch gol
 benign (config beta). Fals-pozitive eliminate din inventar: firme.js:134 si navigator.js AU .catch.
+
+## 09.08.2026 — Verificator pe tot frontendul; cele 7 opriri ramase inchise
+
+Extins verificator_conformitate.py de la `static/js/ecrane/` la TOT frontendul (`_DIRS_FRONTEND`): toate regulile
+DS scaneaza acum si app.js/navigator.js/sesiune.js/api.js. api.js = sursa canonica -> exceptata la registre;
+comentariile intregi nu se mai flagueaza. Extinderea a aprins 22 candidate: 11 excepate (surse api.js + comentarii),
+11 reparate (navigator strip-html->esc x5 + diacritice; app.js font/radius). Cele 7 opriri ramase din 08.08
+reparate: 3 mig-gol firme.js -> arataMesaj/caseta-atentie; 3 catch->stare-goala (control + declaratii D390/D301,
+ecrane UI) -> ecran-nota; login.js catch gol -> console.warn. Garzi noi mutatie-probate: regula STARE_GOALA_EROARE
+in verificator, test de acoperire a frontendului, ratchet mig-gol la 0. Poarta verde. Punct de oprire ridicat:
+lista de avertismente de registru (firme.js:1668) fara componenta DS dedicata -> mapata la caseta-atentie, intrebare
+in raport.

@@ -24,20 +24,29 @@ ZEBRA_INTERZISE = {"#fdeef2", "#eaf2fb", "#f4f7fb", "#f7f8fa"}  # alternante vec
 CULORI_OK = {"#1d7a4d", "#c9961f", "#ff3b30", "#1d4ed8", "#5b6b7c", "#1d3a5f", "#8a97a5", "#e11d1d"}
 
 fisiere = {}
-for f in sorted(os.listdir(BAZA)):
-    if f.endswith(".js") and ".bak" not in f:
-        with open(os.path.join(BAZA, f), encoding="utf-8") as h:
-            fisiere[f] = h.read()
+# [ds_frontend_integral_v1] verificatorul acopera TOT frontendul, nu doar ecrane/: static/js/*.js
+# (app.js/navigator.js/sesiune.js/api.js) intra sub aceleasi reguli DS. api.js = SURSA canonica
+# (esc/ICOANE/paleta culori) -> exceptata la regulile de registru (redef-esc/strip-html/icoane/culoare_card_hex).
+_DIRS_FRONTEND = [BAZA, os.path.expanduser("~/iconta_nou/static/js")]
+for _d in _DIRS_FRONTEND:
+    for f in sorted(os.listdir(_d)):
+        if f.endswith(".js") and ".bak" not in f and f not in fisiere:
+            with open(os.path.join(_d, f), encoding="utf-8") as h:
+                fisiere[f] = h.read()
 
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
                         "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
-                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune", "verdict_paritate", "mirror_campuri_lipsa", "filtrare_inainte_validare"]}
+                        "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune", "verdict_paritate", "mirror_campuri_lipsa", "filtrare_inainte_validare", "stare_goala_eroare"]}
 meniuri = {}
 
 for nume, t in fisiere.items():
     linii = t.split("\n")
     for i, lin in enumerate(linii, 1):
+        # [ds_frontend_integral_v1] nu se flagueste cod COMENTAT (linie intreaga // sau /* * <!--);
+        # cod comentat nu e comportament livrat (evita fals-pozitive pe marcaje ca "// alert() INTERZIS").
+        if lin.strip().startswith(("//", "/*", "*", "<!--")):
+            continue
         if "<" in lin or "textContent" in lin or "placeholder" in lin:
             for m in RE_CUV.finditer(lin):  # toate aparitiile, nu doar prima (bug: prima in cod ascundea restul)
                 cuv = m.group(1); poz = m.start(1)
@@ -117,14 +126,14 @@ for nume, t in fisiere.items():
         # const|let|var esc =) in loc de importul canonic din api.js. O copie locala poate fi mai SLABA (setari.js
         # escapa DOAR `"` -> XSS pe <> in continut de element, gasit 24.07) si oricum e a doua sursa de adevar pt
         # o primitiva de securitate. api.js (sursa canonica) e in static/js/, NU in ecrane/ -> nu se auto-flag.
-        if re.search(r'\bfunction\s+esc\s*\(', lin) or re.search(r'\b(?:const|let|var)\s+esc\s*=', lin):
+        if (re.search(r'\bfunction\s+esc\s*\(', lin) or re.search(r'\b(?:const|let|var)\s+esc\s*=', lin)) and nume != "api.js":
             rap["esc_local"].append((nume, i, "redef-esc", lin.strip()[:60]))
         # ESC_LOCAL extins v3 (cap.10): STRIP inline de caractere HTML (.replace(/[...<>&...]/,...)) ca sanitizare
         # ad-hoc in loc de esc canonic. NU e XSS (scoate <>), dar e DATA-LOSSY (scoate & din nume: "A&B"->"AB") si
         # o a doua sursa de sanitizare. Prinde orice clasa de caractere care contine TOATE din <>& (robust la
         # reordonare/caractere extra). api.js (sursa canonica) e in static/js/, nescanat -> fara auto-flag.
         for _ms in re.finditer(r'\.replace\(\s*/\[([^\]]*)\]/', lin):
-            if all(ch in _ms.group(1) for ch in "<>&"):
+            if all(ch in _ms.group(1) for ch in "<>&") and nume != "api.js":  # api.js = corpul esc canonic
                 rap["esc_local"].append((nume, i, "strip-html", lin.strip()[:60]))
                 break
         # CASETA_ATENTIE (cap.5): caseta de atentionare (#fdf3f3, per .caseta-atentie din stil.css) reprodusa
@@ -180,7 +189,8 @@ for nume, t in fisiere.items():
         # DATA_BRUTA: ${x.data} sau ${x.data_ceva} afisat direct in template fara dataRo (exclus value= de input si payload)
         # ICOANE_LOCAL: dictionar local de iconite (building/report/shield cu <path) in loc de ICOANE canonic
         if re.search(r'(building|report|shield|clipboard)\s*:\s*.<path', lin):
-            rap["icoane_local"].append((nume, i, "", lin.strip()[:60]))
+            if nume != "api.js":  # api.js = dictionarul ICOANE canonic (sursa), nu duplicat local
+                rap["icoane_local"].append((nume, i, "", lin.strip()[:60]))
         # FONT_INLINE: font-size cu valoare literala inline (px/em) in loc de var(--text-*) sau clasa .tip-*
         for fm in re.finditer(r'font-size:\s*([0-9.]+(?:px|em|rem))', lin):
             rap["font_inline"].append((nume, i, fm.group(1), lin.strip()[:56]))
@@ -188,7 +198,7 @@ for nume, t in fisiere.items():
         if re.search(r'#(ff3b30|c9961f|1d7a4d|9aa3b2|3a4250)\b', lin, re.I) and '--rosu-semafor:' not in lin and '--galben:' not in lin and '--verde:' not in lin and '--gri-semafor:' not in lin and '--gri-fundal-semafor:' not in lin and 'dot:' not in lin:
             rap["hex_semafor"].append((nume, i, "", lin.strip()[:66]))
         # CULOARE_CARD_HEX: bg:/fg: cu hex literal pe carduri in loc de ...CULORI_CARD.cheie (exceptie: semafor control.js, are dot:)
-        if re.search(r'\b(bg|fg)\s*:\s*"#', lin) and 'dot:' not in lin:
+        if re.search(r'\b(bg|fg)\s*:\s*"#', lin) and 'dot:' not in lin and nume != "api.js":
             rap["culoare_card_hex"].append((nume, i, "", lin.strip()[:66]))
         # RADIUS_INLINE: border-radius cu valoare literala in loc de var(--raza) (exceptie: 50% pentru cercuri, 20px landing)
         for rm in re.finditer(r'border-radius:\s*([0-9]+px)', lin):
@@ -1083,6 +1093,15 @@ for _nume, _t in fisiere.items():
     for _m in _re_r2.finditer(_t):
         _ln = _t[:_m.start()].count("\n") + 1
         rap["filtrare_inainte_validare"].append((_nume, _ln, "", " ".join(_t[_m.start():_m.start()+70].split())))
+
+# --- STARE_GOALA_EROARE (cap.6 v2.13, 09.08.2026): un catch (EROARE de incarcare) randat prin .stare-goala.
+# stare-goala = CONTINUT (lista cu 0 randuri: gol+cauza+iesire), NU mesaj de eroare (DS cap.6). Eroarea de
+# load merge la .ecran-nota / arataMesaj. Multi-linie (catch { ... stare-goala). Frontend integral.
+_re_sge = re.compile(r"catch\s*(?:\([^)]*\))?\s*\{[^{}]{0,220}?stare-goala", re.S)
+for _nume, _t in fisiere.items():
+    for _m in _re_sge.finditer(_t):
+        _ln = _t[:_m.start()].count("\n") + 1
+        rap["stare_goala_eroare"].append((_nume, _ln, "", " ".join(_t[_m.start():_m.start()+70].split())))
 
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))

@@ -2188,3 +2188,48 @@ extinderea INTREGULUI verificator la static/js/*.js = workstream separat (risc d
   (constrangere "nu atinge generatoarele" interpretata conservator). De migrat la ecran-nota intr-un pas dedicat.
 - login.js:295 catch{} gol pe prefetch `/public/config` (poarta beta) — degradare GRATIOASA (campul de cod beta
   nu apare daca fetch-ul pica); NU e o actiune a userului, nu e stare falsa actabila. Benign, listat.
+
+## 09.08.2026 — Verificatorul acopera TOT frontendul + cele 7 opriri ramase reparate
+
+**RADACINA (finding structural din tura precedenta):** verificatorul scana DOAR `static/js/ecrane/*.js` (BAZA).
+`static/js/*.js` (app.js/navigator.js/sesiune.js/api.js) scapau TUTUROR regulilor DS. Acum extins: `_DIRS_FRONTEND`
+= [ecrane, static/js] -> toate regulile scaneaza tot frontendul. `api.js` = SURSA canonica (esc/ICOANE/paleta
+culori) -> exceptata la registre (`nume != "api.js"` pe redef-esc/strip-html/icoane_local/culoare_card_hex);
+comentariile intregi (`//` `/*` `*` `<!--`) nu se mai flagueaza (fals-pozitive pe marcaje).
+
+**22 candidate aprinse de extindere -> 0:**
+- SURSE canonice api.js (excepate, principiu deja scris in DS cap.10/13): 7 culoare_card_hex (paleta entitate),
+  2 icoane_local (dictionarul ICOANE), 2 esc_local (definitia esc + corpul).
+- COMENTARII (comment-skip): 2 dialog_browser (marcaje `// alert() INTERZIS`).
+- REPARATE real: navigator.js:104 diacritice ("se incarca realizarile" -> "se incarca realizarile" cu diacritice);
+  navigator.js x5 strip-html `.replace(/[<>&]/g,"")` (data-lossy, cap.10c) -> `esc()` canonic (+ import esc);
+  app.js:8 font-size:14px -> `var(--text-mic)` (banner failsafe, cap.14); app.js:43/77 border-radius:12px
+  (carduri activare/reset) -> `var(--raza)` (cap.16).
+
+**Cele 7 opriri ramase (tura precedenta) — REPARATE:**
+- firme.js:1640 `mig-gol` (rezultat descarcare gestiune) -> `arataMesaj(zonaM, r.mesaj, "info")` (cap.6).
+- firme.js:1668 `mig-gol` (lista avertismente registru casa) -> o singura `.caseta-atentie` cu `.ca-mesaj`/rand (cap.5).
+- firme.js:2021 `mig-gol` (nota-avertisment legatura factura) -> `.caseta-atentie`.
+- control.js:79 `catch -> .stare-goala` (control fiscal) -> `.ecran-nota` (load-error, nu gol).
+- declaratii.js:265/327 `catch -> .stare-goala` (D390 clasificare / D301 operatiuni; ECRAN UI, nu generator) -> `.ecran-nota`.
+- login.js:295 `catch {}` gol pe prefetch `/public/config` -> `catch (e) { console.warn(...) }` (nu mai e tacere
+  totala; prefetch optional, nu actiune a userului).
+
+**GARZI MECANICE (mutatie-probate 09.08):**
+- verificator regula noua **STARE_GOALA_EROARE** (cap.6): `catch{...stare-goala}` = eroare randata ca gol -> flag
+  (mutatie: revert la stare-goala -> TOTAL 1). Frontend integral.
+- `test_verificator_acopera_tot_frontendul` (core/test_dialog_nativ_frontend.py): asigura ca verificatorul
+  ramane extins la static/js/*.js + exceptiile api.js (mutatie: scoate `_DIRS_FRONTEND` -> rosu).
+- ratchet `.mig-gol` coborat 3 -> **0**, numarat pe utilizare de atribut `class` (nu mentiuni in comentarii)
+  (mutatie: un `class="mig-gol"` nou -> rosu).
+- `test_niciun_dialog_nativ_in_frontend` (deja) acopera ambele zone.
+
+**PUNCT DE OPRIRE ridicat (tipar fara regula scrisa, cap.6):** lista de avertismente inline (registru casa,
+firme.js:1668) nu are componenta DS dedicata. Am continuat mapand-o la o singura `.caseta-atentie` (avertismente
+= atentionari). Intrebare pt Costin: e `.caseta-atentie` casa corecta pt o LISTA de avertismente de registru,
+sau DS primeste o componenta "lista de avertismente"? (Nu am scris capitol nou — constrangere.)
+
+**Observatie (nu blocaj):** bannerul global de eroare (app.js `_bannerEroareGlobala`, window.onerror) si bannerul
+de boot login (`_bannerLoginEroare`) raman cu pozitionare inline prin NECESITATE (se randeaza cand aplicatia /
+CSS-ul poate fi rupt). Doar `font-size` a trecut la token; culorile/pozitia inline nu sunt flaguite de nicio
+regula si sunt legitime pt un failsafe. Daca se vrea o regula scrisa "failsafe/pre-CSS", e decizie DS.

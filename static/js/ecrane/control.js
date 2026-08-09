@@ -77,7 +77,7 @@ async function detaliuFirma(corp, nav, firma) {
   try {
     d = await api.get(`/control-fiscal/${firma.tenant_id}`);
   } catch (e) {
-    corp.innerHTML = `<div class="stare-goala">Nu am putut încărca controlul fiscal. Reîncearcă.</div>`;
+    corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca controlul fiscal. Reîncearcă.</p>`;
     return;
   }
   const col = CULORI[d.stare] || CULORI.gri;

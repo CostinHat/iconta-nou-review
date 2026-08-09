@@ -1636,9 +1636,8 @@ export async function ecranStocuri(corp, nav, t) {
       confirmaCaseta(bD.parentElement || bD, `Descarci gestiunea pe ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}? Se calculează din notele VALIDATE.`, async () => {  // audit_cab_lot2_v1
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/descarcare?an=${an}&luna=${luna}`, {});
-        zonaM.innerHTML = r.mesaj
-          ? `<div class="mig-gol">${esc(r.mesaj)}</div>`
-          : `<p class="pf-intro">K=${r.k} \u00b7 CMV ${r.cmv} \u00b7 adaos ${r.adaos} \u00b7 TVA ${r.tva} \u00b7 total 371: ${bani(r.total_371)} lei \u00b7 ${r.inregistrari.length} note ciorne.</p>`;
+        if (r.mesaj) arataMesaj(zonaM, r.mesaj, "info");  // mesaj de stare = arataMesaj (cap.6), nu clasa ad-hoc mig-gol
+        else zonaM.innerHTML = `<p class="pf-intro">K=${r.k} \u00b7 CMV ${r.cmv} \u00b7 adaos ${r.adaos} \u00b7 TVA ${r.tva} \u00b7 total 371: ${bani(r.total_371)} lei \u00b7 ${r.inregistrari.length} note ciorne.</p>`;
       } catch (e) { arataMesaj(zonaM, e.mesaj || "eroare", "eroare"); }
       }, { textOk: "Descarcă gestiunea" });
     });
@@ -1664,8 +1663,10 @@ async function ecranCasa(corp, nav, t) {
     let reg = { operatiuni: [], sold_final: "0", avertismente: [] };
     try { reg = await api.get(`/tenants/${t.id}/casa/registru?an=${an}&luna=${luna}`); } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca registrul de casă.</p>`; return; }
     const ziAzi = new Date().toISOString().slice(0, 10);
-    const avert = (reg.avertismente || []).map((a) =>
-      `<div class="mig-gol" style="margin-bottom:6px">${esc(a.mesaj || a.cod || "")}${a.temei ? " \u00b7 " + esc(a.temei) : ""}</div>`).join("");
+    const _avertLinii = (reg.avertismente || []).map((a) =>
+      `<div class="ca-mesaj">${esc(a.mesaj || a.cod || "")}${a.temei ? " \u00b7 " + esc(a.temei) : ""}</div>`).join("");
+    // avertismentele registrului = atentionari -> o caseta canonica .caseta-atentie (cap.5), nu clasa ad-hoc mig-gol
+    const avert = _avertLinii ? `<div class="caseta-atentie" style="margin-bottom:6px">${_avertLinii}</div>` : "";
     const randuri = !(reg.operatiuni || []).length
       ? `<div class="stare-goala">Nicio opera\u021biune \u00een luna asta.</div>`
       : reg.operatiuni.map((o) => `
@@ -2018,7 +2019,7 @@ async function ecranJurnal(corp, nav, t) {
     };
     const editor = (n) => `
       <div style="display:block;border:1px solid var(--galben)">
-        <div class="pf-frand-nume" style="margin-bottom:8px">${n.id === "nou" || !n.id ? "Not\u0103 nou\u0103" : "Editare not\u0103 #" + n.id} \u00b7 ${dataRo(n.data)}</div>${n.factura_id ? `<div class="mig-gol" style="margin-bottom:8px">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div>` : ""}
+        <div class="pf-frand-nume" style="margin-bottom:8px">${n.id === "nou" || !n.id ? "Not\u0103 nou\u0103" : "Editare not\u0103 #" + n.id} \u00b7 ${dataRo(n.data)}</div>${n.factura_id ? `<div class="caseta-atentie" style="margin-bottom:8px"><div class="ca-mesaj">Aten\u021bie: nota e legat\u0103 de factura #${n.factura_id} \u2014 modificarea sumei schimb\u0103 soldul facturii.</div></div>` : ""}
         <label class="camp"><span class="camp-eticheta">Descriere</span><input type="text" id="je-desc" class="camp-input" style="width:100%" value="${esc(n.descriere || "")}"></label>
         <div class="camp-eticheta" style="margin-top:8px">Linii: cont debit = cont credit \u00b7 sum\u0103</div>
         <div id="je-linii">${n.linii.map((l, i) => `
