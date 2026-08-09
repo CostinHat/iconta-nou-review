@@ -8244,3 +8244,26 @@ CONTURI TEST create (rol / email / firma; parolele DOAR in raportul din chat, nu
 - client: client@prisma-cont.test (NOU, firma 1968, legat de tenant_001 "Panificatie Salarii Speciale SRL" id=4784).
 Contul REAL costin.hateganu@gmail.com (superadmin id=1) NEATINS. Constrangeri: parole prin nucleu.hash_parola
 (scrypt, nimic slabit); parolele NU in git/registre/fisier comis.
+
+## 09.08.2026 — Cross-check TVA D300 era MORT (apel d300.genereaza cu semnatura veche); reparat + gardat
+
+BUG: control_incrucisat.verifica_tva chema _d300.genereaza(conn, schema, an, luna). d300.genereaza a fost
+schimbat (06.08.2026, fereastra pe perioada fiscala TVA) sa ceara un obiect Perioada: genereaza(conn, schema,
+perioada, manual=None). Apelul ridica TypeError, prins de `except Exception -> gri` din verifica_tva -> verdict
+permanent GRI, niciodata rosu. Cross-check-ul D300-vs-4427/4426 (facturi emise/primite necontabilizate) a fost
+MORT tacit, inclusiv in cronul zilnic alerte_control_fiscal (acelasi apel). Descoperit de proba de date de test
+(cazul L1: o factura emisa fara nota validata NU producea rosu).
+
+FIX: verifica_tva construieste Perioada(an, luna=luna) (din core.common), oglindind calea corecta din
+declaratii_api (_d300). Temei: d300.pull/genereaza cer perioada.luna (D300 lunar).
+
+CLASA: singurul apelant d300 stale era acesta. grep "genereaza(conn, schema, an, luna)" -> d112/d390/d406 si-au
+PASTRAT semnatura (an, luna); apelantii lor sunt corecti (control_incrucisat:326 d112, salarii_contare:72 d112).
+
+ALTERNATIVA RESPINSA: a ingusta `except Exception -> gri` ca sa NU inghita TypeError de programare (ar fi facut
+bug-ul zgomotos de la inceput). Respinsa acum: except-ul larg e legitim pentru erori de DATE (profil incomplet ->
+gri corect); distinctia date-vs-programare e fragila. Riscul de re-rupere e acoperit MECANIC de gard
+(test_control_incrucisat_wiring), nu de ingustarea except-ului.
+
+LIMITA: gardul acopera doar verifica_tva (D300). verifica_d112/verifica_d390 au semnatura corecta azi, dar nu au
+inca un gard de cablaj end-to-end propriu (cele 61 teste din test_control_incrucisat sunt pe compara_* PURE).

@@ -2442,3 +2442,12 @@ gardul degeaba). Chokepoint acoperit: _api_schema(actx, tenant_id) = SELECT ... 
 accounting_firm_id=cheie.firm. O ruta /api/v1 noua care uita _api_schema intra automat si PICA. Nicio regula
 de acces schimbata (doar acoperire adaugata). Efemer: cheie inserata manual (fara conn.commit pe conn real,
 altfel ar persista), scheme+firme sterse la teardown, 0 reziduuri verificat.
+
+## 09.08.2026 (tura 14) — Gard cablaj end-to-end verifica_tva (cross-check D300 era mort)
+
+Gard: core/test_control_incrucisat_wiring.py::test_verifica_tva_prinde_factura_necontabilizata_end_to_end.
+Cele 61 teste din test_control_incrucisat.py exercita compara_tva (functia PURA); NICIUNUL nu chema verifica_tva()
+end-to-end -> derivarea de semnatura a d300.genereaza (cere acum Perioada) a ramas nedetectata, inghitita de
+`except -> gri`. Gardul cheama verifica_tva pe schema efemera cu o factura emisa necontabilizata (4427=0) si cere
+stare=='rosu'. MUTATIE PROBATA: revert la _d300.genereaza(conn, schema, an, luna) -> testul PICA `- rosu + gri`;
+fix restaurat -> pass. Efemer: schema stearsa + rollback, 0 reziduuri.

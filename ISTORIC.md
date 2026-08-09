@@ -3699,3 +3699,15 @@ Revizuit si OK: POST /public/plata/{ref}/confirma e fara auth by design (/public
 urlsafe(16) (128 biti, neghicibil) -> confirmare doar de posesorul link-ului, ca un link de plata; nu e scurgere
 de tenant. Poluare tranzitorie in public (firme/scheme ztest comise de un conn.commit din api_public.genereaza
 in prima varianta a testului) -> curatata imediat, testul rescris fara commit, 0 reziduuri.
+
+## 09.08.2026 (tura 14) — Reparat cross-check TVA D300 mort (descoperit de proba de date de test)
+
+Proba de date de test (4 firme; cazul L1: factura emisa necontabilizata) a demascat ca
+control_incrucisat.verifica_tva chema d300.genereaza cu semnatura veche (an, luna) dupa ce generatorul a trecut la
+Perioada (06.08.2026) -> TypeError inghitit de except -> verdict permanent gri; cross-check-ul D300-vs-4427/4426
+mort, inclusiv cronul alerte_control_fiscal. Fix: Perioada(an, luna=luna) in verifica_tva. Gard end-to-end nou
+(test_control_incrucisat_wiring, vezi GARZI) cu mutatie probata. Verificat pe schemele efemere ale probei: DELTA
+verifica_tva trece de la gri la ROSU ("D300 declara 210,00 lei, contul 4427 are 0,00 lei"). Restul verdictelor
+probei neschimbate (GAMA migrare 4 rosii; DELTA L2 cota19 rosu, L3 D390 rosu, L4 trezorerie, L5 D112 blocat).
+Set de date de test sub ~/date_test_cabinet/ (raport tura anterioara). Singurul apelant d300 stale; d112/d390/d406
+si-au pastrat semnatura.

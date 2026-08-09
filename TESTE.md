@@ -1359,3 +1359,8 @@ Cluster CM+pull: 56 passed.
 - core/test_izolare_api_key.py::test_control_pozitiv_cheia_A_isi_vede_tenantul: cheia firmei A pe tenantul A -> 200 + factura A (APIKA-100).
 - core/test_izolare_api_key.py::test_cheia_A_nu_atinge_tenantul_B: pe TOATE (ruta,metoda) /api/v1/firme/{tenant_id}, cheia A pe tenantul B -> niciodata 2xx, niciodata sentinela B. Mutatie: o ruta /api/v1 fara _api_schema -> pica.
 - core/test_izolare_api_key.py::test_fara_cheie_401: fara X-Api-Key -> 401.
+
+## 09.08.2026 (tura 14) — Gard cablaj verifica_tva (bug cross-check D300)
+- core/test_control_incrucisat_wiring.py::test_verifica_tva_prinde_factura_necontabilizata_end_to_end:
+  factura emisa TVA 210 fara nota validata -> verifica_tva ROSU (constatare "TVA colectata"). Mutatie:
+  d300.genereaza(conn, schema, an, luna) [semnatura veche] -> gri -> pica.

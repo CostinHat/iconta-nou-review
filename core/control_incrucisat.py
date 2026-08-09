@@ -365,6 +365,7 @@ def verifica_tva(conn, schema, an, luna):
     Conexiunea trebuie pozitionata pe schema: get_conn(schema) (ca la declaratii).
     Intoarce si starea GRI daca D300 nu se poate genera (nu ascunde necunoscutul)."""
     from core import d300 as _d300
+    from core.common import Perioada
     # gardă subiect (analog cu d112 pe salariati): neplatitor de TVA -> D300 nu se aplica, NU producem verdict.
     # Verdele pe 0-vs-0 ar afirma o verificare fara subiect. platitor_tva==True cu luna goala e legitim (decont
     # nul coincide) -> ramane verde. None (vector incomplet) -> lasat sa ruleze; D300-declaratie e deja gri. DECIZII 23.07.
@@ -376,7 +377,7 @@ def verifica_tva(conn, schema, an, luna):
                 "explicatie": "", "limita": "Firmă neplătitoare de TVA — D300 nu se datorează, nimic de verificat.",
                 "modul": MODUL, "reguli": REGULI}
     try:
-        _xml, res = _d300.genereaza(conn, schema, an, luna)
+        _xml, res = _d300.genereaza(conn, schema, Perioada(an, luna=luna))
     except Exception as e:
         return {"an": an, "luna": luna, "stare": "gri",
                 "constatari": [{
