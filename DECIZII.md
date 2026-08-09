@@ -8267,3 +8267,23 @@ gri corect); distinctia date-vs-programare e fragila. Riscul de re-rupere e acop
 
 LIMITA: gardul acopera doar verifica_tva (D300). verifica_d112/verifica_d390 au semnatura corecta azi, dar nu au
 inca un gard de cablaj end-to-end propriu (cele 61 teste din test_control_incrucisat sunt pe compara_* PURE).
+
+## 09.08.2026 — Firul de intrare cabinet nou se testeaza intr-un CABINET SEPARAT, nu peste date reale
+
+Contul de lucru al lui Costin e admin_firma intr-un cabinet cu 12 firme REALE. Datele de test (4 firme
+alfa/beta/gama/delta din ~/date_test_cabinet) importate acolo ar face verdictele Controlului fiscal
+neatribuibile (nu se mai stie ce rosu vine din test vs real) si ar polua un cabinet de productie.
+
+DECIZIE: mediu de test izolat = cabinet nou "CABINET TEST FIR INTRARE SRL" (accounting_firms id=4163) + cont
+admin_firma dedicat (fir-intrare@prisma-cont.test, user 6504, poate_pregati/valida/depune=true) creat cu
+auth_api.inregistreaza_cabinet (scrypt). Un user apartine UNUI cabinet -> contul real NU poate accesa alt
+cabinet; de aceea cont NOU, nu reutilizarea contului real. Login probat prin /auth/login (HTTP 200 + token).
+Parola DOAR in raportul din chat (nu in git/registre). Cabinetul real + cele 12 firme NEATINSE.
+
+ALTERNATIVA RESPINSA: superadmin (costin id=1) sa vada firmele de test - respinsa: schema_tenant da
+superadminului doar tenantii cu accounting_firm_id IS NULL; firmele de test au accounting_firm_id=4163 ->
+superadmin nu le-ar atinge. Trebuie admin_firma al cabinetului 4163.
+
+LIMITA: firmele de test au CUI-uri FALSE (valid checksum, inexistente la ANAF) -> fluxul Migrare
+"import CUI -> validare ANAF -> provisionare" le respinge; se adauga MANUAL (Adauga firma: provision_tenant
+valideaza CUI-ul doar offline, precompletarea ANAF e best-effort inghitita). Vezi ISTORIC + raport pt. ordine.

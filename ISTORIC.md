@@ -3711,3 +3711,13 @@ verifica_tva trece de la gri la ROSU ("D300 declara 210,00 lei, contul 4427 are 
 probei neschimbate (GAMA migrare 4 rosii; DELTA L2 cota19 rosu, L3 D390 rosu, L4 trezorerie, L5 D112 blocat).
 Set de date de test sub ~/date_test_cabinet/ (raport tura anterioara). Singurul apelant d300 stale; d112/d390/d406
 si-au pastrat semnatura.
+
+## 09.08.2026 (tura 15) — Pregatit mediu de test izolat pentru firul de intrare cabinet nou
+
+Cerut: cabinet separat curat + cont de acces, in care Costin importa cele 4 firme de test prin UI. Facut
+server-side (ce nu se face din browser): cabinet "CABINET TEST FIR INTRARE SRL" (id 4163) + cont admin_firma
+dedicat (user 6504) via auth_api.inregistreaza_cabinet; login probat /auth/login 200+token. Runner de seed
+~/date_test_cabinet/aplica.py (profil|luna) mapeaza firma->schema dupa CUI in cabinetul 4163 si aplica seed-urile
+cu search_path (schemele iau nume auto la provisionare). Ramane pentru Costin (UI): adauga cele 4 firme MANUAL
+(CUI-uri de test false, respinse de fluxul ANAF), importa CSV migrare + XML e-Factura; intre pasi rulez eu
+seed_profil (dupa provizionare) si seed_luna (dupa XML). Cabinetul real cu 12 firme NEATINS. Vezi DECIZII.
