@@ -369,6 +369,14 @@ def salveaza_concediu(conn, salariat_id, date):
         except ValueError: la_data = None
     else:
         la_data = _di
+    # [gating diminuare] OUG 91/2025 art.II(1): fereastra se aplica dupa DATA ELIBERARII certificatului
+    # (data_acordare), nu dupa data_inceput -> data_eliberare pt dispecerul de variante din calcul_cm.
+    _dacg = date.get("data_acordare") or None
+    if isinstance(_dacg, str) and _dacg:
+        try: data_elib = _dtmod.date.fromisoformat(_dacg[:10])
+        except ValueError: data_elib = None
+    else:
+        data_elib = _dacg
 
     # [G9] Data de sfarsit e OBLIGATORIE (asterisc UI real): un CM fara sfarsit = perioada corupta in D112.
     if not (date.get("data_sfarsit") or None):
@@ -403,7 +411,8 @@ def salveaza_concediu(conn, salariat_id, date):
         serie_ini, numar_ini, data_ini, prima_zi = date.get("serie"), date.get("numar"), la_data, True
     with conn.cursor() as cur:
         cur.execute("SELECT id, an, luna, cod, zile, media_zilnica, data_inceput, "
-                    "(serie IS NOT DISTINCT FROM serie_initiala AND numar IS NOT DISTINCT FROM numar_initial) "
+                    "(serie IS NOT DISTINCT FROM serie_initiala AND numar IS NOT DISTINCT FROM numar_initial), "
+                    "data_acordare "
                     "FROM concedii_medicale WHERE salariat_id=%s AND serie_initiala=%s AND numar_initial=%s",
                     (salariat_id, serie_ini, numar_ini))
         _ep_existente = cur.fetchall()
@@ -414,12 +423,12 @@ def salveaza_concediu(conn, salariat_id, date):
     if este_continuare and _ep_existente:
         from core import perioada as _per
         _blocate, _delta = set(), Decimal("0")
-        for (_cid, _an, _lu, _cod2, _zile2, _mz2, _di2, _eini2) in _ep_existente:
+        for (_cid, _an, _lu, _cod2, _zile2, _mz2, _di2, _eini2, _dac2) in _ep_existente:
             if _per.e_confirmat(conn, "", _an, _lu, "d112").get("confirmat"):
                 if str(_cod2).zfill(2) != "10":
                     _rc = _s.calcul_cm(_dec_pos(_mz2), 1, int(_zile2 or 0), cod=str(_cod2).zfill(2),
                                        zile_episod=zile_episod, prima_zi_din_episod=bool(_eini2),
-                                       la_data=_di2, data_episod_initial=data_ini)
+                                       la_data=_di2, data_episod_initial=data_ini, data_eliberare=_dac2)
                     with conn.cursor() as cur:
                         cur.execute("SELECT indemnizatie FROM concedii_medicale WHERE id=%s", (_cid,))
                         _bv = cur.fetchone()[0] or 0
@@ -454,7 +463,8 @@ def salveaza_concediu(conn, salariat_id, date):
     else:
         calc = _s.calcul_cm(ven6, zile6, zile_cm, cod=cod, spitalizare=spitalizare,
                             la_data=la_data, procent_accident=pacc, venituri_lunare=venituri_lunare,
-                            zile_episod=zile_episod, prima_zi_din_episod=prima_zi, data_episod_initial=data_ini)
+                            zile_episod=zile_episod, prima_zi_din_episod=prima_zi, data_episod_initial=data_ini,
+                            data_eliberare=data_elib)
     taxe = _s.taxe_cm(calc["brut"], cod=cod, la_data=la_data)
 
     with conn.cursor() as cur:
@@ -479,12 +489,12 @@ def salveaza_concediu(conn, salariat_id, date):
     # [CM-episod] RECALCUL RETROACTIV: episodul a crescut -> re-aplica procentul (55/65->75), diminuarea
     # (o data/episod) si portia angajator (o data/episod) pe certificatele ANTERIOARE neconfirmate.
     if este_continuare and _ep_existente:
-        for (_cid, _an, _lu, _cod2, _zile2, _mz2, _di2, _eini2) in _ep_existente:
+        for (_cid, _an, _lu, _cod2, _zile2, _mz2, _di2, _eini2, _dac2) in _ep_existente:
             if str(_cod2).zfill(2) == "10":
                 continue
             _rc = _s.calcul_cm(_dec_pos(_mz2), 1, int(_zile2 or 0), cod=str(_cod2).zfill(2),
                                zile_episod=zile_episod, prima_zi_din_episod=bool(_eini2),
-                               la_data=_di2, data_episod_initial=data_ini)
+                               la_data=_di2, data_episod_initial=data_ini, data_eliberare=_dac2)
             _rt = _s.taxe_cm(_rc["brut"], cod=str(_cod2).zfill(2), la_data=_di2)
             with conn.cursor() as cur:
                 cur.execute("UPDATE concedii_medicale SET indemnizatie=%s, procent=%s, diminuare=%s, "

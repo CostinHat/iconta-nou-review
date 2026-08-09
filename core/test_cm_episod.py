@@ -131,3 +131,46 @@ def test_diminuare_exceptii_verbatim_art2_lit_c_d1_e():
     for cod in ("01", "09"):
         r = calcul_cm(25200, 126, 7, cod=cod, zile_episod=7, prima_zi_din_episod=True, la_data=LA0)
         assert r["diminuare"] == 1, "cod %s (NU e in lista de exceptii) se diminueaza" % cod
+
+
+# ---------------------------------------------------------------------------
+# Deciziile Costin 09.08.2026 (tura 5): izolare se diminueaza; exceptii de la 01.06.2026;
+# cod 02 ramane nediminuat; gating pe data eliberarii.
+# ---------------------------------------------------------------------------
+
+def test_izolare_51_se_diminueaza():
+    """Decizie Costin: izolarea (cod 51) SE DIMINUEAZA. Ordin 506 alin.(2^1)/(2^2) NU listeaza izolarea
+    printre exceptii; norma de calcul prevaleaza asupra formatului D112 (care o excepta)."""
+    r = calcul_cm(25200, 126, 7, cod="51", zile_episod=7, prima_zi_din_episod=True, la_data=date(2026, 7, 1))
+    assert r["diminuare"] == 1, "izolare 51 se diminueaza (nu mai e exceptata)"
+
+
+def test_exceptii_de_la_01062026_nu_de_la_01022026():
+    """Legea 64/2026 art.VI(4): exceptiile alin.(4)/(5) (08/15/17 + spitalizare + programe nationale) se
+    aplica DE LA 01.06.2026. Certificat eliberat inainte (02-05.2026): exceptia NU se aplica -> se diminueaza."""
+    B0 = dict(zile_episod=7, prima_zi_din_episod=True)
+    # maternitate 08: eliberat 03.2026 -> diminuat; eliberat 07.2026 -> exceptat
+    assert calcul_cm(25200, 126, 7, cod="08", data_eliberare=date(2026, 3, 1), **B0)["diminuare"] == 1
+    assert calcul_cm(25200, 126, 7, cod="08", data_eliberare=date(2026, 7, 1), **B0)["diminuare"] == 0
+    # spitalizare: la fel (flag), fazat 01.06.2026
+    assert calcul_cm(25200, 126, 7, cod="01", spitalizare=True, data_eliberare=date(2026, 3, 1), **B0)["diminuare"] == 1
+    assert calcul_cm(25200, 126, 7, cod="01", spitalizare=True, data_eliberare=date(2026, 7, 1), **B0)["diminuare"] == 0
+
+
+def test_cod_02_03_04_raman_nediminuate():
+    """Decizie Costin: codurile accident 02/03/04 ('neconfirmat de casa de pensii', Nomenclator 9) raman
+    NEDIMINUATE pana la confirmare verbatim ca sunt indemnizatii OUG 158 (asimilarea la Legea 346/2002
+    nerezolvata; 'cod 02 nu alegi tu, listezi'). Independent de faza 01.06.2026."""
+    for cod in ("02", "03", "04"):
+        for elib in (date(2026, 3, 1), date(2026, 7, 1)):
+            r = calcul_cm(25200, 126, 7, cod=cod, zile_episod=7, prima_zi_din_episod=True, data_eliberare=elib)
+            assert r["diminuare"] == 0, "cod %s nediminuat (elib %s)" % (cod, elib)
+
+
+def test_gating_pe_data_eliberarii_nu_pe_data_inceput():
+    """OUG 91/2025 art.II(1): fereastra pe 'certificatele ELIBERATE in perioada'. Dispecerul foloseste
+    data_eliberare (data acordarii), nu data_inceput (la_data). Certificat cu inceput in fereastra dar
+    ELIBERAT inainte de 01.02.2026: NU se diminueaza."""
+    B0 = dict(cod="01", zile_episod=7, prima_zi_din_episod=True, la_data=date(2026, 3, 1))  # inceput in fereastra
+    assert calcul_cm(25200, 126, 7, data_eliberare=date(2026, 1, 20), **B0)["diminuare"] == 0, "eliberat < 01.02.2026"
+    assert calcul_cm(25200, 126, 7, data_eliberare=date(2026, 3, 1),  **B0)["diminuare"] == 1, "eliberat in fereastra"

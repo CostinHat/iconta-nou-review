@@ -487,11 +487,24 @@ def calcul_cm_cod10(baza_lunara, venit_realizat, la_data=None):
     fn, _ = c.alege_varianta(_VARIANTE_CALCUL_CM_COD10, la_data or _dt.today())
     return fn(baza_lunara, venit_realizat)
 
+# Coduri accident "neconfirmat de casa de pensii" (Nomenclator 9 D_9, anaf_surse/d112_struct_anaf.txt):
+# 02 accident deplasare, 03 accident munca, 04 boala profesionala - toate G1 (incapacitate temporara) cat
+# sunt neconfirmate. Asimilarea la Legea 346/2002 NU e rezolvata verbatim in OUG 91/Ordin 506, iar Legea
+# 346/2002 nu e in corpus -> NEdiminuate pana la confirmare (decizie Costin 09.08.2026: "cod 02 nu alegi tu,
+# listezi"). Excepate MEREU (independent de faza 01.06.2026).
+_CM_COD_ACCIDENT_NECONFIRMAT = ("02", "03", "04")
+# Exceptii de la diminuare, Legea 64/2026 alin.(4)/(5) -> art.2(1) OUG 158 lit c)=08 maternitate, d^1)=17
+# oncologic, e)=15 risc maternal + programe nationale 12/13/14. Se aplica DE LA 01.06.2026 (Legea 64
+# art.VI(4)); spitalizarea (flag) la fel. Izolare 51 NU e aici: SE DIMINUEAZA (decizie Costin 09.08.2026 -
+# Ordin 506 alin.(2^1)/(2^2) NU listeaza izolarea; norma de calcul prevaleaza asupra formatului D112).
+_CM_COD_EXCEPT_L64 = ("08", "12", "13", "14", "15", "17")
+
+
 def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
                     cod="01", zile_episod=None, prima_zi_din_episod=True,
                     spitalizare=False, la_data=None, exceptat_prima_zi=False,
                     procent_accident=100, venituri_lunare=None, data_episod_initial=None,
-                    *, diminuare_activa):
+                    *, diminuare_activa, exceptii_active=True):
     """
     Ci = Mzbci x procent x (NZLCM - diminuare)
     - Mzbci = suma venituri 6 luni / total zile lucratoare 6 luni
@@ -520,14 +533,20 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     # [CM-episod] art.XI L141/2025: forma art.17(1) se alege dupa data certificatului INITIAL al
     # episodului (data_episod_initial), nu dupa data certificatului curent.
     pct = procent_cm(cod, ze, procent_accident, la_data=data_episod_initial or la_data)
+    # Diminuarea de 1 zi (OUG 91/2025 art.II; Ordin 506/1030/2026 art.78^4(4): NZLCM-1 = prima zi
+    # LUCRATOARE), O DATA pe episod (prima_zi_din_episod). Doua categorii de exceptii:
+    #  (a) accidente "neconfirmate de casa de pensii" 02/03/04 - NEdiminuate mereu (vezi _CM_COD_ACCIDENT_
+    #      NECONFIRMAT; decizie Costin 09.08.2026, "cod 02 nu alegi tu, listezi");
+    #  (b) exceptiile Legea 64/2026 alin.(4)/(5) (08/15/17 + programe nationale 12/13/14 + spitalizare) -
+    #      DOAR de la 01.06.2026 (exceptii_active; Legea 64 art.VI(4)).
+    # Izolare 51: SE DIMINUEAZA (decizie Costin 09.08.2026; nu e in lista de exceptii a normei).
     diminuare = 0
-    # Exceptii diminuare 1 zi verif. la sursa MOF 507/19.06.2026 (Ordinul 506/1030/2026):
-    # accidente 02/03/04, izolare 51, maternitate 08, oncologic 17, risc maternal 15, PNS 12/13/14.
-    # NU exceptate: urgente 06, carantina 07, boala obisnuita 01, ingrijire copil 09.
-    if (diminuare_activa
-            and prima_zi_din_episod and not spitalizare and not exceptat_prima_zi
-            and str(cod).zfill(2) not in ("02", "03", "04", "08", "12", "13", "14", "15", "17", "51")):
-        diminuare = 1
+    if diminuare_activa and prima_zi_din_episod and not exceptat_prima_zi:
+        _cz = str(cod).zfill(2)
+        _accident_neconf = _cz in _CM_COD_ACCIDENT_NECONFIRMAT
+        _exceptat_l64 = exceptii_active and (spitalizare or _cz in _CM_COD_EXCEPT_L64)
+        if not (_accident_neconf or _exceptat_l64):
+            diminuare = 1
     zile_platite = max(zile_lucratoare_cm - diminuare, 0)
     brut = (mz * pct * zile_platite).quantize(Decimal("1"))  # rotunjit la leu
     # split angajator/FNUASS (Norme OUG 158/2005): angajatorul suporta zilele 2-6 ale
@@ -550,24 +569,31 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
 
 
 def _calcul_cm_2018(*a, **k):
-    return _calcul_cm_core(*a, diminuare_activa=False, **k)
+    return _calcul_cm_core(*a, diminuare_activa=False, exceptii_active=False, **k)
+
+
+def _calcul_cm_2026_fara_exceptii(*a, **k):
+    # 01.02.2026-31.05.2026: diminuare activa, dar exceptiile Legea 64 alin.(4)/(5) INCA nu se aplica
+    # (Legea 64 art.VI(4): de la 01.06.2026). Accidentele 02/03/04 raman excepate independent de data.
+    return _calcul_cm_core(*a, diminuare_activa=True, exceptii_active=False, **k)
 
 
 def _calcul_cm_2026(*a, **k):
-    return _calcul_cm_core(*a, diminuare_activa=True, **k)
+    return _calcul_cm_core(*a, diminuare_activa=True, exceptii_active=True, **k)
 
 
 def _calcul_cm_2028(*a, **k):
-    return _calcul_cm_core(*a, diminuare_activa=False, **k)
+    return _calcul_cm_core(*a, diminuare_activa=False, exceptii_active=False, **k)
 
 
-# Diminuarea de 1 zi (Ordinul 506/1030/2026) e o regula pe FEREASTRA 01.02.2026-31.12.2027. Peticul
-# "if 2026-02 <= ref <= 2027-12" convertit in 3 variante datate (tiparul cota() pe cod): fara diminuare
-# pana la 02.2026, cu diminuare in fereastra, fara diminuare de la 2028 (regula expira) - frontierele de
-# varianta sunt exact punctele de schimbare. Nimic hardcodat pe data in corp.
+# Diminuarea de 1 zi (OUG 91/2025 art.II(1)) e pe FEREASTRA certificatelor eliberate 01.02.2026-31.12.2027;
+# exceptiile Legea 64/2026 alin.(4)/(5) intra abia de la 01.06.2026 (art.VI(4)). Patru variante datate:
+# fara diminuare < 02.2026; diminuare FARA exceptii 02-05.2026; diminuare CU exceptii 06.2026-12.2027; fara
+# diminuare de la 2028. Dispecerul alege pe DATA ELIBERARII certificatului. Nimic hardcodat pe data in corp.
 _VARIANTE_CALCUL_CM = [
     ("2018-01-01", _calcul_cm_2018, c.Temei("OUG", 158, 2005, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
-    ("2026-02-01", _calcul_cm_2026, c.Temei("OUG", 158, 2005, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31", lant_acte="Ordinul 506/1030/2026 (MOF 507/2026) introduce diminuarea de 1 zi, 01.02.2026-31.12.2027")),
+    ("2026-02-01", _calcul_cm_2026_fara_exceptii, c.Temei("OUG", 158, 2005, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-08-09", lant_acte="OUG 91/2025 art.II(1): diminuare 1 zi de la 01.02.2026; exceptiile Legea 64 abia de la 01.06.2026")),
+    ("2026-06-01", _calcul_cm_2026, c.Temei("OUG", 158, 2005, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-08-09", lant_acte="Legea 64/2026 art.VI(4): exceptiile alin.(4)/(5) (08/15/17 + programe nationale + spitalizare) de la 01.06.2026; Ordin 506/1030/2026 art.78^4")),
     ("2028-01-01", _calcul_cm_2028, c.Temei("OUG", 158, 2005, nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
 ]
 
@@ -575,14 +601,14 @@ _VARIANTE_CALCUL_CM = [
 def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
               cod="01", zile_episod=None, prima_zi_din_episod=True,
               spitalizare=False, la_data=None, exceptat_prima_zi=False,
-              procent_accident=100, venituri_lunare=None, data_episod_initial=None):
-    """Indemnizatia de concediu medical, DISPECER pe la_data - alege varianta valabila la data
-    certificatului (diminuarea de 1 zi doar in fereastra 01.02.2026-31.12.2027).
+              procent_accident=100, venituri_lunare=None, data_episod_initial=None, data_eliberare=None):
+    """Indemnizatia de concediu medical, DISPECER pe DATA ELIBERARII certificatului (data_eliberare;
+    OUG 91/2025 art.II(1) "certificatele ... eliberate in perioada"). Fallback pe la_data daca lipseste.
     TEMEI: OUG 158/2005 (indemnizatie CM: Ci = Mzbci x procent x zile); Ordinul 506/1030/2026 (MOF
     507/2026, diminuare 1 zi 2026-2027); Norme OUG 158/2005 (angajator zilele 2-6 = primele 5 platite,
     FNUASS din ziua 7). nivel_sursa: REDARE (OUG 158/2005 + Ordinul 506/1030/2026 MOF 507/2026)."""
     from datetime import date as _dt
-    fn, _ = c.alege_varianta(_VARIANTE_CALCUL_CM, la_data or _dt.today())
+    fn, _ = c.alege_varianta(_VARIANTE_CALCUL_CM, data_eliberare or la_data or _dt.today())
     return fn(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm, cod, zile_episod,
               prima_zi_din_episod, spitalizare, la_data, exceptat_prima_zi, procent_accident,
               venituri_lunare=venituri_lunare, data_episod_initial=data_episod_initial)

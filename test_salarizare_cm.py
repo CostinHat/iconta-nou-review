@@ -55,12 +55,13 @@ def test_prima_zi_exceptii():
 
 
 def test_nc28_exceptii_diminuare():
-    # Ordinul 506/1030/2026 MOF 507 - verificat la sursa
+    # Ordinul 506/1030/2026 MOF 507 - verificat la sursa. Izolare 51: SE DIMINUEAZA (decizie Costin
+    # 09.08.2026 - norma nu o excepta; nu mai e in lista de exceptii). d=07.2026 -> exceptiile active.
     from datetime import date as _d
     d=_d(2026,7,2)
-    for c in ('02','03','04','08','12','13','14','15','17','51'):
+    for c in ('02','03','04','08','12','13','14','15','17'):
         assert s.calcul_cm(27000,129,10,cod=c,zile_episod=10,la_data=d)['diminuare']==0, c
-    for c in ('01','06','07','09'):
+    for c in ('01','06','07','09','51'):
         assert s.calcul_cm(27000,129,10,cod=c,zile_episod=10,la_data=d)['diminuare']==1, c
     assert s.calcul_cm(27000,129,10,cod='01',zile_episod=10,la_data=d,spitalizare=True)['diminuare']==0
 

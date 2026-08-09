@@ -1320,3 +1320,10 @@ core/test_running_head.py (detectorul running==HEAD) ramane neatins si suficient
 - test_diminuare_exceptii_verbatim_art2_lit_c_d1_e: 08(c)/15(e)/17(d^1) NEdiminuate; 09(lit d)/01 diminuate.
 Gardeaza NUMAI aspectele CLARE verbatim (nu 02/51 - sub intrebare). Ancorate la actele din corpus (oug_91_2025.html,
 lege_64_2026.html, ordin_506_1030_2026_norme_oug158.html). test_cm_episod.py + test_salarizare.py: 46 passed.
+
+## 09.08.2026 (tura 5) — Garduri CM decizii Costin (izolare/faza/cod02/gating) — 4 garduri (test_cm_episod.py)
+- test_izolare_51_se_diminueaza: cod 51 in fereastra -> diminuare=1.
+- test_exceptii_de_la_01062026_nu_de_la_01022026: 08 + spitalizare eliberate 03.2026 -> diminuate; 07.2026 -> exceptate.
+- test_cod_02_03_04_raman_nediminuate: 02/03/04 diminuare=0 (ambele faze).
+- test_gating_pe_data_eliberarii_nu_pe_data_inceput: inceput in fereastra dar eliberat < 01.02.2026 -> nediminuat.
+Cluster CM+D112: 100 passed.

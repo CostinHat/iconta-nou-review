@@ -7991,3 +7991,41 @@ vs ANAF D112 (exceptat); (2) faza excepatiilor 01.06.2026 vs aplicarea din 01.02
 data_inceput vs "eliberate" (data_acordare); (5) cod 02 accident - nomenclator neconfirmat. Toate afecteaza
 LUNI INCHISE si/sau sunt ambigue -> NU le-am atins (stop point "raportezi inainte de a atinge sume pe luni
 inchise" + "nu alegi interpretarea"); le pun ca decizii pentru Costin.
+
+## 09.08.2026 — CM OUG 91/2025: 4 decizii de calcul (izolare, faza excepatiilor, cod 02, gating)
+
+Comanda Costin (executie): din cele 5 divergente CM (GARZI 09.08 tura 4), patru se implementeaza acum, a
+cincea se amana. Cele patru decizii, cu temeiul fiecareia:
+
+1. **Izolare (cod 51): SE DIMINUEAZA.** Temei: Ordin 506/1030/2026 art.78^4 alin.(2^1)/(2^2) NU listeaza
+   izolarea printre exceptii (doar art.2(1) lit c/d^1/e + programe nationale + spitalizare); OUG 91 art.II(1)
+   mentioneaza izolarea DOAR la suportare (lit a) -> trece pe FNUASS, b(ii) "a 2-a zi"), NU la diminuare.
+   Norma de calcul PREVALEAZA asupra formatului de raportare D112 (care o excepta - structura_D112 p.2). Verificat
+   la J27: emiterea unui D112 cu CM 51 diminuat NU declanseaza nicio regula impotriva reducerii (erorile vazute =
+   D_12 obligatoriu la 51 + agregatul C2 pentru randul izolare - completitudine generator D112, separat, neatins
+   per constrangere). Daca apare conflict la validare, se raporteaza; NU se rezolva platind altfel decat norma.
+
+2. **Exceptiile de la diminuare se aplica de la 01.06.2026, nu de la 01.02.2026.** Temei VERBATIM: Legea 64/2026
+   art.VI(4) "Prevederile art. II alin.(4) si (5) se aplica ... incepand cu data de 1 a lunii urmatoare intrarii
+   in vigoare a legii de aprobare" (Legea 64 in vigoare 18.05.2026 -> 01.06.2026). Implementat: varianta datata
+   2026-02-01 (diminuare FARA exceptii) + 2026-06-01 (diminuare CU exceptii 08/15/17 + programe nationale +
+   spitalizare). Certificate 02-05.2026 cu aceste coduri: se diminueaza.
+
+3. **Cod 02 (si 03/04): RAMAN NEDIMINUATE.** Temei: Nomenclator 9 (anaf_surse/d112_struct_anaf.txt) le
+   clasifica "accident ... neconfirmat de casa de pensii" in G1 (incapacitate temporara); asimilarea accidentelor
+   de traseu/munca la Legea 346/2002 (cand se confirma) NU e rezolvata verbatim in OUG 91/Ordin 506, iar Legea
+   346/2002 NU e in corpus. Decizie Costin "cod 02 nu alegi tu, listezi" -> raman nediminuate pana la confirmare.
+   LIPSA (de adus): Legea 346/2002 + o afirmatie verbatim ca accidentele "neconfirmate" sunt/nu sunt supuse
+   diminuarii OUG 91.
+
+4. **Gating pe DATA ELIBERARII certificatului.** Temei VERBATIM: OUG 91 art.II(1) "certificatele de concediu
+   medical ELIBERATE in perioada 1 februarie 2026-31 decembrie 2027". Implementat: dispecerul de variante
+   (calcul_cm) alege pe data_eliberare (= data_acordare), nu pe data_inceput; apelantul (salariati_api) o
+   transmite. Fallback pe la_data daca lipseste.
+
+5. Programe nationale pe coduri regulate: AMANATA (decizie de produs - marcaj pe certificat, ~D_9a). Neatinsa.
+
+PROBA pe date reale (tenant_001, read-only): din 11 CM, UN singur certificat schimbat de corectie - id=46
+(05/2026, cod 08 maternitate): 3034 -> 2832 lei (-202, o zi lucratoare; maternitatea se diminueaza in 05.2026,
+exceptata abia din 06.2026). ZERO luni depuse/confirmate la ANAF afectate (stop point neaprins). Nu s-a modificat
+nicio valoare stocata (doar calculul; recalculul efectiv al lunilor = a doua comanda).

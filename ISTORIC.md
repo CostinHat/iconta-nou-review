@@ -3626,3 +3626,10 @@ teste (inclusiv exemplul numeric al normei). 5 divergente listate in GARZI (izol
 excepatiilor 01.06.2026; programe nationale pe coduri regulate = BLOCAT_DATE ~D_9a; gating data_inceput vs
 eliberare; cod 02 nomenclator) - NEatinse: afecteaza luni inchise si/sau ambigue -> decizii Costin. Niciun cod de
 calcul atins (fara schimbare de sume pe luni inchise). Proba before->after: 3000 -> 2850 lei (dif -150, o zi/episod).
+
+## 09.08.2026 (tura 5) — CM OUG 91/2025: 4 decizii implementate in calcul + proba pe date reale
+Reparat calculul CM (salarizare.py + salariati_api.py) pe cele 4 decizii Costin: izolare 51 se diminueaza (norma
+> format D112; J27 fara conflict pe reducere); exceptiile de la 01.06.2026 (Legea 64 art.VI(4), variante datate
+2026-02/2026-06); cod 02/03/04 raman nediminuate (asimilare Legea 346/2002 neconfirmata verbatim, listat); gating
+pe data eliberarii (data_acordare). Programe nationale amanate. 4 garduri noi. Proba read-only pe tenant_001: 1
+cert schimbat (id=46 05/2026 cod 08: 3034->2832 lei), 0 luni depuse afectate. Nicio valoare stocata modificata.

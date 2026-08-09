@@ -2327,3 +2327,24 @@ constituie stagiu de asigurare (OUG 91 art.II(2)) - app nu reduce niciun stagiu,
 
 Toate 5 sunt NEatinse: 1/2/4 schimba sume pe luni INCHISE (02-08.2026) -> stop point "raportezi inainte de a
 atinge"; 1 e ambiguu (norma vs ANAF); 3 e BLOCAT_DATE; 5 cere nomenclatorul verbatim. Niciun cod de calcul atins.
+
+## 09.08.2026 (tura 5) — CM OUG 91/2025: 4 divergente REZOLVATE in calcul; cod 02 + programe nationale raman
+
+Reparat in salarizare.py (_calcul_cm_core + variante) + salariati_api.py (gating), fara a atinge alte generatoare:
+- **Izolare 51: se DIMINUEAZA** (scos din exceptii). Norma (Ordin 506) prevaleaza asupra D112. J27: nicio regula
+  impotriva reducerii; golul agregat C2 pentru randul 51 (generator D112) - de verificat la o declaratie reala
+  cu 51 (neatins, constrangere "nu atingi generatoarele").
+- **Exceptii de la 01.06.2026** (Legea 64 art.VI(4)): varianta 2026-02-01 (diminuare fara exceptii) + 2026-06-01
+  (cu exceptii). 08/15/17 + spitalizare + programe nationale 12/13/14 se diminueaza in 02-05.2026.
+- **Gating pe data eliberarii** (data_acordare), nu data_inceput (OUG 91 art.II(1) "eliberate").
+- Garduri: core/test_cm_episod.py (izolare 51, faza 01.06.2026, cod 02/03/04 nediminuate, gating pe eliberare).
+
+**RAMAN datorie:**
+- **cod 02/03/04 (accident neconfirmat):** nediminuate pana la confirmare verbatim ca sunt indemnizatii OUG 158
+  supuse diminuarii OUG 91. LIPSA: Legea 346/2002 (nu e in corpus) + afirmatie verbatim pe accidentele
+  neconfirmate. Nomenclator 9 le pune in G1 (incapacitate), dar asimilarea la Legea 346 e nerezolvata.
+- **programe nationale pe coduri regulate (01 etc.):** app excepta doar 12/13/14; restul cere marcaj pe certificat
+  (~D_9a din D112, [[d112 13 campuri]]). BLOCAT_DATE, AMANAT (decizie de produs).
+- **luni depuse afectate:** NICIUNA acum (tenant_001: 0 confirmate; singurul cert schimbat = id=46 05/2026, +202
+  lei diferenta, nedepus). La aparitia unor luni depuse afectate -> recalcul efectiv = a doua comanda (nu se
+  atinge o luna depusa fara aprobare).
