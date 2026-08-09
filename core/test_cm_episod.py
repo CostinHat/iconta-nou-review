@@ -157,14 +157,14 @@ def test_exceptii_de_la_01062026_nu_de_la_01022026():
     assert calcul_cm(25200, 126, 7, cod="01", spitalizare=True, data_eliberare=date(2026, 7, 1), **B0)["diminuare"] == 0
 
 
-def test_cod_02_03_04_raman_nediminuate():
-    """Decizie Costin: codurile accident 02/03/04 ('neconfirmat de casa de pensii', Nomenclator 9) raman
-    NEDIMINUATE pana la confirmare verbatim ca sunt indemnizatii OUG 158 (asimilarea la Legea 346/2002
-    nerezolvata; 'cod 02 nu alegi tu, listezi'). Independent de faza 01.06.2026."""
+def test_cod_02_03_04_se_diminueaza():
+    """Decizie Costin (09.08 tura 8, propunere aplicata): codurile accident 02/03/04 ('neconfirmat de casa de
+    pensii', Nomenclator 9 = G1/OUG 158 cat timp neconfirmate) SE DIMINUEAZA ca orice cod G1. Legea 319/2006
+    art.5 lit.g) (accident de munca, include traseu) + Legea 346/2002 = FAAMBP abia DUPA confirmare (ies din CM)."""
     for cod in ("02", "03", "04"):
         for elib in (date(2026, 3, 1), date(2026, 7, 1)):
             r = calcul_cm(25200, 126, 7, cod=cod, zile_episod=7, prima_zi_din_episod=True, data_eliberare=elib)
-            assert r["diminuare"] == 0, "cod %s nediminuat (elib %s)" % (cod, elib)
+            assert r["diminuare"] == 1, "cod %s se diminueaza G1/OUG 158 (elib %s)" % (cod, elib)
 
 
 def test_gating_pe_data_eliberarii_nu_pe_data_inceput():

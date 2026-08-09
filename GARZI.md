@@ -2386,3 +2386,11 @@ RAMAS (propunere / deschis):
 - cod 02/03/04 diminuare: PROPUNERE = se diminueaza (G1/OUG 158 cat timp neconfirmat); actul primar (Legea
   346/2002) defera la Legea 319/2006 (ABSENTA) -> de adus pt confirmare primara daca Costin accepta propunerea.
   Neatins codul de calcul.
+
+## 09.08.2026 (tura 8) — Cod 02/03/04 diminuare: datorie INCHISA; Legea 319/2006 in corpus
+
+Propunerea din tura 7 aplicata: cod 02/03/04 ("accident neconfirmat", G1/OUG 158) SE DIMINUEAZA ca orice cod G1.
+Temei complet acum: Legea 319/2006 art.5 lit.g) (accident de munca + accidentul de traseu) adusa in corpus
+(legea_319_2006_consolidat.html), coroborata cu Nomenclator 9/10 + OUG 91/Ordin 506. Scos
+_CM_COD_ACCIDENT_NECONFIRMAT din salarizare.py. Gard test_cod_02_03_04_se_diminueaza (diminuare=1). Golul primar
+(Legea 319/2006 absenta) = INCHIS. Nicio pozitie CM ramasa deschisa pe diminuare.

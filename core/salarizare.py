@@ -487,12 +487,11 @@ def calcul_cm_cod10(baza_lunara, venit_realizat, la_data=None):
     fn, _ = c.alege_varianta(_VARIANTE_CALCUL_CM_COD10, la_data or _dt.today())
     return fn(baza_lunara, venit_realizat)
 
-# Coduri accident "neconfirmat de casa de pensii" (Nomenclator 9 D_9, anaf_surse/d112_struct_anaf.txt):
-# 02 accident deplasare, 03 accident munca, 04 boala profesionala - toate G1 (incapacitate temporara) cat
-# sunt neconfirmate. Asimilarea la Legea 346/2002 NU e rezolvata verbatim in OUG 91/Ordin 506, iar Legea
-# 346/2002 nu e in corpus -> NEdiminuate pana la confirmare (decizie Costin 09.08.2026: "cod 02 nu alegi tu,
-# listezi"). Excepate MEREU (independent de faza 01.06.2026).
-_CM_COD_ACCIDENT_NECONFIRMAT = ("02", "03", "04")
+# Coduri accident 02/03/04 (Nomenclator 9 D_9): "neconfirmat de casa de pensii" = G1 (incapacitate temporara,
+# OUG 158) cat timp sunt neconfirmate. Legea 319/2006 art.5 lit.g) defineste accidentul de munca (si include
+# accidentul de traseu); Legea 346/2002 (FAAMBP) le acopera DUPA confirmarea casei de pensii - atunci ies din
+# sistemul CM. Cat timp sunt neconfirmate (asa cum apar in D112) se platesc ca OUG 158/G1 -> SE DIMINUEAZA ca
+# orice cod G1 (decizie Costin 09.08.2026 tura 8: propunere aplicata; Legea 319/2006 adusa in corpus).
 # Exceptii de la diminuare, Legea 64/2026 alin.(4)/(5) -> art.2(1) OUG 158 lit c)=08 maternitate, d^1)=17
 # oncologic, e)=15 risc maternal + programe nationale 12/13/14. Se aplica DE LA 01.06.2026 (Legea 64
 # art.VI(4)); spitalizarea (flag) la fel. Izolare 51 NU e aici: SE DIMINUEAZA (decizie Costin 09.08.2026 -
@@ -509,7 +508,8 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     Ci = Mzbci x procent x (NZLCM - diminuare)
     - Mzbci = suma venituri 6 luni / total zile lucratoare 6 luni
     - diminuare 1 zi: certificate 01.02.2026-31.12.2027, O DATA per episod,
-      NU la spitalizare, accidente 02/03/04, izolare 51, maternitate 08, oncologic 17, risc maternal 15, PNS 12/13/14
+      exceptii (de la 01.06.2026): spitalizare, maternitate 08, oncologic 17, risc maternal 15, PNS 12/13/14;
+      accidentele 02/03/04 si izolarea 51 SE diminueaza (G1/OUG 158)
     - rotunjire la leu (norme CNAS)
     TEMEI: OUG 158/2005 (indemnizatie CM: Ci = Mzbci x procent x zile); Ordinul 506/1030/2026
     (MOF 507/2026, diminuare 1 zi certificate 2026-2027); Norme OUG 158/2005 (angajatorul suporta
@@ -535,17 +535,14 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     pct = procent_cm(cod, ze, procent_accident, la_data=data_episod_initial or la_data)
     # Diminuarea de 1 zi (OUG 91/2025 art.II; Ordin 506/1030/2026 art.78^4(4): NZLCM-1 = prima zi
     # LUCRATOARE), O DATA pe episod (prima_zi_din_episod). Doua categorii de exceptii:
-    #  (a) accidente "neconfirmate de casa de pensii" 02/03/04 - NEdiminuate mereu (vezi _CM_COD_ACCIDENT_
-    #      NECONFIRMAT; decizie Costin 09.08.2026, "cod 02 nu alegi tu, listezi");
-    #  (b) exceptiile Legea 64/2026 alin.(4)/(5) (08/15/17 + programe nationale 12/13/14 + spitalizare) -
-    #      DOAR de la 01.06.2026 (exceptii_active; Legea 64 art.VI(4)).
-    # Izolare 51: SE DIMINUEAZA (decizie Costin 09.08.2026; nu e in lista de exceptii a normei).
+    # SINGURELE exceptii = Legea 64/2026 alin.(4)/(5): 08/15/17 (art.2(1) lit c/d^1/e) + programe nationale
+    # 12/13/14 + spitalizare, DOAR de la 01.06.2026 (exceptii_active; art.VI(4)). Accidentele 02/03/04
+    # "neconfirmate" (G1/OUG 158, Legea 319/2006 + Nomenclator) si izolarea 51 SE DIMINUEAZA ca orice cod G1.
     diminuare = 0
     if diminuare_activa and prima_zi_din_episod and not exceptat_prima_zi:
         _cz = str(cod).zfill(2)
-        _accident_neconf = _cz in _CM_COD_ACCIDENT_NECONFIRMAT
         _exceptat_l64 = exceptii_active and (spitalizare or _cz in _CM_COD_EXCEPT_L64)
-        if not (_accident_neconf or _exceptat_l64):
+        if not _exceptat_l64:
             diminuare = 1
     zile_platite = max(zile_lucratoare_cm - diminuare, 0)
     brut = (mz * pct * zile_platite).quantize(Decimal("1"))  # rotunjit la leu

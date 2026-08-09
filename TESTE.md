@@ -1324,7 +1324,7 @@ lege_64_2026.html, ordin_506_1030_2026_norme_oug158.html). test_cm_episod.py + t
 ## 09.08.2026 (tura 5) — Garduri CM decizii Costin (izolare/faza/cod02/gating) — 4 garduri (test_cm_episod.py)
 - test_izolare_51_se_diminueaza: cod 51 in fereastra -> diminuare=1.
 - test_exceptii_de_la_01062026_nu_de_la_01022026: 08 + spitalizare eliberate 03.2026 -> diminuate; 07.2026 -> exceptate.
-- test_cod_02_03_04_raman_nediminuate: 02/03/04 diminuare=0 (ambele faze).
+- test_cod_02_03_04_raman_nediminuate: 02/03/04 diminuare=0 (ambele faze). [citare-istorica: redenumit test_cod_02_03_04_se_diminueaza in tura 8]
 - test_gating_pe_data_eliberarii_nu_pe_data_inceput: inceput in fereastra dar eliberat < 01.02.2026 -> nediminuat.
 Cluster CM+D112: 100 passed.
 
@@ -1337,3 +1337,10 @@ neschimbate (noile fisiere = forma_la_data, exceptate de G2). INDEX.json regener
 Cele 5 valori (facilitate 300, tva_redusa_5, tva 19%, dividend 5%, mijloc fix 2.500) intra sub G1
 (test_corpus_surse): MO => fisier local. Mutatie probata: sters cf_2015_forma_initiala.html -> G1 ROSU; restaurat
 -> verde. G3 (set volatil-fara-MO) actualizat la [] (toate legate). Valorile confirmate NEschimbate (sanity rulat).
+
+## 09.08.2026 (tura 8) — Cod 02/03/04 se diminueaza (garduri actualizate)
+- core/test_cm_episod.py: test_cod_02_03_04_se_diminueaza (diminuare=1, ambele faze; fost gardul 'raman
+  nediminuate'). Mutatie: re-exceptarea 02/03/04 -> rosu.
+- Setul de exceptii de la diminuare (suita de salarizare CM de la radacina, nc28): 02/03/04 mutate din exceptat
+  in diminuat.
+Cluster CM+pull: 56 passed.

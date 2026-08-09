@@ -3650,3 +3650,10 @@ pct.42 (carti/cultural 11%, locuinte 21%); istorice L227/2015: tva 19%@2017->CF 
 regenerat; G3 set ->[]; G1 mutatie-probat. POZ.4 (cod 02 traseu) = PROPUNERE: se diminueaza (G1/OUG 158 cat timp
 neconfirmat); Legea 346/2002 defera la Legea 319/2006 (absenta) -> primar neinchis; efect -1 zi/episod, risc
 minor reversibil, 0 certificate reale/depuse; cod de calcul neatins. ZERO efect in bani pe corecturi.
+
+## 09.08.2026 (tura 8) — Cod 02/03/04 diminuare aplicata + Legea 319/2006 adusa
+Propunerea poz.4 (tura 7) acceptata si aplicata: accidentele 02/03/04 "neconfirmate" (G1/OUG 158) se diminueaza
+cu 1 zi/episod ca orice cod G1. Adus verbatim Legea 319/2006 (art.5 lit.g accident de munca + accidentul de
+traseu), care coroborata cu Nomenclator 9/10 + Legea 346/2002 inchide golul primar. Scos exceptia din
+salarizare.py; 2 garduri actualizate. Efect: -1 zi/episod pe 02/03/04 (0 pe date reale, 0 luni depuse). Supersedeaza
+decizia "raman nediminuate pana la confirmare" (confirmarea a sosit).

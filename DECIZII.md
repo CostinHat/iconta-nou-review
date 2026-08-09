@@ -8100,3 +8100,25 @@ inchisa in care accidentele nu figureaza. EFECT IN BANI: -1 zi lucratoare/episod
 lei/episod). RISC daca gresesc (accidentele trebuie protejate de diminuare): subplata cu 1 zi, reversibila; 0
 certificate reale (tenant_001 n-are 02/03/04), 0 luni depuse. NEATINS codul de calcul (propunere, nu executie);
 daca accepti, aplic + aduc Legea 319/2006 pt confirmarea primara.
+
+## 09.08.2026 (tura 8) — Cod 02/03/04 SE DIMINUEAZA (propunere aplicata) + Legea 319/2006 in corpus
+
+Comanda Costin: aplica propunerea pe cod 02/03/04 si adu Legea 319/2006. Propunerea din tura 7 (poz.4) ACCEPTATA.
+
+TEMEI (verbatim, adus azi): Legea 319/2006 (anaf_surse/legea_319_2006_consolidat.html, forma consolidata) art.5
+lit.g): "accident de munca - vatamarea violenta a organismului ... care au loc in timpul procesului de munca sau
+in indeplinirea indatoririlor de serviciu"; include "accidentul de traseu ori de circulatie ... persoane
+angajate". Coroborat cu Nomenclator 9/10 (d112_struct): 02/03/04 "neconfirmat de casa de pensii" = G1
+(incapacitate temporara, OUG 158) cat timp neconfirmate; Legea 346/2002 (FAAMBP) le preia DUPA confirmare
+(atunci ies din sistemul CM). => cat timp sunt in D112 ca neconfirmate, se platesc OUG 158/G1 -> se diminueaza.
+
+FACUT: eliminata exceptia accidentelor din core/salarizare.py (_CM_COD_ACCIDENT_NECONFIRMAT scos). Cod 02/03/04
+se diminueaza acum cu 1 zi lucratoare/episod ca orice cod G1 (SINGURELE exceptii ramase = Legea 64 alin.(4)/(5):
+08/15/17 + programe nationale + spitalizare, de la 01.06.2026). Izolare 51 se diminua deja.
+
+EFECT IN BANI: -1 zi lucratoare/episod pe codurile 02/03/04 (~150-200 lei/episod, dupa media si procent). Pe date
+reale: 0 (tenant_001 n-are certificate 02/03/04), 0 luni depuse afectate (stop point neaprins). Certificate viitoare
+02/03/04 in fereastra 01.02.2026-31.12.2027: diminuate.
+
+Supersedeaza decizia din tura 4/7 ("raman nediminuate pana la confirmare"): confirmarea a venit (Legea 319/2006 +
+Nomenclator). Gard: core/test_cm_episod.py::test_cod_02_03_04_se_diminueaza (mutatie: re-exceptare -> rosu).
