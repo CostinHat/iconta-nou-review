@@ -271,10 +271,20 @@ def _d112_genereaza(prof, salariati, an, luna):
                             "Completeaza-l in certificat (ecran Concedii medicale) - nu se emite D112 invalid."
                             % (_cod_c, s.get("cnp"), _camp, _mot_c))
                     _opt += (' D_8a="%s"' if _cod_c == "17" else ' D_8="%s"') % _cnp_i
+                # [d112 v1.03-072026] Ordin comun 605/95/928/2314/2026 (D112_A7.2.6 v7, se aplica din 07/2026):
+                # D_14a/D_15a = "Zile prestatii (zile lucratoare) suportate de angajator/FNUASS"
+                # (structura_D112_0726_030826.pdf rd.103a/104a); D_16a = D_14a+D_15a (rd.105a, formula VERBATIM).
+                # Zilele-prestatii = za/zf (exact ce statea deja in D_14/D_15). D_14/D_15/D_16 raman "14.1/15.1/16.1
+                # din care zile platite" (regula D_14<=D_14a, D_15<=D_15a; aplicatia n-are distinctie platit-vs-
+                # prestatii pe zile CM => egale). Restul campurilor 07/2026 (D_20a/D_21a/C2_155/C2_156/E2_156/
+                # B3_7D/C_10D/D_9a/D_9b/E3_97) = datorie GARZI (fara formula verbatim sau fara date in aplicatie).
+                _da = ""
+                if (an, luna) >= (2026, 7):
+                    _da = ' D_14a="%d" D_15a="%d" D_16a="%d"' % (za, zf, d16)
                 _dl.append('    <asiguratD%s D_9="%s" D_10="%d" '
-                           'D_14="%d" D_15="%d" D_16="%d" D_17="%d" D_18="%d" D_19="%.2f" D_20="%d" D_21="%d" D_23="%s"/>'
+                           'D_14="%d" D_15="%d" D_16="%d"%s D_17="%d" D_18="%d" D_19="%.2f" D_20="%d" D_21="%d" D_23="%s"/>'
                            % (_opt, (x.get("cod") or "01"), int(x.get("loc_prescriere") or 1),
-                              za, zf, d16, d17, d18, d19, d20, d21,
+                              za, zf, d16, _da, d17, d18, d19, d20, d21,
                               _d112esc("RM" if _cod_c == "15" else (x.get("diagnostic") or "999"))))  # [cod15] D_23="RM" (risc maternal)
             c1_12 += cm_base
         else:

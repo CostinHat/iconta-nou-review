@@ -236,6 +236,64 @@ def test_limita_75_asigurat_si_functie_declar_50():
 
 
 
+
+# ---------------------------------------------------------------------------
+# D112 v1.03-072026 (Ordin comun 605/95/928/2314/2026) - zile prestatii D_14a/D_15a/D_16a
+# ---------------------------------------------------------------------------
+import re as _re112
+
+
+def _sal_cm(cod="01", za=4, zf=3, brut=6000):
+    """Salariat cu un certificat de concediu medical (pt. sectiunea asiguratD)."""
+    cas = round(brut * 0.25); cass = round(brut * 0.10)
+    impozit = round((brut - cas - cass) * 0.10)
+    return [{"nume": "IONESCU", "prenume": "Maria", "cnp": cnp_valid("290010145001"),
+             "brut": brut, "brut_lucrat": brut, "cas": cas, "cass": cass, "impozit": impozit,
+             "ore_zi": 8, "judet_casa": "B", "cor": "263501", "data_angajare": "2024-01-15",
+             "activ": True, "zile_cm": za + zf,
+             "cm": [{"cod": cod, "zile_ang": za, "zile_fnuass": zf, "brut_ang": 2000,
+                     "brut_fnuass": 1500, "baza": brut, "loc_prescriere": 1, "diagnostic": "999",
+                     "serie": "AA", "numar": "12345", "da": "02.07.2026",
+                     "di": "02.07.2026", "ds": "09.07.2026"}]}]
+
+
+def _attr112(xml, tag, attr):
+    m = _re112.search(r'<%s\b[^>]*\b%s="([^"]*)"' % (tag, attr), xml)
+    return m.group(1) if m else None
+
+
+def test_d112_zile_prestatii_072026_emise_si_verbatim():
+    """Ordin 605/95/928/2314/2026 (D112_A7.2.6 v7, 07/2026): asiguratD trebuie sa poarte
+    D_14a/D_15a/D_16a. D_14a/D_15a = zilele-prestatii angajator/FNUASS (= za/zf); D_16a =
+    D_14a+D_15a (structura_D112_0726_030826.pdf rd.105a). Fara ele, J27.0.1 respinge sect.D
+    ('atributul D_14a trebuie sa existe'). Mutatie: scoate emisia _da -> D_14a lipseste -> rosu."""
+    xml, _ = _d112_genereaza(_prof(), _sal_cm(za=4, zf=3), 2026, 7)
+    d14a = _attr112(xml, "asiguratD", "D_14a")
+    d15a = _attr112(xml, "asiguratD", "D_15a")
+    d16a = _attr112(xml, "asiguratD", "D_16a")
+    assert d14a == "4", "D_14a asteptat 4 (zile_ang), primit %r" % d14a
+    assert d15a == "3", "D_15a asteptat 3 (zile_fnuass), primit %r" % d15a
+    # formula VERBATIM D_16a = D_14a + D_15a (rd.105a)
+    assert int(d16a) == int(d14a) + int(d15a), "D_16a != D_14a+D_15a"
+    # reguli validator: D_14<=D_14a, D_15<=D_15a
+    assert int(_attr112(xml, "asiguratD", "D_14")) <= int(d14a)
+    assert int(_attr112(xml, "asiguratD", "D_15")) <= int(d15a)
+    # D_16a <= NZL (iulie 2026)
+    from core.d112 import _nzl
+    assert int(d16a) <= _nzl(2026, 7), "D_16a depaseste NZL"
+
+
+def test_d112_zile_prestatii_absente_inainte_072026():
+    """Campurile se aplica DIN 07/2026 (structura, 'se aplica din 01.07.2026'). O declaratie
+    regenerata pentru o luna < 07/2026 pastreaza structura veche - fara D_14a/D_15a/D_16a
+    (altfel DUK ar respinge structura anterioara). Mutatie: emisie neconditionata -> rosu."""
+    xml, _ = _d112_genereaza(_prof(), _sal_cm(za=4, zf=3), 2026, 6)
+    assert "<asiguratD" in xml, "fixtura trebuie sa emita sectiunea D"
+    assert "D_14a=" not in xml
+    assert "D_15a=" not in xml
+    assert "D_16a=" not in xml
+
+
 def test_cod_oblig_pereche_cu_cod_bugetar_corect():
     """GARD (verificare nomenclator 03.08.2026, cluster nomenclator cod_oblig | d112): fiecare cod_oblig
     D112 poarta codul bugetar CORECT din nomenclatorul oficial ANAF (structura D112, Nomenclator 3 -

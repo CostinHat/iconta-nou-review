@@ -3598,3 +3598,13 @@ ecrane UI) -> ecran-nota; login.js catch gol -> console.warn. Garzi noi mutatie-
 in verificator, test de acoperire a frontendului, ratchet mig-gol la 0. Poarta verde. Punct de oprire ridicat:
 lista de avertismente de registru (firme.js:1668) fara componenta DS dedicata -> mapata la caseta-atentie, intrebare
 in raport.
+
+## 09.08.2026 (tura 2) — D112: structura 07/2026 (Ordin 605/95/928/2314/2026), D_14a/D_15a/D_16a livrate
+Din datoria celor 13 campuri (GARZI 09.08 tura 1): inchise 3 (D_14a/D_15a/D_16a - zile prestatii), verbatim din
+structura_D112_0726_030826.pdf (rd.103a/104a/105a), gated pe >=07/2026, gard + mutatie, DUK J27 VALID pe CM cod 01
+(fara fix: "atributul trebuie sa existe" + S103a/S104a). Restul 10 (D_20a/D_21a, C2_155/C2_156, E2_156, B3_7D,
+C_10D, D_9a, D_9b, E3_97) raman datorie cu LIPSA numita exact (fara formula verbatim / fara date in aplicatie /
+regula neimplementata) - toate conditionale (CM in continuare / program national / pensii ocupationale), firma
+tipica valida fara ele. Decizii de produs deschise: unde intra datele noi (D_9a marcaj program national pe CM;
+E3_97 pensii ocupationale in salarizare); daca se implementeaza acum regula D_9b (diminuare 1 zi, OUG 91/2025) si
+mecanismul D_20a/D_21a (OUG 89/2025, fara declaratie rectificativa).

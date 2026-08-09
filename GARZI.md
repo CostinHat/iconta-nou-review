@@ -2233,3 +2233,47 @@ sau DS primeste o componenta "lista de avertismente"? (Nu am scris capitol nou �
 de boot login (`_bannerLoginEroare`) raman cu pozitionare inline prin NECESITATE (se randeaza cand aplicatia /
 CSS-ul poate fi rupt). Doar `font-size` a trecut la token; culorile/pozitia inline nu sunt flaguite de nicio
 regula si sunt legitime pt un failsafe. Daca se vrea o regula scrisa "failsafe/pre-CSS", e decizie DS.
+
+## 09.08.2026 (tura 2) — D112 v1.03-072026: D_14a/D_15a/D_16a LIVRAT; restul 10 campuri = datorie rafinata
+
+**LIVRAT (verbatim + gard + DUK J27 VALID).** Din cele 13 campuri ale Ordinului comun 605/95/928/2314/2026
+(D112_A7.2.6 v7, aplicabil 07/2026), s-au inchis TREI - singurele confirmabile verbatim SI actabile fara date noi:
+- **D_14a** = zile prestatii (lucratoare) suportate de angajator = `za` (zile_ang). structura_D112_0726_030826.pdf rd.103a.
+- **D_15a** = zile prestatii suportate de FNUASS = `zf` (zile_fnuass). rd.104a.
+- **D_16a = D_14a + D_15a** (rd.105a, FORMULA VERBATIM). D_16a<=NZL.
+Semantica: zilele-prestatii = exact ce statea in D_14/D_15 (structura veche). D_14/D_15/D_16 devin "din care zile
+platite" (reguli S103a/S104a: D_14<=D_14a, D_15<=D_15a); aplicatia n-are distinctie platit-vs-prestatii pe zile CM
+=> egale (data-consistent, NU formula dedusa). Emise GATED pe (an,luna)>=(2026,7) - lunile < 07/2026 pastreaza
+structura veche (altfel DUK respinge structura anterioara). Fix: core/d112.py, ramura CM asiguratD (`_da`, gate
+`if (an, luna) >= (2026, 7)`). Gard: core/test_d112.py::test_d112_zile_prestatii_072026_emise_si_verbatim
+(+ ...absente_inainte_072026). Mutatie (gate -> False) -> rosu. PROBA J27 (autoritatea): fara fix -> "D_14a/D_15a/
+D_16a: atributul trebuie sa existe" + S103a/S104a; cu fix -> DUK stare=VALID, 0 erori (D112 07/2026 cu CM cod 01).
+
+**RAMAN 10 (datorie rafinata - acum cu definitia verbatim extrasa, LIPSA numita exact):**
+- **D_20a / D_21a** (asiguratD, N(15)) — "diferenta indemnizatie sanatate recalculata pentru CM in continuare"
+  (angajator / FNUASS), OUG 89/2025. Def verbatim: rd.109.1/110.1 + p60: `D_20a(07)=dif.indemniz.recalculata(06)`,
+  `D_20(07)=indemniz(07)+D_20a(07)`; non-null doar daca (D_9=01 si Data_CMI#null); null daca luna_r<07/2026.
+  LIPSA: mecanismul de recalcul al indemnizatiei lunii precedente la procentul D_28 actualizat + diferenta; cere
+  stocarea/citirea indemnizatiei CM pe luna anterioara. BLOCAT_FORMULA+DATE. Decizie de produs: mecanismul OUG
+  89/2025 "fara declaratie rectificativa".
+- **C2_155 = Σasigurat(D_20a) daca C_1<>2; null <07/2026** (angajatorC2, rd.44e) — FORMULA VERBATIM, dar operandul
+  D_20a nu e calculabil inca. BLOCAT pe D_20a (a emite 0 = a afirma "niciun CM in continuare" = neverificabil).
+- **C2_156 = Σasigurat(D_21a) daca C_1<>2; null <07/2026** (rd.45e) — idem, BLOCAT pe D_21a.
+- **E2_156 = Σasigurat(D_21a) daca C_1=2; null <07/2026** (asiguratE2, rd.109e; someri) — idem, BLOCAT pe D_21a.
+- **B3_7D** (asiguratB3, rd.8.1, N(15)) — "din care, diferenta de indemnizatie CASS aferenta lunii anterioare".
+  LIPSA: structura NU da formula (doar antetul); legat de baza CASS a diferentei D_20a/D_21a. BLOCAT_FORMULA.
+- **C_10D** (asiguratC, rd.11.0, N(15)) — "din care, diferenta de indemnizatie CASS aferenta lunii anterioare".
+  LIPSA: structura NU da formula (doar antetul). BLOCAT_FORMULA.
+- **D_9a** (asiguratD, N(1)) — "=1 pentru CM acordate pacientilor inclusi in programe nationale de sanatate".
+  Semantica VERBATIM. LIPSA: aplicatia n-are marcaj "program national" pe certificatul de CM. BLOCAT_DATE (camp
+  nou pe certificat, ecran Concedii medicale). Absent = corect pentru firme fara asemenea CM.
+- **D_9b** (asiguratD, N(1)) — "=1 pentru diminuarea cu 1 zi lucratoare a CM cf OUG 91/2025" (+ Legea 64/2026;
+  exceptii verbatim p2: D_9 in 08/15/51/17, D_9a=1, D_10=2, CM in continuare). Semantica VERBATIM. LIPSA: regula
+  de diminuare cu 1 zi lucratoare a CM nu e implementata (schimba zilele/indemnizatia CM). BLOCAT_REGULA + decizie
+  de produs (afecteaza calculul CM, nu doar declaratia).
+- **E3_97** (asiguratE3, rd.8.5.6, N(15)) — "Contributii la fond de pensii ocupational (Legea 1/2020), neimpozabil,
+  art.76 alin.(4^1)"; regula E3_90>=...+E3_97. Semantica VERBATIM. LIPSA: aplicatia n-are date de pensii
+  ocupationale in salarizare. BLOCAT_DATE (camp nou de salarizare). Absent/0 = corect pentru firme fara pensii ocup.
+
+Toate 10 sunt CONDITIONALE (CM in continuare D_9=01 / program national / pensii ocupationale / diminuare OUG 91) -
+firma tipica fara aceste cazuri e VALIDA cu doar D_14a/D_15a/D_16a (probat: DUK VALID pe CM cod 01 fara ele).

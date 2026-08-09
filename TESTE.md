@@ -1295,3 +1295,12 @@ fixture-ul auto-instaleaza pachetul playwright si browserul chromium daca lipses
 MUTATIE probata: reintroducerea filtrului in construiesteCorp -> 3 teste ROSII (doua erori / re-validare /
 rand incomplet mijloc); revenit la original -> verde. Vezi GARZI 08.08 + commit batch 3a.
 Nota anti-stale: bifa √ in inventarul sesiunii A vine intr-un commit SEPARAT (test_agenda cere fisierul in HEAD).
+
+## 09.08.2026 — D112 v1.03-072026 (zile prestatii) — 2 garduri
+- test_d112_zile_prestatii_072026_emise_si_verbatim: asiguratD (07/2026, CM cod 01) poarta D_14a=za, D_15a=zf,
+  D_16a=D_14a+D_15a; reguli D_14<=D_14a, D_15<=D_15a, D_16a<=NZL. Mutatie: gate (an,luna)>=(2026,7) -> False =>
+  D_14a=None -> rosu.
+- test_d112_zile_prestatii_absente_inainte_072026: luna 06/2026 NU emite D_14a/D_15a/D_16a (structura veche).
+  Mutatie: emisie neconditionata -> rosu.
+Fixtura noua _sal_cm (certificat CM inline: cod, zile_ang/fnuass, brut_ang/fnuass, serie/numar/date). PROBA J27:
+XML 07/2026 -> DUK VALID (fara fix -> 3 erori "D_1xa: atributul trebuie sa existe").

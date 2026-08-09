@@ -7918,3 +7918,20 @@ PROBĂ: e-Transport sha256 XML = 480d4bf2… (frontend vechi == nou, set complet
 ## 08.08.2026 — Detector "running == HEAD" VIZIBIL IN APP (superadmin) LIVRAT (mecanism 1 din decizia iulie)
 
 Comanda Costin (executie): cablat DETECTORUL vizibil inainte de urmatoarea parcurgere (nu dupa), ca sa nu mai stea pe premisa neverificata (prod a rulat cod din 1 aug, 45 commituri in urma, 6 zile tacut). LIVRAT partea vizibila in app: commitul rulat se stampileaza in memorie la pornirea procesului (core/versiune.py, in lifespan) - fidel procesului viu, NU dedus din mtime-uri; `/admin/versiune` (superadmin-only) compara cu HEAD; banner `.caseta-atentie` in desktopAdmin DOAR la divergenta, DOAR superadmin. NU reporneste, NU repara (constrangerea din iulie respectata; post-commit neatins). Gard test_running_head.py + mutatie. Mecanismul (2) cron/sentinela/Brevo + (3) raport patru-way + auditul schema PUBLIC = scop separat, necablat aici (comanda a cerut semnalul vizibil in app).
+
+## 09.08.2026 — D112 v1.03-072026: doar D_14a/D_15a/D_16a inchise; restul raman datorie (verbatim sau deloc)
+
+Comanda Costin (executie): D112 pe structura in vigoare (Ordin comun 605/95/928/2314/2026, 07/2026), campuri
+confirmate VERBATIM din corpus; ce nu se confirma ramane in GARZI. DE CE doar 3 din 13:
+- D_14a/D_15a/D_16a au definitie verbatim (rd.103a/104a/105a) SI operanzi existenti in aplicatie (za/zf) =>
+  actabile. D_16a=D_14a+D_15a e singura formula-agregat data explicit pe zile.
+- Celelalte 10 pica testul "verbatim sau deloc" pe UNUL din doua motive: (a) structura NU da formula (B3_7D,
+  C_10D - doar antet; D_20a/D_21a - doar descriere narativa "diferenta recalculata", nu mecanismul), sau (b) cer
+  date pe care aplicatia nu le are (D_9a program national, E3_97 pensii ocupationale) ori o regula de calcul
+  neimplementata (D_9b diminuare 1 zi). A emite valori deduse (ex. C2_155=0) ar incalca "nicio formula dedusa".
+TEMEI: anaf_surse/structura_D112_0726_030826.pdf (rd. citate), anaf_surse/d112_06082026.xsd (tipuri: toate 13
+atribute confirmate; C2_155/C2_156 uppercase in XSD). PROBA (autoritatea J27, NU structura): kit D112 upgradat
+08.08 (D112Validator.jar bak_pre_J27_20260808); XML 07/2026 cu CM cod 01 -> fara fix: 3 erori "atributul trebuie
+sa existe" + S103a/S104a; cu fix: DUK stare=VALID. Nivel sursa: XSD/structura = REDARE oficiala; DUK J27 = autoritate.
+Gating (an,luna)>=(2026,7): structura spune "se aplica din 01.07.2026"; regenerarea unei luni < 07/2026 pastreaza
+structura veche, altfel DUK ar respinge structura anterioara.
