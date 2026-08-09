@@ -2286,3 +2286,44 @@ ramanea in urma (running 6589873 vs HEAD f20ee85 la aceasta tura). Reparat prin 
 automati dupa poarta verde; four-way running==HEAD) + §2.2 sect.11 extins la four-way. Push-ul era deja cablat
 (post-commit, three-way); restartul ramane pas de executor - stop point uman pe comportament vizibil, nu se
 cableaza orb. Neguardabil mecanic (vezi TESTE 09.08 tura 3); confirmarea = four-way in raport.
+
+## 09.08.2026 (tura 4) — OUG 91/2025 diminuare CM: nucleul CONFORM; 5 divergente listate (NEatinse - luni inchise/ambiguu)
+
+**CORPUS (adus, sursa oficiala legislatie.just.ro):** anaf_surse/oug_91_2025.html (MO 1223/31.12.2025),
+lege_64_2026.html (MO 416/15.05.2026, aproba OUG 91), ordin_506_1030_2026_norme_oug158.html (MO 507/19.06.2026,
+normele - modifica art.78^4 din Ordinul 15/2018/1311/2017).
+
+**NUCLEU CONFORM (verificat verbatim, gardat - test_cm_episod.py):** aplicatia implementa DEJA regula si
+COINCIDE cu textul pe aspectele CLARE: (a) diminuare = NZLCM-1 = o ZI LUCRATOARE (Ordin 506 art.78^4(4), inclusiv
+exemplul numeric 442 lei reprodus de gard); (b) o singura zi/episod indiferent de nr. certificate (Legea 64
+alin.1^1); (c) fereastra certificate 01.02.2026-31.12.2027 (OUG 91 art.II(1)); (d) exceptii art.2(1) lit c)=08,
+d^1)=17, e)=15 (+09 lit d) NEexceptat); (e) angajator zilele 2-6 (5 zile), FNUASS din ziua 7; (f) ziua diminuata
+constituie stagiu de asigurare (OUG 91 art.II(2)) - app nu reduce niciun stagiu, doar zilele platite.
+
+**DIVERGENTE / AMBIGUITATI (NEatinse - fiecare afecteaza LUNI INCHISE si/sau e ambiguu; decizie Costin):**
+1. **cod 51 (izolare) - CONFLICT norma vs ANAF.** App il EXCEPTA de la diminuare. Ordin 506 alin.(2^1)/(2^2) NU
+   listeaza izolarea (nu e art.2(1) lit c/d^1/e, nu programe nationale, nu spitalizare); OUG 91 art.II(1) lit a)
+   mentioneaza izolarea DOAR la suportare (trece pe FNUASS), NU la diminuare. DAR structura ANAF D112
+   (structura_D112_0726_030826.pdf p.2) listeaza D_9=51 ca EXCEPTAT de la diminuare. Norma spune "se diminueaza",
+   ANAF spune "nu". Impact: overpay pe CM izolare daca norma prevaleaza. DECIZIE (nu aleg interpretarea).
+2. **faza excepatiilor 01.06.2026.** Legea 64 art.VI(4): exceptiile art.II alin.(4)/(5) (08/15/17 + programe
+   nationale + spitalizare) se aplica "incepand cu data de 1 a lunii urmatoare intrarii in vigoare a legii de
+   aprobare" = 01.06.2026. App aplica lista completa de exceptii din 01.02.2026. Deci pt certificate 02-05.2026,
+   textul ar cere diminuarea si a codurilor 08/15/17 (exceptia lor incepe abia 01.06.2026), iar app NU le
+   diminueaza. Impact: underpay evitat gresit pe 02-05.2026 (LUNI INCHISE). DECIZIE + interpretare.
+3. **programe nationale pe coduri regulate.** Ordin 506 alin.(6): pacientii din programe nationale ALTII decat
+   art.13(3) lit a)-c) au cuantum per art.17(1) (deci coduri regulate 01 etc.), dar sunt EXCEPTATI (alin.2^1
+   "bolnavilor inclusi in programele nationale"). App excepta doar codurile 12/13/14 -> un pacient de program
+   national pe cod 01 e diminuat gresit (underpay). BLOCAT_DATE: aplicatia n-are marcaj "program national" pe
+   certificat = aceeasi datorie ca D_9a din D112 (vezi 09.08 tura 1). Se leaga de [[d112 13 campuri]].
+4. **data de gating: data_inceput vs data eliberarii.** OUG 91 art.II(1): "certificatele ELIBERATE in perioada".
+   App gateaza fereastra + varianta de calcul pe `data_inceput` (inceputul CM, salariati_api.py:366), nu pe
+   `data_acordare` (data eliberarii). Diferenta apare doar la FRONTIERELE ferestrei (ian/feb 2026, dec 2027/ian
+   2028). Text clar ("eliberate"), dar schimbarea muta calculul pe luni inchise. DECIZIE (schimb gating-ul?).
+5. **cod 02 (accident) - nomenclator neconfirmat.** App excepta 02/03/04 ca "accidente". 03/04 (accident de
+   munca/boala profesionala) = Legea 346/2002, NU OUG 158 (art.2(1) lit b exclude) -> exceptare inofensiva. 02:
+   daca = accident IN AFARA muncii, e sub OUG 158 art.2(1) lit a) -> AR TREBUI diminuat -> exceptare gresita
+   (overpay). LIPSA: nomenclatorul OFICIAL cod-indemnizatie->tip (Nomenclator D_9), de confirmat verbatim.
+
+Toate 5 sunt NEatinse: 1/2/4 schimba sume pe luni INCHISE (02-08.2026) -> stop point "raportezi inainte de a
+atinge"; 1 e ambiguu (norma vs ANAF); 3 e BLOCAT_DATE; 5 cere nomenclatorul verbatim. Niciun cod de calcul atins.

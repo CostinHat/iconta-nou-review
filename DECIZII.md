@@ -7961,3 +7961,33 @@ interzis; ce devine obligatoriu e restartul CONSTIENT al executorului dupa poart
 TEMEI: CLAUDE.md §2.3 pct.8 (push three-way) + §2.2 sect.11, core/versiune.py (detector running==HEAD),
 iconta-nou.service (WorkingDirectory=/home/costin/iconta_nou -> deploy = HEAD pe disc). Registrul care face regula
 sa supravietuiasca schimbarii de sesiune = CLAUDE.md (incarcat la fiecare sesiune) - acolo intra pct.10.
+
+## 09.08.2026 — OUG 91/2025 (diminuare CM 1 zi): nucleul aplicatiei CONFORM cu textul oficial; 5 divergente ca intrebari
+
+Comanda Costin (executie): adu textul oficial OUG 91/2025 + norme, stabileste verbatim regula, compara cu app,
+repara ce e verbatim, listeaza restul. REZULTAT: aplicatia implementa DEJA diminuarea (chestionar pct.4 confirmat -
+nu presupun lipsa) si, pe aspectele pe care textul le spune CLAR, COINCIDE cu el - deci nucleul NU necesita reparatie.
+
+TEMEI (verbatim, sursa oficiala legislatie.just.ro, aduse in corpus):
+- OUG 91/2025 art.II(1) (MO 1223/31.12.2025): "certificatele ... eliberate in perioada 1 februarie 2026-31
+  decembrie 2027 ... se calculeaza si se platesc prin diminuarea cu o zi"; a) angajator zilele 2-6, b) FNUASS ziua
+  urmatoare; art.II(2): ziua diminuata "constituie stagiu de asigurare".
+- Legea 64/2026 (MO 416/15.05.2026): alin.(1^1) "o singura zi, indiferent de numarul certificatelor" (episod
+  fara intrerupere); alin.(4) exceptii art.2(1) lit c)/d^1)/e) + programe nationale; alin.(5) spitalizare;
+  art.VI(4) exceptiile alin.(4)/(5) se aplica de la 01.06.2026.
+- Ordin 506/1030/2026 art.78^4(4) (MO 507/19.06.2026): "Ci = Mzbci x ....% x (NZLCM - 1) ... minus prima zi
+  LUCRATOARE" - REZOLVA ambiguitatea zi calendaristica vs lucratoare: e ZI LUCRATOARE (constrangerea "nu alegi tu"
+  nu s-a aprins - norma alege). Exemplul normei (442 lei) reprodus de gard.
+- OUG 158/2005 art.2(1): c)=maternitate, d)=ingrijire copil bolnav, d^1)=oncologic, e)=risc maternal.
+
+DE CE nucleul e conform: app calculeaza NZLCM-1 (o zi lucratoare), o data/episod (prima_zi_din_episod),
+in fereastra 2026-2027 (variante datate), exceptand 08/15/17 (=lit c/d^1/e) + spitalizare, angajator 5 zile /
+FNUASS din 7; ziua diminuata nu reduce niciun stagiu. Proba before->after: episod 20 zile (init 7 + cont 13),
+media 200 -> 3000 lei fara diminuare, 2850 cu diminuare (dif -150 = o zi x 200 x 75%%, o data pe initial, din FNUASS).
+
+CE RAMANE (5 divergente, NEatinse - vezi GARZI 09.08 tura 4): (1) izolare cod 51 - CONFLICT norma (se diminueaza)
+vs ANAF D112 (exceptat); (2) faza excepatiilor 01.06.2026 vs aplicarea din 01.02.2026 in app (certificate
+02-05.2026); (3) programe nationale pe coduri regulate - BLOCAT_DATE (marcaj lipsa, ~D_9a); (4) gating pe
+data_inceput vs "eliberate" (data_acordare); (5) cod 02 accident - nomenclator neconfirmat. Toate afecteaza
+LUNI INCHISE si/sau sunt ambigue -> NU le-am atins (stop point "raportezi inainte de a atinge sume pe luni
+inchise" + "nu alegi interpretarea"); le pun ca decizii pentru Costin.

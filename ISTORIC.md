@@ -3615,3 +3615,14 @@ four-way (running==HEAD). Scrisa in CLAUDE.md §2.3 pct.10 + §2.2 sect.11 (thre
 09.08. Prod era divergent (RUNNING 6589873 din 03:26 EEST vs HEAD f20ee85); adus la zi prin `systemctl restart
 iconta-nou` dupa raportarea impactului vizibil (stop point). Four-way confirmat post-restart (HEAD=origin=backup=
 RUNNING; start-time dupa commit) - vezi raportul 09.08 tura 3.
+
+## 09.08.2026 (tura 4) — OUG 91/2025 diminuare CM: acte in corpus + verificare (nucleu conform) + 3 garduri
+Adus verbatim (legislatie.just.ro): OUG 91/2025 (MO 1223/31.12.2025), Legea 64/2026 (MO 416/15.05.2026), Ordin
+506/1030/2026 (MO 507/19.06.2026) -> anaf_surse/. Regula clarificata pe 7 aspecte (pct.2): diminuare o zi
+LUCRATOARE (Ordin 506 rezolva ambiguitatea), certificate 01.02.2026-31.12.2027, o data/episod, exceptii art.2(1)
+lit c/d^1/e + programe nationale + spitalizare, izolare doar la suportare, ziua diminuata = stagiu de asigurare.
+Comparatie cu app: NUCLEUL implementat DEJA si CONFORM pe aspectele clare -> fara reparatie de cod; gardat cu 3
+teste (inclusiv exemplul numeric al normei). 5 divergente listate in GARZI (izolare 51 conflict norma/ANAF; faza
+excepatiilor 01.06.2026; programe nationale pe coduri regulate = BLOCAT_DATE ~D_9a; gating data_inceput vs
+eliberare; cod 02 nomenclator) - NEatinse: afecteaza luni inchise si/sau ambigue -> decizii Costin. Niciun cod de
+calcul atins (fara schimbare de sume pe luni inchise). Proba before->after: 3000 -> 2850 lei (dif -150, o zi/episod).

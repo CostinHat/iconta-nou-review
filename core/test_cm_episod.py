@@ -89,3 +89,45 @@ def test_coduri_speciale_neatinse_de_l141():
         assert procent_cm("07", 10, la_data=d) == Decimal("1.00")
         assert procent_cm("12", 10, la_data=d) == Decimal("1.00")
         assert procent_cm("08", 10, la_data=d) == Decimal("0.85")
+
+
+# ---------------------------------------------------------------------------
+# OUG 91/2025 + Legea 64/2026 + Ordin 506/1030/2026 - verbatim (aduse in corpus 09.08.2026:
+# anaf_surse/oug_91_2025.html, lege_64_2026.html, ordin_506_1030_2026_norme_oug158.html)
+# ---------------------------------------------------------------------------
+
+def test_diminuare_o_zi_lucratoare_exemplul_ordin_506():
+    """Ordin 506/1030/2026 art.I pct.3 -> Norme art.78^4 alin.(4) VERBATIM:
+    Ci = Mzbci x ....% x (NZLCM - 1), unde 'NZLCM - 1 = numarul de zile lucratoare din concediul
+    medical minus prima zi lucratoare'. Exemplul din norma: 5 zile lucratoare, media 200,82 lei, 55%
+    -> 200,82 x 55%% x 4 = 441,80 -> 442 lei. Se scade O ZI LUCRATOARE (nu calendaristica)."""
+    r = calcul_cm(24300, 121, 5, cod="01", zile_episod=5, prima_zi_din_episod=True, la_data=date(2026, 7, 1))
+    assert r["zile_platite"] == 4, "NZLCM-1 = 5 minus prima zi lucratoare = 4"
+    assert r["procent"] == Decimal("55.00"), "episod 5 zile (<=7) -> 55%%"
+    assert r["media_zilnica"] == Decimal("200.83") or r["media_zilnica"] == Decimal("200.82"), r["media_zilnica"]
+    assert r["brut"] == Decimal("442"), "exemplul Ordin 506: 200,82 x 55%% x 4 = 442 lei (rotunjit la leu)"
+
+
+def test_diminuare_fereastra_certificat_01022026_31122027():
+    """OUG 91/2025 art.II(1) VERBATIM: 'Pentru certificatele de concediu medical eliberate in perioada
+    1 februarie 2026-31 decembrie 2027 ... se calculeaza si se platesc prin diminuarea cu o zi'.
+    In afara ferestrei: fara diminuare."""
+    B0 = dict(cod="01", zile_episod=7, prima_zi_din_episod=True)
+    assert calcul_cm(25200, 126, 7, la_data=date(2026, 1, 31), **B0)["diminuare"] == 0, "< 01.02.2026 fara diminuare"
+    assert calcul_cm(25200, 126, 7, la_data=date(2026, 2, 1),  **B0)["diminuare"] == 1, "01.02.2026 diminuare"
+    assert calcul_cm(25200, 126, 7, la_data=date(2027, 12, 31),**B0)["diminuare"] == 1, "31.12.2027 diminuare"
+    assert calcul_cm(25200, 126, 7, la_data=date(2028, 1, 1),  **B0)["diminuare"] == 0, ">= 2028 fara diminuare"
+
+
+def test_diminuare_exceptii_verbatim_art2_lit_c_d1_e():
+    """Legea 64/2026 pct.3 -> OUG 91 art.II alin.(4) + Ordin 506 art.78^4 alin.(2^1) VERBATIM:
+    diminuarea NU se aplica la CM prevazute la art.2 alin.(1) lit. c), d^1) si e) din OUG 158/2005.
+    art.2(1) OUG 158 (oug_158_2005_consolidat.html): c)=maternitate(08), d^1)=oncologic(17), e)=risc
+    maternal(15). lit d)=ingrijire copil bolnav(09) NU e in lista -> se diminueaza."""
+    LA0 = date(2026, 7, 1)
+    for cod in ("08", "15", "17"):
+        r = calcul_cm(25200, 126, 7, cod=cod, zile_episod=7, prima_zi_din_episod=True, la_data=LA0)
+        assert r["diminuare"] == 0, "cod %s (art.2(1) lit c/d^1/e) NU se diminueaza" % cod
+    for cod in ("01", "09"):
+        r = calcul_cm(25200, 126, 7, cod=cod, zile_episod=7, prima_zi_din_episod=True, la_data=LA0)
+        assert r["diminuare"] == 1, "cod %s (NU e in lista de exceptii) se diminueaza" % cod

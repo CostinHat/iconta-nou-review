@@ -1311,3 +1311,12 @@ de push INAINTE de cablarea post-commit. NU se adauga gard nou: restartul are st
 -> nu se poate cabla orb intr-un hook (ar reporni prod peste utilizatori activi). Confirmarea ramane four-way in
 raport (§2.2 sect.11), verificata la executie prin versiune.stare() + start-time systemd. Gardul existent
 core/test_running_head.py (detectorul running==HEAD) ramane neatins si suficient pentru semnalul de divergenta.
+
+## 09.08.2026 (tura 4) — Garduri OUG 91/2025 (diminuare CM) verbatim — 3 garduri (test_cm_episod.py)
+- test_diminuare_o_zi_lucratoare_exemplul_ordin_506: reproduce exemplul VERBATIM din Ordin 506 art.78^4(4)
+  (5 zile lucr, media 200,82, 55%% -> 442 lei); pineaza NZLCM-1 = o zi LUCRATOARE.
+- test_diminuare_fereastra_certificat_01022026_31122027: frontierele ferestrei OUG 91 art.II(1) (31.01.2026 nu,
+  01.02.2026 da, 31.12.2027 da, 01.01.2028 nu).
+- test_diminuare_exceptii_verbatim_art2_lit_c_d1_e: 08(c)/15(e)/17(d^1) NEdiminuate; 09(lit d)/01 diminuate.
+Gardeaza NUMAI aspectele CLARE verbatim (nu 02/51 - sub intrebare). Ancorate la actele din corpus (oug_91_2025.html,
+lege_64_2026.html, ordin_506_1030_2026_norme_oug158.html). test_cm_episod.py + test_salarizare.py: 46 passed.
