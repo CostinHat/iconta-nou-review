@@ -4,6 +4,7 @@ Dimensiuni (6): tip_firma x platitor_tva x salariati x operatiuni_ic x D205 x de
 Acopera calea VERDE (confirmate) prin _clasifica cu `depuse` (fapt de depunere) - temeiul verde inclus.
 declaratii_datorate + declaratii_fapt (helperi D205/D301 mock-uiti) + _clasifica (lipsa/urmarit/confirmate).
 """
+import datetime
 import pytest
 from datetime import date
 from core import control_fiscal_api as cf
@@ -35,8 +36,9 @@ def _stari(tip_firma, platitor_tva, salariati, operatiuni_ic, d205_note, depuse_
     neaplicabile = rez["neaplicabile"] + fapt["neaplicabile"]
     neclar = rez["neclar"] + fapt["neclar"]
     # depuse: fapt de depunere -> calea VERDE (confirmate). "toate" = tot ce e datorat a fost depus.
-    depuse = {(d["tip"], d["an"], d["luna"]): AZI for d in datorate} if depuse_toate else {}
-    lipsa, urmarit, confirmate = cf._clasifica(datorate, depuse, AZI)
+    depuse = {(d["tip"], d["an"], d["luna"]): datetime.date.fromisoformat(d["termen"])
+              for d in datorate} if depuse_toate else {}
+    lipsa, urmarit, confirmate, _ = cf._clasifica(datorate, depuse, AZI)
     return partida_simpla, datorate, lipsa, urmarit, confirmate, neaplicabile, neclar
 
 

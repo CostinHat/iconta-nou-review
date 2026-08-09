@@ -3721,3 +3721,14 @@ dedicat (user 6504) via auth_api.inregistreaza_cabinet; login probat /auth/login
 cu search_path (schemele iau nume auto la provisionare). Ramane pentru Costin (UI): adauga cele 4 firme MANUAL
 (CUI-uri de test false, respinse de fluxul ANAF), importa CSV migrare + XML e-Factura; intre pasi rulez eu
 seed_profil (dupa provizionare) si seed_luna (dupa XML). Cabinetul real cu 12 firme NEATINS. Vezi DECIZII.
+
+## 09.08.2026 (tura 16) — Reparat doua "forme care spun altceva": balanta straina "echilibrata" + "La zi" cu intarziati
+
+Descoperite parcurgand firul de intrare in cabinetul test 4163 (GAMA/ALFA). (1) Import solduri accepta fisier strain
+(istoric_declaratii la solduri) -> "echilibrat" verde pe 0=0, salva balanta goala. Fix: solduri_api.balanta_valida
+(cont ne-numeric / total 0=0) -> poarta in importa + preview valida/motiv + UI avert+salvare blocata. (2) Control
+fiscal numara depusele DUPA termen la "La zi". Fix: cos nou cu_intarziere in _clasifica (stare noua in model, nu DB),
+nume "Depuse cu intarziere", informativ (nu urca pastila; depus tarziu != restanta). Probat pe ALFA: La zi 19->5 +
+Depuse cu intarziere 14, firma verde. Frontend: grup nou in control_verdict.js (cf-galben), ?v=1->2 (firme+control).
+Citata regula DESIGN_SYSTEM cap.6 (arataMesaj/solduri) si cap.8 (semafor/control fiscal) la capul patch-urilor UI.
+Vezi DECIZII (nume+severitate = decizii Costin) + GARZI.

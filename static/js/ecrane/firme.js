@@ -10,7 +10,7 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js?v=2";
 import { ecranEtransport } from "./etransport_ecran.js?v=5";
 import { meniuMigrarePerFirma } from "./migrare.js?v=5";  // [p96_import_firma]
 import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=1";  // renderer unic verdict control fiscal (DS cap.20)
+import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=2";  // [date_firma_v1]

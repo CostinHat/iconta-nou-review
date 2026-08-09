@@ -2451,3 +2451,12 @@ end-to-end -> derivarea de semnatura a d300.genereaza (cere acum Perioada) a ram
 `except -> gri`. Gardul cheama verifica_tva pe schema efemera cu o factura emisa necontabilizata (4427=0) si cere
 stare=='rosu'. MUTATIE PROBATA: revert la _d300.genereaza(conn, schema, an, luna) -> testul PICA `- rosu + gri`;
 fix restaurat -> pass. Efemer: schema stearsa + rollback, 0 reziduuri.
+
+## 09.08.2026 (tura 16) — Doua garduri de "forma": balanta valida la import + "cu intarziere" scos din "La zi"
+
+1. core/test_solduri_api.py::test_fisier_strain_nu_e_balanta_valida / test_balanta_goala_toate_zero_nu_e_valida /
+   test_importa_refuza_fisier_strain_inainte_de_db: solduri_api.balanta_valida prinde fisier strain (cont
+   ne-numeric) si balanta all-zero; verifica_echilibru zice inca "echilibrat" pe 0=0 (asertat) -> balanta_valida
+   e a doua poarta. Mutatie: importa fara poarta -> verifica_echilibru trece (0=0) -> asigura_tabel(None) (nu ValueError).
+2. core/test_control_fiscal.py::test_clasifica_depusa_dupa_termen_iese_din_la_zi: depusa 20.07 vs termen 25.02 ->
+   cu_intarziere, confirmate gol, lipsa gol (nu restanta). Mutatie: fara cosul separat -> cadea in confirmate (La zi).

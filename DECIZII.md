@@ -8287,3 +8287,25 @@ superadmin nu le-ar atinge. Trebuie admin_firma al cabinetului 4163.
 LIMITA: firmele de test au CUI-uri FALSE (valid checksum, inexistente la ANAF) -> fluxul Migrare
 "import CUI -> validare ANAF -> provisionare" le respinge; se adauga MANUAL (Adauga firma: provision_tenant
 valideaza CUI-ul doar offline, precompletarea ANAF e best-effort inghitita). Vezi ISTORIC + raport pt. ordine.
+
+## 09.08.2026 — Doua "forme care spun altceva decat faptul": balanta straina si "La zi" cu intarziati
+
+Constatari de ecran (cabinet test 4163, GAMA/ALFA): app-ul stie faptul corect, il prezinta inselator.
+
+(1) IMPORT SOLDURI accepta fisier cu structura straina. istoric_declaratii.csv incarcat la solduri -> "D394"
+citit ca numar de cont, debit/credit 0 -> verifica_echilibru zice "echilibrat" (0==0), bulina verde, importul
+SALVA balanta goala. Importul de parteneri avea verificare de continut (compara cu balanta), solduri NU avea
+niciuna (chestionar pt.4: da, mecanisme diferite - solduri e general, accepta orice cont, dar n-avea poarta
+"e chiar o balanta?"). FIX: solduri_api.balanta_valida (PURA): (a) niciun cont nu incepe cu cifra -> fisier
+strain; (b) total debit=0 SI credit=0 -> balanta goala. Poarta in importa (refuz, ca la dezechilibru) + ruta
+preview intoarce valida/motiv + UI avert + salvare blocata. NU schimba verifica_echilibru (folosit de audit_preluare).
+
+(2) CONTROL FISCAL "LA ZI" numara declaratiile depuse DUPA termen. D112 dec: termen 26.01, depusa 20.07 -> randul
+scria "dupa termen" dar categoria = La zi -> "LA ZI (19)" ascundea 14 depuneri intarziate. STARE NOUA in model
+(nu doar afisare, dar FARA DB - data_depunere deja stocata): _clasifica capata cosul cu_intarziere (dd>termen),
+separat de confirmate. NUME (decizie Costin, pt.5): "Depuse cu intarziere". SEVERITATE (decizie Costin):
+informativ - NU urca pastila (_stare neatins); depus tarziu != restanta (constrangere respectata) -> firma
+ramane verde daca totul e depus. Probat pe ALFA: La zi 19 -> La zi 5 + Depuse cu intarziere 14, firma verde, restante 0.
+
+ALTERNATIVA RESPINSA (pt.2): urca pastila la galben pe istoric de intarzieri - respinsa de Costin (firma e
+conforma acum; intarzierea e fapt istoric vizibil in grup separat, nu risc curent).

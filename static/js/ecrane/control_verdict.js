@@ -104,6 +104,10 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const lipsa = (d.lipsa || []).slice().sort((a, b) => (a.termen || "").localeCompare(b.termen || ""));
   const urmarit = (d.urmarit || []).slice().sort((a, b) => (a.termen || "").localeCompare(b.termen || ""));
   const confirmate = d.confirmate || [];
+  // [DESIGN_SYSTEM cap.8 — semafor: ordine roșu→galben→verde + tokeni de culoare] «La zi» (verde) =
+  // depus LA termen. O depunere DUPĂ termen nu e verde, dar nici restanță (roșu) -> categorie proprie
+  // (chihlimbar/galben), informativă. NU urcă pastila firmei (control_fiscal_api._stare neatins).
+  const cu_intarziere = d.cu_intarziere || [];
   const neclar = d.neclar || [];
   const neaplicabile = d.neaplicabile || [];
 
@@ -112,6 +116,7 @@ export function randeazaCorpVerdict(d, opt = {}) {
     ${urmarit.length ? `<div class="cf-grup-titlu cf-galben">De urmărit (${urmarit.length})</div><div class="cf-decl">${randDecl(urmarit, "cf-termen-galben")}</div>` : ""}
     ${neclar.length ? `<div class="cf-grup-titlu">Nu pot verifica (${neclar.length})</div><div class="cf-decl">${randMotiv(neclar)}</div>` : ""}
     ${neaplicabile.length ? `<div class="cf-grup-titlu">Nu se datorează (${neaplicabile.length})</div><div class="cf-decl">${randMotiv(neaplicabile)}</div>` : ""}
+    ${cu_intarziere.length ? `<div class="cf-grup-titlu cf-galben">Depuse cu întârziere (${cu_intarziere.length})</div><div class="cf-decl">${randDecl(cu_intarziere, "cf-termen-galben")}</div>` : ""}
     ${confirmate.length ? `<div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div><div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}`;
 
   // «Declaratie vs contabilitate» — vc.tva_incrucisat/d112_incrucisat/d390_incrucisat (aceeasi anatomie).

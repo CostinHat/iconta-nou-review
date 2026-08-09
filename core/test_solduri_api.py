@@ -121,3 +121,36 @@ def test_contul_fara_denumire_primeste_simbolul():
 
     solduri_api._adauga_conturi_lipsa(_Conn(), [{"cont": "5121", "debit": 0, "credit": 0}])
     assert scrise == [("5121", "5121")]
+
+
+# ---- Poarta "balanta valida" (09.08.2026): fisier strain / gol nu trece ca "echilibrat" ----
+# Constatare de ecran: istoric_declaratii.csv incarcat din greseala la solduri -> "D394" citit ca
+# cont, debit/credit 0 -> verifica_echilibru zicea "echilibrat" (0==0) cu bulina verde, iar importul
+# salva o balanta goala. Paralela lipsa fata de importul de parteneri (care compara cu balanta).
+from core.solduri_api import balanta_valida
+
+
+def test_fisier_strain_nu_e_balanta_valida():
+    strain = [{"cont": "D394", "debit": 0, "credit": 0}, {"cont": "D100", "debit": 0, "credit": 0}]
+    assert verifica_echilibru(strain)[0] is True   # bugul vechi: 0=0 = "echilibrat"
+    ok, motiv = balanta_valida(strain)
+    assert ok is False and "cont" in motiv.lower()
+
+
+def test_balanta_goala_toate_zero_nu_e_valida():
+    zero = [{"cont": "5121", "debit": 0, "credit": 0}]
+    ok, motiv = balanta_valida(zero)
+    assert ok is False and "0" in motiv
+
+
+def test_balanta_reala_e_valida():
+    reala = [{"cont": "5121", "debit": 1000, "credit": 0}, {"cont": "1012", "debit": 0, "credit": 1000}]
+    assert balanta_valida(reala) == (True, "")
+
+
+def test_importa_refuza_fisier_strain_inainte_de_db():
+    # importa cheama balanta_valida INAINTE sa atinga conn -> ridica ValueError fara DB.
+    # Mutatie: fara poarta, verifica_echilibru trece (0=0) si se ajunge la asigura_tabel(None) -> alt tip de eroare.
+    strain = [{"cont": "D394", "debit": 0, "credit": 0}]
+    with pytest.raises(ValueError):
+        importa(None, strain)

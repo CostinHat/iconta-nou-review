@@ -549,13 +549,18 @@ function importSolduriFirma(corp, nav, firma) {
 function previzualizeazaSolduri(corp, nav, firma, date) {
   latime(corp, true);
   const randuri = date.randuri || [];
-  const echilibrat = Math.abs(date.total_debit - date.total_credit) < 0.01;
+  // [DESIGN_SYSTEM cap.6, arataMesaj v2] tipuri canonice: eroare/avert/info/ok; un "ok" (verde)
+  // se afiseaza DOAR pe succes real. O balanta goala / cu structura straina (fisier gresit) NU e
+  // succes -> badge verde "echilibrat" pe 0=0 ar fi status FALS. valida vine din backend
+  // (solduri_api.balanta_valida): pe invalid aratam avert-ul si blocam salvarea.
+  const valida = date.valida !== false;
+  const echilibrat = valida && Math.abs(date.total_debit - date.total_credit) < 0.01;
 
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b> · balanță încărcată</p>
     <div class="mig-sold-rezumat">
       <b>${randuri.length}</b> conturi · debit <b>${bani(date.total_debit)}</b> · credit <b>${bani(date.total_credit)}</b>
-      ${echilibrat ? '<span class="mig-eq mig-eq-ok">echilibrat</span>' : '<span class="mig-eq mig-eq-no">neechilibrat</span>'}
+      ${!valida ? '<span class="mig-eq mig-eq-no">fișier nevalid</span>' : (echilibrat ? '<span class="mig-eq mig-eq-ok">echilibrat</span>' : '<span class="mig-eq mig-eq-no">neechilibrat</span>')}
     </div>
     <div class="mig-eroare" id="mig-eroare"></div>
     <div class="mig-sold-cap">
@@ -565,6 +570,13 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
     <button class="buton-primar mig-buton" id="mig-salveaza-sold">Salvează soldurile</button>
   `;
   nav.setInapoi(() => wizardSolduri(corp, nav));
+
+  // Fisier nevalid (gol / structura straina): nu e succes -> avert + salvarea blocata (nu bulina verde).
+  if (!valida) {
+    arataMesaj(corp.querySelector("#mig-eroare"), date.motiv || "Fișier nerecunoscut ca balanță.", "avert");
+    const bs = corp.querySelector("#mig-salveaza-sold");
+    if (bs) { bs.disabled = true; bs.title = "Balanță nevalidă — verifică fișierul încărcat"; }
+  }
 
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => `

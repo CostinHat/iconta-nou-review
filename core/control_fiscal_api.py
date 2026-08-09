@@ -357,7 +357,7 @@ def _clasifica(datorate, depuse, azi):
     # [C1] motiv = doar ce NU e in antet (tip·perioada·termen se randeaza structurat in rand). Confirmate:
     # data depunerii + la/dupa termen (info noua). Lipsa/urmarit: DOAR faptul (D205/D301 "de ce e datorat");
     # statusul "nedepusa/termen depasit" e implicit din sectiune (Restante) + termenul rosu din antet.
-    lipsa, urmarit, confirmate = [], [], []
+    lipsa, urmarit, confirmate, cu_intarziere = [], [], [], []
     for d in datorate:
         cheie = (d["tip"], d["an"], d["luna"])
         fapt = d.get("fapt") or ""
@@ -367,16 +367,20 @@ def _clasifica(datorate, depuse, azi):
         if cheie in depuse:
             dd = depuse[cheie]
             data_txt = (" " + _dmy(dd.isoformat())) if dd else ""
-            la_termen = ("" if not dd else (" la termen" if dd <= term else " după termen"))
+            tarziu = bool(dd) and dd > term
+            la_termen = ("" if not dd else (" la termen" if not tarziu else " după termen"))
             e["motiv"] = f"Depusă{data_txt}{la_termen}{fapt_sufix}"
-            confirmate.append(e)
+            # [09.08.2026] Depusă DUPĂ termen -> coş separat cu_intarziere, NU confirmate/La zi.
+            # Faptul (dd>term) era deja în motiv, dar categoria o înghiţea la La zi -> "LA ZI (N)"
+            # ascundea întârzierile. NU e restanţă (e depusă) -> _stare neatins, nu urcă pastila.
+            (cu_intarziere if tarziu else confirmate).append(e)
         elif term < azi:
             e["motiv"] = fapt                 # restanta: temeiul e structurat (antet + sectiune); doar faptul e nou
             lipsa.append(e)
         else:
             e["motiv"] = fapt                 # de urmarit: idem
             urmarit.append(e)
-    return lipsa, urmarit, confirmate
+    return lipsa, urmarit, confirmate, cu_intarziere
 
 
 def _stare(lipsa, urmarit, neclar):
@@ -454,7 +458,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
 
     if not vector:
         return {"stare": "gri", "datorate": 0, "depuse": 0, "lipsa": [], "urmarit": [],
-                "confirmate": [], "neaplicabile": [],
+                "confirmate": [], "cu_intarziere": [], "neaplicabile": [],
                 "neclar": [{"tip": "—", "motiv": "Vector fiscal necompletat — nu pot evalua obligațiile firmei."}],
                 "mesaj": "vector fiscal necompletat"}
 
@@ -480,7 +484,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
         for t, a, l, dd in cur.fetchall():
             depuse[(t, a, l)] = dd.date() if hasattr(dd, "date") else dd
 
-    lipsa, urmarit, confirmate = _clasifica(datorate, depuse, azi)
+    lipsa, urmarit, confirmate, cu_intarziere = _clasifica(datorate, depuse, azi)
     # neclar uniformizat pe campul `motiv` (declaratii_datorate foloseste `cauza`)
     neclar_m = [{"tip": n["tip"], "motiv": n.get("motiv") or n.get("cauza", "")} for n in neclar]
     stare = _stare(lipsa, urmarit, neclar_m)
@@ -495,5 +499,6 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
 
     return {"stare": stare, "datorate": len(datorate), "depuse": len(depuse),
             "lipsa": lipsa, "urmarit": urmarit, "confirmate": confirmate,
+            "cu_intarziere": cu_intarziere,
             "neclar": neclar_m, "neaplicabile": neaplicabile,
             "regim_tva_anaf": regim_tva_anaf}

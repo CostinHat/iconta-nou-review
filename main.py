@@ -1730,7 +1730,8 @@ async def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=De
         raise HTTPException(400, str(e))
     td = round(sum(r["debit"] for r in randuri), 2)
     tc = round(sum(r["credit"] for r in randuri), 2)
-    return {"randuri": randuri, "total_debit": td, "total_credit": tc}
+    valida, motiv = solduri_api.balanta_valida(randuri)
+    return {"randuri": randuri, "total_debit": td, "total_credit": tc, "valida": valida, "motiv": motiv}
 
 
 @app.get("/tenants/{tenant_id}/solduri")

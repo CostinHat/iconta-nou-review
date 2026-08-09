@@ -1364,3 +1364,8 @@ Cluster CM+pull: 56 passed.
 - core/test_control_incrucisat_wiring.py::test_verifica_tva_prinde_factura_necontabilizata_end_to_end:
   factura emisa TVA 210 fara nota validata -> verifica_tva ROSU (constatare "TVA colectata"). Mutatie:
   d300.genereaza(conn, schema, an, luna) [semnatura veche] -> gri -> pica.
+
+## 09.08.2026 (tura 16) — Garduri "forma": balanta valida + cu_intarziere
+- core/test_solduri_api.py: +4 teste (balanta_valida strain/gol/real + importa refuza strain inainte de DB).
+- core/test_control_fiscal.py::test_clasifica_depusa_dupa_termen_iese_din_la_zi: depusa dupa termen -> cu_intarziere.
+- test_matrice_control_fiscal + test_control_fiscal: re-ancorate la _clasifica cu 4 cosuri (depunere on-time = termen).

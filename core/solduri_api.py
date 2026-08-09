@@ -141,6 +141,30 @@ def verifica_echilibru(randuri):
     return abs(dif) < 0.01, td, tc, dif
 
 
+def balanta_valida(randuri):
+    """PURA: (ok, motiv). O balanta reala are solduri (totaluri != 0) si conturi contabile.
+    Un fisier strain (ex. istoric_declaratii.csv incarcat din greseala) e citit cu coloanele
+    debit/credit NEGASITE -> toate 0 -> verifica_echilibru zice "echilibrat" (0==0). Fara
+    aceasta poarta, o balanta GOALA se salva cu bulina verde si contabilul credea ca e in
+    regula (constatare de ecran 09.08.2026). Paralela cu importul de parteneri, care compara
+    cu balanta si arata diferenta; solduri n-avea nicio verificare de continut."""
+    randuri = randuri or []
+    if not randuri:
+        return False, "Fisier gol: niciun rand de citit."
+    td = round(sum(_numar(r.get("debit")) for r in randuri), 2)
+    tc = round(sum(_numar(r.get("credit")) for r in randuri), 2)
+    conturi_cont = sum(1 for r in randuri if str(r.get("cont") or "").strip()[:1].isdigit())
+    if conturi_cont == 0:
+        return False, ("Fisier nerecunoscut ca balanta: nicio valoare din coloana Cont nu arata "
+                       "a cont contabil (un cont incepe cu cifra; \"D394\" nu e cont). "
+                       "Verifica daca ai incarcat balanta de deschidere.")
+    if td == 0 and tc == 0:
+        return False, ("Balanta fara solduri: total debitor si total creditor sunt amandoua 0 "
+                       "(coloanele Sold debitor/creditor lipsesc sau toate valorile sunt 0). "
+                       "\"Echilibrat\" pe 0 = 0 nu inseamna o balanta valida.")
+    return True, ""
+
+
 def _adauga_conturi_lipsa(conn, randuri):
     """Conturile din balanta care nu sunt in planul firmei intra in el.
 
@@ -180,6 +204,9 @@ def importa(conn, randuri, data_referinta=None):
     # REFUZUL E PRIMA POARTA: nimic nu se scrie dintr-o balanta respinsa. Pusesem
     # _adauga_conturi_lipsa inaintea verificarii - conturile intrau in plan chiar si
     # cand importul era refuzat. Prins de test (15.07.2026), nu de mine.
+    vok, vmotiv = balanta_valida(randuri)
+    if not vok:
+        raise ValueError(vmotiv)
     ok, td_v, tc_v, dif = verifica_echilibru(randuri)
     if not ok:
         raise ValueError(
