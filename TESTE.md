@@ -1344,3 +1344,8 @@ Cele 5 valori (facilitate 300, tva_redusa_5, tva 19%, dividend 5%, mijloc fix 2.
 - Setul de exceptii de la diminuare (suita de salarizare CM de la radacina, nc28): 02/03/04 mutate din exceptat
   in diminuat.
 Cluster CM+pull: 56 passed.
+
+## 09.08.2026 (tura 9) — D_9a: 3 garduri
+- core/test_migrare_program_national_cm.py: fiecare tenant are concedii_medicale.program_national.
+- core/test_cm_episod.py::test_program_national_exceptat_de_la_diminuare: program_national -> diminuare=0 (fazat 01.06.2026).
+- core/test_d112.py::test_d112_d9a_program_national_emis: asiguratD emite D_9a="1" cand marcaj (07/2026); absent altfel.

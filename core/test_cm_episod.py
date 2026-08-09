@@ -174,3 +174,12 @@ def test_gating_pe_data_eliberarii_nu_pe_data_inceput():
     B0 = dict(cod="01", zile_episod=7, prima_zi_din_episod=True, la_data=date(2026, 3, 1))  # inceput in fereastra
     assert calcul_cm(25200, 126, 7, data_eliberare=date(2026, 1, 20), **B0)["diminuare"] == 0, "eliberat < 01.02.2026"
     assert calcul_cm(25200, 126, 7, data_eliberare=date(2026, 3, 1),  **B0)["diminuare"] == 1, "eliberat in fereastra"
+
+
+def test_program_national_exceptat_de_la_diminuare():
+    """D_9a: pacient inclus in program national de sanatate -> exceptat de la diminuare (Ordin 506/1030/2026
+    art.78^4 alin.(2^1)), fazat de la 01.06.2026 (Legea 64 art.VI(4)). Inainte de 06.2026 inca se diminueaza."""
+    B0 = dict(cod="01", zile_episod=7, prima_zi_din_episod=True)
+    assert calcul_cm(25200, 126, 7, program_national=True,  data_eliberare=date(2026, 7, 1), **B0)["diminuare"] == 0
+    assert calcul_cm(25200, 126, 7, program_national=True,  data_eliberare=date(2026, 3, 1), **B0)["diminuare"] == 1
+    assert calcul_cm(25200, 126, 7, program_national=False, data_eliberare=date(2026, 7, 1), **B0)["diminuare"] == 1

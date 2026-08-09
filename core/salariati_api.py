@@ -336,6 +336,7 @@ def salveaza_concediu(conn, salariat_id, date):
         ven6 = sum((_dec_pos(_e[0]) for _e in venituri_lunare), _dec_pos(0))
         zile6 = sum(int(_e[1]) for _e in venituri_lunare)
     spitalizare = bool(date.get("spitalizare"))
+    program_national = bool(date.get("program_national"))  # [D_9a] marcaj program national de sanatate
     pacc = int(date.get("procent_accident") or 100)
     cod_urgenta = date.get("cod_urgenta")
     cod_urgenta = int(cod_urgenta) if cod_urgenta not in (None, "") else None
@@ -464,7 +465,7 @@ def salveaza_concediu(conn, salariat_id, date):
         calc = _s.calcul_cm(ven6, zile6, zile_cm, cod=cod, spitalizare=spitalizare,
                             la_data=la_data, procent_accident=pacc, venituri_lunare=venituri_lunare,
                             zile_episod=zile_episod, prima_zi_din_episod=prima_zi, data_episod_initial=data_ini,
-                            data_eliberare=data_elib)
+                            data_eliberare=data_elib, program_national=program_national)
     taxe = _s.taxe_cm(calc["brut"], cod=cod, la_data=la_data)
 
     with conn.cursor() as cur:
@@ -473,8 +474,8 @@ def salveaza_concediu(conn, salariat_id, date):
             "baza, media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, "
             "brut_ang, brut_fnuass, cass, impozit, cas, net, serie, numar, data_acordare, "
             "data_inceput, data_sfarsit, loc_prescriere, diagnostic, cod_urgenta, cnp_ingrijit, "
-            "serie_initiala, numar_initial, este_continuare, data_certificat_initial, venituri_6_luni, zile_6_luni) "
-            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
+            "serie_initiala, numar_initial, este_continuare, data_certificat_initial, venituri_6_luni, zile_6_luni, program_national) "
+            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) "
             "RETURNING id",
             (salariat_id, date.get("an"), date.get("luna"), cod, zile_cm, calc["brut"],
              calc.get("baza", ven6), calc["media_zilnica"], calc["procent"], bool(calc["diminuare"]),
@@ -483,7 +484,7 @@ def salveaza_concediu(conn, salariat_id, date):
              taxe["cas"], taxe["net"], date.get("serie"), date.get("numar"),
              date.get("data_acordare"), date.get("data_inceput"), date.get("data_sfarsit"),
              int(date.get("loc_prescriere") or 1), date.get("diagnostic"), cod_urgenta, cnp_ingrijit,
-             serie_ini, numar_ini, este_continuare, data_ini, _dec_pos(ven6), int(zile6)))
+             serie_ini, numar_ini, este_continuare, data_ini, _dec_pos(ven6), int(zile6), program_national))
         cm_id = cur.fetchone()[0]
 
     # [CM-episod] RECALCUL RETROACTIV: episodul a crescut -> re-aplica procentul (55/65->75), diminuarea

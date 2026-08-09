@@ -8122,3 +8122,27 @@ reale: 0 (tenant_001 n-are certificate 02/03/04), 0 luni depuse afectate (stop p
 
 Supersedeaza decizia din tura 4/7 ("raman nediminuate pana la confirmare"): confirmarea a venit (Legea 319/2006 +
 Nomenclator). Gard: core/test_cm_episod.py::test_cod_02_03_04_se_diminueaza (mutatie: re-exceptare -> rosu).
+
+## 09.08.2026 (tura 9) — D112 D_9a: marcaj "program national de sanatate" pe certificatul CM (date -> ecran -> D112)
+
+Comanda Costin: construieste locul de intrare pentru D_9a (blocat pe date) si emite-l in D112. STRUCTURA VERBATIM
+(structura_D112_0726_030826.pdf rd.98a, XSD IntInt1_1SType): D_9a N(1), "9.1 - se bifeaza pentru CM acordate
+pacientilor inclusi in programele nationale de sanatate" (se aplica din 07/2026). Conditie de completare = BIFA
+per certificat (structura o da explicit ca marcaj) -> se poate EMITE verbatim.
+
+CONSTRUIT (DB -> ecran -> D112):
+- DB: concedii_medicale.program_national boolean DEFAULT false (core/migrare_program_national_cm.py, idempotent,
+  aplicat pe 12 tenanti; mirror in tenant_template.sql). Migrare aditiva metadata-only (ADD COLUMN IF NOT EXISTS)
+  - NU atinge date existente (fara rescriere).
+- Ecran: flux_concediu.js - checkbox .set-bifa "Pacient inclus in program national de sanatate (D112 D_9a)" +
+  payload program_national. Regula DS REUTILIZATA (checkbox cu eticheta v2.11 .set-bifa) - NICIUN tipar nou ->
+  nicio regula noua in DESIGN_SYSTEM/verificator (citata la capul patch-ului frontend).
+- Persistenta: salariati_api.salveaza_concediu stocheaza program_national; d112.pull il citeste in dict.
+- D112: asiguratD emite D_9a="1" cand marcajul e setat (gated >=07/2026). J27: DUK stare=VALID, 0 erori.
+- Calcul: program_national exceptat de la diminuarea de 1 zi (Ordin 506/1030/2026 art.78^4 alin.(2^1) "bolnavilor
+  inclusi in programele nationale"), FAZAT 01.06.2026 (Legea 64 art.VI(4)) - inchide gapul "programe nationale pe
+  coduri regulate" din GARZI (acum exista marcajul, nu doar codurile 12/13/14).
+
+EFECT IN BANI: marcajul nou (0 certificate existente il au) -> 0 acum. Certificate viitoare cu program national:
+D_9a="1" in D112 + exceptat de la diminuare (de la 01.06.2026). Nicio munca in plus obligatorie pt contabil (bifa
+optionala, default nebifat).

@@ -101,6 +101,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
           <label class="camp"><span class="camp-eticheta">Zile lucr\u0103toare 6 luni<span class="oblig">*</span></span><input type="number" id="cm-zile6" class="camp-input" min="1" placeholder="ex. 126"><span class="camp-ajutor">Total zile lucr\u0103toare din acelea\u0219i 6 luni (ex. ~126 pentru 6 luni pline).</span></label>
           <label class="camp"><span class="camp-eticheta">Diagnostic (op\u021bional)</span><input type="text" id="cm-diag" class="camp-input"></label>
           <label class="set-bifa" style="margin-top:18px"><input type="checkbox" id="cm-spital"> <span>Spitalizare (prima zi se plătește)</span></label>
+          <label class="set-bifa" style="margin-top:18px"><input type="checkbox" id="cm-program-national"> <span>Pacient inclus în program național de sănătate (D112 D_9a)</span></label>
         </div>
         <p style="margin-top:14px">
           <button class="buton-primar" id="cm-calc">Calculeaz\u0103 \u0219i salveaz\u0103</button>
@@ -184,6 +185,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         data_sfarsit: zona.querySelector("#cm-sfarsit").value || null,
         diagnostic: zona.querySelector("#cm-diag").value,
         spitalizare: zona.querySelector("#cm-spital").checked,
+        program_national: zona.querySelector("#cm-program-national").checked,  // [D_9a] marcaj program national de sanatate
         zile_cm: zile,
         venituri_6_luni: ven6,
         zile_6_luni: zile6,

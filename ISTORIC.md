@@ -3657,3 +3657,9 @@ cu 1 zi/episod ca orice cod G1. Adus verbatim Legea 319/2006 (art.5 lit.g accide
 traseu), care coroborata cu Nomenclator 9/10 + Legea 346/2002 inchide golul primar. Scos exceptia din
 salarizare.py; 2 garduri actualizate. Efect: -1 zi/episod pe 02/03/04 (0 pe date reale, 0 luni depuse). Supersedeaza
 decizia "raman nediminuate pana la confirmare" (confirmarea a sosit).
+
+## 09.08.2026 (tura 9) — D112 D_9a construit (marcaj program national): date -> ecran -> D112
+Extras verbatim din structura (rd.98a, N(1), bifa). Construit full-stack: coloana program_national pe
+concedii_medicale (migrare pe 12 tenanti + template), checkbox .set-bifa in flux_concediu.js (regula DS existenta
+v2.11, fara tipar nou), persistenta, emisie D_9a="1" in D112 (>=07/2026), exceptare de la diminuare (fazat 01.06).
+J27 VALID. 3 garduri. Efect bani 0 (marcaj nou, optional). Urmeaza E3_97 (pensii ocupationale).

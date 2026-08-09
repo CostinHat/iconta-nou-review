@@ -281,6 +281,8 @@ def _d112_genereaza(prof, salariati, an, luna):
                 _da = ""
                 if (an, luna) >= (2026, 7):
                     _da = ' D_14a="%d" D_15a="%d" D_16a="%d"' % (za, zf, d16)
+                    if x.get("program_national"):  # [D_9a] N(1): =1 pt CM acordate pacientilor inclusi in programe nationale de sanatate
+                        _da += ' D_9a="1"'
                 _dl.append('    <asiguratD%s D_9="%s" D_10="%d" '
                            'D_14="%d" D_15="%d" D_16="%d"%s D_17="%d" D_18="%d" D_19="%.2f" D_20="%d" D_21="%d" D_23="%s"/>'
                            % (_opt, (x.get("cod") or "01"), int(x.get("loc_prescriere") or 1),
@@ -483,6 +485,7 @@ def pull(conn, schema, an, luna):
             "cod": c.get("cod") or "01",
             "cod_urgenta": c.get("cod_urgenta"),
             "cnp_ingrijit": c.get("cnp_ingrijit"),   # [D_8/D_8a] CNP persoana ingrijita (copil 09/91/92 / pacient oncologic 17)
+            "program_national": bool(c.get("program_national")),   # [D_9a] pacient in program national de sanatate
             "loc_prescriere": c.get("loc_prescriere") or 1,
             "zile_ang": c.get("zile_ang") or 0,
             "zile_fnuass": c.get("zile_fnuass") or 0,

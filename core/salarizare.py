@@ -503,7 +503,7 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
                     cod="01", zile_episod=None, prima_zi_din_episod=True,
                     spitalizare=False, la_data=None, exceptat_prima_zi=False,
                     procent_accident=100, venituri_lunare=None, data_episod_initial=None,
-                    *, diminuare_activa, exceptii_active=True):
+                    *, diminuare_activa, exceptii_active=True, program_national=False):
     """
     Ci = Mzbci x procent x (NZLCM - diminuare)
     - Mzbci = suma venituri 6 luni / total zile lucratoare 6 luni
@@ -541,7 +541,9 @@ def _calcul_cm_core(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     diminuare = 0
     if diminuare_activa and prima_zi_din_episod and not exceptat_prima_zi:
         _cz = str(cod).zfill(2)
-        _exceptat_l64 = exceptii_active and (spitalizare or _cz in _CM_COD_EXCEPT_L64)
+        # [D_9a] pacient in program national de sanatate: exceptat de la diminuare (Ordin 506/1030/2026
+        # art.78^4 alin.(2^1): "bolnavilor inclusi in programele nationale de sanatate"), fazat 01.06.2026.
+        _exceptat_l64 = exceptii_active and (spitalizare or program_national or _cz in _CM_COD_EXCEPT_L64)
         if not _exceptat_l64:
             diminuare = 1
     zile_platite = max(zile_lucratoare_cm - diminuare, 0)
@@ -598,7 +600,8 @@ _VARIANTE_CALCUL_CM = [
 def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
               cod="01", zile_episod=None, prima_zi_din_episod=True,
               spitalizare=False, la_data=None, exceptat_prima_zi=False,
-              procent_accident=100, venituri_lunare=None, data_episod_initial=None, data_eliberare=None):
+              procent_accident=100, venituri_lunare=None, data_episod_initial=None, data_eliberare=None,
+              program_national=False):
     """Indemnizatia de concediu medical, DISPECER pe DATA ELIBERARII certificatului (data_eliberare;
     OUG 91/2025 art.II(1) "certificatele ... eliberate in perioada"). Fallback pe la_data daca lipseste.
     TEMEI: OUG 158/2005 (indemnizatie CM: Ci = Mzbci x procent x zile); Ordinul 506/1030/2026 (MOF
@@ -608,7 +611,8 @@ def calcul_cm(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm,
     fn, _ = c.alege_varianta(_VARIANTE_CALCUL_CM, data_eliberare or la_data or _dt.today())
     return fn(venituri_6_luni, zile_lucratoare_6_luni, zile_lucratoare_cm, cod, zile_episod,
               prima_zi_din_episod, spitalizare, la_data, exceptat_prima_zi, procent_accident,
-              venituri_lunare=venituri_lunare, data_episod_initial=data_episod_initial)
+              venituri_lunare=venituri_lunare, data_episod_initial=data_episod_initial,
+              program_national=program_national)
 
 
 # Coduri indemnizatie pt care NU se retine CASS (verif. la sursa: art.17(2) OUG 34/2024,

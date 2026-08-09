@@ -2394,3 +2394,12 @@ Temei complet acum: Legea 319/2006 art.5 lit.g) (accident de munca + accidentul 
 (legea_319_2006_consolidat.html), coroborata cu Nomenclator 9/10 + OUG 91/Ordin 506. Scos
 _CM_COD_ACCIDENT_NECONFIRMAT din salarizare.py. Gard test_cod_02_03_04_se_diminueaza (diminuare=1). Golul primar
 (Legea 319/2006 absenta) = INCHIS. Nicio pozitie CM ramasa deschisa pe diminuare.
+
+## 09.08.2026 (tura 9) — D_9a: datorie pe date INCHISA (marcaj program national, date->ecran->D112)
+
+Din cele 13 campuri D112 v1.03-072026: D_9a (blocat pe DATE inexistente) INCHIS. Construit: coloana
+concedii_medicale.program_national (migrare + template), checkbox .set-bifa in flux_concediu.js, persistenta in
+salveaza_concediu, emisie D_9a="1" in asiguratD (>=07/2026, J27 valid), exceptare de la diminuare (fazat 01.06).
+Gapul "programe nationale pe coduri regulate" (tura 4/7) inchis. Garduri: test_migrare_program_national_cm,
+test_program_national_exceptat_de_la_diminuare, test_d112_d9a_program_national_emis. RAMAS pe date: E3_97 (pensii
+ocupationale in salarizare) - urmatorul slice.

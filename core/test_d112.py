@@ -253,7 +253,7 @@ def _sal_cm(cod="01", za=4, zf=3, brut=6000):
              "activ": True, "zile_cm": za + zf,
              "cm": [{"cod": cod, "zile_ang": za, "zile_fnuass": zf, "brut_ang": 2000,
                      "brut_fnuass": 1500, "baza": brut, "loc_prescriere": 1, "diagnostic": "999",
-                     "serie": "AA", "numar": "12345", "da": "02.07.2026",
+                     "serie": "AA", "numar": "12345", "da": "02.07.2026", "program_national": False,
                      "di": "02.07.2026", "ds": "09.07.2026"}]}]
 
 
@@ -307,3 +307,14 @@ def test_cod_oblig_pereche_cu_cod_bugetar_corect():
     assert perechi.get("412") == "5503XXXXXX", "412 (CAS) cod bugetar gresit: %r" % perechi.get("412")
     assert perechi.get("432") == "5503XXXXXX", "432 (CASS) cod bugetar gresit: %r" % perechi.get("432")
     assert perechi.get("480") == "20470300XX", "480 (CAM) trebuie 20470300XX, nu %r" % perechi.get("480")
+
+
+def test_d112_d9a_program_national_emis():
+    """D_9a (N(1)): =1 pt CM acordate pacientilor inclusi in programe nationale de sanatate (07/2026+).
+    structura_D112_0726_030826.pdf rd.98a. Emis DOAR cand marcajul e setat."""
+    sal = _sal_cm(za=4, zf=3); sal[0]["cm"][0]["program_national"] = True
+    xml, _ = _d112_genereaza(_prof(), sal, 2026, 7)
+    assert 'D_9a="1"' in xml, "D_9a=1 cand program_national"
+    # fara marcaj -> fara D_9a
+    xml2, _ = _d112_genereaza(_prof(), _sal_cm(za=4, zf=3), 2026, 7)
+    assert 'D_9a=' not in xml2, "D_9a absent cand nu e program national"
