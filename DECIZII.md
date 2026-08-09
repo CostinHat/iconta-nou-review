@@ -8146,3 +8146,37 @@ CONSTRUIT (DB -> ecran -> D112):
 EFECT IN BANI: marcajul nou (0 certificate existente il au) -> 0 acum. Certificate viitoare cu program national:
 D_9a="1" in D112 + exceptat de la diminuare (de la 01.06.2026). Nicio munca in plus obligatorie pt contabil (bifa
 optionala, default nebifat).
+
+## 09.08.2026 (tura 10) — E3_97 plafon 400 EUR: cautat la sursa; curs si excedent NU-s reglementate verbatim -> decizie Costin
+
+Comanda Costin: nu presupune - cauta cursul/cumulul/excedentul plafonului de 400 euro. CAUTAT (act cu act):
+- CF art.76 alin.(4^1) lit.e^1) (cod_fiscal_227_2015_consolidat.html): "contributiile la un fond de pensii
+  ocupational potrivit Legii nr.1/2020 ... in limita a 400 euro anual pentru fiecare persoana" (OUG 8/2026 pct.30,
+  de la 01.03.2026). => defineste plafonul (400 EUR ANUAL/persoana) dar NU cursul, NU excedentul.
+- CF art.76 alin.(4^2): "Ordinea in care veniturile prevazute la alin.(4^1) se includ in plafonul lunar de cel
+  mult 33% ... se stabileste de angajator." => doar ORDINEA. NU exista alin.(4^3).
+- CF art.76 alin.(4): curs pt avantaje in natura (alin.3): "cursul de schimb comunicat de BNR valabil pentru
+  datele respective" - context ALTUL (avantaje alin.3, nu plafoanele EUR din 4^1).
+- CF art.78 alin.(2) lit.a): "cursul leu/euro comunicat de BNR, in vigoare in ULTIMA ZI A LUNII pentru care se
+  platesc drepturile salariale" - context ETF (deducere plafon anual), NU atasat lui art.76(4^1).
+- OUG 8/2026 art.10 alin.(10): pt pensii ocupationale se iau in calcul "contributiile platite incepand cu data de
+  1 martie 2026" => confirma CUMULUL (anual, de la 01.03.2026).
+- HG 1/2016 (norme metodologice CF, adus azi in corpus): "pensii ocupationale" NEGASIT (normele sunt anterioare
+  OUG 8/2026 care a introdus lit.e^1; nu acopera mecanismul).
+
+REZULTAT pe cele 3 aspecte:
+- CUMUL: REGLEMENTAT (400 EUR anual/persoana; de la 01.03.2026). Distributia pe luni a campului D112 lunar E3_97
+  NU e specificata.
+- CURS: NEATASAT lui art.76(4^1) - doi candidati divergenti (art.76(4) "valabil pentru datele respective" vs
+  art.78(2)(a) "ultima zi a lunii"). NU se poate alege verbatim.
+- EXCEDENT: doar IMPLICIT (peste plafonul de 33% + plafoanele individuale -> impozabil); NICIO fraza verbatim
+  "partea care depaseste ... este venit impozabil" pt (4^1) in sursele cautate.
+
+Pct.2 (alte plafoane in valuta in app): curs_bnr.py trateaza cursul BNR general PENTRU FACTURI (nu salarii);
+aplicatia NU trateaza niciun plafon EUR de salariu (pensii facultative/sanatate/ocupationale) si nici plafonul
+lunar de 33% din art.76(4^1). Deci NICIUN analog de reutilizat sau de contrazis (stop point 2 neaprins).
+
+DECIZIE: per "verbatim sau deloc" + stop point ("mecanismul chiar nu e reglementat: te opresti pe E3_97"), NU
+construiesc emisia/plafonarea E3_97 (curs+excedent neconfirmate). Ramane decizia lui Costin: (i) ce curs se
+foloseste (art.76(4) vs art.78(2)(a)); (ii) cum se trateaza excedentul (impozabil, unde); (iii) metoda de
+colectare (A: contabilul introduce partea neimpozabila lunara; B: app aplica plafonul). D_9a ramane livrat (tura 9).

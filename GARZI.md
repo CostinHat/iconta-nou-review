@@ -2403,3 +2403,13 @@ salveaza_concediu, emisie D_9a="1" in asiguratD (>=07/2026, J27 valid), exceptar
 Gapul "programe nationale pe coduri regulate" (tura 4/7) inchis. Garduri: test_migrare_program_national_cm,
 test_program_national_exceptat_de_la_diminuare, test_d112_d9a_program_national_emis. RAMAS pe date: E3_97 (pensii
 ocupationale in salarizare) - urmatorul slice.
+
+## 09.08.2026 (tura 10) — E3_97: mecanismul plafonului 400 EUR NEreglementat verbatim (curs+excedent) -> ramane pe decizie
+
+Cautat la sursa (CF art.76 alin.(4^1)/(4^2)/(4), art.78(2)(a), HG 1/2016 norme - adus in corpus, OUG 8/2026):
+- CUMUL reglementat (400 EUR anual/persoana; ocupationale de la 01.03.2026, OUG 8/2026 art.10(10)).
+- CURS: neatasat lui art.76(4^1); doi candidati (art.76(4) "valabil pentru datele respective" / art.78(2)(a)
+  "ultima zi a lunii"). EXCEDENT: doar implicit, neexplicit.
+Aplicatia nu trateaza niciun plafon EUR de salariu, nici plafonul 33% din (4^1) -> niciun analog. E3_97 EMISIE
+BLOCATA pe curs+excedent neconfirmate + metoda de colectare (decizie Costin). Datele existente NEatinse.
+Act nou in corpus: hg_1_2016_norme_cod_fiscal.html (normele metodologice CF; confirma ca NU acopera pensiile ocupationale).

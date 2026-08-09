@@ -3663,3 +3663,11 @@ Extras verbatim din structura (rd.98a, N(1), bifa). Construit full-stack: coloan
 concedii_medicale (migrare pe 12 tenanti + template), checkbox .set-bifa in flux_concediu.js (regula DS existenta
 v2.11, fara tipar nou), persistenta, emisie D_9a="1" in D112 (>=07/2026), exceptare de la diminuare (fazat 01.06).
 J27 VALID. 3 garduri. Efect bani 0 (marcaj nou, optional). Urmeaza E3_97 (pensii ocupationale).
+
+## 09.08.2026 (tura 10) — E3_97: cautat mecanismul plafonului 400 EUR la sursa; curs+excedent nereglementate verbatim
+Cautat CF art.76(4^1) lit.e^1 (plafon 400 EUR anual/persoana), art.76(4^2) (doar ordinea, angajator; fara 4^3),
+art.76(4) + art.78(2)(a) (doua reguli de curs divergente, niciuna atasata lui 4^1), OUG 8/2026 art.10(10) (cumul
+anual de la 01.03.2026), HG 1/2016 norme (adus in corpus; nu acopera pensiile ocupationale). Rezultat: cumul
+reglementat; curs NEATASAT (2 candidati); excedent doar implicit. App n-are analog de plafon EUR de salariu. Per
+verbatim-sau-deloc + stop point -> nu construiesc emisia E3_97; decizie Costin (curs + excedent + metoda colectare).
+D_9a ramane livrat.

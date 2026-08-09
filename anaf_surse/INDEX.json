@@ -269,6 +269,11 @@
         }
       ]
     },
+    "hg_1_2016_norme_cod_fiscal.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "hg_276_2013.html": {
       "exista": true,
       "tip_forma": "forma_la_data",
