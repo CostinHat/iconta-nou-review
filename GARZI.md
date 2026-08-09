@@ -2277,3 +2277,12 @@ D_16a: atributul trebuie sa existe" + S103a/S104a; cu fix -> DUK stare=VALID, 0 
 
 Toate 10 sunt CONDITIONALE (CM in continuare D_9=01 / program national / pensii ocupationale / diminuare OUG 91) -
 firma tipica fara aceste cazuri e VALIDA cu doar D_14a/D_15a/D_16a (probat: DUK VALID pe CM cod 01 fara ele).
+
+## 09.08.2026 (tura 3) — Datorie inchisa: publicarea se oprea la disc (deploy+restart neautomate)
+
+INCHISA (regula de proces, nu gard mecanic): sub-blocajul "detectorul running==HEAD semnala divergenta dar nimeni
+n-o repara" (DECIZII 08.08). Cauza: deploy+restart depindeau de memoria celui care compunea comanda -> productia
+ramanea in urma (running 6589873 vs HEAD f20ee85 la aceasta tura). Reparat prin CLAUDE.md §2.3 pct.10 (patru pasi
+automati dupa poarta verde; four-way running==HEAD) + §2.2 sect.11 extins la four-way. Push-ul era deja cablat
+(post-commit, three-way); restartul ramane pas de executor - stop point uman pe comportament vizibil, nu se
+cableaza orb. Neguardabil mecanic (vezi TESTE 09.08 tura 3); confirmarea = four-way in raport.

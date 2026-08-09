@@ -1304,3 +1304,10 @@ Nota anti-stale: bifa √ in inventarul sesiunii A vine intr-un commit SEPARAT (
   Mutatie: emisie neconditionata -> rosu.
 Fixtura noua _sal_cm (certificat CM inline: cod, zile_ang/fnuass, brut_ang/fnuass, serie/numar/date). PROBA J27:
 XML 07/2026 -> DUK VALID (fara fix -> 3 erori "D_1xa: atributul trebuie sa existe").
+
+## 09.08.2026 (tura 3) — Regula publicare four-way: comportamentala, neguardabila mecanic
+Regula "patru pasi dupa poarta verde" (CLAUDE.md §2.3 pct.10) e comportamentala (executorul restarteaza), ca regula
+de push INAINTE de cablarea post-commit. NU se adauga gard nou: restartul are stop point uman (comportament vizibil)
+-> nu se poate cabla orb intr-un hook (ar reporni prod peste utilizatori activi). Confirmarea ramane four-way in
+raport (§2.2 sect.11), verificata la executie prin versiune.stare() + start-time systemd. Gardul existent
+core/test_running_head.py (detectorul running==HEAD) ramane neatins si suficient pentru semnalul de divergenta.

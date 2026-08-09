@@ -454,6 +454,10 @@ Fara titlu, raportul e incomplet.
     PLUS (decizia c, 05.08.2026): se confirma EXPLICIT ca HEAD local, origin/main si backup sunt pe ACELASI commit,
     numind commit-ul (ex. "HEAD = origin/main = backup/lant-<data> = <hash>"). Daca NU sunt pe acelasi commit, se
     spune DE CE (poarta rosie -> nepins pe main; tree murdar; origin/main avansat sub tine; etc.).
+    PLUS (four-way, 09.08.2026): se confirma SI ca PROCESUL VIU ruleaza commitul - RUNNING = HEAD (`versiune.stare()`,
+    divergent=False), cu start-time-ul procesului DUPA data commitului. Confirmarea completa e FOUR-WAY, numind
+    commit-ul: "HEAD = origin/main = backup/lant-<data> = RUNNING = <hash>". Daca procesul NU ruleaza commitul, se
+    spune DE CE (restart neefectuat -> stop point comportament vizibil / decizie de produs; poarta rosie). Vezi §2.3 pct.10.
 
 ## 2.2.1 ACTUALIZAREA REGISTRELOR DUPA FIECARE EXECUTIE (04.08.2026, ceruta de Costin)
 
@@ -580,6 +584,35 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    starea in care e - nu se curata, nu se repara, nu se comite pe main/backup. Scop: starea defecta e cea mai
    valoroasa pentru diagnostic SI cea mai expusa la pierdere (pct.8 cere commit+tree curat, deci n-ar acoperi-o).
    Raportul declara `WIP SALVAT: <ramura>` sau motivul exact pentru care nu s-a putut.
+
+10. **PUBLICAREA COMPLETA = PATRU PASI, AUTOMATA DUPA POARTA VERDE (09.08.2026, ceruta de Costin).**
+   Publicarea NU se opreste la disc. Dupa ORICE executie care a trecut poarta verde (pytest cu COLLECTED confirmat +
+   verificator TOTAL 0 + `git status --porcelain` gol), executorul face TOTI cei patru pasi de publicare FARA sa fie
+   ceruti in comanda - absenta lor e o defectiune, nu o optiune a celui care compune comanda:
+   1. **commit** local pe server (declanseaza pre-commit = poarta verde);
+   2. **push** pe `origin/main` SI `backup/lant-<data>` (cablat, post-commit hook - pct.8);
+   3. **deploy** = codul comis ajunge pe checkout-ul care serveste productia. Serviciul `iconta-nou` ruleaza din
+      `/home/costin/iconta_nou` (WorkingDirectory al unitatii systemd), ACELASI checkout pe care se comite -> deploy-ul
+      e HEAD-ul de pe disc = commitul; NU exista checkout de prod separat de sincronizat. Daca arhitectura se schimba
+      (checkout separat), deploy = `git pull --ff-only` pe acel checkout INAINTE de restart;
+   4. **restart** = `sudo systemctl restart iconta-nou` (NU `iconta`, buildul vechi, esueaza tacit), ca procesul VIU
+      sa incarce codul comis. Fara restart, procesul ruleaza in continuare commitul stampilat la pornirea lui
+      (core/versiune.py) - exact divergenta pe care detectorul running==HEAD o semnala fara ca nimeni s-o repare.
+   **Publicarea nu e completa pana cand procesul viu nu ruleaza codul comis, confirmat FOUR-WAY:** HEAD (disc) =
+   origin/main = backup/lant-<data> = **RUNNING** (commitul procesului viu; `versiune.stare()`: running==head,
+   divergent=False), cu **start-time-ul procesului DUPA data commitului** (systemd ExecMainStartTimestamp > data
+   commit - se CITESTE, nu se presupune). Aceasta EXTINDE three-way din pct.8: confirmarea din raport (§2.2 sect.11)
+   devine four-way.
+   **STOP POINT (pastrat):** daca restartul schimba comportament VIZIBIL utilizatorului, se RAPORTEAZA inainte de a-l
+   face. Daca restartul cu utilizatori activi cere fereastra sau anunt, e DECIZIE DE PRODUS - se opreste si se
+   intreaba, nu se restarteaza orbeste. Pe poarta ROSIE sau tree murdar (pct.4) NU se publica deloc: nici deploy,
+   nici restart.
+   **DE CE executor, nu hook:** pasii 1-2 sunt stare remote fara risc vizibil -> s-au putut cabla in post-commit
+   (pct.8). Restartul are stop point uman (comportament vizibil; utilizatori activi -> eventual fereastra = decizie de
+   produs) -> NU se cableaza orb in post-commit (ar reporni prod la fiecare commit, peste utilizatori activi); ramane
+   pas de EXECUTOR, obligatoriu, cu raportare inainte. Coerent cu decizia iulie "detector vizibil, NU auto-restart"
+   (DECIZII 08.08): auto-restartul ORB ramane interzis; devine obligatoriu restartul CONSTIENT al executorului dupa
+   poarta verde.
 
 ## 2.1 De unde vin pasii
 

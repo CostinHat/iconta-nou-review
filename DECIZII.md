@@ -7935,3 +7935,29 @@ atribute confirmate; C2_155/C2_156 uppercase in XSD). PROBA (autoritatea J27, NU
 sa existe" + S103a/S104a; cu fix: DUK stare=VALID. Nivel sursa: XSD/structura = REDARE oficiala; DUK J27 = autoritate.
 Gating (an,luna)>=(2026,7): structura spune "se aplica din 01.07.2026"; regenerarea unei luni < 07/2026 pastreaza
 structura veche, altfel DUK ar respinge structura anterioara.
+
+## 09.08.2026 — Publicarea completa = patru pasi, automata dupa poarta verde (four-way)
+
+Comanda Costin (executie): dupa fiecare executie cu poarta verde, cei patru pasi de publicare (commit, push
+origin/main+backup, deploy, restart) se fac AUTOMAT, fara sa fie ceruti in comanda; publicarea nu e completa pana
+cand procesul viu nu ruleaza codul comis (four-way running==HEAD). DE CE: publicarea se oprea la disc pentru ca
+deploy-ul si restartul depindeau de ce isi amintea sa ceara cel care compunea comanda; detectorul running==HEAD
+(DECIZII 08.08) semnala divergenta, dar nimeni n-o repara (la aceasta comanda procesul rula 6589873 din 03:26 in
+timp ce HEAD era f20ee85).
+
+CE ERA DEJA (verificat, nu presupus - chestionar pct.4): push-ul pe origin/main SI backup e DEJA regula scrisa
+(CLAUDE.md §2.3 pct.8, decizia c 05.08) SI cablat mecanic (post-commit hook, 07.08) -> three-way. Lipseau doar
+pasii 3-4 (deploy + restart) si a patra latura de confirmare (RUNNING).
+
+CE SE SCHIMBA: CLAUDE.md §2.3 pct.10 NOU (patru pasi + four-way, cu stop point pastrat pe restart vizibil); §2.2
+sect.11 extins de la three-way la four-way (HEAD = origin/main = backup = RUNNING = <hash>, start-time dupa commit).
+
+DE CE executor, nu hook: pasii 1-2 sunt stare remote fara risc vizibil -> cablati in post-commit. Restartul are
+stop point uman (comportament vizibil utilizatorului; utilizatori activi -> eventual fereastra = decizie de produs)
+-> NU se cableaza orb (ar reporni prod la fiecare commit); ramane pas de executor, obligatoriu, cu raportare
+inainte. Coerent cu decizia iulie "detector vizibil, NU auto-restart" (DECIZII 08.08): auto-restartul orb ramane
+interzis; ce devine obligatoriu e restartul CONSTIENT al executorului dupa poarta verde.
+
+TEMEI: CLAUDE.md §2.3 pct.8 (push three-way) + §2.2 sect.11, core/versiune.py (detector running==HEAD),
+iconta-nou.service (WorkingDirectory=/home/costin/iconta_nou -> deploy = HEAD pe disc). Registrul care face regula
+sa supravietuiasca schimbarii de sesiune = CLAUDE.md (incarcat la fiecare sesiune) - acolo intra pct.10.

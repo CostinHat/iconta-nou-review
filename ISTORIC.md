@@ -3608,3 +3608,10 @@ regula neimplementata) - toate conditionale (CM in continuare / program national
 tipica valida fara ele. Decizii de produs deschise: unde intra datele noi (D_9a marcaj program national pe CM;
 E3_97 pensii ocupationale in salarizare); daca se implementeaza acum regula D_9b (diminuare 1 zi, OUG 91/2025) si
 mecanismul D_20a/D_21a (OUG 89/2025, fara declaratie rectificativa).
+
+## 09.08.2026 (tura 3) — Publicarea completa (four-way) scrisa in CLAUDE.md + prod adus la zi
+Regula: dupa fiecare poarta verde, cei patru pasi (commit/push/deploy/restart) automat; publicarea completa doar la
+four-way (running==HEAD). Scrisa in CLAUDE.md §2.3 pct.10 + §2.2 sect.11 (three-way -> four-way); decizie in DECIZII
+09.08. Prod era divergent (RUNNING 6589873 din 03:26 EEST vs HEAD f20ee85); adus la zi prin `systemctl restart
+iconta-nou` dupa raportarea impactului vizibil (stop point). Four-way confirmat post-restart (HEAD=origin=backup=
+RUNNING; start-time dupa commit) - vezi raportul 09.08 tura 3.
