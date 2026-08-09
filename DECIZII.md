@@ -8061,3 +8061,42 @@ RAMAN REDARE (raportate, nu inchise - forma consolidata la zi NU le confirma):
   CF consolidat (local) nu le contine. Necesita forma-la-data (CF forma de baza 08.09.2015, just.ro/171282).
 - tva_redusa_5 @2025 (abrogare alin.3 de L141 pct.43): unde ajung fostele operatiuni de 5% (11% vs 21%) NU e
   confirmat verbatim -> DE DECIS (Costin), nu verificare.
+
+## 09.08.2026 (tura 7) — Cele 4 pozitii deschise din corpus: 3 corectate verbatim, 1 propunere
+
+Comanda Costin: fa ce se poate, propune ce nu. Separ ce e sprijinit de act de rationamentul propriu.
+
+POZ.1 facilitate_salariu_minim 300 @2025 - CORECTAT (temei gresit). SPRIJINIT DE ACT: OUG 156/2024 art.LXVI
+alin.(1) VERBATIM "suma de 300 lei/luna ... nu se cuprinde in baza lunara de calcul al contributiilor sociale
+obligatorii" (venit brut <= 4.300 lei). Re-citat OUG 115/2023 -> OUG 156/2024 (deja local), REDARE->MO. Valoare
+300 NEschimbata -> ZERO efect in bani. (Chestionar pct.4 confirmat: poz.1 = corectura de temei fara bani.)
+
+POZ.2 tva_redusa_5 @2025 - CORECTAT (nu era "alegere", actul transeaza). SPRIJINIT DE ACT: Legea 141/2025 pct.42,
+CF art.291 alin.(2) lit.g) "manuale scolare, carti, ziare si reviste" + lit.h) "acces la castele, muzee ...
+monumente" = cota redusa 11%. RATIONAMENT PROPRIU (marcat): locuintele sociale (fost alin.3 lit.c) NU apar in
+lista alin.(2) -> trec la 21% standard; categoria "5%" s-a SPLIT. Valoarea 0.11 e corecta pt operatiunile reduse
+supravietuitoare (carti/cultural), care sunt cele folosite in D301; locuintele domestice nu trec prin aceasta
+cota. REDARE->MO. ZERO efect in bani (0.11 neschimbat; locuintele nu erau calculate via aceasta cota).
+
+POZ.3 valori istorice - CORECTAT toate 3 (aduse forme-la-data). SPRIJINIT DE ACT:
+- tva_standard 19% @2017: CF forma initiala 2015 (anaf_surse/cf_2015_forma_initiala.html) art.291 alin.(1) lit.b)
+  "19% incepand cu data de 1 ianuarie 2017". REDARE->MO.
+- impozit_dividend 5% @2016: OUG 50/2015 (oug_50_2015_consolidat.html) art.97 alin.(8) "Cota de 5% ... dividende
+  distribuite incepand cu data de 1 ianuarie 2016". Temei corectat Legea 227/2015->OUG 50/2015 (CF initial spune
+  5% "din 2017"; OUG 50/2015 accelereaza la 2016). REDARE->MO.
+- plafon_mijloc_fix 2.500 @2015: HG 276/2013 (hg_276_2013.html) "valoarea de intrare a mijloacelor fixe ... este
+  de 2.500 lei". Temei corectat Legea 227/2015->HG 276/2013 (CF art.28 trimite la HG; 2.500 NU e in CF). REDARE->MO.
+ZERO efect in bani (valorile neschimbate; corectii de temei/sursa).
+
+POZ.4 cod 02 (accident de traseu) - PROPUNERE (actul primar NU transeaza). SPRIJINIT DE ACT: Nomenclator 9 + 10
+(anaf_surse/d112_struct_anaf.txt) clasifica 02/03/04 "neconfirmat de casa de pensii" in G1 = incapacitate
+temporara (OUG 158); OUG 91/Ordin 506 diminueaza indemnizatiile OUG 158 mai putin exceptiile (art.2(1) lit
+c/d^1/e + programe nationale + spitalizare), in care 02/03/04 NU intra. LIPSA verbatim primar: Legea 346/2002 NU
+contine "traseu/deplasare" - defera la Legea 319/2006 (ABSENTA din corpus) pt definitia accidentului.
+POZITIA MEA ASUMATA: **cod 02/03/04 SE DIMINUEAZA** cat timp sunt "neconfirmate" (paltite ca OUG 158/G1, deci
+urmeaza aceeasi diminuare ca celelalte coduri G1). Dupa confirmarea casei de pensii trec la FAAMBP (Legea 346),
+ies din sistemul CM. DE CE: clasificarea operativa (cum sunt declarate/paltite acum) primeaza; exceptia e o lista
+inchisa in care accidentele nu figureaza. EFECT IN BANI: -1 zi lucratoare/episod pe codurile 02/03/04 (~150-200
+lei/episod). RISC daca gresesc (accidentele trebuie protejate de diminuare): subplata cu 1 zi, reversibila; 0
+certificate reale (tenant_001 n-are 02/03/04), 0 luni depuse. NEATINS codul de calcul (propunere, nu executie);
+daca accepti, aplic + aduc Legea 319/2006 pt confirmarea primara.

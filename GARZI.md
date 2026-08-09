@@ -2370,3 +2370,19 @@ ACTE CITATE IN COD FARA FISIER LOCAL, dar NU temeiuri-COTE (clasa diferita de pc
   cod urgenta), OUG 96/2003 (risc maternal - referita in OUG 158 art.2 lit.e, deja local), Legea 399/2006
   (aproba OUG 158, inglobata in consolidat), acte de aprobare/modificare inglobate in formele consolidate prezente.
 Motiv (chestionar pct.4): lista pct.5 (temeiuri-COTE) e SCURTA si inchisa; restul sunt structura/context, alta clasa.
+
+## 09.08.2026 (tura 7) — 4 pozitii corpus: 3 inchise (MO), 1 propunere; +3 acte, COTE MO+local ->33
+
+Corectat (REDARE->MO, valori neschimbate, doar temei/nivel_sursa; INDEX regenerat; G1 gardeaza, mutatie probata):
+- facilitate_salariu_minim 300 @2025 -> OUG 156/2024 art.LXVI (era OUG 115/2023, care NU continea valoarea).
+- tva_redusa_5 @2025 -> Legea 141/2025 pct.42 (art.291 alin.2 g carti + h cultural = 11%); locuinte sociale -> 21%.
+- tva_standard 19% @2017 -> CF forma initiala 2015 (art.291 alin.1 lit.b).
+- impozit_dividend 5% @2016 -> OUG 50/2015 art.97 alin.8 (temei corectat de la Legea 227/2015).
+- plafon_mijloc_fix 2.500 @2015 -> HG 276/2013 (temei corectat de la Legea 227/2015).
+Acte noi in corpus (3): cf_2015_forma_initiala.html, oug_50_2015_consolidat.html, hg_276_2013.html.
+G3 set volatil-fara-MO -> [] (tva_redusa_5 era ultimul; toate legate).
+
+RAMAS (propunere / deschis):
+- cod 02/03/04 diminuare: PROPUNERE = se diminueaza (G1/OUG 158 cat timp neconfirmat); actul primar (Legea
+  346/2002) defera la Legea 319/2006 (ABSENTA) -> de adus pt confirmare primara daca Costin accepta propunerea.
+  Neatins codul de calcul.

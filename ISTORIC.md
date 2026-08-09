@@ -3642,3 +3642,11 @@ regenerat; G1 le gardeaza (mutatie probata). Stop point: facilitate 300 @2025 - 
 REDARE (candidat OUG 156/2024). Legea 346/2002 confirma cod 03/04 (accident munca/boli prof.), nu explicit cod 02
 (traseu). Ramase REDARE: valori istorice L227/2015 (forma-la-data) + tva_redusa_5 (de decis). Acte structurale/
 contextuale (OPANAF structuri, OMFP 1802, Cod muncii etc.) listate ca alta clasa, neaduse. Nu am atins codul de calcul.
+
+## 09.08.2026 (tura 7) — Cele 4 pozitii deschise din corpus: 3 corectate verbatim, 1 propunere
+POZ.1-3 corectate (REDARE->MO, valori neschimbate): facilitate 300->OUG 156/2024 art.LXVI; tva_redusa_5->L141
+pct.42 (carti/cultural 11%, locuinte 21%); istorice L227/2015: tva 19%@2017->CF forma initiala 2015, dividend
+5%@2016->OUG 50/2015, mijloc fix 2.500->HG 276/2013 (ultimele doua = corectii de temei). +3 acte in corpus; INDEX
+regenerat; G3 set ->[]; G1 mutatie-probat. POZ.4 (cod 02 traseu) = PROPUNERE: se diminueaza (G1/OUG 158 cat timp
+neconfirmat); Legea 346/2002 defera la Legea 319/2006 (absenta) -> primar neinchis; efect -1 zi/episod, risc
+minor reversibil, 0 certificate reale/depuse; cod de calcul neatins. ZERO efect in bani pe corecturi.

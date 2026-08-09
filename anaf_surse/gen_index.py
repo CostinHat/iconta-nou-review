@@ -19,6 +19,9 @@ TIP_FORMA = {
     "oug_115_2023_consolidat.html": "forma_la_data",
     "og_16_2022_consolidat.html": "forma_la_data",
     "legea_70_2015_consolidat.html": "forma_la_data",
+    "cf_2015_forma_initiala.html": "forma_la_data",
+    "oug_50_2015_consolidat.html": "forma_la_data",
+    "hg_276_2013.html": "forma_la_data",
     "anaf_limite_2025.pdf": "forma_la_data",   # tabel de limite ANAF pt 2025 (valori la date fixe)
     "legea_201_2025.html": "forma_la_data",    # act punctual (tichet 45 de la noiembrie 2025)
     "oug_156_2024.pdf": "forma_la_data",       # act punctual (plafon facilitate 4300 pt 2025)

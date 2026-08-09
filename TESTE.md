@@ -1332,3 +1332,8 @@ Cluster CM+D112: 100 passed.
 Cele 4 temeiuri COTE ridicate la MO intra sub G1 (test_corpus_surse.test_temei_mo_are_sursa_locala): MO => fisier
 local existent. Mutatie probata azi: sters og_16_2022_consolidat.html -> G1 ROSU; restaurat -> verde. G2/G3
 neschimbate (noile fisiere = forma_la_data, exceptate de G2). INDEX.json regenerat coerent cu COTE.
+
+## 09.08.2026 (tura 7) — 5 temeiuri COTE ridicate la MO (garduri existente)
+Cele 5 valori (facilitate 300, tva_redusa_5, tva 19%, dividend 5%, mijloc fix 2.500) intra sub G1
+(test_corpus_surse): MO => fisier local. Mutatie probata: sters cf_2015_forma_initiala.html -> G1 ROSU; restaurat
+-> verde. G3 (set volatil-fara-MO) actualizat la [] (toate legate). Valorile confirmate NEschimbate (sanity rulat).

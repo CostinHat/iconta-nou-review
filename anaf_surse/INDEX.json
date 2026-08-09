@@ -62,6 +62,19 @@
       "tip_forma": null,
       "acopera": []
     },
+    "cf_2015_forma_initiala.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "tva_standard",
+          "data_in": "2017-01-01",
+          "valoare": "0.19",
+          "nivel_sursa": "MO",
+          "temei": "Legea 227/2015 art.291"
+        }
+      ]
+    },
     "cf_art291_2016_forma_initiala.txt": {
       "exista": true,
       "tip_forma": "forma_la_data",
@@ -256,6 +269,19 @@
         }
       ]
     },
+    "hg_276_2013.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_mijloc_fix",
+          "data_in": "2015-01-01",
+          "valoare": "2500",
+          "nivel_sursa": "MO",
+          "temei": "HG 276/2013 art."
+        }
+      ]
+    },
     "impozit_dividende_istoric_cote.txt": {
       "exista": true,
       "tip_forma": null,
@@ -289,6 +315,13 @@
         },
         {
           "cota": "tva_redusa",
+          "data_in": "2025-08-01",
+          "valoare": "0.11",
+          "nivel_sursa": "MO",
+          "temei": "Legea 141/2025 art.291"
+        },
+        {
+          "cota": "tva_redusa_5",
           "data_in": "2025-08-01",
           "valoare": "0.11",
           "nivel_sursa": "MO",
@@ -455,6 +488,13 @@
       "tip_forma": "forma_la_data",
       "acopera": [
         {
+          "cota": "facilitate_salariu_minim",
+          "data_in": "2025-01-01",
+          "valoare": "300",
+          "nivel_sursa": "MO",
+          "temei": "OUG 156/2024 art.LXVI"
+        },
+        {
           "cota": "plafon_facilitate_salariu_minim",
           "data_in": "2025-01-01",
           "valoare": "4300",
@@ -477,6 +517,19 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "oug_50_2015_consolidat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "impozit_dividend",
+          "data_in": "2016-01-01",
+          "valoare": "0.05",
+          "nivel_sursa": "MO",
+          "temei": "OUG 50/2015 art.97"
+        }
+      ]
     },
     "oug_89_2025.html": {
       "exista": true,

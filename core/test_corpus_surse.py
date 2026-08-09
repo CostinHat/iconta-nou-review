@@ -77,8 +77,9 @@ def test_index_coerent_cu_cote():
 # Daca lista se schimba: ori ai adaugat o cota volatila fara sursa (leag-o la MO / adu actul), ori ai legat
 # una (scoate-o de aici). Gardul te forteaza sa fii constient - nu e zgomot pasiv.
 SET_VOLATIL_FARA_MO_20260807 = [
-    # Dupa aducerea OUG 8/2026 + OUG 89/2025 (07.08), cele 4 plafoane au fost legate MO -> au iesit din set.
-    "tva_redusa_5",  # 11% @2025 - alin.3 abrogat (Legea 141 pct.43), unde ajung fostele operatiuni de 5% e de DECIS (nu act lipsa)
+    # 07.08: cele 4 plafoane legate MO. 09.08 (tura 7): tva_redusa_5 rezolvat verbatim (Legea 141 pct.42 art.291
+    # alin.2 lit.g carti + lit.h cultural = 11%; locuinte sociale -> 21%) -> legat MO. Set gol: nicio cota vie
+    # fara sursa. Daca reapare ceva aici: leag-o la MO / adu actul, sau scoate-o dupa legare.
 ]
 
 

@@ -101,8 +101,8 @@ def test_url_completat_doar_din_sursa_deschisa():
     assert t1506.url == "anaf_surse/hg_1506_2024_salariu_minim.html" and t1506.nivel_sursa == "MO"
     _, ttva = cota("tva_standard", _d(2026, 1, 1))   # =21% @2025-08, legat la Legea 141/2025 (local)
     assert ttva.url == "anaf_surse/legea_141_2025_consolidat.html" and ttva.nivel_sursa == "MO"
-    _, ttva19 = cota("tva_standard", _d(2018, 1, 1))  # =19% @2017: forma 2017 lipsa local -> REDARE, url None
-    assert ttva19.url is None and ttva19.nivel_sursa == "REDARE"
+    _, ttva19 = cota("tva_standard", _d(2018, 1, 1))  # =19% @2017: adus CF forma initiala 2015 (09.08 tura 7) -> MO
+    assert ttva19.url == "anaf_surse/cf_2015_forma_initiala.html" and ttva19.nivel_sursa == "MO"
 
 
 def test_temei_are_nivel_sursa_text_citat_lant_acte():
