@@ -2460,3 +2460,9 @@ fix restaurat -> pass. Efemer: schema stearsa + rollback, 0 reziduuri.
    e a doua poarta. Mutatie: importa fara poarta -> verifica_echilibru trece (0=0) -> asigura_tabel(None) (nu ValueError).
 2. core/test_control_fiscal.py::test_clasifica_depusa_dupa_termen_iese_din_la_zi: depusa 20.07 vs termen 25.02 ->
    cu_intarziere, confirmate gol, lipsa gol (nu restanta). Mutatie: fara cosul separat -> cadea in confirmate (La zi).
+
+## 09.08.2026 (tura 17) — Gard ingust: mesajele balanta_valida au diacritice (NU gard de clasa)
+core/test_solduri_api.py::test_mesajele_balanta_valida_au_diacritice: fiecare motiv de eroare user-facing are
+macar o diacritica RO. Mutatie: mesaj rescris fara diacritice -> pica. NU e gard de clasa pe diacritice (ar da
+fals-pozitive pe .py: docstring/comentarii/scripturi migrare/SQL/termeni tehnici/citate legale) - vezi DECIZII.
+Regula "diacritice" din verificator ramane frontend-only (.js) prin design.

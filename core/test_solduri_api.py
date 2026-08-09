@@ -154,3 +154,17 @@ def test_importa_refuza_fisier_strain_inainte_de_db():
     strain = [{"cont": "D394", "debit": 0, "credit": 0}]
     with pytest.raises(ValueError):
         importa(None, strain)
+
+
+def test_mesajele_balanta_valida_au_diacritice():
+    # Regresie 09.08.2026: mesajele balanta_valida au fost scrise FARA diacritice (restul app-ului are).
+    # Gard INGUST pe ce s-a inchis, nu gard de clasa pe diacritice: un scanner general pe .py ar da
+    # fals-pozitive pe docstring/comentarii, log-uri din scripturi de migrare, SQL, termeni tehnici
+    # (CUI/TVA/CAEN/simboluri de cont) si citate legale verbatim. Aici doar: fiecare motiv de eroare
+    # user-facing are macar o diacritica romaneasca.
+    DIAC = set("ăâîșțĂÂÎȘȚ")
+    cazuri = ([], [{"cont": "D394", "debit": 0, "credit": 0}], [{"cont": "5121", "debit": 0, "credit": 0}])
+    for rr in cazuri:
+        ok, motiv = balanta_valida(rr)
+        assert ok is False
+        assert any(ch in DIAC for ch in motiv), "mesaj fara diacritice: %r" % motiv

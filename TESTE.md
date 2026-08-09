@@ -1369,3 +1369,6 @@ Cluster CM+pull: 56 passed.
 - core/test_solduri_api.py: +4 teste (balanta_valida strain/gol/real + importa refuza strain inainte de DB).
 - core/test_control_fiscal.py::test_clasifica_depusa_dupa_termen_iese_din_la_zi: depusa dupa termen -> cu_intarziere.
 - test_matrice_control_fiscal + test_control_fiscal: re-ancorate la _clasifica cu 4 cosuri (depunere on-time = termen).
+
+## 09.08.2026 (tura 17) — Mesaje solduri cu diacritice
+- core/test_solduri_api.py::test_mesajele_balanta_valida_au_diacritice: cele 3 motive balanta_valida au diacritice RO.

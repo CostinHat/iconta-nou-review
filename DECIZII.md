@@ -8309,3 +8309,18 @@ ramane verde daca totul e depus. Probat pe ALFA: La zi 19 -> La zi 5 + Depuse cu
 
 ALTERNATIVA RESPINSA (pt.2): urca pastila la galben pe istoric de intarzieri - respinsa de Costin (firma e
 conforma acum; intarzierea e fapt istoric vizibil in grup separat, nu risc curent).
+
+## 09.08.2026 — Mesaje UI backend fara diacritice: reparate; NU se pune gard mecanic de clasa
+
+Mesajele balanta_valida (solduri_api, adaugate azi) erau fara diacritice; reparate + ghilimele romanesti „".
+Regula "diacritice" din verificator_conformitate scaneaza DOAR .js (frontend) -> de aceea a scapat un mesaj .py.
+
+DECIZIE (stop point): NU extind un gard mecanic de diacritice pe backend .py. Motiv: in .py nu se pot izola sigur
+textele user-facing de restul (docstring, comentarii, print/raise din scripturi de migrare dev, SQL, identificatori
+englezi, termeni tehnici CUI/TVA/CAEN/simboluri de cont, citate legale verbatim in Temei.text_citat) -> fals-pozitive.
+Un scanner care ar cere diacritice pe "cont"/"data"/"balanta" din SQL/docstring ar fi zgomot. GARD INGUST in schimb:
+test pe mesajele balanta_valida (au diacritice) - pe ce s-a inchis, fara fals-pozitive.
+
+Verificat (chestionar pt.4): singurul text user-facing fara diacritice scris azi = mesajele solduri. Restul
+diacritic-less din diff-ul de azi = neuser-facing: print/raise din migrare_pontaj/data_incetare/rapoarte_salvate
+(scripturi dev), Temei.text_citat (provenienta legala, nerandata in UI, disciplina verbatim-MO separata).

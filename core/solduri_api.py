@@ -150,18 +150,18 @@ def balanta_valida(randuri):
     cu balanta si arata diferenta; solduri n-avea nicio verificare de continut."""
     randuri = randuri or []
     if not randuri:
-        return False, "Fisier gol: niciun rand de citit."
+        return False, "Fișier gol: niciun rând de citit."
     td = round(sum(_numar(r.get("debit")) for r in randuri), 2)
     tc = round(sum(_numar(r.get("credit")) for r in randuri), 2)
     conturi_cont = sum(1 for r in randuri if str(r.get("cont") or "").strip()[:1].isdigit())
     if conturi_cont == 0:
-        return False, ("Fisier nerecunoscut ca balanta: nicio valoare din coloana Cont nu arata "
-                       "a cont contabil (un cont incepe cu cifra; \"D394\" nu e cont). "
-                       "Verifica daca ai incarcat balanta de deschidere.")
+        return False, ("Fișier nerecunoscut ca balanță: nicio valoare din coloana Cont nu arată "
+                       "a cont contabil (un cont începe cu cifră; „D394” nu e cont). "
+                       "Verifică dacă ai încărcat balanța de deschidere.")
     if td == 0 and tc == 0:
-        return False, ("Balanta fara solduri: total debitor si total creditor sunt amandoua 0 "
+        return False, ("Balanță fără solduri: total debitor și total creditor sunt amândouă 0 "
                        "(coloanele Sold debitor/creditor lipsesc sau toate valorile sunt 0). "
-                       "\"Echilibrat\" pe 0 = 0 nu inseamna o balanta valida.")
+                       "„Echilibrat” pe 0 = 0 nu înseamnă o balanță validă.")
     return True, ""
 
 

@@ -3732,3 +3732,12 @@ nume "Depuse cu intarziere", informativ (nu urca pastila; depus tarziu != restan
 Depuse cu intarziere 14, firma verde. Frontend: grup nou in control_verdict.js (cf-galben), ?v=1->2 (firme+control).
 Citata regula DESIGN_SYSTEM cap.6 (arataMesaj/solduri) si cap.8 (semafor/control fiscal) la capul patch-urilor UI.
 Vezi DECIZII (nume+severitate = decizii Costin) + GARZI.
+
+## 09.08.2026 (tura 17) — Reparat diacritice in mesajele importului de solduri (scrise azi fara)
+
+Mesajele balanta_valida (solduri_api, tura 16) erau fara diacritice: "Fisier nerecunoscut ca balanta..." ->
+"Fișier nerecunoscut ca balanță..." + ghilimele romanesti „D394". Cauza: regula "diacritice" din
+verificator_conformitate scaneaza doar .js, nu .py -> mesaj backend scapat. Scanat restul diff-ului de azi
+(chestionar pt.4): singurul text user-facing fara diacritice = solduri; celelalte hit-uri (print/raise din
+scripturi de migrare, Temei.text_citat legal) nu-s UI contabil. Gard ingust adaugat; gard de clasa pe backend NU
+se pune (fals-pozitive - vezi DECIZII/GARZI). Probat runtime. Poarta verde + restart.
