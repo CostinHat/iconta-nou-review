@@ -1354,3 +1354,8 @@ Cluster CM+pull: 56 passed.
 - core/test_login_proba_metoda.py::test_proba_login_e_prin_endpoint_nu_prin_hash: cont cu hash VALID + activ=false
   -> verifica_parola=True dar auth_api.login()=ok:False; activ=true -> login() ok:True + token. Cont efemer
   @invalid, cleanup. Mutatie: login() fara verificarea activ -> assert (2) pica.
+
+## 09.08.2026 (tura 13) — Gard izolare pe cheie API
+- core/test_izolare_api_key.py::test_control_pozitiv_cheia_A_isi_vede_tenantul: cheia firmei A pe tenantul A -> 200 + factura A (APIKA-100).
+- core/test_izolare_api_key.py::test_cheia_A_nu_atinge_tenantul_B: pe TOATE (ruta,metoda) /api/v1/firme/{tenant_id}, cheia A pe tenantul B -> niciodata 2xx, niciodata sentinela B. Mutatie: o ruta /api/v1 fara _api_schema -> pica.
+- core/test_izolare_api_key.py::test_fara_cheie_401: fara X-Api-Key -> 401.

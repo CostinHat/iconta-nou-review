@@ -3679,3 +3679,23 @@ impozabil (alegere Costin). Dar E3_97 e in art.76(4^1) -> cere plafonul lunar de
 lipsesc din app; 33% poate musca (lumpy/salariu mic). Per stop point #2 m-am oprit inainte de a construi si am
 aratat ce presupune subsistemul; decizie de scope (E3_97 izolat vs subsistem complet). Metoda B fixata. Exemplu
 bani: 3.600 lei/an contributie -> 2.020 neimpozabil (400 EUR x ~5.05) + 1.580 excedent impozabil (+158 impozit).
+
+## 09.08.2026 (tura 13) — Audit izolare tenant + roluri; inchis punctul orb pe cheie API
+
+Verificat izolarea de tenant + sistemul de roluri (metoda aleasa: garzi mecanice + audit static al rutelor).
+Rutele {tenant_id} pe token Bearer: COMPLET acoperite de test_izolare_structurala (enumerare dinamica din
+app.routes, 4 principii, GET+POST+PUT+DELETE); clusterul de izolare = 11 passed. Chokepoint user =
+_schema_sau_404/auth_api.schema_tenant; superadmin atinge doar tenanti cu accounting_firm_id IS NULL.
+Nicio ruta {tenant_id} noua fara filtrare (chestionar pct.4: garda inca acopera toate rutele Bearer).
+Roluri corecte AMBELE sensuri: client = doar portal (cere_client, 403 pe cabinet); angajat = munca de cabinet
+(cere_cabinet) dar NU administrare (importuri bulk, chei API, perioade-blocate, vector, acces-client, creare
+asistenti, editare firma, GDPR = cere_rol("admin_firma")); admin_firma = cabinet + administrare; superadmin =
+platforma (anunturi, alerte, stergere cabinet, versiune). Nicio supra/sub-permisiune gasita.
+GAURA (in ACOPERIRE, nu activa): rutele /api/v1/firme/{tenant_id}/* folosesc X-Api-Key, nu Bearer -> gardul
+structural le vedea 401 si le trecea fara a testa izolarea pe cheie; o ruta noua fara _api_schema ar fi trecut
+fals-verde. Inchis cu core/test_izolare_api_key.py (vezi GARZI). Izolarea ACTIVA era deja corecta: toate cele
+4 rute /api/v1 folosesc _api_schema. Nicio regula de acces slabita.
+Revizuit si OK: POST /public/plata/{ref}/confirma e fara auth by design (/public/), dar ref = secrets.token_
+urlsafe(16) (128 biti, neghicibil) -> confirmare doar de posesorul link-ului, ca un link de plata; nu e scurgere
+de tenant. Poluare tranzitorie in public (firme/scheme ztest comise de un conn.commit din api_public.genereaza
+in prima varianta a testului) -> curatata imediat, testul rescris fara commit, 0 reziduuri.

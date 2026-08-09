@@ -2430,3 +2430,15 @@ demonstreaza divergenta hash-ok vs login-esec pe cont inactiv (activ=false). Con
 (angajat/client cer accounting_firm_id) - respectata (asistent+client pe firma 1968). Conturi test pe cele 4
 roluri (admin@/patron@/asistent@/client@ prisma-cont.test), probate real (HTTP 200 + token); contul real (id=1)
 neatins; parolele doar in raport, nu in registre.
+
+## 09.08.2026 (tura 13) — Gard izolare pe CHEIE API (punct orb al gardului structural)
+
+Gard: core/test_izolare_api_key.py. Gardul structural (test_izolare_structurala) probeaza rutele {tenant_id}
+cu token Bearer; rutele /api/v1/firme/{tenant_id}/* folosesc X-Api-Key (cere_api_key -> firm_id), deci la
+Bearer raspund 401 si treceau FALS-VERDE fara a exercita vreodata izolarea pe cheie. Gardul nou enumereaza
+DINAMIC rutele /api/v1/firme/{tenant_id}/* din app si probeaza cheia firmei A pe tenantul firmei B ->
+niciodata 2xx, niciodata sentinela B; control pozitiv A pe A = 2xx cu date A (altfel un 404 uniform ar trece
+gardul degeaba). Chokepoint acoperit: _api_schema(actx, tenant_id) = SELECT ... WHERE id=tenant AND
+accounting_firm_id=cheie.firm. O ruta /api/v1 noua care uita _api_schema intra automat si PICA. Nicio regula
+de acces schimbata (doar acoperire adaugata). Efemer: cheie inserata manual (fara conn.commit pe conn real,
+altfel ar persista), scheme+firme sterse la teardown, 0 reziduuri verificat.
