@@ -1349,3 +1349,8 @@ Cluster CM+pull: 56 passed.
 - core/test_migrare_program_national_cm.py: fiecare tenant are concedii_medicale.program_national.
 - core/test_cm_episod.py::test_program_national_exceptat_de_la_diminuare: program_national -> diminuare=0 (fazat 01.06.2026).
 - core/test_d112.py::test_d112_d9a_program_national_emis: asiguratD emite D_9a="1" cand marcaj (07/2026); absent altfel.
+
+## 09.08.2026 (tura 12) — Gard proba de login prin endpoint (gaura de metoda)
+- core/test_login_proba_metoda.py::test_proba_login_e_prin_endpoint_nu_prin_hash: cont cu hash VALID + activ=false
+  -> verifica_parola=True dar auth_api.login()=ok:False; activ=true -> login() ok:True + token. Cont efemer
+  @invalid, cleanup. Mutatie: login() fara verificarea activ -> assert (2) pica.

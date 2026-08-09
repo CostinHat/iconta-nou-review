@@ -8217,3 +8217,30 @@ DECIZIE CERUTA (scope, chestionar pct.6): (A) construiesc E3_97 ACUM cu plafonul
 cumul euro) + plafonul de 33% aplicat pe E3_97 ca UNIC element art.76(4^1) urmarit (corect pt datele curente,
 extensibil), sau (B) construiesc subsistemul complet art.76(4^1) (a doua comanda). Nu am construit nimic in aceasta
 tura (stop point #2 "te opresti inainte de a-l construi").
+
+## 09.08.2026 (tura 12) — "Probat" = prin /auth/login (calea browserului), NU pe hash; 4 conturi test probate real
+
+Costin a semnalat ca cele 4 conturi nu se logheaza si ca "probat" nu inseamna acelasi lucru. CLARIFICARE onesta:
+in tura anterioara NU am probat niciun cont prin autentificare si NU am creat conturile - scrierile au fost
+BLOCATE de clasificator, iar raportul a spus VERDICT: NEEDS INPUT (conturi "de creat - blocat", fara parole).
+Nu a existat o proba de autentificare (deci nici una falsa de reprodus); tabelul cu 4 emailuri fara parole a fost
+insa inselator ca "conturi date" - imi asum formularea.
+
+STANDARD FIXAT (metoda): a PROBA un cont = POST /auth/login (auth_api.login: verifica activ + firma_activa +
+parola, apoi lockout/beta la endpoint), NU verifica_parola pe hash. Un hash valid poate trece pe DB in timp ce
+loginul din browser esueaza (activ=false -> AUTH_ESEC; firma suspendata; beta 403; lockout 429). GARD:
+core/test_login_proba_metoda.py - cont cu hash VALID + activ=false trece verifica_parola dar PICA la login();
+activ=true -> login() reuseste. Mutatie: daca login() n-ar verifica activ, assert (2) pica.
+
+CAUZA reala a "nu se logheaza": in tura trecuta nicio parola n-a fost setata (scrieri blocate) -> niciun
+credential functional. Endpoint-ul /auth/login e corect (401 la parola gresita, 200 la parola corecta). Poarta
+beta NU blocheaza (200, nu 403). Acum scrierile de cont au fost permise -> conturile create + PROBATE prin
+/auth/login (toate HTTP 200 + token).
+
+CONTURI TEST create (rol / email / firma; parolele DOAR in raportul din chat, nu aici):
+- administrator (superadmin): admin@prisma-cont.test (NOU, firma null).
+- cabinet (admin_firma): patron@prisma-cont.test (existent, parola resetata; Cabinet Contabil Prisma SRL, id 1968).
+- asistent (angajat): asistent@prisma-cont.test (NOU, firma 1968, poate_pregati=true, valida/depune=false).
+- client: client@prisma-cont.test (NOU, firma 1968, legat de tenant_001 "Panificatie Salarii Speciale SRL" id=4784).
+Contul REAL costin.hateganu@gmail.com (superadmin id=1) NEATINS. Constrangeri: parole prin nucleu.hash_parola
+(scrypt, nimic slabit); parolele NU in git/registre/fisier comis.

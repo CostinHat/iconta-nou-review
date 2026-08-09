@@ -2422,3 +2422,11 @@ euro pt art.76(4^1) pct.29/e). Cumul: anual in euro, ocupationale de la 01.03.20
 cere subsistemul art.76(4^1) (plafon lunar 33% pe suma a-j + ordine art.76(4^2) + excedent), care lipseste complet
 din app; 33% poate musca la plata lumpy pe salariu mic. Neconstruit; decizie de scope (E3_97 izolat cu 33% pe sine
 vs subsistem complet). Metoda B fixata (app aplica plafonul, contabilul introduce brutul). Datele NEatinse.
+
+## 09.08.2026 (tura 12) — Gard gaura de metoda pe proba de login + 4 conturi test pe roluri
+
+Gard: core/test_login_proba_metoda.py - "probat" = auth_api.login (calea /auth/login), nu verifica_parola pe hash;
+demonstreaza divergenta hash-ok vs login-esec pe cont inactiv (activ=false). Constrangere chk_firm_required
+(angajat/client cer accounting_firm_id) - respectata (asistent+client pe firma 1968). Conturi test pe cele 4
+roluri (admin@/patron@/asistent@/client@ prisma-cont.test), probate real (HTTP 200 + token); contul real (id=1)
+neatins; parolele doar in raport, nu in registre.
