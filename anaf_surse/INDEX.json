@@ -261,6 +261,16 @@
       "tip_forma": null,
       "acopera": []
     },
+    "lege_64_2026.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_136_2020_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "legea_141_2025.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -328,6 +338,50 @@
         }
       ]
     },
+    "legea_296_2020_consolidat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_tva_incasare",
+          "data_in": "2021-01-01",
+          "valoare": "4500000",
+          "nivel_sursa": "MO",
+          "temei": "Legea 296/2020 art."
+        }
+      ]
+    },
+    "legea_346_2002_consolidat.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_70_2015_consolidat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_sold_casa",
+          "data_in": "2015-05-09",
+          "valoare": "50000",
+          "nivel_sursa": "MO",
+          "temei": "Legea 70/2015 art."
+        }
+      ]
+    },
+    "og_16_2022_consolidat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "impozit_dividend",
+          "data_in": "2023-01-01",
+          "valoare": "0.08",
+          "nivel_sursa": "MO",
+          "temei": "OG 16/2022 art.97"
+        }
+      ]
+    },
     "oms_15_2018_modificare_2025.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -378,6 +432,24 @@
       "tip_forma": null,
       "acopera": []
     },
+    "ordin_506_1030_2026_norme_oug158.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_115_2023_consolidat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [
+        {
+          "cota": "plafon_avans_decontare",
+          "data_in": "2023-12-15",
+          "valoare": "5000",
+          "nivel_sursa": "MO",
+          "temei": "OUG 115/2023 art."
+        }
+      ]
+    },
     "oug_156_2024.pdf": {
       "exista": true,
       "tip_forma": "forma_la_data",
@@ -397,6 +469,11 @@
       "acopera": []
     },
     "oug_158_2005_pre_L141.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "oug_34_2024_consolidat.html": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -454,6 +531,11 @@
           "temei": "OUG 8/2026 art.282"
         }
       ]
+    },
+    "oug_91_2025.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
     },
     "pdf_original": {
       "exista": true,

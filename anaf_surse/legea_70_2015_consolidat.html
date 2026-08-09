@@ -1,0 +1,1226 @@
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <title>LEGE           (A)    70 02/04/2015 - Portal Legislativ</title>
+    <link href="/Content/css?v=iKXncnEnzeZrcZDXQ4gyEFYtrgIhK9GqKaiZ1xjeUOQ1" rel="stylesheet"/>
+
+    <link href="/Content/themes/base/css?v=7T_tuS9RP8sQe2HxerJdL6STYU-qCHtjrExyjsSiYcQ1" rel="stylesheet"/>
+
+    <meta name="keywords" content="LEGE           (A)    70 02/04/2015 - Portal Legislativ">
+    <meta name="description" content="LEGE           (A)    70 02/04/2015 - Portal Legislativ">
+    <meta name="title" content="LEGE           (A)    70 02/04/2015 - Portal Legislativ">
+    <link href="/Content/bootstrap-datepicker.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="/Content/Images/Site/temanoua/favicon.ico" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="/Content/public.css" rel="stylesheet" />
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="/bundles/modernizr?v=qVODBytEBVVePTNtSFXgRX0NCEjh9U_Oj8ePaSiRcGg1"></script>
+
+    <script src="/bundles/jquery?v=UgyEMAYOuSB9Bb6HcOEVHpd6fIIp54yF086SRNVcdIY1"></script>
+
+    <script src="/bundles/jqueryui?v=O4Awnx3xYnFLmC1TAsxXigS8kLERW18heIHqD0bRSTE1"></script>
+
+    <script src="/bundles/bootstrap?v=WyYa2dIFje-38fhrXc_sQiaOB-lu9j8r45bVIBgtqrw1"></script>
+
+    <script type="text/javascript" language="JavaScript">
+        var backColor = '#f0ffff';
+        var actColor = 'white';
+        var brdColor = 'black';
+        function marcheaza(id_ttl, id) {
+            /*id.style.backgroundColor=backColor;
+            id_ttl.style.cursor='pointer';
+            id.style.borderColor=brdColor;
+            id.style.borderStyle='dashed';*/
+        }
+        function demarcheaza(id_ttl, id) {
+            /*id.style.backgroundColor='transparent';
+            id_ttl.style.cursor='default';
+            id.style.borderColor=actColor;
+            id.style.borderStyle='dotted';*/
+        }
+        function plusMinus(id1, id2) {
+            if (id1.style.display == 'none') {
+                id1.style.display = 'inline';
+                id2.style.display = 'none';
+            }
+            else {
+                id1.style.display = 'none';
+                id2.style.display = 'inline';
+            }
+        }
+        function setCursor(id, tipCursor) {
+            id.style.cursor = tipCursor;
+        }
+    </script>
+    <script>
+        function pozitioneaza(id) {
+            var id_nou = id.substring(0, id.length - 4);
+           //document.getElementById('toTop').click();
+            $("#toTop").trigger("click");
+ 
+        }
+ 
+
+    </script>
+
+
+
+</head>
+
+<body data-spy="scroll" data-target="#affix-nav" data-twttr-rendered="true">
+    <a name="top"></a>
+
+
+    <div id="toTop" class="toggle-menu menu-left"><a class="toggle-menu menu-left"><img src="/Content/Images/Site/temanoua/butonmeniu.png" alt="logo" /></a> </div>
+    <div id="masterwrapper page-content">
+        <div id="header_wrapper" class="navbar navbar-default">
+            <!--navbar-fixed-top-->
+            <header>
+                <div id="header">
+                    <div class="header_top">
+                        <div class="banner">
+                            <div class="row">
+                                <img class="img-responsive center-block pozawidth" id="logoportal" src="/Content/Images/Site/header_logo.png" style="width:85%;" alt="logo" />
+                            </div>
+                        </div>
+                        <div class="row margin0" id="textlogo">
+                            <center>
+                                <h4 class="reducerespatiu logo">Portal Legislativ</h4>
+
+                            </center>
+                            <!-- <div style="float:right; position:relative; right:0; margin-top:-23px;">
+                                <a data-toggle="modal" data-target="#mesajBetaModal" style="cursor:pointer;">
+                                    <img width="50" src="/Content/Images/Site/versiunebeta.png" alt="Versiune Beta 2.0" />
+                                </a>
+                            </div>-->
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="menu_wrapper navbar navbar-inverse" role="navigation" id="slide-nav">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <a id="btnNavbar" class="navbar-toggle">
+                                    <span class="sr-only">Meniu</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </a>
+
+                            </div>
+                            <div id="slidemenu" style="cursor:pointer;">
+                                <div id="menu" onclick="pozitioneaza('')">
+                                    <a style=" cursor:pointer;" onclick="pozitioneaza('')">
+                                        <h3>Meniu</h3>
+                                    </a>
+                                    <ul></ul>
+                                    <ul class="mainmenu">
+ 
+        <li>
+            <a href="/Public/Acasa" class="main_link">
+
+                Acasă
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/NLEX" class="main_link">
+
+                Despre Proiect
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/Functionalitati" class="main_link">
+
+                Facilități Oferite 
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/LegaturiUtile" class="main_link">
+
+                Legături Utile
+
+            </a>
+        </li>
+<li>
+	<a href="https://www.just.ro/informatii-de-interes-public/protectia-datelor-cu-caracter-personal/" class="main_link" target="_blank" title="Protecţia datelor cu caracter personal">GDPR</a>
+</li>
+
+             
+                                    </ul>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </header>
+            <div class="meniunu">
+                <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left">
+                    <h3 style="padding-left:65px; margin-top:-5px;">Meniu</h3>
+                    <div id="meniutitlu"></div>
+                    <div id="meniupaginastart">
+ 
+        <li>
+            <a href="/Public/Acasa" class="main_link">
+
+                Acasă
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/NLEX" class="main_link">
+
+                Despre Proiect
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/Functionalitati" class="main_link">
+
+                Facilități Oferite 
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/LegaturiUtile" class="main_link">
+
+                Legături Utile
+
+            </a>
+        </li>
+<li>
+	<a href="https://www.just.ro/informatii-de-interes-public/protectia-datelor-cu-caracter-personal/" class="main_link" target="_blank" title="Protecţia datelor cu caracter personal">GDPR</a>
+</li>
+
+              <br />
+                        Prin portalul N-Lex se acorda acces gratuit la legislatiile nationale ale statelor membre, portalul fiind
+                        conceput pe baza unei tehnologii de comunicare interne, ce permite accesarea directa a bazelor de date legislative nationale,
+                        rezultatele cautarilor venind direct de la sursa.
+                    </div>
+                    <script>
+                        if (window.location.href.indexOf('DetaliiDocument') != -1) {
+                            $('#meniupaginastart').hide();
+                        }
+                        else {
+                            $('#meniupaginastart').show();
+                        }
+                    </script>
+                </nav>
+            </div>
+        </div>
+ 
+        <div id="page_content" style="margin-top:-15px;">
+            <div id="page_wrapper">
+                <div class="articole_wrapper">
+                    
+
+
+<style>
+    #masterwrapper, #page_content, #page_wrapper {
+        background-color: white;
+        background: white;
+    }
+
+    #document_info {
+        font-size: 15px;
+    }
+
+    #fisaact {
+        font-size: 14px;
+    }
+
+    .seincarca {
+        position: fixed;
+        z-index: 1100;
+        left: 45%;
+        /*	margin-top: -500px;*/
+        top: 45%;
+        height: 100px;
+        background-color: #ffffff;
+        -moz-box-shadow: 5px 5px 5px #400;
+        -webkit-box-shadow: 5px 5px 5px #400;
+        box-shadow: 5px 5px 5px #400;
+        border: 1px solid #dadada;
+        -moz-border-radius: 15px;
+        -webkit-border-radius: 15px;
+        -khtml-border-radius: 15px;
+        border-radius: 15px;
+    }
+
+    .cbsloader {
+        background-image: url(~/../../../Content/Images/Site/bar-circle.gif);
+        background-repeat: no-repeat;
+    }
+
+    #modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('~/../../../Content/Images/Site/tint20.png') 0 0 repeat;
+        background: rgba(0,0,0,0.2);
+    }
+    #sidebar  {
+        &.affix;
+
+    {
+        top: 10px;
+        bottom: auto;
+    }
+
+    &.affix-top {
+        position: absolute;
+        top: 20px;
+    }
+
+    &.affix-bottom {
+        position: relative;
+        top: auto;
+        bottom: auto;
+    }
+
+    }
+
+</style>
+ <script>
+
+     function imgSIZE() {
+         $("#infoactinfoact img").one("load", function() {
+             try {
+                 var theImage = new Image();
+                 theImage.src = $(this).attr("src");
+                 var imgW = theImage.width;
+                 var imgH = theImage.height;
+                 // console.log($(this).attr("src") + "   - " + imgW + ", " + imgH);
+
+                 
+                 $(this).css("max-width", "100%");
+                 $(this).css("width", imgW+"px");
+                 
+             }
+             catch(e) {
+                 // console.log("horror> "+e);
+             }
+         });
+     }
+
+ </script>
+
+<div class="container bs-docs-container"  data-target="#sidebar">
+
+    <div class="row" id="textdocumentleg">
+        <div class="col-md-3" id="meniu">
+            <div class="bs-docs-sidebar affix-top meniuaffix" id="sidebar">
+                <div class="articole_wrapper">
+                    <div class="h1_articole">
+                        <h1>Cuprins</h1>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="loaderDiv" class="seincarca" style="display: none; text-align: center; width: auto !important; height: auto !important; padding: 40px;">
+                    <div id="modal"></div>
+                    <progress max="100">
+                        <div class="cbsloader">
+                            <div style="color:#333; margin-top:-40px; margin-left:130px;">
+                            </div>
+                            <br>
+                            <div style="color:#333; margin-left:49px; margin-top:-5px;">
+                                <b>Se încarcă, vă rugăm asteptati.</b><br><br>
+                            </div>
+                        </div>
+                    </progress>
+                </div>
+                <div class="details_navigation">
+
+                    <input type="hidden" id="id_act" name="id_act" value="209207" />
+                    <div class="nav_header expanded" data-target="FormeAct" style="margin-left:-10px; font-weight: bold !important;">
+                            <span class="trigger plus">+</span>
+                             <b><span>Forme act</span></b>
+                    </div>
+                    <div class="nav_content expanded" data-target="FormeAct" style="margin-left: -10px;">
+                            <div class="forme_act">
+<input checked="checked" id="Formaconsolidata" name="FormeAct" onchange="SchimbareFormaAct();" type="radio" value="1" /><label for="Formaconsolidata">Forma consolidata</label>                                        <div class="forme_act_chk">
+                                            
+                                            
+                                        </div>
+                                            <div>
+                                                <div id="label_forme_actz" onclick="toggle_istoric_forme_actz()" style="cursor: pointer; margin-left: -5px; margin-top: 5px;">&nbsp;&nbsp;&nbsp;+&nbsp;istoric consolidări</div>
+                                                <div id="istoric_fa" class="nav_content expanded" style="display: none; margin-left: -8px;">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 01.01.2026' style='color:#428BCA' href='~/../../../Public/DetaliiDocument/304521'>01.01.2026</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 16.06.2024' style='color:#428BCA' href='~/../../../Public/DetaliiDocument/283695'>16.06.2024</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 15.12.2023' style='color:#428BCA' href='~/../../../Public/DetaliiDocument/269531'>15.12.2023</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 11.11.2023' style='color:#428BCA' href='~/../../../Public/DetaliiDocument/269122'>11.11.2023</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 06.01.2019' id='fa_selectata' style='color:red;text-decoration:none;cursor:default'>06.01.2019</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 01.08.2016' style='color:#428BCA' href='~/../../../Public/DetaliiDocument/179669'>01.08.2016</a><br/>
+                                                </div>
+                                            </div>
+                                <!--
+                                -->
+                            </div>
+                            <div class="forme_act">
+                                <!--
+                                -->
+                            </div>
+                            <div class="forme_act">
+                                <!--
+                                -->
+<input id="Formadebaza" name="FormeAct" onchange="incarcaFormaDeBaza(167088);" type="radio" value="3" /><label for="Formadebaza">Forma de baza</label>                            </div>
+                    </div>
+
+                    <div id="label_fisaact" class="nav_header" onclick="toggle_fisaact()" style="margin-left:-10px !important; margin-top:10px;">
+                        <span id="label_fisaact_plus_minus" style="cursor:pointer">+</span>
+                        <span style="cursor: pointer; font-weight: bold; color: #3c3636; ">Fișă act</span>
+                    </div>
+
+                    <div id="content_fisaact" class="nav_content" style="display: none;">
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="1" id="Actiunisuferite" name="Actiunisuferite" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Actiunisuferite" type="hidden" value="false" />
+                                <label for="Actiunisuferite">Actiuni suferite</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="2" id="ActiuniInduse" name="ActiuniInduse" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="ActiuniInduse" type="hidden" value="false" />
+                                <label for="ActiuniInduse">Actiuni Induse</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="3" id="Referape" name="Referape" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Referape" type="hidden" value="false" />
+                                <label for="Referape">Refera pe</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="4" id="Referitde" name="Referitde" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Referitde" type="hidden" value="false" />
+                                <label for="Referitde">Referit de</label>
+                            </div>
+                    </div>
+
+                </div>
+                <p style="padding-top: 10px; font-variant: small-caps; border-bottom: 3px solid #BB3A3A; color: #112F5D; font-size: 18px; font-family: EB Garamond !important; ">Cuprinsul Actului</p>
+                <ul class="nav bs-docs-sidenav" style=" margin-top:5px;">
+
+                    pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar și pentru modificarea și completarea Ordonanței de urgență a Guvernului nr. 193/2002 privind introducerea sistemelor moderne de plată<li><a href="#id_capA21_ttl" onclick="&#xA;        pozitioneaza('id_capA21_ttl')&#xA;      ">Capitolul I</a><ul class="nav submeniu"><li><a href="#id_artA23_ttl" onclick="&#xA;        pozitioneaza('id_artA23_ttl')&#xA;      ">Articolul 1</a></li><li><a href="#id_artA27_ttl" onclick="&#xA;        pozitioneaza('id_artA27_ttl')&#xA;      ">Articolul 2</a></li><li><a href="#id_artA32_ttl" onclick="&#xA;        pozitioneaza('id_artA32_ttl')&#xA;      ">Articolul 3</a></li><li><a href="#id_artA42_ttl" onclick="&#xA;        pozitioneaza('id_artA42_ttl')&#xA;      ">Articolul 4</a></li><li><a href="#id_artA48_ttl" onclick="&#xA;        pozitioneaza('id_artA48_ttl')&#xA;      ">Articolul 4^1</a></li><li><a href="#id_artA69_ttl" onclick="&#xA;        pozitioneaza('id_artA69_ttl')&#xA;      ">Articolul 5</a></li><li><a href="#id_artA81_ttl" onclick="&#xA;        pozitioneaza('id_artA81_ttl')&#xA;      ">Articolul 6</a></li><li><a href="#id_artA83_ttl" onclick="&#xA;        pozitioneaza('id_artA83_ttl')&#xA;      ">Articolul 7</a></li><li><a href="#id_artA85_ttl" onclick="&#xA;        pozitioneaza('id_artA85_ttl')&#xA;      ">Articolul 8</a></li><li><a href="#id_artA87_ttl" onclick="&#xA;        pozitioneaza('id_artA87_ttl')&#xA;      ">Articolul 9</a></li><li><a href="#id_artA90_ttl" onclick="&#xA;        pozitioneaza('id_artA90_ttl')&#xA;      ">Articolul 10</a></li><li><a href="#id_artA92_ttl" onclick="&#xA;        pozitioneaza('id_artA92_ttl')&#xA;      ">Articolul 11</a></li><li><a href="#id_artA96_ttl" onclick="&#xA;        pozitioneaza('id_artA96_ttl')&#xA;      ">Articolul 12</a></li><li><a href="#id_artA99_ttl" onclick="&#xA;        pozitioneaza('id_artA99_ttl')&#xA;      ">Articolul 13</a></li><li><a href="#id_artA101_ttl" onclick="&#xA;        pozitioneaza('id_artA101_ttl')&#xA;      ">Articolul 14</a></li></ul></li><li><a href="#id_capA103_ttl" onclick="&#xA;        pozitioneaza('id_capA103_ttl')&#xA;      ">Capitolul II</a><ul class="nav submeniu"><li><a href="#id_artA105_ttl" onclick="&#xA;        pozitioneaza('id_artA105_ttl')&#xA;      ">Articolul 15</a></li></ul></li><li><a href="#id_capA126_ttl" onclick="&#xA;        pozitioneaza('id_capA126_ttl')&#xA;      ">Capitolul III</a><ul class="nav submeniu"><li><a href="#id_artA128_ttl" onclick="&#xA;        pozitioneaza('id_artA128_ttl')&#xA;      ">Articolul 16</a></li><li><a href="#id_artA131_ttl" onclick="&#xA;        pozitioneaza('id_artA131_ttl')&#xA;      ">Articolul 17</a></li><li><a href="#id_artA133_ttl" onclick="&#xA;        pozitioneaza('id_artA133_ttl')&#xA;      ">Articolul 18</a></li><li><a href="#id_artA135_ttl" onclick="&#xA;        pozitioneaza('id_artA135_ttl')&#xA;      ">Articolul 19</a></li></ul></li>p. PREȘEDINTELE CAMEREI DEPUTAȚILOR,PETRU GABRIEL VLASEPREȘEDINTELE SENATULUICĂLIN-CONSTANTIN-ANTON POPESCU-TĂRICEANU
+
+                </ul>
+                <a class="back-to-top" onclick="pozitioneaza('')" href="#top">
+                    Reveniti in topul paginii
+                </a>
+                <div style="text-align:center;">
+                    
+
+                    <a target="_blank" class="btn btn-primary btn-xs" href=/Public/FormaPrintabila/00000G081UXM5DSL9RK2SG4IMM3PDRSX>
+                        <span class="glyphicon glyphicon-print"></span> Forma printabilă
+                    </a>
+                </div>
+                <div class="articole_wrapper">
+                    <div class="h1_articole">
+
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+
+
+
+        <div class="col-md-8" role="main" id="infoactinfoact">
+            <div class="bs-docs-section">
+                <div class="main_details">
+                    
+                    <div class="document_info" id="document_info">
+                        <div id="forme_act_container" data-id="FormeAct" data-state="loaded">
+                                    <div id="div_Formaconsolidata" class="content_forma_act" data-state="loaded">
+                                        
+                                        <span class="S_DEN">LEGE nr. 70 din 2 aprilie 2015 </span><span class="S_HDR">pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar și pentru modificarea și completarea <A href="~/../../../Public/DetaliiDocumentAfis/40872">Ordonanței de urgență a Guvernului nr. 193/2002</A> privind introducerea sistemelor moderne de plată</span><table cellspacing="0px" cellpadding="0px" class="S_EMT"><tr valign="baseline"><td width="75px"><span class="S_EMT_TTL">EMITENT</span></td><td><span class="S_EMT_BDY"><li>PARLAMENTUL</li></span></td></tr></table><span class="S_PUB"><span class="S_PUB_TTL">Publicat în 
+			</span><span class="S_PUB_BDY">MONITORUL OFICIAL nr. 242 din 9 aprilie 2015</span></span><span id="fisaact"><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='actiuni_suferite'></span><br/><span style='display:none;border:1px solid;height:180px;overflow:auto' id='actiuni_induse'></span><br/><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='refera_pe'></span><br/><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='referit_de'></span><br/><!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA20">Parlamentul României adoptă prezenta lege.<!----></span><span class="S_CAP" style="display: block; color:black;" id="id_capA21" name="id_capA21"><span class="TAG_COLLAPSED" id="id_cllpsdA21" onMouseOver="marcheaza(id_cllpsdA21,id_capA21)" onMouseOut="demarcheaza(id_cllpsdA21,id_capA21)" onMouseDown="plusMinus(id_capA21_bdy,id_cllpsdA21)">
+				 + 
+			</span><span class="S_CAP_TTL" id="id_capA21_ttl" onMouseOver="marcheaza(id_capA21_ttl,id_capA21)" onMouseOut="demarcheaza(id_capA21_ttl,id_capA21)" onMouseDown="plusMinus(id_capA21_bdy,id_cllpsdA21)">Capitolul I</span><span class="S_CAP_DEN"> Măsuri pentru întărirea disciplinei financiare privind operațiunile de încasări și plăți în numerar<!----></span><span class="S_CAP_BDY" id="id_capA21_bdy"><span class="S_ART" style="display: block; color:black;" id="id_artA23" name="id_artA23"><span class="TAG_COLLAPSED" id="id_cllpsdA23" onMouseOver="marcheaza(id_cllpsdA23,id_artA23)" onMouseOut="demarcheaza(id_cllpsdA23,id_artA23)" onMouseDown="plusMinus(id_artA23_bdy,id_cllpsdA23)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA23_ttl" onMouseOver="marcheaza(id_artA23_ttl,id_artA23)" onMouseOut="demarcheaza(id_artA23_ttl,id_artA23)" onMouseDown="plusMinus(id_artA23_bdy,id_cllpsdA23)">Articolul 1</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA23_bdy"><span class="S_ALN" style="display: block; color:black;" id="id_litA24"><span class="S_ALN_TTL" id="id_litA24_ttl" onMouseOver="marcheaza(id_litA24_ttl,id_litA24)" onMouseOut="demarcheaza(id_litA24_ttl,id_litA24)" onMouseDown="plusMinus(id_litA24_short,id_litA24_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA24_bdy">Operațiunile de încasări și plăți efectuate de persoane juridice, persoane fizice autorizate, întreprinderi individuale, întreprinderi familiale, liber profesioniști, persoane fizice care desfășoară activități în mod independent, asocieri și alte entități cu sau fără personalitate juridică de la/către oricare dintre aceste categorii de persoane se vor realiza numai prin instrumente de plată fără numerar, definite potrivit legii.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA25"><span class="S_ALN_TTL" id="id_litA25_ttl" onMouseOver="marcheaza(id_litA25_ttl,id_litA25)" onMouseOut="demarcheaza(id_litA25_ttl,id_litA25)" onMouseDown="plusMinus(id_litA25_short,id_litA25_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA25_bdy">Prevederile prezentului capitol nu se aplică Trezoreriei Statului, instituțiilor de credit, instituțiilor emitente de monedă electronică, instituțiilor care prestează servicii de plată, autorizate de Banca Națională a României sau autorizate în alt stat membru al Uniunii Europene și notificate către Banca Națională a României, potrivit legii, instituțiilor financiare nebancare și entităților care efectuează operațiuni de schimb valutar, definite potrivit legii, pentru operațiunile specifice activității pentru care acestea au fost autorizate, precum și operatorilor din domeniul jocurilor de noroc.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA26"><span class="S_ALN_TTL" id="id_litA26_ttl" onMouseOver="marcheaza(id_litA26_ttl,id_litA26)" onMouseOut="demarcheaza(id_litA26_ttl,id_litA26)" onMouseDown="plusMinus(id_litA26_short,id_litA26_bdy)">(3)<!----></span> <span class="S_ALN_BDY" id="id_litA26_bdy">Prevederile prezentului capitol se aplică și operațiunilor de încasări și plăți în valută efectuate pe teritoriul României. Încadrarea în plafoanele prevăzute de prezentul capitol se efectuează în funcție de cursul de schimb valutar, comunicat de Banca Națională a României, de la data efectuării operațiunilor de încasări sau plăți.</span></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA27" name="id_artA27"><span class="TAG_COLLAPSED" id="id_cllpsdA27" onMouseOver="marcheaza(id_cllpsdA27,id_artA27)" onMouseOut="demarcheaza(id_cllpsdA27,id_artA27)" onMouseDown="plusMinus(id_artA27_bdy,id_cllpsdA27)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA27_ttl" onMouseOver="marcheaza(id_artA27_ttl,id_artA27)" onMouseOut="demarcheaza(id_artA27_ttl,id_artA27)" onMouseDown="plusMinus(id_artA27_bdy,id_cllpsdA27)">Articolul 2</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA27_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA28">În sensul prezentei legi, următorii termeni se definesc astfel:<!----></span><span class="S_LIT" style="display: block; color:black;" id="id_litA29"><span class="S_LIT_TTL" id="id_litA29_ttl" onMouseOver="marcheaza(id_litA29_ttl,id_litA29)" onMouseOut="demarcheaza(id_litA29_ttl,id_litA29)" onMouseDown="plusMinus(id_litA29_short,id_litA29_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA29_bdy">încasare fragmentată - fracționarea sumei de încasat în mai multe tranșe, pentru a evita plafonul de încasare în numerar stabilit prin lege;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA29_short" onMouseOver="marcheaza(id_litA29_short,id_litA29)" onMouseOut="demarcheaza(id_litA29_short,id_litA29)" onMouseDown="plusMinus(id_litA29_short,id_litA29_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA30"><span class="S_LIT_TTL" id="id_litA30_ttl" onMouseOver="marcheaza(id_litA30_ttl,id_litA30)" onMouseOut="demarcheaza(id_litA30_ttl,id_litA30)" onMouseDown="plusMinus(id_litA30_short,id_litA30_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA30_bdy">plată fragmentată - fracționarea sumei de plată în mai multe tranșe, pentru a evita plafonul de plată în numerar stabilit prin lege;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA30_short" onMouseOver="marcheaza(id_litA30_short,id_litA30)" onMouseOut="demarcheaza(id_litA30_short,id_litA30)" onMouseDown="plusMinus(id_litA30_short,id_litA30_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA31"><span class="S_LIT_TTL" id="id_litA31_ttl" onMouseOver="marcheaza(id_litA31_ttl,id_litA31)" onMouseOut="demarcheaza(id_litA31_ttl,id_litA31)" onMouseDown="plusMinus(id_litA31_short,id_litA31_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA31_bdy">magazin de tipul cash and carry - magazin care realizează comerț de tipul cash and carry, astfel cum este definit la <A href="~/../../../Public/DetaliiDocumentAfis/84943">art. 4 lit. e) din Ordonanța Guvernului nr. 99/2000</A> privind comercializarea produselor și serviciilor de piață, republicată, cu modificările și completările ulterioare.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA31_short" onMouseOver="marcheaza(id_litA31_short,id_litA31)" onMouseOut="demarcheaza(id_litA31_short,id_litA31)" onMouseDown="plusMinus(id_litA31_short,id_litA31_bdy)"> ... </span></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA32" name="id_artA32"><span class="TAG_COLLAPSED" id="id_cllpsdA32" onMouseOver="marcheaza(id_cllpsdA32,id_artA32)" onMouseOut="demarcheaza(id_cllpsdA32,id_artA32)" onMouseDown="plusMinus(id_artA32_bdy,id_cllpsdA32)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA32_ttl" onMouseOver="marcheaza(id_artA32_ttl,id_artA32)" onMouseOut="demarcheaza(id_artA32_ttl,id_artA32)" onMouseDown="plusMinus(id_artA32_bdy,id_cllpsdA32)">Articolul 3</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA32_bdy"><span class="S_ALN" style="display: block; color:black;" id="id_litA33"><span class="S_ALN_TTL" id="id_litA33_ttl" onMouseOver="marcheaza(id_litA33_ttl,id_litA33)" onMouseOut="demarcheaza(id_litA33_ttl,id_litA33)" onMouseDown="plusMinus(id_litA33_short,id_litA33_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA33_bdy">Prin excepție de la prevederile <span class="S_LGI">art. 1 alin. (1)</span> se pot efectua operațiuni de încasări și plăți în numerar, în următoarele condiții:<span class="S_LIT" style="display: block; color:black;" id="id_litA34"><span class="S_LIT_TTL" id="id_litA34_ttl" onMouseOver="marcheaza(id_litA34_ttl,id_litA34)" onMouseOut="demarcheaza(id_litA34_ttl,id_litA34)" onMouseDown="plusMinus(id_litA34_short,id_litA34_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA34_bdy">încasări de la persoanele prevăzute la <span class="S_LGI">art. 1 alin. (1)</span>, în limita unui plafon zilnic de 5.000 lei de la o persoană;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA34_short" onMouseOver="marcheaza(id_litA34_short,id_litA34)" onMouseOut="demarcheaza(id_litA34_short,id_litA34)" onMouseDown="plusMinus(id_litA34_short,id_litA34_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA35"><span class="S_LIT_TTL" id="id_litA35_ttl" onMouseOver="marcheaza(id_litA35_ttl,id_litA35)" onMouseOut="demarcheaza(id_litA35_ttl,id_litA35)" onMouseDown="plusMinus(id_litA35_short,id_litA35_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA35_bdy">încasări efectuate de către magazinele de tipul cash and carry, care sunt organizate și funcționează în baza legislației în vigoare, de la persoanele prevăzute la <span class="S_LGI">art. 1 alin. (1)</span>, în limita unui plafon zilnic de 10.000 lei de la o persoană;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA35_short" onMouseOver="marcheaza(id_litA35_short,id_litA35)" onMouseOut="demarcheaza(id_litA35_short,id_litA35)" onMouseDown="plusMinus(id_litA35_short,id_litA35_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA36"><span class="S_LIT_TTL" id="id_litA36_ttl" onMouseOver="marcheaza(id_litA36_ttl,id_litA36)" onMouseOut="demarcheaza(id_litA36_ttl,id_litA36)" onMouseDown="plusMinus(id_litA36_short,id_litA36_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA36_bdy">plăți către persoanele prevăzute la <span class="S_LGI">art. 1 alin. (1)</span>, în limita unui plafon zilnic de 5.000 lei/persoană, dar nu mai mult de un plafon total de 10.000 lei/zi;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA36_short" onMouseOver="marcheaza(id_litA36_short,id_litA36)" onMouseOut="demarcheaza(id_litA36_short,id_litA36)" onMouseDown="plusMinus(id_litA36_short,id_litA36_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA37"><span class="S_LIT_TTL" id="id_litA37_ttl" onMouseOver="marcheaza(id_litA37_ttl,id_litA37)" onMouseOut="demarcheaza(id_litA37_ttl,id_litA37)" onMouseDown="plusMinus(id_litA37_short,id_litA37_bdy)">d)<!----></span> <span class="S_LIT_BDY" id="id_litA37_bdy">plăți către magazinele de tipul cash and carry, care sunt organizate și funcționează în baza legislației în vigoare, în limita unui plafon zilnic total de 10.000 lei;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA37_short" onMouseOver="marcheaza(id_litA37_short,id_litA37)" onMouseOut="demarcheaza(id_litA37_short,id_litA37)" onMouseDown="plusMinus(id_litA37_short,id_litA37_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA38"><span class="S_LIT_TTL" id="id_litA38_ttl" onMouseOver="marcheaza(id_litA38_ttl,id_litA38)" onMouseOut="demarcheaza(id_litA38_ttl,id_litA38)" onMouseDown="plusMinus(id_litA38_short,id_litA38_bdy)">e)<!----></span> <span class="S_LIT_BDY" id="id_litA38_bdy">plăți din avansuri spre decontare, în limita unui plafon zilnic de 5.000 lei, stabilit pentru fiecare persoană care a primit avansuri spre decontare.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA38_short" onMouseOver="marcheaza(id_litA38_short,id_litA38)" onMouseOut="demarcheaza(id_litA38_short,id_litA38)" onMouseDown="plusMinus(id_litA38_short,id_litA38_bdy)"> ... </span></span></span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA39"><span class="S_ALN_TTL" id="id_litA39_ttl" onMouseOver="marcheaza(id_litA39_ttl,id_litA39)" onMouseOut="demarcheaza(id_litA39_ttl,id_litA39)" onMouseDown="plusMinus(id_litA39_short,id_litA39_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA39_bdy">Sunt interzise încasările fragmentate în numerar de la beneficiari pentru facturile a căror valoare este mai mare de 5.000 lei și, respectiv, de 10.000 lei, în cazul magazinelor de tipul cash and carry, precum și fragmentarea facturilor pentru o livrare de bunuri sau o prestare de servicii a căror valoare este mai mare de 5.000 lei, respectiv de 10.000 lei.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA40"><span class="S_ALN_TTL" id="id_litA40_ttl" onMouseOver="marcheaza(id_litA40_ttl,id_litA40)" onMouseOut="demarcheaza(id_litA40_ttl,id_litA40)" onMouseDown="plusMinus(id_litA40_short,id_litA40_bdy)">(3)<!----></span> <span class="S_ALN_BDY" id="id_litA40_bdy">Sunt interzise plățile fragmentate în numerar către furnizorii de bunuri și servicii pentru facturile a căror valoare este mai mare de 5.000 lei și, respectiv, de 10.000 lei, către magazinele de tipul cash and carry. Persoanele prevăzute la <span class="S_LGI">art. 1 alin. (1)</span> pot achita facturile cu valori care depășesc plafonul de 5.000 lei, către furnizorii de bunuri și servicii, respectiv de 10.000 lei, către magazinele de tipul cash and carry, astfel: 5.000 lei/10.000 lei în numerar, suma care depășește acest plafon putând fi achitată numai prin instrumente de plată fără numerar.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA41"><span class="S_ALN_TTL" id="id_litA41_ttl" onMouseOver="marcheaza(id_litA41_ttl,id_litA41)" onMouseOut="demarcheaza(id_litA41_ttl,id_litA41)" onMouseDown="plusMinus(id_litA41_short,id_litA41_bdy)">(4)<!----></span> <span class="S_ALN_BDY" id="id_litA41_bdy">La data acordării avansurilor spre decontare, sumele aferente intră în calculul plafonului zilnic prevăzut la <span class="S_LGI">alin. (1) lit. c)</span> sau <span class="S_LGI">d)</span>, după caz.</span></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA42" name="id_artA42"><span class="TAG_COLLAPSED" id="id_cllpsdA42" onMouseOver="marcheaza(id_cllpsdA42,id_artA42)" onMouseOut="demarcheaza(id_cllpsdA42,id_artA42)" onMouseDown="plusMinus(id_artA42_bdy,id_cllpsdA42)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA42_ttl" onMouseOver="marcheaza(id_artA42_ttl,id_artA42)" onMouseOut="demarcheaza(id_artA42_ttl,id_artA42)" onMouseDown="plusMinus(id_artA42_bdy,id_cllpsdA42)">Articolul 4</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA42_bdy"><span class="S_ALN" style="display: block; color:black;" id="id_litA43"><span class="S_ALN_TTL" id="id_litA43_ttl" onMouseOver="marcheaza(id_litA43_ttl,id_litA43)" onMouseOut="demarcheaza(id_litA43_ttl,id_litA43)" onMouseDown="plusMinus(id_litA43_short,id_litA43_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA43_bdy">Operațiunile de încasări în numerar efectuate de persoanele prevăzute la <span class="S_LGI">art. 1 alin. (1)</span>, de la persoane fizice, reprezentând cesiuni de creanțe, primiri de împrumuturi sau alte finanțări, precum și contravaloarea unor livrări de bunuri sau a unor prestări de servicii se efectuează în limita unui plafon zilnic de 10.000 lei de la o persoană.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA44"><span class="S_ALN_TTL" id="id_litA44_ttl" onMouseOver="marcheaza(id_litA44_ttl,id_litA44)" onMouseOut="demarcheaza(id_litA44_ttl,id_litA44)" onMouseDown="plusMinus(id_litA44_short,id_litA44_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA44_bdy">Sunt interzise încasările fragmentate de la o persoană, pentru operațiunile de încasări în numerar prevăzute la <span class="S_LGI">alin. (1)</span>, cu o valoare mai mare de 10.000 lei, precum și fragmentarea tranzacțiilor reprezentând cesiuni de creanțe, primiri de împrumuturi sau alte finanțări, respectiv fragmentarea unei livrări de bunuri sau a unei prestări de servicii, cu valoare mai mare de 10.000 lei.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA45"><span class="S_ALN_TTL" id="id_litA45_ttl" onMouseOver="marcheaza(id_litA45_ttl,id_litA45)" onMouseOut="demarcheaza(id_litA45_ttl,id_litA45)" onMouseDown="plusMinus(id_litA45_short,id_litA45_bdy)">(3)<!----></span> <span class="S_ALN_BDY" id="id_litA45_bdy">Prevederile <span class="S_LGI">alin. (1)</span> și <span class="S_LGI">(2)</span> nu se aplică în cazul livrărilor de bunuri și prestărilor de servicii care se efectuează cu plata în rate, în condițiile în care între persoanele prevăzute la <span class="S_LGI">art. 1 alin. (1)</span> și persoanele fizice sunt încheiate contracte de vânzare-cumpărare cu plata în rate, conform legii.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA46"><span class="S_ALN_TTL" id="id_litA46_ttl" onMouseOver="marcheaza(id_litA46_ttl,id_litA46)" onMouseOut="demarcheaza(id_litA46_ttl,id_litA46)" onMouseDown="plusMinus(id_litA46_short,id_litA46_bdy)">(4)<!----></span> <span class="S_ALN_BDY" id="id_litA46_bdy">Operațiunile de plăți în numerar efectuate de persoanele prevăzute la <span class="S_LGI">art. 1 alin. (1)</span>, către persoane fizice, reprezentând contravaloarea unor achiziții de bunuri sau a unor prestări de servicii, dividende, cesiuni de creanțe sau alte drepturi și restituiri de împrumuturi sau alte finanțări se efectuează cu încadrarea în plafonul zilnic de 10.000 lei către o persoană. Sunt interzise plățile fragmentate în numerar către o persoană, pentru tranzacțiile mai mari de 10.000 lei.</span></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA48" name="id_artA48"><span class="TAG_COLLAPSED" id="id_cllpsdA48" onMouseOver="marcheaza(id_cllpsdA48,id_artA48)" onMouseOut="demarcheaza(id_cllpsdA48,id_artA48)" onMouseDown="plusMinus(id_artA48_bdy,id_cllpsdA48)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA48_ttl" onMouseOver="marcheaza(id_artA48_ttl,id_artA48)" onMouseOut="demarcheaza(id_artA48_ttl,id_artA48)" onMouseDown="plusMinus(id_artA48_bdy,id_cllpsdA48)">Articolul 4^1</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA48_bdy"><span class="S_ALN" style="display: block; color:blue;" id="id_litA50"><span class="S_ALN_TTL" id="id_litA50_ttl" onMouseOver="marcheaza(id_litA50_ttl,id_litA50)" onMouseOut="demarcheaza(id_litA50_ttl,id_litA50)" onMouseDown="plusMinus(id_litA50_short,id_litA50_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA50_bdy">Organizatorii de nunți și botezuri, pentru operațiunile de încasări în numerar pe zi, de la persoane fizice, pentru serviciile legate de aceste evenimente, pot solicita organului fiscal central competent în administrarea obligațiilor lor fiscale, în cazul în care aceștia prezintă organului fiscal informații din care rezultă că încasările de la persoane fizice generate de organizarea de astfel de evenimente depășesc plafonul prevăzut la <span class="S_LGI">art. 4</span>, aprobarea unui alt plafon de încasări decât cel stabilit la <span class="S_LGI">art. 4</span>.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA52"><span class="S_ALN_TTL" id="id_litA52_ttl" onMouseOver="marcheaza(id_litA52_ttl,id_litA52)" onMouseOut="demarcheaza(id_litA52_ttl,id_litA52)" onMouseDown="plusMinus(id_litA52_short,id_litA52_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA52_bdy">La stabilirea plafonului, organul fiscal va avea în vedere încasările pe care organizatorii de nunți și botezuri le-au avut anterior din astfel de evenimente.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA54"><span class="S_ALN_TTL" id="id_litA54_ttl" onMouseOver="marcheaza(id_litA54_ttl,id_litA54)" onMouseOut="demarcheaza(id_litA54_ttl,id_litA54)" onMouseDown="plusMinus(id_litA54_short,id_litA54_bdy)">(3)<!----></span> <span class="S_ALN_BDY" id="id_litA54_bdy">Organul fiscal dispune cu privire la cererea depusă, potrivit <span class="S_LGI">alin. (1)</span>, printr-o decizie în termen de cel mult 15 zile de la data depunerii cererii. Decizia are valabilitate un an de la data comunicării.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA56"><span class="S_ALN_TTL" id="id_litA56_ttl" onMouseOver="marcheaza(id_litA56_ttl,id_litA56)" onMouseOut="demarcheaza(id_litA56_ttl,id_litA56)" onMouseDown="plusMinus(id_litA56_short,id_litA56_bdy)">(4)<!----></span> <span class="S_ALN_BDY" id="id_litA56_bdy">Decizia poate fi reînnoită sau modificată la cererea solicitantului. Dispozițiile <span class="S_LGI">alin. (1)-(3)</span> sunt aplicabile în mod corespunzător.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA58"><span class="S_ALN_TTL" id="id_litA58_ttl" onMouseOver="marcheaza(id_litA58_ttl,id_litA58)" onMouseOut="demarcheaza(id_litA58_ttl,id_litA58)" onMouseDown="plusMinus(id_litA58_short,id_litA58_bdy)">(5)<!----></span> <span class="S_ALN_BDY" id="id_litA58_bdy">Procedura de aplicare a prevederilor prezentului articol se aprobă prin ordin al ministrului finanțelor publice.</span></span><span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA67226776">
+			(la 30-06-2016, 
+			Art. 4^1 a fost introdus de <A href="~/../../../Public/DetaliiDocumentAfis/179598">pct. 1 al art. IV din ORDONANȚA DE URGENȚĂ nr. 32 din 28 iunie 2016, publicată în MONITORUL OFICIAL nr. 488 din 30 iunie 2016.</A>
+			)
+	</span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA69" name="id_artA69"><span class="TAG_COLLAPSED" id="id_cllpsdA69" onMouseOver="marcheaza(id_cllpsdA69,id_artA69)" onMouseOut="demarcheaza(id_cllpsdA69,id_artA69)" onMouseDown="plusMinus(id_artA69_bdy,id_cllpsdA69)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA69_ttl" onMouseOver="marcheaza(id_artA69_ttl,id_artA69)" onMouseOut="demarcheaza(id_artA69_ttl,id_artA69)" onMouseDown="plusMinus(id_artA69_bdy,id_cllpsdA69)">Articolul 5</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA69_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA70">Plafoanele-limită prevăzute de prezentul capitol nu se aplică de către persoanele prevăzute la <span class="S_LGI">art. 1 alin. (1)</span>, pentru următoarele operațiuni:<!----></span><span class="S_LIT" style="display: block; color:black;" id="id_litA71"><span class="S_LIT_TTL" id="id_litA71_ttl" onMouseOver="marcheaza(id_litA71_ttl,id_litA71)" onMouseOut="demarcheaza(id_litA71_ttl,id_litA71)" onMouseDown="plusMinus(id_litA71_short,id_litA71_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA71_bdy">depunerea de numerar în conturile deschise la instituțiile de credit sau la instituțiile care prestează servicii de plată și care sunt autorizate de Banca Națională a României, inclusiv în automatele de încasări în numerar;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA71_short" onMouseOver="marcheaza(id_litA71_short,id_litA71)" onMouseOut="demarcheaza(id_litA71_short,id_litA71)" onMouseDown="plusMinus(id_litA71_short,id_litA71_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA72"><span class="S_LIT_TTL" id="id_litA72_ttl" onMouseOver="marcheaza(id_litA72_ttl,id_litA72)" onMouseOut="demarcheaza(id_litA72_ttl,id_litA72)" onMouseDown="plusMinus(id_litA72_short,id_litA72_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA72_bdy">plata cheltuielilor de deplasare în interes de serviciu, în limita sumelor cuvenite pentru plata transportului, a diurnei, a indemnizației și a cazării pe timpul deplasării, precum și a cheltuielilor neprevăzute efectuate în acest sens;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA72_short" onMouseOver="marcheaza(id_litA72_short,id_litA72)" onMouseOut="demarcheaza(id_litA72_short,id_litA72)" onMouseDown="plusMinus(id_litA72_short,id_litA72_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA73"><span class="S_LIT_TTL" id="id_litA73_ttl" onMouseOver="marcheaza(id_litA73_ttl,id_litA73)" onMouseOut="demarcheaza(id_litA73_ttl,id_litA73)" onMouseDown="plusMinus(id_litA73_short,id_litA73_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA73_bdy">plata în numerar a impozitelor, taxelor, contribuțiilor, amenzilor și a altor obligații datorate bugetului general consolidat al statului;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA73_short" onMouseOver="marcheaza(id_litA73_short,id_litA73)" onMouseOut="demarcheaza(id_litA73_short,id_litA73)" onMouseDown="plusMinus(id_litA73_short,id_litA73_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:blue;" id="id_litA76"><span class="S_LIT_TTL" id="id_litA76_ttl" onMouseOver="marcheaza(id_litA76_ttl,id_litA76)" onMouseOut="demarcheaza(id_litA76_ttl,id_litA76)" onMouseDown="plusMinus(id_litA76_short,id_litA76_bdy)">d)<!----></span> <span class="S_LIT_BDY" id="id_litA76_bdy">retragerea de numerar din conturi deschise la instituțiile de credit sau la instituțiile care prestează servicii de plată și care sunt autorizate de Banca Națională a României pentru plata salariilor și a altor drepturi de personal prevăzute de lege și pentru alte operațiuni de plăți efectuate către persoanele fizice;<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA67226777">
+			(la 30-06-2016, 
+			Lit. d) a art. 5 a fost modificată de <A href="~/../../../Public/DetaliiDocumentAfis/179598">pct. 2 al art. IV din ORDONANȚA DE URGENȚĂ nr. 32 din 28 iunie 2016, publicată în MONITORUL OFICIAL nr. 488 din 30 iunie 2016.</A>
+			)
+	</span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA76_short" onMouseOver="marcheaza(id_litA76_short,id_litA76)" onMouseOut="demarcheaza(id_litA76_short,id_litA76)" onMouseDown="plusMinus(id_litA76_short,id_litA76_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA79"><span class="S_LIT_TTL" id="id_litA79_ttl" onMouseOver="marcheaza(id_litA79_ttl,id_litA79)" onMouseOut="demarcheaza(id_litA79_ttl,id_litA79)" onMouseDown="plusMinus(id_litA79_short,id_litA79_bdy)">e)<!----></span> <span class="S_LIT_BDY" id="id_litA79_bdy">transferarea de sume prin intermediul instituțiilor care prestează servicii de plată autorizate de Banca Națională a României sau autorizate în alt stat membru al Uniunii Europene și notificate către Banca Națională a României, potrivit legii;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA79_short" onMouseOver="marcheaza(id_litA79_short,id_litA79)" onMouseOut="demarcheaza(id_litA79_short,id_litA79)" onMouseDown="plusMinus(id_litA79_short,id_litA79_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA80"><span class="S_LIT_TTL" id="id_litA80_ttl" onMouseOver="marcheaza(id_litA80_ttl,id_litA80)" onMouseOut="demarcheaza(id_litA80_ttl,id_litA80)" onMouseDown="plusMinus(id_litA80_short,id_litA80_bdy)">f)<!----></span> <span class="S_LIT_BDY" id="id_litA80_bdy">depunerea de numerar în automate ce funcționează pe baza acceptatoarelor de bancnote sau monede.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA80_short" onMouseOver="marcheaza(id_litA80_short,id_litA80)" onMouseOut="demarcheaza(id_litA80_short,id_litA80)" onMouseDown="plusMinus(id_litA80_short,id_litA80_bdy)"> ... </span></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA81" name="id_artA81"><span class="TAG_COLLAPSED" id="id_cllpsdA81" onMouseOver="marcheaza(id_cllpsdA81,id_artA81)" onMouseOut="demarcheaza(id_cllpsdA81,id_artA81)" onMouseDown="plusMinus(id_artA81_bdy,id_cllpsdA81)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA81_ttl" onMouseOver="marcheaza(id_artA81_ttl,id_artA81)" onMouseOut="demarcheaza(id_artA81_ttl,id_artA81)" onMouseDown="plusMinus(id_artA81_bdy,id_cllpsdA81)">Articolul 6</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA81_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA82">Este interzisă acordarea oricăror avantaje clienților, de către persoanele prevăzute la <span class="S_LGI">art. 1 alin. (1)</span>, pentru efectuarea de plăți în numerar.<!----></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA83" name="id_artA83"><span class="TAG_COLLAPSED" id="id_cllpsdA83" onMouseOver="marcheaza(id_cllpsdA83,id_artA83)" onMouseOut="demarcheaza(id_cllpsdA83,id_artA83)" onMouseDown="plusMinus(id_artA83_bdy,id_cllpsdA83)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA83_ttl" onMouseOver="marcheaza(id_artA83_ttl,id_artA83)" onMouseOut="demarcheaza(id_artA83_ttl,id_artA83)" onMouseDown="plusMinus(id_artA83_bdy,id_cllpsdA83)">Articolul 7</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA83_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA84">În cazul persoanelor prevăzute la <span class="S_LGI">art. 1 alin. (1)</span> care au organizate mai multe casierii, plafoanele prevăzute la <span class="S_LGI">art. 3 alin. (1) lit. a)</span> și <span class="S_LGI">b)</span> și la <span class="S_LGI">art. 4 alin. (1)</span> sunt aplicabile pe fiecare casierie în parte.<!----></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA85" name="id_artA85"><span class="TAG_COLLAPSED" id="id_cllpsdA85" onMouseOver="marcheaza(id_cllpsdA85,id_artA85)" onMouseOut="demarcheaza(id_cllpsdA85,id_artA85)" onMouseDown="plusMinus(id_artA85_bdy,id_cllpsdA85)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA85_ttl" onMouseOver="marcheaza(id_artA85_ttl,id_artA85)" onMouseOut="demarcheaza(id_artA85_ttl,id_artA85)" onMouseDown="plusMinus(id_artA85_bdy,id_cllpsdA85)">Articolul 8</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA85_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA86">Sucursalele și alte sedii secundare ale persoanelor juridice care au casierie proprie și/sau cont deschis la o instituție de credit aplică în mod corespunzător prevederile prezentului capitol.<!----></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA87" name="id_artA87"><span class="TAG_COLLAPSED" id="id_cllpsdA87" onMouseOver="marcheaza(id_cllpsdA87,id_artA87)" onMouseOut="demarcheaza(id_cllpsdA87,id_artA87)" onMouseDown="plusMinus(id_artA87_bdy,id_cllpsdA87)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA87_ttl" onMouseOver="marcheaza(id_artA87_ttl,id_artA87)" onMouseOut="demarcheaza(id_artA87_ttl,id_artA87)" onMouseDown="plusMinus(id_artA87_bdy,id_cllpsdA87)">Articolul 9</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA87_bdy"><span class="S_ALN" style="display: block; color:black;" id="id_litA88"><span class="S_ALN_TTL" id="id_litA88_ttl" onMouseOver="marcheaza(id_litA88_ttl,id_litA88)" onMouseOut="demarcheaza(id_litA88_ttl,id_litA88)" onMouseDown="plusMinus(id_litA88_short,id_litA88_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA88_bdy">În cazul persoanelor prevăzute la <span class="S_LGI">art. 1 alin. (1)</span>, pentru facturile stornate, aferente bunurilor returnate și/sau serviciilor care nu au fost prestate, cu valori mai mari de 5.000 lei, respectiv 10.000 lei, în cazul magazinelor de tipul cash and carry, restituirea sumelor aferente poate fi efectuată astfel: 5.000 lei, respectiv 10.000 lei în numerar, sumele care depășesc aceste plafoane putând fi restituite numai prin instrumente de plată fără numerar.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA89"><span class="S_ALN_TTL" id="id_litA89_ttl" onMouseOver="marcheaza(id_litA89_ttl,id_litA89)" onMouseOut="demarcheaza(id_litA89_ttl,id_litA89)" onMouseDown="plusMinus(id_litA89_short,id_litA89_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA89_bdy">În cazul returnării de bunuri de către persoanele fizice și, respectiv, neprestării de servicii către persoanele fizice, restituirea sumelor aferente poate fi efectuată în numerar în limita a 10.000 lei, sumele care depășesc acest plafon putând fi restituite numai prin instrumente de plată fără numerar. Prin excepție, în cazul în care, la data restituirii, persoanele fizice declară pe propria răspundere că nu mai dețin cont bancar, restituirea se poate face integral în numerar, indiferent de nivelul sumei care trebuie restituită.</span></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA90" name="id_artA90"><span class="TAG_COLLAPSED" id="id_cllpsdA90" onMouseOver="marcheaza(id_cllpsdA90,id_artA90)" onMouseOut="demarcheaza(id_cllpsdA90,id_artA90)" onMouseDown="plusMinus(id_artA90_bdy,id_cllpsdA90)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA90_ttl" onMouseOver="marcheaza(id_artA90_ttl,id_artA90)" onMouseOut="demarcheaza(id_artA90_ttl,id_artA90)" onMouseDown="plusMinus(id_artA90_bdy,id_cllpsdA90)">Articolul 10</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA90_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA91">Operațiunile de încasări și plăți în numerar între persoanele fizice, altele decât operațiunile de încasări și plăți realizate prin intermediul instituțiilor care prestează servicii de plată autorizate de Banca Națională a României sau autorizate în alt stat membru al Uniunii Europene și notificate către Banca Națională a României, potrivit legii, efectuate ca urmare a transferului dreptului de proprietate asupra unor bunuri sau drepturi, a prestării de servicii, precum și cele reprezentând acordarea/restituirea de împrumuturi, se pot efectua în limita unui plafon zilnic de 50.000 lei/tranzacție. Sunt interzise încasările și plățile fragmentate în numerar pentru tranzacțiile mai mari de 50.000 lei, precum și fragmentarea unei tranzacții mai mari de 50.000 lei.<!----></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA92" name="id_artA92"><span class="TAG_COLLAPSED" id="id_cllpsdA92" onMouseOver="marcheaza(id_cllpsdA92,id_artA92)" onMouseOut="demarcheaza(id_cllpsdA92,id_artA92)" onMouseDown="plusMinus(id_artA92_bdy,id_cllpsdA92)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA92_ttl" onMouseOver="marcheaza(id_artA92_ttl,id_artA92)" onMouseOut="demarcheaza(id_artA92_ttl,id_artA92)" onMouseDown="plusMinus(id_artA92_bdy,id_cllpsdA92)">Articolul 11</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA92_bdy"><span class="S_ALN" style="display: block; color:black;" id="id_litA93"><span class="S_ALN_TTL" id="id_litA93_ttl" onMouseOver="marcheaza(id_litA93_ttl,id_litA93)" onMouseOut="demarcheaza(id_litA93_ttl,id_litA93)" onMouseDown="plusMinus(id_litA93_short,id_litA93_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA93_bdy">Se interzice persoanelor prevăzute la <span class="S_LGI">art. 1 alin. (2)</span> să elibereze persoanelor prevăzute la <span class="S_LGI">art. 1 alin. (1)</span> și <span class="S_LGI">art. 8</span> sume în numerar peste plafonul stabilit la <span class="S_LGI">art. 3 alin. (1) lit. c)</span>, pe fiecare persoană și tranzacție, cu excepția operațiunilor prevăzute la <span class="S_LGI">art. 5</span>.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA94"><span class="S_ALN_TTL" id="id_litA94_ttl" onMouseOver="marcheaza(id_litA94_ttl,id_litA94)" onMouseOut="demarcheaza(id_litA94_ttl,id_litA94)" onMouseDown="plusMinus(id_litA94_short,id_litA94_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA94_bdy">Este interzisă persoanelor prevăzute la <span class="S_LGI">art. 1 alin. (1)</span> și <span class="S_LGI">art. 8</span> fragmentarea solicitărilor de eliberare de numerar care conduce la depășirea plafonului prevăzut la <span class="S_LGI">art. 3 alin. (1) lit. c)</span>.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA95"><span class="S_ALN_TTL" id="id_litA95_ttl" onMouseOver="marcheaza(id_litA95_ttl,id_litA95)" onMouseOut="demarcheaza(id_litA95_ttl,id_litA95)" onMouseDown="plusMinus(id_litA95_short,id_litA95_bdy)">(3)<!----></span> <span class="S_ALN_BDY" id="id_litA95_bdy">Persoanele prevăzute la <span class="S_LGI">art. 1 alin. (1)</span> pot transfera sume din contul lor în contul persoanelor fizice, în baza documentelor justificative legale prezentate de plătitori.</span></span><span class="S_NTA" style="display: block; color:black;" id="id_ntaA67226773"><span class="S_NTA_TTL" id="id_ntaA67226773_ttl" onMouseOver="marcheaza(id_ntaA67226773_ttl,id_ntaA67226773)" onMouseOut="demarcheaza(id_ntaA67226773_ttl,id_ntaA67226773)" onMouseDown="plusMinus(id_ntaA67226773_scurt,id_ntaA67226773_lung)">
+						Notă </span><span style="display: none" class="S_NTA_SHORT" id="id_ntaA67226773_scurt">...
+			</span><span id="id_ntaA67226773_lung"><br /><span class="S_NTA_PAR" style="display: block; color:black;">Conform <A href="~/../../../Public/DetaliiDocumentAfis/209525">art. II din LEGEA nr. 344 din 27 decembrie 2018</A>, publicată în MONITORUL OFICIAL nr. 3 din 3 ianuarie 2019, dispozițiile privitoare la constatarea și sancționarea contravențiilor pentru nerespectarea prevederilor <span class="S_LGI">art. 11 alin. (3)</span> din prezenta lege intră în vigoare la data de 2 februarie 2019.</span></span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA36068261"><span class="S_ALN_TTL" id="id_litA36068261_ttl" onMouseOver="marcheaza(id_litA36068261_ttl,id_litA36068261)" onMouseOut="demarcheaza(id_litA36068261_ttl,id_litA36068261)" onMouseDown="plusMinus(id_litA36068261_short,id_litA36068261_bdy)">(4)<!----></span> <span class="S_ALN_BDY" id="id_litA36068261_bdy">Prin excepție de la prevederile <span class="S_LGI">alin. (3)</span>, în cazul operațiunilor efectuate prin instrumente de plată cu acces la distanță, persoanele prevăzute la <span class="S_LGI">art. 1 alin. (1)</span> pot transfera sume din contul lor în contul persoanelor fizice, cu condiția existenței documentelor justificative legale în evidența plătitorilor.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA17004459">
+			(la 06-01-2019, 
+			Articolul 11  din  Capitolul I  a fost completat de <A href="~/../../../Public/DetaliiDocumentAfis/209525">Punctul 1, Articolul I din LEGEA nr. 344 din 27 decembrie 2018, publicată în MONITORUL OFICIAL nr. 3 din 03 ianuarie 2019</A>
+			)
+	</span></span></span><span class="S_NTA" style="display: block; color:black;" id="id_ntaA67226774"><span class="S_NTA_TTL" id="id_ntaA67226774_ttl" onMouseOver="marcheaza(id_ntaA67226774_ttl,id_ntaA67226774)" onMouseOut="demarcheaza(id_ntaA67226774_ttl,id_ntaA67226774)" onMouseDown="plusMinus(id_ntaA67226774_scurt,id_ntaA67226774_lung)">
+						Notă </span><span style="display: none" class="S_NTA_SHORT" id="id_ntaA67226774_scurt">...
+			</span><span id="id_ntaA67226774_lung"><br /><span class="S_NTA_PAR" style="display: block; color:black;">Conform <A href="~/../../../Public/DetaliiDocumentAfis/209525">art. II din LEGEA nr. 344 din 27 decembrie 2018</A>, publicată în MONITORUL OFICIAL nr. 3 din 3 ianuarie 2019, dispozițiile privitoare la constatarea și sancționarea contravențiilor pentru nerespectarea prevederilor <span class="S_LGI">art. 11 alin. (4)</span> din prezenta lege intră în vigoare la data de 2 februarie 2019.</span></span></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA96" name="id_artA96"><span class="TAG_COLLAPSED" id="id_cllpsdA96" onMouseOver="marcheaza(id_cllpsdA96,id_artA96)" onMouseOut="demarcheaza(id_cllpsdA96,id_artA96)" onMouseDown="plusMinus(id_artA96_bdy,id_cllpsdA96)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA96_ttl" onMouseOver="marcheaza(id_artA96_ttl,id_artA96)" onMouseOut="demarcheaza(id_artA96_ttl,id_artA96)" onMouseDown="plusMinus(id_artA96_bdy,id_cllpsdA96)">Articolul 12</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA96_bdy"><span class="S_ALN" style="display: block; color:black;" id="id_litA97"><span class="S_ALN_TTL" id="id_litA97_ttl" onMouseOver="marcheaza(id_litA97_ttl,id_litA97)" onMouseOut="demarcheaza(id_litA97_ttl,id_litA97)" onMouseDown="plusMinus(id_litA97_short,id_litA97_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA97_bdy">Nerespectarea prevederilor <span class="S_LGI">art. 1 alin. (1)</span>, <span class="S_LGI">art. 3 alin. (2)</span> și <span class="S_LGI">(3)</span>, <span class="S_LGI">art. 4 alin. (1)</span>, <span class="S_LGI">(2)</span> și <span class="S_LGI">(4)</span>, <span class="S_LGI">art. 9</span> și <span class="S_LGI">10</span> constituie contravenții, dacă nu au fost săvârșite în astfel de condiții încât, potrivit legii penale, să constituie infracțiuni, și se sancționează, prin derogare de la prevederile <A href="~/../../../Public/DetaliiDocumentAfis/29779">art. 8 din Ordonanța Guvernului nr. 2/2001</A> privind regimul juridic al contravențiilor, aprobată cu modificări și completări prin <A href="~/../../../Public/DetaliiDocumentAfis/35433">Legea nr. 180/2002</A>, cu modificările și completările ulterioare, cu amendă de 10% din suma încasată/plătită care depășește plafonul stabilit de prezentul capitol pentru fiecare tip de operațiune, dar nu mai puțin de 100 lei.</span></span><span class="S_ALN" style="display: block; color:blue;" id="id_litA16716166"><span class="S_ALN_TTL" id="id_litA16716166_ttl" onMouseOver="marcheaza(id_litA16716166_ttl,id_litA16716166)" onMouseOut="demarcheaza(id_litA16716166_ttl,id_litA16716166)" onMouseDown="plusMinus(id_litA16716166_short,id_litA16716166_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA16716166_bdy"> Nerespectarea prevederilor <span class="S_LGI">art. 6</span> și <span class="S_LGI">art. 11 alin. (1)-(4)</span> constituie contravenție și se sancționează cu amendă de la 3.000 lei la 4.500 lei.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA17004481">
+			(la 06-01-2019, 
+			Alineatul (2) din Articolul 12 , Capitolul I  a fost modificat de <A href="~/../../../Public/DetaliiDocumentAfis/209525">Punctul 2, Articolul I din LEGEA nr. 344 din 27 decembrie 2018, publicată în MONITORUL OFICIAL nr. 3 din 03 ianuarie 2019</A>
+			)
+	</span></span></span><span class="S_NTA" style="display: block; color:black;" id="id_ntaA67226775"><span class="S_NTA_TTL" id="id_ntaA67226775_ttl" onMouseOver="marcheaza(id_ntaA67226775_ttl,id_ntaA67226775)" onMouseOut="demarcheaza(id_ntaA67226775_ttl,id_ntaA67226775)" onMouseDown="plusMinus(id_ntaA67226775_scurt,id_ntaA67226775_lung)">
+						Notă </span><span style="display: none" class="S_NTA_SHORT" id="id_ntaA67226775_scurt">...
+			</span><span id="id_ntaA67226775_lung"><br /><span class="S_NTA_PAR" style="display: block; color:black;">Conform <A href="~/../../../Public/DetaliiDocumentAfis/209525">art. II din LEGEA nr. 344 din 27 decembrie 2018</A>, publicată în MONITORUL OFICIAL nr. 3 din 3 ianuarie 2019, dispozițiile privitoare la constatarea și sancționarea contravențiilor pentru nerespectarea prevederilor <span class="S_LGI">art. 11 alin. (3)</span> și <span class="S_LGI">(4)</span> din prezenta lege intră în vigoare la data de 2 februarie 2019.</span></span></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA99" name="id_artA99"><span class="TAG_COLLAPSED" id="id_cllpsdA99" onMouseOver="marcheaza(id_cllpsdA99,id_artA99)" onMouseOut="demarcheaza(id_cllpsdA99,id_artA99)" onMouseDown="plusMinus(id_artA99_bdy,id_cllpsdA99)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA99_ttl" onMouseOver="marcheaza(id_artA99_ttl,id_artA99)" onMouseOut="demarcheaza(id_artA99_ttl,id_artA99)" onMouseDown="plusMinus(id_artA99_bdy,id_cllpsdA99)">Articolul 13</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA99_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA100">Constatarea contravențiilor și aplicarea sancțiunilor prevăzute la <span class="S_LGI">art. 12</span> se efectuează de către organele Ministerului Finanțelor Publice, ale Agenției Naționale de Administrare Fiscală și unităților sale subordonate, conform competențelor.<!----></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA101" name="id_artA101"><span class="TAG_COLLAPSED" id="id_cllpsdA101" onMouseOver="marcheaza(id_cllpsdA101,id_artA101)" onMouseOut="demarcheaza(id_cllpsdA101,id_artA101)" onMouseDown="plusMinus(id_artA101_bdy,id_cllpsdA101)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA101_ttl" onMouseOver="marcheaza(id_artA101_ttl,id_artA101)" onMouseOut="demarcheaza(id_artA101_ttl,id_artA101)" onMouseDown="plusMinus(id_artA101_bdy,id_cllpsdA101)">Articolul 14</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA101_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA102">Contravențiilor prevăzute la <A href="~/../../../Public/DetaliiDocumentAfis/29779">art. 12 le sunt aplicabile dispozițiile Ordonanței Guvernului nr. 2/2001</A>, aprobată cu modificări și completări prin <A href="~/../../../Public/DetaliiDocumentAfis/35433">Legea nr. 180/2002</A>, cu modificările și completările ulterioare.<!----></span></span></span></span></span><span class="S_CAP" style="display: block; color:black;" id="id_capA103" name="id_capA103"><span class="TAG_COLLAPSED" id="id_cllpsdA103" onMouseOver="marcheaza(id_cllpsdA103,id_capA103)" onMouseOut="demarcheaza(id_cllpsdA103,id_capA103)" onMouseDown="plusMinus(id_capA103_bdy,id_cllpsdA103)">
+				 + 
+			</span><span class="S_CAP_TTL" id="id_capA103_ttl" onMouseOver="marcheaza(id_capA103_ttl,id_capA103)" onMouseOut="demarcheaza(id_capA103_ttl,id_capA103)" onMouseDown="plusMinus(id_capA103_bdy,id_cllpsdA103)">Capitolul II</span><span class="S_CAP_DEN"><!----></span><span class="S_CAP_BDY" id="id_capA103_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA104">Modificarea și completarea <A href="~/../../../Public/DetaliiDocumentAfis/40872">Ordonanței de urgență a Guvernului nr. 193/2002</A> privind introducerea sistemelor moderne de plată<!----></span><span class="S_ART" style="display: block; color:black;" id="id_artA105" name="id_artA105"><span class="TAG_COLLAPSED" id="id_cllpsdA105" onMouseOver="marcheaza(id_cllpsdA105,id_artA105)" onMouseOut="demarcheaza(id_cllpsdA105,id_artA105)" onMouseDown="plusMinus(id_artA105_bdy,id_cllpsdA105)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA105_ttl" onMouseOver="marcheaza(id_artA105_ttl,id_artA105)" onMouseOut="demarcheaza(id_artA105_ttl,id_artA105)" onMouseDown="plusMinus(id_artA105_bdy,id_cllpsdA105)">Articolul 15</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA105_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA106"><A href="~/../../../Public/DetaliiDocumentAfis/40872">Ordonanța de urgență a Guvernului nr. 193/2002</A> privind introducerea sistemelor moderne de plată, publicată în Monitorul Oficial al României, Partea I, nr. 942 din 23 decembrie 2002, aprobată cu modificări și completări prin <A href="~/../../../Public/DetaliiDocumentAfis/44470">Legea nr. 250/2003</A>, cu modificările ulterioare, se modifică și se completează după cum urmează:<!----></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA107"><span class="S_PCT_TTL" id="id_pctA107_ttl" onMouseOver="marcheaza(id_pctA107_ttl,id_pctA107)" onMouseOut="demarcheaza(id_pctA107_ttl,id_pctA107)" onMouseDown="plusMinus(id_pctA107_short,id_pctA107_bdy)">1.<!----></span> <span class="S_PCT_BDY" id="id_pctA107_bdy">După articolul 1 se introduce un nou articol, articolul 1^1, cu următorul cuprins:<span class="S_CIT"><span class="S_ART" style="display: block; color:black;" id="id_artA108" name="id_artA108"><span class="TAG_COLLAPSED" id="id_cllpsdA108" onMouseOver="marcheaza(id_cllpsdA108,id_artA108)" onMouseOut="demarcheaza(id_cllpsdA108,id_artA108)" onMouseDown="plusMinus(id_artA108_bdy,id_cllpsdA108)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA108_ttl" onMouseOver="marcheaza(id_artA108_ttl,id_artA108)" onMouseOut="demarcheaza(id_artA108_ttl,id_artA108)" onMouseDown="plusMinus(id_artA108_bdy,id_cllpsdA108)">Articolul 1^1</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA108_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA67226765">În sensul prezentei ordonanțe de urgență, următorii termeni se definesc astfel:<span class="S_LIT" style="display: block; color:black;" id="id_litA109"><span class="S_LIT_TTL" id="id_litA109_ttl" onMouseOver="marcheaza(id_litA109_ttl,id_litA109)" onMouseOut="demarcheaza(id_litA109_ttl,id_litA109)" onMouseDown="plusMinus(id_litA109_short,id_litA109_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA109_bdy">instituție acceptantă - instituție de credit sau o instituție financiară nebancară care oferă comercianților acceptanți servicii de acceptare la plată a cardurilor și/sau a instrumentelor de plată de tip monedă electronică, în baza unui contract încheiat în prealabil între aceasta și comerciantul acceptant, precum și servicii de eliberare de numerar la ghișeele sale și în rețeaua proprie de terminale ale deținătorilor. În cazul instrumentelor de plată electronică de tipul cardului, instituția acceptantă poate fi și emitentul instrumentului de plată;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA109_short" onMouseOver="marcheaza(id_litA109_short,id_litA109)" onMouseOut="demarcheaza(id_litA109_short,id_litA109)" onMouseDown="plusMinus(id_litA109_short,id_litA109_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA110"><span class="S_LIT_TTL" id="id_litA110_ttl" onMouseOver="marcheaza(id_litA110_ttl,id_litA110)" onMouseOut="demarcheaza(id_litA110_ttl,id_litA110)" onMouseDown="plusMinus(id_litA110_short,id_litA110_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA110_bdy">instituție emitentă - instituție de credit sau o instituție financiară nebancară care emite și pune la dispoziție deținătorului un instrument de plată electronică, pe baza unui contract încheiat cu acesta;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA110_short" onMouseOver="marcheaza(id_litA110_short,id_litA110)" onMouseOut="demarcheaza(id_litA110_short,id_litA110)" onMouseDown="plusMinus(id_litA110_short,id_litA110_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA111"><span class="S_LIT_TTL" id="id_litA111_ttl" onMouseOver="marcheaza(id_litA111_ttl,id_litA111)" onMouseOut="demarcheaza(id_litA111_ttl,id_litA111)" onMouseDown="plusMinus(id_litA111_short,id_litA111_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA111_bdy">card comercial - cardul de plată emis unor operatori economici, unor entități din sectorul public sau unor persoane fizice care desfășoară o activitate independentă de natură economică, a cărui utilizare este limitată la cheltuielile legate de activitatea desfășurată;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA111_short" onMouseOver="marcheaza(id_litA111_short,id_litA111)" onMouseOut="demarcheaza(id_litA111_short,id_litA111)" onMouseDown="plusMinus(id_litA111_short,id_litA111_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA112"><span class="S_LIT_TTL" id="id_litA112_ttl" onMouseOver="marcheaza(id_litA112_ttl,id_litA112)" onMouseOut="demarcheaza(id_litA112_ttl,id_litA112)" onMouseDown="plusMinus(id_litA112_short,id_litA112_bdy)">d)<!----></span> <span class="S_LIT_BDY" id="id_litA112_bdy">comision interbancar - comisionul plătit în mod direct sau indirect, pentru fiecare operațiune, între prestatorul de servicii de plată al plătitorului și cel al beneficiarului care participă la operațiunea de plată cu cardul sau pe bază de card;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA112_short" onMouseOver="marcheaza(id_litA112_short,id_litA112)" onMouseOut="demarcheaza(id_litA112_short,id_litA112)" onMouseDown="plusMinus(id_litA112_short,id_litA112_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA113"><span class="S_LIT_TTL" id="id_litA113_ttl" onMouseOver="marcheaza(id_litA113_ttl,id_litA113)" onMouseOut="demarcheaza(id_litA113_ttl,id_litA113)" onMouseDown="plusMinus(id_litA113_short,id_litA113_bdy)">e)<!----></span> <span class="S_LIT_BDY" id="id_litA113_bdy">comision de servicii percepute comercianților - comisionul plătit acceptantului de către beneficiarul plății, pentru fiecare operațiune, cuprinzând comisionul interbancar, comisionul pentru sistemul de plată și procesare și marja acceptantului;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA113_short" onMouseOver="marcheaza(id_litA113_short,id_litA113)" onMouseOut="demarcheaza(id_litA113_short,id_litA113)" onMouseDown="plusMinus(id_litA113_short,id_litA113_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA114"><span class="S_LIT_TTL" id="id_litA114_ttl" onMouseOver="marcheaza(id_litA114_ttl,id_litA114)" onMouseOut="demarcheaza(id_litA114_ttl,id_litA114)" onMouseDown="plusMinus(id_litA114_short,id_litA114_bdy)">f)<!----></span> <span class="S_LIT_BDY" id="id_litA114_bdy">beneficiar al plății - destinatarul preconizat al fondurilor care au făcut obiectul unei operațiuni de plată;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA114_short" onMouseOver="marcheaza(id_litA114_short,id_litA114)" onMouseOut="demarcheaza(id_litA114_short,id_litA114)" onMouseDown="plusMinus(id_litA114_short,id_litA114_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA115"><span class="S_LIT_TTL" id="id_litA115_ttl" onMouseOver="marcheaza(id_litA115_ttl,id_litA115)" onMouseOut="demarcheaza(id_litA115_ttl,id_litA115)" onMouseDown="plusMinus(id_litA115_short,id_litA115_bdy)">g)<!----></span> <span class="S_LIT_BDY" id="id_litA115_bdy">sistem tripartit de plată cu cardul - sistemul de plată prin carduri în care funcțiile de emitere și acceptare sunt integrate într-o singură instituție financiară, care este și proprietarul sistemului. Atunci când un sistem tripartit de plată cu cardul autorizează alți prestatori de servicii de plată să emită și/sau să accepte carduri de plată, acesta este considerat ca fiind un sistem cvadripartit de plată cu cardul și se va supune prevederilor prezentei ordonanțe de urgență.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA115_short" onMouseOver="marcheaza(id_litA115_short,id_litA115)" onMouseOut="demarcheaza(id_litA115_short,id_litA115)" onMouseDown="plusMinus(id_litA115_short,id_litA115_bdy)"> ... </span></span><!----></span></span></span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA107_short" onMouseOver="marcheaza(id_pctA107_short,id_pctA107)" onMouseOut="demarcheaza(id_pctA107_short,id_pctA107)" onMouseDown="plusMinus(id_pctA107_short,id_pctA107_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA116"><span class="S_PCT_TTL" id="id_pctA116_ttl" onMouseOver="marcheaza(id_pctA116_ttl,id_pctA116)" onMouseOut="demarcheaza(id_pctA116_ttl,id_pctA116)" onMouseDown="plusMinus(id_pctA116_short,id_pctA116_bdy)">2.<!----></span> <span class="S_PCT_BDY" id="id_pctA116_bdy">După articolul 2 se introduc trei noi articole, articolele 2^1-2^3, cu următorul cuprins:<span class="S_CIT"><span class="S_ART" style="display: block; color:black;" id="id_artA117" name="id_artA117"><span class="TAG_COLLAPSED" id="id_cllpsdA117" onMouseOver="marcheaza(id_cllpsdA117,id_artA117)" onMouseOut="demarcheaza(id_cllpsdA117,id_artA117)" onMouseDown="plusMinus(id_artA117_bdy,id_cllpsdA117)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA117_ttl" onMouseOver="marcheaza(id_artA117_ttl,id_artA117)" onMouseOut="demarcheaza(id_artA117_ttl,id_artA117)" onMouseDown="plusMinus(id_artA117_bdy,id_cllpsdA117)">Articolul 2^1</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA117_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA67226766">Instituțiile emitente nu pot aplica instituțiilor acceptante comisioane interbancare mai mari de 0,2% din valoarea fiecărei operațiuni efectuate prin utilizarea cardurilor de debit, respectiv comisioane interbancare mai mari de 0,3% din valoarea fiecărei operațiuni efectuate prin utilizarea cardurilor de credit.<!----></span><span class="S_ART" style="display: block; color:black;" id="id_artA67226771" name="id_artA67226771"><span class="TAG_COLLAPSED" id="id_cllpsdA67226771" onMouseOver="marcheaza(id_cllpsdA67226771,id_artA67226771)" onMouseOut="demarcheaza(id_cllpsdA67226771,id_artA67226771)" onMouseDown="plusMinus(id_artA67226771_bdy,id_cllpsdA67226771)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA67226771_ttl" onMouseOver="marcheaza(id_artA67226771_ttl,id_artA67226771)" onMouseOut="demarcheaza(id_artA67226771_ttl,id_artA67226771)" onMouseDown="plusMinus(id_artA67226771_bdy,id_cllpsdA67226771)">Articolul 2^2</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA67226771_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA118">Acordurile dintre instituțiile acceptante și beneficiarii plăților vor conține informații detaliate referitoare la comisionul interbancar, comisionul pentru sistemul de plată și procesare, marja acceptantului, precum și a comisioanelor suplimentare aplicate în funcție de marca și categoria respectivelor carduri de plată.<!----></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA67226772" name="id_artA67226772"><span class="TAG_COLLAPSED" id="id_cllpsdA67226772" onMouseOver="marcheaza(id_cllpsdA67226772,id_artA67226772)" onMouseOut="demarcheaza(id_cllpsdA67226772,id_artA67226772)" onMouseDown="plusMinus(id_artA67226772_bdy,id_cllpsdA67226772)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA67226772_ttl" onMouseOver="marcheaza(id_artA67226772_ttl,id_artA67226772)" onMouseOut="demarcheaza(id_artA67226772_ttl,id_artA67226772)" onMouseDown="plusMinus(id_artA67226772_bdy,id_cllpsdA67226772)">Articolul 2^3</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA67226772_bdy"><span class="S_ALN" style="display: block; color:black;" id="id_litA119"><span class="S_ALN_TTL" id="id_litA119_ttl" onMouseOver="marcheaza(id_litA119_ttl,id_litA119)" onMouseOut="demarcheaza(id_litA119_ttl,id_litA119)" onMouseDown="plusMinus(id_litA119_short,id_litA119_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA119_bdy">Prevederile art. 2^1 și 2^2 se aplică instituțiilor emitente și instituțiilor acceptante din România.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA120"><span class="S_ALN_TTL" id="id_litA120_ttl" onMouseOver="marcheaza(id_litA120_ttl,id_litA120)" onMouseOut="demarcheaza(id_litA120_ttl,id_litA120)" onMouseDown="plusMinus(id_litA120_short,id_litA120_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA120_bdy">Prevederile art. 2^1 și 2^2 nu se aplică operațiunilor cu carduri comerciale, retragerilor de numerar de la bancomate și operațiunilor cu carduri emise de sisteme tripartite de plată cu cardul.</span></span></span></span></span></span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA116_short" onMouseOver="marcheaza(id_pctA116_short,id_pctA116)" onMouseOut="demarcheaza(id_pctA116_short,id_pctA116)" onMouseDown="plusMinus(id_pctA116_short,id_pctA116_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA121"><span class="S_PCT_TTL" id="id_pctA121_ttl" onMouseOver="marcheaza(id_pctA121_ttl,id_pctA121)" onMouseOut="demarcheaza(id_pctA121_ttl,id_pctA121)" onMouseDown="plusMinus(id_pctA121_short,id_pctA121_bdy)">3.<!----></span> <span class="S_PCT_BDY" id="id_pctA121_bdy">La articolul 3, după alineatul (2) se introduc două noi alineate, alineatele (2^1) și (2^2), cu următorul cuprins:<span class="S_CIT"><span class="S_ALN" style="display: block; color:black;" id="id_litA122"><span class="S_ALN_TTL" id="id_litA122_ttl" onMouseOver="marcheaza(id_litA122_ttl,id_litA122)" onMouseOut="demarcheaza(id_litA122_ttl,id_litA122)" onMouseDown="plusMinus(id_litA122_short,id_litA122_bdy)">(2^1)<!----></span> <span class="S_ALN_BDY" id="id_litA122_bdy">Constituie contravenție și se sancționează, prin derogare de la dispozițiile <A href="~/../../../Public/DetaliiDocumentAfis/29779">art. 8 din Ordonanța Guvernului nr. 2/2001</A> privind regimul juridic al contravențiilor, aprobată cu modificări și completări prin <A href="~/../../../Public/DetaliiDocumentAfis/35433">Legea nr. 180/2002</A>, cu modificările și completările ulterioare, cu amendă de la 10.000 lei la 200.000 lei nerespectarea dispozițiilor art. 2^1 și 2^2.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA123"><span class="S_ALN_TTL" id="id_litA123_ttl" onMouseOver="marcheaza(id_litA123_ttl,id_litA123)" onMouseOut="demarcheaza(id_litA123_ttl,id_litA123)" onMouseDown="plusMinus(id_litA123_short,id_litA123_bdy)">(2^2)<!----></span> <span class="S_ALN_BDY" id="id_litA123_bdy">Constituie contravenție și se sancționează cu amendă de la 5.000 lei la 7.500 lei nerespectarea prevederilor art. 1 alin. (3).</span></span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA121_short" onMouseOver="marcheaza(id_pctA121_short,id_pctA121)" onMouseOut="demarcheaza(id_pctA121_short,id_pctA121)" onMouseDown="plusMinus(id_pctA121_short,id_pctA121_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA124"><span class="S_PCT_TTL" id="id_pctA124_ttl" onMouseOver="marcheaza(id_pctA124_ttl,id_pctA124)" onMouseOut="demarcheaza(id_pctA124_ttl,id_pctA124)" onMouseDown="plusMinus(id_pctA124_short,id_pctA124_bdy)">4.<!----></span> <span class="S_PCT_BDY" id="id_pctA124_bdy">La articolul 3, alineatul (4) se modifică și va avea următorul cuprins:<span class="S_CIT"><span class="S_ALN" style="display: block; color:black;" id="id_litA125"><span class="S_ALN_TTL" id="id_litA125_ttl" onMouseOver="marcheaza(id_litA125_ttl,id_litA125)" onMouseOut="demarcheaza(id_litA125_ttl,id_litA125)" onMouseDown="plusMinus(id_litA125_short,id_litA125_bdy)">(4)<!----></span> <span class="S_ALN_BDY" id="id_litA125_bdy">Contravențiilor prevăzute la alin. (1), (2), (2^1) și (2^2) le sunt aplicabile dispozițiile <A href="~/../../../Public/DetaliiDocumentAfis/29779">Ordonanței Guvernului nr. 2/2001</A>, aprobată cu modificări și completări prin <A href="~/../../../Public/DetaliiDocumentAfis/35433">Legea nr. 180/2002</A>, cu modificările și completările ulterioare.</span></span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA124_short" onMouseOver="marcheaza(id_pctA124_short,id_pctA124)" onMouseOut="demarcheaza(id_pctA124_short,id_pctA124)" onMouseDown="plusMinus(id_pctA124_short,id_pctA124_bdy)"> ... </span></span></span></span></span></span><span class="S_CAP" style="display: block; color:black;" id="id_capA126" name="id_capA126"><span class="TAG_COLLAPSED" id="id_cllpsdA126" onMouseOver="marcheaza(id_cllpsdA126,id_capA126)" onMouseOut="demarcheaza(id_cllpsdA126,id_capA126)" onMouseDown="plusMinus(id_capA126_bdy,id_cllpsdA126)">
+				 + 
+			</span><span class="S_CAP_TTL" id="id_capA126_ttl" onMouseOver="marcheaza(id_capA126_ttl,id_capA126)" onMouseOut="demarcheaza(id_capA126_ttl,id_capA126)" onMouseDown="plusMinus(id_capA126_bdy,id_cllpsdA126)">Capitolul III</span><span class="S_CAP_DEN"> Dispoziții tranzitorii și finale<!----></span><span class="S_CAP_BDY" id="id_capA126_bdy"><span class="S_ART" style="display: block; color:black;" id="id_artA128" name="id_artA128"><span class="TAG_COLLAPSED" id="id_cllpsdA128" onMouseOver="marcheaza(id_cllpsdA128,id_artA128)" onMouseOut="demarcheaza(id_cllpsdA128,id_artA128)" onMouseDown="plusMinus(id_artA128_bdy,id_cllpsdA128)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA128_ttl" onMouseOver="marcheaza(id_artA128_ttl,id_artA128)" onMouseOut="demarcheaza(id_artA128_ttl,id_artA128)" onMouseDown="plusMinus(id_artA128_bdy,id_cllpsdA128)">Articolul 16</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA128_bdy"><span class="S_ALN" style="display: block; color:black;" id="id_litA129"><span class="S_ALN_TTL" id="id_litA129_ttl" onMouseOver="marcheaza(id_litA129_ttl,id_litA129)" onMouseOut="demarcheaza(id_litA129_ttl,id_litA129)" onMouseDown="plusMinus(id_litA129_short,id_litA129_bdy)">(1)<!----></span> <span class="S_ALN_BDY" id="id_litA129_bdy"><span class="S_LGI">Cap. I</span> intră în vigoare la 30 zile de la data publicării în Monitorul Oficial al României, Partea I.</span></span><span class="S_ALN" style="display: block; color:black;" id="id_litA130"><span class="S_ALN_TTL" id="id_litA130_ttl" onMouseOver="marcheaza(id_litA130_ttl,id_litA130)" onMouseOut="demarcheaza(id_litA130_ttl,id_litA130)" onMouseDown="plusMinus(id_litA130_short,id_litA130_bdy)">(2)<!----></span> <span class="S_ALN_BDY" id="id_litA130_bdy">Prevederile <span class="S_LGI">cap. I</span> nu se aplică contractelor încheiate anterior intrării în vigoare a prezentei legi.</span></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA131" name="id_artA131"><span class="TAG_COLLAPSED" id="id_cllpsdA131" onMouseOver="marcheaza(id_cllpsdA131,id_artA131)" onMouseOut="demarcheaza(id_cllpsdA131,id_artA131)" onMouseDown="plusMinus(id_artA131_bdy,id_cllpsdA131)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA131_ttl" onMouseOver="marcheaza(id_artA131_ttl,id_artA131)" onMouseOut="demarcheaza(id_artA131_ttl,id_artA131)" onMouseDown="plusMinus(id_artA131_bdy,id_cllpsdA131)">Articolul 17</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA131_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA132">La data intrării în vigoare a dispozițiilor <span class="S_LGI">cap. I</span> se abrogă prevederile <A href="~/../../../Public/DetaliiDocumentAfis/141503">Ordonanței Guvernului nr. 15/1996</A> privind întărirea disciplinei financiar-valutare, publicată în Monitorul Oficial al României, Partea I, nr. 24 din 31 ianuarie 1996, aprobată cu modificări și completări prin <A href="~/../../../Public/DetaliiDocumentAfis/8673">Legea nr. 131/1996</A>, cu modificările și completările ulterioare.<!----></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA133" name="id_artA133"><span class="TAG_COLLAPSED" id="id_cllpsdA133" onMouseOver="marcheaza(id_cllpsdA133,id_artA133)" onMouseOut="demarcheaza(id_cllpsdA133,id_artA133)" onMouseDown="plusMinus(id_artA133_bdy,id_cllpsdA133)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA133_ttl" onMouseOver="marcheaza(id_artA133_ttl,id_artA133)" onMouseOut="demarcheaza(id_artA133_ttl,id_artA133)" onMouseDown="plusMinus(id_artA133_bdy,id_cllpsdA133)">Articolul 18</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA133_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA134">Prevederile <span class="S_LGI">art. 15</span> se aplică la 12 luni de la data intrării în vigoare a prezentei legi.<!----></span></span></span><span class="S_ART" style="display: block; color:black;" id="id_artA135" name="id_artA135"><span class="TAG_COLLAPSED" id="id_cllpsdA135" onMouseOver="marcheaza(id_cllpsdA135,id_artA135)" onMouseOut="demarcheaza(id_cllpsdA135,id_artA135)" onMouseDown="plusMinus(id_artA135_bdy,id_cllpsdA135)">
+				 + 
+			</span><span class="S_ART_TTL" id="id_artA135_ttl" onMouseOver="marcheaza(id_artA135_ttl,id_artA135)" onMouseOut="demarcheaza(id_artA135_ttl,id_artA135)" onMouseDown="plusMinus(id_artA135_bdy,id_cllpsdA135)">Articolul 19</span><span class="S_ART_DEN"><!----></span><span class="S_ART_BDY" id="id_artA135_bdy"><span class="S_PAR" style="display: block; color:black;" id="id_parA136">În termen de 30 de zile de la data intrării în vigoare a prezentei legi, prin hotărâre a Guvernului, se vor modifica și completa Normele metodologice pentru aplicarea prevederilor <A href="~/../../../Public/DetaliiDocumentAfis/40872">Ordonanței de urgență a Guvernului nr. 193/2002</A> privind introducerea sistemelor moderne de plată, aprobate prin <A href="~/../../../Public/DetaliiDocumentAfis/47591">Hotărârea Guvernului nr. 1.253/2003</A>, publicată în Monitorul Oficial al României, Partea I, nr. 790 din 10 noiembrie 2003.<!----></span></span></span></span></span><span class="S_PAR" style="display: block; color:black;" id="id_parA137">Această lege a fost adoptată de Parlamentul României, cu respectarea prevederilor <A href="~/../../../Public/DetaliiDocumentAfis/47355">art. 75</A> și ale <A href="~/../../../Public/DetaliiDocumentAfis/47355">art. 76 alin. (2) din Constituția României</A>, republicată.<!----></span><span class="S_SMN"><br /><span class="S_SMN_PAR">p. PREȘEDINTELE CAMEREI DEPUTAȚILOR,<!----></span><br /><span class="S_SMN_PAR">PETRU GABRIEL VLASE<!----></span><br /><span class="S_SMN_PAR">PREȘEDINTELE SENATULUI<!----></span><br /><span class="S_SMN_PAR">CĂLIN-CONSTANTIN-ANTON POPESCU-TĂRICEANU<!----></span></span><span class="S_PAR" style="display: block; color:black;" id="id_parA142">București, 2 aprilie 2015.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA143">Nr. 70.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA144">-----<!----></span>
+                                    </div>
+                                    <div id="div_Formerepublicate" class="content_forma_act" style="display: none" data-state="empty"></div>
+                                    <div id="div_Formadebaza" class="content_forma_act" style="display: none" data-state="empty"></div>
+
+
+                        </div>
+
+                        <div id="fisa_act_container" style="display: none" data-id="FisaAct" data-state="empty">
+                                <div id="div_Actiunisuferite" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_ActiuniInduse" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_Referape" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_Referitde" class="content_fisa_act" data-state="empty">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+ 
+<script type="text/javascript">
+    if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+        $("#meniu").css("float", "left");
+        $("#meniu").css("width", "20%");
+        $(".affix-top").css("position", "fixed");
+        $(".affix-top").css("top", "20px");
+        $(".affix-bottom").css("top", "20px");
+        $("#infoactinfoact").css("float", "right");
+        $("#infoactinfoact").css("width", "79%");
+        //var naturalWidth = img.naturalWidth;
+        //var imagini = document.getElementsByTagName("img");
+        //for (i=0;i<imagini.length;i++)
+        //{
+         //   alert(imagini[i].naturalWidth);
+         //   imagini[i].setAttribute("style","max-width:"+imagini[i].naturalWidth+"px");
+       // }
+       //////$("#infoactinfoact img").css("max-width", +"px");
+        /////alert($("#infoactinfoact img").width);
+        $("#infoactinfoact img").css("width", "auto");
+         
+        
+ 
+    }
+    var sbarHeight = null;
+
+    $(function () {
+
+        if (document.getElementsByClassName("alert")[0])
+            document.getElementsByClassName("alert")[0].style.visibility = 'hidden';
+
+        document.getElementById("Actiunisuferite").checked = false;
+        document.getElementById("ActiuniInduse").checked = false;
+        document.getElementById("Referape").checked = false;
+        document.getElementById("Referitde").checked = false;
+
+        //alert(document.getElementById("header_wrapper").offsetHeight);
+        //alert(screen.height);
+
+        var inaltime_meniu_stanga = screen.height - document.getElementById("header_wrapper").offsetHeight;
+        //alert(inaltime_meniu_stanga);
+        //  document.getElementById("meniu_stanga").style.maxHeight = inaltime_meniu_stanga + "px";
+
+        if (window.location.href.indexOf("forma_de_baza") != -1) {
+            document.getElementById("Formadebaza").style.disabled = true;
+            document.getElementById("Formadebaza").nextSibling.style.disabled = true;
+        }
+
+        if (window.location.href.indexOf("isFormaDeBaza") != -1) {
+            if (document.getElementById('istoric_fa'))
+                document.getElementById('istoric_fa').style.display = 'none'
+            document.getElementById("Formadebaza").checked = true;
+        }
+
+        if (window.location.href.indexOf("#A") != -1) {
+            var id_elem = window.location.href.split("#")[1];
+            window.scrollTo(id_elem.offsetHeight, 0);
+        }
+        else
+            window.scrollTo(0, 0);
+
+        //alert(document.getElementById('menu'));
+
+        //afisare/ascundere radio buttons (forme consolidate, forme republicate, forma de baza)
+
+        if (window.innerWidth < 1010) {
+            document.getElementById('sidebar').id = 'sidebar1';
+            document.getElementById('meniutitlu').appendChild(document.getElementById('sidebar1'));
+            document.getElementById('sidebar1').style.display = 'block';
+        }
+
+        $('a[href*=#]:not([href=#])').click(function () {
+            if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '')
+        && location.hostname == this.hostname) {
+
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                if (target.length) {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top - 0 //offsets for fixed header
+                    }, 50);
+                    return false;
+                }
+            }
+        });
+        //Executed on page load with URL containing an anchor tag.
+        if ($(location.href.split("#")[1])) {
+            var target = $('#' + location.href.split("#")[1]);
+            if (target.length) {
+                $('html,body').animate({
+                    scrollTop: target.offset().top - 0 //offset height of header here too.
+                }, 50);
+                return false;
+            }
+        }
+        /*
+        $("#sidebar").affix({
+            offset: {
+                top: $("header").outerHeight(true),
+                bottom: $("footer").outerHeight(true)+10
+            }
+        });
+        */
+        //alert(inaltimediv);
+        //document.getElementsByClassName('meniuaffix')[0].style.maxHeight = inaltimediv + "px";
+      $(window).resize(function () {
+            doResizeMenu();
+        });
+        
+        // scroll pe meniu la incarcare pagina (onload jQuery)
+      doResizeMenu();
+      imgSIZE(); // redim poze
+
+      // inaltime initiala sidebar
+      if ($("#sidebar").html())
+          sbarHeight = $("#sidebar").height();
+      else
+          sbarHeight = $("#sidebar1").height();
+        
+      $(window).scroll(function () {
+          if (isScrolledIntoView($(".footer_logo"))) {
+              $("#sidebar").height(sbarHeight - 200);
+          }
+          else {
+              $("#sidebar").height(sbarHeight);
+          }
+      });
+
+      var _tipact = 3;
+        //alert(_tipact);
+        if ((_tipact == 3 || _tipact == 2) && window.location.href.indexOf('isFormaDeBaza') == -1)
+        {
+            if (document.getElementById('Formaconsolidata'))
+            {
+                document.getElementById('Formaconsolidata').checked = true;
+            }
+        }        
+        else
+        {
+            //republicare
+            if (_tipact == 4)
+            {
+                if (document.getElementById('Formerepublicate'))
+                {
+                    document.getElementById('Formerepublicate').checked = true;
+                }
+                else if (document.getElementById('Formadebaza'))
+                {
+                    document.getElementById('Formadebaza').checked = true;
+                }
+            }
+            else
+                if (document.getElementById('Formadebaza'))
+                {
+                    document.getElementById('Formadebaza').checked = true;
+                }
+        }
+        //republicata (fortez forma de baza)
+        if (_tipact == 5)
+        {
+            if (document.getElementById('Formaconsolidata'))
+            {
+                document.getElementById('Formaconsolidata').checked = true;
+            }
+        }
+
+    }); // onload jQuery END
+
+    function doResizeMenu() {
+        var proc = 65;
+        var wh = window.innerHeight;
+        var dy = Math.floor(proc*wh/100);
+        var inaltimediv = window.innerHeight;
+        //var inaltimediv = window.innerHeight - $('#header_footer').height() - 400; // $("#footer_wrapper").height();
+        var inaltimediv1 = window.innerHeight - $('#header_wrapper').height();
+        
+        $("#sidebar").height(dy);
+        $("#sidebar1").height(inaltimediv1);
+    }
+
+    function AfiseazaTextModificat(e) {
+        // console.log($(e).prop("checked"));
+    }
+    function toggle_cuprins() {
+        if (document.getElementById('tree_cuprins_act').style.display != 'none')
+            document.getElementById('tree_cuprins_act').style.display = 'none'
+        else
+            document.getElementById('tree_cuprins_act').style.display = 'block';
+    }
+
+    function toggle_fisaact() {
+        if (document.getElementById('content_fisaact').style.display != 'none') {
+            document.getElementById('label_fisaact_plus_minus').innerHTML = '+';
+            document.getElementById('content_fisaact').style.display = 'none'
+        }
+        else {
+            document.getElementById('label_fisaact_plus_minus').innerHTML = '&#8212;&#160;';
+            document.getElementById('content_fisaact').style.display = 'block';
+        }
+    }
+
+    function toggle_istoric_forme_actz() {
+        if (document.getElementById('istoric_fa').style.display != 'none') {
+            document.getElementById('istoric_fa').style.display = 'none';
+            document.getElementById('label_forme_actz').innerHTML = "&nbsp;&nbsp;&nbsp;+&nbsp;istoric consolidari";
+        }
+        else {
+            document.getElementById('istoric_fa').style.display = 'block';
+            document.getElementById('label_forme_actz').innerHTML = "&nbsp;&nbsp;&nbsp;&#8212;&nbsp;istoric consolidari";
+        }
+    }
+    function scroll_to_fa() {
+        if (document.getElementById('fa_selectata'))
+            document.getElementById('meniu_stanga').scrollTop = document.getElementById('fa_selectata').offsetTop;
+    }
+    function ArataFisaAct(elem) {
+        //alert(elem.id);
+        if (elem.id == 'Actiunisuferite')
+        {
+            if (document.getElementById('actiuni_suferite').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/actiuniSuferite", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('actiuni_suferite').style.height = '30px';
+                    document.getElementById('actiuni_suferite').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('actiuni_suferite').style.display == 'none')
+                document.getElementById('actiuni_suferite').style.display = 'block';            
+            else
+                document.getElementById('actiuni_suferite').style.display = 'none';
+            
+        }
+
+        if (elem.id == 'ActiuniInduse')
+        {
+            if (document.getElementById('actiuni_induse').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/actiuniInduse", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('actiuni_induse').style.height = '30px';
+                    document.getElementById('actiuni_induse').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('actiuni_induse').style.display == 'none')
+                document.getElementById('actiuni_induse').style.display = 'block';
+            else
+                document.getElementById('actiuni_induse').style.display = 'none';
+        }
+
+        if (elem.id == 'Referape')
+        {
+            if (document.getElementById('refera_pe').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/referaPe", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('refera_pe').style.height = '30px';
+                    document.getElementById('refera_pe').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('refera_pe').style.display == 'none')
+                document.getElementById('refera_pe').style.display = 'block';
+            else
+                document.getElementById('refera_pe').style.display = 'none';
+        }
+
+        if (elem.id == 'Referitde')
+        {
+            if (document.getElementById('referit_de').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/referitDe", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('referit_de').style.height = '30px';
+                    document.getElementById('referit_de').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('referit_de').style.display == 'none')
+                document.getElementById('referit_de').style.display = 'block';
+            else
+                document.getElementById('referit_de').style.display = 'none';
+        }
+        window.scrollTo(0, 0);
+
+    }
+    function alege_articol(tip, select) {
+        var element_selectat = select.options[select.selectedIndex].text;
+        var id_elem = '';
+
+        if (tip == 1)
+            id = "actiuni_suferite";
+        else if (tip == 2)
+            id = "actiuni_induse";
+        else if (tip == 3)
+            id = "refera_pe";
+        else
+            id = "referit_de";
+
+        var linii_tabel = document.getElementById(id).childNodes[4].childNodes[0].childNodes;
+
+        if (element_selectat == 'Toate sectiunile')
+            for (i = 0; i < linii_tabel.length; i++) {
+                linii_tabel[i].style.display = 'table-row';
+            }
+        else {
+            linii_tabel[0].style.display = 'table-row';
+            for (i = 1; i < linii_tabel.length; i++) {
+                var element_gasit = linii_tabel[i].childNodes[0].innerHTML;
+                if (element_selectat != element_gasit)
+                    linii_tabel[i].style.display = 'none';
+                else
+                    linii_tabel[i].style.display = 'table-row';
+            }
+        }
+    }
+
+    function alege_articol_ref(select) {
+        var element_selectat = select.options[select.selectedIndex].text;
+
+        $("#loaderDiv").show();
+        $.post("/Public/getReferitDe", { contor: document.getElementById('id_act').value, element: element_selectat }, function (result) {
+            if (result.acte.indexOf('Nu exist') != -1)
+                document.getElementById('referit_de').style.height = '30px';
+            document.getElementById('referit_de').innerHTML = result.acte;
+            $("#loaderDiv").hide();
+        });
+
+    }
+
+    function incarcaFormaDeBaza(contor) {
+        $.post("/Public/DetaliiDocument", { isFormaDeBaza: true }, function (result) {
+            window.location.href = result.Url;
+        });
+    }
+    function myFunction() {
+        var latime = window.innerWidth;
+        if (latime < 1010) {
+            if (document.getElementById('sidebar')) {
+                document.getElementById('meniutitlu').appendChild(document.getElementById('sidebar'));
+                document.getElementById('sidebar').style.display = 'block';
+                // $("#sidebar").hide(); // display : none
+                // $("#sidebar").show(); // display : default
+                document.getElementById('sidebar').id = 'sidebar1';
+            }
+        }
+        else {
+            if (document.getElementById('sidebar1')) {
+                document.getElementById('meniu').insertBefore(document.getElementById('sidebar1'), document.getElementById('infoact'));
+                document.getElementById('sidebar1').style.display = 'block';
+                document.getElementById('sidebar1').id = 'sidebar';
+                setTimeout(function () { $("#sidebar").height(sbarHeight); }, 1000);
+                
+            }
+            else {
+                document.getElementById('meniu').insertBefore(document.getElementById('sidebar'), document.getElementById('infoact'));
+                document.getElementById('sidebar').style.display = 'block';
+                //document.getElementById('sidebar').id = 'sidebar';
+            }
+        }
+    }
+    //document.getElementById('menu').appendChild(document.getElementById('sidebar'));
+    //document.getElementById('sidebar').style.display = 'inline';
+    //document.getElementById('sidebar').style.zIndex = '999';
+    window.onresize = myFunction;
+
+    function isScrolledIntoView(elem) {
+        var docViewTop = $(window).scrollTop();
+        var docViewBottom = docViewTop + $(window).height();
+
+        var elemTop = $(elem).offset().top;
+        var elemBottom = elemTop + $(elem).height();
+
+        return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    }
+    $(document).ready(function () {
+        doResizeMenu();
+    });
+    $(window).resize(function () {
+        doResizeMenu();
+    });
+</script>
+                </div>
+                <div class="clear"></div>
+
+            </div>
+            <div class="clear"></div>
+ 
+        </div>
+        <footer>
+            <div id="footer_wrapper">
+                <div class="footer_wrapper_inner bs-docs-footer">
+                    <div class="footer_inner">
+                        <div class="footer_logo"></div>
+                        <ul class="top_menu">
+                            <li class="floatnone" style="margin-left: -70px;">
+                                <center>
+                                    <div style="max-width:1024px;">
+                                        <br /><img src="/Content/Images/Site/justitie_logo.png" style="max-width:90px; position:relative; z-index:9999; width:100%; margin-top:-35px;" align="left" alt="logo" />
+                                        <p style="text-transform:none;">Conținutul acestui material nu reprezintă în mod obligatoriu poziția oficială a Uniunii Europene sau a Guvernului României.</p>
+                                        <br />
+                                        <center><p style="text-transform:none;">Pentru informații detaliate despre celelalte programe cofinanțate de Uniunea Europeană, vă invităm să vizitați <a onmouseover="this.style.color = '#386897'" onmouseout="    this.style.color = '#ffffff'" style="color: #ffffff; font-weight:bold;" href="http://www.fonduri-ue.ro">www.fonduri-ue.ro</a>.</p></center>
+                                    </div>
+                                </center>
+                            </li>
+                        </ul>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+                <div class="footer_bottom">
+                    <div class="footer_inner">
+                        <div class="copyright left">
+                            Copyright &copy; 2026 - Ministerul Justiției. Toate drepturile rezervate. - <a href="/Public/Termeni">Termeni și Condiții</a>
+                            <div id="meniufooter">
+
+                            </div>
+                        </div>
+                        <div class="copyright right">        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/Acasa">
+
+    &nbsp;&#124;&nbsp;Acasă
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/NLEX">
+
+    &nbsp;&#124;&nbsp;Despre Proiect
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/Functionalitati">
+
+    &nbsp;&#124;&nbsp;Facilități Oferite 
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/LegaturiUtile">
+
+    &nbsp;&#124;&nbsp;Legături Utile
+
+</a>
+        </li>
+
+
+</div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.toggle-menu').jPushMenu();
+
+                $('ul.mainmenu li.dropdown').hover(function () {
+                    $(this).find('a.main_link').addClass('active');
+                    $(this).find('.level2_menu').show();
+                    $('li.dropdown_2').hover(function () {
+                        $(this).find('a.second_link').addClass('second_active');
+                        $(this).find('.level3_menu').show();
+
+                    }, function () {
+                        $(this).find('a.second_link').removeClass('second_active');
+                        $('.level3_menu').hide();
+                    });
+
+                }, function () {
+                    $(this).find('a.main_link').removeClass('active');
+                    $('.level2_menu').hide();
+                });
+    
+                if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+
+                    $('#mesajIe8Modal').modal('show');
+
+                }
+            });
+            //
+
+
+
+            $(document).ready(function () {
+
+
+                //stick in the fixed 100% height behind the navbar but don't wrap it
+                $('#slide-nav.navbar-inverse').after($('<div class="inverse" id="navbar-height-col"></div>'));
+
+                $('#slide-nav.navbar-default').after($('<div id="navbar-height-col"></div>'));
+
+                // Enter your ids or classes
+                var toggler = '.navbar-toggle';
+                var pagewrapper = '#page-content';
+                var navigationwrapper = '.navbar-header';
+                var menuwidth = '100%'; // the menu inside the slide menu itself
+                var slidewidth = '60%';
+                var menuneg = '-100%';
+                var slideneg = '-60%';
+
+
+                $("#slide-nav").on("click", toggler, function (e) {
+
+                    var selected = $(this).hasClass('slide-active');
+
+                    $('#slidemenu').stop().animate({
+                        left: selected ? menuneg : '0px'
+                    });
+
+                    $('#navbar-height-col').stop().animate({
+                        left: selected ? slideneg : '0px'
+                    });
+
+                    $(pagewrapper).stop().animate({
+                        left: selected ? '0px' : slidewidth
+                    });
+
+                    $(navigationwrapper).stop().animate({
+                        left: selected ? '0px' : slidewidth
+                    });
+
+
+                    $(this).toggleClass('slide-active', !selected);
+                    $('#slidemenu').toggleClass('slide-active');
+
+
+                    $('#page-content, .navbar, body, .navbar-header').toggleClass('slide-active');
+
+
+                });
+
+
+                var selected = '#slidemenu, #page-content, body, .navbar, .navbar-header';
+
+
+                $(window).on("resize", function () {
+
+                    if ($(window).width() > 1010 && $('.navbar-toggle').is(':hidden')) {
+                        $(selected).removeClass('slide-active');
+                    }
+
+
+                });
+
+
+            });
+        </script>
+        
+    </div>
+    <script>
+
+        function replaceScript() {
+            var toReplace = '<a href="javascript:;">Proiect</a>';
+            var replaceWith = '';
+            document.body.innerHTML = document.body.innerHTML.replace(toReplace, replaceWith);
+        }
+        replaceScript();
+
+        if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+            $("#toTop").hide();
+            $(".meniunu").hide();
+            $(".icon-bar").hide();
+            $("#btnNavbar").hide();
+            $(".navbar-header").hide();
+            $("body").css("min-width", "600px");
+
+        }
+
+       /* if (navigator.appName.indexOf("Netscape") != -1) {
+            $("#page_wrapper").css("transform", "scale(0.8)");
+            alert(0);
+            $("#page_wrapper").css("transform-origin", "50% 0% ");
+        }*/
+    </script>
+    
+    <!-- BETA Mesaj -->
+    <div class="modal fade" id="mesajBetaModal" tabindex="-1" role="dialog" aria-labelledby="mesajBetaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 700px; margin: 5% auto; ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Inchide</span></button>
+                    <br /><div class="alert alert-danger" role="alert"> <center>Versiune Beta</center></div>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        A fost lansata versiunea Beta a Portalului Legislativ<br /><br /><br />
+                    Fiind o versiune Beta, este posibil ca unele facilitati sa nu functioneze in mod corect.</center>  
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" data-dismiss="modal" class="btn btn-primary">Inchide mesajul de atentionare</button>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- IE8 Mesaj -->
+    <div class="modal fade" id="mesajIe8Modal" tabindex="-1" role="dialog" aria-labelledby="mesajIe8ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 700px; margin: 5% auto; ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Inchide</span></button>
+                    <br /><div class="alert alert-danger" role="alert"> <center>Datorita faptului ca folositi o versiune de Internet Explorer (Internet Explorer 8) foarte veche este posibil ca unele functionalitati sa fie dezactivate sau sa nu functioneze corect!</center></div>
+                </div>
+                <div class="modal-body">
+                    <div style="width:100%;">
+                        <div style="width:50%; float:left; text-transform:uppercase;">
+                            <span style="font-size:18px; font-weight:bold; text-transform:none;">Ce browser sa aleg?</span>
+                            <br /><br /><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/chrome.jpg" align="left" width="69" style="padding-right:10px;" /><b>Google Chrome</b><br />
+                                <br /><a href="http://www.google.com/chrome" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/firefox.jpg" align="left" width="69" style="padding-right:10px;" /><b>Mozilla Firefox</b><br />
+                                <br /><a href="https://www.mozilla.org/en-US/firefox/all/?q=romania" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/ie.jpg" align="left" width="69" style="padding-right:10px;" /><b>Internet Explorer</b><br />
+                                <br />
+                                <a href="http://www.microsoft.com/windows/internet-explorer/default.aspx" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/safari.jpg" align="left" width="69" style="padding-right:10px;" /><b>Apple Safari</b><br />
+                                <br /><a href="http://www.apple.com/safari/" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div>
+                        </div>
+                        <div style="width:50%; float:left;">
+                            <span style="font-size:18px; font-weight:bold;">De ce sa actualizez browserul?</span>
+                            <br /><br /><br />
+                            Browserele invechite, cum ar fi Internet Explorer 8 (lansat în 2001) nu respecta standardele web, nu ofera unele facilitati noi browser-ului, cum ar fi de navigatie sau descarcare, managerul de tab-uri, si au probleme de securitate.
+                            <br /><br />
+                            Aceasta afecteaza, de asemenea, calitatea de redare site-uri web.
+                            <br /><br /><br />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" data-dismiss="modal" class="btn btn-primary">Inchide mesajul de atentionare</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

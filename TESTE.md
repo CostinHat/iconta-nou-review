@@ -1327,3 +1327,8 @@ lege_64_2026.html, ordin_506_1030_2026_norme_oug158.html). test_cm_episod.py + t
 - test_cod_02_03_04_raman_nediminuate: 02/03/04 diminuare=0 (ambele faze).
 - test_gating_pe_data_eliberarii_nu_pe_data_inceput: inceput in fereastra dar eliberat < 01.02.2026 -> nediminuat.
 Cluster CM+D112: 100 passed.
+
+## 09.08.2026 (tura 6) — Corpus pasul 3: garduri existente acopera noile MO
+Cele 4 temeiuri COTE ridicate la MO intra sub G1 (test_corpus_surse.test_temei_mo_are_sursa_locala): MO => fisier
+local existent. Mutatie probata azi: sters og_16_2022_consolidat.html -> G1 ROSU; restaurat -> verde. G2/G3
+neschimbate (noile fisiere = forma_la_data, exceptate de G2). INDEX.json regenerat coerent cu COTE.

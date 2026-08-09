@@ -8029,3 +8029,35 @@ PROBA pe date reale (tenant_001, read-only): din 11 CM, UN singur certificat sch
 (05/2026, cod 08 maternitate): 3034 -> 2832 lei (-202, o zi lucratoare; maternitatea se diminueaza in 05.2026,
 exceptata abia din 06.2026). ZERO luni depuse/confirmate la ANAF afectate (stop point neaprins). Nu s-a modificat
 nicio valoare stocata (doar calculul; recalculul efectiv al lunilor = a doua comanda).
+
+## 09.08.2026 — Corpus (pasul 3, amanat 08.08): 7 acte aduse, 4 temeiuri COTE ridicate la MO, 1 stop point
+
+Comanda Costin (executie): completeaza corpusul - toate actele pe care aplicatia le invoca drept temei si nu au
+sursa locala. Sursa oficiala legislatie.just.ro (local; server-ul ramane blocat la download).
+
+ADUSE (7, forma consolidata "(A)"): anaf_surse/ legea_346_2002_consolidat.html, oug_115_2023_consolidat.html,
+legea_296_2020_consolidat.html, legea_70_2015_consolidat.html, og_16_2022_consolidat.html,
+legea_136_2020_consolidat.html, oug_34_2024_consolidat.html.
+
+RIDICATE REDARE->MO dupa verificare VERBATIM in fisierul adus (act cu act; valoarea de cod NEATINSA - doar
+metadata nivel_sursa/url/text_citat; cele 4 valori confirmate neschimbate; INDEX.json regenerat):
+- impozit_dividend 8% @2023 -> OG 16/2022 ("cota de impozit de 8% asupra dividendului brut", art.43 alin.2 CF).
+- plafon_tva_incasare 4.500.000 @2021 -> Legea 296/2020 ("cifra de afaceri ... nu a depasit plafonul de 4.500.000 lei").
+- plafon_sold_casa 50.000 @2015 -> Legea 70/2015 ("plafon zilnic de 50.000 lei/tranzactie").
+- plafon_avans_decontare 5.000 @2023 -> OUG 115/2023 (modifica Legea 70/2015 art.4 lit.e: "plafon zilnic de 5.000 lei").
+Gard: G1 (test_corpus_surse) - MO => fisier local existent; mutatie probata (sters og_16 -> G1 rosu; restaurat -> verde).
+
+STOP POINT (act adus NU confirma valoarea din cod): facilitate_salariu_minim 300 @2025 citeaza OUG 115/2023, dar
+OUG 115/2023 NU contine cei 300 lei (doar o amenda). RAMANE REDARE, neatins. Candidatul real = OUG 156/2024
+(deja local, art.LXVI; structura D112: "Suma300 cf.OUG156/2024") - re-citarea = tura non-read-only, decizie separata.
+
+pct.4 Legea 346/2002 (blocheaza cod 02/03/04): adusa + verificata. CONFIRMA accident de munca + boli profesionale
+(cod 03/04 = domeniul ei, NU OUG 158). NU acopera explicit "accident de traseu/deplasare" (cod 02) in forma
+actualizata la 2011. Nomenclator 9 (d112_struct): 02/03/04 "neconfirmat de casa de pensii" = G1 (incapacitate,
+OUG 158) cat timp neconfirmate. Decizia cod 02/03/04 ramane a lui Costin (nu am atins codul de calcul).
+
+RAMAN REDARE (raportate, nu inchise - forma consolidata la zi NU le confirma):
+- Legea 227/2015 valori istorice: tva 19% @2017, dividend 5% @2016, plafon mijloc fix 2.500 @2015 - superseded;
+  CF consolidat (local) nu le contine. Necesita forma-la-data (CF forma de baza 08.09.2015, just.ro/171282).
+- tva_redusa_5 @2025 (abrogare alin.3 de L141 pct.43): unde ajung fostele operatiuni de 5% (11% vs 21%) NU e
+  confirmat verbatim -> DE DECIS (Costin), nu verificare.

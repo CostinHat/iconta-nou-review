@@ -4,6 +4,7 @@
 Fost job de expirare (EXPIRA_DUPA_LUNI scos): acum semnaleaza valorile care n-au mai fost CONFIRMATE
 la sursa de peste N luni. Poarta: toate confirmate recent -> tacut, 0; unele vechi -> o alerta
 grupata, cu nume+temei+vechime+ce sa faci; garda de acoperire prinde o cheie COTE fara eticheta."""
+import re
 from datetime import date
 
 from core import expirare_cote as ec
@@ -28,7 +29,7 @@ def test_neconfirmate_o_singura_alerta_cu_toate_valorile():
     cheie, subiect, mesaj = apeluri[0]
     assert "n-au mai fost confirmate" in subiect and str(r["neconfirmate"]) in subiect and "6" in subiect
     assert "Salariul minim brut" in mesaj and "Cota standard TVA" in mesaj
-    assert "2026-07-31" in mesaj   # verificat_la
+    assert re.search(r"\d{4}-\d{2}-\d{2}", mesaj)   # verificat_la (o data ISO in alerta; nu hardcodat - se bumpeaza la re-verificare)
     assert "Monitorul Oficial" in mesaj and "actualiz" in mesaj.lower()
     assert cheie.startswith("confirmare_cote:")   # o singura cheie de throttling pe rulare
 

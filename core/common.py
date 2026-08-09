@@ -385,7 +385,7 @@ COTE = {
     # 10% e cota impozitului pe VENIT art.78, nu pe dividende.)
     "impozit_dividend": [
         (date(2026, 1, 1), Decimal("0.16"), Temei("Legea", 141, 2025, art="97", alin="7", data_in="2026-01-01", verificat_la="2026-08-07", de_cine="Code+cercetare", nivel_sursa="MO", url="anaf_surse/legea_141_2025_consolidat.html", text_citat="Art.II pct.1 (art.43 alin.2 CF): impozit pe dividende cota 16% asupra dividendului brut", lant_acte="Legea 141/2025 majoreaza impozitul pe dividende de la 8% la 16%, dividende distribuite de la 01.01.2026")),
-        (date(2023, 1, 1), Decimal("0.08"), Temei("OG", 16, 2022, art="97", alin="7", data_in="2023-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", lant_acte="OG 16/2022 (MO 716/15.07.2022) majoreaza cota de la 5% la 8%, dividende distribuite de la 01.01.2023; aprobata prin Legea 370/2022")),
+        (date(2023, 1, 1), Decimal("0.08"), Temei("OG", 16, 2022, art="97", alin="7", data_in="2023-01-01", verificat_la="2026-08-09", de_cine="Code+cercetare", nivel_sursa="MO", url="anaf_surse/og_16_2022_consolidat.html", text_citat="OG 16/2022 modifica art.43 alin.(2) CF: Impozitul pe dividende se stabileste prin aplicarea unei cote de impozit de 8% asupra dividendului brut platit unei persoane juridice romane", lant_acte="OG 16/2022 (MO 716/15.07.2022) majoreaza cota de la 5% la 8%, dividende distribuite de la 01.01.2023; aprobata prin Legea 370/2022")),
         (date(2016, 1, 1), Decimal("0.05"), Temei("Legea", 227, 2015, art="97", alin="7", data_in="2016-01-01", verificat_la="2026-08-03", de_cine="Code+cercetare", nivel_sursa="REDARE", lant_acte="cota 5% pt dividende distribuite de la 01.01.2016 (OUG 50/2015 MO 817/2015 accelereaza data din Legea 227/2015; aprobata prin Legea 358/2015)")),
     ],
     # plafon TVA la incasare (fost petic 3-tier plafon_la). OUG 8/2026: 5M de la 03.2026, 5.5M de la 2027.
@@ -393,17 +393,17 @@ COTE = {
     "plafon_tva_incasare": [
         (date(2027, 1, 1), Decimal("5500000"), Temei("OUG", 8, 2026, art="282", alin="3", lit="b", data_in="2027-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_8_2026.html", text_citat="art.282 alin.(3) lit.b) CF: Plafonul pentru aplicarea sistemului TVA la incasare este de 5.500.000 lei, incepand cu data de 1 ianuarie 2027")),
         (date(2026, 3, 1), Decimal("5000000"), Temei("OUG", 8, 2026, art="282", alin="3", lit="a", data_in="2026-03-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_8_2026.html", text_citat="art.282 alin.(3) lit.a) CF: Plafonul pentru aplicarea sistemului TVA la incasare este de 5.000.000 lei, in perioada 1 martie-31 decembrie 2026")),
-        (date(2021, 1, 1), Decimal("4500000"), Temei("Legea", 296, 2020, data_in="2021-01-01", verificat_la="2026-08-05", de_cine="Code/Costin", nivel_sursa="REDARE", lant_acte="Legea 296/2020 (MO 1269/21.12.2020) majoreaza plafonul TVA la incasare 2.250.000->4.500.000 de la 01.01.2021; ramas 4,5M pana la OUG 8/2026 (5M de la 01.03.2026). Confirmat secundar - CF consolidat a inlocuit tier-ul la OUG 8/2026")),
+        (date(2021, 1, 1), Decimal("4500000"), Temei("Legea", 296, 2020, data_in="2021-01-01", verificat_la="2026-08-09", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/legea_296_2020_consolidat.html", text_citat="Legea 296/2020 (modifica CF): a caror cifra de afaceri in anul calendaristic precedent nu a depasit plafonul de 4.500.000 lei (TVA la incasare)", lant_acte="Legea 296/2020 (MO 1269/21.12.2020) majoreaza plafonul TVA la incasare 2.250.000->4.500.000 de la 01.01.2021; ramas 4,5M pana la OUG 8/2026 (5M de la 01.03.2026). Confirmat secundar - CF consolidat a inlocuit tier-ul la OUG 8/2026")),
     ],
     "plafon_mijloc_fix": [
         (date(2026, 1, 1), Decimal("5000"), Temei("OUG", 8, 2026, art="28", alin="2", lit="b", data_in="2026-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_8_2026.html", text_citat="art.28 alin.(2) lit.b) CF: la data intrarii in patrimoniul contribuabilului are o valoare fiscala egala sau mai mare decat suma de 5.000 lei; aceasta limita se actualizeaza anual cu indicele de inflatie, prin HG")),
         (date(2015, 1, 1), Decimal("2500"), Temei("Legea", 227, 2015, data_in="2015-01-01", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
     ],
     "plafon_sold_casa": [
-        (date(2015, 5, 9), Decimal("50000"), Temei("Legea", 70, 2015, data_in="2015-05-09", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2015, 5, 9), Decimal("50000"), Temei("Legea", 70, 2015, data_in="2015-05-09", verificat_la="2026-08-09", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/legea_70_2015_consolidat.html", text_citat="Legea 70/2015 art.3: incasarile/platile in numerar ... se pot efectua in limita unui plafon zilnic de 50.000 lei/tranzactie")),
     ],
     "plafon_avans_decontare": [
-        (date(2023, 12, 15), Decimal("5000"), Temei("OUG", 115, 2023, data_in="2023-12-15", verificat_la="2026-07-31", de_cine="Code/Costin", nivel_sursa="REDARE")),
+        (date(2023, 12, 15), Decimal("5000"), Temei("OUG", 115, 2023, data_in="2023-12-15", verificat_la="2026-08-09", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_115_2023_consolidat.html", text_citat="OUG 115/2023 modifica Legea 70/2015 art.4 lit.e): plati din avansuri spre decontare, in limita unui plafon zilnic de 5.000 lei")),
     ],
     # impozit micro (1% standard) / profit (16%) - rata DEFAULT (contabilul o poate da explicit prin manual).
     # Mutate din literalele hardcodate din d100 (dependenta ascunsa V2) -> vizibile in graf.

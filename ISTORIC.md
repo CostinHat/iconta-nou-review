@@ -3633,3 +3633,12 @@ Reparat calculul CM (salarizare.py + salariati_api.py) pe cele 4 decizii Costin:
 2026-02/2026-06); cod 02/03/04 raman nediminuate (asimilare Legea 346/2002 neconfirmata verbatim, listat); gating
 pe data eliberarii (data_acordare). Programe nationale amanate. 4 garduri noi. Proba read-only pe tenant_001: 1
 cert schimbat (id=46 05/2026 cod 08: 3034->2832 lei), 0 luni depuse afectate. Nicio valoare stocata modificata.
+
+## 09.08.2026 (tura 6) — Corpus completat (pasul 3 din 08.08): 7 acte + 4 temeiuri la MO
+Adus verbatim de pe legislatie.just.ro (local): Legea 346/2002, OUG 115/2023, Legea 296/2020, Legea 70/2015, OG
+16/2022, Legea 136/2020, OUG 34/2024 (forme consolidate). Ridicat REDARE->MO 4 valori COTE (dividend 8%, plafon
+TVA incasare 4.5M, sold casa 50k, avans 5k) dupa verificare verbatim; valorile neschimbate, doar metadata; INDEX
+regenerat; G1 le gardeaza (mutatie probata). Stop point: facilitate 300 @2025 - OUG 115/2023 nu o confirma, ramane
+REDARE (candidat OUG 156/2024). Legea 346/2002 confirma cod 03/04 (accident munca/boli prof.), nu explicit cod 02
+(traseu). Ramase REDARE: valori istorice L227/2015 (forma-la-data) + tva_redusa_5 (de decis). Acte structurale/
+contextuale (OPANAF structuri, OMFP 1802, Cod muncii etc.) listate ca alta clasa, neaduse. Nu am atins codul de calcul.

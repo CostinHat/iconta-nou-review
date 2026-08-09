@@ -2348,3 +2348,25 @@ Reparat in salarizare.py (_calcul_cm_core + variante) + salariati_api.py (gating
 - **luni depuse afectate:** NICIUNA acum (tenant_001: 0 confirmate; singurul cert schimbat = id=46 05/2026, +202
   lei diferenta, nedepus). La aparitia unor luni depuse afectate -> recalcul efectiv = a doua comanda (nu se
   atinge o luna depusa fara aprobare).
+
+## 09.08.2026 (tura 6) — Corpus pasul 3: 7 acte aduse, 4 COTE la MO; REDARE ramase + acte structurale listate
+
+COTE MO+local: 19 -> 23 (4 ridicate: dividend 8%, plafon TVA incasare 4.5M, sold casa 50k, avans 5k).
+Acte noi in corpus (7): legea_346_2002, oug_115_2023, legea_296_2020, legea_70_2015, og_16_2022, legea_136_2020,
+oug_34_2024 (toate _consolidat.html, forma "(A)"). INDEX.json regenerat (gen_index TIP_FORMA += 4 forma_la_data).
+
+RAMAS REDARE (nu inchis, cu motiv):
+- facilitate_salariu_minim 300 @2025: OUG 115/2023 (citat) NU confirma 300 -> stop point; candidat OUG 156/2024.
+- Legea 227/2015 valori istorice (tva 19%@2017, dividend 5%@2016, mijloc fix 2.500@2015): consolidatul nu le
+  contine -> forma-la-data (CF baza 08.09.2015, just.ro/171282).
+- tva_redusa_5 @2025: abrogare confirmata (L141 pct.43), dar destinatia fostelor 5% = de decis.
+
+ACTE CITATE IN COD FARA FISIER LOCAL, dar NU temeiuri-COTE (clasa diferita de pct.5; NEaduse, listate):
+- structuri de declaratie (OPANAF 705/2020, 102/2025, 206/2025, 592/2016, 2194/2025, 407/2025, 1783/2021,
+  3769/2015, 394/2017, 146/2018, 779/2024, 174/2026 etc.): STRUCTURA e capturata in fisierele d*_struct_anaf.txt;
+  textul ordinului in sine nu e adus.
+- contextuale (nu backeaza o valoare fiscala calculata): OMFP 1802/2014 + 3103/2017 (contabilitate), Legea
+  53/2003 (Cod muncii), Legea 31/1990 (societati), Legea 207/2015 (Cod proc fiscala), HG 423/2020 (nomenclator
+  cod urgenta), OUG 96/2003 (risc maternal - referita in OUG 158 art.2 lit.e, deja local), Legea 399/2006
+  (aproba OUG 158, inglobata in consolidat), acte de aprobare/modificare inglobate in formele consolidate prezente.
+Motiv (chestionar pct.4): lista pct.5 (temeiuri-COTE) e SCURTA si inchisa; restul sunt structura/context, alta clasa.
