@@ -3741,3 +3741,10 @@ verificator_conformitate scaneaza doar .js, nu .py -> mesaj backend scapat. Scan
 (chestionar pt.4): singurul text user-facing fara diacritice = solduri; celelalte hit-uri (print/raise din
 scripturi de migrare, Temei.text_citat legal) nu-s UI contabil. Gard ingust adaugat; gard de clasa pe backend NU
 se pune (fals-pozitive - vezi DECIZII/GARZI). Probat runtime. Poarta verde + restart.
+
+## 09.08.2026 (tura 18) — PREDARE_LANT.md devine al 5-lea pas de publicare (doc-only)
+
+Modificat CLAUDE.md §2.3 pct.10 (PATRU->CINCI pasi; pas 5 = predare PREDARE_LANT, cu reguli: suprascriere, stare
+curenta, four-way+fronturi+in-lucru+urmeaza, neatins daca niciun front nu s-a miscat) + §2.2 pct.11 (PREDARE_LANT
+listat intotdeauna, doua valori). Rescris PREDARE_LANT.md pe starea de la d217981 (four-way tura 17 + 4 fronturi
+deschise: test fir intrare cabinet 4163, E3_97, D101 scadenta lege-vs-validator, descoperiri date-test). Doc-only.

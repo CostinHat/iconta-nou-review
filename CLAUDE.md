@@ -451,6 +451,10 @@ Fara titlu, raportul e incomplet.
 11. CE AM ACTUALIZAT - ULTIMUL PUNCT, OBLIGATORIU. Cele patru registre (GARZI.md, DECIZII.md, TESTE.md, ISTORIC.md),
     fiecare cu ce s-a scris in el la aceasta executie, SAU "nimic de actualizat in X, pentru ca <motiv>" - explicit,
     niciodata prin omisiune. Un registru neatins fara motiv scris = raport incomplet.
+    PLUS (predare, 09.08.2026, ceruta de Costin): sectiunea 11 listeaza INTOTDEAUNA si PREDARE_LANT.md (al
+    cincilea pas de publicare, §2.3 pct.10), cu una din DOUA valori: "rescris (tura N)" - si atunci se arata
+    diff-ul; SAU "nemodificat - starea din tura N ramane valida" - si atunci se spune de ce niciun front
+    deschis nu s-a miscat. Absenta lui din sectiunea 11 = raport incomplet.
     PLUS (decizia c, 05.08.2026): se confirma EXPLICIT ca HEAD local, origin/main si backup sunt pe ACELASI commit,
     numind commit-ul (ex. "HEAD = origin/main = backup/lant-<data> = <hash>"). Daca NU sunt pe acelasi commit, se
     spune DE CE (poarta rosie -> nepins pe main; tree murdar; origin/main avansat sub tine; etc.).
@@ -585,9 +589,9 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    valoroasa pentru diagnostic SI cea mai expusa la pierdere (pct.8 cere commit+tree curat, deci n-ar acoperi-o).
    Raportul declara `WIP SALVAT: <ramura>` sau motivul exact pentru care nu s-a putut.
 
-10. **PUBLICAREA COMPLETA = PATRU PASI, AUTOMATA DUPA POARTA VERDE (09.08.2026, ceruta de Costin).**
+10. **PUBLICAREA COMPLETA = CINCI PASI, AUTOMATA DUPA POARTA VERDE (09.08.2026, ceruta de Costin).**
    Publicarea NU se opreste la disc. Dupa ORICE executie care a trecut poarta verde (pytest cu COLLECTED confirmat +
-   verificator TOTAL 0 + `git status --porcelain` gol), executorul face TOTI cei patru pasi de publicare FARA sa fie
+   verificator TOTAL 0 + `git status --porcelain` gol), executorul face TOTI cei cinci pasi de publicare FARA sa fie
    ceruti in comanda - absenta lor e o defectiune, nu o optiune a celui care compune comanda:
    1. **commit** local pe server (declanseaza pre-commit = poarta verde);
    2. **push** pe `origin/main` SI `backup/lant-<data>` (cablat, post-commit hook - pct.8);
@@ -598,6 +602,13 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    4. **restart** = `sudo systemctl restart iconta-nou` (NU `iconta`, buildul vechi, esueaza tacit), ca procesul VIU
       sa incarce codul comis. Fara restart, procesul ruleaza in continuare commitul stampilat la pornirea lui
       (core/versiune.py) - exact divergenta pe care detectorul running==HEAD o semnala fara ca nimeni s-o repare.
+   5. **predare** = actualizeaza PREDARE_LANT.md. E fisierul de care depinde sesiunea urmatoare (constatare
+      tura 17: DECIZII/GARZI/TESTE/ISTORIC s-au actualizat, dar PREDARE a lipsit din lista - exact ce conteaza
+      pentru continuitate era singurul optional). Se SUPRASCRIE, nu se adauga: e fisier de STARE CURENTA, nu
+      jurnal (jurnalul e ISTORIC.md). Contine, IN ACEASTA ORDINE: (a) four-way de la ultima executie (SHA +
+      ora); (b) fronturile deschise, cu blocajul fiecaruia; (c) ce e in lucru acum; (d) ce urmeaza. Daca
+      executia NU a schimbat niciun front deschis, fisierul RAMANE NEATINS - dar raportul (§2.2 sect.11) o
+      spune EXPLICIT.
    **Publicarea nu e completa pana cand procesul viu nu ruleaza codul comis, confirmat FOUR-WAY:** HEAD (disc) =
    origin/main = backup/lant-<data> = **RUNNING** (commitul procesului viu; `versiune.stare()`: running==head,
    divergent=False), cu **start-time-ul procesului DUPA data commitului** (systemd ExecMainStartTimestamp > data

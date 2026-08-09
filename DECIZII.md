@@ -8324,3 +8324,14 @@ test pe mesajele balanta_valida (au diacritice) - pe ce s-a inchis, fara fals-po
 Verificat (chestionar pt.4): singurul text user-facing fara diacritice scris azi = mesajele solduri. Restul
 diacritic-less din diff-ul de azi = neuser-facing: print/raise din migrare_pontaj/data_incetare/rapoarte_salvate
 (scripturi dev), Temei.text_citat (provenienta legala, nerandata in UI, disciplina verbatim-MO separata).
+
+## 09.08.2026 — PREDARE_LANT.md = al 5-lea pas de publicare (dupa poarta verde), obligatoriu in raport
+
+Constatare tura 17: la publicare s-au actualizat DECIZII/GARZI/TESTE/ISTORIC, dar PREDARE_LANT - fisierul de care
+depinde sesiunea urmatoare - a lipsit din lista, adica exact ce conteaza pentru continuitate era singurul optional.
+DECIZIE: PREDARE_LANT intra in pasii de publicare (CLAUDE.md §2.3 pct.10, acum CINCI pasi: commit/push/deploy/
+restart/predare) + in raport (§2.2 sect.11, listat INTOTDEAUNA: "rescris (tura N)"+diff SAU "nemodificat - starea
+din tura N ramane valida"+de ce). Reguli PREDARE: se SUPRASCRIE (stare curenta, nu jurnal - jurnalul e ISTORIC.md);
+contine in ordine four-way ultima executie (SHA+ora), fronturi deschise cu blocaj, ce e in lucru, ce urmeaza; daca
+niciun front nu s-a miscat, ramane neatins DAR raportul o spune explicit. Backup CLAUDE.md.bak inainte, cu assert pe
+ancora (4 ancore, fiecare cu o singura aparitie).
