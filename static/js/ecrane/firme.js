@@ -8,7 +8,7 @@ import { randeazaFacturi } from "./facturi_ecran.js?v=7";
 import { ecranRip } from "./rip_ecran.js";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=2";
 import { ecranEtransport } from "./etransport_ecran.js?v=5";
-import { meniuMigrarePerFirma } from "./migrare.js?v=5";  // [p96_import_firma]
+import { meniuMigrarePerFirma } from "./migrare.js?v=6";  // [p96_import_firma]
 import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
