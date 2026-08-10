@@ -14,8 +14,9 @@ Ultimul commit de COD: tura 20 (fix antet wizard navigator.js + capacitate proba
 1. **Test fir de intrare cabinet nou** — ACTIV. Cabinet test izolat 4163 "CABINET TEST FIR INTRARE SRL", cont
    admin_firma fir-intrare@prisma-cont.test (user 6504; parola in raportul turei 15). 4 firme: ALFA=tenant_013(8396),
    BETA=014(8397), GAMA=015(8398), DELTA=016(8399). seed_profil aplicat. Fisiere/ordine/verdicte: ~/date_test_cabinet/
-   README.md; runner ~/date_test_cabinet/aplica.py profil|luna. BLOCAJ: Costin importa prin UI (CSV migrare + XML
-   e-Factura); la "gata XML" rulez aplica.py luna. Cabinetul REAL 1968 (12 firme) = neatins.
+   README.md; runner ~/date_test_cabinet/aplica.py profil|luna. SETUP COMPLET (tura 21): asociati+XML+seed_luna
+   aplicate pe 4163; fir parcurs cap-coada, TOATE verdictele README confirmate pe cabinetul real (fixurile 14/16/17
+   valideaza). Ramane: review UI Costin / depunere efectiva. Cabinetul REAL 1968 (12 firme) = neatins.
 2. **E3_97 (pensie ocupationala, Legea 1/2020)** — build oprit pe stop point (cere subsistemul art.76(4^1): plafon
    lunar 33% + ordine). BLOCAJ: decizie de scope Costin.
 3. **D101 scadenta: lege vs validator INVERS** — codul urmeaza validatorul DUK. BLOCAJ: decizie de produs Costin.

@@ -8371,3 +8371,15 @@ trunchiere (ultimul nod vizibil, parintii ellipsis; nu overflow:hidden care taia
 reala: cod vechi exit 1, cod nou exit 0. Alternative respinse: fix ingust doar-antet; per-wizard manual.
 LIMITE: pachete/setari netestate depth prin UI; portal/admin/asistent nereachable cu 4163 (cer client/superadmin/
 angajat). Proba NU e in poarta verde (decizia lui Costin cand ruleaza).
+
+## 10.08.2026 — Fir intrare cap-coada (4163): D101 totalPlata_A e checksum ANAF (nu bug); ZERO-BASE D100/D300
+
+Parcurs firul de intrare pe cele 4 firme (cai reale). Doua concerne ridicate de proba, verificate:
+1. BETA D101 total_plata_a=-11212 pe pierdere NU e bug: anaf_surse/d101_struct_anaf.txt:417 defineste totalPlata_A
+   = "Suma de control" = suma(P1..P53) -> negativ pe pierdere e conform specificatiei; impozitul real (P15) = 0 pe
+   pierdere (corect). Verificat la SURSA oficiala, NEreparat (o "corectie" ar fi stricat conformitatea).
+2. ZERO-BASE: D100/D300 genereaza declaratie pe zero silentios, pe cand D205/D112 refuza golul/suspectul. GASIT,
+   NEREPARAT - motiv: nil D300 e legal SI obligatoriu (platitor TVA depune lunar chiar pe zero); DELTA D100=0
+   reflecta corect facturile NEcontabilizate (defectul DELTA), prins de cross-check (verifica_tva ROSU). Refuzul
+   D300/D100 pe zero ar bloca declaratiile nil legale. DECIZIE DESCHISA Costin: vrei ca D100/D300 sa AVERTIZEZE
+   (nu refuze) cand genereaza zero desi exista facturi necontabilizate?

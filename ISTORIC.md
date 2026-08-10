@@ -3768,3 +3768,14 @@ back prefera pop natural (pas -> fereastra) inaintea setInapoi custom + trunchie
 (frontend_test/proba_wizard_antet.py): cod vechi exit 1, cod nou exit 0; caile curate neschimbate (back=pusher).
 navigator.js?v=3, stil.css?v=1. NU in poarta verde. Limite: pachete/setari depth + portal/admin/asistent (roluri)
 netestate prin UI. Vezi DECIZII/GARZI.
+
+## 10.08.2026 (tura 21) — Fir de intrare parcurs cap-coada pe 4 firme (4163): validare end-to-end
+
+Completat setup lipsa pe 4163 prin caile reale (doar cabinet test): asociati (ALFA/BETA/DELTA), XML e-Factura
+(ALFA 5/BETA 2/DELTA 3), seed_luna. Generat fiecare declaratie + audit_preluare + control_fiscal + cross-check-uri.
+TOATE verdictele README confirmate pe cabinetul REAL: ALFA/BETA verde + genereaza (continut non-zero: ALFA
+D100=60/D300=4155/D394=1504/D390=3502/D205=11601/D112=1581/D406; BETA D101/D301=4970/D205=9281/D112/D406); GAMA
+migrare ROSU parteneri + GRI istoric + control ROSU restante D300/D112 (M1-M4); DELTA verifica_tva ROSU (L1 - fixul
+tura 14 prinde acum factura necontabilizata, README il marca RATAT), cota19 ROSU (L2), D390 ROSU (L3), D112 blocat
+SUSPECT (L5), D205 refuzat fara beneficiar. Doua concerne verificate non-bug (DECIZII: D101 checksum ANAF; nil D300
+legal). Niciun defect nou de reparat. Fara cod atins; scrieri doar in 4163; cabinetul 1968 neatins.
