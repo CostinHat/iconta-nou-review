@@ -1384,5 +1384,9 @@ Cluster CM+pull: 56 passed.
 - frontend_test/observa_*.py: unelte de observatie per-wizard (back-destinatie/acumulare), fara verdict.
 
 ## 10.08.2026 (tura 22) — Gard ZERO-BASE D100/D300
-- core/test_zero_base_declaratii.py::test_zero_base_d100_d300: D100/D300 pe zero cu facturi -> avertisment;
+- core/test_zero_base_declaratii.py::test_zero_base_d100_d300: D100/D300 pe zero cu facturi -> avertisment; [citare-istorica: redenumit tura 23 -> test_d100_pe_zero_refuza + test_d300_pe_zero_cu_facturi_avertizeaza/nil_legal]
   nil legal (fara facturi) -> fara avertisment. Mutatie: cod vechi avertismente=[] -> pica.
+
+## 10.08.2026 (tura 23) — Gard D100 refuz pe zero (DUK-dovedit invalid)
+- core/test_zero_base_declaratii.py::test_d100_pe_zero_refuza: D100 fara obligatie -> ValueError. Mutatie: cod vechi nu ridica.
+- ::test_d300_pe_zero_cu_facturi_avertizeaza / ::test_d300_nil_legal_fara_avertisment: D300 avertisment vs nil legal.

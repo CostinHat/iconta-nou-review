@@ -281,21 +281,21 @@ def genereaza(conn, schema, perioada, manual=None):
         if suma > 0:
             obligatii.append({"cod_oblig": "103", "suma_dat": suma})
 
-    res = calcul_d100(prof, an, luna, obligatii)
-    xml = build_xml(res)
-    from core.reconciliere_emis import verifica_total_plata_a as _vte
-    _vte("d100", xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res
-    # [zero_base_v1 10.08.2026] Un D100 pe zero care POATE fi defect nu trebuie sa arate ca un nil legal:
-    # venit contabilizat (70x)=0 DAR facturi emise in perioada -> semnaleaza (NU blocheaza; nil-ul e legal,
-    # decide contabilul). Vezi DECIZII 10.08 + core/test_zero_base_declaratii.py.
-    if not venituri:
+    # [zero_base_refuz_v1 10.08.2026] D100 pe zero = XML STRUCTURAL INVALID la DUKIntegrator (sectiunea
+    # <obligatie> e OBLIGATORIE, >=1 - verificat la sursa anaf_surse/d100_struct_anaf.txt + DUK: 'lipsa
+    # sectiune obligatorie'). Nil-ul D100 NU e depozitabil -> REFUZAM (ca D390 'nu se depune pe zero'),
+    # nu emitem XML invalid. Superseda avertismentul din tura 22 (care emitea XML invalid + doar avertiza);
+    # DUK a dovedit ca golul D100 nu e un nil legal. D300 ramane pe avertisment - nil-ul D300 E valid.
+    if not obligatii:
         _inc, _sf = perioada.interval()
         with conn.cursor() as _cur:
             _cur.execute("SELECT count(*) FROM facturi WHERE directie='emisa' "
                          "AND data_emitere >= %s AND data_emitere < %s", (_inc.isoformat(), _sf.isoformat()))
             _nf = _cur.fetchone()[0]
-        if _nf:
-            res.avertismente.append(
-                "D100 pe zero: venituri contabilizate (cont 70x) = 0, dar exista %d facturi emise in perioada. "
-                "Verifica contabilizarea - nil-ul e legal, dar confirma ca nu lipsesc date." % _nf)
+        _hint = (" Exista %d facturi emise necontabilizate in perioada - contabilizeaza-le intai." % _nf) if _nf else ""
+        raise ValueError("D100 nu se depune pe zero: nicio obligatie (venituri contabilizate cont 70x = 0)." + _hint)
+    res = calcul_d100(prof, an, luna, obligatii)
+    xml = build_xml(res)
+    from core.reconciliere_emis import verifica_total_plata_a as _vte
+    _vte("d100", xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res
     return xml, res

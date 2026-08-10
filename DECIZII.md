@@ -8396,3 +8396,24 @@ Nil legal (fara facturi) -> FARA avertisment (control negativ in gard). NU se ca
 noua - doar se semnaleaza inconsistenta facturi-vs-declaratie. Probat pe DELTA real (D100 pe zero cu 3 facturi
 -> avertisment). Gard: core/test_zero_base_declaratii.py (old-fail/new-pass). Vezi si DECIZII tura 21 (D101
 checksum ANAF + nil D300 legal).
+
+## 10.08.2026 (tura 23) — DUK-validat toate declaratiile (4 firme). D100 gol REFUZAT (PIVOT tura 22)
+
+Validat prin DUKIntegrator oficial toate declaratiile pe 4163 - prima oara. 5 defecte structurale gasite (nu
+fusesera niciodata validate oficial). Reparat 1 (cel mai clar + DUK-dovedit); 4 raportate (fiecare investigatie
+la sursa proprie, nu batch-rush - lectia D101 unde o valoare parea gresita dar era corecta).
+
+PIVOT tura 22: avertismentul non-blocant pe D100 gol -> REFUZ. Motiv: DUK a dovedit ca D100 pe zero emite XML
+STRUCTURAL INVALID ('lipsa sectiune obligatorie <obligatie>' - obligatoriu >=1, verificat anaf_surse/
+d100_struct_anaf.txt). Nil-ul D100 NU e depozitabil -> se refuza (ca D390 'nu se depune pe zero'), nu se emite
+XML invalid + avertisment. D300 RAMANE pe avertisment (nil-ul D300 E legal si depozitabil). Probat DELTA real
+(D100 refuzat cu hint 'contabilizeaza cele 3 facturi').
+
+DEFECTE DUK RAMASE (raportate, de reparat pe rand la sursa):
+- D394 codPR '21' respins: 21 (cereale) e CENTRALIZATOR; la op11 se pune SUBCODUL NC (1001 grau...), nu 21
+  (d394.py:92). Seed 'cereale' prea grosier. Nuanta date+app.
+- D112 asiguratB3 (CM): nepotrivire zile/baza CAS pe indemnizatia de concediu medical (salarizare CM). Fiscal, deep.
+- D301 data_doc ISO (BETA): BUG DE DATE DE TEST - seed a inserat ISO ocolind ruta care valideaza ZZ.LL.AAAA;
+  nu e bug de app (generatorul emite ce e in DB; ruta valideaza inputul real). Fix = corectat seed-ul.
+- D406 SupplierID pe PurchaseInvoices (SAF-T): structural, deep (XSD).
+D390 'codO invalid' pe ALFA/DELTA = CUI-uri UE FALSE din setul de test (nu bug de app; app deja avertizeaza).

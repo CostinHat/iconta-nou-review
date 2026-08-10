@@ -3787,3 +3787,12 @@ avertisment non-blocant (res.avertismente) - un zero care poate fi defect nu mai
 blocheaza generarea/depunerea (nil-ul e legal, decide contabilul). Nil legal (fara facturi) nu avertizeaza.
 Probat pe DELTA real (D100 pe zero cu 3 facturi necontabilizate -> avertisment). Gard nou test_zero_base_
 declaratii (old-fail/new-pass); suita d100/d300 54 passed (fara regresie). Vezi DECIZII/GARZI.
+
+## 10.08.2026 (tura 23) — DUK-validat toate declaratiile pe 4 firme; D100 gol refuzat (nu XML invalid)
+
+Prima validare oficiala DUKIntegrator a declaratiilor generate pe 4163. 5 defecte structurale gasite. REPARAT:
+D100 pe zero emitea XML structural invalid ('lipsa sectiune obligatorie') -> acum REFUZA (ca D390), PIVOT fata de
+avertismentul tura 22 (DUK a dovedit ca golul D100 nu e nil legal). D300 ramane pe avertisment (nil valid). Probat
+DELTA real (refuz cu hint facturi). Gard rescris (old-fail/new-pass); d100 suita 15 passed. RAMASE (raportate,
+de reparat pe rand la sursa): D394 codPR 21 (subcod NC la op11), D112 asiguratB3 CM (zile/baza CAS), D301 data_doc
+ISO (bug de SEED, nu app), D406 SupplierID SAF-T. Vezi DECIZII pt tabel + clasificare. Doar 4163; 1968 neatins.

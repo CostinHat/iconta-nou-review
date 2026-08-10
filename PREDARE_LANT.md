@@ -25,6 +25,12 @@ Ultimul commit de COD: tura 20 (fix antet wizard navigator.js + capacitate proba
 5. **Frontend probe — de completat** — proba browser exista (vezi Unelte) dar acopera prin UI real doar migrare/firme/
    facturi; pachete/setari (depth) + portal/admin/asistent (cer rol client/superadmin/angajat in 4163) raman de probat.
 
+6. **Declaratii DUK — 4 defecte structurale ramase (tura 23)** — validate oficial prima oara pe 4163; D100 gol
+   reparat (refuz). RAMAN: D394 codPR 21 (la op11 = subcod NC 1001..., nu 21; seed cereale prea grosier);
+   D112 asiguratB3 CM (zile/baza CAS pe indemnizatia de concediu medical); D301 data_doc ISO (bug de SEED,
+   nu app - seed a ocolit ruta ZZ.LL.AAAA); D406 SupplierID pe PurchaseInvoices (SAF-T XSD). Fiecare = fix
+   la sursa + gard + re-validare DUK. Unealta: frontend_test/valideaza_duk.py. BLOCAJ: neprogramate (una pe comanda).
+
 ## (c) Ce e in lucru acum
 Parcurgerea firului de intrare (front 1). Turele recente: 13 izolare cheie API, 14 cross-check D300 mort, 16 doua
 "forme care spun altceva", 17 diacritice solduri, 18 PREDARE al 5-lea pas de publicare, 19 izolare /raportari,

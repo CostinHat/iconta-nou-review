@@ -2486,3 +2486,9 @@ core/test_zero_base_declaratii.py: firma cu factura emisa necontabilizata -> D10
 D300 pe zero (TVA la incasare nedecontata) cu facturi EMITE avertisment; control negativ (fara facturi = nil
 legal) -> FARA avertisment. MUTATIE PROBATA: cod vechi -> D100 avertismente=[] (pica); cod nou -> 1 passed.
 Non-blocant (nu blocheaza generarea/depunerea). Efemer, drop+rollback.
+
+## 10.08.2026 (tura 23) — Gard: D100 pe zero refuzat (nu XML invalid) + DUK-validare
+core/test_zero_base_declaratii.py (rescris): D100 pe zero (cu SAU fara facturi) -> ValueError 'nu se depune pe
+zero'; D300 pe zero cu facturi -> avertisment; D300 nil fara facturi -> fara avertisment. MUTATIE: cod vechi
+(avertisment D100, XML invalid) -> test_d100 NU ridica -> PICA; cod nou -> 3 passed. Unealta DUK re-validare:
+frontend_test/valideaza_duk.py (necomis).
