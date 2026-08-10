@@ -138,9 +138,16 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     # (bază+TVA) si semnalate distinct jos - un contabil nu trebuie sa rateze o vanzare taxabila
     # scapata din decont (probat pe firma DELTA: livrare 19% cu TVA scapata tacit).
     drop_l_tax_b = drop_l_tax_t = Decimal(0); drop_l_tax_n = 0
-    drop_l_zero_b = Decimal(0); drop_l_zero_n = 0
     drop_a_tax_b = drop_a_tax_t = Decimal(0); drop_a_tax_n = 0
-    drop_a_zero_b = Decimal(0); drop_a_zero_n = 0
+    # [Task1 10.08.2026 - cota ZERO, NU se arunca tacit]
+    # Livrari 0%: natura scutirii (R14 scutit CU drept/export art.294 vs R15 scutit FARA drept) NU e
+    #   capturata in factura -> per-linie avertisment (NU se inventeaza clasificarea; camp lipsa raportat).
+    # Achizitii 0% CURATE (fara TVA orfan forfetar, fara categorie_331): scutite/neimpozabile -> DERIVATE
+    #   la R26_1 (rd.26, informativ, fara TVA) - apar in decont, nu dispar tacit.
+    # Achizitii 0% cu categorie_331 (art.331 taxare inversa cu rata pierduta): avertisment dedicat.
+    zero_livr = []      # [Decimal] baze livrari 0% (nu se clasifica auto)
+    zero_achiz = []     # [Decimal] baze achizitii 0% scutite/neimpozabile -> R26_1
+    achiz_331_0 = []    # [Decimal] baze achizitii 0% cu categorie art.331 (rata pierduta)
 
     # TVA la incasare (art.282 alin.3 CF, OUG 8/2026): pentru firmele care aplica sistemul,
     # exigibilitatea intervine la INCASARE (colectata) / PLATA (deductibila), proportional cu
@@ -149,6 +156,9 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     # regim: exigibilitate la faptul generator (emitere), comportament neschimbat.
     tvai = bool(prof.get("tva_la_incasare"))
     livrare_ti_base = Decimal(0)   # rd.13: baza livrarilor cu taxare inversa (furnizor art.331), fara TVA
+    # [Task2 10.08.2026] beneficiar taxare inversa PRIMITA (art.331, masuri de simplificare): anterior
+    # se arunca tacit (`continue`). Acum se DERIVA rd.12 colectat + rd.25 deductibil (net zero).
+    ti_ben_baza = Decimal(0); ti_ben_tva = Decimal(0); ti_ben_n = 0
     # [C-4 T2] TVA din ANTETUL facturilor primite neacoperit de randurile pe cota (ex: compensatia
     # forfetara agricultor art.315^1 al.17). NU se auto-deduce (nu se forteaza - lipsa flag Registrul
     # agricultorilor), dar NU se pierde tacit -> se masoara si se semnaleaza cantitativ (avertisment jos).
@@ -156,6 +166,8 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     for f in facturi:
         emisa = (f.get("directie") == "emisa")
         ti = bool(f.get("taxare_inversa"))
+        cat331 = f.get("categorie_331")   # [Task1] natura art.331 (taxare inversa) pt achizitii 0%
+        f_zero_b = Decimal(0)             # [Task1] baza cotelor 0% pe ACEASTA factura primita
         if tvai:
             from core import tva_incasare as _tvi
             segmente = []
@@ -172,33 +184,45 @@ def calcul_d300(prof, perioada, facturi, manual=None):
                         for (ci, baza) in _segmente(f)]
         for (ci, baza, tva) in segmente:
             if ti:
-                # [decizie Costin 06.08.2026] Taxare inversa art.331: FURNIZORUL (emisa) raporteaza
-                # livrarea in rd.13 (baza, FARA TVA). BENEFICIARUL (primita) declara MANUAL rd.12 colectat
-                # + rd.27 deductibil (net zero) - NU se auto-deduce aici (altfel dubla numarare cu manualul).
+                # [decizie Costin 06.08.2026 + Task2 10.08.2026] Taxare inversa art.331 (masuri de
+                # simplificare): FURNIZORUL (emisa) raporteaza livrarea in rd.13 (baza, FARA TVA).
+                # BENEFICIARUL (primita) declara rd.12 colectat + rd.25 deductibil (net zero) - ACUM
+                # DERIVAT automat (inainte disparea tacit prin `continue`; cerinta Costin: fara drop tacit).
                 if emisa:
                     livrare_ti_base += baza
+                else:
+                    ti_ben_baza += baza; ti_ben_tva += tva; ti_ben_n += 1
                 continue
             if emisa:
                 if ci in col:
                     col[ci][0] += baza; col[ci][1] += tva
                 elif ci:   # cotă taxabilă fără rând colectat auto (ex. 19/5%): TVA ar dispărea
                     drop_l_tax_b += baza; drop_l_tax_t += tva; drop_l_tax_n += 1
-                else:      # cotă 0% (scutit/export/neimpozabil): fără impact pe TVA
-                    drop_l_zero_b += baza; drop_l_zero_n += 1
+                else:      # cotă 0% livrare (scutit/export/neimpozabil): clasificare manuala R14/R15
+                    zero_livr.append(baza)
             else:
                 if ci in ded:
                     ded[ci][0] += baza; ded[ci][1] += tva
                 elif ci:   # cotă taxabilă fără rând deductibil auto (ex. 19/5%)
                     drop_a_tax_b += baza; drop_a_tax_t += tva; drop_a_tax_n += 1
-                else:
-                    drop_a_zero_b += baza; drop_a_zero_n += 1
+                else:      # cotă 0% achizitie: se clasifica per-factura mai jos (R26 vs art.331 vs forfait)
+                    f_zero_b += baza
         # [C-4 T2] TVA orfan: antetul facturii primite depaseste TVA-ul rezultat din cote (compensatie
         # forfetara agricultor art.315^1 al.17). Se masoara aici, se semnaleaza jos; nu se deduce tacit.
         if not emisa and not ti and not tvai:
             _antet = Decimal(str(f.get("tva") or 0))
             _linii_tva = sum((s[2] for s in segmente), Decimal(0))
-            if _antet - _linii_tva >= 1:
-                orphan_ded += (_antet - _linii_tva)
+            _orfan = _antet - _linii_tva
+            if _orfan >= 1:
+                orphan_ded += _orfan
+            # [Task1] rutarea achizitiilor 0% de pe ACEASTA factura:
+            if f_zero_b > 0:
+                if cat331:
+                    achiz_331_0.append(f_zero_b)       # art.331 taxare inversa, rata pierduta -> avertisment
+                elif _orfan >= 1:
+                    pass                                # forfait agricol (TVA orfan): semnalat de avert orfan, NU e scutit -> NU R26
+                else:
+                    zero_achiz.append(f_zero_b)         # scutit/neimpozabil curat -> R26_1
 
     R = {}
     def setr(name, val):
@@ -233,6 +257,26 @@ def calcul_d300(prof, perioada, facturi, manual=None):
                 "taxare_inversa (=%d) SI introdus manual (R13_1) - dubla numarare. Pastreaza o singura "
                 "sursa: elimina R13_1 din manual SAU scoate taxare_inversa de pe facturi." % _r13)
         R["R13_1"] = _r13
+
+    # [Task2 10.08.2026] rd.12 colectat + rd.25 deductibil = beneficiar taxare inversa primita (art.331,
+    # masuri de simplificare), DERIVAT din facturi primite cu flag taxare_inversa. Confruntat cu sursa
+    # ANAF (anaf_surse/d300_struct_anaf.txt): rd.12 (R12_1/R12_2) "Achizitii de bunuri si servicii supuse
+    # masurilor de simplificare pentru care beneficiarul este obligat la plata TVA (taxare inversa)" =
+    # COLECTAT; rd.25 (R25_1/R25_2) acelasi text = DEDUCTIBIL. Net zero: R12_2 intra in R17_2 (colectata),
+    # R25_2 in R27_2 (deductibila) -> se anuleaza pe rezultat. DUK-validat (net zero acceptat). rd.7 NU se
+    # foloseste: DUK impune V13/V14 R20_x = R7_x (alta familie, achizitii altele decat masuri de simplificare).
+    # Anti-dubla-numarare: daca vin SI manual (R12/R25) -> EROARE (o singura sursa), ca la rd.13.
+    _tib = _int(ti_ben_baza); _tit = _int(ti_ben_tva)
+    if _tib or _tit:
+        _dbl = sorted(k for k in ("R12_1", "R12_2", "R25_1", "R25_2") if k in manual)
+        if _dbl:
+            raise ValueError(
+                "D300 taxare inversa primita (rd.12/rd.25): derivata AUTOMAT din facturi primite cu flag "
+                "taxare_inversa (baza=%d, TVA=%d) SI introdusa manual (%s) - dubla numarare. Pastreaza o "
+                "singura sursa: elimina cheile din manual SAU scoate taxare_inversa de pe facturi."
+                % (_tib, _tit, ", ".join(_dbl)))
+        R["R12_1"] = _tib; R["R12_2"] = _tit   # colectat (rd.12)
+        R["R25_1"] = _tib; R["R25_2"] = _tit   # deductibil (rd.25)
 
     # R17 = TOTAL TAXĂ COLECTATĂ (formula oficială: sumă rd.1-18 cu excepții)
     # col.1 (bază) și col.2 (TVA) — pentru firma simplă: R9_1+R10_1+R11_1, R9_2+R10_2+R11_2
@@ -347,6 +391,18 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     de_plata = r41_2
     de_recuperat = r42_2
 
+    # [Task1 10.08.2026] rd.26 (R26_1) = "Achizitii de bunuri si servicii scutite de taxa sau
+    # neimpozabile" (sursa ANAF anaf_surse/d300_struct_anaf.txt, nr.crt.99). Achizitiile 0% CURATE
+    # (fara taxare inversa, fara categorie_331, fara TVA orfan forfetar) se DECLARA aici - informativ,
+    # fara TVA, NU intra in R27 (deductibila) - apar in decont, nu dispar tacit. Anti-dubla cu manual R26.
+    _r26 = _int(sum(zero_achiz, Decimal(0)))
+    if _r26:
+        if "R26_1" in manual:
+            raise ValueError(
+                "D300 rd.26 (achizitii scutite/neimpozabile): derivat AUTOMAT din achizitii cu cota 0%% "
+                "(=%d) SI introdus manual (R26_1) - dubla numarare. Pastreaza o singura sursa." % _r26)
+        R["R26_1"] = _r26
+
     res = Rezultat(an=an, luna=luna, prof=prof)
     res.R = R
     res.tva_de_plata = de_plata
@@ -364,21 +420,35 @@ def calcul_d300(prof, perioada, facturi, manual=None):
             "(sub-declarare). Cotele 19/5%% nu au rând acceptat de ANAF în decontul v12 — NU le adăuga manual "
             "la R69/R71 (respinse); corectează cota facturii sau tratează ca regularizare (R16)."
             % (drop_l_tax_n, _f(drop_l_tax_b), _f(drop_l_tax_t)))
-    if drop_l_zero_n:
+    for _b in zero_livr:
         res.avertismente.append(
-            "%d linii livrare cu cotă 0%% (bază %s lei) — neincluse; fără impact pe TVA de plată, dar "
-            "clasifică-le manual la scutiri/export (R14/R15) dacă trebuie raportate."
-            % (drop_l_zero_n, _f(drop_l_zero_b)))
+            "Livrare cu cotă 0%% (bază %s lei) — nu se clasifică automat: decontul cere distincţia scutit "
+            "CU drept de deducere (R14, ex. export/art.294) vs scutit FĂRĂ drept (R15), iar natura scutirii "
+            "NU e capturată în factură. Clasific-o manual la R14/R15 (altfel nu apare în decont)."
+            % _f(_b))
     if drop_a_tax_n:
         res.avertismente.append(
             "%d linii achiziție cu cotă în afara 21/11/9 (bază %s lei, TVA %s lei) — deducere NEINCLUSĂ. "
             "Cotele 19/5%% nu au rând deductibil acceptat de ANAF în decontul v12 — NU le adăuga manual la "
             "R74/R24 (respinse); corectează cota facturii sau tratează ca regularizare."
             % (drop_a_tax_n, _f(drop_a_tax_b), _f(drop_a_tax_t)))
-    if drop_a_zero_n:
+    if zero_achiz:
         res.avertismente.append(
-            "%d linii achiziție cu cotă 0%% (bază %s lei) — neincluse (scutite/neimpozabile, R26); fără impact pe TVA."
-            % (drop_a_zero_n, _f(drop_a_zero_b)))
+            "%d achiziţii cu cotă 0%% (bază %s lei) — raportate automat la R26 (scutite de taxă sau "
+            "neimpozabile), fără impact pe TVA. Verifică: dacă sunt achiziţii intracomunitare, "
+            "reclasifică-le la taxare inversă (R5/R18)."
+            % (len(zero_achiz), _f(sum(zero_achiz, Decimal(0)))))
+    if achiz_331_0:
+        res.avertismente.append(
+            "%d achiziţii cu categorie art.331 (taxare inversă) dar cotă 0%% (bază %s lei) — cota aplicabilă "
+            "nu e capturată, deci rd.12/rd.25 (colectat+deductibil) NU se pot deriva. Declar-o manual la "
+            "R12/R25 sau completează cota (altfel taxarea inversă nu apare în decont)."
+            % (len(achiz_331_0), _f(sum(achiz_331_0, Decimal(0)))))
+    if ti_ben_n:
+        res.avertismente.append(
+            "%d achiziţii cu taxare inversă primită (bază %s lei, TVA %s lei) — derivate automat: rd.12 "
+            "colectat + rd.25 deductibil (net zero, art.331). Anterior dispăreau tacit din decont."
+            % (ti_ben_n, _f(ti_ben_baza), _f(ti_ben_tva)))
     if ded[9][0]:
         res.avertismente.append(
             "Achiziții deductibile 9%% (bază %s lei, TVA %s lei) — NEINCLUSE automat: rândul deductibil 9%% "
@@ -568,7 +638,7 @@ def pull(conn, schema, perioada):
             # nu pe emitere. Vezi _pull_incasare.
             return prof, _pull_incasare(cur, inceput, sfarsit)
         cur.execute("SELECT f.id, f.directie, f.total, f.tva, "
-                    "COALESCE(f.taxare_inversa, false) AS taxare_inversa, "
+                    "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
                     "l.cantitate, l.pret_unitar, l.cota_tva "
                     "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
                     "WHERE f.data_emitere >= %s AND f.data_emitere < %s ORDER BY f.id",
@@ -578,6 +648,7 @@ def pull(conn, schema, perioada):
     for r in rows:
         f = fmap.setdefault(r["id"], {"directie": r["directie"],
                                       "taxare_inversa": r["taxare_inversa"],
+                                      "categorie_331": r["categorie_331"],
                                       "total": r["total"] if r["total"] is not None else 0,
                                       "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
         if r["cantitate"] is not None and r["pret_unitar"] is not None:

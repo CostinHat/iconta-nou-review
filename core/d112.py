@@ -269,12 +269,26 @@ def _d112_genereaza(prof, salariati, an, luna):
                 if d17 == 0:  # d112_s107_v1: S107.1 - fara medie => si d18=0
                     d18 = 0
                 d19 = round(d17 / d18, 2) if d18 else 0
-                # d112_atrib_optionale_v1: atributele optionale se omit cand sunt goale (vid nepermis)
+                # [d112 asiguratD zero-base v1] D_1/D_2/D_5/D_6/D_7 sunt use="required" in AsiguratDType
+                # (d112_06082026.xsd l.665-671; struct rd.90-96 D_1..D_7). Un certificat cu vreunul gol =>
+                # XML respins de ANAF ("D_1: atributul trebuie sa exista"). REFUZ pe gol la radacina (aceeasi
+                # clasa ca hard-block-ul D_8 de mai jos si ca D205 cifR): nu se emite D112 invalid. Campurile
+                # NU se mai omit (comportamentul vechi masca certificatele corupte).
+                _obl = (("D_1", "serie certificat", _d112esc(x.get("serie"))),
+                        ("D_2", "numar certificat", _d112esc(x.get("numar"))),
+                        ("D_5", "data acordarii", x.get("da") or ""),
+                        ("D_6", "data inceput valabilitate", x.get("di") or ""),
+                        ("D_7", "data incetare", x.get("ds") or ""))
+                _lipsa = ["%s (%s)" % (_a, _lbl) for _a, _lbl, _v in _obl if not str(_v).strip()]
+                if _lipsa:
+                    raise ValueError(
+                        "D112: certificatul de concediu medical (salariat CNP %s) are campuri obligatorii goale: %s. "
+                        "AsiguratDType le cere use=required in d112_06082026.xsd - un XML cu ele goale e respins de "
+                        "ANAF. Completeaza-le in certificat (ecran Concedii medicale) - nu se emite D112 invalid."
+                        % (s.get("cnp"), ", ".join(_lipsa)))
                 _opt = ""
-                for _a, _v in (("D_1", _d112esc(x.get("serie"))), ("D_2", _d112esc(x.get("numar"))),
-                               ("D_5", x.get("da") or ""), ("D_6", x.get("di") or ""), ("D_7", x.get("ds") or "")):
-                    if _v:
-                        _opt += ' %s="%s"' % (_a, _v)
+                for _a, _lbl, _v in _obl:
+                    _opt += ' %s="%s"' % (_a, _v)
                 if str(x.get("cod") or "01").zfill(2) == "06" and x.get("cod_urgenta"):
                     _opt += ' D_11="%d"' % int(x.get("cod_urgenta"))  # [D_11] cod urgenta HG 423/2020, oblig. la cod 06 (D112 C(3), mutex D_12)
                 if str(x.get("cod") or "01").zfill(2) == "10" and x.get("cod_urgenta"):

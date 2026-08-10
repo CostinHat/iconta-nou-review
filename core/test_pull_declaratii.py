@@ -273,8 +273,8 @@ def test_cm_arbori_paraleli_acelasi_rezultat(schema):
                     "(1,'CM','B','1900101410011','2026-01-01',6000,8,false)")
         cur.execute("INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, baza, "
                     "media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, brut_ang, "
-                    "brut_fnuass, cass, impozit, cas, net) VALUES "
-                    "(1,2026,6,'08',10,%s,0,0,85,false,10,5,5,%s,%s,0,0,0,0)",
+                    "brut_fnuass, cass, impozit, cas, net, serie, numar, data_acordare, data_inceput, data_sfarsit) VALUES "
+                    "(1,2026,6,'08',10,%s,0,0,85,false,10,5,5,%s,%s,0,0,0,0,'AB','1','2026-06-01','2026-06-01','2026-06-10')",
                     (cm_base, CM_ANG, CM_FNUASS))
     xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
     m = re.search(r'<asiguratB4[^>]*B4_5="(\d+)"[^>]*B4_7="(\d+)"', xml)
@@ -472,8 +472,9 @@ def test_d112_cm_baza_salariala_realizata_nu_brut_intreg(schema):
         cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
                     "OVERRIDING SYSTEM VALUE VALUES (1,'CM','R','1900101410011','2025-01-01',8400,8,false)")
         cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',8400)")
-        cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile_ang,zile_fnuass,brut_ang,brut_fnuass) "
-                    "OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'01',5,0,4000,0)")
+        cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile_ang,zile_fnuass,brut_ang,brut_fnuass,"
+                    "serie,numar,data_acordare,data_inceput,data_sfarsit) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'01',5,0,4000,0,'AB','1','2026-06-01','2026-06-01','2026-06-05')")
     xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
     b1 = re.search(r"<asiguratB1[^>]*/>", xml).group(0)
     b2 = re.search(r"<asiguratB2[^>]*/>", xml).group(0)
@@ -503,8 +504,8 @@ def test_d112_maternitate_cod08_c2_rd3(schema):
                     "(1,'MAT','A','2900101410011','2026-01-01',6000,8,false)")
         cur.execute("INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, baza, "
                     "media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, brut_ang, "
-                    "brut_fnuass, cass, impozit, cas, net) VALUES "
-                    "(1,2026,6,'08',10,4000,6000,400,85,false,10,0,10,0,4000,0,300,1000,2700)")
+                    "brut_fnuass, cass, impozit, cas, net, serie, numar, data_acordare, data_inceput, data_sfarsit) VALUES "
+                    "(1,2026,6,'08',10,4000,6000,400,85,false,10,0,10,0,4000,0,300,1000,2700,'AB','1','2026-06-01','2026-06-01','2026-06-10')")
     xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
     import re
     m = re.search(r'<angajatorC2[^>]*/>', xml)
@@ -524,8 +525,8 @@ def test_d112_urgenta_cod06_emite_d11(schema):
                     "(1,'URG','C','1900101410011','2026-01-01',6000,8,false)")
         cur.execute("INSERT INTO concedii_medicale (salariat_id, an, luna, cod, zile, indemnizatie, baza, "
                     "media_zilnica, procent, diminuare, zile_platite, zile_ang, zile_fnuass, brut_ang, "
-                    "brut_fnuass, cass, impozit, cas, net, cod_urgenta) VALUES "
-                    "(1,2026,6,'06',10,4000,6000,400,100,false,10,5,5,2000,2000,0,300,1000,2700,123)")
+                    "brut_fnuass, cass, impozit, cas, net, cod_urgenta, serie, numar, data_acordare, data_inceput, data_sfarsit) VALUES "
+                    "(1,2026,6,'06',10,4000,6000,400,100,false,10,5,5,2000,2000,0,300,1000,2700,123,'AB','1','2026-06-01','2026-06-01','2026-06-10')")
     xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
     import re
     m = re.search(r'<asiguratD[^>]*D_9="06"[^>]*/>', xml)

@@ -217,6 +217,28 @@ def valideaza(res):
     return erori
 
 
+def _pers_inreg(prof):
+    """pers_inreg - atribut OBLIGATORIU N(1), valori admise (1,2)
+    (anaf_surse/d301_struct_anaf.txt poz.15 "pers_inreg:=(1,2)"):
+      1 = persoana care NU este inregistrata in scopuri de TVA;
+      2 = persoana inregistrata conform art. 317 CF (fost art. 153^1) NUMAI pentru
+          achizitii intracomunitare.
+    Distinctia (1 vs 2) depinde EXCLUSIV de STATUTUL de inregistrare art. 317, NU de faptul
+    ca firma face operatiuni intracomunitare. Doctrina interna e explicita (control_fiscal_api.py:
+    "art. 317 gri (nu stim daca e inregistrat)"; termene_api.py: "inregistrarea art. 317, pe
+    care n-o urmarim - facturile IC nu o dovedesc"): operatiuni_ic e un FLAG DE FAPT, nu o
+    proba de inregistrare, deci NU poate decide pers_inreg - o firma cu IC dar neinregistrata
+    ramane pers_inreg=1 (are chiar obligatia de a se inregistra). Sursa autoritara ar fi un marcaj
+    explicit de inregistrare art. 317 pe profil (propus: firma_profil.inreg_art317 boolean - vezi
+    raportul de neconformitate). Cat timp coloana lipseste, cazul STANDARD al depunatorului de D301
+    e neinregistrat -> "1". Default EXPLICIT si documentat (nu hardcode tacit): in momentul in care
+    profilul poarta marcajul (prof["inreg_art317"]=True), aceasta functie emite "2" fara alte modificari.
+    """
+    if prof.get("inreg_art317"):
+        return "2"
+    return "1"
+
+
 def build_xml(res):
     prof = res.prof
     cif = _NEDIGIT.sub("", prof.get("cui") or "")
@@ -229,12 +251,13 @@ def build_xml(res):
     # declaratiei DUPA anularea rezervei verificarii ulterioare (art. 105 alin.(6) din
     # Legea 207/2015, Codul de procedura fiscala). La o depunere obisnuita = 0.
     H.append('<declaratie301 xmlns="%s" luna="%d" an="%d" d_rec="0" temei="0" mijl_trans="%d" '
-             'cif="%s" denumire="%s" adresa="%s" banca="%s" cont="%s" pers_inreg="1" '
+             'cif="%s" denumire="%s" adresa="%s" banca="%s" cont="%s" pers_inreg="%s" '
              'nr_evid="%s" baza1="%d" tva1="%d" baza2="%d" tva2="%d" baza3="%d" tva3="%d" '
              'baza4="%d" tva4="%d" baza5="%d" tva5="%d" totalPlata_A="%d" '
              'nume_declarant="%s" prenume_declarant="%s" functia_declarant="%s">'
              % (NS, res.luna, res.an, res.mij_transp, _esc(cif), _esc(_t(den, _LIM["d301"]["denumire"])), _esc(_t(adr, _LIM["d301"]["adresa"])),
                 _esc(_t(_clean_bc(prof.get("banca")), _LIM["d301"]["banca"])), _esc(_t(_clean_bc(prof.get("iban") or prof.get("cont")), _LIM["d301"]["cont"])),
+                _pers_inreg(prof),
                 nr_evidenta(res.an, res.luna, res.mij_transp),
                 t[1][0], t[1][1], t[2][0], t[2][1], t[3][0], t[3][1],
                 t[4][0], t[4][1], t[5][0], t[5][1], res.total_plata_a,

@@ -1408,3 +1408,15 @@ Cluster CM+pull: 56 passed.
 - core/test_d394_pull_ti_fara_linii.py: pull() pe taxare-inversa fara linii nu crapa (NameError latent).
 - core/test_d406_payment_method.py: PaymentMethod = cod ANAF 01/02/03 (nu "VIR"/"NUM"). 3 teste.
 - core/test_d112_carantina_c2.py: carantina cod 07 emite C2_213/C2_215 (angajator).
+
+## 10.08.2026 (tura 26) — Garzi din repararea deciziilor §6 (Costin)
+- core/test_d112_asiguratd_zerobase.py: asiguratD obligatorii goale -> refuz. + 4 fixtures reparate in test_pull_declaratii.py.
+- core/test_d205_divid_platit.py: divid_D (distribuit) vs divid_P (platit) din cont 457.
+- core/test_d205_rezid_derivat.py: Rezid derivat din CNP; nerezident dividende refuzat (R32).
+- core/test_d300_taxare_inversa_beneficiar.py: achizitie taxare inversa -> R12/R25 net-zero, anti-dubla-numarare.
+- core/test_d300_zero_rate.py: achizitie 0% -> R26_1; livrare 0% -> avertisment per-linie.
+- core/test_d301_pers_inreg.py: pers_inreg 1/2 din inreg_art317 (nu hardcodat).
+- core/test_d394_manual_codpr.py: op11/codPR pt operatiuni manuale C/V.
+- core/test_d394_prsafiliat.py: prsAfiliat din are_operatiuni_afiliate.
+- core/test_d406_taxcode_nota.py: GL/Payment TaxCode 380304 (nu "300").
+- core/test_d406_master_pf.py: PF tip-04 prezent in master Customers/Suppliers.

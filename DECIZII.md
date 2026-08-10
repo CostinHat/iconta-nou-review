@@ -8544,3 +8544,71 @@ GASIT, NU REPARAT (date/decizie produs Costin; cod corect pe date corecte):
 Proba obiectiva COMBINATA (frontend_test/valideaza_duk.py, 4 firme, arborele cu toate 8 fixurile): fara
 regresie - toate declaratiile valide raman valide; avertismentul D300 nou apare pe DELTA; erorile ramase =
 DATE (R233.6/R24.1). Un singur commit prin poarta verde; doar 4163; 1968 neatins.
+
+## 10.08.2026 (tura 26) — Reparat toate deciziile §6 (Costin) din auditul tura 25 (DUK-dovedit)
+
+Comanda: Costin a decis pe §6 tura 25. Metoda: 7 audituri/fixuri paralele (agenti proaspeti), fiecare la sursa
+citata + gard old-fail/new-pass (pe HEAD 6cd0054) + DUK before/after pe DATE POPULATE (injectii ROLLBACK).
+
+FIXURI DE COD (6 declaratii, 9 defecte):
+- D112 (core/d112.py): asiguratD D_1/D_2/D_5/D_6/D_7 (use="required" in d112_06082026.xsd) puteau fi emise GOALE
+  -> REFUZ ZERO-BASE (ValueError care numeste salariatul + campurile), ca D205 cifR. + REPARAT cele 4 fixtures din
+  test_pull_declaratii.py care construiau certificate CM fara serie/numar/date (Costin: fixtures gresite se repara,
+  nu se ocolesc) - acum cu serie/numar/date realiste. CONSTATARE salveaza_concediu (Costin a cerut verificarea):
+  garanteaza DOAR D_7 (data_sfarsit, G9); NU verifica serie/numar/data_acordare/data_inceput -> fluxul de salvare
+  e o RADACINA SECUNDARA (poate persista date invalide). Refuzul din d112 e ultima linie; un gard simetric in
+  salveaza_concediu (4 campuri, langa G9 ~L383) = RECOMANDAT, neaplicat (schimba UX la salvare; Costin a cerut sa
+  raportez).
+- D205 (core/d205.py): (1) divid_D/divid_P (rand 39a/39b) - pull() citea doar platit dar emitea divid_P=0. Acum
+  distribuit = Sum credit 457, platit = Sum debit 457 (semantica cont 457 bifunctional); baza1/imp1 pe suma
+  PLATITA (pastreaza reconcilierea verde). (2) Rezid (rand 32) hardcodat "1" -> derivat din CNP (_cnp_rezident:
+  13 cifre, prima 1-8 = rezident). DESCOPERIRE: DUK regula R32 INTERZICE Rezid=2 pt tip_venit1=08 (dividende) -
+  beneficiarii nerezidenti de dividende merg pe D207, nu D205 -> fixul ii REFUZA (nu emite Rezid=2). Coloana
+  asociati.tara NU se adauga (R32 o face inutila pt dividende).
+- D300 (core/d300.py): (1) achizitiile cu taxare inversa (beneficiar) erau aruncate TACIT -> acum deriva R12_1/
+  R12_2 (colectat) + R25_1/R25_2 (deductibil), net-zero, cu gard anti-dubla-numarare (simetric cu rd.13). Ales
+  rd.12/25 (nu rd.7) pt ca DUK respinge R7 fara R20 (probat). (2) liniile 0% clasificate: achizitie 0% curata ->
+  R26_1; livrare 0% -> avertisment per-linie cu suma (natura scutit-cu-drept R14/fara-drept R15/export NU e
+  captata in date -> NU se inventeaza).
+- D301 (core/d301.py): pers_inreg (poz.15) hardcodat "1" (ramura "2" moarta) -> _pers_inreg(prof) face "2"
+  reachable din prof["inreg_art317"]. REFUZAT derivarea din operatiuni_ic (doctrina codului: e flag de FAPT, nu
+  marker de inregistrare art.317 - o firma cu achizitii IC dar neinregistrata e tot "1"). Default sigur "1".
+- D394 (core/d394.py): (1) op11/codPR pt operatiuni MANUALE C/V - calea manuala nu pasa categoria -> op1 fara op11
+  obligatoriu (poz.233/R233.5) -> invalid. Acum manual["operatiuni"] poarta categorie_331 (nume categorie SAU
+  subcod NC direct). (2) prsAfiliat (poz.6a) hardcodat "0" -> sourced din prof["are_operatiuni_afiliate"].
+  REFUZAT fake-derivarea (niciun model de date afiliati, confirmat via information_schema).
+- D406 (core/d406.py): (1) GL/PaymentLine TaxCode "300" (inexistent in nomenclator) -> 380304 (cota 0 note fara
+  TVA, art.319 alin.10, singurul cod 0 din TVA_NoteContabile) + declarat in TaxTable. (2) PF tip-04 absent din
+  Customers/Suppliers master - RADACINA in d406.py pull() (NU facturi_api - verificat: e CRUD pur): derivarea
+  master folosea _partener_registration_number (00/01/02) + filtra tert_cui!='' -> exclus. Acum _partener_id_saft
+  + drop filtru + dedup pe pid SAF-T.
+
+SEED DE TEST CORECTAT (decizia #2 Costin - date, nu cod; committed pe 4163, 1968 neatins):
+- D390 R24.1: CUI UE FALSE inlocuite cu reale checksum-valide - t013 DE811111114->DE136695976, FR12345678901->
+  FR40303265045; t016 DE811111114->DE136695976. NU s-au exclus operatiuni (Costin: o op obligatorie disparuta e
+  mai grava decat una cu CUI invalid). D390 t013 + t016: erori R24.1 -> VALID.
+- D394 R233.6: cereale de la PF (PF-01) categorie_331 'cereale' (centralizator) -> '1005' (porumb, subcod NC).
+  D394 t013: erori R233.6 -> VALID. Sursa seed (~/date_test_cabinet: genereaza.py + XML e-Factura + seed_luna.sql)
+  actualizata, ca re-seed sa pastreze fixul.
+
+## 10.08.2026 (tura 26) — REGULA: la conflict XSD-livrat vs validator DUK, VALIDATORUL e autoritatea
+
+Decizia #4 Costin, consemnata ca REGULA (sa nu se redeschida): cand XSD-ul livrat de ANAF si DUKIntegrator
+instalat NU sunt de acord, se urmeaza VALIDATORUL (poarta reala de depunere), nu XSD-ul citit izolat. Cazuri
+dovedite (tura 25): d112 Str_codBoalaSType enum stale (01-15) dar DUK accepta codurile 91/92/17; d406 namespace
+fara "t" (mfp:...d406:... vs XSD targetNamespace ...d406t...) + containerele SourceDocuments goale OMISE (DUK
+respinge un <Payments> gol injectat). In toate, XML-ul emis e DUK-valid; lxml-vs-XSD pica doar pe discrepanta
+XSD. NU se "repara" codul dupa XSD contra validatorului. (Simetric cu D101 lege-vs-validator: codul urmeaza
+validatorul.)
+
+## 10.08.2026 (tura 26) — Coloane de date RAPORTATE (nu adaugate): constrangerea 1968-neatins
+
+Trei fixuri sunt COMPLETE la nivel de cod (ramura corecta reachable + sourced dintr-un camp + default sigur +
+dovedite cu valori injectate), dar valoarea EXACTA cere un camp care nu exista. NU am adaugat coloanele: un ALTER
+pe firma_profil/facturi ar atinge schema cabinetului REAL 1968 (interzis), iar o coloana goala fara UI nu schimba
+nimic functional. DDL raportat pentru decizia Costin (cum secventiaza + cum trateaza 1968):
+- D301 pers_inreg=2 (art.317): `firma_profil.inreg_art317 boolean NOT NULL DEFAULT false`.
+- D394 prsAfiliat=1: `firma_profil.are_operatiuni_afiliate boolean NOT NULL DEFAULT false`.
+- D300 clasificare livrari 0% (R14 cu drept / R15 fara drept / export): `facturi.natura_scutire varchar(16)`.
+Codul consuma deja prof.get(...)/campul (pull() firma_profil = SELECT * -> curge automat cand coloana exista;
+1968 fara coloana -> .get() default sigur). Pana atunci: pers_inreg=1, prsAfiliat=0, livrari 0% avertizate per-linie.

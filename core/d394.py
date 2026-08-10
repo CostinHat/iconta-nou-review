@@ -434,9 +434,18 @@ def calcul_d394(prof, perioada, date, manual=None):
             else:
                 excluse_N.append((op.get("denP"), op.get("cuiP"), op.get("baza")))
             continue
+        # [manual_codPR 10.08.2026] SPEC OFICIAL anaf_surse/d394_struct_anaf.txt poz.233:
+        # "Pt ((tip in (V,C) si tip_partener=1) sau (tip=N si ...)) sectiunea <op11> este
+        # OBLIGATORIE". O operatiune manuala C (achizitie art.331) / V (livrare cu taxare
+        # inversa) catre partener TVA RO (tip_partener=1) trebuie sa poarte codPR in <op11>,
+        # altfel op1 se emite FARA op11 -> DUKIntegrator R233.5 respinge. Contractul manual
+        # duce categoria art.331 in campul categorie_331 (numele categoriei "deseuri"/"cereale"
+        # ... SAU subcodul NC direct, exact ca pe calea facturilor); build op11 (mai jos) o
+        # transforma in codPR prin acelasi nomenclator. Fara acest argument C/V manual emitea
+        # op1 fara op11 (neconformitate confirmata).
         _adauga(op["tip"], int(op.get("tip_partener") or P_TVA_RO), op.get("cota") or 0,
                 op.get("cuiP"), op.get("denP"), op.get("nrFact") or 1,
-                op.get("baza"), op.get("tva"))
+                op.get("baza"), op.get("tva"), op.get("categorie_331"))
 
     if excluse_N:
         lista = "; ".join("%s (baza %s lei)" % (n or (c or "fara CUI"), _int(b)) for n, c, b in excluse_N)
@@ -672,14 +681,26 @@ def build_xml(res):
     # cif_intocmit = CUI-ul firmei, calitate_intocmit completata, functie_intocmit=null.
     rep_den = prof.get("reprezentant_nume") or prof.get("declarant_nume") or "ADMINISTRATOR"
     rep_fct = prof.get("reprezentant_functie") or prof.get("declarant_functie") or "ADMINISTRATOR"
+    # [prsAfiliat 10.08.2026] SPEC OFICIAL anaf_surse/d394_struct_anaf.txt poz.6.a:
+    # "prsAfiliat - Au fost efectuate operatiuni cu persoane afiliate in perioada de
+    # raportare", N(1), camp OBLIGATORIU: =0 NU, =1 Da. NU e derivabil din datele iConta -
+    # confruntat cu schema (tenant_016 DELTA): firma_profil / clienti / furnizori NU au nicio
+    # coloana de persoana afiliata / related-party; 'afiliat' apare in provizioane.py si
+    # tva_incasare.py doar ca PARAMETRU de calcul, nu ca date stocate despre parteneri. Sursa
+    # onesta = un flag EXPLICIT pe profilul firmei. Pana cand coloana exista prof.get(...) e
+    # None -> "0" = DECLARAT: fara operatiuni cu persoane afiliate (valoare declarata, NU
+    # presupusa verificata). DDL recomandat (a se aplica de owner, nu aici):
+    #   ALTER TABLE firma_profil ADD COLUMN are_operatiuni_afiliate boolean NOT NULL DEFAULT false;
+    # firma_profil se citeste cu SELECT * -> coloana, odata adaugata, ajunge automat in prof.
+    prs_afiliat = 1 if prof.get("are_operatiuni_afiliate") else 0
     A = ['<?xml version="1.0" encoding="UTF-8"?>']
     A.append('<declaratie394 xmlns="%s" luna="%d" an="%d" tip_D394="%s" sistemTVA="%d" '
-             'op_efectuate="%d" prsAfiliat="0" '
+             'op_efectuate="%d" prsAfiliat="%d" '
              'cui="%s" caen="%s" den="%s" adresa="%s" telefon="%s" '
              'cifR="%s" denR="%s" functie_reprez="%s" adresaR="%s" '
              'tip_intocmit="0" den_intocmit="%s" cif_intocmit="%s" calitate_intocmit="%s" '
              'optiune="0" totalPlata_A="%d">'
-             % (NS, res.luna, res.an, tip_d394(res.prof), sistem_tva, res.op_efectuate,
+             % (NS, res.luna, res.an, tip_d394(res.prof), sistem_tva, res.op_efectuate, prs_afiliat,
                 _esc(cui), _esc(prof.get("caen") or ""), _esc(_t(prof.get("nume") or "", _LIM["d394"]["den"])),
                 _esc(_t(adr, _LIM["d394"]["adresa"])), _esc(prof.get("telefon") or ""),
                 _esc(cui), _esc(_t(rep_den, _LIM["d394"]["denR"])), _esc(_t(rep_fct, _LIM["d394"]["functie_reprez"])), _esc(_t(adr, _LIM["d394"]["adresaR"])),

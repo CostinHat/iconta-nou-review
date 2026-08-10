@@ -6,9 +6,9 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-Ultimul commit de COD: tura 25 (TOATE declaratiile confruntate field-by-field cu sursa oficiala; 8 reparate,
-2 conforme). Four-way exact (SHA + ora) = in raportul turei 25. Anterior: tura 24 = c9869a1 (4 declaratii DUK).
-Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul (js/css) e servit de pe disc.
+Ultimul commit de COD: tura 26 (reparate toate deciziile §6 Costin din auditul tura 25 - 6 declaratii cod +
+seed corectat + regula XSD-vs-DUK). Four-way exact (SHA + ora) = in raportul turei 26. Anterior: tura 25 = 6cd0054
+(toate declaratiile field-by-field). Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
 
 ## (b) Fronturi deschise (cu blocajul fiecaruia)
 1. **Test fir de intrare cabinet nou** — ACTIV. Cabinet test izolat 4163 "CABINET TEST FIR INTRARE SRL", cont
@@ -25,26 +25,27 @@ Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul (js/css) e servit de pe
 5. **Frontend probe — de completat** — proba browser exista (vezi Unelte) dar acopera prin UI real doar migrare/firme/
    facturi; pachete/setari (depth) + portal/admin/asistent (cer rol client/superadmin/angajat in 4163) raman de probat.
 
-6. **Declaratii DUK — TOATE 10 confruntate field-by-field cu sursa (tura 25); 8 reparate, 2 conforme** — audit
-   pe anaf_surse/*_struct + XSD, pe date POPULATE (nu nil), fiecare cu gard + DUK before/after. Reparate: D100
-   (scadenta micro trim IV - respins de ANAF), D101 (nr_evid poz.1-2), D205 (cifR/den1 goale), D300 (sub-declarare
-   tacita), D390 (rotunjire R16), D394 (V cota0 + crash pull), D406 (PaymentMethod), D112 (carantina C2_213/215).
-   Conform: D301, D710. RAMAS = DATE/DECIZIE PRODUS Costin (NU defect de cod):
-   (i) D112 asiguratD D_1..D_7 obligatorii-goale = aceeasi clasa ZERO-BASE ca D205 cifR; cere migrarea a 4 fixtures
-       shared (test_pull_declaratii.py) + confirmarea ca salveaza_concediu garanteaza serie/numar/date. DECIDE Costin.
-   (ii) D390 R24.1 - CUI UE FALS in seed (cu CUI real = valid, dovedit); corecteaza seed, NU exclude tacit.
-   (iii) D394 R233.6 - seed cereale de la PF fara subcod NC pe factura.
-   (iv) D300 - rate 19%/5% fara rand DUK-valid 2026 (rutare R16?), achizitii taxare-inversa aruncate tacit.
-   (v) D205 divid_P mereu 0 (distribuit-vs-platit); D301 pers_inreg / D394 prsAfiliat / D205 Rezid hardcodate
-       (lipsa coloana/model de date). D406 GL TaxCode 300, PF tip-04 absent din master (radacina facturi_api).
+6. **Declaratii DUK — auditate + reparate (turele 24-26); RAMAS = doar decizii de model de date** — toate 10
+   confruntate field-by-field cu sursa (tura 25); deciziile §6 ale lui Costin reparate (tura 26). Cod reparat:
+   D112 asiguratD refuz + fixtures, D205 divid_D/P + Rezid, D300 taxare-inversa R12/R25 + 0% clasificat, D301
+   pers_inreg reachable, D394 op11 manual + prsAfiliat, D406 TaxCode 380304 + PF master. Seed corectat: D390 CUI UE
+   reale, D394 cereale 1005 -> D390/D394 acum VALID pe date. REGULA: XSD-vs-DUK -> validatorul e autoritatea.
+   RAMAS (decizie Costin, NU defect de cod):
+   (a) 3 COLOANE de date (cod gata + default sigur, NEadaugate ca sa nu atinga schema cabinetului 1968):
+       firma_profil.inreg_art317 (D301 pers_inreg=2), firma_profil.are_operatiuni_afiliate (D394 prsAfiliat=1),
+       facturi.natura_scutire (D300 clasificare livrari 0% R14/R15/export). + optional discriminator taxare_inversa
+       art.331-vs-general (D300 R12/R25 vs R7/R20).
+   (b) salveaza_concediu: gard simetric serie/numar/data_acordare/data_inceput (garanteaza doar D_7 acum) - UX la
+       salvare, recomandat, neaplicat.
+   (c) UI care sa POPULEZE campurile de mai sus (altfel raman pe default).
    Unealta: PYTHONPATH=$PWD venv/bin/python3 frontend_test/valideaza_duk.py.
 
 ## (c) Ce e in lucru acum
 Conformitatea declaratiilor la spec oficial DUK (front 6) + firul de intrare (front 1). Turele recente:
-18 PREDARE al 5-lea pas, 19 izolare /raportari, 20 proba browser + fix antet wizard, 22 ZERO-BASE avertisment,
-23 DUK-validat + D100 gol refuzat, 24 refacut 4 declaratii la spec oficial, 25 TOATE 10 declaratiile confruntate
-field-by-field cu sursa (8 reparate, 2 conforme). Metoda tura 25: audit paralel cu agenti proaspeti + DUK pe
-date populate - a scos defecte pe care validarea pe nil le rata (ex. D100 micro trim IV respins de ANAF).
+20 proba browser + fix antet wizard, 22 ZERO-BASE avertisment, 23 DUK-validat + D100 gol refuzat, 24 refacut 4
+declaratii la spec oficial, 25 TOATE 10 declaratiile confruntate field-by-field (8 reparate, 2 conforme), 26
+reparate deciziile §6 Costin (6 declaratii cod + seed corectat + regula XSD-vs-DUK). Metoda 25-26: audit/fix paralel
+cu agenti proaspeti + DUK pe date populate - a scos defecte pe care validarea pe nil le rata.
 
 ## (d) Ce urmeaza
 1. Costin: importa CSV migrare + XML e-Factura -> "gata XML"; eu rulez aplica.py luna.

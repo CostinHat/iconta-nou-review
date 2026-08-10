@@ -444,6 +444,16 @@ TAXCODE_LIVRARI_PRE_2025_08 = {19: "310309", 9: "310310", 5: "310311", 0: "31031
 # granita codurilor TaxCode livrari (Legea 141/2025). Sub ea = codurile epocii, peste = cele noi.
 _TAXCODE_141_DIN = date(2025, 8, 1)
 
+# TaxCode pentru liniile de NOTA CONTABILA / PLATA fara TVA (banca, casa, creante,
+# venituri neimpozabile - TaxAmount 0.00). Nomenclatorul oficial (d406_schema_anaf.xlsx,
+# foaia 'TVA_NoteContabile', antet: 'NOMENCLATOR CODURI DE TAXA PENTRU RAPORTAREA
+# NOTELOR CONTABILE CARE NU AU CORESPONDENT IN DOCUMENTE SURSA') acopera DOAR familia
+# 380xxx; '300' (emis anterior) NU exista in el - era un prefix inventat, nu un cod.
+# Singurul cod cu cota 0 / scutit din familie este 380304 (cota 0, 'Livrari/prestari
+# pentru care nu exista obligatia emiterii facturii si nu sunt supuse TVA, art. 319
+# alin. 10 Cod Fiscal') - valoarea corecta de nomenclator pentru liniile de nota fara TVA.
+TAXCODE_NOTA_FARA_TVA = "380304"
+
 
 def _taxcode_livrari(cota, data_factura):
     """TaxCode SAF-T pentru livrari, PERIOD-AWARE pe data facturii. ANAF a schimbat codurile cu
@@ -647,6 +657,15 @@ def _masterfiles(res):
         M.append('          <BaseRate>%s</BaseRate>' % BASE_RATE)
         M.append('          <Country>RO</Country>')
         M.append('        </TaxCodeDetails>')
+    # 380304 e referit pe liniile GL/Payment fara TVA -> il declaram si in TaxTable
+    # (cod valid din nomenclatorul TVA_NoteContabile), ca sa fie regasit la lookup.
+    M.append('        <TaxCodeDetails>')
+    M.append('          <TaxCode>%s</TaxCode>' % TAXCODE_NOTA_FARA_TVA)
+    M.append('          <Description>Nota contabila fara TVA (art. 319 alin. 10 CF)</Description>')
+    M.append('          <TaxPercentage>0</TaxPercentage>')
+    M.append('          <BaseRate>%s</BaseRate>' % BASE_RATE)
+    M.append('          <Country>RO</Country>')
+    M.append('        </TaxCodeDetails>')
     M.append('      </TaxTableEntry>')
     M.append('    </TaxTable>')
     # containere obligatorii
@@ -823,7 +842,7 @@ def _gl_entries(res):
                 G.append('          </CreditAmount>')
             G.append('          <TaxInformation>')
             G.append('            <TaxType>300</TaxType>')
-            G.append('            <TaxCode>300</TaxCode>')
+            G.append('            <TaxCode>%s</TaxCode>' % TAXCODE_NOTA_FARA_TVA)
             G.append('            <TaxAmount>')
             G.append('              <Amount>0.00</Amount>')
             G.append('              <CurrencyCode>RON</CurrencyCode>')
@@ -988,7 +1007,7 @@ def _source_documents(res):
                 S.append('          </PaymentLineAmount>')
                 S.append('          <TaxInformation>')
                 S.append('            <TaxType>300</TaxType>')
-                S.append('            <TaxCode>300</TaxCode>')
+                S.append('            <TaxCode>%s</TaxCode>' % TAXCODE_NOTA_FARA_TVA)
                 S.append('            <TaxAmount>')
                 S.append('              <Amount>0.00</Amount>')
                 S.append('              <CurrencyCode>RON</CurrencyCode>')
@@ -1085,25 +1104,37 @@ def pull(conn, schema, an, luna):
             # (00/01/02 + cod), ca fiecare linie 4111/401 sa aiba un CustomerID/
             # SupplierID valabil - nu doar primul partener (LIMIT 1 lasa restul
             # tranzactiilor fara CustomerID, cum s-a dovedit cu factura UE).
+            # ROOT FIX (tip-04): derivarea partenerilor din facturi trebuie sa
+            # foloseasca ACEEASI identitate ca referinta de pe factura
+            # (_partener_id_saft, folosit la construirea Invoice mai jos): cu cod
+            # fiscal -> 00/01/02, iar PF FARA cod fiscal declarat -> tipul 04 + cod
+            # din nume. Vechiul cod folosea _partener_registration_number (doar
+            # 00/01/02) SI filtra tert_cui != '' -> partenerul PF (tip 04) referit
+            # de factura (SupplierID/CustomerID=04...) NU aparea in <Customers>/
+            # <Suppliers> (neconformitate: referit pe factura, absent din master).
+            # Dedup pe identitatea SAF-T (pid), NU pe tert_cui: toti PF au tert_cui=''
+            # -> DISTINCT ON (tert_cui) i-ar fi colapsat pe toti intr-un singur rand.
             if not clienti:
                 cur.execute(
-                    "SELECT DISTINCT ON (tert_cui) tert_cui, tert_nume FROM facturi "
-                    "WHERE directie='emisa' AND tert_cui IS NOT NULL AND tert_cui != '' "
-                    "ORDER BY tert_cui, id")
+                    "SELECT tert_cui, tert_nume FROM facturi "
+                    "WHERE directie='emisa' ORDER BY id")
+                vazut = set()
                 for r in cur.fetchall():
-                    rid = _partener_registration_number(r["tert_cui"])
-                    if rid:
-                        clienti.append(Partener(id=rid, nume=r["tert_nume"] or "",
+                    pid = _partener_id_saft(r["tert_cui"], r["tert_nume"])
+                    if pid and pid not in vazut:
+                        vazut.add(pid)
+                        clienti.append(Partener(id=pid, nume=r["tert_nume"] or "",
                                                 cui=r["tert_cui"] or "", oras=""))
             if not furnizori:
                 cur.execute(
-                    "SELECT DISTINCT ON (tert_cui) tert_cui, tert_nume FROM facturi "
-                    "WHERE directie='primita' AND tert_cui IS NOT NULL AND tert_cui != '' "
-                    "ORDER BY tert_cui, id")
+                    "SELECT tert_cui, tert_nume FROM facturi "
+                    "WHERE directie='primita' ORDER BY id")
+                vazut = set()
                 for r in cur.fetchall():
-                    rid = _partener_registration_number(r["tert_cui"])
-                    if rid:
-                        furnizori.append(Partener(id=rid, nume=r["tert_nume"] or "",
+                    pid = _partener_id_saft(r["tert_cui"], r["tert_nume"])
+                    if pid and pid not in vazut:
+                        vazut.add(pid)
+                        furnizori.append(Partener(id=pid, nume=r["tert_nume"] or "",
                                                   cui=r["tert_cui"] or "", oras=""))
         except Exception as e:
             # MASCA SCOASA (27.07.2026, al doilea val). In PostgreSQL un query esuat

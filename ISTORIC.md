@@ -3825,3 +3825,16 @@ pull NameError), D406 (PaymentMethod VIR->01/02/03), D112 (carantina C2_213/C2_2
 Ramas = date/decizie produs (Costin): D112 asiguratD D_1..D_7 goale (aceeasi clasa ca D205, cere fixtures +
 contract de date), D390 CUI UE fals seed, D394 cereale R233.6, D300 rate fara rand 2026, D205 divid_P, s.a.
 DUK combinat 4 firme = fara regresie. Un singur commit; doar 4163; 1968 neatins. Detalii: DECIZII/GARZI tura 25.
+
+## 10.08.2026 (tura 26) — Reparat toate deciziile §6 (Costin) din auditul tura 25
+
+Costin a decis pe cele gasite-nereparate in tura 25. 7 fixuri paralele (agenti proaspeti), fiecare la sursa + gard
+old-fail/new-pass + DUK before/after pe date populate. Cod (6 declaratii, 9 defecte): D112 (asiguratD refuz pe gol
++ 4 fixtures reparate), D205 (divid_D/divid_P din cont 457 + Rezid derivat, nerezident dividende refuzat R32),
+D300 (achizitii taxare-inversa R12/R25 net-zero + linii 0% clasificate/avertizate), D301 (pers_inreg reachable/
+sourced), D394 (op11 manual C/V + prsAfiliat sourced), D406 (TaxCode 380304 + PF tip-04 in master, radacina in
+d406.py nu facturi_api). Seed corectat (date, committed 4163): D390 CUI UE reale (erori R24.1->valid pe t013+t016),
+D394 cereale subcod 1005 (R233.6->valid). REGULA consemnata: la conflict XSD-vs-DUK, validatorul e autoritatea.
+3 coloane raportate (nu adaugate - ar atinge 1968): inreg_art317, are_operatiuni_afiliate, natura_scutire; cod gata
++ default sigur. Constatare: salveaza_concediu garanteaza doar D_7, nu si serie/numar/data (radacina secundara,
+gard recomandat). Un singur commit prin poarta verde; doar 4163; 1968 neatins. Detalii: DECIZII/GARZI tura 26.

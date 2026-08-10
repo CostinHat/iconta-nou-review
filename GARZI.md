@@ -2532,3 +2532,20 @@ Toate cu MUTATIE pe HEAD c9869a1 (pre-fix) + re-validare DUKIntegrator pe date P
   se afla in lista".
 - core/test_d112_carantina_c2.py: cod 07 carantina -> C2_213=3, C2_215=714, C2_212=C2_213+C2_214. MUTATIE:
   cod vechi C2_213 OMIS (pica); DUK before = erori A49c/A43d.2/A49e.
+
+## 10.08.2026 (tura 26) — 10 garzi: reparate deciziile §6 (Costin). Toate MUTATIE pe HEAD 6cd0054 + DUK populat.
+- core/test_d112_asiguratd_zerobase.py: D_1/D_2/D_5/D_6/D_7 gol -> ValueError (numeste salariatul). MUTATIE: HEAD
+  5 failed (nu ridica, emitea gol); dupa fix 6 passed. + cele 4 fixtures din test_pull_declaratii.py reparate
+  (serie/numar/date realiste) - suita d112 verde cu refuzul activ.
+- core/test_d205_divid_platit.py: divid_D=distribuit(credit457), divid_P=platit(debit457). MUTATIE: HEAD divid_P=0.
+- core/test_d205_rezid_derivat.py: nerezident dividende (CNP prima cifra 9) -> ValueError (DUK regula R32/R33).
+  MUTATIE: HEAD nu ridica (emitea Rezid="1").
+- core/test_d300_taxare_inversa_beneficiar.py: achizitie taxare inversa -> R12_1/R12_2 + R25_1/R25_2 net-zero +
+  gard anti-dubla-numarare. MUTATIE: HEAD chei absente (aruncata tacit).
+- core/test_d300_zero_rate.py: achizitie 0% -> R26_1; livrare 0% -> avertisment per-linie cu suma. MUTATIE: HEAD
+  6/8 failed (fara R26_1, agregat).
+- core/test_d301_pers_inreg.py: inreg_art317=True -> pers_inreg "2". MUTATIE: HEAD "1" (ramura moarta).
+- core/test_d394_manual_codpr.py: manual C(deseuri->22)/V(cereale 1005) -> op11 emis. MUTATIE: HEAD op11 gol.
+- core/test_d394_prsafiliat.py: are_operatiuni_afiliate=True -> prsAfiliat "1". MUTATIE: HEAD mereu "0".
+- core/test_d406_taxcode_nota.py: GL/Payment TaxCode = 380304 (nu "300"). MUTATIE: HEAD "300".
+- core/test_d406_master_pf.py: PF tip-04 in <Suppliers>/<Customers>. MUTATIE: HEAD blocuri goale.
