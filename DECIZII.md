@@ -8335,3 +8335,15 @@ din tura N ramane valida"+de ce). Reguli PREDARE: se SUPRASCRIE (stare curenta, 
 contine in ordine four-way ultima executie (SHA+ora), fronturi deschise cu blocaj, ce e in lucru, ce urmeaza; daca
 niciun front nu s-a miscat, ramane neatins DAR raportul o spune explicit. Backup CLAUDE.md.bak inainte, cu assert pe
 ancora (4 ancore, fiecare cu o singura aparitie).
+
+## 09.08.2026 — /raportari: filtrul de AUTOR coborat in SQL (aparare de date sub garda de ruta)
+
+Audit 3de694e poz.4: /raportari/{rid} + /{rid}/citit aveau SQL nefiltrat pe proprietar; apararea statea intr-un
+singur strat (ruta). Clasa D300 mort (aparare intr-un strat cedeaza tacut). PUNCT DE OPRIRE ridicat: garda actuala
+e pe AUTOR (raportare vizibila DOAR autorului), nu pe cabinet; cabinetul ar fi strict mai larg. DECIZIE Costin: NU
+se relaxeaza la cabinet - filtrul de AUTOR coboara in SQL (firul_complet primeste cerut_de_uid + e_superadmin;
+non-superadmin -> AND autor_id=cerut_de_uid), sub garda de ruta care RAMANE. Data-layer = ruta (autor), zero
+relaxare de vizibilitate. ALTERNATIVE RESPINSE: filtru de cabinet in SQL (mai larg decat autorul); relaxare la
+cabinet-vizibil (schimba ce vede contabilul). Gap /raportari/{rid}/citit (marcheaza_citit fara check proprietar ->
+orice user marca citit pe fir strain, dovedit 200 pe cod vechi) - INTRAT in acelasi lot (check proprietar pe ruta).
+/raportari/admin ramane superadmin (global by design; apararea = gate-ul superadmin). Gard: test_izolare_raportari.

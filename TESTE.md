@@ -1372,3 +1372,8 @@ Cluster CM+pull: 56 passed.
 
 ## 09.08.2026 (tura 17) — Mesaje solduri cu diacritice
 - core/test_solduri_api.py::test_mesajele_balanta_valida_au_diacritice: cele 3 motive balanta_valida au diacritice RO.
+
+## 09.08.2026 (tura 19) — Gard izolare /raportari (aparare de date)
+- core/test_izolare_raportari.py::test_fir_alt_cabinet_da_404_nu_403: sesiune A pe fir B -> 404 (nu 403). Mutatie: firul_complet nefiltrat -> 403.
+- core/test_izolare_raportari.py::test_citit_alt_cabinet_da_404: /citit pe fir B -> 404. Mutatie: fara check proprietar -> 200.
+- core/test_izolare_raportari.py::test_autorul_isi_vede_firul: control pozitiv, autorul vede firul (200).

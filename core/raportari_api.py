@@ -200,16 +200,23 @@ def toate_raportarile(conn):
     return {"ok": True, "raportari": fire}
 
 
-def firul_complet(conn, raportare_id):
-    """Un fir cu toate mesajele (pt admin sau pt detaliu)."""
+def firul_complet(conn, raportare_id, cerut_de_uid=None, e_superadmin=False):
+    """Un fir cu toate mesajele (pt admin sau pt detaliu).
+    [izolare_raportari 09.08.2026] Aparare de DATE sub garda de ruta (care RAMANE): daca cerut_de_uid
+    e dat si NU superadmin, SQL adauga AND autor_id=cerut_de_uid -> data-layer = garda pe AUTOR, FARA
+    relaxare la cabinet. Fara context (apel superadmin/intern) ramane pe id. Vezi test_izolare_raportari.py."""
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(
+        _baza = (
             "SELECT r.id, r.subiect, r.stare, r.autor_id, "
             "       u.prenume, u.nume, u.email, af.nume AS cabinet "
             "  FROM public.raportari r "
             "  LEFT JOIN public.users u ON u.id = r.autor_id "
             "  LEFT JOIN public.accounting_firms af ON af.id = r.cabinet_id "
-            " WHERE r.id = %s", (raportare_id,))
+            " WHERE r.id = %s")
+        if cerut_de_uid is not None and not e_superadmin:
+            cur.execute(_baza + " AND r.autor_id = %s", (raportare_id, cerut_de_uid))
+        else:
+            cur.execute(_baza, (raportare_id,))
         f = cur.fetchone()
         if not f:
             return {"ok": False, "cod": "INEXISTENT"}

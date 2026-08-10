@@ -5214,7 +5214,7 @@ def raportari_admin(ctx=Depends(cere_cabinet)):
 @app.get("/raportari/{rid}")
 def raportari_fir(rid: int, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
-        r = _rap.firul_complet(conn, rid)
+        r = _rap.firul_complet(conn, rid, cerut_de_uid=ctx["uid"], e_superadmin=(ctx["rol"] == "superadmin"))
         if not r.get("ok"):
             raise HTTPException(404, mesaj_din_cod(r.get("cod")))
         # acces: autorul firului sau superadmin
@@ -5229,7 +5229,7 @@ def raportari_mesaj(rid: int, date: MesajIn, ctx=Depends(cere_cabinet)):
     with db.get_conn() as conn:
         # utilizatorul poate scrie doar in firele lui
         if rol_autor == "utilizator":
-            f = _rap.firul_complet(conn, rid)
+            f = _rap.firul_complet(conn, rid, cerut_de_uid=ctx["uid"], e_superadmin=False)
             if not f.get("ok"):
                 raise HTTPException(404, "Inexistent.")
             if f["raportare"]["autor_id"] != ctx["uid"]:
@@ -5244,6 +5244,11 @@ def raportari_mesaj(rid: int, date: MesajIn, ctx=Depends(cere_cabinet)):
 def raportari_citit(rid: int, ctx=Depends(cere_cabinet)):
     cine_rol = "admin" if ctx["rol"] == "superadmin" else "utilizator"
     with db.get_conn() as conn:
+        # [izolare_raportari 09.08.2026] utilizatorul marcheaza citit DOAR firele lui (nu ale altui cabinet)
+        if cine_rol == "utilizator":
+            f = _rap.firul_complet(conn, rid, cerut_de_uid=ctx["uid"], e_superadmin=False)
+            if not f.get("ok"):
+                raise HTTPException(404, "Inexistent.")
         return _rap.marcheaza_citit(conn, rid, cine_rol)
 
 

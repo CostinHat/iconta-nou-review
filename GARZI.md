@@ -2466,3 +2466,9 @@ core/test_solduri_api.py::test_mesajele_balanta_valida_au_diacritice: fiecare mo
 macar o diacritica RO. Mutatie: mesaj rescris fara diacritice -> pica. NU e gard de clasa pe diacritice (ar da
 fals-pozitive pe .py: docstring/comentarii/scripturi migrare/SQL/termeni tehnici/citate legale) - vezi DECIZII.
 Regula "diacritice" din verificator ramane frontend-only (.js) prin design.
+
+## 09.08.2026 (tura 19) — Gard izolare pe /raportari (aparare de date, nu doar ruta)
+core/test_izolare_raportari.py: sesiune HTTP reala cabinet A -> fir/citit al cabinetului B -> 404 (data-layer
+refuza); control pozitiv: autorul isi vede firul (200). MUTATIE PROBATA pe cod vechi (firul_complet nefiltrat +
+/citit fara check): test_fir_alt_cabinet_da_404_nu_403 -> 403 (pica), test_citit_alt_cabinet_da_404 -> 200 (pica);
+dupa fix -> 3 passed. Efemer (firme/useri/raportare pe conn din pool, get_conn monkeypatch cu SAVEPOINT), rollback.

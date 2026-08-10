@@ -3748,3 +3748,12 @@ Modificat CLAUDE.md §2.3 pct.10 (PATRU->CINCI pasi; pas 5 = predare PREDARE_LAN
 curenta, four-way+fronturi+in-lucru+urmeaza, neatins daca niciun front nu s-a miscat) + §2.2 pct.11 (PREDARE_LANT
 listat intotdeauna, doua valori). Rescris PREDARE_LANT.md pe starea de la d217981 (four-way tura 17 + 4 fronturi
 deschise: test fir intrare cabinet 4163, E3_97, D101 scadenta lege-vs-validator, descoperiri date-test). Doc-only.
+
+## 09.08.2026 (tura 19) — /raportari: filtru de autor coborat in SQL + gap /citit inchis (clasa D300 mort)
+
+Audit 3de694e poz.4: /raportari/{rid}+/{rid}/citit cu SQL nefiltrat, aparare intr-un singur strat (ruta). Punct de
+oprire: garda e pe AUTOR, nu cabinet -> decizie Costin: AUTOR in SQL (nu relaxare la cabinet), sub garda de ruta
+care ramane. firul_complet primeste cerut_de_uid+e_superadmin (non-superadmin -> AND autor_id). Rutele /{rid} si
+/{rid}/mesaj paseaza contextul; /{rid}/citit primeste check de proprietar (gap dovedit: cod vechi marca citit fir
+strain, 200). /admin ramane superadmin. Gard nou test_izolare_raportari (HTTP real; mutatie: cod vechi 2 failed,
+cod nou 3 passed). Vezi DECIZII/GARZI.
