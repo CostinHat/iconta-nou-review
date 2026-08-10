@@ -875,3 +875,343 @@ def constatare_cota_tva(linii, an, luna):
     return {"an": an, "luna": luna, "stare": "rosu", "constatari": [constatare],
             "explicatie": f"{n} facturi emise cu cotă TVA neconformă perioadei.",
             "limita": limita, "modul": MODUL, "reguli": REGULI}
+
+
+# ============================================================
+#  RECONCILIERE SURSA <-> DECLARATIE, VIZIBILA IN CONTROL FISCAL (Tura 4, 10.08.2026)
+#
+#  CE E: ACEEASI reconciliere care ruleaza ca POARTA la generare (dXXX.genereaza cheama
+#  dXXX_reconciliere.verifica_reconciliere, care RIDICA pe divergenta) - expusa AICI ca verdict
+#  cu trei stari, ca sa se VADA in Control fiscal. NU un mecanism duplicat: refolosim FORMA care
+#  NU ridica (dXXX_reconciliere.reconciliaza), identica cu ce cheama poarta; recalculul independent
+#  din sursa NU se reimplementeaza - traieste o singura data, in dXXX_reconciliere.
+#
+#  res se produce prin functiile GENERATORULUI, read-only, pe calea GATE-FREE (pull + calcul_*,
+#  ori d390.calculeaza / d112._d112_genereaza / d406.construieste) - exact ce face genereaza INAINTE
+#  de poarta. NU chemam genereaza insasi, fiindca poarta ei ar RIDICA pe divergenta INAINTE sa
+#  intoarca res, iar noi vrem raportul STRUCTURAT (care numeste AMBELE valori), nu o exceptie-string
+#  colapsata (regula verificator VERDICT_COLAPSAT).
+#
+#  ANTI-"D300 mort" (lectia core/test_control_incrucisat_wiring.py): un apel rupt prin deriva de
+#  semnatura / bug de cod NU trebuie inghitit tacit intr-un gri (acolo a murit tacit cross-check-ul
+#  TVA: except Exception -> gri, verdict permanent gri). Distingem MECANIC, in doi pasi separati:
+#    1. res nu se poate PRODUCE fiindca lipsesc date/profil -> generatorul ridica ValueError
+#       ("nu se poate genera") -> GRI genuin ("nu pot verifica"), cu temei.
+#    2. reconciliaza (recalculul) RIDICA ORICE -> contractul ei e sa NU ridice, deci e RUPTA
+#       (deriva/bug) -> ROSU ZGOMOTOS "verificare intrerupta", NICIODATA gri.
+#    Orice ALTA exceptie la producerea res (TypeError/AttributeError = deriva) -> tot ROSU rupt.
+#  Divergenta reala (recalcul != generator) -> ROSU care NUMESTE AMBELE VALORI.
+# ============================================================
+
+class _SkipSubiect(Exception):
+    """Semnal INTERN: declaratia nu are subiect in perioada (D100 pe zero, D205 fara dividende,
+    D301 fara operatiuni) -> nimic de reconciliat, se SARE tacut (nu verde fara subiect, nu gri)."""
+
+
+# ---- producere res GATE-FREE + thunk de reconciliere (aceeasi reconciliaza ca poarta) ------------
+def _thunk_d300(conn, schema, an, luna):
+    from core import d300 as _g, d300_reconciliere as _r
+    from core.common import Perioada
+    per = Perioada(an, luna=luna)
+    prof, facturi = _g.pull(conn, schema, per)
+    res = _g.calcul_d300(prof, per, facturi, None)
+    return lambda: _r.reconciliaza(conn, per, res, None)
+
+
+def _thunk_d394(conn, schema, an, luna):
+    from core import d394 as _g, d394_reconciliere as _r
+    from core.common import Perioada
+    per = Perioada(an, luna=luna)
+    prof, date = _g.pull(conn, schema, per)
+    res = _g.calcul_d394(prof, per, date, None)
+    return lambda: _r.reconciliaza(conn, per, res, None)
+
+
+def _thunk_d301(conn, schema, an, luna):
+    from core import d301 as _g, d301_reconciliere as _r
+    from core.common import Perioada
+    per = Perioada(an, luna=luna)
+    prof, ops = _g.pull(conn, schema, per)
+    res = _g.calcul_d301(prof, per, ops)
+    return lambda: _r.reconciliaza(conn, per, res)
+
+
+def _thunk_d390(conn, schema, an, luna):
+    from core import d390 as _g, d390_reconciliere as _r
+    res = _g.calculeaza(conn, schema, an, luna)   # calculeaza = gate-free (fara poarta zero, prin design)
+    return lambda: _r.reconciliaza(conn, schema, an, luna, res)
+
+
+def _thunk_d406(conn, schema, an, luna):
+    from core import d406 as _g, d406_reconciliere as _r
+    pulled = _g.pull(conn, schema, an, luna)
+    prof, conturi, clienti, furnizori, note, fv, fc, plati = pulled[:8]
+    res = _g.construieste(prof, an, luna, conturi, clienti, furnizori, note=note,
+                          facturi_vanzare=fv, facturi_cumparare=fc, plati=plati)
+    return lambda: _r.reconciliaza(conn, schema, an, luna, res)
+
+
+def _thunk_d112(conn, schema, an, luna):
+    from core import d112 as _g, d112_reconciliere as _r
+    prof, salariati = _g.pull(conn, schema, an, luna)
+    _g._d112_genereaza(prof, salariati, an, luna)   # scrie contributiile EMISE inapoi in salariati
+    return lambda: _r.reconciliaza(conn, schema, an, luna, salariati)
+
+
+def _thunk_d100(conn, schema, an, luna):
+    from core import d100 as _g, d100_reconciliere as _r
+    from core.common import Perioada
+    per = Perioada(an, trim=(luna - 1) // 3 + 1)
+    a2, l2 = per.an, per.trim * 3
+    prof, venituri = _g.pull(conn, schema, per)
+    regim = (prof.get("regim_fiscal") or "").strip().lower()
+    obligatii = []   # replica orchestrarii din d100.genereaza (fara poarta); NU inventeaza cote
+    if regim == "micro":
+        c = _g._rata_impozit_default("micro", a2, l2)
+        suma = _g._i(Decimal(str(venituri)) * c / Decimal(100))
+        if suma > 0:
+            obligatii.append({"cod_oblig": "121", "suma_dat": suma, "cota": "1"})
+    elif regim == "profit":
+        c = _g._rata_impozit_default("profit", a2, l2)
+        suma = _g._i(Decimal(str(venituri)) * c / Decimal(100))
+        if suma > 0:
+            obligatii.append({"cod_oblig": "103", "suma_dat": suma})
+    if not obligatii:
+        raise _SkipSubiect("D100 fara obligatie (venituri cont 70x = 0) - nimic de reconciliat.")
+    res = _g.calcul_d100(prof, a2, l2, obligatii)
+    return lambda: _r.reconciliaza(conn, per, res, None)
+
+
+def _thunk_d101(conn, schema, an, luna):
+    from core import d101 as _g, d101_reconciliere as _r
+    from core.common import Perioada
+    per = Perioada(an)
+    prof, r = _g.pull(conn, schema, per)
+    intrari = {"P1": r.get("ven_expl", 0), "P2": r.get("chelt_expl", 0),
+               "P4": r.get("ven_fin", 0), "P5": r.get("chelt_fin", 0)}
+    res = _g.calcul_d101(prof, per.an, intrari,
+                         rezerva={"capital": r.get("capital", 0),
+                                  "rezerva_existenta": r.get("rezerva_existenta", 0),
+                                  "chelt_impozit": r.get("chelt_impozit", 0)})
+    return lambda: _r.reconciliaza(conn, schema, per, res, None)
+
+
+def _thunk_d205(conn, schema, an, luna):
+    from core import d205 as _g, d205_reconciliere as _r
+    from core.common import Perioada, cota as _cota
+    from datetime import date as _date
+    per = Perioada(an)
+    prof, asoc, total_distribuit, total_platit = _g.pull(conn, schema, per)
+    beneficiari = []   # replica derivarii automate din d205.genereaza (fara poarta)
+    if total_platit > 0 and asoc:
+        cd = _cota("impozit_dividend", _date(per.an, 12, 31))[0]   # period-aware, din registrul de lege
+        for a in asoc:
+            platit = _g._i(Decimal(str(total_platit)) * Decimal(str(a["cota"])) / Decimal(100))
+            distribuit = _g._i(Decimal(str(total_distribuit)) * Decimal(str(a["cota"])) / Decimal(100))
+            if platit > 0:
+                impozit = _g._i(Decimal(platit) * cd)
+                beneficiari.append({"categ": "1.a", "nume": a["nume"], "cif": a.get("cnp") or "",
+                                    "baza": platit, "imp": impozit, "castig": 0, "pierdere": 0,
+                                    "divid_d": max(distribuit, platit), "divid_p": platit, "tip_plata": "2"})
+    if not beneficiari:
+        raise _SkipSubiect("D205 fara dividende platite (cont 457) - nimic de reconciliat.")
+    res = _g.calcul_d205(prof, per.an, beneficiari)
+    return lambda: _r.reconciliaza(conn, schema, per, res, None)
+
+
+# ---- descriere STRUCTURATA a divergentei (numeste AMBELE valori, prin _lei) ----------------------
+def _descrie_div(d):
+    """Un rand de divergenta de reconciliere -> propozitie care NUMESTE ambele valori (declarat vs
+    recalcul din sursa). Acopera formele tuturor celor 9 reconciliatoare (rand/camp/cont/beneficiar...)."""
+    ce = (d.get("eticheta") or d.get("camp") or d.get("rand") or d.get("sectiune"))
+    if not ce and d.get("cont"):
+        ce = "cont %s %s" % (d.get("cont"), d.get("latura"))
+    if not ce and d.get("salariat") is not None:
+        ce = "salariat %s" % d.get("salariat")
+    if not ce and d.get("beneficiar"):
+        ce = "beneficiar %s" % d.get("beneficiar")
+    ce = ce or "valoare"
+    gen = d.get("generator")
+    if gen is None:
+        gen = d.get("saft")
+    c2 = d.get("cale2")
+    if c2 is None:
+        c2 = d.get("cale2_imp")
+    if gen is not None and c2 is not None:
+        return "%s: declarat %s, recalcul din sursa %s (diferenta %s)." % (
+            ce, _lei(gen), _lei(c2), _lei(_d(gen) - _d(c2)))
+    if d.get("cale2_baza") is not None:
+        return "%s: lipseste din declaratie; recalcul din sursa baza %s, impozit %s." % (
+            ce, _lei(d.get("cale2_baza")), _lei(d.get("cale2_imp") or 0))
+    return "%s: divergenta intre declaratie si recalculul independent din sursa." % ce
+
+
+# ---- constructori de constatare (anatomia control_incrucisat: stare + eticheta + mesaj + temei) --
+def _c_verde(cheie, eticheta, temei):
+    return {"declaratie": cheie, "stare": "verde", "eticheta": eticheta,
+            "mesaj": "Declaratia se reconciliaza cu sursa - recalculul independent confirma valorile.",
+            "temei": temei, "remediu": None}
+
+
+def _c_rosu(cheie, eticheta, temei, mesaj):
+    return {"declaratie": cheie, "stare": "rosu", "eticheta": eticheta, "mesaj": mesaj, "temei": temei,
+            "remediu": {"fel": "investigatie",
+                        "cauza": "Recalculul independent din sursa NU confirma valoarea declarata.",
+                        "actiune": ("Verifica agregarea si datele sursa - gardul nu alege singur cine are "
+                                    "dreptate. ACEEASI reconciliere blocheaza generarea declaratiei la depunere."),
+                        "facturi": []}}
+
+
+def _c_gri(cheie, eticheta, temei, motiv):
+    return {"declaratie": cheie, "stare": "gri", "eticheta": eticheta,
+            "mesaj": "NU pot reconcilia %s: %s" % (eticheta, motiv), "temei": temei,
+            "remediu": {"fel": "investigatie", "cauza": "Date sau profil fiscal incomplet.",
+                        "actiune": "Completeaza datele firmei si reincearca.", "facturi": []}}
+
+
+def _c_rupt(cheie, eticheta, e):
+    """ANTI-"D300 mort": verificarea s-a RUPT (bug/deriva de semnatura), NU e "nu pot verifica" (gri).
+    Se semnaleaza ROSU ZGOMOTOS, ca sa nu redevina un verdict permanent gri, ascuns."""
+    return {"declaratie": cheie, "stare": "rosu",
+            "eticheta": eticheta + " - VERIFICARE INTRERUPTA",
+            "mesaj": ("Reconcilierea %s s-a oprit cu o eroare (%s: %s) - NU e 'date lipsa', ci verificare "
+                      "RUPTA. Semnalat ROSU, nu ascuns gri (lectia D300 mort)." % (eticheta, type(e).__name__, e)),
+            "temei": ("Contractul reconciliere: recalculul (reconciliaza) NU ridica; daca ridica, e deriva de "
+                      "semnatura / bug de cod. Un except->gri l-ar ascunde ca verdict permanent gri - vezi "
+                      "core/test_control_incrucisat_wiring.py."),
+            "remediu": {"fel": "investigatie", "cauza": "Cod / semnatura reconciliere rupta.",
+                        "actiune": "Verifica semnatura apelului de reconciliere pentru aceasta declaratie.",
+                        "facturi": []}}
+
+
+def _interpreteaza(cheie, eticheta, temei, rap):
+    """Raportul (non-raising) al reconciliatorului -> constatare cu trei stari. Rosu numeste AMBELE valori."""
+    div = list(rap.get("divergente") or [])
+    susp = list(rap.get("suspecte") or [])     # D112: date corupte pe angajat emis (loud, nu tacut)
+    dez = rap.get("dezechilibru")              # D406: dubla partida dezechilibrata
+    if div or susp or dez:
+        parti = [_descrie_div(d) for d in div[:6]]
+        for s in susp[:6]:
+            parti.append("salariat %s: %s (date suspecte, nu caz fiscal legitim)." % (s.get("salariat"), s.get("motiv")))
+        if dez:
+            parti.append("dubla partida dezechilibrata in declaratie: debit %s vs credit %s (diferenta %s)."
+                         % (_lei(dez["debit"]), _lei(dez["credit"]), _lei(dez["diferenta"])))
+        return _c_rosu(cheie, eticheta, temei, eticheta + ": " + " ".join(parti))
+    if rap.get("acoperit") is False and rap.get("motiv"):
+        return _c_gri(cheie, eticheta, temei, rap["motiv"])   # reconcilierea nu se APLICA (limita declarata)
+    return _c_verde(cheie, eticheta, temei)
+
+
+def _ruleaza_una(conn, schema, cheie, eticheta, thunk_builder, an, luna):
+    """Ruleaza O reconciliere cu clasificarea anti-"D300 mort" (vezi capul sectiunii). Nu ridica."""
+    temei = ("Aceeasi reconciliere sursa<->declaratie care blocheaza generarea (%s vs recalcul independent "
+             "din sursa, core/%s_reconciliere.py); expusa aici ca verdict, NU mecanism nou." % (eticheta, cheie))
+    # PASUL 1 - producerea res (functiile generatorului, read-only). ValueError = "nu se poate genera"
+    # (date/profil) -> gri genuin; orice altceva = deriva/bug -> ROSU rupt (nu gri).
+    try:
+        thunk = thunk_builder(conn, schema, an, luna)
+    except _SkipSubiect:
+        return None
+    except ValueError as e:
+        return _c_gri(cheie, eticheta, temei, str(e))
+    except Exception as e:
+        return _c_rupt(cheie, eticheta, e)
+    # PASUL 2 - recalculul independent (reconciliaza). Contractul ei e sa NU ridice: ORICE exceptie aici
+    # e o RUPTURA (deriva de semnatura = exact bug-ul D300 mort) -> ROSU, NICIODATA gri.
+    try:
+        rap = thunk()
+    except Exception as e:
+        return _c_rupt(cheie, eticheta, e)
+    return _interpreteaza(cheie, eticheta, temei, rap)
+
+
+def _vector_firma(conn, schema):
+    """Vectorul fiscal (regim/platitor/decont/IC/partida) + are_salariati - o singura citire, calificata
+    pe schema. FARA default fiscal inline (fiecare camp e citit ca FAPT; partida din regim_contabil)."""
+    from core.migrare_api import regim_contabil
+    vector = {}
+    with conn.cursor() as cur:
+        cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, tip_firma "
+                    "FROM %s.firma_profil LIMIT 1" % schema)
+        row = cur.fetchone()
+        if row:
+            vector = {"regim_fiscal": row[0], "platitor_tva": row[1], "tip_decont": row[2],
+                      "operatiuni_ic": row[3], "tip_firma": row[4],
+                      "partida_simpla": regim_contabil(row[4]) == "simpla"}
+        cur.execute("SELECT to_regclass(%s)", (schema + ".salariati",))
+        are_sal = False
+        if cur.fetchone()[0]:
+            cur.execute("SELECT count(*) FROM %s.salariati WHERE "
+                        "(data_incetare IS NULL OR data_incetare >= CURRENT_DATE) AND "
+                        "(data_angajare IS NULL OR data_angajare <= CURRENT_DATE)" % schema)
+            are_sal = cur.fetchone()[0] > 0
+    return vector, are_sal
+
+
+def _d301_are_ops(conn, schema, an, luna):
+    """D301 se reconciliaza doar daca luna are operatiuni IC inregistrate (altfel n-are subiect)."""
+    try:
+        return luna in d301_luni_operatiuni(conn, schema, an)
+    except Exception:
+        return False
+
+
+def reconciliaza_declaratii(conn, schema, an, luna):
+    """SUPRAFATA UNIFICATA: reconciliere SURSA <-> DECLARATIE pentru toate declaratiile APLICABILE firmei,
+    cu trei stari (verde/rosu/gri), refolosind ACEEASI reconciliere ca poarta de generare (vezi capul
+    sectiunii). Nu ridica. Perioadele: lunare/TVA pe (an, luna); D100 pe trimestrul lunii; D101/D205 pe
+    anul `an`. Intoarce {an, luna, stare, constatari:[...structurate...], explicatie, limita, modul, reguli}."""
+    vector, are_sal = _vector_firma(conn, schema)
+    platitor = vector.get("platitor_tva")
+    regim = (vector.get("regim_fiscal") or "").strip().lower()
+    partida_simpla = vector.get("partida_simpla")
+    operatiuni_ic = vector.get("operatiuni_ic")
+
+    plan = []   # (cheie, eticheta, thunk_builder) - DOAR declaratiile aplicabile pe vector/fapt
+    if platitor is True:
+        plan.append(("d300", "D300 (decont TVA)", _thunk_d300))
+        plan.append(("d394", "D394 (informativa TVA)", _thunk_d394))
+        if operatiuni_ic is True:
+            plan.append(("d390", "D390 (recapitulativa IC)", _thunk_d390))
+    if platitor is False and _d301_are_ops(conn, schema, an, luna):
+        plan.append(("d301", "D301 (TVA neinregistrati)", _thunk_d301))
+    if are_sal:
+        plan.append(("d112", "D112 (salarii)", _thunk_d112))
+    if not partida_simpla:
+        plan.append(("d406", "D406 (SAF-T)", _thunk_d406))
+        if regim in ("micro", "profit"):
+            plan.append(("d100", "D100 (impozit micro/profit)", _thunk_d100))
+        if regim == "profit":
+            plan.append(("d101", "D101 (impozit pe profit)", _thunk_d101))
+        plan.append(("d205", "D205 (impozit dividende)", _thunk_d205))
+
+    constatari = []
+    for cheie, eticheta, tb in plan:
+        c = _ruleaza_una(conn, schema, cheie, eticheta, tb, an, luna)
+        if c is not None:
+            constatari.append(c)
+
+    if any(c["stare"] == "rosu" for c in constatari):
+        stare = "rosu"
+    elif any(c["stare"] == "gri" for c in constatari):
+        stare = "gri"
+    else:
+        stare = "verde"
+
+    n_rosu = sum(1 for c in constatari if c["stare"] == "rosu")
+    n_gri = sum(1 for c in constatari if c["stare"] == "gri")
+    parti = []
+    if n_rosu:
+        parti.append("%d declaratie(i) NU se reconciliaza cu sursa" % n_rosu)
+    if n_gri:
+        parti.append("%d nu au putut fi verificate" % n_gri)
+    explicatie = ("; ".join(parti) + ".") if parti else ""
+    return {"an": an, "luna": luna, "stare": stare, "constatari": constatari,
+            "explicatie": explicatie,
+            "limita": ("Reconciliere sursa<->declaratie pentru declaratiile aplicabile firmei, cu ACEEASI "
+                       "reconciliere care blocheaza generarea (dXXX_reconciliere.reconciliaza - recalcul "
+                       "independent din sursa). Verde=recalculul confirma; rosu=divergenta (ambele valori "
+                       "numite) sau verificare rupta; gri=nu pot verifica (date/profil lipsa). NEVERIFICAT: "
+                       "declaratiile fara subiect in perioada (sarite tacut, nu verde fals). Perioade: TVA/"
+                       "salarii/SAF-T pe luna; D100 pe trimestru; D101/D205 pe an."),
+            "modul": MODUL, "reguli": REGULI}

@@ -1433,3 +1433,13 @@ Cluster CM+pull: 56 passed.
 - D394: test_d394_partener_cui_litere, test_d394_cuip_checksum, test_d394_op1_fara_op11.
 - D406: test_d406_cui_checksum, test_d406_cnp_tert, test_d406_coercitie_t3, test_d406_accounttype_wired.
 - D710: test_d710_t9_parsare, test_d710_t1_cui, test_d710_nomenclator_manual, test_d710_cod131_132, test_d710_sume_negative.
+
+## 10.08.2026 (tura 30) — Garzi TURA 4 (reconciliere sursa-vs-declaratie + meta-gard)
+- core/test_reconciliere_vie.py: meta-gard "nicio reconciliere nu moare tacit" (9/9, AST).
+- core/test_d100_reconciliere.py: D100 baza din cont 70x vs suma_dat (aggregation-loss).
+- core/test_d301_reconciliere.py: D301 baza din d301_operatiuni (RON curs 1) vs res.
+- core/test_d390_reconciliere.py: D390 baza+nrOPI din facturi IC vs res (Layer-1 gen-gate).
+- core/test_d205_imp_manual.py: D205 imp1 manual = rate×baza (d1).
+- core/test_d300_r25_r12.py: D300 R25=R12 (V19/V20 neimpus de DUK).
+- core/test_d710_suma_ded.py: D710 suma_ded (121 aplicat / 103 blocat).
+- core/test_control_reconciliere_vizibila.py: reconciliere vizibila in Control fiscal (acelasi mecanism, anti-mort).

@@ -48,12 +48,38 @@ def _dividende_independent(conn, an):
     return total_div, asoc
 
 
+def _consistenta_interna(perioada, res):
+    """d1 (CATALOG): regula fiscala INTERNA per beneficiar - imp1 == round(cota_dividend x baza1).
+    DUK-INVIZIBILA: validatorul verifica doar Timp=Σimp1 (totalul), NU cota per beneficiar, deci un
+    imp1 individual gresit trece DUK. Se aplica si beneficiarilor MANUALI (fara sursa in 457): NU
+    recalculeaza baza dintr-un ledger (nu exista), confrunta doar cele doua campuri DEJA din
+    declaratie intre ele. Cota din registrul de lege, period-aware - ACEEASI sursa ca d205
+    (common.cota('impozit_dividend')). Toleranta rotunjire: 1 leu (imp1 introdus manual poate diferi
+    de round() prin conventia de rotunjire a contabilului; o abatere >1 leu = eroare, nu rotunjire)."""
+    an = perioada.an
+    from core import common as _c   # registrul de lege (cota impozit dividende period-aware)
+    cota_div = Decimal(str(_c.cota("impozit_dividend", date(an, 12, 31))[0]))
+    divergente = []
+    for b in res.beneficiari:
+        asteptat = _q(Decimal(int(b.baza1)) * cota_div)
+        if abs(int(b.imp1) - asteptat) > 1:
+            divergente.append({"beneficiar": b.cif or b.nume1, "camp": "consistenta_interna",
+                               "imp1": int(b.imp1), "rate_baza": asteptat})
+    return divergente
+
+
 def reconciliaza(conn, schema, perioada, res, manual=None):
     """NU ridica. {"acoperit":bool, "motiv":str|None, "divergente":[...]}."""
     manual = manual or {}
     if manual.get("beneficiari"):
-        return {"acoperit": False, "divergente": [],
-                "motiv": "beneficiari introdusi manual de contabil (§8) - recalculul din 457 nu se aplica."}
+        # d1 (CATALOG): beneficiari MANUALI - recalculul din 457 NU se aplica (nicio sursa in
+        # registru), DAR imp1 trebuie sa ramana round(cota_dividend x baza1) - regula fiscala
+        # INTERNA, invizibila DUK. acoperit ramane False (§8: baza NU e recalculata dintr-o sursa
+        # independenta), dar divergentele de consistenta interna se raporteaza (ridica in
+        # verifica_reconciliere). Inainte: return divergente=[] TACIT -> imp1 gresit trecea + DUK valid.
+        return {"acoperit": False, "divergente": _consistenta_interna(perioada, res),
+                "motiv": "beneficiari introdusi manual de contabil (§8) - recalculul din 457 nu se "
+                         "aplica; verificata DOAR consistenta interna imp1=round(cota_dividend x baza1)."}
     an = perioada.an
     from core import common as _c   # registrul de lege (cota impozit dividende period-aware)
     cota_div = Decimal(str(_c.cota("impozit_dividend", date(an, 12, 31))[0]))
@@ -85,13 +111,23 @@ def verifica_reconciliere(conn, schema, perioada, res, manual=None):
     rap = reconciliaza(conn, schema, perioada, res, manual)
     if rap["divergente"]:
         det = []
+        interne = all(d["camp"] == "consistenta_interna" for d in rap["divergente"])
         for d in rap["divergente"]:
-            if d["camp"].startswith("beneficiar LIPSA"):
+            if d["camp"] == "consistenta_interna":
+                det.append("beneficiar %s: imp1=%d dar rate×baza1=%d (dif %d)"
+                           % (d["beneficiar"], d["imp1"], d["rate_baza"], d["imp1"] - d["rate_baza"]))
+            elif d["camp"].startswith("beneficiar LIPSA"):
                 det.append("beneficiar %s: %s (cale2 baza=%d imp=%d)"
                            % (d["beneficiar"], d["camp"], d["cale2_baza"], d["cale2_imp"]))
             else:
                 det.append("beneficiar %s %s: generator=%d vs cale2=%d (dif %d)"
                            % (d["beneficiar"], d["camp"], d["generator"], d["cale2"], d["diferenta"]))
+        if interne:
+            raise ReconciliereD205(
+                "D205 CONSISTENTA INTERNA (d1): impozitul retinut (imp1) NU este round(cota_dividend "
+                "x baza1) pentru un beneficiar MANUAL - regula fiscala invizibila DUK (care verifica "
+                "doar Timp=Σimp1, nu cota per beneficiar). Divergente: %s. Declaratia NU se genereaza - "
+                "corecteaza imp1 sau baza1." % "; ".join(det))
         raise ReconciliereD205(
             "D205 A DOUA CALE: baza/impozitul pe dividende ale generatorului NU se leaga de recalculul "
             "independent din contul 457. Divergente: %s. Declaratia NU se genereaza - gardul nu alege "

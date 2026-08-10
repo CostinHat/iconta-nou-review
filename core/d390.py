@@ -31,6 +31,7 @@ from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text
 import re
 import datetime
 from core import common as c
+from core import d390_reconciliere as _recon  # POARTA a-doua-cale (recalcul independent sursa->declaratie)
 from core.identitate import valideaza_cui as _valideaza_cui  # T1: checksum CUI RO (partener/firma), sursa canonica (read-only)
 from dataclasses import dataclass, field
 from decimal import Decimal
@@ -530,6 +531,12 @@ def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):
     _er = valideaza(res)
     if _er:
         raise ValueError("D390 nu se poate genera (corecteaza si regenereaza):\n  - " + "\n  - ".join(_er))
+    # POARTA A DOUA CALE (10.08.2026): recalcul INDEPENDENT sursa->declaratie (core/d390_reconciliere,
+    # ca d300_reconciliere). Ruleaza DUPA valideaza (codO/tara/manual curate) si INAINTE de poarta-zero.
+    # Blocheaza emiterea daca generatorul a pierdut/mutat o operatiune intre facturi si <rezumat>
+    # (aggregation-loss) - DUK n-ar prinde-o (structura valida). Pe zero operatiuni: recalcul 0 == res 0,
+    # nu alarmeaza; poarta-zero de mai jos da mesajul corect.
+    _recon.verifica_reconciliere(conn, schema, an, luna, res, manual, reclasificari)
     # POARTA FISCALA (27.07.2026, verificat la sursa): D390 NU se depune pe zero.
     # OPANAF 705/2020, Instructiuni pct. 1.2: "Persoanele impozabile inregistrate in scopuri
     # de TVA depun declaratia recapitulativa NUMAI pentru lunile calendaristice in care ia

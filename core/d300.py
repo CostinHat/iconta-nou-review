@@ -554,6 +554,29 @@ def _avertismente_marja(res):
     return av
 
 
+def _oglinda_r12_r25(res):
+    """[Task4 CR-5/T8 10.08.2026] Cross-total: rd.12 (colectat, taxare inversa primita / masuri de
+    simplificare art.331) TREBUIE oglindit integral de rd.25 (deductibil) -> net zero.
+
+    Sursa oficiala (anaf_surse/d300_struct_anaf.txt): V_19 \"R25_1= R12_1\" (ERR: rd.25<>rd.12 col.1)
+    si V_20 \"R25_2= R12_2\" (ERR: rd.25<>rd.12 col.2). Auto-derivarea din facturi cu flag taxare_inversa
+    (calcul_d300) le seteaza deja egale; dar calea MANUALA poate pune R12 fara R25 (sau inegal/invers) ->
+    colectat supra-declarat, net != 0, TVA de plata umflata. Validatorul DUK INSTALAT nu impune V19/V20
+    (probat: R12 fara R25 = valid) si reconcilierea a-doua-cale SARE randurile manuale (limita 1) -> gard
+    propriu, la aceeasi poarta ca reconcilierea, ridicat inainte de build_xml (iesire catre autoritati).
+    Numeste AMBELE valori, nu repara tacit.
+    """
+    R = res.R
+    r12_1 = R.get("R12_1", 0); r25_1 = R.get("R25_1", 0)
+    r12_2 = R.get("R12_2", 0); r25_2 = R.get("R25_2", 0)
+    if r12_1 != r25_1 or r12_2 != r25_2:
+        raise ValueError(
+            "D300 oglinda taxare inversa rd.12<->rd.25 (masuri de simplificare): colectatul rd.12 trebuie "
+            "oglindit integral de deductibilul rd.25 (net zero). R12_1=%d vs R25_1=%d (col.1); "
+            "R12_2=%d vs R25_2=%d (col.2). DUK regula V19/V20 (neimpusa de validatorul instalat)."
+            % (r12_1, r25_1, r12_2, r25_2))
+
+
 def valideaza(res):
     """Verific\u0103 regulile ANAF. \u00centoarce lista COMPLET\u0102 (blocante + avertismente marj\u0103) - compat.
     erori_generare(prof) r\u0103m\u00e2ne sursa unic\u0103 pentru c\u00e2mpurile de profil.
@@ -713,6 +736,9 @@ def genereaza(conn, schema, perioada, manual=None):
     # POARTA A DOUA CALE (gard de continut, 05.08.2026): reconciliere pe totaluri dintr-un
     # recalcul INDEPENDENT al liniilor brute. Divergenta = eroare vizibila care numeste ambele
     # valori; NU repara tacit. Vezi core/d300_reconciliere.py + GARZI cat.4 (limita declarata).
+    # [Task4 CR-5/T8] OGLINDA rd.12<->rd.25 (DUK V19/V20, neimpusa de validatorul instalat; reconcilierea
+    # a-doua-cale sare randurile manuale) - poarta pe totaluri inainte de reconciliere si build_xml.
+    _oglinda_r12_r25(res)
     from core.d300_reconciliere import verifica_reconciliere
     verifica_reconciliere(conn, perioada, res, manual)
     _xml = build_xml(res)

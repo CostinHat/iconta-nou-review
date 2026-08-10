@@ -3875,3 +3875,18 @@ netrunchiat (nr_doc/serie/codO) -> blocat; T9 exceptii brute (D710) -> ValueErro
 conformitate D406 03+CNP. checksum_vies DE/HR/FR (verificat DUK). Baseline valid ramane DUK-valid la toate 10.
 Fixtures cu date invalide reparate (nu slabite garduri). Ramas TURA 4: T7/T8 (semantic + non-impunere DUK).
 Un singur commit; doar 4163; 1968 neatins. Detalii: DECIZII/GARZI tura 29 + CATALOG_INVALIDITATE.md.
+
+## 10.08.2026 (tura 30) — LANT legislatie TURA 4/4: reconcilierea sursa-vs-declaratie (capstone) + LANT COMPLET
+
+TURA 4 (finala). Confruntat cap-la-cap sursa pe perioada vs ce raporteaza declaratia. Completat reconcilierile
+gen-gate lipsa: D100 (baza din cont 70x), D301 (d301_operatiuni, regula RON curs 1), D390 (facturi IC) - recompute
+independent non-tautologic, cablat, cu probe anti-mort. Inchis gap-urile semantice T7/T8 pe care DUK nu le prinde:
+D205 imp1 manual≠rate×baza (d1), D300 R25=R12 (V19/V20 neimpus, CR-5), D710 suma_ded (implementat model 9#/blocat 8#,
+cu corectie de sursa non-circulara). META-GARD test_reconciliere_vie: nicio reconciliere nu mai poate muri tacit
+(9/9, AST mecanic - generalizeaza gardul tura 14). Control fiscal: reconciliaza_declaratii ruleaza ACEIASI
+reconcilieri (non-blocant), surfaceaza 3-state structurat + escaladeaza pastila; divergenta->ROSU numind ambele
+valori, apel rupt->ROSU "verificare intrerupta" (nu gri tacit). Baseline DUK-valid; doar 4163; 1968 neatins.
+
+LANT COMPLET (T1-4, turele 27-30): corpus legislatie la zi -> catalog invaliditate exhaustiv -> mesaj exact pre-DUK
+-> reconciliere sursa-vs-declaratie. "Declaratie invalida" si "declaratie valida care nu reflecta contabilitatea"
+prinse acum, nu tacit. Detalii: DECIZII tura 30 + CATALOG_INVALIDITATE.md.

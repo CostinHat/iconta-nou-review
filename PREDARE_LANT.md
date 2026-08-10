@@ -6,9 +6,9 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-Ultimul commit de COD: tura 29 (LANT legislatie TURA 3/4 - mesajul exact pre-DUK: validator identitate partajat
-+ reparatii pe toate 10 declaratiile). Four-way exact (SHA + ora) = in raportul turei 29. Anterior: tura 28 = 8b74ccb
-(CATALOG_INVALIDITATE). Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
+Ultimul commit de COD: tura 30 (LANT legislatie TURA 4/4 - reconciliere sursa-vs-declaratie + meta-gard anti-mort
++ Control fiscal; LANTUL COMPLET). Four-way exact (SHA + ora) = in raportul turei 30. Anterior: tura 29 = 9ed38ae.
+Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
 
 ## (b) Fronturi deschise (cu blocajul fiecaruia)
 1. **Test fir de intrare cabinet nou** — ACTIV. Cabinet test izolat 4163 "CABINET TEST FIR INTRARE SRL", cont
@@ -55,9 +55,12 @@ contabilitatea" (T4). Fiecare tura se raporteaza inainte de urmatoarea.
   coercitii vizibile, T4 op11 exclus, T6 lungimi, T9 exceptii prietenoase) + fix conformitate D406 03+CNP. Baseline
   valid ramane DUK-valid. RAMAS decizii produs: D101 scadenta LL+3/LL+6, D394 G-x1 cota, D301 pers_inreg
   (inreg_art317), D390 VIES full-27, T10 feature (rectificativa etc.), T11 DUK D112_209.
-- TURA 4 (reconcilierea sursa-vs-declaratie, gardata sa nu moara tacit - clasa D300 mort) - urmeaza dupa confirmare.
-  Tinte din TURA 2/3: T7 (D205 imp1≠rate×baza, D301 RON curs≠1, D710 suma_ded, agregare mis-contabilizata, D100
-  suma_dat) + T8 (D300 CR-5 R25=R12, D101 d_reg/d_succ/cod_bug).
+- TURA 4 (reconcilierea) = GATA tura 30: reconcilieri gen-gate lipsa completate (D100/D301/D390); gap-uri semantice
+  inchise (D205 imp1 manual, D300 R25=R12, D710 suma_ded); META-GARD test_reconciliere_vie (nicio reconciliere nu
+  moare tacit, 9/9 AST); Control fiscal reconciliaza_declaratii (ACELASI mecanism, anti-mort, escaladeaza pastila).
+  LANTUL COMPLET (T1-4). RAMAS = decizii produs Costin: D101 scadenta LL+3/LL+6, D394 G-x1 cota, D301 pers_inreg
+  (coloana inreg_art317), D390 VIES full-27, completitudine feature (rectificativa/succesor/grup), DUK D112_209
+  actualizare, panel UI "Reconciliere surse<->declaratii" (findings deja curg prin evalueaza_firma.reconciliere_surse).
 
 ## (c) Ce e in lucru acum
 Conformitatea declaratiilor la spec oficial DUK (front 6) + firul de intrare (front 1). Turele recente:

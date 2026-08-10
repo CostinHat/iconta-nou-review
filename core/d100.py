@@ -333,6 +333,12 @@ def genereaza(conn, schema, perioada, manual=None):
         _hint = (" Exista %d facturi emise necontabilizate in perioada - contabilizeaza-le intai." % _nf) if _nf else ""
         raise ValueError("D100 nu se depune pe zero: nicio obligatie (venituri contabilizate cont 70x = 0)." + _hint)
     res = calcul_d100(prof, an, luna, obligatii)
+    # POARTA A DOUA CALE (gard continut, pas 4/4 lant reconciliere): recalcul INDEPENDENT al
+    # obligatiei din SURSA (venituri cont 70x, note validate) x cota din registru, confruntat
+    # cu suma_dat a generatorului. Prinde CATALOG #31 aggregation-loss (venit scapat din pull ->
+    # suma_dat gresita, azi DUK-valid). NU alege singur cine are dreptate; NU repara tacit.
+    from core.d100_reconciliere import verifica_reconciliere as _vr100
+    _vr100(conn, perioada, res, manual)
     xml = build_xml(res)
     from core.reconciliere_emis import verifica_total_plata_a as _vte
     _vte("d100", xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res

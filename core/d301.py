@@ -362,4 +362,12 @@ def genereaza(conn, schema, perioada, manual=None):
     _blocante = _blocante_pre_duk(res)
     if _blocante:
         raise ValueError("D301 nu se poate genera: " + " ".join(_blocante))
+    # POARTA A DOUA CALE (gard de continut, 10.08.2026): recalcul INDEPENDENT al bazelor+TVA
+    # din d301_operatiuni cu regula CORECTA (baza=round(val_valuta x curs), curs=1 pentru RON),
+    # confruntat cu totalurile generatorului (res.totaluri) si totalPlata_A. Divergenta ->
+    # ReconciliereD301 cu AMBELE valori; NU repara tacit. Prinde pierderi de agregare + semantic
+    # T7 (RON cu curs!=1 -> baza supraevaluata), pe care DUK nu le vede (totalPlata_A ramane
+    # coerent cu bazele umflate). Vezi core/d301_reconciliere.py + GARZI cat.4 (limite declarate).
+    from core.d301_reconciliere import verifica_reconciliere
+    verifica_reconciliere(conn, perioada, res, manual)
     return build_xml(res), res

@@ -424,7 +424,7 @@ def constatare_regim_tva(local, anaf, data=None):
     return c
 
 
-def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
+def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu_reconciliere=True):
     """
     Intoarce {stare, datorate, depuse, lipsa, urmarit, confirmate, neclar, neaplicabile}.
     stare: 'verde' / 'galben' / 'gri' / 'rosu'. Fiecare linie poarta `motiv` (pe orice culoare).
@@ -497,8 +497,35 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None):
                                           vector.get("platitor_tva_anaf_data"))
     stare = pastila_firma(stare, [regim_tva_anaf])
 
+    # [Tura4] Reconciliere SURSA<->DECLARATIE, VIZIBILA in Control fiscal prin ACELASI mecanism ca poarta
+    # de generare (control_incrucisat.reconciliaza_declaratii - refoloseste dXXX_reconciliere.reconciliaza,
+    # NU un motor nou). Punte, ca declaratii_fapt (motoare separate). Perioada = ultima luna INCHISA
+    # (declaratiile se reconciliaza pe perioade incheiate). Escaladeaza pastila prin constatari (rosu urca,
+    # gri NU - filozofia control_incrucisat). ANTI-"D300 mort": daca PUNTEA insasi se rupe, NU se inghite
+    # tacit -> constatare ROSIE zgomotoasa (nu gri). cu_reconciliere=False dezactiveaza (consumatori usori).
+    reconciliere = None
+    if cu_reconciliere:
+        an_r, luna_r = (azi.year - 1, 12) if azi.month == 1 else (azi.year, azi.month - 1)
+        from core import control_incrucisat as _ci_rec
+        try:
+            reconciliere = _ci_rec.reconciliaza_declaratii(conn_schema, schema, an_r, luna_r)
+        except Exception as _e:
+            reconciliere = {"an": an_r, "luna": luna_r, "stare": "rosu", "constatari": [{
+                "stare": "rosu", "eticheta": "Reconciliere surse<->declaratii - PUNTE RUPTA",
+                "mesaj": ("Reconcilierea nu a putut fi apelata (%s: %s) - semnalat, nu ascuns "
+                          "(anti-D300 mort)." % (type(_e).__name__, _e)),
+                "temei": ("Puntea control_incrucisat.reconciliaza_declaratii a ridicat; contractul ei e sa "
+                          "nu ridice. Un except->gri ar ascunde ruptura ca verdict permanent gri."),
+                "remediu": None}],
+                "explicatie": "", "limita": "Reconcilierea surse<->declaratii nu a rulat.",
+                "modul": "control_incrucisat", "reguli": ""}
+        # severitatea vine din constatari (pastila_firma), NU dintr-un literal - un rosu de reconciliere urca
+        # pastila firmei; gri-ul (nu pot verifica) NU o urca. Vezi DECIZII 23.07 + common.pastila_firma.
+        stare = pastila_firma(stare, [regim_tva_anaf] + list(reconciliere.get("constatari") or []))
+
     return {"stare": stare, "datorate": len(datorate), "depuse": len(depuse),
             "lipsa": lipsa, "urmarit": urmarit, "confirmate": confirmate,
             "cu_intarziere": cu_intarziere,
             "neclar": neclar_m, "neaplicabile": neaplicabile,
-            "regim_tva_anaf": regim_tva_anaf}
+            "regim_tva_anaf": regim_tva_anaf,
+            "reconciliere_surse": reconciliere}

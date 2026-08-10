@@ -25,13 +25,20 @@ constant pool + mesajele de validare, 20.07.2026:
     - cota se completeaza DACA SI NUMAI DACA cod_oblig=121
     - luna raportare 3/6/9/12 (trimestrial, ca D100 pe care il corecteaza)
 
-LIMITA (scop v1, decis 20.07.2026): motorul acopera rectificarea sumei DATORATE
-(suma_dat_I -> suma_dat_C, cu suma_plata = suma_dat). Deducerile/reducerile/
-sponsorizarile/AMEF (model 8# al validatorului: suma_ded/suma_redu/suma_spons/
-suma_AMEF) au reguli DIFERITE per cod_oblig si per model (ex. la cod 103 "suma_plata =
-suma_dat - suma_redu iar suma_ded nu se completeaza") - nu se acopera speculativ, se
-adauga la primul caz real de rectificare cu deducere, extras iterativ pe validator.
-Cazul dominant (contabilul a declarat gresit suma datorata si o corecteaza) e acoperit.
+DEDUCEREA (suma_ded), extins 09.08.2026 (J1/T7 - inchidere gol RECONCILIERE): motorul
+acopera rectificarea sumei DATORATE (suma_dat_I -> suma_dat_C) SI deducerea (suma_ded_I/_C)
+pt codurile al caror model o prevede. Regulile, extrase din sursa (Zona 710, poz.11a +
+Modele de completare) si dovedite pe DUK:
+  - cod 121 (micro, model 9#): suma_plata = Maximum(suma_dat - suma_ded, 0); suma_rest nu se
+    completeaza. Deducerea E parte din model -> IMPLEMENTATA (suma_ded_I/_C emise, suma_plata
+    reconciliata, totalPlata_A include suma_ded - DUK regula R11b).
+  - cod 103 (profit, model 8#=identic 1#): suma_plata = suma_dat - suma_redu iar suma_ded
+    "nu se completeaza" (DUK regula R14-21). Deducerea NU e parte din model -> BLOCATA cu
+    ValueError daca e furnizata (nu se emite o declaratie respinsa/gresita, nu se pierde tacit).
+Inainte de aceasta extindere, suma_ded_I/_C era LISTATA ca input acceptat dar niciodata
+citita: o rectificare cu deducere producea o declaratie DUK-valida dar ARITMETIC GRESITA
+(deducerea disparea tacit, suma_plata=suma_dat). LIMITA ramasa: suma_redu/suma_spons/suma_AMEF
+(celelalte reduceri din model 9#) - se adauga la primul caz real, extras iterativ pe validator.
 """
 from __future__ import annotations
 
@@ -95,8 +102,11 @@ def _suma(val, camp, cod, idx):
 @dataclass
 class ObligatieRect:
     """O obligatie corectata: suma initiala (asa cum a fost declarata gresit in D100)
-    si suma corectata (valoarea corecta pt perioada). Rectificare a sumei DATORATE:
-    suma de plata = suma datorata (fara deduceri/reduceri - vezi LIMITA in modul)."""
+    si suma corectata (valoarea corecta pt perioada). suma de plata = suma datorata MINUS
+    deducerea (suma_ded), pe fiecare latura, clamp la 0 (model 9# micro, cod 121). Fara
+    deducere (suma_ded=0, cazul dominant) suma_plata = suma_dat - IDENTIC cu comportamentul
+    anterior. Deducerea e ACCEPTATA doar pentru codurile al caror model o prevede (121);
+    pentru celelalte (103, model 8#) e blocata in calcul_d710 (vezi J1/T7)."""
     cod_oblig: str
     suma_dat_i: int
     suma_dat_c: int
@@ -104,14 +114,17 @@ class ObligatieRect:
     scadenta: str = ""
     nr_evid: str = ""
     cota: str = ""
+    suma_ded_i: int = 0
+    suma_ded_c: int = 0
 
     @property
     def suma_plata_i(self):
-        return self.suma_dat_i
+        # Model 9# (micro 121): suma_plata = Maximum(suma_dat - suma_ded, 0). suma_ded=0 -> = suma_dat.
+        return max(self.suma_dat_i - self.suma_ded_i, 0)
 
     @property
     def suma_plata_c(self):
-        return self.suma_dat_c
+        return max(self.suma_dat_c - self.suma_ded_c, 0)
 
 
 @dataclass
@@ -134,7 +147,10 @@ def _scadenta_d710(cod, an, luna):
 
 def calcul_d710(prof, perioada, date, manual=None):
     """`luna` = 3/6/9/12 (trimestrial, ca D100). `obligatii` = lista de dict-uri
-    {cod_oblig, suma_dat_i, suma_dat_c, cod_bugetar?, cota?, suma_ded_i?, suma_ded_c?}."""
+    {cod_oblig, suma_dat_i, suma_dat_c, cod_bugetar?, cota?, suma_ded_i?, suma_ded_c?}.
+    suma_ded_i/_c (deducere) SUNT acum citite si aplicate (suma_plata = suma_dat - suma_ded)
+    pt codurile al caror model o prevede (121, model 9#); pt celelalte (103, model 8#) o
+    suma_ded furnizata ridica ValueError - vezi DEDUCEREA in docstring-ul modulului (J1/T7)."""
     an = perioada.an
     luna = perioada.luna if perioada.luna is not None else (perioada.trim * 3 if perioada.trim else None)
     obligatii = (manual or {}).get("obligatii") or []
@@ -206,16 +222,43 @@ def calcul_d710(prof, perioada, date, manual=None):
         if cod == "121" and cota_val and cota_val not in COTE_MICRO:
             raise ValueError("D710: cod_oblig 121 (micro): cota %r nu e o rata micro valida (%s); "
                              "DUK regula R17 o respinge." % (cota_val, "/".join(COTE_MICRO)))
+        # J1/T7: DEDUCEREA (suma_ded_i/_c). Era LISTATA in docstring ca input acceptat dar NICIODATA
+        # citita: ObligatieRect emitea suma_plata=suma_dat indiferent -> o rectificare cu deducere
+        # producea o declaratie DUK-VALIDA dar ARITMETIC GRESITA (deducerea disparea tacit). Rezolvat per
+        # sursa (Zona 710) + dovedit pe DUK (09.08.2026):
+        #  - cod 121 (micro, model 9#): suma_plata = Maximum(suma_dat - suma_ded, 0), suma_rest nu se
+        #    completeaza. Deducerea E parte din model -> se IMPLEMENTEAZA (plata reconciliata, suma_ded_I/_C
+        #    emise, totalPlata_A include suma_ded - DUK regula R11b).
+        #  - cod 103 (profit, model 8#): suma_plata = suma_dat - suma_redu iar suma_ded "nu se completeaza"
+        #    (DUK regula R14-21 respinge un 103 cu suma_ded). Deducerea NU e parte din model -> se BLOCHEAZA
+        #    cu motiv, ca deducerea sa nu poata fi NICIODATA emisa gresit / pierduta tacit.
+        ded_i = _suma(o.get("suma_ded_i", 0), "suma_ded_i", cod, idx)
+        ded_c = _suma(o.get("suma_ded_c", 0), "suma_ded_c", cod, idx)
+        if (ded_i or ded_c) and cod != "121":
+            raise ValueError("D710: cod_oblig %s: suma_ded (deducere) nu e parte din modelul de completare "
+                             "al acestui cod (model 8#: suma_plata = suma_dat, DUK regula R14-21 'suma_ded "
+                             "nu se completeaza'); doar cod 121 (micro, model 9#) accepta deducere. Nu se "
+                             "emite o declaratie respinsa de validator si nici nu se abandoneaza deducerea "
+                             "tacit." % cod)
+        if ded_i > di or ded_c > dc:
+            raise ValueError("D710: cod_oblig 121 (micro): suma_ded nu poate depasi suma_dat pe aceeasi "
+                             "latura (initial: ded=%d>dat=%d; corectat: ded=%d>dat=%d). Model 9# are "
+                             "suma_rest=0 (micro nu restituie excedentul), deci o deducere excedentara s-ar "
+                             "pierde tacit." % (ded_i, di, ded_c, dc))
         r = ObligatieRect(
             cod_oblig=cod, suma_dat_i=di, suma_dat_c=dc,
             cod_bugetar=cod_bug,
             scadenta=scad, nr_evid=_nr_evid(cod, luna, an, zi_s, luna_s, an_s),
-            cota=str(o.get("cota") or ""))
+            cota=str(o.get("cota") or ""),
+            suma_ded_i=ded_i, suma_ded_c=ded_c)
         obl.append(r)
-        # totalPlata_A = suma de control ceruta de validator (DUK regula R11b): SUMA sumelor
-        # datorat + plata pe fiecare obligatie, ambele laturi (initial + corectat).
-        # Dovedit pe validator: 100(dat_I)+100(plata_I)+150(dat_C)+150(plata_C)=500.
-        total += (r.suma_dat_i + r.suma_plata_i + r.suma_dat_c + r.suma_plata_c)
+        # totalPlata_A = suma de control ceruta de validator (DUK regula R11b). Pt D710 sursa (Zona 710,
+        # poz.11a) o defineste ca Σ pe fiecare latura a (suma_dat + suma_ded + suma_plata + ...). Fara
+        # deducere: dat + 0 + (dat) = 2*dat pe latura (identic cu formula veche dat + plata). Cu deducere:
+        # dat + ded + (dat-ded) = 2*dat -> valoarea NU se schimba, DAR suma_ded TREBUIE inclusa explicit
+        # (dovedit pe DUK: total fara suma_ded -> R11b respins). Sursa unica: proprietatile ObligatieRect.
+        total += (r.suma_dat_i + r.suma_ded_i + r.suma_plata_i
+                  + r.suma_dat_c + r.suma_ded_c + r.suma_plata_c)
     return RezultatD710(an=an, luna=luna, prof=prof, obligatii=obl, total_plata_a=total)
 
 
@@ -262,10 +305,14 @@ def build_xml(res):
     H.append(hdr)
     for o in res.obligatii:
         linie = ('  <obligatie cod_oblig="%s" scadenta="%s" nr_evid="%s" '
-                 'suma_dat_I="%d" suma_dat_C="%d" '
-                 'suma_plata_I="%d" suma_plata_C="%d"'
-                 % (o.cod_oblig, o.scadenta, o.nr_evid,
-                    o.suma_dat_i, o.suma_dat_c, o.suma_plata_i, o.suma_plata_c))
+                 'suma_dat_I="%d" suma_dat_C="%d"'
+                 % (o.cod_oblig, o.scadenta, o.nr_evid, o.suma_dat_i, o.suma_dat_c))
+        # suma_ded_I/_C: emise DOAR cand exista deducere (o latura>0); altfel "nu se completeaza" (model
+        # 8#/1#, cazul dominant) - pastreaza baseline-ul fara-deducere IDENTIC. Perechea I/_C se emite
+        # impreuna (0 pe latura fara deducere e acceptat de DUK, dovedit 09.08.2026).
+        if o.suma_ded_i or o.suma_ded_c:
+            linie += ' suma_ded_I="%d" suma_ded_C="%d"' % (o.suma_ded_i, o.suma_ded_c)
+        linie += ' suma_plata_I="%d" suma_plata_C="%d"' % (o.suma_plata_i, o.suma_plata_c)
         if o.cod_bugetar:
             linie += ' cod_bugetar=%s' % _esc(o.cod_bugetar)
         # cota: OBLIGATORIU si NUMAI pentru cod_oblig 121 (micro). Gard bidirectional (ca la d100) -

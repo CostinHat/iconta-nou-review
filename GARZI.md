@@ -2565,3 +2565,16 @@ cnp/cif ancorat pe valori DUK valid+invalid). Per declaratie (fisiere noi de gar
 - D710: test_d710_t9_parsare, test_d710_t1_cui, test_d710_nomenclator_manual, test_d710_cod131_132, test_d710_sume_negative.
 Fixtures reparate (date invalide inlocuite cu valide, gardurile NEslabite): test_d112_reconciliere, test_d205_reconciliere,
 test_d205 (test_id_inreg), test_d710 (test_cod_bugetar - bumpuit √).
+
+## 10.08.2026 (tura 30) — LANT legislatie TURA 4/4: reconciliere + meta-gard anti-mort
+- core/test_reconciliere_vie.py: META-GARD - fiecare din 9 dXXX_reconciliere exista + cablat in genereaza (AST,
+  orice stil) + non-tautologic (nu importa generatorul) + are test de firing. Prinde mecanic clasa "D300 mort"
+  (necablat/tautologizat/sters). MUTATIE: modul inexistent d999 semnalat.
+- core/test_d100_reconciliere.py / test_d301_reconciliere.py / test_d390_reconciliere.py: reconcilieri gen-gate NOI,
+  non-tautologie (AST) + ANTI-MORT (injectie divergenta ROLLBACK -> verifica_reconciliere RIDICA numind ambele valori)
+  + baseline DUK-valid. D301 include semanticul T7 (RON curs=5 -> genereaza ridica baza1 gen=5000 vs cale2=1000).
+- core/test_d205_imp_manual.py: beneficiar manual imp1≠rate×baza -> ridica (d1; before: tacit+DUK-valid).
+- core/test_d300_r25_r12.py: R12 fara oglinda R25 -> ridica DUK regula V19/V20 (CR-5; before: DUK-valid supra-declarat).
+- core/test_d710_suma_ded.py: suma_ded nu mai e aruncat (121 aplicat max(dat-ded,0)+emis; 103 blocat R14-21).
+- core/test_control_reconciliere_vizibila.py: reconciliaza_declaratii vizibil in Control fiscal, ACELASI mecanism;
+  divergenta -> ROSU numind ambele valori; apel rupt -> ROSU "VERIFICARE INTRERUPTA" (NU gri tacit); verde cand reconciliaza.

@@ -8746,3 +8746,60 @@ inreg_art317), D390 VIES full-27, T10 completitudine feature (rectificativa etc.
 
 Bump √ INVENTAR_A: clusterul "nomenclator COD_BUGETAR" (d710) 04.08->10.08 - functia test_cod_bugetar_nomenclator_
 duk_si_antidrop a fost reparata (escape-hatch buggy -> blocaj), re-verificata DUK R14a.
+
+## 10.08.2026 (tura 30) — LANT legislatie TURA 4/4: reconcilierea sursa-vs-declaratie (capstone)
+
+Comanda: fiecare declaratie agrega dintr-o sursa (facturi/note/salarii/certificate); confrunta cap-la-cap sursa
+pe perioada vs ce a raportat declaratia - diferenta = date pierdute pe drum. Inventariaza, verifica ce exista,
+completeaza, gardeaza-le sa nu mai moara tacit (clasa D300 mort); ruleaza la generare SI se vede in Control fiscal,
+din acelasi mecanism.
+
+INVENTAR (2 straturi): (1) gen-gate `dXXX_reconciliere.verifica_reconciliere` cablat in genereaza (hard-block,
+recompute INDEPENDENT non-tautologic din sursa vs res); (2) Control fiscal `control_incrucisat` (verde/rosu/gri).
+
+COMPLETAT reconcilierile gen-gate LIPSA (recompute independent din sursa, non-tautologic, cablat, cu probe anti-mort):
+- D100 (core/d100_reconciliere.py NOU): baza impozabila recalculata din cont 70x (SQL propriu) x cota (registru) vs
+  res.suma_dat. Inchide #31 aggregation-loss (venit mis-contabilizat -> suma_dat gresit, azi DUK-valid).
+- D301 (core/d301_reconciliere.py NOU): Sigma(baza per tip) din d301_operatiuni cu regula CORECTA (RON->curs 1) vs
+  res. Inchide aggregation-loss + semanticul T7 (RON curs≠1 -> baza supraevaluata).
+- D390 (core/d390_reconciliere.py NOU): Sigma(baza per tip)+nrOPI+total din facturi IC vs res (Layer-1 gen-gate,
+  complementar cu Layer-2 verifica_d390 tolerant).
+
+GAP-URI T7/T8 INCHISE (semantic gresit-dar-consistent pe care DUK nu-l prinde):
+- D205 (d205_reconciliere): beneficiar MANUAL imp1 ≠ round(cota_dividend×baza1) -> ValueError (d1, cel mai grav
+  D205; azi trecea de generator SI DUK). Verifica doua campuri declarate, fara ledger.
+- D300 (d300 _oglinda_r12_r25): R25=R12 (V19/V20, NEIMPUS de validatorul instalat) -> ValueError (CR-5/T8; R12 fara
+  R25 = TVA colectata supra-declarata, azi DUK-valid). Cablat in genereaza, calcul_d300 pastrat pur.
+- D710 (d710): suma_ded aruncat tacit -> IMPLEMENTAT corect pt model 9# (cod 121: suma_plata=max(dat-ded,0), emite
+  suma_ded_I/_C, reconciliaza totalPlata_A) / BLOCAT pt model 8# (cod 103: suma_ded interzis, DUK R14-21). CORECTIE
+  DE SURSA non-circulara: premisa "model 8# = dat-ded" era gresita - proba DUK arata 8#=dat (deducere doar 9#).
+
+META-GARD "NICIO RECONCILIERE NU MOARE TACIT" (core/test_reconciliere_vie.py) - generalizeaza gardul tura 14 de la
+D300 la toate 9, MECANIC (AST, imun la mentiuni docstring): fiecare dXXX_reconciliere (a) exista, (b) e importat SI
+apelat in genereaza (orice stil de import - un modul necablat = mort), (c) NON-TAUTOLOGIC (nu importa core.dXXX),
+(d) are test_dXXX_reconciliere (proba de FIRE pe divergenta traieste acolo). D710 exceptat (input manual).
+
+CONTROL FISCAL, ACELASI MECANISM (control_incrucisat.reconciliaza_declaratii + wiring in control_fiscal_api.
+evalueaza_firma): pentru fiecare declaratie aplicabila ruleaza ACEIASI reconcilieri (forma reconciliaza, non-blocant)
+si surfaceaza 3-state STRUCTURAT (declaratie+eticheta+mesaj+temei+remediu); escaladeaza pastila firmei -> divergenta
+inrosaste firma in Control fiscal. ANTI-MORT clasificat: date lipsa -> GRI genuin; reconciliere care CRAPA
+(semnatura/bug) -> ROSU "VERIFICARE INTRERUPTA" (NICIODATA gri tacit); divergenta reala -> ROSU numind ambele valori.
+Probat: injectie aggregation-loss -> ROSU numind 310 vs 210; apel rupt -> ROSU-rupt, nu gri.
+
+Fiecare reconciliere: gard old-fail/new-pass + probe anti-mort (fire pe divergenta injectata ROLLBACK) + baseline
+DUK-valid. Doar 4163; 1968 neatins.
+
+RAMAS (raportat): panel UI dedicat "Reconciliere surse<->declaratii" in main.py (findings deja curg prin
+evalueaza_firma.reconciliere_surse + escaladeaza pastila; panelul per-declaratie cere edit front-end).
+
+## 10.08.2026 (tura 30) — LANT legislatie COMPLET (TURA 1-4): declaratiile, cap-coada
+
+Cele doua clase de risc, inchise cap-coada in 4 ture inlantuite:
+- TURA 1 (tura 27): corpusul de legislatie la zi - actul care aproba forma fiecarei declaratii, adus din MO/ANAF.
+- TURA 2 (tura 28): CATALOG_INVALIDITATE.md - exhaustiv, ce date invalideaza fiecare declaratie (11 teme transversale).
+- TURA 3 (tura 29): mesajul exact al invaliditatii PRE-DUK (validator identitate partajat + reparatii pe toate 10).
+- TURA 4 (tura 30): reconcilierea sursa-vs-declaratie (aggregation-loss + semantic) + meta-gard anti-mort + Control fiscal.
+Rezultat: "declaratie invalida" (T1-3) si "declaratie valida care nu reflecta contabilitatea" (T4) - ambele acum
+prinse PRE-DUK (mesaj exact) sau la reconciliere (divergenta sursa), nu tacit. Decizii produs deschise (Costin):
+D101 scadenta LL+3/LL+6, D394 G-x1 asimetrie cota, D301 pers_inreg (coloana inreg_art317), D390 VIES full-27,
+completitudine feature (rectificativa/succesor/grup), actualizare DUK D112_209, panel UI reconciliere.
