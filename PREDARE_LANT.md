@@ -6,79 +6,52 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-Ultimul commit de COD: tura 30 = 123a7e5 (LANT legislatie TURA 4/4 - reconciliere sursa-vs-declaratie + meta-gard
-anti-mort + Control fiscal; LANTUL COMPLET T1-4). FOUR-WAY (10.08.2026): HEAD = origin/main = backup/lant-2026-08-10
-= 123a7e5; RUNNING start 20:15:39 > commit-time 20:09:13, HTTP 200. Anterior: tura 29 = 9ed38ae. Serviciul
-iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
+Ultimul commit de COD: LOT 0 = 42b97fb (adevarul registrului FUNCTIONALITATI.csv). FOUR-WAY (10.08.2026):
+HEAD = origin/main = origin/backup/lant-2026-08-10 = 42b97fb; RUNNING = 42b97fb (restart iconta-nou
+start 21:52:36 > commit-time 21:45:51; versiune.py stampileaza git HEAD la pornire, HEAD nemiscat de atunci),
+HTTP 200. Sentinele push absente. Anterior: tura 30 = 123a7e5 / predare 4b4cbad. Serviciul iconta-nou ruleaza
+din ~/iconta_nou. LIMITA: /admin/versiune (running in-memory) cere superadmin - neinterogat; RUNNING confirmat
+prin start-time+HEAD (citirea canonica §2.3 pct.10).
 
 ## (b) Fronturi deschise (cu blocajul fiecaruia)
-1. **Test fir de intrare cabinet nou** — ACTIV. Cabinet test izolat 4163 "CABINET TEST FIR INTRARE SRL", cont
-   admin_firma fir-intrare@prisma-cont.test (user 6504; parola in raportul turei 15). 4 firme: ALFA=tenant_013(8396),
-   BETA=014(8397), GAMA=015(8398), DELTA=016(8399). seed_profil aplicat. Fisiere/ordine/verdicte: ~/date_test_cabinet/
-   README.md; runner ~/date_test_cabinet/aplica.py profil|luna. SETUP COMPLET (tura 21): asociati+XML+seed_luna
-   aplicate pe 4163; fir parcurs cap-coada, TOATE verdictele README confirmate pe cabinetul real (fixurile 14/16/17
-   valideaza). Ramane: review UI Costin / depunere efectiva. Cabinetul REAL 1968 (12 firme) = neatins.
-2. **E3_97 (pensie ocupationala, Legea 1/2020)** — build oprit pe stop point (cere subsistemul art.76(4^1): plafon
-   lunar 33% + ordine). BLOCAJ: decizie de scope Costin.
+0. **CAMPANIE "verifica toate 201 functionalitatile" (Costin, 10.08)** — ACTIV, in lucru. Ia toate cele 201
+   intrari din FUNCTIONALITATI.csv, verifica-le (inclusiv conformitate Design System), repara pe masura;
+   corecteaza REGISTRUL cand nu corespunde realitatii (nu doar codul). 9 loturi aprobate de Costin, ordine:
+   Lot 0 adevarul registrului -> 1 transversal/infra -> 2 Facturare/e-Factura -> 3 Contabilitate -> 4 Stocuri/
+   banca/casa -> 5 Salarizare -> 6 Fiscalitate/declaratii -> 7 Control fiscal -> 8 Cabinet/portal client.
+   Lantul curge fara comanda intre loturi (Costin opreste daca e nevoie). Fiecare lot: raport §2.2 complet + four-way.
+   - **LOT 0 INCHIS (42b97fb)**: registrul confruntat cap-coada cu realitatea. Drift reparat (F117/F121/F152/F188
+     Sursa cod; F092/F171/F172/F180/F188 descrieri gratuit-eliminat). Gard nou test_sursa_cod_refera_fisiere_care_exista.
+     ELIMINAT(10) probate 404 pe app viu + cod absent; RESPINS/AMANAT/PLANIFICAT fara cod-fantoma; PARTIAL D406 exact.
+   - **URMATOR: LOT 1 (transversal & infra, ~34 LIVE)** — NEINCEPUT. Include ~15 fundatii fara proba de test.
+   - Accente Costin: (1) ELIMINAT - probeaza rutele pe app viu (facut Lot 0); (2) marcheaza explicit cele 33 LIVE
+     fara proba, grupat, si urmareste care FUNDATII raman neprobate dupa lotul lor (F008 auth, F116 securitate,
+     F004 ANAF, F043 import e-Factura, F001 AI, F081 scadente).
+1. **Test fir de intrare cabinet nou** — cabinet test izolat 4163; fir parcurs cap-coada tura 21. Ramane review UI
+   Costin / depunere efectiva. Cabinetul REAL 1968 (12 firme) = NEATINS (constrangere absoluta a campaniei).
+2. **E3_97 (pensie ocupationala, Legea 1/2020)** — BLOCAJ: decizie de scope Costin (subsistem art.76(4^1)).
 3. **D101 scadenta: lege vs validator INVERS** — codul urmeaza validatorul DUK. BLOCAJ: decizie de produs Costin.
-4. **Descoperiri proba date-test (neprogramate)** — D710 nederivabil; D300 achizitii (R5/taxare inversa/9-5%) nederivate
-   + fara stocare importabila; D406 lunar fara Active/Stocuri.
-5. **Frontend probe — de completat** — proba browser exista (vezi Unelte) dar acopera prin UI real doar migrare/firme/
-   facturi; pachete/setari (depth) + portal/admin/asistent (cer rol client/superadmin/angajat in 4163) raman de probat.
-
-6. **Declaratii DUK — auditate + reparate (turele 24-26); RAMAS = doar decizii de model de date** — toate 10
-   confruntate field-by-field cu sursa (tura 25); deciziile §6 ale lui Costin reparate (tura 26). Cod reparat:
-   D112 asiguratD refuz + fixtures, D205 divid_D/P + Rezid, D300 taxare-inversa R12/R25 + 0% clasificat, D301
-   pers_inreg reachable, D394 op11 manual + prsAfiliat, D406 TaxCode 380304 + PF master. Seed corectat: D390 CUI UE
-   reale, D394 cereale 1005 -> D390/D394 acum VALID pe date. REGULA: XSD-vs-DUK -> validatorul e autoritatea.
-   RAMAS (decizie Costin, NU defect de cod):
-   (a) 3 COLOANE de date (cod gata + default sigur, NEadaugate ca sa nu atinga schema cabinetului 1968):
-       firma_profil.inreg_art317 (D301 pers_inreg=2), firma_profil.are_operatiuni_afiliate (D394 prsAfiliat=1),
-       facturi.natura_scutire (D300 clasificare livrari 0% R14/R15/export). + optional discriminator taxare_inversa
-       art.331-vs-general (D300 R12/R25 vs R7/R20).
-   (b) salveaza_concediu: gard simetric serie/numar/data_acordare/data_inceput (garanteaza doar D_7 acum) - UX la
-       salvare, recomandat, neaplicat.
-   (c) UI care sa POPULEZE campurile de mai sus (altfel raman pe default).
-   Unealta: PYTHONPATH=$PWD venv/bin/python3 frontend_test/valideaza_duk.py.
-
-## (c-lant) LANT LEGISLATIE (4 ture, Costin) - inchide "declaratie invalida" (T1-3) + "valida dar nereflectand
-contabilitatea" (T4). Fiecare tura se raporteaza inainte de urmatoarea.
-- TURA 1 (legislatia) = GATA tura 27: actul care aproba forma fiecarei declaratii adus in corpus (12 ordine
-  oficiale). RAMAS de adus dintr-un mirror accesibil (legislatie.just.ro respinge serverul): D205 102/2025, CPF
-  207/2015; CF master consolidat de reimprospatat (pre-2025). Flag: validatorul D112_209 e ANTERIOR formei
-  605/2026 (iulie 2026) -> DUK server o generatie in urma pe D112.
-- TURA 2 (datele care invalideaza) = GATA tura 28: CATALOG_INVALIDITATE.md - ~350 tipuri per declaratie (ce
-  invalideaza / ce incalca / sursa / mesaj curent a/b/c/d) + 11 teme transversale. Tintele: TURA 3 (T1 checksum
-  CUI/CNP nepre-validat 9/9, T2 valideaza() cod mort D300/D301/D406/D390, T3 coercitie tacita, T4 avertizeaza-dar-
-  emite, T6 passthrough netrunchiat, T9 exceptii brute); TURA 4 (T7 semantic, T8 non-impunere DUK).
-- TURA 3 (mesajul catre utilizator) = GATA tura 29: core/identitate.py (validator CUI/CNP partajat) + reparatii
-  pe toate 10 declaratiile ca aplicatia sa arate motivul EXACT pre-DUK (T1 checksum, T2 valideaza() cablat, T3
-  coercitii vizibile, T4 op11 exclus, T6 lungimi, T9 exceptii prietenoase) + fix conformitate D406 03+CNP. Baseline
-  valid ramane DUK-valid. RAMAS decizii produs: D101 scadenta LL+3/LL+6, D394 G-x1 cota, D301 pers_inreg
-  (inreg_art317), D390 VIES full-27, T10 feature (rectificativa etc.), T11 DUK D112_209.
-- TURA 4 (reconcilierea) = GATA tura 30: reconcilieri gen-gate lipsa completate (D100/D301/D390); gap-uri semantice
-  inchise (D205 imp1 manual, D300 R25=R12, D710 suma_ded); META-GARD test_reconciliere_vie (nicio reconciliere nu
-  moare tacit, 9/9 AST); Control fiscal reconciliaza_declaratii (ACELASI mecanism, anti-mort, escaladeaza pastila).
-  LANTUL COMPLET (T1-4). RAMAS = decizii produs Costin: D101 scadenta LL+3/LL+6, D394 G-x1 cota, D301 pers_inreg
-  (coloana inreg_art317), D390 VIES full-27, completitudine feature (rectificativa/succesor/grup), DUK D112_209
-  actualizare, panel UI "Reconciliere surse<->declaratii" (findings deja curg prin evalueaza_firma.reconciliere_surse).
+4. **Declaratii DUK (turele 24-26)** — RAMAS doar decizii de model de date Costin (3 coloane firma_profil/facturi;
+   salveaza_concediu gard simetric; UI populare). Unealta: frontend_test/valideaza_duk.py.
+5. **F035/F036/F037 D406 PARTIAL** — familia D406 NEDEPUNABILA (SourceDocuments sintetic + Payments gol). Reparatie =
+   feature mare -> decizie de scope. Registru marcat corect PARTIAL (confirmat Lot 0).
+6. **Datorii Lot 0 nereparate** — F176 Descriere cita F160 (ELIMINAT) - de reincadrat la Lot 1 (F176 = OAuth); 3
+   comentarii cod stale (login.js:418, main.py:2728/2786) - cosmetic, de curatat oportunist.
 
 ## (c) Ce e in lucru acum
-Conformitatea declaratiilor la spec oficial DUK (front 6) + firul de intrare (front 1). Turele recente:
-20 proba browser + fix antet wizard, 22 ZERO-BASE avertisment, 23 DUK-validat + D100 gol refuzat, 24 refacut 4
-declaratii la spec oficial, 25 TOATE 10 declaratiile confruntate field-by-field (8 reparate, 2 conforme), 26
-reparate deciziile §6 Costin (6 declaratii cod + seed corectat + regula XSD-vs-DUK). Metoda 25-26: audit/fix paralel
-cu agenti proaspeti + DUK pe date populate - a scos defecte pe care validarea pe nil le rata.
+Campania de verificare cap-coada a celor 201 functionalitati (front 0). Lot 0 inchis; Lot 1 (transversal & infra)
+urmatorul. Metoda Lot 1: pytest existent + functional pe cabinet 4163 + citire cod, marcaj explicit al fundatiilor
+fara proba.
 
 ## (d) Ce urmeaza
-1. Costin: importa CSV migrare + XML e-Factura -> "gata XML"; eu rulez aplica.py luna.
-2. Costin: Control fiscal + Audit preluare + genereaza declaratiile -> confirma verdictele din README.
-3. Orice "forma care spune altceva decat faptul" -> comanda de reparatie (ca turele 16-17-20).
+1. LOT 1 — transversal & infra (~34 LIVE): F001 AI client, F002 incredere AI, F004 ANAF, F005 API keys, F008 auth,
+   F107 magic-link, F116 securitate perimetru, backup off-site, GDPR, notificari, etc. Marcheaza cele fara proba.
+2. Apoi Lot 2 (Facturare/e-Factura) ... pana la Lot 8, fara comanda intre loturi.
+3. Orice "forma care spune altceva decat faptul" -> corectie de registru + cod, ca in Lot 0.
 
 ## Unelte
-- **Proba browser (Playwright)**: `ssh iconta 'cd ~/iconta_nou && venv/bin/python3 frontend_test/proba_wizard_antet.py'`
-  (antet wizard; exit 0 = ok). Observatii per-wizard: frontend_test/observa_*.py. Auth via token, creds in
-  ~/.iconta/fe_test.env (in afara git). Doar cabinet 4163. NU in poarta verde (rulare manuala; pytest nu colecteaza
-  frontend_test/ - fisiere non-test_).
-- Poarta verde: commit ruleaza pytest suita intreaga + verificator_conformitate (TOTAL 0); post-commit publica
-  origin/main + backup/lant-<data>; apoi restart iconta-nou (four-way).
+- Registru: gard structura + anti-drift in core/test_registru_functionalitati.py (3 teste).
+- Proba browser (Playwright): frontend_test/proba_wizard_antet.py + observa_*.py; creds ~/.iconta/fe_test.env
+  (cabinet 4163, admin_firma fir-intrare@prisma-cont.test). DUK: frontend_test/valideaza_duk.py. NU in poarta verde.
+- Poarta verde: commit ruleaza pytest suita intreaga (~6min) + verificator (TOTAL 0); post-commit publica
+  origin/main + backup/lant-<data>; apoi restart iconta-nou (four-way). App pe 127.0.0.1:8010.
