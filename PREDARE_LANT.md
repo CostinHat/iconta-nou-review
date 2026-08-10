@@ -6,9 +6,10 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-Ultimul commit de COD: tura 30 (LANT legislatie TURA 4/4 - reconciliere sursa-vs-declaratie + meta-gard anti-mort
-+ Control fiscal; LANTUL COMPLET). Four-way exact (SHA + ora) = in raportul turei 30. Anterior: tura 29 = 9ed38ae.
-Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
+Ultimul commit de COD: tura 30 = 123a7e5 (LANT legislatie TURA 4/4 - reconciliere sursa-vs-declaratie + meta-gard
+anti-mort + Control fiscal; LANTUL COMPLET T1-4). FOUR-WAY (10.08.2026): HEAD = origin/main = backup/lant-2026-08-10
+= 123a7e5; RUNNING start 20:15:39 > commit-time 20:09:13, HTTP 200. Anterior: tura 29 = 9ed38ae. Serviciul
+iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
 
 ## (b) Fronturi deschise (cu blocajul fiecaruia)
 1. **Test fir de intrare cabinet nou** — ACTIV. Cabinet test izolat 4163 "CABINET TEST FIR INTRARE SRL", cont
