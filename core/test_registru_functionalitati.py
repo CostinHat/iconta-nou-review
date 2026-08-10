@@ -95,3 +95,38 @@ def test_sursa_cod_refera_fisiere_care_exista():
           " EXACTA. Nume scurt (firme.js) => pune calea completa (static/js/ecrane/firme.js). Modul"
           " disparut => actualizeaza intrarea sau mut-o la ELIMINAT."
     )
+
+
+def test_sursa_cod_nu_e_referinta_de_concurenta():
+    """Anti-drift: o functionalitate LIVE/PARTIAL nu poate avea Sursa cod = referinta la CONCURENTA
+    (SAGA/SmartBill/Oblio/WinMentor/FGO/Keez...).
+
+    DE CE: registrul a fost populat partial din analiza de concurenta (CONCURENTA.csv); la CONSTRUIREA
+    feature-ului, coloana Sursa cod TREBUIE actualizata la modulul real. O intrare LIVE care inca trimite
+    la un concurent descrie de unde a venit IDEEA, nu unde e CODUL -> harta de cod falsa pentru AI (F152)
+    si pentru dezvoltator (checkul de existenta a fisierului nu prinde asta: 'CONCURENTA: Oblio' n-are
+    path-token, deci trece de test_sursa_cod_refera_fisiere_care_exista).
+
+    NON-LIVE excluse (AMANAT/PLANIFICAT/RESPINS): acolo referinta la concurenta e LEGITIMA - feature
+    neconstruit, doar analizat (ex. F127/F130/F149).
+
+    PRINS REAL 11.08.2026 (Lot 3, generalizare pe clasa): 10 intrari LIVE (F126, F138-F142, F144-F147)
+    inca citau 'CONCURENTA: ...' desi codul exista - normalizate la modulul real."""
+    randuri = _randuri()
+    header = randuri[0]
+    idx_src = header.index("Sursa cod")
+    idx_st = header.index("Stare")
+    idx_id = header.index("ID")
+    rele = []
+    for r in randuri[1:]:
+        stare = (r[idx_st] or "").strip()
+        if not (stare.startswith("LIVE") or stare.startswith("PARTIAL")):
+            continue
+        if (r[idx_src] or "").strip().upper().startswith("CONCURENTA"):
+            rele.append((r[idx_id], stare[:12], (r[idx_src] or "")[:45]))
+    assert not rele, (
+        "FUNCTIONALITATI.csv: intrari LIVE/PARTIAL cu Sursa cod = referinta la CONCURENTA (nu cod real):\n"
+        + "\n".join("  %s [%s] -> %s" % (i, s, t) for i, s, t in rele)
+        + "\n-> feature-ul e construit: pune modulul real (core/...py, static/js/...). Referinta la"
+          " concurent e legitima DOAR pe non-LIVE (feature neconstruit, doar analizat)."
+    )

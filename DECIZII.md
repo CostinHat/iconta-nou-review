@@ -8818,3 +8818,8 @@ RAMAS (nereparat, notat GARZI): F176 pastreaza cross-ref la F160 (ELIMINAT) in "
 Constatare: F116 pretindea "headere (HSTS, X-Frame-Options, X-Content-Type, Referrer-Policy)" dar nginx live are add_header=0 (zero headere pe raspuns 443, verificat 10.08). Registrul mintea (AI ar descrie protectii inexistente).
 Decizie: registrul corectat la ADEVAR (headere NEDEPLOYATE). Deploy-ul NU se face nesupravegheat: nginx server config (/etc/nginx/sites-available/iconta) e root-owned, in afara git, ne-gated (fara poarta verde); reload afecteaza TOTI userii reali (inclusiv cabinet 1968); HSTS semi-permanent. Per §2.3 pct.3 (infra pe real = deployment, consemnat) + constrangerea "1968 nu se atinge" -> FLAG Costin (§6 raport Lot 1).
 Recomandare: adu nginx server config sub versionare (config_server/) ca driftul de headere sa fie guardabil mecanic.
+
+## 11.08.2026 — Sursa cod "CONCURENTA:" pe LIVE = drift (Lot 3, generalizare pe clasa)
+Decizie: o functionalitate LIVE/PARTIAL nu poate pastra Sursa cod = referinta la concurent (SAGA/SmartBill/Oblio/WinMentor/FGO/Keez). La CONSTRUIRE se actualizeaza la modulul real. Referinta la concurenta e legitima DOAR pe non-LIVE (feature analizat, neconstruit - F127/F130/F149 etc.).
+Temei: registrul e harta de cod a AI-ului (F152) + a dezvoltatorului; "CONCURENTA: Oblio" descrie de unde a venit IDEEA, nu unde e CODUL. Checkul de existenta din Lot 0 nu prinde (proza fara path-token).
+Proba: 10 intrari LIVE reparate (F126/F138-142/F144-147) -> module reale (toate fisierele exista). Gard nou test_sursa_cod_nu_e_referinta_de_concurenta, ROSU pe cele 10 inainte.

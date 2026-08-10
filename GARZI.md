@@ -2590,3 +2590,8 @@ test_d205 (test_id_inreg), test_d710 (test_cod_bugetar - bumpuit √).
 - **Test-debt migrari** (F007/F053/F059/F079/F084/F085/F150): cablate dar fara proba functionala adanca (fara pytest). De acoperit cu smoke pe cabinet 4163.
 - **F124 "Testare pilot P1-P5"**: campanie de test finalizata, NU feature de cod; Sursa cod "DE_FACUT sectiunea 1" stale/contradictoriu-cu-LIVE. De reincadrat (milestone) sau clarificat.
 - **F035/F036/F037 D406 PARTIAL** (mostenit Lot 0).
+
+## 11.08.2026 — Lot 2+3: goluri/datorii
+- Test-debt Lot 2: F017 (chitante)/F018 (parteneri)/F045 (generare PDF)/F048 (profil+model) - cablate, fara test dedicat.
+- Test-debt Lot 3: F118 (blocare perioade)/F054 (editor note)/F145 (rapoarte config) - cablate, fara test dedicat.
+- Fixul CONCURENTA a corectat Sursa cod si pentru F138-142 (Lot 4 Stocuri) + F146/F147 (Lot 8 Cabinet); verificarea FUNCTIONALA a acestora ramane la lotul lor.

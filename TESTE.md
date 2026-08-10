@@ -1461,3 +1461,9 @@ Migrari cablate (rute+importa): F007/F053/F059/F079/F084/F085/F150; proba functi
 PWA F113: manifest+sw servite 200. Registru reparat: F150+F122 Sursa cod -> cod real. Gard test_sursa_cod verde (3/3).
 Suita: 1886 passed/3 skipped/16 xfailed, verificator 0.
 LIMITA gard: Sursa cod PROZA (fara path-token) nu e prinsa de test_sursa_cod (F150/F122/F124 treceau) - de intarit daca reapare.
+
+## 11.08.2026 — Lot 2+3 verificate + gard CONCURENTA
+Gard nou (al 4-lea de registru): test_sursa_cod_nu_e_referinta_de_concurenta - LIVE/PARTIAL nu poate avea Sursa cod care incepe cu "CONCURENTA". ROSU pe 10 (F126/F138-142/F144-147), verde dupa normalizare la cod real.
+Lot 2: wizard Playwright TRECUT (exit 0); F004 ANAF live; F043 cod+ruta + suita e-Factura import verde (6 teste, fisier root-level); 21 cablate. F043 Testat gol->pytest.
+Lot 3: 55 pytest tintit + suita; F118/F054/F144/F145 verificate; restul cu pytest verzi in suita.
+Suita: 1886 passed/3 skipped/16 xfailed, verificator 0. Garduri registru: 4/4.

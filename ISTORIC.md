@@ -3923,3 +3923,9 @@ PWA F113: manifest.json + sw.js servite 200 (standalone, start_url /, 2 icons).
 DRIFT REGISTRU reparat: F150 Sursa cod proza ("identificat 13.07") -> core/retete_import_api.py+retete_api.py+main.py (importul EXISTA); F122 Sursa cod GOL -> core/salarizare.py+main.py (cod-10 CM art.19 confirmat).
 Restul (F092/F104/F105/F106/F117/F124/F165/F189-191/F199-202/F203): cod intact (Lot 0) + majoritatea cu test in suita (verde in poarta) sau proba anterioara (GDPR real 25.07, F165 11 teste, F189-191 functional).
 Poarta verde: 1886 passed/3 skipped/16 xfailed, verificator 0.
+
+## 11.08.2026 — LOT 2 + LOT 3 + generalizare CONCURENTA [campania verifica-201]
+LOT 2 (Facturare & e-Factura, 21) VERIFICAT: wizard Playwright TRECUT (exit 0); F004 ANAF live (DANTE INTERNATIONAL, CAEN 4754, TVA); F043 import UBL = cod+ruta+test_efactura_import.py; toate 21 cablate (rute live); 0 defecte functionale. Registru: F043 Testat gol -> "pytest (test_efactura_import.py)".
+LOT 3 (Contabilitate, 23) VERIFICAT: 55 pytest tintit (avansuri/bacsis/leasing/provizioane/sgr/sponsorizari/subventii/ong) + suita verde; F118 (perioade-blocate) + F054 (jurnal) cablate; F144/F145 cod real confirmat (rapoarte_comerciale_api.py + migrare_rapoarte_salvate.py).
+GENERALIZARE CONCURENTA (§8): 10 intrari LIVE (F126, F138-142, F144-147) aveau Sursa cod "CONCURENTA: <concurent>" desi codul exista - registrul populat din analiza de concurenta, Sursa cod neactualizata la construire. Toate 10 -> module reale. Atinge si Lot 4 (F138-142 stocuri) + Lot 8 (F146/F147). Gard nou test_sursa_cod_nu_e_referinta_de_concurenta, ROSU pe cele 10.
+Poarta verde: 1886 passed/3 skipped/16 xfailed, verificator 0.
