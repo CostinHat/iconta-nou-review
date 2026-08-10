@@ -6,9 +6,9 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-Ultimul commit: tura 27 (LANT legislatie TURA 1/4 - adus in corpus actul care aproba forma fiecarei declaratii;
-corpus files, nu cod). Four-way exact (SHA + ora) = in raportul turei 27. Anterior COD: tura 26 = c362cc6 (deciziile
-§6). Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
+Ultimul commit: tura 28 (LANT legislatie TURA 2/4 - CATALOG_INVALIDITATE.md, datele care invalideaza fiecare
+declaratie; doc, nu cod). Four-way exact (SHA + ora) = in raportul turei 28. Anterior COD: tura 26 = c362cc6.
+Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
 
 ## (b) Fronturi deschise (cu blocajul fiecaruia)
 1. **Test fir de intrare cabinet nou** — ACTIV. Cabinet test izolat 4163 "CABINET TEST FIR INTRARE SRL", cont
@@ -46,8 +46,11 @@ contabilitatea" (T4). Fiecare tura se raporteaza inainte de urmatoarea.
   oficiale). RAMAS de adus dintr-un mirror accesibil (legislatie.just.ro respinge serverul): D205 102/2025, CPF
   207/2015; CF master consolidat de reimprospatat (pre-2025). Flag: validatorul D112_209 e ANTERIOR formei
   605/2026 (iulie 2026) -> DUK server o generatie in urma pe D112.
-- TURA 2 (datele care invalideaza) - urmeaza dupa confirmare Costin.
-- TURA 3 (mesajul catre utilizator pe fiecare tip de date invalide).
+- TURA 2 (datele care invalideaza) = GATA tura 28: CATALOG_INVALIDITATE.md - ~350 tipuri per declaratie (ce
+  invalideaza / ce incalca / sursa / mesaj curent a/b/c/d) + 11 teme transversale. Tintele: TURA 3 (T1 checksum
+  CUI/CNP nepre-validat 9/9, T2 valideaza() cod mort D300/D301/D406/D390, T3 coercitie tacita, T4 avertizeaza-dar-
+  emite, T6 passthrough netrunchiat, T9 exceptii brute); TURA 4 (T7 semantic, T8 non-impunere DUK).
+- TURA 3 (mesajul catre utilizator pe fiecare tip de date invalide) - urmeaza dupa confirmare Costin.
 - TURA 4 (reconcilierea sursa-vs-declaratie, gardata sa nu moara tacit - clasa D300 mort).
 
 ## (c) Ce e in lucru acum

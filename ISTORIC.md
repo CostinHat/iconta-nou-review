@@ -3851,3 +3851,14 @@ Descoperiri de "la zi": D112 validator D112_209 e ANTERIOR formei iulie-2026 (60
 in urma; D394 corpus era un amendator in urma; CF master consolidat pare stale (pre-2025). Reference-only
 (nefetchabil de pe server): D205 102/2025, CPF 207/2015. INDEX.json regenerat. Un commit; corpus files; DB/1968
 neatins. TURA 2 (datele care invalideaza) urmeaza dupa confirmare. Detalii: DECIZII tura 27.
+
+## 10.08.2026 (tura 28) — LANT legislatie TURA 2/4: catalogul exhaustiv al datelor care invalideaza
+
+TURA 2 din lantul de 4. Pentru fiecare declaratie, construit EXHAUSTIV tipurile de date care o invalideaza (10
+audituri paralele, fiecare tip construit pe date populate + rulat prin genereaza + DUKIntegrator, + XML corupt la
+DUK pt regulile neproductibile). Livrabil: CATALOG_INVALIDITATE.md (~350 tipuri, per declaratie: ce invalideaza / ce
+incalca / sursa / mesaj curent a/b/c/d). 11 teme transversale identificate ca tinte TURA 3 (mesajul: T1 checksum
+CUI/CNP nepre-validat 9/9, T2 valideaza() cod mort, T3 coercitie tacita, T4 avertizeaza-dar-emite, T6 passthrough
+netrunchiat, T9 exceptii brute) si TURA 4 (reconciliere: T7 semantic gresit-dar-consistent, T8 non-impunere DUK).
+Nimic de cod schimbat (catalog + registre); DB/1968 neatins. TURA 3 (mesajul catre utilizator) urmeaza dupa
+confirmare. Detalii: DECIZII tura 28 + CATALOG_INVALIDITATE.md.

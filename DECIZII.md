@@ -8655,3 +8655,40 @@ RAMAS (raportat, nu adus - decizie/urmarire Costin):
   valorile sunt acoperite, DAR fisierul-master CF e depasit -> de reimprospatat dintr-un mirror accesibil.
 - DISCREPANTE validator-vs-ordin (packaging vs lege): D112_209 in urma formei 605/2026 (real, flag DUK);
   D390_11/D394_31/D301_9 = doar bump de packaging, legea neschimbata (confirmat).
+
+## 10.08.2026 (tura 28) — LANT legislatie TURA 2/4: catalogul exhaustiv al datelor care invalideaza
+
+Comanda: identifica si CONSTRUIESTE toate tipurile de date care pot face o declaratie invalida - exhaustiv, "ce
+scapa aici nu se prinde mai tarziu"; pt FIECARE declaratie: ce o invalideaza, ce incalca, sursa, ce mesaj primeste
+utilizatorul. Metoda: 10 audituri paralele (agenti proaspeti), fiecare tip CONSTRUIT pe date POPULATE (injectii
+ROLLBACK) + rulat prin genereaza + DUKIntegrator; XML corupt trimis direct la DUK pt regulile pe care generatorul
+nu le poate produce (dovada ca gardul e load-bearing). Rezultat: CATALOG_INVALIDITATE.md (livrabil persistent +
+checklist TURA 3/4). Total ~350 tipuri catalogate; distributie mesaj (a) refuz / (b) avertisment / (c) emis-tacit
++DUK / (d) tacit-complet.
+
+11 TEME TRANSVERSALE (se repara o data, acopera multe declaratii) - tintele TUREI 3/4:
+- T1 checksum CUI/CNP NICIODATA pre-validat (9/9 declaratii) - dominanta; exista valideaza_cnp la import asociati,
+  nefolosit pe declaratii. Fix comun.
+- T2 valideaza(res) = COD MORT (D300/D301/D406/D390: genereaza cheama doar erori_generare, nu valideaza) - verificari
+  prietenoase calculate dar niciodata aratate -> user primeste eroarea DUK bruta.
+- T3 coercitie TACITA enum-necunoscut->default (D406 UOM->H87/plata->03/cota->taxcode; D301 tip->1/valuta->EUR; D394
+  CUI garbage->partener strain) - date GRESITE trec validarea.
+- T4 avertizeaza-dar-emite-INVALID (D394 op1 C/V fara op11 -> R233.5).
+- T5 cale MANUALA/IMPORT ocoleste gardurile (D205 imp1 gresit, D301 nr_doc/val, D710 obligatii).
+- T6 passthrough NETRUNCHIAT -> overflow (D301 nr_doc>C(20) leak pur; D112 D_1/D_2/D_23; D390 codO>12 CORUPE TVA).
+- T7 SEMANTIC gresit-dar-consistent -> DUK nu prinde (D205 imp1≠rate×baza, D301 RON curs≠1, D710 suma_ded, agregare
+  mis-contabilizata, CUI proprietar gresit) -> TINTA TURA 4 (reconciliere).
+- T8 gap-uri NON-IMPUNERE DUK (D300 R25=R12 neimpus -> TVA colectata supra-declarata; D101 d_reg/d_succ/cod_bug).
+- T9 EXCEPTII BRUTE in loc de mesaj (D710/D390 decimal.InvalidOperation, KeyError).
+- T10 UNREACHABLE = completitudine feature (rectificativa/succesor/grup/D406 Payments/CNP-03/D390 <cos>).
+- T11 VALIDATOR IN URMA FORMEI (D112_209 anterior formei 605/2026 - campuri noi neverificate; infra, flag Costin).
+
+Cele mai grave (d) - date gresite ajung la ANAF, nimeni nu prinde:
+- D205 imp1≠rate×baza pe beneficiar MANUAL (trece de generator SI DUK).
+- D300 CR-5 R12 fara R25 (V19/V20 neimpus) -> TVA colectata supra-declarata.
+- D394 G-d1 CUI cu litere -> partener strain tip3/4 -> LS cota0.
+- D406 coercitie UOM/plata/cota tacita -> date gresite DUK-valide.
+- D390 CUI UE checksum-invalid fara diagnoza per-partener + tara mistypata -> partener disparut.
+- D112 judet_casa bogus -> casa de sanatate gresita mascata.
+- D710 suma_ded aruncat tacit.
+Detalii complete per declaratie + surse: CATALOG_INVALIDITATE.md.
