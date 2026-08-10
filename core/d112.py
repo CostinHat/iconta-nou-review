@@ -183,6 +183,30 @@ def _d112_genereaza(prof, salariati, an, luna):
             zile = nzl - zile_cm
             if zile < 0:
                 zile = 0
+            # [d112_cm_suma_din_media_v1, 10.08.2026] Indemnizatia CM (D_20/D_21 = brut angajator/FNUASS)
+            # se ia din certificatul stocat (salariati_api.salveaza_concediu o calculeaza cu
+            # salarizare.calcul_cm). DAR d112 RECALCULEAZA deja media pe 6 luni (D_17/D_18/D_19 via
+            # _cm_media6) la generare: un certificat cu media>0 si zile>0 dar brut_ang=brut_fnuass=0
+            # (stocare incompleta) producea XML AUTO-CONTRADICTORIU (media X lei/zi x N zile, dar
+            # indemnizatie 0) -> DUKIntegrator V47/V52 ('baza CAS ptr indemnizatii OUG158=0 si exista
+            # zile prestatii<>0'; spec anaf_surse/d112_struct_anaf.txt asiguratB3 B3_7: 'ERR daca B3_7=0
+            # si B3_6>0'). Completam suma DOAR cand lipseste, din ACEEASI formula OUG 158/2005 art.17
+            # (Ci = media_zilnica x procent x zile), cu procentul canonic salarizare.procent_cm si
+            # split-ul angajator/FNUASS stocat (za/zf). Certificatele cu suma stocata (fluxul de salvare)
+            # raman NEATINSE (productia neschimbata). GARD: test_pull_declaratii.
+            # test_d112_cm_suma_lipsa_din_stocare_recalc_din_media.
+            for _c in cms:
+                if _d112int(_c.get("brut_ang")) or _d112int(_c.get("brut_fnuass")):
+                    continue
+                _za = int(_c.get("zile_ang") or 0); _zf = int(_c.get("zile_fnuass") or 0)
+                if _za + _zf <= 0:
+                    continue
+                _mm17, _mm18, _mmedia = _cm_media6(_c.get("baza"), s.get("data_angajare"), an, luna)
+                if _mmedia <= 0:
+                    continue
+                _pct = float(_sz.procent_cm(str(_c.get("cod") or "01").zfill(2), _za + _zf, la_data=ref))
+                _c["brut_ang"] = _d112int(_mmedia * _pct * _za)
+                _c["brut_fnuass"] = _d112int(_mmedia * _pct * _zf)
             cm_ang = sum(_d112int(x.get("brut_ang")) for x in cms)
             cm_fnuass = sum(_d112int(x.get("brut_fnuass")) for x in cms)
             cm_base = cm_ang + cm_fnuass

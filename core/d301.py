@@ -113,6 +113,27 @@ class Rezultat:
     avertismente: list = field(default_factory=list)
 
 
+def _data_doc_ro(v):
+    """data_doc in formatul OFICIAL ANAF ZZ.LL.AAAA, C(10) (anaf_surse/d301_struct_anaf.txt poz.35).
+    Normalizeaza din ORICE sursa: date/datetime, ISO 'AAAA-LL-ZZ', sau deja ZZ.LL.AAAA. Generatorul
+    emite formatul cerut de ANAF indiferent de ce e stocat (defense-in-depth; ruta valideaza inputul,
+    DAR datele pot ajunge pe alte cai - ex. import/backfill). DUK respinge orice != ZZ.LL.AAAA."""
+    if v is None:
+        return ""
+    if hasattr(v, "strftime"):
+        # format XML ANAF ZZ.LL.AAAA (spec poz.35); NU data_ro (e formator UI - vezi docstring-ul lui:
+        # "NU pentru XML/SAF-T") si NU strftime("%d..") (BACKEND_UI_BRUT: data zi-intai = pt OCHI).
+        # data_doc e CONTINUT DE FIR (XML), format dictat de ANAF, nu ales de UI -> il construim explicit.
+        return "%02d.%02d.%04d" % (v.day, v.month, v.year)
+    t = str(v).strip()
+    if not t:
+        return ""
+    m = re.match(r"^(\d{4})-(\d{2})-(\d{2})", t)   # ISO AAAA-LL-ZZ -> ZZ.LL.AAAA
+    if m:
+        return "%s.%s.%s" % (m.group(3), m.group(2), m.group(1))
+    return t   # deja ZZ.LL.AAAA (sau alt format - ruta valideaza inputul real la scriere)
+
+
 def calcul_d301(prof, perioada, operatiuni_raw):
     """PUR. operatiuni_raw: listă de dict {tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva}."""
     an, luna = perioada.an, perioada.luna
@@ -123,7 +144,7 @@ def calcul_d301(prof, perioada, operatiuni_raw):
         tip = int(r.get("tip") or 1)
         baza = calc_baza(r.get("val_valuta") or 0, r.get("curs"))
         tva = _r0(r.get("tva") or 0)
-        op = Operatiune(tip=tip, nr_doc=r.get("nr_doc") or "", data_doc=r.get("data_doc") or "",
+        op = Operatiune(tip=tip, nr_doc=r.get("nr_doc") or "", data_doc=_data_doc_ro(r.get("data_doc")),
                         val_valuta=float(r.get("val_valuta") or 0),
                         tip_valuta=(r.get("tip_valuta") or "EUR").upper(),
                         curs=float(r.get("curs")), baza=baza, tva=tva)

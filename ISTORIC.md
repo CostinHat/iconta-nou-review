@@ -3796,3 +3796,15 @@ avertismentul tura 22 (DUK a dovedit ca golul D100 nu e nil legal). D300 ramane 
 DELTA real (refuz cu hint facturi). Gard rescris (old-fail/new-pass); d100 suita 15 passed. RAMASE (raportate,
 de reparat pe rand la sursa): D394 codPR 21 (subcod NC la op11), D112 asiguratB3 CM (zile/baza CAS), D301 data_doc
 ISO (bug de SEED, nu app), D406 SupplierID SAF-T. Vezi DECIZII pt tabel + clasificare. Doar 4163; 1968 neatins.
+
+## 10.08.2026 (tura 24) — Refacut 4 declaratii conform specificatiilor oficiale (DUK-dovedit, de-circularizat)
+
+Comanda: verificarea de pana acum era CIRCULARA (cod+test pe aceeasi presupunere, neconfruntate cu validatorul) -
+refa toate declaratiile la spec oficial. Cele 4 defecte DUK din tura 23 reparate la sursa (anaf_surse/saft.xsd),
+fiecare gard old-fail/new-pass + re-validare DUKIntegrator (proba EXTERNA codului+testelor). Rezultat combinat,
+4 firme: D112 (era V47/V52), D301 (era ISO), D406 (era "SupplierID 0") -> toate VALID; D394 eroarea codPR
+"21 nu in lista"+R63/R80/R81 DISPARUTA (op11 emite subcod NC, nu centralizator). D301: divergenta fata de tura 23
+(clasase seed-only) -> defense-in-depth in generator (_data_doc_ro), acopera si import/backfill. RAMAS = date/
+decizie produs (Costin): D394 R233.6 (PF cereale fara subcod NC pe factura), D390 R24.1 (CUI UE fals in seed; app
+deja avertizeaza), D112 split zile stocat. Un singur commit prin poarta verde; doar 4163; 1968 neatins.
+Detalii+clasificare: DECIZII/GARZI/TESTE tura 24.

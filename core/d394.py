@@ -153,9 +153,12 @@ def jud_siruta(judet):
 
 # Nomenclatorul pentru operatiuni N (lit. D, OPANAF 77/2022 pct.10): "natura bunurilor/serviciilor
 # achizitionate de la persoane fizice - tip N - cereale si plante tehnice, deseuri, masa lemnoasa, terenuri,
-# constructii, ALTE bunuri si servicii". DIFERIT de art.331 (lit. C): validatorul v5 accepta pt tip_partener=2
-# DOAR codPR in 21-23 sau 32-35 (DUK regula R64.3, probat DUK 04.08.2026; 27/36 respinse). 34/35 = catch-all
-# "alte bunuri" / "alte servicii" - fac declarabila orice achizitie N de la persoana fizica.
+# constructii, ALTE bunuri si servicii". Codurile de categorie 22/23/32-35 sunt valide direct la op11
+# (2 cifre). EXCEPTIE cereale (21): centralizator - la op11 codul 21 NU e valid (DUKIntegrator D394_31,
+# reguli 2026.1: "valoarea '21' nu se afla in lista" + R63; spec anaf_surse/d394_struct_anaf.txt poz.68-70:
+# "op11(codPR)=bun pt bun<>21 SAU lung(op11(codPR))>2 pt bun=21"), se cere subcodul NC (lung>2), ca la art.331.
+# NOTA 10.08.2026: comentariul anterior sustinea ca validatorul accepta 21 pt tip_partener=2 - CREDINTA
+# NECORFRUNTATA, infirmata la confruntarea cu DUK (verificare circulara: cod+test scrise pe aceeasi presupunere).
 CODPR_N = {
     "cereale": "21",         # centralizator - cere subcod NC pe factura (ca la art.331)
     "deseuri": "22",
@@ -168,8 +171,15 @@ CODPR_N = {
 
 
 def codpr_N_din_categorie(categorie):
-    """codPR pentru o operatiune N (lit.D) din categoria bunurilor/serviciilor. None daca necunoscuta."""
-    return CODPR_N.get((categorie or "").strip().lower())
+    """codPR pentru o operatiune N (lit.D). None daca necunoscuta.
+    Pentru cereale accepta direct subcodul NC (1001, 1005...) - la op11 codul 21 (centralizator) NU e
+    valid (spec poz.68-70: pt bun=21 lung(op11(codPR))>2); subcodul e obligatoriu, ca pe calea art.331."""
+    if not categorie:
+        return None
+    c = str(categorie).strip()
+    if c in CODPR_CEREALE:
+        return c
+    return CODPR_N.get(c.lower())
 
 
 def codpr_din_categorie(categorie):
@@ -554,6 +564,20 @@ def calcul_d394(prof, perioada, date, manual=None):
         # bun = categoria pentru <detaliu>; codPR = subcodul NC pentru <op11>.
         # La cereale codul de categorie e 21, iar codPR trebuie sa fie subcodul NC.
         bun = "21" if cod in CODPR_CEREALE else cod
+        # [codpr21_v1 10.08.2026] SPEC OFICIAL anaf_surse/d394_struct_anaf.txt poz.68-70
+        # (nrLivV/bazaLivV/tvaLivV): "op11(codPR) = bun pt bun<>21 sau lung(op11(codPR))>2
+        # pt bun=21" -> pentru cereale (bun=21) codPR TREBUIE sa fie subcodul NC (lung>2:
+        # 1001 grau, 1005 porumb...), NU centralizatorul '21'. DUKIntegrator D394_31 (reguli
+        # 2026.1) respinge codPR='21' la op11: "valoarea '21' nu se afla in lista" + R63/R80/R81.
+        # Comentariul anterior (validatorul accepta 21 pt tip_partener=2) era o credinta
+        # necorfruntata cu validatorul - infirmata de DUK. Cand datele au doar categoria coarsa
+        # 'cereale' (fara subcod NC pe factura) NU putem emite codPR valid -> EXCLUDEM operatiunea
+        # din op11 cu avertisment (contabilul adauga subcodul NC pe factura), nu emitem cod invalid.
+        if bun == "21" and len(cod) <= 2:
+            avert.append("Operatiune cereale (op11, %s) fara subcod NC pe factura - D394 cere "
+                         "subcodul NC (lung>2, ex. 1001 grau / 1005 porumb), nu centralizatorul 21; "
+                         "contabilul adauga subcodul NC pe factura." % (cuiP or denP))
+            continue
         op11[k] = {"codPR": cod, "bun": bun, "nrFactPR": nr, "bazaPR": _int(baza),
                    "tvaPR": (None if tip in ("V", "N") else _int(tva))}
 

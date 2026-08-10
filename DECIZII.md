@@ -8417,3 +8417,50 @@ DEFECTE DUK RAMASE (raportate, de reparat pe rand la sursa):
   nu e bug de app (generatorul emite ce e in DB; ruta valideaza inputul real). Fix = corectat seed-ul.
 - D406 SupplierID pe PurchaseInvoices (SAF-T): structural, deep (XSD).
 D390 'codO invalid' pe ALFA/DELTA = CUI-uri UE FALSE din setul de test (nu bug de app; app deja avertizeaza).
+
+## 10.08.2026 (tura 24) — Refacut 4 declaratii conform specificatiilor oficiale (DUK-dovedit)
+
+Comanda: "verificarea de pana acum era CIRCULARA (cod+test scrise pe aceeasi presupunere, neconfruntate cu
+validatorul); refa toate declaratiile conform specificatiilor oficiale". Cele 4 defecte DUK ramase din tura 23
+reparate la SURSA (anaf_surse/XSD, nu memorie), fiecare cu gard old-fail/new-pass + re-validare DUK. Proba
+obiectiva = DUKIntegrator (EXTERN codului+testelor noastre) pe arborele combinat, 4 firme.
+
+- D394 codPR cereale (core/d394.py): spec anaf_surse/d394_struct_anaf.txt poz.68-70 ("op11(codPR)=bun pt bun<>21
+  SAU lung(op11(codPR))>2 pt bun=21") -> la op11 pt cereale se cere SUBCODUL NC (lung>2: 1001 grau, 1005 porumb),
+  NU centralizatorul '21'. op11 nu mai emite '21' (exclude cu avertisment cand lipseste subcodul); calea N
+  recunoaste subcodul NC. Comentariul-CREDINTA anterior ("validatorul accepta 21 pt tip_partener=2, probat 04.08")
+  = INFIRMAT de DUK - exact verificarea circulara semnalata. DUK: eroarea "21 nu se afla in lista"+R63/R80/R81
+  DISPARUTA; calea cu subcod '1005' -> D394 VALID.
+- D112 asiguratB3 concediu medical (core/d112.py): spec d112_struct asiguratB3 B3_7 ("ERR daca B3_7=0 si B3_6>0")
+  + OUG 158/2005 art.17 (Ci=media_zilnica x procent x zile). Defectul: d112 recalcula media pe 6 luni dar lua
+  indemnizatia (B3_12/B3_13) direct din coloanele stocate; certificat cu media>0/zile>0 dar brut_ang=brut_fnuass=0
+  -> XML auto-contradictoriu -> DUK V47/V52. Fix: completeaza indemnizatia din media x procent_cm(canonic) x zile
+  DOAR cand lipseste; certificatele cu suma stocata NEATINSE. DUK tenant_013+014: erori V47/V52 -> VALID
+  (B3_7=655=B3_12+B3_13).
+- D301 data_doc (core/d301.py): spec d301_struct poz.35 (data_doc C(10) Format ZZ.LL.AAAA). Codul emitea ISO.
+  DIVERGENTA fata de tura 23 (care-l clasase "bug de seed, nu app"): am ales DEFENSE-IN-DEPTH in generator
+  (_data_doc_ro normalizeaza orice format stocat -> ZZ.LL.AAAA), nu doar corectia seed-ului. Motiv: ruta valideaza
+  inputul, DAR datele pot ajunge pe alte cai (import/backfill) -> generatorul emite formatul cerut de ANAF
+  indiferent de stocare. DUK D301: VALID pe toate 4 firmele (fork raportase "gri" pe o rulare izolata; rularea
+  combinata confirma valid).
+- D406 SupplierID (core/d406.py): spec d406_schema_anaf.xlsx "5. Structures" + saft.xsd (regula SD.P.22/23:
+  SupplierID nu poate fi "0"; cod 08 'neidentificat' interzis EXPLICIT pe SupplierID). Codul dadea "0" pt PF fara
+  cod fiscal. Fix: _partener_id_saft -> cu cod fiscal 00/01/02; PF fara cod fiscal -> tipul 04+cod alfanumeric
+  (placeholder-ul PREVAZUT de norma, NU inventeaza CUI); fara cod nici nume -> ValueError (raporteaza, nu cade pe
+  "0"). DUK SAF-T: "SupplierID nu poate fi 0" -> VALID pe toate 4 firmele.
+
+GASIT, NU REPARAT IN COD (date/decizie produs Costin - clasa R233.6/R24.1: cod corect pe date corecte):
+- D394 R233.6 ramas pe ALFA (PF-01): achizitie cereale de la persoana fizica fara CUI, categorie coarsa 'cereale'
+  fara subcod NC pe factura -> op11 obligatoriu la PF dar fara subcod NU se poate emite codPR valid. DECIZIE:
+  (1) corecteaza seed PF-01 cu subcod NC real (ex 1005) -> D394 valid (dovedit pe calea cu subcod); SAU (2) daca
+  achizitia de cereale de la PF fara CUI nu e operatiune art.331/N reala (taxarea inversa cere ambii platitori
+  TVA), categorie_331 n-ar trebui setata. Spre deosebire de D394 codPR '21' (cod MEREU gresit -> fix de cod), aici
+  codul e corect; lipsa e in DATE.
+- D390 R24.1 pe ALFA/DELTA: CUI-uri UE FALSE in seed (12345678901 / 811111114 nu trec algoritmul de tara).
+  Generatorul deja AVERTIZEAZA ("X facturi fara CUI UE valid") si emite CUI-ul stocat - cu CUI real ar fi valid.
+  Gap de DATE (seed), NU defect de cod (asimetrie fata de D394 '21' care era mereu gresit). Decizie: seed cu CUI UE
+  reale, SAU exclude ops fara CUI UE valid (decizie de continut = produs).
+- D112 split zile stocat anomal (semnalat de fork): fixul completeaza suma pe split-ul STOCAT (za/zf); daca
+  certificatele de test se re-salveaza prin salariati_api.salveaza_concediu, split-ul canonic (min 5 + diminuare
+  OUG91/2025) ar diferi. Radacina reala: orice cale care scrie certificate fara a calcula suma (seed/import direct)
+  ar trebui sa calculeze suma la scriere. Decizie produs.

@@ -1390,3 +1390,10 @@ Cluster CM+pull: 56 passed.
 ## 10.08.2026 (tura 23) — Gard D100 refuz pe zero (DUK-dovedit invalid)
 - core/test_zero_base_declaratii.py::test_d100_pe_zero_refuza: D100 fara obligatie -> ValueError. Mutatie: cod vechi nu ridica.
 - ::test_d300_pe_zero_cu_facturi_avertizeaza / ::test_d300_nil_legal_fara_avertisment: D300 avertisment vs nil legal.
+
+## 10.08.2026 (tura 24) — Garzi declaratii refacute la spec oficial (DUK)
+- core/test_d394_codpr_cereale.py: op11 nu emite centralizatorul '21' (spec poz.68-70); subcod NC recunoscut. 3 teste.
+- core/test_d301_data_doc.py: data_doc normalizat la ZZ.LL.AAAA (spec poz.35) din ISO/date/canonic. 3 teste.
+- core/test_d406_supplierid.py: SupplierID PF fara CUI -> tip 04, nu "0" (SAF-T SD.P.22/23). 1 test (fixture efemera).
+- core/test_pull_declaratii.py::test_d112_cm_suma_lipsa_din_stocare_recalc_din_media: indemnizatie CM completata din
+  media x procent x zile (OUG158 art.17) cand lipseste din stocare.

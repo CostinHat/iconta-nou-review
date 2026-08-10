@@ -707,3 +707,46 @@ def test_d112_cod10_D13_aviz(schema):
     xml, _ = d112.genereaza(schema, SCHEMA_T, 2026, 6)
     m = re.search(r'<asiguratD[^>]*D_9="10"[^>]*/>', xml)
     assert m and 'D_13="55501"' in m.group(0), "cod 10 trebuie D_13 (nr aviz): %s" % (m.group(0) if m else "randul lipseste")
+
+
+def test_d112_cm_suma_lipsa_din_stocare_recalc_din_media(schema):
+    """[d112_cm_suma_din_media_v1, 10.08.2026] Un certificat CM stocat cu inputurile brute (zile+baza) dar
+    FARA suma calculata (brut_ang=brut_fnuass=0 - stocare incompleta) NU trebuie sa produca asiguratB3 cu
+    B3_7=0 (baza CAS indemnizatie OUG158) cand exista zile prestatii. DUKIntegrator respinge (V47/V52; spec
+    asiguratB3 B3_7: 'ERR daca B3_7=0 si B3_6>0'). d112 recalculeaza deja media 6 luni (D_17/18/19 via
+    _cm_media6); trebuie sa completeze si suma din formula OUG158 art.17 (Ci=media_zilnica x procent x zile).
+    COD VECHI: cm_ang=cm_fnuass=0 -> B3_7=B3_12=B3_13=0 -> pica. COD NOU: B3_7=B3_12+B3_13=SumaD_20+D_21>0."""
+    from core import d112
+    import re
+    with schema.cursor() as cur:
+        cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,'CM','S','1900101410011','2025-01-01',6000,8,false)")
+        cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) VALUES (1,'2025-01-01',6000)")
+        # certificat cod 01, 5 zile (3 ang + 2 FNUASS), baza 6000, DAR suma NECALCULATA (brut_ang=brut_fnuass=0)
+        cur.execute("INSERT INTO concedii_medicale (id,salariat_id,an,luna,cod,zile,zile_ang,zile_fnuass,brut_ang,"
+                    "brut_fnuass,baza,media_zilnica,serie,numar,data_acordare,data_inceput,data_sfarsit,loc_prescriere) "
+                    "OVERRIDING SYSTEM VALUE VALUES (1,1,2026,6,'01',5,3,2,0,0,6000,0,'AB','1',"
+                    "'2026-06-01','2026-06-01','2026-06-05',1)")
+    xml, _av = d112.genereaza(schema, SCHEMA_T, 2026, 6)
+    m = re.search(r'<asiguratB3[^>]*/>', xml)
+    assert m, "asiguratB3 lipseste din XML"
+    b3 = m.group(0)
+
+    def _a(name):
+        mm = re.search(r'%s="(\d+)"' % name, b3)
+        return int(mm.group(1)) if mm else 0
+    b3_6 = _a("B3_6"); b3_7 = _a("B3_7"); b3_12 = _a("B3_12"); b3_13 = _a("B3_13")
+    assert b3_6 == 5, "B3_6 (zile CM) asteptat 5: " + b3
+    # miezul gardului: baza CAS indemnizatie (B3_7) nu poate fi 0 cand exista zile prestatii (spec B3_7 ERR)
+    assert b3_7 > 0, ("COD VECHI: B3_7=0 (baza CAS indemnizatie OUG158) cu B3_6=%d zile prestatii "
+                      "-> DUKIntegrator V47/V52: %s" % (b3_6, b3))
+    assert b3_7 == b3_12 + b3_13, "B3_7 trebuie = B3_12+B3_13 (spec, B3_7S=0 pt cod 01): " + b3
+    # D_20+D_21 (indemnizatia emisa pe certificat) trebuie sa insumeze exact la B3_7 (spec C1_12=Sigma B3_7)
+    sd = (sum(int(x) for x in re.findall(r'D_20="(\d+)"', xml))
+          + sum(int(x) for x in re.findall(r'D_21="(\d+)"', xml)))
+    assert sd == b3_7, "SumaD_20+D_21=%d trebuie = B3_7=%d (baza CAS = indemnizatia emisa)" % (sd, b3_7)
+    # daca DUK e disponibil, certificatul completat trebuie sa fie VALID (nu doar non-zero orb)
+    from core import duk as _duk
+    if _duk.poate_valida("d112"):
+        r = _duk.valideaza(xml, "d112", an=2026, luna=6)
+        assert r["stare"] == "valid", "certificatul completat trebuie DUK-valid: " + (r.get("erori") or "")[:300]

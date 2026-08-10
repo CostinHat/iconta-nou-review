@@ -171,6 +171,30 @@ def _partener_registration_number(cui_brut):
     return "02" + tara + rest
 
 
+def _partener_id_saft(cui_brut, nume):
+    """CustomerID/SupplierID pt. un partener de pe FACTURA/master, cf. codificarii
+    oficiale ANAF (d406_schema_anaf.xlsx, '5. Structures', tip 00-11 + regula
+    sintactica S.I.23/S.I.26/SD.P.22/SD.P.23). Un furnizor/client de pe o factura are
+    mereu identitate cunoscuta -> ID-ul NU poate fi '0' (validatorul oficial: '2.
+    Altfel daca ... egal cu 0 se semnaleaza eroare sintactica - SupplierID nu poate fi
+    0'; codul 08 'neidentificat' e interzis EXPLICIT pe SupplierID). Reguli:
+      - cu cod fiscal   -> 00/01/02 (via _partener_registration_number)
+      - persoana fizica -> tipul 04 = 'cod client asociat in mod unic de catre
+        FARA cod fiscal    operatorul economic ... pentru pers. fizice care nu isi
+                           declara CNP-ul' (regula sintactica 1.5: doar alfanumeric,
+                           fara caractere speciale; max 33 = 35 SAFmiddle1textType - 2).
+                           Codul intern e derivat determinist din numele partenerului.
+    NU inventeaza un CUI: 04 e placeholder-ul PREVAZUT de norma pentru PF fara cod
+    fiscal declarat. Daca sistemul ar captura CNP-ul, tipul corect ar fi 03+CNP -
+    facturile nu poarta inca CNP, deci 04 e singura optiune valida. Fara cod fiscal SI
+    fara nume -> None: apelantul raporteaza (nu cade pe '0', nu inventeaza)."""
+    rid = _partener_registration_number(cui_brut)
+    if rid:
+        return rid
+    cod = _NEALNUM.sub("", (nume or "").upper())[:33]
+    return ("04" + cod) if cod else None
+
+
 def registration_number(prof):
     """RegistrationNumber conform schemei oficiale ANAF (d406_schema_anaf.xlsx,
     foaia "5. Structures", S.CMH.1 CompanyHeaderStructure), citat integral:
@@ -211,6 +235,7 @@ def plan_oficial(norma):
                 return {x.strip() for x in l.split("=", 1)[1].strip().split(",") if x.strip()}
     return set()
 _NEDIGIT = re.compile(r"\D")
+_NEALNUM = re.compile(r"[^A-Z0-9]")  # tip 04: doar alfanumeric, fara caractere speciale
 
 # valori enumerate confirmate din XSD
 TAB_VALORI = {"A", "I", "IFRS", "BANK", "INSURANCE", "NORMA39", "IFN", "NORMA36", "NORMA14", "ONG"}
@@ -1143,7 +1168,17 @@ def pull(conn, schema, an, luna):
                 # InvoiceType = COD SAFcodeType (Nom_Tipuri_facturi): 380 factura
                 # comerciala, 381 nota de credit (storno). Valoarea DB 'tip' NU e cod valid.
                 itype = "381" if r["storno_din_id"] else "380"
-                pid = _partener_registration_number(r["tert_cui"]) or "0"
+                # SupplierID/CustomerID pe factura NU poate fi "0" (regula oficiala
+                # SD.P.22/SD.P.23): furnizorul/clientul de pe o factura are mereu
+                # identitate. Fara cod fiscal (PF) -> tipul 04 + cod intern (vezi
+                # _partener_id_saft). "0" era respins de DUK SAF-T ("SupplierID nu
+                # poate fi 0") pe achizitiile de la persoane fizice.
+                pid = _partener_id_saft(r["tert_cui"], r["tert_nume"])
+                if not pid:
+                    raise ValueError(
+                        "D406: factura %s nu are nici cod fiscal nici nume de partener - "
+                        "nu se poate emite un SupplierID/CustomerID valid (interzis '0'). "
+                        "Completeaza partenerul pe factura." % (r["numar"] or r["id"]))
                 cont_l = "707" if este_v else "371"
                 sens = "C" if este_v else "D"
                 linii = []

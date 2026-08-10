@@ -2492,3 +2492,19 @@ core/test_zero_base_declaratii.py (rescris): D100 pe zero (cu SAU fara facturi) 
 zero'; D300 pe zero cu facturi -> avertisment; D300 nil fara facturi -> fara avertisment. MUTATIE: cod vechi
 (avertisment D100, XML invalid) -> test_d100 NU ridica -> PICA; cod nou -> 3 passed. Unealta DUK re-validare:
 frontend_test/valideaza_duk.py (necomis).
+
+## 10.08.2026 (tura 24) — 4 garzi: declaratii refacute la spec oficial (DUK-dovedit)
+- core/test_d394_codpr_cereale.py::test_op11_cereale_coarse_nu_emite_centralizatorul_21 /
+  ::test_op11_cereale_cu_subcod_NC_emite_codPR_valid / ::test_codpr_N_din_categorie_recunoaste_subcod_NC
+  (seam pur calcul_d394, fara DB). MUTATIE pe HEAD pre-fix: coarse 'cereale' -> op11 codPR=['21'] (pica
+  assert "21" not in), subcod '1005' -> op11=[] (pica assert "1005" in); cod nou 3 passed. Suita d394 97 passed.
+- core/test_d301_data_doc.py::test_data_doc_iso_normalizat / ::test_data_doc_date_obiect_normalizat /
+  ::test_data_doc_deja_canonic_pastrat: ISO/obiect date -> ZZ.LL.AAAA; canonic pastrat. MUTATIE: cod vechi
+  2 failed (ISO+date), cod nou 11 passed (fara regresie d301_rollup).
+- core/test_d406_supplierid.py::test_supplierid_pf_fara_cui_nu_e_zero: factura de la PF fara CUI -> SupplierID
+  != "0" si = 04+cod (fixture schema efemera, rollback). MUTATIE: cod vechi SupplierID="0" (pica), cod nou pass.
+- core/test_pull_declaratii.py::test_d112_cm_suma_lipsa_din_stocare_recalc_din_media: cert CM cod 01, 5 zile,
+  brut_ang=brut_fnuass=0 -> B3_7>0, B3_7=B3_12+B3_13, DUK valid. MUTATIE: cod vechi B3_7="0" (pica assert 0>0),
+  cod nou pass. Suita d112 82 passed.
+Proba obiectiva comuna: DUKIntegrator pe arborele combinat, 4 firme (frontend_test/valideaza_duk.py, PYTHONPATH=$PWD):
+D112/D301/D406 VALID; D394 eroarea codPR "21" DISPARUTA (ramane R233.6=date, vezi DECIZII).
