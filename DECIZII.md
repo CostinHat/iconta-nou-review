@@ -8383,3 +8383,16 @@ Parcurs firul de intrare pe cele 4 firme (cai reale). Doua concerne ridicate de 
    reflecta corect facturile NEcontabilizate (defectul DELTA), prins de cross-check (verifica_tva ROSU). Refuzul
    D300/D100 pe zero ar bloca declaratiile nil legale. DECIZIE DESCHISA Costin: vrei ca D100/D300 sa AVERTIZEZE
    (nu refuze) cand genereaza zero desi exista facturi necontabilizate?
+
+## 10.08.2026 (tura 22) — ZERO-BASE hardening D100/D300: avertisment non-blocant pe zero-suspect
+
+Decizie Costin (raspuns la §6 tura 21): un zero care poate fi defect nu trebuie sa arate ca un nil legal.
+Constrangere: NU bloca generarea/depunerea - nil-ul D300 e legal si obligatoriu, decide contabilul.
+IMPLEMENTAT: D100 si D300 emit un AVERTISMENT (res.avertismente, non-blocant, surfaced la UI prin getattr in
+ruta) cand declaratia e pe ZERO dar exista facturi in perioada:
+- D100: venituri contabilizate (70x) = 0 DAR facturi emise in fereastra trim > 0 (necontabilizate).
+- D300: R tot zero DAR facturi in fereastra > 0 (necontabilizate / TVA la incasare nedecontata).
+Nil legal (fara facturi) -> FARA avertisment (control negativ in gard). NU se calculeaza nicio valoare fiscala
+noua - doar se semnaleaza inconsistenta facturi-vs-declaratie. Probat pe DELTA real (D100 pe zero cu 3 facturi
+-> avertisment). Gard: core/test_zero_base_declaratii.py (old-fail/new-pass). Vezi si DECIZII tura 21 (D101
+checksum ANAF + nil D300 legal).

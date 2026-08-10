@@ -3779,3 +3779,11 @@ migrare ROSU parteneri + GRI istoric + control ROSU restante D300/D112 (M1-M4); 
 tura 14 prinde acum factura necontabilizata, README il marca RATAT), cota19 ROSU (L2), D390 ROSU (L3), D112 blocat
 SUSPECT (L5), D205 refuzat fara beneficiar. Doua concerne verificate non-bug (DECIZII: D101 checksum ANAF; nil D300
 legal). Niciun defect nou de reparat. Fara cod atins; scrieri doar in 4163; cabinetul 1968 neatins.
+
+## 10.08.2026 (tura 22) — ZERO-BASE: D100/D300 avertizeaza pe zero-suspect (decizie Costin din §6 tura 21)
+
+Hardening: D100 (venituri 70x=0 dar facturi emise) si D300 (R tot zero dar facturi in perioada) emit un
+avertisment non-blocant (res.avertismente) - un zero care poate fi defect nu mai arata ca un nil legal. NU
+blocheaza generarea/depunerea (nil-ul e legal, decide contabilul). Nil legal (fara facturi) nu avertizeaza.
+Probat pe DELTA real (D100 pe zero cu 3 facturi necontabilizate -> avertisment). Gard nou test_zero_base_
+declaratii (old-fail/new-pass); suita d100/d300 54 passed (fara regresie). Vezi DECIZII/GARZI.

@@ -570,4 +570,17 @@ def genereaza(conn, schema, perioada, manual=None):
     _xml = build_xml(res)
     from core.reconciliere_emis import verifica_total_plata_a as _vte
     _vte("d300", _xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res
+    # [zero_base_v1 10.08.2026] Decont pe zero care POATE fi defect != nil legal: R tot zero DAR facturi in
+    # perioada (necontabilizate / TVA la incasare nedecontata) -> semnaleaza (NU blocheaza; nil-ul e legal).
+    if not any(res.R.values()):
+        from core import common as _c
+        _inc, _sf = _c.fereastra_tva(perioada, _c.perioada_tva_tip(prof))
+        with conn.cursor() as _cur:
+            _cur.execute("SELECT count(*) FROM facturi WHERE data_emitere >= %s AND data_emitere < %s",
+                         (_inc.isoformat(), _sf.isoformat()))
+            _nf = _cur.fetchone()[0]
+        if _nf:
+            res.avertismente.append(
+                "Decont pe zero: nicio valoare declarata, dar exista %d facturi in perioada "
+                "(necontabilizate sau TVA la incasare nedecontata). Nil-ul e legal - confirma ca nu lipsesc date." % _nf)
     return _xml, res

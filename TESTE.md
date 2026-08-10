@@ -1382,3 +1382,7 @@ Cluster CM+pull: 56 passed.
 - frontend_test/proba_wizard_antet.py: calea 'Migrare cabinet' - back revine la meniu + antet fara acumulare.
   Mutatie: cod vechi exit 1, cod nou exit 0. Rulare manuala (nu in pre-commit; pytest nu colecteaza frontend_test/).
 - frontend_test/observa_*.py: unelte de observatie per-wizard (back-destinatie/acumulare), fara verdict.
+
+## 10.08.2026 (tura 22) — Gard ZERO-BASE D100/D300
+- core/test_zero_base_declaratii.py::test_zero_base_d100_d300: D100/D300 pe zero cu facturi -> avertisment;
+  nil legal (fara facturi) -> fara avertisment. Mutatie: cod vechi avertismente=[] -> pica.

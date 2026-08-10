@@ -120,6 +120,7 @@ class RezultatD100:
     prof: dict = field(default_factory=dict)
     obligatii: list = field(default_factory=list)
     total_plata_a: int = 0
+    avertismente: list = field(default_factory=list)
 
 
 def calcul_d100(prof, an, luna, obligatii):
@@ -284,4 +285,17 @@ def genereaza(conn, schema, perioada, manual=None):
     xml = build_xml(res)
     from core.reconciliere_emis import verifica_total_plata_a as _vte
     _vte("d100", xml, res.total_plata_a)   # poarta pe ARTEFACT: totalPlata_A parsat din emis == res
+    # [zero_base_v1 10.08.2026] Un D100 pe zero care POATE fi defect nu trebuie sa arate ca un nil legal:
+    # venit contabilizat (70x)=0 DAR facturi emise in perioada -> semnaleaza (NU blocheaza; nil-ul e legal,
+    # decide contabilul). Vezi DECIZII 10.08 + core/test_zero_base_declaratii.py.
+    if not venituri:
+        _inc, _sf = perioada.interval()
+        with conn.cursor() as _cur:
+            _cur.execute("SELECT count(*) FROM facturi WHERE directie='emisa' "
+                         "AND data_emitere >= %s AND data_emitere < %s", (_inc.isoformat(), _sf.isoformat()))
+            _nf = _cur.fetchone()[0]
+        if _nf:
+            res.avertismente.append(
+                "D100 pe zero: venituri contabilizate (cont 70x) = 0, dar exista %d facturi emise in perioada. "
+                "Verifica contabilizarea - nil-ul e legal, dar confirma ca nu lipsesc date." % _nf)
     return xml, res

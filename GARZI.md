@@ -2480,3 +2480,9 @@ navigheaza calea reala 'Migrare cabinet' > Solduri > (back) > Salariati si asert
 cabinet' + antetul nu acumuleaza. MUTATIE PROBATA: cod vechi exit 1 (back ramane pe strat; 'Solduri' se acumuleaza
 in fir), cod nou exit 0. NU in poarta verde (nume non-test_ -> pytest nu-l colecteaza).
 Ruleaza: venv/bin/python3 frontend_test/proba_wizard_antet.py
+
+## 10.08.2026 (tura 22) — Gard ZERO-BASE D100/D300 (avertisment pe zero-suspect)
+core/test_zero_base_declaratii.py: firma cu factura emisa necontabilizata -> D100 pe zero EMITE avertisment;
+D300 pe zero (TVA la incasare nedecontata) cu facturi EMITE avertisment; control negativ (fara facturi = nil
+legal) -> FARA avertisment. MUTATIE PROBATA: cod vechi -> D100 avertismente=[] (pica); cod nou -> 1 passed.
+Non-blocant (nu blocheaza generarea/depunerea). Efemer, drop+rollback.
