@@ -3910,3 +3910,16 @@ DRIFT REAL gasit + reparat (registrul = baza de cunostinte a AI-ului F152 raport
 Gard nou: test_sursa_cod_refera_fisiere_care_exista (registrul LIVE/PARTIAL nu poate cita fisiere inexistente la calea exacta) - probat ROSU pe registrul nereparat (F117/F121/F152/F188 FAILED), verde dupa.
 Ramas nereparat (GARZI): F176 cita F160 (ELIMINAT) - cross-ref intern OAuth, cuplaj "cinci pozitii" riscant; 3 comentarii cod stale (login.js:418, main.py:2728/2786).
 Poarta verde: 1886 passed / 3 skipped / 16 xfailed, verificator DS 0.
+
+## 10.08.2026 — LOT 1: Transversal & infrastructura (35 LIVE) [campania verifica-201]
+Verificat cele 35 LIVE negrupate (transversal/infra/superadmin).
+FUNDATII fara proba -> PROBATE:
+- F008 Autentificare: cod (bcrypt+scrypt dual verifica_parola_orice; JWT rol din DB; 4 roluri) + LIVE (/auth/login 200 + JWT 148c; parola gresita 401).
+- F001 Client AI: ANTHROPIC_API_KEY prezenta in procesul viu (/proc/PID/environ, din api_keys.env); apel REAL Claude (model claude-sonnet-4-6) -> 'OK'; disponibil()=True.
+- F116 Securitate perimetru: rate-limit (5r/m auth, 20r/s gen, 429) + TLS (letsencrypt TLSv1.2/1.3) + fail2ban 3 jails PREZENTE; HEADERELE (HSTS/X-Frame/X-Content/Referrer) ABSENTE (add_header=0 in nginx live) -> gol real; registru corectat + flag decizie infra.
+CRONURI toate instalate + ruleaza: crontab (F083 19:00, F110 07:00, F111 07:30, F112/F060 08:00/09:00, F201 04:00, F202 */15) + timers systemd (F177 refresh, F178 poll, F179 receive, F170 backup) cu rulari recente.
+MIGRARI (F007/F053/F059/F079/F084/F085/F150) cablate: rute live + importa() exista; proba functionala adanca = test-debt.
+PWA F113: manifest.json + sw.js servite 200 (standalone, start_url /, 2 icons).
+DRIFT REGISTRU reparat: F150 Sursa cod proza ("identificat 13.07") -> core/retete_import_api.py+retete_api.py+main.py (importul EXISTA); F122 Sursa cod GOL -> core/salarizare.py+main.py (cod-10 CM art.19 confirmat).
+Restul (F092/F104/F105/F106/F117/F124/F165/F189-191/F199-202/F203): cod intact (Lot 0) + majoritatea cu test in suita (verde in poarta) sau proba anterioara (GDPR real 25.07, F165 11 teste, F189-191 functional).
+Poarta verde: 1886 passed/3 skipped/16 xfailed, verificator 0.

@@ -2584,3 +2584,9 @@ test_d205 (test_id_inreg), test_d710 (test_cod_bugetar - bumpuit √).
 - **F176 Descriere** cita F160 (ELIMINAT, e-Factura pt cont gratuit) in "e-Factura/e-Transport (F126/F160/F121) ... cinci pozitii un singur auth". Lasat: scoaterea lui F160 cere re-verificarea numaratorii "cinci pozitii" (nu doar stergerea ID-ului). Harm mic (ID intern, nu claim de feature user-facing servit ca disponibil). De reincadrat cand se atinge F176 (Lot 1 transversal - F176 e conectorul OAuth SPV/ANAF).
 - **3 comentarii cod stale** referind conceptul "gratuit" ELIMINAT 26.07: static/js/ecrane/login.js:418 ("// null in modul gratuit"), main.py:2728 + :2786 ("acces client+gratuit+cabinet"). Cosmetic - comentarii, NU registru, deci nu feed AI-ul. De curatat oportunist la atingerea fisierelor.
 - **F035/F036/F037 D406 PARTIAL**: registru EXACT (marcat corect PARTIAL/nedepunabil), dar familia D406 ramane NEDEPUNABILA (SourceDocuments = linie sintetica per factura in loc de factura_linii reale + Payments gol). Reparatia = feature mare (liniile reale + sectiunea Payments) -> decizie de scope, in afara Lot 0.
+
+## 10.08.2026 — Lot 1: datorii/goluri
+- **F116 headere de securitate NEDEPLOYATE** (HSTS/X-Frame/X-Content/Referrer): gol real de securitate; decizie infra Costin. nginx server config in afara git.
+- **Test-debt migrari** (F007/F053/F059/F079/F084/F085/F150): cablate dar fara proba functionala adanca (fara pytest). De acoperit cu smoke pe cabinet 4163.
+- **F124 "Testare pilot P1-P5"**: campanie de test finalizata, NU feature de cod; Sursa cod "DE_FACUT sectiunea 1" stale/contradictoriu-cu-LIVE. De reincadrat (milestone) sau clarificat.
+- **F035/F036/F037 D406 PARTIAL** (mostenit Lot 0).

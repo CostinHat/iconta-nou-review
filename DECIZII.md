@@ -8813,3 +8813,8 @@ Proba: contul gratuit ELIMINAT 26.07 aparea inca in 5 descrieri LIVE (F092/F171/
 Sub-decizie (grupare stabila la editarea descrierii): F188 fixat in EXPLICIT="Cabinet si portal client" in genereaza_grupe_functii.py. Gruparea VIZIBILA a paginii Functionalitati NU trebuie sa depinda de cuvintele din descriere - o corectie de text (scoaterea "cont gratuit") mutase F188 keyword-grup Cabinet->Contabilitate. Override peste keyword; login.js GRUPE_FUNC regenerat = identic (no-op).
 
 RAMAS (nereparat, notat GARZI): F176 pastreaza cross-ref la F160 (ELIMINAT) in "e-Factura/e-Transport (F126/F160/F121), cinci pozitii un singur auth" - scoaterea lui F160 cere re-verificarea numaratorii "cinci pozitii"; harm mic (ID intern, nu claim user-facing). De reincadrat la Lot 1 (transversal, F176 e conectorul OAuth).
+
+## 10.08.2026 — F116 headere de securitate: registru corectat la adevar, deploy = decizie infra (Lot 1)
+Constatare: F116 pretindea "headere (HSTS, X-Frame-Options, X-Content-Type, Referrer-Policy)" dar nginx live are add_header=0 (zero headere pe raspuns 443, verificat 10.08). Registrul mintea (AI ar descrie protectii inexistente).
+Decizie: registrul corectat la ADEVAR (headere NEDEPLOYATE). Deploy-ul NU se face nesupravegheat: nginx server config (/etc/nginx/sites-available/iconta) e root-owned, in afara git, ne-gated (fara poarta verde); reload afecteaza TOTI userii reali (inclusiv cabinet 1968); HSTS semi-permanent. Per §2.3 pct.3 (infra pe real = deployment, consemnat) + constrangerea "1968 nu se atinge" -> FLAG Costin (§6 raport Lot 1).
+Recomandare: adu nginx server config sub versionare (config_server/) ca driftul de headere sa fie guardabil mecanic.

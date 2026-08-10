@@ -1453,3 +1453,11 @@ Gard nou: core/test_registru_functionalitati.py::test_sursa_cod_refera_fisiere_c
 
 Suita dupa Lot 0: 1886 passed / 3 skipped / 16 xfailed. Verificator DS TOTAL 0.
 Verificat MANUAL (nu gard mecanic, notat): ELIMINAT (10) rute 404 pe app viu (127.0.0.1:8010) + cod absent; RESPINS/AMANAT/PLANIFICAT fara cod-fantoma; PARTIAL D406 registru exact (nedepunabil).
+
+## 10.08.2026 — Lot 1 (transversal & infra) verificat
+Fundatii PROBATE (erau fara proba): F008 (/auth/login live 200+401), F001 (apel real Claude 'OK'), F116 (partial: rate-limit/TLS/fail2ban OK, headere absente=gol).
+Cronuri: crontab + timers systemd toate instalate/ruleaza (F083/F110/F111/F112/F060/F177/F178/F179/F170/F201/F202).
+Migrari cablate (rute+importa): F007/F053/F059/F079/F084/F085/F150; proba functionala adanca = test-debt.
+PWA F113: manifest+sw servite 200. Registru reparat: F150+F122 Sursa cod -> cod real. Gard test_sursa_cod verde (3/3).
+Suita: 1886 passed/3 skipped/16 xfailed, verificator 0.
+LIMITA gard: Sursa cod PROZA (fara path-token) nu e prinsa de test_sursa_cod (F150/F122/F124 treceau) - de intarit daca reapare.
