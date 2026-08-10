@@ -3890,3 +3890,23 @@ valori, apel rupt->ROSU "verificare intrerupta" (nu gri tacit). Baseline DUK-val
 LANT COMPLET (T1-4, turele 27-30): corpus legislatie la zi -> catalog invaliditate exhaustiv -> mesaj exact pre-DUK
 -> reconciliere sursa-vs-declaratie. "Declaratie invalida" si "declaratie valida care nu reflecta contabilitatea"
 prinse acum, nu tacit. Detalii: DECIZII tura 30 + CATALOG_INVALIDITATE.md.
+
+
+## 10.08.2026 — LOT 0: Adevarul registrului (campania "verifica toate 201 functionalitatile")
+Comanda Costin: ia toate functionalitatile din FUNCTIONALITATI.csv (inclusiv conformitate Design System), verifica-le si repara pe masura; 9 loturi aprobate; Lot 0 = adevarul registrului, coloana vertebrala. Accente: (1) ELIMINAT - probeaza ca rutele NU mai raspund pe app viu; (2) marcaj explicit al celor 33 LIVE fara proba.
+
+Baleiaj cap-coada al celor 201 intrari (PRIMA verificare integrala a registrului, nu pe bucati):
+- Structural: toate referintele Sursa cod exista, exceptie F186 (ELIMINAT) admin_gratuite.js corect absent.
+- ELIMINAT (10, contul gratuit scos 26.07): probate VII pe app (127.0.0.1:8010) - /public/register-gratuit, /register-gratuit, /admin/conturi-gratuite, /admin/coliziuni-cui toate 404 (GET+POST) + cod absent (grep 0). Accent Costin onorat: cod scos din registru dar viu = mai grav; NU e cazul.
+- RESPINS(7)/AMANAT(6)/PLANIFICAT(3): zero cod-fantoma. D106/D230/D392/D094/D700/D307/D207/D177 fara generator (D207 = doar lista import istoric + comentarii D205). F067 link-plata = mock (provider real Netopia/Stripe doar cu env keys, absente pe prod) -> F123 PLANIFICAT corect.
+- PARTIAL(3, D406 lunar/active/stocuri): registru EXACT (D406 nedepunabil: SourceDocuments linie sintetica + Payments gol) - nu drift; reparatie = feature mare, amanat (GARZI).
+
+DRIFT REAL gasit + reparat (registrul = baza de cunostinte a AI-ului F152 raportari_ai.py; stale = AI minte utilizatorii):
+- F188 Sursa cod cita `register_gratuit` (functie ELIMINATA 26.07) -> scoasa; +firme.js normalizat la cale completa.
+- F117/F121/F152 Sursa cod: nume scurte (admin_sanatate.js / etransport_ecran.js / raportari_api.py) -> cai complete.
+- Descrieri LIVE care descriau contul gratuit ELIMINAT ca activ (exact ce citeste AI-ul): F092 (coliziune_gratuit_v1 + /admin/conturi-gratuite/suspenda), F171 ("Disponibil si in cont gratuit"), F188 (onboarding "cont gratuit F160 self-serve" -> "inregistrare cabinet self-service" + Acces UI), + minore F172 ("contul gratuit NICIODATA"), F180 ("ca F185").
+- F188 fixat explicit in grupa "Cabinet si portal client" (genereaza_grupe_functii EXPLICIT) ca fixul de descriere sa NU-i mute grupa vizibila (verificator GRUPE_FUNC_STALE prinsese mutarea keyword Cabinet->Contabilitate); login.js GRUPE_FUNC regenerat = no-op.
+
+Gard nou: test_sursa_cod_refera_fisiere_care_exista (registrul LIVE/PARTIAL nu poate cita fisiere inexistente la calea exacta) - probat ROSU pe registrul nereparat (F117/F121/F152/F188 FAILED), verde dupa.
+Ramas nereparat (GARZI): F176 cita F160 (ELIMINAT) - cross-ref intern OAuth, cuplaj "cinci pozitii" riscant; 3 comentarii cod stale (login.js:418, main.py:2728/2786).
+Poarta verde: 1886 passed / 3 skipped / 16 xfailed, verificator DS 0.

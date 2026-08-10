@@ -8803,3 +8803,13 @@ Rezultat: "declaratie invalida" (T1-3) si "declaratie valida care nu reflecta co
 prinse PRE-DUK (mesaj exact) sau la reconciliere (divergenta sursa), nu tacit. Decizii produs deschise (Costin):
 D101 scadenta LL+3/LL+6, D394 G-x1 asimetrie cota, D301 pers_inreg (coloana inreg_art317), D390 VIES full-27,
 completitudine feature (rectificativa/succesor/grup), actualizare DUK D112_209, panel UI reconciliere.
+
+
+## 10.08.2026 — Registrul FUNCTIONALITATI.csv = baza de cunostinte a AI-ului: descrierile trebuie sa fie ADEVARUL curent (Lot 0)
+Decizie: coloanele servite AI-ului (raportari_ai.py: Functionalitate/Descriere/Acces UI, filtrate pe Stare LIVE) NU au voie sa descrie feature-uri ELIMINATE ca active. Un registru stale nu e cosmetica - AI-ul de triaj (F152) raspunde clientilor DIN el, deci minte.
+Temei: comanda Costin ("un registru stale inseamna ca AI-ul minte utilizatorii; daca gasesti intrari care nu mai corespund realitatii, corecteaza registrul, nu doar codul"). Sursa: core/raportari_ai.py::_baza_cunostinte foloseste r[0]/r[1]/r[4] pe randurile LIVE.
+Proba: contul gratuit ELIMINAT 26.07 aparea inca in 5 descrieri LIVE (F092/F171/F172/F180/F188) + F188 Sursa cod cita functia moarta register_gratuit. Toate reparate. Gard nou pe existenta fisierelor (test_sursa_cod_refera_fisiere_care_exista), ROSU pe registrul vechi.
+
+Sub-decizie (grupare stabila la editarea descrierii): F188 fixat in EXPLICIT="Cabinet si portal client" in genereaza_grupe_functii.py. Gruparea VIZIBILA a paginii Functionalitati NU trebuie sa depinda de cuvintele din descriere - o corectie de text (scoaterea "cont gratuit") mutase F188 keyword-grup Cabinet->Contabilitate. Override peste keyword; login.js GRUPE_FUNC regenerat = identic (no-op).
+
+RAMAS (nereparat, notat GARZI): F176 pastreaza cross-ref la F160 (ELIMINAT) in "e-Factura/e-Transport (F126/F160/F121), cinci pozitii un singur auth" - scoaterea lui F160 cere re-verificarea numaratorii "cinci pozitii"; harm mic (ID intern, nu claim user-facing). De reincadrat la Lot 1 (transversal, F176 e conectorul OAuth).

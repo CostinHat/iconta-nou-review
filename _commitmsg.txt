@@ -1,0 +1,20 @@
+Lot 0: adevarul registrului FUNCTIONALITATI.csv (campania verifica-toate-201)
+
+Baleiaj cap-coada al celor 201 functionalitati (prima verificare integrala, nu pe bucati).
+
+Drift reparat (registrul = baza de cunostinte a AI-ului F152; stale = AI minte utilizatorii):
+- F188 Sursa cod cita register_gratuit (functie ELIMINATA 26.07) -> scos
+- F117/F121/F152 Sursa cod: nume scurte -> cai complete
+- descrieri LIVE care descriau contul gratuit ELIMINAT ca activ: F092, F171, F172, F180, F188 (+Acces UI)
+- F188 fixat explicit in grupa "Cabinet si portal client" (genereaza_grupe_functii) ca fixul de
+  descriere sa nu-i mute grupa vizibila; login.js GRUPE_FUNC regenerat = no-op
+
+Gard nou: test_sursa_cod_refera_fisiere_care_exista (LIVE/PARTIAL nu poate cita fisiere inexistente
+la calea exacta) - probat ROSU pe registrul nereparat (F117/F121/F152/F188), verde dupa.
+
+Verificat manual (accent Costin): ELIMINAT (10) rute 404 pe app viu (127.0.0.1:8010) + cod absent;
+RESPINS/AMANAT/PLANIFICAT fara cod-fantoma; PARTIAL D406 registru exact (nedepunabil).
+
+Poarta verde: 1886 passed / 3 skipped / 16 xfailed, verificator DS 0.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>

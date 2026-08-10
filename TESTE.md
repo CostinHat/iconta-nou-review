@@ -1443,3 +1443,13 @@ Cluster CM+pull: 56 passed.
 - core/test_d300_r25_r12.py: D300 R25=R12 (V19/V20 neimpus de DUK).
 - core/test_d710_suma_ded.py: D710 suma_ded (121 aplicat / 103 blocat).
 - core/test_control_reconciliere_vizibila.py: reconciliere vizibila in Control fiscal (acelasi mecanism, anti-mort).
+
+
+## 10.08.2026 — Lot 0 (adevarul registrului)
+Gard nou: core/test_registru_functionalitati.py::test_sursa_cod_refera_fisiere_care_exista
+- ce face imposibil: o intrare LIVE/PARTIAL care citeaza in coloana Sursa cod un fisier inexistent la calea EXACTA (modul mutat/redenumit/eliminat fara update de registru). Registrul e harta de cod a AI-ului F152; checkul vechi (numar campuri/ID) nu prinde asta - campurile pot fi aliniate si calea moarta.
+- non-LIVE excluse (ELIMINAT/RESPINS/AMANAT/PLANIFICAT au codul legitim absent).
+- proba ROSIE (registru nereparat): F117 admin_sanatate.js / F121 etransport_ecran.js / F152 raportari_api.py / F188 firme.js -> FAILED (4 intrari LIVE cu nume scurt/cale moarta); VERDE dupa normalizare la cale completa. "Un gard care nu pica pe codul vechi nu e gard" - probat.
+
+Suita dupa Lot 0: 1886 passed / 3 skipped / 16 xfailed. Verificator DS TOTAL 0.
+Verificat MANUAL (nu gard mecanic, notat): ELIMINAT (10) rute 404 pe app viu (127.0.0.1:8010) + cod absent; RESPINS/AMANAT/PLANIFICAT fara cod-fantoma; PARTIAL D406 registru exact (nedepunabil).

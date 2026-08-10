@@ -2578,3 +2578,9 @@ test_d205 (test_id_inreg), test_d710 (test_cod_bugetar - bumpuit √).
 - core/test_d710_suma_ded.py: suma_ded nu mai e aruncat (121 aplicat max(dat-ded,0)+emis; 103 blocat R14-21).
 - core/test_control_reconciliere_vizibila.py: reconciliaza_declaratii vizibil in Control fiscal, ACELASI mecanism;
   divergenta -> ROSU numind ambele valori; apel rupt -> ROSU "VERIFICARE INTRERUPTA" (NU gri tacit); verde cand reconciliaza.
+
+
+## 10.08.2026 — Lot 0: datorii ramase (nereparate)
+- **F176 Descriere** cita F160 (ELIMINAT, e-Factura pt cont gratuit) in "e-Factura/e-Transport (F126/F160/F121) ... cinci pozitii un singur auth". Lasat: scoaterea lui F160 cere re-verificarea numaratorii "cinci pozitii" (nu doar stergerea ID-ului). Harm mic (ID intern, nu claim de feature user-facing servit ca disponibil). De reincadrat cand se atinge F176 (Lot 1 transversal - F176 e conectorul OAuth SPV/ANAF).
+- **3 comentarii cod stale** referind conceptul "gratuit" ELIMINAT 26.07: static/js/ecrane/login.js:418 ("// null in modul gratuit"), main.py:2728 + :2786 ("acces client+gratuit+cabinet"). Cosmetic - comentarii, NU registru, deci nu feed AI-ul. De curatat oportunist la atingerea fisierelor.
+- **F035/F036/F037 D406 PARTIAL**: registru EXACT (marcat corect PARTIAL/nedepunabil), dar familia D406 ramane NEDEPUNABILA (SourceDocuments = linie sintetica per factura in loc de factura_linii reale + Payments gol). Reparatia = feature mare (liniile reale + sectiunea Payments) -> decizie de scope, in afara Lot 0.

@@ -55,3 +55,43 @@ def test_fiecare_id_este_valid():
         + "\n-> un ID care nu e F\\d+ semnaleaza un rand decalat care totalizeaza fortuit "
           "numarul corect de campuri (checkul de numar-campuri nu l-ar prinde)."
     )
+
+
+def test_sursa_cod_refera_fisiere_care_exista():
+    """Anti-drift SEMANTIC (nu doar structural): fiecare fisier citat in coloana `Sursa cod`
+    pentru o functionalitate LIVE sau PARTIAL trebuie sa existe pe disc, la calea EXACTA scrisa.
+
+    DE CE: registrul e harta de cod pe care se sprijina AI-ul (F152, raportari_ai.py) si pagina
+    Functionalitati. O intrare LIVE care trimite catre un modul/ecran disparut (mutat, redenumit,
+    eliminat) = registru care MINTE - descrie cod inexistent. Checkul de structura (numar campuri/ID)
+    NU prinde asta: campurile pot fi perfect aliniate si totusi calea sa fie moarta.
+
+    NON-LIVE excluse: ELIMINAT/RESPINS/AMANAT/PLANIFICAT au codul LEGITIM absent - coloana lor
+    Sursa cod documenteaza unde A STAT codul (ex. F186 admin_gratuite.js, sters corect).
+
+    PRINS REAL 10.08.2026 (Lot 0, baleiaj cap-coada al registrului): 4 intrari LIVE citau nume
+    scurte fara cale (F117 admin_sanatate.js, F121 etransport_ecran.js, F152 raportari_api.py,
+    F188 firme.js) - fisiere reale, dar in static/js/ecrane/ sau core/; F188 in plus cita
+    `register_gratuit`, functie a contului gratuit ELIMINAT 26.07. Normalizate la cale completa."""
+    randuri = _randuri()
+    header = randuri[0]
+    idx_src = header.index("Sursa cod")
+    idx_st = header.index("Stare")
+    idx_id = header.index("ID")
+    path_re = re.compile(r"[\w][\w./-]*\.(?:py|js|sql|html|css)")
+    baza = _CALE.parent
+    rele = []
+    for r in randuri[1:]:
+        stare = (r[idx_st] or "").strip()
+        if not (stare.startswith("LIVE") or stare.startswith("PARTIAL")):
+            continue
+        for tok in path_re.findall(r[idx_src] or ""):
+            if not (baza / tok).exists():
+                rele.append((r[idx_id], stare[:12], tok))
+    assert not rele, (
+        "FUNCTIONALITATI.csv: intrari LIVE/PARTIAL care citeaza fisiere inexistente la calea scrisa:\n"
+        + "\n".join("  %s [%s] -> %s" % (i, s, t) for i, s, t in rele)
+        + "\n-> registrul e harta de cod a AI-ului (F152); un fisier citat trebuie sa existe la calea"
+          " EXACTA. Nume scurt (firme.js) => pune calea completa (static/js/ecrane/firme.js). Modul"
+          " disparut => actualizeaza intrarea sau mut-o la ELIMINAT."
+    )
