@@ -449,8 +449,14 @@ def _d112_genereaza(prof, salariati, an, luna):
             _c2a.append('C2_41a="%d" C2_42a="%d" C2_44a="%d" C2_46a="%d"' % (_r41[0], _r41[1], _r41[3], _r41[5]))
         if _r5[0]:  # Rd.5 risc maternal
             _c2a.append('C2_51="%d" C2_52="%d" C2_54="%d" C2_56="%d"' % (_r5[0], _r5[1], _r5[3], _r5[5]))
-        if _r07[0]:  # carantina (cod 07): rand propriu C2_211-216
-            _c2a.append('C2_211="%d" C2_212="%d" C2_214="%d" C2_216="%d"' % (_r07[0], _r07[1], _r07[3], _r07[5]))
+        if _r07[0]:  # carantina (cod 07): rand propriu C2_211-216 (Rd2.2) - TOATE 6 coloanele.
+            # C2_211=nr cazuri, C2_212=Sum D_16 (total zile), C2_213=Sum D_14 (zile suportate de angajator,
+            # struct rd.49c l.1684), C2_214=Sum D_15 (zile FNUASS, rd.49d), C2_215=Sum D_20 (suma angajator,
+            # rd.49e l.1699), C2_216=Sum D_21 (suma FNUASS, rd.49f). Carantina 07 NU e FNUASS-integral
+            # (salarizare._CM_COD_FNUASS_INTEGRAL: angajatorul suporta primele zile) -> C2_213/C2_215 > 0 si
+            # OBLIGATORII. Omiterea lor => DUK A49c (C2_213 lipsa), A43d.2 (C2_212=C2_213+C2_214), A49e (C2_215 lipsa).
+            _c2a.append('C2_211="%d" C2_212="%d" C2_213="%d" C2_214="%d" C2_215="%d" C2_216="%d"'
+                        % (_r07[0], _r07[1], _r07[2], _r07[3], _r07[4], _r07[5]))
         _c2t6 = _r1[5] + _r2[5] + _r3[5] + _r4[5] + _r41[5] + _r5[5]  # carantina e deja in _r2[5]=C2_26 (nu se dubleaza)
         _c2a.append('C2_T6="%d" C2_10="%d" C2_140="%d"' % (_c2t6, _c2t6, _c2t6))
         H.append('    <angajatorC2 %s/>' % " ".join(_c2a))

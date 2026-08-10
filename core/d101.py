@@ -20,27 +20,11 @@ Structura reala <declaratie101>:
   Declarant: nume_declar, prenume_declar, functie_declar
   temei (daca d_anulare=1), Stat_rezid, nr_evid, totalPlata_A
 
-  Corpul declaratiei (P1-P16 - cele relevante pentru o firma fara grup fiscal,
-  fara operatiuni offshore/redirectionare, cazuri acoperite de P17-P53):
-    P1  = Total venituri
-    P2  = Total cheltuieli
-    P3  = Rezultat contabil (P1-P2)
-    P4  = Elemente similare veniturilor
-    P5  = Elemente similare cheltuielilor
-    P6  = Deduceri fiscale
-    P7  = Venituri neimpozabile
-    P8  = Cheltuieli nedeductibile (=P081+P082+P083+P084 daca detaliat)
-    P9  = Rezultat fiscal (P3+P4-P5+P8-P6-P7, minim 0)
-    P10 = Pierdere fiscala recuperata
-    P11 = Impozit pe profit calculat
-    P12 = Reduceri de impozit
-    P13 = Impozit declarat trimestrial prin D100
-    P15 = Diferenta de impozit datorata: max((P11-P12)-P13, 0)
-    P16 = Diferenta de impozit de recuperat: max(P13-(P11-P12), 0)
-
-  NEIMPLEMENTATE (cazuri speciale, nu se aplica unei firme obisnuite):
-    P17 (redirectionare 20%), P38-P53 (offshore, facilitati specifice,
-    grup fiscal). Se adauga cand apare un caz real care le cere.
+  Corpul real = P1..P53, conform OPANAF (anaf_surse/d101_struct_anaf.txt); formulele
+  (sume pe grupe, checksums, comparatia P46/P47/P48, P52/P53 mutual-exclusive etc.) sunt
+  implementate si VERIFICATE field-by-field la sursa in calcul_d101 (audit tura 25, DUK + gard).
+  NU se duplica mapping-ul aici: un "P1-P16 din cap", divergent de cod, scris candva in acest
+  docstring, a fost exact hazardul infirmat la d394 (comentariu-credinta). Sursa e autoritatea.
 """
 from __future__ import annotations
 
@@ -298,11 +282,11 @@ def erori_generare(prof):
 
 
 def _nr_evid(cui, an, luna, cod_oblig="103"):
-    """23 caractere, format oficial ANAF: poz.1-2 '10', poz.3-5 cod_oblig, poz.6-7 '01',
+    """23 caractere, format oficial ANAF: poz.1-2 '11', poz.3-5 cod_oblig, poz.6-7 '01',
     poz.8-11 LLAA (sfarsit perioada = 12.AA), poz.12-17 ZZLLAA (scadenta din _scadenta),
     poz.18 '0', poz.19 '0', poz.20-21 '00', poz.22-23 = ultimele 2 cifre din suma primelor 21."""
     scad_luna, scad_an = _scadenta(an)
-    p1_21 = ("10" + str(cod_oblig).rjust(3, "0")[-3:] + "01" +
+    p1_21 = ("11" + str(cod_oblig).rjust(3, "0")[-3:] + "01" +
              "%02d%02d" % (12, an % 100) +
              "%02d%02d%02d" % (25, scad_luna, scad_an % 100) + "0" + "0" + "00")
     assert len(p1_21) == 21

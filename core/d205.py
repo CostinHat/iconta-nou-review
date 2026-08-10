@@ -26,8 +26,11 @@ Reguli de calcul (din ANAF structura D205 (OPANAF 102/2025)):
   Timp    = SUMA(imp1) pt. toti beneficiarii sectiunii
   nrben   = COUNT(beneficiari) din sectiune
 
-tip_venit = 25 -> categoria uzuala pentru dividende (1.a). rezid=1 (rezident RO)
-e cazul standard; statR/cifS raman goale pentru rezidenti.
+tip_venit pt. DIVIDENDE = 08 (nomenclator ANAF "08 1.a) venituri din dividende"); codul emite
+08. "25" (castiguri din aurul de investitie) intr-o versiune veche a acestui comentariu era
+GRESIT (comentariu-credinta, infirmat la audit tura 25). Tcastig/Tpierd se aduna doar pt.
+beneficiarii cu tip_venit1=25 (castiguri), deci = 0 pt. o declaratie de dividende. Rezid=1
+(rezident RO) e cazul standard; statR/cifS raman goale pentru rezidenti.
 """
 from __future__ import annotations
 
@@ -112,6 +115,23 @@ def build_xml(res):
     if not res.beneficiari:
         raise ValueError("D205 fara niciun beneficiar de venit - nu se genereaza "
                          "declaratie fara continut.")
+
+    # Campuri OBLIGATORII pe beneficiar in structura ANAF (anaf_surse/d205_struct_anaf.txt):
+    # cifR "4.CNP/NIF din Romania" N(13) DA (rand 34, "ERR - ... necompletat"; DUK: "cifR:
+    # atribut prezent dar vid nepermis") si den1 "1.Nume ... / Denumire" C(100) DA (rand 31).
+    # Un asociat cu cota>0 si dividende dar fara CNP (asociati.cnp NULL) ar emite cifR="" ->
+    # declaratie respinsa de ANAF. Refuzam la generare, nu producem un XML invalid.
+    for b in res.beneficiari:
+        if not any(ch.isdigit() for ch in (b.cif or "")):
+            raise ValueError(
+                "D205: beneficiarul %r are CNP/NIF (cifR) necompletat - camp "
+                "obligatoriu N(13) in structura ANAF; declaratia ar fi respinsa "
+                "de validator." % (b.nume1 or "necunoscut"))
+        if not (b.nume1 or "").strip():
+            raise ValueError(
+                "D205: beneficiarul cu CNP %s are numele (den1) necompletat - "
+                "camp obligatoriu in structura ANAF."
+                % "".join(ch for ch in b.cif if ch.isdigit()))
 
     # Tcastig/Tpierd, conform formulei oficiale, se calculeaza DOAR din
     # beneficiarii cu tip_venit1=25 ("Tcastig = suma(castig1) pt. tip_venit1=25").

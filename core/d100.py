@@ -140,7 +140,7 @@ def calcul_d100(prof, an, luna, obligatii):
         if not cod_bug:
             raise ValueError("D100: cod_oblig %r fara cont bugetar (nu e in nomenclatorul COD_BUGETAR); "
                              "atributul cod_bugetar e OBLIGATORIU (ANAF C(10)), nu se omite tacit." % cod)
-        zi_s, luna_s, an_s = _scadenta_zile(an, luna)
+        zi_s, luna_s, an_s = _scadenta_cod(cod, an, luna)
         # scadenta manuala (override): nr_evid EMBEDA scadenta (poz.12-17), verificata de DUK regula R16
         # fata de atributul scadenta - deci nr_evid TREBUIE derivat din ACEEASI data, nu din cea calculata
         # (acelasi footgun ca la d710, generalizat pe clasa d100/d710 la 04.08.2026).
@@ -171,6 +171,26 @@ def _scadenta_zile(an, luna):
         luna_urm = 1
         an_urm += 1
     return 25, luna_urm, an_urm
+
+
+def _scadenta_cod(cod, an, luna):
+    """Scadenta pe cod_oblig + luna de raportare, cf. anaf_surse/d100_struct_anaf.txt
+    (nomenclator scadente) SI validatorul oficial DUK regula R15.1:
+      - cod 121 (micro), trim IV (luna=12): scadenta = 25.06 an+1. Validatorul v9 (raportare
+        an 2026) RESPINGE 25.01.an+1 cu R15.1 ('scadenta ar fi trebuit sa fie 25.06.AAAA pt.
+        cod obligatie=121') - dovedit pe date populate. Nota 'pana in anul 2025 inclusiv' din
+        structura (linia 807-811) e superseda de comportamentul validatorului curent (acelasi
+        tipar de comentariu invechit ca la d394 - de aici prioritatea validatorului).
+      - cod 102/103/105 (impozit pe profit / plati anticipate), luna = luna de sfarsit de an
+        fiscal (calendaristic = 12): scadenta = 25.LS = 25.12.an (structura linia 258-260;
+        definitia '25LS' linia 3286).
+      - restul (trim I/II/III): 25 a lunii urmatoare perioadei de raportare (default).
+    """
+    if cod == "121" and luna == 12:
+        return 25, 6, an + 1
+    if cod in ("102", "103", "105") and luna == 12:
+        return 25, 12, an
+    return _scadenta_zile(an, luna)
 
 
 def erori_generare(prof):

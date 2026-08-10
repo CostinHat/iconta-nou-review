@@ -2508,3 +2508,27 @@ frontend_test/valideaza_duk.py (necomis).
   cod nou pass. Suita d112 82 passed.
 Proba obiectiva comuna: DUKIntegrator pe arborele combinat, 4 firme (frontend_test/valideaza_duk.py, PYTHONPATH=$PWD):
 D112/D301/D406 VALID; D394 eroarea codPR "21" DISPARUTA (ramane R233.6=date, vezi DECIZII).
+
+## 10.08.2026 (tura 25) — 9 garzi: toate declaratiile confruntate cu sursa oficiala (DUK-dovedit)
+Toate cu MUTATIE pe HEAD c9869a1 (pre-fix) + re-validare DUKIntegrator pe date POPULATE.
+- core/test_d100_scadenta_trimiv.py::test_micro_121_trim_IV_scadenta_25_06_an_urmator /
+  ::test_profit_103_trim_IV_scadenta_25_LS / ::test_trim_III_neschimbat: micro 121 trim IV -> 25.06.an+1,
+  profit 103 luna12 -> 25.12.an. MUTATIE: cod vechi 25.01.an+1 (pica); DUK before micro trim IV = erori R15.1.
+- core/test_d101_nr_evid_poz12.py: nr_evid poz.1-2 = "11" (+ structura poz.3-5/6-7 + ancora exemplul ANAF).
+  MUTATIE: cod vechi "10" -> assert '10'=='11' pica (2 failed/1 passed -> 3 passed).
+- core/test_d205_cifr_obligatoriu.py::test_cifR_gol_refuzat_nu_emis_invalid / ::test_den1_gol_refuzat /
+  ::test_beneficiar_valid_nu_e_afectat: cifR/den1 gol -> ValueError. MUTATIE: cod vechi NU ridica (emitea XML
+  invalid). DUK before (CNP anulat): "cifR: atribut prezent dar vid nepermis".
+- core/test_d300_drop_taxabil.py (4 teste): linie 19% taxabila aruncata -> avertisment CUANTIFICAT ("TVA 190
+  lei"), fara "pune-le manual la randurile potrivite", liniile 0% separate. MUTATIE: cod vechi 4 failed.
+- core/test_d390_rotunjire_coerenta.py (3 teste): rezumat["L"] == suma operatie(baza tip L) == 2002. MUTATIE:
+  cod vechi bazaL=2001 != 2002 (pica); DUK before = erori R16.
+- core/test_d394_v_taxare_inversa_cota0.py: V -> cota 0 (nrLivV/bazaLivV doar la cota 0). MUTATIE: cod vechi
+  cheia V purta cota 21 (pica); DUK before = erori R217.2/R68.2/R69.2/R35/R77-79.
+- core/test_d394_pull_ti_fara_linii.py: pull() pe taxare-inversa fara linii -> cota == cota_standard. MUTATIE:
+  cod vechi NameError 'an' la d394.py:831 (crash latent).
+- core/test_d406_payment_method.py (3 teste): PaymentMethod in {01,02,03,98,99}; "VIR"->03; "numerar"->01.
+  MUTATIE: cod vechi emitea 'VIR'/'numerar' (pica); DUK before (sectiune Payments) = erori "valoarea 'VIR' nu
+  se afla in lista".
+- core/test_d112_carantina_c2.py: cod 07 carantina -> C2_213=3, C2_215=714, C2_212=C2_213+C2_214. MUTATIE:
+  cod vechi C2_213 OMIS (pica); DUK before = erori A49c/A43d.2/A49e.

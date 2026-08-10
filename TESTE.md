@@ -1397,3 +1397,14 @@ Cluster CM+pull: 56 passed.
 - core/test_d406_supplierid.py: SupplierID PF fara CUI -> tip 04, nu "0" (SAF-T SD.P.22/23). 1 test (fixture efemera).
 - core/test_pull_declaratii.py::test_d112_cm_suma_lipsa_din_stocare_recalc_din_media: indemnizatie CM completata din
   media x procent x zile (OUG158 art.17) cand lipseste din stocare.
+
+## 10.08.2026 (tura 25) — Garzi din auditul field-by-field al tuturor declaratiilor (DUK)
+- core/test_d100_scadenta_trimiv.py: scadenta pe cod (micro 121 trim IV 25.06.an+1; profit 103 sfarsit-an 25.12.an). 3 teste.
+- core/test_d101_nr_evid_poz12.py: nr_evid poz.1-2 = "11" (OPANAF 206/2025). 3 teste.
+- core/test_d205_cifr_obligatoriu.py: cifR/den1 obligatorii goale -> refuz. 3 teste.
+- core/test_d300_drop_taxabil.py: linii taxabile la cota fara rand DUK-valid -> avertisment cuantificat. 4 teste.
+- core/test_d390_rotunjire_coerenta.py: coerenta rotunjire baza per-op vs rezumat (R16). 3 teste.
+- core/test_d394_v_taxare_inversa_cota0.py: V (taxare inversa) emisa la cota 0 (R217.2).
+- core/test_d394_pull_ti_fara_linii.py: pull() pe taxare-inversa fara linii nu crapa (NameError latent).
+- core/test_d406_payment_method.py: PaymentMethod = cod ANAF 01/02/03 (nu "VIR"/"NUM"). 3 teste.
+- core/test_d112_carantina_c2.py: carantina cod 07 emite C2_213/C2_215 (angajator).

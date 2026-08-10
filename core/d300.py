@@ -133,7 +133,14 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     col = {21: Z(), 11: Z(), 9: Z()}
     # deductibilă pe cote (achiziții)
     ded = {21: Z(), 11: Z(), 9: Z()}
-    alte_l = alte_a = 0
+    # Linii cu cotă fără rând D300 auto. Separate: TAXABILE (cotă>0 => TVA dispare din decont,
+    # SUB-DECLARARE) vs COTĂ-ZERO (scutit/export/neimpozabil, doar informativ). Cuantificate
+    # (bază+TVA) si semnalate distinct jos - un contabil nu trebuie sa rateze o vanzare taxabila
+    # scapata din decont (probat pe firma DELTA: livrare 19% cu TVA scapata tacit).
+    drop_l_tax_b = drop_l_tax_t = Decimal(0); drop_l_tax_n = 0
+    drop_l_zero_b = Decimal(0); drop_l_zero_n = 0
+    drop_a_tax_b = drop_a_tax_t = Decimal(0); drop_a_tax_n = 0
+    drop_a_zero_b = Decimal(0); drop_a_zero_n = 0
 
     # TVA la incasare (art.282 alin.3 CF, OUG 8/2026): pentru firmele care aplica sistemul,
     # exigibilitatea intervine la INCASARE (colectata) / PLATA (deductibila), proportional cu
@@ -174,13 +181,17 @@ def calcul_d300(prof, perioada, facturi, manual=None):
             if emisa:
                 if ci in col:
                     col[ci][0] += baza; col[ci][1] += tva
-                else:
-                    alte_l += 1
+                elif ci:   # cotă taxabilă fără rând colectat auto (ex. 19/5%): TVA ar dispărea
+                    drop_l_tax_b += baza; drop_l_tax_t += tva; drop_l_tax_n += 1
+                else:      # cotă 0% (scutit/export/neimpozabil): fără impact pe TVA
+                    drop_l_zero_b += baza; drop_l_zero_n += 1
             else:
                 if ci in ded:
                     ded[ci][0] += baza; ded[ci][1] += tva
+                elif ci:   # cotă taxabilă fără rând deductibil auto (ex. 19/5%)
+                    drop_a_tax_b += baza; drop_a_tax_t += tva; drop_a_tax_n += 1
                 else:
-                    alte_a += 1
+                    drop_a_zero_b += baza; drop_a_zero_n += 1
         # [C-4 T2] TVA orfan: antetul facturii primite depaseste TVA-ul rezultat din cote (compensatie
         # forfetara agricultor art.315^1 al.17). Se masoara aici, se semnaleaza jos; nu se deduce tacit.
         if not emisa and not ti and not tvai:
@@ -343,16 +354,37 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     # totalPlata_A = suma câmpurilor 27-124 (toate rândurile R emise)
     res.total_plata_a = sum(R.values())
 
-    if alte_l:
-        res.avertismente.append("%d linii livrare cu cotă în afara 21/11/9 — neincluse (pune-le manual la rândurile potrivite)." % alte_l)
-    if alte_a:
-        res.avertismente.append("%d linii achiziție cu cotă în afara 21/11/9 — neincluse." % alte_a)
     _f = lambda x: format(int(x), ",").replace(",", ".")
+    # Livrări TAXABILE fără rând valid pentru perioadă (19/5% etc): TVA-ul lor DISPARE din decont
+    # (sub-declarare). ANAF (DUK v12, 2026) RESPINGE rândurile 19/5% (colectat R69/R71) — probat —
+    # deci NU sunt auto-emise si NU trebuie adaugate manual acolo (ar invalida declaratia).
+    if drop_l_tax_n:
+        res.avertismente.append(
+            "%d linii livrare cu cotă în afara 21/11/9 (bază %s lei, TVA %s lei) — TVA colectată NEDECLARATĂ "
+            "(sub-declarare). Cotele 19/5%% nu au rând acceptat de ANAF în decontul v12 — NU le adăuga manual "
+            "la R69/R71 (respinse); corectează cota facturii sau tratează ca regularizare (R16)."
+            % (drop_l_tax_n, _f(drop_l_tax_b), _f(drop_l_tax_t)))
+    if drop_l_zero_n:
+        res.avertismente.append(
+            "%d linii livrare cu cotă 0%% (bază %s lei) — neincluse; fără impact pe TVA de plată, dar "
+            "clasifică-le manual la scutiri/export (R14/R15) dacă trebuie raportate."
+            % (drop_l_zero_n, _f(drop_l_zero_b)))
+    if drop_a_tax_n:
+        res.avertismente.append(
+            "%d linii achiziție cu cotă în afara 21/11/9 (bază %s lei, TVA %s lei) — deducere NEINCLUSĂ. "
+            "Cotele 19/5%% nu au rând deductibil acceptat de ANAF în decontul v12 — NU le adăuga manual la "
+            "R74/R24 (respinse); corectează cota facturii sau tratează ca regularizare."
+            % (drop_a_tax_n, _f(drop_a_tax_b), _f(drop_a_tax_t)))
+    if drop_a_zero_n:
+        res.avertismente.append(
+            "%d linii achiziție cu cotă 0%% (bază %s lei) — neincluse (scutite/neimpozabile, R26); fără impact pe TVA."
+            % (drop_a_zero_n, _f(drop_a_zero_b)))
     if ded[9][0]:
         res.avertismente.append(
             "Achiziții deductibile 9%% (bază %s lei, TVA %s lei) — NEINCLUSE automat: rândul deductibil 9%% "
-            "(Rd.25.1/R75 din structura v12) e RESPINS de validatorul DUK instalat. Declară-le MANUAL la rândul "
-            "deductibil corect, altfel TVA de plată e supraevaluată." % (_f(ded[9][0]), _f(ded[9][1])))
+            "(Rd.25.1/R75 din structura v12) e RESPINS de validatorul DUK instalat 2026 (probat). NU există rând "
+            "deductibil 9%% valid pentru perioadă — NU-l declara MANUAL la R75 (respins); corectează cota sau "
+            "tratează ca regularizare, altfel TVA de plată e supraevaluată." % (_f(ded[9][0]), _f(ded[9][1])))
     if orphan_ded >= 1:
         res.avertismente.append(
             "Achiziții cu TVA în antet neacoperit de rândurile pe cotă (%s lei) — ex. compensația "

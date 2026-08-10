@@ -8464,3 +8464,83 @@ GASIT, NU REPARAT IN COD (date/decizie produs Costin - clasa R233.6/R24.1: cod c
   certificatele de test se re-salveaza prin salariati_api.salveaza_concediu, split-ul canonic (min 5 + diminuare
   OUG91/2025) ar diferi. Radacina reala: orice cale care scrie certificate fara a calcula suma (seed/import direct)
   ar trebui sa calculeze suma la scriere. Decizie produs.
+
+## 10.08.2026 (tura 25) — Reconstruit TOATE declaratiile confruntate cu sursa oficiala (DUK-dovedit)
+
+Comanda: turele 23-24 atinsesera doar cele 4 cu defecte DUK; restul trecusera validarea, unele doar pe NIL
+(nu dovedeste nimic). "Reconstruieste toate conform sursei oficiale - structuri, nomenclatoare, XSD - nu
+conform intelegerii din cod." Metoda: 10 audituri paralele (agenti PROASPETI, ca sa citeasca sursa fara
+mostenirea presupunerilor), field-by-field pe anaf_surse/*_struct + XSD, pe DATE POPULATE (injectii ROLLBACK
+unde seed-ul era nil), fiecare defect cu gard old-fail/new-pass + DUK before/after. Teza confirmata de la
+prima constatare: DUK e LENIENT pe campuri pe care nu le verifica -> "a trecut validarea" nu = conform.
+
+DEFECTE REALE REPARATE (8 declaratii, 10 defecte; fiecare la sursa citata + gard + DUK):
+- D100 (core/d100.py): (1) micro cod 121 trim IV scadenta = 25.06.(an+1), NU 25.01 (sursa d100_struct
+  L807-811 + validator R15.1 - ANAF RESPINGEA D100-ul de Q4 al unei micro; DUK erori R15.1 -> valid). (2)
+  profit 102/103/105 sfarsit de an (luna 12) scadenta = 25.12.an (25.LS), NU 25.01.an+1 (sursa L258-260/L3286;
+  DUK lenient accepta ambele, dar termenul emis era cu o luna tarziu). Introdus _scadenta_cod(cod,an,luna).
+  CROSS-CHECK: D710 (care imparte logica obligatiei D100) emitea deja corect 25.06.2027 pt micro trim IV -
+  D100 era neconform cu propriul frate.
+- D101 (core/d101.py): nr_evid poz.1-2 = "11", NU "10" (OPANAF 206/2025 poz.19 + exemplul lucrat ANAF
+  11103011212250413000028). Codul avea doar un comentariu auto-referential ("poz.1-2 '10'") - modul de esec
+  "comentariu suspect". DUK R18 valideaza DOAR checksum-ul (poz.22-23), nu poz.1-2 -> accepta tacut "10".
+- D205 (core/d205.py): cifR/den1 (obligatorii, rand 34/31) puteau fi emise GOALE cand asociatul n-are CNP ->
+  XML invalid la ANAF ("cifR: atribut prezent dar vid nepermis"). Fix: refuz cu ValueError care numeste
+  beneficiarul (oglinda erori_generare). Clasa ZERO-BASE (ca D100 gol).
+- D300 (core/d300.py): liniile taxabile la o cota FARA rand DUK-valid pe 2026 (19%/5%) erau aruncate TACIT cu
+  sfat gresit ("pune-le manual la randuri" - randuri pe care DUK le respinge). DELTA: o livrare 19% (TVA 190)
+  disparea din TVA colectata (sub-declarare). Fix: avertisment CUANTIFICAT (arata TVA-ul) + sfat corect (NU
+  la R69/R71/R74; corecteaza cota facturii sau regularizare R16); separa liniile 0% de cele taxabile. XML
+  neschimbat (nu auto-emite un rand respins). Agentul a PROBAT DUK direct (nu comentariul): v12/2026 respinge
+  R69/R70/R71/R74/R75/R24, accepta R9/R10/R11/R22/R23/R13/R16 - codul avea dreptate acolo.
+- D390 (core/d390.py): incoerenta de rotunjire (R16): baza per-operatie rotunjita individual, dar totalurile
+  rezumat (bazaL..bazaR) rotunjeau suma Decimal bruta -> pe baze fractionare divergeau (2x1000.50: op 1001+1001
+  =2002 dar bazaL=2001) -> DUK R16. Fix: totalurile derivate din intregii deja-rotunjiti. (Seed-ul avea baze
+  intregi rotunde -> nu se vedea.)
+- D394 (core/d394.py): (1) V (livrare taxare inversa) emisa la cota produsului (21) in loc de 0 (sursa poz.217:
+  cota=0 IFF tip in LS,AS,N,V; validator R217.2 + cascada R68.2/R69.2/R35/R77-79). Cheia _adauga purta cota
+  bunului pt V; exista doar reclasarea L->LS. Fix: cheia foloseste 0 pt V. (2) CRASH LATENT: pull() chema
+  cota_standard(an,luna) dar an/luna nu erau legate in pull -> orice achizitie cu taxare inversa fara linii de
+  detaliu -> NameError la d394.py:831 (exact calea pe care comentariul pretindea ca o trateaza).
+- D406 (core/d406.py): PaymentMethod folosea literalii "VIR"/"NUM" in loc de codul ANAF pe 2 cifre
+  (Nom_Mecanisme_plati: doar 01/02/03/98/99; XSD fara enum -> impus de DUK). "VIR" -> DUK respinge. Fix: mapper
+  payment_method_anaf (numerar->01, compensare->02, virament/card/transfer->03), default 03. (A iesit doar cand
+  s-a exercitat sectiunea Payments - fisierele de baza n-aveau plati.)
+- D112 (core/d112.py): carantina (cod 07) angajatorC2 Rd2.2 omitea C2_213 (Sum D_14) si C2_215 (Sum D_20).
+  Carantina NU e integral-FNUASS -> angajatorul suporta primele zile -> aceste coloane sunt >0 si obligatorii
+  (sursa rd.49c/49e). DUK before (cod 07): erori A49c/A43d.2/A49e -> valid. Codul emitea doar 4 din 6 coloane.
+
+CONFORM, FARA FIX (dovedit field-by-field, nu doar "a trecut"):
+- D301 (core/d301.py): fiecare camp confruntat cu sursa + fiecare comentariu suspect (temei obligatoriu, tip=5
+  emite doua randuri, formula totalPlata_A) RE-PROBAT direct pe DUK - toate au tinut.
+- D710 (core/d710.py): nu are struct dedicat; spec-ul e "Zona 710" in d100_struct; validatorul D710_56 e
+  INSTALAT (/home/costin/duk/dist), 22 teste DUK-gated. Fiecare camp confruntat - conform.
+
+DOCSTRING-URI STALE CORECTATE (comentariu-only, verificatorul sare peste docstring-uri; exact hazardul comenzii):
+- d101.py: sectiunea "Corpul declaratiei (P1-P16...)" descria un mapping INVENTAT (P11=Impozit calculat,
+  P15=Diferenta datorata) care contrazicea codul real (P1..P53) -> inlocuita cu pointer la sursa.
+- d205.py: "tip_venit = 25 -> dividende" era GRESIT (25=castiguri aur investitie; dividendele=08, cum foloseste
+  corect codul) -> corectat.
+
+GASIT, NU REPARAT (date/decizie produs Costin; cod corect pe date corecte):
+- D112 asiguratD D_1/D_2/D_5/D_6/D_7 (obligatorii) pot fi emise GOALE pe un certificat CM fara serie/numar/date
+  -> XML invalid ("D_1: atributul trebuie sa existe"). ACEEASI CLASA ZERO-BASE ca fixul D205 cifR - AR MERITA
+  acelasi refuz-pe-gol, DAR hard-block-ul rupe 4 fixtures minimale din test_pull_declaratii.py (shared) si cere
+  confirmarea ca fluxul salveaza_concediu garanteaza aceste campuri. Decizie de contract de date -> Costin.
+- D390 R24.1: CUI UE FALS in seed (12345678901/811111114). Cu CUI real (DE136695976/FR40303265045 injectate)
+  -> valid pe ambele firme. Recomandare: corecteaza seed; NU exclude tacit ops fara CUI valid (ar sub-raporta o
+  op obligatorie legal). Optional produs: avertisment per-partener pre-emitere.
+- D394 R233.6 (ALFA cereale de la PF fara subcod NC pe factura - seed); C/V manuale nu poarta op11 (path
+  manual nealimentat - UI); prsAfiliat hardcodat 0 (fara model de date afiliati).
+- D300: 19%/5% fara rand DUK-valid 2026 (rutare la R16 = decizie); liniile 0% neclasificate (scutit cu/fara
+  drept/export); achizitiile cu taxare inversa aruncate TACIT (net-zero, dar merita avertisment).
+- D205 divid_P (platit) mereu 0 desi sursa e dividende PLATITE (model distribuit-vs-platit); Rezid hardcodat 1
+  (nerezident). D301 pers_inreg hardcodat 1 (nu exista coloana firma_profil). D406 GL TaxCode=300 (nu in
+  TVA_NoteContabile, DUK accepta); PF tip-04 absent din Customers/Suppliers master (radacina in facturi_api).
+- D101 scadenta lege-vs-validator (cunoscut, codul urmeaza validatorul); D100 an fiscal modificat nemodelat.
+- XSD-vs-DUK: d112 Str_codBoalaSType enum stale (01-15) dar DUK accepta 91/92/17; d406 namespace fara "t" +
+  containere goale omise - AMBELE corecte pe DUK (validatorul e autoritatea, nu XSD-ul livrat izolat).
+
+Proba obiectiva COMBINATA (frontend_test/valideaza_duk.py, 4 firme, arborele cu toate 8 fixurile): fara
+regresie - toate declaratiile valide raman valide; avertismentul D300 nou apare pe DELTA; erorile ramase =
+DATE (R233.6/R24.1). Un singur commit prin poarta verde; doar 4163; 1968 neatins.

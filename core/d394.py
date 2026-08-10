@@ -356,7 +356,14 @@ def calcul_d394(prof, perioada, date, manual=None):
     excluse_N = []   # (nume, cui, baza) operatiuni N excluse - decizie Costin 04.08 (approach b)
 
     def _adauga(tip, tp, cota, cuiP, denP, nrFact, baza, tva, cat=None):
-        k = (tip, tp, int(cota), cuiP or "", (denP or "")[:200])
+        # [V_cota0 10.08.2026] R217.2 (validator, PROBAT pe date populate + DUK): tip in
+        # (LS,AS,N,V) => cota TREBUIE sa fie 0. V (livrare cu taxare inversa) nu declara TVA
+        # (reverse charge la beneficiar); cota bunului sta in op11/detaliu (bazaLivV la
+        # tip_partener=1, cota=0), NU pe op1. Fara asta, o livrare taxare inversa cu linii pe
+        # cota bunului (ex.21) e respinsa: R217.2 + R68.2/R69.2 (nrLivV/bazaLivV nu au voie la
+        # cota<>0) + R35. LS/AS/N sunt deja emise cu cota 0; V era singurul care purta cota
+        # bunului. Centralizat aici ca sa acopere ambele cai (facturi + manual).
+        k = (tip, tp, (0 if tip == "V" else int(cota)), cuiP or "", (denP or "")[:200])
         if cat:
             categorii.setdefault(k, set()).add(cat)
         c = op1.setdefault(k, [0, Decimal(0), Decimal(0)])
@@ -767,6 +774,7 @@ def valideaza(res):
 def pull(conn, schema, perioada):
     """Facturile lunii, cu cota din linii. O factura cu doua cote da doua intrari:
     op1 e unic pe (cuiP, tip, cota) — pct. 218. Intoarce (prof, {facturi, serii})."""
+    an, luna = perioada.an, perioada.luna  # [fix NameError 10.08.2026] folosite la cota_standard (taxare inversa primita fara linii)
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT * FROM firma_profil WHERE id = 1")

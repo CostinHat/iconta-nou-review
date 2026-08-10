@@ -3808,3 +3808,20 @@ fiecare gard old-fail/new-pass + re-validare DUKIntegrator (proba EXTERNA codulu
 decizie produs (Costin): D394 R233.6 (PF cereale fara subcod NC pe factura), D390 R24.1 (CUI UE fals in seed; app
 deja avertizeaza), D112 split zile stocat. Un singur commit prin poarta verde; doar 4163; 1968 neatins.
 Detalii+clasificare: DECIZII/GARZI/TESTE tura 24.
+
+## 10.08.2026 (tura 25) — Reconstruit TOATE declaratiile confruntate cu sursa oficiala ANAF (DUK-dovedit)
+
+Turele 23-24 atinsesera doar cele 4 cu defecte DUK; restul trecusera validarea, unele doar pe nil. Comanda:
+reconstruieste TOATE conform sursei oficiale (structuri/nomenclatoare/XSD), nu conform intelegerii din cod.
+10 audituri paralele (agenti proaspeti), field-by-field pe anaf_surse/*_struct + XSD, pe date POPULATE (injectii
+ROLLBACK unde seed-ul era nil), fiecare cu gard old-fail/new-pass + DUK before/after. Teza confirmata: DUK e
+lenient pe campuri nevalidate -> "a trecut" nu = conform (ex. D101 nr_evid poz.1-2 "10", acceptat tacit de R18).
+
+8 declaratii reparate (10 defecte): D100 (micro trim IV scadenta - RESPINS de ANAF R15.1 - + profit sfarsit-an),
+D101 (nr_evid poz.1-2 10->11), D205 (cifR/den1 goale -> refuz), D300 (sub-declarare tacita a liniilor 19%/5% ->
+avertisment cuantificat), D390 (incoerenta rotunjire R16), D394 (V taxare-inversa cota0 R217.2 + crash latent
+pull NameError), D406 (PaymentMethod VIR->01/02/03), D112 (carantina C2_213/C2_215 omise). Conform fara fix
+(dovedit): D301, D710. Docstring-uri stale corectate: d101 (mapping P1-P16 inventat), d205 (tip_venit 25->08).
+Ramas = date/decizie produs (Costin): D112 asiguratD D_1..D_7 goale (aceeasi clasa ca D205, cere fixtures +
+contract de date), D390 CUI UE fals seed, D394 cereale R233.6, D300 rate fara rand 2026, D205 divid_P, s.a.
+DUK combinat 4 firme = fara regresie. Un singur commit; doar 4163; 1968 neatins. Detalii: DECIZII/GARZI tura 25.

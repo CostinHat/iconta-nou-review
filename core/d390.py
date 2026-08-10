@@ -195,16 +195,20 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
         k = (tip, tara, cod, den)
         ops[k] = ops.get(k, Decimal("0")) + Decimal(str(op.get("baza") or 0))
 
-    rez = {t: Decimal("0") for t in TIPURI}
-    for (tip, _, _, _), b in ops.items():
-        rez[tip] += b
-    bz = {t: _int(rez[t]) for t in TIPURI}
-    nr_opi = len(ops)
-    tot = _int(sum(rez.values()))
+    # ROTUNJIRE COERENTA (10.08.2026, probat DUK R16): rezumatul (bazaL..bazaR, total_baza) =
+    # suma bazelor ROTUNJITE PE OPERATIE (exact valorile emise in <operatie baza=...>), NU
+    # rotunjirea sumei brute Decimal. Validatorul recalculeaza R16: bazaL = Suma(baza pt tip=L)
+    # peste operatiile (deja intregi) din XML; daca rezumatul rotunjeste suma bruta iar operatiile
+    # se rotunjesc individual, cele doua diverg la baze fractionare (2x 1000.50 -> operatii
+    # 1001+1001=2002, dar _int(2001.00)=2001 -> R16 respins). Gard: test_d390_rotunjire_coerenta.
+    ops_int = {k: _int(v) for k, v in ops.items()}
+    bz = {t: 0 for t in TIPURI}
+    for (tip, _, _, _), b in ops_int.items():
+        bz[tip] += b
+    nr_opi = len(ops_int)
+    tot = sum(bz.values())
     # formula oficială totalPlata_A
     total_plata = nr_opi + bz["L"] + bz["T"] + bz["A"] + bz["P"] + bz["S"] + bz["R"]
-
-    ops_int = {k: _int(v) for k, v in ops.items()}
     res = Rezultat(an=an, luna=luna, prof=prof, ops=ops_int, rezumat=bz,
                    nr_opi=nr_opi, total_baza=tot, total_plata_a=total_plata)
     if skip_dom:

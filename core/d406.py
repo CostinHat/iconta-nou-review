@@ -124,6 +124,33 @@ MOVEMENT_IMPLICIT = "10"
 # restrictie, nu din proza). Pazit de test_baserate_encoding_pro_rata_fractie.
 BASE_RATE = 1
 
+# PaymentMethod (SD Payment) = cod de DOUA CIFRE din nomenclatorul oficial ANAF
+# (d406_schema_anaf.xlsx, foaia "Nom_Mecanisme_plati", coloana "Code used for Payment
+# Method"). Valorile permise sunt DOAR: 01 Numerar, 02 Compensare, 03 Fara numerar,
+# 98 Definit de comun acord, 99 Instrument nedefinit. Literalii "VIR"/"NUM" NU exista in
+# lista - respinsi de validatorul oficial ("valoarea VIR nu se afla in lista", probat pe
+# DUK 09.08.2026 pe Payments injectate). Mapam tokenii interni la codul ANAF; necunoscut -> 03.
+METODE_PLATA_ANAF = {"01", "02", "03", "98", "99"}
+_METODA_PLATA_MAP = {
+    "num": "01", "numerar": "01", "cash": "01", "casa": "01", "chitanta": "01",
+    "comp": "02", "compensare": "02", "offset": "02", "netting": "02",
+    "vir": "03", "virament": "03", "transfer": "03", "op": "03", "banca": "03",
+    "card": "03", "cec": "03", "ob": "03", "mobilpay": "03", "pos": "03",
+}
+PAYMENT_METHOD_IMPLICIT = "03"   # fara numerar (virament/card) - cazul majoritatii platilor
+
+
+def payment_method_anaf(m):
+    """Metoda noastra de plata -> cod ANAF de 2 cifre (Nom_Mecanisme_plati). Un cod deja
+    valid (01/02/03/98/99) trece neschimbat; necunoscut -> 03 (fara numerar), niciodata
+    literalul brut (respins de validator: valoarea ... nu se afla in lista)."""
+    if not m:
+        return PAYMENT_METHOD_IMPLICIT
+    k = str(m).strip()
+    if k in METODE_PLATA_ANAF:
+        return k
+    return _METODA_PLATA_MAP.get(k.lower(), PAYMENT_METHOD_IMPLICIT)
+
 
 def uom_unece(um):
     """Unitatea noastra -> cod UN/ECE Rec.20. Necunoscut -> H87 (bucata), cu semnalare
@@ -369,7 +396,7 @@ class LiniePlata:
 class Plata:
     ref: str                 # PaymentRefNo
     data: date               # TransactionDate
-    metoda: str = "VIR"      # PaymentMethod (VIR virament, NUM numerar, etc.)
+    metoda: str = "03"       # PaymentMethod cod ANAF (01 numerar/02 compensare/03 fara numerar)
     partener_id: str = ""
     descriere: str = ""
     linii: list = field(default_factory=list)
@@ -938,7 +965,7 @@ def _source_documents(res):
             S.append('        <PaymentRefNo>%s</PaymentRefNo>' % _esc(p.ref))
             S.append('        <TransactionID>%s</TransactionID>' % _esc(p.ref))
             S.append('        <TransactionDate>%s</TransactionDate>' % _d(p.data))
-            S.append('        <PaymentMethod>%s</PaymentMethod>' % _esc(_t(p.metoda, _LIM["d406"]["PaymentMethod"])))
+            S.append('        <PaymentMethod>%s</PaymentMethod>' % _esc(payment_method_anaf(p.metoda)))
             S.append('        <Description>%s</Description>' % _esc(_t(p.descriere or "Plata", _LIM["d406"]["Description"])))
             for l in p.linii:
                 # CustomerID/SupplierID pe PaymentLine: aceeasi regula ca la GL
