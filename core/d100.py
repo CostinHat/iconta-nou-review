@@ -32,6 +32,7 @@ from __future__ import annotations
 from datetime import date
 from core import common as _common
 from core.common import text_anaf as _t, cheie_manual, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp din structura (03.08.2026)
+from core.identitate import valideaza_cui  # T1 (CATALOG_INVALIDITATE.md): sursa CANONICA checksum CUI, import READ-ONLY (LEAF, fara db)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 import datetime as _dt
@@ -195,8 +196,16 @@ def _scadenta_cod(cod, an, luna):
 
 def erori_generare(prof):
     erori = []
-    if not (prof.get("cui") or "").strip():
+    cui = (prof.get("cui") or "").strip()
+    if not cui:
         erori.append("LIPSĂ CUI (obligatoriu).")
+    else:
+        # T1 (CATALOG_INVALIDITATE.md): checksum/format CUI validat PRE-DUK cu sursa canonica
+        # core.identitate. Pana aici un CUI non-numeric / lungime gresita / cifra de control
+        # gresita era emis TACIT si il prindea doar DUK (mesaj brut la depunere).
+        valid, motiv = valideaza_cui(cui)
+        if not valid:
+            erori.append("D100: CUI firmă invalid (%s: %s). Corectează în Profil firmă." % (cui, motiv))
     if not (prof.get("nume") or "").strip():
         erori.append("LIPSĂ denumire firmă (obligatorie).")
     if not (prof.get("adresa") or "").strip():
@@ -206,6 +215,15 @@ def erori_generare(prof):
 
 def build_xml(res):
     prof = res.prof
+    # T6 (CATALOG_INVALIDITATE.md): text_anaf trunchiaza TACIT den/adresa la limita oficiala C(n)
+    # (LIMITE_TEXT_ANAF). Pierderea de date era silentioasa; emitem un avertisment NON-blocant care
+    # numeste campul cand valoarea reala depaseste limita si a fost taiata pentru XML.
+    for _cheie, _et, _lim_c in (("nume", "denumirea firmei", _LIM["d100"]["den"]),
+                                ("adresa", "adresa domiciliului fiscal", _LIM["d100"]["adresa"])):
+        _real = " ".join(str(prof.get(_cheie) or "").split())
+        if len(_real) > _lim_c:
+            res.avertismente.append(
+                "D100: %s depaseste %d caractere si a fost trunchiata pentru XML - verifica." % (_et, _lim_c))
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
     # d_anulare/d_succ/d_dizolv/d_bonif/d_nInf/d_energie = "0": fara ele bifate,
     # validatorul NU cere campurile suplimentare (temei, cifS etc.) - dovedit

@@ -3862,3 +3862,16 @@ CUI/CNP nepre-validat 9/9, T2 valideaza() cod mort, T3 coercitie tacita, T4 aver
 netrunchiat, T9 exceptii brute) si TURA 4 (reconciliere: T7 semantic gresit-dar-consistent, T8 non-impunere DUK).
 Nimic de cod schimbat (catalog + registre); DB/1968 neatins. TURA 3 (mesajul catre utilizator) urmeaza dupa
 confirmare. Detalii: DECIZII tura 28 + CATALOG_INVALIDITATE.md.
+
+## 10.08.2026 (tura 29) — LANT legislatie TURA 3/4: mesajul catre utilizator (motivul exact pre-DUK)
+
+TURA 3 din lant. Pentru fiecare declaratie x fiecare tip de date invalide din catalogul tura 28, reparat ca
+aplicatia sa arate MOTIVUL EXACT al invaliditatii PRE-DUK (nu eroarea DUK bruta la depunere, nu drop/coercitie
+tacuta). Fundatie noua: core/identitate.py (validator CUI/CNP OFFLINE partajat, canonic pentru declaratii - gap-ul
+era 9/9: validatoarele existau doar pe caile de import). Reparat prin 10 audituri paralele: T1 checksum CUI/CNP
+peste tot; T2 valideaza() COD MORT cablat (D300/D301/D390/D406-partial); T3 coercitii tacite (UOM/plata/cota/tip/
+valuta/CUI-strain) -> avertisment/blocaj vizibil; T4 avertizeaza-dar-emite (D394 op11) -> exclus; T6 passthrough
+netrunchiat (nr_doc/serie/codO) -> blocat; T9 exceptii brute (D710) -> ValueError prietenos. Plus fix de
+conformitate D406 03+CNP. checksum_vies DE/HR/FR (verificat DUK). Baseline valid ramane DUK-valid la toate 10.
+Fixtures cu date invalide reparate (nu slabite garduri). Ramas TURA 4: T7/T8 (semantic + non-impunere DUK).
+Un singur commit; doar 4163; 1968 neatins. Detalii: DECIZII/GARZI tura 29 + CATALOG_INVALIDITATE.md.

@@ -99,7 +99,7 @@ def test_total_plata_a_res_egal_checksum_emis():
 def test_id_inreg_e_secvential():
     res = calcul_d205(_prof(), 2025, [
         {"categ": "1.a", "nume": "A", "cif": "1850101450013", "baza": 100, "imp": 10, "castig": 100},
-        {"categ": "1.a", "nume": "B", "cif": "1850101450013", "baza": 200, "imp": 20, "castig": 200},
+        {"categ": "1.a", "nume": "B", "cif": "1850101450021", "baza": 200, "imp": 20, "castig": 200},
     ])
     xml = build_xml(res)
     assert 'id_inreg="1"' in xml

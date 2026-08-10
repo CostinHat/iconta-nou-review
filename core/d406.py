@@ -39,6 +39,7 @@ Separare strictă: construcție pură / validare / XML / DB / orchestrare.
 import re
 from core import common as c
 from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text SAF-T din XSD (03.08.2026)
+from core.identitate import valideaza_cui as _vcui, valideaza_cif as _vcif  # T1/E3 (CATALOG_INVALIDITATE.md): checksum CUI/CNP + tip 03 CNP pre-DUK, sursa canonica read-only (LEAF, fara db)
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from decimal import Decimal, ROUND_HALF_UP
@@ -152,6 +153,21 @@ def payment_method_anaf(m):
     return _METODA_PLATA_MAP.get(k.lower(), PAYMENT_METHOD_IMPLICIT)
 
 
+def _payment_method_anaf_stiut(m):
+    """Ca payment_method_anaf, dar intoarce (cod, cunoscut): cunoscut=False cand valoarea a fost
+    inlocuita TACIT cu implicitul 03 pentru ca nu e in nomenclator (T3). Gol -> (03, True): nu s-a
+    dat nimic, nu e o coercitie a unei valori gresite."""
+    if not m:
+        return PAYMENT_METHOD_IMPLICIT, True
+    k = str(m).strip()
+    if k in METODE_PLATA_ANAF:
+        return k, True
+    kl = k.lower()
+    if kl in _METODA_PLATA_MAP:
+        return _METODA_PLATA_MAP[kl], True
+    return PAYMENT_METHOD_IMPLICIT, False
+
+
 def uom_unece(um):
     """Unitatea noastra -> cod UN/ECE Rec.20. Necunoscut -> H87 (bucata), cu semnalare
     la apelant: mai bine o unitate implicita declarata decat un XML respins."""
@@ -173,7 +189,7 @@ _UE_NON_RO = {"AT","BE","BG","HR","CY","CZ","DK","EE","FI","FR","DE","EL",
 _ISO_TO_VAT = {"GR": "EL"}
 
 
-def _partener_registration_number(cui_brut):
+def _partener_registration_number(cui_brut, eticheta=None):
     """RegistrationNumber pt. PARTENERI (Customer/Supplier, S.C.1 CompanyStructure) -
     diferit de registration_number() de mai jos, care e pt. firma proprie (S.CMH.1).
     Format oficial (d406_schema_anaf.xlsx, "5. Structures", citat integral):
@@ -192,13 +208,27 @@ def _partener_registration_number(cui_brut):
     if not rest:
         return None
     if tara == "RO" or not tara:
-        return "00" + rest
+        # RO / fara prefix: cod fiscal romanesc = CUI (persoana juridica) SAU CNP (persoana
+        # fizica). Cifra de control se verifica OFFLINE, PRE-DUK (T1, CATALOG_INVALIDITATE.md):
+        # un cod cu checksum/lungime gresita era emis TACIT "00"+cod -> DUK
+        # "RegistrationNumber/SupplierID format invalid" (userul afla abia la depunere). Un CNP
+        # VALID -> tipul 03 (E3/E4: d406_schema_anaf.xlsx "5. Structures", regula sintactica
+        # S.I.26 pct.1.4 "03 urmat de CNP ... 13 caractere numerice, prima cifra diferita de 0"),
+        # NU 00+CNP (respins de DUK indiferent de validitate - tipul gresit, calea 03 inexistenta).
+        _valid, _tip, _motiv = _vcif(rest)
+        if not _valid:
+            _cine = (" (%s)" % eticheta) if eticheta else ""
+            raise ValueError(
+                "D406: cod fiscal partener invalid%s: %r - %s. Corecteaza codul fiscal al "
+                "partenerului inainte de generare (DUK regula S.I.26/S.C.1)."
+                % (_cine, cui_brut, _motiv))
+        return ("03" + rest) if _tip == "cnp" else ("00" + rest)
     if tara in _UE_NON_RO:
         return "01" + tara + rest
     return "02" + tara + rest
 
 
-def _partener_id_saft(cui_brut, nume):
+def _partener_id_saft(cui_brut, nume, eticheta=None):
     """CustomerID/SupplierID pt. un partener de pe FACTURA/master, cf. codificarii
     oficiale ANAF (d406_schema_anaf.xlsx, '5. Structures', tip 00-11 + regula
     sintactica S.I.23/S.I.26/SD.P.22/SD.P.23). Un furnizor/client de pe o factura are
@@ -215,7 +245,7 @@ def _partener_id_saft(cui_brut, nume):
     fiscal declarat. Daca sistemul ar captura CNP-ul, tipul corect ar fi 03+CNP -
     facturile nu poarta inca CNP, deci 04 e singura optiune valida. Fara cod fiscal SI
     fara nume -> None: apelantul raporteaza (nu cade pe '0', nu inventeaza)."""
-    rid = _partener_registration_number(cui_brut)
+    rid = _partener_registration_number(cui_brut, eticheta=eticheta)
     if rid:
         return rid
     cod = _NEALNUM.sub("", (nume or "").upper())[:33]
@@ -465,6 +495,14 @@ def _taxcode_livrari(cota, data_factura):
     return tabela.get(int(cota), "310312")
 
 
+def _cota_livrari_in_tabela(cota, data_factura):
+    """True daca cota exista in tabela TaxCode livrari a epocii facturii. False =
+    _taxcode_livrari a inlocuit-o TACIT cu 310312 (taxare inversa) - se semnaleaza (T3)."""
+    tabela = (TAXCODE_LIVRARI_PRE_2025_08 if (data_factura and data_factura < _TAXCODE_141_DIN)
+              else TAXCODE_LIVRARI)
+    return int(cota) in tabela
+
+
 def construieste(prof, an, luna, conturi, clienti, furnizori, note=None,
                  facturi_vanzare=None, facturi_cumparare=None, plati=None, cote_tva=None):
     res = Rezultat(an=an, luna=luna, prof=prof, conturi=conturi, clienti=clienti,
@@ -477,6 +515,15 @@ def construieste(prof, an, luna, conturi, clienti, furnizori, note=None,
                             % (SAFT_VERSION, len(conturi), len(clienti), len(furnizori), len(res.note),
                                len(res.facturi_vanzare), len(res.facturi_cumparare), len(res.plati)))
     res.avertismente.append("Validare finală: DUKIntegrator pe server (-v D406 fisier.xml $ $ an=%d luna=%d)." % (an, luna))
+    # T3 (CATALOG_INVALIDITATE.md): o metoda de plata necunoscuta e inlocuita TACIT cu 03 (fara
+    # numerar) de payment_method_anaf. Nu tacit: semnalam per plata valoarea exacta inlocuita.
+    for _p in (plati or []):
+        _pm, _pm_stiut = _payment_method_anaf_stiut(getattr(_p, "metoda", None))
+        if not _pm_stiut:
+            res.avertismente.append(
+                "ATENTIE (D406): metoda de plata necunoscuta %r pe plata %s - inlocuita cu 03 "
+                "(fara numerar). Mapeaza metoda in nomenclatorul de mecanisme de plata "
+                "(Nom_Mecanisme_plati: 01/02/03/98/99)." % (_p.metoda, getattr(_p, "ref", "?")))
     return res
 
 
@@ -1120,7 +1167,7 @@ def pull(conn, schema, an, luna):
                     "WHERE directie='emisa' ORDER BY id")
                 vazut = set()
                 for r in cur.fetchall():
-                    pid = _partener_id_saft(r["tert_cui"], r["tert_nume"])
+                    pid = _partener_id_saft(r["tert_cui"], r["tert_nume"], eticheta=r["tert_nume"])
                     if pid and pid not in vazut:
                         vazut.add(pid)
                         clienti.append(Partener(id=pid, nume=r["tert_nume"] or "",
@@ -1131,11 +1178,15 @@ def pull(conn, schema, an, luna):
                     "WHERE directie='primita' ORDER BY id")
                 vazut = set()
                 for r in cur.fetchall():
-                    pid = _partener_id_saft(r["tert_cui"], r["tert_nume"])
+                    pid = _partener_id_saft(r["tert_cui"], r["tert_nume"], eticheta=r["tert_nume"])
                     if pid and pid not in vazut:
                         vazut.add(pid)
                         furnizori.append(Partener(id=pid, nume=r["tert_nume"] or "",
                                                   cui=r["tert_cui"] or "", oras=""))
+        except ValueError:
+            # Eroare de CONTINUT (checksum CUI/CNP partener, T1): trece nemodificata,
+            # nu se mascheaza in RuntimeError (cauza reala ar fi ascunsa).
+            raise
         except Exception as e:
             # MASCA SCOASA (27.07.2026, al doilea val). In PostgreSQL un query esuat
             # OTRAVESTE tranzactia: masca ascundea cauza, iar eroarea aparea abia in
@@ -1173,7 +1224,7 @@ def pull(conn, schema, an, luna):
                     n = Nota(id=str(r["id"]), data=r["data"], descriere=r["descriere"] or "")
                     nmap[r["id"]] = n
                 suma = Decimal(str(r["suma"] or 0))
-                pid = _partener_registration_number(r["tert_cui"]) if r["tert_cui"] else ""
+                pid = _partener_registration_number(r["tert_cui"], eticheta=r["tert_nume"]) if r["tert_cui"] else ""
                 n.linii.append(LinieNota(record_id=str(len(n.linii) + 1), cont=r["cont_debit"] or "",
                                          descriere="", debit=suma, credit=Decimal("0"),
                                          cont_partener_id=pid))
@@ -1181,11 +1232,16 @@ def pull(conn, schema, an, luna):
                                          descriere="", debit=Decimal("0"), credit=suma,
                                          cont_partener_id=pid))
             note = list(nmap.values())
+        except ValueError:
+            # Eroare de CONTINUT (checksum CUI/CNP partener, T1): trece nemodificata,
+            # nu se mascheaza in RuntimeError (cauza reala ar fi ascunsa).
+            raise
         except Exception as e:
             # MASCA SCOASA (27.07.2026) - vezi nota de la blocul facturi.
             raise RuntimeError("D406: citirea notelor a esuat - %s" % e) from e
         facturi_vanzare, facturi_cumparare, plati = [], [], []
-        um_necunoscute = set()  # [B17] UM necunoscute inlocuite cu H87 - se NUMESC in avertisment, nu tacit
+        um_necunoscute = []  # [B17] UM necunoscute -> H87; (factura, UM) NUMITE in avertisment, nu tacit (T3)
+        cote_necunoscute = []  # T3: cota fara cod TaxCode livrari -> 310312 (taxare inversa); (factura, cota) NUMITE
         try:
             # COLOANE REALE facturi (dovedit 16.07.2026 prin \d tenant_002.facturi):
             # data_emitere (NU 'data'), tert_cui/tert_nume (NU partener_id/nume),
@@ -1231,7 +1287,7 @@ def pull(conn, schema, an, luna):
                 # identitate. Fara cod fiscal (PF) -> tipul 04 + cod intern (vezi
                 # _partener_id_saft). "0" era respins de DUK SAF-T ("SupplierID nu
                 # poate fi 0") pe achizitiile de la persoane fizice.
-                pid = _partener_id_saft(r["tert_cui"], r["tert_nume"])
+                pid = _partener_id_saft(r["tert_cui"], r["tert_nume"], eticheta=r["tert_nume"])
                 if not pid:
                     raise ValueError(
                         "D406: factura %s nu are nici cod fiscal nici nume de partener - "
@@ -1249,11 +1305,13 @@ def pull(conn, schema, an, luna):
                     # TaxCode PE LINIE, dupa cota liniei si sensul operatiunii.
                     if este_v:
                         tcod_l = _taxcode_livrari(cota_l, r["data_emitere"])
+                        if not _cota_livrari_in_tabela(cota_l, r["data_emitere"]):
+                            cote_necunoscute.append((r["numar"] or str(r["id"]), str(cota_l)))
                     else:
                         tcod_l = "300101" if (r["ti"] or cota_l == 0) else "300501"
                     um_cod, _um_stiut = uom_unece(lr["um"])
                     if not _um_stiut and lr.get("um"):
-                        um_necunoscute.add(str(lr["um"]).strip())
+                        um_necunoscute.append((r["numar"] or str(r["id"]), str(lr["um"]).strip()))
                     linii.append(LinieFactura(nr=idx, cont=cont_l,
                                               descriere=lr["descriere"] or "Produs/serviciu",
                                               cantitate=cant, um=um_cod, pret_unitar=pret,
@@ -1276,6 +1334,8 @@ def pull(conn, schema, an, luna):
                     cota = (tva / net * 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP) if net else Decimal(0)
                     if este_v:
                         tcod_l = _taxcode_livrari(cota, r["data_emitere"])
+                        if not _cota_livrari_in_tabela(cota, r["data_emitere"]):
+                            cote_necunoscute.append((r["numar"] or str(r["id"]), str(cota)))
                     else:
                         tcod_l = "300101" if (r["ti"] or cota == 0) else "300501"
                     linii = [LinieFactura(nr=1, cont=cont_l,
@@ -1298,14 +1358,23 @@ def pull(conn, schema, an, luna):
             # produca SalesInvoices/PurchaseInvoices goale intr-un XML valid structural.
             # Clasa de bug din 16.07. Orice garda pusa deasupra ar fi fost inghitita aici.
             raise RuntimeError("D406: citirea facturilor a esuat - %s" % e) from e
-    return prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati, strain, um_necunoscute
+    return prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati, strain, um_necunoscute, cote_necunoscute
 
 
 def erori_generare(prof):
     """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
     erori = []
-    if not str(prof.get("cui") or "").strip():
+    _cui = str(prof.get("cui") or "").strip()
+    if not _cui:
         erori.append("LIPSA CUI firma.")
+    else:
+        # T1 (CATALOG_INVALIDITATE.md): cifra de control a CUI-ului firmei, verificata OFFLINE
+        # pre-DUK. Un CUI cu checksum gresit era emis tacit in RegistrationNumber -> DUK
+        # "formatul este invalid" abia la depunere. Firma proprie e mereu persoana juridica.
+        _ok, _motiv = _vcui(_cui)
+        if not _ok:
+            erori.append("CUI firma invalid (%s) - %s. Corecteaza CUI-ul in profilul firmei "
+                         "(DUK regula S.CMH.1)." % (_cui, _motiv))
     if not str(prof.get("nume") or "").strip():
         erori.append("LIPSA denumire firma.")
     return erori
@@ -1314,12 +1383,20 @@ def erori_generare(prof):
 def genereaza(conn, schema, an, luna):
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
-    prof, conturi, clienti, furnizori, note, fv, fc, plati, strain, um_necunoscute = pull(conn, schema, an, luna)
+    prof, conturi, clienti, furnizori, note, fv, fc, plati, strain, um_necunoscute, cote_necunoscute = pull(conn, schema, an, luna)
     _er = erori_generare(prof)
     if _er:
         raise ValueError("D406 nu se poate genera: " + " ".join(_er))
     res = construieste(prof, an, luna, conturi, clienti, furnizori, note=note,
                        facturi_vanzare=fv, facturi_cumparare=fc, plati=plati)
+    # T2 (CATALOG_INVALIDITATE.md): valideaza(res) are o verificare AccountType (Activ/Pasiv/
+    # Bifunctional) pe care genereaza() nu o chema (cod mort). O cablam TINTIT aici (nu tot
+    # valideaza(res), care ar bloca fixture-le legitime fara plan de conturi): un AccountType in
+    # afara nomenclatorului era emis tacit -> DUK il respinge; acum prins pre-DUK cu mesaj clar.
+    for _c in res.conturi:
+        if _c.tip not in ACCOUNT_TYPE:
+            raise ValueError("D406: AccountType invalid pentru contul %s: %r (trebuie Activ/Pasiv/"
+                             "Bifunctional). Corecteaza tipul contului in planul de conturi." % (_c.id, _c.tip))
     if strain:
         # Conturile din planul firmei care NU sunt in nomenclatorul normei declarate se EXCLUD (ANAF le
         # respinge: "ID-ul contului trebuie sa se gaseasca in planul de conturi"). NU tacit - le NUMIM in
@@ -1330,7 +1407,16 @@ def genereaza(conn, schema, an, luna):
                                    "declarate (%s), ANAF le-ar respinge: %s. Verifica planul de conturi / baza "
                                    "contabila a firmei." % (len(strain), prof.get("baza_contabila") or "A", lista))
     if um_necunoscute:
-        res.avertismente.insert(0, "ATENTIE: unitate(i) de masura necunoscuta(e) inlocuita(e) cu H87 (bucata) in D406: %s. NU tacit - o unitate gresita e eronata/respinsa la ANAF; mapeaza unitatile in nomenclatorul de unitati de masura." % ", ".join(sorted(um_necunoscute)))
+        _detu = "; ".join("factura %s: UM %r" % (nrf, um) for nrf, um in um_necunoscute)
+        res.avertismente.insert(0, "ATENTIE (D406): unitate(i) de masura necunoscuta(e) inlocuita(e) "
+                                   "cu H87 (bucata) - NU tacit: o unitate gresita e eronata/respinsa la "
+                                   "ANAF. %s. Mapeaza unitatile in nomenclatorul UN/ECE Rec.20." % _detu)
+    if cote_necunoscute:
+        _detc = "; ".join("factura %s: cota %s%%" % (nrf, ct) for nrf, ct in cote_necunoscute)
+        res.avertismente.insert(0, "ATENTIE (D406): cota(e) de TVA fara cod TaxCode de livrare in "
+                                   "nomenclator, inlocuita(e) TACIT cu 310312 (taxare inversa) - date "
+                                   "GRESITE la ANAF. %s. Verifica cota facturii / actualizeaza "
+                                   "nomenclatorul de coduri de taxa." % _detc)
     # POARTA A DOUA CALE (gard de continut, 05.08.2026, pas 4/6): balanta de rulaje per cont
     # INDEPENDENTA din inregistrari_linii, legata de SAF-T emis + invariant Sdebit=Scredit.
     # Divergenta = HARD-BLOCK. Vezi core/d406_reconciliere.py.

@@ -29,6 +29,7 @@ from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 
 from core import common as c
+from core.identitate import valideaza_cui   # validator partajat CUI (read-only) - T1 MARKER_T2_T1_WIRED
 
 NS = "mfp:anaf:dgti:d300:declaratie:v12"
 REGULI = "2026.1"
@@ -475,41 +476,65 @@ def erori_generare(prof):
     ANAF il respingea cu "atribut prezent dar vid nepermis". Contabilul primea eroarea
     criptica a validatorului in loc de "completeaza IBAN-ul". Dovedit 27.07.2026 pe tenant_002 si tenant_003 (2 din 3 firme).
 
+    [T1 10.08.2026] Pe langa non-gol se verifica si CONTINUTUL, tot pre-DUK:
+      - CUI: cifra de control (validator partajat core.identitate), nu doar prezenta;
+      - CAEN: forma C(4) din structura ANAF (4 cifre);
+      - pro_rata: interval [0,100] cand e prezent (absent = 100%, legitim).
+
     Sursa UNICA: valideaza() cheama tot functia asta, nu-si repeta verificarile.
     """
     erori = []
-    if not _digits(prof.get("cui")):
-        erori.append("LIPSĂ CUI firmă.")
+    _cui = prof.get("cui")
+    if not _digits(_cui):
+        erori.append("LIPS\u0102 CUI firm\u0103.")
+    else:
+        _ok_cui, _motiv_cui = valideaza_cui(_cui)   # T1: cifra de control, pre-DUK
+        if not _ok_cui:
+            erori.append("CUI firm\u0103 invalid (%s): %s." % (_digits(_cui), _motiv_cui))
     if not str(prof.get("nume") or "").strip():
-        erori.append("LIPSĂ denumire firmă.")
+        erori.append("LIPS\u0102 denumire firm\u0103.")
     if not _clean_bc(prof.get("banca")):
-        erori.append("LIPSĂ bancă — obligatorie la D300.")
+        erori.append("LIPS\u0102 banc\u0103 \u2014 obligatorie la D300.")
     if not _clean_bc(prof.get("iban") or prof.get("cont")):
-        erori.append("LIPSĂ cont/IBAN — obligatoriu la D300.")
-    if not _digits(prof.get("caen")):
-        erori.append("LIPSĂ CAEN — obligatoriu la D300.")
+        erori.append("LIPS\u0102 cont/IBAN \u2014 obligatoriu la D300.")
+    _caen = _digits(prof.get("caen"))
+    if not _caen:
+        erori.append("LIPS\u0102 CAEN \u2014 obligatoriu la D300.")
+    elif len(_caen) != 4:
+        erori.append("COD CAEN invalid: '%s' \u2014 trebuie 4 cifre (structura ANAF caen C(4))." % _caen)
+    _pr = prof.get("pro_rata")   # T1: pro_rata prezent trebuie in [0,100]; absent = 100% (legitim)
+    if _pr is not None and str(_pr).strip():
+        from core.numere import numar_fiscal
+        try:
+            _prv = float(numar_fiscal(_pr, "pro_rata"))
+        except Exception:
+            erori.append("pro_rata invalid: %r \u2014 trebuie num\u0103r in [0,100]." % _pr)
+        else:
+            if not (0.0 <= _prv <= 100.0):
+                erori.append("pro_rata in afara intervalului [0,100]: %s (structura ANAF pro_rata N(7.2))." % _prv)
     return erori
 
-def valideaza(res):
-    """Verifică regulile ANAF. Întoarce listă de erori (gol = ok)."""
-    erori = []
+def _blocante_pre_duk(res):
+    """Motive care INVALIDEAZ\u0102 decontul, semnalate PRE-DUK ca ValueError (nu R18 brut la upload).
+    Aici doar corela\u021bia tip_decont \u2194 luna (DUK regula R18); c\u00e2mpurile de profil sunt gardate
+    de erori_generare (poarta din genereaza)."""
     prof = res.prof
     luna = res.luna
     tip = tip_decont(prof)
-
-    # tip_decont corelat cu luna
+    erori = []
     if tip == "A" and luna != 12:
-        erori.append("tip_decont=A (anual) cere luna=12.")
+        erori.append("tip_decont=A (anual) cere luna=12 (DUK regula R18).")
     if tip == "S" and luna not in (6, 12):
-        erori.append("tip_decont=S (semestrial) cere luna 06 sau 12.")
+        erori.append("tip_decont=S (semestrial) cere luna 06 sau 12 (DUK regula R18).")
     if tip == "T" and luna not in (2, 3, 5, 6, 8, 9, 11, 12):
-        erori.append("tip_decont=T (trimestrial) cere luna în (02,03,05,06,08,09,11,12).")
+        erori.append("tip_decont=T (trimestrial) cere luna in (02,03,05,06,08,09,11,12) (DUK regula R18).")
+    return erori
 
-    # Campurile de profil: sursa unica e erori_generare (chemata si din genereaza).
-    erori.extend(erori_generare(prof))
 
-    # marja ±1% pe cotele cu valori. Cota standard vine din common (cu data perioadei
-    # declarate), ca să fie corectă și pe perioade cu 19% (înainte de 01.08.2025).
+def _avertismente_marja(res):
+    """\u00b11% pe r\u00e2ndurile pe cot\u0103 cu valori. DUK doar ATEN\u021aIONEAZ\u0102 (decontul r\u0103m\u00e2ne
+    uploadabil), deci se raporteaz\u0103 ca avertisment, NU blocheaz\u0103 generarea."""
+    av = []
     cota_std_dec, _ = c.cota("tva_standard", date(res.an, res.luna, 1))
     cota_std = int(round(float(cota_std_dec) * 100))  # ROTUNJIRE PE COTA (nu pe suma): cotele fiscale RO sunt intregi (21/11/9/5/0), bancar==aritmetic
 
@@ -520,13 +545,24 @@ def valideaza(res):
             lo = round((cota - 1) / 100 * b)
             hi = round((cota + 1) / 100 * b)
             if not (lo <= t <= hi):
-                erori.append("TVA %s (%d) nu se încadrează în %d%%±1%% din baza %d." % (tva_k, t, cota, b))
+                av.append("TVA %s (%d) nu se \u00eencadreaz\u0103 in %d%%\u00b11%% din baza %d (DUK: aten\u021bionare, uploadabil)."
+                          % (tva_k, t, cota, b))
     marja("R9_1", "R9_2", cota_std)
     marja("R10_1", "R10_2", 11)
     marja("R11_1", "R11_2", 9)
     marja("R22_1", "R22_2", cota_std)
-    return erori
+    return av
 
+
+def valideaza(res):
+    """Verific\u0103 regulile ANAF. \u00centoarce lista COMPLET\u0102 (blocante + avertismente marj\u0103) - compat.
+    erori_generare(prof) r\u0103m\u00e2ne sursa unic\u0103 pentru c\u00e2mpurile de profil.
+    genereaza() ruteaz\u0103 separat: blocantele -> ValueError, marja -> avertisment."""
+    prof = res.prof
+    erori = _blocante_pre_duk(res)
+    erori.extend(erori_generare(prof))
+    erori.extend(_avertismente_marja(res))
+    return erori
 
 def build_xml(res):
     prof = res.prof
@@ -665,6 +701,15 @@ def genereaza(conn, schema, perioada, manual=None):
     if erori:
         raise ValueError("D300 nu se poate genera: " + " ".join(erori))
     res = calcul_d300(prof, perioada, facturi, manual)
+    # [T2 10.08.2026] valideaza(res) era COD MORT: genereaza chema doar erori_generare(prof).
+    # Cablam verificarile prietenoase aici, rutate pe severitate:
+    #  - blocante (tip_decont <-> luna, DUK regula R18) -> ValueError cu motiv EXACT, pre-DUK
+    #    (contabilul nu mai primeste eroarea bruta a validatorului la upload);
+    #  - marja +-1% pe rand pe cota -> DUK doar atentioneaza => avertisment, nu blocaj.
+    _blocante = _blocante_pre_duk(res)
+    if _blocante:
+        raise ValueError("D300 nu se poate genera: " + " ".join(_blocante))
+    res.avertismente.extend(_avertismente_marja(res))
     # POARTA A DOUA CALE (gard de continut, 05.08.2026): reconciliere pe totaluri dintr-un
     # recalcul INDEPENDENT al liniilor brute. Divergenta = eroare vizibila care numeste ambele
     # valori; NU repara tacit. Vezi core/d300_reconciliere.py + GARZI cat.4 (limita declarata).

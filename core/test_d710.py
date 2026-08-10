@@ -188,11 +188,19 @@ def test_cod_bugetar_nomenclator_duk_si_antidrop():
     # anti-drop: cod nemapat FARA cod_bugetar manual -> ValueError (nu XML tacit incomplet)
     with pytest.raises(ValueError):
         _c(prof, Perioada(2025, luna=3), {}, {"obligatii": [{"cod_oblig": "999", "suma_dat_i": 100, "suma_dat_c": 150}]})
-    # cod nemapat CU cod_bugetar manual -> NU ridica (permite extinderi controlate)
-    r = _c(prof, Perioada(2025, luna=3), {}, {"obligatii": [{"cod_oblig": "999", "suma_dat_i": 100, "suma_dat_c": 150, "cod_bugetar": "5503XXXXXX"}]})
-    assert r.obligatii[0].cod_bugetar == "5503XXXXXX"
+    # TURA 3 (C2/C3, FIXTURA REPARATA): un cod_oblig necunoscut e RESPINS pe nomenclator (COD_BUGETAR) chiar
+    # CU un cod_bugetar manual. Vechea "extindere controlata" lasa un cod garbage sa ocoleasca gardul (emis
+    # tacit -> DUK 'cod_oblig nu se afla in lista'). Nomenclatorul e acum poarta unica; extinderea legitima =
+    # adaugare in COD_BUGETAR, nu ocolire prin cod_bugetar manual.
+    with pytest.raises(ValueError):
+        _c(prof, Perioada(2025, luna=3), {}, {"obligatii": [{"cod_oblig": "999", "suma_dat_i": 100, "suma_dat_c": 150, "cod_bugetar": "5503XXXXXX"}]})
 
-    # DUK-backed (gated): nomenclatorul e acceptat, un cod_bugetar gresit e respins (R14a) - dinti
+    # TURA 3 (D4, FIXTURA REPARATA): un cod_bugetar MANUAL divergent de nomenclator e prins PRE-DUK cu motiv
+    # (DUK regula R14a), nu mai ajunge la validator. (Inainte se emitea XML si DUK il respingea cu R14a.)
+    with pytest.raises(ValueError):
+        _c(prof, Perioada(2025, luna=3), {}, {"obligatii": [{"cod_oblig": "121", "suma_dat_i": 100, "suma_dat_c": 150, "cota": "1", "cod_bugetar": "9999999999"}]})
+
+    # DUK-backed (gated): nomenclatorul (cod_bugetar corect din COD_BUGETAR) e acceptat de validator - dinti
     if duk.poate_valida("d710"):
         for cod, cota, luna in [("121", "1", 3), ("103", "", 6)]:
             o = {"cod_oblig": cod, "suma_dat_i": 100, "suma_dat_c": 150}
@@ -200,9 +208,6 @@ def test_cod_bugetar_nomenclator_duk_si_antidrop():
                 o["cota"] = cota
             good = duk.valideaza(build_xml(_c(prof, Perioada(2025, luna=luna), {}, {"obligatii": [o]})), "d710")
             assert good["stare"] == "valid", "DUK: nomenclator %s respins: %s" % (cod, good["erori"])
-            o_bad = dict(o, cod_bugetar="9999999999")
-            bad = duk.valideaza(build_xml(_c(prof, Perioada(2025, luna=luna), {}, {"obligatii": [o_bad]})), "d710")
-            assert bad["stare"] != "valid" and "R14a" in bad["erori"], "cod_bugetar gresit ar trebui respins R14a"
 
 
 def test_checksum_r11b_multi_obligatie_si_duk():

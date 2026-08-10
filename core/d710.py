@@ -54,10 +54,16 @@ def _d_recN(an, luna):
     fn, _ = _av(_VARIANTE_D_RECN, _date_v(an, luna, 1))
     return fn()
 from dataclasses import dataclass, field
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 from core.d100 import COD_BUGETAR, _nr_evid, _scadenta_zile
+from core.identitate import valideaza_cui   # T1: checksum CUI comun, sursa canonica (import read-only)
 
 NS = "mfp:anaf:dgti:d710:declaratie:v2"
+
+# Ratele micro valide pt cod_oblig 121 (impozit microintreprinderi): 1% si 3% (art.51 Cod fiscal /
+# nomenclator D100-D710). DUK regula R17 respinge orice alta valoare ('cota ... nu se incadreaza in
+# intervalul cerut'). Lista inchisa a ratelor legale, NU un default inline.
+COTE_MICRO = ("1", "3")
 
 
 def _esc(v):
@@ -67,6 +73,23 @@ def _esc(v):
 
 def _i(x):
     return int(Decimal(str(x)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+
+
+def _suma(val, camp, cod, idx):
+    """Suma dintr-o obligatie MANUALA -> int, cu ValueError CLAR (camp + valoare) in loc de exceptie
+    bruta. Acopera T9 (nenumeric -> decimal.InvalidOperation) si B4 (negativ -> DUK 'nu se incadreaza in
+    intervalul cerut'). Gol/None = 0 (latura necompletata a rectificarii)."""
+    if val is None or val == "":
+        return 0
+    try:
+        n = _i(val)
+    except (InvalidOperation, ValueError, TypeError, ArithmeticError):
+        raise ValueError("D710: obligatie #%d (cod_oblig %s): campul %s are o valoare nenumerica (%r); "
+                         "se asteapta o suma intreaga." % (idx, cod, camp, val))
+    if n < 0:
+        raise ValueError("D710: obligatie #%d (cod_oblig %s): campul %s nu poate fi negativ (%r)."
+                         % (idx, cod, camp, val))
+    return n
 
 
 @dataclass
@@ -119,9 +142,28 @@ def calcul_d710(prof, perioada, date, manual=None):
         raise ValueError("D710 (corectie D100 trimestrial): luna trebuie 3/6/9/12 (primit %r)." % luna)
     obl = []
     total = 0
-    for o in obligatii or []:
-        cod = str(o["cod_oblig"])
-        di, dc = _i(o.get("suma_dat_i", 0)), _i(o.get("suma_dat_c", 0))
+    for idx, o in enumerate(obligatii or [], 1):
+        # T9: obligatia MANUALA (contabil) e parsata cu ValueError CLAR (camp + valoare) in loc de
+        # exceptie bruta (KeyError la cod_oblig lipsa / decimal.InvalidOperation la suma nenumerica) -
+        # mesajul ajunge la utilizator PRE-DUK, nu un stacktrace criptic.
+        cod_raw = o.get("cod_oblig")
+        if cod_raw is None or str(cod_raw).strip() == "":
+            raise ValueError("D710: obligatie #%d fara cod_oblig (camp obligatoriu)." % idx)
+        cod = str(cod_raw).strip()
+        # C5: cod_oblig 131/132 cer Data_I (data incheierii exercitiului financiar) pe care aplicatia NU o
+        # furnizeaza; fara ea validatorul CRAPA ('F: eroare fatala de parsare', dupa DUK regula R_cod131_132).
+        # Blocam explicit cu motivul, nu emitem un XML care crapa validatorul.
+        if cod in ("131", "132"):
+            raise ValueError("D710: cod_oblig %s necesita Data_I (data incheierii exercitiului financiar), "
+                             "neacceptat de aplicatie (DUK regula R_cod131_132)." % cod)
+        # C2/C3: cod_oblig acceptat NUMAI din nomenclatorul suportat (sursa unica COD_BUGETAR din d100).
+        # Un cod necunoscut era emis raw -> DUK 'cod_oblig ... nu se afla in lista'. Il prindem aici, PRE-DUK.
+        if cod not in COD_BUGETAR:
+            raise ValueError("D710: cod_oblig %r nu e in nomenclatorul suportat de aplicatie (%s); "
+                             "DUK regula 'cod_oblig nu se afla in lista' l-ar respinge."
+                             % (cod, "/".join(sorted(COD_BUGETAR))))
+        di = _suma(o.get("suma_dat_i", 0), "suma_dat_i", cod, idx)
+        dc = _suma(o.get("suma_dat_c", 0), "suma_dat_c", cod, idx)
         if di <= 0 and dc <= 0:
             continue
         zi_s, luna_s, an_s = _scadenta_d710(cod, an, luna)
@@ -136,6 +178,12 @@ def calcul_d710(prof, perioada, date, manual=None):
                     or len(parti[0]) != 2 or len(parti[1]) != 2 or len(parti[2]) != 4):
                 raise ValueError("D710: scadenta manuala %r nu e in formatul ZZ.LL.AAAA." % scad_manual)
             zi_s, luna_s, an_s = int(parti[0]), int(parti[1]), int(parti[2])
+            # Nu doar FORMA ZZ.LL.AAAA, ci data calendaristica REALA (31.02 / luna 13 -> DUK
+            # 'data calendaristica eronata'). O prindem aici cu motiv, nu o trimitem la validator.
+            try:
+                _date_v(an_s, luna_s, zi_s)
+            except ValueError:
+                raise ValueError("D710: scadenta manuala %r nu e o data calendaristica valida." % scad_manual)
         scad = "%02d.%02d.%04d" % (zi_s, luna_s, an_s)
         # Gard anti-drop (ca la d100): cod_bugetar per cod_oblig din nomenclatorul COD_BUGETAR (sursa
         # unica d100). Un cod fara cont bugetar (nemapat SI fara valoare manuala) ar emite un XML fara
@@ -146,6 +194,18 @@ def calcul_d710(prof, perioada, date, manual=None):
             raise ValueError("D710: cod_oblig %r fara cont bugetar (nu e in nomenclatorul COD_BUGETAR, sursa "
                              "unica din d100). Codurile suportate (121/103) sunt mapate; alt cod cere "
                              "cod_bugetar explicit sau extinderea nomenclatorului." % cod)
+        # D4: un cod_bugetar MANUAL trebuie sa coincida cu nomenclatorul pt acel cod_oblig; altfel DUK
+        # DUK regula R14a ('cod bugetar ... trebuie sa fie = X') il respinge. Il prindem cu motivul exact.
+        nomen_bug = COD_BUGETAR.get(cod, "")
+        if o.get("cod_bugetar") and nomen_bug and str(o["cod_bugetar"]).strip() != nomen_bug:
+            raise ValueError("D710: cod_bugetar %r nu corespunde nomenclatorului pentru cod_oblig %s "
+                             "(asteptat %s); DUK regula R14a l-ar respinge." % (o["cod_bugetar"], cod, nomen_bug))
+        # E: cota (rata micro) pentru cod 121 trebuie sa fie o rata valida (COTE_MICRO); altfel DUK regula
+        # R17 ('cota ... nu se incadreaza in intervalul cerut'). Prezenta/absenta o pazeste build_xml.
+        cota_val = str(o.get("cota") or "").strip()
+        if cod == "121" and cota_val and cota_val not in COTE_MICRO:
+            raise ValueError("D710: cod_oblig 121 (micro): cota %r nu e o rata micro valida (%s); "
+                             "DUK regula R17 o respinge." % (cota_val, "/".join(COTE_MICRO)))
         r = ObligatieRect(
             cod_oblig=cod, suma_dat_i=di, suma_dat_c=dc,
             cod_bugetar=cod_bug,
@@ -161,8 +221,15 @@ def calcul_d710(prof, perioada, date, manual=None):
 
 def erori_generare(prof):
     erori = []
-    if not (prof.get("cui") or "").strip():
+    cui = (prof.get("cui") or "").strip()
+    if not cui:
         erori.append("LIPSĂ CUI (obligatoriu).")
+    else:
+        # T1: checksum CUI validat PRE-DUK (sursa canonica core.identitate). Un CUI cu cifra de control
+        # gresita / lungime / non-numeric era emis tacit -> DUK 'cui: CUI invalid'. Il prindem cu motiv exact.
+        ok, motiv = valideaza_cui(cui)
+        if not ok:
+            erori.append("CUI invalid (%s): %s." % (cui, motiv))
     if not (prof.get("nume") or "").strip():
         erori.append("LIPSĂ denumire firmă (obligatorie).")
     if not (prof.get("adresa") or "").strip():

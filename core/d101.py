@@ -29,6 +29,7 @@ Structura reala <declaratie101>:
 from __future__ import annotations
 
 from core.common import text_anaf as _t, alege_varianta as _av, Temei as _Tm, LIMITE_TEXT_ANAF as _LIM  # +versionare +limite text
+from core.identitate import valideaza_cui as _valideaza_cui  # T1 (10.08.2026): checksum CUI firma, sursa canonica (read-only)
 from datetime import date as _date_v
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
@@ -103,6 +104,67 @@ _P_INTRARI = {
 # OPANAF 206/2025 poz.20: "totalPlata_A = suma(P1 la P53) (nu se insumeaza rd. de sub rd. 'din care')".
 _P_MAIN = ["P%d" % n for n in range(1, 54)]
 
+# Nomenclator tip impozit pe profit (anaf_surse/d101_struct_anaf.txt poz.e; OPANAF 206/2025):
+# cod_obligatie=(102,103,104,105); orice alta valoare -> DUK "nu se afla in lista".
+_COD_OBLIGATIE_D101 = {"102", "103", "104", "105"}
+
+# Randuri de INTRARE cu regula explicita "Pn>=0" in sursa (col. Validari). NU includem P23..P33
+# (cheltuieli nedeductibile: N(15) FARA constrangere de semn in validator) - le-am respinge desi
+# DUK le accepta; nici derivatele (P3,P7,P22...), care se calculeaza, nu se introduc.
+_NENEG_D101 = ("P1", "P2", "P4", "P5", "P081", "P082", "P083", "P084", "P91",
+               "P111", "P112", "P113", "P121", "P122", "P13", "P151",
+               "P171", "P172", "P173", "P18", "P19", "P20",
+               "P36", "P37", "P38", "P39", "P39a", "P412", "P421",
+               "P4221", "P4222", "P4231", "P43a", "P46", "P47", "P49")
+
+# Rand parinte "din care" >= suma sub-randurilor furnizate. Doar parintii care sunt INTRARI
+# (P422/P423 se DERIVA ca suma sub-randurilor -> egalitate mereu, nu se verifica).
+_SUBTOTAL_D101 = {
+    "P8": ("P081", "P082", "P083", "P084"),
+    "P9": ("P91",),
+    "P11": ("P111", "P112", "P113"),
+    "P12": ("P121", "P122"),
+    "P14": ("P141",),
+    "P15": ("P151",),
+    "P17": ("P171", "P172", "P173"),
+}
+
+
+def _erori_valori_p(g, P):
+    """Verificari PRE-DUK pe VALORILE fiscale furnizate de contabil (manual). Sursa reguli:
+    anaf_surse/d101_struct_anaf.txt (col. Validari). Prinde INAINTE de DUK, cu motivul exact:
+      (1) non-negativitate pe randurile cu regula "Pn>=0" (ex. P36<0 -> DUK regula P36>=0);
+      (2) rand parinte "din care" >= suma sub-randurilor (ex. P8 < P081.. -> DUK regula R41);
+      (3) V1-V7: plafoane pe credite fiscale / sponsorizare / reduceri de impozit.
+    NU reimplementeaza checksum-urile de calcul (P3,P7,P16... sunt CALCULATE de app, nu introduse),
+    nici V8 (P48 e derivat, mereu = P481 sau P482). g = citire intrare; P = randuri calculate."""
+    erori = []
+    for k in _NENEG_D101:
+        if g(k) < 0:
+            erori.append("D101: %s = %d < 0 (DUK regula %s>=0). Corecteaza valoarea in declaratie." % (k, g(k), k))
+    for parinte, copii in _SUBTOTAL_D101.items():
+        suma = sum(g(c) for c in copii)
+        if g(parinte) < suma:
+            erori.append("D101: %s = %d < suma sub-randurilor %s = %d (DUK regula %s>=%s)." % (
+                parinte, g(parinte), "+".join(copii), suma, parinte, "+".join(copii)))
+    P41, P42, P43 = P["P41"], P["P42"], P["P43"]
+    P422, P423 = P["P422"], P["P423"]
+    _plaf_v5 = _i(Decimal(P41 - P42) * Decimal("0.20"))
+    verif = [
+        ("V1", "P39a", g("P39a"), g("P39"), "P39a<=P39"),
+        ("V2", "P421", g("P421"), P41, "P421<=P41"),
+        ("V3", "P422", P422, P41 - g("P421"), "P422<=P41-P421"),
+        ("V4", "P423", P423, P41 - g("P421") - P422, "P423<=P41-P421-P422"),
+        ("V5", "P43", P43, _plaf_v5, "P43<=20%*(P41-P42)"),
+        ("V6", "P44", g("P44"), P41 - (P42 + P43), "P44<=P41-(P42+P43)"),
+        ("V7", "P45", g("P45"), P41 - (P42 + P43 + g("P44")), "P45<=P41-(P42+P43+P44)"),
+    ]
+    for cod, camp, val, plafon, expr in verif:
+        if val > plafon:
+            erori.append("D101: %s = %d > plafon %d (DUK regula %s: %s)." % (camp, val, plafon, cod, expr))
+    return erori
+
+
 
 # Scadenta platii D101 = regula de STRUCTURA versionata pe an (tiparul cota() pe cod, PAS 2). Valorile urmeaza
 # validatorul OFICIAL DUKIntegrator (R17) SI sunt legal corecte pe 2022-2025 - temeiul real (verificat 03.08.2026):
@@ -155,6 +217,10 @@ def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"
     necunoscute = [k for k in I if k not in _P_INTRARI]
     if necunoscute:
         raise ValueError("D101 intrari necunoscute: %s (permise: %s)" % (sorted(necunoscute), sorted(_P_INTRARI)))
+    cod_obligatie = str(cod_obligatie)
+    if cod_obligatie not in _COD_OBLIGATIE_D101:
+        raise ValueError("D101: cod_obligatie invalid (%s): permise %s (DUK regula cod_obligatie=(102,103,104,105)). "
+                         "Corecteaza tipul de impozit pe profit." % (cod_obligatie, sorted(_COD_OBLIGATIE_D101)))
     cota = Decimal(str(cota if cota is not None else COTA_STANDARD))
     g = lambda k: _i(I.get(k, 0))
 
@@ -260,6 +326,10 @@ def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"
         if g(k):
             P[k] = g(k)
 
+    # PRE-DUK: valorile fiscale ale contabilului (semn, sub-randuri, plafoane V1-V7) - motiv exact
+    _erv = _erori_valori_p(g, P)
+    if _erv:
+        raise ValueError(" ".join(_erv))
     # totalPlata_A = suma randurilor PRINCIPALE P1..P53 (checksum de structura, nu impozit datorat)
     total = sum(P.get(k, 0) for k in _P_MAIN)
     # emitem doar campurile NENULE (validatorul nu cere randuri = 0 explicit)
@@ -270,14 +340,24 @@ def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"
 
 def erori_generare(prof):
     erori = []
-    if not (prof.get("cui") or "").strip():
+    _cui = (prof.get("cui") or "").strip()
+    if not _cui:
         erori.append("LIPSĂ CUI (obligatoriu).")
+    else:
+        _valid, _motiv = _valideaza_cui(_cui)   # T1: cifra de control CUI, PRE-DUK
+        if not _valid:
+            erori.append("D101: CUI firmă invalid (%s: %s). Corectează în Profil firmă." % (_cui, _motiv))
     if not (prof.get("nume") or "").strip():
         erori.append("LIPSĂ denumire firmă (obligatorie).")
     if not (prof.get("adresa") or "").strip():
         erori.append("LIPSĂ adresă domiciliu fiscal (obligatorie).")
-    if not (prof.get("caen") or "").strip():
+    _caen = (prof.get("caen") or "").strip()
+    if not _caen:
         erori.append("LIPSĂ cod CAEN (obligatoriu în D101).")
+    elif not re.fullmatch(r"\d{4}", _caen):
+        # N(4): forma. Apartenenta la nomenclatorul CAEN complet NU e verificabila offline
+        # (lista de valori nu exista in codebase - vezi raport TURA 3); DUK ramane plasa finala.
+        erori.append("D101: cod CAEN invalid (%s): trebuie exact 4 cifre — N(4) (DUK regula caen N(4)). Corectează în Profil firmă." % _caen)
     return erori
 
 

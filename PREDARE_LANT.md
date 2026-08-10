@@ -6,9 +6,9 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-Ultimul commit: tura 28 (LANT legislatie TURA 2/4 - CATALOG_INVALIDITATE.md, datele care invalideaza fiecare
-declaratie; doc, nu cod). Four-way exact (SHA + ora) = in raportul turei 28. Anterior COD: tura 26 = c362cc6.
-Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
+Ultimul commit de COD: tura 29 (LANT legislatie TURA 3/4 - mesajul exact pre-DUK: validator identitate partajat
++ reparatii pe toate 10 declaratiile). Four-way exact (SHA + ora) = in raportul turei 29. Anterior: tura 28 = 8b74ccb
+(CATALOG_INVALIDITATE). Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
 
 ## (b) Fronturi deschise (cu blocajul fiecaruia)
 1. **Test fir de intrare cabinet nou** — ACTIV. Cabinet test izolat 4163 "CABINET TEST FIR INTRARE SRL", cont
@@ -50,8 +50,14 @@ contabilitatea" (T4). Fiecare tura se raporteaza inainte de urmatoarea.
   invalideaza / ce incalca / sursa / mesaj curent a/b/c/d) + 11 teme transversale. Tintele: TURA 3 (T1 checksum
   CUI/CNP nepre-validat 9/9, T2 valideaza() cod mort D300/D301/D406/D390, T3 coercitie tacita, T4 avertizeaza-dar-
   emite, T6 passthrough netrunchiat, T9 exceptii brute); TURA 4 (T7 semantic, T8 non-impunere DUK).
-- TURA 3 (mesajul catre utilizator pe fiecare tip de date invalide) - urmeaza dupa confirmare Costin.
-- TURA 4 (reconcilierea sursa-vs-declaratie, gardata sa nu moara tacit - clasa D300 mort).
+- TURA 3 (mesajul catre utilizator) = GATA tura 29: core/identitate.py (validator CUI/CNP partajat) + reparatii
+  pe toate 10 declaratiile ca aplicatia sa arate motivul EXACT pre-DUK (T1 checksum, T2 valideaza() cablat, T3
+  coercitii vizibile, T4 op11 exclus, T6 lungimi, T9 exceptii prietenoase) + fix conformitate D406 03+CNP. Baseline
+  valid ramane DUK-valid. RAMAS decizii produs: D101 scadenta LL+3/LL+6, D394 G-x1 cota, D301 pers_inreg
+  (inreg_art317), D390 VIES full-27, T10 feature (rectificativa etc.), T11 DUK D112_209.
+- TURA 4 (reconcilierea sursa-vs-declaratie, gardata sa nu moara tacit - clasa D300 mort) - urmeaza dupa confirmare.
+  Tinte din TURA 2/3: T7 (D205 imp1≠rate×baza, D301 RON curs≠1, D710 suma_ded, agregare mis-contabilizata, D100
+  suma_dat) + T8 (D300 CR-5 R25=R12, D101 d_reg/d_succ/cod_bug).
 
 ## (c) Ce e in lucru acum
 Conformitatea declaratiilor la spec oficial DUK (front 6) + firul de intrare (front 1). Turele recente:

@@ -52,6 +52,7 @@ cere Stat_R (DUK regula R33), camp inexistent in tabelul `asociati` (vezi build_
 from __future__ import annotations
 
 from core.common import text_anaf as _t, cheie_manual, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
+from core.identitate import valideaza_cui, valideaza_cnp  # T1: checksum CUI/CNP pre-DUK, read-only (LEAF, fara import circular)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -164,6 +165,19 @@ def build_xml(res):
         raise ValueError("D205 fara niciun beneficiar de venit - nu se genereaza "
                          "declaratie fara continut.")
 
+    # c2 (T1 - CATALOG_INVALIDITATE.md): CUI platitor pre-validat pe CIFRA DE CONTROL, nu doar
+    # non-gol (erori_generare verifica doar non-gol). Un CUI cu control gresit / lungime gresita
+    # era emis TACIT si respins abia de DUK (atribut "cui: CUI invalid"; structura ANAF rand 9
+    # "Verificare cui" -> "ERR - CIF platitor de venit invalid"). valideaza_cui = validatorul
+    # canonic OFFLINE (core.identitate), refolosit read-only.
+    _ok_cui, _motiv_cui = valideaza_cui(prof.get("cui"))
+    if not _ok_cui:
+        raise ValueError(
+            "D205: CUI platitor %s invalid (%s) - se corecteaza, nu se emite declaratie respinsa "
+            "de ANAF (validarea DUK de atribut 'cui: CUI invalid'; structura ANAF rand 9 "
+            "'Verificare cui')." % (
+                "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()) or "-", _motiv_cui))
+
     # Campuri OBLIGATORII pe beneficiar in structura ANAF (anaf_surse/d205_struct_anaf.txt):
     # cifR "4.CNP/NIF din Romania" N(13) DA (rand 34, "ERR - ... necompletat"; DUK: "cifR:
     # atribut prezent dar vid nepermis") si den1 "1.Nume ... / Denumire" C(100) DA (rand 31).
@@ -195,6 +209,33 @@ def build_xml(res):
                 "inexistent in tabelul `asociati`." % (
                     b.nume1 or "necunoscut",
                     "".join(ch for ch in (b.cif or "") if ch.isdigit()) or "-"))
+
+        # c1 (T1): beneficiar REZIDENT (CNP-shaped, rezid==1) - checksum CNP pre-validat. _rezid()
+        # stabileste DOAR forma (13 cifre, prima 1-8); un CNP cu cifra de control gresita trecea
+        # TACIT si era respins abia de DUK (R29: "cif1(...) este invalid"). valideaza_cnp =
+        # validatorul canonic (core.identitate), refolosit read-only. NU inlocuieste refuzul de
+        # nerezident de mai sus (prefix-9 / cod strain) - il COMPLETEAZA cu checksum-ul rezidentilor.
+        _ok_cnp, _motiv_cnp = valideaza_cnp("".join(ch for ch in (b.cif or "") if ch.isdigit()))
+        if not _ok_cnp:
+            raise ValueError(
+                "D205: beneficiarul %s are CNP invalid (%s: %s) - se corecteaza, nu se emite "
+                "declaratie respinsa de ANAF (DUK regula R29)." % (
+                    b.nume1 or "necunoscut",
+                    "".join(ch for ch in (b.cif or "") if ch.isdigit()), _motiv_cnp))
+
+    # c3 (T1): (tip_venit1+cifR) trebuie UNIC (structura ANAF "Validari suplimentare" pct.2
+    # "unicitate (tip_venit1+cifR) pt. tip_venit1#25"; DUK regula R41b: "combinatia 08_<cnp> nu
+    # este unica"). Doi asociati cu acelasi CNP (toti tip_venit1=08) colapsau pe cheia cif in
+    # reconciliere (dict pe cif) si scapau nedetectati -> respinsi abia de DUK. Hard-block care
+    # numeste CNP-ul, inainte de emitere.
+    _cifr_vazute = set()
+    for _b in res.beneficiari:
+        _cheie_cifr = "".join(ch for ch in (_b.cif or "") if ch.isdigit())
+        if _cheie_cifr in _cifr_vazute:
+            raise ValueError(
+                "D205: beneficiarul cu CNP %s apare de 2 ori - (tip_venit1+CNP) trebuie unic "
+                "(DUK regula R41b). Comaseaza sau corecteaza." % _cheie_cifr)
+        _cifr_vazute.add(_cheie_cifr)
 
     # Tcastig/Tpierd, conform formulei oficiale, se calculeaza DOAR din
     # beneficiarii cu tip_venit1=25 ("Tcastig = suma(castig1) pt. tip_venit1=25").

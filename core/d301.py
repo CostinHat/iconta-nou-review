@@ -28,6 +28,7 @@ from core import common as c
 from core.pdf_util import bani
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
+from core.identitate import valideaza_cui  # T1: validator partajat CUI (read-only) - checksum + lungime pre-DUK
 
 NS = "mfp:anaf:dgti:d301:declaratie:v1"
 REGULI = "2026.1"
@@ -111,6 +112,7 @@ class Rezultat:
     total_plata_a: int = 0
     mij_transp: int = 0
     avertismente: list = field(default_factory=list)
+    ops_raw: list = field(default_factory=list)   # T2/T3: valorile BRUTE, pre-coercitie (validate pre-DUK)
 
 
 def _data_doc_ro(v):
@@ -172,7 +174,8 @@ def calcul_d301(prof, perioada, operatiuni_raw):
     total_plata = sum(tot[t][0] + tot[t][1] for t in TIPURI_OP)
     res = Rezultat(an=an, luna=luna, prof=prof, operatiuni=ops,
                    totaluri={t: tuple(tot[t]) for t in TIPURI_OP},
-                   total_plata_a=total_plata, mij_transp=mij)
+                   total_plata_a=total_plata, mij_transp=mij,
+                   ops_raw=list(operatiuni_raw))
     res.avertismente.append("D301 %d/%d: %d operațiuni, TVA total %s."
                             % (luna, an, len(ops), bani(sum(tot[t][1] for t in TIPURI_OP), "lei")))
     return res
@@ -190,8 +193,18 @@ def erori_generare(prof):
     Sursa UNICA: valideaza() cheama tot functia asta, nu-si repeta verificarile.
     """
     erori = []
-    if not _NEDIGIT.sub("", prof.get("cui") or ""):
+    _cif = _NEDIGIT.sub("", prof.get("cui") or "")
+    if not _cif:
         erori.append("LIPSĂ CIF persoană impozabilă.")
+    else:
+        # T1: cifra de control + lungime (validator partajat core.identitate, read-only), nu doar
+        # prezenta. Un CIF cu checksum gresit / supra-lung era emis TACIT (doar DUK il prindea, criptic).
+        # C(13) e latimea campului ANAF; validatorul respinge deja >10 cifre ("lungime").
+        _ok_cif, _motiv_cif = valideaza_cui(prof.get("cui"))
+        if not _ok_cif:
+            erori.append("CIF persoana impozabila invalid (%s): %s." % (_cif, _motiv_cif))
+        elif len(_cif) > 13:
+            erori.append("CIF %s depaseste C(13) (structura ANAF d301)." % _cif)
     if not str(prof.get("nume") or "").strip():
         erori.append("LIPSĂ denumire.")
     if not _clean_bc(prof.get("banca")):
@@ -200,21 +213,56 @@ def erori_generare(prof):
         erori.append("LIPSĂ cont (obligatoriu la D301).")
     return erori
 
+def _blocante_pre_duk(res):
+    """Motive care INVALIDEAZA D301, semnalate PRE-DUK ca ValueError cu motiv EXACT (nu eroarea
+    bruta a validatorului: "atribut prezent dar vid nepermis" / "nu se afla in lista"). Verifica
+    valorile BRUTE (res.ops_raw), INAINTE de coercitia din calcul_d301 (tip->1, valuta->EUR):
+    o valoare coercita din gunoi trebuie sa iasa la suprafata, nu sa devina tacit un default (T3).
+    Acopera: nr_doc gol (T2), data_doc gol (T2), tip out-of-nomenclator (T2/T3), valuta gol sau
+    out-of-nomenclator (T2/T3), nr_doc > C(20) passthrough netrunchiat (T6, leak pur pe care DUK
+    nu il impune). Campurile de profil (CIF checksum inclus, T1) raman in erori_generare (sursa unica)."""
+    b = []
+    for i, r in enumerate(res.ops_raw, 1):
+        nr_raw = r.get("nr_doc")
+        nr = str(nr_raw).strip() if nr_raw is not None else ""
+        eticheta = nr if nr else "#%d" % i
+        # tip: out-of-nomenclator / gol / negenerabil -> NU se reclasifica tacit in sectiunea 1 (T2/T3)
+        tip_raw = r.get("tip")
+        try:
+            tip = int(tip_raw)
+        except (TypeError, ValueError):
+            tip = None
+        if tip not in TIPURI_OP:
+            b.append("Operatiunea %s: tip operatiune %r in afara nomenclatorului (permise 1..5); "
+                     "nu se reclasifica tacit in sectiunea 1." % (eticheta, tip_raw))
+        # valuta: gol -> NU devine tacit EUR; altfel trebuie in nomenclatorul ancorat pe validator (T2/T3)
+        val_raw = r.get("tip_valuta")
+        val = str(val_raw).strip().upper() if val_raw is not None else ""
+        if not val:
+            b.append("Operatiunea %s: valuta lipsa; nu se completeaza tacit EUR." % eticheta)
+        elif val not in VALUTE:
+            b.append("Operatiunea %s: valuta %r neacceptata (nomenclator ANAF)." % (eticheta, val))
+        # nr_doc: gol (T2) sau supra-lung C(20) netrunchiat (T6, leak pur)
+        if not nr:
+            b.append("Operatiunea #%d: fara numar document (nr_doc gol)." % i)
+        elif len(nr) > 20:
+            b.append("Operatiunea %s: numar document de %d caractere depaseste C(20) (structura ANAF); "
+                     "nu se emite netrunchiat." % (eticheta, len(nr)))
+        # data_doc: gol (T2)
+        dd_raw = r.get("data_doc")
+        dd = str(dd_raw).strip() if dd_raw is not None else ""
+        if not dd:
+            b.append("Operatiunea %s: fara data document (data_doc gol)." % eticheta)
+    return b
+
+
 def valideaza(res):
-    erori = []
-    prof = res.prof
-    if res.luna < 1 or res.luna > 12:
-        erori.append("Lună invalidă.")
-    # Campurile de profil: sursa unica e erori_generare (chemata si din genereaza).
-    erori.extend(erori_generare(prof))
-    for op in res.operatiuni:
-        if op.tip not in TIPURI_OP:
-            erori.append("Tip operațiune %s invalid." % op.tip)
-        if op.tip_valuta not in VALUTE:
-            erori.append("Valută %s neacceptată (nomenclator ANAF)." % op.tip_valuta)
-        if not op.nr_doc:
-            erori.append("Operațiune fără număr document.")
-    return erori
+    """Revitalizat (T2): era COD MORT - genereaza chema doar erori_generare(prof), deci verificarile
+    prietenoase pe operatiuni (nr_doc/data_doc gol, tip/valuta out-of-nomenclator) NU ajungeau la
+    contabil; primea eroarea bruta a validatorului la upload. Acum genereaza() ruteaza
+    _blocante_pre_duk -> ValueError cu motiv EXACT pre-DUK. Returneaza lista COMPLETA (blocante pe
+    operatiuni + campuri de profil); sursa unica pentru profil = erori_generare (T1 inclus)."""
+    return _blocante_pre_duk(res) + erori_generare(res.prof)
 
 
 def _pers_inreg(prof):
@@ -299,10 +347,19 @@ def genereaza(conn, schema, perioada, manual=None):
         raise ValueError("D301 nu acceptă 'manual' (chei: %s)" % sorted(manual))
     if perioada.luna is None or not (1 <= perioada.luna <= 12):
         raise ValueError("D301 lunar: luna invalidă: %r" % perioada.luna)
+    if perioada.an is None or int(perioada.an) < 2013:
+        raise ValueError("D301: an invalid %r - formularul 301 se depune din 2013 (OPANAF 592/2016 si anterioare)." % perioada.an)
     prof, ops = pull(conn, schema, perioada)
     # POARTA (27.07.2026): profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF.
     erori = erori_generare(prof)
     if erori:
         raise ValueError("D301 nu se poate genera: " + " ".join(erori))
     res = calcul_d301(prof, perioada, ops)
+    # [T2 10.08.2026] valideaza(res) era COD MORT: genereaza chema doar erori_generare(prof), deci
+    # verificarile prietenoase pe operatiuni (nr_doc/data_doc gol, tip/valuta out-of-nomenclator, T6
+    # nr_doc>C(20)) nu ajungeau la contabil - primea eroarea bruta a validatorului la upload. Le cablam
+    # aici pe valorile BRUTE (pre-coercitie), rutate ca ValueError cu motiv EXACT pre-DUK.
+    _blocante = _blocante_pre_duk(res)
+    if _blocante:
+        raise ValueError("D301 nu se poate genera: " + " ".join(_blocante))
     return build_xml(res), res

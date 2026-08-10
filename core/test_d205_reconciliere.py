@@ -52,7 +52,7 @@ def conn_recon():
                 cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,"
                             "declarant_nume,declarant_prenume,declarant_functie) "
                             "VALUES (1,'TEST SRL','14399840','Str 1','Buc','B','POP','ION','ADMINISTRATOR')")
-                cur.execute("INSERT INTO asociati (nume, cnp, cota) VALUES ('POPESCU','1900101410011',60),('IONESCU','2900101410012',40)")
+                cur.execute("INSERT INTO asociati (nume, cnp, cota) VALUES ('POPESCU','1900101410011',60),('IONESCU','2900101410011',40)")
                 # total dividende distribuite (cont 457) = 10000, in an
                 cur.execute("INSERT INTO inregistrari (data, descriere, status) VALUES ('2026-04-01','div','validata') RETURNING id")
                 nid = cur.fetchone()[0]
@@ -68,7 +68,7 @@ def test_reconciliere_curata_si_genereaza_trece(conn_recon):
     # 2026: cota dividende 16%. POPESCU 60% -> baza 6000, imp 960 ; IONESCU 40% -> 4000, 640.
     porc = {b.cif: (int(b.baza1), int(b.imp1)) for b in res.beneficiari}
     assert porc.get("1900101410011") == (6000, 960), porc
-    assert porc.get("2900101410012") == (4000, 640), porc
+    assert porc.get("2900101410011") == (4000, 640), porc
     rap = reconciliaza(conn_recon, _SCHEMA, Perioada(2026), res)
     assert rap["acoperit"] is True and rap["divergente"] == [], rap["divergente"]
     assert "declaratie205" in xml

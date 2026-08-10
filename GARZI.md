@@ -2549,3 +2549,19 @@ Toate cu MUTATIE pe HEAD c9869a1 (pre-fix) + re-validare DUKIntegrator pe date P
 - core/test_d394_prsafiliat.py: are_operatiuni_afiliate=True -> prsAfiliat "1". MUTATIE: HEAD mereu "0".
 - core/test_d406_taxcode_nota.py: GL/Payment TaxCode = 380304 (nu "300"). MUTATIE: HEAD "300".
 - core/test_d406_master_pf.py: PF tip-04 in <Suppliers>/<Customers>. MUTATIE: HEAD blocuri goale.
+
+## 10.08.2026 (tura 29) — LANT legislatie TURA 3/4: garzi pe mesajul exact pre-DUK (identitate + coercitii + wiring)
+Toate MUTATIE pe HEAD 8b74ccb + baseline DUK-valid nemodificat. FUNDATIE: core/test_identitate.py (valideaza_cui/
+cnp/cif ancorat pe valori DUK valid+invalid). Per declaratie (fisiere noi de gard, old-fail/new-pass):
+- D100: test_d100_cui_checksum, test_d100_trunchiere.
+- D101: test_d101_cui_checksum, test_d101_cod_obligatie_caen, test_d101_valori_pre_duk (P-uri/plafoane V).
+- D112: test_d112_cnp_angajat, test_d112_nume_dataang, test_d112_caen_codboala, test_d112_cert_overflow.
+- D205: test_d205_cnp_checksum, test_d205_cui_checksum, test_d205_cnp_duplicat (R29/R41b pre-DUK).
+- D300: test_d300_valideaza_wired (T2 tip_decont↔luna R18 + marja), test_d300_profil_identitate.
+- D301: test_d301_valideaza_wired, test_d301_cif_checksum, test_d301_an_guard, test_d301_nr_doc_c20, test_d301_coercitie_tacita.
+- D390: test_d390_diagnostic_partener (checksum_vies DE/HR/FR + tara mistypata + codO>12 + wiring).
+- D394: test_d394_partener_cui_litere (G-d1 blocaj), test_d394_cuip_checksum, test_d394_op1_fara_op11 (R233.5 exclus).
+- D406: test_d406_cui_checksum, test_d406_cnp_tert (03+CNP DUK-valid), test_d406_coercitie_t3, test_d406_accounttype_wired.
+- D710: test_d710_t9_parsare, test_d710_t1_cui, test_d710_nomenclator_manual, test_d710_cod131_132, test_d710_sume_negative.
+Fixtures reparate (date invalide inlocuite cu valide, gardurile NEslabite): test_d112_reconciliere, test_d205_reconciliere,
+test_d205 (test_id_inreg), test_d710 (test_cod_bugetar - bumpuit √).

@@ -8692,3 +8692,57 @@ Cele mai grave (d) - date gresite ajung la ANAF, nimeni nu prinde:
 - D112 judet_casa bogus -> casa de sanatate gresita mascata.
 - D710 suma_ded aruncat tacit.
 Detalii complete per declaratie + surse: CATALOG_INVALIDITATE.md.
+
+## 10.08.2026 (tura 29) — LANT legislatie TURA 3/4: mesajul catre utilizator (motivul exact al invaliditatii, PRE-DUK)
+
+Comanda: ia fiecare declaratie x fiecare tip de date invalide; aplicatia sa prezinte MOTIVUL EXACT al
+invaliditatii; repara tot ce gasesti. Reparate temele transversale din catalogul tura 28 (CATALOG_INVALIDITATE.md).
+10 audituri/reparatii paralele, fiecare cu gard old-fail (HEAD 8b74ccb)/new-pass + proba DUK before/after pe date
+POPULATE; baseline valid ramane DUK-valid la toate.
+
+FUNDATIE T1: core/identitate.py (NOU, LEAF) - valideaza_cui/valideaza_cnp/valideaza_cif OFFLINE, sursa CANONICA
+pentru declaratii. Validatoarele existau imprastiate (solduri_parteneri_api/salariati_import_api/tenant_provisioning)
+si erau folosite DOAR la import, NICIODATA in generatoare - de-aici gap-ul 9/9. Verificat contra valorilor pe care
+DUK le accepta/respinge (301111003 valid/301111004 invalid; CNP idem). Gard: core/test_identitate.py (dubla ancora
+valid+invalid). Cele 4 validatoare vechi raman (au apelantii lor); consolidarea = curatare ulterioara.
+
+REPARAT per declaratie (motiv EXACT pre-DUK; hard-block pe identitate obligatorie, avertisment unde blocajul ar
+subtia nedrept declaratia - principiul Costin "utilizatorul afla, nu declaratia se subtiaza"):
+- D100: T1 CUI firma checksum/format/lungime -> ValueError; T6 den/adresa supra-lungime -> avertisment.
+- D101: T1 cif checksum; cod_obligatie ∉{102-105}; caen N(4); P-uri negative (set source-backed, exclude P23-33
+  fara constrangere de semn); parent<Σsub; plafoane V2-V7. (CAEN full-list + checksum-uri pe randuri COMPUTATE =
+  raportate, nereimplementate - n-ar adauga acoperire.)
+- D112: T1 CNP angajat (format+checksum) + CUI firma; numeAsig gol / data_angajare NULL; caen/cod-boala out-of-enum
+  (enum extras din XSD via _enum_xsd, nu tabel hardcodat); T6 serie/numar/diagnostic (D_1/D_2/D_23) overflow ->
+  ValueError numind salariatul/campul. Fixtures reparate: test_d112_reconciliere (CNP ...012->...028 valid).
+- D205: T1 CNP beneficiar checksum (c1) + CUI platitor (c2); CNP duplicat (tip_venit1+cifR) (c3) R41b -> ValueError
+  numind beneficiarul. Fixtures reparate (de coordonator): test_d205_reconciliere (IONESCU ...012->...011),
+  test_d205 test_id_inreg (beneficiar B CNP distinct). d1 (imp1≠rate×baza manual) -> TURA 4.
+- D300: T2 valideaza() COD MORT -> CABLAT in genereaza (split severitate: _blocante_pre_duk->ValueError tip_decont
+  A/S↔luna R18; _avertismente_marja->warn ±1%); T1 cui/caen/pro_rata. CR-5 (R25=R12 neimpus) -> TURA 4.
+- D301: T2 valideaza() cablat (nr_doc/data_doc gol, tip/valuta out-of-nomenclator); T1 cif; an<2013; T6 nr_doc>C(20)
+  (era leak pur); T3 tip=0/valuta-lipsa coercitii -> blocate cu motiv (nu default tacit). Rest -> TURA 4.
+- D390: FLAGSHIP checksum_vies() OFFLINE (DE/HR/FR verificat contra DUK; restul "neverificat", zero false-pozitiv)
+  -> avertisment PER-PARTENER numind partenerul + motiv + "va fi respins DUK R24.1"; tara mistypata (CR/EL) ->
+  numit + sugestie + BLOCAJ (nu mai dispare tacit); codO>12 -> NU se mai trunchiaza (corupea TVA), blocaj; T2
+  valideaza() cablat; telefon>15 clamp+avert, cui>10 blocaj; codO="" pt A/S omis. VIES full-27 = deferat (Costin).
+  FINDING (non-circular): catalogul zicea "codO cerut doar L,T,P"; proba DUK a agentului INFIRMA (R fara codO ->
+  R24.2 respins) -> pastrat L,T,P,R (DUK-ancorat), documentat.
+- D394: T3/G-d1 CUI cu litere -> P_INVALID + BLOCAJ (nu mai devine tacit partener strain - cel mai grav);
+  T1 cuiP checksum (R218.2/R218.3) + CUI firma (R6); T4 op1 C/V fara op11 -> EXCLUS (nu mai avertizeaza-dar-emite)
+  + R233.5; N cu CUI de firma -> exclus R233.4. G-x1 asimetrie cota -> decizie produs (Costin).
+- D406: T1 partener + CUI firma; E3/E4 CNP in tert_cui -> acum 03+CNP (CNP valid -> DUK valid; invalid -> ValueError)
+  = fix de CONFORMITATE; T3 UOM/cota/PaymentMethod coercitie -> avertisment PER-ITEM numind factura+valoarea; T2
+  AccountType cablat tintit (nu tot valideaza() - ar bloca fixtures + redundant cu reconcilierea). Payments/
+  InvoiceType/TaxCode/BaseRate/HeaderComment/Country = NESONDAT (hardcodat, cer code-injection).
+- D710: T9 exceptii brute -> ValueError prietenos (suma nenumerica/lipsa cod_oblig/negativa); T1 CUI; cod_oblig ∉
+  nomenclator + cod_bugetar (R14a) + cota micro (R17) + scadenta calendar; C5 cod 131/132 -> blocat (era crash NPE).
+  Fixtures reparate: test_d710 (escape-hatch buggy -> blocaj). J1 (suma_ded aruncat) -> TURA 4.
+
+RAMAS pentru TURA 4 (reconciliere; semantic gresit-dar-consistent, DUK nu prinde): T7 (D205 imp1, D301 RON curs≠1
++ rotunjire, D710 suma_ded, agregare mis-contabilizata, D100 suma_dat), T8 (D300 CR-5 R25=R12, D101 d_reg/d_succ/
+cod_bug). Decizii produs: D101 scadenta LL+3-vs-LL+6, D394 G-x1 asimetrie cota, D301 pers_inreg (coloana
+inreg_art317), D390 VIES full-27, T10 completitudine feature (rectificativa etc.), T11 actualizare DUK D112_209.
+
+Bump √ INVENTAR_A: clusterul "nomenclator COD_BUGETAR" (d710) 04.08->10.08 - functia test_cod_bugetar_nomenclator_
+duk_si_antidrop a fost reparata (escape-hatch buggy -> blocaj), re-verificata DUK R14a.

@@ -37,6 +37,7 @@ ANCORE = {
     ("d394", "REZ1_FARA_TVA"): "test_TIPURI_e_setul_validatorului_curent",   # subset derivat din TIPURI
     ("d394", "OP1_CU_TVA"): "test_TIPURI_e_setul_validatorului_curent",      # subset derivat din TIPURI
     ("d394", "_TARI_UE"): "test_tip_partener_clasificare_pct216",
+    ("d394", "_TARI_NONUE"): "test_tip_partener_clasificare_pct216",   # jumatatea non-UE a clasificarii pct.216 (sibling _TARI_UE)
     ("d406", "_UE_NON_RO"): "test_registration_number_partener_si_firma_proprie",
 }
 

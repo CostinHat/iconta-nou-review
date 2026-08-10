@@ -101,10 +101,10 @@ def conn_recon():
                 cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
                             "OVERRIDING SYSTEM VALUE VALUES (1,'SIMPLU','A','1900101410011','2025-01-01',6000,8,false)")
                 cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                            "OVERRIDING SYSTEM VALUE VALUES (2,'SIMPLU','B','1900101410012','2025-01-01',8000,8,false)")
+                            "OVERRIDING SYSTEM VALUE VALUES (2,'SIMPLU','B','1900101410028','2025-01-01',8000,8,false)")
                 # 1 salariat la MINIM (4050) -> facilitate -> CAZ NESIMPLU
                 cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
-                            "OVERRIDING SYSTEM VALUE VALUES (3,'MINIM','C','1900101410013','2025-01-01',4050,8,false)")
+                            "OVERRIDING SYSTEM VALUE VALUES (3,'MINIM','C','1900101410036','2025-01-01',4050,8,false)")
                 cur.execute("INSERT INTO salariu_istoric (salariat_id,valabil_din,salariu_brut) "
                             "VALUES (1,'2025-01-01',6000),(2,'2025-01-01',8000),(3,'2025-01-01',4050)")
             yield conn

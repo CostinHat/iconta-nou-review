@@ -10,6 +10,28 @@ from core import pontaj as _pontaj
 from core import perioada as _per
 from core import beneficii_api as _ben
 from core.pdf_util import bani
+import os as _os
+from core.identitate import valideaza_cnp as _vcnp_id, valideaza_cui as _vcui_id  # T1: checksum CUI/CNP pre-DUK (read-only)
+
+_D112_XSD = _os.path.join(_os.path.dirname(__file__), "..", "anaf_surse", "d112_06082026.xsd")
+_ENUM_XSD_CACHE = {}
+def _enum_xsd(tip):
+    """Valorile enumerate ale unui xs:simpleType din XSD-ul D112 (anaf_surse/d112_06082026.xsd,
+    autoritatea in-repo pt nomenclatoarele inchise). Extrage <xs:enumeration value=...> din blocul
+    simpleType; cache la prima citire. La lipsa fisierului intoarce set gol (caller-ul cade pe fallback)."""
+    if tip in _ENUM_XSD_CACHE:
+        return _ENUM_XSD_CACHE[tip]
+    vals = set()
+    try:
+        with open(_D112_XSD, encoding="utf-8") as _f:
+            _txt = _f.read()
+        _m = re.search(r'<xs:simpleType name="%s">(.*?)</xs:simpleType>' % re.escape(tip), _txt, re.S)
+        if _m:
+            vals = set(re.findall(r'<xs:enumeration value="([^"]*)"', _m.group(1)))
+    except Exception:
+        vals = set()
+    _ENUM_XSD_CACHE[tip] = vals
+    return vals
 
 def _nzl(an, luna):
     # Zile lucratoare din luna, FARA sarbatori legale (OUG 158/2005 art.10). Sursa UNICA
@@ -135,6 +157,26 @@ def _d112_genereaza(prof, salariati, an, luna):
         av.append("CUI firma lipsa - completeaza Profil firma.")
     if caen_f == "0000":
         av.append("CAEN firma lipsa/invalid - D112 cere CAEN valid in Profil firma.")
+    # [T1 identitate firma, 10.08.2026] CUI prezent-dar-invalid (cifra de control / lungime) pleca TACIT ->
+    # DUK "CUI invalid". Pre-validam cu core.identitate.valideaza_cui (checksum offline). Golul ramane
+    # avertisment / poarta erori_generare; blocam doar valoarea PREZENTA si gresita.
+    if cui_f:
+        _ok_cui, _mot_cui = _vcui_id(cui_f)
+        if not _ok_cui:
+            raise ValueError(
+                "D112: CUI firma %s invalid (%s) - se corecteaza in Profil firma (ecran Date firma), "
+                "nu se emite D112 respins de DUK." % (cui_f, _mot_cui))
+    # [caen out-of-enum, 10.08.2026] CAEN prezent-dar-neenumerat (ex '9999') pleca TACIT -> XSD reject
+    # (caen type=Str_caenListSType, enumerare INCHISA in d112_06082026.xsd). '0000' = LIPSA (avertisment
+    # mai sus). Validam contra enumerarii din XSD (autoritatea in-repo); fallback pe forma daca XSD lipseste.
+    if caen_f != "0000":
+        _caene = _enum_xsd("Str_caenListSType")
+        _caen_ok = (caen_f in _caene) if _caene else (len(caen_f) == 4 and caen_f not in ("0000", "9999"))
+        if not _caen_ok:
+            raise ValueError(
+                "D112: CAEN firma '%s' nu exista in nomenclatorul CAEN acceptat de D112 (tip XSD "
+                "Str_caenListSType, enumerare inchisa) - se corecteaza in Profil firma, nu se emite D112 "
+                "respins de ANAF." % caen_f)
     sum_imp = sum_cas = sum_cass = sum_bazac = 0
     cas_ang_dif = cass_ang_dif = 0  # d112_b4p_v2
     _c2_cazuri = []  # [D112 C2 pe rand] (cod, d16, d14=za, d15=zf, d20, d21) per certificat
@@ -143,6 +185,25 @@ def _d112_genereaza(prof, salariati, an, luna):
     idx = 0
     for s in salariati:
         idx += 1
+        # [T1 CNP angajat + numeAsig/dataAng obligatorii, 10.08.2026] Passthrough per-salariat: CNP gresit
+        # (lungime/format/leading-zero/alpha = XSD CnpSType pattern; cifra de control = DUK), numeAsig gol
+        # (DUK: vid nepermis) sau data_angajare NULL (dataAng lipsa, XSD) plecau TACIT la ANAF. Refuz la
+        # radacina care NUMESTE salariatul - aceeasi clasa ca hard-block-ul D_8/asiguratD (nu se trunchiaza).
+        _cnp_s = str(s.get("cnp") or "").strip()
+        _nume_s = str(s.get("nume") or "").strip()
+        _ok_cnp, _mot_cnp = _vcnp_id(_cnp_s)
+        if not _ok_cnp:
+            raise ValueError(
+                "D112: salariatul %s (CNP %s) are CNP invalid (%s) - se corecteaza in fisa salariatului, "
+                "nu se emite D112 invalid." % (_nume_s or "(nume necompletat)", _cnp_s or "(gol)", _mot_cnp))
+        if not _nume_s:
+            raise ValueError(
+                "D112: salariatul cu CNP %s are numeAsig gol - numele e obligatoriu (DUK: vid nepermis). "
+                "Completeaza-l in fisa salariatului, nu se emite D112 invalid." % _cnp_s)
+        if not str(s.get("data_angajare") or "").strip():
+            raise ValueError(
+                "D112: salariatul %s (CNP %s) are data_angajare necompletata - dataAng e obligatoriu in "
+                "D112 (XSD). Completeaz-o in fisa salariatului, nu se emite D112 invalid." % (_nume_s, _cnp_s))
         brut = _d112int(s.get("brut")) + _d112int(s.get("exces_vacanta", 0))  # [D3] excesul de vacanta in brutul declarat (S731)
         facil = _d112int(s.get("facilitate"))
         bazac = brut - facil
@@ -286,6 +347,32 @@ def _d112_genereaza(prof, salariati, an, luna):
                         "AsiguratDType le cere use=required in d112_06082026.xsd - un XML cu ele goale e respins de "
                         "ANAF. Completeaza-le in certificat (ecran Concedii medicale) - nu se emite D112 invalid."
                         % (s.get("cnp"), ", ".join(_lipsa)))
+                # [cod boala D_9 out-of-enum, 10.08.2026] D_9 type=Str_codBoalaSType (enum '01'..'15' in
+                # XSD). Un cod '99' pleca TACIT -> XSD reject. Validam contra enumerarii din XSD.
+                _cod_b = str(x.get("cod") or "01").zfill(2)
+                _codb_set = _enum_xsd("Str_codBoalaSType")
+                _codb_ok = (_cod_b in _codb_set) if _codb_set else (_cod_b.isdigit() and 1 <= int(_cod_b) <= 15)
+                if not _codb_ok:
+                    raise ValueError(
+                        "D112: certificatul de concediu medical (salariat CNP %s) are cod boala '%s' in "
+                        "afara nomenclatorului D_9 (tip XSD Str_codBoalaSType, coduri 01-15) - se corecteaza "
+                        "in certificat (ecran Concedii medicale), nu se emite D112 respins de ANAF."
+                        % (s.get("cnp"), _cod_b))
+                # [T6 passthrough NETRUNCHIAT, 10.08.2026] serie(D_1)/numar(D_2)/diagnostic(D_23) sunt
+                # identificatori de certificat - NU se trunchiaza tacit (spre deosebire de nume/den prin _t):
+                # o serie/numar trunchiat = alt certificat la ANAF. Overflow lungime (XSD Str5/Str10/Str3)
+                # -> hard-block care numeste campul + limita. (Golul e deja blocat mai sus.)
+                _diag = "RM" if _cod_b == "15" else str(x.get("diagnostic") or "999")
+                _t6 = (("D_1 (serie)", str(x.get("serie") or ""), 5),
+                       ("D_2 (numar)", str(x.get("numar") or ""), 10),
+                       ("D_23 (diagnostic)", _diag, 3))
+                _ovf = ["%s = %d caractere (max %d)" % (_lbl, len(_v), _lim) for _lbl, _v, _lim in _t6 if len(_v) > _lim]
+                if _ovf:
+                    raise ValueError(
+                        "D112: certificatul de concediu medical (salariat CNP %s) are campuri care depasesc "
+                        "lungimea maxima XSD: %s - se corecteaza in certificat (ecran Concedii medicale); "
+                        "identificatorii de certificat NU se trunchiaza tacit, nu se emite D112 invalid."
+                        % (s.get("cnp"), ", ".join(_ovf)))
                 _opt = ""
                 for _a, _lbl, _v in _obl:
                     _opt += ' %s="%s"' % (_a, _v)

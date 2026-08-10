@@ -33,6 +33,9 @@ from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text
 from core.common import cere_coloane_cursor  # [garda coloane 27.07.2026]
 from core.common import cheie_manual
 from core.common import perioada_tva_tip as _ptv, fereastra_tva as _fer  # [fix trim 06.08.2026]
+# [LANT legislatie TURA 3, 10.08.2026] SURSA CANONICA de validare a identitatii fiscale (T1/T3 din
+# CATALOG_INVALIDITATE.md). Import READ-ONLY, modul LEAF (fara db) - fara risc de import circular.
+from core.identitate import valideaza_cui as _vcui, valideaza_cif as _vcif
 _COLOANE_PROFIL = ("nume", "cui", "adresa", "caen")   # minimul citit de aici
 
 import re
@@ -57,6 +60,9 @@ P_TVA_RO = 1      # persoana impozabila inregistrata in scopuri de TVA in Romani
 P_NEINREG = 2     # persoana neinregistrata in scopuri de TVA
 P_UE = 3          # nestabilita in RO, stabilita in alt stat membru
 P_NONUE = 4       # nestabilita in RO, in afara UE
+# [T3/G-d1 10.08.2026] SENTINEL intern (NU tip ANAF): CUI cu prefix alfabetic care nu e cod de tara
+# recunoscut -> CUI RO gresit tastat, NU partener strain. Vezi clasifica_partener + calcul_d394 (blocaj).
+P_INVALID = -1
 
 # cote acceptate: doc. 2020 zice (0,5,9,19,20,24); validatorul v5 are si 21 si 11
 # (OPANAF 2194/2025, TVA 21% si 11% de la 01.08.2025). Validatorul castiga.
@@ -192,6 +198,31 @@ def codpr_din_categorie(categorie):
         return c
     return CODPR.get(c)
 
+
+def _op11_necesita(tip, tp):
+    """op11 e OBLIGATORIU pt: R233.5 (tip_partener=1 si tip in C/V) sau R233.6 (tip_partener=2 si tip N).
+    Un op1 din aceste cazuri emis FARA op11 e respins de DUK -> nu-l expediem (blocaj/excludere)."""
+    return (tp == P_TVA_RO and tip in ("V", "C")) or (tp == P_NEINREG and tip == "N")
+
+
+def _op11_cod(k, categorii):
+    """(codPR, bun, motiv_lipsa) pentru un op1 care necesita op11. PUR (foloseste nomenclatorul
+    modulului). codPR=None + motiv cand nu se poate obtine un cod valid (fara categorie art.331, sau
+    cereale fara subcodul NC pe factura - centralizatorul '21' nu e valid la op11, poz.68-70)."""
+    tip = k[0]
+    cats = categorii.get(k) or set()
+    cod = None
+    for c in cats:
+        cod = codpr_N_din_categorie(c) if tip == "N" else codpr_din_categorie(c)
+        if cod:
+            break
+    if not cod:
+        return None, None, "fara categoria art.331 a bunului"
+    bun = "21" if cod in CODPR_CEREALE else cod
+    if bun == "21" and len(cod) <= 2:
+        return None, None, "cereale fara subcodul NC pe factura (ex. 1001 grau / 1005 porumb)"
+    return cod, bun, None
+
 # <rezumat2>: TOATE campurile sunt obligatorii, si cele de facturi simplificate/bonuri,
 # chiar daca sunt 0 (dovedit prin rulare: "atributul trebuie sa existe").
 # FSLcod = facturi simplificate cu CUI-ul beneficiarului; FSL = fara CUI; FSA/FSAI =
@@ -241,6 +272,19 @@ def rez1_tipuri(tip_partener, cota):
 _NEDIGIT = re.compile(r"\D")
 _TARI_UE = {"AT","BE","BG","CY","CZ","DE","DK","EE","EL","ES","FI","FR","HR","HU",
             "IE","IT","LT","LU","LV","MT","NL","PL","PT","SE","SI","SK"}
+# [T3/G-d1] coduri de tara NON-UE recunoscute (ISO 3166-1 alpha-2, set generos de parteneri comerciali
+# reali). Rol: a distinge un partener STRAIN GENUIN (prefix = cod de tara real) de un CUI RO gresit
+# tastat cu litere (prefix care NU e cod de tara -> nu-l facem tacit partener strain, vezi P_INVALID).
+# Erand spre BLOCAJ: un cod NON-UE lipsa aici e o eroare vizibila (contabilul o vede), pe cand un CUI RO
+# garbage clasificat tacit strain e cea mai grava neconformitate D394 (date gresite acceptate de DUK).
+_TARI_NONUE = {
+    "GB","CH","NO","IS","LI","MC","SM","VA","AD","GI",
+    "AL","BA","ME","MK","RS","XK","MD","UA","BY","RU","TR","GE","AM","AZ",
+    "US","CA","MX","BR","AR","CL","CO","PE","UY","VE","EC","BO","PY","CR","PA","DO","GT",
+    "CN","JP","KR","HK","TW","SG","MY","TH","VN","ID","PH","IN","PK","BD","LK","KZ","UZ",
+    "IL","AE","SA","QA","KW","BH","OM","JO","LB","IQ","IR","EG","MA","TN","DZ","LY",
+    "ZA","NG","KE","GH","ET","TZ","AU","NZ",
+}
 
 
 def _esc(v):
@@ -275,13 +319,21 @@ def clasifica_partener(cui_brut, platitor_tva=None):
     legacy, inainte de camp) -> EURISTICA de forma (un CUI valid e PRESUPUS platitor). Limita legacy + trigger
     de backfill via perioade_TVA: GARZI. Corectitudine ISTORICA: flag-ul inghetat da statutul de ATUNCI (acelasi
     CUI, 2 facturi -> 2 raspunsuri).
-    Fara CUI -> 2. Prefix de stat membru -> 3 (flag N/A - ANAF RO nu are firme UE). Alt prefix -> 4."""
+    Fara CUI -> 2. Prefix de stat membru UE -> 3; prefix de tara NON-UE recunoscut -> 4.
+    [T3/G-d1 10.08.2026] Prefix ALFABETIC care NU e cod de tara (UE sau non-UE) recunoscut -> P_INVALID:
+    e un CUI RO gresit tastat (ex. 'ABC...'), NU un partener strain. ANTERIOR: orice prefix alfa != RO
+    devenea TACIT tip 4 (strain, LS cota 0) si DUK trecea cu date GRESITE - cea mai grava neconformitate
+    D394. Acum sentinelul urca la calcul_d394 care BLOCHEAZA cu motivul exact (nu-l facem tacit strain)."""
     raw = (cui_brut or "").strip().upper().replace(" ", "")
     if not raw:
         return P_NEINREG, None
     prefix = raw[:2]
     if prefix.isalpha() and prefix != "RO":
-        return (P_UE if prefix in _TARI_UE else P_NONUE), raw
+        if prefix in _TARI_UE:
+            return P_UE, raw
+        if prefix in _TARI_NONUE:
+            return P_NONUE, raw
+        return P_INVALID, raw   # prefix alfa necunoscut: CUI RO invalid, nu partener strain
     cif = cui_ro(raw)
     if not cif:
         return P_NEINREG, None
@@ -373,6 +425,16 @@ def calcul_d394(prof, perioada, date, manual=None):
 
     for f in facturi:
         tp, cui = clasifica_partener(f.get("cui"), f.get("platitor_tva"))
+        if tp == P_INVALID:
+            # [T3/G-d1 10.08.2026] BLOCAJ pre-DUK: un CUI cu prefix alfabetic care NU e cod de tara
+            # recunoscut e un CUI RO gresit tastat, NU un partener strain. ANTERIOR devenea TACIT tip
+            # 3/4 -> livrare scutita cota 0 (LS) -> DUK trecea cu DATE GRESITE (cea mai grava
+            # neconformitate D394). Nu-l emitem tacit: numim partenerul si motivul exact.
+            raise ValueError(
+                "D394: partenerul \"%s\" are CUI \"%s\" cu prefix alfabetic care nu e cod de tara valid "
+                "-> CUI RO invalid, nu partener strain. Un CUI RO tastat gresit (cu litere) NU trebuie "
+                "raportat tacit ca partener strain (tip 3/4, cota 0). Corecteaza CUI-ul pe factura."
+                % (f.get("nume") or "?", f.get("cui") or ""))
         # ACHIZITIILE INTRACOMUNITARE NU INTRA IN D394 - se declara in D390 (VIES).
         # Ghid ANAF: "Nu se inscriu achizitiile intracomunitare de bunuri si servicii
         # pentru care exista obligativitatea inscrierii in declaratia 390."
@@ -454,6 +516,62 @@ def calcul_d394(prof, perioada, date, manual=None):
             "din D394 fiindca le LIPSESTE categoria art.331 a bunurilor (op11.codPR e OBLIGATORIU la persoana "
             "fizica, conform R233.6). Adauga categoria produsului pe factura ca sa fie declarate. Furnizori/sume: "
             "%s. Restul declaratiei RAMANE valid." % (len(excluse_N), lista))
+
+    # [T1/G-c1 10.08.2026] CHECKSUM cuiP partener, PRE-DUK (altfel DUK il prinde brut: R218.2/R218.3).
+    # Sursa canonica core.identitate (import read-only). Un CUI/CIF cu cifra de control gresita / lungime /
+    # non-numeric era emis TACIT -> DUK il respingea la depunere. Acum: avertisment care NUMESTE partenerul
+    # + motivul exact, PE FIECARE partener distinct (dedup pe (tip, cuiP)). NU exclude (clasificarea e
+    # aceeasi ca in a doua cale -> reconciliere neafectata); DUK tot il respinge, dar userul stie motivul.
+    # tip 1 = CUI RO (valideaza_cui); tip 2 = poate fi CUI/CNP/NIF (valideaza_cif); 3/4 = strain (RO N/A).
+    _cuip_vazute = set()
+    for (tip, tp, cota, cuiP, denP) in op1:
+        if not cuiP or (tp, cuiP) in _cuip_vazute:
+            continue
+        _cuip_vazute.add((tp, cuiP))
+        if tp == P_TVA_RO:
+            ok, motiv = _vcui(cuiP)
+            if not ok:
+                avert.append("Partener \"%s\": CUI \"%s\" invalid (%s) - DUK regula R218.2 il respinge. "
+                             "Corecteaza CUI-ul pe factura." % (denP or "?", cuiP, motiv))
+        elif tp == P_NEINREG:
+            ok, _tid, motiv = _vcif(cuiP)
+            if not ok:
+                avert.append("Partener \"%s\": cod fiscal \"%s\" invalid (%s) - DUK regula R218.3 il "
+                             "respinge. Corecteaza codul pe factura." % (denP or "?", cuiP, motiv))
+
+    # [T4/G-bc1 + G-bc2 10.08.2026] op1 care NECESITA op11 dar NU-l poate obtine -> EXCLUS aici, INAINTE de
+    # rezumat1/rezumat2 (totalurile raman coerente) si de reconciliere. ANTERIOR (T4): op1 C/V (tip_partener=1)
+    # fara categorie art.331 se emitea FARA op11 -> DUK R233.5 respingea, iar avertismentul NU bloca (avertiza-
+    # dar-emite-invalid). Acum nu expediem XML pe care DUK il respinge - consistent cu excluderea N-fara-subcod.
+    # G-bc2: un N (tip_partener=2) cu cuiP = CUI de FIRMA (nu CNP de persoana fizica) contrazice op11-ul de
+    # persoana fizica -> DUK R233.4; il detectam (valideaza_cif: tip 'cui') si-l excludem cu motivul exact.
+    for k in list(op1):
+        tip, tp, cota, cuiP, denP = k
+        if not _op11_necesita(tip, tp):
+            continue
+        if tp == P_NEINREG and tip == "N" and cuiP:
+            _ok, _tid, _m = _vcif(cuiP)
+            if _ok and _tid == "cui":
+                avert.append(
+                    "Operatiune N catre partener \"%s\" (cod \"%s\") - codul e CUI de FIRMA, nu CNP de "
+                    "persoana fizica: op11 (categoria art.331) e cerut la persoane fizice, iar un partener cu "
+                    "CUI de firma declarat ca N-persoana fizica e respins de DUK regula R233.4. Operatiune "
+                    "EXCLUSA din declaratie; declara-l corect (persoana fizica fara CUI, sau alt tip de "
+                    "operatiune)." % (denP or "?", cuiP))
+                del op1[k]
+                categorii.pop(k, None)
+                continue
+        cod, _bun, motiv = _op11_cod(k, categorii)
+        if cod is None:
+            _regula = "R233.6" if tip == "N" else "R233.5"
+            _ident = (denP or "?") + ((" (CUI %s)" % cuiP) if cuiP else "")
+            avert.append(
+                "Operatiune %s catre partener %s %s -> op1 s-ar emite FARA op11 (codul produsului "
+                "art.331), pe care DUK regula %s il respinge. Operatiune EXCLUSA din declaratie; adauga "
+                "categoria art.331 / subcodul NC pe factura ca sa fie declarata. Restul declaratiei RAMANE "
+                "valid." % (tip, _ident, motiv, _regula))
+            del op1[k]
+            categorii.pop(k, None)
 
     # rezumat1: unic pe (tip_partener, cota), CALCULAT din op1 (pct. 38-40).
     # ATENTIE: setul de atribute e ASIMETRIC si e cel din validatorul v5, nu unul
@@ -560,40 +678,19 @@ def calcul_d394(prof, perioada, date, manual=None):
     # op11 — R233.5: "daca tip_partener = 1 si tip este in lista (C, V) atunci trebuie
     # completata cel putin o sectiune op11". codPR din nomenclatorul ANAF.
     # tvaPR nu se pune la (tip_partener=1 si tip=V) — regula din validator.
+    # op11 — R233.5 (tp=1, tip C/V) si R233.6 (tp=2, tip N): codPR din nomenclatorul ANAF, obtinut prin
+    # _op11_cod (sursa unica; cereale cer subcodul NC, nu centralizatorul '21' - poz.68-70). op1-urile care
+    # NU pot obtine un cod valid au fost DEJA excluse mai sus (T4/G-bc1), inainte de rezumat1/rezumat2 si de
+    # reconciliere, deci aici gasim mereu un cod pentru cele care necesita op11 (safety-continue pastrat).
+    # tvaPR nu se pune la (tip_partener=1 si tip=V) si nici la N — regula din validator.
     op11 = {}
     for k, (nr, baza, tva) in op1.items():
         tip, tp, cota, cuiP, denP = k
-        # op11: R233.5 (tp=1, tip V/C) SI R233.3/R233.6 (tp=2, tip N: pt persoane fizice op11 e OBLIGATORIU).
-        if not ((tp == P_TVA_RO and tip in ("V", "C")) or (tp == P_NEINREG and tip == "N")):
+        if not _op11_necesita(tip, tp):
             continue
-        cats = categorii.get(k) or set()
-        cod = None
-        for c in cats:
-            cod = codpr_N_din_categorie(c) if tip == "N" else codpr_din_categorie(c)
-            if cod:
-                break
-        if not cod:
-            avert.append("Operațiune cu taxare inversă (%s, %s) fără categorie art. 331 "
-                         "declarabilă — D394 cere codul produsului (op11)."
-                         % (tip, cuiP or denP))
-            continue
-        # bun = categoria pentru <detaliu>; codPR = subcodul NC pentru <op11>.
-        # La cereale codul de categorie e 21, iar codPR trebuie sa fie subcodul NC.
-        bun = "21" if cod in CODPR_CEREALE else cod
-        # [codpr21_v1 10.08.2026] SPEC OFICIAL anaf_surse/d394_struct_anaf.txt poz.68-70
-        # (nrLivV/bazaLivV/tvaLivV): "op11(codPR) = bun pt bun<>21 sau lung(op11(codPR))>2
-        # pt bun=21" -> pentru cereale (bun=21) codPR TREBUIE sa fie subcodul NC (lung>2:
-        # 1001 grau, 1005 porumb...), NU centralizatorul '21'. DUKIntegrator D394_31 (reguli
-        # 2026.1) respinge codPR='21' la op11: "valoarea '21' nu se afla in lista" + R63/R80/R81.
-        # Comentariul anterior (validatorul accepta 21 pt tip_partener=2) era o credinta
-        # necorfruntata cu validatorul - infirmata de DUK. Cand datele au doar categoria coarsa
-        # 'cereale' (fara subcod NC pe factura) NU putem emite codPR valid -> EXCLUDEM operatiunea
-        # din op11 cu avertisment (contabilul adauga subcodul NC pe factura), nu emitem cod invalid.
-        if bun == "21" and len(cod) <= 2:
-            avert.append("Operatiune cereale (op11, %s) fara subcod NC pe factura - D394 cere "
-                         "subcodul NC (lung>2, ex. 1001 grau / 1005 porumb), nu centralizatorul 21; "
-                         "contabilul adauga subcodul NC pe factura." % (cuiP or denP))
-            continue
+        cod, bun, _motiv = _op11_cod(k, categorii)
+        if cod is None:
+            continue   # exclus deja mai sus; nu emitem niciodata op1 fara op11 cerut
         op11[k] = {"codPR": cod, "bun": bun, "nrFactPR": nr, "bazaPR": _int(baza),
                    "tvaPR": (None if tip in ("V", "N") else _int(tva))}
 
@@ -781,6 +878,13 @@ def valideaza(res):
         erori.append("Lună invalidă.")
     if not _NEDIGIT.sub("", prof.get("cui") or ""):
         erori.append("LIPSĂ CUI declarant (obligatoriu).")
+    else:
+        # [T1/G-c1] CUI-ul PROPRIEI firme prezent-dar-invalid (checksum/lungime) -> DUK regula R6 il
+        # respinge la depunere. Il verificam pre-DUK cu sursa canonica (core.identitate), nu doar non-gol.
+        _ok, _motiv = _vcui(prof.get("cui"))
+        if not _ok:
+            erori.append("CUI declarant \"%s\" invalid (%s) - DUK regula R6 il respinge; corecteaza CUI-ul "
+                         "in profilul firmei." % (prof.get("cui"), _motiv))
     if not prof.get("caen"):
         erori.append("LIPSĂ cod CAEN în profilul firmei (obligatoriu în D394).")
     if not prof.get("nume"):
