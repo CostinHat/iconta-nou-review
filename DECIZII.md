@@ -8612,3 +8612,46 @@ nimic functional. DDL raportat pentru decizia Costin (cum secventiaza + cum trat
 - D300 clasificare livrari 0% (R14 cu drept / R15 fara drept / export): `facturi.natura_scutire varchar(16)`.
 Codul consuma deja prof.get(...)/campul (pull() firma_profil = SELECT * -> curge automat cand coloana exista;
 1968 fara coloana -> .get() default sigur). Pana atunci: pers_inreg=1, prsAfiliat=0, livrari 0% avertizate per-linie.
+
+## 10.08.2026 (tura 27) — LANT legislatie TURA 1/4: corpusul de legislatie la zi pentru fiecare declaratie
+
+Comanda: lant de 4 ture (fiecare raportata inainte de urmatoarea) care inchide "declaratie invalida" (T1-3) +
+"declaratie valida care nu reflecta contabilitatea" (T4). TURA 1 = legislatia: pentru fiecare declaratie, actul
+ANAF care APROBA forma + legea substantiala, verificat la zi in MO, adus in corpus unde lipsea/era depasit.
+
+Metoda: 4 audituri web paralele (agenti proaspeti cu WebSearch/WebFetch), ancorate pe server (versiuni.xml +
+/home/costin/duk/dist/D<F>IstoriaVersiunilor) si confirmate web (static.anaf.ro, legislatie.just.ro, CECCAR/
+PwC/MO). Corpusul avea legea SUBSTANTIALA (CF + acte modificatoare) + structurile extrase, dar NU ordinele care
+aproba forma (doar 77/2022 + 3562/2024).
+
+ACT CURENT care aproba forma, per declaratie (adus in corpus, nivel PRIMAR static.anaf.ro daca nu se noteaza altfel):
+- D100/D710: OPANAF 57/2026 (MO 55/23.01.2026), amendeaza baza 587/2016 -> opanaf_57_2026_d100_d710.pdf.
+- D101: OPANAF 206/2025 (MO 140/18.02.2025) -> opanaf_206_2025_d101.pdf.
+- D112: Ordin comun 605/95/928/2314/2026 (ANAF 605, MO 463+463bis/02.06.2026), din luna 07/2026 -> opanaf_605_2026_d112.pdf.
+  SUPERSEDA 2066/.../2025 (ce cita struct-ul). DISCREPANTA: validatorul instalat D112_209 (Apr 2026) e ANTERIOR
+  formei iulie-2026 -> DUK-ul de pe server e o generatie in urma pe D112 (flag Costin - actualizare DUK).
+- D205: OPANAF 303/2026 (MO 187/11.03.2026) -> opanaf_303_2026_d205.pdf; baza OPANAF 179/2022 -> opanaf_179_2022_d205_d207_baza.pdf.
+  SUPERSEDA 102/2025. (102/2025 = REFERENCE-ONLY: MO 65/27.01.2025, nefetchabil - 404 ANAF + legislatie.just.ro
+  blocheaza serverul.)
+- D300: OPANAF 174/2026 (MO 105/09.02.2026, reforma TVA Legea 141/2025) -> opanaf_174_2026_d300.pdf. Struct-ul
+  "D300_A10.0.0 v12" era versiune de tranzitie, inlocuita de 174/2026.
+- D301: OPANAF 592/2016 (MO 94/08.02.2016) -> opanaf_592_2016_d301.pdf. Inca ordinul care aproba modelul (niciun
+  ordin nou); d301_struct e etichetat 2013 (provenienta), validatorul D301_9 = packaging.
+- D390: OPANAF 705/2020 (MO 217/17.03.2020) -> opanaf_705_2020_d390.pdf. Inca in vigoare; NICIUN amendator
+  (validatorul D390_11/2026 = doar packaging - confirmat pe legislatie.just.ro).
+- D394: OPANAF 2194/2025 (MO 852/17.09.2025, rate 21%/11% + CAEN Rev.3) -> opanaf_2194_2025_d394.pdf; baza
+  3769/2015 -> opanaf_3769_2015_d394_baza.pdf. CORPUSUL ERA DEPASIT: avea doar 77/2022, superseded de 2194/2025
+  (care corespunde validatorului D394_31). 77/2022 lasat ca istoric.
+- D406: OPANAF 1783/2021 (MO 1073/09.11.2021) + amendator 407/2025 (MO 310/08.04.2025, a inlocuit Anexa 5) ->
+  opanaf_1783_2021_saft_d406.pdf + opanaf_407_2025_saft_d406.pdf. Baza legala CPF Legea 207/2015 art.59^1.
+- D177: OPANAF 3562/2024 (MO 643/05.07.2024) - DEJA prezent si curent (OPANAF_3562_2024_D177.pdf). Nimic de adus.
+
+RAMAS (raportat, nu adus - decizie/urmarire Costin):
+- REFERENCE-ONLY (nefetchabile de pe server; legislatie.just.ro respinge curl-ul host-ului): D205 OPANAF 102/2025;
+  CPF Legea 207/2015 consolidat (art.59^1 = baza legala D406/SAF-T). Coperirea substantiala e intacta (ordinele
+  in corpus, CF prezent), dar aceste doua raman de adus dintr-un mirror accesibil.
+- CF MASTER STALE: cod_fiscal_227_2015_consolidat.html (adus 02.08) pare consolidat PRE-2025 (nu contine Legea
+  141/2025 / 239/2025); reforma 2025 e prezenta separat (legea_141_2025_consolidat.html) + COTE o citeaza, deci
+  valorile sunt acoperite, DAR fisierul-master CF e depasit -> de reimprospatat dintr-un mirror accesibil.
+- DISCREPANTE validator-vs-ordin (packaging vs lege): D112_209 in urma formei 605/2026 (real, flag DUK);
+  D390_11/D394_31/D301_9 = doar bump de packaging, legea neschimbata (confirmat).

@@ -3838,3 +3838,16 @@ D394 cereale subcod 1005 (R233.6->valid). REGULA consemnata: la conflict XSD-vs-
 3 coloane raportate (nu adaugate - ar atinge 1968): inreg_art317, are_operatiuni_afiliate, natura_scutire; cod gata
 + default sigur. Constatare: salveaza_concediu garanteaza doar D_7, nu si serie/numar/data (radacina secundara,
 gard recomandat). Un singur commit prin poarta verde; doar 4163; 1968 neatins. Detalii: DECIZII/GARZI tura 26.
+
+## 10.08.2026 (tura 27) — LANT legislatie TURA 1/4: adus in corpus actul care aproba forma fiecarei declaratii
+
+Lant de 4 ture (raportate una cate una). TURA 1 = legislatia. 4 audituri web paralele au stabilit actul ANAF
+curent care aproba forma fiecarei declaratii, confruntat cu MO, adus in corpus unde lipsea/era depasit. Corpusul
+avea legea substantiala + structurile, dar NU ordinele de aprobare a formei (doar 77/2022 + 3562/2024). Aduse 12
+ordine (PDF oficial static.anaf.ro): D100/710 OPANAF 57/2026, D101 206/2025, D112 Ordin comun 605/2026 (superseda
+2066/2025), D205 303/2026 (superseda 102/2025) + baza 179/2022, D300 174/2026, D301 592/2016, D390 705/2020, D394
+2194/2025 (corpus era la 77/2022) + baza 3769/2015, D406 1783/2021 + 407/2025. D177 3562/2024 deja curent.
+Descoperiri de "la zi": D112 validator D112_209 e ANTERIOR formei iulie-2026 (605/2026) -> DUK server o generatie
+in urma; D394 corpus era un amendator in urma; CF master consolidat pare stale (pre-2025). Reference-only
+(nefetchabil de pe server): D205 102/2025, CPF 207/2015. INDEX.json regenerat. Un commit; corpus files; DB/1968
+neatins. TURA 2 (datele care invalideaza) urmeaza dupa confirmare. Detalii: DECIZII tura 27.

@@ -6,9 +6,9 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-Ultimul commit de COD: tura 26 (reparate toate deciziile §6 Costin din auditul tura 25 - 6 declaratii cod +
-seed corectat + regula XSD-vs-DUK). Four-way exact (SHA + ora) = in raportul turei 26. Anterior: tura 25 = 6cd0054
-(toate declaratiile field-by-field). Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
+Ultimul commit: tura 27 (LANT legislatie TURA 1/4 - adus in corpus actul care aproba forma fiecarei declaratii;
+corpus files, nu cod). Four-way exact (SHA + ora) = in raportul turei 27. Anterior COD: tura 26 = c362cc6 (deciziile
+§6). Serviciul iconta-nou ruleaza din ~/iconta_nou; static-ul servit de pe disc.
 
 ## (b) Fronturi deschise (cu blocajul fiecaruia)
 1. **Test fir de intrare cabinet nou** — ACTIV. Cabinet test izolat 4163 "CABINET TEST FIR INTRARE SRL", cont
@@ -39,6 +39,16 @@ seed corectat + regula XSD-vs-DUK). Four-way exact (SHA + ora) = in raportul tur
        salvare, recomandat, neaplicat.
    (c) UI care sa POPULEZE campurile de mai sus (altfel raman pe default).
    Unealta: PYTHONPATH=$PWD venv/bin/python3 frontend_test/valideaza_duk.py.
+
+## (c-lant) LANT LEGISLATIE (4 ture, Costin) - inchide "declaratie invalida" (T1-3) + "valida dar nereflectand
+contabilitatea" (T4). Fiecare tura se raporteaza inainte de urmatoarea.
+- TURA 1 (legislatia) = GATA tura 27: actul care aproba forma fiecarei declaratii adus in corpus (12 ordine
+  oficiale). RAMAS de adus dintr-un mirror accesibil (legislatie.just.ro respinge serverul): D205 102/2025, CPF
+  207/2015; CF master consolidat de reimprospatat (pre-2025). Flag: validatorul D112_209 e ANTERIOR formei
+  605/2026 (iulie 2026) -> DUK server o generatie in urma pe D112.
+- TURA 2 (datele care invalideaza) - urmeaza dupa confirmare Costin.
+- TURA 3 (mesajul catre utilizator pe fiecare tip de date invalide).
+- TURA 4 (reconcilierea sursa-vs-declaratie, gardata sa nu moara tacit - clasa D300 mort).
 
 ## (c) Ce e in lucru acum
 Conformitatea declaratiilor la spec oficial DUK (front 6) + firul de intrare (front 1). Turele recente:
