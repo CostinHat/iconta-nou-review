@@ -6,27 +6,38 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-HEAD = origin/main = backup/lant-2026-08-09 = RUNNING = **d217981** (tura 17: diacritice in mesajele importului de solduri).
-Commit 2026-08-09 21:09:52 EEST; serviciu `iconta-nou` pornit 21:15:40 EEST (start > commit); `/tenants` -> 401 local (8010) si public (iconta.eu); tree curat.
-(Tura 18, aceasta, e doc-only: introduce PREDARE_LANT ca al 5-lea pas de publicare in CLAUDE.md §2.3 pct.10 + §2.2 pct.11; comportament RUNNING identic, four-way-ul ei e in raportul turei 18.)
+Ultimul commit de COD: tura 20 (fix antet wizard navigator.js + capacitate proba browser). Four-way exact (SHA + ora)
+= in raportul turei 20. Anterior stabil: tura 19 = 888ae7d (izolare /raportari). Serviciul iconta-nou ruleaza din
+~/iconta_nou; static-ul (js/css) e servit de pe disc.
 
 ## (b) Fronturi deschise (cu blocajul fiecaruia)
-1. **Test fir de intrare cabinet nou** — ACTIV. Cabinet de test izolat "CABINET TEST FIR INTRARE SRL" (public.accounting_firms id=4163), cont admin_firma `fir-intrare@prisma-cont.test` (user 6504; parola doar in raportul turei 15, nu in git). 4 firme: ALFA=tenant_013 (8396), BETA=tenant_014 (8397), GAMA=tenant_015 (8398), DELTA=tenant_016 (8399). `seed_profil` aplicat pe toate 4 (vector fiscal corect). Fisierele + ordinea + verdictele asteptate: `~/date_test_cabinet/README.md`; runner seed: `~/date_test_cabinet/aplica.py profil|luna`.
-   BLOCAJ: Costin importa prin UI (CSV migrare per firma + XML e-Factura); la "gata XML" se ruleaza `~/iconta_nou/venv/bin/python3 ~/date_test_cabinet/aplica.py luna` (note validate, salarii, dividende, patch facturi). Cabinetul REAL cu 12 firme = neatins.
-
-2. **E3_97 (pensie ocupationala, Legea 1/2020)** — build oprit pe stop point. Emisia corecta cere subsistemul art.76(4^1) (plafon lunar 33% pe suma a-j + ordine), care lipseste din app. Curs+cumul confirmate verbatim (art.78(2)(a) BNR ultima zi a lunii; OUG 8/2026 art.10). Metoda B fixata (app aplica plafonul, contabilul introduce brutul).
-   BLOCAJ: decizie de scope Costin (E3_97 izolat vs subsistem complet).
-
-3. **D101 scadenta: lege vs validator INVERS** — validatorul DUK (R17) e exact invers fata de CF art.42; codul urmeaza validatorul.
-   BLOCAJ: decizie de produs Costin.
-
-4. **Descoperiri din proba de date de test (de tratat separat, neprogramate)** — D710 nederivabil din date (`_DOAR_API`, doar din corp de cerere); D300 pe achizitii (IC R5 / taxare inversa R12-R27 / deductibil 9-5%) nu se deriva din facturi si n-are stocare importabila -> D300 subevaluat SI auto-declanseaza rosul propriu D390-vs-D300; D406 lunar din dispatcher fara Active/Stocuri/Plati (mijloacele fixe necablate in `d406.genereaza`).
+1. **Test fir de intrare cabinet nou** — ACTIV. Cabinet test izolat 4163 "CABINET TEST FIR INTRARE SRL", cont
+   admin_firma fir-intrare@prisma-cont.test (user 6504; parola in raportul turei 15). 4 firme: ALFA=tenant_013(8396),
+   BETA=014(8397), GAMA=015(8398), DELTA=016(8399). seed_profil aplicat. Fisiere/ordine/verdicte: ~/date_test_cabinet/
+   README.md; runner ~/date_test_cabinet/aplica.py profil|luna. BLOCAJ: Costin importa prin UI (CSV migrare + XML
+   e-Factura); la "gata XML" rulez aplica.py luna. Cabinetul REAL 1968 (12 firme) = neatins.
+2. **E3_97 (pensie ocupationala, Legea 1/2020)** — build oprit pe stop point (cere subsistemul art.76(4^1): plafon
+   lunar 33% + ordine). BLOCAJ: decizie de scope Costin.
+3. **D101 scadenta: lege vs validator INVERS** — codul urmeaza validatorul DUK. BLOCAJ: decizie de produs Costin.
+4. **Descoperiri proba date-test (neprogramate)** — D710 nederivabil; D300 achizitii (R5/taxare inversa/9-5%) nederivate
+   + fara stocare importabila; D406 lunar fara Active/Stocuri.
+5. **Frontend probe — de completat** — proba browser exista (vezi Unelte) dar acopera prin UI real doar migrare/firme/
+   facturi; pachete/setari (depth) + portal/admin/asistent (cer rol client/superadmin/angajat in 4163) raman de probat.
 
 ## (c) Ce e in lucru acum
-Testarea firului de intrare (front 1): Costin parcurge importul prin UI in cabinetul 4163; eu rulez seed-urile la checkpoint-uri (seed_profil DONE; seed_luna la "gata XML"). Turele recente 13-17 au reparat, parcurgand firul: izolare pe cheie API (gard), cross-check TVA D300 mort (semnatura veche), doua "forme care spun altceva" (balanta straina "echilibrata" + "La zi" cu intarziati), diacritice in mesajele solduri.
+Parcurgerea firului de intrare (front 1). Turele recente: 13 izolare cheie API, 14 cross-check D300 mort, 16 doua
+"forme care spun altceva", 17 diacritice solduri, 18 PREDARE al 5-lea pas de publicare, 19 izolare /raportari,
+20 capacitate proba browser + fix antet wizard.
 
 ## (d) Ce urmeaza
-1. Costin: importa CSV migrare (per firma) + XML e-Factura -> anunta "gata XML".
-2. Eu: `aplica.py luna`.
-3. Costin: deschide Control fiscal + Audit preluare + genereaza declaratiile -> confirma verdictele din README (ALFA/BETA verde; GAMA migrare ROSU parteneri + GRI istoric + ROSU restante D300/D112; DELTA luna ROSU cota19/D300 necontabilizat/D390 + trezorerie negativa + D112 blocat).
-4. Reia parcurgerea; orice "forma care spune altceva decat faptul" -> comanda de reparatie, ca turele 16-17.
+1. Costin: importa CSV migrare + XML e-Factura -> "gata XML"; eu rulez aplica.py luna.
+2. Costin: Control fiscal + Audit preluare + genereaza declaratiile -> confirma verdictele din README.
+3. Orice "forma care spune altceva decat faptul" -> comanda de reparatie (ca turele 16-17-20).
+
+## Unelte
+- **Proba browser (Playwright)**: `ssh iconta 'cd ~/iconta_nou && venv/bin/python3 frontend_test/proba_wizard_antet.py'`
+  (antet wizard; exit 0 = ok). Observatii per-wizard: frontend_test/observa_*.py. Auth via token, creds in
+  ~/.iconta/fe_test.env (in afara git). Doar cabinet 4163. NU in poarta verde (rulare manuala; pytest nu colecteaza
+  frontend_test/ - fisiere non-test_).
+- Poarta verde: commit ruleaza pytest suita intreaga + verificator_conformitate (TOTAL 0); post-commit publica
+  origin/main + backup/lant-<data>; apoi restart iconta-nou (four-way).

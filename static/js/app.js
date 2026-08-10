@@ -29,7 +29,7 @@ window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reas
 
 import { sesiune } from "./sesiune.js";
 import { ecranLogin } from "./ecrane/login.js?v=7";
-import { creeazaNavigator } from "./navigator.js?v=2";
+import { creeazaNavigator } from "./navigator.js?v=3";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=2";
 import { desktopAsistent } from "./ecrane/asistent.js";
 import { desktopPortal } from "./ecrane/portal.js?v=11";

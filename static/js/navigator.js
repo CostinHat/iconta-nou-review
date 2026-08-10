@@ -175,7 +175,10 @@ export function creeazaNavigator(radacina, desktopRandator) {
     const bInapoi = fer.querySelector(".nav-inapoi");
     if (bInapoi) {
       bInapoi.addEventListener("click", () => {  // traseu_automat_v1
-        if (typeof sus.inapoi === "function") { sus.inapoi(); return; }
+        // [fir_pop_v1 10.08.2026] Back CONSUMA pozitia reala INAINTE de setInapoi custom. Altfel un
+        // setInapoi(()=>re-randare) sarea pop-ul si antetul acumula ferestre/pasi (dovedit in browser:
+        // 'Migrare cabinet' > Solduri > Salariati...). Ordine: pop pas (traseu) -> pop fereastra (stiva>1)
+        // -> setInapoi custom (doar fara pop natural) -> nav.inapoi.
         if (sus.pasi && sus.pasi.length) {
           const p = sus.pasi.pop();
           sus.curent = p.randator;
@@ -184,6 +187,8 @@ export function creeazaNavigator(radacina, desktopRandator) {
           randeazaFerestre();
           return;
         }
+        if (stiva.length > 1) { nav.inapoi(); return; }
+        if (typeof sus.inapoi === "function") { sus.inapoi(); return; }
         nav.inapoi();
       });
     }

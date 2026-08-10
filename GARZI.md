@@ -2472,3 +2472,11 @@ core/test_izolare_raportari.py: sesiune HTTP reala cabinet A -> fir/citit al cab
 refuza); control pozitiv: autorul isi vede firul (200). MUTATIE PROBATA pe cod vechi (firul_complet nefiltrat +
 /citit fara check): test_fir_alt_cabinet_da_404_nu_403 -> 403 (pica), test_citit_alt_cabinet_da_404 -> 200 (pica);
 dupa fix -> 3 passed. Efemer (firme/useri/raportare pe conn din pool, get_conn monkeypatch cu SAVEPOINT), rollback.
+
+## 10.08.2026 (tura 20) — Gard browser (Playwright) pe antetul wizardurilor + capacitate noua
+Capacitate: Playwright+Chromium pe server (venv, ~/.cache 656M), auth prin token in sessionStorage (creds
+~/.iconta/fe_test.env, 600, in afara git), doar cabinet 4163. Gard: frontend_test/proba_wizard_antet.py -
+navigheaza calea reala 'Migrare cabinet' > Solduri > (back) > Salariati si aserteaza: back revine la 'Migrare
+cabinet' + antetul nu acumuleaza. MUTATIE PROBATA: cod vechi exit 1 (back ramane pe strat; 'Solduri' se acumuleaza
+in fir), cod nou exit 0. NU in poarta verde (nume non-test_ -> pytest nu-l colecteaza).
+Ruleaza: venv/bin/python3 frontend_test/proba_wizard_antet.py

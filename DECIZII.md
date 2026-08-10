@@ -8347,3 +8347,27 @@ relaxare de vizibilitate. ALTERNATIVE RESPINSE: filtru de cabinet in SQL (mai la
 cabinet-vizibil (schimba ce vede contabilul). Gap /raportari/{rid}/citit (marcheaza_citit fara check proprietar ->
 orice user marca citit pe fir strain, dovedit 200 pe cod vechi) - INTRAT in acelasi lot (check proprietar pe ruta).
 /raportari/admin ramane superadmin (global by design; apararea = gate-ul superadmin). Gard: test_izolare_raportari.
+
+## 10.08.2026 — Real bate static: divergenta setInapoi migrare INFIRMATA in browser
+
+Analiza statica (fork) a indicat divergenta setInapoi != pusher pe migrare (importXFirma face
+setInapoi(()=>wizardSolduri), diferit de pusher pe calea per-firma). Observatia in browser REAL a
+infirmat-o: pe calea per-firma, back = pusher ("Import date"), iar fixul pop-priority NU muta destinatia
+la nivelul 1. Real bate static - exact motivul pentru care s-a construit capacitatea de probare in browser
+(frontend_test/, Playwright). NOTA: la data acestei intrari, drumul MULTI-STRAT din bug (Solduri>Salariati>
+Istoric, adancime >1) inca se probeaza; decizia de fix se ia dupa tabelul complet pe toate nivelurile.
+
+## 10.08.2026 (tura 20) — Antet wizard: fix de clasa in navigator.js (back prefera pop natural) + proba browser
+
+Bug (browser, cabinet 4163): pe calea 'Migrare cabinet' antetul acumuleaza (Firme > Migrare cabinet > Solduri >
+Salariati...) si back-ul nu revine la meniu. RE-DIAGNOZA (real bate static): NU e la nivel sus.pasi/mergi (cum
+indica analiza statica), ci la nivel STIVA de ferestre - meniuMigrare deschide fiecare strat ca fereastra
+(nav.deschide), iar wizardSolduri/fratii fac setInapoi(()=>meniuMigrare) = re-randare IN LOC in loc de pop pe
+fereastra -> ferestre stivuite. Dovedit in browser: caile pasi (per-firma/firme/facturi) sunt curate (back=pusher,
+fixul NU le schimba); doar calea straturi acumuleaza.
+DECIZIE Costin (dupa proba per-wizard in browser): fix de clasa in navigator.js - back face pop NATURAL (pas pe
+traseu, altfel fereastra daca stiva>1) INAINTE de setInapoi custom; custom ramane doar fara pop natural. +
+trunchiere (ultimul nod vizibil, parintii ellipsis; nu overflow:hidden care taia dreapta). Gardat cu proba browser
+reala: cod vechi exit 1, cod nou exit 0. Alternative respinse: fix ingust doar-antet; per-wizard manual.
+LIMITE: pachete/setari netestate depth prin UI; portal/admin/asistent nereachable cu 4163 (cer client/superadmin/
+angajat). Proba NU e in poarta verde (decizia lui Costin cand ruleaza).

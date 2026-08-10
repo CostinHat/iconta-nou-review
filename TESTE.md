@@ -1377,3 +1377,8 @@ Cluster CM+pull: 56 passed.
 - core/test_izolare_raportari.py::test_fir_alt_cabinet_da_404_nu_403: sesiune A pe fir B -> 404 (nu 403). Mutatie: firul_complet nefiltrat -> 403.
 - core/test_izolare_raportari.py::test_citit_alt_cabinet_da_404: /citit pe fir B -> 404. Mutatie: fara check proprietar -> 200.
 - core/test_izolare_raportari.py::test_autorul_isi_vede_firul: control pozitiv, autorul vede firul (200).
+
+## 10.08.2026 (tura 20) — Proba browser antet wizard (in afara portii verzi)
+- frontend_test/proba_wizard_antet.py: calea 'Migrare cabinet' - back revine la meniu + antet fara acumulare.
+  Mutatie: cod vechi exit 1, cod nou exit 0. Rulare manuala (nu in pre-commit; pytest nu colecteaza frontend_test/).
+- frontend_test/observa_*.py: unelte de observatie per-wizard (back-destinatie/acumulare), fara verdict.

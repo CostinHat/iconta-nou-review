@@ -3757,3 +3757,14 @@ care ramane. firul_complet primeste cerut_de_uid+e_superadmin (non-superadmin ->
 /{rid}/mesaj paseaza contextul; /{rid}/citit primeste check de proprietar (gap dovedit: cod vechi marca citit fir
 strain, 200). /admin ramane superadmin. Gard nou test_izolare_raportari (HTTP real; mutatie: cod vechi 2 failed,
 cod nou 3 passed). Vezi DECIZII/GARZI.
+
+## 10.08.2026 (tura 20) — Capacitate de proba browser (Playwright) + fix antet wizard (clasa, navigator.js)
+
+Construit capacitatea de proba automata in browser pe server (Playwright+Chromium; auth prin token in
+sessionStorage, creds ~/.iconta/fe_test.env 600 in afara git; doar cabinet 4163). RE-DIAGNOZA in browser (real
+bate static): acumularea antetului e la nivel de STIVA de ferestre pe calea 'Migrare cabinet' (nav.deschide +
+setInapoi(()=>meniuMigrare) re-randare in loc de pop), NU la nivel sus.pasi; caile pasi curate. Fix navigator.js:
+back prefera pop natural (pas -> fereastra) inaintea setInapoi custom + trunchiere stil.css. Gard browser
+(frontend_test/proba_wizard_antet.py): cod vechi exit 1, cod nou exit 0; caile curate neschimbate (back=pusher).
+navigator.js?v=3, stil.css?v=1. NU in poarta verde. Limite: pachete/setari depth + portal/admin/asistent (roluri)
+netestate prin UI. Vezi DECIZII/GARZI.

@@ -2165,6 +2165,12 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
   color: #5b6b7c; font-size: 13px; font-weight: 500; border-radius: 6px; }  /* uniformizare_fir_v1 */
 .fir-veriga:hover { background: #eef2f6; color: #1d3a5f; text-decoration: underline; }
 .fir-sep { color: #9aa7b4; font-size: 13px; }
+/* [fir_trunchiere_v1 10.08.2026] ultimul nod mereu vizibil; parintii se scurteaza cu ellipsis;
+   fara a taia nodul din dreapta (bugul overflow:hidden care ascundea simptomul in DOM). */
+.fereastra-fir { flex: 0 1 auto; }
+.fir-veriga { min-width: 0; flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fereastra-fir > .fir-veriga:last-of-type { flex-shrink: 0; max-width: 55%; }
+.fir-sep { flex: 0 0 auto; }
 .fir-parinti { color: #5b6b7c; font-size: 13px; font-weight: 500; }  /* parintii in titlurile de panou */
 /* titlu-entitate eliminat v1.1: entitatea traieste in bara mare de sus */
 .fir-acum { color: #1d3a5f; font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
