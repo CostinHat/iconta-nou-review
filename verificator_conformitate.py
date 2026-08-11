@@ -179,6 +179,12 @@ for nume, t in fisiere.items():
                 continue
             if "camp-input" not in _at:
                 rap["input_neconform"].append((nume, i, "", lin.strip()[:66]))
+        # INPUT_NECONFORM prin createElement (decizie Costin 11.08 seara, inchide gaura tag-urilor
+        # literale): input/select construit programatic (document.createElement) fara .camp-input in
+        # fereastra (linia + urmatoarele 4, unde se seteaza className/classList/setAttribute).
+        _ce = re.search(r"""createElement\(\s*['"](input|select)['"]""", lin)
+        if _ce and "camp-input" not in " ".join(linii[i - 1:i + 4]):
+            rap["input_neconform"].append((nume, i, "createElement", lin.strip()[:66]))
         # FMT_LOCAL: definitie locala de format monetar (const fmt = ...toLocaleString) in loc de bani() canonic
         if re.search(r'const\s+(?!pct\b)\w+\s*=.*toLocaleString\("ro-RO"', lin):
             rap["fmt_local"].append((nume, i, "", lin.strip()[:66]))
