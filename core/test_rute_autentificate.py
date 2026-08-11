@@ -42,6 +42,7 @@ PUBLICE = {
     ("post", "/public/plata/{ref}/confirma"),   # confirmare plata (ref = secret in URL)
     ("get",  "/ghid/{slug}"),                   # continut public (SEO)
     ("get",  "/ghid"),                          # index ghid
+    ("get",  "/ajutor/{fid}"),                 # ajutor contextual: text de FOLOSIRE, nu date de firma
     ("get",  "/sitemap.xml"),                   # SEO
     ("get",  "/robots.txt"),                    # SEO
     ("get",  "/anaf/oauth/callback"),           # ANAF redirecteaza aici; nu are cum sa poarte

@@ -313,3 +313,34 @@ export function esc(s) {
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   }[c]));
 }
+
+
+// ============================================================
+// [ajutor_contextual] Semnul "?" pe ecrane -> textul de FOLOSIRE (coloana `ajutor` din registru).
+// semnAjutor(fid) da HTML-ul butonului; se pune DOAR unde exista ceva de spus dincolo de eticheta
+// (reguli fiscale, preconditii, consecinte). Handler global delegat: fetch /ajutor/{fid} -> modal DS.
+// ============================================================
+export function semnAjutor(fid) {
+  return `<button type="button" class="ajutor-btn" data-ajutor="${esc(fid)}" title="Ce face și cum se folosește" aria-label="Ajutor">?</button>`;
+}
+
+function _randeazaAjutor(a) {
+  const corp = (a.ajutor || "").split("\n").map((l) => {
+    l = l.replace(/\s+$/, "");
+    if (l.startsWith("## ")) return `<h4 class="aj-sec">${esc(l.slice(3))}</h4>`;
+    if (!l.trim()) return "";
+    return `<p class="aj-p">${esc(l)}</p>`;
+  }).join("");
+  return `<div class="aj-continut">${corp || '<p class="aj-p">Fără text de ajutor.</p>'}</div>`;
+}
+
+document.addEventListener("click", async (e) => {
+  const b = e.target && e.target.closest && e.target.closest("[data-ajutor]");
+  if (!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const fid = b.dataset.ajutor;
+  let a;
+  try { a = await api.get(`/ajutor/${fid}`); }
+  catch { a = { titlu: "Ajutor", ajutor: "Nu există încă text de ajutor pentru această funcționalitate." }; }
+  if (window._navGlobal) window._navGlobal.deschide("Ajutor · " + (a.titlu || ""), (c) => { c.innerHTML = _randeazaAjutor(a); });
+});

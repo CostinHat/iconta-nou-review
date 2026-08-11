@@ -8518,6 +8518,18 @@ from core import spv_rute as _spv_rute
 _spv_rute.monteaza(app, cere_context)  # proprietatea principalului o impune spv_principal (cabinet XOR gratuit)
 
 
+@app.get("/ajutor/{fid}")
+def ajutor_contextual(fid: str):
+    """Ajutor contextual pentru contabil (semnul "?" din UI). Public: text de FOLOSIRE a
+    functionalitatii (ce face, cand, pasi, reguli fiscale) - NU date de firma. Sursa: coloana
+    ajutor din FUNCTIONALITATI.csv (core/ajutor.py). 404 daca nu are ajutor scris."""
+    from core import ajutor as _aj
+    a = _aj.pentru(fid)
+    if not a:
+        raise HTTPException(404, "fara ajutor pentru aceasta functionalitate")
+    return a
+
+
 # ============================================================
 #  PAGINI PUBLICE DE GHID (DS cap.22) — /ghid/{slug} + index + sitemap + robots
 # ============================================================

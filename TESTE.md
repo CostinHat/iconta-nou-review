@@ -1498,3 +1498,6 @@ verificator_conformitate.py: regula INPUT_NECONFORM - input/select normal fara .
 Costin: extinde gardul sa prinda inputurile construite prin document.createElement, nu doar tag-urile literale.
 verificator_conformitate.py (INPUT_NECONFORM) extins: detecteaza createElement("input"|"select") fara .camp-input in fereastra (linia curenta + 4 urmatoare, unde se seteaza className/classList/setAttribute).
 PROBAT pe caz CONSTRUIT: _test_ce_rau.js (createElement fara camp-input) -> INPUT_NECONFORM=1 (PICA, tag "createElement"); _test_ce_bun.js (createElement cu className camp-input in fereastra) -> nu pica (control pozitiv). Sterse dupa, verificator 0. Zero createElement inputs in cod curent (gapul era teoretic; acum mecanizat pentru viitor). Limita ramasa: createElement(tag) cu tag dinamic (variabila) nu se prinde static.
+
+## 11.08.2026 — Ajutor contextual: infrastructura + pipeline probat
+core/ajutor.py + GET /ajutor/{fid} + api.js semnAjutor + .ajutor-btn (whitelist verificator). Endpoint: F031 -> 1587c ajutor, F001/F999 (fara ajutor) -> 404. Modal end-to-end pe Casa: 7 sectiuni, 0 erori consola, DS. Coloana `ajutor` (11 coloane), gard registru se adapteaza (4 passed). verificator 0.

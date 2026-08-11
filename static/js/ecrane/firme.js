@@ -1,7 +1,7 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { fluxConcediu } from "./flux_concediu.js?v=8";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=7";
@@ -617,7 +617,7 @@ async function ecranControlFirma(corp, nav, t) {
   }
   const cul = CULORI_VERDICT[d.stare] || CULORI_VERDICT.gri;
   corp.innerHTML = `
-    <h2 class="pf-titlu">Control fiscal</h2>
+    <h2 class="pf-titlu">Control fiscal ${semnAjutor("F022")}</h2>
     <p class="pf-intro">Situația fiscală a firmei: ce s-a depus vs ce e datorat, cu verificări de coerență.</p>
     <div class="cf-stare-mare" style="background:${cul.bg}">
       <span class="cf-dot" style="background:${cul.dot}"></span>
@@ -1681,7 +1681,7 @@ async function ecranCasa(corp, nav, t) {
           <button class="buton-secundar" data-del="${o.id}">\u0218terge</button>
         </div>`).join("");
     corp.innerHTML = `
-      <h2 class="pf-titlu">Cas\u0103</h2>
+      <h2 class="pf-titlu">Cas\u0103 ${semnAjutor("F015")}</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 sold final <b>${bani(reg.sold_final)} lei</b>
         <button class="buton-secundar" id="c-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="c-next">luna \u2192</button></p>
@@ -1777,7 +1777,7 @@ async function ecranCasa(corp, nav, t) {
 async function ecranBanca(corp, nav, t) {
   const CUL = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu-semafor)", gri: "var(--gri-semafor)" };
   corp.innerHTML = `
-    <h2 class="pf-titlu">Banc\u0103</h2>
+    <h2 class="pf-titlu">Banc\u0103 ${semnAjutor("F011")}</h2>
     <p class="pf-intro">Încarcă extrasul (.xls, .xlsx, .csv) \u2014 liniile se potrivesc automat pe facturi dupa CUI.</p>
     <input type="file" id="bk-fisier" accept=".xls,.xlsx,.csv" style="margin-bottom:16px">
     <div id="bk-mesaj"></div>
@@ -2299,7 +2299,7 @@ async function ecranBonuri(corp, nav, t) {
       docs = (r && r.bonuri) || [];
     } catch (e) { err = e; }
     if (err) {
-      corp.innerHTML = `<h2 class="pf-titlu">Bonuri și chitanțe</h2>
+      corp.innerHTML = `<h2 class="pf-titlu">Bonuri și chitanțe ${semnAjutor("F017")}</h2>
         <p class="msg-eroare">${err.mesaj || "Nu am putut încărca documentele."}</p>`;
       return;
     }
@@ -2312,7 +2312,7 @@ async function ecranBonuri(corp, nav, t) {
           · <b>${fmtPrimit(b.primit_la)}</b>
         </button>`).join("");
     corp.innerHTML = `
-      <h2 class="pf-titlu">Bonuri și chitanțe</h2>
+      <h2 class="pf-titlu">Bonuri și chitanțe ${semnAjutor("F017")}</h2>
       <p class="pf-intro">Documente pozate de clienți sau adăugate de tine. Alege unul ca să-l verifici și să-l contezi.</p>
       <div style="margin:0 0 12px">
         <button class="buton-secundar" id="bc-adauga">Adaugă document (pozează / încarcă)</button>

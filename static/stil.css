@@ -2311,3 +2311,13 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .ghid-procedura ol { margin: 22px 0; padding: 0; counter-reset: pas; list-style: none; }
 .ghid-procedura li { position: relative; padding: 4px 0 16px 44px; color: var(--gri); font-size: var(--text-mic); line-height: 1.6; }
 .ghid-procedura li::before { counter-increment: pas; content: counter(pas); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--albastru); color: var(--alb); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: var(--text-mic); }
+
+/* [ajutor_contextual] semnul "?" pe ecrane + panoul de ajutor (11.08.2026) */
+.ajutor-btn { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px;
+  border-radius:50%; border:1.5px solid #b9c2cf; background:#eef4fd; color:#3d8fd6; font-weight:700;
+  font-size:12px; line-height:1; cursor:pointer; padding:0; margin-left:6px; vertical-align:middle; }
+.ajutor-btn:hover { background:#3d8fd6; color:#fff; border-color:#3d8fd6; }
+.aj-continut { max-width:640px; }
+.aj-sec { margin:14px 0 4px; color:#1a3a6b; font-size:var(--text-mic); font-weight:700; }
+.aj-sec:first-child { margin-top:0; }
+.aj-p { margin:3px 0; color:var(--ardezie); line-height:1.55; }

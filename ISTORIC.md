@@ -4000,3 +4000,11 @@ Cele 4 butoane (firme.js) + 1 flag backend:
 - Salariati "Fisier plata card SEPA" #sp-plata-card: disabled cand niciun salariat n-are IBAN (stat.some(s=>s.iban)); title "Niciun salariat nu are IBAN...".
 - Acces client "Previzualizeaza portalul" #ac-btn-preview: disabled cand 0 clienti (dupa incarcarea client-acces); title "Nu exista client. Invita un client intai".
 PROBA comportamentala (app viu): ALFA -> REGES/SEPA disabled+motiv, Casa disabled->ENABLED dupa data+suma; BETA (fara client) -> portal disabled+motiv; ALFA (are client) -> portal ENABLED (0 over-disable/regresie); 0 erori consola. Bug scop reparat pe drum (regesOk const-in-try -> let function-scope). node --check ESM 0, verificator 0.
+
+## 11.08.2026 — Ajutor contextual (semnul "?") - infrastructura + batch 1 (Costin)
+Costin: aplicatia n-are ajutor contextual pentru contabil. Adaugat: (1) coloana `ajutor` in FUNCTIONALITATI.csv (text de FOLOSIRE, separat de Descriere tehnica); (2) mecanism "?" pe ecrane.
+INFRASTRUCTURA: core/ajutor.py (citeste coloana, cache la restart) + endpoint public GET /ajutor/{fid} (404 daca n-are ajutor scris) + api.js semnAjutor(fid) (buton "?") + handler global delegat (fetch -> modal DS via window._navGlobal) + CSS .ajutor-btn (20px circular) + whitelist verificator (CLASE_BUTON_OK) + DESIGN_SYSTEM.md documentat.
+BATCH 1 (8 ajutoare detaliate, 7 sectiuni: Ce face/Cand/Inainte/Pas cu pas/Rezultat/Greseli/Reguli fiscale): F031 D300, F026 D100, F028 D112, F029 D205, F015 Casa, F017 Chitante, F011 Contabilizare extras, F022 Semafor control fiscal.
+PLASARI "?" (doar unde e ceva de spus dincolo de eticheta): Casa(F015), Banca(F011), Control fiscal(F022), Bonuri si chitante(F017).
+PROBAT end-to-end: click "?" pe Casa -> modal 7 sectiuni, continut fiscal (plafon, Legea 70/2015), 0 erori, aspect DS. Screenshot confirmat.
+RAMAS: restul functionalitatilor cu UI - continua (declaratii, operatiuni, stocuri, cabinet etc.).

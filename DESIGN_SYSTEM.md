@@ -431,3 +431,6 @@ verificator. Revine la închiderea lunii contabile + confirmarea inventarului.
 **v2.1 (12.07.2026)** — adăugate: `bani()` formator monetar canonic + interdicție `toFixed` pe afișare (cap.4); `.camp-input` obligatoriu pe input/select + interdicție `.mig-text` + structură label canonică (cap.2). Ambele reguli în `verificator_conformitate.py` (BANI_NEFORMATATI întărit, MIG_TEXT nou).
 **v2.0 (11.07.2026)** — migrat docx → .md; adăugate: bordură buton-secundar #b9c2cf (cap.1); interdicție wrapper alb pe formulare (cap.2); `dataRo()` canonic (cap.4); interdicție prompt() nativ (cap.5); `.oblig` asterisc roșu + `.camp-ajutor` albastru (cap.6); `esc` canonic + interdicție variante locale (cap.10).
 **v1.0 (08.07.2026)** — versiune inițială, 10 capitole (docx).
+
+## Componenta: semnul "?" de ajutor contextual (v_ajutor, 11.08.2026)
+.ajutor-btn - buton mic circular (20px) cu "?", plasat langa titlul unei functionalitati DOAR unde exista ceva de spus dincolo de eticheta (reguli fiscale, preconditii, consecinte). Deschide un modal cu textul de folosire din coloana ajutor (FUNCTIONALITATI.csv), via api.js semnAjutor(fid) + handler global. NU se pune peste tot (Salveaza/Cauta/Inapoi/camp Denumire = zgomot).

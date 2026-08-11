@@ -13,7 +13,7 @@ CUVINTE = ["inca", "raspuns", "adauga", "sterge", "stergi", "cauta", "fara",
            "astazi", "productia", "sesizari", "prioritatile"]
 RE_CUV = re.compile(r'[">\s(](' + "|".join(CUVINTE) + r')[\s.,:!?<")]', re.IGNORECASE)
 CLASE_BUTON_OK = {"buton-primar", "buton-secundar", "buton-sters", "buton-verde",
-                  "buton-mic", "btn-link", "btn-nav", "buton-activ"}
+                  "buton-mic", "btn-link", "btn-nav", "buton-activ", "ajutor-btn"}
 # componente structurale si selectoare de optiune — limbaj propriu, nu butoane de actiune (Design System v1.1)
 CLASE_COMPONENTA_OK = {"firme-optiune", "cab-card", "acces-card", "meniu-card", "sub-inapoi",
                        "firme-inapoi", "rap-tab", "ac-per", "mig-dec", "vf-opt", "sa-asist",
