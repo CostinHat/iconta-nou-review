@@ -1555,3 +1555,10 @@ ghid/: diurna-interna-neimpozabila, diurna-externa-neimpozabila, impozit-dividen
 (ghid_slug "|"). Verificat: 6 ghiduri in index+sitemap; pagina randeaza 200 cu title/meta description/canonical/OG/
 JSON-LD/blocuri ghid-temei+ghid-exemplu. CSV integru 201x11 (test_registru passed). Toate pe functii LIVE, grounding
 verbatim din anaf_surse (nicio valoare din memorie).
+
+## 12.08.2026 — +9 ghiduri publice, legate + verificate
+ghid/: salariu-minim-2026, cote-tva-2025, concediu-medical-cine-suporta, sponsorizare-credit-fiscal,
+tva-la-incasare-exigibilitate, taxare-inversa-interna, control-incrucisat-d112, d394-ce-declari-reconciliere,
+impozit-micro-2026. Legate in ghid_slug (F087/F023/F122/F086/F097/F091/F162/F034/F026, toate LIVE). Verificat: 15
+ghiduri in index+sitemap; randare 200 + SEO complet (title/meta description/canonical/OG/JSON-LD/ghid-temei) pe
+paginile noi; CSV integru 201x11. Temei verbatim din anaf_surse, nicio valoare din memorie.

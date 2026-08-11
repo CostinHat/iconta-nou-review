@@ -4111,3 +4111,16 @@ DISTINCTA, sprijinite verbatim pe anaf_surse:
   ce cota si dupa ce data se determina.
 Infra: _ghid_lista extins la MULTI-SLUG (ghid_slug cu "|" -> mai multe pagini per functionalitate; F040 are 2 pagini).
 SEO complet verificat (title/meta/canonical/OG/JSON-LD/sitemap//ghid). Toate pe functii LIVE (F040, F029). Ghiduri 3->6.
+
+## 12.08.2026 — Ghiduri publice pe volum: +9 pagini grounded verbatim (toate pe functii LIVE cu corpus)
+Continuat pe volum, fara loturi. 9 pagini noi, fiecare cu intrebare distincta, temei verbatim din anaf_surse:
+- salariu-minim-2026 (F087): 4.325 lei de la 01.07.2026 (HG 146/2026, MO 196).
+- cote-tva-2025 (F023): standard 21% / redusa 11% de la 01.08.2025 (Legea 141/2025, art. II pct.42 -> art.291 CF).
+- concediu-medical-cine-suporta (F122): OUG 158/2005 art.12/10/17 + regula temporara 2026-2027 (OUG 91/2025 + L64/2026) + exemplu 442 lei din norme (Ordin 506/1030/2026).
+- sponsorizare-credit-fiscal (F086): profit min(0,75%CA, 20%impozit) art.25(4)i; micro ABROGAT din 2024 (art.56(2^5)).
+- tva-la-incasare-exigibilitate (F097): exigibil la incasare, plafon 5.000.000/5.500.000 lei (art.282, OUG 8/2026).
+- taxare-inversa-interna (F091): art.331 (categorii a-l, prag 22.500 lei, mecanism 4426=4427).
+- control-incrucisat-d112 (F162): art.147 + cote 10/25/10/2,25% (art.64/138/156/220^3), mapare reala conturi.
+- d394-ce-declari-reconciliere (F034): OPANAF 3769/2015 + 2194/2025 + 77/2022 (tip_partener, rezumat1/2, codPR).
+- impozit-micro-2026 (F026): cota unica 1% (OUG 89/2025), plafon 100.000 euro (OUG 8/2026).
+Scrise prin subagenti (extractie+scriere din sursa), verificate pe citari; nicio valoare din memorie. Ghiduri 6->15.

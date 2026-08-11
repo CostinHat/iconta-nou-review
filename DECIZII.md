@@ -8930,3 +8930,13 @@ descoperire: ghid_slug suporta mai multe slug-uri separate cu "|" -> o functiona
 Legea 141/2025, OG 16/2022), ZERO din memorie. Verificat ca app-ul e corect INAINTE de a promite public: cota
 dividende 16% e in common.py period-aware (eroarea 10% reparata). SARIT (fara temei in corpus / defect deschis / nu
 LIVE) - se reiau cand corpusul/starea permit: vezi raport §5/§8.
+
+## 12.08.2026 — Ghiduri pe volum: 9 pagini, grounding verbatim, valori 2026 din SURSA nu din memorie
+Executie (comanda Costin, fara loturi, fara confirmari): scris toate paginile cu temei in corpus pe functiile LIVE.
+Metoda: subagenti paraleli, fiecare citeste sursa din anaf_surse verbatim + verifica functia LIVE in registru + scrie
+pagina; verificate pe citari inainte de publicare. DISCIPLINA SURSEI (dovada): agentul micro a corectat presupunerea
+briefului (1%/3%, 500.000 euro) cu valorile REALE 2026 din Cod fiscal (cota UNICA 1% - OUG 89/2025; plafon 100.000
+euro - OUG 8/2026) -> a urmat sursa, nu memoria. Agentul TVA la incasare a OMIS regula "90 de zile" (absenta din
+versiunea consolidata) - corect. Toate 9 au intrebare distincta si temei verbatim; niciun SKIP la aceasta rulare.
+RAMASE saritе (stop points): D101 (conflict lege/validator - decizie deschisa), D406 (PARTIAL, nu LIVE), e-Factura/
+e-Transport (fara actul lor in anaf_surse). Ghiduri 6->15.
