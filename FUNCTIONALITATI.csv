@@ -3,7 +3,22 @@ Client AI (Claude),Wrapper unic peste API-ul Anthropic: generare text (narativul
 Incredere si invatare AI,"Memoreaza corectiile contabilului la propunerile AI (cont per partener/descriere normalizata) si le refoloseste: dupa validari repetate sugestia devine cea invatata, cu scor de incredere.",F002,transversal,"propuneri contare (Banca, Bonuri)",core/ai_incredere.py,,LIVE,pytest,,
 Import Raport Z din AMEF,"Parseaza fisierul AMEF (.p7b sau XML, structura OPANAF 146/2018 anexa 2 II.7 verificata la sursa): totalurile zilei pe cote TVA (valoare operatiuni + TVA per cota) si pe tipuri de plata (nomenclator 1=Card, 3=Numerar, 4=Tichete etc.), din care se construieste nota contabila zilnica a Raportului Z; alimenteaza si retetarul GV (descarcarea pe portii).",F003,firma,card Raport Z,core/amef_import.py,OPANAF 146/2018,LIVE,date reale de re-verificat,,
 Validare CUI la ANAF,"Interogheaza serviciul ANAF pentru un CUI (existenta, denumire, platitor TVA, CAEN) + extragere CUI-uri in masa din fisiere la migrare.",F004,transversal,"Adauga firma, Migrare, Emitere, inregistrare",core/anaf_api.py,,LIVE,,,
-Chei API publice per cabinet,"Chei API per cabinet pentru API-ul public v1: creare cu nume, cheia in clar se arata O SINGURA DATA la creare (stocam doar SHA256 + prefix pentru identificare), listare cu ultima folosire, dezactivare. Autentifica cererile /api/v1/*.",F005,cabinet,Setari cont > Chei API,core/api_public.py,,LIVE,pytest,,
+Chei API publice per cabinet,"Chei API per cabinet pentru API-ul public v1: creare cu nume, cheia in clar se arata O SINGURA DATA la creare (stocam doar SHA256 + prefix pentru identificare), listare cu ultima folosire, dezactivare. Autentifica cererile /api/v1/*.",F005,cabinet,Setari cont > Chei API,core/api_public.py,,LIVE,pytest,,"## Ce face
+Chei API publice per cabinet - creeaza chei pentru API-ul public v1 (integrari externe). Cheia in clar se arata O SINGURA DATA la creare; se stocheaza doar amprenta (SHA256) + prefixul.
+## Cand se foloseste
+Cand integrezi o aplicatie externa cu iConta prin API-ul public.
+## Ce trebuie pregatit inainte
+- Necesitatea unei integrari externe (aplicatie terta).
+## Pas cu pas
+1. Setari cont -> Chei API -> creeaza cheie cu nume.
+2. COPIAZA cheia in clar ACUM (nu se mai arata).
+3. Foloseste-o in integrare; o poti dezactiva oricand.
+## Ce iese la capat
+Cheie API pentru autentificarea cererilor /api/v1/*; listare cu ultima folosire.
+## Greseli frecvente
+- Uitarea copierii cheii la creare (nu se mai poate recupera - trebuie recreata).
+## Reguli fiscale
+Fara implicatii fiscale (securitatea integrarii)."
 Management actori de cabinet,"Lista asistentilor cu roluri/permisiuni/firme, centralizator si jurnal, sumar calitate, detalii per actor (nivel/tipare/drift), setare patru-ochi, educatie pe erori.",F006,cabinet,card Asistenti,core/asistenti_api.py,,LIVE,vizual,,
 Import asociati (migrare),"Citeste .xlsx/.csv cu nume/CNP-CUI/cota %, mapare flexibila, validare CNP, coerenta cotelor (100%), import per firma pentru D205.",F007,firma,Migrare / Import date,core/asociati_import_api.py,,LIVE,,,
 Autentificare si sesiuni,"Login email+parola (bcrypt+scrypt), token JWT cu rol (superadmin/admin_firma/angajat/client), acces per tenant, actualizare profil.",F008,transversal,ecran login,core/auth_api.py,,LIVE,,,
@@ -60,8 +75,39 @@ Note contabile pe liniile de extras, cu urma regulii aplicate; reconciliere cu f
 ## Reguli fiscale
 Monografie OMFP 1802/2014 pe tipurile de operatiuni bancare."
 Parser extras bancar,"Citeste .xls/.xlsx/.csv (ING/Jasper), format detectat dupa continut (magic bytes), grid pe pozitia coloanelor, randuri multi-linie.",F012,firma,card Banca,core/banca_parser.py,,LIVE,validat la leu pe ING,,
-Bilant anual S1005/S1003,"Situatii financiare anuale pentru microentitati S1005 (OMF 107/2025, XSD v14): mapare balanta -> F10 bilant prescurtat + rulaje clase 6/7 -> F20 cont de profit si pierdere prescurtat, dupa structura oficiala ANAF (F10_BS, F20_micro); valori intregi in lei, rotunjite aritmetic. Motor pur.",F013,firma,card Bilant anual,core/bilant.py + core/bilant_api.py,OMF 107/2025,LIVE,validator ANAF,,
-Panou Capacitate,"Trei perspective pe cabinet pentru patron: totaluri (in lucru/de validat/depuse/ritm pe zi lucratoare), tabel per asistent (in lucru/pregatite/depuse/% acceptate), timp mediu masurat per tip de declaratie.",F014,cabinet,card Capacitate,core/capacitate_api.py,,LIVE,vizual,,
+Bilant anual S1005/S1003,"Situatii financiare anuale pentru microentitati S1005 (OMF 107/2025, XSD v14): mapare balanta -> F10 bilant prescurtat + rulaje clase 6/7 -> F20 cont de profit si pierdere prescurtat, dupa structura oficiala ANAF (F10_BS, F20_micro); valori intregi in lei, rotunjite aritmetic. Motor pur.",F013,firma,card Bilant anual,core/bilant.py + core/bilant_api.py,OMF 107/2025,LIVE,validator ANAF,,"## Ce face
+Situatiile financiare anuale (bilant) - pentru microentitati S1005 sau S1003: mapeaza balanta in formularele oficiale F10 (bilant) si F20 (cont de profit si pierdere), dupa structura ANAF, cu valori intregi in lei.
+## Cand se foloseste
+Anual, la depunerea situatiilor financiare (termenele legale dupa tipul entitatii).
+## Ce trebuie pregatit inainte
+- Balanta anuala inchisa (dupa toate operatiunile de inchidere).
+- Incadrarea corecta a entitatii (micro S1005 / mica S1003).
+## Pas cu pas
+1. Bilant anual -> alege tipul (S1005/S1003).
+2. Aplicatia mapeaza balanta in F10+F20.
+3. Verifica si genereaza XML-ul validat ANAF.
+## Ce iese la capat
+XML bilant (F10 bilant + F20 CPP) validat, gata de depus.
+## Greseli frecvente
+- Balanta neinchisa -> bilant eronat.
+- Incadrare gresita a entitatii (micro vs mica).
+## Reguli fiscale
+OMF 107/2025 (situatii financiare micro, XSD v14); Legea contabilitatii (termene depunere)."
+Panou Capacitate,"Trei perspective pe cabinet pentru patron: totaluri (in lucru/de validat/depuse/ritm pe zi lucratoare), tabel per asistent (in lucru/pregatite/depuse/% acceptate), timp mediu masurat per tip de declaratie.",F014,cabinet,card Capacitate,core/capacitate_api.py,,LIVE,vizual,,"## Ce face
+Panoul de Capacitate al cabinetului - trei perspective pentru patron: totaluri (declaratii in lucru/de validat/depuse, ritm pe zi lucratoare), tabel per asistent (in lucru/pregatite/depuse/%% acceptate) si timpul mediu masurat per tip de declaratie.
+## Cand se foloseste
+Pentru managementul cabinetului - sa vezi incarcarea, ritmul si performanta echipei inainte de termene.
+## Ce trebuie pregatit inainte
+- Activitate inregistrata (declaratii lucrate de asistenti).
+## Pas cu pas
+1. Capacitate (nivel cabinet).
+2. Citesti totalurile, tabelul per asistent si timpii medii.
+## Ce iese la capat
+Tablou de capacitate: volum, ritm, performanta per asistent.
+## Greseli frecvente
+- Compararea asistentilor fara context (tipuri diferite de declaratii).
+## Reguli fiscale
+Fara implicatii fiscale (instrument de management de cabinet)."
 Registru de casa + plafoane,"Registru zilnic cu sold curent per operatiune, reguli de cont pe tip (incasare client 5311=4111 etc.), verificare plafoane numerar (Legea 70/2015), avansuri de trezorerie (acordare 542 / restituire cu justificare).",F015,firma,card Casa,core/casa.py + core/casa_api.py,Legea 70/2015,LIVE,pytest,,"## Ce face
 Registrul de casa - evidenta zilnica a incasarilor si platilor in numerar, cu sold curent, reguli de cont pe tip de operatiune si verificarea plafoanelor de numerar. Emite nota contabila pe fiecare operatiune.
 ## Cand se foloseste
@@ -80,7 +126,23 @@ Operatiune inregistrata in registrul de casa, nota contabila, sold zilnic actual
 - Sold de casa negativ (imposibil in realitate) - verificatorul blocheaza.
 ## Reguli fiscale
 Legea 70/2015 (plafoane numerar: incasari/plati per zi si per partener). Monografie OMFP 1802/2014."
-Forecast cash-flow 8 saptamani,"Previziunea banilor: cash curent + incasari/plati asteptate pe scadente; soldurile 4111/401 alocate pe facturile deschise, obligatiile fiscale din balanta, cheltuielile lunare recurente estimate.",F016,firma,Portal > Cifrele firmei,core/cashflow.py,,LIVE,pytest,,
+Forecast cash-flow 8 saptamani,"Previziunea banilor: cash curent + incasari/plati asteptate pe scadente; soldurile 4111/401 alocate pe facturile deschise, obligatiile fiscale din balanta, cheltuielile lunare recurente estimate.",F016,firma,Portal > Cifrele firmei,core/cashflow.py,,LIVE,pytest,,"## Ce face
+Forecast de cash-flow pe 8 saptamani - previziunea banilor: cash-ul curent plus incasarile si platile asteptate pe scadente (facturi deschise, obligatii fiscale din balanta, cheltuieli recurente estimate).
+## Cand se foloseste
+Cand vrei sa vezi daca firma va avea lichiditati in urmatoarele saptamani (planificare de trezorerie).
+## Ce trebuie pregatit inainte
+- Facturile deschise (de incasat/de platit) cu scadente.
+- Balanta la zi pentru obligatiile fiscale.
+## Pas cu pas
+1. Portal / Cifrele firmei -> Forecast cash-flow.
+2. Aplicatia proiecteaza incasarile/platile pe scadente.
+3. Citesti soldul proiectat pe 8 saptamani.
+## Ce iese la capat
+Grafic/tabel al soldului de cash proiectat pe 8 saptamani.
+## Greseli frecvente
+- Interpretarea forecast-ului ca certitudine (e estimare pe scadente).
+## Reguli fiscale
+Fara implicatii fiscale (instrument de management)."
 Chitante emise,"Chitanta cod 14-4-1 (Ordin 2634/2015) cu suma in litere generata automat si PDF; emiterea trece prin casa (5311=4111) la certificarea platilor cash - inclusiv fluxul portal: clientul pozeaza bonul, contabilul certifica plata si emite chitanta.",F017,firma,Bonuri si chitante / portal Pozeaza bon,core/chitante.py,Ordin 2634/2015,LIVE,,,"## Ce face
 Emiterea de chitante (cod 14-4-1, Ordin 2634/2015) pentru incasari in numerar, cu suma in litere generata automat si PDF. Incasarea trece prin registrul de casa (5311=4111).
 ## Cand se foloseste
@@ -459,7 +521,22 @@ OMFP 1802/2014; IFRS 16 / reglementari nationale pe clasificarea leasingului."
 Lichidare/radiere societate,"Lichidare/radiere societate (OMFP 897/2015 + L31/1990 art. 227+ + L85/2014): monografiile etapelor dupa aprobarea lichidarii - valorificarea activelor (461=7583+4427, descarcare 6583+28xx=21x, stocuri), incasare creante si plata datorii, inchidere TVA/impozite, rezultat pe 121, apoi PARTAJUL dupa bilantul de lichidare cu impozit pe castig in regim de dividende (16% din 2026). Motor pur.",F057,firma,Operatiuni speciale,core/lichidare.py,OMFP 897/2015; L31/1990; L85/2014,LIVE,pytest,,
 Starea migrarii pe straturi,Per cabinet: fiecare strat cu stare (gata/in lucru + nota ce mai lipseste) decisa explicit; remindere pentru straturile ramase.,F058,cabinet,Migrare cabinet,core/migrare_api.py,,LIVE,vizual (9 straturi),,
 Import mijloace fixe (migrare),"Citeste registrul de mijloace fixe din export (valoare, durata, amortizare cumulata) - amortizarea continua fara reluare de la zero.",F059,firma,Migrare / Import date,core/mijloace_fixe_import_api.py,,LIVE,,,
-Motor contabil (carte mare + inchidere),"Nucleul contabilitatii: cartea mare din note validate, rezultatul, inchiderea de luna (TVA, venituri/cheltuieli in 121) si de an (rezerva legala, repartizare 129).",F061,firma,— (motorul tuturor rapoartelor),core/motor.py,OMFP 1802/2014,LIVE,pytest (bug nota neechilibrata prins la rescriere),,
+Motor contabil (carte mare + inchidere),"Nucleul contabilitatii: cartea mare din note validate, rezultatul, inchiderea de luna (TVA, venituri/cheltuieli in 121) si de an (rezerva legala, repartizare 129).",F061,firma,— (motorul tuturor rapoartelor),core/motor.py,OMFP 1802/2014,LIVE,pytest (bug nota neechilibrata prins la rescriere),,"## Ce face
+Motorul contabil - Cartea Mare si operatiunile de inchidere: agregarea notelor validate in solduri pe conturi, inchiderea conturilor de venituri si cheltuieli, stabilirea rezultatului.
+## Cand se foloseste
+Lunar/anual, la inchiderea perioadei, pentru a obtine balanta si rezultatul.
+## Ce trebuie pregatit inainte
+- Toate notele perioadei validate.
+## Pas cu pas
+1. Motor contabil -> inchide perioada.
+2. Aplicatia agrega notele, inchide 6xx/7xx si stabileste rezultatul.
+3. Obtii balanta si rezultatul.
+## Ce iese la capat
+Balanta la zi, conturi de venituri/cheltuieli inchise, rezultatul perioadei.
+## Greseli frecvente
+- Inchiderea cu note neechilibrate (motorul o semnaleaza).
+## Reguli fiscale
+OMFP 1802/2014 (planul de conturi, inchiderea exercitiului)."
 Notificari pe evenimente,"O notificare = eveniment catre un user (mesaj client, respingere, validare); adresare individuala sau catre validatorii cabinetului; contor necitite + marcare citit.",F062,transversal,clopotel,core/notificari_api.py,,LIVE,,,
 Obiecte de inventar,"Note pentru achizitie (303), dare in folosinta si scoatere din uz, cu pragul de mijloc fix actualizat (5.000 lei din 25.02.2026).",F063,firma,Operatiuni speciale > Imobilizari,core/obiecte_inventar.py,OMFP 1802/2014; OUG 8/2026,LIVE,pytest,,"## Ce face
 Evidenta obiectelor de inventar - inregistrarea si darea in folosinta a obiectelor de inventar (materiale de natura obiectelor de inventar), cu evidenta extrabilantiera.
@@ -535,7 +612,23 @@ Note pentru reevaluare, rezerva din reevaluare (105x), amortizare ajustata.
 ## Reguli fiscale
 OMFP 1802/2014 (reevaluarea imobilizarilor, rezerva din reevaluare)."
 Client REGES-ONLINE,"Mesaje catre registrul de evidenta a salariatilor (Inspectia Muncii): inregistrare salariat, adaugare contract, incetare; chei per firma, raspunsuri interogabile.",F075,firma,Salariati > REGES,core/reges_client.py,HG REGES; API oficial,LIVE (API alpha ITM),,,
-Registru incasari/plati (partida simpla),"Registrul-jurnal PFA/II/IF pe luna: operatiuni cu categorie/deductibilitate, validare, import ciorne din banca si din casa, plus Fisa D212.",F077,firma,card Incasari/plati,core/rip_api.py,OMFP 170/2015,LIVE,vizual,,
+Registru incasari/plati (partida simpla),"Registrul-jurnal PFA/II/IF pe luna: operatiuni cu categorie/deductibilitate, validare, import ciorne din banca si din casa, plus Fisa D212.",F077,firma,card Incasari/plati,core/rip_api.py,OMFP 170/2015,LIVE,vizual,,"## Ce face
+Registrul de incasari si plati (RIP) pentru partida simpla - evidenta cronologica a incasarilor si platilor pentru PFA/II/IF care tin contabilitate in partida simpla, baza pentru Fisa D212.
+## Cand se foloseste
+Pentru PFA/II/intreprinderi familiale in sistem real (partida simpla), pe tot parcursul anului.
+## Ce trebuie pregatit inainte
+- Documentele de incasare/plata ale activitatii.
+## Pas cu pas
+1. RIP -> inregistreaza incasarile si platile.
+2. Aplicatia clasifica (venituri/cheltuieli deductibile).
+3. Alimenteaza calculul D212.
+## Ce iese la capat
+Registru de incasari si plati; venitul net pentru D212.
+## Greseli frecvente
+- Cheltuieli nedeductibile trecute ca deductibile.
+- Confuzia partida simpla (PFA) cu partida dubla (SRL).
+## Reguli fiscale
+Codul fiscal (venituri din activitati independente, sistem real); norme partida simpla."
 Salariati (CRUD),"Salariatii firmei: creare/editare/stergere cu validare (CNP, norma, contract), alimenteaza statul de plata, D112 si REGES.",F078,firma,card Salariati,core/salariati_api.py,,LIVE,bug tip_norma reparat,,
 Import salariati (migrare),"Import salariati la migrare (stratul 4): citeste exportul din vechea aplicatie (.xlsx/.csv) cu mapare flexibila a coloanelor (nume/prenume/CNP/salariu/functie/data angajare, indiferent de ordine sau denumire); valideaza CNP-ul cu cheia de control oficiala 279146358279 + structura data + judet; importa in tabelul salariati existent al tenantului.",F079,firma,Migrare / Import date,core/salariati_import_api.py,,LIVE,,,
 Calculul scadentelor,"Data scadentei per declaratie (25 ale lunii etc.), mutata la prima zi lucratoare dupa sarbatori legale (calendar cu Pastele pe ani).",F081,transversal,Termene / Control fiscal,core/scadente.py,calendar sarbatori legale,LIVE,,,
@@ -622,7 +715,21 @@ API public v1,"API public v1 (REST, autentificat cu chei F005): GET firme, factu
 Notificari in-app + email,"Clopotel cu necitite, sumar la login, email zilnic (mesaje clienti, evenimente echipa); notificarile de mesaje doar catre rolurile de cabinet.",F115,transversal,clopotel antet,core/notificari_api.py,,LIVE,,,
 Securitate perimetru,"nginx SSL + rate limiting (5r/m auth, 20r/s general) + fail2ban 3 jails (nginx-botsearch/nginx-limit-req/sshd) + HEADERE de securitate DEPLOYATE 11.08.2026: X-Frame-Options SAMEORIGIN, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, HSTS max-age=300 (fara includeSubDomains/preload, de urcat dupa verificare), CSP enforcing (default-src self; script-src self+hash SW+unsafe-hashes hash return-false; style-src self unsafe-inline; img-src self data:; object-src none; frame-ancestors self). Verificat: headere la client extern, login prin formular OK sub enforce, 38 ecrane 0 violari. Config: config_server/iconta-nginx.conf.",F116,transversal,—,nginx + fail2ban,,LIVE,,,
 Alerte sanatate server,"Bucla de monitorizare a serverului (RAM, disc, load, DB, erori) cu metrici persistate (metrici_sanatate), alerta pe email la depasirea pragurilor, istoric pe ore si endpoint de test permanent al livrarii (Admin > Sanatate).",F117,admin,Admin > Sanatate server,core/observare.py + static/js/ecrane/admin_sanatate.js,,LIVE,vizual partial,,
-Blocare perioade,"Blocarea unei luni contabile per firma (perioade_blocate, per tenant): trigger DB (verifica_perioada_blocata) respinge ORICE inregistrare in luna inchisa, indiferent de sursa (UI, import, cron, retetar); lista + deblocare din UI.",F118,firma,Registru jurnal > Blocheaza luna,main.py perioade-blocate,,LIVE,,,
+Blocare perioade,"Blocarea unei luni contabile per firma (perioade_blocate, per tenant): trigger DB (verifica_perioada_blocata) respinge ORICE inregistrare in luna inchisa, indiferent de sursa (UI, import, cron, retetar); lista + deblocare din UI.",F118,firma,Registru jurnal > Blocheaza luna,main.py perioade-blocate,,LIVE,,,"## Ce face
+Blocarea perioadelor contabile - inchide o perioada (luna/an) pentru a impiedica modificarea notelor dupa depunerea declaratiilor, pastrand integritatea evidentei.
+## Cand se foloseste
+Dupa depunerea declaratiilor unei perioade, ca sa nu se mai modifice retroactiv datele.
+## Ce trebuie pregatit inainte
+- Toate operatiunile perioadei finalizate si declaratiile depuse.
+## Pas cu pas
+1. Blocare perioade -> alege perioada de blocat.
+2. Confirma; nu se mai pot adauga/modifica note in perioada blocata.
+## Ce iese la capat
+Perioada blocata: evidenta inghetata, protejata de modificari retroactive.
+## Greseli frecvente
+- Blocarea prematura (inainte de finalizarea perioadei) -> nu mai poti corecta.
+## Reguli fiscale
+Legea contabilitatii (integritatea inregistrarilor); buna practica dupa depunere."
 Declaratia D394,"Declaratia informativa D394 (OPANAF 3769/2015): livrarile/prestarile si achizitiile nationale defalcate pe parteneri si tipuri de operatiune, calculate din facturile emise/primite; XML generat pe structura oficiala ANAF (structura_D394), refacut de la zero dupa sursa.",F034,firma,Declaratii,core/d394.py,ANAF,LIVE,generator complet; valideaza FARA ERORI pe DUK headless (core/duk.py); conectat in semafor faza 3 (control_fiscal_api.declaratii_datorate - grep D394 = 5 linii; commit 3cc1455),,"## Ce face
 Declaratia informativa D394 - livrarile/achizitiile pe teritoriul national intre platitorii de TVA, cu clasificare pe coduri si nomenclatoare. Generatorul valideaza fara erori pe DUK.
 ## Cand se foloseste
@@ -736,7 +843,22 @@ Analitica de stoc,"Raport pe 4 sectiuni: stoc critic (sub nivel_minim, cu necesa
 Coduri de bare in gestiune,"Cod de bare unic per articol (index partial WHERE NOT NULL): atribuire/stergere pe articol, cautare articol dupa cod (scan/tastare) care il selecteaza in fisele de magazie pentru intrare/iesire/inventar.",F141,firma,card Stocuri,core/stocuri_cv_api.py + main.py,,LIVE,core/stocuri_cv_api.py (gaseste_barcode/set_barcode); test functional pe Postgres (unicitate + reutilizare dupa stergere),,
 Inventar pe mobil,"Mod de numarare optimizat mobil (peste PWA F113): scanare cod de bare (keyboard-wedge, F141) sau cautare denumire -> adaugare la numaratoare cu acumulare in timp real pe ecran -> finalizare care posteaza diferentele prin motorul inventar() existent (note ciorne). Numarare oarba (nu afiseaza scripticul, evita influentarea). Fara schema noua. Sincronizarea live intre mai multi numaratori (nevoie de tabel de sesiune) NU e inclusa - vezi DECIZII 17.07.",F142,firma,card Stocuri,core/stocuri_cv_api.py + static/js/ecrane/firme.js + main.py,,LIVE (numarare oarba; fara sync multi-utilizator),static/js firme.js (mod inventar mobil) + core/stocuri_cv_api.py inventar(); test functional pe Postgres,,
 Centre de cost + bugete (management accounting intern),"LIVE 20.07: dimensiune centru de cost pe linia notei manuale + bugete anuale cu varianta. Faza 1: nomenclator centre per firma (card dedicat), selector pe linia de nota in Registru jurnal, raport 'realizat pe centre' (clasa 6 chelt / clasa 7 venit din note validate, pe perioada + nealocat). Faza 2: buget anual per centru, per clasa (cheltuieli + venituri, UNIQUE centru+an), ecran de setare in ecranul Centre de cost + raport varianta buget vs realizat pe an (abatere colorata: depasire chelt=rosu, peste plan venit=verde). Doar note MANUALE poarta centru. Management accounting intern confirmat la sursa CONCURENTA.csv (firme private). Vezi DECIZII 20.07.",F143,firma,Firma > Centre de cost (management + realizat + bugete/varianta) + selector in Registru jurnal,"02_ddl_centre_cost.sql, 03_ddl_bugete.sql, core/centre_cost_api.py, core/jurnal_api.py, static/js/ecrane/firme.js",,LIVE 20.07.2026 (Faza 1 + Faza 2),"test functional real (CRUD centre, tagare nota, raport realizat/nealocat, buget upsert, varianta buget vs realizat)",,
-Rapoarte comerciale,"v1 LIVE (read-only): fisa client/furnizor, vanzari pe partener, durata medie de incasare (ecran Rapoarte comerciale, rapoarte_comerciale_api.py). Profit pe produs / vanzari pe articol / vanzari pe agent = DECIZIE DESCHISA: vanzarea si descarcarea gestiunii sunt acte deconectate prin design (factura_linii fara articol_id, miscari_stoc fara factura_id). Vezi DECIZII.md 17.07 + DE_FACUT.md CARENTE pct.4. | 18.07: profit-pe-produs ACUM LIVE la CV prin puntea factura->stoc (F172) - articol_id pe linii + factura_id pe miscari_stoc; join venit(factura_linii)<->cost(miscari_stoc la CMP). GV ramane fara profit pe produs (cost pe articol inexistent). Decizia deschisa F144 (17.07) inchisa pt CV.",F144,firma,rapoarte,core/rapoarte_comerciale_api.py + main.py,,"LIVE (CV, 18.07)",functional real tenant_002 (Widget X: venit 100 - cost 60 = profit 40),,
+Rapoarte comerciale,"v1 LIVE (read-only): fisa client/furnizor, vanzari pe partener, durata medie de incasare (ecran Rapoarte comerciale, rapoarte_comerciale_api.py). Profit pe produs / vanzari pe articol / vanzari pe agent = DECIZIE DESCHISA: vanzarea si descarcarea gestiunii sunt acte deconectate prin design (factura_linii fara articol_id, miscari_stoc fara factura_id). Vezi DECIZII.md 17.07 + DE_FACUT.md CARENTE pct.4. | 18.07: profit-pe-produs ACUM LIVE la CV prin puntea factura->stoc (F172) - articol_id pe linii + factura_id pe miscari_stoc; join venit(factura_linii)<->cost(miscari_stoc la CMP). GV ramane fara profit pe produs (cost pe articol inexistent). Decizia deschisa F144 (17.07) inchisa pt CV.",F144,firma,rapoarte,core/rapoarte_comerciale_api.py + main.py,,"LIVE (CV, 18.07)",functional real tenant_002 (Widget X: venit 100 - cost 60 = profit 40),,"## Ce face
+Rapoarte comerciale - situatii de management pe date reale: vanzari pe partener, durata medie de incasare, fisa partenerului, profit pe produs (cu centrele de cost).
+## Cand se foloseste
+Pentru analiza comerciala a firmei (cine cumpara, cat de repede plateste, ce e profitabil).
+## Ce trebuie pregatit inainte
+- Facturi si incasari inregistrate (cu cat mai multe date, cu atat rapoartele sunt mai relevante).
+## Pas cu pas
+1. Rapoarte comerciale -> alege raportul si perioada.
+2. Aplicatia calculeaza pe datele reale.
+3. Poti salva variante de raport (filtre).
+## Ce iese la capat
+Rapoarte de vanzari/incasari/profit pe partener sau produs.
+## Greseli frecvente
+- Interpretarea rapoartelor pe date incomplete (facturi neinregistrate).
+## Reguli fiscale
+Fara implicatii fiscale (management accounting)."
 Rapoarte configurabile salvabile,"LIVE 17.07: tabel rapoarte_salvate (schema tenant, izolat) + salvare/incarcare/stergere variante ale firmei pe ecranul Rapoarte comerciale (an+partener). Vocabular fix tip_raport (CHECK DB + constanta cod), UNIQUE(tip,nume), autor afisat, referinta partener validata la incarcare (gol+cauza+iesire daca a disparut). Extensibil la orice raport filtrabil viitor. core/rapoarte_comerciale_api.py + core/migrare_rapoarte_salvate.py.",F145,transversal,rapoarte,core/rapoarte_comerciale_api.py + core/migrare_rapoarte_salvate.py + main.py,,LIVE (17.07),—,,
 Registratura documente,"LIVE 17.07: registru UNIC de intrare-iesire (un numar secvential per an, resetare anuala, coloana directie), v1 manual. Ecran Registratura in meniul firmei + tabel registratura (schema tenant). core/registratura_api.py + core/migrare_registratura.py. Hook automat la facturi/adeverinte = iteratie ulterioara.",F146,firma,Registratură,core/registratura_api.py + core/migrare_registratura.py + main.py,,LIVE (17.07),"functional real tenant_002 (serie 1-2-3, resetare pe an, validari, ROLLBACK)",,
 Generare contracte,"LIVE 17.07: mail-merge - firma isi scrie sablonul cu marcaje {{...}} (vocabular fix verificat la scriere), generarea completeaza datele partenerului (clienti) + firmei (firma_profil) si scoate PDF. NU autoram continut legal (lectia F136). Contractul nu se stocheaza (doar descarcare). Ecran Contracte + tabel contracte_sabloane (schema tenant). core/contracte_api.py + core/migrare_contracte_sabloane.py.",F147,firma,Contracte,core/contracte_api.py + core/migrare_contracte_sabloane.py + main.py,,LIVE (17.07),"functional real tenant_002 (marcaj orfan respins, dup, substitutie, PDF %PDF-, ROLLBACK)",,
@@ -804,11 +926,42 @@ Audit de preluare firma,"Cand un cabinet preia o firma cu istoric de la alt cont
 Avertisment regim TVA vs ANAF + semafor Control fiscal,"La editarea manuala a statutului de platitor TVA (Configurare emitere / Vector fiscal) se interogheaza LIVE ANAF v9 (scpTVA) pe CUI-ul firmei: daca difera de ce salveaza omul -> AVERTISMENT signal-not-block (salveaza oricum), iar snapshot-ul ANAF (coloana SEPARATA platitor_tva_anaf + data) se reimprospateaza. In Control fiscal, constatarea 'Regim TVA vs ANAF' compara OFFLINE platitor_tva vs snapshot: verde (coincid) / rosu (difera, remediu=investigatie: verifica SPV, corecteaza vector sau depune mentiuni) / gri (fara snapshot sau ANAF necunoscut). Model snapshot+live ales fiindca F188 suprascrie ACEEASI coloana (nu exista valoare ANAF de comparat) si /control-fiscal itereaza toate firmele (live-per-firma neviabil). Verificat fiscal la sursa (v9 raw 22.07): scpTVA=boolean la data interogarii; TVA la incasare/SplitTVA sunt fatete separate -> comparatie apples-to-apples, zero fals-pozitiv din granularitate. Vezi DECIZII 22.07 F180.",F180,firma,Configurare emitere + Vector fiscal (avertisment la salvare); Control fiscal (rosu la divergenta),core/firma_profil_api.py + core/control_fiscal_api.py + core/migrare_platitor_tva_anaf.py + main.py (rute regim-tva/vector + prefill F188) + tenant_template.sql,"date publice ANAF (PlatitorTvaRest v9, scpTVA); regim TVA Cod fiscal",LIVE (22.07.2026),"9 teste pure (stare_tva_anaf + avertisment_tva_anaf + constatare_regim_tva: verde/rosu/gri, contract remediu=investigatie/limita) + functional REAL pe tenant_002 (live ANAF 14399840: local!=ANAF->avertisment, ==->none; gri fara snapshot; cale ROSIE end-to-end cu divergenta fortata in tranzactie ROLLBACK, tenant_002 neatins) + migrare 2/2 scheme + suita 447 verde + verificator DS 0",,
 Auditor conformitate schema tenant vs template,"Detecteaza driftul intre schema fiecarui tenant si tenant_template.sql (sursa canonica). Motor: construieste o schema de referinta din template intr-o tranzactie ROLLBACK + introspecteaza information_schema + face diff coloana-cu-coloana (filosofia DUK: lucrul real e judecatorul, nu parsare SQL de mana; normalizeaza zgomotul nextval din defaults). Directia HARD (template->tenant: tabela/coloana lipsa, tip diferit, nullable diferit) = clasa link_plata (template a castigat ceva, tenantul vechi n-a primit -> codul crapa). Directia inversa (extra in tenant) = doar raport informativ, NU pica (evita whitelist ever-growing). Expus ca POARTA (test in suita, pica la drift template->tenant -> driftul tacut devine rosu la dev) + CLI on-demand (python3 -m core.audit_schema) care SUGEREAZA SQL (corp migrare_*, ADD COLUMN IF NOT EXISTS + avertisment pe NOT NULL fara default) dar NU-l APLICA - repararea ramane un migrare_* numit + mirror template, revizuit de om (suggest-don't-apply, nu lasa gaura in procesul de migrari). Fara auto-ALTER, fara ecran (YAGNI). De ce: tenant_provisioning aplica template-ul integral la tenantii NOI, dar cei EXISTENTI raman in urma cand template-ul se schimba fara migrare_*; convenția migrare_* repara pe disciplina, nimic nu prindea driftul mecanic. Vezi DECIZII 22.07 F165.",F165,transversal,CLI (python3 -m core.audit_schema) + poarta in suita (test_audit_schema.py),core/audit_schema.py + core/test_audit_schema.py,conformitate schema-per-tenant vs tenant_template.sql (sursa canonica),LIVE (22.07.2026),11 teste (9 pure compara/sugereaza_alter/normalizare nextval + poarta reala 'toti tenantii conform' + mutatie negativa din ref real) + DOVADA E2E: DROP link_plata REAL pe tenant_002 in tranzactie ROLLBACK -> drift HARD detectat + SQL sugerat corect + tenant neatins. CLI: 0/2 drift HARD (2 tabele extra lazy/legacy = info adnotat). Drift curent verificat = ZERO. Suita 460 verde + verificator DS 0,,
 Persistarea declaratiei depuse (xml + randuri) - F163v2,"La depunere (coada_api.marcheaza_depusa) se persista in public.declaratii_depuse nu doar metadatele (tenant/an/luna/tip) ci si XML-ul efectiv depus + `res` (randurile calculate, jsonb). Prerechizit pentru control D-vs-D real intre declaratii (D390<->D300 etc.) fara reparsare XML - res e deja structurat. Motor: coada_api.randuri_din_res serializeaza dataclass-ul de rezultat (asdict + default=str -> Decimal pastrat valoric); call-site-ul de depunere (main.py) pastreaza `res` intreg in payload-ul cozii (inainte se arunca, retinea doar avertismentele - docstring corectat, mintea). Migrare pe schema PUBLIC (nu tenant): migrare_declaratii_depuse_randuri.py, ADD COLUMN IF NOT EXISTS xml text + randuri jsonb, coloane nullable (depunerile istorice raman fara, nu se fabrica). d112 -> randuri NULL cu temei in cod (intoarce (xml, avertismente), nu un dataclass cu totaluri; NU se refactorizeaza - F181). Jurnal append-only cu VERSIONARE (varianta A): PK=(tenant_id,an,luna,tip,nr_depunere); marcheaza_depusa calculeaza nr_depunere=MAX+1 in aceeasi instructiune (FARA ON CONFLICT - PK-ul e garda la cursa, conflictul nu se inghite tacut). Fiecare depunere/rectificativa = rand nou cu xml/randuri proprii; 'curenta' = vederea public.declaratii_depuse_curente (DISTINCT ON per perioada, nr_depunere DESC); cei 6 cititori de logica trec pe vedere, istoricul ramane in tabel. D710 rectificativa D100 = tip separat, coexista. De ce A si nu B (ON CONFLICT DO UPDATE): first-write-wins devine fals fiscal odata ce persistam valori - rectificativa ar compara cu actul inlocuit. Vezi DECIZII 22.07 F163v2.",F198,transversal,automat la depunere (backend); baza pentru controalele D-vs-D,core/migrare_declaratii_depuse_randuri.py + core/migrare_declaratii_depuse_versiune.py (nr_depunere+PK+vedere) + core/coada_api.py (randuri_din_res + marcheaza_depusa) + main.py + cei 6 cititori pe vedere,control incrucisat declaratie-vs-declaratie (D390<->D300); persistare pentru trasabilitate depunere,LIVE (22.07.2026),"6 teste (randuri_din_res dataclass cu Decimal / d112-lista->None, round-trip Decimal prin jsonb, d112 NULL in DB, VERSIONARE prin marcheaza_depusa real - 2 randuri nr 1/2 cu xml/randuri proprii + vederea da valorile NOI, D710 coexista cu D100) + migrari public aplicate (randuri+sursa, versiune). Suita 466 verde + verificator DS 0",,
-Export GDPR complet cabinet (portabilitate),"Art.20 GDPR. Endpoint autentificat (admin_firma/superadmin) -> ZIP cu toate datele unui cabinet: schema public (accounting_firms/users/tenants/audit_log ale cabinetului) + fiecare schema tenant (toate tabelele, JSON/tabel) + fisiere disc (imagini bonuri, zip-uri e-Factura) + MANIFEST. Citire cu nume CALIFICAT schema.tabela (nu depinde de search_path).",F199,cabinet,GET /gdpr/export-cabinet,core/gdpr_export.py + main.py (ruta /gdpr/export-cabinet),GDPR art. 20 (portabilitate),LIVE 25.07.2026,"real 25.07 pe cabinet 1 (contine tenant_002 DANTE): export_cabinet -> ZIP 7.69MB, 222 intrari; public/tenants.json=3 tenanti, users cu email; tenant_002=45 tabele (firma_profil+salariati cu CNP prezente); MANIFEST 3 tenanti/84 fisiere disc; py_compile OK; restart serviciu active.",,
+Export GDPR complet cabinet (portabilitate),"Art.20 GDPR. Endpoint autentificat (admin_firma/superadmin) -> ZIP cu toate datele unui cabinet: schema public (accounting_firms/users/tenants/audit_log ale cabinetului) + fiecare schema tenant (toate tabelele, JSON/tabel) + fisiere disc (imagini bonuri, zip-uri e-Factura) + MANIFEST. Citire cu nume CALIFICAT schema.tabela (nu depinde de search_path).",F199,cabinet,GET /gdpr/export-cabinet,core/gdpr_export.py + main.py (ruta /gdpr/export-cabinet),GDPR art. 20 (portabilitate),LIVE 25.07.2026,"real 25.07 pe cabinet 1 (contine tenant_002 DANTE): export_cabinet -> ZIP 7.69MB, 222 intrari; public/tenants.json=3 tenanti, users cu email; tenant_002=45 tabele (firma_profil+salariati cu CNP prezente); MANIFEST 3 tenanti/84 fisiere disc; py_compile OK; restart serviciu active.",,"## Ce face
+Exportul GDPR complet al cabinetului - descarca toate datele cabinetului (firme, useri, documente) intr-un pachet, pentru portabilitatea datelor (dreptul de acces/portabilitate GDPR).
+## Cand se foloseste
+Cand cabinetul cere o copie completa a datelor sale (portabilitate) sau la migrarea de pe platforma.
+## Ce trebuie pregatit inainte
+- Drept de admin_firma pe cabinet.
+## Pas cu pas
+1. Setari cont -> Export date cabinet.
+2. Aplicatia genereaza un ZIP cu toate datele.
+3. Descarci pachetul.
+## Ce iese la capat
+ZIP cu datele cabinetului (firme, useri, documente, manifest).
+## Greseli frecvente
+- Confundarea exportului (copie) cu stergerea (art.17).
+## Reguli fiscale
+GDPR art. 15/20 (acces si portabilitate)."
 Stergere completa cabinet (GDPR art.17),"Doi pasi: previzualizare (superadmin) apoi executa cu confirmare typed-back a numelui cabinetului. Sterge scheme tenant (DROP SCHEMA CASCADE), randuri public (audit_log/user_tenants/tenants/users/accounting_firms), fisiere disc (bonuri, e-Factura zip). Logheaza in public.gdpr_stergeri (FARA date personale) - logul supravietuieste. NU se sterge: backup Storage Box (dump integral, stergere selectiva imposibila tehnic, expira 30 zile).",F200,transversal,POST /gdpr/sterge-cabinet/{id}/previzualizare + /executa,core/gdpr_sterge.py + gdpr_stergeri_ddl.sql + main.py,GDPR art. 17 (dreptul la stergere),LIVE 25.07.2026,"real 25.07 pe cabinet FABRICAT (ZZZ TEST + tenant_zzztest cu clienti+CNP): previzualizare corecta; confirmare GRESITA respinsa; executa cu nume corect -> accounting_firms/users/tenants/audit=0, schema DROP-uita, log gdpr_stergeri prezent (cabinet_id, nr_tenanti=1, nr_useri=1, scheme, sters_de_user_id). NU pe tenant_001/002/003.",,
 Retentie audit_log (GDPR art.5 minimizare),"Cron zilnic (04:00) care sterge din public.audit_log inregistrarile mai vechi de AUDIT_LOG_RETENTIE_LUNI (implicit 12 luni). N=12: acopera un AN FISCAL complet, iar intrebarile de audit vin de obicei la inchiderea anului; tabela e marginita (~20 MB/an la ritmul actual) (schimbat 6->12 la 25.07). Configurabil prin env.",F201,transversal,- (cron 04:00; python -m core.audit_retentie),core/audit_retentie.py + crontab (0 4 * * *),GDPR art. 5 (minimizare / storage limitation),LIVE 25.07.2026,"real 25.07: 3 randuri fabricate created_at=now()-8luni + 1 recent -> ruleaza(6) sterse=3 -> vechile=0, recentul=1 pastrat (sterge DOAR vechile); cron instalat (crontab core.audit_retentie 04:00); py_compile OK.",,
 Alerta acces anormal (GDPR art.33 pregatire),"Cron (la 15 min) care detecteaza pe public.audit_log un user care atinge >= prag tenanti distincti SAU >= prag actiuni intr-o fereastra scurta (implicit 8 tenanti / 300 actiuni / 10 min). NU blocheaza - doar semnaleaza (fals-pozitive OK, ratarea nu). Brevo la ICONTA_ALERTA_EMAIL, dedup PERSISTENT (public.alerte_acces_dedup, implicit 60 min). Praguri configurabile prin env. FARA date personale in alerta (doar user_id + contoare).",F202,transversal,- (cron */15; python -m core.alerta_acces),core/alerta_acces.py + alerte_acces_dedup_ddl.sql + crontab (*/15) + observare._trimite_brevo,GDPR art. 33 (pregatire notificare bresa),LIVE 25.07.2026,real 25.07: user fabricat 999999 (10 tenanti distincti) -> ALERTAT; user 999998 (1 tenant) -> NEalertat; a doua rulare imediata -> 0 alerte (dedup persistent OK); cron instalat (*/15); py_compile OK.,,
 Pagina Functionalitati pe landing (7 grupe),"Cardul mare landing 'Facturare gratuita' inlocuit cu 'Functionalitati' (acelasi tipar .pagina-card-mare). Click -> fereastra client-side cu 7 carduri (Contabilitate, Fiscalitate, Control fiscal, Facturare si e-Factura, Salarizare, Stocuri/banca/casa, Cabinet si portal client). Click pe un card -> fereastra centrata pe ecran cu lista functiilor grupei (max-height + scroll intern doar daca depaseste). Replica VIZUALA a modalului DS (nav.deschide e shell autentificat). Sursa: FUNCTIONALITATI.csv Stare=LIVE; cross-check-uri la Control fiscal; migrari comasate; infra+gratuit excluse.",F203,transversal,landing -> card Functionalitati -> 7 grupe -> lista,static/js/ecrane/login.js + static/stil.css (.func-*) + DECIZII.md,- (prezentare),LIVE 25.07.2026,"real 25.07: node --check login.js OK (ESM); GRUPE_FUNC=7 grupe (Contab 24/Fisc 26/Control 14/Facturare 21/Salariz 11/Stocuri 20/Cabinet 24, 0 goale); card landing='Functionalitati', id vechi 'pagina-facturare-gratuita-btn' eliminat, handler->deschideFunctionalitati; fereastra reutilizeaza clasele DS .fereastra-overlay/.fereastra; login.js LIVE-servit contine noul card. Eyeball vizual: user.",,
 Autoservire export date cabinet (buton),"UI self-service pentru admin_firma: buton in Setari > Datele cabinetului (GDPR) care descarca arhiva ZIP completa a cabinetului (reutilizeaza endpoint-ul F199) fara interventie umana - satisface art.20 oricand. Text clar despre ce contine arhiva si formatul (JSON per tabela + fisiere originale). Avertisment ca arhiva contine date personale (clienti/salariati/parteneri) si trebuie pastrata in siguranta. Indicator de progres (butonul se blocheaza si anunta ca generarea poate dura). Jurnalizare in public.audit_log (actiune=gdpr_export: cine si cand, FARA continut - exportul e GET, deci nu-l prinde middleware-ul de mutatii).",F204,cabinet,Setari > Datele cabinetului (GDPR) > Descarca arhiva cabinetului,static/js/ecrane/setari.js (randeazaGDPR) + main.py (logare export gdpr_export),GDPR art. 20 (portabilitate),LIVE 25.07.2026,"real 25.07 pe cont FABRICAT (curatat): export_cabinet -> ZIP valid (accounting_firms.json prezent, 5 intrari pe cabinet gol); INSERT audit_log gdpr_export scris cu coloanele reale (user_id/actiune/entitate/entitate_id/detalii) -> 1 rand; node --check ESM setari.js OK; verificator DS TOTAL 0; serviciu restart active.",,
-Cerere de stergere cont din aplicatie (GDPR art.17),"Cabinetul DEPUNE o cerere din Setari (NU buton self-service - stergerea e ireversibila, face DROP SCHEMA; superadmin executa manual F200 in termenul legal). Formular: explica EXPLICIT ce se sterge (toate firmele/userii/facturile/declaratiile/documentele) si ce NU imediat (copiile de siguranta raman pana la 30 de zile, stergerea selectiva dintr-un backup e imposibila tehnic); motiv optional; confirmare typed-back a denumirii exacte a cabinetului (butonul rosu ramane dezactivat pana la potrivire) + confirmaCaseta DS inainte de trimitere. La trimitere: INSERT in public.gdpr_cereri_stergere (dovada de primire, stare=primita) + email la contact@iconta.eu prin observare._trimite_brevo (canalul comun F164/F202, fara canal paralel). Termen afisat: 5 zile lucratoare, cu plafonul legal de 30 de zile (art.12). NU executa nimic automat.",F205,cabinet,Setari > Datele cabinetului (GDPR) > Cerere de stergere cont,core/gdpr_cerere.py + gdpr_cereri_stergere_ddl.sql + main.py (POST /gdpr/cerere-stergere) + static/js/ecrane/setari.js,GDPR art. 17 (dreptul la stergere) + art. 12 (termen de raspuns),LIVE 25.07.2026,"real 25.07 pe cont FABRICAT (curatat): typed-back GRESIT respins (ValueError); nume corect -> cerere in public.gdpr_cereri_stergere (stare=primita, nume_cabinet+motiv corecte), email anuntat (mock _trimite_brevo), termen 5 zile; POST /gdpr/cerere-stergere fara auth -> 401 (protejat, admin_firma); node --check ESM setari.js OK; verificator DS TOTAL 0.",,
+Cerere de stergere cont din aplicatie (GDPR art.17),"Cabinetul DEPUNE o cerere din Setari (NU buton self-service - stergerea e ireversibila, face DROP SCHEMA; superadmin executa manual F200 in termenul legal). Formular: explica EXPLICIT ce se sterge (toate firmele/userii/facturile/declaratiile/documentele) si ce NU imediat (copiile de siguranta raman pana la 30 de zile, stergerea selectiva dintr-un backup e imposibila tehnic); motiv optional; confirmare typed-back a denumirii exacte a cabinetului (butonul rosu ramane dezactivat pana la potrivire) + confirmaCaseta DS inainte de trimitere. La trimitere: INSERT in public.gdpr_cereri_stergere (dovada de primire, stare=primita) + email la contact@iconta.eu prin observare._trimite_brevo (canalul comun F164/F202, fara canal paralel). Termen afisat: 5 zile lucratoare, cu plafonul legal de 30 de zile (art.12). NU executa nimic automat.",F205,cabinet,Setari > Datele cabinetului (GDPR) > Cerere de stergere cont,core/gdpr_cerere.py + gdpr_cereri_stergere_ddl.sql + main.py (POST /gdpr/cerere-stergere) + static/js/ecrane/setari.js,GDPR art. 17 (dreptul la stergere) + art. 12 (termen de raspuns),LIVE 25.07.2026,"real 25.07 pe cont FABRICAT (curatat): typed-back GRESIT respins (ValueError); nume corect -> cerere in public.gdpr_cereri_stergere (stare=primita, nume_cabinet+motiv corecte), email anuntat (mock _trimite_brevo), termen 5 zile; POST /gdpr/cerere-stergere fara auth -> 401 (protejat, admin_firma); node --check ESM setari.js OK; verificator DS TOTAL 0.",,"## Ce face
+Cererea de stergere a contului cabinet din aplicatie (dreptul de a fi uitat, GDPR art.17) - inregistreaza cererea de stergere completa a datelor cabinetului, cu confirmare explicita.
+## Cand se foloseste
+Cand cabinetul vrea sa-si stearga definitiv contul si datele din platforma.
+## Ce trebuie pregatit inainte
+- Constientizarea ca stergerea e DEFINITIVA si ireversibila.
+- Obligatiile de arhivare fiscala indeplinite in alta parte (datele contabile au termene de pastrare legale).
+## Pas cu pas
+1. Setari cont -> Cerere stergere cont.
+2. Confirma tastand numele cabinetului (typed-back).
+3. Cererea intra in proces (termen 5 zile).
+## Ce iese la capat
+Cerere de stergere inregistrata; datele se sterg definitiv la procesare.
+## Greseli frecvente
+- Stergerea inainte de indeplinirea obligatiilor de arhivare fiscala (documentele contabile au termene legale de pastrare).
+## Reguli fiscale
+GDPR art. 17 (dreptul de a fi uitat); DAR termenele legale de pastrare a documentelor contabile (Legea contabilitatii - 5/10 ani) au prioritate."
 Declaratia D177 (redirectionare impozit profit/micro catre sponsorizare) - AMANAT,"AMANAT 04.08.2026 (decizie Costin): D177 e cerere-formular PDF, NU declaratie XML - nu are validator instalat. Arhitectura de declaratii se sprijina pe validatorul DUK ca autoritate (R17); D177 ar fi prima piesa construita pe interpretarea unui PDF fara proba mecanica (tiparul ASI/HRK/nomenclator N gresit). Cerere ANUALA, nu lunara. Structura OPANAF 3562/2024 salvata in anaf_surse/. Vezi DECIZII.md + GARZI.md 04.08.",F206,firma,—,—,OPANAF 3562/2024,AMANAT 04.08.2026,—,,

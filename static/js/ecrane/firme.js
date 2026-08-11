@@ -1456,7 +1456,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
 async function ecranBilant(corp, nav, t) {
   {
     corp.innerHTML = `
-      <h2 class="pf-titlu">Bilan\u021b anual</h2>
+      <h2 class="pf-titlu">Bilan\u021b anual ${semnAjutor("F013")}</h2>
       <p class="pf-intro">Genereaz\u0103 \u0219i valideaz\u0103 situa\u021biile financiare (validator ANAF pe server).</p>
       <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
         <label class="camp"><span class="camp-eticheta">An</span><input type="number" id="bl-an" class="camp-input" value="${new Date().getFullYear() - 1}" style="width:90px"></label>
@@ -2611,7 +2611,7 @@ async function ecranRapoarte(corp, nav, t) {
     const optParteneri = (d.parteneri || []).map((p) =>
       `<option value="${esc(p.cui)}"${p.cui === fisaCui ? " selected" : ""}>${esc(p.nume)}</option>`).join("");
     corp.innerHTML = `
-      <h2 class="pf-titlu">Rapoarte comerciale</h2>
+      <h2 class="pf-titlu">Rapoarte comerciale ${semnAjutor("F144")}</h2>
       <p class="pf-intro">Anul ${an}
         <button class="buton-secundar" id="r-prev" style="margin-left:12px">← an</button>
         <button class="buton-secundar" id="r-next">an →</button></p>

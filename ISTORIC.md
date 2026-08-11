@@ -4023,3 +4023,8 @@ RAMAS de plasat pentru ajutoarele scrise: F009/F010/F056/F039 (operatiuni specia
 Inca 10 ajutoare (monografii): F024 Credite, F020 Comodat/chirii/refacturari, F040 Deconturi deplasare, F021 Contracte speciale, F074 Reevaluare, F071 Provizioane, F086 Sponsorizari, F090 Subventii, F063 Obiecte inventar, F052 Inventariere. Total 37 ajutoare.
 PLASARE: "?" DINAMIC pe operatiuni speciale (mapare _OP_AJUTOR cheie->fid: avans/bacsis/leasing/asociati/credit/chirie/decont/contract_special/reevaluare/provizion/sponsorizare/subventie/obiect_inv/inventariere -> 14 operatiuni acoperite cu un semn adaptiv pe titlul formularului).
 Cumulat plasari: declaratii dinamic (10) + operatiuni dinamic (14) + 10 ecrane statice = ~34 functionalitati acoperite.
+
+## 11.08.2026 — Ajutor contextual batch 5 (cabinet + contabilitate)
+Inca 10 ajutoare: F013 Bilant, F077 RIP, F118 Blocare perioade, F016 Cashflow, F014 Capacitate, F199 GDPR export, F205 GDPR stergere, F005 Chei API, F144 Rapoarte comerciale, F061 Motor contabil. Total 47 ajutoare.
+PLASARI: Bilant anual (F013), Rapoarte comerciale (F144) in firme.js; Chei API (F005), Export date cabinet (F199) in setari.js.
+RAMAS de plasat (ajutor scris): F133 tichete/F136 adeverinte (sub-ecrane salarizare), F016 cashflow (portal), F014 capacitate, F205 stergere, F061 motor, F077 RIP, F118 blocare.

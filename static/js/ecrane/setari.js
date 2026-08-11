@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo } from "../api.js";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 export async function randeazaSetari(corp, nav) {
@@ -120,7 +120,7 @@ export async function randeazaSetari(corp, nav) {
   function randeazaChei() {
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
-        <div class="cap-titlu">Chei API</div>
+        <div class="cap-titlu">Chei API ${semnAjutor("F005")}</div>
         <p class="mig-intro">Pentru conectarea altor aplicatii la datele cabinetului. Cheia se afiseaza o singura data.</p>
         <div id="set-chei-lista"><p class="ecran-nota">Se încarcă...</p></div>
         <label class="camp-eticheta" for="set-cheie-nume">Nume cheie</label>
@@ -183,7 +183,7 @@ export async function randeazaSetari(corp, nav) {
     const numeCab = ((cab && cab.nume) || "").trim();
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
-        <div class="cap-titlu">Export date cabinet</div>
+        <div class="cap-titlu">Export date cabinet ${semnAjutor("F199")}</div>
         <p class="ecran-nota">Descarci o arhivă ZIP cu toate datele cabinetului: firmele, utilizatorii, facturile, documentele contabile, jurnalul de audit și fișierele atașate (poze bonuri, e-Factură). Format: fișiere JSON per tabelă + fișierele originale. Îți exerciți dreptul la portabilitate (GDPR art. 20), oricând, fără intervenția noastră.</p>
         <div class="caseta-atentie"><div class="ca-mesaj">Arhiva conține date personale (ale clienților, salariaților și partenerilor). Păstreaz-o în siguranță și nu o distribui.</div></div>
         <button class="buton-primar" id="gdpr-export">Descarcă arhiva cabinetului</button>
