@@ -13,7 +13,12 @@ commituri dupa HEAD. App pe 127.0.0.1:8010. Verificare la predare: `/admin/versi
 `git log -1` + systemd ExecMainStartTimestamp (nu se hardcodeaza hash-ul in registru).
 
 ## (b) Fronturi deschise
-0. **CAMPANIE "RESTART NECONDITIONAT" (Costin, 11.08) — COMPLETA.** Eliminata conditionarea restartului
+0. **DATE D406 ALFA (Costin, 11.08) — CONSTRUCTIE COMPLETA.** tenant_013 facut apt de proba DUK: CUI-uri
+   valide, 2 mijloace fixe, plati trezorerie legate de facturi, miscari stoc; reconcilieri inchise
+   (2131=MF activ=10800). D406 periodic 2026-08 -> DUK VALID cu un fix de generator DOVEDIT dar NEcomis
+   (nomenclator->id brut; raza peste ALFA -> decizie Costin, ca Payments). Seed: scripts/seed_alfa_d406.py.
+   RAMAS pe D406: (a) sursa maparii Payments; (b) decizia pe fix-ul de nomenclator; (c) F035/F036/F037 registru.
+0b. **RESTART NECONDITIONAT (11.08) — COMPLETA.** Eliminata conditionarea restartului
    pe tipul commitului din ritualul de publicare: cablat NECONDITIONAT in scripts/githooks/post-commit
    (pasul 4, ca pasul 2 push) -> dupa orice publicare procesul viu preia HEAD. Gard
    core/test_publicare_restart_neconditionat.py (rosu pe conditionat, verde pe neconditionat). Probat pe

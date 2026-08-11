@@ -2623,3 +2623,12 @@ test_d205 (test_id_inreg), test_d710 (test_cod_bugetar - bumpuit √).
 - Fiecare commit pe main restarteaza serviciul (cateva secunde downtime). Acceptat: mediu single-user, invariantul
   RUNNING==HEAD prioritar (decizia Costin). Cu utilizatori activi, decizia de fereastra se ia INAINTE de commit.
 - Gardul verifica NECONDITIONAREA hook-ului, NU ca restartul chiar reuseste la runtime (aia = sentinela + four-way).
+
+## 11.08.2026 — D406 ALFA: datorii/limite descoperite
+- **BUG GENERATOR (negardat, NEcomis):** core/d406.py pull() ~1123/1133 emite RegistrationNumber/CustomerID = id brut
+  din clienti/furnizori (nu 00+CUI) cand nomenclatorul e POPULAT -> DUK "format invalid". Mascat pana acum de nomenclator
+  gol (cale fallback corecta cu _partener_id_saft). Fix dovedit, NEcomis (raza peste ALFA: alti tenanti cu CUI invalid
+  in nomenclator ar RIDICE). Blocheaza un DUK 'valid' pe ORICE tenant cu nomenclator populat. Decizie Costin (ca Payments).
+- Corelatie ANUALA vs GL la amortizare: <Assets> proiecteaza la Dec, GL posteaza la zi -> difera mid-an (by-design, nu defect).
+- Perioada 08/2026 deblocata pe ALFA (era blocata dintr-un test F118) - necesar pt seed/generare pe acea luna.
+- Payments: DATE de trezorerie construite (casa+banca legate de facturi), dar generatorul NU le emite inca (asteapta sursa maparii).

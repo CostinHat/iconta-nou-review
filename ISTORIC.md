@@ -4060,3 +4060,14 @@ reapare inspectia de continut in hook (git diff/--name-only/HEAD~/glob de extens
 conditionata pe .py, VERDE pe cea neconditionata. Commit mecanism a2e8d33 (s-a AUTO-restartat: "procesul viu preia
 a2e8d33"). Norme: PREDARE (fraza regulii vechi + hash hardcodat stersa) + CLAUDE.md pct.10 + STOP POINT mutat
 inainte de commit.
+
+## 11.08.2026 — tenant_013 (ALFA) facut APT de proba DUK D406 (constructie de date)
+Construite date de TEST cu structura+validitate REALE pe tenant_013 DOAR (014/015/016 neatinse): CUI-uri valide
+(2 placeholder corectate la cifra de control: RO12345678->RO12345674, RO87654321->RO87654329; restul treceau deja),
+2 mijloace fixe (Laptop 4800/24l PIF 02.2026, Mobilier 6000/60l PIF 09.2025) + note achizitie+amortizare, 3 plati
+trezorerie (casa+banca) legate de facturi (note validate), 2 iesiri stoc legate de factura. Reconcilieri INCHISE:
+2131 debit GL = valoare MF activ = 10800; stoc nenegativ; 0 CUI invalid. Corelatie care NU se inchide (ARATATA):
+<Assets> anual proiecteaza amortizarea la Dec (3500) vs GL la Aug (2300), diferenta 1200 (Sep-Dec neinregistrate;
+asteptat pt declaratie ANUALA vs postare la zi). PROBA DUK: D406 periodic 2026-08 pe date ALFA -> 'valid' (0 erori)
+DAR numai cu un fix de generator descoperit acum (vezi DECIZII/GARZI). Seed reproductibil: scripts/seed_alfa_d406.py
+(idempotent, --commit). Perioada 08/2026 deblocata pe ALFA (artefact test F118).

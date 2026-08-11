@@ -8873,3 +8873,16 @@ comportamentul, nu-l schimba - clasa ramanea deschisa (urmatorul commit de docs 
   comiti, nu dupa; odata comis pe poarta verde, serviciul preia HEAD neconditionat.
 Temei: CLAUDE.md §2.3 pct.10 (restartul era deja cerut neconditionat, doar necablat) + regula reparatiei reale
 (elimini problema, nu o descrii). Alternativa RESPINSA: restart manual conditionat + descriere corecta in PREDARE.
+
+## 11.08.2026 — ALFA date D406: CUI-uri sintetice valide + BUG generator nomenclator (expus de datele complete)
+Decizie/executie (comanda Costin): tenant_013 facut apt de proba DUK prin constructie de date de test cu validitate
+reala. CUI: NU s-a folosit CUI-ul niciunei firme reale (stop point Costin) - corectata DOAR cifra de control a
+placeholder-elor secventiale existente (12345678->12345674, 87654321->87654329), pattern sintetic evident; restul
+(143000000/145000006/301111003, DE/FR straine, PF gol) treceau deja.
+DESCOPERIRE (proba pe date reale): popularea nomenclatorului clienti/furnizori a EXPUS un bug de generator
+(core/d406.py pull() ~1123/1133): Partener(id=str(r["id"])) emitea id-ul BRUT din tabel ca RegistrationNumber/
+CustomerID SAF-T (DUK "format invalid"), in loc de _partener_id_saft(cui)=00+CUI (cum face deja calea de fallback
+cand nomenclatorul e gol). Fix dovedit throwaway -> DUK 'valid'. NEcomis: schimbare de GENERATOR (nu Payments, dar
+tot generator) cu RAZA peste ALFA (la alti tenanti cu CUI de nomenclator invalid ar incepe sa RIDICE - corect: esec
+zgomotos vs iesire tacit-gresita) -> cere decizia lui Costin, ca Payments. Temei: comanda + "arata defectele, nu le
+ascunde" + "proba pe date reale". Alternativa respinsa: a fi comis fix-ul unilateral (garda generatorului).

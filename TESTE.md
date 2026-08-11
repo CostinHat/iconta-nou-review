@@ -1525,3 +1525,11 @@ diff-tree/diff-index/HEAD~/HEAD^/glob *.ext/regex ancorat .ext$). PROBAT pe muta
 (git diff --name-only HEAD~ | grep pe extensie -> restart) PICA (1 failed, restul 2 passed); cea neconditionata
 VERDE (3 passed). Proba comportamentala: commit de DOCS -> post-commit auto-restarteaza -> RUNNING==HEAD
 (hash-uri in raport §3, /admin/versiune divergent=false).
+
+## 11.08.2026 — tenant_013 apt DUK D406: proba pe date reale
+Seed scripts/seed_alfa_d406.py (idempotent, hard-tintit tenant_013). Reconcilieri verificate: 2131 debit GL = valoare
+MF activ = 10800 (INCHIS); stoc nenegativ pe toate articolele; 0 CUI invalid ramas. PROBA DUK: D406 periodic 2026-08 pe
+date ALFA (6 InvoiceLine reale, Payments=0) -> DUKIntegrator_AnLunaUI -v D406 = **'valid' (0 erori)** CU fix-ul de
+nomenclator (throwaway); FARA fix -> 4 erori format RegistrationNumber/CustomerID (Customer 1/2). F036: 2 <Asset>;
+F037: 3 <PhysicalStockEntry>. DUK e LENIENT (nu verifica corespondenta cu contabilitatea) -> reconcilierea cu GL
+verificata separat (mai sus), nu prin DUK.
