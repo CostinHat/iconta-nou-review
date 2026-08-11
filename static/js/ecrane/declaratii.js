@@ -6,7 +6,10 @@
 // pana la 15.07.2026 spunea "declaratia pare in regula" fara sa fi validat nimic,
 // iar asistentul trimitea in coada un XML nevalidat. Trei stari: valid/erori/gri.
 
-import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp } from "../api.js";
+import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js";
+// [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
+const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -99,7 +102,7 @@ ${S.firmaFixa ? "" : `      <label class="camp">
         </select>
       </label>`}
       <label class="camp">
-        <span class="camp-eticheta">Tip declarație</span>
+        <span class="camp-eticheta">Tip declarație <span id="dec-ajutor"></span></span>
         <select id="dec-tip" class="camp-input">${optiuniTip()}</select>
       </label>
       <div id="dec-perioada">${randPerioada(per)}</div>
@@ -128,6 +131,8 @@ ${S.firmaFixa ? "" : `      <label class="camp">
     zonaP.innerHTML = randPerioada(p);
     legPerioada(zonaP);
     cont.disabled = !(S.tenant_id && S.tip);
+    const _za = corp.querySelector("#dec-ajutor");  // [ajutor] "?" urmareste tipul ales
+    if (_za) _za.innerHTML = (S.tip && _DECL_AJUTOR[S.tip]) ? semnAjutor(_DECL_AJUTOR[S.tip]) : "";
   }
   if (selFirma) selFirma.addEventListener("change", refresh);
   selTip.addEventListener("change", refresh);

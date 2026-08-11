@@ -4008,3 +4008,8 @@ BATCH 1 (8 ajutoare detaliate, 7 sectiuni: Ce face/Cand/Inainte/Pas cu pas/Rezul
 PLASARI "?" (doar unde e ceva de spus dincolo de eticheta): Casa(F015), Banca(F011), Control fiscal(F022), Bonuri si chitante(F017).
 PROBAT end-to-end: click "?" pe Casa -> modal 7 sectiuni, continut fiscal (plafon, Legea 70/2015), 0 erori, aspect DS. Screenshot confirmat.
 RAMAS: restul functionalitatilor cu UI - continua (declaratii, operatiuni, stocuri, cabinet etc.).
+
+## 11.08.2026 — Ajutor contextual batch 2 (continuare)
+Inca 10 ajutoare detaliate: F027 D101, F032 D301, F033 D390, F034 D394, F035 D406, F192 D710, F009 Avansuri, F010 Bacsis, F056 Leasing, F089 Stocuri CV. Total 18 ajutoare scrise.
+PLASARI noi: "?" DINAMIC pe wizard-ul Declaratii (urmareste tipul ales: d300->F031 etc., mapare _DECL_AJUTOR; un semn acopera toate 10 declaratiile); "?" static pe Stocuri (F089). Probat: alegere D300 -> "?" cu data-ajutor F031 -> modal cu ajutor D300, 0 erori.
+RAMAS: facturare (emitere/e-Factura/export), salarizare (calcul/concedii/tichete), operatiuni speciale (dinamic), stocuri detaliu, cabinet (capacitate/GDPR/asistenti), control cross-checks - continua.

@@ -1535,7 +1535,7 @@ export async function ecranStocuri(corp, nav, t) {
     }
     corp.innerHTML = 
     corp.innerHTML = `
-      <h2 class="pf-titlu">Stocuri</h2>
+      <h2 class="pf-titlu">Stocuri ${semnAjutor("F089")}</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="s-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="s-next">luna \u2192</button>

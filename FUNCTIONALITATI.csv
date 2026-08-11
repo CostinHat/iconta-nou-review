@@ -7,8 +7,40 @@ Chei API publice per cabinet,"Chei API per cabinet pentru API-ul public v1: crea
 Management actori de cabinet,"Lista asistentilor cu roluri/permisiuni/firme, centralizator si jurnal, sumar calitate, detalii per actor (nivel/tipare/drift), setare patru-ochi, educatie pe erori.",F006,cabinet,card Asistenti,core/asistenti_api.py,,LIVE,vizual,,
 Import asociati (migrare),"Citeste .xlsx/.csv cu nume/CNP-CUI/cota %, mapare flexibila, validare CNP, coerenta cotelor (100%), import per firma pentru D205.",F007,firma,Migrare / Import date,core/asociati_import_api.py,,LIVE,,,
 Autentificare si sesiuni,"Login email+parola (bcrypt+scrypt), token JWT cu rol (superadmin/admin_firma/angajat/client), acces per tenant, actualizare profil.",F008,transversal,ecran login,core/auth_api.py,,LIVE,,,
-Avansuri furnizori/clienti,"Note pentru avansuri platite (409x + 4426 = 401 la factura de avans primita) si incasate (419, cu TVA exigibila la incasare conform art. 282(2)(b) CF: incasare 5121=4111 cu 4427), plus regularizarea la factura finala prin inversare (419=4111, 4427=4111). Motor pur, monografii OMFP 1802/2014.",F009,firma,Operatiuni speciale,core/avansuri.py,OMFP 1802/2014; art. 282(2)(b) CF,LIVE,pytest,,
-Bacsis HoReCa,"Note pentru incasarea si distribuirea bacsisului (0-15%/suma fixa), tratament fiscal dedicat (impozit 10%, fara contributii).",F010,firma,Operatiuni speciale,core/bacsis.py,Legea 376/2022; art. 115 CF,LIVE,pytest,,
+Avansuri furnizori/clienti,"Note pentru avansuri platite (409x + 4426 = 401 la factura de avans primita) si incasate (419, cu TVA exigibila la incasare conform art. 282(2)(b) CF: incasare 5121=4111 cu 4427), plus regularizarea la factura finala prin inversare (419=4111, 4427=4111). Motor pur, monografii OMFP 1802/2014.",F009,firma,Operatiuni speciale,core/avansuri.py,OMFP 1802/2014; art. 282(2)(b) CF,LIVE,pytest,,"## Ce face
+Note contabile pentru avansuri catre furnizori si de la clienti - avansuri platite (409x + 4426 = 401 la factura de avans primita) si incasate (419, cu TVA exigibila la incasare), plus regularizarea la factura finala prin inversare.
+## Cand se foloseste
+Cand platesti sau incasezi un avans inainte de livrare/prestare, si apoi la factura finala.
+## Ce trebuie pregatit inainte
+- Documentul de avans (factura de avans, ordin de plata/incasare).
+## Pas cu pas
+1. Operatiuni speciale -> Avansuri.
+2. Alege tipul (platit/incasat) si suma.
+3. Aplicatia genereaza notele (cu TVA la avans).
+4. La factura finala, regularizeaza (inversare).
+## Ce iese la capat
+Note contabile pentru avans + regularizare, cu TVA exigibila corect.
+## Greseli frecvente
+- Uitarea regularizarii la factura finala (avansul ramane pe cont).
+- TVA la avans tratata gresit.
+## Reguli fiscale
+OMFP 1802/2014 (monografii avansuri); Codul fiscal art. 282(2)(b) (TVA exigibila la incasarea avansului)."
+Bacsis HoReCa,"Note pentru incasarea si distribuirea bacsisului (0-15%/suma fixa), tratament fiscal dedicat (impozit 10%, fara contributii).",F010,firma,Operatiuni speciale,core/bacsis.py,Legea 376/2022; art. 115 CF,LIVE,pytest,,"## Ce face
+Note contabile pentru incasarea si distribuirea bacsisului in HoReCa, cu tratamentul fiscal dedicat (impozit 10%, fara contributii sociale).
+## Cand se foloseste
+In restaurante/HoReCa, cand se incaseaza bacsis (procent 0-15% sau suma fixa) care se distribuie personalului.
+## Ce trebuie pregatit inainte
+- Suma bacsisului incasat si modul de distribuire.
+## Pas cu pas
+1. Operatiuni speciale -> Bacsis.
+2. Introdu suma/procentul si distribuirea.
+3. Aplicatia aplica impozitul de 10% si genereaza notele.
+## Ce iese la capat
+Note contabile pentru bacsis cu impozit 10%, fara contributii sociale.
+## Greseli frecvente
+- Tratarea bacsisului ca venit salarial normal (cu contributii) - gresit.
+## Reguli fiscale
+Legea 376/2022; Codul fiscal art. 115 (bacsis: impozit 10%, fara CAS/CASS)."
 Contabilizare extras de cont,"Motor pur pe liniile de extras bancar: detecteaza tipul operatiunii, extrage CUI-ul partenerului din descriere, aplica reguli de cont pe tipare (comision, dobanda, salarii, TVA, incasare/plata partener) si produce note contabile cu urma (justificarea regulii aplicate). Alimentat de importul de extrase (XLS/CSV) si de reconciliere; invata din corectii prin F002.",F011,firma,card Banca,core/banca.py,,LIVE,pytest,,"## Ce face
 Contabilizarea extrasului de cont bancar - motor care citeste liniile de extras, detecteaza tipul operatiunii, extrage CUI-ul partenerului din descriere, aplica reguli de cont pe tipare (comision, dobanda, salarii, TVA, incasare/plata partener) si produce note contabile cu justificarea regulii aplicate. Invata din corectiile tale.
 ## Cand se foloseste
@@ -110,7 +142,26 @@ XML D100 validat, cu impozitul micro de plata pe trimestru.
 - Cota micro gresita pentru an/perioada.
 ## Reguli fiscale
 OPANAF 587/2016 cu modificari; regimul micro din Codul fiscal. Termen 25 ale lunii urmatoare trimestrului."
-Declaratia D101 + IMCA,"Impozitul pe profit anual (namespace v10): calcul din balanta, pierdere reportata, IMCA (impozit minim cifra afaceri, 0,5% 2026) cu comparatia P46/P47, sub-randuri, XML validat.",F027,firma,Declaratii,core/d101.py,OPANAF 206/2025,LIVE,DUKIntegrator,,
+Declaratia D101 + IMCA,"Impozitul pe profit anual (namespace v10): calcul din balanta, pierdere reportata, IMCA (impozit minim cifra afaceri, 0,5% 2026) cu comparatia P46/P47, sub-randuri, XML validat.",F027,firma,Declaratii,core/d101.py,OPANAF 206/2025,LIVE,DUKIntegrator,,"## Ce face
+Declaratia D101 - impozitul pe profit anual, cu calcul din balanta, pierderea reportata si IMCA (impozitul minim pe cifra de afaceri), inclusiv comparatia impozit pe profit vs IMCA. Genereaza XML-ul validat (namespace v10).
+## Cand se foloseste
+Anual, pana pe 25 martie a anului urmator (pentru platitorii de impozit pe profit), sau la termenul specific regimului.
+## Ce trebuie pregatit inainte
+- Balanta anuala inchisa (rulaje clase 6/7, rezultatul).
+- Pierderea fiscala reportata din anii anteriori, daca e cazul.
+- Cifra de afaceri pentru IMCA (0,5% in 2026).
+## Pas cu pas
+1. Inchide anul (motor contabil).
+2. Declaratii -> D101 -> anul.
+3. Aplicatia calculeaza impozitul pe profit, IMCA si compara.
+4. Verifica sub-randurile si valideaza XML-ul, apoi depune.
+## Ce iese la capat
+XML D101 validat, cu impozitul pe profit datorat (sau IMCA daca e mai mare), pierdere reportata.
+## Greseli frecvente
+- Balanta neinchisa -> rezultat gresit.
+- Ignorarea IMCA (impozitul minim) cand profitul e mic.
+## Reguli fiscale
+OPANAF 206/2025; Codul fiscal titlul II (impozit pe profit); IMCA 0,5% cifra de afaceri (2026). Termen 25 martie."
 Declaratia D112,"Contributii sociale si impozit pe salarii: pull din statul de plata (inclusiv CM cu asiguratB3, part-time cu supliment angajator pe baza minima, facilitati), generare XML pe namespace v7.",F028,firma,Declaratii / Salariati,core/d112.py,CF titlul V,LIVE,DUKIntegrator cap-coada,,"## Ce face
 Declaratia D112 - contributiile sociale (CAS, CASS) si impozitul pe salarii, plus contributia asiguratorie de munca. Aplicatia o construieste din statul de plata (inclusiv concedii medicale, part-time cu supliment pe baza minima, facilitati) si genereaza XML-ul pe namespace-ul curent.
 ## Cand se foloseste
@@ -173,9 +224,61 @@ XML D300 v12 validat, cu TVA de plata sau de recuperat/reportat, defalcat pe cot
 - Achizitii intracomunitare / taxare inversa neinregistrate -> nu apar in decont.
 ## Reguli fiscale
 Cod fiscal; OPANAF 174/2026; cote Legea 141/2025 (21% standard de la 01.08.2025). Termen 25 ale lunii urmatoare. Se depune si pe zero cat esti inregistrat in scopuri de TVA."
-Declaratia D301,"Decontul special de TVA pentru neplatitori cu achizitii UE (servicii Google/FB, bunuri intracom): ECRAN DE INTRODUCERE operatiuni (grila lunara, tipurile 1-5 OPANAF 592/2016 cu etichete oficiale, cota period-aware din common.cota [21/11/0 Legea 141/2025], TVA calculat+stocat, baza=val x curs afisata) incorporat in fluxul de declaratii (geaman d390-clasificare, cere_cabinet). Rollup fiscal S4.1->S4 REPARAT: serviciile tip 5 se preiau in sectiunea 4 (emit <sectiune tip=4>+<sectiune tip=5>) - fara asta DUK respingea (R32/R24). XML validat pe servicii reale.",F032,firma,Declaratii,core/d301.py; core/d301_operatiuni_api.py,OPANAF 592/2016,LIVE,DUKIntegrator (servicii tip 5 - tenant_001 iunie 2026) + core/test_d301_rollup.py,,
-Declaratia D390 (VIES),"Recapitulativa intracomunitara: livrari/achizitii/prestari pe parteneri UE cu mapare automata emisa->L, primita->A, avertisment pe CUI UE invalid si pe clasificarile manuale (P/S, T/R), XML validat.",F033,firma,Declaratii,core/d390.py,ANAF v3,LIVE,DUKIntegrator,,
-D406 SAF-T lunar,"D406 SAF-T periodic: Header+MasterFiles+GeneralLedgerEntries complet, trece DUK STRUCTURAL; DAR SourceDocuments emite o linie sintetica per factura (nu liniile reale din factura_linii) + Payments gol -> NEDEPUNABIL pana la reparare",F035,firma,Declaratii (tab D406),core/d406.py,OPANAF; schema v2.4.9,PARTIAL 27.07.2026,DUKIntegrator 0 erori end-to-end,,
+Declaratia D301,"Decontul special de TVA pentru neplatitori cu achizitii UE (servicii Google/FB, bunuri intracom): ECRAN DE INTRODUCERE operatiuni (grila lunara, tipurile 1-5 OPANAF 592/2016 cu etichete oficiale, cota period-aware din common.cota [21/11/0 Legea 141/2025], TVA calculat+stocat, baza=val x curs afisata) incorporat in fluxul de declaratii (geaman d390-clasificare, cere_cabinet). Rollup fiscal S4.1->S4 REPARAT: serviciile tip 5 se preiau in sectiunea 4 (emit <sectiune tip=4>+<sectiune tip=5>) - fara asta DUK respingea (R32/R24). XML validat pe servicii reale.",F032,firma,Declaratii,core/d301.py; core/d301_operatiuni_api.py,OPANAF 592/2016,LIVE,DUKIntegrator (servicii tip 5 - tenant_001 iunie 2026) + core/test_d301_rollup.py,,"## Ce face
+Declaratia D301 - decontul special de TVA pentru neplatitorii de TVA care fac achizitii intracomunitare (servicii Google/Facebook, bunuri intracom). Ecran de introducere a operatiunilor pe grila lunara, cu tipurile 1-5, cota period-aware si TVA calculat.
+## Cand se foloseste
+Lunar, cand un NEplatitor de TVA a facut achizitii intracomunitare care genereaza obligatia de plata a TVA (taxare inversa la neplatitor).
+## Ce trebuie pregatit inainte
+- Facturile de achizitie intracomunitara (servicii/bunuri) ale lunii.
+- CUI-ul de TVA intracomunitar al firmei (inregistrare speciala).
+## Pas cu pas
+1. Declaratii -> D301 -> luna.
+2. Introdu operatiunile pe grila (tipul 1-5, valoarea, cursul).
+3. Aplicatia calculeaza baza x curs si TVA-ul, pe cota perioadei.
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D301 validat, cu TVA de plata pe achizitiile intracomunitare ale neplatitorului.
+## Greseli frecvente
+- Neinregistrarea serviciilor intracom (Google Ads etc.) -> D301 subevaluat.
+- Confuzia intre tipurile de operatiuni (servicii vs bunuri).
+## Reguli fiscale
+OPANAF 592/2016; Codul fiscal (achizitii intracomunitare, taxare inversa la neplatitor). Cote period-aware (Legea 141/2025). Termen 25 ale lunii urmatoare."
+Declaratia D390 (VIES),"Recapitulativa intracomunitara: livrari/achizitii/prestari pe parteneri UE cu mapare automata emisa->L, primita->A, avertisment pe CUI UE invalid si pe clasificarile manuale (P/S, T/R), XML validat.",F033,firma,Declaratii,core/d390.py,ANAF v3,LIVE,DUKIntegrator,,"## Ce face
+Declaratia recapitulativa D390 (VIES) - livrarile, achizitiile si prestarile intracomunitare pe parteneri din UE, cu mapare automata: factura emisa -> L, factura primita -> A. Avertizeaza pe CUI UE invalid si pe clasificarile manuale. Genereaza XML validat.
+## Cand se foloseste
+Lunar, cand ai avut operatiuni intracomunitare cu parteneri UE (livrari, achizitii, prestari servicii). NU se depune pe zero (fara operatiuni IC).
+## Ce trebuie pregatit inainte
+- Facturile intracomunitare ale lunii, cu CUI-urile UE ale partenerilor.
+- Verificarea CUI-urilor UE la VIES (aplicatia semnaleaza cele invalide).
+## Pas cu pas
+1. Inregistreaza facturile intracomunitare.
+2. Declaratii -> D390 -> luna.
+3. Aplicatia mapeaza L/A/P/S si avertizeaza pe CUI UE invalid.
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D390 validat, cu operatiunile IC pe parteneri UE, defalcate pe tip.
+## Greseli frecvente
+- CUI UE invalid la VIES -> declaratie respinsa/eronata.
+- Depunerea pe zero (fara operatiuni IC) - nu se datoreaza.
+## Reguli fiscale
+Recapitulativa VIES (ANAF v3); Codul fiscal (operatiuni intracomunitare). Termen 25 ale lunii urmatoare. Se coreleaza cu D300 (Control fiscal verifica D390 vs D300)."
+D406 SAF-T lunar,"D406 SAF-T periodic: Header+MasterFiles+GeneralLedgerEntries complet, trece DUK STRUCTURAL; DAR SourceDocuments emite o linie sintetica per factura (nu liniile reale din factura_linii) + Payments gol -> NEDEPUNABIL pana la reparare",F035,firma,Declaratii (tab D406),core/d406.py,OPANAF; schema v2.4.9,PARTIAL 27.07.2026,DUKIntegrator 0 erori end-to-end,,"## Ce face
+Declaratia D406 (SAF-T) - fisierul standard de audit fiscal, periodic, cu Header, MasterFiles si inregistrarile din Cartea Mare. ATENTIE: familia D406 e in dezvoltare - partea de SourceDocuments (facturi detaliate) si Payments nu e completa; declaratia trece structural DUK dar nu e inca depunabila pana la reparare.
+## Cand se foloseste
+Periodic (lunar sau trimestrial dupa perioada TVA; anual pentru neplatitori), la termenele SAF-T ANAF. Pentru firmele obligate la SAF-T.
+## Ce trebuie pregatit inainte
+- Balanta si Cartea Mare complete pentru perioada.
+- Planul de conturi si nomenclatoarele.
+## Pas cu pas
+1. Declaratii -> D406 -> perioada.
+2. Aplicatia construieste Header + MasterFiles + GeneralLedgerEntries.
+3. (In dezvoltare) SourceDocuments/Payments.
+## Ce iese la capat
+XML SAF-T (structura v2.4.9) - momentan valid structural DUK, dar NEDEPUNABIL pana la completarea SourceDocuments reale + Payments.
+## Greseli frecvente
+- Presupunerea ca D406 e gata de depus - familia e marcata PARTIAL.
+## Reguli fiscale
+OPANAF (SAF-T); schema oficiala ANAF v2.4.9. Vezi si termenele specifice de raportare SAF-T."
 D406 Active (SAF-T anual),"D406 Active (SAF-T anual, sectiunea Assets): generator pur pe structura verificata din saft.xsd oficial ANAF (Asset cu Valuations: costuri achizitie inceput/sfarsit, durata de viata, adaugiri/transferuri/cedari, valoare contabila, metoda si procent amortizare, amortizarea perioadei); alimentat din registrul de mijloace fixe. [PARTIAL 27.07: familia D406 nedepunabila pana la reparare, vezi F035]",F036,firma,Declaratii D406,core/d406_active.py,schema SAF-T ANAF,PARTIAL 27.07.2026,pe XSD oficial,,
 D406 Stocuri (la cerere),"D406 Stocuri (SAF-T la cerere ANAF, sectiunea PhysicalStock): generator pur pe saft.xsd oficial (PhysicalStockEntry cu depozit, cod produs, cont de stoc, UM + factor conversie, pret unitar, cantitati si valori deschidere/inchidere); soldurile din cumulul miscarilor de stoc pana la data, la pret unitar mediu. [PARTIAL 27.07: familia D406 nedepunabila pana la reparare, vezi F035]",F037,firma,Declaratii D406,core/d406_stocuri.py,schema SAF-T ANAF,PARTIAL 27.07.2026,pe XSD oficial,,
 Dispatch declaratii,"Punct unic pentru cele 9 declaratii: tipuri, periodicitate (lunar/trimestrial/anual), validarea cererii, rutarea catre generatorul potrivit - o singura ruta HTTP pentru toate.",F038,transversal,Declaratii (toate intrarile),core/declaratii_api.py,,LIVE,,,
@@ -195,7 +298,23 @@ Inventariere anuala,"Notele rezultatelor inventarierii dupa compensari: plusuri 
 Import istoric declaratii (migrare),"Citeste lista declaratiilor deja depuse in vechiul program (tip/an/luna) si le inregistreaza, ca iConta sa nu le ceara ca restanta.",F053,firma,Migrare / Import date,core/istoric_declaratii_import_api.py,,LIVE,,,
 Editor note contabile,"Creare/editare/stergere/validare note: doar ciornele se modifica (AI propune ciorna, contabilul valideaza - validata devine imutabila).",F054,firma,Registru jurnal,core/jurnal_api.py,,LIVE,,,
 KPI client (portal),"KPI pentru portalul clientului, calculate din balanta cumulata: P&L (venituri/cheltuieli/profit), cash (conturi 5xxx), creante (4111), datorii (401, buget, salarii) - cifrele firmei pe intelesul antreprenorului, fara acces la contabilitatea bruta.",F055,portal,Portal > Cifrele firmei,core/kpi_client.py,,LIVE,pytest,,
-Leasing financiar si operational,"Note pentru leasingul financiar (primire 2133=167, rata cu dobanda si TVA, valoare reziduala) si operational (chirie 612=401+4426).",F056,firma,Operatiuni speciale > Finantare,core/leasing.py,OMFP 1802/2014 pct. 212-217,LIVE,pytest,,
+Leasing financiar si operational,"Note pentru leasingul financiar (primire 2133=167, rata cu dobanda si TVA, valoare reziduala) si operational (chirie 612=401+4426).",F056,firma,Operatiuni speciale > Finantare,core/leasing.py,OMFP 1802/2014 pct. 212-217,LIVE,pytest,,"## Ce face
+Note contabile pentru leasing financiar si operational - recunoasterea bunului si a datoriei, dobanda, ratele, TVA, la leasing financiar; cheltuiala cu chiria la leasing operational.
+## Cand se foloseste
+Cand firma ia un bun in leasing (auto, echipamente) si trebuie inregistrate contractul si ratele lunare.
+## Ce trebuie pregatit inainte
+- Contractul de leasing (valoare, dobanda, durata, tip financiar/operational).
+- Scadentarul ratelor.
+## Pas cu pas
+1. Operatiuni speciale -> Leasing.
+2. Alege tipul (financiar/operational) si introdu datele.
+3. Aplicatia genereaza notele (recunoastere + rate + dobanda).
+## Ce iese la capat
+Note contabile pentru leasing, cu bunul si datoria (financiar) sau chiria (operational).
+## Greseli frecvente
+- Confuzia leasing financiar (bun in bilant) vs operational (cheltuiala).
+## Reguli fiscale
+OMFP 1802/2014; IFRS 16 / reglementari nationale pe clasificarea leasingului."
 Lichidare/radiere societate,"Lichidare/radiere societate (OMFP 897/2015 + L31/1990 art. 227+ + L85/2014): monografiile etapelor dupa aprobarea lichidarii - valorificarea activelor (461=7583+4427, descarcare 6583+28xx=21x, stocuri), incasare creante si plata datorii, inchidere TVA/impozite, rezultat pe 121, apoi PARTAJUL dupa bilantul de lichidare cu impozit pe castig in regim de dividende (16% din 2026). Motor pur.",F057,firma,Operatiuni speciale,core/lichidare.py,OMFP 897/2015; L31/1990; L85/2014,LIVE,pytest,,
 Starea migrarii pe straturi,Per cabinet: fiecare strat cu stare (gata/in lucru + nota ce mai lipseste) decisa explicit; remindere pentru straturile ramase.,F058,cabinet,Migrare cabinet,core/migrare_api.py,,LIVE,vizual (9 straturi),,
 Import mijloace fixe (migrare),"Citeste registrul de mijloace fixe din export (valoare, durata, amortizare cumulata) - amortizarea continua fara reluare de la zero.",F059,firma,Migrare / Import date,core/mijloace_fixe_import_api.py,,LIVE,,,
@@ -225,7 +344,24 @@ Import solduri parteneri (migrare),"Import solduri parteneri la migrare (defalca
 Sponsorizari si credit fiscal,"Plafonul creditului fiscal (0,75% CA / 20% impozit), creditul de sponsorizare si nota; fara credit ramane simpla cheltuiala.",F086,firma,Operatiuni speciale,core/sponsorizari.py,art. 25(4)i CF; Legea 32/1994,LIVE,pytest,,
 Stat de plata + fluturasi,"Statul de plata lunar per firma: toti salariatii prin motorul de salarizare (brut -> contributii -> net, cu deduceri, facilitati, CM), plus fluturasii PDF individuali per salariat (pdf_util, identitate DS cap.7). Alimenteaza D112 si plata salariilor.",F087,firma,Salariati,core/stat_plata_api.py,,LIVE,vizual + parte din D112 DUK,,
 Stocuri global-valorice,"Stocuri global-valorice (metoda pretului cu amanuntul, OMFP 1802/2014): NIR cu adaos + TVA neexigibila (378/4428), coeficientul K calculat cumulat pe exercitiu, descarcarea lunara a gestiunii din vanzari (nota % = 371: 607 + 378 + 4428). Propusa automat dupa nota Raportului Z al lunii.",F088,firma,card Stocuri,core/stocuri.py + core/stocuri_api.py,OMFP 1802/2014,LIVE,pytest,,
-Stocuri cantitativ-valorice (CMP),"Stocuri cantitativ-valorice la CMP (OMFP 1802/2014 pct. 96: CMP recalculat dupa fiecare intrare): fisa de magazie cronologica per articol (intrari/iesiri), iesiri la CMP curent, note 607=371 (marfa) / 601=301 (materii prime). Validare cronologica: o iesire nu poate depasi stocul LA DATA ei (gv_crono) - antedatarile care ar sparge fisa sunt respinse. Sta la baza retetarului HoReCa si a importului de articole cu stoc initial.",F089,firma,card Stocuri,core/stocuri_cv.py + core/stocuri_cv_api.py,OMFP 1802/2014 pct. 96,LIVE,pytest,,
+Stocuri cantitativ-valorice (CMP),"Stocuri cantitativ-valorice la CMP (OMFP 1802/2014 pct. 96: CMP recalculat dupa fiecare intrare): fisa de magazie cronologica per articol (intrari/iesiri), iesiri la CMP curent, note 607=371 (marfa) / 601=301 (materii prime). Validare cronologica: o iesire nu poate depasi stocul LA DATA ei (gv_crono) - antedatarile care ar sparge fisa sunt respinse. Sta la baza retetarului HoReCa si a importului de articole cu stoc initial.",F089,firma,card Stocuri,core/stocuri_cv.py + core/stocuri_cv_api.py,OMFP 1802/2014 pct. 96,LIVE,pytest,,"## Ce face
+Gestiunea stocurilor cantitativ-valorica (CV) la cost mediu ponderat (CMP) - intrari (NIR), iesiri, transferuri intre gestiuni, cu evidenta pe cantitate si valoare, la pret mediu.
+## Cand se foloseste
+Pentru firme cu marfa/materiale, care tin evidenta cantitativa a stocului (nu doar valorica).
+## Ce trebuie pregatit inainte
+- Articolele in nomenclator (import articole + stoc initial).
+- Documentele de intrare (NIR) si iesire.
+## Pas cu pas
+1. Stocuri -> intrari (NIR) / iesiri / transfer.
+2. Aplicatia calculeaza CMP la fiecare miscare.
+3. Iesirile descarca gestiunea la CMP curent.
+## Ce iese la capat
+Stoc actualizat pe cantitate si valoare la CMP, miscari cu urma, sold pe gestiune.
+## Greseli frecvente
+- Iesiri fara stoc suficient (stoc negativ).
+- Amestecarea gestiunilor.
+## Reguli fiscale
+OMFP 1802/2014 (evaluarea stocurilor la CMP/FIFO); coerenta cu inventarul."
 Subventii,Note pentru subventiile de exploatare (inclusiv cele pe salarii) si de investitii (4751 cu reluarea lunara la venituri pe durata amortizarii).,F090,firma,Operatiuni speciale,core/subventii.py,OMFP 1802/2014 pct. 392-402,LIVE,pytest,,
 Taxare inversa interna,"Taxare inversa interna (art. 331 CF + norme pct. 109): conditie furnizor SI beneficiar platitori de TVA, doar operatiuni interne; beneficiarul inregistreaza 4426=4427, furnizorul factureaza fara TVA cu mentiunea obligatorie; prag 22.500 lei/factura la telefoane/circuite/console; categoriile c)-f), i)-l) valabile pana la 31.12.2026 (OUG 85/2022). Neaplicarea corecta = pierderea dreptului de deducere. Motor pur.",F091,firma,Operatiuni speciale > TVA regimuri,core/taxare_inversa.py,art. 331 CF; norme pct. 109,LIVE,pytest,,
 Provisioning tenant (schema per firma),Firma noua = schema PostgreSQL dedicata cu tabelele din template + planul de conturi OMFP populat + numerotare automata a schemei; actualizare detalii tenant.,F092,transversal,— (automat la Adauga firma),core/tenant_provisioning.py + tenant_template.sql,,LIVE,bug template gol reparat 10.07; coliziune_gratuit_v1 testat real 18.07 (detectie pozitiva pe rand gratuit temporar cu prefix RO in tranzactie rollback; non-match si CUI inexistent -> None) | coliziune_gratuit_v1 SCOS 26.07 (contul gratuit eliminat); provisioning cabinet intact.,,
@@ -253,7 +389,25 @@ Notificari in-app + email,"Clopotel cu necitite, sumar la login, email zilnic (m
 Securitate perimetru,"nginx SSL + rate limiting (5r/m auth, 20r/s general) + fail2ban 3 jails (nginx-botsearch/nginx-limit-req/sshd) + HEADERE de securitate DEPLOYATE 11.08.2026: X-Frame-Options SAMEORIGIN, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, HSTS max-age=300 (fara includeSubDomains/preload, de urcat dupa verificare), CSP enforcing (default-src self; script-src self+hash SW+unsafe-hashes hash return-false; style-src self unsafe-inline; img-src self data:; object-src none; frame-ancestors self). Verificat: headere la client extern, login prin formular OK sub enforce, 38 ecrane 0 violari. Config: config_server/iconta-nginx.conf.",F116,transversal,—,nginx + fail2ban,,LIVE,,,
 Alerte sanatate server,"Bucla de monitorizare a serverului (RAM, disc, load, DB, erori) cu metrici persistate (metrici_sanatate), alerta pe email la depasirea pragurilor, istoric pe ore si endpoint de test permanent al livrarii (Admin > Sanatate).",F117,admin,Admin > Sanatate server,core/observare.py + static/js/ecrane/admin_sanatate.js,,LIVE,vizual partial,,
 Blocare perioade,"Blocarea unei luni contabile per firma (perioade_blocate, per tenant): trigger DB (verifica_perioada_blocata) respinge ORICE inregistrare in luna inchisa, indiferent de sursa (UI, import, cron, retetar); lista + deblocare din UI.",F118,firma,Registru jurnal > Blocheaza luna,main.py perioade-blocate,,LIVE,,,
-Declaratia D394,"Declaratia informativa D394 (OPANAF 3769/2015): livrarile/prestarile si achizitiile nationale defalcate pe parteneri si tipuri de operatiune, calculate din facturile emise/primite; XML generat pe structura oficiala ANAF (structura_D394), refacut de la zero dupa sursa.",F034,firma,Declaratii,core/d394.py,ANAF,LIVE,generator complet; valideaza FARA ERORI pe DUK headless (core/duk.py); conectat in semafor faza 3 (control_fiscal_api.declaratii_datorate - grep D394 = 5 linii; commit 3cc1455),,
+Declaratia D394,"Declaratia informativa D394 (OPANAF 3769/2015): livrarile/prestarile si achizitiile nationale defalcate pe parteneri si tipuri de operatiune, calculate din facturile emise/primite; XML generat pe structura oficiala ANAF (structura_D394), refacut de la zero dupa sursa.",F034,firma,Declaratii,core/d394.py,ANAF,LIVE,generator complet; valideaza FARA ERORI pe DUK headless (core/duk.py); conectat in semafor faza 3 (control_fiscal_api.declaratii_datorate - grep D394 = 5 linii; commit 3cc1455),,"## Ce face
+Declaratia informativa D394 - livrarile/achizitiile pe teritoriul national intre platitorii de TVA, cu clasificare pe coduri si nomenclatoare. Generatorul valideaza fara erori pe DUK.
+## Cand se foloseste
+Lunar sau trimestrial (dupa perioada TVA), pentru platitorii de TVA, cu tranzactiile interne cu alti platitori.
+## Ce trebuie pregatit inainte
+- Facturile interne (emise si primite) cu parteneri platitori de TVA.
+- Operatiunile cu numerar peste prag, daca e cazul (op11).
+## Pas cu pas
+1. Inregistreaza facturile interne.
+2. Declaratii -> D394 -> perioada.
+3. Aplicatia clasifica si construieste declaratia.
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D394 validat, cu tranzactiile interne intre platitori de TVA.
+## Greseli frecvente
+- Operatiuni cu parteneri afiliati nemarcate (prsAfiliat).
+- Operatiunile in numerar (op11) neincluse manual unde e cazul.
+## Reguli fiscale
+OPANAF (D394); nomenclator coduri produse D394. Termen: la fel ca D300 (perioada TVA)."
 Notificare e-Transport,"Genereaza XML-ul notificarii v2 (UIT) pe structura oficiala, pentru incarcare manuala in SPV: operatiune, bunuri cu cod tarifar/greutati/valoare, partener, puncte incarcare/descarcare, vehicul.",F044,firma,card e-Transport,core/etransport.py,schema mfp v2,"LIVE 18.07 (mai putin proba live pending drept): genereaza XML-ul UIT v2 (core/etransport.py) SI il trimite direct prin API (F121, butonul Trimite UIT pe card) - nu doar upload manual. XML-ul merge la ANAF prin conectorul principal. Nota veche 'blocaj SPVWS2' DEPASITA (aia tinea de F128 mesaje SPV, nu e-Transport). LIMITA: trimiterea live = pending drept e-Transport pe CIF real (ca F176).",vizual + backend HTTP (POST etransport/trimite: poarta de timp blocheaza prea-devreme; GET trimiteri: semafor timp separat de trimitere),,
 Monitor fiscal (noutati legislative),"Cron saptamanal: citeste noutatile ANAF/MF, AI filtreaza relevanta (TVA, salarii, plafoane, declaratii, dividende) cu data intrarii in vigoare, salveaza si trimite email.",F060,admin,— (automat) + email,core/monitor_fiscal.py,,LIVE (13.07 seara: detectie+email+emitere programata 7/3/0 testata idempotent),pytest + test date reale,,
 Retetar HoReCa (GV),Reteta = ingrediente cu cantitate/portie; vanzarea a N portii consuma ingredientele din stoc la CMP (iesiri miscari_stoc + nota ciorna) si calculeaza food cost per portie.,F076,firma,Raport Z / retetar,core/retete.py + core/retete_api.py,,"LIVE (13.07 seara: flux complet verificat cu date reale in tenant_002 - food cost, descarcare la CMP, nota ciorna 601=302, stoc insuficient; bug antedatare gv_crono gasit si reparat)",pytest 23 + date reale,,
@@ -323,7 +477,23 @@ Pre-completare date firma din ANAF v9 la onboarding,"LIVE 19.07: la onboarding (
 Regim firma SRL/PFA (carduri + straturi migrare filtrate),"Coloana tip_firma pe firma_profil (srl=partida dubla / pfa=partida simpla) decide ce vede firma. La creare se alege regimul (default srl). Meniul firmei ascunde la PFA cardurile de partida dubla (Declaratii, Registru jurnal, Balanta, Bilant, Operatiuni speciale) si ascunde la SRL cardul Incasari/plati; Control fiscal ramane la ambele (semafor partial acceptat la PFA). Straturile de migrare (straturi_pentru) sunt filtrate pe acelasi tip_firma. Lista firmelor aduce tip_firma per schema (traieste in firma_profil, nu in public.tenants).",F189,firma,Adauga firma (selector Tip firma); meniu firma (carduri filtrate),"static/js/ecrane/firme.js, core/tenant_provisioning.py, core/auth_api.py, core/migrare_api.py, tenant_template.sql, 01_ddl_tip_firma.sql",OMFP 170/2015,LIVE,functional (provision PFA+SRL + rollback pe prod),,
 Import RIP la preluarea unui PFA,"Rută POST /tenants/{id}/rip-import/incarca + buton „Import RIP” (doar PFA) în meniul de migrare per-firmă. Parsează registrul de încasări-plăți (dată/tip/explicație/sumă/categorie/metodă), raportează rândurile respinse (ambigue/incomplete) înainte de commit, importă operațiunile valide cu status='validata' și marchează stratul 'rip' (seteaza_status → reminder). Idempotent la reimport: operațiunile identice (data_operatiune, tip, sumă, explicație, metodă) deja în registru se sar (sarite_duplicat), nu se dublează. Istoric cronologic al anului curent, NU balanță de deschidere (partida simplă). Fix la sursă: rip_migrare_api folosea metoda 'casa', constraintul DB cere 'numerar'.",F190,firma,Firmă > Import date > Import RIP (doar PFA),"core/rip_migrare_api.py, main.py, static/js/ecrane/migrare.js",OMFP 170/2015,LIVE,"functional (2 valide+1 respins, reimport idempotent, rollback pe prod)",,
 Meniu migrare filtrat pe regim firmă (SRL/PFA),"Meniul de import per-firmă (meniuMigrarePerFirma) ascunde straturile de partidă dublă (Solduri, Solduri parteneri, Asociați, Mijloace fixe, Plan conturi) când firma e PFA, folosind straturi_pentru(tip_firma) din backend ca sursă unică de adevăr (endpoint GET /migrare/straturi), nu o listă duplicată în JS. Firme/Vector fiscal/Salariați/Istoric declarații rămân la ambele regimuri; Import RIP doar la PFA. Analog F189 (filtrare carduri firmă), dar pe ecranul de migrare.",F191,firma,Firmă > Import date,"static/js/ecrane/migrare.js, main.py, core/migrare_api.py",OMFP 170/2015,LIVE,functional (straturi_pentru pfa/srl + filtrare pași),,
-Declaratia D710 (rectificativa D100),"LIVE 20.07: motor propriu generare XML declaratie rectificativa 710 (corecteaza obligatiile D100). Namespace/structura proprii (declaratie710, mfp:anaf:dgti:d710:declaratie:v2), reutilizeaza din d100 doar nomenclatorul COD_BUGETAR + _nr_evid/_scadenta_zile. Fiecare suma cu pereche Initial/Corectat; validat pe DUK oficial (D710_56) izolat pe date inventate, stare valid FARA ERORI (micro/profit, toate trimestrele incl. scadenta speciala micro trim4, d_recN versionat pe perioada). In dispecer declaratii_api (nu in selectorul UI generic - cere `obligatii`; nu in semaforul de restante - e la cerere, nu periodica). LIMITA: rectificare suma datorata; deduceri/reduceri (model 8#) la caz real. Vezi DECIZII 20.07.",F192,firma,API/dispecer (fara ecran dedicat inca),"core/d710.py, core/declaratii_api.py, core/duk.py",OPANAF 649/2025; CF (corectare D100),LIVE 20.07.2026,pytest test_d710.py (25 teste) + DUK valid FARA ERORI,,
+Declaratia D710 (rectificativa D100),"LIVE 20.07: motor propriu generare XML declaratie rectificativa 710 (corecteaza obligatiile D100). Namespace/structura proprii (declaratie710, mfp:anaf:dgti:d710:declaratie:v2), reutilizeaza din d100 doar nomenclatorul COD_BUGETAR + _nr_evid/_scadenta_zile. Fiecare suma cu pereche Initial/Corectat; validat pe DUK oficial (D710_56) izolat pe date inventate, stare valid FARA ERORI (micro/profit, toate trimestrele incl. scadenta speciala micro trim4, d_recN versionat pe perioada). In dispecer declaratii_api (nu in selectorul UI generic - cere `obligatii`; nu in semaforul de restante - e la cerere, nu periodica). LIMITA: rectificare suma datorata; deduceri/reduceri (model 8#) la caz real. Vezi DECIZII 20.07.",F192,firma,API/dispecer (fara ecran dedicat inca),"core/d710.py, core/declaratii_api.py, core/duk.py",OPANAF 649/2025; CF (corectare D100),LIVE 20.07.2026,pytest test_d710.py (25 teste) + DUK valid FARA ERORI,,"## Ce face
+Declaratia D710 - declaratia rectificativa pentru D100 (corectarea unei obligatii declarate gresit la bugetul de stat). Se produce prin corp de cerere (versioneaza declaratia depusa).
+## Cand se foloseste
+Cand ai depus un D100 cu o suma gresita si trebuie corectata - rectificativa peste declaratia initiala.
+## Ce trebuie pregatit inainte
+- Declaratia D100 initiala depusa (numarul de evidenta / perioada).
+- Suma corecta a obligatiei.
+## Pas cu pas
+1. Identifica declaratia D100 de rectificat.
+2. Declaratii -> D710 -> completeaza suma dedusa corect.
+3. Valideaza si depune rectificativa.
+## Ce iese la capat
+XML D710 validat, cu obligatia corectata, legata de declaratia initiala.
+## Greseli frecvente
+- Rectificarea prin re-depunerea D100 in loc de D710.
+## Reguli fiscale
+OPANAF (D710 rectificativa D100). Se depune la constatarea erorii."
 Declaratia D207 (impozit retinut la sursa - nerezidenti) - AMANAT,"Declaratie informativa privind impozitul retinut la sursa / suportat de platitor / venituri scutite, pe beneficiari de venit NEREZIDENTI (art. 224 CF). Aplicabila firmelor private DAR nisa: doar cele cu plati catre nerezidenti (dobanzi/redevente/servicii/dividende externe). Anuala. Model structural = D205 (LIVE). Se construieste la caz real, nu preventiv (ca D307). Vezi DECIZII.md 20.07.",F193,firma,Declaratii,—,OPANAF 179/2022 actualiz. 303/2026; CF art. 224,"AMANAT 20.07.2026 (nisa, la caz real)",—,,
 Declaratia D392 (informativa livrari sub plafon TVA) - RESPINS,RESPINS 20.07: depunerea D392A/392B este SUSPENDATA prin lege pana la 31.12.2026 (art. LXII OUG 115/2023). Nu se construieste motor pentru o declaratie a carei depunere e suspendata legal. Reevaluare doar daca suspendarea nu se prelungeste in 2027. Vezi DECIZII.md 20.07.,F194,firma,—,—,art. LXII OUG 115/2023 (suspendare); OPANAF 392A/B,RESPINS 20.07.2026,—,,
 Declaratia D094 (cifra afaceri trimestru) - RESPINS,"RESPINS 20.07: formularul 094 nu mai exista de sine-statator - a fost inglobat in D700 (sectiunea B.II, mentiuni schimbare perioada fiscala). Confirmat la sursa: lipseste din nomenclatorul DUK (versiuni.xml). Obligatia se satisface prin D700. Vezi DECIZII.md 20.07.",F195,firma,—,—,abrogat; inglobat in D700 (OPANAF 631/2016 istoric),RESPINS 20.07.2026,—,,
