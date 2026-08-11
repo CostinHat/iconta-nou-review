@@ -3929,3 +3929,12 @@ LOT 2 (Facturare & e-Factura, 21) VERIFICAT: wizard Playwright TRECUT (exit 0); 
 LOT 3 (Contabilitate, 23) VERIFICAT: 55 pytest tintit (avansuri/bacsis/leasing/provizioane/sgr/sponsorizari/subventii/ong) + suita verde; F118 (perioade-blocate) + F054 (jurnal) cablate; F144/F145 cod real confirmat (rapoarte_comerciale_api.py + migrare_rapoarte_salvate.py).
 GENERALIZARE CONCURENTA (§8): 10 intrari LIVE (F126, F138-142, F144-147) aveau Sursa cod "CONCURENTA: <concurent>" desi codul exista - registrul populat din analiza de concurenta, Sursa cod neactualizata la construire. Toate 10 -> module reale. Atinge si Lot 4 (F138-142 stocuri) + Lot 8 (F146/F147). Gard nou test_sursa_cod_nu_e_referinta_de_concurenta, ROSU pe cele 10.
 Poarta verde: 1886 passed/3 skipped/16 xfailed, verificator 0.
+
+## 11.08.2026 — LOT 4-8 verificate: CAMPANIA "verifica-201" COMPLETA [9/9 loturi]
+LOT 4 (Stocuri/banca/casa, 19): 55 pytest tintit + suita; F138-142 Sursa cod deja corectata (Lot 3). DRIFT: F151 Sursa cod proza ("identificat 13.07") -> core/articole_import_api.py (rute /articole-import exista).
+LOT 5 (Salarizare, 11): 56 pytest tintit (adeverinta/pontaj/salarizare_cm/zile_lucratoare); F075 REGES (rute /reges-*) + F122 cod-10 cablate. Zero drift registru.
+LOT 6 (Fiscalitate/declaratii, 24): DUK pe cabinet 4163 (4 firme) - TOATE declaratiile care genereaza = VALID (d100-d406 pe ALFA/BETA/GAMA/DELTA); "BLOCAT/EROARE" = gardurile PRE-DUK refuzand corect zero/gol/date-corupte (D390 zero, D205 fara beneficiar, D112 a-doua-cale suspecte). Lanturile 24-30 confirmate vii. Zero drift registru.
+LOT 7 (Control fiscal, 14): F081 scadente (core/scadente.py + test_zile_lucratoare/test_scadentar verzi) probata; F051 Intrastat cablat (/intrastat-praguri). Zero drift.
+LOT 8 (Cabinet/portal, 26): teste verzi; FARA-PROBA toate cablate (F108 /auth/register, F107 /public/magic-login, F042 /portal/documente, F109 suspenda, F075 reges). Zero drift.
+BILANT CAMPANIE (201 functionalitati, 9 loturi): registru confruntat cap-coada cu realitatea. Drift reparat: 4 cai scurte (F117/F121/F152/F188), 5 descrieri gratuit-eliminat, F150/F122/F151 proza->cod, 10x CONCURENTA->cod, F043 Testat, F116 headere->adevar. Garduri noi: test_sursa_cod_refera_fisiere_care_exista + test_sursa_cod_nu_e_referinta_de_concurenta. Fundatii probate: F001/F004/F008/F043/F081/F116. ELIMINAT(10) probate 404 pe app viu. RAMAS: decizie F116 (headere infra), test-debt (cablate fara test dedicat), F124 (proces nu feature), D406 PARTIAL.
+Poarta verde: 1887 passed/3 skipped/16 xfailed, verificator 0.

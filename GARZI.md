@@ -2595,3 +2595,10 @@ test_d205 (test_id_inreg), test_d710 (test_cod_bugetar - bumpuit √).
 - Test-debt Lot 2: F017 (chitante)/F018 (parteneri)/F045 (generare PDF)/F048 (profil+model) - cablate, fara test dedicat.
 - Test-debt Lot 3: F118 (blocare perioade)/F054 (editor note)/F145 (rapoarte config) - cablate, fara test dedicat.
 - Fixul CONCURENTA a corectat Sursa cod si pentru F138-142 (Lot 4 Stocuri) + F146/F147 (Lot 8 Cabinet); verificarea FUNCTIONALA a acestora ramane la lotul lor.
+
+## 11.08.2026 — Campanie verifica-201 COMPLETA: datorii ramase (cumulat)
+- **F116 headere de securitate NEDEPLOYATE** - DECIZIE INFRA Costin (singura decizie deschisa). Snippet gata.
+- **Test-debt** (cablate, fara test dedicat): migrari (F007/F053/F059/F079/F084/F085/F150/F151), F017/F018/F045-gen/F048, F118/F054/F145, F075. Cablate + rute live, dar fara pytest dedicat.
+- **F124 "Testare pilot P1-P5"**: proces finalizat, NU feature; Sursa cod "DE_FACUT sectiunea 1" stale. De reincadrat/scos de Costin.
+- **F035/F036/F037 D406 PARTIAL**: familia nedepunabila (SourceDocuments sintetic + Payments gol). Scope Costin.
+- **Limita gard**: proza-Sursa-cod fara path-token nu e mecanizata (fals-pozitiv pe infra F116/F113/F170) - ramane judecata.

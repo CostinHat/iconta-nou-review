@@ -1467,3 +1467,8 @@ Gard nou (al 4-lea de registru): test_sursa_cod_nu_e_referinta_de_concurenta - L
 Lot 2: wizard Playwright TRECUT (exit 0); F004 ANAF live; F043 cod+ruta + suita e-Factura import verde (6 teste, fisier root-level); 21 cablate. F043 Testat gol->pytest.
 Lot 3: 55 pytest tintit + suita; F118/F054/F144/F145 verificate; restul cu pytest verzi in suita.
 Suita: 1886 passed/3 skipped/16 xfailed, verificator 0. Garduri registru: 4/4.
+
+## 11.08.2026 — Lot 4-8 verificate (campania completa 9/9)
+Lot 4: 55 pytest; drift F151 Sursa cod proza -> core/articole_import_api.py. Lot 5: 56 pytest (salarizare/pontaj/adeverinta). Lot 6: DUK pe 4163 - toate declaratiile generabile VALID; refuzurile = garduri pre-DUK corecte (zero/gol/corupt). Lot 7: F081 scadente probata (scadente.py + zile_lucratoare/scadentar); F051 cablat. Lot 8: FARA-PROBA toate cablate (rute confirmate).
+Zero drift registru in Lot 5-8 (fixurile registry-wide din Lot 0-3 au curatat). Garduri registru: 4/4 verzi.
+Suita: 1887 passed/3 skipped/16 xfailed, verificator 0.
