@@ -32,7 +32,7 @@ Ultimul commit de COD: (vezi git HEAD). App pe 127.0.0.1:8010. Four-way se confi
    Costin, snippet gata); D406 PARTIAL (F035-037, scope); F124 (proces nu feature); test-debt import (proba pozitiva).
 
 ## (raport livrat)
-RAPORT UNIC certificare-comportament livrat 11.08 pe HEAD 7fbb2aa (four-way: RUNNING 38dbb06 = ultima schimbare runtime). LIVRAT PARTIAL: 3 dimensiuni (comportament/cale-UI/DS-browser) certificate la nivelul datelor de test 4163; import class REPARAT; 38 ecrane DS-curate; 0 cale-UI lipsa. NECERTIFICAT: proba pozitiva ZERO-BASE pe features fara date pe firmele de test (produse/clienti/retete/stocuri) + write-flows (emitere) + sub-ecrane adanci - cer populare de date.
+RAPORT UNIC certificare-comportament livrat 11.08 pe HEAD 7fbb2aa (four-way: RUNNING 38dbb06 = ultima schimbare runtime). CAMPANIE CERTIFICARE-COMPORTAMENT COMPLETA (11.08): 3 dimensiuni certificate; date operationale populate pe ALFA + proba pozitiva ZERO-BASE + write-flows (emitere/chitanta/contare) + deep sub-screen emitere DS-curat. Import class reparat+gardat. Ramas: bonuri portal (partial), sub-ecrane adanci exhaustiv (esantionat).
 
 ## (c) Ce e in lucru acum
 Campania certificare-comportament (front 0). Cluster import certificat+reparat; harness browser-DS pe dashboard

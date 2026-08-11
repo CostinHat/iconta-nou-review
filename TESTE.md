@@ -1477,3 +1477,7 @@ Suita: 1887 passed/3 skipped/16 xfailed, verificator 0.
 core/test_import_migrare_valideaza.py::test_parser_respinge_coloane_nerecunoscute (parametrizat pe 5 module):
 un CSV cu structura valida dar coloane straine -> parserul (extrage/extrage_balanta) ridica ValueError, NU intoarce [] tacit (ZERO-BASE). ROSU pe cod vechi (5 failed), VERDE dupa fix. + non-regresie (fisier bun asociati acceptat).
 Reparate: asociati/istoric_declaratii/mijloace_fixe/salariati/solduri_api - clasa "accepta orice fisier si declara succes".
+
+## 11.08.2026 — Certificare pozitiva (populare + write-flows)
+Certificat POZITIV pe ALFA populata (comportament exercitat, nu cod citit): produse/clienti/centre-cost/registratura/casa/stocuri/retete (creare 200 + citire nenula ZERO-BASE); emitere factura (TVA 21% corect), PDF (%PDF- valid), chitanta (serie CH 2 buc), contare extras (import 2 linii, nota 5121=4111). Formular emitere DS-curat in browser. README bug #6 (verifica_tva) confirmat reparat comportamental pe DELTA.
+Gard import test_import_migrare_valideaza verde. Suita 1893 passed / verificator 0.

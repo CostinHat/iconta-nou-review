@@ -3958,3 +3958,12 @@ RAMAS: ecrane firma-level (Firme->firma->emitere/declaratii/operatiuni), portal/
 READ/GENERATE behavioral pe ALFA (8396): baleiere 56 rute GET tenant -> 34 x 200 (functioneaza); date reale unde exista (facturi=5, plan-conturi=100, salariati=1, scadentar=2, rapoarte parteneri=4, vector, firma-profil 16 chei); cu parametri (an/luna) inca ~10 devin 200 (stat-plata=1 salariu, documente/balanta GENEREAZA PDF 44507o, casa/jurnal/d301/d390/rip/intrastat). Empty = ALFA legitim fara acele date (clienti/produse/retete/stocuri 0). F045 PDF factura: %PDF-1.4, 44515o VALID.
 DS BROWSER firma-level: frontend_test/cert_ds_firma.py - navigheaza Firme->Firme existente->ALFA-> enumereaza 25 ecrane operatiuni. TOATE 25 render DS-curat (0 erori consola, doar clase DS; fir-veriga=breadcrumb legitim). Cele 2 aparent-esuate (Declaratii/Control fiscal) = ambiguitate selector (card cabinet in spatele modalului); click precis pe .firme-optiune -> ambele deschid, cerr=0.
 CUMULAT DS-browser: 13 carduri cabinet + 25 ecrane firma = 38 ecrane certificate DS-curat pe pagina RANDATA.
+
+## 11.08.2026 — Certificare-comportament COMPLETA: populare date + proba pozitiva + write-flows (Costin)
+Costin a aprobat popularea de date OPERATIONALE pe 4163 (fiscal = de la sursa; cota 21% Legea 141/2025). Populat ALFA (8396) via API (populeaza + exercita write-flow de creare):
+POZITIV (ZERO-BASE dupa populare): produse F070 (3, cota 21% oficial), clienti F018 (2), centre-cost F143 (2), registratura F146 (2), casa F015 (op, nota 5311=4111), stocuri/articole F089/F138-142 (3), retete F076/F150 (1, ingredient potrivit dupa articole).
+WRITE-FLOWS end-to-end: emitere factura F044 (200, TVA 21% corect = 63 pe 300, factura id=14), PDF F045 (%PDF-1 valid 44541o pe factura emisa), chitanta F017 (pe factura + libera, serie CH, 2), contare extras F011/F012/F073 (import 2 linii CSV grid ING, conteaza nota 5121=4111).
+DEEP SUB-SCREEN: formular emitere ("Configurare emitere") DS-curat in browser (cerr=0, 0 input ne-DS).
+BONURI F017 portal: rute cabinet (de-verificat/aproba/stinge) + /portal/bon (cere rol client+imagine) - certificat PARTIAL (flux portal-upload neexercitat).
+README Descoperire #6 (verifica_tva mort) = DEJA REPARAT: codul foloseste Perioada(an,luna=luna); comportamental pe DELTA -> Control fiscal produce ROSU + facturi_necontabilizate populate (nu blocat pe gri). Cross-check TVA F169/F022 functioneaza.
+NOTA: ALFA are acum date operationale adaugate (nu mai e scenariul README pristin) - per instructiunea de populare Costin.
