@@ -1472,3 +1472,8 @@ Suita: 1886 passed/3 skipped/16 xfailed, verificator 0. Garduri registru: 4/4.
 Lot 4: 55 pytest; drift F151 Sursa cod proza -> core/articole_import_api.py. Lot 5: 56 pytest (salarizare/pontaj/adeverinta). Lot 6: DUK pe 4163 - toate declaratiile generabile VALID; refuzurile = garduri pre-DUK corecte (zero/gol/corupt). Lot 7: F081 scadente probata (scadente.py + zile_lucratoare/scadentar); F051 cablat. Lot 8: FARA-PROBA toate cablate (rute confirmate).
 Zero drift registru in Lot 5-8 (fixurile registry-wide din Lot 0-3 au curatat). Garduri registru: 4/4 verzi.
 Suita: 1887 passed/3 skipped/16 xfailed, verificator 0.
+
+## 11.08.2026 — Gard comportamental import migrare (certificare-comportament, cluster 1)
+core/test_import_migrare_valideaza.py::test_parser_respinge_coloane_nerecunoscute (parametrizat pe 5 module):
+un CSV cu structura valida dar coloane straine -> parserul (extrage/extrage_balanta) ridica ValueError, NU intoarce [] tacit (ZERO-BASE). ROSU pe cod vechi (5 failed), VERDE dupa fix. + non-regresie (fisier bun asociati acceptat).
+Reparate: asociati/istoric_declaratii/mijloace_fixe/salariati/solduri_api - clasa "accepta orice fisier si declara succes".

@@ -8823,3 +8823,8 @@ Recomandare: adu nginx server config sub versionare (config_server/) ca driftul 
 Decizie: o functionalitate LIVE/PARTIAL nu poate pastra Sursa cod = referinta la concurent (SAGA/SmartBill/Oblio/WinMentor/FGO/Keez). La CONSTRUIRE se actualizeaza la modulul real. Referinta la concurenta e legitima DOAR pe non-LIVE (feature analizat, neconstruit - F127/F130/F149 etc.).
 Temei: registrul e harta de cod a AI-ului (F152) + a dezvoltatorului; "CONCURENTA: Oblio" descrie de unde a venit IDEEA, nu unde e CODUL. Checkul de existenta din Lot 0 nu prinde (proza fara path-token).
 Proba: 10 intrari LIVE reparate (F126/F138-142/F144-147) -> module reale (toate fisierele exista). Gard nou test_sursa_cod_nu_e_referinta_de_concurenta, ROSU pe cele 10 inainte.
+
+## 11.08.2026 — ZERO-BASE la importurile de migrare: fisier nerecunoscut = eroare, nu 0 tacit
+Decizie: un import care nu gaseste coloana-cheie de identificare RESPINGE (400), nu intoarce 0 randuri prezentat ca succes. Aliniaza toata familia la comportamentul retete/articole (care ridicau deja pe coloane lipsa).
+Temei: comanda Costin (certificare comportament; ZERO-BASE: rezultat gol/zero = eroare pana la proba contrara; clasa "accepta orice fisier si declara succes" reparata doar punctual pe solduri strict=True).
+Proba: feed gunoi comportamental (HTTP 200 total=0 inainte) + gard unit ROSU pe cod vechi. Cele 8 importuri: retete/articole aveau checkul; asociati/istoric/mijloace/salariati/solduri reparate acum. (solduri avea deja strict=True pe numeric; adaugat si checkul de coloana debit/credit.)

@@ -81,6 +81,8 @@ def extrage(continut, nume_fisier=""):
     i_nume = _gaseste_col(antet, "nume", "asociat", "denumire")
     i_cod = _gaseste_col(antet, "cnp", "cui", "cif", "cod")
     i_cota = _gaseste_col(antet, "cota", "cotă", "procent", "participare", "%")
+    if i_nume < 0 and i_cod < 0:
+        raise ValueError("nu gasesc coloana nume/cod asociat - fisier nerecunoscut")
 
     out = []
     for r in randuri[1:]:

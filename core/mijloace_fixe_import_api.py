@@ -93,6 +93,8 @@ def extrage(continut, nume_fisier=""):
     i_met = _gaseste_col(antet, "metoda", "metodă", "amortizare")
     i_cimo = _gaseste_col(antet, "cont imob", "cont_imob", "imobilizare")
     i_camo = _gaseste_col(antet, "cont amort", "cont_amort", "amortizare cont")
+    if i_den < 0:
+        raise ValueError("nu gasesc coloana denumire mijloc fix - fisier nerecunoscut")
 
     out = []
     for idx, r in enumerate(randuri[1:], start=1):

@@ -98,6 +98,8 @@ def extrage_balanta(continut, nume_fisier=""):
     i_den = _gaseste_col(antet, "denumire", "nume")
     i_deb = _gaseste_col(antet, "debitor", "debit")
     i_cre = _gaseste_col(antet, "creditor", "credit")
+    if i_deb < 0 and i_cre < 0:
+        raise ValueError("nu gasesc coloane debit/credit - fisier nerecunoscut")
     if i_cont < 0:
         i_cont = 0   # fallback: prima coloană e contul
 

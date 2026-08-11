@@ -3938,3 +3938,12 @@ LOT 7 (Control fiscal, 14): F081 scadente (core/scadente.py + test_zile_lucratoa
 LOT 8 (Cabinet/portal, 26): teste verzi; FARA-PROBA toate cablate (F108 /auth/register, F107 /public/magic-login, F042 /portal/documente, F109 suspenda, F075 reges). Zero drift.
 BILANT CAMPANIE (201 functionalitati, 9 loturi): registru confruntat cap-coada cu realitatea. Drift reparat: 4 cai scurte (F117/F121/F152/F188), 5 descrieri gratuit-eliminat, F150/F122/F151 proza->cod, 10x CONCURENTA->cod, F043 Testat, F116 headere->adevar. Garduri noi: test_sursa_cod_refera_fisiere_care_exista + test_sursa_cod_nu_e_referinta_de_concurenta. Fundatii probate: F001/F004/F008/F043/F081/F116. ELIMINAT(10) probate 404 pe app viu. RAMAS: decizie F116 (headere infra), test-debt (cablate fara test dedicat), F124 (proces nu feature), D406 PARTIAL.
 Poarta verde: 1887 passed/3 skipped/16 xfailed, verificator 0.
+
+## 11.08.2026 — CERTIFICARE COMPORTAMENT: familia de import migrare (clasa "accepta orice fisier")
+Campanie noua (Costin): certifica comportamentul, nu doar registrul. Proba = comportament exercitat pe 4163.
+Cluster 1 = familia de import de migrare (semnalata de Costin: cablate + clasa "accepta orice fisier si declara succes" reparata punctual, nu pe familie).
+PROBA COMPORTAMENTALA (feed gunoi pe /incarca, tenant 8396 ALFA): asociati/istoric-declaratii/mijloace-fixe/salariati/solduri raspundeau HTTP 200 total=0 pe fisier-gunoi (coloane nerecunoscute) - ZERO-BASE incalcat (rezultat gol = succes tacit). retete/articole respingeau corect (400 coloane lipsa).
+CAUZA: parserul (extrage/extrage_balanta) gasea coloanele cu _gaseste_col (-1 la negasire), dar NU verifica prezenta coloanei-cheie -> cel(-1)="" -> 0 randuri tacit. solduri in plus forta i_cont=0 pe orice.
+FIX (5 module): raise ValueError cand lipseste coloana-cheie de identificare (istoric i_tip; asociati nume/cod; salariati nume/CNP; mijloace denumire; solduri debit/credit) -> ruta 400. Adus la nivelul retete/articole (care aveau deja checkul).
+GARD: core/test_import_migrare_valideaza.py - parserul ridica ValueError pe CSV cu coloane-gunoi. ROSU pe cod vechi (5 failed: intorcea []), VERDE dupa (6 passed). + non-regresie fisier bun.
+Poarta verde + re-test comportamental pe rута (200->400) dupa restart.

@@ -116,6 +116,8 @@ def extrage(continut, nume_fisier=""):
     i_intr = _gaseste_col(antet, "intretinere", "persoane")
     i_jud = _gaseste_col(antet, "judet", "casa")
     i_cor = _gaseste_col(antet, "cor", "ocupatie", "ocupație")
+    if i_nume < 0 and i_cnp < 0:
+        raise ValueError("nu gasesc coloana nume/CNP salariat - fisier nerecunoscut")
 
     out = []
     for r in randuri[1:]:
