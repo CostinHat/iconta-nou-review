@@ -8745,19 +8745,20 @@ def _ghid_lista():
             for r in _csv.reader(f):
                 if len(r) < 10:
                     continue
-                slug = r[9].strip()
-                if not slug or not _GHID_SLUG_RE.match(slug) or slug in vazut:
-                    continue
-                cale = os.path.join(_GHID_DIR, slug + ".md")
-                if not os.path.isfile(cale):
-                    continue
-                vazut.add(slug)
-                meta, corp = _ghid_frontmatter(open(cale, encoding="utf-8").read())
-                out.append({"slug": slug,
-                            "titlu": meta.get("title") or _ghid_titlu(corp),
-                            "descriere": meta.get("description", ""),
-                            "published": meta.get("published", ""),
-                            "modified": meta.get("modified", "") or _ghid_mtime(cale)})
+                for slug in r[9].split("|"):   # [multi_ghid] o functionalitate poate avea mai multe pagini de ghid
+                    slug = slug.strip()
+                    if not slug or not _GHID_SLUG_RE.match(slug) or slug in vazut:
+                        continue
+                    cale = os.path.join(_GHID_DIR, slug + ".md")
+                    if not os.path.isfile(cale):
+                        continue
+                    vazut.add(slug)
+                    meta, corp = _ghid_frontmatter(open(cale, encoding="utf-8").read())
+                    out.append({"slug": slug,
+                                "titlu": meta.get("title") or _ghid_titlu(corp),
+                                "descriere": meta.get("description", ""),
+                                "published": meta.get("published", ""),
+                                "modified": meta.get("modified", "") or _ghid_mtime(cale)})
     except Exception:
         pass
     out.sort(key=lambda g: g["slug"])

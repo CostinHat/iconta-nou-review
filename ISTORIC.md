@@ -4099,3 +4099,15 @@ golului fata de "154 vizibile in UI": 9 importuri de migrare COMASATE in "Import
 infra/meta/CLI/superadmin corect excluse (F008 login, F104 navigator, F117 sanatate server, F165 CLI, F189 mecanic
 regim SRL/PFA, F200 stergere cabinet=superadmin [F205 cererea e deja in modal], F203=modalul insusi). Niciun
 RESPINS/ELIMINAT/AMANAT/PLANIFICAT adaugat (toate 3 sunt LIVE). Gard GRUPE_FUNC_STALE verde.
+
+## 12.08.2026 — Pagini publice de ghid: +3 (lot 1 pe volum), grounded verbatim din corpus
+Trecere pe volum la ghidurile SEO (cele 3 vechi nu produceau trafic). Adaugate 3 pagini, fiecare cu INTREBARE
+DISTINCTA, sprijinite verbatim pe anaf_surse:
+- diurna-interna-neimpozabila (F040): plafon 2,5 x 23 = 57,5 lei/zi de la 01.04.2023 (CF art.76 + HG714/2018 + Ordin
+  1235/2023). Intrebare: cat e diurna interna neimpozabila si de cand.
+- diurna-externa-neimpozabila (F040): plafon 2,5 x diurna pe tara (HG518/1995; 35 euro UE -> 87,5 euro/zi). Intrebare:
+  cum se calculeaza plafonul diurnei externe (nomenclator pe tari, nu suma unica).
+- impozit-dividende-2026 (F029/D205): cota 16% de la 01.01.2026 (Legea 141/2025), dupa data distribuirii. Intrebare:
+  ce cota si dupa ce data se determina.
+Infra: _ghid_lista extins la MULTI-SLUG (ghid_slug cu "|" -> mai multe pagini per functionalitate; F040 are 2 pagini).
+SEO complet verificat (title/meta/canonical/OG/JSON-LD/sitemap//ghid). Toate pe functii LIVE (F040, F029). Ghiduri 3->6.

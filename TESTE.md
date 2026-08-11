@@ -1549,3 +1549,9 @@ coloane (test_registru_functionalitati 4 passed). DECIZII: PIVOT peste "27.07 NU
 genereaza_grupe_functii.py: F083/F113/F199 mutate din EXCLUDE in EXPLICIT (Cabinet si portal client); login.js
 regenerat (--scrie). Modal 138->141 (Cabinet si portal client 26->29; restul grupelor neschimbate). Gard
 GRUPE_FUNC_STALE (verificator) VERDE (login.js in sync cu repartizeaza). ESM login.js OK. Doar functii LIVE adaugate.
+
+## 12.08.2026 — 3 ghiduri noi + multi-slug
+ghid/: diurna-interna-neimpozabila, diurna-externa-neimpozabila, impozit-dividende-2026. _ghid_lista extins multi-slug
+(ghid_slug "|"). Verificat: 6 ghiduri in index+sitemap; pagina randeaza 200 cu title/meta description/canonical/OG/
+JSON-LD/blocuri ghid-temei+ghid-exemplu. CSV integru 201x11 (test_registru passed). Toate pe functii LIVE, grounding
+verbatim din anaf_surse (nicio valoare din memorie).

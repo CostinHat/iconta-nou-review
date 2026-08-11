@@ -8920,3 +8920,13 @@ F189 (mecanic regim SRL/PFA - suportul PFA e deja reprezentat prin features prop
 F200 (stergere cabinet = executie superadmin; cererea user F205 e deja in modal), F203 (modalul insusi). Migrarea (9)
 ramane COMASATA intr-o intrare. Regula onorata: nu se promite public ce nu e LIVE (RESPINS/ELIMINAT/AMANAT/PLANIFICAT
 raman afara). SURSA UNICA: modalul se genereaza din registru (repartizeaza), sincron gardat de GRUPE_FUNC_STALE.
+
+## 12.08.2026 — Ghiduri publice pe volum: multi-slug + triere LIVE + grounding verbatim
+Decizie (comanda Costin): pagini de ghid pe volum, fiecare la o intrebare distincta, sprijinite pe corpus (temei
+verbatim + regula concreta + exemplu numeric + defect din practica), nu pe formulari generale. Extins mecanismul de
+descoperire: ghid_slug suporta mai multe slug-uri separate cu "|" -> o functionalitate poate avea mai multe pagini
+(F040 diurna: interna + externa, intrebari diferite). Triere respectata (20.07): doar LIVE cu valoare de client
+(F040, F029). Grounding: fiecare valoare fiscala din anaf_surse (CF art.76, HG714/2018, Ordin 1235/2023, HG518/1995,
+Legea 141/2025, OG 16/2022), ZERO din memorie. Verificat ca app-ul e corect INAINTE de a promite public: cota
+dividende 16% e in common.py period-aware (eroarea 10% reparata). SARIT (fara temei in corpus / defect deschis / nu
+LIVE) - se reiau cand corpusul/starea permit: vezi raport §5/§8.

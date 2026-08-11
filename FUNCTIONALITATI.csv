@@ -290,7 +290,7 @@ XML D112 validat, cu contributiile si impozitul pe salarii, pe fiecare asigurat.
 - CNP invalid sau salariat cu brut sub minim pe norma intreaga -> generarea refuza (date suspecte).
 ## Reguli fiscale
 Codul fiscal titlul V (contributii sociale). Termen 25 ale lunii urmatoare. Baza minima part-time (art. specific), facilitati per domeniu."
-Declaratia D205 + distribuire dividende,"Impozit retinut la sursa (dividende): beneficiari cu cota pe an (8/10/16%), impartire automata a dividendului brut pe asociati dupa cote, XML validat.",F029,firma,Declaratii (tab D205 + asociati),core/d205.py,CF art. 97,LIVE,DUKIntegrator + ANAF,,"## Ce face
+Declaratia D205 + distribuire dividende,"Impozit retinut la sursa (dividende): beneficiari cu cota pe an (8/10/16%), impartire automata a dividendului brut pe asociati dupa cote, XML validat.",F029,firma,Declaratii (tab D205 + asociati),core/d205.py,CF art. 97,LIVE,DUKIntegrator + ANAF,impozit-dividende-2026,"## Ce face
 Declaratia D205 - impozitul retinut la sursa pe dividende, cu impartirea automata a dividendului brut pe asociati dupa cotele de participare. Aplicatia calculeaza impozitul pe cota anului si genereaza XML-ul validat.
 ## Cand se foloseste
 Anual, pana la ultima zi a lunii februarie a anului urmator, pentru dividendele distribuite.
@@ -407,7 +407,7 @@ Note contabile pentru dividende/imprumuturi asociati; baza pentru D205 la divide
 - Dividende interimare fara regularizare la sfarsit de an.
 ## Reguli fiscale
 Legea 31/1990 art. 67 (dividende); OMFP 1802/2014. Impozitul pe dividende -> D205."
-Deconturi deplasare si diurna,"Avans de deplasare, decont cu justificare si diferenta (restituire/plata), plafonul de diurna neimpozabila intern/extern.",F040,firma,Operatiuni speciale,core/deconturi.py,art. 76 CF; HG 714/2018,LIVE,pytest,,"## Ce face
+Deconturi deplasare si diurna,"Avans de deplasare, decont cu justificare si diferenta (restituire/plata), plafonul de diurna neimpozabila intern/extern.",F040,firma,Operatiuni speciale,core/deconturi.py,art. 76 CF; HG 714/2018,LIVE,pytest,diurna-interna-neimpozabila|diurna-externa-neimpozabila,"## Ce face
 Note pentru deconturi de deplasare si diurna - cheltuieli de deplasare (transport, cazare) si diurna, cu plafoanele de diurna neimpozabila.
 ## Cand se foloseste
 Cand un angajat/administrator face o deplasare si deconteaza cheltuieli + diurna.
