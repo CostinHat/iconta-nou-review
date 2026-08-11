@@ -1,5 +1,5 @@
 // [rip] Registru incasari/plati (partida simpla PFA/II/IF) + Fisa D212
-import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj } from "../api.js";  /* investigatie_identitate_v1 */
+import { api, bani, esc, confirmaCaseta, dataRo, arataMesaj, semnAjutor } from "../api.js";  /* investigatie_identitate_v1 */
 
 const CATEGORII_INC = [
   ["activitate", "\u00cencasare din activitate"],
@@ -40,7 +40,7 @@ export async function ecranRip(corp, nav, t) {
         </div>`).join("");
 
     corp.innerHTML = `
-      <h2 class="pf-titlu">Registru \u00eencas\u0103ri/pl\u0103\u021bi</h2>
+      <h2 class="pf-titlu">Registru \u00eencas\u0103ri/pl\u0103\u021bi ${semnAjutor("F077")}</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         \u00b7 \u00eencas\u0103ri <b>${bani(reg.total_incasari)}</b> \u00b7 pl\u0103\u021bi <b>${bani(reg.total_plati)}</b> \u00b7 sold <b>${bani(reg.sold)} lei</b>
         <button class="buton-secundar" id="r-prev" style="margin-left:12px">\u2190 luna</button>

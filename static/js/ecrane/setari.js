@@ -191,7 +191,7 @@ export async function randeazaSetari(corp, nav) {
       </div>
 
       <div class="panou" style="margin-top:16px">
-        <div class="cap-titlu">Cerere de ștergere cont</div>
+        <div class="cap-titlu">Cerere de ștergere cont ${semnAjutor("F205")}</div>
         <div class="caseta-atentie"><div class="ca-mesaj">
           <b>Ștergerea este ireversibilă.</b> Se șterg definitiv toate firmele cabinetului, utilizatorii, facturile, declarațiile, documentele și fișierele — prin distrugerea completă a bazei de date a cabinetului.<br><br>
           <b>Ce NU se poate șterge imediat:</b> copiile de siguranță (backup) rămân până la 30 de zile, apoi se suprascriu automat. Ștergerea selectivă dintr-un backup nu e posibilă tehnic.<br><br>

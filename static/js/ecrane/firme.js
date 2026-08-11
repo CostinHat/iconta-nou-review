@@ -685,7 +685,7 @@ async function ecranPontaj(corp, nav, t, sid, nume, an, luna) {
 // F136: formular adeverinta salariat -> PDF (art. 34(5) Codul muncii)
 function formularAdeverinta(corp, nav, t, sid, nume, an, luna) {
   corp.innerHTML = `
-    <h2 class="pf-titlu">Adeverință</h2>
+    <h2 class="pf-titlu">Adeverință ${semnAjutor("F136")}</h2>
     <p class="pf-intro">Pentru ${esc(nume || "salariat")}. Denumirea firmei, numele, CNP-ul, funcția COR, data angajării și salariul brut/net se completează automat din datele firmei. Restul, mai jos.</p>
     <div class="caseta-atentie" style="margin:0 0 12px"><span class="ca-mesaj">Pentru credit bancar, băncile cer de obicei formularul propriu — un PDF generic nu e acceptat. Din 2026 verifică veniturile direct la ANAF.</span></div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;max-width:820px">
@@ -2050,7 +2050,7 @@ async function ecranJurnal(corp, nav, t) {
         : note.map(rand).join(""));
     const ciorne = note.filter((n) => n.status === "ciorna").length;
     corp.innerHTML = `
-      <h2 class="pf-titlu">Registru jurnal</h2>
+      <h2 class="pf-titlu">Registru jurnal ${semnAjutor("F061")}</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:var(--galben);font-weight:600">${ciorne} de validat</span>` : ""}
         <button class="buton-secundar" id="j-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="j-next">luna \u2192</button>
