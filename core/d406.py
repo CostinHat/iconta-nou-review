@@ -1118,9 +1118,21 @@ def pull(conn, schema, an, luna):
             # picase planul de conturi). Dovedit pe tenant_002 prin redenumirea tabelei.
             raise RuntimeError("D406: citirea planului de conturi a esuat - %s" % e) from e
         try:
+            # SAF-T: identitatea partenerului (RegistrationNumber/CustomerID/SupplierID) = format
+            # oficial via _partener_id_saft (00/01/02+cod, 03+CNP, 04+nume) - ACEEASI logica ca
+            # fallback-ul (derivare din facturi) si ca liniile de tranzactie. NU id-ul brut de
+            # nomenclator: bug PROD (11.08) -> DUK "RegistrationNumber/CustomerID format invalid"
+            # pe orice tenant cu nomenclator POPULAT; mascat de nomenclator gol (-> calea fallback).
+            # Gard anti-regresie: core/test_d406_partener_id_neconform.py.
             cur.execute("SELECT id, nume, cui, oras FROM clienti ORDER BY id")
+            vazut_cl = set()
             for r in cur.fetchall():
-                clienti.append(Partener(id=str(r["id"]), nume=r["nume"] or "", cui=r["cui"] or "", oras=r["oras"] or ""))
+                pid = _partener_id_saft(r["cui"], r["nume"], eticheta=r["nume"])
+                if pid and pid not in vazut_cl:
+                    vazut_cl.add(pid)
+                    clienti.append(Partener(id=pid, nume=r["nume"] or "", cui=r["cui"] or "", oras=r["oras"] or ""))
+        except ValueError:
+            raise  # eroare de CONTINUT (CUI/CNP partener invalid) - nu se mascheaza in RuntimeError
         except Exception as e:
             # MASCA SCOASA (27.07.2026, al doilea val). In PostgreSQL un query esuat
             # OTRAVESTE tranzactia: masca ascundea cauza, iar eroarea aparea abia in
@@ -1128,9 +1140,21 @@ def pull(conn, schema, an, luna):
             # picase nomenclatorul de clienti). Dovedit pe tenant_002 prin redenumirea tabelei.
             raise RuntimeError("D406: citirea nomenclatorului de clienti a esuat - %s" % e) from e
         try:
+            # SAF-T: identitatea partenerului (RegistrationNumber/CustomerID/SupplierID) = format
+            # oficial via _partener_id_saft (00/01/02+cod, 03+CNP, 04+nume) - ACEEASI logica ca
+            # fallback-ul (derivare din facturi) si ca liniile de tranzactie. NU id-ul brut de
+            # nomenclator: bug PROD (11.08) -> DUK "RegistrationNumber/CustomerID format invalid"
+            # pe orice tenant cu nomenclator POPULAT; mascat de nomenclator gol (-> calea fallback).
+            # Gard anti-regresie: core/test_d406_partener_id_neconform.py.
             cur.execute("SELECT id, nume, cui, oras FROM furnizori ORDER BY id")
+            vazut_fu = set()
             for r in cur.fetchall():
-                furnizori.append(Partener(id=str(r["id"]), nume=r["nume"] or "", cui=r["cui"] or "", oras=r["oras"] or ""))
+                pid = _partener_id_saft(r["cui"], r["nume"], eticheta=r["nume"])
+                if pid and pid not in vazut_fu:
+                    vazut_fu.add(pid)
+                    furnizori.append(Partener(id=pid, nume=r["nume"] or "", cui=r["cui"] or "", oras=r["oras"] or ""))
+        except ValueError:
+            raise  # eroare de CONTINUT (CUI/CNP partener invalid) - nu se mascheaza in RuntimeError
         except Exception as e:
             # MASCA SCOASA (27.07.2026, al doilea val). In PostgreSQL un query esuat
             # OTRAVESTE tranzactia: masca ascundea cauza, iar eroarea aparea abia in

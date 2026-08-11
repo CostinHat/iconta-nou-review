@@ -2632,3 +2632,9 @@ test_d205 (test_id_inreg), test_d710 (test_cod_bugetar - bumpuit √).
 - Corelatie ANUALA vs GL la amortizare: <Assets> proiecteaza la Dec, GL posteaza la zi -> difera mid-an (by-design, nu defect).
 - Perioada 08/2026 deblocata pe ALFA (era blocata dintr-un test F118) - necesar pt seed/generare pe acea luna.
 - Payments: DATE de trezorerie construite (casa+banca legate de facturi), dar generatorul NU le emite inca (asteapta sursa maparii).
+
+## 11.08.2026 — D406 nomenclator id brut: INCHIS (reparat + gardat)
+Datoria "BUG GENERATOR nomenclator -> id brut" (consemnata mai sus, lasata NEcomis) e INCHISA: reparat pe calea
+principala (_partener_id_saft, ambele bucle), gardat (core/test_d406_partener_id_neconform, rosu/verde probat), DUK
+tenant_013 'valid' FARA patch temporar. Family-check: doar D406 avea tiparul (D394/D390/e-Factura folosesc valoarea
+CUI). RAMAS pe D406: sursa maparii Payments (date construite, generator neatins).

@@ -4071,3 +4071,14 @@ trezorerie (casa+banca) legate de facturi (note validate), 2 iesiri stoc legate 
 asteptat pt declaratie ANUALA vs postare la zi). PROBA DUK: D406 periodic 2026-08 pe date ALFA -> 'valid' (0 erori)
 DAR numai cu un fix de generator descoperit acum (vezi DECIZII/GARZI). Seed reproductibil: scripts/seed_alfa_d406.py
 (idempotent, --commit). Perioada 08/2026 deblocata pe ALFA (artefact test F118).
+
+## 11.08.2026 — FIX PROD: D406 nomenclator emitea id BRUT ca identitate partener (reparat + gardat + family-check)
+pull() construia Partener(id=str(r["id"])) din clienti/furnizori -> RegistrationNumber/CustomerID/SupplierID = id
+brut de nomenclator ("1","2"), respins de DUK ("format invalid") pe ORICE tenant cu nomenclator POPULAT. Mascat de
+nomenclator gol (calea fallback, corecta cu _partener_id_saft). Aliniate ambele bucle (clienti ~1123, furnizori ~1133)
+cu _partener_id_saft (00/01/02+cod, 03+CNP, 04+nume) + dedup + passthrough ValueError - O SINGURA logica.
+GARD: core/test_d406_partener_id_neconform.py (ROSU pe anti-tipar Partener(id=str(r["id"])), VERDE dupa). PROBA DUK
+FARA patch temporar: tenant_013 D406 2026-08 -> 'valid' (0 erori); identitati toate 00/01/04+cod, zero id brut.
+STOP-POINT: tenantii care trec azi (nomenclator gol -> fallback) NESCHIMBATI (014/016 verificati; 013 e singurul cu
+nomenclator populat, pica azi -> acum trece). FAMILIE: D394 (cuiP=c_cui/tert_cui), D390 (c_cui/tert_cui), e-Factura
+(CompanyID=_vatid(cui)) emit VALOAREA CUI, nu id brut -> bug DOAR in D406; clienti_api.py e CRUD, nu generator.

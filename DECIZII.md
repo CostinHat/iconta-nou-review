@@ -8886,3 +8886,12 @@ cand nomenclatorul e gol). Fix dovedit throwaway -> DUK 'valid'. NEcomis: schimb
 tot generator) cu RAZA peste ALFA (la alti tenanti cu CUI de nomenclator invalid ar incepe sa RIDICE - corect: esec
 zgomotos vs iesire tacit-gresita) -> cere decizia lui Costin, ca Payments. Temei: comanda + "arata defectele, nu le
 ascunde" + "proba pe date reale". Alternativa respinsa: a fi comis fix-ul unilateral (garda generatorului).
+
+## 11.08.2026 — D406 nomenclator: id brut de partener = bug PROD, reparat pe calea principala (PIVOT peste nota de mai sus)
+Costin: e bug de PRODUCTIE, nu decizie de produs - "calea de rezerva corecta nu justifica o cale principala gresita".
+PIVOT peste intrarea anterioara (11.08) care lasase fix-ul NEcomis pentru decizie: acum se COMITE. Reparat: pull()
+foloseste _partener_id_saft si pe nomenclator (nu doar pe fallback) -> identitate SAF-T conforma (00/01/02/03/04),
+o singura logica; dedup + passthrough ValueError (ca fallback-ul, sa nu mascheze CUI invalid in RuntimeError).
+Gard anti-regresie: test_d406_partener_id_neconform. FAMILY-CHECK (cerut): tiparul "id brut ca identificator" NU
+exista in D394/D390/e-Factura (folosesc valoarea CUI) -> clasa = D406, inchisa. Temei: regula reparatiei reale +
+"clasa se inchide intreaga sau deloc". Stop-point onorat: tenantii care trec azi raman neschimbati (fallback neatins).

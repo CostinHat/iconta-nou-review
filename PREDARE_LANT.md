@@ -17,7 +17,8 @@ commituri dupa HEAD. App pe 127.0.0.1:8010. Verificare la predare: `/admin/versi
    valide, 2 mijloace fixe, plati trezorerie legate de facturi, miscari stoc; reconcilieri inchise
    (2131=MF activ=10800). D406 periodic 2026-08 -> DUK VALID cu un fix de generator DOVEDIT dar NEcomis
    (nomenclator->id brut; raza peste ALFA -> decizie Costin, ca Payments). Seed: scripts/seed_alfa_d406.py.
-   RAMAS pe D406: (a) sursa maparii Payments; (b) decizia pe fix-ul de nomenclator; (c) F035/F036/F037 registru.
+   Fix nomenclator (id brut -> _partener_id_saft) COMIS + gardat + DUK tenant_013 valid.
+   RAMAS pe D406: (a) sursa maparii Payments; (b) actualizare registru F035/F036/F037 la starea reala.
 0b. **RESTART NECONDITIONAT (11.08) — COMPLETA.** Eliminata conditionarea restartului
    pe tipul commitului din ritualul de publicare: cablat NECONDITIONAT in scripts/githooks/post-commit
    (pasul 4, ca pasul 2 push) -> dupa orice publicare procesul viu preia HEAD. Gard

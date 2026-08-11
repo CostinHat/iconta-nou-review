@@ -1533,3 +1533,9 @@ date ALFA (6 InvoiceLine reale, Payments=0) -> DUKIntegrator_AnLunaUI -v D406 = 
 nomenclator (throwaway); FARA fix -> 4 erori format RegistrationNumber/CustomerID (Customer 1/2). F036: 2 <Asset>;
 F037: 3 <PhysicalStockEntry>. DUK e LENIENT (nu verifica corespondenta cu contabilitatea) -> reconcilierea cu GL
 verificata separat (mai sus), nu prin DUK.
+
+## 11.08.2026 — Gard D406 identitate partener + reprobare DUK (fix real)
+Gard nou: core/test_d406_partener_id_neconform.py - cade daca reapare Partener(id=str(r["id"])) pe identitatea
+partenerului SAF-T. PROBAT: ROSU pe cod nereparat (test_fara_id_brut FAILED), VERDE dupa fix (2 passed). Reprobare DUK
+FARA patch temporar: tenant_013 D406 2026-08 -> DUKIntegrator 'valid' (0 erori); id-uri brute suspecte: NICIUNUL.
+Non-regresie: 30 teste d406 existente + smoke (strict-xfail) = passed. Stop-point: 014/016 (nomenclator gol) neschimbati.
