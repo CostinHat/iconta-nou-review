@@ -8940,3 +8940,9 @@ euro - OUG 8/2026) -> a urmat sursa, nu memoria. Agentul TVA la incasare a OMIS 
 versiunea consolidata) - corect. Toate 9 au intrebare distincta si temei verbatim; niciun SKIP la aceasta rulare.
 RAMASE saritе (stop points): D101 (conflict lege/validator - decizie deschisa), D406 (PARTIAL, nu LIVE), e-Factura/
 e-Transport (fara actul lor in anaf_surse). Ghiduri 6->15.
+
+## 12.08.2026 — Ghiduri, lot final: regimuri speciale TVA + decont D300 (corpus puternic epuizat)
+Inca 3 pagini verbatim: marja second-hand (art.312), agentii turism (art.311), decont D300 (art.323/303). Total 18
+ghiduri. Corpusul cu regula concreta + numar (cote/plafoane/formule) e epuizat pe functiile LIVE. Ce ramane e ori
+structural-subtire (D301/D710 = mecanica XML, fara regula punctuala noua), ori stop-point (D101 conflict, D406 PARTIAL),
+ori fara act in anaf_surse (e-Factura OUG 120/2021, e-Transport OUG 41/2022 - absente din corpus).

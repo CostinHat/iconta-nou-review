@@ -4124,3 +4124,9 @@ Continuat pe volum, fara loturi. 9 pagini noi, fiecare cu intrebare distincta, t
 - d394-ce-declari-reconciliere (F034): OPANAF 3769/2015 + 2194/2025 + 77/2022 (tip_partener, rezumat1/2, codPR).
 - impozit-micro-2026 (F026): cota unica 1% (OUG 89/2025), plafon 100.000 euro (OUG 8/2026).
 Scrise prin subagenti (extractie+scriere din sursa), verificate pe citari; nicio valoare din memorie. Ghiduri 6->15.
+
+## 12.08.2026 — Ghiduri: +3 finale (regimuri speciale TVA + decont D300)
+regim-marja-second-hand (F098, CF art.312: TVA pe marja, suta marita 21/121), regim-special-agentii-turism (F099,
+art.311: marja pe pachet), decont-tva-d300-rezultat (F031, art.323/303: colectata-deductibila, sold negativ report/
+rambursare, prag 5.000 lei). Toate verbatim din Cod fiscal, functii LIVE. Total ghiduri publice: 18. Corpus puternic
+EPUIZAT pe volum. Ramase: D101 (conflict lege/validator), D406 (PARTIAL), e-Factura/e-Transport (fara act in corpus).
