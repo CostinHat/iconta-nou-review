@@ -69,4 +69,19 @@ else
     banner "$BK" "$S_BK" "$BK a divergat (nu e fast-forward)" \
            "verifica ramura; NU se forteaza din hook - muta backup-ul manual, constient"
 fi
+
+# ---------- 3. restart NECONDITIONAT: procesul viu preia HEAD dupa ORICE publicare ----------
+# NU se inspecteaza tipul commitului (runtime / docs / CSV / JS). Conditionarea pe tip a produs
+# divergenta RUNNING != HEAD (un commit de docs a lasat procesul pe commitul anterior). Regula
+# CLAUDE.md §2.3 pct.10: dupa orice publicare din lant, procesul viu incarca HEAD - fara exceptii,
+# fara liste de tipuri. Gardat de core/test_publicare_restart_neconditionat.py (cade daca reapare
+# orice conditionare pe continut). Esec = sentinela + banner, niciodata tacut (ca push-urile).
+S_RS=".git/RESTART_ESUAT"; rm -f "$S_RS"
+if sudo -n systemctl restart iconta-nou > /tmp/restart_iconta.log 2>&1; then
+    echo "[post-commit] iconta-nou restartat -> procesul viu preia $(git rev-parse --short HEAD)"
+else
+    banner "iconta-nou (restart)" "$S_RS" "restart a esuat: $(tail -1 /tmp/restart_iconta.log 2>/dev/null)" \
+           "verifica sudoers (systemctl restart iconta-nou), apoi ruleaza: sudo systemctl restart iconta-nou"
+fi
+
 exit 0

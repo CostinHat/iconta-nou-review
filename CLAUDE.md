@@ -602,6 +602,11 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    4. **restart** = `sudo systemctl restart iconta-nou` (NU `iconta`, buildul vechi, esueaza tacit), ca procesul VIU
       sa incarce codul comis. Fara restart, procesul ruleaza in continuare commitul stampilat la pornirea lui
       (core/versiune.py) - exact divergenta pe care detectorul running==HEAD o semnala fara ca nimeni s-o repare.
+      CABLAT (post-commit, ca pasul 2 de push): restartul e NECONDITIONAT de tipul commitului - dupa ORICE
+      publicare din lant procesul viu preia HEAD, fara exceptii, fara liste de tipuri. Conditionarea pe tip
+      (docs vs runtime, decisa de executor) a produs divergenta RUNNING!=HEAD (11.08.2026: RUNNING pe commitul
+      de cod, HEAD avansat de un commit de DOCS) si e ELIMINATA din mecanism; gardata de
+      core/test_publicare_restart_neconditionat.py (cade daca reapare orice inspectie de continut in hook).
    5. **predare** = actualizeaza PREDARE_LANT.md. E fisierul de care depinde sesiunea urmatoare (constatare
       tura 17: DECIZII/GARZI/TESTE/ISTORIC s-au actualizat, dar PREDARE a lipsit din lista - exact ce conteaza
       pentru continuitate era singurul optional). Se SUPRASCRIE, nu se adauga: e fisier de STARE CURENTA, nu
@@ -614,10 +619,11 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    divergent=False), cu **start-time-ul procesului DUPA data commitului** (systemd ExecMainStartTimestamp > data
    commit - se CITESTE, nu se presupune). Aceasta EXTINDE three-way din pct.8: confirmarea din raport (§2.2 sect.11)
    devine four-way.
-   **STOP POINT (pastrat):** daca restartul schimba comportament VIZIBIL utilizatorului, se RAPORTEAZA inainte de a-l
-   face. Daca restartul cu utilizatori activi cere fereastra sau anunt, e DECIZIE DE PRODUS - se opreste si se
-   intreaba, nu se restarteaza orbeste. Pe poarta ROSIE sau tree murdar (pct.4) NU se publica deloc: nici deploy,
-   nici restart.
+   **STOP POINT (mutat INAINTE de commit):** restartul fiind acum automat la publicare (post-commit,
+   neconditionat), decizia de produs se ia INAINTE de a comite. Daca schimbarea are comportament VIZIBIL care,
+   cu utilizatori activi, cere fereastra sau anunt, se RAPORTEAZA si se asteapta INAINTE de commit-ul care o
+   publica - nu dupa. Odata comis pe poarta verde, serviciul preia HEAD neconditionat (nu se mai alege "restart
+   sau nu" per commit). Pe poarta ROSIE sau tree murdar (pct.4) NU se comite deloc: nici deploy, nici restart.
    **DE CE executor, nu hook:** pasii 1-2 sunt stare remote fara risc vizibil -> s-au putut cabla in post-commit
    (pct.8). Restartul are stop point uman (comportament vizibil; utilizatori activi -> eventual fereastra = decizie de
    produs) -> NU se cableaza orb in post-commit (ar reporni prod la fiecare commit, peste utilizatori activi); ramane

@@ -6,11 +6,11 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-HEAD = origin/main = backup/lant-2026-08-11 = RUNNING (ALINIAT: dupa ULTIMA publicare din lant se
-restarteaza iconta-nou INDIFERENT daca commitul e runtime sau doar docs, ca versiune.stare() sa fie
-divergent=False la predare - nu doar "RUNNING = ultimul runtime"). Ultimul commit cu efect vizibil =
-b0ccc40 (bun-venit + "?" general); commiturile ulterioare (registre/PREDARE) sunt doar docs.
-Confirmare: start-time proces > data commitului HEAD, zero commituri dupa HEAD. App pe 127.0.0.1:8010.
+HEAD = origin/main = backup/lant-<data> = RUNNING. Restartul e NECONDITIONAT, cablat in post-commit:
+dupa ORICE publicare din lant procesul viu preia HEAD, indiferent de continut (fara liste de tipuri).
+versiune.stare(): running==head, divergent=False; start-time proces > data commitului HEAD; zero
+commituri dupa HEAD. App pe 127.0.0.1:8010. Verificare la predare: `/admin/versiune` (superadmin) sau
+`git log -1` + systemd ExecMainStartTimestamp (nu se hardcodeaza hash-ul in registru).
 
 ## (b) Fronturi deschise
 0. **CAMPANIE "AJUTOR DE ANSAMBLU" (Costin, 11.08) — COMPLETA.** Pagina de bun-venit la prima logare (prezentare
@@ -33,8 +33,10 @@ Nimic in lucru. Campania ajutor de ansamblu inchisa cu raport unic.
 - Ajutor de ansamblu: core/ajutor.py + genereaza_grupe_functii.repartizeaza (grupe) + STRATURI (migrare.js, firul).
   Migrare coloana: `set -a; . ~/.iconta/db.env; set +a; PYTHONPATH=$PWD venv/bin/python3 -m core.migrare_bun_venit`.
   Reset flag test (welcome reapare): UPDATE public.users SET bun_venit_vazut_la=NULL WHERE email='fir-intrare@prisma-cont.test'.
-  Nota: modificarea TEXTULUI ajutor (CSV) cere restart (cache core/ajutor.py); plasarea "?" (JS) nu.
+  Nota: orice publicare restarteaza iconta-nou (post-commit) -> modificarile de CSV (cache core/ajutor.py)
+  si de cod sunt preluate automat; nu mai exista pasi "care nu cer restart".
 - Browser: creds ~/.iconta/fe_test.env (cabinet 4163; login POST /auth/login -> sessionStorage token+user).
 - DUK declaratii: PYTHONPATH=$PWD frontend_test/valideaza_duk.py. Registru: 5 garduri in core/test_registru_*.
 - Poarta verde: commit ruleaza pytest (~6min) + verificator (0); post-commit publica origin/main + backup/lant-<data>;
-  apoi restart iconta-nou DACA s-a schimbat runtime/CSV (four-way: RUNNING > commit).
+  apoi restart iconta-nou NECONDITIONAT (cablat in post-commit, gardat de
+  core/test_publicare_restart_neconditionat) -> four-way RUNNING==HEAD.
