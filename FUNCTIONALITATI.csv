@@ -282,15 +282,80 @@ OPANAF (SAF-T); schema oficiala ANAF v2.4.9. Vezi si termenele specifice de rapo
 D406 Active (SAF-T anual),"D406 Active (SAF-T anual, sectiunea Assets): generator pur pe structura verificata din saft.xsd oficial ANAF (Asset cu Valuations: costuri achizitie inceput/sfarsit, durata de viata, adaugiri/transferuri/cedari, valoare contabila, metoda si procent amortizare, amortizarea perioadei); alimentat din registrul de mijloace fixe. [PARTIAL 27.07: familia D406 nedepunabila pana la reparare, vezi F035]",F036,firma,Declaratii D406,core/d406_active.py,schema SAF-T ANAF,PARTIAL 27.07.2026,pe XSD oficial,,
 D406 Stocuri (la cerere),"D406 Stocuri (SAF-T la cerere ANAF, sectiunea PhysicalStock): generator pur pe saft.xsd oficial (PhysicalStockEntry cu depozit, cod produs, cont de stoc, UM + factor conversie, pret unitar, cantitati si valori deschidere/inchidere); soldurile din cumulul miscarilor de stoc pana la data, la pret unitar mediu. [PARTIAL 27.07: familia D406 nedepunabila pana la reparare, vezi F035]",F037,firma,Declaratii D406,core/d406_stocuri.py,schema SAF-T ANAF,PARTIAL 27.07.2026,pe XSD oficial,,
 Dispatch declaratii,"Punct unic pentru cele 9 declaratii: tipuri, periodicitate (lunar/trimestrial/anual), validarea cererii, rutarea catre generatorul potrivit - o singura ruta HTTP pentru toate.",F038,transversal,Declaratii (toate intrarile),core/declaratii_api.py,,LIVE,,,
-Decontari asociati,"Note pentru dividende (455/457 cu cota pe an), dividende interimare cu regularizare, imprumuturi de la/catre asociati (455/456/463).",F039,firma,Operatiuni speciale > Finantare,core/decontari_asociati.py,Legea 31/1990 art. 67; OMFP 1802,LIVE,pytest,,
+Decontari asociati,"Note pentru dividende (455/457 cu cota pe an), dividende interimare cu regularizare, imprumuturi de la/catre asociati (455/456/463).",F039,firma,Operatiuni speciale > Finantare,core/decontari_asociati.py,Legea 31/1990 art. 67; OMFP 1802,LIVE,pytest,,"## Ce face
+Decontari cu asociatii - note contabile pentru dividende (455/457 cu cota pe an), dividende interimare cu regularizare, imprumuturi de la/catre asociati (455/456/463).
+## Cand se foloseste
+Cand firma distribuie dividende, acorda/primeste imprumuturi de la asociati sau face decontari cu acestia.
+## Ce trebuie pregatit inainte
+- Hotararea de distribuire a dividendelor / contractul de imprumut.
+- Cotele asociatilor (pentru dividende).
+## Pas cu pas
+1. Operatiuni speciale -> Decontari asociati.
+2. Alege tipul (dividend, imprumut) si datele.
+3. Aplicatia genereaza notele.
+## Ce iese la capat
+Note contabile pentru dividende/imprumuturi asociati; baza pentru D205 la dividende.
+## Greseli frecvente
+- Dividende interimare fara regularizare la sfarsit de an.
+## Reguli fiscale
+Legea 31/1990 art. 67 (dividende); OMFP 1802/2014. Impozitul pe dividende -> D205."
 Deconturi deplasare si diurna,"Avans de deplasare, decont cu justificare si diferenta (restituire/plata), plafonul de diurna neimpozabila intern/extern.",F040,firma,Operatiuni speciale,core/deconturi.py,art. 76 CF; HG 714/2018,LIVE,pytest,,
 Diferente de curs valutar,"Diferentele de curs valutar 665/765 (OMFP 1802/2014 pct. 316-322), cu reguli de semn pe tip de sold: la decontarea creantelor/datoriilor in valuta (automat la incasare/plata) si la reevaluarea LUNARA a soldurilor (creante, datorii, disponibilitati) la cursul BNR din ultima zi bancara a lunii. Motor pur.",F041,firma,Operatiuni speciale / automat la decontare,core/diferente_curs.py,OMFP 1802/2014 pct. 316-322,LIVE,pytest,,
 Documente pentru portal,"Arhiva documentelor firmei pentru client: lunile disponibile, balanta lunara ca PDF, declaratiile depuse - totul read-only.",F042,portal,Portal > Documente,core/documente_api.py,,LIVE,,,
-Import e-Factura (UBL),"Parser pentru XML-urile e-Factura (UBL 2.1 / CIUS-RO): numar, data, scadenta, parti, linii cu cote - facturile primite intra in aplicatie fara retastare.",F043,firma,Facturi (import),core/efactura_import.py,CIUS-RO,LIVE,pytest (test_efactura_import.py),,
+Import e-Factura (UBL),"Parser pentru XML-urile e-Factura (UBL 2.1 / CIUS-RO): numar, data, scadenta, parti, linii cu cote - facturile primite intra in aplicatie fara retastare.",F043,firma,Facturi (import),core/efactura_import.py,CIUS-RO,LIVE,pytest (test_efactura_import.py),,"## Ce face
+Importul facturilor primite din e-Factura (format UBL/XML de la SPV) - parseaza fisierul si creeaza ciorna de cheltuiala, cu datele extrase (furnizor, sume, TVA), pentru validare de catre contabil.
+## Cand se foloseste
+Cand primesti facturi prin SPV (e-Factura obligatorie B2B) si vrei sa le inregistrezi automat, fara tastare manuala.
+## Ce trebuie pregatit inainte
+- Fisierul UBL/XML descarcat din SPV (sau fluxul automat de primire e-Factura).
+## Pas cu pas
+1. Import e-Factura -> incarca fisierul UBL.
+2. Aplicatia parseaza si arata datele (furnizor, cont sugerat, sume).
+3. Verifica si valideaza (patru-ochi) -> creeaza cheltuiala.
+## Ce iese la capat
+Cheltuiala inregistrata din factura primita, legata de factura, cu contul confirmat de tine.
+## Greseli frecvente
+- Validarea fara verificarea contului sugerat.
+- Parserul minimal pierde unele campuri (tert platitor, categorie) - se completeaza manual.
+## Reguli fiscale
+e-Factura obligatorie B2B (OUG 120/2021 si urmatoarele); structura CIUS-RO / UBL."
 PDF factura,"Genereaza PDF-ul facturii (reportlab) cu identitatea vizuala a firmei-client din Model factura: logo (base64), culoare accent, font (sans/serif/mono); folosit la emitere, pe portal si la trimiterea catre client.",F045,firma,Facturi / portal,core/factura_pdf.py,,LIVE,,,
 Contare facturi + TVA + storno,"Motor pur: TVA pe cote, nota pentru factura emisa (4111=70x+4427) si primita (60x+4426=401), taxare inversa, storno cu semn.",F046,firma,Facturi (contare automata ca ciorna),core/facturi.py + core/facturi_api.py,OMFP 1802/2014,LIVE,pytest,,
-Facturi recurente,"Sabloane cu zi de emitere: lista/adaugare/activare-dezactivare/stergere; cron-ul zilnic emite scadentele (sablon activ, zi <= azi, o singura data pe luna).",F047,firma,Facturi > Facturi recurente,core/facturi_recurente.py,,LIVE,de testat cap-coada P1.4,,
-Profil firma + model factura,"Profilul firmei din schema tenant (regim fiscal, platitor TVA, banca/IBAN, antet) + modelul vizual de factura (logo, font, culoare) cu salvare.",F048,firma,Model factura / Control fiscal,core/firma_profil_api.py,,LIVE,,,
+Facturi recurente,"Sabloane cu zi de emitere: lista/adaugare/activare-dezactivare/stergere; cron-ul zilnic emite scadentele (sablon activ, zi <= azi, o singura data pe luna).",F047,firma,Facturi > Facturi recurente,core/facturi_recurente.py,,LIVE,de testat cap-coada P1.4,,"## Ce face
+Facturi recurente - sabloane de facturi care se emit automat, periodic (ex. abonamente lunare), pe baza unei configurari (client, articole, ziua din luna). Un cron le genereaza la scadenta.
+## Cand se foloseste
+Pentru servicii/abonamente facturate periodic acelasi client cu aceeasi valoare (mentenanta, chirie, abonament).
+## Ce trebuie pregatit inainte
+- Clientul si articolele/serviciile de facturat.
+- Ziua din luna la care se emite si periodicitatea.
+## Pas cu pas
+1. Facturi recurente -> configureaza sablonul (client, linii, zi).
+2. Cronul emite factura automat la scadenta.
+3. Verifici facturile generate.
+## Ce iese la capat
+Facturi emise automat periodic, dupa sablon.
+## Greseli frecvente
+- Sablon cu date invechite (pret vechi) -> facturi gresite.
+## Reguli fiscale
+Numerotare continua; TVA pe cota curenta la data emiterii."
+Profil firma + model factura,"Profilul firmei din schema tenant (regim fiscal, platitor TVA, banca/IBAN, antet) + modelul vizual de factura (logo, font, culoare) cu salvare.",F048,firma,Model factura / Control fiscal,core/firma_profil_api.py,,LIVE,,,"## Ce face
+Profilul firmei si modelul de factura - datele de identificare (denumire, CUI, adresa, cont, capital), regimul de TVA si numerotarea facturilor (serie, urmatorul numar), plus modelul (logo, culori) pentru PDF-ul de factura.
+## Cand se foloseste
+La configurarea initiala a firmei, INAINTE de prima factura, si ori de cate ori se schimba datele firmei sau regimul de TVA.
+## Ce trebuie pregatit inainte
+- Datele oficiale ale firmei (de la ANAF / Reg. Com.).
+- Seria si ultimul numar de factura folosit (daca ai mai emis in alt program), ca numerotarea sa fie neintrerupta.
+## Pas cu pas
+1. Date firma / Configurare emitere.
+2. Completeaza datele, regimul de TVA (platitor/neplatitor) si numerotarea.
+3. Salveaza; modelul se aplica pe PDF-urile viitoare.
+## Ce iese la capat
+Firma configurata pentru emitere: numerotare corecta, regim TVA, model PDF.
+## Greseli frecvente
+- Numerotare care se suprapune cu facturi deja emise in alt program.
+- Regim TVA gresit -> facturi cu/fara TVA gresit.
+## Reguli fiscale
+Numerotarea facturilor trebuie sa fie continua si cronologica (Codul fiscal, art. 319). Regimul de TVA din vectorul fiscal."
 Import/export extracomunitar,"Baza TVA la import (valoarea in vama + taxe + comisioane), calculul importului, validarea exportului (scutit cu drept de deducere).",F049,firma,Operatiuni speciale > Extern,core/import_export.py,art. 289 CF,LIVE,pytest,,
 Operatiuni intracomunitare,"AIC/LIC si servicii B2B: despartirea codului TVA, verificare VIES a partenerului, taxare inversa (4426=4427), validarile livrarii si prestarii IC.",F050,firma,Operatiuni speciale > Extern / Emitere,core/intracomunitar.py,"art. 268, 278(2) CF",LIVE,pytest,,
 Verificator praguri Intrastat,Analizeaza fluxurile UE ale firmei contra pragurilor 2026 (1.000.000 lei expedieri/introduceri) si avertizeaza cand se apropie obligatia de raportare.,F051,firma,Control fiscal (verificare),core/intrastat.py,Ordin INS 1604/2025,LIVE,,,
@@ -324,7 +389,23 @@ Obiecte de inventar,"Note pentru achizitie (303), dare in folosinta si scoatere 
 Contabilitate ONG,Note pe partida dubla specifica ONG (venituri fara scop patrimonial vs economice) si testul scutirii activitatii economice.,F064,firma,Operatiuni speciale,core/ong.py,OMFP 3103/2017; art. 15(2-3) CF,LIVE,pytest,,
 Povestea lunii (pachet lunar),Aduna cifrele lunii firmei -> AI scrie un draft narativ pentru antreprenor -> contabilul editeaza/aproba -> trimitere pe email; istoric per luna.,F065,cabinet,card Pachete lunare,core/pachete_api.py,,LIVE,vizual,,
 Perisabilitati si scazaminte,"Perisabilitati si scazaminte (HG 831/2004 + art. 25 si 304 CF): limita maxima deductibila = coeficientul grupei (anexe 1-3) aplicat la pretul de inregistrare al produselor INTRATE, cu conditii (verificare faptica, aprobarea administratorului, proces-verbal). IN limita: 607/60x=3xx deductibil fara ajustare TVA; PESTE limita: 607 nedeductibil + ajustare TVA dedusa (635=4426) pe depasire. Motor pur.",F066,firma,Operatiuni speciale,core/perisabilitati.py,"HG 831/2004; art. 25, 304 CF",LIVE,pytest,,
-Link de plata pe factura,Genereaza link de plata online pe factura emisa si confirma incasarea; provider abstract: mock (fara cont) / Netopia / Stripe - cheia providerului per cabinet.,F067,firma,Facturi (detaliu),core/plati.py,,LIVE cu mock; provider real de configurat,pytest,,
+Link de plata pe factura,Genereaza link de plata online pe factura emisa si confirma incasarea; provider abstract: mock (fara cont) / Netopia / Stripe - cheia providerului per cabinet.,F067,firma,Facturi (detaliu),core/plati.py,,LIVE cu mock; provider real de configurat,pytest,,"## Ce face
+Link de plata pe factura emisa - genereaza un link prin care clientul poate plati factura online (provider de plata). Azi functioneaza cu provider mock; la activarea unui provider real (Netopia/Stripe) devine plata reala.
+## Cand se foloseste
+Cand vrei sa oferi clientului o modalitate rapida de plata online a facturii.
+## Ce trebuie pregatit inainte
+- Factura emisa si neplatita.
+- (Pentru plata reala) un provider de plata configurat (cheie in mediu).
+## Pas cu pas
+1. Pe factura -> Link plata.
+2. Aplicatia genereaza linkul (refoloseste linkul existent daca e cazul).
+3. Trimite linkul clientului.
+## Ce iese la capat
+Link de plata pentru factura (provider mock sau real).
+## Greseli frecvente
+- Asteptarea unei plati reale cand providerul e inca mock.
+## Reguli fiscale
+Fara implicatii fiscale directe; incasarea se contabilizeaza la confirmare."
 "API portal (read-only, izolat)","Datele clientului strict pe firmele lui: date firma, declaratii depuse etc.; rol client separat, fara actiuni de contabil.",F068,portal,Portal (toate ecranele),core/portal_api.py,,LIVE,privacy-bug reparat 10.07,,
 Productie in curs si produse finite,"Note pentru obtinerea produselor (345=711), productia in curs (331), coeficientul 348 (diferente de pret) si vanzarea cu descarcare.",F069,firma,Operatiuni speciale > Imobilizari,core/productie.py,OMFP 1802/2014,LIVE,pytest,,
 Nomenclator produse + cota AI,"Produsele firmei: denumire -> AI potriveste cota TVA din regula oficiala cu justificare afisata, corectabila manual; cautare si potrivire la emiterea facturilor.",F070,firma,card Produse / Emitere,core/produse_api.py,art. 291 CF,LIVE,vizual (reconectat 13.07),,
@@ -411,7 +492,24 @@ OPANAF (D394); nomenclator coduri produse D394. Termen: la fel ca D300 (perioada
 Notificare e-Transport,"Genereaza XML-ul notificarii v2 (UIT) pe structura oficiala, pentru incarcare manuala in SPV: operatiune, bunuri cu cod tarifar/greutati/valoare, partener, puncte incarcare/descarcare, vehicul.",F044,firma,card e-Transport,core/etransport.py,schema mfp v2,"LIVE 18.07 (mai putin proba live pending drept): genereaza XML-ul UIT v2 (core/etransport.py) SI il trimite direct prin API (F121, butonul Trimite UIT pe card) - nu doar upload manual. XML-ul merge la ANAF prin conectorul principal. Nota veche 'blocaj SPVWS2' DEPASITA (aia tinea de F128 mesaje SPV, nu e-Transport). LIMITA: trimiterea live = pending drept e-Transport pe CIF real (ca F176).",vizual + backend HTTP (POST etransport/trimite: poarta de timp blocheaza prea-devreme; GET trimiteri: semafor timp separat de trimitere),,
 Monitor fiscal (noutati legislative),"Cron saptamanal: citeste noutatile ANAF/MF, AI filtreaza relevanta (TVA, salarii, plafoane, declaratii, dividende) cu data intrarii in vigoare, salveaza si trimite email.",F060,admin,— (automat) + email,core/monitor_fiscal.py,,LIVE (13.07 seara: detectie+email+emitere programata 7/3/0 testata idempotent),pytest + test date reale,,
 Retetar HoReCa (GV),Reteta = ingrediente cu cantitate/portie; vanzarea a N portii consuma ingredientele din stoc la CMP (iesiri miscari_stoc + nota ciorna) si calculeaza food cost per portie.,F076,firma,Raport Z / retetar,core/retete.py + core/retete_api.py,,"LIVE (13.07 seara: flux complet verificat cu date reale in tenant_002 - food cost, descarcare la CMP, nota ciorna 601=302, stoc insuficient; bug antedatare gv_crono gasit si reparat)",pytest 23 + date reale,,
-Calcul salarizare (brut->net),"Motorul salariilor 2026: CAS/CASS/impozit, deducere personala + suplimentare (tineri<26, copii), facilitatea 200/300 lei (4 conditii cumulative), part-time cu supliment angajator pe baza minima, procente CM (55/65/75), monografia salariilor si a platii.",F080,firma,Salariati > Stat de plata,core/salarizare.py,CF titlul IV-V; OUG 158/2005; OUG 34/2024,LIVE (cod 10 integrat 13.07 seara: dropdown + camp venit realizat conditionat + calcul art.19 + integral FNUASS; testat 3 cazuri pe formula),285 pytest pe core + DUK pe D112,,
+Calcul salarizare (brut->net),"Motorul salariilor 2026: CAS/CASS/impozit, deducere personala + suplimentare (tineri<26, copii), facilitatea 200/300 lei (4 conditii cumulative), part-time cu supliment angajator pe baza minima, procente CM (55/65/75), monografia salariilor si a platii.",F080,firma,Salariati > Stat de plata,core/salarizare.py,CF titlul IV-V; OUG 158/2005; OUG 34/2024,LIVE (cod 10 integrat 13.07 seara: dropdown + camp venit realizat conditionat + calcul art.19 + integral FNUASS; testat 3 cazuri pe formula),285 pytest pe core + DUK pe D112,,"## Ce face
+Calculul salarizarii (de la brut la net) - din salariul brut calculeaza contributiile (CAS, CASS), impozitul pe venit, contributia asiguratorie de munca (angajator), rezultand netul si costul total. Include facilitati, part-time cu baza minima, concedii.
+## Cand se foloseste
+Lunar, pentru fiecare salariat, ca baza a statului de plata, fluturasilor si a declaratiei D112.
+## Ce trebuie pregatit inainte
+- Salariatii activi cu datele de contract (brut, norma, tip contract).
+- Pontajul/concediile lunii, tichetele.
+## Pas cu pas
+1. Salariati -> statul de plata al lunii.
+2. Aplicatia calculeaza pe fiecare salariat (brut->net, contributii, impozit).
+3. Verifica; genereaza fluturasii; declara D112.
+## Ce iese la capat
+Statul de plata cu net, contributii, impozit, cost, per salariat; baza pentru D112 si plata.
+## Greseli frecvente
+- Brut sub salariul minim pe norma intreaga (generarea D112 refuza ca date suspecte).
+- Facilitatile fiscale nemarcate.
+## Reguli fiscale
+Codul fiscal titlul V (contributii); salariul minim; baza minima part-time; facilitati per domeniu."
 Alerte legislative programate,"Modificarile legislative detectate de monitorul fiscal se afiseaza pe ecranele utilizatorilor la DATA decisa de superadmin, cu data intrarii in vigoare - pentru incredere in aplicatie. EXISTA: detectia (monitor AI saptamanal, email) + anunturi imediate cu confirmare. LIPSESTE: data programata a afisarii (tabela anunturi_cabinet nu are campul) + fluxul monitor -> propunere anunt in admin. AUTOMAT: alertele cu data intrarii in vigoare (extrasa de AI) genereaza anunturi catre toate cabinetele la 7/3/0 zile inainte, prin cron zilnic 9:00; idempotent (jurnal alerte_emise); propunerile manuale raman pentru cazurile fara data.",F103,transversal,banner utilizatori + admin Anunturi,core/monitor_fiscal.py + anunturi_cabinet,,"LIVE (13.07 seara: DDL data_afisare + propuneri monitor in admin (filtrate, fara markere buletin) + afisare conditionata de data + cron 9:00 - testat: emitere praguri, idempotenta, filtru data viitoare)",test date reale + vizual,,
 PWA (aplicatie instalabila),"Aplicatie web instalabila (PWA): manifest (standalone, iconite 192/512, tema) + service worker v2 cu fallback offline DOAR pe navigare (JS/CSS/date merg direct la server - prospetimea o decide serverul, fara cache paralel pe datele contabile); instalare pe ecranul telefonului din Safari/Chrome, pornire full-screen fara browser.",F113,transversal,portal pe mobil,static/,,"LIVE (14.07: testat pe iPhone/Safari - instalare pe ecranul principal, pornire standalone, login+navigare completa, offline: UI viu + date absente corect; Android ramas ca verificare secundara)",—,,
 Educatie AI pe tipare (varianta generativa),"LIVE 21.07.2026: extensia ecranului G (Tipare de erori) cu analiza generativa AI - inainte doar agregare statistica (F094). Butonul 'Genereaza analiza AI' cere lui Claude (core.ai_client, model ales de proiect) o explicatie a tiparelor de respingere + 3-5 recomandari concrete, GROUNDED strict pe agregatele deterministe F094 (motive respingere, tipuri cu rata, firme) - fara cifre inventate. On-demand (apel platit, nu automat); fallback curat daca AI indisponibil sau lipsa date. Doar patron. Vezi DECIZII 21.07.",F120,cabinet,Activitate > Tipare de erori,"core/tipare_api.py (analiza_ai), core/ai_client.py (refolosit), main.py, static/js/ecrane/tipare.js",,LIVE 21.07.2026,apel real Claude verificat (analiza structurata romana + grounding pe date reale CUI/CAS) + fallback fara date/fara cheie; verificator DS 0 nou,,
@@ -420,16 +518,64 @@ Cod 10 CM in flux,"Integrarea calculului pentru codul 10 de concediu medical (re
 Provider real de plata,Configurarea Netopia sau Stripe pe cont real (azi F067 functioneaza cu provider mock).,F123,firma,Facturi > link de plata,,—,PLANIFICAT,—,,
 Testare pilot P1-P5,"Campania de testare pentru pilot: fluxul lunar complet pe firma reala, salarizare cap-coada, TVA la incasare, operatiuni speciale esantion, partida simpla, recurente, WooCommerce, KPI/forecast, backup-restore, PWA si responsive pe telefon.",F124,transversal,— (campanie),DE_FACUT sectiunea 1,—,"LIVE (16.07: testat SSH pe date inventate verificate la sursa oficiala/DUK - flux lunar reconciliere->D300, salarizare->D112, TVA la incasare, operatiuni speciale, partida simpla->D212, recurente idempotent, WooCommerce, KPI/forecast, import e-Factura; 555 teste)",—,,
 Trimitere D390 clasificari manuale,"LIVE 21.07.2026: clasificarea manuala D390 - inainte doar avertisment, clasificarea se facea in afara aplicatiei. Auto-maparea pune orice factura IC pe bunuri (emisa->L, primita->A); contabilul poate RECLASIFICA o operatiune auto (override tip: emisa L/T/P/R, primita A/S) SI adauga linii pur manuale (P/S/T/R fara factura) - model reclasificare+adaugare, fara dubla numarare (DECIZII 21.07). Panou pe pasul 2 al declaratiei D390: lista operatiuni auto cu selector de tip + adaugare/stergere linii manuale + regenereaza. Persistat per tenant/an/luna (d390_reclasificare + d390_manual) -> toate caile care genereaza D390 (wizard, pachet, control incrucisat) vad aceleasi clasificari. Validare tranzitii la sursa; cod partener obligatoriu L/T/P/R.",F125,firma,Declaratii D390 (pasul 2),"09_ddl_d390_clasificare.sql, core/d390.py, core/d390_clasificare_api.py, main.py, static/js/ecrane/declaratii.js",OPANAF 705/2020 (D390),LIVE 21.07.2026,"core/test_d390.py (8 teste, +4 F125: reclasificare fara dubla numarare, operatiuni_auto) + DUK stare VALID pe XML cu reclasificare L->P + linie manuala S + E2E autentificat (reclasificare, tranzitii ilegale 422, persistenta)",,
-e-Factura SPV complet,"Trimitere automata a facturilor emise in SPV (cu retry la indisponibilitate ANAF), urmarirea starii cu recipisa/erori, primirea facturilor de la furnizori din SPV si transformarea lor automata in NIR/cheltuieli. TEMEI TEHNIC CONFIRMAT 17.07.2026: fezabil server-side prin OAuth ANAF (authorize/token la logincert.anaf.ro/anaf-oauth2/v1/; access token 90 zile, refresh 365 zile; iConta = aplicatie inrolata cu un Client ID, contabilul autorizeaza cu certificatul lui). Nu atinge blocantul certificatului (vezi F128).",F126,firma,Facturi / Bonuri,core/efactura_send.py + core/efactura_import.py + main.py,OUG 120/2021; obligatoriu 2024,"LIVE 18.07 (e-Factura cap-coada, mai putin round-trip live pending drept): SEND (generator UBL/CIUS-RO + POARTA validare/FACT1 + upload + recipisa poll F178) + RECEIVE (cron F179 listaMesajeFactura filtru=P -> ciorna in efactura_primite, dedup + anti-scurgere cif_beneficiar) + FOUR-EYES (ecran validare: date PARSATE + cont sugerat confirmat de om -> creeaza cheltuiala + factura_id; Respinge cu motiv, nu sterge; idempotent FOR UPDATE). Gard four-eyes = masina (cron=ochiul 1) vs om (ochiul 2), NU doi useri fizici (cabinet cu 1 contabil); rol/acces la tenant, nu identitate. Peste modelul principal cabinet XOR gratuit.","backend HTTP dovedit: GET lista (preview parsat + cont sugerat), valideaza -> factura_id legat + status validata + cont, idempotent (deja_validata), respinge+motiv (ramane in istoric), 422 fara motiv; ecran node+verificator 0. LIMITA: import/recipisa LIVE pending drept (dev token, ca F176) - four-eyes testat cu ciorna injectata (factura parsata, factura_id NULL)",,
+e-Factura SPV complet,"Trimitere automata a facturilor emise in SPV (cu retry la indisponibilitate ANAF), urmarirea starii cu recipisa/erori, primirea facturilor de la furnizori din SPV si transformarea lor automata in NIR/cheltuieli. TEMEI TEHNIC CONFIRMAT 17.07.2026: fezabil server-side prin OAuth ANAF (authorize/token la logincert.anaf.ro/anaf-oauth2/v1/; access token 90 zile, refresh 365 zile; iConta = aplicatie inrolata cu un Client ID, contabilul autorizeaza cu certificatul lui). Nu atinge blocantul certificatului (vezi F128).",F126,firma,Facturi / Bonuri,core/efactura_send.py + core/efactura_import.py + main.py,OUG 120/2021; obligatoriu 2024,"LIVE 18.07 (e-Factura cap-coada, mai putin round-trip live pending drept): SEND (generator UBL/CIUS-RO + POARTA validare/FACT1 + upload + recipisa poll F178) + RECEIVE (cron F179 listaMesajeFactura filtru=P -> ciorna in efactura_primite, dedup + anti-scurgere cif_beneficiar) + FOUR-EYES (ecran validare: date PARSATE + cont sugerat confirmat de om -> creeaza cheltuiala + factura_id; Respinge cu motiv, nu sterge; idempotent FOR UPDATE). Gard four-eyes = masina (cron=ochiul 1) vs om (ochiul 2), NU doi useri fizici (cabinet cu 1 contabil); rol/acces la tenant, nu identitate. Peste modelul principal cabinet XOR gratuit.","backend HTTP dovedit: GET lista (preview parsat + cont sugerat), valideaza -> factura_id legat + status validata + cont, idempotent (deja_validata), respinge+motiv (ramane in istoric), 422 fara motiv; ecran node+verificator 0. LIMITA: import/recipisa LIVE pending drept (dev token, ca F176) - four-eyes testat cu ciorna injectata (factura parsata, factura_id NULL)",,"## Ce face
+e-Factura SPV completa - genereaza XML-ul UBL (CIUS-RO) al facturii emise, il valideaza (poarta FACT1) si il incarca in SPV la ANAF, apoi urmareste recipisa. Plus primirea facturilor furnizorilor (four-eyes: masina propune, omul confirma).
+## Cand se foloseste
+Obligatoriu pentru facturile B2B - toate facturile emise catre alte firme trebuie transmise prin SPV.
+## Ce trebuie pregatit inainte
+- Conectarea SPV/ANAF (OAuth) configurata pentru cabinet (Setari -> Conectare SPV), cu certificatul cabinetului.
+- Factura emisa corect (date beneficiar, CUI, cote TVA).
+## Pas cu pas
+1. Emite factura.
+2. Trimite prin e-Factura (genereaza UBL -> valideaza -> incarca in SPV).
+3. Urmareste recipisa (acceptata/respinsa).
+## Ce iese la capat
+Factura transmisa in SPV, cu index de incarcare si recipisa ANAF.
+## Greseli frecvente
+- Lipsa dreptului e-Factura pe CIF-ul real -> incarcarea esueaza.
+- Date de beneficiar incomplete -> respingere FACT.
+## Reguli fiscale
+e-Factura B2B obligatorie; OAuth ANAF (token 90 zile, refresh 365); validare CIUS-RO."
 Transmitere declaratii direct la ANAF,"Depunerea declaratiilor din aplicatie cu certificat digital/token, preluarea automata a recipiselor, istoric depuneri cu stare. VERIFICAT LA SURSA 17.07.2026: nu exista API de depunere. OAuth ANAF expune in nomenclator doar e-Factura si e-Transport (procedura oficiala static.anaf.ro/.../Oauth_procedura_inregistrare_aplicatii_portal_ANAF.pdf). SPVWS2 (webserviced.anaf.ro) nu are metoda de transmitere; README oficial MfpAnaf/ClientSPV listeaza 'transmitere declaratii' la sectiunea de viitor. Ramane DUK + upload manual in SPV. De confirmat cu spv.webservice@mfinante.ro inainte de RESPINS definitiv.",F127,transversal,Declaratii / De validat,CONCURENTA: SAGA/SmartBill/Keez,,AMANAT 17.07.2026 (fara API la ANAF; de confirmat la spv.webservice@mfinante.ro),—,,
 Monitorizare mesaje SPV ale firmelor,"Citirea automata a mesajelor din SPV pentru fiecare firma (somatii, notificari, decizii) cu alerte catre cabinet. VERIFICAT LA SURSA 17.07.2026: exista serviciul SPVWS2 (webserviced.anaf.ro/SPVWS2/rest/listaMesaje?zile=N&cif=X + /descarcare?id=N), client oficial MfpAnaf/ClientSPV. BLOCANT STRUCTURAL: SPVWS2 se autentifica prin mTLS cu certificat calificat local (Sign.java foloseste KeyStore PKCS11 = token USB; varianta cloud certSIGN cere aplicatia vToken pe Windows/macOS). Sub eIDAS cheia privata nu paraseste dispozitivul calificat - nu poate ajunge pe serverul Linux. SPVWS2 NU are OAuth. Singura cale ramasa = agent desktop la cabinet (alt produs: instalare+update+suport pe calculatoare straine). SE REDESCHIDE daca ANAF adauga OAuth la SPVWS2.",F128,cabinet,Control fiscal / notificari,CONCURENTA: Keez,,"AMANAT 17.07.2026 (blocant structural: SPVWS2 cere certificat local, nu are OAuth)",—,,
 Open Banking PSD2 (extrase automate),"Conectarea conturilor bancare prin PSD2: extrasele sosesc zilnic automat (toate bancile + Revolut + Trezoreria), fara import manual de fisiere.",F130,firma,card Banca,CONCURENTA: FGO/Keez,PSD2,PLANIFICAT (din analiza concurentei 13.07),—,,
 Notificari de plata si alerte neplatnici,"Notificari automate catre clientii cu facturi scadente/restante, alerte in aplicatie, scadentar si fisa de client.",F131,firma,Facturi,"core/scadentar.py, core/notificari_scadenta.py",,"LIVE (17.07: scadentar + fisa client + badge restante pe card Facturi; notificare email opt-in default OFF, praguri {-3,+1,+7} stadiu curent - zi ratata nu pierde, reply-to firma, supape stop/amana, cron 08:00)",pytest (18) + functional,,
 Import borderouri curieri si procesatori card - AMANAT (la semnal),"AMANAT (la semnal, nu preventiv): incasarile ramburs (curier COD) si decontarile procesatorilor de card ca surse de reconciliere. Verificat la sursa 20.07: e o EXTINDERE a reconcilierii bancare (F012) la alte surse de fisier (reutilizeaza reconciliere.potriveste_extras + reconciliere_api), NU feature structural nou; singura mecanica noua = netarea comisionului (decontarea plateste net=brut-comision, factura e pe brut -> potrivire pe brut + comision postat ca cheltuiala 627/622). NU depinde de F123 (calea prin fisier, provider-agnostica). Parserele sunt specifice formatului -> se construieste la PRIMUL client e-commerce cu fisier real (ca Ciel 'blocat pe spec' / D307), nu speculativ. Vezi DECIZII 18.07 (bucket 'la semnal') + verificare 20.07.",F132,firma,card Banca,CONCURENTA: SmartBill/Oblio/FGO,,AMANAT 20.07.2026 (la semnal - primul client e-commerce cu fisier real),—,,
-Tichete de masa + vacanta + cadou in stat plata (Faza 1 + 2a + 2b1),"LIVE 20.07 (Faza 1): tichete de MASA cap-coada. Config per salariat (valoare/tichet, plafon 45 lei/2026 in common.COTE - Legea 201/2025), calcul CASS 10% + impozit 10% pe valoare (fara CAS/CAM, fara deducere), zile = zile lucrate salariu (luna-CM, nu pontaj), linie in stat + bloc pe fluturas, monografie (421=4316 include CASS tichete, 642=5328 nominal), D112 corect (baza CASS include tichete, baza CAS nu) - VALIDAT DUK stare valid FARA ERORI. Tratament fiscal verificat la sursa (Legea 296/2023 le-a scos din exceptia CASS din 2024).  Vezi DECIZII 20.07. FAZA 2a LIVE 20.07: tichete de VACANTA - suma one-off pe luna (tabel beneficii_lunare, buton '+ vacanta' pe rand), acelasi tratament fiscal ca masa (CASS+impozit, fara CAS/CAM), plafon anual 6 salarii minime cu semnal la depasire, stat/fluturas (net cash + total disponibil), monografie 642=5328, D112 (baza CASS include vacanta) VALIDAT DUK valid FARA ERORI. FAZA 2b1 LIVE 20.07: tichete CADOU neimpozabile - cadou <=300 lei/persoana/EVENIMENT pentru evenimente LEGALE (paste/craciun/8martie/1iunie) = NEIMPOZABIL (nu atinge calcul_salariu/D112); coloana eveniment (4 legale + 'altul'), un cadou per eveniment/luna (beneficii_lunare, buton '+ cadou' cu selector), stat + fluturas (pe card separat, in total disponibil, fara retinere), monografie cheltuiala 642=5328 pe valoarea totala. SEMNAL rosu la TAXABIL (>300 lei/eveniment sau eveniment nelegal) - se raporteaza dar NU se taxeaza automat. Verificat vizual 20.07 (cadou 800 -> semnal corect). Fiscal verificat la sursa. Taxarea peste prag = Faza 2b2 (amanat la caz real). Vezi DECIZII 20.07.",F133,firma,Salariati (config + stat plata + fluturas),"04_ddl_tichet_masa.sql, 05_ddl_beneficii_lunare.sql, 06_ddl_cadou_eveniment.sql, core/common.py, core/salarizare.py, core/stat_plata_api.py, core/salarii_contare.py, core/d112.py, core/beneficii_api.py, static/js/ecrane/firme.js",Legea 201/2025; Legea 296/2023; Cod fiscal,LIVE 20.07.2026 (Faza 1 + 2a + 2b1; taxare cadou peste prag = Faza 2b2 amanat),test functional + DUK (D112 masa+vacanta valid FARA ERORI) + verificat vizual cadou; non-regresie,,
+Tichete de masa + vacanta + cadou in stat plata (Faza 1 + 2a + 2b1),"LIVE 20.07 (Faza 1): tichete de MASA cap-coada. Config per salariat (valoare/tichet, plafon 45 lei/2026 in common.COTE - Legea 201/2025), calcul CASS 10% + impozit 10% pe valoare (fara CAS/CAM, fara deducere), zile = zile lucrate salariu (luna-CM, nu pontaj), linie in stat + bloc pe fluturas, monografie (421=4316 include CASS tichete, 642=5328 nominal), D112 corect (baza CASS include tichete, baza CAS nu) - VALIDAT DUK stare valid FARA ERORI. Tratament fiscal verificat la sursa (Legea 296/2023 le-a scos din exceptia CASS din 2024).  Vezi DECIZII 20.07. FAZA 2a LIVE 20.07: tichete de VACANTA - suma one-off pe luna (tabel beneficii_lunare, buton '+ vacanta' pe rand), acelasi tratament fiscal ca masa (CASS+impozit, fara CAS/CAM), plafon anual 6 salarii minime cu semnal la depasire, stat/fluturas (net cash + total disponibil), monografie 642=5328, D112 (baza CASS include vacanta) VALIDAT DUK valid FARA ERORI. FAZA 2b1 LIVE 20.07: tichete CADOU neimpozabile - cadou <=300 lei/persoana/EVENIMENT pentru evenimente LEGALE (paste/craciun/8martie/1iunie) = NEIMPOZABIL (nu atinge calcul_salariu/D112); coloana eveniment (4 legale + 'altul'), un cadou per eveniment/luna (beneficii_lunare, buton '+ cadou' cu selector), stat + fluturas (pe card separat, in total disponibil, fara retinere), monografie cheltuiala 642=5328 pe valoarea totala. SEMNAL rosu la TAXABIL (>300 lei/eveniment sau eveniment nelegal) - se raporteaza dar NU se taxeaza automat. Verificat vizual 20.07 (cadou 800 -> semnal corect). Fiscal verificat la sursa. Taxarea peste prag = Faza 2b2 (amanat la caz real). Vezi DECIZII 20.07.",F133,firma,Salariati (config + stat plata + fluturas),"04_ddl_tichet_masa.sql, 05_ddl_beneficii_lunare.sql, 06_ddl_cadou_eveniment.sql, core/common.py, core/salarizare.py, core/stat_plata_api.py, core/salarii_contare.py, core/d112.py, core/beneficii_api.py, static/js/ecrane/firme.js",Legea 201/2025; Legea 296/2023; Cod fiscal,LIVE 20.07.2026 (Faza 1 + 2a + 2b1; taxare cadou peste prag = Faza 2b2 amanat),test functional + DUK (D112 masa+vacanta valid FARA ERORI) + verificat vizual cadou; non-regresie,,"## Ce face
+Tichete de masa, de vacanta si cadouri in statul de plata - adaugarea beneficiilor extrasalariale cu tratamentul fiscal corect (impozit pe tichete, plafoane pe cadouri/vacanta, retineri).
+## Cand se foloseste
+Cand acorzi salariatilor tichete de masa, tichete de vacanta sau cadouri (evenimente).
+## Ce trebuie pregatit inainte
+- Numarul de zile lucrate (pentru tichete de masa) si valorile nominale.
+- Evenimentul pentru cadou (legal) si suma.
+## Pas cu pas
+1. Salariati -> pe randul salariatului -> + vacanta / + cadou / tichete.
+2. Aplicatia aplica impozitul pe tichete si verifica plafoanele.
+## Ce iese la capat
+Beneficii in statul de plata cu impozit/retineri corecte, avertisment la depasirea plafonului.
+## Greseli frecvente
+- Cadou peste 300 lei/eveniment sau eveniment nelegal -> devine taxabil.
+- Tichete de masa pe zile nelucrate.
+## Reguli fiscale
+Codul fiscal: tichete de masa (impozit pe venit, fara contributii), cadouri plafon 300 lei/eveniment, tichete de vacanta (plafon anual)."
 Plata salariilor pe card (fisier bancar),"LIVE 20.07.2026: fisier de plata a salariilor NET pe card, format SEPA / ISO 20022 pain.001.001.03 (CustomerCreditTransferInitiation) - decizie STOP (Costin), bank-agnostic, verificat la sursa (XSD in sepa_surse/). Suma platita = NET cash (tichetele merg pe card de beneficii separat, nu in transfer). Prereq: IBAN salariat (coloana + validare mod-97 ISO 13616 la introducere, ca CUI/CNP - un IBAN gresit trimite banii altcuiva) + IBAN firma (ordonator). Salariatii fara IBAN valid = EXCLUSI si RAPORTATI (nu platiti tacit); firma fara IBAN -> eroare. XML validat pe XSD-ul oficial INAINTE de download (refuz daca banca l-ar respinge). Diacritice transliterate (charset SEPA). Buton 'Fisier plata card (SEPA)' pe stat: preview (cati/total/cine fara IBAN) -> download. Doar RON domestic (RO IBAN); valuta = tema separata.",F134,firma,Salariati > Stat de plata,"07_ddl_iban_salariat.sql, core/plata_salarii.py, core/salariati_api.py, core/stat_plata_api.py, main.py, static/js/ecrane/firme.js, sepa_surse/pain.001.001.03.xsd",ISO 20022 pain.001.001.03; ISO 13616 (IBAN),LIVE 20.07.2026,"core/test_plata_salarii.py (11 teste: iban_valid mod-97 + charset SEPA + rotunjire) + E2E autentificat pe tenant_002 (preview+download, fisier valid pe XSD oficial, multi-plata, fara_iban, cai de eroare)",,
 Pontaj angajati,"Pontaj lunar (prezenta/concedii) completabil si de client pe portal, alimenteaza statul de plata.",F135,firma,Salariati / portal,core/pontaj.py,informativ (DECIZII.md 17.07),"LIVE (17.07: pontaj lunar informativ - grila zile lucratoare fara sarbatori, stari prezent/absent/concediu/invoire/delegatie ca exceptii; NU alimenteaza statul de plata; portal client poate completa)",pytest (5) + functional,,
-Adeverinte salariati,"Generarea adeverintelor uzuale (venit, CIC, medic) din datele de salarizare.",F136,firma,Salariati,core/adeverinta.py,art. 34 alin. 5 + art. 40(2)h Codul muncii (L 53/2003),"LIVE (17.07: adeverinta generica de salariat -> PDF; date auto firma+salariat+net, campuri CI/CIM/tip contract/vechime/scop/mentiuni; nota onesta banca; NU adeverinta pt banca)",pytest (3) + functional,,
+Adeverinte salariati,"Generarea adeverintelor uzuale (venit, CIC, medic) din datele de salarizare.",F136,firma,Salariati,core/adeverinta.py,art. 34 alin. 5 + art. 40(2)h Codul muncii (L 53/2003),"LIVE (17.07: adeverinta generica de salariat -> PDF; date auto firma+salariat+net, campuri CI/CIM/tip contract/vechime/scop/mentiuni; nota onesta banca; NU adeverinta pt banca)",pytest (3) + functional,,"## Ce face
+Adeverinte de salariat - genereaza o adeverinta generica (PDF) cu datele firmei si ale salariatului (net, tip contract, vechime), cu campuri configurabile (scop, mentiuni). NU e adeverinta pentru banca (are mentiune onesta).
+## Cand se foloseste
+Cand un salariat cere o adeverinta de salariat (pentru diverse scopuri administrative).
+## Ce trebuie pregatit inainte
+- Salariatul si scopul adeverintei.
+## Pas cu pas
+1. Salariati -> pe salariat -> Adeverinta.
+2. Completeaza scopul/mentiunile.
+3. Genereaza PDF-ul.
+## Ce iese la capat
+Adeverinta PDF cu datele salariatului.
+## Greseli frecvente
+- Folosirea ei ca adeverinta pentru banca (nu e destinata asta).
+## Reguli fiscale
+Fara implicatii fiscale (document informativ)."
 Coduri COR pe contracte,"LIVE 20.07.2026: nomenclatorul COR (Clasificarea Ocupatiilor din Romania) - inainte era free-text nevalidat, acum lookup validat la sursa. Nomenclator NATIONAL in public.cor_ocupatii (4422 ocupatii, cod 6 cifre), incarcat din fisierul OFICIAL data.gov.ro (Ordin 573/180/2024, MO 344/12.04.2024) prin cor_incarca.py - regula de aur, nu coduri inventate. Cautare diacritic-insensitiva dupa cod (prefix) sau denumire (GET /cor). Codul COR se valideaza la salvarea salariatului (creare+editare): inexistent in nomenclator -> respins (REGES respinge oricum un cod fals). UI: camp lookup 'Ocupatie (COR)' in formularul salariat + buton 'COR ✓/⚠' pe stat (editor inline, pt angajatii existenti). REGES foloseste codul (deja validat) + versiune 10 (COR 2010/ISCO-08). Import bulk ramane lax (date de migrare).",F137,firma,Salariati,"08_ddl_cor_ocupatii.sql, cor_incarca.py, core/cor_api.py, core/salariati_api.py, core/stat_plata_api.py, main.py, static/js/ecrane/firme.js, cor_surse/cor2024.xml",Ordin 573/180/2024 (COR); data.gov.ro,LIVE 20.07.2026,"core/test_cor.py (4 teste normalizare diacritice) + loader auto-valideaza (4422 coduri unice/6 cifre) + E2E: /cor cautare cod+denumire, validare creare/editare (cod inexistent respins), 35 teste non-regresie",,
 Transfer intre gestiuni,"Tier 1 (LIVE): multi-locatie DESCRIPTIVA - transfer fizic intre locatii (iesire+intrare la CMP GLOBAL, fara nota contabila, neutru pe valorizare/D406) + reclasificare tip produs (materie prima->marfa, nota cont_nou=cont_vechi la CMP). Tier 3 (multi-gestiune cu CMP separat per depozit) AMANAT pana la testare - vezi DECIZII.md 17.07.",F138,firma,card Stocuri,core/stocuri_cv_api.py + main.py,OMFP 1802/2014,LIVE (Tier 1; Tier 3 AMANAT),core/stocuri_cv_api.py (transfer/reclasificare/stoc_pe_locatii); test functional pe Postgres,,
 Landed cost pe NIR,"Transport + taxe pe NIR, repartizate PROPORTIONAL cu costul de baza in costul de achizitie al articolelor (OMFP 1802/2014: cost achizitie = pret + taxe nerecuperabile de import + transport direct atribuibil), cu restul de rotunjire pe ultima linie. Capitalizarea reduce adaosul si intra in K/descarcare. Contul de credit al accesoriului (401 furnizor / 446 taxe vamale) = default vizibil, confirmat de contabil - nu ghicit. Note ciorne.",F139,firma,card Stocuri (NIR),core/stocuri.py + main.py,OMFP 1802/2014,LIVE,core/stocuri.py (nir_gv landed) + core/test_stocuri.py (6 teste landed); test functional pe Postgres,,

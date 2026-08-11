@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, dataRo, esc, eroareCamp, curataEroriCamp } from "../api.js";
+import { api, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js";
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
@@ -38,7 +38,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
   const inapoi = opt.inapoi || (() => nav.inapoi());
   corp.innerHTML = `
 
-    <h2 class="pf-titlu">Configurare emitere</h2>
+    <h2 class="pf-titlu">Configurare emitere ${semnAjutor("F048")}</h2>
     <p class="pf-intro">Înainte de prima factură: numerotarea (ca să fie neîntreruptă) și regimul de TVA.</p>
     <div class="em-config-camp" style="margin-bottom:12px">
       <label>Firma e plătitoare de TVA?<span class="oblig">*</span></label>

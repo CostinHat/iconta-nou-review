@@ -3,7 +3,7 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp } from "../api.js";  /* esc_nc27 */
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js";
 import { randeazaEmitere } from "./emitere_ecran.js?v=6";
 
@@ -20,7 +20,7 @@ function meniuFacturi(corp, nav, tenantId, opt) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());
   const titluInapoi = opt.titluInapoi || "Inapoi";
   corp.innerHTML = `
-    <h2 class="pf-titlu">Facturi</h2>
+    <h2 class="pf-titlu">Facturi ${semnAjutor("F126")}</h2>
     <p class="pf-intro">Ce vrei s\u0103 faci?</p>
     <div class="firme-optiuni">
       <button class="firme-optiune" id="fac-istoric">
@@ -83,12 +83,12 @@ async function primiteSPV(corp, nav, tenantId, opt) {
   let lista = [];
   try { const r = await api.get(`/tenants/${tenantId}/facturi-primite`); lista = (r && r.primite) || []; } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca facturile primite din SPV.</p>`; return; }
   if (!lista.length) {
-    corp.innerHTML = `<h2 class="pf-titlu">Facturi primite din SPV</h2>
+    corp.innerHTML = `<h2 class="pf-titlu">Facturi primite din SPV ${semnAjutor("F043")}</h2>
       <div class="stare-goala">Nicio factură primită de validat. Facturile de la furnizori apar aici automat din SPV; le validezi înainte să intre în cheltuieli.</div>`;
     return;
   }
   corp.innerHTML = `
-    <h2 class="pf-titlu">Facturi primite din SPV</h2>
+    <h2 class="pf-titlu">Facturi primite din SPV ${semnAjutor("F043")}</h2>
     <p class="pf-intro">De la furnizori · de validat înainte de cheltuieli.</p>
     <div class="pf-lista zebra-lista">${lista.map((p) => `
       <button class="buton-secundar pf-frand fac-primita-btn" data-id="${p.id}">
@@ -950,7 +950,7 @@ function randareRecurente(corp, nav, tenantId, opt, sabloane) {
       }).join("");
 
   corp.innerHTML = `
-    <h2 class="pf-titlu">Facturi recurente</h2>
+    <h2 class="pf-titlu">Facturi recurente ${semnAjutor("F047")}</h2>
     <p class="pf-intro">\u0218abloane emise automat \u00een fiecare lun\u0103 (verificare zilnic\u0103 la 07:00).</p>
     <div class="pf-lista zebra-lista">${corpuri}</div>
     <button class="buton-primar" id="fr-add" style="margin-top:12px">+ \u0218ablon nou</button>`;

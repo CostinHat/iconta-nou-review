@@ -772,7 +772,7 @@ async function ecranSalariati(corp, nav, t) {
           </div>
         </div>`).join("");
     corp.innerHTML = `
-      <h2 class="pf-titlu">Stat de plat\u0103</h2>
+      <h2 class="pf-titlu">Stat de plat\u0103 ${semnAjutor("F080")}</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
         <button class="buton-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="sp-next">luna \u2192</button>
