@@ -1481,3 +1481,6 @@ Reparate: asociati/istoric_declaratii/mijloace_fixe/salariati/solduri_api - clas
 ## 11.08.2026 — Certificare pozitiva (populare + write-flows)
 Certificat POZITIV pe ALFA populata (comportament exercitat, nu cod citit): produse/clienti/centre-cost/registratura/casa/stocuri/retete (creare 200 + citire nenula ZERO-BASE); emitere factura (TVA 21% corect), PDF (%PDF- valid), chitanta (serie CH 2 buc), contare extras (import 2 linii, nota 5121=4111). Formular emitere DS-curat in browser. README bug #6 (verifica_tva) confirmat reparat comportamental pe DELTA.
 Gard import test_import_migrare_valideaza verde. Suita 1893 passed / verificator 0.
+
+## 11.08.2026 — F116 headere securitate verificate (nginx enforcing)
+Proba comportamentala: curl extern (5 headere), login prin formular sub CSP enforcing reusit (onsubmit OK, Enter nu navigheaza), walk 38 ecrane 0 violari, nginx 0 5xx. Unealta parcurgere CSP: cert_ds_browser/cert_ds_firma prin https://iconta.eu. Registru F116 corectat (NEDEPLOYATE->DEPLOYATE). Config sub versionare config_server/iconta-nginx.conf.

@@ -3967,3 +3967,12 @@ DEEP SUB-SCREEN: formular emitere ("Configurare emitere") DS-curat in browser (c
 BONURI F017 portal: rute cabinet (de-verificat/aproba/stinge) + /portal/bon (cere rol client+imagine) - certificat PARTIAL (flux portal-upload neexercitat).
 README Descoperire #6 (verifica_tva mort) = DEJA REPARAT: codul foloseste Perioada(an,luna=luna); comportamental pe DELTA -> Control fiscal produce ROSU + facturi_necontabilizate populate (nu blocat pe gri). Cross-check TVA F169/F022 functioneaza.
 NOTA: ALFA are acum date operationale adaugate (nu mai e scenariul README pristin) - per instructiunea de populare Costin.
+
+## 11.08.2026 — F116 headere de securitate DEPLOYATE pe nginx prod (Costin a ridicat constrangerea 1968)
+Ultimul lucru neexecutat din verifica-201. Aplicat pe /etc/nginx/sites-available/iconta (bloc 443, nivel server):
+- X-Frame-Options SAMEORIGIN, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin (enforce).
+- Strict-Transport-Security max-age=300 (SCURT, fara includeSubDomains/preload - de urcat dupa verificare, Costin).
+- CSP: intai REPORT-ONLY, parcurs cu cert_ds_browser/cert_ds_firma prin nginx (https://iconta.eu) -> 0 violari pe 38 ecrane + landing + Acces modal; onsubmit="return false" acoperit cu 'unsafe-hashes'+hash; script SW cu hash. Comutat ENFORCING dupa parcurgere curata. Final: default-src 'self'; script-src 'self'+hash SW+unsafe-hashes+hash return-false; style-src 'self' 'unsafe-inline' (645 inline); img-src 'self' data:; object-src 'none'; frame-ancestors 'self'; form-action 'self'.
+PROBA: headere la client extern (curl https://iconta.eu). Login prin FORMULAR sub enforcing REUSIT (Enter nu navigheaza gresit -> onsubmit OK; cab-card apare; 0 violari/Refused). Walk autentificat 38 ecrane sub enforcing = 0 violari. Nginx access log 198x200+2x404, zero 5xx. Ambele cabinete: headere globale identice (un singur server block); 4163 verificat complet; 1968 acelasi tratament + cod app neatins.
+Config nginx adus sub versionare: config_server/iconta-nginx.conf. Backup: /etc/nginx/sites-available/iconta.bak-11aug.
+NEAPLICAT deliberat: HSTS lung/includeSubDomains/preload (max-age scurt intai - Costin urca dupa verificare).

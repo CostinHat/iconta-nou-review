@@ -8828,3 +8828,7 @@ Proba: 10 intrari LIVE reparate (F126/F138-142/F144-147) -> module reale (toate 
 Decizie: un import care nu gaseste coloana-cheie de identificare RESPINGE (400), nu intoarce 0 randuri prezentat ca succes. Aliniaza toata familia la comportamentul retete/articole (care ridicau deja pe coloane lipsa).
 Temei: comanda Costin (certificare comportament; ZERO-BASE: rezultat gol/zero = eroare pana la proba contrara; clasa "accepta orice fisier si declara succes" reparata doar punctual pe solduri strict=True).
 Proba: feed gunoi comportamental (HTTP 200 total=0 inainte) + gard unit ROSU pe cod vechi. Cele 8 importuri: retete/articole aveau checkul; asociati/istoric/mijloace/salariati/solduri reparate acum. (solduri avea deja strict=True pe numeric; adaugat si checkul de coloana debit/credit.)
+
+## 11.08.2026 — F116 headere securitate APLICATE pe nginx prod (constrangerea 1968 ridicata de Costin)
+Decizie/executie: headerele promise in registru aplicate pe nginx prod dupa ce Costin a ridicat explicit "1968 neatins" pentru aceasta operatiune. CSP livrat prin Report-Only -> parcurgere (0 violari) -> enforce. HSTS max-age scurt (300s) intai, de urcat dupa verificare. Config adus sub versionare (config_server/iconta-nginx.conf).
+Temei: comanda Costin (nivel infra, nu act fiscal). Proba: curl extern + login formular sub enforce + 38 ecrane 0 violari + 0 5xx.
