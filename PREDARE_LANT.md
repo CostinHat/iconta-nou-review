@@ -6,8 +6,11 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-HEAD = origin/main = backup/lant-2026-08-11 = RUNNING = b0ccc40 (runtime: main.py/auth_api.py schimbate ->
-restart efectuat, start 11.08 19:52 > commit 19:46). App pe 127.0.0.1:8010.
+HEAD = origin/main = backup/lant-2026-08-11 = RUNNING (ALINIAT: dupa ULTIMA publicare din lant se
+restarteaza iconta-nou INDIFERENT daca commitul e runtime sau doar docs, ca versiune.stare() sa fie
+divergent=False la predare - nu doar "RUNNING = ultimul runtime"). Ultimul commit cu efect vizibil =
+b0ccc40 (bun-venit + "?" general); commiturile ulterioare (registre/PREDARE) sunt doar docs.
+Confirmare: start-time proces > data commitului HEAD, zero commituri dupa HEAD. App pe 127.0.0.1:8010.
 
 ## (b) Fronturi deschise
 0. **CAMPANIE "AJUTOR DE ANSAMBLU" (Costin, 11.08) — COMPLETA.** Pagina de bun-venit la prima logare (prezentare
