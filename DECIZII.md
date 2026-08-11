@@ -8842,3 +8842,20 @@ Decizie (comanda Costin): ajutorul pentru contabil NU se amesteca cu descrierea 
 Semn DINAMIC pe ecrane-wizard/meniu: la declaratii (mapare _DECL_AJUTOR tip->fid, 10) si operatiuni speciale (_OP_AJUTOR cheie->fid, 14), un singur "?" adaptiv urmareste selectia -> 24 functionalitati acoperite fara a aglomera meniul cu 24 de semne.
 F014 Capacitate: ajutor scris (registru) dar "?" neplast — management pur, fara continut fiscal, ecran auto-explicativ.
 Temei: comanda Costin (UI/produs, nu act fiscal). Valorile fiscale din texte (cote 21/11, plafoane diurna/sponsorizare, temeiuri OMFP 1802/2014, OMF 107/2025, CF, L52/2011, L141/2025, GDPR art.15/17/20) trimit la sursa oficiala, nu inventate. Proba: /ajutor/Fxxx -> 200 pe cele cu ajutor, 404 pe cele fara; modal end-to-end pe Casa 0 erori consola.
+
+## 11.08.2026 — Ajutor de ansamblu: bun-venit la prima logare + "?" general, distinct de contextual
+Decizie (comanda Costin): un cabinet NOU, la prima logare, vede o prezentare schematica a aplicatiei INAINTE
+de operare; apare o singura data; dupa aceea semnul "?" GENERAL din bara de stare o redeschide oricand.
+- Continut DERIVAT, nu scris separat: firul de intrare = STRATURI (migrare.js, 9 pasi, migrarea prima) +
+  ansamblul = grupele din registru (genereaza_grupe_functii.repartizeaza, SURSA UNICA a repartizarii) +
+  coloana `ajutor` (45 semne "?" contextuale in prezentare, care deschid ajutorul functionalitatii).
+- DISTINCTIA general vs contextual (ceruta explicit): GENERAL = .nav-ghid, buton de bara-chrome (pill patrat cu
+  grila 2x2 + "?", alb pe bara albastra, sus, langa clopot/iesire), deschide "Prezentarea aplicatiei" (tot
+  ansamblul). CONTEXTUAL = .ajutor-btn, cerc mic albastru pe fond alb, inline langa eticheta, deschide
+  "Ajutor · <functionalitate>" (un singur subiect). Diferite prin pozitie (bara vs inline), forma (patrat/grila
+  vs cerc), culoare (alb-pe-albastru vs albastru-pe-alb), titlu si domeniu (general vs punctual).
+- "Apare o data" = flag SERVER users.bun_venit_vazut_la (NU localStorage per-browser): urmareste cabinetul, nu
+  tab-ul/dispozitivul. Userii EXISTENTI (inclusiv cabinetul real) backfill-uiti la "vazut" -> welcome-ul e doar
+  pentru cabinete NOI (nu retroactiv; datele contabile neatinse, doar un flag de onboarding pus pe "onboardat").
+Temei: comanda Costin (UI/produs, nu act fiscal). Alternativa RESPINSA: localStorage (per-browser -> ar reaparea
+pe alt dispozitiv, n-ar respecta "prima logare a cabinetului"). Proba: browser end-to-end + TestClient (vezi TESTE).

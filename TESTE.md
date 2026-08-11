@@ -1505,3 +1505,15 @@ core/ajutor.py + GET /ajutor/{fid} + api.js semnAjutor + .ajutor-btn (whitelist 
 ## 11.08.2026 — Ajutor contextual: acoperire finala + garduri
 Plasari finale (batch 6/7): F136 Adeverinta, F061 Registru jurnal, F077 RIP, F205 Cerere stergere, F016 Previziune bani, F118 Blocheaza luna. BILANT: 44 functionalitati cu "?" (20 statice + 24 dinamice), 47 ajutoare scrise.
 Garduri active pe subsistem: GET /ajutor/{fid} declarat in PUBLICE (core/test_rute_autentificate.py) — altfel poarta pica pe ruta neautentificata nedeclarata; .ajutor-btn in CLASE_BUTON_OK (verificator, altfel BUTOANE il flag-uieste); coloana `ajutor` in test_registru_functionalitati (11 coloane, passed). Endpoint probat: F-cu-ajutor -> 200, F-fara-ajutor -> 404. ESM node --check pe toate ecranele atinse (declaratii/operatiuni/firme/setari/emitere/facturi/rip/portal). verificator TOTAL 0.
+
+## 11.08.2026 — Ajutor de ansamblu: probe
+Backend (TestClient, pe copie): login flag=False cand NULL / =True dupa marcare; GET /ansamblu 200 (7 grupe,
+138 functii, 45 cu ajutor); POST /cont/bun-venit-vazut 200; fara auth 401/401.
+Browser (playwright, 127.0.0.1:8010, cabinet 4163 test): prima logare -> .bun-venit-overlay (antet
+"iConta.eu · bun venit", 9 pasi fir de intrare cu migrarea prima, 7 grupe, 45 "?" contextuale, buton "intru",
+inchidere mentioneaza bara+ecrane), 0 erori consola; "intru" -> overlay dispare + flag DB setat; re-logare
+(flag True) -> welcome NU reapare; ".nav-ghid" din bara -> modal "Prezentarea aplicatiei" (9 pasi, 7 grupe,
+45 "?"); "?" contextual din ansamblu -> "Ajutor · Avansuri furnizori/clienti" cu 7 sectiuni (.aj-sec).
+Garduri: rute autentificate (cere_context) -> test_rute_autentificate + test_registru passed (9); verificator 0
+(.nav-ghid = buton bara-chrome, exceptat prin prefix "nav-"; BRAND_EU corectat "iConta.eu"; IMPORT_VERSIUNE
+corectat migrare.js?v=6).

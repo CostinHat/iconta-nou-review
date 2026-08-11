@@ -4034,3 +4034,18 @@ Plasari ramase: Adeverinta (F136), Registru jurnal (F061), RIP incasari/plati (F
 BILANT: 20 plasari STATICE + 24 DINAMICE (10 declaratii tip->fid + 14 operatiuni speciale cheie->fid) = 44 functionalitati cu semn "?". 47 ajutoare scrise in coloana `ajutor`.
 F014 Capacitate: ajutor scris dar "?" INTENTIONAT neplast — dashboard de management fara continut fiscal, ecranul se auto-explica prin 3 paragrafe intro ("nu pune ? peste tot").
 Commituri campanie: 23e9fc3 (infra+batch1), 143e917 (b2), 357b933 (b3), 9de2564 (b4), d5d87af (b5, ultimul CSV/runtime), f764347 (b6 JS), + batch7 (JS). Four-way ancorat pe d5d87af (RUNNING > ultimul commit CSV/runtime, 18:31:04 > 18:25:02; /ajutor/F061 din b5 serveste 200 = cache proaspat); b6/b7 JS-only servit de pe disc, fara restart.
+
+## 11.08.2026 — Ajutor de ansamblu (bun-venit la prima logare + "?" general in bara)
+Un cabinet NOU vede la prima logare o prezentare schematica a aplicatiei INAINTE de operare: firul de
+intrare (9 pasi de migrare, in ordine, migrarea prima) + cele 7 grupe din registru + 45 semne "?" contextuale
+pe functionalitatile cu ajutor. Apare O SINGURA DATA (flag server users.bun_venit_vazut_la). Dupa aceea,
+semnul "?" GENERAL din bara de stare (.nav-ghid, distinct de .ajutor-btn contextual) redeschide aceeasi
+prezentare oricand.
+Backend: coloana users.bun_venit_vazut_la (migrare idempotenta core/migrare_bun_venit.py) + flag in payload
+login/magic/profil + GET /ansamblu (grupe din repartizeaza + coloana ajutor) + POST /cont/bun-venit-vazut.
+Front: ecrane/ansamblu.js (continut DERIVAT: STRATURI + /ansamblu), buton in bara (navigator.js), welcome
+overlay (app.js), export STRATURI (migrare.js), helper sesiune.marcheazaBunVenit.
+Backfill existenti -> vazut (welcome DOAR pentru cabinete noi; cabinetul real neatins comportamental).
+Commit b0ccc40 (four-way: RUNNING 11.08 19:52 > commit 19:46). Probat backend (TestClient: /ansamblu 200/7 grupe/
+45 cu ajutor; flag False->True) + browser (welcome 9 pasi+7 grupe+45 "?", 0 erori; marcat -> re-logare nu mai
+apare; "?" general redeschide; "?" contextual din ansamblu deschide "Ajutor · <fn>" cu 7 sectiuni).

@@ -2607,3 +2607,12 @@ test_d205 (test_id_inreg), test_d710 (test_cod_bugetar - bumpuit √).
 - CSV `ajutor` e citit la runtime de core/ajutor.py cu CACHE la pornire -> orice modificare de TEXT ajutor cere `sudo systemctl restart iconta-nou` ca sa se serveasca. Plasarile "?" (JS static) NU cer restart (servite de pe disc). Ancora four-way: RUNNING > ultimul commit care schimba CSV/runtime, nu ultimul commit JS.
 - F014 Capacitate: ajutor scris, "?" neplast INTENTIONAT (management fara continut fiscal, ecran auto-explicativ). Decizie, nu datorie.
 - Fara gard mecanic ca fiecare functionalitate "cu ceva de spus" sa aiba ajutor scris/plast — ramane judecata (ca actualizarea registrelor). Endpoint-ul ARE garduri: /ajutor/{fid} in PUBLICE (test_rute_autentificate), .ajutor-btn whitelisted (verificator CLASE_BUTON_OK), coloana `ajutor` in test_registru_functionalitati (11 coloane).
+
+## 11.08.2026 — Ajutor de ansamblu: datorii/limite
+- users.bun_venit_vazut_la: migrare idempotenta (core/migrare_bun_venit.py) RULATA manual pe DB (ca reset_parola,
+  cu env ~/.iconta/db.env). Backfill existenti->vazut = pas UNIC manual (NU in DDL-ul idempotent). Pe un DB nou,
+  migrarea creeaza coloana (toti NULL) -> toti ar vedea welcome; daca nu se vrea retroactiv, se re-ruleaza backfill-ul.
+- Fara test pytest DEDICAT pe /ansamblu si /cont/bun-venit-vazut (probate cu TestClient + browser, nu in poarta
+  verde). Rutele au gard de autentificare (cere_context -> test_rute_autentificate).
+- Prezentarea depinde de doua surse: front STRATURI (migrare.js) + back repartizeaza() (/ansamblu). Ambele SURSA
+  UNICA a lor -> daca se schimba pasii de migrare sau repartizarea, prezentarea se actualizeaza automat (import/API).
