@@ -101,8 +101,38 @@ Chitanta PDF numerotata, operatiune in registrul de casa, suma in litere.
 Ordin 2634/2015 (chitanta cod 14-4-1). Legea 70/2015 pentru plafonul de numerar la incasare."
 Parteneri (clienti/furnizori),"CRUD parteneri in schema firmei: lista, creare, editare, stergere, cu reguli de validare; folositi la facturare, solduri, reconciliere.",F018,firma,Emitere / Solduri parteneri,core/clienti_api.py,,LIVE,,,
 Coada de validare patru-ochi,"Fluxul declaratiilor: pregatita -> aprobata/respinsa (cu motiv) -> depusa (cu index SPV); tranzitii de stare validate, hash pe payload, patru-ochi pe ID (pregatitorul nu aproba), cronometru de efort (inceput_la).",F019,transversal,De validat / Declaratii,core/coada_api.py,,LIVE,403 dovedit pe self-approval,,
-"Comodat, chirii, refacturari","Note pentru comodat (evidenta extrabilantiera), chirie platita/incasata, refacturare utilitati (art. 271 CF: refacturarea = livrare/prestare in nume propriu).",F020,firma,Operatiuni speciale,core/comodat_chirii.py,OMFP 1802/2014; art. 271 CF,LIVE,pytest,,
-Contracte de munca speciale,"Calcul pentru zilieri (remuneratie minima, impozit, fara contributii sociale standard), cenzori si mandat administrator, cu notele contabile aferente.",F021,firma,Salarizare / Operatiuni,core/contracte_speciale.py,Legea 52/2011; CF,LIVE,pytest,,
+"Comodat, chirii, refacturari","Note pentru comodat (evidenta extrabilantiera), chirie platita/incasata, refacturare utilitati (art. 271 CF: refacturarea = livrare/prestare in nume propriu).",F020,firma,Operatiuni speciale,core/comodat_chirii.py,OMFP 1802/2014; art. 271 CF,LIVE,pytest,,"## Ce face
+Note pentru comodat (evidenta extrabilantiera), chirie platita/incasata si refacturare utilitati (refacturarea = livrare/prestare in nume propriu, art. 271 CF).
+## Cand se foloseste
+Cand firma primeste/da bunuri in comodat, plateste/incaseaza chirie sau refactureaza utilitati.
+## Ce trebuie pregatit inainte
+- Contractul (comodat/chirie) sau facturile de utilitati de refacturat.
+## Pas cu pas
+1. Operatiuni speciale -> Comodat / Chirii / Refacturari.
+2. Alege tipul si introdu datele.
+3. Aplicatia genereaza notele.
+## Ce iese la capat
+Note contabile pentru comodat (extrabilantier), chirie sau refacturare cu TVA corect.
+## Greseli frecvente
+- Refacturarea utilitatilor tratata gresit (nu ca livrare in nume propriu).
+## Reguli fiscale
+OMFP 1802/2014; Codul fiscal art. 271 (refacturare = livrare/prestare in nume propriu)."
+Contracte de munca speciale,"Calcul pentru zilieri (remuneratie minima, impozit, fara contributii sociale standard), cenzori si mandat administrator, cu notele contabile aferente.",F021,firma,Salarizare / Operatiuni,core/contracte_speciale.py,Legea 52/2011; CF,LIVE,pytest,,"## Ce face
+Calcul pentru contracte de munca speciale - zilieri (remuneratie minima, impozit, fara contributii sociale standard), cenzori si contract de mandat administrator, cu notele aferente.
+## Cand se foloseste
+Cand firma are zilieri, cenzori sau administratori cu contract de mandat (nu contract de munca clasic).
+## Ce trebuie pregatit inainte
+- Datele persoanei si tipul de contract (zilier/cenzor/mandat).
+## Pas cu pas
+1. Salarizare / Operatiuni -> Contracte speciale.
+2. Alege tipul si introdu remuneratia.
+3. Aplicatia calculeaza impozitul/contributiile specifice.
+## Ce iese la capat
+Note pentru remuneratia speciala cu tratament fiscal corect.
+## Greseli frecvente
+- Tratarea zilierului ca salariat normal (cu toate contributiile).
+## Reguli fiscale
+Legea 52/2011 (zilieri); Codul fiscal (mandat, cenzori)."
 Semafor conformare fiscala,"Pentru fiecare firma: declaratiile DATORATE (din vectorul fiscal: TVA/regim/salariati) vs cele depuse, cu termene ANAF -> stare verde/galben/gri/rosu; agregat pe portofoliu si detaliat per firma. v2 (17.07): reparate 5 defecte de verdict (BRIEF_CODE_SEMAFOR faza 1) - termen tine cont de sarbatori (delegat scadente.py), decembrie an-1 vizibil, atribut vector NULL -> GRI cu cauza (nu default fabricat), scadentar per declaratie, cod mort sters. faza 3 (17.07): conectate D394 (platitori TVA) si D406/SAF-T (platitori pe perioada TVA, neplatitori trimestrial - OPANAF 1783/2021 Anexa 4) -> semaforul acopera 7 din 9. faza B (18.07, DECIZII commit 898482a): D205 si D301 conectate pe FAPT (nu vector) printr-o punte care citeste evidenta din note validate (control_incrucisat.rulaje_interval/dividende_distribuite/d301_luni_operatiuni) - motoare separate, nu fuziune -> 9/9 real. Plus: fiecare verdict poarta MOTIVUL pe orice culoare (inclusiv verde: 'D300 depusa la termen'; neaplicabil: 'D205 nu se datoreaza - niciun rulaj 457'). D205=rulaj cont 457 (ca d205.py); D301=tabel d301_operatiuni pe luna, doar neplatitori TVA.",F022,transversal,Control fiscal (cabinet + per firma + asistent),core/control_fiscal_api.py,,LIVE,"core/test_control_fiscal.py (teste) + control_incrucisat 23 + functional real tenant_002 (D205 pe fapt 457, motiv pe fiecare linie, 0 fara motiv)",,"## Ce face
 Semaforul de conformare fiscala - pentru fiecare firma, compara declaratiile DATORATE (din vectorul fiscal si din fapte) cu cele depuse, cu termenele ANAF, si arata o stare verde/galben/gri/rosu. Fiecare verdict poarta MOTIVUL (inclusiv pe verde). Agregat pe portofoliu si detaliat per firma.
 ## Cand se foloseste
@@ -121,7 +151,23 @@ Tablou de stari pe portofoliu + detaliu per firma cu motiv, termen si remediu.
 ## Reguli fiscale
 Termenele ANAF pe fiecare declaratie (tin cont de sarbatorile legale). Vectorul fiscal = sursa obligatiilor declarative."
 Regula cotelor de TVA,"Sursa unica a cotelor (21/11/0% de la 01.08.2025): potrivirea cotei corecte pe descrierea produsului (regula + AI cu justificare), lista cotelor valide pe perioada.",F023,transversal,Produse / Emitere / Raport Z,core/cote_tva.py,art. 291 CF; Legea 141/2025,LIVE,pytest,,
-Credite bancare si garantii,"Note pentru primirea creditului, dobanda angajata lunar, plata ratelor, restante si garantii (conturi 162/168/519x/8051).",F024,firma,Operatiuni speciale > Finantare,core/credite.py,OMFP 1802/2014 pct. 360-364,LIVE,pytest,,
+Credite bancare si garantii,"Note pentru primirea creditului, dobanda angajata lunar, plata ratelor, restante si garantii (conturi 162/168/519x/8051).",F024,firma,Operatiuni speciale > Finantare,core/credite.py,OMFP 1802/2014 pct. 360-364,LIVE,pytest,,"## Ce face
+Note pentru credite bancare si garantii - primirea creditului, dobanda angajata lunar, plata ratelor, restante si garantii (conturi 162/168/519x/8051).
+## Cand se foloseste
+Cand firma ia un credit bancar sau constituie garantii.
+## Ce trebuie pregatit inainte
+- Contractul de credit (valoare, dobanda, scadentar).
+## Pas cu pas
+1. Operatiuni speciale -> Credite si garantii.
+2. Introdu datele creditului.
+3. Aplicatia genereaza notele (primire, dobanda, rate).
+## Ce iese la capat
+Note contabile pentru credit, dobanda lunara, rate, garantii extrabilantiere.
+## Greseli frecvente
+- Dobanda neangajata lunar (doar la plata).
+- Garantiile neinregistrate extrabilantier (8051).
+## Reguli fiscale
+OMFP 1802/2014 pct. 360-364 (credite, dobanzi, garantii)."
 Curs valutar BNR,"Preia si aplica cursul BNR pentru facturile in valuta, cu regula legala a cursului corect pe data operatiunii si conversia TVA.",F025,transversal,Emitere / operatiuni valutare,core/curs_bnr.py,art. 290(2) CF,LIVE,pytest,,
 Declaratia D100,"Impozitele la bugetul de stat, in principal impozitul micro: cota pe perioada, proratizare, scadente micro, numar de evidenta cu checksum, XML validat.",F026,firma,Declaratii,core/d100.py,OPANAF 587/2016 mod.,LIVE,DUKIntegrator,,"## Ce face
 Declaratia D100 - impozitele la bugetul de stat, in principal impozitul pe veniturile microintreprinderilor. Aplicatia calculeaza cota pe perioada, aplica proratizarea si genereaza XML-ul validat.
@@ -299,7 +345,22 @@ Note contabile pentru dividende/imprumuturi asociati; baza pentru D205 la divide
 - Dividende interimare fara regularizare la sfarsit de an.
 ## Reguli fiscale
 Legea 31/1990 art. 67 (dividende); OMFP 1802/2014. Impozitul pe dividende -> D205."
-Deconturi deplasare si diurna,"Avans de deplasare, decont cu justificare si diferenta (restituire/plata), plafonul de diurna neimpozabila intern/extern.",F040,firma,Operatiuni speciale,core/deconturi.py,art. 76 CF; HG 714/2018,LIVE,pytest,,
+Deconturi deplasare si diurna,"Avans de deplasare, decont cu justificare si diferenta (restituire/plata), plafonul de diurna neimpozabila intern/extern.",F040,firma,Operatiuni speciale,core/deconturi.py,art. 76 CF; HG 714/2018,LIVE,pytest,,"## Ce face
+Note pentru deconturi de deplasare si diurna - cheltuieli de deplasare (transport, cazare) si diurna, cu plafoanele de diurna neimpozabila.
+## Cand se foloseste
+Cand un angajat/administrator face o deplasare si deconteaza cheltuieli + diurna.
+## Ce trebuie pregatit inainte
+- Documentele de deplasare (bonuri, facturi) si numarul de zile.
+## Pas cu pas
+1. Operatiuni speciale -> Deconturi deplasare.
+2. Introdu cheltuielile si zilele de diurna.
+3. Aplicatia aplica plafonul de diurna si genereaza notele.
+## Ce iese la capat
+Note pentru decont, cu diurna in/peste plafon corect tratata.
+## Greseli frecvente
+- Diurna peste plafon netratata ca venit impozabil.
+## Reguli fiscale
+Codul fiscal (diurna neimpozabila in limita plafonului legal, restul impozabil)."
 Diferente de curs valutar,"Diferentele de curs valutar 665/765 (OMFP 1802/2014 pct. 316-322), cu reguli de semn pe tip de sold: la decontarea creantelor/datoriilor in valuta (automat la incasare/plata) si la reevaluarea LUNARA a soldurilor (creante, datorii, disponibilitati) la cursul BNR din ultima zi bancara a lunii. Motor pur.",F041,firma,Operatiuni speciale / automat la decontare,core/diferente_curs.py,OMFP 1802/2014 pct. 316-322,LIVE,pytest,,
 Documente pentru portal,"Arhiva documentelor firmei pentru client: lunile disponibile, balanta lunara ca PDF, declaratiile depuse - totul read-only.",F042,portal,Portal > Documente,core/documente_api.py,,LIVE,,,
 Import e-Factura (UBL),"Parser pentru XML-urile e-Factura (UBL 2.1 / CIUS-RO): numar, data, scadenta, parti, linii cu cote - facturile primite intra in aplicatie fara retastare.",F043,firma,Facturi (import),core/efactura_import.py,CIUS-RO,LIVE,pytest (test_efactura_import.py),,"## Ce face
@@ -359,7 +420,22 @@ Numerotarea facturilor trebuie sa fie continua si cronologica (Codul fiscal, art
 Import/export extracomunitar,"Baza TVA la import (valoarea in vama + taxe + comisioane), calculul importului, validarea exportului (scutit cu drept de deducere).",F049,firma,Operatiuni speciale > Extern,core/import_export.py,art. 289 CF,LIVE,pytest,,
 Operatiuni intracomunitare,"AIC/LIC si servicii B2B: despartirea codului TVA, verificare VIES a partenerului, taxare inversa (4426=4427), validarile livrarii si prestarii IC.",F050,firma,Operatiuni speciale > Extern / Emitere,core/intracomunitar.py,"art. 268, 278(2) CF",LIVE,pytest,,
 Verificator praguri Intrastat,Analizeaza fluxurile UE ale firmei contra pragurilor 2026 (1.000.000 lei expedieri/introduceri) si avertizeaza cand se apropie obligatia de raportare.,F051,firma,Control fiscal (verificare),core/intrastat.py,Ordin INS 1604/2025,LIVE,,,
-Inventariere anuala,"Notele rezultatelor inventarierii dupa compensari: plusuri (marfa/MF), minusuri imputabile/neimputabile, casare mijloace fixe.",F052,firma,Operatiuni speciale > Imobilizari,core/inventariere.py,OMFP 2861/2009; art. 304 CF,LIVE,pytest,,
+Inventariere anuala,"Notele rezultatelor inventarierii dupa compensari: plusuri (marfa/MF), minusuri imputabile/neimputabile, casare mijloace fixe.",F052,firma,Operatiuni speciale > Imobilizari,core/inventariere.py,OMFP 2861/2009; art. 304 CF,LIVE,pytest,,"## Ce face
+Inventarierea anuala - compararea stocului faptic (numarat) cu cel scriptic (din evidenta), cu inregistrarea diferentelor (plusuri/minusuri).
+## Cand se foloseste
+Anual (obligatoriu) sau la nevoie, pentru a confirma soldurile de stoc si a inregistra diferentele.
+## Ce trebuie pregatit inainte
+- Listele de inventar cu cantitatile faptice numarate.
+## Pas cu pas
+1. Operatiuni speciale -> Inventariere.
+2. Introdu cantitatile faptice.
+3. Aplicatia compara cu scripticul si propune notele de diferenta.
+## Ce iese la capat
+Diferente de inventar inregistrate (plus/minus), stoc reconciliat.
+## Greseli frecvente
+- Neinregistrarea minusurilor (imputare/cheltuiala).
+## Reguli fiscale
+Legea contabilitatii (inventariere anuala obligatorie); OMFP 2861/2009 (norme inventariere)."
 Import istoric declaratii (migrare),"Citeste lista declaratiilor deja depuse in vechiul program (tip/an/luna) si le inregistreaza, ca iConta sa nu le ceara ca restanta.",F053,firma,Migrare / Import date,core/istoric_declaratii_import_api.py,,LIVE,,,
 Editor note contabile,"Creare/editare/stergere/validare note: doar ciornele se modifica (AI propune ciorna, contabilul valideaza - validata devine imutabila).",F054,firma,Registru jurnal,core/jurnal_api.py,,LIVE,,,
 KPI client (portal),"KPI pentru portalul clientului, calculate din balanta cumulata: P&L (venituri/cheltuieli/profit), cash (conturi 5xxx), creante (4111), datorii (401, buget, salarii) - cifrele firmei pe intelesul antreprenorului, fara acces la contabilitatea bruta.",F055,portal,Portal > Cifrele firmei,core/kpi_client.py,,LIVE,pytest,,
@@ -385,7 +461,22 @@ Starea migrarii pe straturi,Per cabinet: fiecare strat cu stare (gata/in lucru +
 Import mijloace fixe (migrare),"Citeste registrul de mijloace fixe din export (valoare, durata, amortizare cumulata) - amortizarea continua fara reluare de la zero.",F059,firma,Migrare / Import date,core/mijloace_fixe_import_api.py,,LIVE,,,
 Motor contabil (carte mare + inchidere),"Nucleul contabilitatii: cartea mare din note validate, rezultatul, inchiderea de luna (TVA, venituri/cheltuieli in 121) si de an (rezerva legala, repartizare 129).",F061,firma,— (motorul tuturor rapoartelor),core/motor.py,OMFP 1802/2014,LIVE,pytest (bug nota neechilibrata prins la rescriere),,
 Notificari pe evenimente,"O notificare = eveniment catre un user (mesaj client, respingere, validare); adresare individuala sau catre validatorii cabinetului; contor necitite + marcare citit.",F062,transversal,clopotel,core/notificari_api.py,,LIVE,,,
-Obiecte de inventar,"Note pentru achizitie (303), dare in folosinta si scoatere din uz, cu pragul de mijloc fix actualizat (5.000 lei din 25.02.2026).",F063,firma,Operatiuni speciale > Imobilizari,core/obiecte_inventar.py,OMFP 1802/2014; OUG 8/2026,LIVE,pytest,,
+Obiecte de inventar,"Note pentru achizitie (303), dare in folosinta si scoatere din uz, cu pragul de mijloc fix actualizat (5.000 lei din 25.02.2026).",F063,firma,Operatiuni speciale > Imobilizari,core/obiecte_inventar.py,OMFP 1802/2014; OUG 8/2026,LIVE,pytest,,"## Ce face
+Evidenta obiectelor de inventar - inregistrarea si darea in folosinta a obiectelor de inventar (materiale de natura obiectelor de inventar), cu evidenta extrabilantiera.
+## Cand se foloseste
+Cand firma achizitioneaza obiecte de inventar (scule, echipamente de valoare mica) date in folosinta.
+## Ce trebuie pregatit inainte
+- Documentele de achizitie ale obiectelor.
+## Pas cu pas
+1. Operatiuni speciale -> Obiecte de inventar.
+2. Introdu obiectele si darea in folosinta.
+3. Aplicatia genereaza notele + evidenta extrabilantiera.
+## Ce iese la capat
+Note pentru obiecte de inventar; evidenta pe durata folosintei.
+## Greseli frecvente
+- Obiectele nescoate din evidenta la casare.
+## Reguli fiscale
+OMFP 1802/2014 (materiale de natura obiectelor de inventar)."
 Contabilitate ONG,Note pe partida dubla specifica ONG (venituri fara scop patrimonial vs economice) si testul scutirii activitatii economice.,F064,firma,Operatiuni speciale,core/ong.py,OMFP 3103/2017; art. 15(2-3) CF,LIVE,pytest,,
 Povestea lunii (pachet lunar),Aduna cifrele lunii firmei -> AI scrie un draft narativ pentru antreprenor -> contabilul editeaza/aproba -> trimitere pe email; istoric per luna.,F065,cabinet,card Pachete lunare,core/pachete_api.py,,LIVE,vizual,,
 Perisabilitati si scazaminte,"Perisabilitati si scazaminte (HG 831/2004 + art. 25 si 304 CF): limita maxima deductibila = coeficientul grupei (anexe 1-3) aplicat la pretul de inregistrare al produselor INTRATE, cu conditii (verificare faptica, aprobarea administratorului, proces-verbal). IN limita: 607/60x=3xx deductibil fara ajustare TVA; PESTE limita: 607 nedeductibil + ajustare TVA dedusa (635=4426) pe depasire. Motor pur.",F066,firma,Operatiuni speciale,core/perisabilitati.py,"HG 831/2004; art. 25, 304 CF",LIVE,pytest,,
@@ -409,10 +500,40 @@ Fara implicatii fiscale directe; incasarea se contabilizeaza la confirmare."
 "API portal (read-only, izolat)","Datele clientului strict pe firmele lui: date firma, declaratii depuse etc.; rol client separat, fara actiuni de contabil.",F068,portal,Portal (toate ecranele),core/portal_api.py,,LIVE,privacy-bug reparat 10.07,,
 Productie in curs si produse finite,"Note pentru obtinerea produselor (345=711), productia in curs (331), coeficientul 348 (diferente de pret) si vanzarea cu descarcare.",F069,firma,Operatiuni speciale > Imobilizari,core/productie.py,OMFP 1802/2014,LIVE,pytest,,
 Nomenclator produse + cota AI,"Produsele firmei: denumire -> AI potriveste cota TVA din regula oficiala cu justificare afisata, corectabila manual; cautare si potrivire la emiterea facturilor.",F070,firma,card Produse / Emitere,core/produse_api.py,art. 291 CF,LIVE,vizual (reconectat 13.07),,
-Provizioane si ajustari,"Provizioane si ajustari de valoare (OMFP 1802/2014 sect. 4.10 + art. 26 CF): ajustari creante clienti (6814=491 / reluare 491=7814) cu deductibilitate pe conditii - 30% peste 270 zile de la scadenta (negarantata, neafiliata), 100% la faliment declarat/insolventa PF, altfel 0%; provizioane 151x (6812=151x / 151x=7812). Motor pur.",F071,firma,Operatiuni speciale > Imobilizari,core/provizioane.py,OMFP 1802/2014 s.4.10; art. 26 CF,LIVE,pytest,,
+Provizioane si ajustari,"Provizioane si ajustari de valoare (OMFP 1802/2014 sect. 4.10 + art. 26 CF): ajustari creante clienti (6814=491 / reluare 491=7814) cu deductibilitate pe conditii - 30% peste 270 zile de la scadenta (negarantata, neafiliata), 100% la faliment declarat/insolventa PF, altfel 0%; provizioane 151x (6812=151x / 151x=7812). Motor pur.",F071,firma,Operatiuni speciale > Imobilizari,core/provizioane.py,OMFP 1802/2014 s.4.10; art. 26 CF,LIVE,pytest,,"## Ce face
+Note pentru provizioane si ajustari - constituirea si reluarea provizioanelor pentru riscuri si cheltuieli, ajustari pentru deprecierea activelor.
+## Cand se foloseste
+La inchiderea perioadei, cand exista riscuri/cheltuieli probabile sau active depreciate.
+## Ce trebuie pregatit inainte
+- Estimarea provizionului / ajustarii si baza legala.
+## Pas cu pas
+1. Operatiuni speciale -> Provizioane si ajustari.
+2. Introdu tipul si suma.
+3. Aplicatia genereaza notele (constituire/reluare).
+## Ce iese la capat
+Note pentru provizioane/ajustari; impact pe rezultat.
+## Greseli frecvente
+- Provizioane nedeductibile fiscal tratate ca deductibile.
+## Reguli fiscale
+OMFP 1802/2014; Codul fiscal (deductibilitatea provizioanelor)."
 Canal de sesizari (Raporteaza),"Feedback de la utilizatori catre Admin iConta: sesizare cu atasamente (capturi), fir de raspunsuri bidirectional, marcare citit.",F072,transversal,Raporteaza (cabinet/asistent/portal) + Admin > Raportari,core/raportari_api.py,,LIVE,vizual,,
 Reconciliere bancara (matching),"Motor pur de potrivire a liniilor de extras pe facturile deschise ale partenerului: exact, combinatii, FIFO; alocare partiala pe mai multe facturi.",F073,firma,card Banca,core/reconciliere.py + core/reconciliere_api.py,,LIVE,pytest,,
-Reevaluare imobilizari,"Reevaluarea la valoarea justa (cont 105, metoda valorii nete cu eliminarea amortizarii) si realizarea surplusului din rezerve.",F074,firma,Operatiuni speciale > Imobilizari,core/reevaluare.py,OMFP 1802/2014 pct. 111-116,LIVE,pytest,,
+Reevaluare imobilizari,"Reevaluarea la valoarea justa (cont 105, metoda valorii nete cu eliminarea amortizarii) si realizarea surplusului din rezerve.",F074,firma,Operatiuni speciale > Imobilizari,core/reevaluare.py,OMFP 1802/2014 pct. 111-116,LIVE,pytest,,"## Ce face
+Note pentru reevaluarea imobilizarilor - actualizarea valorii mijloacelor fixe la valoarea justa, cu rezerva din reevaluare si impactul pe amortizare.
+## Cand se foloseste
+Periodic (nu anual obligatoriu), cand se reevalueaza imobilizarile la valoarea justa.
+## Ce trebuie pregatit inainte
+- Raportul de evaluare (valoarea justa) al imobilizarilor.
+## Pas cu pas
+1. Operatiuni speciale -> Reevaluare imobilizari.
+2. Introdu valorile reevaluate.
+3. Aplicatia genereaza notele (rezerva, ajustare amortizare).
+## Ce iese la capat
+Note pentru reevaluare, rezerva din reevaluare (105x), amortizare ajustata.
+## Greseli frecvente
+- Ignorarea impactului fiscal al rezervei din reevaluare.
+## Reguli fiscale
+OMFP 1802/2014 (reevaluarea imobilizarilor, rezerva din reevaluare)."
 Client REGES-ONLINE,"Mesaje catre registrul de evidenta a salariatilor (Inspectia Muncii): inregistrare salariat, adaugare contract, incetare; chei per firma, raspunsuri interogabile.",F075,firma,Salariati > REGES,core/reges_client.py,HG REGES; API oficial,LIVE (API alpha ITM),,,
 Registru incasari/plati (partida simpla),"Registrul-jurnal PFA/II/IF pe luna: operatiuni cu categorie/deductibilitate, validare, import ciorne din banca si din casa, plus Fisa D212.",F077,firma,card Incasari/plati,core/rip_api.py,OMFP 170/2015,LIVE,vizual,,
 Salariati (CRUD),"Salariatii firmei: creare/editare/stergere cu validare (CNP, norma, contract), alimenteaza statul de plata, D112 si REGES.",F078,firma,card Salariati,core/salariati_api.py,,LIVE,bug tip_norma reparat,,
@@ -422,7 +543,24 @@ SGR (garantie-returnare),"Notele fluxului SGR: garantie la achizitie/vanzare (0,
 Sinteza zilnica pe email,"Seara, patronul primeste pe email sinteza cabinetului: pregatite/validate/respinse/depuse, productia echipei, evenimente; aceeasi sinteza si in card, la cerere.",F083,cabinet,card Sinteza zilei + email (cron),core/sinteza_zilnica.py,,LIVE,vizual,,
 Import solduri initiale (migrare),"Citeste balanta de deschidere (.xlsx/.csv), extrage soldurile per cont si le importa ca pozitie de pornire; conturile analitice intra automat in plan.",F084,firma,Migrare / Import date,core/solduri_api.py,,LIVE,,,
 Import solduri parteneri (migrare),"Import solduri parteneri la migrare (defalcarea 4111/401 per client/furnizor): fisier .xlsx/.csv cu Cont, CUI, Denumire, Sold debitor/creditor - un rand = un partener pe un cont; verificare de coerenta cu stratul 2: suma soldurilor partenerilor pe contul sintetic se compara cu soldul din balanta de deschidere (analiticele grupate pe radacina).",F085,firma,Migrare / Import date,core/solduri_parteneri_api.py,,LIVE,,,
-Sponsorizari si credit fiscal,"Plafonul creditului fiscal (0,75% CA / 20% impozit), creditul de sponsorizare si nota; fara credit ramane simpla cheltuiala.",F086,firma,Operatiuni speciale,core/sponsorizari.py,art. 25(4)i CF; Legea 32/1994,LIVE,pytest,,
+Sponsorizari si credit fiscal,"Plafonul creditului fiscal (0,75% CA / 20% impozit), creditul de sponsorizare si nota; fara credit ramane simpla cheltuiala.",F086,firma,Operatiuni speciale,core/sponsorizari.py,art. 25(4)i CF; Legea 32/1994,LIVE,pytest,,"## Ce face
+Note pentru sponsorizari si creditul fiscal aferent - inregistrarea sponsorizarii si calculul creditului fiscal (scaderea din impozit in limita legala).
+## Cand se foloseste
+Cand firma acorda o sponsorizare si vrea sa beneficieze de creditul fiscal.
+## Ce trebuie pregatit inainte
+- Contractul de sponsorizare si suma.
+- Entitatea beneficiara inscrisa in registrul ANAF (pentru micro).
+## Pas cu pas
+1. Operatiuni speciale -> Sponsorizari.
+2. Introdu suma si beneficiarul.
+3. Aplicatia calculeaza creditul fiscal in limita.
+## Ce iese la capat
+Note pentru sponsorizare + creditul fiscal aplicabil (in limita legala).
+## Greseli frecvente
+- Depasirea limitei de credit fiscal.
+- Beneficiar neinscris in registru (micro) -> fara credit.
+## Reguli fiscale
+Codul fiscal (sponsorizare: limita creditului fiscal - profit 0,75%% CA si max 20%% impozit; micro 20%% impozit)."
 Stat de plata + fluturasi,"Statul de plata lunar per firma: toti salariatii prin motorul de salarizare (brut -> contributii -> net, cu deduceri, facilitati, CM), plus fluturasii PDF individuali per salariat (pdf_util, identitate DS cap.7). Alimenteaza D112 si plata salariilor.",F087,firma,Salariati,core/stat_plata_api.py,,LIVE,vizual + parte din D112 DUK,,
 Stocuri global-valorice,"Stocuri global-valorice (metoda pretului cu amanuntul, OMFP 1802/2014): NIR cu adaos + TVA neexigibila (378/4428), coeficientul K calculat cumulat pe exercitiu, descarcarea lunara a gestiunii din vanzari (nota % = 371: 607 + 378 + 4428). Propusa automat dupa nota Raportului Z al lunii.",F088,firma,card Stocuri,core/stocuri.py + core/stocuri_api.py,OMFP 1802/2014,LIVE,pytest,,
 Stocuri cantitativ-valorice (CMP),"Stocuri cantitativ-valorice la CMP (OMFP 1802/2014 pct. 96: CMP recalculat dupa fiecare intrare): fisa de magazie cronologica per articol (intrari/iesiri), iesiri la CMP curent, note 607=371 (marfa) / 601=301 (materii prime). Validare cronologica: o iesire nu poate depasi stocul LA DATA ei (gv_crono) - antedatarile care ar sparge fisa sunt respinse. Sta la baza retetarului HoReCa si a importului de articole cu stoc initial.",F089,firma,card Stocuri,core/stocuri_cv.py + core/stocuri_cv_api.py,OMFP 1802/2014 pct. 96,LIVE,pytest,,"## Ce face
@@ -443,7 +581,22 @@ Stoc actualizat pe cantitate si valoare la CMP, miscari cu urma, sold pe gestiun
 - Amestecarea gestiunilor.
 ## Reguli fiscale
 OMFP 1802/2014 (evaluarea stocurilor la CMP/FIFO); coerenta cu inventarul."
-Subventii,Note pentru subventiile de exploatare (inclusiv cele pe salarii) si de investitii (4751 cu reluarea lunara la venituri pe durata amortizarii).,F090,firma,Operatiuni speciale,core/subventii.py,OMFP 1802/2014 pct. 392-402,LIVE,pytest,,
+Subventii,Note pentru subventiile de exploatare (inclusiv cele pe salarii) si de investitii (4751 cu reluarea lunara la venituri pe durata amortizarii).,F090,firma,Operatiuni speciale,core/subventii.py,OMFP 1802/2014 pct. 392-402,LIVE,pytest,,"## Ce face
+Note pentru subventii - subventii pentru investitii (in venituri amanate, reluate pe durata amortizarii) si subventii de exploatare (venit curent).
+## Cand se foloseste
+Cand firma primeste o subventie (pentru investitii sau de exploatare).
+## Ce trebuie pregatit inainte
+- Documentul de acordare a subventiei si destinatia.
+## Pas cu pas
+1. Operatiuni speciale -> Subventii.
+2. Alege tipul (investitii/exploatare) si suma.
+3. Aplicatia genereaza notele.
+## Ce iese la capat
+Note pentru subventie, cu recunoasterea corecta (amanata pt investitii, curenta pt exploatare).
+## Greseli frecvente
+- Recunoasterea subventiei pentru investitii integral pe venit (in loc de amanat).
+## Reguli fiscale
+OMFP 1802/2014 (subventii: venituri amanate pentru investitii, venit curent pentru exploatare)."
 Taxare inversa interna,"Taxare inversa interna (art. 331 CF + norme pct. 109): conditie furnizor SI beneficiar platitori de TVA, doar operatiuni interne; beneficiarul inregistreaza 4426=4427, furnizorul factureaza fara TVA cu mentiunea obligatorie; prag 22.500 lei/factura la telefoane/circuite/console; categoriile c)-f), i)-l) valabile pana la 31.12.2026 (OUG 85/2022). Neaplicarea corecta = pierderea dreptului de deducere. Motor pur.",F091,firma,Operatiuni speciale > TVA regimuri,core/taxare_inversa.py,art. 331 CF; norme pct. 109,LIVE,pytest,,
 Provisioning tenant (schema per firma),Firma noua = schema PostgreSQL dedicata cu tabelele din template + planul de conturi OMFP populat + numerotare automata a schemei; actualizare detalii tenant.,F092,transversal,— (automat la Adauga firma),core/tenant_provisioning.py + tenant_template.sql,,LIVE,bug template gol reparat 10.07; coliziune_gratuit_v1 testat real 18.07 (detectie pozitiva pe rand gratuit temporar cu prefix RO in tranzactie rollback; non-match si CUI inexistent -> None) | coliziune_gratuit_v1 SCOS 26.07 (contul gratuit eliminat); provisioning cabinet intact.,,
 Scadente viitoare pe portofoliu,"Pentru fiecare firma deriva din vectorul fiscal declaratiile datorate cu termenele urmatoarelor 60 de zile; agregare pe portofoliu, grupare pe data.",F093,cabinet,card Termene,core/termene_api.py,,LIVE,vizual,,

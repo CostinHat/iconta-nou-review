@@ -4018,3 +4018,8 @@ RAMAS: facturare (emitere/e-Factura/export), salarizare (calcul/concedii/tichete
 Inca 9 ajutoare: F048 Profil+model factura, F043 Import e-Factura, F126 e-Factura SPV, F067 Link plata, F047 Facturi recurente, F080 Calcul salarizare, F133 Tichete/cadou, F136 Adeverinte, F039 Decontari asociati. Total 27 ajutoare.
 PLASARI: Stat de plata (F080), Configurare emitere (F048), Facturi (F126), Facturi primite din SPV (F043), Facturi recurente (F047). Cumulat ~20 plasari "?".
 RAMAS de plasat pentru ajutoarele scrise: F009/F010/F056/F039 (operatiuni speciale - dinamic pe tip), F133/F136 (sub-ecrane salarizare). RAMAS de scris: control cross-checks, cabinet, GDPR, restul operatiunilor/stocurilor.
+
+## 11.08.2026 — Ajutor contextual batch 4 (operatiuni speciale)
+Inca 10 ajutoare (monografii): F024 Credite, F020 Comodat/chirii/refacturari, F040 Deconturi deplasare, F021 Contracte speciale, F074 Reevaluare, F071 Provizioane, F086 Sponsorizari, F090 Subventii, F063 Obiecte inventar, F052 Inventariere. Total 37 ajutoare.
+PLASARE: "?" DINAMIC pe operatiuni speciale (mapare _OP_AJUTOR cheie->fid: avans/bacsis/leasing/asociati/credit/chirie/decont/contract_special/reevaluare/provizion/sponsorizare/subventie/obiect_inv/inventariere -> 14 operatiuni acoperite cu un semn adaptiv pe titlul formularului).
+Cumulat plasari: declaratii dinamic (10) + operatiuni dinamic (14) + 10 ecrane statice = ~34 functionalitati acoperite.

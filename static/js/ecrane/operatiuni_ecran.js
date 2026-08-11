@@ -1,6 +1,10 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, esc, arataMesaj } from "../api.js";
+import { api, esc, arataMesaj, semnAjutor } from "../api.js";
+// [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
+const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
+  credit:"F024", chirie:"F020", decont:"F040", contract_special:"F021", reevaluare:"F074",
+  provizion:"F071", sponsorizare:"F086", subventie:"F090", obiect_inv:"F063", inventariere:"F052" };
 
 // tipuri de camp: data | numar | text | select(optiuni) | bool
 // conditie: {camp: "tip", val: "rata"} - campul apare doar cand alt camp are valoarea
@@ -312,7 +316,7 @@ export async function ecranOperatiuni(corp, nav, t) {
       return `<div class="camp"${cond}><label class="camp-eticheta" for="op-${c.nume}">${esc(c.eticheta)}${c.optional ? "" : '<span class="oblig">*</span>'}</label>${input}${ajutor}</div>`;
     };
     corp.innerHTML = `
-      <h2 class="pf-titlu">${esc(opCurenta.titlu)}</h2>
+      <h2 class="pf-titlu">${esc(opCurenta.titlu)}${_OP_AJUTOR[opCurenta.cheie] ? " " + semnAjutor(_OP_AJUTOR[opCurenta.cheie]) : ""}</h2>
       <div class="pf-frand" style="display:block">
         <div class="grila-campuri">
           ${opCurenta.campuri.map(camp).join("")}
