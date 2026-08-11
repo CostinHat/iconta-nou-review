@@ -4089,3 +4089,13 @@ reale erau reparate din 27.07 (+ nomenclator fix 11.08, DUK valid). Actualizat F
 PARTIAL 11.08.2026 cu motivul REAL de azi (F035 Payments neemis; F036 doar liniara + fragment; F037 fragment). DECIZII:
 PIVOT care supersedeaza explicit intrarea 27.07 "NU e depunabil". Drift-check pe restul registrului: doar cele trei
 aveau stare pre-reparatie (restul indicatorilor = fals-pozitivi: "buget"/"mock curent"/"bug reparat istoric").
+
+## 11.08.2026 — Modal "Functionalitati" (landing) adus la zi: +3 functii LIVE ascunse in EXCLUDE
+Modalul public (GRUPE_FUNC, generat de genereaza_grupe_functii.py din registru) enumera 138; 3 functii LIVE vizibile
+in UI erau ascunse in EXCLUDE ca "infra": F083 Sinteza zilnica pe email (card + email seara), F113 PWA (aplicatie
+instalabila pe mobil), F199 Export GDPR complet cabinet (portabilitate, buton Setari). Mutate in EXPLICIT ->
+"Cabinet si portal client"; login.js regenerat (--scrie). Total 138->141 (Cabinet si portal client 26->29). Restul
+golului fata de "154 vizibile in UI": 9 importuri de migrare COMASATE in "Import la preluarea firmei" (reprezentate);
+infra/meta/CLI/superadmin corect excluse (F008 login, F104 navigator, F117 sanatate server, F165 CLI, F189 mecanic
+regim SRL/PFA, F200 stergere cabinet=superadmin [F205 cererea e deja in modal], F203=modalul insusi). Niciun
+RESPINS/ELIMINAT/AMANAT/PLANIFICAT adaugat (toate 3 sunt LIVE). Gard GRUPE_FUNC_STALE verde.

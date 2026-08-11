@@ -31,16 +31,20 @@ EXPLICIT = {"F164": "Control fiscal", "F108": "Cabinet si portal client", "F002"
     "F187": "Facturare si e-Factura",
     "F188": "Cabinet si portal client",  # onboarding/setup firma; override 10.08 (Lot 0) ca fixul
                                           # de descriere (scos "cont gratuit") sa nu-i mute grupa vizibila
-    "F204": "Cabinet si portal client", "F205": "Cabinet si portal client"}
+    "F204": "Cabinet si portal client", "F205": "Cabinet si portal client",
+    # [modal_la_zi 11.08] functii LIVE vizibile in UI, mutate din EXCLUDE in lista publica:
+    "F083": "Cabinet si portal client",   # sinteza zilnica pe email (card + email)
+    "F113": "Cabinet si portal client",   # PWA (aplicatie instalabila pe mobil)
+    "F199": "Cabinet si portal client"}
 # cross-check-urile fiscale -> Control fiscal (NU Fiscalitate, desi numele incepe cu declaratia)
 CROSS = {"F162", "F163", "F169", "F180", "F184"}
 # EXCLUSE: infrastructura invizibila utilizatorului + variante superadmin + pagina insasi + cont gratuit inchis
 EXCLUDE = {
     # infra invizibila
-    "F060", "F083", "F092", "F104", "F106", "F110", "F111", "F112", "F113", "F116", "F119",
+    "F060", "F092", "F104", "F106", "F110", "F111", "F112", "F116", "F119",
     "F165", "F170", "F177", "F178", "F179", "F189", "F201", "F202",
     # meta / superadmin / pagina insasi
-    "F001", "F008", "F105", "F117", "F124", "F186", "F199", "F200", "F203",
+    "F001", "F008", "F105", "F117", "F124", "F186", "F200", "F203",
     # mecanism intern de coliziune (nu capabilitate)
     "F185",
     # cont gratuit: palnie publica INCHISA (DECIZII 25.07) -> nu afisam functii inaccesibile

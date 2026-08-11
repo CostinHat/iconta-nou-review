@@ -1544,3 +1544,8 @@ Non-regresie: 30 teste d406 existente + smoke (strict-xfail) = passed. Stop-poin
 FUNCTIONALITATI.csv: F035/F036/F037 Stare 27.07->11.08 + descrieri aduse la realitate; integritate 201 randuri x 11
 coloane (test_registru_functionalitati 4 passed). DECIZII: PIVOT peste "27.07 NU e depunabil". Drift-check pe registru
 (indicatori NEDEPUNABIL/pana la reparare/de reparat/sintetic/mock/stub): doar F035/F036/F037 aveau drift real.
+
+## 11.08.2026 — Modal landing la zi (+3 LIVE), sync gardat
+genereaza_grupe_functii.py: F083/F113/F199 mutate din EXCLUDE in EXPLICIT (Cabinet si portal client); login.js
+regenerat (--scrie). Modal 138->141 (Cabinet si portal client 26->29; restul grupelor neschimbate). Gard
+GRUPE_FUNC_STALE (verificator) VERDE (login.js in sync cu repartizeaza). ESM login.js OK. Doar functii LIVE adaugate.

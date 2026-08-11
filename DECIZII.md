@@ -8910,3 +8910,13 @@ asteapta sursa maparei, decizie Costin); F036 = doar amortizare liniara (degresi
 deci trebuie sa fie adevarat. DRIFT-CHECK pe restul registrului: singurele randuri cu stare pre-reparatie erau
 F035/F036/F037; "bug" in alte descrieri = "buget", "mock" (F067/F123) descrie corect starea curenta, F076 "bug reparat"
 e istoric-corect.
+
+## 11.08.2026 — Modal landing: 3 functii LIVE scoase din EXCLUDE in lista publica
+Decizie (comanda Costin): functiile LIVE vizibile in UI trebuie sa apara in modalul public "Functionalitati".
+Reclasificate din EXCLUDE ("infra invizibila"/"meta") in EXPLICIT (grupa "Cabinet si portal client"): F083 (sinteza
+zilnica pe email), F113 (PWA instalabila), F199 (export GDPR portabilitate) - capabilitati REALE de user, nu infra.
+LASATE in EXCLUDE, cu motiv: F008/F104 (infra transversala), F117 (sanatate server, superadmin), F165 (CLI, nu UI),
+F189 (mecanic regim SRL/PFA - suportul PFA e deja reprezentat prin features proprii: Motor D212, RIP, import RIP),
+F200 (stergere cabinet = executie superadmin; cererea user F205 e deja in modal), F203 (modalul insusi). Migrarea (9)
+ramane COMASATA intr-o intrare. Regula onorata: nu se promite public ce nu e LIVE (RESPINS/ELIMINAT/AMANAT/PLANIFICAT
+raman afara). SURSA UNICA: modalul se genereaza din registru (repartizeaza), sincron gardat de GRUPE_FUNC_STALE.
