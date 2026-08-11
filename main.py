@@ -3725,7 +3725,10 @@ def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
             _snapshot_stat_plata(conn, schema, stat, an, luna)
         except Exception:
             conn.rollback()
-        return {"stat": stat}
+        with conn.cursor() as _rc:
+            _rc.execute("SELECT 1 FROM public.reges_chei WHERE tenant_id=%s", (tenant_id,))
+            _reges_ok = _rc.fetchone() is not None
+        return {"stat": stat, "reges_configurat": _reges_ok}
 @app.get("/tenants/{tenant_id}/fluturas/{salariat_id}")
 def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from fastapi.responses import Response

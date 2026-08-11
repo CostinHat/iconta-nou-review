@@ -1490,3 +1490,6 @@ Crawl adanc pe 39 ecrane (fiecare sub-element deschis individual in browser prin
 
 ## 11.08.2026 — Gard INPUT_NECONFORM (verificator) + refactor DS-input
 verificator_conformitate.py: regula INPUT_NECONFORM - input/select normal fara .camp-input pica (candidate). PROBAT rosu pe cod vechi = 27 (stash refactor JS/CSS), 0 dupa refactor. 28 inputuri refactorate la .camp-input (pr-input/asi-per-sel/asi-cauta/em-moneda-select/em-curs-input/dlg-input/fd-email-input/firme-q). Layout verificat vizual (screenshot Produse/Asistenti/emitere - nerupte). node --check ESM 0.
+
+## 11.08.2026 — Decizia 2: butoane console-400 dezactivate cu motiv (verificat comportamental)
+4 butoane firme.js disabled+title cand preconditia lipseste (Casa data/suma, REGES chei, SEPA IBAN, portal client) + backend /stat-plata reges_configurat. Verificat pe app viu: disabled+motiv cand lipseste, ENABLED cand precondtia e indeplinita (Casa dupa fill, portal ALFA cu client). 0 erori consola. Elimina clasa console-400 gasita la certificarea sub-ecranelor.

@@ -741,9 +741,12 @@ async function ecranSalariati(corp, nav, t) {
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se calculeaz\u0103...</p>`;
     let stat = [];
+    let areIban = false, regesOk = false;  // [dec2] preconditii SEPA/REGES (scop functie)
     try {
       const r = await api.get(`/tenants/${t.id}/stat-plata?an=${an}&luna=${luna}`);
       stat = (r && r.stat) || [];
+    areIban = stat.some((s) => s.iban);  // [dec2 Costin] SEPA cere macar un IBAN
+    regesOk = !!(r && r.reges_configurat);  // [dec2 Costin] REGES cere chei configurate
     } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca statul de plată.</p>`; return; }
     const randuri = !stat.length
       ? `<div class="stare-goala">Niciun salariat activ încă.</div>`
@@ -774,9 +777,9 @@ async function ecranSalariati(corp, nav, t) {
         <button class="buton-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="sp-next">luna \u2192</button>
         <button class="buton-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
-        <button class="buton-secundar" id="sp-reges-poll">R\u0103spunsuri REGES</button>
+        <button class="buton-secundar" id="sp-reges-poll"${regesOk ? "" : ' disabled title="Configureaz\u0103 cheile REGES (butonul Chei REGES) \u00eent\u00e2i"'}>R\u0103spunsuri REGES</button>
         <button class="buton-primar" id="sp-salariat-nou" style="margin-left:12px">+ Salariat nou</button>
-        <button class="buton-secundar" id="sp-plata-card" style="margin-left:12px">Fișier plată card (SEPA)</button></p>
+        <button class="buton-secundar" id="sp-plata-card" style="margin-left:12px"${areIban ? "" : ' disabled title="Niciun salariat nu are IBAN. Completeaz\u0103 IBAN-ul (buton IBAN)"'}>Fișier plată card (SEPA)</button></p>
       <div id="sp-plata-zona"></div>
       <div id="sp-reges-zona"></div>
       <div id="sp-vac-zona"></div>
@@ -1701,7 +1704,7 @@ async function ecranCasa(corp, nav, t) {
           <label class="camp"><span class="camp-eticheta">Document</span><input type="text" id="c-doc" class="camp-input"></label>
         </div>
         <div class="em-cui-stare" id="c-cui-stare"></div>
-        <p style="margin-top:10px"><button class="buton-primar" id="c-adauga">Adaugă (notă ciornă)</button></p>
+        <p style="margin-top:10px"><button class="buton-primar" id="c-adauga" disabled title="Completeaz\u0103 data \u0219i suma \u00eent\u00e2i">Adaugă (notă ciornă)</button></p>
         <div id="c-mesaj"></div>
       </div>
       <div class="pf-lista">${randuri}</div>`;
@@ -1738,6 +1741,9 @@ async function ecranCasa(corp, nav, t) {
     });
     corp.querySelector("#c-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#c-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
+    { const _cA = corp.querySelector("#c-adauga"), _cD = corp.querySelector("#c-data"), _cS = corp.querySelector("#c-suma");
+      const _cChk = () => { if (_cA) _cA.disabled = !(_cD && _cD.value && _cS && parseFloat(_cS.value) > 0); };
+      [_cD, _cS].forEach((el) => el && el.addEventListener("input", _cChk)); _cChk(); }
     corp.querySelector("#c-adauga").addEventListener("click", async () => {
       const zonaM = corp.querySelector("#c-mesaj");
       try {
@@ -2922,6 +2928,7 @@ async function ecranAccesClient(corp, nav, t) {
     try {
       const r = await api.get(`/tenants/${t.id}/client-acces`);
       const cl = r.clienti || [];
+      { const _pv = corp.querySelector("#ac-btn-preview"); if (_pv && !cl.length) { _pv.disabled = true; _pv.title = "Nu exist\u0103 client. Invit\u0103 un client \u00eent\u00e2i."; } }
       if (!cl.length) { zona.innerHTML = `<p class="ecran-nota">Niciun cont de client încă.</p>`; }
       else {
         zona.innerHTML = cl.map((c) => `

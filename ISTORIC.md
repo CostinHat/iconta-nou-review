@@ -3991,3 +3991,12 @@ Costin (§6.1): ".pr-input si .asi-per-sel la .camp-input; doua exceptii lasate 
 REFACTOR (28 inputuri normale -> .camp-input; checkbox sel-bifa exclus corect): pr-input (emitere/produse/facturi, ~22, pastrat layout pr-den/pr-mic/em-*), asi-per-sel (asistenti, +rehook handler pe data-per in loc de classList), asi-cauta, fd-email-input (pastrat flex layout), em-moneda-select, em-curs-input, dlg-input (pastrat width layout), firme-q (era fara clasa). CSS: sters styling deviant, pastrat layout.
 VIZUAL (cerinta Costin - layout neruput): screenshot Produse (Denumire/Pret/UM/cota in rand, camp-input 40px), Asistenti (select Perioada camp-input, rehook change=0 erori), emitere - toate INTACTE. node --check ESM 0, 0 erori consola.
 GARD: verificator_conformitate.py regula INPUT_NECONFORM - orice <input>/<select> normal (excl checkbox/radio/hidden/file/submit/button/range/color) fara .camp-input -> candidate. PROBAT: 27 pe cod vechi (stash refactor), 0 dupa. Extinde MIG_TEXT (care prindea doar mig-text) la toata clasa.
+
+## 11.08.2026 — DECIZIA 2 Costin: dezactiveaza butoanele console-400 cu MOTIV
+Costin (§6.2): "dezactiveaza butoanele cand preconditia lipseste; butonul dezactivat trebuie sa spuna DE CE (tooltip/text) - un buton mort si mut e mai rau decat unul care da 400."
+Cele 4 butoane (firme.js) + 1 flag backend:
+- Casa "Adauga (nota ciorna)" #c-adauga: disabled pana la #c-data + #c-suma>0; title "Completeaza data si suma intai"; se activeaza la input (listeners).
+- Salariati "Raspunsuri REGES" #sp-reges-poll: disabled cand nu-s chei; title "Configureaza cheile REGES (butonul Chei REGES) intai". BACKEND: /stat-plata intoarce acum reges_configurat (SELECT 1 public.reges_chei).
+- Salariati "Fisier plata card SEPA" #sp-plata-card: disabled cand niciun salariat n-are IBAN (stat.some(s=>s.iban)); title "Niciun salariat nu are IBAN...".
+- Acces client "Previzualizeaza portalul" #ac-btn-preview: disabled cand 0 clienti (dupa incarcarea client-acces); title "Nu exista client. Invita un client intai".
+PROBA comportamentala (app viu): ALFA -> REGES/SEPA disabled+motiv, Casa disabled->ENABLED dupa data+suma; BETA (fara client) -> portal disabled+motiv; ALFA (are client) -> portal ENABLED (0 over-disable/regresie); 0 erori consola. Bug scop reparat pe drum (regesOk const-in-try -> let function-scope). node --check ESM 0, verificator 0.
