@@ -31,6 +31,9 @@ Ultimul commit de COD: (vezi git HEAD). App pe 127.0.0.1:8010. Four-way se confi
 1-N. **Fronturi mostenite (campania verifica-201, INCHISA)**: F116 headere securitate NEDEPLOYATE (decizie infra
    Costin, snippet gata); D406 PARTIAL (F035-037, scope); F124 (proces nu feature); test-debt import (proba pozitiva).
 
+## (raport livrat)
+RAPORT UNIC certificare-comportament livrat 11.08 pe HEAD 7fbb2aa (four-way: RUNNING 38dbb06 = ultima schimbare runtime). LIVRAT PARTIAL: 3 dimensiuni (comportament/cale-UI/DS-browser) certificate la nivelul datelor de test 4163; import class REPARAT; 38 ecrane DS-curate; 0 cale-UI lipsa. NECERTIFICAT: proba pozitiva ZERO-BASE pe features fara date pe firmele de test (produse/clienti/retete/stocuri) + write-flows (emitere) + sub-ecrane adanci - cer populare de date.
+
 ## (c) Ce e in lucru acum
 Campania certificare-comportament (front 0). Cluster import certificat+reparat; harness browser-DS pe dashboard
 cabinet; urmeaza ecranele firma-level + proba comportamentala pozitiva.
