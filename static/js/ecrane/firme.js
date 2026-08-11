@@ -2056,7 +2056,7 @@ async function ecranJurnal(corp, nav, t) {
         <button class="buton-secundar" id="j-next">luna \u2192</button>
         <button class="buton-primar" id="j-amort" style="margin-left:12px">Genereaz\u0103 amortizarea</button>
         <button class="buton-secundar" id="j-nota-noua" style="margin-left:6px">+ Not\u0103 nou\u0103</button>
-        <button class="buton-secundar" id="j-lock" style="margin-left:6px"></button></p>
+        <button class="buton-secundar" id="j-lock" style="margin-left:6px"></button>${semnAjutor("F118")}</p>
       <div id="j-mesaj"></div>
       <div class="pf-lista">${randuri}</div>`;
     const zonaMesaj = corp.querySelector("#j-mesaj");

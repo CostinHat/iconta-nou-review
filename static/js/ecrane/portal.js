@@ -1,6 +1,6 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD } from "../api.js";  /* generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor } from "../api.js";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js";
 import { randeazaFacturi } from "./facturi_ecran.js?v=7";  // [p116_facturi_modul]
 
@@ -660,7 +660,7 @@ async function ecranCifre(corp, nav) {
       ${rand("De \u00eencasat de la clien\u021bi", lei(k.de_incasat))}
       ${rand("De pl\u0103tit c\u0103tre furnizori", lei(k.de_platit))}
     </div>
-    <h2 class="pf-titlu" style="margin-top:20px">Previziune bani (8 s\u0103pt\u0103m\u00e2ni)</h2>
+    <h2 class="pf-titlu" style="margin-top:20px">Previziune bani (8 s\u0103pt\u0103m\u00e2ni) ${semnAjutor("F016")}</h2>
     <p class="pf-intro" id="cf-intro">Estimare pe scaden\u021bele facturilor \u2014 orientativ.</p>
     <div class="pf-lista" id="cf-zona"><p class="ecran-nota">Se \u00eencarc\u0103\u2026</p></div>`;
   incarcaForecast(corp, rand, lei);  // portal_cashflow_fe_v1

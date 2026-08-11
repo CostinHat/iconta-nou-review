@@ -1501,3 +1501,7 @@ PROBAT pe caz CONSTRUIT: _test_ce_rau.js (createElement fara camp-input) -> INPU
 
 ## 11.08.2026 — Ajutor contextual: infrastructura + pipeline probat
 core/ajutor.py + GET /ajutor/{fid} + api.js semnAjutor + .ajutor-btn (whitelist verificator). Endpoint: F031 -> 1587c ajutor, F001/F999 (fara ajutor) -> 404. Modal end-to-end pe Casa: 7 sectiuni, 0 erori consola, DS. Coloana `ajutor` (11 coloane), gard registru se adapteaza (4 passed). verificator 0.
+
+## 11.08.2026 — Ajutor contextual: acoperire finala + garduri
+Plasari finale (batch 6/7): F136 Adeverinta, F061 Registru jurnal, F077 RIP, F205 Cerere stergere, F016 Previziune bani, F118 Blocheaza luna. BILANT: 44 functionalitati cu "?" (20 statice + 24 dinamice), 47 ajutoare scrise.
+Garduri active pe subsistem: GET /ajutor/{fid} declarat in PUBLICE (core/test_rute_autentificate.py) — altfel poarta pica pe ruta neautentificata nedeclarata; .ajutor-btn in CLASE_BUTON_OK (verificator, altfel BUTOANE il flag-uieste); coloana `ajutor` in test_registru_functionalitati (11 coloane, passed). Endpoint probat: F-cu-ajutor -> 200, F-fara-ajutor -> 404. ESM node --check pe toate ecranele atinse (declaratii/operatiuni/firme/setari/emitere/facturi/rip/portal). verificator TOTAL 0.

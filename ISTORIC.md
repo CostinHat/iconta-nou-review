@@ -4028,3 +4028,9 @@ Cumulat plasari: declaratii dinamic (10) + operatiuni dinamic (14) + 10 ecrane s
 Inca 10 ajutoare: F013 Bilant, F077 RIP, F118 Blocare perioade, F016 Cashflow, F014 Capacitate, F199 GDPR export, F205 GDPR stergere, F005 Chei API, F144 Rapoarte comerciale, F061 Motor contabil. Total 47 ajutoare.
 PLASARI: Bilant anual (F013), Rapoarte comerciale (F144) in firme.js; Chei API (F005), Export date cabinet (F199) in setari.js.
 RAMAS de plasat (ajutor scris): F133 tichete/F136 adeverinte (sub-ecrane salarizare), F016 cashflow (portal), F014 capacitate, F205 stergere, F061 motor, F077 RIP, F118 blocare.
+
+## 11.08.2026 — Ajutor contextual batch 6+7: plasari finale + CAMPANIE COMPLETA
+Plasari ramase: Adeverinta (F136), Registru jurnal (F061), RIP incasari/plati (F077), Cerere stergere GDPR (F205) in firme.js/rip_ecran.js/setari.js; Previziune bani 8 sapt (F016) in portal.js; "Blocheaza luna" (F118, buton #j-lock pe Registru jurnal) in firme.js.
+BILANT: 20 plasari STATICE + 24 DINAMICE (10 declaratii tip->fid + 14 operatiuni speciale cheie->fid) = 44 functionalitati cu semn "?". 47 ajutoare scrise in coloana `ajutor`.
+F014 Capacitate: ajutor scris dar "?" INTENTIONAT neplast — dashboard de management fara continut fiscal, ecranul se auto-explica prin 3 paragrafe intro ("nu pune ? peste tot").
+Commituri campanie: 23e9fc3 (infra+batch1), 143e917 (b2), 357b933 (b3), 9de2564 (b4), d5d87af (b5, ultimul CSV/runtime), f764347 (b6 JS), + batch7 (JS). Four-way ancorat pe d5d87af (RUNNING > ultimul commit CSV/runtime, 18:31:04 > 18:25:02; /ajutor/F061 din b5 serveste 200 = cache proaspat); b6/b7 JS-only servit de pe disc, fara restart.

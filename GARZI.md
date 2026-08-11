@@ -2602,3 +2602,8 @@ test_d205 (test_id_inreg), test_d710 (test_cod_bugetar - bumpuit √).
 - **F124 "Testare pilot P1-P5"**: proces finalizat, NU feature; Sursa cod "DE_FACUT sectiunea 1" stale. De reincadrat/scos de Costin.
 - **F035/F036/F037 D406 PARTIAL**: familia nedepunabila (SourceDocuments sintetic + Payments gol). Scope Costin.
 - **Limita gard**: proza-Sursa-cod fara path-token nu e mecanizata (fals-pozitiv pe infra F116/F113/F170) - ramane judecata.
+
+## 11.08.2026 — Ajutor contextual: datorii/limite
+- CSV `ajutor` e citit la runtime de core/ajutor.py cu CACHE la pornire -> orice modificare de TEXT ajutor cere `sudo systemctl restart iconta-nou` ca sa se serveasca. Plasarile "?" (JS static) NU cer restart (servite de pe disc). Ancora four-way: RUNNING > ultimul commit care schimba CSV/runtime, nu ultimul commit JS.
+- F014 Capacitate: ajutor scris, "?" neplast INTENTIONAT (management fara continut fiscal, ecran auto-explicativ). Decizie, nu datorie.
+- Fara gard mecanic ca fiecare functionalitate "cu ceva de spus" sa aiba ajutor scris/plast — ramane judecata (ca actualizarea registrelor). Endpoint-ul ARE garduri: /ajutor/{fid} in PUBLICE (test_rute_autentificate), .ajutor-btn whitelisted (verificator CLASE_BUTON_OK), coloana `ajutor` in test_registru_functionalitati (11 coloane).
