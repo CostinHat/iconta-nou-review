@@ -53,3 +53,6 @@ cabinet; urmeaza ecranele firma-level + proba comportamentala pozitiva.
 - DUK declaratii: PYTHONPATH=$PWD frontend_test/valideaza_duk.py. Registru: 5 garduri in core/test_registru_*.
 - Poarta verde: commit ruleaza pytest suita (~6min) + verificator (0); post-commit publica origin/main +
   backup/lant-<data>; apoi restart iconta-nou (four-way).
+
+## (stare 11.08 seara) DECIZII §6 EXECUTATE (0304128)
+D1: refactor DS-input (29 inputuri -> .camp-input) + gard INPUT_NECONFORM (verificator, rosu pe 27 cod vechi). D2: 4 butoane console-400 (Casa/REGES/SEPA/portal) disabled+motiv + backend /stat-plata reges_configurat. Verificat vizual + comportamental, 0 regresii. Four-way RUNNING=HEAD=0304128.
