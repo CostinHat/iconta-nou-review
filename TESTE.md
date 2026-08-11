@@ -1484,3 +1484,6 @@ Gard import test_import_migrare_valideaza verde. Suita 1893 passed / verificator
 
 ## 11.08.2026 — F116 headere securitate verificate (nginx enforcing)
 Proba comportamentala: curl extern (5 headere), login prin formular sub CSP enforcing reusit (onsubmit OK, Enter nu navigheaza), walk 38 ecrane 0 violari, nginx 0 5xx. Unealta parcurgere CSP: cert_ds_browser/cert_ds_firma prin https://iconta.eu. Registru F116 corectat (NEDEPLOYATE->DEPLOYATE). Config sub versionare config_server/iconta-nginx.conf.
+
+## 11.08.2026 — Certificare sub-ecrane adanci + bonuri portal
+Crawl adanc pe 39 ecrane (fiecare sub-element deschis individual in browser prin nginx): render+DS+consola+CSP. ~130 pytest/DUK trecute prin aceeasi parcurgere. Covarsitor curat. Findings: clasa DS-input (.pr-input/.asi-per-sel vs .camp-input, browser>verificator static) + clasa console-400 (butoane cu precon­ditii, app se recupereaza) - raportate, nereparate (intentionate/benigne). Bonuri portal F017 certificat end-to-end (client->AI Claude vision->draft->confirm->cabinet). Fara schimbari de cod.
