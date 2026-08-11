@@ -28,7 +28,7 @@ Ultimul commit de COD: (vezi git HEAD). App pe 127.0.0.1:8010. Four-way se confi
    - **URMATOR**: (a) extinde harness-ul browser-DS la ecrane firma-level (Firme->firma->emitere/declaratii/
      operatiuni/banca/casa) + portal/client; (b) proba comportamentala pozitiva per functionalitate (nu doar
      respingere gunoi) - emitere factura reala, generare PDF, contare, etc.; (c) certificare cap-coada restul 201.
-1-N. **Fronturi mostenite (campania verifica-201, INCHISA)**: F116 headere securitate NEDEPLOYATE (decizie infra
+1-N. **Fronturi mostenite (campania verifica-201, INCHISA)**: F116 headere securitate DEPLOYATE 11.08 pe nginx (64e8b1b): X-Frame/X-Content/Referrer/HSTS-300/CSP-enforce, verificat login+38 ecrane 0 violari+0 5xx, config sub versionare config_server/iconta-nginx.conf; RAMAS optional HSTS lung (Costin). [vechea nota: decizie infra
    Costin, snippet gata); D406 PARTIAL (F035-037, scope); F124 (proces nu feature); test-debt import (proba pozitiva).
 
 ## (raport livrat)
