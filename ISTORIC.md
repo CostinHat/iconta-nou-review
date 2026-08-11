@@ -3947,3 +3947,9 @@ CAUZA: parserul (extrage/extrage_balanta) gasea coloanele cu _gaseste_col (-1 la
 FIX (5 module): raise ValueError cand lipseste coloana-cheie de identificare (istoric i_tip; asociati nume/cod; salariati nume/CNP; mijloace denumire; solduri debit/credit) -> ruta 400. Adus la nivelul retete/articole (care aveau deja checkul).
 GARD: core/test_import_migrare_valideaza.py - parserul ridica ValueError pe CSV cu coloane-gunoi. ROSU pe cod vechi (5 failed: intorcea []), VERDE dupa (6 passed). + non-regresie fisier bun.
 Poarta verde + re-test comportamental pe rута (200->400) dupa restart.
+
+## 11.08.2026 — Certificare-comportament: harness browser-DS + harta cale-UI (cluster 2-3)
+UI-PATH MAP (toate 172 LIVE): doar 4 LIVE fara Acces UI (F001 AI, F105 sesiune, F106 DS-tooling, F116 nginx) - toate infra transversala legitima (invocate de alte features/underpin). ZERO features user-facing LIVE fara cale. Registrul Acces UI onest.
+HARNESS BROWSER-DS nou: frontend_test/cert_ds_browser.py - login 4163 + click pe fiecare card cabinet + verifica pe DOM RANDAT (ce verificator static nu prinde): modal .fereastra deschis non-gol, zero erori consola, butoane/inputuri pe clase DS. RE-INCARCA grila per card (stare curata).
+PROBA: 13 carduri cabinet (Recomanda/Firme/De validat/Control fiscal/Termene/Sinteza/Activitate/Pachete/Capacitate/Consolidare/Asistenti/Setari/Suport) - TOATE OK: modal deschis, non-blank, 0 erori consola, doar clase DS (semantice: firme-optiune/mig-frand/sa-cifra/acces-card acceptate). Dashboard cabinet DS-curat in browser.
+RAMAS: ecrane firma-level (Firme->firma->emitere/declaratii/operatiuni), portal/client, modaluri adanci - de extins harness-ul.

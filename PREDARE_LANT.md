@@ -6,41 +6,47 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-Ultimul commit de COD: 1ef33b1 (Lot 4-8, campania verifica-201 COMPLETA). FOUR-WAY (11.08.2026): HEAD =
-origin/main = origin/backup/lant-2026-08-11 = RUNNING = 1ef33b1; restart start 03:24:36 > commit-time 03:18:28;
-sentinele absente; HTTP 200; tree curat. Deasupra, commit PREDARE (markdown) fara restart. App pe 127.0.0.1:8010.
+Ultimul commit de COD: (vezi git HEAD). App pe 127.0.0.1:8010. Four-way se confirma dupa restart
+(start-time > commit-time). Ramura backup: backup/lant-2026-08-11.
 
 ## (b) Fronturi deschise
-0. **CAMPANIE "verifica toate 201 functionalitatile" (Costin, 10.08) — COMPLETA (9/9 loturi).**
-   Toate cele 201 confruntate cap-coada cu realitatea (prima verificare integrala). Registru corectat la adevar;
-   2 garduri noi de registru; fundatii probate. NIMIC nou de executat pe aceasta comanda - ramase doar deciziile/
-   datoriile de mai jos.
-   - Loturi: 0 adevar registru (f189e91), 1 transversal (18e05d6), 2 facturare (verif), 3 contab+CONCURENTA
-     (a0856e4), 4-8 stocuri/salarizare/fiscalitate/control/cabinet (1ef33b1).
-   - Drift reparat: F117/F121/F152/F188 cai; 5 descrieri gratuit-eliminat; F150/F122/F151 proza->cod; 10x
-     CONCURENTA->cod; F043 Testat; F116 headere->adevar. Garduri: test_sursa_cod_refera_fisiere_care_exista +
-     test_sursa_cod_nu_e_referinta_de_concurenta. ELIMINAT(10) probate 404 pe app viu.
-1. **F116 headere de securitate NEDEPLOYATE** (HSTS/X-Frame/X-Content/Referrer) — SINGURA DECIZIE DESCHISA.
-   nginx server config = /etc/nginx/sites-available/iconta (root, in afara git, ne-gated). Snippet add_header
-   pregatit. La OK Costin: adauga pe blocul 443 + nginx -t + reload + adu configul sub versionare in config_server/.
-2. **Test-debt** (cablate + rute live, fara test dedicat): F007/F053/F059/F079/F084/F085/F150/F151 (migrari),
-   F017/F018/F045-gen/F048, F118/F054/F145, F075. De acoperit cu smoke pe cabinet 4163.
-3. **F124 "Testare pilot P1-P5"** — proces finalizat, NU feature; Sursa cod "DE_FACUT sectiunea 1". De reincadrat/scos.
-4. **F035/F036/F037 D406 PARTIAL** — familia nedepunabila (SourceDocuments sintetic + Payments gol). Scope Costin.
-5. **Alte fronturi preexistente**: fir intrare 4163 (review UI/depunere); E3_97 BLOCAJ scope; D101 scadenta lege-vs-
-   validator BLOCAJ produs; Declaratii DUK 24-26 ramas decizii model de date (3 coloane; UI populare).
+0. **CAMPANIE "CERTIFICARE-COMPORTAMENT" (Costin, 11.08) — IN CURS.** Certifica pentru fiecare din cele 201
+   ca FACE ce spune (comportament exercitat pe 4163, NU cod citit) + are cale de acces in UI + ecranul respecta
+   DS pe pagina RANDATA in browser. Raport UNIC la final (NU pe traseu). Constrangere: doar 4163; 1968 NEATINS;
+   ZERO-BASE (rezultat gol/zero = eroare pana la proba contrara).
+   PROGRES:
+   - **CLUSTER 1 (import migrare) CERTIFICAT + REPARAT** (commit 38dbb06): clasa "accepta orice fisier si declara
+     succes" reparata pe TOATA familia (asociati/istoric/mijloace/salariati/solduri; retete/articole aveau deja
+     checkul). Proba comportamentala: feed gunoi pe /incarca -> era HTTP 200 total=0, acum 400. Gard
+     core/test_import_migrare_valideaza.py (ROSU pe cod vechi 5 failed, VERDE dupa). RAMAS proba: import de fisier
+     BUN -> N randuri nenule (ZERO-BASE pozitiv) inca nefacut pe fiecare.
+   - **UI-PATH MAP (toate 172 LIVE) GATA**: doar 4 LIVE fara Acces UI (F001/F105/F106/F116) = infra legitima; ZERO
+     user-facing fara cale.
+   - **HARNESS BROWSER-DS construit**: frontend_test/cert_ds_browser.py (login 4163 + click card + verifica DOM
+     randat: modal .fereastra non-gol, 0 erori consola, clase DS). Dashboard cabinet (13 carduri) CERTIFICAT
+     DS-curat in browser.
+   - **URMATOR**: (a) extinde harness-ul browser-DS la ecrane firma-level (Firme->firma->emitere/declaratii/
+     operatiuni/banca/casa) + portal/client; (b) proba comportamentala pozitiva per functionalitate (nu doar
+     respingere gunoi) - emitere factura reala, generare PDF, contare, etc.; (c) certificare cap-coada restul 201.
+1-N. **Fronturi mostenite (campania verifica-201, INCHISA)**: F116 headere securitate NEDEPLOYATE (decizie infra
+   Costin, snippet gata); D406 PARTIAL (F035-037, scope); F124 (proces nu feature); test-debt import (proba pozitiva).
 
 ## (c) Ce e in lucru acum
-NIMIC in lucru - campania verifica-201 e completa (9/9). Urmatoarea comanda a lui Costin decide directia.
+Campania certificare-comportament (front 0). Cluster import certificat+reparat; harness browser-DS pe dashboard
+cabinet; urmeaza ecranele firma-level + proba comportamentala pozitiva.
 
 ## (d) Ce urmeaza
-La comanda Costin: (a) deploy headere F116; (b) acoperire test-debt cu smoke pe 4163; (c) reincadrare F124;
-(d) reparatie D406 (feature mare, scope). Sau firul de intrare / declaratii DUK (decizii model de date).
+1. Extinde cert_ds_browser.py la ecranele firma-level + portal (navigare mai adanca).
+2. Proba comportamentala POZITIVA (fisier bun -> N randuri; emitere -> factura; PDF -> %PDF-; etc.) pe fiecare
+   functionalitate, grupat pe loturi (ca verifica-201: transversal/facturare/contab/stocuri/salarizare/fiscal/
+   control/cabinet).
+3. Raport UNIC final (§2.2, 11 sectiuni): certificat cu ce proba functionalitate-cu-functionalitate; LIVE fara UI
+   (deja: 0 user-facing); abateri DS ecran-cu-ecran; reparat; gasit-nereparat; necertificat + de ce; four-way.
 
 ## Unelte
-- Registru: 4 garduri in core/test_registru_functionalitati.py (structura x2 + existenta fisiere + anti-CONCURENTA).
-  Gardul anti-stale citari (core/test_agenda.py) accepta DOAR teste din core/test_*.py.
-- Proba browser (Playwright): frontend_test/proba_wizard_antet.py + observa_*.py; creds ~/.iconta/fe_test.env
-  (cabinet 4163). DUK pe declaratii: PYTHONPATH=$PWD frontend_test/valideaza_duk.py (4 firme 4163). NU in poarta verde.
+- Certificare comportament import: gard core/test_import_migrare_valideaza.py (in poarta verde).
+- Browser-DS: frontend_test/cert_ds_browser.py (login sessionStorage token; NU in poarta verde). Creds
+  ~/.iconta/fe_test.env (cabinet 4163; tenants 8396 ALFA/8397 BETA/8398 GAMA/8399 DELTA).
+- DUK declaratii: PYTHONPATH=$PWD frontend_test/valideaza_duk.py. Registru: 5 garduri in core/test_registru_*.
 - Poarta verde: commit ruleaza pytest suita (~6min) + verificator (0); post-commit publica origin/main +
-  backup/lant-<data>; apoi restart iconta-nou (four-way). AI: cheia in ~/.iconta/api_keys.env.
+  backup/lant-<data>; apoi restart iconta-nou (four-way).
