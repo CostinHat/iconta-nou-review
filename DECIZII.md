@@ -8895,3 +8895,18 @@ o singura logica; dedup + passthrough ValueError (ca fallback-ul, sa nu mascheze
 Gard anti-regresie: test_d406_partener_id_neconform. FAMILY-CHECK (cerut): tiparul "id brut ca identificator" NU
 exista in D394/D390/e-Factura (folosesc valoarea CUI) -> clasa = D406, inchisa. Temei: regula reparatiei reale +
 "clasa se inchide intreaga sau deloc". Stop-point onorat: tenantii care trec azi raman neschimbati (fallback neatins).
+
+## 11.08.2026 — PIVOT: D406 depunabil structural (supersedeaza EXPLICIT "27.07 NU e depunabil")
+Supersedeaza intrarea 27.07.2026 "D406 (SAF-T) NU e depunabil: gap cunoscut" (de la inceputul fisierului): motivul
+ei - "SourceDocuments emite o SINGURA linie sintetica per factura + Payments gol -> NEDEPUNABIL" - NU mai e adevarat.
+- INTERMEDIAR (27.07, dimineata): linie sintetica per factura -> nedepunabil.
+- FINAL (azi): liniile REALE per produs reparate 27.07 (intrarea ulterioara din aceeasi zi) + period-aware 03.08;
+  identitatea partenerului din nomenclator conforma (fix PROD 11.08: era id brut -> _partener_id_saft, gardat);
+  DUKIntegrator -v D406 'valid' pe DATE REALE (tenant_013 2026-08).
+RAMAS deschis, cu motivul REAL de AZI (nu iulie): F035 = Payments neemis (cod complet, pull() nu populeaza plati -
+asteapta sursa maparei, decizie Costin); F036 = doar amortizare liniara (degresiva/accelerata art.28 neimplementate)
++ fragment; F037 = fragment (endpoint separat, nu in AuditFile lunar). Registrul F035/F036/F037 adus la PARTIAL
+11.08.2026 cu motivul de azi (starile raman in enum: PARTIAL). Temei: SURSA UNICA - registrul e adevarul despre stare,
+deci trebuie sa fie adevarat. DRIFT-CHECK pe restul registrului: singurele randuri cu stare pre-reparatie erau
+F035/F036/F037; "bug" in alte descrieri = "buget", "mock" (F067/F123) descrie corect starea curenta, F076 "bug reparat"
+e istoric-corect.

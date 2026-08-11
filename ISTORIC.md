@@ -4082,3 +4082,10 @@ FARA patch temporar: tenant_013 D406 2026-08 -> 'valid' (0 erori); identitati to
 STOP-POINT: tenantii care trec azi (nomenclator gol -> fallback) NESCHIMBATI (014/016 verificati; 013 e singurul cu
 nomenclator populat, pica azi -> acum trece). FAMILIE: D394 (cuiP=c_cui/tert_cui), D390 (c_cui/tert_cui), e-Factura
 (CompanyID=_vatid(cui)) emit VALOAREA CUI, nu id brut -> bug DOAR in D406; clienti_api.py e CRUD, nu generator.
+
+## 11.08.2026 — Registru + DECIZII aduse la starea reala D406 (F035/F036/F037)
+Starea de record ramasese in urma codului: F035 etichetat "PARTIAL 27.07 - linie sintetica -> NEDEPUNABIL" desi liniile
+reale erau reparate din 27.07 (+ nomenclator fix 11.08, DUK valid). Actualizat FUNCTIONALITATI.csv: F035/F036/F037 ->
+PARTIAL 11.08.2026 cu motivul REAL de azi (F035 Payments neemis; F036 doar liniara + fragment; F037 fragment). DECIZII:
+PIVOT care supersedeaza explicit intrarea 27.07 "NU e depunabil". Drift-check pe restul registrului: doar cele trei
+aveau stare pre-reparatie (restul indicatorilor = fals-pozitivi: "buget"/"mock curent"/"bug reparat istoric").

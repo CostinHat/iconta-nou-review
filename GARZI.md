@@ -2638,3 +2638,9 @@ Datoria "BUG GENERATOR nomenclator -> id brut" (consemnata mai sus, lasata NEcom
 principala (_partener_id_saft, ambele bucle), gardat (core/test_d406_partener_id_neconform, rosu/verde probat), DUK
 tenant_013 'valid' FARA patch temporar. Family-check: doar D406 avea tiparul (D394/D390/e-Factura folosesc valoarea
 CUI). RAMAS pe D406: sursa maparii Payments (date construite, generator neatins).
+
+## 11.08.2026 — Registru D406 la zi: F035/F036/F037 PARTIAL 11.08 cu motiv real
+Starea de record F035/F036/F037 adusa la realitatea de azi (era 27.07 "NEDEPUNABIL linie sintetica"). Deschise RAMAN,
+cu motivul de azi: F035 = Payments neemis (asteapta sursa maparei); F036 = amortizare doar liniara (art.28 degresiva/
+accelerata neimplementate) + fragment; F037 = fragment (nu in AuditFile lunar). Drift de registru similar: negasit pe
+alte randuri.

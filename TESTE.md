@@ -1539,3 +1539,8 @@ Gard nou: core/test_d406_partener_id_neconform.py - cade daca reapare Partener(i
 partenerului SAF-T. PROBAT: ROSU pe cod nereparat (test_fara_id_brut FAILED), VERDE dupa fix (2 passed). Reprobare DUK
 FARA patch temporar: tenant_013 D406 2026-08 -> DUKIntegrator 'valid' (0 erori); id-uri brute suspecte: NICIUNUL.
 Non-regresie: 30 teste d406 existente + smoke (strict-xfail) = passed. Stop-point: 014/016 (nomenclator gol) neschimbati.
+
+## 11.08.2026 — Registru F035/F036/F037 la starea reala
+FUNCTIONALITATI.csv: F035/F036/F037 Stare 27.07->11.08 + descrieri aduse la realitate; integritate 201 randuri x 11
+coloane (test_registru_functionalitati 4 passed). DECIZII: PIVOT peste "27.07 NU e depunabil". Drift-check pe registru
+(indicatori NEDEPUNABIL/pana la reparare/de reparat/sintetic/mock/stub): doar F035/F036/F037 aveau drift real.
