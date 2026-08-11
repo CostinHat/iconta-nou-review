@@ -128,7 +128,7 @@ def sesiune_pentru_user(conn, user_id, secret=None):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT u.id, u.email, u.nume, u.prenume, u.rol, u.accounting_firm_id, u.activ, "
-            "u.poate_pregati, u.poate_valida, u.poate_depune, "
+            "u.poate_pregati, u.poate_valida, u.poate_depune, u.bun_venit_vazut_la, "
             "af.nume AS nume_firma, af.activ AS firma_activa "
             "FROM public.users u "
             "LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id "
@@ -149,7 +149,8 @@ def sesiune_pentru_user(conn, user_id, secret=None):
                      "tenant_are_cabinet": tenant_are_cabinet,
                      "poate_pregati": bool(u.get("poate_pregati")),
                      "poate_valida": bool(u.get("poate_valida")),
-                     "poate_depune": bool(u.get("poate_depune"))}}
+                     "poate_depune": bool(u.get("poate_depune")),
+                     "bun_venit_vazut": bool(u.get("bun_venit_vazut_la"))}}
 
 
 def login(conn, email, parola, secret=None):
@@ -163,7 +164,7 @@ def login(conn, email, parola, secret=None):
         cur.execute(  # [p20_sursa_unica]
             "SELECT u.id, u.email, u.password_hash, u.nume, u.prenume, u.rol, "
             "u.accounting_firm_id, u.activ, "
-            "u.poate_pregati, u.poate_valida, u.poate_depune, "
+            "u.poate_pregati, u.poate_valida, u.poate_depune, u.bun_venit_vazut_la, "
             "af.nume AS nume_firma, af.activ AS firma_activa "  # ICRD_CABINETE_CONSOLIDAT_LOGIN_V1
             "FROM public.users u "
             "LEFT JOIN public.accounting_firms af ON af.id = u.accounting_firm_id "
@@ -190,8 +191,17 @@ def login(conn, email, parola, secret=None):
                      "tenant_are_cabinet": tenant_are_cabinet,
                      "poate_pregati": bool(u.get("poate_pregati")),
                      "poate_valida": bool(u.get("poate_valida")),
-                     "poate_depune": bool(u.get("poate_depune"))},
+                     "poate_depune": bool(u.get("poate_depune")),
+                     "bun_venit_vazut": bool(u.get("bun_venit_vazut_la"))},
             "rehash_recomandat": e_bcrypt(u["password_hash"])}
+
+
+def marcheaza_bun_venit(conn, user_id):
+    """Marcheaza pagina de bun-venit ca vazuta (o data). Idempotent: seteaza doar daca era NULL."""
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.users SET bun_venit_vazut_la = now() "
+                    "WHERE id = %s AND bun_venit_vazut_la IS NULL", (user_id,))
+    return {"ok": True}
 
 
 # [p27_setari]
@@ -209,7 +219,7 @@ def actualizeaza_profil(conn, user_id, nume=None, prenume=None):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("UPDATE public.users SET " + ", ".join(sets) +
                     " WHERE id = %s RETURNING id, email, nume, prenume, rol, "
-                    "accounting_firm_id, poate_pregati, poate_valida, poate_depune",
+                    "accounting_firm_id, poate_pregati, poate_valida, poate_depune, bun_venit_vazut_la",
                     tuple(par))
         u = cur.fetchone()
     if not u:
@@ -226,7 +236,8 @@ def actualizeaza_profil(conn, user_id, nume=None, prenume=None):
         "nume_firma": nume_firma,
         "poate_pregati": bool(u.get("poate_pregati")),
         "poate_valida": bool(u.get("poate_valida")),
-        "poate_depune": bool(u.get("poate_depune"))}}
+        "poate_depune": bool(u.get("poate_depune")),
+                     "bun_venit_vazut": bool(u.get("bun_venit_vazut_la"))}}
 
 
 def schimba_parola(conn, user_id, parola_noua):

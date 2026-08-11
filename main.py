@@ -8530,6 +8530,37 @@ def ajutor_contextual(fid: str):
     return a
 
 
+@app.get("/ansamblu")
+def ansamblu_aplicatie(ctx=Depends(cere_context)):
+    """Prezentarea de ansamblu a aplicatiei (semnul "?" GENERAL din bara de stare +
+    pagina de bun-venit). Continut DERIVAT, nu scris separat: grupele din registru
+    (genereaza_grupe_functii.repartizeaza, SURSA UNICA a repartizarii) + flagul de ajutor
+    per functionalitate (core/ajutor.py). Firul de intrare (pasii de migrare) e in front
+    (STRATURI, migrare.js). Autentificat: orice rol logat."""
+    from genereaza_grupe_functii import repartizeaza
+    from core import ajutor as _aj
+    import csv as _csv
+    grupe = repartizeaza()  # [{titlu, icon, functii:[nume sortate]}]
+    rows = list(_csv.reader(open("FUNCTIONALITATI.csv", encoding="utf-8-sig")))[1:]
+    nume2id = {r[0].strip(): r[2].strip() for r in rows if len(r) > 2}
+    cu = _aj.cu_ajutor()
+    out = []
+    for gr in grupe:
+        ff = [{"nume": n, "id": nume2id.get(n),
+               "are_ajutor": bool(nume2id.get(n) and nume2id.get(n) in cu)}
+              for n in gr["functii"]]
+        out.append({"titlu": gr["titlu"], "icon": gr["icon"], "functii": ff})
+    return {"grupe": out}
+
+
+@app.post("/cont/bun-venit-vazut")
+def cont_bun_venit_vazut(ctx=Depends(cere_context)):
+    """Marcheaza prezentarea de bun-venit ca vazuta (o data, la prima logare)."""
+    with db.get_conn() as conn:
+        auth_api.marcheaza_bun_venit(conn, ctx["uid"])
+    return {"ok": True}
+
+
 # ============================================================
 #  PAGINI PUBLICE DE GHID (DS cap.22) — /ghid/{slug} + index + sitemap + robots
 # ============================================================

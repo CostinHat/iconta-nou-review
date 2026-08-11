@@ -10,6 +10,7 @@
 
 import { sesiune } from "./sesiune.js";
 import { esc } from "./api.js";  // esc canonic (cap.10): strip-html data-lossy inlocuit
+import { deschideAnsamblu } from "./ecrane/ansamblu.js";  // [bun_venit_v1] "?" general (ansamblu)
 
 // [p21_bara_lant] contextul barei 1 ca LANT, citit din sesiune.user() (sursa unica)
 function _functieAsistent(u) {
@@ -61,10 +62,12 @@ export function creeazaNavigator(radacina, desktopRandator) {
       ${ctx.verigi.map((v) => `<span class="bara-chevron" aria-hidden="true">\u203a</span>` +
         `<span class="${v.slab ? "bara-veriga-slab" : "bara-veriga"}">${v.text}</span>`).join("")}
       <span class="bara-spatiu"></span>
+      <button class="nav-ghid" id="nav-ghid" title="Prezentarea aplicatiei (ansamblu)" aria-label="Prezentarea aplicatiei"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="14" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><rect x="14" y="14" width="7" height="7" rx="1.3"/></svg><span class="nav-ghid-q">?</span></button>
       <button class="nav-clopot" id="nav-clopot" title="Notificari" aria-label="Notificari"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="nav-clopot-badge" id="nav-clopot-badge"></span></button>
       <button class="nav-iesire" id="nav-iesire" title="Ieși din cont" aria-label="Ieși din cont"><span aria-hidden="true">←</span></button>
     `;
     bara.querySelector("#nav-iesire").addEventListener("click", () => sesiune.iesi());
+    bara.querySelector("#nav-ghid").addEventListener("click", deschideAnsamblu);  // [bun_venit_v1]
     ecran.appendChild(bara);
     // [p58_clopot] clopotel notificari -- dupa append, ca badge-ul sa fie in DOM  // [p65_clopot_dom]
     _clopotInit(bara, ecran);

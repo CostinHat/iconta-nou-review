@@ -5,7 +5,7 @@
 import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
-const STRATURI = [
+export const STRATURI = [
   { cheie:"firme", nr:1, titlu:"Firme", desc:"Validare CUI la ANAF · identificare + status fiscal",
     ...CULORI_CARD.albastru, construit:true,
     icon:'<path d="M3 21h18"/><path d="M5 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M19 21V11a2 2 0 0 0-2-2h-2"/><path d="M9 7h2M9 11h2M9 15h2"/>' },

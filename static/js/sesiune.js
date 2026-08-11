@@ -61,6 +61,11 @@ export const sesiune = {
   },
 
   // setează sesiunea după login reușit (token + user din răspunsul serverului)
+  // [bun_venit_v1] dupa ce s-a aratat prezentarea de bun-venit: flag local = vazut (fara re-trigger)
+  marcheazaBunVenit() {
+    try { const u = _user(); if (u) { u.bun_venit_vazut = true; sessionStorage.setItem(CHEIE_USER, JSON.stringify(u)); } }
+    catch (_e) { /* sessionStorage indisponibil -> ignora */ }
+  },
   intra(token, user) {
     sessionStorage.setItem(CHEIE_TOKEN, token);
     sessionStorage.setItem(CHEIE_USER, JSON.stringify(user));

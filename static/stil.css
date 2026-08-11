@@ -2321,3 +2321,46 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .aj-sec { margin:14px 0 4px; color:#1a3a6b; font-size:var(--text-mic); font-weight:700; }
 .aj-sec:first-child { margin-top:0; }
 .aj-p { margin:3px 0; color:var(--ardezie); line-height:1.55; }
+
+
+/* [bun_venit_v1] semnul "?" GENERAL din bara de stare (.nav-ghid) — DISTINCT de .ajutor-btn contextual:
+   general = pill patrat cu grila 2x2 + "?", alb pe bara albastra, in bara de sus (harta intregii aplicatii);
+   contextual = cerc mic albastru pe fond alb, inline langa eticheta unei functionalitati. */
+.nav-ghid { display: inline-flex; align-items: center; gap: 3px; height: 30px; padding: 0 9px;
+  margin-right: 6px; border: 1px solid rgba(255,255,255,0.45); border-radius: 7px;
+  background: transparent; color: #fff; cursor: pointer; }
+.nav-ghid:hover { background: rgba(255,255,255,0.16); }
+.nav-ghid-q { font-weight: 700; font-size: 15px; line-height: 1; }
+
+/* prezentarea de ansamblu (modal general + corp bun-venit) */
+.ans-continut { padding: 2px 2px 6px; }
+.ans-intro { font-size: 14px; color: #48586b; margin: 0 0 14px; line-height: 1.55; }
+.ans-sectiune { margin-bottom: 18px; }
+.ans-sec-titlu { font-size: 15px; font-weight: 700; color: #17324d; margin: 0 0 10px;
+  padding-bottom: 5px; border-bottom: 1px solid #e6ebf1; }
+.ans-fir { list-style: none; margin: 0; padding: 0; }
+.ans-pas { display: flex; align-items: flex-start; gap: 10px; padding: 5px 0; }
+.ans-pas-nr { flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%; background: #eef4fd;
+  color: #3d8fd6; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; justify-content: center; }
+.ans-pas-txt { font-size: 13.5px; color: #38485a; line-height: 1.5; }
+.ans-grupe { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.ans-grupa { border: 1px solid #e6ebf1; border-radius: 9px; padding: 10px 12px; }
+.ans-grupa-titlu { font-size: 13.5px; font-weight: 700; color: #17324d; margin: 0 0 7px;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ans-grupa-nr { font-size: 11px; font-weight: 600; color: #8a97a6; background: #f1f5f9; border-radius: 10px; padding: 1px 7px; }
+.ans-grupa-lista { list-style: none; margin: 0; padding: 0; }
+.ans-grupa-lista li { font-size: 12.5px; color: #4a5a6b; padding: 2px 0; line-height: 1.5; }
+.ans-inchidere { margin: 16px 0 0; font-size: 13px; color: #48586b; line-height: 1.7;
+  background: #f7fafd; border: 1px solid #e6ebf1; border-radius: 8px; padding: 10px 12px; }
+.ans-mostra { display: inline-flex; align-items: center; justify-content: center; font-weight: 700; vertical-align: middle; }
+.ans-mostra--general { width: 20px; height: 20px; border-radius: 5px; border: 1px solid #17324d; background: #17324d; color: #fff; font-size: 12px; }
+.ans-mostra--contextual { width: 18px; height: 18px; border-radius: 50%; background: #eef4fd; color: #3d8fd6; border: 1px solid #b9c2cf; font-size: 12px; }
+.ans-actiuni { margin-top: 18px; text-align: right; }
+
+/* pagina de bun-venit — overlay peste desktop (z sub .fereastra-overlay=100, ca "?"-urile contextuale sa apara deasupra) */
+.bun-venit-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(16,32,48,0.55);
+  display: flex; align-items: flex-start; justify-content: center; padding: 34px 16px; overflow: auto; }
+.bun-venit-box { width: min(880px, 100%); background: #fff; border-radius: 14px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.28); overflow: hidden; }
+.bun-venit-antet { background: #17324d; color: #fff; font-weight: 700; font-size: 15px; padding: 13px 20px; }
+.bun-venit-corp { padding: 20px 22px; max-height: calc(100dvh - 150px); overflow: auto; }

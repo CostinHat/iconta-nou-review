@@ -28,6 +28,8 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js";
+import { api } from "./api.js";
+import { ecranBunVenit } from "./ecrane/ansamblu.js";  // [bun_venit_v1]
 import { ecranLogin } from "./ecrane/login.js?v=7";
 import { creeazaNavigator } from "./navigator.js?v=3";
 import { desktopCabinet } from "./ecrane/cabinet.js?v=2";
@@ -152,6 +154,16 @@ function randeaza() {
       break;
     default: // admin_firma
       creeazaNavigator(radacina, desktopCabinet);
+  }
+
+  // [bun_venit_v1] la PRIMA logare (flag server === false) prezentarea de ansamblu, o singura data,
+  // peste desktopul deja montat (inainte de operare). Nu in previzualizare portal.
+  const _ubv = sesiune.user();
+  if (_ubv && _ubv.bun_venit_vazut === false && !(sesiune.estePreview && sesiune.estePreview())) {
+    ecranBunVenit(radacina, () => {
+      api.post("/cont/bun-venit-vazut", {}).catch(() => {});
+      sesiune.marcheazaBunVenit();
+    });
   }
 }
 
