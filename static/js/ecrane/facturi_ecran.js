@@ -653,7 +653,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
         <div class="fd-email-box">
           <label class="fd-email-eticheta">Trimite factura ${esc(f.numar || "")} c\u0103tre:</label>
           <div class="fd-email-rand">
-            <input type="email" id="fd-email-input" class="fd-email-input" placeholder="email@client.ro" value="${esc(emailPre)}">
+            <input type="email" id="fd-email-input" class="camp-input fd-email-input" placeholder="email@client.ro" value="${esc(emailPre)}">
             <button class="buton-primar fd-email-send" id="fd-email-send">Trimite</button>
           </div>
           <div class="em-rezultat" id="fd-email-rez"></div>
@@ -989,9 +989,9 @@ export function formSablon(corp, nav, tenantId, opt) {
     <div class="em-sectiune">
       <div class="em-eticheta">Beneficiar</div>
       <label class="camp-eticheta" for="fr-cui">CUI beneficiar</label>
-      <input class="pr-input" id="fr-cui" placeholder="ex: RO12345678" autocomplete="off">
+      <input class="camp-input" id="fr-cui" placeholder="ex: RO12345678" autocomplete="off">
       <label class="camp-eticheta" for="fr-nume">Denumire beneficiar</label>
-      <input class="pr-input" id="fr-nume" autocomplete="off">
+      <input class="camp-input" id="fr-nume" autocomplete="off">
     </div>
 
     <div class="em-sectiune">
@@ -1003,8 +1003,8 @@ export function formSablon(corp, nav, tenantId, opt) {
 
     <div class="em-sectiune">
       <div class="em-eticheta">Emitere</div>
-      <input class="pr-input" id="fr-zi" type="number" min="1" max="28" placeholder="1" title="Ziua din lun\u0103 la care se emite">
-      <select class="pr-input" id="fr-moneda">
+      <input class="camp-input" id="fr-zi" type="number" min="1" max="28" placeholder="1" title="Ziua din lun\u0103 la care se emite">
+      <select class="camp-input" id="fr-moneda">
         <option value="RON">RON</option>
         <option value="EUR">EUR</option>
         <option value="USD">USD</option>
@@ -1027,9 +1027,9 @@ export function formSablon(corp, nav, tenantId, opt) {
     const l = linii[i];
     const cotaTxt = l.cota_tva == null ? "—" : (l.cota_tva === 0 ? "scutit" : `${l.cota_tva}%`);
     return `<div class="em-linie" data-idx="${i}">
-      <input class="pr-input em-l-den" id="fr-l${i}-descriere" value="${_val(l.descriere)}" placeholder="Denumire (ex: abonament mentenanță)" aria-label="Denumire articol" autocomplete="off">
-      <input class="pr-input em-l-cant" id="fr-l${i}-cantitate" type="number" step="0.001" value="${_val(l.cantitate)}" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
-      <input class="pr-input em-l-pret" id="fr-l${i}-pret_unitar" type="number" step="0.01" value="${_val(l.pret_unitar)}" placeholder="Preț" aria-label="Preț unitar" title="Preț unitar">
+      <input class="camp-input em-l-den" id="fr-l${i}-descriere" value="${_val(l.descriere)}" placeholder="Denumire (ex: abonament mentenanță)" aria-label="Denumire articol" autocomplete="off">
+      <input class="camp-input em-l-cant" id="fr-l${i}-cantitate" type="number" step="0.001" value="${_val(l.cantitate)}" placeholder="Cant." aria-label="Cantitate" title="Cantitate">
+      <input class="camp-input em-l-pret" id="fr-l${i}-pret_unitar" type="number" step="0.01" value="${_val(l.pret_unitar)}" placeholder="Preț" aria-label="Preț unitar" title="Preț unitar">
       <span class="em-l-cota" id="fr-l${i}-cota" title="Cota TVA">${cotaTxt}</span>
       <button type="button" class="buton-sters em-l-sterge" data-idx="${i}" title="Șterge">×</button>
     </div>`;

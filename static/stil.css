@@ -800,8 +800,7 @@ html, body {
 /* ---------- DIALOG INPUT (modal in fereastra) ---------- */
 .dlg-eticheta { display: block; font-size: var(--text-mic); color: #344054; margin-bottom: 8px; }
 .dlg-input {
-  width: 100%; box-sizing: border-box; padding: 10px 12px; font-size: var(--text-mic);
-  border: 1px solid #cfd6e0; border-radius: 8px; font-family: inherit;
+  width: 100%; box-sizing: border-box;
 }
 .dlg-input:focus { outline: none; border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29,78,216,.12); }
 .dlg-eroare { color: #c0392b; font-size: var(--text-mic); margin-top: 8px; min-height: 16px; }
@@ -1715,7 +1714,7 @@ html, body {
 .pr-form-zona { margin: 12px 0; }
 .pr-form { background:#f7f9fc; border:2px solid rgba(0,0,0,0.10); border-radius:12px; padding:16px; display:flex; flex-direction:column; gap:12px; }
 .pr-form-rand { display:flex; gap:10px; flex-wrap:wrap; }
-.pr-input { padding:10px 12px; border:1.5px solid #b9c2cf; border-radius:8px; font-size: var(--text-mic); }  /* contrast_ferestre_v1 */
+/* .pr-input -> .camp-input (11.08, refactor DS-input, decizie Costin) */
 .pr-den { width:100%; }
 .pr-mic { flex:1; min-width:90px; }
 .pr-form-detalii { }
@@ -1759,7 +1758,7 @@ html, body {
 .em-cui-atentie { color:#c2410c; }
 .em-linii { display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
 .em-linie { display:grid; grid-template-columns: 1fr 80px 100px 54px 28px; gap:8px; align-items:center; }
-.em-linie .pr-input { padding:9px 10px; }
+.em-linie .camp-input { padding:0 10px; }
 .em-l-cota { text-align:center; font-weight:700; font-size: var(--text-mic); color:#64748b; }
 .em-l-cota.cota-11 { color:#15803d; }
 .em-l-cota.cota-21 { color:#475569; }
@@ -1822,8 +1821,7 @@ html, body {
 /* ===== Emitere: selector moneda + curs indisponibil ===== */
 .em-moneda-rand { display: flex; align-items: center; gap: 10px; margin: 12px 0 4px; }
 .em-moneda-eticheta { font-size: var(--text-mic); font-weight: 600; color: var(--ardezie); }
-.em-moneda-select { padding: 6px 10px; border: 1px solid var(--linie); border-radius: var(--raza);
-  font-size: var(--text-mic); background: var(--alb); color: var(--ardezie); }
+/* .em-moneda-select -> .camp-input (11.08) */
 .em-moneda-nota { font-size: var(--text-mic); color: var(--gri); }
 .em-curs-box { border: 1px solid var(--portocaliu, #e08a2b); border-radius: var(--raza);
   background: var(--portocaliu-fundal, #fff6ec); padding: 12px; }
@@ -1831,7 +1829,7 @@ html, body {
 .em-curs-actiuni { display: flex; gap: 8px; }
 .em-curs-manual { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
 .em-curs-manual label { font-size: var(--text-mic); color: var(--gri); }
-.em-curs-input { padding: 6px 10px; border: 1px solid var(--linie); border-radius: var(--raza); font-size: var(--text-mic); }
+/* .em-curs-input -> .camp-input (11.08) */
 .em-curs-avertisment { font-size: var(--text-mic); color: var(--gri); }
 
 /* ===== Model factura (mf-*) ===== */
@@ -1891,8 +1889,7 @@ html, body {
 .fd-email-box { background: #fff; border: 1px solid var(--linie); border-radius: var(--raza); padding: 14px 16px; margin: 10px 0 14px; max-width: 560px; }
 .fd-email-eticheta { display: block; font-size: var(--text-mic); color: var(--ardezie); margin-bottom: 8px; }
 .fd-email-rand { display: flex; gap: 8px; }
-.fd-email-input { flex: 1; padding: 8px 10px; border: 1px solid var(--linie);
-  border-radius: var(--raza); font-size: var(--text-mic); }
+.fd-email-input { flex: 1; }
 .fd-email-send { white-space: nowrap; }
 
 /* ===== Storno (fd-storno-*) ===== */

@@ -8832,3 +8832,6 @@ Proba: feed gunoi comportamental (HTTP 200 total=0 inainte) + gard unit ROSU pe 
 ## 11.08.2026 — F116 headere securitate APLICATE pe nginx prod (constrangerea 1968 ridicata de Costin)
 Decizie/executie: headerele promise in registru aplicate pe nginx prod dupa ce Costin a ridicat explicit "1968 neatins" pentru aceasta operatiune. CSP livrat prin Report-Only -> parcurgere (0 violari) -> enforce. HSTS max-age scurt (300s) intai, de urcat dupa verificare. Config adus sub versionare (config_server/iconta-nginx.conf).
 Temei: comanda Costin (nivel infra, nu act fiscal). Proba: curl extern + login formular sub enforce + 38 ecrane 0 violari + 0 5xx.
+
+## 11.08.2026 — DS §2.1 "exclusiv .camp-input" mecanizat (decizia Costin §6.1)
+Decizie Costin: clasele ad-hoc pe input (.pr-input/.asi-per-sel + em-moneda-select/em-curs-input/dlg-input/fd-email-input/asi-cauta/firme-q) refactorate la .camp-input; toleranta verificatorului era LACUNA a uneltei, nu dezlegare. Extins verificatorul (INPUT_NECONFORM) sa prinda TOATA clasa - orice input non-.camp-input pica. Layout pastrat prin clase secundare (pr-den/pr-mic/em-cui/em-nume/fd-email-input flex/dlg-input width) + rehook JS (asi-per-sel -> data-per). Proba: gard rosu pe 27 (cod vechi), verde dupa; vizual nerupt.

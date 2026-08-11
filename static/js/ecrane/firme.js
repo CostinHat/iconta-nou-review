@@ -24,7 +24,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
     </div>
     <div class="firme-cautare">
       <label class="camp-eticheta" for="firme-q">Caut\u0103</label>
-      <input type="text" id="firme-q" placeholder="Caută după nume sau CUI" autocomplete="off">
+      <input type="text" id="firme-q" class="camp-input" placeholder="Caută după nume sau CUI" autocomplete="off">
     </div>
     <div class="firme-lista" id="firme-lista"><div class="ecran-nota">Se încarcă firmele…</div></div>
   `;

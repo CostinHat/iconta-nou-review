@@ -36,7 +36,7 @@ for _d in _DIRS_FRONTEND:
 
 rap = {k: [] for k in ["hex_semafor", "culoare_card_hex", "diacritice", "precompletari", "butoane", "entitate_in_titlu",
                         "dialog_browser", "bani_neformatati", "spatiere", "culori_hardcodate",
-                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
+                        "etichete_lipsa", "input_contrast", "antet", "camp_dialect", "mig_text", "input_neconform", "fmt_local", "data_dialect", "data_bruta", "icoane_local", "font_inline", "radius_inline", "card_inline", "checkbox_dialect", "caseta_info", "stare_goala", "poarta_inline",
                         "esc_local", "caseta_atentie", "backend_ui_brut", "verdict_colapsat", "default_fiscal_tacit", "card_regim", "import_versiune", "verdict_paritate", "mirror_campuri_lipsa", "filtrare_inainte_validare", "stare_goala_eroare"]}
 meniuri = {}
 
@@ -169,6 +169,16 @@ for nume, t in fisiere.items():
         # MIG_TEXT: input/select cu clasa mig-text (dialect de contrast, textarea-only) in loc de camp-input
         if re.search(r'<(input|select)[^>]*class="[^"]*\bmig-text\b', lin):
             rap["mig_text"].append((nume, i, "", lin.strip()[:66]))
+        # INPUT_NECONFORM (decizie Costin 11.08): orice <input>/<select> NORMAL fara .camp-input.
+        # DS 2.1: input/select normale poarta EXCLUSIV .camp-input. Extinde MIG_TEXT la TOATA clasa
+        # (.pr-input/.asi-per-sel/em-*-input/dlg-input etc.). Exclus tipuri ne-text.
+        for _tm in re.finditer(r"<(input|select)\b([^>]*?)/?>", lin):
+            _at = _tm.group(2)
+            _ty = re.search(r'type="(\w+)"', _at)
+            if _ty and _ty.group(1) in ("checkbox", "radio", "hidden", "file", "submit", "button", "range", "color"):
+                continue
+            if "camp-input" not in _at:
+                rap["input_neconform"].append((nume, i, "", lin.strip()[:66]))
         # FMT_LOCAL: definitie locala de format monetar (const fmt = ...toLocaleString) in loc de bani() canonic
         if re.search(r'const\s+(?!pct\b)\w+\s*=.*toLocaleString\("ro-RO"', lin):
             rap["fmt_local"].append((nume, i, "", lin.strip()[:66]))

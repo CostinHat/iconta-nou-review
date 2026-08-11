@@ -146,7 +146,7 @@ async function deschideEditare(uid, corp, nav) {
         <div class="asi-sectiune-titlu">Selecteaza firme</div>
         <p class="asi-mic">Asistentul vede doar firmele bifate. Bifarea = stare finala.</p>
         <label class="camp-eticheta" for="asi-cauta-firme">Caut\u0103 firma</label>
-        <input id="asi-cauta-firme" class="asi-cauta" placeholder="Caută firma (nume sau CUI)..." style="width:100%;margin-bottom:8px;">
+        <input id="asi-cauta-firme" class="camp-input" placeholder="Caută firma (nume sau CUI)..." style="width:100%;margin-bottom:8px;">
         <div id="asi-firme">${firme.map((f) => `
           <label class="asi-firma-rand">
             <input type="checkbox" data-tid="${f.id}" ${f.atribuit ? "checked" : ""}>
@@ -280,7 +280,7 @@ async function deschideVizualizare(uid, nav) {
     }
     box.addEventListener("change", (e) => {
       const t = e.target;
-      if (!(t && t.classList && t.classList.contains("asi-per-sel"))) return;
+      if (!(t && t.classList && (t.matches && t.matches("select[data-per]")))) return;
       const azi = new Date();
       let de = null, pana = null;
       if (t.value === "azi") { de = iso(azi); pana = iso(azi); }
@@ -309,7 +309,7 @@ function _asiRandeazaFereastra(d, c) {
   const perioada = `
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
       <span class="tip-desc">Perioada:</span>
-      <select class="asi-per-sel" style="width:auto;">
+      <select class="camp-input" data-per style="width:auto;">
         <option value="tot">Tot</option>
         <option value="azi">Azi</option>
         <option value="luna">Luna curenta</option>

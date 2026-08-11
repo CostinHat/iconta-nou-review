@@ -3985,3 +3985,9 @@ REZULTAT: covarsitor curat. Findings:
 - Sinteza zilei "sa-cifra" = fals-pozitiv de regex (componente DS legitime).
 BONURI PORTAL F017 CERTIFICAT end-to-end: client-acces creat (uid 8284) -> sesiune client -> POST /portal/bon cu imagine -> AI (Claude vision) extrage corect (comerciant MAGAZIN TEST SRL, total 18.00, TVA 21%=3.12) -> draft status=extras -> confirmare client -> ajunge la cabinet (de-verificat=1).
 Fara schimbari de cod (certificare + date test). Unelte: frontend_test/cert_ds_browser.py + cert_ds_firma.py (crawl adanc).
+
+## 11.08.2026 — DECIZIA 1 Costin: refactor DS-input (.pr-input/.asi-per-sel -> .camp-input) + gard verificator
+Costin (§6.1): ".pr-input si .asi-per-sel la .camp-input; doua exceptii lasate in pace devin conventie; extinde verificatorul: orice input care nu e .camp-input trebuie sa pice."
+REFACTOR (28 inputuri normale -> .camp-input; checkbox sel-bifa exclus corect): pr-input (emitere/produse/facturi, ~22, pastrat layout pr-den/pr-mic/em-*), asi-per-sel (asistenti, +rehook handler pe data-per in loc de classList), asi-cauta, fd-email-input (pastrat flex layout), em-moneda-select, em-curs-input, dlg-input (pastrat width layout), firme-q (era fara clasa). CSS: sters styling deviant, pastrat layout.
+VIZUAL (cerinta Costin - layout neruput): screenshot Produse (Denumire/Pret/UM/cota in rand, camp-input 40px), Asistenti (select Perioada camp-input, rehook change=0 erori), emitere - toate INTACTE. node --check ESM 0, 0 erori consola.
+GARD: verificator_conformitate.py regula INPUT_NECONFORM - orice <input>/<select> normal (excl checkbox/radio/hidden/file/submit/button/range/color) fara .camp-input -> candidate. PROBAT: 27 pe cod vechi (stash refactor), 0 dupa. Extinde MIG_TEXT (care prindea doar mig-text) la toata clasa.
