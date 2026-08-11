@@ -2616,3 +2616,10 @@ test_d205 (test_id_inreg), test_d710 (test_cod_bugetar - bumpuit √).
   verde). Rutele au gard de autentificare (cere_context -> test_rute_autentificate).
 - Prezentarea depinde de doua surse: front STRATURI (migrare.js) + back repartizeaza() (/ansamblu). Ambele SURSA
   UNICA a lor -> daca se schimba pasii de migrare sau repartizarea, prezentarea se actualizeaza automat (import/API).
+
+## 11.08.2026 — Restart neconditionat: datorii/limite
+- Restartul in post-commit ruleaza `sudo -n systemctl restart iconta-nou` la FIECARE commit pe main. Depinde de
+  NOPASSWD in sudoers (costin: NOPASSWD ALL). Esec -> sentinela .git/RESTART_ESUAT + banner (ca push-urile), nu tacut.
+- Fiecare commit pe main restarteaza serviciul (cateva secunde downtime). Acceptat: mediu single-user, invariantul
+  RUNNING==HEAD prioritar (decizia Costin). Cu utilizatori activi, decizia de fereastra se ia INAINTE de commit.
+- Gardul verifica NECONDITIONAREA hook-ului, NU ca restartul chiar reuseste la runtime (aia = sentinela + four-way).

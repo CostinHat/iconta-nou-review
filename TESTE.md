@@ -1517,3 +1517,11 @@ inchidere mentioneaza bara+ecrane), 0 erori consola; "intru" -> overlay dispare 
 Garduri: rute autentificate (cere_context) -> test_rute_autentificate + test_registru passed (9); verificator 0
 (.nav-ghid = buton bara-chrome, exceptat prin prefix "nav-"; BRAND_EU corectat "iConta.eu"; IMPORT_VERSIUNE
 corectat migrare.js?v=6).
+
+## 11.08.2026 — Restart neconditionat: gard + probe
+Gard nou (poarta verde): core/test_publicare_restart_neconditionat.py - 3 aserturi: hook-ul de publicare exista;
+restarteaza iconta-nou; NU inspecteaza tipul continutului (interzis: --name-only/--stat/git diff/git show/
+diff-tree/diff-index/HEAD~/HEAD^/glob *.ext/regex ancorat .ext$). PROBAT pe mutatie reala: varianta conditionata
+(git diff --name-only HEAD~ | grep pe extensie -> restart) PICA (1 failed, restul 2 passed); cea neconditionata
+VERDE (3 passed). Proba comportamentala: commit de DOCS -> post-commit auto-restarteaza -> RUNNING==HEAD
+(hash-uri in raport §3, /admin/versiune divergent=false).

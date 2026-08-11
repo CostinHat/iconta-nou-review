@@ -8859,3 +8859,17 @@ de operare; apare o singura data; dupa aceea semnul "?" GENERAL din bara de star
   pentru cabinete NOI (nu retroactiv; datele contabile neatinse, doar un flag de onboarding pus pe "onboardat").
 Temei: comanda Costin (UI/produs, nu act fiscal). Alternativa RESPINSA: localStorage (per-browser -> ar reaparea
 pe alt dispozitiv, n-ar respecta "prima logare a cabinetului"). Proba: browser end-to-end + TestClient (vezi TESTE).
+
+## 11.08.2026 — Restart la publicare: NECONDITIONAT de tipul commitului (cablat, nu judecata executor)
+Decizie/executie (comanda Costin): pasul de restart din ritualul de publicare NU mai decide dupa tipul commitului
+(runtime vs docs). Cauza divergentei prinse la audit: restartam doar la commituri de runtime/CSV; un commit de
+docs a lasat procesul viu pe commitul anterior (RUNNING b0ccc40 != HEAD f504f00). Rescrierea PREDARE descria
+comportamentul, nu-l schimba - clasa ramanea deschisa (urmatorul commit de docs o reproducea).
+- Mecanism: restart cablat in scripts/githooks/post-commit (dupa cele doua push-uri), NECONDITIONAT. NU s-a inventat
+  un al doilea mecanism - s-a completat cel existent (post-commit facea deja push-ul, §2.3 pct.8).
+- Gard: core/test_publicare_restart_neconditionat.py - cade la disparitia restartului sau la orice inspectie de
+  continut in hook. Probat rosu/verde pe mutatie reala.
+- STOP POINT (comportament vizibil cu utilizatori activi) MUTAT inainte de commit: decizia se ia cand alegi sa
+  comiti, nu dupa; odata comis pe poarta verde, serviciul preia HEAD neconditionat.
+Temei: CLAUDE.md §2.3 pct.10 (restartul era deja cerut neconditionat, doar necablat) + regula reparatiei reale
+(elimini problema, nu o descrii). Alternativa RESPINSA: restart manual conditionat + descriere corecta in PREDARE.

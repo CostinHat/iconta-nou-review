@@ -13,7 +13,12 @@ commituri dupa HEAD. App pe 127.0.0.1:8010. Verificare la predare: `/admin/versi
 `git log -1` + systemd ExecMainStartTimestamp (nu se hardcodeaza hash-ul in registru).
 
 ## (b) Fronturi deschise
-0. **CAMPANIE "AJUTOR DE ANSAMBLU" (Costin, 11.08) — COMPLETA.** Pagina de bun-venit la prima logare (prezentare
+0. **CAMPANIE "RESTART NECONDITIONAT" (Costin, 11.08) — COMPLETA.** Eliminata conditionarea restartului
+   pe tipul commitului din ritualul de publicare: cablat NECONDITIONAT in scripts/githooks/post-commit
+   (pasul 4, ca pasul 2 push) -> dupa orice publicare procesul viu preia HEAD. Gard
+   core/test_publicare_restart_neconditionat.py (rosu pe conditionat, verde pe neconditionat). Probat pe
+   commit doar-docs: RUNNING==HEAD la final. Norme: PREDARE + CLAUDE.md §2.3 pct.10 + STOP POINT.
+0b. **AJUTOR DE ANSAMBLU (11.08) — COMPLETA.** Pagina de bun-venit la prima logare (prezentare
    schematica: firul de intrare 9 pasi + 7 grupe + 45 "?" contextuale) o singura data (flag server
    users.bun_venit_vazut_la) + semn "?" GENERAL permanent in bara de stare (.nav-ghid, distinct de .ajutor-btn)
    care redeschide ansamblul. Continut DERIVAT (STRATURI + repartizeaza + coloana ajutor). Backend: /ansamblu,

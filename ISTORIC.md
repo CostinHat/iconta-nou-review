@@ -4049,3 +4049,14 @@ Backfill existenti -> vazut (welcome DOAR pentru cabinete noi; cabinetul real ne
 Commit b0ccc40 (four-way: RUNNING 11.08 19:52 > commit 19:46). Probat backend (TestClient: /ansamblu 200/7 grupe/
 45 cu ajutor; flag False->True) + browser (welcome 9 pasi+7 grupe+45 "?", 0 erori; marcat -> re-logare nu mai
 apare; "?" general redeschide; "?" contextual din ansamblu deschide "Ajutor · <fn>" cu 7 sectiuni).
+
+## 11.08.2026 — Restart NECONDITIONAT in ritualul de publicare (eliminarea clasei "restart pe tip de commit")
+Publicarea decidea singura daca restarteaza dupa tipul commitului (practica executor, scrisa in PREDARE) -> un
+commit de DOCS a lasat RUNNING != HEAD (b0ccc40 vs f504f00, prins la audit). CLAUDE.md §2.3 pct.10 cerea DEJA
+restart neconditionat; l-am CABLAT in scripts/githooks/post-commit (pasul 4, ca pasul 2 push): dupa orice
+publicare din lant procesul viu preia HEAD, fara exceptii, fara liste de tipuri.
+Gard: core/test_publicare_restart_neconditionat.py (poarta verde) - cade daca dispare restartul iconta-nou sau
+reapare inspectia de continut in hook (git diff/--name-only/HEAD~/glob de extensie). Probat ROSU pe varianta
+conditionata pe .py, VERDE pe cea neconditionata. Commit mecanism a2e8d33 (s-a AUTO-restartat: "procesul viu preia
+a2e8d33"). Norme: PREDARE (fraza regulii vechi + hash hardcodat stersa) + CLAUDE.md pct.10 + STOP POINT mutat
+inainte de commit.
