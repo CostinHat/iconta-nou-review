@@ -1,0 +1,263 @@
+      Structura fişier XML pentru declaratia 107 (an sfarsit exercitiu >=2024) conf. OPANAF nr. OPANAF nr.355/ 04.03.2024.
+      (universalCode: D107_100, declaratie:v1)
+      - cu atasament fisier .zip
+
+Nr.         Elemente/     Denumire câmp                            Tip şi    Câmp
+cr.         atribute                                               lungime   obligat   Formule şi restricţii              Erori
+                                                                   câmp      oriu
+       1.   <d107>
+       2.                                                                              d_rec =(0,1)
+            d_rec         Declaratie rectifcativa                   N(1)     DA
+                                                                                        0-initiala, 1-rectificativa
+       3.                 Tip impozit pe profit/ micro
+            cod_oblig                                               N(3)     DA        cod_oblig=(102,103,104,105, 121)   ERR - valoare invalida
+                          (nomenclator)
+       4.                                                                                                                 ERR- Luna de inceput
+                                                                                                                          de exercitiu financiar
+            luna_i        Luna de inceput de exercitiu financiar    N(2)     DA        luna_i = Luna( Data_I)             nu corespunde cu Data
+                                                                                                                          de inceput de exercitiu
+                                                                                                                          financiar
+       5.                                                                                                                 ERR- Anul de inceput
+                                                                                       an_i = Anul( Data_I)               de exercitiu financiar
+                          Anul de inceput de exercitiu financiar
+            an_i                                                    N(4)     DA        an_i>=2024                         nu corespunde cu Data
+                          (an raportare D107)
+                                                                                                                          de inceput de exercitiu
+                                                                                                                          financiar
+       6.                                                                                                                 ERR- Luna de sfarsit
+                                                                                                                          de exercitiu financiar
+            luna          Luna de sfarsit de exercitiu financiar    N(2)     DA        luna= Luna(Data_S)                 nu corespunde cu Data
+                                                                                                                          de sfarsit de exercitiu
+                                                                                                                          financiar
+       7.                                                                                                                 ERR- Anul de sfarsit de
+                                                                                                                          exercitiu financiar nu
+                                                                                       an = Anul( Data_S)
+            an            Anul de sfarsit de exercitiu financiar    N(4)     DA                                           corespunde cu Data
+                                                                                        an>=2024
+                                                                                                                          de sfarsit de exercitiu
+                                                                                                                          financiar
+       8.                                                                              d_PM =1(profit)
+
+                          Plătitor de impozit pe profit/                               d_PM =(1,2)
+            d_PM                                                    N(1)     DA
+                          de impozit pe veniturile                                     1-profit, 2-micro
+                          microîntreprinderilor                                        if (cod_oblig=121) then d_PM=2
+                                                                                       else d_PM=1
+       9.                                                                              d_alte =(0,1)                      ERR - camp d_alte
+                          Se bifeaza pentru
+                                                                                       0- nebifat
+            d_alte        'Alte situatii'                           N(1)     DA
+                                                                                       1- bifat
+
+
+
+
+                                                                                                                                                    1
+10.                   Trimestrul in care PJ trece de la micro           Nu se mai foloseste
+      trim_micro                                                N(1)
+                      la profit                                         trim_micro=null
+11.                                                                     primul_an_modif =(0,1)
+                                                                                                               ERR- Primul an fiscal
+                                                                         0- NU , 1- DA
+      primul_an_mo                                                                                             modificat nu se bifeaza
+                      Primul an fiscal modificat                N(1)
+      dif                                                                                                      pt. cod_oblig=102,121
+                                                                        if (cod_oblig=102,121 then
+                                                                               primul_an_modif =null
+12.                                                                     ultimul_an_modif =(0,1)
+                                                                                                               ERR- Ultimul an fiscal
+                                                                         0- NU , 1- DA
+      ultimul_an_mo                                                                                            modificat nu se bifeaza
+                      Ultimul an fiscal modificat               N(1)
+      dif                                                                                                      pt. cod_oblig=102,121
+                                                                        if (cod_oblig=102,121 then
+                                                                               ultimul_an_modif =null
+13.                                                                                                            ERR- Data de inceput
+                                                                                                               an modificat nu se
+                                                                                                               completeaza pt.
+                                                                        if (cod_oblig=102,121 then
+                                                                                                               cod_oblig =102,121
+                                                                               Data_M =null
+      Data_M          Data de inceput de an modificat           D(10)
+                                                                                                               ERR- Anul din data de
+                                                                        if (Data_M<>null) then
+                                                                                                               inceput de an modificat
+                                                                              AAAA(Data_M)=an_i
+                                                                                                               trebuie sa fie egal cu
+                                                                                                               anul de raportare
+
+14.
+                                                                                                               ERR - Data dizolvarii
+                                                                                                               cu lichidare
+                                                                                                               nu poate fi completata
+                                                                                                               in acelasi timp cu Data
+                                                                        if (Data_L<>null) then Data_B = null
+                                                                                                               dizolvarii cu lichidare
+                      Data dizolvarii cu lichidare
+      Data_L                                                    D(10)
+                                                                        AAAA(Data_L)>= an
+                                                                                                               ERR - Data dizolvarii
+                                                                                                               cu lichidare
+                                                                                                               nu poate fi ulterioara
+                                                                                                               anului de sfarsit de
+                                                                                                               exercitiu financiar
+15.
+                                                                        if (Data_B<>null) then Data_L = null   ERR - Data dizolvarii
+                      Data dizolvarii fara lichidare
+                                                                                                               fara lichidare
+      Data_B                                                    D(10)
+                                                                                                               nu poate fi completata
+                                                                                                               in acelasi timp cu Data
+                                                                                                               dizolvarii cu lichidare
+
+
+
+
+                                                                                                                                         2
+                                                                                                                    ERR - Data dizolvarii
+                                                                           AAAA(Data_B)>= an                        fara lichidare
+                                                                                                                    nu poate fi ulterioara
+                                                                                                                    anului de sfarsit de
+                                                                                                                    exercitiu financiar
+16.                                                                                                                 ERR- Data de inceput
+                 Data de inceput de exercitiu financiar
+      Data_I                                                  D(10)   DA                                            de exercitiu financiar
+                                                                           Corel.suplimentare
+17.                                                                                                                 ERR- Data de sfarsit
+                                                                                                                    de exercitiu financiar
+                                                                           Corel.suplimentare
+                 Data de sfarsit de exercitiu financiar
+      Data_S                                                  D(10)   DA                                            ERR- Data de sfarsit
+                                                                                                                    de exercitiu financiar nu
+                                                                           Data_S>= Data_I
+                                                                                                                    poate fi anterioara Datei
+                                                                                                                    de inceput
+18.                                                                        AA = Anul(Data_S)
+                                                                           LL = Luna(Data_S)
+                                                                           ZZ = 25
+                                                                           -----------------
+                                                                           If (an<=2025) then LL=LL+6
+                                                                           else
+                                                                           (
+                                                                             if (Data_L<>null sau Data_B <> null)
+                                                                             then LL=LL+1
+                                                                             else
+                                                                             (
+                                                                                                                    ERR- ‘Scadenta platii‘
+      scadenta   Scadenta platii                              D(8)    DA       if (cod_oblig=104) then LL=LL+2
+                                                                               if (cod_oblig=102,103,105) then
+                                                                                    LL=LL+ 3 sau LL=LL+6
+                                                                                 (If (an<=2025) then LL=LL+6
+                                                                                 else LL=LL+ 3)
+                                                                             )
+                                                                           )
+
+
+
+                                                                           daca LL>12 atunci AA=AA+1
+                                                                           scadenta=ZZLLAA
+19. cod_bug      Cod Bugetar                                  C(10)   DA   20470101XX 5503XXXXXX
+20. nr_evid
+21. d_succ       Declaraţie depusă potrivit art.90 alin.(4)   N(1)    DA   d_succ = 0(nebifat), 1 (bifat)           ERR - camp d_succ
+                 din L207/2015
+22. cifS         Cod de identificare fiscală                  N(13)        if (d_succ=1) then cifS # null           ERR - cif succesor
+
+
+
+                                                                                                                                                3
+                     succesor                                            else cifS=null                    invalid
+
+                                                                         Verificare CF sau CNP
+23.                  A. Date de identificare a
+                     contribuabilului
+24.   cui            1.Cod de identificare fiscala        N(10)     DA   Validare cui(10)                  ERR- CIF invalid
+25.   denC           2.Denumire                          C(200)     DA
+26.   adresaC        3.-11.Adresa                        C(1000)    DA
+27.   codpC          12.Cod postal                        C(6)
+28.   telC           13.Telefon                           C(15)
+29.   emailC         14.E-mail                           C(200)
+30.                  C. Date de identificare a
+                     împuternicitului
+31.   denR           15.Nume,prenume/ Denumire           C(200)
+32.   cifR           16.Cod de identificare fiscala       N(13)          Validare cui(10),cif(13)          ERR- CIF invalid
+33.   adresaR        17.-25.Adresa                       C(1000)
+34.   codpR          26.Cod postal                        C(6)
+35.   telR           27.Telefon                           C(15)
+36.   emailR         28.E-mail                           C(200)
+37.                  Nume şi prenume persoană care
+      denS                                                C(75)    DA
+                     semnează
+38.                                                                      totalPlata_A =TVal1+TVal2+TVal3   ERR-calcul suma de
+      totalPlata_A   Suma de control                      N(15)    DA
+                                                                                                           control
+39.                  TOTALURI
+40.   Val2_NI        5. Suma reportată (lei)              N(15)    DA    Val2_NI>=0
+41.   Val3_NI        6. Suma dedusă (lei)                 N(15)    DA    Val3_NI>=0
+42.   TVal1          4.Suma (lei)                         N(15)    DA    TVal1=suma(Val1)
+43.   TVal2          5.Suma reportată (lei)               N(15)    DA    TVal2=suma(Val2)+Val2_NI
+44.   TVal3          6.Suma dedusă (lei)                  N(15)    DA    TVal3=suma(Val3)+Val3_NI
+45.                  B. Date privind beneficiarii
+                     sponsorizărilor / mecenatului /
+                     burselor private
+46.   <entit>        1-n aparitii
+47.   denE           1.Denumire/ nume si prenume         C(200)    DA
+48.   cifE           2.Cod de identificare fiscală        N(13)    DA
+49.   adrE           3.Adresa                            C(1000)   DA
+50.   Val1           4. Suma (lei)                        N(15)    DA    Val1>=0
+51.   Val2           5. Suma reportată (lei)              N(15)    DA    Val2>=0
+52.   Val3           6. Suma dedusă (lei)                 N(15)    DA    Val3>=0
+53.   </ entit >
+54.                  Anexa - Date privind beneficiarii
+                     neindividualizati
+
+
+
+                                                                                                                                4
+       55.                                                                                      0 aparitii daca Val2_NI=0
+             <entit1>         0-n aparitii
+                                                                                                n aparitii daca Val2_NI >0
+       56. denE_NI             1.Denumire/ nume si prenume                   C(200)             Obligatoriu daca Val2_NI >0
+       57. cifE_NI             2.Cod de identificare fiscală                  N(13)             Obligatoriu daca Val2_NI >0   Nomenclator cod_oblig:
+       58. adrE_NI             3.Adresa                                     C(1000)             Obligatoriu daca Val2_NI >0
+       59. </ entit1>
+       60. </d107>
+Nr       Cod                                          Denumire creanţă fiscală
+crt    Impozit
+1      102       Plăţi anticipate, în contul impozitului pe profit anual, datorate de societăţi comerciale bancare,
+                 persoane juridice române şi de sucursalele din România ale băncilor, persoane juridice străine
+2      103       Impozit pe profit datorat de persoane juridice române, altele decât cele de la pct.1
+3      104       Impozit pe profit anual (agric., ONG-uri)
+4      105       Impozit pe profit datorat de persoane juridice străine, altele decât cele de la pct.1
+5      121       Impozit pe veniturile microîntreprinderilor
+
+      Corelatii suplimentare:
+
+      if ( cod_oblig=(102) { Data_M=null ; primul_an_modif=null; ultimul_an_modif=null}
+      ---------------------------------
+      If (Data_M<>null ) then { d_alte=0; Data_L=null ; Data_B=null }
+      ----------------------------------
+      If (Data_L<>null or Data_B<>null) then { d_alte=1; Data_M=null ; primul_an_modif=null; ultimul_an_modif=null}
+      ---------------------------------
+      If (d_alte=1) then { Data_M=null; primul_an_modif=null; ultimul_an_modif=null ; Data_I si Data_S nu se verifica}
+      -----------------------
+      //calcul Data_I, Data_S
+      if (Data_M=null) then { Data_I="01.01."+an_i ; Data_S="31.12."+an ; luna_i=01 ;luna=12 ; }
+      else
+      (
+           If (primul_an_modif=1) then Data_I= 01.01.Anul(Data_M)
+           else Data_I=Data_M
+          ----------------------
+           If (ultimul_an_modif=1) then Data_S=31.12.an (adica an= Anul( Data_M) +1)
+           else                            Data_S=Data_M+364 zile (sau 365 zile in an bisect)
+      )
+      ------------------------------------
+             if (Data_L<>null) then Data_S = Data_L
+             if (Data_B<>null) then Data_S = Data_B
+
+
+         Vers. 1.0.0 din 27.02.2024
+
+
+
+
+                                                                                                                                                       5
