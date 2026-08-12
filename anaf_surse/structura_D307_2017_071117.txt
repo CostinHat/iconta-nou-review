@@ -1,0 +1,116 @@
+  Structura fişier XML pentru D307 ' Declaraţie privind sumele rezultate din ajustarea/corecţia ajustărilor/ regularizarea taxei pe
+  valoarea adăugată' an 2016, 2017
+
+  Conform OPANAF 793/2016
+  Conform OPANAF 76/ 21.01.2010
+  declaratie:v1
+  Data      Nr. crt. Elemente/                        Denumire câmp                  Tip şi     Câmp
+modificării          atribute                                                      lungime    obligatoriu       Formule şi restricţii                    Erori
+                                                                                     câmp
+                1.   <declaratie307>
+                2.                                                                                          1<=luna <=12
+                     luna              Perioada de raportare – Luna                 N(2)         DA                                        ERR - luna raportare
+                3.   an                Perioada de raportare - An                   N(4)         DA         an >= 2016                     ERR - an raportare
+                4.                                                                  N(1)         DA         d_rec in (0,1) unde
+                                                                                                            1=Rectificativa , 0=Initiala
+                     d_rec             Declaratie rectificativa
+                                                                                                            Se raporteaza toata initiala
+                                                                                                            corectata
+                5.   d_anulare         Declaraţie depusă/ corectata după            N(1)         DA         d_anulare = 0(nebifat), 1      ERR - camp d_anulare
+                                       anularea rezervei verificării ulterioare.                            (bifat)                        necompletat/ invalid
+                6.   temei             Temeiul legal pentru corectarea              N(1)                    temei # null daca              ERR - camp Temei
+                                       declarației                                                          d_anulare=1 (bifat)            necompletat pentru
+                                                                                                                                           d_anulare=1 (bifat)
+                                                                                                            1-->a) art.105 alin(6)
+                                                                                                            lit.a) din Legea
+                                                                                                            nr.207/2015 (în situaţia
+                                                                                                            în care corecţia se
+                                                                                                            datorează îndeplinirii sau
+                                                                                                            neîndeplinirii unei condiţii
+                                                                                                            prevăzute de lege care
+                                                                                                            impune corectarea bazei
+                                                                                                            de impozitare şi/sau a
+                                                                                                            creanţei fiscale aferente)
+
+
+                                                                                                            2-->b) art.105 alin(6)
+
+
+
+
+                                                                                                                                                                  1
+                                                                              lit.b) din Legea
+                                                                              nr.207/2015 (în situaţia
+                                                                              în care prin hotărâri
+                                                                              judecătoreşti definitive s-
+                                                                              au stabilit în sarcina
+                                                                              plătitorului obligaţii de
+                                                                              plată reprezentând venituri
+                                                                              sau diferenţe de venituri
+                                                                              către beneficiarii acestora
+                                                                              care generează obligaţii
+                                                                              fiscale aferente unor
+                                                                              perioade pentru care s-a
+                                                                              anulat rezerva verificării
+                                                                              ulterioare.)
+
+7.    nume_declar      Nume declarant                           C(75)    DA
+                                                                                                            ERR - nume declarant
+                                                                                                            necompletat
+8.    prenume_declar   Prenume declarant                        C(75)    DA
+                                                                                                            ERR - prenume declarant
+                                                                                                            necompletat
+9.    functie_declar   Functie declarant                        C(50)    DA
+                                                                                                            ERR – functie declarant
+                                                                                                            necompletată
+10.                    Cod de înregistrare în scopuri de tva   N(10)
+      cif              Cod de identificare fiscala
+                                                                         DA   Verificare cif (cui / CNP)    ERR - cif invalid sau inexistent
+                                                               N(13)
+11. den                Denumire sau Nume şi Prenume            C(200)    DA                                 ERR - denumire necompletată
+12. adresa             Adresă domiciliu fiscal                 C(1000)   DA                                 ERR – adresă necompletată
+13. telefon            Telefon domiciliu fiscal                 C(15)
+14. fax                Fax domiciliu fiscal                     C(15)
+15. mail               E-mail domiciliu fiscal                 C(200)
+16.                                                                           tvaA =
+      tvaA             Suma TVA din operatiuni de tip A         N(15)    DA                                 ERR - calcul tvaA
+                                                                              Σ operatie(tva) pt. tip='A"
+17.                                                                           tvaL =
+      tvaL             Suma TVA din operatiuni de tip A         N(15)    DA   Σ operatie(tva) pt. tip='L"   ERR - calcul tvaL
+
+18. tvaC               Suma TVA din operatiuni de tip A         N(15)    DA   tvaC =                        ERR - calcul tvaC
+
+
+
+
+                                                                                                                                               2
+                                                                                                Σ operatie(tva) pt. tip='C"
+          19.                                                                                   totalPlata_A =
+                totalPlata_A        Suma de control                               N(15)    DA                                 ERR - calcul totalPlata_A
+                                                                                                Σ operatie(tva)
+          20. <operatie>            1-n aparitii
+          21.                                                                      C(1)
+                                                                                                tip in (A,L,C)                ERR – tip operaţiune diferit de
+                tip                 Tip operaţiune                                         DA                                 (A,L,C)
+          22.                                                                                                                 ERR – codO invalid/ necompletat
+                codO                Cod operator (cedent/finantator/beneficiar)   C(10)    DA   Verificare cui
+                                                                                                                              ERR- (tip+codO) are apariţii
+                                                                                                                              multiple
+          23.
+                denO                Denumire / nume si prenume operator           C(200)   DA                                 ERR - denumire operator
+                                                                                                                              necompletată
+          24.
+                tva                 TVA                                           N(15)    DA                                 ERR - TVA necompletată
+
+          25.         </operatie>
+          26.    </declaratie307>
+
+
+
+
+Vers. A1.0.0 din 06.11.2017
+
+
+
+
+                                                                                                                                                                3

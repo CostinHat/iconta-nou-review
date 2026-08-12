@@ -288,6 +288,16 @@
       "tip_forma": null,
       "acopera": []
     },
+    "d307_20171205.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d307_20171205.xsd.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "d311_20210129.xsd": {
       "exista": true,
       "tip_forma": null,
@@ -911,6 +921,21 @@
       "acopera": []
     },
     "structura_D223_2016_050116_13012016.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D307_2017_071117.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D307_2017_071117.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D307_2017_071117.txt": {
       "exista": true,
       "tip_forma": null,
       "acopera": []

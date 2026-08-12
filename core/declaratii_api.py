@@ -18,7 +18,7 @@ CALCUL+DB stau în module (au pull+genereaza). Aici doar: validare cerere (pură
 """
 from __future__ import annotations
 
-from core import (d100, d101, d104, d107, d110, d220, d221, d223, d112, d177, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710)
+from core import (d100, d101, d104, d107, d110, d220, d221, d223, d307, d112, d177, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710)
 from core.common import Perioada
 
 REGULI = "2026.1"
@@ -117,6 +117,11 @@ def _d230(conn, schema, b):
     return d230.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
 
 
+def _d307(conn, schema, b):
+    # D307 e MANUALA (ajustare/corectie/regularizare TVA). Lunara (luna+an). operatiuni tip A/L/C.
+    return d307.genereaza(conn, schema, Perioada(b["an"], luna=b["luna"]), b.get("manual") or {})
+
+
 def _d311(conn, schema, b):
     # D311 e MANUALA integral (TVA in situatii speciale, dupa anularea codului de TVA) -
     # fara pull automat; `manual` = bazele/TVA pe situatii + Data_A + d_anul1/d_anul2.
@@ -139,6 +144,7 @@ DECLARATII = {
     "d230": ("anual",       _d230),
     "d300": ("lunar",       _d300),
     "d301": ("lunar",       _d301),
+    "d307": ("lunar",       _d307),
     "d311": ("lunar",       _d311),
     "d390": ("lunar",       _d390),
     "d394": ("lunar",       _d394),
@@ -155,7 +161,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230", "d311", "d710"))
+_DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230", "d307", "d311", "d710"))
 
 
 def tipuri():
@@ -250,6 +256,12 @@ def valideaza_cerere(tip, body):
         if not isinstance(body.get("manual"), dict) or not body.get("manual"):
             erori.append("d230 cere `manual` (nume_c/cif_c contribuabil + den/cif/cont_entitate ONG)")
 
+    # d307 (ajustare TVA, MANUALA lunara): cere manual.operatiuni (tip A/L/C)
+    if tip == "d307":
+        m = body.get("manual")
+        if not isinstance(m, dict) or not m.get("operatiuni"):
+            erori.append("d307 cere `manual.operatiuni` (operatiuni de ajustare TVA, tip A/L/C)")
+
     # d311 (TVA situatii speciale, MANUALA): cere `manual` (bazele/TVA pe situatii)
     if tip == "d311":
         if not isinstance(body.get("manual"), dict) or not body.get("manual"):
@@ -320,6 +332,8 @@ def numar_operatiuni(tip, res):
         return int(getattr(res, "nr_asociati", 0) or 0)
     if t == "d110":
         return int(getattr(res, "nr_obligatii", 0) or 0)
+    if t == "d307":
+        return int(getattr(res, "nr_operatiuni", 0) or 0)
     if t == "d107":
         return (int(getattr(res, "nr_beneficiari", 0) or 0) +
                 int(getattr(res, "nr_neindividualizati", 0) or 0))
