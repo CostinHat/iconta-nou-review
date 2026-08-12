@@ -1,0 +1,237 @@
+     Structura fisier XML pentru declaratia 110 - Declaraţie de regularizare/ cerere de restituire privind impozitul pe venit reţinut la sursă
+
+     (declaratie:v1)
+Nr. cr.    Elemente/ atribute           Denumire câmp               Tip si    Camp
+                                                                    lung.     oblig.                 Formule si restrictii                   Eori
+                                                                    camp
+1          <D110>
+2          luna                 Perioada de raportare - Luna         N(2)      DA       0>luna <=12                                ERR - luna raportarii
+3          an                   Perioada de raportare - An           N(4)      DA       an >= 2016                                 ERR - anul raportarii
+4          d_rec                Declaratie rectifcativa              N(1)      DA      d_rec =(0,1)                                 ERR - camp d_rec
+                                                                                        0-initiala, 1-rectificativa
+5          d_temei              Bifa pentru 'In temeiul art.168      N(1)      DA      d_temei = 0(nebifat), 1 (bifat)              ERR - camp d_temei
+                                si 170 din Legea nr.207/ 2015
+                                privind codul de procedură                             if Σdif_rest >0 then d_temei=1
+                                fiscală solicit restituirea sumei                      else d_temei=0
+                                prevăzute la rd.4'
+6          IBAN                 Cont bancar                          C(24)             if (d_temei=1) IBAN#null                     ERR - camp IBAN
+                                                                                       else IBAN=null
+
+7          banca                Banca                               C(1000)            if (d_temei=1) banca#null                    ERR - camp banca
+                                                                                       else banca=null
+
+8          nume_declar          Nume declarant                       C(75)     DA                                                  ERR - Nume
+                                                                                                                                    declarant necompletat
+9          prenume_declar       Prenume declarant                    C(75)     DA                                                  ERR - Prenume
+                                                                                                                                    declarant necompletat
+10         functie_declar       Functie declarant                    C(50)     DA                                                  ERR - functie_declar
+                                                                                                                                    necompletat
+11         cif                  Cod de identificare fiscală         N(13)      DA      Verificare CF sau CNP                       ERR - cif invalid
+12         den                  Denumire sau Nume si                C(200)     DA                                                  ERR - denumire
+                                Prenume                                                                                             necompletata
+13         adresa               Adresă                              C(1000)    DA                                                  ERR - adresa
+                                                                                                                                    necompletata
+14         telefon              Telefon                             C(15)              
+15         fax                  Fax                                 C(15)              
+16         mail                 E-mail                              C(200)              validare e-mail                            ATT - E-mail eronat
+17         totalPlata_A         Suma de control                     N(15)      DA      Σ (dif_plata+ dif_rest)                      ERR calcul
+18         <obligatie>          1-n aparitii
+19         cod_oblig            Cod obligatie                        N(3)      DA      Atentie !                                    ERR – cod obligatie
+                                                                                       Orice obligatie se incarca o singura data.   negasit in
+                                                                                                                                    nomenclator
+
+                                                                                                                                    ERR – cod obligatie
+                                                                                                                                    cu aparitii multiple
+20         cod_bugetar          Cod bugetar                          C(10)     DA      Se completeaza cu X pana la 10 caractere.
+20a        scadenta             Scadenta platii                      D(10)     DA      Format ZZ.LL.AAAA                            ERR – scadenta
+                                                                                       scadenta=25 a lunii urmatoare perioadei de   invalida
+                                                                                       raportare
+
+20b        nr_evid              Nr.de evidenta a platii              N(23)     DA      Ex.nr.evid.a platii :                        ERR – nr.de evidenta
+                                                                                       10602010611250711000035                      a platii invalid
+
+                                                                                       Verificare componenta si suma de control
+                                                                                       pentru nr_evid :
+                                                                                       Poz.1-2 :10
+                                                                                       Poz.3-5 : cod obligatie (nomenclator)
+                                                                                       Poz.6-7 :01
+                                                                                       Poz.8-11 : LLAA (sf.per.de raportare)
+
+                                                                                                                                                            1
+                                                                                           Poz.12-17 : ZZLLAA (scadenta platii)
+                                                                                           Poz.18: 0
+                                                                                           Poz.19 : 0
+                                                                                           Poz.20-21 : 00
+                                                                                           Poz.22-23 : suma de control = suma primelor
+                                                                                           21 pozitii (se iau ultimele 2 cifre ale sumei)
+21          suma_dat                 1.Suma datorata                    N(15)         DA   suma_dat >=0                                     ERR - 1.Suma
+                                                                                                                                            datorata <0
+22          suma_rest                2.Suma restituita                  N(15)         DA   suma_rest >0                                     ERR - 2.Suma
+                                                                                                                                            restituita <=0
+23          dif_plata                3.Diferenta de plata la BS         N(15)         DA   If(suma_dat - suma_rest>0) then                  ERR - 3. Diferenta de
+                                                                                           {                                                plata la BS
+                                                                                           dif_plata=suma_dat - suma_rest
+                                                                                           dif_rest=0
+                                                                                           }
+24          dif_rest                 4.Diferenta solicitata la          N(15)         DA   If(suma_rest - suma_dat >0) then                 ERR - 4.Diferenta
+                                     restituire de la BS                                   {                                                solicitata la restituire
+                                                                                           dif_rest= suma_rest - suma_dat                   de la BS
+                                                                                           dif_plata=0
+                                                                                           }
+
+25          </obligatie >
+26          </D110>
+
+     Nomenclator D100
+
+     Nr.                 Cod        Denumire creanţă fiscală           Cont bugetar        Per.de raportare              Scadenţă (termen de
+     crt.               Impoz                                                                                                  plată)
+                          it
+              1.        604     Impozit pe veniturile din dividende       5503                     L                             25LU
+                                distribuite persoanelor fizice
+              2.        605     Impozit pe veniturile din dobânzi         5503                     L                             25LU
+
+              3.        606     Impozit pe veniturile din lichidarea      5503                     L                             25LU
+                                unei persoane juridice
+              4.        608     Impozit pe veniturile din premii          5503                     L                             25LU
+
+              5.        621     Impozit pe veniturile din jocuri de       5503                     L                             25LU
+                                noroc
+
+              6.        690     Impozit pe veniturile din alte surse      5503                     L                             25LU
+              7.                Impozit pe veniturile din dividende       5503                     L                             25LU
+                        631     obţinute din România de persoane
+                                nerezidente
+              8.                Impozit pe veniturile din dobânzi         5503                     L                             25LU
+                                obţinute din România de persoane
+                        632     nerezidente
+
+              9.                Impozit pe veniturile din redevenţe       5503                     L                             25LU
+                                obţinute din România de persoane
+                        633     nerezidente
+
+              10.               Impozit pe veniturile din                 5503                     L                             25LU
+                                comisioane obţinute din România
+                        634     de persoane nerezidente
+
+              11.       635     Impozit pe veniturile obţinute din        5503                     L                             25LU
+                                România de persoane nerezidente
+
+                                                                                                                                                                       2
+             din activităţi sportive şi de
+             divertisment
+
+12.          Impozit pe veniturile din servicii     5503   L   25LU
+       636   prestate de persoane nerezidente
+
+13.          Impozit pe veniturile obţinute de      5503   L   25LU
+             persoane fizice nerezidente din
+             premii acordate la concursuri
+       637   organizate în România
+
+14.                                                 5503   L   25LU
+             Impozit pe veniturile obţinute la
+             jocuri de noroc practicate în
+             România de persoane fizice
+       638   nerezidente
+
+15.          Impozit pe venituri din lichidarea     5503   L   25LU
+             unei persoane juridice române
+       639   realizate de persoane nerezidente
+
+16.          Impozit pe veniturile reprezentând     5503   L   25LU
+             remuneraţii primite de persoane
+             juridice nerezidente care
+             actioneaza în calitate de
+             administrator, fondator sau
+       640   membru al consiliului de
+             administraţie al unei persoane
+             juridice române
+17.          Impozit pe veniturile realizate din    5503   L   25LU
+             transferul masei patrimoniale
+       641   fiduciare de la fiduciar la
+             beneficiarul nerezident
+18.          Impozit pe veniturile din pensii       5503   L   25LU
+       607
+             (mutat in nomenclator D112)
+19.          Impozit pe veniturile din transferul   5503   L   25LU
+             titlurilor de valoare si din
+
+       642   operatiuni cu instrumente
+             financiare derivate
+             (se aplica din 01.2023)
+             Modif.in 22.07.2024
+20.          Impozit pe veniturile din cedarea      5503   L   25LU
+             folosinței bunurilor, altele decât
+             cele din arendarea bunurilor
+             agricole și din închirierea în scop
+             turistic a camerelor situate în
+      628    locuințe proprietate personală,
+             plătite de persoane juridice sau
+             alte entități care au obligația de a
+             conduce evidență contabilă
+
+
+
+
+                                                                      3
+       21.           Impozit pe veniturile din transferul         20A031800                   L                         25LU
+                     dezmembramintele dreptului de
+             629     proprietate sub conditie
+                     suspensiva
+
+
+
+Nomenclatorul D112
+
+  Nr.crt.     Cod         Denumire creanţă fiscală               Cod bugetar          Per.de raportare            Scadenţă (termen de
+             Impo                                                                                                       plată)
+               zit
+       22.   602     Impozit pe veniturile din salarii           5503          L-Declara lunar si platesc lunar
+                                                                                T-Declara lunar/ trimestrial si         25.LL1
+                                                                                     platesc trimestrial
+
+                                                                                     Scadenţă 25.LL1
+                                                                                L (LL=1 la 12) ==>25.(LL+1)
+                                                                               T (LL=1,4,7,10) ==>25.(LL+3)
+                                                                               T (LL=2,5,8,11) ==>25.(LL+2)
+                                                                               T (LL=3,6,9,12) ==>25.(LL+1)
+
+       23.   611     Impozit pe veniturile din drepturi de       5503                         L                         25.LU
+                     proprietate intelectuala
+       24.   122
+       25.   622     Impozit pe veniturile realizate de          5503                         L                         25.LU
+                     persoanele fizice dintr-o asociere
+                     cu o persoană juridică contribuabil,
+                     potrivit titlului II din Legea
+                     nr.227/2015 privind Codul fiscal, cu
+                     modificările          și     completările
+                     ulterioare
+       26.   623     Impozit pe veniturile realizate de          5503                         L                         25.LU
+                     persoanele fizice dintr-o asociere
+                     cu o persoană juridică contribuabil,
+                     potrivit titlului III din Legea
+                     nr.227/2015 privind Codul fiscal, cu
+                     modificările și completările
+                     ulterioare
+       27.   619     Impozit pe veniturile din arendarea         5503                         L                         25.LU
+                     bunurilor agricole
+       28.   626     Plati anticipate ale impozitului            5503                         L                         25.LU
+                     pentru unele venituri din activitati
+                     independente , precum si pentru
+                     venituri din alte surse prevazute la
+                     art.114 alin.(2) lit.k ^1)
+                     Modif.in 28.02.2024
+       29.   607     Impozit pe veniturile din pensii            5503                         L                          25LU
+                     (mutat din nomenclator D100)
+       30.   625     Impozit pe ven. realiz. de PF din           5503                         L                          25LU
+                     activit. indep. realizate în baza
+                     contractelor de activitate sportiva
+       31.   627     Impozit PF care realizează venituri         5503                         L                          25LU
+                     din      desfășurarea      activităților
+                     casnice
+
+
+
+
+                                                                                                                                        4
