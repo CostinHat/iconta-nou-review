@@ -18,7 +18,7 @@ CALCUL+DB stau în module (au pull+genereaza). Aici doar: validare cerere (pură
 """
 from __future__ import annotations
 
-from core import (d100, d101, d104, d107, d220, d223, d112, d177, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710)
+from core import (d100, d101, d104, d107, d220, d221, d223, d112, d177, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710)
 from core.common import Perioada
 
 REGULI = "2026.1"
@@ -96,6 +96,11 @@ def _d220(conn, schema, b):
     return d220.genereaza(conn, schema, Perioada(b["an"]), b.get("manual") or {})
 
 
+def _d221(conn, schema, b):
+    # D221 e MANUALA (venituri agricole pe norme de venit - PF/asociere). Anuala (luna=12 fix).
+    return d221.genereaza(conn, schema, Perioada(b["an"]), b.get("manual") or {})
+
+
 def _d223(conn, schema, b):
     # D223 e MANUALA (venituri estimate asocieri fara PJ / transparenta fiscala). Anuala (luna=12 fix).
     return d223.genereaza(conn, schema, Perioada(b["an"]), b.get("manual") or {})
@@ -123,6 +128,7 @@ DECLARATII = {
     "d205": ("anual",       _d205),
     "d207": ("anual",       _d207),
     "d220": ("anual",       _d220),
+    "d221": ("anual",       _d221),
     "d223": ("anual",       _d223),
     "d230": ("anual",       _d230),
     "d300": ("lunar",       _d300),
@@ -143,7 +149,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d104", "d107", "d177", "d207", "d220", "d223", "d230", "d311", "d710"))
+_DOAR_API = frozenset(("d104", "d107", "d177", "d207", "d220", "d221", "d223", "d230", "d311", "d710"))
 
 
 def tipuri():
@@ -214,6 +220,12 @@ def valideaza_cerere(tip, body):
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("cif") or not m.get("activitate"):
             erori.append("d220 cere `manual.cif` (CNP) + `manual.activitate` (venit estimat PF)")
+
+    # d221 (venituri agricole pe norme, MANUALA anuala): cere manual.cif + activitati
+    if tip == "d221":
+        m = body.get("manual")
+        if not isinstance(m, dict) or not m.get("cif") or not m.get("activitati"):
+            erori.append("d221 cere `manual.cif` (CNP) + `manual.activitati` (activitati agricole)")
 
     # d223 (venituri estimate asocieri, MANUALA anuala): cere manual.activitate + asociati
     if tip == "d223":

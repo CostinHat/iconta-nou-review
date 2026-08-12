@@ -1,0 +1,221 @@
+   Structura fişier XML pentru declaratia 221 pentru an >= 2016 conform OPANAF nr.3622/2015
+   Atentie ! Poate avea atasament o arhiva .ZIP.
+
+
+Data      Nr. crt.   Elemente/ atribute   Denumire câmp                            Tip şi    Câmp
+modif.                                                                             lungime   obliga   Formule şi restricţii                Erori
+                                                                                   câmp      toriu
+               1.    <declaratie221>
+               2.    luna                 Perioada de raportare - Luna             N(2)      DA       luna =12                             ERR - luna raportare
+               3.    an                   Perioada de raportare - An               N(4)      DA       an >= 2016                           ERR - an raportare
+               4.                                                                                     d_rec=(0-initiala,1-rectificativa)
+                     d_rec                Declaratie rectifcativa                  N(1)      DA                                            ERR – rectificativa
+               5.    nume_declar          Nume declarant                           C(75)     DA                                            ERR - nume declarant
+               6.    prenume_declar       Prenume declarant                        C(75)     DA                                            ERR - prenume declarant
+               7.    functie_declar       Functie declarant                        C(50)     DA                                            ERR - functie declarant
+               8.    totalPlata_A         Suma de control                          N(15)     DA       totalPlata_A = 0                     ERR – suma de control
+               9.                         I. DATE DE IDENTIFICARE A
+                                          CONTRIBUABILULUI/ ASOCIERII
+                                          FARA PERSONALITATE JURIDICA
+               10.                                                                                    aj_soc=(0,1)
+                                          Declar că nu fac parte dintr-o familie                      0-neselectat
+                     aj_soc                                                        N(1)      DA                                            ERR - ajutor social
+                                          beneficiară de ajutor social                                1-selectata
+                                                                                                      aj_soc=0 pentru an>=2017
+               11.                                                                           DA                                            ERR – denume contribuabil/
+                     nume_a               Nume si prenume/ Denumire                C(75)
+                                                                                                                                           asociere
+               12.   cif                  CIF                                      N(13)     DA       Validare CF/CNP/ NIF                 ERR – CIF contribuabil/ asociere
+               13.                                                                                                                         ERR – adresa contribuabil/
+                     adresa_a             Adresa                                   C(200)    DA
+                                                                                                                                           asociere
+               14.   telefon_a            Telefon                                  C(15)
+               15.   fax_a                Fax                                      C(15)
+               16.   email_a              E-mail                                   C(200)
+               17.                        II. DATE PRIVIND ACTIVITATEA
+                                          DESFĂŞURATĂ
+               18.                                                                                    forma_org= (1,2)
+                                                                                                      1.Individual                         ERR – camp '1.Forma de
+                     forma_org            1.Forma de organizare                    N(1)      DA
+                                                                                                      2.Asociere fara personalitate        organizare'
+                                                                                                      juridica
+               19.                                                                                    -daca forma_org=1 atunci             ERR – camp '2.Numar asociati '
+                                                                                                      nr_asoc=0                            necompletat
+                     nr_asoc              2.Numar asociati                         N(6)               -daca forma_org=2 atunci             pentru '1.Forma de organizare'
+                                                                                                      nr_asoc= numar aparitii              =2.asociere
+                                                                                                      <asociati>
+
+
+
+
+                                                                                                                                                                              1
+                                                                                 -daca suma(cota_d)#100             ERR - suma cotelor asociatilor
+                                                                                                                    diferita de 100
+20.                       3.Contractul de asociere
+21.                                                                              -daca forma_org=1 atunci
+                                                                                                                    ERR – campul '3.Numar contract'
+                                                                                 nr_contr=null
+                                                                                                                    necompletat
+      nr_contr              - nr.                                  C(15)         -daca forma_org=2 atunci
+                                                                                                                    pentru '1.Forma de
+                                                                                 nr_contr#null
+                                                                                                                    organizare'=2.asociere
+22.                                                                              -daca forma_org=1 atunci
+                                                                                                                    ERR – campul '3.Data contract'
+                                                                                 dat_contr=null
+                                                                                                                    necompletat
+      data_contr            - data                                 D(10)         -daca forma_org=2 atunci
+                                                                                                                    pentru '1.Forma de
+                                                                                 data_contr#null
+                                                                                                                    organizare'=2.asociere
+23.                       4.Nr. de zile scutite de la plata
+      nr_zile_scut                                                 N(3)
+                          impozitului pe venit
+24.                       V. DATE DE IDENTIFICARE A
+                          IMPUTERNICITULUI/
+                          RESPONSABILULUI ASOCIERII
+25.                                                                              (den_r#nul si cif_r#null si
+                                                                                 adresa_r# null)                    ERR – nu s-au incarcat toate
+                                                                                 sau                                campurile obligatorii : CIF sau
+      den_r               Nume, prenume / Denumire                 C(75)
+                                                                                 (den_r=nul si cif_r=null si        Nume, prenume / Denumire sau
+                                                                                 adresa_r= null si telefon_r=null   Adresa imputernicit
+                                                                                 si fax_r = null email_r= null)
+26.   cif_r               Cod de identificare fiscală              N(13)         Validare CIF (CNP/NIF/CF)          ERR – CIF imputernicit invalid
+27.   adresa_r            Adresa                                   C(200)
+28.   telefon_r           Telefon                                  C(15)
+29.   fax_r               Fax                                      C(15)
+30.   email_r             E-mail                                   C(200)
+31.                       III. DATE PENTRU STABILIREA
+                          VENITULUI IMPOZABIL
+32.   <activitati>        1-n aparitii
+33.                                                                                                                 ERR - camp 'Judet activitate'
+      judet               Judet activitate                         C(2)     DA   Nomenclator judete
+                                                                                                                    necompletat
+34.                                                                              localitate unica (in cadrul unei   ERR - camp 'Localitate activitate'
+      localitate          Localitate activitate                    C(30)    DA
+                                                                                 activitati)                        necompletata
+35.                                                                              optiune=(0,1)                      ERR - camp ' Optiune privind
+                          Optiune privind incadrarea in limitele
+      optiune                                                      N(1)     DA   0-neselectat                       incadrarea in limitele veniturilor
+                          veniturilor neimpozabile
+                                                                                 1-selectata                        neimpozabile' necompletat
+36.           <produse>   1-20 aparitii
+37.   codp                Cod produse vegetale/                    N(3)     DA   Nomenclator produse                ERR – camp ' Cod produse
+
+
+
+
+                                                                                                                                                         2
+                                      animale                                                  vegetale/ animale              vegetale/ animale' necompletat
+
+                                                                                               codp unic (in cadrul unei
+                                                                                               activitati)
+             38.                      Total suprafata (ha)/                                                                   ERR – camp 'Total suprafata (ha)/
+                   prod1              Nr. total capete animale/ familii de      N(15.2)   DA   prod1>=0                       Nr. total capete animale/ familii de
+                                      albine                                                                                  albine' necompletat
+             39.       </produse>
+             40.   </activitati>
+             41.                      IV. DATE PRIVIND ASOCIAŢII ŞI
+                                      COTA DE DISTRIBUIRE DIN
+                                      VENITUL IMPOZABIL
+                                      CALCULAT LA NIVELUL ASOCIERII
+             42.                                                                               0 aparitii pt. forma_org=1
+                   <asociati>         0-n aparitii
+                                                                                               2-n aparitii pt. forma_org=2
+             43.                                                                                                              ERR- camp '1. Nume si prenume
+                   nume_d             1. Nume si prenume asociat                C(75)     DA
+                                                                                                                              asociat' necompletat
+             44.                                                                               Validare CIF (CNP/NIF/CF)      ERR- camp '2. CNP/ NIF asociat'
+                   cif_d              2. CNP/ NIF asociat                       N(13)     DA
+                                                                                               cif_d unic                     necompletat
+             45.                                                                                                              ERR- camp '3. Domiciliu asociat'
+                   dom_d              3. Domiciliu asociat                      C(200)    DA
+                                                                                                                              necompletat
+             46.                                                                                                              ERR- camp '4. Cota de distribuire
+                                                                                               0<cota_d<100
+                                                                                                                              asociat' necompletat
+                                      4. Cota de distribuire a venitului
+                   cota_d                                                       N(2.2)    DA
+                                      net/ pierderii la nivelul asocierii (%)
+                                                                                                                              ERR- Suma cotelor tuturor
+                                                                                               SUMA(cota_d)=100
+                                                                                                                              asociatilor trebuie sa fie 100.
+             47.                      5.Nr. de zile scutite de la plata
+                   nr_zile_d                                                    N(3)
+                                      impozitului pe venit
+             48.   </asociati>
+             49.   </declaratie221>
+
+
+   Nomenclator judete
+     Judete
+01   Alba                   22   Iasi
+02   Arad                   23   Ilfov
+03   Arges                  24   Maramures
+04   Bacau                  25   Mehedinti
+05   Bihor                  26   Mures
+06   Bistrita-Nasaud        27   Neamt
+07   Botosani               28   Olt
+08   Brasov                 29   Prahova
+
+
+
+
+                                                                                                                                                                     3
+09       Braila                 30       Satu Mare
+10       Buzau                  31       Salaj
+11       Caras-Severin          32       Sibiu
+51       Calarasi               33       Suceava
+12       Cluj                   34       Teleorman
+13       Constanta              35       Timis
+14       Covasna                36       Tulcea
+15       Dambovita              37       Vaslui
+16       Dolj                   38       Valcea
+17       Galati                 39       Vrancea
+52       Giurgiu                40       Municipiul Bucuresti
+18       Gorj
+19       Harghita
+20       Hunedoara
+21       Ialomita
+
+
+      Nomenclator produse vegetale/ animale
+Nr.
+         Cod     Tip produse vegetale
+cr.
+1        101     Cereale
+2        102     Plante oleaginoase
+3        103     Cartofi
+4        104     Sfecla de zahar
+5        105     Tutun
+6        106     Hamei pe rod
+7        107     Legume in camp
+8        108     Legume in spatii protejate
+9        109     Leguminoase pentru boabe
+10       110     Pomi pe rod
+11       111     Vie pe rod
+12       112     Arbusti fructiferi
+13       113     Flori si plante ornamentale
+
+                 Tip produse animale
+1        201     Vaci
+2        202     Bivolite
+3        203     Oi
+4        204     Capre
+5        205     Porci pentru ingrasat
+6        206     Albine
+
+
+
+
+                                                                4
+7      207     Pasari de curte
+
+
+    Vers. A1.0.0 din 05.01.2018
+
+
+
+
+                                  5
