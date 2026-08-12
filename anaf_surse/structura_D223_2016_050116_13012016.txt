@@ -1,0 +1,367 @@
+   Structura fişier XML pentru declaratia 223
+   pentru an curent 2016 (conform OPANAF 184/ 2013)
+   Atentie ! Poate avea atasament o arhiva .ZIP.
+
+
+Data modif. Nr. crt. Elemente/ atribute   Denumire câmp                          Tip şi    Câmp
+                                                                                 lungime   obliga   Formule şi restricţii                Erori
+                                                                                 câmp      toriu
+                 1.    <declaratie223>
+                 2.    luna               Perioada de raportare - Luna           N(2)      DA       luna =12                             ERR – luna <> 12
+                 3.    an                 Perioada de raportare - An             N(4)      DA       an >= 2016                           ERR – an < 2016
+                 4.    d_rec1             Recalcularea platilor anticipate       N(1)      DA       d_rec1=(0-nebifata,1-bifata)         ERR – d_rec1 invalid
+                 5.                       Modificarea modului de determinare a
+05012016               d_rec2             venitului net (trecerea de la norma    N(1)      DA       d_rec2=(0-nebifata,1-bifata)         ERR – d_rec2 invalid
+                                          de venit la sistem real)
+                 6.                                                                                 d_rec=(0-initiala,1-rectificativa)
+
+                                                                                                    d_rec=1 daca d_rec1=1 sau
+05012016               d_rec              Declaratie rectifcativa                N(1)      DA       d_rec2=1                             ERR – d_rec invalid
+                                                                                                    d_rec=0 daca d_rec1=0 si
+                                                                                                    d_rec2=0
+
+                 7. nume_declar           Nume declarant                         C(75)     DA
+                 8. prenume_declar        Prenume declarant                      C(75)     DA
+                 9. functie_declar        Functie declarant                      C(50)     DA
+                 10.                                                                                totalPlata_A =
+                     totalPlata_A         Suma de control                        N(15)     DA                                            ERR – calcul totalPlata_A
+                                                                                                    venit3+chelt3+net3
+                 11.                      I. DATE DE IDENTIFICARE A
+                                          ASOCIERII
+                 12. nume                 Denumire                               C(75)     DA
+                 13. cif                  Cod de identificare fiscală            N(10)     DA       Validare cif (CF )                   ERR – cif asociere invalid
+                 14. adresa               Adresa                                 C(200)    DA
+                 15. telefon              Telefon                                C(15)
+                 16. fax                  Fax                                    C(15)
+                 17. email                E-mail                                 C(200)
+                 18.                      IV. DATE DE IDENTIFICARE A
+                                          RESPONSABILULUI ASOCIERII
+                 19. den_r                Nume, prenume / Denumire               C(75)     DA
+                 20. cif_r                Cod de identificare fiscală            N(13)     DA       Validare cif_r (CNP/ CF/ NIF)        ERR – cif_r invalid
+                 21. adresa_r             Adresa                                 C(200)    DA
+                 22. telefon_r            Telefon                                C(15)
+
+
+
+
+                                                                                                                                                                      1
+           23. fax_r           Fax                              C(15)
+           24. email_r         E-mail                           C(200)
+           25. <activitate>
+           26.                 II. DATE PRIVIND ACTIVITATEA
+                               DESFĂŞURATĂ
+           27.                                                                categ_venit in
+                                                                              Listă de valori (1,2, 4,5,6,7)
+                                                                                     6 valori:
+                                                                               1.Venituri comerciale
+                                                                               2.Venituri din profesii libere       ERR – categ_venit in afara listei
+05012016         categ_venit   1. Categoria de venit            N(1)     DA
+                                                                               4.Venituri din activitati agricole   de valori
+                                                                              5-Venituri din silvicultura
+                                                                              6-Venituri din piscicultura
+                                                                              7-Alte venituri
+
+           28.                                                                forma_org in
+                                                                              Listă de valori (2,3,4)
+                                                                                      3 valori
+                                                                              2.Asociere fara personalitate
+                                                                                                                    ERR – forma_org in afara listei de
+                 forma_org     2.Forma de organizare            N(1)     DA   juridica
+                                                                                                                    valori
+                                                                              3.Entitati supuse regimului
+                                                                              transparentei fiscale
+                                                                              4.Modificarea modalitatii/
+                                                                              formei de exercitare a activitatii
+           29.                                                                det_venit in
+                                                                              Listă de valori (1,3)
+                                                                                      2 valori                      ERR – det_venit in afara listei de
+                 det_venit     3.Determinarea venitului net     N(1)     DA
+                                                                              1.sistem real                         valori
+                                                                              3.norma de venit
+
+           30.                                                                nr_asoc =
+                 nr_asoc       4.Numar asociati                 N(6)     DA
+                                                                              nr.aparitii <asociat>
+           31. CAEN            5.Cod CAEN                       C(4)     DA   Validare cod CAEN                     ERR – cod CAEN invalid
+           32.                 6.Sediul
+           33. judet            -Judet                          N(2)     DA   judet in Nomenclator judete           ERR – judet invalid
+           34. localitate       -Localitate                     C(50)    DA
+           35.                                                                sector =(1,2,3,4,5,6) daca
+               sector           -Sector                         N(1)                                                ERR – sector invalid
+                                                                              judet=40
+           36.                  -Adresa (Strada, Numar, Bloc,
+                 sediu                                          C(200)   DA
+                               Scara, Etaj,Ap,Cod postal)
+           37.                 7.Contractul de asociere
+           38. nr_contr          - nr.                          C(15)    DA
+
+
+
+
+                                                                                                                                                         2
+39. data_contr     - data                                     D(10)   DA
+40.              8.Documentul de autorizare
+41. nr_doc         - nr.                                      C(15)
+42. data_doc       - data                                     D(10)
+43.                                                                        -anul(data_I) <= an_r sau        ERR – anul din data_I > anul
+    data_I       9.Data începerii activităţii (zz.ll.aaaa)    D(10)        data_I =null                     raportarii
+
+44.                                                                        -anul(data_F) >= an_r sau
+                                                                           data_F =null
+                                                                                                            ERR – anul din data_F < anul
+                                                                                                            raportarii
+                                                                           -daca data_I#null si
+                                                                           data_F#null atunci
+      data_F     10.Data încetării activităţii (zz.ll.aaaa)   D(10)                                         ERR – data_F<=data_I
+                                                                           data_F>data_I
+                                                                                                            ERR – data_F si data_S nu pot fi
+                                                                           -daca data_S#null atunci
+                                                                                                            completate simultan
+                                                                           data_F=null
+
+45.                                                                        -anul(data_S) = an_r sau
+                                                                           data_S =null
+                                                                                                            ERR – anul din data_S <> anul
+                                                                                                            raportarii
+                                                                           -daca data_I#null si
+                 11. Data suspendarii activităţii                          data_S#null atunci
+      data_S                                                  D(10)                                         ERR – data_S<=data_I
+                 (zz.ll.aaaa)                                              data_S>data_I
+                                                                                                            ERR – data_F si data_S nu pot fi
+                                                                           -daca data_F#null atunci
+                                                                                                            completate simultan
+                                                                           data_S=null
+
+46.              III.DATE PRIVIND VENITUL
+                 ESTIMAT
+47. venit3       1.Venit brut estimat                         N(15)   DA   venit3>=0
+48. chelt3       2.Cheltuieli deductibile estimate            N(15)   DA   chelt3>=0
+49.                                                           N(15)        -daca (venit3-chelt3)>0 atunci   ERR – calcul net3
+                                                                           net3=venit3-chelt3 altfel
+                                                                           net3=0
+      net3       3.Venit net estimat(rd.2-rd.1)                       DA
+                                                                           net3 = suma(venit_d)             ERR – net3 <> suma(venit_d)
+
+50. <asociat>    1-n aparitii (=nr_asoc)
+51.              V. DISTRIBUŢIA VENITULUI NET
+                 ESTIMAT PE ASOCIAŢI
+52. id_asociat   Index asociat                                N(5)    DA
+53.              1. Nume si prenume / denumire
+    nume_d                                                    C(75)   DA
+                 asociat
+
+
+
+                                                                                                                                               3
+                  54.                    2. Cod de identificare fiscala (CNP,
+                        cif_d                                                    N(13)          DA                                  ERR – cif asociat invalid
+                                         NIF, CUI)
+                  55. dom_d              3. Domiciliu asociat                    C(200)
+                  56.
+                                                                                                     0<=cota_d<=100                 ERR – cota_d nu se incadreaza in
+                                                                                 N(3.2)
+                                         4. Cota de distribuire a venitului                                                         [0,100]
+                        cota_d                                                   3 intregi si   DA
+                                         net estimat la nivelul asocierii (%)
+                                                                                 2 zecimale
+                                                                                                     suma(cota_d) =100              ERR – suma(cota_d)<>100
+
+                  57.                                                            N(15)               venit_d=round(net3*cota_d)
+                                                                                                     daca
+                                                                                                       det_venit=1 (system real),
+                                                                                                                                    ERR – calcul venit_d
+                        venit_d          5. Venit net estimat distribuit (lei)                  DA                                       cu marja +-1
+                                                                                                     altfel venit_d=0
+
+                                                                                                     (rotunjire matematica
+                                                                                                     la intregi )
+                  58. </asociat>
+                  59. </activitate>
+                  60. </declaratie223>
+
+
+
+   Corelatii intre Categorie de venit - Determinarea ven.net – Forma de organizare
+                                                 2.Determinarea ven.net     3.Forma de organizare
+1.Categorie de venit
+                                                 (Sistem de impunere)
+1.Venituri din activitati de productie, prestari Sistem real;               Asociere fara PJ;
+servicii, comert                                 Norma de venit             Entitati cu transparenta fiscala;
+                                                                            Modificarea activitatii
+2.Venituri din profesii libere                   Sistem real                Asociere fara PJ;
+                                                                            Entitati cu transparenta fiscala;
+                                                                            Modificarea activitatii
+4.Venituri din activităţi agricole               Sistem real                Asociere fara PJ
+5.Venituri din silvicultura                      Sistem real                Asociere fara PJ
+6.Venituri din piscicultura                      Sistem real                Asociere fara PJ
+7, Alte venituri
+  Obs. pt. contribuabili :
+   -    Casuta 'Recalc.platilor anticipate' se selecteaza:
+
+
+
+                                                                                                                                                                       4
+               -in cazul suspendarii/ incetarii activitatii (pt.categ.de venit=1,2,4,5,6);
+      -     Casuta 'Modif.modului de det.a ven.net' se selecteaza, de regula, daca se trece de la
+            'Norma de venit' la 'Sistem real' si invers;
+      -     Tabelul III trebuie sa ramana pe zero doar pentru 'Norma de venit (pt.categ.de venit=1)';
+      -     Tabelul V, col. ‘5.Venit net estimat distribuit’ nu se completeaza (ramane pe zero) pentru 'Norma de venit (pt.categ.de
+            venit=1)'.
+
+
+
+     Nomenclator ordonatori - Judete
+01        Alba                    22   Iasi
+02        Arad                    23   Ilfov
+03        Arges                   24   Maramures
+04        Bacau                   25   Mehedinti
+05        Bihor                   26   Mures
+06        Bistrita-Nasaud         27   Neamt
+07        Botosani                28   Olt
+08        Brasov                  29   Prahova
+09        Braila                  30   Satu Mare
+10        Buzau                   31   Salaj
+11        Caras-Severin           32   Sibiu
+51        Calarasi                33   Suceava
+12        Cluj                    34   Teleorman
+13        Constanta               35   Timis
+14        Covasna                 36   Tulcea
+15        Dambovita               37   Vaslui
+16        Dolj                    38   Valcea
+17        Galati                  39   Vrancea
+52        Giurgiu                 40   Municipiul Bucuresti
+18        Gorj
+19        Harghita
+20        Hunedoara
+21        Ialomita
+
+
+
+
+     Nomenclator coduri CAEN
+                  CAE       CAE        CAE        CAE         CAE   CAE
+     CAEN         N         N          N          N           N     N
+
+
+
+
+                                                                                                                                      5
+ 0111    1414    2562    3900    4771    7211   9523
+ 0112    1419    2571    4110    4772    7219   9524
+ 0113    1420    2572    4120    4773    7220   9525
+ 0114    1431    2573    4211    4774    7311   9529
+ 0115    1439    2591    4212    4775    7312   9601
+ 0116    1511    2592    4213    4776    7320   9602
+ 0119    1512    2593    4221    4777    7410   9603
+ 0121    1520    2594    4222    4778    7420   9604
+ 0122    1610    2599    4291    4779    7430   9609
+ 0123    1621    2611    4299    4781    7490   9700
+ 0124    1622    2612    4311    4782    7500   9900
+ 0125    1623    2620    4312    4789    7711   8422
+ 0126    1624    2630    4313    4791    7712   5122
+ 0127    1629    2640    4321    4799    7721   9810
+ 0128    1711    2651    4322    4910    7722   9820
+0129    1712    2652    4329    4920    7729
+0130    1721    2660    4331    4931    7731
+0141    1722    2670    4332    4932    7732
+0142    1723    2680    4333    4939    7733
+0143    1724    2711    4334    4941    7734
+0144    1729    2712    4339    4942    7735
+0145    1811    2720    4391    4950    7739
+0146    1812    2731    4399    5010    7740
+0147    1813    2732    4511    5020    7810
+0149    1814    2733    4519    5030    7820
+0150    1820    2740    4520    5040    7830
+0161    1910    2751    4531    5110    7911
+0162    1920    2752    4532    5121    7912
+0163    2011    2790    4540    5210    7990
+0164    2012    2811    4611    5221    8010
+0170    2013    2812    4612    5222    8020
+0210    2014    2813    4613    5223    8030
+0220    2015    2814    4614    5224    8110
+0230    2016    2815    4615    5229    8121
+
+
+
+                                                       6
+0240   2017   2821   4616   5310   8122
+0311   2020   2822   4617   5320   8129
+0312   2030   2823   4618   5510   8130
+0321   2041   2824   4619   5520   8211
+0322   2042   2825   4621   5530   8219
+0510   2051   2829   4622   5590   8220
+0520   2052   2830   4623   5610   8230
+0610   2053   2841   4624   5621   8291
+0620   2059   2849   4631   5629   8292
+0710   2060   2891   4632   5630   8299
+0721   2110   2892   4633   5811   8411
+0729   2120   2893   4634   5812   8412
+0811   2211   2894   4635   5813   8413
+0812   2219   2895   4636   5814   8421
+0891   2221   2896   4637   5819   8423
+0892   2222   2899   4638   5821   8424
+0893   2223   2910   4639   5829   8425
+0899   2229   2920   4641   5911   8430
+0910   2311   2931   4642   5912   8510
+0990   2312   2932   4643   5913   8520
+1011   2313   3011   4644   5914   8531
+1012   2314   3012   4645   5920   8532
+1013   2319   3020   4646   6010   8541
+1020   2320   3030   4647   6020   8542
+1031   2331   3040   4648   6110   8551
+1032   2332   3091   4649   6120   8552
+1039   2341   3092   4651   6130   8553
+1041   2342   3099   4652   6190   8559
+1042   2343   3101   4661   6201   8560
+1051   2344   3102   4662   6202   8610
+1052   2349   3103   4663   6203   8621
+1061   2351   3109   4664   6209   8622
+1062   2352   3211   4665   6311   8623
+1071   2361   3212   4666   6312   8690
+
+
+
+                                          7
+1072   2362   3213   4669   6391   8710
+1073   2363   3220   4671   6399   8720
+1081   2364   3230   4672   6411   8730
+1082   2365   3240   4673   6419   8790
+1083   2369   3250   4674   6420   8810
+1084   2370   3291   4675   6430   8891
+1085   2391   3299   4676   6491   8899
+1086   2399   3311   4677   6492   9001
+1089   2410   3312   4690   6499   9002
+1091   2420   3313   4711   6511   9003
+1092   2431   3314   4719   6512   9004
+1101   2432   3315   4721   6520   9101
+1102   2433   3316   4722   6530   9102
+1103   2434   3317   4723   6611   9103
+1104   2441   3319   4724   6612   9104
+1105   2442   3320   4725   6619   9200
+1106   2443   3511   4726   6621   9311
+1107   2444   3512   4729   6622   9312
+1200   2445   3513   4730   6629   9313
+1310   2446   3514   4741   6630   9319
+1320   2451   3521   4742   6810   9321
+1330   2452   3522   4743   6820   9329
+1391   2453   3523   4751   6831   9411
+1392   2454   3530   4752   6832   9412
+1393   2511   3600   4753   6910   9420
+1394   2512   3700   4754   6920   9491
+1395   2521   3811   4759   7010   9492
+1396   2529   3812   4761   7021   9499
+1399   2530   3821   4762   7022   9511
+1411   2540   3822   4763   7111   9512
+1412   2550   3831   4764   7112   9521
+1413   2561   3832   4765   7120   9522
+
+
+
+
+                                          8
+Vers. A1.0.0 din 12.06.2014
+
+
+
+
+                              9
