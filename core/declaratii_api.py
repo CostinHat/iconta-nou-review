@@ -18,7 +18,7 @@ CALCUL+DB stau în module (au pull+genereaza). Aici doar: validare cerere (pură
 """
 from __future__ import annotations
 
-from core import (d100, d101, d112, d205, d300, d301, d390, d394, d406, d710)
+from core import (d100, d101, d112, d205, d300, d301, d311, d390, d394, d406, d710)
 from core.common import Perioada
 
 REGULI = "2026.1"
@@ -70,6 +70,12 @@ def _d710(conn, schema, b):
 
 
 # tip -> (periodicitate, adaptor). Adăugarea unei declarații = o linie aici.
+def _d311(conn, schema, b):
+    # D311 e MANUALA integral (TVA in situatii speciale, dupa anularea codului de TVA) -
+    # fara pull automat; `manual` = bazele/TVA pe situatii + Data_A + d_anul1/d_anul2.
+    return d311.genereaza(conn, schema, Perioada(b["an"], luna=b["luna"]), b.get("manual") or {})
+
+
 DECLARATII = {
     "d100": ("trimestrial", _d100),
     "d101": ("anual",       _d101),
@@ -77,6 +83,7 @@ DECLARATII = {
     "d205": ("anual",       _d205),
     "d300": ("lunar",       _d300),
     "d301": ("lunar",       _d301),
+    "d311": ("lunar",       _d311),
     "d390": ("lunar",       _d390),
     "d394": ("lunar",       _d394),
     "d406": ("lunar",       _d406),
@@ -92,7 +99,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d710",))
+_DOAR_API = frozenset(("d311", "d710"))
 
 
 def tipuri():
@@ -133,6 +140,11 @@ def valideaza_cerere(tip, body):
         if not isinstance(trim, int) or trim < 1 or trim > 4:
             erori.append("trimestru invalid: %r (aștept 1-4)" % (trim,))
     # 'anual' nu cere nimic în plus față de an
+
+    # d311 (TVA situatii speciale, MANUALA): cere `manual` (bazele/TVA pe situatii)
+    if tip == "d311":
+        if not isinstance(body.get("manual"), dict) or not body.get("manual"):
+            erori.append("d311 cere `manual` (bazele/TVA pe situatii + Data_A + d_anul1/d_anul2)")
 
     # d710 (rectificativa): cere lista de corectii `obligatii` [{cod_oblig, suma_dat_i, suma_dat_c}]
     if tip == "d710":

@@ -8590,7 +8590,7 @@ _GHID_PAGINA = """<!doctype html>
 <div class="ghid-shell">
   <header class="pagina-bara">
     <a class="pagina-bara-stanga" href="/">
-      <img class="pagina-bara-logo" src="/static/logo_simbol.png" alt="iConta.eu">
+      <img class="pagina-bara-logo" src="/static/logo_login.png" alt="iConta.eu">
       <span class="pagina-bara-marca">iConta.eu</span>
     </a>
     <a class="pagina-bara-acces" href="/">Intră în cont</a>

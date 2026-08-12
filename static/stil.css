@@ -2314,7 +2314,7 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 /* .ghid-procedura — pasi numerotati */
 .ghid-procedura ol { margin: 22px 0; padding: 0; counter-reset: pas; list-style: none; }
 .ghid-procedura li { position: relative; padding: 4px 0 16px 44px; color: var(--gri); font-size: var(--text-mic); line-height: 1.6; }
-.ghid-procedura li::before { counter-increment: pas; content: counter(pas); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--albastru); color: var(--alb); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: var(--text-mic); }
+.ghid-procedura li::before { content: counter(pas); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--albastru); color: var(--alb); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: var(--text-mic); }
 
 /* [ajutor_contextual] semnul "?" pe ecrane + panoul de ajutor (11.08.2026) */
 .ajutor-btn { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px;
@@ -2368,3 +2368,250 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
   box-shadow: 0 18px 50px rgba(0,0,0,0.28); overflow: hidden; }
 .bun-venit-antet { background: #17324d; color: #fff; font-weight: 700; font-size: 15px; padding: 13px 20px; }
 .bun-venit-corp { padding: 20px 22px; max-height: calc(100dvh - 150px); overflow: auto; }
+/* ============================================================
+   CAP. 22 — PAGINI PUBLICE DE GHID · forma Fluent
+   Se adauga la SFARSITUL lui static/stil.css. Rescrie regulile
+   de ghid din blocul anterior (~2275-2310) prin ordine, nu prin
+   stergere. Nu atinge nicio clasa a aplicatiei.
+   Tokeni proprii zonei publice, sub :root — nu modifica tokenii
+   aplicatiei din cap.15.
+   ============================================================ */
+
+:root{
+  /* neutrale Fluent */
+  --p-fundal:#FAF9F8;
+  --p-card:#FFFFFF;
+  --p-umplere:#F5F5F5;
+  --p-stroke:#E0E0E0;
+  --p-stroke-tare:#D1D1D1;
+  --p-text:#0B1733;
+  --p-text-sec:#616161;
+  --p-text-tert:#707070;
+
+  /* brand — culori luate din logo */
+  --p-brand:#0672FE;
+  --p-brand-hover:#0559CC;
+  --p-link:#0A57C7;
+  --p-tinta:#F0F6FF;
+  --p-tinta-stroke:#CCE0FF;
+
+  /* semantice */
+  --p-succes:#0E700E;   --p-succes-bg:#F1FAF1;  --p-succes-str:#9FD89F;
+  --p-atentie:#835B00;  --p-atentie-bg:#FFF9F5; --p-atentie-str:#EFD9B4;
+  --p-pericol:#B10E1C;  --p-pericol-bg:#FDF3F4; --p-pericol-str:#EEACB2;
+  --p-neutru:#616161;   --p-neutru-bg:#F5F5F5;  --p-neutru-str:#D1D1D1;
+
+  /* elevatie */
+  --p-umbra2:0 1px 2px rgba(0,0,0,.14), 0 0 2px rgba(0,0,0,.12);
+  --p-umbra4:0 2px 4px rgba(0,0,0,.14), 0 0 2px rgba(0,0,0,.12);
+
+  --p-r-mic:4px; --p-r-mediu:6px; --p-r-mare:8px;
+
+  --p-font:"Segoe UI Variable Text","Segoe UI",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --p-font-afis:"Segoe UI Variable Display","Segoe UI",-apple-system,system-ui,sans-serif;
+  --p-mono:"Cascadia Code","Consolas",ui-monospace,monospace;
+}
+
+/* ---------- structura ---------- */
+body.pagina-publica{
+  background:var(--p-fundal);
+  font-family:var(--p-font);
+  color:var(--p-text);
+  font-variant-numeric:tabular-nums;
+  -webkit-font-smoothing:antialiased;
+}
+
+.ghid-shell{background:var(--p-fundal)}
+
+/* ---------- bara ---------- */
+body.pagina-publica .pagina-bara{
+  position:sticky; top:0; z-index:50;
+  height:132px;
+  background:rgba(255,255,255,.88);
+  backdrop-filter:saturate(180%) blur(20px);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--p-stroke);
+  padding:0 32px;
+}
+body.pagina-publica .pagina-bara-stanga{gap:0}
+body.pagina-publica .pagina-bara-logo{height:104px;width:auto}
+body.pagina-publica .pagina-bara-marca{display:none}
+body.pagina-publica .pagina-bara-acces{
+  height:32px; padding:0 16px;
+  display:inline-flex; align-items:center;
+  background:var(--p-brand); color:#fff;
+  border:none; border-radius:var(--p-r-mic);
+  font-family:var(--p-font); font-size:14px; font-weight:600;
+  text-decoration:none;
+  transition:background .1s cubic-bezier(.33,0,.67,1);
+}
+body.pagina-publica .pagina-bara-acces:hover{background:var(--p-brand-hover)}
+body.pagina-publica .pagina-bara-acces:focus-visible{outline:2px solid var(--p-text);outline-offset:2px}
+
+/* ---------- corp ---------- */
+.ghid-wrap{max-width:800px;padding:44px 24px 96px}
+
+.ghid-wrap h1{
+  font-family:var(--p-font-afis);
+  font-size:40px; line-height:1.2; font-weight:600;
+  letter-spacing:-.02em; color:var(--p-text);
+  margin:0 0 18px;
+}
+.ghid-wrap h2{
+  font-family:var(--p-font-afis);
+  font-size:24px; line-height:1.3; font-weight:600;
+  letter-spacing:-.01em; color:var(--p-text);
+  margin:44px 0 14px;
+  scroll-margin-top:156px;
+}
+.ghid-wrap h3{
+  font-family:var(--p-font-afis);
+  font-size:18px; font-weight:600; color:var(--p-text);
+  margin:28px 0 10px;
+}
+.ghid-wrap p, .ghid-wrap li{
+  font-size:15px; line-height:1.65; color:var(--p-text-sec);
+}
+.ghid-wrap > p{max-width:68ch}
+.ghid-wrap strong{color:var(--p-text);font-weight:600}
+.ghid-wrap a{color:var(--p-link);text-decoration:none}
+.ghid-wrap a:hover{text-decoration:underline}
+.ghid-wrap hr{border:none;border-top:1px solid var(--p-stroke);margin:44px 0 20px}
+
+/* primul paragraf de dupa h1 = intro */
+.ghid-wrap h1 + p{
+  font-size:17px; line-height:1.65; color:var(--p-text-sec);
+  margin-bottom:28px; padding-bottom:24px;
+  border-bottom:1px solid var(--p-stroke);
+}
+
+/* ---------- temei legal (InfoLabel) ---------- */
+.ghid-temei{
+  background:var(--p-tinta);
+  border:1px solid var(--p-tinta-stroke);
+  border-left:3px solid var(--p-brand);
+  border-radius:var(--p-r-mediu);
+  padding:20px 24px;
+  margin:0 0 22px;
+}
+.ghid-temei::before{
+  content:"TEMEI LEGAL";
+  display:block;
+  font-size:12px; font-weight:600; letter-spacing:.04em;
+  color:var(--p-link);
+  margin-bottom:12px;
+}
+.ghid-temei p, .ghid-temei li{color:var(--p-text);font-size:14.5px}
+.ghid-temei p:last-child{margin-bottom:0}
+.ghid-temei em{color:var(--p-text-sec)}
+
+/* ---------- procedura ---------- */
+.ghid-procedura{margin:0 0 24px;counter-reset:pas}
+.ghid-procedura ol{list-style:none;margin:0;padding:0}
+.ghid-procedura ol > li{
+  counter-increment:pas;
+  position:relative;
+  padding:0 0 20px 44px;
+  font-size:14.5px; color:var(--p-text-sec);
+}
+.ghid-procedura ol > li::before{
+  content:counter(pas);
+  position:absolute; left:0; top:1px;
+  width:28px; height:28px; border-radius:50%;
+  background:var(--p-brand); color:#fff;
+  display:flex; align-items:center; justify-content:center;
+  font-size:13px; font-weight:600;
+}
+.ghid-procedura ol > li:not(:last-child)::after{
+  content:""; position:absolute; left:13.5px; top:32px; bottom:4px;
+  width:1px; background:var(--p-stroke-tare);
+}
+
+/* ---------- exemplu ---------- */
+.ghid-exemplu{
+  background:var(--p-card);
+  border:1px solid var(--p-stroke);
+  border-radius:var(--p-r-mare);
+  box-shadow:var(--p-umbra2);
+  padding:24px;
+  margin:0 0 24px;
+}
+.ghid-exemplu::before{
+  content:"EXEMPLU NUMERIC";
+  display:block;
+  font-size:12px; font-weight:600; letter-spacing:.04em;
+  color:var(--p-text-tert);
+  margin-bottom:14px;
+}
+.ghid-exemplu p, .ghid-exemplu li{color:var(--p-text);font-size:14.5px}
+.ghid-exemplu p:last-child{margin-bottom:0}
+
+/* ---------- semafor — element-semnatura ---------- */
+.ghid-semafor{display:grid;gap:8px;margin:0 0 24px}
+.ghid-semafor-rand{
+  display:grid; grid-template-columns:auto 1fr; gap:12px;
+  align-items:start;
+  padding:14px 16px;
+  border-radius:var(--p-r-mediu);
+  border:1px solid;
+}
+.ghid-semafor-led{
+  width:12px; height:12px; border-radius:50%;
+  margin-top:5px; flex-shrink:0;
+  box-shadow:0 0 0 3px rgba(255,255,255,.9);
+}
+.ghid-semafor-text{font-size:14px;line-height:1.55;color:var(--p-text)}
+.ghid-semafor-rosu{background:var(--p-pericol-bg);border-color:var(--p-pericol-str)}
+.ghid-semafor-rosu .ghid-semafor-led{background:var(--p-pericol)}
+.ghid-semafor-galben{background:var(--p-atentie-bg);border-color:var(--p-atentie-str)}
+.ghid-semafor-galben .ghid-semafor-led{background:var(--p-atentie)}
+.ghid-semafor-verde{background:var(--p-succes-bg);border-color:var(--p-succes-str)}
+.ghid-semafor-verde .ghid-semafor-led{background:var(--p-succes)}
+.ghid-semafor-gri{background:var(--p-neutru-bg);border-color:var(--p-neutru-str)}
+.ghid-semafor-gri .ghid-semafor-led{background:var(--p-neutru)}
+
+/* ---------- comparatie (DataGrid) ---------- */
+.ghid-comparatie{margin:0 0 24px}
+.ghid-comparatie table{
+  width:100%; border-collapse:separate; border-spacing:0;
+  border:1px solid var(--p-stroke);
+  border-radius:var(--p-r-mare);
+  overflow:hidden;
+  background:var(--p-card);
+}
+.ghid-comparatie th{
+  text-align:left; font-weight:600; font-size:13px;
+  padding:12px 16px;
+  background:var(--p-umplere);
+  border:none; border-bottom:1px solid var(--p-stroke);
+  color:var(--p-text);
+}
+.ghid-comparatie th:last-child{color:var(--p-link)}
+.ghid-comparatie td{
+  padding:14px 16px;
+  border:none; border-bottom:1px solid var(--p-stroke);
+  vertical-align:top; font-size:14px; line-height:1.55;
+  color:var(--p-text);
+}
+.ghid-comparatie tr:last-child td{border-bottom:none}
+.ghid-comparatie td:first-child{color:var(--p-text-sec);width:47%}
+.ghid-comparatie td:last-child{background:rgba(240,246,255,.6)}
+
+/* ---------- subsol ---------- */
+.ghid-subsol{
+  font-size:13px; color:var(--p-text-tert);
+  margin-top:24px;
+}
+.ghid-subsol a{color:var(--p-link)}
+
+/* ---------- ecrane mici ---------- */
+@media (max-width:700px){
+  body.pagina-publica .pagina-bara{height:96px;padding:0 16px}
+  body.pagina-publica .pagina-bara-logo{height:72px}
+  .ghid-wrap h1{font-size:30px}
+  .ghid-wrap h2{font-size:21px;scroll-margin-top:112px}
+  .ghid-wrap{padding:28px 18px 72px}
+}
+@media (prefers-reduced-motion:reduce){
+  body.pagina-publica *{transition:none !important;animation:none !important}
+}
