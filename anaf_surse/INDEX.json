@@ -203,6 +203,16 @@
       "tip_forma": null,
       "acopera": []
     },
+    "d104.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d104.xsd.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "d112_06082026.xsd": {
       "exista": true,
       "tip_forma": null,
@@ -736,6 +746,21 @@
       "acopera": []
     },
     "pdf_original": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D104_2012_v100_030613.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D104_2012_v100_030613.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D104_2012_v100_030613.txt": {
       "exista": true,
       "tip_forma": null,
       "acopera": []

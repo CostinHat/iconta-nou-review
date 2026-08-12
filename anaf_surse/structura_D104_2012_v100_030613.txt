@@ -1,0 +1,106 @@
+  Structura fişier XML pentru declaratia 104
+  Conform modif OPANAF nr.101/ 01.2008
+
+Data     Nr. crt.     Elemente/ atribute   Denumire câmp                             Tip şi    Câmp          Câmp
+modifică                                                                             lungim    obligatoriu   calcu
+                                                                                                                     Formule şi restricţii   Erori
+rii                                                                                  e câmp                  lat
+
+                1.    <declaratie104>
+                2.                                                                                                   luna =(3,6,9,12)
+                                                                                                                     3(Trim.I)
+                      luna                 Perioada de raportare - Luna              N(2)      DA                    6(Trim.II)              ERR - luna raportare
+                                                                                                                     9(Trim.III)
+                                                                                                                     12(Definitivare An
+                3.    an                   Perioada de raportare - An                N(4)      DA                    an >= 2012              ERR - an raportare
+                4.                                                                                                   d_rec=(0,1)
+                      d_rec                Declaratie rectifcativa                   N(1)      DA                    0-initiala              ERR - camp rectificativa
+                                                                                                                     1-rectificativa
+                5.                                                                                                                           ERR - nume declarant
+                      nume_declar          Nume declarant                            C(75)     DA
+                                                                                                                                             necompletat
+                6.                                                                                                                           ERR - prenume declarant
+                      prenume_declar       Prenume declarant                         C(75)     DA
+                                                                                                                                             necompletat
+                7.                                                                                                                           ERR - functie declarant
+                      functie_declar       Functie declarant                         C(50)     DA
+                                                                                                                                             necompletată
+                8.                         A. DATE DE IDENTIFICARE A
+                                           ASOCIERII FARA
+                                           PERSONALITATE JURIDICA
+                9.                                                                                                                           ERR - CIF asociere invalid
+                      cui                  Cod de înregistrare fiscala               N(13)     DA                    Verificare CF sau CNP
+                                                                                                                                             sau necompletat
+                10.                                                                                                                          ERR - denumire asociere
+                      den                  Denumire / Nume şi Prenume                C(200)    DA
+                                                                                                                                             necompletată
+                11.                                                                                                                          ERR - adresă asociere
+                      adresa               Adresă                                    C(1000)   DA
+                                                                                                                                             necompletată
+                12. telefon                Telefon domiciliu fiscal                  C(15)
+                13. fax                    Fax domiciliu fiscal                      C(15)
+                14. mail                   E-mail domiciliu fiscal                   C(200)
+                15. Tven                   Total venituri                            N(15)     DA                    Tven= Suma(venit)       ERR – calcul
+                16. Tchelt                 Total cheltuieli                          N(15)     DA                    Tchelt= Suma(chelt)     ERR – calcul
+                17.                        Profit impozabil (+)/                               DA
+                    profit_pierd                                                     N(15)
+                                           Pierdere fiscala (-)
+                18.                        Total impozit datorat                               DA
+                      TimpD                                                          N(15)                           TimpD= Suma(impD)       ERR – calcul
+                19. TimpR                  Total impozit declarat in cursul anului   N(15)     DA                    TimpR= Suma(impR)       ERR – calcul
+
+
+
+                                                                                                                                                                          1
+                 20.                                                                      DA        TdifP= Suma(difPR)
+                       TdifP            Total diferenta de plata (+)            N(15)                                              ERR – calcul
+                                                                                                    pt.difPR>0
+                 21.                                                                      DA        TdifR= Suma(difPR)
+                       TdifR            Total diferenta de recuperat (-)        N(15)                                              ERR – calcul
+                                                                                                    pt.difPR<0
+                 22.                                                                                totalPlata_A = profit_pierd+   ERR – calcul suma de
+                       totalPlata_A     Suma de control                         N(15)     DA   DA
+                                                                                                    TimpD+ TimpR+ TdifP+ TdifR     control
+                 23. <SB >              1-n aparitii
+                 24.                    B. Date privind distribuirea
+                                        trimestriala intre asociati a
+                                        veniturilor si cheltuielilor
+                                           sau
+                                        C. Date privind definitivarea
+                                        impozitului pe profit
+                 25.                                                                                                               ERR – Denumire/ Nume si
+                       den1             1.Denumire/ Nume si prenume asociat     C(100)    DA                                       prenume asociat invalida
+                                                                                                                                   sau necompletata
+                 26.                                                            N(13)               Verificare CF sau CNP          ERR - CIF asociat invalid
+03.06.13               cif1             2.CIF asociat                                     DA
+                                                                                C(50)               cif1= cheie unica              sau necompletat
+                 27. adresa1            3.Adresă asociat                        C(1000)
+                 28.                                                                                                               ERR – valoare camp ‘cota’
+                     cota               4.Cota de participare in asociere (%)   N(3.2)    DA        cota =(0,100]
+                                                                                                                                   invalida sau necompletat
+                 29.                                                                      DA        venit>=0                       ERR – valoare camp ‘venit’
+                       venit            5.Venituri                              N(15)
+                                                                                                                                   negativa
+                 30.                                                                      DA        chelt>=0                       ERR – valoare camp ‘chelt’
+                       chelt            6.Cheltuieli                            N(15)
+                                                                                                                                   negativa
+                 31.                                                                      DA        impD>=0                        ERR – valoare camp ‘impD’
+                       impD             8.Impozit datorat                       N(15)
+                                                                                                                                   negativa
+                 32.                                                                      DA        impR>=0 daca luna=12           ERR – valoare camp ‘impR’
+                       impR             9.Impozit declarat in cursul anului     N(15)
+                                                                                                    impR=0 daca luna=3,6,9         negativa
+                 33.                                                                      DA        difPR= impD- impR daca
+                                        10.Diferenta de plata (+)/
+                       difPR                                                    N(15)               luna=12                        ERR – calcul
+                                        de recuperat (-)                                            difPR=0 daca luna=3,6,9
+                 34. </SB >
+                 35. </declaratie104>
+
+
+   Vers. A1.0.0 din 03.06.2013
+
+
+
+
+                                                                                                                                                                2
