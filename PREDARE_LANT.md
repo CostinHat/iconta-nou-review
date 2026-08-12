@@ -6,11 +6,13 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-HEAD = origin/main = backup/lant-<data> = RUNNING. Restartul e NECONDITIONAT, cablat in post-commit:
-dupa ORICE publicare din lant procesul viu preia HEAD, indiferent de continut (fara liste de tipuri).
-versiune.stare(): running==head, divergent=False; start-time proces > data commitului HEAD; zero
-commituri dupa HEAD. App pe 127.0.0.1:8010. Verificare la predare: `/admin/versiune` (superadmin) sau
-`git log -1` + systemd ExecMainStartTimestamp (nu se hardcodeaza hash-ul in registru).
+HEAD = origin/main = backup/lant-2026-08-12 = RUNNING pe **ddd2275** (D107, 12.08.2026 21:53).
+Poarta verde: pytest 1920 passed / 3 skipped / 16 xfailed; verificator TOTAL 0. Publicat pe origin/main
++ backup/lant-2026-08-12 (post-commit); iconta-nou restartat (ExecMainStartTimestamp 21:59:35 > commit
+21:53:26 -> procesul viu preia ddd2275). Sentinele PUSH_*_ESUAT absente. Nota: `versiune.stare()` rulat
+din CLI da running=null (necunoscut) - NU e procesul viu; proba RUNNING = start-time > commit (citita, nu
+presupusa) + banner post-commit "procesul viu preia ddd2275". App pe 127.0.0.1:8010. Verificare la predare:
+`/admin/versiune` (superadmin) sau `git log -1` + systemd ExecMainStartTimestamp.
 
 ## (b) Fronturi deschise
 0. **DATE D406 ALFA (Costin, 11.08) — CONSTRUCTIE COMPLETA.** tenant_013 facut apt de proba DUK: CUI-uri
@@ -35,11 +37,25 @@ commituri dupa HEAD. App pe 127.0.0.1:8010. Verificare la predare: `/admin/versi
    securitate (64e8b1b, ramas optional HSTS lung); D406 PARTIAL (F035-037); test-debt import (proba pozitiva).
 
 ## (c) Ce e in lucru acum
-Nimic in lucru. Campania ajutor de ansamblu inchisa cu raport unic.
+CAMPANIA DE 10 DECLARATII NOI (act -> corpus -> cod -> DUK-valid). Facute: D207 (1), D177 (2),
+D107 (3, ddd2275). OPRIT dupa D107 pentru DECIZIE DE PRODUS pe ORDINEA/lista celor 10 - vezi (d).
 
 ## (d) Ce urmeaza
-1. La cererea lui Costin: rafinari (ex. buton "?" general si pe portalul clientului daca se doreste; screenshot).
-2. Fronturi mostenite (mai sus) daca le redeschide Costin.
+1. **CAMPANIA DE 10 - urmatoarea declaratie: cere ORDINEA lui Costin.** Lista/ordinea celor 10 NU e pe
+   disc (core.agenda.urmator_cluster()=None; niciun fisier de plan) - a fost data in conversatia dinaintea
+   acestui lant. Alegerea DECLARATIEI URMATOARE = ce se publica = decizie de produs (§2.3 pct.2), cu atat mai
+   mult cu cat unii candidati au fost RESPINSI in DECIZII (nu se reconstruiesc fara decizie noua).
+   METODA (identica D107/D177/D207): act din static.anaf.ro -> anaf_surse (pdf+sha256+txt) + gen_index.py;
+   structura din DXXXValidator.jar (arbitrul, casing case-sensitive); core/dXXX.py generator MANUAL; test
+   core/test_dXXX.py + DUKIntegrator -v DXXX 'valid'; cablat CHEIE_DUK(duk.py)+dispatch(declaratii_api:
+   anual/lunar, _DOAR_API, validare, numar_operatiuni); FUNCTIONALITATI F### LIVE + genereaza_grupe_functii.py
+   --scrie (login.js); commit (poarta verde) -> four-way.
+   CANDIDATI cu validator instalat SI fara generator: D104, D110, D220, D221, D223, B230 (D307 AMANAT).
+   RESPINSI in DECIZII 20.07 (NU se construiesc fara decizie noua a lui Costin): D700 (mentiuni administrative),
+   D392 (suspendat legal pana 31.12.2026, art.LXII OUG), D094 (inglobat in D700). Din 'nivelul 3' nedecis
+   (DECIZII:117): D104, D223, D221 au validator; D204/D108/D180/D209 NU au validator instalat.
+2. La cererea lui Costin: rafinari (ex. ecrane manuale de introducere pentru declaratiile _DOAR_API).
+3. Fronturi mostenite (mai sus) daca le redeschide Costin.
 
 ## Unelte
 - Ajutor de ansamblu: core/ajutor.py + genereaza_grupe_functii.repartizeaza (grupe) + STRATURI (migrare.js, firul).
