@@ -370,8 +370,8 @@ XML D390 validat, cu operatiunile IC pe parteneri UE, defalcate pe tip.
 - Depunerea pe zero (fara operatiuni IC) - nu se datoreaza.
 ## Reguli fiscale
 Recapitulativa VIES (ANAF v3); Codul fiscal (operatiuni intracomunitare). Termen 25 ale lunii urmatoare. Se coreleaza cu D300 (Control fiscal verifica D390 vs D300)."
-D406 SAF-T lunar,"D406 SAF-T periodic: Header+MasterFiles+GeneralLedgerEntries + SourceDocuments cu LINII REALE per produs (AccountID+TaxInformation pe linie, reconciliate cu antetul) - reparat 27.07, period-aware 03.08; identitate partener conforma din nomenclator (00/01/02+cod, 03+CNP, 04+nume) - fix PROD 11.08 (era id brut), gardat. Trece DUKIntegrator 'valid' pe DATE REALE (tenant_013 2026-08). RAMAS: sectiunea Payments neemisa (cod de emitere complet, dar pull() nu populeaza plati - asteapta sursa de mapare a trezoreriei, decizie Costin).",F035,firma,Declaratii (tab D406),core/d406.py,OPANAF; schema v2.4.9,PARTIAL 11.08.2026,DUKIntegrator -v D406 'valid' pe date reale (tenant_013 2026-08),,"## Ce face
-Declaratia D406 (SAF-T) - fisierul standard de audit fiscal, periodic, cu Header, MasterFiles si inregistrarile din Cartea Mare. ATENTIE: familia D406 e in dezvoltare - partea de SourceDocuments (facturi detaliate) si Payments nu e completa; declaratia trece structural DUK dar nu e inca depunabila pana la reparare.
+D406 SAF-T lunar,"D406 SAF-T periodic: Header+MasterFiles+GeneralLedgerEntries + SourceDocuments cu LINII REALE per produs (AccountID+TaxInformation pe linie, reconciliate cu antetul) - reparat 27.07, period-aware 03.08; identitate partener conforma din nomenclator (00/01/02+cod, 03+CNP, 04+nume) - fix PROD 11.08 (era id brut), gardat. Trece DUKIntegrator 'valid' pe DATE REALE (tenant_013 2026-08). RAMAS: sectiunea Payments neemisa (cod de emitere complet, dar pull() nu populeaza plati - asteapta sursa de mapare a trezoreriei, decizie Costin).",F035,firma,Declaratii (tab D406),core/d406.py,OPANAF; schema v2.4.9,LIVE,DUKIntegrator -v D406 'valid' pe date reale (tenant_013 2026-08),,"## Ce face
+Declaratia D406 (SAF-T) - fisierul standard de audit fiscal, periodic, cu Header, MasterFiles si inregistrarile din Cartea Mare. ATENTIE: familia D406: SourceDocuments emite liniile REALE de factura pe produs (reparat 11.08, gardat); ramane Payments neemis (asteapta sursa de trezorerie, decizie Costin). Trece DUKIntegrator valid pe DATE REALE; depunabila pe zero-plati, incompleta pentru firme cu plati.
 ## Cand se foloseste
 Periodic (lunar sau trimestrial dupa perioada TVA; anual pentru neplatitori), la termenele SAF-T ANAF. Pentru firmele obligate la SAF-T.
 ## Ce trebuie pregatit inainte
@@ -382,9 +382,9 @@ Periodic (lunar sau trimestrial dupa perioada TVA; anual pentru neplatitori), la
 2. Aplicatia construieste Header + MasterFiles + GeneralLedgerEntries.
 3. (In dezvoltare) SourceDocuments/Payments.
 ## Ce iese la capat
-XML SAF-T (structura v2.4.9) - momentan valid structural DUK, dar NEDEPUNABIL pana la completarea SourceDocuments reale + Payments.
+XML SAF-T (structura v2.4.9) - valid pe DUKIntegrator pe DATE REALE (linii reale de factura pe produs); depunabil pe zero-plati. Payments neemis (asteapta sursa de trezorerie) -> incomplet pentru firme cu plati.
 ## Greseli frecvente
-- Presupunerea ca D406 e gata de depus - familia e marcata PARTIAL.
+- Presupunerea ca D406 raporteaza si platile (Payments) - inca nu; depunabil pe zero-plati, PARTIAL pentru firme cu plati.
 ## Reguli fiscale
 OPANAF (SAF-T); schema oficiala ANAF v2.4.9. Vezi si termenele specifice de raportare SAF-T."
 D406 Active (SAF-T anual),"D406 Active (SAF-T anual, sectiunea Assets): generator pe structura saft.xsd oficial (Asset cu Valuations: costuri achizitie inceput/sfarsit, durata, adaugiri/transferuri/cedari, valoare contabila, metoda+procent amortizare, amortizarea perioadei); alimentat din mijloace_fixe. Probat pe DATE REALE (tenant_013: 2 Asset emise, reconciliat cu GL 2131=10800). RAMAS: doar amortizare LINIARA (degresiva/accelerata art.28 CF neimplementate, xfail cunoscut) + fragment (endpoint separat, nu in AuditFile-ul lunar).",F036,firma,Declaratii D406,core/d406_active.py,schema SAF-T ANAF,PARTIAL 11.08.2026,pe XSD oficial,,

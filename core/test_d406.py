@@ -304,3 +304,54 @@ def test_structura_xsd_conforma_saft():
     assert not ok2, "asteptam abaterea lunara (PurchaseInvoices omis), dar XML-ul a validat integral"
     assert len(erori2) == 1, "asteptam EXACT o abatere lunara, sunt %d:\n%s" % (len(erori2), "\n".join(erori2))
     assert "PurchaseInvoices" in erori2[0], "abaterea nu e omisiunea PurchaseInvoices: %s" % erori2[0]
+
+
+
+@_pytest_d406.mark.skipif(not _db_ok_d406(), reason="DB indisponibil")
+def test_genereaza_emite_liniile_reale_din_factura_linii():
+    """GOLD pe DATE REALE — inchide golul: niciun test nu exercita pull() cu randuri REALE din
+    factura_linii (cazul traia doar intr-un comentariu, d406.py:1279). Regresia 27.07.2026: in DB
+    'Deseuri fier vechi' 1000 kg x 5,00 lei/kg -> in SAF-T iesea 1 buc x 5000 lei (cantitate, UM si
+    descriere FALSE catre ANAF). Aici: factura cu DOUA linii reale distincte (kg + buc) trebuie sa
+    apara FIDEL in <Invoice>, nu ca o singura linie sintetica 1 x net. Mutatia care il probeaza:
+    daca _factura_xml revine la linia sintetica, count(<InvoiceLine>)==1 si <InvoiceUOM>KGM</> dispare."""
+    from core import db, tenant_provisioning as _tp, d406 as _d406mod
+    from decimal import Decimal
+    SCHEMA = "ztest_d406_linii_reale"
+    db.init_pool()
+    with db.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % SCHEMA)
+                cur.execute(_tp.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), SCHEMA))
+                cur.execute("SET search_path TO %s, public" % SCHEMA)
+                cur.execute(
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
+                    "declarant_nume, declarant_prenume, declarant_functie, platitor_tva, tip_decont, regim_fiscal) "
+                    "VALUES (1, 'TEST SRL', '14399840', 'Str. Testul 1', 'Bucuresti', 'B', '4711', 'BCR', "
+                    "'RO49BCRA0000000000000000', 'POPESCU', 'GHEORGHE', 'EXPERT CONTABIL', true, 'L', 'real')")
+                # factura de vanzare cu DOUA linii reale, reconciliate cu antetul (net 6000 + tva 1260 = 7260)
+                cur.execute(
+                    "INSERT INTO facturi (numar, data_emitere, tert_cui, tert_nume, total, tva, directie) "
+                    "VALUES ('FV100', '2026-06-10', 'RO14399840', 'Client SRL', 7260, 1260, 'emisa') RETURNING id")
+                fid = cur.fetchone()[0]
+                cur.execute("INSERT INTO factura_linii (factura_id, descriere, um, cantitate, pret_unitar, cota_tva) "
+                            "VALUES (%s, 'Deseuri fier vechi', 'kg', 1000, 5, 21)", (fid,))
+                cur.execute("INSERT INTO factura_linii (factura_id, descriere, um, cantitate, pret_unitar, cota_tva) "
+                            "VALUES (%s, 'Transport', 'buc', 1, 1000, 21)", (fid,))
+            xml, res = _d406mod.genereaza(conn, SCHEMA, 2026, 6)
+            # (1) liniile reale ajung in modelul pull() - nu o linie sintetica
+            fv = res.facturi_vanzare
+            assert len(fv) == 1 and len(fv[0].linii) == 2, "ambele linii reale, nu una sintetica"
+            l0 = fv[0].linii[0]
+            assert l0.descriere == "Deseuri fier vechi" and l0.cantitate == Decimal("1000") and l0.um == "KGM", (
+                "kg -> UN/ECE KGM, cantitate 1000 reala, descriere fidela; got %r" % (l0,))
+            assert l0.valoare == Decimal("5000") and l0.tva_procent == Decimal("21") and l0.tva_suma == Decimal("1050")
+            # (2) ajung FIDEL in XML (nu 1 buc x net)
+            assert "<Quantity>1000.00</Quantity>" in xml, "cantitatea reala 1000 lipseste din XML"
+            assert "<InvoiceUOM>KGM</InvoiceUOM>" in xml, "UM reala (kg->KGM) lipseste din XML"
+            assert "<Description>Deseuri fier vechi</Description>" in xml, "descrierea reala lipseste din XML"
+            assert xml.count("<InvoiceLine>") == 2, "doua linii reale in <Invoice>, nu o linie sintetica"
+        finally:
+            conn.rollback()

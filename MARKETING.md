@@ -25,7 +25,7 @@
 ## AFIRMAȚII PERMISE (din inventar FUNCTIONALITATI.csv, onest)
 - "Software PENTRU contabilitate completă" (NU "oferim contabilitate" — zid legal CECCAR: iConta.eu e
   instrument, contabilul prestează).
-- "Generează și validează declarațiile pe validatorul oficial ANAF (DUK): D100/D101/D112/D205/D300/D301/D390/D394/D710. (D406/SAF-T — vezi INTERZISE, nedepunabil până la reparare.)".
+- "Generează și validează declarațiile pe validatorul oficial ANAF (DUK): D100/D101/D112/D205/D300/D301/D390/D394/D710 și D406/SAF-T. D406 iese cu liniile REALE de factură (InvoiceLine pe produs — cantitate/UM/preț reale, reconciliate cu antetul), validat pe DUKIntegrator pe date reale (gardat de test_genereaza_emite_liniile_reale_din_factura_linii). Limitări documentate: secțiunea Payments se omite (nu există încă sursă de date de plăți în model — valid și acceptat de DUK pe zero-plăți; incomplet pentru firme cu plăți); AccountID pe linie e 707/371, nu contul real pe produs.".
 - "Control fiscal automat: control încrucișat + semafor + alerte roșii".
 - "Depunerea o faci din SPV cu XML verificat de iConta.eu (ANAF nu oferă depunere prin API niciunui soft
   cloud)".
@@ -35,7 +35,7 @@
 - "e-Factura funcțională live end-to-end" — PREMATUR (round-trip neprobat pe CIF real cu drept SPV). Doar
   după probă live.
 - "100% fără alt tool" — FALS (portal SPV necesar).
-- "D406/SAF-T generat de iConta.eu, gata de depus" — FALS deocamdată. Trece validarea STRUCTURALĂ a DUKIntegrator, dar SourceDocuments emite o singură linie sintetică per factură (nu liniile reale pe produs) și fără Payments → fișier INCOMPLET față de cerința ANAF (facturi la nivel de InvoiceLine). Doar după reparare (linii reale + Payments). Vezi DECIZII 27.07.
+- "D406/SAF-T care raportează plăți/încasări (Payments) sau contul real per produs" — FALS: liniile reale de factură se emit deja (InvoiceLine pe produs, reparat 11.08.2026 — DECIZII 27.07 superseded, gardat), dar Payments se omite (nu există sursă de date de plăți în model) și AccountID pe linie e 707/371. NU se afirmă "raportare de plăți" sau "cont real pe produs" până la modelarea trezoreriei. Depunerea structurală pe zero-plăți e PERMISĂ (vezi mai sus).
 
 ## OFERTĂ: Program Cabinet Fondator
 - ȚINTĂ: contabili care ÎȘI PORNESC cabinetul (nelegați încă de SAGA — tablă goală, zero zid de
