@@ -8946,3 +8946,20 @@ Inca 3 pagini verbatim: marja second-hand (art.312), agentii turism (art.311), d
 ghiduri. Corpusul cu regula concreta + numar (cote/plafoane/formule) e epuizat pe functiile LIVE. Ce ramane e ori
 structural-subtire (D301/D710 = mecanica XML, fara regula punctuala noua), ori stop-point (D101 conflict, D406 PARTIAL),
 ori fara act in anaf_surse (e-Factura OUG 120/2021, e-Transport OUG 41/2022 - absente din corpus).
+
+
+### 13.08.2026 D392 CONFIRMAT SUSPENDAT LEGAL pana 31.12.2026 (scos din campanie)  (nu se construieste)
+DECIZIE: D392 (392A/392B) NU se construieste - suspendat legal la data curenta.
+TEMEI (verbatim, corpus local anaf_surse/oug_115_2023_consolidat.html, Articolul LXII): "Aplicarea prevederilor
+art. 324 alin. (4)-(6) din Legea nr. 227/2015 ... se suspenda incepand cu data de 1 ianuarie 2024 si pana la data
+de 31 decembrie 2026 inclusiv." Art.324 CF: alin.(4)=392A, (5)=392B, (6)=393. Confirma cu temei exact decizia
+20.07 (F194 RESPINS). Sursa bate memoria: extras din actul consolidat din corpus, nu din memorie.
+LIMITA: se reevalueaza inainte de termenele 2027 (392A/392B pe anul 2026 s-ar depune, in vechea logica, pana la
+28.02.2027) - daca nu apare o noua OUG de prelungire, redevine obligatorie.
+
+### 13.08.2026 D307 REACTIVAT din AMANAT - construit si LIVE (PIVOT peste AMANAT)  (F217, baafe62)
+DECIZIE: D307 (ajustare/corectie/regularizare TVA) se construieste (cerut de Costin in campania de 6). Supersedeaza
+starea AMANAT (F175). Coexista ca F217 LIVE (tiparul D207: F193 AMANAT + F209 LIVE).
+TEMEI: are validator oficial ANAF (D307Validator.jar) -> proba MECANICA pe DUK, nu interpretare de PDF. OPANAF
+793/2016; CF art.270(7) transfer active, art.324(8)(9), art.316(11) anulare cod TVA. PROBAT: DUKIntegrator -v
+D307 'valid' pe tip A/L/C + d_anulare. Structura in vigoare v0/namespace :v1; atribut mail (nu email); TVA <=0 permis.

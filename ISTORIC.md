@@ -4143,3 +4143,25 @@ Pagina spune SI ce cere validatorul instalat azi (DUK R17 iunie pe 2021-2025; R1
 ca cititorul sa nu se sperie la respingerea unei date pe care o crede corecta — FARA a numi vreun conflict lege-validator.
 Total ghiduri publice: 18 -> 19. Ramase din corpus: D406 (PARTIAL), e-Factura/e-Transport (fara act in corpus).
 Lectie: sursa bate memoria, fara exceptie — citeste CONTINUTUL fisierului, nu numele lui.
+
+
+## 13.08.2026 — Campanie 6 declaratii noi (D104/D220/D223/D221/D110/D307), act->corpus->cod->DUK, four-way baafe62
+Lot cerut de Costin in ordine fixa. Metoda uniforma (ca D107/D177/D207): act oficial ANAF in corpus (structura
+PDF + XSD, sha256, txt, INDEX.json); structura din DXXXValidator.jar (ARBITRUL; versiune din _dateVersionTable;
+namespace din vN/ValidatorImpl.class - poate diferi de numele folderului bytecode; casing case-sensitive);
+generator MANUAL core/dXXX.py; DUKIntegrator -v DXXX 'valid'; cablat CHEIE_DUK(duk.py)+dispatch(_DOAR_API,
+declaratii_api)+FUNCTIONALITATI (F212-F217)+login modal (genereaza_grupe_functii --scrie); commit IZOLAT pe poarta verde.
+- D104 (F212, 4e7bc3a): distribuire venituri/cheltuieli intre asociati (asociere fara PJ). Trimestrial cumulat +
+  definitivare (luna 12); impR=0/difPR=0 la trimestre. totalPlata_A=profit_pierd+TimpD+TimpR+TdifP+TdifR. Fara cod_bug.
+- D220 (F213, 3b7ec92): venit estimat/norma PF. SUPERSEAT de D212 (Declaratia Unica, OPANAF 888/2018) dar
+  validatorul ramane livrat -> construit pt cazuri retro-2017. stat_pensie OMIS (validatorul il respinge pt categ 1..7).
+- D223 (F214, c2e5299): venituri estimate asocieri f.PJ/transparenta fiscala. venit_d distribuit dupa cota_d (suma=net3).
+- D221 (F215, a33da7d): venituri agricole pe norme. totalPlata_A=0 mereu (ANAF aplica normele intern); forma_org 1/2.
+- D110 (F216, c36857a): regularizare/restituire impozit retinut la sursa. nr_evid (23 car) control = suma primelor
+  21 cifre %100 - CONFIRMAT EMPIRIC pe DUKIntegrator (exemplul din structura PDF cu control 35 pe suma 34 = typo);
+  cod_bugetar 5503XXXXXX (X literale), 20A031800X pt cod 629; suma_rest>0 strict.
+- D307 (F217, baafe62): ajustare/corectie/regularizare TVA (tip A/L/C). REACTIVAT din AMANAT (vezi DECIZII 13.08).
+D392 SCOS din lot: suspendat legal pana 31.12.2026 (OUG 115/2023 art.LXII, verbatim din corpus). Fiecare
+declaratie DUK-valida + 3-4 teste pytest. Suita 1942 passed / 3 skipped / 16 xfailed la final; verificator TOTAL 0;
+four-way HEAD=origin/main=backup/lant-2026-08-13=RUNNING=baafe62. Lectii de metoda in memoria
+campanie-10-declaratii + PREDARE_LANT (d).
