@@ -1,0 +1,524 @@
+  Structura fişier XML pentru declaratia 207
+  Conform modif OPANAF nr...
+
+  declaratie: v1 v2
+Data     Nr. crt.   Elemente/ atribute   Denumire câmp                             Tip şi    Câmp
+modifică                                                                           lungim    obligatoriu   Formule şi restricţii          Erori
+rii                                                                                e câmp
+              1.    <declaratie207>
+              2.    luna                 Perioada de raportare - Luna              N(2)      DA            luna =12                       ERR - luna raportare
+03.01.22      3.    an                   Perioada de raportare - An                N(4)      DA            an >= 2021                     ERR - an raportare
+              4.                                                                                           d_rec=(0,1)
+                                                                                                           0-initiala
+                                                                                                           1-rectificativa
+                    d_rec                Declaratie rectifcativa                   N(1)      DA                                           ERR - camp rectificativa
+                                                                                                           Declaratia rectificativa va
+                                                                                                           inlocui raportarea initiala.
+              4a.   d_succ
+              4b.   cifSS                Cod de identificare fiscală                N(13)                  cifSS # null                   ERR - cif succesor invalid
+                                         succesor                                                          Verificare CF sau CNP
+              5.                                                                                                                          ERR - nume declarant
+                    nume_declar          Nume declarant                            C(75)     DA
+                                                                                                                                          necompletat
+              6.                                                                                                                          ERR - prenume declarant
+                    prenume_declar       Prenume declarant                         C(75)     DA
+                                                                                                                                          necompletat
+              7.                                                                                                                          ERR - functie declarant
+                    functie_declar       Functie declarant                         C(50)     DA
+                                                                                                                                          necompletată
+              8.                         Secţiunea I - Date de identificare a
+                                         plătitorului de venit
+              9.                                                                                                                          ERR - CIF plătitor de venit
+                    cui                  Cod de identificare fiscala din Romania   N(13)     DA            Verificare CF/CNP/NIF
+                                                                                                                                          invalid sau necompletat
+              10.                        Cod de identificare fiscala din
+                    cuiS                                                           C(20)
+                                         strainatate
+              11.                                                                                                                         ERR - denumire plătitor
+                    den                  Denumire / Nume şi Prenume                C(200)    DA
+                                                                                                                                          de venit necompletată
+              12.                                                                                                                         ERR - adresă plătitor de
+                    adresa               Adresă domiciliu fiscal                   C(1000)   DA
+                                                                                                                                          venit necompletată
+              13.   telefon              Telefon domiciliu fiscal                  C(15)
+              14.   fax                  Fax domiciliu fiscal                      C(15)
+              15.   mail                 E-mail domiciliu fiscal                   C(200)
+              16.                                                                                          totalPlata_A = suma(nrben)+
+03.01.22            totalPlata_A         Suma de control                           N(15)     DA            suma(Tscutit)+ suma(Tbaza)+    ERR - suma de control
+                                                                                                           suma(Timp) + suma(Timps)
+              17.   <sect_II>            1-n aparitii                                                      cheie unica pe tip_venit
+
+
+
+
+                                                                                                                                                                        1
+                                    unde n=nr.poz.din nomenclator natura
+                                    venit
+                 18.                Secţiunea II - Date recapitulative
+                 19.                                                                        tip_venit in (01 la 25 26 fara
+                                                                                            09)                               ERR – tip_venit invalid
+03.01.22               tip_venit    Tip venit                                 C(2)     DA
+                                                                                            cf. nomenclator tip venit
+                 20.                                                                        nrben = suma(benef) pt. un        ERR - Nr. beneficiari de
+                       nrben        Nr. beneficiari de venit                  N(15)    DA
+                                                                                            (fiecare) tip_venit1              venit / nr.salariati
+                 21.                                                                        Tscutit = suma(baza1) pt.         ERR - Total venit brut
+                                    Total venit brut scutit
+                       Tscutit                                                N(15)    DA   un tip_venit1 din (12 la 21)      scutit
+
+                 22.                                                                        Tbaza = suma(baza1) pt.      un
+                                    Total baza de calcul al impozitului                     tip_venit1 din (01 la 11          ERR - Total baza de
+                       Tbaza                                                  N(15)    DA
+                                                                                            fara 09 si 22 la 25 26)           calcul la imozitului
+
+                 23.                                                                        Timp = suma(imp1) pt. un
+                       Timp         Total impozit retinut                     N(15)    DA                                     ERR - Total impozit retinut
+                                                                                            tip_venit1
+           23a                                                                                                                ERR - Total impozit
+                                    Total impozit suportat de platitorul de                 Timps = suma(imps1) pt. un
+03.01.22               Timps                                                  N(15)    DA                                     suportat de platitorul de
+                                    venit                                                   tip_venit1
+                                                                                                                              venit
+                 24.   </sect_II>
+                 25.   <benef >     1-n aparitii                                            cheie unica (cifR + tip_venit1)
+                 26.                Secţiunile III, IV
+
+                                    III. DATE PRIVIND NATURA
+                                    VENITURILOR
+
+                                    IV. DATE INFORMATIVE PRIVIND
+                                    IMPOZITUL REŢINUT LA SURSĂ ,
+                                    VENITURILE DIN JOCURI DE NOROC
+                                    ŞI CÂŞTIGURILE/ PIERDERILE DIN
+                                    INVESTIȚII, PE BENEFICIARI DE
+                                    VENIT
+                 27.                                                                                                          ERR – ID inregistrare
+                       id_inreg     ID inregistrare                           N(15)    DA   id_inreg unic
+                                                                                                                              neunic
+                 28.                                                                                                          ERR -Campul 'III.Tip venit'
+                                                                                            tip_venit1 in (01 la 25 26 fara
+                                                                                                                              este diferit de (01 la 25 26
+03.01.22               tip_venit1   III.Tip venit                             C(2)     DA   09)
+                                                                                                                              fara 09)
+
+                 29.                                                                                                          ERR - '1.Nume' beneficiar
+                       den1         1.Nume si prenume / Denumire              C(100)   DA
+                                                                                                                              necompletat
+                 30.   Stat_R       2.Statul de rezidenta                     C(2)     DA   Stat_R in nomenclator state       ERR – Campul '2.Statul
+
+
+
+                                                                                                                                                             2
+                                                                                                    de rezidenta                     de rezidenta' necompletat
+                                                                                                                                     sau invalid
+                 31.                                                                                                                 ERR - Campul
+                                                                                                    Verificare cifR
+                                                                                                                                     '3.CF/CNP/NIF din
+                       cifR               3.CNP/NIF/CF din Romania                     N(13)
+                                                                                                                                     Romania' invalid
+                                                                                                    cifR= CF/CNP/NIF
+                 32.   cifS               4.CIF din strainatate                        C(20)
+                 33.                                                                                                                 ERR – Campul '5.Baza de
+                                                                                                    baza1>=0                         calcul/6.Venit scutit’ are
+                                          5.Baza de calcul al impozitului
+                       baza1                                                           N(15)   DA                                    valoare negativa sau nu e
+                                           / 6.Venit brut scutit
+                                                                                                                                     completat
+
+                 34.                                                                                                                 ERR – Campul '7.Impozit
+                                                                                                                                     retinut’ are valoare
+                                                                                                    imp1>=0 pt. tip_venit1=(01 la
+                                                                                                                                     negativa sau nu e
+                                                                                                    11 si 22 la 25 26)
+                                                                                                                                     completat pt.
+                                                                                                                                     tip_venit1=(01 la 11 si 22
+03.01.22               imp1               7.Impozit retinut                            N(15)   DA   imp1 =0 pt. tip_venit1=(12 la
+                                                                                                                                     la 25 26)
+                                                                                                    21)
+                                                                                                                                     ERR – Campul ‘7.impozit
+                                                                                                                                     retinut' trebuie sa fie 0 pt.
+                                                                                                                                     tip_venit1=(12 la 21)
+           34a                                                                                                                       ERR – Campul '8. Impozit
+                                                                                                                                     suportat de platitorul de
+                                                                                                                                     venit’ are valoare
+                                                                                                    imps1>=0 pt. tip_venit1=(01 la
+                                                                                                                                     negativa sau nu e
+                                                                                                    11 si 22 la 25 26)
+                                                                                                                                     completat pt.
+                                                                                                                                     tip_venit1=(01 la 11 si 22
+03.01.22               imps1              8. Impozit suportat de platitorul de venit   N(15)   DA   imps1 =0 pt. tip_venit1=(12 la
+                                                                                                                                     la 25 26)
+                                                                                                    21)
+                                                                                                                                     ERR – Campul ‘8. Impozit
+                                                                                                                                     suportat de platitorul de
+                                                                                                                                     venit ' trebuie sa fie 0 pt.
+                                                                                                                                     tip_venit1=(12 la 21)
+                 35.                                                                                Act_N=(1,2,3)
+                                                                                                    1-Legea nr.227/2015              ERR - Campul '9.Actul
+                                                                                                    2-Convenția de evitare a         normativ' este diferit de
+03.01.22               Act_N              9.Actul normativ                             N(1)    DA
+                                                                                                    dublei impuneri                  (1,2,3)
+                                                                                                    3-Acord internațional la care
+                                                                                                    România este parte
+                 36.   </benef >
+                 37.   </declaratie207>
+
+
+
+
+                                                                                                                                                                     3
+Validari suplimentare:
+
+1. cheie unica (cifR + tip_venit1)
+
+
+Nomenclator - natura veniturilor 03.01.22
+ Cod    Tip venit
+        1. Venituri pentru care plătitorul de venituri are obligația reținerii şi plății impozitului pe veniturile cu regim de reținere la
+        sursă a impozitului conform titlului VI din Codul fiscal, respectiv a convențiilor de evitare a dublei impuneri încheiate de
+        România cu alte state (art.223 din Codul fiscal)
+ 01     a. Venituri din dividende (art.223 alin.(1) lit.a))
+ 22     a. Venituri din dividende (cf. convențiilor de evitare a dublei impuneri )
+ 02     b. Venituri din dobânzi (art.223 alin.(1) lit.b) și c))
+ 23     b. Venituri din dobânzi (cf. convențiilor de evitare a dublei impuneri )
+ 03     c. Venituri din redevențe (art.223 alin.(1) lit.d) și e))
+ 24     c. Venituri din redevențe (cf. convențiilor de evitare a dublei impuneri )
+ 04     d. Venituri din comisioane (art.223 alin.(1) lit.f) și g))
+ 25     d. Venituri din comisioane (cf. convențiilor de evitare a dublei impuneri )
+ 05     e. Venituri activități sportive și de divertisment (art.223 alin.(1) lit.h))
+        f. Venituri reprezentând remuneraţii primite de persoane juridice străine care acţionează în calitate de administrator, fondator sau
+ 06     membru al consiliului de administraţie al unui rezident (art.223 alin.(1) lit.j) )
+ 07     g. Venituri din servicii prestate de persoane nerezidente (art.223 alin.(1) lit.i), k) și l))
+        g. Plati pentru servicii tehnice (art.12 din Acordul între România și Republica India pentru evitarea dublei impuneri și prevenirea
+ 26     evaziunii fiscale cu privire la impozitele pe venit, ratificat prin L329/2013)
+ 08     h. Venituri obținute de persoane fizice nerezidente din premii acordate la concursuri organizate în România (art.223 alin.(1) lit.m))
+ 10     i. Venituri realizate de nerezidenti din lichidarea unui rezident, (art.223 alin.(1) lit.o) )
+ 11     j. Venituri realizate din transferul masei patrimoniale fiduciare de la fiduciar la beneficiarul nerezident. (art.223 alin.(1) lit.p))
+
+          2. Venituri scutite de impozitul pe veniturile obţinute din România, conform art.229 din Codul fiscal
+ 12       a. Venituri din dobânzi (art.229 alin.(1) lit. a), lit.b), lit.g) și lit.h))
+ 19       a. Venituri din dobânzi (cf. convențiilor de evitare a dublei impuneri / acordurilor internationale)
+ 13       b. Veniturile obținute din tranzacțiile cu instrumente financiare derivate/ titlurilor de stat și a obligațiunilor (art.229 alin.(1) lit. a))
+ 14       c. Venituri din dividende (art.229 alin.(1) lit. c) și lit.c^1))
+ 20       c. Venituri din dividende (cf. convențiilor de evitare a dublei impuneri / acordurilor internationale)
+
+
+
+
+                                                                                                                                                          4
+      15        d. Venituri din premii (art.229 alin.(1) lit. d) și lit.e))
+      16        e. Venituri din redevențe (art.229 alin.(1) lit. g))
+      21        e. Venituri din redevențe (cf. convențiilor de evitare a dublei impuneri / acordurilor internationale)
+      17        f. Veniturile din activități de consultanță (art.229 alin.(1) lit. f))
+      18        g. Veniturile realizate ca urmare a participării în alt stat la un joc de noroc (art.229 alin.(1) lit. i))
+
+
+
+
+     Modificari state:
+CS         Serbia si Muntenegru                 27.02.2020
+PS         Fisia Gaza Palestina                 27.02.2020
+CF         CENTRAL AFRICAN REP.                 27.02.2020
+           REPUBLICA
+           CENTRAFRICANA
+           FC CF
+NL         Olanda Tarile de Jos                 27.02.2020
+ME         Muntenegru XM ME                     27.02.2020
+RS         Serbia XS RS                         27.02.2020
+XI         Irlanda de Nord                      01.01.2021
+
+
+
+
+   Nomenclator state de rezidenta
+Cod    Descriere                                Data modificarii
+JE     Jersey, Insulele Canalului
+JM     Jamaica
+JP     Japonia
+KZ     Kazakhstan
+KE     Kenia
+KG     Kirghizistan
+KI     Kiribati
+KW     Kuwait
+LA     Laos
+LS     Lesotho
+
+
+
+
+                                                                                                                             5
+LV   Letonia
+LB   Liban
+LR   Liberia
+LY   Libia
+LI   Liechtenstein
+LT   Lituania
+LU   Luxemburg
+MO   Macao
+MK   Macedonia
+MG   Madagascar
+MW   Malawi
+MY   Malayezia
+MV   Maldive
+ML   Mali
+MT   Malta
+MH   Marshall
+MQ   Martinica
+MR   Mauritania
+MU   Mauritius
+YT   Mayotte
+FM   Micronezia
+MC   Monaco
+MN   Mongolia
+MS   Montserrat
+MZ   Mozambic
+NA   Namibia
+NR   Nauru
+NP   Nepal
+NI   Nicaragua
+NE   Niger
+NU   Niue
+NF   Norfolk
+CD   Congo (Rep. Dem.)
+CS   Serbia si Muntenegru          27.02.2020
+GS   Georgia Sud si Insulele
+     Sandwich Sud
+MP   Marianele de Nord
+PS   Fisia Gaza Palestina          27.02.2020
+RU   RUSIA
+SA   Arabia Saudita
+TF   Teritoriile Franceze de Sud
+
+
+
+
+                                                6
+TW   Taiwan
+UM   Teritoriile SUA din departare
+WS   Samoa de Vest
+XK   Kosovo
+XL   Melila
+AX   Insulele Aaland
+AF   Afghanistan
+CF   CENTRAL AFRICAN REP.            27.02.2020
+     REPUBLICA
+     CENTRAFRICANA
+     FC CF
+ZA   SOUTH AFRICA
+AL   Albania
+DZ   Algeria
+AD   Andorra
+AO   Angola
+AI   insula,(terit.aut.britanic)
+AQ   ANTARCTICA
+AG   ANTIGUA
+AN   NETHERLANDS ANTILLES
+AR   Argentina
+AM   Armenia
+AU   Australia
+AT   Austria
+AZ   Azerbaidjan
+BS   Bahamas
+BH   Bahrain
+BD   Bangladesh
+BB   Barbados
+BE   Belgia
+BZ   Belize
+BJ   Benin
+BM   Bermude
+BT   Bhutan
+BY   Bielorusia
+BO   Bolivia
+BA   Bosnia-Hertegovina
+BW   Botswana
+BR   Brazilia
+BN   Brunei
+BG   Bulgaria
+
+
+
+
+                                                  7
+BF   Burkina Faso
+BI   Burundi
+KH   Cambogia
+CM   Camerun
+CA   Canada
+CV   Capul Verde
+CZ   Cehia
+CL   Chile
+CN   China
+CX   insula,(terit. ausralian)
+TD   Ciad
+CY   Cipru
+CI   Coasta de Fildes
+CC   insule,(terit. australian)
+CO   Columbia
+KM   Comore
+CG   Congo
+CK   Cook
+KP   COREEA DE NORD
+KR   Coreea de Sud
+HR   Croatia
+CU   Cuba
+DK   Danemarca
+DM   Dominica
+DO   Dominicana
+EC   Ecuador
+CH   Elvetia
+AE   Emiratele Arabe Unite
+ER   Erytrhreea
+EE   Estonia
+FO   Feroe
+FJ   Fiji
+FI   Finlanda
+FR   Franta
+GA   Gabon
+GM   Gambia
+GE   Georgia
+DE   Germania
+GH   Ghana
+GI   Gibraltar
+TV   Gilbert si Tuvalu
+
+
+
+
+                                  8
+GR   Grecia
+GD   Grenada
+GL   Groenlanda
+GP   Guadelupa
+GU   Guam
+GT   Guatemala
+GN   Guineea
+GQ   Guineea Ecuatoriala
+GW   Guineea-Bissau
+GY   Guyana
+GF   Guiana Franceza
+HT   Haiti
+HM   (terit.australian)
+HN   Honduras
+HK   Hong-Kong
+IN   India
+ID   Indonezia
+JO   Iordania
+IQ   Irak
+IR   Iran
+IE   Irlanda
+XI   Irlanda de Nord        01.01.2021
+IS   ISLANDA
+IL   Israel
+IT   Italia
+EG   Egipt
+ET   Ethiopia
+FK   Falkland
+MX   Mexic
+MA   Maroc
+NG   Nigeria
+NL   Olanda Tarile de Jos   27.02.2020
+PH   Filipine
+UG   Uganda
+UY   Uruguay
+CR   Costa Rica
+GB   Marea Britanie
+SV   Salvador
+AW   Aruba
+BV   Bouvet (Insula)
+KY   Cayan (Insule)
+
+
+
+
+                                         9
+ME   Muntenegru XM ME            27.02.2020
+PW   Palau (Insule)
+NO   Norvegia
+NC   Noua Caledonie
+NZ   Noua Zeelanda
+OM   Oman
+PK   Pakistan
+PA   Panama
+PG   Papua-Noua Guinee
+PY   Paraguay
+PE   Peru
+PN   Pitcairn
+PF   Polinezia Franceza
+PL   Polonia
+PT   Portugalia
+XC   Poses. Spaniole Africa de
+     Nord
+PR   Puerto Rico
+QA   Qatar
+YE   R.A YEMEN
+MD   Republica Moldova
+RE   Reunion
+RO   România
+RW   Rwanda
+US   S.U.A.
+EH   Western Sahara
+SH   Saint Helena
+KN   Saint Kitts Nevis Anguil
+LC   Saint Lucia
+PM   Saint Pierre si Miquelon
+VC   Saint Vincent
+AS   Samoa Americana
+SM   San Marino
+ST   Sao Tome si Principe
+SN   Senegal
+RS   Serbia XS RS                27.02.2020
+SC   Seychelles
+SL   Sierra Leone
+SG   Singapore
+SY   Siria
+SK   Slovacia
+
+
+
+
+                                              10
+GG   Guernsey
+SI   Slovenia
+SB   Solomon Britanice
+SO   Somalia
+ES   Spania
+LK   Sri Lanka
+SD   Sudan
+SE   Suedia
+SR   Surinam
+SJ   Svalbard si Jan Mayen
+SZ   Swaziland
+TJ   REP. TADJIKISTAN
+TZ   Tanzania
+IO   Chagos,Aldabra,Farquhar,Des
+     roches(insule)
+TH   Thailanda
+TL   insula,(terit. indonezian)
+TG   Togo
+TK   insule(terit. neozeelandez)
+TO   Tonga
+TT   Trinidad-Tobago
+TN   Tunisia
+TR   Turcia
+TM   Turkmenistan
+TC   Turks si Caikos
+UA   Ucraina
+HU   Ungaria
+MM   Uniunea Myanmar
+UZ   REP. UZBEKISTAN
+VU   Vanuatu
+VA   Vatican
+VE   Venezuela
+VN   Vietnam
+VI   Virgine Americane
+VG   Virgine Britanice
+WF   Wallis si Futuna
+ZM   Zambia
+ZW   Zimbabwe
+DJ   Djibouti
+
+
+
+
+                                   11
+

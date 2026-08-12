@@ -18,7 +18,7 @@ CALCUL+DB stau în module (au pull+genereaza). Aici doar: validare cerere (pură
 """
 from __future__ import annotations
 
-from core import (d100, d101, d112, d205, d230, d300, d301, d311, d390, d394, d406, d710)
+from core import (d100, d101, d112, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710)
 from core.common import Perioada
 
 REGULI = "2026.1"
@@ -70,6 +70,11 @@ def _d710(conn, schema, b):
 
 
 # tip -> (periodicitate, adaptor). Adăugarea unei declarații = o linie aici.
+def _d207(conn, schema, b):
+    # D207 e MANUALA (informativa impozit retinut nerezidenti) - lista de beneficiari din corp cerere.
+    return d207.genereaza(conn, schema, Perioada(b["an"], luna=b.get("luna") or 12), b.get("manual") or {})
+
+
 def _d230(conn, schema, b):
     # D230 e MANUALA integral (redirectionare pana la 3,5% din impozit catre ONG) - fara pull automat.
     # ANUALA (an = anul venitului); luna de raportare = 12 (structura, fix).
@@ -87,6 +92,7 @@ DECLARATII = {
     "d101": ("anual",       _d101),
     "d112": ("lunar",       _d112),
     "d205": ("anual",       _d205),
+    "d207": ("anual",       _d207),
     "d230": ("anual",       _d230),
     "d300": ("lunar",       _d300),
     "d301": ("lunar",       _d301),
@@ -106,7 +112,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d230", "d311", "d710"))
+_DOAR_API = frozenset(("d207", "d230", "d311", "d710"))
 
 
 def tipuri():
@@ -147,6 +153,12 @@ def valideaza_cerere(tip, body):
         if not isinstance(trim, int) or trim < 1 or trim > 4:
             erori.append("trimestru invalid: %r (aștept 1-4)" % (trim,))
     # 'anual' nu cere nimic în plus față de an
+
+    # d207 (informativa nerezidenti, MANUALA): cere `manual` cu lista de beneficiari
+    if tip == "d207":
+        m = body.get("manual")
+        if not isinstance(m, dict) or not m.get("beneficiari"):
+            erori.append("d207 cere `manual.beneficiari` (lista de beneficiari nerezidenti)")
 
     # d230 (redirectionare 3,5%, MANUALA): cere `manual` (contribuabil + beneficiar ONG)
     if tip == "d230":

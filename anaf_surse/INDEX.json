@@ -7,6 +7,26 @@
       "tip_forma": null,
       "acopera": []
     },
+    "D311_XML_2021_290121.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "OPANAF_179_2022_D207.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "OPANAF_179_2022_D207.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "OPANAF_179_2022_D207.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "OPANAF_3562_2024_D177.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -148,6 +168,11 @@
         }
       ]
     },
+    "d010_d020_d070_d700_status.md": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "d100_struct_anaf.txt": {
       "exista": true,
       "tip_forma": null,
@@ -183,12 +208,22 @@
       "tip_forma": null,
       "acopera": []
     },
+    "d230_structura_din_validator.md": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "d300_struct_anaf.txt": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
     },
     "d301_struct_anaf.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "d311_20210129.xsd": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
@@ -691,6 +726,26 @@
       "acopera": []
     },
     "structura_D112_0726_030826.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D207_2025.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D207_2025.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D207_2025.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "structura_D311_2021_290121.pdf": {
       "exista": true,
       "tip_forma": null,
       "acopera": []
