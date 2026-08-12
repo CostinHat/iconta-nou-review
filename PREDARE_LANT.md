@@ -6,13 +6,13 @@ Se SUPRASCRIE la fiecare publicare (al 5-lea pas, CLAUDE.md §2.3 pct.10). NU e 
 Ritual pornire: `ssh iconta 'cd ~/iconta_nou && git log -1 && git status --porcelain'`.
 
 ## (a) Four-way de la ultima executie
-HEAD = origin/main = backup/lant-2026-08-12 = RUNNING pe **ddd2275** (D107, 12.08.2026 21:53).
-Poarta verde: pytest 1920 passed / 3 skipped / 16 xfailed; verificator TOTAL 0. Publicat pe origin/main
-+ backup/lant-2026-08-12 (post-commit); iconta-nou restartat (ExecMainStartTimestamp 21:59:35 > commit
-21:53:26 -> procesul viu preia ddd2275). Sentinele PUSH_*_ESUAT absente. Nota: `versiune.stare()` rulat
-din CLI da running=null (necunoscut) - NU e procesul viu; proba RUNNING = start-time > commit (citita, nu
-presupusa) + banner post-commit "procesul viu preia ddd2275". App pe 127.0.0.1:8010. Verificare la predare:
-`/admin/versiune` (superadmin) sau `git log -1` + systemd ExecMainStartTimestamp.
+HEAD = origin/main = backup/lant-2026-08-13 = RUNNING pe **baafe62** (D307, 13.08.2026).
+Poarta verde la fiecare commit: pytest 1942 passed / 3 skipped / 16 xfailed (la ultimul); verificator TOTAL 0.
+Publicat pe origin/main + backup/lant-2026-08-13 (post-commit); iconta-nou restartat NECONDITIONAT (post-commit)
+-> procesul viu preia baafe62 (start-time > data commitului; sentinele PUSH_*_ESUAT absente). Nota:
+`versiune.stare()` din CLI da running=null (necunoscut) - NU e procesul viu; proba RUNNING = start-time > commit
+(citita, nu presupusa) + banner post-commit. App pe 127.0.0.1:8010. Verificare la predare: `/admin/versiune`
+(superadmin) sau `git log -1` + systemd ExecMainStartTimestamp.
 
 ## (b) Fronturi deschise
 0. **DATE D406 ALFA (Costin, 11.08) — CONSTRUCTIE COMPLETA.** tenant_013 facut apt de proba DUK: CUI-uri
@@ -37,25 +37,26 @@ presupusa) + banner post-commit "procesul viu preia ddd2275". App pe 127.0.0.1:8
    securitate (64e8b1b, ramas optional HSTS lung); D406 PARTIAL (F035-037); test-debt import (proba pozitiva).
 
 ## (c) Ce e in lucru acum
-CAMPANIA DE 10 DECLARATII NOI (act -> corpus -> cod -> DUK-valid). Facute: D207 (1), D177 (2),
-D107 (3, ddd2275). OPRIT dupa D107 pentru DECIZIE DE PRODUS pe ORDINEA/lista celor 10 - vezi (d).
+Nimic in lucru. Campania de declaratii noi INCHISA: D207/D177/D107 (12.08) + lotul de 6 cerut de
+Costin in ordine fixa (13.08): D104, D220, D223, D221, D110, D307 - toate DUK-valide, LIVE (F212-F217),
+in dispatch (_DOAR_API) + modalul de login. D392 scos (suspendat legal pana 31.12.2026, OUG 115/2023).
 
 ## (d) Ce urmeaza
-1. **CAMPANIA DE 10 - urmatoarea declaratie: cere ORDINEA lui Costin.** Lista/ordinea celor 10 NU e pe
-   disc (core.agenda.urmator_cluster()=None; niciun fisier de plan) - a fost data in conversatia dinaintea
-   acestui lant. Alegerea DECLARATIEI URMATOARE = ce se publica = decizie de produs (§2.3 pct.2), cu atat mai
-   mult cu cat unii candidati au fost RESPINSI in DECIZII (nu se reconstruiesc fara decizie noua).
-   METODA (identica D107/D177/D207): act din static.anaf.ro -> anaf_surse (pdf+sha256+txt) + gen_index.py;
-   structura din DXXXValidator.jar (arbitrul, casing case-sensitive); core/dXXX.py generator MANUAL; test
-   core/test_dXXX.py + DUKIntegrator -v DXXX 'valid'; cablat CHEIE_DUK(duk.py)+dispatch(declaratii_api:
-   anual/lunar, _DOAR_API, validare, numar_operatiuni); FUNCTIONALITATI F### LIVE + genereaza_grupe_functii.py
-   --scrie (login.js); commit (poarta verde) -> four-way.
-   CANDIDATI cu validator instalat SI fara generator: D104, D110, D220, D221, D223, B230 (D307 AMANAT).
-   RESPINSI in DECIZII 20.07 (NU se construiesc fara decizie noua a lui Costin): D700 (mentiuni administrative),
-   D392 (suspendat legal pana 31.12.2026, art.LXII OUG), D094 (inglobat in D700). Din 'nivelul 3' nedecis
-   (DECIZII:117): D104, D223, D221 au validator; D204/D108/D180/D209 NU au validator instalat.
-2. La cererea lui Costin: rafinari (ex. ecrane manuale de introducere pentru declaratiile _DOAR_API).
-3. Fronturi mostenite (mai sus) daca le redeschide Costin.
+Campania de declaratii cerute de Costin e COMPLETA (D104/D220/D223/D221/D110/D307 construite; D392 exclus
+legal). Optional, la cererea lui Costin:
+1. Ecrane manuale de introducere pentru declaratiile _DOAR_API (azi doar prin dispatch/API): d104, d107, d110,
+   d177, d207, d220, d221, d223, d230, d307, d311, d710.
+2. Declaratii ramase cu validator dar excluse de Costin (NU se construiesc fara decizie noua): B230 (se depune
+   de ONG-uri), D700/D010/D020/D070/D094 (administrative/inglobate), D392 (suspendat pana 31.12.2026).
+   La reactivare 2027 D392, se reevalueaza.
+
+METODA per declaratie (pt orice viitoare): act din static.anaf.ro -> anaf_surse (pdf+xsd, sha256, txt) +
+gen_index.py; structura din DXXXValidator.jar (arbitrul; versiune din _dateVersionTable; namespace din
+vN/ValidatorImpl.class - poate diferi de folderul bytecode; casing case-sensitive); core/dXXX.py generator MANUAL
+(contract: pull/erori_generare/calcul_dXXX/build_xml/genereaza - gardul CONTRACT GENERATOARE le cere pe toate);
+DUKIntegrator -v DXXX 'valid'; cablat CHEIE_DUK(duk.py)+dispatch(declaratii_api)+FUNCTIONALITATI F### +
+genereaza_grupe_functii.py --scrie; commit IZOLAT (pathspec) -> poarta verde -> four-way. NU pre-descarca acte
+pentru declaratii viitoare (gen_index scaneaza tot discul -> INDEX ar referi fisiere necomise).
 
 ## Unelte
 - Ajutor de ansamblu: core/ajutor.py + genereaza_grupe_functii.repartizeaza (grupe) + STRATURI (migrare.js, firul).
