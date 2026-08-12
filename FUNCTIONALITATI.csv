@@ -250,7 +250,7 @@ XML D100 validat, cu impozitul micro de plata pe trimestru.
 - Cota micro gresita pentru an/perioada.
 ## Reguli fiscale
 OPANAF 587/2016 cu modificari; regimul micro din Codul fiscal. Termen 25 ale lunii urmatoare trimestrului."
-Declaratia D101 + IMCA,"Impozitul pe profit anual (namespace v10): calcul din balanta, pierdere reportata, IMCA (impozit minim cifra afaceri, 0,5% 2026) cu comparatia P46/P47, sub-randuri, XML validat.",F027,firma,Declaratii,core/d101.py,OPANAF 206/2025,LIVE,DUKIntegrator,,"## Ce face
+Declaratia D101 + IMCA,"Impozitul pe profit anual (namespace v10): calcul din balanta, pierdere reportata, IMCA (impozit minim cifra afaceri, 0,5% 2026) cu comparatia P46/P47, sub-randuri, XML validat.",F027,firma,Declaratii,core/d101.py,OPANAF 206/2025,LIVE,DUKIntegrator,termen-depunere-d101,"## Ce face
 Declaratia D101 - impozitul pe profit anual, cu calcul din balanta, pierderea reportata si IMCA (impozitul minim pe cifra de afaceri), inclusiv comparatia impozit pe profit vs IMCA. Genereaza XML-ul validat (namespace v10).
 ## Cand se foloseste
 Anual, pana pe 25 martie a anului urmator (pentru platitorii de impozit pe profit), sau la termenul specific regimului.
