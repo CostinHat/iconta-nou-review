@@ -310,6 +310,8 @@ Textul unei pagini stă într-un fișier Markdown separat. Nu în registrul de f
 
 Shell-ul care randează leagă foaia de stil canonică și folosește clase și tokeni. Fără `<style>` inline, fără culori scrise direct în șablon.
 
+**Scroll de document.** Paginile publice folosesc scroll normal de document. Ele **NU** moștenesc regula globală `html, body { overflow-y: hidden }` — aceea aparține shell-ului aplicației/landing-ului (care are scroll intern propriu). Shell-ul public marchează `<html>` **și** `<body>` cu clasa `.pagina-publica`, iar foaia de stil readuce `overflow-y: auto` pe ea. Un shell public fără această clasă se taie la primul ecran (conținutul de sub fold devine invizibil, iar componentele par „text simplu"). Verificatorul îl prinde.
+
 ---
 
 ### 8. Verificator

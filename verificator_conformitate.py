@@ -1119,6 +1119,33 @@ for _nume, _t in fisiere.items():
         _ln = _t[:_m.start()].count("\n") + 1
         rap["stare_goala_eroare"].append((_nume, _ln, "", " ".join(_t[_m.start():_m.start()+70].split())))
 
+# --- GARD SCROLL PAGINI PUBLICE (DS cap.22 §7): shell-urile publice folosesc scroll de document.
+#     Nu mostenesc html,body{overflow-y:hidden} (app/landing). Marcheaza html+body cu .pagina-publica,
+#     iar stil.css readuce overflow-y:auto pe .pagina-publica. Fara asta pagina se taie la primul ecran
+#     si componentele de sub fold par "text simplu". Mutatia care il probeaza: scoate clasa dintr-un shell
+#     public sau override-ul din stil.css -> aceasta lista devine nevida -> TOTAL > 0 -> poarta rosie.
+rap["scroll_public"] = []
+try:
+    _css_sp = open(os.path.join(BAZA_PY, "static", "stil.css"), encoding="utf-8").read()
+    _main_sp = open(os.path.join(BAZA_PY, "main.py"), encoding="utf-8").read()
+    if re.search(r"html\s*,\s*body\s*\{[^}]*overflow-y\s*:\s*hidden", _css_sp) and \
+       not re.search(r"\.pagina-publica[^{]*\{[^}]*overflow-y\s*:\s*auto", _css_sp):
+        rap["scroll_public"].append(("static/stil.css", 0, "scroll",
+            "html,body overflow-y:hidden fara override .pagina-publica:auto (DS cap.22 §7)"))
+    for _sh in ("_GHID_PAGINA", "_TERMENI_PAGINA"):
+        _msp = re.search(_sh + r'\s*=\s*"""(.*?)"""', _main_sp, re.S)
+        if not _msp:
+            rap["scroll_public"].append(("main.py", 0, _sh, "shell public negasit - nu pot verifica .pagina-publica"))
+            continue
+        _blk = _msp.group(1)
+        _ok_html = re.search(r'<html[^>]*class="[^"]*pagina-publica', _blk)
+        _ok_body = re.search(r'<body[^>]*class="[^"]*pagina-publica', _blk)
+        if not (_ok_html and _ok_body):
+            rap["scroll_public"].append(("main.py", 0, _sh,
+                "shell public fara .pagina-publica pe html+body (DS cap.22 §7) -> se taie la primul ecran"))
+except Exception as _e_sp:
+    rap["scroll_public"].append(("verificator", 0, "EROARE", "gard scroll_public: " + str(_e_sp)))
+
 for cat, lista in rap.items():
     print("\n### %s: %d" % (cat.upper(), len(lista)))
     for nume, i, extra, lin in lista:

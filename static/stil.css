@@ -1989,6 +1989,10 @@ html, body { overflow-x: hidden; }
 
 html, body { overflow-y: hidden; }
 
+/* Paginile publice (ghid, /public/termeni) folosesc scroll de document — NU mostenesc scroll-lock-ul
+   aplicatiei/landing-ului de mai sus (DS cap.22 §7). Shell-ul public marcheaza html+body cu .pagina-publica. */
+html.pagina-publica, body.pagina-publica { overflow-y: auto; }
+
 /* ICRD_LANDING_V3 — layout refacut dupa referinta */
 .pagina-card-mare .pagina-card-buton { background: #3d8fd6; }
 .pagina-card-mare .pagina-card-buton:hover { background: #115ea3; }

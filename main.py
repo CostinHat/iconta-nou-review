@@ -1283,7 +1283,7 @@ def _termeni_public_md(txt):
         out.append(ln)
     return "\n".join(out)
 
-_TERMENI_PAGINA = """<!doctype html><html lang="ro"><head><meta charset="utf-8">
+_TERMENI_PAGINA = """<!doctype html><html lang="ro" class="pagina-publica"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Termeni si conditii - iConta.eu</title>
 <link rel="stylesheet" href="/static/stil.css">
@@ -1299,7 +1299,7 @@ body{background:#f4f6f9;margin:0;font-family:-apple-system,BlinkMacSystemFont,'S
 .tc-wrap blockquote{border-left:3px solid #b9c2cf;margin:1em 0;padding:.2em 0 .2em 14px;color:#5b6b7c;background:#eef4fd}
 .tc-wrap hr{border:none;border-top:1px solid #dbe1ea;margin:1.6em 0}
 .tc-inapoi{margin-top:44px}
-</style></head><body>
+</style></head><body class="pagina-publica">
 <div class="tc-bara"><a href="/">iConta.eu</a><span>&middot; Termeni si conditii</span></div>
 <main class="tc-wrap">%(corp)s<p class="tc-inapoi"><a href="/">&larr; Inapoi la iConta.eu</a></p></main>
 </body></html>"""
@@ -8576,7 +8576,7 @@ _GHID_OG_IMAGINE = _GHID_BAZA + "/static/logo_login.png"   # provizoriu; DE_FACU
 # Shell public: leaga stil.css, foloseste DOAR clase + tokeni (fara <style> inline, fara culori
 # scrise direct). {{META}} = description + canonical + Open Graph + JSON-LD, construite PER PAGINA.
 _GHID_PAGINA = """<!doctype html>
-<html lang="ro">
+<html lang="ro" class="pagina-publica">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8586,7 +8586,7 @@ _GHID_PAGINA = """<!doctype html>
 <link rel="manifest" href="/static/manifest.json">
 <link rel="apple-touch-icon" href="/static/icon-192.png">
 </head>
-<body>
+<body class="pagina-publica">
 <div class="ghid-shell">
   <header class="pagina-bara">
     <a class="pagina-bara-stanga" href="/">
