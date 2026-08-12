@@ -4130,3 +4130,16 @@ regim-marja-second-hand (F098, CF art.312: TVA pe marja, suta marita 21/121), re
 art.311: marja pe pachet), decont-tva-d300-rezultat (F031, art.323/303: colectata-deductibila, sold negativ report/
 rambursare, prag 5.000 lei). Toate verbatim din Cod fiscal, functii LIVE. Total ghiduri publice: 18. Corpus puternic
 EPUIZAT pe volum. Ramase: D101 (conflict lege/validator), D406 (PARTIAL), e-Factura/e-Transport (fara act in corpus).
+
+## 12.08.2026 — Ghid D101 scadenta: golul "conflict lege/validator" era FALS (sursa bate memoria)
+termen-depunere-d101 (F027). Sarita anterior ca "D101 (conflict lege/validator)" — dar am citit NUMELE fisierului si
+memoria d101-scadenta ("conflict deschis"), nu CONTINUTUL. Evidenta anaf_surse/d101_scadenta_conflict_lege_validator.md
+are pe PRIMA linie "REZOLVAT (03.08.2026)": nu exista conflict de fond, prima cercetare ratase OUG 153/2020.
+Intrebare distincta: "pana cand se depune D101 si de ce difera termenul de la un an la altul". Temei verbatim:
+- 2021-2025 -> 25 iunie: OUG 153/2020 art.I alin.(13) lit.a) (MO 817/04.09.2020), derogare GENERALA de la art.41-42 CF.
+- 2026+ -> 25 iunie permanent: OUG 8/2026 art.6 pct.12 (MO 147/25.02.2026) modifica art.42(1) CF.
+- baza art.42(1) CF = 25 martie (forma originara, neaplicata in interval).
+Pagina spune SI ce cere validatorul instalat azi (DUK R17 iunie pe 2021-2025; R17.1 martie pe 2026 pana preia OUG 8/2026)
+ca cititorul sa nu se sperie la respingerea unei date pe care o crede corecta — FARA a numi vreun conflict lege-validator.
+Total ghiduri publice: 18 -> 19. Ramase din corpus: D406 (PARTIAL), e-Factura/e-Transport (fara act in corpus).
+Lectie: sursa bate memoria, fara exceptie — citeste CONTINUTUL fisierului, nu numele lui.
