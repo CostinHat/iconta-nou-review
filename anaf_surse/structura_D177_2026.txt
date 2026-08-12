@@ -1,0 +1,161 @@
+D177 CERERE PRIVIND REDIRECȚIONAREA IMPOZITULUI PE PROFIT
+
+structura xml
+
+D177_A1.0.8 data: 14032025
+
+
+dataModificare    nr.crt element/ atribut      semnificatie       tipDate   Cardinalitate      reguli operationale        eroare/
+                                                                            0..1 = optional                               atentiona
+                                                                            maxim o aparitie                              re
+                                                                            0..n = optional
+                                                                            maxim n aparitii
+                                                                            1..1 =
+                                                                            obligatoriu
+                                                                            maxim 1 aparitie
+                                                                            1..n = obligatoriu
+                                                                            maxim n aparirii
+                        <D177>                                              1..1
+                      1 d_rec                  Declaratie         N(1)      1..1             d_rec = (0, 1)
+                                               rectificativa                                 IF d_rec = 1 THEN
+                                                                                             d_rec_notif = (0,1)
+
+14032025            1.1 d_rec_notif            Declaratie         N(1)      1..1             d_rec_notif = (0, 1)
+                                               rectificativa ca
+                                               urmarea unei                                  IF d_rec_notif = 1 THEN
+                                               notificari                                    d_rec = 1
+                      2 index                  Index încarcare    N(20)     0..1             index != null <=> d_rec =1
+                                               formularul care se
+                                               rectifica
+                      3 an                     Anul               N(4)      1..1             an >= 2021
+4 luna           Luna              N(2)    1..1   Luna = 12
+                                                  luna trebuie sa coincida cu
+                                                  luna din dataSfarsit, sau sa
+                                                  fie 12 daca dataSfarsit este
+                                                  necompletat
+5 dataInceput    Data inceput      D(10)   1..1   zz.ll.aaaa
+                 perioada                         dataInceput < dataSfarsit
+                                                  Daca tipPlatitor = 2, atunci
+                                                  fie dataInceput si dataSfarsit
+                                                  sunt null, fie dataInceput =
+                                                  01.01.an si dataSfarsit =
+                                                  31.12.an
+
+                                                  Daca tipPatitor = 1, anul din
+                                                  dataInceput poate fi an-1 sau
+                                                  an
+6 dataSfarsit    Data inceput      D(10)   1..1   zz.ll.aaaa
+                 perioada                         dataSfarsit != null <=>
+                                                  dataInceput != null
+
+                                                  dataSfarsit.substr(6,4)== an
+
+                                                  daca anul din dataInceput = an
+                                                  atunci dataSfarsit = 31.12.an
+
+                                                  Daca (tipPatitor = 1 si anul
+                                                  din dataInceput = an-1) atunci
+                                                  dataSfarsit >= dataInceput + 365
+                                                  sau 366 in functie de an
+                                                  nebisect/bisect
+
+                                                  anul din dataSfarsit
+                                                  TREBUIE sa fie egal cu an
+7 totalPlata_A   Suma de control   C(15)   1..1   totalPlata_A = 0
+                                                                   Math.round(sumaRest/100).t
+                                                                   oString(2)
+
+                                                                   suma ramasa de redictionat / 100
+                                                                   rotunjita la intreg si convertita într-
+                                                                   un șir folosind baza 2
+
+
+            8 cif           Cod de               N(13)      1..1   Validare CUI, CNP
+                            identificare fiscala
+                            contribuabil
+            9 denC          Denumire               C(250)   1..1
+                            contribuabil
+           10 sumaMax       Suma maximă            N(15)    1..1   sumaMax > 0
+                            care poate fi
+                            redirecționată                         sumaMax >= sumaAnt +
+                            potrivit legii (lei)                   sumaRest
+           11 sumaAnt       Suma                N(15)       1..1   sumaAnt>= 0
+                            redirecționată prin
+                            formularele 177
+                            depuse
+                            anterior(lei)
+           12 sumaRest      Suma rămasă de         N(15)    1..1   sumaRest > 0
+                            redirecționat(lei)
+           13 adresaC       Adresa                 C(500)   0..1
+                            Contribuabil
+           14 telC          Telefon                N(10)    0..1
+                            contribuabil
+14032025   15 tipPlatitor   Platitor de impozit N(1)        1..1   tipPlatitor = (1,2)
+                            pe profit/ Platitor                    1 = Platitor de impozit pe
+                            de impozit pe                          profit
+                            veniturile                             2 = Platitor de impozit pe
+                              microintreprinderi                   veniturile microintreprinderi
+            16 emailC         Adresa de email      C(400)   0..1   Validare format adresa de
+                              contribuabil                         email
+            17 denR           Denumire             C(250)   0..1
+                              imputernicit
+            18 cifR           Cod de               N(13)    0..1   cifR != null <=> denR != null
+                              identificare fiscala
+                              imputernicit                         Validare CUI, CNP
+
+            19 adresaR        Adresa               C(500)   0..1
+                              imputernicit
+
+            20 telR           Telefon              N(10)    0..1
+                              imputernict
+            21 emailR         Adresa de email      C(400)   0..1
+                              imputernicit
+            22 <beneficiar>                                 1…n
+14032025   22.1 acord                              N(10     1..1   acord = (0, 1)
+14032025    23 tipB           Tip beneficiar       N(1)     1..1   tipB = (1,2,3,4,5)
+                                                                   1 = Sponsorizare către
+                                                                   entități persoane juridice fără
+                                                                   scop lucrativ, inclusiv unități
+                                                                   de cult
+                                                                   2 = Sponsorizare către
+                                                                   beneficiari, alții decât cei de
+                                                                   la punctul 1, potrivit legii
+                                                                   3= Act de mecenat
+                                                                   4= Bursa privată
+                                                                   5= Fondul Națiunilor Unite
+                                                                   Pentru Copii (UNICEF) și
+                                                                   alte organizații internaționale
+                                                  care își desfășoară
+                                                  activitatea potrivit
+                                                  prevederilor unor acorduri
+                                                  speciale la care România
+                                                  este parte
+
+                                                  IF (tipPlatitor = 2) THEN tipB
+                                                  <> 3
+24 cuiB        Cod de identifi-   N(13)    1..1   Validare CUI, CNP
+               care fiscala
+                                                  IF (tipB = 1,2,5) cuiB = CUI
+                                                  IF (tipB = 3,4) cuiB = CNP
+
+
+25 denB        Denumire benefi-   C(250)   1..1
+               ciar
+26 adresaB     Adresa beneficiar C(500)    0..1
+27 contractB   Numar si data      C(500)   0..1    IF (tipB < 5) THEN
+               contract                           contractB MUST EXIST
+28 telB        Telefon beneficiar N(10)    0..1
+29 emailB      Adresa email       C(400)   0..1
+               beneficiar
+30 ibanB       Cod IBAN benefi- C(24)      1..1   Validare lungime , sintaxa si
+               ciar                               cifra de control IBAN
+
+                                                  ibanB.substring(0, 2)== RO
+                                                  IBAN trebuie sa fie emis de o
+                                                  banca din Romania
+
+31 sumaB       Suma de redis-     N(15)    1..1   Σ sumaB <= sumaRest
+               tribuit
+32 </beneficiar>
+33 </D177>
+
