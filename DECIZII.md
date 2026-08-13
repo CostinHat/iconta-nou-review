@@ -9013,3 +9013,17 @@ e-Transport OUG41/2022) sub pretextul 'consolidat' - ar fi text expirat folosit 
 se aduce consolidatul separat.
 FAPT CONFIRMAT: diurna interna 23 lei/zi e in vigoare in 2026 (OMF 1235/2023, adus in corpus). Valoarea din cod
 si din paginile publice are acum act pe disc.
+
+
+### 13.08.2026 PIVOT: legislatie.just.ro e blocat la NIVEL DE IP al serverului, NU de amprenta client (supersedeaza nota de mai sus)
+CONSTATARE (corecteaza intrarea anterioara de azi care sugera 'de adus cu client cu amprenta de browser'):
+descarcarea de pe just.ro NU e posibila de pe server prin NICIO metoda client-side. Probat serios, la cererea lui
+Costin: curl (HTTP/2 -> PROTOCOL_ERROR; --http1.1 -> empty reply), wget/urllib/requests, SI chromium REAL
+(playwright, headless, UA de browser, --disable-http2) -> ERR_EMPTY_RESPONSE / ERR_HTTP2_PROTOCOL_ERROR. In acelasi
+timp, din acelasi chromium: example.com=200, static.anaf.ro=200. Deci blocajul e pe CONEXIUNEA server->just.ro
+(IP/rutare/egress al serverului respins de WAF-ul just.ro, posibil declansat de accesele automate anterioare), NU
+pe metoda/amprenta -> un browser real de pe server e blocat la fel.
+DECIZIE: nu se mai incearca variatii client-side de pe server pentru just.ro (efort inutil). Ocolirea printr-un
+proxy/alt IP ar fi circumventie ABUZIVA a unui control de acces pe care site-ul il aplica acestui host
+(constrangerea lui Costin: 'nu ocoli protectiile in mod abuziv') -> INTERZIS. Actele consolidate de pe just.ro se
+aduc din BROWSERUL OMULUI (alt IP), pe URL-urile predate. Rezultat concret: 0 din cele 43 aduse de pe server.
