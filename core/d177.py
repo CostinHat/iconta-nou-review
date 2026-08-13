@@ -13,7 +13,9 @@ Nomenclator (structura_D177_2026):
     3=UNICEF/organizatii internationale cu acord special; 5=... . cuiB=CUI pt tipB in (1,2,5), CNP pt (3,4).
   acord = (0,1) pe beneficiar. contractB obligatoriu daca tipB<5.
 Reguli: sumaMax >= sumaAnt+sumaRest; sumaRest>0; Σ sumaB <= sumaRest; IBAN cu cifra de control;
-  totalPlata_A (C15, suma de control) = round(sumaRest/100) (half-up) - confirmat pe validator.
+  totalPlata_A (C15, suma de control) = 0 (D177 informativa; validator J2.0.3, pachet v1, an 2025).
+  NOTA: formula veche round(sumaRest/100) era FALS-confirmata - validatorul vechi crapa tacit (fals-verde,
+  vezi DECIZII 14.08); validatorul curent respinge orice totalPlata_A != 0 ('nu se incadreaza in interval').
 
 Contract dXXX: pull/erori_generare/calcul_d177/build_xml/genereaza(conn, schema, perioada).
 """
@@ -68,10 +70,10 @@ class Rezultat177:
 
 
 def calcul_d177(manual):
-    """suma de control totalPlata_A = round(sumaRest/100) half-up (structura rd.7)."""
+    """suma de control totalPlata_A = 0 (D177 e informativa; validator J2.0.3/v1). Formula veche
+    round(sumaRest/100) era fals-confirmata pe validatorul vechi care crapa tacit (fals-verde)."""
     rest = _i(manual.get("suma_rest"))
-    tot = int((Decimal(rest) / 100).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
-    return {"suma_rest": rest, "totalPlata_A": str(tot)}
+    return {"suma_rest": rest, "totalPlata_A": "0"}
 
 
 def pull(conn, schema, perioada):
@@ -148,7 +150,7 @@ def build_xml(prof, an, luna, manual, calc):
     if tp == 1:
         a.append('dataInceput="%s"' % _data(manual.get("data_inceput")))
         a.append('dataSfarsit="%s"' % _data(manual.get("data_sfarsit")))
-    linii = ['<declaratie177 xmlns="%s" %s>' % (NS, " ".join(a))]
+    linii = ['<D177 xmlns="%s" %s>' % (NS, " ".join(a))]
     for b in manual.get("beneficiari") or []:
         tb = str(b.get("tip") or "")
         iban = str(b.get("iban") or "").replace(" ", "").upper()
@@ -160,7 +162,7 @@ def build_xml(prof, an, luna, manual, calc):
         if b.get("contract"):
             ba.append('contractB="%s"' % _esc(b.get("contract"), 500))
         linii.append('  <beneficiar %s/>' % " ".join(ba))
-    linii.append('</declaratie177>')
+    linii.append('</D177>')
     return '<?xml version="1.0" encoding="UTF-8"?>\n' + "\n".join(linii) + "\n"
 
 

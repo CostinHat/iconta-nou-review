@@ -9155,3 +9155,17 @@ FALS-VERDE: validatorul D177 e de generatie noua, iar generatorul core/d177.py p
 DECIZIE: test_d177_valid_pe_validatorul_oficial marcat xfail(strict) ca DATORIE (nu se ascunde, nu se lasa fals-verde);
 d177 se reconstruieste dupa structura validatorului CURENT (root/ns/campuri), cu proba DUK, ca lotul 2 - task separat.
 Doar D177 e afectat dintre declaratiile cablate (D406 foloseste calea SAF-T separata; D212/D398/D700 nu-s cablate).
+
+### 14.08.2026 D177 REPARAT — datoria din 13.08 INCHISA (root D177 + totalPlata_A=0)
+Verificare forensica ceruta de Costin (respingerea e reala? ce difera?): respingerea era REALA, dar strict pe
+NUMELE RADACINII - generatorul emitea <declaratie177>, validatorul curent (J2.0.3, pachet v1, activ pt 2025 din
+_dateVersionTable) cere <D177>. Namespace IDENTIC (mfp:anaf:dgti:d177:declaratie:v1), TOATE atributele (radacina
++ beneficiar) recunoscute, niciunul lipsa. Dovada: schimband doar rootul in <D177> dispare "element necunoscut".
+In plus, doua reguli de VALOARE nesatisfacute de vechea proba fals-verde: totalPlata_A trebuie = 0 (vechea
+formula round(sumaRest/100) era FALS-confirmata pe validatorul vechi care crapa tacit), si perioada = an fiscal
+complet (R6: dataSfarsit = 31.12.an cand dataInceput e in acelasi an; R4.1: luna = luna din dataSfarsit = 12).
+FIX core/d177.py: radacina declaratie177 -> D177; calcul_d177 totalPlata_A "0"; docstring corectat.
+FIX core/test_d177.py: date an fiscal 2025, CUI beneficiar valid, luna=12, control_sum asteapta "0"; xfail
+ELIMINAT - test_d177_valid_pe_validatorul_oficial trece GENUIN pe validatorul oficial (via DecValidation nou din
+duk.py), nu mai e fals-verde. Singura declaratie afectata era D177 (verificat: din 31 cablate, doar d177+d216
+sunt generatie noua; d216 valida corect). Datorie INCHISA.

@@ -18,26 +18,28 @@ class _P:
 
 
 def _manual(**ov):
-    m = {"tip_platitor": 1, "data_inceput": "2024-01-01", "data_sfarsit": "2024-12-31",
+    m = {"tip_platitor": 1, "data_inceput": "2025-01-01", "data_sfarsit": "2025-12-31",
          "suma_max": 10000, "suma_ant": 0, "suma_rest": 10000,
-         "beneficiari": [{"tip": "2", "cui": "12345678", "den": "Asociatia Binele",
+         "beneficiari": [{"tip": "2", "cui": "14399840", "den": "Asociatia Binele",
                           "iban": "RO49AAAA1B31007593840000", "contract": "12/2025", "suma": 10000, "acord": "1"}]}
     m.update(ov)
     return m
 
 
 def test_d177_control_sum():
-    """totalPlata_A = round(sumaRest/100) half-up (structura rd.7)."""
-    assert d177.calcul_d177({"suma_rest": 10000})["totalPlata_A"] == "100"
-    assert d177.calcul_d177({"suma_rest": 1250})["totalPlata_A"] == "13"   # 12.5 -> 13 half-up
+    """totalPlata_A = 0 (D177 informativa; validator J2.0.3/v1). Vechea formula round(sumaRest/100)
+    era fals-confirmata pe validatorul vechi care crapa tacit."""
+    assert d177.calcul_d177({"suma_rest": 10000})["totalPlata_A"] == "0"
+    assert d177.calcul_d177({"suma_rest": 1250})["totalPlata_A"] == "0"
 
 
 def test_d177_build_xml():
     c = d177.calcul_d177(_manual())
-    xml = d177.build_xml({"cui": "14399840", "den": "F"}, 2025, 6, _manual(), c)
+    xml = d177.build_xml({"cui": "14399840", "den": "F"}, 2025, 12, _manual(), c)
     assert 'xmlns="mfp:anaf:dgti:d177:declaratie:v1"' in xml
     assert 'tipPlatitor="1"' in xml and 'tipB="2"' in xml
-    assert 'sumaRest="10000"' in xml and 'totalPlata_A="100"' in xml
+    assert 'sumaRest="10000"' in xml and 'totalPlata_A="0"' in xml
+    assert '<D177 ' in xml and '</D177>' in xml
 
 
 def test_d177_reguli():
@@ -51,11 +53,10 @@ def test_d177_reguli():
     assert any("depaseste sumaRest" in e for e in d177.erori_generare(prof, b))                  # Σsuma>rest
 
 
-@pytest.mark.xfail(strict=True, reason='DATORIE 13.08.2026: validatorul D177 a trecut la GENERATIE NOUA (cere DecValidation 2024); generatorul core/d177.py produce root/namespace stale (declaratie177, ns v1) respins de validatorul curent (element necunoscut). Fals-verde preexistent EXPUS de fail-safe-ul din core/duk.py (retry cu DecValidation nou). Se inchide cand d177 e reconstruit dupa structura validatorului CURENT, cu proba DUK (aceeasi metoda ca lotul 2). Vezi DECIZII.md 13.08.')
 @pytest.mark.skipif(not os.path.exists(_JAR), reason="Validatorul D177 nu e instalat in DUK.")
 def test_d177_valid_pe_validatorul_oficial():
     from core import duk
     from core.common import Perioada
-    xml, res = d177.genereaza(_P(), "s", Perioada(2025, luna=6), _manual())
-    rez = duk.valideaza(xml, "d177", an=2025, luna=6)
+    xml, res = d177.genereaza(_P(), "s", Perioada(2025, luna=12), _manual())
+    rez = duk.valideaza(xml, "d177", an=2025, luna=12)
     assert rez["stare"] == "valid", rez.get("erori")
