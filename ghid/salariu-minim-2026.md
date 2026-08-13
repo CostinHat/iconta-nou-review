@@ -1,8 +1,8 @@
 ---
-title: Salariul minim brut în 2026: 4.325 lei de la 1 iulie
-description: Salariul minim brut garantat este 4.050 lei până la 30 iunie 2026 și 4.325 lei de la 1 iulie 2026 (HG 146/2026). Tariful orar, part-time și ce se recalculează.
+title: Salariul minim brut în 2026: 4.325 lei din iulie (HG 146/2026)
+description: Salariul minim brut garantat este 4.050 lei până la 30 iunie 2026 și 4.325 lei de la 1 iulie 2026, potrivit HG 146/2026. Tariful orar, part-time și ce se recalculează.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # Cât e salariul minim brut în 2026 și de la ce dată se schimbă?

@@ -1,8 +1,8 @@
 ---
-title: Taxarea inversă internă: pentru ce livrări se aplică și cum se contează
-description: Lista operațiunilor cu taxare inversă din art. 331 Cod fiscal, condițiile cumulative, pragul de 22.500 lei la electronice și înregistrarea 4426 = 4427.
+title: Taxare inversă internă: livrările de la art. 331 Cod fiscal
+description: Lista operațiunilor cu taxare inversă din art. 331 din Codul fiscal, condițiile cumulative, pragul de 22.500 lei la electronice și înregistrarea 4426 = 4427.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # Pentru ce livrări interne se aplică taxarea inversă și de ce nu circulă TVA între firme?

@@ -1,8 +1,8 @@
 ---
-title: Microîntreprinderea în 2026: cota unică de 1% și plafonul de 100.000 euro
-description: În 2026 microîntreprinderea plătește 1% pe venituri, cota diferențiată a dispărut, iar plafonul e 100.000 euro. La depășire treci la impozit pe profit din chiar trimestrul depășirii.
+title: Microîntreprindere în 2026: cota 1% și plafon 100.000 euro
+description: În 2026 microîntreprinderea plătește 1% pe venituri (OUG 89/2025), cota diferențiată a dispărut, iar plafonul e 100.000 euro (OUG 8/2026). La depășire treci la impozit pe profit din trimestrul depășirii.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # Cât plătește o microîntreprindere în 2026 și când trece obligatoriu la impozit pe profit?

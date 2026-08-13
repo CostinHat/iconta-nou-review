@@ -1,8 +1,8 @@
 ---
-title: TVA la marjă pentru bunuri second-hand: cum se calculează corect
-description: La revânzarea de bunuri second-hand în regimul marjei, TVA se calculează pe diferența dintre prețul de vânzare și cel de cumpărare, prin suta mărită, fără deducere la intrare.
+title: TVA la marjă second-hand: calculul din art. 312 Cod fiscal
+description: La revânzarea de bunuri second-hand în regimul marjei, TVA se calculează pe diferența dintre prețul de vânzare și cel de cumpărare, prin suta mărită, fără deducere la intrare — art. 312 Cod fiscal.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # Cum se calculează TVA la vânzarea de bunuri second-hand în regimul marjei?

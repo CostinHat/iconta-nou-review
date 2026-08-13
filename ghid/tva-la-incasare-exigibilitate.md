@@ -1,8 +1,8 @@
 ---
-title: TVA la încasare: când devine exigibilă taxa și ce plafon se aplică
-description: La sistemul TVA la încasare, taxa devine exigibilă la data încasării, nu la emiterea facturii. Plafonul de 5.000.000 lei în 2026 și operațiunile care rămân la regula generală.
+title: TVA la încasare: exigibilitatea și plafonul (art. 282 Cod fiscal)
+description: La sistemul TVA la încasare, taxa devine exigibilă la data încasării, nu la emiterea facturii, potrivit art. 282 din Codul fiscal. Plafonul de 5.000.000 lei în 2026 și operațiunile exceptate.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # La TVA la încasare, când datorezi taxa — la facturare sau la încasare?

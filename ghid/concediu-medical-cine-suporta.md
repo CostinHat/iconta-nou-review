@@ -1,8 +1,8 @@
 ---
-title: Concediul medical: cine suportă indemnizația și cum se calculează
-description: Cine plătește indemnizația de concediu medical — angajatorul primele zile, apoi FNUASS — procentele pe durata certificatului și regula temporară 2026-2027 care schimbă zilele.
+title: Concediu medical: cine suportă indemnizația (OUG 158/2005)
+description: Cine plătește indemnizația de concediu medical potrivit OUG 158/2005 — angajatorul primele zile, apoi FNUASS — procentele pe durata certificatului și regula temporară 2026-2027 din OUG 91/2025.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # Cine suportă indemnizația de concediu medical și cum se calculează?

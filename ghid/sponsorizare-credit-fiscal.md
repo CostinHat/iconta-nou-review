@@ -1,8 +1,8 @@
 ---
-title: Sponsorizarea: cât scazi din impozit la profit și de ce nu mai scazi la micro
-description: Creditul fiscal pentru sponsorizare la impozitul pe profit — minimul dintre 0,75% din cifra de afaceri și 20% din impozit — și de ce la microîntreprinderi mecanismul s-a încheiat în 2023.
+title: Sponsorizare: creditul fiscal din art. 25 Cod fiscal
+description: Creditul fiscal pentru sponsorizare la impozitul pe profit — minimul dintre 0,75% din cifra de afaceri și 20% din impozit, potrivit art. 25 alin. (4) lit. i) — și de ce la microîntreprinderi mecanismul s-a încheiat în 2023.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # Cât din impozit poți scădea pentru o sponsorizare și în ce limite?

@@ -1,8 +1,8 @@
 ---
-title: Diurna externă neimpozabilă: 2,5 × baremul pe țară, nu o sumă fixă
+title: Diurna externă neimpozabilă: 2,5 × baremul din HG 518/1995
 description: Cum se calculează plafonul neimpozabil al diurnei externe — 2,5 × diurna pe țara de destinație din HG 518/1995 (35 euro pentru majoritatea statelor UE), cu temei și exemplu.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 # Diurna externă neimpozabilă: se calculează pe țară, nu cu o sumă unică
 

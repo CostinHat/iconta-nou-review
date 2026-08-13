@@ -1,8 +1,8 @@
 ---
-title: Diurna internă neimpozabilă în 2026: plafonul de 57,5 lei pe zi
-description: Cât e diurna internă scutită de impozit și contribuții — plafonul de 2,5 × 23 lei = 57,5 lei pe zi din 1 aprilie 2023, cu temeiul legal și un exemplu numeric.
+title: Diurna internă neimpozabilă: 57,5 lei pe zi (Ordin MF 1235/2023)
+description: Cât e diurna internă scutită de impozit și contribuții — plafonul de 2,5 × 23 lei = 57,5 lei pe zi, potrivit Ordinului MF 1235/2023, aplicabil din 1 aprilie 2023.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 # Diurna internă neimpozabilă: până la 57,5 lei pe zi, și de când
 

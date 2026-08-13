@@ -1,8 +1,8 @@
 ---
-title: Impozit pe dividende în 2026: cota de 16% și data care o decide
-description: Cota de impozit pe dividende este 16% pentru dividendele distribuite de la 1 ianuarie 2026. Contează data distribuirii, nu anul profitului — cu temei legal și exemplu.
+title: Impozit pe dividende în 2026: cota de 16% (Legea 141/2025)
+description: Cota de impozit pe dividende este 16% pentru dividendele distribuite de la 1 ianuarie 2026, potrivit Legii 141/2025. Contează data distribuirii, nu anul profitului.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # Ce cotă de impozit se aplică dividendelor în 2026 și după ce dată se stabilește?

@@ -1,8 +1,8 @@
 ---
-title: Cotele de TVA în vigoare: standard 21%, redusă 11%
-description: De la 1 august 2025 cota standard de TVA este 21%, iar cotele reduse de 9% și 5% au fost comasate într-una singură, de 11%. Ce a trecut la standard și ce decide cota aplicabilă.
+title: Cotele de TVA în vigoare: 21% și 11% (Legea 141/2025)
+description: De la 1 august 2025 cota standard de TVA este 21%, iar cotele reduse de 9% și 5% au fost comasate într-una singură, de 11%, prin Legea 141/2025. Ce a trecut la standard și ce decide cota aplicabilă.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # Ce cote de TVA se aplică în România și ce s-a schimbat din august 2025?

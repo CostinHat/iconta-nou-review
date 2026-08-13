@@ -1,8 +1,8 @@
 ---
-title: Avans încasat la o cotă, livrare la alta: ce TVA aplici
-description: Avans încasat la 19% și livrare după 1 august 2025? La livrare se regularizează la 21%, pentru că faptul generator decide cota finală. Temei legal și exemplu numeric.
+title: Avans la 19%, livrare la 21%: regularizarea cotei de TVA
+description: Ai încasat un avans la 19% înainte de 1 august 2025 și livrezi după? La livrare se regularizează la 21%, pentru că faptul generator decide cota finală — art. 291 alin. (6) Cod fiscal.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # Am încasat avans la 19% și livrez după schimbarea cotei — ce TVA aplic?

@@ -1,8 +1,8 @@
 ---
-title: TVA la agențiile de turism: regimul marjei pe pachetul de călătorie
-description: La agențiile de turism TVA se calculează pe marja agenției, nu pe prețul pachetului, iar taxa de la hotelieri și transportatori nu se deduce — rămâne în cost.
+title: TVA la agențiile de turism: marja din art. 311 Cod fiscal
+description: La agențiile de turism TVA se calculează pe marja agenției, nu pe prețul pachetului, iar taxa de la furnizorii serviciilor pentru călător nu se deduce — regimul special din art. 311 Cod fiscal.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # Cum aplică o agenție de turism TVA la pachetul de călătorie și de ce nu deduce taxa de la furnizori?

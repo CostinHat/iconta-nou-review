@@ -1,8 +1,8 @@
 ---
-title: Termenul de depunere a D101: până când se depune declarația de impozit pe profit
-description: Termenul de depunere a D101 este 25 iunie, atât pentru anii fiscali 2021-2025 (OUG 153/2020), cât și permanent din 2026 (OUG 8/2026). De ce nu e 25 martie, cum mulți cred.
+title: Termenul de depunere a D101: 25 iunie, nu 25 martie
+description: Termenul de depunere a declarației anuale de impozit pe profit este 25 iunie: pentru 2021-2025 prin OUG 153/2020, iar din 2026 permanent prin OUG 8/2026. De ce cifra din memorie e greșită.
 published: 2026-08-12
-modified: 2026-08-12
+modified: 2026-08-13
 ---
 
 # Până când se depune D101 și de ce nu e 25 martie?
